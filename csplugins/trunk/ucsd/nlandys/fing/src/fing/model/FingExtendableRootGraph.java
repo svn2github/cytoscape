@@ -2,15 +2,15 @@ package fing.model;
 
 /**
  * Please try to restrain from using this class.  This class was created so
- * that certain legacy application would have an easier time using this
+ * that certain legacy applications would have an easier time using this
  * giny.model implementation.
  * @deprecated Use FingRootGraphFactory instead.
  * @see FingRootGraphFactory
  **/
-public class ExtendableFingRootGraph extends FRootGraph
+public class FingExtendableRootGraph extends FRootGraph
 {
 
-  public ExtendableFingRootGraph() { }
+  public FingExtendableRootGraph() { }
 
 //   /**
 //    * This method is here so that subclasses can gain control of the exact
