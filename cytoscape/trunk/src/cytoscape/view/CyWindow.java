@@ -144,8 +144,7 @@ protected void doInit(CytoscapeObj globalInstance, CyNetwork network, String tit
 
     //need to create a graph view before creating menu actions that
     //want access to the view
-    updateGraphView();
-    //applyLayout(); do not layout by the default, too slow
+    createGraphView();
 
     mainFrame.setContentPane(this);
     //create the menu objects
@@ -153,10 +152,14 @@ protected void doInit(CytoscapeObj globalInstance, CyNetwork network, String tit
     cyMenus.initializeMenus();
     add(cyMenus.getToolBar(), BorderLayout.NORTH);
     mainFrame.setJMenuBar(cyMenus.getMenuBar());
+    installGraphView();
     // load vizmapper after menus are done and graph is available
     loadVizMapper();
+    //applyLayout(); do not layout by the default, too slow
     redrawGraph(false, true);
-
+    view.fitContent();
+    view.setZoom(view.getZoom()*0.9);
+    
     setInteractivity(true);
 
     //add a listener to save the visual mapping catalog on exit
@@ -205,31 +208,32 @@ protected void loadPlugins() {
 //------------------------------------------------------------------------------
 
 /**
-* initialize the Graph View
-*/
-protected void updateGraphView() {
-    Component oldDisplay = null;
-    if (display != null) {
-        oldDisplay = display;
-    }
-
+ * Creates a new graph view, replacing the old if necessary
+ */
+protected void createGraphView() {
     if (view != null) {
         view.removeGraphViewChangeListener(this);
     }
     view = GinyFactory.createGraphView(network.getGraphPerspective());
     view.addGraphViewChangeListener(this);
-    display = view.getComponent();
-    add( display, BorderLayout.CENTER);
-    //the tool bar is usually already in the window; the following is a trick
-    //to force the tool bar to be displayed properly after changing the view
-    //the if statement is needed because this method gets called before
-    //constructing the menus on initialization
-    if (this.cyMenus != null) {
-        add(cyMenus.getToolBar(), BorderLayout.NORTH);
+    addViewContextMenus();
+    // Add the GraphViewController as a listener to the graphPerspective
+    // so that it keeps is synchronized to graphView
+    if(this.graphViewController == null){
+        this.graphViewController = new GraphViewController();
+    } else {
+        this.graphViewController.removeAllGraphViews();
     }
-
+    boolean added = this.graphViewController.addGraphView(this.view);
+    if(!added){
+        // This should never happen, but just in case
+        System.err.println("1. In CyWindow.updateGraphView(): Could not add this.view to "
+                           + " this.graphViewController.");
+    }
     /*
-     * the vizmapper makes most of these redundant
+     * These are initial values for the view parameters, which are mostly
+     * redundant since the vizmapper controls these. The might be useful if
+     * the vizmapper is not available or disabled.
     view.setBackgroundPaint(Color.BLACK);
 
     Iterator i = view.getNodeViewsIterator();
@@ -254,42 +258,29 @@ protected void updateGraphView() {
         ev.setStroke(new BasicStroke(5f));
     }
     */
-    addViewContextMenus();
-    view.fitContent();
-    view.setZoom(view.getZoom()*0.9);
+}
+
+/**
+* install the Graph View in this window
+*/
+protected void installGraphView() {
+    Component oldDisplay = null;
+    if (display != null) {
+        oldDisplay = display;
+    }
+    
+    display = view.getComponent();
+    add( display, BorderLayout.CENTER);
+    //the tool bar is usually already in the window; the following is a trick
+    //to force the tool bar to be displayed properly after changing the view
+    if (this.cyMenus != null) {
+        add(cyMenus.getToolBar(), BorderLayout.NORTH);
+    }
+
     //redrawGraph(false, true);
     if (oldDisplay != null){
         this.remove(oldDisplay);
     }
-
-    // Add the GraphViewController as a listener to the graphPerspective
-    // so that it keeps is synchronized to graphView
-    if(this.graphViewController == null){
-        this.graphViewController = new GraphViewController();
-        boolean added = this.graphViewController.addGraphView(this.view);
-        if(!added){
-            // This should never happen, but just in case
-          System.err.println("1. In CyWindow.updateGraphView(): Could not add this.view to "
-                             + " this.graphViewController.");
-        }
-        //TODO: Remove
-        //System.out.println("1. In CyWindow.updateGraphView(). Added this.view to "
-        //                 + " this.graphViewController");
-    } else {
-      // The graphViewController had been instatiated before.
-      // Since right now we only have one view, clear the controller, and add the
-      // possibly new view. When we have more than one view, this will change.
-      this.graphViewController.removeAllGraphViews();
-      boolean added = this.graphViewController.addGraphView(this.view);
-      if(!added){
-        // Again, this should never happen, but just in case
-        System.err.println("2. In CyWindow.updateGraphView(): Could not add this.view to "
-                           + " this.graphViewController.");
-      }
-      //TODO: Remove
-      //System.out.println("2. In CyWindow.updateGraphView(). Added this.view to "
-      //                 + " this.graphViewController");
-    }// end of GraphViewController stuff
 }
 //------------------------------------------------------------------------------
 /**
@@ -519,9 +510,12 @@ public void setNewNetwork( CyNetwork newNetwork ) {
     this.network = newNetwork;
     newNetwork.addCyNetworkListener(this);
 
-    updateGraphView();
+    createGraphView();
+    installGraphView();
     //applyLayout();
     redrawGraph(false, true);
+    view.fitContent();
+    view.setZoom(view.getZoom()*0.9);
     updateStatusLabel(0, 0);
 
     //this call forces the window to revalidate itself
