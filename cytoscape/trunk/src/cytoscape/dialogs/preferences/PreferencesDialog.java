@@ -52,13 +52,19 @@ public class PreferencesDialog extends JDialog {
 	    if (tm == pluginsTM) {
 		// catch at table - don't allow duplicate values for
 		// name/value pair
-		if (!inTable(pluginsTM,"Plugin",preferenceValue)) {
-	        	pluginsTM.addPlugin(preferenceValue);
-		} else {
+		Vector listOfDuplicates = new Vector();
+		Vector listOfNew= new Vector();
+		pluginsTM.validateNewPlugins(preferenceValue,listOfDuplicates,
+					listOfNew);
+		for (int i = 0; i < listOfNew.size(); i++) {
+		    pluginsTM.addPlugin((String)listOfNew.elementAt(i));
+		}
+		for (int i = 0; i < listOfDuplicates.size(); i++) {
 		// popup info dialog
 			JOptionPane.showMessageDialog(this,
-				"Plugin: "+ preferenceValue +
-					" already included","Information",
+				"Plugin: " +
+				    ((String)listOfDuplicates.elementAt(i)) +
+				    " already included","Information",
 				JOptionPane.INFORMATION_MESSAGE);
 		}
 	
@@ -75,19 +81,6 @@ public class PreferencesDialog extends JDialog {
 	    deletePropBtn.setEnabled(false);
 	    deletePluginBtn.setEnabled(false);
     }
-
-   /*
-    * check for presence of name/value pair in table/table model
-    */
-    public boolean inTable(PluginsTableModel tm, String name, String value) {
-      int numRows = tm.getRowCount();
-      for (int i = 0; i < numRows; i++) {
-        if ( ((String)tm.getValueAt(i,0)).equals(value))
-            return true;
-      }
-      return false;
-    }
-
 
 
     public void refresh() {

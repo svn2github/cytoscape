@@ -26,33 +26,6 @@ public class PreferenceTableModel extends AbstractTableModel {
         loadProperties();
     }
     
-    public String abs2rel(String absS) {
-        String mrudURI = new String((new File(
-	    System.getProperty("user.dir"))).toURI().toString().substring(5));
-        String absURI = absS;
-        String prefix = new String();
-        String returnRel = null;
-            
-        int check = 0;
-        for (int i=1;i<mrudURI.length();i++) {
-            if (absURI.startsWith(mrudURI.substring(0,i))) {
-                check = i;
-            } else {
-                break;
-            }
-        }
-            
-        int lastpath = absURI.substring(0,check+1).lastIndexOf("/");
-            
-        if (lastpath == mrudURI.length()-1) {
-            returnRel = absURI.substring(lastpath+1);
-        } else { 
-            returnRel = new String(mrudURI.substring(lastpath+1).toLowerCase().replaceAll("[a-z]+","..") + absURI.substring(lastpath+1));
-        }
-            
-        return returnRel;
-    }
-    
 
     public void loadProperties() {
 	    clearVector();

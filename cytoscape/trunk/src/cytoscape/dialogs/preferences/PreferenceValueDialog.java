@@ -118,10 +118,8 @@ public class PreferenceValueDialog extends JDialog {
             int returnVal =  fc.showOpenDialog(motherRef);
 
             if (returnVal == JFileChooser.APPROVE_OPTION) {
-                File file;
-                file = fc.getSelectedFile();
+                File file = fc.getSelectedFile();
 		String selection = file.getAbsolutePath();
-		selection = grandmotherRef.pluginsTM.abs2rel(selection);
 
                 if (motherRef.preferenceName.equals("Local")) {
 			String plugins = validatedPluginData(motherRef,
@@ -151,8 +149,7 @@ public class PreferenceValueDialog extends JDialog {
 		    String [] fileList = file.list();	// could use FileFilter
 		    String pluginFiles = new String("");
 		    for (int j=0;j<fileList.length; j++) {
-//			String jarString = file.getAbsolutePath()+
-			String jarString = file.getPath()+
+			String jarString = file.getAbsolutePath()+
 						File.separator+ fileList[j];
 			if (jarString.endsWith(".jar")) {
 			  if (pluginFiles.length()>0) {
@@ -173,7 +170,8 @@ public class PreferenceValueDialog extends JDialog {
 		} else {
 		// ordinary file was specified
 		    if (!selection.endsWith(".jar")) {
-			 // no *.jar files found in input string, popup info dialog
+			 // no *.jar files found in input string, popup info
+			 // dialog
 			 JOptionPane.showMessageDialog(comp,
 				"No plugins (*.jar files) found.","Information",
 				JOptionPane.INFORMATION_MESSAGE);

@@ -20,7 +20,6 @@ public class PluginsTableModel extends AbstractTableModel {
 
     public PluginsTableModel() {
         super();
-//MDA
 	pluginsFromCommandLineLoadedAndSaved = false;
 	// get only one entry from properties: key=plugins
 	properties = new Properties();
@@ -31,34 +30,6 @@ public class PluginsTableModel extends AbstractTableModel {
         loadProperties();
     }
     
-    public String abs2rel(String absS) {
-        String mrudURI = new String((new File(
-	    System.getProperty("user.dir"))).toURI().toString().substring(5));
-        String absURI = absS;
-        String prefix = new String();
-        String returnRel = null;
-            
-        int check = 0;
-        for (int i=1;i<mrudURI.length();i++) {
-            if (absURI.startsWith(mrudURI.substring(0,i))) {
-                check = i;
-            } else {
-                break;
-            }
-        }
-            
-        int lastpath = absURI.substring(0,check+1).lastIndexOf("/");
-            
-        if (lastpath == mrudURI.length()-1) {
-            returnRel = absURI.substring(lastpath+1);
-        } else { 
-            returnRel = new String(mrudURI.substring(lastpath+1).toLowerCase().replaceAll("[a-z]+","..") + absURI.substring(lastpath+1));
-        }
-            
-        return returnRel;
-    }
-    
-
     public void loadProperties() {
 	pluginsSet.clear();
         if ( getProperty( "plugins" ) != null ) {
@@ -243,6 +214,49 @@ public class PluginsTableModel extends AbstractTableModel {
 
     public int getRowCount() {
         return pluginsSet.size();
+    }
+
+
+   /*
+    * check for presence of name/value pair in table/table model
+    */
+    public boolean validateNewPlugins(String value, Vector listOfDuplicates,
+						Vector listOfNew) {
+     listOfDuplicates.clear();
+     listOfNew.clear();
+     try {
+
+      // handle comma separated list of paths, or single path
+      String[] path = value.split(",");
+      for (int i = 0; i < path.length; i++) {
+        File newFile = new File(path[i]);
+        int numRows = getRowCount();
+	boolean isDuplicate = false;
+        for (int j = 0; j < numRows; j++) {
+	  String currentFileStr = (String)getValueAt(j,0);
+	  // test for simple string match - path[i] already in list
+          if (currentFileStr.equals(path[i])) {
+	    listOfDuplicates.add(path[i]);
+	    isDuplicate = true;
+	  } else {
+	    // not textually in list, but must test for File equivalence
+	    // - are the two file paths the same file?
+	    File currentFile = new File(currentFileStr);
+	    if ((currentFile.getCanonicalPath()).equals(
+					newFile.getCanonicalPath())) {
+	        listOfDuplicates.add(path[i]);
+	    	isDuplicate = true;
+	    }
+	  }
+        }
+	if (!isDuplicate) {
+	  listOfNew.add(path[i]);
+	}
+      }
+     } catch (IOException ioe) {
+      ioe.printStackTrace();
+     }
+     return (listOfDuplicates.size() > 0 ? true : false);
     }
 
 }
