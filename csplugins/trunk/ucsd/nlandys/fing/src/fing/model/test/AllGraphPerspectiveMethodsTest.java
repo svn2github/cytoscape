@@ -527,12 +527,56 @@ public final class AllGraphPerspectiveMethodsTest
       throw new IllegalStateException("not in degree -1");
 
     // getOutDegree(Node).
+    if (persp.getOutDegree(root2Node) != -1 ||
+        persp.getOutDegree(nodeNotInPersp) != -1)
+      throw new IllegalStateException("not out degree -1");
+    if (persp.getOutDegree(persp.getNode(nodeInx[2])) != 3)
+      throw new IllegalStateException("not out degree 3");
+    if (persp.getOutDegree(persp.getNode(nodeInx[1])) != 3)
+      throw new IllegalStateException("not out degree 3");
+    if (persp.getOutDegree(persp.getNode(nodeInx[4])) != 0)
+      throw new IllegalStateException("not out degree 0");
 
     // getOutDegree(int).
+    if (persp.getOutDegree(minNodeInx - 1) != -1 ||
+        persp.getOutDegree(0) != -1 ||
+        persp.getOutDegree(101) != -1)
+      throw new IllegalStateException("not out degree -1");
+    if (persp.getOutDegree(nodeInx[3]) != 1)
+      throw new IllegalStateException("not out degree 1");
+    if (persp.getOutDegree(nodeInx[0]) != 1)
+      throw new IllegalStateException("not out degree 1");
+    if (persp.getOutDegree(Integer.MIN_VALUE) != -1)
+      throw new IllegalStateException("not out degree -1");
 
     // getOutDegree(Node, boolean).
+    if (persp.getOutDegree(root2Node, false) != -1 ||
+        persp.getOutDegree(nodeNotInPersp, true) != -1)
+      throw new IllegalStateException("not out degree -1");
+    if (persp.getOutDegree(persp.getNode(nodeInx[1]), false) != 1)
+      throw new IllegalStateException("not out degree 1");
+    if (persp.getOutDegree(persp.getNode(nodeInx[1]), true) != 3)
+      throw new IllegalStateException("not out degree 1");
+    if (persp.getOutDegree(persp.getNode(nodeInx[0]), false) != 1 ||
+        persp.getOutDegree(persp.getNode(nodeInx[0]), true) != 1)
+      throw new IllegalStateException("not out degree 1");
 
     // getOutDegree(int, boolean).
+    if (persp.getOutDegree(minNodeInx - 3, false) != -1 ||
+        persp.getOutDegree(0, true) != -1 ||
+        persp.getOutDegree(2, false) != -1)
+      throw new IllegalStateException("not out degree -1");
+    if (persp.getOutDegree(nodeInx[2], false) != 2 ||
+        persp.getOutDegree(nodeInx[2], true) != 3)
+      throw new IllegalStateException("not correct out degree");
+    if (persp.getOutDegree(nodeInx[3], false) != 1 ||
+        persp.getOutDegree(nodeInx[3], true) != 1)
+      throw new IllegalStateException("not out degree 1");
+    if (persp.getOutDegree(nodeInx[4], true) != 0 ||
+        persp.getOutDegree(nodeInx[4], false) != 0)
+      throw new IllegalStateException("not out degree 0");
+    if (persp.getOutDegree(Integer.MAX_VALUE, false) != -1)
+      throw new IllegalStateException("not out degree -1");
 
     // getDegree(Node).
 
