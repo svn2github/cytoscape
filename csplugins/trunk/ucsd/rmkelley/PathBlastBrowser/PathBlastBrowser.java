@@ -174,7 +174,7 @@ class LoadPathBlastGMLTask extends Thread{
    * of overlaps created from this graph
    */
   public CyNetwork createOverlapGraph(HashMap cyNetwork2Name, HashMap cyNetwork2NameSet){
-    CyNetwork overlapNetwork = Cytoscape.createNetwork();
+    CyNetwork overlapNetwork = Cytoscape.createNetwork("Overlap Graph");
     
     //create the nodes for this graph, also create a mapping from GMLTree objects to nodes in the graph
     HashMap cyNetwork2Node = new HashMap();	

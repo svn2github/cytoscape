@@ -74,7 +74,7 @@ public class DualLayoutTask extends Thread{
     //first make a new network in which to put the result 
     //and GraphObjAttributes to put the attributes associated
     //with the nodes
-    CyNetwork gmlNetwork = Cytoscape.createNetwork();
+    CyNetwork gmlNetwork = Cytoscape.createNetwork("GML Network");
     gmlNetwork.setTitle(title);
 
     //These are maps from the name of a node to the node itself
