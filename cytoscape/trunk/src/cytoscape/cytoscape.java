@@ -198,9 +198,11 @@ public void windowActivated   (WindowEvent e) {
 	if(splashScreen != null)
 	{	splashScreen.advance(200);
 		splashScreen.dispose();
-		//splashScreen = null;
+		splashScreen = null;
 	}
+	
 }
+
 /**
  * on linux (at least) a killed window generates a 'windowClosed' event; trap that here
  */
@@ -211,7 +213,13 @@ public void windowIconified   (WindowEvent e) {}
 //------------------------------------------------------------------------------
 public void windowOpened (WindowEvent e) 
 {  
+  if(splashScreen != null)
+	{	splashScreen.advance(200);
+		splashScreen.dispose();
+		splashScreen = null;
+	}
   windows.add (e.getWindow ());
+  
 }
 //------------------------------------------------------------------------------
 public void windowClosed (WindowEvent e) 
