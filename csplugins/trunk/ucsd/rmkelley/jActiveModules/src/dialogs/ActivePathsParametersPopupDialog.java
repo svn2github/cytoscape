@@ -88,17 +88,18 @@ public class ActivePathsParametersPopupDialog extends JDialog {
 
 //-----------------------------------------------------------------------------
 public ActivePathsParametersPopupDialog 
-                         (ActivePathsParametersPopupDialogListener listener, 
+  (//ActivePathsParametersPopupDialogListener listener, 
                           Frame parentFrame, String title, 
 			  ActivePathFinderParameters incomingApfParams)
 {
   super (parentFrame, true);
   setTitle (title);
-  this.listener = listener;
+  //this.listener = listener;
 
   // uses copy constructor so that changes aren't committed if you dismiss.
-  apfParams = new ActivePathFinderParameters(incomingApfParams);
-  
+  //apfParams = new ActivePathFinderParameters(incomingApfParams);
+  apfParams = incomingApfParams;
+
   readout = new JTextField(new String("seed: "+apfParams.getRandomSeed()));
   RandomSeedTextListener readoutListener = new RandomSeedTextListener();
   readout.addFocusListener(readoutListener);
@@ -140,16 +141,16 @@ public ActivePathsParametersPopupDialog
   
   ///////////////////////////////////////////
   JPanel buttonPanel = new JPanel ();
-  JButton applyButton = new JButton ("Apply");
-  JButton saveButton = new JButton ("Save Params");
+  //JButton applyButton = new JButton ("Apply");
+  //JButton saveButton = new JButton ("Save Params");
   JButton dismissButton= new JButton ("Dismiss");
 
-  applyButton.addActionListener (new ApplyAction ());
-  saveButton.addActionListener (new SaveAction ());
+  //applyButton.addActionListener (new ApplyAction ());
+  //saveButton.addActionListener (new SaveAction ());
   dismissButton.addActionListener (new DismissAction());
   
-  buttonPanel.add (applyButton, BorderLayout.WEST);
-  buttonPanel.add (saveButton, BorderLayout.CENTER);
+  //buttonPanel.add (applyButton, BorderLayout.WEST);
+  //buttonPanel.add (saveButton, BorderLayout.CENTER);
   buttonPanel.add (dismissButton, BorderLayout.EAST);
 
   c.gridx=0;
@@ -183,7 +184,7 @@ private void createAnnealContentPanel() {
     gridbag.setConstraints(iterPanel,c);
     annealContentPanel.add (iterPanel);
     
-        c.gridx=1;
+    c.gridx=1;
     c.gridy=0;
     createPathsController();
     gridbag.setConstraints(pathPanel,c);
@@ -1140,35 +1141,35 @@ class IntervalListener implements FocusListener {
 
 
 //-----------------------------------------------------------------------------
-public class ApplyAction extends AbstractAction {
-  ApplyAction () {
-      super ("");
-  }
+// public class ApplyAction extends AbstractAction {
+//   ApplyAction () {
+//       super ("");
+//   }
 
-  public void actionPerformed (ActionEvent e) {
-      listener.setActivePathsParameters (apfParams);
-      ActivePathsParametersPopupDialog.this.dispose ();
-  }
+//   public void actionPerformed (ActionEvent e) {
+//       listener.setActivePathsParameters (apfParams);
+//       ActivePathsParametersPopupDialog.this.dispose ();
+//   }
 
-} // QuitAction
+//} // QuitAction
 //-----------------------------------------------------------------------------
-public class SaveAction extends AbstractAction {
-  SaveAction () {
-      super ("");
-  }
+// public class SaveAction extends AbstractAction {
+//   SaveAction () {
+//       super ("");
+//   }
 
-  public void actionPerformed (ActionEvent e) {
-      listener.setActivePathsParameters (apfParams);
-      Object[] options = { "OK"};
-      JOptionPane.showOptionDialog(null,
-				   "Parameters Successfully Saved.",
-				   "Data Saved.",
-				   JOptionPane.DEFAULT_OPTION,
-				   JOptionPane.PLAIN_MESSAGE,
-				   null, options, options[0]);
-  }
+//   public void actionPerformed (ActionEvent e) {
+//       listener.setActivePathsParameters (apfParams);
+//       Object[] options = { "OK"};
+//       JOptionPane.showOptionDialog(null,
+// 				   "Parameters Successfully Saved.",
+// 				   "Data Saved.",
+// 				   JOptionPane.DEFAULT_OPTION,
+// 				   JOptionPane.PLAIN_MESSAGE,
+// 				   null, options, options[0]);
+//   }
 
-} // QuitAction
+//} // QuitAction
 //-----------------------------------------------------------------------------
 public class DismissAction extends AbstractAction 
 {
@@ -1176,7 +1177,7 @@ public class DismissAction extends AbstractAction
   DismissAction () {super ("");}
 
   public void actionPerformed (ActionEvent e) {
-    listener.cancelActivePathsFinding ();
+    //listener.cancelActivePathsFinding ();
     ActivePathsParametersPopupDialog.this.dispose ();
   }
 

@@ -20,227 +20,186 @@ import cytoscape.view.*;
 import cytoscape.data.*;
 import cytoscape.data.servers.*;
 import cytoscape.data.readers.*;
-import cytoscape.undo.*;
+//import cytoscape.undo.*;
 import csplugins.jActiveModules.data.*;
 import csplugins.jActiveModules.dialogs.*;
 //import cytoscape.vizmap.*;
-import cytoscape.layout.*;
+//import cytoscape.layout.*;
 import cytoscape.*;
+import cytoscape.data.CyNetworkFactory;
 
 //-----------------------------------------------------------------------------------
 public class ActivePaths implements ActivePathViewer, Runnable {
 
-    protected CyWindow cytoscapeWindow;
-    protected boolean showTable = true;
-    protected boolean hideOthers = true;
-    protected ExpressionData expressionData = null;
-    protected JMenuBar menubar;
-    protected JMenu expressionConditionsMenu;
-    protected ConditionsVsPathwaysTable tableDialog;
-    protected String currentCondition = "none";
-    protected Component [] activePaths;
-    protected String [] conditionNames;
-    protected static boolean activePathsFindingIsAvailable;
-    protected JButton activePathToolbarButton;
-    protected JFrame mainFrame;
-    protected GraphPerspective perspective;
-    protected String titleForCurrentSelection;
-    protected ActivePathFinderParameters apfParams;
+  protected CyWindow cytoscapeWindow;
+  protected boolean showTable = true;
+  protected boolean hideOthers = true;
+  protected ExpressionData expressionData = null;
+  protected JMenuBar menubar;
+  protected JMenu expressionConditionsMenu;
+  protected ConditionsVsPathwaysTable tableDialog;
+  protected String currentCondition = "none";
+  protected Component [] activePaths;
+  protected String [] attrNames;
+  protected static boolean activePathsFindingIsAvailable;
+  protected JButton activePathToolbarButton;
+  protected JFrame mainFrame;
+  protected GraphPerspective perspective;
+  protected String titleForCurrentSelection;
+  protected ActivePathFinderParameters apfParams;
 
 
-    //----------------------------------------------------------------
-    public ActivePaths (CyWindow cytoscapeWindow)
-    {
-	this.cytoscapeWindow = cytoscapeWindow;
-	apfParams = new ActivePathFinderParameters();
-	expressionData = cytoscapeWindow.getNetwork().getExpressionData ();
-	conditionNames = expressionData.getConditionNames ();
-	menubar = cytoscapeWindow.getCyMenus().getMenuBar ();
-	mainFrame = cytoscapeWindow.getMainFrame ();
-	perspective = cytoscapeWindow.getView().getGraphPerspective();
-    } // ctor
+  //----------------------------------------------------------------
+  public ActivePaths (CyWindow cytoscapeWindow, ActivePathFinderParameters apfParams)
+  {
+    this.cytoscapeWindow = cytoscapeWindow;
+    this.apfParams = apfParams;
+    expressionData = cytoscapeWindow.getNetwork().getExpressionData ();
+    attrNames = expressionData.getConditionNames ();
+    menubar = cytoscapeWindow.getCyMenus().getMenuBar ();
+    mainFrame = cytoscapeWindow.getMainFrame ();
+    perspective = cytoscapeWindow.getView().getGraphPerspective();
+  } // ctor
 
-    //--------------------------------------------------------------
-    protected void setShowTable (boolean showTable) { this.showTable = showTable; }
-    protected void clearActivePaths ()              { this.activePaths = null; }
-    
-    //------------------------------------------------------------------------------
-    protected class ExpressionMenuListener implements ActionListener {
-    
-	public void actionPerformed (ActionEvent e) {
-	    String conditionName = e.getActionCommand ();
-	    if (conditionName.equalsIgnoreCase ("none"))
-		currentCondition = null;
-	    else
-		currentCondition = conditionName;
-	}
+  //--------------------------------------------------------------
+  protected void setShowTable (boolean showTable) { this.showTable = showTable; }
+  protected void clearActivePaths ()              { this.activePaths = null; }
+  
+  public void run()
+  {
+    String callerID = "jActiveModules";
+    cytoscapeWindow.getNetwork().beginActivity(callerID);
+    System.gc();
+    GraphViewController gvc = cytoscapeWindow.getGraphViewController();
+    gvc.stopListening();
+    long start = System.currentTimeMillis ();
 
-    } // inner class ExpressionMenuListener
+    //run the path finding algorithm
+    ActivePathsFinder apf = new ActivePathsFinder(expressionData,attrNames,cytoscapeWindow.getNetwork(),apfParams,mainFrame);
+    activePaths = apf.findActivePaths();
 
-    //------------------------------------------------------------------------------
-
-    //------------------------------------------------------------------------------
-    //protected void runActivePathsFinder()
-    
-
-    public void setParams(ActivePathFinderParameters params){
-	apfParams.setParams(params);
+    long duration = System.currentTimeMillis () - start;
+    int numberOfPathsFound = activePaths.length;
+    System.out.println ("-------------- back from finderBridge: "+numberOfPathsFound+" paths, "+duration+" msecs");
+    tableDialog = null;
+    cytoscapeWindow.getNetwork().endActivity(callerID);
+    gvc.resumeListening();
+    if(apfParams.getExit()){
+      System.exit(0);
     }
-
-    public void run()
-    {
-	String callerID = "jActiveModules";
-	cytoscapeWindow.getNetwork().beginActivity(callerID);
-	System.gc();
-	long start = System.currentTimeMillis ();
-	ActivePathsFinder apf = new ActivePathsFinder(expressionData,conditionNames,cytoscapeWindow,apfParams);
-	activePaths = apf.findActivePaths();
-
-	//setShowTable(true);
-	long duration = System.currentTimeMillis () - start;
-	int numberOfPathsFound = activePaths.length;
-	System.out.println ("-------------- back from finderBridge: " +
-			    numberOfPathsFound + " paths, " + duration + " msecs");
-	tableDialog = null;
-	//if(hideOthers){
-	//	Vector uniqueNodes = combinePaths (activePaths);
-		//cytoscapeWindow.showNodesByName(uniqueNodeNames);
-	//}
-	if(apfParams.getExit()){
-		System.exit(0);
-	}
-	if(showTable){
-		showConditionsVsPathwaysTable();
-	}
-	cytoscapeWindow.getNetwork().endActivity(callerID);
-
-    } // runActivePathsFinder
-    
-    //------------------------------------------------------------------------------
-    
-    protected Component getHighScoringPath(){
-	return activePaths[0];
+    if(showTable){
+      showConditionsVsPathwaysTable();
     }
+  } 
+    
+  /**
+   * Returns the best scoring path from the last run. This is
+   * mostly used by the score distribution when calculating the 
+   * distribution
+   */
+  protected Component getHighScoringPath(){
+    return activePaths[0];
+  }
  
-    protected void showConditionsVsPathwaysTable () {
-	//if (activePaths == null) {
-	//    tableDialog = new ConditionsVsPathwaysTable (cytoscapeWindow.getMainFrame(),
-	//						 cytoscapeWindow,
-	//						 conditionNames, this);
-	//    activePaths = tableDialog.getActivePaths();
-	//}
-	//else if (tableDialog == null)  {
-	    tableDialog = new ConditionsVsPathwaysTable (cytoscapeWindow.getMainFrame(),
-							 cytoscapeWindow,
-							 conditionNames, activePaths, this);
-	//}
-	tableDialog.pack ();
-	tableDialog.setLocationRelativeTo (mainFrame);
-	tableDialog.setVisible (true);
-	addActivePathToolbarButton ();
+  protected void showConditionsVsPathwaysTable () {
+     tableDialog = new ConditionsVsPathwaysTable (cytoscapeWindow.getMainFrame(),
+						  cytoscapeWindow,
+						  attrNames, 
+						  activePaths, 
+						  this);
+ 
+    tableDialog.pack ();
+    tableDialog.setLocationRelativeTo (mainFrame);
+    tableDialog.setVisible (true);
+    addActivePathToolbarButton ();
+  }
+
+  protected ConditionsVsPathwaysTable getConditionsVsPathwaysTable () { 
+    return tableDialog; 
+  }
+
+
+  /**
+   * Scores the currently selected nodes in the graph, and pops up a window with the result
+   */
+  protected void scoreActivePath ()  
+  {
+    String callerID = "jActiveModules";
+    cytoscapeWindow.getNetwork().beginActivity(callerID);
+    ActivePathsFinder apf = new ActivePathsFinder(expressionData,attrNames,cytoscapeWindow.getNetwork(),apfParams,mainFrame);
+
+    long start = System.currentTimeMillis ();
+    cytoscapeWindow.redrawGraph ();
+    Vector result = new Vector();
+    Iterator it = cytoscapeWindow.getView().getSelectedNodes().iterator();
+    while(it.hasNext()){
+      result.add(((NodeView)it.next()).getNode());
     }
+	
+    double score = apf.scoreList(result);
+    long duration = System.currentTimeMillis () - start;
+    System.out.println ("-------------- back from score: " + duration + " msecs");
+    System.out.println ("-------------- score: " + score + " \n");
+    JOptionPane.showMessageDialog (mainFrame, "Score: " + score);
+    cytoscapeWindow.getNetwork().endActivity(callerID);
+  } // scoreActivePath
+
+
+  protected class ActivePathControllerLauncherAction extends AbstractAction  {
+    ActivePathControllerLauncherAction () {
+      super ("Active Modules"); 
+    } // ctor
+    public void actionPerformed (ActionEvent e) {
+      showConditionsVsPathwaysTable();
+    }
+  } 
     
-    /** This version of showConditionsVsPathwaysTable accepts a 
-     *  filename argument, in case the table file was specified
-     *  on the command line. */
-    //protected void showConditionsVsPathwaysTable (String filename) {
-	//if (activePaths == null) {
-	  //  tableDialog = new ConditionsVsPathwaysTable (cytoscapeWindow.getMainFrame(),
-	//						 cytoscapeWindow,
-	//						 conditionNames, this, filename);
-	  //  activePaths = tableDialog.getActivePaths();
-	//}
-	//else if (tableDialog == null)  {
-	 //   tableDialog = new ConditionsVsPathwaysTable (cytoscapeWindow.getMainFrame(),
-	//						 cytoscapeWindow,
-	//						 conditionNames, activePaths, this);
-	//}
-	//tableDialog.pack ();
-	//tableDialog.setLocationRelativeTo (mainFrame);
-	//tableDialog.setVisible (true);
-	//addActivePathToolbarButton ();
-    //}
-    //------------------------------------------------------------------------------
+  /**
+   * find all of the unique node names in the full set of active paths.  there may
+   * be duplicates since some nodes may appear in several paths
+   */
+  protected Vector combinePaths  (Component [] activePaths)
+  {
+    HashSet set = new HashSet();
+    for (int i=0; i < activePaths.length; i++) {
+      set.addAll(activePaths[i].getNodes());
+    } // for i
+    return new Vector(set);
 
-    protected ConditionsVsPathwaysTable getConditionsVsPathwaysTable () { 
-	return tableDialog; 
+  } 
+
+  
+  protected void addActivePathToolbarButton ()
+  {
+    if (activePathToolbarButton != null)
+      cytoscapeWindow.getCyMenus().getToolBar().remove (activePathToolbarButton);
+
+    activePathToolbarButton = 
+      cytoscapeWindow.getCyMenus().getToolBar().add (new ActivePathControllerLauncherAction ());
+
+  } // addActivePathToolbarButton 
+    //------------------------------------------------------------------------------
+  public void displayPath (Component activePath, boolean clearOthersFirst,
+			   String pathTitle)
+  {
+    titleForCurrentSelection = pathTitle;
+    //cytoscapeWindow.selectNodesByName (activePath.getNodes (), clearOthersFirst);
+    Vector nodes = activePath.getNodes();
+    GraphView view = cytoscapeWindow.getView();
+    Iterator nodeViewIt = view.getSelectedNodes().iterator();
+    while(nodeViewIt.hasNext()){
+      ((NodeView)nodeViewIt.next()).setSelected(false);
     }
-
-    //------------------------------------------------------------------------------
-    protected void scoreActivePath (ActivePathFinderParameters params)
-    {
-	String callerID = "jActiveModules";
-	cytoscapeWindow.getNetwork().beginActivity(callerID);
-	apfParams.setParams(params);
-	ActivePathsFinder apf = new ActivePathsFinder(expressionData,conditionNames,cytoscapeWindow,apfParams);
-
-	long start = System.currentTimeMillis ();
-	cytoscapeWindow.redrawGraph ();
-
-	double score = apf.scoreSelected();
-	long duration = System.currentTimeMillis () - start;
-	System.out.println ("-------------- back from score: " + duration + " msecs");
-	System.out.println ("-------------- score: " + score + " \n");
-	JOptionPane.showMessageDialog (mainFrame, "Score: " + score);
-	cytoscapeWindow.getNetwork().endActivity(callerID);
-
-    } // scoreActivePath
-
-    //---------------------------------------------------------------------------------------
-    protected class ActivePathControllerLauncherAction extends AbstractAction  {
-	ActivePathControllerLauncherAction () {
-	    super ("Active Modules"); 
-	} // ctor
-	public void actionPerformed (ActionEvent e) {
-	    showConditionsVsPathwaysTable();
-	}
-    } // AppearanceControllerLauncher
-    //------------------------------------------------------------------------------
-    /**
-     * find all of the unique node names in the full set of active paths.  there may
-     * be duplicates since some nodes may appear in several paths
-     */
-    protected Vector combinePaths  (Component [] activePaths)
-    {
-	HashSet set = new HashSet();
-	for (int i=0; i < activePaths.length; i++) {
-	    set.addAll(activePaths[i].getNodes());
-	} // for i
-	return new Vector(set);
-
-    } // combinePaths
-    //------------------------------------------------------------------------------
-    protected void addActivePathToolbarButton ()
-    {
-	if (activePathToolbarButton != null)
-	    cytoscapeWindow.getCyMenus().getToolBar().remove (activePathToolbarButton);
-
-	activePathToolbarButton = 
-	    cytoscapeWindow.getCyMenus().getToolBar().add (new ActivePathControllerLauncherAction ());
-
-    } // addActivePathToolbarButton 
-    //------------------------------------------------------------------------------
-    public void displayPath (Component activePath, boolean clearOthersFirst,
-			     String pathTitle)
-    {
-	titleForCurrentSelection = pathTitle;
-	//cytoscapeWindow.selectNodesByName (activePath.getNodes (), clearOthersFirst);
-       	Vector nodes = activePath.getNodes();
-	GraphView view = cytoscapeWindow.getView();
-	Iterator nodeViewIt = view.getSelectedNodes().iterator();
-	while(nodeViewIt.hasNext()){
-		((NodeView)nodeViewIt.next()).setSelected(false);
-	}
-	for(int i=0;i<nodes.size();i++){
-		NodeView nodeview= view.getNodeView((Node)nodes.get(i));
-		nodeview.setSelected(!nodeview.isSelected());
-	} 
+    for(int i=0;i<nodes.size();i++){
+      NodeView nodeview= view.getNodeView((Node)nodes.get(i));
+      nodeview.setSelected(!nodeview.isSelected());
+    } 
     }
-    //------------------------------------------------------------------------------
-    public void displayPath (Component activePath, String pathTitle)
-    {
-	displayPath (activePath, true, pathTitle);
-    }
-    //------------------------------------------------------------------------------
+  //------------------------------------------------------------------------------
+  public void displayPath (Component activePath, String pathTitle)
+  {
+    displayPath (activePath, true, pathTitle);
+  }
+  //------------------------------------------------------------------------------
 
 } // class ActivePaths (a CytoscapeWindow plugin)

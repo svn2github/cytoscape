@@ -237,79 +237,85 @@ public class ParamStatistics implements Serializable{
 
 
 class MeanAndStdThread extends Thread{
-    private double [] overall_tallyx;
-    private double [] overall_tallyx_2;
-    private int total_trials;
-    private static int current_trials = 0;
-    private Node[] nodes;
-    private MyProgressMonitor progress;
-    private Random rand;
-    public MeanAndStdThread(double [] overall_tallyx,double [] overall_tallyx_2,int total_trials,Node [] nodes,MyProgressMonitor progress,Random rand){
-	this.overall_tallyx = overall_tallyx;
-	this.overall_tallyx_2 = overall_tallyx_2;
-	this.total_trials = total_trials;
-	this.nodes = nodes;
-	this.progress = progress;
-	this.rand = rand;
-	current_trials = 0;
+  private double [] overall_tallyx;
+  private double [] overall_tallyx_2;
+  private int total_trials;
+  private static int current_trials = 0;
+  private Node[] nodes;
+  private MyProgressMonitor progress;
+  private Random rand;
+  public MeanAndStdThread(double [] overall_tallyx,double [] overall_tallyx_2,int total_trials,Node [] nodes,MyProgressMonitor progress,Random rand){
+    this.overall_tallyx = overall_tallyx;
+    this.overall_tallyx_2 = overall_tallyx_2;
+    this.total_trials = total_trials;
+    this.nodes = nodes;
+    this.progress = progress;
+    this.rand = rand;
+    current_trials = 0;
+  }
+  /**
+   * Does the actual work of calculating the mean and 
+   * standard deviation tallys
+   */
+  public void run(){
+    double [] tallyx = new double[nodes.length];
+    double [] tallyx_2 = new double[nodes.length];
+    Arrays.fill(tallyx,0);
+    Arrays.fill(tallyx_2,0);
+    Vector nodeList = null;
+    synchronized (nodes) {
+      nodeList = new Vector(Arrays.asList(nodes));
     }
-    /**
-     * Does the actual work of calculating the mean and 
-     * standard deviation tallys
-     */
-    public void run(){
-	double [] tallyx = new double[nodes.length];
-	double [] tallyx_2 = new double[nodes.length];
-	Arrays.fill(tallyx,0);
-	Arrays.fill(tallyx_2,0);
-	Vector nodeList = null;
-	synchronized (nodes) {
-	    nodeList = new Vector(Arrays.asList(nodes));
-	}
-	boolean done = false;
-	synchronized (progress){
-	    if(current_trials < total_trials){
-		current_trials++;
-		progress.update();
-	    }
-	    else{
-		done = true;
-	    }
-	}
-	while(!done){
-	    Collections.shuffle(nodeList,rand);
-	    Component comp = new Component();
-	    Iterator it = nodeList.iterator();
-	    int i = 0;
-	    while(it.hasNext()){
-		comp.addNode((Node)it.next());
-		double score = comp.calculateSimpleScore();
-		tallyx[i] += score;
-		tallyx_2[i] += score*score;
-		i++;
-	    }
+    boolean done = false;
+    
+    synchronized (nodes){
+      if(current_trials < total_trials){
+	current_trials++;
+	if (progress != null) {
+	  progress.update();
+	} // end of if ()
+      }
+      else{
+	done = true;
+      }
+    }
+    
+    while(!done){
+      Collections.shuffle(nodeList,rand);
+      Component comp = new Component();
+      Iterator it = nodeList.iterator();
+      int i = 0;
+      while(it.hasNext()){
+	comp.addNode((Node)it.next());
+	double score = comp.calculateSimpleScore();
+	tallyx[i] += score;
+	tallyx_2[i] += score*score;
+	i++;
+      }
 	    
-	    synchronized (progress){
-		if(current_trials < total_trials){
-		    current_trials++;
-		    progress.update();
-		}
-		else{
-		    done = true;
-		}
-	    }
+      synchronized (nodes){
+	if(current_trials < total_trials){
+	  current_trials++;
+	  if (progress != null) {
+	    progress.update();
+	  } // end of if ()
 	}
-	synchronized (overall_tallyx){
-	    for(int j=0;j<nodes.length;j++){
-		overall_tallyx[j] += tallyx[j];
-	    }
+	else{
+	  done = true;
 	}
-	synchronized (overall_tallyx_2){
-	    for(int j=0;j<nodes.length;j++){
-		overall_tallyx_2[j] += tallyx_2[j];
-	    }
-	}
-
+      }
     }
+    synchronized (overall_tallyx){
+      for(int j=0;j<nodes.length;j++){
+	overall_tallyx[j] += tallyx[j];
+      }
+    }
+    synchronized (overall_tallyx_2){
+      for(int j=0;j<nodes.length;j++){
+	overall_tallyx_2[j] += tallyx_2[j];
+      }
+    }
+
+  }
     
 }

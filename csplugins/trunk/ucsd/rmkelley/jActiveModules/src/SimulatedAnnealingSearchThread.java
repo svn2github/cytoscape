@@ -9,11 +9,11 @@ import giny.model.*;
 import cytoscape.data.*;
 import cytoscape.data.servers.*;
 import cytoscape.data.readers.*;
-import cytoscape.undo.*;
+//import cytoscape.undo.*;
 import csplugins.jActiveModules.data.*;
 import csplugins.jActiveModules.dialogs.*;
 //import cytoscape.vizmap.*;
-import cytoscape.layout.*;
+//import cytoscape.layout.*;
 import cytoscape.*;
 import javax.swing.*;
 
@@ -80,7 +80,7 @@ public class SimulatedAnnealingSearchThread extends SearchThread{
 	int display_step = apfParams.getTotalIterations()/1000;
 	while(timeout < apfParams.getTotalIterations()){
 	    timeout++;
-	    if(timeout%display_step == 0){
+	    if(progress != null && timeout%display_step == 0){
 		progress.update();
 	    }
 	    T *= 1 - temp_step;

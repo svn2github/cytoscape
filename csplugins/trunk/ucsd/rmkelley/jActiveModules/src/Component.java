@@ -60,7 +60,7 @@ public class Component implements Comparable{
      *of doubles? Not me.
      */
     private double [] zSumsSort;
-    public static String [] conditionNames;
+    public static String [] attrNames;
     /**
      * Should we include our neighbors in calculating the score 
      *
@@ -110,8 +110,8 @@ public class Component implements Comparable{
 	scored = true;
 	score = Integer.MIN_VALUE;
 	nodes = new Vector();
-	zSums = new double [conditionNames.length];
-	zSumsSort = new double [conditionNames.length];
+	zSums = new double [attrNames.length];
+	zSumsSort = new double [attrNames.length];
 	Arrays.fill(zSums,0);
 	contains = new HashSet();
 	if(regionScoring){
@@ -132,8 +132,8 @@ public class Component implements Comparable{
 	nodes = new Vector();
 	contains = new HashSet();
 	scored = false;
-	zSums = new double[conditionNames.length];
-	zSumsSort = new double[conditionNames.length];
+	zSums = new double[attrNames.length];
+	zSumsSort = new double[attrNames.length];
 	Arrays.fill(zSums,0);
 	Iterator it = nComponents.iterator();
 	//for each neighboring component, get all of the nodes
@@ -223,8 +223,8 @@ public class Component implements Comparable{
     public Component(List nlist){
 	scored = false;
 	nodes = new Vector(nlist);
-	zSums = new double [conditionNames.length];
-	zSumsSort = new double [conditionNames.length];
+	zSums = new double [attrNames.length];
+	zSumsSort = new double [attrNames.length];
 	Arrays.fill(zSums,0);	
 	if(nodes.size() == 0){
 	    scored = true;
@@ -455,7 +455,7 @@ public class Component implements Comparable{
 	//this is mostly copied from BasicScoringSystem.cc
 	double simple_score;
 	//keep track of how many conditions we have looked at
-	min_i = conditionNames.length;
+	min_i = attrNames.length;
 	//even the max zscore sum is pretty bad, screw it
 	if(zSumOverSqrt < threshhold){
 	    simple_score = zStats.rankAdjustedZUsingLog(zSumOverSqrt,numConds,1);
@@ -509,7 +509,7 @@ public class Component implements Comparable{
      * @return A array of string which represent the condition names
      */
     public String [] getConditions(){
-	String [] result = new String [conditionNames.length-min_i+1];
+	String [] result = new String [attrNames.length-min_i+1];
 	//System.out.println(""+calculateSimpleScore());
 	//System.out.println(""+calculateSimpleScore());
 	//after we call simple score, min_i lets us know how many
@@ -526,7 +526,7 @@ public class Component implements Comparable{
 
 	Arrays.sort(integerArray,new MyComparator());
 	
-	for(int i=0;i <= conditionNames.length-min_i;i++){
+	for(int i=0;i <= attrNames.length-min_i;i++){
 	    //double temp_score = zSumsSort[zSumsSort.length-i-1];
 	    //int j = 0;
 	    //while(temp_score != zSums[j] /*&& !Double.isNaN(temp_score)*/){
@@ -535,7 +535,7 @@ public class Component implements Comparable{
 	    //}
 	    //zSums[j] = Double.NaN;
 	    //result[i]=conditionNames[j];
-	    result[i]=conditionNames[integerArray[zSums.length-i-1].intValue()];
+	    result[i]=attrNames[integerArray[zSums.length-i-1].intValue()];
 	}
 	//System.out.println(""+Arrays.asList(result));
 	return result;
