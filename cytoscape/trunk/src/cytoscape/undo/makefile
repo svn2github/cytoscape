@@ -1,11 +1,11 @@
-# makefile for cytoscape.view package
+# makefile for cytoscape.undo package
 #-------------------------------------------------------------------------
 # $Revision$
 # $Date$
 # $Author$
 #-------------------------------------------------------------------------
 
-JC=javac
+JC=javac -source 1.4
 
 .SUFFIXES: .java .class
 .java.class: 
@@ -14,6 +14,7 @@ JC=javac
 OBJS =  UndoItem.class \
         UndoManager.class \
         CytoscapeUndoManager.class \
+	EmptyUndoManager.class \
         RealizerUndoItem.class \
         NodeCreationUndoItem.class \
         EdgeCreationUndoItem.class \

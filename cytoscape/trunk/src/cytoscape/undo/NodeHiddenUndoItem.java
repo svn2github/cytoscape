@@ -36,6 +36,7 @@
 
 package cytoscape.undo;
 
+import java.util.*;
 import y.base.*;
 
 /**
@@ -44,10 +45,12 @@ import y.base.*;
 public class NodeHiddenUndoItem implements UndoItem {
 
     Node node;
+    Set edges;
     UndoableGraphHider hider;
 
-    NodeHiddenUndoItem ( UndoableGraphHider hider, Node node) {
+    NodeHiddenUndoItem ( UndoableGraphHider hider, Node node, Set edges) {
 	this.node  = node;
+        this.edges = edges;
 	this.hider = hider;
     }
 
@@ -56,6 +59,10 @@ public class NodeHiddenUndoItem implements UndoItem {
      */
     public boolean undo() {
 	hider.undoHide(node);
+        for (Iterator si = edges.iterator(); si.hasNext(); ) {
+            Edge e = (Edge)si.next();
+            hider.undoHide(e);
+        }
 	return true;
     }
 
@@ -64,6 +71,10 @@ public class NodeHiddenUndoItem implements UndoItem {
      */
     public boolean redo() {
 	hider.redoHide(node);
+        for (Iterator si = edges.iterator(); si.hasNext(); ) {
+            Edge e = (Edge)si.next();
+            hider.redoHide(e);
+        }
 	return true;
     }
 }
