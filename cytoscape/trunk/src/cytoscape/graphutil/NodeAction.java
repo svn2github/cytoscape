@@ -7,6 +7,10 @@
 
 package cytoscape.graphutil;
 
+import cytoscape.*;
+import cytoscape.view.*;
+import cytoscape.data.*;
+
 import java.util.*;
 import giny.model.*;
 import giny.view.*;
@@ -27,8 +31,25 @@ public class NodeAction {
   public NodeAction () {
   }
 
+  /**
+   * get the Title for PNodeView which is just the "getIdentifier()" method 
+   * from Node
+   */
+  public static String getTitle ( Object[] args, PNode node ) {
+    //System.out.println( "Getting Title" );
+    final NetworkView nv = ( NetworkView )args[0];
+    //return nv.getNetwork().getNodeAttributes().getCanonicalName( node );
+   
+    if ( node instanceof PNodeView ) {
+      return nv.getNetwork().getGraphPerspective().
+        getNode( ( (PNodeView)node).getGraphPerspectiveIndex() ).
+        getIdentifier();
+    }
+    return "";
+  }
 
-  public static JMenuItem openSGD ( PGraphView view, PNode node ) {
+
+  public static JMenuItem openSGD ( Object[] args, PNode node ) {
 
     final PNode nv = node;
     return new JMenuItem( new AbstractAction( "SGD" ) {
@@ -52,7 +73,7 @@ public class NodeAction {
    }
 
  
-   public static JMenuItem colorNodeWhite ( PGraphView view, PNode node ) {
+   public static JMenuItem colorNodeWhite ( Object[] args, PNode node ) {
 
     final PNodeView nv = ( PNodeView )node;
     return new JMenuItem( new AbstractAction( "Color Node White" ) {
@@ -67,7 +88,7 @@ public class NodeAction {
                 } } ); } } );
    }
 
-  public static JMenuItem colorNodeBlack ( PGraphView view, PNode node ) {
+  public static JMenuItem colorNodeBlack ( Object[] args, PNode node ) {
 
     final PNodeView nv = ( PNodeView )node;
     return new JMenuItem( new AbstractAction( "Color Node Black" ) {
@@ -83,11 +104,10 @@ public class NodeAction {
    }
 
 
-   public static JMenuItem colorNode ( PGraphView view, PNode node ) {
+   public static JMenuItem colorNode ( Object[] args, PNode node ) {
 
     final PNodeView nv = ( PNodeView )node;
-    final PGraphView v = view;
-
+    final PGraphView v = ( PGraphView )args[0];
     JMenu color_menu = new JMenu( "Choose node Color" );
     color_menu.add( new JMenuItem( new AbstractAction( "Black" ) {
           public void actionPerformed ( ActionEvent e ) {
@@ -167,11 +187,10 @@ public class NodeAction {
      return color_menu;
    }
 
-   public static JMenuItem colorSelectNode ( PGraphView view, PNode node ) {
+   public static JMenuItem colorSelectNode ( Object[] args, PNode node ) {
 
     final PNodeView nv = ( PNodeView )node;
-    final PGraphView v = view;
-
+    final PGraphView v = ( PGraphView )args[0];
     JMenu color_menu = new JMenu( "Choose Selected Color" );
     color_menu.add( new JMenuItem( new AbstractAction( "Black" ) {
           public void actionPerformed ( ActionEvent e ) {
@@ -251,11 +270,11 @@ public class NodeAction {
      return color_menu;
    }
 
-  public static JMenuItem shapeNode ( PGraphView view , PNode node ) {
+  public static JMenuItem shapeNode ( Object[] args , PNode node ) {
 
     final PNodeView nv = ( PNodeView )node;
-    final PGraphView v = view;
-    final GraphPerspective graphPerspective = view.getGraphPerspective();
+    final PGraphView v = ( PGraphView )args[0];
+    final GraphPerspective graphPerspective = v.getGraphPerspective();
 
     JMenu shape_menu = new JMenu( "Choose Node Shape" );
     shape_menu.add( new JMenuItem( new AbstractAction( "Diamond" ) {
@@ -320,11 +339,11 @@ public class NodeAction {
                } } ); } } ) );
     return shape_menu;
   }
-  public static JMenuItem showData ( PGraphView view, PNode node ) {
+  public static JMenuItem showData ( Object[] args, PNode node ) {
 
     final PNodeView nv = ( PNodeView )node;
-    final PGraphView v = view;
-    final GraphPerspective graphPerspective = view.getGraphPerspective();
+    final PGraphView v = ( PGraphView )args[0];
+    final GraphPerspective graphPerspective = v.getGraphPerspective();
 
     JMenu datashow_menu = new JMenu( "Show the Node" );
     datashow_menu.add( new JMenuItem( new AbstractAction( "As a Star Node" ) {
@@ -380,12 +399,12 @@ public class NodeAction {
      return datashow_menu;
    }//end of datashow menu
    
-   public static JMenuItem changeFirstNeighbors (PGraphView view, PNode node)
+   public static JMenuItem changeFirstNeighbors (Object[] args, PNode node)
    {
 	  //final PNode thenode = node;
 	  final PNodeView nv = ( PNodeView )node;
-	  final PGraphView v = view;
-	  final GraphPerspective graphPerspective = view.getGraphPerspective();
+    final PGraphView v = ( PGraphView )args[0];
+	  final GraphPerspective graphPerspective = v.getGraphPerspective();
 
     JMenu firstn_menu = new JMenu( "Change Fist Neighbors" );
 	 
@@ -564,10 +583,10 @@ public class NodeAction {
      return firstn_menu;
    }//end of changeFirstNeighbors
    
-    public static JMenuItem zoomToNode ( PGraphView view, PNode node ) {
+    public static JMenuItem zoomToNode ( Object[] args, PNode node ) {
     final PNode n = ( PNode )node;
-    final PGraphView v = view;
     
+     final PGraphView v = ( PGraphView )args[0];
     return new  JMenuItem( new AbstractAction( "Zoom To" ) {
          public void actionPerformed ( ActionEvent e ) {
            // Do this in the GUI Event Dispatch thread...
@@ -576,16 +595,16 @@ public class NodeAction {
 		       PTransformActivity activity =  v.getCanvas().getCamera().animateViewToCenterBounds( n.getGlobalFullBounds(), true, 500 );
                } } ); } } );
   }
-  public static JMenuItem zoomToNeighbors ( PGraphView view, PNode node ) {
+  public static JMenuItem zoomToNeighbors ( Object[] args, PNode node ) {
     final PNode n = ( PNode )node;
-    final PGraphView v = view;
     
+     final PGraphView v = ( PGraphView )args[0];
     return new  JMenuItem( new AbstractAction( "Zoom To Neghbors" ) {
          public void actionPerformed ( ActionEvent e ) {
            // Do this in the GUI Event Dispatch thread...
            SwingUtilities.invokeLater( new Runnable() {
                public void run() {
-		       PTransformActivity activity =  v.getCanvas().getCamera().animateViewToCenterBounds( n.getUnionOfChildrenBounds(n.getFullBounds()), true, 500 );
+                 PTransformActivity activity =  v.getCanvas().getCamera().animateViewToCenterBounds( n.getUnionOfChildrenBounds(n.getFullBounds()), true, 500 );
                   
 		       //PTransformActivity activity =  v.getCanvas().getCamera().animateViewToCenterBounds( n.getGlobalFullBounds(), true, 500 );
                } } ); } } );

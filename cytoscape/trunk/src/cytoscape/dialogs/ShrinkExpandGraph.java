@@ -73,58 +73,58 @@ public class ShrinkExpandGraph extends AbstractAction {
     double nx;
     double ny;
   
-    GraphView view = parent.getView();
-    int[] nodes = view.getGraphPerspective().getNodeIndicesArray();
-    for ( int i = 0; i < nodes.length; ++i ) {
-      sx += view.getNodeDoubleProperty( nodes[i], GraphView.NODE_X_POSITION ); 
-      sy += view.getNodeDoubleProperty( nodes[i], GraphView.NODE_Y_POSITION );
-    }
+  //   GraphView view = parent.getView();
+//     int[] nodes = view.getGraphPerspective().getNodeIndicesArray();
+//     for ( int i = 0; i < nodes.length; ++i ) {
+//       sx += view.getNodeDoubleProperty( nodes[i], GraphView.NODE_X_POSITION ); 
+//       sy += view.getNodeDoubleProperty( nodes[i], GraphView.NODE_Y_POSITION );
+//     }
   
-    // average all coordinates to find center of graph
-    int nodeCount = parent.getView().getNodeViewCount();
-    cx = sx/(nodeCount + 1);
-    cy = sy/(nodeCount + 1);
+//     // average all coordinates to find center of graph
+//     int nodeCount = parent.getView().getNodeViewCount();
+//     cx = sx/(nodeCount + 1);
+//     cy = sy/(nodeCount + 1);
 
 
-    for ( int i = 0; i < nodes.length; ++i ) {
-      view.setNodeDoubleProperty( nodes[i], 
-                                  GraphView.NODE_X_POSITION, 
-                                  m*( ( view.getNodeDoubleProperty( nodes[i], GraphView.NODE_X_POSITION ) ) - cx ) + cx); 
-      view.setNodeDoubleProperty( nodes[i], 
-                                  GraphView.NODE_Y_POSITION,
-                                  m*( ( view.getNodeDoubleProperty( nodes[i], GraphView.NODE_Y_POSITION ) ) - cy ) + cy); 
+//     for ( int i = 0; i < nodes.length; ++i ) {
+//       view.setNodeDoubleProperty( nodes[i], 
+//                                   GraphView.NODE_X_POSITION, 
+//                                   m*( ( view.getNodeDoubleProperty( nodes[i], GraphView.NODE_X_POSITION ) ) - cx ) + cx); 
+//       view.setNodeDoubleProperty( nodes[i], 
+//                                   GraphView.NODE_Y_POSITION,
+//                                   m*( ( view.getNodeDoubleProperty( nodes[i], GraphView.NODE_Y_POSITION ) ) - cy ) + cy); 
                                   
+//     }
+
+//     Iterator node_views = view.getNodeViewsIterator();
+//     while ( node_views.hasNext() ) {
+//       ( ( NodeView )node_views.next() ).setNodePosition( true );
+//     }
+
+
+
+
+    //loop through each node to add up all x and all y coordinates
+    for (Iterator i = parent.getView().getNodeViewsIterator(); i.hasNext(); ){
+	    NodeView nodeView = (NodeView)i.next();
+	    // get coordinates of node
+	    double ax = nodeView.getXPosition();
+	    double ay = nodeView.getYPosition();
+	    // sum up coordinates of all the nodes
+	    sx += ax;
+	    sy += ay;
     }
-
-    Iterator node_views = view.getNodeViewsIterator();
-    while ( node_views.hasNext() ) {
-      ( ( NodeView )node_views.next() ).setNodePosition( true );
-    }
-
-
-
-
-    // loop through each node to add up all x and all y coordinates
-    // for (Iterator i = parent.getView().getNodeViewsIterator(); i.hasNext(); ){
-// 	    NodeView nodeView = (NodeView)i.next();
-// 	    // get coordinates of node
-// 	    double ax = nodeView.getXPosition();
-// 	    double ay = nodeView.getYPosition();
-// 	    // sum up coordinates of all the nodes
-// 	    sx += ax;
-// 	    sy += ay;
-    //}
     
    
   
     
-    // set new coordinates of each node at center (0,0), shrink, then return to
+    //set new coordinates of each node at center (0,0), shrink, then return to
     //  original center at (cx, cy)
-    //for (Iterator i = parent.getView().getNodeViewsIterator(); i.hasNext(); ){
-    // NodeView nodeView = (NodeView)i.next();
-	  //  nodeView.setXPosition(m*((nodeView.getXPosition())-cx) + cx);
-	  //  nodeView.setYPosition(m*((nodeView.getYPosition())-cy) + cy);
-    //}
+    for (Iterator i = parent.getView().getNodeViewsIterator(); i.hasNext(); ){
+    NodeView nodeView = (NodeView)i.next();
+	   nodeView.setXPosition(m*((nodeView.getXPosition())-cx) + cx);
+	   nodeView.setYPosition(m*((nodeView.getYPosition())-cy) + cy);
+    }
 	
     
 

@@ -293,62 +293,68 @@ protected void updateGraphView() {
  */
 protected void addViewContextMenus() {
 	// Add some Node Context Menu Items
+
+  view.addContextMethod( "class phoebe.PNodeView",
+                         "cytoscape.graphutil.NodeAction",
+                         "getTitle",
+                         new Object[] { ( NetworkView )this } );
+
       view.addContextMethod( "class edu.umd.cs.piccolo.PNode",
-                                  "cytoscape.graphutil.NodeAction",
-                                  "openSGD",
-                                  "Color This Node White" );
+                             "cytoscape.graphutil.NodeAction",
+                             "openSGD",
+                             new Object[] {view } );
 
 
 	    view.addContextMethod( "class phoebe.PNodeView",
-                                  "cytoscape.graphutil.NodeAction",
-                                  "colorNode",
-                                  "Color This Node White" );
+                             "cytoscape.graphutil.NodeAction",
+                             "colorNode",
+                              new Object[] {view } );
 
 	    view.addContextMethod( "class phoebe.PNodeView",
-                                  "cytoscape.graphutil.NodeAction",
-                                  "colorSelectNode",
-                                  "Color This Node White" );
+                             "cytoscape.graphutil.NodeAction",
+                             "colorSelectNode",
+                              new Object[] {view });
 
 	    view.addContextMethod( "class phoebe.PNodeView",
                                   "cytoscape.graphutil.NodeAction",
                                   "shapeNode",
-                                  "Color This Node White" );
+                                 new Object[] {view } );
 
 	    // Add some Edge Context Menus
 	    view.addContextMethod( "class phoebe.PEdgeView",
                                   "cytoscape.graphutil.EdgeAction",
                                   "colorEdge",
-                                  "Color This Node White" );
+                                 new Object[] {view } );
 	    view.addContextMethod( "class phoebe.PEdgeView",
                                   "cytoscape.graphutil.EdgeAction",
                                   "colorSelectEdge",
-                                  "Color This Node White" );
+                                 new Object[] {view } );
 	    view.addContextMethod( "class phoebe.PEdgeView",
                                   "cytoscape.graphutil.EdgeAction",
                                   "edgeWidth",
-                                  "Color This Node White" );
+                                 new Object[] {view } );
 	    view.addContextMethod( "class phoebe.PEdgeView",
                                   "cytoscape.graphutil.EdgeAction",
                                   "edgeLineType",
-                                  "Color This Node White" );
+                                 new Object[] {view } );
 	    view.addContextMethod( "class phoebe.PEdgeView",
                                   "cytoscape.graphutil.EdgeAction",
                                   "edgeSourceEndType",
-                                  "Color This Node White" );
+                                 new Object[] {view } );
 	    view.addContextMethod( "class phoebe.PEdgeView",
                                   "cytoscape.graphutil.EdgeAction",
                                   "edgeTargetEndType",
-                                  "Color This Node White" );
+                                 new Object[] {view } );
 
 	    // Add some Edge-end Context menus
 	    view.addContextMethod( "class phoebe.util.PEdgeEndIcon",
                                   "cytoscape.graphutil.EdgeAction",
                                   "edgeEndColor",
-                                  "Color This Node White" );
+                                 new Object[] {view } );
 	    view.addContextMethod( "class phoebe.util.PEdgeEndIcon",
                                   "cytoscape.graphutil.EdgeAction",
                                   "edgeEndBorderColor",
-                                  "Color This Node White" );
+                                 new Object[] {view } );
 
       //data menues
      // view.addContextMethod( "class phoebe.PNodeView",
@@ -358,11 +364,11 @@ protected void addViewContextMenus() {
       view.addContextMethod( "class phoebe.PNodeView",
                                   "cytoscape.graphutil.NodeAction",
                                   "changeFirstNeighbors",
-                                  "Paint First Neighbors of this node" );
+                                  new Object[] {view } );
       view.addContextMethod( "edu.umd.cs.piccolo.PNode",
                                   "cytoscape.graphutil.NodeAction",
                                   "zoomToNode",
-                                  "Zoom to this node" );
+                                 new Object[] {view } );
 }
 //------------------------------------------------------------------------------
 /**

@@ -24,6 +24,14 @@ public class GinyFactory {
      * Creates a new instance of a Giny RootGraph. Currently this returns
      * a LunaRootGraph.
      */
+    public static RootGraph createRootGraph ( int nodes, int edges ) {
+        return new LunaRootGraph( nodes, edges );
+    }
+
+    /**
+     * Creates a new instance of a Giny RootGraph. Currently this returns
+     * a LunaRootGraph.
+     */
     public static RootGraph createRootGraph() {
         return new LunaRootGraph();
     }

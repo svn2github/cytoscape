@@ -7,7 +7,7 @@ package cytoscape.graphutil;
 
 import java.util.*;
 import phoebe.*;
-
+import giny.view.*;
 import edu.umd.cs.piccolo.*;
 import edu.umd.cs.piccolox.*;
 import edu.umd.cs.piccolox.util.*;
@@ -23,7 +23,7 @@ public class EdgeAction {
   public EdgeAction () {
   }
 
-  public static JMenuItem edgeLineType  ( PGraphView view, PNode node ) {
+  public static JMenuItem edgeLineType  (Object[] args, PNode node ) {
     final PEdgeView ev = ( PEdgeView )node;
     
     JMenu type_menu = new JMenu( "Edge Line Type" );
@@ -45,7 +45,7 @@ public class EdgeAction {
   }
 
 
-  public static JMenuItem edgeSourceEndType ( PGraphView view, PNode node ) {
+  public static JMenuItem edgeSourceEndType (Object[] args, PNode node ) {
     final PEdgeView ev = ( PEdgeView )node;
 
     JMenu type_menu = new JMenu( "Source End Type" );
@@ -82,7 +82,7 @@ public class EdgeAction {
     return type_menu;
   }
 
-  public static JMenuItem edgeTargetEndType ( PGraphView view, PNode node ) {
+  public static JMenuItem edgeTargetEndType (Object[] args, PNode node ) {
     final PEdgeView ev = ( PEdgeView )node;
 
     JMenu type_menu = new JMenu( "Target End Type" );
@@ -121,8 +121,8 @@ public class EdgeAction {
 
 
 
-  public static JMenuItem edgeEndBorderColor ( PGraphView view, PNode node ) {
-    final PGraphView v = view;
+  public static JMenuItem edgeEndBorderColor (Object[] args, PNode node ) {
+    final PGraphView v = ( PGraphView )args[0];
     final PPath icon = ( PPath )node;
 
     JMenu color_menu = new JMenu( "Choose Edge Color" );
@@ -206,10 +206,10 @@ public class EdgeAction {
 
 
 
-  public static JMenuItem edgeEndColor ( PGraphView view, PNode node ) {
+  public static JMenuItem edgeEndColor (Object[] args, PNode node ) {
     final PPath icon = ( PPath )node;
-    final PGraphView v = view;
-    
+    final PGraphView v = ( PGraphView )args[0];
+
     JMenu color_menu = new JMenu( "Choose edge end Color" );
     color_menu.add( new JMenuItem( new AbstractAction( "Black" ) {
           public void actionPerformed ( ActionEvent e ) {
@@ -291,11 +291,11 @@ public class EdgeAction {
 
   
 
-  public static JMenuItem edgeWidth ( PGraphView view, PNode node ) {
+  public static JMenuItem edgeWidth (Object[] args, PNode node ) {
 
     final PEdgeView ev = ( PEdgeView )node;
-    final PGraphView v = view;
-
+    final PGraphView v = ( PGraphView )args[0];
+    
     JMenu width_menu = new JMenu( "Choose Edge Width" );
     width_menu.add( new JMenuItem( new AbstractAction( "1/2" ) {
           public void actionPerformed ( ActionEvent e ) {
@@ -366,10 +366,10 @@ public class EdgeAction {
 
 
   
-   public static JMenuItem colorEdge ( PGraphView view, PNode node ) {
+   public static JMenuItem colorEdge (Object[] args, PNode node ) {
 
     final PEdgeView ev = ( PEdgeView )node;
-    final PGraphView v = view;
+    final PGraphView v = ( PGraphView )args[0];
 
     JMenu color_menu = new JMenu( "Choose node Color" );
     color_menu.add( new JMenuItem( new AbstractAction( "Black" ) {
@@ -450,11 +450,11 @@ public class EdgeAction {
      return color_menu;
    }
 
-   public static JMenuItem colorSelectEdge ( PGraphView view, PNode node ) {
+   public static JMenuItem colorSelectEdge (Object[] args, PNode node ) {
 
     final PEdgeView ev = ( PEdgeView )node;
-    final PGraphView v = view;
-
+   
+    final PGraphView v = ( PGraphView )args[0];
     JMenu color_menu = new JMenu( "Choose Selected Color" );
     color_menu.add( new JMenuItem( new AbstractAction( "Black" ) {
           public void actionPerformed ( ActionEvent e ) {
