@@ -302,24 +302,13 @@ class FRootGraph implements RootGraph
   {
     final int positiveNodeInxA = ~nodeInxA;
     final int positiveNodeInxB = ~nodeInxB;
-    final IntEnumerator aAdj;
-    final IntEnumerator bAdj;
+    final IntIterator connectingEdges;
     try {
-      aAdj = m_graph.adjacentEdges(positiveNodeInxA, true, true, true);
-      bAdj = m_graph.adjacentEdges(positiveNodeInxB, true, true, true); }
+      connectingEdges = m_graph.connectingEdges
+        (positiveNodeInxA, positiveNodeInxB, true, true, true); }
     catch (IllegalArgumentException e) { return false; }
-    final IntEnumerator theAdj =
-      ((aAdj.numRemaining() < bAdj.numRemaining()) ? aAdj : bAdj);
-    final int adjPositiveNode =
-      ((theAdj == aAdj) ? positiveNodeInxA : positiveNodeInxB);
-    final int neighPositiveNode =
-      ((theAdj == aAdj) ? positiveNodeInxB : positiveNodeInxA);
-    while (theAdj.numRemaining() > 0) {
-      final int adjEdge = theAdj.nextInt();
-      if ((m_graph.sourceNode(adjEdge) ^ m_graph.targetNode(adjEdge) ^
-           adjPositiveNode) == neighPositiveNode)
-        return true; }
-    return false;
+    if (connectingEdges == null) return false;
+    return connectingEdges.hasNext();
   }
 
   // This method has been marked deprecated in the Giny API.
@@ -334,23 +323,13 @@ class FRootGraph implements RootGraph
   {
     final int positiveFromNodeInx = ~fromNodeInx;
     final int positiveToNodeInx = ~toNodeInx;
-    final IntEnumerator fromAdj;
-    final IntEnumerator toAdj;
+    final IntIterator connectingEdges;
     try {
-      fromAdj = m_graph.adjacentEdges(positiveFromNodeInx, true, false, true);
-      toAdj = m_graph.adjacentEdges(positiveToNodeInx, false, true, true); }
+      connectingEdges = m_graph.connectingEdges
+        (positiveFromNodeInx, positiveToNodeInx, true, false, true); }
     catch (IllegalArgumentException e) { return false; }
-    final IntEnumerator theAdj =
-      ((fromAdj.numRemaining() < toAdj.numRemaining()) ? fromAdj : toAdj);
-    final int adjPositiveNode =
-      ((theAdj == fromAdj) ? positiveFromNodeInx : positiveToNodeInx);
-    final int neighPositiveNode =
-      ((theAdj == fromAdj) ? positiveToNodeInx : positiveFromNodeInx);
-    while (theAdj.numRemaining() > 0) {
-      final int adjEdge = theAdj.nextInt();
-      if ((m_graph.sourceNode(adjEdge) ^ m_graph.targetNode(adjEdge) ^
-           adjPositiveNode) == neighPositiveNode) return true; }
-    return false;
+    if (connectingEdges == null) return false;
+    return connectingEdges.hasNext();
   }
 
   // This method has been marked deprecated in the Giny API.
@@ -364,8 +343,9 @@ class FRootGraph implements RootGraph
   // This method has been marked deprecated in the Giny API.
   public int getEdgeCount(int fromNodeInx, int toNodeInx,
                           boolean countUndirectedEdges) {
-    return getEdgeIndicesArray(fromNodeInx, toNodeInx,
-                               countUndirectedEdges).length; }
+    try { return getEdgeIndicesArray(fromNodeInx, toNodeInx,
+                                     countUndirectedEdges).length; }
+    catch (NullPointerException e) { return -1; } }
 
   public int[] getAdjacentEdgeIndicesArray(int nodeInx,
                                            boolean undirected,
@@ -389,22 +369,24 @@ class FRootGraph implements RootGraph
     final IntHash nodeBucket = new IntHash();
     for (int i = 0; i < nodeInx.length; i++) {
       final int positiveNodeIndex = ~nodeInx[i];
-      if (m_graph.containsNode(positiveNodeIndex))
-        nodeBucket.put(positiveNodeIndex); }
+      try {
+        if (m_graph.containsNode(positiveNodeIndex))
+          nodeBucket.put(positiveNodeIndex); }
+      catch (IllegalArgumentException e) { } }
     m_hash.empty();
     final IntHash edgeBucket = m_hash;
     final IntEnumerator nodeIter = nodeBucket.elements();
     while (nodeIter.numRemaining() > 0)
     {
-      final int theNode = nodeIter.nextInt();
-      final IntEnumerator edgeIter;
-      try { edgeIter = m_graph.adjacentEdges(theNode, true, false, true); }
-      catch (IllegalArgumentException e) { continue; }
+      final int thePositiveNode = nodeIter.nextInt();
+      final IntEnumerator edgeIter =
+        m_graph.adjacentEdges(thePositiveNode, true, false, true);
       while (edgeIter.numRemaining() > 0)
       {
         final int candidateEdge = edgeIter.nextInt();
-        final int otherEdgeNode = theNode ^ m_graph.sourceNode(candidateEdge) ^
-          m_graph.targetNode(candidateEdge);
+        final int otherEdgeNode = (thePositiveNode ^
+                                   m_graph.sourceNode(candidateEdge) ^
+                                   m_graph.targetNode(candidateEdge));
         if (otherEdgeNode == nodeBucket.get(otherEdgeNode))
           edgeBucket.put(candidateEdge);
       }
@@ -445,27 +427,17 @@ class FRootGraph implements RootGraph
   {
     final int positiveFromNodeInx = ~fromNodeInx;
     final int positiveToNodeInx = ~toNodeInx;
-    final IntEnumerator fromAdj;
-    final IntEnumerator toAdj;
+    final IntIterator connectingEdges;
     try {
-      fromAdj = m_graph.adjacentEdges(positiveFromNodeInx,
-                                       true, bothDirections, undirectedEdges);
-      toAdj = m_graph.adjacentEdges(positiveToNodeInx,
-                                     bothDirections, true, undirectedEdges); }
-    catch (IllegalArgumentException e) { return new int[0]; }
-    final IntEnumerator theAdj =
-      ((fromAdj.numRemaining() < toAdj.numRemaining()) ? fromAdj : toAdj);
-    final int adjPositiveNode =
-      ((theAdj == fromAdj) ? positiveFromNodeInx : positiveToNodeInx);
-    final int neighPositiveNode =
-      ((theAdj == fromAdj) ? positiveToNodeInx : positiveFromNodeInx);
+      connectingEdges = m_graph.connectingEdges
+        (positiveFromNodeInx, positiveToNodeInx, true, bothDirections,
+         undirectedEdges); }
+    catch (IllegalArgumentException e) { return null; }
+    if (connectingEdges == null) return null;
     m_heap.empty();
     final MinIntHeap edgeBucket = m_heap;
-    while (theAdj.numRemaining() > 0) {
-      final int adjEdge = theAdj.nextInt();
-      if ((m_graph.sourceNode(adjEdge) ^ m_graph.targetNode(adjEdge) ^
-           adjPositiveNode) == neighPositiveNode)
-        edgeBucket.toss(~adjEdge); }
+    while (connectingEdges.hasNext())
+      edgeBucket.toss(~connectingEdges.nextInt());
     final int[] returnThis = new int[edgeBucket.size()];
     edgeBucket.copyInto(returnThis, 0);
     return returnThis;
@@ -476,7 +448,7 @@ class FRootGraph implements RootGraph
     if (from.getRootGraph() == this && to.getRootGraph() == this)
       return edgesList(from.getRootGraphIndex(),
                        to.getRootGraphIndex(), true);
-    else return new java.util.ArrayList(); }
+    else return null; }
 
   // This method has been marked deprecated in the Giny API.
   public java.util.List edgesList(int fromNodeInx, int toNodeInx,
@@ -514,6 +486,7 @@ class FRootGraph implements RootGraph
     try { adj = m_graph.adjacentEdges
             (positiveNodeInx, false, true, countUndirectedEdges); }
     catch (IllegalArgumentException e) { return -1; }
+    if (adj == null) return -1;
     return adj.numRemaining();
   }
 
@@ -537,6 +510,7 @@ class FRootGraph implements RootGraph
     try { adj = m_graph.adjacentEdges
             (positiveNodeInx, true, false, countUndirectedEdges); }
     catch (IllegalArgumentException e) { return -1; }
+    if (adj == null) return -1;
     return adj.numRemaining();
   }
 
@@ -551,6 +525,7 @@ class FRootGraph implements RootGraph
     final IntEnumerator adj;
     try { adj = m_graph.adjacentEdges(positiveNodeInx, true, true, true); }
     catch (IllegalArgumentException e) { return -1; }
+    if (adj == null) return -1;
     return adj.numRemaining();
   }
 
@@ -572,12 +547,14 @@ class FRootGraph implements RootGraph
 
   public int getEdgeSourceIndex(int edgeInx)
   {
-    return ~(m_graph.sourceNode(~edgeInx));
+    try { return ~(m_graph.sourceNode(~edgeInx)); }
+    catch (IllegalArgumentException e) { return 0; }
   }
 
   public int getEdgeTargetIndex(int edgeInx)
   {
-    return ~(m_graph.targetNode(~edgeInx));
+    try { return ~(m_graph.targetNode(~edgeInx)); }
+    catch (IllegalArgumentException e) { return 0; }
   }
 
   // Throws IllegalArgumentException.
