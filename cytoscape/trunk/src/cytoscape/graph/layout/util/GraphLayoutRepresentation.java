@@ -14,7 +14,7 @@ public class GraphLayoutRepresentation
 
   /**
    * Node X positions for subclasses that implement mutable functionality.
-   * subclasses should take care to respect zero and max width bounds.
+   * Subclasses should take care to respect zero and max width bounds.
    **/
   protected final double[] m_nodeXPositions;
 
@@ -72,7 +72,7 @@ public class GraphLayoutRepresentation
    *   <code>0.0</code>.</blockquote>
    * @exception IllegalArgumentException if parameters are passed which
    *   don't agree with a possible graph definition.
-   * @see GraphTopologyRepresentation
+   * @see GraphTopologyRepresentation#GraphTopologyRepresentation(int, int[], int[], int[], int[])
    **/
   public GraphLayoutRepresentation(int numNodes,
                                    int[] directedEdgeSourceNodeIndices,
