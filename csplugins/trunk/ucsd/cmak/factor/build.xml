@@ -131,8 +131,8 @@
   <target name="plugin" depends="compile" 
           description="generate the plugin jar">
     <mkdir dir="${dist}"/>
-    <delete file="${dist}/fgraph.jar"/>
-    <jar jarfile="${dist}/fgraph.jar" 
+    <delete file="${dist}/yeang2005-plugin.jar"/>
+    <jar jarfile="${dist}/yeang2005-plugin.jar" 
          basedir="${build}"
          includes="fgraph/**,chi2cdf1table_rev.txt"
          excludes="fgraph/test/**,**/*Test.class"
