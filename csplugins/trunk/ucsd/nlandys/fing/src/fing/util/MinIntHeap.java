@@ -133,7 +133,7 @@ public final class MinIntHeap
    * in the heap.  This method leaves the heap in an ordered state.<p>
    * If there are no elements in this heap, results of this operation
    * are undefined.
-   * @see #numElements()
+   * @see #size()
    */
   public final int findMin()
   {
@@ -155,7 +155,7 @@ public final class MinIntHeap
    * state.<p>
    * If there are no elements in this heap, results of this operation
    * are undefined.
-   * @see #numElements()
+   * @see #size()
    */
   public final int deleteMin()
   {
