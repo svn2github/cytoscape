@@ -3,6 +3,9 @@
  **
  ** Code written by: Ethan Cerami
  ** Authors: Ethan Cerami, Gary Bader, Chris Sander
+ ** Date: Nov 14, 2003
+ ** Time: 3:48:51 PM
+ ** Description: Action code for PathDistPlugin
  **
  ** This library is free software; you can redistribute it and/or modify it
  ** under the terms of the GNU Lesser General Public License as published
@@ -30,10 +33,6 @@
  ** You should have received a copy of the GNU Lesser General Public License
  ** along with this library; if not, write to the Free Software Foundation,
  ** Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- **
- ** User: Gary Bader
- ** Date: Nov 14, 2003
- ** Time: 3:48:51 PM
  **/
 
 package csplugins.pathdist;
@@ -169,7 +168,7 @@ public class PathDistAction implements ActionListener {
 		}
 		//output
 		//copy temp distribution to final for output
-        for(int i=1;i<=nodeCountMax;i++){
+		for(int i=1;i<=nodeCountMax;i++) {
 			System.err.println(i+" "+distribution[i]);
 		}
 

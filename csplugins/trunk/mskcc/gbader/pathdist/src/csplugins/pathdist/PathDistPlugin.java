@@ -2,11 +2,13 @@
  ** California at San Diego, and Memorial Sloan-Kettering Cancer Center.
  **
  ** Code written by: Gary Bader
+ ** Authors: Gary Bader, Ethan Cerami, Chris Sander
  ** Date: Nov.14.2003
  ** Description: Cytoscape Plug In that calculates a path length distribution for the selected nodes.
  ** If no nodes are selected the calculation will be based on the entire graph.
  **
- ** Based on the csplugins.tutorial written by Ethan Cerami
+ ** Based on the csplugins.tutorial written by Ethan Cerami and GINY plugin
+ ** written by Andrew Markiel
  **
  ** This library is free software; you can redistribute it and/or modify it
  ** under the terms of the GNU Lesser General Public License as published
@@ -35,6 +37,7 @@
  ** along with this library; if not, write to the Free Software Foundation,
  ** Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  **/
+
 package csplugins.pathdist;
 
 import cytoscape.AbstractPlugin;
