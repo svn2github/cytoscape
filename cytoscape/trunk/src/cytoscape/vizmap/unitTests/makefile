@@ -19,6 +19,7 @@ OBJS =  AttributeMapperPropertiesAdapterTest.class \
 	DiscreteMapperTest.class \
 	FlatInterpolatorTest.class \
 	LinearNumberToColorInterpolatorTest.class \
+	LinearNumberToNumberInterpolatorTest.class \
 	VizMapperCategoriesTest.class
 
 #
@@ -50,6 +51,7 @@ run: $(OBJS)
 	java $(PKG).DiscreteMapperTest
 	java $(PKG).FlatInterpolatorTest
 	java $(PKG).LinearNumberToColorInterpolatorTest
+	java $(PKG).LinearNumberToNumberInterpolatorTest
 	java $(PKG).VizMapperCategoriesTest
 
 #

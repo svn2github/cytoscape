@@ -52,21 +52,21 @@ public class VizMapperCategories implements AttributeMapperCategories {
 	return (Color)mapper.getRangeValue(attrBundle,NODE_BORDER_COLOR);
     }
 
-    public int getNodeHeight(Map attrBundle, AttributeMapper mapper) {
-	Integer i = (Integer)mapper.getRangeValue(attrBundle,NODE_HEIGHT);
-	if (i == null) {
+    public double getNodeHeight(Map attrBundle, AttributeMapper mapper) {
+	Double d = (Double)mapper.getRangeValue(attrBundle,NODE_HEIGHT);
+	if (d == null) {
 	    return 0;
 	} else {
-	    return i.intValue();
+	    return d.doubleValue();
 	}
     }
 
-    public int getNodeWidth(Map attrBundle, AttributeMapper mapper) {
-	Integer i = (Integer)mapper.getRangeValue(attrBundle,NODE_WIDTH);
-	if (i == null) {
+    public double getNodeWidth(Map attrBundle, AttributeMapper mapper) {
+	Double d = (Double)mapper.getRangeValue(attrBundle,NODE_WIDTH);
+	if (d == null) {
 	    return 0;
 	} else {
-	    return i.intValue();
+	    return d.doubleValue();
 	}
     }
 
@@ -150,7 +150,7 @@ public class VizMapperCategories implements AttributeMapperCategories {
 	    returnVal = Misc.parseRGBText(value);
 	} else if ( vizAttribute.equals(NODE_HEIGHT) ||
 		    vizAttribute.equals(NODE_WIDTH) ) {
-	    returnVal = new Integer(value);
+	    returnVal = new Double(value);
 	} else if( vizAttribute.equals(NODE_SHAPE) ) {
 	    returnVal = Misc.parseNodeShapeTextIntoByte(value);
 	} else if ( vizAttribute.equals(EDGE_LINETYPE) ) {
@@ -179,6 +179,7 @@ public class VizMapperCategories implements AttributeMapperCategories {
 	} else if ( vizAttribute.equals(NODE_HEIGHT) ||
 		    vizAttribute.equals(NODE_WIDTH) ) {
 	    //fInt = new IntegerInterpolator();
+            fInt = new LinearNumberToNumberInterpolator();
 	} else if( vizAttribute.equals(NODE_SHAPE) ) {
 	    //fInt = new ShapeInterpolator();
             fInt = new FlatInterpolator();

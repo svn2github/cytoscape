@@ -22,6 +22,7 @@ OBJS =  AttributeMapper.class \
 	Interpolator.class \
 	LinearNumberInterpolator.class \
 	LinearNumberToColorInterpolator.class \
+	LinearNumberToNumberInterpolator.class \
 	NumberInterpolator.class \
 	ValueMapper.class \
 	VizMapperCategories.class \
