@@ -22,15 +22,16 @@ public final class IntArray
    * matter what.  The value returned by this method will be 0 unless a
    * value at given index has been previously specified with
    * setIntAtIndex(int, int).
+   *
    * @exception ArrayIndexOutOfBoundsException if index is negative or
    *   Integer.MAX_VALUE.
    */
   public final int getIntAtIndex(int index)
   {
-    try { return m_arr[index]; }
-    catch (ArrayIndexOutOfBoundsException e) {
-      if (index < 0 || index == Integer.MAX_VALUE) { throw e; }
-      return 0; }
+    // Do pre-checking because try/catch with thrown exception causes huge
+    // performance hit.
+    if (index >= m_arr.length && index != Integer.MAX_VALUE) return 0;
+    return m_arr[index]; // Exception if Integer.MAX_VALUE or negative.
   }
 
   /**
@@ -43,26 +44,29 @@ public final class IntArray
    * <p>
    * NOTE: Setting very large indices to non-zero values implies instantiating
    * a very large underlying data structure.
+   *
    * @exception ArrayIndexOutOfBoundsException if index is negative or
    *   Integer.MAX_VALUE.
    */
   public final void setIntAtIndex(int value, int index)
   {
+    // Do pre-checking because try/catch with thrown exception causes huge
+    // performance hit.
+    if (index >= m_arr.length && value == 0 && index != Integer.MAX_VALUE)
+      return;
     try { m_arr[index] = value; }
     catch (ArrayIndexOutOfBoundsException e)
     {
       if (index < 0 || index == Integer.MAX_VALUE) { throw e; }
-      else if (value == 0) { return; }
-      else {
-        // We need to ensure amortized constant time hits.
-        final int newArrSize = (int)
-          Math.min((long) Integer.MAX_VALUE,
-                   Math.max(((long) m_arr.length) * 2l + 1l,
-                            ((long) index) + 1l + (long) INITIAL_CAPACITY));
-        int[] newArr = new int[newArrSize];
-        System.arraycopy(m_arr, 0, newArr, 0, m_arr.length);
-        m_arr = newArr;
-        m_arr[index] = value; }
+      // We need to ensure amortized constant time hits.
+      final int newArrSize = (int)
+        Math.min((long) Integer.MAX_VALUE,
+                 Math.max(((long) m_arr.length) * 2l + 1l,
+                          ((long) index) + 1l + (long) INITIAL_CAPACITY));
+      int[] newArr = new int[newArrSize];
+      System.arraycopy(m_arr, 0, newArr, 0, m_arr.length);
+      m_arr = newArr;
+      m_arr[index] = value;
     }
   }
 
