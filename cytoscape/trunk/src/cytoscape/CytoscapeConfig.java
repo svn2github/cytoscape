@@ -22,6 +22,7 @@ public class CytoscapeConfig {
   protected String argSpecificationString = "n:j:g:b:i:he:vW;";
 
   protected String [] commandLineArguments;
+  protected String[] argsCopy;
   protected boolean helpRequested = false;
   protected boolean inputsError = false;
   protected boolean displayVersion = false;
@@ -41,11 +42,22 @@ public class CytoscapeConfig {
 //------------------------------------------------------------------------------------------
 public CytoscapeConfig (String [] args)
 {
-  commandLineArguments = args;
+  //make a copy of the args to parse here (getopt can mangle the array it parses)
+  commandLineArguments = new String[args.length];
+  System.arraycopy(args, 0, commandLineArguments, 0, args.length);
+  //make a copy of the arguments for later use
+  argsCopy = new String[args.length];
+  System.arraycopy(args, 0, argsCopy, 0, args.length);
   // activePathParameters = new ActivePathFinderParameters ();
   parseArgs ();
   props = readProperties ();
 
+}
+//------------------------------------------------------------------------------------------
+public String[] getArgs() {
+    String[] returnVal = new String[argsCopy.length];
+    System.arraycopy(argsCopy, 0, returnVal, 0, argsCopy.length);
+    return returnVal;
 }
 //------------------------------------------------------------------------------------------
 public String getGeometryFilename ()
@@ -244,105 +256,17 @@ protected void parseArgs ()
   boolean argsError = false;
   String tmp;
 
-    // use LongOpt command line arguments for the ActivePathFinderParameters
-    // the presence of any one of these sets 'activePathParam
-  LongOpt [] longOpts = new LongOpt [7];
-  longOpts[0] = new LongOpt ("APsig", LongOpt.REQUIRED_ARGUMENT, null, 0); // significance 
-  longOpts[1] = new LongOpt ("APt0",  LongOpt.REQUIRED_ARGUMENT, null, 1); // initial temp
-  longOpts[2] = new LongOpt ("APtf",  LongOpt.REQUIRED_ARGUMENT, null, 2); // final temp
-  longOpts[3] = new LongOpt ("APni",  LongOpt.REQUIRED_ARGUMENT, null, 3); // iterations
-  longOpts[4] = new LongOpt ("APnp",  LongOpt.REQUIRED_ARGUMENT, null, 4); // number of paths
-  longOpts[5] = new LongOpt ("APdi",  LongOpt.REQUIRED_ARGUMENT, null, 5); // display interval
-  longOpts[6] = new LongOpt ("APrs",  LongOpt.REQUIRED_ARGUMENT, null, 6); // random seed
-
   if (commandLineArguments == null || commandLineArguments.length == 0)
     return;
 
-  Getopt g = new Getopt ("cytoscape", commandLineArguments, argSpecificationString, longOpts);
+  LongOpt[] longopts = new LongOpt[0];
+  //  Getopt g = new Getopt ("cytoscape", commandLineArguments, argSpecificationString, longOpts);
+  Getopt g = new Getopt ("cytoscape", commandLineArguments, argSpecificationString, longopts);
   g.setOpterr (false); // We'll do our own error handling
 
   int c;
   while ((c = g.getopt ()) != -1) {
    switch (c) {
-      /*********************************************
-     case 0:
-       tmp = g.getOptarg ();
-       try {
-         activePathParameters.setSignificanceThreshold (Double.parseDouble (tmp));
-         activePathParametersPresent = true;
-         }
-       catch (NumberFormatException e) {
-         inputsError = true;
-         System.err.println ("illegal value for --APsig: " + tmp);
-         }
-       break;
-     case 1:
-       tmp = g.getOptarg ();
-       try {
-         activePathParameters.setInitialTemperature (Double.parseDouble (tmp));
-         activePathParametersPresent = true;
-         }
-       catch (NumberFormatException e) {
-         inputsError = true;
-         System.err.println ("illegal value for --APt0: " + tmp);
-         }
-       break;
-     case 2:
-       tmp = g.getOptarg ();
-       try {
-         activePathParameters.setFinalTemperature (Double.parseDouble (tmp));;
-         activePathParametersPresent = true;
-         }
-       catch (NumberFormatException e) {
-         inputsError = true;
-         System.err.println ("illegal value for --APtf: " + tmp);
-         }
-       break;
-     case 3:
-       tmp = g.getOptarg ();
-       try {
-         activePathParameters.setTotalIterations (Integer.parseInt (tmp));
-         activePathParametersPresent = true;
-         }
-       catch (NumberFormatException e) {
-         inputsError = true;
-         System.err.println ("illegal value for --APni: " + tmp);
-         }
-       break;
-     case 4:
-       tmp = g.getOptarg ();
-       try {
-         activePathParameters.setNumberOfPaths (Integer.parseInt (tmp));
-         activePathParametersPresent = true;
-         }
-       catch (NumberFormatException e) {
-         inputsError = true;
-         System.err.println ("illegal value for --APnp: " + tmp);
-         }
-       break;
-     case 5:
-       tmp = g.getOptarg ();
-       try {
-         activePathParameters.setDisplayInterval (Integer.parseInt (tmp));
-         activePathParametersPresent = true;
-         }
-       catch (NumberFormatException e) {
-         inputsError = true;
-         System.err.println ("illegal value for --APdi: " + tmp);
-         }
-       break;
-     case 6:
-       tmp = g.getOptarg ();
-       try {
-         activePathParameters.setRandomSeed (Integer.parseInt (tmp));
-         activePathParametersPresent = true;
-         }
-       catch (NumberFormatException e) {
-         inputsError = true;
-         System.err.println ("illegal value for --APrs: " + tmp);
-         }
-       break;
-     ****************************/
      case 'n':
        nodeAttributeFilenames.add (g.getOptarg ());
        break;
@@ -368,8 +292,13 @@ protected void parseArgs ()
        displayVersion = true;
        break;
      case '?':
-          System.out.println ("The option '" + (char)g.getOptopt() + 
+       /* Optopt==0 indicates an unrecognized long option, which is
+        * reserved for plugins */
+      int theOption = g.getOptopt();
+       if ( theOption != 0 ) {
+          System.out.println ("The option '" + (char)theOption + 
                            "' is not valid");
+       }
           break;
      default:
        System.err.println ("unexpected argument: " + c);
@@ -437,16 +366,6 @@ public String getUsage ()
    sb.append (" -e  <expression filename>         (zzz.mrna)\n");
    sb.append (" -n  <nodeAttributes filename>     (zero or more)\n");
    sb.append (" -j  <edgeAttributes filename>     (zero or more)\n");
-   sb.append ("\n");
-   sb.append ("      -------- active paths parameters\n");
-   sb.append ("      (with one or more present, path finding starts automatically)\n\n");
-   sb.append (" --APsig  <significance threshold>  (default:  20.0)\n");
-   sb.append (" --APt0   <initial temperarture>    (default:  10.0)\n");
-   sb.append (" --APtf   <final temperature>       (default:  0.0)\n");
-   sb.append (" --APni   <number of iterations>    (default:  2500)\n");
-   sb.append (" --APnp   <number of paths to find> (default:  5)\n");
-   sb.append (" --APdi   <display update interval> (default:  500)\n");
-   sb.append (" --APrs   <random seed>             (default:  pseudo-random, from system clock)\n");
    sb.append ("\n");
 
    sb.append (" -h  (display usage\n");

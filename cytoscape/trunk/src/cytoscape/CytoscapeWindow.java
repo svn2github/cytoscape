@@ -172,6 +172,10 @@ public void windowStateChanged (WindowEvent e)
   System.out.println ("--- windowStateChanged: " + e);
 }
 //------------------------------------------------------------------------------
+public CytoscapeConfig getConfiguration() {
+    return config;
+}
+//------------------------------------------------------------------------------
 public Graph2D getGraph ()
 {  
   return graph;
