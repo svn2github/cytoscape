@@ -24,6 +24,7 @@ public class GraphObjectSelection extends JPanel implements ActionListener {
 
   JTextField searchField;
   JCheckBox regexpSearch, clearSelection;
+  JRadioButton hideFailed, grayFailed, selectPassed;
   JList selectedAttributes;
   JList allAttributes;
   CyNetwork cyNetwork;
@@ -108,6 +109,7 @@ public class GraphObjectSelection extends JPanel implements ActionListener {
 
     // Create the Center Panel
     JPanel centerPanel = new JPanel();
+    centerPanel.setLayout( new GridLayout( 0, 1 ) );
     centerPanel.setBorder( new TitledBorder( "Control" ) );
     centerPanel.add(  new JButton (new AbstractAction( "+" ) {
           public void actionPerformed ( ActionEvent e ) {
@@ -155,8 +157,27 @@ public class GraphObjectSelection extends JPanel implements ActionListener {
                 }
               } ); } } ) );
     
-    clearSelection = new JCheckBox( "Clear", true );
+    clearSelection = new JCheckBox( "Clear", false );
     centerPanel.add( clearSelection );
+
+    JPanel actionPanel = new JPanel();
+    ButtonGroup actionGroup = new ButtonGroup();
+    actionPanel.setBorder( new TitledBorder( "Action to Take" ) );
+    
+    hideFailed = new JRadioButton( "Hide Failed", true );
+    actionGroup.add( hideFailed );
+    actionPanel.add( hideFailed );
+
+    
+    grayFailed = new JRadioButton( "Gray Failed", false );
+    actionGroup.add( grayFailed );
+    actionPanel.add( grayFailed );
+
+    selectPassed = new JRadioButton( "Select Passed", false );
+    actionGroup.add( selectPassed );
+    actionPanel.add( selectPassed );
+
+    centerPanel.add( actionPanel );
 
     JSplitPane all_center_1 = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT, true,  centerPanel, allAttributesPanel  );
     JSplitPane sel = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT, true, selectedAttributesPanel, all_center_1 );
@@ -228,35 +249,53 @@ public class GraphObjectSelection extends JPanel implements ActionListener {
 //     }
 
 
-    // restore all EdgeViews prior to hiding
-    networkView.getView().showGraphObjects( networkView.getView().getEdgeViewsList() );
-
-    Iterator all_nodes = networkView.getView().getGraphPerspective().nodesList().iterator();
-    while ( all_nodes.hasNext() ) {
-      Node node =  ( Node )all_nodes.next();
+    // Hide the Failed Nodes
+    if ( hideFailed.isSelected() ) {
       
-      //System.out.println( "ALL NODES: "+ nv.toString() );
-
-      if ( passes.contains( node.getIdentifier() ) ) {
-        //graphView.showGraphObject( nv );
-        //System.out.println( "PASSES: "+node.getIdentifier() );
-        //System.out.println( "PASSES: "+node );
-        //NodeView nv =  networkView.getView().getNodeView( node );
-        //System.out.println( "Will Show: "+nv );
-        //graphView.showGraphObject( networkView.getView().getNodeView( node.getRootGraphIndex() ) );
-        //networkView.getView().showGraphObject( nv );
-        networkView.getView().showNodeView( networkView.getView().getNodeView( node ), false );
-      } else {
-        //graphView.hideGraphObject( nv );
-        //System.out.println( "        NOPE: "+node.getIdentifier()+ " : "+node.getRootGraphIndex()+" : "+networkView.getView().getGraphPerspective().getIndex( node ) );
-        //System.out.println( "        NOPE: "+node.getIdentifier() );
-        //NodeView nv =  networkView.getView().getNodeView( node );
-        //System.out.println( "        Will Hide: "+nv );
-        //networkView.getView().hideGraphObject( nv );
-        networkView.getView().hideNodeView(  networkView.getView().getNodeView( node ) );
+      // restore all EdgeViews prior to hiding
+      networkView.getView().showGraphObjects( networkView.getView().getEdgeViewsList() );
+      Iterator all_nodes = networkView.getView().getGraphPerspective().nodesList().iterator();
+      while ( all_nodes.hasNext() ) {
+        Node node =  ( Node )all_nodes.next();
+        if ( passes.contains( node.getIdentifier() ) ) {
+          networkView.getView().showNodeView( networkView.getView().getNodeView( node ), false );
+        } else {
+          networkView.getView().hideNodeView(  networkView.getView().getNodeView( node ) );
+        }
       }
+    } 
+    // gray the Failed
+    else if ( grayFailed.isSelected() ) {
+      networkView.getView().showGraphObjects( networkView.getView().getEdgeViewsList() );
+      networkView.getView().showGraphObjects( networkView.getView().getNodeViewsList() );
+      Iterator all_nodes = networkView.getView().getGraphPerspective().nodesList().iterator();
+      while ( all_nodes.hasNext() ) {
+        Node node =  ( Node )all_nodes.next();
+        if ( passes.contains( node.getIdentifier() ) ) {
+          networkView.getView().getNodeView( node ).setTransparency( 1f );
+        } else {
+          networkView.getView().getNodeView( node ).setTransparency( 0.5f );
+        }
+      }
+    } 
+    // select those who passed 
+    else if ( selectPassed.isSelected() ) {
+      networkView.getView().showGraphObjects( networkView.getView().getEdgeViewsList() );
+      networkView.getView().showGraphObjects( networkView.getView().getNodeViewsList() );
+      Iterator all_nodes = networkView.getView().getGraphPerspective().nodesList().iterator();
+      while ( all_nodes.hasNext() ) {
+        Node node =  ( Node )all_nodes.next();
+        if ( passes.contains( node.getIdentifier() ) ) {
+          networkView.getView().getNodeView( node ).setSelected( true );
+        } else {
+          networkView.getView().getNodeView( node ).setSelected( false );
+        }
+      }
+
     }
-    
+
+
+
 
   //   Iterator sel;
 //     DefaultListModel new_model;
