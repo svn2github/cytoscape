@@ -30,7 +30,7 @@ public class TaskManager {
         }
 
         //  Instantiate a new JTask UI Component
-        JTask jTask = new JTask(task.getTitle(), config);
+        JTask jTask = new JTask(task, config);
 
         //  Tell task to report progress to JTask
         task.setTaskMonitor(jTask);
