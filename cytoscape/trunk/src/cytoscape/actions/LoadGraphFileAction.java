@@ -1,7 +1,6 @@
 // $Revision$
 // $Date$
 // $Author$
-
 package cytoscape.actions;
 
 import cytoscape.CyNetwork;
@@ -21,7 +20,6 @@ import cytoscape.util.CytoscapeAction;
 import cytoscape.util.FileUtil;
 import cytoscape.view.CyMenus;
 
-import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
