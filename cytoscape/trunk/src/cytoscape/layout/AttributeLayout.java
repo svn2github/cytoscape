@@ -45,7 +45,8 @@ import cytoscape.undo.*;
 
 import y.base.*;
 import y.view.*;
-import y.util.GraphHider;
+import y.util.GraphHider; // yFiles 2.01
+//import y.algo.GraphHider; // yFiles 1.4
 
 
 import java.util.*;
@@ -121,15 +122,42 @@ protected String [] getAnnotationAttributes (GraphObjAttributes nodeAttributes)
 //----------------------------------------------------------------------------------------
 public void doCallback (String attributeName, int functionToPerform)
 {
-  if (functionToPerform == DO_LAYOUT)
-    performLayoutByAttribute (attributeName);
-  else if (functionToPerform == CREATE_EDGES)
-    createEdgesBetweenAllNodesWithSharedAttribute (attributeName);
 
+ 
+  if (functionToPerform == DO_LAYOUT){
+    // Added by iliana on 1.21.2003 (works with yFiles 2.01)
+    // Remove graph listeners: (including undoManager)
+    // This is so that the removing and adding of graph objects
+    // does not fire graph events that slow down the application
+    // and also makes it hard for other classes that are graph listeners
+    // to distinguish between user-generated graph events, and side-effect
+    // graph events.
+    Iterator it = graph.getGraphListeners();
+    ArrayList gls = new ArrayList();
+    GraphListener gl;
+    while(it.hasNext()){
+      gl = (GraphListener)it.next();
+      gls.add(gl);
+    }
+    for(int i = 0; i < gls.size(); i++){
+      graph.removeGraphListener((GraphListener)gls.get(i));
+    }
+    //-----
+    performLayoutByAttribute (attributeName);
+    // Add back graph listeners:
+    for(int i = 0; i < gls.size(); i++){
+      graph.addGraphListener((GraphListener)gls.get(i));
+    }
+    //-----
+  }else if (functionToPerform == CREATE_EDGES){
+    createEdgesBetweenAllNodesWithSharedAttribute (attributeName);
+  }
+ 
 }
 //----------------------------------------------------------------------------------------
 public void createEdgesBetweenAllNodesWithSharedAttribute (String attributeName)
 {
+  
   deleteCategoryNodes ();
   cytoscapeWindow.redrawGraph ();
 
@@ -195,14 +223,43 @@ protected void deleteCategoryNodes ()
   if (categoryNodes == null || categoryNodes.size () == 0)
     return;
 
+  
+  
   String [] names = (String []) categoryNodes.keySet().toArray(new String [0]);
+  // Added by iliana on 1.21.2003 (works with yFiles 2.01)
+  // Remove graph listeners: (including undoManager)
+  // This is so that the removing and adding of graph objects
+  // does not fire graph events that slow down the application
+  // and also makes it hard for other classes that are graph listeners
+  // to distinguish between user-generated graph events, and side-effect
+  // graph events.
+  ArrayList gls = new ArrayList();
+  if(names.length > 0){
+    Iterator it = graph.getGraphListeners();
+    GraphListener gl;
+    while(it.hasNext()){
+      gl = (GraphListener)it.next();
+      gls.add(gl);
+    }
+    for(int i = 0; i < gls.size(); i++){
+      graph.removeGraphListener((GraphListener)gls.get(i));
+    }
+  }
+  //------
   for (int i=0; i < names.length; i++) {
     Node node = (Node) categoryNodes.get (names [i]);
     graph.removeNode (node);
     } // for i
 
   categoryNodes = new HashMap ();
-
+  
+  // Add back graph listeners:
+  if(names.length > 0){
+    for(int i = 0; i < gls.size(); i++){
+      graph.addGraphListener((GraphListener)gls.get(i));
+    }
+  }
+  //------
 } // deleteCategoryNodes
 //----------------------------------------------------------------------------------------
 protected void removeCategoryEdges (String [] categories)
@@ -287,6 +344,8 @@ protected void addCategoryEdgesBetweenNodes (String attributeName)
 //    value for that attribute
 // 3) loop through the has, drawing lines between every pair in the list
 {
+  
+  graph.firePreEvent();
 
   HashMap attributeHash = nodeAttributes.getAttribute (attributeName);
   if (attributeHash == null)
@@ -356,6 +415,8 @@ protected void addCategoryEdgesBetweenNodes (String attributeName)
 
       } // for n
     } // for i
+
+  graph.firePostEvent();
   
 } // addCategoryEdgesBetweenNodes
 //----------------------------------------------------------------------------------------
