@@ -1,0 +1,95 @@
+#------------------------------------------------------------------------------------
+# interaction will determine the edge color.  this is the middle term in
+# an intr file, where the form is (by example)
+#    YPL075W pd YOL086C
+#    YPL248C pp YBR018C
+#    YPL248C pp YBR019C
+#
+#  specify that 'interaction' values control the color
+
+edge.color.controller=interaction
+edge.color.interaction.type=discrete
+edge.color.interaction.map.pp=0,0,225
+edge.color.interaction.map.pd=255,255,0
+edge.color.interaction.map.gl=0,225,0
+edge.color.interaction.map.gd=0,225,255
+edge.color.interaction.map.cr=225,150,0
+edge.color.interaction.map.rc=150,150,5
+edge.color.interaction.map.pr=255,0,255
+
+#---------------------------------------------------------------------
+# interaction values also control the decoration at the end of
+# an edge on the graph.  'pd' causes an arrow to be drawn
+# where the edge hits the target node; the default target
+# and source decorators (no decoration) is used everywhere else
+
+edge.targetDecoration.controller=interaction
+edge.targetDecoration.interaction.type=discrete
+edge.targetDecoration.interaction.map.pd=scalableArrow20
+
+#edge.sourceDecoration.controller=interaction
+#edge.sourceDecoration.interaction.type=discrete
+#edge.sourceDecoration.interaction.map.pd=scalableArrow15
+#edge.sourceDecoration.interaction.map.pp=scalableArrow10
+
+#edge.targetDecoration.interaction.map.pd=delta
+
+edge.linetype.controller=interaction
+edge.linetype.interaction.type=discrete
+edge.linetype.interaction.map.pd=line2
+edge.linetype.interaction.map.pp=dashed2
+
+
+#--------------------------------------------------------------------
+# window and graph defaults:
+
+background.color.default=185,185,185
+node.fillColor.default=225,225,225
+node.borderColor.default=25,25,25
+node.height.default=20
+node.width.default=20
+node.shape.default=circle
+
+#--------------------------------------------------------------------
+# node color based on interactions:
+
+node.fillColor.controller=expression
+node.fillColor.expression.type=continuous
+
+node.fillColor.expression.boundaryvalues=3
+
+node.fillColor.expression.bv0.domainvalue=0.0
+node.fillColor.expression.bv0.lesser=0,255,0
+node.fillColor.expression.bv0.equal=0,255,0
+node.fillColor.expression.bv0.greater=185,185,185
+
+node.fillColor.expression.bv1.domainvalue=0.1
+node.fillColor.expression.bv1.lesser=0,255,0
+node.fillColor.expression.bv1.equal=185,185,185
+node.fillColor.expression.bv1.greater=185,185,185
+
+node.fillColor.expression.bv2.domainvalue=1.0
+node.fillColor.expression.bv2.lesser=185,185,185
+node.fillColor.expression.bv2.equal=185,185,185
+node.fillColor.expression.bv2.greater=185,185,185
+
+#--------------------------------------------------------------------
+# plugins. for each plugin, specify
+#
+#   1. the full name of the class to be loaded.
+#   2. the file extension which tells cytoscape to load the plugin
+#   3. the attribute name which, if present in node or edge attributes,
+#      tells cytoscape to load the plugin
+#--------------------------------------------------------------------
+plugin.bar.className=csplugins.demo.Bar
+plugin.bar.fileExtension=bar
+plugin.bar.attributeName=bar
+
+# optional load, based on the presence of an "xxx.pvals" file
+plugin.activePathsNew.className=csplugins.activePathsNew.ActivePathsUI
+plugin.activePathsNew.fileExtension=pvals
+
+#plugin.expressionChooser.classname=csplugins.expressionData.ExpressionDataUI
+#plugin.expressionChooser.fileExtension=mrna
+#plugin.expressionChooser.fileExtension=pvals
+plugin.expressionChooser.load=csplugins.expressionData.ExpressionDataUI
