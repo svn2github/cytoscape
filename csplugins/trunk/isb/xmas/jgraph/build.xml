@@ -1,0 +1,214 @@
+<project name="jgraph" default="jgraph" basedir=".">
+
+  <!-- =================================================================== -->
+  <!-- Initialization target                                               -->
+  <!-- =================================================================== -->
+  <target name="init-jgraph">
+    <tstamp/>
+    <property name="jgraph.Name" value="jgraph"/>
+    <property name="jgraph.name" value="jgraph"/>
+    <property name="jgraph.version" value="0.1"/>
+    <property name="jgraph.year" value="200"/>
+
+    <echo message="Building ${jgraph.name} version ${jgraph.version}."/>
+
+    <!-- Inheritable properties -->
+    <property name="debug" value="on"/>
+    <property name="optimize" value="off"/>
+    <property name="deprecation" value="on"/>
+    <property name="nowarn" value="true"/>
+    <property name="fork" value="false"/>
+    <property name="jgraph.root.dir" value="."/>
+    <property name="jgraph.lib.dir" value="${jgraph.root.dir}/lib"/>
+    <property name="cytoscape.lib.dir" value="${jgraph.root.dir}/../../../../cytoscape/lib"/>
+    <property name="cytoscape.plugin.dir" value="${jgraph.root.dir}/../../../../cytoscape/plugins"/>
+    <path id="project.class.path">
+      <pathelement path="${java.class.path}/"/>
+    </path>
+
+    <!-- Define the directories -->
+    <property name="jgraph.root.dir" value="./"/>
+    <property name="jgraph.src.dir" value="${jgraph.root.dir}/src"/>
+    <property name="jgraph.classes.dir" value="${jgraph.root.dir}/classes"/>
+    <property name="jgraph.javadoc.dir" value="${javadoc.dir}/jgraph"/>
+    <property name="jgraph.resources.dir" value="${jgraph.root.dir}/resources"/>
+    <property name="jgraph.manifest.dir" value="${jgraph.root.dir}/manifest"/>
+    <property name="jgraph.packages" value="jgraph.*"/>
+    <!-- Subdirectory for test reports -->
+    <property name="jgraph.tests.reports.dir" value="${jgraph.root.dir}/reports/tests" />
+    <property name="cytoscape.lib" value="../../cytoscape/lib" />
+
+    <!-- Define the condition for compilation -->
+    <property name="cytoscape.jar" value="${jgraph.lib.dir}/cytoscape.jar"/>
+    <property name="colt.jar" value="${jgraph.lib.dir}/colt.jar"/>
+    
+
+    <condition property="cytoscape.present">
+      <and> 
+	  		<available file="${cytoscape.jar}"/> 
+				<available file="${colt.jar}"/> 
+		  </and>
+    </condition>
+
+    <!-- Define excludes for jgraph compile and javadoc -->
+    <property name="jgraph.excludes" value="**/notyet/*"/>
+    <property name="jgraph.tests.excludes" value="**/notyet/*"/>
+    <property name="jgraph.packages.excludes" value="**.test.*,**.notyet.*"/>
+
+    <path id="jgraph.project.class.path">
+      <pathelement location="${jgraph.classes.dir}"/>
+      <pathelement location="${cytoscape.lib.dir}/colt.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/y.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/giny.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/phoebe.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/coltginy.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/piccolo.jar"/>
+      <pathelement location="${jgraph.lib.dir}/jgraph.jar"/>
+      <pathelement location="${jgraph.lib.dir}/jgraphaddons.jar"/>
+      <pathelement path="${project.class.path}/"/>
+    </path>
+
+
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the jgraph project                                           -->
+  <!-- =================================================================== -->
+  <target name="compile-jgraph" depends="init-jgraph"  >
+
+   <echo message=" COMPILE jgraph "/>
+
+    <mkdir dir="${jgraph.classes.dir}"/>
+    <javac srcdir="${jgraph.src.dir}"
+           excludes="${jgraph.excludes}"
+           classpathref="jgraph.project.class.path"
+           destdir="${jgraph.classes.dir}"
+           debug="${debug}"
+           nowarn="${nowarn}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the jgraph.jar file                                           -->
+  <!-- =================================================================== -->
+  <target name="jgraph" depends="compile-jgraph"  >
+    <jar destfile="jgraphLayout.jar" manifest="${jgraph.manifest.dir}/jgraph.manifest">
+      <fileset
+        dir="${jgraph.classes.dir}"
+        includes="**"/>
+      <fileset
+        dir="${jgraph.root.dir}/lib"
+        includes="resources/**"/>
+      <fileset 
+        dir="${jgraph.root.dir}/images"/>
+    </jar>
+    <copy todir="${jgraph.lib.dir}" file="jgraphLayout.jar"/>
+   
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the jgraph tests                                             -->
+  <!-- =================================================================== -->
+  <target name="compile-tests" depends="jgraph"  >
+    <mkdir dir="${jgraph.classes.dir}"/>
+    <javac srcdir="${jgraph.src.dir}"
+           includes="**/test/*"
+           excludes="${jgraph.tests.excludes}"
+           classpathref="jgraph.project.class.path"
+           destdir="${jgraph.classes.dir}"
+           debug="${debug}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the jgraph-tests.jar file                                     -->
+  <!-- =================================================================== -->
+  <target name="tests" depends="compile-tests"  >
+    <jar jarfile="jgraph-tests.jar"
+         basedir="${jgraph.classes.dir}"
+         includes="**/test/*"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Build all jars                                                      -->
+  <!-- =================================================================== -->
+  <target name="all" depends="jgraph"/>
+
+   <!-- =================================================================== -->
+  <!-- Run the Plugin                                                      -->
+  <!-- =================================================================== -->
+  <target name="run" depends="jgraph" >
+     
+     <java classname="cytoscape.cytoscape" 
+           classpathref="jgraph.project.class.path"
+           fork="true"/>
+           <arg line = "-y giny"/>
+           <arg line = "--JLD"/>
+           <arg line = "${jgraph.lib.dir}/jgraph.jar"/>
+           
+
+  </target>
+
+
+
+  <!-- =================================================================== -->
+  <!-- Runs the tests in jgraph-tests.jar                                    -->
+  <!-- =================================================================== -->
+  <target name="runtests" depends="tests"  >
+    <mkdir dir="${jgraph.tests.reports.dir}"/>
+    <junit
+       printsummary="yes"
+       haltonfailure="no"
+       dir="${jgraph.classes.dir}"
+       maxmemory="1G"
+    >
+      <formatter type="plain" usefile="true" />
+      <classpath refid="jgraph.project.class.path"/>
+      <!-- The junit task doesn't support 'if' so we test for JUnit here -->
+      <batchtest fork="yes" todir="${jgraph.tests.reports.dir}" if="junit.present">
+        <fileset
+           dir="${jgraph.classes.dir}"
+           includes="**/test/*"
+           excludes="${jgraph.tests.excludes}"
+        />
+      </batchtest>
+    </junit>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the API documentation                                       -->
+  <!-- =================================================================== -->
+  <target name="docs" depends="init-jgraph" >
+    <mkdir dir="${jgraph.javadoc.dir}"/>
+    <javadoc packagenames="${jgraph.packages}"
+             excludepackagenames="${jgraph.packages.excludes}"
+             sourcepath="${jgraph.src.dir}"
+             destdir="${jgraph.javadoc.dir}"
+             classpathref="jgraph.project.class.path"
+             author="true"
+             version="true"
+             use="true"
+             splitindex="true"
+             noindex="false"
+             windowtitle="${jgraph.Name} API"
+             doctitle="${jgraph.Name}"
+    />
+  </target>
+ 
+  <!-- =================================================================== -->
+  <!-- Clean up, get back to original state                                -->
+  <!-- =================================================================== -->
+  <target name="clean" depends="init-jgraph">
+    <delete dir="${jgraph.classes.dir}"/>
+    <delete file="jgraph.jar"/>
+    <delete file="jgraph-tests.jar"/>
+  </target>
+
+</project>
+
+<!-- End of file -->

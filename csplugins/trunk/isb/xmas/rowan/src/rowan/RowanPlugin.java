@@ -116,6 +116,18 @@ public class RowanPlugin extends CytoscapePlugin {
     Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu( "Plugins" ).add( shadow );
 
 
+    JMenuItem first = new JMenuItem( new AbstractAction( "First Neighbors" ) {
+        public void actionPerformed ( ActionEvent e ) {
+          // Do this in the GUI Event Dispatch thread...
+          SwingUtilities.invokeLater( new Runnable() {
+              public void run() {
+                NeighborView nv = new NeighborView();
+               
+
+              } } ); } } );
+    Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu( "Plugins" ).add( first );
+
+
     JMenuItem complex = new JMenuItem( new AbstractAction( "Complex" ) {
         public void actionPerformed ( ActionEvent e ) {
           // Do this in the GUI Event Dispatch thread...
