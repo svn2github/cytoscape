@@ -4,22 +4,22 @@
  ** under the terms of the GNU Lesser General Public License as published
  ** by the Free Software Foundation; either version 2.1 of the License, or
  ** any later version.
- ** 
+ **
  ** This library is distributed in the hope that it will be useful, but
  ** WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
  ** MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
  ** documentation provided hereunder is on an "as is" basis, and the
- ** Institute for Systems Biology and the Whitehead Institute 
+ ** Institute for Systems Biology and the Whitehead Institute
  ** have no obligations to provide maintenance, support,
  ** updates, enhancements or modifications.  In no event shall the
- ** Institute for Systems Biology and the Whitehead Institute 
+ ** Institute for Systems Biology and the Whitehead Institute
  ** be liable to any party for direct, indirect, special,
  ** incidental or consequential damages, including lost profits, arising
  ** out of the use of this software and its documentation, even if the
- ** Institute for Systems Biology and the Whitehead Institute 
+ ** Institute for Systems Biology and the Whitehead Institute
  ** have been advised of the possibility of such damage.  See
  ** the GNU Lesser General Public License for more details.
- ** 
+ **
  ** You should have received a copy of the GNU Lesser General Public License
  ** along with this library; if not, write to the Free Software Foundation,
  ** Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
@@ -64,21 +64,21 @@ import cytoscape.actions.SetVisualPropertiesAction;
  * all of the UI components and the the graph view.
  */
 public class CyWindow extends JPanel implements GraphViewChangeListener,CyNetworkListener, NetworkView {
-        
+
     protected static final int DEFAULT_WIDTH = 700;
     protected static final int DEFAULT_HEIGHT = 700;
     Paint DEFAULT_PAINT = Color.yellow;
 
     protected CytoscapeObj globalInstance;
     protected CyNetwork network;
-   
+
     protected JFrame mainFrame;
     protected CyMenus cyMenus;
     protected JLabel infoLabel;
-    
+
     protected String defaultWindowTitle = "Cytoscape " + CytoscapeVersion.version + "     ";
     protected String windowTitle;
-    
+
     protected GraphView  view;
     protected Component display;
     /**
@@ -86,20 +86,20 @@ public class CyWindow extends JPanel implements GraphViewChangeListener,CyNetwor
      * synchronized with its <code>GraphView</code>.
      */
     protected GraphViewController graphViewController;
-    
+
     protected boolean currentInteractivityState = false;
-    
+
     /** contains mappings from network properties and attributes to visual
      *  properties such as the sizes and colors of nodes and edges.
      */
     protected VisualMappingManager vizMapper;
-    
-    /** user interface to the 
+
+    /** user interface to the
      *  {@link cytoscape.visual.VisualMappingManager VisualMappingManager}
      *  {@link #vizMapper vizMapper}.
      */
     protected VizMapUI vizMapUI;
-    
+
     //save constructor variable here to draw graph later
     protected boolean windowDisplayed = false;
 
@@ -123,26 +123,26 @@ protected void doInit(CytoscapeObj globalInstance, CyNetwork network, String tit
     this.globalInstance = globalInstance;
     this.network = network;
     network.addCyNetworkListener(this);
-     
+
     if (title == null) {
         this.windowTitle = defaultWindowTitle;
     } else {
         this.windowTitle = defaultWindowTitle + title;
     }
 
-    setLayout( new BorderLayout() );  
+    setLayout( new BorderLayout() );
 
     this.infoLabel = new JLabel();
     this.infoLabel.setBackground(Color.BLUE);
     add(infoLabel, BorderLayout.SOUTH);
     updateStatusLabel(0, 0);
     this.mainFrame = new JFrame(windowTitle);
-    
+
     //need to create a graph view before creating menu actions that
     //want access to the view
     updateGraphView();
     //applyLayout(); do not layout by the default, too slow
-    
+
     mainFrame.setContentPane(this);
     //create the menu objects
     this.cyMenus = new CyMenus(this);
@@ -151,7 +151,7 @@ protected void doInit(CytoscapeObj globalInstance, CyNetwork network, String tit
     mainFrame.setJMenuBar(cyMenus.getMenuBar());
     // load vizmapper after menus are done and graph is available
     loadVizMapper();
-    
+
     setInteractivity(true);
 
     //add a listener to save the visual mapping catalog on exit
@@ -162,7 +162,7 @@ protected void doInit(CytoscapeObj globalInstance, CyNetwork network, String tit
         public void windowClosing(WindowEvent we) {
             theCytoscapeObj.saveCalculatorCatalog();
         }
-    }); 
+    });
     //add the parent app as a listener, to manage the session when this window closes
     //is this strictly necessary, since cytoscape.java listens for
     //WindowOpened events? -AM 2003/06/24
@@ -198,14 +198,14 @@ protected void loadPlugins() {
 //------------------------------------------------------------------------------
 
 /**
-* initialize the Graph View 
+* initialize the Graph View
 */
 protected void updateGraphView() {
     Component oldDisplay = null;
     if (display != null) {
         oldDisplay = display;
     }
-    
+
     if (view != null) {
         view.removeGraphViewChangeListener(this);
     }
@@ -220,9 +220,9 @@ protected void updateGraphView() {
     if (this.cyMenus != null) {
         add(cyMenus.getToolBar(), BorderLayout.NORTH);
     }
-    
+
     view.setBackgroundPaint(Color.BLACK);
-    
+
     Iterator i = view.getNodeViewsIterator();
     while ( i.hasNext()) {
         NodeView nv = (NodeView)i.next();
@@ -234,7 +234,7 @@ protected void updateGraphView() {
         nv.setSelectedPaint( ((Color)nv.getUnselectedPaint()).darker() );
         nv.setBorderPaint(Color.black);
     }
-    
+
     //edges
     java.util.List edges = view.getEdgeViewsList();
     for ( Iterator ie= edges.iterator(); ie.hasNext(); ) {
@@ -253,7 +253,7 @@ protected void updateGraphView() {
     if (oldDisplay != null){
         this.remove(oldDisplay);
     }
-    
+
     // Add the GraphViewController as a listener to the graphPerspective
     // so that it keeps is synchronized to graphView
     if(this.graphViewController == null){
@@ -300,17 +300,17 @@ protected void addViewContextMenus() {
                                   "cytoscape.graphutil.NodeAction",
                                   "colorNode",
                                   "Color This Node White" );
-	
+
 	    view.addContextMethod( "class phoebe.PNodeView",
                                   "cytoscape.graphutil.NodeAction",
                                   "colorSelectNode",
                                   "Color This Node White" );
-	
+
 	    view.addContextMethod( "class phoebe.PNodeView",
                                   "cytoscape.graphutil.NodeAction",
                                   "shapeNode",
                                   "Color This Node White" );
-	   
+
 	    // Add some Edge Context Menus
 	    view.addContextMethod( "class phoebe.PEdgeView",
                                   "cytoscape.graphutil.EdgeAction",
@@ -336,7 +336,7 @@ protected void addViewContextMenus() {
                                   "cytoscape.graphutil.EdgeAction",
                                   "edgeTargetEndType",
                                   "Color This Node White" );
-	    
+
 	    // Add some Edge-end Context menus
 	    view.addContextMethod( "class phoebe.util.PEdgeEndIcon",
                                   "cytoscape.graphutil.EdgeAction",
@@ -346,7 +346,7 @@ protected void addViewContextMenus() {
                                   "cytoscape.graphutil.EdgeAction",
                                   "edgeEndBorderColor",
                                   "Color This Node White" );
-					
+
       //data menues
      // view.addContextMethod( "class phoebe.PNodeView",
                                   //"cytoscape.graphutil.NodeAction",
@@ -355,11 +355,11 @@ protected void addViewContextMenus() {
       view.addContextMethod( "class phoebe.PNodeView",
                                   "cytoscape.graphutil.NodeAction",
                                   "changeFirstNeighbors",
-                                  "Paint First Neighbors of this node" );	
+                                  "Paint First Neighbors of this node" );
       view.addContextMethod( "edu.umd.cs.piccolo.PNode",
                                   "cytoscape.graphutil.NodeAction",
                                   "zoomToNode",
-                                  "Zoom to this node" );	
+                                  "Zoom to this node" );
 }
 //------------------------------------------------------------------------------
 /**
@@ -367,9 +367,9 @@ protected void addViewContextMenus() {
  * is selected, either from the config or a default value.
  */
 protected void loadVizMapper() {
-    
+
     // BUG: vizMapper.applyAppearances() gets called twice here
-    
+
     CalculatorCatalog calculatorCatalog = getCytoscapeObj().getCalculatorCatalog();
     //try to get visual style from properties
     Properties configProps = getCytoscapeObj().getConfiguration().getProperties();
@@ -379,13 +379,13 @@ protected void loadVizMapper() {
     if (vs == null) {//none specified, or not found; use the default
         vs = calculatorCatalog.getVisualStyle("default");
     }
-    
+
     //create the vizMapping objects
     this.vizMapper = new VisualMappingManager(this, calculatorCatalog, vs,
                                               getCytoscapeObj().getLogger());
     this.vizMapUI = new VizMapUI(this.vizMapper, this.mainFrame);
     vizMapper.setUI(vizMapUI);
-    
+
     // add vizmapper to toolbar
     JToolBar toolBar = getCyMenus().getToolBar();
     toolBar.addSeparator();
@@ -393,7 +393,7 @@ protected void loadVizMapper() {
     b.setIcon(new ImageIcon(getClass().getResource("images/ColorVisual.gif")));
     b.setToolTipText("Set Visual Properties");
     b.setBorderPainted(false);
-    
+
     // easy-access visual styles changer
     toolBar.add(vizMapUI.getStyleSelector().getToolbarComboBox());
     toolBar.addSeparator();
@@ -407,11 +407,15 @@ protected void loadVizMapper() {
  * Any calls after the first force this window to revalidate and redraw
  * itself, usually only needed internally when the components are changed.
  */
+public void showWindow(int width, int height) {
+	mainFrame.pack();
+	mainFrame.setSize(width, height);
+	this.setVisible(true);
+	mainFrame.setVisible(true);
+}
+
 public void showWindow() {
-    mainFrame.pack();
-    mainFrame.setSize (new Dimension (DEFAULT_WIDTH, DEFAULT_HEIGHT));
-    this.setVisible(true);
-    mainFrame.setVisible(true);
+	this.showWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 }
 
 //------------------------------------------------------------------------------
@@ -509,7 +513,7 @@ public void setNewNetwork( CyNetwork newNetwork ) {
     this.network.removeCyNetworkListener(this);
     this.network = newNetwork;
     newNetwork.addCyNetworkListener(this);
-    
+
     updateGraphView();
     //applyLayout();
     updateStatusLabel(0, 0);
@@ -547,7 +551,7 @@ public void setInteractivity (boolean newState) {
         Component comp = menuBarEls[i].getComponent();
         comp.setEnabled(newState);
     }
-    
+
     getCyMenus().getToolBar().setEnabled(newState);
 } // setInteractivity
 //------------------------------------------------------------------------------
@@ -598,7 +602,7 @@ public void applyLayout(GraphView lview) {
  */
 public void applySelLayout() {
     if (view == null) return;
-    
+
     int[] selNodes = view.getSelectedNodeIndices();
     int[] selEdges = view.getSelectedEdgeIndices();
     GraphView selView =
@@ -654,19 +658,19 @@ public void graphViewChanged ( GraphViewChangeEvent event) {
  * nodes, edges, selected nodes, and selected edges.
  */
 public void updateStatusLabel(int hiddenNodes, int hiddenEdges) {
-    if (getView() == null) { 
+    if (getView() == null) {
         infoLabel.setText("No graph specified for the display  ");
         return;
     }
-    
+
     int nodeCount = view.getNodeViewCount();
-    int edgeCount = view.getEdgeViewCount();	
+    int edgeCount = view.getEdgeViewCount();
     int selectedNodes = view.getSelectedNodes().size();
     int selectedEdges = view.getSelectedEdges().size();
-    
+
     infoLabel.setText("  Nodes: " + nodeCount
                       + " ("+selectedNodes+" selected)"
-		      + " ("+hiddenNodes + " hidden)"  
+		      + " ("+hiddenNodes + " hidden)"
                       + " Edges: " + edgeCount
                       + " ("+selectedEdges+" selected)"
 		      + " (" +hiddenEdges+ " hidden)");
