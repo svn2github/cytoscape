@@ -9,17 +9,34 @@ public final class IntBTree
   // This quantity must be at least 3.
   // The author prefers that this quantity be odd because that way nodes
   // are split evenly when they get full.
-  // 45 or so seems to be the optimal value for very large trees.
-  private final static int MAX_BRANCHES = 45;
+  // 45 or so seems to be the optimal value for large trees.
+  public final static int DEFAULT_MAX_BRANCHES = 45;
 
+  private final int m_maxBranches;
   private Node m_root;
 
   /**
-   * Creates a new tree structure.
+   * Creates a new tree structure with the default maximum branching factor.
    */
   public IntBTree()
   {
-    m_root = new Node(MAX_BRANCHES, true);
+    m_maxBranches = DEFAULT_MAX_BRANCHES;
+    m_root = new Node(m_maxBranches, true);
+  }
+
+  /**
+   * Creates a new tree structure with the specified maximum branching
+   * factor.  Overriding the default maximum branching factor is only
+   * useful for testing purposes; there are no performance gains to be had.
+   * @param maxBranches the maximum branching factor of this tree.
+   * @exception IllegalArgumentException if maxBranches is less than three.
+   */
+  public IntBTree(final int maxBranches)
+  {
+    if (maxBranches < 3) throw new IllegalArgumentException
+                           ("maxBranches is less than three");
+    m_maxBranches = maxBranches;
+    m_root = new Node(m_maxBranches, true);
   }
 
   /**
@@ -29,7 +46,7 @@ public final class IntBTree
    */
   public final void empty()
   {
-    m_root = new Node(MAX_BRANCHES, true);
+    m_root = new Node(m_maxBranches, true);
   }
 
   /**
@@ -68,7 +85,7 @@ public final class IntBTree
       else {
         newSplitVal = m_root.data.splitVals[m_root.sliceCount - 1];
         newDeepCount = m_root.data.deepCount + newSibling.data.deepCount; }
-      final Node newRoot = new Node(MAX_BRANCHES, false);
+      final Node newRoot = new Node(m_maxBranches, false);
       newRoot.sliceCount = 2;
       newRoot.data.deepCount = newDeepCount;
       newRoot.data.splitVals[0] = newSplitVal;
@@ -89,14 +106,14 @@ public final class IntBTree
   private final Node insert(final Node n, final int x)
   {
     if (isLeafNode(n)) {
-      if (n.sliceCount < MAX_BRANCHES) { // There's room for a value.
+      if (n.sliceCount < m_maxBranches) { // There's room for a value.
         int i = -1; while (++i < n.sliceCount) if (x <= n.values[i]) break;
         for (int j = n.sliceCount; j > i;) n.values[j] = n.values[--j];
         n.values[i] = x; n.sliceCount++;
         return null; }
       else { // No room for another value in this leaf node; perform split.
-        final Node newLeafSibling = new Node(MAX_BRANCHES, true);
-        final int combinedCount = MAX_BRANCHES + 1;
+        final Node newLeafSibling = new Node(m_maxBranches, true);
+        final int combinedCount = m_maxBranches + 1;
         n.sliceCount = combinedCount >> 1; // Divide by two.
         newLeafSibling.sliceCount = combinedCount - n.sliceCount;
         split(x, n.values, newLeafSibling.values, newLeafSibling.sliceCount);
@@ -114,7 +131,7 @@ public final class IntBTree
         final int newSplit;
         if (isLeafNode(newChild)) newSplit = newChild.values[0];
         else newSplit = oldChild.data.splitVals[oldChild.sliceCount - 1];
-        if (n.sliceCount < MAX_BRANCHES) { // There's room here.
+        if (n.sliceCount < m_maxBranches) { // There's room here.
           for (int j = n.sliceCount - 1; j > foundPath;) {
             n.data.children[j + 1] = n.data.children[j];
             n.data.splitVals[j] = n.data.splitVals[--j]; }
@@ -123,8 +140,8 @@ public final class IntBTree
           n.data.splitVals[foundPath] = newSplit;
           return null; }
         else { // No room in this internal node; perform split.
-          final Node newInternalSibling = new Node(MAX_BRANCHES, false);
-          final int combinedCount = MAX_BRANCHES + 1;
+          final Node newInternalSibling = new Node(m_maxBranches, false);
+          final int combinedCount = m_maxBranches + 1;
           n.sliceCount = combinedCount >> 1; // Divide by two.
           newInternalSibling.sliceCount = combinedCount - n.sliceCount;
           split(newChild, foundPath, n.data.children,
@@ -291,8 +308,7 @@ public final class IntBTree
     if (isLeafNode(n)) {
       for (int i = -1; i < n.sliceCount;)
         if (x >= n.values[++i]) {
-          if (x == n.values[i]) count++;
-          else break; } }
+          if (x == n.values[i]) count++; else break; } }
     else { // Internal node.
       int currentMax = maxBound;
       int currentMin;
@@ -384,7 +400,7 @@ public final class IntBTree
    * leaf entry counting towards the enumeration in the range query (this
    * statement is important for leaf nodes).
    */
-  private final int searchRange(Node n, NodeStack nodeStack,
+  private final int searchRange(final Node n, NodeStack nodeStack,
                                 int xMin, int xMax,
                                 int minBound, int maxBound)
   {
