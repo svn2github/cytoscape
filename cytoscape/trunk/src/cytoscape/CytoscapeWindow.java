@@ -548,14 +548,20 @@ protected JMenuBar createMenuBar ()
 
   JMenu viewMenu = new JMenu ("View");
   menuBar.add (viewMenu);
+  JMenu displayNWSubMenu = new JMenu("New Window");
+  viewMenu.add(displayNWSubMenu);
+  mi = displayNWSubMenu.add(new NewWindowSelectedNodesOnlyAction());
+  mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_N, ActionEvent.CTRL_MASK));
+  mi = displayNWSubMenu.add(new NewWindowSelectedNodesEdgesAction());
+  mi = displayNWSubMenu.add (new CloneGraphInNewWindowAction ());
+  mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_K, ActionEvent.CTRL_MASK));
+
   JMenu viewNodeSubMenu = new JMenu("Node Selection");
   viewMenu.add(viewNodeSubMenu);
   viewNodeSubMenu.add(new InvertSelectedNodesAction());
   mi = viewNodeSubMenu.add(new HideSelectedNodesAction());
   mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_H, ActionEvent.CTRL_MASK));
 
-  mi = viewNodeSubMenu.add(new DisplaySelectedInNewWindowAction());
-  mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_N, ActionEvent.CTRL_MASK));
   mi = viewNodeSubMenu.add (new DisplayAttributesOfSelectedNodesAction ());
   mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_D, ActionEvent.CTRL_MASK));
   JMenu viewEdgeSubMenu = new JMenu("Edge Selection");
@@ -571,8 +577,6 @@ protected JMenuBar createMenuBar ()
   selectMenu.add (new ListFromFileSelectionAction ());
   selectMenu.add (new MenuFilterAction ());
   if (bioDataServer != null) selectMenu.add (new GoIDSelectAction ());
-  mi = viewMenu.add (new CloneGraphInNewWindowAction ());
-  mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_K, ActionEvent.CTRL_MASK));
 
   ButtonGroup layoutGroup = new ButtonGroup ();
   layoutMenu = new JMenu ("Layout");
@@ -1584,8 +1588,8 @@ protected class DisplayAttributesOfSelectedNodesAction extends AbstractAction {
     }
 }
 //------------------------------------------------------------------------------
-protected class DisplaySelectedInNewWindowAction extends AbstractAction   {
-  DisplaySelectedInNewWindowAction () { super ("Display in New Window"); }
+protected class NewWindowSelectedNodesOnlyAction extends AbstractAction   {
+  NewWindowSelectedNodesOnlyAction () { super ("Selected nodes, All edges"); }
 
   public void actionPerformed (ActionEvent e) {
     SelectedSubGraphFactory factory = new SelectedSubGraphFactory (graph, nodeAttributes, edgeAttributes);
@@ -1613,10 +1617,58 @@ protected class DisplaySelectedInNewWindowAction extends AbstractAction   {
 
     } // actionPerformed
 
-} // inner class DisplaySelectedInNewWindowAction
+} // inner class NewWindowSelectedNodesOnlyAction
+//------------------------------------------------------------------------------
+protected class NewWindowSelectedNodesEdgesAction extends AbstractAction   {
+  NewWindowSelectedNodesEdgesAction () { super ("Selected nodes, Selected edges"); }
+
+  public void actionPerformed (ActionEvent e) {
+      // allows us to temporarily hide unselected nodes/edges
+      GraphHider hider = new GraphHider(graph);
+
+      // hide unselected nodes
+      for (NodeCursor nodes = graph.nodes(); nodes.ok(); nodes.next())
+	  if (!graph.isSelected(nodes.node()))
+	      hider.hide(nodes.node());
+
+      // hide unselected edges
+      for (EdgeCursor edges = graph.edges(); edges.ok(); edges.next())
+	  if (!graph.isSelected(edges.edge()))
+	      hider.hide(edges.edge());
+
+      SelectedSubGraphFactory factory
+	  = new SelectedSubGraphFactory(graph, nodeAttributes, edgeAttributes);
+      Graph2D subGraph = factory.getSubGraph ();
+      GraphObjAttributes newNodeAttributes = factory.getNodeAttributes ();
+      GraphObjAttributes newEdgeAttributes = factory.getEdgeAttributes ();
+
+      // unhide unselected nodes & edges
+      hider.unhideAll();
+
+      String title = "selection";
+      if (titleForCurrentSelection != null) 
+	  title = titleForCurrentSelection;
+      try {
+	  boolean requestFreshLayout = true;
+	  CytoscapeWindow newWindow =
+	      new CytoscapeWindow  (parentApp, config, subGraph,
+				    expressionData, bioDataServer,
+				    newNodeAttributes, newEdgeAttributes, 
+				    "dataSourceName", expressionDataFilename,
+				    title, requestFreshLayout);
+	  subwindows.add (newWindow);  
+      }
+      catch (Exception e00) {
+	  System.err.println ("exception when creating new window");
+	  e00.printStackTrace ();
+      }
+
+    } // actionPerformed
+
+} // inner class NewWindowSelectedNodesEdgesAction
 //------------------------------------------------------------------------------
 protected class CloneGraphInNewWindowAction extends AbstractAction   {
-    CloneGraphInNewWindowAction () { super ("Clone Graph In New Window"); }
+    CloneGraphInNewWindowAction () { super ("Whole graph"); }
 
   public void actionPerformed (ActionEvent e) {
     cloneWindow ();
