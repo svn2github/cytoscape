@@ -81,7 +81,11 @@ public final class ProgressUI
    * @param message brief message that will appear to the user;
    *   may not be <code>null</code>.
    * @param stop hook to allow a stop button to stop a process; if
-   *   <code>null</code>, no stop button will appear in the dialog.
+   *   <code>null</code>, no stop button will appear in the dialog;
+   *   <code>stop.stop()</code> is called by this framework if and only if
+   *   the &quot;Stop&quot; button is pushed by a user; disposing of the
+   *   returned <code>ProgressUIControl</code> does <i>not</i> cause
+   *   <code>stop()</code> to be called.
    * @return hook for controlling this UI.
    * @exception IllegalStateException if this is called while another
    *   progress dialog is currently open.
