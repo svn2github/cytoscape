@@ -643,11 +643,17 @@ public class ContinuousMapping extends TreeMap implements ObjectMapping {
 		this.v=v;
 		this.index=index;
 	    }
+	    /**
+	     *  The ValueDisplayer being reflected by this listener was changed.
+	     *  Make the appropriate changes to the underlying data in the mapper
+	     *  and notify interested listeners that state has changed.
+	     */
 	    public void itemStateChanged(ItemEvent e) {
 		Object o = ((ValueDisplayer)e.getItemSelectable()).getValue();
 		// ui for mapper could have been modified.
 		needsUpdate=true;
 		v.set(index,o);
+		fireStateChanged();
 	    }
 	}
 
@@ -678,6 +684,7 @@ public class ContinuousMapping extends TreeMap implements ObjectMapping {
 		// remove element from the colors and points
 		removeFromPoints(index);
 		redoInterface();
+		fireStateChanged();
 	    }
 	}
 
@@ -702,13 +709,14 @@ public class ContinuousMapping extends TreeMap implements ObjectMapping {
 		addToPoints(brv,point);
 
 		redoInterface();
+		fireStateChanged();
 	    }
 	}
 
 	// this is the listener that listens to the JTextFields.
 	private class PointTextListener implements FocusListener { 
 	    public void focusGained (FocusEvent e) {
-		validate();
+		//validate();
 	    }
 	    public void focusLost (FocusEvent e) {
 		validate();
@@ -767,6 +775,7 @@ public class ContinuousMapping extends TreeMap implements ObjectMapping {
 		}
 		// ui for mapper could have been modified.
 		needsUpdate=true;
+		fireStateChanged();
 	    }
 	} // PointTextListener
     } // ContinuousUI
