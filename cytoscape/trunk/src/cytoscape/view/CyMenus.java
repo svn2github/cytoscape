@@ -375,7 +375,6 @@ public class CyMenus  implements GraphViewChangeListener {
     addAction( new FooAction() );
     addAction( new BarAction() );
     addAction( new BazAction() );
-    addAction( new TehAction() );
     layoutMenu.addSeparator();
 
     //fill the Visualization menu
