@@ -107,7 +107,7 @@ public class CsNodeTypeFilter
     if ( object instanceof Node ) {
       node = ( Node )object;
       value = nodeAttributes.getValue( selectedAttribute, node.getIdentifier() );
-      //System.out.println( "Value returned for node: "+node.getIdentifier()+" attribute: "+selectedAttribute+" was: "+value );
+      System.out.println( "Value returned for node: "+node.getIdentifier()+" attribute: "+selectedAttribute+" was: "+value );
     }
 
 

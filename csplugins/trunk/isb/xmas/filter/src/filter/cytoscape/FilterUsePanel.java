@@ -18,6 +18,12 @@ import cytoscape.view.*;
 import giny.model.*;
 import giny.view.*;
 
+import edu.umd.cs.piccolo.*;
+import edu.umd.cs.piccolo.activities.*;
+import edu.umd.cs.piccolo.util.*;
+import java.awt.geom.*;
+import phoebe.*;
+
 public class FilterUsePanel extends JPanel 
   implements PropertyChangeListener,
              ActionListener {
@@ -30,7 +36,8 @@ public class FilterUsePanel extends JPanel
   CyNetwork network;
   CyWindow window;
 
-  JCheckBox select, gray, hide, overwrite;
+  JCheckBox select, gray, hide,  overwrite;
+  JRadioButton pulsate, spiral;
 
   public FilterUsePanel ( CyNetwork network, CyWindow window ) {
     super();
@@ -222,6 +229,69 @@ public class FilterUsePanel extends JPanel
           nv.setSelected( true );
         }
       
+        if ( pulsate.isSelected() ) {
+          final PNodeView node = ( PNodeView )nv;
+
+          PActivityScheduler scheduler = node.getRoot().getActivityScheduler();
+          
+         
+          PAffineTransform at_shrink =  node.getTransformReference( true );
+          PAffineTransform at_grow = node.getTransform();
+          at_grow.scaleAboutPoint( 10, node.getX() + .5 * node.getWidth(), node.getY() + .5 * node.getHeight());
+
+          node.moveToFront();
+          PColorActivity repeatReversePulseActivity = new PColorActivity( 500, 0, 12, PInterpolatingActivity.SOURCE_TO_DESTINATION_TO_SOURCE, new PColorActivity.Target() {
+              public Color getColor() {
+                return (Color) node.getPaint();
+              }
+              public void setColor(Color color) {
+                node.setPaint(color);
+              }
+            }, Color.WHITE);
+          
+          PActivity grow = node.animateToTransform( at_grow, 3000 );
+          PActivity shrink = node.animateToTransform( at_shrink, 3000 );
+
+          scheduler.addActivity( repeatReversePulseActivity );
+          scheduler.addActivity( grow );
+          shrink.startAfter( grow );
+
+
+        } else if ( spiral.isSelected() ) {
+
+          final PNodeView node = ( PNodeView )nv;
+          PActivityScheduler scheduler = node.getRoot().getActivityScheduler();
+                   
+          PAffineTransform at_shrink =  node.getTransformReference( true );
+          PAffineTransform at_grow = node.getTransform();
+          double x = node.getX();
+          double y = node.getY();
+          at_grow.scaleAboutPoint( 10, x + .5 * node.getWidth(), y + .5 * node.getHeight());
+
+          PAffineTransform at_rotate = node.getTransform();
+          at_rotate.setRotation( Math.PI );
+         //  PTransformActivity rotate = new PTransformActivity( 3000, 0, 2, PInterpolatingActivity.SOURCE_TO_DESTINATION_TO_SOURCE, new PTransformActivity.Target() {
+//               public void getSourceMatrix ( double[] aSource ) {
+//                 node.getTransformReference( true ).getMatrix( aSource );
+//               }
+//               public void setTransform ( AffineTransform aTransform ) {
+//                 node.setTransform( aTransform );
+//               }
+//             },  at_rotate );
+          
+
+          node.moveToFront();
+          
+          PActivity rotate = node.animateToPositionScaleRotation(  x + .5 * node.getWidth(), y + .5 * node.getHeight(), 10,  Math.PI, 3000 );
+          //PActivity grow = node.animateToTransform( at_grow, 3000 );
+          PActivity shrink = node.animateToTransform( at_shrink, 3000 );
+
+          //scheduler.addActivity( rotate );
+          //scheduler.addActivity( grow );
+          shrink.startAfter( rotate );
+        }
+
+
         if ( overwrite.isSelected() ) {
           // things to overwrite if passes
           if ( gray.isSelected() ) {
@@ -306,6 +376,8 @@ public class FilterUsePanel extends JPanel
     select = new JCheckBox( "Select Passed" );
     gray = new JCheckBox( "Gray Failed" );
     hide = new JCheckBox( "Hide Failed" );
+    pulsate = new JRadioButton( "Pulsate" );
+    spiral = new JRadioButton( "Spiral" );
     overwrite = new JCheckBox( "Overwrite State" );
 
     JPanel boxes = new JPanel();
@@ -313,6 +385,12 @@ public class FilterUsePanel extends JPanel
     boxes.add( select );
     boxes.add( gray );
     boxes.add( hide );
+    boxes.add( pulsate );
+    boxes.add( spiral );
+    
+    ButtonGroup g = new ButtonGroup();
+    g.add( spiral );
+    g.add( pulsate );
 
     actionPanel.add( boxes );
     actionPanel.add( overwrite );

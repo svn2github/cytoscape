@@ -129,7 +129,7 @@ public class CsNodeInteractionFilter
     while ( aei.hasNext() && !passes ) {
       Edge edge = ( Edge )aei.next();
       Object value;
-      value = edgeAttributes.getValue( selectedEdgeAttribute, edge.getIdentifier() );
+      value = edgeAttributes.getValue( selectedEdgeAttribute, (String)edgeAttributes.getCanonicalName(edge) );
      
        System.out.println( "Testing node: "+node+" against edge: "+edge+" value: "+value+" of attr: "+selectedEdgeAttribute +" ss: "+searchString);
       
