@@ -810,6 +810,9 @@ public void applyLayout (boolean animated)
   setInteractivity (false);
   layouter.doLayout (graphView.getGraph2D ());
 
+  graphView.fitContent ();
+  graphView.setZoom (graphView.getZoom ()*0.9);
+
   setInteractivity (true);
   System.out.println (" done");
 
@@ -826,8 +829,7 @@ protected void applyLayoutSelection() {
 	
     }
 
-    
-    System.out.print ("starting layout...");  System.out.flush ();
+        System.out.print ("starting layout...");  System.out.flush ();
     setInteractivity (false);
 
 
