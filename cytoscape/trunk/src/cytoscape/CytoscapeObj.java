@@ -64,6 +64,9 @@ public class CytoscapeObj
   //List cyWindows = new ArrayList();
   protected long lastPluginRegistryUpdate;
 
+  protected int viewThreshold;
+
+
   /**
    * Constructor taking just a CytoscapeConfig object. The constructor
    * will attempt to use the specifications in the config object to
@@ -139,6 +142,15 @@ public class CytoscapeObj
       saveCalculatorCatalog();
     }
   }
+
+  public int getViewThreshold () {
+    return viewThreshold;
+  }
+
+  public void setViewThreshold ( int v ) {
+    viewThreshold = v;
+  }
+
 
   /**
    * @return the directory ".cytoscape" in the users home directory.

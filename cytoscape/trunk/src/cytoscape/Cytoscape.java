@@ -15,6 +15,8 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.Iterator;
+import java.util.HashSet;
 import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
@@ -196,6 +198,33 @@ public abstract class Cytoscape {
 
   }
 
+  public static CyEdge getCyEdge ( CyNode node_1, CyNode node_2, String attribute, Object attribute_value, boolean create ) {
+    
+    Set edges = new HashSet();
+    edges.addAll( Cytoscape.getRootGraph().edgesList( node_1, node_2 ) );
+    edges.addAll( Cytoscape.getRootGraph().edgesList( node_2, node_1 ) );
+    for ( Iterator i = edges.iterator(); i.hasNext(); ) {
+      CyEdge edge = ( CyEdge )i.next();
+      if ( getEdgeAttributeValue( edge, attribute ) == attribute_value ) 
+        return edge;
+    }
+      
+    if ( !create )
+      return null;
+
+
+    if ( attribute == Semantics.INTERACTION ) {
+    // create the edge
+      CyEdge edge =  ( CyEdge )Cytoscape.getRootGraph().getEdge( Cytoscape.getRootGraph().createEdge (node_1, node_2));
+      String edge_name = node_1.getIdentifier()+" ("+attribute_value+") "+node_2.getIdentifier();
+      Cytoscape.getEdgeNetworkData().add ("interaction", edge_name, attribute_value);
+      Cytoscape.getEdgeNetworkData().addNameMapping (edge_name, edge);
+      return edge;
+    }
+
+    return null;
+
+  }
 
 
   /**
@@ -227,9 +256,84 @@ public abstract class Cytoscape {
     return edge;
   }
    
+   /**
+   * Return the requested Attribute for the given Node
+   * @param node the given CyNode
+   * @param attribute the name of the requested attribute
+   * @return the value for the give node, for the given attribute
+   */
+  public static Object getNodeAttributeValue ( CyNode node, String attribute ) {
+    return Cytoscape.getNodeNetworkData().get( attribute, 
+                                               Cytoscape.getNodeNetworkData().getCanonicalName( node ) );
+  }
+
+  /**
+   * Return the requested Attribute for the given Edge
+   */
+  public static Object getEdgeAttributeValue ( CyEdge edge, String attribute ) {
+    return Cytoscape.getEdgeNetworkData().get( attribute, 
+                                               Cytoscape.getEdgeNetworkData().getCanonicalName( edge ) );
+  }
+
+  /**
+   * Return all availble Attributes for the Nodes in this CyNetwork
+   */
+  public static String[] getNodeAttributesList () {
+    return Cytoscape.getNodeNetworkData().getAttributeNames();
+  }
+  
+  /**
+   * Return all available Attributes for the given Nodes
+   */
+  public static String[] getNodeAttributesList ( CyNode[] nodes ) {
+    return Cytoscape.getNodeNetworkData().getAttributeNames();
+  }
+
+  /**
+   * Return all availble Attributes for the Edges in this CyNetwork
+   */
+  public static String[] getEdgeAttributesList () {
+    return Cytoscape.getEdgeNetworkData().getAttributeNames();
+  }
+
+  /**
+   * Return all available Attributes for the given Edges
+   */
+  public static String[] getNodeAttributesList ( CyEdge[] edges ) {
+    return Cytoscape.getEdgeNetworkData().getAttributeNames();
+  }
+
+
+   /**
+   * Return the requested Attribute for the given Node
+   * @param node the given CyNode
+   * @param attribute the name of the requested attribute
+   * @param value the value to be set
+   * @return if it overwrites a previous value
+   */
+  public static boolean setNodeAttributeValue ( CyNode node, String attribute, Object value ) {
+    return Cytoscape.getNodeNetworkData().set( attribute, 
+                                               Cytoscape.
+                                               getNodeNetworkData().
+                                               getCanonicalName( node ),
+                                               value );
+    
+
+  }
+
+
+  /**
+   * Return the requested Attribute for the given Edge
+   */
+  public static boolean setEdgeAttributeValue ( CyEdge edge, String attribute, Object value ) {
+    return Cytoscape.getEdgeNetworkData().set( attribute, 
+                                               Cytoscape.
+                                               getEdgeNetworkData().
+                                               getCanonicalName( edge ),
+                                               value );
+  }
 
  
-
   /**
    * @deprecated argh!...
    */

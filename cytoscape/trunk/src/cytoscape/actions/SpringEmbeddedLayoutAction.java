@@ -8,7 +8,7 @@ package cytoscape.actions;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 
-import giny.util.SpringEmbeddedLayouter;
+
 import giny.util.GraphPartition;
 
 import cytoscape.Cytoscape;
@@ -39,6 +39,7 @@ public class SpringEmbeddedLayoutAction extends CytoscapeAction {
 
     final SwingWorker worker = new SwingWorker(){
         public Object construct(){
+          //LayoutAlgorithm layout = new SpringEmbeddedLayouter( Cytoscape.getCurrentNetworkView() );
           LayoutAlgorithm layout = new ISOMLayout( Cytoscape.getCurrentNetworkView() );
           Cytoscape.getCurrentNetworkView().applyLayout( layout );
           return null;

@@ -210,12 +210,13 @@ abstract public class AbstractLayout
 	 */
   protected void initializeLocations() {
 
-    
+    int count = 0;
     for (Iterator iter = network.nodesIterator(); iter.hasNext();) {
       NodeView v = networkView.getNodeView( ( Node ) iter.next() );
       if ( !staticNodes.contains( v ) )
         initializeLocation( v, currentSize);
       initialize_local_node_view(v);
+      //System.out.println( (count++)+"init: "+v.getNode().getIdentifier() );
     }
   }
   

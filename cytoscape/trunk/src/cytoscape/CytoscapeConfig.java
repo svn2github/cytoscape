@@ -46,7 +46,9 @@ public class CytoscapeConfig {
   protected StringBuffer errorMessages = new StringBuffer ();
   // system and user property files use the same name
   protected Properties props;
+  protected Integer viewThreshold;
   
+
   static public StringBuffer debugLog = new StringBuffer ();
 
 
@@ -75,6 +77,12 @@ public class CytoscapeConfig {
     return returnVal;
   }
  
+  public int getViewThreshold () {
+    if ( viewThreshold == null )
+      return 500;
+    return viewThreshold.intValue();
+  }
+
   public int getViewType() {
     
     if ( viewType.equals( "tabbed" ) ) 
@@ -452,13 +460,17 @@ public class CytoscapeConfig {
     if (commandLineArguments == null || commandLineArguments.length == 0)
       return;
 
-    LongOpt[] longopts = new LongOpt[0];
+    LongOpt[] longopts = new LongOpt[] {
+      new LongOpt ("VT",  LongOpt.REQUIRED_ARGUMENT, null, 0) 
+    };
     Getopt g = new Getopt ("cytoscape", commandLineArguments, argSpecificationString, longopts);
     g.setOpterr(false); // We'll do our own error handling
 
     int c;
     while ( ( c = g.getopt() ) != -1 ) {
       switch (c) {
+      case 0:
+        viewThreshold = new Integer(g.getOptarg());
       case 't':
         viewType = g.getOptarg();
         break;

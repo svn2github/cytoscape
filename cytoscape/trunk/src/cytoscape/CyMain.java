@@ -119,7 +119,10 @@ public class CyMain implements WindowListener {
 //     }
 
   
-    
+    // general setup
+    cytoscapeObj.setViewThreshold( config.getViewThreshold() );
+
+
 
     //get some standard fields for doing name resolution
     boolean canonicalize = Semantics.getCanonicalize( cytoscapeObj );
@@ -139,13 +142,18 @@ public class CyMain implements WindowListener {
                                                    false,
                                                    null,
                                                    null );
+      if ( network.getNodeCount() < cytoscapeObj.getViewThreshold() )
+        Cytoscape.createNetworkView( network );
     }
     while ( ii.hasNext() ) {
-      Cytoscape.createNetwork( (String)ii.next(),
+      CyNetwork network = Cytoscape.createNetwork( (String)ii.next(),
                                Cytoscape.FILE_SIF,
                                canonicalize,
                                bioDataServer,
                                defaultSpecies );
+      
+      if ( network.getNodeCount() < cytoscapeObj.getViewThreshold() )
+        Cytoscape.createNetworkView( network );
     }
 
     if ( splashScreen != null )

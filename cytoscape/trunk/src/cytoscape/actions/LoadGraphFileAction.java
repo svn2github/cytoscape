@@ -140,17 +140,17 @@ public class LoadGraphFileAction extends CytoscapeAction {
         sb.append(" edges."+lineSep);
         sb.append("There were "+nn+" unique nodes, and "+ne+" unique edges."+lineSep+lineSep);
         
-        if ( newNetwork.getNodeCount() < 500 ) {
-          sb.append( "Your Network is Under 500 nodes, a View  will be automatically created." );
+        if ( newNetwork.getNodeCount() < Cytoscape.getCytoscapeObj().getViewThreshold() ) {
+          sb.append( "Your Network is Under "+Cytoscape.getCytoscapeObj().getViewThreshold() +" nodes, a View  will be automatically created." );
         } else { 
-          sb.append( "Your Network is Over 500 nodes, a View  will be not be created."+lineSep+"If you wish to view this Network use \"Create View\" from the \"Edit\" menu." );
+          sb.append( "Your Network is Over nodes "+Cytoscape.getCytoscapeObj().getViewThreshold() +", a View  will be not be created."+lineSep+"If you wish to view this Network use \"Create View\" from the \"Edit\" menu." );
         }
         JOptionPane.showMessageDialog( Cytoscape.getDesktop(),
                                       sb.toString(),
                                       "Load graph successful",
                                       JOptionPane.INFORMATION_MESSAGE);
 
-        if ( newNetwork.getNodeCount() < 500 ) {
+        if ( newNetwork.getNodeCount() < Cytoscape.getCytoscapeObj().getViewThreshold()  ) {
           Cytoscape.createNetworkView( newNetwork );
         }
       
