@@ -173,6 +173,11 @@ public class ValueDisplayer extends JButton {
 	    v.setBackground(c);
 	    v.inputObj = c;
 	}
+	else {
+	    v.setOpaque(false);
+	    v.setBackground(null);
+	    v.inputObj = null;
+	}
 	v.setInputColorListener();
 	return v;
     }
@@ -197,8 +202,8 @@ public class ValueDisplayer extends JButton {
     }
 
     /**
-     * Set the object displayed. Ensure that the class is the same.
-     * Fires an itemSelected event.
+     * Externally sets the object displayed. Ensure that the class is the same.
+     * Does not fire an itemSelected event.
      *
      * @throws ClassCastException if caller attempts to set an object
      *	   different from what was being represented.
@@ -219,7 +224,7 @@ public class ValueDisplayer extends JButton {
 	else { // anything else must be a Double, Integer, or String
 	    setText(o.toString());
 	}
-	fireItemSelected();
+	//fireItemSelected();
     }
 
     // internal class ColorListener
