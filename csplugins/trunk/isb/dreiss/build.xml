@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<!-- build.xml - Build file for Sample Cytoscape Plugin -->
+<project name="Cytoscape" default="cspluginsjar" basedir=".">
+
+        <!-- Ant build file for cytoscape jar with many plugins.
+             By David Reiss, dreiss@systemsbiology.org -->
+
+	<property name="cs.dir" value="${basedir}/../../../cytoscape"/>
+	<property name="csplugins.dir" value="${basedir}/../../"/>
+	<property name="lib.dir" value="${basedir}/lib"/>
+	<property name="build.dir" value="${basedir}/build"/>
+	<property name="build.classes" value="${basedir}/build/classes"/>
+
+	<property name="build.compiler" value="modern"/>
+        <property environment="env"/>
+	
+	<path id="classpath">	
+		<fileset dir="${cs.dir}"><include name="**/*.jar"/></fileset>
+		<fileset dir="${lib.dir}"><include name="**/*.jar"/></fileset>
+		<pathelement location="${build.classes}"/>
+		<pathelement location="${csplugins.dir}/../"/>
+	</path>
+	
+	<!-- Compile Cytoscape class files -->
+	<target name="build_cs">
+		<ant antfile="${cs.dir}/build.xml" inheritAll="false" target="compile"/>
+	</target>
+
+	<!-- Build Cytoscape Jar file  -->
+	<target name="build_csjar">
+		<ant antfile="${cs.dir}/build.xml" inheritAll="false" target="jar"/>
+	</target>
+
+	<target name="csplugins" depends="build_cs">
+	        <mkdir dir="${build.dir}"/>
+	        <mkdir dir="${build.classes}"/>
+                <antcall target="pluginant"><param name="pname" value="isb/dreiss/httpdata"/></antcall>
+	        <antcall target="pluginant"><param name="pname" value="isb/dreiss/sequence"/></antcall>
+                <antcall target="pluginant"><param name="pname" value="isb/dreiss/motifFinder"/></antcall>
+                <!--<antcall target="pluginant"><param name="pname" value="isb/dreiss/visualClustering"/></antcall>-->
+	        <antcall target="pluginant"><param name="pname" value="isb/dreiss/getInteractions"/></antcall>
+	        <antcall target="pluginant"><param name="pname" value="isb/dreiss/cytoTalk"/></antcall>
+                <!--<antcall target="pluginant"><param name="pname" value="isb/dreiss/homology"/></antcall>-->
+	</target>
+
+        <target name="cspluginsjar" depends="csplugins">
+                <taskdef resource="genjar.properties" classpath="${lib.dir}/GenJar.jar"/>
+                <delete file="${build.dir}/csplugins.jar"/>
+
+                <genjar jarfile="${build.dir}/csplugins.jar">
+                    <classpath refid="classpath"/>
+                    <class><fileset dir="${build.classes}">
+                         <include name="csplugins/**/*.class"/>
+                         <exclude name="csplugins/isb/dreiss/httpdata/xmlrpc/*.class"/>
+                         <include name="csplugins/isb/dreiss/httpdata/xmlrpc/MyXmlRpcServer.class"/>
+                         <include name="csplugins/isb/dreiss/httpdata/xmlrpc/XmlRpcUtils*.class"/>
+                    </fileset></class>
+                    <resource package="csplugins.isb.dreiss">
+                        <fileset dir="${basedir}/resources"><include name="*.properties"/></fileset>
+                    </resource>
+ 	            <class name="csplugins.isb.dreiss.httpdata.xmlrpc.MyXmlRpcServer"/>
+	            <class name="org.apache.xmlrpc.XmlRpcClientLite"/>
+	            <class name="uk.co.wilson.xml.MinML"/>
+	            <!--<class name="org.hsqldb.jdbcDriver"/>-->
+                    <classfilter>
+                         <exclude name="ptolemy."/>
+                         <exclude name="junit."/>
+                         <exclude name="Acme."/>
+                         <exclude name="ViolinStrings."/>
+                         <exclude name="cytoscape."/>
+                         <exclude name="y."/>
+                         <exclude name="org.hsqldb."/>
+                         <exclude name="giny."/>
+                    </classfilter>
+                </genjar>
+        </target>
+
+	<!-- Try to build a random plugin using ant -->
+	<target name="pluginant">
+                <echo message="BUILDING ${pname} plugin"/>
+                <ant antfile="${csplugins.dir}/${pname}/build.xml" 
+                                        inheritAll="false" target="jar"/>
+                <copy todir="${build.classes}">
+                         <fileset dir="${csplugins.dir}/${pname}/build/classes">
+                                 <include name="**/*.class"/>
+                         </fileset>
+                </copy>
+        </target>
+</project>
