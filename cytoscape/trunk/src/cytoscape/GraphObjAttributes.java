@@ -763,6 +763,9 @@ public Double getDoubleValue (String attributeName, String graphObjectName)
 public String getStringValue (String attributeName, String graphObjectName)
 {
   Object object = getValue (attributeName, graphObjectName); 
+  if (object == null)
+    return null;
+
   try {
     if (object.getClass() == Class.forName ("java.util.Vector")) {
       Vector tmp = (Vector) object;
