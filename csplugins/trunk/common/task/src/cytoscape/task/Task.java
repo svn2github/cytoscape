@@ -73,7 +73,8 @@ public interface Task extends Runnable, Haltable {
      * @throws IllegalThreadStateException Indicates that the TaskMonitor has
      *                                     already been set.
      */
-    public void setTaskMonitor(TaskMonitor monitor);
+    public void setTaskMonitor(TaskMonitor monitor)
+            throws IllegalThreadStateException;
 
     /**
      * Gets a Human Readable Title of this Task.
