@@ -11,7 +11,7 @@ AUXJAR_UNPACKED_DIR=/common/aux
 JARFILE=$(PWD)/cytoscape.jar
 AUXJARFILE=$(PWD)/aux.jar
 #YFILESDIR=/net/compbio/src/distributions/yfiles/jarUnpacked
-YFILESDIR=/common/yfiles1.4-unpacked
+YFILESDIR=/common/yfiles1.4.0.2-unpacked
 VISADDIR=/common/visad-unpacked
 
 default: help
