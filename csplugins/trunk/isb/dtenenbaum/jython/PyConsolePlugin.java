@@ -99,11 +99,8 @@ public class PyConsolePlugin extends CytoscapePlugin {
 			currentGroup.enumerate(listOfThreads);
 			for (int i = 0; i < numThreads; i++) {
 				if (null != listOfThreads[i]) { // in case the list has changed since we created it
-					System.out.println("thread name = " + listOfThreads[i].getName()+", alive? " +
-							listOfThreads[i].isAlive());
 					if ("jythonConsoleThread".equals(listOfThreads[i].getName())) {
 						if (listOfThreads[i].isAlive()) {
-							System.out.println("found a live console thread");
 							JFrame cFrame = (JFrame)singleton.get("ConsoleFrame");
 							cFrame.requestFocus();
 							return;
@@ -123,7 +120,6 @@ public class PyConsolePlugin extends CytoscapePlugin {
 			consoleFrame = new JFrame("Jython Console");
 			consoleFrame.addWindowListener(new java.awt.event.WindowAdapter() {
 			    public void windowClosing(java.awt.event.WindowEvent e) {
-			    	System.out.println("You clicked on the close box.");
 			    	ExitAction ea = new ExitAction(consoleFrame);
 			    	ea.actionPerformed(null);
 			    	

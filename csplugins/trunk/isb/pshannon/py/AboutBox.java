@@ -52,7 +52,7 @@ public class AboutBox extends JDialog {
       jlblAppName.setText("SPyConsole");
       jlblAuthorLabel.setText("Authors:");
       jlblAuthorName.setText("Tom Maxwell (maxwell@cbl.umces.edu)");
-      jlblAuthor2.setText("GUI enhancements by Jeff Davies (xaan@xaan.com)");
+      jlblAuthor2.setText("GUI enhancements by Jeff Davies (xaan@xaan.com) - Modified By dtenenbaum & pshannon @isb");
       jlblCopyrightLabel.setText("Copyright:");
       jtxtCopyright.setText("GNU - General Public License");
       jtxtCopyright.setBackground(Color.lightGray);
