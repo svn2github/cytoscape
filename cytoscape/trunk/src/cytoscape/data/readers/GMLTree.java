@@ -86,7 +86,7 @@ public class GMLTree{
 // 			//System.out.println(nodeColor.toString());
  			GMLNode nC = new GMLNode("\"#"+Integer.toHexString(256+nodeColor.getRed()).substring(1)
  						 +Integer.toHexString(256+nodeColor.getGreen()).substring(1)
- 						 +Integer.toHexString(256+nodeColor.getBlue())substring(1)+"\"");
+ 						 +Integer.toHexString(256+nodeColor.getBlue()).substring(1)+"\"");
  			graphics.addMapping("fill", nC);
 			switch(currentView.getShape()) {
 			case NodeView.RECTANGLE:
