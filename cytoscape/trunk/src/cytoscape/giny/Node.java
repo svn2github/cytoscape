@@ -47,6 +47,9 @@ public abstract class Node implements giny.model.Node {
     return rootGraphIndex;
   }
      
+  public int getIndex () {
+    return rootGraphIndex;
+  }
 
   public boolean setGraphPerspective ( GraphPerspective gp ) {
     this.network = ( CyNetwork )gp;

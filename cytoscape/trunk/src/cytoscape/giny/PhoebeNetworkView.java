@@ -80,7 +80,7 @@ public class PhoebeNetworkView
     
     GraphView[] graphViews = {this};
     flagAndSelectionHandler =
-    new FlagAndSelectionHandler( ( ( ColtCyNetwork )getNetwork()).getFlagger(), this);
+    new FlagAndSelectionHandler( ( ( CyNetwork )getNetwork()).getFlagger(), this);
     //TODO:
     //     Add NetworkView specific ToolBars
 

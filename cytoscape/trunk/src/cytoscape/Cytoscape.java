@@ -28,7 +28,6 @@ import cytoscape.data.readers.GraphReader;
 import cytoscape.data.readers.InteractionsReader;
 import cytoscape.data.servers.BioDataServer;
 import cytoscape.giny.CytoscapeRootGraph;
-import cytoscape.giny.CytoscapeColtRootGraph;
 import cytoscape.giny.PhoebeNetworkView;
 import cytoscape.util.CyNetworkNaming;
 import cytoscape.view.CyNetworkView;
@@ -149,7 +148,7 @@ public abstract class Cytoscape {
    */
   public static CytoscapeRootGraph getRootGraph () {
     if ( cytoscapeRootGraph == null ) 
-      cytoscapeRootGraph = new CytoscapeColtRootGraph();
+      cytoscapeRootGraph = new CytoscapeRootGraph();
     
     return cytoscapeRootGraph;
   }
@@ -595,7 +594,7 @@ public abstract class Cytoscape {
             nodes.add( node );
             getNodeNetworkData().removeNameMapping( node.getIdentifier() );
             getNodeNetworkData().removeObjectMapping( node );
-            getRootGraph().deleteNode( node );
+            getRootGraph().removeNode( node );
           }
         }
       
@@ -613,7 +612,7 @@ public abstract class Cytoscape {
             edges.add( edge );
             getEdgeNetworkData().removeNameMapping( edge.getIdentifier() );
             getEdgeNetworkData().removeObjectMapping( edge );
-            getRootGraph().deleteEdge( edge );
+            getRootGraph().removeEdge( edge );
           }
         }
 
@@ -729,10 +728,7 @@ public abstract class Cytoscape {
   public static CyNetwork createNetwork ( Collection nodes, 
                                           Collection edges,
                                           String title ) {
-    Node[] node_array = ( Node[] )nodes.toArray( new Node[]{} );
-    Edge[] edge_array = ( Edge[] )edges.toArray( new Edge[]{} );
-
-    CyNetwork network = getRootGraph().createNetwork( node_array, edge_array );
+    CyNetwork network = getRootGraph().createNetwork( nodes, edges );
     addNetwork( network, title  );
     return network;
   }
@@ -760,9 +756,7 @@ public abstract class Cytoscape {
                                            Collection edges,  
                                            String child_title, 
                                            CyNetwork parent ) {
-    Node[] node_array = ( Node[] )nodes.toArray( new Node[]{} );
-    Edge[] edge_array = ( Edge[] )edges.toArray( new Edge[]{} );
-    CyNetwork network = getRootGraph().createNetwork( node_array, edge_array );
+    CyNetwork network = getRootGraph().createNetwork( nodes, edges );
     addNetwork( network, child_title, parent );
     return network;
   }

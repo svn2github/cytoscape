@@ -28,6 +28,10 @@ public abstract class Edge implements giny.model.Edge {
     return rootGraphIndex;
   }
 
+  public int getIndex () {
+    return rootGraphIndex;
+  }
+
   public boolean isDirected () {
     return rootGraph.isEdgeDirected( rootGraphIndex );
   }
