@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- $Revision$
+     $Date$
+     $Author$
+  -->
+
+<annotation species="saccharomyces cerevisiae" curator="GO" type="Biological Process">
+
+  <term>
+     <entity> AAC1 </entity>
+     <id> 6854 </id>
+     <name> ATP/ADP exchange </name>
+  </term>
+
+  <term>
+     <entity> AAC3 </entity>
+     <id> 6854 </id>
+     <name> ATP/ADP exchange </name>
+  </term>
+
+  <term>
+     <entity> AAD10 </entity>
+     <id> 4 </id>
+     <name> biological_process unknown </name>
+  </term>
+
+  <term>
+     <entity> AAD14 </entity>
+     <id> 4 </id>
+     <name> biological_process unknown </name>
+  </term>
+
+  <term>
+     <entity> AAD15 </entity>
+     <id> 4 </id>
+     <name> biological_process unknown </name>
+  </term>
+
+  <term>
+     <entity> AAD3 </entity>
+     <id> 4 </id>
+     <name> biological_process unknown </name>
+  </term>
+
+  <term>
+     <entity> AAD4 </entity>
+     <id> 4 </id>
+     <name> biological_process unknown </name>
+  </term>
+
+  <term>
+     <entity> AAD6 </entity>
+     <id> 4 </id>
+     <name> biological_process unknown </name>
+  </term>
+
+  <term>
+     <entity> AAH1 </entity>
+     <id> 6146 </id>
+     <name> adenine catabolism </name>
+  </term>
+
+  <term>
+     <entity> AAP1 </entity>
+     <id> 1598 </id>
+     <name> 6   ATP synthesis coupled proton transport </name>
+  </term>
+
+  <term>
+     <entity> AAP1' </entity>
+     <id> 4 </id>
+     <name> biological_process unknown </name>
+  </term>
+
+  <term>
+     <entity> AAR2 </entity>
+     <id> 6371 </id>
+     <name> mRNA splicing </name>
+  </term>
+
+  <term>
+     <entity> AAT1 </entity>
+     <id> 6533 </id>
+     <name> aspartate catabolism </name>
+  </term>
+
+  <term>
+     <entity> AAT2 </entity>
+     <id> 6533 </id>
+     <name> aspartate catabolism </name>
+  </term>
+
+  <term>
+     <entity> AAT2 </entity>
+     <id> 6536 </id>
+     <name> glutamate metabolism </name>
+  </term>
+
+  <term>
+     <entity> AAT2 </entity>
+     <id> 6807 </id>
+     <name> nitrogen metabolism </name>
+  </term>
+
+  <term>
+     <entity> ABC1 </entity>
+     <id> 6122 </id>
+     <name> complex III (ubiquinone to cytochrome c) </name>
+  </term>
+
+  <term>
+     <entity> ABD1 </entity>
+     <id> 6370 </id>
+     <name> mRNA capping </name>
+  </term>
+
+  <term>
+     <entity> ABF1 </entity>
+     <id> 6350 </id>
+     <name> transcription </name>
+  </term>
+
+  <term>
+     <entity> ABF2 </entity>
+     <id> 2 </id>
+     <name> mitochondrial genome maintenance </name>
+  </term>
+
+</annotation>
