@@ -13,11 +13,12 @@ public class GOBRegistry
   /**
    * @param type one of the ATTR_TYPE_* constants.
    * @return an identifier for this newly created attribute or -1 if
-   *   the specified attribute type is not recognized as a valid type.
+   *   the specified attribute type is not recognized as a valid type;
+   *   attribute IDs are always non-negative.
    */
   public int defineAttribute(int type)
   {
-    return false;
+    return -1;
   }
 
   /**
@@ -35,7 +36,7 @@ public class GOBRegistry
    *   attribute the specified attribute is, or -1 if no attribute with
    *   specified attribute ID exists.
    */
-  public int getAttributeType(int attrID)
+  public int attributeType(int attrID)
   {
     return -1;
   }
@@ -45,7 +46,7 @@ public class GOBRegistry
    *   entry in the returned enumeration is a unique attribute ID; this method
    *   never returns null.
    */
-  public IntEnumerator getAttributes()
+  public IntEnumerator attributes()
   {
     return null;
   }
@@ -58,7 +59,7 @@ public class GOBRegistry
   {
   }
 
-  public void assignDoubleAttribute(int objID, int attrID, boolean attrValue)
+  public void assignDoubleAttribute(int objID, int attrID, double attrValue)
   {
   }
 
@@ -70,28 +71,78 @@ public class GOBRegistry
   {
   }
 
+  /**
+   * You are strongly encouraged to not use this method; use one of the
+   * access methods that return a specific type instead.
+   */
+  public Object attributeValue(int objID, int attrID)
+  {
+    return null;
+  }
+
+  // We will have to throw a RuntimeException subclass if there's a type
+  // mismatch or if specified obj attr map does not exist.
+  public boolean booleanAttributeValue(int objID, int attrID)
+  {
+    throw new RuntimeException();
+  }
+
+  public double doubleAttributeValue(int objID, int attrID)
+  {
+    throw new RuntimeException();
+  }
+
+  public long longAttributeValue(int objID, int attrID)
+  {
+    throw new RuntimeException();
+  }
+
+  public String stringAttributeValue(int objID, int attrID)
+  {
+    throw new RuntimeException();
+  }
+
+  /**
+   * @return an enumeration of attributes that currently have assigned
+   *   values to the specified objects; every entry in the returned enumeration
+   *   is an attribute identifier; this method null if and only if this
+   *   registry knows nothing of the specified object (for example if no
+   *   attributes were ever specified for this object or if all attributes
+   *   were deleted for this [once existing] object); note that an object
+   *   will cease to exist in this registry if it has no attributes assigned
+   *   to it.
+   */
   public IntEnumerator assignedAttributes(int objID)
   {
   }
 
+  /**
+   * @return an enumeration of all objects that have at least one
+   *   attribute value assigned; each element of the returned enumeration
+   *   is an object identifier; this method never returns null.
+   */
   public IntEnumerator objects()
   {
   }
 
   /**
    * Forgets that any value for the specified attribute was ever assigned to
-   * the specified object.
+   * the specified object.  Note that an object will cease to exist in this
+   * registry if it has no attributes assigned to it.
    * @return true if and only if a value for the specified attribute is
    *   assigned to the specified object at the time this method is called.
    */
-  public boolean forgetAttribute(int objID, int attrID)
+  public boolean forgetAssignedAttribute(int objID, int attrID)
   {
     return false;
   }
 
   /**
    * Forgets all attribute values that have been assigned to the specified
-   * object ID.
+   * object.<p>
+   * NOTE: This method is superfluous because we can implement it by
+   * getting all assigned attributes for specified object, then deleteing
+   * those attributes one by one.
    * @return true if and only if the specified object ID is currently
    *   registered as having at least one attribute value assigned to it.
    */
