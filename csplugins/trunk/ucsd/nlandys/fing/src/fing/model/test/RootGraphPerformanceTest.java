@@ -39,6 +39,11 @@ public final class RootGraphPerformanceTest
     long millisEnd3 = System.currentTimeMillis();
     System.out.println("node neighbors test took " +
                        (millisEnd3 - millisBegin3) + " milliseconds");
+    long millisBegin4 = System.currentTimeMillis();
+    testConnectingWeb(root, nodes);
+    long millisEnd4 = System.currentTimeMillis();
+    System.out.println("connecting web test took " +
+                       (millisEnd4 - millisBegin4) + " milliseconds");
   }
 
   private static final RootGraph getRootGraph(String[] mainArgs)
@@ -152,6 +157,20 @@ public final class RootGraphPerformanceTest
   {
     for (int j = 1; j < nodes.length; j++) {
       root.neighborsList(root.getNode(nodes[j])); }
+  }
+
+  public static final void testConnectingWeb(RootGraph root, int[] nodes)
+  {
+    final int[] nodesWeb = new int[nodes.length / 2];
+    System.arraycopy(nodes, 0, nodesWeb, 0, nodesWeb.length);
+    final int[] temp = new int[nodesWeb.length];
+    for (int i = 0; i < nodesWeb.length; i++) {
+      System.arraycopy(nodesWeb, 0, temp, 0, nodesWeb.length);
+      root.getConnectingEdgeIndicesArray(nodesWeb);
+      for (int j = 0; j < nodesWeb.length; j++)
+        if (nodesWeb[j] != temp[j])
+          throw new IllegalStateException("array was modified");
+      nodesWeb[i] = nodes[nodesWeb.length + i]; }
   }
 
 }
