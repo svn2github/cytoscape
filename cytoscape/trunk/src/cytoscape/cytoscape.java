@@ -117,7 +117,7 @@ public cytoscape (String [] args) throws Exception
     splashScreen.advance(25);
   if (geometryFilename != null) {
     logger.info ("reading " + geometryFilename + "...");
-    graph = FileReadingAbstractions.loadGMLBasic (geometryFilename, edgeAttributes);
+    graph = FileReadingAbstractions.loadGMLBasic (geometryFilename, edgeAttributes,config.getCanonicalize());
     logger.info ("  done");
     title = geometryFilename;
     requestFreshLayout = false;
@@ -125,8 +125,15 @@ public cytoscape (String [] args) throws Exception
     }
   else if (interactionsFilename != null) {
     logger.info ("reading " + interactionsFilename + "...");
-    graph = FileReadingAbstractions.loadIntrBasic (bioDataServer, defaultSpecies, interactionsFilename,
-                                                  edgeAttributes);
+    //TODO: Remove performance
+    long time1 = System.currentTimeMillis();
+    System.out.println("Calling FileReadingAbstraction.loadIntrBasic...");
+    graph = FileReadingAbstractions.loadIntrBasic (bioDataServer, 
+                                                   defaultSpecies, 
+                                                   interactionsFilename,
+                                                   edgeAttributes,
+                                                   config.getCanonicalize());
+    System.out.println("done calling FileReadingAbstraction.loadIntrBasic " +  (System.currentTimeMillis() - time1));
     logger.info ("  done");
     title = interactionsFilename;
     splashScreen.advance(90);
