@@ -88,8 +88,8 @@ public HierarchicalLayoutDialog (Frame parentFrame) {
   mainPanel.add(layoutList);
 
   // checkboxes
-  usePortsBox = new JCheckBox("Use Ports");
-  mainPanel.add(usePortsBox);
+  //usePortsBox = new JCheckBox("Use Ports");
+  //mainPanel.add(usePortsBox);
   removeFalseCrossingsBox = new JCheckBox("Remove False Crossings");
   mainPanel.add(removeFalseCrossingsBox);
 
@@ -153,7 +153,7 @@ public class ApplyAction extends AbstractAction {
 	item = (String) layoutList.getSelectedItem();
 	layouter.setLayoutStyle(( (Byte) layoutHash.get(item)).byteValue());
 	layouter.setRemoveFalseCrossings( removeFalseCrossingsBox.isSelected() );
-	layouter.setUsePorts( usePortsBox.isSelected() );
+	// layouter.setUsePorts( usePortsBox.isSelected() );
 	HierarchicalLayoutDialog.this.dispose ();
     }
 } // ApplyAction

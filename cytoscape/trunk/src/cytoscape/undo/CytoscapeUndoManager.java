@@ -123,18 +123,19 @@ public class CytoscapeUndoManager
 		
 		break;
 		
+            
+		/*
 	    case GraphEvent.EDGE_REVERSAL:
 		saveState(new EdgeReversalUndoItem(graph, (Edge)e.getData()));
-		/*
 		ui = new EdgeReversalUndoItem(graph, (Edge)e.getData());
 
 		if (itemList != null)
 		    itemList.add(ui);
 		else
 		    saveState(ui);
-		*/
 		
 		break;
+		*/
 		
 	    case GraphEvent.NODE_CREATION:
 	    case GraphEvent.NODE_REINSERTION:

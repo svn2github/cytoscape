@@ -71,6 +71,7 @@ public void loadAnnotationFiles (String [] annotationFilenames) throws Exception
 {
   for (int i=0; i < annotationFilenames.length; i++) {
     File xmlFile = new File (annotationFilenames [i]);
+    System.out.println ("--- loading annotation: " + xmlFile.getPath ());
     AnnotationXmlReader reader = new AnnotationXmlReader (xmlFile);
     server.addAnnotation (reader.getAnnotation ());
     }
@@ -80,6 +81,7 @@ public void loadAnnotationFiles (String [] annotationFilenames) throws Exception
 public void loadThesaurusFiles (String [] thesaurusFilenames) throws Exception
 {
   for (int i=0; i < thesaurusFilenames.length; i++) {
+    System.out.println ("--- loading synonyms: " + thesaurusFilenames [i]);
     ThesaurusFlatFileReader reader = new ThesaurusFlatFileReader (thesaurusFilenames [i]);
     Thesaurus thesaurus = reader.getThesaurus (); 
     server.addThesaurus (thesaurus.getSpecies (), thesaurus);

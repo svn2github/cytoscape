@@ -105,6 +105,7 @@ public cytoscape (String [] args) throws Exception
   FileReadingAbstractions.initAttribs (bioDataServer, defaultSpecies, config, graph, 
                                        nodeAttributes, edgeAttributes);
 
+
   cytoscapeWindow = new CytoscapeWindow (this, config, logger,
                                          graph, expressionData, bioDataServer,
                                          nodeAttributes, edgeAttributes, 

@@ -87,13 +87,15 @@ public JPopupMenu getSelectionPopup (double x, double y)
     return null;
     }
     
-  if (selectedNodes.length > 0)
+  if (selectedNodes.length > 0) {
     nodeBrowser = new TabbedBrowser (selectedNodes, cytoscapeWindow.getNodeAttributes (),
                                      attributeCategoriesToIgnore, webBrowserScript);
+    }
 
-  if (selectedEdges.length > 0)
+  if (selectedEdges.length > 0) {
     edgeBrowser = new TabbedBrowser (selectedEdges, cytoscapeWindow.getEdgeAttributes (),
                                      attributeCategoriesToIgnore, webBrowserScript);
+    }
 
    return null;
 

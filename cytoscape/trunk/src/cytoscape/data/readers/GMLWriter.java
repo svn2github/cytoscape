@@ -37,7 +37,15 @@ public class GMLWriter {
 	    graph.setLabelText(edge, type);
 	}
 
-	ioh.write (graph,filename);
+        try {
+          ioh.write (graph,filename);
+          }
+        catch (java.io.IOException e) {
+          System.err.println ("error reading '" + filename + "' -- " + e.getMessage ());
+          e.printStackTrace ();
+          return;
+          }
+
 
 	// Erase the edge labels.
 	for(EdgeCursor ec = graph.edges(); ec.ok(); ec.next()) {

@@ -31,7 +31,7 @@ import y.layout.random.RandomLayouter;
 import y.io.YGFIOHandler;
 import y.io.GMLIOHandler;
 
-import y.algo.GraphHider;
+import y.util.GraphHider;
 
  // printing
 import java.awt.print.PageFormat;
@@ -195,6 +195,8 @@ public CytoscapeWindow (cytoscape parentApp,
 
   loadPlugins ();
   setPopupMode (new NodeBrowsingMode ());
+  // System.out.println ("----------------- edgeAttributes\n" + edgeAttributes);
+  
 
 } // ctor
 //------------------------------------------------------------------------------
@@ -392,8 +394,9 @@ public void selectionStateChanged(Graph2DSelectionEvent e) {
                          0);
     }
 }
-
-
+//------------------------------------------------------------------------------
+public void onGraph2DSelectionEvent(y.view.Graph2DSelectionEvent e) {
+}
 //------------------------------------------------------------------------------
 public JFrame getMainFrame ()
 {
@@ -689,7 +692,6 @@ public void setNodeAttributes(GraphObjAttributes newValue, boolean skipAddNameMa
     Node [] nodes = graphView.getGraph2D().getNodeArray();
     for (int i=0; i < nodes.length; i++) {
       String canonicalName = nodes [i].toString ();
-      System.out.println ("-- adding name mapping for node " + nodes [i] + "   canonical: " + canonicalName);
       nodeAttributes.addNameMapping (canonicalName, nodes [i]);
       }
     }
@@ -718,9 +720,10 @@ public void displayCommonNodeNames()
     // exist before returning?
     // -iliana 10/21/2002
     
+    
     if (bioDataServer == null){ 
-	System.out.println("\nCytoscapeWindow: the bioDataServer is down");
-	System.out.flush();
+	//System.out.println("\nCytoscapeWindow: the bioDataServer is down");
+	//System.out.flush();
 	return;
     }
 
@@ -915,41 +918,38 @@ protected JMenuBar createMenuBar ()
   deleteSelectionMenuItem = editMenu.add (new DeleteSelectedAction ());
   deleteSelectionMenuItem.setEnabled (false);
 
-  JMenu selectMenu = new JMenu ("Select");
-  menuBar.add (selectMenu);
-  mi = selectMenu.add (new EdgeManipulationAction ());
-  JMenu viewMenu = new JMenu ("View");
-  menuBar.add (viewMenu);
+  JMenu selectMenu = new JMenu ("Select");             menuBar.add    (selectMenu);
+  JMenu selectNodesSubMenu = new JMenu("Nodes");       selectMenu.add (selectNodesSubMenu);
+  JMenu selectEdgesSubMenu = new JMenu("Edges");       selectMenu.add (selectEdgesSubMenu);
+  JMenu displayNWSubMenu = new JMenu("To New Window"); selectMenu.add (displayNWSubMenu);
 
-  JMenu displayNWSubMenu = new JMenu("New Window");
-  viewMenu.add(displayNWSubMenu);
+
+  // mi = selectEdgesSubMenu.add (new EdgeTypeDialogAction ());
+
+  mi = selectNodesSubMenu.add(new InvertSelectedNodesAction());
+  mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_V, ActionEvent.CTRL_MASK));
+  mi = selectNodesSubMenu.add(new HideSelectedNodesAction());
+  mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_H, ActionEvent.CTRL_MASK));
+
+  //mi = selectNodesSubMenu.add (new DisplayAttributesOfSelectedNodesAction ());
+  //mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_D, ActionEvent.CTRL_MASK));
+  mi = selectEdgesSubMenu.add(new InvertSelectedEdgesAction());
+  mi = selectEdgesSubMenu.add(new HideSelectedEdgesAction());
+  mi = selectEdgesSubMenu.add (new EdgeManipulationAction ());
+
+  mi = selectNodesSubMenu.add (new SelectFirstNeighborsAction ());
+  mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_F, ActionEvent.CTRL_MASK));
+
+  selectNodesSubMenu.add (new AlphabeticalSelectionAction ());
+  selectNodesSubMenu.add (new ListFromFileSelectionAction ());
+  selectNodesSubMenu.add (new MenuFilterAction ());
+
   mi = displayNWSubMenu.add(new NewWindowSelectedNodesOnlyAction());
   mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_N, ActionEvent.CTRL_MASK));
   mi = displayNWSubMenu.add(new NewWindowSelectedNodesEdgesAction());
   mi = displayNWSubMenu.add (new CloneGraphInNewWindowAction ());
   mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_K, ActionEvent.CTRL_MASK));
 
-  JMenu viewNodeSubMenu = new JMenu("Node Selection");
-  viewMenu.add(viewNodeSubMenu);
-  mi = viewNodeSubMenu.add(new InvertSelectedNodesAction());
-  mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_V, ActionEvent.CTRL_MASK));
-  mi = viewNodeSubMenu.add(new HideSelectedNodesAction());
-  mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_H, ActionEvent.CTRL_MASK));
-
-  mi = viewNodeSubMenu.add (new DisplayAttributesOfSelectedNodesAction ());
-  mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_D, ActionEvent.CTRL_MASK));
-  JMenu viewEdgeSubMenu = new JMenu("Edge Selection");
-  viewMenu.add(viewEdgeSubMenu);
-  viewEdgeSubMenu.add(new InvertSelectedEdgesAction());
-  viewEdgeSubMenu.add(new HideSelectedEdgesAction());
-  selectSubmenu = new JMenu("Select");
-  viewMenu.add(selectSubmenu);
-  selectSubmenu.add (new EdgeTypeDialogAction ());
-  mi = selectSubmenu.add (new SelectFirstNeighborsAction ());
-  mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_F, ActionEvent.CTRL_MASK));
-  selectSubmenu.add (new AlphabeticalSelectionAction ());
-  selectSubmenu.add (new ListFromFileSelectionAction ());
-  selectSubmenu.add (new MenuFilterAction ());
 
   ButtonGroup layoutGroup = new ButtonGroup ();
   layoutMenu = new JMenu ("Layout");
@@ -1000,7 +1000,7 @@ protected JMenuBar createMenuBar ()
   vizMenu = new JMenu ("Visualization"); // always create the viz menu
   menuBar.add (vizMenu);
   vizMenu.add (new SetVisualPropertiesAction ());
-  vizMenu.add( new ColorNodesFromFile());
+  // vizMenu.add( new ColorNodesFromFile());
   //  vizMenu.add (new PrintPropsAction ());
 
   opsMenu = new JMenu ("PlugIns"); // always create the plugins menu
@@ -1355,10 +1355,6 @@ protected String findCanonicalName(String key) {
 
 protected void setNodeSelected (Node node, boolean visible)
 {
-    if(visible){
-	System.out.println("setNodeSelected " + node);
-	System.out.flush();
-    }
     NodeRealizer r = graphView.getGraph2D().getRealizer(node);
     r.setSelected (visible);
     
@@ -1583,7 +1579,7 @@ protected class SetVisualPropertiesAction extends AbstractAction   {
 //------------------------------------------------------------------------------
 /*
 protected class HideEdgesAction extends AbstractAction   {
-  HideEdgesAction () { super ("Hide Edges"); }
+  HideEdgesAction () { super ("Hide selected edges"); }
 
   public void actionPerformed (ActionEvent e) {
     graphHider.hideEdges ();
@@ -1613,14 +1609,14 @@ protected void hideSelectedEdges() {
     redrawGraph ();
 }
 protected class HideSelectedNodesAction extends AbstractAction   {
-  HideSelectedNodesAction () { super ("Hide"); }
+  HideSelectedNodesAction () { super ("Hide selection"); }
 
   public void actionPerformed (ActionEvent e) {
       hideSelectedNodes();
   }
 }
 protected class InvertSelectedNodesAction extends AbstractAction {
-    InvertSelectedNodesAction () { super ("Invert"); }
+    InvertSelectedNodesAction () { super ("Invert selection"); }
 
     public void actionPerformed (ActionEvent e) {
         Graph2D g = graphView.getGraph2D();
@@ -1634,14 +1630,14 @@ protected class InvertSelectedNodesAction extends AbstractAction {
     }
 }
 protected class HideSelectedEdgesAction extends AbstractAction   {
-  HideSelectedEdgesAction () { super ("Hide"); }
+  HideSelectedEdgesAction () { super ("Hide selection"); }
 
   public void actionPerformed (ActionEvent e) {
       hideSelectedEdges();
   }
 }
 protected class InvertSelectedEdgesAction extends AbstractAction {
-    InvertSelectedEdgesAction () { super ("Invert"); }
+    InvertSelectedEdgesAction () { super ("Invert selection"); }
 
     public void actionPerformed (ActionEvent e) {
         Graph2D g = graphView.getGraph2D();
@@ -1883,7 +1879,7 @@ protected class ReduceEquivalentNodesAction extends AbstractAction  {
 
 //-----------------------------------------------------------------------------
 public class AlphabeticalSelectionAction extends AbstractAction   {
-  AlphabeticalSelectionAction () { super ("Nodes By Name"); }
+  AlphabeticalSelectionAction () { super ("By Name..."); }
 
   public void actionPerformed (ActionEvent e) {
     String answer = 
@@ -1895,7 +1891,7 @@ public class AlphabeticalSelectionAction extends AbstractAction   {
 }
 //------------------------------------------------------------------------------
 protected class ListFromFileSelectionAction extends AbstractAction   {
-  ListFromFileSelectionAction () { super ("Nodes From File"); }
+  ListFromFileSelectionAction () { super ("From File..."); }
 
     public void actionPerformed (ActionEvent e) {
         boolean cancelSelectionAction = !useSelectionFile();
@@ -2141,7 +2137,7 @@ protected class SelectFirstNeighborsAction extends AbstractAction {
  * selected nodes are printed to stdout.
  */
 protected class DisplayAttributesOfSelectedNodesAction extends AbstractAction {
-  DisplayAttributesOfSelectedNodesAction () { super ("Display attributes"); }
+  DisplayAttributesOfSelectedNodesAction () { super ("Display attributes of selected nodes"); }
   public void actionPerformed (ActionEvent e) {
     Graph2D g = graphView.getGraph2D ();
     NodeCursor nc = g.selectedNodes (); 
@@ -2809,7 +2805,7 @@ protected class MenuFilterAction extends MainFilterDialogAction  {
 //---------------------------------------------------------------------------------------------------
 protected class EdgeManipulationAction extends AbstractAction {
   EdgeManipulationAction () {
-    super ("Select or Hide Edges ");
+    super ("Select or hide by attibutes...");
     }
   public void actionPerformed (ActionEvent e) {
     String [] edgeAttributeNames = edgeAttributes.getAttributeNames ();
@@ -2851,7 +2847,12 @@ protected class EdgeTypeDialogAction extends AbstractAction  {
 }
 
 protected String[] getInteractionTypes() {
-    String[] interactionTypes;
+
+    if (edgeAttributes == null)
+      return new String [0];
+
+    String[] interactionTypes = edgeAttributes.getUniqueStringValues ("interaction");
+    /******************************
     // figure out the interaction types dynamically
     DiscreteMapper typesColor = (DiscreteMapper) vizMapper.getValueMapper(VizMapperCategories.EDGE_COLOR);
     Map typeMap = new HashMap(typesColor.getValueMap());
@@ -2862,6 +2863,7 @@ protected String[] getInteractionTypes() {
         String type = (String)iter.next();
         interactionTypes[i] = type;
     }
+    ******************************/
     return interactionTypes;
 }
 

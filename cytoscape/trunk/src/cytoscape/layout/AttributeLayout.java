@@ -17,7 +17,7 @@ import cytoscape.undo.*;
 
 import y.base.*;
 import y.view.*;
-import y.algo.GraphHider;
+import y.util.GraphHider;
 
 
 import java.util.*;

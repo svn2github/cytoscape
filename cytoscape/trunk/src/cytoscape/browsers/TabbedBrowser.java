@@ -129,10 +129,10 @@ protected int detectClassOfBrowsedObjects (Object [] graphObjects)
 {
   String graphObjectClassName = graphObjects [0].getClass().getName();
 
-  if (graphObjectClassName.indexOf ("Node") >= 0)
+  if (graphObjectClassName.indexOf ("y.view.a") >= 0)
    return BROWSING_NODES;
 
-  else if (graphObjectClassName.indexOf ("Edge") >= 0)
+  else if (graphObjectClassName.indexOf ("y.view.f") >= 0)
     return BROWSING_EDGES;
 
   else 

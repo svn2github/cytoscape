@@ -19,7 +19,8 @@ OBJS = BioDataServerInterface.class \
        loadThesaurus.class \
        status.class \
        clear.class \
-       getCommonName.class
+       getCommonName.class \
+       getCanonicalName.class
 
 default: objs rmic
 

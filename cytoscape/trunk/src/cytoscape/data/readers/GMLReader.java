@@ -28,7 +28,14 @@ public void read ()
 {
   GMLIOHandler ioh  = new GMLIOHandler ();
   graph = new Graph2D ();
-  ioh.read (graph, filename);
+  try {
+    ioh.read (graph, filename);
+    }
+  catch (java.io.IOException e) {
+    System.err.println ("error reading '" + filename + "' -- " + e.getMessage ());
+    e.printStackTrace ();
+    return;
+    }
 
   // set the interaction types recorded in the labels
   // erase the labels serving this purpose

@@ -75,7 +75,7 @@ public class UndoableGraphHider {
 
 
 	// save node and edges
-	nodes.add(v);
+ 	nodes.add(v);
 	EdgeList list = new EdgeList();
 	// to avoid counting loops twice, only count loop as out edge
 	for (EdgeCursor ec = v.inEdges(); ec.ok(); ec.next()) {

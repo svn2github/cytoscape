@@ -2,7 +2,7 @@ package cytoscape.layout;
 
 import y.base.*;
 import y.view.*;
-import y.algo.*;
+import y.util.*;
 
 import cytoscape.*;
 import cytoscape.data.*;

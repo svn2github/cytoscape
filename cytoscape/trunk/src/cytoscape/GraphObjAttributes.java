@@ -253,6 +253,7 @@ public Object clone ()
     attributesClone.canonicalToGraphObject = (HashMap) canonicalToGraphObject.clone();
     attributesClone.countIdMap  = (HashMap) countIdMap.clone ();
     attributesClone.categoryMap = (HashMap) categoryMap.clone ();
+    attributesClone.classMap = (HashMap) classMap.clone ();
     }
   catch (Exception e) {
     System.err.println (" --- error in GraphObjAttributes.clone");
@@ -328,6 +329,16 @@ public void clearObjectMap()
 public HashMap getNameMap ()
 {
   return nameFinder;
+}
+//--------------------------------------------------------------------------------
+public HashMap getClassMap ()
+{
+  return classMap;
+}
+//--------------------------------------------------------------------------------
+public void addClassMap (HashMap newClassMap)
+{
+  classMap.putAll (newClassMap);
 }
 //--------------------------------------------------------------------------------
 public HashMap getObjectMap()
@@ -422,9 +433,6 @@ protected void initializeAttributeAsRequired (String attributeName,
                                               String graphObjectName, 
                                               Object obj)
 {
-  //System.out.println ("---------- attributeName:   " + attributeName);
-  //System.out.println ("---------- graphObjectName: " + graphObjectName);
-  //System.out.println ("---------- obj:             " + obj);
 
   if (!map.containsKey (attributeName)) {
     // System.out.println (" --- map does not contain key " + attributeName);
@@ -695,6 +703,9 @@ public Object [] getUniqueValues (String attributeName)
 public String [] getUniqueStringValues (String attributeName)
 {
   Object [] objs = getUniqueValues (attributeName);
+  if (objs == null)
+    return new String [0];
+
   String [] result = new String [objs.length];
   for (int i=0; i < objs.length; i++) 
     result [i] = (String) objs [i];

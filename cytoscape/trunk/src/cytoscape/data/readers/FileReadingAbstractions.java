@@ -39,6 +39,7 @@ public static Graph2D loadBasic (GraphReader reader, GraphObjAttributes edgeAttr
   GraphObjAttributes newEdgeAttributes = reader.getEdgeAttributes ();
   edgeAttributes.add (newEdgeAttributes);
   edgeAttributes.addNameMap (newEdgeAttributes.getNameMap ());
+  edgeAttributes.addClassMap (newEdgeAttributes.getClassMap ());
   return reader.getGraph();
 
 }

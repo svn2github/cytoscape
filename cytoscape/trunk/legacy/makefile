@@ -80,6 +80,7 @@ test: objs
 clean:
 	- rm *.class core
 	- (cd unitTests; make clean)
+	- (cd undo; make clean)
 	- (cd data; make clean)
 	- (cd data/unitTests; make clean)
 	- (cd data/readers; make clean)
