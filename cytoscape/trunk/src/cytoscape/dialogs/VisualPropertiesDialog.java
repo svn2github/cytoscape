@@ -29,10 +29,10 @@ import cytoscape.dialogs.GeneralColorDialogListener;
 //--------------------------------------------------------------------------------------
 public class VisualPropertiesDialog extends JDialog {
 
-    ShapePopupButton shapeDefault;
-    IntegerEntryField sizeDefault;
-    LineTypePopupButton lineTypeDefault;
+    IconPopupButton shapeDefault;
+    IconPopupButton lineTypeDefault;
     IconPopupButton arrowDefault;
+    IntegerEntryField sizeDefault;
     AttributeMapper aMapper;
     MutableColor nColor;
     MutableColor bColor;
@@ -108,21 +108,13 @@ public VisualPropertiesDialog (Frame parentFrame,
   gridbag.setConstraints(labelTextPanel,c);
   mainPanel.add(labelTextPanel);
   
-  shapeDefault = 
-      new ShapePopupButton
-	  ("Default Node Shape",
-	   ((Byte)aMapper.getDefaultValue(VizMapperCategories.NODE_SHAPE)).byteValue(),
-	   this);
+  initializeShapeDefault();
   c.gridx=0;
   c.gridy=5;
   gridbag.setConstraints(shapeDefault,c);
   mainPanel.add(shapeDefault);
 
-  lineTypeDefault = 
-      new LineTypePopupButton
-	  ("Default Line Type",
-	   (LineType)aMapper.getDefaultValue(VizMapperCategories.EDGE_LINETYPE),
-	   this);
+  initializeLineTypeDefault();
   c.gridx=0;
   c.gridy=6;
   gridbag.setConstraints(lineTypeDefault,c);
@@ -172,8 +164,8 @@ public class ApplyAction extends AbstractAction {
 
       Object o1 = aMapper.setDefaultValue(VizMapperCategories.NODE_FILL_COLOR, nColor.getColor());
       Object o2 = aMapper.setDefaultValue(VizMapperCategories.BG_COLOR, bgColor.getColor());
-      Object o3 = aMapper.setDefaultValue(VizMapperCategories.NODE_SHAPE, shapeDefault.getShapeByte());
-      Object o4 = aMapper.setDefaultValue(VizMapperCategories.EDGE_LINETYPE, lineTypeDefault.getLineType());
+      Object o3 = aMapper.setDefaultValue(VizMapperCategories.NODE_SHAPE, (Byte)shapeDefault.getIconObject());
+      Object o4 = aMapper.setDefaultValue(VizMapperCategories.EDGE_LINETYPE, (LineType)lineTypeDefault.getIconObject());
       Object o5 = aMapper.setDefaultValue(VizMapperCategories.NODE_HEIGHT, sizeDefault.getInteger());
       Object o6 = aMapper.setDefaultValue(VizMapperCategories.NODE_WIDTH, sizeDefault.getInteger());
       Object o7 = aMapper.setDefaultValue(VizMapperCategories.NODE_BORDER_COLOR, bColor.getColor());
@@ -229,10 +221,29 @@ public class CancelAction extends AbstractAction {
 	}
     }
 
+    /**
+     *  For each icon-list of attributes, there is an IconPopupButton,
+     *  initialized through a function called
+     *     initialize<Whatever>Default()
+     *  (several instances of this sort of function follow this comment).
+     *
+     *  Construction of an IconPopupButton requires a title for the button,
+     *  a name of the attribute in question, two hashes for going from
+     *  Object to String and back again, a list of ImageIcon's, a current
+     *  Object that is selected, and a reference to this, the parent dialog.
+     *
+     *  Each different icon-list of attributes also depends on a few
+     *  functions from MiscDialog.java.  These functions create the
+     *  HashMaps and the list of ImageIcons.
+     *
+     *  Finally, the value in each of these IconPopupButton's is taken and
+     *  used during ApplyAction's actionPerformed(), above.
+     *
+     */
 
     private void initializeArrowDefault() {
 	int ns = ((Integer)aMapper.getDefaultValue(VizMapperCategories.NODE_HEIGHT)).intValue();
-	Object currentArrow =  aMapper.getDefaultValue(VizMapperCategories.EDGE_SOURCE_DECORATION);
+	Object currentArrow =  aMapper.getDefaultValue(VizMapperCategories.EDGE_TARGET_DECORATION);
 	HashMap arrowToString = MiscDialog.getArrowToStringHashMap(ns);
 	HashMap stringToArrow = MiscDialog.getStringToArrowHashMap(ns);
 	ImageIcon [] icons = MiscDialog.getArrowIcons();
@@ -243,6 +254,38 @@ public class CancelAction extends AbstractAction {
 				 stringToArrow,
 				 icons,
 				 currentArrow,
+				 this);
+    }
+
+
+    private void initializeShapeDefault() {
+	Object currentShape =  aMapper.getDefaultValue(VizMapperCategories.NODE_SHAPE);
+	HashMap shapeToString = MiscDialog.getShapeByteToStringHashMap();
+	HashMap stringToShape = MiscDialog.getStringToShapeByteHashMap();
+	ImageIcon [] icons = MiscDialog.getShapeIcons();
+	shapeDefault =
+	    new IconPopupButton ("Default Node Shape",
+				 "Node Shape",
+				 shapeToString,
+				 stringToShape,
+				 icons,
+				 currentShape,
+				 this);
+    }
+
+
+    private void initializeLineTypeDefault() {
+	Object currentLineType =  aMapper.getDefaultValue(VizMapperCategories.EDGE_LINETYPE);
+	HashMap lineTypeToString = MiscDialog.getLineTypeToStringHashMap();
+	HashMap stringToLineType = MiscDialog.getStringToLineTypeHashMap();
+	ImageIcon [] icons = MiscDialog.getLineTypeIcons();
+	lineTypeDefault =
+	    new IconPopupButton ("Default Line Type",
+				 "Line Type",
+				 lineTypeToString,
+				 stringToLineType,
+				 icons,
+				 currentLineType,
 				 this);
     }
     

@@ -22,9 +22,7 @@ OBJS = ColorPopupButton.class \
         VisualPropertiesDialog.class \
         LabelTextPanel.class \
         GeneralColorDialogListener.class \
-        ShapePopupButton.class \
         IntegerEntryField.class \
-        LineTypePopupButton.class \
         IconPopupButton.class \
         MiscDialog.class
 
