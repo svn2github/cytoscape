@@ -46,11 +46,11 @@ public final class IntStack
    */
   public final void push(int value)
   {
-    try { m_stack[m_currentSize++] = val; }
+    try { m_stack[m_currentSize++] = value; }
     catch (ArrayIndexOutOfBoundsException e) {
       m_currentSize--;
       checkSize();
-      m_stack[m_currentSize++] = val; }
+      m_stack[m_currentSize++] = value; }
   }
 
   /**
