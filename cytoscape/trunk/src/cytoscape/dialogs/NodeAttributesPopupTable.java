@@ -224,14 +224,12 @@ public AllAttributesTableModel (String [] geneNames,
       if (displayingGeneExpressionInfo)
          attributeColumn += 3; 
       for (int row=0; row < geneCount; row++) {
-        // Double d = geneAttributes.getDoubleValue (aNames [i], geneNames [row]);
         String canonicalName = geneNames [row];
         try {
           canonicalName = bioDataServer.getCanonicalName (geneNames [row]);
           }
         catch (Exception ignore) {}
         Object d = geneAttributes.getValue (aNames [i], canonicalName);
-        System.out.println ("looking for attribute " + aNames [i] + " for " + canonicalName);
         if (d != null) 
           data [row][attributeColumn+i] = d;
         } // for row
