@@ -37,7 +37,7 @@
     <property name="build.compiler" value="modern"/>
 
     <!-- Release number -->
-    <property name="version" value="2.0ALPHA3"/>
+    <property name="version" value="2.0ALPHA1"/>
 
     <!-- Temporary Release Directory -->
     <property name="release.dir" value="release"/>
