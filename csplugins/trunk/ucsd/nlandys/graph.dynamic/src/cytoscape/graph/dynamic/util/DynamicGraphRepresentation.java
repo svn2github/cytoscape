@@ -10,11 +10,12 @@ class DynamicGraphRepresentation implements DynamicGraph
   private int m_nodeCount;
   private Node m_firstNode;
   private int m_edgeCount;
-  private NodeArray m_nodes;
-  private EdgeArray m_edges;
-  private IntStack m_freeNodes;
-  private IntStack m_freeEdges;
-  private EdgeDepot m_edgeDepot;
+  private final NodeArray m_nodes;
+  private final EdgeArray m_edges;
+  private final IntStack m_freeNodes;
+  private final IntStack m_freeEdges;
+  private final EdgeDepot m_edgeDepot;
+  private final NodeDepot m_nodeDepot;
 
   DynamicGraphRepresentation()
   {
@@ -26,6 +27,7 @@ class DynamicGraphRepresentation implements DynamicGraph
     m_freeNodes = new IntStack();
     m_freeEdges = new IntStack();
     m_edgeDepot = new EdgeDepot();
+    m_nodeDepot = new NodeDepot();
   }
 
   public IntEnumerator nodes()
