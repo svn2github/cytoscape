@@ -23,9 +23,14 @@ public class JTaskConfig {
     private boolean timeRemainingFlag = false;
 
     /**
-     * Display User Cancel / Close Buttons.
+     * Display User Cancel Button.
      */
-    private boolean userButtonFlag = false;
+    private boolean cancelButtonFlag = false;
+
+    /**
+     * Display Close Button.
+     */
+    private boolean closeButtonFlag = false;
 
     /**
      * Disposes of Component When Task Completes.
@@ -77,13 +82,23 @@ public class JTaskConfig {
     }
 
     /**
-     * Enables/Disables Display of the Close/Cancel Buttons.
+     * Enables/Disables Display of the Cancel Button.
      * <P>By default, this value is set to false.
      * @param flag boolean value.
      */
-    public void displayUserButtons(boolean flag) {
-        this.userButtonFlag = flag;
+    public void displayCancelButton(boolean flag) {
+        this.cancelButtonFlag = flag;
     }
+
+    /**
+     * Enables/Disables Display of the Close Button.
+     * <P>By default, this value is set to false.
+     * @param flag boolean value.
+     */
+    public void displayCloseButton(boolean flag) {
+        this.closeButtonFlag = flag;
+    }
+
 
     /**
      * Enables/Disables Auto-Dispose Feature.
@@ -165,11 +180,19 @@ public class JTaskConfig {
     }
 
     /**
-     * Gets Display Options for User Button Field.
+     * Gets Display Options for Cancel Button Field.
      * @return boolean value.
      */
-    boolean getUserButtonFlag() {
-        return this.userButtonFlag;
+    boolean getCancelButtonFlag() {
+        return this.cancelButtonFlag;
+    }
+
+    /**
+     * Gets Display Options for Close Button Field.
+     * @return boolean value.
+     */
+    boolean getCloseButtonFlag() {
+        return this.closeButtonFlag;
     }
 
     /**
