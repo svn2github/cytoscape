@@ -1232,7 +1232,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph
       final MinIntHeap successes = m_heap_hideNodes;
       final int[] returnThis = new int[rootNodeInx.length];
       for (int i = 0; i < rootNodeInx.length; i++) {
-        returnThis[i] = _hideNode(this, rootNodeInx[i]);
+        returnThis[i] = _hideNode(source, rootNodeInx[i]);
         if (returnThis[i] != 0) successes.toss(i); }
       if (successes.size() > 0) {
         final GraphPerspectiveChangeListener listener = m_lis[0];
