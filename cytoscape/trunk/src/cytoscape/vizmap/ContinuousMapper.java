@@ -71,24 +71,30 @@ public class ContinuousMapper implements ValueMapper {
 
 	if ( !(domainValue instanceof Comparable) ) {return null;}
 	Comparable inValue = (Comparable)domainValue;
-
+        
 	Comparable minDomain = (Comparable)boundaryValueMap.firstKey();
 	/* if given domain value is smaller than any in our Vector,
 	   return the range value for the smallest domain value we have */
-	if ( inValue.compareTo(minDomain) <= 0 ) {
+        /* since this is our first compare, we'd better check that the supplied
+         * domain value is of the right type by trapping ClassCastExceptions.
+         * We're assuming that all the keys of the boundaryValueMap are of the
+         * same type, so we only have to check this first time. */
+        int firstCmp = 0;
+        try {
+            firstCmp = compareValues(inValue, minDomain);
+        } catch (ClassCastException cce) {//oops, domainValue parameter is wrong type
+            return null;
+        }
+	if (firstCmp <= 0) {
 	    BoundaryRangeValues bv =
 		(BoundaryRangeValues)boundaryValueMap.get(minDomain);
-	    if (inValue.compareTo(minDomain) < 0) {
-		return bv.lesserValue;
-	    } else {
-		return bv.equalValue;
-	    }
+	    if (firstCmp < 0) {return bv.lesserValue;} else {return bv.equalValue;}
 	}
 
 	/* if given domain value is larger than any in our Vector,
 	   return the range value for the largest domain value we have */
 	Comparable maxDomain = (Comparable)boundaryValueMap.lastKey();
-	if (inValue.compareTo(maxDomain) > 0) {
+	if (compareValues(inValue, maxDomain) > 0) {
 	    BoundaryRangeValues bv =
 		(BoundaryRangeValues)boundaryValueMap.get(maxDomain);
 	    return bv.greaterValue;
@@ -108,7 +114,7 @@ public class ContinuousMapper implements ValueMapper {
 	Comparable upperDomain = null;
 	for ( ; i.hasNext(); ) {
 	    upperDomain = (Comparable)i.next();
-	    int cmpValue = inValue.compareTo(upperDomain);
+            int cmpValue = compareValues(inValue, upperDomain);
 	    if (cmpValue == 0) {
 		BoundaryRangeValues bv =
 		    (BoundaryRangeValues)boundaryValueMap.get(upperDomain);
@@ -124,7 +130,7 @@ public class ContinuousMapper implements ValueMapper {
 	 * lowerDomain and less than upperDomain. Therefore, we want
 	 * the "greater" field of the lower boundary value (because the
 	 * desired domain value is greater) and the "lesser" field of
-	 * the lower boundary value (semantic difficulties).
+	 * the upper boundary value (semantic difficulties).
 	 */
 	BoundaryRangeValues lv =
 	    (BoundaryRangeValues)boundaryValueMap.get(lowerDomain);
@@ -136,5 +142,17 @@ public class ContinuousMapper implements ValueMapper {
 	return this.fInt.getRangeValue(lowerDomain, lowerRange,
 				       upperDomain, upperRange,
 				       domainValue);
+    }
+    
+    private int compareValues(Comparable probe, Comparable target) {
+        /* If these are numbers, we have to extract double values because Java
+         * doesn't allow comparing, for example, Integer objects to Double objects */
+        if (probe instanceof Number && target instanceof Number) {
+            double d1 = ((Number)probe).doubleValue();
+            double d2 = ((Number)target).doubleValue();
+            if (d1 < d2) {return -1;} else if (d1 > d2) {return 1;} else {return 0;}
+        } else {//assume objects have the same class and compare them
+            return probe.compareTo(target);
+        }
     }
 }
