@@ -284,7 +284,15 @@ public final class GraphConverter
     Iterator edgeIterator = graphView.getEdgeViewsIterator();
     while (edgeIterator.hasNext())
     {
-      Edge currentEdge = ((EdgeView) edgeIterator.next()).getEdge();
+      EdgeView currentEdgeView = (EdgeView) edgeIterator.next();
+      Point2D[] anchors = currentEdgeView.getBend().getDrawPoints();
+      for (int a = 0; a < anchors.length; a++) {
+        System.out.println("anchor");
+        minX = Math.min(minX, anchors[a].getX());
+        maxX = Math.max(maxX, anchors[a].getX());
+        minY = Math.min(minY, anchors[a].getY());
+        maxY = Math.max(maxY, anchors[a].getY()); }
+      Edge currentEdge = currentEdgeView.getEdge();
       int ginySourceNodeIndex = currentEdge.getSource().getRootGraphIndex();
       int ginyTargetNodeIndex = currentEdge.getTarget().getRootGraphIndex();
       int nativeSourceNodeIndex =
@@ -298,7 +306,7 @@ public final class GraphConverter
       chosenEdgeVector.add
         (new Object[] { new int[] { nativeSourceNodeIndex,
                                     nativeTargetNodeIndex },
-                        currentEdge });
+                        currentEdgeView });
     }
     final int[] directedEdgeSourceNodeIndices =
       new int[directedEdgeVector.size()];
