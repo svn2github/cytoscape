@@ -164,6 +164,16 @@ public abstract class Cytoscape {
   }
 
   /**
+   * Return the CyNetwork that has the given identifier
+   * or null if there is no such network 
+   */
+  public static CyNetwork getNetwork ( String id ) {
+    if ( getNetworkMap().containsKey( id ) ) 
+      return ( CyNetwork )getNetworkMap().get( id ); 
+    return nullNetwork;
+  }
+
+  /**
    * Return the CyNetworkView that currently has the focus.
    * Can be different from getCurrentNetwork 
    */ 

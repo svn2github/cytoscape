@@ -34,6 +34,10 @@ public interface CyNetworkView extends GraphView {
   
   public void toggleVisualMapperEnabled();
 
+  public void setVisualMapperEnabled ( boolean state );
+
+  public boolean getVisualMapperEnabled ();
+
   //--------------------//
   // Network Client Data
   

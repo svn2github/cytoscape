@@ -49,7 +49,11 @@ public class CytoscapeDesktop
   public static String NETWORK_VIEW_FOCUSED = "NETWORK_VIEW_FOCUSED";
   public static String NETWORK_VIEW_FOCUS = "NETWORK_VIEW_FOCUS";
   public static String NETWORK_VIEW_CREATED = "NETWORK_VIEW_CREATED";
+
+  // state variables
   public static String VISUAL_STYLE = "VISUAL_STYLE";
+  public static String VIZMAP_ENABLED = "VIZMAP_ENABLED";
+
 
   /**
    * Displays all network views in TabbedPanes
@@ -213,14 +217,15 @@ public class CytoscapeDesktop
     // create the CytoscapeDesktop
     if ( VIEW_TYPE == TABBED_VIEW ) {
       // eveything gets put into this one window
-      JScrollPane scroll_panel = new JScrollPane( networkPanel );
+      //JScrollPane scroll_panel = new JScrollPane( networkPanel );
       JScrollPane scroll_tab = new JScrollPane( networkViewManager.getTabbedPane() );
 
 
       JSplitPane split = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT,
                                          false,
-                                         scroll_panel,
+                                         networkPanel,
                                          scroll_tab );
+      split.setOneTouchExpandable( true );
     //   JSplitPane split = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT,
 //                                          false,
 //                                          networkPanel,
@@ -404,7 +409,7 @@ public class CytoscapeDesktop
 
     CyNetworkView old_view = Cytoscape.getCurrentNetworkView();
     old_view.setClientData( VISUAL_STYLE, old_style );
-    
+    old_view.setClientData( VIZMAP_ENABLED, new Boolean( old_view.getVisualMapperEnabled() ) );
 
     // set the current Network/View
     Cytoscape.setCurrentNetworkView( network_view_id );
@@ -413,14 +418,23 @@ public class CytoscapeDesktop
     // deal with the new Network
      CyNetworkView new_view = Cytoscape.getCurrentNetworkView();
      VisualStyle new_style = ( VisualStyle )new_view.getClientData( VISUAL_STYLE );
+     Boolean vizmap_enabled = ( ( Boolean )new_view.getClientData( VIZMAP_ENABLED ) );
+
      if ( new_style == null ) 
        new_style = defaultVisualStyle;
+
+     if ( vizmap_enabled == null )
+       vizmap_enabled = new Boolean( true );
+
      vizMapper.setNetworkView( new_view );
      vizMapper.setVisualStyle( new_style );
      vizMapUI.getStyleSelector().getToolbarComboBox().setSelectedItem( new_style );
 
-     
-     new_view.redrawGraph( false, false );
+     cyMenus.setNodesRequiredItemsEnabled();
+     cyMenus.setVisualMapperItemsEnabled( vizmap_enabled.booleanValue() );
+     if ( vizmap_enabled.booleanValue() ) {
+       new_view.redrawGraph( false, false );
+     }
   }
 
   /**

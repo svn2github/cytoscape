@@ -18,6 +18,8 @@ public class PhoebeNetworkView
   implements
     CyNetworkView {
 
+  boolean vizmapEnabled = true;
+
   /**
    * This is the title of the NetworkView, it will be 
    * dispalyed in a Tab, or in a Window.
@@ -90,7 +92,17 @@ public class PhoebeNetworkView
 //     }
   }
 
-  public void toggleVisualMapperEnabled() {}
+  public void toggleVisualMapperEnabled () {
+    vizmapEnabled = !vizmapEnabled;
+  }
+
+  public void setVisualMapperEnabled ( boolean state ) {
+    vizmapEnabled = state;
+  }
+
+  public boolean getVisualMapperEnabled () {
+    return vizmapEnabled;
+  }
 
   public cytoscape.visual.VisualMappingManager getVizMapManager() {
     return null;

@@ -12,6 +12,8 @@ import cytoscape.view.CyEdgeView;
 
 import cytoscape.giny.*;
 
+import cytoscape.util.swing.*;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
@@ -31,7 +33,7 @@ public class NetworkPanel
 
   protected SwingPropertyChangeSupport pcs = new SwingPropertyChangeSupport( this );
 
-  JTree tree;
+  JTreeTable treeTable;
   DefaultMutableTreeNode root;
 
   private CytoscapeDesktop cytoscapeDesktop;
@@ -43,10 +45,20 @@ public class NetworkPanel
   }
 
   protected void initialize () {
+    setLayout( new BorderLayout() );
+    setPreferredSize( new Dimension( 181, 700 ) );
     root = new DefaultMutableTreeNode( "Network Root" );
-    tree = new JTree( root );
-    tree.addTreeSelectionListener( this );
-    add( tree );
+    treeTable = new JTreeTable( new NetworkTreeTableModel( root ) );
+    treeTable.getTree().addTreeSelectionListener( this );
+    treeTable.getTree().setRootVisible( false );
+
+
+    treeTable.getColumn( "Network" ).setMaxWidth(100);
+    treeTable.getColumn( "Nodes" ).setMaxWidth(40);
+    treeTable.getColumn( "Edges" ).setMaxWidth(40);
+
+    //treeTable.setMaximumSize( new Dimension( 150,  ) );
+     add( new JScrollPane( treeTable ), BorderLayout.CENTER );
     
   }
 
@@ -54,23 +66,29 @@ public class NetworkPanel
     return pcs;
   }
 
-
+  //TODO: update to allow for children
   public void addNetwork ( String network_id ) {
     // first see if it exists
     if ( getNetworkNode( network_id ) == null ) {
+      System.out.println( "Adding new Network node: "+network_id );
       DefaultMutableTreeNode dmtn = new DefaultMutableTreeNode( network_id );
-      ( ( DefaultTreeModel )tree.getModel() ).insertNodeInto( dmtn, root,
-                                                              root.getChildCount());
-      
-      tree.scrollPathToVisible(new TreePath(dmtn.getPath()));
+     
+      // TODO: is all this really needed?
+      root.add( dmtn );
+      treeTable.getTree().collapsePath( new TreePath( new TreeNode[] {root } ) );
+      treeTable.getTree().updateUI();
+      TreePath path = new TreePath( dmtn.getPath() );
+      treeTable.getTree().expandPath( path );
+      treeTable.getTree().scrollPathToVisible( path );
+      treeTable.doLayout();
     }
   }
 
   public void focusNetworkNode ( String network_id ) {
     DefaultMutableTreeNode node = getNetworkNode( network_id );
     if ( node != null ) {
-      tree.getSelectionModel().setSelectionPath( new TreePath( node.getPath() ) );
-      tree.scrollPathToVisible(new TreePath( node.getPath()));
+      treeTable.getTree().getSelectionModel().setSelectionPath( new TreePath( node.getPath() ) );
+      treeTable.getTree().scrollPathToVisible(new TreePath( node.getPath()));
     }
   }
 
@@ -96,10 +114,10 @@ public class NetworkPanel
   public void valueChanged ( TreeSelectionEvent e ) {
 
       DefaultMutableTreeNode node = (DefaultMutableTreeNode)
-        tree.getLastSelectedPathComponent();
+        treeTable.getTree().getLastSelectedPathComponent();
     
-      if (node == null) return;
-    
+      if (node == null ) return;
+      if (node.getUserObject() == null ) return;
       fireFocus( (String)node.getUserObject() );
                                                      
   }
@@ -116,5 +134,68 @@ public class NetworkPanel
     
   }
 
+  /**
+   * Inner class that extends the AbstractTreeTableModel
+   */
+  class NetworkTreeTableModel extends AbstractTreeTableModel {
+    
+    String[] columns = { "Network", "Nodes", "Edges" };
+    Class[] columns_class = { TreeTableModel.class, Integer.class, Integer.class };
+
+    public NetworkTreeTableModel ( Object root ) {
+      super( root );
+    }
+
+    public Object getChild (Object parent, int index) {
+      Enumeration tree_node_enum = ( ( DefaultMutableTreeNode )getRoot() ).breadthFirstEnumeration();
+      while ( tree_node_enum.hasMoreElements() ) {
+        DefaultMutableTreeNode node = ( DefaultMutableTreeNode )tree_node_enum.nextElement();
+        if ( node == parent  ) {
+          return node.getChildAt( index ) ;
+        }
+      }
+    return null;
+    }
+
+    public int getChildCount(Object parent) {
+        Enumeration tree_node_enum = ( ( DefaultMutableTreeNode )getRoot() ).breadthFirstEnumeration();
+      while ( tree_node_enum.hasMoreElements() ) {
+        DefaultMutableTreeNode node = ( DefaultMutableTreeNode )tree_node_enum.nextElement();
+        if ( node == parent  ) {
+          return node.getChildCount() ;
+        }
+      }
+      return 0;
+    }
+
+  public int getColumnCount() {
+    return columns.length;
+
+  }
+
+  public String getColumnName( int column) {
+    return columns[column];
+  }
+
+  public Class getColumnClass(int column) {
+    return columns_class[column];
+  }
+
+  public Object getValueAt(Object node, int column) {
+    if ( column == 0 ) 
+      return ( ( DefaultMutableTreeNode )node).getUserObject();
+    else if ( column == 1 ) 
+      return new Integer( Cytoscape.getNetwork( ( String )( ( DefaultMutableTreeNode )node ).getUserObject() ).getNodeCount() );
+    else if ( column == 2 )
+      return new Integer( Cytoscape.getNetwork( ( String )( ( DefaultMutableTreeNode )node ).getUserObject() ).getEdgeCount() );
+
+    return new Integer(0);
+
+  }
+    
+
+
+  } // NetworkTreeTableModel
+  
 
 }
