@@ -1,9 +1,15 @@
 package cytoscape.graph;
 
 /**
- * A bare-minimum definition of a graph.
- * (I'm hesitant to let edges be &quot;undirected&quot;; this
- * is a &quot;feature&quot; that people want.)
+ * A bare-minimum definition of a graph.  A given edge in a graph can
+ * be either <i>directed</i> or <i>undirected</i>.  Directedness of edges
+ * is an important part of graph topology for calculations such as
+ * finding a path <i>from</i> node A <i>to</i> node B.<p>
+ * Topologists claim that they can't tell a donut apart from a coffee cup.
+ * In fact, a coffee cup with a handle can be &quot;smoothly morphed&quot;
+ * into a donut shape.  In topology, distances do not matter but connectedness
+ * does.  Therefore, a topological definition of a graph should not
+ * contain any notion of a &quot;distance along edge&quot;.<p>
  * The methods on this interface do not expose any mutable behavior; this does
  * not mean, however, that instances of this interface are not mutable.  A
  * sub-interface extending <code>GraphTopology</code> could be defined which
