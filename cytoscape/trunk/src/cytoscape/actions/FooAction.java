@@ -40,18 +40,10 @@ public class FooAction extends CytoscapeAction
           b = !b;
           int addThis = (forward ? 1 : -1);
           for (int i = 0; i < nodes.length; i++) {
-            System.out.println( "BNode: "+nodes[i].getNode().getIdentifier()+" x: "+nodes[i].getXPosition()+" y: "+nodes[i].getYPosition() );
-            
-            nodes[i].setXPosition(nodes[i].getXPosition() + addThis);
-            nodes[i].setYPosition(nodes[i].getYPosition() + addThis); 
-
-            System.out.println( "ANode: "+nodes[i].getNode().getIdentifier()+"  x: "+nodes[i].getXPosition()+" y: "+nodes[i].getYPosition() );
-
-} } } );
-   
-            //System.out.println( "Add This: "+addThis );
-            //nodes[i].setOffset(nodes[i].getXPosition() + addThis,
-            //                   nodes[i].getYPosition() + addThis); } } } );
+//             nodes[i].setXPosition(nodes[i].getXPosition() + addThis);
+//             nodes[i].setYPosition(nodes[i].getYPosition() + addThis); } } } );
+            nodes[i].setOffset(nodes[i].getXPosition() + addThis,
+                               nodes[i].getYPosition() + addThis); } } } );
     dialog.getContentPane().add(slider);
     dialog.pack();
     dialog.move((cyFrame.size().width - dialog.size().width) / 2 +
