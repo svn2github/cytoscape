@@ -50,7 +50,7 @@
 		</p>
 		<p>
 		<p>
-		<h4>Option 4:  All Platforms:  Download the Complete Source Code for Cytoscape
+		<h4>Option 3:  All Platforms:  Download the Complete Source Code for Cytoscape
 		</h4>
     		<UL>
 		    <li><a href='<?= $cyto2_1_source_east ?>'>Cytoscape source</a> - USA, East Coast (New York, NY).</li>  
