@@ -9,6 +9,7 @@ package cytoscape.data;
 import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.Hashtable;
+import java.util.HashMap;
 
 import java.io.FileReader;
 import java.io.BufferedReader;
@@ -130,19 +131,15 @@ public class ExpressionData {
 	}
 
 	String headerLine = this.readOneLine(input);
-	if (headerLine == null) {
-	    System.err.println("Could not read header line from data file "
-			       + filename);
-	    try {
-		input.close();
-	    } catch (IOException e) {
-	    }
-	    return false;
-	}
+	if (isHeaderLineNull(headerLine,input,filename)) {return false;}
 
+	boolean expectPvals = doesHeaderLineHaveDuplicates(headerLine);
 	StringTokenizer headerTok = new StringTokenizer(headerLine);
 	int numTokens = headerTok.countTokens();
-	if (numTokens < 4) {
+	// if we expect p-values, 4 is the minimum number.
+	// if we don't, 3 is the minimum number.  Ergo:
+	// either way, we need 3, and if we expectPvals, we need 4.
+	if ((numTokens < 3) || ((numTokens<4)&&expectPvals)) {
 	    System.err.println("Bad header format in data file " + filename);
 	    System.err.println("Number of tokens parsed: " + numTokens);
 	    for (int i=0; i<numTokens; i++) {
@@ -158,14 +155,18 @@ public class ExpressionData {
 	double tmpF = numTokens/2.0;
 	int tmpI = (int)Math.rint(tmpF);
 	int numberOfConditions;
-	int haveExtraTokens;
-	if ( tmpI == tmpF ) {//missing numSigConds field
-	    numberOfConditions = (numTokens - 2) / 2;
-	    haveExtraTokens = 0;
-	} else {
-	    numberOfConditions = (numTokens - 3) / 2;
-	    haveExtraTokens = 1;
+	int haveExtraTokens = 0;
+	if(expectPvals) {
+	    if ( tmpI == tmpF ) {//missing numSigConds field
+		numberOfConditions = (numTokens - 2) / 2;
+		haveExtraTokens = 0;
+	    } else {
+		numberOfConditions = (numTokens - 3) / 2;
+		haveExtraTokens = 1;
+	    }
 	}
+	else { numberOfConditions = numTokens - 2; }
+
 	System.out.println("parsed " + numTokens + " tokens from header line,"
 			   + " representing " + numberOfConditions
 			   + " conditions.");
@@ -180,13 +181,16 @@ public class ExpressionData {
 	}
 	/* the next numConds tokens should duplicate the previous list
 	   of condition names */
-	for (int i=0; i<numberOfConditions; i++) {
-	    String title = headerTok.nextToken();
-	    if ( !(title.equals( cNames.get(i) )) ) {
-		System.err.println("Condition name mismatch in header line"
-				   + " of data file " + filename + ": "
-				   + cNames.get(i) + " vs. " + title);
-		return false;
+	if(expectPvals) {
+	    for (int i=0; i<numberOfConditions; i++) {
+		String title = headerTok.nextToken();
+		if ( !(title.equals( cNames.get(i) )) ) {
+		    System.err.println("Expecting both ratios and p-values.\n");
+		    System.err.println("Condition name mismatch in header line"
+				       + " of data file " + filename + ": "
+				       + cNames.get(i) + " vs. " + title);
+		    return false;
+		}
 	    }
 	}
 
@@ -207,7 +211,7 @@ public class ExpressionData {
 	int lineCount = 1;
 	while (oneLine != null) {
 	    lineCount++;
-	    parseOneLine(oneLine,lineCount);
+	    parseOneLine(oneLine,lineCount,expectPvals);
 	    oneLine = this.readOneLine(input);
 	}
 
@@ -233,6 +237,46 @@ public class ExpressionData {
 
 //--------------------------------------------------------------------
 
+    private boolean doesHeaderLineHaveDuplicates(String hline) {
+	boolean retval = false;
+
+	StringTokenizer headerTok = new StringTokenizer(hline);
+	int numTokens = headerTok.countTokens();
+	if (numTokens < 3) { retval = false; }
+	else {
+
+	    headerTok.nextToken();
+	    headerTok.nextToken();
+
+	    HashMap names = new HashMap();
+	    while ((!retval) && headerTok.hasMoreTokens()) {
+		String title = headerTok.nextToken();
+		Object titleObject = (Object)title;
+		if(names.get( titleObject ) == null) {
+		    names.put( titleObject, titleObject);
+		}
+		else {retval=true;}
+		//System.out.println("retval : " + retval);
+	    }
+	}
+
+	return retval;
+    }
+    
+    private boolean isHeaderLineNull(String hline, BufferedReader input,
+				     String filename) {
+	if (hline == null) {
+	    System.err.println("Could not read header line from data file "
+			       + filename);
+	    try {
+		input.close();
+	    } catch (IOException e) {
+	    }
+	    return true;
+	}
+	else { return false; }
+    }
+
     private String readOneLine(BufferedReader f) {
 	String s = null;
 	try {
@@ -243,6 +287,9 @@ public class ExpressionData {
     }
 
     private void parseOneLine(String oneLine, int lineCount) {
+	parseOneLine(oneLine,lineCount,true);
+    }
+    private void parseOneLine(String oneLine, int lineCount, boolean pvals) {
 	StringTokenizer strtok = new StringTokenizer(oneLine);
 	int numTokens = strtok.countTokens();
 
@@ -251,7 +298,8 @@ public class ExpressionData {
 	String gName = strtok.nextToken();
 	if ( gName.startsWith("NumSigGenes") ) {return;}
 
-	if (numTokens < 2*numConds + 2) {
+	if ( (pvals && (numTokens < 2*numConds + 2)) ||
+	     ((!pvals)&&numTokens<numConds+2) ) {
 	    System.out.println("Warning: parse error on line " + lineCount
 			       + "  tokens read: " + numTokens);
 	    return;
@@ -266,8 +314,15 @@ public class ExpressionData {
 	    expData[i] = strtok.nextToken();
 	}
 	String[] sigData = new String[numConds];
-	for (int i=0; i<numConds; i++) {
-	    sigData[i] = strtok.nextToken();
+	if(pvals) {
+	    for (int i=0; i<numConds; i++) {
+		sigData[i] = strtok.nextToken();
+	    }
+	}
+	else {
+	    for (int i=0; i<numConds; i++) {
+		sigData[i] = expData[i];
+	    }
 	}
 
 	Vector measurements = new Vector(numConds);
