@@ -90,31 +90,32 @@ public class SaveAsInteractionsAction extends AbstractAction {
 			RootGraph rgraph = networkView.getNetwork().getRootGraph();
 			GraphPerspective gp = rgraph.createGraphPerspective(rgraph.getNodeIndicesArray(), rgraph.getEdgeIndicesArray());
 			List edges = gp.getAdjacentEdgesList(node, true, true, true); 
+			
 			if (edges.size() == 0) {
 				sb.append(canonicalName + "\n");
-      } else {
-					List outedges = gp.getAdjacentEdgesList(node, true, false, true);
-          if ( outedges == null || outedges.size() == 0 ) {
-            sb.append(canonicalName + "\n");
-          } else {
+			} 		
+			else {
+					
 
-            Iterator it = outedges.iterator();
-            while ( it.hasNext() ) {
-              giny.model.Edge edge = (giny.model.Edge)it.next();
-              giny.model.Node target = edge.getTarget();
-              String canonicalTargetName = nodeAttributes.getCanonicalName(target);
-              String edgeName = edgeAttributes.getCanonicalName(edge);
-              String interactionName =
-                (String)(edgeAttributes.getValue("interaction", edgeName));
-              if (interactionName == null) {interactionName = "xx";}
-              sb.append(canonicalName);
-              sb.append(" ");
-              sb.append(interactionName);
-              sb.append(" ");
-              sb.append(canonicalTargetName);
-              sb.append("\n");
-            } // while
-          }
+				    Iterator it = edges.iterator();
+				    while ( it.hasNext() ) {
+				      giny.model.Edge edge = (giny.model.Edge)it.next();
+				      if (node == edge.getSource()){ //do only for outgoing edges
+					      giny.model.Node target = edge.getTarget();
+					      String canonicalTargetName = nodeAttributes.getCanonicalName(target);
+					      String edgeName = edgeAttributes.getCanonicalName(edge);
+					      String interactionName =
+						(String)(edgeAttributes.getValue("interaction", edgeName));
+					      if (interactionName == null) {interactionName = "xx";}
+					      sb.append(canonicalName);
+					      sb.append(" ");
+					      sb.append(interactionName);
+					      sb.append(" ");
+					      sb.append(canonicalTargetName);
+					      sb.append("\n");
+				      }
+				    } // while
+				
 				} // else: this node has edges, write out one line for every out edge (if any) */
 				fileWriter.write(sb.toString());
         //System.out.println(" WRITE: "+ sb.toString() );
