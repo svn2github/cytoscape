@@ -21,12 +21,12 @@
 	</target>
 
 	<target name="deploy" description="Deploys Web Site to cytoscape.org"
-		depends="config_prod">
+		depends="env, config_prod">
 		<ftp server="cytoscape.org" 
 			remotedir="/html/new" 
 			verbose="yes"
 			userid="${cyto.user}"
-			password="${cyto.password}"
+			password="${password}"
 			depends="yes"
 			binary="yes">
 			<fileset dir=".">
@@ -40,6 +40,8 @@
 
 	<target name="env">
 		<echo>cyto.user:  ${cyto.user}</echo>
-		<echo>cyto.password:  ${cyto.password}</echo>
+		<echo>cyto.password:  ${password}</echo>
+		<echo>If password is empty, you must set it via a command line</echo>
+		<echo>argument, e.g. ant deploy -Dpassword=value</echo>
 	</target>
 </project>
