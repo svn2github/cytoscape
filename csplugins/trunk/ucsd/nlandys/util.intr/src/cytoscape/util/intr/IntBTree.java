@@ -301,26 +301,30 @@ public final class IntBTree
     return count(m_root, x, Integer.MIN_VALUE, Integer.MAX_VALUE);
   }
 
+  /*
+   * It's important that with every invocation of this method, we have
+   * minBound <= x <= maxBound.
+   */
   private final int count(final Node n, final int x,
                           final int minBound, final int maxBound)
   {
     int count = 0;
-    if (isLeafNode(n)) {
-      for (int i = 0; i < n.sliceCount; i++)
-        if (x <= n.values[i]) {
-          if (x == n.values[i]) count++; else break; } }
-    else { // Internal node.
-      int currentMax = maxBound;
-      int currentMin;
-      for (int i = n.sliceCount - 2; i >= -1; i--) {
-        currentMin = ((i < 0) ? minBound : n.data.splitVals[i]);
-        if (currentMin <= x) {
-          if (currentMin == currentMax) {
-            count += n.data.children[i + 1].data.deepCount; }
-          else {
+    if (minBound == maxBound) { // Trivially include node.
+      count += (isLeafNode(n) ? n.sliceCount : n.data.deepCount); }
+    else { // Cannot trivially include node; must recurse.
+      if (isLeafNode(n)) {
+        for (int i = 0; i < n.sliceCount; i++)
+          if (x <= n.values[i]) {
+            if (x == n.values[i]) count++; else break; } }
+      else { // Internal node.
+        int currentMax = maxBound;
+        int currentMin;
+        for (int i = n.sliceCount - 2; i >= -1; i--) {
+          currentMin = ((i < 0) ? minBound : n.data.splitVals[i]);
+          if (currentMin <= x) {
             count += count(n.data.children[i + 1], x, currentMin, currentMax);
-            if (currentMin < x) break; } }
-        currentMax = currentMin; } }
+            if (currentMin < x) break; }
+          currentMax = currentMin; } } }
     return count;
   }
 
