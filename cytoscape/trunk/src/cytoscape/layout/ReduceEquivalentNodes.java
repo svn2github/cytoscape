@@ -31,7 +31,7 @@ package cytoscape.layout;
 import y.base.*;
 import y.view.*;
 import y.util.*;
-
+import y.algo.*; // for GraphHider in yFiles 1.4
 import cytoscape.*;
 import cytoscape.data.*;
 
@@ -110,6 +110,8 @@ public class ReduceEquivalentNodes {
 	YList listOfNodes;
 	Node n;
 	int i = 0;
+  
+  graph.firePreEvent();
 
 	// get equivalent nodes from each hash table entry
 	for (Iterator it = key2nodes.values().iterator(); it.hasNext(); ) {
@@ -135,6 +137,8 @@ public class ReduceEquivalentNodes {
 		System.out.println();
 	    }
 	}
+
+  graph.firePostEvent();
     }
 
     /************************************************************/
