@@ -1,5 +1,3 @@
-// cytoscape.java  
-
 /** Copyright (c) 2002 Institute for Systems Biology and the Whitehead Institute
  **
  ** This library is free software; you can redistribute it and/or modify it
@@ -26,26 +24,56 @@
  ** along with this library; if not, write to the Free Software Foundation,
  ** Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  **/
-
+//-------------------------------------------------------------------------
 // $Revision$
-// $Date$ 
+// $Date$
 // $Author$
-//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 package cytoscape;
-//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 /**
- * @deprecated This class has been replaced by the CyMain class.<P>
- *
- * This class used to be the main startup class of Cytoscape. It's name is the
- * same as the enclosing package, which creates confusion in certain cases.
- * This class has been completely replaced by the CyMain class which provides
- * the same API and functionality. The main method of this class now
- * immediately delegates to the main method of CyMain.
+ * Events of this class are fired from a CyNetwork object when something
+ * happens to the network. The event holds a reference to the network that
+ * is the source of the event, and an int flag identifying the type of event.
  */
-public class cytoscape {
-
-    public static void main(String args []) throws Exception {
-        CyMain.main(args);
+public class CyNetworkEvent {
+    
+    /**
+     * This type is used when the requested type is unknown to this class.
+     */
+    public static final int UNKNOWN = -1;
+    /**
+     * Indicates that someone is beginning to work with the network.
+     */
+    public static final int BEGIN = 0;
+    /**
+     * Indicates that someone is done working with the network.
+     */
+    public static final int END = 1;
+    /**
+     * Indicates that a new graph has been installed in the network.
+     */
+    public static final int GRAPH_REPLACED = 10;
+    
+    private CyNetwork network;
+    private int type;
+    
+    public CyNetworkEvent(CyNetwork source, int type) {
+        network = source;
+        if (type == this.BEGIN || type == this.END || type == this.GRAPH_REPLACED) {
+            this.type = type;
+        } else {
+            this.type = this.UNKNOWN;
+        }
     }
+    
+    public CyNetwork getNetwork () { 
+      return network;
+    }
+
+    public int getType () {
+      return type;
+    }
+
 }
 
