@@ -212,16 +212,23 @@ class FGraphPerspective implements GraphPerspective
     return returnThis; }
 
   public java.util.List restoreNodes(java.util.List nodes,
-                                     boolean restoreIncidentEdges)
-  {
-    throw new IllegalStateException("not implemented yet");
-  }
+                                     boolean restoreIncidentEdges) {
+    final java.util.List returnThis = restoreNodes(nodes);
+    final int[] restoredNodeInx = new int[returnThis.size()];
+    for (int i = 0; i < restoredNodeInx.length; i++)
+      restoredNodeInx[i] = ((Node) returnThis.get(i)).getRootGraphIndex();
+    final int[] connectingEdgeInx =
+      m_root.getConnectingEdgeIndicesArray(restoredNodeInx);
+    restoreEdges(connectingEdgeInx);
+    return returnThis; }
 
-  public int[] restoreNodes(int[] perspNodeInx,
-                            boolean restoreIncidentEdges)
-  {
-    throw new IllegalStateException("not implemented yet");
-  }
+  public int[] restoreNodes(int[] rootGraphNodeInx,
+                            boolean restoreIncidentEdges) {
+    final int[] returnThis = restoreNodes(rootGraphNodeInx);
+    final int[] connectingEdgeInx =
+      m_root.getConnectingEdgeIndicesArray(returnThis);
+    restoreEdges(connectingEdgeInx);
+    return returnThis; }
 
   public int[] restoreNodes(int[] rootGraphNodeInx) {
     m_heap.empty();
@@ -229,15 +236,12 @@ class FGraphPerspective implements GraphPerspective
     final int[] returnThis = new int[rootGraphNodeInx.length];
     for (int i = 0; i < rootGraphNodeInx.length; i++) {
       returnThis[i] = _restoreNode(rootGraphNodeInx[i]);
-      if (returnThis[i] != 0) successes.toss(i); }
+      if (returnThis[i] != 0) successes.toss(returnThis[i]); }
     if (successes.size() > 0) {
       final GraphPerspectiveChangeListener listener = m_lis[0];
       if (listener != null) {
         final int[] successArr = new int[successes.size()];
-        final IntEnumerator enum = successes.elements();
-        int index = -1;
-        while (enum.numRemaining() > 0)
-          successArr[++index] = rootGraphNodeInx[enum.nextInt()];
+        successes.copyInto(successArr, 0);
         listener.graphPerspectiveChanged
           (new GraphPerspectiveNodesRestoredEvent(this, successArr)); } }
     return returnThis; }
