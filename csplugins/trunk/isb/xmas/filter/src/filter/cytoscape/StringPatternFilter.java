@@ -132,14 +132,19 @@ public class StringPatternFilter
 								return false;
 				}
 
-				String[] pattern = searchString.split("\\s");
+				/*String[] pattern = searchString.split("\\s");
 				for ( int p = 0; p < pattern.length; ++p ) {
 								if ( Strings.isLike( ( String )value, pattern[p], 0, true ) ) {
 												// this is an OR function
 												return true;
 								}
+				}*/
+				try{
+							return value.matches(searchString);
+				}catch(Exception e){
+								return false;
 				}
-				return false;
+		
 		}
 
   public Class[] getPassingTypes () {

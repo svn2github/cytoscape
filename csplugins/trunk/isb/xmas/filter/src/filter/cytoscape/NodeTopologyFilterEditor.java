@@ -77,25 +77,36 @@ implements ActionListener {
 		add( namePanel,BorderLayout.NORTH );
 
 		JPanel all_panel = new JPanel();
-		all_panel.add(new JLabel("Select nodes with "));
+		all_panel.setLayout(new GridLayout(3,1));
+	
+		JPanel topPanel = new JPanel();
+		topPanel.add(new JLabel("Select nodes with "));
 		
 		countField = new JTextField(10);
 		countField.setEditable(true);
 		countField.addActionListener(this);
-		all_panel.add(countField);
+		topPanel.add(countField);
 
-		all_panel.add(new JLabel(" neighbors within distance "));
+		topPanel.add(new JLabel(" neighbors"));
+		
+		JPanel middlePanel = new JPanel();
+		middlePanel.add(new JLabel("within distance "));
 
 		distanceField = new JTextField(10);
 		distanceField.setEditable(true);
 		distanceField.addActionListener(this);
-		all_panel.add(distanceField);
+		middlePanel.add(distanceField);
 
-		all_panel.add(new JLabel(" that pass the filter "));
+
+		JPanel bottomPanel = new JPanel();
+		bottomPanel.add(new JLabel("that pass the filter "));
 		filterBox = new JComboBox();
 		filterBox.addActionListener(this);
-		all_panel.add(filterBox);
-		
+		bottomPanel.add(filterBox);
+		all_panel.add(topPanel);
+		all_panel.add(middlePanel);
+		all_panel.add(bottomPanel);
+
 		add( new JButton (new AbstractAction( "Update List of Filters" ) {
 			public void actionPerformed ( ActionEvent e ) {
 				// Do this in the GUI Event Dispatch thread...

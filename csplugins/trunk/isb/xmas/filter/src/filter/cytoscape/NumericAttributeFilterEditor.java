@@ -79,8 +79,8 @@ public class NumericAttributeFilterEditor
 
     //this.objectAttributes = network.getNodeAttributes();
 				setLayout(new BorderLayout());
-    identifier = "Numeric Comparison";
-    setBorder( new TitledBorder( "Numeric Comparison Filter - Select nodes or edges based on the value of numeric attributes" ) );
+    identifier = "Numeric Filter";
+    setBorder( new TitledBorder( "Numeric Filter - Select nodes or edges based on the value of numeric attributes" ) );
 
     JPanel namePanel = new JPanel();
     nameField = new JTextField(15);
@@ -89,24 +89,28 @@ public class NumericAttributeFilterEditor
     add( namePanel,BorderLayout.NORTH );
 
 				JPanel all_panel = new JPanel();
+				all_panel.setLayout(new GridLayout(3,1));	
 				
-				all_panel.add(new JLabel("Select graph objects of type "));
+				JPanel topPanel = new JPanel();
+				topPanel.add(new JLabel("Select graph objects of type "));
 			
 				classBox = new JComboBox();
 				classBox.addItem(NumericAttributeFilter.NODE);
 				classBox.addItem(NumericAttributeFilter.EDGE);
 				classBox.setEditable( false );
 				classBox.addActionListener(this);
-				all_panel.add(classBox);
+				topPanel.add(classBox);
     
-				all_panel.add(new JLabel(" with a value for numeric attribute "));
+				JPanel middlePanel = new JPanel();
+				middlePanel.add(new JLabel(" with a value for numeric attribute "));
 				
 				attributeBox = new JComboBox();
 				attributeBox.setEditable(false);
 				attributeBox.addActionListener(this);
-				all_panel.add(attributeBox);
+				middlePanel.add(attributeBox);
 
-				all_panel.add(new JLabel(" that is "));
+				JPanel bottomPanel = new JPanel();	
+				bottomPanel.add(new JLabel(" that is "));
 				
 				comparisonBox = new JComboBox();
 				comparisonBox.addItem(NumericAttributeFilter.LESS);
@@ -115,13 +119,16 @@ public class NumericAttributeFilterEditor
 				comparisonBox.setSelectedIndex(0);
 				comparisonBox.setEditable(false);
 				comparisonBox.addActionListener(this);
-				all_panel.add(comparisonBox);
+				bottomPanel.add(comparisonBox);
     
 				searchField = new JTextField(10);
     searchField.setEditable( true );
     searchField.addActionListener( this );
-    all_panel.add(searchField);
-
+    bottomPanel.add(searchField);
+				
+				all_panel.add(topPanel);
+				all_panel.add(middlePanel);
+				all_panel.add(bottomPanel);
 				//updateAttributeBox(NODE_CLASS);
     add( new JButton (new AbstractAction( "Update List of Attributes" ) {
           public void actionPerformed ( ActionEvent e ) {

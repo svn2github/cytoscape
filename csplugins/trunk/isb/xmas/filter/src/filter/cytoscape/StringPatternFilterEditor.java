@@ -47,7 +47,7 @@ public class StringPatternFilterEditor
   protected String DEFAULT_SEARCH_STRING = "";
   protected String RESET_SEARCH_STRING;
 
-  protected String DEFAULT_FILTER_NAME = "StringPattern: ";
+  protected String DEFAULT_FILTER_NAME = "Regex: ";
   protected String RESET_FITLER_NAME;
 
   protected String DEFAULT_SELECTED_ATTRIBUTE = "";
@@ -72,8 +72,8 @@ public class StringPatternFilterEditor
 				
 				
 				setLayout(new BorderLayout());
-    identifier = "String Pattern";
-    setBorder( new TitledBorder( "String Pattern Filter - Select nodes or edges based on pattern match to text attribute" ) );
+    identifier = "String Filter";
+    setBorder( new TitledBorder( "String Filter - Select nodes or edges based on regular expression match to text attribute" ) );
 
     JPanel namePanel = new JPanel();
     nameField = new JTextField(15);
@@ -82,30 +82,35 @@ public class StringPatternFilterEditor
     add( namePanel,BorderLayout.NORTH );
 
 				JPanel all_panel = new JPanel();
-				
-				all_panel.add(new JLabel("Select graph objects of type "));
+				all_panel.setLayout(new GridLayout(3,1));	
+				JPanel topPanel = new JPanel();
+				topPanel.add(new JLabel("Select graph objects of type "));
 				classBox = new JComboBox();
 				classBox.addItem(StringPatternFilter.NODE);
 				classBox.addItem(StringPatternFilter.EDGE);
 				classBox.setEditable( false );
 				classBox.addActionListener(this);
-				all_panel.add(classBox);
+				topPanel.add(classBox);
 				
-				all_panel.add(new JLabel(" with a value for text attribute "));
+				JPanel middlePanel = new JPanel();
+				middlePanel.add(new JLabel(" with a value for text attribute "));
     
 				attributeBox = new JComboBox();
 				attributeBox.setEditable(false);
 				attributeBox.addActionListener(this);
-				all_panel.add(attributeBox);
+				middlePanel.add(attributeBox);
 
-				all_panel.add(new JLabel(" that matches the pattern "));
+				JPanel bottomPanel = new JPanel();
+				bottomPanel.add(new JLabel(" that matches the regular expression "));
 				
 				searchField = new JTextField(10);
     searchField.setEditable( true );
     searchField.addActionListener( this );
-    all_panel.add(searchField);
+    bottomPanel.add(searchField);
 
-    all_panel.add(new JLabel(""));
+				all_panel.add(topPanel);
+				all_panel.add(middlePanel);
+				all_panel.add(bottomPanel);
 				add( new JButton (new AbstractAction( "Update List of Attributes" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...

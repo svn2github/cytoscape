@@ -59,8 +59,7 @@ implements ActionListener {
 								identifier = "Node Interactions";
 								setBorder( new TitledBorder( "Select nodes based on adjacent edges" ) );
 								setLayout( new BorderLayout() );
-
-								
+								setPreferredSize(new Dimension(600,250));	
 								JPanel namePanel = new JPanel();
 								nameField = new JTextField(15);
 								namePanel.add( new JLabel( "Filter Name" ) );
@@ -77,20 +76,25 @@ implements ActionListener {
 																} ); } } ),BorderLayout.SOUTH );
 
 								JPanel all_panel = new JPanel();
-							
-								all_panel.add(new JLabel("Select nodes which are the "));
+								all_panel.setLayout(new GridLayout(2,1));
+								
+								JPanel topPanel = new JPanel();
+								topPanel.add(new JLabel("Select nodes which are the "));
 								targetBox = new JComboBox();
 								targetBox.addItem(InteractionFilter.SOURCE);
 								targetBox.addItem(InteractionFilter.TARGET);
 								targetBox.addActionListener(this);
-								all_panel.add( targetBox );
+								topPanel.add( targetBox );
 								
-								all_panel.add(new JLabel(" of at least one edge which passes the filter "));	
+								JPanel bottomPanel = new JPanel();
+								bottomPanel.add(new JLabel("of at least one edge which passes the filter "));	
 								
 								filterBox = new JComboBox();
 								filterBox.addActionListener(this);
-								all_panel.add(filterBox);
-
+								bottomPanel.add(filterBox);
+								
+								all_panel.add(topPanel);
+								all_panel.add(bottomPanel);
 								
 								add( all_panel, BorderLayout.CENTER );
 
