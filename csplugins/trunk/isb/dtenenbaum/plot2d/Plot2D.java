@@ -11,10 +11,9 @@ package csplugins.isb.dtenenbaum.plot2d;
 
 
 
-// TODO - get rid of legacy UI and LegendPanel code
+// TODO - get rid of legacy UI, LegendPanel and x axis legend code
 
 // TODO - Can some public stuff be made private or protected?
-// TODO - get tooltips over x ticks with condition names?
 // TODO - enable zoom?
 // TODO - possible to add to the number of colors used
 // 		  so that line colors repeat less frequently? 
@@ -37,7 +36,6 @@ package csplugins.isb.dtenenbaum.plot2d;
 // TODO - when live updating is enabled, try and make it so row names 
 // always have the same color even if new rows are selected. 
 
-// TODO - do something about long strings as window titles and Y axis names
 
 
 import org.jfree.chart.*;
@@ -53,6 +51,7 @@ import java.awt.*;
 import java.util.*;
 import java.awt.event.*;
 import java.awt.geom.*;
+import java.io.File;
 
 import javax.swing.*;
 import javax.swing.border.*;
@@ -94,7 +93,8 @@ public class Plot2D extends JFrame  implements DataMatrixBrowserListener {
   private JLabel lblRow = new JLabel("   Row:");
   private JLabel lblXAxis = new JLabel();
 
-  private Vector savedPaints;  
+  private Vector savedPaints;
+  private Hashtable sPaints;
   private ItemListSelectionListener ilsl;
 
   private JScrollPane scrollPane;
@@ -228,10 +228,10 @@ public Plot2D (String title, String xAxisLabel, String yAxisLabel) {
 
 
 public void browserSelectionChanged(DataMatrixBrowserEvent e) {
-	//System.out.println("caught event, source = " + e.getSource().getClass().getName());
-	DataMatrixLens dmlens = (DataMatrixLens)e.getSource();
-	if (allowLiveUpdate)
+	if (allowLiveUpdate) {
+		DataMatrixLens dmlens = (DataMatrixLens)e.getSource();
 		populateFromLens(dmlens);
+	}
 }
 
 /**
@@ -806,9 +806,12 @@ private void setupXLabels() {
  * @return The chart object containing the plot.
  */
 private JFreeChart createChart(CategoryDataset dataset) {
+	File f = new File(yAxisLabel);
+	// TODO -- test this with jar://matrixname urls, will it break?
+	String shortName = f.getName();
 	JFreeChart chart = ChartFactory.createLineChart(
 		null,
-		xAxisLabel, yAxisLabel, dataset,
+		xAxisLabel, shortName, dataset,
 		PlotOrientation.VERTICAL,
 		false,  // legend
 		true,  // tooltips
@@ -984,7 +987,8 @@ class ML implements ChartMouseListener {
 	private void resetColors() {
 		CategoryItemRenderer ren = plot.getRenderer();
 		for (int i = 0; i < dataset.getRowCount(); i++) {
-			ren.setSeriesPaint(i, (Paint)savedPaints.get(i));
+			//ren.setSeriesPaint(i, (Paint)savedPaints.get(i));
+			ren.setSeriesPaint(i, (Paint)sPaints.get(dataset.getRowKey(i)));
 		}
 	}
 	
@@ -998,9 +1002,12 @@ class ML implements ChartMouseListener {
 			LegendItemCollection lic = plot.getLegendItems();
 			Vector v  = new Vector();
 			savedPaints = new Vector();
+			sPaints = new Hashtable();
 			for (int i = 0; i < lic.getItemCount(); i++) {
 				LegendItem li = (LegendItem)lic.get(i);
 				v.add(li);
+				System.out.println("label = " + li.getLabel()+", paint= " + li.getPaint());
+				sPaints.put(li.getLabel(),li.getPaint());
 				savedPaints.add(li.getPaint());
 				
 			}
@@ -1051,7 +1058,11 @@ class ML implements ChartMouseListener {
 			}
 		}
 		
-		this.setTitle(dm.getMatrixName());
+		File f = new File(dm.getMatrixName());
+		// TODO -- test this with jar://matrixname urls, will it break?
+		String shortName = f.getName();
+		
+		this.setTitle("Plotter - " + shortName);
 		resetStatusPanel();
 		//dataset.removeAllSeries();
 		dataset.clear();
@@ -1328,10 +1339,15 @@ class ML implements ChartMouseListener {
 			}
 			JList src = (JList)e.getSource();
 			
+			
+			Object[] selObjs = itemList.getSelectedValues();
 			int[] selected = itemList.getSelectedIndices();
+			System.out.println("num of selected items: " + selected.length);
 			Hashtable selHash = new Hashtable();
 			for (int i = 0; i < selected.length; i++) {
-				selHash.put(new Integer(selected[i]),"~");
+				LegendItem li = (LegendItem)selObjs[i];
+				//System.out.println("selected: " + li.getLabel());
+				selHash.put(li.getLabel(),"~");
 			}
 			
 			
@@ -1342,23 +1358,39 @@ class ML implements ChartMouseListener {
 			CategoryItemRenderer ren = plot.getRenderer();
 			
 			Color bgColor = new Color(230,230,230);
-			for (int i = 0; i < dataset.getRowCount(); i++) {
-				try {
-					String s = (String)selHash.get(new Integer(i));
-					if ("~".equals(s)) {
-						ren.setSeriesPaint(i, (Paint)savedPaints.get(i));
-					} else {
-						ren.setSeriesPaint(i, bgColor);
-					}
-					
+
+			
+			Enumeration selKeys = selHash.keys();
+			while (selKeys.hasMoreElements()) {
+				String rowTitle = (String) selKeys.nextElement();
+				//System.out.println("rowTitle = " + rowTitle);
+				int newRowId;
+				Number[] data = new Number[dataset.getColumnCount()];
+				for (int j = 0; j < dataset.getColumnCount(); j++) {
+					String colKey = (String)dataset.getColumnKey(j);
+					data[j] = dataset.getValue(rowTitle,colKey);
 				}
-				catch (NullPointerException ex) {
-					System.out.println("caught ex");
-					//ren.setSeriesPaint(i, (Paint)savedPaints.get(i));
+				dataset.removeRow(rowTitle);
+				for (int j = 0; j < dataset.getColumnCount(); j++) {
+					String colKey = (String)dataset.getColumnKey(j);
+					dataset.addValue(data[j],rowTitle,colKey);
+				}
+				newRowId = dataset.getRowIndex(rowTitle);
+				Paint savedPaint = (Paint)sPaints.get(rowTitle);
+				System.out.println("id = "+ newRowId + ", row =  " + rowTitle +", paint = " + savedPaint);
+				ren.setSeriesPaint(newRowId, savedPaint);
+			}
+
+			
+			for (int i = 0; i < dataset.getRowCount(); i++) {
+				System.out.println("row " + i + " is called " + dataset.getRowKey(i));
+				String s = (String)selHash.get(dataset.getRowKey(i));
+				if (null == s) {
+					ren.setSeriesPaint(i, bgColor);
 				}
 			}
-			chartPanel.repaint();
 			
+			chartPanel.repaint();
 			
 		}
 	} // inner class ItemListSelectionListener
