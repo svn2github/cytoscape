@@ -28,8 +28,6 @@ public class CreateNetworkViewAction extends CytoscapeAction {
     }
 
     public static void createViewFromCurrentNetwork(CyNetwork cyNetwork) {
-        System.out.println("Secondary View Threshold:  "
-            + CytoscapeInit.getSecondaryViewThreshold());
         NumberFormat formatter = new DecimalFormat("#,###,###");
         if (cyNetwork.getNodeCount()
                 > CytoscapeInit.getSecondaryViewThreshold()) {
@@ -48,6 +46,8 @@ public class CreateNetworkViewAction extends CytoscapeAction {
                 JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
                         "Create View Request Cancelled by User.");
             }
+        } else {
+            Cytoscape.createNetworkView(Cytoscape.getCurrentNetwork());            
         }
     }
 }
