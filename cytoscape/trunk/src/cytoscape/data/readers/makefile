@@ -22,6 +22,7 @@ OBJS =  BindingPairXmlReader.class \
         InteractionsReader.class \
         TextFileReader.class \
         FileReadingAbstractions.class \
+        GraphReader.class \
 
 default: objs 
 

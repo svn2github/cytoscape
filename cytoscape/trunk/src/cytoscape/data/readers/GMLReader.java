@@ -14,7 +14,7 @@ import y.io.GMLIOHandler;
 
 import cytoscape.GraphObjAttributes;
 //-------------------------------------------------------------------------------------
-public class GMLReader {
+public class GMLReader implements GraphReader {
   private String filename;
   GraphObjAttributes edgeAttributes = new GraphObjAttributes ();
   Graph2D graph;    

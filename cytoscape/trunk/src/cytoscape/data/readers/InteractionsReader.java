@@ -17,7 +17,7 @@ import y.view.Graph2D;
 import cytoscape.GraphObjAttributes;
 import cytoscape.data.Interaction;
 //-----------------------------------------------------------------------------------------
-public class InteractionsReader {
+public class InteractionsReader implements GraphReader {
   String filename;
   Vector allInteractions = new Vector ();
   GraphObjAttributes edgeAttributes = new GraphObjAttributes ();

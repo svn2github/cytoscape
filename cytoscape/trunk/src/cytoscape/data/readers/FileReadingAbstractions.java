@@ -13,20 +13,18 @@ import cytoscape.CytoscapeConfig;
 public class FileReadingAbstractions {
 
     public static Graph2D loadGMLBasic (String filename,
-					GraphObjAttributes edgeAttributes)
-    {
+					GraphObjAttributes edgeAttributes) {
 	GMLReader reader = new GMLReader(filename);
-	reader.read();
-	GraphObjAttributes gmlEdgeAttributes = reader.getEdgeAttributes ();
-	edgeAttributes.add(gmlEdgeAttributes);
-	edgeAttributes.addNameMap(gmlEdgeAttributes.getNameMap ());
-	return reader.getGraph();
+	return loadBasic(reader,edgeAttributes);
     }
 
     public static Graph2D loadInteractionBasic (String filename,
-						GraphObjAttributes edgeAttributes)
-    {
+						GraphObjAttributes edgeAttributes) {
 	InteractionsReader reader = new InteractionsReader (filename);
+	return loadBasic(reader,edgeAttributes);
+    }
+    public static Graph2D loadBasic(GraphReader reader,
+				    GraphObjAttributes edgeAttributes) {
 	reader.read ();
 	GraphObjAttributes interactionEdgeAttributes = reader.getEdgeAttributes ();
 	edgeAttributes.add (interactionEdgeAttributes);
