@@ -830,6 +830,57 @@ public void testDeleteAttributeForOneGraphObject () throws Exception
 } // testDeleteAttributeForOneGraphObject
 //-------------------------------------------------------------------------
 /**
+ *  can we delete a specific value from a named attribute of a graphObj?
+ *  the full attribute, say "homolog" of a node may be a list of protein names.
+ *  this test ensures that we can delete exactly one of those protein names
+ *  from the list
+ */
+public void testDeleteAttributeValueForOneGraphObject () throws Exception
+{
+  System.out.println ("testDeleteAttributeValueForOneGraphObject");
+
+  GraphObjAttributes attributes = new GraphObjAttributes ();
+
+  attributes.append ("homolog", "GAL4", "h0");
+  attributes.append ("homolog", "GAL4", "h1");
+  attributes.append ("homolog", "GAL4", "h2");
+
+  assertTrue (attributes.numberOfAttributes () == 1);
+  String [] homologNames = attributes.getStringArrayValues ("homolog", "GAL4");
+  assertTrue (homologNames.length == 3);
+
+     // delete the value "h0"
+  attributes.deleteAttributeValue ("homolog", "GAL4", "h0");
+  assertTrue (attributes.getStringArrayValues ("homolog", "GAL4").length == 2);
+
+    // do it again.  this should have no effect
+  attributes.deleteAttributeValue ("homolog", "GAL4", "h0");
+  assertTrue (attributes.getStringArrayValues ("homolog", "GAL4").length == 2);
+
+    // do some bogus deletes.  this, too, should change nothing
+  attributes.deleteAttributeValue ("homolog", "GAL4", "hohoho");
+  assertTrue (attributes.getStringArrayValues ("homolog", "GAL4").length == 2);
+  attributes.deleteAttributeValue ("homolog", "GAL4", "hobo");
+  assertTrue (attributes.getStringArrayValues ("homolog", "GAL4").length == 2);
+
+  attributes.deleteAttributeValue ("homolog", "GAL5", "hobo");
+  attributes.deleteAttributeValue ("homologue", "GAL4", "hobo");
+  assertTrue (attributes.getStringArrayValues ("homolog", "GAL4").length == 2);
+
+
+    // now delete "h1".  this should leave only "h2"
+  attributes.deleteAttributeValue ("homolog", "GAL4", "h1");
+  assertTrue (attributes.getStringArrayValues ("homolog", "GAL4").length == 1);
+  assertTrue (attributes.getStringArrayValues ("homolog", "GAL4")[0].equals ("h2"));
+
+    // now delete "h2"
+  attributes.deleteAttributeValue ("homolog", "GAL4", "h2");
+  assertTrue (attributes.getStringArrayValues ("homolog", "GAL4").length == 0);
+
+
+} // testDeleteAttributeValueForOneGraphObject
+//-------------------------------------------------------------------------
+/**
  *  can we set and get attribute category?  numerical, annotation, categorizer, temporary, ...
  */
 public void testAttributeCategories () throws Exception

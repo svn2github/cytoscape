@@ -822,13 +822,28 @@ public void deleteAttribute (String attributeName)
 }
 //--------------------------------------------------------------------------------
 /**
- *  remove the specified attribute for the specified node or edge
+ *  remove the specified attribute from the specified node or edge
  */
 public void deleteAttribute (String attributeName, String graphObjectName)
 {
   if (!hasAttribute (attributeName)) return;
   HashMap oneAttributeMap = getAttribute (attributeName);
   oneAttributeMap.remove (graphObjectName);
+
+}
+//--------------------------------------------------------------------------------
+/**
+ *  remove the specified attribute value from the specified node or edge.
+ *  there may be multiple values associated with the attribute, so search through
+ *  the list, and if it is found, remove it
+ */
+public void deleteAttributeValue (String attributeName, String graphObjectName, Object value)
+{
+  if (!hasAttribute (attributeName)) return;
+  Vector list = (Vector) getList (attributeName, graphObjectName);
+ 
+  if (list.contains (value))
+     list.remove (value);
 
 }
 //--------------------------------------------------------------------------------
