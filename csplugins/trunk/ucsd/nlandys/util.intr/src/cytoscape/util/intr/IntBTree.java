@@ -326,6 +326,28 @@ public final class IntBTree
     return 0x0b;
   }
 
+//   private final static void shiftFromLesser(final int[] 
+//   {
+//   }
+
+  private final static int fillHole(final int holeInx, final int[] arr,
+                                    final int origLen)
+  {
+    final int returnThis = origLen - 1;
+    for (int i = holeInx; i < returnThis;) arr[i] = arr[++i];
+    return returnThis;
+  }
+
+  private final static int fillHole(final int holeInx, final Node[] arr,
+                                    final int origLen)
+  {
+    final int returnThis = origLen - 1;
+    int i = holeInx;
+    while (i < returnThis) arr[i] = arr[++i];
+    arr[i] = null;
+    return returnThis;
+  }
+
   /**
    * Returns the number of entries of the integer x in this tree.
    * This method has a time complexity of O(log(N)) where N is the total
