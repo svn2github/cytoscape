@@ -15,12 +15,15 @@ import cytoscape.visual.*;
 import cytoscape.visual.calculators.*;
 import cytoscape.dialogs.GridBagGroup;
 import cytoscape.dialogs.MiscGB;
+import cytoscape.data.CyNetworkListener;
+import cytoscape.data.CyNetwork;
+import cytoscape.data.CyNetworkEvent;
 //------------------------------------------------------------------------------
 
 /**
  * Primary UI class for the Set Visual Properties dialog box.
  */
-public class VizMapUI extends JDialog {
+public class VizMapUI extends JDialog implements CyNetworkListener {
     // constants for attribute types, one for each tab
     public static final byte NODE_COLOR = 0;
     public static final byte NODE_BORDER_COLOR = 1;
@@ -76,8 +79,13 @@ public class VizMapUI extends JDialog {
      */
     public VizMapUI(VisualMappingManager VMM, JFrame mainFrame) {
 	super(mainFrame, "Set Visual Properties");
-	
 	this.VMM = VMM;
+
+    //  Register to Listen for Changes in Underlying Network.
+    //  Code Added by Ethan Cerami:  April 2, 2004.
+    CyNetwork cyNetwork = VMM.getNetwork();
+    cyNetwork.addCyNetworkListener(this);
+
 	this.mainGBG = new GridBagGroup();
 	this.mainPane = mainGBG.panel;
 	//MiscGB.pad(mainGBG.constraints, 2, 2);
@@ -601,5 +609,12 @@ public class VizMapUI extends JDialog {
 		conflicts.add(styleName);
 	}
 	return conflicts;
+    }
+
+    /**
+     * State of Underlying CyNework has Changed.  Refresh UI.
+     */
+    public void onCyNetworkEvent(CyNetworkEvent event) {
+        this.refreshUI();
     }
 }
