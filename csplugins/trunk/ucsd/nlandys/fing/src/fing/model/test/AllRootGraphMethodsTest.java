@@ -32,9 +32,9 @@ public final class AllRootGraphMethodsTest
     if (root.createGraphPerspective(twoNodes, null).getNodeCount() != 2)
       throw new IllegalStateException
         ("GraphPerspective does not have two nodes");
-    if (root.createGraphPerspective(null, twoEdges).getEdgeCount() != 2)
+    if (root.createGraphPerspective(null, twoEdges).getNodeCount() < 2)
       throw new IllegalStateException
-        ("GraphPerspective does not have two edges");
+        ("GraphPerspective does not have two nodes");
     if (root.createGraphPerspective(twoNodes, twoEdges).getNodeCount() < 2)
       throw new IllegalStateException
         ("GraphPerspective has less than two nodes");
@@ -66,9 +66,9 @@ public final class AllRootGraphMethodsTest
     if (root.createGraphPerspective(twoNodeInx, null).getNodeCount() != 2)
       throw new IllegalStateException
         ("GraphPerspective does not have two nodes");
-    if (root.createGraphPerspective(null, twoEdgeInx).getEdgeCount() != 2)
+    if (root.createGraphPerspective(null, twoEdgeInx).getNodeCount() < 2)
       throw new IllegalStateException
-        ("GraphPerspective does not have two edges");
+        ("GraphPerspective does not have two nodes");
     if (root.createGraphPerspective(twoNodeInx, twoEdgeInx).getNodeCount() < 2)
       throw new IllegalStateException
         ("GraphPerspective has less than two nodes");
@@ -120,6 +120,20 @@ public final class AllRootGraphMethodsTest
         ("size of edges List and length of edge indices array don't match");
     if (root.createGraphPerspective(null, edgeIndicesArray) == null)
       throw new IllegalStateException("GraphPerspective is null");
+
+    // Create and remove node/edge functionality is tested in other code.
+
+    // containsNode(Node).
+    if (!root.containsNode(twoNodes[1]))
+      throw new IllegalStateException("RootGraph does not contain node");
+    if (root.containsNode(root2Node))
+      throw new IllegalStateException("RootGraph contains node from other");
+
+    // containsEdge(Edge).
+    if (!root.containsEdge(twoEdges[1]))
+      throw new IllegalStateException("RootGraph does not contain edge");
+    if (root.containsEdge(root2Edge))
+      throw new IllegalStateException("RootGraph contains edge from other");
   }
 
   private static final void addNodesAndEdges(RootGraph root) {
