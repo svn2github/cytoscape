@@ -305,6 +305,7 @@ public class CyMenus {
     mi = dataMenu.add(new EdgeManipulationAction(networkView));
 
     //fill the Select menu
+    selectMenu.add( new SelectionModeAction(networkView));
     JMenu selectNodesSubMenu = new JMenu("Nodes");
     selectMenu.add(selectNodesSubMenu);
     JMenu selectEdgesSubMenu = new JMenu("Edges");
