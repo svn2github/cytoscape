@@ -450,7 +450,7 @@ public class GraphViewController
    */
   public void graphPerspectiveChanged (GraphPerspectiveChangeEvent event){
     //TODO: Remove
-    System.out.println("In GraphViewController.graphPerspectiveChanged()");
+    //System.out.println("In GraphViewController.graphPerspectiveChanged()");
     GraphPerspective changedGraphPers = (GraphPerspective)event.getSource();
     GraphView graphView = (GraphView)this.gpToGv.get(changedGraphPers);
     if(graphView == null){
