@@ -18,7 +18,6 @@
              source="1.4">
       <fileset dir="${src.dir}">
         <include name="fing/model/*.java"/>
-        <include name="fing/util/*.java"/>
       </fileset>
       <classpath>
         <fileset dir="${lib.dir}">
