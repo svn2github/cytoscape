@@ -94,7 +94,12 @@ The networks can be viewed and manipulated in Cytoscape v2.1.
 					<br>
 					<br>
 					<br>
-					[<a href="http://www.chem.agilent.com/scripts/PHome.asp">Agilent Technologies Life Science Products</a>]
+					[<a href="http://www.labs.agilent.com/research/mtl/projects/sysbio/golsca.html">Agilent Technologies Life Science Products</a>]
+				</td>
+			</tr>
+			<tr>
+				<td colspan="4">
+					<hr>
 				</td>
 			</tr>
 			<tr>
