@@ -4,12 +4,12 @@
 // $Date$
 // $Author$
 //--------------------------------------------------------------------------------------
-package csplugins.data.annotation.unitTests;
+package cytoscape.data.annotation.unitTests;
 //--------------------------------------------------------------------------------------
 import junit.framework.*;
 import java.io.*;
-import csplugins.data.annotation.*;
-import csplugins.data.annotation.readers.*;
+import cytoscape.data.annotation.*;
+import cytoscape.data.annotation.readers.*;
 //------------------------------------------------------------------------------
 /**
  * test the Annotation class

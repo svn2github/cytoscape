@@ -6,7 +6,7 @@
 #--------------------------------------------------------------------------------------
 JC=javac -source 1.4
 JI=java
-PKG=csplugins.data.annotation.unitTests
+PKG=cytoscape.data.annotation.unitTests
 
 .SUFFIXES: .java .class
 .java.class: 

@@ -4,13 +4,13 @@
 // $Date$
 // $Author$
 //--------------------------------------------------------------------------------------
-package csplugins.data.annotation.unitTests;
+package cytoscape.data.annotation.unitTests;
 //--------------------------------------------------------------------------------------
 import junit.framework.*;
 import java.io.*;
 import java.util.*;
 
-import csplugins.data.annotation.*;
+import cytoscape.data.annotation.*;
 //------------------------------------------------------------------------------
 /**
  * test the Ontology class

@@ -4,9 +4,9 @@
 // $Date$
 // $Author$
 //------------------------------------------------------------------------------
-package csplugins.data.annotation.unitTests;
+package cytoscape.data.annotation.unitTests;
 //---------------------------------------------------------------------------------------------------
-import csplugins.data.annotation.*;
+import cytoscape.data.annotation.*;
 //---------------------------------------------------------------------------------------------------
 class Utils {
 
