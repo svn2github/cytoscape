@@ -7,6 +7,9 @@ public class PolyEdgeGraphLayoutRepresentation
   implements PolyEdgeGraphLayout
 {
 
+  private final double[][] m_edgeAnchorXPositions;
+  private final double[][] m_edgeAnchorYPositions;
+
   /**
    * Copies are made of all the array input parameters; modifying
    * the arrays after this constructor is called will have no effect on
@@ -27,54 +30,35 @@ public class PolyEdgeGraphLayoutRepresentation
    * <code>GraphLayoutRepresentation</code> for a definition of these first
    * nine input parameters.
    *
-   * @param directedEdgeAnchorXPositions
-   *   <blockquote>an array of length equal to the number of directed edges in
+   * @param edgeAnchorXPositions
+   *   <blockquote>an array of length equal to the number of edges in
    *   this graph; the <code>double[]</code> array
-   *   <code>directedEdgeAnchorXPositions[edgeIndex]</code> defines, in index
-   *   order, the X positions of anchor points belonging to edge at index
+   *   <code>edgeAnchorXPositions[edgeIndex]</code> defines, in anchor point
+   *   index order, the X positions of anchor points belonging to edge at index
    *   <code>edgeIndex</code>.</blockquote>
-   * @param directedEdgeAnchorYPositions
-   *   <blockquote>an array of length equal to the number of directed edges in
+   * @param edgeAnchorYPositions
+   *   <blockquote>an array of length equal to the number of edges in
    *   this graph; the <code>double[]</code> array
-   *   <code>directedEdgeAnchorYPositions[edgeIndex]</code> defines, in index
-   *   order, the Y positions of anchor points belonging to edge at index
+   *   <code>edgeAnchorYPositions[edgeIndex]</code> defines, in anchor point
+   *   index order, the Y positions of anchor points belonging to edge at index
    *   <code>edgeIndex</code>.</blockquote>
-   * @param undirectedEdgeAnchorXPositions
-   *   <blockquote>an array of length equal to the number of undirected edges
-   *   in this graph; the <code>double[]</code> array
-   *   <nobr><code>undirectedEdgeAnchorXPositions[edgeIndex - numDirectedEdges]</code></nobr>
-   *   defines, in index order, the X positions of anchor points belonging
-   *   to edge at index <code>edgeIndex</code>, where
-   *   <code>numDirectedEdges</code> is the number of directed edges in this
-   *   graph.</blockquote>
-   * @param undirectedEdgeAnchorYPositions
-   *   <blockquote>an array of length equal to the number of undirected edges
-   *   in this graph; the <code>double[]</code> array
-   *   <nobr><code>undirectedEdgeAnchorYPositions[edgeIndex - numDirectedEdges]</code></nobr>
-   *   defines, in index order, the Y positions of anchor points belonging
-   *   to edge at index <code>edgeIndex</code>, where
-   *   <code>numDirectedEdges</code> is the number of directed edges in this
-   *   graph.</blockquote>
    *
    * @exception IllegalArgumentException if parameters are passed which
    *   don't agree with a possible graph definition.
    * @see GraphLayoutRepresentation#GraphLayoutRepresentation(int, int[], int[], int[], int[], double, double, double[], double[])
    * @see cytoscape.graph.util.GraphTopologyRepresentation#GraphTopologyRepresentation(int, int[], int[], int[], int[])
    **/
-  public PolyEdgeGraphLayoutRepresentation
-    (int numNodes,
-     int[] directedEdgeSourceNodeIndices,
-     int[] directedEdgeTargetNodeIndices,
-     int[] undirectedEdgeNode0Indices,
-     int[] undirectedEdgeNode1Indices,
-     double maxWidth,
-     double maxHeight,
-     double[] nodeXPositions,
-     double[] nodeYPositions,
-     double[][] directedEdgeAnchorXPositions,
-     double[][] directedEdgeAnchorYPositions,
-     double[][] undirectedEdgeAnchorXPositions,
-     double[][] undirectedEdgeAnchorYPositions)
+  public PolyEdgeGraphLayoutRepresentation(int numNodes,
+                                           int[] directedEdgeSourceNodeIndices,
+                                           int[] directedEdgeTargetNodeIndices,
+                                           int[] undirectedEdgeNode0Indices,
+                                           int[] undirectedEdgeNode1Indices,
+                                           double maxWidth,
+                                           double maxHeight,
+                                           double[] nodeXPositions,
+                                           double[] nodeYPositions,
+                                           double[][] edgeAnchorXPositions,
+                                           double[][] edgeAnchorYPositions)
   {
     super(numNodes, directedEdgeSourceNodeIndices,
           directedEdgeTargetNodeIndices, undirectedEdgeNode0Indices,
@@ -90,22 +74,58 @@ public class PolyEdgeGraphLayoutRepresentation
     nodeXPositions = null; nodeYPositions = null;
 
     // Preliminary error checking.
-    if (directedEdgeAnchorXPositions == null)
-      directedEdgeAnchorXPositions = new double[getNumDirectedEdges()][];
-    if (directedEdgeAnchorYPositions == null)
-      directedEdgeAnchorYPositions = new double[getNumDirectedEdges()][];
-    if (undirectedEdgeAnchorXPositions == null
+    if (edgeAnchorXPositions == null)
+      edgeAnchorXPositions = new double[getNumEdges()][];
+    if (edgeAnchorYPositions == null)
+      edgeAnchorYPositions = new double[getNumEdges()][];
+
+    // Real parameter checking.  Set member variables;
+    final int numEdges = getNumEdges();
+    if (edgeAnchorXPositions.length != numEdges)
+      throw new IllegalArgumentException
+        ("edge anchor points X array does not have length numEdges");
+    if (edgeAnchorYPositions.length != numEdges)
+      throw new IllegalArgumentException
+        ("edge anchor points Y array does not have length numEdges");
+    m_edgeAnchorXPositions = new double[edgeAnchorXPositions.length][];
+    m_edgeAnchorYPositions = new double[edgeAnchorYPositions.length][];
+    for (int i = 0; i < numEdges; i++) {
+      m_edgeAnchorXPositions[i] =
+        new double[((edgeAnchorXPositions[i] == null) ?
+                    0 : edgeAnchorXPositions[i].length)];
+      m_edgeAnchorYPositions[i] =
+        new double[((edgeAnchorYPositions[i] == null) ?
+                    0 : edgeAnchorYPositions[i].length)];
+      if (m_edgeAnchorXPositions[i].length != m_edgeAnchorYPositions[i].length)
+        throw new IllegalArgumentException
+          ("for anchor points belonging to edge at index " + i +
+           ", the number of X positions is not the same as the number of " +
+           "Y positions");
+      System.arraycopy(edgeAnchorXPositions[i], 0, m_edgeAnchorXPositions[i],
+                       0, edgeAnchorXPositions[i].length);
+      System.arraycopy(edgeAnchorYPositions[i], 0, m_edgeAnchorYPositions[i],
+                       0, edgeAnchorYPositions[i].length);
+      for (int j = 0; j < m_edgeAnchorXPositions[i].length; j++) {
+        if (m_edgeAnchorXPositions[i][j] < 0.0d ||
+            m_edgeAnchorXPositions[i][j] > getMaxWidth() ||
+            m_edgeAnchorYPositions[i][j] < 0.0d ||
+            m_edgeAnchorYPositions[i][j] > getMaxHeight())
+          throw new IllegalArgumentException
+            ("an anchor position falls outside of allowable rectangle"); } }
   }
 
   public final int getNumAnchors(int edgeIndex)
   {
-    return 0;
+    return m_edgeAnchorXPositions[edgeIndex].length;
   }
 
   public final double getAnchorPosition(int edgeIndex, int anchorIndex,
                                         boolean xPosition)
   {
-    return 0.0d;
+    double[] chosenArr = (xPosition ?
+                          m_edgeAnchorXPositions[edgeIndex] :
+                          m_edgeAnchorYPositions[edgeIndex]);
+    return chosenArr[anchorIndex];
   }
 
 }
