@@ -199,10 +199,11 @@ class FRootGraph implements RootGraph
     final IntEnumerator edgeInxEnum =
       m_graph.adjacentEdges(positiveNodeIndex, true, true, true);
     if (edgeInxEnum == null) return null;
-    final int[] edgeRemoveArr = new int[edgeInxEnum.numRemaining()];
-    for (int i = 0; i < edgeRemoveArr.length; i++)
-      edgeRemoveArr[i] = ~(edgeInxEnum.nextInt());
-    removeEdges(edgeRemoveArr);
+    if (edgeInxEnum.numRemaining() > 0) {
+      final int[] edgeRemoveArr = new int[edgeInxEnum.numRemaining()];
+      for (int i = 0; i < edgeRemoveArr.length; i++)
+        edgeRemoveArr[i] = ~(edgeInxEnum.nextInt());
+      removeEdges(edgeRemoveArr); }
     // positiveNodeIndex tested for validity with adjacentEdges() above.
     if (m_graph.removeNode(positiveNodeIndex)) {
       final FNode garbage = m_nodes.getNodeAtIndex(positiveNodeIndex);
