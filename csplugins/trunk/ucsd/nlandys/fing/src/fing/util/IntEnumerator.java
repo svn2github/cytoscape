@@ -15,7 +15,7 @@ public interface IntEnumerator
   /**
    * Returns the next integer in the enumeration.
    * If numRemaining() returns a non-positive quantity before
-   * nextInt() is called, the behavior of nextInt() is undefined.
+   * nextInt() is called, the behavior of this enumeration becomes undefined.
    */
   public int nextInt();
 
