@@ -35,6 +35,7 @@
 package cytoscape.data.readers;
 //-----------------------------------------------------------------------------------------
 import java.util.*;
+import java.awt.geom.Point2D;
 
 import giny.model.*;
 import giny.view.*;
@@ -195,8 +196,13 @@ public class GMLReader implements GraphReader {
       //Cytoscape.getEdgeNetworkData().add("interaction", edgeName, interactionType);
       //Cytoscape.getEdgeNetworkData().addNameMapping(edgeName, edge);
     }
+<<<<<<< GMLReader.java
+    rootGraph.createEdges(sources,targets,false);
+    for (Iterator edgeIt = rootGraph.edgesList().iterator(),sourceIt = edgeSources.iterator(),targetIt = edgeTargets.iterator(),labelIt = edgeLabels.iterator();edgeIt.hasNext();) {
+=======
     edge_indices_array = Cytoscape.getRootGraph().createEdges(sources,targets,false);
     for ( Iterator edgeIt = Cytoscape.getRootGraph().edgesList().iterator(),sourceIt = edgeSources.iterator(),targetIt = edgeTargets.iterator(),labelIt = edgeLabels.iterator();edgeIt.hasNext();) {
+>>>>>>> 1.26
       interactionType = (String)labelIt.next();
       String edgeName = ""+nodeNameMap.get(sourceIt.next())+" ("+interactionType+") "+nodeNameMap.get(targetIt.next());
       int previousMatchingEntries = Cytoscape.getEdgeNetworkData().countIdentical(edgeName);
@@ -254,7 +260,8 @@ public class GMLReader implements GraphReader {
 	Vector nodeHeight = gmlTree.getVector("graph|node|graphics|h","|",GMLTree.DOUBLE);
 	Vector nodeWidth  = gmlTree.getVector("graph|node|graphics|w","|",GMLTree.DOUBLE);
 	Vector nodeType   = gmlTree.getVector("graph|node|graphics|type","|",GMLTree.STRING);
-	  
+
+
 	if( (nodeLabels.size() == myView.getRootGraph().getNodeCount()) &&
 	    (nodeX.size() == myView.getRootGraph().getNodeCount()) &&
 	    (nodeY.size() == myView.getRootGraph().getNodeCount()) ) {
@@ -264,8 +271,13 @@ public class GMLReader implements GraphReader {
 	  //for(int i=0;i<nodeLabels.size();i++){
 	  String ELLIPSE = "ellipse";
 	  String RECTANGLE = "rectangle";
+<<<<<<< GMLReader.java
+	  int i = 0;
+	  for (Iterator nodeIt = rootGraph.nodesIterator(); nodeIt.hasNext(); i++) {
+=======
 	  int i=0;
 	  for (Iterator nodeIt = Cytoscape.getRootGraph().nodesIterator();nodeIt.hasNext();i++) {
+>>>>>>> 1.26
 	    Node current = (Node)nodeIt.next();
 	    String nodeName = (String)nodeLabels.get(i);
 	    if ( !current.getIdentifier().equals(nodeName)) {
@@ -289,6 +301,32 @@ public class GMLReader implements GraphReader {
 	    }
 	  }
 	}
+        // vector of GMLTrees rooted at "edge" 
+	Vector edgeGML  = gmlTree.getVector("graph|edge","|",GMLTree.GMLTREE);
+
+	if( edgeGML.size() == myView.getRootGraph().getEdgeCount() ) {
+
+	    // ASSUMING THE ORDER IN THE GML IS THE SAME AS THAT RETURNED BY THE ITERATOR!!!!
+	    int i = 0;
+	    for (Iterator edgeIt = rootGraph.edgesIterator(); edgeIt.hasNext(); i++) {
+		Edge current = (Edge)edgeIt.next();
+		GMLTree tmpGML = (GMLTree)edgeGML.get(i);
+		Vector tmpLine = tmpGML.getVector("graphics|Line", "|", GMLTree.GMLTREE);
+		if(tmpLine.size()==1) {
+		    GMLTree Line = (GMLTree)tmpLine.get(0); 
+		    EdgeView currentView = myView.getEdgeView(current);
+		    currentView.getBend().removeAllHandles();
+		    //currentView.getBend().setHandles(); // we want to do this
+		    Vector tmpXs = Line.getVector("point|x", "|",GMLTree.DOUBLE);
+		    Vector tmpYs = Line.getVector("point|y", "|",GMLTree.DOUBLE);
+		    // Edge Handles are reversed for some reason??
+		    for(int j=tmpXs.size()-2; j>0; j--) {
+			Point2D.Double pt = new Point2D.Double(((Double)tmpXs.get(j)).doubleValue(), ((Double)tmpYs.get(j)).doubleValue());
+			currentView.getBend().addHandle( pt );
+		    }
+		} // END if(tmpLine.size()==1)
+	    } // END for(Iterator...
+	} // END if( edgeGML.size()...
       }
   }
 
