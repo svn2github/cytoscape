@@ -27,6 +27,8 @@ public class BetweenPathwayOptions{
   public CyNetwork physicalNetwork,geneticNetwork;
   public File physicalScores,geneticScores;
   public double alpha,cutoff;
+  public double beta;
   public int iterations;
   public List directedTypes;
+
 }

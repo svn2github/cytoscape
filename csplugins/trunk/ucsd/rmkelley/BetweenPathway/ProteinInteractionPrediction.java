@@ -28,9 +28,9 @@ public class ProteinInteractionPrediction{
   protected void makePredictions(Set one, Set two, HashMap results){
     for(Iterator nodeIt = one.iterator();nodeIt.hasNext();){
       Node node = (Node)nodeIt.next();
-      for(Iterator partnerIt = two.iterator();partnerIt.hasNext();){
+      for(Iterator partnerIt = one.iterator();partnerIt.hasNext();){
 	Node partner = (Node)partnerIt.next();
-	if(physicalNetwork.isNeighbor(node,partner)){
+	if(node == partner || physicalNetwork.isNeighbor(node,partner)){
 	  continue;
 	}
 	List sharedPhysical = sharedNeighbors(node,partner,physicalNetwork,one);

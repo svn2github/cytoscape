@@ -17,7 +17,7 @@ import javax.swing.border.TitledBorder;
 public class SearchOptionsPanel extends JPanel{
 
   JCheckBox selectedSearch, newScore, generateCutoff;
-  JTextField cutoffField;
+  JTextField cutoffField,betaField;
 
   public SearchOptionsPanel(){
     
@@ -27,7 +27,7 @@ public class SearchOptionsPanel extends JPanel{
     newScore.setEnabled(false);
     generateCutoff = new JCheckBox("Generate score thresh-hold?",false);
     cutoffField = new JTextField("0.0",10);
-
+    betaField = new JTextField("0.9",10);
     //set up the behaviors of the objects
     generateCutoff.addChangeListener(new ChangeListener(){
 	public void stateChanged(ChangeEvent e){	
@@ -36,12 +36,14 @@ public class SearchOptionsPanel extends JPanel{
     
     //set up the verification agents for the particular data types
     new DoubleVerification(cutoffField,0.0,Double.POSITIVE_INFINITY,0.0);
-    
+    new DoubleVerification(betaField,0.0,1.0,0.9);
+
     //add into the layout
     setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
     add(selectedSearch);
     add(newScore);
     add(generateCutoff);
+    add(betaField);
     JPanel cutoffPanel = new JPanel();
     cutoffPanel.setBorder(new TitledBorder("Manually specify scoring thresh-hold"));
     cutoffPanel.add(cutoffField);
@@ -53,6 +55,10 @@ public class SearchOptionsPanel extends JPanel{
     return selectedSearch.isSelected();
   }
 
+  public double getBeta(){
+    return Double.parseDouble(betaField.getText());
+  }
+    
   public boolean newScore(){
     return newScore.isSelected();
   }

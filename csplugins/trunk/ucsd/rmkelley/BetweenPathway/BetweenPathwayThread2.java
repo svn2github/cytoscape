@@ -24,13 +24,13 @@ import java.awt.Dimension;
 
 class BetweenPathwayThread2 extends Thread{
   double absent_score = .00001;
-  double physical_beta = 0.9;
-  double genetic_beta = 0.9;
-  double physical_logBeta = Math.log(physical_beta);
-  double physical_logOneMinusBeta = Math.log(1-physical_beta);
-  double genetic_logBeta = Math.log(genetic_beta);
-  double genetic_logOneMinusBeta = Math.log(1-genetic_beta);
-  double overlap_cutoff = 0.30;
+  double physical_beta;
+  double genetic_beta;
+  double physical_logBeta;
+  double physical_logOneMinusBeta;
+  double genetic_logBeta;
+  double genetic_logOneMinusBeta;
+  //double overlap_cutoff = 0.30;
   BetweenPathwayOptions options;
   double [][] physicalScores;
   double [][] geneticScores;
@@ -40,6 +40,12 @@ class BetweenPathwayThread2 extends Thread{
 
   public BetweenPathwayThread2(BetweenPathwayOptions options){
     this.options = options;
+    physical_beta = options.beta;
+    genetic_beta = options.beta;
+    physical_logBeta = Math.log(physical_beta);
+    physical_logOneMinusBeta = Math.log(1-physical_beta);
+    genetic_logBeta = Math.log(genetic_beta);
+    genetic_logOneMinusBeta = Math.log(1-genetic_beta);
   }
 
   public void setPhysicalNetwork(CyNetwork physicalNetwork){
@@ -594,21 +600,21 @@ class BetweenPathwayThread2 extends Thread{
     return results;
   }
 
-  public boolean overlap(NetworkModel one, NetworkModel two){
-    return (intersection(one.one,two.one)>overlap_cutoff && intersection(one.two,two.two)>overlap_cutoff) || (intersection(one.one,two.two) > overlap_cutoff && intersection(one.two,two.one) > overlap_cutoff); 
-  }
+//   public boolean overlap(NetworkModel one, NetworkModel two){
+//     return (intersection(one.one,two.one)>overlap_cutoff && intersection(one.two,two.two)>overlap_cutoff) || (intersection(one.one,two.two) > overlap_cutoff && intersection(one.two,two.one) > overlap_cutoff); 
+//   }
 
 
-  public double intersection(Set one, Set two){
-    int size = one.size() + two.size();
-    int count = 0;
-    for(Iterator nodeIt = one.iterator() ; nodeIt.hasNext() ;){
-      if(two.contains(nodeIt.next())){
-	count++;
-      }
-    }
-    return count/(double)(size-count);
-  }
+//   public double intersection(Set one, Set two){
+//     int size = one.size() + two.size();
+//     int count = 0;
+//     for(Iterator nodeIt = one.iterator() ; nodeIt.hasNext() ;){
+//       if(two.contains(nodeIt.next())){
+// 	count++;
+//       }
+//     }
+//     return count/(double)(size-count);
+//   }
       
   /**
    * Calculate how many new cross physical interactions are implied
