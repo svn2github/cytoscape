@@ -2429,7 +2429,17 @@ protected class NodeAttributesPopupMode extends PopupMode {
     dialog.setVisible (true);
     return null;
     }
-
+    
+    /**
+     * Returns an Edge Popup dialog for getting edge properties.
+     *
+     * added by dramage 2002-08-23
+     */
+    public JPopupMenu getEdgePopup (Edge e) {
+	EdgePopupMenu epm = new EdgePopupMenu(CytoscapeWindow.this, e);
+	return epm;
+    }
+    
   public JPopupMenu getPaperPopup (double x, double y) {
     return null;
     }
