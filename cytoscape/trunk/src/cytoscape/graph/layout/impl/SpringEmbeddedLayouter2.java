@@ -720,7 +720,6 @@ public final class SpringEmbeddedLayouter2 extends LayoutAlgorithm
   public void run()
   {
     if (m_halt) return;
-    m_percentComplete.setPercentCompleted(0);
 
     // Stop if all nodes are closer together than this euclidean distance.
     final double euclideanDistanceThreshold =
@@ -740,12 +739,12 @@ public final class SpringEmbeddedLayouter2 extends LayoutAlgorithm
     m_nodeDistanceSpringStrengths = new double[m_nodeCount][m_nodeCount];
 
     if (m_halt) return;
-    m_percentComplete.setPercentCompleted(1);
+    m_percentComplete.setPercentCompleted(2);
 
     int[][] nodeDistances = calculateNodeDistances(m_graph);
 
     if (m_halt) return;
-    m_percentComplete.setPercentCompleted(3);
+    m_percentComplete.setPercentCompleted(4);
 
     // Calculate rest lengths and strengths based on node distance data.
     for (int node_i = 0; node_i < m_nodeCount; node_i++)
@@ -779,18 +778,16 @@ public final class SpringEmbeddedLayouter2 extends LayoutAlgorithm
 
     final double percentCompletedBeforePasses = 5.0d;
     final double percentCompletedAfterPasses = 95.0d;
-
-    // Wow!  Four 'p' words in a row!
-    final double percentProgressPerPass =
-      (percentCompletedAfterPasses - percentCompletedBeforePasses) /
-      (double) m_numLayoutPasses;
+    // The second pass takes little time, and the ratio of time for second pass
+    // to time for first pass approaches zero as the graph gets large.
+    // Therefore we don't report progress on any pass but the first.
 
     for (m_layoutPass = 0; m_layoutPass < m_numLayoutPasses; m_layoutPass++)
     {
-      double currentProgress = percentCompletedBeforePasses +
-        percentProgressPerPass * (double) m_layoutPass;
+      double currentProgress = percentCompletedBeforePasses;
       final double percentProgressPerIter =
-        percentProgressPerPass / (double) (m_nodeCount + numIterations);
+        (percentCompletedAfterPasses - percentCompletedBeforePasses) /
+        (double) (m_nodeCount + numIterations);
 
       // Initialize this layout pass.
       potentialEnergy[0] = 0.0;
@@ -800,7 +797,8 @@ public final class SpringEmbeddedLayouter2 extends LayoutAlgorithm
       for (int nodeIndex = 0; nodeIndex < m_nodeCount; nodeIndex++)
       {
         if (m_halt) return;
-        m_percentComplete.setPercentCompleted((int) currentProgress);
+        if (m_layoutPass == 0)
+          m_percentComplete.setPercentCompleted((int) currentProgress);
 
         partials = new PartialDerivatives(nodeIndex);
         calculatePartials(partials, null, potentialEnergy, false,
@@ -811,7 +809,7 @@ public final class SpringEmbeddedLayouter2 extends LayoutAlgorithm
              furthestNodePartials.euclideanDistance)) {
           furthestNodePartials = partials; }
 
-        currentProgress += percentProgressPerIter;
+        if (m_layoutPass == 0) currentProgress += percentProgressPerIter;
       }
       for (int iterations_i = 0; 
            (iterations_i < numIterations) &&
@@ -820,13 +818,14 @@ public final class SpringEmbeddedLayouter2 extends LayoutAlgorithm
            iterations_i++)
       {
         if (m_halt) return;
-        m_percentComplete.setPercentCompleted((int) currentProgress);
+        if (m_layoutPass == 0)
+          m_percentComplete.setPercentCompleted((int) currentProgress);
         
         furthestNodePartials = moveNode(furthestNodePartials, partialsList,
                                         potentialEnergy,
                                         m_autoScaleGraph);
 
-        currentProgress += percentProgressPerIter;
+        if (m_layoutPass == 0) currentProgress += percentProgressPerIter;
       }
     }
 
