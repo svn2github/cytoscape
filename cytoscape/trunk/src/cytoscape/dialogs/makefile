@@ -32,7 +32,9 @@ OBJS = ColorPopupButton.class \
         JointIntegerEntry.class \
         RotateSelectionDialog.class \
         EdgePopupMenu.class \
-        EdgeAttributesPopupDetails.class
+        EdgeAttributesPopupDetails.class \
+        ShrinkExpandGraph.class \
+        ShrinkExpandGraphUI.class
 
 
 

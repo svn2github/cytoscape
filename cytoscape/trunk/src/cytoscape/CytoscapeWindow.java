@@ -28,6 +28,9 @@ import y.layout.hierarchic.*;
 import y.layout.organic.OrganicLayouter;
 import y.layout.random.RandomLayouter;
 
+import cytoscape.dialogs.ShrinkExpandGraph;
+import cytoscape.dialogs.ShrinkExpandGraphUI;
+
 import y.io.YGFIOHandler;
 import y.io.GMLIOHandler;
 
@@ -886,6 +889,7 @@ protected JMenuBar createMenuBar ()
   alignSubMenu.add (new AlignVerticalAction   ());
   layoutMenu.add(new RotateSelectedNodesAction());
   layoutMenu.add(new ReduceEquivalentNodesAction());
+  ShrinkExpandGraphUI shrinkExpand = new ShrinkExpandGraphUI(this);  
 
   vizMenu = new JMenu ("Visualization"); // always create the viz menu
   menuBar.add (vizMenu);
