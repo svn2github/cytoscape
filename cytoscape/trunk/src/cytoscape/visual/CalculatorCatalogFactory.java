@@ -84,7 +84,6 @@ public abstract class CalculatorCatalogFactory {
         System.out.println( "vizmaps found at: "+propertiesFile );
         propsFound = true;
       } catch ( Exception e ) {
-        e.printStackTrace();
         propsFound = false;
       }
     }
@@ -113,7 +112,6 @@ public abstract class CalculatorCatalogFactory {
         propsFound = true;
       } catch ( Exception e ) {
         // error
-        e.printStackTrace();
         propsFound = false;
       }
     }
