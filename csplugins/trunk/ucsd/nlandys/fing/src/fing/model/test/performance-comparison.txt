@@ -56,3 +56,63 @@ ADJACENT EDGES TEST:
     changes; instead of returning an array of integers, return
     an iteration over integers.  This would prevent a lot of
     unnecessary array allocation.
+
+
+=======================================================================
+CONNECTING EDGES TEST:
+
+  Testing: A deprecated method:
+    RootGraph.getEdgeIndicesArray(int, int, boolean, boolean)
+
+  Importance:
+    This method has been deprecated -- it is suggested to use
+    getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean) instead.
+    I can't think of an important algorithm that requires the operation
+    of getting all edges connecting two nodes.
+
+  Description of test:
+    This test creates N nodes and E edges (an even mix of directed and
+    undirected) in a RootGraph.  The topology of RootGraph created is
+    defined by [random] bytes read from standard input.  For every pair
+    nodes whose order of creation was i, i+1, in the RootGraph,
+    getEdgeIndicesArray() is called on that pair.  Because
+    getEdgeIndicesArray() takes two boolean input parameters, this test
+    is be repeated four times, each time with a different set of
+    boolean input parameters.
+
+  Test circumstances:
+    Tests were performed on a 2.4GHz P4, with 512M RAM, and 256M memory
+    was allocated to the JVM.
+
+  Test results:
+
+             Milliseconds taken to perform test case:
+
+    graph size                          |  Fing  |  Luna  |
+  --------------------------------------+--------+--------+
+       7 nodes,      20 edges           |      3 |      2 |
+     100 nodes,     500 edges           |     12 |     13 |
+     100 nodes,   10000 edges           |     20 |      4 |
+    1000 nodes,   20000 edges           |     47 |     10 |
+    1000 nodes,   39998 edges           |     75 |     10 |
+    2000 nodes,   20000 edges           |     53 |     11 |
+    4000 nodes,   20000 edges           |     57 |     16 |
+    8000 nodes,   20000 edges           |     70 |     20 |
+   16000 nodes,   20000 edges           |    130 |     27 |
+   16000 nodes,  100000 edges           |    215 |   fail |
+   50000 nodes,  400000 edges           |    800 |   fail |
+  100000 nodes, 1000000 edges           |   2000 |   fail |
+  --------------------------------------+--------+--------+
+
+  Afterthoughts:
+    This method was deprecated for a good reason -- it's not used
+    by algorithms and it's not worth optimizing it.  In the Fing
+    implementation, this method iterates over all edges touching one
+    of the nodes, choosing those edges which also touch the other node.
+    Therefore, the time complexity of this method is linear with respect
+    to the number of edges touching one of the input nodes.  It's
+    possible to arrange the adjacent edge lists into tree-like
+    structures in order to optimize this operation; this idea was
+    discussed, and then it was decided to use plain old linked lists
+    of adjacent edges in favor of trees, for the sake of simplicity of
+    implementation.
