@@ -85,6 +85,9 @@ public class MinIntHeapPerformance
   public static void main(String[] args) throws Exception
   {
     int N = Integer.parseInt(args[0]);
+    boolean repeat = false;
+    if (args.length > 1 && args[1].equalsIgnoreCase("repeat"))
+      repeat = true;
     int[] elements = new int[N];
     InputStream in = System.in;
     byte[] buff = new byte[4];
@@ -121,11 +124,21 @@ public class MinIntHeapPerformance
     long millisEnd = System.currentTimeMillis();
 
     // Print the time taken to standard error.
-    System.err.println(millisEnd - millisBegin);
+    if (!repeat) System.err.println(millisEnd - millisBegin);
 
     // Print sorted array to standard out.
-    for (int i = 0; i < uniqueElements.length; i++)
-      System.out.println(uniqueElements[i]);
+    if (!repeat)
+      for (int i = 0; i < uniqueElements.length; i++)
+        System.out.println(uniqueElements[i]);
+
+    // Run repeated test if that's what the command line told us.
+    else
+    {
+      IntEnumerator iter = _REPEAT_TEST_CASE_(elements);
+      final int numElements = iter.numRemaining();
+      for (int i = 0; i < numElements; i++)
+        System.out.println(iter.nextInt());
+    }
   }
 
   private static final int assembleInt(byte[] fourConsecutiveBytes)
@@ -149,6 +162,13 @@ public class MinIntHeapPerformance
     for (int i = 0; i < returnThis.length; i++)
       returnThis[i] = iter.nextInt();
     return returnThis;
+  }
+
+  private static final IntEnumerator _REPEAT_TEST_CASE_(int[] elements)
+  {
+    _THE_HEAP_.empty();
+    _THE_HEAP_.toss(elements, 0, elements.length);
+    return _THE_HEAP_.orderedElements(true);
   }
 
 }
