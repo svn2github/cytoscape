@@ -10,22 +10,10 @@ package fing.model;
 public class FingExtendableRootGraph extends FRootGraph
 {
 
-  public FingExtendableRootGraph(FingNodeDepot nodeDepot) { }
-
-//   /**
-//    * This method is here so that subclasses can gain control of the exact
-//    * Node and Edge object that are used by this graph system.
-//    **/
-//   protected Node createNode(int nodeInx)
-//   {
-//   }
-
-//   /**
-//    * This method is here so that subclasses can gain control of the exact
-//    * Node and Edge object that are used by this graph system.
-//    **/
-//   protected Edge createEdge(int edgeInx)
-//   {
-//   }
+  public FingExtendableRootGraph(FingNodeDepot nodeDepot,
+                                 FingEdgeDepot edgeDepot)
+  {
+    super(nodeDepot, edgeDepot);
+  }
 
 }
