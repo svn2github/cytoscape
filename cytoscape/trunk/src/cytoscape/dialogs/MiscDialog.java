@@ -55,13 +55,13 @@ public class MiscDialog {
 	if(p==null) return new ImageIcon [0];
 
 	ImageIcon [] arrowIcons = new ImageIcon [7];
-	arrowIcons[0] = new ImageIcon(p+"rectangle.jpg", "DELTA");
-	arrowIcons[1] = new ImageIcon(p+"diamond.jpg", "DIAMOND");
-	arrowIcons[2] = new ImageIcon(p+"ellipse.jpg", "STANDARD");
-	arrowIcons[3] = new ImageIcon(p+"hexagon.jpg", "SHORT");
-	arrowIcons[4] = new ImageIcon(p+"trapezoid.jpg", "WHITE_DIAMOND");
-	arrowIcons[5] = new ImageIcon(p+"triangle.jpg", "WHITE_DELTA");
-	arrowIcons[6] = new ImageIcon(p+"triangle.jpg", "SCALABLE");
+	arrowIcons[0] = new ImageIcon(p+"arrow_delta.jpg", "DELTA");
+	arrowIcons[1] = new ImageIcon(p+"arrow_diamond.jpg", "DIAMOND");
+	arrowIcons[2] = new ImageIcon(p+"arrow_standard.jpg", "STANDARD");
+	arrowIcons[3] = new ImageIcon(p+"arrow_short.jpg", "SHORT");
+	arrowIcons[4] = new ImageIcon(p+"arrow_whitediamond.jpg", "WHITE_DIAMOND");
+	arrowIcons[5] = new ImageIcon(p+"arrow_whitedelta.jpg", "WHITE_DELTA");
+	arrowIcons[6] = new ImageIcon(p+"arrow_scalable.jpg", "SCALABLE");
 
 	return arrowIcons;
     }
