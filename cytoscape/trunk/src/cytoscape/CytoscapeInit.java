@@ -225,7 +225,7 @@ public class CytoscapeInit
 
   
   public String getHelp () {
-    return CyCommandLineParser.HELP;
+    return CyCommandLineParser.getHelp();
   }
 
   public static boolean isHeadless () {
