@@ -447,9 +447,12 @@ protected JMenuBar createMenuBar ()
   mi = loadSubMenu.add (new LoadExpressionMatrixAction ());
   mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_E, ActionEvent.CTRL_MASK));
 
-  fileMenu.add (new SaveAsGMLAction ());
-  fileMenu.add (new SaveAsInteractionsAction ());
-  fileMenu.add (new SaveVisibleNodesAction());
+  JMenu saveSubMenu = new JMenu ("Save");
+  fileMenu.add (saveSubMenu);
+  saveSubMenu.add (new SaveAsGMLAction ());
+  saveSubMenu.add (new SaveAsInteractionsAction ());
+  saveSubMenu.add (new SaveVisibleNodesAction());
+
   fileMenu.add (new PrintAction ());
 
   mi = fileMenu.add (new CloseWindowAction ());
@@ -1228,7 +1231,7 @@ public boolean saveVisibleNodeNames ()
 
 //------------------------------------------------------------------------------
 protected class SaveVisibleNodesAction extends AbstractAction   {
-  SaveVisibleNodesAction () { super ("Save Visible Nodes"); }
+  SaveVisibleNodesAction () { super ("Visible Nodes"); }
 
     public void actionPerformed (ActionEvent e) {
 	boolean itWorked = saveVisibleNodeNames ();
@@ -1493,7 +1496,7 @@ protected class CloseWindowAction extends AbstractAction  {
  */
 protected class SaveAsInteractionsAction extends AbstractAction  
 {
-  SaveAsInteractionsAction () {super ("Save As Interactions..."); }
+  SaveAsInteractionsAction () {super ("As Interactions..."); }
 
   public void actionPerformed (ActionEvent e) {
     File currentDirectory = new File (System.getProperty ("user.dir"));
@@ -1535,7 +1538,7 @@ protected class SaveAsInteractionsAction extends AbstractAction
 //------------------------------------------------------------------------------
 protected class SaveAsGMLAction extends AbstractAction  
 {
-  SaveAsGMLAction () {super ("Save As GML..."); }
+  SaveAsGMLAction () {super ("As GML..."); }
   public void actionPerformed (ActionEvent e) {
     File currentDirectory = new File (System.getProperty ("user.dir"));
     JFileChooser chooser = new JFileChooser (currentDirectory);
