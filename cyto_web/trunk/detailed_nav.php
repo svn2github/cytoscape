@@ -3,30 +3,30 @@
 			<td width="120" id="first">
 				<h1>
 					<a href="download.php?file=cyto2">
-						Download Cytoscape 
+						Download Cytoscape
 					</a>
 				</h1>
 				<p>
 					<a href="download.php?file=cyto2">
-						Download Version 2.0 
+						Download Version 2.0
 					</a>
 				</p>
 				<p>
 					<a href="download.php?file=cyto1">
-						Download Version 1.1.1 
+						Download Version 1.1.1
 					</a>
 				</p>
 				<p>
-					Requires 
+					Requires
 					<a href="http://java.sun.com/j2se/1.4.2/index.jsp">
-						Java 1.4.2 
+						Java 1.4.2
 					</a>
 				</p>
 			</td>
 			<td width="120">
 				<h1>
 					<a href="tutorial.php">
-						Online Tutorial 
+						Online Tutorial
 					</a>
 				</h1>
 				<p>
@@ -37,14 +37,14 @@
 			<td width="120">
 				<h1>
 					<a href="manual/Cytoscape2_0Manual.pdf">
-						Manual 
+						Manual
 					</a>
 				</h1>
 				<p>
 					<a href="manual/Cytoscape2_0Manual.pdf">
-						PDF format</a>, explains all basic features of Cytoscape. 
+						PDF format</a>, explains all basic features of Cytoscape.
 					<a href="http://www.adobe.com/products/acrobat/readstep2.html">
-						Get Acrobat reader 
+						Get Acrobat reader
 					</a>
 				</p>
 			</td>
@@ -52,7 +52,7 @@
 			<td width="120">
 				<h1>
 					<a href="mail.php">
-						Mailing Lists 
+						Mailing Lists
 					</a>
 				</h1>
 				<p>
@@ -63,25 +63,21 @@
 			<td width="120">
 				<h1>
 					<a href="developer.php">
-						Developer Docs 
+						Developer Docs
 					</a>
 				</h1>
 				<p>
 					<a href="http://cbio.mskcc.org/cytoscape/javadoc/">
-						Cytoscape Javadoc API 
+						Cytoscape Javadoc API
 					</a>
-				</p>
-				<p>
-					<a href="http://cytoscape.systemsbiology.net/Cytoscape2.0/plugin/pluginTutorial/pluginTutorial.html">
-					Cytoscape 2.0 PlugIn Tutorial</A>
 				</p>
 				<p>
 					<a href="http://cytoscape.systemsbiology.net/Cytoscape2.0/plugin/index.html">
 					Cytoscape 2.0 PlugIn Writer Documentation</A>
-				</p>				
+				</p>
 				<p>
 					<a href="http://csbi.sourceforge.net/">
-						Graph INterface librarY (GINY) 
+						Graph INterface librarY (GINY)
 					</a>
 				</p>
 			</td>

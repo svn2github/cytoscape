@@ -105,10 +105,13 @@
 					</tr>
 				</tbody>
 			</table>
-			<big>
-				<br>
-			</big>
+			</div>
 		</div>
+		<br>
+		<img src="/images/2004Aug_devteam-updated.gif">
+		<br>
+		Image created with Cytoscape
+		<br>
 <? include "footer.php"; ?>
 	</body>
 </html>
