@@ -18,7 +18,7 @@ public class LabelTextPanel extends JPanel {
 
     String [] attributeNames;
     MutableString nodeLabelKey;
-    JList theList;
+    JComboBox theBox;
 //--------------------------------------------------------------------------------------
 public LabelTextPanel (GraphObjAttributes nodeAttribs,
 		       MutableString writeHere)
@@ -31,38 +31,28 @@ public LabelTextPanel (GraphObjAttributes nodeAttribs,
   GridBagConstraints c = new GridBagConstraints();
   this.setLayout (gridbag);
 
-  DefaultListModel listModel = new DefaultListModel();
+  // using Model so we can manually add "canonicalName" at the end.
+  DefaultComboBoxModel boxModel = new DefaultComboBoxModel();
   for (int i=0; i < attributeNames.length; i++)
-      listModel.addElement(attributeNames [i]);
-  listModel.addElement("canonicalName");
+      boxModel.addElement(new String(attributeNames [i]));
+  boxModel.addElement(new String("canonicalName"));
 
-  // now constructing from the listModel instead of
-  // attributeNames so that "canonicalName" can be
-  // on the list.
-  theList = new JList(listModel);
-
-  theList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-  theList.addListSelectionListener(new SharedListSelectionHandler());
-  theList.setSelectedValue(nodeLabelKey.getString(),true);
-  /*
-    for (int i=0; i < attributeNames.length; i++) {
-    String attributeName = attributeNames [i];
-    System.out.println(attributeName);
-    }
-  */
+  theBox = new JComboBox(boxModel);
+  theBox.setSelectedItem(nodeLabelKey.getString());
+  theBox.addActionListener(new BoxAction());
 
   c.gridx=0;
   c.gridy=0;
-  gridbag.setConstraints(theList,c);
-  this.add(theList);
+
+  gridbag.setConstraints(theBox,c);
+  this.add(theBox);
   
 } // LabelTextPanel ctor
 
-public class SharedListSelectionHandler implements ListSelectionListener {
-    public void valueChanged(ListSelectionEvent e) {
-
-	JList jl = (JList)e.getSource();
-	nodeLabelKey.setString(jl.getSelectedValue().toString());
+public class BoxAction extends AbstractAction {
+    public void actionPerformed (ActionEvent e) {
+	JComboBox jcb = (JComboBox)e.getSource();
+	nodeLabelKey.setString((String)jcb.getSelectedItem());
     }
 }
 

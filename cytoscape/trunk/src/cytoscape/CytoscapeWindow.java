@@ -422,7 +422,7 @@ protected void displayNodeLabels (String key)
 	Node node = nodes [i];
 	String canonicalName = getCanonicalNodeName(node);
 	String newName = "";
-	if(key!="canonicalName") {
+	if(!(key.equals("canonicalName"))) {
 	    HashMap attribmap = nodeAttributes.getAttributes(canonicalName);
 	    Object newObjectWithName  = (Object)attribmap.get(key);
 	    if(newObjectWithName != null)
