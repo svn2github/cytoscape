@@ -28,11 +28,6 @@ For programmers:
 -New task framework for long-term tasks
 -Headless mode (command line only operation) for advanced scripting
 
-Cytoscape is jointly developed by the groups of Benno Schwikowski (Pasteur
-Institute, Paris), Trey Ideker (University of California San Diego), Chris
-Sander (Memorial Sloan-Kettering Cancer Center), Annette Adler (Agilent
-Laboratories) and the Institute of Systems Biology, Seattle.
-
 Best regards,
 The Cytoscape Collaboration
-
+http://cytoscape.org/people.php
