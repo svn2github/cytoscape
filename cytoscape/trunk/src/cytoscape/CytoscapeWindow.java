@@ -179,8 +179,8 @@ public CytoscapeWindow (cytoscape parentApp,
   displayCommonNodeNames ();
   displayNewGraph (doFreshLayout);
 
-  mainFrame.setVisible (true);
   mainFrame.addWindowListener (parentApp);
+  mainFrame.setVisible (true);
 
 
   // load plugins last, after the main window is setup, since they
