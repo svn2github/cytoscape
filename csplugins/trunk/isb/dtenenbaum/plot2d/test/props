@@ -1,1 +1,1 @@
-#plugin.dcb.load=csplugins.trial.pshannon.dataCube.DataCubePlugin
+plugin.dcb.load=csplugins.isb.pshannon.dataMatrix.DataMatrixPlugin
