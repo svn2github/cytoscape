@@ -350,24 +350,22 @@ class FGraphPerspective implements GraphPerspective
           (new GraphPerspectiveEdgesRestoredEvent(this, successArr)); } }
     return returnThis; }
 
-  public boolean containsNode(Node node)
-  {
-    throw new IllegalStateException("not implemented yet");
-  }
+  public boolean containsNode(Node node) {
+    return node.getRootGraph() == m_root &&
+      !(m_rootToNativeNodeInxMap.get(~(node.getRootGraphIndex())) < 0); }
 
   public boolean containsNode(Node node, boolean recurse)
   {
-    throw new IllegalStateException("not implemented yet");
+    throw new UnsupportedOperationException("meta nodes not yet supported");
   }
 
-  public boolean containsEdge(Edge edge)
-  {
-    throw new IllegalStateException("not implemented yet");
-  }
+  public boolean containsEdge(Edge edge) {
+    return edge.getRootGraph() == m_root &&
+      !(m_rootToNativeEdgeInxMap.get(~(edge.getRootGraphIndex())) < 0); }
 
   public boolean containsEdge(Edge edge, boolean recurse)
   {
-    throw new IllegalStateException("not implemented yet");
+    throw new UnsupportedOperationException("meta nodes not yet supported");
   }
 
   public GraphPerspective join(GraphPerspective persp)
