@@ -1,0 +1,208 @@
+<project name="console" default="console" basedir=".">
+
+  <!-- =================================================================== -->
+  <!-- Initialization target                                               -->
+  <!-- =================================================================== -->
+  <target name="init-console">
+    <tstamp/>
+    <property name="console.Name" value="console"/>
+    <property name="console.name" value="console"/>
+    <property name="console.version" value="0.1"/>
+    <property name="console.year" value="200"/>
+
+    <echo message="Building ${console.name} version ${console.version}."/>
+
+    <!-- Inheritable properties -->
+    <property name="debug" value="on"/>
+    <property name="optimize" value="off"/>
+    <property name="deprecation" value="on"/>
+    <property name="nowarn" value="true"/>
+    <property name="fork" value="false"/>
+    <property name="console.root.dir" value="."/>
+    <property name="console.lib.dir" value="${console.root.dir}/lib"/>
+    <property name="cytoscape.lib.dir" value="${console.root.dir}/../../../../cytoscape/lib"/>
+    <property name="cytoscape.plugin.dir" value="${console.root.dir}/../../../../cytoscape/plugins"/>
+    <path id="project.class.path">
+      <pathelement path="${java.class.path}/"/>
+    </path>
+
+    <!-- Define the directories -->
+    <property name="console.root.dir" value="./"/>
+    <property name="console.src.dir" value="${console.root.dir}/src"/>
+    <property name="console.classes.dir" value="${console.root.dir}/classes"/>
+    <property name="console.javadoc.dir" value="${javadoc.dir}/console"/>
+    <property name="console.resources.dir" value="${console.root.dir}/resources"/>
+    <property name="console.manifest.dir" value="${console.root.dir}/manifest"/>
+    <property name="console.packages" value="console.*"/>
+    <!-- Subdirectory for test reports -->
+    <property name="console.tests.reports.dir" value="${console.root.dir}/reports/tests" />
+    <property name="cytoscape.lib" value="../../cytoscape/lib" />
+
+    <!-- Define the condition for compilation -->
+    <property name="cytoscape.jar" value="${console.lib.dir}/cytoscape.jar"/>
+    <property name="colt.jar" value="${console.lib.dir}/colt.jar"/>
+    
+
+    <condition property="cytoscape.present">
+      <and> 
+	  		<available file="${cytoscape.jar}"/> 
+				<available file="${colt.jar}"/> 
+		  </and>
+    </condition>
+
+    <!-- Define excludes for console compile and javadoc -->
+    <property name="console.excludes" value="**/notyet/*"/>
+    <property name="console.tests.excludes" value="**/notyet/*"/>
+    <property name="console.packages.excludes" value="**.test.*,**.notyet.*"/>
+
+    <path id="console.project.class.path">
+      <pathelement location="${console.classes.dir}"/>
+      <pathelement location="${cytoscape.lib.dir}/colt.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/../cytoscape.jar"/>
+      <pathelement location="${console.lib.dir}/jline.jar"/>
+      <pathelement path="${project.class.path}/"/>
+    </path>
+
+
+
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the console project                                           -->
+  <!-- =================================================================== -->
+  <target name="compile-console" depends="init-console"  >
+
+   <echo message=" COMPILE console "/>
+
+    <mkdir dir="${console.classes.dir}"/>
+    <javac srcdir="${console.src.dir}"
+           excludes="${console.excludes}"
+           classpathref="console.project.class.path"
+           destdir="${console.classes.dir}"
+           debug="${debug}"
+           nowarn="${nowarn}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the console.jar file                                           -->
+  <!-- =================================================================== -->
+  <target name="console" depends="compile-console"  >
+    <jar destfile="console.jar" manifest="${console.manifest.dir}/console.manifest">
+      <fileset
+        dir="${console.classes.dir}"
+        includes="**"/>
+      <fileset
+        dir="${console.root.dir}/lib"
+        includes="resources/**"/>
+      
+    </jar>
+    <copy todir="${console.lib.dir}" file="console.jar"/>
+    <copy todir="${cytoscape.plugin.dir}" file="console.jar"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the console tests                                             -->
+  <!-- =================================================================== -->
+  <target name="compile-tests" depends="console"  >
+    <mkdir dir="${console.classes.dir}"/>
+    <javac srcdir="${console.src.dir}"
+           includes="**/test/*"
+           excludes="${console.tests.excludes}"
+           classpathref="console.project.class.path"
+           destdir="${console.classes.dir}"
+           debug="${debug}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the console-tests.jar file                                     -->
+  <!-- =================================================================== -->
+  <target name="tests" depends="compile-tests"  >
+    <jar jarfile="console-tests.jar"
+         basedir="${console.classes.dir}"
+         includes="**/test/*"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Build all jars                                                      -->
+  <!-- =================================================================== -->
+  <target name="all" depends="console"/>
+
+   <!-- =================================================================== -->
+  <!-- Run the Plugin                                                      -->
+  <!-- =================================================================== -->
+  <target name="run" depends="console" >
+     
+     <java classname="cytoscape.cytoscape" 
+           classpathref="console.project.class.path"
+           fork="true"/>
+           <arg line = "-y giny"/>
+           <arg line = "--JLD"/>
+           <arg line = "${console.lib.dir}/console.jar"/>
+           
+
+  </target>
+
+
+
+  <!-- =================================================================== -->
+  <!-- Runs the tests in console-tests.jar                                    -->
+  <!-- =================================================================== -->
+  <target name="runtests" depends="tests"  >
+    <mkdir dir="${console.tests.reports.dir}"/>
+    <junit
+       printsummary="yes"
+       haltonfailure="no"
+       dir="${console.classes.dir}"
+       maxmemory="1G"
+    >
+      <formatter type="plain" usefile="true" />
+      <classpath refid="console.project.class.path"/>
+      <!-- The junit task doesn't support 'if' so we test for JUnit here -->
+      <batchtest fork="yes" todir="${console.tests.reports.dir}" if="junit.present">
+        <fileset
+           dir="${console.classes.dir}"
+           includes="**/test/*"
+           excludes="${console.tests.excludes}"
+        />
+      </batchtest>
+    </junit>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the API documentation                                       -->
+  <!-- =================================================================== -->
+  <target name="docs" depends="init-console" >
+    <mkdir dir="${console.javadoc.dir}"/>
+    <javadoc packagenames="${console.packages}"
+             excludepackagenames="${console.packages.excludes}"
+             sourcepath="${console.src.dir}"
+             destdir="${console.javadoc.dir}"
+             classpathref="console.project.class.path"
+             author="true"
+             version="true"
+             use="true"
+             splitindex="true"
+             noindex="false"
+             windowtitle="${console.Name} API"
+             doctitle="${console.Name}"
+    />
+  </target>
+ 
+  <!-- =================================================================== -->
+  <!-- Clean up, get back to original state                                -->
+  <!-- =================================================================== -->
+  <target name="clean" depends="init-console">
+    <delete dir="${console.classes.dir}"/>
+    <delete file="console.jar"/>
+    <delete file="console-tests.jar"/>
+  </target>
+
+</project>
+
+<!-- End of file -->
