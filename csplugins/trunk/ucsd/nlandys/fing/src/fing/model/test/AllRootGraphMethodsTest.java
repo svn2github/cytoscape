@@ -58,6 +58,18 @@ public final class AllRootGraphMethodsTest
           root.addEdgeMetaChild(nodeInx[3], edgeInx[0]) &&
           root.addEdgeMetaChild(nodeInx[0], edgeInx[4])))
       throw new IllegalStateException("unable to create meta relationship");
+
+    // BEGIN: Extra checking code that can be removed later.
+    if (root.addNodeMetaChild(nodeInx[0], nodeInx[1]) ||
+        root.addNodeMetaChild(nodeInx[0], nodeInx[4]) ||
+        root.addNodeMetaChild(nodeInx[3], nodeInx[1]) ||
+        root.addNodeMetaChild(nodeInx[4], nodeInx[4]) ||
+        root.addEdgeMetaChild(nodeInx[3], edgeInx[6]) ||
+        root.addEdgeMetaChild(nodeInx[3], edgeInx[0]) ||
+        root.addEdgeMetaChild(nodeInx[0], edgeInx[4]))
+      throw new IllegalStateException("able to create meta relationship");
+    // END: Extra checking code that can be removed later.
+
     for (int i = 0; i < nodeInx.length; i++)
       if (nodeInx[i] >= 0)
         throw new IllegalStateException("non-negative node");
