@@ -499,6 +499,7 @@ class FRootGraph //implements RootGraph
     return returnThis;
   }
 
+  // This method has been marked deprecated in the Giny API.
   public int[] getConnectingNodeIndicesArray(int[] edgeInx)
   {
     m_hash.empty();
@@ -519,6 +520,7 @@ class FRootGraph //implements RootGraph
     return returnThis;
   }
 
+  // This method has been marked deprecated in the Giny API.
   public int[] getEdgeIndicesArray(int fromNodeInx,
                                    int toNodeInx,
                                    boolean undirectedEdges,
@@ -552,6 +554,41 @@ class FRootGraph //implements RootGraph
     for (int i = 0; i < returnThis.length; i++)
       returnThis[i] = ~(edges.nextInt());
     return returnThis;
+  }
+
+  // This method has been marked deprecated in the Giny API.
+  public java.util.List edgesList(Node from, Node to)
+  {
+    if (from.getRootGraph() == this && to.getRootGraph() == this)
+    {
+      return edgesList(from.getRootGraphIndex(),
+                       to.getRootGraphIndex(), true);
+    }
+    else
+    {
+      return null;
+    }
+  }
+
+  // This method has been marked deprecated in the Giny API.
+  public java.util.List edgesList(int fromNodeInx, int toNodeInx,
+                                  boolean includeUndirectedEdges)
+  {
+    final int[] edgeInx = getEdgeIndicesArray(fromNodeInx, toNodeInx,
+                                              includeUndirectedEdges);
+    if (edgeInx == null) return null;
+    java.util.ArrayList returnList = new java.util.ArrayList(edgeInx.length);
+    for (int i = 0; i < edgeInx.length; i++)
+      returnList.add(getEdge(edgeInx[i]));
+    return returnList;
+  }
+
+  // This method has been marked deprecated in the Giny API.
+  public int[] getEdgeIndicesArray(int fromNodeInx, int toNodeInx,
+                                   boolean includeUndirectedEdges)
+  {
+    return getEdgeIndicesArray(fromNodeInx, toNodeInx,
+                               includeUndirectedEdges, false);
   }
 
   public Node getNode(int nodeInx)
