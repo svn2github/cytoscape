@@ -75,7 +75,7 @@ public abstract class AbstractCalculator implements Calculator {
     public void addMapping(ObjectMapping m) {
 	this.mappings.add(m);
 	this.acceptedDataClasses.add(m.getAcceptedDataClasses());
-	m.addChangeListener(new MappingListener());
+	//m.addChangeListener(new MappingListener());
     }
 
     /**
@@ -84,7 +84,7 @@ public abstract class AbstractCalculator implements Calculator {
      */
     protected class MappingListener implements ChangeListener {
 	public void stateChanged(ChangeEvent e) {
-	    fireStateChanged();
+	    //  fireStateChanged();
 	}
     }
 
@@ -248,7 +248,7 @@ public abstract class AbstractCalculator implements Calculator {
     throws ArrayIndexOutOfBoundsException {
 	ObjectMapping m = (ObjectMapping) this.mappings.get(mIndex);
 	m.setControllingAttributeName(attrName, network, false);
-	fireStateChanged();
+	//  fireStateChanged();
     }
 
     /**
