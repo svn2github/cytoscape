@@ -158,8 +158,7 @@ protected void doInit(CytoscapeObj globalInstance, CyNetwork network, String tit
     //applyLayout(); do not layout by the default, too slow
     redrawGraph(false, true);
     //view.fitContent();
-    setNewNetwork( getNetwork() );
-    view.setZoom(view.getZoom()*0.9);
+    //view.setZoom(view.getZoom()*0.9);
     
     setInteractivity(true);
 
@@ -213,12 +212,20 @@ protected void loadPlugins() {
  * Creates a new graph view, replacing the old if necessary
  */
 protected void createGraphView() {
-    if (view != null) {
-        view.removeGraphViewChangeListener(this);
+    GraphView newView = GinyFactory.createGraphView(network.getGraphPerspective());
+    //not sure why we have to disable the selections before enabling them -AM 2004-04-05
+    newView.disableNodeSelection();
+    newView.disableEdgeSelection();    
+    if (this.view != null) {
+        this.view.removeGraphViewChangeListener(this);
+        if (this.view.nodeSelectionEnabled()) {newView.enableNodeSelection();}
+        if (this.view.edgeSelectionEnabled()) {newView.enableEdgeSelection();}
+        //if no previous view, then menu items will set selection state
     }
-    view = GinyFactory.createGraphView(network.getGraphPerspective());
-    view.addGraphViewChangeListener(this);
-    addViewContextMenus();
+    //now we can switch to the new view
+    this.view = newView;
+    
+    newView.addGraphViewChangeListener(this);
     // Add the GraphViewController as a listener to the graphPerspective
     // so that it keeps is synchronized to graphView
     if(this.graphViewController == null){
@@ -226,12 +233,15 @@ protected void createGraphView() {
     } else {
         this.graphViewController.removeAllGraphViews();
     }
-    boolean added = this.graphViewController.addGraphView(this.view);
+    boolean added = this.graphViewController.addGraphView(newView);
     if(!added){
         // This should never happen, but just in case
         System.err.println("1. In CyWindow.updateGraphView(): Could not add this.view to "
                            + " this.graphViewController.");
     }
+    
+    addViewContextMenus();
+    
     /*
      * These are initial values for the view parameters, which are mostly
      * redundant since the vizmapper controls these. The might be useful if
@@ -263,8 +273,8 @@ protected void createGraphView() {
 }
 
 /**
-* install the Graph View in this window
-*/
+ * install the Graph View in the displayed window frame
+ */
 protected void installGraphView() {
     Component oldDisplay = null;
     if (display != null) {
@@ -413,6 +423,10 @@ public void showWindow() {
         this.showWindow(mainFrame.getWidth(), mainFrame.getHeight());
     } else {
 	this.showWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        //these methods have to wait until the window size is set, which only
+        //happens after an initial call to showWindow
+        view.fitContent();
+        view.setZoom(view.getZoom()*0.9);
     }
 }
 
