@@ -2920,7 +2920,7 @@ protected class ShowConditionAction extends AbstractAction   {
 //------------------------------------------------------------------------------
 protected boolean loadGML (String filename)
 {
-    Graph2D newGraph = FileReadingAbstractions.loadGMLBasic(filename,edgeAttributes);
+    Graph2D newGraph = FileReadingAbstractions.loadGMLBasic(filename,edgeAttributes,config.getCanonicalize());
     if (newGraph == null) {return false;}//couldn't read the graph
     
     setGraph (newGraph);//sets class variable graph to reference newGraph object
@@ -2940,8 +2940,13 @@ protected void loadInteraction (String filename)
   
   long time1 = System.currentTimeMillis();
   System.out.println("Calling FileReadingAbstractions.loadIntrBasic...");
-  setGraph (FileReadingAbstractions.loadIntrBasic (bioDataServer, getDefaultSpecies (), 
-                                                   filename,edgeAttributes));
+  setGraph (
+            FileReadingAbstractions.loadIntrBasic (bioDataServer, 
+                                                   getDefaultSpecies (), 
+                                                   filename,
+                                                   edgeAttributes, 
+                                                   config.getCanonicalize()) 
+            );
   System.out.println("done calling FileReadingAbstractions.loadIntrBasic " +  (System.currentTimeMillis() - time1));
   time1 = System.currentTimeMillis();
   System.out.println("Calling FileReadingAbstractions.initAttribs...");
@@ -3141,8 +3146,19 @@ protected class LoadNodeAttributesAction extends AbstractAction {
       currentDirectory = chooser.getCurrentDirectory();
       String [] attrFileNames = new String [1]; 
       attrFileNames[0] = chooser.getSelectedFile ().toString ();
-      FileReadingAbstractions.readAttribs(bioDataServer, defaultSpecies, 
-		    graph, nodeAttributes, null, attrFileNames, null);
+      FileReadingAbstractions.readAttribs(bioDataServer, 
+                                          defaultSpecies, 
+                                          graph, 
+                                          nodeAttributes, 
+                                          null, 
+                                          attrFileNames, 
+                                          null,
+                                          config.getCanonicalize());
+      // Added by iliana on May, 2003
+      // We need to reapply appearances since this attribute could be 
+      // mapped to a visual property
+      redrawGraph(false, true);
+      System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!! CALLED REDRAWgRAPH FOR LOAD NODE ATTS !!!!!!!!!!!!!!!!!!!!!!!!");
       } // if
     } // actionPerformed
 
@@ -3165,7 +3181,11 @@ protected class LoadEdgeAttributesAction extends AbstractAction {
       String [] attrFileNames = new String [1]; 
       attrFileNames[0] = chooser.getSelectedFile ().toString ();
       FileReadingAbstractions.readAttribs(bioDataServer, defaultSpecies, 
-		    graph, null, edgeAttributes, null, attrFileNames);
+                                          graph, null, edgeAttributes, null, attrFileNames, config.getCanonicalize());
+      // Added by iliana on May, 2003
+      // We need to reapply appearances since this attribute could be 
+      // mapped to a visual property
+      redrawGraph(false, true);
       } // if
     } // actionPerformed
 
