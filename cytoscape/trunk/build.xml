@@ -466,8 +466,7 @@
     <!-- Questions?  email:  cerami@cbio.mskcc.org	             -->
     <!-- ======================================================= -->
     <target name="mac" depends="compile, jar"
-        description="Creates a Mac-specific application via the
-        Mac OS X Jar Bundler.">
+        description="Creates a Mac-specific application via the Mac OS X Jar Bundler.">
         <delete dir="${mac_app.dir}"/>
         <mkdir dir="${mac_app.dir}"/>
         <copy todir="${mac_app.dir}">
