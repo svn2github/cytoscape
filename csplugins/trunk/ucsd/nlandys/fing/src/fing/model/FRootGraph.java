@@ -762,17 +762,17 @@ class FRootGraph implements RootGraph, DynamicGraph
     final IntHash metaVisited = m_hash;
     m_stack.empty();
     final IntStack metaPending = m_stack;
-    m_hash.put(metaParent);
-    m_stack.push(metaParent);
-    while (m_stack.size() > 0) {
-      final int currMeta = m_stack.pop();
+    metaVisited.put(metaParent);
+    metaPending.push(metaParent);
+    while (metaPending.size() > 0) {
+      final int currMeta = metaPending.pop();
       final IntEnumerator relationships = m_metaGraph.edgesAdjacent
         (currMeta, true, false, false);
       while (relationships.numRemaining() > 0) {
         final int aChild = m_metaGraph.edgeTarget(relationships.nextInt());
-        if (m_hash.put(aChild) < 0) {
-          if (aChild == metaChildNode) return true;
-          m_stack.push(aChild); } } }
+        if (aChild == metaChildNode) return true;
+        if (m_metaToNativeInxMap.getIntAtIndex(aChild) > 0 && // A node.
+            metaVisited.put(aChild) < 0) metaPending.push(aChild); } }
     return false;
   }
 
@@ -789,13 +789,59 @@ class FRootGraph implements RootGraph, DynamicGraph
       returnThis.add(getNode(childInxArr[i]));
     return returnThis; }
 
-  public int[] getNodeMetaChildIndicesArray(int parentNodeInx) {
-    return getNodeMetaChildIndicesArray(parentNodeInx, false); }
+  public int[] getNodeMetaChildIndicesArray(int parentNodeInx)
+  {
+    final int nativeParent = ~parentNodeInx;
+    if (!m_graph.nodeExists(nativeParent)) return null;
+    final int metaParent = m_nativeToMetaNodeInxMap.get(nativeParent);
+    final IntEnumerator metaRelationshipsEnum =
+      m_metaGraph.edgesAdjacent(metaParent, true, false, false);
+    if (metaRelationshipsEnum == null) return new int[0];
+    m_heap.empty();
+    final MinIntHeap childRootNodeBucket = m_heap;
+    while (metaRelationshipsEnum.numRemaining() > 0) {
+      final int metaChild =
+        m_metaGraph.edgeTarget(metaRelationshipsEnum.nextInt());
+      if (m_metaToNativeInxMap.getIntAtIndex(metaChild) > 0)
+        childRootNodeBucket.toss
+          (~(m_metaToNativeInxMap.getIntAtIndex(metaChild) - 1)); }
+    final int[] returnThis = new int[childRootNodeBucket.size()];
+    childRootNodeBucket.copyInto(returnThis, 0);
+    return returnThis;
+  }
 
   public int[] getNodeMetaChildIndicesArray(int parentNodeInx,
                                             boolean recursive)
   {
-    throw new UnsupportedOperationException("meta nodes not yet supported");
+    if (!recursive) return getNodeMetaChildIndicesArray(parentNodeInx);
+    final int nativeParent = ~parentNodeInx;
+    if (!m_graph.nodeExists(nativeParent)) return null;
+    final int metaParent = m_nativeToMetaNodeInxMap.get(nativeParent);
+    if (metaParent < 0 || metaParent == Integer.MAX_VALUE) return new int[0];
+    // Depth first search.
+    m_hash.empty();
+    final IntHash metaVisited = m_hash;
+    m_stack.empty();
+    final IntStack metaPending = m_stack;
+    m_hash2.empty();
+    final IntHash rootChildNodeBucket = m_hash2;
+    metaVisited.put(metaParent);
+    metaPending.push(metaParent);
+    while (metaPending.size() > 0) {
+      final int currMeta = metaPending.pop();
+      final IntEnumerator relationships = m_metaGraph.edgesAdjacent
+        (currMeta, true, false, false);
+      while (relationships.numRemaining() > 0) {
+        final int aChild = m_metaGraph.edgeTarget(relationships.nextInt());
+        if (m_metaToNativeInxMap.getIntAtIndex(aChild) > 0) { // A node.
+          rootChildNodeBucket.put
+            (~(m_metaToNativeInxMap.getIntAtIndex(aChild) - 1));
+          if (metaVisited.put(aChild) < 0) metaPending.push(aChild); } } }
+    final IntEnumerator returnElements = rootChildNodeBucket.elements();
+    final int[] returnThis = new int[returnElements.numRemaining()];
+    for (int i = 0; i < returnThis.length; i++)
+      returnThis[i] = returnElements.nextInt();
+    return returnThis;
   }
 
   public int[] getChildlessMetaDescendants(int nodeInx)
