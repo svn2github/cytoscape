@@ -75,12 +75,6 @@ Radial (nodes in concentric circles), Spring (embedded spring energy
 minimization), and Sugiyama (layered hierarchical) are possible
 choices.
 
-layout.jar
-----------
-This plugin adds several new layout choices to the Layout menu: 
-ISOM (spring embedded), Radial (polar coordinates), Circle (all nodes
-in a single circle), Spring (local spring embedded optimization)
-
 yLayouts.jar
 ------------
 This plugin add a new choice to the Layout menu labelled "yFiles".
