@@ -90,12 +90,8 @@ public class CytoscapeWindow extends JPanel { // implements VizChooserClient {
   protected GraphObjAttributes nodeAttributes = new GraphObjAttributes ();
   protected GraphObjAttributes edgeAttributes = new GraphObjAttributes ();
 
-    protected AttributeMapper vizMapper;
-    protected VizMapperCategories vizMapperCategories;
-  //protected NodeVizMapper nodeVizMapper;
-  //protected EdgeVizMapper edgeVizMapper;
-  // protected WindowVizMapper windowVizMapper;
-
+  protected AttributeMapper vizMapper;
+  protected VizMapperCategories vizMapperCategories;
 
   protected ExpressionData expressionData = null;
 
@@ -539,6 +535,23 @@ protected JMenuBar createMenuBar ()
 
   menuBar.add (viewMenu);
 
+  JMenu selectiveDisplayMenu = new JMenu ("Select");
+  menuBar.add (selectiveDisplayMenu);
+  selectiveDisplayMenu.add (new DeselectAllAction ());
+  mi = selectiveDisplayMenu.add (new InvertSelectionAction ());
+  mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_K, ActionEvent.CTRL_MASK));
+
+  if (bioDataServer != null) selectiveDisplayMenu.add (new GoIDSelectAction ());
+  selectiveDisplayMenu.add (new AlphabeticalSelectionAction ());
+  selectiveDisplayMenu.add (new ListFromFileSelectionAction ());
+
+  mi = selectiveDisplayMenu.add (new SelectFirstNeighborsAction ());
+  mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_F, ActionEvent.CTRL_MASK));
+
+  mi = selectiveDisplayMenu.add (new DisplayAttributesOfSelectedNodesAction ());
+  mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_D, ActionEvent.CTRL_MASK));
+  
+
   ButtonGroup layoutGroup = new ButtonGroup ();
   layoutMenu = new JMenu ("Layout");
   layoutMenu.setToolTipText ("Apply new layout algorithm to graph");
@@ -581,20 +594,14 @@ protected JMenuBar createMenuBar ()
   alignSubMenu.add (new AlignHorizontalAction ());
   alignSubMenu.add (new AlignVerticalAction   ());
 
-  opsMenu = new JMenu ("Ops"); // always create the ops menu
-  menuBar.add (opsMenu);
-
   vizMenu = new JMenu ("Visualization"); // always create the viz menu
   menuBar.add (vizMenu);
   vizMenu.add (new SetVisualPropertiesAction ());
   //  vizMenu.add (new PrintPropsAction ());
 
+  opsMenu = new JMenu ("Ops"); // always create the ops menu
+  menuBar.add (opsMenu);
 
-  JMenu selectiveDisplayMenu = new JMenu ("DEBUG");
-  menuBar.add (selectiveDisplayMenu);
-  selectiveDisplayMenu.add (new DeselectAllAction ());
-  mi = selectiveDisplayMenu.add (new InvertSelectionAction ());
-  mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_K, ActionEvent.CTRL_MASK));
 
   if (bioDataServer != null) selectiveDisplayMenu.add (new GoIDSelectAction ());
   selectiveDisplayMenu.add (new AlphabeticalSelectionAction ());
