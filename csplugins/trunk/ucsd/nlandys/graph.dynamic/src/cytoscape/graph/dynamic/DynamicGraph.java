@@ -3,23 +3,23 @@ package cytoscape.graph.dynamic;
 import cytoscape.util.intr.IntEnumerator;
 
 // Edges and nodes are non-negative.
-interface DynamicGraph
+public interface DynamicGraph
 {
-  IntEnumerator nodes();
-  IntEnumerator edges();
-  boolean removeNode(int node);
-  int createNode();
-  boolean removeEdge(int edge);
+  public IntEnumerator nodes();
+  public IntEnumerator edges();
+  public boolean removeNode(int node);
+  public int createNode();
+  public boolean removeEdge(int edge);
   // Returns -1 if nodes specified are invalid.
-  int createEdge(int sourceNode, int targetNode, boolean directed);
-  boolean containsNode(int node);
-  boolean containsEdge(int edge);
+  public int createEdge(int sourceNode, int targetNode, boolean directed);
+  public boolean containsNode(int node);
+  public boolean containsEdge(int edge);
   // Throws IllegalArgumentException.
-  IntEnumerator adjacentEdges(int node, boolean undirected,
-                              boolean incoming, boolean outgoing);
+  public IntEnumerator adjacentEdges(int node, boolean undirected,
+                                     boolean incoming, boolean outgoing);
   // Returns -1 if edge specified is invalid.
-  int sourceNode(int edge);
-  int targetNode(int edge);
+  public int sourceNode(int edge);
+  public int targetNode(int edge);
   // Throws IllegalArgumentException.
-  boolean isDirectedEdge(int edge);
+  public boolean isDirectedEdge(int edge);
 }
