@@ -1,6 +1,7 @@
 package csplugins.mcode;
 
 import cytoscape.CyNetwork;
+import cytoscape.task.TaskMonitor;
 import giny.model.GraphPerspective;
 import giny.model.Node;
 
@@ -46,6 +47,8 @@ import java.util.*;
  * An implementation of the MCODE algorithm
  */
 public class MCODEAlgorithm {
+    private boolean cancelled=false;
+    private TaskMonitor taskMonitor = null;
 
     //data structure for storing information required for each node
 	private class NodeInfo {
@@ -84,6 +87,11 @@ public class MCODEAlgorithm {
         params = MCODECurrentParameters.getInstance().getParamsCopy();
     }
 
+    public MCODEAlgorithm(TaskMonitor taskMonitor) {
+        this();
+        this.taskMonitor = taskMonitor;
+    }
+
     /**
      * Get the time taken by the last score operation in this instance of the algorithm
      */
@@ -106,6 +114,14 @@ public class MCODEAlgorithm {
         return params;
     }
 
+    /**
+     * If set, will schedule the algorithm to cancelled at the next convenient opportunity
+     * @param cancelled Set to true if the algorithm should be cancelled
+     */
+    public void setCancelled(boolean cancelled) {
+        this.cancelled = cancelled;
+    }
+
 	/**
      * Step 1: Score the graph and save scores as node attributes.  Scores are also
      * saved internally in your instance of MCODEAlgorithm.
@@ -121,7 +137,7 @@ public class MCODEAlgorithm {
 		//initialize
         long msTimeBefore = System.currentTimeMillis();
 		nodeInfoHashMap = new HashMap(inputNetwork.getNodeCount());
-		nodeScoreSortedMap = new TreeMap(new Comparator() { //will store Doubles
+		nodeScoreSortedMap = new TreeMap(new Comparator() { //will store Doubles (score) as the key, Lists as values
 			//sort Doubles in descending order
 			public int compare(Object o1, Object o2) {
 				double d1 = ((Double) o1).doubleValue();
@@ -137,9 +153,9 @@ public class MCODEAlgorithm {
 		});
 		//iterate over all nodes and calculate MCODE score
 		NodeInfo nodeInfo = null;
-		double nodeScore;
+		double nodeScore; ArrayList al; int i=0;
         Iterator nodes = inputNetwork.nodesIterator();
-        while (nodes.hasNext()) {
+        while (nodes.hasNext() && (!cancelled)) {
             Node n = (Node) nodes.next();
 			nodeInfo = calcNodeInfo(inputNetwork, n.getRootGraphIndex());
 			nodeInfoHashMap.put(new Integer(n.getRootGraphIndex()), nodeInfo);
@@ -148,8 +164,21 @@ public class MCODEAlgorithm {
 			//record score as a nodeAttribute
             inputNetwork.setNodeAttributeValue(n, "MCODE_SCORE", new Double(nodeScore));
 			//save score for later use in TreeMap
-            //TODO: add a list of nodes to each score in case nodes have the same score
-			nodeScoreSortedMap.put(new Double(nodeScore), new Integer(n.getRootGraphIndex()));
+            //add a list of nodes to each score in case nodes have the same score
+            if(nodeScoreSortedMap.containsKey(new Double(nodeScore))) {
+                //already have a node with this score, add it to the list
+                al = (ArrayList) nodeScoreSortedMap.get(new Double(nodeScore));
+                al.add(new Integer(n.getRootGraphIndex()));
+            }
+            else {
+                al = new ArrayList();
+                al.add(new Integer(n.getRootGraphIndex()));
+			    nodeScoreSortedMap.put(new Double(nodeScore), al);
+            }
+            if(taskMonitor!=null) {
+                i++;
+                taskMonitor.setPercentCompleted((i*100)/inputNetwork.getNodeCount());
+            }
 		}
         long msTimeAfter = System.currentTimeMillis();
         lastScoreTime = msTimeAfter - msTimeBefore;
@@ -176,40 +205,52 @@ public class MCODEAlgorithm {
 		//initialization
         long msTimeBefore = System.currentTimeMillis();
         HashMap nodeSeenHashMap = new HashMap(); //key is nodeIndex, value is true/false
-		Integer currentNode;
-		Collection values = nodeScoreSortedMap.values();
+		Integer currentNode; int k=0;
+		Collection values = nodeScoreSortedMap.values(); //returns a Collection sorted by key order (descending)
 		//stores the list of complexes as ArrayLists of node indices in the input Network
 		ArrayList alComplexes = new ArrayList();
 		//iterate over node indices sorted descending by their score
+        ArrayList alNodesWithSameScore;
 		for (Iterator iterator = values.iterator(); iterator.hasNext();) {
-			currentNode = (Integer) iterator.next();
-			if (!nodeSeenHashMap.containsKey(currentNode)) {
-				ArrayList complex = getComplexCore(currentNode, nodeSeenHashMap);
-				if (complex.size() > 0) {
-					//make sure spawning node is part of complex, if not already in there
-                    if(!complex.contains(currentNode)) {
-					    complex.add(currentNode);
-                    }
-                    //create an input graph for the filter and haircut methods
-                    //comvert Integer array to int array
-                    int[] complexArray = new int[complex.size()];
-                    for (int i = 0; i < complex.size(); i++) {
-                        int nodeIndex = ((Integer) complex.get(i)).intValue();
-                        complexArray[i] = nodeIndex;
-                    }
-                    GraphPerspective gpComplexGraph = inputNetwork.createGraphPerspective(complexArray);
-					if (!filterComplex(gpComplexGraph)) {
-                        if (params.isHaircut()) {
-                            haircutComplex(gpComplexGraph, complex, inputNetwork);
+            //each score may be associated with multiple nodes, iterate over these lists
+            alNodesWithSameScore = (ArrayList) iterator.next();
+            for (int j = 0; j < alNodesWithSameScore.size(); j++) {
+                currentNode = (Integer) alNodesWithSameScore.get(j);
+                if (!nodeSeenHashMap.containsKey(currentNode)) {
+                    ArrayList complex = getComplexCore(currentNode, nodeSeenHashMap);
+                    if (complex.size() > 0) {
+                        //make sure spawning node is part of complex, if not already in there
+                        if (!complex.contains(currentNode)) {
+                            complex.add(currentNode);
                         }
-                        if (params.isFluff()) {
-                            fluffComplexBoundary(complex, nodeSeenHashMap);
+                        //create an input graph for the filter and haircut methods
+                        //comvert Integer array to int array
+                        int[] complexArray = new int[complex.size()];
+                        for (int i = 0; i < complex.size(); i++) {
+                            int nodeIndex = ((Integer) complex.get(i)).intValue();
+                            complexArray[i] = nodeIndex;
                         }
-                        //store detected complex for later
-						alComplexes.add(complex);
+                        GraphPerspective gpComplexGraph = inputNetwork.createGraphPerspective(complexArray);
+                        if (!filterComplex(gpComplexGraph)) {
+                            if (params.isHaircut()) {
+                                haircutComplex(gpComplexGraph, complex, inputNetwork);
+                            }
+                            if (params.isFluff()) {
+                                fluffComplexBoundary(complex, nodeSeenHashMap);
+                            }
+                            //store detected complex for later
+                            alComplexes.add(complex);
+                        }
                     }
-				}
-			}
+                }
+            }
+            if (taskMonitor != null) {
+                k++;
+                taskMonitor.setPercentCompleted((k * 100) / nodeScoreSortedMap.size());
+            }
+            if(cancelled) {
+                break;
+            }
 		}
         long msTimeAfter = System.currentTimeMillis();
         lastFindTime = msTimeAfter - msTimeBefore;

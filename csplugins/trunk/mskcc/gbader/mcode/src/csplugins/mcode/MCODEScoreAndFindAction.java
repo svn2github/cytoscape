@@ -2,6 +2,10 @@ package csplugins.mcode;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
+import cytoscape.task.Task;
+import cytoscape.task.ui.JTask;
+import cytoscape.task.ui.JTaskConfig;
+import cytoscape.task.util.TaskManager;
 import giny.model.GraphPerspective;
 
 import javax.swing.*;
@@ -94,83 +98,28 @@ public class MCODEScoreAndFindAction implements ActionListener {
             network.putClientData("MCODE_running", new Boolean(false));
         }
         else {
-            class ThreadReturnInfo {
-                ArrayList complexes;
-                Image imageList[];
+            //run MCODE
+            MCODEScoreAndFindTask MCODEScoreAndFindTask = new MCODEScoreAndFindTask(network);
+            //Configure JTask
+            JTaskConfig config = new JTaskConfig();
 
-                public ThreadReturnInfo(ArrayList complexes, Image[] imageList) {
-                    this.complexes = complexes;
-                    this.imageList = imageList;
-                }
+            //Show Cancel/Close Buttons
+            config.displayCancelButton(true);
+            config.displayStatus(true);
+
+            //Execute Task via TaskManager
+            //This automatically pops-open a JTask Dialog Box
+            TaskManager.executeTask(MCODEScoreAndFindTask, config);
+            //display clusters in a new non modal dialog box
+            if (MCODEScoreAndFindTask.isCompletedSuccessfully()) {
+                resultDialog = new MCODEResultsDialog(Cytoscape.getDesktop(), MCODEScoreAndFindTask.getClusters(),
+                        network, MCODEScoreAndFindTask.getImageList());
+                resultDialog.pack();
+                //store the results dialog box if the user wants to see it later
+                network.putClientData("MCODE_dialog", resultDialog);
+                network.putClientData("MCODE_running", new Boolean(false));
+                resultDialog.setVisible(true);
             }
-
-            //set up progress bar
-            final MCODEProgressBarDialog progressBarDialog = new MCODEProgressBarDialog(Cytoscape.getDesktop());
-            progressBarDialog.setIndeterminate(true);
-            progressBarDialog.pack();
-            progressBarDialog.setVisible(true);
-
-            //threaded because MCODE may take a while
-            final SwingWorker worker = new SwingWorker() {
-                public Object construct() {
-                    //run MCODE scoring algorithm - node scores are saved as node attributes
-                    MCODEAlgorithm alg = new MCODEAlgorithm();
-                    progressBarDialog.setString("Scoring Network (Step 1 of 3)");
-                    alg.scoreGraph(network);
-                    if(progressBarDialog.isCancelled()) {
-                        progressBarDialog.dispose();
-                        network.putClientData("MCODE_running", new Boolean(false));
-                        return null;
-                    }
-                    progressBarDialog.setString("Finding Clusters (Step 2 of 3)");
-                    ArrayList complexes = alg.findComplexes(network);
-                    if (progressBarDialog.isCancelled()) {
-                        progressBarDialog.dispose();
-                        network.putClientData("MCODE_running", new Boolean(false));
-                        return null;
-                    }
-                    progressBarDialog.setIndeterminate(false);
-                    progressBarDialog.setLengthOfTask(complexes.size());
-                    progressBarDialog.setString("Drawing Results (Step 3 of 3)");
-                    //store this MCODE instance with the network to avoid duplicating the calculation
-                    network.putClientData("MCODE_alg", alg);
-                    System.err.println("Network was scored in " + alg.getLastScoreTime() + " ms.");
-                    //also create all the images here for the complexes, since it can be a time consuming operation
-                    GraphPerspective gpComplexArray[] = MCODEUtil.convertComplexListToSortedNetworkList(complexes, network, alg);
-                    Image imageList[] = new Image[complexes.size()];
-                    int imageSize = MCODECurrentParameters.getInstance().getParamsCopy().getDefaultRowHeight();
-                    for (int i = 0; i < gpComplexArray.length; i++) {
-                        if (progressBarDialog.isCancelled()) {
-                            progressBarDialog.dispose();
-                            network.putClientData("MCODE_running", new Boolean(false));
-                            return null;
-                        }
-                        imageList[i] = MCODEUtil.convertNetworkToImage(gpComplexArray[i], imageSize, imageSize);
-                        progressBarDialog.setValue(i+1);
-                    }
-                    ThreadReturnInfo returnInfo = new ThreadReturnInfo(complexes, imageList);
-                    return returnInfo;
-                }
-
-                /**
-                 * Called on the event dispatching thread (not on the worker thread)
-                 * after the <code>construct</code> method has returned.
-                 */
-                public void finished() {
-                    //display complexes in a new non modal dialog box
-                    ThreadReturnInfo returnInfo = (ThreadReturnInfo) this.get();
-                    if(returnInfo!=null) {
-                        resultDialog = new MCODEResultsDialog(Cytoscape.getDesktop(), returnInfo.complexes, network, returnInfo.imageList);
-                        resultDialog.pack();
-                        //store the results dialog box if the user wants to see it later
-                        network.putClientData("MCODE_dialog", resultDialog);
-                        network.putClientData("MCODE_running", new Boolean(false));
-                        progressBarDialog.dispose();
-                        resultDialog.setVisible(true);
-                    }
-                }
-            };
-            worker.start();
         }
     }
 }
