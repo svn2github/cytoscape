@@ -65,7 +65,7 @@ public cytoscape (String [] args) throws Exception
     }
 
     //------------------------- run the program
-  logger.config (config.toString ());
+  logger.info (config.toString ());
   String geometryFilename = config.getGeometryFilename ();
   String bioDataDirectory = config.getBioDataDirectory ();
   String interactionsFilename = config.getInteractionsFilename ();
