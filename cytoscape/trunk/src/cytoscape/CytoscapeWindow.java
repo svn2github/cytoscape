@@ -1309,9 +1309,9 @@ protected JMenuBar createMenuBar ()
   mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_E, ActionEvent.CTRL_MASK));
   mi = loadSubMenu.add (new LoadBioDataServerAction ());
   mi = loadSubMenu.add (new LoadNodeAttributesAction ());
-  mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_N, ActionEvent.CTRL_MASK));
+  mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_N, ActionEvent.CTRL_MASK|ActionEvent.SHIFT_MASK));
   mi = loadSubMenu.add (new LoadEdgeAttributesAction ());
-  mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_J, ActionEvent.CTRL_MASK));
+  mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_J, ActionEvent.CTRL_MASK|ActionEvent.SHIFT_MASK));
 
   saveSubMenu = new JMenu ("Save");
   fileMenu.add (saveSubMenu);
