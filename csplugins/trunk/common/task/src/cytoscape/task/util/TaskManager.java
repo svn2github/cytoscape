@@ -15,9 +15,12 @@ public class TaskManager {
      *
      * @param task   the task to execute.
      * @param config Configuration options for the JTask UI Component.
-     * @return JTask UI Component, can be null.
+     * @return true value indicates that task completed successfully.
+     *         false value indicates that task was halted by user or task
+     *         encountered an error. 
      */
-    public static JTask executeTask(Task task, JTaskConfig config) {
+    public synchronized static boolean executeTask(Task task,
+            JTaskConfig config) {
 
         //  Validate incoming task parameter.
         if (task == null) {
@@ -41,8 +44,19 @@ public class TaskManager {
         //  Start the Task
         taskThread.start();
 
-        //  Return a JTask UI Component
-        return jTask;
+        //  Show the JTask Object.
+        //  Because JTask is Modal, this method will block until
+        //  JTask is disposed or hidden.
+        jTask.show();
+
+        //  We don't get here until Modal Dialog Box is Disposed/Hidden.
+        //  If all went well, return true.  Otherwise, return false.
+        if (jTask.errorOccurred() == false
+                && jTask.haltRequested() == false) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
 
@@ -52,10 +66,6 @@ public class TaskManager {
 class TaskWrapper extends Thread {
     private Task task;
     private JTask jTask;
-    private final Object lock = new Object();
-    private boolean ran = false;
-    private boolean running = false;
-    private boolean stop = false;
 
     /**
      * Constructor.
@@ -68,40 +78,17 @@ class TaskWrapper extends Thread {
         this.jTask = jTask;
     }
 
+
     /**
-     * This method is guaranteed to run at most once - that is, it will call
-     * the underlying <code>Task.run()</code> at most once.
-     * If this method is invoked a second time, it will throw an
-     * <code>IllegalStateException</code>.
+     * Executes the Task.
      */
     public void run() {
-        synchronized (lock) {
-            if (ran) {
-                throw new IllegalStateException
-                        ("Task already running or ran");
-            }
-            ran = true;
-        }
-
-        // Guaranteed to get to this line of code at most once.
-        synchronized (lock) {
-            if (stop) {
-                return;
-            }
-            running = true;
-        }
         try {
             //  Run the actual task
             task.run();
         } finally {
-
             //  Inform the UI Component that the task is now done
             jTask.setDone();
-
-            synchronized (lock) {
-                running = false;
-                lock.notifyAll();
-            }
         }
     }
 }
