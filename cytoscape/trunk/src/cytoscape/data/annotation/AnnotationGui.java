@@ -57,13 +57,10 @@ public AnnotationGui (CytoscapeWindow cytoscapeWindow)
   if (dataServer != null)
     annotationDescriptions = dataServer.getAnnotationDescriptions ();
 
-  System.out.println ("----- AnnotationGui.ctor, annotationDescriptions");
   for (int i=0; i < annotationDescriptions.length; i++)
     System.out.println (annotationDescriptions [i]);
 
   this.cytoscapeWindow = cytoscapeWindow;
-  //this.nodeAttributes = cytoscapeWindow.getNodeAttributes ();
-  //this.edgeAttributes = cytoscapeWindow.getEdgeAttributes ();
   defaultSpecies = cytoscapeWindow.getDefaultSpecies ();
 
 } // ctor
