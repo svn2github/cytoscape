@@ -69,7 +69,7 @@ public final class MinIntHeap
    * operation if the heap is ordered.  If the heap is not ordered, this
    * operation will first order the entire heap.  The time complexity of
    * ordering an unordered heap is O(n) where n is the number of elements
-   * in the heap.<p>
+   * in the heap.  This method leaves the heap in an ordered state.<p>
    * If there are no elements in this heap, results of this operation
    * are undefined.
    * @see #numElements()
@@ -90,7 +90,8 @@ public final class MinIntHeap
    * heap is not ordered at the time this operation is invoked, this
    * operation will first order the entire heap.  The time complexity of
    * ordering an unordered heap is O(n), where n is the number of elements
-   * in the heap.<p>
+   * in the heap.  When this method returns, this heap is in an ordered
+   * state.<p>
    * If there are no elements in this heap, results of this operation
    * are undefined.
    * @see #numElements()
@@ -166,26 +167,55 @@ public final class MinIntHeap
    * @see #elements()
    */
   public final IntIterator orderedElements(boolean pruneDuplicates,
-                                           boolean reverseOrder)
+                                           final boolean reverseOrder)
   {
+    final int[] heap = m_heap;
+    final int size = m_currentSize;
+    if (!m_orderOK) // Fix heap.
+      for (int i = size / 2; i > 0; i--) percolateDown(heap, i, size);
+    m_orderOK = false;
     if (pruneDuplicates || reverseOrder)
     {
-      return null;
+      int dups = 0;
+      int sizeIter = size;
+      while (sizeIter > 1) { // Needs to be 1, not 0, for duplicates.
+        swap(heap, 1, sizeIter);
+        percolateDown(heap, 1, sizeIter - 1);
+        if (pruneDuplicates && heap[1] == heap[sizeIter]) dups++;
+        sizeIter--; }
+      if (pruneDuplicates)
+      {
+        final int numDuplicates = dups;
+        if (reverseOrder) // Prune duplicates and reverse the order.
+        {
+          return new IntIterator() {
+              
+        }
+        else // Prune duplicates and normal order.
+        {
+          return new IntIterator() {
+              int m_index = size;
+              int m_dups = numDuplicates;
+              int m_prevValue = heap[m_index] + 1;
+              public int numRemaining() { return m_index - m_dups; }
+              public int nextInt() {
+                while (heap[m_index] == m_prevValue) {
+                  m_dups--; m_index--; }
+                m_prevValue = heap[m_index--];
+                return m_prevValue; } };
+        }
+      }
+      else // Don't prune duplicates, reverse the order.
     }
-    else // We can do lazy computations.
+    else // Don't prune duplicates, normal order.  Do lazy computation.
     {
-      if (!m_orderOK) // Fix heap.
-        for (int i = m_currentSize / 2; i > 0; i--)
-          percolateDown(m_heap, i, m_currentSize);
-      else m_orderOK = false;
-      final int[] heap = m_heap;
-      final int[] size = new int[] { m_currentSize };
       return new IntIterator() {
-          public int numRemaining() { return size[0]; }
+          int m_size = size;
+          public int numRemaining() { return m_size; }
           public int nextInt() {
-            swap(heap, 1, size[0]--);
-            percolateDown(heap, 1, size[0]);
-            return heap[size[0] + 1]; } };
+            swap(heap, 1, m_size);
+            percolateDown(heap, 1, m_size - 1);
+            return heap[m_size--]; } };
     }
   }
 
@@ -193,7 +223,9 @@ public final class MinIntHeap
    * Returns an iteration over all the elements currently in this heap;
    * the order of elements in the returned iteration is undefined.<p>
    * If other methods in this heap are called while iterating through
-   * the return value, behavior of the iterator is undefined.
+   * the return value, behavior of the iterator is undefined.<p>
+   * This iterator has no effect on the set of element in this heap.  This
+   * iterator has no effect on the ordered state of this heap.
    * @see #orderedElements(boolean, boolean)
    */
   public final IntIterator elements()
