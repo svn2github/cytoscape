@@ -221,6 +221,15 @@ public JFrame getMainFrame ()
   return mainFrame;
 }
 //------------------------------------------------------------------------------
+public String getWindowTitle() {
+  return windowTitle;
+}
+//------------------------------------------------------------------------------
+public void setWindowTitle(String newTitle) {
+    windowTitle = newTitle;
+    mainFrame.setTitle(windowTitle);
+}
+//------------------------------------------------------------------------------
 public JMenuBar getMenuBar ()
 {
   return menuBar;
@@ -1729,6 +1738,8 @@ protected void loadGML (String filename)
     graph=FileReadingAbstractions.loadGMLBasic(filename,edgeAttributes);
     FileReadingAbstractions.initAttribs(config,graph,nodeAttributes,edgeAttributes);
     displayCommonNodeNames (); // fills in canonical name for blank common names
+    geometryFilename = filename;
+    setWindowTitle(filename);
     displayNewGraph (false);
 } // loadGML
 //------------------------------------------------------------------------------
@@ -1737,6 +1748,8 @@ protected void loadInteraction (String filename)
     graph = FileReadingAbstractions.loadIntrBasic(filename,edgeAttributes);
     FileReadingAbstractions.initAttribs(config,graph,nodeAttributes,edgeAttributes);
     displayCommonNodeNames (); // fills in canonical name for blank common names
+    geometryFilename = null;
+    setWindowTitle(filename);
     displayNewGraph (true);
 } // loadInteraction
 //------------------------------------------------------------------------------
