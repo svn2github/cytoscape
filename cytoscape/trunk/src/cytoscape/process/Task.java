@@ -2,7 +2,12 @@ package cytoscape.process;
 
 /**
  * Represents a task that can be terminated prematurely by the same
- * entity that started the task.
+ * entity that started the task.<p>
+ * Because the same &quot;parent program&quot; that starts
+ * <code>run()</code> will determine whether or not <code>halt()</code>
+ * will be called at some point, there is no problem determining whether
+ * or not a process was terminated prematurely when <code>run()</code>
+ * returns. 
  **/
 public interface Task extends Runnable, Haltable
 {
