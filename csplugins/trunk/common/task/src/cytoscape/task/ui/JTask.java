@@ -256,22 +256,20 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
             }
         });
 
-        this.pack();
-        this.setResizable(false);
-
         //  Define Modality
-        this.setModal(config.getModal());
+        setModal(true);
+
+        this.pack();
+        this.setResizable(config.getModal());
 
         //  Center component relative to parent component
         //  or relative to user's screen.
         setLocationRelativeTo(config.getOwner());
 
         //  Conditionally Show / AutoPopUp the Component.
-        if (config.getMillisToDecideToPopup() == 0) {
-            this.show();
-        } else {
-            autoPopUp();
-        }
+        //  Call to show must be done on the event-dispatch thread
+        //  Otherwise, a modal window will block.
+        autoPopUp();
 
         //  Initialize timer only if we want to display the time elapsed field.
         if (config.getTimeElapsedFlag()) {
