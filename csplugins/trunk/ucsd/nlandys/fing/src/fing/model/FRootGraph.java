@@ -126,7 +126,7 @@ class FRootGraph implements RootGraph
 
   public Node removeNode(Node node) {
     if (node.getRootGraph() == this &&
-        removeNode(node.getRootGraphIndex()) < 0) return node;
+        removeNode(node.getRootGraphIndex()) != 0) return node;
     else return null; }
 
   public int removeNode(int nodeInx) {
@@ -236,7 +236,7 @@ class FRootGraph implements RootGraph
 
   public Edge removeEdge(Edge edge) {
     if (edge.getRootGraph() == this &&
-        removeEdge(edge.getRootGraphIndex()) < 0) return edge;
+        removeEdge(edge.getRootGraphIndex()) != 0) return edge;
     else return null; }
 
   public int removeEdge(int edgeInx) {
