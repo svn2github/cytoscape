@@ -931,25 +931,49 @@ public void selectNodesByName (String [] nodeNames){
  */
 protected void showNodesByName (String [] nodeNames)
 {
-  Graph2D g = graphView.getGraph2D ();
-  graphHider.unhideAll ();
-  Node [] nodes = graphView.getGraph2D().getNodeArray();
+    // not sure if this is any faster. - owo 2002 10 03
 
-  for (int i=0; i < nodes.length; i++) {
-    boolean matched = false;
-    String graphNodeName = getCanonicalNodeName (nodes [i]);
+    // first show all nodes
+    Graph2D g = graphView.getGraph2D ();
+    graphHider.unhideAll ();
+    Node [] nodes = graphView.getGraph2D().getNodeArray();
+    
+    // construct a hash of the nodeNames
+    Hashtable namedNodes = new Hashtable();
     for (int n=0; n < nodeNames.length; n++) {
-      if (nodeNames [n].equalsIgnoreCase (graphNodeName)) {
-        matched = true;
-        break;
-        } // if equals
-       } // for n
-     if (!matched) 
-       graphHider.hide (nodes [i]);
-    } // for i
+	nodeNames[n].toLowerCase();
+	namedNodes.put(nodeNames[n],Boolean.TRUE);
+    }
+    
+    // if a node in the graph isn't in the hash, hide it.
+    for (int i=0; i < nodes.length; i++) {
+	String graphNodeName = getCanonicalNodeName (nodes [i]);
+	graphNodeName.toLowerCase();
+	Boolean select = (Boolean) namedNodes.get(graphNodeName);
+	if(select==null) {
+	    graphHider.hide (nodes [i]);
+	}
+    }
+    redrawGraph ();
 
-  redrawGraph ();
-
+    // old code follows:
+    //
+    //Graph2D g = graphView.getGraph2D ();
+    //graphHider.unhideAll ();
+    //Node [] nodes = graphView.getGraph2D().getNodeArray();
+    //for (int i=0; i < nodes.length; i++) {
+    //boolean matched = false;
+    //String graphNodeName = getCanonicalNodeName (nodes [i]);
+    //for (int n=0; n < nodeNames.length; n++) {
+    //if (nodeNames [n].equalsIgnoreCase (graphNodeName)) {
+    //matched = true;
+    //break;
+    //} // if equals
+    //} // for n
+    //if (!matched) 
+    //graphHider.hide (nodes [i]);
+    //} // for i
+    //redrawGraph ();
 } // showNodesByName
 //------------------------------------------------------------------------------
 /**
@@ -963,26 +987,54 @@ public void showNodesByName (Vector uniqueNodeNames)
 //------------------------------------------------------------------------------
 public void selectNodesByName (String [] nodeNames, boolean clearAllSelectionsFirst)
 {
-  Graph2D g = graphView.getGraph2D();
-  Node [] nodes = graphView.getGraph2D().getNodeArray();
+    // not sure if this is any faster. - owo 2002 10 03
 
-  for (int i=0; i < nodes.length; i++) {
-    String graphNodeName = getCanonicalNodeName (nodes [i]);
-    NodeRealizer nodeRealizer = graphView.getGraph2D().getRealizer(nodes [i]);
-    boolean matched = false;
+    Graph2D g = graphView.getGraph2D ();
+    Node [] nodes = graphView.getGraph2D().getNodeArray();
+    
+    // construct a hash of the nodeNames
+    Hashtable namedNodes = new Hashtable();
     for (int n=0; n < nodeNames.length; n++) {
-      if (nodeNames [n].equalsIgnoreCase (graphNodeName)) {
-        matched = true;
-        break;
-        } // if matched
-      } // for n
-    if (clearAllSelectionsFirst && !matched)
-      nodeRealizer.setSelected (false);
-    else if (matched)
-      nodeRealizer.setSelected (true);
-    } // for i
+	nodeNames[n].toLowerCase();
+	namedNodes.put(nodeNames[n],Boolean.TRUE);
+    }
 
-  redrawGraph ();
+    // if a node in the graph is in the hash, select it;
+    // if not, and clearAllSelectionsFirst is true, unselect it.
+    for (int i=0; i < nodes.length; i++) {
+	String graphNodeName = getCanonicalNodeName (nodes [i]);
+	NodeRealizer nodeRealizer = graphView.getGraph2D().getRealizer(nodes [i]);
+	graphNodeName.toLowerCase();
+	Boolean select = (Boolean) namedNodes.get(graphNodeName);
+	if(select!=null) {
+	    nodeRealizer.setSelected (true);
+	}
+	else if (clearAllSelectionsFirst) {
+	    nodeRealizer.setSelected (false);
+	}
+    }
+    redrawGraph ();
+
+  // old code follows
+  //
+  //Graph2D g = graphView.getGraph2D();
+  //Node [] nodes = graphView.getGraph2D().getNodeArray();
+  //for (int i=0; i < nodes.length; i++) {
+  //String graphNodeName = getCanonicalNodeName (nodes [i]);
+  //NodeRealizer nodeRealizer = graphView.getGraph2D().getRealizer(nodes [i]);
+  //boolean matched = false;
+  //for (int n=0; n < nodeNames.length; n++) {
+  //if (nodeNames [n].equalsIgnoreCase (graphNodeName)) {
+  //matched = true;
+  //break;
+  //} // if matched
+  //} // for n
+  //if (clearAllSelectionsFirst && !matched)
+  //nodeRealizer.setSelected (false);
+  //else if (matched)
+  //nodeRealizer.setSelected (true);
+  //} // for i
+  //redrawGraph ();
 
 } // selectNodesByName
 //------------------------------------------------------------------------------
