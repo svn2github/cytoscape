@@ -11,7 +11,8 @@
     <property name = "lib" value="../../../../cytoscape/lib"/>
     <property name = "local.lib" value="lib"/>
     <property name = "jar"  location = "jar"/>
-
+    <property name = "dist" location = "dist"/>
+	
     <!-- classpath for compiling -->
     <path id = "classpath_compile">
        <fileset dir = "${lib}">
@@ -50,12 +51,38 @@
     </target>
 
     <!-- jar target -->
-    <target name = "jar" depends = "compile" description = "Creates a jar">
+    <target name = "jar" depends = "compile" description = "Creates a jar that contains only biomodules classes">
      <mkdir dir = "${jar}"/>
      <jar jarfile = "${jar}/biomodules.jar">
        <fileset dir="${build}"/>
      </jar>
     </target>
+	
+	<!-- dist target, DOES NOT WORK!!!!-->
+	<target name = "dist" depends="compile" description="Makes stand-alone jar of the plug-in for distribution, NOT WORKING">
+	 <mkdir dir = "${dist}"/>
+     
+	 <!-- unjar all of the jars that are in the local library -->
+     <unjar dest="${local.lib}/temp">
+	  <fileset dir="${local.lib}">
+	   <include name="**/*.jar"/>
+	  </fileset>
+	 </unjar>
+		
+	 <jar jarfile="${dist}/biomodules.jar"> 	
+	 	
+	 	<fileset dir="${local.lib}/temp">
+	      <include name="**/*.*"/>
+	    </fileset>
+	 	
+	 	<fileset dir="${build}">
+	 	  <include name="**/*.*"/>
+	 	</fileset>
+	 
+	 </jar>
+	 
+	 <delete dir = "${local.lib}/temp"/>
+	</target>
 
     <!-- run target, loads yeast annotations database  -->
     <target name = "run" depends="jar" description = "Runs cytoscape and loads biomodules">
@@ -66,7 +93,8 @@
           <arg line = "--JLD"/>
           <arg line = "../../../../cytoscape/plugins/"/>
           <arg line = "-c"/>
-      	  <arg line = "-b http://db.systemsbiology.net:8080/cytoscape/annotation/yeast/manifest"/>
+      	  <arg line = "-b"/>
+      	  <arg line = "/users/iavila/Cytoscape_R/cytoscape/testData/annotation/manifest"/>
       </java>
     </target>
 

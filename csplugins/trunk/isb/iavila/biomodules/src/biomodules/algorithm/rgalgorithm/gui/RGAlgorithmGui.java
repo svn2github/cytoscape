@@ -50,6 +50,8 @@ import metaNodeViewer.data.IntraDegreeComparator;
 import cern.colt.list.IntArrayList;
 import annotations.ui.*;
 import cytoscape.data.servers.*;
+import filter.cytoscape.CsFilter;
+import filter.model.Filter;
 
 public class RGAlgorithmGui extends JDialog {
   
@@ -60,7 +62,7 @@ public class RGAlgorithmGui extends JDialog {
   protected final static int UNKNOWN_BOUNDS = -3;
   protected final static boolean DEFAULT_VIEW_DATA = false;
   protected final static int APSP_TABLE = 0;
-  protected final static int MD_TABLE = 1;
+  protected final static int MD_TABLE = 1;	
     
   protected RGAlgorithmData algorithmData;
   protected JTextField minSizeField;
@@ -80,7 +82,8 @@ public class RGAlgorithmGui extends JDialog {
   protected DisplayTableAction displayApspAction, displayMDAction;
   protected DisplayBiomodulesAction displayBiomodulesAction;
   protected ModuleAnnotationsDialog moduleAnnotsDialog;
-  
+  protected CsFilter filtersDialog;
+
   /**
    * Constructor, calls <code>create()</code>.
    *
@@ -92,6 +95,26 @@ public class RGAlgorithmGui extends JDialog {
     this.algorithmData = RGAlgorithm.getClientData(network);
     create();
   }//RGAlgorithmGui
+  
+  /**
+   * @return an array of Filter objects that the user selected from the filters dialog
+   */
+  public Filter [] getSelectedFilters (){
+  	//if(this.filtersDialog == null){
+  		return new Filter[0];
+  	//}
+  	//return this.filtersDialog.getFilterUsePanel().getFilterListPanel().getSelectedFilters();
+  }//getSelectedFilters
+  
+  /**
+   * If the user has selected filters from the filters dialog, then this method applies the filters according to their settings.
+   */
+  public void applySelectedFilters (){
+  	if(this.filtersDialog == null){
+  		return;
+  	}
+  	this.filtersDialog.getFilterUsePanel().testObjects();
+  }//applySelectedFilters
 
   /**
    * Creates the dialog.
@@ -151,6 +174,22 @@ public class RGAlgorithmGui extends JDialog {
     sizePanel.add(minSizeField);
     paramsPanel.add(sizePanel);
     
+    // --------- Filters -------- //
+    JPanel filtersPanel = new JPanel();
+    filtersPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+    JButton filtersButton = new JButton("Filters...");
+    filtersButton.addActionListener(
+    		new AbstractAction (){
+    			public void actionPerformed (ActionEvent e){
+    			if(filtersDialog == null){
+    				filtersDialog = new CsFilter(Cytoscape.getDesktop());
+    			}
+    			filtersDialog.show();
+    			}
+    		}
+    );
+    filtersPanel.add(filtersButton);
+    paramsPanel.add(filtersPanel);
     // --------- Plots ---------- //
     JPanel optionsPanel = new JPanel();
     optionsPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -455,6 +494,7 @@ public class RGAlgorithmGui extends JDialog {
     CyNetworkView netView = Cytoscape.getNetworkView(netID);
   
     if(this.abstractRbutton.isSelected() && netView != null){
+    	System.out.println("this.abstractRbutton.isSelected () = true and netView exists so create meta-nodes");
       // Remove existent meta-nodes:
       IntArrayList metaNodes = (IntArrayList)net.getClientData(MetaNodeFactory.METANODES_IN_NETWORK);
       if(metaNodes != null){
@@ -475,7 +515,9 @@ public class RGAlgorithmGui extends JDialog {
       	}
       	bioIdentifiersToMembers.put(canonical,biomodules[i]);
       }//for i
+      System.out.println("Done creating meta-nodes.");
     }else{
+    	System.out.println("there is no view or the user does not want to abstract meta-nodes. creating names for biomodules...");
     	// The Biomodules need to have an identifier, so lets make it the member with the highest intra-degree
     	CyNetwork network = this.algorithmData.getNetwork();
     	for(int i = 0; i < biomodules.length; i++){
@@ -491,8 +533,10 @@ public class RGAlgorithmGui extends JDialog {
     	    }
     	    bioIdentifiersToMembers.put(alias,biomodules[i]);
     	}//for i
+    	System.out.println("Done creating names for biomodules.");
     }
  
+    
     this.algorithmData.setBiomodules(bioIdentifiersToMembers);
     this.displayApspAction.setUpdateNeeded(true);
     this.displayMDAction.setUpdateNeeded(true);

@@ -42,11 +42,8 @@ package biomodules.algorithm.rgalgorithm;
 
 import biomodules.algorithm.*;
 import java.util.*;
-import java.lang.*;
 import cytoscape.*;
-import cytoscape.data.Semantics;
 import giny.util.*;
-import cytoscape.util.CytoscapeProgressMonitor;
 import common.algorithms.hierarchicalClustering.*;
 
 public class RGAlgorithm implements BiomodulesAlgorithm{
@@ -162,9 +159,9 @@ public class RGAlgorithm implements BiomodulesAlgorithm{
     node_list.addAll(0,nodeList);
    
     NodeDistances apspCalculator = new NodeDistances(node_list,
-                                                     null,
-                                                     network);
-    
+            null,
+            network);
+ 
     //TODO: Monitor NodeDistances. Right now I can't, because NodeDistances is
     // a MonitorableTask, but CytoscapeProgressMonitor takes a MonitoredTask.
     
