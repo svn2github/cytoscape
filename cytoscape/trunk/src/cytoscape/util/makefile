@@ -16,7 +16,8 @@ OBJS =  Misc.class \
         MutableString.class \
         MutableInt.class \
         MutableBool.class \
-        Exec.class
+        Exec.class\
+	CyFileFilter.class
 
 default: objs 
 
