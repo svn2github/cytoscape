@@ -295,9 +295,6 @@ protected Properties readProperties ()
     userSpecialProps = readOnePropertyFile (userGeneralProps, userSpecialPropsFile);
 
   CytoscapeWindow.debugLog.append ("projectPropsFileName: " + projectPropsFileName);
-  // TODO: Remove
-  System.out.println(projectPropsFileName);
-  //--
   if (projectPropsFileName != null) {
     projectProps = readPropertyFileAsText (projectPropsFileName);
     // projectProps = readOnePropertyFile (projectProps, projectPropsFile);
