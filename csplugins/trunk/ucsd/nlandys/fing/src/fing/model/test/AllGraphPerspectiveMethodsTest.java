@@ -47,12 +47,6 @@ public final class AllGraphPerspectiveMethodsTest
     for (int i = 0; i < edgeInx.length; i++)
       if (persp.restoreEdge(edgeInx[i]) != edgeInx[i])
         throw new IllegalStateException("unable to restore edge");
-    int minNodeInx = 0;
-    for (int i = 0; i < nodeInx.length; i++)
-      minNodeInx = Math.min(minNodeInx, nodeInx[i]);
-    int minEdgeInx = 0;
-    for (int i = 0; i < edgeInx.length; i++)
-      minEdgeInx = Math.min(minEdgeInx, edgeInx[i]);
     RootGraph root2 = FingRootGraphFactory.instantiateRootGraph();
     root2.createNode();
     root2.createEdge
@@ -67,6 +61,12 @@ public final class AllGraphPerspectiveMethodsTest
       (root.createEdge(nodeInx[2], nodeNotInPersp.getRootGraphIndex(), false));
     root.addNodeMetaChild(nodeInx[2], nodeNotInPersp.getRootGraphIndex());
     root.addEdgeMetaChild(nodeInx[3], edge1NotInPersp.getRootGraphIndex());
+    int minNodeInx = 0;
+    for (int i = 0; i < nodeInx.length; i++)
+      minNodeInx = Math.min(minNodeInx, nodeInx[i]);
+    int minEdgeInx = 0;
+    for (int i = 0; i < edgeInx.length; i++)
+      minEdgeInx = Math.min(minEdgeInx, edgeInx[i]);
 
     // Not testing GraphPerspectiveChangeListener methods.
 
@@ -190,7 +190,10 @@ public final class AllGraphPerspectiveMethodsTest
     if (persp.getEdgeIndicesArray(Integer.MAX_VALUE, Integer.MIN_VALUE,
                                  true, false) != null ||
         persp.getEdgeIndicesArray(Integer.MIN_VALUE, Integer.MAX_VALUE,
-                                 false, false) != null)
+                                 false, false) != null ||
+        persp.getEdgeIndicesArray(nodeInx[0],
+                                  nodeNotInPersp.getRootGraphIndex(),
+                                  false, true) != null)
       throw new IllegalStateException("not null");
 
     // hide/restore mothods are tested elsewhere.
