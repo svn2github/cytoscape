@@ -64,11 +64,11 @@ public interface Task extends Runnable, Haltable {
      * If this method is called more than once, the method may throw an
      * <code>IllegalStateException</code>.
      * <P>
-     * If this method is called before <code>run()</code> then
+     * If this method is not called before <code>run()</code> then
      * <code>run()</code> may throw an <code>IllegalStateException</code>.
      * <P>
-     * <code>TaskMonitor</code> can only be be called from the thread that
-     * invokes <code>run()</code>.
+     * <code>TaskMonitor</code> methods can only be be called from the thread
+     * that invokes <code>run()</code>.
      *
      * @throws IllegalThreadStateException Indicates that the TaskMonitor has
      *                                     already been set.
@@ -78,7 +78,7 @@ public interface Task extends Runnable, Haltable {
     /**
      * Gets a Human Readable Title of this Task.
      *
-     * @return humean readable title of task.
+     * @return human readable title of task.
      */
     public String getTitle();
 }

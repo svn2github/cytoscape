@@ -16,9 +16,18 @@ public interface TaskMonitor {
      * <P>
      * The parent application will use this information submitted by the child
      * process to present a percent completed progress bar to a user, for
-     * example.  Other uses may include having a parent application
-     * programmatically abort a child process if it determines that the child
-     * process will take too much time.
+     * example.  Some tasks may choose to go from 0 to 100 on all subtasks
+     * which are executed in order by a task.  For example,
+     * <blockquote><pre>
+     * m_taskMonitor.setPercentCompleted(0);
+     * m_taskMonitor.setStatus("fetching URL");
+     * // fetch URL
+     * m_taskMonitor.setPercentCompleted(100);
+     * m_taskMonitor.setPercentCompleted(0);
+     * m_taskMonitor.setStatus("parsing webpage");
+     * // parse webpage
+     * m_taskMonitor.setPercentCompleted(100);
+     * </pre></blockquote>
      * <p/>
      * This method should not block; it should return quickly.<p>
      *
