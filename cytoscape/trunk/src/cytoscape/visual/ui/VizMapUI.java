@@ -60,7 +60,10 @@ public class VizMapUI extends JDialog {
      *  All known VisualStyles
      */
     protected Collection styles;
-	
+    /**
+     * StyleSelector sub-dialog
+     */
+    protected StyleSelector styleSelector;
     // kludge!
     private boolean initialized = false;
 
@@ -129,43 +132,60 @@ public class VizMapUI extends JDialog {
 	attrSelectorPanel.add(defSelect);
  	//attrSelectorPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
-	StyleSelector vizStylePanel = new StyleSelector(this);
+	this.styleSelector = new StyleSelector(this);
 
-	MiscGB.insert(mainGBG, vizStylePanel, 0, 0, 1, 1, 1, 0, GridBagConstraints.HORIZONTAL);
-	MiscGB.insert(mainGBG, attrSelectorPanel, 0, 1, 1, 1, 1, 0, GridBagConstraints.HORIZONTAL);
-	MiscGB.insert(mainGBG, tabPaneContainer, 0, 2, 1, 1, 1, 1, GridBagConstraints.BOTH);
+	//MiscGB.insert(mainGBG, vizStylePanel, 0, 0, 1, 1, 1, 0, GridBagConstraints.HORIZONTAL);
+	MiscGB.insert(mainGBG, attrSelectorPanel, 0, 0, 1, 1, 1, 0, GridBagConstraints.HORIZONTAL);
+	MiscGB.insert(mainGBG, tabPaneContainer, 0, 1, 1, 1, 1, 1, GridBagConstraints.BOTH);
 	
 	// add apply & cancel button
 	this.actionButtonsPanel = new JPanel();
-	JButton applyButton = new JButton("Apply");
-	applyButton.addActionListener(new ApplyAction());
+	//JButton applyButton = new JButton("Apply");
+	//applyButton.addActionListener(new ApplyAction());
 	JButton closeButton = new JButton("Close");
 	closeButton.addActionListener(new CloseAction());
-	actionButtonsPanel.add(applyButton);
+	//actionButtonsPanel.add(applyButton);
 	actionButtonsPanel.add(closeButton);
 	
 	MiscGB.insert(mainGBG, actionButtonsPanel, 0, 3, 1, 1, 1, 0, GridBagConstraints.HORIZONTAL);
 	
 	setContentPane(mainPane);
 	pack();
-	//this.show();
 	nodeSelect.doClick();
 	initialized = true;
     }
+    
+    public StyleSelector getStyleSelector() {
+	return this.styleSelector;
+    }
+
     /**
-     * StyleSelector implements the style selection control at the top of the
-     * VizMapUI.
+     * StyleSelector implements the style selection control. It has been separated
+     * visually from the dialog shown by VizMapUI, but is still very much a part
+     * of the parent VizMapUI. Keeping StyleSelector as an internal class of
+     * VizMapUI makes the program simpler since many variables must be kept
+     * synchronized between the two classes.
      */
-    protected class StyleSelector extends JPanel {
+    public class StyleSelector extends JDialog {
 	/**
 	 *  Reference to catalog
 	 */
 	protected CalculatorCatalog catalog;
 
 	/**
+	 *  Model for combo boxes
+	 */
+	protected DefaultComboBoxModel styleComboModel = new DefaultComboBoxModel();
+
+	/**
 	 *  Combo box for style selection
 	 */
-	protected JComboBox styleComboBox;
+	protected JComboBox styleComboBox = new JComboBox(styleComboModel);
+
+	/**
+	 *  Duplicate combo box for style selection - used in toolbar
+	 */
+	protected JComboBox styleComboBoxDupe = new JComboBox(styleComboModel);
 
 	/**
 	 *  GridBagGroup for layout
@@ -178,19 +198,33 @@ public class VizMapUI extends JDialog {
 	protected VisualStyle currentStyle;
 
 	/**
-	 *  Parent JDialog
+	 *  Reference to style definition UI
 	 */
-	protected JDialog mainUIDialog;
+	protected VizMapUI styleDefUI;
 
 	/**
-	 *  Reference to calculator catalog
+	 *  Reference back to self for action listeners
 	 */
-	protected StyleSelector(JDialog parent) {
-	    super(false);
-	    this.mainUIDialog = parent;
+	protected StyleSelector myself;
+
+	/**
+	 *  Lazily create visual style parameter UI.
+	 */
+	protected boolean styleDefNeedsUpdate = false;
+	
+	protected StyleSelector(VizMapUI styleDef) {
+	    super(VMM.getCytoscapeWindow().getMainFrame(), "Visual Styles");
+	    this.styleDefUI = styleDef;
 	    this.catalog = VMM.getCalculatorCatalog();
 	    styles = catalog.getVisualStyles();
 	    this.styleGBG = new GridBagGroup("Style");
+	    this.myself = this;
+	    // attach listener
+	    StyleSelectionListener listen = new StyleSelectionListener();
+	    this.styleComboBox.addItemListener(listen);
+	    //the duplicate styleComboBox doesn't need a listener because
+	    //JComboBox fires ItemEvents when the underlying model changes.
+	    //this.styleComboBoxDupe.addItemListener(listen);
 	    MiscGB.pad(styleGBG.constraints, 2, 2);
 	    MiscGB.inset(styleGBG.constraints, 3);
 	    
@@ -216,7 +250,24 @@ public class VizMapUI extends JDialog {
 	    rmStyle.addActionListener(new RmStyleListener());
 	    MiscGB.insert(styleGBG, rmStyle, 3, 1, 1, 1, 1, 0, GridBagConstraints.HORIZONTAL);
 
-	    add(styleGBG.panel);
+	    // define style button
+	    JButton defStyle = new JButton("Define");
+	    defStyle.addActionListener(new DefStyleListener());
+	    MiscGB.insert(styleGBG, defStyle, 4, 0, 1, 1, 1, 0, GridBagConstraints.HORIZONTAL);
+
+	    // close button
+	    JButton closeBut = new JButton("Close");
+	    closeBut.addActionListener(
+	        new AbstractAction() {
+		    public void actionPerformed(ActionEvent e) {
+			dispose();
+		    }
+		}
+		);
+	    MiscGB.insert(styleGBG, closeBut, 4, 1, 1, 1, 1, 0, GridBagConstraints.HORIZONTAL);
+	    MiscGB.insert(this.styleGBG, this.styleComboBox, 0, 0, 4, 1, 1, 0, GridBagConstraints.HORIZONTAL);
+	    setContentPane(styleGBG.panel);
+	    pack();
 	}
 	
 	public String getStyleName(VisualStyle s) {
@@ -225,7 +276,7 @@ public class VizMapUI extends JDialog {
 		suggestedName = this.catalog.checkVisualStyleName(s.getName());
 	    // keep prompting for input until user cancels or we get a valid name
 	    while(true) {
-		String ret = (String) JOptionPane.showInputDialog(mainUIDialog,
+		String ret = (String) JOptionPane.showInputDialog(myself,
 								  "Name for new visual style",
 								  "Visual Style Name Input",
 								  JOptionPane.QUESTION_MESSAGE,
@@ -237,7 +288,7 @@ public class VizMapUI extends JDialog {
 		String newName = catalog.checkVisualStyleName(ret);
 		if (newName.equals(ret))
 		    return ret;
-		int alt = JOptionPane.showConfirmDialog(mainUIDialog,
+		int alt = JOptionPane.showConfirmDialog(myself,
 							"Visual style with name " + ret + " already exists,\nrename to " + newName + " okay?",
 							"Duplicate visual style name",
 							JOptionPane.YES_NO_OPTION,
@@ -245,6 +296,14 @@ public class VizMapUI extends JDialog {
 							null);
 		if (alt == JOptionPane.YES_OPTION)
 		    return newName;
+	    }
+	}
+
+	protected class DefStyleListener extends AbstractAction {
+	    public void actionPerformed(ActionEvent e) {
+		if (styleDefNeedsUpdate)
+		    styleDefUI.visualStyleChanged();
+		styleDefUI.show();
 	    }
 	}
 
@@ -275,7 +334,7 @@ public class VizMapUI extends JDialog {
 	protected class RmStyleListener extends AbstractAction {
 	    public void actionPerformed(ActionEvent e) {
 		if (styles.size() == 1) {
-		    JOptionPane.showMessageDialog(mainUIDialog,
+		    JOptionPane.showMessageDialog(myself,
 						  "There must be at least one visual style",
 						  "Cannot remove style",
 						  JOptionPane.ERROR_MESSAGE);
@@ -311,10 +370,21 @@ public class VizMapUI extends JDialog {
 	
 	protected class StyleSelectionListener implements ItemListener {
 	    public void itemStateChanged(ItemEvent e) {
+		System.out.println("StyleSelectionListener itemStateChanged!");
 		if (e.getStateChange() == ItemEvent.SELECTED) {
-		    currentStyle = (VisualStyle) styleComboBox.getSelectedItem();
-		    VMM.setVisualStyle(currentStyle);
-		    visualStyleChanged();
+		    VisualStyle newStyle = (VisualStyle) ((JComboBox) e.getSource()).getSelectedItem();
+
+		    System.out.println("newStyle = " + newStyle + ", currentstyle = " + currentStyle);
+
+		    if (newStyle != currentStyle && newStyle != null) {
+			currentStyle = newStyle;
+			VMM.setVisualStyle(currentStyle);
+			VMM.applyAppearances();
+			if (styleDefUI.isShowing())
+			    visualStyleChanged();
+			else
+			    styleDefNeedsUpdate = true;
+		    }
 		}
 	    }
 	}
@@ -322,6 +392,7 @@ public class VizMapUI extends JDialog {
 	/**
 	 *  Populates the styles combo box
 	 */
+	/*
 	protected void setupStyleComboBox() {
 	    Object styleArray[] = new Object[styles.size()];
 	    Iterator styleIter = styles.iterator();
@@ -329,26 +400,59 @@ public class VizMapUI extends JDialog {
 		styleArray[i] = (VisualStyle)styleIter.next();
 	    }
 	    this.styleComboBox = new JComboBox(styleArray);
+	    this.styleComboBoxDupe = new JComboBox(styleArray);
 	    this.styleComboBox.setSelectedItem(null);
+	    this.styleComboBoxDupe.setSelectedItem(null);
 	    // attach listener
-	    this.styleComboBox.addItemListener(new StyleSelectionListener());
+	    StyleSelectionListener listen = new StyleSelectionListener();
+	    this.styleComboBox.addItemListener(listen);
+	    this.styleComboBoxDupe.addItemListener(listen);
+	    
 	    if (this.currentStyle == null)
 		this.currentStyle = (VisualStyle) styleArray[0];
 	    this.styleComboBox.setSelectedItem(this.currentStyle);
+	    this.styleComboBoxDupe.setSelectedItem(this.currentStyle);
 	}
-	 
+	 */
+
+	/**
+	 *  Retrieve copy of style selection combo box for toolbar
+	 */
+	public JComboBox getToolbarComboBox() {
+	    return this.styleComboBoxDupe;
+	}
+
+	/**
+	 *  Update the style combo box model
+	 */
+	protected void refreshStyleComboBox() {
+	    System.out.println("refreshStyleComboBox()");
+	    Iterator styleIter = styles.iterator();
+	    
+	    this.styleComboModel.removeAllElements();
+	    for (int i = 0; styleIter.hasNext(); i++) {
+		this.styleComboModel.addElement(styleIter.next());
+	    }
+	    this.styleComboModel.setSelectedItem(null);
+	    if (this.currentStyle == null)
+		this.currentStyle = (VisualStyle) this.styleComboModel.getElementAt(0);
+	    this.styleComboModel.setSelectedItem(this.currentStyle);
+	}
+	    
+
 	/**
 	 *  Reset the style selection controls.
 	 */
 	public void resetStyles() {
 	    // reset local style collection
 	    styles = catalog.getVisualStyles();
-	    if (this.styleComboBox != null)
+	    refreshStyleComboBox();
+	    /*	    if (this.styleComboBox != null)
 		this.styleGBG.panel.remove(this.styleComboBox);
-	    setupStyleComboBox();
+	    refreshStyleComboBox();
 	    MiscGB.insert(this.styleGBG, this.styleComboBox, 0, 0, 4, 1, 1, 0, GridBagConstraints.HORIZONTAL);
 	    validate();
-	    repaint();
+	    repaint(); */
 	}
     }
     
@@ -399,6 +503,7 @@ public class VizMapUI extends JDialog {
      * with their corresponding interfaces must be switched into the UI.
      */
     public void visualStyleChanged() {
+	System.out.println("Visual style changed!");
 	for (int i = 0; i < tabs.length; i++) {
 	    tabs[i].visualStyleChanged();
 	}

@@ -500,7 +500,7 @@ public class VizMapAttrTab extends VizMapTab {
      */
     protected class CalculatorUIListener implements ChangeListener {
 	public void stateChanged(ChangeEvent e) {
-	    refreshUI();
+	    VMM.applyAppearances();
 	}
     }
 
@@ -517,7 +517,7 @@ public class VizMapAttrTab extends VizMapTab {
 	}
 	public void stateChanged(ChangeEvent e) {
 	    JTabbedPane source = (JTabbedPane) e.getSource();
-	    if (source.isEnabledAt(tabIndex)) 		
+	    if (source.getModel().getSelectedIndex() == tabIndex) 		
 		refreshUI();
 	}
     }
@@ -582,13 +582,11 @@ public class VizMapAttrTab extends VizMapTab {
 	// switch listeners
 	if (this.currentCalculator != null) {
 	    this.currentCalculator.removeChangeListener(this.calcListener);
-	    this.currentCalculator.getMapping().removeChangeListener(this.calcListener);
 	}
 	this.currentCalculator = c;
 
 	if (this.currentCalculator != null) {
 	    this.currentCalculator.addChangeListener(this.calcListener);
-	    this.currentCalculator.getMapping().addChangeListener(this.calcListener);
 	}
 
 	// tell the respective appearance calculators
@@ -655,6 +653,7 @@ public class VizMapAttrTab extends VizMapTab {
 	refreshUI();
 	mainUIDialog.pack();
 	mainUIDialog.repaint();
+	VMM.applyAppearances();
     }
 
     /**
@@ -743,6 +742,7 @@ public class VizMapAttrTab extends VizMapTab {
 	    nodeCalc.setDefaultNodeFontSize(((Double) c).floatValue());
 	    break;
 	}
+	VMM.applyAppearances();
     }	
 
     /**
