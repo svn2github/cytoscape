@@ -80,7 +80,12 @@ public class MinIntHeapPerformance
    * we've completely filled the array with these elements.  Note that
    * the process of instantiating this array is time consuming and has nothing
    * to do with the algorithm we're trying to test; this operation is
-   * included in this time trial anyways.
+   * included in this time trial anyways.<p>
+   * An optional second argument to this program is the string 'repeat' -
+   * this command-line option will run a first test, and then a repeated test
+   * using the same objects that were used in the first test (basically, the
+   * purpose of the repeated test is to not instantiate anything) - all
+   * output information is based off of the repeated test.
    */
   public static void main(String[] args) throws Exception
   {
@@ -174,6 +179,8 @@ public class MinIntHeapPerformance
     _THE_HEAP_.toss(elements, 0, elements.length);
     final IntEnumerator iter = _THE_HEAP_.orderedElements(true);
     final int numElements = iter.numRemaining();
+    if (numElements != output.length)
+      throw new IllegalStateException("output array is incorrect size");
     for (int i = 0; i < numElements; i++) output[i] = iter.nextInt();
   }
 
