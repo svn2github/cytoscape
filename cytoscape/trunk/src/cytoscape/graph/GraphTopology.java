@@ -19,6 +19,32 @@ package cytoscape.graph;
  * into a donut shape.  In topology, distances do not matter but connectedness
  * does.  Therefore, a topological definition of a graph should not
  * contain any notion of a &quot;distance along edge&quot;.<p>
+ * <!-- This next paragraph has been commented out because the author
+ * feels that he needs to refine concepts having to do with allowing
+ * multiple equal elements to be in a set.
+ * If the graph definition defined in this object were translated into
+ * a language suitable for an elementary mathematics textbook on set theory,
+ * it would read something like this (our version of set theory treats
+ * {a,a} and {a} as not equal - that is, repeated elements in a set
+ * are honored):
+ * <blockquote>A <i>graph</i> is an ordered set of exactly 3 elements:
+ * <ol><li>a set N of pairwise unique elements</li>
+ *     <li>a set of ordered pairs of elements in N, where an
+ *         <i>ordereed pair</i> is an ordered set of 2 elements</li>
+ *     <li>a set of pairs of elements in N, where a <i>pair</i>
+ *         is a set of 2 elements</li></ol>
+ * To help our intuition, we can nickname N &quot;the set of nodes&quot;,
+ * we can nickname the second set &quot;the set of directed edges&quot;,
+ * and we can nickname the third set &quot;the set of undirected
+ * edges&quot;.</blockquote>
+ * An example set G defining a graph would be:
+ * <blockquote><nobr>&lt; {a,b,c}, {&lt;a,b&gt;,&lt;b,c&gt;,&lt;c,a&gt;}, {} &gt;</nobr></blockquote>
+ * Another example:
+ * <blockquote><nobr>&lt; {d,e}, {&lt;d,e&gt;}, {{d,d},{d,e},{d.e},{e,d}} &gt;</nobr></blockquote>
+ * Notice that
+ * in the second example above, {d,e} is equal to {e,d}; this graph
+ * has 3 &quot;undirected edges&quot; &quot;between nodes&quot; d and e.<p>
+ * -->
  * The methods on this interface do not expose any mutable behavior; this does
  * not mean, however, that instances of this interface are not mutable.  A
  * sub-interface extending <code>GraphTopology</code> could be defined which
