@@ -115,7 +115,7 @@ public class PathDistAction implements ActionListener {
 		}
 		//take List of nodes and pass to NodeDistance util in giny.util
 		NodeDistances apspResult = new NodeDistances(nodeList, null, graphPerspective);
-		int[][] distanceMatrix = (int[][]) apspResult.construct();
+		int[][] distanceMatrix = (int[][]) apspResult.calculate();
 		if (distanceMatrix == null) {
 			System.err.println("In " + callerID + ":");
 			System.err.println("Path length calculation failed.");

@@ -11,7 +11,7 @@
   	<property name="src.dir" value="src"/>
 
 	<!--  The directory containing library jar files -->
-	<property name="lib.dir" value="../../../cytoscape/lib"/>
+	<property name="lib.dir" value="../../../../cytoscape/lib"/>
 
   	<!-- Temporary build directories -->
  	<property name="build.dir" value="build"/>
@@ -24,7 +24,7 @@
 	<!-- Classpath with all lib JAR Files and all Cytoscape Core classes -->
 	<path id="classpath">
 		<pathelement path="${build.classes}"/>
-		<pathelement path="../../../cytoscape/build/classes"/>
+		<pathelement path="../../../../cytoscape/build/classes"/>
 		<fileset dir="${lib.dir}">
 			<include name="**/*.jar"/>
 		</fileset>
@@ -45,7 +45,7 @@
 
 	<!-- Target to create Cytoscape Jar File  -->
 	<target name="build_cytoscape">
-		<ant antfile="../../../cytoscape/build.xml" inheritAll="false" target="jar"/>
+		<ant antfile="../../../../cytoscape/build.xml" inheritAll="false" target="jar"/>
 	</target>
 
 	<!--  Target to compile all Plug In Code -->
