@@ -2065,6 +2065,23 @@ protected void loadInteraction (String filename)
     loadPlugins();
     displayNewGraph (true);
 } // loadInteraction
+
+
+/**
+ * Load the named expression data filename.
+ *
+ * added by dramage 2002-08-21
+ */
+protected void loadExpressionData (String filename) {
+    expressionData = new ExpressionData (filename);
+
+    config.addNodeAttributeFilename(filename);
+
+    // update plugin list
+    loadPlugins();
+}
+
+
 //------------------------------------------------------------------------------
 protected class ExitAction extends AbstractAction  {
   ExitAction () { super ("Exit"); }
@@ -2195,7 +2212,7 @@ protected class LoadExpressionMatrixAction extends AbstractAction {
    if (chooser.showOpenDialog (CytoscapeWindow.this) == chooser.APPROVE_OPTION) {
       currentDirectory = chooser.getCurrentDirectory();
       expressionDataFilename = chooser.getSelectedFile ().toString ();
-      expressionData = new ExpressionData (expressionDataFilename);
+      loadExpressionData (expressionDataFilename);
       // incorporateExpressionData ();
       } // if
     } // actionPerformed
