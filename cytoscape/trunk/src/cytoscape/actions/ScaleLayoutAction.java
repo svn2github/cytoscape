@@ -8,6 +8,7 @@ import cytoscape.util.CytoscapeAction;
 import java.awt.BorderLayout;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
+import java.util.Hashtable;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -37,11 +38,19 @@ public class ScaleLayoutAction extends CytoscapeAction
     dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     JPanel panel = new JPanel(new BorderLayout());
     panel.setBorder(new EmptyBorder(20, 20, 20, 20));
-    panel.add(new JLabel("Scale graph by factor of 2^(n/100):"),
+    panel.add(new JLabel("Scale Factor:"),
               BorderLayout.CENTER);
     final JSlider slider = new JSlider(-300, 300, 0);
     slider.setMajorTickSpacing(100);
-    slider.setMinorTickSpacing(25);
+    Hashtable labels = new Hashtable();
+    labels.put(new Integer(-300), new JLabel("1/8"));
+    labels.put(new Integer(-200), new JLabel("1/4"));
+    labels.put(new Integer(-100), new JLabel("1/2"));
+    labels.put(new Integer(0), new JLabel("1"));
+    labels.put(new Integer(100), new JLabel("2"));
+    labels.put(new Integer(200), new JLabel("4"));
+    labels.put(new Integer(300), new JLabel("8"));
+    slider.setLabelTable(labels);
     slider.setPaintTicks(true);
     slider.setPaintLabels(true);
     slider.addChangeListener(new ChangeListener() {
