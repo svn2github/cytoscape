@@ -46,8 +46,8 @@ public class GraphObjectSelection extends JPanel implements ActionListener {
 
     // Create the Node Selection Panel
     JPanel searchPanel = new JPanel();
-    searchPanel.setBorder( new TitledBorder( "Search to Select" ) );
-    searchPanel.add( new JLabel( "Attribute Search: " ) );
+    searchPanel.setBorder( new TitledBorder( "Describe Filter" ) );
+    searchPanel.add( new JLabel( "Filter: " ) );
     searchField = new JTextField( 30 );
     searchField.addActionListener( this );
     searchPanel.add( searchField );
@@ -110,8 +110,10 @@ public class GraphObjectSelection extends JPanel implements ActionListener {
     // Create the Center Panel
     JPanel centerPanel = new JPanel();
     centerPanel.setLayout( new GridLayout( 0, 1 ) );
-    centerPanel.setBorder( new TitledBorder( "Control" ) );
-    centerPanel.add(  new JButton (new AbstractAction( "+" ) {
+    
+    JPanel controlPanel = new JPanel();
+    controlPanel.setBorder( new TitledBorder( "Control" ) );
+    controlPanel.add(  new JButton (new AbstractAction( "+" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
@@ -132,7 +134,7 @@ public class GraphObjectSelection extends JPanel implements ActionListener {
                   selectedAttributes.setModel( new_model );
                 }
               } ); } } ) );
-    centerPanel.add(  new JButton (new AbstractAction( "-" ) {
+    controlPanel.add(  new JButton (new AbstractAction( "-" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
@@ -146,7 +148,7 @@ public class GraphObjectSelection extends JPanel implements ActionListener {
 
                 }
               } ); } } ) );
-    centerPanel.add(  new JButton (new AbstractAction( "Update" ) {
+    controlPanel.add(  new JButton (new AbstractAction( "Update" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
@@ -158,7 +160,8 @@ public class GraphObjectSelection extends JPanel implements ActionListener {
               } ); } } ) );
     
     clearSelection = new JCheckBox( "Clear", false );
-    centerPanel.add( clearSelection );
+    controlPanel.add( clearSelection );
+    centerPanel.add( controlPanel );
 
     JPanel actionPanel = new JPanel();
     ButtonGroup actionGroup = new ButtonGroup();
@@ -293,27 +296,6 @@ public class GraphObjectSelection extends JPanel implements ActionListener {
       }
 
     }
-
-
-
-
-  //   Iterator sel;
-//     DefaultListModel new_model;
-//     if ( clearSelection.isSelected() ) {
-//       sel = passes.iterator();
-//     } else {
-            
-//       // add them to the selection list
-//       Set current_selection = new TreeSet( java.util.Arrays.asList( ( ( DefaultListModel )selectedAttributes.getModel() ).toArray() ) );
-//       current_selection.addAll( passes );
-      
-//       sel = current_selection.iterator();
-//     }
-//     new_model = new DefaultListModel();
-//     while ( sel.hasNext() ){
-//       new_model.addElement( sel.next() );
-//     }
-//     selectedAttributes.setModel( new_model );
     
   }
 
