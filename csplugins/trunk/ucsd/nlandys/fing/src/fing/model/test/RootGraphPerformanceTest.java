@@ -24,6 +24,12 @@ public final class RootGraphPerformanceTest
       createEdges(root, Integer.parseInt(args[1]), System.in, nodes, true);
     final int[] undirectedEdges =
       createEdges(root, Integer.parseInt(args[2]), System.in, nodes, false);
+    long millisBegin = System.currentTimeMillis();
+    testAdjacentEdges(root, nodes);
+    long millisEnd = System.currentTimeMillis();
+    System.out.println("adjacent edges test took " +
+                       (millisEnd - millisBegin) +
+                       " milliseconds");
   }
 
   private static final RootGraph getRootGraph(String[] mainArgs)
@@ -88,6 +94,31 @@ public final class RootGraphPerformanceTest
       (((long) eightConsecutiveBytes[7]) & 0x00000000000000ff);
     return firstByte | secondByte | thirdByte | fourthByte |
       fifthByte | sixthByte | seventhByte | eighthByte;
+  }
+
+  // This test actually fail with luna when calling several combinations:
+  // 1. RootGraph.getAdjacentEdgeIndicesArray(true, false, false)
+  // 2. RootGraph.getAdjacentEdgeIndicesArray(true, true, false)
+  // 3. RootGraph.getAdjacentEdgeIndicesArray(false, true, true)
+  // 4. RootGraph.getAdjacentEdgeIndicesArray(false, true, false)
+  // -- throws a NullPointerException.
+  public static final void testAdjacentEdges(RootGraph root, int[] nodes)
+  {
+    for (int i = 0; i < 4; i++) {
+      boolean undirected;
+      boolean incoming;
+      boolean outgoing;
+      if (i == 0) {
+        undirected = true; incoming = true; outgoing = true; }
+      else if (i == 1) {
+        undirected = true; incoming = false; outgoing = true; }
+      else if (i == 2) {
+        undirected = false; incoming = false; outgoing = true; }
+      else {
+        undirected = false; incoming = false; outgoing = false; }
+      for (int j = 0; j < nodes.length; j++) {
+        root.getAdjacentEdgeIndicesArray
+          (nodes[j], undirected, incoming, outgoing); } }
   }
 
 }

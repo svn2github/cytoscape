@@ -1,0 +1,22 @@
+ADJACENT EDGES TEST:
+
+  Testing:
+    RootGraph.getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean)
+
+  Description of test:
+    This test creates N nodes and E edges (an even mix of directed and
+    undirected) in a RootGraph.  The topology of RootGraph created is
+    defined by [random] bytes read from standard input.  For every node
+    in the RootGraph, getAdjacentEdgeIndicesArray() is called on that
+    node.  Because getAdjacentEdgeIndicesArray() takes three boolean
+    input parameters defining which adjacent edges we're looking for,
+    this test over all nodes should be repeated eight times, each time
+    with a different set of boolean input parameters.  However, four of
+    these boolean combinations cause the Luna implementation of
+    RootGraph to throw NullPointerException in getAdjacentEdges().
+    Therefore, this test is only repeated 4 times, each with a different
+    set of boolean inputs:
+      iteration 1: getAdjacentEdgeIndicesArray(int, true, true, true)
+      iteration 2: getAdjacentEdgeIndicesArray(int, true, false, true)
+      iteration 3: getAdjacentEdgeIndicesArray(int, false, false, false)
+      iteration 4: getAdjacentEdgeIndicesArray(int, false, false, false)
