@@ -4,7 +4,7 @@ package cytoscape.dialogs.preferences;
 import cytoscape.init.CyPropertiesReader;
 import cytoscape.CytoscapeInit;
 
-import java.net.URL;
+import java.net.*;
 import java.io.*;
 import java.util.*;
 import java.awt.*;
@@ -16,6 +16,8 @@ import javax.swing.table.*;
 public class PreferencesDialog extends JDialog {
 
     String[] pluginTypes = {"Local", "Remote/URL"};
+    static int LOCAL_PLUGIN_TYPE = 0;
+    static int URL_PLUGIN_TYPE = 1;
 	
     int [] selection = null;
 	
@@ -23,18 +25,21 @@ public class PreferencesDialog extends JDialog {
     JScrollPane pluginsTablePane  = new JScrollPane();
     JTable      pluginsTable      = new JTable();
     JTable      prefsTable       = new JTable();
-    JPanel      buttonPane  = new JPanel(new FlowLayout());
-    JPanel      buttonPaneA = new JPanel(new FlowLayout());
+    JPanel      propBtnPane  = new JPanel(new FlowLayout());
+    JPanel      pluginBtnPane = new JPanel(new FlowLayout());
     JPanel      okButtonPane = new JPanel(new FlowLayout());
     JComboBox   pluginTypesComboBox  = new JComboBox(pluginTypes);
-    JButton     addButton   = new JButton("Add");
-    JButton     modifyButton= new JButton("Modify");
-    JButton     deleteButton   = new JButton("Delete");
+
+    JButton     addPluginBtn   = new JButton("Add");
+    JButton     deletePluginBtn   = new JButton("Delete");
+
+    JButton     addPropBtn   = new JButton("Add");
+    JButton     deletePropBtn   = new JButton("Delete");
+    JButton     modifyPropBtn= new JButton("Modify");
+
     JButton     okButton = new JButton("OK");
     JButton     cancelButton = new JButton("Cancel");
 	
-    //private Set pluginURLs = new HashSet();
-
     public PreferenceTableModel prefsTM = null;
     public PluginsTableModel pluginsTM = null;
     private ListSelectionModel lsm = null;
@@ -52,7 +57,8 @@ public class PreferencesDialog extends JDialog {
 		} else {
 		// popup info dialog
 			JOptionPane.showMessageDialog(this,
-				"Plugin already included","Information",
+				"Plugin: "+ preferenceValue +
+					" already included","Information",
 				JOptionPane.INFORMATION_MESSAGE);
 		}
 	
@@ -65,8 +71,9 @@ public class PreferencesDialog extends JDialog {
 
 	    // reset state of Modify and Delete buttons to inactive
 	    // since update of parameter will clear any selections
-	    modifyButton.setEnabled(false);
-	    deleteButton.setEnabled(false);
+	    modifyPropBtn.setEnabled(false);
+	    deletePropBtn.setEnabled(false);
+	    deletePluginBtn.setEnabled(false);
     }
 
    /*
@@ -84,9 +91,7 @@ public class PreferencesDialog extends JDialog {
 
 
     public void refresh() {
-	prefsTM.loadProperties();
-        pluginsTM.loadProperties();
-        
+	// refresh the view
         prefsTable.setModel(prefsTM);
         pluginsTable.setModel(pluginsTM);
 
@@ -99,19 +104,25 @@ public class PreferencesDialog extends JDialog {
     }
 	
 	private void initButtonPane() {
+		propBtnPane.add(addPropBtn);
+		propBtnPane.add(modifyPropBtn);
+		propBtnPane.add(deletePropBtn);
+
 		pluginTypesComboBox.setSelectedIndex(0);
-		buttonPaneA.add(pluginTypesComboBox); 
-		buttonPaneA.add(addButton);
-		buttonPane.add(modifyButton);
-		buttonPaneA.add(deleteButton);
+		pluginBtnPane.add(pluginTypesComboBox); 
+		pluginBtnPane.add(addPluginBtn);
+		pluginBtnPane.add(deletePluginBtn);
 		okButtonPane.add(okButton);
 		okButtonPane.add(cancelButton);
 
-		modifyButton.setEnabled(false);
-		deleteButton.setEnabled(false);
-		addButton.addActionListener(new AddPropertyListener(this));
-		modifyButton.addActionListener(new ModifyPropertyListener(this));
-		deleteButton.addActionListener(new DeletePropertyListener(this));
+		modifyPropBtn.setEnabled(false);
+		deletePropBtn.setEnabled(false);
+		deletePluginBtn.setEnabled(false);
+		addPropBtn.addActionListener(new AddPropertyListener(this));
+		modifyPropBtn.addActionListener(new ModifyPropertyListener(this));
+		deletePropBtn.addActionListener(new DeletePropertyListener(this));
+		addPluginBtn.addActionListener(new AddPluginListener(this));
+		deletePluginBtn.addActionListener(new DeletePluginListener(this));
 		okButton.addActionListener(new OkButtonListener(this));
 		cancelButton.addActionListener(new CancelButtonListener(this));
 	}
@@ -191,7 +202,7 @@ public class PreferencesDialog extends JDialog {
 	prefsTable.setPreferredScrollableViewportSize(new Dimension(500,150));
 	modTableBox.add(prefsTablePane);
 	modTableBox.add(Box.createVerticalStrut(10));
-        modTableBox.add(buttonPane);
+        modTableBox.add(propBtnPane);
 	modTableBox.setBorder(BorderFactory.createTitledBorder(
 					"Properties"));
 	outerBox.add(modTableBox);
@@ -203,7 +214,7 @@ public class PreferencesDialog extends JDialog {
 	pluginsTable.setPreferredScrollableViewportSize(new Dimension(500,100));
         addTableBox.add(pluginsTablePane);
 	addTableBox.add(Box.createVerticalStrut(10));
-        addTableBox.add(buttonPaneA);
+        addTableBox.add(pluginBtnPane);
 	addTableBox.setBorder(BorderFactory.createTitledBorder(
 					"Plugins"));
 	outerBox.add(addTableBox);
@@ -225,20 +236,49 @@ public class PreferencesDialog extends JDialog {
         this.getContentPane().add(outerBox, BorderLayout.CENTER);
     }
 
+    class AddPluginListener implements ActionListener {
+	PreferencesDialog callerRef = null;
+	public AddPluginListener(PreferencesDialog caller) {
+		super();
+		callerRef = caller;
+	}
+		
+	public void actionPerformed(ActionEvent e) {
+		int type = pluginTypesComboBox.getSelectedIndex();
+        	PreferenceValueDialog pd = new PreferenceValueDialog(
+			PreferencesDialog.this,
+			pluginTypes[type],
+			"", callerRef, pluginsTM,
+			"Enter Plugin to be added:",
+			(type == LOCAL_PLUGIN_TYPE ? true : false));
+	}
+    }
+
     class AddPropertyListener implements ActionListener {
 	PreferencesDialog callerRef = null;
 	public AddPropertyListener(PreferencesDialog caller) {
 		super();
 		callerRef = caller;
 	}
-		
 	public void actionPerformed(ActionEvent e) {
-        	PreferenceValueDialog pd = new PreferenceValueDialog(
-			PreferencesDialog.this,
-			pluginTypes[pluginTypesComboBox.getSelectedIndex()],
-			callerRef, pluginsTM);
+	    String key = JOptionPane.showInputDialog(addPropBtn,
+				"Enter property name:","Add Property",
+				JOptionPane.QUESTION_MESSAGE);
+	    if (key != null) {
+	        String value = JOptionPane.showInputDialog(addPropBtn,
+				"Enter value for property " + key + ":",
+				"Add Property Value",
+				JOptionPane.QUESTION_MESSAGE);
+		if (value != null) {
+	            String[] vals = {key,value};
+	            prefsTM.addProperty(vals);
+	            refresh();			// refresh view in table
+		}
+	    }
 	}
     }
+
+
 
     class ModifyPropertyListener implements ActionListener {
 	PreferencesDialog callerRef = null;
@@ -246,7 +286,6 @@ public class PreferencesDialog extends JDialog {
 		super();
 		callerRef = caller;
 	}
-		
 	public void actionPerformed(ActionEvent e) {
 	    for (int i=0;i<selection.length;i++) {
 		String name = new String((String)(prefsTM.getValueAt(
@@ -255,15 +294,30 @@ public class PreferencesDialog extends JDialog {
 						selection[i],1)));
 	  	PreferenceValueDialog pd = new PreferenceValueDialog(
 			PreferencesDialog.this, name, value,
-			callerRef, prefsTM);
+			callerRef, prefsTM, "Modify value...",false);
 	    }
 	}
     }
-
     class DeletePropertyListener implements ActionListener {
 	PreferencesDialog callerRef = null;
-		
 	public DeletePropertyListener(PreferencesDialog caller) {
+		super();
+		callerRef = caller;
+	}
+	public void actionPerformed(ActionEvent e) {
+	    for (int i=0;i<selection.length;i++) {
+		String name = new String((String)(prefsTM.getValueAt(
+						selection[i],0)));
+		prefsTM.deleteProperty(name);
+	    }
+	    refresh();
+	}
+    }
+
+    class DeletePluginListener implements ActionListener {
+	PreferencesDialog callerRef = null;
+		
+	public DeletePluginListener(PreferencesDialog caller) {
 		super();
 		callerRef = caller;
 	}
@@ -277,7 +331,7 @@ public class PreferencesDialog extends JDialog {
     		callerRef.pluginsTM.deletePlugins(plugins);
 
 		callerRef.pluginsTable.clearSelection();
-		callerRef.deleteButton.setEnabled(false);
+		callerRef.deletePluginBtn.setEnabled(false);
 		refresh();
 	}
     }
@@ -298,8 +352,7 @@ public class PreferencesDialog extends JDialog {
 		    callerRef.prefsTM.save(newProps);
 		    CytoscapeInit.getProperties().clear();
 		    CytoscapeInit.getProperties().putAll(newProps);
-
-		    callerRef.dispose();
+		    callerRef.hide();
 		}
 	}
 	class CancelButtonListener implements ActionListener {
@@ -309,7 +362,10 @@ public class PreferencesDialog extends JDialog {
 		    callerRef = caller;
 		}
 		public void actionPerformed(ActionEvent e) {
-		    callerRef.dispose();
+		    Properties oldProps = CytoscapeInit.getProperties();
+		    callerRef.pluginsTM.restore(oldProps);
+		    callerRef.prefsTM.restore(oldProps);
+		    callerRef.hide();
 		}
 	}
 	
@@ -333,7 +389,7 @@ public class PreferencesDialog extends JDialog {
 				}
 				else {
 					int isPlugin = 1;
-                    deleteButton.setEnabled(true);
+                    deletePluginBtn.setEnabled(true);
 				}
 			}
 		}
@@ -373,11 +429,14 @@ public class PreferencesDialog extends JDialog {
 		public void valueChanged(ListSelectionEvent lse) {
 			if (!lse.getValueIsAdjusting()) {
 				StringBuffer buf = new StringBuffer();
-				selection = getSelectedIndices(model.getMinSelectionIndex(), model.getMaxSelectionIndex());
+				selection = getSelectedIndices(
+					model.getMinSelectionIndex(),
+					model.getMaxSelectionIndex());
 				if (selection.length == 0) {
 				}
 				else {
-					modifyButton.setEnabled(true);
+					modifyPropBtn.setEnabled(true);
+					deletePropBtn.setEnabled(true);
 				}
 			}
 		}

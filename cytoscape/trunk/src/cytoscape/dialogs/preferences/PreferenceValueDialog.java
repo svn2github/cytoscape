@@ -14,49 +14,42 @@ import javax.swing.table.*;
 public class PreferenceValueDialog extends JDialog {
     String      preferenceName = null;
     String      preferenceValue = null;
+    String 	title = null;
     JLabel      preferenceNameL = null;
     JTextField  value           = null;
     JButton     browseButton    = null;
     JButton     okButton        = null;
     JButton     cancelButton    = null;
     TableModel	tableModel	= null;
+    boolean	includeBrowseBtn = false;
 
     PreferencesDialog callerRef = null;
 
-    public PreferenceValueDialog(Dialog owner, String nameString,
-		PreferencesDialog caller, TableModel tm) {
-	super(owner,true);
-
-        callerRef = caller;
-	tableModel = tm;
-        
-        preferenceName = new String(nameString);
-        preferenceValue = new String("");
-
-        showDialog(owner);
-    }
-
-    public PreferenceValueDialog(Dialog owner, String nameString,
-		String valueString, PreferencesDialog caller, TableModel tm) {
+    public PreferenceValueDialog(Dialog owner, String name,
+		String value, PreferencesDialog caller, TableModel tm,
+		String title, boolean includeBrowse) {
 	super(owner,true);
         callerRef = caller;
 	tableModel = tm;
+	this.title=title;
+	includeBrowseBtn = includeBrowse;
         
-        preferenceName = new String(nameString);
-        preferenceValue = new String(valueString);
+        preferenceName = new String(name);
+        preferenceValue = new String(value);
 
         showDialog(owner);
     }
         
     protected void showDialog(Dialog owner) {
 
-        preferenceNameL = new JLabel(preferenceName);
-        value = new JTextField(preferenceValue, 20);
+	preferenceNameL = new JLabel(preferenceName);
+        value = new JTextField(preferenceValue, 32);
         browseButton  = new JButton("Browse..");
         okButton = new JButton("OK");
         cancelButton = new JButton("Cancel");
 
-        browseButton.addActionListener(new BrowseButtonListener(this, callerRef));
+        browseButton.addActionListener(new
+			BrowseButtonListener(this,callerRef));
         okButton.addActionListener(new OkButtonListener(this, callerRef));
         cancelButton.addActionListener(new CancelButtonListener(this,
 								callerRef));
@@ -66,9 +59,11 @@ public class PreferenceValueDialog extends JDialog {
 	JPanel buttonPanel = new JPanel(new FlowLayout());
         valuePanel.add(preferenceNameL);
         valuePanel.add(value);
-        if (preferenceName.compareTo("Local")==0 ||
-            preferenceName.compareTo("bioDataDirectory")==0 ||
-            preferenceName.compareTo("mrud")==0) {
+	// take a guess and look for names with directory or file in them
+	// and include the browse button if found
+        if (includeBrowseBtn ||
+		preferenceName.toUpperCase().indexOf("DIRECTORY") >= 0 ||
+		preferenceName.toUpperCase().indexOf("FILE") >= 0) {
             valuePanel.add(browseButton);
         }
         buttonPanel.add(okButton);
@@ -79,10 +74,10 @@ public class PreferenceValueDialog extends JDialog {
         this.getContentPane().add(outerPanel, BorderLayout.CENTER);
 	pack();
 
+	this.setTitle(title);
 	// popup relative to owner/parent
 	this.setLocationRelativeTo(owner);
         this.setVisible(true);
-        this.setTitle("Adjust Preferences...");
         
     }
     
@@ -101,7 +96,14 @@ public class PreferenceValueDialog extends JDialog {
 
         public void actionPerformed(ActionEvent e) {
 
-            fc = new JFileChooser(grandmotherRef.prefsTM.getProperty("mrud"));
+	    // use relative paths (since command line args do by default)
+	    // or absolute paths if explicitly specifed (by not using
+	    // the file chooser)
+	    String startingDir = grandmotherRef.prefsTM.getProperty("mrud");
+	    if (startingDir == null)
+		startingDir = System.getProperty("user.dir");
+
+            fc = new JFileChooser(startingDir);
             CyFileFilter filter = new CyFileFilter();
             filter.addExtension("jar");
             filter.setDescription("Plugins");
@@ -109,8 +111,7 @@ public class PreferenceValueDialog extends JDialog {
             if (motherRef.preferenceName.equals("Local")) {
                 fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
                 fc.setFileFilter(filter);
-            }
-            if (motherRef.preferenceName.equals("mrud")) {
+            } else if (motherRef.preferenceName.equals("mrud")) {
                 fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             }            
 
@@ -120,6 +121,8 @@ public class PreferenceValueDialog extends JDialog {
                 File file;
                 file = fc.getSelectedFile();
 		String selection = file.getAbsolutePath();
+		selection = grandmotherRef.pluginsTM.abs2rel(selection);
+
                 if (motherRef.preferenceName.equals("Local")) {
 			String plugins = validatedPluginData(motherRef,
 						selection);
@@ -148,7 +151,8 @@ public class PreferenceValueDialog extends JDialog {
 		    String [] fileList = file.list();	// could use FileFilter
 		    String pluginFiles = new String("");
 		    for (int j=0;j<fileList.length; j++) {
-			String jarString = file.getAbsolutePath()+
+//			String jarString = file.getAbsolutePath()+
+			String jarString = file.getPath()+
 						File.separator+ fileList[j];
 			if (jarString.endsWith(".jar")) {
 			  if (pluginFiles.length()>0) {
@@ -193,25 +197,27 @@ public class PreferenceValueDialog extends JDialog {
 
 		public void actionPerformed(ActionEvent e) {
 		    if (tableModel == grandmotherRef.pluginsTM) {
+			// plugins
 			String plugins = validatedPluginData(motherRef,
 					motherRef.value.getText());
-		if (plugins != null && plugins.length() >0) {
-            	    grandmotherRef.setParameter(tableModel,
+		      if (plugins != null && plugins.length() >0) {
+            	        grandmotherRef.setParameter(tableModel,
 					motherRef.preferenceName,
 					plugins);
-                    motherRef.dispose();
-		} else {
-		    motherRef.value.setText("");
-		}
-	    } else {
-            	motherRef.preferenceValue = motherRef.value.getText();
-            	grandmotherRef.setParameter(tableModel,
+                        motherRef.dispose();
+		      } else {
+		        motherRef.value.setText("");
+		      }
+		    } else {
+			// properties
+		      motherRef.preferenceValue = motherRef.value.getText();
+		      grandmotherRef.setParameter(tableModel,
 					motherRef.preferenceName,
 					motherRef.preferenceValue);
-                motherRef.dispose();
+		      motherRef.dispose();
+		    }
+		}
 	    }
-        }
-    }
 
     class CancelButtonListener implements ActionListener {
         PreferenceValueDialog motherRef = null;

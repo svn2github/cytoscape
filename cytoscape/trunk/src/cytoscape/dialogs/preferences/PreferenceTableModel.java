@@ -12,13 +12,10 @@ public class PreferenceTableModel extends AbstractTableModel {
     static int[] columnWidth = new int[] {100, 400};
     static int[] alignment = new int[] {JLabel.LEFT, JLabel.LEFT};
 
-    private Set pluginURLs = new HashSet();
-
     private Properties properties;
     Vector propertiesList = new Vector();
     static String[] columnHeader = new String[] {
         "Property Name", "Value"};
-    private int rowNum = 0;
 
     public PreferenceTableModel() {
         super();
@@ -62,11 +59,9 @@ public class PreferenceTableModel extends AbstractTableModel {
 	    for (Enumeration names = properties.propertyNames();
 					names.hasMoreElements();) {
 		String name = (String)names.nextElement();
-		addRow(new String[] {name,properties.getProperty(name)});
+		addProperty(new String[] {name,properties.getProperty(name)});
 	    }
-//	    addRow( new String[]{"mrud",properties.getProperty("mrud",
-//		System.getProperty( "user.dir" ))});
-	}
+    }
 
     public String getProperty(String key) {
         return properties.getProperty(key);
@@ -77,31 +72,70 @@ public class PreferenceTableModel extends AbstractTableModel {
     }
 
     public void setProperty(String key, String value) {
+	// update property object
         properties.setProperty(key,value);
+	// update table model (propertiesList)
+	for (Iterator it = propertiesList.iterator(); it.hasNext(); ) {
+	    String[] prop = (String[])it.next();
+	    if (prop[0].equals(key)) {
+		prop[1] = value;
+	    }
+	}
     }
 
-    public void addRow(String[] row) {
-        if (row.length < 0 || row.length > columnHeader.length) return;
-        propertiesList.add(row);
+    public void deleteProperty(String key) {
+	// remove property from property object
+        properties.remove(key);
+	// remove property from table model (propertiesList)
+	for (Iterator it = propertiesList.iterator(); it.hasNext(); ) {
+	    String[] prop = (String[])it.next();
+	    if (prop[0].equals(key)) {
+		propertiesList.remove(prop);
+		return;
+	    }
+	}
+    }
+
+    public void addProperty(String[] val) {
+        if (val.length < 0 || val.length > columnHeader.length) return;
+
+	// add to table model (propertiesList vector) if not present,
+	// otherwise replace existing entry
+	boolean found = false;
+	for (Iterator it = propertiesList.iterator(); it.hasNext(); ) {
+	    String[] prop = (String[])it.next();
+	    if (prop[0].equals(val[0])) {
+		prop[1] = val[1];
+		found = true;
+	    }
+	}
+	if (!found)
+	    propertiesList.add(val);
+
         sort();
-        rowNum++;
+	// also add to local properties object for saving 
+        properties.setProperty(val[0],val[1]);
     }
 
     public String getColumnName(int col) { return columnHeader[col]; }
-    
-    public String getFieldName(int row) {
-        String returnvalue = (String)getValueAt(row, 0);
-        return returnvalue;
-    }
     
     public void clearVector() {
         propertiesList.clear();
     }
 
-    public void save(Properties updateProps) {
-	// update local property values in passed-in Properties
-	updateProps.putAll(properties);
+    public void save(Properties saveToProps) {
+	// save local property values to passed-in Properties
+	saveToProps.putAll(properties);
     }
+
+    public void restore(Properties restoreFromProps) {
+	properties.clear();
+	properties.putAll(restoreFromProps);
+	// don't include plugins= property
+	properties.remove("plugins");
+	loadProperties();
+    }
+
 
     public int getColumnCount() {
         return columnHeader.length;

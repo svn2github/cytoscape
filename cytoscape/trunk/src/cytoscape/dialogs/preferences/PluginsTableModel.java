@@ -12,15 +12,16 @@ public class PluginsTableModel extends AbstractTableModel {
     static int[] columnWidth = new int[] {400};
     static int[] alignment = new int[] {JLabel.LEFT};
 
-    private Set pluginURLs = new HashSet();
-
     private Properties properties;
-    Vector propertiesList = new Vector();
+    TreeSet pluginsSet = new TreeSet();
     static String[] columnHeader = new String[] {"Plugin Location"};
-    private int rowNum = 0;
+
+    boolean pluginsFromCommandLineLoadedAndSaved;
 
     public PluginsTableModel() {
         super();
+//MDA
+	pluginsFromCommandLineLoadedAndSaved = false;
 	// get only one entry from properties: key=plugins
 	properties = new Properties();
 	if (CytoscapeInit.getProperties().get("plugins") != null) {
@@ -59,27 +60,22 @@ public class PluginsTableModel extends AbstractTableModel {
     
 
     public void loadProperties() {
-	    clearVector();
+	pluginsSet.clear();
         if ( getProperty( "plugins" ) != null ) {
             String[] pargs = getProperty( "plugins", "" ).split(",");
             for ( int i = 0; i < pargs.length; i++ ) {
-                String plugin = pargs[i];
-                URL url; 
-                try {
-                    if ( plugin.startsWith( "http" ) ) {
-                        plugin = plugin.replaceAll( "http:/" ,"http://" );
-                        plugin = "jar:"+plugin+"!/";
-                        url = new URL( plugin );
-                    } else {
-                        url = new URL( "file", "", plugin );
-                    }
-                    pluginURLs.add( url );
-        		    addRow( new String[]{url.toString().substring(5)});
-                } catch ( Exception ue ) {
-                    System.err.println( "Jar: "+pargs[i]+ "was not a valid URL" );
-                }
+                addPlugin(pargs[i]);
             }
         }
+	// now (non-redundantly) include plugins specified on the command line
+	if (!pluginsFromCommandLineLoadedAndSaved) {
+	  Set plugins = CytoscapeInit.getPluginURLs();
+	  Iterator iterator = plugins.iterator();
+	  while (iterator.hasNext()) {
+	    URL url = (URL) iterator.next();
+            addPlugin(url);
+	  }
+	}
     }
 
     public String getProperty(String key) {
@@ -94,15 +90,17 @@ public class PluginsTableModel extends AbstractTableModel {
         properties.setProperty(key,value);
     }
 
-    public void addPlugin(String preferenceValue) {
+    // Add plugin to plugins=... String in private Properties object for
+    // later commit to CytoscapeInit's Properties object
+    public void addPluginToPropertyString(String newPlugin) {
         String tempPlugins = properties.getProperty("plugins");
         if (tempPlugins != null) {
 //cull out duplicate entries, since single entries and directory adds
 // can result in duplicates not specified strictly at UI level
             properties.setProperty("plugins",
-		cullDuplicates(tempPlugins + "," + preferenceValue));
+		cullDuplicates(tempPlugins + "," + newPlugin));
         } else {
-            properties.setProperty("plugins", preferenceValue);
+            properties.setProperty("plugins", newPlugin);
         }
     }
 
@@ -128,14 +126,21 @@ public class PluginsTableModel extends AbstractTableModel {
     }
 
     
-    public void deletePlugins(String[] deletedPlugins) {
-//MDA - deletion a little weird - multiple selection deletes not working
-// right - restricting via setting Tables to use single selection
+    public void deletePlugins(String[] deletedPlugins) {	
+	// deletion a little weird - multiple selection deletes not working
+	// right - restricting via setting Tables to use single selection
+
+	// remove deleted plugin from plugins=... property
         String tempPlugins = properties.getProperty("plugins");
 	for (int k = 0; k < deletedPlugins.length; k++) {
-	  String value = new String(deletedPlugins[k]);
+	  String value = deletedPlugins[k];
           if (value.startsWith("file:"))
             value = value.substring(5);
+          else if (value.startsWith("jar:"))
+            value = value.substring(4);
+          else if (value.startsWith("http\\:"))	// don't want the backslash
+            value = value.substring(0,3) + value.substring(5);
+						// NB: \\ is escaped "\"
           if (tempPlugins != null) {
             String [] plugins = tempPlugins.split(",");
             String returnString = null;
@@ -155,62 +160,69 @@ public class PluginsTableModel extends AbstractTableModel {
                 properties.setProperty("plugins", returnString);
             }
           }
+
+	// and remove deleted plugins from TreeSet for model and table
+          pluginsSet.remove(value);
 	}
-	for (int k = 0; k < deletedPlugins.length; k++) {
-          for (int i=0;i<propertiesList.size();i++) {
-            String[] rowData = (String[])propertiesList.get(i);
-            if (rowData[0].equals(deletedPlugins[k])) {
-                propertiesList.remove(i);
+    }
+
+    // add plugin to table and properties object
+    // accept single plugin as String, or comma-seperated String of plugins
+    public void addPlugin(String pluginString) {
+
+	String[] plugin = pluginString.split(",");
+	for ( int i = 0; i < plugin.length; i++ ) {
+
+	  URL url; 
+	  try {
+	    if ( plugin[i].startsWith("http") ) {
+            plugin[i] = "jar:"+plugin[i]+"!/";
+            url = new URL( plugin[i] );
+            } else if ( plugin[i].startsWith("file") ||
+					plugin[i].startsWith("jar")) {
+	    // do no massaging of string, just create URL
+            url = new URL( plugin[i] );
+            } else {
+            url = new URL( "file", "", plugin[i] );
             }
+            addPlugin(url);
+	  } catch ( Exception ue ) {
+            System.err.println("Error: cannot construct URL from: "+ plugin[i]);
           }
 	}
     }
     
-    public void addRow(String[] row) {
-        if (row.length < 0 || row.length > columnHeader.length) return;
-        propertiesList.add(row);
-        removeRedundancy();
-        sort();
-        rowNum++;
+    public void addPlugin(URL u) {
+        if (u!= null)  {
+	    // get string info (no protocol) for insertion into table
+	    // and plugins=... property
+	    String path = u.getPath();
+	    // strip off trailing "!/" for JAR URLs
+	    if (path.endsWith("!/"))
+		path = path.substring(0,path.length()-2);
+
+            pluginsSet.add(path);	// add to TreeSet for model and table
+	    addPluginToPropertyString(path); // also add to plugins=... string
+					    //   in private properties object
+	}
     }
 
-    public void removeRedundancy() {
-        Set s = new HashSet();
-
-        for (int i=0;i<propertiesList.size();i++) {
-            String[] row1 = (String[])propertiesList.get(i);
-            s.add(row1);
-        }
-        propertiesList.clear();
-        String[] element = null;
-        String allPlugin = new String ("");        
-        Iterator iter = s.iterator();
-        while (iter.hasNext()) {
-            element = (String[]) iter.next();
-            if (allPlugin.length()>0) {
-                allPlugin = allPlugin+","+element[0];
-            } else {
-                allPlugin = new String(element[0]);
-            }
-            propertiesList.add(element);
-        }
-        properties.setProperty("plugins", allPlugin);
-    }
-        
     public String getColumnName(int col) { return columnHeader[col]; }
     
-    public String getFieldName(int row) {
-        String returnvalue = (String)getValueAt(row, 0);
-        return returnvalue;
-    }
-    
-    public void clearVector() {
-        propertiesList.clear();
+    public void save(Properties saveToProps) {
+	// save local property values to passed-in Properties
+	saveToProps.putAll(properties);
+	// mark these plugins loaded from the command line as loaded
+	// and saved, so no need to reparse, etc.
+	pluginsFromCommandLineLoadedAndSaved = true;
     }
 
-    public void save(Properties updateProps) {
-	// update local property values in passed-in Properties
-	updateProps.putAll(properties);
+    public void restore(Properties restoreFromProps) {
+	properties.clear();
+	if (restoreFromProps.getProperty("plugins") != null) {
+	    properties.put("plugins",restoreFromProps.getProperty("plugins"));
+	    loadProperties();	// now get pluginsSet populated from properties
+	}
     }
 
     public int getColumnCount() {
@@ -218,15 +230,19 @@ public class PluginsTableModel extends AbstractTableModel {
     }
 
     public Object getValueAt(int row, int col) {
-        String[] rowData = (String[])propertiesList.get(row);
-        return rowData[col];
+	Object retVal = new String("");
+	int index=0;
+	for (Iterator it=pluginsSet.iterator(); it.hasNext(); ) {
+	    retVal = it.next();
+	    if (index == row) 
+		break;
+	    index++;
+	}
+        return retVal;
     }
 
     public int getRowCount() {
-        return propertiesList.size();
+        return pluginsSet.size();
     }
 
-    public void sort() {
-        Collections.sort(propertiesList, new StringComparator());
-    }
 }
