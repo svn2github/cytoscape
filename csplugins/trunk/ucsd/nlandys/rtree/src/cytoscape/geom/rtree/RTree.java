@@ -3,7 +3,7 @@ package cytoscape.geom.rtree;
 import cytoscape.util.intr.IntEnumerator;
 
 /**
- * An R-tree over real numbers in two dimensions.
+ * An in-memory R-tree over real numbers in two dimensions.
  * Only intersection and containment queries over an orthogonal
  * (axis-aligned) range are suppored.  This class only knows about
  * [minimum bounding] rectangles; to compute exact intersections of query
