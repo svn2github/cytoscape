@@ -5,7 +5,6 @@ import cytoscape.data.*;
 import cytoscape.view.*;
 import cytoscape.util.*;
 import cytoscape.plugin.*;
-import cytoscape.plugin.jar.*;
 import filter.model.*;
 import filter.view.*;
 import cytoscape.CyNetwork;
@@ -40,7 +39,7 @@ public class CsFilter
       // StringBuffer buffer = new StringBuffer();
       try {
 
-        File filter_file = Cytoscape.getCytoscapeObj().getConfigFile( "filter.props" );
+        File filter_file = CytoscapeInit.getConfigFile( "filter.props" );
 
         BufferedWriter writer = new BufferedWriter(new FileWriter( filter_file ));
         
@@ -68,7 +67,7 @@ public class CsFilter
     Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener( this );
     
     try {
-      File filter_file = Cytoscape.getCytoscapeObj().getConfigFile( "filter.props" );
+      File filter_file = CytoscapeInit.getConfigFile( "filter.props" );
       BufferedReader in
         = new BufferedReader(new FileReader(filter_file));
       String oneLine = in.readLine();
