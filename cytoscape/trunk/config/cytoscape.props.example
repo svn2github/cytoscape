@@ -22,7 +22,3 @@ plugin.bar.attributeName=bar
 plugin.activeModules.className=csplugins.activeModules.ActiveModulesUI
 plugin.activeModules.fileExtension=pvals
 
-#plugin.expressionChooser.classname=csplugins.expressionData.ExpressionDataUI
-#plugin.expressionChooser.fileExtension=mrna
-#plugin.expressionChooser.fileExtension=pvals
-plugin.expressionChooser.load=csplugins.expressionData.ExpressionDataUI
