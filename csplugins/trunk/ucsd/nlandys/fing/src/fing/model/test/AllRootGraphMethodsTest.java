@@ -37,6 +37,19 @@ public final class AllRootGraphMethodsTest
     nodeInx[nodeInx.length - 1] = root.createNode
       (null, new int[] { edgeInx[6], edgeInx[2] }); // Should have nodes
       // nodeInx[0], nodeInx[2], and nodeInx[3].
+
+    // BEGIN: Extra checking code that can be removed later.
+    int[] childNodeInxArr = root.getNodeMetaChildIndicesArray(nodeInx[4]);
+    int[] childEdgeInxArr = root.getEdgeMetaChildIndicesArray(nodeInx[4]);
+    if (childNodeInxArr.length != 3 || childEdgeInxArr.length != 2)
+      throw new IllegalStateException();
+    for (int i = 0;; i++) if (childNodeInxArr[i] == nodeInx[0]) break;
+    for (int i = 0;; i++) if (childNodeInxArr[i] == nodeInx[2]) break;
+    for (int i = 0;; i++) if (childNodeInxArr[i] == nodeInx[3]) break;
+    for (int i = 0;; i++) if (childEdgeInxArr[i] == edgeInx[2]) break;
+    for (int i = 0;; i++) if (childEdgeInxArr[i] == edgeInx[6]) break;
+    // END: Extra checking code that can be removed later.
+
     if (!(root.addNodeMetaChild(nodeInx[0], nodeInx[1]) &&
           root.addNodeMetaChild(nodeInx[0], nodeInx[4]) &&
           root.addNodeMetaChild(nodeInx[3], nodeInx[1]) &&
