@@ -1110,7 +1110,7 @@ public void deselectAllNodes ()
  * network and bioDataServer as arguments.
  */
 public void selectNodesStartingWith (String key) {
-    CyNetworkUtilities.selectNodesStartingWith(this.getNetwork(), key, this.getCytoscapeObj());
+    CyNetworkUtilities.selectNodesStartingWith(this.getNetwork(), key, this.getCytoscapeObj(), this.getCyWindow());
 }
 //------------------------------------------------------------------------------
 /**
@@ -1200,7 +1200,7 @@ public boolean saveVisibleNodeNames () {
  * network as an argument.
  */
 public boolean saveVisibleNodeNames (String filename) {
-    return CyNetworkUtilities.saveVisibleNodeNames(this.getNetwork(), filename);
+    return CyNetworkUtilities.saveVisibleNodeNames(this.getNetwork(), filename, this.getCytoscapeObj().getConfiguration().isYFiles());
 } // saveVisibleNodeNames
 //------------------------------------------------------------------------------
 /**
@@ -1208,7 +1208,7 @@ public boolean saveVisibleNodeNames (String filename) {
  * network as an argument.
  */
 public boolean saveSelectedNodeNames(String filename) {
-    return CyNetworkUtilities.saveSelectedNodeNames(this.getNetwork(), filename);
+    return CyNetworkUtilities.saveSelectedNodeNames(this.getCyWindow(), this.getNetwork(), filename);
 } // saveSelectedNodeNames
 //------------------------------------------------------------------------------
 public HashMap configureNewNode (Node node)

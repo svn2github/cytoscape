@@ -294,10 +294,17 @@ protected void initialize() {
 */
 protected void updateGraphView() {
 	
+	 if (display != null) {
+		    remove(display);
+	    }
 	
 	GraphPerspective gp = network.getGraphPerspective();
 	
 	view = new PGraphView(network.getGraphPerspective());
+	display = view.getComponent();
+	setLayout( new BorderLayout() );  
+	add( display, BorderLayout.CENTER);
+	
 	java.util.List nodes = view.getNodeViewsList();
 	    for ( Iterator i= nodes.iterator(); i.hasNext();)
 	    {
@@ -326,14 +333,7 @@ protected void updateGraphView() {
 	    addViewContextMenues();
 	    view.setBackgroundPaint(Color.YELLOW);
 	    view.fitContent();
-	    view.updateView();
-	    if (display != null)
-		    remove(display);
-	     
-	     display = view.getComponent();
-	     setLayout( new BorderLayout() );  
-	     add( display, BorderLayout.CENTER);
-	 
+	    view.updateView(); 
 }
 
 /**
@@ -769,10 +769,12 @@ public void setNewNetwork( CyNetwork newNetwork ) {
     else {
 	    //using giny update the view
 	    this.network = newNetwork;
+	    //this.setVisible(false);
 	    updateGraphView();
 	    //applyLayout();
 	    fitGraphView();
 	    add(cyMenus.getToolBar(), BorderLayout.NORTH);
+	    
 	    showWindow();
 	   
     }
