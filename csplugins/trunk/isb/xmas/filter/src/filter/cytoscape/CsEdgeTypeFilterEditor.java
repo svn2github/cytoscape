@@ -19,11 +19,11 @@ import filter.model.*;
 import ViolinStrings.Strings;
 
 /**
- * This is a Cytoscape specific filter that will pass nodes if
+ * This is a Cytoscape specific filter that will pass edges if
  * a selected attribute matches a specific value.
  */
 
-public class CsNodeTypeFilterEditor 
+public class CsEdgeTypeFilterEditor 
   extends FilterEditor 
   implements ActionListener {
          
@@ -40,28 +40,28 @@ public class CsNodeTypeFilterEditor
   protected String searchString;
   protected String selectedAttribute;
 
-  protected CsNodeTypeFilter filter;
+  protected CsEdgeTypeFilter filter;
 
   protected CyNetwork network;
-  protected GraphObjAttributes nodeAttributes;
+  protected GraphObjAttributes edgeAttributes;
 
   protected String DEFAULT_SEARCH_STRING = "";
   protected String RESET_SEARCH_STRING;
 
-  protected String DEFAULT_FILTER_NAME = "NodeType: ";
+  protected String DEFAULT_FILTER_NAME = "EdgeType: ";
   protected String RESET_FITLER_NAME;
 
   protected String DEFAULT_SELECTED_ATTRIBUTE = "";
   protected String RESET_SELECTED_ATTRIBUTE;
   
 
-  public CsNodeTypeFilterEditor ( CyNetwork network ) {
+  public CsEdgeTypeFilterEditor ( CyNetwork network ) {
     super();
     this.network = network;
-    this.nodeAttributes = network.getNodeAttributes();
+    this.edgeAttributes = network.getEdgeAttributes();
 
-    identifier = "Node Attribute";
-    setBorder( new TitledBorder( "Node Attribute Filter" ) );
+    identifier = "Edge Attribute";
+    setBorder( new TitledBorder( "Edge Attribute Filter" ) );
 
     JPanel namePanel = new JPanel();
     nameField = new JTextField(15);
@@ -70,7 +70,7 @@ public class CsNodeTypeFilterEditor
     add( namePanel );
 
     JPanel attribute_panel = new JPanel();
-    attributeBox = new JComboBox( nodeAttributes.getAttributeNames() );
+    attributeBox = new JComboBox( edgeAttributes.getAttributeNames() );
     attributeBox.setEditable( false );
     attributeBox.addActionListener( this );
     attribute_panel.add( attributeBox );
@@ -88,12 +88,12 @@ public class CsNodeTypeFilterEditor
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
                 public void run() {
-                  String[] atts = nodeAttributes.getAttributeNames();
+                  String[] atts = edgeAttributes.getAttributeNames();
                   System.out.println( "There are: "+atts.length+" attributes." );
                   for ( int i = 0; i < atts.length; ++i ) {
                     System.out.println( i+". "+atts[i] );
                   }
-                  attributeBox.setModel( new DefaultComboBoxModel( nodeAttributes.getAttributeNames() ) );
+                  attributeBox.setModel( new DefaultComboBoxModel( edgeAttributes.getAttributeNames() ) );
                   //( ( DefaultComboBoxModel )attributeBox.getModel() ).addElement( "canonicalName" );
                 }
               } ); } } ) );
@@ -112,7 +112,7 @@ public class CsNodeTypeFilterEditor
   }
 
   public String getFilterID () {
-    return CsNodeTypeFilter.FILTER_ID;
+    return CsEdgeTypeFilter.FILTER_ID;
   }
 
   /** 
@@ -126,7 +126,7 @@ public class CsNodeTypeFilterEditor
     if ( search_item == null || attr_item == null || nameField.getText() == null ) {
       return null;
     }
-    return new CsNodeTypeFilter( network, attr_item, search_item, nameField.getText() );
+    return new CsEdgeTypeFilter( network, attr_item, search_item, nameField.getText() );
   }
 
   /**
@@ -135,10 +135,10 @@ public class CsNodeTypeFilterEditor
    * by this Filter editor. 
    */
   public void editFilter ( Filter filter ) {
-    if ( filter instanceof CsNodeTypeFilter ) {
+    if ( filter instanceof CsEdgeTypeFilter ) {
       // good, this Filter is of the right type
       getSwingPropertyChangeSupport().removePropertyChangeListener( this.filter );
-      this.filter = ( CsNodeTypeFilter )filter;
+      this.filter = ( CsEdgeTypeFilter )filter;
       readInFilter();
       getSwingPropertyChangeSupport().addPropertyChangeListener( this.filter );
     }
@@ -167,7 +167,7 @@ public class CsNodeTypeFilterEditor
 
 
   //----------------------------------------//
-  // CsNodeTypeFilter Methods
+  // CsEdgeTypeFilter Methods
   //----------------------------------------//
 
   // There should be getter and setter methods for
@@ -216,17 +216,17 @@ public class CsNodeTypeFilterEditor
   }
 
   public void fireSearchStringChanged () {
-    pcs.firePropertyChange( CsNodeTypeFilter.SEARCH_STRING_EVENT, null, getSearchString() );
+    pcs.firePropertyChange( CsEdgeTypeFilter.SEARCH_STRING_EVENT, null, getSearchString() );
   }
 
   public void fireFilterNameChanged () {
-    pcs.firePropertyChange( CsNodeTypeFilter.FILTER_NAME_EVENT, null, nameField.getText() );
+    pcs.firePropertyChange( CsEdgeTypeFilter.FILTER_NAME_EVENT, null, nameField.getText() );
   }
   
   public void fireAttributeChanged () {
     String new_attr = getSelectedAttribute();
-    searchBox.setModel( new DefaultComboBoxModel( nodeAttributes.getUniqueValues( new_attr ) ) );
-    pcs.firePropertyChange( CsNodeTypeFilter.SELECTED_ATTRIBUTE_EVENT, null, getSelectedAttribute() );
+    searchBox.setModel( new DefaultComboBoxModel( edgeAttributes.getUniqueValues( new_attr ) ) );
+    pcs.firePropertyChange( CsEdgeTypeFilter.SELECTED_ATTRIBUTE_EVENT, null, getSelectedAttribute() );
   }
 
   public void setDefaults () {

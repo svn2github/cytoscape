@@ -109,12 +109,10 @@ public class FilterUsePanel extends JPanel
       while ( nodes.hasNext() ) {
         node = ( Node )nodes.next();
         passes = true;
-        while ( passes ) {
-          for ( int i = 0; i < filters.length; ++i ) {
-            boolean passed = filters[i].passesFilter( node );
-            if ( !passed ) {
-              passes = false;
-            }
+        for ( int i = 0; i < filters.length; ++i ) {
+          boolean passed = filters[i].passesFilter( node );
+          if ( !passed ) {
+            passes = false;
           }
         }
         passObject( node, passes ); 
@@ -124,12 +122,10 @@ public class FilterUsePanel extends JPanel
       while ( edges.hasNext() ) {
         edge = ( Edge )edges.next();
         passes = true;
-        while ( passes ) {
-          for ( int i = 0; i < filters.length; ++i ) {
-            boolean passed = filters[i].passesFilter( edge );
-            if ( !passed ) {
-              passes = false;
-            }
+        for ( int i = 0; i < filters.length; ++i ) {
+          boolean passed = filters[i].passesFilter( edge );
+          if ( !passed ) {
+            passes = false;
           }
         }
         passObject( edge, passes ); 
@@ -142,12 +138,10 @@ public class FilterUsePanel extends JPanel
       while ( nodes.hasNext() ) {
         node = ( Node )nodes.next();
         passes = false;
-        while ( !passes ) {
-          for ( int i = 0; i < filters.length; ++i ) {
-            boolean passed = filters[i].passesFilter( node );
-            if ( passed ) {
-              passes = true;
-            }
+        for ( int i = 0; i < filters.length; ++i ) {
+          boolean passed = filters[i].passesFilter( node );
+          if ( passed ) {
+            passes = true;
           }
         }
         passObject( node, passes ); 
@@ -157,13 +151,11 @@ public class FilterUsePanel extends JPanel
       while ( edges.hasNext() ) {
         edge = ( Edge )edges.next();
         passes = false;
-        while ( !passes ) {
-          for ( int i = 0; i < filters.length; ++i ) {
-            boolean passed = filters[i].passesFilter( edge );
-            if ( !passed ) {
-              passes = true;
+        for ( int i = 0; i < filters.length; ++i ) {
+          boolean passed = filters[i].passesFilter( edge );
+          if ( !passed ) {
+            passes = true;
             }
-          }
         }
         passObject( edge, passes ); 
       }
@@ -218,11 +210,47 @@ public class FilterUsePanel extends JPanel
    * according to what the available actions are.
    */
   protected void passObject( Object object, boolean passes ) {
-    if (passes ) 
-      System.out.println( "Object: "+object+" passed? "+passes );
-
+    if (passes ) {
+      
+      if ( object instanceof Node ) {
+        NodeView nv =   window.getView().getNodeView( ( Node )object );
+        
+        // things to do if passes
+        if ( select.isSelected() ) {
+          nv.setSelected( true );
+        }
+      
+        if ( overwrite.isSelected() ) {
+          // things to overwrite if passes
+          if ( gray.isSelected() ) {
+            nv.setTransparency( 1f );
+          } 
+          if ( hide.isSelected() ) {
+            ( ( phoebe.PGraphView )window.getView() ).showNodeView( nv );
+          }
+        }
+      } 
+    } else {
+      if ( object instanceof Node ) {
+        NodeView nv =   window.getView().getNodeView( ( Node )object );
+        
+        // things to do if failed
+        if ( gray.isSelected() ) {
+          nv.setTransparency( 0.5f );
+        } 
+        if ( hide.isSelected() ) {
+          ( ( phoebe.PGraphView )window.getView() ).hideNodeView( nv );
+        }
+        if ( overwrite.isSelected() ) {
+          // things to overwrite if failed
+          if ( select.isSelected() ) {
+            nv.setSelected( false );
+          }
+        }
+        
+      }
+    }
   }
-
 
   public JPanel createActionPanel () {
     JPanel actionPanel = new JPanel();

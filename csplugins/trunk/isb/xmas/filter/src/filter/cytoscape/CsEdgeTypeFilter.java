@@ -18,10 +18,10 @@ import giny.model.*;
 import ViolinStrings.Strings;
 
 /**
- * This is a Cytoscape specific filter that will pass nodes if
+ * This is a Cytoscape specific filter that will pass edges if
  * a selected attribute matches a specific value.
  */
-public class CsNodeTypeFilter
+public class CsEdgeTypeFilter
   implements Filter  {
   
   //----------------------------------------//
@@ -34,13 +34,13 @@ public class CsNodeTypeFilter
   public static String SELECTED_ATTRIBUTE_EVENT = "SELECTED_ATTRIBUTE_EVENT";
   public static String FILTER_NAME_EVENT = "FILTER_NAME_EVENT";
 
-  public static String FILTER_ID = "CsNodeTypeFilter";
+  public static String FILTER_ID = "CsEdgeTypeFilter";
 
   //----------------------------------------//
   // Cytoscape specific Variables
   //----------------------------------------//
   protected CyNetwork network;
-  protected GraphObjAttributes nodeAttributes;
+  protected GraphObjAttributes edgeAttributes;
 
 
   //----------------------------------------//
@@ -55,14 +55,14 @@ public class CsNodeTypeFilter
   //----------------------------------------//
 
   /**
-   * Creates a new CsNodeTypeFilter
+   * Creates a new CsEdgeTypeFilter
    */  
-  public CsNodeTypeFilter ( CyNetwork network,  
+  public CsEdgeTypeFilter ( CyNetwork network,  
                             String selectedAttribute, 
                             String searchString,
                             String identifier ) {
     this.network = network;
-    this.nodeAttributes = network.getNodeAttributes();
+    this.edgeAttributes = network.getEdgeAttributes();
     this.selectedAttribute = selectedAttribute;  
     this.searchString = searchString;
     this.identifier =identifier;
@@ -101,13 +101,12 @@ public class CsNodeTypeFilter
   public boolean passesFilter ( Object object ) {
 
     Object value = null;
-    Node node;
     Edge edge;
    
-    if ( object instanceof Node ) {
-      node = ( Node )object;
-      value = nodeAttributes.getValue( selectedAttribute, node.getIdentifier() );
-      //System.out.println( "Value returned for node: "+node.getIdentifier()+" attribute: "+selectedAttribute+" was: "+value );
+    if ( object instanceof Edge ) {
+      edge = ( Edge )object;
+      value = edgeAttributes.getValue( selectedAttribute, edge.getIdentifier() );
+      //System.out.println( "Value returned for edge: "+edge.getIdentifier()+" attribute: "+selectedAttribute+" was: "+value );
     }
 
 
@@ -130,8 +129,8 @@ public class CsNodeTypeFilter
   }
   
   public boolean equals ( Object other_object ) {
-    if ( other_object instanceof CsNodeTypeFilter ) {
-      if ( ( ( CsNodeTypeFilter )other_object).getSearchString().equals( getSearchString() ) ) {
+    if ( other_object instanceof CsEdgeTypeFilter ) {
+      if ( ( ( CsEdgeTypeFilter )other_object).getSearchString().equals( getSearchString() ) ) {
         return true;
       }
     }
@@ -139,7 +138,7 @@ public class CsNodeTypeFilter
   }
   
   public Object clone () {
-    return new CsNodeTypeFilter ( network, selectedAttribute, searchString, identifier+"_new" );
+    return new CsEdgeTypeFilter ( network, selectedAttribute, searchString, identifier+"_new" );
   }
   
   public SwingPropertyChangeSupport getSwingPropertyChangeSupport() {
@@ -147,7 +146,7 @@ public class CsNodeTypeFilter
   }
 
   //----------------------------------------//
-  // CsNodeTypeFilter methods
+  // CsEdgeTypeFilter methods
   //----------------------------------------//
 
   public void propertyChange ( PropertyChangeEvent e ) {

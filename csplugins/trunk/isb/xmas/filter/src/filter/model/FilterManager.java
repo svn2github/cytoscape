@@ -81,7 +81,7 @@ public class FilterManager {
   // Editor Methods
 
   public boolean addEditor ( FilterEditor editor ) {
-    if ( editorExists( editor.toString() ) ) {
+    if ( editorExists( editor.getFilterID() ) ) {
       return false;
     }
     editorMap.put( editor.toString(), editor );

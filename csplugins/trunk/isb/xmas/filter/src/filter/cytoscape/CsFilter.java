@@ -25,7 +25,8 @@ public class CsFilter extends AbstractPlugin {
      FilterManager.defaultManager().addEditor( new DefaultFilterEditor() );
      FilterManager.defaultManager().addEditor( new FilterTreeEditor() );
      FilterManager.defaultManager().addEditor( new CsNodeTypeFilterEditor( window.getNetwork() ) );
-    
+     FilterManager.defaultManager().addEditor( new CsEdgeTypeFilterEditor( window.getNetwork() ) );
+     FilterManager.defaultManager().addEditor( new CsNodeInteractionFilterEditor( window.getNetwork() ) );
 
   }
 

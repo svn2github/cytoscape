@@ -85,6 +85,11 @@ public class DefaultFilterEditor extends FilterEditor
     return identifier;
   }
 
+  public String getFilterID() {
+    return DefaultFilter.FILTER_ID;
+  }
+  
+
   /** 
    * Returns a new Filter, or the Modified Filter 
    */

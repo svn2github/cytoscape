@@ -28,7 +28,7 @@ public interface Filter extends PropertyChangeListener {
    */
   public String toString ();
 
-  public String getEditorName();
+  public String getFilterID();
 
   /**
    * Every filter needs to know how to output itself in such a way that 

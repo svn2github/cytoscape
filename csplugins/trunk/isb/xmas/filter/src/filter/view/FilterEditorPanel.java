@@ -81,7 +81,7 @@ public class FilterEditorPanel
   
   public void addEditor ( FilterEditor new_editor ) {
     System.out.println( "New Editor Added: "+new_editor+" "+editorCount );
-    editorIndexMap.put( new_editor.toString() , new Integer( editorCount ) );
+    editorIndexMap.put( new_editor.getFilterID() , new Integer( editorCount ) );
     editorTabs.insertTab( new_editor.toString(), null, new_editor, new_editor.toString(), editorCount );
     editorCount++;
   }
@@ -112,7 +112,7 @@ public class FilterEditorPanel
       if ( f == null ) {
         return;
       }
-      setEditorActive( f.getEditorName() );
+      setEditorActive( f.getFilterID() );
       FilterEditor fe = ( FilterEditor )editorTabs.getSelectedComponent();
       //FilterEditor fe = FilterManager.defaultManager().getEditor( f.getEditorName() );
       fe.editFilter( f );

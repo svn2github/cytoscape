@@ -20,7 +20,7 @@ public abstract class  FilterEditor extends JPanel {
    * Return the Description of this Editor that will 
    * go into its tab
    */
-  public abstract String toString ();
+  public abstract String getFilterID ();
 
   /**
    * This Editor should be able to read in a Filter that it produced 

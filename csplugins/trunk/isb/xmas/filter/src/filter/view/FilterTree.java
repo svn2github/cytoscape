@@ -17,6 +17,8 @@ public class FilterTree extends JTree implements Filter {
 
   protected FilterNode root;
   protected String identifier; 
+  
+  public static String FILTER_ID = "FilterTree";
 
   protected SwingPropertyChangeSupport pcs = new SwingPropertyChangeSupport( this );
 
@@ -61,8 +63,8 @@ public class FilterTree extends JTree implements Filter {
     return pcs;
   }
 
-  public String getEditorName () {
-    return "FilterTree" ;
+  public String getFilterID () {
+    return FILTER_ID ;
   }
 
 

@@ -28,6 +28,11 @@ public class  FilterTreeEditor extends FilterEditor {
   public  String toString () {
     return "FilterTree";
   }
+  
+  public String getFilterID () {
+    return FilterTree.FILTER_ID ;
+  }
+
 
   /**
    * This Editor should be able to read in a Filter that it produced 

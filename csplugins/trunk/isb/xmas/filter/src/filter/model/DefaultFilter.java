@@ -22,7 +22,8 @@ public class DefaultFilter
 
   public static String SEARCH_STRING_EVENT = "SEARCH_STRING_EVENT";
   public static String FILTER_NAME_EVENT = "FILTER_NAME_EVENT";
-  
+  public static String FILTER_ID = "DefaultFilter";
+
   public DefaultFilter () {
     // creates a Filter 
   }
@@ -43,6 +44,11 @@ public class DefaultFilter
   public String toString () {
     return identifier;
   }
+
+  public String getFilterID() {
+    return FILTER_ID;
+  }
+  
 
   public void setIdentifier ( String new_id ) {
     FilterManager.defaultManager().renameFilter( identifier, new_id );
