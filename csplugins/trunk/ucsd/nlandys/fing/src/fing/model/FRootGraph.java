@@ -16,20 +16,21 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 // Package visible class.  Use factory to get instance.
+// This implementation of giny.model is safe to use with a single thread only.
 class FRootGraph implements RootGraph
 {
 
   // Not specified by giny.model.RootGraph.  GraphPerspective implementation
   // in this package relies on this method.
   void addRootGraphChangeListener(RootGraphChangeListener listener)
-  {
+  { // This method is not thread safe; synchronize on an object to make it so.
     m_lis = RootGraphChangeListenerChain.add(m_lis, listener);
   }
 
   // Not specified by giny.model.RootGraph.  GraphPerspective implementation
   // in this package relies on this method.
   void removeRootGraphChangeListener(RootGraphChangeListener listener)
-  {
+  { // This method is not thread safe; synchronize on an object to make it so.
     m_lis = RootGraphChangeListenerChain.remove(m_lis, listener);
   }
 
