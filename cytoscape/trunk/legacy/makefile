@@ -213,6 +213,14 @@ run3:
           -b $(CYTOSCAPE_DATA)/GO
 #
 # --- run3a
+# like 3, but w/o expression and GO data
+#
+
+run3a:
+	java -Xmx512MB -Djava.library.path=. cytoscape.cytoscape \
+          -i $(CYTOSCAPE_DATA)/tideker0/yeastSmall.intr \
+#
+# --- run3b
 #  Demonstrates two things:
 #    1. how to supply a minimal "interactions" file from which a full graph
 #       is created
@@ -221,7 +229,7 @@ run3:
 #       of graph edges as a function of edge attribute values
 #
 
-run3a:
+run3b:
 	java -Xmx512MB -Djava.library.path=. cytoscape.cytoscape \
           -i $(CYTOSCAPE_DATA)/tideker0/yeastSmall.intr \
           -j $(CYTOSCAPE_DATA)/tideker0/yeastSmall.edgeAttr.0 \
