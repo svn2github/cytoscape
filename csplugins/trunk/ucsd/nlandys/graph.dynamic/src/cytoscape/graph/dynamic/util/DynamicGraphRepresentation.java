@@ -245,8 +245,9 @@ public class DynamicGraphRepresentation implements DynamicGraph
               returnThis = edge.edgeId;
               edge = edge.nextOutEdge; } }
           if (edgeListIndex == 1) {
-            while (((outgoing || undirected) &&
-                    edge.sourceNode == edge.targetNode) ||
+            while ((edge.sourceNode == edge.targetNode &&
+                    ((outgoing && edge.directed) ||
+                     (undirected && !edge.directed))) ||
                    !((incoming && edge.directed) ||
                      (undirected && !edge.directed))) {
               edge = edge.nextInEdge; }

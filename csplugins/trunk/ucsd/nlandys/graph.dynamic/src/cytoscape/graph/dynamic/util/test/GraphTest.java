@@ -24,7 +24,7 @@ public class GraphTest
                                          true, false, false, true, true,
                                          false, false, true, false, true };
     int[][] edgesDef = new int[][] { {2,5}, {0,8}, {4,1}, {9,0}, {9,0},
-                                     {0,8}, {1,4}, {2,2}, {7,7}, {8,1},
+                                     {0,8}, {1,4}, {2,2}, {7,7}, {1,1},
                                      {3,1}, {7,2}, {1,0}, {8,5}, {4,9} };
     for (int i = 0; i < edgesDir.length; i++) {
       System.out.println
@@ -53,6 +53,52 @@ public class GraphTest
         final int edge = adjEdges.nextInt();
         System.out.print(edge + " "); }
       System.out.println(); }
+    System.out.println();
+    System.out.println("All undirected adjacent edges for node...");
+    nodesEnum = graph.nodes();
+    while (nodesEnum.numRemaining() > 0) {
+      final int node = nodesEnum.nextInt();
+      IntEnumerator adjEdges = graph.adjacentEdges(node, false, false, true);
+      System.out.print("For node " + node + ": ");
+      while (adjEdges.numRemaining() > 0) {
+        final int edge = adjEdges.nextInt();
+        System.out.print(edge + " "); }
+      System.out.println(); }
+    System.out.println();
+    System.out.println
+      ("All undirected and incoming adjacent edges for node...");
+    nodesEnum = graph.nodes();
+    while (nodesEnum.numRemaining() > 0) {
+      final int node = nodesEnum.nextInt();
+      IntEnumerator adjEdges = graph.adjacentEdges(node, false, true, true);
+      System.out.print("For node " + node + ": ");
+      while (adjEdges.numRemaining() > 0) {
+        final int edge = adjEdges.nextInt();
+        System.out.print(edge + " "); }
+      System.out.println(); }
+    System.out.println();
+    System.out.println("All outgoing adjacent edges for node...");
+    nodesEnum = graph.nodes();
+    while (nodesEnum.numRemaining() > 0) {
+      final int node = nodesEnum.nextInt();
+      IntEnumerator adjEdges = graph.adjacentEdges(node, true, false, false);
+      System.out.print("For node " + node + ": ");
+      while (adjEdges.numRemaining() > 0) {
+        final int edge = adjEdges.nextInt();
+        System.out.print(edge + " "); }
+      System.out.println(); }
+    System.out.println();
+    System.out.println("All outgoing and incoming adjacent edges for node...");
+    nodesEnum = graph.nodes();
+    while (nodesEnum.numRemaining() > 0) {
+      final int node = nodesEnum.nextInt();
+      IntEnumerator adjEdges = graph.adjacentEdges(node, true, true, false);
+      System.out.print("For node " + node + ": ");
+      while (adjEdges.numRemaining() > 0) {
+        final int edge = adjEdges.nextInt();
+        System.out.print(edge + " "); }
+      System.out.println(); }
+    System.out.println();
   }
 
 }
