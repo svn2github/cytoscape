@@ -3,12 +3,10 @@ package fgraph;
 }
 
 {
-import fgraph.Submodel;
-
 import java.util.List;
 import java.util.ArrayList;
 }
-class ExpressionParser extends Parser;
+class EdgeAttrParser extends Parser;
 options {
 //  k = 2;
 }
@@ -16,33 +14,39 @@ options {
 parse returns [List l]
 {
     l = new ArrayList();
+    String[] m;
 }
-    : (m=kodata {l.add(m);} )+
+    : (m=edgeAttr {l.add(m);} )+
     ;
 
-kodata returns [String[] data]
+edgeAttr returns [String[] data]
 {
-    data = new String[3];
+    data = new String[4];
 }
-    : ko:ORF target:ORF p:PVALUE
+    : source:ORF type:EDGE_TYPE target:ORF EQUAL v:VALUE
       {
-            data[0] = ko.getText();
-            data[1] = target.getText();
-            data[2] = p.getText();
+            data[0] = source.getText();
+            data[1] = type.getText();
+            data[2] = target.getText();
+            data[3] = v.getText();
       }
     ;
 
 
 
-class ExpressionLexer extends Lexer;
+class EdgeAttrLexer extends Lexer;
 options {
-  k = 3;
+  k = 2;
   testLiterals = true;
 }
 
-ORF: ;
-PVALUE: ('0'..'9')+;    
+ORF: ( 'a'..'z' | 'A'..'Z' | '0'..'9')+ ;
 
+EDGE_TYPE: ( 'a'..'z' | 'A'..'Z' )+ ;
+
+VALUE: '0' '.' ('0'..'9')+;    
+
+EQUAL: '=';
 
 WS  :   (   ' '
         |   '\t'

@@ -71,8 +71,6 @@ public class InteractionGraph
     // map edge index to pval (if p-d edge) or probability (if p-p edge).
     private OpenIntDoubleHashMap _edgePvalMap;
 
-
-    
     InteractionGraph(int nodeCount, int edgeCount)
     {
         _nodeCount = nodeCount;
@@ -83,7 +81,6 @@ public class InteractionGraph
         // calling ensureCapacity results in better performance
         _graph.ensureCapacity(nodeCount, edgeCount);
         
-
         // Map each node index to a node name
         _node2name = new OpenIntObjectHashMap(nodeCount);
         _name2node = new ObjectIntMap(nodeCount);
@@ -104,7 +101,6 @@ public class InteractionGraph
         return _graph.getNodeCount();
     }
 
-    
     OpenIntDoubleHashMap getEdgePvalMap()
     {
         return _edgePvalMap;
@@ -321,14 +317,6 @@ public class InteractionGraph
     public void loadExpressionData(String filename)
     {
         _expressionData = new ExpressionData(filename);
-    }
-
-    /**
-     * Load expression data from the file
-     */ 
-    public void loadExpressionDataYeangFormat(String filename)
-    {
-
     }
 
     

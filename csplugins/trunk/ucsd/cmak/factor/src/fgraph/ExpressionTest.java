@@ -33,6 +33,11 @@ public class ExpressionTest extends TestCase
         assertEquals("gene=YHR007C, cond=ade16: ratio", 0.03, m.getRatio(), 0.01);
         assertEquals("gene=YHR007C, cond=ade16: ratio", 0.793, m.getSignificance(), 0.001);
     }
+
+    public void testEdgeData() throws Exception
+    {
+        EdgeData ed = new EdgeData("yeang-ko.eda");
+    }
     
     /*
     public void testCached() throws Exception
