@@ -477,12 +477,15 @@
               zipfile="${zip_release.dir}/cytoscape-v${version}.tar.gz"/>
         <delete file="${zip_release.dir}/cytoscape-v${version}.tar"/>
 
-        <!--  Create tar.gz release of source code -->
-        <!--  Note that the source tar because does not preserve -->
-        <!--  individual permissions of files.  This is a bug in Ant/Java.  -->
+   </target>
+
+     <!--  Create tar.gz release of source code -->
+     <!--  Note that the source tar because does not preserve -->
+     <!--  individual permissions of files.  This is a bug in Ant/Java.  -->
+     <target name="source" description="Generates a release .tar.gz of all source code">
         <tar tarfile="${zip_release.dir}/cytoscapeSource-v${version}.tar">
-            <tarfileset dir=".">
-                <exclude name="${build.dir}/**"/>
+		<tarfileset dir="${basedir}">
+		<exclude name="build/**"/>
                 <exclude name="CVS/**"/>
                 <exclude name="*.log"/>
             </tarfileset>
@@ -490,8 +493,6 @@
         <gzip src="${zip_release.dir}/cytoscapeSource-v${version}.tar"
               zipfile="${zip_release.dir}/cytoscapeSource-v${version}.tar.gz"/>
         <delete file="${zip_release.dir}/cytoscapeSource-v${version}.tar"/>
-
-
     </target>
 
 
