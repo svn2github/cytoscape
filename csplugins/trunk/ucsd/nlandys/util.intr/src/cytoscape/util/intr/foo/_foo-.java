@@ -71,15 +71,16 @@ public class foo
         int currentMin = ((i < 0) ? Integer.MIN_VALUE : n.data.splitVals[i]);
         if (currentMin <= x) {
           if (delete(n.data.children[i + 1], x)) {
-            deletedPath = i + 1; break; }
+            n.data.deepCount--; deletedPath = i + 1; break; }
           if (currentMin < x) break; } }
       if (deletedPath < 0) return false;
       // We deleted something.
       final Node deletedFromNode = n.data.children[deletedPath];
       if (deletedFromNode.sliceCount < minBranches) { // Underflow.
-
         // FILL IN HERE!
-
+        // if (left sibling not minimal) shift from left sibling into deleted
+        // else if (right sibling not minimal) shift from right
+        // else we perform a merge with deleted and left, and fill the hole.
         return true;
       }
       else { // Alles in Ordnung.
