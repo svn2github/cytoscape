@@ -34,8 +34,58 @@ public class foo
       else { count += n.sliceCount; }
       n.sliceCount = 0; }
     else { // Cannot trivially delete everything; must recurse.
-    }
+      if (isLeafNode(n)) { // Easy.
+      }
+      else { // Internal node.
+        int currentMax = maxBound; int currentMin;
+        for (int i = n.sliceCount - 2; i >= -1; i--) {
+          currentMin = ((i < 0) ? minBound : n.data.splitVals[i]);
+          if (currentMin <= xMax) {
+            count += deleteRange(n.data.children[i + 1], xMin, xMax,
+                                 currentMin, currentMax);
+            if (currentMin < xMin) break; }
+          currentMax = currentMin; }}}
     return count;
+  }
+
+  public final boolean delete(final int x)
+  {
+    return delete(m_root, x);
+  }
+
+  private final boolean delete(final Node n, final int x)
+  {
+    if (isLeafNode(n)) {
+      final int foundInx = findMatch(x, n.values, n.sliceCount);
+      if (foundInx < 0) { return false; }
+      else {
+        // Here, we fill the hole, knowing that the caller of this method
+        // may rearrange the entries again if there is underflow.  While
+        // filling the hole is extra work that makes this code inefficient in
+        // the specific case of underflow, it does make the code much simpler.
+        fillHole(foundInx, n.values, --n.sliceCount);
+        return true; } }
+    else { // Internal node.
+      int deletedPath = -1;
+      for (int i = n.sliceCount - 2; i >= -1; i--) {
+        int currentMin = ((i < 0) ? Integer.MIN_VALUE : n.data.splitVals[i]);
+        if (currentMin <= x) {
+          if (delete(n.data.children[i + 1], x)) {
+            deletedPath = i + 1; break; }
+          if (currentMin < x) break; } }
+      if (deletedPath < 0) return false;
+      // We deleted something.
+      final Node deletedFromNode = n.data.children[deletedPath];
+      if (deletedFromNode.sliceCount < minBranches) { // Underflow.
+
+        // FILL IN HERE!
+
+        return true;
+      }
+      else { // Alles in Ordnung.
+        return true;
+      }
+    }
   }
 
 }
