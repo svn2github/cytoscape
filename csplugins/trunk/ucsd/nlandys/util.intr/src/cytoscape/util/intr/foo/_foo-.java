@@ -82,7 +82,8 @@ public class foo
           deletedPath + 1 < n.sliceCount ?
           n.data.children[deletedPath + 1] : null;
         if (leftChild != null && leftChild.sliceCount > m_minBranches) {
-        }
+          n.data.splitVals[deletedPath - 1] = distributeFromLeft
+            (leftChild, affectedChild, n.data.splitVals[deletedPath - 1]); }
         else if (rightChild != null && rightChild.sliceCount > m_minBranches) {
         }
         else { // Merge with a child sibling.
