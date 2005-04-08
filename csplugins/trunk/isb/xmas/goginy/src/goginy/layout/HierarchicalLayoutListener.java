@@ -269,8 +269,8 @@ public class HierarchicalLayoutListener  {
 			node.setXPos(cleanLayerX);
 			node.setYPos(startLayerY);
 			cleanLayerX += nodeHorizontalSpacing;
-			int currentBottom = startLayerY + (int)(currentView.getHeight());
-			int currentRight = cleanLayerX + (int)(currentView.getWidth());
+			int currentBottom = startLayerY + (int)(currentView.getWidth());
+			int currentRight = cleanLayerX + (int)(currentView.getHeight()/3);
 			if (currentBottom > cleanBandY) cleanBandY = currentBottom;
 			if (currentRight > cleanComponentX) cleanComponentX = currentRight;
 			if (currentBottom > cleanLayerY) cleanLayerY = currentBottom;
@@ -304,7 +304,7 @@ public class HierarchicalLayoutListener  {
 		for (nodeIndex=0; nodeIndex<numLayoutNodes; nodeIndex++) {
 			HierarchyFlowLayoutOrderNode node = flowLayoutOrder[nodeIndex];
 			NodeView currentView = node.nodeView;
-			currentView.setOffset(node.getXPos(),node.getYPos());
+			currentView.setOffset(node.getYPos(),node.getXPos());
 		}
 		/* layout any other nodes */
 		if (numNodes > numLayoutNodes) {

@@ -1,4 +1,4 @@
-Main-Class: goginy.GoGinyView
-Class-Path: lib/fing.jar lib/giny.jar lib/cytoscape-graph-dynamic.jar lib/cytoscape-graph-fixed.jar lib/cytoscape-graph-layout.jar lib/cytoscape-graph-legacy.jar lib/cytoscape-util-intr.jar lib/tclib.jar lib/violinstrings-1.0.2.jar lib/colt.jar lib/coltginy.jar lib/phoebe.jar lib/piccolo.jar lib/piccolox.jar
+Main-Class: goginy.GoOntology
+Class-Path: lib/fing.jar lib/giny.jar lib/cytoscape-graph-dynamic.jar lib/cytoscape-graph-fixed.jar lib/cytoscape-graph-layout.jar lib/cytoscape-graph-legacy.jar lib/cytoscape-util-intr.jar lib/tclib.jar lib/violinstrings-1.0.2.jar lib/colt.jar lib/coltginy.jar lib/phoebe.jar lib/piccolo.jar lib/piccolox.jar lib/violinstrings-1.0.2.jar
 
 

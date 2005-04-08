@@ -18,23 +18,45 @@ import fing.model.*;
  */
 public class GoParser {
 
-  public static RootGraph root;
-  public static OpenIntIntHashMap uidGidMap;
-  public static OpenIntIntHashMap gidUidMap;
-  public static Map gdescGidMap;
-  public static OpenIntObjectHashMap gidGdescMap;
+  // The Root Graphs store the ontology
+  public RootGraph cp;
+  public RootGraph bp;
+  public RootGraph mf;
+
+  // This converts a RootGraphIndex to a GO id
+  public OpenIntIntHashMap cp_uid_gid_map;
+  public OpenIntIntHashMap bp_uid_gid_map;
+  public OpenIntIntHashMap mf_uid_gid_map;
+   
+
+  // This converts a GO id to a RootGraphIndex
+  public OpenIntIntHashMap cp_gid_uid_map;
+  public OpenIntIntHashMap bp_gid_uid_map;
+  public OpenIntIntHashMap mf_gid_uid_map;
+
+  // Get a Description given a GO id
+  public OpenIntObjectHashMap cp_gid_desc_map;
+  public OpenIntObjectHashMap bp_gid_desc_map;
+  public OpenIntObjectHashMap mf_gid_desc_map;
 
 
+  public void parseOBO ( String file_name ) {
 
-  public static void parseOBO ( String file_name ) {
+    cp =  fing.model.FingRootGraphFactory.instantiateRootGraph();
+    bp =  fing.model.FingRootGraphFactory.instantiateRootGraph();
+    mf =  fing.model.FingRootGraphFactory.instantiateRootGraph();
 
-    root =  fing.model.FingRootGraphFactory.instantiateRootGraph();
-    uidGidMap = new OpenIntIntHashMap( 5000 );
-    gidUidMap = new OpenIntIntHashMap( 5000 );
-    gidGdescMap = new OpenIntObjectHashMap( 5000 );
-    gdescGidMap = new HashMap();
-
+    cp_uid_gid_map = new OpenIntIntHashMap();
+    bp_uid_gid_map = new OpenIntIntHashMap();
+    mf_uid_gid_map = new OpenIntIntHashMap();
     
+    cp_gid_uid_map = new OpenIntIntHashMap();
+    bp_gid_uid_map = new OpenIntIntHashMap();
+    mf_gid_uid_map = new OpenIntIntHashMap();
+
+    cp_gid_desc_map = new OpenIntObjectHashMap();
+    bp_gid_desc_map = new OpenIntObjectHashMap();
+    mf_gid_desc_map = new OpenIntObjectHashMap();
 
     try {
       BufferedReader in
@@ -43,38 +65,75 @@ public class GoParser {
       
       boolean in_term = false;
       int current_go_id = 0;
-      boolean make = false;
-    
+      String name = "";
+      String namespace = "";
+
+
       while (oneLine != null  ) {
         if ( oneLine.startsWith( "[Term]" ) ) {
           in_term = true;
-        } else if ( oneLine.startsWith( "id: part_of" ) ) {
+        } else if ( oneLine.startsWith( "[Type" ) ) {
+          break;
+        }else if ( oneLine.startsWith( "id: part_of" ) ) {
             continue;
         } else if ( in_term && oneLine.startsWith( "id:" ) ) {
-          
           current_go_id = ( new Integer( oneLine.substring( 7, 14 ) ) ).intValue();
         } else if ( in_term && oneLine.startsWith( "name:" ) ) {
-          String name = oneLine.substring( 6, oneLine.length() );
-          //System.out.println( "name: "+name );
-          gidGdescMap.put( current_go_id, name );
-          gdescGidMap.put( name, new Integer( current_go_id ) );
-
+          name = oneLine.substring( 6, oneLine.length() );
         } else if ( in_term && oneLine.startsWith( "namespace:" ) ) {
-          String namespace = oneLine.substring( 11, oneLine.length() );
-          //System.out.println( "namespace: "+namespace );
-          if ( namespace.startsWith("biological_process") ) {
-            make = true;
-          } else {
-            make = false;
+          namespace = oneLine.substring( 11, oneLine.length() );
+
+          if ( namespace.startsWith( "cellular_component" ) ) {
+            cp_gid_desc_map.put( current_go_id, name );
+          } else if ( namespace.startsWith( "biological_process" ) ) {
+            bp_gid_desc_map.put( current_go_id, name ); 
+          } else if ( namespace.startsWith( "molecular_function" ) ) {
+             mf_gid_desc_map.put( current_go_id, name ); 
           }
 
-        } else if ( in_term && oneLine.startsWith( "is_a:" ) ) {        
-          int is_a = ( new Integer( oneLine.substring( 9, 16 ) ) ).intValue();
-          //System.out.println( current_go_id+" is a "+is_a );
-          // make pairing between the current GID and its Parent
-          if ( make ) 
-            makePairing( is_a, current_go_id );
-        }
+
+
+        } else if ( in_term && oneLine.startsWith( "is_a:" ) || 
+                    oneLine.startsWith( "relationship:" ) ) {
+
+          int is_a;
+          if ( oneLine.startsWith( "is_a:" ) )
+            is_a = ( new Integer( oneLine.substring( 9, 16 ) ) ).intValue();
+          else
+            is_a = ( new Integer( oneLine.substring( 25, 32 ) ) ).intValue();
+
+          if ( namespace.startsWith( "cellular_component" ) ) {
+            //cp
+            makePairing( is_a,
+                         current_go_id,
+                         cp,
+                         cp_uid_gid_map,
+                         cp_gid_uid_map );
+            
+          } else if ( namespace.startsWith( "biological_process" ) ) {
+            //bp
+            makePairing( is_a,
+                         current_go_id,
+                         bp,
+                         bp_uid_gid_map,
+                         bp_gid_uid_map );
+            
+          } else if ( namespace.startsWith( "molecular_function" ) ) {
+            //mf
+            makePairing( is_a,
+                         current_go_id,
+                         mf,
+                         mf_uid_gid_map,
+                         mf_gid_uid_map );
+          }
+
+
+        } //else if ( in_term && oneLine.startsWith( "relationship:" ) ) {
+          //int is_a = ( new Integer( oneLine.substring( 25, 31 ) ) ).intValue();
+          //makePairing( is_a, current_go_id );
+        //}
+
+
         oneLine = in.readLine();
         
       } 
@@ -94,7 +153,11 @@ public class GoParser {
    * @param current this is the current GID
    * @param returns the current UID
    */
-  public static int makePairing ( int parent_gid, int current_gid ) {
+  public static int makePairing ( int parent_gid, 
+                                  int current_gid, 
+                                  RootGraph root,
+                                  OpenIntIntHashMap uidGidMap,
+                                  OpenIntIntHashMap gidUidMap ) {
     int current_uid;
     int parent_uid;
 
@@ -126,11 +189,7 @@ public class GoParser {
   }
 
 
-  public static void main ( String[] args ) {
-    parseOBO( args[0] );
-  }
-
-
+ 
 }
 
 
