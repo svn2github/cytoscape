@@ -286,9 +286,9 @@ public final class IntBTree
   }
 
   /**
-   * NOT IMPLEMENTED YET.
-   * Deletes at most one entry of the integer x.  To delete all
-   * entries of the integer x, use ____.
+   * Deletes at most one entry of the integer x.  Unfortunately there does not
+   * seem to exists an elegant algorithm for efficiently deleting a range of
+   * integers, other than deleting each integer in succession.
    * @param x the integer to try to delete (just one entry).
    * @return true if and only if an entry was deleted (at most one entry is
    *   deleted by this method).
