@@ -100,6 +100,53 @@ public class foo
   }
 
   /*
+   * Returns a new splitVal.  Updates counts and nulls out entries as
+   * appropriate.
+   */
+  private final int distributeFromLeft(final Node leftSibling,
+                                       final Node thisSibling,
+                                       final int oldSplitVal)
+  {
+    final int distributeNum = (1 + leftSibling.sliceCount - m_minBranches) / 2;
+    if (isLeafNode(leftSibling)) {
+      for (int i = thisSibling.sliceCount, o = i + distributeNum; i > 0;)
+        thisSibling.values[--o] = thisSibling.values[--i];
+      System.arraycopy
+        (leftSibling.values, leftSibling.sliceCount - distributeNum,
+         thisSibling.values, 0, distributeNum);
+      leftSibling.sliceCount -= distributeNum;
+      thisSibling.sliceCount += distributeNum;
+      return thisSibling.values[0]; }
+    else {
+      
+    }
+  }
+
+  /*
+   * Returns a new splitVal.  Updates counts and nulls out entries as
+   * appropriate.
+   */
+  private final int distributeFromRight(final Node rightSibling,
+                                        final Node thisSibling,
+                                        final int oldSplitVal)
+  {
+    final int distributeNum =
+      (1 + rightSibling.sliceCount - m_minBranches) / 2;
+    if (isLeafNode(rightSibling)) {
+      System.arraycopy(rightSibling.values, 0,
+                       thisSibling.values, thisSibling.sliceCount,
+                       distributeNum);
+      for (int i = 0, o = distributeNum; o < rightSibling.sliceCount;)
+        rightSibling.values[i++] = rightSibling.values[o++];
+      rightSibling.sliceCount -= distributeNum;
+      thisSibling.sliceCount += distributeNum;
+      return rightSibling.values[0]; }
+    else {
+      
+    }
+  }
+
+  /*
    * Copies into leftSibling.  You can discard rightSibling after this.
    * Updates counts and nulls out entries as appropriate.
    */
