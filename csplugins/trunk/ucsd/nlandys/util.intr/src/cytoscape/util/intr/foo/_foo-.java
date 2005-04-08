@@ -120,8 +120,27 @@ public class foo
     else {
       for (int i = thisSibling.sliceCount, o = i + distributeNum; i > 0;)
         thisSibling.data.children[--o] = thisSibling.data.children[--i];
-      
-    }
+      System.arraycopy
+        (leftSibling.data.children, leftSibling.sliceCount - distributeNum,
+         thisSibling.data.children, 0, distributeNum);
+      for (int i = thisSibling.sliceCount - 1, o = i + distributeNum; i > 0;)
+        thisSibling.data.splitVals[--o] = thisSibling.data.splitVals[--i];
+      thisSibling.data.splitVals[distributeNum - 1] = oldSplitVal;
+      System.arraycopy
+        (leftSibling.data.splitVals, leftSibling.sliceCount - distributeNum,
+         thisSibling.data.splitVals, 0, distributeNum - 1);
+      final int returnThis =
+        leftSibling.data.splitVals[leftSibling.sliceCount - distributeNum - 1];
+      int deepCountDiff = 0;
+      for (int i = leftSibling.sliceCount - distributeNum;
+           i < leftSibling.sliceCount; i++) {
+        deepCountDiff += leftSibling.data.children[i].data.deepCount;
+        leftSibling.data.children[i] = null; }
+      leftSibling.sliceCount -= distributeNum;
+      thisSibling.sliceCount += distributeNum;
+      leftSibling.data.deepCount -= deepCountDiff;
+      thisSibling.data.deepCount += deepCountDiff;
+      return returnThis; }
   }
 
   /*
