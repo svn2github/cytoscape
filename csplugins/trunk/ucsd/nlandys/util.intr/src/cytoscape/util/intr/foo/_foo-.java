@@ -118,6 +118,8 @@ public class foo
       thisSibling.sliceCount += distributeNum;
       return thisSibling.values[0]; }
     else {
+      for (int i = thisSibling.sliceCount, o = i + distributeNum; i > 0;)
+        thisSibling.data.children[--o] = thisSibling.data.children[--i];
       
     }
   }
