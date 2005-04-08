@@ -344,7 +344,7 @@ public final class IntBTree
             (leftChild, affectedChild, n.data.splitVals[deletedPath - 1]); }
         else if (rightChild != null && rightChild.sliceCount > m_minBranches) {
           n.data.splitVals[deletedPath] = distributeFromRight
-            (rightChild, affectedChild, n.data.splitVals[deletedPath]);
+            (rightChild, affectedChild, n.data.splitVals[deletedPath]); }
         else { // Merge with a child sibling.
           final int holeInx;
           if (leftChild != null) // Merge with left child.
@@ -353,8 +353,8 @@ public final class IntBTree
           else // Merge with right child.
             mergeSiblings(affectedChild, rightChild,
                           n.data.splitVals[holeInx = deletedPath]);
-          fillHole(n.data.children, holeInx + 1, --n.sliceCount);
-          fillHole(n.data.splitVals, holeInx, n.sliceCount - 1); } }
+          fillHole(holeInx + 1, n.data.children, --n.sliceCount);
+          fillHole(holeInx, n.data.splitVals, n.sliceCount - 1); } }
       return true;
     }
   }
@@ -483,11 +483,11 @@ public final class IntBTree
                        leftSibling.data.children, leftSibling.sliceCount,
                        rightSibling.sliceCount);
       for (int i = 0; i < rightSibling.sliceCount; i++) {
-        rightSibling.children[i] = null; /* Pedantic. */ }
+        rightSibling.data.children[i] = null; /* Pedantic. */ }
       leftSibling.sliceCount += rightSibling.sliceCount;
       rightSibling.sliceCount = 0; // Pedantic.
       leftSibling.data.deepCount += rightSibling.data.deepCount;
-      rightSibling.data.deepCount = 0 /* Pedantic. */ }
+      rightSibling.data.deepCount = 0; /* Pedantic. */ }
   }
 
   /*
