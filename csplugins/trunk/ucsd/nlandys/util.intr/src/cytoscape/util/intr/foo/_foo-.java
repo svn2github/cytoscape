@@ -50,7 +50,10 @@ public class foo
 
   public final boolean delete(final int x)
   {
-    return delete(m_root, x);
+    final boolean returnThis = delete(m_root, x);
+    if ((!isLeafNode(m_root)) && m_root.sliceCount == 1)
+      m_root = m_root.data.children[0];
+    return returnThis;
   }
 
   private final boolean delete(final Node n, final int x)
