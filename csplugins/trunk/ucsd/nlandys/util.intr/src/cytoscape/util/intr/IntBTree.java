@@ -2,11 +2,10 @@ package cytoscape.util.intr;
 
 /**
  * A B<sup>+</sup>-tree that stores integers.<p>
- * The motivation behind the implementation of this tree is not
- * modularity or performance.  The motivation is to get to know the
- * algorithms associated with this tree structure, so that implementing
- * variants of this structure would become simpler (a variant of this
- * structure is the R-tree).
+ * The motivation behind the implementation of this tree is not usefullness.
+ * The motivation is to get to know the algorithms associated with this tree
+ * structure, so that implementing variants of this structure would become
+ * simpler (an example of a variant of this structure is the R-tree).
  */
 public final class IntBTree
 {
@@ -68,7 +67,8 @@ public final class IntBTree
   }
 
   /*
-   * Perhaps this should be inlined later for performance.
+   * This simple functionality is in the form of a helper method in order
+   * to make code more readable.
    */
   private static final boolean isLeafNode(final Node n)
   {
@@ -77,7 +77,7 @@ public final class IntBTree
 
   /**
    * Inserts a new entry into this tree structure; duplicate entries may be
-   * entered.  This method has a time complexity of O(log(N)) where N is the
+   * inserted.  This method has a time complexity of O(log(N)) where N is the
    * number of entries currently stored in this tree structure.
    * @param x the new entry to insert.
    */
@@ -285,119 +285,84 @@ public final class IntBTree
       origNodes[i] = null; // Remove dangling pointers for garbage collection.
   }
 
+  // NOTE TO MYSELF: If we had a double-linked node structure (every
+  // node points to its parent in addition to what we have now) and if
+  // we could access, in constant time, the leaf node to which an entry to
+  // be deleted belongs to, and if we did not store deep counts in nodes,
+  // then we could implement a single deletion in constant average time
+  // because the likelihood of necessary percolations (shifting and merging)
+  // decreases as we head from a leaf node to a root node after a deletion.
   /**
-   * Deletes at most one entry of the integer x.  Unfortunately there does not
-   * seem to exists an elegant algorithm for efficiently deleting a range of
-   * integers, other than deleting each integer in succession.
+   * Deletes at most one entry of the integer x.  This method has a time
+   * complexity of O(log(N)) where N is the number of entries currently
+   * stored in this tree structure.<p>
+   * Unfortunately there does not seem to exists an elegant algorithm for
+   * efficiently deleting a range of integers while guaranteeing a balanced
+   * tree structure.
    * @param x the integer to try to delete (just one entry).
    * @return true if and only if an entry was deleted (at most one entry is
    *   deleted by this method).
    */
   public final boolean delete(final int x)
   {
-    final int deleted = delete(m_root, null, null, x);
-    return false;
+    final boolean returnThis = delete(m_root, x);
+    if ((!isLeafNode(m_root)) && m_root.sliceCount == 1)
+      m_root = m_root.data.children[0];
+    return returnThis;
   }
 
-  /*
-   * Bits are set on the return value:
-   *   0x01 - if an entry was deleted (no other bits will be set unless
-   *          this bit is set).
-   *   0x80 - if entries have been shifted from sibling nodes into n (if
-   *          this bit is set then at least one of 0x02 and 0x04 is also set).
-   *   0x40 - if two nodes have been merged into one (this is exclusive with
-   *          respect to 0x80 -- at least one of 0x02 and 0x04 is also set); if
-   *          n is merged with the left sibling then all data will be
-   *          contained in leftSib and n can be discarded; if
-   *          n is merged with the right sibling then all data will be
-   *          contained in n and rightSib can be discarded.
-   *   0x02 - left sibling.
-   *   0x04 - right sibling.
-   */
-  private final int delete(final Node n, final Node leftSib,
-                           final Node rightSib, final int x)
+  private final boolean delete(final Node n, final int x)
   {
     if (isLeafNode(n)) {
       final int foundInx = findMatch(x, n.values, n.sliceCount);
-      if (foundInx < 0) {
-        return 0x00; }
-      else if (n.sliceCount > m_minBranches || n == m_root) { // Simple.
+      if (foundInx < 0) { return false; }
+      else {
+        // Here, we fill the hole, knowing that the caller of this method
+        // may rearrange the entries again if there is underflow.  While
+        // filling the hole is extra work that makes this code inefficient in
+        // the specific case of underflow, it does make the code much simpler.
         fillHole(foundInx, n.values, --n.sliceCount);
-        return 0x01; }
-      else if (leftSib != null && leftSib.sliceCount > m_minBranches) {
-        // We could shift values from sibling that has greater count.
-        // Might want to optimize in this way later.
-        // Left sibling shift more efficient.
-        leftSib.sliceCount = shiftFromLeftSibling
-          (foundInx, n.values, leftSib.values, leftSib.sliceCount);
-        n.sliceCount = leftSib.values[leftSib.sliceCount];
-        return 0x01 | 0x80 | 0x02; }
-      else if (rightSib != null && rightSib.sliceCount > m_minBranches) {
-        rightSib.sliceCount = shiftFromRightSibling
-          (foundInx, n.values, rightSib.values, rightSib.sliceCount);
-        n.sliceCount = rightSib.values[rightSib.sliceCount];
-        return 0x01 | 0x80 | 0x04; }
-      else { // We must perform a merge.
-        if (leftSib != null) { // Left sibling merge more efficient.
-          mergeWithLeftSibling(foundInx, n.values, leftSib.values);
-          leftSib.sliceCount = (m_minBranches * 2) - 1; // All data in leftSib.
-          return 0x01 | 0x40 | 0x02; }
-        else { // Right sibling is not null; don't even check that.
-          mergeWithRightSibling(foundInx, n.values, rightSib.values);
-          n.sliceCount = (m_minBranches * 2) - 1; // All data in n.
-          return 0x01 | 0x40 | 0x04; } } }
+        return true; } }
     else { // Internal node.
-      int foundPath = 0;
-      for (int i = n.sliceCount - 2; i >= 0; i--)
-        if (x >= n.data.splitVals[i]) { foundPath = i + 1; break; }
-      final Node child = n.data.children[foundPath];
-      final Node childLeft =
-        foundPath > 0 ? n.data.children[foundPath - 1] : null;
-      final Node childRight =
-        foundPath < n.sliceCount - 1 ? n.data.children[foundPath + 1] : null;
-      final int lowerDelete = delete(child, childLeft, childRight, x);
-      if (lowerDelete == 0x00) { // Nothing was deleted (not found).
-        return 0x00; }
-      else if (lowerDelete == 0x01) { // Simple deletion.
-        n.data.deepCount--;
-        return 0x01; }
-      else if ((lowerDelete & 0x80) != 0x00) { // Shift was performed.
-        final Node nodeWithNewInx;
-        final int affectedPath;
-        if ((lowerDelete & 0x02) != 0) {
-          nodeWithNewInx = child; affectedPath = foundPath - 1; }
-        else { // Could explicitly check bit 0x04.
-          nodeWithNewInx = childRight; affectedPath = foundPath; }
-        if (isLeafNode(child)) {
-          n.data.splitVals[affectedPath] = nodeWithNewInx.values[0];
-          n.data.deepCount--;
-          return 0x01; }
-        else { // Children are internal nodes.
-          return -1;
-        }
-      }
-      else { // Merge was performed; don't check bit (0x40).
-        if (isLeafNode(child)) {
-          if ((lowerDelete & 0x02) != 0) { // Left child.
-            if (n.sliceCount > m_minBranches) { // Simple delete.
-            }
-            else { // Merge this internal node with sibling.
-            }
-          }
-          else { // Right child.
-          }
-        }
-        else { // Children are internal nodes.
-        }
-        return -1;
-      }
+      int deletedPath = -1;
+      for (int i = n.sliceCount - 2; i >= -1; i--) {
+        int currentMin = ((i < 0) ? Integer.MIN_VALUE : n.data.splitVals[i]);
+        if (currentMin <= x) {
+          if (delete(n.data.children[i + 1], x)) {
+            n.data.deepCount--; deletedPath = i + 1; break; }
+          if (currentMin < x) break; } }
+      if (deletedPath < 0) { return false; }
+      final Node affectedChild = n.data.children[deletedPath];
+      if (affectedChild.sliceCount < m_minBranches) { // Underflow handling.
+        final Node leftChild =
+          deletedPath > 0 ? n.data.children[deletedPath - 1] : null;
+        final Node rightChild =
+          deletedPath + 1 < n.sliceCount ?
+          n.data.children[deletedPath + 1] : null;
+        if (leftChild != null && leftChild.sliceCount > m_minBranches) {
+          n.data.splitVals[deletedPath - 1] = distributeFromLeft
+            (leftChild, affectedChild, n.data.splitVals[deletedPath - 1]); }
+        else if (rightChild != null && rightChild.sliceCount > m_minBranches) {
+          n.data.splitVals[deletedPath] = distributeFromRight
+            (rightChild, affectedChild, n.data.splitVals[deletedPath]);
+        else { // Merge with a child sibling.
+          final int holeInx;
+          if (leftChild != null) // Merge with left child.
+            mergeSiblings(leftChild, affectedChild,
+                          n.data.splitVals[holeInx = deletedPath - 1]);
+          else // Merge with right child.
+            mergeSiblings(affectedChild, rightChild,
+                          n.data.splitVals[holeInx = deletedPath]);
+          fillHole(n.data.children, holeInx + 1, --n.sliceCount);
+          fillHole(n.data.splitVals, holeInx, n.sliceCount - 1); } }
+      return true;
     }
   }
 
   /*
    * Returns the index of the first occurance of x in the array,
    * starting from beginning of array.  If no occurance is found
-   * returns -1.
+   * returns -1.  Assuming ordered array.
    */
   private final static int findMatch(final int x, final int[] arr,
                                      final int arrLen)
@@ -407,6 +372,122 @@ public final class IntBTree
         if (x == arr[i]) return i;
         else break; // x > arr[i], so we did not find anything in this array.
     return -1;
+  }
+
+  /*
+   * Returns a new splitVal.  Updates counts and nulls out entries as
+   * appropriate.
+   */
+  private final int distributeFromLeft(final Node leftSibling,
+                                       final Node thisSibling,
+                                       final int oldSplitVal)
+  {
+    final int distributeNum = (1 + leftSibling.sliceCount - m_minBranches) / 2;
+    if (isLeafNode(leftSibling)) {
+      for (int i = thisSibling.sliceCount, o = i + distributeNum; i > 0;)
+        thisSibling.values[--o] = thisSibling.values[--i];
+      System.arraycopy
+        (leftSibling.values, leftSibling.sliceCount - distributeNum,
+         thisSibling.values, 0, distributeNum);
+      leftSibling.sliceCount -= distributeNum;
+      thisSibling.sliceCount += distributeNum;
+      return thisSibling.values[0]; }
+    else {
+      final int returnThis =
+        leftSibling.data.splitVals[leftSibling.sliceCount - distributeNum - 1];
+      for (int i = thisSibling.sliceCount, o = i + distributeNum; i > 0;)
+        thisSibling.data.children[--o] = thisSibling.data.children[--i];
+      System.arraycopy
+        (leftSibling.data.children, leftSibling.sliceCount - distributeNum,
+         thisSibling.data.children, 0, distributeNum);
+      int deepCountDiff = 0;
+      for (int i = leftSibling.sliceCount - distributeNum;
+           i < leftSibling.sliceCount; i++) {
+        deepCountDiff += leftSibling.data.children[i].data.deepCount;
+        leftSibling.data.children[i] = null; }
+      for (int i = thisSibling.sliceCount - 1, o = i + distributeNum; i > 0;)
+        thisSibling.data.splitVals[--o] = thisSibling.data.splitVals[--i];
+      thisSibling.data.splitVals[distributeNum - 1] = oldSplitVal;
+      System.arraycopy
+        (leftSibling.data.splitVals, leftSibling.sliceCount - distributeNum,
+         thisSibling.data.splitVals, 0, distributeNum - 1);
+      leftSibling.sliceCount -= distributeNum;
+      thisSibling.sliceCount += distributeNum;
+      leftSibling.data.deepCount -= deepCountDiff;
+      thisSibling.data.deepCount += deepCountDiff;
+      return returnThis; }
+  }
+
+  /*
+   * Returns a new splitVal.  Updates counts and nulls out entries as
+   * appropriate.
+   */
+  private final int distributeFromRight(final Node rightSibling,
+                                        final Node thisSibling,
+                                        final int oldSplitVal)
+  {
+    final int distributeNum =
+      (1 + rightSibling.sliceCount - m_minBranches) / 2;
+    if (isLeafNode(rightSibling)) {
+      System.arraycopy(rightSibling.values, 0,
+                       thisSibling.values, thisSibling.sliceCount,
+                       distributeNum);
+      for (int i = 0, o = distributeNum; o < rightSibling.sliceCount;)
+        rightSibling.values[i++] = rightSibling.values[o++];
+      rightSibling.sliceCount -= distributeNum;
+      thisSibling.sliceCount += distributeNum;
+      return rightSibling.values[0]; }
+    else {
+      final int returnThis = rightSibling.data.splitVals[distributeNum - 1];
+      int deepCountDiff = 0;
+      for (int i = 0, o = thisSibling.sliceCount; i < distributeNum;) {
+        deepCountDiff += rightSibling.data.children[i].data.deepCount;
+        thisSibling.data.children[o++] = rightSibling.data.children[i++]; }
+      for (int i = distributeNum, o = 0; i < rightSibling.sliceCount;)
+        rightSibling.data.children[o++] = rightSibling.data.children[i++];
+      for (int i = rightSibling.sliceCount - distributeNum;
+           i < rightSibling.sliceCount; i++)
+        rightSibling.data.children[i] = null;
+      thisSibling.data.splitVals[thisSibling.sliceCount - 1] = oldSplitVal;
+      System.arraycopy(rightSibling.data.splitVals, 0,
+                       thisSibling.data.splitVals, thisSibling.sliceCount,
+                       distributeNum - 1);
+      for (int i = distributeNum, o = 0; i < rightSibling.sliceCount - 1;)
+        rightSibling.data.splitVals[o++] = rightSibling.data.splitVals[i++];
+      rightSibling.sliceCount -= distributeNum;
+      thisSibling.sliceCount += distributeNum;
+      rightSibling.data.deepCount -= deepCountDiff;
+      thisSibling.data.deepCount += deepCountDiff;
+      return returnThis; }
+  }
+
+  /*
+   * Copies into leftSibling.  You can discard rightSibling after this.
+   * Updates counts and nulls out entries as appropriate.
+   */
+  private final static void mergeSiblings(final Node leftSibling,
+                                          final Node rightSibling,
+                                          final int splitValue) {
+    if (isLeafNode(leftSibling)) {
+      System.arraycopy(rightSibling.values, 0,
+                       leftSibling.values, leftSibling.sliceCount,
+                       rightSibling.sliceCount);
+      leftSibling.sliceCount += rightSibling.sliceCount;
+      rightSibling.sliceCount = 0; /* Pedantic. */ }
+    else {
+      System.arraycopy(rightSibling.data.splitVals, 0,
+                       leftSibling.data.splitVals, leftSibling.sliceCount,
+                       rightSibling.sliceCount - 1);
+      leftSibling.data.splitVals[leftSibling.sliceCount - 1] = splitValue;
+      System.arraycopy(rightSibling.data.children, 0,
+                       leftSibling.data.children, leftSibling.sliceCount,
+                       rightSibling.sliceCount);
+      for (int i = 0; i < rightSibling.sliceCount; i++) {
+        rightSibling.children[i] = null; /* Pedantic. */ }
+      leftSibling.sliceCount += rightSibling.sliceCount;
+      rightSibling.sliceCount = 0; // Pedantic.
+      leftSibling.data.deepCount += rightSibling.data.deepCount;
+      rightSibling.data.deepCount = 0 /* Pedantic. */ }
   }
 
   /*
@@ -470,234 +551,6 @@ public final class IntBTree
     int i = holeInx;
     while (i < newLen) arr[i] = arr[++i];
     arr[i] = null;
-  }
-
-  /*
-   * I give an example:
-   *
-   *
-   *   INPUTS
-   *   ======
-   *
-   *        +---+---+---+---+---+---+---+---+---+---+
-   *   arr: |   |   | 8 | 5 | 9 |   |   |   |   |   |
-   *        +---+---+---+---+---+---+---+---+---+---+
-   *
-   *   startInx: 2
-   *
-   *   origLen: 5
-   *
-   *
-   *   OUTPUTS
-   *   =======
-   *
-   *        +---+---+---+---+---+---+---+---+---+---+
-   *   arr: | 8 | 5 | 9 |   |   |   |   |   |   |   |
-   *        +---+---+---+---+---+---+---+---+---+---+
-   */
-  private final static void shiftToBeginning(final int[] arr,
-                                             final int startInx,
-                                             final int origLen)
-  {
-    for (int i = startInx, o = 0; i < origLen;) arr[o++] = arr[i++];
-  }
-
-  /*
-   * I give an example:
-   *
-   *
-   *   INPUTS
-   *   ======
-   *
-   *        +---+---+---+---+---+---+
-   *   arr: |   |   | Z | K | C |   |
-   *        +---+---+---+---+---+---+
-   *
-   *   startInx: 2
-   *
-   *   origLen: 5
-   *
-   *   nullOut: true
-   *
-   *
-   *   OUTPUTS
-   *   =======
-   *
-   *        +---+---+---+---+---+---+
-   *   arr: | Z | K | C | / | / |   |
-   *        +---+---+---+---+---+---+
-   *
-   *   The trailing entries (the two '/' in example output) are nulled out
-   *   if and only if parameter nullOut is true.
-   */
-  private final static void shiftToBeginning(final Node[] arr,
-                                             final int startInx,
-                                             final int origLen,
-                                             final boolean nullOut)
-  {
-    int o = 0;
-    for (int i = startInx; i < origLen;) arr[o++] = arr[i++];
-    if (nullOut) for (int i = o; i < origLen; i++) arr[i] = null;
-  }
-
-  /*
-   * I give an example:
-   *
-   *
-   *   INPUTS
-   *   ======
-   *
-   *   holeInx: 1
-   *
-   *            +---+---+---+---+---+---+---+---+---+
-   *   thisArr: | 9 |   | 1 | 5 |-2 |   |   |   |   |
-   *            +---+---+---+---+---+---+---+---+---+
-   *
-   *   (The number of elements in thisArr is assumed to be m_minBranches.)
-   *
-   *            +---+---+---+---+---+---+---+---+---+
-   *   leftArr: | 8 | 3 | 2 | 4 | 7 | 6 | 0 |-1 |   |
-   *            +---+---+---+---+---+---+---+---+---+
-   *
-   *   leftLen: 8
-   *
-   *
-   *   OUTPUTS
-   *   =======
-   *
-   *            +---+---+---+---+---+---+---+---+---+
-   *   thisArr: | 0 |-1 | 9 | 1 | 5 |-2 |   |   |   |
-   *            +---+---+---+---+---+---+---+---+---+
-   *
-   *            +---+---+---+---+---+---+---+---+---+
-   *   leftArr: | 8 | 3 | 2 | 4 | 7 | 6 |   |   |   |
-   *            +---+---+---+---+---+---+---+---+---+
-   *
-   *   returnVal: 6 (the new size of leftArr)
-   *
-   *   Also, the entry leftArr[returnVal] is set to the new size of thisArr.
-   */
-  private final int shiftFromLeftSibling(final int holeInx,
-                                         final int[] thisArr,
-                                         final int[] leftArr,
-                                         final int leftLen)
-  {
-    final int returnThis;
-    returnThis = m_minBranches + ((leftLen - m_minBranches) / 2);
-    return returnThis;
-  }
-
-  /*
-   * I give an example:
-   *
-   *
-   *   INPUTS
-   *   ======
-   *
-   *   holeInx: 1
-   *
-   *            +---+---+---+---+---+---+---+---+---+
-   *   thisArr: | 9 |   | 1 | 5 |-2 |   |   |   |   |
-   *            +---+---+---+---+---+---+---+---+---+
-   *
-   *   (The number of elements in thisArr is assumed to be m_minBranches.)
-   *
-   *             +---+---+---+---+---+---+---+---+---+
-   *   rightArr: | 8 | 3 | 2 | 4 | 7 | 6 | 0 |-1 |   |
-   *             +---+---+---+---+---+---+---+---+---+
-   *
-   *   rightLen: 8
-   *
-   *
-   *   OUTPUTS
-   *   =======
-   *
-   *            +---+---+---+---+---+---+---+---+---+
-   *   thisArr: | 9 | 1 | 5 |-2 | 8 | 3 |   |   |   |
-   *            +---+---+---+---+---+---+---+---+---+
-   *
-   *             +---+---+---+---+---+---+---+---+---+
-   *   rightArr: | 2 | 4 | 7 | 6 | 0 |-1 |   |   |   |
-   *             +---+---+---+---+---+---+---+---+---+
-   *
-   *   returnVal: 6 (the new size of rightArr)
-   *
-   *   Also, the entry rightArr[returnVal] is set to the new size of thisArr.
-   */
-  private final int shiftFromRightSibling(final int holeInx,
-                                          final int[] thisArr,
-                                          final int[] rightArr,
-                                          final int rightLen)
-  {
-    final int returnThis;
-    returnThis = m_minBranches + ((rightLen - m_minBranches) / 2);
-    return returnThis;
-  }
-
-  /*
-   * I give an example:
-   *
-   *
-   *   INPUTS
-   *   ======
-   *
-   *   holeInx: 1
-   *
-   *            +---+---+---+---+---+---+---+
-   *   thisArr: | 7 |   | 9 | 4 |   |   |   |
-   *            +---+---+---+---+---+---+---+
-   *
-   *            +---+---+---+---+---+---+---+
-   *   leftArr: | 8 | 0 | 2 | 5 |   |   |   |
-   *            +---+---+---+---+---+---+---+
-   *
-   *   (The number of elements in both arrays is assumed to be m_minBranches.)
-   *
-   *
-   *   OUTPUTS
-   *   =======
-   *
-   *            +---+---+---+---+---+---+---+
-   *   leftArr: | 8 | 0 | 2 | 5 | 7 | 9 | 4 |
-   *            +---+---+---+---+---+---+---+
-   */
-  private final void mergeWithLeftSibling(final int holeInx,
-                                          final int[] thisArr,
-                                          final int[] leftArr)
-  {
-  }
-
-  /*
-   * I give an example:
-   *
-   *
-   *   INPUTS
-   *   ======
-   *
-   *   holeInx: 1
-   *
-   *            +---+---+---+---+---+---+---+
-   *   thisArr: | 7 |   | 9 | 4 |   |   |   |
-   *            +---+---+---+---+---+---+---+
-   *
-   *             +---+---+---+---+---+---+---+
-   *   rightArr: | 8 | 0 | 2 | 5 |   |   |   |
-   *             +---+---+---+---+---+---+---+
-   *
-   *   (The number of elements in both arrays is assumed to be m_minBranches.)
-   *
-   *
-   *   OUTPUTS
-   *   =======
-   *
-   *            +---+---+---+---+---+---+---+
-   *   thisArr: | 7 | 9 | 4 | 8 | 0 | 2 | 5 |
-   *            +---+---+---+---+---+---+---+
-   */
-  private final void mergeWithRightSibling(final int holeInx,
-                                           final int[] thisArr,
-                                           final int[] rightArr)
-  {
   }
 
   /**
