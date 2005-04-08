@@ -47,7 +47,7 @@ public class Ontology {
     IntArrayList mat = new IntArrayList();
     for ( int i = 0; i < nodes.length ; ++i ) {
       
-      if ( ( ( String )gidGdescMap.get( uidGidMap.get( nodes[i] ) )).startsWith( "perox" ) ) {
+      if ( ( ( String )gidGdescMap.get( uidGidMap.get( nodes[i] ) )).startsWith( "photo" ) ) {
         mat.add( nodes[i] );
       }
       
