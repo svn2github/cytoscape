@@ -5,6 +5,8 @@ import java.util.*;
 import java.io.*;
 import javax.swing.*;
 import java.awt.Color;
+import java.awt.BorderLayout;
+import java.awt.event.*;
 // violin Strings Import
 import ViolinStrings.Strings;
 
@@ -22,10 +24,12 @@ import ViolinStrings.Strings;
 
 import java.beans.*;
 
-public class GoGinyView 
-  extends 
-    JPanel 
+import edu.umd.cs.piccolo.util.PBounds;
+import edu.umd.cs.piccolo.activities.PTransformActivity;
+import phoebe.*;
+public class GoGinyView
   implements 
+    ActionListener,
     PropertyChangeListener,
     GraphPerspectiveChangeListener {
 
@@ -35,9 +39,18 @@ public class GoGinyView
 
   HierarchicalLayoutListener layout;
 
+  JButton searchButton;
+  JTextField searchField;
+  
+  JSplitPane split;
+  
+  
   public GoGinyView ( Ontology ontology ) {
     super();
     this.ontology = ontology;
+
+
+    ontology.pcs.addPropertyChangeListener( this );
 
     layout = new HierarchicalLayoutListener();
     
@@ -55,22 +68,37 @@ public class GoGinyView
 
     refreshAll( new int[] {});
 
-    this.add( view.getComponent() );
-    //this.setSize( 800, 400 );
-    this.layout();
-    //this.setVisible( true );
-    
+
+
+    searchButton = new JButton( "Search" );
+    searchButton.addActionListener( this );
+    searchField = new JTextField( 20 );
+
+    JPanel lower = new JPanel();
+    lower.add( searchButton );
+    lower.add( searchField );
+    lower.setPreferredSize( new java.awt.Dimension( 200, 30 ) );
+   
+    split = new JSplitPane( JSplitPane.VERTICAL_SPLIT,  view.getComponent(), lower );
+    split.setResizeWeight(1);
   }
 
   public java.awt.Component getComponent () {
-    return view.getComponent();
+    return split;
   }
+  
+
+  public void actionPerformed ( ActionEvent e ) {
+    ontology.searchFor( searchField.getText() );
+  } 
 
   public void propertyChange ( PropertyChangeEvent event ) {
-    refreshAll( new int[] {});
+    refreshAll( (int[])event.getNewValue() );
   }
 
   public void graphPerspectiveChanged ( GraphPerspectiveChangeEvent event ) {
+
+    //System.out.println( "GP EVENT: "+event );
 
     // nodes restored
     if ( event.isNodesRestoredType() ) 
@@ -125,7 +153,7 @@ public class GoGinyView
 
   private void removeNodes ( int[] nodes ) {
     for ( int i = 0; i < nodes.length; ++i ) 
-      view.addNodeView( nodes[i] );
+      view.removeNodeView( nodes[i] );
   }
 
   private void addEdges ( int[] edges ) {
@@ -139,7 +167,7 @@ public class GoGinyView
 
   private void removeEdges ( int[] edges ) {
     for ( int i = 0; i < edges.length; ++i ) 
-      view.addEdgeView( edges[i] );
+      view.removeEdgeView( edges[i] );
   }
 
   /**
@@ -158,12 +186,54 @@ public class GoGinyView
 
     }
 
-    for ( int i = 0; i < selected_nodes.length; ++i ) {
-      //System.out.println( "setting : "+selected_nodes[i] );
-      view.getNodeView( selected_nodes[i] ).setUnselectedPaint( Color.orange );
-    }
+   
     
     layout.layout( view );
+
+    if ( selected_nodes.length == 0 ) {return;}
+    double bigX;
+    double bigY;
+    double smallX;
+    double smallY;
+    double W;
+    double H;
+    NodeView first = ( NodeView )view.getNodeView( selected_nodes[1] );
+    bigX = first.getXPosition();
+    smallX = bigX;
+    bigY = first.getYPosition();
+    smallY = bigY;
+    
+    for ( int i = 0; i < selected_nodes.length; ++i ) {
+    
+      if ( view.getNodeView( selected_nodes[i] ) == null ) {
+      } else {
+        NodeView nv = view.getNodeView( selected_nodes[i] );
+        nv.setUnselectedPaint( Color.orange );
+        double x = nv.getXPosition();
+        double y = nv.getYPosition();
+
+        if ( x > bigX ) {
+          bigX = x;
+        } else if ( x < smallX ) {
+          smallX = x;
+        }
+        
+          if ( y > bigY ) {
+            bigY = y;
+          } else if ( y < smallY ) {
+            smallY = y;
+          }
+      }
+    }
+
+    PBounds zoomToBounds;
+    if (selected_nodes.length == 1) {
+      zoomToBounds = new PBounds( smallX - 100 , smallY - 100 , ( bigX - smallX + 200 ), ( bigY - smallY + 200 ) );
+    } else {
+      zoomToBounds = new PBounds( smallX  , smallY  , ( bigX - smallX + 100 ), ( bigY - smallY + 100 ) );
+    }
+    PTransformActivity activity =  ( ( PGraphView )view).getCanvas().getCamera().animateViewToCenterBounds( zoomToBounds, true, 500 );
+
 
   }
 

@@ -3,7 +3,7 @@ package goginy;
 // Java Import
 import java.util.*;
 import java.io.*;
-import javax.swing.*;
+import java.beans.*;
 
 // Violin Strings Import
 import ViolinStrings.Strings;
@@ -30,7 +30,10 @@ public class Ontology {
   
   int root_node = 0;
 
-  public int[] flagged_nodes;
+  public PropertyChangeSupport pcs;
+  
+
+  public int[] flagged_nodes = new int[] {};
 
   public Ontology ( RootGraph root, 
                     OpenIntIntHashMap uidGidMap,
@@ -42,30 +45,61 @@ public class Ontology {
     this.gidUidMap = gidUidMap;
     this.gidGdescMap = gidGdescMap;
 
+    pcs = new PropertyChangeSupport( this );
+
     int[] nodes = root.getNodeIndicesArray();
     
-    IntArrayList mat = new IntArrayList();
-    for ( int i = 0; i < nodes.length ; ++i ) {
-      
-      if ( ( ( String )gidGdescMap.get( uidGidMap.get( nodes[i] ) )).startsWith( "photo" ) ) {
-        mat.add( nodes[i] );
+    for ( int i = 0; i < nodes.length && root_node == 0; ++i ) {
+           
+      if ( isUIDRoot( nodes[i] ) ) {
+        root_node = nodes[i];
       }
-      
-      //if ( isUIDRoot( nodes[i] ) ) {
-      //  root_node = nodes[i];
-      //  System.out.println( "Root node is: "+nodes[i]+" : "+gidGdescMap.get( uidGidMap.get( nodes[i] ) )+" gid: "+ uidGidMap.get( nodes[i] ));
-      
-      // }
     }
-    mat.trimToSize();
-    gp = getUIDParentsAsGP( mat.elements() );
-    flagged_nodes = mat.elements();
-    //gp = getUIDChildrenAsGP( root_node, 2 );
+    gp = getUIDChildrenAsGP( root_node, 0 );
   }
 
   
-  public GraphPerspective getGraphPerspective () {
+  protected GraphPerspective getGraphPerspective () {
     return gp;
+  }
+
+  protected void searchFor ( String string ) {
+
+    IntArrayList mat = new IntArrayList();
+    int[] nodes = root.getNodeIndicesArray();
+    String pattern = "*"+string+"*" ;
+    for ( int i = 0; i < nodes.length ; ++i ) {
+      if ( Strings.isLike( (String)gidGdescMap.get( uidGidMap.get(nodes[i]) ),
+                           pattern ) ) {
+        //System.out.println( nodes[i]+"matches "+pattern );
+        mat.add( nodes[i] );
+      } // else 
+//         System.out.println(gidGdescMap.get( uidGidMap.get(nodes[i]) )+" does not matches "+pattern );
+
+    }
+
+    mat.trimToSize();
+    flagged_nodes = mat.elements();
+
+    GraphPerspective new_gp  = getUIDParentsAsGP( mat.elements() );
+
+     IntArrayList inOld_notNew = new IntArrayList();
+     IntArrayList inNew_notOld = new IntArrayList();
+    
+     IntArrayList diff = Diff.diff( new IntArrayList( gp.getNodeIndicesArray() ),
+                                    new IntArrayList( new_gp.getNodeIndicesArray() ),
+                                    inOld_notNew,
+                                    inNew_notOld );
+
+    
+     gp.restoreNodes( new_gp.getNodeIndicesArray() );
+     gp.restoreEdges( new_gp.getEdgeIndicesArray() );
+     gp.hideNodes( inOld_notNew.elements() );
+     gp.restoreNode( root_node );
+
+     pcs.firePropertyChange( "layout", null, mat.elements() );
+    
+
   }
 
 
