@@ -686,48 +686,6 @@ public final class IntBTree
     return count;
   }
 
-  public void debugPrint()
-  {
-    java.util.Vector v = new java.util.Vector();
-    v.add(m_root);
-    while (true) {
-      v = debugPrint_level(v);
-      if (v.size() == 0) break; }
-    System.out.print("total count: ");
-    if (isLeafNode(m_root))
-      System.out.println(m_root.sliceCount);
-    else
-      System.out.println(m_root.data.deepCount);
-  }
-
-  private java.util.Vector debugPrint_level(java.util.Vector v)
-  {
-    java.util.Vector returnThis = new java.util.Vector();
-    while (v.size() > 0) {
-      Node n = (Node) v.remove(0);
-      if (!isLeafNode(n)) {
-        for (int i = 0; i < n.sliceCount; i++) {
-          returnThis.add(n.data.children[i]); } }
-      debugPrint_node(n); }
-    System.out.println();
-    return returnThis;
-  }
-
-  private void debugPrint_node(Node n)
-  {
-    if (isLeafNode(n)) {
-      System.out.print(" [");
-      for (int i = 0; i < n.sliceCount - 1; i++) {
-        System.out.print(n.values[i] + " "); }
-      if (n.sliceCount > 0) System.out.print(n.values[n.sliceCount - 1]);
-      System.out.print("]"); }
-    else {
-      System.out.print(" <.");
-      for (int i = 0; i < n.sliceCount - 1; i++) {
-        System.out.print(n.data.splitVals[i] + "."); }
-      System.out.print(">"); }
-  }
-
   private final static class Node
   {
     private int sliceCount = 0;
