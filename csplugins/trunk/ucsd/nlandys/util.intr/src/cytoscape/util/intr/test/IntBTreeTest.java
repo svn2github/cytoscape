@@ -21,17 +21,6 @@ public class IntBTreeTest
     for (int i = 0; i < arr.length; i++) tree.insert(arr[i]);
     System.out.println
       ("Inserted all elements of array into tree.");
-
-    System.out.println();
-    tree.debugPrint();
-    System.out.println();
-
-    System.out.println(tree.delete(9));
-
-    System.out.println();
-    tree.debugPrint();
-    System.out.println();
-
     IntEnumerator iter = tree.searchRange(Integer.MIN_VALUE,
                                           Integer.MAX_VALUE);
     System.out.println
