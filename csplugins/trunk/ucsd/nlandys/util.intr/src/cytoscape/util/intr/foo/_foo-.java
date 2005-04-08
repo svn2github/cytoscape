@@ -75,18 +75,65 @@ public class foo
           if (currentMin < x) break; } }
       if (deletedPath < 0) return false;
       // We deleted something.
-      final Node deletedFromNode = n.data.children[deletedPath];
-      if (deletedFromNode.sliceCount < minBranches) { // Underflow.
-        // FILL IN HERE!
-        // if (left sibling not minimal) shift from left sibling into deleted
-        // else if (right sibling not minimal) shift from right
-        // else we perform a merge with deleted and left, and fill the hole.
+      final Node affectedChild = n.data.children[deletedPath];
+
+
+
+      if (affectedChild.sliceCount < minBranches) { // Underflow.
+        final Node leftChild = deletedPath > 0 ?
+          n.data.children[deletedPath - 1] : null;
+        final Node rightChild = deletedPath + 1 < n.sliceCount ?
+          n.data.children[deletedPath + 1] : null;
+        if (leftChild != null && leftChild.sliceCount > m_minBranches) {
+        }
+        else if (rightChild != null && rightChild.sliceCount > m_minBranches) {
+        }
+        else { // Merge with a child sibling.
+          if (leftChild != null) { // Merge with left child.
+            System.arraycopy(affectedChild);
+          }
+          else { // Merge with right child.
+          }
+        }
         return true;
-      }
-      else { // Alles in Ordnung.
+      } // End underflow handling logic.
+
+
+
+
+      else { // No underflow.
         return true;
       }
     }
+  }
+
+  /*
+   * Copies into leftSibling.  You can discard rightSibling after this.
+   * Updates counts and nulls out entries as appropriate.
+   */
+  private final static void mergeSiblings(final Node leftSibling,
+                                          final Node rightSibling,
+                                          final int splitValue) {
+    if (isLeafNode(leftSibling)) {
+      System.arraycopy(rightSibling.values, 0,
+                       leftSibling.values, leftSibling.sliceCount,
+                       rightSibling.sliceCount);
+      leftSibling.sliceCount += rightSibling.sliceCount;
+      rightSibling.sliceCount = 0; /* Pedantic. */ }
+    else {
+      System.arraycopy(rightSibling.data.splitVals, 0,
+                       leftSibling.data.splitVals, leftSibling.sliceCount,
+                       rightSibling.sliceCount - 1);
+      leftSibling.data.splitVals[leftSibling.sliceCount - 1] = splitValue;
+      System.arraycopy(rightSibling.data.children, 0,
+                       leftSibling.data.children, leftSibling.sliceCount,
+                       rightSibling.sliceCount);
+      for (int i = 0; i < rightSibling.sliceCount; i++) {
+        rightSibling.children[i] = null; /* Pedantic. */ }
+      leftSibling.sliceCount += rightSibling.sliceCount;
+      rightSibling.sliceCount = 0; // Pedantic.
+      leftSibling.data.deepCount += rightSibling.data.deepCount;
+      rightSibling.data.deepCount = 0 /* Pedantic. */ }
   }
 
 }
