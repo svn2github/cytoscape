@@ -85,7 +85,8 @@ public class foo
           n.data.splitVals[deletedPath - 1] = distributeFromLeft
             (leftChild, affectedChild, n.data.splitVals[deletedPath - 1]); }
         else if (rightChild != null && rightChild.sliceCount > m_minBranches) {
-        }
+          n.data.splitVals[deletedPath] = distributeFromRight
+            (rightChild, affectedChild, n.data.splitVals[deletedPath]);
         else { // Merge with a child sibling.
           final int holeInx;
           if (leftChild != null) // Merge with left child.
@@ -164,8 +165,27 @@ public class foo
       thisSibling.sliceCount += distributeNum;
       return rightSibling.values[0]; }
     else {
-      
-    }
+      final int returnThis = rightSibling.data.splitVals[distributeNum - 1];
+      int deepCountDiff = 0;
+      for (int i = 0, o = thisSibling.sliceCount; i < distributeNum;) {
+        deepCountDiff += rightSibling.data.children[i].data.deepCount;
+        thisSibling.data.children[o++] = rightSibling.data.children[i++]; }
+      for (int i = distributeNum, o = 0; i < rightSibling.sliceCount;)
+        rightSibling.data.children[o++] = rightSibling.data.children[i++];
+      for (int i = rightSibling.sliceCount - distributeNum;
+           i < rightSibling.sliceCount; i++)
+        rightSibling.data.children[i] = null;
+      thisSibling.data.splitVals[thisSibling.sliceCount - 1] = oldSplitVal;
+      System.arraycopy(rightSibling.data.splitVals, 0,
+                       thisSibling.data.splitVals, thisSibling.sliceCount,
+                       distributeNum - 1);
+      for (int i = distributeNum, o = 0; i < rightSibling.sliceCount - 1;)
+        rightSibling.data.splitVals[o++] = rightSibling.data.splitVals[i++];
+      rightSibling.sliceCount -= distributeNum;
+      thisSibling.sliceCount += distributeNum;
+      rightSibling.data.deepCount -= deepCountDiff;
+      thisSibling.data.deepCount += deepCountDiff;
+      return returnThis; }
   }
 
   /*
