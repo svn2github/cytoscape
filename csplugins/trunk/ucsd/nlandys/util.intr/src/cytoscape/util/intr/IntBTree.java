@@ -126,7 +126,7 @@ public final class IntBTree
         newLeafSibling.sliceCount = combinedCount - n.sliceCount;
         split(x, n.values, newLeafSibling.values, newLeafSibling.sliceCount);
         return newLeafSibling; } }
-    else { // Not a leaf node.
+    else { // Internal node.
       int foundPath = 0;
       for (int i = n.sliceCount - 2; i >= 0; i--)
         if (x >= n.data.splitVals[i]) { foundPath = i + 1; break; }
@@ -314,13 +314,12 @@ public final class IntBTree
   private final boolean delete(final Node n, final int x)
   {
     if (isLeafNode(n)) {
-      final int foundInx = findMatch(x, n.values, n.sliceCount);
+      int foundInx = -1;
+      for (int i = 0; i < n.sliceCount; i++) {
+        if (x <= n.values[i]) {
+          if (x == n.values[i]) { foundInx = i; } break; } }
       if (foundInx < 0) { return false; }
       else {
-        // Here, we fill the hole, knowing that the caller of this method
-        // may rearrange the entries again if there is underflow.  While
-        // filling the hole is extra work that makes this code inefficient in
-        // the specific case of underflow, it does make the code much simpler.
         fillHole(foundInx, n.values, --n.sliceCount);
         return true; } }
     else { // Internal node.
@@ -357,21 +356,6 @@ public final class IntBTree
           fillHole(holeInx, n.data.splitVals, n.sliceCount - 1); } }
       return true;
     }
-  }
-
-  /*
-   * Returns the index of the first occurance of x in the array,
-   * starting from beginning of array.  If no occurance is found
-   * returns -1.  Assuming ordered array.
-   */
-  private final static int findMatch(final int x, final int[] arr,
-                                     final int arrLen)
-  {
-    for (int i = 0; i < arrLen; i++)
-      if (x >= arr[i])
-        if (x == arr[i]) return i;
-        else break; // x > arr[i], so we did not find anything in this array.
-    return -1;
   }
 
   /*
@@ -702,47 +686,47 @@ public final class IntBTree
     return count;
   }
 
-//   public void debugPrint()
-//   {
-//     java.util.Vector v = new java.util.Vector();
-//     v.add(m_root);
-//     while (true) {
-//       v = debugPrint_level(v);
-//       if (v.size() == 0) break; }
-//     System.out.print("total count: ");
-//     if (isLeafNode(m_root))
-//       System.out.println(m_root.sliceCount);
-//     else
-//       System.out.println(m_root.data.deepCount);
-//   }
+  public void debugPrint()
+  {
+    java.util.Vector v = new java.util.Vector();
+    v.add(m_root);
+    while (true) {
+      v = debugPrint_level(v);
+      if (v.size() == 0) break; }
+    System.out.print("total count: ");
+    if (isLeafNode(m_root))
+      System.out.println(m_root.sliceCount);
+    else
+      System.out.println(m_root.data.deepCount);
+  }
 
-//   private java.util.Vector debugPrint_level(java.util.Vector v)
-//   {
-//     java.util.Vector returnThis = new java.util.Vector();
-//     while (v.size() > 0) {
-//       Node n = (Node) v.remove(0);
-//       if (!isLeafNode(n)) {
-//         for (int i = 0; i < n.sliceCount; i++) {
-//           returnThis.add(n.data.children[i]); } }
-//       debugPrint_node(n); }
-//     System.out.println();
-//     return returnThis;
-//   }
+  private java.util.Vector debugPrint_level(java.util.Vector v)
+  {
+    java.util.Vector returnThis = new java.util.Vector();
+    while (v.size() > 0) {
+      Node n = (Node) v.remove(0);
+      if (!isLeafNode(n)) {
+        for (int i = 0; i < n.sliceCount; i++) {
+          returnThis.add(n.data.children[i]); } }
+      debugPrint_node(n); }
+    System.out.println();
+    return returnThis;
+  }
 
-//   private void debugPrint_node(Node n)
-//   {
-//     if (isLeafNode(n)) {
-//       System.out.print(" [");
-//       for (int i = 0; i < n.sliceCount - 1; i++) {
-//         System.out.print(n.values[i] + " "); }
-//       if (n.sliceCount > 0) System.out.print(n.values[n.sliceCount - 1]);
-//       System.out.print("]"); }
-//     else {
-//       System.out.print(" <.");
-//       for (int i = 0; i < n.sliceCount - 1; i++) {
-//         System.out.print(n.data.splitVals[i] + "."); }
-//       System.out.print(">"); }
-//   }
+  private void debugPrint_node(Node n)
+  {
+    if (isLeafNode(n)) {
+      System.out.print(" [");
+      for (int i = 0; i < n.sliceCount - 1; i++) {
+        System.out.print(n.values[i] + " "); }
+      if (n.sliceCount > 0) System.out.print(n.values[n.sliceCount - 1]);
+      System.out.print("]"); }
+    else {
+      System.out.print(" <.");
+      for (int i = 0; i < n.sliceCount - 1; i++) {
+        System.out.print(n.data.splitVals[i] + "."); }
+      System.out.print(">"); }
+  }
 
   private final static class Node
   {
