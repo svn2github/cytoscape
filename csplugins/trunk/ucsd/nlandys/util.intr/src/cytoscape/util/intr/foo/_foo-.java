@@ -73,37 +73,29 @@ public class foo
           if (delete(n.data.children[i + 1], x)) {
             n.data.deepCount--; deletedPath = i + 1; break; }
           if (currentMin < x) break; } }
-      if (deletedPath < 0) return false;
-      // We deleted something.
+      if (deletedPath < 0) { return false; }
       final Node affectedChild = n.data.children[deletedPath];
-
-
-
-      if (affectedChild.sliceCount < minBranches) { // Underflow.
-        final Node leftChild = deletedPath > 0 ?
-          n.data.children[deletedPath - 1] : null;
-        final Node rightChild = deletedPath + 1 < n.sliceCount ?
+      if (affectedChild.sliceCount < m_minBranches) { // Underflow handling.
+        final Node leftChild =
+          deletedPath > 0 ? n.data.children[deletedPath - 1] : null;
+        final Node rightChild =
+          deletedPath + 1 < n.sliceCount ?
           n.data.children[deletedPath + 1] : null;
         if (leftChild != null && leftChild.sliceCount > m_minBranches) {
         }
         else if (rightChild != null && rightChild.sliceCount > m_minBranches) {
         }
         else { // Merge with a child sibling.
-          if (leftChild != null) { // Merge with left child.
-            System.arraycopy(affectedChild);
-          }
-          else { // Merge with right child.
-          }
-        }
-        return true;
-      } // End underflow handling logic.
-
-
-
-
-      else { // No underflow.
-        return true;
-      }
+          final int holeInx;
+          if (leftChild != null) // Merge with left child.
+            mergeSiblings(leftChild, affectedChild,
+                          n.data.splitVals[holeInx = deletedPath - 1]);
+          else // Merge with right child.
+            mergeSiblings(affectedChild, rightChild,
+                          n.data.splitVals[holeInx = deletedPath]);
+          fillHole(n.data.children, holeInx + 1, --n.sliceCount);
+          fillHole(n.data.splitVals, holeInx, n.sliceCount - 1); } }
+      return true;
     }
   }
 
