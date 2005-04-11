@@ -420,11 +420,11 @@
             ---------------------------------------
         </echo>
         <copy todir="${release.dir}/plugins">
-            <fileset dir="plugins">
+            <fileset dir="plugins/core">
                 <include name="*.jar"/>
             </fileset>
         </copy>
-        <copy file="plugins/pluginsContents.txt"
+        <copy file="plugins/core/pluginsContents.txt"
               todir="${release.dir}/plugins"/>
     </target>
 
@@ -647,11 +647,11 @@
             ---------------------------------------
         </echo>
         <copy todir="${webstart.dir}/plugins">
-            <fileset dir="plugins">
+            <fileset dir="plugins/core">
                 <include name="*.jar"/>
             </fileset>
         </copy>
-        <copy file="plugins/pluginsContents.txt"
+        <copy file="plugins/core/pluginsContents.txt"
               todir="${webstart.dir}/plugins"/>
 
          <signjar alias="cytoscape"
