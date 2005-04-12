@@ -77,6 +77,10 @@ public interface CyNodeData
    * @exception IllegalArgumentException if dimNames and attrTypes don't
    *   match in length or if any one of the values in attrTypes is not
    *   one of the four primitive ATTR_TYPE_* types.
+   * @exception NullPointerException if any part of the input parameters is
+   *   null (one of the arrays or any entry of dimNames).
+   * @exception IllegalStateException if dimNames[dimNames.length - 1] already
+   *   defines an existing attribute domain.
    */
   public void defineMultiNodeAttribute(String[] dimNames, byte[] attrTypes);
 
