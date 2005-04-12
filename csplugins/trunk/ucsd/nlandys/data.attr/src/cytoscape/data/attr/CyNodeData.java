@@ -45,21 +45,27 @@ public interface CyNodeData
    * how to use multi-attributes to our advantage.  Suppose that our nodes
    * are proteins.  Experiments were performed at two different labs, the
    * Ideker lab and the Salk lab, and these experiments measure all possible
-   * locations of these proteins within a cell over some period of time.
+   * locations of these proteins within a cell over some period of time (e.g.,
+   * "nucleus", "membrane", "disneyland").
    * For a given experiment (Ideker or Salk) and for a given protein, the
    * experiment results are defined to be a list of all observed locations of
    * that protein.<p>
    * Let's analyze how we would represent this data with multi-attributes.
    * The final values we're interested in are locations, which will be
    * represented as strings.  So our final dimension becomes a string type,
-   * whose name shall be "location".  A key into such a set of location values
+   * whose name shall be "location".  We secretly adopt the policy that
+   * the range of values in this third dimension is exactly
+   * {"nucleus", "membrane", "disneyland"}.
+   * A key into such a set of location values
    * is an experiment.  We have exactly two named experiments, "Ideker" and
-   * "Salk".  We will define the first dimesion of our multi-attribute
+   * "Salk".  We will define the first dimension of our multi-attribute
    * definition to be a string type, representing the experiment from which
-   * data came.  We will call this first dimension "experiment".  Now all
+   * data came.  We will call this first dimension "experiment".  We will
+   * secretly adopt the policy that the range of values in this first
+   * dimension is exactly {"Ideker", "Salk"}.  Now all
    * that we have not solved is how to represent multiple values -- that is,
    * for a given experiment and a given protein, there can be zero, one, or
-   * more locations observed.  In order to do this, we define our second
+   * more locations observed.  In order to represent this, we define our second
    * dimension to be of type integer, and we adopt the policy that an integer
    * in the second dimension stands for the offset into the "array" of
    * multiple locations.  So, the key pair ("Ideker", 0) would uniquely
