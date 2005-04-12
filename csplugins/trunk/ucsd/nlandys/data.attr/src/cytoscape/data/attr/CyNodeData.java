@@ -17,6 +17,12 @@ public interface CyNodeData
   public final byte ATTR_TYPE_MULTI = 5;
 
   /**
+   * Defines an attribute domain.  To create multi-attribute domains
+   * use defineMultiNodeAttribute().
+   * @exception IllegalStateException if attrName specified already defines
+   *   an existing attribute domain.
+   * @exception IllegalArgumentException if attrType specified is not one of
+   *   the ATTR_TYPE_* constants or if it is equal to ATTR_TYPE_MULTI.
    */
   public void defineNodeAttribute(String attrName, byte attrType);
 
