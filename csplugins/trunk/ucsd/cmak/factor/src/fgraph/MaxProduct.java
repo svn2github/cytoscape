@@ -10,6 +10,8 @@ import java.io.FileNotFoundException;
 
 import cern.colt.list.IntArrayList;
 
+import netan.GeneNameMap;
+
 public class MaxProduct
 {
     
@@ -160,7 +162,7 @@ public class MaxProduct
     }
     
     public SubmodelOutputFiles run(String outputDir, String outputFile,
-                    boolean yeangDataFormat)
+                                   boolean yeangDataFormat)
         throws IOException, AlgorithmException
     {
         //System.out.println(_ig.toString());
@@ -183,7 +185,7 @@ public class MaxProduct
         {
             int ko = kos.get(n);
 
-            log(_ig.node2Name(ko) + " " +
+            log(GeneNameMap.getName(_ig.node2Name(ko)) + " #path=" +
                 paths.getTarget2PathMap(ko).size());
         }
 
@@ -263,7 +265,13 @@ public class MaxProduct
     protected PathResult findPaths()
     {
         String[] conds = _expressionData.getConditionNames();
-        log("conditions: " + Arrays.asList(conds));
+
+        String[] condsByName = new String[conds.length];
+        for(int x=0; x < conds.length; x++)
+        {
+            condsByName[x] = GeneNameMap.getName(conds[x]);
+        }
+        log("conditions: " + Arrays.asList(condsByName));
 
         int kos[] = _ig.getKOIndices();
         

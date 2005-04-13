@@ -24,6 +24,7 @@ import cern.colt.list.IntArrayList;
 import cern.colt.list.ObjectArrayList;
 
 import netan.BioGraph;
+import netan.GeneNameMap;
 
 /**
  * A class that uses Depth First Search to efficiently
@@ -249,8 +250,8 @@ public class DFSPath
             color[sourceLabel] = WHITE; // unmark the source.
 
             logger.info("DFSPath finished: " + sourceNode
-                               + " total paths = " + pathCount
-                               + ". Paths not counted = " + notCounted);
+                        + " total paths = " + pathCount
+                        + ". Paths not counted = " + notCounted);
         }
 
         result.setPathCount(pathCount);
@@ -337,6 +338,14 @@ public class DFSPath
         }
         else
         {
+
+            /*
+            logger.info(GeneNameMap.getName(g.getNodeName(source))
+                        + " [" + g.getNodeName(source) + "] "
+                        + " rejecting: "
+                        + GeneNameMap.getName(g.getNodeName(target))
+                        + " [" + g.getNodeName(target) + "]");
+            */
             notCounted++;
         }
 

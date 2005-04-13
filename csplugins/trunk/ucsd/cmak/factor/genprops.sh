@@ -20,7 +20,7 @@ set TS=`date +%F-%H.%M`
 set DATA=$HOME/data
 
 set PATH=2
-set EXP=0.78
+set EXP=0.01
 set EDGE=0.02
 set DECOMPOSE=false
 set YEANG_DATA_FORMAT=false

@@ -22,11 +22,7 @@ import java.util.Arrays;
 import java.util.logging.Logger;
 
 import cytoscape.data.mRNAMeasurement;
-import cytoscape.util.GinyFactory;
 
-import fing.model.FingRootGraphFactory;
-
-import giny.model.RootGraph;
 import giny.model.Node;
 import giny.model.Edge;
 
@@ -45,31 +41,7 @@ public class InteractionGraph
 {
     private static Logger logger = Logger.getLogger(FactorGraph.class.getName());
 
-    private double PVAL_THRESH = 1;
-    
-
     private BioGraph _bioGraph;
-
-    /*
-
-    private int _edgeCount;
-    private int _nodeCount;
-    
-    private RootGraph _graph;
-    private OpenIntObjectHashMap _node2name;
-
-    // map the name of a node in the sif file to an index in the RootGraph
-     
-    private ObjectIntMap _name2node; 
-     */
-    /*private OpenIntObjectHashMap _edge2type;
-    
-    private OpenIntIntHashMap _edge2pd; // used to efficiently calculate isProteinDNA
-
-    private static final int UNDIRECTED = 1;
-    private static final int DIR_S2T = 2; // edge is directed src -> target
-    private static final int DIR_T2S = 3; // edge is directed target -> src
-    */
     
     private List _activeEdges;
 
@@ -84,44 +56,12 @@ public class InteractionGraph
     // map edge index to pval (if p-d edge) or probability (if p-p edge).
     private OpenIntDoubleHashMap _edgePvalMap;
 
-    /*
-    InteractionGraph(int nodeCount, int edgeCount)
-    {
-        _nodeCount = nodeCount;
-        _edgeCount = edgeCount;
-        
-        //_graph = GinyFactory.createRootGraph(nodeCount, edgeCount);
-        _graph = FingRootGraphFactory.instantiateRootGraph();
-        
-        // calling ensureCapacity results in better performance
-        //_graph.ensureCapacity(nodeCount, edgeCount);
-        
-        // Map each node index to a node name
-        _node2name = new OpenIntObjectHashMap(nodeCount);
-        _name2node = new ObjectIntMap(nodeCount);
 
-        _edge2type = new OpenIntObjectHashMap( edgeCount );
-        _edge2pd = new OpenIntIntHashMap( edgeCount );
-
-        _edgePvalMap = new OpenIntDoubleHashMap();
-    }
-    */
-
+    
     InteractionGraph(BioGraph g)
     {
         
         _bioGraph = g;
-
-        //_nodeCount = g.numNode();
-        //_edgeCount = g.numEdges();
-        
-        // Map each node index to a node name
-        //_node2name = new OpenIntObjectHashMap(nodeCount);
-        //_name2node = new ObjectIntMap(nodeCount);
-
-        //_edge2type = new OpenIntObjectHashMap( edgeCount );
-        //_edge2pd = new OpenIntIntHashMap( edgeCount );
-
         _edgePvalMap = new OpenIntDoubleHashMap();
     }
 
@@ -130,19 +70,6 @@ public class InteractionGraph
     {
         return _edgePvalMap;
     }
-
-    /*
-    int[] createNodes(int num)
-    {
-        return _graph.createNodes(num);
-    }
-    
-    void addNodeName(int index, String nodeName)
-    {
-        _node2name.put(index, nodeName);
-        _name2node.put(nodeName, index);
-    }
-    */
     
     public BioGraph getBioGraph()
     {
@@ -336,7 +263,7 @@ public class InteractionGraph
     
     /**
      * @return true if knocking out "koNode" causes the expression of
-     * "targetNode" to change.  Use PVAL_THRESH as a cutoff.
+     * "targetNode" to change.
      */
     public boolean expressionChanges(int koNode, int targetNode)
     {
@@ -399,33 +326,6 @@ public class InteractionGraph
         return _bioGraph.edges();
     }
 
-    /**
-     * Create edges in this interaction graph
-     *
-    void createEdges(int[] src, int[] tgt, String[] types, boolean directed)
-    {
-        // create the edges in the RootGraph
-        int[] edges = _graph.createEdges(src, tgt, directed);
-
-        // update internal data structures
-        for(int e=0; e < edges.length; e++)
-        {
-            _edge2type.put(edges[e], types[e]);
-
-            if( InteractionGraphFactory.isDirected(types[e]))
-            {
-                // direction of pd edge is implied to be source to target
-                // in the sif file
-                _edge2pd.put(edges[e], DIR_S2T);
-            }
-            else
-            {
-                _edge2pd.put(edges[e], UNDIRECTED);
-            }
-        }
-
-    }
-    */
     
     int[] getKOIndices()
     {
@@ -905,9 +805,4 @@ public class InteractionGraph
 
         
     }
-
-
-
-
-
 }

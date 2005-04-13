@@ -84,6 +84,54 @@ public class InteractionGraphFactory
         
     }
 
+
+    /**
+     * Load an edge attributes file and store the data in
+     * a data structure that maps edge index to a p value.
+     *
+     * @param g the interaction graph
+     * @param filename the file containing "EdgeProbs" edge attributes
+     */
+    public static void loadEdgeData(InteractionGraph g, String filename)
+        throws FileNotFoundException,
+               IllegalArgumentException,
+               NumberFormatException
+    {
+          GraphObjAttributes edgeData = new GraphObjAttributes();
+          edgeData.readAttributesFromFile( filename );
+          Map m = edgeData.getAttribute("EdgeProbs");
+
+          OpenIntDoubleHashMap pvMap = g.getEdgePvalMap();
+          pvMap.ensureCapacity(m.size());
+
+          ObjectIntMap name2edge = new ObjectIntMap( g.getBioGraph().getEdgeCount() );          
+
+          int[] edges = g.edges();
+
+          // create a mapping of edges names to edge indicies
+          for(int x=0; x < edges.length; x++)
+          {
+              name2edge.put(g.edgeName(edges[x]), edges[x]);
+          }
+
+          // now map edge indicies to a pvalue/probability
+          for(Iterator it = m.entrySet().iterator(); it.hasNext();)
+          {
+              Map.Entry e = (Map.Entry) it.next();
+
+              //System.out.print("edge key=" + e.getKey() + " val=" +  e.getValue());
+              if(name2edge.containsKey(e.getKey()))
+              {
+                  int i = name2edge.get(e.getKey());
+                  
+                  //System.out.println(" mapped to index: " + i);
+                  
+                  pvMap.put(i, ((Double) e.getValue()).doubleValue());
+              }
+          }
+          
+    }
+
     
     /**
      * Factory method to create and InteractionGraph from a .sif file
@@ -485,11 +533,11 @@ public class InteractionGraphFactory
      * 2. remove protein-protein edges that overlap with a protein-DNA edge
      *
      * @param a list of interactions
-     */
+     *
     private static void removeOverlaps(List interactions)
     {
     }
-    
+    */
     /*
     private static Set loadCandidateGenes(String filename)
         throws IOException
@@ -569,51 +617,6 @@ public class InteractionGraphFactory
     }
     */
 
-    /**
-     * Load an edge attributes file and store the data in
-     * a data structure that maps edge index to a p value.
-     *
-     * @param g the interaction graph
-     * @param filename the file containing "EdgeProbs" edge attributes
-     */
-    public static void loadEdgeData(InteractionGraph g, String filename)
-        throws FileNotFoundException, IllegalArgumentException,
-               NumberFormatException
-    {
-          GraphObjAttributes edgeData = new GraphObjAttributes();
-          edgeData.readAttributesFromFile( filename );
-          Map m = edgeData.getAttribute("EdgeProbs");
-
-          OpenIntDoubleHashMap pvMap = g.getEdgePvalMap();
-          pvMap.ensureCapacity(m.size());
-
-          ObjectIntMap name2edge = new ObjectIntMap( g.getBioGraph().getEdgeCount() );          
-
-          int[] edges = g.edges();
-
-          // create a mapping of edges names to edge indicies
-          for(int x=0; x < edges.length; x++)
-          {
-              name2edge.put(g.edgeName(edges[x]), edges[x]);
-          }
-
-          // now map edge indicies to a pvalue/probability
-          for(Iterator it = m.entrySet().iterator(); it.hasNext();)
-          {
-              Map.Entry e = (Map.Entry) it.next();
-
-              //System.out.print("edge key=" + e.getKey() + " val=" +  e.getValue());
-              if(name2edge.containsKey(e.getKey()))
-              {
-                  int i = name2edge.get(e.getKey());
-                  
-                  //System.out.println(" mapped to index: " + i);
-                  
-                  pvMap.put(i, ((Double) e.getValue()).doubleValue());
-              }
-          }
-          
-    }
 
     
 }

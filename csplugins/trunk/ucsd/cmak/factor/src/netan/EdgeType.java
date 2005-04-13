@@ -7,6 +7,7 @@ public class EdgeType
 {
     public static String PD = "pd";
     public static String PP = "pp";
+    public static String RR = "rr";
     
     // pattern for matching directed edges.
     private static Pattern directedPattern =

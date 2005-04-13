@@ -364,25 +364,28 @@ public class BioGraph
      */
     private boolean edgeExists(int s, int t, String type)
     {
-        Set edges = _edgeType.get(type);
-
-        int[] conn = edgesConnecting(s, t);
-        for(int x=0; x < conn.length; x++)
+        if(_edgeType.containsKey(type))
         {
-            int e = conn[x];
-            if(edges.contains(new Integer(e)))
+            Set edges = _edgeType.get(type);
+            
+            int[] conn = edgesConnecting(s, t);
+            for(int x=0; x < conn.length; x++)
             {
-                if(EdgeType.isDirected(type))
+                int e = conn[x];
+                if(edges.contains(new Integer(e)))
                 {
-                    if(_g.getEdgeSourceIndex(e) == s &&
-                       _g.getEdgeTargetIndex(e) == t)
+                    if(EdgeType.isDirected(type))
+                    {
+                        if(_g.getEdgeSourceIndex(e) == s &&
+                           _g.getEdgeTargetIndex(e) == t)
+                        {
+                            return true;
+                        }
+                    }
+                    else
                     {
                         return true;
                     }
-                }
-                else
-                {
-                    return true;
                 }
             }
         }
