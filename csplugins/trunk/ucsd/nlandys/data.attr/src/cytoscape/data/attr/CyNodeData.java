@@ -11,8 +11,8 @@ public interface CyNodeData
 {
 
   public final byte ATTR_TYPE_BOOLEAN = 1;
-  public final byte ATTR_TYPE_DOUBLE = 2;
-  public final byte ATTR_TYPE_LONG = 3;
+  public final byte ATTR_TYPE_FLOATING_POINT = 2;
+  public final byte ATTR_TYPE_INTEGER = 3;
   public final byte ATTR_TYPE_STRING = 4;
   public final byte ATTR_TYPE_MULTI = 5;
 
@@ -118,6 +118,60 @@ public interface CyNodeData
   public void undefineNodeAttribute(String attrName);
 
   // Actual attribute value set and get methods.
+
+  public void setAttrValue(String nodeKey, String attrName, Object attrValue);
+
+//   public void setBoolAttrValue(String nodeKey, String attrName,
+//                                boolean attrValue);
+
+//   public void setFloatAttrValue(String nodeKey, String attrName,
+//                                 double attrValue);
+
+//   public void setIntAttrValue(String nodeKey, String attrName,
+//                               long attrValue);
+
+//   public void setStringAttrValue(String nodeKey, String attrName,
+//                                  String attrValue);
+
+  public void setMultiAttrValue(String nodeKey, String attrName,
+                                Object[] keyIntoValue, Object attrValue);
+
+//   /**
+//    * This method works for both primitive attributes and for
+//    * multi-attributes.
+//    * In the case of multi-attributes, this method returns true if nodeKey
+//    * has at least one attribute value assigned to it, with some
+//    * n-minus-one-tuple key into that value.
+//    */
+//   public boolean hasAttributeValue(String nodeKey, String attrName);
+
+  public Object getAttrValue(String nodeKey, String attrName);
+
+//   public boolean getBoolAttrValue(String nodeKey, String attrName);
+
+//   public double getFloatAttrValue(String nodeKey, String attrName);
+
+//   public long getIntAttrValue(String nodeKey, String attrName);
+
+//   public String getStringAttrValue(String nodeKey, String attrName);
+
+  public Object getMultiAttrValue(String nodeKey, String attrName,
+                                  Object[] key);
+
+  /**
+   * Returns the number of representatives in the dimension
+   * prefix.length + 1, based on the prefix.  This is useful for
+   * representing arrays.
+   */
+  public int getMultiAttrSpanCount(String nodeKey, String attrName,
+                                   Object[] prefix);
+
+  /**
+   * Returns representatives, along specified prefix, of the
+   * prefix.length + 1 'th dimension.
+   */
+  public Enumeration getMultiAttrSpan(String nodeKey, String attrName,
+                                      Object[] prefix);
 
 //   /**
 //    * This method enables the notion of "duplicate node".  I've thought about
