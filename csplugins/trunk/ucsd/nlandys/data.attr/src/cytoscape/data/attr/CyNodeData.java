@@ -95,50 +95,60 @@ public interface CyNodeData
 
   /**
    * The last entry in the returned array is the string attrName (the input
-   * parameter).
+   * parameter) because the name of the last dimension in a multi-attribute
+   * is exactly the name of that attribute definition.
+   * @return an array of length equal to the dimensionality of
+   *   multi-attribute attrName, defining the name of each dimension.
+   * @exception IllegalArgumentException if attrName does not correspond
+   *   to a defined multi-attribute.
    */
   public String[] multiNodeAttributeDimensionNames(String attrName);
 
+  /**
+   * @return an array of length equal to the dimensionality of
+   *   multi-attribute attrName, defining the type of each dimension
+   *   (the entries in the array are ATTR_TYPE_* primitive constants).
+   * @exception IllegalArgumentException if attrName does not correspond
+   *   to a defined multi-attribute.
+   */
   public byte[] multiNodeAttributeType(String attrName);
 
   /**
-   * The "un"-define of an attribute node.
-   * @exception UnsupportedOperationException if the specified attribute domain
-   *   exists but permission to delete it is not granted; for example, the
-   *   "nodeName" attribute domain always exists and can never be deleted.
    */
   public void undefineNodeAttribute(String attrName);
 
   // Actual attribute value set and get methods.
 
-  /**
-   * This method enables the notion of "duplicate node".  I've thought about
-   * adding finer-grain linking control (for example, linking node1.color ->
-   * node2.color or even linking node1.color -> foo, where foo -> blue) but
-   * decided that it is too much overhead both for understanding the API and
-   * for implementing the API.  The one feature that people ask for
-   * consistently is duplication of nodes.<p>
-   * When this method is called, all attribute values that have been assigned
-   * to fromNode go away.
-   * @exception IllegalStateException if a loop of links is detected.
-   * @exception IllegalStateException if toNode is linked as well.
-   */
-  public void linkNode(String fromNode, String toNode);
+//   /**
+//    * This method enables the notion of "duplicate node".  I've thought about
+//    * adding finer-grain linking control (for example, linking node1.color ->
+//    * node2.color or even linking node1.color -> foo, where foo -> blue) but
+//    * decided that it is too much overhead both for understanding the API and
+//    * for implementing the API.  The one feature that people ask for
+//    * consistently is duplication of nodes.<p>
+//    * When this method is called, all attribute values that have been
+//    * assigned to fromNode go away.
+//    * @exception IllegalStateException if a loop of links is detected.
+//    * @exception IllegalStateException if toNode is linked as well.
+//    */
+//   public void linkNode(String fromNode, String toNode);
 
-  /**
-   * Returns null if fromNode does not link to another node.
-   */
-  public String getLinkDestination(String fromNode);
+//   /**
+//    * Returns null if fromNode does not link to another node.
+//    */
+//   public String getLinkDestination(String fromNode);
 
-  // Exceptions are thrown if we try to modify attributes on a node which
-  // links to another node.
+//   // Exceptions are thrown if we try to modify attributes on a node which
+//   // links to another node.
 
-  // Exceptions are thrown if we try to delete a node which has links pointing
-  // to it.  This is like freeing memory in C which is still being used.
+//   // Exceptions are thrown if we try to delete a node which has links
+//   // pointing to it.  This is like freeing memory in C which is still
+//   // being used.
 
-  /**
-   * Returns an non-null [but possibly empty] enumeration of java.lang.String.
-   */
-  public Enumeration getLinkSources(String toNode);
+//   /**
+//    * Returns an non-null [but possibly empty] enumeration of
+//    * java.lang.String.
+//    */
+//   public Enumeration getLinkSources(String toNode);
 
 }
