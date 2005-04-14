@@ -6,6 +6,10 @@ public interface CyNodeData
 {
 
   /**
+   * @param keyIntoValue an array of length N - 1 where N is the
+   *   dimensionality of attribute attrName; this set of objects is
+   *   a key that will uniquely define the attribute value for this node
+   *   in the specified attribute definition.
    * @param attrValue the attribute value to set on specified nodeKey;
    *   the type of this object must be of the appropriate type based on
    *   the final dimension of the attribute definition.
@@ -32,7 +36,7 @@ public interface CyNodeData
 
   /**
    * Returns representatives, along specified prefix, of
-   * dimension prefix.length + 1.  The type of object in the returned
+   * dimension prefix.length + 1.  The type of objects in the returned
    * enumeration will all be of the type as specified by the
    * dimension prefix.length + 1.
    * @param delete if true, all value entries with specified prefix are also
