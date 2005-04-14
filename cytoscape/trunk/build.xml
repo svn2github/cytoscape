@@ -353,9 +353,9 @@
             Copying over all property files.
             ---------------------------------------
         </echo>
-        <copy file="${basedir}/cytoscape.props"
+        <copy file="${basedir}/props/cytoscape.props"
               tofile="${release.dir}/cytoscape.props"/>
-        <copy file="${basedir}/vizmap.props"
+        <copy file="${basedir}/props/vizmap.props"
               tofile="${release.dir}/vizmap.props"/>
 
         <!-- Copy over Txt/PDF files -->
