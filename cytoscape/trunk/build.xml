@@ -116,6 +116,8 @@
     <target name="clean" description="Removes all generated files.">
         <delete dir="${build.dir}"/>
         <delete file="${basedir}/cytoscape.jar"/>
+        <delete file="${basedir}/cytoscape.props"/>
+        <delete file="${basedir}/vizmap.props"/>
     </target>
 
     <!-- ======================================================= -->
@@ -284,7 +286,10 @@
             <fileset dir="${build.classes}"/>
             <fileset dir="${build.dir}/temp"/>
         </jar>
-
+        <copy file="${basedir}/props/cytoscape.props"
+              todir="${basedir}"/>
+        <copy file="${basedir}/props/vizmap.props"
+              todir="${basedir}"/>
     </target>
 
     <!-- ======================================================= -->
