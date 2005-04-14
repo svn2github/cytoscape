@@ -28,26 +28,30 @@ public interface CyNodeDataDef
   public final byte DIM_TYPE_STRING = 4;
 
   /**
-   * @param attrName a unique name for this attribute definition; this
-   *   string should be interpreted as the [human-readable] name of
-   *   dimension N, where N is the number of dimensions this attribute
-   *   definition has.
+   * @param attrName an identifier for this attribute definition; this value
+   *   must be unique from all existing node attribute definitions.
    * @param dimTypes an array of length N, where N is the number of
    *   dimensions in this attribute definition; each entry in this array is
    *   one of the DIM_TYPE_* constants and the entry at index i in this
    *   array defines the type of dimension i + 1.
-   * @param dimNames an array of length N - 1, where N is the number of
+   * @param dimNames an array of length N, where N is the number of
    *   dimensions in this attribute definition; the entry at index i in this
-   *   array defines the [human-readable] name of dimension i + 1.
+   *   array defines the name of dimension i + 1; the dimension names must
+   *   be unique from each other withing a given attribute definition.
    */
   public void defineNodeAttribute(String attrName,
                                   byte[] dimTypes, String[] dimNames);
 
   /**
    * @return an enumeration of java.lang.String; each returned string
-   * is an attrName (an attribute definition name).
+   *   is an attrName (an attribute definition name).
    */
   public Enumeration getDefinedNodeAttributes();
+
+  /**
+   * @return the number of dimensions in the attribute specified.
+   */
+  public int getNumDimensions(String attrName);
 
   /**
    * @param attrName the name of attribute whose information we are
@@ -58,9 +62,9 @@ public interface CyNodeDataDef
    *   and the dimension types are copied into this array starting at index
    *   zero of the array.
    * @param dimNames this array is copied into by this method; the array
-   *   is populated with the name of each dimension but the last;
+   *   is populated with the name of each dimension;
    *   the array must be of length at least equal to the dimensionality of
-   *   attribute attrName minus one, and the dimension names are copied into
+   *   attribute attrName, and the dimension names are copied into
    *   this array starting at index zero of the array.
    */
   public void getAttributeInfo(String attrName,
@@ -71,8 +75,8 @@ public interface CyNodeDataDef
    */
   public void undefineNodeAttribute(String attrName);
 
-  public void addListener(CyNodeDataDefListener listener);
+  public void addNodeDataDefListener(CyNodeDataDefListener listener);
 
-  public void removeListener(CyNodeDataDefListener listener);
+  public void removeNodeDataDefListener(CyNodeDataDefListener listener);
 
 }
