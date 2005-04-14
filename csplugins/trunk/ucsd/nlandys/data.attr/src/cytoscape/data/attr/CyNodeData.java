@@ -45,4 +45,8 @@ public interface CyNodeData
   public Enumeration getAttributeSpan(String nodeKey, String attrName,
                                       Object[] prefix, boolean delete);
 
+  public void addListener(CyNodeDataListener listener);
+
+  public void removeListener(CyNodeDataListener listener);
+
 }

@@ -71,4 +71,8 @@ public interface CyNodeDataDef
    */
   public void undefineNodeAttribute(String attrName);
 
+  public void addListener(CyNodeDataDefListener listener);
+
+  public void removeListener(CyNodeDataDefListener listener);
+
 }
