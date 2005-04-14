@@ -23,7 +23,7 @@ public interface CyNodeData
    * @return the same value that was set with setAttributeValue() with
    *   parameters specified.
    */
-  public Object getMultiAttrValue(String nodeKey, String attrName,
+  public Object getAttributeValue(String nodeKey, String attrName,
                                   Object[] keyIntoValue, boolean delete);
 
 
