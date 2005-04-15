@@ -204,6 +204,10 @@ public class AddAttributes
 
     main_panel.add( action, BorderLayout.CENTER );
 
+    apply = new JButton( "Apply" );
+    apply.addActionListener( this );
+    main_panel.add( apply, BorderLayout.SOUTH );
+
     // to make sure everyting gets updated
     Cytoscape.firePropertyChange( Cytoscape.ATTRIBUTES_CHANGED, null, null );
 

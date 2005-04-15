@@ -1,4 +1,3 @@
-package integration.view;
 
 import edu.umd.cs.piccolo.*;
 import edu.umd.cs.piccolo.activities.*;

@@ -34,7 +34,7 @@ public class NetworkManagement
   Map titleIdMap;
 
   public NetworkManagement () {
-    super( "Network +/-" );
+    super( "Network Management" );
     initialize();
   }
 
@@ -53,7 +53,7 @@ public class NetworkManagement
     JPanel add_to_panel = new JPanel();
     add_to_panel.setLayout( new BorderLayout() );
     append = new JRadioButton( "Append to:" );
-    append.setSelected( true );
+    append.addActionListener( this );
         
     networkBox = getNetworkBox();
     networkBox.setMaximumSize( new Dimension(  15, (int)networkBox.getPreferredSize().getHeight()) );
@@ -75,6 +75,8 @@ public class NetworkManagement
     JPanel create_new_panel = new JPanel();
     create_new_panel.setLayout( new BorderLayout() );
     create = new JRadioButton( "Create new Network:" );
+    create.setSelected( true );
+    create.addActionListener( this );
     newNetworkField = new JTextField( 10 );
     create_new_panel.add( create, BorderLayout.NORTH );
     create_new_panel.add( newNetworkField, BorderLayout.CENTER );
@@ -135,8 +137,9 @@ public class NetworkManagement
     tabs.addTab("File", file );
 
     main_panel.add( tab_panel, BorderLayout.SOUTH );
-
-
+    
+    hideStuff();
+    
     setContentPane( main_panel );
     pack();
     
@@ -168,9 +171,22 @@ public class NetworkManagement
     }
     
 
+    } 
+    else if ( e.getSource() == append || e.getSource() == create ) {
+      hideStuff();
     }
   }
     
+  protected void hideStuff () {
+    if ( append.isSelected() ) {
+      newNetworkField.disable();
+      networkBox.enable();
+    } else {
+      newNetworkField.enable();
+      networkBox.disable();
+    }
+  }
+
 
   protected void getMatchingNodes ( String function ) {
     Iterator edges_i = Cytoscape.getRootGraph().edgesList().iterator();

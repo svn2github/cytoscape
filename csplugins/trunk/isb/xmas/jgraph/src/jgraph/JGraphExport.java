@@ -20,27 +20,17 @@ import cern.colt.map.*;
 
 import cytoscape.view.*;
 
-public class JGraphLayout {
-
-  int AnnealingLayoutAlgorithm = 0;
-  int MoenLayoutAlgorithm = 1;
-  int CircleGraphLayout = 2;
-  int RadialTreeLayoutAlgorithm = 3;
-  int GEMLayoutAlgorithm = 4;
-  int SpringEmbeddedLayoutAlgorithm = 5;
-  int SugiyamaLayoutAlgorithm = 6;
-  int TreeLayoutAlgorithm = 7;
-
-  int layout_type = 0;
-
+public class JGraphExport {
+  
   protected GraphView graphView;
+  protected int exportType = 0;
 
-  public JGraphLayout ( GraphView view, int layout_type, double extra_dat ) {
+  public JGraphExport ( CyNetworkView view, int export_type ) {
     this.graphView = ( GraphView )view;
-    this.layout_type = layout_type;
+    this.exportType = export_type;
   }
 
-  public void doLayout ( ) {
+  public void doExport ( ) {
 
     
 
@@ -134,45 +124,13 @@ public class JGraphLayout {
 
     }
 
-    // now do the layout
-    JGraphLayoutAlgorithm layout = null;
+    if ( exportType == 0 ) {
+      
+      String dot = org.jgraph.util.JGraphGraphvizEncoder.encode( graph, cells.toArray() ) ;
 
-    if ( layout_type == 0 )
-      layout = new AnnealingLayoutAlgorithm();
-    else if ( layout_type == 1 )
-      layout = new MoenLayoutAlgorithm();
-    else if ( layout_type == 2 )
-      layout = new CircleGraphLayout();
-    else if ( layout_type == 3 )
-      layout = new RadialTreeLayoutAlgorithm();
-    else if ( layout_type == 4 )
-      layout = new GEMLayoutAlgorithm( new AnnealingLayoutAlgorithm() );
-    else if ( layout_type == 5 )
-      layout = new SpringEmbeddedLayoutAlgorithm();
-    else if ( layout_type == 6 )
-      layout = new SugiyamaLayoutAlgorithm();
-    else if ( layout_type == 7 )
-      layout = new TreeLayoutAlgorithm();
-    
-    layout.run( graph, cells.toArray(), new Object[] {} );
-    
-    GraphLayoutCache cache = graph.getGraphLayoutCache();
-    Iterator i = cells.iterator();
-    while ( i.hasNext() ) {
-      Object cell = i.next();
-      CellView cell_view = cache.getMapping( cell, false );
-      if ( cell_view instanceof VertexView ) {
-        // ok, we found a node
-        Rectangle2D rect = cell_view.getBounds();
-        giny.model.Node giny = ( giny.model.Node )j_giny_node_map.get( cell );
-        NodeView node_view = graphView.getNodeView( giny );
-        node_view.setXPosition( rect.getX(), false );
-        node_view.setYPosition( rect.getY(), false );
-        node_view.setNodePosition( true );
-        
-       
-      }
+      System.out.println( dot );
     }
+
 
 
     // I don't think that any of the current layouts have edge components, 

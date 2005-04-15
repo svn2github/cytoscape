@@ -86,6 +86,10 @@ public class GoGinyView
   public java.awt.Component getComponent () {
     return split;
   }
+
+  public int[] getSelectedNodeIndices() {
+    return view.getSelectedNodeIndices();
+  }
   
 
   public void actionPerformed ( ActionEvent e ) {
@@ -197,7 +201,7 @@ public class GoGinyView
     double smallY;
     double W;
     double H;
-    NodeView first = ( NodeView )view.getNodeView( selected_nodes[1] );
+    NodeView first = ( NodeView )view.getNodeView( selected_nodes[0] );
     bigX = first.getXPosition();
     smallX = bigX;
     bigY = first.getYPosition();
@@ -230,7 +234,7 @@ public class GoGinyView
     if (selected_nodes.length == 1) {
       zoomToBounds = new PBounds( smallX - 100 , smallY - 100 , ( bigX - smallX + 200 ), ( bigY - smallY + 200 ) );
     } else {
-      zoomToBounds = new PBounds( smallX  , smallY  , ( bigX - smallX + 100 ), ( bigY - smallY + 100 ) );
+      zoomToBounds = new PBounds( smallX - 100 , smallY - 100 , ( bigX - smallX + 100 ), ( bigY - smallY + 100 ) );
     }
     PTransformActivity activity =  ( ( PGraphView )view).getCanvas().getCamera().animateViewToCenterBounds( zoomToBounds, true, 500 );
 

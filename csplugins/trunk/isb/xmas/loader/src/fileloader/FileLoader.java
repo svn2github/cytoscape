@@ -12,7 +12,7 @@ import cytoscape.plugin.*;
 import cytoscape.data.*;
 
 import giny.model.*;
-
+import ViolinStrings.Strings;
 public class FileLoader {
 
 
@@ -424,7 +424,16 @@ public class FileLoader {
     
   }
 
-  public static boolean loadRow ( String[] row, Vector titles, boolean is_nodes ) {
+   public static boolean loadRow ( String[] row, 
+                                  Vector titles, 
+                                   boolean is_nodes ) {
+     return loadRow( row, titles, is_nodes, new int[] {} );
+   }
+
+  public static boolean loadRow ( String[] row, 
+                                  Vector titles, 
+                                  boolean is_nodes,
+                                  int[] restricted_colums ) {
 
     if ( is_nodes ) {
       CyNode node = null;
@@ -435,52 +444,31 @@ public class FileLoader {
         if ( node != null )
           break;
       }
-      if ( node != null )
-        System.out.println( "NOde exists: "+node.getIdentifier() );
-      // if no node is found, create one with the first column name
       if ( node == null ) {
-        //System.out.println( "Creating Node: "+row[0] );
         node = Cytoscape.getCyNode( row[0], true );
-
       }
-      //System.out.println( "Loading data for: "+node.getIdentifier() );
-
-
       
-      // now place the attributes
-      for ( int i = 0; i < row.length; ++i ) {
-        Object attribute;
-        try {
-          attribute = new Double( row[i] );
-        } catch ( Exception e ) {
-          // not a number, leave as string
-          attribute = row[i];
+      if ( restricted_colums.length != 0 ) {
+        // load only the columns given
+        for ( int i = 0; i < restricted_colums.length; ++i ) {
+          loadNodeColumn( node,
+                          ( String )titles.get( restricted_colums[i] ),
+                          row[ restricted_colums[i] ] );
         }
-        try {
-          if ( !attribute.equals( null_att ) ) {
-            Cytoscape.setNodeAttributeValue( node, (String)titles.get( i ), attribute );
-            System.out.println( "Loading data for: "+node.getIdentifier()+" att:"+titles.get( i )+" val: "+attribute );
-          }
-        } catch ( Exception ex ) {
-          ex.printStackTrace();
-          System.out.print( "Error Loading node: "+node.getIdentifier() );
-          System.out.print( " attribute: "+(String)titles.get( i ) );
-          System.out.println( " attribute value: "+attribute );
-
+      } else {
+        // load all columns
+        for ( int i = 0; i < row.length; ++i ) {
+          loadNodeColumn( node,
+                          ( String )titles.get( i ),
+                          row[i] );
         }
       }
+
       return true;
     } else {
-      //System.out.print( "Source: "+row[0] );
-     //  CyNode source = Cytoscape.getCyNode( row[0], true );
-//       //System.out.println("");
-//       //System.out.print( "Target: "+row[2] );
-//       CyNode target = Cytoscape.getCyNode( row[2], true );
-//       //System.out.println("");
-//       CyEdge edge = Cytoscape.getCyEdge( source, target, Semantics.INTERACTION, row[1], true );
-
-      String edgeName = row[0] + " (" + row[1] + ") " + row[2];
-      CyEdge edge = Cytoscape.getCyEdge( row[0], edgeName, row[2], row[1] );
+   
+      // load edges
+      CyEdge edge = getEdgeForRow( row );
 
 
 
@@ -504,6 +492,106 @@ public class FileLoader {
 
   }
     
+  public static CyNode getNodeForRow ( String[] row ) {
+    CyNode node = null;
+      
+    // iterate through until a node is found
+    for ( int i = 0; i < row.length; ++i ) {
+      node = Cytoscape.getCyNode( row[i], false );
+      if ( node != null )
+        break;
+    }
+    if ( node == null ) {
+      node = Cytoscape.getCyNode( row[0], true );
+    }
+
+    return node;
+
+  }
+
+
+  public static CyEdge getEdgeForRow ( String[] row ) {
+
+    if ( row.length < 3 ) 
+      return null;
+
+    CyNode source;
+    CyNode target;
+
+    // source and target must be defined as row[0] and row[2]
+    // the Edge Semantics.INTERACTION must be row[1]
+
+    source = Cytoscape.getCyNode( row[0], false );
+    if ( source == null ) 
+      source = Cytoscape.getCyNode( row[0], true );
+
+    target = Cytoscape.getCyNode( row[2], false );
+    if ( target == null ) 
+      target = Cytoscape.getCyNode( row[2], true );
+
+    CyEdge edge = Cytoscape.getCyEdge( source, 
+                                       target, 
+                                       cytoscape.data.Semantics.INTERACTION,
+                                       row[2],
+                                       false );
+    if ( edge == null )
+      return Cytoscape.getCyEdge( source, 
+                                       target, 
+                                       cytoscape.data.Semantics.INTERACTION,
+                                       row[2],
+                                       true );
+
+    return edge;
+  }
+
+  public static boolean loadNodeColumn ( CyNode node,
+                                         String title, 
+                                         String att ) {
+
+    // figure out what the Attibute is
+    Object attribute;
+    try { 
+      attribute = new Double( att );
+    } catch ( Exception e ) {
+      attribute = att;
+      // not a number, leave as string
+    }
+    try {
+      if ( !attribute.equals( null_att ) ) {
+        if ( attribute instanceof String ) {
+          if ( att.startsWith("[") ) {
+            attribute = formList( att );
+          }
+        }
+
+        // set value
+        //System.out.println( "Loading: "+node.getIdentifier()+" "+title+ " "+attribute );
+        Cytoscape.setNodeAttributeValue( node, title, attribute );
+      }
+    }  catch ( Exception ex ) {
+      ex.printStackTrace();
+      System.out.print( "Error Loading node: "+node.getIdentifier() );
+      System.out.print( " attribute: "+title );
+      System.out.println( " attribute value: "+attribute );
+      return false;
+    }
+    return true;
+  }
+
+      
+  public static List formList ( String value ) {
+    List attribute = new ArrayList();
+    value = value.substring( 1,value.length()-1 );
+    String[] delim = value.split( ";" );
+    for ( int j = 0; j < delim.length; ++j ) {
+      attribute.add( delim[j] );
+    }
+
+    //System.out.println( "LIST MADE: "+attribute );
+
+    return attribute;
+  }
+
 
     
 

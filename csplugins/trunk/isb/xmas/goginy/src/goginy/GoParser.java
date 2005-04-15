@@ -19,42 +19,42 @@ import fing.model.*;
 public class GoParser {
 
   // The Root Graphs store the ontology
-  public RootGraph cp;
+  public RootGraph cc;
   public RootGraph bp;
   public RootGraph mf;
 
   // This converts a RootGraphIndex to a GO id
-  public OpenIntIntHashMap cp_uid_gid_map;
+  public OpenIntIntHashMap cc_uid_gid_map;
   public OpenIntIntHashMap bp_uid_gid_map;
   public OpenIntIntHashMap mf_uid_gid_map;
    
 
   // This converts a GO id to a RootGraphIndex
-  public OpenIntIntHashMap cp_gid_uid_map;
+  public OpenIntIntHashMap cc_gid_uid_map;
   public OpenIntIntHashMap bp_gid_uid_map;
   public OpenIntIntHashMap mf_gid_uid_map;
 
   // Get a Description given a GO id
-  public OpenIntObjectHashMap cp_gid_desc_map;
+  public OpenIntObjectHashMap cc_gid_desc_map;
   public OpenIntObjectHashMap bp_gid_desc_map;
   public OpenIntObjectHashMap mf_gid_desc_map;
 
 
   public void parseOBO ( String file_name ) {
 
-    cp =  fing.model.FingRootGraphFactory.instantiateRootGraph();
+    cc =  fing.model.FingRootGraphFactory.instantiateRootGraph();
     bp =  fing.model.FingRootGraphFactory.instantiateRootGraph();
     mf =  fing.model.FingRootGraphFactory.instantiateRootGraph();
 
-    cp_uid_gid_map = new OpenIntIntHashMap();
+    cc_uid_gid_map = new OpenIntIntHashMap();
     bp_uid_gid_map = new OpenIntIntHashMap();
     mf_uid_gid_map = new OpenIntIntHashMap();
     
-    cp_gid_uid_map = new OpenIntIntHashMap();
+    cc_gid_uid_map = new OpenIntIntHashMap();
     bp_gid_uid_map = new OpenIntIntHashMap();
     mf_gid_uid_map = new OpenIntIntHashMap();
 
-    cp_gid_desc_map = new OpenIntObjectHashMap();
+    cc_gid_desc_map = new OpenIntObjectHashMap();
     bp_gid_desc_map = new OpenIntObjectHashMap();
     mf_gid_desc_map = new OpenIntObjectHashMap();
 
@@ -84,7 +84,7 @@ public class GoParser {
           namespace = oneLine.substring( 11, oneLine.length() );
 
           if ( namespace.startsWith( "cellular_component" ) ) {
-            cp_gid_desc_map.put( current_go_id, name );
+            cc_gid_desc_map.put( current_go_id, name );
           } else if ( namespace.startsWith( "biological_process" ) ) {
             bp_gid_desc_map.put( current_go_id, name ); 
           } else if ( namespace.startsWith( "molecular_function" ) ) {
@@ -103,12 +103,12 @@ public class GoParser {
             is_a = ( new Integer( oneLine.substring( 25, 32 ) ) ).intValue();
 
           if ( namespace.startsWith( "cellular_component" ) ) {
-            //cp
+            //cc
             makePairing( is_a,
                          current_go_id,
-                         cp,
-                         cp_uid_gid_map,
-                         cp_gid_uid_map );
+                         cc,
+                         cc_uid_gid_map,
+                         cc_gid_uid_map );
             
           } else if ( namespace.startsWith( "biological_process" ) ) {
             //bp

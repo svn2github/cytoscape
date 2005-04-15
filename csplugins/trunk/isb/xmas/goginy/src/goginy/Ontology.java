@@ -63,6 +63,54 @@ public class Ontology {
     return gp;
   }
 
+  public String getDesc ( int gid ) {
+    return ( String )gidGdescMap.get( gid );
+  }
+
+
+  public int[] getTerms ( int[] selected_nodes ) {
+    //take the selected nodes and return the GO indices
+    IntArrayList go_terms = new IntArrayList();
+    for ( int i = 0; i < selected_nodes.length; ++i ) {
+      go_terms.add( uidGidMap.get( selected_nodes[i] ) );
+    }
+    go_terms.trimToSize();
+    return go_terms.elements();
+  }
+
+  public void showTerms ( int[] go_terms ) {
+
+
+    // take an array of GO ints and show them
+       
+    IntArrayList mat = new IntArrayList();
+    // iterate through the given go_terms and get the nodes
+    for ( int i = 0; i < go_terms.length; ++i ) {
+      mat.add(  gidUidMap.get( go_terms[i] ) );
+    }
+    mat.trimToSize();
+    flagged_nodes = mat.elements();
+
+    GraphPerspective new_gp  = getUIDParentsAsGP( mat.elements() );
+
+    IntArrayList inOld_notNew = new IntArrayList();
+    IntArrayList inNew_notOld = new IntArrayList();
+    
+    IntArrayList diff = Diff.diff( new IntArrayList( gp.getNodeIndicesArray() ),
+                                   new IntArrayList( new_gp.getNodeIndicesArray() ),
+                                   inOld_notNew,
+                                   inNew_notOld );
+    
+    gp.restoreNodes( new_gp.getNodeIndicesArray() );
+    gp.restoreEdges( new_gp.getEdgeIndicesArray() );
+    gp.hideNodes( inOld_notNew.elements() );
+    gp.restoreNode( root_node );
+    
+    pcs.firePropertyChange( "layout", null, mat.elements() );
+    
+  }
+
+
   protected void searchFor ( String string ) {
 
     IntArrayList mat = new IntArrayList();
@@ -226,6 +274,9 @@ public class Ontology {
                                   true, 
                                   false);
 
+    if ( incoming_edges == null )
+      return false;
+
     // add these edges
     for ( int i = 0; i < incoming_edges.length; ++i )
       if ( !edges.contains( incoming_edges[i] ) )
@@ -271,6 +322,9 @@ public class Ontology {
                                   false, 
                                   false, 
                                   true);
+
+    if ( outgoing_edges == null )
+      return false;
 
     // add these edges
     for ( int i = 0; i < outgoing_edges.length; ++i )

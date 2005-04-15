@@ -57,9 +57,10 @@
 
     <path id="goginy.project.class.path">
       <pathelement location="${goginy.classes.dir}"/>
+      <pathelement location="${cytoscape.lib.dir}/../plugins/core/filter.jar"/>
       <pathelement location="${cytoscape.lib.dir}/colt.jar"/>
       <pathelement location="${cytoscape.lib.dir}/coltginy.jar"/>
-      <pathelement location="${cytoscape.lib.dir}/cytoscape.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/../cytoscape.jar"/>
       <pathelement location="${cytoscape.lib.dir}/giny.jar"/>
       <pathelement location="${cytoscape.lib.dir}/tclib.jar"/>
       <pathelement location="${cytoscape.lib.dir}/com-nerius-math-xform.jar"/> 

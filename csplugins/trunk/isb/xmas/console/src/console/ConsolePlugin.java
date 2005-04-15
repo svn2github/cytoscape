@@ -22,6 +22,9 @@ public class ConsolePlugin
   List completors;
 
   int count = 0;
+  
+  SimpleCompletor sc;
+  List actions;
 
   public ConsolePlugin () {
    
@@ -47,8 +50,8 @@ public class ConsolePlugin
 
             completors = new LinkedList ();
             
-            SimpleCompletor sc = new SimpleCompletor ( new String [] { "foo", "bar", "baz"});
-            List actions = CytoscapeAction.getActionList();
+            sc = new SimpleCompletor (new String[] {});
+            actions = CytoscapeAction.getActionList();
             for ( Iterator i = actions.iterator(); i.hasNext(); ) {
               CytoscapeAction action = ( CytoscapeAction )i.next();
               sc.addCandidateString( action.getName() );
@@ -57,11 +60,6 @@ public class ConsolePlugin
             completors.add ( sc );
             completors.add (new FileNameCompletor ());
 
-
-            //completors.add ( new SimpleCompletor 
-            //                 ( new String [] { "foo", "bar", "baz"}));
-            //completors.add( new CytoscapeActionCompletor() );
-            
 
             reader.addCompletor (new ArgumentCompletor (completors));
             
@@ -74,6 +72,18 @@ public class ConsolePlugin
               out.println (count+"> "+ line );
               out.flush ();
               count++;
+              if ( count < 2 ) {
+                //check to see if any actions were added from plugins loaded later
+                List new_actions = CytoscapeAction.getActionList();
+                for ( Iterator i = actions.iterator(); i.hasNext(); ) {
+                  CytoscapeAction action = ( CytoscapeAction )i.next();
+                  String name = action.getName();
+                  if ( !actions.contains( name ) ) {
+                    actions.add( name );
+                    sc.addCandidateString( name );
+                  }
+                }
+              }
               // If we input the special word then we will mask
               // the next line.
             }

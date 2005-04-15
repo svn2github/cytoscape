@@ -62,7 +62,7 @@
       <pathelement location="${cytoscape.lib.dir}/giny.jar"/>
       <pathelement location="${cytoscape.lib.dir}/phoebe.jar"/>
       <pathelement location="${cytoscape.lib.dir}/coltginy.jar"/>
-      <pathelement location="${cytoscape.lib.dir}/piccolo.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/violinstrings-1.0.2.jar"/>
       <pathelement path="${project.class.path}/"/>
     </path>
 

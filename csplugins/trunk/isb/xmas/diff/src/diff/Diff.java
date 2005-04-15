@@ -1,6 +1,6 @@
 package diff;
 
-import cytoscape.*;
+import giny.model.*;
 import filter.model.Filter;
 import java.util.*;
 
@@ -19,12 +19,12 @@ public abstract class Diff {
 
     Iterator i = both.iterator();
     while( i.hasNext() ) {
-      CyNode node = ( CyNode )i.next();
+      Node node = ( Node )i.next();
       if ( set1.contains( node ) && set2.contains( node ) ) {
         // thy both conain the node
-        System.out.println( "Both Contain: "+node );
+        //System.out.println( "Both Contain: "+node );
       } else {
-        System.out.println( "Added to diff: "+node );
+        //System.out.println( "Added to diff: "+node );
         diff.add( node );
       }
     }
@@ -44,35 +44,37 @@ public abstract class Diff {
 
     Iterator i = both.iterator();
     while( i.hasNext() ) {
-      CyEdge edge = ( CyEdge )i.next();
+      Edge edge = ( Edge )i.next();
       if ( set1.contains( edge ) && set2.contains( edge ) ) {
         // thy both conain the edge
-        System.out.println( "Both Contain: "+edge );
+        //System.out.println( "Both Contain: "+edge );
       } else {
-        System.out.println( "Added to diff: "+edge );
+        //System.out.println( "Added to diff: "+edge );
         diff.add( edge );
       }
     }
     return diff;
   }
 
-  public static List nodesDiff ( CyNetwork network1, CyNetwork network2 ) {
+  public static List nodesDiff ( GraphPerspective network1, GraphPerspective network2 ) {
     return nodesDiff( network1.nodesList(), network2.nodesList() );
   }
 
-  public static List edgesDiff ( CyNetwork network1, CyNetwork network2 ) {
+  public static List edgesDiff ( GraphPerspective network1, GraphPerspective network2 ) {
     return edgesDiff( network1.edgesList(), network2.edgesList() );
   }
   
-  public static List nodesDiff ( Filter filter1, Filter filter2 ) {
+  public static List nodesDiff ( Filter filter1, 
+                                 Filter filter2,  
+                                 List nodes ) {
     List list1 = new LinkedList();
     List list2 = new LinkedList();
-    CyNode node;
-    Iterator nodes_i = Cytoscape.getRootGraph().nodesList().iterator();
+    Node node;
+    Iterator nodes_i = nodes.iterator();
     while ( nodes_i.hasNext() ) {
       Object o = nodes_i.next(); 
-      if ( o instanceof CyNode ) 
-        node = ( CyNode )o;
+      if ( o instanceof Node ) 
+        node = ( Node )o;
       else
         continue;
       try {
@@ -84,11 +86,11 @@ public abstract class Diff {
       }
     }
 
-    nodes_i = Cytoscape.getRootGraph().nodesList().iterator();
+    nodes_i = nodes.iterator();
     while ( nodes_i.hasNext() ) {
       Object o = nodes_i.next();
-      if ( o instanceof CyNode ) 
-        node = ( CyNode )o;
+      if ( o instanceof Node ) 
+        node = ( Node )o;
       else
         continue;
       try {
@@ -102,15 +104,17 @@ public abstract class Diff {
     return( nodesDiff( list1, list2 ) );
   }  
 
-  public static List edgesDiff ( Filter filter1, Filter filter2 ) {
+  public static List edgesDiff ( Filter filter1, 
+                                 Filter filter2,
+                                 List edges ) {
     List list1 = new LinkedList();
     List list2 = new LinkedList();
-    CyEdge edge;
-    Iterator edges_i = Cytoscape.getRootGraph().edgesList().iterator();
+    Edge edge;
+    Iterator edges_i = edges.iterator();
     while ( edges_i.hasNext() ) {
       Object o = edges_i.next(); 
-      if ( o instanceof CyEdge ) 
-        edge = ( CyEdge )o;
+      if ( o instanceof Edge ) 
+        edge = ( Edge )o;
       else
         continue;
       try {
@@ -122,11 +126,11 @@ public abstract class Diff {
       }
     }
 
-    edges_i = Cytoscape.getRootGraph().edgesList().iterator();
+    edges_i = edges.iterator();
     while ( edges_i.hasNext() ) {
       Object o = edges_i.next();
-      if ( o instanceof CyEdge ) 
-        edge = ( CyEdge )o;
+      if ( o instanceof Edge ) 
+        edge = ( Edge )o;
       else
         continue;
       try {
