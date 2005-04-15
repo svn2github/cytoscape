@@ -71,40 +71,55 @@ public interface CyNodeDataDef
                                   String[] keyNames);
 
   /**
+   * It is a programming error to define or undefine attribute domains
+   * whilst iterating through the returned enumeration.
    * @return an enumeration of java.lang.String; each returned string
-   *   is an attrName (an attribute definition name).
+   *   is an attributeName (an attribute definition name).
    */
   public Enumeration getDefinedNodeAttributes();
 
   /**
-   * @return the number of dimensions in the attribute specified.
+   * @return the type (TYPE_*) of values bound to nodes by this attribute
+   *   definition.
    */
-  public int getNumDimensions(String attrName);
+  public byte getNodeAttributeValueType();
 
   /**
-   * @param attrName the name of attribute whose information we are
-   *   querying.
-   * @param dimTypes this array is copied into by this method; the array
-   *   is populated with the type of each dimension; the array must be
-   *   of length at least equal to the dimensionality of attribute attrName,
-   *   and the dimension types are copied into this array starting at index
-   *   zero of the array.
-   * @param dimNames this array is copied into by this method; the array
-   *   is populated with the name of each dimension;
-   *   the array must be of length at least equal to the dimensionality of
-   *   attribute attrName, and the dimension names are copied into
-   *   this array starting at index zero of the array.
+   * @param attributeName the attribute definition whose key space
+   *   dimensionality we are querying.
+   * @return the number of dimensions in the specified attribute's key
+   *   space.
    */
-  public void getAttributeInfo(String attrName,
-                               byte[] dimTypes, String[] dimNames);
+  public int getNodeAttributeKeyspaceDimensionality(String attributeName);
 
   /**
-   * @param attrName the attribute definition to undefine.
+   * @param attributeName the attribute definition whose key space information
+   *   we are querying.
+   * @param keyTypes this parameter is written into by this method; it is not
+   *   used as input; consider this a return value; the size of this array
+   *   must be at least the dimensionality of the key space of specified
+   *   attribute definition, and the key space dimension types (TYPE_*) are
+   *   written into this array starting at index zero of this array.
+   * @param keyNames this parameter is written into by this method; it is not
+   *   used as input; consider this a return value; the size of this array
+   *   must be at least the dimensionality of the key space of specified
+   *   attribute definition, and the key space dimension names are written
+   *   into this array starting at index zero of this array.
    */
-  public void undefineNodeAttribute(String attrName);
+  public void getNodeAttributeKeyspaceInfo(String attributeName,
+                                           byte[] keyTypes, String[] keyNames);
 
-  public void addNodeDataDefListener(CyNodeDataDefListener listener);
+  /**
+   * WARNING!  All bound attribute values on nodes will go away in this
+   * attribute namespace when this method is called.
+   * @param attributeName the attribute definition to undefine.
+   */
+  public void undefineNodeAttribute(String attributeName);
 
-  public void removeNodeDataDefListener(CyNodeDataDefListener listener);
+  public void addNodeDataDefinitionListener(
+                                        CyNodeDataDefinitionListener listener);
+
+  public void removeNodeDataDefinitionListener(
+                                        CyNodeDataDefinitionListener listener);
 
 }
