@@ -7,7 +7,6 @@
 		You may now download Cytoscape for Unix, Windows and Mac OS X systems through any of the following
 		four options:
 		</p>
-<!--
 		<h4>
 		Option 1:  Windows / Linux:  One Step Installation
 		</h4>
@@ -18,7 +17,6 @@
 			Install Cytoscape 2.1 (One Click Install)</a>
 		</UL>
 		</h2>
--->
 		<p>
 		<h4>Option 1:  All Platforms:  Download a .tar.gz or .zip distribution file
 		</H4>
@@ -56,7 +54,7 @@
 		</h4>
     		<UL>
 		    <li><a href='<?= $cyto2_1_source_east ?>'>Cytoscape source</a> - USA, East Coast (New York, NY).</li>
-		    <li>Note: Saving to disk via the right-click menu is recommended.</li>  
+		    <li>Note: Saving to disk via the right-click menu is recommended.</li>
 		</UL>
   </p>
   <P>
