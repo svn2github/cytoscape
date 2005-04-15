@@ -1,0 +1,70 @@
+# cytoscape.props 
+#---------------------------------------------------------------
+# $Revision$
+# $Date$
+# $Author$
+#---------------------------------------------------------------
+logging=none
+#newbiodata.server=rmi://localhost/newbiodata
+newbiodata.server=./annotationLoadList
+fontName=Helvetica
+fontStyle=italic
+fontSize=16
+#species=Halobacterium sp.
+species=Saccharomyces cerevisiae
+#plugin.annotationGui.load=csplugins.annotation.AnnotationGui
+#plugin.attributeLayout.load=csplugins.layout.AttributeLayout
+#plugin.nodeBrowserDemo.load=csplugins.browsers.NodeBrowserDemo
+#plugin.debug.load=csplugins.debug.Debug
+#plugin.edgeOps.load=csplugins.trial.edgeOps.EdgeOperations
+webBrowserScript=/users/pshannon/bin/web
+
+node.fillColor.default=255,255,255
+
+node.fillColor.controller=expression
+node.fillColor.expression.type=continuous
+node.fillColor.expression.boundaryvalues=3
+
+node.fillColor.expression.bv0.domainvalue=-1.0
+node.fillColor.expression.bv0.lesser=0,255,0
+node.fillColor.expression.bv0.equal=0,255,0
+node.fillColor.expression.bv0.greater=0,255,0
+
+node.fillColor.expression.bv1.domainvalue=0.0
+node.fillColor.expression.bv1.lesser=204,255,204
+node.fillColor.expression.bv1.equal=255,255,255
+node.fillColor.expression.bv1.greater=255,204,204
+
+node.fillColor.expression.bv2.domainvalue=1.0
+node.fillColor.expression.bv2.lesser=255,0,0
+node.fillColor.expression.bv2.equal=255,0,0
+node.fillColor.expression.bv2.greater=255,0,0
+
+
+edge.color.controller=interaction
+edge.color.interaction.type=discrete
+edge.color.interaction.map.geneFusion=0,0,255
+edge.color.interaction.map.phylogeneticPattern=255,0,0
+edge.color.interaction.map.cogInference=0,255,0
+
+edge.targetDecoration.controller=interaction
+edge.targetDecoration.interaction.type=discrete
+#edge.targetDecoration.interaction.map.geneFusion=arrow
+
+edge.sourceDecoration.controller=interaction
+edge.sourceDecoration.interaction.type=discrete
+#edge.sourceDecoration.interaction.map.phylogeneticPattern=arrow
+
+node.shape.controller=categorizer
+node.shape.categorizer.type=discrete
+node.shape.categorizer.map.true=circle
+
+node.height.controller=categorizer
+node.height.categorizer.type=discrete
+node.height.categorizer.map.true=50
+
+node.width.controller=categorizer
+node.width.categorizer.type=discrete
+node.width.categorizer.map.true=50
+
+
