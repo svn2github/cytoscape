@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- This script was automatically generated using Zero G's InstallAnywhere 6.1 Standard, Build 2325
      STATUS: Fully Functional LICENSED Edition
-     DATE:   Wed Mar 30 09:36:56 PST 2005 -->
-<InstallAnywhere_Deployment_Project increments="2658">
+     DATE:   Thu Apr 14 14:29:20 PDT 2005 -->
+<InstallAnywhere_Deployment_Project increments="2774">
 	<!-- ** DO NOT EDIT ** Essential authorization and configuration data ** DO NOT EDIT ** -->
 	<essentialScriptInfo>
 		<versionID major="6" minor="1" revision="-1"/>
@@ -10,10 +10,185 @@
 		<scriptID>12,42,11,90,89,56,50,54,54,69,56,69,52,85,90,82</scriptID>
 		<buildID>3,13,71,76,105,110,117,120,44,32,50,46,52,46,50,49,45,52,46,69,76,115,109,112,44,32,105,51,56,54,59,32,74,97,118,97,32,49,46,51,46,49,95,48,57,44,32,83,117,110,32,77,105,99,114,111,115,121,115,116,101,109,115,32,73,110,99,46,44,32,104,116,116,112,58,47,47,106,97,118,97,46,115,117,110,46,99,111,109,47,59,32,101,110,44,32,85,83,59,32,85,84,70,45,56</buildID>
 		<!-- The authorizationID may change between project saves and builds.  This does not effect the integrity of the project, nor do changes in this value represent changes in the actual InstallAnywhere project. -->
-		<authorizationID>1,0,0,0,-13,-116,-128,32,80,112,116,103,88,98,113,97,113,81,67,49,74,65,70,70,85,71,64,69,66,69,48,79,87,5,2,10,8,89,116,2,1,0,0</authorizationID>
+		<authorizationID>1,0,0,0,67,-98,-80,-112,80,112,116,103,88,98,113,97,113,81,67,49,74,65,70,70,85,71,64,69,66,69,48,79,87,5,2,0,0,93,114,3,1,0,0</authorizationID>
 	</essentialScriptInfo>
-	<installationObjects uniqueObjects="132">
+	<installationObjects uniqueObjects="145">
 		<object class="com.zerog.ia.installer.Installer" objectID="e9d168cbb969">
+			<property name="wizardME">
+				<object class="com.zerog.ia.installer.actions.MakeExecutable" objectID="55fb905eb976">
+					<property name="unixPermissions">
+						<string><![CDATA[664]]></string>
+					</property>
+					<property name="overrideUnixPermissions">
+						<boolean>false</boolean>
+					</property>
+					<property name="guiLauncher">
+						<boolean>true</boolean>
+					</property>
+					<property name="propertyList">
+						<object class="java.util.Vector">
+							<method name="addElement">
+								<object class="com.zerog.ia.installer.util.LAXPropertyData" objectID="55fb9062b978">
+									<property name="propertyValue">
+										<string><![CDATA[]]></string>
+									</property>
+									<property name="propertyName">
+										<string><![CDATA[lax.stderr.redirect]]></string>
+									</property>
+									<property name="propertyComment">
+										<string><![CDATA[leave blank for no input, "console" to read from the console window,
+and any path to a file to read from that file]]></string>
+									</property>
+								</object>
+							</method>
+							<method name="addElement">
+								<object class="com.zerog.ia.installer.util.LAXPropertyData" objectID="55fb9062b97a">
+									<property name="propertyValue">
+										<string><![CDATA[2750]]></string>
+									</property>
+									<property name="propertyName">
+										<string><![CDATA[lax.nl.win32.microsoftvm.min.version]]></string>
+									</property>
+									<property name="propertyComment">
+										<string><![CDATA[The minimum version of Microsoft's VM this application will run against]]></string>
+									</property>
+								</object>
+							</method>
+							<method name="addElement">
+								<object class="com.zerog.ia.installer.util.LAXPropertyData" objectID="55fb9060b978">
+									<property name="propertyValue">
+										<string><![CDATA[]]></string>
+									</property>
+									<property name="propertyName">
+										<string><![CDATA[lax.stdin.redirect]]></string>
+									</property>
+									<property name="propertyComment">
+										<string><![CDATA[leave blank for no input, "console" to read from the console window,
+and any path to a file to read from that file]]></string>
+									</property>
+								</object>
+							</method>
+							<method name="addElement">
+								<object class="com.zerog.ia.installer.util.LAXPropertyData" objectID="55fb9061b976">
+									<property name="propertyValue">
+										<string><![CDATA[.]]></string>
+									</property>
+									<property name="propertyName">
+										<string><![CDATA[lax.user.dir]]></string>
+									</property>
+									<property name="propertyComment">
+										<string><![CDATA[left blank, this property will cause the native launcher to not
+alter the platform default behavior for setting the user dir.
+To override this you may set this property to a relative or absolute path.
+Relative paths are relative to the launcher.]]></string>
+									</property>
+								</object>
+							</method>
+							<method name="addElement">
+								<object class="com.zerog.ia.installer.util.LAXPropertyData" objectID="55fb9060b976">
+									<property name="propertyValue">
+										<string><![CDATA[main]]></string>
+									</property>
+									<property name="propertyName">
+										<string><![CDATA[lax.main.method]]></string>
+									</property>
+									<property name="propertyComment">
+										<string><![CDATA[the method in the main class that will be invoked]]></string>
+									</property>
+								</object>
+							</method>
+							<method name="addElement">
+								<object class="com.zerog.ia.installer.util.LAXPropertyData" objectID="55fb9060b977">
+									<property name="propertyValue">
+										<string><![CDATA[$USER_INSTALL_DIR$]]></string>
+									</property>
+									<property name="propertyName">
+										<string><![CDATA[lax.root.install.dir]]></string>
+									</property>
+									<property name="propertyComment">
+										<string><![CDATA[path to the installdir magic folder]]></string>
+									</property>
+								</object>
+							</method>
+							<method name="addElement">
+								<object class="com.zerog.ia.installer.util.LAXPropertyData" objectID="55fb9061b977">
+									<property name="propertyValue">
+										<string><![CDATA[$CMD_LINE_ARGUMENTS$]]></string>
+									</property>
+									<property name="propertyName">
+										<string><![CDATA[lax.command.line.args]]></string>
+									</property>
+									<property name="propertyComment">
+										<string><![CDATA[what will be passed to the main method -- be sure to quote arguments with spaces in them]]></string>
+									</property>
+								</object>
+							</method>
+							<method name="addElement">
+								<object class="com.zerog.ia.installer.util.LAXPropertyData" objectID="55fb9062b979">
+									<property name="propertyValue">
+										<string><![CDATA[$IA_CLASSPATH$]]></string>
+									</property>
+									<property name="propertyName">
+										<string><![CDATA[lax.class.path]]></string>
+									</property>
+									<property name="propertyComment">
+										<string><![CDATA[the Java classpath necessary to run this application
+Can be separated by colons (Mac OS/Unix) or semicolons (Windows)]]></string>
+									</property>
+								</object>
+							</method>
+							<method name="addElement">
+								<object class="com.zerog.ia.installer.util.LAXPropertyData" objectID="55fb9061b979">
+									<property name="propertyValue">
+										<string><![CDATA[J2 J1 MSJ]]></string>
+									</property>
+									<property name="propertyName">
+										<string><![CDATA[lax.nl.valid.vm.list]]></string>
+									</property>
+									<property name="propertyComment">
+										<string><![CDATA[a string containing one or more of [ ALL JDK JRE J1 J2 JRE_J1 JDK_J1 JRE_J2 JDK_J2 MSJ ]
+ delimited by spaces or commas.  If the native launcher cannot find the current vm,
+it will search for ones in this list]]></string>
+									</property>
+								</object>
+							</method>
+							<method name="addElement">
+								<object class="com.zerog.ia.installer.util.LAXPropertyData" objectID="55fb9061b97a">
+									<property name="propertyValue">
+										<string><![CDATA[6.0]]></string>
+									</property>
+									<property name="propertyName">
+										<string><![CDATA[lax.version]]></string>
+									</property>
+									<property name="propertyComment">
+										<string><![CDATA[version of LaunchAnywhere that created this properties file]]></string>
+									</property>
+								</object>
+							</method>
+							<method name="addElement">
+								<object class="com.zerog.ia.installer.util.LAXPropertyData" objectID="55fb9061b978">
+									<property name="propertyValue">
+										<string><![CDATA[]]></string>
+									</property>
+									<property name="propertyName">
+										<string><![CDATA[lax.stdout.redirect]]></string>
+									</property>
+									<property name="propertyComment">
+										<string><![CDATA[leave blank for no input, "console" to read from the console window,
+and any path to a file to read from that file]]></string>
+									</property>
+								</object>
+							</method>
+						</object>
+					</property>
+					<property name="shouldUninstall">
+						<boolean>true</boolean>
+					</property>
+					<property name="destinationName">
+						<string><![CDATA[Cytoscape 2.1]]></string>
+					</property>
+				</object>
+			</property>
 			<property name="classpath">
 				<object class="java.util.Vector">
 					<method name="addElement">
@@ -28,7 +203,7 @@
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/lib/]]></string>
+								<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/lib/]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -59,7 +234,7 @@
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/lib/]]></string>
+								<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/lib/]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -90,7 +265,7 @@
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/lib/]]></string>
+								<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/lib/]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -121,7 +296,7 @@
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/lib/]]></string>
+								<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/lib/]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -152,7 +327,7 @@
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/lib/]]></string>
+								<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/lib/]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -183,7 +358,7 @@
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/lib/]]></string>
+								<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/lib/]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -214,7 +389,7 @@
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/lib/]]></string>
+								<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/lib/]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -245,7 +420,7 @@
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/lib/]]></string>
+								<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/lib/]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -276,7 +451,7 @@
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/plugins/]]></string>
+								<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/plugins/]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -307,7 +482,7 @@
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/lib/]]></string>
+								<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/lib/]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -338,7 +513,7 @@
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/lib/]]></string>
+								<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/lib/]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -369,7 +544,7 @@
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/plugins/]]></string>
+								<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/plugins/]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -400,7 +575,7 @@
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/lib/]]></string>
+								<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/lib/]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -431,7 +606,7 @@
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/plugins/]]></string>
+								<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/plugins/]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -440,7 +615,7 @@
 								<string><![CDATA[yLayouts.jar]]></string>
 							</property>
 							<property name="fileSize">
-								<long>870590</long>
+								<long>870545</long>
 							</property>
 							<property name="macBinary">
 								<boolean>false</boolean>
@@ -462,7 +637,7 @@
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/lib/]]></string>
+								<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/lib/]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -493,7 +668,7 @@
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/lib/]]></string>
+								<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/lib/]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -524,7 +699,7 @@
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/lib/]]></string>
+								<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/lib/]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -555,7 +730,7 @@
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/lib/]]></string>
+								<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/lib/]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -586,7 +761,7 @@
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/]]></string>
+								<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -595,7 +770,7 @@
 								<string><![CDATA[cytoscape.jar]]></string>
 							</property>
 							<property name="fileSize">
-								<long>3055496</long>
+								<long>3081261</long>
 							</property>
 							<property name="macBinary">
 								<boolean>false</boolean>
@@ -617,7 +792,7 @@
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/plugins/]]></string>
+								<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/plugins/]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -648,7 +823,7 @@
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/plugins/]]></string>
+								<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/plugins/]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -679,7 +854,7 @@
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/lib/]]></string>
+								<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/lib/]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -710,7 +885,7 @@
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/lib/]]></string>
+								<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/lib/]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -741,7 +916,7 @@
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/lib/]]></string>
+								<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/lib/]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -772,7 +947,7 @@
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/lib/]]></string>
+								<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/lib/]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -803,7 +978,7 @@
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/plugins/]]></string>
+								<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/plugins/]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -834,7 +1009,7 @@
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/lib/]]></string>
+								<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/lib/]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -865,7 +1040,7 @@
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/lib/]]></string>
+								<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/lib/]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -896,7 +1071,7 @@
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/lib/]]></string>
+								<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/lib/]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -927,7 +1102,7 @@
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/lib/]]></string>
+								<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/lib/]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -958,7 +1133,7 @@
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/lib/]]></string>
+								<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/lib/]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -989,7 +1164,7 @@
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/lib/]]></string>
+								<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/lib/]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -1020,7 +1195,7 @@
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/lib/]]></string>
+								<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/lib/]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -1051,7 +1226,7 @@
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/lib/]]></string>
+								<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/lib/]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -1082,7 +1257,7 @@
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/lib/]]></string>
+								<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/lib/]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -1113,7 +1288,7 @@
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/lib/]]></string>
+								<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/lib/]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -1144,7 +1319,7 @@
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/lib/]]></string>
+								<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/lib/]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -1175,7 +1350,7 @@
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/lib/]]></string>
+								<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/lib/]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -1206,7 +1381,7 @@
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/plugins/]]></string>
+								<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/plugins/]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -1237,7 +1412,7 @@
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/lib/]]></string>
+								<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/lib/]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -1268,7 +1443,7 @@
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/lib/]]></string>
+								<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/lib/]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -1299,7 +1474,7 @@
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/lib/]]></string>
+								<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/lib/]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -1330,7 +1505,7 @@
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/lib/]]></string>
+								<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/lib/]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -1361,7 +1536,7 @@
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/lib/]]></string>
+								<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/lib/]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -1905,7 +2080,7 @@ Press "Done" to quit the installer.]]></string>
 					</method>
 					<method name="put">
 						<string><![CDATA[com.zerog.ia.project.build.last.date]]></string>
-						<string><![CDATA[March 30, 2005 9:36:02 AM PST]]></string>
+						<string><![CDATA[April 14, 2005 2:29:19 PM PDT]]></string>
 					</method>
 					<method name="put">
 						<string><![CDATA[com.zerog.ia.build.platform.windows.vm]]></string>
@@ -1977,7 +2152,7 @@ Press "Done" to quit the installer.]]></string>
 					</method>
 					<method name="put">
 						<string><![CDATA[com.zerog.ia.project.save.last.date]]></string>
-						<string><![CDATA[March 30, 2005 9:36:56 AM PST]]></string>
+						<string><![CDATA[April 14, 2005 2:29:19 PM PDT]]></string>
 					</method>
 					<method name="put">
 						<string><![CDATA[com.zerog.ia.build.options.optimization.platform.cdrom]]></string>
@@ -2417,7 +2592,7 @@ This will remove features installed by InstallAnywhere.  It will not remove file
 												<boolean>false</boolean>
 											</property>
 											<property name="sourcePath">
-												<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/]]></string>
+												<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/]]></string>
 											</property>
 											<property name="shouldUninstall">
 												<boolean>true</boolean>
@@ -2685,7 +2860,7 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="sourcePath">
-												<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/]]></string>
+												<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/]]></string>
 											</property>
 											<property name="shouldUninstall">
 												<boolean>true</boolean>
@@ -2750,7 +2925,7 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="sourcePath">
-												<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/lib]]></string>
+												<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/lib]]></string>
 											</property>
 											<property name="shouldUninstall">
 												<boolean>true</boolean>
@@ -2822,7 +2997,7 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="sourcePath">
-												<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/plugins/]]></string>
+												<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/plugins/]]></string>
 											</property>
 											<property name="shouldUninstall">
 												<boolean>true</boolean>
@@ -2853,7 +3028,7 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="sourcePath">
-												<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/plugins]]></string>
+												<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/plugins]]></string>
 											</property>
 											<property name="shouldUninstall">
 												<boolean>true</boolean>
@@ -2892,7 +3067,7 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="sourcePath">
-												<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/]]></string>
+												<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/]]></string>
 											</property>
 											<property name="shouldUninstall">
 												<boolean>true</boolean>
@@ -2921,7 +3096,7 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="sourcePath">
-												<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/]]></string>
+												<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/]]></string>
 											</property>
 											<property name="shouldUninstall">
 												<boolean>true</boolean>
@@ -2950,7 +3125,7 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="sourcePath">
-												<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/]]></string>
+												<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/]]></string>
 											</property>
 											<property name="shouldUninstall">
 												<boolean>true</boolean>
@@ -2979,7 +3154,7 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="sourcePath">
-												<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/]]></string>
+												<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/]]></string>
 											</property>
 											<property name="shouldUninstall">
 												<boolean>true</boolean>
@@ -3009,7 +3184,7 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="sourcePath">
-												<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/]]></string>
+												<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/]]></string>
 											</property>
 											<property name="shouldUninstall">
 												<boolean>true</boolean>
@@ -3038,7 +3213,7 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="sourcePath">
-												<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/]]></string>
+												<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/]]></string>
 											</property>
 											<property name="shouldUninstall">
 												<boolean>true</boolean>
@@ -3220,19 +3395,6 @@ it will search for ones in this list]]></string>
 														</object>
 													</method>
 													<method name="addElement">
-														<object class="com.zerog.ia.installer.util.LAXPropertyData" objectID="078066bab97f">
-															<property name="propertyValue">
-																<string><![CDATA[cytoscape.CyMain]]></string>
-															</property>
-															<property name="propertyName">
-																<string><![CDATA[lax.main.class]]></string>
-															</property>
-															<property name="propertyComment">
-																<string><![CDATA[the class that contains the main method for the application]]></string>
-															</property>
-														</object>
-													</method>
-													<method name="addElement">
 														<object class="com.zerog.ia.installer.util.LAXPropertyData" objectID="fd88c1d0b99b">
 															<property name="propertyValue">
 																<string><![CDATA[64000000]]></string>
@@ -3242,6 +3404,19 @@ it will search for ones in this list]]></string>
 															</property>
 															<property name="propertyComment">
 																<string><![CDATA[initial heap size]]></string>
+															</property>
+														</object>
+													</method>
+													<method name="addElement">
+														<object class="com.zerog.ia.installer.util.LAXPropertyData" objectID="55fb8cbdb975">
+															<property name="propertyValue">
+																<string><![CDATA[cytoscape.CyMain]]></string>
+															</property>
+															<property name="propertyName">
+																<string><![CDATA[lax.main.class]]></string>
+															</property>
+															<property name="propertyComment">
+																<string><![CDATA[the class that contains the main method for the application]]></string>
 															</property>
 														</object>
 													</method>
@@ -3310,7 +3485,7 @@ and any path to a file to save to the file]]></string>
 												<string><![CDATA[]]></string>
 											</property>
 										</object>
-										<object class="com.zerog.ia.installer.actions.InstallDirectory" objectID="ea04904eb990">
+										<object class="com.zerog.ia.installer.actions.InstallDirectory" objectID="ea049025b97f">
 											<property name="unixPermissions">
 												<string><![CDATA[775]]></string>
 											</property>
@@ -3321,19 +3496,19 @@ and any path to a file to save to the file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="sourcePath">
-												<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/sampleData]]></string>
+												<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/annotation]]></string>
 											</property>
 											<property name="shouldUninstall">
 												<boolean>true</boolean>
 											</property>
 											<property name="destinationName">
-												<string><![CDATA[sampleData]]></string>
+												<string><![CDATA[annotation]]></string>
 											</property>
 											<property name="removeRecursively">
 												<boolean>false</boolean>
 											</property>
 											<property name="totalSize">
-												<long>1</long>
+												<long>1286837</long>
 											</property>
 											<property name="macBinary">
 												<boolean>false</boolean>
@@ -3350,7 +3525,7 @@ and any path to a file to save to the file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="sourcePath">
-												<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/licenses]]></string>
+												<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/licenses]]></string>
 											</property>
 											<property name="shouldUninstall">
 												<boolean>true</boolean>
@@ -3362,13 +3537,13 @@ and any path to a file to save to the file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="totalSize">
-												<long>1</long>
+												<long>17638</long>
 											</property>
 											<property name="macBinary">
 												<boolean>false</boolean>
 											</property>
 										</object>
-										<object class="com.zerog.ia.installer.actions.InstallDirectory" objectID="ea049025b97f">
+										<object class="com.zerog.ia.installer.actions.InstallDirectory" objectID="ea04904eb990">
 											<property name="unixPermissions">
 												<string><![CDATA[775]]></string>
 											</property>
@@ -3379,22 +3554,40 @@ and any path to a file to save to the file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="sourcePath">
-												<string><![CDATA[/cellar/users/anderson/CYTOSCAPE/Cyto-2.1-release/cytoscape-v2.1/annotation]]></string>
+												<string><![CDATA[/cellar/users/anderson/CVS/cytoscape/build/cytoscape-v2.1/sampleData]]></string>
 											</property>
 											<property name="shouldUninstall">
 												<boolean>true</boolean>
 											</property>
 											<property name="destinationName">
-												<string><![CDATA[annotation]]></string>
+												<string><![CDATA[sampleData]]></string>
 											</property>
 											<property name="removeRecursively">
 												<boolean>false</boolean>
 											</property>
 											<property name="totalSize">
-												<long>1</long>
+												<long>1363465</long>
 											</property>
 											<property name="macBinary">
 												<boolean>false</boolean>
+											</property>
+										</object>
+										<object refID="55fb905eb976"/>
+										<object class="com.zerog.ia.installer.actions.CreateShortcut" objectID="55fb9063b97a">
+											<property name="targetAction">
+												<object refID="55fb905eb976"/>
+											</property>
+											<property name="useInstalledFile">
+												<boolean>true</boolean>
+											</property>
+											<property name="workingDir">
+												<string><![CDATA[]]></string>
+											</property>
+											<property name="shouldUninstall">
+												<boolean>true</boolean>
+											</property>
+											<property name="args">
+												<string><![CDATA[]]></string>
 											</property>
 										</object>
 									</installChildren>
@@ -3521,6 +3714,7 @@ and any path to a file to save to the file]]></string>
 						<object refID="ea049055b994"/>
 						<object refID="ea049056b994"/>
 						<object refID="fd7923adb992"/>
+						<object refID="55fb905eb976"/>
 					</visualChildren>
 				</object>
 				<object class="com.zerog.ia.installer.GhostDirectory" objectID="e9d1c2d6b97f">
@@ -3535,6 +3729,7 @@ and any path to a file to save to the file]]></string>
 					</property>
 					<visualChildren>
 						<object refID="fd7923adb993"/>
+						<object refID="55fb9063b97a"/>
 					</visualChildren>
 				</object>
 				<object refID="07f14a8cb99b"/>
@@ -3546,8 +3741,8 @@ and any path to a file to save to the file]]></string>
 		</object>
 	</installationObjects>
 	<restorationObjects count="3">
-		<object refID="ea04904eb990"/>
-		<object refID="ea049040b98c"/>
 		<object refID="ea049025b97f"/>
+		<object refID="ea049040b98c"/>
+		<object refID="ea04904eb990"/>
 	</restorationObjects>
 </InstallAnywhere_Deployment_Project>
