@@ -4,7 +4,7 @@ import cytoscape.data.attr;
  * This interface contains the API specification for creating node
  * attribute definitions.
  */
-public interface CyNodeDataDef
+public interface CyNodeDataDefinition
 {
 
   /**
