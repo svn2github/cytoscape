@@ -2,40 +2,56 @@ package cytoscape.data.attr;
 
 import java.util.Enumeration;
 
+/**
+ * This interface consists of the API specification to bind attribute
+ * values to nodes.
+ */
 public interface CyNodeData
 {
 
   /**
    * @param nodeKey the node to which to bind a new attribute value.
-   * @param attrName the attribute definition in which to assign an
+   * @param attributeName the attribute definition in which to assign an
    *   attribute value.
-   * @param keyIntoValue an array of length N - 1 where N is the
-   *   dimensionality of attribute attrName; this set of objects is
-   *   a key that will uniquely define the attribute value for this node
-   *   in the specified attribute definition; the entry at index i in this
-   *   array must correspond to the type of dimension i + 1 of the attribute
-   *   definition (for example if attribuute attrName has two or more
-   *   dimensions and if the first dimension of attribute attrName
-   *   is of type
-   *   CyNodeDataDef.DIM_TYPE_INTEGER, then the element at index zero in this
-   *   array must be of type java.lang.Long); keyIntoValue may be null if
-   *   the dimenstionality of attribute attrName is one.
-   * @param attrValue the attribute value to bind;
+   * @param attributeValue the attribute value to bind;
    *   the type of this object must be of the appropriate type based on
-   *   the final dimension of the attribute definition.
+   *   the value type of specified attribute definition.
+   * @param keyIntoValue an array of length equal to the dimensionality of
+   *   the key space of specified attribute definition; entry at index i
+   *   is a "representative" from dimension i + 1 of the key space; if
+   *   specified attribute definition has a zero-dimensional key space (this
+   *   is perhaps the most common scenario) then
+   *   this array may either be null or the empty array.
    */
-  public void setAttributeValue(String nodeKey, String attrName,
-                                Object[] keyIntoValue, Object attrValue);
+  public void setNodeAttributeValue(String nodeKey, String attributeName,
+                                    Object attributeValue,
+                                    Object[] keyIntoValue);
 
   /**
-   * @param delete if true, also deletes this attribute value; otherwise
-   *   keeps this attribute value.
-   * @return the same value that was set with setAttributeValue() with
+   * @param nodeKey the node from which to retrieve a bound attribute
+   *   value.
+   * @param attributeName the attribute definition in which to assign an
+   *   attribute value.
+   * @param keyIntoValue an array of length equal to the dimensionality of
+   *   the key space of specified attribute definition; entry at index i
+   *   is a "representative" from dimension i + 1 of the key space; if
+   *   specified attribute definition has a zero-dimensional key space (this
+   *   is perhaps the most commen scenario) then this array may either
+   *   be null or the empty array.
+   * @return the same value that was set with setNodeAttributeValue() with
    *   parameters specified.
    */
-  public Object getAttributeValue(String nodeKey, String attrName,
-                                  Object[] keyIntoValue, boolean delete);
+  public Object getNodeAttributeValue(String nodeKey, String attributeName,
+                                      Object[] keyIntoValue);
 
+
+  /**
+   * This method is the same as getNodeAttributeValue(), only the retrieved
+   * attribute value is also deleted.
+   * @see #getNodeAttributeValue(String, String, Object[])
+   */
+  public Object removeNodeAttributeValue(String nodeKey, String attributeName,
+                                         Object[] keyIntoValue);
 
   /**
    * Returns the number of representatives in the dimension
