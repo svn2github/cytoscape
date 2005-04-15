@@ -37,23 +37,23 @@
 			The features discussed at the NYC retreat are being
 			developed and made available in two releases,
 			currently scheduled for early February 2005 and 
-			June 2005 availability.<P>
+			July 2005 availability.<P>
 			<CENTER><IMG SRC="roadmap/roadmap.gif"></IMG></CENTER>
-			<P>The <B>Cytoscape 2.1</B> release, slated for early
-			February 2005 availability, is a performance and
-			scalability
-			focused release, improving performance, usability, and
+			<P><B>Cytoscape 2.1</B>, released in 
+			February 2005, is a performance and scalability
+			focused release, improving usability, and
 			the capability of the system to handle large networks.
 			Several important new features are also included in 2.1.
+			For more information, see the 2.1 Release Notes.
 			<P><B>Cytoscape 2.2</B> is a functionality focused
 			release, implementing a majority of the new features
 			identified at the retreat. Performance improvements
 			are also planned.  Cytoscape 2.2 is expected to be
-			released in June 2005.
+			released in July 2005.
 			<H3>Project Plan</H2>
 			The Cytoscape Project Plan is regularly updated, 
 			and is available in PDF and GIF formats.
-			<P>The current Project Plan, last updated 28 Jan 2005,
+			<P>The current Project Plan, last updated 14 Apr 2005,
 			is available below:
 			<UL>
 			  <LI><A HREF="roadmap/ProjPlan.pdf">PDF</A>
