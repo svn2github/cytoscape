@@ -28,15 +28,18 @@ public interface CyNodeDataDef
   public final byte TYPE_STRING = 4;
 
   /**
-   * Creates a node attribute definition.  The most common type of attribute
-   * (or at least the type most of us are familiar with) is one where the
+   * Creates a node attribute definition.  An attribute definition must be
+   * created before binding an attribute value to a node.<p>
+   * Perhaps the most common type of attribute definition is one where the
    * key space has zero dimensions.  For example, if I want to identify each
-   * node as having a color, I would create an attribute namespace which
-   * stores values of TYPE_STRING, and has no key sequence mapping color
+   * node as having a color, I would create an attribute definition which
+   * stores values of TYPE_STRING (for storing "red", "blue", and so on),
+   * and has no key sequence mapping color
    * values.  By "no key sequence" I mean that the input parameters
    * keyTypes and keyNames would be either null or the empty array for my
-   * color attribute definition.  The more interesting case is where the key
-   * space for an attribute has one or more dimensions.  For example, if I
+   * color attribute definition.<p>
+   * The more interesting case is where the key space in an attribute
+   * definition has one or more dimensions.  For example, if I
    * wanted to create an attribute that represents measured p-values for
    * all nodes over a set of experiments ("Ideker experiment",
    * "Salk experiment", ...) I would define a one-dimensional key space
@@ -48,7 +51,8 @@ public interface CyNodeDataDef
    *   attribute definition.
    * @param valueType one of the TYPE_* constants defining what type of
    *   values are bound to nodes in this attribute definition.
-   * @param keyTypes defines the type of each dimension in the key space;
+   * @param keyTypes defines the type (TYPE_*) of each dimension in the key
+   *   space;
    *   the entry at index i defines the type of key space dimension i + 1;
    *   this parameter may either be null or the empty array if an attribute
    *   definition does not use a key space (this is perhaps the most common
