@@ -59,7 +59,9 @@ public class Semantics {
   public static final String PROTEIN = "protein";
   public static final String DNA = "DNA";
   public static final String RNA = "RNA";
-  
+  public static final String MOLECULAR_FUNCTION = "molecular_function";
+  public static final String BIOLOGICAL_PROCESS = "biological_process";
+  public static final String CELLULAR_COMPONENT = "cellular_component";
 
   /**
    * This method should be called in the process of creating a new network,
