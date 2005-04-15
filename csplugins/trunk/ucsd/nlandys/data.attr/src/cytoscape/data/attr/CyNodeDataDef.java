@@ -62,6 +62,8 @@ public interface CyNodeDataDef
    *   this parameter may either be null or the empty array if an attribute
    *   definition does not use a key space (this is perhaps the most common
    *   scenario).
+   * @exception IllegalStateException if attributeName is already the name
+   *   of an existing attribute definition.
    */
   public void defineNodeAttribute(String attributeName,
                                   byte valueType,
