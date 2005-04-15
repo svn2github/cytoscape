@@ -82,7 +82,7 @@ public interface CyNodeDataDefinition
    * @return the type (TYPE_*) of values bound to nodes by this attribute
    *   definition.
    */
-  public byte getNodeAttributeValueType();
+  public byte getNodeAttributeValueType(String attributeName);
 
   /**
    * @param attributeName the attribute definition whose key space
