@@ -20,6 +20,7 @@ public class FilterEditorPanel
   extends JPanel 
   implements PropertyChangeListener{
 
+  public FilterEditor nullEdit;
   public static String ACTIVE_PANEL_CHANGED = "Active Panel Changed";
   JPanel currentEditor;
   JPanel defaultPanel;
@@ -33,6 +34,7 @@ public class FilterEditorPanel
   public void initialize() {
     defaultPanel = new DefaultPanel(); 
     currentEditor = defaultPanel;
+    nullEdit = new NullFilterEditor();
     add(currentEditor);
   }
   
@@ -53,6 +55,9 @@ public class FilterEditorPanel
     if ( e.getPropertyName() == FilterListPanel.FILTER_SELECTED ) {
       Filter f = ((FilterListPanel)e.getSource()).getSelectedFilter();
       FilterEditor editor = FilterEditorManager.defaultManager().getEditorForFilter(f);
+      if ( editor == null ) {
+        editor = nullEdit;
+      } 
       editor.editFilter(f);
       setActivePanel(editor);
     }else if( e.getPropertyName() == FilterListPanel.NO_SELECTION ){
