@@ -54,22 +54,36 @@ public interface CyNodeData
                                          Object[] keyIntoValue);
 
   /**
-   * Returns the number of representatives in the dimension
-   * prefix.length + 1, based on the prefix.
+   * For all bound attribute values on nodeKey in the specified attribute
+   * definition, returns the number of representatives in the key space in
+   * dimension keyPrefix.length + 1, along specified prefix.
+   * @param nodeKey the node to query.
+   * @param attributeName the attribute definition to query.
+   * @param keyPrefix an array of length K where K is strictly less than N,
+   *    the dimensionality of key space of specified attribute definition;
+   *    entry at index i contains a "representative" from dimension i + 1 of
+   *    the key space of specified attribute definition; this parameter may
+   *    be either null or the empty array, in which case the count returned
+   *    is the number of representatives in the first dimension of
+   *    key space.
+   * @return the number of keys in key space dimension K + 1 along specified
+   *    keyPrefix.
    */
-  public int getAttributeSpanCount(String nodeKey, String attrName,
-                                   Object[] prefix);
+  public int getNodeAttributeKeyspanCount(String nodeKey, String attributeName,
+                                          Object[] keyPrefix);
 
   /**
-   * @param delete if true, all value entries with specified prefix are also
-   *   deleted from specified nodeKey.
-   * @return representatives, along specified prefix, of
-   * dimension prefix.length + 1.  The type of objects in the returned
-   * enumeration will all be of the type as specified by the
-   * dimension prefix.length + 1 of attribute attrName.
+   * This method is the same as getNodeAttributeKeyspanCount(), only
+   * the actual representatives are returned, and not their count.
+   * @see getNodeAttributeKeyspanCount(String, String, Object[])
    */
-  public Enumeration getAttributeSpan(String nodeKey, String attrName,
-                                      Object[] prefix, boolean delete);
+  public Enumeration getNodeAttributeKeyspan(String nodeKey,
+                                             String attributeName,
+                                             Object[] keyPrefix);
+
+  public Enumeration removeNodeAttributeKeyspan(String nodeKey,
+                                                String attributeName,
+                                                Object[] keyPrefix);
 
   public void addListener(CyNodeDataListener listener);
 
