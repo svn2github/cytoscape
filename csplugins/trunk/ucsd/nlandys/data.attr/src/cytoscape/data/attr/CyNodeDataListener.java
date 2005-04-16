@@ -8,7 +8,7 @@ public interface CyNodeDataListener
    */
   public void nodeAttributeValueAssigned(String nodeKey,
                                          String attributeName,
-                                         Object[] keuIntoValue,
+                                         Object[] keyIntoValue,
                                          Object attributeValue);
 
   /**
@@ -20,7 +20,7 @@ public interface CyNodeDataListener
                                         Object attributeValue);
 
   /**
-   * @param prefix don't modify this array!
+   * @param keyPrefix don't modify this array!
    */
   public void nodeAttributeKeyspanRemoved(String nodeKey,
                                           String attributeName,

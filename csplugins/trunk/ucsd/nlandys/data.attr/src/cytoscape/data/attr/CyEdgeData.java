@@ -75,7 +75,7 @@ public interface CyEdgeData
   /**
    * This method is the same as getEdgeAttributeKeyspanCount(), only
    * the actual representatives are returned, and not their count.
-   * @see getEdgeAttributeKeyspanCount(String, String, Object[])
+   * @see #getEdgeAttributeKeyspanCount(String, String, Object[])
    */
   public Enumeration getEdgeAttributeKeyspan(String edgeKey,
                                              String attributeName,

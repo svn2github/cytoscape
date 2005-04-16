@@ -75,7 +75,7 @@ public interface CyNodeData
   /**
    * This method is the same as getNodeAttributeKeyspanCount(), only
    * the actual representatives are returned, and not their count.
-   * @see getNodeAttributeKeyspanCount(String, String, Object[])
+   * @see #getNodeAttributeKeyspanCount(String, String, Object[])
    */
   public Enumeration getNodeAttributeKeyspan(String nodeKey,
                                              String attributeName,

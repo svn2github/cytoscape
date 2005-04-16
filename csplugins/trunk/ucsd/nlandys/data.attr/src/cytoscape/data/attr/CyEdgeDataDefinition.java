@@ -112,7 +112,7 @@ public interface CyEdgeDataDefinition
                                            byte[] keyTypes, String[] keyNames);
 
   /**
-   * WARNING!  All bound attribute values on edges will go away in this
+   * WARNING: All bound attribute values on edges will go away in this
    * attribute namespace when this method is called.
    * @param attributeName the attribute definition to undefine.
    */

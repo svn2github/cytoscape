@@ -8,7 +8,7 @@ public interface CyEdgeDataListener
    */
   public void edgeAttributeValueAssigned(String edgeKey,
                                          String attributeName,
-                                         Object[] keuIntoValue,
+                                         Object[] keyIntoValue,
                                          Object attributeValue);
 
   /**
@@ -20,7 +20,7 @@ public interface CyEdgeDataListener
                                         Object attributeValue);
 
   /**
-   * @param prefix don't modify this array!
+   * @param keyPrefix don't modify this array!
    */
   public void edgeAttributeKeyspanRemoved(String edgeKey,
                                           String attributeName,

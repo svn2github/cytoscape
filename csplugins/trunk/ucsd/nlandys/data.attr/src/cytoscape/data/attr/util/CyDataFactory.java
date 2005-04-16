@@ -9,10 +9,10 @@ public final class CyDataFactory
   /**
    * The return object is an implementation of the following interfaces:
    * <blockquote>
-   * - cytoscape.data.attr.CyNodeDataDefinition
-   * - cytoscape.data.attr.CyNodeData
-   * - cytoscape.data.attr.CyEdgeDataDefinition
-   * - cytoscape.data.attr.CyEdgeData
+   * cytoscape.data.attr.CyNodeDataDefinition<br />
+   * cytoscape.data.attr.CyNodeData<br />
+   * cytoscape.data.attr.CyEdgeDataDefinition<br />
+   * cytoscape.data.attr.CyEdgeData<br />
    * </blockquote>
    * You will need to cast the return value to one of these to access the
    * corresponding functionality.
