@@ -1,4 +1,4 @@
-package cytoscape.attr.data;
+package cytoscape.data.attr;
 
 public interface CyEdgeDataListener
 {
