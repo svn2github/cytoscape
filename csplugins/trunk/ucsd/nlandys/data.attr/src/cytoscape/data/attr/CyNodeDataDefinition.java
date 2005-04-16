@@ -1,4 +1,6 @@
-import cytoscape.data.attr;
+package cytoscape.data.attr;
+
+import java.util.Enumeration;
 
 /**
  * This interface contains the API specification for creating node
