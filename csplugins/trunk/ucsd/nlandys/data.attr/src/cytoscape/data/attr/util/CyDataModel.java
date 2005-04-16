@@ -1,5 +1,16 @@
 package cytoscape.data.attr.util;
 
+import cytoscape.data.attr.CyEdgeData;
+import cytoscape.data.attr.CyEdgeDataDefinition;
+import cytoscape.data.attr.CyEdgeDataDefinitionListener;
+import cytoscape.data.attr.CyEdgeDataListener;
+import cytoscape.data.attr.CyNodeData;
+import cytoscape.data.attr.CyNodeDataDefinition;
+import cytoscape.data.attr.CyNodeDataDefinitionListener;
+import cytoscape.data.attr.CyNodeDataListener;
+
+import java.util.Enumeration;
+
 final class CyDataModel
   implements CyNodeDataDefinition, CyNodeData, CyEdgeDataDefinition, CyEdgeData
 {
@@ -13,6 +24,11 @@ final class CyDataModel
                                   byte[] keyTypes,
                                   String[] keyNames)
   {
+  }
+
+  public Enumeration getDefinedNodeAttributes()
+  {
+    return null;
   }
 
   public byte getNodeAttributeValueType(String attributeName)
@@ -56,6 +72,12 @@ final class CyDataModel
     return null;
   }
 
+  public Object removeNodeAttributeValue(String nodeKey, String attributeName,
+                                         Object[] keyIntoValue)
+  {
+    return null;
+  }
+
   public int getNodeAttributeKeyspanCount(String nodeKey, String attributeName,
                                           Object[] keyPrefix)
   {
@@ -89,6 +111,11 @@ final class CyDataModel
                                   byte[] keyTypes,
                                   String[] keyNames)
   {
+  }
+
+  public Enumeration getDefinedEdgeAttributes()
+  {
+    return null;
   }
 
   public byte getEdgeAttributeValueType(String attributeName)
@@ -128,6 +155,12 @@ final class CyDataModel
 
   public Object getEdgeAttributeValue(String edgeKey, String attributeName,
                                       Object[] keyIntoValue)
+  {
+    return null;
+  }
+
+  public Object removeEdgeAttributeValue(String edgeKey, String attributeName,
+                                         Object[] keyIntoValue)
   {
     return null;
   }
