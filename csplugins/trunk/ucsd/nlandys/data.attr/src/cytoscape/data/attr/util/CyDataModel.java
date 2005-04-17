@@ -149,6 +149,7 @@ final class CyDataModel
 
   public void undefineNodeAttribute(String attributeName)
   {
+    m_nodeAttrMap.remove(attributeName);
   }
 
   public void addNodeDataDefinitionListener(
