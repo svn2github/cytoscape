@@ -128,15 +128,17 @@ final class CyDataModel
     return data.valueType;
   }
 
-  public int getNodeAttributeKeyspaceDimensionality(String attributeName)
+  public final int getNodeAttributeKeyspaceDimensionality(
+                                                    final String attributeName)
   {
     final AttrDefData data = (AttrDefData) m_nodeAttrMap.get(attributeName);
     if (data == null) return -1;
     return data.keyTypes.length;
   }
 
-  public void copyNodeAttributeKeyspaceInfo(String attributeName,
-                                            byte[] keyTypes, String[] keyNames)
+  public final void copyNodeAttributeKeyspaceInfo(final String attributeName,
+                                                  final byte[] keyTypes,
+                                                  final String[] keyNames)
   {
     final AttrDefData data = (AttrDefData) m_nodeAttrMap.get(attributeName);
     if (data == null) throw new IllegalStateException
