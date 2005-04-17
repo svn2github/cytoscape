@@ -113,24 +113,36 @@ final class CyDataModel
     m_nodeAttrMap.put(attributeName, def);
   }
 
-  public Enumeration getDefinedNodeAttributes()
+  public final Enumeration getDefinedNodeAttributes()
   {
-    return null;
+    final java.util.Iterator keys = m_nodeAttrMap.keySet().iterator();
+    return new Enumeration() {
+        public final boolean hasMoreElements() { return keys.hasNext(); }
+        public final Object nextElement() { return keys.next(); } };
   }
 
-  public byte getNodeAttributeValueType(String attributeName)
+  public final byte getNodeAttributeValueType(final String attributeName)
   {
-    return -1;
+    final AttrDefData data = m_nodeAttrMap.get(attributeName);
+    if (data == null) return -1;
+    return data.valueType;
   }
 
   public int getNodeAttributeKeyspaceDimensionality(String attributeName)
   {
-    return -1;
+    final AttrDefData data = m_nodeAttrMap.get(attributeName);
+    if (data == null) return -1;
+    return data.keyTypes.length;
   }
 
-  public void getNodeAttributeKeyspaceInfo(String attributeName,
-                                           byte[] keyTypes, String[] keyNames)
+  public void copyNodeAttributeKeyspaceInfo(String attributeName,
+                                            byte[] keyTypes, String[] keyNames)
   {
+    final AttrDefData data = m_nodeAttrMap.get(attributeName);
+    if (data == null) throw new IllegalStateException
+                        ("no attributeName '" + attributeName + "' exists");
+    System.arraycopy(data.keyTypes, 0, keyTypes, 0, data.keyTypes.length);
+    System.arraycopy(data.keyNames, 0, keyNames, 0, data.keyNames.length);
   }
 
   public void undefineNodeAttribute(String attributeName)
@@ -215,8 +227,8 @@ final class CyDataModel
     return -1;
   }
 
-  public void getEdgeAttributeKeyspaceInfo(String attributeName,
-                                           byte[] keyTypes, String[] keyNames)
+  public void copyEdgeAttributeKeyspaceInfo(String attributeName,
+                                            byte[] keyTypes, String[] keyNames)
   {
   }
 

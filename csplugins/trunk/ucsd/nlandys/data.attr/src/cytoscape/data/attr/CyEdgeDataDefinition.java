@@ -82,7 +82,8 @@ public interface CyEdgeDataDefinition
 
   /**
    * @return the type (TYPE_*) of values bound to edges by this attribute
-   *   definition.
+   *   definition, or -1 if specified attribute definition does not exist;
+   *   note that all of the TYPE_* constants are positive.
    */
   public byte getEdgeAttributeValueType(String attributeName);
 
@@ -90,7 +91,7 @@ public interface CyEdgeDataDefinition
    * @param attributeName the attribute definition whose key space
    *   dimensionality we are querying.
    * @return the number of dimensions in the specified attribute's key
-   *   space.
+   *   space, or -1 if specified attribute definition does not exist.
    */
   public int getEdgeAttributeKeyspaceDimensionality(String attributeName);
 
@@ -107,9 +108,12 @@ public interface CyEdgeDataDefinition
    *   must be at least the dimensionality of the key space of specified
    *   attribute definition, and the key space dimension names are written
    *   into this array starting at index zero of this array.
+   * @exception IllegalStateException if no edge attribute definition called
+   *   attributeName exists.
    */
-  public void getEdgeAttributeKeyspaceInfo(String attributeName,
-                                           byte[] keyTypes, String[] keyNames);
+  public void copyEdgeAttributeKeyspaceInfo(String attributeName,
+                                            byte[] keyTypes,
+                                            String[] keyNames);
 
   /**
    * WARNING: All bound attribute values on edges will go away in this
