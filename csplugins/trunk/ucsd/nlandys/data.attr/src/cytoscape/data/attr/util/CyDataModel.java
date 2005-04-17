@@ -22,8 +22,8 @@ final class CyDataModel
     private final Byte valueType;
     private final byte[] keyTypes;
     private final String[] keyNames;
-    AttrDefData(HashMap objMap, Byte valueType,
-                byte[] keyTypes, String[] keyNames)
+    private AttrDefData(HashMap objMap, Byte valueType,
+                        byte[] keyTypes, String[] keyNames)
     {
       this.objMap = objMap;
       this.valueType = valueType;
@@ -32,14 +32,55 @@ final class CyDataModel
     }
   }
 
+  private final static class NodeAttrDefLisChain
+    implements CyNodeDataDefinitionListener
+  {
+    // Use only the static methods from outside this inner class.
+    private final CyNodeDataDefinitionListener a, b;
+    private NodeAttrDefLisChain(CyNodeDataDefinitionListener a,
+                                CyNodeDataDefinitionListener b) {
+      this.a = a;
+      this.b = b; }
+    public final void nodeAttributeDefined(final String attributeName) {
+      a.nodeAttributeDefined(attributeName);
+      b.nodeAttributeDefined(attributeName); }
+    public final void nodeAttributeUndefined(final String attributeName) {
+      a.nodeAttributeUndefined(attributeName);
+      b.nodeAttributeUndefined(attributeName); }
+    private final static CyNodeDataDefinitionListener add(
+                                              CyNodeDataDefinitionListener a,
+                                              CyNodeDataDefinitionListener b) {
+      if (a == null) return b;
+      if (b == null) return a;
+      return new NodeAttrDefLisChain(a, b); }
+    private final static CyNodeDataDefinitionListener remove(
+                                           CyNodeDataDefinitionListener l,
+                                           CyNodeDataDefinitionListener oldl) {
+      if (l == oldl || l == null) return null;
+      else if (l instanceof NodeAttrDefLisChain)
+        return ((NodeAttrDefLisChain) l).remove(oldl);
+      else return l; }
+    private final CyNodeDataDefinitionListener remove(
+                                           CyNodeDataDefinitionListener oldl) {
+      if (oldl == a) return b;
+      if (oldl == b) return a;
+      CyNodeDataDefinitionListener a2 = remove(a, oldl);
+      CyNodeDataDefinitionListener b2 = remove(b, oldl);
+      if (a2 == a && b2 == b) return this;
+      return add(a2, b2); }
+  }
+
   // Keys are attributeName, values are AttrDefData.
   private final HashMap m_nodeAttrMap;
   private final HashMap m_edgeAttrMap;
+
+  private CyNodeDataDefinitionListener m_nodeDataDefListener;
 
   CyDataModel()
   {
     m_nodeAttrMap = new HashMap();
     m_edgeAttrMap = new HashMap();
+    m_nodeDataDefListener = null;
   }
 
   public final void defineNodeAttribute(final String attributeName,
@@ -111,6 +152,10 @@ final class CyDataModel
     final AttrDefData def = new AttrDefData(new HashMap(), valueType,
                                             keyTypesCopy, keyNamesCopy);
     m_nodeAttrMap.put(attributeName, def);
+
+    // Call listeners.  Make sure this is done after we actaully create def.
+    final CyNodeDataDefinitionListener l = m_nodeDataDefListener;
+    if (l != null) l.nodeAttributeDefined(attributeName);
   }
 
   public final Enumeration getDefinedNodeAttributes()
@@ -149,17 +194,24 @@ final class CyDataModel
 
   public void undefineNodeAttribute(String attributeName)
   {
-    m_nodeAttrMap.remove(attributeName);
+    Object o = m_nodeAttrMap.remove(attributeName);
+    if (o != null) { // attributeName was in fact deleted.
+      final CyNodeDataDefinitionListener l = m_nodeDataDefListener;
+      if (l != null) l.nodeAttributeUndefined(attributeName); }
   }
 
   public void addNodeDataDefinitionListener(
                                          CyNodeDataDefinitionListener listener)
   {
+    m_nodeDataDefListener = NodeAttrDefLisChain.add(m_nodeDataDefListener,
+                                                    listener);
   }
 
   public void removeNodeDataDefinitionListener(
                                          CyNodeDataDefinitionListener listener)
   {
+    m_nodeDataDefListener = NodeAttrDefLisChain.remove(m_nodeDataDefListener,
+                                                       listener);
   }
 
   public void setNodeAttributeValue(String nodeKey, String attributeName,
