@@ -123,14 +123,14 @@ final class CyDataModel
 
   public final byte getNodeAttributeValueType(final String attributeName)
   {
-    final AttrDefData data = m_nodeAttrMap.get(attributeName);
+    final AttrDefData data = (AttrDefData) m_nodeAttrMap.get(attributeName);
     if (data == null) return -1;
     return data.valueType;
   }
 
   public int getNodeAttributeKeyspaceDimensionality(String attributeName)
   {
-    final AttrDefData data = m_nodeAttrMap.get(attributeName);
+    final AttrDefData data = (AttrDefData) m_nodeAttrMap.get(attributeName);
     if (data == null) return -1;
     return data.keyTypes.length;
   }
@@ -138,7 +138,7 @@ final class CyDataModel
   public void copyNodeAttributeKeyspaceInfo(String attributeName,
                                             byte[] keyTypes, String[] keyNames)
   {
-    final AttrDefData data = m_nodeAttrMap.get(attributeName);
+    final AttrDefData data = (AttrDefData) m_nodeAttrMap.get(attributeName);
     if (data == null) throw new IllegalStateException
                         ("no attributeName '" + attributeName + "' exists");
     System.arraycopy(data.keyTypes, 0, keyTypes, 0, data.keyTypes.length);
