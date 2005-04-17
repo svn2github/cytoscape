@@ -16,25 +16,30 @@ final class CyDataModel
   implements CyNodeDataDefinition, CyNodeData, CyEdgeDataDefinition, CyEdgeData
 {
 
-  // Keys are attributeName, values are java.util.HashMap whose keys are
-  // nodeKey.
-  private final HashMap m_attrMap;
+  private final static class AttrDefData
+  {
+    private final HashMap objMap;
+    private final Byte valueType;
+    private final byte[] keyTypes;
+    private final String[] keyNames;
+    AttrDefData(HashMap objMap, Byte valueType,
+                byte[] keyTypes, String[] keyNames)
+    {
+      this.objMap = objMap;
+      this.valueType = valueType;
+      this.keyTypes = keyTypes;
+      this.keyNames = keyNames;
+    }
+  }
 
-  // Keys are attributeName, values are java.lang.Byte.
-  private final HashMap m_attrValueTypeMap;
-
-  // Keys are attributeName, values are byte[].
-  private final HashMap m_attrKeyTypesMap;
-
-  // Keys are attributeName, values are java.lang.String[].
-  private final HashMap m_attrKeyNamesMap;
+  // Keys are attributeName, values are AttrDefData.
+  private final HashMap m_nodeAttrMap;
+  private final HashMap m_edgeAttrMap;
 
   CyDataModel()
   {
-    m_attrMap = new HashMap();
-    m_attrValueTypeMap = new HashMap();
-    m_attrKeyTypesMap = new HashMap();
-    m_attrKeyNamesMap = new HashMap();
+    m_nodeAttrMap = new HashMap();
+    m_edgeAttrMap = new HashMap();
   }
 
   public final void defineNodeAttribute(final String attributeName,
@@ -46,7 +51,7 @@ final class CyDataModel
     // constraints on the length or the contents of attributeName.
     if (attributeName == null)
       throw new NullPointerException("attributeName is null");
-    if (m_attrMap.containsKey(attributeName))
+    if (m_nodeAttrMap.containsKey(attributeName))
       throw new IllegalStateException
         ("attributeName '" + attributeName + "' already exists");
 
@@ -101,6 +106,11 @@ final class CyDataModel
       if (tempHash.put(keyNamesCopy[i], keyNamesCopy[i]) != null)
         throw new IllegalArgumentException
           ("duplicate in keyNames at index " + i); }
+
+    // Finally, create the definition.
+    final AttrDefData def = new AttrDefData(new HashMap(), valueType,
+                                            keyTypesCopy, keyNamesCopy);
+    m_nodeAttrMap.put(attributeName, def);
   }
 
   public Enumeration getDefinedNodeAttributes()
