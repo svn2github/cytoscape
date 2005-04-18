@@ -18,11 +18,11 @@ final class CyDataModel
 
   private final static class AttrDefData
   {
-    private final HashMap objMap;
-    private final Byte valueType;
+    private final HashMap objMap; // Keys are nodeKey.
+    private final byte valueType;
     private final byte[] keyTypes;
     private final String[] keyNames;
-    private AttrDefData(HashMap objMap, Byte valueType,
+    private AttrDefData(HashMap objMap, byte valueType,
                         byte[] keyTypes, String[] keyNames)
     {
       this.objMap = objMap;
@@ -168,31 +168,31 @@ final class CyDataModel
 
   public final byte getNodeAttributeValueType(final String attributeName)
   {
-    final AttrDefData data = (AttrDefData) m_nodeAttrMap.get(attributeName);
-    if (data == null) return -1;
-    return data.valueType;
+    final AttrDefData def = (AttrDefData) m_nodeAttrMap.get(attributeName);
+    if (def == null) return -1;
+    return def.valueType;
   }
 
   public final int getNodeAttributeKeyspaceDimensionality(
                                                     final String attributeName)
   {
-    final AttrDefData data = (AttrDefData) m_nodeAttrMap.get(attributeName);
-    if (data == null) return -1;
-    return data.keyTypes.length;
+    final AttrDefData def = (AttrDefData) m_nodeAttrMap.get(attributeName);
+    if (def == null) return -1;
+    return def.keyTypes.length;
   }
 
   public final void copyNodeAttributeKeyspaceInfo(final String attributeName,
                                                   final byte[] keyTypes,
                                                   final String[] keyNames)
   {
-    final AttrDefData data = (AttrDefData) m_nodeAttrMap.get(attributeName);
-    if (data == null) throw new IllegalStateException
+    final AttrDefData def = (AttrDefData) m_nodeAttrMap.get(attributeName);
+    if (def == null) throw new IllegalStateException
                         ("no attributeName '" + attributeName + "' exists");
-    System.arraycopy(data.keyTypes, 0, keyTypes, 0, data.keyTypes.length);
-    System.arraycopy(data.keyNames, 0, keyNames, 0, data.keyNames.length);
+    System.arraycopy(def.keyTypes, 0, keyTypes, 0, def.keyTypes.length);
+    System.arraycopy(def.keyNames, 0, keyNames, 0, def.keyNames.length);
   }
 
-  public void undefineNodeAttribute(String attributeName)
+  public final void undefineNodeAttribute(final String attributeName)
   {
     Object o = m_nodeAttrMap.remove(attributeName);
     if (o != null) { // attributeName was in fact deleted.
@@ -200,24 +200,72 @@ final class CyDataModel
       if (l != null) l.nodeAttributeUndefined(attributeName); }
   }
 
-  public void addNodeDataDefinitionListener(
-                                         CyNodeDataDefinitionListener listener)
+  public final void addNodeDataDefinitionListener(
+                                   final CyNodeDataDefinitionListener listener)
   {
     m_nodeDataDefListener = NodeAttrDefLisChain.add(m_nodeDataDefListener,
                                                     listener);
   }
 
-  public void removeNodeDataDefinitionListener(
-                                         CyNodeDataDefinitionListener listener)
+  public final void removeNodeDataDefinitionListener(
+                                   final CyNodeDataDefinitionListener listener)
   {
     m_nodeDataDefListener = NodeAttrDefLisChain.remove(m_nodeDataDefListener,
                                                        listener);
   }
 
-  public void setNodeAttributeValue(String nodeKey, String attributeName,
-                                    Object attributeValue,
-                                    Object[] keyIntoValue)
+  public final void setNodeAttributeValue(final String nodeKey,
+                                          final String attributeName,
+                                          final Object attributeValue,
+                                          final Object[] keyIntoValue)
   {
+    // Pull out the definition, error-checking attributeName in the process.
+    final AttrDefData def = (AttrDefData) m_nodeAttrMap.get(attributeName);
+    if (def == null) throw new IllegalStateException
+                       ("no attributeName '" + attributeName + "' exists");
+
+    // Error-check nodeKey.  Right now there are no constraints on the length
+    // or the contents of nodeKey.  In the future, consider having
+    // a "registry" of all nodeKeys and permitting only assignment to those
+    // nodeKeys.
+    if (nodeKey == null) throw new NullPointerException("nodeKey is null");
+
+    // Error-check attributeValue.  Note that the instanceof operation always
+    // returns false for null values, and does not throw an exception.
+    if (attributeValue == null)
+      throw new NullPointerException("cannot set null attributeValue - " +
+                                     "use removeNodeAttributeValue() instead");
+    boolean passed = false;
+    switch (def.valueType)
+    { // I'm wondering what the most efficient way of doing this is.
+      case CyNodeDataDefinition.TYPE_BOOLEAN:
+        passed = (attributeValue instanceof java.lang.Boolean); break;
+      case CyNodeDataDefinition.TYPE_FLOATING_POINT:
+        passed = (attributeValue instanceof java.lang.Double); break;
+      case CyNodeDataDefinition.TYPE_INTEGER:
+        passed = (attributeValue instanceof java.lang.Long); break;
+      case CyNodeDataDefinition.TYPE_STRING:
+        passed = (attributeValue instanceof java.lang.String); break;
+    }
+    if (!passed) { // Go the extra effort to return an informational error.
+      String className = null;
+      switch (def.valueType)
+      { // Repeat same switch logic here for efficiency in non-error case.
+        case CyNodeDataDefinition.TYPE_BOOLEAN:
+          className = "java.lang.Boolean"; break;
+        case CyNodeDataDefinition.TYPE_FLOATING_POINT:
+          className = "java.lang.Double"; break;
+        case CyNodeDataDefinition.TYPE_INTEGER:
+          className = "java.lang.Long"; break;
+        case CyNodeDataDefinition.TYPE_STRING:
+          className = "java.lang.String"; break;
+      }
+      throw new ClassCastException
+        ("attributeValue must be of type " + className +
+         " in node attributeName '" + attributeName + "' definition"); }
+
+    // Error-check keyIntoValue.
+    
   }
 
   public Object getNodeAttributeValue(String nodeKey, String attributeName,
