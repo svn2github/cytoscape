@@ -264,9 +264,51 @@ final class CyDataModel
         ("attributeValue must be of type " + className +
          " in node attributeName '" + attributeName + "' definition"); }
 
-    // Error-check keyIntoValue.
+    // Error-check keyIntoValue.  Note that even after we check this, a crafty
+    // programmer could mutate the array from a different thread, causing
+    // data corruption in our model.  For the sake of simplicity and
+    // efficiency, we're going to assume that this will not happen.
+    if (def.keyTypes.length == 0) {
+      if (keyIntoValue != null || keyIntoValue.length != 0) {
+        throw new IllegalArgumentException
+          ("node attributeName '" + attributeName + "' has no keyspace" +
+           " defined, yet keyIntoValue is not empty"); } }
+    else { // Keyspace is not empty.
+      if (def.keyTypes.length != keyIntoValue.length) { // May trigger NullPtr.
+        throw new IllegalArgumentException
+          ("keyIntoValue has incorrect dimensionality"); }
+      // Dimensionality matches.
+      for (int i = 0; i < keyIntoValue.length; i++) {
+        // Right now, key representatives cannot be null - that is the only
+        // constraint.  This may or may not make sense; imagine a String key
+        // representative being "".
+        if (keyIntoValue[i] == null)
+          throw new NullPointerException("keyIntoValue[" + i + "] is null");
+        boolean passed = false;
+        switch (def.keyTypes[i])
+        {
+          case CyNodeDataDefinition.TYPE_BOOLEAN:
+            passed = (keyIntoValue[i] instanceof java.lang.Boolean); break;
+          case CyNodeDataDefinition.TYPE_FLOATING_POINT:
+            passed = (keyIntoValue[i] instanceof java.lang.Double); break;
+          case CyNodeDataDefinition.TYPE_INTEGER:
+            passed = (keyIntoValue[i] instanceof java.lang.Long); break;
+          case CyNodeDataDefinition.TYPE_STRING:
+            passed = (keyIntoValue[i] instanceof java.lang.String); break;
+        }
+        if (!passed) {
+          throw new ClassCastException
+            ("keyIntoValue[" + i + "] is of incorrect object type"); } } }
+
     
   }
+
+  // Recursive helper method.
+  private final void r_setNodeAttributeValue(final HashMap hash,
+                                             final Object attributeValue,
+                                             final Object[] keyIntoValue,
+                                             final int arrOffset)
+  {
 
   public Object getNodeAttributeValue(String nodeKey, String attributeName,
                                       Object[] keyIntoValue)
