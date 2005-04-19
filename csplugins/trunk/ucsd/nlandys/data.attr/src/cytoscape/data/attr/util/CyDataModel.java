@@ -125,6 +125,90 @@ final class CyDataModel
       return add(a2, b2); }
   }
 
+  private final static class EdgeAttrDefLisChain
+    implements CyEdgeDataDefinitionListener
+  {
+    // Use only the static methods from outside this inner class.
+    private final CyEdgeDataDefinitionListener a, b;
+    private EdgeAttrDefLisChain(final CyEdgeDataDefinitionListener a,
+                                final CyEdgeDataDefinitionListener b) {
+      this.a = a;
+      this.b = b; }
+    public final void edgeAttributeDefined(final String attributeName) {
+      a.edgeAttributeDefined(attributeName);
+      b.edgeAttributeDefined(attributeName); }
+    public final void edgeAttributeUndefined(final String attributeName) {
+      a.edgeAttributeUndefined(attributeName);
+      b.edgeAttributeUndefined(attributeName); }
+    private final static CyEdgeDataDefinitionListener add(
+                                        final CyEdgeDataDefinitionListener a,
+                                        final CyEdgeDataDefinitionListener b) {
+      if (a == null) return b;
+      if (b == null) return a;
+      return new EdgeAttrDefLisChain(a, b); }
+    private final static CyEdgeDataDefinitionListener remove(
+                                     final CyEdgeDataDefinitionListener l,
+                                     final CyEdgeDataDefinitionListener oldl) {
+      if (l == oldl || l == null) return null;
+      else if (l instanceof EdgeAttrDefLisChain)
+        return ((EdgeAttrDefLisChain) l).remove(oldl);
+      else return l; }
+    private final CyEdgeDataDefinitionListener remove(
+                                     final CyEdgeDataDefinitionListener oldl) {
+      if (oldl == a) return b;
+      if (oldl == b) return a;
+      final CyEdgeDataDefinitionListener a2 = remove(a, oldl);
+      final CyEdgeDataDefinitionListener b2 = remove(b, oldl);
+      if (a2 == a && b2 == b) return this;
+      return add(a2, b2); }
+  }
+
+  private final static class EdgeAttrLisChain implements CyEdgeDataListener
+  {
+    // Use only the static methods from outside this inner class.
+    private final CyEdgeDataListener a, b;
+    private EdgeAttrLisChain(final CyEdgeDataListener a,
+                             final CyEdgeDataListener b) {
+      this.a = a;
+      this.b = b; }
+    public final void edgeAttributeValueAssigned(final String edgeKey,
+                                                 final String attributeName,
+                                                 final Object[] keyIntoValue,
+                                                 final Object oldAttrVal,
+                                                 final Object newAttrVal) {
+      a.edgeAttributeValueAssigned(edgeKey, attributeName, keyIntoValue,
+                                   oldAttrVal, newAttrVal);
+      b.edgeAttributeValueAssigned(edgeKey, attributeName, keyIntoValue,
+                                   oldAttrVal, newAttrVal); }
+    public final void edgeAttributeValueRemoved(final String edgeKey,
+                                                final String attributeName,
+                                                final Object[] keyIntoValue,
+                                                final Object attributeValue) {
+      a.edgeAttributeValueRemoved(edgeKey, attributeName, keyIntoValue,
+                                  attributeValue);
+      b.edgeAttributeValueRemoved(edgeKey, attributeName, keyIntoValue,
+                                  attributeValue); }
+    private final static CyEdgeDataListener add(final CyEdgeDataListener a,
+                                                final CyEdgeDataListener b) {
+      if (a == null) return b;
+      if (b == null) return a;
+      return new EdgeAttrLisChain(a, b); }
+    private final static CyEdgeDataListener remove(
+                                               final CyEdgeDataListener l,
+                                               final CyEdgeDataListener oldl) {
+      if (l == oldl || l == null) return null;
+      else if (l instanceof EdgeAttrLisChain)
+        return ((EdgeAttrLisChain) l).remove(oldl);
+      else return l; }
+    private final CyEdgeDataListener remove(final CyEdgeDataListener oldl) {
+      if (oldl == a) return b;
+      if (oldl == b) return a;
+      final CyEdgeDataListener a2 = remove(a, oldl);
+      final CyEdgeDataListener b2 = remove(b, oldl);
+      if (a2 == a && b2 == b) return this;
+      return add(a2, b2); }
+  }
+
   private final static Enumeration s_the_empty_enumeration =
     new Enumeration() {
       public final boolean hasMoreElements() { return false; }
