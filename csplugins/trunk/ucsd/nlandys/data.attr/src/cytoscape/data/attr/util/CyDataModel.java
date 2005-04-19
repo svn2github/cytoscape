@@ -37,8 +37,8 @@ final class CyDataModel
   {
     // Use only the static methods from outside this inner class.
     private final CyNodeDataDefinitionListener a, b;
-    private NodeAttrDefLisChain(CyNodeDataDefinitionListener a,
-                                CyNodeDataDefinitionListener b) {
+    private NodeAttrDefLisChain(final CyNodeDataDefinitionListener a,
+                                final CyNodeDataDefinitionListener b) {
       this.a = a;
       this.b = b; }
     public final void nodeAttributeDefined(final String attributeName) {
@@ -48,24 +48,74 @@ final class CyDataModel
       a.nodeAttributeUndefined(attributeName);
       b.nodeAttributeUndefined(attributeName); }
     private final static CyNodeDataDefinitionListener add(
-                                              CyNodeDataDefinitionListener a,
-                                              CyNodeDataDefinitionListener b) {
+                                        final CyNodeDataDefinitionListener a,
+                                        final CyNodeDataDefinitionListener b) {
       if (a == null) return b;
       if (b == null) return a;
       return new NodeAttrDefLisChain(a, b); }
     private final static CyNodeDataDefinitionListener remove(
-                                           CyNodeDataDefinitionListener l,
-                                           CyNodeDataDefinitionListener oldl) {
+                                     final CyNodeDataDefinitionListener l,
+                                     final CyNodeDataDefinitionListener oldl) {
       if (l == oldl || l == null) return null;
       else if (l instanceof NodeAttrDefLisChain)
         return ((NodeAttrDefLisChain) l).remove(oldl);
       else return l; }
     private final CyNodeDataDefinitionListener remove(
-                                           CyNodeDataDefinitionListener oldl) {
+                                     final CyNodeDataDefinitionListener oldl) {
       if (oldl == a) return b;
       if (oldl == b) return a;
-      CyNodeDataDefinitionListener a2 = remove(a, oldl);
-      CyNodeDataDefinitionListener b2 = remove(b, oldl);
+      final CyNodeDataDefinitionListener a2 = remove(a, oldl);
+      final CyNodeDataDefinitionListener b2 = remove(b, oldl);
+      if (a2 == a && b2 == b) return this;
+      return add(a2, b2); }
+  }
+
+  private final static class NodeAttrLisChain implements CyNodeDataListener
+  {
+    // Use only the static methods from outside this inner class.
+    private final CyNodeDataListener a, b;
+    private NodeAttrLisChain(final CyNodeDataListener a,
+                             final CyNodeDataListener b) {
+      this.a = a;
+      this.b = b; }
+    public final void nodeAttributeValueAssigned(final String nodeKey,
+                                                 final String attributeName,
+                                                 final Object[] keyIntoValue,
+                                                 final Object attributeValue) {
+      a.nodeAttributeValueAssigned(nodeKey, attributeName, keyIntoValue,
+                                   attributeValue);
+      b.nodeAttributeValueAssigned(nodeKey, attributeName, keyIntoValue,
+                                   attributeValue); }
+    public final void nodeAttributeValueRemoved(final String nodeKey,
+                                                final String attributeName,
+                                                final Object[] keyIntoValue,
+                                                final Object attributeValue) {
+      a.nodeAttributeValueRemoved(nodeKey, attributeName, keyIntoValue,
+                                  attributeValue);
+      b.nodeAttributeValueRemoved(nodeKey, attributeName, keyIntoValue,
+                                  attributeValue); }
+    public final void nodeAttributeKeyspanRemoved(final String nodeKey,
+                                                  final String attributeName,
+                                                  final Object[] keyPrefix) {
+      a.nodeAttributeKeyspanRemoved(nodeKey, attributeName, keyPrefix);
+      b.nodeAttributeKeyspanRemoved(nodeKey, attributeName, keyPrefix); }
+    private final static CyNodeDataListener add(final CyNodeDataListener a,
+                                                final CyNodeDataListener b) {
+      if (a == null) return b;
+      if (b == null) return a;
+      return new NodeAttrLisChain(a, b); }
+    private final static CyNodeDataListener remove(
+                                               final CyNodeDataListener l,
+                                               final CyNodeDataListener oldl) {
+      if (l == oldl || l == null) return null;
+      else if (l instanceof NodeAttrLisChain)
+        return ((NodeAttrLisChain) l).remove(oldl);
+      else return l; }
+    private final CyNodeDataListener remove(final CyNodeDataListener oldl) {
+      if (oldl == a) return b;
+      if (oldl == b) return a;
+      final CyNodeDataListener a2 = remove(a, oldl);
+      final CyNodeDataListener b2 = remove(b, oldl);
       if (a2 == a && b2 == b) return this;
       return add(a2, b2); }
   }
@@ -75,12 +125,14 @@ final class CyDataModel
   private final HashMap m_edgeAttrMap;
 
   private CyNodeDataDefinitionListener m_nodeDataDefListener;
+  private CyNodeDataListener m_nodeDataListener;
 
   CyDataModel()
   {
     m_nodeAttrMap = new HashMap();
     m_edgeAttrMap = new HashMap();
     m_nodeDataDefListener = null;
+    m_nodeDataListener = null;
   }
 
   public final void defineNodeAttribute(final String attributeName,
@@ -284,7 +336,7 @@ final class CyDataModel
         // representative being "".
         if (keyIntoValue[i] == null)
           throw new NullPointerException("keyIntoValue[" + i + "] is null");
-        boolean passed = false;
+        passed = false;
         switch (def.keyTypes[i])
         {
           case CyNodeDataDefinition.TYPE_BOOLEAN:
@@ -309,6 +361,7 @@ final class CyDataModel
                                              final Object[] keyIntoValue,
                                              final int arrOffset)
   {
+  }
 
   public Object getNodeAttributeValue(String nodeKey, String attributeName,
                                       Object[] keyIntoValue)
