@@ -435,7 +435,7 @@ final class CyDataModel
                                                final byte[] keyTypes,
                                                final int currOffset)
   {
-    // Error check type of object keyIntoValue[currOffset].
+    // Error-check type of object keyIntoValue[currOffset].
     final Object currKey = keyIntoValue[currOffset];
     if (currKey == null)
       throw new NullPointerException("keyIntoValue[" + currOffset + "] null");
@@ -451,7 +451,7 @@ final class CyDataModel
         passed = (currKey instanceof java.lang.String); break; }
     if (!passed)
       throw new ClassCastException
-        ("keyIntoValue[" + currKey + "] is of incorrect object type");
+        ("keyIntoValue[" + currOffset + "] is of incorrect object type");
 
     // Retrieve the value.
     if (currOffset == keyIntoValue.length - 1) { // The final dimension.
@@ -463,8 +463,9 @@ final class CyDataModel
                                      currOffset + 1); }
   }
 
-  public Object removeNodeAttributeValue(String nodeKey, String attributeName,
-                                         Object[] keyIntoValue)
+  public final Object removeNodeAttributeValue(final String nodeKey,
+                                               final String attributeName,
+                                               final Object[] keyIntoValue)
   {
     // Pull out the definition, error-checking attributeName in the process.
     final AttrDefData def = (AttrDefData) m_nodeAttrMap.get(attributeName);
@@ -543,10 +544,70 @@ final class CyDataModel
       return returnThis; }
   }
 
-  public int getNodeAttributeKeyspanCount(String nodeKey, String attributeName,
-                                          Object[] keyPrefix)
+  public final int getNodeAttributeKeyspanCount(final String nodeKey,
+                                                final String attributeName,
+                                                final Object[] keyPrefix)
   {
-    return -1;
+    // Pull out the definition, error-checking attributeName in the process.
+    final AttrDefData def = (AttrDefData) m_nodeAttrMap.get(attributeName);
+    if (def == null) throw new IllegalStateException
+                       ("no attributeName '" + attributeName + "' exists");
+
+    // Error-check nodeKey.
+    if (nodeKey == null) throw new NullPointerException("nodeKey is null");
+
+    // Error-check keyPrefix.  Leave the type checks to the recursion.
+    if (def.keyTypes.length == 0) {
+      throw new IllegalStateException
+        ("node attributeName '" + attributeName + "' has no keyspace, so" +
+         " calling this method makes no sense"); }
+    if (keyPrefix != null && keyPrefix.length >= def.keyTypes.length)
+      throw new IllegalArgumentException
+        ("the length of keyPrefix must be strictly less than the" +
+         " dimensionality of keyspace");
+
+    if (keyPrefix == null || keyPrefix.length == 0) { // Don't even recurse.
+      final HashMap dim = (HashMap) def.objMap.get(nodeKey);
+      if (dim == null) return 0;
+      return dim.size(); }
+    else { // Recurse.
+      final HashMap dim = (HashMap) def.objMap.get(nodeKey);
+      if (dim == null) return 0;
+      return r_getNodeAttributeKeyspanCount(dim, keyPrefix, def.keyTypes, 0); }
+  }
+
+  private final int r_getNodeAttributeKeyspanCount(final HashMap hash,
+                                                   final Object[] keyPrefix,
+                                                   final byte[] keyTypes,
+                                                   final int currOffset)
+  {
+    // Error-check type of object keyPrefix[currOffset].
+    final Object currKey = keyPrefix[currOffset];
+    if (currKey == null)
+      throw new NullPointerException("keyPrefix[" + currOffset + "] is null");
+    boolean passed = false;
+    switch (keyTypes[currOffset]) {
+      case CyNodeDataDefinition.TYPE_BOOLEAN:
+        passed = (currKey instanceof java.lang.Boolean); break;
+      case CyNodeDataDefinition.TYPE_FLOATING_POINT:
+        passed = (currKey instanceof java.lang.Double); break;
+      case CyNodeDataDefinition.TYPE_INTEGER:
+        passed = (currKey instanceof java.lang.Long); break;
+      case CyNodeDataDefinition.TYPE_STRING:
+        passed = (currKey instanceof java.lang.String); break; }
+    if (!passed)
+      throw new ClassCastException
+        ("keyPrefix[" + currOffset + "] is of incorrect object type");
+
+    if (currOffset == keyPrefix.length - 1) { // The dimension.
+      final HashMap dim = (HashMap) hash.get(keyPrefix[currOffset]);
+      if (dim == null) return 0;
+      return dim.size(); }
+    else { // Recurse.
+      final HashMap dim = (HashMap) hash.get(keyPrefix[currOffset]);
+      if (dim == null) return 0;
+      return r_getNodeAttributeKeyspanCount(dim, keyPrefix, keyTypes,
+                                            currOffset + 1); }
   }
 
   public Enumeration getNodeAttributeKeyspan(String nodeKey,
