@@ -493,8 +493,9 @@ final class CyDataModel
     if (attributeName == null)
       throw new NullPointerException("attributeName is null");
     final AttrDefData def = (AttrDefData) m_nodeAttrMap.get(attributeName);
-    if (def == null) throw new IllegalStateException
-                       ("no attributeName '" + attributeName + "' exists");
+    if (def == null)
+      throw new IllegalStateException
+        ("no node attributeName '" + attributeName + "' exists");
 
     // Error-check nodeKey.
     if (nodeKey == null) throw new NullPointerException("nodeKey is null");
@@ -552,7 +553,7 @@ final class CyDataModel
         passed = (currKey instanceof java.lang.String); break; }
     if (!passed)
       throw new ClassCastException
-        ("keyIntoValue[" + currKey + "] is of incorrect object type");
+        ("keyIntoValue[" + currOffset + "] is of incorrect object type");
 
     // Retrieve the value.
     if (currOffset == keyIntoValue.length - 1) { // The final dimension.
@@ -563,8 +564,7 @@ final class CyDataModel
       final HashMap dim = (HashMap) o;
       final Object returnThis =
         r_getNodeAttributeValue(dim, keyIntoValue, keyTypes, currOffset + 1);
-      if (dim.size() == 0) { // We could only test this if returnThis != null.
-        hash.remove(currKey); }
+      if (dim.size() == 0) hash.remove(currKey);
       return returnThis; }
   }
 
@@ -576,8 +576,9 @@ final class CyDataModel
     if (attributeName == null)
       throw new NullPointerException("attributeName is null");
     final AttrDefData def = (AttrDefData) m_nodeAttrMap.get(attributeName);
-    if (def == null) throw new IllegalStateException
-                       ("no attributeName '" + attributeName + "' exists");
+    if (def == null)
+      throw new IllegalStateException
+        ("no node attributeName '" + attributeName + "' exists");
 
     // Error-check nodeKey.
     if (nodeKey == null) throw new NullPointerException("nodeKey is null");
@@ -644,8 +645,9 @@ final class CyDataModel
     if (attributeName == null)
       throw new NullPointerException("attributeName is null");
     final AttrDefData def = (AttrDefData) m_nodeAttrMap.get(attributeName);
-    if (def == null) throw new IllegalStateException
-                       ("no attributeName '" + attributeName + "' exists");
+    if (def == null)
+      throw new IllegalStateException
+        ("no node attributeName '" + attributeName + "' exists");
 
     // Error-check nodeKey.
     if (nodeKey == null) throw new NullPointerException("nodeKey is null");
@@ -663,10 +665,7 @@ final class CyDataModel
     if (keyPrefix == null || keyPrefix.length == 0) { // Don't even recurse.
       final HashMap dim = (HashMap) def.objMap.get(nodeKey);
       if (dim == null) return s_the_empty_enumeration;
-      final java.util.Iterator iter = dim.keySet().iterator();
-      return new Enumeration() {
-          public final boolean hasMoreElements() { return iter.hasNext(); }
-          public final Object nextElement() { return iter.next(); } }; }
+      return new Iterator2Enumeration(dim.keySet().iterator()); }
     else { // Recurse.
       final HashMap dim = (HashMap) def.objMap.get(nodeKey);
       if (dim == null) return s_the_empty_enumeration;
@@ -699,10 +698,7 @@ final class CyDataModel
     if (currOffset == keyPrefix.length - 1) { // The dimension.
       final HashMap dim = (HashMap) hash.get(currKey);
       if (dim == null) return s_the_empty_enumeration;
-      final java.util.Iterator iter = dim.keySet().iterator();
-      return new Enumeration() {
-          public final boolean hasMoreElements() { return iter.hasNext(); }
-          public final Object nextElement() { return iter.next(); } }; }
+      return new Iterator2Enumeration(dim.keySet().iterator()); }
     else { // Recurse further.
       final HashMap dim = (HashMap) hash.get(currKey);
       if (dim == null) return s_the_empty_enumeration;
