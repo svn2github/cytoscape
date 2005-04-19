@@ -804,85 +804,574 @@ final class CyDataModel
     m_nodeDataListener = NodeAttrLisChain.remove(m_nodeDataListener, listener);
   }
 
-  public void defineEdgeAttribute(String attributeName,
-                                  byte valueType,
-                                  byte[] keyTypes,
-                                  String[] keyNames)
+  public final void defineEdgeAttribute(final String attributeName,
+                                        final byte valueType,
+                                        final byte[] keyTypes,
+                                        final String[] keyNames)
   {
+    // Error-check attributeName.  Unfortunately there are currently no
+    // constraints on the length or the contents of attributeName.
+    if (attributeName == null)
+      throw new NullPointerException("attributeName is null");
+    if (m_edgeAttrMap.containsKey(attributeName))
+      throw new IllegalStateException
+        ("edge attributeName '" + attributeName + "' already exists");
+
+    // Error-check valueType.
+    switch (valueType)
+    {
+      case CyEdgeDataDefinition.TYPE_BOOLEAN:
+      case CyEdgeDataDefinition.TYPE_FLOATING_POINT:
+      case CyEdgeDataDefinition.TYPE_INTEGER:
+      case CyEdgeDataDefinition.TYPE_STRING:
+        break;
+      default:
+        throw new IllegalArgumentException("valueType is unrecognized");
+    }
+
+    // Make sure keyTypes and keyNames are the same length.
+    final int keyTypesLength = (keyTypes == null ? 0 : keyTypes.length);
+    final int keyNamesLength = (keyNames == null ? 0 : keyNames.length);
+    if (keyTypesLength != keyNamesLength)
+      throw new IllegalArgumentException
+        ("lengths of keyTypes and keyNames arrays don't match");
+
+    // Make copies of keyTypes and keyNames.
+    final byte[] keyTypesCopy = new byte[keyTypesLength];
+    if (keyTypes != null)
+      System.arraycopy(keyTypes, 0, keyTypesCopy, 0, keyTypesLength);
+    final String[] keyNamesCopy = new String[keyNamesLength];
+    if (keyNames != null)
+      System.arraycopy(keyNames, 0, keyNamesCopy, 0, keyNamesLength);
+
+    // Error-check keyTypesCopy.
+    for (int i = 0; i < keyTypesCopy.length; i++)
+      switch (keyTypesCopy[i])
+      {
+        case CyEdgeDataDefinition.TYPE_BOOLEAN:
+        case CyEdgeDataDefinition.TYPE_FLOATING_POINT:
+        case CyEdgeDataDefinition.TYPE_INTEGER:
+        case CyEdgeDataDefinition.TYPE_STRING:
+          break;
+        default:
+          throw new IllegalArgumentException
+            ("keyTypes[" + i + "] is unrecognized");
+      }
+
+    // Error-check keyNamesCopy.  Make sure that all are names are distinct.
+    // Unfortunately there are currently no contraints on the length and
+    // content of the key names.
+    final HashMap tempHash = new HashMap();
+    for (int i = 0; i < keyNamesCopy.length; i++) {
+      if (keyNamesCopy[i] == null)
+        throw new NullPointerException("keyNames[" + i + "] is null");
+      if (tempHash.put(keyNamesCopy[i], keyNamesCopy[i]) != null)
+        throw new IllegalArgumentException
+          ("duplicate name keyNames[" + i + "]"); }
+
+    // Finally, create the definition.
+    final AttrDefData def = new AttrDefData(new HashMap(), valueType,
+                                            keyTypesCopy, keyNamesCopy);
+    m_edgeAttrMap.put(attributeName, def);
+
+    // Call listeners.  Make sure this is done after we actaully create def.
+    final CyEdgeDataDefinitionListener l = m_edgeDataDefListener;
+    if (l != null) l.edgeAttributeDefined(attributeName);
   }
 
-  public Enumeration getDefinedEdgeAttributes()
+  public final Enumeration getDefinedEdgeAttributes()
   {
-    return null;
+    return new Iterator2Enumeration(m_edgeAttrMap.keySet().iterator());
   }
 
-  public byte getEdgeAttributeValueType(String attributeName)
+  public final byte getEdgeAttributeValueType(final String attributeName)
   {
-    return -1;
+    if (attributeName == null)
+      throw new NullPointerException("attributeName is null");
+    final AttrDefData def = (AttrDefData) m_edgeAttrMap.get(attributeName);
+    if (def == null) return -1;
+    return def.valueType;
   }
 
-  public int getEdgeAttributeKeyspaceDimensionality(String attributeName)
+  public final int getEdgeAttributeKeyspaceDimensionality(
+                                                    final String attributeName)
   {
-    return -1;
+    if (attributeName == null)
+      throw new NullPointerException("attributeName is null");
+    final AttrDefData def = (AttrDefData) m_edgeAttrMap.get(attributeName);
+    if (def == null) return -1;
+    return def.keyTypes.length;
   }
 
-  public void copyEdgeAttributeKeyspaceInfo(String attributeName,
-                                            byte[] keyTypes, String[] keyNames)
+  public final void copyEdgeAttributeKeyspaceInfo(final String attributeName,
+                                                  final byte[] keyTypes,
+                                                  final String[] keyNames)
   {
+    if (attributeName == null)
+      throw new NullPointerException("attributeName is null");
+    final AttrDefData def = (AttrDefData) m_edgeAttrMap.get(attributeName);
+    if (def == null)
+      throw new IllegalStateException
+        ("no edge attributeName '" + attributeName + "' exists");
+    System.arraycopy(def.keyTypes, 0, keyTypes, 0, def.keyTypes.length);
+    System.arraycopy(def.keyNames, 0, keyNames, 0, def.keyNames.length);
   }
 
-  public void undefineEdgeAttribute(String attributeName)
+  public final void undefineEdgeAttribute(final String attributeName)
   {
+    if (attributeName == null)
+      throw new NullPointerException("attributeName is null");
+    final Object o = m_edgeAttrMap.remove(attributeName);
+    if (o != null) { // attributeName was in fact deleted.
+      final CyEdgeDataDefinitionListener l = m_edgeDataDefListener;
+      if (l != null) l.edgeAttributeUndefined(attributeName); }
   }
 
-  public void addEdgeDataDefinitionListener(
-                                         CyEdgeDataDefinitionListener listener)
+  public final void addEdgeDataDefinitionListener(
+                                   final CyEdgeDataDefinitionListener listener)
   {
+    m_edgeDataDefListener = EdgeAttrDefLisChain.add(m_edgeDataDefListener,
+                                                    listener);
   }
 
-  public void removeEdgeDataDefinitionListener(
-                                         CyEdgeDataDefinitionListener listener)
+  public final void removeEdgeDataDefinitionListener(
+                                   final CyEdgeDataDefinitionListener listener)
   {
+    m_edgeDataDefListener = EdgeAttrDefLisChain.remove(m_edgeDataDefListener,
+                                                       listener);
   }
 
-  public Object setEdgeAttributeValue(String edgeKey, String attributeName,
-                                      Object attributeValue,
-                                      Object[] keyIntoValue)
+  public final Object setEdgeAttributeValue(final String edgeKey,
+                                            final String attributeName,
+                                            final Object attributeValue,
+                                            final Object[] keyIntoValue)
   {
-    return null;
+    // Pull out the definition, error-checking attributeName in the process.
+    if (attributeName == null)
+      throw new NullPointerException("attributeName is null");
+    final AttrDefData def = (AttrDefData) m_edgeAttrMap.get(attributeName);
+    if (def == null)
+      throw new IllegalStateException
+        ("no edge attributeName '" + attributeName + "' exists");
+
+    // Error-check edgeKey.  Right now there are no constraints on the length
+    // or the contents of edgeKey.  In the future, consider having
+    // a "registry" of all edgeKeys and permitting only assignment to those
+    // edgeKeys.
+    if (edgeKey == null) throw new NullPointerException("edgeKey is null");
+
+    // Error-check attributeValue.  Note that the instanceof operation always
+    // returns false for null values, and does not throw an exception.
+    if (attributeValue == null)
+      throw new NullPointerException("cannot set null attributeValue - " +
+                                     "use removeEdgeAttributeValue() instead");
+    boolean passed = false;
+    switch (def.valueType)
+    { // I'm wondering what the most efficient way of doing this is.
+      case CyEdgeDataDefinition.TYPE_BOOLEAN:
+        passed = (attributeValue instanceof java.lang.Boolean); break;
+      case CyEdgeDataDefinition.TYPE_FLOATING_POINT:
+        passed = (attributeValue instanceof java.lang.Double); break;
+      case CyEdgeDataDefinition.TYPE_INTEGER:
+        passed = (attributeValue instanceof java.lang.Long); break;
+      case CyEdgeDataDefinition.TYPE_STRING:
+        passed = (attributeValue instanceof java.lang.String); break;
+    }
+    if (!passed) { // Go the extra effort to return an informational error.
+      String className = null;
+      switch (def.valueType)
+      { // Repeat same switch logic here for efficiency in non-error case.
+        case CyEdgeDataDefinition.TYPE_BOOLEAN:
+          className = "java.lang.Boolean"; break;
+        case CyEdgeDataDefinition.TYPE_FLOATING_POINT:
+          className = "java.lang.Double"; break;
+        case CyEdgeDataDefinition.TYPE_INTEGER:
+          className = "java.lang.Long"; break;
+        case CyEdgeDataDefinition.TYPE_STRING:
+          className = "java.lang.String"; break;
+      }
+      throw new ClassCastException
+        ("attributeValue must be of type " + className +
+         " in edge attributeName '" + attributeName + "' definition"); }
+
+    // Error-check keyIntoValue.  Leave the type checks to the recursion.
+    if (def.keyTypes.length == 0) {
+      if (keyIntoValue != null || keyIntoValue.length != 0) {
+        throw new IllegalArgumentException
+          ("edge attributeName '" + attributeName + "' has no keyspace" +
+           " defined, yet keyIntoValue is not empty"); } }
+    else { // Keyspace is not empty.
+      if (def.keyTypes.length != keyIntoValue.length) { // May trigger NullPtr.
+        throw new IllegalArgumentException
+          ("keyIntoValue has incorrect dimensionality"); } }
+
+    final CyEdgeDataListener listener = m_edgeDataListener;
+    if (def.keyTypes.length == 0) { // Don't even recurse.
+      final Object returnThis = def.objMap.put(edgeKey, attributeValue);
+      if (listener != null)
+        listener.edgeAttributeValueAssigned(edgeKey, attributeName, null,
+                                            returnThis, attributeValue);
+      return returnThis; }
+    else { // Recurse.
+      final Object o = def.objMap.get(edgeKey);
+      final HashMap firstDim;
+      if (o == null) firstDim = new HashMap();
+      else firstDim = (HashMap) o;
+      final Object returnThis =
+        r_setEdgeAttributeValue(firstDim, attributeValue, keyIntoValue,
+                                def.keyTypes, 0);
+      // If firstDim is a new HashMap add it to the definition after the
+      // recursion completes so that if an exception is thrown, we can avoid
+      // cleanup.
+      if (o == null) def.objMap.put(edgeKey, firstDim);
+      if (listener != null)
+        listener.edgeAttributeValueAssigned
+          (edgeKey, attributeName, keyIntoValue, returnThis, attributeValue);
+      return returnThis; }
   }
 
-  public Object getEdgeAttributeValue(String edgeKey, String attributeName,
-                                      Object[] keyIntoValue)
+  // Recursive helper method.
+  private final Object r_setEdgeAttributeValue(final HashMap hash,
+                                               final Object attributeValue,
+                                               final Object[] keyIntoValue,
+                                               final byte[] keyTypes,
+                                               final int currOffset)
   {
-    return null;
+    // Error check type of object keyIntoValue[currOffset].
+    final Object currKey = keyIntoValue[currOffset];
+    // Right now, key representatives cannot be null - that is the only
+    // constraint.  This may or may not make sense; imagine a String key
+    // representative being "".
+    if (currKey == null)
+      throw new NullPointerException("keyIntoValue[" + currOffset + "] null");
+    boolean passed = false;
+    switch (keyTypes[currOffset]) {
+      case CyEdgeDataDefinition.TYPE_BOOLEAN:
+        passed = (currKey instanceof java.lang.Boolean); break;
+      case CyEdgeDataDefinition.TYPE_FLOATING_POINT:
+        passed = (currKey instanceof java.lang.Double); break;
+      case CyEdgeDataDefinition.TYPE_INTEGER:
+        passed = (currKey instanceof java.lang.Long); break;
+      case CyEdgeDataDefinition.TYPE_STRING:
+        passed = (currKey instanceof java.lang.String); break; }
+    if (!passed)
+      throw new ClassCastException
+        ("keyIntoValue[" + currOffset + "] is of incorrect object type");
+
+    // Put something in.
+    if (currOffset == keyIntoValue.length - 1) { // The final dimension.
+      return hash.put(currKey, attributeValue); }
+    else { // Must recurse further.
+      final Object o = hash.get(currKey);
+      final HashMap dim;
+      if (o == null) dim = new HashMap();
+      else dim = (HashMap) o;
+      final Object returnThis =
+        r_setEdgeAttributeValue(dim, attributeValue, keyIntoValue, keyTypes,
+                                currOffset + 1);
+      // Put new HashMap in after recursive call to prevent the need for
+      // cleanup in case exception is thrown.
+      if (o == null) hash.put(currKey, dim);
+      return returnThis; }
   }
 
-  public Object removeEdgeAttributeValue(String edgeKey, String attributeName,
-                                         Object[] keyIntoValue)
+  public final Object getEdgeAttributeValue(final String edgeKey,
+                                            final String attributeName,
+                                            final Object[] keyIntoValue)
   {
-    return null;
+    // Pull out the definition, error-checking attributeName in the process.
+    if (attributeName == null)
+      throw new NullPointerException("attributeName is null");
+    final AttrDefData def = (AttrDefData) m_edgeAttrMap.get(attributeName);
+    if (def == null)
+      throw new IllegalStateException
+        ("no edge attributeName '" + attributeName + "' exists");
+
+    // Error-check edgeKey.
+    if (edgeKey == null) throw new NullPointerException("edgeKey is null");
+
+    // Error-check keyIntoValue.  Leave the type checks to the recursion.
+    if (def.keyTypes.length == 0) {
+      if (keyIntoValue != null || keyIntoValue.length != 0) {
+        throw new IllegalArgumentException
+          ("edge attributeName '" + attributeName + "' has no keyspace" +
+           " defined, yet keyIntoValue is not empty"); } }
+    else { // Keyspace is not empty.
+      if (def.keyTypes.length != keyIntoValue.length) { // May trigger NullPtr.
+        throw new IllegalArgumentException
+          ("keyIntoValue has incorrect dimensionality"); } }
+
+    if (def.keyTypes.length == 0) { // Don't even recurse.
+      return def.objMap.get(edgeKey); }
+    else { // Recurse.
+      final Object o = def.objMap.get(edgeKey);
+      if (o == null) return null;
+      return r_getEdgeAttributeValue((HashMap) o, keyIntoValue,
+                                     def.keyTypes, 0); }
   }
 
-  public int getEdgeAttributeKeyspanCount(String edgeKey, String attributeName,
-                                          Object[] keyPrefix)
+  private final Object r_getEdgeAttributeValue(final HashMap hash,
+                                               final Object[] keyIntoValue,
+                                               final byte[] keyTypes,
+                                               final int currOffset)
   {
-    return -1;
+    // Error-check type of object keyIntoValue[currOffset].
+    final Object currKey = keyIntoValue[currOffset];
+    if (currKey == null)
+      throw new NullPointerException("keyIntoValue[" + currOffset + "] null");
+    boolean passed = false;
+    switch (keyTypes[currOffset]) {
+      case CyEdgeDataDefinition.TYPE_BOOLEAN:
+        passed = (currKey instanceof java.lang.Boolean); break;
+      case CyEdgeDataDefinition.TYPE_FLOATING_POINT:
+        passed = (currKey instanceof java.lang.Double); break;
+      case CyEdgeDataDefinition.TYPE_INTEGER:
+        passed = (currKey instanceof java.lang.Long); break;
+      case CyEdgeDataDefinition.TYPE_STRING:
+        passed = (currKey instanceof java.lang.String); break; }
+    if (!passed)
+      throw new ClassCastException
+        ("keyIntoValue[" + currOffset + "] is of incorrect object type");
+
+    // Retrieve the value.
+    if (currOffset == keyIntoValue.length - 1) { // The final dimension.
+      return hash.get(currKey); }
+    else { // Must recurse further.
+      final Object o = hash.get(currKey);
+      if (o == null) return null;
+      return r_getEdgeAttributeValue((HashMap) o, keyIntoValue, keyTypes,
+                                     currOffset + 1); }
   }
 
-  public Enumeration getEdgeAttributeKeyspan(String edgeKey,
-                                             String attributeName,
-                                             Object[] keyPrefix)
+  public final Object removeEdgeAttributeValue(final String edgeKey,
+                                               final String attributeName,
+                                               final Object[] keyIntoValue)
   {
-    return null;
+    // Pull out the definition, error-checking attributeName in the process.
+    if (attributeName == null)
+      throw new NullPointerException("attributeName is null");
+    final AttrDefData def = (AttrDefData) m_edgeAttrMap.get(attributeName);
+    if (def == null)
+      throw new IllegalStateException
+        ("no edge attributeName '" + attributeName + "' exists");
+
+    // Error-check edgeKey.
+    if (edgeKey == null) throw new NullPointerException("edgeKey is null");
+
+    // Error-check keyIntoValue.  Leave the type checks to the recursion.
+    if (def.keyTypes.length == 0) {
+      if (keyIntoValue != null || keyIntoValue.length != 0) {
+        throw new IllegalArgumentException
+          ("edge attributeName '" + attributeName + "' has no keyspace" +
+           " defined, yet keyIntoValue is not empty"); } }
+    else { // Keyspace is not empty.
+      if (def.keyTypes.length != keyIntoValue.length) { // May trigger NullPtr.
+        throw new IllegalArgumentException
+          ("keyIntoValue has incorrect dimensionality"); } }
+
+    final CyEdgeDataListener listener = m_edgeDataListener;
+    if (def.keyTypes.length == 0) { // Don't even recurse.
+      final Object returnThis = def.objMap.remove(edgeKey);
+      if (listener != null && returnThis != null)
+        listener.edgeAttributeValueRemoved
+          (edgeKey, attributeName, null, returnThis);
+      return returnThis; }
+    else { // Recurse.
+      final Object o = def.objMap.get(edgeKey);
+      if (o == null) return null;
+      final HashMap dim = (HashMap) o;
+      final Object returnThis =
+        r_getEdgeAttributeValue(dim, keyIntoValue, def.keyTypes, 0);
+      if (returnThis != null) {
+        if (dim.size() == 0) def.objMap.remove(edgeKey);
+        if (listener != null)
+          listener.edgeAttributeValueRemoved
+            (edgeKey, attributeName, keyIntoValue, returnThis); }
+      return returnThis; }
   }
 
-  public void addEdgeDataListener(CyEdgeDataListener listener)
+  private final Object r_removeEdgeAttributeValue(final HashMap hash,
+                                                  final Object[] keyIntoValue,
+                                                  final byte[] keyTypes,
+                                                  final int currOffset)
   {
+    // Error check type of object keyIntoValue[currOffset].
+    final Object currKey = keyIntoValue[currOffset];
+    if (currKey == null)
+      throw new NullPointerException("keyIntoValue[" + currOffset + "] null");
+    boolean passed = false;
+    switch (keyTypes[currOffset]) {
+      case CyEdgeDataDefinition.TYPE_BOOLEAN:
+        passed = (currKey instanceof java.lang.Boolean); break;
+      case CyEdgeDataDefinition.TYPE_FLOATING_POINT:
+        passed = (currKey instanceof java.lang.Double); break;
+      case CyEdgeDataDefinition.TYPE_INTEGER:
+        passed = (currKey instanceof java.lang.Long); break;
+      case CyEdgeDataDefinition.TYPE_STRING:
+        passed = (currKey instanceof java.lang.String); break; }
+    if (!passed)
+      throw new ClassCastException
+        ("keyIntoValue[" + currOffset + "] is of incorrect object type");
+
+    // Retrieve the value.
+    if (currOffset == keyIntoValue.length - 1) { // The final dimension.
+      return hash.remove(currKey); }
+    else { // Must recurse further.
+      final Object o = hash.get(currKey);
+      if (o == null) return null;
+      final HashMap dim = (HashMap) o;
+      final Object returnThis =
+        r_getEdgeAttributeValue(dim, keyIntoValue, keyTypes, currOffset + 1);
+      if (dim.size() == 0) hash.remove(currKey);
+      return returnThis; }
   }
 
-  public void removeEdgeDataListener(CyEdgeDataListener listener)
+  public final int getEdgeAttributeKeyspanCount(final String edgeKey,
+                                                final String attributeName,
+                                                final Object[] keyPrefix)
   {
+    // Pull out the definition, error-checking attributeName in the process.
+    if (attributeName == null)
+      throw new NullPointerException("attributeName is null");
+    final AttrDefData def = (AttrDefData) m_edgeAttrMap.get(attributeName);
+    if (def == null)
+      throw new IllegalStateException
+        ("no edge attributeName '" + attributeName + "' exists");
+
+    // Error-check edgeKey.
+    if (edgeKey == null) throw new NullPointerException("edgeKey is null");
+
+    // Error-check keyPrefix.  Leave the type checks to the recursion.
+    if (def.keyTypes.length == 0)
+      throw new IllegalStateException
+        ("edge attributeName '" + attributeName + "' has no keyspace, so" +
+         " calling this method makes no sense");
+    if (keyPrefix != null && keyPrefix.length >= def.keyTypes.length)
+      throw new IllegalArgumentException
+        ("the length of keyPrefix must be strictly less than the" +
+         " dimensionality of keyspace");
+
+    if (keyPrefix == null || keyPrefix.length == 0) { // Don't even recurse.
+      final HashMap dim = (HashMap) def.objMap.get(edgeKey);
+      if (dim == null) return 0;
+      return dim.size(); }
+    else { // Recurse.
+      final HashMap dim = (HashMap) def.objMap.get(edgeKey);
+      if (dim == null) return 0;
+      return r_getEdgeAttributeKeyspanCount(dim, keyPrefix, def.keyTypes, 0); }
+  }
+
+  private final int r_getEdgeAttributeKeyspanCount(final HashMap hash,
+                                                   final Object[] keyPrefix,
+                                                   final byte[] keyTypes,
+                                                   final int currOffset)
+  {
+    // Error-check type of object keyPrefix[currOffset].
+    final Object currKey = keyPrefix[currOffset];
+    if (currKey == null)
+      throw new NullPointerException("keyPrefix[" + currOffset + "] is null");
+    boolean passed = false;
+    switch (keyTypes[currOffset]) {
+      case CyEdgeDataDefinition.TYPE_BOOLEAN:
+        passed = (currKey instanceof java.lang.Boolean); break;
+      case CyEdgeDataDefinition.TYPE_FLOATING_POINT:
+        passed = (currKey instanceof java.lang.Double); break;
+      case CyEdgeDataDefinition.TYPE_INTEGER:
+        passed = (currKey instanceof java.lang.Long); break;
+      case CyEdgeDataDefinition.TYPE_STRING:
+        passed = (currKey instanceof java.lang.String); break; }
+    if (!passed)
+      throw new ClassCastException
+        ("keyPrefix[" + currOffset + "] is of incorrect object type");
+
+    if (currOffset == keyPrefix.length - 1) { // The dimension.
+      final HashMap dim = (HashMap) hash.get(currKey);
+      if (dim == null) return 0;
+      return dim.size(); }
+    else { // Recurse.
+      final HashMap dim = (HashMap) hash.get(currKey);
+      if (dim == null) return 0;
+      return r_getEdgeAttributeKeyspanCount(dim, keyPrefix, keyTypes,
+                                            currOffset + 1); }
+  }
+
+  public final Enumeration getEdgeAttributeKeyspan(final String edgeKey,
+                                                   final String attributeName,
+                                                   final Object[] keyPrefix)
+  {
+    // Pull out the definition, error-checking attributeName in the process.
+    if (attributeName == null)
+      throw new NullPointerException("attributeName is null");
+    final AttrDefData def = (AttrDefData) m_edgeAttrMap.get(attributeName);
+    if (def == null)
+      throw new IllegalStateException
+        ("no edge attributeName '" + attributeName + "' exists");
+
+    // Error-check edgeKey.
+    if (edgeKey == null) throw new NullPointerException("edgeKey is null");
+
+    // Error-check keyPrefix.  Leave the type checks to the recursion.
+    if (def.keyTypes.length == 0)
+      throw new IllegalStateException
+        ("edge attributeName '" + attributeName + "' has no keyspace, so" +
+         " calling this method makes no sense");
+    if (keyPrefix != null && keyPrefix.length >= def.keyTypes.length)
+      throw new IllegalArgumentException
+        ("the length of keyPrefix must be strictly less than the" +
+         " dimensionality of keyspace");
+
+    if (keyPrefix == null || keyPrefix.length == 0) { // Don't even recurse.
+      final HashMap dim = (HashMap) def.objMap.get(edgeKey);
+      if (dim == null) return s_the_empty_enumeration;
+      return new Iterator2Enumeration(dim.keySet().iterator()); }
+    else { // Recurse.
+      final HashMap dim = (HashMap) def.objMap.get(edgeKey);
+      if (dim == null) return s_the_empty_enumeration;
+      return r_getEdgeAttributeKeyspan(dim, keyPrefix, def.keyTypes, 0); }
+  }
+
+  private final Enumeration r_getEdgeAttributeKeyspan(final HashMap hash,
+                                                      final Object[] keyPrefix,
+                                                      final byte[] keyTypes,
+                                                      final int currOffset)
+  {
+    // Error-check type of object keyPrefix[currOffset].
+    final Object currKey = keyPrefix[currOffset];
+    if (currKey == null)
+      throw new NullPointerException("keyPrefix[" + currOffset + "] is null");
+    boolean passed = false;
+    switch (keyTypes[currOffset]) {
+      case CyEdgeDataDefinition.TYPE_BOOLEAN:
+        passed = (currKey instanceof java.lang.Boolean); break;
+      case CyEdgeDataDefinition.TYPE_FLOATING_POINT:
+        passed = (currKey instanceof java.lang.Double); break;
+      case CyEdgeDataDefinition.TYPE_INTEGER:
+        passed = (currKey instanceof java.lang.Long); break;
+      case CyEdgeDataDefinition.TYPE_STRING:
+        passed = (currKey instanceof java.lang.String); break; }
+    if (!passed)
+      throw new ClassCastException
+        ("keyPrefix[" + currOffset + "] is of incorrect object type");
+
+    if (currOffset == keyPrefix.length - 1) { // The dimension.
+      final HashMap dim = (HashMap) hash.get(currKey);
+      if (dim == null) return s_the_empty_enumeration;
+      return new Iterator2Enumeration(dim.keySet().iterator()); }
+    else { // Recurse further.
+      final HashMap dim = (HashMap) hash.get(currKey);
+      if (dim == null) return s_the_empty_enumeration;
+      return r_getEdgeAttributeKeyspan(dim, keyPrefix, keyTypes,
+                                       currOffset + 1); }
+  }
+
+  public final void addEdgeDataListener(final CyEdgeDataListener listener)
+  {
+    m_edgeDataListener = EdgeAttrLisChain.add(m_edgeDataListener, listener);
+  }
+
+  public final void removeEdgeDataListener(final CyEdgeDataListener listener)
+  {
+    m_edgeDataListener = EdgeAttrLisChain.remove(m_edgeDataListener, listener);
   }
 
 }
