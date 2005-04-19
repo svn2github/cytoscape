@@ -74,6 +74,8 @@ public interface CyEdgeData
    *   key space.
    * @return the number of keys in key space dimension K + 1 along specified
    *   keyPrefix.
+   * @exception IllegalStateException if attributeName is not an existing
+   *   edge attribute definition; see CyEdgeDataDefinition.
    */
   public int getEdgeAttributeKeyspanCount(String edgeKey, String attributeName,
                                           Object[] keyPrefix);

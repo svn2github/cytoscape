@@ -74,6 +74,8 @@ public interface CyNodeData
    *   key space.
    * @return the number of keys in key space dimension K + 1 along specified
    *   keyPrefix.
+   * @exception IllegalStateException if attributeName is not an existing
+   *   node attribute definition; see CyNodeDataDefinition.
    */
   public int getNodeAttributeKeyspanCount(String nodeKey, String attributeName,
                                           Object[] keyPrefix);
