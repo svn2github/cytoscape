@@ -706,13 +706,6 @@ final class CyDataModel
                                        currOffset + 1); }
   }
 
-  public int removeNodeAttributeKeyspan(String nodeKey,
-                                        String attributeName,
-                                        Object[] keyPrefix)
-  {
-    return -1;
-  }
-
   public void addNodeDataListener(CyNodeDataListener listener)
   {
     m_nodeDataListener = NodeAttrLisChain.add(m_nodeDataListener, listener);
@@ -794,13 +787,6 @@ final class CyDataModel
                                              Object[] keyPrefix)
   {
     return null;
-  }
-
-  public int removeEdgeAttributeKeyspan(String edgeKey,
-                                        String attributeName,
-                                        Object[] keyPrefix)
-  {
-    return -1;
   }
 
   public void addEdgeDataListener(CyEdgeDataListener listener)

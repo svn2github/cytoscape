@@ -90,12 +90,25 @@ public interface CyEdgeData
                                              String attributeName,
                                              Object[] keyPrefix);
 
-  /**
-   * @return the number of 
+  /*
+   * I'm not including this method in the API for good reasons.
+   * For one, removal is the opposite of insertion, and even though
+   * we could potentially remove many entries at once for free, because
+   * we inserted them one-by-one, the time complexity for a complete
+   * insert-remove cycle of many elements is governed by the insertion
+   * time complexity.  Therefore we don't lose in overall time complexity if
+   * we omit this removal optimization.  Second, I want listeners to hear
+   * all removals that happen.  If I include this method, I either have
+   * to iterate over all values that have been removed to fire appropriate
+   * listener events (which defeats the purpose of this optimization)
+   * or I have to define a separate listener method that
+   * says "hey I've removed a keyspan", but then the listener would not
+   * get a list of values (corresponding to all keys, recursively, in
+   * keyspan) that were removed.
    */
-  public int removeEdgeAttributeKeyspan(String edgeKey,
-                                        String attributeName,
-                                        Object[] keyPrefix);
+//   public int removeEdgeAttributeKeyspan(String edgeKey,
+//                                         String attributeName,
+//                                         Object[] keyPrefix);
 
   public void addEdgeDataListener(CyEdgeDataListener listener);
 
