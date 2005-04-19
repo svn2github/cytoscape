@@ -22,6 +22,8 @@ public interface CyNodeData
    *   specified attribute definition has a zero-dimensional key space (this
    *   is perhaps the most common scenario) then
    *   this array may either be null or the empty array.
+   * @exception IllegalStateException if attributeName is not an existing
+   *   node attribute definition; see CyNodeDataDefinition.
    */
   public void setNodeAttributeValue(String nodeKey, String attributeName,
                                     Object attributeValue,
@@ -39,7 +41,9 @@ public interface CyNodeData
    *   is perhaps the most commen scenario) then this array may either
    *   be null or the empty array.
    * @return the same value that was set with setNodeAttributeValue() with
-   *   parameters specified.
+   *   parameters specified or null if no such value is bound.
+   * @exception IllegalStateException if attributeName is not an existing
+   *   node attribute definition; see CyNodeDataDefinition.
    */
   public Object getNodeAttributeValue(String nodeKey, String attributeName,
                                       Object[] keyIntoValue);

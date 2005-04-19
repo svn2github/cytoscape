@@ -22,6 +22,8 @@ public interface CyEdgeData
    *   specified attribute definition has a zero-dimensional key space (this
    *   is perhaps the most common scenario) then
    *   this array may either be null or the empty array.
+   * @exception IllegalStateException if attributeName is not an existing
+   *   node attribute definition; see CyEdgeDataDefinition.
    */
   public void setEdgeAttributeValue(String edgeKey, String attributeName,
                                     Object attributeValue,
@@ -39,7 +41,9 @@ public interface CyEdgeData
    *   is perhaps the most commen scenario) then this array may either
    *   be null or the empty array.
    * @return the same value that was set with setEdgeAttributeValue() with
-   *   parameters specified.
+   *   parameters specified or null if no such value is bound.
+   * @exception IllegalStateException if attributeName is not an existing
+   *   edge attribute definition; see CyEdgeDataDefinition.
    */
   public Object getEdgeAttributeValue(String edgeKey, String attributeName,
                                       Object[] keyIntoValue);
