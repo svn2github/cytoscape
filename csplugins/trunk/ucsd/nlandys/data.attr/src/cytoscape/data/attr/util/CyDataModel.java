@@ -81,11 +81,12 @@ final class CyDataModel
     public final void nodeAttributeValueAssigned(final String nodeKey,
                                                  final String attributeName,
                                                  final Object[] keyIntoValue,
-                                                 final Object attributeValue) {
+                                                 final Object oldAttrVal,
+                                                 final Object newAttrVal) {
       a.nodeAttributeValueAssigned(nodeKey, attributeName, keyIntoValue,
-                                   attributeValue);
+                                   oldAttrVal, newAttrVal);
       b.nodeAttributeValueAssigned(nodeKey, attributeName, keyIntoValue,
-                                   attributeValue); }
+                                   oldAttrVal, newAttrVal); }
     public final void nodeAttributeValueRemoved(final String nodeKey,
                                                 final String attributeName,
                                                 final Object[] keyIntoValue,
@@ -266,10 +267,10 @@ final class CyDataModel
                                                        listener);
   }
 
-  public final void setNodeAttributeValue(final String nodeKey,
-                                          final String attributeName,
-                                          final Object attributeValue,
-                                          final Object[] keyIntoValue)
+  public final Object setNodeAttributeValue(final String nodeKey,
+                                            final String attributeName,
+                                            final Object attributeValue,
+                                            final Object[] keyIntoValue)
   {
     // Pull out the definition, error-checking attributeName in the process.
     final AttrDefData def = (AttrDefData) m_nodeAttrMap.get(attributeName);
@@ -329,32 +330,35 @@ final class CyDataModel
 
     final CyNodeDataListener listener = m_nodeDataListener;
     if (def.keyTypes.length == 0) { // Don't even recurse.
-      def.objMap.put(nodeKey, attributeValue);
-      if (listener != null) {
+      final Object returnThis = def.objMap.put(nodeKey, attributeValue);
+      if (listener != null)
         listener.nodeAttributeValueAssigned(nodeKey, attributeName, null,
-                                            attributeValue); } }
+                                            returnThis, attributeValue);
+      return returnThis; }
     else { // Recurse.
       final Object o = def.objMap.get(nodeKey);
       final HashMap firstDim;
       if (o == null) firstDim = new HashMap();
       else firstDim = (HashMap) o;
-      r_setNodeAttributeValue(firstDim, attributeValue, keyIntoValue,
-                              def.keyTypes, 0);
+      final Object returnThis =
+        r_setNodeAttributeValue(firstDim, attributeValue, keyIntoValue,
+                                def.keyTypes, 0);
       // If firstDim is a new HashMap add it to the definition after the
       // recursion completes so that if an exception is thrown, we can avoid
       // cleanup.
       if (o == null) def.objMap.put(nodeKey, firstDim);
-      if (listener != null) {
-        listener.nodeAttributeValueAssigned(nodeKey, attributeName,
-                                            keyIntoValue, attributeValue); } }
+      if (listener != null)
+        listener.nodeAttributeValueAssigned
+          (nodeKey, attributeName, keyIntoValue, returnThis, attributeValue);
+      return returnThis; }
   }
 
   // Recursive helper method.
-  private final void r_setNodeAttributeValue(final HashMap hash,
-                                             final Object attributeValue,
-                                             final Object[] keyIntoValue,
-                                             final byte[] keyTypes,
-                                             final int currOffset)
+  private final Object r_setNodeAttributeValue(final HashMap hash,
+                                               final Object attributeValue,
+                                               final Object[] keyIntoValue,
+                                               final byte[] keyTypes,
+                                               final int currOffset)
   {
     // Error check type of object keyIntoValue[currOffset].
     final Object currKey = keyIntoValue[currOffset];
@@ -379,17 +383,19 @@ final class CyDataModel
 
     // Put something in.
     if (currOffset == keyIntoValue.length - 1) { // The final dimension.
-      hash.put(currKey, attributeValue); }
+      return hash.put(currKey, attributeValue); }
     else { // Must recurse further.
       final Object o = hash.get(currKey);
       final HashMap dim;
       if (o == null) dim = new HashMap();
       else dim = (HashMap) o;
-      r_setNodeAttributeValue(dim, attributeValue, keyIntoValue, keyTypes,
-                              currOffset + 1);
+      final Object returnThis =
+        r_setNodeAttributeValue(dim, attributeValue, keyIntoValue, keyTypes,
+                                currOffset + 1);
       // Put new HashMap in after recursive call to prevent the need for
       // cleanup in case exception is thrown.
-      if (o == null) hash.put(currKey, dim); }
+      if (o == null) hash.put(currKey, dim);
+      return returnThis; }
   }
 
   public final Object getNodeAttributeValue(final String nodeKey,
@@ -608,10 +614,11 @@ final class CyDataModel
   {
   }
 
-  public void setEdgeAttributeValue(String edgeKey, String attributeName,
-                                    Object attributeValue,
-                                    Object[] keyIntoValue)
+  public Object setEdgeAttributeValue(String edgeKey, String attributeName,
+                                      Object attributeValue,
+                                      Object[] keyIntoValue)
   {
+    return null;
   }
 
   public Object getEdgeAttributeValue(String edgeKey, String attributeName,

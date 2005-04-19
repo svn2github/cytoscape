@@ -22,12 +22,14 @@ public interface CyEdgeData
    *   specified attribute definition has a zero-dimensional key space (this
    *   is perhaps the most common scenario) then
    *   this array may either be null or the empty array.
+   * @return previous attribute value bound at specified key sequence, or
+   *   null if no attribute value was previously bound.
    * @exception IllegalStateException if attributeName is not an existing
    *   node attribute definition; see CyEdgeDataDefinition.
    */
-  public void setEdgeAttributeValue(String edgeKey, String attributeName,
-                                    Object attributeValue,
-                                    Object[] keyIntoValue);
+  public Object setEdgeAttributeValue(String edgeKey, String attributeName,
+                                      Object attributeValue,
+                                      Object[] keyIntoValue);
 
   /**
    * @param edgeKey the edge from which to retrieve a bound attribute
