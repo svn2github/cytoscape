@@ -27,14 +27,4 @@ public interface CyNodeDataListener
                                         Object[] keyIntoValue,
                                         Object attributeValue);
 
-  /**
-   * @param keyPrefix don't modify this array; this array may be null,
-   *   and will never be of length zero; a null array implies that all
-   *   attribute values on specified node in attributeName definition have
-   *   been deleted.
-   */
-  public void nodeAttributeKeyspanRemoved(String nodeKey,
-                                          String attributeName,
-                                          Object[] keyPrefix);
-
 }
