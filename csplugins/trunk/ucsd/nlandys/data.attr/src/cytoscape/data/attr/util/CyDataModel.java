@@ -121,6 +121,12 @@ final class CyDataModel
       return add(a2, b2); }
   }
 
+  private final static Enumeration s_the_empty_enumeration =
+    new Enumeration() {
+      public final boolean hasMoreElements() { return false; }
+      public final Object nextElement() {
+        throw new java.util.NoSuchElementException(); } };
+
   // Keys are attributeName, values are AttrDefData.
   private final HashMap m_nodeAttrMap;
   private final HashMap m_edgeAttrMap;
@@ -221,6 +227,8 @@ final class CyDataModel
 
   public final byte getNodeAttributeValueType(final String attributeName)
   {
+    if (attributeName == null)
+      throw new NullPointerException("attributeName is null");
     final AttrDefData def = (AttrDefData) m_nodeAttrMap.get(attributeName);
     if (def == null) return -1;
     return def.valueType;
@@ -229,6 +237,8 @@ final class CyDataModel
   public final int getNodeAttributeKeyspaceDimensionality(
                                                     final String attributeName)
   {
+    if (attributeName == null)
+      throw new NullPointerException("attributeName is null");
     final AttrDefData def = (AttrDefData) m_nodeAttrMap.get(attributeName);
     if (def == null) return -1;
     return def.keyTypes.length;
@@ -238,6 +248,8 @@ final class CyDataModel
                                                   final byte[] keyTypes,
                                                   final String[] keyNames)
   {
+    if (attributeName == null)
+      throw new NullPointerException("attributeName is null");
     final AttrDefData def = (AttrDefData) m_nodeAttrMap.get(attributeName);
     if (def == null) throw new IllegalStateException
                         ("no attributeName '" + attributeName + "' exists");
@@ -247,6 +259,8 @@ final class CyDataModel
 
   public final void undefineNodeAttribute(final String attributeName)
   {
+    if (attributeName == null)
+      throw new NullPointerException("attributeName is null");
     Object o = m_nodeAttrMap.remove(attributeName);
     if (o != null) { // attributeName was in fact deleted.
       final CyNodeDataDefinitionListener l = m_nodeDataDefListener;
@@ -273,6 +287,8 @@ final class CyDataModel
                                             final Object[] keyIntoValue)
   {
     // Pull out the definition, error-checking attributeName in the process.
+    if (attributeName == null)
+      throw new NullPointerException("attributeName is null");
     final AttrDefData def = (AttrDefData) m_nodeAttrMap.get(attributeName);
     if (def == null) throw new IllegalStateException
                        ("no attributeName '" + attributeName + "' exists");
@@ -403,6 +419,8 @@ final class CyDataModel
                                             final Object[] keyIntoValue)
   {
     // Pull out the definition, error-checking attributeName in the process.
+    if (attributeName == null)
+      throw new NullPointerException("attributeName is null");
     final AttrDefData def = (AttrDefData) m_nodeAttrMap.get(attributeName);
     if (def == null) throw new IllegalStateException
                        ("no attributeName '" + attributeName + "' exists");
@@ -468,6 +486,8 @@ final class CyDataModel
                                                final Object[] keyIntoValue)
   {
     // Pull out the definition, error-checking attributeName in the process.
+    if (attributeName == null)
+      throw new NullPointerException("attributeName is null");
     final AttrDefData def = (AttrDefData) m_nodeAttrMap.get(attributeName);
     if (def == null) throw new IllegalStateException
                        ("no attributeName '" + attributeName + "' exists");
@@ -549,6 +569,8 @@ final class CyDataModel
                                                 final Object[] keyPrefix)
   {
     // Pull out the definition, error-checking attributeName in the process.
+    if (attributeName == null)
+      throw new NullPointerException("attributeName is null");
     final AttrDefData def = (AttrDefData) m_nodeAttrMap.get(attributeName);
     if (def == null) throw new IllegalStateException
                        ("no attributeName '" + attributeName + "' exists");
@@ -557,10 +579,10 @@ final class CyDataModel
     if (nodeKey == null) throw new NullPointerException("nodeKey is null");
 
     // Error-check keyPrefix.  Leave the type checks to the recursion.
-    if (def.keyTypes.length == 0) {
+    if (def.keyTypes.length == 0)
       throw new IllegalStateException
         ("node attributeName '" + attributeName + "' has no keyspace, so" +
-         " calling this method makes no sense"); }
+         " calling this method makes no sense");
     if (keyPrefix != null && keyPrefix.length >= def.keyTypes.length)
       throw new IllegalArgumentException
         ("the length of keyPrefix must be strictly less than the" +
@@ -610,11 +632,78 @@ final class CyDataModel
                                             currOffset + 1); }
   }
 
-  public Enumeration getNodeAttributeKeyspan(String nodeKey,
-                                             String attributeName,
-                                             Object[] keyPrefix)
+  public final Enumeration getNodeAttributeKeyspan(final String nodeKey,
+                                                   final String attributeName,
+                                                   final Object[] keyPrefix)
   {
-    return null;
+    // Pull out the definition, error-checking attributeName in the process.
+    if (attributeName == null)
+      throw new NullPointerException("attributeName is null");
+    final AttrDefData def = (AttrDefData) m_nodeAttrMap.get(attributeName);
+    if (def == null) throw new IllegalStateException
+                       ("no attributeName '" + attributeName + "' exists");
+
+    // Error-check nodeKey.
+    if (nodeKey == null) throw new NullPointerException("nodeKey is null");
+
+    // Error-check keyPrefix.  Leave the type checks to the recursion.
+    if (def.keyTypes.length == 0)
+      throw new IllegalStateException
+        ("node attributeName '" + attributeName + "' has no keyspace, so" +
+         " calling this method makes no sense");
+    if (keyPrefix != null && keyPrefix.length >= def.keyTypes.length)
+      throw new IllegalArgumentException
+        ("the length of keyPrefix must be strictly less than the" +
+         " dimensionality of keyspace");
+
+    if (keyPrefix == null || keyPrefix.length == 0) { // Don't even recurse.
+      final HashMap dim = (HashMap) def.objMap.get(nodeKey);
+      if (dim == null) return s_the_empty_enumeration;
+      final java.util.Iterator iter = dim.keySet().iterator();
+      return new Enumeration() {
+          public final boolean hasMoreElements() { return iter.hasNext(); }
+          public final Object nextElement() { return iter.next(); } }; }
+    else { // Recurse.
+      final HashMap dim = (HashMap) def.objMap.get(nodeKey);
+      if (dim == null) return s_the_empty_enumeration;
+      return r_getNodeAttributeKeyspan(dim, keyPrefix, def.keyTypes, 0); }
+  }
+
+  private final Enumeration r_getNodeAttributeKeyspan(final HashMap hash,
+                                                      final Object[] keyPrefix,
+                                                      final byte[] keyTypes,
+                                                      final int currOffset)
+  {
+    // Error-check type of object keyPrefix[currOffset].
+    final Object currKey = keyPrefix[currOffset];
+    if (currKey == null)
+      throw new NullPointerException("keyPrefix[" + currOffset + "] is null");
+    boolean passed = false;
+    switch (keyTypes[currOffset]) {
+      case CyNodeDataDefinition.TYPE_BOOLEAN:
+        passed = (currKey instanceof java.lang.Boolean); break;
+      case CyNodeDataDefinition.TYPE_FLOATING_POINT:
+        passed = (currKey instanceof java.lang.Double); break;
+      case CyNodeDataDefinition.TYPE_INTEGER:
+        passed = (currKey instanceof java.lang.Long); break;
+      case CyNodeDataDefinition.TYPE_STRING:
+        passed = (currKey instanceof java.lang.String); break; }
+    if (!passed)
+      throw new ClassCastException
+        ("keyPrefix[" + currOffset + "] is of incorrect object type");
+
+    if (currOffset == keyPrefix.length - 1) { // The dimension.
+      final HashMap dim = (HashMap) hash.get(keyPrefix[currOffset]);
+      if (dim == null) return s_the_empty_enumeration;
+      final java.util.Iterator iter = dim.keySet().iterator();
+      return new Enumeration() {
+          public final boolean hasMoreElements() { return iter.hasNext(); }
+          public final Object nextElement() { return iter.next(); } }; }
+    else { // Recurse further.
+      final HashMap dim = (HashMap) hash.get(keyPrefix[currOffset]);
+      if (dim == null) return s_the_empty_enumeration;
+      return r_getNodeAttributeKeyspan(dim, keyPrefix, keyTypes,
+                                       currOffset + 1); }
   }
 
   public int removeNodeAttributeKeyspan(String nodeKey,
