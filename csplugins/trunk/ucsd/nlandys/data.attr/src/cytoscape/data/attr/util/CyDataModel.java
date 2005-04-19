@@ -221,6 +221,8 @@ final class CyDataModel
 
   private CyNodeDataDefinitionListener m_nodeDataDefListener;
   private CyNodeDataListener m_nodeDataListener;
+  private CyEdgeDataDefinitionListener m_edgeDataDefListener;
+  private CyEdgeDataListener m_edgeDataListener;
 
   CyDataModel()
   {
@@ -228,6 +230,8 @@ final class CyDataModel
     m_edgeAttrMap = new HashMap();
     m_nodeDataDefListener = null;
     m_nodeDataListener = null;
+    m_edgeDataDefListener = null;
+    m_edgeDataListener = null;
   }
 
   public final void defineNodeAttribute(final String attributeName,
@@ -790,12 +794,12 @@ final class CyDataModel
                                        currOffset + 1); }
   }
 
-  public void addNodeDataListener(CyNodeDataListener listener)
+  public final void addNodeDataListener(final CyNodeDataListener listener)
   {
     m_nodeDataListener = NodeAttrLisChain.add(m_nodeDataListener, listener);
   }
 
-  public void removeNodeDataListener(CyNodeDataListener listener)
+  public final void removeNodeDataListener(final CyNodeDataListener listener)
   {
     m_nodeDataListener = NodeAttrLisChain.remove(m_nodeDataListener, listener);
   }
