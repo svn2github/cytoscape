@@ -485,10 +485,12 @@ final class CyDataModel
 
   public void addNodeDataListener(CyNodeDataListener listener)
   {
+    m_nodeDataListener = NodeAttrLisChain.add(m_nodeDataListener, listener);
   }
 
   public void removeNodeDataListener(CyNodeDataListener listener)
   {
+    m_nodeDataListener = NodeAttrLisChain.remove(m_nodeDataListener, listener);
   }
 
   public void defineEdgeAttribute(String attributeName,
