@@ -352,15 +352,33 @@ final class CyDataModel
           throw new ClassCastException
             ("keyIntoValue[" + i + "] is of incorrect object type"); } } }
 
-    
+    if (def.keyTypes.length == 0) { // Don't even recurse.
+      def.objMap.put(nodeKey, attributeValue);
+      final CyNodeDataListener listener = m_nodeDataListener;
+      if (listener != null) {
+        listener.nodeAttributeValueAssigned(nodeKey, attributeName, null,
+                                            attributeValue); } }
+    else { // Recurse.
+      final Object o = def.objMap.get(nodeKey);
+      final HashMap firstDim;
+      if (o == null) firstDim = new HashMap();
+      else firstDim = (HashMap) o;
+      r_setNodeAttributeValue(firstDim, attributeValue, keyIntoValue, 0);
+      // If firstDim is a new HashMap add it to the definition after the
+      // recursion completes so that if an exception is thrown, we can avoid
+      // cleanup.
+      if (o == null) def.objMap.put(nodeKey, firstDim);
+      listener.nodeAttributeValueAssigned(nodeKey, attributeName, keyIntoValue,
+                                          attributeValue); }
   }
 
   // Recursive helper method.
   private final void r_setNodeAttributeValue(final HashMap hash,
                                              final Object attributeValue,
                                              final Object[] keyIntoValue,
-                                             final int arrOffset)
+                                             final int currOffset)
   {
+    
   }
 
   public Object getNodeAttributeValue(String nodeKey, String attributeName,
