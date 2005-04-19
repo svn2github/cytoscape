@@ -316,10 +316,7 @@ final class CyDataModel
         ("attributeValue must be of type " + className +
          " in node attributeName '" + attributeName + "' definition"); }
 
-    // Error-check keyIntoValue.  Note that even after we check this, a crafty
-    // programmer could mutate the array from a different thread, causing
-    // data corruption in our model.  For the sake of simplicity and
-    // efficiency, we're going to assume that this will not happen.
+    // Error-check keyIntoValue.  Leave the type checks to the recursion.
     if (def.keyTypes.length == 0) {
       if (keyIntoValue != null || keyIntoValue.length != 0) {
         throw new IllegalArgumentException
@@ -328,33 +325,11 @@ final class CyDataModel
     else { // Keyspace is not empty.
       if (def.keyTypes.length != keyIntoValue.length) { // May trigger NullPtr.
         throw new IllegalArgumentException
-          ("keyIntoValue has incorrect dimensionality"); }
-      // Dimensionality matches.
-      for (int i = 0; i < keyIntoValue.length; i++) {
-        // Right now, key representatives cannot be null - that is the only
-        // constraint.  This may or may not make sense; imagine a String key
-        // representative being "".
-        if (keyIntoValue[i] == null)
-          throw new NullPointerException("keyIntoValue[" + i + "] is null");
-        passed = false;
-        switch (def.keyTypes[i])
-        {
-          case CyNodeDataDefinition.TYPE_BOOLEAN:
-            passed = (keyIntoValue[i] instanceof java.lang.Boolean); break;
-          case CyNodeDataDefinition.TYPE_FLOATING_POINT:
-            passed = (keyIntoValue[i] instanceof java.lang.Double); break;
-          case CyNodeDataDefinition.TYPE_INTEGER:
-            passed = (keyIntoValue[i] instanceof java.lang.Long); break;
-          case CyNodeDataDefinition.TYPE_STRING:
-            passed = (keyIntoValue[i] instanceof java.lang.String); break;
-        }
-        if (!passed) {
-          throw new ClassCastException
-            ("keyIntoValue[" + i + "] is of incorrect object type"); } } }
+          ("keyIntoValue has incorrect dimensionality"); } }
 
+    final CyNodeDataListener listener = m_nodeDataListener;
     if (def.keyTypes.length == 0) { // Don't even recurse.
       def.objMap.put(nodeKey, attributeValue);
-      final CyNodeDataListener listener = m_nodeDataListener;
       if (listener != null) {
         listener.nodeAttributeValueAssigned(nodeKey, attributeName, null,
                                             attributeValue); } }
@@ -363,22 +338,58 @@ final class CyDataModel
       final HashMap firstDim;
       if (o == null) firstDim = new HashMap();
       else firstDim = (HashMap) o;
-      r_setNodeAttributeValue(firstDim, attributeValue, keyIntoValue, 0);
+      r_setNodeAttributeValue(firstDim, attributeValue, keyIntoValue,
+                              def.keyTypes, 0);
       // If firstDim is a new HashMap add it to the definition after the
       // recursion completes so that if an exception is thrown, we can avoid
       // cleanup.
       if (o == null) def.objMap.put(nodeKey, firstDim);
-      listener.nodeAttributeValueAssigned(nodeKey, attributeName, keyIntoValue,
-                                          attributeValue); }
+      if (listener != null) {
+        listener.nodeAttributeValueAssigned(nodeKey, attributeName,
+                                            keyIntoValue, attributeValue); } }
   }
 
   // Recursive helper method.
   private final void r_setNodeAttributeValue(final HashMap hash,
                                              final Object attributeValue,
                                              final Object[] keyIntoValue,
+                                             final byte[] keyTypes,
                                              final int currOffset)
   {
-    
+    // Error check type of object keyIntoValue[currOffset].
+    final Object currKey = keyIntoValue[currOffset];
+    // Right now, key representatives cannot be null - that is the only
+    // constraint.  This may or may not make sense; imagine a String key
+    // representative being "".
+    if (currKey == null)
+      throw new NullPointerException("keyIntoValue[" + currOffset + "] null");
+    boolean passed = false;
+    switch (keyTypes[currOffset]) {
+      case CyNodeDataDefinition.TYPE_BOOLEAN:
+        passed = (currKey instanceof java.lang.Boolean); break;
+      case CyNodeDataDefinition.TYPE_FLOATING_POINT:
+        passed = (currKey instanceof java.lang.Double); break;
+      case CyNodeDataDefinition.TYPE_INTEGER:
+        passed = (currKey instanceof java.lang.Long); break;
+      case CyNodeDataDefinition.TYPE_STRING:
+        passed = (currKey instanceof java.lang.String); break; }
+    if (!passed)
+      throw new ClassCastException
+        ("keyIntoValue[" + currKey + "] is of incorrect object type");
+
+    // Put something in.
+    if (currOffset == keyIntoValue.length - 1) { // The final dimension.
+      hash.put(currKey, attributeValue); }
+    else { // Must recurse further.
+      final Object o = hash.get(currKey);
+      final HashMap dim;
+      if (o == null) dim = new HashMap();
+      else dim = (HashMap) o;
+      r_setNodeAttributeValue(dim, attributeValue, keyIntoValue, keyTypes,
+                              currOffset + 1);
+      // Put new HashMap in after recursive call to prevent the need for
+      // cleanup in case exception is thrown.
+      if (o == null) hash.put(currKey, dim); }
   }
 
   public Object getNodeAttributeValue(String nodeKey, String attributeName,
