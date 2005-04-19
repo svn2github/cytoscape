@@ -420,7 +420,8 @@ final class CyDataModel
     else { // Recurse.
       final Object o = def.objMap.get(nodeKey);
       if (o == null) return null;
-      return r_getNodeAttributeValue((HashMap) o, keyIntoValue, 0); }
+      return r_getNodeAttributeValue((HashMap) o, keyIntoValue,
+                                     def.keyTypes, 0); }
   }
 
   private final Object r_getNodeAttributeValue(final HashMap hash,
