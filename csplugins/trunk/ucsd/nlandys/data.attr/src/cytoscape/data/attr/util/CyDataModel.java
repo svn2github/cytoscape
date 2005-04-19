@@ -392,10 +392,68 @@ final class CyDataModel
       if (o == null) hash.put(currKey, dim); }
   }
 
-  public Object getNodeAttributeValue(String nodeKey, String attributeName,
-                                      Object[] keyIntoValue)
+  public final Object getNodeAttributeValue(final String nodeKey,
+                                            final String attributeName,
+                                            final Object[] keyIntoValue)
   {
-    return null;
+    // Pull out the definition, error-checking attributeName in the process.
+    final AttrDefData def = (AttrDefData) m_nodeAttrMap.get(attributeName);
+    if (def == null) throw new IllegalStateException
+                       ("no attributeName '" + attributeName + "' exists");
+
+    // Error-check nodeKey.
+    if (nodeKey == null) throw new NullPointerException("nodeKey is null");
+
+    // Error-check keyIntoValue.  Leave the type checks to the recursion.
+    if (def.keyTypes.length == 0) {
+      if (keyIntoValue != null || keyIntoValue.length != 0) {
+        throw new IllegalArgumentException
+          ("node attributeName '" + attributeName + "' has no keyspace" +
+           " defined, yet keyIntoValue is not empty"); } }
+    else { // Keyspace is not empty.
+      if (def.keyTypes.length != keyIntoValue.length) { // May trigger NullPtr.
+        throw new IllegalArgumentException
+          ("keyIntoValue has incorrect dimensionality"); } }
+
+    if (def.keyTypes.length == 0) { // Don't even recurse.
+      return def.objMap.get(nodeKey); }
+    else { // Recurse.
+      final Object o = def.objMap.get(nodeKey);
+      if (o == null) return null;
+      return r_getNodeAttributeValue((HashMap) o, keyIntoValue, 0); }
+  }
+
+  private final Object r_getNodeAttributeValue(final HashMap hash,
+                                               final Object[] keyIntoValue,
+                                               final byte[] keyTypes,
+                                               final int currOffset)
+  {
+    // Error check type of object keyIntoValue[currOffset].
+    final Object currKey = keyIntoValue[currOffset];
+    if (currKey == null)
+      throw new NullPointerException("keyIntoValue[" + currOffset + "] null");
+    boolean passed = false;
+    switch (keyTypes[currOffset]) {
+      case CyNodeDataDefinition.TYPE_BOOLEAN:
+        passed = (currKey instanceof java.lang.Boolean); break;
+      case CyNodeDataDefinition.TYPE_FLOATING_POINT:
+        passed = (currKey instanceof java.lang.Double); break;
+      case CyNodeDataDefinition.TYPE_INTEGER:
+        passed = (currKey instanceof java.lang.Long); break;
+      case CyNodeDataDefinition.TYPE_STRING:
+        passed = (currKey instanceof java.lang.String); break; }
+    if (!passed)
+      throw new ClassCastException
+        ("keyIntoValue[" + currKey + "] is of incorrect object type");
+
+    // Retrieve the value.
+    if (currOffset == keyIntoValue.length - 1) { // The final dimension.
+      return hash.get(currKey); }
+    else { // Must recurse further.
+      final Object o = hash.get(currKey);
+      if (o == null) return null;
+      return r_getNodeAttributeValue((HashMap) o, keyIntoValue, keyTypes,
+                                     currOffset + 1); }
   }
 
   public Object removeNodeAttributeValue(String nodeKey, String attributeName,
