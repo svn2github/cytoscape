@@ -6,12 +6,14 @@ import cytoscape.data.attr.CyNodeData;
 import cytoscape.data.attr.CyNodeDataDefinition;
 import cytoscape.data.attr.util.CyDataFactory;
 
+import java.util.Enumeration;
+
 public final class TestCyData
 {
 
   public final static void main(final String[] args)
   {
-    final Object o = CyDataFactory.instantiateDataModel();
+    Object o = CyDataFactory.instantiateDataModel();
     final CyNodeDataDefinition nodeDef = (CyNodeDataDefinition) o;
     final CyNodeData nodeData = (CyNodeData) o;
     final CyEdgeDataDefinition edgeDef = (CyEdgeDataDefinition) o;
@@ -34,6 +36,29 @@ public final class TestCyData
     nodeData.setNodeAttributeValue
       (nodeTwoName, nodeAttrName, new Double(0.4),
        new Object[] { "Salk", new Long(0) });
+    Enumeration enum = nodeData.getNodeAttributeKeyspan
+      (nodeOneName, nodeAttrName, new Object[] { "Ideker" });
+    for (int i = 0; i < 2; i++)
+      if (!(enum.nextElement() instanceof java.lang.Long))
+        throw new IllegalStateException("expected Long");
+    if (enum.hasMoreElements())
+      throw new IllegalStateException("did not expect more elements");
+    o = nodeData.getNodeAttributeValue
+      (nodeOneName, nodeAttrName, new Object[] { "Ideker", new Long(1) });
+    if (!(((Double) o).doubleValue() == 0.6d))
+      throw new IllegalStateException("expected 0.6");
+    o = nodeData.getNodeAttributeValue
+      (nodeTwoName, nodeAttrName, new Object[] { "Salk", new Long(0) });
+    if (!(((Double) o).doubleValue() == 0.4d))
+      throw new IllegalStateException("expected 0.4");
+    o = nodeData.getNodeAttributeValue
+      ("noNode", nodeAttrName, new Object[] { "Howdy", new Long(0) });
+    if (o != null)
+      throw new IllegalStateException("expected null");
+    o = nodeData.getNodeAttributeValue
+      (nodeTwoName, nodeAttrName, new Object[] { "Salk", new Long(1) });
+    if (o != null)
+      throw new IllegalStateException("expected null");
   }
 
 }
