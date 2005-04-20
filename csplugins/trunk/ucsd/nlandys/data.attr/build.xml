@@ -18,7 +18,7 @@
              source="1.4">
       <fileset dir="${src.dir}">
         <include name="cytoscape/data/attr/*.java"/>
-<!--        <include name="cytoscape/data/attr/util/*.java"/> -->
+        <include name="cytoscape/data/attr/util/*.java"/>
       </fileset>
       <classpath>
         <fileset dir="${lib.dir}">
