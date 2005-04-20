@@ -17,7 +17,7 @@ public final class CyDataFactory
    * You will need to cast the return value to one of these to access the
    * corresponding functionality.
    */
-  public static Object instantiateDataModel()
+  public final static Object instantiateDataModel()
   {
     return new CyDataModel();
   }
