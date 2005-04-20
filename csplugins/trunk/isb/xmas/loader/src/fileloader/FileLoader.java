@@ -470,24 +470,22 @@ public class FileLoader {
       // load edges
       CyEdge edge = getEdgeForRow( row );
 
-
-
-      for ( int i = 0; i < row.length; ++i ) {
-        Object attribute;
-        try {
-          attribute = new Double( row[i] );
-        } catch ( Exception e ) {
-          // not a number, leave as string
-          attribute = row[i];
+      if ( restricted_colums.length != 0 ) {
+        // load only the columns given
+        for ( int i = 0; i < restricted_colums.length; ++i ) {
+          loadEdgeColumn( edge,
+                          ( String )titles.get( restricted_colums[i] ),
+                          row[ restricted_colums[i] ] );
         }
-        try {
-          Cytoscape.setEdgeAttributeValue( edge, (String)titles.get( i ), attribute );
-        } catch ( Exception E ) {
-          Cytoscape.setEdgeAttributeValue( edge, (String)titles.get( i ), attribute.toString() );
+      } else {
+        // load all columns
+        for ( int i = 0; i < row.length; ++i ) {
+          loadEdgeColumn( node,
+                          ( String )titles.get( i ),
+                          row[i] );
         }
       }
       return true;
-      
     }
 
   }
@@ -577,6 +575,43 @@ public class FileLoader {
     }
     return true;
   }
+
+
+  
+  public static boolean loadEdgeColumn ( CyEdge edge,
+                                         String title, 
+                                         String att ) {
+
+    // figure out what the Attibute is
+    Object attribute;
+    try { 
+      attribute = new Double( att );
+    } catch ( Exception e ) {
+      attribute = att;
+      // not a number, leave as string
+    }
+    try {
+      if ( !attribute.equals( null_att ) ) {
+        if ( attribute instanceof String ) {
+          if ( att.startsWith("[") ) {
+            attribute = formList( att );
+          }
+        }
+
+        // set value
+        //System.out.println( "Loading: "+edge.getIdentifier()+" "+title+ " "+attribute );
+        Cytoscape.setEdgeAttributeValue( edge, title, attribute );
+      }
+    }  catch ( Exception ex ) {
+      ex.printStackTrace();
+      System.out.print( "Error Loading edge: "+edge.getIdentifier() );
+      System.out.print( " attribute: "+title );
+      System.out.println( " attribute value: "+attribute );
+      return false;
+    }
+    return true;
+  }
+
 
       
   public static List formList ( String value ) {
