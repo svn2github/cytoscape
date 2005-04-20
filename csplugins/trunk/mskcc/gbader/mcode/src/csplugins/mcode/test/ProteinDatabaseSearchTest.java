@@ -1,14 +1,11 @@
 package org.mskcc.csplugins.PDIDDyNet.test;
 
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
 import junit.framework.TestCase;
-import org.mskcc.csplugins.PDIDDyNet.*;
 import org.biojava.bio.BioException;
+import org.mskcc.csplugins.PDIDDyNet.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -51,9 +48,9 @@ import java.util.List;
  * Test for the protein profile search algorithm
  */
 public class ProteinDatabaseSearchTest extends TestCase {
-    ProteinDatabaseSearch search=null;
-    ProteinProfile profile=null;
-    ProteinDatabaseSearchParams params =null;
+    ProteinDatabaseSearch search = null;
+    ProteinProfile profile = null;
+    ProteinDatabaseSearchParams params = null;
     BindingPeptideList peptideList = null;
 
     /**
