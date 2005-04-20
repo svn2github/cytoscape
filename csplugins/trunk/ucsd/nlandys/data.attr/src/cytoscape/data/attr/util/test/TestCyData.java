@@ -27,13 +27,13 @@ public final class TestCyData
        new String[] { "experiment", "multi-value offset" });
     nodeData.setNodeAttributeValue
       (nodeOneName, nodeAttrName, new Double(0.5),
-       new Object[] { "Ideker", new Integer(0) });
+       new Object[] { "Ideker", new Long(0) });
     nodeData.setNodeAttributeValue
       (nodeOneName, nodeAttrName, new Double(0.6),
-       new Object[] { "Ideker", new Integer(1) });
+       new Object[] { "Ideker", new Long(1) });
     nodeData.setNodeAttributeValue
       (nodeTwoName, nodeAttrName, new Double(0.4),
-       new Object[] { "Salk", new Integer(0) });
+       new Object[] { "Salk", new Long(0) });
   }
 
 }
