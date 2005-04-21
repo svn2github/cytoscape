@@ -694,6 +694,19 @@ final class CyDataModel implements CyDataDefinition, CyData
                                    currOffset + 1); }
   }
 
+  public final Enumeration getObjectKeys(final String attributeName)
+  {
+    // Pull out the definition, error-checking attributeName in the process.
+    if (attributeName == null)
+      throw new NullPointerException("attributeName is null");
+    final AttrDefData def = (AttrDefData) m_attrMap.get(attributeName);
+    if (def == null)
+      throw new IllegalStateException
+        ("no attributeName '" + attributeName + "'exists");
+
+    return new Iterator2Enumeration(def.objMap.keySet().iterator());
+  }
+
   public final void addDataListener(final CyDataListener listener)
   {
     m_dataListener = AttrLisChain.add(m_dataListener, listener);

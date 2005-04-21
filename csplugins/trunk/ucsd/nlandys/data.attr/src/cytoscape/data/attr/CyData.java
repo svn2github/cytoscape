@@ -92,6 +92,13 @@ public interface CyData
                                          String attributeName,
                                          Object[] keyPrefix);
 
+  /**
+   * @return an enumeration of objectKey strings (java.lang.String) that
+   *   currently have value[s] assigned to them in the specified attribute
+   *   definition; the order of the returned strings is arbitrary.
+   */
+  public Enumeration getObjectKeys(String attributeName);
+
   /*
    * I'm not including this method in the API for good reasons.
    * For one, removal is the opposite of insertion, and even though
