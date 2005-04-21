@@ -480,7 +480,7 @@ public class FileLoader {
       } else {
         // load all columns
         for ( int i = 0; i < row.length; ++i ) {
-          loadEdgeColumn( node,
+          loadEdgeColumn( edge,
                           ( String )titles.get( i ),
                           row[i] );
         }

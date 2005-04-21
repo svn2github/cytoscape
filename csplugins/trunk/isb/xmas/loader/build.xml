@@ -99,8 +99,6 @@
       <fileset
         dir="${loader.root.dir}/lib"
         includes="resources/**"/>
-      <fileset 
-        dir="${loader.root.dir}/images"/>
     </jar>
     <copy todir="${loader.lib.dir}" file="loader.jar"/>
     <copy todir="${cytoscape.plugin.dir}" file="loader.jar"/>
