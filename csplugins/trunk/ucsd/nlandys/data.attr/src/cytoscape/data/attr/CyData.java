@@ -57,6 +57,13 @@ public interface CyData
    *   parameters specified or null if no such value is bound.
    * @exception IllegalStateException if attributeName is not an existing
    *   attribute definition; see CyDataDefinition.
+   * @exception NullPointerException if objectKey or attributeName is null,
+   *   or if keyIntoValue is [not null and] of positive length and any one
+   *   of its entries is null.
+   * @exception ClassCastException if any one of keyIntoValue's representatives
+   *   is not of the appropriate object type; see CyDataDefinition.
+   * @exception IllegalArgumentException if keyIntoValue's length does not
+   *   match the keyspace dimensionality of attributeName.
    */
   public Object getAttributeValue(String objectKey, String attributeName,
                                   Object[] keyIntoValue);
@@ -76,6 +83,24 @@ public interface CyData
    */
   public Object removeAttributeValue(String objectKey, String attributeName,
                                      Object[] keyIntoValue);
+
+  /**
+   * Removes all values bound to objectKey in attributeName.  Most attribute
+   * definitions will have no keyspace, and such attribute definitions will
+   * bind at most one attribute value to any give objectKey; this method is
+   * useful with attribute definitions that have nonzero keyspaces.
+   * @return true if and only if objectKey had at least one attribute value
+   *   bound in attributeName prior to this method invocation.
+   * @param objectKey the object from which to delete all bound attribute
+   *   values.
+   * @param attributeName the attribute definition in which to delete
+   *   attribute values.
+   * @exception IllegalStateException if attributeName is not an existing
+   *   attribute definition; see CyDataDefinition.
+   * @exception NullPointerException if objectKey or attributeName is null.
+   */
+  public boolean removeAllAttributeValues(String objectKey,
+                                          String attributeName);
 
   /**
    * For all bound attribute values on objectKey in the specified attribute

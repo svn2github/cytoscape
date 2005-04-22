@@ -98,6 +98,10 @@ final class CyDataModel implements CyDataDefinition, CyData
                               attributeValue);
       b.attributeValueRemoved(objectKey, attributeName, keyIntoValue,
                               attributeValue); }
+    public final void allAttributeValuesRemoved(final String objectKey,
+                                                final String attributeName) {
+      a.allAttributeValuesRemoved(objectKey, attributeName);
+      b.allAttributeValuesRemoved(objectKey, attributeName); }
     private final static CyDataListener add(final CyDataListener a,
                                             final CyDataListener b) {
       if (a == null) return b;
@@ -560,6 +564,28 @@ final class CyDataModel implements CyDataDefinition, CyData
         r_getAttributeValue(dim, keyIntoValue, keyTypes, currOffset + 1);
       if (dim.size() == 0) hash.remove(currKey);
       return returnThis; }
+  }
+
+  public final boolean removeAllAttributeValues(final String objectKey,
+                                                final String attributeName)
+  {
+    // Pull out the definition, error-checking attributeName in the process.
+    if (attributeName == null)
+      throw new NullPointerException("attributeName is null");
+    final AttrDefData def = (AttrDefData) m_attrMap.get(attributeName);
+    if (def == null)
+      throw new IllegalStateException
+        ("no attributeName '" + attributeName + "' exists");
+
+    // Error-check objectKey.
+    if (objectKey == null) throw new NullPointerException("objectKey is null");
+
+    final boolean returnThis = (def.objMap.remove(objectKey) != null);
+    if (returnThis) {
+      final CyDataListener listener = m_dataListener;
+      if (listener != null)
+        listener.allAttributeValuesRemoved(objectKey, attributeName); }
+    return returnThis;
   }
 
   public final int getAttributeKeyspanCount(final String objectKey,
