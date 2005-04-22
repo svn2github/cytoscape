@@ -104,8 +104,10 @@ public interface CyData
 
   /**
    * For all bound attribute values on objectKey in attributeName,
-   * returns the number of representatives in the key space in
-   * dimension keyPrefix.length + 1, along specified prefix.
+   * returns an enumeration of [unique] representatives in the key space in
+   * dimension keyPrefix.length + 1, along specified prefix.<p>
+   * IMPORTANT: It is a programming error to modify (add or remove) attribute
+   * values in attributeName whilst iterating through the returned enumeration.
    * @param objectKey the object to query.
    * @param attributeName the attribute definition to query.
    * @param keyPrefix an array of length K where K is strictly less than N,
@@ -115,33 +117,22 @@ public interface CyData
    *   be either null or the empty array, in which case the count returned
    *   is the number of representatives in the first dimension of
    *   key space.
-   * @return the number of keys in key space dimension K + 1 along specified
-   *   keyPrefix; the quantity returned is always non-negative.
+   * @return an enumeration of keys in key space dimension K + 1 along
+   *   specified keyPrefix; the enumeration returned is never null;
+   *   the order of the returned keys is arbitrary.
    * @exception IllegalStateException if attributeName is not an existing
    *   attribute definition; see CyDataDefinition.
    */
-  public int getAttributeKeyspanCount(String objectKey, String attributeName,
-                                      Object[] keyPrefix);
-
-  /**
-   * This method is the same as getAttributeKeyspanCount(), only
-   * the actual representatives are returned, and not their count.<p>
-   * IMPORTANT: It is a programming error to modify (add or remove) attribute
-   * values in attributeName whilst iterating through the returned enumeration.
-   * @return a non-null enumeration of key representatives; the order
-   *   of the returned keys is arbitrary.
-   * @see #getAttributeKeyspanCount(String, String, Object[])
-   */
-  public Enumeration getAttributeKeyspan(String objectKey,
-                                         String attributeName,
-                                         Object[] keyPrefix);
+  public CountedEnumeration getAttributeKeyspan(String objectKey,
+                                                String attributeName,
+                                                Object[] keyPrefix);
 
   /**
    * @return an enumeration of objectKey strings (java.lang.String) that
    *   currently have value[s] assigned to them in the specified attribute
    *   definition; the order of the returned strings is arbitrary.
    */
-  public Enumeration getObjectKeys(String attributeName);
+  public CountedEnumeration getObjectKeys(String attributeName);
 
   /*
    * I'm not including this method in the API for good reasons.

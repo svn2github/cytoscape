@@ -1,11 +1,11 @@
 package cytoscape.data.attr.util;
 
+import cytoscape.data.attr.CountedEnumeration;
 import cytoscape.data.attr.CyData;
 import cytoscape.data.attr.CyDataDefinition;
 import cytoscape.data.attr.CyDataDefinitionListener;
 import cytoscape.data.attr.CyDataListener;
 
-import java.util.Enumeration;
 import java.util.HashMap;
 
 final class CyDataModel implements CyDataDefinition, CyData
@@ -27,13 +27,18 @@ final class CyDataModel implements CyDataDefinition, CyData
     }
   }
 
-  final static class Iterator2Enumeration implements Enumeration
+  final static class Iterator2Enumeration implements CountedEnumeration
   {
     private final java.util.Iterator iter;
-    Iterator2Enumeration(final java.util.Iterator iter) {
-      this.iter = iter; }
+    private int count;
+    Iterator2Enumeration(final java.util.Iterator iter, final int count) {
+      this.iter = iter;
+      this.count = count; }
     public final boolean hasMoreElements() { return iter.hasNext(); }
-    public final Object nextElement() { return iter.next(); }
+    public final Object nextElement() {
+      if (iter.hasNext()) count--;
+      return iter.next(); }
+    public final int numElementsRemaining() { return count; }
   }
 
   private final static class AttrDefLisChain
@@ -122,8 +127,9 @@ final class CyDataModel implements CyDataDefinition, CyData
       return add(a2, b2); }
   }
 
-  private final static Enumeration s_the_empty_enumeration =
-    new Enumeration() {
+  private final static CountedEnumeration s_the_empty_enumeration =
+    new CountedEnumeration() {
+      public final int numElementsRemaining() { return 0; }
       public final boolean hasMoreElements() { return false; }
       public final Object nextElement() {
         throw new java.util.NoSuchElementException(); } };
@@ -216,9 +222,10 @@ final class CyDataModel implements CyDataDefinition, CyData
     if (l != null) l.attributeDefined(attributeName);
   }
 
-  public final Enumeration getDefinedAttributes()
+  public final CountedEnumeration getDefinedAttributes()
   {
-    return new Iterator2Enumeration(m_attrMap.keySet().iterator());
+    return new Iterator2Enumeration(m_attrMap.keySet().iterator(),
+                                    m_attrMap.size());
   }
 
   public final byte getAttributeValueType(final String attributeName)
@@ -588,78 +595,10 @@ final class CyDataModel implements CyDataDefinition, CyData
     return returnThis;
   }
 
-  public final int getAttributeKeyspanCount(final String objectKey,
-                                            final String attributeName,
-                                            final Object[] keyPrefix)
-  {
-    // Pull out the definition, error-checking attributeName in the process.
-    if (attributeName == null)
-      throw new NullPointerException("attributeName is null");
-    final AttrDefData def = (AttrDefData) m_attrMap.get(attributeName);
-    if (def == null)
-      throw new IllegalStateException
-        ("no attributeName '" + attributeName + "' exists");
-
-    // Error-check objectKey.
-    if (objectKey == null) throw new NullPointerException("objectKey is null");
-
-    // Error-check keyPrefix.  Leave the type checks to the recursion.
-    if (def.keyTypes.length == 0)
-      throw new IllegalStateException
-        ("attributeName '" + attributeName + "' has no keyspace, so" +
-         " calling this method makes no sense");
-    if (keyPrefix != null && keyPrefix.length >= def.keyTypes.length)
-      throw new IllegalArgumentException
-        ("the length of keyPrefix must be strictly less than the" +
-         " dimensionality of keyspace");
-
-    if (keyPrefix == null || keyPrefix.length == 0) { // Don't even recurse.
-      final HashMap dim = (HashMap) def.objMap.get(objectKey);
-      if (dim == null) return 0;
-      return dim.size(); }
-    else { // Recurse.
-      final HashMap dim = (HashMap) def.objMap.get(objectKey);
-      if (dim == null) return 0;
-      return r_getAttributeKeyspanCount(dim, keyPrefix, def.keyTypes, 0); }
-  }
-
-  private final int r_getAttributeKeyspanCount(final HashMap hash,
-                                               final Object[] keyPrefix,
-                                               final byte[] keyTypes,
-                                               final int currOffset)
-  {
-    // Error-check type of object keyPrefix[currOffset].
-    final Object currKey = keyPrefix[currOffset];
-    if (currKey == null)
-      throw new NullPointerException("keyPrefix[" + currOffset + "] is null");
-    boolean passed = false;
-    switch (keyTypes[currOffset]) {
-      case CyDataDefinition.TYPE_BOOLEAN:
-        passed = (currKey instanceof java.lang.Boolean); break;
-      case CyDataDefinition.TYPE_FLOATING_POINT:
-        passed = (currKey instanceof java.lang.Double); break;
-      case CyDataDefinition.TYPE_INTEGER:
-        passed = (currKey instanceof java.lang.Integer); break;
-      case CyDataDefinition.TYPE_STRING:
-        passed = (currKey instanceof java.lang.String); break; }
-    if (!passed)
-      throw new ClassCastException
-        ("keyPrefix[" + currOffset + "] is of incorrect object type");
-
-    if (currOffset == keyPrefix.length - 1) { // The dimension.
-      final HashMap dim = (HashMap) hash.get(currKey);
-      if (dim == null) return 0;
-      return dim.size(); }
-    else { // Recurse.
-      final HashMap dim = (HashMap) hash.get(currKey);
-      if (dim == null) return 0;
-      return r_getAttributeKeyspanCount(dim, keyPrefix, keyTypes,
-                                        currOffset + 1); }
-  }
-
-  public final Enumeration getAttributeKeyspan(final String objectKey,
-                                               final String attributeName,
-                                               final Object[] keyPrefix)
+  public final CountedEnumeration getAttributeKeyspan(
+                                                    final String objectKey,
+                                                    final String attributeName,
+                                                    final Object[] keyPrefix)
   {
     // Pull out the definition, error-checking attributeName in the process.
     if (attributeName == null)
@@ -685,17 +624,18 @@ final class CyDataModel implements CyDataDefinition, CyData
     if (keyPrefix == null || keyPrefix.length == 0) { // Don't even recurse.
       final HashMap dim = (HashMap) def.objMap.get(objectKey);
       if (dim == null) return s_the_empty_enumeration;
-      return new Iterator2Enumeration(dim.keySet().iterator()); }
+      return new Iterator2Enumeration(dim.keySet().iterator(), dim.size()); }
     else { // Recurse.
       final HashMap dim = (HashMap) def.objMap.get(objectKey);
       if (dim == null) return s_the_empty_enumeration;
       return r_getAttributeKeyspan(dim, keyPrefix, def.keyTypes, 0); }
   }
 
-  private final Enumeration r_getAttributeKeyspan(final HashMap hash,
-                                                  final Object[] keyPrefix,
-                                                  final byte[] keyTypes,
-                                                  final int currOffset)
+  private final CountedEnumeration r_getAttributeKeyspan(
+                                                      final HashMap hash,
+                                                      final Object[] keyPrefix,
+                                                      final byte[] keyTypes,
+                                                      final int currOffset)
   {
     // Error-check type of object keyPrefix[currOffset].
     final Object currKey = keyPrefix[currOffset];
@@ -718,7 +658,7 @@ final class CyDataModel implements CyDataDefinition, CyData
     if (currOffset == keyPrefix.length - 1) { // The dimension.
       final HashMap dim = (HashMap) hash.get(currKey);
       if (dim == null) return s_the_empty_enumeration;
-      return new Iterator2Enumeration(dim.keySet().iterator()); }
+      return new Iterator2Enumeration(dim.keySet().iterator(), dim.size()); }
     else { // Recurse further.
       final HashMap dim = (HashMap) hash.get(currKey);
       if (dim == null) return s_the_empty_enumeration;
@@ -726,7 +666,7 @@ final class CyDataModel implements CyDataDefinition, CyData
                                    currOffset + 1); }
   }
 
-  public final Enumeration getObjectKeys(final String attributeName)
+  public final CountedEnumeration getObjectKeys(final String attributeName)
   {
     // Pull out the definition, error-checking attributeName in the process.
     if (attributeName == null)
@@ -736,7 +676,8 @@ final class CyDataModel implements CyDataDefinition, CyData
       throw new IllegalStateException
         ("no attributeName '" + attributeName + "'exists");
 
-    return new Iterator2Enumeration(def.objMap.keySet().iterator());
+    return new Iterator2Enumeration(def.objMap.keySet().iterator(),
+                                    def.objMap.size());
   }
 
   public final void addDataListener(final CyDataListener listener)

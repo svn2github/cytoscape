@@ -78,7 +78,7 @@ public interface CyDataDefinition
    * @return an enumeration of java.lang.String; each returned string
    *   is an attributeName (an attribute definition name).
    */
-  public Enumeration getDefinedAttributes();
+  public CountedEnumeration getDefinedAttributes();
 
   /**
    * @return the type (TYPE_*) of values bound to objects by this attribute

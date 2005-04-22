@@ -1,9 +1,9 @@
 package cytoscape.data.attr.util;
 
+import cytoscape.data.attr.CountedEnumeration;
 import cytoscape.data.attr.CyData;
 import cytoscape.data.attr.CyDataDefinition;
 
-import java.util.Enumeration;
 import java.util.HashMap;
 
 public final class CyDataHelpers
@@ -18,10 +18,11 @@ public final class CyDataHelpers
   // No constructor.  Static methods only.
   private CyDataHelpers() { }
 
-  public static Enumeration distinctBoundValues(final String objectKey,
-                                                final String attributeName,
-                                                final CyData data,
-                                                final CyDataDefinition def)
+  public static CountedEnumeration distinctBoundValues(
+                                                    final String objectKey,
+                                                    final String attributeName,
+                                                    final CyData data,
+                                                    final CyDataDefinition def)
   {
     final HashMap duplicateFilter = new HashMap();
     final int keyspaceDims =
@@ -31,23 +32,24 @@ public final class CyDataHelpers
         (objectKey, attributeName, null); // May trigger exception; OK.
       if (attrVal != null) duplicateFilter.put(attrVal, null); }
     else { // keyspaceDims > 1.
-      final Enumeration dim1Keys =
+      final CountedEnumeration dim1Keys =
         data.getAttributeKeyspan(objectKey, attributeName, null);
       r_distinctBoundValues(objectKey, attributeName, data,
                             duplicateFilter, dim1Keys,
                             new Object[0], keyspaceDims); }
     return new CyDataModel.Iterator2Enumeration
-      (duplicateFilter.keySet().iterator());
+      (duplicateFilter.keySet().iterator(), duplicateFilter.size());
   }
 
   // Recursive helper for distinctBoundValues().
-  private static void r_distinctBoundValues(final String objectKey,
-                                            final String attributeName,
-                                            final CyData dataRegistry,
-                                            final HashMap duplicateFilter,
-                                            final Enumeration currentKeyspan,
-                                            final Object[] prefixSoFar,
-                                            final int keyspaceDims)
+  private static void r_distinctBoundValues(
+                                       final String objectKey,
+                                       final String attributeName,
+                                       final CyData dataRegistry,
+                                       final HashMap duplicateFilter,
+                                       final CountedEnumeration currentKeyspan,
+                                       final Object[] prefixSoFar,
+                                       final int keyspaceDims)
   {
     final Object[] newPrefix = new Object[prefixSoFar.length + 1];
     System.arraycopy(prefixSoFar, 0, newPrefix, 0, prefixSoFar.length);
@@ -60,7 +62,7 @@ public final class CyDataHelpers
     else { // Not the final dimension.
       while (currentKeyspan.hasMoreElements()) {
         newPrefix[prefixSoFar.length] = currentKeyspan.nextElement();
-        final Enumeration newKeyspan = dataRegistry.getAttributeKeyspan
+        final CountedEnumeration newKeyspan = dataRegistry.getAttributeKeyspan
           (objectKey, attributeName, newPrefix);
         r_distinctBoundValues(objectKey, attributeName, dataRegistry,
                               duplicateFilter, newKeyspan,
