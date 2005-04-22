@@ -26,6 +26,14 @@ public interface CyData
    *   null if no attribute value was previously bound.
    * @exception IllegalStateException if attributeName is not an existing
    *   attribute definition; see CyDataDefinition.
+   * @exception NullPointerException if objectKey, attributeName, or
+   *   attributeValue is null, or if keyIntoValue is [not null and]
+   *   of positive length and any one of its entries is null.
+   * @exception ClassCastException if attributeValue is not of the
+   *   appropriate object type or if any one of keyIntoValue's representatives
+   *   is not of the appropriate object type; see CyDataDefinition.
+   * @exception IllegalArgumentException if keyIntoValue's length does not
+   *   match the keyspace dimensionality of attributeName.
    */
   public Object setAttributeValue(String objectKey,
                                   String attributeName,

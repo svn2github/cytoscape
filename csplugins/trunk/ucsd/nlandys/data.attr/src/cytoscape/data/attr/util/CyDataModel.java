@@ -332,7 +332,9 @@ final class CyDataModel implements CyDataDefinition, CyData
           ("attributeName '" + attributeName + "' has no keyspace" +
            " defined, yet keyIntoValue is not empty"); } }
     else { // Keyspace is not empty.
-      if (def.keyTypes.length != keyIntoValue.length) { // May trigger NullPtr.
+      final int keyIntoValueLength =
+        (keyIntoValue == null ? 0 : keyIntoValue.length);
+      if (def.keyTypes.length != keyIntoValueLength) {
         throw new IllegalArgumentException
           ("keyIntoValue has incorrect dimensionality"); } }
 
@@ -428,7 +430,9 @@ final class CyDataModel implements CyDataDefinition, CyData
           ("attributeName '" + attributeName + "' has no keyspace" +
            " defined, yet keyIntoValue is not empty"); } }
     else { // Keyspace is not empty.
-      if (def.keyTypes.length != keyIntoValue.length) { // May trigger NullPtr.
+      final int keyIntoValueLength =
+        (keyIntoValue == null ? 0 : keyIntoValue.length);
+      if (def.keyTypes.length != keyIntoValueLength) {
         throw new IllegalArgumentException
           ("keyIntoValue has incorrect dimensionality"); } }
 
@@ -495,7 +499,9 @@ final class CyDataModel implements CyDataDefinition, CyData
           ("attributeName '" + attributeName + "' has no keyspace" +
            " defined, yet keyIntoValue is not empty"); } }
     else { // Keyspace is not empty.
-      if (def.keyTypes.length != keyIntoValue.length) { // May trigger NullPtr.
+      final int keyIntoValueLength =
+        (keyIntoValue == null ? 0 : keyIntoValue.length);
+      if (def.keyTypes.length != keyIntoValueLength) {
         throw new IllegalArgumentException
           ("keyIntoValue has incorrect dimensionality"); } }
 
