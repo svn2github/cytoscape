@@ -103,8 +103,8 @@ public interface CyData
                                           String attributeName);
 
   /**
-   * For all bound attribute values on objectKey in the specified attribute
-   * definition, returns the number of representatives in the key space in
+   * For all bound attribute values on objectKey in attributeName,
+   * returns the number of representatives in the key space in
    * dimension keyPrefix.length + 1, along specified prefix.
    * @param objectKey the object to query.
    * @param attributeName the attribute definition to query.
