@@ -84,7 +84,7 @@ public interface CyData
    *   is the number of representatives in the first dimension of
    *   key space.
    * @return the number of keys in key space dimension K + 1 along specified
-   *   keyPrefix.
+   *   keyPrefix; the quantity returned is always non-negative.
    * @exception IllegalStateException if attributeName is not an existing
    *   attribute definition; see CyDataDefinition.
    */
