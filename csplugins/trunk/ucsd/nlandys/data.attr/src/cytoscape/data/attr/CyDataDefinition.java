@@ -47,6 +47,10 @@ public interface CyDataDefinition
    * "Salk experiment", ...) I would define a one-dimensional key space
    * of TYPE_STRING (to represent the experiment names) and a value of
    * TYPE_FLOATING_POINT (to represent p-values).<p>
+   * NOTE: No constraints on attributeName are documented by this API.  In
+   * other words, as far as this API is concerned, any attributeName is
+   * acceptable, including the empty string ("").  The only necessary
+   * condition is that each attributeName be unique.
    * @param attributeName an identifier for this attribute definition;
    *   this value must be unique from all existing attribute definitions;
    *   ideally, the choice of name would describe values being stored by this
@@ -61,6 +65,10 @@ public interface CyDataDefinition
    *   scenario).
    * @exception IllegalStateException if attributeName is already the name
    *   of an existing attribute definition.
+   * @exception NullPointerException if attributeName is null.
+   * @exception IllegalArgumentException if valueType is not one of the
+   *   TYPE_* constants, or if keyTypes is [not null and] of positive length
+   *   and any one of its elements is not one of the TYPE_* constants.
    */
   public void defineAttribute(String attributeName,
                               byte valueType,
@@ -78,6 +86,7 @@ public interface CyDataDefinition
    * @return the type (TYPE_*) of values bound to objects by this attribute
    *   definition, or -1 if specified attribute definition does not exist;
    *   note that all of the TYPE_* constants are positive.
+   * @exception NullPointerException if attributeName is null.
    */
   public byte getAttributeValueType(String attributeName);
 
@@ -86,6 +95,7 @@ public interface CyDataDefinition
    *   dimensionality we are querying.
    * @return the number of dimensions in the specified attribute's key
    *   space, or -1 if specified attribute definition does not exist.
+   * @exception NullPointerException if attributeName is null.
    */
   public int getAttributeKeyspaceDimensionality(String attributeName);
 
@@ -99,6 +109,7 @@ public interface CyDataDefinition
    *   written into this array starting at index zero of this array.
    * @exception IllegalStateException if no attribute definition called
    *   attributeName exists.
+   * @exception NullPointerException if attributeName is null.
    */
   public void copyAttributeKeyspaceInfo(String attributeName,
                                         byte[] keyTypes);
@@ -107,6 +118,7 @@ public interface CyDataDefinition
    * WARNING: All bound attribute values on objects will go away in this
    * attribute namespace when this method is called.
    * @param attributeName the attribute definition to undefine.
+   * @exception NullPointerException if attributeName is null.
    */
   public void undefineAttribute(String attributeName);
 
