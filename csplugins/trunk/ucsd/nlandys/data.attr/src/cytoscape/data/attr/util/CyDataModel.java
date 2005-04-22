@@ -304,7 +304,7 @@ final class CyDataModel implements CyDataDefinition, CyData
       case CyDataDefinition.TYPE_FLOATING_POINT:
         passed = (attributeValue instanceof java.lang.Double); break;
       case CyDataDefinition.TYPE_INTEGER:
-        passed = (attributeValue instanceof java.lang.Long); break;
+        passed = (attributeValue instanceof java.lang.Integer); break;
       case CyDataDefinition.TYPE_STRING:
         passed = (attributeValue instanceof java.lang.String); break;
     }
@@ -317,7 +317,7 @@ final class CyDataModel implements CyDataDefinition, CyData
         case CyDataDefinition.TYPE_FLOATING_POINT:
           className = "java.lang.Double"; break;
         case CyDataDefinition.TYPE_INTEGER:
-          className = "java.lang.Long"; break;
+          className = "java.lang.Integer"; break;
         case CyDataDefinition.TYPE_STRING:
           className = "java.lang.String"; break;
       }
@@ -384,7 +384,7 @@ final class CyDataModel implements CyDataDefinition, CyData
       case CyDataDefinition.TYPE_FLOATING_POINT:
         passed = (currKey instanceof java.lang.Double); break;
       case CyDataDefinition.TYPE_INTEGER:
-        passed = (currKey instanceof java.lang.Long); break;
+        passed = (currKey instanceof java.lang.Integer); break;
       case CyDataDefinition.TYPE_STRING:
         passed = (currKey instanceof java.lang.String); break; }
     if (!passed)
@@ -460,7 +460,7 @@ final class CyDataModel implements CyDataDefinition, CyData
       case CyDataDefinition.TYPE_FLOATING_POINT:
         passed = (currKey instanceof java.lang.Double); break;
       case CyDataDefinition.TYPE_INTEGER:
-        passed = (currKey instanceof java.lang.Long); break;
+        passed = (currKey instanceof java.lang.Integer); break;
       case CyDataDefinition.TYPE_STRING:
         passed = (currKey instanceof java.lang.String); break; }
     if (!passed)
@@ -542,7 +542,7 @@ final class CyDataModel implements CyDataDefinition, CyData
       case CyDataDefinition.TYPE_FLOATING_POINT:
         passed = (currKey instanceof java.lang.Double); break;
       case CyDataDefinition.TYPE_INTEGER:
-        passed = (currKey instanceof java.lang.Long); break;
+        passed = (currKey instanceof java.lang.Integer); break;
       case CyDataDefinition.TYPE_STRING:
         passed = (currKey instanceof java.lang.String); break; }
     if (!passed)
@@ -613,7 +613,7 @@ final class CyDataModel implements CyDataDefinition, CyData
       case CyDataDefinition.TYPE_FLOATING_POINT:
         passed = (currKey instanceof java.lang.Double); break;
       case CyDataDefinition.TYPE_INTEGER:
-        passed = (currKey instanceof java.lang.Long); break;
+        passed = (currKey instanceof java.lang.Integer); break;
       case CyDataDefinition.TYPE_STRING:
         passed = (currKey instanceof java.lang.String); break; }
     if (!passed)
@@ -682,7 +682,7 @@ final class CyDataModel implements CyDataDefinition, CyData
       case CyDataDefinition.TYPE_FLOATING_POINT:
         passed = (currKey instanceof java.lang.Double); break;
       case CyDataDefinition.TYPE_INTEGER:
-        passed = (currKey instanceof java.lang.Long); break;
+        passed = (currKey instanceof java.lang.Integer); break;
       case CyDataDefinition.TYPE_STRING:
         passed = (currKey instanceof java.lang.String); break; }
     if (!passed)

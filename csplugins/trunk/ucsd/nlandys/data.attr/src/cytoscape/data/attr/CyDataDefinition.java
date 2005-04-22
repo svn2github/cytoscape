@@ -20,7 +20,7 @@ public interface CyDataDefinition
   public final byte TYPE_FLOATING_POINT = 2;
 
   /**
-   * This type corresponds to java.lang.Long.
+   * This type corresponds to java.lang.Integer.
    */
   public final byte TYPE_INTEGER = 3;
 

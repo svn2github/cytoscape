@@ -30,40 +30,40 @@ public final class TestCyData
                                       new Double(0.7) };
     data.setAttributeValue
       (oneName, attrName, oneVals[0],
-       new Object[] { "Ideker", new Long(0) });
+       new Object[] { "Ideker", new Integer(0) });
     data.setAttributeValue
       (oneName, attrName, oneVals[1],
-       new Object[] { "Ideker", new Long(1) });
+       new Object[] { "Ideker", new Integer(1) });
     data.setAttributeValue
       (oneName, attrName, oneVals[2],
-       new Object[] { "Salk", new Long(0) });
+       new Object[] { "Salk", new Integer(0) });
     data.setAttributeValue
       (oneName, attrName, oneVals[1],
-       new Object[] { "Salk", new Long(1) });
+       new Object[] { "Salk", new Integer(1) });
     data.setAttributeValue
       (twoName, attrName, new Double(0.4),
-       new Object[] { "Salk", new Long(0) });
+       new Object[] { "Salk", new Integer(0) });
     Enumeration foo = data.getAttributeKeyspan
       (oneName, attrName, new Object[] { "Ideker" });
     for (int i = 0; i < 2; i++)
-      if (!(foo.nextElement() instanceof java.lang.Long))
-        throw new IllegalStateException("expected Long");
+      if (!(foo.nextElement() instanceof java.lang.Integer))
+        throw new IllegalStateException("expected Integer");
     if (foo.hasMoreElements())
       throw new IllegalStateException("did not expect more elements");
     o = data.getAttributeValue
-      (oneName, attrName, new Object[] { "Ideker", new Long(1) });
+      (oneName, attrName, new Object[] { "Ideker", new Integer(1) });
     if (!(((Double) o).doubleValue() == 0.6d))
       throw new IllegalStateException("expected 0.6");
     o = data.getAttributeValue
-      (twoName, attrName, new Object[] { "Salk", new Long(0) });
+      (twoName, attrName, new Object[] { "Salk", new Integer(0) });
     if (!(((Double) o).doubleValue() == 0.4d))
       throw new IllegalStateException("expected 0.4");
     o = data.getAttributeValue
-      ("noNode", attrName, new Object[] { "Howdy", new Long(0) });
+      ("noNode", attrName, new Object[] { "Howdy", new Integer(0) });
     if (o != null)
       throw new IllegalStateException("expected null");
     o = data.getAttributeValue
-      (twoName, attrName, new Object[] { "Salk", new Long(1) });
+      (twoName, attrName, new Object[] { "Salk", new Integer(1) });
     if (o != null)
       throw new IllegalStateException("expected null");
     Iterator boundValsOne =
