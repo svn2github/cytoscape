@@ -36,12 +36,12 @@ public final class TestCyData
     nodeData.setNodeAttributeValue
       (nodeTwoName, nodeAttrName, new Double(0.4),
        new Object[] { "Salk", new Long(0) });
-    Enumeration enum = nodeData.getNodeAttributeKeyspan
+    Enumeration foo = nodeData.getNodeAttributeKeyspan
       (nodeOneName, nodeAttrName, new Object[] { "Ideker" });
     for (int i = 0; i < 2; i++)
-      if (!(enum.nextElement() instanceof java.lang.Long))
+      if (!(foo.nextElement() instanceof java.lang.Long))
         throw new IllegalStateException("expected Long");
-    if (enum.hasMoreElements())
+    if (foo.hasMoreElements())
       throw new IllegalStateException("did not expect more elements");
     o = nodeData.getNodeAttributeValue
       (nodeOneName, nodeAttrName, new Object[] { "Ideker", new Long(1) });
