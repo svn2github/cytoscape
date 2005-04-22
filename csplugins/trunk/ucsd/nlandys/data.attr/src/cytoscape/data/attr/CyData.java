@@ -82,12 +82,12 @@ public interface CyData
    * definitions will have no key space, and such attribute definitions will
    * bind at most one attribute value to any give objectKey; this method is
    * useful with attribute definitions that have nonzero key spaces.
-   * @return true if and only if objectKey had at least one attribute value
-   *   bound in attributeName prior to this method invocation.
    * @param objectKey the object from which to delete all bound attribute
    *   values.
    * @param attributeName the attribute definition in which to delete
    *   attribute values.
+   * @return true if and only if objectKey had at least one attribute value
+   *   bound in attributeName prior to this method invocation.
    * @exception IllegalStateException if attributeName is not an existing
    *   attribute definition; see CyDataDefinition.
    * @exception NullPointerException if objectKey or attributeName is null.
@@ -128,9 +128,13 @@ public interface CyData
                                                 Object[] keyPrefix);
 
   /**
+   * @param attributeName the attribute definition to query.
    * @return an enumeration of objectKey strings (java.lang.String) that
    *   currently have value[s] assigned to them in the specified attribute
    *   definition; the order of the returned strings is arbitrary.
+   * @exception IllegalStateException if attributeName is not an existing
+   *   attribute definition; see CyDataDefinition.
+   * @exception NullPointerException if attributeName is null.
    */
   public CountedEnumeration getObjectKeys(String attributeName);
 
