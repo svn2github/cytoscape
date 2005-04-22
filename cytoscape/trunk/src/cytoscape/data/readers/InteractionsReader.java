@@ -108,8 +108,9 @@ public class InteractionsReader implements GraphReader {
   public void layout( GraphView view ){}
  
   public void read () {
-    String rawText;
-    if ( !is_zip ) {
+    String rawText = null;
+    try {
+      if ( !is_zip ) {
         if (filename.trim().startsWith ("jar://")) {
           TextJarReader reader = new TextJarReader (filename);
           reader.read ();
@@ -120,8 +121,11 @@ public class InteractionsReader implements GraphReader {
           reader.read ();
           rawText = reader.getText ();
         }
-    } else {
-      rawText = zip_entry;
+      } else {
+        rawText = zip_entry;
+      }
+    } catch ( Exception e ) {
+      return;
     }
 
     String delimiter = " ";

@@ -1,7 +1,3 @@
-//  $Revision$
-//  $Date$
-//  $Author$
-//---------------------------------------------------------------------------
 package cytoscape;
 
 import giny.model.Edge;
@@ -23,7 +19,7 @@ import javax.swing.*;
 import javax.swing.event.SwingPropertyChangeSupport;
 
 import cytoscape.data.ExpressionData;
-import cytoscape.data.GraphObjAttributes;
+import cytoscape.data.CytoscapeData;
 import cytoscape.data.Semantics;
 import cytoscape.data.readers.GMLReader2;
 import cytoscape.data.readers.GraphReader;
@@ -86,13 +82,13 @@ public abstract class Cytoscape {
    * The NetworkData that stores node info
    */
   // TODO: replace seperate objects with one
-  protected static GraphObjAttributes nodeData;
+  protected static CytoscapeData nodeData;
 
   /**
    * The NetworkData that stores edge info
    */
   // TODO: replace seperate objects with one
-  protected static GraphObjAttributes edgeData;
+  protected static CytoscapeData edgeData;
 
   //TODO: remove, replace with NetworkData
   protected static ExpressionData expressionData;
@@ -826,9 +822,9 @@ public abstract class Cytoscape {
    * @deprecated
    * This should not be used by any user-code
    */
-  public static GraphObjAttributes getNodeNetworkData () {
+  public static CytoscapeData getNodeNetworkData () {
     if ( nodeData == null )
-      nodeData = new GraphObjAttributes();
+      nodeData = new CytoscapeData(CytoscapeData.NODES);
     return nodeData;
   }
 
@@ -836,9 +832,9 @@ public abstract class Cytoscape {
    * @deprecated
    * This should not be used by any user-code
    */
-  public static GraphObjAttributes getEdgeNetworkData () {
+  public static CytoscapeData getEdgeNetworkData () {
     if ( edgeData == null )
-      edgeData = new GraphObjAttributes();
+      edgeData = new CytoscapeData(CytoscapeData.EDGES);
     return edgeData;
   }
 

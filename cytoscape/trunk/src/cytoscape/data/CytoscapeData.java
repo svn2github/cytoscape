@@ -4,25 +4,26 @@ import java.util.*;
 import java.io.*;
 import java.lang.reflect.*;
 
+import cytoscape.Cytoscape;
 import cytoscape.data.readers.*;
 import cytoscape.util.Misc;
 import cytoscape.task.TaskMonitor;
 
-import cytoscape.data.attr.CyData
-import cytoscape.data.attr.CyDataDefinition
-import cytoscape.data.attr.CyDataDefinitionListener
-import cytoscape.data.attr.CyDataListener
+import cytoscape.data.attr.CyData;
+import cytoscape.data.attr.CyDataDefinition;
+import cytoscape.data.attr.CyDataDefinitionListener;
+import cytoscape.data.attr.CyDataListener;
 import cytoscape.data.attr.util.CyDataFactory;
 
 import giny.model.GraphObject;
 
-public class CyData 
+public class CytoscapeData 
   implements GraphObjAttributes {
 
   private TaskMonitor taskMonitor;
 
   private Object objectModel;
-  private CyData data;
+  private cytoscape.data.attr.CyData data;
   private CyDataDefinition definition;
 
   public final byte TYPE_BOOLEAN = 1;
@@ -30,17 +31,18 @@ public class CyData
   public final byte TYPE_INTEGER = 3;
   public final byte TYPE_STRING = 4;
 
-  public final byte NODES = 1;
-  public final byte EDGES = 2;
+  public static final byte NODES = 1;
+  public static final byte EDGES = 2;
   private byte type;
 
   private static final String LIST = "LIST";
+  private static final Object[] LIST_KEY = {"LIST"};
   private static final Object[] ZERO = {new Integer(0)};
 
-  public CyData ( byte type) {
+  public CytoscapeData ( byte type) {
     this.type = type;
     objectModel = CyDataFactory.instantiateDataModel();
-    data = ( CyData )objectModel;
+    data = ( cytoscape.data.attr.CyData )objectModel;
     definition = ( CyDataDefinition )objectModel;
   }
  
@@ -105,7 +107,7 @@ public class CyData
 
     while( i.hasNext() ) {
       GraphObject gobj = ( GraphObject )i.next();
-      map.set( gobj, gobj.getIdentifier() );
+      map.put( gobj, gobj.getIdentifier() );
     }
     return map;
   }
@@ -128,7 +130,7 @@ public class CyData
 
     while( i.hasNext() ) {
       GraphObject gobj = ( GraphObject )i.next();
-      map.set( gobj.getIdentifier(), gobj );
+      map.put( gobj.getIdentifier(), gobj );
     }
     return map;
   }
@@ -148,13 +150,13 @@ public class CyData
       byte type = definition.getAttributeValueType(attr);
 
       if ( type == TYPE_BOOLEAN )
-        map.set( attr, Boolean.class );
+        map.put( attr, Boolean.class );
       else if ( type == TYPE_FLOATING_POINT )
-        map.set( attr, Double.class );
+        map.put( attr, Double.class );
       else if (type == TYPE_INTEGER )
-        map.set( attr, Integer.class );
+        map.put( attr, Integer.class );
       else if (type == TYPE_STRING )
-        map.set( attr, String.class );
+        map.put( attr, String.class );
     }
     return map;
   }
@@ -173,25 +175,25 @@ public class CyData
       String key = ( String )keys.next();
       Class dude = ( Class )newClassMap.get( key );
       if ( dude == Boolean.class ) {
-        definition.defineDataAttribute( key,
+        definition.defineAttribute( key,
                                         TYPE_BOOLEAN,
-                                        null,
-                                        null );
+                                        new byte[] {TYPE_INTEGER}, 
+                                        new String[] {LIST} );
       } else if ( dude == Double.class ) {
-        definition.defineDataAttribute( key,
+        definition.defineAttribute( key,
                                         TYPE_FLOATING_POINT,
-                                        null,
-                                        null );
+                                        new byte[] {TYPE_INTEGER}, 
+                                        new String[] {LIST} );
       } else if (dude == Integer.class ) {
-        definition.defineDataAttribute( key,
+        definition.defineAttribute( key,
                                         TYPE_INTEGER,
-                                        null,
-                                        null );
+                                        new byte[] {TYPE_INTEGER}, 
+                                        new String[] {LIST} );
       } else if (dude == String.class ) {
-        definition.defineDataAttribute( key,
+        definition.defineAttribute( key,
                                         TYPE_STRING,
-                                        null,
-                                        null );
+                                        new byte[] {TYPE_INTEGER}, 
+                                        new String[] {LIST} );
       } else {
       }
     }
@@ -213,7 +215,9 @@ public class CyData
    * @deprecated 
    * @see giny.model.GraphObject#getIdentifier()
    */
-  public String getCanonicalName ( Object graphObject );
+  public String getCanonicalName ( Object graphObject ) {
+    return ( ( GraphObject)graphObject).getIdentifier();
+  }
 
   /**
    * @return A GraphObject that matches this name
@@ -257,45 +261,45 @@ public class CyData
 
   }
 
-  private Object supportedObjectType ( Object object ) {
+  private Object supportedObjectType ( Object value ) {
     Object attribute;
     try { 
-      attribute = new Double( value );
-      return object;
+      attribute = new Double( value.toString() );
+      return attribute;
     } catch ( Exception e ) {}
     
     try { 
-      attribute = new Integer( value );
-      return object;
+      attribute = new Integer( value.toString() );
+      return attribute;
     } catch ( Exception e ) {}
     
     try { 
-      attribute = new Boolean( value );
-      return object;
+      attribute = new Boolean( value.toString() );
+      return attribute;
     } catch ( Exception e ) {}
     
     try { 
-      attribute = new String( value );
-      return object;
+      attribute = new String( value.toString() );
+      return attribute;
     } catch ( Exception e ) {}
 
     return null;
   }
 
-  private byte guessAndDefineObjectType ( Object object ) {
+  private byte guessAndDefineObjectType ( Object value, String attributeName ) {
     Object attribute;
     try { 
-      attribute = new Double( value );
-      defintion.defineAttribute( attributeName,
+      attribute = new Double( value.toString() );
+      definition.defineAttribute( attributeName,
                                  TYPE_FLOATING_POINT,
                                  new byte[] {TYPE_INTEGER}, 
-                                 new String[] {LIST} )
-      return TYPE_FLOATING_POINT;
+                                 new String[] {LIST} );
+        return TYPE_FLOATING_POINT;
     } catch ( Exception e ) {}
     
     try { 
-      attribute = new Integer( value );
-      defintion.defineAttribute( attributeName,
+      attribute = new Integer( value.toString() );
+      definition.defineAttribute( attributeName,
                                  TYPE_INTEGER,
                                  new byte[] {TYPE_INTEGER}, 
                                  new String[] {LIST} );
@@ -303,8 +307,8 @@ public class CyData
     } catch ( Exception e ) {}
 
     try { 
-      attribute = new Boolean( value );
-      defintion.defineAttribute( attributeName,
+      attribute = new Boolean( value.toString() );
+      definition.defineAttribute( attributeName,
                                  TYPE_BOOLEAN,
                                  new byte[] {TYPE_INTEGER}, 
                                  new String[] {LIST} );
@@ -312,11 +316,11 @@ public class CyData
     } catch ( Exception e ) {}
     
     try { 
-      attribute = new String( value );
-      defintion.defineAttribute( attributeName,
-                                 TYPE_STRING,
-                                 new byte[] {TYPE_INTEGER}, 
-                                 new String[] {LIST} );
+      attribute = new String( value.toString() );
+      definition.defineAttribute( attributeName,
+                                  TYPE_STRING,
+                                  new byte[] {TYPE_INTEGER}, 
+                                  new String[] {LIST} );
       return TYPE_STRING;
     } catch ( Exception e ) {}
 
@@ -330,7 +334,7 @@ public class CyData
    * value. The value is retrievable later by using the same GraphObject and 
    * attribute combination.
    *
-   * The attribute defintion should be set, but if it is not, a type will be guessed
+   * The attribute definition should be set, but if it is not, a type will be guessed
    * for it.
    * @param attributeName the name of the attribute
    * @param graphObjectName  the identifier of a Node or Edge
@@ -342,10 +346,10 @@ public class CyData
                        Object value ) {
 
     
-    byte set = defintion.getAttributeValueType( attributeName );
+    byte set = definition.getAttributeValueType( attributeName );
     if ( set == -1 ) {
       // not set, guess the type
-      set = guessAndDefineObjectType( value );
+      set = guessAndDefineObjectType( value, attributeName );
       Object attribute = supportedObjectType( value );
 
       try { 
@@ -390,13 +394,13 @@ public class CyData
                           String graphObjectName, 
                           Object value ) {
 
-    byte set = defintion.getAttributeValueType( attributeName );
-    int dims = defintion.getAttributeKeyspaceDimensionality( attributeName );
+    byte set = definition.getAttributeValueType( attributeName );
+    int dims = definition.getAttributeKeyspaceDimensionality( attributeName );
     if ( set == -1 ) {
       //the attribute is not set at all, we need to initialize it as a list
       
       // first we need the type
-      set = guessAndDefineObjectType( value );
+      set = guessAndDefineObjectType( value, attributeName );
       Object attribute = supportedObjectType( value );
 
     } 
@@ -405,9 +409,9 @@ public class CyData
     Object current_val = supportedObjectType( value );
     
     // first find the end of the list
-    int span = defintion.getAttributeKeyspanCount( graphObjectName, 
-                                                   attributeName,
-                                                   new Object[] {LIST} );
+    int span = data.getAttributeKeyspanCount( graphObjectName, 
+                                                    attributeName,
+                                                    LIST_KEY);
     try {
       // now insert the current_val into the end of the list
       data.setAttributeValue( graphObjectName,
@@ -457,7 +461,7 @@ public class CyData
    * @deprecated
    */
   public int numberOfAttributes () {
-    Enumeration iter = defintion.getDefinedAttributes();
+    Enumeration iter = definition.getDefinedAttributes();
     int count = 0;
     while ( iter.hasMoreElements() ) {
       Object o = iter.nextElement();
@@ -473,7 +477,7 @@ public class CyData
   public String[] getAttributeNames () {
 
     List list = new ArrayList();
-    Enumeration iter = defintion.getDefinedAttributes();
+    Enumeration iter = definition.getDefinedAttributes();
     while ( iter.hasMoreElements() ) {
       list.add( ( String )iter.nextElement() );
     }
@@ -528,11 +532,11 @@ public class CyData
     List arraylist = new ArrayList();
     
     // first find the end of the list
-    int span = defintion.getAttributeKeyspanCount( graphObjectName, 
-                                                   attributeName,
-                                                   new Object[] {LIST} );
+    int span = data.getAttributeKeyspanCount( graphObjectName, 
+                                                    attributeName,
+                                                    LIST_KEY );
 
-    for ( int i = 0; i < spanl ++i ) {
+    for ( int i = 0; i < span; ++i ) {
       arraylist.add( data.getAttributeValue( graphObjectName,
                                              attributeName,
                                              new Object[] { new Integer(i) } ) );
@@ -546,8 +550,10 @@ public class CyData
    * return the unique Strings among the values of all objects with a given attribute.
    */
   public String[] getUniqueStringValues ( String attributeName ) {
-    if ( defintion.getAttributeValueType() != TYPE_STRING ) 
+    if ( definition.getAttributeValueType( attributeName ) != TYPE_STRING ) 
       return new String[] {};
+
+    Set unique = new HashSet();
 
     Iterator i;
     if ( type == NODES ) 
@@ -578,10 +584,10 @@ public class CyData
   }
 
   /**
-   * I guess this is if there is a defnition
+   * I guess this is if there is a definition
    */ 
   public boolean hasAttribute ( String attributeName ) {
-    if ( defnition.getAttributeValueType( attributeName ) != -1 ) 
+    if ( definition.getAttributeValueType( attributeName ) != -1 ) 
       return true;
     return false;
   }
@@ -590,7 +596,7 @@ public class CyData
    * Is there and attribute defined for this object 
    */
   public boolean hasAttribute ( String attributeName, String graphObjName ) {
-    if ( getAttributeKeyspanCount(graphObjName,  attributeName, LIST) != -1 )
+    if ( data.getAttributeKeyspanCount(graphObjName,  attributeName, LIST_KEY) != -1 )
       return true;
     return false;
   }
@@ -619,9 +625,9 @@ public class CyData
       i = Cytoscape.getRootGraph().edgesIterator();
     while( i.hasNext() ) {
       GraphObject gobj = ( GraphObject )i.next();
-      map.set( gobj.getIdentifier(), getListValues( gobj.getIdentifier(), attributeName ) );
+      map.put( gobj.getIdentifier(), getListValues( gobj.getIdentifier(), attributeName ) );
     }
-    
+    return map;
   }
  
   /**
@@ -629,7 +635,7 @@ public class CyData
    *  remove the entire second level Hashmap whose key is the specified attributeName
    */
   public void deleteAttribute ( String attributeName ) {
-    defnition.undefineAttribute( attributeName );
+    definition.undefineAttribute( attributeName );
   }
 
   /**
@@ -655,28 +661,28 @@ public class CyData
   public boolean setClass ( String attributeName, Class attributeClass ) {
 
     if ( attributeClass == Boolean.class ) {
-      defnition.defineAttribute( attributeName,
+      definition.defineAttribute( attributeName,
                                  TYPE_BOOLEAN,
                                  new byte[] {TYPE_INTEGER}, 
                                  new String[] {LIST} );
       return true;
     }
     else if (  attributeClass == Double.class ) {
-      defnition.defineAttribute( attributeName,
+      definition.defineAttribute( attributeName,
                                  TYPE_FLOATING_POINT,
                                  new byte[] {TYPE_INTEGER}, 
                                  new String[] {LIST} );
       return true;
     }
     else if (  attributeClass == Integer.class ) {
-      defnition.defineAttribute( attributeName,
+      definition.defineAttribute( attributeName,
                                  TYPE_INTEGER,
                                  new byte[] {TYPE_INTEGER}, 
                                  new String[] {LIST} );
       return true;
     }
     else if (  attributeClass == String.class ) {
-      defnition.defineAttribute( attributeName,
+      definition.defineAttribute( attributeName,
                                  TYPE_STRING,
                                  new byte[] {TYPE_INTEGER}, 
                                  new String[] {LIST} );
@@ -718,9 +724,13 @@ public class CyData
   
   public Object get ( String attributeName, 
                       String graphObjectName ) {
-    return data.getAttributeValue( graphObjectName,
-                                   attributeName,
-                                   ZERO );
+    try {
+      return data.getAttributeValue( graphObjectName,
+                                     attributeName,
+                                     ZERO );
+    } catch ( Exception e ) {
+      return null;
+    }
   }
 
   /**
@@ -758,7 +768,7 @@ public class CyData
                                  String graphObjectName ) {
 
     if ( definition.getAttributeValueType( attributeName ) != TYPE_FLOATING_POINT )
-      return Double.NaN;
+      return new Double(0);
 
     return ( Double )data.getAttributeValue( graphObjectName,
                                              attributeName,
@@ -773,7 +783,7 @@ public class CyData
                                    String graphObjectName ){
 
     if ( definition.getAttributeValueType( attributeName ) != TYPE_INTEGER )
-      return Integer.NaN;
+      return new Integer(0);
 
     return ( Integer )data.getAttributeValue( graphObjectName,
                                              attributeName,
@@ -807,12 +817,12 @@ public class CyData
     HashMap map = new HashMap();
     
     Enumeration iter = definition.getDefinedAttributes();
-    while ( iter.hasNext() ) {
+    while ( iter.hasMoreElements() ) {
       String attr = ( String )iter.nextElement();
       if ( data.getAttributeKeyspanCount( identifier,
                                           attr,
-                                          LIST ) != 0 ) {
-        map.set( attr, data.getAttributeValue( identifier, attr, ZERO ) );
+                                          LIST_KEY ) != 0 ) {
+        map.put( attr, data.getAttributeValue( identifier, attr, ZERO ) );
       }
     }
     return map;
@@ -855,8 +865,6 @@ public class CyData
         StringTokenizer strtok2 = new StringTokenizer (valuePair, "=");
         String name = strtok2.nextToken ();
         String value = strtok2.nextToken ();
-        if (name.equals ("category"))
-          attributeCategory = value;
         if (name.equals ("class")) {
           try {
             attributeClass = Class.forName (value);
@@ -896,18 +904,22 @@ public class CyData
     if (taskMonitor != null) {
       taskMonitor.setStatus("Importing Attributes...");
     }
-
-    String rawText;
+    
+    String rawText = null;
     if (filename.trim().startsWith("jar://")) {
-      TextJarReader reader = new TextJarReader(filename);
-      reader.read();
-      rawText = reader.getText();
-    } else if ( filename.trim().startsWith("http://") || filename.trim().startsWith( "file://") ) {
+      try {
+        TextJarReader reader = new TextJarReader(filename);
+        reader.read();
+        rawText = reader.getText();
+        } catch ( Exception e ) {
+          //throw new IOException( e.getMessage() );
+        } // end of try-catch
+      } else if ( filename.trim().startsWith("http://") || filename.trim().startsWith( "file://") ) {
       try {
         TextHttpReader reader = new TextHttpReader( filename );
         rawText = reader.getText();
       } catch ( Exception e ) {
-        throw new IOException( e.getMessage() );
+        //throw new IOException( e.getMessage() );
       } // end of try-catch
        
     } else {
@@ -943,10 +955,10 @@ public class CyData
       lineNumber++;
       StringTokenizer strtok2 = new StringTokenizer(newLine, "=");
       if (strtok2.countTokens() < 2) {
-        throw new IOException
-          ("Cannot parse line number " + lineNumber
-           + ":\n\t" + newLine + ".  This may not be a valid "
-           + "attributes file.");
+        //throw new IOException
+        //  ("Cannot parse line number " + lineNumber
+        //   + ":\n\t" + newLine + ".  This may not be a valid "
+        //   + "attributes file.");
       }
       String graphObjectName = strtok2.nextToken().trim();
       
@@ -1039,13 +1051,16 @@ public class CyData
    */
   static public Object createInstanceFromString ( Class requestedClass, 
                                                   String ctorArg ) {
-    Class [] ctorArgsClasses = new Class [1];
-    ctorArgsClasses [0] =  Class.forName ("java.lang.String");
-    Object [] ctorArgs = new Object [1];
-    ctorArgs [0] = new String (ctorArg);
-    Constructor ctor = requestedClass.getConstructor (ctorArgsClasses);
-    return ctor.newInstance (ctorArgs);
-    
+    try {
+      Class [] ctorArgsClasses = new Class [1];
+      ctorArgsClasses [0] =  Class.forName ("java.lang.String");
+      Object [] ctorArgs = new Object [1];
+      ctorArgs [0] = new String (ctorArg);
+      Constructor ctor = requestedClass.getConstructor (ctorArgsClasses);
+      return ctor.newInstance (ctorArgs);
+    } catch ( Exception e ) {
+      return null;
+    }
   } // createInstanceFromString
 
   /**
