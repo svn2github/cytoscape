@@ -100,7 +100,9 @@ public interface CyData
 
   /**
    * This method is the same as getAttributeKeyspanCount(), only
-   * the actual representatives are returned, and not their count.
+   * the actual representatives are returned, and not their count.<p>
+   * IMPORTANT: It is a programming error to modify (add or remove) attribute
+   * values in attributeName whilst iterating through the returned enumeration.
    * @return a non-null enumeration of key representatives; the order
    *   of the returned keys is arbitrary.
    * @see #getAttributeKeyspanCount(String, String, Object[])
