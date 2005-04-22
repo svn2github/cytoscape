@@ -43,10 +43,18 @@ public interface CyDataDefinition
    * The more interesting case is where the key space in an attribute
    * definition has one or more dimensions.  For example, if I
    * wanted to create an attribute that represents measured p-values for
-   * all objectss over a set of experiments ("Ideker experiment",
+   * all objects over a set of experiments ("Ideker experiment",
    * "Salk experiment", ...) I would define a one-dimensional key space
    * of TYPE_STRING (to represent the experiment names) and a value of
-   * TYPE_FLOATING_POINT (to represent p-values).
+   * TYPE_FLOATING_POINT (to represent p-values).<p>
+   * <font color="red">CLARIFICATION:</font>
+   * The concept of "key name" (represented by the parameter keyNames)
+   * is not used anywhere by this API (except for retrieving the key names
+   * in method copyAttributeKeyspaceInfo()); the key name concept was
+   * introduced because it was thought that it will be used in
+   * SQL-language-like constructs.  It is perhaps a good idea to now remove
+   * the concept of "key name"; please give the author (Nerius) encouragement
+   * to do so if you agree.
    * @param attributeName an identifier for this attribute definition;
    *   this value must be unique from all existing attribute definitions;
    *   ideally, the choice of name would describe values being stored by this
