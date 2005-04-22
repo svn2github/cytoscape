@@ -10,7 +10,7 @@ import cytoscape.giny.PhoebeNetworkView;
 import cytoscape.data.readers.GMLReader2;
 import cytoscape.data.readers.GraphReader;
 import cytoscape.data.readers.InteractionsReader;
-import cytoscape.data.servers.BioDataServer;
+
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
@@ -189,8 +189,7 @@ class LoadNetworkTask implements Task {
 
         try {
             cyNetwork = this.createNetwork(file.getAbsolutePath(),
-                    fileType, Cytoscape.getBioDataServer(),
-                    CytoscapeInit.getDefaultSpeciesName());
+                    fileType );
 
             if (cyNetwork != null) {
                 informUserOfGraphStats(cyNetwork);
@@ -269,19 +268,16 @@ class LoadNetworkTask implements Task {
      *
      * @param location      the location of the file
      * @param file_type     the type of file GML, SIF, SBML, etc.
-     * @param biodataserver provides the name conversion service
-     * @param species       the species used by the BioDataServer
      */
-    private CyNetwork createNetwork(String location, int file_type,
-            BioDataServer biodataserver, String species) throws IOException {
+    private CyNetwork createNetwork ( String location, int file_type ) throws IOException {
 
         GraphReader reader;
         taskMonitor.setPercentCompleted(5);
 
         //  Set the reader according to what file type was passed.
         if (file_type == Cytoscape.FILE_SIF) {
-            reader = new InteractionsReader(biodataserver, species, location,
-                    taskMonitor);
+            reader = new InteractionsReader( location,
+                                             taskMonitor);
         } else if (file_type == Cytoscape.FILE_GML) {
             reader = new GMLReader2(location, taskMonitor);
         } else {

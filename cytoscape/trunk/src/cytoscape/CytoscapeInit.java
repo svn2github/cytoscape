@@ -3,7 +3,6 @@ package cytoscape;
 import cytoscape.init.*;
 import cytoscape.plugin.*;
 import cytoscape.util.shadegrown.WindowUtilities;
-import cytoscape.data.servers.BioDataServer;
 import cytoscape.view.CytoscapeDesktop;
 
 import java.io.*;
@@ -48,24 +47,23 @@ public class CytoscapeInit
   private static Set pluginURLs;
 
   // Data variables
-  private static String bioDataServer;
-  private static boolean noCanonicalization;
   private static Set expressionFiles;
   private static Set graphFiles;
   private static Set edgeAttributes;
   private static Set nodeAttributes;
   private static String defaultSpeciesName;
 
+
   // Configuration variables
   private static boolean useView = true;
   private static boolean suppressView = false;
-  private static String viewType = "tabbed";
   private static int viewThreshold;
   private static int secondaryViewThreshold;
 
   // View Only Variables
   private static String vizmapPropertiesLocation;
   private static String defaultVisualStyle = "default";
+  private static int viewType;
 
   // project parsing
   private static final String fWHITESPACE_AND_QUOTES = " \t\r\n\"";
@@ -105,8 +103,6 @@ public class CytoscapeInit
   public boolean init ( String[] args ) {
 
     this.args = args;
-    bioDataServer = null;
-    noCanonicalization = false;
     expressionFiles = new HashSet();
     graphFiles = new HashSet();
     edgeAttributes = new HashSet();
@@ -167,27 +163,18 @@ public class CytoscapeInit
     //now that we are properly set up,
     //load all data, then load all plugins
 
-    //Load the BioDataServer(s)
-    BioDataServer bds = Cytoscape.loadBioDataServer( getBioDataServer() );
-
     // Load all requested networks
     for ( Iterator i = graphFiles.iterator(); i.hasNext(); ) {
       String net = (String)i.next();
       System.out.println( "Load: "+net );
 
       CyNetwork network = Cytoscape.createNetwork( net,
-                                                   Cytoscape.FILE_BY_SUFFIX,
-                                                   !noCanonicalization(),
-                                                   bds,
-                                                   getDefaultSpeciesName() );
+                                                   Cytoscape.FILE_BY_SUFFIX);
     }
 
     //load any specified data attribute files
     Cytoscape.loadAttributes( ( String[] )getNodeAttributes().toArray( new String[] {} ),
-                              ( String[] )getEdgeAttributes().toArray( new String[] {} ),
-                              !noCanonicalization(),
-                              bds,
-                              getDefaultSpeciesName() );
+                              ( String[] )getEdgeAttributes().toArray( new String[] {} ) );
 
     Cytoscape.firePropertyChange( Cytoscape.ATTRIBUTES_CHANGED, null, null );
 
@@ -234,8 +221,7 @@ public class CytoscapeInit
   // store value of key variables in Properties object
   // for access in PreferencesDialog and eventual saving on exit
   private void storeVariablesInProperties() {
-    if (bioDataServer != null)
-      properties.setProperty( "bioDataServer", bioDataServer);
+   
     if (defaultSpeciesName != null)
       properties.setProperty("defaultSpeciesName", defaultSpeciesName);
     properties.setProperty( "viewThreshold",""+viewThreshold);
@@ -295,15 +281,6 @@ public class CytoscapeInit
     return pluginURLs;
   }
 
-  // Data variables
-  public static String getBioDataServer () {
-    return bioDataServer;
-  }
-
-  public static boolean noCanonicalization () {
-    return noCanonicalization;
-  }
-
   public static Set getExpressionFiles () {
     return expressionFiles;
   }
@@ -327,13 +304,7 @@ public class CytoscapeInit
   // Configuration variables
 
   public static int getViewType () {
-    if ( viewType == "internal" ) {
-      return CytoscapeDesktop.INTERNAL_VIEW;
-    } else if ( ( viewType == "external" ) ) {
-      return CytoscapeDesktop.EXTERNAL_VIEW;
-    } else {
-      return CytoscapeDesktop.TABBED_VIEW;
-    }
+    return viewType;
   }
 
   /**
@@ -433,21 +404,17 @@ public class CytoscapeInit
 
   private void setVariablesFromCommandLine ( CyCommandLineParser parser ) {
 
-    if ( parser.getBioDataServer() != null ) {
-      bioDataServer = parser.getBioDataServer();
-    }
-
-    noCanonicalization = parser.noCanonicalization();
-
-    if ( parser.getSpecies() != null ) {
-      defaultSpeciesName = parser.getSpecies();
-    }
+    //if ( parser.getSpecies() != null ) {
+    //  defaultSpeciesName = parser.getSpecies();
+    //}
 
     expressionFiles.addAll( parser.getExpressionFiles() );
     graphFiles.addAll( parser.getGraphFiles() );
     nodeAttributes.addAll( parser.getNodeAttributeFiles() );
     edgeAttributes.addAll( parser.getEdgeAttributeFiles() );
     pluginURLs.addAll( parser.getPluginURLs() );
+
+    viewType = parser.getViewType();
 
     if ( parser.getViewThreshold() != null )
       viewThreshold = parser.getViewThreshold().intValue();
@@ -481,13 +448,19 @@ public class CytoscapeInit
 
     // Data variables
     defaultSpeciesName = properties.getProperty("defaultSpeciesName", "unknown" );
-    bioDataServer = properties.getProperty( "bioDataServer", "unknown");
-
+   
 
     // Configuration variables
     viewThreshold = (new Integer(properties.getProperty( "viewThreshold", "500" ) ) ).intValue();
     secondaryViewThreshold = (new Integer(properties.getProperty( "secondaryViewThreshold", "2000" ) ) ).intValue();
-    viewType = properties.getProperty( "viewType", "tabbed" );
+
+    String tmpViewType = properties.getProperty( "viewType", "tabbed" );
+    if ( tmpViewType.startsWith( "tabbed" ) ) {
+      viewType = CytoscapeDesktop.TABBED_VIEW;
+    } else {
+      viewType = CytoscapeDesktop.INTERNAL_VIEW;
+    }
+
 
 
     // View Only Variables

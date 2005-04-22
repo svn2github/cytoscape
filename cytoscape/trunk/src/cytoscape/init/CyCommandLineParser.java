@@ -5,15 +5,13 @@ import java.io.File;
 import java.net.URL;
 import cytoscape.data.readers.TextHttpReader;
 import ViolinStrings.Strings;
-
+import cytoscape.view.CytoscapeDesktop;
 
 
 public class CyCommandLineParser {
 
    // variables available to the command line
-   String bioDataServer ;
-   boolean noCanonicalization;
-   ArrayList expressionFiles;
+  ArrayList expressionFiles;
    boolean inExpression;
    ArrayList graphFiles;
    boolean inGraph;
@@ -35,6 +33,8 @@ public class CyCommandLineParser {
    ArrayList currentScript;
    boolean suppressView;
    ArrayList resourcePlugins;
+   int viewType = CytoscapeDesktop.TABBED_VIEW;
+
 
    boolean helpRequested = false;
 
@@ -53,16 +53,14 @@ public class CyCommandLineParser {
       // use ResourceBundle for static strings like Help/Usage text
       // -- could lead to localizable versions of Cytoscape in the future...
       try {
-	 ResourceBundle coreStrings = ResourceBundle.getBundle(
-							       "cytoscape.resources.CoreStrings",
-							       Locale.getDefault());
-	 helpString = coreStrings.getString("USAGE");
+        ResourceBundle coreStrings = ResourceBundle.getBundle(
+                                                              "cytoscape.resources.CoreStrings",
+                                                              Locale.getDefault());
+        helpString = coreStrings.getString("USAGE");
       } catch (MissingResourceException mre) {
-	 mre.printStackTrace();
+        mre.printStackTrace();
       }
 
-      bioDataServer = null;
-      noCanonicalization = false;
       expressionFiles = new ArrayList();
       inExpression = false;
       graphFiles = new ArrayList();
@@ -118,6 +116,10 @@ public class CyCommandLineParser {
       return suppressView;
    }
 
+  public int getViewType () {
+    return viewType;
+  }
+
 
    public boolean useView () {
       return useView;
@@ -125,27 +127,6 @@ public class CyCommandLineParser {
 
    public Integer getViewThreshold () {
       return viewThreshold;
-   }
-
-   /**
-    * @return the location of a BioDataServer, if there is one
-    */
-   public String getBioDataServer () {
-      return bioDataServer;
-   }
-
-   /**
-    * @return if we should *not* canonicalize names
-    */
-   public boolean noCanonicalization () {
-      return noCanonicalization;
-   }
-
-   /**
-    * @return the default species for nodes
-    */
-   public String getSpecies () {
-      return species;
    }
 
    /**
@@ -210,15 +191,12 @@ public class CyCommandLineParser {
    /**
     * Parsing for the command line.
     *<ol>
-    * <li> b : BioDataServer : BDS [manifest file]| location of BioDataServer manifest file
-    * <li> c : noCanonicalization  | suppress automatic canonicalization
     * <li> e : expression [file name] | expression
     * <li> g : graph [graph files] | gml, sif, cyf files
     * <li> h : help | shows help and exits
     * <li> i : interaction [interaction files] | sif files
     * <li> j : edgeAttributes [attribute files] | old-style edge attribute files
     * <li> n : nodeAttributes [attributes files] | old-style node attribute files
-    * <li> s : species [species name] | the name of a species for wchi there is information
     */
    public void parseCommandLine ( String[] args ) {
       //System.out.println( "Parsing command line" );
@@ -253,18 +231,12 @@ public class CyCommandLineParser {
 	    i++;
 	 }
 
-	 // BioDataServer
-	 else if ( Strings.isLike( args[i], "-b",0, true ) ||
-		   Strings.isLike( args[i], "-bioDataServer",0, true ) ||
-		   Strings.isLike( args[i], "-BDS",0, true ) ) {
-        i++;
-        if ( badArgs(args, i ) )
-          return;
+  
+   else if ( Strings.isLike( args[i], "-internal", 0, true ) ) {
+     i++;
+     viewType = CytoscapeDesktop.INTERNAL_VIEW;
+   }
 
-        //System.out.println( "BDS: "+args[i] );
-        bioDataServer = args[i];
-        i++;
-      }
 
       // species
       else if ( Strings.isLike( args[i], "-s", 0, true ) ||
@@ -276,14 +248,7 @@ public class CyCommandLineParser {
         species = args[i];
         i++;
       }
-
-      // noCanonicalization
-      else if ( Strings.isLike( args[i], "-c", 0, true ) ||
-                Strings.isLike( args[i], "-noCanonicalization", 0, true ) ) {
-        i++;
-        //System.out.println( "there will be no canonicalization" );
-        noCanonicalization = true;
-      }
+    
 
       else if ( Strings.isLike( args[i], "-vp", 0, true ) ||
 		Strings.isLike( args[i], "-vprops", 0, true ) ||

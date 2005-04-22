@@ -148,12 +148,12 @@ JTabbedPane createGui (GraphObjAttributes attributes)
     //System.out.println("attribute name = " + attributeName);
     if (attributeName.equalsIgnoreCase ("commonName"))
       continue;
-    String attributeCategory = attributes.getCategory (attributeName);
+    //String attributeCategory = attributes.getCategory (attributeName);
     //System.out.println("attribute category = " + attributeCategory);
-    if (attributeCategoriesToIgnore.contains (attributeCategory)){
+    //if (attributeCategoriesToIgnore.contains (attributeCategory)){
       //System.out.println("Ignoring attribute =" + attributeCategory);
-      continue;
-    }
+    //  continue;
+    //}
     String [] requestedAttibuteNames = {attributeName};
     BrowserTableModel model = new BrowserTableModel (graphObjects, attributes, requestedAttibuteNames);
     JTable table = new JTable (model);
@@ -208,8 +208,8 @@ protected JPanel createCustomizerTab (String [] attributeNames)
   for (int i=0; i < attributeNames.length; i++) {
     if (attributeNames [i].equals ("commonName")) continue;
     String attributeName = attributeNames [i];
-    String attributeCategory = attributes.getCategory(attributeName);
-    if (attributeCategoriesToIgnore.contains (attributeCategory)) continue;
+    //String attributeCategory = attributes.getCategory(attributeName);
+    //if (attributeCategoriesToIgnore.contains (attributeCategory)) continue;
     JCheckBox button = new JCheckBox (attributeNames [i]);
     checkBoxButtonPanel.add (button);
     button.addItemListener (new CheckBoxListener (attributeNames [i]));

@@ -66,14 +66,14 @@ public class ListFromFileSelectionAction extends CytoscapeAction {
         boolean select = false;
         String canonicalName =
           network.getNodeAttributes().getCanonicalName(node);
-        List synonyms =
-          Semantics.getAllSynonyms(canonicalName, network );
-        for (Iterator synI=synonyms.iterator(); synI.hasNext(); ) {
-          if ( fileNodes.contains( (String)synI.next() ) ) {
-            select = true;
-            break;
-          }
-        }
+        //List synonyms =
+        //  Semantics.getAllSynonyms(canonicalName, network );
+        //for (Iterator synI=synonyms.iterator(); synI.hasNext(); ) {
+        //  if ( fileNodes.contains( (String)synI.next() ) ) {
+        //    select = true;
+        // break;
+        //  }
+        // }
         if (select) {
           //CyNetworkView view = Cytoscape.getCurrentNetworkView();
           //NodeView nv = view.getNodeView(node.getRootGraphIndex());

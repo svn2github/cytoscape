@@ -51,7 +51,6 @@ public class DataReaderSuite extends TestCase {
     public static Test suite() {
         TestSuite suite = new TestSuite();
         suite.addTestSuite(GMLReaderTest.class);
-        suite.addTestSuite(InteractionsReaderTest.class);
         suite.addTestSuite(TextFileReaderTest.class);
         suite.addTestSuite(TextJarReaderTest.class);
         suite.setName("Date Reader Tests");

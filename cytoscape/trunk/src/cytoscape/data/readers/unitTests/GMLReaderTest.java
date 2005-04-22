@@ -73,7 +73,7 @@ public void testSmallGraphRead () throws Exception
   //reader.read ();
   //RootGraph graph = reader.getRootGraph ();
   
-  Cytoscape.clearCytoscape();
+
   CyNetwork network = Cytoscape.createNetwork( testDataDir + "/gal.gml" );
 
   assertTrue ("node count", network.getNodeCount () == 11);
@@ -88,7 +88,7 @@ public void testMediumGraphRead () throws Exception
   //reader.read ();
   //RootGraph graph = reader.getRootGraph ();
   
-  Cytoscape.clearCytoscape();
+
   CyNetwork network = Cytoscape.createNetwork( testDataDir + "/noLabels.gml" );
 
   assertTrue ("node count", network.getNodeCount () == 332);

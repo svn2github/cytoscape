@@ -151,7 +151,7 @@ public class CytoscapeDesktop
    * The Default constructor uses a TabbedView
    */
   public CytoscapeDesktop () {
-    this( TABBED_VIEW );
+    this( INTERNAL_VIEW );
   }
   
   /**
@@ -238,6 +238,9 @@ public class CytoscapeDesktop
 
     // create the CytoscapeDesktop
     if ( VIEW_TYPE == TABBED_VIEW ) {
+
+       System.out.println( "TABBED_VIEW" );
+
       // eveything gets put into this one window
       //JScrollPane scroll_panel = new JScrollPane( networkPanel );
       JScrollPane scroll_tab = new JScrollPane( networkViewManager.getTabbedPane() );
@@ -258,6 +261,9 @@ public class CytoscapeDesktop
     }
 
     else if ( VIEW_TYPE == INTERNAL_VIEW ) {
+
+      System.out.println( "INTERNAL_VIEW" );
+
       // eveything gets put into this one window
       JSplitPane split = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT,
                                          false,
