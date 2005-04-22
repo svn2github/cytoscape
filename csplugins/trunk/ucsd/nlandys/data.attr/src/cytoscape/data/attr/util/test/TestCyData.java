@@ -25,12 +25,21 @@ public final class TestCyData
        new byte[] { CyDataDefinition.TYPE_STRING,
                     CyDataDefinition.TYPE_INTEGER },
        new String[] { "experiment", "multi-value offset" });
+    Object[] oneVals = new Object[] { new Double(0.5),
+                                      new Double(0.6),
+                                      new Double(0.7) };
     data.setAttributeValue
-      (oneName, attrName, new Double(0.5),
+      (oneName, attrName, oneVals[0],
        new Object[] { "Ideker", new Long(0) });
     data.setAttributeValue
-      (oneName, attrName, new Double(0.6),
+      (oneName, attrName, oneVals[1],
        new Object[] { "Ideker", new Long(1) });
+    data.setAttributeValue
+      (oneName, attrName, oneVals[2],
+       new Object[] { "Salk", new Long(0) });
+    data.setAttributeValue
+      (oneName, attrName, oneVals[1],
+       new Object[] { "Salk", new Long(1) });
     data.setAttributeValue
       (twoName, attrName, new Double(0.4),
        new Object[] { "Salk", new Long(0) });
@@ -57,6 +66,15 @@ public final class TestCyData
       (twoName, attrName, new Object[] { "Salk", new Long(1) });
     if (o != null)
       throw new IllegalStateException("expected null");
+    Iterator boundValsOne =
+      distinctBoundValues(oneName, attrName, data, def);
+    int count = 0;
+    while (boundValsOne.hasNext()) {
+      Object boundVal = boundValsOne.next();
+      count++;
+      for (int i = 0;; i++) {
+        if (boundVal.equals(oneVals[i])) break; } }
+    if (count != 3) throw new IllegalStateException("count not 3");
   }
 
   // NOTE: If you want return value of an array containing all attribute
