@@ -35,7 +35,7 @@ public interface CyData
    *   appropriate object type or if any one of keyIntoValue's representatives
    *   is not of the appropriate object type; see CyDataDefinition.
    * @exception IllegalArgumentException if keyIntoValue's length does not
-   *   match the keyspace dimensionality of attributeName.
+   *   match the key space dimensionality of attributeName.
    */
   public Object setAttributeValue(String objectKey,
                                   String attributeName,
@@ -63,7 +63,7 @@ public interface CyData
    * @exception ClassCastException if any one of keyIntoValue's representatives
    *   is not of the appropriate object type; see CyDataDefinition.
    * @exception IllegalArgumentException if keyIntoValue's length does not
-   *   match the keyspace dimensionality of attributeName.
+   *   match the key space dimensionality of attributeName.
    */
   public Object getAttributeValue(String objectKey, String attributeName,
                                   Object[] keyIntoValue);
@@ -79,9 +79,9 @@ public interface CyData
 
   /**
    * Removes all values bound to objectKey in attributeName.  Most attribute
-   * definitions will have no keyspace, and such attribute definitions will
+   * definitions will have no key space, and such attribute definitions will
    * bind at most one attribute value to any give objectKey; this method is
-   * useful with attribute definitions that have nonzero keyspaces.
+   * useful with attribute definitions that have nonzero key spaces.
    * @return true if and only if objectKey had at least one attribute value
    *   bound in attributeName prior to this method invocation.
    * @param objectKey the object from which to delete all bound attribute
@@ -103,18 +103,25 @@ public interface CyData
    * values in attributeName whilst iterating through the returned enumeration.
    * @param objectKey the object to query.
    * @param attributeName the attribute definition to query.
-   * @param keyPrefix an array of length K where K is strictly less than N,
-   *   the dimensionality of key space of specified attribute definition;
+   * @param keyPrefix an array of length K, where K is strictly less than
+   *   the dimensionality of key space of attributeName;
    *   entry at index i contains a "representative" from dimension i + 1 of
-   *   the key space of specified attribute definition; this parameter may
-   *   be either null or the empty array, in which case the count returned
-   *   is the number of representatives in the first dimension of
+   *   the key space of attributeName; keyPrefix may
+   *   be either null or the empty array, in which case the enumeration
+   *   returned consists of the representatives in the first dimension of
    *   key space.
    * @return an enumeration of keys in key space dimension K + 1 along
    *   specified keyPrefix; the enumeration returned is never null;
    *   the order of the returned keys is arbitrary.
    * @exception IllegalStateException if attributeName is not an existing
    *   attribute definition; see CyDataDefinition.
+   * @exception NullPointerException if objectKey or attributeName is null,
+   *   or if keyPrefix is [not null and] of positive length and any one
+   *   of its entries is null.
+   * @exception ClassCastException if any one of keyPrefix's representatives
+   *   is not of the appropriate object type; see CyDataDefinition.
+   * @exception IllegalArgumentException if keyPrefix's length is not
+   *   strictly less than the dimensionality of attributeName's key space.
    */
   public CountedEnumeration getAttributeKeyspan(String objectKey,
                                                 String attributeName,
