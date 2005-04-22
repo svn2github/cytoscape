@@ -4,7 +4,9 @@ import java.util.Enumeration;
 
 /**
  * This interface consists of the API specification to bind attribute
- * values to objects.
+ * values to objects.  A sibling API is CyDataDefinition, which is used
+ * to define attribute spaces in which attribute values can be bound
+ * to objects; attribute space definition is the first thing that happens.
  */
 public interface CyData
 {
