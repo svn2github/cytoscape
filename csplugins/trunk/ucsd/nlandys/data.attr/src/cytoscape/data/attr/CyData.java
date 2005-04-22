@@ -72,13 +72,6 @@ public interface CyData
   /**
    * This method is the same as getAttributeValue(), only the retrieved
    * attribute value is also deleted.<p>
-   * NOTE: To remove all values bound to an objectKey in an attribute
-   * definition, one must iterate over all mapped key sequences and
-   * remove bound values individually.  An initial design approach of this
-   * API included an optimized method for removin all values bound along
-   * a key prefix; that method has since gone away for good reasons.  These
-   * reasons are documented in the source code to this interface in the form
-   * of a private comment.
    * @see #getAttributeValue(String, String, Object[])
    */
   public Object removeAttributeValue(String objectKey, String attributeName,
