@@ -16,14 +16,12 @@ final class CyDataModel implements CyDataDefinition, CyData
     private final HashMap objMap; // Keys are objectKey.
     private final byte valueType;
     private final byte[] keyTypes;
-    private final String[] keyNames;
     private AttrDefData(final HashMap objMap, final byte valueType,
-                        final byte[] keyTypes, final String[] keyNames)
+                        final byte[] keyTypes)
     {
       this.objMap = objMap;
       this.valueType = valueType;
       this.keyTypes = keyTypes;
-      this.keyNames = keyNames;
     }
   }
 
@@ -149,8 +147,7 @@ final class CyDataModel implements CyDataDefinition, CyData
 
   public final void defineAttribute(final String attributeName,
                                     final byte valueType,
-                                    final byte[] keyTypes,
-                                    final String[] keyNames)
+                                    final byte[] keyTypes)
   {
     // Error-check attributeName.  Unfortunately there are currently no
     // constraints on the length or the contents of attributeName.
@@ -172,20 +169,11 @@ final class CyDataModel implements CyDataDefinition, CyData
         throw new IllegalArgumentException("valueType is unrecognized");
     }
 
-    // Make sure keyTypes and keyNames are the same length.
+    // Make copy of keyTypes.
     final int keyTypesLength = (keyTypes == null ? 0 : keyTypes.length);
-    final int keyNamesLength = (keyNames == null ? 0 : keyNames.length);
-    if (keyTypesLength != keyNamesLength)
-      throw new IllegalArgumentException
-        ("lengths of keyTypes and keyNames arrays don't match");
-
-    // Make copies of keyTypes and keyNames.
     final byte[] keyTypesCopy = new byte[keyTypesLength];
     if (keyTypes != null)
       System.arraycopy(keyTypes, 0, keyTypesCopy, 0, keyTypesLength);
-    final String[] keyNamesCopy = new String[keyNamesLength];
-    if (keyNames != null)
-      System.arraycopy(keyNames, 0, keyNamesCopy, 0, keyNamesLength);
 
     // Error-check keyTypesCopy.
     for (int i = 0; i < keyTypesCopy.length; i++)
@@ -201,23 +189,12 @@ final class CyDataModel implements CyDataDefinition, CyData
             ("keyTypes[" + i + "] is unrecognized");
       }
 
-    // Error-check keyNamesCopy.  Make sure that all are names are distinct.
-    // Unfortunately there are currently no contraints on the length and
-    // content of the key names.
-    final HashMap tempHash = new HashMap();
-    for (int i = 0; i < keyNamesCopy.length; i++) {
-      if (keyNamesCopy[i] == null)
-        throw new NullPointerException("keyNames[" + i + "] is null");
-      if (tempHash.put(keyNamesCopy[i], keyNamesCopy[i]) != null)
-        throw new IllegalArgumentException
-          ("duplicate name keyNames[" + i + "]"); }
-
     // Finally, create the definition.
     final AttrDefData def = new AttrDefData(new HashMap(), valueType,
-                                            keyTypesCopy, keyNamesCopy);
+                                            keyTypesCopy);
     m_attrMap.put(attributeName, def);
 
-    // Call listeners.  Make sure this is done after we actaully create def.
+    // Call listeners.  Make sure this is done after we actually create def.
     final CyDataDefinitionListener l = m_dataDefListener;
     if (l != null) l.attributeDefined(attributeName);
   }
@@ -248,8 +225,7 @@ final class CyDataModel implements CyDataDefinition, CyData
   }
 
   public final void copyAttributeKeyspaceInfo(final String attributeName,
-                                              final byte[] keyTypes,
-                                              final String[] keyNames)
+                                              final byte[] keyTypes)
   {
     if (attributeName == null)
       throw new NullPointerException("attributeName is null");
@@ -258,7 +234,6 @@ final class CyDataModel implements CyDataDefinition, CyData
       throw new IllegalStateException
         ("no attributeName '" + attributeName + "' exists");
     System.arraycopy(def.keyTypes, 0, keyTypes, 0, def.keyTypes.length);
-    System.arraycopy(def.keyNames, 0, keyNames, 0, def.keyNames.length);
   }
 
   public final void undefineAttribute(final String attributeName)

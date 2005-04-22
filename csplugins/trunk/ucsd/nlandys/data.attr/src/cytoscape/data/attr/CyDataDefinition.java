@@ -47,14 +47,6 @@ public interface CyDataDefinition
    * "Salk experiment", ...) I would define a one-dimensional key space
    * of TYPE_STRING (to represent the experiment names) and a value of
    * TYPE_FLOATING_POINT (to represent p-values).<p>
-   * <font color="red">CLARIFICATION:</font>
-   * The concept of "key name" (represented by the parameter keyNames)
-   * is not used anywhere by this API (except for retrieving the key names
-   * in method copyAttributeKeyspaceInfo()); the key name concept was
-   * introduced because it was thought that it will be used in
-   * SQL-language-like constructs.  It is perhaps a good idea to now remove
-   * the concept of "key name"; please give the author (Nerius) encouragement
-   * to do so if you agree.
    * @param attributeName an identifier for this attribute definition;
    *   this value must be unique from all existing attribute definitions;
    *   ideally, the choice of name would describe values being stored by this
@@ -67,18 +59,12 @@ public interface CyDataDefinition
    *   this parameter may either be null or the empty array if an attribute
    *   definition does not use a key space (this is perhaps the most common
    *   scenario).
-   * @param keyNames defines the name of each dimension in the key space;
-   *   the entry at index i defines the name of key space dimension i + 1;
-   *   this parameter may either be null or the empty array if an attribute
-   *   definition does not use a key space (this is perhaps the most common
-   *   scenario).
    * @exception IllegalStateException if attributeName is already the name
    *   of an existing attribute definition.
    */
   public void defineAttribute(String attributeName,
                               byte valueType,
-                              byte[] keyTypes,
-                              String[] keyNames);
+                              byte[] keyTypes);
 
   /**
    * It is a programming error to define or undefine attribute domains
@@ -111,17 +97,11 @@ public interface CyDataDefinition
    *   must be at least the dimensionality of the key space of specified
    *   attribute definition, and the key space dimension types (TYPE_*) are
    *   written into this array starting at index zero of this array.
-   * @param keyNames this parameter is written into by this method; it is not
-   *   used as input; consider this a return value; the size of this array
-   *   must be at least the dimensionality of the key space of specified
-   *   attribute definition, and the key space dimension names are written
-   *   into this array starting at index zero of this array.
    * @exception IllegalStateException if no attribute definition called
    *   attributeName exists.
    */
   public void copyAttributeKeyspaceInfo(String attributeName,
-                                        byte[] keyTypes,
-                                        String[] keyNames);
+                                        byte[] keyTypes);
 
   /**
    * WARNING: All bound attribute values on objects will go away in this

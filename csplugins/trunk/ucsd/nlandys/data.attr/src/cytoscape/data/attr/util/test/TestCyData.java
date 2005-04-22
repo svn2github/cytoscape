@@ -23,8 +23,7 @@ public final class TestCyData
     def.defineAttribute
       (attrName, CyDataDefinition.TYPE_FLOATING_POINT,
        new byte[] { CyDataDefinition.TYPE_STRING,
-                    CyDataDefinition.TYPE_INTEGER },
-       new String[] { "experiment", "multi-value offset" });
+                    CyDataDefinition.TYPE_INTEGER });
     Object[] oneVals = new Object[] { new Double(0.5),
                                       new Double(0.6),
                                       new Double(0.7) };
