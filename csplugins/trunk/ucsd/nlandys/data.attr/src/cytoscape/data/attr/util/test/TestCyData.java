@@ -5,6 +5,8 @@ import cytoscape.data.attr.CyDataDefinition;
 import cytoscape.data.attr.util.CyDataFactory;
 
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
 
 public final class TestCyData
 {
@@ -55,6 +57,63 @@ public final class TestCyData
       (twoName, attrName, new Object[] { "Salk", new Long(1) });
     if (o != null)
       throw new IllegalStateException("expected null");
+  }
+
+  // NOTE: If you want return value of an array containing all attribute
+  // values that have been deleted (w/o keys that is) I can do that also.
+  private final static void recursiveDelete(final String objectKey,
+                                            final String attributeName,
+                                            final CyData dataRegistry)
+  {
+    
+  }
+
+  static Iterator distinctBoundValues(final String objectKey,
+                                      final String attributeName,
+                                      final CyData dataRegistry,
+                                      final CyDataDefinition def)
+  {
+    final HashMap duplicateFilter = new HashMap();
+    final int keyspaceDims =
+      def.getAttributeKeyspaceDimensionality(attributeName);
+    if (keyspaceDims < 1) { // It's either 0 or -1.
+      final Object attrVal = dataRegistry.getAttributeValue
+        (objectKey, attributeName, null); // May trigger exception; OK.
+      if (attrVal != null) duplicateFilter.put(attrVal, null); }
+    else { // keyspaceDims > 1.
+      final Enumeration dim1Keys = dataRegistry.getAttributeKeyspan
+        (objectKey, attributeName, null);
+      r_distinctBoundValues(objectKey, attributeName, dataRegistry,
+                            duplicateFilter, dim1Keys,
+                            new Object[0], keyspaceDims); }
+    return duplicateFilter.keySet().iterator();
+  }
+
+  // Recursive helper for distinctBoundValues().
+  private static void r_distinctBoundValues(final String objectKey,
+                                            final String attributeName,
+                                            final CyData dataRegistry,
+                                            final HashMap duplicateFilter,
+                                            final Enumeration currentKeyspan,
+                                            final Object[] prefixSoFar,
+                                            final int keyspaceDims)
+  {
+    final Object[] newPrefix = new Object[prefixSoFar.length + 1];
+    System.arraycopy(prefixSoFar, 0, newPrefix, 0, prefixSoFar.length);
+    if (keyspaceDims == newPrefix.length) { // The final dimension.
+      while (currentKeyspan.hasMoreElements()) {
+        newPrefix[prefixSoFar.length] = currentKeyspan.nextElement();
+        duplicateFilter.put
+          (dataRegistry.getAttributeValue(objectKey, attributeName, newPrefix),
+           null); } }
+    else { // Not the final dimension.
+      while (currentKeyspan.hasMoreElements()) {
+        newPrefix[prefixSoFar.length] = currentKeyspan.nextElement();
+        final Enumeration newKeyspan = dataRegistry.getAttributeKeyspan
+          (objectKey, attributeName, newPrefix);
+        r_distinctBoundValues(objectKey, attributeName, dataRegistry,
+                              duplicateFilter, newKeyspan,
+                              newPrefix, keyspaceDims); } }
   }
 
 }
