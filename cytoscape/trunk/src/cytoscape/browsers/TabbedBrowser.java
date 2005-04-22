@@ -145,15 +145,9 @@ JTabbedPane createGui (GraphObjAttributes attributes)
 
   for (int i=0; i < attributeNames.length; i++) {
     String attributeName = attributeNames [i];
-    //System.out.println("attribute name = " + attributeName);
-    if (attributeName.equalsIgnoreCase ("commonName"))
-      continue;
-    //String attributeCategory = attributes.getCategory (attributeName);
-    //System.out.println("attribute category = " + attributeCategory);
-    //if (attributeCategoriesToIgnore.contains (attributeCategory)){
-      //System.out.println("Ignoring attribute =" + attributeCategory);
-    //  continue;
-    //}
+    System.out.println("attribute name = " + attributeName);
+    
+    
     String [] requestedAttibuteNames = {attributeName};
     BrowserTableModel model = new BrowserTableModel (graphObjects, attributes, requestedAttibuteNames);
     JTable table = new JTable (model);

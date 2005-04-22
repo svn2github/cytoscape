@@ -202,7 +202,7 @@ public abstract class Cytoscape {
    
     CyNode node = ( CyNode )getNodeNetworkData().getGraphObject( alias );
     if ( node != null ) {
-      //System.out.print(".");
+      System.out.print(".");
       return node;
     }
     // node does not exist, create one
@@ -211,11 +211,13 @@ public abstract class Cytoscape {
       return null;
     }
 
-    //System.out.print( "|" );
+    System.out.print( "|" );
     node = ( CyNode )Cytoscape.getRootGraph().getNode( Cytoscape.getRootGraph().createNode() );
     node.setIdentifier( alias );
    
-    Cytoscape.getNodeNetworkData().addNameMapping( alias, node );
+    Cytoscape.getNodeNetworkData().set( cytoscape.data.Semantics.CANONICAL_NAME,
+                                        alias,
+                                        alias );
     return node;
 
   }

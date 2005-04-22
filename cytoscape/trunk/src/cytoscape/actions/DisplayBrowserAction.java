@@ -43,33 +43,11 @@ public class DisplayBrowserAction extends CytoscapeAction  {
     
 
   public void actionPerformed ( ActionEvent ev ) {	
-    // List nvlist = Cytoscape.getCurrentNetworkView().getSelectedNodes();
-//     ArrayList nodeList = new ArrayList( nvlist.size() );
-//     Iterator ni = nvlist.iterator();
-//     while ( ni.hasNext() ) {
-//       NodeView nview = ( NodeView )ni.next();
-//       //giny.model.Node n = nview.getNode();
-//       giny.model.Node n = Cytoscape.getRootGraph().getNode( nview.getRootGraphIndex() );
-//       nodeList.add(n);
-//     }//while
-        
-//     Node[] selectedNodes = ( giny.model.Node[] ) nodeList.toArray (new giny.model.Node [0]);
-    giny.model.Node [] selectedNodes = (giny.model.Node[]) Cytoscape.getCurrentNetwork().getFlaggedNodes().toArray(new giny.model.Node[0]);
-    
-//     List evList = Cytoscape.getCurrentNetworkView().getSelectedEdges();
-        
-//     ArrayList edgeList = new ArrayList( evList.size() );
-//     Iterator ei = evList.iterator();
-//     while (ei.hasNext()) {
-//       EdgeView eview =(EdgeView) ei.next();
-//       //giny.model.Edge e = eview.getEdge();
-//       giny.model.Edge e = Cytoscape.getRootGraph().getEdge( eview.getRootGraphIndex() );
-//       edgeList.add(e);
-//     }//while
-        
-//     giny.model.Edge[] selectedEdges = ( giny.model.Edge[] ) edgeList.toArray (new Edge [0]);
  
+    giny.model.Node [] selectedNodes = (giny.model.Node[]) Cytoscape.getCurrentNetwork().getFlaggedNodes().toArray(new giny.model.Node[0]);
+     
     giny.model.Edge [] selectedEdges = (giny.model.Edge[]) Cytoscape.getCurrentNetwork().getFlaggedEdges().toArray(new giny.model.Edge[0]);    
+    
     TabbedBrowser nodeBrowser = null;
     TabbedBrowser edgeBrowser = null;
         

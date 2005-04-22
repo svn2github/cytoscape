@@ -533,8 +533,8 @@ public class CytoscapeData
     
     // first find the end of the list
     int span = data.getAttributeKeyspanCount( graphObjectName, 
-                                                    attributeName,
-                                                    LIST_KEY );
+                                              attributeName,
+                                              null );
 
     for ( int i = 0; i < span; ++i ) {
       arraylist.add( data.getAttributeValue( graphObjectName,
@@ -810,7 +810,7 @@ public class CytoscapeData
    *
    *  @see #getValue
 
-   * KEY: Attributename
+   * KEY: Attributename 
    * VALUE: value[0]
    */
   public HashMap getAttributes ( String identifier ) {
@@ -821,7 +821,7 @@ public class CytoscapeData
       String attr = ( String )iter.nextElement();
       if ( data.getAttributeKeyspanCount( identifier,
                                           attr,
-                                          LIST_KEY ) != 0 ) {
+                                          null ) != 0 ) {
         map.put( attr, data.getAttributeValue( identifier, attr, ZERO ) );
       }
     }
