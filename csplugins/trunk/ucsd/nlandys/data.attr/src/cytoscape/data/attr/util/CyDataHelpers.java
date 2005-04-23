@@ -213,46 +213,4 @@ public final class CyDataHelpers
                               bucket, newPrefix, keyspaceDims); } }
   }
 
-  /**
-   * Convenience method for deleting attribute values along a specified key
-   * prefix; this method is only useful with attribute definitions
-   * that have nonzero key spaces.<p>
-   * TIP: To find out exactly what is deleted by this method, add a
-   * CyDataListener to cyData.
-   * @param objectKey the object whose attribute values to delete.
-   * @param attributeName the attribute definition in which to delete
-   *   attribute values.
-   * @param keyPrefix an array of length less than or equal to the
-   *   dimensionality
-   *   of key space of attributeName; entry at index i contains a
-   *   "representative" from dimension i + 1 of the key space of attributeName;
-   *   keyPrefix may be either null or the empty array, in which case all
-   *   attribute values bound to objectKey in attributeName will be deleted,
-   *   one at a time; if keyPrefix is not empty, all values having key
-   *   sequences whose beginning matches the specified prefix will be deleted.
-   * @param cyData the data repository to use to dig for attribute values.
-   * @param cyDataDef the data definition registry to use to find out about
-   *   the dimensionality of attributeName.
-   * @return true if and only if at least one attribute value has been deleted.
-   * @exception IllegalStateException if attributeName is not an existing
-   *   attribute definition in cyData and cyDataDef.
-   * @exception NullPointerException if any one of the input parameters except
-   *   for keyPrefix is null, or if keyPrefix is of positive length and any one
-   *   of its entries is null.
-   * @exception ClassCastException if keyPrefix is [not null and] of positive
-   *   length and any one of its entries does not match the type of object
-   *   specified by corresponding dimension type in attributeName's definition.
-   * @exception IllegalArgumentException if keyPrefix's length is 
-   *   greater than the dimensionality of attributeName's key space.
-   */
-  public static boolean removeAllAttributeValuesAlongPrefix(
-                                             final String objectKey,
-                                             final String attributeName,
-                                             final Object[] keyPrefix,
-                                             final CyData cyData,
-                                             final CyDataDefinition cyDataDef)
-  {
-    throw new IllegalStateException("not implemented yet - no worries");
-  }
-
 }
