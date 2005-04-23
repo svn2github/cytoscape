@@ -139,14 +139,26 @@ public final class CyDataHelpers
 
   /**
    * @return a list of Object[]; each Object[] in the returned list is
-   *   a key into a bound value.
+   *   a unique full key into a bound value; the returned list is never null,
+   *   and always contains the full set of key sequences registered on
+   *   objectKey in attributeName.
    */
   public static List getAllAttributeKeys(final String objectKey,
                                          final String attributeName,
                                          final CyData cyData,
                                          final CyDataDefinition cyDataDef)
   {
-    throw new IllegalStateException("not implemented yet");
+    final ArrayList bucket = new ArrayList();
+    final int keyspaceDims =
+      cyDataDef.getAttributeKeyspaceDimensionality(attributeName);
+    if (keyspaceDims < 1) { // It's either 0 or -1.
+      final Object attrVal = cyData.getAttributeValue
+        (objectKey, attributeName, null); // May trigger exception; OK.
+      if (attrVal != null) bucket.add(new Object[0]); }
+    else { // keyspaceDims > 0.
+      r_getAllAttributeKeys(objectKey, attributeName, cyData,
+                            bucket, new Object[0], keyspaceDims); }
+    return bucket;
   }
 
   public static List getAllAttributeKeysAlongPrefix(
@@ -159,32 +171,32 @@ public final class CyDataHelpers
     throw new IllegalStateException("not implemented yet");
   }
 
-  private static void r_getAllAttributeKeys(
-                                       final String objectKey,
-                                       final String attributeName,
-                                       final CyData dataRegistry,
-                                       final ArrayList bucket,
-                                       final CountedEnumeration currentKeyspan,
-                                       final Object[] prefixSoFar,
-                                       final int keyspaceDims)
+  // Recursive helper for getAllAttributeKeys() and
+  // getAllAttributeKeysAlongPrefix().
+  private static void r_getAllAttributeKeys(final String objectKey,
+                                            final String attributeName,
+                                            final CyData dataRegistry,
+                                            final ArrayList bucket,
+                                            final Object[] prefixSoFar,
+                                            final int keyspaceDims)
   {
+    final CountedEnumeration currentKeyspan =
+      dataRegistry.getAttributeKeyspan(objectKey, attributeName, prefixSoFar);
     if (keyspaceDims == prefixSoFar.length + 1) { // The final dimension.
-      while (currentKeyspan.hasMoreElements()) {
-        final Object[] fullKey = new Object[keyspaceDims];
-        for (int i = 0; i < prefixSoFar.length; i++)
-          fullKey[i] = prefixSoFar[i];
-        fullKey[keyspaceDims - 1] = currentKeyspan.nextElement();
-        bucket.add(fullKey); } }
-    else { // Not the final dimension.
       while (currentKeyspan.hasMoreElements()) {
         final Object[] newPrefix = new Object[prefixSoFar.length + 1];
         for (int i = 0; i < prefixSoFar.length; i++)
           newPrefix[i] = prefixSoFar[i];
-        newPrefix[prefixSoFar.length] = currentKeyspan.nextElement();
-        final CountedEnumeration newKeyspan = dataRegistry.getAttributeKeyspan
-          (objectKey, attributeName, newPrefix);
+        newPrefix[newPrefix.length - 1] = currentKeyspan.nextElement();
+        bucket.add(newPrefix); } }
+    else { // Not the final dimension.
+      final Object[] newPrefix = new Object[prefixSoFar.length + 1];
+      for (int i = 0; i < prefixSoFar.length; i++)
+        newPrefix[i] = prefixSoFar[i];
+      while (currentKeyspan.hasMoreElements()) {
+        newPrefix[newPrefix.length - 1] = currentKeyspan.nextElement();
         r_getAllAttributeKeys(objectKey, attributeName, dataRegistry,
-                              bucket, newKeyspan, newPrefix, keyspaceDims); } }
+                              bucket, newPrefix, keyspaceDims); } }
   }
 
   /**
