@@ -139,10 +139,23 @@ public final class CyDataHelpers
   }
 
   /**
+   * Convenience method for discovering all key sequnces that map into
+   * bound values; this method is primarily useful with attribute
+   * definitions that have nonzero key spaces.
+   * @param objectKey the object whose mapped attribute keys to return.
+   * @param attributeName the attribute definition in which to find
+   *   attribute keys.
+   * @param cyData the data repository to use to discover attribute keys.
+   * @param cyDataDef the data definition registry to use to find out about
+   *   the dimensionality of attributeName.
    * @return a list of Object[]; each Object[] in the returned list is
-   *   a unique full key into a bound value; the returned list is never null,
-   *   and always contains the full set of key sequences registered on
+   *   a unique key sequence into a bound value; the returned list is never
+   *   null and always contains the full set of key sequences registered on
    *   objectKey in attributeName.
+   * @exception IllegalStateException if attributeName is not an existing
+   *   attribute definition in cyData and cyDataDef.
+   * @exception NullPointerException if any one of the input parameters is
+   *   null.
    */
   public static List getAllAttributeKeys(final String objectKey,
                                          final String attributeName,
@@ -162,6 +175,38 @@ public final class CyDataHelpers
     return bucket;
   }
 
+  /**
+   * Convenience method for discovering all key sequences having a given
+   * prefix that map into bound values; this method is primarily useful with
+   * attribute definitions that have nonzero key spaces.
+   * @param objectKey the object whose mapped attribute keys to return.
+   * @param attributeName the attribute definition in which to find
+   *   attribute keys.
+   * @param keyPrefix an array of length less than or equal to the
+   *   dimensionality of key space of attributeName; entry at index i contains
+   *   a "representative" from dimension i + 1 of the key space of
+   *   attributeName; keyPrefix may be either null or the empty array, in which
+   *   case all attribute key sequences mapped to attribute values for
+   *   objectKey in attributeName will be returned; if keyPrefix is not empty,
+   *   all mapped key sequences having prefix keyPrefix will be returned.
+   * @param cyData the data repository to use to discover attribute keys.
+   * @param cyDataDef the data definition registry to use to find out about
+   *   the dimensionality of attributeName.
+   * @return a list of Object[]; each Object[] in the returned list is
+   *   a unique key sequence whose beginning matches keyPrefix and which
+   *   is mapped to a value; the returned list contains all such key sequences;
+   *   the return value is never null;
+   * @exception IllegalStateException if attributeName is not an existing
+   *   attribute definition in cyData and cyDataDef.
+   * @exception NullPointerException if any one of the input parameters except
+   *   keyPrefix is null, or if keyPrefix is of positive length and any one
+   *   of its entries is null.
+   * @exception ClassCastException if keyPrefix is of positive length and any
+   *   one of its entries does not match the type of object specified
+   *   by corresponding dimension type in attributeName's definition.
+   * @exception IllegalArgumentException if keyPrefix's length is
+   *   greater than the dimensionality of attributeName's key space.
+   */
   public static List getAllAttributeKeysAlongPrefix(
                                               final String objectKey,
                                               final String attributeName,
