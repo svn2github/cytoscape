@@ -57,7 +57,8 @@ public final class CyDataHelpers
       (bucket.iterator(), bucket.size());
   }
 
-  // Recursive helper for getAllAttributeValues().
+  // Recursive helper for getAllAttributeValues() and
+  // getAllAttributeValuesAlongPrefix().
   private static void r_getAllAttributeValues(
                                        final String objectKey,
                                        final String attributeName,
