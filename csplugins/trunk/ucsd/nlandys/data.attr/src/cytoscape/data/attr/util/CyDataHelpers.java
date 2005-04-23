@@ -84,6 +84,32 @@ public final class CyDataHelpers
                                 newPrefix, keyspaceDims); } }
   }
 
-//   public static boolean removeAllAlongPrefix(
+  /**
+   * @param objectKey the object whose attribute values to delete.
+   * @param attributeName the attribute definition in which to delete
+   *   attribute values.
+   * @param keyPrefix an array of length strictly less than the dimensionality
+   *   of key space of attributeName; entry at index i contains a
+   *   "representative" from dimension i + 1 of the key space of attributeName;
+   *   keyPrefix may be either null or the empty array, in which case all
+   *   attribute values bound to objectKey in attributeName will be deleted,
+   *   one at a time; if keyPrefix is not empty, all values having key
+   *   sequences whose beginning matches the specified prefix will be deleted.
+   * @param cyData the data repository to use to dig for attribute values.
+   * @param cyDataDef the data definition registry to use to find out about
+   *   the dimensionality of attributeName.
+   * @return true if and only if at least one attribute value has been deleted.
+   * @exception IllegalStateException if attributeName is not an existing
+   *   attribute definition in cyData and cyDataDef.
+   */
+  public static boolean removeAttributeKeyspan(
+                                             final String objectKey,
+                                             final String attributeName,
+                                             final Object[] keyPrefix,
+                                             final CyData cyData,
+                                             final CyDataDefinition cyDataDef)
+  {
+    throw new IllegalStateException("not implemented yet - no worries");
+  }
 
 }
