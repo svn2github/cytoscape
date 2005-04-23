@@ -148,6 +148,18 @@ public final class CyDataHelpers
   }
 
   /**
+   * @return a list of Object[]; each Object[] in the returned list is
+   *   a key into a bound value.
+   */
+  public static List getAllAttributeKeys(final String objectKey,
+                                         final String attributeName,
+                                         final CyData cyData,
+                                         final CyDataDefinition cyDataDef)
+  {
+    throw new IllegalStateException("not implemented yet");
+  }
+
+  /**
    * Convenience method for deleting attribute values along a specified key
    * prefix.<p>
    * TIP: To find out exactly what is deleted by this method, add a
