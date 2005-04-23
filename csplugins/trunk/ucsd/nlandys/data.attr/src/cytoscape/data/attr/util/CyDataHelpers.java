@@ -7,6 +7,15 @@ import cytoscape.data.attr.CyDataDefinition;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class contains static utilitarian methods that return information
+ * pertaining to attributes.  The reason why the methods here are defined
+ * in this helper class and not in CyData is that the return values in these
+ * methods are simply computed using the public API methods of CyData.
+ * CyDataHelpers is an implementation layer on top of CyData, whereas CyData
+ * provides only those methods which are either essential to its API or are
+ * optimized by its implementation.
+ */
 public final class CyDataHelpers
 {
   // NOTE: This class resides in the same package as the CyDataModel
@@ -84,7 +93,7 @@ public final class CyDataHelpers
    * @exception IllegalStateException if attributeName is not an existing
    *   attribute definition in cyData and cyDataDef.
    * @exception NullPointerException if any one of the input parameters except
-   *   for keyPrefix is null, or if keyPrefix is of positive length and any one
+   *   keyPrefix is null, or if keyPrefix is of positive length and any one
    *   of its entries is null.
    * @exception ClassCastException if keyPrefix is of positive length and any
    *   one of its entries does not match the type of object specified
