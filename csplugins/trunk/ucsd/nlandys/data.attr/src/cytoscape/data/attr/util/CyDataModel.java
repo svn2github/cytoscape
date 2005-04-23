@@ -174,7 +174,9 @@ final class CyDataModel implements CyDataDefinition, CyData
     final int keyTypesLength = (keyTypes == null ? 0 : keyTypes.length);
     final byte[] keyTypesCopy = new byte[keyTypesLength];
     if (keyTypes != null)
-      System.arraycopy(keyTypes, 0, keyTypesCopy, 0, keyTypesLength);
+//       System.arraycopy(keyTypes, 0, keyTypesCopy, 0, keyTypesLength);
+      for (int i = 0; i < keyTypesLength; i++)
+        keyTypesCopy[i] = keyTypes[i];
 
     // Error-check keyTypesCopy.
     for (int i = 0; i < keyTypesCopy.length; i++)
@@ -234,7 +236,9 @@ final class CyDataModel implements CyDataDefinition, CyData
     if (def == null)
       throw new IllegalStateException
         ("no attributeName '" + attributeName + "' exists");
-    System.arraycopy(def.keyTypes, 0, keyTypes, 0, def.keyTypes.length);
+//     System.arraycopy(def.keyTypes, 0, keyTypes, 0, def.keyTypes.length);
+    for (int i = 0; i < def.keyTypes.length; i++)
+      keyTypes[i] = def.keyTypes[i];
   }
 
   public final void undefineAttribute(final String attributeName)
