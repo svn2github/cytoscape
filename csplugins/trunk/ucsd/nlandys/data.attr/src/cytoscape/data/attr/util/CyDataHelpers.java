@@ -127,18 +127,14 @@ public final class CyDataHelpers
       dataRegistry.getAttributeKeyspan(objectKey, attributeName, prefixSoFar);
     final Object[] newPrefix = new Object[prefixSoFar.length + 1];
     for (int i = 0; i < prefixSoFar.length; i++) newPrefix[i] = prefixSoFar[i];
-    if (keyspaceDims == newPrefix.length) { // The final dimension.
-      while (currentKeyspan.hasMoreElements()) {
-        newPrefix[prefixSoFar.length] = currentKeyspan.nextElement();
+    while (currentKeyspan.hasMoreElements()) {
+      newPrefix[newPrefix.length - 1] = currentKeyspan.nextElement();
+      if (keyspaceDims == newPrefix.length) // The final dimension.
         bucket.add(dataRegistry.getAttributeValue
-                   (objectKey, attributeName, newPrefix)); } }
-    else { // Not the final dimension.
-      while (currentKeyspan.hasMoreElements()) {
-        newPrefix[prefixSoFar.length] = currentKeyspan.nextElement();
-        final CountedEnumeration newKeyspan = dataRegistry.getAttributeKeyspan
-          (objectKey, attributeName, newPrefix);
+                   (objectKey, attributeName, newPrefix));
+      else // Not the final dimension.
         r_getAllAttributeValues(objectKey, attributeName, dataRegistry,
-                                bucket, newPrefix, keyspaceDims); } }
+                                bucket, newPrefix, keyspaceDims); }
   }
 
   /**
