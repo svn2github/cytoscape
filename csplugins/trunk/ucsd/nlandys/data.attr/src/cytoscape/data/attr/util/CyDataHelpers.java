@@ -53,7 +53,7 @@ public final class CyDataHelpers
       final Object attrVal = cyData.getAttributeValue
         (objectKey, attributeName, null); // May trigger exception; OK.
       if (attrVal != null) bucket.add(attrVal); }
-    else { // keyspaceDims > 1.
+    else { // keyspaceDims > 0.
       r_getAllAttributeValues(objectKey, attributeName, cyData,
                               bucket, new Object[0], keyspaceDims); }
     return bucket;
@@ -108,9 +108,10 @@ public final class CyDataHelpers
         (objectKey, attributeName, keyPrefix); // May trigger exception; OK.
       if (attrVal != null) bucket.add(attrVal); }
     else {
-      r_getAllAttributeValues(objectKey, attributeName, cyData, bucket,
-                              (keyPrefix == null ? new Object[0] : keyPrefix),
-                              keyspaceDims); }
+      final Object[] keyPrefixCopy = new Object[prefixDims];
+      for (int i = 0; i < prefixDims; i++) keyPrefixCopy[i] = keyPrefix[i];
+      r_getAllAttributeValues(objectKey, attributeName, cyData,
+                              bucket, keyPrefixCopy, keyspaceDims); }
     return bucket;
   }
 
