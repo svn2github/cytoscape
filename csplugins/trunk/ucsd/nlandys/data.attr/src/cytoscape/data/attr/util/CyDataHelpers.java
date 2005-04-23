@@ -169,7 +169,20 @@ public final class CyDataHelpers
                                               final CyData cyData,
                                               final CyDataDefinition cyDataDef)
   {
-    throw new IllegalStateException("not implemented yet");
+    final ArrayList bucket = new ArrayList();
+    final int keyspaceDims =
+      cyDataDef.getAttributeKeyspaceDimensionality(attributeName);
+    final int prefixDims = (keyPrefix == null ? 0 : keyPrefix.length);
+    final Object[] keyPrefixCopy = new Object[prefixDims];
+    for (int i = 0; i < prefixDims; i++) keyPrefixCopy[i] = keyPrefix[i];
+    if (keyspaceDims <= prefixDims) {
+      final Object attrVal = cyData.getAttributeValue
+        (objectKey, attributeName, keyPrefixCopy); // ? trigger exception; OK.
+      if (attrVal != null) bucket.add(keyPrefixCopy); }
+    else {
+      r_getAllAttributeKeys(objectKey, attributeName, cyData,
+                            bucket, keyPrefixCopy, keyspaceDims); }
+    return bucket;
   }
 
   // Recursive helper for getAllAttributeKeys() and
