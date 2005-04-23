@@ -373,10 +373,9 @@ public final class IntBTree
 //       System.arraycopy
 //         (leftSibling.values, leftSibling.sliceCount - distributeNum,
 //          thisSibling.values, 0, distributeNum);
-      final int[] thisVals = thisSibling.values;
-      final int[] leftVals = leftSibling.values;
       for (int i = leftSibling.sliceCount - distributeNum, o = 0;
-           o < distributeNum;) thisVals[o++] = leftVals[i++];
+           o < distributeNum;)
+        thisSibling.values[o++] = leftSibling.values[i++];
       leftSibling.sliceCount -= distributeNum;
       thisSibling.sliceCount += distributeNum;
       return thisSibling.values[0]; }
@@ -388,10 +387,9 @@ public final class IntBTree
 //       System.arraycopy
 //         (leftSibling.data.children, leftSibling.sliceCount - distributeNum,
 //          thisSibling.data.children, 0, distributeNum);
-      final Node[] thisKids = thisSibling.data.children;
-      final Node[] leftKids = leftSibling.data.children;
       for (int i = leftSibling.sliceCount - distributeNum, o = 0;
-           o < distributeNum;) thisKids[o++] = leftKids[i++];
+           o < distributeNum;)
+        thisSibling.data.children[o++] = leftSibling.data.children[i++];
       int deepCountDiff = 0;
       for (int i = leftSibling.sliceCount - distributeNum;
            i < leftSibling.sliceCount; i++) {
@@ -403,10 +401,9 @@ public final class IntBTree
 //       System.arraycopy
 //         (leftSibling.data.splitVals, leftSibling.sliceCount - distributeNum,
 //          thisSibling.data.splitVals, 0, distributeNum - 1);
-      final int[] thisSplits = thisSibling.data.splitVals;
-      final int[] leftSplits = leftSibling.data.splitVals;
       for (int i = leftSibling.sliceCount - distributeNum, o = 0;
-           o < distributeNum - 1;) thisSplits[o++] = leftSplits[i++];
+           o < distributeNum - 1;)
+        thisSibling.data.splitVals[o++] = leftSibling.data.splitVals[i++];
       leftSibling.sliceCount -= distributeNum;
       thisSibling.sliceCount += distributeNum;
       leftSibling.data.deepCount -= deepCountDiff;
@@ -428,10 +425,8 @@ public final class IntBTree
 //       System.arraycopy(rightSibling.values, 0,
 //                        thisSibling.values, thisSibling.sliceCount,
 //                        distributeNum);
-      final int[] thisVals = thisSibling.values;
-      final int[] rightVals = rightSibling.values;
       for (int i = 0, o = thisSibling.sliceCount; i < distributeNum;)
-        thisVals[o++] = rightVals[i++];
+        thisSibling.values[o++] = rightSibling.values[i++];
       for (int i = 0, o = distributeNum; o < rightSibling.sliceCount;)
         rightSibling.values[i++] = rightSibling.values[o++];
       rightSibling.sliceCount -= distributeNum;
@@ -452,10 +447,8 @@ public final class IntBTree
 //       System.arraycopy(rightSibling.data.splitVals, 0,
 //                        thisSibling.data.splitVals, thisSibling.sliceCount,
 //                        distributeNum - 1);
-      final int[] thisSplits = thisSibling.data.splitVals;
-      final int[] rightSplits = rightSibling.data.splitVals;
       for (int i = 0, o = thisSibling.sliceCount; i < distributeNum - 1;)
-        thisSplits[o++] = rightSplits[i++];
+        thisSibling.data.splitVals[o++] = rightSibling.data.splitVals[i++];
       for (int i = distributeNum, o = 0; i < rightSibling.sliceCount - 1;)
         rightSibling.data.splitVals[o++] = rightSibling.data.splitVals[i++];
       rightSibling.sliceCount -= distributeNum;
@@ -476,29 +469,23 @@ public final class IntBTree
 //       System.arraycopy(rightSibling.values, 0,
 //                        leftSibling.values, leftSibling.sliceCount,
 //                        rightSibling.sliceCount);
-      final int[] leftVals = leftSibling.values;
-      final int[] rightVals = rightSibling.values;
       for (int i = 0, o = leftSibling.sliceCount; i < rightSibling.sliceCount;)
-        leftVals[o++] = rightVals[i++];
+        leftSibling.values[o++] = rightSibling.values[i++];
       leftSibling.sliceCount += rightSibling.sliceCount;
       rightSibling.sliceCount = 0; /* Pedantic. */ }
     else {
 //       System.arraycopy(rightSibling.data.splitVals, 0,
 //                        leftSibling.data.splitVals, leftSibling.sliceCount,
 //                        rightSibling.sliceCount - 1);
-      final int[] leftSplits = leftSibling.data.splitVals;
-      final int[] rightSplits = rightSibling.data.splitVals;
       for (int i = 0, o = leftSibling.sliceCount;
            i < rightSibling.sliceCount - 1;)
-        leftSplits[o++] = rightSplits[i++];
+        leftSibling.data.splitVals[o++] = rightSibling.data.splitVals[i++];
       leftSibling.data.splitVals[leftSibling.sliceCount - 1] = splitValue;
 //       System.arraycopy(rightSibling.data.children, 0,
 //                        leftSibling.data.children, leftSibling.sliceCount,
 //                        rightSibling.sliceCount);
-      final Node[] leftKids = leftSibling.data.children;
-      final Node[] rightKids = rightSibling.data.children;
       for (int i = 0, o = leftSibling.sliceCount; i < rightSibling.sliceCount;)
-        leftKids[o++] = rightKids[i++];
+        leftSibling.data.children[o++] = rightSibling.data.children[i++];
       for (int i = 0; i < rightSibling.sliceCount; i++) {
         rightSibling.data.children[i] = null; /* Pedantic. */ }
       leftSibling.sliceCount += rightSibling.sliceCount;
