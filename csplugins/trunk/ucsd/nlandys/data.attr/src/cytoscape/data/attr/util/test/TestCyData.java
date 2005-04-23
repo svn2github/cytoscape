@@ -67,18 +67,14 @@ public final class TestCyData
       (twoName, attrName, new Object[] { "Salk", new Integer(1) });
     if (o != null)
       throw new IllegalStateException("expected null");
-    CountedEnumeration boundValsOne =
+    List boundValsOne =
       CyDataHelpers.getAllAttributeValues(oneName, attrName, data, def);
-    int count = 0;
-    while (boundValsOne.hasMoreElements()) {
-      Object boundVal = boundValsOne.nextElement();
-      count++;
-      for (int i = 0;; i++) {
-        if (boundVal.equals(oneVals[i])) break; } }
-    if (count != 4) throw new IllegalStateException("count not 3");
-    List l = CyDataHelpers.getAllAttributeValuesAlongPrefix
+    if (boundValsOne.size() != 4)
+      throw new IllegalStateException("count not 4");
+    boundValsOne = CyDataHelpers.getAllAttributeValuesAlongPrefix
       (oneName, attrName, new Object[] { "Salk" }, data, def);
-    if (l.size() != 2) throw new IllegalStateException("expected 2");
+    if (boundValsOne.size() != 2)
+      throw new IllegalStateException("expected 2");
   }
 
 }

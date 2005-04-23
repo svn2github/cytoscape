@@ -25,11 +25,12 @@ final class CyDataModel implements CyDataDefinition, CyData
     }
   }
 
-  final static class Iterator2Enumeration implements CountedEnumeration
+  private final static class Iterator2Enumeration implements CountedEnumeration
   {
     private final java.util.Iterator iter;
     private int count;
-    Iterator2Enumeration(final java.util.Iterator iter, final int count) {
+    private Iterator2Enumeration(final java.util.Iterator iter,
+                                 final int count) {
       this.iter = iter;
       this.count = count; }
     public final boolean hasMoreElements() { return iter.hasNext(); }

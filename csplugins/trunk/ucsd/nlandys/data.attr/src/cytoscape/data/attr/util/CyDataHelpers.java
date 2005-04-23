@@ -15,31 +15,36 @@ public final class CyDataHelpers
   // by its CyData interface.  We could provide dual implementations for
   // every method in this class, and choose the path of execution based on
   // whether or not our input object is an instance of CyDataModel.
+  // Right now, though, everything is implemented in terms of CyData interface
+  // methods.
 
   // No constructor.  Static methods only.
   private CyDataHelpers() { }
 
   /**
+   * Convenience method for discovering all attribute values on an object in
+   * a given attribute definition; this method is only useful with attribute
+   * definitions that have nonzero key spaces.
    * @param objectKey the object whose attribute values to return.
    * @param attributeName the attribute definition in which to find attribute
    *   values.
    * @param cyData the data repository to use to dig for attribute values.
    * @param cyDataDef the data definition registry to use to find out about
    *   the dimensionality of attributeName.
-   * @return an enumeration of all bound values on objectKey in
-   *   attributeName, with duplicate values included; the returned enumeration
-   *   is never null; elements in the returned enumeration are ordered
-   *   arbitrarily.
+   * @return a list of all bound values on objectKey in
+   *   attributeName, with duplicate values included; the returned list
+   *   is never null; elements in the returned list are ordered
+   *   arbitrarily; subsequent operations on cyData or cyDataDef will have
+   *   no effect on the returned list.
    * @exception IllegalStateException if attributeName is not an existing
    *   attribute definition in cyData and cyDataDef.
    * @exception NullPointerException if any one of the input parameters is
    *   null.
    */
-  public static CountedEnumeration getAllAttributeValues(
-                                              final String objectKey,
-                                              final String attributeName,
-                                              final CyData cyData,
-                                              final CyDataDefinition cyDataDef)
+  public static List getAllAttributeValues(final String objectKey,
+                                           final String attributeName,
+                                           final CyData cyData,
+                                           final CyDataDefinition cyDataDef)
   {
     final ArrayList bucket = new ArrayList();
     final int keyspaceDims =
@@ -54,36 +59,7 @@ public final class CyDataHelpers
       r_getAllAttributeValues(objectKey, attributeName, cyData,
                               bucket, dim1Keys,
                               new Object[0], keyspaceDims); }
-    return new CyDataModel.Iterator2Enumeration
-      (bucket.iterator(), bucket.size());
-  }
-
-  // Recursive helper for getAllAttributeValues() and
-  // getAllAttributeValuesAlongPrefix().
-  private static void r_getAllAttributeValues(
-                                       final String objectKey,
-                                       final String attributeName,
-                                       final CyData dataRegistry,
-                                       final ArrayList bucket,
-                                       final CountedEnumeration currentKeyspan,
-                                       final Object[] prefixSoFar,
-                                       final int keyspaceDims)
-  {
-    final Object[] newPrefix = new Object[prefixSoFar.length + 1];
-    System.arraycopy(prefixSoFar, 0, newPrefix, 0, prefixSoFar.length);
-    if (keyspaceDims == newPrefix.length) { // The final dimension.
-      while (currentKeyspan.hasMoreElements()) {
-        newPrefix[prefixSoFar.length] = currentKeyspan.nextElement();
-        bucket.add(dataRegistry.getAttributeValue
-                   (objectKey, attributeName, newPrefix)); } }
-    else { // Not the final dimension.
-      while (currentKeyspan.hasMoreElements()) {
-        newPrefix[prefixSoFar.length] = currentKeyspan.nextElement();
-        final CountedEnumeration newKeyspan = dataRegistry.getAttributeKeyspan
-          (objectKey, attributeName, newPrefix);
-        r_getAllAttributeValues(objectKey, attributeName, dataRegistry,
-                                bucket, newKeyspan,
-                                newPrefix, keyspaceDims); } }
+    return bucket;
   }
 
   /**
@@ -140,6 +116,34 @@ public final class CyDataHelpers
                               (keyPrefix == null ? new Object[0] : keyPrefix),
                               keyspaceDims); }
     return bucket;
+  }
+
+  // Recursive helper for getAllAttributeValues() and
+  // getAllAttributeValuesAlongPrefix().
+  private static void r_getAllAttributeValues(
+                                       final String objectKey,
+                                       final String attributeName,
+                                       final CyData dataRegistry,
+                                       final ArrayList bucket,
+                                       final CountedEnumeration currentKeyspan,
+                                       final Object[] prefixSoFar,
+                                       final int keyspaceDims)
+  {
+    final Object[] newPrefix = new Object[prefixSoFar.length + 1];
+    System.arraycopy(prefixSoFar, 0, newPrefix, 0, prefixSoFar.length);
+    if (keyspaceDims == newPrefix.length) { // The final dimension.
+      while (currentKeyspan.hasMoreElements()) {
+        newPrefix[prefixSoFar.length] = currentKeyspan.nextElement();
+        bucket.add(dataRegistry.getAttributeValue
+                   (objectKey, attributeName, newPrefix)); } }
+    else { // Not the final dimension.
+      while (currentKeyspan.hasMoreElements()) {
+        newPrefix[prefixSoFar.length] = currentKeyspan.nextElement();
+        final CountedEnumeration newKeyspan = dataRegistry.getAttributeKeyspan
+          (objectKey, attributeName, newPrefix);
+        r_getAllAttributeValues(objectKey, attributeName, dataRegistry,
+                                bucket, newKeyspan,
+                                newPrefix, keyspaceDims); } }
   }
 
   /**
