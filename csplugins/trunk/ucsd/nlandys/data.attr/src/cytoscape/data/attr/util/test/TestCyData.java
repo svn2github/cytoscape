@@ -73,7 +73,7 @@ public final class TestCyData
       count++;
       for (int i = 0;; i++) {
         if (boundVal.equals(oneVals[i])) break; } }
-    if (count != 3) throw new IllegalStateException("count not 3");
+    if (count != 4) throw new IllegalStateException("count not 3");
   }
 
 }

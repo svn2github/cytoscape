@@ -4,7 +4,7 @@ import cytoscape.data.attr.CountedEnumeration;
 import cytoscape.data.attr.CyData;
 import cytoscape.data.attr.CyDataDefinition;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 
 public final class CyDataHelpers
 {
@@ -26,8 +26,9 @@ public final class CyDataHelpers
    * @param cyDataDef the data definition registry to use to find out about
    *   the dimensionality of attributeName.
    * @return an enumeration of all bound values on objectKey in
-   *   attributeName, with duplicate values removed; the returned enumeration
-   *   is never null.
+   *   attributeName, with duplicate values included; the returned enumeration
+   *   is never null; elements in the returned enumeration are ordered
+   *   arbitrarily.
    * @exception IllegalStateException if attributeName is not an existing
    *   attribute definition in cyData and cyDataDef.
    * @exception NullPointerException if any one of the input parameters is
@@ -39,21 +40,21 @@ public final class CyDataHelpers
                                               final CyData cyData,
                                               final CyDataDefinition cyDataDef)
   {
-    final HashMap duplicateFilter = new HashMap();
+    final ArrayList bucket = new ArrayList();
     final int keyspaceDims =
       cyDataDef.getAttributeKeyspaceDimensionality(attributeName);
     if (keyspaceDims < 1) { // It's either 0 or -1.
       final Object attrVal = cyData.getAttributeValue
         (objectKey, attributeName, null); // May trigger exception; OK.
-      if (attrVal != null) duplicateFilter.put(attrVal, null); }
+      if (attrVal != null) bucket.add(attrVal); }
     else { // keyspaceDims > 1.
       final CountedEnumeration dim1Keys =
         cyData.getAttributeKeyspan(objectKey, attributeName, null);
       r_getAllAttributeValues(objectKey, attributeName, cyData,
-                              duplicateFilter, dim1Keys,
+                              bucket, dim1Keys,
                               new Object[0], keyspaceDims); }
     return new CyDataModel.Iterator2Enumeration
-      (duplicateFilter.keySet().iterator(), duplicateFilter.size());
+      (bucket.iterator(), bucket.size());
   }
 
   // Recursive helper for getAllAttributeValues().
@@ -61,7 +62,7 @@ public final class CyDataHelpers
                                        final String objectKey,
                                        final String attributeName,
                                        final CyData dataRegistry,
-                                       final HashMap duplicateFilter,
+                                       final ArrayList bucket,
                                        final CountedEnumeration currentKeyspan,
                                        final Object[] prefixSoFar,
                                        final int keyspaceDims)
@@ -71,16 +72,15 @@ public final class CyDataHelpers
     if (keyspaceDims == newPrefix.length) { // The final dimension.
       while (currentKeyspan.hasMoreElements()) {
         newPrefix[prefixSoFar.length] = currentKeyspan.nextElement();
-        duplicateFilter.put
-          (dataRegistry.getAttributeValue(objectKey, attributeName, newPrefix),
-           null); } }
+        bucket.add(dataRegistry.getAttributeValue
+                   (objectKey, attributeName, newPrefix)); } }
     else { // Not the final dimension.
       while (currentKeyspan.hasMoreElements()) {
         newPrefix[prefixSoFar.length] = currentKeyspan.nextElement();
         final CountedEnumeration newKeyspan = dataRegistry.getAttributeKeyspan
           (objectKey, attributeName, newPrefix);
         r_getAllAttributeValues(objectKey, attributeName, dataRegistry,
-                                duplicateFilter, newKeyspan,
+                                bucket, newKeyspan,
                                 newPrefix, keyspaceDims); } }
   }
 
