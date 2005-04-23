@@ -54,11 +54,8 @@ public final class CyDataHelpers
         (objectKey, attributeName, null); // May trigger exception; OK.
       if (attrVal != null) bucket.add(attrVal); }
     else { // keyspaceDims > 1.
-      final CountedEnumeration dim1Keys =
-        cyData.getAttributeKeyspan(objectKey, attributeName, null);
       r_getAllAttributeValues(objectKey, attributeName, cyData,
-                              bucket, dim1Keys,
-                              new Object[0], keyspaceDims); }
+                              bucket, new Object[0], keyspaceDims); }
     return bucket;
   }
 
@@ -111,9 +108,7 @@ public final class CyDataHelpers
         (objectKey, attributeName, keyPrefix); // May trigger exception; OK.
       if (attrVal != null) bucket.add(attrVal); }
     else {
-      final CountedEnumeration keys =
-        cyData.getAttributeKeyspan(objectKey, attributeName, keyPrefix);
-      r_getAllAttributeValues(objectKey, attributeName, cyData, bucket, keys,
+      r_getAllAttributeValues(objectKey, attributeName, cyData, bucket,
                               (keyPrefix == null ? new Object[0] : keyPrefix),
                               keyspaceDims); }
     return bucket;
@@ -121,15 +116,15 @@ public final class CyDataHelpers
 
   // Recursive helper for getAllAttributeValues() and
   // getAllAttributeValuesAlongPrefix().
-  private static void r_getAllAttributeValues(
-                                       final String objectKey,
-                                       final String attributeName,
-                                       final CyData dataRegistry,
-                                       final ArrayList bucket,
-                                       final CountedEnumeration currentKeyspan,
-                                       final Object[] prefixSoFar,
-                                       final int keyspaceDims)
+  private static void r_getAllAttributeValues(final String objectKey,
+                                              final String attributeName,
+                                              final CyData dataRegistry,
+                                              final ArrayList bucket,
+                                              final Object[] prefixSoFar,
+                                              final int keyspaceDims)
   {
+    final CountedEnumeration currentKeyspan =
+      dataRegistry.getAttributeKeyspan(objectKey, attributeName, prefixSoFar);
     final Object[] newPrefix = new Object[prefixSoFar.length + 1];
     for (int i = 0; i < prefixSoFar.length; i++) newPrefix[i] = prefixSoFar[i];
     if (keyspaceDims == newPrefix.length) { // The final dimension.
@@ -143,8 +138,7 @@ public final class CyDataHelpers
         final CountedEnumeration newKeyspan = dataRegistry.getAttributeKeyspan
           (objectKey, attributeName, newPrefix);
         r_getAllAttributeValues(objectKey, attributeName, dataRegistry,
-                                bucket, newKeyspan,
-                                newPrefix, keyspaceDims); } }
+                                bucket, newPrefix, keyspaceDims); } }
   }
 
   /**
