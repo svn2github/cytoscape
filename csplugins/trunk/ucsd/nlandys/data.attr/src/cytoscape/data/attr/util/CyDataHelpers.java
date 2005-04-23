@@ -33,7 +33,7 @@ public final class CyDataHelpers
    * @exception NullPointerException if any one of the input parameters is
    *   null.
    */
-  public static CountedEnumeration distinctBoundValues(
+  public static CountedEnumeration getAllAttributeValues(
                                               final String objectKey,
                                               final String attributeName,
                                               final CyData cyData,
@@ -49,15 +49,15 @@ public final class CyDataHelpers
     else { // keyspaceDims > 1.
       final CountedEnumeration dim1Keys =
         cyData.getAttributeKeyspan(objectKey, attributeName, null);
-      r_distinctBoundValues(objectKey, attributeName, cyData,
-                            duplicateFilter, dim1Keys,
-                            new Object[0], keyspaceDims); }
+      r_getAllAttributeValues(objectKey, attributeName, cyData,
+                              duplicateFilter, dim1Keys,
+                              new Object[0], keyspaceDims); }
     return new CyDataModel.Iterator2Enumeration
       (duplicateFilter.keySet().iterator(), duplicateFilter.size());
   }
 
-  // Recursive helper for distinctBoundValues().
-  private static void r_distinctBoundValues(
+  // Recursive helper for getAllAttributeValues().
+  private static void r_getAllAttributeValues(
                                        final String objectKey,
                                        final String attributeName,
                                        final CyData dataRegistry,
@@ -79,9 +79,11 @@ public final class CyDataHelpers
         newPrefix[prefixSoFar.length] = currentKeyspan.nextElement();
         final CountedEnumeration newKeyspan = dataRegistry.getAttributeKeyspan
           (objectKey, attributeName, newPrefix);
-        r_distinctBoundValues(objectKey, attributeName, dataRegistry,
-                              duplicateFilter, newKeyspan,
-                              newPrefix, keyspaceDims); } }
+        r_getAllAttributeValues(objectKey, attributeName, dataRegistry,
+                                duplicateFilter, newKeyspan,
+                                newPrefix, keyspaceDims); } }
   }
+
+//   public static boolean removeAllAlongPrefix(
 
 }

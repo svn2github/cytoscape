@@ -66,7 +66,7 @@ public final class TestCyData
     if (o != null)
       throw new IllegalStateException("expected null");
     Enumeration boundValsOne =
-      CyDataHelpers.distinctBoundValues(oneName, attrName, data, def);
+      CyDataHelpers.getAllAttributeValues(oneName, attrName, data, def);
     int count = 0;
     while (boundValsOne.hasMoreElements()) {
       Object boundVal = boundValsOne.nextElement();
