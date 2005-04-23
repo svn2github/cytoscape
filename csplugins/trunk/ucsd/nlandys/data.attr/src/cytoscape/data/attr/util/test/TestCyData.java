@@ -1,5 +1,6 @@
 package cytoscape.data.attr.util.test;
 
+import cytoscape.data.attr.CountedEnumeration;
 import cytoscape.data.attr.CyData;
 import cytoscape.data.attr.CyDataDefinition;
 import cytoscape.data.attr.util.CyDataFactory;
@@ -7,6 +8,7 @@ import cytoscape.data.attr.util.CyDataHelpers;
 
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 
 public final class TestCyData
 {
@@ -65,7 +67,7 @@ public final class TestCyData
       (twoName, attrName, new Object[] { "Salk", new Integer(1) });
     if (o != null)
       throw new IllegalStateException("expected null");
-    Enumeration boundValsOne =
+    CountedEnumeration boundValsOne =
       CyDataHelpers.getAllAttributeValues(oneName, attrName, data, def);
     int count = 0;
     while (boundValsOne.hasMoreElements()) {
@@ -74,6 +76,9 @@ public final class TestCyData
       for (int i = 0;; i++) {
         if (boundVal.equals(oneVals[i])) break; } }
     if (count != 4) throw new IllegalStateException("count not 3");
+    List l = CyDataHelpers.getAllAttributeValuesAlongPrefix
+      (oneName, attrName, new Object[] { "Salk" }, data, def);
+    if (l.size() != 2) throw new IllegalStateException("expected 2");
   }
 
 }
