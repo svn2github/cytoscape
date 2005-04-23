@@ -18,23 +18,38 @@ public final class CyDataHelpers
   // No constructor.  Static methods only.
   private CyDataHelpers() { }
 
+  /**
+   * @param objectKey the object whose attribute values to return.
+   * @param attributeName the attribute definition in which to find attribute
+   *   values.
+   * @param cyData the data repository to use to dig for attribute values.
+   * @param cyDataDef the data definition registry to use to find out about
+   *   the dimensionality of attributeName.
+   * @return an enumeration of all bound values on objectKey in
+   *   attributeName, with duplicate values removed; the returned enumeration
+   *   is never null.
+   * @exception IllegalStateException if attributeName is not an existing
+   *   attribute definition in cyData and cyDataDef.
+   * @exception NullPointerException if any one of the input parameters is
+   *   null.
+   */
   public static CountedEnumeration distinctBoundValues(
-                                                    final String objectKey,
-                                                    final String attributeName,
-                                                    final CyData data,
-                                                    final CyDataDefinition def)
+                                              final String objectKey,
+                                              final String attributeName,
+                                              final CyData cyData,
+                                              final CyDataDefinition cyDataDef)
   {
     final HashMap duplicateFilter = new HashMap();
     final int keyspaceDims =
-      def.getAttributeKeyspaceDimensionality(attributeName);
+      cyDataDef.getAttributeKeyspaceDimensionality(attributeName);
     if (keyspaceDims < 1) { // It's either 0 or -1.
-      final Object attrVal = data.getAttributeValue
+      final Object attrVal = cyData.getAttributeValue
         (objectKey, attributeName, null); // May trigger exception; OK.
       if (attrVal != null) duplicateFilter.put(attrVal, null); }
     else { // keyspaceDims > 1.
       final CountedEnumeration dim1Keys =
-        data.getAttributeKeyspan(objectKey, attributeName, null);
-      r_distinctBoundValues(objectKey, attributeName, data,
+        cyData.getAttributeKeyspan(objectKey, attributeName, null);
+      r_distinctBoundValues(objectKey, attributeName, cyData,
                             duplicateFilter, dim1Keys,
                             new Object[0], keyspaceDims); }
     return new CyDataModel.Iterator2Enumeration
