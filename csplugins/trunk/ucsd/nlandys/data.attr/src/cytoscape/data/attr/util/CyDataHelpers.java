@@ -64,7 +64,8 @@ public final class CyDataHelpers
 
   /**
    * Convenience method for discovering attribute values along a specified
-   * key prefix.
+   * key prefix; this method is only useful with attribute
+   * definitions that have nonzero key spaces.
    * @param objectKey the object whose attribute values to return.
    * @param attributeName the attribute definition in which to find attribute
    *   values.
