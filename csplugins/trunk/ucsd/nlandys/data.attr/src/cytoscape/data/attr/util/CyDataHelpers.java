@@ -131,7 +131,7 @@ public final class CyDataHelpers
                                        final int keyspaceDims)
   {
     final Object[] newPrefix = new Object[prefixSoFar.length + 1];
-    System.arraycopy(prefixSoFar, 0, newPrefix, 0, prefixSoFar.length);
+    for (int i = 0; i < prefixSoFar.length; i++) newPrefix[i] = prefixSoFar[i];
     if (keyspaceDims == newPrefix.length) { // The final dimension.
       while (currentKeyspan.hasMoreElements()) {
         newPrefix[prefixSoFar.length] = currentKeyspan.nextElement();
@@ -159,9 +159,48 @@ public final class CyDataHelpers
     throw new IllegalStateException("not implemented yet");
   }
 
+  public static List getAllAttributeKeysAlongPrefix(
+                                              final String objectKey,
+                                              final String attributeName,
+                                              final Object[] keyPrefix,
+                                              final CyData cyData,
+                                              final CyDataDefinition cyDataDef)
+  {
+    throw new IllegalStateException("not implemented yet");
+  }
+
+  private static void r_getAllAttributeKeys(
+                                       final String objectKey,
+                                       final String attributeName,
+                                       final CyData dataRegistry,
+                                       final ArrayList bucket,
+                                       final CountedEnumeration currentKeyspan,
+                                       final Object[] prefixSoFar,
+                                       final int keyspaceDims)
+  {
+    if (keyspaceDims == prefixSoFar.length + 1) { // The final dimension.
+      while (currentKeyspan.hasMoreElements()) {
+        final Object[] fullKey = new Object[keyspaceDims];
+        for (int i = 0; i < prefixSoFar.length; i++)
+          fullKey[i] = prefixSoFar[i];
+        fullKey[keyspaceDims - 1] = currentKeyspan.nextElement();
+        bucket.add(fullKey); } }
+    else { // Not the final dimension.
+      while (currentKeyspan.hasMoreElements()) {
+        final Object[] newPrefix = new Object[prefixSoFar.length + 1];
+        for (int i = 0; i < prefixSoFar.length; i++)
+          newPrefix[i] = prefixSoFar[i];
+        newPrefix[prefixSoFar.length] = currentKeyspan.nextElement();
+        final CountedEnumeration newKeyspan = dataRegistry.getAttributeKeyspan
+          (objectKey, attributeName, newPrefix);
+        r_getAllAttributeKeys(objectKey, attributeName, dataRegistry,
+                              bucket, newKeyspan, newPrefix, keyspaceDims); } }
+  }
+
   /**
    * Convenience method for deleting attribute values along a specified key
-   * prefix.<p>
+   * prefix; this method is only useful with attribute definitions
+   * that have nonzero key spaces.<p>
    * TIP: To find out exactly what is deleted by this method, add a
    * CyDataListener to cyData.
    * @param objectKey the object whose attribute values to delete.
