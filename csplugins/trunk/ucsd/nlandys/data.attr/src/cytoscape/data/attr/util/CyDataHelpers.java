@@ -5,6 +5,7 @@ import cytoscape.data.attr.CyData;
 import cytoscape.data.attr.CyDataDefinition;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public final class CyDataHelpers
 {
@@ -96,15 +97,16 @@ public final class CyDataHelpers
    *   a "representative" from dimension i + 1 of the key space of
    *   attributeName; keyPrefix may be either null or the empty array, in
    *   which case all attribute values bound to objectKey in attributeName will
-   *   be returned; if keyPrefix is not empty, all values having key
+   *   be returned; if keyPrefix is not empty, all bound values having key
    *   sequences whose beginning matches the specified prefix will be returned.
    * @param cyData the data repository to use to dig for attribute values.
    * @param cyDataDef the data definition registry to use to find out about
    *   the dimensionality of attributeName.
-   * @return an enumeration of all bound values on objectKey in attributeName
+   * @return a list of all bound values on objectKey in attributeName
    *   along key space prefix keyPrefix, with duplicate values included; the
-   *   returned enumeration is never null; elements in the returned
-   *   enumeration are ordered arbitrarily.
+   *   returned list is never null; elements in the returned
+   *   list are ordered arbitrarily; subsequent operations on cyData or
+   *   cyDataDef will have no effect on the returned list.
    * @exception IllegalStateException if attributeName is not an existing
    *   attribute definition in cyData and cyDataDef.
    * @exception NullPointerException if any one of the input parameters except
@@ -116,14 +118,28 @@ public final class CyDataHelpers
    * @exception IllegalArgumentException if keyPrefix's length is
    *   greater than the dimensionality of attributeName's key space.
    */
-  public static CountedEnumeration getAllAttributeValuesAlongPrefix(
+  public static List getAllAttributeValuesAlongPrefix(
                                               final String objectKey,
                                               final String attributeName,
                                               final Object[] keyPrefix,
                                               final CyData cyData,
                                               final CyDataDefinition cyDataDef)
   {
-    throw new IllegalStateException("sorry not yet implemented");
+    final ArrayList bucket = new ArrayList();
+    final int keyspaceDims =
+      cyDataDef.getAttributeKeyspaceDimensionality(attributeName);
+    final int prefixDims = (keyPrefix == null ? 0 : keyPrefix.length);
+    if (keyspaceDims <= prefixDims) {
+      final Object attrVal = cyData.getAttributeValue
+        (objectKey, attributeName, keyPrefix); // May trigger exception; OK.
+      if (attrVal != null) bucket.add(attrVal); }
+    else {
+      final CountedEnumeration keys =
+        cyData.getAttributeKeyspan(objectKey, attributeName, keyPrefix);
+      r_getAllAttributeValues(objectKey, attributeName, cyData, bucket, keys,
+                              (keyPrefix == null ? new Object[0] : keyPrefix),
+                              keyspaceDims); }
+    return bucket;
   }
 
   /**
