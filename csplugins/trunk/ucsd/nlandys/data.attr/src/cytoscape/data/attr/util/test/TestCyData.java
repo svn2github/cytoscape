@@ -19,6 +19,7 @@ public final class TestCyData
     Object o = CyDataFactory.instantiateDataModel();
     final CyDataDefinition def = (CyDataDefinition) o;
     final CyData data = (CyData) o;
+    RuntimeException exc = null;
     def.defineAttribute("p-values", CyDataDefinition.TYPE_FLOATING_POINT,
                         new byte[] { CyDataDefinition.TYPE_STRING,
                                      CyDataDefinition.TYPE_INTEGER });
@@ -38,9 +39,35 @@ public final class TestCyData
                            new Object[] { "Weirdo", new Integer(0) });
     data.setAttributeValue("node3", "p-values", new Double(0.1),
                            new Object[] { "Foofoo", new Integer(11) });
+    data.setAttributeValue("node4", "p-values", new Double(0.9),
+                           new Object[] { "BarBar", new Integer(9) });
+    try { data.setAttributeValue("node4", "p-values", new Double(0.4),
+                                 new Object[] { "BarBar", new Long(1) }); }
+    catch (ClassCastException e) { exc = e; }
+    if (exc == null) throw new IllegalStateException("expected exception");
+    exc = null;
+    try { data.setAttributeValue("node5", "p-values", new Double(0.4),
+                                 new Object[] { "BarBar", new Long(1) }); }
+    catch (ClassCastException e) { exc = e; }
+    if (exc == null) throw new IllegalStateException("expected exception");
+    exc = null;
+
     def.defineAttribute("color", CyDataDefinition.TYPE_STRING, null);
     data.setAttributeValue("node1", "color", "red", null);
     data.setAttributeValue("node4", "color", "cyan", null);
+    data.setAttributeValue("node8", "color", "yellow", null);
+
+    try { data.removeAttributeValue("node1", "p-values",
+                                    new Object[] { "Salk", new Long(1) }); }
+    catch (ClassCastException e) { exc = e; }
+    if (exc == null) throw new IllegalStateException("expected exception");
+    exc = null;
+    if (!(data.removeAttributeValue
+          ("node4", "p-values",
+           new Object[] { "BarBar", new Integer(9) }).equals(new Double(0.9))))
+      throw new IllegalStateException("expected to remove 0.9");
+    if (!(data.removeAttributeValue("node4", "color", null).equals("cyan")))
+      throw new IllegalStateException("expected to remove cyan");
 
     Enumeration attrDefEnum = def.getDefinedAttributes();
     while (attrDefEnum.hasMoreElements()) {
@@ -49,6 +76,7 @@ public final class TestCyData
       Enumeration objKeyEnum = data.getObjectKeys(attrDefName);
       while (objKeyEnum.hasMoreElements()) {
         String objKey = (String) objKeyEnum.nextElement();
+        System.out.println("(" + objKey + ")");
         List keySeqList = CyDataHelpers.getAllAttributeKeys
           (objKey, attrDefName, data, def);
         Iterator keySeqIter = keySeqList.iterator();
