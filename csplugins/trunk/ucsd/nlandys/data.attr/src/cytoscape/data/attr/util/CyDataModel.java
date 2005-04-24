@@ -318,7 +318,7 @@ final class CyDataModel implements CyDataDefinition, CyData
 
     // Error-check keyIntoValue.  Leave the type checks to the recursion.
     if (def.keyTypes.length == 0) {
-      if (keyIntoValue != null || keyIntoValue.length != 0) {
+      if (keyIntoValue != null && keyIntoValue.length != 0) {
         throw new IllegalArgumentException
           ("attributeName '" + attributeName + "' has no keyspace" +
            " defined, yet keyIntoValue is not empty"); } }
@@ -416,7 +416,7 @@ final class CyDataModel implements CyDataDefinition, CyData
 
     // Error-check keyIntoValue.  Leave the type checks to the recursion.
     if (def.keyTypes.length == 0) {
-      if (keyIntoValue != null || keyIntoValue.length != 0) {
+      if (keyIntoValue != null && keyIntoValue.length != 0) {
         throw new IllegalArgumentException
           ("attributeName '" + attributeName + "' has no keyspace" +
            " defined, yet keyIntoValue is not empty"); } }
@@ -485,7 +485,7 @@ final class CyDataModel implements CyDataDefinition, CyData
 
     // Error-check keyIntoValue.  Leave the type checks to the recursion.
     if (def.keyTypes.length == 0) {
-      if (keyIntoValue != null || keyIntoValue.length != 0) {
+      if (keyIntoValue != null && keyIntoValue.length != 0) {
         throw new IllegalArgumentException
           ("attributeName '" + attributeName + "' has no keyspace" +
            " defined, yet keyIntoValue is not empty"); } }
