@@ -174,7 +174,6 @@ final class CyDataModel implements CyDataDefinition, CyData
     final int keyTypesLength = (keyTypes == null ? 0 : keyTypes.length);
     final byte[] keyTypesCopy = new byte[keyTypesLength];
     if (keyTypes != null)
-//       System.arraycopy(keyTypes, 0, keyTypesCopy, 0, keyTypesLength);
       for (int i = 0; i < keyTypesLength; i++)
         keyTypesCopy[i] = keyTypes[i];
 
@@ -236,7 +235,6 @@ final class CyDataModel implements CyDataDefinition, CyData
     if (def == null)
       throw new IllegalStateException
         ("no attributeName '" + attributeName + "' exists");
-//     System.arraycopy(def.keyTypes, 0, keyTypes, 0, def.keyTypes.length);
     for (int i = 0; i < def.keyTypes.length; i++)
       keyTypes[i] = def.keyTypes[i];
   }
@@ -508,7 +506,7 @@ final class CyDataModel implements CyDataDefinition, CyData
       if (o == null) return null;
       final HashMap dim = (HashMap) o;
       final Object returnThis =
-        r_getAttributeValue(dim, keyIntoValue, def.keyTypes, 0);
+        r_removeAttributeValue(dim, keyIntoValue, def.keyTypes, 0);
       if (returnThis != null) {
         if (dim.size() == 0) def.objMap.remove(objectKey);
         if (listener != null)
@@ -548,7 +546,7 @@ final class CyDataModel implements CyDataDefinition, CyData
       if (o == null) return null;
       final HashMap dim = (HashMap) o;
       final Object returnThis =
-        r_getAttributeValue(dim, keyIntoValue, keyTypes, currOffset + 1);
+        r_removeAttributeValue(dim, keyIntoValue, keyTypes, currOffset + 1);
       if (dim.size() == 0) hash.remove(currKey);
       return returnThis; }
   }
