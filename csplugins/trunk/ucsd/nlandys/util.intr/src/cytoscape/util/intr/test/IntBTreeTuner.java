@@ -22,11 +22,17 @@ public class IntBTreeTuner
       elements[inx++] = Math.abs(assembleInt(buff)) % N; }
     if (inx < N) throw new IOException("premature end of input");
 
-    for (int i = 0; i < elements.length; i++)
-      System.out.println(elements[i]);
+    IntBTree tree = new IntBTree();
+    long timeBegin = System.currentTimeMillis();
+    for (int i = 0; i < elements.length; i++) tree.insert(elements[i]);
+    if (tree.size() != elements.length) throw new IllegalStateException();
+    for (int i = 0; i < elements.length; i++) tree.delete(elements[i]);
+    if (tree.size() != 0) throw new IllegalStateException();
+    long timeEnd = System.currentTimeMillis();
+    System.out.println((timeEnd - timeBegin) + " milliseconds");
   }
 
-  private static final int assembleInt(byte[] fourConsecutiveBytes)
+  private static int assembleInt(byte[] fourConsecutiveBytes)
   {
     int firstByte = (((int) fourConsecutiveBytes[0]) & 0x000000ff) << 24;
     int secondByte = (((int) fourConsecutiveBytes[1]) & 0x000000ff) << 16;
