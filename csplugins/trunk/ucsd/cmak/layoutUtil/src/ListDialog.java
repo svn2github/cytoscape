@@ -4,14 +4,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-/*
- * ListDialog.java is a 1.4 class meant to be used by programs such as
- * ListDialogRunner.  It requires no additional files.
- *
- * Copied from Java Swing examples tutorial
- */
-
 /**
+
+ * 
  * Use this modal dialog to let the user choose one string from a long
  * list.  See ListDialogRunner.java for an example of using ListDialog.
  * The basics:
@@ -25,6 +20,11 @@ import java.awt.event.*;
                                 choices,
                                 choices[0]);
  * </pre>
+ * <p>
+ * ListDialog.java is a 1.4 class meant to be used by programs such as
+ * ListDialogRunner.  It requires no additional files.
+ * <p>
+ * Copied from Java Swing examples tutorial
  */
 public class ListDialog extends JDialog
                         implements ActionListener {
