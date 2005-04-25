@@ -119,7 +119,7 @@ public interface FixedGraph
    * I assume that most implementations of this interface will implement
    * this method in terms of edgesAdjacent().  Why, then, is this method
    * necessary?  Because some implementations may choose to optimize the
-   * implementation of this method by using a binary search tree or a
+   * implementation of this method by using a search tree or a
    * hashtable, for example.  This method is a hook to provide such
    * optimization.<p>
    * This method returns an IntIterator as opposed to an IntEnumerator
