@@ -384,10 +384,13 @@ public final class IntBTree
       for (int i = leftSibling.sliceCount - distributeNum, o = 0;
            o < distributeNum;)
         thisSibling.data.children[o++] = leftSibling.data.children[i++];
+      final boolean leafChildren = isLeafNode(leftSibling.data.children[0]);
       int deepCountDiff = 0;
       for (int i = leftSibling.sliceCount - distributeNum;
            i < leftSibling.sliceCount; i++) {
-        deepCountDiff += leftSibling.data.children[i].data.deepCount;
+        deepCountDiff +=
+          (leafChildren ? leftSibling.data.children[i].sliceCount :
+           leftSibling.data.children[i].data.deepCount);
         leftSibling.data.children[i] = null; }
       for (int i = thisSibling.sliceCount - 1, o = i + distributeNum; i > 0;)
         thisSibling.data.splitVals[--o] = thisSibling.data.splitVals[--i];
@@ -422,9 +425,12 @@ public final class IntBTree
       return rightSibling.values[0]; }
     else {
       final int returnThis = rightSibling.data.splitVals[distributeNum - 1];
+      final boolean leafChildren = isLeafNode(rightSibling.data.children[0]);
       int deepCountDiff = 0;
       for (int i = 0, o = thisSibling.sliceCount; i < distributeNum;) {
-        deepCountDiff += rightSibling.data.children[i].data.deepCount;
+        deepCountDiff +=
+          (leafChildren ? rightSibling.data.children[i].sliceCount :
+           rightSibling.data.children[i].data.deepCount);
         thisSibling.data.children[o++] = rightSibling.data.children[i++]; }
       for (int i = distributeNum, o = 0; i < rightSibling.sliceCount;)
         rightSibling.data.children[o++] = rightSibling.data.children[i++];
