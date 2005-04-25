@@ -204,7 +204,7 @@ public final class CyDataHelpers
    * @return a list of Object[]; each Object[] in the returned list is
    *   a unique key sequence whose beginning matches keyPrefix and which
    *   is mapped to a value; the returned list contains all such key sequences;
-   *   the return value is never null;
+   *   the return value is never null.
    * @exception IllegalStateException if attributeName is not an existing
    *   attribute definition in cyData and cyDataDef.
    * @exception NullPointerException if any one of the input parameters except
