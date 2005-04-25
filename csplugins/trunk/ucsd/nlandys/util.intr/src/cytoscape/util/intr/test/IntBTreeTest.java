@@ -47,7 +47,8 @@ public class IntBTreeTest
       while (iter.numRemaining() > 0)
         System.out.print(iter.nextInt() + " ");
       System.out.println("."); }
-    final int[] delInts = new int[] { 8, -1, 3, 2, 9, 3 };
+    System.out.println("Now going to delete some random entries.");
+    final int[] delInts = new int[] { 8, -1, 3, 2, 9, 3, 0, 3 };
     for (int i = 0; i < delInts.length; i++) {
       if (tree.delete(delInts[i])) {
         System.out.println("Deletion of integer " + delInts[i] +
@@ -58,6 +59,23 @@ public class IntBTreeTest
         System.out.println("."); }
       else {
         System.out.println("Deletion of integer " + delInts[i] +
+                           " unsuccessful."); } }
+    iter = tree.searchRange(Integer.MIN_VALUE, Integer.MAX_VALUE);
+    System.out.println("Now going to delete remaining entries.");
+    final int[] intsRemaining = new int[iter.numRemaining()];
+    for (int i = 0; i < intsRemaining.length; i++)
+      intsRemaining[i] = iter.nextInt();
+    for (int i = 0; i < intsRemaining.length; i++) {
+      final int delInt =
+        intsRemaining[(i + (intsRemaining.length / 2)) % intsRemaining.length];
+      if (tree.delete(delInt)) {
+        System.out.println("Deletion of integer " + delInt + " successful.");
+        iter = tree.searchRange(Integer.MIN_VALUE, Integer.MAX_VALUE);
+        System.out.print("  Current ordered elements: ");
+        while (iter.numRemaining() > 0) System.out.print(iter.nextInt() + " ");
+        System.out.println("."); }
+      else {
+        System.out.println("Deletion of integer " + delInt +
                            " unsuccessful."); } }
   }
 
