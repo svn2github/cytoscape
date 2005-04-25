@@ -11,7 +11,7 @@
   	<property name="src.dir" value="src"/>
 
 	<!--  The directory containing library jar files -->	
-        <property name="cytoroot.dir" value="${user.home}/cytoscape-trey"/>
+        <property name="cytoroot.dir" value="${user.home}/cytoscape-v2.1"/>
  	<property name="lib.dir" value="${cytoroot.dir}/lib"/>
 	
   	<!-- Temporary build directories -->
@@ -65,7 +65,7 @@
 
         
 	<!--  Target to compile all Plug In Code -->
-  	<target name="compile" depends="prepare, build_cytoscape" 
+  	<target name="compile" depends="prepare" 
 		description="Compiles all PlugIn source code.">
                 <javac debug="Yes" srcdir="${src.dir}" destdir="${build.classes}">
 			<classpath refid="classpath"/>
