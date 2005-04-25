@@ -37,8 +37,8 @@ public interface CyDataDefinition
    * object as having a color, I would create an attribute definition which
    * stores values of TYPE_STRING (for storing "red", "blue", and so on),
    * and has no key sequence mapping color
-   * values.  By "no key sequence" I mean that the input parameters
-   * keyTypes and keyNames would be either null or the empty array for my
+   * values.  By "no key sequence" I mean that the input parameter
+   * keyTypes would be either null or the empty array for my
    * color attribute definition.<p>
    * The more interesting case is where the key space in an attribute
    * definition has one or more dimensions.  For example, if I

@@ -128,6 +128,11 @@ public interface CyData
                                                 Object[] keyPrefix);
 
   /**
+   * Returns all objectKeys that have at least one attribute value assigned
+   * in attributeName.<p>
+   * IMPORTANT: It is a programming error to modify (add or remove) attribute
+   * values in attributeName whilst iterating through the returned
+   * enumeration.
    * @param attributeName the attribute definition to query.
    * @return an enumeration of objectKey strings (java.lang.String) that
    *   currently have value[s] assigned to them in the specified attribute
