@@ -47,6 +47,18 @@ public class IntBTreeTest
       while (iter.numRemaining() > 0)
         System.out.print(iter.nextInt() + " ");
       System.out.println("."); }
+    final int[] delInts = new int[] { 8, -1, 3, 2, 9, 3 };
+    for (int i = 0; i < delInts.length; i++) {
+      if (tree.delete(delInts[i])) {
+        System.out.println("Deletion of integer " + delInts[i] +
+                           " successful.");
+        iter = tree.searchRange(Integer.MIN_VALUE, Integer.MAX_VALUE);
+        System.out.print("  Current ordered elements: ");
+        while (iter.numRemaining() > 0) System.out.print(iter.nextInt() + " ");
+        System.out.println("."); }
+      else {
+        System.out.println("Deletion of integer " + delInts[i] +
+                           " unsuccessful."); } }
   }
 
 }
