@@ -24,7 +24,8 @@ import cytoscape.plugin.CytoscapePlugin;
  ** The value of the node attribute is split using the "\n" [newline]
  ** character into an array of values.  The longest value is used
  ** to set the node width.  The number of values is used to set the
- ** node height.
+ ** node height.  Typically, a "\n"-delimited node attribute is created
+ ** by MergeEquivalentNodes.  Then use this plugin to adjust the sizes.
  ** <p>
  ** <b>Usage</b><p>
  ** Running this plugin creates 2 nodes attributes: NodeHeight and NodeWidth.
@@ -35,8 +36,9 @@ import cytoscape.plugin.CytoscapePlugin;
  ** longest name is contains more than 3 characters.
  ** <p>
  ** Plugin code-structure was borrowed from MergeEquivalentNodes.
- **
- ** @author cmak, April 13, 2005
+ ** <p>
+ ** Last Updated: April 21, 2005
+ ** @author Craig Mak
  */
 public class ResizeNodesPlugin extends CytoscapePlugin {
     
@@ -195,8 +197,6 @@ public class ResizeNodesPlugin extends CytoscapePlugin {
      *
      * @param attr the node attribute to use to resize the node
      * @param nodeIndex root graph index of a node
-     *
-     * @author cmak
      */
     private void adjustNodeSize(String attr,
                                 int nodeIndex,

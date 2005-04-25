@@ -20,14 +20,19 @@ import cytoscape.visual.ShapeNodeRealizer;
 import giny.model.*;
 
 /**
- **
+ ** <ol>
+ ** <li>Plugin for merging nodes in Cytoscape. TI
+ ** <li>Updated to work in Cytoscape Version 2.1. CM
+ ** <li>SmartMerge using edge attributes. CM
+ ** </ol>
+ ** 
+ ** @author Trey Ideker, Craig Mak
  */
 public class MergeEquivalentNodes extends CytoscapePlugin {
     
     CyNetwork network;
     CytoscapeObj cyObj;
     boolean DEBUG=false;
-
 
     static String LAST_SELECTED = null;
     
@@ -520,8 +525,6 @@ public class MergeEquivalentNodes extends CytoscapePlugin {
      * Can we call the ResizeNodesPlugin from this plugin?
      * 
      * @param nodeIndex root graph index of a node
-     *
-     * @author cmak
      */
     private void adjustNodeSize(int nodeIndex)
     {
