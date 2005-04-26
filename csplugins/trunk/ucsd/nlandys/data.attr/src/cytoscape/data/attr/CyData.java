@@ -98,7 +98,9 @@ public interface CyData
   /**
    * For all bound attribute values on objectKey in attributeName,
    * returns an enumeration of [unique] representatives in the key space in
-   * dimension keyPrefix.length + 1, along specified prefix.<p>
+   * dimension keyPrefix.length + 1, along specified prefix; this method
+   * only makes sense for attributeNames that have nonzero key space
+   * dimensionality.<p>
    * IMPORTANT: It is a programming error to modify (add or remove) attribute
    * values in attributeName whilst iterating through the returned enumeration.
    * @param objectKey the object to query.
