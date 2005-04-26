@@ -39,6 +39,12 @@ public final class RTree
   {
   }
 
+  /**
+   * @param objKey a user-defined identifier that was potentially used
+   *   in a previous insertion.
+   * @return true if and only if objKey was previously inserted into this
+   *   R-tree and has not since been removed.
+   */
   public final boolean keyExists(int objKey)
   {
     return false;
@@ -76,8 +82,8 @@ public final class RTree
 
   /**
    * Removes the specified data entry from this tree.
-   * @param objKey a user-defined identifier that was used in a previous
-   *   insertion.
+   * @param objKey a user-defined identifier that was potentially used in a
+   *   previous insertion.
    * @return true if and only if objKey existed in this R-tree prior to this
    *   method invocation.
    */
