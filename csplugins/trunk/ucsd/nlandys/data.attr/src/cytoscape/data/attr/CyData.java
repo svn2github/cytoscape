@@ -130,6 +130,12 @@ public interface CyData
   /**
    * Returns all objectKeys that have at least one attribute value assigned
    * in attributeName.<p>
+   * NOTE: To quickly determine whether or not a given objectKey has at least
+   * one attribute value bound to it under attributeName, use
+   * getAttributeValue(objectKey, attributeName, null) if attributeName has
+   * zero keyspace dimensionality, or use
+   * getAttributeKeyspan(objectKey, attributeName, null) if attributeName has
+   * nonzero keyspace dimensionality.<p>
    * IMPORTANT: It is a programming error to modify (add or remove) attribute
    * values in attributeName whilst iterating through the returned
    * enumeration.
