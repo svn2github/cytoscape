@@ -18,6 +18,16 @@ public final class RTree
   /**
    * Inserts a new data entry into this tree; the entry's extents are
    * specified by the input parameters.
+   * @param objKey a user-defined identifier used to refer to the entry
+   *   being inserted in later operations.
+   * @param minX the minimum X coordinate of the minimum bounding rectangle
+   *   of the entry being inserted.
+   * @param minY the minimum Y coordinate of the minimum bounding rectangle
+   *   of the entry being inserted.
+   * @param maxX the maximum X coordinate of the minimum bounding rectangle
+   *   of the entry being inserted.
+   * @param maxY the maximum Y coordinate of the minimum bounding rectangel
+   *   of the entry being inserted.
    * @exception IllegalStateException if objKey is already used for an
    *   existing entry in this R-tree.
    * @exception IllegalArgumentException if objKey is negative or equal to
@@ -39,7 +49,20 @@ public final class RTree
    *   <tr><td>offset+1</td><td>minY</td></tr>
    *   <tr><td>offset+2</td><td>maxX</td></tr>
    *   <tr><td>offset+3</td><td>maxY</td></tr>
-   * </table>
+   * </table><p>
+   * The values written into extentsArr are exactly the same ones that
+   * were previously passed to insert() using the same objKey.
+   * @param objKey a user-defined identifier that was used in a previous
+   *   insertion.
+   * @param extentsArr an array, supplied by caller of this method, to which
+   *   extent values will be written by this method.
+   * @param offset specifies the beginning index of where to write data into
+   *   extentsArr; exactly four entries are written starting at this index
+   *   (see above table).
+   * @exception IllegalStateException if objKey does not exist in this R-tree.
+   * @exception NullPointerException if extentsArr is null.
+   * @exception ArrayIndexOutOfBoundsException if extentsArr cannot be written
+   *   to in the index range [offset, offset+3].
    */
   public final void getExtents(int objKey, double[] extentsArr, int offset)
   {
