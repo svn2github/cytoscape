@@ -39,6 +39,11 @@ public final class RTree
   {
   }
 
+  public final boolean keyExists(int objKey)
+  {
+    return false;
+  }
+
   /**
    * Writes the extents of objKey into the specified array, starting at
    * specified offset.  The following table describes what is written to
