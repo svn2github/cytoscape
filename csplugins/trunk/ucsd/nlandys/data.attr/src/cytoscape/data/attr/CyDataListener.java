@@ -1,5 +1,9 @@
 package cytoscape.data.attr;
 
+/**
+ * A hook to receive notification when attribute values are set and removed
+ * from objects.
+ */
 public interface CyDataListener
 {
 
