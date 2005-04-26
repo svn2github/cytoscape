@@ -13,7 +13,18 @@ import cytoscape.util.intr.IntEnumerator;
 public final class RTree
 {
 
+  /**
+   * Empties this R-tree of all entries.  This method returns in constant
+   * time (note however that garbage collection will take place in the
+   * background).
+   */
   public final void empty() {}
+
+  /**
+   * Returns the number of entries currently in this R-tree.  This method
+   * returns in constant time.
+   */
+  public final int size() { return 0; }
 
   /**
    * Inserts a new data entry into this tree; the entry's extents are
@@ -40,10 +51,14 @@ public final class RTree
   }
 
   /**
+   * Determines whether or not a given key exists in this R-tree structure.<p>
+   * NOTE: To retrieve an enumeration of all entries in this R-tree, call
+   * queryIntersection() with Double.MIN_VALUE minimum values and
+   * Double.MAX_VALUE maximum values.
    * @param objKey a user-defined identifier that was potentially used
    *   in a previous insertion.
    * @return true if and only if objKey was previously inserted into this
-   *   R-tree and has not since been removed.
+   *   R-tree and has not since been deleted.
    */
   public final boolean keyExists(int objKey)
   {
@@ -53,7 +68,7 @@ public final class RTree
   /**
    * Writes the extents of objKey into the specified array, starting at
    * specified offset.  The following table describes what is written to
-   * the extentsArr input parameter:<p>
+   * the extentsArr input parameter by this method:<p>
    * <table border="1" cellpadding="5" cellspacing="0">
    *   <tr><th>array index</th><th>value</th></tr>
    *   <tr><td>offset</td><td>minX</td></tr>
@@ -75,19 +90,19 @@ public final class RTree
    * @exception ArrayIndexOutOfBoundsException if extentsArr cannot be written
    *   to in the index range [offset, offset+3].
    */
-  public final void getExtents(final int objKey, final double[] extentsArr,
-                               final int offset)
+  public final void extents(final int objKey, final double[] extentsArr,
+                            final int offset)
   {
   }
 
   /**
-   * Removes the specified data entry from this tree.
+   * Deletes the specified data entry from this tree.
    * @param objKey a user-defined identifier that was potentially used in a
    *   previous insertion.
    * @return true if and only if objKey existed in this R-tree prior to this
    *   method invocation.
    */
-  public final boolean remove(final int objKey)
+  public final boolean delete(final int objKey)
   {
     return false;
   }
