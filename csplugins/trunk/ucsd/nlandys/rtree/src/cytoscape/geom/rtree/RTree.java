@@ -33,9 +33,9 @@ public final class RTree
    * @exception IllegalArgumentException if objKey is negative or equal to
    *   Integer.MAX_VALUE.
    */
-  public final void insert(int objKey,
-                           double minX, double minY,
-                           double maxX, double maxY)
+  public final void insert(final int objKey,
+                           final double minX, final double minY,
+                           final double maxX, final double maxY)
   {
   }
 
@@ -64,37 +64,45 @@ public final class RTree
    * @exception ArrayIndexOutOfBoundsException if extentsArr cannot be written
    *   to in the index range [offset, offset+3].
    */
-  public final void getExtents(int objKey, double[] extentsArr, int offset)
+  public final void getExtents(final int objKey, final double[] extentsArr,
+                               final int offset)
   {
   }
 
   /**
    * Removes the specified data entry from this tree.
+   * @param objKey a user-defined identifier that was used in a previous
+   *   insertion.
    * @return true if and only if objKey existed in this R-tree prior to this
    *   method invocation.
    */
-  public boolean remove(int objKey)
+  public final boolean remove(final int objKey)
   {
     return false;
   }
 
   /**
-   * Returns all data entries which intersect the specified area.
+   * Returns an enumeration of entries that intersect the extents specified.
    */
-  public IntEnumerator intersected(double minX, double minY,
-                                   double maxX, double maxY)
+  public final IntEnumerator queryIntersection(final double minX,
+                                               final double minY,
+                                               final double maxX,
+                                               final double maxY)
   {
     return null;
   }
 
   /**
-   * Returns all data entries which are fully enclosed by the specified
-   * rectangle.
+   * Returns an enumeration of entries that are fully enclosed by the
+   * specified extents.  Note that the set returned by this method is a subset
+   * of the set returned by queryIntersection().
    */
-  public IntEnumerator enclosed(double minX, double minY,
-                                double maxX, double maxY)
+  public final IntEnumerator queryEnclosure(final double minX,
+                                            final double minY,
+                                            final double maxX,
+                                            final double maxY)
   {
     return null;
   }
-  
+
 }
