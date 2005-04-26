@@ -1,5 +1,9 @@
 package cytoscape.data.attr.util;
 
+/**
+ * This class provides access to implementations of CyData and
+ * CyDataDefinition.
+ */
 public final class CyDataFactory
 {
 
