@@ -8,7 +8,7 @@ import cytoscape.data.attr.CyDataListener;
 
 import java.util.HashMap;
 
-final class CyDataModel implements CyDataDefinition, CyData
+class CyDataModel implements CyDataDefinition, CyData
 {
 
   private final static class AttrDefData
