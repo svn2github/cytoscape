@@ -133,9 +133,9 @@ public interface CyData
    * NOTE: To quickly determine whether or not a given objectKey has at least
    * one attribute value bound to it under attributeName, use
    * getAttributeValue(objectKey, attributeName, null) if attributeName has
-   * zero keyspace dimensionality, or use
+   * zero key space dimensionality, or use
    * getAttributeKeyspan(objectKey, attributeName, null) if attributeName has
-   * nonzero keyspace dimensionality.<p>
+   * nonzero key space dimensionality.<p>
    * IMPORTANT: It is a programming error to modify (add or remove) attribute
    * values in attributeName whilst iterating through the returned
    * enumeration.
