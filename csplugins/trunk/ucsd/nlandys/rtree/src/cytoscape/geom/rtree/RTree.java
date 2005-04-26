@@ -82,7 +82,8 @@ public final class RTree
   }
 
   /**
-   * Returns an enumeration of entries that intersect the extents specified.
+   * Returns an enumeration of entries whose extents intersect the extents
+   * specified.
    */
   public final IntEnumerator queryIntersection(final double minX,
                                                final double minY,
