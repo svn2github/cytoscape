@@ -114,7 +114,7 @@ public interface CyData
    *   be either null or the empty array, in which case the enumeration
    *   returned consists of the representatives in the first dimension of
    *   key space.
-   * ;@return an enumeration of keys in key space dimension K + 1 along
+   * @return an enumeration of keys in key space dimension K + 1 along
    *   specified keyPrefix; the enumeration returned is never null;
    *   the order of the returned keys is arbitrary.
    * @exception IllegalStateException if attributeName is not an existing
