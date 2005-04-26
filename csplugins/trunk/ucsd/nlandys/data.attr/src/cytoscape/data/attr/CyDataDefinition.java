@@ -75,10 +75,10 @@ public interface CyDataDefinition
                               byte[] keyTypes);
 
   /**
-   * Returns all defined attributeNames.
+   * Returns all defined attributeNames.<p>
    * NOTE: To find out whether or not an attributeName is defined, use
    * getAttrubuteValueType(attributeName) and test whether or not the
-   * return value is negative.
+   * return value is negative.<p>
    * IMPORTANT: The returned enumeration becomes invalid as soon as any
    * attributeName is defined or undefined in this CyDataDefinition.  Calling
    * methods on an invalid enumeration will result in undefined
@@ -124,9 +124,11 @@ public interface CyDataDefinition
    * WARNING: All bound attribute values on objects will go away in this
    * attribute namespace when this method is called.
    * @param attributeName the attribute definition to undefine.
+   * @return true if and only if attributeName was defined prior to this
+   *   method invocation.
    * @exception NullPointerException if attributeName is null.
    */
-  public void undefineAttribute(String attributeName);
+  public boolean undefineAttribute(String attributeName);
 
   public void addDataDefinitionListener(CyDataDefinitionListener listener);
 

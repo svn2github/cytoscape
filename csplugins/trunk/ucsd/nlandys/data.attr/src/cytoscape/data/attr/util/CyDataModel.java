@@ -239,14 +239,16 @@ final class CyDataModel implements CyDataDefinition, CyData
       keyTypes[i] = def.keyTypes[i];
   }
 
-  public final void undefineAttribute(final String attributeName)
+  public final boolean undefineAttribute(final String attributeName)
   {
     if (attributeName == null)
       throw new NullPointerException("attributeName is null");
     final Object o = m_attrMap.remove(attributeName);
     if (o != null) { // attributeName was in fact deleted.
       final CyDataDefinitionListener l = m_dataDefListener;
-      if (l != null) l.attributeUndefined(attributeName); }
+      if (l != null) l.attributeUndefined(attributeName);
+      return true; }
+    return false;
   }
 
   public final void addDataDefinitionListener(
