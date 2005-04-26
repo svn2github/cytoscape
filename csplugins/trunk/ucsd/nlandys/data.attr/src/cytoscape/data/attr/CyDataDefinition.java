@@ -76,7 +76,10 @@ public interface CyDataDefinition
 
   /**
    * It is a programming error to define or undefine attribute domains
-   * whilst iterating through the returned enumeration.
+   * whilst iterating through the returned enumeration.<p>
+   * NOTE: To find out whether or not an attributeName is defined, use
+   * getAttrubuteValueType(attributeName) and test whether or not the
+   * return value is negative.
    * @return an enumeration of java.lang.String; each returned string
    *   is an attributeName (an attribute definition name).
    */
