@@ -148,7 +148,8 @@ public interface CyData
    * @param attributeName the attribute definition to query.
    * @return an enumeration of objectKey strings (java.lang.String) that
    *   currently have value[s] assigned to them in the specified attribute
-   *   definition; the order of the returned strings is arbitrary.
+   *   definition; the order of the returned strings is arbitrary; null is
+   *   never returned.
    * @exception IllegalStateException if attributeName is not an existing
    *   attribute definition; see CyDataDefinition.
    * @exception NullPointerException if attributeName is null.
