@@ -75,11 +75,14 @@ public interface CyDataDefinition
                               byte[] keyTypes);
 
   /**
-   * It is a programming error to define or undefine attribute domains
-   * whilst iterating through the returned enumeration.<p>
+   * Returns all defined attributeNames.
    * NOTE: To find out whether or not an attributeName is defined, use
    * getAttrubuteValueType(attributeName) and test whether or not the
    * return value is negative.
+   * IMPORTANT: The returned enumeration becomes invalid as soon as any
+   * attributeName is defined or undefined in this CyDataDefinition.  Calling
+   * methods on an invalid enumeration will result in undefined
+   * behavior of that enumeration.
    * @return an enumeration of java.lang.String; each returned string
    *   is an attributeName (an attribute definition name).
    */

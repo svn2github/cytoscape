@@ -101,8 +101,10 @@ public interface CyData
    * dimension keyPrefix.length + 1, along specified prefix; this method
    * only makes sense for attributeNames that have nonzero key space
    * dimensionality.<p>
-   * IMPORTANT: It is a programming error to modify (add or remove) attribute
-   * values in attributeName whilst iterating through the returned enumeration.
+   * IMPORTANT: The returned enumeration becomes invalid as soon as any
+   * attribute value is set or removed for some objectKey in attributeName.
+   * Calling methods on an invalid enumeration will result in undefined
+   * behavior of that enumeration.
    * @param objectKey the object to query.
    * @param attributeName the attribute definition to query.
    * @param keyPrefix an array of length K, where K is strictly less than
@@ -112,7 +114,7 @@ public interface CyData
    *   be either null or the empty array, in which case the enumeration
    *   returned consists of the representatives in the first dimension of
    *   key space.
-   * @return an enumeration of keys in key space dimension K + 1 along
+   * ;@return an enumeration of keys in key space dimension K + 1 along
    *   specified keyPrefix; the enumeration returned is never null;
    *   the order of the returned keys is arbitrary.
    * @exception IllegalStateException if attributeName is not an existing
@@ -139,9 +141,10 @@ public interface CyData
    * enumeration return value in
    * getAttributeKeyspan(objectKey, attributeName, null) if attributeName has
    * nonzero key space dimensionality.<p>
-   * IMPORTANT: It is a programming error to modify (add or remove) attribute
-   * values in attributeName whilst iterating through the returned
-   * enumeration.
+   * IMPORTANT: The returned enumeration becomes invalid as soon as any
+   * attribute value is set or removed for some objectKey in attributeName.
+   * Calling methods on an invalid enumeration will result in undefined
+   * behavior of that enumeration.
    * @param attributeName the attribute definition to query.
    * @return an enumeration of objectKey strings (java.lang.String) that
    *   currently have value[s] assigned to them in the specified attribute
