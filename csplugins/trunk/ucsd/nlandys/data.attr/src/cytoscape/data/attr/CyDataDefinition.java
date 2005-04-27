@@ -97,28 +97,20 @@ public interface CyDataDefinition
   public byte getAttributeValueType(String attributeName);
 
   /**
+   * Returns information about the dimensionality and types in the key space
+   * of specified attribute.
    * @param attributeName the attribute definition whose key space
-   *   dimensionality we are querying.
-   * @return the number of dimensions in the specified attribute's key
-   *   space, or -1 if specified attribute definition does not exist.
-   * @exception NullPointerException if attributeName is null.
-   */
-  public int getAttributeKeyspaceDimensionality(String attributeName);
-
-  /**
-   * @param attributeName the attribute definition whose key space information
    *   we are querying.
-   * @param keyTypes this parameter is written into by this method; it is not
-   *   used as input; consider this a return value; the size of this array
-   *   must be at least the dimensionality of the key space of specified
-   *   attribute definition, and the key space dimension types (TYPE_*) are
-   *   written into this array starting at index zero of this array.
-   * @exception IllegalStateException if no attribute definition called
-   *   attributeName exists.
+   * @return a carbon copy of the array that was used to initially define
+   *   attributeName (see defineAttribute()); implementations are required
+   *   to instantiate and return a new array on each call to this method;
+   *   if attributeName has no key space defined, the empty array is returned;
+   *   null is never returned.
+   * @exception IllegalStateException if attributeName is not an existing
+   *   attribute definition.
    * @exception NullPointerException if attributeName is null.
    */
-  public void copyAttributeKeyspaceInfo(String attributeName,
-                                        byte[] keyTypes);
+  public byte[] getAttributeKeyspaceDimensionTypes(String attributeName);
 
   /**
    * WARNING: All bound attribute values on objects will go away in this

@@ -216,18 +216,8 @@ class CyDataModel implements CyDataDefinition, CyData
     return def.valueType;
   }
 
-  public final int getAttributeKeyspaceDimensionality(
+  public final byte[] getAttributeKeyspaceDimensionTypes(
                                                     final String attributeName)
-  {
-    if (attributeName == null)
-      throw new NullPointerException("attributeName is null");
-    final AttrDefData def = (AttrDefData) m_attrMap.get(attributeName);
-    if (def == null) return -1;
-    return def.keyTypes.length;
-  }
-
-  public final void copyAttributeKeyspaceInfo(final String attributeName,
-                                              final byte[] keyTypes)
   {
     if (attributeName == null)
       throw new NullPointerException("attributeName is null");
@@ -235,8 +225,10 @@ class CyDataModel implements CyDataDefinition, CyData
     if (def == null)
       throw new IllegalStateException
         ("no attributeName '" + attributeName + "' exists");
-    for (int i = 0; i < def.keyTypes.length; i++)
-      keyTypes[i] = def.keyTypes[i];
+    final byte[] returnThis = new byte[def.keyTypes.length];
+    for (int i = 0; i < returnThis.length; i++)
+      returnThis[i] = def.keyTypes[i];
+    return returnThis;
   }
 
   public final boolean undefineAttribute(final String attributeName)

@@ -57,7 +57,7 @@ public final class CyDataHelpers
   {
     final ArrayList bucket = new ArrayList();
     final int keyspaceDims =
-      cyDataDef.getAttributeKeyspaceDimensionality(attributeName);
+      cyDataDef.getAttributeKeyspaceDimensionTypes(attributeName).length;
     if (keyspaceDims < 1) { // It's either 0 or -1.
       final Object attrVal = cyData.getAttributeValue
         (objectKey, attributeName, null); // May trigger exception; OK.
@@ -110,7 +110,7 @@ public final class CyDataHelpers
   {
     final ArrayList bucket = new ArrayList();
     final int keyspaceDims =
-      cyDataDef.getAttributeKeyspaceDimensionality(attributeName);
+      cyDataDef.getAttributeKeyspaceDimensionTypes(attributeName).length;
     final int prefixDims = (keyPrefix == null ? 0 : keyPrefix.length);
     if (keyspaceDims <= prefixDims) {
       final Object attrVal = cyData.getAttributeValue
@@ -173,7 +173,7 @@ public final class CyDataHelpers
   {
     final ArrayList bucket = new ArrayList();
     final int keyspaceDims =
-      cyDataDef.getAttributeKeyspaceDimensionality(attributeName);
+      cyDataDef.getAttributeKeyspaceDimensionTypes(attributeName).length;
     if (keyspaceDims < 1) { // It's either 0 or -1.
       final Object attrVal = cyData.getAttributeValue
         (objectKey, attributeName, null); // May trigger exception; OK.
@@ -225,7 +225,7 @@ public final class CyDataHelpers
   {
     final ArrayList bucket = new ArrayList();
     final int keyspaceDims =
-      cyDataDef.getAttributeKeyspaceDimensionality(attributeName);
+      cyDataDef.getAttributeKeyspaceDimensionTypes(attributeName).length;
     final int prefixDims = (keyPrefix == null ? 0 : keyPrefix.length);
     final Object[] keyPrefixCopy = new Object[prefixDims];
     for (int i = 0; i < prefixDims; i++) keyPrefixCopy[i] = keyPrefix[i];
