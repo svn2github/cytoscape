@@ -22,15 +22,19 @@ public final class RTree
 
   /**
    * Returns the number of entries currently in this R-tree.  This method
-   * returns in constant time.
+   * returns in constant time.<p>
+   * NOTE: To retrieve an enumeration of all entries in this R-tree, call
+   * queryIntersection() with Double.MIN_VALUE minimum values and
+   * Double.MAX_VALUE maximum values.
    */
   public final int size() { return 0; }
 
   /**
    * Inserts a new data entry into this tree; the entry's extents are
    * specified by the input parameters.
-   * @param objKey a user-defined identifier used to refer to the entry
-   *   being inserted in later operations.
+   * @param objKey a user-defined unique identifier used to refer to the entry
+   *   being inserted in later operations; this identifier must be positive
+   *   and cannot be equal to Integer.MAX_VALUE.
    * @param minX the minimum X coordinate of the minimum bounding rectangle
    *   of the entry being inserted.
    * @param minY the minimum Y coordinate of the minimum bounding rectangle
@@ -60,7 +64,7 @@ public final class RTree
    * @return true if and only if objKey was previously inserted into this
    *   R-tree and has not since been deleted.
    */
-  public final boolean keyExists(int objKey)
+  public final boolean keyExists(final int objKey)
   {
     return false;
   }
@@ -108,8 +112,21 @@ public final class RTree
   }
 
   /**
-   * Returns an enumeration of entries whose extents intersect the extents
-   * specified.
+   * Returns an enumeration of entries whose extents intersect the
+   * specified axis-aligned rectangular area.  By "axis-aligned" I mean that
+   * the query rectangle's sides are parallel to the axes of the data
+   * space.<p>
+   * IMPORTANT: The returned enumeration becomes invalid as soon as any
+   * structure-modifying operation (insert or delete) is performed on this
+   * R-tree.  Accessing an invalid enumeration's methods will result in
+   * unpredictable and ill-defined behavior in that enumeration, but will
+   * have no effect on the integrity of the underlying tree structure.
+   * @param minX the minimum X coordinate of the query rectangle.
+   * @param minY the minimum Y coordinate of the query rectangle.
+   * @param maxX the maximum X coordinate of the query rectangle.
+   * @param maxY the maximum Y coordinate of the query rectangle.
+   * @return a non-null enumeration of all [distinct] R-tree entries
+   *   (objKeys) whose extents intersect the specified rectangular area.
    */
   public final IntEnumerator queryIntersection(final double minX,
                                                final double minY,
@@ -120,9 +137,21 @@ public final class RTree
   }
 
   /**
-   * Returns an enumeration of entries that are fully enclosed by the
-   * specified extents.  Note that the set returned by this method is a subset
-   * of the set returned by queryIntersection().
+   * Returns an enumeration of entries whose extents area are fully contained
+   * within the specified axis-aligned rectangular area.  By "axis-aligned" I
+   * mean that the query rectangle's sides are parallel to the axes of the
+   * data space.<p>
+   * IMPORTANT: The returned enumeration becomes invalid as soon as any
+   * structure-modifying operation (insert or delete) is performed on this
+   * R-tree.  Accessing an invalid enumeration's methods will result in
+   * unpredictable and ill-defined behavior in that enumeration, but will
+   * have no effect on the integrity of the underlying tree structure.
+   * @param minX the minimum X coordinate of the query rectangle.
+   * @param minY the minimum Y coordinate of the query rectangle.
+   * @param maxX the maximum X coordinate of the query rectangle.
+   * @param maxY the maximum Y coordinate of the query rectangle.
+   * @return a non-null enumeration of all [distinct] R-tree entries
+   *   (objKeys) whose extents intersect the specified rectangular area.
    */
   public final IntEnumerator queryEnclosure(final double minX,
                                             final double minY,
