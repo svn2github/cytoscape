@@ -9,6 +9,13 @@ public final class RTree
 {
 
   /**
+   * Instantiates a new R-tree.  A new R-tree has no entries.
+   */
+  public RTree()
+  {
+  }
+
+  /**
    * Empties this R-tree of all entries.  This method returns in constant
    * time (note however that garbage collection will take place in the
    * background).
