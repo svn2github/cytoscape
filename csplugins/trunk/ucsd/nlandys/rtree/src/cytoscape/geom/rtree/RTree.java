@@ -138,7 +138,7 @@ public final class RTree
   }
 
   /**
-   * Returns an enumeration of entries whose extents area are fully contained
+   * Returns an enumeration of entries whose extents are fully contained
    * within the specified axis-aligned rectangular area.  By "axis-aligned" I
    * mean that the query rectangle's sides are parallel to the axes of the
    * data space.<p>
