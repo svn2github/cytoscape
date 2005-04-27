@@ -4,11 +4,6 @@ import cytoscape.util.intr.IntEnumerator;
 
 /**
  * An in-memory R-tree over real numbers in two dimensions.
- * Only intersection and enclosure queries over an orthogonal
- * (axis-aligned) range are suppored.  This class only knows about
- * [minimum bounding] rectangles; to compute exact intersections of query
- * rectangles with lines and polygons, for example, you can build a higher
- * level module using this class as the underlying engine.
  */
 public final class RTree
 {
@@ -30,19 +25,18 @@ public final class RTree
   public final int size() { return 0; }
 
   /**
-   * Inserts a new data entry into this tree; the entry's extents are
-   * specified by the input parameters.
+   * Inserts a new data entry into this tree; the entry's extents
+   * are specified by the input parameters.  "Extents" is a short way
+   * of saying "minimum bounding rectangle".  The minimum bounding rectangle
+   * of an entry is axis-aligned, meaning that its sides are parallel to the
+   * axes of the data space.
    * @param objKey a user-defined unique identifier used to refer to the entry
    *   being inserted in later operations; this identifier must be positive
    *   and cannot be equal to Integer.MAX_VALUE.
-   * @param minX the minimum X coordinate of the minimum bounding rectangle
-   *   of the entry being inserted.
-   * @param minY the minimum Y coordinate of the minimum bounding rectangle
-   *   of the entry being inserted.
-   * @param maxX the maximum X coordinate of the minimum bounding rectangle
-   *   of the entry being inserted.
-   * @param maxY the maximum Y coordinate of the minimum bounding rectangel
-   *   of the entry being inserted.
+   * @param minX the minimum X coordinate of the entry's extents rectangle.
+   * @param minY the minimum Y coordinate of the entry's extents rectangle.
+   * @param maxX the maximum X coordinate of the entry's extents rectangle.
+   * @param maxY the maximum Y coordinate of the entry's extents rectangle.
    * @exception IllegalStateException if objKey is already used for an
    *   existing entry in this R-tree.
    * @exception IllegalArgumentException if objKey is negative or equal to
@@ -74,11 +68,11 @@ public final class RTree
    * specified offset.  The following table describes what is written to
    * the extentsArr input parameter by this method:<p>
    * <table border="1" cellpadding="5" cellspacing="0">
-   *   <tr><th>array index</th><th>value</th></tr>
-   *   <tr><td>offset</td><td>minX</td></tr>
-   *   <tr><td>offset+1</td><td>minY</td></tr>
-   *   <tr><td>offset+2</td><td>maxX</td></tr>
-   *   <tr><td>offset+3</td><td>maxY</td></tr>
+   *   <tr>  <th>array index</th>  <th>value</th>  </tr>
+   *   <tr>  <td>offset</td>       <td>minX</td>   </tr>
+   *   <tr>  <td>offset+1</td>     <td>minY</td>   </tr>
+   *   <tr>  <td>offset+2</td>     <td>maxX</td>   </tr>
+   *   <tr>  <td>offset+3</td>     <td>maxY</td>   </tr>
    * </table><p>
    * The values written into extentsArr are exactly the same ones that
    * were previously passed to insert() using the same objKey.
