@@ -59,7 +59,9 @@ public final class IntBTree
   /**
    * Returns the number of elements currently in this structure.  Duplicate
    * entries are counted however many times they are present.  This method
-   * returns in constant time.
+   * returns in constant time.<p>
+   * NOTE: To retrieve an enumeration of all entries in this tree, call
+   * searchRange(Integer.MIN_VALUE, Integer.MAX_VALUE).
    */
   public final int size()
   {
