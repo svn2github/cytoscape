@@ -1,7 +1,5 @@
 package cytoscape.data.attr;
 
-import java.util.Enumeration;
-
 /**
  * This interface consists of the API specification to bind attribute
  * values to objects.  A sibling API is CyDataDefinition, which is used
@@ -97,25 +95,26 @@ public interface CyData
 
   /**
    * For all bound attribute values on objectKey in attributeName,
-   * returns an enumeration of [unique] representatives in the key space in
+   * returns an iterator of [unique] representatives in the key space in
    * dimension keyPrefix.length + 1, along specified prefix; this method
    * only makes sense for attributeNames that have nonzero key space
    * dimensionality.<p>
-   * IMPORTANT: The returned enumeration becomes invalid as soon as any
+   * NOTE: The returned iterator does not support the remove() operation.
+   * IMPORTANT: The returned iterator becomes invalid as soon as any
    * attribute value is set or removed for some objectKey in attributeName.
-   * Calling methods on an invalid enumeration will result in undefined
-   * behavior of that enumeration.
+   * Calling methods on an invalid iterator will result in undefined
+   * behavior of that iterator.
    * @param objectKey the object to query.
    * @param attributeName the attribute definition to query.
    * @param keyPrefix an array of length K, where K is strictly less than
    *   the dimensionality of key space of attributeName;
    *   entry at index i contains a "representative" from dimension i + 1 of
    *   the key space of attributeName; keyPrefix may
-   *   be either null or the empty array, in which case the enumeration
+   *   be either null or the empty array, in which case the iterator
    *   returned consists of the representatives in the first dimension of
    *   key space.
-   * @return an enumeration of keys in key space dimension K + 1 along
-   *   specified keyPrefix; the enumeration returned is never null;
+   * @return an iterator of keys in key space dimension K + 1 along
+   *   specified keyPrefix; the iterator returned is never null;
    *   the order of the returned keys is arbitrary.
    * @exception IllegalStateException if attributeName is not an existing
    *   attribute definition; see CyDataDefinition.
@@ -127,26 +126,27 @@ public interface CyData
    * @exception IllegalArgumentException if keyPrefix's length is not
    *   strictly less than the dimensionality of attributeName's key space.
    */
-  public CountedEnumeration getAttributeKeyspan(String objectKey,
-                                                String attributeName,
-                                                Object[] keyPrefix);
+  public CountedIterator getAttributeKeyspan(String objectKey,
+                                             String attributeName,
+                                             Object[] keyPrefix);
 
   /**
    * Returns all objectKeys that have at least one attribute value assigned
    * in attributeName.<p>
+   * NOTE: The returned iterator does not support the remove() operation.
    * NOTE: To quickly determine whether or not a given objectKey has at least
    * one attribute value bound to it under attributeName, test for a null
    * return value in getAttributeValue(objectKey, attributeName, null)
    * if attributeName has zero key space dimensionality, or test for an empty
-   * enumeration return value in
+   * iterator return value in
    * getAttributeKeyspan(objectKey, attributeName, null) if attributeName has
    * nonzero key space dimensionality.<p>
-   * IMPORTANT: The returned enumeration becomes invalid as soon as any
+   * IMPORTANT: The returned iterator becomes invalid as soon as any
    * attribute value is set or removed for some objectKey in attributeName.
-   * Calling methods on an invalid enumeration will result in undefined
-   * behavior of that enumeration.
+   * Calling methods on an invalid iterator will result in undefined
+   * behavior of that iterator.
    * @param attributeName the attribute definition to query.
-   * @return an enumeration of objectKey strings (java.lang.String) that
+   * @return an iterator of objectKey strings (java.lang.String) that
    *   currently have value[s] assigned to them in the specified attribute
    *   definition; the order of the returned strings is arbitrary; null is
    *   never returned.
@@ -154,7 +154,7 @@ public interface CyData
    *   attribute definition; see CyDataDefinition.
    * @exception NullPointerException if attributeName is null.
    */
-  public CountedEnumeration getObjectKeys(String attributeName);
+  public CountedIterator getObjectKeys(String attributeName);
 
   /*
    * I'm not including this method in the API for good reasons.

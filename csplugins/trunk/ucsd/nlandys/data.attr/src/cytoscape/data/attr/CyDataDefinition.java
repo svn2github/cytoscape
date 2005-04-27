@@ -1,7 +1,5 @@
 package cytoscape.data.attr;
 
-import java.util.Enumeration;
-
 /**
  * This interface contains the API specification for creating
  * attribute definitions.
@@ -76,17 +74,18 @@ public interface CyDataDefinition
 
   /**
    * Returns all defined attributeNames.<p>
+   * NOTE: The returned iterator does not support the remove() operation.<p>
    * NOTE: To find out whether or not an attributeName is defined, use
    * getAttrubuteValueType(attributeName) and test whether or not the
    * return value is negative.<p>
-   * IMPORTANT: The returned enumeration becomes invalid as soon as any
+   * IMPORTANT: The returned iterator becomes invalid as soon as any
    * attributeName is defined or undefined in this CyDataDefinition.  Calling
-   * methods on an invalid enumeration will result in undefined
-   * behavior of that enumeration.
-   * @return an enumeration of java.lang.String; each returned string
+   * methods on an invalid iterator will result in undefined
+   * behavior of that iterator.
+   * @return an iterator of java.lang.String; each returned string
    *   is an attributeName (an attribute definition name).
    */
-  public CountedEnumeration getDefinedAttributes();
+  public CountedIterator getDefinedAttributes();
 
   /**
    * @return the type (TYPE_*) of values bound to objects by this attribute

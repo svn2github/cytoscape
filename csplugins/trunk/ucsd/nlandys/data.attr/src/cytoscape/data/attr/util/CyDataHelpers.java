@@ -1,6 +1,6 @@
 package cytoscape.data.attr.util;
 
-import cytoscape.data.attr.CountedEnumeration;
+import cytoscape.data.attr.CountedIterator;
 import cytoscape.data.attr.CyData;
 import cytoscape.data.attr.CyDataDefinition;
 
@@ -133,12 +133,12 @@ public final class CyDataHelpers
                                               final Object[] prefixSoFar,
                                               final int keyspaceDims)
   {
-    final CountedEnumeration currentKeyspan =
+    final CountedIterator currentKeyspan =
       dataRegistry.getAttributeKeyspan(objectKey, attributeName, prefixSoFar);
     final Object[] newPrefix = new Object[prefixSoFar.length + 1];
     for (int i = 0; i < prefixSoFar.length; i++) newPrefix[i] = prefixSoFar[i];
-    while (currentKeyspan.hasMoreElements()) {
-      newPrefix[newPrefix.length - 1] = currentKeyspan.nextElement();
+    while (currentKeyspan.hasNext()) {
+      newPrefix[newPrefix.length - 1] = currentKeyspan.next();
       if (keyspaceDims == newPrefix.length) // The final dimension.
         bucket.add(dataRegistry.getAttributeValue
                    (objectKey, attributeName, newPrefix));
@@ -248,21 +248,21 @@ public final class CyDataHelpers
                                             final Object[] prefixSoFar,
                                             final int keyspaceDims)
   {
-    final CountedEnumeration currentKeyspan =
+    final CountedIterator currentKeyspan =
       dataRegistry.getAttributeKeyspan(objectKey, attributeName, prefixSoFar);
     if (keyspaceDims == prefixSoFar.length + 1) { // The final dimension.
-      while (currentKeyspan.hasMoreElements()) {
+      while (currentKeyspan.hasNext()) {
         final Object[] newPrefix = new Object[prefixSoFar.length + 1];
         for (int i = 0; i < prefixSoFar.length; i++)
           newPrefix[i] = prefixSoFar[i];
-        newPrefix[newPrefix.length - 1] = currentKeyspan.nextElement();
+        newPrefix[newPrefix.length - 1] = currentKeyspan.next();
         bucket.add(newPrefix); } }
     else { // Not the final dimension.
       final Object[] newPrefix = new Object[prefixSoFar.length + 1];
       for (int i = 0; i < prefixSoFar.length; i++)
         newPrefix[i] = prefixSoFar[i];
-      while (currentKeyspan.hasMoreElements()) {
-        newPrefix[newPrefix.length - 1] = currentKeyspan.nextElement();
+      while (currentKeyspan.hasNext()) {
+        newPrefix[newPrefix.length - 1] = currentKeyspan.next();
         r_getAllAttributeKeys(objectKey, attributeName, dataRegistry,
                               bucket, newPrefix, keyspaceDims); } }
   }

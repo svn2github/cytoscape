@@ -1,6 +1,6 @@
 package cytoscape.data.attr.util;
 
-import cytoscape.data.attr.CountedEnumeration;
+import cytoscape.data.attr.CountedIterator;
 import cytoscape.data.attr.CyData;
 import cytoscape.data.attr.CyDataDefinition;
 import cytoscape.data.attr.CyDataDefinitionListener;
@@ -25,19 +25,22 @@ class CyDataModel implements CyDataDefinition, CyData
     }
   }
 
-  private final static class Iterator2Enumeration implements CountedEnumeration
+  private final static class Iterator2Counted implements CountedIterator
   {
     private final java.util.Iterator iter;
     private int count;
-    private Iterator2Enumeration(final java.util.Iterator iter,
-                                 final int count) {
+    private Iterator2Counted(final java.util.Iterator iter,
+                             final int count) {
       this.iter = iter;
       this.count = count; }
-    public final boolean hasMoreElements() { return iter.hasNext(); }
-    public final Object nextElement() {
+    public final boolean hasNext() { return iter.hasNext(); }
+    public final Object next() {
       if (iter.hasNext()) count--;
       return iter.next(); }
-    public final int numElementsRemaining() { return count; }
+    public final int numRemaining() { return count; }
+    public final void remove() {
+      throw new UnsupportedOperationException
+        ("cannot remove from this iterator"); }
   }
 
   private final static class AttrDefLisChain
@@ -126,12 +129,15 @@ class CyDataModel implements CyDataDefinition, CyData
       return add(a2, b2); }
   }
 
-  private final static CountedEnumeration s_the_empty_enumeration =
-    new CountedEnumeration() {
-      public final int numElementsRemaining() { return 0; }
-      public final boolean hasMoreElements() { return false; }
-      public final Object nextElement() {
-        throw new java.util.NoSuchElementException(); } };
+  private final static CountedIterator s_the_empty_iterator =
+    new CountedIterator() {
+      public final int numRemaining() { return 0; }
+      public final boolean hasNext() { return false; }
+      public final Object next() {
+        throw new java.util.NoSuchElementException(); }
+      public final void remove() {
+        throw new UnsupportedOperationException
+          ("cannot remove from this iterator"); } };
 
   // Keys are attributeName, values are AttrDefData.
   private final HashMap m_attrMap;
@@ -201,10 +207,10 @@ class CyDataModel implements CyDataDefinition, CyData
     if (l != null) l.attributeDefined(attributeName);
   }
 
-  public final CountedEnumeration getDefinedAttributes()
+  public final CountedIterator getDefinedAttributes()
   {
-    return new Iterator2Enumeration(m_attrMap.keySet().iterator(),
-                                    m_attrMap.size());
+    return new Iterator2Counted(m_attrMap.keySet().iterator(),
+                                m_attrMap.size());
   }
 
   public final byte getAttributeValueType(final String attributeName)
@@ -567,10 +573,9 @@ class CyDataModel implements CyDataDefinition, CyData
     return returnThis;
   }
 
-  public final CountedEnumeration getAttributeKeyspan(
-                                                    final String objectKey,
-                                                    final String attributeName,
-                                                    final Object[] keyPrefix)
+  public final CountedIterator getAttributeKeyspan(final String objectKey,
+                                                   final String attributeName,
+                                                   final Object[] keyPrefix)
   {
     // Pull out the definition, error-checking attributeName in the process.
     if (attributeName == null)
@@ -595,16 +600,15 @@ class CyDataModel implements CyDataDefinition, CyData
 
     if (keyPrefix == null || keyPrefix.length == 0) { // Don't even recurse.
       final HashMap dim = (HashMap) def.objMap.get(objectKey);
-      if (dim == null) return s_the_empty_enumeration;
-      return new Iterator2Enumeration(dim.keySet().iterator(), dim.size()); }
+      if (dim == null) return s_the_empty_iterator;
+      return new Iterator2Counted(dim.keySet().iterator(), dim.size()); }
     else { // Recurse.
       final HashMap dim = (HashMap) def.objMap.get(objectKey);
-      if (dim == null) return s_the_empty_enumeration;
+      if (dim == null) return s_the_empty_iterator;
       return r_getAttributeKeyspan(dim, keyPrefix, def.keyTypes, 0); }
   }
 
-  private final CountedEnumeration r_getAttributeKeyspan(
-                                                      final HashMap hash,
+  private final CountedIterator r_getAttributeKeyspan(final HashMap hash,
                                                       final Object[] keyPrefix,
                                                       final byte[] keyTypes,
                                                       final int currOffset)
@@ -629,16 +633,16 @@ class CyDataModel implements CyDataDefinition, CyData
 
     if (currOffset == keyPrefix.length - 1) { // The dimension.
       final HashMap dim = (HashMap) hash.get(currKey);
-      if (dim == null) return s_the_empty_enumeration;
-      return new Iterator2Enumeration(dim.keySet().iterator(), dim.size()); }
+      if (dim == null) return s_the_empty_iterator;
+      return new Iterator2Counted(dim.keySet().iterator(), dim.size()); }
     else { // Recurse further.
       final HashMap dim = (HashMap) hash.get(currKey);
-      if (dim == null) return s_the_empty_enumeration;
+      if (dim == null) return s_the_empty_iterator;
       return r_getAttributeKeyspan(dim, keyPrefix, keyTypes,
                                    currOffset + 1); }
   }
 
-  public final CountedEnumeration getObjectKeys(final String attributeName)
+  public final CountedIterator getObjectKeys(final String attributeName)
   {
     // Pull out the definition, error-checking attributeName in the process.
     if (attributeName == null)
@@ -648,8 +652,8 @@ class CyDataModel implements CyDataDefinition, CyData
       throw new IllegalStateException
         ("no attributeName '" + attributeName + "'exists");
 
-    return new Iterator2Enumeration(def.objMap.keySet().iterator(),
-                                    def.objMap.size());
+    return new Iterator2Counted(def.objMap.keySet().iterator(),
+                                def.objMap.size());
   }
 
   public final void addDataListener(final CyDataListener listener)

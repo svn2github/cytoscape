@@ -1,12 +1,11 @@
 package cytoscape.data.attr.util.test;
 
-import cytoscape.data.attr.CountedEnumeration;
+import cytoscape.data.attr.CountedIterator;
 import cytoscape.data.attr.CyData;
 import cytoscape.data.attr.CyDataDefinition;
 import cytoscape.data.attr.util.CyDataFactory;
 import cytoscape.data.attr.util.CyDataHelpers;
 
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -69,13 +68,13 @@ public final class TestCyData
     if (!(data.removeAttributeValue("node4", "color", null).equals("cyan")))
       throw new IllegalStateException("expected to remove cyan");
 
-    Enumeration attrDefEnum = def.getDefinedAttributes();
-    while (attrDefEnum.hasMoreElements()) {
-      String attrDefName = (String) attrDefEnum.nextElement();
+    Iterator attrDefIter = def.getDefinedAttributes();
+    while (attrDefIter.hasNext()) {
+      String attrDefName = (String) attrDefIter.next();
       System.out.println("ATTRIBUTE DOMAIN " + attrDefName + ":");
-      Enumeration objKeyEnum = data.getObjectKeys(attrDefName);
-      while (objKeyEnum.hasMoreElements()) {
-        String objKey = (String) objKeyEnum.nextElement();
+      Iterator objKeyIter = data.getObjectKeys(attrDefName);
+      while (objKeyIter.hasNext()) {
+        String objKey = (String) objKeyIter.next();
         System.out.println("(" + objKey + ")");
         List keySeqList = CyDataHelpers.getAllAttributeKeys
           (objKey, attrDefName, data, def);
