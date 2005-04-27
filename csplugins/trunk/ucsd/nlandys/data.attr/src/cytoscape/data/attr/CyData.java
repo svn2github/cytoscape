@@ -99,7 +99,7 @@ public interface CyData
    * dimension keyPrefix.length + 1, along specified prefix; this method
    * only makes sense for attributeNames that have nonzero key space
    * dimensionality.<p>
-   * NOTE: The returned iterator does not support the remove() operation.
+   * NOTE: The returned iterator does not support the remove() operation.<p>
    * IMPORTANT: The returned iterator becomes invalid as soon as any
    * attribute value is set or removed for some objectKey in attributeName.
    * Calling methods on an invalid iterator will result in undefined
@@ -133,7 +133,7 @@ public interface CyData
   /**
    * Returns all objectKeys that have at least one attribute value assigned
    * in attributeName.<p>
-   * NOTE: The returned iterator does not support the remove() operation.
+   * NOTE: The returned iterator does not support the remove() operation.<p>
    * NOTE: To quickly determine whether or not a given objectKey has at least
    * one attribute value bound to it under attributeName, test for a null
    * return value in getAttributeValue(objectKey, attributeName, null)
