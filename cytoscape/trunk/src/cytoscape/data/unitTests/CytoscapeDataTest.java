@@ -30,35 +30,38 @@ public class CytoscapeDataTest extends TestCase {
   public void testData () {
 
 
-    // create some nodes
+    CytoscapeData node_data = Cytoscape.getNodeNetworkData();
+
+    // create node and test attribute creation, for a single value
     CyNode node1 = Cytoscape.getCyNode( "node1", true );
+    node_data.set( "single", node1.getIdentifier(), "foo1" );
+    assertTrue( node_data.get( "single", node1.getIdentifier() ) == "foo1" );
+
+
+
     CyNode node2 = Cytoscape.getCyNode( "node2", true );
     CyNode node3 = Cytoscape.getCyNode( "node3", true );
     CyNode node4 = Cytoscape.getCyNode( "node4", true );
 
-    System.out.println( node1 );
+    
 
 
-    CytoscapeData node_data = Cytoscape.getNodeNetworkData();
+    
 
     System.out.println( node_data );
 
 
-    node_data.set( "test", node1.getIdentifier(), "foo" );
-    //Assert.assertTrue( node_data.get( "test", node1.getIdentifier() ) == "foo" );
-    System.out.println( node_data.get( "test", node1.getIdentifier() ) );
 
-
-    String[] atts = node_data.getAttributeNames();
-    for ( int i = 0; i < atts.length; ++i ) {
-      System.out.println( " "+i+"Att: "+atts[i] );
+    // String[] atts = node_data.getAttributeNames();
+//     for ( int i = 0; i < atts.length; ++i ) {
+//       System.out.println( " "+i+"Att: "+atts[i] );
     
-      for ( Iterator j = Cytoscape.getRootGraph().nodesIterator(); j.hasNext(); ) {
-        CyNode node = ( CyNode )j.next();
-        System.out.println( atts[i]+ " "+node.getIdentifier()+" "+node_data.get( atts[i],
-                                                                              node.getIdentifier() ) );
-      }
-    }
+//       for ( Iterator j = Cytoscape.getRootGraph().nodesIterator(); j.hasNext(); ) {
+//         CyNode node = ( CyNode )j.next();
+//         System.out.println( atts[i]+ " "+node.getIdentifier()+" "+node_data.get( atts[i],
+//                                                                               node.getIdentifier() ) );
+//       }
+//     }
 
 
   }

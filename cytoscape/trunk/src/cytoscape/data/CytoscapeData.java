@@ -9,7 +9,7 @@ import cytoscape.data.readers.*;
 import cytoscape.util.Misc;
 import cytoscape.task.TaskMonitor;
 
-import cytoscape.data.attr.CountedEnumeration;
+import cytoscape.data.attr.CountedIterator;
 import cytoscape.data.attr.CyData;
 import cytoscape.data.attr.CyDataDefinition;
 import cytoscape.data.attr.CyDataDefinitionListener;
@@ -237,16 +237,16 @@ public interface CytoscapeData
   // SECTION 4: helpepr methods and convience
 
 
-  /**
-   * @return the identifiers of all objects with a given attribute defined
-   */
-  public Set getDefinedForAttribute ( String attributeName );
+  // /**
+//    * @return the identifiers of all objects with a given attribute defined
+//    */
+//   public Set getDefinedForAttribute ( String attributeName );
 
 
-  /**
-   * @return the unique values among the values of all objects with a given attribute.
-   */
-  public Set getUniqueAttributeValues ( String attributeName );
+//   /**
+//    * @return the unique values among the values of all objects with a given attribute.
+//    */
+//   public Set getUniqueAttributeValues ( String attributeName );
 
 
 

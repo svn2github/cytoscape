@@ -13,7 +13,7 @@ import cytoscape.data.attr.CyData;
 import cytoscape.data.attr.CyDataDefinition;
 import cytoscape.data.attr.CyDataDefinitionListener;
 import cytoscape.data.attr.CyDataListener;
-import cytoscape.data.attr.CountedEnumeration;
+import cytoscape.data.attr.CountedIterator;
 import cytoscape.data.attr.util.ExtensibleCyDataModel;
 import cytoscape.data.attr.util.CyDataHelpers;
 
@@ -96,7 +96,7 @@ public class CytoscapeDataImpl
                                 objectAsType( value, set ),
                                 ZERO );
       } catch ( Exception e ) {
-        System.out.println( "set is failing: "+attribute+" "+identifier+ "  "+value );
+        //System.out.println( "set is failing: "+attribute+" "+identifier+ "  "+value );
         e.printStackTrace();
         return null;
       }
@@ -164,7 +164,7 @@ public class CytoscapeDataImpl
     // first find the end of the list
     int span = getAttributeKeyspan( identifier, 
                                     attribute,
-                                    null).numElementsRemaining();
+                                    null).numRemaining();
     try {
       // now insert the current_val into the end of the list
       setAttributeValue( identifier,
@@ -188,7 +188,7 @@ public class CytoscapeDataImpl
                                           String attribute ) {
     return getAttributeKeyspan( identifier, 
                                 attribute,
-                                null).numElementsRemaining();
+                                null).numRemaining();
   }
 
 
@@ -230,7 +230,7 @@ public class CytoscapeDataImpl
     // first find the end of the list
     int span = data.getAttributeKeyspan( identifier, 
                                          attribute,
-                                         null ).numElementsRemaining();
+                                         null ).numRemaining();
 
     for ( int i = 0; i < span; ++i ) {
       arraylist.add( data.getAttributeValue( identifier,
@@ -301,7 +301,7 @@ public class CytoscapeDataImpl
 
     return getAttributeKeyspan( identifier, 
                                 attribute,
-                                null).numElementsRemaining();
+                                null).numRemaining();
  
   }
 
@@ -313,12 +313,12 @@ public class CytoscapeDataImpl
   public Set getAttributeKeySet ( String identifier,
                                   String attribute ) {
 
-    CountedEnumeration ce =  getAttributeKeyspan( identifier, 
+    CountedIterator ce =  getAttributeKeyspan( identifier, 
                                                   attribute,
                                                   null);
     Set set = new HashSet();
-    while ( ce.hasMoreElements() ) {
-      set.add( ce.nextElement() );
+    while ( ce.hasNext() ) {
+      set.add( ce.next() );
     }
     return set;
   }
@@ -350,12 +350,12 @@ public class CytoscapeDataImpl
   public Map getAttributeValuesMap ( String identifier,
                                      String attribute ) {
 
-    CountedEnumeration ce =  getAttributeKeyspan( identifier, 
+    CountedIterator ce =  getAttributeKeyspan( identifier, 
                                                   attribute,
                                                   null);
     Map map = new HashMap();
-    while ( ce.hasMoreElements() ) {
-      Object key = ce.nextElement();
+    while ( ce.hasNext() ) {
+      Object key = ce.next();
       map.put( key, getAttributeValue( identifier,
                                        attribute,
                                        new Object[] { key } ) );
@@ -394,9 +394,9 @@ public class CytoscapeDataImpl
   public Set getDefinedForAttribute ( String attributeName ) {
 
     Set set = new HashSet();
-    CountedEnumeration ce = getObjectKeys( attributeName );
-    while ( ce.hasMoreElements() ) {
-      set.add( ce.nextElement() );
+    CountedIterator ce = getObjectKeys( attributeName );
+    while ( ce.hasNext() ) {
+      set.add( ce.next() );
     }
     return set;
 
@@ -406,12 +406,12 @@ public class CytoscapeDataImpl
   /**
    * @return the unique values among the values of all objects with a given attribute.
    */
-  public Set getUniqueAttributeValues ( String attributeName ) {
+  public Set getUniquAttributeValues ( String attributeName ) {
 
     Set set = new HashSet();
-    CountedEnumeration ce = getObjectKeys( attributeName );
-    while ( ce.hasMoreElements() ) {
-      String id = ( String )ce.nextElement();
+    CountedIterator ce = getObjectKeys( attributeName );
+    while ( ce.hasNext() ) {
+      String id = ( String )ce.next();
       List list = CyDataHelpers.getAllAttributeValues( id,  
                                                        attributeName, 
                                                        data, 
@@ -530,9 +530,9 @@ public class CytoscapeDataImpl
   public HashMap getClassMap () {
 
     HashMap map = new HashMap();
-    Enumeration iter = definition.getDefinedAttributes();
-    while ( iter.hasMoreElements() ) {
-      String attr = ( String )iter.nextElement();
+    Iterator iter = definition.getDefinedAttributes();
+    while ( iter.hasNext() ) {
+      String attr = ( String )iter.next();
       byte type = definition.getAttributeValueType(attr);
 
       if ( type == TYPE_BOOLEAN )
@@ -828,7 +828,7 @@ public class CytoscapeDataImpl
    * @deprecated
    */
   public int numberOfAttributes () {
-    return definition.getDefinedAttributes().numElementsRemaining();
+    return definition.getDefinedAttributes().numRemaining();
   }
 
   /**
@@ -838,9 +838,9 @@ public class CytoscapeDataImpl
   public String[] getAttributeNames () {
 
     List list = new ArrayList();
-    Enumeration iter = definition.getDefinedAttributes();
-    while ( iter.hasMoreElements() ) {
-      list.add( ( String )iter.nextElement() );
+    Iterator iter = definition.getDefinedAttributes();
+    while ( iter.hasNext() ) {
+      list.add( ( String )iter.next() );
     }
     return (String []) list.toArray (new String [0]);
   }
@@ -849,10 +849,10 @@ public class CytoscapeDataImpl
    * return the identifier of all objects with a given attribute.
    */
   public String[] getObjectNames ( String attributeName ) {
-    Enumeration iter = data.getObjectKeys( attributeName );
+    Iterator iter = data.getObjectKeys( attributeName );
     List list = new ArrayList();
-    while ( iter.hasMoreElements() ) {
-      list.add( ( String )iter.nextElement() );
+    while ( iter.hasNext() ) {
+      list.add( ( String )iter.next() );
     }
     return (String []) list.toArray (new String [0]);
   } 
@@ -864,15 +864,12 @@ public class CytoscapeDataImpl
 
     Set unique = new HashSet();
     
-    Iterator i;
-    if ( type == NODES ) 
-      i = Cytoscape.getRootGraph().nodesIterator();
-    else
-      i = Cytoscape.getRootGraph().edgesIterator();
+    Iterator i = getObjectKeys( attributeName );
+
     while( i.hasNext() ) {
-      GraphObject gobj = ( GraphObject )i.next();
+      //GraphObject gobj = ( GraphObject )i.next();
       unique.addAll( getList( attributeName,
-                              gobj.getIdentifier() ) );
+                              (String)i.next() ) );
     }
 
      return ( Object[] )unique.toArray (new Object [0]);
@@ -896,15 +893,12 @@ public class CytoscapeDataImpl
 
     Set unique = new HashSet();
 
-    Iterator i;
-    if ( type == NODES ) 
-      i = Cytoscape.getRootGraph().nodesIterator();
-    else
-      i = Cytoscape.getRootGraph().edgesIterator();
+    Iterator i = getObjectKeys( attributeName );
+
     while( i.hasNext() ) {
-      GraphObject gobj = ( GraphObject )i.next();
+      //GraphObject gobj = ( GraphObject )i.next();
       unique.addAll( getList( attributeName,
-                              gobj.getIdentifier() ) );
+                              (String)i.next() ) );
     }
 
      return ( String[] )unique.toArray (new String [0]);
@@ -915,15 +909,23 @@ public class CytoscapeDataImpl
    * return the number of graph objects with the specified attribute.
    */
   public int getObjectCount ( String attributeName ) {
-    return data.getObjectKeys( attributeName ).numElementsRemaining();
+    try {
+      return data.getObjectKeys( attributeName ).numRemaining();
+    } catch ( Exception e ) {
+      return 0;
+    }
   }
-
+ 
   /**
    * I guess this is if there is a definition
    */ 
   public boolean hasAttribute ( String attributeName ) {
-    if ( definition.getAttributeValueType( attributeName ) != -1 ) 
-      return true;
+    try {
+      if ( definition.getAttributeValueType( attributeName ) != -1 ) 
+        return true;
+    } catch ( Exception e ) {
+      return false;
+    }
     return false;
   }
 
@@ -933,7 +935,7 @@ public class CytoscapeDataImpl
   public boolean hasAttribute ( String attributeName, String graphObjName ) {
     if ( data.getAttributeKeyspan(graphObjName,  
                              attributeName, 
-                             null).numElementsRemaining() != -1 )
+                             null).numRemaining() != -1 )
       return true;
     return false;
   }
@@ -955,11 +957,8 @@ public class CytoscapeDataImpl
 
     HashMap map = new HashMap();
 
-    Iterator i;
-    if ( type == NODES ) 
-      i = Cytoscape.getRootGraph().nodesIterator();
-    else
-      i = Cytoscape.getRootGraph().edgesIterator();
+    Iterator i = getObjectKeys( attributeName );
+
     while( i.hasNext() ) {
       GraphObject gobj = ( GraphObject )i.next();
       map.put( gobj.getIdentifier(), getAttributeValueList( gobj.getIdentifier(), attributeName ) );
@@ -978,8 +977,19 @@ public class CytoscapeDataImpl
   /**
    *  remove the specified attribute from the specified node or edge
    */
-  public void deleteAttribute ( String attributeName, String graphObjectName ) {
-    data.removeAttributeValue( graphObjectName, attributeName, null );
+  public void deleteAttribute ( String attribute, String identifier ) {
+    //data.removeAttributeValue( graphObjectName, attributeName, ZERO );
+    CountedIterator ce =  getAttributeKeyspan( identifier, 
+                                                  attribute,
+                                                  null);
+    while ( ce.hasNext() ) {
+      Object key = ce.next();
+      removeAttributeValue( identifier,
+                            attribute,
+                            new Object[] { key } );
+    }
+  
+    
   }
 
   /**
@@ -988,7 +998,9 @@ public class CytoscapeDataImpl
    *  the list, and if it is found, remove it
    */
   public void deleteAttributeValue ( String attributeName, String graphObjectName, Object value ) {
-    data.removeAttributeValue( graphObjectName, attributeName, ZERO );
+    try {
+      data.removeAttributeValue( graphObjectName, attributeName, ZERO );
+    } catch ( Exception e ) {}
   }
 
   /**
@@ -1153,12 +1165,12 @@ public class CytoscapeDataImpl
   public HashMap getAttributes ( String identifier ) {
     HashMap map = new HashMap();
     
-    Enumeration iter = definition.getDefinedAttributes();
-    while ( iter.hasMoreElements() ) {
-      String attr = ( String )iter.nextElement();
+    Iterator iter = definition.getDefinedAttributes();
+    while ( iter.hasNext() ) {
+      String attr = ( String )iter.next();
       if ( data.getAttributeKeyspan( identifier,
                                      attr,
-                                     null ).numElementsRemaining() != 0 ) {
+                                     null ).numRemaining() != 0 ) {
         map.put( attr, data.getAttributeValue( identifier, attr, ZERO ) );
       }
     }
@@ -1301,7 +1313,7 @@ public class CytoscapeDataImpl
       
       String rawString = newLine.substring(newLine.indexOf("=") + 1).trim();
 
-      System.out.println( "line: "+newLine+" rawStrng: "+rawString);
+      //System.out.println( "line: "+newLine+" rawStrng: "+rawString);
 
       String[] rawList;
       boolean isList = false;

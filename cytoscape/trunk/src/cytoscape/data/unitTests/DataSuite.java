@@ -58,6 +58,8 @@ public class DataSuite extends TestCase {
         suite.addTestSuite(CyNetworkTest.class);
         suite.addTestSuite(FlagEventTest.class);
         suite.addTestSuite(FlagFilterTest.class);
+        suite.addTestSuite(GraphObjAttributesTest.class);
+        suite.addTestSuite(CytoscapeDataTest.class);
         suite.setName("Date Core Tests");
         return suite;
     }
