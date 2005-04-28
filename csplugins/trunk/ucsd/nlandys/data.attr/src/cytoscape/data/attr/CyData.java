@@ -94,9 +94,9 @@ public interface CyData
                                           String attributeName);
 
   /**
-   * For all bound attribute values on objectKey in attributeName,
-   * returns an iterator of [unique] representatives in the key space in
-   * dimension keyPrefix.length + 1, along specified prefix; this method
+   * For all key sequences, having specified prefix, that map into bound
+   * values on objectKey in attributeName, returns the [unique] representatives
+   * from dimension keyPrefix.length + 1.  This method
    * only makes sense for attributeNames that have nonzero key space
    * dimensionality.<p>
    * NOTE: The returned iterator does not support the remove() operation.<p>
