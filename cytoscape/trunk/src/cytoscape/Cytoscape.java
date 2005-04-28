@@ -20,6 +20,7 @@ import javax.swing.event.SwingPropertyChangeSupport;
 
 import cytoscape.data.ExpressionData;
 import cytoscape.data.CytoscapeData;
+import cytoscape.data.CytoscapeDataImpl;
 import cytoscape.data.Semantics;
 import cytoscape.data.readers.GMLReader2;
 import cytoscape.data.readers.GraphReader;
@@ -265,8 +266,12 @@ public abstract class Cytoscape {
       //System.out.println( "Edge Created: "+edge );
 
       String edge_name = node_1.getIdentifier()+" ("+attribute_value+") "+node_2.getIdentifier();
-      Cytoscape.getEdgeNetworkData().set("interaction", edge_name, attribute_value);
-      Cytoscape.getEdgeNetworkData().addNameMapping(edge_name, edge);
+      edge.setIdentifier( edge_name );
+      Cytoscape.getEdgeNetworkData().setAttributeValue( edge.getIdentifier(), 
+                                                        "interaction",
+                                                        attribute_value );
+      //Cytoscape.getEdgeNetworkData().addNameMapping(edge_name, edge);
+      
       return edge;
     }
 
@@ -287,11 +292,11 @@ public abstract class Cytoscape {
                                    String interaction_type ) {
 
     
-    CyEdge edge = ( CyEdge )getEdgeNetworkData().getGraphObject( edge_name );
-    if ( edge != null ) {
-      //System.out.print( "`" );
-      return edge;
-    }
+    // CyEdge edge = ( CyEdge )getEdgeNetworkData().getGraphObject( edge_name );
+//     if ( edge != null ) {
+//       //System.out.print( "`" );
+//       return edge;
+//     }
 
     // edge does not exist, create one
     //System.out.print( "*" );
@@ -826,7 +831,7 @@ public abstract class Cytoscape {
    */
   public static CytoscapeData getNodeNetworkData () {
     if ( nodeData == null )
-      nodeData = new CytoscapeData(CytoscapeData.NODES);
+      nodeData = new CytoscapeDataImpl(CytoscapeData.NODES);
     return nodeData;
   }
 
@@ -836,7 +841,7 @@ public abstract class Cytoscape {
    */
   public static CytoscapeData getEdgeNetworkData () {
     if ( edgeData == null )
-      edgeData = new CytoscapeData(CytoscapeData.EDGES);
+      edgeData = new CytoscapeDataImpl(CytoscapeData.EDGES);
     return edgeData;
   }
 

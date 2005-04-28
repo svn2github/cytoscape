@@ -723,35 +723,34 @@ public boolean loadData (String filename) throws IOException {
      * @param taskMonitor Task Monitor.  Can be null.
      */
     public void copyToAttribs(GraphObjAttributes nodeAttribs,
-            TaskMonitor taskMonitor) {
-        //  A small optimization;  only perform mapping when we actually
-        //  have attributes.
-        if (nodeAttribs.numberOfAttributes() > 0) {
-            String[] condNames = getConditionNames();
-            for(int condNum=0; condNum<condNames.length; condNum++) {
-                String condName = condNames[condNum];
-                String eStr = condName + "exp";
-                String sStr = condName + "sig";
-                for (int i=0; i<geneNames.size(); i++) {
-                    String canName = (String)geneNames.get(i);
+                              TaskMonitor taskMonitor) {
+
+
+      System.out.println( "Copying to attributes" );
+      String[] condNames = getConditionNames();
+      for(int condNum=0; condNum<condNames.length; condNum++) {
+        String condName = condNames[condNum];
+        String eStr = condName + "exp";
+        String sStr = condName + "sig";
+        for (int i=0; i<geneNames.size(); i++) {
+          String canName = (String)geneNames.get(i);
                     mRNAMeasurement mm =  getMeasurement(canName,condName);
                     if(mm!=null) {
-                        nodeAttribs.set(eStr,canName,mm.getRatio());
-                        nodeAttribs.set(sStr,canName,mm.getSignificance());
+                      nodeAttribs.set(eStr,canName,mm.getRatio());
+                      nodeAttribs.set(sStr,canName,mm.getSignificance());
                     }
                     //  Report on Progress to the Task Monitor.
                     if (taskMonitor != null) {
-                        int currentCoordinate = condNum * geneNames.size() + i;
-                        int matrixSize = condNames.length * geneNames.size();
+                      int currentCoordinate = condNum * geneNames.size() + i;
+                      int matrixSize = condNames.length * geneNames.size();
                         double percent = ((double) currentCoordinate / matrixSize)
-                            * 100.0;
+                          * 100.0;
                         taskMonitor.setPercentCompleted((int) percent);
                     }
-                }
+        }
                 nodeAttribs.setClass(eStr,Double.class);
                 nodeAttribs.setClass(sStr,Double.class);
-            }
-    }
+      }
     }
 }
 

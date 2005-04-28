@@ -11,14 +11,24 @@ import java.util.Collection;
 import giny.model.Node;
 import giny.model.Edge;
 
+import com.sosnoski.util.hashmap.StringIntHashMap;
+
 public class CytoscapeFingRootGraph  
   extends FingExtensibleRootGraph 
   implements  CytoscapeRootGraph {
 
 
+  StringIntHashMap node_name_index_map;
+  StringIntHashMap edge_name_index_map;
+  
+
   public CytoscapeFingRootGraph () {
     super( new CyNodeDepot(),
            new CyEdgeDepot() );
+
+    node_name_index_map = new StringIntHashMap();
+    edge_name_index_map = new StringIntHashMap();
+
   }
 
   public CyNetwork createNetwork ( Collection nodes, Collection edges ) {
@@ -68,6 +78,23 @@ public class CytoscapeFingRootGraph
              new ArrayIntIterator(edgeInx, 0, edgeInx.length)); }
     catch (IllegalArgumentException exc) { return null; } 
   }
+
+  public cytoscape.CyNode getNode ( String identifier ) {
+    return ( cytoscape.CyNode )getNode( node_name_index_map.get( identifier ) );
+  }
+
+  public cytoscape.CyEdge getEdge ( String identifier ) {
+    return ( cytoscape.CyEdge )getEdge( edge_name_index_map.get( identifier ) );
+  }
+
+  public void setNodeIdentifier ( String identifier, int index ) {
+    node_name_index_map.add( identifier, index );
+  }
+
+  public void setEdgeIdentifier ( String identifier, int index ) {
+    edge_name_index_map.add( identifier, index );
+  }
+
 }
   
 

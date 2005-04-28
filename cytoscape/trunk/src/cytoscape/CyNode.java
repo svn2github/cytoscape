@@ -1,20 +1,20 @@
 package cytoscape;
 
 import giny.model.*;
-
+import cytoscape.giny.CytoscapeFingRootGraph;
 
   // Package visible class.
 public class CyNode implements cytoscape.giny.Node
 {
 
   // Variables specific to public get/set methods.
-  RootGraph m_rootGraph = null;
+  CytoscapeFingRootGraph m_rootGraph = null;
   int m_rootGraphIndex = 0;
   String m_identifier = null;
 
   public CyNode(RootGraph root,
          int rootGraphIndex) { 
-    this.m_rootGraph = root;
+    this.m_rootGraph = ( CytoscapeFingRootGraph )root;
     this.m_rootGraphIndex = rootGraphIndex;
     this.m_identifier = new Integer(m_rootGraphIndex).toString();
   }
@@ -57,6 +57,7 @@ public class CyNode implements cytoscape.giny.Node
   public boolean setIdentifier(String new_id)
   {
     m_identifier = new_id;
+    m_rootGraph.setNodeIdentifier( new_id, m_rootGraphIndex );
     return true;
   }
 

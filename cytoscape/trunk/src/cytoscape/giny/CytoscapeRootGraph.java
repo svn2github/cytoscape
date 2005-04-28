@@ -23,5 +23,12 @@ public interface CytoscapeRootGraph extends RootGraph {
   public CyNetwork createNetwork ( int[] node_indices, int[] edge_indices ) ;
 
  
-}
+  public cytoscape.CyNode getNode ( String identifier );
 
+  public cytoscape.CyEdge getEdge ( String identifier );
+
+  public void setNodeIdentifier ( String identifier, int index );
+
+  public void setEdgeIdentifier ( String identifier, int index );
+
+}

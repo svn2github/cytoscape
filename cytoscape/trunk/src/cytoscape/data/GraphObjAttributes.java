@@ -8,7 +8,11 @@ import cytoscape.data.readers.*;
 import cytoscape.util.Misc;
 import cytoscape.task.TaskMonitor;
 
+/**
+ * @deprecated
+ */
 public interface GraphObjAttributes {
+
 
   /**
    * Sets a TaskMonitor for tracking loading of node attribute files.
