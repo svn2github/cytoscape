@@ -26,7 +26,7 @@ public final class RTree
    * Returns the number of entries currently in this R-tree.  This method
    * returns in constant time.<p>
    * NOTE: To retrieve an enumeration of all entries in this R-tree, call
-   * queryIntersection() with Double.MIN_VALUE minimum values and
+   * queryOverlap() with Double.MIN_VALUE minimum values and
    * Double.MAX_VALUE maximum values.
    */
   public final int size() { return 0; }
@@ -58,7 +58,7 @@ public final class RTree
   /**
    * Determines whether or not a given key exists in this R-tree structure.<p>
    * NOTE: To retrieve an enumeration of all entries in this R-tree, call
-   * queryIntersection() with Double.MIN_VALUE minimum values and
+   * queryOverlap() with Double.MIN_VALUE minimum values and
    * Double.MAX_VALUE maximum values.
    * @param objKey a user-defined identifier that was potentially used
    *   in a previous insertion.
@@ -129,10 +129,10 @@ public final class RTree
    * @return a non-null enumeration of all [distinct] R-tree entries
    *   (objKeys) whose extents intersect the specified rectangular area.
    */
-  public final IntEnumerator queryIntersection(final double minX,
-                                               final double minY,
-                                               final double maxX,
-                                               final double maxY)
+  public final IntEnumerator queryOverlap(final double minX,
+                                          final double minY,
+                                          final double maxX,
+                                          final double maxY)
   {
     return null;
   }
@@ -154,12 +154,37 @@ public final class RTree
    * @return a non-null enumeration of all [distinct] R-tree entries
    *   (objKeys) whose extents intersect the specified rectangular area.
    */
-  public final IntEnumerator queryEnclosure(final double minX,
-                                            final double minY,
-                                            final double maxX,
-                                            final double maxY)
+  public final IntEnumerator queryEnvelope(final double minX,
+                                           final double minY,
+                                           final double maxX,
+                                           final double maxY)
   {
     return null;
+  }
+
+  public final IntEnumerator queryContainment(final double minX,
+                                              final double minY,
+                                              final double maxX,
+                                              final double maxY)
+  {
+    return null;
+  }
+
+  private final static class Node
+  {
+    private int entryCount = 0;
+    private final double[] minXs;
+    private final double[] minYs;
+    private final double[] maxXs;
+    private final double[] maxYs;
+    private final int[] objKeys; // null if and only if internal node.
+    private Node(int maxBranches, boolean leafNode) {
+      minXs = new double[maxBranches];
+      minYs = new double[maxBranches];
+      maxXs = new double[maxBranches];
+      maxYs = new double[maxBranches];
+      if (leafNode) { objKeys = new int[maxBranches]; }
+      else { objKeys = null; } }
   }
 
 }
