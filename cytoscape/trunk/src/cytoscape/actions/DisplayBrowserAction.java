@@ -24,17 +24,17 @@ import cytoscape.view.CyNetworkView;
 
 public class DisplayBrowserAction extends CytoscapeAction  {
 
-  Vector attributeCategoriesToIgnore;
+  Vector attributeCategoriesToIgnore = new Vector();
   final static String invisibilityPropertyName = "nodeAttributeCategories.invisibleToBrowser";
-  String webBrowserScript;
+  String webBrowserScript = "";
 
   public DisplayBrowserAction() {
     super ("Display attribute browser");
     setPreferredMenu( "Data" );
     setAcceleratorCombo( KeyEvent.VK_F5, 0 );
     Properties configProps = CytoscapeInit.getProperties();
-    webBrowserScript = configProps.getProperty("webBrowserScript", "noScriptDefined");
-    attributeCategoriesToIgnore = Misc.getPropertyValues(configProps, invisibilityPropertyName);
+    //webBrowserScript = configProps.getProperty("webBrowserScript", "noScriptDefined");
+    //attributeCategoriesToIgnore = Misc.getPropertyValues(configProps, invisibilityPropertyName);
     for (int i=0; i < attributeCategoriesToIgnore.size(); i++) {
       System.out.println ("  ignore type " + attributeCategoriesToIgnore.get(i));
     }

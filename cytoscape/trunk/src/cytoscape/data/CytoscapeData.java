@@ -189,7 +189,7 @@ public interface CytoscapeData
    * @param value the value stored for this identifier, attribute, key 
    *              combination
    */
-  public int addAttributeKeyValue ( String identifier,
+  public int putAttributeKeyValue ( String identifier,
                                     String attribute,
                                     Object key,
                                     Object value );

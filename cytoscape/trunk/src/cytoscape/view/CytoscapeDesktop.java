@@ -583,6 +583,9 @@ public class CytoscapeDesktop
       
     // System.out.println( "CD: setting focus to: "+network_id );
 
+    if ( vizMapUI == null )
+      return;
+
 
     // deal with the old Network
     VisualStyle old_style = ( VisualStyle )vizMapUI.
