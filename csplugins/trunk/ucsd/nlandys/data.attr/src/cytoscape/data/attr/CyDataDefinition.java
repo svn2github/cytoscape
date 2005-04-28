@@ -76,7 +76,7 @@ public interface CyDataDefinition
    * Returns all defined attributeNames.<p>
    * NOTE: The returned iterator does not support the remove() operation.<p>
    * NOTE: To find out whether or not an attributeName is defined, use
-   * getAttrubuteValueType(attributeName) and test whether or not the
+   * getAttributeValueType(attributeName) and test whether or not the
    * return value is negative.<p>
    * IMPORTANT: The returned iterator becomes invalid as soon as any
    * attributeName is defined or undefined in this CyDataDefinition.  Calling
