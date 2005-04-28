@@ -178,13 +178,22 @@ public final class RTree
     private final double[] maxXs;
     private final double[] maxYs;
     private final int[] objKeys; // null if and only if internal node.
+    private final InternalNodeData data;
     private Node(int maxBranches, boolean leafNode) {
       minXs = new double[maxBranches];
       minYs = new double[maxBranches];
       maxXs = new double[maxBranches];
       maxYs = new double[maxBranches];
-      if (leafNode) { objKeys = new int[maxBranches]; }
-      else { objKeys = null; } }
+      if (leafNode) { objKeys = new int[maxBranches]; data = null; }
+      else { objKeys = null; data = new InternalNodeData(maxBranches); } }
+  }
+
+  private final static class InternalNodeData
+  {
+    private int deepCount;
+    private final Node[] children;
+    private InternalNodeData(int maxBranches) {
+      children = new Node[maxBranches]; }
   }
 
 }
