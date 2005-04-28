@@ -113,8 +113,8 @@ public interface CyData
    *   be either null or the empty array, in which case the iterator
    *   returned consists of the representatives in the first dimension of
    *   key space.
-   * @return an iterator of keys in key space dimension K + 1 along
-   *   specified keyPrefix; the iterator returned is never null;
+   * @return an iterator of key representatives in key space dimension K + 1
+   *   along specified keyPrefix; the iterator returned is never null;
    *   the order of the returned keys is arbitrary.
    * @exception IllegalStateException if attributeName is not an existing
    *   attribute definition; see CyDataDefinition.
