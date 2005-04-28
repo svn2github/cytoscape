@@ -249,8 +249,12 @@ public class JTreeTable extends JTable {
      * row will be drawn at 0,0.
      */
     public void paint(Graphics g) {
-        g.translate(0, -visibleRow * getRowHeight());
+      if ( g == null )
+        return;
+      g.translate(0, -visibleRow * getRowHeight());
+      try {
         super.paint(g);
+      } catch ( Exception e ) {}
     }
 
     /**

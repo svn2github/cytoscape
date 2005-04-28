@@ -42,7 +42,7 @@ public class GraphObjAttributesTest extends TestCase {
     assertTrue (attributes.numberOfAttributes () == 0);
 
   } // testAllArgs
-  //-------------------------------------------------------------------------
+  
   public void testSet () throws Exception { 
     AllTests.standardOut("testSet");
     GraphObjAttributes attributes = new CytoscapeDataImpl (CytoscapeDataImpl.NODES);
@@ -57,7 +57,7 @@ public class GraphObjAttributesTest extends TestCase {
     assertTrue (attributes.numberOfAttributes () == 2);
 
   } // testSet
-  //-------------------------------------------------------------------------
+  
   public void testGetSingleStringValueFromVector () throws Exception { 
     AllTests.standardOut ("testGetSingleStringValueFromVector");
     GraphObjAttributes attributes = new CytoscapeDataImpl (CytoscapeDataImpl.NODES);
@@ -74,7 +74,7 @@ public class GraphObjAttributesTest extends TestCase {
     assertTrue (synonym.equals (firstSynonym));;
 
   } // testGetSingleStringValueFromVector 
-  //-------------------------------------------------------------------------
+  
   public void testGetSingleDoubleValueFromVector () throws Exception { 
     AllTests.standardOut ("testGetSingleDoubleValueFromVector");
     GraphObjAttributes attributes = new CytoscapeDataImpl (CytoscapeDataImpl.NODES);
@@ -100,7 +100,7 @@ public class GraphObjAttributesTest extends TestCase {
 
 
   } // testGetSingleDoubleValueFromVector 
-  //-------------------------------------------------------------------------
+  
   /**
    *  four overloaded 'add' methods are now deprected, in favor of 'set'
    *  methods
@@ -165,7 +165,7 @@ public class GraphObjAttributesTest extends TestCase {
 
 
   } // testAdd
-  //-------------------------------------------------------------------------
+  
   /**
    *  make sure that everything is done properly when we call
    *  GraphObjAttributes.set (GraphObjAttributes attributes)
@@ -241,7 +241,7 @@ public class GraphObjAttributesTest extends TestCase {
 
 
   } // testAddGraphObjAttributes
-  //-------------------------------------------------------------------------
+  
   public void testHasAttribute () throws Exception {
     AllTests.standardOut ("testHasAttribute");
     GraphObjAttributes attributes = new CytoscapeDataImpl (CytoscapeDataImpl.NODES);
@@ -265,7 +265,7 @@ public class GraphObjAttributesTest extends TestCase {
     assertTrue (!attributes.hasAttribute ("foo", "GAL4bogus"));
   
   } // testHasAttribute
-  //-------------------------------------------------------------------------
+  
   public void testGetAttributeNames () throws Exception {
     AllTests.standardOut ("testGetAttributeNames");
     GraphObjAttributes attributes = new CytoscapeDataImpl (CytoscapeDataImpl.NODES);
@@ -278,7 +278,7 @@ public class GraphObjAttributesTest extends TestCase {
     assertTrue (names.length == 2);
   
   } // testGetAttributeNames
-  //-------------------------------------------------------------------------
+  
   public void testGetAttributeByName () throws Exception {
     AllTests.standardOut ("testGetAttributeByName");
     GraphObjAttributes attributes = new CytoscapeDataImpl (CytoscapeDataImpl.NODES);
@@ -305,7 +305,7 @@ public class GraphObjAttributesTest extends TestCase {
     assertTrue (bar == null);
   
   } // testGetAttributeByName
-  //-------------------------------------------------------------------------
+  
   public void testGetOneGeneAttribute () throws Exception {
     AllTests.standardOut ("testGetOneGeneAttribute");
     GraphObjAttributes attributes = new CytoscapeDataImpl (CytoscapeDataImpl.NODES);
@@ -337,7 +337,7 @@ public class GraphObjAttributesTest extends TestCase {
     assertTrue (actual == null);
   
   } // testGetOneGeneAttribute
-  //-------------------------------------------------------------------------
+  
   public void testTextFileReaderOnNodeAttributeData () throws Exception {
     AllTests.standardOut ("testTextFileReaderOnNodeAttributeData");
     GraphObjAttributes attributes = new CytoscapeDataImpl(CytoscapeDataImpl.NODES);
@@ -349,7 +349,7 @@ public class GraphObjAttributesTest extends TestCase {
     assertTrue (fooB.size () == 333);
 
   } // testTextFileReaderOnNodeAttributeData
-  //-------------------------------------------------------------------------
+  
   public void testTextFileReaderOnEdgeAttributeData () throws Exception {
     AllTests.standardOut ("testTextFileReaderOnEdgeAttributeData");
     GraphObjAttributes attributes = new CytoscapeDataImpl(CytoscapeDataImpl.NODES);
@@ -365,7 +365,7 @@ public class GraphObjAttributesTest extends TestCase {
     assertTrue (edgeAttribute.size () == 27);
 
   } // testTextFileReaderOnEdgeAttributeData
-  //-------------------------------------------------------------------------
+  
   public void testAddAttributeHash () throws Exception {
                                              // can we combine two GraphObjAttributes, by simply adding the second
                                              // to the first? {
@@ -399,7 +399,7 @@ public class GraphObjAttributesTest extends TestCase {
     assertTrue (edgeAttribute0.size () == 27);
 
   } // testAddAttributeHash
-  //-------------------------------------------------------------------------
+  
   public void testNodeToNameMapping () throws Exception {
                                               // an application program often deals primarily in nodes and edges,
                                               // rather than the canonical name of nodes and edges; since those
@@ -447,7 +447,7 @@ public class GraphObjAttributesTest extends TestCase {
     assertTrue (intentionalError == null);
 
   } // testNodeToNameMapping
-  //-------------------------------------------------------------------------
+  
   /**
    * client programs may need a hashmap of attribute/attributeValue pairs
    * for each graphObj (each node or edge).   test that here.
@@ -481,7 +481,7 @@ public class GraphObjAttributesTest extends TestCase {
     assertTrue (magicRetrieved.equals (magic));
 
   } // testGetAttributesBundle
-  //-------------------------------------------------------------------------
+  
   /**
    * client programs may need to supply a hashmap of attribute/attributeValue 
    * for a new or existing node or edge.
@@ -519,7 +519,7 @@ public class GraphObjAttributesTest extends TestCase {
     assertTrue (magicRetrieved.equals (magic));
 
   } // testAddAttributesBundle
-  //-------------------------------------------------------------------------
+  
   /**
    *  multiple GraphObj's (edges in particular) may have the same name; this method
    *  counts names which begin with the same string.  for instance
@@ -559,7 +559,7 @@ public class GraphObjAttributesTest extends TestCase {
     */
     // attributes.finalCountMap();
   } // testCountDuplicateNamesForAttribute
-  //-------------------------------------------------------------------------
+  
   /**
    * in some cases we need to get the name map, and add it to another.
    * (one place this comes up is in the reading of successive edge attributes)
@@ -637,7 +637,7 @@ public class GraphObjAttributesTest extends TestCase {
     assertTrue (intentionalError == null);
 
   } // testGetAndAddNameMapping
-  //-------------------------------------------------------------------------
+  
   /**
    * can we get back exactly the java class of an attribute?
    */
@@ -667,9 +667,9 @@ public class GraphObjAttributesTest extends TestCase {
     assertTrue (attributes.getClass ("magic") == "string".getClass ());
 
   } // testGetAttributeClass
-  //-------------------------------------------------------------------------
+  
 
-  //-------------------------------------------------------------------------
+  
   /**
    *  can we delete an attribute by name?
    */
@@ -705,7 +705,7 @@ public class GraphObjAttributesTest extends TestCase {
     assertTrue (attributes.hasAttribute ("magic") == false);
 
   } // testDeleteAttribute
-  //-------------------------------------------------------------------------
+  
   /**
    *  can we delete an attribute by name?
    */
@@ -740,7 +740,7 @@ public class GraphObjAttributesTest extends TestCase {
     assertTrue (attributes.hasAttribute ("count", "GAL4"));
 
   } // testDeleteAttributeForOneGraphObject
-  //-------------------------------------------------------------------------
+  
   /**
    *  can we delete a specific value from a named attribute of a graphObj?
    *  the full attribute, say "homolog" of a node may be a list of protein names.
@@ -790,7 +790,7 @@ public class GraphObjAttributesTest extends TestCase {
 
 
   } // testDeleteAttributeValueForOneGraphObject
-  //-------------------------------------------------------------------------
+  
   /**
    *  can we set and get attribute category?  numerical, annotation, categorizer, temporary, ...
    */
@@ -824,7 +824,7 @@ public class GraphObjAttributesTest extends TestCase {
 
 
   } // testAttributeCategories
-  //-------------------------------------------------------------------------
+  
   /**
    *  can we handle the several possible varieties of header lines?
    *
@@ -848,7 +848,7 @@ public class GraphObjAttributesTest extends TestCase {
     a.processFileHeader (s3);
 
   } // testProcessFileHeader
-  //-------------------------------------------------------------------------
+  
   /**
    *  can we create objects of a requested type from an appropriate string argument?
    *
@@ -884,7 +884,7 @@ public class GraphObjAttributesTest extends TestCase {
     assertTrue (deducedClass == Class.forName ("java.lang.String"));
 
   } // testObjectCreation
-  //-------------------------------------------------------------------------
+  
   /**
    *  can we create objects of a requested type from an appropriate string argument?
    *
@@ -938,7 +938,7 @@ public class GraphObjAttributesTest extends TestCase {
 
 
   } // testObjectCreation
-  //-------------------------------------------------------------------------
+  
   /**
    *  can we read (and/or infer) attribute category and class from some
    *  combination of the attribute file header, and the file contents?
@@ -997,7 +997,7 @@ public class GraphObjAttributesTest extends TestCase {
 
   
   } // testAttributeCategoryAndClassDetection
-  //-------------------------------------------------------------------------
+  
   /**
    *  can we read array attributes?
    *
