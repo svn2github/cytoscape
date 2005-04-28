@@ -160,7 +160,8 @@ public final class CyDataHelpers
    * @return a list of Object[]; each Object[] in the returned list is
    *   a unique key sequence into a bound value; the returned list is never
    *   null and always contains the full set of key sequences registered on
-   *   objectKey in attributeName.
+   *   objectKey in attributeName; subsequent operations on cyData or cyDataDef
+   *   will have no effect on the returned list.
    * @exception IllegalStateException if attributeName is not an existing
    *   attribute definition in cyData and cyDataDef.
    * @exception NullPointerException if any one of the input parameters is
@@ -204,7 +205,8 @@ public final class CyDataHelpers
    * @return a list of Object[]; each Object[] in the returned list is
    *   a unique key sequence whose beginning matches keyPrefix and which
    *   is mapped to a value; the returned list contains all such key sequences;
-   *   the return value is never null.
+   *   the return value is never null; subsequent operations on cyData or
+   *   cyDataDef will have no effect on the returned list.
    * @exception IllegalStateException if attributeName is not an existing
    *   attribute definition in cyData and cyDataDef.
    * @exception NullPointerException if any one of the input parameters except
