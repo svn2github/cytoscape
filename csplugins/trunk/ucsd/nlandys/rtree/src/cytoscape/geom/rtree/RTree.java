@@ -95,13 +95,12 @@ public final class RTree
    * @exception ArrayIndexOutOfBoundsException if extentsArr cannot be written
    *   to in the index range [offset, offset+3].
    */
-  public final void objectExtents(final int objKey, final double[] extentsArr,
-                                  final int offset)
+  public final void extents(final int objKey, final double[] extentsArr,
+                            final int offset)
   {
   }
 
-  public final void overallExtents(final double[] extentsArr,
-                                   final int offset)
+  public final void envelope(final double[] extentsArr, final int offset)
   {
   }
 
