@@ -36,6 +36,7 @@ public final class IntBTree
    * useful for testing purposes; there are no performance gains to be had.
    * @param maxBranches the maximum branching factor of this tree.
    * @exception IllegalArgumentException if maxBranches is less than three.
+   * @deprecated Use the default constructor instead.
    */
   public IntBTree(final int maxBranches)
   {
@@ -622,11 +623,13 @@ public final class IntBTree
    */
   public final IntEnumerator searchRange(final int xMin, final int xMax)
   {
+    final boolean reverseOrder = false;
     if (xMin > xMax) throw new IllegalArgumentException
                        ("xMin is greater than xMax");
     final NodeStack nodeStack = new NodeStack();
-    final int totalCount = searchRange
-      (m_root, nodeStack, xMin, xMax, Integer.MIN_VALUE, Integer.MAX_VALUE);
+    final int totalCount =
+      searchRange(m_root, nodeStack, xMin, xMax,
+                  Integer.MIN_VALUE, Integer.MAX_VALUE, reverseOrder);
     return new IntEnumerator() {
         private int count = totalCount;
         private int wholeLeafNodes = 0; // Whole leaf nodes on stack.
@@ -671,7 +674,8 @@ public final class IntBTree
    */
   private final static int searchRange(final Node n, final NodeStack nodeStack,
                                        final int xMin, final int xMax,
-                                       final int minBound, final int maxBound)
+                                       final int minBound, final int maxBound,
+                                       final boolean reverseOrder)
   {
     int count = 0;
     if (minBound >= xMin && maxBound <= xMax) { // Trivially include node.
@@ -686,14 +690,25 @@ public final class IntBTree
           else break; }
         if (count > 0) nodeStack.push(n); }
       else { // Internal node.
-        int currentMax = maxBound; int currentMin;
-        for (int i = n.sliceCount - 2; i >= -1; i--) {
-          currentMin = ((i < 0) ? minBound : n.data.splitVals[i]);
-          if (currentMin <= xMax) {
-            count += searchRange(n.data.children[i + 1], nodeStack, xMin, xMax,
-                                 currentMin, currentMax);
-            if (currentMin < xMin) break; }
-          currentMax = currentMin; } } }
+        if (reverseOrder) {
+          int currentMin = minBound; int currentMax;
+          final int maxInx = n.sliceCount - 1; // Slight optimization.
+          for (int i = 0; i < n.sliceCount; i++) {
+            currentMax = ((i == maxInx) ? maxBound : n.data.splitVals[i]);
+            if (currentMax >= xMin) {
+              count += searchRange(n.data.children[i], nodeStack, xMin, xMax,
+                                   currentMin, currentMax, reverseOrder);
+              if (currentMax > xMax) break; }
+            currentMin = currentMax; } }
+        else { // Not reverse order.
+          int currentMax = maxBound; int currentMin;
+          for (int i = n.sliceCount - 2; i >= -1; i--) {
+            currentMin = ((i < 0) ? minBound : n.data.splitVals[i]);
+            if (currentMin <= xMax) {
+              count += searchRange(n.data.children[i + 1], nodeStack, xMin,
+                                   xMax, currentMin, currentMax, reverseOrder);
+              if (currentMin < xMin) break; }
+            currentMax = currentMin; } } } }
     return count;
   }
 
