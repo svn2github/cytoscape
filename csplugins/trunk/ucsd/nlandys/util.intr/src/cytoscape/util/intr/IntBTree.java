@@ -308,13 +308,14 @@ public final class IntBTree
    */
   public final boolean delete(final int x)
   {
-    final boolean returnThis = delete(m_root, x);
+    final boolean returnThis = delete(m_root, x, m_minBranches);
     if ((!isLeafNode(m_root)) && m_root.sliceCount == 1)
       m_root = m_root.data.children[0];
     return returnThis;
   }
 
-  private final boolean delete(final Node n, final int x)
+  private final static boolean delete(final Node n, final int x,
+                                      final int minBranches)
   {
     if (isLeafNode(n)) {
       int foundInx = -1;
@@ -330,23 +331,25 @@ public final class IntBTree
       for (int i = n.sliceCount - 2; i >= -1; i--) {
         int currentMin = ((i < 0) ? Integer.MIN_VALUE : n.data.splitVals[i]);
         if (currentMin <= x) {
-          if (delete(n.data.children[i + 1], x)) {
+          if (delete(n.data.children[i + 1], x, minBranches)) {
             n.data.deepCount--; deletedPath = i + 1; break; }
           if (currentMin < x) break; } }
       if (deletedPath < 0) { return false; }
       final Node affectedChild = n.data.children[deletedPath];
-      if (affectedChild.sliceCount < m_minBranches) { // Underflow handling.
+      if (affectedChild.sliceCount < minBranches) { // Underflow handling.
         final Node leftChild =
           deletedPath > 0 ? n.data.children[deletedPath - 1] : null;
         final Node rightChild =
           deletedPath + 1 < n.sliceCount ?
           n.data.children[deletedPath + 1] : null;
-        if (leftChild != null && leftChild.sliceCount > m_minBranches) {
+        if (leftChild != null && leftChild.sliceCount > minBranches) {
           n.data.splitVals[deletedPath - 1] = distributeFromLeft
-            (leftChild, affectedChild, n.data.splitVals[deletedPath - 1]); }
-        else if (rightChild != null && rightChild.sliceCount > m_minBranches) {
+            (leftChild, affectedChild, n.data.splitVals[deletedPath - 1],
+             minBranches); }
+        else if (rightChild != null && rightChild.sliceCount > minBranches) {
           n.data.splitVals[deletedPath] = distributeFromRight
-            (rightChild, affectedChild, n.data.splitVals[deletedPath]); }
+            (rightChild, affectedChild, n.data.splitVals[deletedPath],
+             minBranches); }
         else { // Merge with a child sibling.
           final int holeInx;
           if (leftChild != null) // Merge with left child.
@@ -365,11 +368,12 @@ public final class IntBTree
    * Returns a new splitVal.  Updates counts and nulls out entries as
    * appropriate.
    */
-  private final int distributeFromLeft(final Node leftSibling,
-                                       final Node thisSibling,
-                                       final int oldSplitVal)
+  private final static int distributeFromLeft(final Node leftSibling,
+                                              final Node thisSibling,
+                                              final int oldSplitVal,
+                                              final int minBranches)
   {
-    final int distributeNum = (1 + leftSibling.sliceCount - m_minBranches) / 2;
+    final int distributeNum = (1 + leftSibling.sliceCount - minBranches) / 2;
     if (isLeafNode(leftSibling)) {
       for (int i = thisSibling.sliceCount, o = i + distributeNum; i > 0;)
         thisSibling.values[--o] = thisSibling.values[--i];
@@ -412,12 +416,13 @@ public final class IntBTree
    * Returns a new splitVal.  Updates counts and nulls out entries as
    * appropriate.
    */
-  private final int distributeFromRight(final Node rightSibling,
-                                        final Node thisSibling,
-                                        final int oldSplitVal)
+  private final static int distributeFromRight(final Node rightSibling,
+                                               final Node thisSibling,
+                                               final int oldSplitVal,
+                                               final int minBranches)
   {
     final int distributeNum =
-      (1 + rightSibling.sliceCount - m_minBranches) / 2;
+      (1 + rightSibling.sliceCount - minBranches) / 2;
     if (isLeafNode(rightSibling)) {
       for (int i = 0, o = thisSibling.sliceCount; i < distributeNum;)
         thisSibling.values[o++] = rightSibling.values[i++];
