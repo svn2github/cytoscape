@@ -15,7 +15,7 @@ public final class IntBTree
   // are split evenly when they get full.
   // 45 or so seems to be the optimal value for large trees.
   /**
-   * @deprecated Use the contructor with no arguments.
+   * @deprecated Use the no-arg contructor.
    */
   public final static int DEFAULT_MAX_BRANCHES = 45;
 
@@ -39,7 +39,7 @@ public final class IntBTree
    * useful for testing purposes; there are no performance gains to be had.
    * @param maxBranches the maximum branching factor of this tree.
    * @exception IllegalArgumentException if maxBranches is less than three.
-   * @deprecated Use the default constructor instead.
+   * @deprecated Use the no-arg constructor instead.
    */
   public IntBTree(final int maxBranches)
   {
@@ -597,32 +597,38 @@ public final class IntBTree
 
   /**
    * Returns an enumeration of all entries in the range [xMin, xMax] currently
-   * in this tree, duplicates included; the elements of the enumeration are
-   * returned in non-descending order.  This method takes O(log(N)) time to
-   * compute a return value, where N is the number of entries currently in
+   * in this tree, duplicates included.  The elements of the enumeration are
+   * returned in non-descending order if the reverseOrder input parameter is
+   * false; otherwise, elements of the enumeration are returned in
+   * non-ascending order.  This method takes O(log(N)) time to compute a
+   * return value, where N is the total number of entries currently in
    * this tree structure.  The returned enumeration reports the number of
    * elements remaining in constant time.  The returned enumeration can
    * be completely traversed in O(K) time, where K is the number of elements
-   * in the returned enumeration; this is always true, regardless of how
-   * small the set of returned enumerated elements is.  Note, however, that
+   * in the returned enumeration.  Note, however, that
    * there is no guarantee that each successive element of the enumeration
-   * is returned in constant time; instead, the time complexity of getting
-   * each successive element is constant on average, and is O(log(K)).<p>
+   * is returned in constant time; instead, the time complexity of accessing
+   * each successive element is only constant on average, and is in fact
+   * O(log(K)).<p>
    * IMPORTANT: The returned enumeration becomes invalid as soon as any
    * structure-modifying operation (insert or delete) is performed on this
    * tree.  Accessing an invalid enumeration's methods will result in
    * unpredictable and ill-defined behavior in that enumeration, but will
-   * have no effect on the integrity of underlying tree structure.<p>
+   * have no effect on the integrity of the underlying tree structure.<p>
    * IMPLEMENTATION NOTE: To find out how many entries are in this tree,
    * one should use the size() method.  Doing so using this method will
    * cost O(log(N)) time, where the size() method returns in constant time.
    * The reason why this method takes longer is because we pre-compute the
-   * first element of the enumeration in order to reduce the number of 'if'
-   * statements in the code.
+   * first element of the enumeration in order to reduce the complexity
+   * of the code.
    * @param xMin the lower [inclusive] bound of the range to search.
    * @param xMax the upper [inclusive] bound of the range to search.
-   * @return an non-descending enumeration of all entries matching this search
-   *   query, duplicates included.
+   * @param reverseOrder if false, elements returned are in non-descending
+   *   order; if true, elements returned are in non-ascending order.
+   * @return an enumeration of all entries matching this search query,
+   *   duplicates included; elements returned are in non-descending order
+   *   if reverseOrder is false; elements returned are in non-ascending order
+   *   if reverseOrder is true.
    * @exception IllegalArgumentException if xMin is greater than xMax.
    */
   public final IntEnumerator searchRange(final int xMin, final int xMax,
