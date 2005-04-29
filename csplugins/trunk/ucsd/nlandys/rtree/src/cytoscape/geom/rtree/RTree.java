@@ -156,7 +156,8 @@ public final class RTree
    * @param maxX the maximum X coordinate of the query rectangle.
    * @param maxY the maximum Y coordinate of the query rectangle.
    * @return a non-null enumeration of all [distinct] R-tree entries
-   *   (objKeys) whose extents intersect the specified rectangular area.
+   *   (objKeys) whose extents are fully contained withing the specified
+   *   rectangular area.
    */
   public final IntEnumerator queryEnvelope(final double minX,
                                            final double minY,
