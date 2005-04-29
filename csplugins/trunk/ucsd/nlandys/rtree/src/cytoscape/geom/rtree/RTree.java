@@ -29,14 +29,14 @@ public final class RTree
    */
   public final void empty() {}
 
-  /**
-   * Returns the number of entries currently in this R-tree.  This method
-   * returns in constant time.<p>
-   * NOTE: To retrieve an enumeration of all entries in this R-tree, call
-   * queryOverlap() with Double.NEGATIVE_INFINITY minimum values and
-   * Double.POSITIVE_INFINITY maximum values.
-   */
-  public final int size() { return 0; }
+//   /**
+//    * Returns the number of entries currently in this R-tree.  This method
+//    * returns in constant time.<p>
+//    * NOTE: To retrieve an enumeration of all entries in this R-tree, call
+//    * queryOverlap() with Double.NEGATIVE_INFINITY minimum values and
+//    * Double.POSITIVE_INFINITY maximum values.
+//    */
+//   public final int size() { return 0; }
 
   private final static boolean isLeafNode(final Node n)
   {
@@ -77,7 +77,7 @@ public final class RTree
    * @return true if and only if objKey was previously inserted into this
    *   R-tree and has not since been deleted.
    */
-  public final boolean keyExists(final int objKey)
+  public final boolean exists(final int objKey)
   {
     return false;
   }
@@ -109,10 +109,6 @@ public final class RTree
    */
   public final void extents(final int objKey, final double[] extentsArr,
                             final int offset)
-  {
-  }
-
-  public final void envelope(final double[] extentsArr, final int offset)
   {
   }
 
