@@ -768,4 +768,44 @@ public final class IntBTree
           wholeLeafNodes += returnThis.sliceCount; } }
   }
 
+  private final static class DescendingEnumerator implements IntEnumerator
+  {
+    private int wholeLeafNodes = 0; // Whole leaf nodes on stack.
+    private int currentNodeInx = 0;
+    private int count;
+    private final NodeStack stack;
+    private final int xMax;
+    private Node currentLeafNode;
+    private DescendingEnumerator(final int totalCount,
+                                 final NodeStack nodeStack,
+                                 final int xMax) {
+      count = totalCount; stack = nodeStack; this.xMax = xMax;
+      currentLeafNode = computeNextLeafNode(); }
+    public final int numRemaining() { return count; }
+    public final int nextInt() {
+      int returnThis = 0; // To keep compiler from complaining.
+      if (wholeLeafNodes != 0) // Faster than 'wholeLeafNodes > 0' ?
+        returnThis = currentLeafNode.values[currentNodeInx];
+      else
+        for (; currentNodeInx >= 0; currentNodeInx--)
+          if (currentLeafNode.values[currentNodeInx] <= xMax) {
+            returnThis = currentLeafNode.values[currentNodeInx]; break; }
+      if (--currentNodeInx < 0) {
+        if (wholeLeafNodes > 0) wholeLeafNodes--;
+        currentLeafNode = computeNextLeafNode();
+        currentNodeInx = currentLeafNode.sliceCount - 1; }
+      count--;
+      return returnThis; }
+    private final Node computeNextLeafNode() {
+      if (stack.currentSize == 0) return null;
+      Node returnThis;
+      while (true) {
+        returnThis = stack.pop();
+        if (isLeafNode(returnThis)) return returnThis;
+        for (int i = 0; i < returnThis.sliceCount; i++)
+          stack.push(returnThis.data.children[i]);
+        if (isLeafNode(returnThis.data.children[0]))
+          wholeLeafNodes += returnThis.sliceCount; } }
+  }
+
 }
