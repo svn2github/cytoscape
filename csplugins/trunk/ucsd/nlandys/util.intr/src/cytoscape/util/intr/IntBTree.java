@@ -14,6 +14,9 @@ public final class IntBTree
   // The author prefers that this quantity be odd because that way nodes
   // are split evenly when they get full.
   // 45 or so seems to be the optimal value for large trees.
+  /**
+   * @deprecated Use the contructor with no arguments.
+   */
   public final static int DEFAULT_MAX_BRANCHES = 45;
 
   private final int m_maxBranches;
@@ -21,7 +24,7 @@ public final class IntBTree
   private Node m_root;
 
   /**
-   * Creates a new tree structure with the default maximum branching factor.
+   * Creates a new tree structure with an optimal branching factor.
    */
   public IntBTree()
   {
