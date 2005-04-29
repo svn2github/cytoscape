@@ -33,8 +33,8 @@ public final class RTree
    * Returns the number of entries currently in this R-tree.  This method
    * returns in constant time.<p>
    * NOTE: To retrieve an enumeration of all entries in this R-tree, call
-   * queryOverlap() with Double.MIN_VALUE minimum values and
-   * Double.MAX_VALUE maximum values.
+   * queryOverlap() with Double.NEGATIVE_INFINITY minimum values and
+   * Double.POSITIVE_INFINITY maximum values.
    */
   public final int size() { return 0; }
 
@@ -70,8 +70,8 @@ public final class RTree
   /**
    * Determines whether or not a given key exists in this R-tree structure.<p>
    * NOTE: To retrieve an enumeration of all entries in this R-tree, call
-   * queryOverlap() with Double.MIN_VALUE minimum values and
-   * Double.MAX_VALUE maximum values.
+   * queryOverlap() with Double.NEGATIVE_INFINITY minimum values and
+   * Double.POSITIVE_INFINITY maximum values.
    * @param objKey a user-defined identifier that was potentially used
    *   in a previous insertion.
    * @return true if and only if objKey was previously inserted into this
@@ -140,11 +140,16 @@ public final class RTree
    * all returned entries.  The following table describes what is written to
    * extentsArr if it is not null:
    * <blockquote><table border="1" cellpadding="5" cellspacing="0">
-   *   <tr>  <th>array index</th>  <th>value</th>        </tr>
-   *   <tr>  <td>offset</td>       <td>xMin of MBR</td>  </tr>
-   *   <tr>  <td>offset+1</td>     <td>yMin of MBR</td>  </tr>
-   *   <tr>  <td>offset+2</td>     <td>xMax of MBR</td>  </tr>
-   *   <tr>  <td>offset+3</td>     <td>yMax of MBR</td>  </tr>
+   *   <tr>  <th>array index</th>  <th>value if query generates results</th>
+   *           <th>value if query does not generate results</th>  </tr>
+   *   <tr>  <td>offset</td>       <td>xMin of MBR</td>
+   *           <td>Double.POSITIVE_INFINITY</td>                  </tr>
+   *   <tr>  <td>offset+1</td>     <td>yMin of MBR</td>
+   *           <td>Double.POSITIVE_INFINITY</td>                  </tr>
+   *   <tr>  <td>offset+2</td>     <td>xMax of MBR</td>
+   *           <td>Double.NEGATIVE_INFINITY</td>                  </tr>
+   *   <tr>  <td>offset+3</td>     <td>yMax of MBR</td>
+   *           <td>Double.NEGATIVE_INFINITY</td>                  </tr>
    * </table></blockquote><p>
    * IMPORTANT: The returned enumeration becomes invalid as soon as any
    * structure-modifying operation (insert or delete) is performed on this
@@ -181,6 +186,20 @@ public final class RTree
     if (yMin > yMax)
       throw new IllegalArgumentException("yMin > yMax");
     return null;
+  }
+
+  /*
+   * Returns the number of entries under n that overlap specified query
+   * rectangle.  Nodes are added to the stack - internal nodes added
+   * recursively contain only overlapping entries, and leaf nodes added are
+   * overlapping.  (You can quickly deduce that internal nodes added to the
+   * stack are completely contained withing specified query rectangle.)
+   */
+  private final static int queryOverlap(final Node n, final NodeStack stack,
+                                        final double xMin, final double yMin,
+                                        final double xMax, final double yMax)
+  {
+    return -1;
   }
 
   /*
@@ -260,6 +279,31 @@ public final class RTree
     private final Node[] children;
     private InternalNodeData(int maxBranches) {
       children = new Node[maxBranches]; }
+  }
+
+  private final static class NodeStack
+  {
+    private Node[] stack;
+    private int currentSize = 0;
+    private NodeStack() { stack = new Node[3]; }
+    private final void push(final Node value) {
+      try { stack[currentSize++] = value; }
+      catch (ArrayIndexOutOfBoundsException e) {
+        currentSize--;
+        final int newStackSize = (int)
+          Math.min((long) Integer.MAX_VALUE, ((long) stack.length) * 2l + 1l);
+        if (newStackSize == stack.length)
+          throw new IllegalStateException
+            ("cannot allocate large enough array");
+        final Node[] newStack = new Node[newStackSize];;
+        System.arraycopy(stack, 0, newStack, 0, stack.length);
+        stack = newStack;
+        stack[currentSize++] = value; } }
+    private final Node pop() {
+      try { return stack[--currentSize]; }
+      catch (ArrayIndexOutOfBoundsException e) {
+        currentSize++;
+        throw e; } }
   }
 
 }
