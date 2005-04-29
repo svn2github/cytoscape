@@ -1,0 +1,11 @@
+no_species 2
+beta 0.8
+blast_th 1E-4
+graph_needed 1
+connectivity_required 1
+all2_allowed 0
+true_factor0 2.5
+true_factor1 3.5
+true_factor2 2.0
+random_path_th 19.4195
+random_net_th 100 100 100 100 20.6257 26.5772 31.8422 36.6455 41.1686 45.3176 50.756 55.6905 65.7372 71.5765 72.7947 71.9262
