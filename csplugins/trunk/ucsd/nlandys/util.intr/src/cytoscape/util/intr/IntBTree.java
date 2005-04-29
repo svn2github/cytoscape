@@ -562,8 +562,8 @@ public final class IntBTree
    * It's important that with every invocation of this method, we have
    * minBound <= x <= maxBound.
    */
-  private final int count(final Node n, final int x,
-                          final int minBound, final int maxBound)
+  private static final int count(final Node n, final int x,
+                                 final int minBound, final int maxBound)
   {
     int count = 0;
     if (minBound == maxBound) { // Trivially include node.
@@ -663,9 +663,9 @@ public final class IntBTree
    * statement is important for leaf nodes).  [xMin, xMax] must intersect
    * [minBound, maxBound] on each call to this method.
    */
-  private final int searchRange(final Node n, final NodeStack nodeStack,
-                                final int xMin, final int xMax,
-                                final int minBound, final int maxBound)
+  private static final int searchRange(final Node n, final NodeStack nodeStack,
+                                       final int xMin, final int xMax,
+                                       final int minBound, final int maxBound)
   {
     int count = 0;
     if (minBound >= xMin && maxBound <= xMax) { // Trivially include node.
