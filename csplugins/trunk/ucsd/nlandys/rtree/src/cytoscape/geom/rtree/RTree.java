@@ -8,11 +8,18 @@ import cytoscape.util.intr.IntEnumerator;
 public final class RTree
 {
 
+  public final static int DEFAULT_MAX_BRANCHES = 7;
+
+  private final int m_maxBranches;
+  private Node m_root;
+
   /**
    * Instantiates a new R-tree.  A new R-tree has no entries.
    */
   public RTree()
   {
+    m_maxBranches = DEFAULT_MAX_BRANCHES;
+    m_root = new Node(m_maxBranches, true);
   }
 
   /**
@@ -30,6 +37,11 @@ public final class RTree
    * Double.MAX_VALUE maximum values.
    */
   public final int size() { return 0; }
+
+  private final static boolean isLeafNode(final Node n)
+  {
+    return n.data == null;
+  }
 
   /**
    * Inserts a new data entry into this tree; the entry's extents
@@ -143,6 +155,26 @@ public final class RTree
       throw new IllegalArgumentException("xMin > xMax");
     if (yMin > yMax)
       throw new IllegalArgumentException("yMin > yMax");
+    return null;
+  }
+
+  /*
+   * Determines whether or not the first rectangle [specified by the first
+   * four parameters] overlaps the second rectangle [specified by the last
+   * four parameters].
+   */
+  private final static boolean overlaps(final double xMin1,
+                                        final double yMin1,
+                                        final double xMax1,
+                                        final double yMax1,
+                                        final double xMin2,
+                                        final double yMin2,
+                                        final double xMax2,
+                                        final double yMax2)
+  {
+    return
+      ((Math.max(xMin1, xMin2) <= Math.min(xMax1, xMax2)) &&
+       (Math.max(yMin1, yMin2) <= Math.min(yMax1, yMax2)));
   }
 
   /**
