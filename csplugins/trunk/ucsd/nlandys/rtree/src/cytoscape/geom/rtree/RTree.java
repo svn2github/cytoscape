@@ -67,49 +67,54 @@ public final class RTree
   {
   }
 
-  /**
-   * Determines whether or not a given key exists in this R-tree structure.<p>
-   * NOTE: To retrieve an enumeration of all entries in this R-tree, call
-   * queryOverlap() with Double.NEGATIVE_INFINITY minimum values and
-   * Double.POSITIVE_INFINITY maximum values.
-   * @param objKey a user-defined identifier that was potentially used
-   *   in a previous insertion.
-   * @return true if and only if objKey was previously inserted into this
-   *   R-tree and has not since been deleted.
-   */
-  public final boolean exists(final int objKey)
-  {
-    return false;
-  }
+//   /**
+//    * Determines whether or not a given key exists in this R-tree structure.<p>
+//    * NOTE: To retrieve an enumeration of all entries in this R-tree, call
+//    * queryOverlap() with Double.NEGATIVE_INFINITY minimum values and
+//    * Double.POSITIVE_INFINITY maximum values.
+//    * @param objKey a user-defined identifier that was potentially used
+//    *   in a previous insertion.
+//    * @return true if and only if objKey was previously inserted into this
+//    *   R-tree and has not since been deleted.
+//    */
+//   public final boolean exists(final int objKey)
+//   {
+//     return false;
+//   }
 
   /**
-   * Writes the extents of objKey into the specified array, starting at
-   * specified offset.  The following table describes what is written to
-   * the extentsArr input parameter by this method:<p>
+   * Determines whether or not a given key exists in this R-tree structure,
+   * and conditionally retrieves the extents of that entry.  The parameter
+   * extentsArr is written into by this method only if it is not null
+   * and if objKey exists in this R-tree.  The information written into
+   * extentsArr consists of the minimum bounding rectangle (MBR) of objKey:
    * <blockquote><table border="1" cellpadding="5" cellspacing="0">
-   *   <tr>  <th>array index</th>  <th>value</th>  </tr>
-   *   <tr>  <td>offset</td>       <td>xMin</td>   </tr>
-   *   <tr>  <td>offset+1</td>     <td>yMin</td>   </tr>
-   *   <tr>  <td>offset+2</td>     <td>xMax</td>   </tr>
-   *   <tr>  <td>offset+3</td>     <td>yMax</td>   </tr>
-   * </table></blockquote><p>
+   *   <tr>  <th>array index</th>  <th>value</th>        </tr>
+   *   <tr>  <td>offset</td>       <td>xMin of MBR</td>  </tr>
+   *   <tr>  <td>offset+1</td>     <td>yMin of MBR</td>  </tr>
+   *   <tr>  <td>offset+2</td>     <td>xMax of MBR</td>  </tr>
+   *   <tr>  <td>offset+3</td>     <td>yMax of MBR</td>  </tr>
+   * </table></blockquote>
    * The values written into extentsArr are exactly the same ones that
    * were previously passed to insert() using the same objKey.
-   * @param objKey a user-defined identifier that was used in a previous
-   *   insertion.
-   * @param extentsArr an array to which
-   *   extent values will be written by this method.
-   * @param offset specifies the beginning index of where to write data into
-   *   extentsArr; exactly four entries are written starting at this index
-   *   (see above table).
-   * @exception IllegalStateException if objKey does not exist in this R-tree.
-   * @exception NullPointerException if extentsArr is null.
-   * @exception ArrayIndexOutOfBoundsException if extentsArr cannot be written
+   * @param objKey a user-defined identifier that was [potentially] used in
+   *   a previous insertion.
+   * @param extentsArr an array to which extent values will be written by this
+   *   method; may be null.
+   * @param offset specifies the beginning index of where to write extent
+   *   values into extentsArr; exactly four entries are written starting at
+   *   this index (see above table); if extentsArr is null then this offset
+   *   is ignored.
+   * @return true if and only if objKey was previously inserted into this
+   *   R-tree and has not since been deleted.
+   * @exception ArrayIndexOutOfBoundsException if objKey exists, if
+   *   extentsArr is not null, and if extentsArr cannot be written
    *   to in the index range [offset, offset+3].
    */
-  public final void extents(final int objKey, final double[] extentsArr,
-                            final int offset)
+  public final boolean exists(final int objKey, final double[] extentsArr,
+                              final int offset)
   {
+    return false;
   }
 
   /**
