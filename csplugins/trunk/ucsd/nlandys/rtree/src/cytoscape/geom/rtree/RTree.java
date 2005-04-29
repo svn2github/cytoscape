@@ -97,7 +97,7 @@ public final class RTree
    * were previously passed to insert() using the same objKey.
    * @param objKey a user-defined identifier that was used in a previous
    *   insertion.
-   * @param extentsArr an array, supplied by caller of this method, to which
+   * @param extentsArr an array to which
    *   extent values will be written by this method.
    * @param offset specifies the beginning index of where to write data into
    *   extentsArr; exactly four entries are written starting at this index
@@ -155,7 +155,7 @@ public final class RTree
    * @param yMin the minimum Y coordinate of the query rectangle.
    * @param xMax the maximum X coordinate of the query rectangle.
    * @param yMax the maximum Y coordinate of the query rectangle.
-   * @param extentsArr an array, supplied by caller of this method, to which
+   * @param extentsArr an array to which
    *   extent values will be written by this method; may be null.
    * @param offset specifies the beginning index of where to write extent
    *   values into extentsArr; exactly four entries are written starting at
