@@ -8,7 +8,7 @@ import cytoscape.util.intr.IntEnumerator;
 public final class RTree
 {
 
-  public final static int DEFAULT_MAX_BRANCHES = 7;
+  private final static int DEFAULT_MAX_BRANCHES = 7;
 
   private final int m_maxBranches;
   private Node m_root;
@@ -68,7 +68,7 @@ public final class RTree
   }
 
 //   /**
-//    * Determines whether or not a given key exists in this R-tree structure.<p>
+//    * Determines whether or not a given entry exists in this R-tree structure.<p>
 //    * NOTE: To retrieve an enumeration of all entries in this R-tree, call
 //    * queryOverlap() with Double.NEGATIVE_INFINITY minimum values and
 //    * Double.POSITIVE_INFINITY maximum values.
@@ -83,17 +83,17 @@ public final class RTree
 //   }
 
   /**
-   * Determines whether or not a given key exists in this R-tree structure,
+   * Determines whether or not a given entry exists in this R-tree structure,
    * and conditionally retrieves the extents of that entry.  The parameter
    * extentsArr is written into by this method only if it is not null
    * and if objKey exists in this R-tree.  The information written into
    * extentsArr consists of the minimum bounding rectangle (MBR) of objKey:
    * <blockquote><table border="1" cellpadding="5" cellspacing="0">
-   *   <tr>  <th>array index</th>  <th>value</th>        </tr>
-   *   <tr>  <td>offset</td>       <td>xMin of MBR</td>  </tr>
-   *   <tr>  <td>offset+1</td>     <td>yMin of MBR</td>  </tr>
-   *   <tr>  <td>offset+2</td>     <td>xMax of MBR</td>  </tr>
-   *   <tr>  <td>offset+3</td>     <td>yMax of MBR</td>  </tr>
+   *   <tr>  <th>array index</th>  <th>value if objKey exists</th>  </tr>
+   *   <tr>  <td>offset</td>       <td>xMin of MBR</td>             </tr>
+   *   <tr>  <td>offset+1</td>     <td>yMin of MBR</td>             </tr>
+   *   <tr>  <td>offset+2</td>     <td>xMax of MBR</td>             </tr>
+   *   <tr>  <td>offset+3</td>     <td>yMax of MBR</td>             </tr>
    * </table></blockquote>
    * The values written into extentsArr are exactly the same ones that
    * were previously passed to insert() using the same objKey.
@@ -168,7 +168,7 @@ public final class RTree
    *   this index (see table above); if extentsArr is null then this offset
    *   is ignored.
    * @return a non-null enumeration of all [distinct] R-tree entries
-   *   (objKeys) whose extents intersect the specified rectangular area.
+   *   (objKeys) whose extents intersect the specified rectangular query area.
    * @exception IllegalArgumentException if xMin is greater than xMax or if
    *   yMin is greater than yMax.
    * @exception ArrayIndexOutOfBoundsException if extentsArr is not null
