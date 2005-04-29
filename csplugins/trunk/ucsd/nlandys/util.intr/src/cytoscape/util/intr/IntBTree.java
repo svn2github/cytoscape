@@ -630,36 +630,8 @@ public final class IntBTree
     final int totalCount =
       searchRange(m_root, nodeStack, xMin, xMax,
                   Integer.MIN_VALUE, Integer.MAX_VALUE, reverseOrder);
-    return new IntEnumerator() {
-        private int count = totalCount;
-        private int wholeLeafNodes = 0; // Whole leaf nodes on stack.
-        private int currentNodeInx = 0;
-        private Node currentLeafNode = computeNextLeafNode();
-        public final int numRemaining() { return count; }
-        public final int nextInt() {
-          int returnThis = 0; // To keep compiler from complaining.
-          if (wholeLeafNodes != 0) // Faster than 'wholeLeafNodes > 0' ? 
-            returnThis = currentLeafNode.values[currentNodeInx];
-          else
-            for (; currentNodeInx < currentLeafNode.sliceCount;
-                 currentNodeInx++)
-              if (currentLeafNode.values[currentNodeInx] >= xMin) {
-                returnThis = currentLeafNode.values[currentNodeInx]; break; }
-          if (++currentNodeInx == currentLeafNode.sliceCount) {
-            if (wholeLeafNodes > 0) wholeLeafNodes--;
-            currentLeafNode = computeNextLeafNode(); currentNodeInx = 0; }
-          count--;
-          return returnThis; }
-        private final Node computeNextLeafNode() {
-          if (nodeStack.currentSize == 0) return null;
-          Node returnThis;
-          while (true) {
-            returnThis = nodeStack.pop();
-            if (isLeafNode(returnThis)) return returnThis;
-            for (int i = returnThis.sliceCount; i > 0;)
-              nodeStack.push(returnThis.data.children[--i]);
-            if (isLeafNode(returnThis.data.children[0]))
-              wholeLeafNodes += returnThis.sliceCount; } } };
+    if (reverseOrder) return null;
+    else return new AscendingEnumerator(totalCount, nodeStack, xMin);
   }
 
   /*
