@@ -630,8 +630,10 @@ public final class IntBTree
     final int totalCount =
       searchRange(m_root, nodeStack, xMin, xMax,
                   Integer.MIN_VALUE, Integer.MAX_VALUE, reverseOrder);
-    if (reverseOrder) return null;
-    else return new AscendingEnumerator(totalCount, nodeStack, xMin);
+    if (reverseOrder)
+      return new DescendingEnumerator(totalCount, nodeStack, xMax);
+    else
+      return new AscendingEnumerator(totalCount, nodeStack, xMin);
   }
 
   /*
