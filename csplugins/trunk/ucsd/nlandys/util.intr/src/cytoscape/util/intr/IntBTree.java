@@ -621,9 +621,9 @@ public final class IntBTree
    *   query, duplicates included.
    * @exception IllegalArgumentException if xMin is greater than xMax.
    */
-  public final IntEnumerator searchRange(final int xMin, final int xMax)
+  public final IntEnumerator searchRange(final int xMin, final int xMax,
+                                         final boolean reverseOrder)
   {
-    final boolean reverseOrder = false;
     if (xMin > xMax) throw new IllegalArgumentException
                        ("xMin is greater than xMax");
     final NodeStack nodeStack = new NodeStack();

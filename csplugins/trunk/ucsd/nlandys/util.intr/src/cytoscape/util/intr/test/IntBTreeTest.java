@@ -22,7 +22,7 @@ public class IntBTreeTest
     System.out.println
       ("Inserted all elements of array into tree.");
     IntEnumerator iter = tree.searchRange(Integer.MIN_VALUE,
-                                          Integer.MAX_VALUE);
+                                          Integer.MAX_VALUE, false);
     System.out.println
       ("Here are the ordered elements:");
     System.out.print
@@ -43,7 +43,7 @@ public class IntBTreeTest
       { 3, 99, 2, Integer.MAX_VALUE, 6, 4, 8, 4, 8, 6, 6, -1, 11 };
     for (int i = 0; i < xMins.length; i++) {
       System.out.print("In range [" + xMins[i] + ", " + xMaxs[i] + "]: ");
-      iter = tree.searchRange(xMins[i], xMaxs[i]);
+      iter = tree.searchRange(xMins[i], xMaxs[i], false);
       while (iter.numRemaining() > 0)
         System.out.print(iter.nextInt() + " ");
       System.out.println("."); }
@@ -53,14 +53,14 @@ public class IntBTreeTest
       if (tree.delete(delInts[i])) {
         System.out.println("Deletion of integer " + delInts[i] +
                            " successful.");
-        iter = tree.searchRange(Integer.MIN_VALUE, Integer.MAX_VALUE);
+        iter = tree.searchRange(Integer.MIN_VALUE, Integer.MAX_VALUE, false);
         System.out.print("  Current ordered elements: ");
         while (iter.numRemaining() > 0) System.out.print(iter.nextInt() + " ");
         System.out.println("."); }
       else {
         System.out.println("Deletion of integer " + delInts[i] +
                            " unsuccessful."); } }
-    iter = tree.searchRange(Integer.MIN_VALUE, Integer.MAX_VALUE);
+    iter = tree.searchRange(Integer.MIN_VALUE, Integer.MAX_VALUE, false);
     System.out.println("Now going to delete remaining entries.");
     final int[] intsRemaining = new int[iter.numRemaining()];
     for (int i = 0; i < intsRemaining.length; i++)
@@ -70,7 +70,7 @@ public class IntBTreeTest
         intsRemaining[(i + (intsRemaining.length / 2)) % intsRemaining.length];
       if (tree.delete(delInt)) {
         System.out.println("Deletion of integer " + delInt + " successful.");
-        iter = tree.searchRange(Integer.MIN_VALUE, Integer.MAX_VALUE);
+        iter = tree.searchRange(Integer.MIN_VALUE, Integer.MAX_VALUE, false);
         System.out.print("  Current ordered elements: ");
         while (iter.numRemaining() > 0) System.out.print(iter.nextInt() + " ");
         System.out.println("."); }

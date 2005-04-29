@@ -86,7 +86,7 @@ public class IntBTreePerformance
     for (int i = 0; i < elements.length; i++)
       _THE_TREE_.insert(elements[i]);
     final IntEnumerator iter =
-      _THE_TREE_.searchRange(Integer.MIN_VALUE, Integer.MAX_VALUE);
+      _THE_TREE_.searchRange(Integer.MIN_VALUE, Integer.MAX_VALUE, false);
     int prevVal = -1;
     if (iter.numRemaining() > 0) {
       prevVal = iter.nextInt();
