@@ -262,7 +262,7 @@ public final class IntBTree
    *   In addition, the "unused" entries in origBuff are nulled out (remove
    *   pointers to enable garbage collection).
    *
-   *   Note tht newInx means to put the new node after the existing node
+   *   Note that newInx means to put the new node after the existing node
    *   at index newInx in the original array.  Placing the new node before
    *   every other node would entail specifying newInx as -1, which is not
    *   allowed.
@@ -457,7 +457,8 @@ public final class IntBTree
    */
   private final static void mergeSiblings(final Node leftSibling,
                                           final Node rightSibling,
-                                          final int splitValue) {
+                                          final int splitValue)
+  {
     if (isLeafNode(leftSibling)) {
       for (int i = 0, o = leftSibling.sliceCount; i < rightSibling.sliceCount;)
         leftSibling.values[o++] = rightSibling.values[i++];
