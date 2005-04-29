@@ -67,21 +67,6 @@ public final class RTree
   {
   }
 
-//   /**
-//    * Determines whether or not a given entry exists in this R-tree structure.<p>
-//    * NOTE: To retrieve an enumeration of all entries in this R-tree, call
-//    * queryOverlap() with Double.NEGATIVE_INFINITY minimum values and
-//    * Double.POSITIVE_INFINITY maximum values.
-//    * @param objKey a user-defined identifier that was potentially used
-//    *   in a previous insertion.
-//    * @return true if and only if objKey was previously inserted into this
-//    *   R-tree and has not since been deleted.
-//    */
-//   public final boolean exists(final int objKey)
-//   {
-//     return false;
-//   }
-
   /**
    * Determines whether or not a given entry exists in this R-tree structure,
    * and conditionally retrieves the extents of that entry.  The parameter
