@@ -40,18 +40,18 @@ public final class RTree
    * @param objKey a user-defined unique identifier used to refer to the entry
    *   being inserted in later operations; this identifier must be positive
    *   and cannot be equal to Integer.MAX_VALUE.
-   * @param minX the minimum X coordinate of the entry's extents rectangle.
-   * @param minY the minimum Y coordinate of the entry's extents rectangle.
-   * @param maxX the maximum X coordinate of the entry's extents rectangle.
-   * @param maxY the maximum Y coordinate of the entry's extents rectangle.
+   * @param xMin the minimum X coordinate of the entry's extents rectangle.
+   * @param yMin the minimum Y coordinate of the entry's extents rectangle.
+   * @param xMax the maximum X coordinate of the entry's extents rectangle.
+   * @param yMax the maximum Y coordinate of the entry's extents rectangle.
    * @exception IllegalStateException if objKey is already used for an
    *   existing entry in this R-tree.
    * @exception IllegalArgumentException if objKey is negative or equal to
    *   Integer.MAX_VALUE.
    */
   public final void insert(final int objKey,
-                           final double minX, final double minY,
-                           final double maxX, final double maxY)
+                           final double xMin, final double yMin,
+                           final double xMax, final double yMax)
   {
   }
 
@@ -76,10 +76,10 @@ public final class RTree
    * the extentsArr input parameter by this method:<p>
    * <table border="1" cellpadding="5" cellspacing="0">
    *   <tr>  <th>array index</th>  <th>value</th>  </tr>
-   *   <tr>  <td>offset</td>       <td>minX</td>   </tr>
-   *   <tr>  <td>offset+1</td>     <td>minY</td>   </tr>
-   *   <tr>  <td>offset+2</td>     <td>maxX</td>   </tr>
-   *   <tr>  <td>offset+3</td>     <td>maxY</td>   </tr>
+   *   <tr>  <td>offset</td>       <td>xMin</td>   </tr>
+   *   <tr>  <td>offset+1</td>     <td>yMin</td>   </tr>
+   *   <tr>  <td>offset+2</td>     <td>xMax</td>   </tr>
+   *   <tr>  <td>offset+3</td>     <td>yMax</td>   </tr>
    * </table><p>
    * The values written into extentsArr are exactly the same ones that
    * were previously passed to insert() using the same objKey.
@@ -126,19 +126,23 @@ public final class RTree
    * R-tree.  Accessing an invalid enumeration's methods will result in
    * unpredictable and ill-defined behavior in that enumeration, but will
    * have no effect on the integrity of the underlying tree structure.
-   * @param minX the minimum X coordinate of the query rectangle.
-   * @param minY the minimum Y coordinate of the query rectangle.
-   * @param maxX the maximum X coordinate of the query rectangle.
-   * @param maxY the maximum Y coordinate of the query rectangle.
+   * @param xMin the minimum X coordinate of the query rectangle.
+   * @param yMin the minimum Y coordinate of the query rectangle.
+   * @param xMax the maximum X coordinate of the query rectangle.
+   * @param yMax the maximum Y coordinate of the query rectangle.
    * @return a non-null enumeration of all [distinct] R-tree entries
    *   (objKeys) whose extents intersect the specified rectangular area.
+   * @exception IllegalArgumentException if xMin > xMax or if yMin > yMax.
    */
-  public final IntEnumerator queryOverlap(final double minX,
-                                          final double minY,
-                                          final double maxX,
-                                          final double maxY)
+  public final IntEnumerator queryOverlap(final double xMin,
+                                          final double yMin,
+                                          final double xMax,
+                                          final double yMax)
   {
-    return null;
+    if (xMin > xMax)
+      throw new IllegalArgumentException("xMin > xMax");
+    if (yMin > yMax)
+      throw new IllegalArgumentException("yMin > yMax");
   }
 
   /**
@@ -151,26 +155,26 @@ public final class RTree
    * R-tree.  Accessing an invalid enumeration's methods will result in
    * unpredictable and ill-defined behavior in that enumeration, but will
    * have no effect on the integrity of the underlying tree structure.
-   * @param minX the minimum X coordinate of the query rectangle.
-   * @param minY the minimum Y coordinate of the query rectangle.
-   * @param maxX the maximum X coordinate of the query rectangle.
-   * @param maxY the maximum Y coordinate of the query rectangle.
+   * @param xMin the minimum X coordinate of the query rectangle.
+   * @param yMin the minimum Y coordinate of the query rectangle.
+   * @param xMax the maximum X coordinate of the query rectangle.
+   * @param yMax the maximum Y coordinate of the query rectangle.
    * @return a non-null enumeration of all [distinct] R-tree entries
    *   (objKeys) whose extents are fully contained withing the specified
    *   rectangular area.
    */
-  public final IntEnumerator queryEnvelope(final double minX,
-                                           final double minY,
-                                           final double maxX,
-                                           final double maxY)
+  public final IntEnumerator queryEnvelope(final double xMin,
+                                           final double yMin,
+                                           final double xMax,
+                                           final double yMax)
   {
     return null;
   }
 
-  public final IntEnumerator queryContainment(final double minX,
-                                              final double minY,
-                                              final double maxX,
-                                              final double maxY)
+  public final IntEnumerator queryContainment(final double xMin,
+                                              final double yMin,
+                                              final double xMax,
+                                              final double yMax)
   {
     return null;
   }
@@ -178,17 +182,17 @@ public final class RTree
   private final static class Node
   {
     private int entryCount = 0;
-    private final double[] minXs;
-    private final double[] minYs;
-    private final double[] maxXs;
-    private final double[] maxYs;
+    private final double[] xMins;
+    private final double[] yMins;
+    private final double[] xMaxs;
+    private final double[] yMaxs;
     private final int[] objKeys; // null if and only if internal node.
     private final InternalNodeData data;
     private Node(int maxBranches, boolean leafNode) {
-      minXs = new double[maxBranches];
-      minYs = new double[maxBranches];
-      maxXs = new double[maxBranches];
-      maxYs = new double[maxBranches];
+      xMins = new double[maxBranches];
+      yMins = new double[maxBranches];
+      xMaxs = new double[maxBranches];
+      yMaxs = new double[maxBranches];
       if (leafNode) { objKeys = new int[maxBranches]; data = null; }
       else { objKeys = null; data = new InternalNodeData(maxBranches); } }
   }
