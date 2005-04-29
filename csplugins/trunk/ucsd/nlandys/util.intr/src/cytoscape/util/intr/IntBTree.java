@@ -72,7 +72,7 @@ public final class IntBTree
    * This simple functionality is in the form of a helper method in order
    * to make code more readable.
    */
-  private static final boolean isLeafNode(final Node n)
+  private final static boolean isLeafNode(final Node n)
   {
     return n.data == null;
   }
@@ -113,7 +113,7 @@ public final class IntBTree
    * method sets; it's this method saying "use this index in the higher
    * levels".)
    */
-  private static final Node insert(final Node n, final int x,
+  private final static Node insert(final Node n, final int x,
                                    final int maxBranches)
   {
     if (isLeafNode(n)) {
@@ -563,7 +563,7 @@ public final class IntBTree
    * It's important that with every invocation of this method, we have
    * minBound <= x <= maxBound.
    */
-  private static final int count(final Node n, final int x,
+  private final static int count(final Node n, final int x,
                                  final int minBound, final int maxBound)
   {
     int count = 0;
@@ -664,7 +664,7 @@ public final class IntBTree
    * statement is important for leaf nodes).  [xMin, xMax] must intersect
    * [minBound, maxBound] on each call to this method.
    */
-  private static final int searchRange(final Node n, final NodeStack nodeStack,
+  private final static int searchRange(final Node n, final NodeStack nodeStack,
                                        final int xMin, final int xMax,
                                        final int minBound, final int maxBound)
   {
