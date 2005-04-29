@@ -279,7 +279,7 @@ public class CytoscapeDataImpl
    */
   public int putAttributeKeyValue ( String identifier,
                                     String attribute,
-                                    Object key,
+                                    String key,
                                     Object value ) {
 
     byte set = definition.getAttributeValueType( attribute );
@@ -331,7 +331,7 @@ public class CytoscapeDataImpl
    */
   public Object getAttributeKeyValue ( String identifier,
                                        String attribute,
-                                       Object key ) {
+                                       String key ) {
     try {
       return getAttributeValue( identifier,
                                 attribute,
@@ -372,7 +372,7 @@ public class CytoscapeDataImpl
    */
   public Object deleteAttributeKeyValue ( String identifier,
                                           String attribute,
-                                          Object key ) {
+                                          String key ) {
     try {
       return removeAttributeValue( identifier,
                                    attribute,
@@ -696,46 +696,39 @@ public class CytoscapeDataImpl
     return null;
   }
 
+  /**
+   * If we are guessing, first try to cast as a Double. Then Boolean, then default to String. We never guess Integer.
+   */
   private byte guessAndDefineObjectType ( Object value, String attributeName ) {
     Object attribute;
 
-   
-
+    // Test for Double
     try { 
       attribute = new Double( value.toString() );
-      definition.defineAttribute( attributeName,
-                                  TYPE_FLOATING_POINT,
-                                  new byte[] {TYPE_STRING} );
+      defineAttribute( attributeName,
+                       TYPE_FLOATING_POINT,
+                       new byte[] {TYPE_STRING} );
       return TYPE_FLOATING_POINT;
     } catch ( Exception e ) {}
-   
-    try { 
-      attribute = new String( value.toString() );
-      definition.defineAttribute( attributeName,
-                                  TYPE_STRING,
-                                  new byte[] {TYPE_STRING} );
-      return TYPE_STRING;
-    } catch ( Exception e ) {}
  
+    // Test for Boolean
     try { 
-      attribute = new Integer( value.toString() );
-      definition.defineAttribute( attributeName,
-                                 TYPE_INTEGER,
-                                  new byte[] {TYPE_STRING} );
-      return TYPE_INTEGER;
+      if ( value.toString().equals("true") || 
+           value.toString().equals("false") ) {
+        defineAttribute( attributeName,
+                         TYPE_BOOLEAN,
+                         new byte[] {TYPE_STRING} );
+        return TYPE_BOOLEAN;
+      }
     } catch ( Exception e ) {}
-
-    try { 
-      attribute = new Boolean( value.toString() );
-      definition.defineAttribute( attributeName,
-                                 TYPE_BOOLEAN,
-                                  new byte[] {TYPE_STRING} );
-      return TYPE_BOOLEAN;
-    } catch ( Exception e ) {}
-    
+      
+    // Default is String
+    defineAttribute( attributeName,
+                     TYPE_STRING,
+                     new byte[] {TYPE_STRING} );
+    return TYPE_STRING;
    
-
-    return -1;
+   
   }
 
  

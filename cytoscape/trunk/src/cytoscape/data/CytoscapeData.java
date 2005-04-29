@@ -191,7 +191,7 @@ public interface CytoscapeData
    */
   public int putAttributeKeyValue ( String identifier,
                                     String attribute,
-                                    Object key,
+                                    String key,
                                     Object value );
   /**
    * @param identifier the unique identifier of the GraphObject
@@ -209,7 +209,7 @@ public interface CytoscapeData
    */
   public Object getAttributeKeyValue ( String identifier,
                                        String attribute,
-                                       Object key );
+                                       String key );
   
 
   /**
@@ -229,7 +229,7 @@ public interface CytoscapeData
    */
   public Object deleteAttributeKeyValue ( String identifier,
                                           String attribute,
-                                          Object key );
+                                          String key );
   
 
 

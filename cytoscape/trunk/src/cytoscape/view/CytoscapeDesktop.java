@@ -312,7 +312,9 @@ public class CytoscapeDesktop
     pack();
     if ( VIEW_TYPE != EXTERNAL_VIEW )
       setSize( 800, 700 );
-    setVisible( true );
+    
+    if ( !Cytoscape.is_test )
+      setVisible( true );
 
   }
 

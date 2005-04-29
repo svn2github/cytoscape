@@ -18,6 +18,7 @@ public class CoreSuite extends TestCase {
      * @return Suite of JUnit tests.
      */
     public static Test suite() {
+      cytoscape.Cytoscape.is_test = true;
         TestSuite suite = new TestSuite();
         //suite.addTestSuite(CytoscapeConfigTest.class);
         //suite.addTestSuite(PluginLoaderTest.class);

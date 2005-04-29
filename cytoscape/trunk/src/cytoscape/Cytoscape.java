@@ -44,6 +44,8 @@ The methods get/setNode/EdgeAttributeValue allow you to assocate data with nodes
  */
 public abstract class Cytoscape {
 
+  public static boolean is_test = false;
+
   public static String NETWORK_CREATED = "NETWORK_CREATED";
   public static String ATTRIBUTES_CHANGED = "ATTRIBUTES_CHANGED";
   public static String NETWORK_DESTROYED = "NETWORK_DESTROYED";
@@ -203,7 +205,7 @@ public abstract class Cytoscape {
    
     CyNode node = ( CyNode )getNodeNetworkData().getGraphObject( alias );
     if ( node != null ) {
-      System.out.print(".");
+      //System.out.print(".");
       return node;
     }
     // node does not exist, create one
@@ -212,7 +214,7 @@ public abstract class Cytoscape {
       return null;
     }
 
-    System.out.print( "|" );
+    //System.out.print( "|" );
     node = ( CyNode )Cytoscape.getRootGraph().getNode( Cytoscape.getRootGraph().createNode() );
     node.setIdentifier( alias );
    
@@ -830,8 +832,10 @@ public abstract class Cytoscape {
    * This should not be used by any user-code
    */
   public static CytoscapeData getNodeNetworkData () {
-    if ( nodeData == null )
+    if ( nodeData == null ) {
       nodeData = new CytoscapeDataImpl(CytoscapeData.NODES);
+      nodeData.initializeAttributeType( Semantics.CANONICAL_NAME, CytoscapeData.TYPE_STRING );
+    }
     return nodeData;
   }
 
@@ -840,8 +844,10 @@ public abstract class Cytoscape {
    * This should not be used by any user-code
    */
   public static CytoscapeData getEdgeNetworkData () {
-    if ( edgeData == null )
+    if ( edgeData == null ) {
       edgeData = new CytoscapeDataImpl(CytoscapeData.EDGES);
+      edgeData.initializeAttributeType( Semantics.CANONICAL_NAME, CytoscapeData.TYPE_STRING );
+    }
     return edgeData;
   }
 
