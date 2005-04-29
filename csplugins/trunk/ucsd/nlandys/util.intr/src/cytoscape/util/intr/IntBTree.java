@@ -85,7 +85,7 @@ public final class IntBTree
    */
   public final void insert(final int x)
   {
-    final Node newSibling = insert(m_root, x);
+    final Node newSibling = insert(m_root, x, m_maxBranches);
     if (newSibling != null) { // The root has been split into two.
       final int newSplitVal;
       final int newDeepCount;
@@ -113,17 +113,18 @@ public final class IntBTree
    * method sets; it's this method saying "use this index in the higher
    * levels".)
    */
-  private final Node insert(final Node n, final int x)
+  private static final Node insert(final Node n, final int x,
+                                   final int maxBranches)
   {
     if (isLeafNode(n)) {
-      if (n.sliceCount < m_maxBranches) { // There's room for a value.
+      if (n.sliceCount < maxBranches) { // There's room for a value.
         int i = -1; while (++i < n.sliceCount) if (x <= n.values[i]) break;
         for (int j = n.sliceCount; j > i;) n.values[j] = n.values[--j];
         n.values[i] = x; n.sliceCount++;
         return null; }
       else { // No room for another value in this leaf node; perform split.
-        final Node newLeafSibling = new Node(m_maxBranches, true);
-        final int combinedCount = m_maxBranches + 1;
+        final Node newLeafSibling = new Node(maxBranches, true);
+        final int combinedCount = maxBranches + 1;
         n.sliceCount = combinedCount >> 1; // Divide by two.
         newLeafSibling.sliceCount = combinedCount - n.sliceCount;
         split(x, n.values, newLeafSibling.values, newLeafSibling.sliceCount);
@@ -133,7 +134,7 @@ public final class IntBTree
       for (int i = n.sliceCount - 2; i >= 0; i--)
         if (x >= n.data.splitVals[i]) { foundPath = i + 1; break; }
       final Node oldChild = n.data.children[foundPath];
-      final Node newChild = insert(oldChild, x);
+      final Node newChild = insert(oldChild, x, maxBranches);
       if (newChild == null) {
         n.data.deepCount++;
         return null; }
@@ -141,7 +142,7 @@ public final class IntBTree
         final int newSplit;
         if (isLeafNode(newChild)) newSplit = newChild.values[0];
         else newSplit = oldChild.data.splitVals[oldChild.sliceCount - 1];
-        if (n.sliceCount < m_maxBranches) { // There's room here.
+        if (n.sliceCount < maxBranches) { // There's room here.
           for (int j = n.sliceCount - 1; j > foundPath;) {
             n.data.children[j + 1] = n.data.children[j];
             n.data.splitVals[j] = n.data.splitVals[--j]; }
@@ -150,8 +151,8 @@ public final class IntBTree
           n.data.splitVals[foundPath] = newSplit;
           return null; }
         else { // No room in this internal node; perform split.
-          final Node newInternalSibling = new Node(m_maxBranches, false);
-          final int combinedCount = m_maxBranches + 1;
+          final Node newInternalSibling = new Node(maxBranches, false);
+          final int combinedCount = maxBranches + 1;
           n.sliceCount = combinedCount >> 1; // Divide by two.
           newInternalSibling.sliceCount = combinedCount - n.sliceCount;
           split(newChild, foundPath, n.data.children,
