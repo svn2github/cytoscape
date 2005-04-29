@@ -86,13 +86,13 @@ public final class RTree
    * Writes the extents of objKey into the specified array, starting at
    * specified offset.  The following table describes what is written to
    * the extentsArr input parameter by this method:<p>
-   * <table border="1" cellpadding="5" cellspacing="0">
+   * <blockquote><table border="1" cellpadding="5" cellspacing="0">
    *   <tr>  <th>array index</th>  <th>value</th>  </tr>
    *   <tr>  <td>offset</td>       <td>xMin</td>   </tr>
    *   <tr>  <td>offset+1</td>     <td>yMin</td>   </tr>
    *   <tr>  <td>offset+2</td>     <td>xMax</td>   </tr>
    *   <tr>  <td>offset+3</td>     <td>yMax</td>   </tr>
-   * </table><p>
+   * </table></blockquote><p>
    * The values written into extentsArr are exactly the same ones that
    * were previously passed to insert() using the same objKey.
    * @param objKey a user-defined identifier that was used in a previous
@@ -133,6 +133,19 @@ public final class RTree
    * specified axis-aligned rectangular area.  By "axis-aligned" I mean that
    * the query rectangle's sides are parallel to the axes of the data
    * space.<p>
+   * The parameter extentsArr is written into by this method if it is not null.
+   * It provides a way for this method to communicate additional information
+   * to the caller of this method.  If not null, extentsArr is populated with
+   * information regarding the minimum bounding rectangle (MBR) that contains
+   * all returned entries.  The following table describes what is written to
+   * extentsArr if it is not null:
+   * <blockquote><table border="1" cellpadding="5" cellspacing="0">
+   *   <tr>  <th>array index</th>  <th>value</th>        </tr>
+   *   <tr>  <td>offset</td>       <td>xMin of MBR</td>  </tr>
+   *   <tr>  <td>offset+1</td>     <td>yMin of MBR</td>  </tr>
+   *   <tr>  <td>offset+2</td>     <td>xMax of MBR</td>  </tr>
+   *   <tr>  <td>offset+3</td>     <td>yMax of MBR</td>  </tr>
+   * </table></blockquote><p>
    * IMPORTANT: The returned enumeration becomes invalid as soon as any
    * structure-modifying operation (insert or delete) is performed on this
    * R-tree.  Accessing an invalid enumeration's methods will result in
@@ -142,6 +155,12 @@ public final class RTree
    * @param yMin the minimum Y coordinate of the query rectangle.
    * @param xMax the maximum X coordinate of the query rectangle.
    * @param yMax the maximum Y coordinate of the query rectangle.
+   * @param extentsArr an array, supplied by caller of this method, to which
+   *   extent values will be written by this method; may be null.
+   * @param offset specifies the beginning index of where to write extent
+   *   values into extentsArr; exactly four entries are written starting at
+   *   this index (see table above); if extentsArr is null then this offset
+   *   is ignored.
    * @return a non-null enumeration of all [distinct] R-tree entries
    *   (objKeys) whose extents intersect the specified rectangular area.
    * @exception IllegalArgumentException if xMin > xMax or if yMin > yMax.
@@ -149,7 +168,9 @@ public final class RTree
   public final IntEnumerator queryOverlap(final double xMin,
                                           final double yMin,
                                           final double xMax,
-                                          final double yMax)
+                                          final double yMax,
+                                          final double[] extentsArr,
+                                          final int offset)
   {
     if (xMin > xMax)
       throw new IllegalArgumentException("xMin > xMax");
