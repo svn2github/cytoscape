@@ -163,7 +163,8 @@ public final class RTree
    *   is ignored.
    * @return a non-null enumeration of all [distinct] R-tree entries
    *   (objKeys) whose extents intersect the specified rectangular area.
-   * @exception IllegalArgumentException if xMin > xMax or if yMin > yMax.
+   * @exception IllegalArgumentException if xMin is greater than xMax or if
+   *   yMin is greater than yMax.
    * @exception ArrayIndexOutOfBoundsException if extentsArr is not null
    *   and if it cannot be written to in the index range
    *   [offset, offset+3].
