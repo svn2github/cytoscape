@@ -717,7 +717,7 @@ public final class IntBTree
     private int sliceCount = 0;
     private final int[] values; // null if and only if internal node.
     private final InternalNodeData data;
-    private Node(int maxBranches, boolean leafNode) {
+    private Node(final int maxBranches, final boolean leafNode) {
       if (leafNode) { values = new int[maxBranches]; data = null; }
       else { values = null; data = new InternalNodeData(maxBranches); } }
   }
@@ -727,7 +727,7 @@ public final class IntBTree
     private int deepCount;
     private final int[] splitVals;
     private final Node[] children;
-    private InternalNodeData(int maxBranches) {
+    private InternalNodeData(final int maxBranches) {
       splitVals = new int[maxBranches - 1];
       children = new Node[maxBranches]; }
   }
@@ -737,7 +737,7 @@ public final class IntBTree
     private Node[] stack;
     private int currentSize = 0;
     private NodeStack() { stack = new Node[3]; }
-    private final void push(Node value) {
+    private final void push(final Node value) {
       try { stack[currentSize++] = value; }
       catch (ArrayIndexOutOfBoundsException e) {
         currentSize--;
@@ -755,6 +755,45 @@ public final class IntBTree
       catch (ArrayIndexOutOfBoundsException e) {
         currentSize++;
         throw e; } }
+  }
+
+  private final static class AscendingEnumerator implements IntEnumerator
+  {
+    private int wholeLeafNodes = 0; // Whole leaf nodes on stack.
+    private int currentNodeInx = 0;
+    private int count;
+    private final NodeStack stack;
+    private final int xMin;
+    private Node currentLeafNode;
+    private AscendingEnumerator(final int totalCount,
+                                final NodeStack nodeStack,
+                                final int xMin) {
+      count = totalCount; stack = nodeStack; this.xMin = xMin;
+      currentLeafNode = computeNextLeafNode(); }
+    public final int numRemaining() { return count; }
+    public final int nextInt() {
+      int returnThis = 0; // To keep compiler from complaining.
+      if (wholeLeafNodes != 0) // Faster than 'wholeLeafNodes > 0' ?
+        returnThis = currentLeafNode.values[currentNodeInx];
+      else
+        for (; currentNodeInx < currentLeafNode.sliceCount; currentNodeInx++)
+          if (currentLeafNode.values[currentNodeInx] >= xMin) {
+            returnThis = currentLeafNode.values[currentNodeInx]; break; }
+      if (++currentNodeInx == currentLeafNode.sliceCount) {
+        if (wholeLeafNodes > 0) wholeLeafNodes--;
+        currentLeafNode = computeNextLeafNode(); currentNodeInx = 0; }
+      count--;
+      return returnThis; }
+    private final Node computeNextLeafNode() {
+      if (stack.currentSize == 0) return null;
+      Node returnThis;
+      while (true) {
+        returnThis = stack.pop();
+        if (isLeafNode(returnThis)) return returnThis;
+        for (int i = returnThis.sliceCount; i > 0;)
+          stack.push(returnThis.data.children[--i]);
+        if (isLeafNode(returnThis.data.children[0]))
+          wholeLeafNodes += returnThis.sliceCount; } }
   }
 
 }
