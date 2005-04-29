@@ -773,16 +773,16 @@ public final class IntBTree
   private final static class DescendingEnumerator implements IntEnumerator
   {
     private int wholeLeafNodes = 0; // Whole leaf nodes on stack.
-    private int currentNodeInx = 0;
     private int count;
     private final NodeStack stack;
     private final int xMax;
     private Node currentLeafNode;
+    private int currentNodeInx;
     private DescendingEnumerator(final int totalCount,
                                  final NodeStack nodeStack,
                                  final int xMax) {
       count = totalCount; stack = nodeStack; this.xMax = xMax;
-      currentLeafNode = computeNextLeafNode(); }
+      computeNextLeafNode(); }
     public final int numRemaining() { return count; }
     public final int nextInt() {
       int returnThis = 0; // To keep compiler from complaining.
@@ -794,20 +794,22 @@ public final class IntBTree
             returnThis = currentLeafNode.values[currentNodeInx]; break; }
       if (--currentNodeInx < 0) {
         if (wholeLeafNodes > 0) wholeLeafNodes--;
-        currentLeafNode = computeNextLeafNode();
-        currentNodeInx = currentLeafNode.sliceCount - 1; }
+        computeNextLeafNode(); }
       count--;
       return returnThis; }
-    private final Node computeNextLeafNode() {
-      if (stack.currentSize == 0) return null;
-      Node returnThis;
+    private final void computeNextLeafNode() {
+      if (stack.currentSize == 0) { currentLeafNode = null; return; }
+      Node next;
       while (true) {
-        returnThis = stack.pop();
-        if (isLeafNode(returnThis)) return returnThis;
-        for (int i = 0; i < returnThis.sliceCount; i++)
-          stack.push(returnThis.data.children[i]);
-        if (isLeafNode(returnThis.data.children[0]))
-          wholeLeafNodes += returnThis.sliceCount; } }
+        next = stack.pop();
+        if (isLeafNode(next)) {
+          currentLeafNode = next;
+          currentNodeInx = currentLeafNode.sliceCount - 1;
+          return; }
+        for (int i = 0; i < next.sliceCount; i++)
+          stack.push(next.data.children[i]);
+        if (isLeafNode(next.data.children[0]))
+          wholeLeafNodes += next.sliceCount; } }
   }
 
 }
