@@ -19,54 +19,54 @@ import cytoscape.data.attr.util.CyDataFactory;
 import giny.model.GraphObject;
 /**
  
- CytoscapeData provides an interface for storing multi-dimensional data for any given object that has a unique String identifier.  For Cytoscape this means that all Nodes and Edges have a "getIdentifer" method that returns a unique identifer that can be used to access the data stored by CytoscapeData.
-
- The Data that is stored is restricted to being either: Boolean, Double, Integer, or String.  So this class will not be able to hold general Objects that are of a special type, and are not one of these primitives.  However, CytoscapeData does provide for limited data structures in that all data can be stored as a collection of multi-dimensional hashes, or lists.
-
- The underlying implementation is that all values are always stored as a hash. To access this low level API use the documentation of CyData.  For less advanced use there are three levels of this API that offer increasingly powerful ways to store your data.
-
- Initializing Attributes:
-
- 
-
- initializeAttributeType
-
-
- Level 1 (Single Value)
-
- At this most basic level, there is just one value for each attribute identifer pair. The methods for using this simple case are:
-  
- setAttributeValue
- getAttributeValue
- deleteAttributeValue 
-
- This level is very straightforward, and is suitable for most situations. 
-
- Level 2 (Lists)
-
- The level 2 API is completely compatible with the level 1 API.  In the level 2 API any value that was set using methods of the level 1 is now usable as the first element in a list of values. In addition, any modification made to the first element of the list will be returned when the level 1 methods are used. The level 2 methods are very similar to the methods of java.util.List :
-
- addAttributeListValue
- getAttributeValueListCount 
- getAttributeValueListElement
- getAttributeValueList
- deleteAttributeListValue
-
- Level 3 (Hashes)
-
- Useing Hashes is an easy way to store mutliple key value pairs for a single attribute. For instance for each attribute "Experiment" one can have keys for values that are things like "Condition" or "Pvalue".  Thus data that belongs under one title cna be grouped there easily.  The level 3 API is completely compatible with the level 1 and 2 API, in the level 3 API previously set values are now accesable via the key "0", or any integer used in level 2. The methods for level 3 are: 
-
- addAttributeKeyValue
- getAttributeKeySet
- getAttributeKeyValue
- getAttributeValuesMap
- deleteAttributeKeyValue
-
-
- Level 4 (to-the-metal)
-
- If you need more flexibility, such as a hash of hashes of lists of hashes, then please refer to the CyData API.  This will most likely create data structures that are not usavle with levels 1-3, but will still be fully supported in terms of UI and IO.
-
+ CytoscapeData provides an interface for storing multi-dimensional data for any given object that has a unique String identifier.  For Cytoscape this means that all Nodes and Edges have a "getIdentifer" method that returns a unique identifer that can be used to access the data stored by CytoscapeData.<br>
+<br>
+ The Data that is stored is restricted to being either: Boolean, Double, Integer, or String.  So this class will not be able to hold general Objects that are of a special type, and are not one of these primitives.  However, CytoscapeData does provide for limited data structures in that all data can be stored as a collection of multi-dimensional hashes, or lists.<br>
+<br>
+ The underlying implementation is that all values are always stored as a hash. To access this low level API use the documentation of CyData.  For less advanced use there are three levels of this API that offer increasingly powerful ways to store your data.<br>
+<br>
+ Initializing Attributes:<br>
+<br>
+ <br>
+<br>
+ initializeAttributeType<br>
+<br>
+<br>
+ Level 1 (Single Value)<br>
+<br>
+ At this most basic level, there is just one value for each attribute identifer pair. The methods for using this simple case are:<br>
+  <br>
+ setAttributeValue<br>
+ getAttributeValue<br>
+ deleteAttributeValue <br>
+<br>
+ This level is very straightforward, and is suitable for most situations. <br>
+<br>
+ Level 2 (Lists)<br>
+<br>
+ The level 2 API is completely compatible with the level 1 API.  In the level 2 API any value that was set using methods of the level 1 is now usable as the first element in a list of values. In addition, any modification made to the first element of the list will be returned when the level 1 methods are used. The level 2 methods are very similar to the methods of java.util.List :<br>
+<br>
+ addAttributeListValue<br>
+ getAttributeValueListCount <br>
+ getAttributeValueListElement<br>
+ getAttributeValueList<br>
+ deleteAttributeListValue<br>
+<br>
+ Level 3 (Hashes)<br>
+<br>
+ Useing Hashes is an easy way to store mutliple key value pairs for a single attribute. For instance for each attribute "Experiment" one can have keys for values that are things like "Condition" or "Pvalue".  Thus data that belongs under one title cna be grouped there easily.  The level 3 API is completely compatible with the level 1 and 2 API, in the level 3 API previously set values are now accesable via the key "0", or any integer used in level 2. The methods for level 3 are: <br>
+<br>
+ addAttributeKeyValue<br>
+ getAttributeKeySet<br>
+ getAttributeKeyValue<br>
+ getAttributeValuesMap<br>
+ deleteAttributeKeyValue<br>
+<br>
+<br>
+ Level 4 (to-the-metal)<br>
+<br>
+ If you need more flexibility, such as a hash of hashes of lists of hashes, then please refer to the CyData API.  This will most likely create data structures that are not usavle with levels 1-3, but will still be fully supported in terms of UI and IO.<br>
+<br>
 */
 public interface CytoscapeData 
   extends GraphObjAttributes,
