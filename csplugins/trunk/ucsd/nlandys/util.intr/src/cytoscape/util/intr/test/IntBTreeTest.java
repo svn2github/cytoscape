@@ -38,12 +38,20 @@ public class IntBTreeTest
         ("The count of integer " + countThese[i] + " is " +
          tree.count(countThese[i]) + ".");
     final int[] xMins = new int[]
-      { Integer.MIN_VALUE, -23, 1, 3, 2, 3, 8, 4, 4, 5, 6, -1, 11 };
+      { Integer.MIN_VALUE, Integer.MIN_VALUE, -23, 1, 3, 2, 3, 8, 4, 4, 5, 6,
+        -1, 11 };
     final int[] xMaxs = new int[]
-      { 3, 99, 2, Integer.MAX_VALUE, 6, 4, 8, 4, 8, 6, 6, -1, 11 };
+      { Integer.MAX_VALUE, 3, 99, 2, Integer.MAX_VALUE, 6, 4, 8, 4, 8, 6, 6,
+        -1, 11 };
     for (int i = 0; i < xMins.length; i++) {
-      System.out.print("In range [" + xMins[i] + ", " + xMaxs[i] + "]: ");
+      System.out.println("In range [" + xMins[i] + ", " + xMaxs[i] + "]:");
+      System.out.print("  ascending: ");
       iter = tree.searchRange(xMins[i], xMaxs[i], false);
+      while (iter.numRemaining() > 0)
+        System.out.print(iter.nextInt() + " ");
+      System.out.println(".");
+      System.out.print("  descending: ");
+      iter = tree.searchRange(xMins[i], xMaxs[i], true);
       while (iter.numRemaining() > 0)
         System.out.print(iter.nextInt() + " ");
       System.out.println("."); }
