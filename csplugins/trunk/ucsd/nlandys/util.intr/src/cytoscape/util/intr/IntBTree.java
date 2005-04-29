@@ -64,8 +64,9 @@ public final class IntBTree
    * Returns the number of elements currently in this structure.  Duplicate
    * entries are counted however many times they are present.  This method
    * returns in constant time.<p>
-   * NOTE: To retrieve an enumeration of all entries in this tree, call
-   * searchRange(Integer.MIN_VALUE, Integer.MAX_VALUE).
+   * NOTE: To retrieve an enumeration of all entries in this tree, use
+   * searchRange() with Integer.MIN_VALUE as the lower bound and
+   * Integer.MAX_VALUE as the upper bound.
    */
   public final int size()
   {
@@ -556,12 +557,12 @@ public final class IntBTree
    * Returns the number of entries of the integer x in this tree.
    * This method has a time complexity of O(log(N)) where N is the total
    * number of entries currently in this tree structure.<p>
-   * This method is superfluous because we can use searchRange(x, x) to
+   * This method is superfluous because we can use searchRange(x, x, false) to
    * get the same information, paying the same hit in time complexity.
    * @param x the integer whose count to query.
    * @return the number of entries x currently in this structure.
-   * @deprecated Use searchRange(x, x) in place of this method; the author
-   *   may decide to remove this method at some point.
+   * @deprecated Use searchRange(x, x, false) in place of this method; the
+   *   author may decide to remove this method at some point.
    */
   public final int count(final int x)
   {
