@@ -1,6 +1,7 @@
 package cytoscape.geom.rtree;
 
 import cytoscape.util.intr.IntEnumerator;
+import cytoscape.util.intr.IntStack;
 
 /**
  * An in-memory R-tree over real numbers in two dimensions.
@@ -181,8 +182,9 @@ public final class RTree
       extentsArr[offset + 2] = Double.NEGATIVE_INFINITY;
       extentsArr[offset + 3] = Double.NEGATIVE_INFINITY; }
     final ObjStack nodeStack = new ObjStack();
+    final ObjStack stackStack = new ObjStack();
     final int totalCount =
-      queryOverlap(m_root, nodeStack, xMin, yMin, xMax, yMax,
+      queryOverlap(m_root, nodeStack, stackStack, xMin, yMin, xMax, yMax,
                    m_mbr[0], m_mbr[1], m_mbr[2], m_mbr[3], extentsArr, offset);
     return new OverlapEnumerator(totalCount, nodeStack,
                                  xMin, yMin, xMax, yMax);
@@ -202,53 +204,58 @@ public final class RTree
    * xMaxN, and yMaxN] be the infinite inverted rectangle (that is, its
    * min values should all be Double.POSITIVE_INFINITY and its max values
    * should all be Double.NEGATIVE_INFINITY).
+   * I'd like to discuss stackStack.  Objects of type IntStack are tossed onto
+   * this stack (in other words, stackStack is a stack of IntStack).  For every
+   * leaf node on nodeStack, stackStack will contain
+   * a corresponding IntStack - if the IntStack is null,
+   * then every entry in that leaf node overlaps the query rectangle; if
+   * the IntStack is of positive length, then the IntStack contains indices of
+   * entries that overlap the query rectangle.
    */
   private final static int queryOverlap(final Node n, final ObjStack nodeStack,
+                                        final ObjStack stackStack,
                                         final double xMinQ, final double yMinQ,
                                         final double xMaxQ, final double yMaxQ,
                                         final double xMinN, final double yMinN,
                                         final double xMaxN, final double yMaxN,
-                                        final double[] extentsArr,
-                                        final int offset)
+                                        final double[] extents, final int off)
   {
     int count = 0;
     if (contains(xMinQ, yMinQ, xMaxQ, yMaxQ, xMinN, yMinN, xMaxN, yMaxN)) {
       // Trivially include node.
-      count += (isLeafNode(n) ? n.entryCount : n.data.deepCount);
+      if (isLeafNode(n)) { count += n.entryCount; stackStack.push(null); }
+      else { count += n.data.deepCount; }
       nodeStack.push(n);
-      if (extentsArr != null) {
-        extentsArr[offset] = Math.min(extentsArr[offset], xMinN);
-        extentsArr[offset + 1] = Math.min(extentsArr[offset + 1], yMinN);
-        extentsArr[offset + 2] = Math.max(extentsArr[offset + 2], xMaxN);
-        extentsArr[offset + 3] = Math.max(extentsArr[offset + 3], yMaxN); } }
+      if (extents != null) {
+        extents[off] = Math.min(extents[off], xMinN);
+        extents[off + 1] = Math.min(extents[off + 1], yMinN);
+        extents[off + 2] = Math.max(extents[off + 2], xMaxN);
+        extents[off + 3] = Math.max(extents[off + 3], yMaxN); } }
     else { // Cannot trivially include node; must recurse.
       if (isLeafNode(n)) {
-        // This is suboptimal.  We're iterating through just to get a count.
-        // We will be iterating through and performing the same test again
-        // when the iteration returns successive elements.
+        final IntStack stack = new IntStack();
         for (int i = 0; i < n.entryCount; i++) {
           if (overlaps(xMinQ, yMinQ, xMaxQ, yMaxQ,
                        n.xMins[i], n.yMins[i], n.xMaxs[i], n.yMaxs[i])) {
-            count++;
-            if (extentsArr != null) {
-              extentsArr[offset] = Math.min(extentsArr[offset], n.xMins[i]);
-              extentsArr[offset + 1] =
-                Math.min(extentsArr[offset + 1], n.yMins[i]);
-              extentsArr[offset + 2] =
-                Math.max(extentsArr[offset + 2], n.xMaxs[i]);
-              extentsArr[offset + 3] =
-                Math.max(extentsArr[offset + 3], n.yMaxs[i]); } } }
-        if (count > 0) { nodeStack.push(n); } }
+            stack.push(i);
+            if (extents != null) {
+              extents[off] = Math.min(extents[off], n.xMins[i]);
+              extents[off + 1] = Math.min(extents[off + 1], n.yMins[i]);
+              extents[off + 2] = Math.max(extents[off + 2], n.xMaxs[i]);
+              extents[off + 3] = Math.max(extents[off + 3], n.yMaxs[i]); } } }
+        if (stack.size() > 0) {
+          count = stack.size();
+          stackStack.push(stack);
+          nodeStack.push(n); } }
       else { // Internal node.
         for (int i = 0; i < n.entryCount; i++) {
           if (overlaps(xMinQ, yMinQ, xMaxQ, yMaxQ,
                        n.xMins[i], n.yMins[i], n.xMaxs[i], n.yMaxs[i])) {
-            final Node candidate = n.data.children[i];
-            count += queryOverlap(candidate, nodeStack,
-                                  xMinQ, yMinQ, xMaxQ, yMaxQ,
-                                  candidate.xMins[i], candidate.yMins[i],
-                                  candidate.xMaxs[i], candidate.yMaxs[i],
-                                  extentsArr, offset); } } } }
+            count += queryOverlap
+              (n.data.children[i], nodeStack, stackStack,
+               xMinQ, yMinQ, xMaxQ, yMaxQ,
+               n.xMins[i], n.yMins[i], n.xMaxs[i], n.yMaxs[i],
+               extents, off); } } } }
     return count;
   }
 
