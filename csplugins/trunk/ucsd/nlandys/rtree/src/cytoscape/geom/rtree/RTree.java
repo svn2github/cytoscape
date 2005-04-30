@@ -190,12 +190,12 @@ public final class RTree
 
   /*
    * Returns the number of entries under n that overlap specified query
-   * rectangle.  Nodes are added to the stack - internal nodes added
+   * rectangle.  Nodes are added to the node stack - internal nodes added
    * recursively contain only overlapping entries, and leaf nodes added
    * should be iterated through to find overlapping entries.
-   * (In fact internal nodes added to the
+   * (In fact internal nodes added to the node
    * stack are completely contained within specified query rectangle.)
-   * An important property is that every node on the returned stack
+   * An important property is that every node on the returned node stack
    * will recursively contain at least one entry that overlaps the
    * query rectangle, unless n is completely empty.  If n is completely
    * empty, it is expected that its MBR [represented by xMinN, yMinN,
@@ -203,7 +203,7 @@ public final class RTree
    * min values should all be Double.POSITIVE_INFINITY and its max values
    * should all be Double.NEGATIVE_INFINITY).
    */
-  private final static int queryOverlap(final Node n, final ObjStack stack,
+  private final static int queryOverlap(final Node n, final ObjStack nodeStack,
                                         final double xMinQ, final double yMinQ,
                                         final double xMaxQ, final double yMaxQ,
                                         final double xMinN, final double yMinN,
@@ -215,7 +215,7 @@ public final class RTree
     if (contains(xMinQ, yMinQ, xMaxQ, yMaxQ, xMinN, yMinN, xMaxN, yMaxN)) {
       // Trivially include node.
       count += (isLeafNode(n) ? n.entryCount : n.data.deepCount);
-      stack.push(n);
+      nodeStack.push(n);
       if (extentsArr != null) {
         extentsArr[offset] = Math.min(extentsArr[offset], xMinN);
         extentsArr[offset + 1] = Math.min(extentsArr[offset + 1], yMinN);
@@ -238,13 +238,14 @@ public final class RTree
                 Math.max(extentsArr[offset + 2], n.xMaxs[i]);
               extentsArr[offset + 3] =
                 Math.max(extentsArr[offset + 3], n.yMaxs[i]); } } }
-        if (count > 0) { stack.push(n); } }
+        if (count > 0) { nodeStack.push(n); } }
       else { // Internal node.
         for (int i = 0; i < n.entryCount; i++) {
           if (overlaps(xMinQ, yMinQ, xMaxQ, yMaxQ,
                        n.xMins[i], n.yMins[i], n.xMaxs[i], n.yMaxs[i])) {
             final Node candidate = n.data.children[i];
-            count += queryOverlap(candidate, stack, xMinQ, yMinQ, xMaxQ, yMaxQ,
+            count += queryOverlap(candidate, nodeStack,
+                                  xMinQ, yMinQ, xMaxQ, yMaxQ,
                                   candidate.xMins[i], candidate.yMins[i],
                                   candidate.xMaxs[i], candidate.yMaxs[i],
                                   extentsArr, offset); } } } }
@@ -378,9 +379,9 @@ public final class RTree
 
   private final static class OverlapEnumerator implements IntEnumerator
   {
-    private int wholeLeafNodes = 0; // Whole leaf nodes on stack.
+    private int wholeLeafNodes = 0; // Whole leaf nodes on node stack.
     private int count;
-    private final ObjStack stack;
+    private final ObjStack nodeStack;
     private final double xMin;
     private final double yMin;
     private final double xMax;
@@ -390,7 +391,7 @@ public final class RTree
     private OverlapEnumerator(final int totalCount, final ObjStack nodeStack,
                               final double xMinQ, final double yMinQ,
                               final double xMaxQ, final double yMaxQ) {
-      count = totalCount; stack = nodeStack;
+      count = totalCount; this.nodeStack = nodeStack;
       xMin = xMinQ; yMin = yMinQ; xMax = xMaxQ; yMax = yMaxQ;
       computeNextLeafNode(); }
     public final int numRemaining() { return count; }
@@ -408,16 +409,16 @@ public final class RTree
 //             returnThis = currentLeafNode.objKeys[currentInx]; break; }
       return returnThis; }
     private final void computeNextLeafNode() {
-      if (stack.currentSize == 0) { currentLeafNode = null; return; }
+      if (nodeStack.currentSize == 0) { currentLeafNode = null; return; }
       Node next;
       while (true) {
-        next = (Node) stack.pop();
+        next = (Node) nodeStack.pop();
         if (isLeafNode(next)) {
           currentLeafNode = next;
           currentInx = 0;
           return; }
         for (int i = 0; i < next.entryCount; i++)
-          stack.push(next.data.children[i]);
+          nodeStack.push(next.data.children[i]);
         if (isLeafNode(next.data.children[0]))
           wholeLeafNodes += next.entryCount; } }
   }
