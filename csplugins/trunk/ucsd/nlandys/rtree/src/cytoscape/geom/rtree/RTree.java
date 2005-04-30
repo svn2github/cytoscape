@@ -171,6 +171,9 @@ public final class RTree
       throw new IllegalArgumentException("xMin > xMax");
     if (yMin > yMax)
       throw new IllegalArgumentException("yMin > yMax");
+    final NodeStack nodeStack = new NodeStack();
+    final int totalCount =
+      queryOverlap(m_root, nodeStack, xMin, yMin, xMax, yMax);
     return null;
   }
 
@@ -179,13 +182,18 @@ public final class RTree
    * rectangle.  Nodes are added to the stack - internal nodes added
    * recursively contain only overlapping entries, and leaf nodes added are
    * overlapping.  (You can quickly deduce that internal nodes added to the
-   * stack are completely contained withing specified query rectangle.)
+   * stack are completely contained within specified query rectangle.)
    */
   private final static int queryOverlap(final Node n, final NodeStack stack,
-                                        final double xMin, final double yMin,
-                                        final double xMax, final double yMax)
+                                        final double xMinQ, final double yMinQ,
+                                        final double xMaxQ, final double yMaxQ,
+                                        final double xMinN, final double yMinN,
+                                        final double xMaxN, final double yMaxN,
+                                        final double[] extentsArr,
+                                        final int offset)
   {
-    return -1;
+    int count = 0;
+    
   }
 
   /*
