@@ -282,7 +282,7 @@ public final class RTree
    * four parameters] fully contains the second rectangle [specified by the
    * last four parameters].  If the second rectangle is the inverted
    * infinite rectangle and the first rectangle is any non-inverted
-   * rectangle this method will return true.
+   * rectangle then this method will return true.
    */
   private final static boolean contains(final double xMin1,
                                         final double yMin1,
