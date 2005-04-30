@@ -180,7 +180,7 @@ public final class RTree
       extentsArr[offset + 1] = Double.POSITIVE_INFINITY;
       extentsArr[offset + 2] = Double.NEGATIVE_INFINITY;
       extentsArr[offset + 3] = Double.NEGATIVE_INFINITY; }
-    final NodeStack nodeStack = new NodeStack();
+    final ObjStack nodeStack = new ObjStack();
     final int totalCount =
       queryOverlap(m_root, nodeStack, xMin, yMin, xMax, yMax,
                    m_mbr[0], m_mbr[1], m_mbr[2], m_mbr[3], extentsArr, offset);
@@ -203,7 +203,7 @@ public final class RTree
    * min values should all be Double.POSITIVE_INFINITY and its max values
    * should all be Double.NEGATIVE_INFINITY).
    */
-  private final static int queryOverlap(final Node n, final NodeStack stack,
+  private final static int queryOverlap(final Node n, final ObjStack stack,
                                         final double xMinQ, final double yMinQ,
                                         final double xMaxQ, final double yMaxQ,
                                         final double xMinN, final double yMinN,
@@ -351,13 +351,13 @@ public final class RTree
       children = new Node[maxBranches]; }
   }
 
-  private final static class NodeStack
+  private final static class ObjStack
   {
-    private Node[] stack;
+    private Object[] stack;
     private int currentSize = 0;
-    private NodeStack() { stack = new Node[3]; }
-    private final void push(final Node value) {
-      try { stack[currentSize++] = value; }
+    private ObjStack() { stack = new Object[3]; }
+    private final void push(final Object obj) {
+      try { stack[currentSize++] = obj; }
       catch (ArrayIndexOutOfBoundsException e) {
         currentSize--;
         final int newStackSize = (int)
@@ -365,11 +365,11 @@ public final class RTree
         if (newStackSize == stack.length)
           throw new IllegalStateException
             ("cannot allocate large enough array");
-        final Node[] newStack = new Node[newStackSize];;
+        final Object[] newStack = new Object[newStackSize];;
         System.arraycopy(stack, 0, newStack, 0, stack.length);
         stack = newStack;
-        stack[currentSize++] = value; } }
-    private final Node pop() {
+        stack[currentSize++] = obj; } }
+    private final Object pop() {
       try { return stack[--currentSize]; }
       catch (ArrayIndexOutOfBoundsException e) {
         currentSize++;
@@ -380,14 +380,14 @@ public final class RTree
   {
     private int wholeLeafNodes = 0; // Whole leaf nodes on stack.
     private int count;
-    private final NodeStack stack;
+    private final ObjStack stack;
     private final double xMin;
     private final double yMin;
     private final double xMax;
     private final double yMax;
     private Node currentLeafNode;
     private int currentInx;
-    private OverlapEnumerator(final int totalCount, final NodeStack nodeStack,
+    private OverlapEnumerator(final int totalCount, final ObjStack nodeStack,
                               final double xMinQ, final double yMinQ,
                               final double xMaxQ, final double yMaxQ) {
       count = totalCount; stack = nodeStack;
@@ -411,7 +411,7 @@ public final class RTree
       if (stack.currentSize == 0) { currentLeafNode = null; return; }
       Node next;
       while (true) {
-        next = stack.pop();
+        next = (Node) stack.pop();
         if (isLeafNode(next)) {
           currentLeafNode = next;
           currentInx = 0;
