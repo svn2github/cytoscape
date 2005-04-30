@@ -190,9 +190,17 @@ public final class RTree
   /*
    * Returns the number of entries under n that overlap specified query
    * rectangle.  Nodes are added to the stack - internal nodes added
-   * recursively contain only overlapping entries, and leaf nodes added are
-   * overlapping.  (You can quickly deduce that internal nodes added to the
+   * recursively contain only overlapping entries, and leaf nodes added
+   * should be iterated through to find overlapping entries.
+   * (In fact internal nodes added to the
    * stack are completely contained within specified query rectangle.)
+   * An important property is that every node on the returned stack
+   * will recursively contain at least one entry that overlaps the
+   * query rectangle, unless n is completely empty.  If n is completely
+   * empty, it is expected that its MBR [represented by xMinN, yMinN,
+   * xMaxN, and yMaxN] be the infinite inverted rectangle (that is, its
+   * min values should all be Double.POSITIVE_INFINITY and its max values
+   * should all be Double.NEGATIVE_INFINITY).
    */
   private final static int queryOverlap(final Node n, final NodeStack stack,
                                         final double xMinQ, final double yMinQ,
@@ -264,7 +272,9 @@ public final class RTree
   /*
    * Determines whether or not the first rectangle [specified by the first
    * four parameters] fully contains the second rectangle [specified by the
-   * last four parameters].
+   * last four parameters].  If the second rectangle is the inverted
+   * infinite rectangle and the first rectangle is any non-inverted
+   * rectangle this method will return true.
    */
   private final static boolean contains(final double xMin1,
                                         final double yMin1,
