@@ -10,6 +10,7 @@ public final class RTree
 
   private final static int DEFAULT_MAX_BRANCHES = 7;
 
+  private final double[] m_mbr;
   private final int m_maxBranches;
   private Node m_root;
 
@@ -18,6 +19,9 @@ public final class RTree
    */
   public RTree()
   {
+    m_mbr = new double[] {
+      Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY,
+      Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY };
     m_maxBranches = DEFAULT_MAX_BRANCHES;
     m_root = new Node(m_maxBranches, true);
   }
@@ -172,19 +176,9 @@ public final class RTree
     if (yMin > yMax)
       throw new IllegalArgumentException("yMin > yMax");
     final NodeStack nodeStack = new NodeStack();
-    // If instead of passing Double.NEGATIVE_INFINITY as xMinN and yMinN and
-    // Double.POSITIVE_INFINITY as xMaxN and yMaxN to the private recursive
-    // queryOverlap() function we instead had the global minimum bounding
-    // rectangle on hand, we could save iterating through the root node's
-    // entries in the case where the query rectangle fully contains the
-    // global MBR.  This would come at the expense of keeping a global MBR
-    // up to date with every insertion and deletion, which is computationally
-    // expensive enough that it may defeat the purpose of stated optimization.
     final int totalCount =
       queryOverlap(m_root, nodeStack, xMin, yMin, xMax, yMax,
-                   Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY,
-                   Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY,
-                   extentsArr, offset);
+                   m_mbr[0], m_mbr[1], m_mbr[2], m_mbr[3], extentsArr, offset);
     return null;
   }
 
@@ -214,7 +208,32 @@ public final class RTree
         extentsArr[offset + 2] = Math.max(extentsArr[offset + 2], xMaxN);
         extentsArr[offset + 3] = Math.max(extentsArr[offset + 3], yMaxN); } }
     else { // Cannot trivially include node; must recurse.
-    }
+      if (isLeafNode(n)) {
+        // This is suboptimal.  We're iterating through just to get a count.
+        // We will be iterating through and performing the same test again
+        // when the iteration returns successive elements.
+        for (int i = 0; i < n.entryCount; i++) {
+          if (overlaps(xMinQ, yMinQ, xMaxQ, yMaxQ,
+                       n.xMins[i], n.yMins[i], n.xMaxs[i], n.yMaxs[i])) {
+            count++;
+            if (extentsArr != null) {
+              extentsArr[offset] = Math.min(extentsArr[offset], n.xMins[i]);
+              extentsArr[offset + 1] =
+                Math.min(extentsArr[offset + 1], n.yMins[i]);
+              extentsArr[offset + 2] =
+                Math.max(extentsArr[offset + 2], n.xMaxs[i]);
+              extentsArr[offset + 3] =
+                Math.max(extentsArr[offset + 3], n.yMaxs[i]); } } }
+        if (count > 0) { stack.push(n); } }
+      else { // Internal node.
+        for (int i = 0; i < n.entryCount; i++) {
+          if (overlaps(xMinQ, yMinQ, xMaxQ, yMaxQ,
+                       n.xMins[i], n.yMins[i], n.xMaxs[i], n.yMaxs[i])) {
+            final Node candidate = n.data.children[i];
+            count += queryOverlap(candidate, stack, xMinQ, yMinQ, xMaxQ, yMaxQ,
+                                  candidate.xMins[i], candidate.yMins[i],
+                                  candidate.xMaxs[i], candidate.yMaxs[i],
+                                  extentsArr, offset); } } } }
     return count;
   }
 
