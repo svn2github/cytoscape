@@ -32,7 +32,6 @@ public class IntBTreeQueryTuner
     long timeBegin = System.currentTimeMillis();
     for (int i = 0; i < 1000; i += 3) {
       IntEnumerator iter = tree.searchRange(i, i + querySpan, reverseOrder);
-//       while (iter.numRemaining() > 0) iter.nextInt();
       reverseOrder = !reverseOrder; }
     long timeEnd = System.currentTimeMillis();
     System.out.println((timeEnd - timeBegin) + " milliseconds");
