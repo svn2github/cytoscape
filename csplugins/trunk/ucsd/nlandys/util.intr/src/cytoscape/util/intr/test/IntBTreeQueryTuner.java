@@ -13,6 +13,7 @@ public class IntBTreeQueryTuner
   {
     int branches = Integer.parseInt(args[0]);
     int N = Integer.parseInt(args[1]);
+    if (N < 1000) throw new IllegalStateException("N should be at least 1000");
     int[] elements = new int[N];
     InputStream in = System.in;
     byte[] buff = new byte[4];
@@ -27,10 +28,9 @@ public class IntBTreeQueryTuner
     IntBTree tree = new IntBTree(branches);
     for (int i = 0; i < elements.length; i++) tree.insert(elements[i]);
     int querySpan = N / 3;
-    int maxStart = querySpan * 2;
     boolean reverseOrder = false;
     long timeBegin = System.currentTimeMillis();
-    for (int i = 0; i < maxStart; i++) {
+    for (int i = 0; i < 1000; i++) {
       IntEnumerator iter = tree.searchRange(i, i + querySpan, reverseOrder);
       while (iter.numRemaining() > 0) iter.nextInt();
       reverseOrder = !reverseOrder; }
