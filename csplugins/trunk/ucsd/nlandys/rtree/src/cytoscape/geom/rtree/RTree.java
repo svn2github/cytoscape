@@ -172,6 +172,14 @@ public final class RTree
     if (yMin > yMax)
       throw new IllegalArgumentException("yMin > yMax");
     final NodeStack nodeStack = new NodeStack();
+    // If instead of passing Double.NEGATIVE_INFINITY as xMinN and yMinN and
+    // Double.POSITIVE_INFINITY as xMaxN and yMaxN to the private recursive
+    // queryOverlap() function we instead had the global minimum bounding
+    // rectangle on hand, we could save iterating through the root node's
+    // entries in the case where the query rectangle fully contains the
+    // global MBR.  This would come at the expense of keeping a global MBR
+    // up to date with every insertion and deletion, which is computationally
+    // expensive enough that it may defeat the purpose of stated optimization.
     final int totalCount =
       queryOverlap(m_root, nodeStack, xMin, yMin, xMax, yMax,
                    Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY,
