@@ -13,7 +13,7 @@ public class IntBTreeQueryTuner
   {
     int branches = Integer.parseInt(args[0]);
     int N = Integer.parseInt(args[1]);
-    if (N < 1000) throw new IllegalStateException("N should be at least 100");
+    if (N < 1000) throw new IllegalStateException("N should be at least 500");
     int[] elements = new int[N];
     InputStream in = System.in;
     byte[] buff = new byte[4];
@@ -30,7 +30,7 @@ public class IntBTreeQueryTuner
     int querySpan = N / 3;
     boolean reverseOrder = false;
     long timeBegin = System.currentTimeMillis();
-    for (int i = 0; i < 100; i++) {
+    for (int i = querySpan; i < 100; i += 3) {
       IntEnumerator iter = tree.searchRange(i, i + querySpan, reverseOrder);
       while (iter.numRemaining() > 0) iter.nextInt();
       reverseOrder = !reverseOrder; }
