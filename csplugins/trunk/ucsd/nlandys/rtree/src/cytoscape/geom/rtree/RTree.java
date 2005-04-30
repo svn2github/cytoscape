@@ -184,7 +184,8 @@ public final class RTree
     final int totalCount =
       queryOverlap(m_root, nodeStack, xMin, yMin, xMax, yMax,
                    m_mbr[0], m_mbr[1], m_mbr[2], m_mbr[3], extentsArr, offset);
-    return null;
+    return new OverlapEnumerator(totalCount, nodeStack,
+                                 xMin, yMin, xMax, yMax);
   }
 
   /*
@@ -373,6 +374,52 @@ public final class RTree
       catch (ArrayIndexOutOfBoundsException e) {
         currentSize++;
         throw e; } }
+  }
+
+  private final static class OverlapEnumerator implements IntEnumerator
+  {
+    private int wholeLeafNodes = 0; // Whole leaf nodes on stack.
+    private int count;
+    private final NodeStack stack;
+    private final double xMin;
+    private final double yMin;
+    private final double xMax;
+    private final double yMax;
+    private Node currentLeafNode;
+    private int currentInx;
+    private OverlapEnumerator(final int totalCount, final NodeStack nodeStack,
+                              final double xMinQ, final double yMinQ,
+                              final double xMaxQ, final double yMaxQ) {
+      count = totalCount; stack = nodeStack;
+      xMin = xMinQ; yMin = yMinQ; xMax = xMaxQ; yMax = yMaxQ;
+      computeNextLeafNode(); }
+    public final int numRemaining() { return count; }
+    public final int nextInt() {
+      int returnThis = -1;
+//       if (wholeLeafNodes > 0)
+//         returnThis = currentLeafNode.objKeys[currentInx];
+//       else
+//         for (; currentInx < currentLeafNode.entryCount; currentInx++) {
+//           if (overlaps(xMin, yMin, xMax, yMax,
+//                        currentLeafNode.xMins[currentInx],
+//                        currentLeafNode.yMins[currentInx],
+//                        currentLeafNode.xMaxs[currentInx],
+//                        currentLeafNode.yMaxs[currentInx])) {
+//             returnThis = currentLeafNode.objKeys[currentInx]; break; }
+      return returnThis; }
+    private final void computeNextLeafNode() {
+      if (stack.currentSize == 0) { currentLeafNode = null; return; }
+      Node next;
+      while (true) {
+        next = stack.pop();
+        if (isLeafNode(next)) {
+          currentLeafNode = next;
+          currentInx = 0;
+          return; }
+        for (int i = 0; i < next.entryCount; i++)
+          stack.push(next.data.children[i]);
+        if (isLeafNode(next.data.children[0]))
+          wholeLeafNodes += next.entryCount; } }
   }
 
 }
