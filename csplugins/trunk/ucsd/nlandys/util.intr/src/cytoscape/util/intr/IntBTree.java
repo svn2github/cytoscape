@@ -637,6 +637,14 @@ public final class IntBTree
     if (xMin > xMax) throw new IllegalArgumentException
                        ("xMin is greater than xMax");
     final NodeStack nodeStack = new NodeStack();
+    // If instead of passing Integer.MIN_VALUE and Integer.MAX_VALUE as
+    // minBound and maxBound [respectively] to the private searchRange()
+    // function we instead had the global minimum and maximum on hand, we
+    // could save iterating through the root node's entries in the case
+    // where [xMin, xMax] fully contains [globalXMin, globalYMin].  That is,
+    // the "trivially include node" condition would be detected in the
+    // very first recursive step, sparing computation time; instead, we
+    // recurse deeper right away.
     final int totalCount =
       searchRange(m_root, nodeStack, xMin, xMax,
                   Integer.MIN_VALUE, Integer.MAX_VALUE, reverseOrder);
