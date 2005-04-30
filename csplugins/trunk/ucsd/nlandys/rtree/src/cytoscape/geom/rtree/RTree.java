@@ -226,6 +226,25 @@ public final class RTree
        (Math.max(yMin1, yMin2) <= Math.min(yMax1, yMax2)));
   }
 
+  /*
+   * Determines whether or not the first rectangle [specified by the first
+   * four parameters] fully contains the second rectangle [specified by the
+   * last four parameters].
+   */
+  private final static boolean contains(final double xMin1,
+                                        final double yMin1,
+                                        final double xMax1,
+                                        final double yMax1,
+                                        final double xMin2,
+                                        final double yMin2,
+                                        final double xMax2,
+                                        final double yMax2)
+  {
+    return
+      ((xMin1 <= xMin2) && (xMax1 >= xMax2) &&
+       (yMin1 <= yMin2) && (yMax1 >= yMax2));
+  }
+
   /**
    * Returns an enumeration of entries whose extents are fully contained
    * within the specified axis-aligned rectangular area.  By "axis-aligned" I
