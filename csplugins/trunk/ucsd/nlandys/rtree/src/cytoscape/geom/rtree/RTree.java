@@ -173,7 +173,10 @@ public final class RTree
       throw new IllegalArgumentException("yMin > yMax");
     final NodeStack nodeStack = new NodeStack();
     final int totalCount =
-      queryOverlap(m_root, nodeStack, xMin, yMin, xMax, yMax);
+      queryOverlap(m_root, nodeStack, xMin, yMin, xMax, yMax,
+                   Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY,
+                   Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY,
+                   extentsArr, offset);
     return null;
   }
 
@@ -193,7 +196,7 @@ public final class RTree
                                         final int offset)
   {
     int count = 0;
-    
+    return count;
   }
 
   /*
