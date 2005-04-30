@@ -175,6 +175,11 @@ public final class RTree
       throw new IllegalArgumentException("xMin > xMax");
     if (yMin > yMax)
       throw new IllegalArgumentException("yMin > yMax");
+    if (extentsArr != null) {
+      extentsArr[offset] = Double.POSITIVE_INFINITY;
+      extentsArr[offset + 1] = Double.POSITIVE_INFINITY;
+      extentsArr[offset + 2] = Double.NEGATIVE_INFINITY;
+      extentsArr[offset + 3] = Double.NEGATIVE_INFINITY; }
     final NodeStack nodeStack = new NodeStack();
     final int totalCount =
       queryOverlap(m_root, nodeStack, xMin, yMin, xMax, yMax,
