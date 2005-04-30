@@ -661,8 +661,10 @@ public final class IntBTree
    * regions of the tree which can be included, as whole, as part of the
    * range query.  Every node on the returned stack will have at least one
    * leaf entry counting towards the enumeration in the range query (this
-   * statement is important for leaf nodes).  [xMin, xMax] must intersect
-   * [minBound, maxBound] on each call to this method.
+   * statement is important for leaf nodes).  (There is one exception to that
+   * rule: when there are no entries in this tree, an empty node may be added
+   * to the stack.)  [xMin, xMax] must intersect [minBound, maxBound] on each
+   * call to this method.
    */
   private final static int searchRange(final Node n, final NodeStack nodeStack,
                                        final int xMin, final int xMax,
