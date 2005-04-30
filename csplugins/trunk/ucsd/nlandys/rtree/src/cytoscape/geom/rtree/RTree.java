@@ -204,6 +204,17 @@ public final class RTree
                                         final int offset)
   {
     int count = 0;
+    if (contains(xMinQ, yMinQ, xMaxQ, yMaxQ, xMinN, yMinN, xMaxN, yMaxN)) {
+      // Trivially include node.
+      count += (isLeafNode(n) ? n.entryCount : n.data.deepCount);
+      stack.push(n);
+      if (extentsArr != null) {
+        extentsArr[offset] = Math.min(extentsArr[offset], xMinN);
+        extentsArr[offset + 1] = Math.min(extentsArr[offset + 1], yMinN);
+        extentsArr[offset + 2] = Math.max(extentsArr[offset + 2], xMaxN);
+        extentsArr[offset + 3] = Math.max(extentsArr[offset + 3], yMaxN); } }
+    else { // Cannot trivially include node; must recurse.
+    }
     return count;
   }
 
