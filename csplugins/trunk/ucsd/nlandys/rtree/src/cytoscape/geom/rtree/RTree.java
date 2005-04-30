@@ -186,8 +186,7 @@ public final class RTree
     final int totalCount =
       queryOverlap(m_root, nodeStack, stackStack, xMin, yMin, xMax, yMax,
                    m_mbr[0], m_mbr[1], m_mbr[2], m_mbr[3], extentsArr, offset);
-    return new OverlapEnumerator(totalCount, nodeStack,
-                                 xMin, yMin, xMax, yMax);
+    return new OverlapEnumerator(totalCount, nodeStack, stackStack);
   }
 
   /*
@@ -386,48 +385,46 @@ public final class RTree
 
   private final static class OverlapEnumerator implements IntEnumerator
   {
-    private int wholeLeafNodes = 0; // Whole leaf nodes on node stack.
     private int count;
     private final ObjStack nodeStack;
-    private final double xMin;
-    private final double yMin;
-    private final double xMax;
-    private final double yMax;
+    private final ObjStack stackStack;
     private Node currentLeafNode;
+    private IntStack currentStack;
     private int currentInx;
     private OverlapEnumerator(final int totalCount, final ObjStack nodeStack,
-                              final double xMinQ, final double yMinQ,
-                              final double xMaxQ, final double yMaxQ) {
-      count = totalCount; this.nodeStack = nodeStack;
-      xMin = xMinQ; yMin = yMinQ; xMax = xMaxQ; yMax = yMaxQ;
+                              final ObjStack stackStack) {
+      count = totalCount;
+      this.nodeStack = nodeStack;
+      this.stackStack = stackStack;
       computeNextLeafNode(); }
     public final int numRemaining() { return count; }
     public final int nextInt() {
       int returnThis = -1;
-//       if (wholeLeafNodes > 0)
-//         returnThis = currentLeafNode.objKeys[currentInx];
-//       else
-//         for (; currentInx < currentLeafNode.entryCount; currentInx++) {
-//           if (overlaps(xMin, yMin, xMax, yMax,
-//                        currentLeafNode.xMins[currentInx],
-//                        currentLeafNode.yMins[currentInx],
-//                        currentLeafNode.xMaxs[currentInx],
-//                        currentLeafNode.yMaxs[currentInx])) {
-//             returnThis = currentLeafNode.objKeys[currentInx]; break; }
+      if (currentStack == null) {
+        returnThis = currentLeafNode.objKeys[currentInx++];
+        if (currentInx == currentLeafNode.entryCount) {
+          computeNextLeafNode(); } }
+      else {
+        returnThis = currentLeafNode.objKeys[currentStack.pop()];
+        if (currentStack.size() == 0) {
+          computeNextLeafNode(); } }
+      count--;
       return returnThis; }
     private final void computeNextLeafNode() {
-      if (nodeStack.currentSize == 0) { currentLeafNode = null; return; }
+      if (nodeStack.currentSize == 0) {
+        currentLeafNode = null; currentStack = null; return; }
       Node next;
       while (true) {
         next = (Node) nodeStack.pop();
         if (isLeafNode(next)) {
           currentLeafNode = next;
-          currentInx = 0;
+          currentStack = (IntStack) stackStack.pop(); // May be null.
+          currentInx = 0; // If currentStack isn't null, this will be ignored.
           return; }
-        for (int i = 0; i < next.entryCount; i++)
-          nodeStack.push(next.data.children[i]);
-        if (isLeafNode(next.data.children[0]))
-          wholeLeafNodes += next.entryCount; } }
+        for (int i = 0; i < next.entryCount; i++) {
+          // This 'if' statement could be taken out of 'for' loop for speed.
+          if (isLeafNode(next.data.children[i])) stackStack.push(null);
+          nodeStack.push(next.data.children[i]); } } }
   }
 
 }
