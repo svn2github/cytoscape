@@ -3,7 +3,7 @@ package cytoscape.geom.rtree;
 /**
  * A first-in, last-out container of objects; an object put onto the stack
  * may be null.  In the underlying implementation, the memory consumed by an
- * instance of this class may increase, but does never decrease.
+ * instance of this class may increase, but does never decrease.<p>
  * NOTE: Right now this class is package visible but it is written in such
  * a way so as to be suitable to become public at some point, once a proper
  * package location for it is found.
