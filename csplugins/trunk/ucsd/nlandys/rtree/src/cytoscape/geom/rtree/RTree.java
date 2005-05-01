@@ -64,12 +64,25 @@ public final class RTree
    * @exception IllegalStateException if objKey is already used for an
    *   existing entry in this R-tree.
    * @exception IllegalArgumentException if objKey is negative or equal to
-   *   Integer.MAX_VALUE.
+   *   Integer.MAX_VALUE, if xMin is greater than xMax, or if yMin is greater
+   *   than yMax.
    */
   public final void insert(final int objKey,
                            final double xMin, final double yMin,
                            final double xMax, final double yMax)
   {
+    if (xMin > xMax)
+      throw new IllegalArgumentException("xMin > xMax");
+    if (yMin > yMax)
+      throw new IllegalArgumentException("yMin > yMax");
+  }
+
+  private final static Node insert(final Node n, final int objKey,
+                                   final double xMin, final double yMin,
+                                   final double xMax, final double yMax,
+                                   final int maxBranches)
+  {
+    return null;
   }
 
   /**
