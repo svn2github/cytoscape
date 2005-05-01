@@ -88,7 +88,7 @@ public final class IntIntHash
     checkSize();
     int index;
     if (key == m_prevKey) index = m_prevInx;
-    else {
+    if (key != m_prevKey) {
       int incr = 0;
       for (index = key % m_size;
            m_keys[index] >= 0 && m_keys[index] != key;
