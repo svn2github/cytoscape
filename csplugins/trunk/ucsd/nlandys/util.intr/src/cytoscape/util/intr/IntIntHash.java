@@ -85,7 +85,7 @@ public final class IntIntHash
   {
     if (key < 0) throw new IllegalArgumentException("key is negative");
     if (value < 0) throw new IllegalArgumentException("value is negative");
-    checkSize();
+    if (m_elements >= m_thresholdSize) incrSize();
     if (key != m_prevKey) {
       int incr = 0;
       for (m_prevInx = key % m_size;
@@ -177,44 +177,41 @@ public final class IntIntHash
   private int[] m_keyDump = null;
   private int[] m_valDump = null;
 
-  private final void checkSize()
+  private final void incrSize()
   {
-    if (m_elements >= m_thresholdSize)
-    {
-      final int newSize;
-      try {
-        int primesInx = 0;
-        while (m_size != PRIMES[primesInx++]);
-        newSize = PRIMES[primesInx]; }
-      catch (ArrayIndexOutOfBoundsException e) {
-        throw new IllegalStateException
-          ("too many elements in this hashtable"); }
-      if (m_keys.length < newSize) {
-        final int[] newKeys = new int[newSize];
-        final int[] newVals = new int[newSize];
-        m_keyDump = m_keys; m_valDump = m_vals;
-        m_keys = newKeys; m_vals = newVals; }
-      else {
-        System.arraycopy(m_keys, 0, m_keyDump, 0, m_size);
-        System.arraycopy(m_vals, 0, m_valDump, 0, m_size); }
-      for (int i = 0; i < newSize; i++) { m_keys[i] = -1; m_vals[i] = -1; }
-      m_size = newSize;
-      m_thresholdSize = (int) (THRESHOLD_FACTOR * (double) m_size);
-      int incr;
-      int newIndex;
-      int oldIndex = -1;
-      for (int i = 0; i < m_elements; i++) {
-        while (m_keyDump[++oldIndex] < 0);
-        incr = 0;
-        for (newIndex = m_keyDump[oldIndex] % m_size;
-             m_keys[newIndex] >= 0;
-             newIndex = (newIndex + incr) % m_size)
-          if (incr == 0) incr = 1 + (m_keyDump[oldIndex] % (m_size - 1));
-        m_keys[newIndex] = m_keyDump[oldIndex];
-        m_vals[newIndex] = m_valDump[oldIndex]; }
-      m_prevKey = -1;
-      m_prevInx = -1;
-    }
+    final int newSize;
+    try {
+      int primesInx = 0;
+      while (m_size != PRIMES[primesInx++]);
+      newSize = PRIMES[primesInx]; }
+    catch (ArrayIndexOutOfBoundsException e) {
+      throw new IllegalStateException
+        ("too many elements in this hashtable"); }
+    if (m_keys.length < newSize) {
+      final int[] newKeys = new int[newSize];
+      final int[] newVals = new int[newSize];
+      m_keyDump = m_keys; m_valDump = m_vals;
+      m_keys = newKeys; m_vals = newVals; }
+    else {
+      System.arraycopy(m_keys, 0, m_keyDump, 0, m_size);
+      System.arraycopy(m_vals, 0, m_valDump, 0, m_size); }
+    for (int i = 0; i < newSize; i++) { m_keys[i] = -1; m_vals[i] = -1; }
+    m_size = newSize;
+    m_thresholdSize = (int) (THRESHOLD_FACTOR * (double) m_size);
+    int incr;
+    int newIndex;
+    int oldIndex = -1;
+    for (int i = 0; i < m_elements; i++) {
+      while (m_keyDump[++oldIndex] < 0);
+      incr = 0;
+      for (newIndex = m_keyDump[oldIndex] % m_size;
+           m_keys[newIndex] >= 0;
+           newIndex = (newIndex + incr) % m_size)
+        if (incr == 0) incr = 1 + (m_keyDump[oldIndex] % (m_size - 1));
+      m_keys[newIndex] = m_keyDump[oldIndex];
+      m_vals[newIndex] = m_valDump[oldIndex]; }
+    m_prevKey = -1;
+    m_prevInx = -1;
   }
 
 }
