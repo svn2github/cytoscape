@@ -67,7 +67,10 @@ final class ObjStack
    */
   public final Object pop()
   {
-    try { return m_stack[--m_currentSize]; }
+    try {
+      final Object returnThis = m_stack[--m_currentSize];
+      m_stack[m_currentSize] = null;
+      return returnThis; }
     catch (ArrayIndexOutOfBoundsException e) {
       m_currentSize++;
       throw e; }
