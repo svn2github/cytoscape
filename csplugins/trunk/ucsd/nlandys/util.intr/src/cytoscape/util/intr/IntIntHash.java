@@ -111,16 +111,14 @@ public final class IntIntHash
   public final int get(final int key)
   {
     if (key < 0) throw new IllegalArgumentException("key is negative");
-    int index;
-    if (key == m_prevKey) index = m_prevInx;
-    else {
+    if (key != m_prevKey) {
       int incr = 0;
-      for (index = key % m_size;
-           m_keys[index] >= 0 && m_keys[index] != key;
-           index = (index + incr) % m_size)
+      for (m_prevInx = key % m_size;
+           m_keys[m_prevInx] >= 0 && m_keys[m_prevInx] != key;
+           m_prevInx = (m_prevInx + incr) % m_size)
         if (incr == 0) incr = 1 + (key % (m_size - 1));
-      m_prevKey = key; m_prevInx = index; }
-    return m_vals[index];
+      m_prevKey = key; }
+    return m_vals[m_prevInx];
   }
 
   /**
