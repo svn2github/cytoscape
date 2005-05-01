@@ -95,9 +95,9 @@ public final class IntIntHash
            index = (index + incr) % m_size)
         if (incr == 0) incr = 1 + (key % (m_size - 1));
       m_prevKey = key; m_prevInx = index; }
-    final int returnVal = m_vals[index];
-    m_vals[index] = value;
-    m_keys[index] = key;
+    final int returnVal = m_vals[m_prevInx];
+    m_vals[m_prevInx] = value;
+    m_keys[m_prevInx] = key;
     m_elements += (returnVal >>> 31);
     return returnVal;
   }
