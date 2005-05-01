@@ -10,7 +10,7 @@ import cytoscape.util.intr.IntEnumerator;
  * invisible to the programmer).  In the underlying implementation, this
  * hashtable never decreases in size.  As a hashtable increases in size,
  * it takes at most four times as much memory as it would take
- * to store the hashtable's keys and values in a perfectly-sized array.
+ * to store the hashtable's keys and values in perfectly-sized arrays.
  * Underlying size expansions are implemented such that the operation of
  * expanding in size is amortized over the contstant time complexity needed to
  * insert new elements.<p>
@@ -79,7 +79,7 @@ final class IntObjHash
   {
     if (key < 0) throw new IllegalArgumentException("key is negative");
     if (value == null) throw new IllegalArgumentException("value is null");
-    checkSize();
+    if (m_elements >= m_thresholdSize) incrSize();
     if (key != m_prevKey) {
       int incr = 0;
       for (m_prevInx = key % m_keys.length;
@@ -138,39 +138,36 @@ final class IntObjHash
           return m_keys[index]; } };
   }
 
-  private final void checkSize()
+  private final void incrSize()
   {
-    if (m_elements >= m_thresholdSize)
-    {
-      final int newSize;
-      try {
-        int primesInx = 0;
-        while (m_keys.length != PRIMES[primesInx++]);
-        newSize = PRIMES[primesInx]; }
-      catch (ArrayIndexOutOfBoundsException e) {
-        throw new IllegalStateException
-          ("too many elements in this hashtable"); }
-      final int[] newKeys = new int[newSize];
-      final Object[] newVals = new Object[newSize];
-      for (int i = 0; i < newKeys.length; i++) newKeys[i] = -1;
-      m_thresholdSize = (int) (THRESHOLD_FACTOR * (double) newKeys.length);
-      int incr;
-      int newIndex;
-      int oldIndex = -1;
-      for (int i = 0; i < m_elements; i++) {
-        while (m_keys[++oldIndex] < 0);
-        incr = 0;
-        for (newIndex = m_keys[oldIndex] % newKeys.length;
-             newKeys[newIndex] >= 0;
-             newIndex = (newIndex + incr) % newKeys.length)
-          if (incr == 0) incr = 1 + (m_keys[oldIndex] % (newKeys.length - 1));
-        newKeys[newIndex] = m_keys[oldIndex];
-        newVals[newIndex] = m_vals[oldIndex]; }
-      m_keys = newKeys;
-      m_vals = newVals;
-      m_prevKey = -1;
-      m_prevInx = -1;
-    }
+    final int newSize;
+    try {
+      int primesInx = 0;
+      while (m_keys.length != PRIMES[primesInx++]);
+      newSize = PRIMES[primesInx]; }
+    catch (ArrayIndexOutOfBoundsException e) {
+      throw new IllegalStateException
+        ("too many elements in this hashtable"); }
+    final int[] newKeys = new int[newSize];
+    final Object[] newVals = new Object[newSize];
+    for (int i = 0; i < newKeys.length; i++) newKeys[i] = -1;
+    m_thresholdSize = (int) (THRESHOLD_FACTOR * (double) newKeys.length);
+    int incr;
+    int newIndex;
+    int oldIndex = -1;
+    for (int i = 0; i < m_elements; i++) {
+      while (m_keys[++oldIndex] < 0);
+      incr = 0;
+      for (newIndex = m_keys[oldIndex] % newKeys.length;
+           newKeys[newIndex] >= 0;
+           newIndex = (newIndex + incr) % newKeys.length)
+        if (incr == 0) incr = 1 + (m_keys[oldIndex] % (newKeys.length - 1));
+      newKeys[newIndex] = m_keys[oldIndex];
+      newVals[newIndex] = m_vals[oldIndex]; }
+    m_keys = newKeys;
+    m_vals = newVals;
+    m_prevKey = -1;
+    m_prevInx = -1;
   }
 
 }
