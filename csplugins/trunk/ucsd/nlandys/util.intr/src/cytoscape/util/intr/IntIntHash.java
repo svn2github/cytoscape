@@ -87,7 +87,6 @@ public final class IntIntHash
     if (value < 0) throw new IllegalArgumentException("value is negative");
     checkSize();
     int index;
-    if (key == m_prevKey) index = m_prevInx;
     if (key != m_prevKey) {
       int incr = 0;
       for (index = key % m_size;
