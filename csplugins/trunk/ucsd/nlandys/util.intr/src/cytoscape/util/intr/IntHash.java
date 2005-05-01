@@ -75,7 +75,7 @@ public final class IntHash
    */
   public final int put(final int value)
   {
-    checkSize();
+    if (m_elements >= m_thresholdSize) incrSize();
     int incr = 0;
     int index;
     try {
@@ -147,42 +147,39 @@ public final class IntHash
 
   private int[] m_dump = null;
 
-  private final void checkSize()
+  private final void incrSize()
   {
-    if (m_elements >= m_thresholdSize)
-    {
-      final int newSize;
-      try {
-        int primesInx = 0;
-        while (m_size != PRIMES[primesInx++]) { }
-        newSize = PRIMES[primesInx]; }
-      catch (ArrayIndexOutOfBoundsException e) {
-        throw new IllegalStateException
-          ("too many elements in this hashtable"); }
-      if (m_arr.length < newSize) {
-        final int[] newArr = new int[newSize];
-        m_dump = m_arr;
-        m_arr = newArr; }
-      else {
-        System.arraycopy(m_arr, 0, m_dump, 0, m_size); }
-      for (int i = 0; i < newSize; i++) m_arr[i] = -1;
-      m_size = newSize;
-      m_thresholdSize = (int) (THRESHOLD_FACTOR * (double) m_size);
-      int incr;
-      int newIndex;
-      int oldIndex = -1;
-      for (int i = 0; i < m_elements; i++) {
-        while (m_dump[++oldIndex] < 0) { }
-        incr = 0;
-        for (newIndex = m_dump[oldIndex] % m_size;
-             m_arr[newIndex] >= 0;
-             newIndex = (newIndex + incr) % m_size) {
-          // Caching increment, which is an expensive operation, at the expense
-          // of having an if statement.  I don't want to compute the increment
-          // before this 'for' loop in case we get an immediate hit.
-          if (incr == 0) { incr = 1 + (m_dump[oldIndex] % (m_size - 1)); } }
-        m_arr[newIndex] = m_dump[oldIndex]; }
-    }
+    final int newSize;
+    try {
+      int primesInx = 0;
+      while (m_size != PRIMES[primesInx++]) { }
+      newSize = PRIMES[primesInx]; }
+    catch (ArrayIndexOutOfBoundsException e) {
+      throw new IllegalStateException
+        ("too many elements in this hashtable"); }
+    if (m_arr.length < newSize) {
+      final int[] newArr = new int[newSize];
+      m_dump = m_arr;
+      m_arr = newArr; }
+    else {
+      System.arraycopy(m_arr, 0, m_dump, 0, m_size); }
+    for (int i = 0; i < newSize; i++) m_arr[i] = -1;
+    m_size = newSize;
+    m_thresholdSize = (int) (THRESHOLD_FACTOR * (double) m_size);
+    int incr;
+    int newIndex;
+    int oldIndex = -1;
+    for (int i = 0; i < m_elements; i++) {
+      while (m_dump[++oldIndex] < 0) { }
+      incr = 0;
+      for (newIndex = m_dump[oldIndex] % m_size;
+           m_arr[newIndex] >= 0;
+           newIndex = (newIndex + incr) % m_size) {
+        // Caching increment, which is an expensive operation, at the expense
+        // of having an if statement.  I don't want to compute the increment
+        // before this 'for' loop in case we get an immediate hit.
+        if (incr == 0) { incr = 1 + (m_dump[oldIndex] % (m_size - 1)); } }
+      m_arr[newIndex] = m_dump[oldIndex]; }
   }
 
 }
