@@ -130,7 +130,11 @@ public final class IntIntHash
    * The returned enumerator has absolutely no effect on the underlying
    * hashtable.<p>
    * This method returns in constant time.  The returned enumerator
-   * returns successive keys in [amortized] time complexity O(1).
+   * returns successive keys in [amortized] time complexity O(1).<p>
+   * It is possible to get the keys() and values() enumerations at the same
+   * time and iterate over them simultaneously; then, the
+   * i<sup>th</sup> element of the keys() enumeration is the key into the
+   * i<sup>th</sup> element of the values() enumeration.
    */
   public final IntEnumerator keys()
   {
@@ -146,7 +150,11 @@ public final class IntIntHash
    * The returned enumerator has absolutely no effect on the underlying
    * hashtable.<p>
    * This method returns in constant time.  The returned enumerator
-   * returns successive values in [amortized] time complexity O(1).
+   * returns successive values in [amortized] time complexity O(1).<p>
+   * It is possible to get the keys() and values() enumerations at the same
+   * time and iterate over them simultaneously; then, the
+   * i<sup>th</sup> element of the keys() enumeration is the key into the
+   * i<sup>th</sup> element of the values() enumeration.
    */
   public final IntEnumerator values()
   {
