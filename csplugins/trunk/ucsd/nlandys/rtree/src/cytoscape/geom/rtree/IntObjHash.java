@@ -79,7 +79,6 @@ final class IntObjHash
   {
     if (key < 0) throw new IllegalArgumentException("key is negative");
     if (value == null) throw new IllegalArgumentException("value is null");
-    if (m_elements >= m_thresholdSize) incrSize();
     if (key != m_prevKey) {
       int incr = 0;
       for (m_prevInx = key % m_keys.length;
@@ -88,9 +87,12 @@ final class IntObjHash
         if (incr == 0) incr = 1 + (key % (m_keys.length - 1));
       m_prevKey = key; }
     final Object returnVal = m_vals[m_prevInx];
+    if (returnVal == null) {
+      if (m_elements == m_thresholdSize) {
+        incrSize(); return put(key, value); }
+      m_elements++; }
     m_vals[m_prevInx] = value;
     m_keys[m_prevInx] = key;
-    if (returnVal == null) m_elements++;
     return returnVal;
   }
 
