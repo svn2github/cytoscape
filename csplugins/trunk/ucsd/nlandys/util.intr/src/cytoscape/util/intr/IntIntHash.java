@@ -85,7 +85,7 @@ public final class IntIntHash
   {
     if (key < 0) throw new IllegalArgumentException("key is negative");
     if (value < 0) throw new IllegalArgumentException("value is negative");
-    if (m_elements >= m_thresholdSize) incrSize();
+    if (m_elements == m_thresholdSize) incrSize();
     if (key != m_prevKey) {
       int incr = 0;
       for (m_prevInx = key % m_size;

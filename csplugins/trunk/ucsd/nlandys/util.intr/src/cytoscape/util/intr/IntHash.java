@@ -75,7 +75,7 @@ public final class IntHash
    */
   public final int put(final int value)
   {
-    if (m_elements >= m_thresholdSize) incrSize();
+    if (m_elements == m_thresholdSize) incrSize();
     int incr = 0;
     int index;
     try {
