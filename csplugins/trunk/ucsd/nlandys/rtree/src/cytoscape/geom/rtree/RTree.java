@@ -358,6 +358,7 @@ public final class RTree
 
   private final static class Node
   {
+    private Node parent;
     private int entryCount = 0;
     private final double[] xMins;
     private final double[] yMins;
