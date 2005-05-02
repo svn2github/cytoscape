@@ -71,10 +71,16 @@ public final class RTree
                            final double xMin, final double yMin,
                            final double xMax, final double yMax)
   {
+    if (objKey < 0) throw new IllegalArgumentException("objKey is negative");
     if (xMin > xMax)
       throw new IllegalArgumentException("xMin > xMax");
     if (yMin > yMax)
       throw new IllegalArgumentException("yMin > yMax");
+    if (m_entryMap.get(objKey) != null) // The hashtable caches lookups so
+      throw new IllegalStateException   // subsequent put() is almost free.
+        ("objkey " + objKey + " is already in this tree");
+    final Node chosenLeaf = chooseLeaf(m_root, xMin, yMin, xMax, yMax);
+    // Do stuff.
   }
 
   /*
