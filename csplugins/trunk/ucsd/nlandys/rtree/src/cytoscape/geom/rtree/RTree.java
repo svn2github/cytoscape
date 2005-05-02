@@ -88,8 +88,36 @@ public final class RTree
   {
     Node n = root;
     while (!isLeafNode(n)) {
+      
     }
     return n;
+  }
+
+  /*
+   * Returns the index of child or entry in n whose rectangular boundary
+   * needs least enlargment to swallow the input rectangle.  Ties are resolved
+   * by choosing the entry with the rectangle of smallest area.
+   */
+  private final static int chooseSubtree(final Node n,
+                                         final double xMin, final double yMin,
+                                         final double xMax, final double yMax)
+  {
+    double bestAreaDelta = Double.POSITIVE_INFINITY;
+    double bestArea = Double.POSITIVE_INFINITY;
+    int bestInx = -1;
+    for (int i = 0; i < n.entryCount; i++) {
+      final double currArea =
+        (n.xMaxs[i] - n.xMins[i]) * (n.yMaxs[i] - n.yMins[i]);
+      final double newArea =
+        (Math.max(n.xMaxs[i], xMax) - Math.min(n.xMins[i], xMin)) *
+        (Math.max(n.yMaxs[i], yMax) - Math.min(n.yMins[i], yMin));
+      final double currAreaDelta = newArea - currArea;
+      if ((currAreaDelta < bestAreaDelta) ||
+          (currAreaDelta == bestAreaDelta && currArea < bestArea)) {
+        bestAreaDelta = currAreaDelta;
+        bestArea = currArea;
+        bestInx = i; } }
+    return bestInx;
   }
 
   /**
