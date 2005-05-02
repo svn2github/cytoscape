@@ -14,6 +14,7 @@ public final class RTree
   private final double[] m_mbr;
   private final int m_maxBranches;
   private Node m_root;
+  private IntObjHash m_entryMap; // Keys are objKey, values are type Node.
 
   /**
    * Instantiates a new R-tree.  A new R-tree has no entries.
@@ -55,17 +56,16 @@ public final class RTree
    * of an entry is axis-aligned, meaning that its sides are parallel to the
    * axes of the data space.
    * @param objKey a user-defined unique identifier used to refer to the entry
-   *   being inserted in later operations; this identifier must be positive
-   *   and cannot be equal to Integer.MAX_VALUE.
+   *   being inserted in later operations; this identifier must be
+   *   non-negative.
    * @param xMin the minimum X coordinate of the entry's extents rectangle.
    * @param yMin the minimum Y coordinate of the entry's extents rectangle.
    * @param xMax the maximum X coordinate of the entry's extents rectangle.
    * @param yMax the maximum Y coordinate of the entry's extents rectangle.
    * @exception IllegalStateException if objKey is already used for an
    *   existing entry in this R-tree.
-   * @exception IllegalArgumentException if objKey is negative or equal to
-   *   Integer.MAX_VALUE, if xMin is greater than xMax, or if yMin is greater
-   *   than yMax.
+   * @exception IllegalArgumentException if objKey is negative,
+   *   if xMin is greater than xMax, or if yMin is greater than yMax.
    */
   public final void insert(final int objKey,
                            final double xMin, final double yMin,
@@ -117,7 +117,18 @@ public final class RTree
   public final boolean exists(final int objKey, final double[] extentsArr,
                               final int offset)
   {
-    return false;
+    if (objKey < 0) return false;
+    final Object o = m_entryMap.get(objKey);
+    if (o == null) return false;
+    if (extentsArr != null) {
+      final Node n = (Node) o;
+      int i = -1;
+      while (n.objKeys[++i] != objKey);
+      extentsArr[offset] = n.xMins[i];
+      extentsArr[offset + 1] = n.yMins[i];
+      extentsArr[offset + 2] = n.xMaxs[i];
+      extentsArr[offset + 3] = n.yMaxs[i]; }
+    return true;
   }
 
   /**
@@ -365,7 +376,7 @@ public final class RTree
 
   private final static class InternalNodeData
   {
-    private int deepCount;
+    private int deepCount = 0;
     private final Node[] children;
     private InternalNodeData(int maxBranches) {
       children = new Node[maxBranches]; }
