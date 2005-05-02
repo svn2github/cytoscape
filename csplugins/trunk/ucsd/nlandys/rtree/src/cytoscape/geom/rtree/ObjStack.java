@@ -69,7 +69,7 @@ final class ObjStack
   {
     try {
       final Object returnThis = m_stack[--m_currentSize];
-      m_stack[m_currentSize] = null;
+      m_stack[m_currentSize] = null; // This line is essential.
       return returnThis; }
     catch (ArrayIndexOutOfBoundsException e) {
       m_currentSize++;
