@@ -79,22 +79,21 @@ public final class RTree
 
   /*
    * Returns a leaf node.  The returned leaf node is chosen by this
-   * algorithm as the most suitable leaf node in which to place specified
-   * new entry.
+   * algorithm as the most suitable leaf node [under specified root] in
+   * which to place specified new entry.
    */
   private final static Node chooseLeaf(final Node root,
                                        final double xMin, final double yMin,
                                        final double xMax, final double yMax)
   {
     Node n = root;
-    while (!isLeafNode(n)) {
-      
-    }
+    while (!isLeafNode(n))
+      n = n.data.children[chooseSubtree(n, xMin, yMin, xMax, yMax)];
     return n;
   }
 
   /*
-   * Returns the index of child or entry in n whose rectangular boundary
+   * Returns the index of entry in n whose rectangular boundary
    * needs least enlargment to swallow the input rectangle.  Ties are resolved
    * by choosing the entry with the rectangle of smallest area.
    */
