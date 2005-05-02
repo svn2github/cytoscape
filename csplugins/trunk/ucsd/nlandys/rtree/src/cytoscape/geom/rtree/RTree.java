@@ -77,6 +77,13 @@ public final class RTree
       throw new IllegalArgumentException("yMin > yMax");
   }
 
+  private final static Node chooseLeaf(final Node root,
+                                       final double xMin, final double yMin,
+                                       final double xMax, final double yMax)
+  {
+    return null;
+  }
+
   /**
    * Determines whether or not a given entry exists in this R-tree structure,
    * and conditionally retrieves the extents of that entry.  The parameter
