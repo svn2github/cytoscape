@@ -77,11 +77,19 @@ public final class RTree
       throw new IllegalArgumentException("yMin > yMax");
   }
 
+  /*
+   * Returns a leaf node.  The returned leaf node is chosen by this
+   * algorithm as the most suitable leaf node in which to place specified
+   * new entry.
+   */
   private final static Node chooseLeaf(final Node root,
                                        final double xMin, final double yMin,
                                        final double xMax, final double yMax)
   {
-    return null;
+    Node n = root;
+    while (!isLeafNode(n)) {
+    }
+    return n;
   }
 
   /**
