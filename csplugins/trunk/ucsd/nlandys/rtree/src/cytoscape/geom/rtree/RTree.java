@@ -77,14 +77,6 @@ public final class RTree
       throw new IllegalArgumentException("yMin > yMax");
   }
 
-  private final static Node insert(final Node n, final int objKey,
-                                   final double xMin, final double yMin,
-                                   final double xMax, final double yMax,
-                                   final int maxBranches)
-  {
-    return null;
-  }
-
   /**
    * Determines whether or not a given entry exists in this R-tree structure,
    * and conditionally retrieves the extents of that entry.  The parameter
