@@ -371,31 +371,6 @@ public final class RTree
       children = new Node[maxBranches]; }
   }
 
-  private final static class ObjStack
-  {
-    private Object[] stack;
-    private int currentSize = 0;
-    private ObjStack() { stack = new Object[3]; }
-    private final void push(final Object obj) {
-      try { stack[currentSize++] = obj; }
-      catch (ArrayIndexOutOfBoundsException e) {
-        currentSize--;
-        final int newStackSize = (int)
-          Math.min((long) Integer.MAX_VALUE, ((long) stack.length) * 2l + 1l);
-        if (newStackSize == stack.length)
-          throw new IllegalStateException
-            ("cannot allocate large enough array");
-        final Object[] newStack = new Object[newStackSize];;
-        System.arraycopy(stack, 0, newStack, 0, stack.length);
-        stack = newStack;
-        stack[currentSize++] = obj; } }
-    private final Object pop() {
-      try { return stack[--currentSize]; }
-      catch (ArrayIndexOutOfBoundsException e) {
-        currentSize++;
-        throw e; } }
-  }
-
   private final static class OverlapEnumerator implements IntEnumerator
   {
     private int count;
@@ -424,7 +399,7 @@ public final class RTree
       count--;
       return returnThis; }
     private final void computeNextLeafNode() {
-      if (nodeStack.currentSize == 0) {
+      if (nodeStack.size() == 0) {
         currentLeafNode = null; currentStack = null; return; }
       Node next;
       while (true) {
