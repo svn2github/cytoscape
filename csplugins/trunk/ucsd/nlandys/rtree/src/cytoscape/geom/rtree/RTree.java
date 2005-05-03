@@ -125,6 +125,20 @@ public final class RTree
     return bestInx;
   }
 
+  /*
+   * This is the quadratic-cost algorithm mentioned in Guttman's 1984
+   * R-tree paper.
+   */
+  private final static void splitNode(final Node fullNode,
+                                      final Node emptyNode,
+                                      final int objKey,
+                                      final double xMin, final double yMin,
+                                      final double xMax, final double yMax,
+                                      final IntObjHash entryMap)
+  {
+    
+  }
+
   /**
    * Determines whether or not a given entry exists in this R-tree structure,
    * and conditionally retrieves the extents of that entry.  The parameter
