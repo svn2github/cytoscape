@@ -23,6 +23,7 @@ public final class RTree
   private final double[] m_yMinBuff;
   private final double[] m_xMaxBuff;
   private final double[] m_yMaxBuff;
+  private final double[] m_tempBuff;
 
   /**
    * Instantiates a new R-tree.  A new R-tree has no entries.
@@ -40,6 +41,7 @@ public final class RTree
     m_yMinBuff = new double[m_maxBranches + 1];
     m_xMaxBuff = new double[m_maxBranches + 1];
     m_yMaxBuff = new double[m_maxBranches + 1];
+    m_tempBuff = new double[m_maxBranches + 1];
   }
 
   /**
@@ -141,7 +143,9 @@ public final class RTree
 
   /*
    * This is the quadratic-cost algorithm described in Guttman's 1984
-   * R-tree paper.  The parent pointer of returned node is not set.
+   * R-tree paper.  The parent pointer of returned node is not set.  The
+   * parent pointer in the full node is not modified, and nothing in that
+   * parent is modified.  Everything else is modified.
    */
   private final Node splitLeafNode(final Node fullLeafNode,
                                    final int newObjKey,
@@ -162,7 +166,10 @@ public final class RTree
     m_xMaxBuff[fullLeafNode.entryCount] = newXMax;
     m_yMaxBuff[fullLeafNode.entryCount] = newYMax;
     final int totalEntries = fullLeafNode.entryCount + 1;
+    fullLeafNode.entryCount = 0;
     final Node returnThis = new Node(m_maxBranches, true);
+    final long seeds = pickSeeds(totalEntries, m_xMinBuff, m_yMinBuff,
+                                 m_xMaxBuff, m_yMaxBuff, m_tempBuff);
     return null;
   }
 
