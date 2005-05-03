@@ -16,6 +16,14 @@ public final class RTree
   private Node m_root;
   private IntObjHash m_entryMap; // Keys are objKey, values are type Node.
 
+  // These four buffer variables are used during node splitting.
+  private final int[] m_objKeyBuff;
+  private final Node[] m_childrenBuff;
+  private final double[] m_xMinBuff;
+  private final double[] m_yMinBuff;
+  private final double[] m_xMaxBuff;
+  private final double[] m_yMaxBuff;
+
   /**
    * Instantiates a new R-tree.  A new R-tree has no entries.
    */
@@ -26,6 +34,12 @@ public final class RTree
       Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY };
     m_maxBranches = DEFAULT_MAX_BRANCHES;
     m_root = new Node(m_maxBranches, true);
+    m_objKeyBuff = new int[m_maxBranches + 1];
+    m_childrenBuff = new Node[m_maxBranches + 1];
+    m_xMinBuff = new double[m_maxBranches + 1];
+    m_yMinBuff = new double[m_maxBranches + 1];
+    m_xMaxBuff = new double[m_maxBranches + 1];
+    m_yMaxBuff = new double[m_maxBranches + 1];
   }
 
   /**
@@ -127,16 +141,29 @@ public final class RTree
 
   /*
    * This is the quadratic-cost algorithm mentioned in Guttman's 1984
-   * R-tree paper.
+   * R-tree paper.  The parent pointer of returned node is not set.
    */
-  private final static void splitNode(final Node fullNode,
-                                      final Node emptyNode,
-                                      final int objKey,
-                                      final double xMin, final double yMin,
-                                      final double xMax, final double yMax,
-                                      final IntObjHash entryMap)
+  private final Node splitLeafNode(final Node fullLeafNode,
+                                   final int newObjKey,
+                                   final double newXMin,
+                                   final double newYMin,
+                                   final double newXMax,
+                                   final double newYMax)
   {
-    
+    for (int i = 0; i < fullLeafNode.entryCount; i++) {
+      m_objKeyBuff[i] = fullLeafNode.objKeys[i];
+      m_xMinBuff[i] = fullLeafNode.xMins[i];
+      m_yMinBuff[i] = fullLeafNode.yMins[i];
+      m_xMaxBuff[i] = fullLeafNode.xMaxs[i];
+      m_yMaxBuff[i] = fullLeafNode.yMaxs[i]; }
+    m_objKeyBuff[fullLeafNode.entryCount] = newObjKey;
+    m_xMinBuff[fullLeafNode.entryCount] = newXMin;
+    m_yMinBuff[fullLeafNode.entryCount] = newYMin;
+    m_xMaxBuff[fullLeafNode.entryCount] = newXMax;
+    m_yMaxBuff[fullLeafNode.entryCount] = newYMax;
+    final int totalEntries = fullLeafNode.entryCount + 1;
+    final Node returnThis = new Node(m_maxBranches, true);
+    return null;
   }
 
   /**
