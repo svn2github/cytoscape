@@ -166,10 +166,36 @@ public final class RTree
     m_xMaxBuff[fullLeafNode.entryCount] = newXMax;
     m_yMaxBuff[fullLeafNode.entryCount] = newYMax;
     final int totalEntries = fullLeafNode.entryCount + 1;
-    fullLeafNode.entryCount = 0;
-    final Node returnThis = new Node(m_maxBranches, true);
     final long seeds = pickSeeds(totalEntries, m_xMinBuff, m_yMinBuff,
                                  m_xMaxBuff, m_yMaxBuff, m_tempBuff);
+    final int seed1 = (int) (seeds >> 32);
+    fullLeafNode.objKeys[0] = m_objKeyBuff[seed1];
+    fullLeafNode.xMins[0] = m_xMinBuff[seed1];
+    fullLeafNode.yMins[0] = m_yMinBuff[seed1];
+    fullLeafNode.xMaxs[0] = m_xMaxBuff[seed1];
+    fullLeafNode.yMaxs[0] = m_yMaxBuff[seed1];
+    fullLeafNode.entryCount = 1;
+    final int seed2 = (int) seeds;
+    final Node returnThis = new Node(m_maxBranches, true);
+    returnThis.objKeys[0] = m_objKeyBuff[seed2];
+    returnThis.xMins[0] = m_xMinBuff[seed2];
+    returnThis.yMins[0] = m_yMinBuff[seed2];
+    returnThis.xMaxs[0] = m_xMaxBuff[seed2];
+    returnThis.yMaxs[0] = m_yMaxBuff[seed2];
+    returnThis.entryCount = 1;
+    for (int i = seed1; i < seed2 - 1; i++) { // seed1 < seed2, guarenteed.
+      m_objKeyBuff[i] = m_objKeyBuff[i + 1];
+      m_xMinBuff[i] = m_xMinBuff[i + 1];
+      m_yMinBuff[i] = m_yMinBuff[i + 1];
+      m_xMaxBuff[i] = m_xMaxBuff[i + 1];
+      m_yMaxBuff[i] = m_yMaxBuff[i + 1]; }
+    for (int i = seed2 - 1; i < totalEntries - 2; i++) {
+      m_objKeyBuff[i] = m_objKeyBuff[i + 2];
+      m_xMinBuff[i] = m_xMinBuff[i + 2];
+      m_yMinBuff[i] = m_yMinBuff[i + 2];
+      m_xMaxBuff[i] = m_xMaxBuff[i + 2];
+      m_yMaxBuff[i] = m_yMaxBuff[i + 2]; }
+    int entriesRemaining = totalEntries - 2;
     return null;
   }
 
@@ -177,7 +203,8 @@ public final class RTree
    * This is the quadratic-cost algorithm described by Guttman.
    * The first seed's index is returned as the 32 most significant bits
    * of returned quantity.  The second seed's index is returned as the 32
-   * least significant bits of returned quantity.
+   * least significant bits of returned quantity.  The first seed's index
+   * is closer to zero than the second seed's index.
    */
   private final static long pickSeeds(final int count,
                                       final double[] xMins,
