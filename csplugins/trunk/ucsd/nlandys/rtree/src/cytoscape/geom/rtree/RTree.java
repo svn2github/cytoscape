@@ -140,7 +140,7 @@ public final class RTree
   }
 
   /*
-   * This is the quadratic-cost algorithm mentioned in Guttman's 1984
+   * This is the quadratic-cost algorithm described in Guttman's 1984
    * R-tree paper.  The parent pointer of returned node is not set.
    */
   private final Node splitLeafNode(final Node fullLeafNode,
@@ -164,6 +164,37 @@ public final class RTree
     final int totalEntries = fullLeafNode.entryCount + 1;
     final Node returnThis = new Node(m_maxBranches, true);
     return null;
+  }
+
+  /*
+   * This is the quadratic-cost algorithm described by Guttman.
+   * The first seed's index is returned as the 32 most significant bits
+   * of returned quantity.  The second seed's index is returned as the 32
+   * least significant bits of returned quantity.
+   */
+  private final static long pickSeeds(final int count,
+                                      final double[] xMins,
+                                      final double[] yMins,
+                                      final double[] xMaxs,
+                                      final double[] yMaxs,
+                                      final double[] tempBuff)
+  {
+    for (int i = 0; i < count; i++)
+      tempBuff[i] = (xMaxs[i] - xMins[i]) * (yMaxs[i] - yMins[i]); // Area.
+    double maximumD = Double.NEGATIVE_INFINITY;
+    int maximumInx1 = -1;
+    int maximumInx2 = -1;
+    for (int i = 0; i < count; i++)
+      for (int j = i + 1; j < count; j++) {
+        final double areaJ =
+          (Math.max(xMaxs[i], xMaxs[j]) - Math.min(xMins[i], xMins[j])) *
+          (Math.max(yMaxs[i], yMaxs[j]) - Math.min(yMins[i], yMins[j]));
+        final double d = areaJ - tempBuff[i] - tempBuff[j];
+        if (d > maximumD) {
+          maximumD = d;
+          maximumInx1 = i;
+          maximumInx2 = j; } }
+    return (((long) maximumInx1) << 32) | ((long) maximumInx2);
   }
 
   /**
