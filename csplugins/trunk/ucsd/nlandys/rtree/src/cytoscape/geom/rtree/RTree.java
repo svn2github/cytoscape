@@ -13,6 +13,7 @@ public final class RTree
 
   private final double[] m_mbr;
   private final int m_maxBranches;
+  private final int m_minBranches;
   private Node m_root;
   private IntObjHash m_entryMap; // Keys are objKey, values are type Node.
 
@@ -23,7 +24,8 @@ public final class RTree
   private final double[] m_yMinBuff;
   private final double[] m_xMaxBuff;
   private final double[] m_yMaxBuff;
-  private final double[] m_tempBuff;
+  private final double[] m_tempBuff1;
+  private final double[] m_tempBuff2;
 
   /**
    * Instantiates a new R-tree.  A new R-tree has no entries.
@@ -34,6 +36,7 @@ public final class RTree
       Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY,
       Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY };
     m_maxBranches = DEFAULT_MAX_BRANCHES;
+    m_minBranches = (m_maxBranches + 1) / 2;
     m_root = new Node(m_maxBranches, true);
     m_objKeyBuff = new int[m_maxBranches + 1];
     m_childrenBuff = new Node[m_maxBranches + 1];
@@ -41,7 +44,8 @@ public final class RTree
     m_yMinBuff = new double[m_maxBranches + 1];
     m_xMaxBuff = new double[m_maxBranches + 1];
     m_yMaxBuff = new double[m_maxBranches + 1];
-    m_tempBuff = new double[m_maxBranches + 1];
+    m_tempBuff1 = new double[m_maxBranches + 1];
+    m_tempBuff2 = new double[m_maxBranches + 1];
   }
 
   /**
@@ -156,6 +160,9 @@ public final class RTree
                                    final double newXMax,
                                    final double newYMax)
   {
+    final int maxBranchesMinusOne = m_maxBranches - 1;
+
+    // Copy node MBRs and objKeys and new MBR and objKey into arrays.
     for (int i = 0; i < fullLeafNode.entryCount; i++) {
       m_objKeyBuff[i] = fullLeafNode.objKeys[i];
       m_xMinBuff[i] = fullLeafNode.xMins[i];
@@ -167,9 +174,11 @@ public final class RTree
     m_yMinBuff[fullLeafNode.entryCount] = newYMin;
     m_xMaxBuff[fullLeafNode.entryCount] = newXMax;
     m_yMaxBuff[fullLeafNode.entryCount] = newYMax;
+
+    // Pick seeds.  Add seeds to two groups (fullLeafNode and returnThis).
     final int totalEntries = fullLeafNode.entryCount + 1;
     final long seeds = pickSeeds(totalEntries, m_xMinBuff, m_yMinBuff,
-                                 m_xMaxBuff, m_yMaxBuff, m_tempBuff);
+                                 m_xMaxBuff, m_yMaxBuff, m_tempBuff1);
     final int seed1 = (int) (seeds >> 32);
     fullLeafNode.objKeys[0] = m_objKeyBuff[seed1];
     fullLeafNode.xMins[0] = m_xMinBuff[seed1];
@@ -185,31 +194,114 @@ public final class RTree
     returnThis.xMaxs[0] = m_xMaxBuff[seed2];
     returnThis.yMaxs[0] = m_yMaxBuff[seed2];
     returnThis.entryCount = 1;
-    for (int i = seed1; i < seed2 - 1; i++) { // seed1 < seed2, guarenteed.
-      m_objKeyBuff[i] = m_objKeyBuff[i + 1];
-      m_xMinBuff[i] = m_xMinBuff[i + 1];
-      m_yMinBuff[i] = m_yMinBuff[i + 1];
-      m_xMaxBuff[i] = m_xMaxBuff[i + 1];
-      m_yMaxBuff[i] = m_yMaxBuff[i + 1]; }
-    for (int i = seed2 - 1; i < totalEntries - 2; i++) {
-      m_objKeyBuff[i] = m_objKeyBuff[i + 2];
-      m_xMinBuff[i] = m_xMinBuff[i + 2];
-      m_yMinBuff[i] = m_yMinBuff[i + 2];
-      m_xMaxBuff[i] = m_xMaxBuff[i + 2];
-      m_yMaxBuff[i] = m_yMaxBuff[i + 2]; }
-    int entriesRemaining = totalEntries - 2;
-    
-    // Initialize the MBRs at index m_maxBranches - 1.
-    fullLeafNode.xMins[m_maxBranches - 1] = fullLeafNode.xMins[0];
-    fullLeafNode.yMins[m_maxBranches - 1] = fullLeafNode.yMins[0];
-    fullLeafNode.xMaxs[m_maxBranches - 1] = fullLeafNode.xMaxs[0];
-    fullLeafNode.yMaxs[m_maxBranches - 1] = fullLeafNode.yMaxs[0];
-    returnThis.xMins[m_maxBranches - 1] = returnThis.xMins[0];
-    returnThis.yMins[m_maxBranches - 1] = returnThis.yMins[0];
-    returnThis.xMaxs[m_maxBranches - 1] = returnThis.xMaxs[0];
-    returnThis.yMaxs[m_maxBranches - 1] = returnThis.yMaxs[0];
 
-    return null;
+    // Initialize the MBRs at index m_maxBranches - 1.
+    fullLeafNode.xMins[maxBranchesMinusOne] = fullLeafNode.xMins[0];
+    fullLeafNode.yMins[maxBranchesMinusOne] = fullLeafNode.yMins[0];
+    fullLeafNode.xMaxs[maxBranchesMinusOne] = fullLeafNode.xMaxs[0];
+    fullLeafNode.yMaxs[maxBranchesMinusOne] = fullLeafNode.yMaxs[0];
+    returnThis.xMins[maxBranchesMinusOne] = returnThis.xMins[0];
+    returnThis.yMins[maxBranchesMinusOne] = returnThis.yMins[0];
+    returnThis.xMaxs[maxBranchesMinusOne] = returnThis.xMaxs[0];
+    returnThis.yMaxs[maxBranchesMinusOne] = returnThis.yMaxs[0];
+
+    // Collapse the arrays where seeds used to be.
+    int entriesRemaining = totalEntries - 2;
+    for (int i = seed1; i < seed2 - 1; i++) { // seed1 < seed2, guarenteed.
+      final int iPlusOne = i + 1;
+      m_objKeyBuff[i] = m_objKeyBuff[iPlusOne];
+      m_xMinBuff[i] = m_xMinBuff[iPlusOne];
+      m_yMinBuff[i] = m_yMinBuff[iPlusOne];
+      m_xMaxBuff[i] = m_xMaxBuff[iPlusOne];
+      m_yMaxBuff[i] = m_yMaxBuff[iPlusOne]; }
+    for (int i = seed2 - 1; i < entriesRemaining; i++) {
+      final int iPlusTwo = i + 2;
+      m_objKeyBuff[i] = m_objKeyBuff[iPlusTwo];
+      m_xMinBuff[i] = m_xMinBuff[iPlusTwo];
+      m_yMinBuff[i] = m_yMinBuff[iPlusTwo];
+      m_xMaxBuff[i] = m_xMaxBuff[iPlusTwo];
+      m_yMaxBuff[i] = m_yMaxBuff[iPlusTwo]; }
+    
+    boolean buff1Valid = false;
+    boolean buff2Valid = false;
+    while (true) {
+
+      // Test to see if we're all done.
+      if (entriesRemaining == 0) break;
+      if (entriesRemaining + fullLeafNode.entryCount == m_minBranches) {
+        // Add remaining entries to fullLeafNode and quit.
+        break; }
+      if (entriesRemaining + returnThis.entryCount == m_minBranches) {
+        // Add remaining entries to returnThis and quit.
+        break; }
+
+      // We're not done; pick next.
+      final int next = pickNext
+        (fullLeafNode, returnThis, entriesRemaining,
+         m_xMinBuff, m_yMinBuff, m_xMaxBuff, m_yMaxBuff,
+         m_tempBuff1, buff1Valid, m_tempBuff2, buff2Valid);
+      final boolean chooseGroup1;
+      if (m_tempBuff1[next] < m_tempBuff2[next]) chooseGroup1 = true;
+      else if (m_tempBuff1[next] > m_tempBuff2[next]) chooseGroup1= false;
+      else { // Tie for how much group's covering rectangle will increase.
+        final double group1Area =
+          (fullLeafNode.xMaxs[maxBranchesMinusOne] -
+           fullLeafNode.xMins[maxBranchesMinusOne]) *
+          (fullLeafNode.yMaxs[maxBranchesMinusOne] -
+           fullLeafNode.yMins[maxBranchesMinusOne]);
+        final double group2Area =
+          (returnThis.xMaxs[maxBranchesMinusOne] -
+           returnThis.xMins[maxBranchesMinusOne]) *
+          (returnThis.yMaxs[maxBranchesMinusOne] -
+           returnThis.yMins[maxBranchesMinusOne]);
+        if (group1Area < group2Area) chooseGroup1 = true;
+        else if (group1Area > group2Area) chooseGroup1 = false;
+        else // Tie for group MBR area as well.
+          if (fullLeafNode.entryCount < returnThis.entryCount)
+            chooseGroup1 = true;
+          else
+            chooseGroup1 = false; }
+      final Node chosenGroup;
+      final double[] validTempBuff;
+      if (chooseGroup1) {
+        chosenGroup = fullLeafNode; validTempBuff = m_tempBuff2;
+        buff1Valid = false; buff2Valid = true; }
+      else {
+        chosenGroup = returnThis; validTempBuff = m_tempBuff1;
+        buff1Valid = true; buff2Valid = false; }
+
+      // Add next to chosen group.
+      final int newInx = chosenGroup.entryCount++;
+      chosenGroup.objKeys[newInx] = m_objKeyBuff[next];
+      chosenGroup.xMins[newInx] = m_xMinBuff[next];
+      chosenGroup.yMins[newInx] = m_yMinBuff[next];
+      chosenGroup.xMaxs[newInx] = m_xMaxBuff[next];
+      chosenGroup.yMaxs[newInx] = m_yMaxBuff[next];
+
+      // Update the MBR of chosen group.
+      // Note: If we see that the MBR stays the same, we could mark the
+      // "invalid" temp buff array as valid to save even more on computations.
+      chosenGroup.xMins[maxBranchesMinusOne] =
+        Math.min(chosenGroup.xMins[maxBranchesMinusOne], m_xMinBuff[next]);
+      chosenGroup.yMins[maxBranchesMinusOne] =
+        Math.min(chosenGroup.yMins[maxBranchesMinusOne], m_yMinBuff[next]);
+      chosenGroup.xMaxs[maxBranchesMinusOne] =
+        Math.max(chosenGroup.xMaxs[maxBranchesMinusOne], m_xMaxBuff[next]);
+      chosenGroup.yMaxs[maxBranchesMinusOne] =
+        Math.max(chosenGroup.yMaxs[maxBranchesMinusOne], m_yMaxBuff[next]);
+
+      // Collapse the arrays where next used to be.
+      entriesRemaining--;
+      for (int i = next; i < entriesRemaining; i++) {
+        final int iPlusOne = i + 1;
+        m_objKeyBuff[i] = m_objKeyBuff[iPlusOne];
+        m_xMinBuff[i] = m_xMinBuff[iPlusOne];
+        m_yMinBuff[i] = m_yMinBuff[iPlusOne];
+        m_xMaxBuff[i] = m_xMaxBuff[iPlusOne];
+        m_yMaxBuff[i] = m_yMaxBuff[iPlusOne];
+        validTempBuff[i] = validTempBuff[iPlusOne]; } }
+
+    return returnThis;
   }
 
   /*
