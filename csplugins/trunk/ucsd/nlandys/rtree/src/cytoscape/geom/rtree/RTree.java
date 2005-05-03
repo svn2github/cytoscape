@@ -145,7 +145,9 @@ public final class RTree
    * This is the quadratic-cost algorithm described in Guttman's 1984
    * R-tree paper.  The parent pointer of returned node is not set.  The
    * parent pointer in the full node is not modified, and nothing in that
-   * parent is modified.  Everything else is modified.
+   * parent is modified.  Everything else is modified.  The MBRs at index
+   * m_maxBranches - 1 in both nodes are set to be the new overall MBR of
+   * corresponding node.
    */
   private final Node splitLeafNode(final Node fullLeafNode,
                                    final int newObjKey,
@@ -196,6 +198,17 @@ public final class RTree
       m_xMaxBuff[i] = m_xMaxBuff[i + 2];
       m_yMaxBuff[i] = m_yMaxBuff[i + 2]; }
     int entriesRemaining = totalEntries - 2;
+    
+    // Initialize the MBRs at index m_maxBranches - 1.
+    fullLeafNode.xMins[m_maxBranches - 1] = fullLeafNode.xMins[0];
+    fullLeafNode.yMins[m_maxBranches - 1] = fullLeafNode.yMins[0];
+    fullLeafNode.xMaxs[m_maxBranches - 1] = fullLeafNode.xMaxs[0];
+    fullLeafNode.yMaxs[m_maxBranches - 1] = fullLeafNode.yMaxs[0];
+    returnThis.xMins[m_maxBranches - 1] = returnThis.xMins[0];
+    returnThis.yMins[m_maxBranches - 1] = returnThis.yMins[0];
+    returnThis.xMaxs[m_maxBranches - 1] = returnThis.xMaxs[0];
+    returnThis.yMaxs[m_maxBranches - 1] = returnThis.yMaxs[0];
+
     return null;
   }
 
@@ -204,7 +217,9 @@ public final class RTree
    * The first seed's index is returned as the 32 most significant bits
    * of returned quantity.  The second seed's index is returned as the 32
    * least significant bits of returned quantity.  The first seed's index
-   * is closer to zero than the second seed's index.
+   * is closer to zero than the second seed's index.  None of the input
+   * arrays are modified except for tempBuff.  tempBuff is populated with
+   * the areas of the MBRs.
    */
   private final static long pickSeeds(final int count,
                                       final double[] xMins,
@@ -230,6 +245,64 @@ public final class RTree
           maximumInx2 = j; } }
     return (((long) maximumInx1) << 32) | ((long) maximumInx2);
   }
+
+  /*
+   * Returns the index (in xMins, etc.) of next entry to add to a group.
+   * The arrays tempBuff1 and tempBuff2 are used to store the [positive]
+   * area increase required in respective groups to swallow corresponding
+   * MBR at same index.  If buff1Valid is true then tempBuff1 already
+   * contains this information and it need not be computed by this
+   * method.  Analagous is true for buff2Valid and tempBuff2.  The nodes
+   * group1 and group2 are only used by this method to read information
+   * of current MBR of corresponding group - the MBR is stored at index
+   * m_maxBranches - 1.  None of the input variables are modified except
+   * for tempBuff1 and tempBuff2.
+   */
+  private final static int pickNext(final Node group1,
+                                    final Node group2,
+                                    final int count,
+                                    final double[] xMins,
+                                    final double[] yMins,
+                                    final double[] xMaxs,
+                                    final double[] yMaxs,
+                                    final double[] tempBuff1,
+                                    final boolean buff1Valid,
+                                    final double[] tempBuff2,
+                                    final boolean buff2Valid)
+  {
+    final int maxBranches = group1.xMins.length;
+    if (!buff1Valid) {
+      final double group1Area =
+        (group1.xMaxs[maxBranches - 1] - group1.xMins[maxBranches - 1]) *
+        (group1.yMaxs[maxBranches - 1] - group1.yMins[maxBranches - 1]);
+      for (int i = 0; i < count; i++) {
+        tempBuff1[i] = // Area of group1 swallowing ith rectangle.
+          (Math.max(group1.xMaxs[maxBranches - 1], xMaxs[i]) -
+           Math.min(group1.xMins[maxBranches - 1], xMins[i])) *
+          (Math.max(group1.yMaxs[maxBranches - 1], yMaxs[i]) -
+           Math.min(group1.yMins[maxBranches - 1], yMins[i]));
+        tempBuff1[i] -= group1Area; } }
+    if (!buff2Valid) {
+      final double group2Area =
+        (group2.xMaxs[maxBranches - 1] - group2.xMins[maxBranches - 1]) *
+        (group2.yMaxs[maxBranches - 1] - group2.yMins[maxBranches - 1]);
+      for (int i = 0; i < count; i++) {
+        tempBuff2[i] = // Area of group2 swallowing ith rectangle.
+          (Math.max(group2.xMaxs[maxBranches - 1], xMaxs[i]) -
+           Math.min(group2.xMins[maxBranches - 1], xMins[i])) *
+          (Math.max(group2.yMaxs[maxBranches - 1], yMaxs[i]) -
+           Math.min(group2.yMins[maxBranches - 1], yMins[i]));
+        tempBuff2[i] -= group2Area; } }
+    double maxDDifference = Double.NEGATIVE_INFINITY;
+    int maxInx = -1;
+    for (int i = 0; i < count; i++) {
+      final double currDDifference = Math.abs(tempBuff1[i] - tempBuff2[i]);
+      if (currDDifference > maxDDifference) {
+        maxDDifference = currDDifference;
+        maxInx = i; } }
+    return maxInx;
+  }
+                                    
 
   /**
    * Determines whether or not a given entry exists in this R-tree structure,
