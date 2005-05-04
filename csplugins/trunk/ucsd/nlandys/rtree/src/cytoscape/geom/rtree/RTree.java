@@ -100,7 +100,17 @@ public final class RTree
       throw new IllegalStateException   // subsequent put() is almost free.
         ("objkey " + objKey + " is already in this tree");
     final Node chosenLeaf = chooseLeaf(m_root, xMin, yMin, xMax, yMax);
-    // Do stuff.
+    final Node splitLeaf;
+    if (chosenLeaf.entryCount < m_maxBranches) { // No split is necessary.
+      final int newInx = chosenLeaf.entryCount++;
+      chosenLeaf.objKeys[newInx] = objKey;
+      chosenLeaf.xMins[newInx] = xMin;
+      chosenLeaf.yMins[newInx] = yMin;
+      chosenLeaf.xMaxs[newInx] = xMax;
+      chosenLeaf.yMaxs[newInx] = yMax;
+      splitLeaf = null; }
+    else { // A split is necessary.
+      splitLeaf = splitLeafNode(chosenLeaf, objKey, xMin, yMin, xMax, yMax); }
   }
 
   /*
@@ -418,7 +428,24 @@ public final class RTree
         maxInx = i; } }
     return maxInx;
   }
-                                    
+
+  /*
+   * leafNode and splitNode are leaves.  splitNode may be null.
+   * Returns the root's new sibling if it was split or else null.
+   */
+  private final static Node adjustTree(final Node leafNode,
+                                       final Node splitNode,
+                                       final double[] globalMBR)
+  {
+    Node n = leafNode;
+    Node nn = splitNode;
+    while (true) {
+      if (n.parent == null) { // n is the root node.
+        if (splitNode == null) { // It is assumed that entry added is last one.
+          globalMBR[0] = Math.min(globalMBR[0], 0); }
+      }
+    }
+  }
 
   /**
    * Determines whether or not a given entry exists in this R-tree structure,
