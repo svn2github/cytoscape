@@ -228,11 +228,35 @@ public final class RTree
 
       // Test to see if we're all done.
       if (entriesRemaining == 0) break;
-      if (entriesRemaining + fullLeafNode.entryCount == m_minBranches) {
-        // Add remaining entries to fullLeafNode and quit.
-        break; }
-      if (entriesRemaining + returnThis.entryCount == m_minBranches) {
-        // Add remaining entries to returnThis and quit.
+      final Node restGroup;
+      if (entriesRemaining + fullLeafNode.entryCount == m_minBranches)
+        restGroup = fullLeafNode;
+      else if (entriesRemaining + returnThis.entryCount == m_minBranches)
+        restGroup = returnThis;
+      else
+        restGroup = null;
+
+      if (restGroup != null) { // Assign remaining entries to this group.
+        for (int i = 0; i < entriesRemaining; i++) {
+
+          // Add entry to "rest" group.
+          final int newInx = restGroup.entryCount++;
+          restGroup.objKeys[newInx] = m_objKeyBuff[i];
+          restGroup.xMins[newInx] = m_xMinBuff[i];
+          restGroup.yMins[newInx] = m_yMinBuff[i];
+          restGroup.xMaxs[newInx] = m_xMaxBuff[i];
+          restGroup.yMaxs[newInx] = m_yMaxBuff[i];
+
+          // Update the MBR of "rest" group.
+          restGroup.xMins[maxBranchesMinusOne] =
+            Math.min(restGroup.xMins[maxBranchesMinusOne], m_xMinBuff[i]);
+          restGroup.yMins[maxBranchesMinusOne] =
+            Math.min(restGroup.yMins[maxBranchesMinusOne], m_yMinBuff[i]);
+          restGroup.xMaxs[maxBranchesMinusOne] =
+            Math.max(restGroup.xMaxs[maxBranchesMinusOne], m_xMaxBuff[i]);
+          restGroup.yMaxs[maxBranchesMinusOne] =
+            Math.max(restGroup.yMaxs[maxBranchesMinusOne], m_yMaxBuff[i]); }
+
         break; }
 
       // We're not done; pick next.
