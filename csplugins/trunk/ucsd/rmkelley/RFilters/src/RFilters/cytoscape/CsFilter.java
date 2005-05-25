@@ -101,6 +101,7 @@ public class CsFilter
     FilterEditorManager.defaultManager().addEditor( new BooleanMetaFilterEditor ());
     FilterEditorManager.defaultManager().addEditor( new NodeInteractionFilterEditor());
     FilterEditorManager.defaultManager().addEditor( new EdgeInteractionFilterEditor());
+
   }
 
   public String describe () {
