@@ -80,6 +80,25 @@ public interface CytoscapeData
 
   public static final byte NODES = 1;
   public static final byte EDGES = 2;
+  
+  
+  public void applyLabel ( String attributeName, String labelName );
+
+  public void removeLabel ( String attributeName, String labelName );
+
+  public Set getAttributesByLabel ( String labelName );
+
+  public Set getLabelNames ();
+
+  public void addCytoscapeDataListener ( CytoscapeDataListener listener );
+
+  public void removeCytoscapeDataListener ( CytoscapeDataListener listener );
+
+  /**
+   * SLOW
+   */
+  public Set getLabelsOfAttribute ( String attributeName );
+
   ////////////////////////////////////////
   //SECTION 1: 1 value per attribute
 

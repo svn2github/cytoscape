@@ -42,18 +42,202 @@ public class CytoscapeDataImpl
   private static final Object[] LIST_KEY = {"LIST"};
   private static final Object[] ZERO = {Integer.toString(0)};
 
+  private Map labelMap;
+  Vector listeners = new Vector();
+
   public CytoscapeDataImpl ( byte type) {
     super();
     this.type = type;
     //objectModel = CyDataFactory.instantiateDataModel();
     data = ( cytoscape.data.attr.CyData )this;
     definition = ( CyDataDefinition )this;
+
+    labelMap = new HashMap();
+
   }
+
+  public void applyLabel ( String attributeName, String labelName ) {
+
+    if ( labelMap.get( labelName ) == null ) {
+      Set atts = new HashSet();
+      labelMap.put( labelName, atts );
+    }
+
+    Set atts = ( Set )labelMap.get( labelName );
+
+    atts.add( attributeName );
+    notifyListeners();
+  }
+
+  public void removeLabel ( String attributeName, String labelName ) {
+    if ( labelMap.get( labelName ) == null ) 
+      return;
+
+    Set atts = ( Set )labelMap.get( labelName );
+
+    atts.remove( attributeName );
+    notifyListeners();
+  }
+
+  public Set getAttributesByLabel ( String labelName ) {
+     if ( labelMap.get( labelName ) == null ) {
+       return null;
+     }
+
+     return ( Set )labelMap.get( labelName );
+  }
+
+  public Set getLabelNames () {
+    return labelMap.keySet();
+  }
+
+  /**
+   * SLOW
+   */
+  public Set getLabelsOfAttribute ( String attributeName ) {
+    Set new_set = new HashSet();
+    for ( Iterator i = labelMap.keySet().iterator(); i.hasNext(); ) {
+      String label = (String)i.next();
+      if ( labelMap.get( label ) == null ) 
+        continue;
+      Set atts = ( Set )labelMap.get( label );
+      if ( atts.contains( attributeName ) )
+        new_set.add( label );
+    }
+    return new_set;
+  }
+  
+  public void addCytoscapeDataListener ( CytoscapeDataListener listener ) {
+    listeners.add( listener );
+  }
+
+  public void removeCytoscapeDataListener ( CytoscapeDataListener listener ) {
+    listeners.remove( listener );
+  }
+
+  public void notifyListeners (){
+    for(Iterator listenIt = listeners.iterator();listenIt.hasNext();){
+      ((CytoscapeDataListener)listenIt.next()).labelStateChange();
+    }
+  }
+
 
   ////////////////////////////////////////
   ////////////////////////////////////////
   // CytoscapeData Implementation
  
+  public Object objectAsType ( Object value, byte type ) {
+   
+    if ( type == TYPE_BOOLEAN && value instanceof Boolean ) {
+      return value;
+    } else if ( type == TYPE_FLOATING_POINT && value instanceof Double ) {
+      return value;
+    } else if ( type == TYPE_INTEGER && value instanceof Integer ) {
+      return value;
+    } else if ( type == TYPE_STRING && value instanceof String ) {
+      return value;
+    } else {
+      return value.toString();
+    }
+  }
+
+  /**
+   * If we are guessing, first try to cast as a Double. 
+   * Then Boolean, then default to String. We never guess Integer.
+   */
+  public byte wildGuessAndDefineObjectType ( Object value, String attributeName ) {
+   
+    Object attribute;
+    // Test for Double
+    try { 
+      attribute = new Double( value.toString() );
+      defineAttribute( attributeName,
+                       TYPE_FLOATING_POINT,
+                       new byte[] {TYPE_STRING} );
+      return TYPE_FLOATING_POINT;
+    } catch ( Exception e ) {}
+    
+    // Test for Boolean
+    try { 
+      if ( value.toString().equals("true") || 
+           value.toString().equals("false") ) {
+        defineAttribute( attributeName,
+                         TYPE_BOOLEAN,
+                         new byte[] {TYPE_STRING} );
+        return TYPE_BOOLEAN;
+      }
+    } catch ( Exception e ) {}
+    
+    // Default is String
+    defineAttribute( attributeName,
+                     TYPE_STRING,
+                     new byte[] {TYPE_STRING} );
+    return TYPE_STRING;
+    
+  }
+  
+
+
+
+  /**
+   * If we are guessing, first try to cast as a Double. 
+   * Then Boolean, then default to String. We never guess Integer.
+   */
+  public byte guessAndDefineObjectType ( Object value, String attributeName ) {
+   
+
+
+    if ( value instanceof Boolean ) {
+      defineAttribute( attributeName,
+                       TYPE_BOOLEAN,
+                       new byte[] {TYPE_STRING} );
+      return TYPE_BOOLEAN;
+    } else if ( value instanceof String ) {
+      defineAttribute( attributeName,
+                       TYPE_STRING,
+                       new byte[] {TYPE_STRING} );
+      return TYPE_STRING;
+    }else if ( value instanceof Double ) {
+      defineAttribute( attributeName,
+                       TYPE_FLOATING_POINT,
+                       new byte[] {TYPE_STRING} );
+      return TYPE_FLOATING_POINT;
+    }else if ( value instanceof Integer ) {
+      defineAttribute( attributeName,
+                       TYPE_INTEGER,
+                       new byte[] {TYPE_STRING} );
+      return TYPE_INTEGER;
+    } else {
+      Object attribute;
+      // Test for Double
+      try { 
+        attribute = new Double( value.toString() );
+        defineAttribute( attributeName,
+                         TYPE_FLOATING_POINT,
+                         new byte[] {TYPE_STRING} );
+        return TYPE_FLOATING_POINT;
+      } catch ( Exception e ) {}
+      
+      // Test for Boolean
+      try { 
+        if ( value.toString().equals("true") || 
+             value.toString().equals("false") ) {
+          defineAttribute( attributeName,
+                           TYPE_BOOLEAN,
+                           new byte[] {TYPE_STRING} );
+          return TYPE_BOOLEAN;
+        }
+      } catch ( Exception e ) {}
+      
+      // Default is String
+      defineAttribute( attributeName,
+                       TYPE_STRING,
+                       new byte[] {TYPE_STRING} );
+      return TYPE_STRING;
+      
+    }
+  }
+
 
   ////////////////////////////////////////
   //SECTION 1: 1 value per attribute
@@ -225,17 +409,26 @@ public class CytoscapeDataImpl
   public List getAttributeValueList ( String identifier,
                                       String attribute ) {
 
-    List arraylist = new ArrayList();
+    //System.out.print( "CD: "+identifier+" "+attribute );
+    
+   
     
     // first find the end of the list
     int span = data.getAttributeKeyspan( identifier, 
                                          attribute,
                                          null ).numRemaining();
 
+    List arraylist = new ArrayList(span);
+
+    //System.out.println( " SPAN: "+span );
+
     for ( int i = 0; i < span; ++i ) {
       arraylist.add( data.getAttributeValue( identifier,
                                              attribute,
                                              new Object[] { Integer.toString(i) } ) );
+      //System.out.println( "add "+ data.getAttributeValue( identifier,
+      //                                                   attribute,
+      //                                                    new Object[] { Integer.toString(i) } ));
     }
     return arraylist;
   }
@@ -625,112 +818,6 @@ public class CytoscapeDataImpl
   public void set ( GraphObjAttributes attributes ) {}
 
  
-  private Object objectAsType ( Object value, byte type ) {
-    
-    if ( type == TYPE_STRING ) {
-      return value.toString();
-    } else if ( type == TYPE_BOOLEAN ) {
-      try { 
-        if ( value.toString().equals("true") || 
-             value.toString().equals("false") ) {
-          return new Boolean( value.toString() );
-        }
-      } catch ( Exception e ) {
-        //System.out.println( value+"Not a Boolean" );
-        return null;
-      }
-    } else if ( type == TYPE_FLOATING_POINT ) {
-      try { 
-        return new Double( value.toString() );
-      } catch ( Exception e ) {
-        //System.out.println( value+"Not a Double" );
-        return null;
-      }
-    } else if ( type == TYPE_INTEGER ) {
-      try {
-        return new Integer( value.toString() );
-      } catch ( Exception e ) {
-        //System.out.println( value+"Not a Double" );
-        return null;
-      }
-    }
-
-    return null;
-
-  }
-
-  private Object supportedObjectType ( Object value ) {
-    Object attribute;
-    try { 
-      attribute = new Double( value.toString() );
-      return attribute;
-    } catch ( Exception e ) {
-      //System.out.println( value+"Not a Double" );
-    }
-    
-    try { 
-      attribute = new Integer( value.toString() );
-      return attribute;
-    } catch ( Exception e ) {
-      // System.out.println( value+"Not a Integer" );
-    }
-    
-    try { 
-      if ( value.toString().equals("true") || 
-           value.toString().equals("false") ) {
-        attribute = new Boolean( value.toString() );
-        //System.out.println( value+ " IS a boolean???" );
-        return attribute;
-      }
-    } catch ( Exception e ) {
-      //System.out.println( value+"Not a Boolean" );
-    }
-    
-    try { 
-      attribute =  value.toString();
-      return attribute;
-    } catch ( Exception e ) {
-      //System.out.println( value+"Not a String" );
-    }
-
-    return null;
-  }
-
-  /**
-   * If we are guessing, first try to cast as a Double. Then Boolean, then default to String. We never guess Integer.
-   */
-  private byte guessAndDefineObjectType ( Object value, String attributeName ) {
-    Object attribute;
-
-    // Test for Double
-    try { 
-      attribute = new Double( value.toString() );
-      defineAttribute( attributeName,
-                       TYPE_FLOATING_POINT,
-                       new byte[] {TYPE_STRING} );
-      return TYPE_FLOATING_POINT;
-    } catch ( Exception e ) {}
- 
-    // Test for Boolean
-    try { 
-      if ( value.toString().equals("true") || 
-           value.toString().equals("false") ) {
-        defineAttribute( attributeName,
-                         TYPE_BOOLEAN,
-                         new byte[] {TYPE_STRING} );
-        return TYPE_BOOLEAN;
-      }
-    } catch ( Exception e ) {}
-      
-    // Default is String
-    defineAttribute( attributeName,
-                     TYPE_STRING,
-                     new byte[] {TYPE_STRING} );
-    return TYPE_STRING;
-   
-   
-  }
-
  
   /**
    * @deprecated
@@ -749,22 +836,10 @@ public class CytoscapeDataImpl
                        String graphObjectName, 
                        Object value ) {
   
-    //try {
-      setAttributeValue( graphObjectName,
-                         attributeName,
-                         value );
-      //} catch ( Exception e ) {
-      //  System.out.println( "set is failing: "+attributeName+" "+graphObjectName+ "  "+value );
-      // e.printStackTrace();
-      // return false;
-      //}/
-    //System.out.println( "set is working: "+attributeName+" "+graphObjectName+ "  "+value );
-    //System.out.println( getAttributeValue( graphObjectName,
-    //                                      attributeName ) );
-
-
+    setAttributeValue( graphObjectName,
+                       attributeName,
+                       value );
     return true;
-
   }
   
 
