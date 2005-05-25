@@ -1,0 +1,66 @@
+package fgraph;
+
+import java.io.File;
+import junit.framework.*;
+import java.util.*;
+
+import giny.model.*;
+
+public class DFSPathTest extends AbstractPathTest
+{
+    private String _testDir = "test-data" + File.separator;
+    private String _sif = _testDir + "test2.sif";
+    private String _dfs = _testDir + "pathtest.sif";
+    private String _fg = _testDir + "fgtest.sif";
+
+    protected void setUp()
+    {
+
+    }
+
+    public void testReadSif() throws Exception
+    {
+        System.out.println("Reading file: " + _sif);
+        InteractionGraph ig = InteractionGraphFactory.createFromSif(_sif);
+
+
+        ig.setExpressionData(CytoscapeExpressionData.load(_testDir + "test.pvals", 1e-2));
+
+        System.out.println(ig.toString());
+
+        PathResult results = runPath(ig, ig.name2Node("B"), 5, 3);
+        System.out.println(results.toString(ig));
+    }
+
+    
+    public void testReadPathSif() throws Exception
+    {
+        System.out.println("Reading file: " + _dfs);
+        InteractionGraph ig = InteractionGraphFactory.createFromSif(_dfs);
+
+        ig.setExpressionData(CytoscapeExpressionData.load(_testDir + "pathtest.pvals", 1e-2));
+
+        System.out.println(ig.toString());
+
+        PathResult results = runPath(ig, ig.name2Node("a"), 5, 3);
+        System.out.println(results.toString(ig));
+    }
+
+    
+    public void testReadFGSif() throws Exception
+    {
+        System.out.println("Reading file: " + _fg);
+        InteractionGraph ig = InteractionGraphFactory.createFromSif(_fg);
+
+        ig.setExpressionData(CytoscapeExpressionData.load(_testDir + "fg.pvals", 1e-2));
+
+        System.out.println(ig.toString());
+
+        int[] sources = {ig.name2Node("A"), ig.name2Node("F")};
+
+        PathResult results = runPath(ig, sources , 5, 10);
+        System.out.println(results.toString(ig));
+    }
+
+
+}
