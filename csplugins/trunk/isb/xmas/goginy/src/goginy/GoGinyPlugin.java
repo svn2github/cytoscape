@@ -6,8 +6,11 @@ import cytoscape.plugin.*;
 import cytoscape.data.Semantics;
 
 import giny.model.*;
+import giny.view.*;
 
 import cern.colt.list.*;
+
+import cern.jet.math.Arithmetic;
 
 import java.util.*;
 import java.awt.event.*;
@@ -94,8 +97,48 @@ public class GoGinyPlugin extends CytoscapePlugin {
               } } ); } } );
     Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu( "GO" ).add( mfb );
     
+    JMenuItem prob = new JMenuItem( new AbstractAction( "Prob" ) {
+        public void actionPerformed ( ActionEvent e ) {
+          // Do this in the GUI Event Dispatch thread...
+          SwingUtilities.invokeLater( new Runnable() {
+              public void run() {
+                printTermProb();
+                  
+              } } ); } } );
+    Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu( "GO" ).add(prob );
     
+    JMenuItem test = new JMenuItem( new AbstractAction( "test" ) {
+        public void actionPerformed ( ActionEvent e ) {
+          // Do this in the GUI Event Dispatch thread...
+          SwingUtilities.invokeLater( new Runnable() {
+              public void run() {
 
+                int[] subset = Cytoscape.getCurrentNetwork().getFlaggedNodeIndicesArray();
+                int node = subset[0];
+
+                 List term_list = Cytoscape.getNodeNetworkData().getAttributeValueList( Cytoscape.getRootGraph().getNode( node ).getIdentifier(),
+                                                                                         CELLULAR_COMPONENT);
+
+                 System.out.println( "node: "+Cytoscape.getRootGraph().getNode( node ).getIdentifier()+" list size: "+term_list.size()+" LIST: "+term_list );
+                 for ( Iterator t = term_list.iterator(); t.hasNext(); ) {
+                   String term = ( String )t.next();
+                   System.out.println( " term: "+term );
+                 }
+
+                  
+              } } ); } } );
+    Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu( "GO" ).add(test );
+
+
+
+  }
+
+
+  public static void printTermProb () {
+
+    go.getMFView().printTermProb( MOLECULAR_FUNCTION );
+    go.getBPView().printTermProb( BIOLOGICAL_PROCESS );
+    go.getCCView().printTermProb( CELLULAR_COMPONENT );
   }
 
   public void init () {
@@ -118,6 +161,7 @@ public class GoGinyPlugin extends CytoscapePlugin {
   }
   
  
+ 
 
   public static void catsFromNodes ( boolean show_selected ) {
 
@@ -134,9 +178,9 @@ public class GoGinyPlugin extends CytoscapePlugin {
     while ( i.hasNext() ) {
 
       Node node = ( Node )i.next();
-      List mf = ( List )Cytoscape.getNodeAttributeValue( node, Semantics.MOLECULAR_FUNCTION );
-      List bp = ( List )Cytoscape.getNodeAttributeValue( node, Semantics.BIOLOGICAL_PROCESS );
-      List cc = ( List )Cytoscape.getNodeAttributeValue( node, Semantics.CELLULAR_COMPONENT );
+      List mf = Cytoscape.getNodeNetworkData().getAttributeValueList( node.getIdentifier(), MOLECULAR_FUNCTION );
+      List bp = Cytoscape.getNodeNetworkData().getAttributeValueList( node.getIdentifier(), BIOLOGICAL_PROCESS );
+      List cc = Cytoscape.getNodeNetworkData().getAttributeValueList( node.getIdentifier(), CELLULAR_COMPONENT );
 
       for ( Iterator j = mf.iterator(); j.hasNext(); ) {
         String go = ( String )j.next();

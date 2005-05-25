@@ -18,6 +18,8 @@ import edu.umd.cs.piccolo.PNode;
 import javax.swing.*;
 import phoebe.*;
 
+import rowan.browser.*;
+
 public class RowanPlugin extends CytoscapePlugin {
 
   public RowanPlugin () {
@@ -97,6 +99,16 @@ public class RowanPlugin extends CytoscapePlugin {
     Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu( "Plugins" ).add( first );
 
 
+    JMenuItem nb = new JMenuItem( new AbstractAction( "Sort Browser" ) {
+        public void actionPerformed ( ActionEvent e ) {
+          // Do this in the GUI Event Dispatch thread...
+          SwingUtilities.invokeLater( new Runnable() {
+              public void run() {
+                
+                DataTable table = new DataTable();
+
+              } } ); } } );
+    Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu( "Plugins" ).add( nb );
 
   }
 

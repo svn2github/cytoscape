@@ -34,6 +34,8 @@ public class GoFilter
   boolean update_cache = true;
   SwingPropertyChangeSupport pcs;
 
+  String identifier = "default";
+
   public GoFilter ( GoGinyView view,
                     Ontology onto,
                     String type ) {
@@ -43,13 +45,21 @@ public class GoFilter
     this.type = type;
     pcs = new SwingPropertyChangeSupport( this );
   }
+
+  /**
+   * sets a new name for this filter
+   */
+  public void setIdentifier ( String new_id ) {
+    this.identifier = new_id;
+    //pcs.firePropertyChange(FILTER_NAME_EVENT,null,new_id);
+  }
         
   public void graphViewChanged ( GraphViewChangeEvent event ) {
     update_cache = true;
   } 
 
   public String toString () {
-    return "Selected "+type;
+    return type;
   }
 
   public Class[] getPassingTypes () {
@@ -72,6 +82,9 @@ public class GoFilter
   }
         
   public boolean equals ( Object other_object ) {
+    if ( other_object instanceof GoFilter ) 
+      if ( ( ( GoFilter )other_object ).toString().equals( type ) )
+        return true;
     return false;
   }
 
@@ -84,6 +97,7 @@ public class GoFilter
   }
         
   public boolean passesFilter ( Object object ) {
+    update_cache = true;
     if ( object instanceof Node ) {
       Node node = ( Node )object;
       
@@ -92,17 +106,21 @@ public class GoFilter
         update_cache = false;
       }
 
-      List cc = ( List )Cytoscape.getNodeAttributeValue( node, type );
+      List cc = Cytoscape.getNodeNetworkData().getAttributeValueList( node.getIdentifier(), type );
       for ( Iterator j = cc.iterator(); j.hasNext(); ) {
         try {
           String go = ( String )j.next();
           int term = Integer.parseInt( go.substring( 4 ) );
           for ( int i = 0; i < go_terms.length; ++i ) {
             if ( go_terms[i] == term ) {
+              //System.out.println( "Evidence: "+go_terms[i]+" == "+term );
               return true;
             }
           }
-        } catch ( Exception e ) {}
+        } catch ( Exception e ) {
+          System.out.println( "Filter Error");
+          e.printStackTrace();
+        }
       }
       return false;
     }

@@ -59,7 +59,7 @@ public class Ontology {
   }
 
   
-  protected GraphPerspective getGraphPerspective () {
+  public GraphPerspective getGraphPerspective () {
     return gp;
   }
 
@@ -67,6 +67,9 @@ public class Ontology {
     return ( String )gidGdescMap.get( gid );
   }
 
+  public int uidForGID ( int gid ) {
+    return gidUidMap.get( gid );
+  }
 
   public int[] getTerms ( int[] selected_nodes ) {
     //take the selected nodes and return the GO indices
@@ -96,6 +99,10 @@ public class Ontology {
     IntArrayList inOld_notNew = new IntArrayList();
     IntArrayList inNew_notOld = new IntArrayList();
     
+    if ( gp == null ) {
+      System.out.println( "GP is null??" );
+    }
+
     IntArrayList diff = Diff.diff( new IntArrayList( gp.getNodeIndicesArray() ),
                                    new IntArrayList( new_gp.getNodeIndicesArray() ),
                                    inOld_notNew,
