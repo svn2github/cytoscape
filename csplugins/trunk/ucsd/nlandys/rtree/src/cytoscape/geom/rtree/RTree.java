@@ -1104,7 +1104,7 @@ public final class RTree
              m_yMinBuff, m_xMaxBuff, m_yMaxBuff, m_tempBuff1, m_tempBuff2); }
         else {
           rootSplit = insert
-            (m_root, currentDepth, eliminatedNode.data.children[i],
+            (m_root, currentDepth + 1, eliminatedNode.data.children[i],
              eliminatedNode.xMins[i], eliminatedNode.yMins[i],
              eliminatedNode.xMaxs[i], eliminatedNode.yMaxs[i],
              m_maxBranches, m_minBranches, m_MBR, m_childrenBuff,
@@ -1132,7 +1132,7 @@ public final class RTree
           m_MBR[2] = Math.max(m_root.xMaxs[0], m_root.xMaxs[1]);
           m_MBR[3] = Math.max(m_root.yMaxs[0], m_root.yMaxs[1]);
           currentDepth++; } }
-      currentDepth--; }
+      currentDepth++; } // End while loop.
 
     // If the root node has only one child, make the child the new root.
     if ((!isLeafNode(m_root)) && m_root.entryCount == 1) {
@@ -1185,7 +1185,6 @@ public final class RTree
         if (p.data.children[i] == n) { nInxInP = i; break; }
       if (n.entryCount < minBranches) { // Delete n from p.
         p.entryCount--;
-
         if (nInxInP != p.entryCount) { // Plug the hole at index nInxInP.
           p.data.children[nInxInP] = p.data.children[p.entryCount];
           p.xMins[nInxInP] = p.xMins[p.entryCount];
@@ -1209,7 +1208,7 @@ public final class RTree
           p.xMaxs[nInxInP] = Math.max(p.xMaxs[nInxInP], n.xMaxs[i]);
           p.yMaxs[nInxInP] = Math.max(p.yMaxs[nInxInP], n.yMaxs[i]); } }
       p.data.deepCount -= deepCountDecrease;
-      n = p; depth++; }
+      n = p; depth++; } // End while loop.
     return depth;
   }
 
