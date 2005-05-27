@@ -43,6 +43,7 @@ public class BasicQuietRTreeTest
       if (extentsArr[0] != 0.5 || extentsArr[1] != 1.0 ||
           extentsArr[2] != 1.5 || extentsArr[3] != 2.0)
         throw new IllegalStateException("entry's extents don't match");
+
       IntEnumerator iter = tree.queryOverlap
         (Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY,
          Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, extentsArr, 0);
@@ -59,6 +60,7 @@ public class BasicQuietRTreeTest
       if (extentsArr[0] != 0.0 || extentsArr[1] != 0.0 ||
           extentsArr[2] != 3.0 || extentsArr[3] != 3.0)
         throw new IllegalStateException("extents from query wrong");
+
       iter = tree.queryOverlap(1.25, 2.0, 2.1, 3.3, extentsArr, 1);
       if (iter.numRemaining() != 2)
         throw new IllegalStateException("exptected query to return 2 hits");
