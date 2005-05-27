@@ -388,11 +388,10 @@ public final class RTree
                                        final double newYMax)
   {
     final int maxBranchesMinusOne = m_maxBranches - 1;
-    final InternalNodeData data = fullInternalNode.data;
 
-    // Copy node MBRs and objKeys and new MBR and objKey into arrays.
+    // Copy node MBRs and children and new MBR and child into arrays.
     for (int i = 0; i < fullInternalNode.entryCount; i++) {
-      m_childrenBuff[i] = data.children[i];
+      m_childrenBuff[i] = fullInternalNode.data.children[i];
       m_xMinBuff[i] = fullInternalNode.xMins[i];
       m_yMinBuff[i] = fullInternalNode.yMins[i];
       m_xMaxBuff[i] = fullInternalNode.xMaxs[i];
@@ -409,7 +408,7 @@ public final class RTree
                                  m_xMaxBuff, m_yMaxBuff, m_tempBuff1);
     // m_tempBuff1 now contains the areas of the MBRs - we won't use this.
     final int seed1 = (int) (seeds >> 32);
-    data.children[0] = m_childrenBuff[seed1];
+    fullInternalNode.data.children[0] = m_childrenBuff[seed1];
     fullInternalNode.xMins[0] = m_xMinBuff[seed1];
     fullInternalNode.yMins[0] = m_yMinBuff[seed1];
     fullInternalNode.xMaxs[0] = m_xMaxBuff[seed1];
@@ -417,8 +416,7 @@ public final class RTree
     fullInternalNode.entryCount = 1;
     final int seed2 = (int) seeds;
     final Node returnThis = new Node(m_maxBranches, false);
-    final InternalNodeData rData = returnThis.data;
-    rData.children[0] = m_childrenBuff[seed2];
+    returnThis.data.children[0] = m_childrenBuff[seed2];
     returnThis.xMins[0] = m_xMinBuff[seed2];
     returnThis.yMins[0] = m_yMinBuff[seed2];
     returnThis.xMaxs[0] = m_xMaxBuff[seed2];
@@ -554,6 +552,22 @@ public final class RTree
         m_xMaxBuff[i] = m_xMaxBuff[iPlusOne];
         m_yMaxBuff[i] = m_yMaxBuff[iPlusOne];
         validTempBuff[i] = validTempBuff[iPlusOne]; } }
+
+    fullInternalNode.data.deepCount = 0; // Update deep counts.
+    if (isLeafNode(fullInternalNode.data.children[0])) {
+      for (int i = 0; i < fullInternalNode.entryCount; i++)
+        fullInternalNode.data.deepCount +=
+          fullInternalNode.data.children[i].entryCount;
+      for (int i = 0; i < returnThis.entryCount; i++)
+        returnThis.data.deepCount +=
+          returnThis.data.children[i].entryCount; }
+    else {
+      for (int i = 0; i < fullInternalNode.entryCount; i++)
+        fullInternalNode.data.deepCount +=
+          fullInternalNode.data.children[i].data.deepCount;
+      for (int i = 0; i < returnThis.entryCount; i++)
+        returnThis.data.deepCount +=
+          returnThis.data.children[i].data.deepCount; }
 
     // Null things out to enable garbage collection.
     for (int i = fullInternalNode.entryCount; i < data.children.length;)
