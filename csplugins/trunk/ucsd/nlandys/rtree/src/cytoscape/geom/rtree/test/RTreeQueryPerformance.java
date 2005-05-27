@@ -50,9 +50,9 @@ public class RTreeQueryPerformance
           (((double) nonnegative) / ((double) 0x7fffffff)) / sqrtN;
         tree.insert(inx,
                     centerX - (width / 2.0d),
-                    centerY - (width / 2.0d),
+                    centerY - (height / 2.0d),
                     centerX + (width / 2.0d),
-                    centerY + (width / 2.0d));
+                    centerY + (height / 2.0d));
         inx++; }
       if (inx < N) throw new IOException("premature end of input");
     }
