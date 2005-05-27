@@ -13,7 +13,7 @@ package cytoscape.util.intr;
  * expanding in size is amortized over the contstant time complexity needed to
  * insert new elements.<p>
  */
-final class IntObjHash
+public final class IntObjHash
 {
   
   private static final int[] PRIMES = { 11, 23, 47, 97, 197, 397, 797, 1597,
