@@ -37,7 +37,8 @@ public final class IntObjHash
    * are expensive computationally and result in a doubling of the amount of
    * memory consumed; this function is a hook for users of hashtables to do
    * smart things when an underlying size expansion is about to happen.
-   * Returns -1 if a hashtable cannot hold the number of keys specified.
+   * Returns -1 if a hashtable cannot hold the number of keys specified
+   * (num too large for algorithms to work).
    */
   public final static int maxCapacity(final int num)
   {
