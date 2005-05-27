@@ -182,17 +182,19 @@ public final class RTree
       newRoot.yMins[0] = m_root.yMins[m_maxBranches - 1];
       newRoot.xMaxs[0] = m_root.xMaxs[m_maxBranches - 1];
       newRoot.yMaxs[0] = m_root.yMaxs[m_maxBranches - 1];
-      newRoot.areas[0] = m_root.areas[m_maxBranches - 1];
+      newRoot.data.areas[0] = (newRoot.xMaxs[0] - newRoot.xMins[0]) *
+        (newRoot.yMaxs[0] - newRoot.yMins[0]);
       newRoot.xMins[1] = rootSplit.xMins[m_maxBranches - 1];
       newRoot.yMins[1] = rootSplit.yMins[m_maxBranches - 1];
       newRoot.xMaxs[1] = rootSplit.xMaxs[m_maxBranches - 1];
       newRoot.yMaxs[1] = rootSplit.yMaxs[m_maxBranches - 1];
-      newRoot.areas[1] = rootSplit.areas[m_maxBranches - 1];
-      if (isLeafNode(m_root))
-        newRoot.data.deepCount = m_root.entryCount + rootSplit.entryCount;
-      else
+      newRoot.data.areas[1] = (newRoot.xMaxs[1] - newRoot.xMins[1]) *
+        (newRoot.yMaxs[1] - newRoot.yMins[1]);
+      if (isLeafNode(m_root)) {
+        newRoot.data.deepCount = m_root.entryCount + rootSplit.entryCount; }
+      else {
         newRoot.data.deepCount =
-          m_root.data.deepCount + rootSplit.data.deepCount;
+          m_root.data.deepCount + rootSplit.data.deepCount; }
       m_root = newRoot;
       m_MBR[0] = Math.min(m_root.xMins[0], m_root.xMins[1]);
       m_MBR[1] = Math.min(m_root.yMins[0], m_root.yMins[1]);
@@ -231,7 +233,6 @@ public final class RTree
       chosenLeaf.objKeys[newInx] = objKey;
       chosenLeaf.xMins[newInx] = xMin; chosenLeaf.yMins[newInx] = yMin;
       chosenLeaf.xMaxs[newInx] = xMax; chosenLeaf.yMaxs[newInx] = yMax;
-      chosenLeaf.areas[newInx] = (xMax - xMin) * (yMax - yMin);
       entryMap.put(objKey, chosenLeaf);
       adjustTreeNoSplit(chosenLeaf, deepCountIncrease, globalMBR);
       return null; }
@@ -284,7 +285,7 @@ public final class RTree
       chosenParent.data.children[newInx] = n;
       chosenParent.xMins[newInx] = xMin; chosenParent.yMins[newInx] = yMin;
       chosenParent.xMaxs[newInx] = xMax; chosenParent.yMaxs[newInx] = yMax;
-      chosenParent.areas[newInx] = (xMax - xMin) * (yMax - yMin);
+      chosenParent.data.areas[newInx] = (xMax - xMin) * (yMax - yMin);
       chosenParent.data.deepCount += deepCountIncrease;
       adjustTreeNoSplit(chosenParent, deepCountIncrease, globalMBR);
       return null; }
@@ -335,6 +336,7 @@ public final class RTree
    * Returns the index of entry in n whose rectangular boundary
    * needs least enlargment to swallow the input rectangle.  Ties are resolved
    * by choosing the entry with the rectangle of smallest area.
+   * The input node cannot be a leaf node.
    */
   private final static int chooseSubtree(final Node n,
                                          final double xMin, final double yMin,
@@ -344,7 +346,7 @@ public final class RTree
     double bestArea = Double.POSITIVE_INFINITY;
     int bestInx = -1;
     for (int i = 0; i < n.entryCount; i++) {
-      final double currArea = n.areas[i];
+      final double currArea = n.data.areas[i];
       final double currAreaDelta =
         ((Math.max(n.xMaxs[i], xMax) - Math.min(n.xMins[i], xMin)) *
          (Math.max(n.yMaxs[i], yMax) - Math.min(n.yMins[i], yMin))) - currArea;
@@ -390,7 +392,8 @@ public final class RTree
       yMinBuff[i] = fullLeafNode.yMins[i];
       xMaxBuff[i] = fullLeafNode.xMaxs[i];
       yMaxBuff[i] = fullLeafNode.yMaxs[i];
-      areaBuff[i] = fullLeafNode.areas[i]; }
+      areaBuff[i] = (xMaxBuff[i] - xMinBuff[i]) * (yMaxBuff[i] - yMinBuff[i]);
+    }
     objKeyBuff[fullLeafNode.entryCount] = newObjKey;
     xMinBuff[fullLeafNode.entryCount] = newXMin;
     yMinBuff[fullLeafNode.entryCount] = newYMin;
@@ -409,7 +412,6 @@ public final class RTree
     fullLeafNode.yMins[0] = yMinBuff[seed1];
     fullLeafNode.xMaxs[0] = xMaxBuff[seed1];
     fullLeafNode.yMaxs[0] = yMaxBuff[seed1];
-    fullLeafNode.areas[0] = areaBuff[seed1];
     fullLeafNode.entryCount = 1;
     final int seed2 = (int) seeds;
     final Node returnThis = new Node(maxBranches, true);
@@ -418,7 +420,6 @@ public final class RTree
     returnThis.yMins[0] = yMinBuff[seed2];
     returnThis.xMaxs[0] = xMaxBuff[seed2];
     returnThis.yMaxs[0] = yMaxBuff[seed2];
-    returnThis.areas[0] = areaBuff[seed2];
     returnThis.entryCount = 1;
 
     // Initialize the overall MBRs at index maxBranches - 1.
@@ -426,12 +427,10 @@ public final class RTree
     fullLeafNode.yMins[maxBranches - 1] = fullLeafNode.yMins[0];
     fullLeafNode.xMaxs[maxBranches - 1] = fullLeafNode.xMaxs[0];
     fullLeafNode.yMaxs[maxBranches - 1] = fullLeafNode.yMaxs[0];
-    fullLeafNode.areas[maxBranches - 1] = fullLeafNode.areas[0];
     returnThis.xMins[maxBranches - 1] = returnThis.xMins[0];
     returnThis.yMins[maxBranches - 1] = returnThis.yMins[0];
     returnThis.xMaxs[maxBranches - 1] = returnThis.xMaxs[0];
     returnThis.yMaxs[maxBranches - 1] = returnThis.yMaxs[0];
-    returnThis.areas[maxBranches - 1] = returnThis.areas[0];
 
     // Plug the holes where seeds used to be.
     int entriesRemaining = totalEntries;
@@ -474,7 +473,6 @@ public final class RTree
           restGroup.yMins[newInx] = yMinBuff[i];
           restGroup.xMaxs[newInx] = xMaxBuff[i];
           restGroup.yMaxs[newInx] = yMaxBuff[i];
-          restGroup.areas[newInx] = areaBuff[i];
 
           // Update the overall MBR of "rest" group.
           restGroup.xMins[maxBranches - 1] =
@@ -486,24 +484,27 @@ public final class RTree
           restGroup.yMaxs[maxBranches - 1] =
             Math.max(restGroup.yMaxs[maxBranches - 1], yMaxBuff[i]); }
 
-        restGroup.areas[maxBranches - 1] =
-          (restGroup.xMaxs[maxBranches - 1] -
-           restGroup.xMins[maxBranches - 1]) *
-          (restGroup.yMaxs[maxBranches - 1] -
-           restGroup.yMins[maxBranches - 1]);
         break; }
 
       // We're not done; pick next.
       final int next = pickNext
-        (fullLeafNode, returnThis, entriesRemaining, maxBranches,
-         xMinBuff, yMinBuff, xMaxBuff, yMaxBuff,
-         tempBuff1, buff1Valid, tempBuff2, buff2Valid);
+        (fullLeafNode, returnThis, entriesRemaining, maxBranches, xMinBuff,
+         yMinBuff, xMaxBuff, yMaxBuff, tempBuff1, buff1Valid, tempBuff2,
+         buff2Valid);
       final boolean chooseGroup1;
       if (tempBuff1[next] < tempBuff2[next]) chooseGroup1 = true;
       else if (tempBuff1[next] > tempBuff2[next]) chooseGroup1 = false;
       else { // Tie for how much group's covering rectangle will increase.
-        final double group1Area = fullLeafNode.areas[maxBranches - 1];
-        final double group2Area = returnThis.areas[maxBranches - 1];
+        final double group1Area =
+          (fullLeafNode.xMaxs[maxBranches - 1] -
+           fullLeafNode.xMins[maxBranches - 1]) *
+          (fullLeafNode.yMaxs[maxBranches - 1] -
+           fullLeafNode.yMins[maxBranches - 1]);
+        final double group2Area =
+          (returnThis.xMaxs[maxBranches - 1] -
+           returnThis.xMins[maxBranches - 1]) *
+          (returnThis.yMaxs[maxBranches - 1] -
+           returnThis.yMins[maxBranches - 1]);
         if (group1Area < group2Area) chooseGroup1 = true;
         else if (group1Area > group2Area) chooseGroup1 = false;
         else // Tie for group MBR area as well.
@@ -527,7 +528,6 @@ public final class RTree
       chosenGroup.yMins[newInx] = yMinBuff[next];
       chosenGroup.xMaxs[newInx] = xMaxBuff[next];
       chosenGroup.yMaxs[newInx] = yMaxBuff[next];
-      chosenGroup.areas[newInx] = areaBuff[next];
 
       // Update the MBR of chosen group.
       // Note: If we see that the MBR stays the same, we could mark the
@@ -542,11 +542,6 @@ public final class RTree
         Math.max(chosenGroup.xMaxs[maxBranches - 1], xMaxBuff[next]);
       chosenGroup.yMaxs[maxBranches - 1] =
         Math.max(chosenGroup.yMaxs[maxBranches - 1], yMaxBuff[next]);
-      chosenGroup.areas[maxBranches - 1] =
-        (chosenGroup.xMaxs[maxBranches - 1] -
-         chosenGroup.xMins[maxBranches - 1]) *
-        (chosenGroup.yMaxs[maxBranches - 1] -
-         chosenGroup.yMins[maxBranches - 1]);
 
       // Plug the hole where next used to be.
       if (next != --entriesRemaining) {
@@ -600,7 +595,7 @@ public final class RTree
       yMinBuff[i] = fullInternalNode.yMins[i];
       xMaxBuff[i] = fullInternalNode.xMaxs[i];
       yMaxBuff[i] = fullInternalNode.yMaxs[i];
-      areaBuff[i] = fullInternalNode.areas[i]; }
+      areaBuff[i] = fullInternalNode.data.areas[i]; }
     childrenBuff[fullInternalNode.entryCount] = newChild;
     xMinBuff[fullInternalNode.entryCount] = newXMin;
     yMinBuff[fullInternalNode.entryCount] = newYMin;
@@ -620,7 +615,7 @@ public final class RTree
     fullInternalNode.yMins[0] = yMinBuff[seed1];
     fullInternalNode.xMaxs[0] = xMaxBuff[seed1];
     fullInternalNode.yMaxs[0] = yMaxBuff[seed1];
-    fullInternalNode.areas[0] = areaBuff[seed1];
+    fullInternalNode.data.areas[0] = areaBuff[seed1];
     fullInternalNode.entryCount = 1;
     final int seed2 = (int) seeds;
     final Node returnThis = new Node(maxBranches, false);
@@ -630,7 +625,7 @@ public final class RTree
     returnThis.yMins[0] = yMinBuff[seed2];
     returnThis.xMaxs[0] = xMaxBuff[seed2];
     returnThis.yMaxs[0] = yMaxBuff[seed2];
-    returnThis.areas[0] = areaBuff[seed2];
+    returnThis.data.areas[0] = areaBuff[seed2];
     returnThis.entryCount = 1;
 
     // Initialize the overall MBRs at index maxBranches - 1.
@@ -638,12 +633,13 @@ public final class RTree
     fullInternalNode.yMins[maxBranches - 1] = fullInternalNode.yMins[0];
     fullInternalNode.xMaxs[maxBranches - 1] = fullInternalNode.xMaxs[0];
     fullInternalNode.yMaxs[maxBranches - 1] = fullInternalNode.yMaxs[0];
-    fullInternalNode.areas[maxBranches - 1] = fullInternalNode.areas[0];
+    fullInternalNode.data.areas[maxBranches - 1] =
+      fullInternalNode.data.areas[0];
     returnThis.xMins[maxBranches - 1] = returnThis.xMins[0];
     returnThis.yMins[maxBranches - 1] = returnThis.yMins[0];
     returnThis.xMaxs[maxBranches - 1] = returnThis.xMaxs[0];
     returnThis.yMaxs[maxBranches - 1] = returnThis.yMaxs[0];
-    returnThis.areas[maxBranches - 1] = returnThis.areas[0];
+    returnThis.data.areas[maxBranches - 1] = returnThis.data.areas[0];
 
     // Plug the holes where seeds used to be.
     int entriesRemaining = totalEntries;
@@ -687,7 +683,7 @@ public final class RTree
           restGroup.yMins[newInx] = yMinBuff[i];
           restGroup.xMaxs[newInx] = xMaxBuff[i];
           restGroup.yMaxs[newInx] = yMaxBuff[i];
-          restGroup.areas[newInx] = areaBuff[i];
+          restGroup.data.areas[newInx] = areaBuff[i];
 
           // Update the overall MBR of "rest" group.
           restGroup.xMins[maxBranches - 1] =
@@ -699,7 +695,7 @@ public final class RTree
           restGroup.yMaxs[maxBranches - 1] =
             Math.max(restGroup.yMaxs[maxBranches - 1], yMaxBuff[i]); }
 
-        restGroup.areas[maxBranches - 1] =
+        restGroup.data.areas[maxBranches - 1] =
           (restGroup.xMaxs[maxBranches - 1] -
            restGroup.xMins[maxBranches - 1]) *
           (restGroup.yMaxs[maxBranches - 1] -
@@ -708,15 +704,15 @@ public final class RTree
 
       // We're not done; pick next.
       final int next = pickNext
-        (fullInternalNode, returnThis, entriesRemaining, maxBranches,
-         xMinBuff, yMinBuff, xMaxBuff, yMaxBuff,
-         tempBuff1, buff1Valid, tempBuff2, buff2Valid);
+        (fullInternalNode, returnThis, entriesRemaining, maxBranches, xMinBuff,
+         yMinBuff, xMaxBuff, yMaxBuff, tempBuff1, buff1Valid, tempBuff2,
+         buff2Valid);
       final boolean chooseGroup1;
       if (tempBuff1[next] < tempBuff2[next]) chooseGroup1 = true;
       else if (tempBuff1[next] > tempBuff2[next]) chooseGroup1 = false;
       else { // Tie for how much group's covering rectangle will increase.
-        final double group1Area = fullInternalNode.areas[maxBranches - 1];
-        final double group2Area = returnThis.areas[maxBranches - 1];
+        final double group1Area = fullInternalNode.data.areas[maxBranches - 1];
+        final double group2Area = returnThis.data.areas[maxBranches - 1];
         if (group1Area < group2Area) chooseGroup1 = true;
         else if (group1Area > group2Area) chooseGroup1 = false;
         else // Tie for group MBR area as well.
@@ -741,7 +737,7 @@ public final class RTree
       chosenGroup.yMins[newInx] = yMinBuff[next];
       chosenGroup.xMaxs[newInx] = xMaxBuff[next];
       chosenGroup.yMaxs[newInx] = yMaxBuff[next];
-      chosenGroup.areas[newInx] = areaBuff[next];
+      chosenGroup.data.areas[newInx] = areaBuff[next];
 
       // Update the MBR of chosen group.
       // Note: If we see that the MBR stays the same, we could mark the
@@ -756,7 +752,7 @@ public final class RTree
         Math.max(chosenGroup.xMaxs[maxBranches - 1], xMaxBuff[next]);
       chosenGroup.yMaxs[maxBranches - 1] =
         Math.max(chosenGroup.yMaxs[maxBranches - 1], yMaxBuff[next]);
-      chosenGroup.areas[maxBranches - 1] =
+      chosenGroup.data.areas[maxBranches - 1] =
         (chosenGroup.xMaxs[maxBranches - 1] -
          chosenGroup.xMins[maxBranches - 1]) *
         (chosenGroup.yMaxs[maxBranches - 1] -
@@ -855,21 +851,27 @@ public final class RTree
                                     final boolean buff2Valid)
   {
     if (!buff1Valid) {
+      final double group1Area =
+        (group1.xMaxs[maxBranches - 1] - group1.xMins[maxBranches - 1]) *
+        (group1.yMaxs[maxBranches - 1] - group1.yMins[maxBranches - 1]);
       for (int i = 0; i < count; i++) {
         tempBuff1[i] =
           ((Math.max(group1.xMaxs[maxBranches - 1], xMaxs[i]) -
             Math.min(group1.xMins[maxBranches - 1], xMins[i])) *
            (Math.max(group1.yMaxs[maxBranches - 1], yMaxs[i]) -
             Math.min(group1.yMins[maxBranches - 1], yMins[i]))) -
-          group1.areas[maxBranches - 1]; } }
+          group1Area; } }
     if (!buff2Valid) {
+      final double group2Area =
+        (group2.xMaxs[maxBranches - 1] - group2.xMins[maxBranches - 1]) *
+        (group2.yMaxs[maxBranches - 1] - group2.yMins[maxBranches - 1]);
       for (int i = 0; i < count; i++) {
         tempBuff2[i] =
           ((Math.max(group2.xMaxs[maxBranches - 1], xMaxs[i]) -
             Math.min(group2.xMins[maxBranches - 1], xMins[i])) *
            (Math.max(group2.yMaxs[maxBranches - 1], yMaxs[i]) -
             Math.min(group2.yMins[maxBranches - 1], yMins[i]))) -
-          group2.areas[maxBranches - 1]; } }
+          group2Area; } }
     double maxDDifference = Double.NEGATIVE_INFINITY;
     int maxInx = -1;
     for (int i = 0; i < count; i++) {
@@ -928,7 +930,7 @@ public final class RTree
         else { // n's overall MBR did increase in size.
           p.xMins[nInxInP] = newXMin; p.yMins[nInxInP] = newYMin;
           p.xMaxs[nInxInP] = newXMax; p.yMaxs[nInxInP] = newYMax;
-          p.areas[nInxInP] = (newXMax - newXMin) * (newYMax - newYMin);
+          p.data.areas[nInxInP] = (newXMax - newXMin) * (newYMax - newYMin);
           currModInx = nInxInP; } }
 
       n = p; } 
@@ -996,7 +998,8 @@ public final class RTree
         p.yMins[nInxInP] = n.yMins[maxBranches - 1]; // overall MBR at inx
         p.xMaxs[nInxInP] = n.xMaxs[maxBranches - 1]; // maxBranches - 1.
         p.yMaxs[nInxInP] = n.yMaxs[maxBranches - 1];
-        p.areas[nInxInP] = n.areas[maxBranches - 1];
+        p.data.areas[nInxInP] = (p.xMaxs[nInxInP] - p.xMins[nInxInP]) *
+          (p.yMaxs[nInxInP] - p.yMins[nInxInP]);
 
         if (p.entryCount < maxBranches) { // No further split is necessary.
           final int newInxInP = p.entryCount++;
@@ -1006,7 +1009,8 @@ public final class RTree
           p.yMins[newInxInP] = nn.yMins[maxBranches - 1]; // overall MBR at inx
           p.xMaxs[newInxInP] = nn.xMaxs[maxBranches - 1]; // maxBranches - 1.
           p.yMaxs[newInxInP] = nn.yMaxs[maxBranches - 1];
-          p.areas[newInxInP] = nn.areas[maxBranches - 1];
+          p.data.areas[newInxInP] = (p.xMaxs[newInxInP] - p.xMins[newInxInP]) *
+            (p.yMaxs[newInxInP] - p.yMins[newInxInP]);
 
           // The recursive step.
           currModInx = nInxInP;
@@ -1047,7 +1051,7 @@ public final class RTree
         else {
           p.xMins[nInxInP] = newXMin; p.yMins[nInxInP] = newYMin;
           p.xMaxs[nInxInP] = newXMax; p.yMaxs[nInxInP] = newYMax;
-          p.areas[nInxInP] = (newXMax - newXMin) * (newYMax - newYMin);
+          p.data.areas[nInxInP] = (newXMax - newXMin) * (newYMax - newYMin);
           currModInx = nInxInP; } }
 
       n = p; } // End while loop.
@@ -1127,8 +1131,7 @@ public final class RTree
       n.xMins[delInx] = n.xMins[n.entryCount];
       n.yMins[delInx] = n.yMins[n.entryCount];
       n.xMaxs[delInx] = n.xMaxs[n.entryCount];
-      n.yMaxs[delInx] = n.yMaxs[n.entryCount];
-      n.areas[delInx] = n.areas[n.entryCount]; }
+      n.yMaxs[delInx] = n.yMaxs[n.entryCount]; }
 
     // Fix up the tree from leaf to root.
     int currentDepth = condenseTree(n, 1, m_nodeStack, m_minBranches, m_MBR) -
@@ -1164,12 +1167,14 @@ public final class RTree
           newRoot.yMins[0] = m_root.yMins[m_maxBranches - 1];
           newRoot.xMaxs[0] = m_root.xMaxs[m_maxBranches - 1];
           newRoot.yMaxs[0] = m_root.yMaxs[m_maxBranches - 1];
-          newRoot.areas[0] = m_root.areas[m_maxBranches - 1];
+          newRoot.data.areas[0] = (newRoot.xMaxs[0] - newRoot.xMins[0]) *
+            (newRoot.yMaxs[0] - newRoot.yMins[0]);
           newRoot.xMins[1] = rootSplit.xMins[m_maxBranches - 1];
           newRoot.yMins[1] = rootSplit.yMins[m_maxBranches - 1];
           newRoot.xMaxs[1] = rootSplit.xMaxs[m_maxBranches - 1];
           newRoot.yMaxs[1] = rootSplit.yMaxs[m_maxBranches - 1];
-          newRoot.areas[1] = rootSplit.areas[m_maxBranches - 1];
+          newRoot.data.areas[1] = (newRoot.xMaxs[1] - newRoot.xMins[1]) *
+            (newRoot.yMaxs[1] - newRoot.yMins[1]);
           newRoot.data.deepCount =
             m_root.data.deepCount + rootSplit.data.deepCount;
           m_root = newRoot;
@@ -1254,7 +1259,7 @@ public final class RTree
           p.yMins[nInxInP] = p.yMins[p.entryCount];
           p.xMaxs[nInxInP] = p.xMaxs[p.entryCount];
           p.yMaxs[nInxInP] = p.yMaxs[p.entryCount];
-          p.areas[nInxInP] = p.areas[p.entryCount]; }
+          p.data.areas[nInxInP] = p.data.areas[p.entryCount]; }
         p.data.children[p.entryCount] = null; // Important for gc.
         n.parent = null; // For some strange reason removing this line will
                          // cause OutOfMemoryError in the basic quiet test.
@@ -1282,7 +1287,7 @@ public final class RTree
               oldXMax == p.xMaxs[nInxInP] && oldYMax == p.yMaxs[nInxInP])
             updateMBR = false;
           else
-            p.areas[nInxInP] = (p.xMaxs[nInxInP] - p.xMins[nInxInP]) *
+            p.data.areas[nInxInP] = (p.xMaxs[nInxInP] - p.xMins[nInxInP]) *
               (p.yMaxs[nInxInP] - p.yMins[nInxInP]); } }
 
       // Update deep count and make the necessary recursive steps.
@@ -1457,7 +1462,6 @@ public final class RTree
     private final double[] yMins;
     private final double[] xMaxs;
     private final double[] yMaxs;
-    private final double[] areas;
     private final int[] objKeys; // null if and only if internal node.
     private final InternalNodeData data;
     private Node(final int maxBranches, final boolean leafNode) {
@@ -1465,7 +1469,6 @@ public final class RTree
       yMins = new double[maxBranches];
       xMaxs = new double[maxBranches];
       yMaxs = new double[maxBranches];
-      areas = new double[maxBranches];
       if (leafNode) { objKeys = new int[maxBranches]; data = null; }
       else { objKeys = null; data = new InternalNodeData(maxBranches); } }
   }
@@ -1474,8 +1477,10 @@ public final class RTree
   {
     private int deepCount = 0;
     private final Node[] children;
+    private final double[] areas;
     private InternalNodeData(final int maxBranches) {
-      children = new Node[maxBranches]; }
+      children = new Node[maxBranches];
+      areas = new double[maxBranches]; }
   }
 
   private final static class OverlapEnumerator implements IntEnumerator
