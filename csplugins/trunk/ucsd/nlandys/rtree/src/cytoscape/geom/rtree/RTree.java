@@ -185,9 +185,9 @@ public final class RTree
    * algorithm as the most suitable leaf node [under specified root] in
    * which to place specified new entry.
    */
-  private final static Node chooseLeaf(final Node root,
-                                       final double xMin, final double yMin,
-                                       final double xMax, final double yMax)
+  private final Node chooseLeaf(final Node root,
+                                final double xMin, final double yMin,
+                                final double xMax, final double yMax)
   {
     Node n = root;
     while (!isLeafNode(n))
@@ -200,9 +200,9 @@ public final class RTree
    * needs least enlargment to swallow the input rectangle.  Ties are resolved
    * by choosing the entry with the rectangle of smallest area.
    */
-  private final static int chooseSubtree(final Node n,
-                                         final double xMin, final double yMin,
-                                         final double xMax, final double yMax)
+  private final int chooseSubtree(final Node n,
+                                  final double xMin, final double yMin,
+                                  final double xMax, final double yMax)
   {
     double bestAreaDelta = Double.POSITIVE_INFINITY;
     double bestArea = Double.POSITIVE_INFINITY;
@@ -235,21 +235,21 @@ public final class RTree
    * corresponding node.  The node returned is also a leaf node.
    * No claim is made as to the resulting values in the buff arrays.
    */
-  private final static Node splitLeafNode(final Node fullLeafNode,
-                                          final int newObjKey,
-                                          final double newXMin,
-                                          final double newYMin,
-                                          final double newXMax,
-                                          final double newYMax,
-                                          final int maxBranches,
-                                          final int minBranches,
-                                          final int[] objKeyBuff,
-                                          final double[] xMinBuff,
-                                          final double[] yMinBuff,
-                                          final double[] xMaxBuff,
-                                          final double[] yMaxBuff,
-                                          final double[] tempBuff1,
-                                          final double[] tempBuff2)
+  private final Node splitLeafNode(final Node fullLeafNode,
+                                   final int newObjKey,
+                                   final double newXMin,
+                                   final double newYMin,
+                                   final double newXMax,
+                                   final double newYMax,
+                                   final int maxBranches,
+                                   final int minBranches,
+                                   final int[] objKeyBuff,
+                                   final double[] xMinBuff,
+                                   final double[] yMinBuff,
+                                   final double[] xMaxBuff,
+                                   final double[] yMaxBuff,
+                                   final double[] tempBuff1,
+                                   final double[] tempBuff2)
   {
     // Copy node MBRs and objKeys and new MBR and objKey into arrays.
     for (int i = 0; i < fullLeafNode.entryCount; i++) {
@@ -436,21 +436,21 @@ public final class RTree
    * than the claim that all entries in childrenBuff will be null when this
    * method returns.
    */
-  private final static Node splitInternalNode(final Node fullInternalNode,
-                                              final Node newChild,
-                                              final double newXMin,
-                                              final double newYMin,
-                                              final double newXMax,
-                                              final double newYMax,
-                                              final int maxBranches,
-                                              final int minBranches,
-                                              final Node[] childrenBuff,
-                                              final double[] xMinBuff,
-                                              final double[] yMinBuff,
-                                              final double[] xMaxBuff,
-                                              final double[] yMaxBuff,
-                                              final double[] tempBuff1,
-                                              final double[] tempBuff2)
+  private final Node splitInternalNode(final Node fullInternalNode,
+                                       final Node newChild,
+                                       final double newXMin,
+                                       final double newYMin,
+                                       final double newXMax,
+                                       final double newYMax,
+                                       final int maxBranches,
+                                       final int minBranches,
+                                       final Node[] childrenBuff,
+                                       final double[] xMinBuff,
+                                       final double[] yMinBuff,
+                                       final double[] xMaxBuff,
+                                       final double[] yMaxBuff,
+                                       final double[] tempBuff1,
+                                       final double[] tempBuff2)
   {
     // Copy node MBRs and children and new MBR and child into arrays.
     for (int i = 0; i < fullInternalNode.entryCount; i++) {
@@ -659,12 +659,12 @@ public final class RTree
    * arrays are modified except for tempBuff.  tempBuff is populated with
    * the areas of the MBRs.
    */
-  private final static long pickSeeds(final int count,
-                                      final double[] xMins,
-                                      final double[] yMins,
-                                      final double[] xMaxs,
-                                      final double[] yMaxs,
-                                      final double[] tempBuff)
+  private final long pickSeeds(final int count,
+                               final double[] xMins,
+                               final double[] yMins,
+                               final double[] xMaxs,
+                               final double[] yMaxs,
+                               final double[] tempBuff)
   {
     for (int i = 0; i < count; i++)
       tempBuff[i] = (xMaxs[i] - xMins[i]) * (yMaxs[i] - yMins[i]); // Area.
@@ -696,18 +696,18 @@ public final class RTree
    * m_maxBranches - 1.  None of the input variables are modified except
    * for tempBuff1 and tempBuff2.
    */
-  private final static int pickNext(final Node group1,
-                                    final Node group2,
-                                    final int count,
-                                    final int maxBranches,
-                                    final double[] xMins,
-                                    final double[] yMins,
-                                    final double[] xMaxs,
-                                    final double[] yMaxs,
-                                    final double[] tempBuff1,
-                                    final boolean buff1Valid,
-                                    final double[] tempBuff2,
-                                    final boolean buff2Valid)
+  private final int pickNext(final Node group1,
+                             final Node group2,
+                             final int count,
+                             final int maxBranches,
+                             final double[] xMins,
+                             final double[] yMins,
+                             final double[] xMaxs,
+                             final double[] yMaxs,
+                             final double[] tempBuff1,
+                             final boolean buff1Valid,
+                             final double[] tempBuff2,
+                             final boolean buff2Valid)
   {
     if (!buff1Valid) {
       // If we had an area cache array field in each node we could prevent
@@ -752,8 +752,8 @@ public final class RTree
    * knowledge to optimize this function.  Deep counts are updated from
    * leaf to root.
    */
-  private final static void adjustTreeNoSplit(final Node leafNode,
-                                              final double[] globalMBR)
+  private final void adjustTreeNoSplit(final Node leafNode,
+                                       final double[] globalMBR)
   {
     int currModInx = leafNode.entryCount - 1;
     Node n = leafNode;
@@ -809,18 +809,18 @@ public final class RTree
    * originalLeafNode's parent - if it does not fit, the parent is split,
    * and the split may go recursively upwards towards the root.
    */
-  private final static Node adjustTreeWithSplit(final Node originalLeafNode,
-                                                final Node newLeafNode,
-                                                final int maxBranches,
-                                                final int minBranches,
-                                                final double[] globalMBR,
-                                                final Node[] childrenBuff,
-                                                final double[] xMinBuff,
-                                                final double[] yMinBuff,
-                                                final double[] xMaxBuff,
-                                                final double[] yMaxBuff,
-                                                final double[] tempBuff1,
-                                                final double[] tempBuff2)
+  private final Node adjustTreeWithSplit(final Node originalLeafNode,
+                                         final Node newLeafNode,
+                                         final int maxBranches,
+                                         final int minBranches,
+                                         final double[] globalMBR,
+                                         final Node[] childrenBuff,
+                                         final double[] xMinBuff,
+                                         final double[] yMinBuff,
+                                         final double[] xMaxBuff,
+                                         final double[] yMaxBuff,
+                                         final double[] tempBuff1,
+                                         final double[] tempBuff2)
   {
     int currModInx = -1;
     boolean newNodeAdded = false; // New node added as last entry in n?
@@ -1070,13 +1070,13 @@ public final class RTree
    * the IntStack is of positive length, then the IntStack contains indices of
    * entries that overlap the query rectangle.
    */
-  private final static int queryOverlap(final ObjStack unprocessedNodes,
-                                        final double[] extentsStack,
-                                        final ObjStack nodeStack,
-                                        final ObjStack stackStack,
-                                        final double xMinQ, final double yMinQ,
-                                        final double xMaxQ, final double yMaxQ,
-                                        final double[] extents, final int off)
+  private final int queryOverlap(final ObjStack unprocessedNodes,
+                                 final double[] extentsStack,
+                                 final ObjStack nodeStack,
+                                 final ObjStack stackStack,
+                                 final double xMinQ, final double yMinQ,
+                                 final double xMaxQ, final double yMaxQ,
+                                 final double[] extents, final int off)
   { // Depth first search.
     int count = 0;
     int extentsOffset = 4; // Into extentsStack.
