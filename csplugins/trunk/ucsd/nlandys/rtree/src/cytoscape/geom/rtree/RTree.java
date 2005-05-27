@@ -70,8 +70,8 @@ public final class RTree
     m_tempBuff2 = new double[m_maxBranches + 1];
 
     // With a m_maxBranches of 7, m_minBranches will be 3, and such a tree of
-    // depth 15 holds at least 14 million entries.
-    m_extentsStack = new double[15 * 7 * 4];
+    // depth 20 holds at least 3,4 billion entries.
+    m_extentsStack = new double[20 * 7 * 4];
     m_nodeStack = new ObjStack();
   }
 
@@ -1071,7 +1071,7 @@ public final class RTree
    * entries that overlap the query rectangle.
    */
   private final static int queryOverlap(final ObjStack unprocessedNodes,
-                                        final double[] extentsStack,
+                                        final double[] extStack,
                                         final ObjStack nodeStack,
                                         final ObjStack stackStack,
                                         final double xMinQ, final double yMinQ,
@@ -1079,25 +1079,24 @@ public final class RTree
                                         final double[] extents, final int off)
   { // Depth first search.
     int count = 0;
-    int extentsOffset = 4; // Into extentsStack.
+    int extOff = 4; // Into extStack.
     while (unprocessedNodes.size() > 0) {
       final Node n = (Node) unprocessedNodes.pop();
-      final double yMaxN = extentsStack[--extentsOffset];
-      final double xMaxN = extentsStack[--extentsOffset];
-      final double yMinN = extentsStack[--extentsOffset];
-      final double xMinN = extentsStack[--extentsOffset];
-      if ((xMinQ <= xMinN) && (xMaxQ >= xMaxN) && // Does rectangle Q contain
-          (yMinQ <= yMinN) && (yMaxQ >= yMaxN)) { // rectangle N?
-        // Trivially include node.
+      extOff -= 4;
+      if ((xMinQ <= extStack[extOff]) &&     // Rectangle Q contains
+          (xMaxQ >= extStack[extOff + 2]) && // rectangle N - trivially
+          (yMinQ <= extStack[extOff + 1]) && // include node.
+          (yMaxQ >= extStack[extOff + 3])) {
         if (n.data == null) { // Leaf node.
           count += n.entryCount; stackStack.push(null); }
         else { count += n.data.deepCount; }
         nodeStack.push(n);
         if (extents != null) {
-          extents[off] = Math.min(extents[off], xMinN);
-          extents[off + 1] = Math.min(extents[off + 1], yMinN);
-          extents[off + 2] = Math.max(extents[off + 2], xMaxN);
-          extents[off + 3] = Math.max(extents[off + 3], yMaxN); } }
+          extents[off] = Math.min(extents[off], extStack[extOff]);
+          extents[off + 1] = Math.min(extents[off + 1], extStack[extOff + 1]);
+          extents[off + 2] = Math.max(extents[off + 2], extStack[extOff + 2]);
+          extents[off + 3] = Math.max(extents[off + 3], extStack[extOff + 3]);
+        } }
       else { // Cannot trivially include node; must recurse.
         if (n.data == null) { // Leaf node.
           final IntStack stack = new IntStack();
@@ -1122,10 +1121,11 @@ public final class RTree
             if ((Math.max(xMinQ, n.xMins[i]) <= Math.min(xMaxQ, n.xMaxs[i])) &&
                 (Math.max(yMinQ, n.yMins[i]) <= Math.min(yMaxQ, n.yMaxs[i]))) {
               unprocessedNodes.push(n.data.children[i]);
-              extentsStack[extentsOffset++] = n.xMins[i];
-              extentsStack[extentsOffset++] = n.yMins[i];
-              extentsStack[extentsOffset++] = n.xMaxs[i];
-              extentsStack[extentsOffset++] = n.yMaxs[i]; } } } } }
+              extStack[extOff] = n.xMins[i];
+              extStack[extOff + 1] = n.yMins[i];
+              extStack[extOff + 2] = n.xMaxs[i];
+              extStack[extOff + 3] = n.yMaxs[i];
+              extOff += 4; } } } } }
     return count;
   }
 
