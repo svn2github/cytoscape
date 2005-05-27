@@ -716,7 +716,8 @@ public final class RTree
   }
 
   /*
-   * It is assumed that the entry in the leaf node at index
+   * This method can only be used to adjust a tree after inserting a single
+   * new entry.  It is assumed that the entry in the leaf node at index
    * leafNode.entryCount - 1 is the only new entry.  We will use this
    * knowledge to optimize this function.  Deep counts are updated from
    * leaf to root.
@@ -752,14 +753,13 @@ public final class RTree
         final double newXMax = Math.max(p.xMaxs[nInxInP], n.xMaxs[currModInx]);
         final double newYMax = Math.max(p.yMaxs[nInxInP], n.yMaxs[currModInx]);
 
-        // If this MBR of all entries in n does not change, we don't need to
+        // If the overall MBR of n does not change, we don't need to
         // update any further MBRs, just deep counts.
         if (newXMin == p.xMins[nInxInP] && newYMin == p.yMins[nInxInP] &&
             newXMax == p.xMaxs[nInxInP] && newYMax == p.yMaxs[nInxInP]) {
           currModInx = -1; }
 
-        else {
-          // Set the computed MBR in the parent and move up the tree one step.
+        else { // n's overall MBR did increase in size.
           p.xMins[nInxInP] = newXMin; p.yMins[nInxInP] = newYMin;
           p.xMaxs[nInxInP] = newXMax; p.yMaxs[nInxInP] = newYMax;
           currModInx = nInxInP; } }
