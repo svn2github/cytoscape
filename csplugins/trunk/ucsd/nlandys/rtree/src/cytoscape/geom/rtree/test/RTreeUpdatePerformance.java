@@ -70,7 +70,7 @@ public class RTreeUpdatePerformance
                          (millisEnd - millisBegin) + " milliseconds");
     }
 
-    // Initial query test.
+    // Initial area query test.
     {
       for (int i = 0; i < 2; i++) { System.gc(); Thread.sleep(1000); }
       final long millisBegin = System.currentTimeMillis();
@@ -80,7 +80,21 @@ public class RTreeUpdatePerformance
                           ((double) (i + 1)) * 0.1d,
                           ((double) (i + 1)) * 0.1d, null, 0); }
       final long millisEnd = System.currentTimeMillis();
-      System.err.println("initial queries took " +
+      System.err.println("initial area queries (5) took " +
+                         (millisEnd - millisBegin) + " milliseconds");
+    }
+
+    // Initial point query test.
+    {
+      for (int i = 0; i < 2; i++) { System.gc(); Thread.sleep(1000); }
+      final long millisBegin = System.currentTimeMillis();
+      for (int i = 0; i < 5; i++) {
+        tree.queryOverlap(((double) i) * 0.1d,
+                          ((double) i) * 0.1d,
+                          ((double) i) * 0.1d,
+                          ((double) i) * 0.1d, null, 0); }
+      final long millisEnd = System.currentTimeMillis();
+      System.err.println("initial point queries (5) took " +
                          (millisEnd - millisBegin) + " milliseconds");
     }
 
@@ -101,7 +115,7 @@ public class RTreeUpdatePerformance
                            " milliseconds");
       }
 
-      // Repeated query test.
+      // Repeated area query test.
       {
         for (int i = 0; i < 2; i++) { System.gc(); Thread.sleep(1000); }
         final long millisBegin = System.currentTimeMillis();
@@ -128,7 +142,38 @@ public class RTreeUpdatePerformance
                                 ((double) (10 - i)) * 0.1d, null, 0); }
             break; }
         final long millisEnd = System.currentTimeMillis();
-        System.err.println("repeated queries took " +
+        System.err.println("repeated area queries (5) took " +
+                           (millisEnd - millisBegin) + " milliseconds");
+      }
+
+      // Repeated point query test.
+      {
+        for (int i = 0; i < 2; i++) { System.gc(); Thread.sleep(1000); }
+        final long millisBegin = System.currentTimeMillis();
+        switch (a) {
+          case 0:
+            for (int i = 0; i < 5; i++) {
+              tree.queryOverlap(((double) i) * 0.1d,
+                                ((double) (10 - i)) * 0.1d,
+                                ((double) i) * 0.1d,
+                                ((double) (10 - i)) * 0.1d, null, 0); }
+            break;
+          case 1:
+            for (int i = 0; i < 5; i++) {
+              tree.queryOverlap(((double) (10 - i)) * 0.1d,
+                                ((double) i) * 0.1d,
+                                ((double) (10 - i)) * 0.1d,
+                                ((double) i) * 0.1d, null, 0); }
+            break;
+          case 2:
+            for (int i = 0; i < 5; i++) {
+              tree.queryOverlap(((double) (10 - i)) * 0.1d,
+                                ((double) (10 - i)) * 0.1d,
+                                ((double) (10 - i)) * 0.1d,
+                                ((double) (10 - i)) * 0.1d, null, 0); }
+            break; }
+        final long millisEnd = System.currentTimeMillis();
+        System.err.println("repeated point queries (5) took " +
                            (millisEnd - millisBegin) + " milliseconds");
       }
     }
