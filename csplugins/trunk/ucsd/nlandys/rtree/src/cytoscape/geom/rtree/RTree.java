@@ -66,7 +66,7 @@ public final class RTree
     m_root = new Node(m_maxBranches, true);
     m_entryMap = new IntObjHash();
     m_deletedEntries = 0;
-    m_mapExpansionThreshold = IntObjHash.maxCapacity(0);
+    m_mapExpansionThreshold = IntObjHash.maxCapacity(m_entryMap.size());
     m_objKeyBuff = new int[m_maxBranches + 1];
     m_childrenBuff = new Node[m_maxBranches + 1];
     m_xMinBuff = new double[m_maxBranches + 1];
@@ -92,7 +92,7 @@ public final class RTree
     m_root = new Node(m_maxBranches, true);
     m_entryMap = new IntObjHash();
     m_deletedEntries = 0;
-    m_mapExpansionThreshold = IntObjHash.maxCapacity(0);
+    m_mapExpansionThreshold = IntObjHash.maxCapacity(m_entryMap.size());
   }
 
   /**
@@ -1112,7 +1112,7 @@ public final class RTree
 
     // Fix up the tree from leaf to root.
     int currentDepth = condenseTree(n, 1, m_nodeStack, m_minBranches, m_MBR) -
-      m_nodeStack.size();
+      m_nodeStack.size() + 1;
     while (m_nodeStack.size() > 0) {
       final Node eliminatedNode = (Node) m_nodeStack.pop();
       for (int i = 0; i < eliminatedNode.entryCount; i++) {
@@ -1126,7 +1126,7 @@ public final class RTree
              m_yMinBuff, m_xMaxBuff, m_yMaxBuff, m_tempBuff1, m_tempBuff2); }
         else {
           rootSplit = insert
-            (m_root, currentDepth + 1, eliminatedNode.data.children[i],
+            (m_root, currentDepth, eliminatedNode.data.children[i],
              eliminatedNode.xMins[i], eliminatedNode.yMins[i],
              eliminatedNode.xMaxs[i], eliminatedNode.yMaxs[i],
              m_maxBranches, m_minBranches, m_MBR, m_childrenBuff,
@@ -1224,7 +1224,6 @@ public final class RTree
           p.xMaxs[nInxInP] = p.xMaxs[p.entryCount];
           p.yMaxs[nInxInP] = p.yMaxs[p.entryCount]; }
         p.data.children[p.entryCount] = null; // Important for gc.
-        n.parent = null;
         eliminatedNodes.push(n);
         deepCountDecrease +=
           (isLeafNode(n) ? n.entryCount : n.data.deepCount); }
