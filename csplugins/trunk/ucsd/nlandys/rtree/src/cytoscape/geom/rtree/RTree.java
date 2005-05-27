@@ -731,7 +731,7 @@ public final class RTree
    * Returns a node if root was split, otherwise returns null.
    * If a node is returned, then both the old root and the returned node
    * will have an MBR entry at index maxBranches - 1 which will be the
-   * overall MBR of that node.
+   * overall MBR of that node.  Deep counts are updated from leaf to root.
    */
   private final static Node adjustTreeWithSplit(final Node originalLeafNode,
                                                 final Node newLeafNode,
@@ -746,6 +746,9 @@ public final class RTree
 
       // "If N is the root, stop."
       if (p == null) { break; }
+
+      // Update the deep count.
+      p.data.deepCount++;
 
       final int nInxInP;
       for (int i = 0;; i++)
@@ -775,6 +778,13 @@ public final class RTree
         else {
         }
 
+        // The recursive step.
+        currModInx = nInxInP;
+        // Also, the next step needs to know that a new leaf has been added.
+        // Figure this out.
+        n = p;
+        nn = null;
+
       }
       else { // A split is necessary.
         // We require that MBR at index maxBranches - 1 in nn contain
@@ -783,6 +793,7 @@ public final class RTree
           (p, nn, nn.xMins[maxBranches - 1], nn.yMins[maxBranches - 1],
            nn.xMaxs[maxBranches - 1], nn.yMaxs[maxBranches - 1]);
       }
+
     }
   }
 
