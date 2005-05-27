@@ -1132,7 +1132,7 @@ public final class RTree
              m_maxBranches, m_minBranches, m_MBR, m_childrenBuff,
              m_xMinBuff, m_yMinBuff, m_xMaxBuff, m_yMaxBuff, m_tempBuff1,
              m_tempBuff2);
-          /* eliminatedNode.data.children[i] = null; // Facilitate gc. */ }
+          eliminatedNode.data.children[i] = null; /* Facilitate gc. */ }
         if (rootSplit != null) {
           final Node newRoot = new Node(m_maxBranches, false);
           newRoot.entryCount = 2;
