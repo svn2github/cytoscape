@@ -116,7 +116,32 @@ public final class RTree
         m_entryMap.put(chosenLeaf.objKeys[i], chosenLeaf);
       for (int i = 0; i < newLeaf.entryCount; i++)
         m_entryMap.put(newLeaf.objKeys[i], newLeaf);
-    }
+      final Node rootSplit = adjustTreeWithSplit(chosenLeaf, newLeaf, m_MBR);
+      if (rootSplit != null) {
+        // The MBR at index m_maxBranches - 1 in both rootSplit and m_root
+        // will contain the overall MBR of corresponding node.
+        final Node newRoot = new Node(m_maxBranches, false);
+        newRoot.entryCount = 2;
+        m_root.parent = newRoot;
+        rootSplit.parent = newRoot;
+        newRoot.data.children[0] = m_root;
+        newRoot.data.children[1] = rootSplit;
+        newRoot.xMins[0] = m_root.xMins[m_maxBranches - 1];
+        newRoot.yMins[0] = m_root.yMins[m_maxBranches - 1];
+        newRoot.xMaxs[0] = m_root.xMaxs[m_maxBranches - 1];
+        newRoot.yMaxs[0] = m_root.yMaxs[m_maxBranches - 1];
+        newRoot.xMins[1] = rootSplit.xMins[m_maxBranches - 1];
+        newRoot.yMins[1] = rootSplit.yMins[m_maxBranches - 1];
+        newRoot.xMaxs[1] = rootSplit.xMaxs[m_maxBranches - 1];
+        newRoot.yMaxs[1] = rootSplit.yMaxs[m_maxBranches - 1];
+        // The deep count of m_root and rootSplit will be accurate.
+        newRoot.data.deepCount =
+          m_root.data.deepCount + rootSplit.data.deepCount;
+        m_root = newRoot;
+        m_MBR[0] = Math.min(m_root.xMins[0], m_root.xMins[1]);
+        m_MBR[1] = Math.min(m_root.yMins[0], m_root.yMins[1]);
+        m_MBR[2] = Math.max(m_root.xMaxs[0], m_root.xMaxs[1]);
+        m_MBR[3] = Math.max(m_root.yMaxs[0], m_root.yMaxs[1]); } }
   }
 
   /*
