@@ -1103,22 +1103,15 @@ public final class RTree
    * can re-insert.  eliminatedNodes should be empty when this function is
    * called.  This method is used for adjusting a tree after deleting one
    * or more entries or children from nodeWithDeletions.  Deep counts are
-   * updated from nodeWithDeletions' parent to root.  The return value is
-   * the distance from nodeWithDeletions of the highest node that was
-   * eliminated; for example, if nodeWithDeletions itself was eliminated
-   * but its parent was not, then the return value is 0; for [another]
-   * example, if nodeWithDeletions' parent was eliminated but
-   * nodeWithDeletions' grandparent was not, then the return value is 1.
-   * -1 is returned if no node has been eliminated.
+   * updated from nodeWithDeletions' parent to root.
    */
-  private final static int condenseTree(final Node nodeWithDeletions,
-                                        int deepCountDecrease,
-                                        final ObjStack eliminatedNodes,
-                                        final int minBranches,
-                                        final double[] globalMBR)
+  private final static void condenseTree(final Node nodeWithDeletions,
+                                         int deepCountDecrease,
+                                         final ObjStack eliminatedNodes,
+                                         final int minBranches,
+                                         final double[] globalMBR)
   {
     Node n = nodeWithDeletions;
-    int depthEliminated = -1;
     while (true) {
       final Node p = n.parent;
       if (p == null) { // n is the root.
@@ -1148,8 +1141,8 @@ public final class RTree
         p.data.children[p.entryCount] = null;
         n.parent = null;
         eliminatedNodes.push(n);
-        deepCountDecrease += (isLeafNode(n) ? n.entryCount : n.data.deepCount);
-        depthEliminated++; }
+        deepCountDecrease +=
+          (isLeafNode(n) ? n.entryCount : n.data.deepCount); }
       else { // n has not been eliminated.  Adjust covering rectangle.
         // This is where we have to optimize in the future.
         p.xMins[nInxInP] = Double.POSITIVE_INFINITY;
@@ -1163,7 +1156,6 @@ public final class RTree
           p.yMaxs[nInxInP] = Math.max(p.yMaxs[nInxInP], n.yMaxs[i]); } }
       p.data.deepCount -= deepCountDecrease;
       n = p; }
-    return depthEliminated;
   }
 
 //     // "Re-insert orphaned entries."
