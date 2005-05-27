@@ -1067,7 +1067,9 @@ public final class RTree
                                         final double[] extents, final int off)
   {
     int count = 0;
-    if (contains(xMinQ, yMinQ, xMaxQ, yMaxQ, xMinN, yMinN, xMaxN, yMaxN)) {
+//     if (contains(xMinQ, yMinQ, xMaxQ, yMaxQ, xMinN, yMinN, xMaxN, yMaxN)) {
+    if ((xMinQ <= xMinN) && (xMaxQ >= xMaxN) &&
+        (yMinQ <= yMinN) && (yMaxQ >= yMaxN)) {
       // Trivially include node.
       if (isLeafNode(n)) { count += n.entryCount; stackStack.push(null); }
       else { count += n.data.deepCount; }
@@ -1081,8 +1083,10 @@ public final class RTree
       if (isLeafNode(n)) {
         final IntStack stack = new IntStack();
         for (int i = 0; i < n.entryCount; i++) {
-          if (overlaps(xMinQ, yMinQ, xMaxQ, yMaxQ,
-                       n.xMins[i], n.yMins[i], n.xMaxs[i], n.yMaxs[i])) {
+//           if (overlaps(xMinQ, yMinQ, xMaxQ, yMaxQ,
+//                        n.xMins[i], n.yMins[i], n.xMaxs[i], n.yMaxs[i])) {
+          if ((Math.max(xMinQ, n.xMins[i]) <= Math.min(xMaxQ, n.xMaxs[i])) &&
+              (Math.max(yMinQ, n.yMins[i]) <= Math.min(yMaxQ, n.yMaxs[i]))) {
             stack.push(i);
             if (extents != null) {
               extents[off] = Math.min(extents[off], n.xMins[i]);
@@ -1095,8 +1099,10 @@ public final class RTree
           nodeStack.push(n); } }
       else { // Internal node.
         for (int i = 0; i < n.entryCount; i++) {
-          if (overlaps(xMinQ, yMinQ, xMaxQ, yMaxQ,
-                       n.xMins[i], n.yMins[i], n.xMaxs[i], n.yMaxs[i])) {
+//           if (overlaps(xMinQ, yMinQ, xMaxQ, yMaxQ,
+//                        n.xMins[i], n.yMins[i], n.xMaxs[i], n.yMaxs[i])) {
+          if ((Math.max(xMinQ, n.xMins[i]) <= Math.min(xMaxQ, n.xMaxs[i])) &&
+              (Math.max(yMinQ, n.yMins[i]) <= Math.min(yMaxQ, n.yMaxs[i]))) {
             count += queryOverlap
               (n.data.children[i], nodeStack, stackStack,
                xMinQ, yMinQ, xMaxQ, yMaxQ,
