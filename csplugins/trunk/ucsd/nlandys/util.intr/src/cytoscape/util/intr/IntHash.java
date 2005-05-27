@@ -158,9 +158,9 @@ public final class IntHash
       throw new IllegalStateException
         ("too many elements in this hashtable"); }
     if (m_arr.length < newSize) {
-      final int[] newArr = new int[newSize];
-      m_dump = m_arr;
-      m_arr = newArr; }
+      m_dump = m_arr; // We want the old m_dump to potentially get garbage
+                      // collected before we instantiate the new array.
+      m_arr = new int[newSize]; }
     else {
       System.arraycopy(m_arr, 0, m_dump, 0, m_size); }
     for (int i = 0; i < newSize; i++) m_arr[i] = -1;
