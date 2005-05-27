@@ -181,7 +181,7 @@ public class BasicQuietRTreeTest
         throw new IllegalStateException("bad entry exists");
       if (extentsArr[0] != 0.0 || extentsArr[1] != 0.0 ||
           extentsArr[2] != 1.0 || extentsArr[3] != 1.0)
-        throw new IllegalStateException("entry's extents incorrect");
+        throw new IllegalStateException("objKey 0 extents incorrect");
 
       IntEnumerator iter = tree.queryOverlap
         (Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY,
