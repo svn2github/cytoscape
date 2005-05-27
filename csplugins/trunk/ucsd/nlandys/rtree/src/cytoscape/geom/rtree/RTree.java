@@ -1193,7 +1193,7 @@ public final class RTree
     private final double[] yMaxs;
     private final int[] objKeys; // null if and only if internal node.
     private final InternalNodeData data;
-    private Node(int maxBranches, boolean leafNode) {
+    private Node(final int maxBranches, final boolean leafNode) {
       xMins = new double[maxBranches];
       yMins = new double[maxBranches];
       xMaxs = new double[maxBranches];
@@ -1206,7 +1206,7 @@ public final class RTree
   {
     private int deepCount = 0;
     private final Node[] children;
-    private InternalNodeData(int maxBranches) {
+    private InternalNodeData(final int maxBranches) {
       children = new Node[maxBranches]; }
   }
 
