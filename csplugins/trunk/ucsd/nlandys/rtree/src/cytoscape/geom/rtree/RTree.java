@@ -1082,11 +1082,10 @@ public final class RTree
     int extOff = 4; // Into extStack.
     while (unprocessedNodes.size() > 0) {
       final Node n = (Node) unprocessedNodes.pop();
-      extOff -= 4;
-      if ((xMinQ <= extStack[extOff]) &&     // Rectangle Q contains
-          (xMaxQ >= extStack[extOff + 2]) && // rectangle N - trivially
-          (yMinQ <= extStack[extOff + 1]) && // include node.
-          (yMaxQ >= extStack[extOff + 3])) {
+      if ((yMaxQ >= extStack[--extOff]) && // Rectangle Q contains
+          (xMaxQ >= extStack[--extOff]) && // rectangle N - trivially
+          (yMinQ <= extStack[--extOff]) && // include node.
+          (xMinQ <= extStack[--extOff])) {
         if (n.data == null) { // Leaf node.
           count += n.entryCount; stackStack.push(null); }
         else { count += n.data.deepCount; }
@@ -1121,11 +1120,10 @@ public final class RTree
             if ((Math.max(xMinQ, n.xMins[i]) <= Math.min(xMaxQ, n.xMaxs[i])) &&
                 (Math.max(yMinQ, n.yMins[i]) <= Math.min(yMaxQ, n.yMaxs[i]))) {
               unprocessedNodes.push(n.data.children[i]);
-              extStack[extOff] = n.xMins[i];
-              extStack[extOff + 1] = n.yMins[i];
-              extStack[extOff + 2] = n.xMaxs[i];
-              extStack[extOff + 3] = n.yMaxs[i];
-              extOff += 4; } } } } }
+              extStack[extOff++] = n.xMins[i];
+              extStack[extOff++] = n.yMins[i];
+              extStack[extOff++] = n.xMaxs[i];
+              extStack[extOff++] = n.yMaxs[i]; } } } } }
     return count;
   }
 
