@@ -36,12 +36,12 @@ public final class IntObjHash
    * size expansion is about to happen.  Returns -1 if a hashtable cannot
    * hold the number of keys specified.
    */
-  public final static int maxCapacity(final int numKeys)
+  public final static int maxCapacity(final int num)
   {
     int inx = 0;
-    while (inx < PRIMES.length && numKeys >= PRIMES[inx]) inx++;
+    while (inx < PRIMES.length && num >= PRIMES[inx]) inx++;
     final int thresholdSize = (int) (THRESHOLD_FACTOR * (double) PRIMES[inx]);
-    if (thresholdSize >= numKeys) return thresholdSize;
+    if (thresholdSize >= num) return thresholdSize;
     else if (++inx == PRIMES.length) return -1;
     return (int) (THRESHOLD_FACTOR * (double) PRIMES[inx]);
   }
