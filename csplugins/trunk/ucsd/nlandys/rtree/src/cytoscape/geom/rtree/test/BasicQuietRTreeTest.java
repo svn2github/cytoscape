@@ -171,6 +171,18 @@ public class BasicQuietRTreeTest
     tree.insert(7, 1.25, 1.75, 2.25, 2.75);
     tree.insert(8, 1.0, 6.0, 2.0, 7.0);
     tree.insert(9, -2.0, 1.0, -1.0, 2.0);
+
+    { // BEGIN DEPTH THREE TEST.
+      double[] extentsArr = new double[4];
+      for (int i = 9; i >= 0; i--)
+        if (!tree.exists(i, extentsArr, 0))
+          throw new IllegalStateException("entry " + i + " does not exist");
+      if (tree.exists(-1, extentsArr, 0) || tree.exists(10, extentsArr, 0))
+        throw new IllegalStateException("bad entry exists");
+      if (extentsArr[0] != 0.0 || extentsArr[1] != 0.0 ||
+          extentsArr[2] != 1.0 || extentsArr[3] != 1.0)
+        throw new IllegalStateException("entry's extents incorrect");
+    } // END DEPTH THREE TEST.
   }
 
 }
