@@ -110,7 +110,13 @@ public final class RTree
       m_entryMap.put(objKey, chosenLeaf);
       adjustTreeNoSplit(chosenLeaf, m_MBR); }
     else { // A split is necessary.
-      splitLeafNode(chosenLeaf, objKey, xMin, yMin, xMax, yMax); }
+      final Node newLeaf =
+        splitLeafNode(chosenLeaf, objKey, xMin, yMin, xMax, yMax);
+      for (int i = 0; i < chosenLeaf.entryCount; i++)
+        m_entryMap.put(chosenLeaf.objKeys[i], chosenLeaf);
+      for (int i = 0; i < newLeaf.entryCount; i++)
+        m_entryMap.put(newLeaf.objKeys[i], newLeaf);
+    }
   }
 
   /*
@@ -161,7 +167,7 @@ public final class RTree
    * parent pointer in the full node is not modified, and nothing in that
    * parent is modified.  Everything else is modified.  The MBRs at index
    * m_maxBranches - 1 in both nodes are set to be the new overall MBR of
-   * corresponding node.
+   * corresponding node.  The node returned is also a leaf node.
    */
   private final Node splitLeafNode(final Node fullLeafNode,
                                    final int newObjKey,
@@ -591,28 +597,32 @@ public final class RTree
                                     final double[] tempBuff2,
                                     final boolean buff2Valid)
   {
-    final int maxBranches = group1.xMins.length;
+    final int maxBranchesMinusOne = group1.xMins.length - 1;
     if (!buff1Valid) {
       final double group1Area =
-        (group1.xMaxs[maxBranches - 1] - group1.xMins[maxBranches - 1]) *
-        (group1.yMaxs[maxBranches - 1] - group1.yMins[maxBranches - 1]);
+        (group1.xMaxs[maxBranchesMinusOne] -
+         group1.xMins[maxBranchesMinusOne]) *
+        (group1.yMaxs[maxBranchesMinusOne] -
+         group1.yMins[maxBranchesMinusOne]);
       for (int i = 0; i < count; i++) {
         tempBuff1[i] = // Area of group1 swallowing ith rectangle.
-          (Math.max(group1.xMaxs[maxBranches - 1], xMaxs[i]) -
-           Math.min(group1.xMins[maxBranches - 1], xMins[i])) *
-          (Math.max(group1.yMaxs[maxBranches - 1], yMaxs[i]) -
-           Math.min(group1.yMins[maxBranches - 1], yMins[i]));
+          (Math.max(group1.xMaxs[maxBranchesMinusOne], xMaxs[i]) -
+           Math.min(group1.xMins[maxBranchesMinusOne], xMins[i])) *
+          (Math.max(group1.yMaxs[maxBranchesMinusOne], yMaxs[i]) -
+           Math.min(group1.yMins[maxBranchesMinusOne], yMins[i]));
         tempBuff1[i] -= group1Area; } }
     if (!buff2Valid) {
       final double group2Area =
-        (group2.xMaxs[maxBranches - 1] - group2.xMins[maxBranches - 1]) *
-        (group2.yMaxs[maxBranches - 1] - group2.yMins[maxBranches - 1]);
+        (group2.xMaxs[maxBranchesMinusOne] -
+         group2.xMins[maxBranchesMinusOne]) *
+        (group2.yMaxs[maxBranchesMinusOne] -
+         group2.yMins[maxBranchesMinusOne]);
       for (int i = 0; i < count; i++) {
         tempBuff2[i] = // Area of group2 swallowing ith rectangle.
-          (Math.max(group2.xMaxs[maxBranches - 1], xMaxs[i]) -
-           Math.min(group2.xMins[maxBranches - 1], xMins[i])) *
-          (Math.max(group2.yMaxs[maxBranches - 1], yMaxs[i]) -
-           Math.min(group2.yMins[maxBranches - 1], yMins[i]));
+          (Math.max(group2.xMaxs[maxBranchesMinusOne], xMaxs[i]) -
+           Math.min(group2.xMins[maxBranchesMinusOne], xMins[i])) *
+          (Math.max(group2.yMaxs[maxBranchesMinusOne], yMaxs[i]) -
+           Math.min(group2.yMins[maxBranchesMinusOne], yMins[i]));
         tempBuff2[i] -= group2Area; } }
     double maxDDifference = Double.NEGATIVE_INFINITY;
     int maxInx = -1;
@@ -664,6 +674,64 @@ public final class RTree
       p.xMaxs[nInxInP] = newXMax; p.yMaxs[nInxInP] = newYMax;
       currModInx = nInxInP;
       n = p; }
+  }
+
+  /*
+   * It is required that the MBRs at index m_maxBranches - 1 in both
+   * input nodes contain the overall MBR of corresponding node.
+   * Returns a node if root was split, otherwise returns null.
+   */
+  private final static Node adjustTreeWithSplit(final Node originalLeafNode,
+                                                final Node newLeafNode,
+                                                final double[] globalMBR)
+  {
+    final int maxBranches = originalLeafNode.xMins.length;
+    int currModInx = -1;
+    Node n = originalLeafNode;
+    Node nn = newLeafNode;
+    while (true) {
+      final Node p = n.parent;
+
+      // "If N is the root, stop."
+      if (p == null) { break; }
+
+      final int nInxInP;
+      for (int i = 0;; i++)
+        if (p.data.children[i] == n) { nInxInP = i; break; }
+
+      // Set the MBR of the original node.
+      if (currModInx < 0) {
+        p.xMins[nInxInP] = n.xMins[maxBranches - 1];
+        p.yMins[nInxInP] = n.yMins[maxBranches - 1];
+        p.xMaxs[nInxInP] = n.xMaxs[maxBranches - 1];
+        p.yMaxs[nInxInP] = n.yMaxs[maxBranches - 1]; }
+      else {
+        // Fill in here.
+      }
+      
+      if (p.entryCount < maxBranches) { // No split is necessary.
+        final int newInxInP = p.entryCount++;
+        nn.parent = p;
+        p.data.children[newInxInP] = nn;
+
+        // Set the MBR of the new node.
+        if (currModInx < 0) {
+          p.xMins[newInxInP] = nn.xMins[maxBranches - 1];
+          p.yMins[newInxInP] = nn.yMins[maxBranches - 1];
+          p.xMaxs[newInxInP] = nn.xMaxs[maxBranches - 1];
+          p.yMaxs[newInxInP] = nn.yMaxs[maxBranches - 1]; }
+        else {
+        }
+
+      }
+      else { // A split is necessary.
+        // We require that MBR at index maxBranches - 1 in nn contain
+        // nn's overall MBR.
+        final Node newLeaf = splitInternalNode
+          (p, nn, nn.xMins[maxBranches - 1], nn.yMins[maxBranches - 1],
+           nn.xMaxs[maxBranches - 1], nn.yMaxs[maxBranches - 1]);
+      }
+    }
   }
 
 //   /*
