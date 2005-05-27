@@ -26,6 +26,26 @@ final class IntObjHash
   private static final int INITIAL_SIZE = PRIMES[0];
   private static final double THRESHOLD_FACTOR = 0.77;
 
+  /**
+   * For a hashtable that currently holds exactly num keys [or zero keys if
+   * num is negative], returns the
+   * maximum number of keys that that hashtable can hold without undergoing an
+   * underlying size expansion.  Size expansions are expensive computationally
+   * and result in a doubling of the amount of memory consumed; this function
+   * is a hook for users of hashtables to do smart things when an underlying
+   * size expansion is about to happen.  Returns -1 if a hashtable cannot
+   * hold the number of keys specified.
+   */
+  public final static int maxCapacity(final int numKeys)
+  {
+    int inx = 0;
+    while (inx < PRIMES.length && numKeys >= PRIMES[inx]) inx++;
+    final int thresholdSize = (int) (THRESHOLD_FACTOR * (double) PRIMES[inx]);
+    if (thresholdSize >= numKeys) return thresholdSize;
+    else if (++inx == PRIMES.length) return -1;
+    return (int) (THRESHOLD_FACTOR * (double) PRIMES[inx]);
+  }
+
   private int[] m_keys;
   private Object[] m_vals;
   private int m_elements;
