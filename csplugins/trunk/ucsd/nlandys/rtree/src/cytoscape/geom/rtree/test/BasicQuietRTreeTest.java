@@ -85,6 +85,7 @@ public class BasicQuietRTreeTest
       if (extentsArr[0] != 2.5 || extentsArr[1] != 0.5 ||
           extentsArr[2] != 3.5 || extentsArr[3] != 1.5)
         throw new IllegalStateException("entry's extents incorrect");
+
       IntEnumerator iter = tree.queryOverlap
         (Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY,
          Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, extentsArr, 0);
@@ -101,6 +102,7 @@ public class BasicQuietRTreeTest
       if (extentsArr[0] != 0.0 || extentsArr[1] != 0.0 ||
           extentsArr[2] != 3.5 || extentsArr[3] != 3.0)
         throw new IllegalStateException("extents from query wrong");
+
       iter = tree.queryOverlap(2.0, 0.5, 2.2, 1.9, extentsArr, 0);
       if (iter.numRemaining() != 0)
         throw new IllegalStateException("expected query to generate 0 hits");
@@ -110,6 +112,7 @@ public class BasicQuietRTreeTest
           extentsArr[3] != Double.NEGATIVE_INFINITY)
         throw new IllegalStateException
           ("query extents - expected inverted infinite");
+
       iter = tree.queryOverlap
         (Double.NEGATIVE_INFINITY, 1.1, Double.POSITIVE_INFINITY, 1.2,
          extentsArr, 0);
@@ -121,9 +124,10 @@ public class BasicQuietRTreeTest
                       ("iter claimed it had 2 elements but really didn't");
       if (cache.size() != 0) throw new IllegalStateException
                                ("query returned wrong objKeys");
-      if (extentsArr[0] != 0.5 || extentsArr[1] != 3.5 ||
-          extentsArr[2] != 0.0 || extentsArr[3] != 3.0)
+      if (extentsArr[0] != 0.5 || extentsArr[1] != 0.5 ||
+          extentsArr[2] != 3.5 || extentsArr[3] != 2.0)
         throw new IllegalStateException("extents from query wrong");
+
       iter = tree.queryOverlap(1.0, 1.0, 1.0, 1.0, extentsArr, 0);
       if (iter.numRemaining() != 2)
         throw new IllegalStateException("expected query to generate 2 hits");
