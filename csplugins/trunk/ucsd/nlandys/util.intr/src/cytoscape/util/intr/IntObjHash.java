@@ -203,8 +203,9 @@ public final class IntObjHash
    * This method returns in constant time.  The returned iterator
    * returns successive values in [amortized] time complexity O(1).<p>
    * NOTE: The order of values returned corresponds to the order of keys
-   * returned by the enumeration from keys() - that is, the nth key returned
-   * by keys() is the key into the nth value returned by values().
+   * returned by the enumeration from keys() - that is, the n<sup>th</sup>
+   * key returned by keys() is the key into the n<sup>th</sup> value
+   * returned by values().
    */
   public final Iterator values()
   {
