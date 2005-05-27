@@ -2,7 +2,7 @@ package cytoscape.geom.rtree.test;
 
 import cytoscape.geom.rtree.RTree;
 import cytoscape.util.intr.IntEnumerator;
-import cytoscape.util.intr.IntStack;
+import cytoscape.util.intr.MinIntHeap;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -57,13 +57,13 @@ public class RTreeQueryPerformance
       if (inx < N) throw new IOException("premature end of input");
     }
 
-    final IntStack[] pointQueries;
+    final MinIntHeap[] pointQueries;
 
     // Test 121 Point queries.
     {
-      pointQueries = new IntStack[121];
+      pointQueries = new MinIntHeap[121];
       for (int i = 0; i < pointQueries.length; i++)
-        pointQueries[i] = new IntStack();
+        pointQueries[i] = new MinIntHeap();
       for (int i = 0; i < 3; i++) { System.gc(); Thread.sleep(1000); }
       final long millisBegin = System.currentTimeMillis();
       int inx = 0;
@@ -75,20 +75,20 @@ public class RTreeQueryPerformance
           currY += 0.1d;
           final IntEnumerator iter =
             tree.queryOverlap(currX, currY, currX, currY, null, 0);
-          final IntStack stack = pointQueries[inx++];
-          while (iter.numRemaining() > 0) stack.push(iter.nextInt()); } }
+          final MinIntHeap heap = pointQueries[inx++];
+          while (iter.numRemaining() > 0) heap.toss(iter.nextInt()); } }
       final long millisEnd = System.currentTimeMillis();
       System.err.println("point queries took " + (millisEnd - millisBegin) +
                          " milliseconds");
     }
 
-    final IntStack[] areaQueries;
+    final MinIntHeap[] areaQueries;
 
     // Test 5 area queries - each area is 0.1 X 0.1.
     {
-      areaQueries = new IntStack[5];
+      areaQueries = new MinIntHeap[5];
       for (int i = 0; i < areaQueries.length; i++)
-        areaQueries[i] = new IntStack();
+        areaQueries[i] = new MinIntHeap();
       for (int i = 0; i < 3; i++) { System.gc(); Thread.sleep(1000); }
       final long millisBegin = System.currentTimeMillis();
       for (int i = 0; i < 5; i++) {
@@ -97,8 +97,8 @@ public class RTreeQueryPerformance
                             ((double) i) * 0.1d,
                             ((double) (i + 1)) * 0.1d,
                             ((double) (i + 1)) * 0.1d, null, 0);
-        final IntStack stack = areaQueries[i];
-        while (iter.numRemaining() > 0) stack.push(iter.nextInt()); }
+        final MinIntHeap heap = areaQueries[i];
+        while (iter.numRemaining() > 0) heap.toss(iter.nextInt()); }
       final long millisEnd = System.currentTimeMillis();
       System.err.println("area queries took " + (millisEnd - millisBegin) +
                          " milliseconds");
