@@ -112,6 +112,9 @@ public class BasicQuietRTreeTest
           extentsArr[2] != 3.5 || extentsArr[3] != 1.5)
         throw new IllegalStateException("entry's extents incorrect");
 
+      if (tree.size() != 4)
+        throw new IllegalStateException("tree's size() is not 4");
+
       IntEnumerator iter = tree.queryOverlap
         (Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY,
          Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, extentsArr, 0);
@@ -195,19 +198,14 @@ public class BasicQuietRTreeTest
                               ("expected exception for min > max");
     } // END EXCEPTION HANDLING TEST.
 
-//     tree.insert(4, 9.0, -2.25, 10.0, -1.75);
-//     tree.delete(4);
     tree.insert(4, 3.0, -0.25, 4.0, 0.75);
     tree.insert(5, -0.5, 2.5, 0.5, 3.5);
-//     tree.insert(6, 2.75, 2.25, 3.75, 3.25);
-//     tree.delete(6);
     tree.insert(6, 2.75, 2.25, 3.75, 3.25);
     tree.insert(7, 1.25, 1.75, 2.25, 2.75);
     tree.insert(8, 1.0, 6.0, 2.0, 7.0);
     tree.insert(9, -2.0, 1.0, -1.0, 2.0);
-//     tree.insert(10, -7.0, -6.0, 7.0, 6.0);
-//     tree.delete(10);
 
+    for (int a = 0;; a++)
     { // BEGIN DEPTH THREE TEST.
       double[] extentsArr = new double[4];
       for (int i = 9; i >= 0; i--)
@@ -218,6 +216,9 @@ public class BasicQuietRTreeTest
       if (extentsArr[0] != 0.0 || extentsArr[1] != 0.0 ||
           extentsArr[2] != 1.0 || extentsArr[3] != 1.0)
         throw new IllegalStateException("objKey 0 extents incorrect");
+
+      if (tree.size() != 10)
+        throw new IllegalStateException("tree's size() is not 10");
 
       IntEnumerator iter = tree.queryOverlap
         (Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY,
@@ -287,32 +288,40 @@ public class BasicQuietRTreeTest
       iter = tree.queryOverlap(-1.0, 0.75, 3.0, 6.0, extentsArr, 0);
       if (iter.numRemaining() != 10)
         throw new IllegalStateException("expected 10 query hits");
+
+      if (a == 1) break;
+      for (int j = 0; j < 1000; j++) {
+        final int stop = ((j + 1) * 1000) + 10;
+        for (int k = (j * 1000) + 10; k < stop; k++)
+          tree.insert(k, k, k, k + 2, k + 2);
+        for (int k = (j * 1000) + 10; k < stop; k++) tree.delete(k); }
     } // END DEPTH THREE TEST.
 
-    tree.insert(10, 2.0, 4.0, 3.0, 5.0);
-    tree.insert(11, 1.5, 3.75, 3.5, 4.25);
-    tree.insert(12, 2.5, 3.5, 3.0, 5.5);
-    tree.insert(13, -4.0, 6.0, -2.0, 8.0);
-    tree.insert(14, -4.25, 5.75, 2.25, 8.25);
-    tree.insert(15, 2.0, -1.0, 2.0, -1.0);
-    tree.insert(16, -1.25, 0.5, -1.25, 3.0);
-    tree.insert(17, -0.5, -0.5, 1.5, 0.5);
-    tree.insert(18, 0.25, 4.0, 1.25, 5.0);
-    tree.insert(19, 4.0, 1.0, 5.0, 2.0);
-    tree.insert(20, 4.0, 3.0, 5.0, 4.0);
-    tree.insert(21, 4.25, -1.5, 4.75, 5.0);
-    tree.insert(22, 3.0, -1.75, 5.0, -1.0);
-    tree.insert(23, 1.25, 0.25, 2.25, 1.25);
-    tree.insert(24, -2.0, 9.0, -1.0, 10.0);
-    tree.insert(25, 1.0, 9.0, 2.0, 10.0);
-    tree.insert(26, -2.0, 5.0, -1.0, 6.0);
-    tree.insert(27, -2.5, 5.25, -1.75, 9.25);
-    for (int i = 28; i < 200; i++)
-      tree.insert(i, 0.0, 0.0, (double) i, (double) i);
-    for (int i = 28; i < 200; i++)
-      tree.delete(i);
+    for (int a = 0;; a++) {
+      tree.insert(10, 2.0, 4.0, 3.0, 5.0);
+      tree.insert(11, 1.5, 3.75, 3.5, 4.25);
+      tree.insert(12, 2.5, 3.5, 3.0, 5.5);
+      tree.insert(13, -4.0, 6.0, -2.0, 8.0);
+      tree.insert(14, -4.25, 5.75, 2.25, 8.25);
+      tree.insert(15, 2.0, -1.0, 2.0, -1.0);
+      tree.insert(16, -1.25, 0.5, -1.25, 3.0);
+      tree.insert(17, -0.5, -0.5, 1.5, 0.5);
+      tree.insert(18, 0.25, 4.0, 1.25, 5.0);
+      tree.insert(19, 4.0, 1.0, 5.0, 2.0);
+      tree.insert(20, 4.0, 3.0, 5.0, 4.0);
+      tree.insert(21, 4.25, -1.5, 4.75, 5.0);
+      tree.insert(22, 3.0, -1.75, 5.0, -1.0);
+      tree.insert(23, 1.25, 0.25, 2.25, 1.25);
+      tree.insert(24, -2.0, 9.0, -1.0, 10.0);
+      tree.insert(25, 1.0, 9.0, 2.0, 10.0);
+      tree.insert(26, -2.0, 5.0, -1.0, 6.0);
+      tree.insert(27, -2.5, 5.25, -1.75, 9.25);
+
+      if (a == 1) break;
+      for (int k = 10; k < 28; k++) tree.delete(k); }
     // There are now 28 entries in the R-tree.  Depth must be at least 4.
 
+    for (int a = 0;; a++)
     { // BEGIN DEPTH FOUR TEST.
       double[] extentsArr = new double[4];
       for (int i = 27; i >= 0; i--)
@@ -325,6 +334,9 @@ public class BasicQuietRTreeTest
       if (extentsArr[0] != 0.0 || extentsArr[1] != 0.0 ||
           extentsArr[2] != 1.0 || extentsArr[3] != 1.0)
         throw new IllegalStateException("objKey 0 extents incorrect");
+
+      if (tree.size() != 28)
+        throw new IllegalStateException("tree's size() is not 28");
 
       IntEnumerator iter = tree.queryOverlap
         (Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY,
@@ -463,6 +475,13 @@ public class BasicQuietRTreeTest
       if (extentsArr[0] != -4.25 || extentsArr[1] != -1.75 ||
           extentsArr[2] != 5.0 || extentsArr[3] != 10.0)
         throw new IllegalStateException("extents from query wrong");
+
+      if (a == 1) break;
+      for (int j = 0; j < 1000; j++) {
+        final int stop = ((j + 1) * 1000) + 28;
+        for (int k = (j * 1000) + 28; k < stop; k++)
+          tree.insert(k, k, k, k + 5, k + 5);
+        for (int k = (j * 1000) + 28; k < stop; k++) tree.delete(k); }
     } // END DEPTH FOUR TEST.
   }
 
