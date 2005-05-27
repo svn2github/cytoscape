@@ -9,10 +9,10 @@ public class RTreeQueryPerformance
 
   /**
    * For given N, creates N rectangles whose centers are in the space
-   * [0,1] X [0,1].  Each rectangle has width and height less than
-   * approximately 1/sqrt(N).  The location of the centers of the rectangles
+   * [0,1] X [0,1].  Each rectangle has width and height no greater
+   * than 1/sqrt(N).  The location of the centers of the rectangles
    * and the choice of width and height for each rectangle is determined
-   * be the input stream, which in most cases will be a randomly generated
+   * by the input stream, which in most cases will be a randomly generated
    * stream of bytes.  Please see the actual code for an explanation of
    * how the input stream of bytes is converted into the rectangle
    * information.
@@ -20,6 +20,7 @@ public class RTreeQueryPerformance
   public static void main(String[] args) throws Exception
   {
     int N = Integer.parseInt(args[0]);
+    double sqrtN = Math.sqrt((double) N);
     int[] randomData = new int[N * 4];
     InputStream in = System.in;
     byte[] buff = new byte[4];
@@ -32,10 +33,20 @@ public class RTreeQueryPerformance
       if (off < buff.length) continue;
       else off = 0;
       randomData[inx++] = assembleInt(buff); }
-    if (inx < N) throw new IOException("premature end of input");
+    if (inx < randomData.length)
+      throw new IOException("premature end of input");
 
-    for (int i = 0; i < randomData.length; i++)
-      System.out.println(randomData[i]);
+    inx = 0;
+    for (int i = 0; i < N; i++) {
+      int nonnegative = 0x7fffffff & randomData[inx++];
+      double centerX = ((double) nonnegative) / ((double) 0x7fffffff);
+      nonnegative = 0x7fffffff & randomData[inx++];
+      double centerY = ((double) nonnegative) / ((double) 0x7fffffff);
+      nonnegative = 0x7fffffff & randomData[inx++];
+      double width = (((double) nonnegative) / ((double) 0x7fffffff)) / sqrtN;
+      nonnegative = 0x7fffffff & randomData[inx++];
+      double height = (((double) nonnegative) / ((double) 0x7fffffff)) / sqrtN;
+    }
 
 //     double maxDim = 1.0d / Math.sqrt((double) N);
 //     final double[] xMins = new int[N];
