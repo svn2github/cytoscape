@@ -45,6 +45,21 @@ public class ArrayTestMethod1
       if (inx < nodeArr.length)
         throw new IOException("premature end of input");
     }
+
+    // Sequential access test.
+    {
+      final int incr = 797;
+      int inx = 0;
+      final long millisBegin = System.currentTimeMillis();
+      for (int i = 0; i < nodeArr.length; i++) {
+        final Node n = nodeArr[inx];
+        for (int j = 0; j < nodeSize; j++) {
+          n.areas[j] = n.xMins[j] + n.yMins[j] + n.xMaxs[j] + n.yMaxs[j]; }
+        inx = (inx + incr) % nodeArr.length; }
+      final long millisEnd = System.currentTimeMillis();
+      System.out.println("sequential rectangle access took " +
+                         (millisEnd - millisBegin) + " milliseconds");
+    }
   }
 
   private static int assembleInt(byte[] bytes, int offset)
