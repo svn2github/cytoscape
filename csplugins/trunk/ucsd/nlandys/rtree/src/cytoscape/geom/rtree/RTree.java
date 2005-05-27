@@ -160,8 +160,11 @@ public final class RTree
         newRoot.yMins[1] = rootSplit.yMins[m_maxBranches - 1];
         newRoot.xMaxs[1] = rootSplit.xMaxs[m_maxBranches - 1];
         newRoot.yMaxs[1] = rootSplit.yMaxs[m_maxBranches - 1];
-        newRoot.data.deepCount =
-          m_root.data.deepCount + rootSplit.data.deepCount;
+        if (isLeafNode(m_root))
+          newRoot.data.deepCount = m_root.entryCount + rootSplit.entryCount;
+        else
+          newRoot.data.deepCount =
+            m_root.data.deepCount + rootSplit.data.deepCount;
         m_root = newRoot;
         m_MBR[0] = Math.min(m_root.xMins[0], m_root.xMins[1]);
         m_MBR[1] = Math.min(m_root.yMins[0], m_root.yMins[1]);
