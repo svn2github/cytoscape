@@ -201,7 +201,7 @@ public final class RTree
    * parent pointer in the full node is not modified, and nothing in that
    * parent is modified.  Everything else in the input node and in the
    * returned node is set as appropriate.  The MBRs at index
-   * m_maxBranches - 1 in both nodes are set to be the new overall MBR of
+   * maxBranches - 1 in both nodes are set to be the new overall MBR of
    * corresponding node.  The node returned is also a leaf node.
    * No claim is made as to the resulting values in the buff arrays.
    */
