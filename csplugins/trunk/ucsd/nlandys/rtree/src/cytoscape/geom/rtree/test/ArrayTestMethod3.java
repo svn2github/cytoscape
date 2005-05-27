@@ -12,7 +12,6 @@ public class ArrayTestMethod3
     final int yMinOffset = nodeSize;
     final int xMaxOffset = nodeSize * 2;
     final int yMaxOffset = nodeSize * 3;
-    final int areaOffset = nodeSize * 4;
     final int nPrime = 51437;
     final Node[] nodeArr = new Node[nPrime];
     for (int i = 0; i < nodeArr.length; i++) nodeArr[i] = new Node(nodeSize);
@@ -53,12 +52,13 @@ public class ArrayTestMethod3
     // Sequential access test.
     {
       final int incr = 797;
+      double foo;
       int inx = 0;
       final long millisBegin = System.currentTimeMillis();
       for (int i = 0; i < nodeArr.length; i++) {
         final Node n = nodeArr[inx];
         for (int j = 0; j < nodeSize; j++) {
-          n.arr[j + areaOffset] =
+          foo =
             n.arr[j] + n.arr[j + yMinOffset] +
             n.arr[j + xMaxOffset] + n.arr[j + yMaxOffset]; }
         inx = (inx + incr) % nodeArr.length; }
@@ -80,7 +80,7 @@ public class ArrayTestMethod3
   private final static class Node
   {
     private final double[] arr;
-    private Node(final int size) { arr = new double[size * 5]; }
+    private Node(final int size) { arr = new double[size * 4]; }
   }
 
 }
