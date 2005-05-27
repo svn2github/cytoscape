@@ -325,7 +325,7 @@ public final class RTree
          xMaxBuff, yMaxBuff, tempBuff1, buff1Valid, tempBuff2, buff2Valid);
       final boolean chooseGroup1;
       if (tempBuff1[next] < tempBuff2[next]) chooseGroup1 = true;
-      else if (tempBuff1[next] > tempBuff2[next]) chooseGroup1= false;
+      else if (tempBuff1[next] > tempBuff2[next]) chooseGroup1 = false;
       else { // Tie for how much group's covering rectangle will increase.
         // If we had an area cache array field in each node we could prevent
         // these two computations.
@@ -366,8 +366,8 @@ public final class RTree
       // Update the MBR of chosen group.
       // Note: If we see that the MBR stays the same, we could mark the
       // "invalid" temp buff array as valid to save even more on computations.
-      // Because this is a rare occurance, I choose not to make this
-      // optimization.
+      // Because this is a rare occurance (seeds of small area tend to be
+      // chosen), I choose not to make this optimization.
       chosenGroup.xMins[maxBranches - 1] =
         Math.min(chosenGroup.xMins[maxBranches - 1], xMinBuff[next]);
       chosenGroup.yMins[maxBranches - 1] =
