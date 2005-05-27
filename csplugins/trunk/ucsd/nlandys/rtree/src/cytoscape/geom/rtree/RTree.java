@@ -11,7 +11,7 @@ public final class RTree
 
   private final static int DEFAULT_MAX_BRANCHES = 7;
 
-  private final double[] m_MBR;
+  private final double[] m_mbr;
   private final int m_maxBranches;
   private final int m_minBranches;
   private Node m_root;
@@ -32,7 +32,7 @@ public final class RTree
    */
   public RTree()
   {
-    m_MBR = new double[] {
+    m_mbr = new double[] {
       Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY,
       Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY };
     m_maxBranches = DEFAULT_MAX_BRANCHES;
@@ -571,7 +571,7 @@ public final class RTree
     final ObjStack stackStack = new ObjStack();
     final int totalCount =
       queryOverlap(m_root, nodeStack, stackStack, xMin, yMin, xMax, yMax,
-                   m_MBR[0], m_MBR[1], m_MBR[2], m_MBR[3], extentsArr, offset);
+                   m_mbr[0], m_mbr[1], m_mbr[2], m_mbr[3], extentsArr, offset);
     return new OverlapEnumerator(totalCount, nodeStack, stackStack);
   }
 
