@@ -22,7 +22,8 @@ public final class RTree
   private Node m_root;
   private IntObjHash m_entryMap; // Keys are objKey, values are type Node.
   private final Object m_deletedEntry = new Object(); // Except when "deleted".
-  private int m_deletedEntries = 0;
+  private int m_deletedEntries;
+  private int m_mapExpansionThreshold;
 
   // These buffers are used during node splitting.
   private final int[] m_objKeyBuff;
@@ -64,6 +65,8 @@ public final class RTree
     m_minBranches = Math.max(2, (int) (((double) (m_maxBranches + 1)) * 0.4d));
     m_root = new Node(m_maxBranches, true);
     m_entryMap = new IntObjHash();
+    m_deletedEntries = 0;
+    m_mapExpansionThreshold = IntObjHash.maxCapacity(0);
     m_objKeyBuff = new int[m_maxBranches + 1];
     m_childrenBuff = new Node[m_maxBranches + 1];
     m_xMinBuff = new double[m_maxBranches + 1];
@@ -89,6 +92,7 @@ public final class RTree
     m_root = new Node(m_maxBranches, true);
     m_entryMap = new IntObjHash();
     m_deletedEntries = 0;
+    m_mapExpansionThreshold = IntObjHash.maxCapacity(0);
   }
 
   /**
@@ -143,8 +147,25 @@ public final class RTree
       if (m_entryMap.get(objKey) != m_deletedEntry)
         throw new IllegalStateException
           ("objkey " + objKey + " is already in this tree");
-      // old entry is m_deletedEntry.
-      m_deletedEntries--; }
+      m_deletedEntries--; } // Old entry is m_deletedEntry.
+
+    // We only allow underlying hashtable expansions if the number of deleted
+    // keys in the table is one quarter or less of the total number of keys.
+    else {
+      if (m_entryMap.size() == m_mapExpansionThreshold) { // Expansion.
+        if (m_deletedEntries * 4 > m_entryMap.size()) { // Prune map.
+          final IntObjHash newEntryMap = new IntObjHash();
+          final IntEnumerator objKeys = m_entryMap.keys();
+          final Iterator leafNodes = m_entryMap.values();
+          while (objKeys.numRemaining() > 0) {
+            final Object leafNode = leafNodes.next();
+            if (leafNode == m_deletedEntry) { objKeys.nextInt(); continue; }
+            newEntryMap.put(objKeys.nextInt(), leafNode); }
+          m_entryMap = newEntryMap;
+          m_deletedEntries = 0; }
+        m_mapExpansionThreshold =
+          IntObjHash.maxCapacity(m_entryMap.size() + 1); } }
+
     final Node rootSplit = insert
       (m_root, objKey, xMin, yMin, xMax, yMax, m_maxBranches, m_minBranches,
        m_entryMap, m_MBR, m_objKeyBuff, m_childrenBuff, m_xMinBuff, m_yMinBuff,
@@ -1142,11 +1163,10 @@ public final class RTree
       m_root = newRoot; }
 
     // Finally, delete the objKey from m_entryMap.
-    m_entryMap.put(objKey, m_deletedEntry);
-    m_deletedEntries++;
-
     // If m_entryMap contains too many deleted entries, prune.
-    if (m_deletedEntries > 10 && m_deletedEntries > size()) {
+    m_entryMap.put(objKey, m_deletedEntry);
+    if (++m_deletedEntries * 2 > m_entryMap.size() &&
+        m_deletedEntries > 5) {
       final IntObjHash newEntryMap = new IntObjHash();
       final IntEnumerator objKeys = m_entryMap.keys();
       final Iterator leafNodes = m_entryMap.values();
@@ -1155,7 +1175,8 @@ public final class RTree
         if (leafNode == m_deletedEntry) { objKeys.nextInt(); continue; }
         newEntryMap.put(objKeys.nextInt(), leafNode); }
       m_entryMap = newEntryMap;
-      m_deletedEntries = 0; }
+      m_deletedEntries = 0;
+      m_mapExpansionThreshold = IntObjHash.maxCapacity(m_entryMap.size()); }
 
     return true;
   }
