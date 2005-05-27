@@ -744,6 +744,7 @@ public final class RTree
   {
     final int maxBranches = originalLeafNode.xMins.length;
     int currModInx = -1;
+    boolean newNodeAdded = false;
     Node n = originalLeafNode;
     Node nn = newLeafNode;
     while (true) {
@@ -763,17 +764,11 @@ public final class RTree
       for (int i = 0;; i++)
         if (p.data.children[i] == n) { nInxInP = i; break; }
 
-      // Set the MBR of the original node in p.
-      if (nn != null) { // A split implies total MBR at inx maxBranches - 1.
+      if (nn != null) {
         p.xMins[nInxInP] = n.xMins[maxBranches - 1];
         p.yMins[nInxInP] = n.yMins[maxBranches - 1];
         p.xMaxs[nInxInP] = n.xMaxs[maxBranches - 1];
-        p.yMaxs[nInxInP] = n.yMaxs[maxBranches - 1]; }
-      else {
-        // Fill in here.
-      }
-
-      if (nn != null) {
+        p.yMaxs[nInxInP] = n.yMaxs[maxBranches - 1];
         if (p.entryCount < maxBranches) { // No split is necessary.
           final int newInxInP = p.entryCount++;
           nn.parent = p;
@@ -788,9 +783,7 @@ public final class RTree
 
           // The recursive step.
           currModInx = nInxInP;
-          // Also, the next step needs to know that a new leaf has been added.
-          // Figure this out.
-          n = p;
+          newNodeAdded = true;
           nn = null;
 
         }
@@ -800,14 +793,33 @@ public final class RTree
           final Node newInternalNode = splitInternalNode
             (p, nn, nn.xMins[maxBranches - 1], nn.yMins[maxBranches - 1],
             nn.xMaxs[maxBranches - 1], nn.yMaxs[maxBranches - 1]);
-
-          // The recursive step.
-          currModInx = -1;
-          n = p;
           nn = newInternalNode;
           
         }
       }
+      else if (currModInx >= 0) { // nn == null.
+        double newXMin = p.xMins[nInxInP];
+        double newYMin = p.yMins[nInxInP];
+        double newXMax = p.xMaxs[nInxInP];
+        double newYMax = p.yMaxs[nInxInP]:
+        newXMin = Math.min(newXMin, n.xMins[currModInx]);
+        newYMin = Math.min(newYMin, n.yMins[currModInx]);
+        newXMax = Math.max(newXMax, n.xMaxs[currModInx]);
+        newYMax = Math.max(newYMax, n.yMaxs[currModInx]);
+        if (newNodeAdded) {
+          newXMin = Math.min(newXMin, n.xMins[n.entryCount - 1]);
+          newYMin = Math.min(newYMin, n.yMins[n.entryCount - 1]);
+          newXMax = Math.max(newXMax, n.xMaxs[n.entryCount - 1]);
+          newYMax = Math.max(newYMax, n.yMaxs[n.entryCount - 1]);
+          newNodeAdded = false; }
+        if (newXMin == p.xMins[nInxInP] && newYMin == p.yMins[nInxInP] &&
+            newXMax == p.xMaxs[nInxInP] && newYMax == p.yMaxs[nInxInP]) {
+          currModInx = -1; }
+        else {
+          p.xMins[nInxInP] = newXMin; p.yMins[nInxInP] = newYMin;
+          p.xMaxs[nInxInP] = newXMax; p.yMaxs[nInxInP] = newYMax;
+          currModInx = nInxInP; } }
+      n = p;
 
     }
     return nn;
