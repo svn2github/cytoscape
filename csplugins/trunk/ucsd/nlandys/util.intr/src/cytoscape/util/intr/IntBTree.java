@@ -5,7 +5,10 @@ package cytoscape.util.intr;
  * The motivation behind the implementation of this tree is not usefulness.
  * The motivation is to get to know the algorithms associated with this tree
  * structure, so that implementing variants of this structure would become
- * simpler (an example of a variant of this structure is the R-tree).
+ * simpler (an example of a variant of this structure is the R-tree).  The
+ * implementation of this tree uses recursion (as opposed to the iterative
+ * approach).  While there is a performance penalty paid by using recursion,
+ * recursion does make the code much more understandable.
  */
 public final class IntBTree
 {
