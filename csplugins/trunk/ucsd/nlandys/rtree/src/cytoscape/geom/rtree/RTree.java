@@ -408,6 +408,7 @@ public final class RTree
                                  m_xMaxBuff, m_yMaxBuff, m_tempBuff1);
     // m_tempBuff1 now contains the areas of the MBRs - we won't use this.
     final int seed1 = (int) (seeds >> 32);
+    m_childrenBuff[seed1].parent = fullInternalNode;
     fullInternalNode.data.children[0] = m_childrenBuff[seed1];
     fullInternalNode.xMins[0] = m_xMinBuff[seed1];
     fullInternalNode.yMins[0] = m_yMinBuff[seed1];
@@ -416,6 +417,7 @@ public final class RTree
     fullInternalNode.entryCount = 1;
     final int seed2 = (int) seeds;
     final Node returnThis = new Node(m_maxBranches, false);
+    m_childrenBuff[seed2].parent = returnThis;
     returnThis.data.children[0] = m_childrenBuff[seed2];
     returnThis.xMins[0] = m_xMinBuff[seed2];
     returnThis.yMins[0] = m_yMinBuff[seed2];
@@ -469,6 +471,7 @@ public final class RTree
 
           // Add entry to "rest" group.
           final int newInx = restGroup.entryCount++;
+          m_childrenBuff[i].parent = restGroup;
           restGroup.data.children[newInx] = m_childrenBuff[i];
           restGroup.xMins[newInx] = m_xMinBuff[i];
           restGroup.yMins[newInx] = m_yMinBuff[i];
@@ -524,6 +527,7 @@ public final class RTree
 
       // Add next to chosen group.
       final int newInx = chosenGroup.entryCount++;
+      m_childrenBuff[next].parent = chosenGroup;
       chosenGroup.data.children[newInx] = m_childrenBuff[next];
       chosenGroup.xMins[newInx] = m_xMinBuff[next];
       chosenGroup.yMins[newInx] = m_yMinBuff[next];
@@ -572,7 +576,7 @@ public final class RTree
     // Null things out to enable garbage collection.
     for (int i = fullInternalNode.entryCount; i < data.children.length;)
       data.children[i++] = null;
-    // We only null out the buffer because we're paranoid.
+    // We only null out the buffer because we're neurotically paranoid.
     for (int i = 0; i < m_childrenBuff.length; i++) m_childrenBuff[i] = null;
 
     return returnThis;
@@ -754,7 +758,7 @@ public final class RTree
       for (int i = 0;; i++)
         if (p.data.children[i] == n) { nInxInP = i; break; }
 
-      // Set the MBR of the original node.
+      // Set the MBR of the original node in p.
       if (currModInx < 0) {
         p.xMins[nInxInP] = n.xMins[maxBranches - 1];
         p.yMins[nInxInP] = n.yMins[maxBranches - 1];
@@ -763,35 +767,37 @@ public final class RTree
       else {
         // Fill in here.
       }
-      
-      if (p.entryCount < maxBranches) { // No split is necessary.
-        final int newInxInP = p.entryCount++;
-        nn.parent = p;
-        p.data.children[newInxInP] = nn;
 
-        // Set the MBR of the new node.
-        if (currModInx < 0) {
-          p.xMins[newInxInP] = nn.xMins[maxBranches - 1];
-          p.yMins[newInxInP] = nn.yMins[maxBranches - 1];
-          p.xMaxs[newInxInP] = nn.xMaxs[maxBranches - 1];
-          p.yMaxs[newInxInP] = nn.yMaxs[maxBranches - 1]; }
-        else {
+      if (nn != null) {
+        if (p.entryCount < maxBranches) { // No split is necessary.
+          final int newInxInP = p.entryCount++;
+          nn.parent = p;
+          p.data.children[newInxInP] = nn;
+
+          // Set the MBR of the new node.
+          if (currModInx < 0) {
+            p.xMins[newInxInP] = nn.xMins[maxBranches - 1];
+            p.yMins[newInxInP] = nn.yMins[maxBranches - 1];
+            p.xMaxs[newInxInP] = nn.xMaxs[maxBranches - 1];
+            p.yMaxs[newInxInP] = nn.yMaxs[maxBranches - 1]; }
+          else {
+          }
+
+          // The recursive step.
+          currModInx = nInxInP;
+          // Also, the next step needs to know that a new leaf has been added.
+          // Figure this out.
+          n = p;
+          nn = null;
+
         }
-
-        // The recursive step.
-        currModInx = nInxInP;
-        // Also, the next step needs to know that a new leaf has been added.
-        // Figure this out.
-        n = p;
-        nn = null;
-
-      }
-      else { // A split is necessary.
-        // We require that MBR at index maxBranches - 1 in nn contain
-        // nn's overall MBR.
-        final Node newLeaf = splitInternalNode
-          (p, nn, nn.xMins[maxBranches - 1], nn.yMins[maxBranches - 1],
-           nn.xMaxs[maxBranches - 1], nn.yMaxs[maxBranches - 1]);
+        else { // A split is necessary.
+          // We require that MBR at index maxBranches - 1 in nn contain
+          // nn's overall MBR.
+          final Node newInternalNode = splitInternalNode
+            (p, nn, nn.xMins[maxBranches - 1], nn.yMins[maxBranches - 1],
+            nn.xMaxs[maxBranches - 1], nn.yMaxs[maxBranches - 1]);
+        }
       }
 
     }
