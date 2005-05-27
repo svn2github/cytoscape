@@ -186,6 +186,19 @@ public final class RTree
   }
 
   /*
+   * Deep counts are not touched by this function.  Inserts specified
+   * node into a parent at specified depth.  Depth zero is defined to
+   * be the depth of the root.
+   */
+  private final void insert(final Node n, final int depth,
+                            final double xMin, final double yMin,
+                            final double xMax, final double yMax)
+  {
+    final Node chosenParent =
+      chooseParent(m_root, depth, xMin, yMin, xMax, yMax);
+  }
+
+  /*
    * Returns a leaf node.  The returned leaf node is chosen by this
    * algorithm as the most suitable leaf node [under specified root] in
    * which to place specified new entry.
@@ -197,6 +210,23 @@ public final class RTree
     Node n = root;
     while (!isLeafNode(n))
       n = n.data.children[chooseSubtree(n, xMin, yMin, xMax, yMax)];
+    return n;
+  }
+
+  /*
+   * The root is defined to be at depth zero.  This function returns a node
+   * at specified depth such that the returned node is the most suitable such
+   * node in which to place specified MBR.
+   */
+  public final static Node chooseParent(final Node root, final int depth,
+                                        final double xMin, final double yMin,
+                                        final double xMax, final double yMax)
+  {
+    Node n = root;
+    int currDepth = 0;
+    while (currDepth != depth) {
+      n = n.data.children[chooseSubtree(n, xMin, yMin, xMax, yMax)];
+      currDepth++; }
     return n;
   }
 
