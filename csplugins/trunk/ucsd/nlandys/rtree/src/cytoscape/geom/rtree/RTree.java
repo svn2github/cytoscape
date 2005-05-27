@@ -84,14 +84,17 @@ public final class RTree
 //    */
 //   public final void empty() {}
 
-//   /**
-//    * Returns the number of entries currently in this R-tree.  This method
-//    * returns in constant time.<p>
-//    * NOTE: To retrieve an enumeration of all entries in this R-tree, call
-//    * queryOverlap() with Double.NEGATIVE_INFINITY minimum values and
-//    * Double.POSITIVE_INFINITY maximum values.
-//    */
-//   public final int size() { return 0; }
+  /**
+   * Returns the number of entries currently in this R-tree.  This method
+   * returns in constant time.<p>
+   * NOTE: To retrieve an enumeration of all entries in this R-tree, call
+   * queryOverlap() with Double.NEGATIVE_INFINITY minimum values and
+   * Double.POSITIVE_INFINITY maximum values.
+   */
+  public final int size()
+  {
+    return (isLeafNode(m_root) ? m_root.entryCount : m_root.data.deepCount);
+  }
 
   /*
    * This gets used a lot.  This test is in the form of a function to make
