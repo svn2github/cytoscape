@@ -19,7 +19,9 @@ public class RTreeQueryPerformance
    */
   public static void main(String[] args) throws Exception
   {
-    int N = Integer.parseInt(args[0]);
+    int branches = Integer.parseInt(args[0]);
+    int N = Integer.parseInt(args[1]);
+    final RTree tree = new RTree(N);
     double sqrtN = Math.sqrt((double) N);
     InputStream in = System.in;
     byte[] buff = new byte[16];
@@ -38,8 +40,11 @@ public class RTreeQueryPerformance
       double width = (((double) nonnegative) / ((double) 0x7fffffff)) / sqrtN;
       nonnegative = 0x7fffffff & assembleInt(buff, 12);
       double height = (((double) nonnegative) / ((double) 0x7fffffff)) / sqrtN;
-      System.out.println("centerX: " + centerX + "  centerY: " + centerY +
-                         "  width: " + width + "  height: " + height);
+      tree.insert(inx,
+                  centerX - (width / 2.0d),
+                  centerY - (width / 2.0d),
+                  centerX + (width / 2.0d),
+                  centerY + (width / 2.0d));
       inx++; }
     if (inx < N) throw new IOException("premature end of input");
   }
