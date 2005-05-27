@@ -1054,17 +1054,42 @@ public final class RTree
     return true;
   }
 
-//   /**
-//    * Deletes the specified data entry from this tree.
-//    * @param objKey a user-defined identifier that was potentially used in a
-//    *   previous insertion.
-//    * @return true if and only if objKey existed in this R-tree prior to this
-//    *   method invocation.
-//    */
-//   public final boolean delete(final int objKey)
-//   {
-//     return false;
-//   }
+  /**
+   * Deletes the specified data entry from this tree.
+   * @param objKey a user-defined identifier that was potentially used in a
+   *   previous insertion.
+   * @return true if and only if objKey existed in this R-tree prior to this
+   *   method invocation.
+   */
+  public final boolean delete(final int objKey)
+  {
+    if (objKey < 0) return false;
+    final Object o = m_entryMap.get(objKey);
+    if (o == null || o == m_deletedEntry) return false;
+    final Node n = (Node) o;
+
+    // Delete record from leaf node.
+    n.entryCount--;
+    final int delInx;
+    for (int i = 0;; i++)
+      if (n.objKeys[i] == objKey) { delInx = i; break; }
+    for (int i = delInx; i < n.entryCount; i++) {
+      final int iPlusOne = i + 1;
+      n.objKeys[i] = n.objKeys[iPlusOne];
+      n.xMins[i] = n.xMins[iPlusOne];
+      n.yMins[i] = n.yMins[iPlusOne];
+      n.xMaxs[i] = n.xMaxs[iPlusOne];
+      n.yMaxs[i] = n.yMaxs[iPlusOne]; }
+    condenseTree(n);
+    return true;
+
+    // Finally, delete the leaf node form m_entryMap.  If m_entryMap contains
+    // too many deleted entries, shrink its size.
+  }
+
+  private final static void condenseTree(final Node leafNode)
+  {
+  }
 
   /**
    * Returns an enumeration of entries whose extents intersect the
