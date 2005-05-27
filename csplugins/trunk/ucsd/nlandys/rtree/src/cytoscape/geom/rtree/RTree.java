@@ -321,8 +321,9 @@ public final class RTree
 
       // We're not done; pick next.
       final int next = pickNext
-        (fullLeafNode, returnThis, entriesRemaining, xMinBuff, yMinBuff,
-         xMaxBuff, yMaxBuff, tempBuff1, buff1Valid, tempBuff2, buff2Valid);
+        (fullLeafNode, returnThis, entriesRemaining, maxBranches,
+         xMinBuff, yMinBuff, xMaxBuff, yMaxBuff,
+         tempBuff1, buff1Valid, tempBuff2, buff2Valid);
       final boolean chooseGroup1;
       if (tempBuff1[next] < tempBuff2[next]) chooseGroup1 = true;
       else if (tempBuff1[next] > tempBuff2[next]) chooseGroup1 = false;
@@ -524,8 +525,9 @@ public final class RTree
 
       // We're not done; pick next.
       final int next = pickNext
-        (fullInternalNode, returnThis, entriesRemaining, xMinBuff, yMinBuff,
-         xMaxBuff, yMaxBuff, tempBuff1, buff1Valid, tempBuff2, buff2Valid);
+        (fullInternalNode, returnThis, entriesRemaining, maxBranches,
+         xMinBuff, yMinBuff, xMaxBuff, yMaxBuff,
+         tempBuff1, buff1Valid, tempBuff2, buff2Valid);
       final boolean chooseGroup1;
       if (tempBuff1[next] < tempBuff2[next]) chooseGroup1 = true;
       else if (tempBuff1[next] > tempBuff2[next]) chooseGroup1 = false;
