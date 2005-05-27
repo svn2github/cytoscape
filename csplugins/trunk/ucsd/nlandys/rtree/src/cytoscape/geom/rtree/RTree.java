@@ -671,31 +671,35 @@ public final class RTree
   {
     final int maxBranchesMinusOne = group1.xMins.length - 1;
     if (!buff1Valid) {
+      // If we had an area cache array field in each node we could prevent
+      // this computation.
       final double group1Area =
         (group1.xMaxs[maxBranchesMinusOne] -
          group1.xMins[maxBranchesMinusOne]) *
         (group1.yMaxs[maxBranchesMinusOne] -
          group1.yMins[maxBranchesMinusOne]);
       for (int i = 0; i < count; i++) {
-        tempBuff1[i] = // Area of group1 swallowing ith rectangle.
-          (Math.max(group1.xMaxs[maxBranchesMinusOne], xMaxs[i]) -
-           Math.min(group1.xMins[maxBranchesMinusOne], xMins[i])) *
-          (Math.max(group1.yMaxs[maxBranchesMinusOne], yMaxs[i]) -
-           Math.min(group1.yMins[maxBranchesMinusOne], yMins[i]));
-        tempBuff1[i] -= group1Area; } }
+        tempBuff1[i] =
+          ((Math.max(group1.xMaxs[maxBranchesMinusOne], xMaxs[i]) -
+            Math.min(group1.xMins[maxBranchesMinusOne], xMins[i])) *
+           (Math.max(group1.yMaxs[maxBranchesMinusOne], yMaxs[i]) -
+            Math.min(group1.yMins[maxBranchesMinusOne], yMins[i]))) -
+          group1Area; } }
     if (!buff2Valid) {
+      // If we had an area cache array field in each node we could prevent
+      // this computation.      
       final double group2Area =
         (group2.xMaxs[maxBranchesMinusOne] -
          group2.xMins[maxBranchesMinusOne]) *
         (group2.yMaxs[maxBranchesMinusOne] -
          group2.yMins[maxBranchesMinusOne]);
       for (int i = 0; i < count; i++) {
-        tempBuff2[i] = // Area of group2 swallowing ith rectangle.
-          (Math.max(group2.xMaxs[maxBranchesMinusOne], xMaxs[i]) -
-           Math.min(group2.xMins[maxBranchesMinusOne], xMins[i])) *
-          (Math.max(group2.yMaxs[maxBranchesMinusOne], yMaxs[i]) -
-           Math.min(group2.yMins[maxBranchesMinusOne], yMins[i]));
-        tempBuff2[i] -= group2Area; } }
+        tempBuff2[i] =
+          ((Math.max(group2.xMaxs[maxBranchesMinusOne], xMaxs[i]) -
+            Math.min(group2.xMins[maxBranchesMinusOne], xMins[i])) *
+           (Math.max(group2.yMaxs[maxBranchesMinusOne], yMaxs[i]) -
+            Math.min(group2.yMins[maxBranchesMinusOne], yMins[i]))) -
+          group2Area; } }
     double maxDDifference = Double.NEGATIVE_INFINITY;
     int maxInx = -1;
     for (int i = 0; i < count; i++) {
