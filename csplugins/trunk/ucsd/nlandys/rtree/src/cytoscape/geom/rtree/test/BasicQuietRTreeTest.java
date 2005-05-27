@@ -283,10 +283,10 @@ public class BasicQuietRTreeTest
     tree.insert(25, 1.0, 9.0, 2.0, 10.0);
     tree.insert(26, -2.0, 5.0, -1.0, 6.0);
     tree.insert(27, -2.5, 5.25, -1.75, 9.25);
-//     for (int i = 28; i < 200; i++)
-//       tree.insert(i, 0.0, 0.0, (double) i, (double) i);
-//     for (int i = 28; i < 200; i++)
-//       tree.delete(i);
+    for (int i = 28; i < 200; i++)
+      tree.insert(i, 0.0, 0.0, (double) i, (double) i);
+    for (int i = 28; i < 200; i++)
+      tree.delete(i);
     // There are now 28 entries in the R-tree.  Depth must be at least 4.
 
     { // BEGIN DEPTH FOUR TEST.
