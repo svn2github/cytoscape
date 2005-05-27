@@ -188,10 +188,8 @@ public final class IntIntHash
       throw new IllegalStateException
         ("too many elements in this hashtable"); }
     if (m_keys.length < newSize) {
-      final int[] newKeys = new int[newSize];
-      final int[] newVals = new int[newSize];
       m_keyDump = m_keys; m_valDump = m_vals;
-      m_keys = newKeys; m_vals = newVals; }
+      m_keys = new int[newSize]; m_vals = new int[newSize]; }
     else {
       System.arraycopy(m_keys, 0, m_keyDump, 0, m_size);
       System.arraycopy(m_vals, 0, m_valDump, 0, m_size); }
