@@ -1070,7 +1070,8 @@ public final class RTree
     if ((xMinQ <= xMinN) && (xMaxQ >= xMaxN) && // Does rectangle Q contain
         (yMinQ <= yMinN) && (yMaxQ >= yMaxN)) { // rectangle N?
       // Trivially include node.
-      if (isLeafNode(n)) { count += n.entryCount; stackStack.push(null); }
+      if (n.data == null) { // Leaf node.
+        count += n.entryCount; stackStack.push(null); }
       else { count += n.data.deepCount; }
       nodeStack.push(n);
       if (extents != null) {
@@ -1079,7 +1080,7 @@ public final class RTree
         extents[off + 2] = Math.max(extents[off + 2], xMaxN);
         extents[off + 3] = Math.max(extents[off + 3], yMaxN); } }
     else { // Cannot trivially include node; must recurse.
-      if (isLeafNode(n)) {
+      if (n.data == null) { // Leaf node.
         final IntStack stack = new IntStack();
         for (int i = 0; i < n.entryCount; i++) {
           // Overlaps test of two rectangles.
@@ -1242,14 +1243,15 @@ public final class RTree
       Node next;
       while (true) {
         next = (Node) nodeStack.pop();
-        if (isLeafNode(next)) {
+        if (next.data == null) { // Leaf node.
           currentLeafNode = next;
           currentStack = (IntStack) stackStack.pop(); // May be null.
           currentInx = 0; // If currentStack isn't null, this will be ignored.
           return; }
         for (int i = 0; i < next.entryCount; i++) {
           // This 'if' statement could be taken out of 'for' loop for speed.
-          if (isLeafNode(next.data.children[i])) stackStack.push(null);
+          if (next.data.children[i].data == null) // Leaf node.
+            stackStack.push(null);
           nodeStack.push(next.data.children[i]); } } }
   }
 
