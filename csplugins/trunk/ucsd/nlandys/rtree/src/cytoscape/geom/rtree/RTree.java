@@ -750,16 +750,21 @@ public final class RTree
     while (true) {
       final Node p = n.parent;
 
-      // "If N is the root, stop."
+      // "If N is the root, stop."  Update globalMBR if root not split.
       if (p == null) {
-        if (nn == null) {
-          // Update global MBR.
-        }
+        if (nn == null && currModInx >= 0) {
+          globalMBR[0] = Math.min(globalMBR[0], n.xMins[currModInx]);
+          globalMBR[1] = Math.min(globalMBR[1], n.yMins[currModInx]);
+          globalMBR[2] = Math.max(globalMBR[2], n.xMaxs[currModInx]);
+          globalMBR[3] = Math.max(globalMBR[3], n.yMaxs[currModInx]);
+          if (newNodeAdded) { // Will only be true when currModInx >= 0.
+            final int countMin1 = n.entryCount - 1;
+            globalMBR[0] = Math.min(globalMBR[0], n.xMins[countMin1]);
+            globalMBR[1] = Math.min(globalMBR[1], n.yMins[countMin1]);
+            globalMBR[2] = Math.max(globalMBR[2], n.xMaxs[countMin1]);
+            globalMBR[3] = Math.max(globalMBR[3], n.yMaxs[countMin1]); } }
         break; }
-
-      // Update the deep count.
-      p.data.deepCount++;
-
+      p.data.deepCount++; // Will get rewritten if p is split - that's OK.
       final int nInxInP;
       for (int i = 0;; i++)
         if (p.data.children[i] == n) { nInxInP = i; break; }
@@ -790,22 +795,17 @@ public final class RTree
         else { // A split is necessary.
           // We require that the MBR at index maxBranches - 1 in nn contain
           // nn's overall MBR at the time this is called.
-          final Node newInternalNode = splitInternalNode
+          nn = splitInternalNode
             (p, nn, nn.xMins[maxBranches - 1], nn.yMins[maxBranches - 1],
             nn.xMaxs[maxBranches - 1], nn.yMaxs[maxBranches - 1]);
-          nn = newInternalNode;
           
         }
       }
       else if (currModInx >= 0) { // nn == null.
-        double newXMin = p.xMins[nInxInP];
-        double newYMin = p.yMins[nInxInP];
-        double newXMax = p.xMaxs[nInxInP];
-        double newYMax = p.yMaxs[nInxInP]:
-        newXMin = Math.min(newXMin, n.xMins[currModInx]);
-        newYMin = Math.min(newYMin, n.yMins[currModInx]);
-        newXMax = Math.max(newXMax, n.xMaxs[currModInx]);
-        newYMax = Math.max(newYMax, n.yMaxs[currModInx]);
+        double newXMin = Math.min(p.xMins[nInxInP], n.xMins[currModInx]);
+        double newYMin = Math.min(p.yMins[nInxInP], n.yMins[currModInx]);
+        double newXMax = Math.max(p.xMaxs[nInxInP], n.xMaxs[currModInx]);
+        double newYMax = Math.max(p.yMaxs[nInxInP], n.yMaxs[currModInx]);
         if (newNodeAdded) {
           newXMin = Math.min(newXMin, n.xMins[n.entryCount - 1]);
           newYMin = Math.min(newYMin, n.yMins[n.entryCount - 1]);
