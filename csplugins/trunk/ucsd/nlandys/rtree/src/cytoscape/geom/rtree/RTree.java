@@ -1090,7 +1090,7 @@ public final class RTree
       n.objKeys[i] = n.objKeys[iPlusOne];
       n.xMins[i] = n.xMins[iPlusOne]; n.yMins[i] = n.yMins[iPlusOne];
       n.xMaxs[i] = n.xMaxs[iPlusOne]; n.yMaxs[i] = n.yMaxs[iPlusOne]; }
-    condenseTree(n, m_nodeStack, m_minBranches);
+    condenseTree(n, m_nodeStack, m_minBranches, m_MBR);
     return true;
 
     // Finally, delete the objKey from m_entryMap.  If m_entryMap contains
@@ -1105,12 +1105,24 @@ public final class RTree
    */
   private final static void condenseTree(final Node leafNode,
                                          final ObjStack eliminatedNodes,
-                                         final int minBranches)
-  {
+                                         final int minBranches,
+                                         final double[] globalMBR)
+  { // Don't forget to update deep counts!
     Node n = leafNode;
     while (true) {
       final Node p = n.parent;
-      if (p == null) return; // n is the root.
+      if (p == null) { // n is the root.
+        // Optimize this later.
+        globalMBR[0] = Double.POSITIVE_INFINITY;
+        globalMBR[1] = Double.POSITIVE_INFINITY;
+        globalMBR[2] = Double.NEGATIVE_INFINITY;
+        globalMBR[3] = Double.NEGATIVE_INFINITY;
+        for (int i = 0; i < n.entryCount; i++) {
+          globalMBR[0] = Math.min(globalMBR[0], n.xMins[i]);
+          globalMBR[1] = Math.min(globalMBR[1], n.yMins[i]);
+          globalMBR[2] = Math.max(globalMBR[2], n.xMaxs[i]);
+          globalMBR[3] = Math.max(globalMBR[3], n.yMaxs[i]); }
+        return; }
       final int nInxInP;
       for (int i = 0;; i++)
         if (p.data.children[i] == n) { nInxInP = i; break; }
