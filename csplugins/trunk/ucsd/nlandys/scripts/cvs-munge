@@ -1,0 +1,26 @@
+#!/bin/sh
+
+set -ex
+
+FROM_DIR=
+TO_DIR=
+PERL_SCRIPT=/path/to/foo.pl
+cd ${FROM_DIR}
+for f in $*; do
+  CURR_VER=1
+  cvs update -j HEAD -j 1.${CURR_VER} ${f}
+  while /bin/true; do
+    cp ${f} ${TO_DIR}/${f}
+    LOG_MESSAGE=`cvs log -r1.${CURR_VER} ${f} | ${PERL_SCRIPT}`
+    pushd ${TO_DIR}
+    cvs add ${f} || echo "already exists; no problem"
+    cvs commit -m "${LOG_MESSAGE}" ${f}
+    popd
+    NEW_CURR_VER=`expr ${CURR_VER} + 1`
+    if ! cvs log -r1.${NEW_CURR_VER} ${f} | ${PERL_SCRIPT}; then
+      break;
+    fi
+    cvs update -j 1.${CURR_VER} -j 1.${NEW_CURR_VER} ${f}
+    CURR_VER=${NEW_CURR_VER}
+  done
+done
