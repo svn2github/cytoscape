@@ -178,6 +178,9 @@ public final class RTree
     double bestArea = Double.POSITIVE_INFINITY;
     int bestInx = -1;
     for (int i = 0; i < n.entryCount; i++) {
+      // A possible optimization would be to add to each node an area cache
+      // for each entry.  That way we wouldn't have to compute this area on
+      // each insertion.
       final double currArea =
         (n.xMaxs[i] - n.xMins[i]) * (n.yMaxs[i] - n.yMins[i]);
       final double newArea =
@@ -196,7 +199,8 @@ public final class RTree
    * This is the quadratic-cost algorithm described in Guttman's 1984
    * R-tree paper.  The parent pointer of returned node is not set.  The
    * parent pointer in the full node is not modified, and nothing in that
-   * parent is modified.  Everything else is modified.  The MBRs at index
+   * parent is modified.  Everything else in the input node and in the
+   * returned node is set as appropriate.  The MBRs at index
    * m_maxBranches - 1 in both nodes are set to be the new overall MBR of
    * corresponding node.  The node returned is also a leaf node.
    * No claim is made as to the resulting values in the buff arrays.
@@ -251,7 +255,7 @@ public final class RTree
     returnThis.yMaxs[0] = yMaxBuff[seed2];
     returnThis.entryCount = 1;
 
-    // Initialize the MBRs at index maxBranches - 1.
+    // Initialize the overall MBRs at index maxBranches - 1.
     fullLeafNode.xMins[maxBranches - 1] = fullLeafNode.xMins[0];
     fullLeafNode.yMins[maxBranches - 1] = fullLeafNode.yMins[0];
     fullLeafNode.xMaxs[maxBranches - 1] = fullLeafNode.xMaxs[0];
@@ -263,7 +267,7 @@ public final class RTree
 
     // Collapse the arrays where seeds used to be.
     int entriesRemaining = totalEntries - 2;
-    for (int i = seed1; i < seed2 - 1; i++) { // seed1 < seed2, guarenteed.
+    for (int i = seed1; i < seed2 - 1; i++) { // seed1 < seed2, guaranteed.
       final int iPlusOne = i + 1;
       objKeyBuff[i] = objKeyBuff[iPlusOne];
       xMinBuff[i] = xMinBuff[iPlusOne];
@@ -303,7 +307,7 @@ public final class RTree
           restGroup.xMaxs[newInx] = xMaxBuff[i];
           restGroup.yMaxs[newInx] = yMaxBuff[i];
 
-          // Update the MBR of "rest" group.
+          // Update the overall MBR of "rest" group.
           restGroup.xMins[maxBranches - 1] =
             Math.min(restGroup.xMins[maxBranches - 1], xMinBuff[i]);
           restGroup.yMins[maxBranches - 1] =
@@ -317,13 +321,14 @@ public final class RTree
 
       // We're not done; pick next.
       final int next = pickNext
-        (fullLeafNode, returnThis, entriesRemaining,
-         xMinBuff, yMinBuff, xMaxBuff, yMaxBuff,
-         tempBuff1, buff1Valid, tempBuff2, buff2Valid);
+        (fullLeafNode, returnThis, entriesRemaining, xMinBuff, yMinBuff,
+         xMaxBuff, yMaxBuff, tempBuff1, buff1Valid, tempBuff2, buff2Valid);
       final boolean chooseGroup1;
       if (tempBuff1[next] < tempBuff2[next]) chooseGroup1 = true;
       else if (tempBuff1[next] > tempBuff2[next]) chooseGroup1= false;
       else { // Tie for how much group's covering rectangle will increase.
+        // If we had an area cache array field in each node we could prevent
+        // these two computations.
         final double group1Area =
           (fullLeafNode.xMaxs[maxBranches - 1] -
            fullLeafNode.xMins[maxBranches - 1]) *
@@ -361,6 +366,8 @@ public final class RTree
       // Update the MBR of chosen group.
       // Note: If we see that the MBR stays the same, we could mark the
       // "invalid" temp buff array as valid to save even more on computations.
+      // Because this is a rare occurance, I choose not to make this
+      // optimization.
       chosenGroup.xMins[maxBranches - 1] =
         Math.min(chosenGroup.xMins[maxBranches - 1], xMinBuff[next]);
       chosenGroup.yMins[maxBranches - 1] =
@@ -379,7 +386,7 @@ public final class RTree
         yMinBuff[i] = yMinBuff[iPlusOne];
         xMaxBuff[i] = xMaxBuff[iPlusOne];
         yMaxBuff[i] = yMaxBuff[iPlusOne];
-        validTempBuff[i] = validTempBuff[iPlusOne]; } }
+        validTempBuff[i] = validTempBuff[iPlusOne]; } } // End while loop.
 
     return returnThis;
   }
