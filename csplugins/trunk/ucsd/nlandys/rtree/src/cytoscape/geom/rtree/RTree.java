@@ -703,11 +703,11 @@ public final class RTree
       // Update the deep count.
       p.data.deepCount++;
 
-      final int nInxInP;
-      for (int i = 0;; i++)
-        if (p.data.children[i] == n) { nInxInP = i; break; }
-
       if (currModInx >= 0) {
+        final int nInxInP;
+        for (int i = 0;; i++)
+          if (p.data.children[i] == n) { nInxInP = i; break; }
+
         // Compute the MBR that tightly encloses all entries in n.
         final double newXMin = Math.min(p.xMins[nInxInP], n.xMins[currModInx]);
         final double newYMin = Math.min(p.yMins[nInxInP], n.yMins[currModInx]);
