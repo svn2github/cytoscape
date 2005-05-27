@@ -457,7 +457,7 @@ public final class RTree
     returnThis.yMaxs[0] = yMaxBuff[seed2];
     returnThis.entryCount = 1;
 
-    // Initialize the MBRs at index maxBranches - 1.
+    // Initialize the overall MBRs at index maxBranches - 1.
     fullInternalNode.xMins[maxBranches - 1] = fullInternalNode.xMins[0];
     fullInternalNode.yMins[maxBranches - 1] = fullInternalNode.yMins[0];
     fullInternalNode.xMaxs[maxBranches - 1] = fullInternalNode.xMaxs[0];
@@ -510,7 +510,7 @@ public final class RTree
           restGroup.xMaxs[newInx] = xMaxBuff[i];
           restGroup.yMaxs[newInx] = yMaxBuff[i];
 
-          // Update the MBR of "rest" group.
+          // Update the overall MBR of "rest" group.
           restGroup.xMins[maxBranches - 1] =
             Math.min(restGroup.xMins[maxBranches - 1], xMinBuff[i]);
           restGroup.yMins[maxBranches - 1] =
@@ -524,13 +524,14 @@ public final class RTree
 
       // We're not done; pick next.
       final int next = pickNext
-        (fullInternalNode, returnThis, entriesRemaining,
-         xMinBuff, yMinBuff, xMaxBuff, yMaxBuff,
-         tempBuff1, buff1Valid, tempBuff2, buff2Valid);
+        (fullInternalNode, returnThis, entriesRemaining, xMinBuff, yMinBuff,
+         xMaxBuff, yMaxBuff, tempBuff1, buff1Valid, tempBuff2, buff2Valid);
       final boolean chooseGroup1;
       if (tempBuff1[next] < tempBuff2[next]) chooseGroup1 = true;
-      else if (tempBuff1[next] > tempBuff2[next]) chooseGroup1= false;
+      else if (tempBuff1[next] > tempBuff2[next]) chooseGroup1 = false;
       else { // Tie for how much group's covering rectangle will increase.
+        // If we had an area cache array field in each node we could prevent
+        // these two computations.
         final double group1Area =
           (fullInternalNode.xMaxs[maxBranches - 1] -
            fullInternalNode.xMins[maxBranches - 1]) *
@@ -569,6 +570,8 @@ public final class RTree
       // Update the MBR of chosen group.
       // Note: If we see that the MBR stays the same, we could mark the
       // "invalid" temp buff array as valid to save even more on computations.
+      // Because this is a rare occurance (seeds of small area tend to be
+      // chosen), I choose not to make this optimization.
       chosenGroup.xMins[maxBranches - 1] =
         Math.min(chosenGroup.xMins[maxBranches - 1], xMinBuff[next]);
       chosenGroup.yMins[maxBranches - 1] =
@@ -587,7 +590,7 @@ public final class RTree
         yMinBuff[i] = yMinBuff[iPlusOne];
         xMaxBuff[i] = xMaxBuff[iPlusOne];
         yMaxBuff[i] = yMaxBuff[iPlusOne];
-        validTempBuff[i] = validTempBuff[iPlusOne]; } }
+        validTempBuff[i] = validTempBuff[iPlusOne]; } } // End while loop.
 
     fullInternalNode.data.deepCount = 0; // Update deep counts.
     if (isLeafNode(fullInternalNode.data.children[0])) {
@@ -597,7 +600,7 @@ public final class RTree
       for (int i = 0; i < returnThis.entryCount; i++)
         returnThis.data.deepCount +=
           returnThis.data.children[i].entryCount; }
-    else {
+    else { // fullInternalNode's children are internal nodes.
       for (int i = 0; i < fullInternalNode.entryCount; i++)
         fullInternalNode.data.deepCount +=
           fullInternalNode.data.children[i].data.deepCount;
@@ -605,7 +608,7 @@ public final class RTree
         returnThis.data.deepCount +=
           returnThis.data.children[i].data.deepCount; }
 
-    // Null things out to enable garbage collection.
+    // Null things out to not hinder future garbage collection.
     for (int i = fullInternalNode.entryCount;
          i < fullInternalNode.data.children.length; i++)
       fullInternalNode.data.children[i] = null;
