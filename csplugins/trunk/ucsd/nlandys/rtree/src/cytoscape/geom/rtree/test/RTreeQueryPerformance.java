@@ -46,6 +46,8 @@ public class RTreeQueryPerformance
       double width = (((double) nonnegative) / ((double) 0x7fffffff)) / sqrtN;
       nonnegative = 0x7fffffff & randomData[inx++];
       double height = (((double) nonnegative) / ((double) 0x7fffffff)) / sqrtN;
+      System.out.println("centerX: " + centerX + "  centerY: " + centerY +
+                         "  width: " + width + "  height: " + height);
     }
 
 //     double maxDim = 1.0d / Math.sqrt((double) N);
