@@ -20,12 +20,11 @@ public class RTreeUpdatePerformance
   public static void main(String[] args) throws Exception
   {
     final double[] data;
-    final int N;
+    final int N = Integer.parseInt(args[1]);
+    final int branches = Integer.parseInt(args[0]);
 
     // Populate the array with entries.
     {
-      int branches = Integer.parseInt(args[0]);
-      N = Integer.parseInt(args[1]);
       data = new double[N * 4];
       double sqrtN = Math.sqrt((double) N);
       InputStream in = System.in;
@@ -55,10 +54,11 @@ public class RTreeUpdatePerformance
       if (inx < N) throw new IOException("premature end of input");
     }
 
-    final RTree tree = new RTree();
+    final RTree tree = new RTree(branches);
 
     // Initial insertion test.
     {
+      for (int i = 0; i < 2; i++) { System.gc(); Thread.sleep(1000); }
       final long millisBegin = System.currentTimeMillis();
       int objKey = 0;
       int inx = 0;
@@ -72,6 +72,7 @@ public class RTreeUpdatePerformance
 
     // Initial query test.
     {
+      for (int i = 0; i < 2; i++) { System.gc(); Thread.sleep(1000); }
       final long millisBegin = System.currentTimeMillis();
       for (int i = 0; i < 5; i++) {
         tree.queryOverlap(((double) i) * 0.1d,
@@ -83,10 +84,11 @@ public class RTreeUpdatePerformance
                          (millisEnd - millisBegin) + " milliseconds");
     }
 
-    for (int a = 0; a < 3; a++)
+    for (byte a = 0; a < 3; a++)
     {
       // Update test.
       {
+        for (int i = 0; i < 2; i++) { System.gc(); Thread.sleep(1000); }
         final long millisBegin = System.currentTimeMillis();
         int objKey = 0;
         int inx = 0;
@@ -101,12 +103,30 @@ public class RTreeUpdatePerformance
 
       // Repeated query test.
       {
+        for (int i = 0; i < 2; i++) { System.gc(); Thread.sleep(1000); }
         final long millisBegin = System.currentTimeMillis();
-        for (int i = 0; i < 5; i++) {
-          tree.queryOverlap(((double) i) * 0.1d,
-                            ((double) i) * 0.1d,
-                            ((double) (i + 1)) * 0.1d,
-                            ((double) (i + 1)) * 0.1d, null, 0); }
+        switch (a) {
+          case 0:
+            for (int i = 0; i < 5; i++) {
+              tree.queryOverlap(((double) i) * 0.1d,
+                                ((double) (9 - i)) * 0.1d,
+                                ((double) (i + 1)) * 0.1d,
+                                ((double) (10 - i)) * 0.1d, null, 0); }
+            break;
+          case 1:
+            for (int i = 0; i < 5; i++) {
+              tree.queryOverlap(((double) (9 - i)) * 0.1d,
+                                ((double) i) * 0.1d,
+                                ((double) (10 - i)) * 0.1d,
+                                ((double) (i + 1)) * 0.1d, null, 0); }
+            break;
+          case 2:
+            for (int i = 0; i < 5; i++) {
+              tree.queryOverlap(((double) (9 - i)) * 0.1d,
+                                ((double) (9 - i)) * 0.1d,
+                                ((double) (10 - i)) * 0.1d,
+                                ((double) (10 - i)) * 0.1d, null, 0); }
+            break; }
         final long millisEnd = System.currentTimeMillis();
         System.err.println("repeated queries took " +
                            (millisEnd - millisBegin) + " milliseconds");
