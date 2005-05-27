@@ -990,7 +990,10 @@ public final class RTree
    * structure-modifying operation (insert or delete) is performed on this
    * R-tree.  Accessing an invalid enumeration's methods will result in
    * unpredictable and ill-defined behavior in that enumeration, but will
-   * have no effect on the integrity of the underlying tree structure.
+   * have no effect on the integrity of the underlying tree structure.<p>
+   * NOTE: It may be possible to provide a more optimized version of this
+   * algorithm for point queries.  Such a public method may be a future
+   * addition to this class.
    * @param xMin the minimum X coordinate of the query rectangle.
    * @param yMin the minimum Y coordinate of the query rectangle.
    * @param xMax the maximum X coordinate of the query rectangle.
