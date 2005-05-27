@@ -705,6 +705,9 @@ public final class RTree
    * It is required that the MBRs at index m_maxBranches - 1 in both
    * input nodes contain the overall MBR of corresponding node.
    * Returns a node if root was split, otherwise returns null.
+   * If a node is returned, then both the old root and the returned node
+   * will have an MBR entry at index maxBranches - 1 which will be the
+   * overall MBR of that node.
    */
   private final static Node adjustTreeWithSplit(final Node originalLeafNode,
                                                 final Node newLeafNode,
