@@ -56,13 +56,11 @@ public class ArrayTestMethod3
       int inx = 0;
       final long millisBegin = System.currentTimeMillis();
       for (int i = 0; i < nodeArr.length; i++) {
-        final double[] arr = nodeArr[inx].arr;
+        final Node n = nodeArr[inx];
         for (int j = 0; j < nodeSize; j++) {
           foo =
-            arr[j] +
-            arr[j + yMinOffset] +
-            arr[j + xMaxOffset] +
-            arr[j + yMaxOffset]; }
+            n.arr[j] + n.arr[j + yMinOffset] +
+            n.arr[j + xMaxOffset] + n.arr[j + yMaxOffset]; }
         inx = (inx + incr) % nodeArr.length; }
       final long millisEnd = System.currentTimeMillis();
       System.out.println("sequential rectangle access took " +
