@@ -107,6 +107,7 @@ public final class RTree
       chosenLeaf.yMins[newInx] = yMin;
       chosenLeaf.xMaxs[newInx] = xMax;
       chosenLeaf.yMaxs[newInx] = yMax;
+      m_entryMap.put(objKey, chosenLeaf);
       adjustTreeNoSplit(chosenLeaf, m_MBR); }
     else { // A split is necessary.
       splitLeafNode(chosenLeaf, objKey, xMin, yMin, xMax, yMax); }
@@ -648,14 +649,17 @@ public final class RTree
       for (int i = 0;; i++)
         if (p.data.children[i] == n) { nInxInP = i; break; }
 
+      // Compute the MBR that tightly encloses all entries in n.
       final double newXMin = Math.min(p.xMins[nInxInP], n.xMins[currModInx]);
       final double newYMin = Math.min(p.yMins[nInxInP], n.yMins[currModInx]);
       final double newXMax = Math.max(p.xMaxs[nInxInP], n.xMaxs[currModInx]);
       final double newYMax = Math.max(p.yMaxs[nInxInP], n.yMaxs[currModInx]);
 
+      // If this MBR of all entries in n does not change, we're done.
       if (newXMin == p.xMins[nInxInP] && newYMin == p.yMins[nInxInP] &&
           newXMax == p.xMaxs[nInxInP] && newYMax == p.yMaxs[nInxInP]) break;
 
+      // Set the computed MBR in the parent and move up the tree one step.
       p.xMins[nInxInP] = newXMin; p.yMins[nInxInP] = newYMin;
       p.xMaxs[nInxInP] = newXMax; p.yMaxs[nInxInP] = newYMax;
       currModInx = nInxInP;
