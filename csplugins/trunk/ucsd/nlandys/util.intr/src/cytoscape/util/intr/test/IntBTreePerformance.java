@@ -32,7 +32,7 @@ public class IntBTreePerformance
       off += read;
       if (off < buff.length) continue;
       else off = 0;
-      elements[inx++] = Math.abs(assembleInt(buff)) % N; }
+      elements[inx++] = (0x7fffffff & assembleInt(buff)) % N; }
     if (inx < N) throw new IOException("premature end of input");
 
     // Lose reference to as much as we can.

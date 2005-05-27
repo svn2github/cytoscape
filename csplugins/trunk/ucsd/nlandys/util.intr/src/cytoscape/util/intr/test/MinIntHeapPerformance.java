@@ -62,7 +62,7 @@ public class MinIntHeapPerformance
    * defined from the input by taking groups of 4 consecutive bytes from input,
    * each group defining a single integer by interpreting the first byte in
    * a group to be the most significant bits of the integer etc.  The
-   * range [0, N-1] of each integer is satisifed by dividing the absolute
+   * range [0, N-1] of each integer is satisifed by dividing the positized
    * value of each assembled
    * four-byte integer by N, and taking the remainder as the element to be
    * tossed onto the heap.<p>
@@ -105,7 +105,7 @@ public class MinIntHeapPerformance
       off += read;
       if (off < buff.length) continue;
       else off = 0;
-      elements[inx++] = Math.abs(assembleInt(buff)) % N; }
+      elements[inx++] = (0x7fffffff & assembleInt(buff)) % N; }
     if (inx < N) throw new IOException("premature end of input");
 
     // Lose reference to as much as we can.
