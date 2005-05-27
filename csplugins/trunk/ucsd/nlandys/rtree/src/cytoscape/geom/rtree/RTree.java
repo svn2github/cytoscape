@@ -1381,7 +1381,7 @@ public final class RTree
           (xMaxQ >= extStack[extOff + 2]) && // rectangle N - trivially
           (yMinQ <= extStack[extOff + 1]) && // include node.
           (yMaxQ >= extStack[extOff + 3])) {
-        if (n.data == null) { // Leaf node.
+        if (isLeafNode(n)) {
           count += n.entryCount; stackStack.push(null); }
         else { count += n.data.deepCount; }
         nodeStack.push(n);
@@ -1392,7 +1392,7 @@ public final class RTree
           extents[off + 3] = Math.max(extents[off + 3], extStack[extOff + 3]);
         } }
       else { // Cannot trivially include node; must recurse.
-        if (n.data == null) { // Leaf node.
+        if (isLeafNode(n)) {
           final IntStack stack = new IntStack();
           for (int i = 0; i < n.entryCount; i++) {
             // Overlaps test of two rectangles.
@@ -1421,80 +1421,6 @@ public final class RTree
               extStack[extOff++] = n.yMaxs[i]; } } } } }
     return count;
   }
-
-//   /*
-//    * Determines whether or not the first rectangle [specified by the first
-//    * four parameters] overlaps the second rectangle [specified by the last
-//    * four parameters].
-//    */
-//   private final static boolean overlaps(final double xMin1,
-//                                         final double yMin1,
-//                                         final double xMax1,
-//                                         final double yMax1,
-//                                         final double xMin2,
-//                                         final double yMin2,
-//                                         final double xMax2,
-//                                         final double yMax2)
-//   {
-//     return
-//       ((Math.max(xMin1, xMin2) <= Math.min(xMax1, xMax2)) &&
-//        (Math.max(yMin1, yMin2) <= Math.min(yMax1, yMax2)));
-//   }
-
-//   /*
-//    * Determines whether or not the first rectangle [specified by the first
-//    * four parameters] fully contains the second rectangle [specified by the
-//    * last four parameters].  If the second rectangle is the inverted
-//    * infinite rectangle and the first rectangle is any non-inverted
-//    * rectangle then this method will return true.
-//    */
-//   private final static boolean contains(final double xMin1,
-//                                         final double yMin1,
-//                                         final double xMax1,
-//                                         final double yMax1,
-//                                         final double xMin2,
-//                                         final double yMin2,
-//                                         final double xMax2,
-//                                         final double yMax2)
-//   {
-//     return
-//       ((xMin1 <= xMin2) && (xMax1 >= xMax2) &&
-//        (yMin1 <= yMin2) && (yMax1 >= yMax2));
-//   }
-
-//   /**
-//    * Returns an enumeration of entries whose extents are fully contained
-//    * within the specified axis-aligned rectangular area.  By "axis-aligned" I
-//    * mean that the query rectangle's sides are parallel to the axes of the
-//    * data space.<p>
-//    * IMPORTANT: The returned enumeration becomes invalid as soon as any
-//    * structure-modifying operation (insert or delete) is performed on this
-//    * R-tree.  Accessing an invalid enumeration's methods will result in
-//    * unpredictable and ill-defined behavior in that enumeration, but will
-//    * have no effect on the integrity of the underlying tree structure.
-//    * @param xMin the minimum X coordinate of the query rectangle.
-//    * @param yMin the minimum Y coordinate of the query rectangle.
-//    * @param xMax the maximum X coordinate of the query rectangle.
-//    * @param yMax the maximum Y coordinate of the query rectangle.
-//    * @return a non-null enumeration of all [distinct] R-tree entries
-//    *   (objKeys) whose extents are fully contained withing the specified
-//    *   rectangular area.
-//    */
-//   public final IntEnumerator queryEnvelope(final double xMin,
-//                                            final double yMin,
-//                                            final double xMax,
-//                                            final double yMax)
-//   {
-//     return null;
-//   }
-
-//   public final IntEnumerator queryContainment(final double xMin,
-//                                               final double yMin,
-//                                               final double xMax,
-//                                               final double yMax)
-//   {
-//     return null;
-//   }
 
   private final static class Node
   {
@@ -1556,15 +1482,14 @@ public final class RTree
       Node next;
       while (true) {
         next = (Node) nodeStack.pop();
-        if (next.data == null) { // Leaf node.
+        if (isLeafNode(next)) {
           currentLeafNode = next;
           currentStack = (IntStack) stackStack.pop(); // May be null.
           currentInx = 0; // If currentStack isn't null, this will be ignored.
           return; }
         for (int i = 0; i < next.entryCount; i++) {
           // This 'if' statement could be taken out of 'for' loop for speed.
-          if (next.data.children[i].data == null) // Leaf node.
-            stackStack.push(null);
+          if (isLeafNode(next.data.children[i])) stackStack.push(null);
           nodeStack.push(next.data.children[i]); } } }
   }
 
