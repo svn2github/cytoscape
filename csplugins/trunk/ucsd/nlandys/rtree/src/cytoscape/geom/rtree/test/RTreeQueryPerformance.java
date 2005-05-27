@@ -1,6 +1,7 @@
 package cytoscape.geom.rtree.test;
 
 import cytoscape.geom.rtree.RTree;
+import cytoscape.util.intr.IntEnumerator;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -47,6 +48,21 @@ public class RTreeQueryPerformance
                   centerY + (width / 2.0d));
       inx++; }
     if (inx < N) throw new IOException("premature end of input");
+
+    // The test.
+    long millisBegin = System.currentTimeMillis();
+    // 121 Point queries.
+    double currX = -0.1d;
+    for (int i = 0; i < 11; i++) {
+      currX += 0.1d;
+      double currY = -0.1d;
+      for (int j = 0; j < 11; j++) {
+        currY += 0.1d;
+        IntEnumerator iter = tree.queryOverlap(currX, currY, currX, currY,
+                                               null, 0);
+        System.out.println(iter.numRemaining() + " hits in point query");
+      }
+    }
   }
 
   private static int assembleInt(byte[] bytes, int offset)
