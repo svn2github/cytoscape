@@ -46,6 +46,20 @@ final class IntObjHash
     return (int) (THRESHOLD_FACTOR * (double) PRIMES[inx]);
   }
 
+  public final static class ObjEnumerator
+  {
+    private final Object[] vals;
+    private int elements;
+    private int index = -1;
+    private ObjEnumerator(final Object[] vals, final int elements) {
+      this.vals = vals; this.elements = elements; }
+    public final int numRemaining() { return elements; }
+    public final Object nextObject() {
+      while (vals[++index] == null);
+      elements--;
+      return vals[index]; }
+  }
+
   private int[] m_keys;
   private Object[] m_vals;
   private int m_elements;
@@ -148,11 +162,30 @@ final class IntObjHash
     return new IntEnumerator() {
         int elements = numElements;
         int index = -1;
-        public int numRemaining() { return elements; }
-        public int nextInt() {
+        public final int numRemaining() { return elements; }
+        public final int nextInt() {
           while (m_keys[++index] < 0);
           elements--;
           return m_keys[index]; } };
+  }
+
+  /**
+   * Returns an enumeration of values in this hashtable, ordered
+   * arbitrarily.<p>
+   * The returned enumeration becomes invalid as soon as put(int, Object)
+   * is called on this hashtable; calling methods on an invalid
+   * enumeration will cause undefined behavior in the enumerator.
+   * The returned enumerator has absolutely no effect on the underlying
+   * hashtable.<p>
+   * This method returns in constant time.  The returned enumerator
+   * returns successive values in [amortized] time complexity O(1).<p>
+   * NOTE: The order of values returned corresponds to the order of keys
+   * returned by the enumeration from keys() - that is, the nth key returned
+   * by keys() is the key into the nth value returned by values().
+   */
+  public final ObjEnumerator values()
+  {
+    return new ObjEnumerator(m_vals, m_elements);
   }
 
   private final void incrSize()
