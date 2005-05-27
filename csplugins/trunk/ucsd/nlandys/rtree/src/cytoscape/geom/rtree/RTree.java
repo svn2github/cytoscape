@@ -1154,7 +1154,8 @@ public final class RTree
         final Object leafNode = leafNodes.next();
         if (leafNode == m_deletedEntry) { objKeys.nextInt(); continue; }
         newEntryMap.put(objKeys.nextInt(), leafNode); }
-      m_entryMap = newEntryMap; }
+      m_entryMap = newEntryMap;
+      m_deletedEntries = 0; }
 
     return true;
   }
