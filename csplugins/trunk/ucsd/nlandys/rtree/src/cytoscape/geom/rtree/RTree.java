@@ -988,7 +988,7 @@ public final class RTree
              maxBranches, minBranches, childrenBuff, xMinBuff, yMinBuff,
              xMaxBuff, yMaxBuff, tempBuff1, tempBuff2); } }
 
-      // Node n was not split into two in previous step, and the updating
+      // Node n was not split into two in previous step, but the updating
       // of the MBR has percolated up to this level.
       else if (currModInx >= 0) { // nn == null.
         final int nInxInP; // Only compute this if we need it.
@@ -1090,7 +1090,7 @@ public final class RTree
       n.objKeys[i] = n.objKeys[iPlusOne];
       n.xMins[i] = n.xMins[iPlusOne]; n.yMins[i] = n.yMins[iPlusOne];
       n.xMaxs[i] = n.xMaxs[iPlusOne]; n.yMaxs[i] = n.yMaxs[iPlusOne]; }
-    condenseTree(n, m_nodeStack, m_minBranches, m_MBR);
+    condenseTree(n, 1, m_nodeStack, m_minBranches, m_MBR);
     return true;
 
     // Finally, delete the objKey from m_entryMap.  If m_entryMap contains
@@ -1101,14 +1101,17 @@ public final class RTree
    * This does not re-insert orphaned nodes and entries - instead, the
    * stack eliminatedNodes is populated so that the caller of this function
    * can re-insert.  eliminatedNodes should be empty when this function is
-   * called.
+   * called.  This method is used for adjusting a tree after deleting one
+   * or more entries or children from nodeWithDeletions.  Deep counts are
+   * updated from nodeWithDeletions' parent to root.
    */
-  private final static void condenseTree(final Node leafNode,
+  private final static void condenseTree(final Node nodeWithDeletions,
+                                         int deepCountDecrease,
                                          final ObjStack eliminatedNodes,
                                          final int minBranches,
                                          final double[] globalMBR)
-  { // Don't forget to update deep counts!
-    Node n = leafNode;
+  {
+    Node n = nodeWithDeletions;
     while (true) {
       final Node p = n.parent;
       if (p == null) { // n is the root.
@@ -1134,7 +1137,9 @@ public final class RTree
           p.xMins[i] = p.xMins[iPlusOne]; p.yMins[i] = p.yMins[iPlusOne];
           p.xMaxs[i] = p.xMaxs[iPlusOne]; p.yMaxs[i] = p.yMaxs[iPlusOne]; }
         n.parent = null;
-        eliminatedNodes.push(n); }
+        eliminatedNodes.push(n);
+        deepCountDecrease +=
+          (isLeafNode(n) ? n.entryCount : n.data.deepCount); }
       else { // n has not been eliminated.  Adjust covering rectangle.
         // This is where we have to optimize in the future.
         p.xMins[nInxInP] = Double.POSITIVE_INFINITY;
@@ -1146,6 +1151,7 @@ public final class RTree
           p.yMins[nInxInP] = Math.min(p.yMins[nInxInP], n.yMins[i]);
           p.xMaxs[nInxInP] = Math.max(p.xMaxs[nInxInP], n.xMaxs[i]);
           p.yMaxs[nInxInP] = Math.max(p.yMaxs[nInxInP], n.yMaxs[i]); } }
+      p.data.deepCount -= deepCountDecrease;
       n = p; }
   }
 
