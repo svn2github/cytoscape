@@ -56,10 +56,12 @@ public class ArrayTestMethod4
       for (int i = 0; i < nodeArr.length; i++) {
         final Node n = nodeArr[inx];
         for (int j = 0; j < nodeSizeX4; j = j + 4) {
-          foo = n.arr[j] + n.arr[j + 1] + n.arr[j + 2] + n.arr[j + 3]; }
+          foo = n.arr[j] + n.arr[j + 1] + n.arr[j + 2] + n.arr[j + 3];
+//           System.out.println(foo);
+        }
         inx = (inx + incr) % nodeArr.length; }
       final long millisEnd = System.currentTimeMillis();
-      System.out.println("sequential rectangle access took " +
+      System.err.println("sequential rectangle access took " +
                          (millisEnd - millisBegin) + " milliseconds");
     }
   }

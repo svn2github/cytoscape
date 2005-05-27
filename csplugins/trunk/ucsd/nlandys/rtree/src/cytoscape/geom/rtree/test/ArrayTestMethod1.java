@@ -55,10 +55,12 @@ public class ArrayTestMethod1
       for (int i = 0; i < nodeArr.length; i++) {
         final Node n = nodeArr[inx];
         for (int j = 0; j < nodeSize; j++) {
-          foo = n.xMins[j] + n.yMins[j] + n.xMaxs[j] + n.yMaxs[j]; }
+          foo = n.xMins[j] + n.yMins[j] + n.xMaxs[j] + n.yMaxs[j];
+//           System.out.println(foo);
+        }
         inx = (inx + incr) % nodeArr.length; }
       final long millisEnd = System.currentTimeMillis();
-      System.out.println("sequential rectangle access took " +
+      System.err.println("sequential rectangle access took " +
                          (millisEnd - millisBegin) + " milliseconds");
     }
   }

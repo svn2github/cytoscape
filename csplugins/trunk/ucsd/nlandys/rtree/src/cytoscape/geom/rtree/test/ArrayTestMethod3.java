@@ -60,10 +60,12 @@ public class ArrayTestMethod3
         for (int j = 0; j < nodeSize; j++) {
           foo =
             n.arr[j] + n.arr[j + yMinOffset] +
-            n.arr[j + xMaxOffset] + n.arr[j + yMaxOffset]; }
+            n.arr[j + xMaxOffset] + n.arr[j + yMaxOffset];
+//           System.out.println(foo);
+        }
         inx = (inx + incr) % nodeArr.length; }
       final long millisEnd = System.currentTimeMillis();
-      System.out.println("sequential rectangle access took " +
+      System.err.println("sequential rectangle access took " +
                          (millisEnd - millisBegin) + " milliseconds");
     }
   }
