@@ -196,6 +196,7 @@ public final class RTree
                                    final double[] tempBuff1,
                                    final double[] tempBuff2)
   {
+    final int deepCountIncrease = 1;
     final Node chosenLeaf = chooseLeaf(root, xMin, yMin, xMax, yMax);
     if (chosenLeaf.entryCount < maxBranches) { // No split is necessary.
       final int newInx = chosenLeaf.entryCount++;
@@ -203,7 +204,7 @@ public final class RTree
       chosenLeaf.xMins[newInx] = xMin; chosenLeaf.yMins[newInx] = yMin;
       chosenLeaf.xMaxs[newInx] = xMax; chosenLeaf.yMaxs[newInx] = yMax;
       entryMap.put(objKey, chosenLeaf);
-      adjustTreeNoSplit(chosenLeaf, 1, globalMBR);
+      adjustTreeNoSplit(chosenLeaf, deepCountIncrease, globalMBR);
       return null; }
     else { // A split is necessary.
       final Node newLeaf = splitLeafNode
@@ -215,72 +216,56 @@ public final class RTree
       for (int i = 0; i < newLeaf.entryCount; i++)
         entryMap.put(newLeaf.objKeys[i], newLeaf);
       return adjustTreeWithSplit
-        (chosenLeaf, newLeaf, 1, maxBranches, minBranches, globalMBR,
-         childrenBuff, xMinBuff, yMinBuff, xMaxBuff, yMaxBuff, tempBuff1,
-         tempBuff2); }
+        (chosenLeaf, newLeaf, deepCountIncrease, maxBranches, minBranches,
+         globalMBR, childrenBuff, xMinBuff, yMinBuff, xMaxBuff, yMaxBuff,
+         tempBuff1, tempBuff2); }
   }
 
   /*
-   * Deep counts are adjusted by this method.  Inserts specified
-   * node into a parent at specified depth.  Depth zero is defined to
-   * be the depth of the root.  Returns true if and only if the entire
-   * tree has grown taller as a result of this insert.  When a tree grown
-   * taller, it increases in depth by one.
+   * This is the routine that re-inserts a node into the tree.
+   * Inserts specified node into a parent at specified depth.  Depth zero is
+   * defined to be the depth of the root.  Returns a non-null node in the
+   * case that the root was split; in this case the globalMBR is not
+   * updated, and the MBR at index maxBranches - 1 in both root and the
+   * returned node will contain the overall MBR of that node.
    */
-  private final boolean insert(final Node n, final int depth,
-                               final double xMin, final double yMin,
-                               final double xMax, final double yMax)
+  private final static Node insert(final Node root, final int depth,
+                                   final Node n,
+                                   final double xMin, final double yMin,
+                                   final double xMax, final double yMax,
+                                   final int maxBranches,
+                                   final int minBranches,
+                                   final double[] globalMBR,
+                                   final Node[] childrenBuff,
+                                   final double[] xMinBuff,
+                                   final double[] yMinBuff,
+                                   final double[] xMaxBuff,
+                                   final double[] yMaxBuff,
+                                   final double[] tempBuff1,
+                                   final double[] tempBuff2)
   {
     final int deepCountIncrease =
       (isLeafNode(n) ? n.entryCount : n.data.deepCount);
     final Node chosenParent =
-      chooseParent(m_root, depth, xMin, yMin, xMax, yMax);
-    final boolean returnThis;
-    if (chosenParent.entryCount < m_maxBranches) { // No split is necessary.
+      chooseParent(root, depth, xMin, yMin, xMax, yMax);
+    if (chosenParent.entryCount < maxBranches) { // No split is necessary.
       final int newInx = chosenParent.entryCount++;
       n.parent = chosenParent;
       chosenParent.data.children[newInx] = n;
       chosenParent.xMins[newInx] = xMin; chosenParent.yMins[newInx] = yMin;
       chosenParent.xMaxs[newInx] = xMax; chosenParent.yMaxs[newInx] = yMax;
       chosenParent.data.deepCount += deepCountIncrease;
-      adjustTreeNoSplit(chosenParent, deepCountIncrease, m_MBR);
-      returnThis = false; }
+      adjustTreeNoSplit(chosenParent, deepCountIncrease, globalMBR);
+      return null; }
     else { // A split is necessary.
       final Node parentSibling = splitInternalNode
-        (chosenParent, n, xMin, yMin, xMax, yMax, m_maxBranches,
-         m_minBranches, m_childrenBuff, m_xMinBuff, m_yMinBuff,
-         m_xMaxBuff, m_yMaxBuff, m_tempBuff1, m_tempBuff2);
-      final Node rootSplit = adjustTreeWithSplit
-        (chosenParent, parentSibling, deepCountIncrease, m_maxBranches,
-         m_minBranches, m_MBR, m_childrenBuff, m_xMinBuff, m_yMinBuff,
-         m_xMaxBuff, m_yMaxBuff, m_tempBuff1, m_tempBuff2);
-      if (rootSplit != null) {
-        // The MBR at index m_maxBranches - 1 in both rootSplit and m_root
-        // will contain the overall MBR of corresponding node.  Also, both
-        // nodes will have an accurate deep count.
-        final Node newRoot = new Node(m_maxBranches, false);
-        newRoot.entryCount = 2;
-        m_root.parent = newRoot; rootSplit.parent = newRoot;
-        newRoot.data.children[0] = m_root;
-        newRoot.data.children[1] = rootSplit;
-        newRoot.xMins[0] = m_root.xMins[m_maxBranches - 1];
-        newRoot.yMins[0] = m_root.yMins[m_maxBranches - 1];
-        newRoot.xMaxs[0] = m_root.xMaxs[m_maxBranches - 1];
-        newRoot.yMaxs[0] = m_root.yMaxs[m_maxBranches - 1];
-        newRoot.xMins[1] = rootSplit.xMins[m_maxBranches - 1];
-        newRoot.yMins[1] = rootSplit.yMins[m_maxBranches - 1];
-        newRoot.xMaxs[1] = rootSplit.xMaxs[m_maxBranches - 1];
-        newRoot.yMaxs[1] = rootSplit.yMaxs[m_maxBranches - 1];
-        newRoot.data.deepCount =
-          m_root.data.deepCount + rootSplit.data.deepCount;
-        m_root = newRoot;
-        m_MBR[0] = Math.min(m_root.xMins[0], m_root.xMins[1]);
-        m_MBR[1] = Math.min(m_root.yMins[0], m_root.yMins[1]);
-        m_MBR[2] = Math.max(m_root.xMaxs[0], m_root.xMaxs[1]);
-        m_MBR[3] = Math.max(m_root.yMaxs[0], m_root.yMaxs[1]);
-        returnThis = true; }
-      else { returnThis = false; } }
-    return returnThis;
+        (chosenParent, n, xMin, yMin, xMax, yMax, maxBranches, minBranches,
+         childrenBuff, xMinBuff, yMinBuff, xMaxBuff, yMaxBuff, tempBuff1,
+         tempBuff2);
+      return adjustTreeWithSplit
+        (chosenParent, parentSibling, deepCountIncrease, maxBranches,
+         minBranches, globalMBR, childrenBuff, xMinBuff, yMinBuff, xMaxBuff,
+         yMaxBuff, tempBuff1, tempBuff2); }
   }
 
   /*
