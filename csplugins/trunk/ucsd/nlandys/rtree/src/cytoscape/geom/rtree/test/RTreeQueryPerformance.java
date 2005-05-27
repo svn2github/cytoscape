@@ -119,7 +119,7 @@ public class RTreeQueryPerformance
                             ((double) (i + 6)) * 0.1d, null, 0);
         countQueries[i] = iter.numRemaining(); }
       final long millisEnd = System.currentTimeMillis();
-      System.out.println("count queries took " + (millisEnd - millisBegin) +
+      System.err.println("count queries took " + (millisEnd - millisBegin) +
                          " milliseconds");
     }
   }
