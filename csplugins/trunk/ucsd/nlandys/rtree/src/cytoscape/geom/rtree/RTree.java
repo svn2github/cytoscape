@@ -19,6 +19,8 @@ public final class RTree
   private final int m_minBranches;
   private Node m_root;
   private IntObjHash m_entryMap; // Keys are objKey, values are type Node.
+  private final Object m_deletedEntry = new Object(); // Except when "deleted".
+  private int m_deletedEntries = 0;
 
   // These buffers are used during node splitting.
   private final int[] m_objKeyBuff;
@@ -127,9 +129,12 @@ public final class RTree
       throw new IllegalArgumentException("xMin > xMax");
     if (yMin > yMax)
       throw new IllegalArgumentException("yMin > yMax");
-    if (m_entryMap.get(objKey) != null) // The hashtable caches lookups so
-      throw new IllegalStateException   // subsequent put() is almost free.
-        ("objkey " + objKey + " is already in this tree");
+    if (m_entryMap.get(objKey) != null) { // Hashtable lookups are cached.
+      if (m_entryMap.get(objKey) != m_deletedEntry)
+        throw new IllegalStateException
+          ("objkey " + objKey + " is already in this tree");
+      // old entry is m_deletedEntry.
+      m_deletedEntries--; }
     final Node chosenLeaf = chooseLeaf(m_root, xMin, yMin, xMax, yMax);
     if (chosenLeaf.entryCount < m_maxBranches) { // No split is necessary.
       final int newInx = chosenLeaf.entryCount++;
