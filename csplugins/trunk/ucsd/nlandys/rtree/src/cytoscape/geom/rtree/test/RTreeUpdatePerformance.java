@@ -20,11 +20,12 @@ public class RTreeUpdatePerformance
   public static void main(String[] args) throws Exception
   {
     final double[] data;
+    final int N;
 
     // Populate the array with entries.
     {
       int branches = Integer.parseInt(args[0]);
-      int N = Integer.parseInt(args[1]);
+      N = Integer.parseInt(args[1]);
       data = new double[N * 4];
       double sqrtN = Math.sqrt((double) N);
       InputStream in = System.in;
@@ -52,6 +53,64 @@ public class RTreeUpdatePerformance
         data[(inx * 4) + 3] = centerY + (height / 2.0d);
         inx++; }
       if (inx < N) throw new IOException("premature end of input");
+    }
+
+    final RTree tree = new RTree();
+
+    // Initial insertion test.
+    {
+      final long millisBegin = System.currentTimeMillis();
+      int objKey = 0;
+      int inx = 0;
+      while (objKey < N) {
+        tree.insert(objKey++, data[inx++], data[inx++],
+                    data[inx++], data[inx++]); }
+      final long millisEnd = System.currentTimeMillis();
+      System.err.println("initial insertions took " +
+                         (millisEnd - millisBegin) + " milliseconds");
+    }
+
+    // Initial query test.
+    {
+      final long millisBegin = System.currentTimeMillis();
+      for (int i = 0; i < 5; i++) {
+        tree.queryOverlap(((double) i) * 0.1d,
+                          ((double) i) * 0.1d,
+                          ((double) (i + 1)) * 0.1d,
+                          ((double) (i + 1)) * 0.1d, null, 0); }
+      final long millisEnd = System.currentTimeMillis();
+      System.err.println("initial queries took " +
+                         (millisEnd - millisBegin) + " milliseconds");
+    }
+
+    for (int a = 0; a < 3; a++)
+    {
+      // Update test.
+      {
+        final long millisBegin = System.currentTimeMillis();
+        int objKey = 0;
+        int inx = 0;
+        while (objKey < N) {
+          tree.delete(objKey);
+          tree.insert(objKey++, data[inx++], data[inx++],
+                      data[inx++], data[inx++]); }
+        final long millisEnd = System.currentTimeMillis();
+        System.err.println("updates took " + (millisEnd - millisBegin) +
+                           " milliseconds");
+      }
+
+      // Repeated query test.
+      {
+        final long millisBegin = System.currentTimeMillis();
+        for (int i = 0; i < 5; i++) {
+          tree.queryOverlap(((double) i) * 0.1d,
+                            ((double) i) * 0.1d,
+                            ((double) (i + 1)) * 0.1d,
+                            ((double) (i + 1)) * 0.1d, null, 0); }
+        final long millisEnd = System.currentTimeMillis();
+        System.err.println("repeated queries took " +
+                           (millisEnd - millisBegin) + " milliseconds");
+      }
     }
   }
 
