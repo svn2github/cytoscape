@@ -13,11 +13,10 @@ public final class IntBTree
   // This quantity must be at least 3.
   // The author prefers that this quantity be odd because that way nodes
   // are split evenly when they get full.
-  // 45 or so seems to be the optimal value for large trees.
   /**
    * @deprecated Use the no-arg contructor.
    */
-  public final static int DEFAULT_MAX_BRANCHES = 45;
+  public final static int DEFAULT_MAX_BRANCHES = 27;
 
   private final int m_maxBranches;
   private final int m_minBranches;
@@ -29,7 +28,28 @@ public final class IntBTree
   public IntBTree()
   {
     m_maxBranches = DEFAULT_MAX_BRANCHES;
-    m_minBranches = (m_maxBranches + 1) / 2;
+
+    // Letting minimum fill fall below half actually decreases performance by
+    // a hair, my tests show.  However, I like the idea of letting nodes fall
+    // below being half full, so I'm keeping it at 0.4 (as opposed to 0.5).
+    // Note that every piece of literature in the entire universe that
+    // mentions B-trees defines them is such a way which is equivalent to
+    // to setting this to 0.5, and not below (setting it above 0.5 would
+    // destroy the algorithms).  With 0.4, the following table shows
+    // the max/min relationships:
+    //
+    //  m_maxBranches | m_minBranches
+    // ---------------+---------------
+    //   3               2
+    //   4               2
+    //   5               2
+    //   6               2
+    //   7               3
+    //   8               3
+    //   9               4
+    //   27              11
+    m_minBranches = Math.max(2, (int) (((double) (m_maxBranches + 1)) * 0.4d));
+
     m_root = new Node(m_maxBranches, true);
   }
 
