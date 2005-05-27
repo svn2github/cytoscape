@@ -1158,7 +1158,7 @@ public final class RTree
    * called.  This method is used for adjusting a tree after deleting one
    * or more entries or children from nodeWithDeletions.  Deep counts are
    * updated from nodeWithDeletions' parent to root.
-   * Returns the distance from nodeWithDeletions to root.
+   * Returns the distance (height) from nodeWithDeletions to root.
    */
   private final static int condenseTree(final Node nodeWithDeletions,
                                         int deepCountDecrease,
@@ -1214,21 +1214,6 @@ public final class RTree
       n = p; depth++; }
     return depth;
   }
-
-//     // "Re-insert orphaned entries."
-//     while (eliminatedNodes.size() > 0) {
-//       final Node underfullNode = (Node) eliminatedNodes.pop();
-//       if (isLeafNode(underfullNode)) {
-//         for (int i = 0; i < underfullNode.entryCount; i++) {
-//           // Call regular insert.
-//         }
-//       }
-//       else { // Internal node.
-//         for (int i = 0; i < underfullNode.entryCount; i++) {
-//           // Call other insert.
-//         }
-//       }
-//     }
 
   /**
    * Returns an enumeration of entries whose extents intersect the
