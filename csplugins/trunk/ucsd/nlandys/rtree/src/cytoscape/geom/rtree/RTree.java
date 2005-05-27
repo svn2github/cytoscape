@@ -69,7 +69,9 @@ public final class RTree
     m_tempBuff1 = new double[m_maxBranches + 1];
     m_tempBuff2 = new double[m_maxBranches + 1];
 
-    m_extentsStack = new double[1000]; // Fix this later.
+    // With a m_maxBranches of 7, m_minBranches will be 3, and such a tree of
+    // depth 15 holds at least 14 million entries.
+    m_extentsStack = new double[15 * 7 * 4];
     m_nodeStack = new ObjStack();
   }
 
