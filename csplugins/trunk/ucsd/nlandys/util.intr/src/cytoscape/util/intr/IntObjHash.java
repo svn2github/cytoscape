@@ -27,6 +27,7 @@ public final class IntObjHash
                                         33554393, 67108837, 134217689,
                                         268435399, 536870879, 1073741789,
                                         2147483647 };
+  private static final int INITIAL_SIZE = PRIMES[0];
   private static final double THRESHOLD_FACTOR = 0.77;
 
   /**
@@ -48,16 +49,6 @@ public final class IntObjHash
     return (int) (THRESHOLD_FACTOR * (double) PRIMES[inx]);
   }
 
-  private final static int maxCapacityIndex(final int num)
-  {
-    int inx = 0;
-    while (inx < PRIMES.length && num >= PRIMES[inx]) inx++;
-    final int thresholdSize = (int) (THRESHOLD_FACTOR * (double) PRIMES[inx]);
-    if (thresholdSize >= num) return inx;
-    else if (++inx == PRIMES.length) return 0;
-    return inx;
-  }
-
   private int[] m_keys;
   private Object[] m_vals;
   private int m_elements;
@@ -75,32 +66,8 @@ public final class IntObjHash
    */
   public IntObjHash()
   {
-    m_keys = new int[PRIMES[0]];
-    m_vals = new Object[PRIMES[0]];
-    m_elements = 0;
-    m_thresholdSize = (int) (THRESHOLD_FACTOR * (double) m_keys.length);
-    for (int i = 0; i < m_keys.length; i++) m_keys[i] = -1;
-    m_prevKey = -1;
-    m_prevInx = -1;
-  }
-
-  /**
-   * Creates a new hashtable large enough to hold maxCapacity(capacity)
-   * key/value pairs.  Calling this constructor with a negative argument
-   * is equivalent to calling the default constructor.  If
-   * maxCapacity(capacity) evaluates to -1 then this is identical to calling
-   * the default constructor.<p>
-   * There is no reason to use this constructor as opposed
-   * to the default constructor except for the case where one is trying to
-   * squeeze out every last drop of performance gains.  Note that this
-   * constructor has time complexity linear to the specified capacity,
-   * whereas the default constructor has constant time complexity.
-   */
-  public IntObjHash(final int capacity)
-  {
-    final int primesIndex = maxCapacityIndex(capacity);
-    m_keys = new int[PRIMES[primesIndex]];
-    m_vals = new Object[PRIMES[primesIndex]];
+    m_keys = new int[INITIAL_SIZE];
+    m_vals = new Object[INITIAL_SIZE];
     m_elements = 0;
     m_thresholdSize = (int) (THRESHOLD_FACTOR * (double) m_keys.length);
     for (int i = 0; i < m_keys.length; i++) m_keys[i] = -1;
