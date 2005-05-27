@@ -1103,15 +1103,22 @@ public final class RTree
    * can re-insert.  eliminatedNodes should be empty when this function is
    * called.  This method is used for adjusting a tree after deleting one
    * or more entries or children from nodeWithDeletions.  Deep counts are
-   * updated from nodeWithDeletions' parent to root.
+   * updated from nodeWithDeletions' parent to root.  The return value is
+   * the distance from nodeWithDeletions of the highest node that was
+   * eliminated; for example, if nodeWithDeletions itself was eliminated
+   * but its parent was not, then the return value is 0; for [another]
+   * example, if nodeWithDeletions' parent was eliminated but
+   * nodeWithDeletions' grandparent was not, then the return value is 1.
+   * -1 is returned if no node has been eliminated.
    */
-  private final static void condenseTree(final Node nodeWithDeletions,
-                                         int deepCountDecrease,
-                                         final ObjStack eliminatedNodes,
-                                         final int minBranches,
-                                         final double[] globalMBR)
+  private final static int condenseTree(final Node nodeWithDeletions,
+                                        int deepCountDecrease,
+                                        final ObjStack eliminatedNodes,
+                                        final int minBranches,
+                                        final double[] globalMBR)
   {
     Node n = nodeWithDeletions;
+    int depthEliminated = -1;
     while (true) {
       final Node p = n.parent;
       if (p == null) { // n is the root.
@@ -1125,12 +1132,14 @@ public final class RTree
           globalMBR[1] = Math.min(globalMBR[1], n.yMins[i]);
           globalMBR[2] = Math.max(globalMBR[2], n.xMaxs[i]);
           globalMBR[3] = Math.max(globalMBR[3], n.yMaxs[i]); }
-        return; }
+        break; }
       final int nInxInP;
       for (int i = 0;; i++)
         if (p.data.children[i] == n) { nInxInP = i; break; }
       if (n.entryCount < minBranches) { // Delete n from p.
         p.entryCount--;
+        // Duh.  Instead of cascading down just plop the last entry
+        // into the hole.  Implement this later.
         for (int i = nInxInP; i < p.entryCount; i++) {
           final int iPlusOne = i + 1;
           p.data.children[i] = p.data.children[iPlusOne];
@@ -1139,8 +1148,8 @@ public final class RTree
         p.data.children[p.entryCount] = null;
         n.parent = null;
         eliminatedNodes.push(n);
-        deepCountDecrease +=
-          (isLeafNode(n) ? n.entryCount : n.data.deepCount); }
+        deepCountDecrease += (isLeafNode(n) ? n.entryCount : n.data.deepCount);
+        depthEliminated++; }
       else { // n has not been eliminated.  Adjust covering rectangle.
         // This is where we have to optimize in the future.
         p.xMins[nInxInP] = Double.POSITIVE_INFINITY;
@@ -1154,6 +1163,7 @@ public final class RTree
           p.yMaxs[nInxInP] = Math.max(p.yMaxs[nInxInP], n.yMaxs[i]); } }
       p.data.deepCount -= deepCountDecrease;
       n = p; }
+    return depthEliminated;
   }
 
 //     // "Re-insert orphaned entries."
