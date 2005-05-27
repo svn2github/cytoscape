@@ -25,6 +25,7 @@ public class BasicQuietRTreeTest
           extentsArr[3] != Double.NEGATIVE_INFINITY)
         throw new IllegalStateException
           ("expected query to return inverted infinite extents");
+
       if (tree.exists(0, extentsArr, 0))
         throw new IllegalStateException("did not expect there to be an entry");
     } // END EMPTY TREE TESTS.
@@ -143,6 +144,27 @@ public class BasicQuietRTreeTest
           extentsArr[2] != 1.5 || extentsArr[3] != 2.0)
         throw new IllegalStateException("extents from query wrong");
     } // END SIMPLE ROOT SPLIT TEST.
+
+    { // BEGIN EXCEPTION HANDLING TEST.
+      boolean exceptionCaught = false;
+      try { tree.insert(0, 0.0, 0.0, 1.0, 1.0); }
+      catch (IllegalStateException e) { exceptionCaught = true; }
+      if (!exceptionCaught) throw new IllegalStateException
+                              ("expected exception for duplicate objKey");
+
+      exceptionCaught = false;
+      try { tree.insert(-1, 0.0, 0.0, 1.0, 1.0); }
+      catch (IllegalArgumentException e) { exceptionCaught = true; }
+      if (!exceptionCaught) throw new IllegalStateException
+                              ("expected exception for negative objKey");
+
+      exceptionCaught = false;
+      try { tree.insert(5, 1.0, 1.0, 0.0, 0.0); }
+      catch (IllegalArgumentException e) { exceptionCaught = true; }
+      if (!exceptionCaught) throw new IllegalStateException
+                              ("expected exception for min > max");
+    } // END EXCEPTION HANDLING TEST.
+
   }
 
 }
