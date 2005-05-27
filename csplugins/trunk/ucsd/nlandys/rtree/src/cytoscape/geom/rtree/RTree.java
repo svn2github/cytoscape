@@ -1224,6 +1224,8 @@ public final class RTree
           p.xMaxs[nInxInP] = p.xMaxs[p.entryCount];
           p.yMaxs[nInxInP] = p.yMaxs[p.entryCount]; }
         p.data.children[p.entryCount] = null; // Important for gc.
+        n.parent = null; // For some strange reason removing this line will
+                         // cause OutOfMemoryError in the basic quiet test.
         eliminatedNodes.push(n);
         deepCountDecrease +=
           (isLeafNode(n) ? n.entryCount : n.data.deepCount); }
