@@ -1082,10 +1082,11 @@ public final class RTree
     int extOff = 4; // Into extStack.
     while (unprocessedNodes.size() > 0) {
       final Node n = (Node) unprocessedNodes.pop();
-      if ((yMaxQ >= extStack[--extOff]) && // Rectangle Q contains
-          (xMaxQ >= extStack[--extOff]) && // rectangle N - trivially
-          (yMinQ <= extStack[--extOff]) && // include node.
-          (xMinQ <= extStack[--extOff])) {
+      extOff -= 4;
+      if ((xMinQ <= extStack[extOff]) &&     // Rectangle Q contains
+          (xMaxQ >= extStack[extOff + 2]) && // rectangle N - trivially
+          (yMinQ <= extStack[extOff + 1]) && // include node.
+          (yMaxQ >= extStack[extOff + 3])) {
         if (n.data == null) { // Leaf node.
           count += n.entryCount; stackStack.push(null); }
         else { count += n.data.deepCount; }
