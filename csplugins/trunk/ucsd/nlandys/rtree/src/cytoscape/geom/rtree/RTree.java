@@ -186,7 +186,7 @@ public final class RTree
   }
 
   /*
-   * Deep counts are not touched by this function.  Inserts specified
+   * Deep counts are adjusted by this method.  Inserts specified
    * node into a parent at specified depth.  Depth zero is defined to
    * be the depth of the root.
    */
@@ -196,6 +196,15 @@ public final class RTree
   {
     final Node chosenParent =
       chooseParent(m_root, depth, xMin, yMin, xMax, yMax);
+    if (chosenParent.entryCount < m_maxBranches) { // No split is necessary.
+      final int newInx = chosenParent.entryCount++;
+      n.parent = chosenParent;
+      chosenParent.data.children[newInx] = n;
+      chosenParent.xMins[newInx] = xMin; chosenParent.yMins[newInx] = yMin;
+      chosenParent.xMaxs[newInx] = xMax; chosenParent.yMaxs[newInx] = yMax;
+      adjustTreeNoSplit(chosenParent, m_MBR); }
+    else { // A split is necessary.
+    }
   }
 
   /*
@@ -782,16 +791,31 @@ public final class RTree
 
   /*
    * This method can only be used to adjust a tree after inserting a single
-   * new entry.  It is assumed that the entry in the leaf node at index
-   * leafNode.entryCount - 1 is the only new entry.  We will use this
-   * knowledge to optimize this function.  Deep counts are updated from
-   * leaf to root.
+   * new entry or node into nodeWithNewEntry.  It is assumed that the new entry
+   * or node in nodeWithNewEntry is at index nodeWithNewEntry.entryCount - 1.
+   * We will use this knowledge to optimize this function.  Deep counts are
+   * updated from nodeWithNewEntry to root.  if nodeWityNewEntry is an internal
+   * node it is assumed that its deep count does not yet include the entries
+   * added as the node at index nodeWithNewEntry.entryCount - 1.
    */
-  private final static void adjustTreeNoSplit(final Node leafNode,
+  private final static void adjustTreeNoSplit(final Node nodeWithNewEntry,
                                               final double[] globalMBR)
   {
-    int currModInx = leafNode.entryCount - 1;
-    Node n = leafNode;
+    int currModInx = nodeWithNewEntry.entryCount - 1;
+
+    // Calculate how many new leaf entries we're inserting.
+    final int deepCountIncrease;
+    if (isLeafNode(nodeWithNewEntry)) { deepCountIncrease = 1; }
+    else { // nodeWithNewEntry is an internal node.
+      if (isLeafNode(nodeWithNewEntry.data.children[currModInx])) {
+        deepCountIncrease =
+          nodeWithNewEntry.data.children[currModInx].entryCount; }
+      else {
+        deepCountIncrease =
+          nodeWithNewEntry.data.children[currModInx].data.deepCount; }
+      nodeWithNewEntry.data.deepCount += deepCountIncrease; }
+
+    Node n = nodeWithNewEntry;
     while (true) {
       final Node p = n.parent;
 
@@ -805,7 +829,7 @@ public final class RTree
         break; }
 
       // Update the deep count.
-      p.data.deepCount++;
+      p.data.deepCount += deepCountIncrease;
 
       if (currModInx >= 0) {
         final int nInxInP;
