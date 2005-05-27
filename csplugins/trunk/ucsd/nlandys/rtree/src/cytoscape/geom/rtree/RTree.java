@@ -1131,7 +1131,8 @@ public final class RTree
              eliminatedNode.xMaxs[i], eliminatedNode.yMaxs[i],
              m_maxBranches, m_minBranches, m_MBR, m_childrenBuff,
              m_xMinBuff, m_yMinBuff, m_xMaxBuff, m_yMaxBuff, m_tempBuff1,
-             m_tempBuff2); }
+             m_tempBuff2);
+          /* eliminatedNode.data.children[i] = null; // Facilitate gc. */ }
         if (rootSplit != null) {
           final Node newRoot = new Node(m_maxBranches, false);
           newRoot.entryCount = 2;
@@ -1197,24 +1198,31 @@ public final class RTree
                                         final double[] globalMBR)
   {
     int depth = 0;
+    boolean updateMBR = true;
     Node n = nodeWithDeletions;
     while (true) {
       final Node p = n.parent;
+
+      // If N is the root, adjust the globalMBR and stop.
       if (p == null) { // n is the root.
-        // Optimize this later.
-        globalMBR[0] = Double.POSITIVE_INFINITY;
-        globalMBR[1] = Double.POSITIVE_INFINITY;
-        globalMBR[2] = Double.NEGATIVE_INFINITY;
-        globalMBR[3] = Double.NEGATIVE_INFINITY;
-        for (int i = 0; i < n.entryCount; i++) {
-          globalMBR[0] = Math.min(globalMBR[0], n.xMins[i]);
-          globalMBR[1] = Math.min(globalMBR[1], n.yMins[i]);
-          globalMBR[2] = Math.max(globalMBR[2], n.xMaxs[i]);
-          globalMBR[3] = Math.max(globalMBR[3], n.yMaxs[i]); }
+        if (updateMBR) {
+          globalMBR[0] = Double.POSITIVE_INFINITY;
+          globalMBR[1] = Double.POSITIVE_INFINITY;
+          globalMBR[2] = Double.NEGATIVE_INFINITY;
+          globalMBR[3] = Double.NEGATIVE_INFINITY;
+          for (int i = 0; i < n.entryCount; i++) {
+            globalMBR[0] = Math.min(globalMBR[0], n.xMins[i]);
+            globalMBR[1] = Math.min(globalMBR[1], n.yMins[i]);
+            globalMBR[2] = Math.max(globalMBR[2], n.xMaxs[i]);
+            globalMBR[3] = Math.max(globalMBR[3], n.yMaxs[i]); } }
         break; }
+
+      // Compute n's index in p.
       final int nInxInP;
       for (int i = 0;; i++)
         if (p.data.children[i] == n) { nInxInP = i; break; }
+
+      // If n is underfull, eliminate it.
       if (n.entryCount < minBranches) { // Delete n from p.
         p.entryCount--;
         if (nInxInP != p.entryCount) { // Plug the hole at index nInxInP.
@@ -1229,19 +1237,31 @@ public final class RTree
         eliminatedNodes.push(n);
         deepCountDecrease +=
           (isLeafNode(n) ? n.entryCount : n.data.deepCount); }
+
+      // Keep n and adjust MBRs if necessary.
       else { // n has not been eliminated.  Adjust covering rectangle.
-        // This is where we have to optimize in the future.
-        p.xMins[nInxInP] = Double.POSITIVE_INFINITY;
-        p.yMins[nInxInP] = Double.POSITIVE_INFINITY;
-        p.xMaxs[nInxInP] = Double.NEGATIVE_INFINITY;
-        p.yMaxs[nInxInP] = Double.NEGATIVE_INFINITY;
-        for (int i = 0; i < n.entryCount; i++) {
-          p.xMins[nInxInP] = Math.min(p.xMins[nInxInP], n.xMins[i]);
-          p.yMins[nInxInP] = Math.min(p.yMins[nInxInP], n.yMins[i]);
-          p.xMaxs[nInxInP] = Math.max(p.xMaxs[nInxInP], n.xMaxs[i]);
-          p.yMaxs[nInxInP] = Math.max(p.yMaxs[nInxInP], n.yMaxs[i]); } }
+        if (updateMBR) {
+          final double oldXMin = p.xMins[nInxInP];
+          final double oldYMin = p.yMins[nInxInP];
+          final double oldXMax = p.xMaxs[nInxInP];
+          final double oldYMax = p.yMaxs[nInxInP];
+          p.xMins[nInxInP] = Double.POSITIVE_INFINITY;
+          p.yMins[nInxInP] = Double.POSITIVE_INFINITY;
+          p.xMaxs[nInxInP] = Double.NEGATIVE_INFINITY;
+          p.yMaxs[nInxInP] = Double.NEGATIVE_INFINITY;
+          for (int i = 0; i < n.entryCount; i++) {
+            p.xMins[nInxInP] = Math.min(p.xMins[nInxInP], n.xMins[i]);
+            p.yMins[nInxInP] = Math.min(p.yMins[nInxInP], n.yMins[i]);
+            p.xMaxs[nInxInP] = Math.max(p.xMaxs[nInxInP], n.xMaxs[i]);
+            p.yMaxs[nInxInP] = Math.max(p.yMaxs[nInxInP], n.yMaxs[i]); }
+          if (oldXMin == p.xMins[nInxInP] && oldYMin == p.yMins[nInxInP] &&
+              oldXMax == p.xMaxs[nInxInP] && oldYMax == p.yMaxs[nInxInP])
+            updateMBR = false; } }
+
+      // Update deep count and make the necessary recursive steps.
       p.data.deepCount -= deepCountDecrease;
       n = p; depth++; } // End while loop.
+
     return depth;
   }
 
