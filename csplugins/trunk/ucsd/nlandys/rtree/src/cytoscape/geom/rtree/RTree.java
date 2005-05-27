@@ -11,7 +11,7 @@ public final class RTree
 
   private final static int DEFAULT_MAX_BRANCHES = 7;
 
-  private final double[] m_mbr;
+  private final double[] m_MBR;
   private final int m_maxBranches;
   private final int m_minBranches;
   private Node m_root;
@@ -32,7 +32,7 @@ public final class RTree
    */
   public RTree()
   {
-    m_mbr = new double[] {
+    m_MBR = new double[] {
       Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY,
       Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY };
     m_maxBranches = DEFAULT_MAX_BRANCHES;
@@ -100,7 +100,6 @@ public final class RTree
       throw new IllegalStateException   // subsequent put() is almost free.
         ("objkey " + objKey + " is already in this tree");
     final Node chosenLeaf = chooseLeaf(m_root, xMin, yMin, xMax, yMax);
-    final Node splitLeaf;
     if (chosenLeaf.entryCount < m_maxBranches) { // No split is necessary.
       final int newInx = chosenLeaf.entryCount++;
       chosenLeaf.objKeys[newInx] = objKey;
@@ -108,9 +107,9 @@ public final class RTree
       chosenLeaf.yMins[newInx] = yMin;
       chosenLeaf.xMaxs[newInx] = xMax;
       chosenLeaf.yMaxs[newInx] = yMax;
-      splitLeaf = null; }
+      adjustTreeNoSplit(chosenLeaf, m_MBR); }
     else { // A split is necessary.
-      splitLeaf = splitLeafNode(chosenLeaf, objKey, xMin, yMin, xMax, yMax); }
+      splitLeafNode(chosenLeaf, objKey, xMin, yMin, xMax, yMax); }
   }
 
   /*
@@ -339,6 +338,197 @@ public final class RTree
   }
 
   /*
+   * This is the quadratic-cost algorithm described in Guttman's 1984
+   * R-tree paper.  The parent pointer of returned node is not set.  The
+   * parent pointer in the full node is not modified, and nothing in that
+   * parent is modified.  Everything else is modified.  The MBRs at index
+   * m_maxBranches - 1 in both nodes are set to be the new overall MBR of
+   * corresponding node.  To picture what this function does, imagine
+   * adding newChild (with specified MBR) to fullInternalNode.
+   */
+  private final Node splitInternalNode(final Node fullInternalNode,
+                                       final Node newChild,
+                                       final double newXMin,
+                                       final double newYMin,
+                                       final double newXMax,
+                                       final double newYMax)
+  {
+    final int maxBranchesMinusOne = m_maxBranches - 1;
+    final InternalNodeData data = fullInternalNode.data;
+
+    // Copy node MBRs and objKeys and new MBR and objKey into arrays.
+    for (int i = 0; i < fullInternalNode.entryCount; i++) {
+      m_childrenBuff[i] = data.children[i];
+      m_xMinBuff[i] = fullLeafNode.xMins[i];
+      m_yMinBuff[i] = fullLeafNode.yMins[i];
+      m_xMaxBuff[i] = fullLeafNode.xMaxs[i];
+      m_yMaxBuff[i] = fullLeafNode.yMaxs[i]; }
+    m_childrenBuff[fullInternalNode.entryCount] = newChild;
+    m_xMinBuff[fullInternalNode.entryCount] = newXMin;
+    m_yMinBuff[fullInternalNode.entryCount] = newYMin;
+    m_xMaxBuff[fullInternalNode.entryCount] = newXMax;
+    m_yMaxBuff[fullInternalNode.entryCount] = newYMax;
+
+    // Pick seeds.  Add seeds to two groups (fullLeafNode and returnThis).
+    final int totalEntries = fullInternalNode.entryCount + 1;
+    final long seeds = pickSeeds(totalEntries, m_xMinBuff, m_yMinBuff,
+                                 m_xMaxBuff, m_yMaxBuff, m_tempBuff1);
+    final int seed1 = (int) (seeds >> 32);
+    fullLeafNode.objKeys[0] = m_objKeyBuff[seed1];
+    fullLeafNode.xMins[0] = m_xMinBuff[seed1];
+    fullLeafNode.yMins[0] = m_yMinBuff[seed1];
+    fullLeafNode.xMaxs[0] = m_xMaxBuff[seed1];
+    fullLeafNode.yMaxs[0] = m_yMaxBuff[seed1];
+    fullLeafNode.entryCount = 1;
+    final int seed2 = (int) seeds;
+    final Node returnThis = new Node(m_maxBranches, true);
+    returnThis.objKeys[0] = m_objKeyBuff[seed2];
+    returnThis.xMins[0] = m_xMinBuff[seed2];
+    returnThis.yMins[0] = m_yMinBuff[seed2];
+    returnThis.xMaxs[0] = m_xMaxBuff[seed2];
+    returnThis.yMaxs[0] = m_yMaxBuff[seed2];
+    returnThis.entryCount = 1;
+
+    // Initialize the MBRs at index m_maxBranches - 1.
+    fullLeafNode.xMins[maxBranchesMinusOne] = fullLeafNode.xMins[0];
+    fullLeafNode.yMins[maxBranchesMinusOne] = fullLeafNode.yMins[0];
+    fullLeafNode.xMaxs[maxBranchesMinusOne] = fullLeafNode.xMaxs[0];
+    fullLeafNode.yMaxs[maxBranchesMinusOne] = fullLeafNode.yMaxs[0];
+    returnThis.xMins[maxBranchesMinusOne] = returnThis.xMins[0];
+    returnThis.yMins[maxBranchesMinusOne] = returnThis.yMins[0];
+    returnThis.xMaxs[maxBranchesMinusOne] = returnThis.xMaxs[0];
+    returnThis.yMaxs[maxBranchesMinusOne] = returnThis.yMaxs[0];
+
+    // Collapse the arrays where seeds used to be.
+    int entriesRemaining = totalEntries - 2;
+    for (int i = seed1; i < seed2 - 1; i++) { // seed1 < seed2, guarenteed.
+      final int iPlusOne = i + 1;
+      m_objKeyBuff[i] = m_objKeyBuff[iPlusOne];
+      m_xMinBuff[i] = m_xMinBuff[iPlusOne];
+      m_yMinBuff[i] = m_yMinBuff[iPlusOne];
+      m_xMaxBuff[i] = m_xMaxBuff[iPlusOne];
+      m_yMaxBuff[i] = m_yMaxBuff[iPlusOne]; }
+    for (int i = seed2 - 1; i < entriesRemaining; i++) {
+      final int iPlusTwo = i + 2;
+      m_objKeyBuff[i] = m_objKeyBuff[iPlusTwo];
+      m_xMinBuff[i] = m_xMinBuff[iPlusTwo];
+      m_yMinBuff[i] = m_yMinBuff[iPlusTwo];
+      m_xMaxBuff[i] = m_xMaxBuff[iPlusTwo];
+      m_yMaxBuff[i] = m_yMaxBuff[iPlusTwo]; }
+    
+    boolean buff1Valid = false;
+    boolean buff2Valid = false;
+    while (true) {
+
+      // Test to see if we're all done.
+      if (entriesRemaining == 0) break;
+      final Node restGroup;
+      if (entriesRemaining + fullLeafNode.entryCount == m_minBranches)
+        restGroup = fullLeafNode;
+      else if (entriesRemaining + returnThis.entryCount == m_minBranches)
+        restGroup = returnThis;
+      else
+        restGroup = null;
+
+      if (restGroup != null) { // Assign remaining entries to this group.
+        for (int i = 0; i < entriesRemaining; i++) {
+
+          // Add entry to "rest" group.
+          final int newInx = restGroup.entryCount++;
+          restGroup.objKeys[newInx] = m_objKeyBuff[i];
+          restGroup.xMins[newInx] = m_xMinBuff[i];
+          restGroup.yMins[newInx] = m_yMinBuff[i];
+          restGroup.xMaxs[newInx] = m_xMaxBuff[i];
+          restGroup.yMaxs[newInx] = m_yMaxBuff[i];
+
+          // Update the MBR of "rest" group.
+          restGroup.xMins[maxBranchesMinusOne] =
+            Math.min(restGroup.xMins[maxBranchesMinusOne], m_xMinBuff[i]);
+          restGroup.yMins[maxBranchesMinusOne] =
+            Math.min(restGroup.yMins[maxBranchesMinusOne], m_yMinBuff[i]);
+          restGroup.xMaxs[maxBranchesMinusOne] =
+            Math.max(restGroup.xMaxs[maxBranchesMinusOne], m_xMaxBuff[i]);
+          restGroup.yMaxs[maxBranchesMinusOne] =
+            Math.max(restGroup.yMaxs[maxBranchesMinusOne], m_yMaxBuff[i]); }
+
+        break; }
+
+      // We're not done; pick next.
+      final int next = pickNext
+        (fullLeafNode, returnThis, entriesRemaining,
+         m_xMinBuff, m_yMinBuff, m_xMaxBuff, m_yMaxBuff,
+         m_tempBuff1, buff1Valid, m_tempBuff2, buff2Valid);
+      final boolean chooseGroup1;
+      if (m_tempBuff1[next] < m_tempBuff2[next]) chooseGroup1 = true;
+      else if (m_tempBuff1[next] > m_tempBuff2[next]) chooseGroup1= false;
+      else { // Tie for how much group's covering rectangle will increase.
+        final double group1Area =
+          (fullLeafNode.xMaxs[maxBranchesMinusOne] -
+           fullLeafNode.xMins[maxBranchesMinusOne]) *
+          (fullLeafNode.yMaxs[maxBranchesMinusOne] -
+           fullLeafNode.yMins[maxBranchesMinusOne]);
+        final double group2Area =
+          (returnThis.xMaxs[maxBranchesMinusOne] -
+           returnThis.xMins[maxBranchesMinusOne]) *
+          (returnThis.yMaxs[maxBranchesMinusOne] -
+           returnThis.yMins[maxBranchesMinusOne]);
+        if (group1Area < group2Area) chooseGroup1 = true;
+        else if (group1Area > group2Area) chooseGroup1 = false;
+        else // Tie for group MBR area as well.
+          if (fullLeafNode.entryCount < returnThis.entryCount)
+            chooseGroup1 = true;
+          else
+            chooseGroup1 = false; }
+      final Node chosenGroup;
+      final double[] validTempBuff;
+      if (chooseGroup1) {
+        chosenGroup = fullLeafNode; validTempBuff = m_tempBuff2;
+        buff1Valid = false; buff2Valid = true; }
+      else {
+        chosenGroup = returnThis; validTempBuff = m_tempBuff1;
+        buff1Valid = true; buff2Valid = false; }
+
+      // Add next to chosen group.
+      final int newInx = chosenGroup.entryCount++;
+      chosenGroup.objKeys[newInx] = m_objKeyBuff[next];
+      chosenGroup.xMins[newInx] = m_xMinBuff[next];
+      chosenGroup.yMins[newInx] = m_yMinBuff[next];
+      chosenGroup.xMaxs[newInx] = m_xMaxBuff[next];
+      chosenGroup.yMaxs[newInx] = m_yMaxBuff[next];
+
+      // Update the MBR of chosen group.
+      // Note: If we see that the MBR stays the same, we could mark the
+      // "invalid" temp buff array as valid to save even more on computations.
+      chosenGroup.xMins[maxBranchesMinusOne] =
+        Math.min(chosenGroup.xMins[maxBranchesMinusOne], m_xMinBuff[next]);
+      chosenGroup.yMins[maxBranchesMinusOne] =
+        Math.min(chosenGroup.yMins[maxBranchesMinusOne], m_yMinBuff[next]);
+      chosenGroup.xMaxs[maxBranchesMinusOne] =
+        Math.max(chosenGroup.xMaxs[maxBranchesMinusOne], m_xMaxBuff[next]);
+      chosenGroup.yMaxs[maxBranchesMinusOne] =
+        Math.max(chosenGroup.yMaxs[maxBranchesMinusOne], m_yMaxBuff[next]);
+
+      // Collapse the arrays where next used to be.
+      entriesRemaining--;
+      for (int i = next; i < entriesRemaining; i++) {
+        final int iPlusOne = i + 1;
+        m_objKeyBuff[i] = m_objKeyBuff[iPlusOne];
+        m_xMinBuff[i] = m_xMinBuff[iPlusOne];
+        m_yMinBuff[i] = m_yMinBuff[iPlusOne];
+        m_xMaxBuff[i] = m_xMaxBuff[iPlusOne];
+        m_yMaxBuff[i] = m_yMaxBuff[iPlusOne];
+        validTempBuff[i] = validTempBuff[iPlusOne]; } }
+
+    // Null things out to enable garbage collection.
+    for (int i = fullInternalNode.entryCount; i < data.children.length;)
+      data.children[i++] = null;
+    // We only null out the buffer because we're paranoid.
+    for (int i = 0; i < m_childrenBuff.length; i++) m_childrenBuff[i] = null;
+
+    return returnThis;
+  }
+
+  /*
    * This is the quadratic-cost algorithm described by Guttman.
    * The first seed's index is returned as the 32 most significant bits
    * of returned quantity.  The second seed's index is returned as the 32
@@ -430,22 +620,68 @@ public final class RTree
   }
 
   /*
-   * leafNode and splitNode are leaves.  splitNode may be null.
-   * Returns the root's new sibling if it was split or else null.
+   * It is assumed that the entry in the leaf node at index
+   * leafNode.entryCount - 1 is the only new entry.  We will use this
+   * knowledge to optimize this function.
    */
-  private final static Node adjustTree(final Node leafNode,
-                                       final Node splitNode,
-                                       final double[] globalMBR)
+  private final static void adjustTreeNoSplit(final Node leafNode,
+                                              final double[] globalMBR)
   {
+    int currModInx = leafNode.entryCount - 1;
     Node n = leafNode;
-    Node nn = splitNode;
     while (true) {
-      if (n.parent == null) { // n is the root node.
-        if (splitNode == null) { // It is assumed that entry added is last one.
-          globalMBR[0] = Math.min(globalMBR[0], 0); }
-      }
-    }
+      final Node p = n.parent;
+
+      // "If N is the root, stop."  Adjust the globalMBR.
+      if (p == null) {
+        globalMBR[0] = Math.min(globalMBR[0], n.xMins[currModInx]);
+        globalMBR[1] = Math.min(globalMBR[1], n.yMins[currModInx]);
+        globalMBR[2] = Math.max(globalMBR[2], n.xMaxs[currModInx]);
+        globalMBR[3] = Math.max(globalMBR[3], n.yMaxs[currModInx]);
+        break; }
+
+      final int nInxInP;
+      for (int i = 0;; i++)
+        if (p.data.children[i] == n) { nInxInP = i; break; }
+
+      final double newXMin = Math.min(p.xMins[nInxInP], n.xMins[currModInx]);
+      final double newYMin = Math.min(p.yMins[nInxInP], n.yMins[currModInx]);
+      final double newXMax = Math.max(p.xMaxs[nInxInP], n.xMaxs[currModInx]);
+      final double newYMax = Math.max(p.yMaxs[nInxInP], n.yMaxs[currModInx]);
+
+      if (newXMin == p.xMins[nInxInP] && newYMin == p.yMins[nInxInP] &&
+          newXMax == p.xMaxs[nInxInP] && newYMax == p.yMaxs[nInxInP]) break;
+
+      p.xMins[nInxInP] = newXMin; p.yMins[nInxInP] = newYMin;
+      p.xMaxs[nInxInP] = newXMax; p.yMaxs[nInxInP] = newYMax;
+      currModInx = nInxInP;
+      n = p; }
   }
+
+//   /*
+//    * leafNode and splitNode are leaves.  splitNode may be null.
+//    * Returns the root's new sibling if it was split or else null.
+//    */
+//   private final static Node adjustTree(final Node leafNode,
+//                                        final Node splitNode,
+//                                        final double[] globalMBR)
+//   {
+//     Node n = leafNode;
+//     Node nn = splitNode;
+//     while (true) {
+//       if (n.parent == null) { // n is the root node.
+//         for (int i = 0; i < leafNode.entryCount; i++) {
+//         }
+//         break;
+//       }
+//       final Node p = n.parent;
+//       final int nInxInP;
+//       for (int i = 0;; i++)
+//         if (p.data.children[i] == n) { nInxInP = i; break; }
+
+//     }
+//     return nn;
+//   }
 
   /**
    * Determines whether or not a given entry exists in this R-tree structure,
@@ -571,7 +807,7 @@ public final class RTree
     final ObjStack stackStack = new ObjStack();
     final int totalCount =
       queryOverlap(m_root, nodeStack, stackStack, xMin, yMin, xMax, yMax,
-                   m_mbr[0], m_mbr[1], m_mbr[2], m_mbr[3], extentsArr, offset);
+                   m_MBR[0], m_MBR[1], m_MBR[2], m_MBR[3], extentsArr, offset);
     return new OverlapEnumerator(totalCount, nodeStack, stackStack);
   }
 
