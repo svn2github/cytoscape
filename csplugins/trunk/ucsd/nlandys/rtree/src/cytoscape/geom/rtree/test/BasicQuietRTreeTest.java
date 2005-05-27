@@ -11,7 +11,7 @@ public class BasicQuietRTreeTest
   {
     RTree tree = new RTree(3);
 
-    for (int i = 0;; i++)
+    for (int a = 0;; a++)
     { // BEGIN EMPTY TREE TESTS: We run our first tests when this tree empty.
       double[] extentsArr = new double[4];
       IntEnumerator iter = tree.queryOverlap
@@ -33,12 +33,11 @@ public class BasicQuietRTreeTest
       if (tree.size() != 0)
         throw new IllegalStateException("tree's size() is not 0");
 
-      if (i == 1) break;
+      if (a == 1) break;
       for (int j = 0; j < 1000; j++) {
         final int stop = (j + 1) * 1000;
         for (int k = j * 1000; k < stop; k++)
-          tree.insert(k, (double) k, (double) k, (double) (k + 1),
-                      (double) (k + 1));
+          tree.insert(k, k, k, k + 1, k + 1);
         for (int k = j * 1000; k < stop; k++) tree.delete(k); }
     } // END EMPTY TREE TESTS.
 
@@ -46,6 +45,7 @@ public class BasicQuietRTreeTest
     tree.insert(1, 2.0, 2.0, 3.0, 3.0);
     tree.insert(2, 0.5, 1.0, 1.5, 2.0);
 
+    for (int a = 0;; a++)
     { // BEGIN ROOT LEAF TEST: Still before any split.
       double[] extentsArr = new double[5];
       for (int i = 0; i < 3; i++)
@@ -89,10 +89,18 @@ public class BasicQuietRTreeTest
       if (extentsArr[1] != 0.5 || extentsArr[2] != 1.0 ||
           extentsArr[3] != 3.0 || extentsArr[4] != 3.0)
         throw new IllegalStateException("extents from query wrong");
+
+      if (a == 1) break;
+      for (int j = 0; j < 1000; j++) {
+        final int stop = ((j + 1) * 1000) + 3;
+        for (int k = (j * 1000) + 3; k < stop; k++)
+          tree.insert(k, -(k + 1), -(k + 1), -k, -k);
+        for (int k = (j * 1000) + 3; k < stop; k++) tree.delete(k); }
     } // END ROOT LEAF TEST.
 
     tree.insert(3, 2.5, 0.5, 3.5, 1.5);
 
+    for (int a = 0;; a++)
     { // BEGIN SIMPLE ROOT SPLIT TEST: Minimum # entries with a split.
       double[] extentsArr = new double[4];
       for (int i = 0; i < 4; i++)
@@ -158,6 +166,13 @@ public class BasicQuietRTreeTest
       if (extentsArr[0] != 0.0 || extentsArr[1] != 0.0 ||
           extentsArr[2] != 1.5 || extentsArr[3] != 2.0)
         throw new IllegalStateException("extents from query wrong");
+
+      if (a == 1) break;
+      for (int j = 0; j < 1000; j++) {
+        final int stop = ((j + 1) * 1000) + 4;
+        for (int k = (j * 1000) + 4; k < stop; k++)
+          tree.insert(k, k, -(k + 1), k + 3, -(k - 2));
+        for (int k = (j * 1000) + 4; k < stop; k++) tree.delete(k); }
     } // END SIMPLE ROOT SPLIT TEST.
 
     { // BEGIN EXCEPTION HANDLING TEST.
