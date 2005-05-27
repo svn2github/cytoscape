@@ -1085,16 +1085,61 @@ public final class RTree
     final int delInx;
     for (int i = 0;; i++)
       if (n.objKeys[i] == objKey) { delInx = i; break; }
+    // Duh instead of cascading just plug the hole.
     for (int i = delInx; i < n.entryCount; i++) {
       final int iPlusOne = i + 1;
       n.objKeys[i] = n.objKeys[iPlusOne];
       n.xMins[i] = n.xMins[iPlusOne]; n.yMins[i] = n.yMins[iPlusOne];
       n.xMaxs[i] = n.xMaxs[iPlusOne]; n.yMaxs[i] = n.yMaxs[iPlusOne]; }
-    condenseTree(n, 1, m_nodeStack, m_minBranches, m_MBR);
-    return true;
+    int currentDepth = condenseTree(n, 1, m_nodeStack, m_minBranches, m_MBR) -
+      m_nodeStack.size();
+    while (m_nodeStack.size() > 0) {
+      final Node eliminatedNode = (Node) m_nodeStack.pop();
+      for (int i = 0; i < eliminatedNode.entryCount; i++) {
+        final Node rootSplit;
+        if (isLeafNode(eliminatedNode)) {
+          rootSplit = insert
+            (m_root, eliminatedNode.objKeys[i], eliminatedNode.xMins[i],
+             eliminatedNode.yMins[i], eliminatedNode.xMaxs[i],
+             eliminatedNode.yMaxs[i], m_maxBranches, m_minBranches,
+             m_entryMap, m_MBR, m_objKeyBuff, m_childrenBuff, m_xMinBuff,
+             m_yMinBuff, m_xMaxBuff, m_yMaxBuff, m_tempBuff1, m_tempBuff2); }
+        else {
+          rootSplit = insert
+            (m_root, currentDepth, eliminatedNode.data.children[i],
+             eliminatedNode.xMins[i], eliminatedNode.yMins[i],
+             eliminatedNode.xMaxs[i], eliminatedNode.yMaxs[i],
+             m_maxBranches, m_minBranches, m_MBR, m_childrenBuff,
+             m_xMinBuff, m_yMinBuff, m_xMaxBuff, m_yMaxBuff, m_tempBuff1,
+             m_tempBuff2); }
+        if (rootSplit != null) {
+          final Node newRoot = new Node(m_maxBranches, false);
+          newRoot.entryCount = 2;
+          m_root.parent = newRoot; rootSplit.parent = newRoot;
+          newRoot.data.children[0] = m_root;
+          newRoot.data.children[1] = rootSplit;
+          newRoot.xMins[0] = m_root.xMins[m_maxBranches - 1];
+          newRoot.yMins[0] = m_root.yMins[m_maxBranches - 1];
+          newRoot.xMaxs[0] = m_root.xMaxs[m_maxBranches - 1];
+          newRoot.yMaxs[0] = m_root.yMaxs[m_maxBranches - 1];
+          newRoot.xMins[1] = rootSplit.xMins[m_maxBranches - 1];
+          newRoot.yMins[1] = rootSplit.yMins[m_maxBranches - 1];
+          newRoot.xMaxs[1] = rootSplit.xMaxs[m_maxBranches - 1];
+          newRoot.yMaxs[1] = rootSplit.yMaxs[m_maxBranches - 1];
+          newRoot.data.deepCount =
+            m_root.data.deepCount + rootSplit.data.deepCount;
+          m_root = newRoot;
+          m_MBR[0] = Math.min(m_root.xMins[0], m_root.xMins[1]);
+          m_MBR[1] = Math.min(m_root.yMins[0], m_root.yMins[1]);
+          m_MBR[2] = Math.max(m_root.xMaxs[0], m_root.xMaxs[1]);
+          m_MBR[3] = Math.max(m_root.yMaxs[0], m_root.yMaxs[1]);
+          currentDepth++; } }
+      currentDepth--; }
 
     // Finally, delete the objKey from m_entryMap.  If m_entryMap contains
     // too many deleted entries, shrink its size.
+
+    return true;
   }
 
   /*
@@ -1104,13 +1149,15 @@ public final class RTree
    * called.  This method is used for adjusting a tree after deleting one
    * or more entries or children from nodeWithDeletions.  Deep counts are
    * updated from nodeWithDeletions' parent to root.
+   * Returns the distance from nodeWithDeletions to root.
    */
-  private final static void condenseTree(final Node nodeWithDeletions,
-                                         int deepCountDecrease,
-                                         final ObjStack eliminatedNodes,
-                                         final int minBranches,
-                                         final double[] globalMBR)
+  private final static int condenseTree(final Node nodeWithDeletions,
+                                        int deepCountDecrease,
+                                        final ObjStack eliminatedNodes,
+                                        final int minBranches,
+                                        final double[] globalMBR)
   {
+    int depth = 0;
     Node n = nodeWithDeletions;
     while (true) {
       final Node p = n.parent;
@@ -1155,7 +1202,8 @@ public final class RTree
           p.xMaxs[nInxInP] = Math.max(p.xMaxs[nInxInP], n.xMaxs[i]);
           p.yMaxs[nInxInP] = Math.max(p.yMaxs[nInxInP], n.yMaxs[i]); } }
       p.data.deepCount -= deepCountDecrease;
-      n = p; }
+      n = p; depth++; }
+    return depth;
   }
 
 //     // "Re-insert orphaned entries."
