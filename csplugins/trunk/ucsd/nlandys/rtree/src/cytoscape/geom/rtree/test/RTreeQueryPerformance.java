@@ -122,6 +122,19 @@ public class RTreeQueryPerformance
       System.err.println("count queries took " + (millisEnd - millisBegin) +
                          " milliseconds");
     }
+
+    for (int i = 0; i < pointQueries.length; i++) {
+      final MinIntHeap heap = pointQueries[i];
+      while (heap.size() > 0) System.out.print(" " + heap.deleteMin());
+      System.out.println(); }
+
+    for (int i = 0; i < areaQueries.length; i++) {
+      final MinIntHeap heap = areaQueries[i];
+      while (heap.size() > 0) System.out.print(" " + heap.deleteMin());
+      System.out.println(); }
+
+    for (int i = 0; i < countQueries.length; i++) {
+      System.out.println(countQueries[i]); }
   }
 
   private static int assembleInt(byte[] bytes, int offset)
