@@ -395,11 +395,15 @@ public final class RTree
    * This is the quadratic-cost algorithm described in Guttman's 1984
    * R-tree paper.  The parent pointer of returned node is not set.  The
    * parent pointer in the full node is not modified, and nothing in that
-   * parent is modified.  Everything else is modified.  The MBRs at index
-   * m_maxBranches - 1 in both nodes are set to be the new overall MBR of
+   * parent is modified.  Everything else in the input node and in the
+   * returned node is set as appropriate.  The MBRs at index
+   * maxBranches - 1 in both nodes are set to be the new overall MBR of
    * corresponding node.  To picture what this function does, imagine
    * adding newChild (with specified MBR) to fullInternalNode.  Note that
    * newChild may be either an internal node or a leaf node.
+   * No claim is made as to the resulting values in the buff arrays other
+   * than the claim that all entries in childrenBuff will be null when this
+   * method returns.
    */
   private final static Node splitInternalNode(final Node fullInternalNode,
                                               final Node newChild,
