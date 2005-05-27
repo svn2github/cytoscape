@@ -21,7 +21,7 @@ public class RTreeQueryPerformance
   {
     int branches = Integer.parseInt(args[0]);
     int N = Integer.parseInt(args[1]);
-    final RTree tree = new RTree(N);
+    final RTree tree = new RTree(branches);
     double sqrtN = Math.sqrt((double) N);
     InputStream in = System.in;
     byte[] buff = new byte[16];
