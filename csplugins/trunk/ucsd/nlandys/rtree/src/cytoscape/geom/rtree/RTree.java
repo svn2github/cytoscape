@@ -9,7 +9,10 @@ import cytoscape.util.intr.IntStack;
 public final class RTree
 {
 
-  private final static int DEFAULT_MAX_BRANCHES = 7;
+  /**
+   * @deprecated Use the no-arg constructor.
+   */
+  public final static int DEFAULT_MAX_BRANCHES = 7;
 
   private final double[] m_MBR; // { xMin, yMin, xMax, yMax }.
   private final int m_maxBranches;
@@ -32,10 +35,25 @@ public final class RTree
    */
   public RTree()
   {
+    this(DEFAULT_MAX_BRANCHES);
+  }
+
+  /**
+   * Instantiates a new R-tree with the specified maximum branching factor.
+   * Overriding the default maximum branching factor is only useful for
+   * testing purposes; there are no performance gains to be had.
+   * @param maxBranches the maximum branching factor of this tree.
+   * @exception IllegalArgumentException if maxBranches is less than three.
+   * @deprecated Use the no-arg constructor instead.
+   */
+  public RTree(final int maxBranches)
+  {
+    if (maxBranches < 3) throw new IllegalArgumentException
+                           ("maxBranches is less than three");
     m_MBR = new double[] {
       Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY,
       Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY };
-    m_maxBranches = DEFAULT_MAX_BRANCHES;
+    m_maxBranches = maxBranches;
     m_minBranches = Math.max(2, (int) (((double) (m_maxBranches + 1)) * 0.4d));
     m_root = new Node(m_maxBranches, true);
     m_objKeyBuff = new int[m_maxBranches + 1];
