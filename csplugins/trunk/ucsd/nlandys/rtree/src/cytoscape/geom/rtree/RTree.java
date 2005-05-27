@@ -30,6 +30,9 @@ public final class RTree
   private final double[] m_tempBuff1;
   private final double[] m_tempBuff2;
 
+  private final double[] m_extentsStack;
+  private final ObjStack m_nodeStack;
+
   /**
    * Instantiates a new R-tree.  A new R-tree is empty (it has no entries).
    */
@@ -65,6 +68,9 @@ public final class RTree
     m_yMaxBuff = new double[m_maxBranches + 1];
     m_tempBuff1 = new double[m_maxBranches + 1];
     m_tempBuff2 = new double[m_maxBranches + 1];
+
+    m_extentsStack = new double[1000]; // Fix this later.
+    m_nodeStack = new ObjStack();
   }
 
 //   /**
@@ -1028,11 +1034,15 @@ public final class RTree
       extentsArr[offset + 1] = Double.POSITIVE_INFINITY;
       extentsArr[offset + 2] = Double.NEGATIVE_INFINITY;
       extentsArr[offset + 3] = Double.NEGATIVE_INFINITY; }
+    m_nodeStack.push(m_root); // This stack should always be left empty.
+    m_extentsStack[0] = m_MBR[0]; m_extentsStack[1] = m_MBR[1];
+    m_extentsStack[2] = m_MBR[2]; m_extentsStack[3] = m_MBR[3];
     final ObjStack nodeStack = new ObjStack();
     final ObjStack stackStack = new ObjStack();
     final int totalCount =
-      queryOverlap(m_root, nodeStack, stackStack, xMin, yMin, xMax, yMax,
-                   m_MBR[0], m_MBR[1], m_MBR[2], m_MBR[3], extentsArr, offset);
+      queryOverlap(m_nodeStack, m_extentsStack, nodeStack, stackStack,
+                   xMin, yMin, xMax, yMax, extentsArr, offset);
+    // m_nodeStack will now be empty.
     return new OverlapEnumerator(totalCount, nodeStack, stackStack);
   }
 
@@ -1058,54 +1068,62 @@ public final class RTree
    * the IntStack is of positive length, then the IntStack contains indices of
    * entries that overlap the query rectangle.
    */
-  private final static int queryOverlap(final Node n, final ObjStack nodeStack,
+  private final static int queryOverlap(final ObjStack unprocessedNodes,
+                                        final double[] extentsStack,
+                                        final ObjStack nodeStack,
                                         final ObjStack stackStack,
                                         final double xMinQ, final double yMinQ,
                                         final double xMaxQ, final double yMaxQ,
-                                        final double xMinN, final double yMinN,
-                                        final double xMaxN, final double yMaxN,
                                         final double[] extents, final int off)
-  {
+  { // Depth first search.
     int count = 0;
-    if ((xMinQ <= xMinN) && (xMaxQ >= xMaxN) && // Does rectangle Q contain
-        (yMinQ <= yMinN) && (yMaxQ >= yMaxN)) { // rectangle N?
-      // Trivially include node.
-      if (n.data == null) { // Leaf node.
-        count += n.entryCount; stackStack.push(null); }
-      else { count += n.data.deepCount; }
-      nodeStack.push(n);
-      if (extents != null) {
-        extents[off] = Math.min(extents[off], xMinN);
-        extents[off + 1] = Math.min(extents[off + 1], yMinN);
-        extents[off + 2] = Math.max(extents[off + 2], xMaxN);
-        extents[off + 3] = Math.max(extents[off + 3], yMaxN); } }
-    else { // Cannot trivially include node; must recurse.
-      if (n.data == null) { // Leaf node.
-        final IntStack stack = new IntStack();
-        for (int i = 0; i < n.entryCount; i++) {
-          // Overlaps test of two rectangles.
-          if ((Math.max(xMinQ, n.xMins[i]) <= Math.min(xMaxQ, n.xMaxs[i])) &&
-              (Math.max(yMinQ, n.yMins[i]) <= Math.min(yMaxQ, n.yMaxs[i]))) {
-            stack.push(i);
-            if (extents != null) {
-              extents[off] = Math.min(extents[off], n.xMins[i]);
-              extents[off + 1] = Math.min(extents[off + 1], n.yMins[i]);
-              extents[off + 2] = Math.max(extents[off + 2], n.xMaxs[i]);
-              extents[off + 3] = Math.max(extents[off + 3], n.yMaxs[i]); } } }
-        if (stack.size() > 0) {
-          count = stack.size();
-          stackStack.push(stack);
-          nodeStack.push(n); } }
-      else { // Internal node.
-        for (int i = 0; i < n.entryCount; i++) {
-          // Overlaps test of two rectangles.
-          if ((Math.max(xMinQ, n.xMins[i]) <= Math.min(xMaxQ, n.xMaxs[i])) &&
-              (Math.max(yMinQ, n.yMins[i]) <= Math.min(yMaxQ, n.yMaxs[i]))) {
-            count += queryOverlap
-              (n.data.children[i], nodeStack, stackStack,
-               xMinQ, yMinQ, xMaxQ, yMaxQ,
-               n.xMins[i], n.yMins[i], n.xMaxs[i], n.yMaxs[i],
-               extents, off); } } } }
+    int extentsOffset = 4; // Into extentsStack.
+    while (unprocessedNodes.size() > 0) {
+      final Node n = (Node) unprocessedNodes.pop();
+      final double yMaxN = extentsStack[--extentsOffset];
+      final double xMaxN = extentsStack[--extentsOffset];
+      final double yMinN = extentsStack[--extentsOffset];
+      final double xMinN = extentsStack[--extentsOffset];
+      if ((xMinQ <= xMinN) && (xMaxQ >= xMaxN) && // Does rectangle Q contain
+          (yMinQ <= yMinN) && (yMaxQ >= yMaxN)) { // rectangle N?
+        // Trivially include node.
+        if (n.data == null) { // Leaf node.
+          count += n.entryCount; stackStack.push(null); }
+        else { count += n.data.deepCount; }
+        nodeStack.push(n);
+        if (extents != null) {
+          extents[off] = Math.min(extents[off], xMinN);
+          extents[off + 1] = Math.min(extents[off + 1], yMinN);
+          extents[off + 2] = Math.max(extents[off + 2], xMaxN);
+          extents[off + 3] = Math.max(extents[off + 3], yMaxN); } }
+      else { // Cannot trivially include node; must recurse.
+        if (n.data == null) { // Leaf node.
+          final IntStack stack = new IntStack();
+          for (int i = 0; i < n.entryCount; i++) {
+            // Overlaps test of two rectangles.
+            if ((Math.max(xMinQ, n.xMins[i]) <= Math.min(xMaxQ, n.xMaxs[i])) &&
+                (Math.max(yMinQ, n.yMins[i]) <= Math.min(yMaxQ, n.yMaxs[i]))) {
+              stack.push(i);
+              if (extents != null) {
+                extents[off] = Math.min(extents[off], n.xMins[i]);
+                extents[off + 1] = Math.min(extents[off + 1], n.yMins[i]);
+                extents[off + 2] = Math.max(extents[off + 2], n.xMaxs[i]);
+                extents[off + 3] = Math.max(extents[off + 3], n.yMaxs[i]);
+              } } }
+          if (stack.size() > 0) {
+            count += stack.size();
+            stackStack.push(stack);
+            nodeStack.push(n); } }
+        else { // Internal node.
+          for (int i = 0; i < n.entryCount; i++) {
+            // Overlaps test of two rectangles.
+            if ((Math.max(xMinQ, n.xMins[i]) <= Math.min(xMaxQ, n.xMaxs[i])) &&
+                (Math.max(yMinQ, n.yMins[i]) <= Math.min(yMaxQ, n.yMaxs[i]))) {
+              unprocessedNodes.push(n.data.children[i]);
+              extentsStack[extentsOffset++] = n.xMins[i];
+              extentsStack[extentsOffset++] = n.yMins[i];
+              extentsStack[extentsOffset++] = n.xMaxs[i];
+              extentsStack[extentsOffset++] = n.yMaxs[i]; } } } } }
     return count;
   }
 
