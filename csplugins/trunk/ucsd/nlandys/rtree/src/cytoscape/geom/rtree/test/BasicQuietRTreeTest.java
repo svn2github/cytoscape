@@ -165,6 +165,8 @@ public class BasicQuietRTreeTest
                               ("expected exception for min > max");
     } // END EXCEPTION HANDLING TEST.
 
+    tree.insert(4, 3.0, -0.25, 4.0, 0.75);
+
   }
 
 }
