@@ -952,7 +952,7 @@ public final class RTree
   {
     if (objKey < 0) return false;
     final Object o = m_entryMap.get(objKey);
-    if (o == null) return false;
+    if (o == null || o == m_deletedEntry) return false;
     if (extentsArr != null) {
       final Node n = (Node) o;
       int i = -1;
