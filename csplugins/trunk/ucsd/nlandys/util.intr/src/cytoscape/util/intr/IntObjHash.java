@@ -18,32 +18,31 @@ import java.util.NoSuchElementException;
  */
 public final class IntObjHash
 {
-  
-  private static final int[] PRIMES = { 11, 23, 47, 97, 197, 397, 797, 1597,
-                                        3203, 6421, 12853, 25717, 51437,
-                                        102877, 205759, 411527, 823117,
-                                        1646237, 3292489, 6584983, 13169977,
-                                        26339969, 52679969, 105359939,
-                                        210719881, 421439783, 842879579,
-                                        1685759167, Integer.MAX_VALUE };
-  private static final double THRESHOLD_FACTOR = 0.785;
+
+
+  private static final int[] PRIMES = { 11, 23, 53, 113, 251, 509, 1019, 2039,
+                                        4079, 8179, 16369, 32749, 65521,
+                                        131063, 262133, 524269, 1048571,
+                                        2097143, 4194287, 8388587, 16777183,
+                                        33554393, 67108837, 134217689,
+                                        268435399, 536870879, 1073741789,
+                                        2147483647 };
+  private static final double THRESHOLD_FACTOR = 0.77;
 
   /**
    * For a hashtable that currently holds exactly num keys [or zero keys if
-   * num is negative], returns the
-   * maximum number of keys that that hashtable can hold without undergoing an
-   * underlying size expansion.  Size expansions are expensive computationally
-   * and result in a doubling of the amount of memory consumed; this function
-   * is a hook for users of hashtables to do smart things when an underlying
-   * size expansion is about to happen.  Returns -1 if a hashtable cannot
-   * hold the number of keys specified.
+   * num is negative], returns the maximum number of keys that that hashtable
+   * can hold without undergoing an underlying size expansion.  Size expansions
+   * are expensive computationally and result in a doubling of the amount of
+   * memory consumed; this function is a hook for users of hashtables to do
+   * smart things when an underlying size expansion is about to happen.
+   * Returns -1 if a hashtable cannot hold the number of keys specified.
    */
   public final static int maxCapacity(final int num)
   {
     int inx = 0;
     while (inx < PRIMES.length && num >= PRIMES[inx]) inx++;
     final int thresholdSize = (int) (THRESHOLD_FACTOR * (double) PRIMES[inx]);
-    // THRESHOLD_FACTOR * Integer.MAX_VALUE is greater than than 1685759167.
     if (thresholdSize >= num) return thresholdSize;
     else if (++inx == PRIMES.length) return -1;
     return (int) (THRESHOLD_FACTOR * (double) PRIMES[inx]);
@@ -54,7 +53,6 @@ public final class IntObjHash
     int inx = 0;
     while (inx < PRIMES.length && num >= PRIMES[inx]) inx++;
     final int thresholdSize = (int) (THRESHOLD_FACTOR * (double) PRIMES[inx]);
-    // THRESHOLD_FACTOR * Integer.MAX_VALUE is greater than than 1685759167.
     if (thresholdSize >= num) return inx;
     else if (++inx == PRIMES.length) return 0;
     return inx;
