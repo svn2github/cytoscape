@@ -768,13 +768,16 @@ public final class RTree
   }
 
   /*
-   * It is required that the MBRs at index m_maxBranches - 1 in both
+   * It is required that the MBRs at index maxBranches - 1 in both
    * input nodes contain the overall MBR of corresponding node.
    * Returns a node if root was split, otherwise returns null.
    * If a node is returned, then both the old root and the returned node
    * will have an MBR entry at index maxBranches - 1 which will be the
    * overall MBR of that node.  The globalMBR is only updated when null
-   * is returned.  Deep counts are updated from leaf to root.
+   * is returned.  Deep counts are updated from leaf to root.  This method
+   * puts newLeafNode into the tree by trying to insert it as a child into
+   * originalLeafNode's parent - if it does not fit, the parent is split,
+   * and the split may go recursively upwards towards the root.
    */
   private final static Node adjustTreeWithSplit(final Node originalLeafNode,
                                                 final Node newLeafNode,
@@ -790,7 +793,8 @@ public final class RTree
                                                 final double[] tempBuff2)
   {
     int currModInx = -1;
-    boolean newNodeAdded = false;
+    boolean newNodeAdded = false; // New node added as last entry in n?
+                                  // (Only when nn is null.)
     Node n = originalLeafNode;
     Node nn = newLeafNode;
     while (true) {
@@ -810,55 +814,61 @@ public final class RTree
             globalMBR[2] = Math.max(globalMBR[2], n.xMaxs[countMin1]);
             globalMBR[3] = Math.max(globalMBR[3], n.yMaxs[countMin1]); } }
         break; }
-      p.data.deepCount++; // Will get rewritten if p is split - that's OK.
-      final int nInxInP;
-      for (int i = 0;; i++)
-        if (p.data.children[i] == n) { nInxInP = i; break; }
 
+      // Update the deep count.
+      p.data.deepCount++; // Will get rewritten if p is split - that's OK.
+
+      // Node n was split into two in previous iterative step.
       if (nn != null) {
-        p.xMins[nInxInP] = n.xMins[maxBranches - 1];
-        p.yMins[nInxInP] = n.yMins[maxBranches - 1];
-        p.xMaxs[nInxInP] = n.xMaxs[maxBranches - 1];
+        final int nInxInP; // Only compute this if we need it.
+        for (int i = 0;; i++)
+          if (p.data.children[i] == n) { nInxInP = i; break; }
+        p.xMins[nInxInP] = n.xMins[maxBranches - 1]; // A split implies
+        p.yMins[nInxInP] = n.yMins[maxBranches - 1]; // overall MBR at inx
+        p.xMaxs[nInxInP] = n.xMaxs[maxBranches - 1]; // maxBranches - 1.
         p.yMaxs[nInxInP] = n.yMaxs[maxBranches - 1];
-        if (p.entryCount < maxBranches) { // No split is necessary.
+
+        if (p.entryCount < maxBranches) { // No further split is necessary.
           final int newInxInP = p.entryCount++;
           nn.parent = p;
           p.data.children[newInxInP] = nn;
-
-          // A split (nn != null) implies total MBR at inx maxBranches - 1.
-          // Set the MBR of the new node.
-          p.xMins[newInxInP] = nn.xMins[maxBranches - 1];
-          p.yMins[newInxInP] = nn.yMins[maxBranches - 1];
-          p.xMaxs[newInxInP] = nn.xMaxs[maxBranches - 1];
+          p.xMins[newInxInP] = nn.xMins[maxBranches - 1]; // A split implies
+          p.yMins[newInxInP] = nn.yMins[maxBranches - 1]; // overall MBR at inx
+          p.xMaxs[newInxInP] = nn.xMaxs[maxBranches - 1]; // maxBranches - 1.
           p.yMaxs[newInxInP] = nn.yMaxs[maxBranches - 1];
 
           // The recursive step.
           currModInx = nInxInP;
           newNodeAdded = true;
-          nn = null;
+          nn = null; }
 
-        }
-        else { // A split is necessary.
+        else { // A split is necessary as the iterative step.
           // We require that the MBR at index maxBranches - 1 in nn contain
           // nn's overall MBR at the time this is called.
           nn = splitInternalNode
             (p, nn, nn.xMins[maxBranches - 1], nn.yMins[maxBranches - 1],
              nn.xMaxs[maxBranches - 1], nn.yMaxs[maxBranches - 1],
              maxBranches, minBranches, childrenBuff, xMinBuff, yMinBuff,
-             xMaxBuff, yMaxBuff, tempBuff1, tempBuff2);
-          
-        }
-      }
+             xMaxBuff, yMaxBuff, tempBuff1, tempBuff2); } }
+
+      // Node n was not split into two in previous step, and the updating
+      // of the MBR has percolated up to this level.
       else if (currModInx >= 0) { // nn == null.
+        final int nInxInP; // Only compute this if we need it.
+        for (int i = 0;; i++)
+          if (p.data.children[i] == n) { nInxInP = i; break; }
+
+        // Compute the new overall MBR for n (stored in n's parent).
         double newXMin = Math.min(p.xMins[nInxInP], n.xMins[currModInx]);
         double newYMin = Math.min(p.yMins[nInxInP], n.yMins[currModInx]);
         double newXMax = Math.max(p.xMaxs[nInxInP], n.xMaxs[currModInx]);
         double newYMax = Math.max(p.yMaxs[nInxInP], n.yMaxs[currModInx]);
-        if (newNodeAdded) {
-          newXMin = Math.min(newXMin, n.xMins[n.entryCount - 1]);
-          newYMin = Math.min(newYMin, n.yMins[n.entryCount - 1]);
-          newXMax = Math.max(newXMax, n.xMaxs[n.entryCount - 1]);
-          newYMax = Math.max(newYMax, n.yMaxs[n.entryCount - 1]);
+        if (newNodeAdded) { // Nodes added always as last index.
+          final int countMin1 = n.entryCount - 1;
+          newXMin = Math.min(newXMin, n.xMins[countMin1]);
+          newYMin = Math.min(newYMin, n.yMins[countMin1]);
+          newXMax = Math.max(newXMax, n.xMaxs[countMin1]);
+          newYMax = Math.max(newYMax, n.yMaxs[countMin1]);
           newNodeAdded = false; }
         if (newXMin == p.xMins[nInxInP] && newYMin == p.yMins[nInxInP] &&
             newXMax == p.xMaxs[nInxInP] && newYMax == p.yMaxs[nInxInP]) {
@@ -867,9 +877,9 @@ public final class RTree
           p.xMins[nInxInP] = newXMin; p.yMins[nInxInP] = newYMin;
           p.xMaxs[nInxInP] = newXMax; p.yMaxs[nInxInP] = newYMax;
           currModInx = nInxInP; } }
-      n = p;
 
-    }
+      n = p; } // End while loop.
+
     return nn;
   }
 
