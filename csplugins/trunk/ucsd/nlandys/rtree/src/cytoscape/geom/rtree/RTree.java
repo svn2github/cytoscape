@@ -142,7 +142,7 @@ public final class RTree
       chosenLeaf.xMins[newInx] = xMin; chosenLeaf.yMins[newInx] = yMin;
       chosenLeaf.xMaxs[newInx] = xMax; chosenLeaf.yMaxs[newInx] = yMax;
       m_entryMap.put(objKey, chosenLeaf);
-      adjustTreeNoSplit(chosenLeaf, m_MBR); }
+      adjustTreeNoSplit(chosenLeaf, 1, m_MBR); }
     else { // A split is necessary.
       final Node newLeaf = splitLeafNode
         (chosenLeaf, objKey, xMin, yMin, xMax, yMax, m_maxBranches,
@@ -153,7 +153,7 @@ public final class RTree
       for (int i = 0; i < newLeaf.entryCount; i++)
         m_entryMap.put(newLeaf.objKeys[i], newLeaf);
       final Node rootSplit = adjustTreeWithSplit
-        (chosenLeaf, newLeaf, m_maxBranches, m_minBranches, m_MBR,
+        (chosenLeaf, newLeaf, 1, m_maxBranches, m_minBranches, m_MBR,
          m_childrenBuff, m_xMinBuff, m_yMinBuff, m_xMaxBuff, m_yMaxBuff,
          m_tempBuff1, m_tempBuff2);
       if (rootSplit != null) {
@@ -194,6 +194,8 @@ public final class RTree
                             final double xMin, final double yMin,
                             final double xMax, final double yMax)
   {
+    final int deepCountIncrease =
+      (isLeafNode(n) ? n.entryCount : n.data.deepCount);
     final Node chosenParent =
       chooseParent(m_root, depth, xMin, yMin, xMax, yMax);
     if (chosenParent.entryCount < m_maxBranches) { // No split is necessary.
@@ -202,11 +204,16 @@ public final class RTree
       chosenParent.data.children[newInx] = n;
       chosenParent.xMins[newInx] = xMin; chosenParent.yMins[newInx] = yMin;
       chosenParent.xMaxs[newInx] = xMax; chosenParent.yMaxs[newInx] = yMax;
-      adjustTreeNoSplit(chosenParent, m_MBR); }
+      chosenParent.data.deepCount += deepCountIncrease;
+      adjustTreeNoSplit(chosenParent, deepCountIncrease, m_MBR); }
     else { // A split is necessary.
       final Node parentSibling = splitInternalNode
         (chosenParent, n, xMin, yMin, xMax, yMax, m_maxBranches,
          m_minBranches, m_childrenBuff, m_xMinBuff, m_yMinBuff,
+         m_xMaxBuff, m_yMaxBuff, m_tempBuff1, m_tempBuff2);
+      final Node rootSplit = adjustTreeWithSplit
+        (chosenParent, parentSibling, deepCountIncrease, m_maxBranches,
+         m_minBranches, m_MBR, m_childrenBuff, m_xMinBuff, m_yMinBuff,
          m_xMaxBuff, m_yMaxBuff, m_tempBuff1, m_tempBuff2);
     }
   }
@@ -475,7 +482,7 @@ public final class RTree
    * R-tree paper.  The parent pointer of returned node is not set.  The
    * parent pointer in the full node is not modified, and nothing in that
    * parent is modified.  Everything else in the input node and in the
-   * returned node is set as appropriate.  The MBRs at index
+   * returned node is set as appropriate (deep count, etc.).  The MBRs at index
    * maxBranches - 1 in both nodes are set to be the new overall MBR of
    * corresponding node.  To picture what this function does, imagine
    * adding newChild (with specified MBR) to fullInternalNode.  Note that
@@ -798,27 +805,13 @@ public final class RTree
    * new entry or node into nodeWithNewEntry.  It is assumed that the new entry
    * or node in nodeWithNewEntry is at index nodeWithNewEntry.entryCount - 1.
    * We will use this knowledge to optimize this function.  Deep counts are
-   * updated from nodeWithNewEntry to root.  if nodeWityNewEntry is an internal
-   * node it is assumed that its deep count does not yet include the entries
-   * added as the node at index nodeWithNewEntry.entryCount - 1.
+   * updated from nodeWithNewEntry's parent to root.
    */
   private final static void adjustTreeNoSplit(final Node nodeWithNewEntry,
+                                              final int deepCountIncrease,
                                               final double[] globalMBR)
   {
     int currModInx = nodeWithNewEntry.entryCount - 1;
-
-    // Calculate how many new leaf entries we're inserting.
-    final int deepCountIncrease;
-    if (isLeafNode(nodeWithNewEntry)) { deepCountIncrease = 1; }
-    else { // nodeWithNewEntry is an internal node.
-      if (isLeafNode(nodeWithNewEntry.data.children[currModInx])) {
-        deepCountIncrease =
-          nodeWithNewEntry.data.children[currModInx].entryCount; }
-      else {
-        deepCountIncrease =
-          nodeWithNewEntry.data.children[currModInx].data.deepCount; }
-      nodeWithNewEntry.data.deepCount += deepCountIncrease; }
-
     Node n = nodeWithNewEntry;
     while (true) {
       final Node p = n.parent;
@@ -868,12 +861,13 @@ public final class RTree
    * will have an MBR entry at index maxBranches - 1 which will be the
    * overall MBR of that node.  The globalMBR is only updated when null
    * is returned.  Deep counts are updated from leaf to root.  This method
-   * puts newLeafNode into the tree by trying to insert it as a child into
-   * originalLeafNode's parent - if it does not fit, the parent is split,
+   * puts newNode into the tree by trying to insert it as a child into
+   * originalNode's parent - if it does not fit, the parent is split,
    * and the split may go recursively upwards towards the root.
    */
-  private final static Node adjustTreeWithSplit(final Node originalLeafNode,
-                                                final Node newLeafNode,
+  private final static Node adjustTreeWithSplit(final Node originalNode,
+                                                final Node newNode,
+                                                final int deepCountIncrease,
                                                 final int maxBranches,
                                                 final int minBranches,
                                                 final double[] globalMBR,
@@ -888,8 +882,8 @@ public final class RTree
     int currModInx = -1;
     boolean newNodeAdded = false; // New node added as last entry in n?
                                   // (Only when nn is null.)
-    Node n = originalLeafNode;
-    Node nn = newLeafNode;
+    Node n = originalNode;
+    Node nn = newNode;
     while (true) {
       final Node p = n.parent;
 
@@ -908,8 +902,8 @@ public final class RTree
             globalMBR[3] = Math.max(globalMBR[3], n.yMaxs[countMin1]); } }
         break; }
 
-      // Update the deep count.
-      p.data.deepCount++; // Will get rewritten if p is split - that's OK.
+      // Update the deep count.  Will get rewritten if p is split - that's OK.
+      p.data.deepCount += deepCountIncrease;
 
       // Node n was split into two in previous iterative step.
       if (nn != null) {
