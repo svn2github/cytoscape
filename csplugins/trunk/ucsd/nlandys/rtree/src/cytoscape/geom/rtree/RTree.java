@@ -204,6 +204,10 @@ public final class RTree
       chosenParent.xMaxs[newInx] = xMax; chosenParent.yMaxs[newInx] = yMax;
       adjustTreeNoSplit(chosenParent, m_MBR); }
     else { // A split is necessary.
+      final Node parentSibling = splitInternalNode
+        (chosenParent, n, xMin, yMin, xMax, yMax, m_maxBranches,
+         m_minBranches, m_childrenBuff, m_xMinBuff, m_yMinBuff,
+         m_xMaxBuff, m_yMaxBuff, m_tempBuff1, m_tempBuff2);
     }
   }
 
