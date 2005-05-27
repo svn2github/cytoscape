@@ -1080,15 +1080,36 @@ public final class RTree
       n.yMins[i] = n.yMins[iPlusOne];
       n.xMaxs[i] = n.xMaxs[iPlusOne];
       n.yMaxs[i] = n.yMaxs[iPlusOne]; }
-    condenseTree(n);
+    condenseTree(n, m_nodeStack);
     return true;
 
-    // Finally, delete the leaf node form m_entryMap.  If m_entryMap contains
+    // Finally, delete the objKey from m_entryMap.  If m_entryMap contains
     // too many deleted entries, shrink its size.
   }
 
-  private final static void condenseTree(final Node leafNode)
+  private final static void condenseTree(final Node leafNode,
+                                         final ObjStack eliminatedNodes)
   {
+    Node n = leafNode;
+    int depthOfLastElimination = 0;
+    while (true) {
+      break;
+    }
+
+    // "Re-insert orphaned entries."
+    while (eliminatedNodes.size() > 0) {
+      final Node underfullNode = (Node) eliminatedNodes.pop();
+      if (isLeafNode(underfullNode)) {
+        for (int i = 0; i < underfullNode.entryCount; i++) {
+          // Call regular insert.
+        }
+      }
+      else { // Internal node.
+        for (int i = 0; i < underfullNode.entryCount; i++) {
+          // Call other insert.
+        }
+      }
+    }
   }
 
   /**
