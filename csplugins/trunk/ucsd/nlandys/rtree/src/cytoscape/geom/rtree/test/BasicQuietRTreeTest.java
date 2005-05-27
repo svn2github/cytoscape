@@ -272,6 +272,37 @@ public class BasicQuietRTreeTest
     tree.insert(26, -2.0, 5.0, -1.0, 6.0);
     tree.insert(27, -2.5, 5.25, -1.75, 9.25);
     // There are now 28 entries in the R-tree.  Depth must be at least 4.
+
+    { // BEGIN DEPTH FOUR TEST.
+      double[] extentsArr = new double[4];
+      for (int i = 27; i >= 0; i--)
+        if (!tree.exists(i, extentsArr, 0))
+          throw new IllegalStateException("entry " + i + " does not exist");
+      if (tree.exists(28, extentsArr, 0) ||
+          tree.exists(Integer.MAX_VALUE, extentsArr, 0) ||
+          tree.exists(Integer.MIN_VALUE, extentsArr, 0))
+        throw new IllegalStateException("bad entry exists");
+      if (extentsArr[0] != 0.0 || extentsArr[1] != 0.0 ||
+          extentsArr[2] != 1.0 || extentsArr[3] != 1.0)
+        throw new IllegalStateException("objKey 0 extents incorrect");
+
+      IntEnumerator iter = tree.queryOverlap
+        (Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY,
+         Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, extentsArr, 0);
+      if (iter.numRemaining() != 28)
+        throw new IllegalStateException("expected query to give 28 hits");
+      IntBTree cache = new IntBTree();
+      for (int i = 0; i < 28; i++) cache.insert(i);
+      int foo = 0;
+      while (iter.numRemaining() > 0) { cache.delete(iter.nextInt()); foo++; }
+      if (foo != 28) throw new IllegalStateException
+                       ("iter claimed it had 28 elements but really didn't");
+      if (cache.size() != 0) throw new IllegalStateException
+                               ("iter returned wrong objKeys");
+      if (extentsArr[0] != -4.25 || extentsArr[1] != -1.75 ||
+          extentsArr[2] != 5.0 || extentsArr[3] != 10.0)
+        throw new IllegalStateException("extents from query wrong");
+    } // END DEPTH FOUR TEST.
   }
 
 }
