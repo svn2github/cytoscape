@@ -676,7 +676,8 @@ public final class RTree
   /*
    * It is assumed that the entry in the leaf node at index
    * leafNode.entryCount - 1 is the only new entry.  We will use this
-   * knowledge to optimize this function.
+   * knowledge to optimize this function.  Deep counts are updated from
+   * leaf to root.
    */
   private final static void adjustTreeNoSplit(final Node leafNode,
                                               final double[] globalMBR)
@@ -688,31 +689,40 @@ public final class RTree
 
       // "If N is the root, stop."  Adjust the globalMBR.
       if (p == null) {
-        globalMBR[0] = Math.min(globalMBR[0], n.xMins[currModInx]);
-        globalMBR[1] = Math.min(globalMBR[1], n.yMins[currModInx]);
-        globalMBR[2] = Math.max(globalMBR[2], n.xMaxs[currModInx]);
-        globalMBR[3] = Math.max(globalMBR[3], n.yMaxs[currModInx]);
+        if (currModInx >= 0) {
+          globalMBR[0] = Math.min(globalMBR[0], n.xMins[currModInx]);
+          globalMBR[1] = Math.min(globalMBR[1], n.yMins[currModInx]);
+          globalMBR[2] = Math.max(globalMBR[2], n.xMaxs[currModInx]);
+          globalMBR[3] = Math.max(globalMBR[3], n.yMaxs[currModInx]); }
         break; }
+
+      // Update the deep count.
+      p.data.deepCount++;
 
       final int nInxInP;
       for (int i = 0;; i++)
         if (p.data.children[i] == n) { nInxInP = i; break; }
 
-      // Compute the MBR that tightly encloses all entries in n.
-      final double newXMin = Math.min(p.xMins[nInxInP], n.xMins[currModInx]);
-      final double newYMin = Math.min(p.yMins[nInxInP], n.yMins[currModInx]);
-      final double newXMax = Math.max(p.xMaxs[nInxInP], n.xMaxs[currModInx]);
-      final double newYMax = Math.max(p.yMaxs[nInxInP], n.yMaxs[currModInx]);
+      if (currModInx >= 0) {
+        // Compute the MBR that tightly encloses all entries in n.
+        final double newXMin = Math.min(p.xMins[nInxInP], n.xMins[currModInx]);
+        final double newYMin = Math.min(p.yMins[nInxInP], n.yMins[currModInx]);
+        final double newXMax = Math.max(p.xMaxs[nInxInP], n.xMaxs[currModInx]);
+        final double newYMax = Math.max(p.yMaxs[nInxInP], n.yMaxs[currModInx]);
 
-      // If this MBR of all entries in n does not change, we're done.
-      if (newXMin == p.xMins[nInxInP] && newYMin == p.yMins[nInxInP] &&
-          newXMax == p.xMaxs[nInxInP] && newYMax == p.yMaxs[nInxInP]) break;
+        // If this MBR of all entries in n does not change, we don't need to
+        // update any further MBRs, just deep counts.
+        if (newXMin == p.xMins[nInxInP] && newYMin == p.yMins[nInxInP] &&
+            newXMax == p.xMaxs[nInxInP] && newYMax == p.yMaxs[nInxInP]) {
+          currModInx = -1; }
 
-      // Set the computed MBR in the parent and move up the tree one step.
-      p.xMins[nInxInP] = newXMin; p.yMins[nInxInP] = newYMin;
-      p.xMaxs[nInxInP] = newXMax; p.yMaxs[nInxInP] = newYMax;
-      currModInx = nInxInP;
-      n = p; }
+        else {
+          // Set the computed MBR in the parent and move up the tree one step.
+          p.xMins[nInxInP] = newXMin; p.yMins[nInxInP] = newYMin;
+          p.xMaxs[nInxInP] = newXMax; p.yMaxs[nInxInP] = newYMax;
+          currModInx = nInxInP; } }
+
+      n = p; } 
   }
 
   /*
