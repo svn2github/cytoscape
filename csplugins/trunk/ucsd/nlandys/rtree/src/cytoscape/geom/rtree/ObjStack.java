@@ -27,6 +27,17 @@ final class ObjStack
   }
 
   /**
+   * Removes everything from this stack.  This operation has time complexity
+   * linear to the current size of this stack because we null out every entry
+   * so as to not hinder garbage collection.
+   */
+  public final void empty()
+  {
+    for (int i = m_currentSize - 1; i >= 0; i--) m_stack[i] = null;
+    m_currentSize = 0;
+  }
+
+  /**
    * Returns the number of objects that are currently on this stack.
    */
   public final int size()
