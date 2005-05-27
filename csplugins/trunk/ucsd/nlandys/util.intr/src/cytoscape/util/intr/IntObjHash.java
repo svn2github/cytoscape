@@ -1,5 +1,8 @@
 package cytoscape.util.intr;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 /**
  * An insert-only hashtable that has non-negative 32 bit integer keys and
  * non-null object values.<p>
@@ -55,20 +58,6 @@ public final class IntObjHash
     if (thresholdSize >= num) return inx;
     else if (++inx == PRIMES.length) return 0;
     return inx;
-  }
-
-  public final static class ObjEnumerator
-  {
-    private final Object[] vals;
-    private int elements;
-    private int index = -1;
-    private ObjEnumerator(final Object[] vals, final int elements) {
-      this.vals = vals; this.elements = elements; }
-    public final int numRemaining() { return elements; }
-    public final Object nextObject() {
-      while (vals[++index] == null);
-      elements--;
-      return vals[index]; }
   }
 
   private int[] m_keys;
@@ -205,22 +194,36 @@ public final class IntObjHash
   }
 
   /**
-   * Returns an enumeration of values in this hashtable, ordered
+   * Returns an iteration of values in this hashtable, ordered
    * arbitrarily.<p>
-   * The returned enumeration becomes invalid as soon as put(int, Object)
+   * The returned iteration becomes invalid as soon as put(int, Object)
    * is called on this hashtable; calling methods on an invalid
-   * enumeration will cause undefined behavior in the enumerator.
-   * The returned enumerator has absolutely no effect on the underlying
-   * hashtable.<p>
-   * This method returns in constant time.  The returned enumerator
+   * iteration will cause undefined behavior in the iterator.
+   * The returned iterator has absolutely no effect on the underlying
+   * hashtable (the remove() operation on the returned iterator is not
+   * supported).<p>
+   * This method returns in constant time.  The returned iterator
    * returns successive values in [amortized] time complexity O(1).<p>
    * NOTE: The order of values returned corresponds to the order of keys
    * returned by the enumeration from keys() - that is, the nth key returned
    * by keys() is the key into the nth value returned by values().
    */
-  public final ObjEnumerator values()
+  public final Iterator values()
   {
-    return new ObjEnumerator(m_vals, m_elements);
+    final int numElements = m_elements;
+    return new Iterator() {
+        int elements = numElements;
+        int index = -1;
+        public final boolean hasNext() { return elements == 0; }
+        public final Object next() {
+          try {
+            while (m_vals[++index] == null);
+            elements--;
+            return m_vals[index]; }
+          catch (ArrayIndexOutOfBoundsException e) {
+            throw new NoSuchElementException(); } }
+        public final void remove() {
+          throw new UnsupportedOperationException(); } };
   }
 
   private final void incrSize()
