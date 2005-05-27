@@ -929,17 +929,17 @@ public final class RTree
     return true;
   }
 
-  /**
-   * Deletes the specified data entry from this tree.
-   * @param objKey a user-defined identifier that was potentially used in a
-   *   previous insertion.
-   * @return true if and only if objKey existed in this R-tree prior to this
-   *   method invocation.
-   */
-  public final boolean delete(final int objKey)
-  {
-    return false;
-  }
+//   /**
+//    * Deletes the specified data entry from this tree.
+//    * @param objKey a user-defined identifier that was potentially used in a
+//    *   previous insertion.
+//    * @return true if and only if objKey existed in this R-tree prior to this
+//    *   method invocation.
+//    */
+//   public final boolean delete(final int objKey)
+//   {
+//     return false;
+//   }
 
   /**
    * Returns an enumeration of entries whose extents intersect the
@@ -1120,39 +1120,39 @@ public final class RTree
        (yMin1 <= yMin2) && (yMax1 >= yMax2));
   }
 
-  /**
-   * Returns an enumeration of entries whose extents are fully contained
-   * within the specified axis-aligned rectangular area.  By "axis-aligned" I
-   * mean that the query rectangle's sides are parallel to the axes of the
-   * data space.<p>
-   * IMPORTANT: The returned enumeration becomes invalid as soon as any
-   * structure-modifying operation (insert or delete) is performed on this
-   * R-tree.  Accessing an invalid enumeration's methods will result in
-   * unpredictable and ill-defined behavior in that enumeration, but will
-   * have no effect on the integrity of the underlying tree structure.
-   * @param xMin the minimum X coordinate of the query rectangle.
-   * @param yMin the minimum Y coordinate of the query rectangle.
-   * @param xMax the maximum X coordinate of the query rectangle.
-   * @param yMax the maximum Y coordinate of the query rectangle.
-   * @return a non-null enumeration of all [distinct] R-tree entries
-   *   (objKeys) whose extents are fully contained withing the specified
-   *   rectangular area.
-   */
-  public final IntEnumerator queryEnvelope(final double xMin,
-                                           final double yMin,
-                                           final double xMax,
-                                           final double yMax)
-  {
-    return null;
-  }
+//   /**
+//    * Returns an enumeration of entries whose extents are fully contained
+//    * within the specified axis-aligned rectangular area.  By "axis-aligned" I
+//    * mean that the query rectangle's sides are parallel to the axes of the
+//    * data space.<p>
+//    * IMPORTANT: The returned enumeration becomes invalid as soon as any
+//    * structure-modifying operation (insert or delete) is performed on this
+//    * R-tree.  Accessing an invalid enumeration's methods will result in
+//    * unpredictable and ill-defined behavior in that enumeration, but will
+//    * have no effect on the integrity of the underlying tree structure.
+//    * @param xMin the minimum X coordinate of the query rectangle.
+//    * @param yMin the minimum Y coordinate of the query rectangle.
+//    * @param xMax the maximum X coordinate of the query rectangle.
+//    * @param yMax the maximum Y coordinate of the query rectangle.
+//    * @return a non-null enumeration of all [distinct] R-tree entries
+//    *   (objKeys) whose extents are fully contained withing the specified
+//    *   rectangular area.
+//    */
+//   public final IntEnumerator queryEnvelope(final double xMin,
+//                                            final double yMin,
+//                                            final double xMax,
+//                                            final double yMax)
+//   {
+//     return null;
+//   }
 
-  public final IntEnumerator queryContainment(final double xMin,
-                                              final double yMin,
-                                              final double xMax,
-                                              final double yMax)
-  {
-    return null;
-  }
+//   public final IntEnumerator queryContainment(final double xMin,
+//                                               final double yMin,
+//                                               final double xMax,
+//                                               final double yMax)
+//   {
+//     return null;
+//   }
 
   private final static class Node
   {
