@@ -400,22 +400,20 @@ public final class RTree
     returnThis.xMaxs[maxBranches - 1] = returnThis.xMaxs[0];
     returnThis.yMaxs[maxBranches - 1] = returnThis.yMaxs[0];
 
-    // Collapse the arrays where seeds used to be.
-    int entriesRemaining = totalEntries - 2;
-    for (int i = seed1; i < seed2 - 1; i++) { // seed1 < seed2, guaranteed.
-      final int iPlusOne = i + 1;
-      objKeyBuff[i] = objKeyBuff[iPlusOne];
-      xMinBuff[i] = xMinBuff[iPlusOne];
-      yMinBuff[i] = yMinBuff[iPlusOne];
-      xMaxBuff[i] = xMaxBuff[iPlusOne];
-      yMaxBuff[i] = yMaxBuff[iPlusOne]; }
-    for (int i = seed2 - 1; i < entriesRemaining; i++) {
-      final int iPlusTwo = i + 2;
-      objKeyBuff[i] = objKeyBuff[iPlusTwo];
-      xMinBuff[i] = xMinBuff[iPlusTwo];
-      yMinBuff[i] = yMinBuff[iPlusTwo];
-      xMaxBuff[i] = xMaxBuff[iPlusTwo];
-      yMaxBuff[i] = yMaxBuff[iPlusTwo]; }
+    // Plug the holes where seeds used to be.
+    int entriesRemaining = totalEntries;
+    if (seed2 != --entriesRemaining) { // seed1 < seed2, guaranteed.
+      objKeyBuff[seed2] = objKeyBuff[entriesRemaining];
+      xMinBuff[seed2] = xMinBuff[entriesRemaining];
+      yMinBuff[seed2] = yMinBuff[entriesRemaining];
+      xMaxBuff[seed2] = xMaxBuff[entriesRemaining];
+      yMaxBuff[seed2] = yMaxBuff[entriesRemaining]; }
+    if (seed1 != --entriesRemaining) {
+      objKeyBuff[seed1] = objKeyBuff[entriesRemaining];
+      xMinBuff[seed1] = xMinBuff[entriesRemaining];
+      yMinBuff[seed1] = yMinBuff[entriesRemaining];
+      xMaxBuff[seed1] = xMaxBuff[entriesRemaining];
+      yMaxBuff[seed1] = yMaxBuff[entriesRemaining]; }
     
     boolean buff1Valid = false;
     boolean buff2Valid = false;
@@ -513,16 +511,15 @@ public final class RTree
       chosenGroup.yMaxs[maxBranches - 1] =
         Math.max(chosenGroup.yMaxs[maxBranches - 1], yMaxBuff[next]);
 
-      // Collapse the arrays where next used to be.
-      entriesRemaining--;
-      for (int i = next; i < entriesRemaining; i++) {
-        final int iPlusOne = i + 1;
-        objKeyBuff[i] = objKeyBuff[iPlusOne];
-        xMinBuff[i] = xMinBuff[iPlusOne];
-        yMinBuff[i] = yMinBuff[iPlusOne];
-        xMaxBuff[i] = xMaxBuff[iPlusOne];
-        yMaxBuff[i] = yMaxBuff[iPlusOne];
-        validTempBuff[i] = validTempBuff[iPlusOne]; } } // End while loop.
+      // Plug the hole where next used to be.
+      if (next != --entriesRemaining) {
+        objKeyBuff[next] = objKeyBuff[entriesRemaining];
+        xMinBuff[next] = xMinBuff[entriesRemaining];
+        yMinBuff[next] = yMinBuff[entriesRemaining];
+        xMaxBuff[next] = xMaxBuff[entriesRemaining];
+        yMaxBuff[next] = yMaxBuff[entriesRemaining];
+        validTempBuff[next] =
+          validTempBuff[entriesRemaining]; } } // End while loop.
 
     return returnThis;
   }
@@ -603,23 +600,21 @@ public final class RTree
     returnThis.xMaxs[maxBranches - 1] = returnThis.xMaxs[0];
     returnThis.yMaxs[maxBranches - 1] = returnThis.yMaxs[0];
 
-    // Collapse the arrays where seeds used to be.
-    int entriesRemaining = totalEntries - 2;
-    for (int i = seed1; i < seed2 - 1; i++) { // seed1 < seed2, guarenteed.
-      final int iPlusOne = i + 1;
-      childrenBuff[i] = childrenBuff[iPlusOne];
-      xMinBuff[i] = xMinBuff[iPlusOne];
-      yMinBuff[i] = yMinBuff[iPlusOne];
-      xMaxBuff[i] = xMaxBuff[iPlusOne];
-      yMaxBuff[i] = yMaxBuff[iPlusOne]; }
-    for (int i = seed2 - 1; i < entriesRemaining; i++) {
-      final int iPlusTwo = i + 2;
-      childrenBuff[i] = childrenBuff[iPlusTwo];
-      xMinBuff[i] = xMinBuff[iPlusTwo];
-      yMinBuff[i] = yMinBuff[iPlusTwo];
-      xMaxBuff[i] = xMaxBuff[iPlusTwo];
-      yMaxBuff[i] = yMaxBuff[iPlusTwo]; }
-    
+    // Plug the holes where seeds used to be.
+    int entriesRemaining = totalEntries;
+    if (seed2 != --entriesRemaining) { // seed1 < seed2, guaranteed.
+      childrenBuff[seed2] = childrenBuff[entriesRemaining];
+      xMinBuff[seed2] = xMinBuff[entriesRemaining];
+      yMinBuff[seed2] = yMinBuff[entriesRemaining];
+      xMaxBuff[seed2] = xMaxBuff[entriesRemaining];
+      yMaxBuff[seed2] = yMaxBuff[entriesRemaining]; }
+    if (seed1 != --entriesRemaining) {
+      childrenBuff[seed1] = childrenBuff[entriesRemaining];
+      xMinBuff[seed1] = xMinBuff[entriesRemaining];
+      yMinBuff[seed1] = yMinBuff[entriesRemaining];
+      xMaxBuff[seed1] = xMaxBuff[entriesRemaining];
+      yMaxBuff[seed1] = yMaxBuff[entriesRemaining]; }
+
     boolean buff1Valid = false;
     boolean buff2Valid = false;
     while (true) {
@@ -718,16 +713,15 @@ public final class RTree
       chosenGroup.yMaxs[maxBranches - 1] =
         Math.max(chosenGroup.yMaxs[maxBranches - 1], yMaxBuff[next]);
 
-      // Collapse the arrays where next used to be.
-      entriesRemaining--;
-      for (int i = next; i < entriesRemaining; i++) {
-        final int iPlusOne = i + 1;
-        childrenBuff[i] = childrenBuff[iPlusOne];
-        xMinBuff[i] = xMinBuff[iPlusOne];
-        yMinBuff[i] = yMinBuff[iPlusOne];
-        xMaxBuff[i] = xMaxBuff[iPlusOne];
-        yMaxBuff[i] = yMaxBuff[iPlusOne];
-        validTempBuff[i] = validTempBuff[iPlusOne]; } } // End while loop.
+      // Plug the hole where next used to be.
+      if (next != --entriesRemaining) {
+        childrenBuff[next] = childrenBuff[entriesRemaining];
+        xMinBuff[next] = xMinBuff[entriesRemaining];
+        yMinBuff[next] = yMinBuff[entriesRemaining];
+        xMaxBuff[next] = xMaxBuff[entriesRemaining];
+        yMaxBuff[next] = yMaxBuff[entriesRemaining];
+        validTempBuff[next] =
+          validTempBuff[entriesRemaining]; } } // End while loop.
 
     fullInternalNode.data.deepCount = 0; // Update deep counts.
     if (isLeafNode(fullInternalNode.data.children[0])) {
@@ -749,7 +743,6 @@ public final class RTree
     for (int i = fullInternalNode.entryCount;
          i < fullInternalNode.data.children.length; i++)
       fullInternalNode.data.children[i] = null;
-    // We only null out the buffer because we're neurotically paranoid.
     for (int i = 0; i < childrenBuff.length; i++) childrenBuff[i] = null;
 
     return returnThis;
@@ -1076,21 +1069,26 @@ public final class RTree
   public final boolean delete(final int objKey)
   {
     if (objKey < 0) return false;
-    final Object o = m_entryMap.get(objKey);
-    if (o == null || o == m_deletedEntry) return false;
-    final Node n = (Node) o;
+    final Node n; // Todo: Rename 'n' to 'leafNode'.
+    {
+      final Object o = m_entryMap.get(objKey);
+      if (o == null || o == m_deletedEntry) return false;
+      n = (Node) o;
+    }
 
     // Delete record from leaf node.
-    n.entryCount--;
     final int delInx;
     for (int i = 0;; i++)
       if (n.objKeys[i] == objKey) { delInx = i; break; }
-    // Duh instead of cascading just plug the hole.
-    for (int i = delInx; i < n.entryCount; i++) {
-      final int iPlusOne = i + 1;
-      n.objKeys[i] = n.objKeys[iPlusOne];
-      n.xMins[i] = n.xMins[iPlusOne]; n.yMins[i] = n.yMins[iPlusOne];
-      n.xMaxs[i] = n.xMaxs[iPlusOne]; n.yMaxs[i] = n.yMaxs[iPlusOne]; }
+    n.entryCount--;
+    if (delInx != n.entryCount) { // Plug the hole at index delInx.
+      n.objKeys[delInx] = n.objKeys[n.entryCount];
+      n.xMins[delInx] = n.xMins[n.entryCount];
+      n.yMins[delInx] = n.yMins[n.entryCount];
+      n.xMaxs[delInx] = n.xMaxs[n.entryCount];
+      n.yMaxs[delInx] = n.yMaxs[n.entryCount]; }
+
+    // Fix up the tree from leaf to root.
     int currentDepth = condenseTree(n, 1, m_nodeStack, m_minBranches, m_MBR) -
       m_nodeStack.size();
     while (m_nodeStack.size() > 0) {
@@ -1187,14 +1185,14 @@ public final class RTree
         if (p.data.children[i] == n) { nInxInP = i; break; }
       if (n.entryCount < minBranches) { // Delete n from p.
         p.entryCount--;
-        // Duh.  Instead of cascading down just plop the last entry
-        // into the hole.  Implement this later.
-        for (int i = nInxInP; i < p.entryCount; i++) {
-          final int iPlusOne = i + 1;
-          p.data.children[i] = p.data.children[iPlusOne];
-          p.xMins[i] = p.xMins[iPlusOne]; p.yMins[i] = p.yMins[iPlusOne];
-          p.xMaxs[i] = p.xMaxs[iPlusOne]; p.yMaxs[i] = p.yMaxs[iPlusOne]; }
-        p.data.children[p.entryCount] = null;
+
+        if (nInxInP != p.entryCount) { // Plug the hole at index nInxInP.
+          p.data.children[nInxInP] = p.data.children[p.entryCount];
+          p.xMins[nInxInP] = p.xMins[p.entryCount];
+          p.yMins[nInxInP] = p.yMins[p.entryCount];
+          p.xMaxs[nInxInP] = p.xMaxs[p.entryCount];
+          p.yMaxs[nInxInP] = p.yMaxs[p.entryCount]; }
+        p.data.children[p.entryCount] = null; // Important for gc.
         n.parent = null;
         eliminatedNodes.push(n);
         deepCountDecrease +=
