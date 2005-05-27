@@ -252,6 +252,26 @@ public class BasicQuietRTreeTest
       if (iter.numRemaining() != 10)
         throw new IllegalStateException("expected 10 query hits");
     } // END DEPTH THREE TEST.
+
+    tree.insert(10, 2.0, 4.0, 3.0, 5.0);
+    tree.insert(11, 1.5, 3.75, 3.5, 4.25);
+    tree.insert(12, 2.5, 3.5, 3.0, 5.5);
+    tree.insert(13, -4.0, 6.0, -2.0, 8.0);
+    tree.insert(14, -4.25, 5.75, 2.25, 8.25);
+    tree.insert(15, 2.0, -1.0, 2.0, -1.0);
+    tree.insert(16, -1.25, 0.5, -1.25, 3.0);
+    tree.insert(17, -0.5, -0.5, 1.5, 0.5);
+    tree.insert(18, 0.25, 4.0, 1.25, 5.0);
+    tree.insert(19, 4.0, 1.0, 5.0, 2.0);
+    tree.insert(20, 4.0, 5.0, 5.0, 6.0);
+    tree.insert(21, 4.25, -1.5, 4.75, 5.0);
+    tree.insert(22, 3.0, -1.75, 5.0, -1.0);
+    tree.insert(23, 1.25, 0.25, 2.25, 1.25);
+    tree.insert(24, -2.0, 9.0, -1.0, 10.0);
+    tree.insert(25, 1.0, 9.0, 2.0, 10.0);
+    tree.insert(26, -2.0, 5.0, -1.0, 6.0);
+    tree.insert(27, -2.5, 5.25, -1.75, 9.25);
+    // There are now 28 entries in the R-tree.  Depth must be at least 4.
   }
 
 }
