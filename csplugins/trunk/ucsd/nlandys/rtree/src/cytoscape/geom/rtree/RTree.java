@@ -11,13 +11,13 @@ public final class RTree
 
   private final static int DEFAULT_MAX_BRANCHES = 7;
 
-  private final double[] m_MBR;
+  private final double[] m_MBR; // { xMin, yMin, xMax, yMax }.
   private final int m_maxBranches;
   private final int m_minBranches;
   private Node m_root;
   private IntObjHash m_entryMap; // Keys are objKey, values are type Node.
 
-  // These four buffer variables are used during node splitting.
+  // These buffers are used during node splitting.
   private final int[] m_objKeyBuff;
   private final Node[] m_childrenBuff;
   private final double[] m_xMinBuff;
@@ -28,7 +28,7 @@ public final class RTree
   private final double[] m_tempBuff2;
 
   /**
-   * Instantiates a new R-tree.  A new R-tree has no entries.
+   * Instantiates a new R-tree.  A new R-tree is empty (it has no entries).
    */
   public RTree()
   {
@@ -48,12 +48,12 @@ public final class RTree
     m_tempBuff2 = new double[m_maxBranches + 1];
   }
 
-  /**
-   * Empties this R-tree of all entries.  This method returns in constant
-   * time (note however that garbage collection will take place in the
-   * background).
-   */
-  public final void empty() {}
+//   /**
+//    * Empties this R-tree of all entries.  This method returns in constant
+//    * time (note however that garbage collection will take place in the
+//    * background).
+//    */
+//   public final void empty() {}
 
 //   /**
 //    * Returns the number of entries currently in this R-tree.  This method
@@ -64,6 +64,10 @@ public final class RTree
 //    */
 //   public final int size() { return 0; }
 
+  /*
+   * This gets used a lot.  This test is in the form of a function to make
+   * the code more readable (as opposed to being inlined).
+   */
   private final static boolean isLeafNode(final Node n)
   {
     return n.data == null;
@@ -103,18 +107,15 @@ public final class RTree
     if (chosenLeaf.entryCount < m_maxBranches) { // No split is necessary.
       final int newInx = chosenLeaf.entryCount++;
       chosenLeaf.objKeys[newInx] = objKey;
-      chosenLeaf.xMins[newInx] = xMin;
-      chosenLeaf.yMins[newInx] = yMin;
-      chosenLeaf.xMaxs[newInx] = xMax;
-      chosenLeaf.yMaxs[newInx] = yMax;
+      chosenLeaf.xMins[newInx] = xMin; chosenLeaf.yMins[newInx] = yMin;
+      chosenLeaf.xMaxs[newInx] = xMax; chosenLeaf.yMaxs[newInx] = yMax;
       m_entryMap.put(objKey, chosenLeaf);
       adjustTreeNoSplit(chosenLeaf, m_MBR); }
     else { // A split is necessary.
-      final Node newLeaf =
-        splitLeafNode(chosenLeaf, objKey, xMin, yMin, xMax, yMax,
-                      m_maxBranches, m_minBranches, m_objKeyBuff,
-                      m_xMinBuff, m_yMinBuff, m_xMaxBuff, m_yMaxBuff,
-                      m_tempBuff1, m_tempBuff2);
+      final Node newLeaf = splitLeafNode
+        (chosenLeaf, objKey, xMin, yMin, xMax, yMax, m_maxBranches,
+         m_minBranches, m_objKeyBuff,  m_xMinBuff, m_yMinBuff, m_xMaxBuff,
+         m_yMaxBuff, m_tempBuff1, m_tempBuff2);
       for (int i = 0; i < chosenLeaf.entryCount; i++)
         m_entryMap.put(chosenLeaf.objKeys[i], chosenLeaf);
       for (int i = 0; i < newLeaf.entryCount; i++)
@@ -126,10 +127,10 @@ public final class RTree
       if (rootSplit != null) {
         // The MBR at index m_maxBranches - 1 in both rootSplit and m_root
         // will contain the overall MBR of corresponding node.
+        // Also, both nodes will have an accurate deep count.
         final Node newRoot = new Node(m_maxBranches, false);
         newRoot.entryCount = 2;
-        m_root.parent = newRoot;
-        rootSplit.parent = newRoot;
+        m_root.parent = newRoot; rootSplit.parent = newRoot;
         newRoot.data.children[0] = m_root;
         newRoot.data.children[1] = rootSplit;
         newRoot.xMins[0] = m_root.xMins[m_maxBranches - 1];
@@ -140,7 +141,6 @@ public final class RTree
         newRoot.yMins[1] = rootSplit.yMins[m_maxBranches - 1];
         newRoot.xMaxs[1] = rootSplit.xMaxs[m_maxBranches - 1];
         newRoot.yMaxs[1] = rootSplit.yMaxs[m_maxBranches - 1];
-        // The deep count of m_root and rootSplit will be accurate.
         newRoot.data.deepCount =
           m_root.data.deepCount + rootSplit.data.deepCount;
         m_root = newRoot;
