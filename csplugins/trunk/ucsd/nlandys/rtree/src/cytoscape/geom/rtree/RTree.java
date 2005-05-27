@@ -735,7 +735,8 @@ public final class RTree
    * Returns a node if root was split, otherwise returns null.
    * If a node is returned, then both the old root and the returned node
    * will have an MBR entry at index maxBranches - 1 which will be the
-   * overall MBR of that node.  Deep counts are updated from leaf to root.
+   * overall MBR of that node.  The globalMBR is only updated when null
+   * is returned.  Deep counts are updated from leaf to root.
    */
   private final static Node adjustTreeWithSplit(final Node originalLeafNode,
                                                 final Node newLeafNode,
@@ -749,7 +750,11 @@ public final class RTree
       final Node p = n.parent;
 
       // "If N is the root, stop."
-      if (p == null) { break; }
+      if (p == null) {
+        if (nn == null) {
+          // Update global MBR.
+        }
+        break; }
 
       // Update the deep count.
       p.data.deepCount++;
@@ -759,7 +764,7 @@ public final class RTree
         if (p.data.children[i] == n) { nInxInP = i; break; }
 
       // Set the MBR of the original node in p.
-      if (currModInx < 0) {
+      if (nn != null) { // A split implies total MBR at inx maxBranches - 1.
         p.xMins[nInxInP] = n.xMins[maxBranches - 1];
         p.yMins[nInxInP] = n.yMins[maxBranches - 1];
         p.xMaxs[nInxInP] = n.xMaxs[maxBranches - 1];
@@ -774,14 +779,12 @@ public final class RTree
           nn.parent = p;
           p.data.children[newInxInP] = nn;
 
+          // A split (nn != null) implies total MBR at inx maxBranches - 1.
           // Set the MBR of the new node.
-          if (currModInx < 0) {
-            p.xMins[newInxInP] = nn.xMins[maxBranches - 1];
-            p.yMins[newInxInP] = nn.yMins[maxBranches - 1];
-            p.xMaxs[newInxInP] = nn.xMaxs[maxBranches - 1];
-            p.yMaxs[newInxInP] = nn.yMaxs[maxBranches - 1]; }
-          else {
-          }
+          p.xMins[newInxInP] = nn.xMins[maxBranches - 1];
+          p.yMins[newInxInP] = nn.yMins[maxBranches - 1];
+          p.xMaxs[newInxInP] = nn.xMaxs[maxBranches - 1];
+          p.yMaxs[newInxInP] = nn.yMaxs[maxBranches - 1];
 
           // The recursive step.
           currModInx = nInxInP;
@@ -792,15 +795,22 @@ public final class RTree
 
         }
         else { // A split is necessary.
-          // We require that MBR at index maxBranches - 1 in nn contain
-          // nn's overall MBR.
+          // We require that the MBR at index maxBranches - 1 in nn contain
+          // nn's overall MBR at the time this is called.
           final Node newInternalNode = splitInternalNode
             (p, nn, nn.xMins[maxBranches - 1], nn.yMins[maxBranches - 1],
             nn.xMaxs[maxBranches - 1], nn.yMaxs[maxBranches - 1]);
+
+          // The recursive step.
+          currModInx = -1;
+          n = p;
+          nn = newInternalNode;
+          
         }
       }
 
     }
+    return nn;
   }
 
 //   /*
