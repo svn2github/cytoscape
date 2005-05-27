@@ -1136,6 +1136,7 @@ public final class RTree
           p.data.children[i] = p.data.children[iPlusOne];
           p.xMins[i] = p.xMins[iPlusOne]; p.yMins[i] = p.yMins[iPlusOne];
           p.xMaxs[i] = p.xMaxs[iPlusOne]; p.yMaxs[i] = p.yMaxs[iPlusOne]; }
+        p.data.children[p.entryCount] = null;
         n.parent = null;
         eliminatedNodes.push(n);
         deepCountDecrease +=
