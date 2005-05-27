@@ -72,7 +72,8 @@ public class BasicQuietRTreeTest
           extentsArr[3] != 3.0 || extentsArr[4] != 3.0)
         throw new IllegalStateException("extents from query wrong");
     } // END ROOT LEAF TEST.
-                 
+
+    tree.insert(3, 2.5, 0.5, 3.5, 1.5);
   }
 
 }
