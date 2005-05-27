@@ -1,7 +1,9 @@
 package cytoscape.geom.rtree;
 
 import cytoscape.util.intr.IntEnumerator;
+import cytoscape.util.intr.IntObjHash;
 import cytoscape.util.intr.IntStack;
+import java.util.Iterator;
 
 /**
  * An in-memory R-tree over real numbers in two dimensions.
@@ -1078,8 +1080,7 @@ public final class RTree
 
     // Delete record from leaf node.
     final int delInx;
-    for (int i = 0;; i++)
-      if (n.objKeys[i] == objKey) { delInx = i; break; }
+    for (int i = 0;; i++) if (n.objKeys[i] == objKey) { delInx = i; break; }
     n.entryCount--;
     if (delInx != n.entryCount) { // Plug the hole at index delInx.
       n.objKeys[delInx] = n.objKeys[n.entryCount];
@@ -1140,11 +1141,20 @@ public final class RTree
       newRoot.parent = null;
       m_root = newRoot; }
 
-    // Finally, delete the objKey from m_entryMap.  If m_entryMap contains
-    // too many deleted entries, shrink its size.
+    // Finally, delete the objKey from m_entryMap.
     m_entryMap.put(objKey, m_deletedEntry);
     m_deletedEntries++;
-    // Figure this out later.
+
+    // If m_entryMap contains too many deleted entries, prune.
+    if (m_deletedEntries > 10 && m_deletedEntries > size()) {
+      final IntObjHash newEntryMap = new IntObjHash();
+      final IntEnumerator objKeys = m_entryMap.keys();
+      final Iterator leafNodes = m_entryMap.values();
+      while (objKeys.numRemaining() > 0) {
+        final Object leafNode = leafNodes.next();
+        if (leafNode == m_deletedEntry) { objKeys.nextInt(); continue; }
+        newEntryMap.put(objKeys.nextInt(), leafNode); }
+      m_entryMap = newEntryMap; }
 
     return true;
   }
