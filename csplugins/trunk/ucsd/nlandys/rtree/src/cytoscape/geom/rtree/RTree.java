@@ -77,12 +77,17 @@ public final class RTree
     m_nodeStack = new ObjStack();
   }
 
-//   /**
-//    * Empties this R-tree of all entries.  This method returns in constant
-//    * time (note however that garbage collection will take place in the
-//    * background).
-//    */
-//   public final void empty() {}
+  /**
+   * Empties this R-tree of all entries.  This method returns in constant
+   * time (note however that garbage collection will take place in the
+   * background).
+   */
+  public final void empty()
+  {
+    m_root = new Node(m_maxBranches, true);
+    m_entryMap = new IntObjHash();
+    m_deletedEntries = 0;
+  }
 
   /**
    * Returns the number of entries currently in this R-tree.  This method
