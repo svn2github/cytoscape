@@ -2,6 +2,7 @@ package cytoscape.geom.rtree.test;
 
 import cytoscape.geom.rtree.RTree;
 import cytoscape.util.intr.IntEnumerator;
+import cytoscape.util.intr.IntStack;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -20,48 +21,65 @@ public class RTreeQueryPerformance
    */
   public static void main(String[] args) throws Exception
   {
-    int branches = Integer.parseInt(args[0]);
-    int N = Integer.parseInt(args[1]);
-    final RTree tree = new RTree(branches);
-    double sqrtN = Math.sqrt((double) N);
-    InputStream in = System.in;
-    byte[] buff = new byte[16];
-    int inx = 0;
-    int off = 0;
-    int read;
-    while (inx < N && (read = in.read(buff, off, buff.length - off)) > 0) {
-      off += read;
-      if (off < buff.length) continue;
-      else off = 0;
-      int nonnegative = 0x7fffffff & assembleInt(buff, 0);
-      double centerX = ((double) nonnegative) / ((double) 0x7fffffff);
-      nonnegative = 0x7fffffff & assembleInt(buff, 4);
-      double centerY = ((double) nonnegative) / ((double) 0x7fffffff);
-      nonnegative = 0x7fffffff & assembleInt(buff, 8);
-      double width = (((double) nonnegative) / ((double) 0x7fffffff)) / sqrtN;
-      nonnegative = 0x7fffffff & assembleInt(buff, 12);
-      double height = (((double) nonnegative) / ((double) 0x7fffffff)) / sqrtN;
-      tree.insert(inx,
-                  centerX - (width / 2.0d),
-                  centerY - (width / 2.0d),
-                  centerX + (width / 2.0d),
-                  centerY + (width / 2.0d));
-      inx++; }
-    if (inx < N) throw new IOException("premature end of input");
+    final RTree tree;
 
-    // The test.
-    long millisBegin = System.currentTimeMillis();
-    // 121 Point queries.
-    double currX = -0.1d;
-    for (int i = 0; i < 11; i++) {
-      currX += 0.1d;
-      double currY = -0.1d;
-      for (int j = 0; j < 11; j++) {
-        currY += 0.1d;
-        IntEnumerator iter = tree.queryOverlap(currX, currY, currX, currY,
-                                               null, 0);
-        System.out.println(iter.numRemaining() + " hits in point query");
-      }
+    // Populate the tree with entries.
+    {
+      int branches = Integer.parseInt(args[0]);
+      int N = Integer.parseInt(args[1]);
+      tree = new RTree(branches);
+      double sqrtN = Math.sqrt((double) N);
+      InputStream in = System.in;
+      byte[] buff = new byte[16];
+      int inx = 0;
+      int off = 0;
+      int read;
+      while (inx < N && (read = in.read(buff, off, buff.length - off)) > 0) {
+        off += read;
+        if (off < buff.length) continue;
+        else off = 0;
+        int nonnegative = 0x7fffffff & assembleInt(buff, 0);
+        double centerX = ((double) nonnegative) / ((double) 0x7fffffff);
+        nonnegative = 0x7fffffff & assembleInt(buff, 4);
+        double centerY = ((double) nonnegative) / ((double) 0x7fffffff);
+        nonnegative = 0x7fffffff & assembleInt(buff, 8);
+        double width =
+          (((double) nonnegative) / ((double) 0x7fffffff)) / sqrtN;
+        nonnegative = 0x7fffffff & assembleInt(buff, 12);
+        double height =
+          (((double) nonnegative) / ((double) 0x7fffffff)) / sqrtN;
+        tree.insert(inx,
+                    centerX - (width / 2.0d),
+                    centerY - (width / 2.0d),
+                    centerX + (width / 2.0d),
+                    centerY + (width / 2.0d));
+        inx++; }
+      if (inx < N) throw new IOException("premature end of input");
+    }
+
+    final IntStack[] pointQueries;
+
+    // Test 121 Point queries.
+    {
+      pointQueries = new IntStack[121];
+      for (int i = 0; i < pointQueries.length; i++)
+        pointQueries[i] = new IntStack();
+      for (int i = 0; i < 3; i++) { System.gc(); Thread.sleep(1000); }
+      long millisBegin = System.currentTimeMillis();
+      int inx = 0;
+      double currX = -0.1d;
+      for (int i = 0; i < 11; i++) {
+        currX += 0.1d;
+        double currY = -0.1d;
+        for (int j = 0; j < 11; j++) {
+          currY += 0.1d;
+          IntEnumerator iter =
+            tree.queryOverlap(currX, currY, currX, currY, null, 0);
+          IntStack stack = pointQueries[inx++];
+          while (iter.numRemaining() > 0) stack.push(iter.nextInt()); } }
+      long millisEnd = System.currentTimeMillis();
+      System.err.println("point queries took " + (millisEnd - millisBegin) +
+                         " milliseconds");
     }
   }
 
