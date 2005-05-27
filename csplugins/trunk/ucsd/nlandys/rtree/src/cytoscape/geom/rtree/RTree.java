@@ -188,16 +188,19 @@ public final class RTree
   /*
    * Deep counts are adjusted by this method.  Inserts specified
    * node into a parent at specified depth.  Depth zero is defined to
-   * be the depth of the root.
+   * be the depth of the root.  Returns true if and only if the entire
+   * tree has grown taller as a result of this insert.  When a tree grown
+   * taller, it increases in depth by one.
    */
-  private final void insert(final Node n, final int depth,
-                            final double xMin, final double yMin,
-                            final double xMax, final double yMax)
+  private final boolean insert(final Node n, final int depth,
+                               final double xMin, final double yMin,
+                               final double xMax, final double yMax)
   {
     final int deepCountIncrease =
       (isLeafNode(n) ? n.entryCount : n.data.deepCount);
     final Node chosenParent =
       chooseParent(m_root, depth, xMin, yMin, xMax, yMax);
+    final boolean returnThis;
     if (chosenParent.entryCount < m_maxBranches) { // No split is necessary.
       final int newInx = chosenParent.entryCount++;
       n.parent = chosenParent;
@@ -205,7 +208,8 @@ public final class RTree
       chosenParent.xMins[newInx] = xMin; chosenParent.yMins[newInx] = yMin;
       chosenParent.xMaxs[newInx] = xMax; chosenParent.yMaxs[newInx] = yMax;
       chosenParent.data.deepCount += deepCountIncrease;
-      adjustTreeNoSplit(chosenParent, deepCountIncrease, m_MBR); }
+      adjustTreeNoSplit(chosenParent, deepCountIncrease, m_MBR);
+      returnThis = false; }
     else { // A split is necessary.
       final Node parentSibling = splitInternalNode
         (chosenParent, n, xMin, yMin, xMax, yMax, m_maxBranches,
@@ -238,7 +242,10 @@ public final class RTree
         m_MBR[0] = Math.min(m_root.xMins[0], m_root.xMins[1]);
         m_MBR[1] = Math.min(m_root.yMins[0], m_root.yMins[1]);
         m_MBR[2] = Math.max(m_root.xMaxs[0], m_root.xMaxs[1]);
-        m_MBR[3] = Math.max(m_root.yMaxs[0], m_root.yMaxs[1]); } }
+        m_MBR[3] = Math.max(m_root.yMaxs[0], m_root.yMaxs[1]);
+        returnThis = true; }
+      else { returnThis = false; } }
+    return returnThis;
   }
 
   /*
