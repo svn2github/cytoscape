@@ -21,48 +21,35 @@ public class RTreeQueryPerformance
   {
     int N = Integer.parseInt(args[0]);
     double sqrtN = Math.sqrt((double) N);
-    int[] randomData = new int[N * 4];
     InputStream in = System.in;
-    byte[] buff = new byte[4];
+    byte[] buff = new byte[16];
     int inx = 0;
     int off = 0;
     int read;
-    while (inx < randomData.length &&
-           (read = in.read(buff, off, buff.length - off)) > 0) {
+    while (inx < N && (read = in.read(buff, off, buff.length - off)) > 0) {
       off += read;
       if (off < buff.length) continue;
       else off = 0;
-      randomData[inx++] = assembleInt(buff); }
-    if (inx < randomData.length)
-      throw new IOException("premature end of input");
-
-    inx = 0;
-    for (int i = 0; i < N; i++) {
-      int nonnegative = 0x7fffffff & randomData[inx++];
+      int nonnegative = 0x7fffffff & assembleInt(buff, 0);
       double centerX = ((double) nonnegative) / ((double) 0x7fffffff);
-      nonnegative = 0x7fffffff & randomData[inx++];
+      nonnegative = 0x7fffffff & assembleInt(buff, 4);
       double centerY = ((double) nonnegative) / ((double) 0x7fffffff);
-      nonnegative = 0x7fffffff & randomData[inx++];
+      nonnegative = 0x7fffffff & assembleInt(buff, 8);
       double width = (((double) nonnegative) / ((double) 0x7fffffff)) / sqrtN;
-      nonnegative = 0x7fffffff & randomData[inx++];
+      nonnegative = 0x7fffffff & assembleInt(buff, 12);
       double height = (((double) nonnegative) / ((double) 0x7fffffff)) / sqrtN;
       System.out.println("centerX: " + centerX + "  centerY: " + centerY +
                          "  width: " + width + "  height: " + height);
-    }
-
-//     double maxDim = 1.0d / Math.sqrt((double) N);
-//     final double[] xMins = new int[N];
-//     final double[] yMins = new int[N];
-//     final double[] xMaxs = new int[N];
-//     final double[] yMaxs = new int[N];
+      inx++; }
+    if (inx < N) throw new IOException("premature end of input");
   }
 
-  private static final int assembleInt(byte[] fourConsecutiveBytes)
+  private static int assembleInt(byte[] bytes, int offset)
   {
-    int firstByte = (((int) fourConsecutiveBytes[0]) & 0x000000ff) << 24;
-    int secondByte = (((int) fourConsecutiveBytes[1]) & 0x000000ff) << 16;
-    int thirdByte = (((int) fourConsecutiveBytes[2]) & 0x000000ff) << 8;
-    int fourthByte = (((int) fourConsecutiveBytes[3]) & 0x000000ff) << 0;
+    int firstByte = (((int) bytes[offset]) & 0x000000ff) << 24;
+    int secondByte = (((int) bytes[offset + 1]) & 0x000000ff) << 16;
+    int thirdByte = (((int) bytes[offset + 2]) & 0x000000ff) << 8;
+    int fourthByte = (((int) bytes[offset + 3]) & 0x000000ff) << 0;
     return firstByte | secondByte | thirdByte | fourthByte;
   }
 
