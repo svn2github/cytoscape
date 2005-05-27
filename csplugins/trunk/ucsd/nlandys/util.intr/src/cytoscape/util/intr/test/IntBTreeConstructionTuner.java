@@ -25,9 +25,21 @@ public class IntBTreeConstructionTuner
 
     IntBTree tree = new IntBTree(branches);
     long timeBegin = System.currentTimeMillis();
-    for (int i = 0; i < elements.length; i++) tree.insert(elements[i]);
+    tree.insert(elements[0]);
+    for (int i = 1; i < elements.length; i++) {
+      tree.delete(elements[i - 1]);
+      tree.insert(elements[i]);
+      tree.insert(elements[i - 1]);
+      tree.insert(elements[i]);
+      tree.delete(elements[i]); }
     if (tree.size() != elements.length) throw new IllegalStateException();
-    for (int i = 0; i < elements.length; i++) tree.delete(elements[i]);
+    tree.delete(elements[0]);
+    for (int i = 1; i < elements.length; i++) {
+      tree.delete(elements[i]);
+      tree.insert(elements[i - 1]);
+      tree.insert(elements[i]);
+      tree.delete(elements[i - 1]);
+      tree.delete(elements[i]); }
     if (tree.size() != 0) throw new IllegalStateException();
     long timeEnd = System.currentTimeMillis();
     System.out.println((timeEnd - timeBegin) + " milliseconds");
