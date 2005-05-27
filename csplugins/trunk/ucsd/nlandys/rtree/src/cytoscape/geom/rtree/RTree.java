@@ -36,7 +36,7 @@ public final class RTree
       Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY,
       Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY };
     m_maxBranches = DEFAULT_MAX_BRANCHES;
-    m_minBranches = (m_maxBranches + 1) / 2;
+    m_minBranches = Math.max(2, (int) (((double) (m_maxBranches + 1)) * 0.4d));
     m_root = new Node(m_maxBranches, true);
     m_objKeyBuff = new int[m_maxBranches + 1];
     m_childrenBuff = new Node[m_maxBranches + 1];
