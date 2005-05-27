@@ -20,8 +20,8 @@ public final class RTree
   private final int m_maxBranches;
   private final int m_minBranches;
   private Node m_root;
-  private IntObjHash m_entryMap; // Keys are objKey, values are type Node.
-  private final Object m_deletedEntry = new Object(); // Except when "deleted".
+  private IntObjHash m_entryMap; // Keys are objKey, values are type Node,
+  private final Object m_deletedEntry = new Object(); // except when "deleted".
   private int m_deletedEntries;
   private int m_mapExpansionThreshold;
 
@@ -77,7 +77,7 @@ public final class RTree
     m_tempBuff2 = new double[m_maxBranches + 1];
 
     // With a m_maxBranches of 7, m_minBranches will be 3, and such a tree of
-    // depth 20 holds at least 3,4 billion entries.
+    // depth 20 holds at least 3.4 billion entries.
     m_extentsStack = new double[20 * 7 * 4];
     m_nodeStack = new ObjStack();
   }
@@ -762,7 +762,7 @@ public final class RTree
         returnThis.data.deepCount +=
           returnThis.data.children[i].data.deepCount; }
 
-    // Null things out to not hinder future garbage collection.
+    // Null things out so as to not hinder future garbage collection.
     for (int i = fullInternalNode.entryCount;
          i < fullInternalNode.data.children.length; i++)
       fullInternalNode.data.children[i] = null;
@@ -792,7 +792,7 @@ public final class RTree
     double maximumD = Double.NEGATIVE_INFINITY;
     int maximumInx1 = -1;
     int maximumInx2 = -1;
-    for (int i = 0; i < count; i++)
+    for (int i = 0; i < count - 1; i++)
       for (int j = i + 1; j < count; j++) {
         final double areaJ =
           (Math.max(xMaxs[i], xMaxs[j]) - Math.min(xMins[i], xMins[j])) *
