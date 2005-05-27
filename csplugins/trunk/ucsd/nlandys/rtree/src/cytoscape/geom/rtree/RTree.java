@@ -1067,9 +1067,8 @@ public final class RTree
                                         final double[] extents, final int off)
   {
     int count = 0;
-//     if (contains(xMinQ, yMinQ, xMaxQ, yMaxQ, xMinN, yMinN, xMaxN, yMaxN)) {
-    if ((xMinQ <= xMinN) && (xMaxQ >= xMaxN) &&
-        (yMinQ <= yMinN) && (yMaxQ >= yMaxN)) {
+    if ((xMinQ <= xMinN) && (xMaxQ >= xMaxN) && // Does rectangle Q contain
+        (yMinQ <= yMinN) && (yMaxQ >= yMaxN)) { // rectangle N?
       // Trivially include node.
       if (isLeafNode(n)) { count += n.entryCount; stackStack.push(null); }
       else { count += n.data.deepCount; }
@@ -1083,8 +1082,7 @@ public final class RTree
       if (isLeafNode(n)) {
         final IntStack stack = new IntStack();
         for (int i = 0; i < n.entryCount; i++) {
-//           if (overlaps(xMinQ, yMinQ, xMaxQ, yMaxQ,
-//                        n.xMins[i], n.yMins[i], n.xMaxs[i], n.yMaxs[i])) {
+          // Overlaps test of two rectangles.
           if ((Math.max(xMinQ, n.xMins[i]) <= Math.min(xMaxQ, n.xMaxs[i])) &&
               (Math.max(yMinQ, n.yMins[i]) <= Math.min(yMaxQ, n.yMaxs[i]))) {
             stack.push(i);
@@ -1099,8 +1097,7 @@ public final class RTree
           nodeStack.push(n); } }
       else { // Internal node.
         for (int i = 0; i < n.entryCount; i++) {
-//           if (overlaps(xMinQ, yMinQ, xMaxQ, yMaxQ,
-//                        n.xMins[i], n.yMins[i], n.xMaxs[i], n.yMaxs[i])) {
+          // Overlaps test of two rectangles.
           if ((Math.max(xMinQ, n.xMins[i]) <= Math.min(xMaxQ, n.xMaxs[i])) &&
               (Math.max(yMinQ, n.yMins[i]) <= Math.min(yMaxQ, n.yMaxs[i]))) {
             count += queryOverlap
@@ -1111,45 +1108,45 @@ public final class RTree
     return count;
   }
 
-  /*
-   * Determines whether or not the first rectangle [specified by the first
-   * four parameters] overlaps the second rectangle [specified by the last
-   * four parameters].
-   */
-  private final static boolean overlaps(final double xMin1,
-                                        final double yMin1,
-                                        final double xMax1,
-                                        final double yMax1,
-                                        final double xMin2,
-                                        final double yMin2,
-                                        final double xMax2,
-                                        final double yMax2)
-  {
-    return
-      ((Math.max(xMin1, xMin2) <= Math.min(xMax1, xMax2)) &&
-       (Math.max(yMin1, yMin2) <= Math.min(yMax1, yMax2)));
-  }
+//   /*
+//    * Determines whether or not the first rectangle [specified by the first
+//    * four parameters] overlaps the second rectangle [specified by the last
+//    * four parameters].
+//    */
+//   private final static boolean overlaps(final double xMin1,
+//                                         final double yMin1,
+//                                         final double xMax1,
+//                                         final double yMax1,
+//                                         final double xMin2,
+//                                         final double yMin2,
+//                                         final double xMax2,
+//                                         final double yMax2)
+//   {
+//     return
+//       ((Math.max(xMin1, xMin2) <= Math.min(xMax1, xMax2)) &&
+//        (Math.max(yMin1, yMin2) <= Math.min(yMax1, yMax2)));
+//   }
 
-  /*
-   * Determines whether or not the first rectangle [specified by the first
-   * four parameters] fully contains the second rectangle [specified by the
-   * last four parameters].  If the second rectangle is the inverted
-   * infinite rectangle and the first rectangle is any non-inverted
-   * rectangle then this method will return true.
-   */
-  private final static boolean contains(final double xMin1,
-                                        final double yMin1,
-                                        final double xMax1,
-                                        final double yMax1,
-                                        final double xMin2,
-                                        final double yMin2,
-                                        final double xMax2,
-                                        final double yMax2)
-  {
-    return
-      ((xMin1 <= xMin2) && (xMax1 >= xMax2) &&
-       (yMin1 <= yMin2) && (yMax1 >= yMax2));
-  }
+//   /*
+//    * Determines whether or not the first rectangle [specified by the first
+//    * four parameters] fully contains the second rectangle [specified by the
+//    * last four parameters].  If the second rectangle is the inverted
+//    * infinite rectangle and the first rectangle is any non-inverted
+//    * rectangle then this method will return true.
+//    */
+//   private final static boolean contains(final double xMin1,
+//                                         final double yMin1,
+//                                         final double xMax1,
+//                                         final double yMax1,
+//                                         final double xMin2,
+//                                         final double yMin2,
+//                                         final double xMax2,
+//                                         final double yMax2)
+//   {
+//     return
+//       ((xMin1 <= xMin2) && (xMax1 >= xMax2) &&
+//        (yMin1 <= yMin2) && (yMax1 >= yMax2));
+//   }
 
 //   /**
 //    * Returns an enumeration of entries whose extents are fully contained
