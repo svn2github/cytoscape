@@ -1088,41 +1088,69 @@ public final class RTree
     for (int i = delInx; i < n.entryCount; i++) {
       final int iPlusOne = i + 1;
       n.objKeys[i] = n.objKeys[iPlusOne];
-      n.xMins[i] = n.xMins[iPlusOne];
-      n.yMins[i] = n.yMins[iPlusOne];
-      n.xMaxs[i] = n.xMaxs[iPlusOne];
-      n.yMaxs[i] = n.yMaxs[iPlusOne]; }
-    condenseTree(n, m_nodeStack);
+      n.xMins[i] = n.xMins[iPlusOne]; n.yMins[i] = n.yMins[iPlusOne];
+      n.xMaxs[i] = n.xMaxs[iPlusOne]; n.yMaxs[i] = n.yMaxs[iPlusOne]; }
+    condenseTree(n, m_nodeStack, m_minBranches);
     return true;
 
     // Finally, delete the objKey from m_entryMap.  If m_entryMap contains
     // too many deleted entries, shrink its size.
   }
 
+  /*
+   * This does not re-insert orphaned nodes and entries - instead, the
+   * stack eliminatedNodes is populated so that the caller of this function
+   * can re-insert.  eliminatedNodes should be empty when this function is
+   * called.
+   */
   private final static void condenseTree(final Node leafNode,
-                                         final ObjStack eliminatedNodes)
+                                         final ObjStack eliminatedNodes,
+                                         final int minBranches)
   {
     Node n = leafNode;
-    int depthOfLastElimination = 0;
     while (true) {
-      break;
-    }
-
-    // "Re-insert orphaned entries."
-    while (eliminatedNodes.size() > 0) {
-      final Node underfullNode = (Node) eliminatedNodes.pop();
-      if (isLeafNode(underfullNode)) {
-        for (int i = 0; i < underfullNode.entryCount; i++) {
-          // Call regular insert.
-        }
-      }
-      else { // Internal node.
-        for (int i = 0; i < underfullNode.entryCount; i++) {
-          // Call other insert.
-        }
-      }
-    }
+      final Node p = n.parent;
+      if (p == null) return; // n is the root.
+      final int nInxInP;
+      for (int i = 0;; i++)
+        if (p.data.children[i] == n) { nInxInP = i; break; }
+      if (n.entryCount < minBranches) { // Delete n from p.
+        p.entryCount--;
+        for (int i = nInxInP; i < p.entryCount; i++) {
+          final int iPlusOne = i + 1;
+          p.data.children[i] = p.data.children[iPlusOne];
+          p.xMins[i] = p.xMins[iPlusOne]; p.yMins[i] = p.yMins[iPlusOne];
+          p.xMaxs[i] = p.xMaxs[iPlusOne]; p.yMaxs[i] = p.yMaxs[iPlusOne]; }
+        n.parent = null;
+        eliminatedNodes.push(n); }
+      else { // n has not been eliminated.  Adjust covering rectangle.
+        // This is where we have to optimize in the future.
+        p.xMins[nInxInP] = Double.POSITIVE_INFINITY;
+        p.yMins[nInxInP] = Double.POSITIVE_INFINITY;
+        p.xMaxs[nInxInP] = Double.NEGATIVE_INFINITY;
+        p.yMaxs[nInxInP] = Double.NEGATIVE_INFINITY;
+        for (int i = 0; i < n.entryCount; i++) {
+          p.xMins[nInxInP] = Math.min(p.xMins[nInxInP], n.xMins[i]);
+          p.yMins[nInxInP] = Math.min(p.yMins[nInxInP], n.yMins[i]);
+          p.xMaxs[nInxInP] = Math.max(p.xMaxs[nInxInP], n.xMaxs[i]);
+          p.yMaxs[nInxInP] = Math.max(p.yMaxs[nInxInP], n.yMaxs[i]); } }
+      n = p; }
   }
+
+//     // "Re-insert orphaned entries."
+//     while (eliminatedNodes.size() > 0) {
+//       final Node underfullNode = (Node) eliminatedNodes.pop();
+//       if (isLeafNode(underfullNode)) {
+//         for (int i = 0; i < underfullNode.entryCount; i++) {
+//           // Call regular insert.
+//         }
+//       }
+//       else { // Internal node.
+//         for (int i = 0; i < underfullNode.entryCount; i++) {
+//           // Call other insert.
+//         }
+//       }
+//     }
 
   /**
    * Returns an enumeration of entries whose extents intersect the
