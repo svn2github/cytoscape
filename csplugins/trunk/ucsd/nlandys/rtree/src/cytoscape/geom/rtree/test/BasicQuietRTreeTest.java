@@ -10,6 +10,10 @@ public class BasicQuietRTreeTest
   public static void main(String[] args)
   {
     RTree tree = new RTree(3);
+    tree.insert(0, 0.0, 0.0, 2.0, 2.0);
+    tree.insert(55, 3.0, 4.0, 5.0, 6.0);
+    tree.delete(0);
+    tree.delete(55);
 
     { // BEGIN EMPTY TREE TESTS: We run our first tests when this tree empty.
       double[] extentsArr = new double[4];
@@ -33,6 +37,8 @@ public class BasicQuietRTreeTest
     tree.insert(0, 0.0, 0.0, 1.0, 1.0);
     tree.insert(1, 2.0, 2.0, 3.0, 3.0);
     tree.insert(2, 0.5, 1.0, 1.5, 2.0);
+    tree.insert(10, 1.0, 1.0, 2.0, 2.0);
+    tree.delete(10);
 
     { // BEGIN ROOT LEAF TEST: Still before any split.
       double[] extentsArr = new double[5];
@@ -165,12 +171,18 @@ public class BasicQuietRTreeTest
                               ("expected exception for min > max");
     } // END EXCEPTION HANDLING TEST.
 
+    tree.insert(4, 9.0, -2.25, 10.0, -1.75);
+    tree.delete(4);
     tree.insert(4, 3.0, -0.25, 4.0, 0.75);
     tree.insert(5, -0.5, 2.5, 0.5, 3.5);
+    tree.insert(6, 2.75, 2.25, 3.75, 3.25);
+    tree.delete(6);
     tree.insert(6, 2.75, 2.25, 3.75, 3.25);
     tree.insert(7, 1.25, 1.75, 2.25, 2.75);
     tree.insert(8, 1.0, 6.0, 2.0, 7.0);
     tree.insert(9, -2.0, 1.0, -1.0, 2.0);
+    tree.insert(10, -7.0, -6.0, 7.0, 6.0);
+    tree.delete(10);
 
     { // BEGIN DEPTH THREE TEST.
       double[] extentsArr = new double[4];
@@ -271,6 +283,10 @@ public class BasicQuietRTreeTest
     tree.insert(25, 1.0, 9.0, 2.0, 10.0);
     tree.insert(26, -2.0, 5.0, -1.0, 6.0);
     tree.insert(27, -2.5, 5.25, -1.75, 9.25);
+    for (int i = 28; i < 200; i++)
+      tree.insert(i, 0.0, 0.0, (double) i, (double) i);
+    for (int i = 28; i < 200; i++)
+      tree.delete(i);
     // There are now 28 entries in the R-tree.  Depth must be at least 4.
 
     { // BEGIN DEPTH FOUR TEST.
