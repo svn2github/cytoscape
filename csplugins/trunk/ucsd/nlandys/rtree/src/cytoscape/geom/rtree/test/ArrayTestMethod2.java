@@ -49,13 +49,14 @@ public class ArrayTestMethod2
     // Sequential access test.
     {
       final int incr = 797;
+      double foo;
       int inx = 0;
       final long millisBegin = System.currentTimeMillis();
       for (int i = 0; i < nodeArr.length; i++) {
         final Node n = nodeArr[inx];
         for (int j = 0; j < nodeSize; j++) {
-          n.arrs[j][4] =
-            n.arrs[j][0] + n.arrs[j][1] + n.arrs[j][2] + n.arrs[j][3]; }
+          final double[] arr = n.arrs[j];
+          foo = arr[0] + arr[1] + arr[2] + arr[3]; }
         inx = (inx + incr) % nodeArr.length; }
       final long millisEnd = System.currentTimeMillis();
       System.out.println("sequential rectangle access took " +
@@ -77,7 +78,7 @@ public class ArrayTestMethod2
     private final double[][] arrs;
     private Node(final int size) {
       arrs = new double[size][];
-      for (int i = 0; i < arrs.length; i++) arrs[i] = new double[5]; }
+      for (int i = 0; i < arrs.length; i++) arrs[i] = new double[4]; }
   }
 
 }
