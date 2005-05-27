@@ -143,57 +143,38 @@ public final class RTree
           ("objkey " + objKey + " is already in this tree");
       // old entry is m_deletedEntry.
       m_deletedEntries--; }
-    final Node chosenLeaf = chooseLeaf(m_root, xMin, yMin, xMax, yMax);
-    if (chosenLeaf.entryCount < m_maxBranches) { // No split is necessary.
-      final int newInx = chosenLeaf.entryCount++;
-      chosenLeaf.objKeys[newInx] = objKey;
-      chosenLeaf.xMins[newInx] = xMin; chosenLeaf.yMins[newInx] = yMin;
-      chosenLeaf.xMaxs[newInx] = xMax; chosenLeaf.yMaxs[newInx] = yMax;
-      m_entryMap.put(objKey, chosenLeaf);
-      adjustTreeNoSplit(chosenLeaf, 1, m_MBR); }
-    else { // A split is necessary.
-      final Node newLeaf = splitLeafNode
-        (chosenLeaf, objKey, xMin, yMin, xMax, yMax, m_maxBranches,
-         m_minBranches, m_objKeyBuff,  m_xMinBuff, m_yMinBuff, m_xMaxBuff,
-         m_yMaxBuff, m_tempBuff1, m_tempBuff2);
-      for (int i = 0; i < chosenLeaf.entryCount; i++)
-        m_entryMap.put(chosenLeaf.objKeys[i], chosenLeaf);
-      for (int i = 0; i < newLeaf.entryCount; i++)
-        m_entryMap.put(newLeaf.objKeys[i], newLeaf);
-      final Node rootSplit = adjustTreeWithSplit
-        (chosenLeaf, newLeaf, 1, m_maxBranches, m_minBranches, m_MBR,
-         m_childrenBuff, m_xMinBuff, m_yMinBuff, m_xMaxBuff, m_yMaxBuff,
-         m_tempBuff1, m_tempBuff2);
-      if (rootSplit != null) {
-        // The MBR at index m_maxBranches - 1 in both rootSplit and m_root
-        // will contain the overall MBR of corresponding node.
-        // Also, both nodes will have an accurate deep count.
-        final Node newRoot = new Node(m_maxBranches, false);
-        newRoot.entryCount = 2;
-        m_root.parent = newRoot; rootSplit.parent = newRoot;
-        newRoot.data.children[0] = m_root;
-        newRoot.data.children[1] = rootSplit;
-        newRoot.xMins[0] = m_root.xMins[m_maxBranches - 1];
-        newRoot.yMins[0] = m_root.yMins[m_maxBranches - 1];
-        newRoot.xMaxs[0] = m_root.xMaxs[m_maxBranches - 1];
-        newRoot.yMaxs[0] = m_root.yMaxs[m_maxBranches - 1];
-        newRoot.xMins[1] = rootSplit.xMins[m_maxBranches - 1];
-        newRoot.yMins[1] = rootSplit.yMins[m_maxBranches - 1];
-        newRoot.xMaxs[1] = rootSplit.xMaxs[m_maxBranches - 1];
-        newRoot.yMaxs[1] = rootSplit.yMaxs[m_maxBranches - 1];
-        if (isLeafNode(m_root))
-          newRoot.data.deepCount = m_root.entryCount + rootSplit.entryCount;
-        else
-          newRoot.data.deepCount =
-            m_root.data.deepCount + rootSplit.data.deepCount;
-        m_root = newRoot;
-        m_MBR[0] = Math.min(m_root.xMins[0], m_root.xMins[1]);
-        m_MBR[1] = Math.min(m_root.yMins[0], m_root.yMins[1]);
-        m_MBR[2] = Math.max(m_root.xMaxs[0], m_root.xMaxs[1]);
-        m_MBR[3] = Math.max(m_root.yMaxs[0], m_root.yMaxs[1]); } }
+    final Node rootSplit = insert
+      (m_root, objKey, xMin, yMin, xMax, yMax, m_maxBranches, m_minBranches,
+       m_entryMap, m_MBR, m_objKeyBuff, m_childrenBuff, m_xMinBuff, m_yMinBuff,
+       m_xMaxBuff, m_yMaxBuff, m_tempBuff1, m_tempBuff2);
+    if (rootSplit != null) {
+      final Node newRoot = new Node(m_maxBranches, false);
+      newRoot.entryCount = 2;
+      m_root.parent = newRoot; rootSplit.parent = newRoot;
+      newRoot.data.children[0] = m_root;
+      newRoot.data.children[1] = rootSplit;
+      newRoot.xMins[0] = m_root.xMins[m_maxBranches - 1];
+      newRoot.yMins[0] = m_root.yMins[m_maxBranches - 1];
+      newRoot.xMaxs[0] = m_root.xMaxs[m_maxBranches - 1];
+      newRoot.yMaxs[0] = m_root.yMaxs[m_maxBranches - 1];
+      newRoot.xMins[1] = rootSplit.xMins[m_maxBranches - 1];
+      newRoot.yMins[1] = rootSplit.yMins[m_maxBranches - 1];
+      newRoot.xMaxs[1] = rootSplit.xMaxs[m_maxBranches - 1];
+      newRoot.yMaxs[1] = rootSplit.yMaxs[m_maxBranches - 1];
+      if (isLeafNode(m_root))
+        newRoot.data.deepCount = m_root.entryCount + rootSplit.entryCount;
+      else
+        newRoot.data.deepCount =
+          m_root.data.deepCount + rootSplit.data.deepCount;
+      m_root = newRoot;
+      m_MBR[0] = Math.min(m_root.xMins[0], m_root.xMins[1]);
+      m_MBR[1] = Math.min(m_root.yMins[0], m_root.yMins[1]);
+      m_MBR[2] = Math.max(m_root.xMaxs[0], m_root.xMaxs[1]);
+      m_MBR[3] = Math.max(m_root.yMaxs[0], m_root.yMaxs[1]); }
   }
 
   /*
+   * This is the routine that inserts an entry into a leaf node.
    * Returns a non-null node in the case that the root was split; in this
    * case the globalMBR is not updated, and the MBR at index
    * maxBranches - 1 in both root and the returned node will contain the
