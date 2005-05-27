@@ -167,6 +167,7 @@ public class BasicQuietRTreeTest
 
     tree.insert(4, 3.0, -0.25, 4.0, 0.75);
     tree.insert(5, -0.5, 2.5, 0.5, 3.5);
+    tree.insert(6, 2.75, 2.25, 3.75, 3.25);
   }
 
 }
