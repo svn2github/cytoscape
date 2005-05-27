@@ -194,6 +194,52 @@ public final class RTree
   }
 
   /*
+   * Returns a non-null node in the case that the root was split; in this
+   * case the globalMBR is not updated, and the MBR at index
+   * maxBranches - 1 in both root and the returned node will contain the
+   * overall MBR of that node.
+   */
+  private final static Node insert(final Node root, final int objKey,
+                                   final double xMin, final double yMin,
+                                   final double xMax, final double yMax,
+                                   final int maxBranches,
+                                   final int minBranches,
+                                   final IntObjHash entryMap,
+                                   final double[] globalMBR,
+                                   final int[] objKeyBuff,
+                                   final Node[] childrenBuff,
+                                   final double[] xMinBuff,
+                                   final double[] yMinBuff,
+                                   final double[] xMaxBuff,
+                                   final double[] yMaxBuff,
+                                   final double[] tempBuff1,
+                                   final double[] tempBuff2)
+  {
+    final Node chosenLeaf = chooseLeaf(root, xMin, yMin, xMax, yMax);
+    if (chosenLeaf.entryCount < maxBranches) { // No split is necessary.
+      final int newInx = chosenLeaf.entryCount++;
+      chosenLeaf.objKeys[newInx] = objKey;
+      chosenLeaf.xMins[newInx] = xMin; chosenLeaf.yMins[newInx] = yMin;
+      chosenLeaf.xMaxs[newInx] = xMax; chosenLeaf.yMaxs[newInx] = yMax;
+      entryMap.put(objKey, chosenLeaf);
+      adjustTreeNoSplit(chosenLeaf, 1, globalMBR);
+      return null; }
+    else { // A split is necessary.
+      final Node newLeaf = splitLeafNode
+        (chosenLeaf, objKey, xMin, yMin, xMax, yMax, maxBranches, minBranches,
+         objKeyBuff, xMinBuff, yMinBuff, xMaxBuff, yMaxBuff, tempBuff1,
+         tempBuff2);
+      for (int i = 0; i < chosenLeaf.entryCount; i++)
+        entryMap.put(chosenLeaf.objKeys[i], chosenLeaf);
+      for (int i = 0; i < newLeaf.entryCount; i++)
+        entryMap.put(newLeaf.objKeys[i], newLeaf);
+      return adjustTreeWithSplit
+        (chosenLeaf, newLeaf, 1, maxBranches, minBranches, globalMBR,
+         childrenBuff, xMinBuff, yMinBuff, xMaxBuff, yMaxBuff, tempBuff1,
+         tempBuff2); }
+  }
+
+  /*
    * Deep counts are adjusted by this method.  Inserts specified
    * node into a parent at specified depth.  Depth zero is defined to
    * be the depth of the root.  Returns true if and only if the entire
@@ -276,9 +322,9 @@ public final class RTree
    * at specified depth such that the returned node is the most suitable such
    * node in which to place specified MBR.
    */
-  public final static Node chooseParent(final Node root, final int depth,
-                                        final double xMin, final double yMin,
-                                        final double xMax, final double yMax)
+  private final static Node chooseParent(final Node root, final int depth,
+                                         final double xMin, final double yMin,
+                                         final double xMax, final double yMax)
   {
     Node n = root;
     int currDepth = 0;
