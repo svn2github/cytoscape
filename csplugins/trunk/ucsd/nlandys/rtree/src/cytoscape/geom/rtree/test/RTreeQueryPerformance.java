@@ -65,7 +65,7 @@ public class RTreeQueryPerformance
       for (int i = 0; i < pointQueries.length; i++)
         pointQueries[i] = new IntStack();
       for (int i = 0; i < 3; i++) { System.gc(); Thread.sleep(1000); }
-      long millisBegin = System.currentTimeMillis();
+      final long millisBegin = System.currentTimeMillis();
       int inx = 0;
       double currX = -0.1d;
       for (int i = 0; i < 11; i++) {
@@ -73,12 +73,53 @@ public class RTreeQueryPerformance
         double currY = -0.1d;
         for (int j = 0; j < 11; j++) {
           currY += 0.1d;
-          IntEnumerator iter =
+          final IntEnumerator iter =
             tree.queryOverlap(currX, currY, currX, currY, null, 0);
-          IntStack stack = pointQueries[inx++];
+          final IntStack stack = pointQueries[inx++];
           while (iter.numRemaining() > 0) stack.push(iter.nextInt()); } }
-      long millisEnd = System.currentTimeMillis();
+      final long millisEnd = System.currentTimeMillis();
       System.err.println("point queries took " + (millisEnd - millisBegin) +
+                         " milliseconds");
+    }
+
+    final IntStack[] areaQueries;
+
+    // Test 5 area queries - each area is 0.1 X 0.1.
+    {
+      areaQueries = new IntStack[5];
+      for (int i = 0; i < areaQueries.length; i++)
+        areaQueries[i] = new IntStack();
+      for (int i = 0; i < 3; i++) { System.gc(); Thread.sleep(1000); }
+      final long millisBegin = System.currentTimeMillis();
+      for (int i = 0; i < 5; i++) {
+        final IntEnumerator iter =
+          tree.queryOverlap(((double) i) * 0.1d,
+                            ((double) i) * 0.1d,
+                            ((double) (i + 1)) * 0.1d,
+                            ((double) (i + 1)) * 0.1d, null, 0);
+        final IntStack stack = areaQueries[i];
+        while (iter.numRemaining() > 0) stack.push(iter.nextInt()); }
+      final long millisEnd = System.currentTimeMillis();
+      System.err.println("area queries took " + (millisEnd - millisBegin) +
+                         " milliseconds");
+    }
+
+    final int[] countQueries;
+
+    // Test 5 count queries - each area is 0.6 X 0.6.
+    {
+      countQueries = new int[5];
+      for (int i = 0; i < 3; i++) { System.gc(); Thread.sleep(1000); }
+      final long millisBegin = System.currentTimeMillis();
+      for (int i = 0; i < 5; i++) {
+        final IntEnumerator iter =
+          tree.queryOverlap(((double) i) * 0.1d,
+                            ((double) i) * 0.1d,
+                            ((double) (i + 6)) * 0.1d,
+                            ((double) (i + 6)) * 0.1d, null, 0);
+        countQueries[i] = iter.numRemaining(); }
+      final long millisEnd = System.currentTimeMillis();
+      System.out.println("area queries took " + (millisEnd - millisBegin) +
                          " milliseconds");
     }
   }
