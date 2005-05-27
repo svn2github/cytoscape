@@ -358,7 +358,7 @@ public class BasicQuietRTreeTest
       if (cache.size() != 0) throw new IllegalStateException
                                ("iter returned wrong objKeys");
       if (extentsArr[0] != -2.0 || extentsArr[1] != -1.75 ||
-          extentsArr[2] != 5.0 || extentsArr[3] != 3.5)
+          extentsArr[2] != 5.0 || extentsArr[3] != 5.0)
         throw new IllegalStateException("extents from query wrong");
     } // END DEPTH FOUR TEST.
   }
