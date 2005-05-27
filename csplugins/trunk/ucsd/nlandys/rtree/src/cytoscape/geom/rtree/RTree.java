@@ -1136,8 +1136,17 @@ public final class RTree
           currentDepth++; } }
       currentDepth--; }
 
+    // If the root node has only one child, make the child the new root.
+    if ((!isLeafNode(m_root)) && m_root.entryCount == 1) {
+      final Node newRoot = m_root.data.children[0];
+      newRoot.parent = null;
+      m_root = newRoot; }
+
     // Finally, delete the objKey from m_entryMap.  If m_entryMap contains
     // too many deleted entries, shrink its size.
+    m_entryMap.put(objKey, m_deletedEntry);
+    m_deletedEntries++;
+    // Figure this out later.
 
     return true;
   }
