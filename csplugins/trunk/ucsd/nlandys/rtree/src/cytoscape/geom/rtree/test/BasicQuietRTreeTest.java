@@ -302,6 +302,20 @@ public class BasicQuietRTreeTest
       if (extentsArr[0] != -4.25 || extentsArr[1] != -1.75 ||
           extentsArr[2] != 5.0 || extentsArr[3] != 10.0)
         throw new IllegalStateException("extents from query wrong");
+
+      iter = tree.queryOverlap(-2.0, 6.0, -2.0, 6.0, extentsArr, 0);
+      if (iter.numRemaining() != 4)
+        throw new IllegalStateException("expected query to generate 4 hits");
+      cache.insert(13); cache.insert(14); cache.insert(26); cache.insert(27);
+      foo = 0;
+      while (iter.numRemaining() > 0) { cache.delete(iter.nextInt()); foo++; }
+      if (foo != 4) throw new IllegalStateException
+                      ("iter claimed it had 4 elements but really didn't");
+      if (cache.size() != 0) throw new IllegalStateException
+                               ("iter returned wrong objKeys");
+      if (extentsArr[0] != -4.25 || extentsArr[1] != 5.0 ||
+          extentsArr[2] != 2.25 || extentsArr[3] != 9.25)
+        throw new IllegalStateException("extents from query wrong");
     } // END DEPTH FOUR TEST.
   }
 
