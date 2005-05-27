@@ -188,6 +188,7 @@ public final class RTree
     final int totalEntries = fullLeafNode.entryCount + 1;
     final long seeds = pickSeeds(totalEntries, m_xMinBuff, m_yMinBuff,
                                  m_xMaxBuff, m_yMaxBuff, m_tempBuff1);
+    // m_tempBuff1 now contains the areas of the MBRs - we won't use this.
     final int seed1 = (int) (seeds >> 32);
     fullLeafNode.objKeys[0] = m_objKeyBuff[seed1];
     fullLeafNode.xMins[0] = m_xMinBuff[seed1];
@@ -344,7 +345,8 @@ public final class RTree
    * parent is modified.  Everything else is modified.  The MBRs at index
    * m_maxBranches - 1 in both nodes are set to be the new overall MBR of
    * corresponding node.  To picture what this function does, imagine
-   * adding newChild (with specified MBR) to fullInternalNode.
+   * adding newChild (with specified MBR) to fullInternalNode.  Note that
+   * newChild may be either an internal node or a leaf node.
    */
   private final Node splitInternalNode(final Node fullInternalNode,
                                        final Node newChild,
@@ -359,30 +361,32 @@ public final class RTree
     // Copy node MBRs and objKeys and new MBR and objKey into arrays.
     for (int i = 0; i < fullInternalNode.entryCount; i++) {
       m_childrenBuff[i] = data.children[i];
-      m_xMinBuff[i] = fullLeafNode.xMins[i];
-      m_yMinBuff[i] = fullLeafNode.yMins[i];
-      m_xMaxBuff[i] = fullLeafNode.xMaxs[i];
-      m_yMaxBuff[i] = fullLeafNode.yMaxs[i]; }
+      m_xMinBuff[i] = fullInternalNode.xMins[i];
+      m_yMinBuff[i] = fullInternalNode.yMins[i];
+      m_xMaxBuff[i] = fullInternalNode.xMaxs[i];
+      m_yMaxBuff[i] = fullInternalNode.yMaxs[i]; }
     m_childrenBuff[fullInternalNode.entryCount] = newChild;
     m_xMinBuff[fullInternalNode.entryCount] = newXMin;
     m_yMinBuff[fullInternalNode.entryCount] = newYMin;
     m_xMaxBuff[fullInternalNode.entryCount] = newXMax;
     m_yMaxBuff[fullInternalNode.entryCount] = newYMax;
 
-    // Pick seeds.  Add seeds to two groups (fullLeafNode and returnThis).
+    // Pick seeds.  Add seeds to two groups (fullInternalNode and returnThis).
     final int totalEntries = fullInternalNode.entryCount + 1;
     final long seeds = pickSeeds(totalEntries, m_xMinBuff, m_yMinBuff,
                                  m_xMaxBuff, m_yMaxBuff, m_tempBuff1);
+    // m_tempBuff1 now contains the areas of the MBRs - we won't use this.
     final int seed1 = (int) (seeds >> 32);
-    fullLeafNode.objKeys[0] = m_objKeyBuff[seed1];
-    fullLeafNode.xMins[0] = m_xMinBuff[seed1];
-    fullLeafNode.yMins[0] = m_yMinBuff[seed1];
-    fullLeafNode.xMaxs[0] = m_xMaxBuff[seed1];
-    fullLeafNode.yMaxs[0] = m_yMaxBuff[seed1];
-    fullLeafNode.entryCount = 1;
+    data.children[0] = m_childrenBuff[seed1];
+    fullInternalNode.xMins[0] = m_xMinBuff[seed1];
+    fullInternalNode.yMins[0] = m_yMinBuff[seed1];
+    fullInternalNode.xMaxs[0] = m_xMaxBuff[seed1];
+    fullInternalNode.yMaxs[0] = m_yMaxBuff[seed1];
+    fullInternalNode.entryCount = 1;
     final int seed2 = (int) seeds;
-    final Node returnThis = new Node(m_maxBranches, true);
-    returnThis.objKeys[0] = m_objKeyBuff[seed2];
+    final Node returnThis = new Node(m_maxBranches, false);
+    final InternalNodeData rData = returnThis.data;
+    rData.children[0] = m_childrenBuff[seed2];
     returnThis.xMins[0] = m_xMinBuff[seed2];
     returnThis.yMins[0] = m_yMinBuff[seed2];
     returnThis.xMaxs[0] = m_xMaxBuff[seed2];
@@ -390,10 +394,10 @@ public final class RTree
     returnThis.entryCount = 1;
 
     // Initialize the MBRs at index m_maxBranches - 1.
-    fullLeafNode.xMins[maxBranchesMinusOne] = fullLeafNode.xMins[0];
-    fullLeafNode.yMins[maxBranchesMinusOne] = fullLeafNode.yMins[0];
-    fullLeafNode.xMaxs[maxBranchesMinusOne] = fullLeafNode.xMaxs[0];
-    fullLeafNode.yMaxs[maxBranchesMinusOne] = fullLeafNode.yMaxs[0];
+    fullInternalNode.xMins[maxBranchesMinusOne] = fullInternalNode.xMins[0];
+    fullInternalNode.yMins[maxBranchesMinusOne] = fullInternalNode.yMins[0];
+    fullInternalNode.xMaxs[maxBranchesMinusOne] = fullInternalNode.xMaxs[0];
+    fullInternalNode.yMaxs[maxBranchesMinusOne] = fullInternalNode.yMaxs[0];
     returnThis.xMins[maxBranchesMinusOne] = returnThis.xMins[0];
     returnThis.yMins[maxBranchesMinusOne] = returnThis.yMins[0];
     returnThis.xMaxs[maxBranchesMinusOne] = returnThis.xMaxs[0];
@@ -403,14 +407,14 @@ public final class RTree
     int entriesRemaining = totalEntries - 2;
     for (int i = seed1; i < seed2 - 1; i++) { // seed1 < seed2, guarenteed.
       final int iPlusOne = i + 1;
-      m_objKeyBuff[i] = m_objKeyBuff[iPlusOne];
+      m_childrenBuff[i] = m_childrenBuff[iPlusOne];
       m_xMinBuff[i] = m_xMinBuff[iPlusOne];
       m_yMinBuff[i] = m_yMinBuff[iPlusOne];
       m_xMaxBuff[i] = m_xMaxBuff[iPlusOne];
       m_yMaxBuff[i] = m_yMaxBuff[iPlusOne]; }
     for (int i = seed2 - 1; i < entriesRemaining; i++) {
       final int iPlusTwo = i + 2;
-      m_objKeyBuff[i] = m_objKeyBuff[iPlusTwo];
+      m_childrenBuff[i] = m_childrenBuff[iPlusTwo];
       m_xMinBuff[i] = m_xMinBuff[iPlusTwo];
       m_yMinBuff[i] = m_yMinBuff[iPlusTwo];
       m_xMaxBuff[i] = m_xMaxBuff[iPlusTwo];
@@ -423,8 +427,8 @@ public final class RTree
       // Test to see if we're all done.
       if (entriesRemaining == 0) break;
       final Node restGroup;
-      if (entriesRemaining + fullLeafNode.entryCount == m_minBranches)
-        restGroup = fullLeafNode;
+      if (entriesRemaining + fullInternalNode.entryCount == m_minBranches)
+        restGroup = fullInternalNode;
       else if (entriesRemaining + returnThis.entryCount == m_minBranches)
         restGroup = returnThis;
       else
@@ -435,7 +439,7 @@ public final class RTree
 
           // Add entry to "rest" group.
           final int newInx = restGroup.entryCount++;
-          restGroup.objKeys[newInx] = m_objKeyBuff[i];
+          restGroup.data.children[newInx] = m_childrenBuff[i];
           restGroup.xMins[newInx] = m_xMinBuff[i];
           restGroup.yMins[newInx] = m_yMinBuff[i];
           restGroup.xMaxs[newInx] = m_xMaxBuff[i];
@@ -455,7 +459,7 @@ public final class RTree
 
       // We're not done; pick next.
       final int next = pickNext
-        (fullLeafNode, returnThis, entriesRemaining,
+        (fullInternalNode, returnThis, entriesRemaining,
          m_xMinBuff, m_yMinBuff, m_xMaxBuff, m_yMaxBuff,
          m_tempBuff1, buff1Valid, m_tempBuff2, buff2Valid);
       final boolean chooseGroup1;
@@ -463,10 +467,10 @@ public final class RTree
       else if (m_tempBuff1[next] > m_tempBuff2[next]) chooseGroup1= false;
       else { // Tie for how much group's covering rectangle will increase.
         final double group1Area =
-          (fullLeafNode.xMaxs[maxBranchesMinusOne] -
-           fullLeafNode.xMins[maxBranchesMinusOne]) *
-          (fullLeafNode.yMaxs[maxBranchesMinusOne] -
-           fullLeafNode.yMins[maxBranchesMinusOne]);
+          (fullInternalNode.xMaxs[maxBranchesMinusOne] -
+           fullInternalNode.xMins[maxBranchesMinusOne]) *
+          (fullInternalNode.yMaxs[maxBranchesMinusOne] -
+           fullInternalNode.yMins[maxBranchesMinusOne]);
         final double group2Area =
           (returnThis.xMaxs[maxBranchesMinusOne] -
            returnThis.xMins[maxBranchesMinusOne]) *
@@ -475,14 +479,14 @@ public final class RTree
         if (group1Area < group2Area) chooseGroup1 = true;
         else if (group1Area > group2Area) chooseGroup1 = false;
         else // Tie for group MBR area as well.
-          if (fullLeafNode.entryCount < returnThis.entryCount)
+          if (fullInternalNode.entryCount < returnThis.entryCount)
             chooseGroup1 = true;
           else
             chooseGroup1 = false; }
       final Node chosenGroup;
       final double[] validTempBuff;
       if (chooseGroup1) {
-        chosenGroup = fullLeafNode; validTempBuff = m_tempBuff2;
+        chosenGroup = fullInternalNode; validTempBuff = m_tempBuff2;
         buff1Valid = false; buff2Valid = true; }
       else {
         chosenGroup = returnThis; validTempBuff = m_tempBuff1;
@@ -490,7 +494,7 @@ public final class RTree
 
       // Add next to chosen group.
       final int newInx = chosenGroup.entryCount++;
-      chosenGroup.objKeys[newInx] = m_objKeyBuff[next];
+      chosenGroup.data.children[newInx] = m_childrenBuff[next];
       chosenGroup.xMins[newInx] = m_xMinBuff[next];
       chosenGroup.yMins[newInx] = m_yMinBuff[next];
       chosenGroup.xMaxs[newInx] = m_xMaxBuff[next];
@@ -512,7 +516,7 @@ public final class RTree
       entriesRemaining--;
       for (int i = next; i < entriesRemaining; i++) {
         final int iPlusOne = i + 1;
-        m_objKeyBuff[i] = m_objKeyBuff[iPlusOne];
+        m_childrenBuff[i] = m_childrenBuff[iPlusOne];
         m_xMinBuff[i] = m_xMinBuff[iPlusOne];
         m_yMinBuff[i] = m_yMinBuff[iPlusOne];
         m_xMaxBuff[i] = m_xMaxBuff[iPlusOne];
