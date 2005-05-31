@@ -39,7 +39,8 @@ public class ArrowNode extends PNodeView {
   PPath inPort;
   PPath outPort;
   
-  
+  boolean notUpdated;
+
   public ArrowNode ( int node_index, PGraphView view ) {
     super( node_index, view );
     

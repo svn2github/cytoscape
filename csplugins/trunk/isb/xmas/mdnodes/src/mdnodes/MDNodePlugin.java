@@ -9,7 +9,6 @@ import giny.model.GraphPerspective;
 import giny.model.Node;
 import giny.view.GraphView;
 import giny.view.NodeView;
-import cytoscape.plugin.jar.JarLoader;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.data.*;
 import cytoscape.*;

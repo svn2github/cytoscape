@@ -1070,7 +1070,7 @@ public void setLocation (double x, double y)
   
    public void updateOffset()
   {
-	  firePropertyChange("Offset", null, this);
+	  firePropertyChange(0,"Offset", null, this);
   }
 
   /**
@@ -1081,7 +1081,7 @@ public void setLocation (double x, double y)
                         double y) {
     //Point2D oldOffset = getOffset();
     super.setOffset(x, y);
-    firePropertyChange("Offset", null, this);
+    firePropertyChange(0,"Offset", null, this);
   }
 
   /**
@@ -1090,7 +1090,7 @@ public void setLocation (double x, double y)
   public void setOffset(java.awt.geom.Point2D point) {
     //Point2D oldOffset = getOffset();
     super.setOffset(point);
-    firePropertyChange("Offset", null, this);
+    firePropertyChange(0,"Offset", null, this);
   }
 
   /**
@@ -1101,7 +1101,7 @@ public void setLocation (double x, double y)
                      double dy) {
     //Point2D oldOffset = getOffset();
     super.offset(dx, dy);
-    firePropertyChange("Offset", null, this);
+    firePropertyChange(0,"Offset", null, this);
   }
 
  
@@ -1213,7 +1213,7 @@ public void setLocation (double x, double y)
       //just move to the new position
       setOffset( view.getNodeDoubleProperty( rootGraphIndex, PGraphView.NODE_X_POSITION ),
                  view.getNodeDoubleProperty( rootGraphIndex, PGraphView.NODE_Y_POSITION ) );
-      firePropertyChange("Offset", null, this);
+      firePropertyChange(0,"Offset", null, this);
     }
     notUpdated = false;
   }
@@ -1309,7 +1309,7 @@ public void setLocation (double x, double y)
                            double height) {
     boolean b = super.setBounds(x, y, width, height);
 
-    firePropertyChange("BoundsChanged", null, this);
+    firePropertyChange(0,"BoundsChanged", null, this);
     label.updatePosition();
 
     return b;

@@ -59,7 +59,6 @@
       <pathelement location="${mdnodes.classes.dir}"/>
       <pathelement location="${cytoscape.lib.dir}/colt.jar"/>
       <pathelement location="${cytoscape.lib.dir}/cytoscape.jar"/>
-      <pathelement location="${cytoscape.lib.dir}/y.jar"/>
       <pathelement location="${cytoscape.lib.dir}/giny.jar"/>
       <pathelement location="${cytoscape.lib.dir}/phoebe.jar"/>
       <pathelement location="${cytoscape.lib.dir}/coltginy.jar"/>
