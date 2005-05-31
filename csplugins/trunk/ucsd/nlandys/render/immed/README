@@ -1,0 +1,5 @@
+This directory is the project directory for java package
+cytoscape.render.immed .  This package does ``immediate mode rendering'' of
+graphs - it does not store any state whatsoever.  There will be a higher
+level package that will use R-trees and this package (along with other
+utilities).
