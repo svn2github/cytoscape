@@ -13,19 +13,21 @@ I. ``Shape'' is one of the following types:
   g. TRIANGLE
 
   All of the shapes can be defined as a sequence of connected line
-  segments except for ellipse.
+  segments except for ELLIPSE.
 
   In low detail view, defaults to RECTANGLE.
 
 II. ``Width''
 
   A non-negative 64 bit floating point quantity which defines the difference
-  in extents of the node (modulo border thickness) along X axis.
+  in extents of the node (modulo border thickness) along X axis, in canvas
+  coordinates.
 
 III. ``Height''
 
   A non-negative 64 bit floating point quantity which defines the difference
-  in extents of the node (module border thickness) along Y axis.
+  in extents of the node (module border thickness) along Y axis, in canvas
+  coordinates.
 
 IV. ``X Position''
 
@@ -51,11 +53,12 @@ VII. ``Border Type'' is one of the following types:
 
 VIII. ``Border Width''
 
-  A non-negative 64 bit floating point quantity which defined the width of
+  A non-negative 64 bit floating point quantity which defines the width of
   a border around the node shape.  The border width is essentially the width
   of a pencil, in canvas coordinates, that is used to draw along the border
   of the node shape.  Notice that half of the width will be inside the border
-  and half of the width will be outside the border.
+  and half of the width will be outside the border.  Actually, the pencil is
+  not round in shape; it will result in pointed corners.
 
 IX. `` Border Color''
 
