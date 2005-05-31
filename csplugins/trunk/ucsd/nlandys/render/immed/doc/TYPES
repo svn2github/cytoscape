@@ -1,0 +1,62 @@
+This file defines visual options for nodes and edges.
+
+NODES
+=====
+
+I. ``Shape'' is one of the following types:
+  a. DIAMOND
+  b. ELLIPSE
+  c. HEXAGON
+  d. OCTAGON
+  e. PARALLELOGRAM
+  f. RECTANGLE
+  g. TRIANGLE
+
+  All of the shapes can be defined as a sequence of connected line
+  segments except for ellipse.
+
+  In low detail view, defaults to RECTANGLE.
+
+II. ``Width''
+
+  A non-negative 64 bit floating point quantity which defines the difference
+  in extents of the node (modulo border thickness) along X axis.
+
+III. ``Height''
+
+  A non-negative 64 bit floating point quantity which defines the difference
+  in extents of the node (module border thickness) along Y axis.
+
+IV. ``X Position''
+
+  In canvas coordinates, a 64 bit floating point quantity representing the
+  x-coordinate of where the center of node is to be placed.
+
+V. ``Y Position''
+
+  In canvas coordinates, a 64 bit floating point quantity representing the
+  y-coordinate of where the center of node is to be placed.
+
+VI. ``Fill Color''
+
+  The interior of the node is filled with this color.
+
+VII. ``Border Type'' is one of the following types:
+
+  a. NONE
+  b. SOLID
+  c. DASHED
+
+  In low detail view, defaults to NONE.
+
+VIII. ``Border Width''
+
+  A non-negative 64 bit floating point quantity which defined the width of
+  a border around the node shape.  The border width is essentially the width
+  of a pencil, in canvas coordinates, that is used to draw along the border
+  of the node shape.  Notice that half of the width will be inside the border
+  and half of the width will be outside the border.
+
+IX. `` Border Color''
+
+  The color of the border stencil.
