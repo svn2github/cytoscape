@@ -1,0 +1,2 @@
+- Does not support resizing of canvas area.  Simply discard, instantiate
+  new, and repaint when changing size of viewable area.
