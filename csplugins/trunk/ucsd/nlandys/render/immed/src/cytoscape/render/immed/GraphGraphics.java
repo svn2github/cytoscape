@@ -1,6 +1,15 @@
 package cytoscape.render.immed;
 
-public interface GraphGraphics
+import java.awt.EventQueue;
+import java.awt.Graphics2D;
+import java.awt.Image;
+
+/**
+ * This is functional programming at it's finest [sarcasm].
+ * The purpose of this class is to make the proper calls on a Graphics2D
+ * object to efficiently render nodes, labels, and edges.
+ */
+public final class GraphGraphics
 {
 
   public static final byte SHAPE_DIAMOND = 0;
@@ -11,26 +20,30 @@ public interface GraphGraphics
   public static final byte SHAPE_RECTANGLE = 5;
   public static final byte SHAPE_TRIANGLE = 6;
 
-  public static final byte BORDER_NONE = 0;
-  public static final byte BORDER_SOLID = 1;
-  public static final byte BORDER_DASHED = 2;
+  public static final byte BORDER_DASHED = 0;
+  public static final byte BORDER_NONE = 1;
+  public static final byte BORDER_SOLID = 2;
+
+  private static final boolean s_threadDebug = true;
 
   /**
-   * Copies the graphics object's extents into the input array specified.
-   * A graphics object's extents do not change during the duration
-   * of the graphics object's lifespan.<p>
-   * Any drawing operations done outside of the graphics object's extents
-   * will not be visible, and will otherwise do no harm.<p>
-   * The information written into extentsArr is as follows:
-   * <blockquote><table border="1" cellpadding="5" cellspacing="0">
-   *   <tr>  <th>array index</th>  <th>value</th>  </tr>
-   *   <tr>  <td>offset</td>       <td>xMin</td>   </tr>
-   *   <tr>  <td>offset+1</td>     <td>yMin</td>   </tr>
-   *   <tr>  <td>offset+2</td>     <td>xMax</td>   </tr>
-   *   <tr>  <td>offset+3</td>     <td>yMax</td>   </tr>
-   * </table></blockquote>
+   * The image that was passed into the constructor.
    */
-  public void extents(double[] extentsArr, int offset);
+  public final Image image;
+
+  private Graphics2D g2d = null;
+
+  /**
+   * This constructor does not necessarily need to be called from the
+   * AWT event handling thread.
+   * @param img an off-screen image (an image gotten via the call
+   *   java.awt.Component.createImage(int, int)).
+   */
+  public GraphGraphics(final Image image)
+  {
+    if (img == null) throw new NullPointerException("image is null");
+    this.image = image;
+  }
 
   /**
    * This must be called to let the renderer know when drawing operations
@@ -42,15 +55,33 @@ public interface GraphGraphics
    * ...<br />
    * finishFrame()<br />
    * </blockquote>
-   * Thereafter, startFrame() may be called again to start another frame.
+   * Thereafter, startFrame() may be called again to start another frame.<p>
+   * This method must be called from the AWT event handling thread.
+   * @exception IllegalThreadStateException if the calling thread isn't the
+   *   AWT event handling thread.
    */
-  public void startFrame();
+  public void startFrame()
+  {
+    if (s_threadDebug && !EventQueue.isDispatchThread())
+      throw new IllegalThreadStateException
+        ("calling thread is not AWT event dispatcher");
+    if (g2d != null) throw new IllegalStateException
+                       ("previous frame was not finished");
+    g2d = (Graphics2D) image.getGraphics();
+  }
 
+  /**
+   * Tells the renderer when rendering operations for one frame are done.
+   * The renderer then disposes of resources used during the rendering
+   * process.<p>
+   * This method must be called from the AWT event handling thread.
+   */
   public void finishFrame();
 
   /**
-   * Clears visible area and makes it transparent.  This is a drawing
-   * operation.
+   * Clears image area and makes it transparent.  This is a rendering
+   * operation.<p>
+   * This method must be called from the AWT event handling thread.
    */
   public void clear();
 
