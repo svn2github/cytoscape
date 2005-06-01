@@ -35,6 +35,8 @@ public final class GraphGraphics
    * The image that was passed into the constructor.
    */
   public final Image image;
+  private final int m_imageWidth;
+  private final int m_imageHeight;
 
   private Graphics2D m_g2d;
   private int m_currColor;
@@ -51,6 +53,8 @@ public final class GraphGraphics
   public GraphGraphics(final Image image)
   {
     this.image = image;
+    m_imageWidth = this.image.getWidth(null);
+    m_imageHeight = this.image.getHeight(null);
     this.clear();
     m_rect2d = new Rectangle2D.Double();
   }
@@ -71,7 +75,7 @@ public final class GraphGraphics
         ("calling thread is not AWT event dispatcher");
     m_g2d = (Graphics2D) image.getGraphics();
     m_g2d.setBackground(s_transparent);
-    m_g2d.clearRect(0, 0, image.getWidth(null), image.getHeight(null));
+    m_g2d.clearRect(0, 0, m_imageWidth, m_imageHeight);
     m_currColor = 0x00000000;
     m_g2d.setColor(s_defaultColor);
     m_g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
