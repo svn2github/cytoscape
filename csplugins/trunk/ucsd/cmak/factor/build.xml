@@ -3,6 +3,10 @@
         simple example build file
     </description>
   <!-- set global properties for this build -->
+
+  <property name="plugin.name" value="yeang2005-plugin"/>
+  <property name="plugin.lib.dir" value="plugin-lib"/>
+
   <property name="src" location="src"/>
   <property name="build" location="build"/>
   <property name="dist"  location="dist"/>
@@ -142,15 +146,23 @@
 
   <target name="plugin" depends="compile" 
           description="generate the plugin jar">
-    <mkdir dir="${dist}"/>
-    <delete file="${dist}/yeang2005-plugin.jar"/>
-    <jar jarfile="${dist}/yeang2005-plugin.jar" 
-         basedir="${build}"
-         includes="fgraph/**,chi2cdf1table_rev.txt"
-         excludes="fgraph/test/**,**/*Test.class"
-    />
+ 
+       <mkdir dir="${dist}"/>
+       <delete file="${dist}/${plugin.name}.jar"/>
 
-    <copy file="${dist}/fgraph.jar" toDir="${user.home}/cytoscape-plugins"/>
+       <unjar dest="${build}">
+             <fileset dir="${plugin.lib.dir}"/>
+       </unjar>
+
+       <echo>Making jar: ${plugin.name}.jar</echo>
+
+       <jar jarfile="${dist}/${plugin.name}.jar" 
+            basedir="${build}"
+            includes="fgraph/**,antlr/**,netan/**,chi2cdf1table_rev.txt"
+            excludes="fgraph/test/**,**/*Test.class"/>
+
+       <copy file="${dist}/${plugin.name}.jar" 
+             toDir="${user.home}/cytoscape-plugins"/>
   </target>
 
   <target name="dist" depends="compile"
