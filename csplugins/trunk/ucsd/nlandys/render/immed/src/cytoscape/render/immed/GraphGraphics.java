@@ -32,6 +32,26 @@ public interface GraphGraphics
    */
   public void extents(double[] extentsArr, int offset);
 
+  /**
+   * This must be called to let the renderer know when drawing operations
+   * are about to be performed.  The sequence of calls will look like this:
+   * <blockquote>
+   * startFrame()<br />
+   * [rendering operation 1]<br />
+   * [rendering operation 2]<br />
+   * ...<br />
+   * finishFrame()<br />
+   * </blockquote>
+   * Thereafter, startFrame() may be called again to start another frame.
+   */
+  public void startFrame();
+
+  public void finishFrame();
+
+  /**
+   * Clears visible area and makes it transparent.  This is a drawing
+   * operation.
+   */
   public void clear();
 
   public void hiDrawNode(byte shape, double width, double height,
