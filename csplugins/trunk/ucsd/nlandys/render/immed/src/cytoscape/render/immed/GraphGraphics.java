@@ -15,7 +15,22 @@ public interface GraphGraphics
   public static final byte BORDER_SOLID = 1;
   public static final byte BORDER_DASHED = 2;
 
-  public void extents(double[] extentsArr);
+  /**
+   * Copies the graphics object's extents into the input array specified.
+   * A graphics object's extents do not change during the duration
+   * of the graphics object's lifespan.<p>
+   * Any drawing operations done outside of the graphics object's extents
+   * will not be visible, and will otherwise do no harm.<p>
+   * The information written into extentsArr is as follows:
+   * <blockquote><table border="1" cellpadding="5" cellspacing="0">
+   *   <tr>  <th>array index</th>  <th>value</th>  </tr>
+   *   <tr>  <td>offset</td>       <td>xMin</td>   </tr>
+   *   <tr>  <td>offset+1</td>     <td>yMin</td>   </tr>
+   *   <tr>  <td>offset+2</td>     <td>xMax</td>   </tr>
+   *   <tr>  <td>offset+3</td>     <td>yMax</td>   </tr>
+   * </table></blockquote>
+   */
+  public void extents(double[] extentsArr, int offset);
 
   public void clear();
 
