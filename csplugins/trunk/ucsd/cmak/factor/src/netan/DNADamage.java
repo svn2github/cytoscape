@@ -62,8 +62,11 @@ public class DNADamage
 
     static String BUF_DATA = BUF_DIR + "TF_KOs_orf.logratios.pscores4.tab2";
 
-    static String SIF_DATA = LOC_DIR + "all+met-p0.02-27Feb05.sif";
-    
+    //static String SIF_DATA = LOC_DIR + "all+met-p0.02-27Feb05.sif";
+    static String SIF_DATA_MMS = LOC_DIR + "plusMMS-27Feb05-p0.02.sif";
+    static String SIF_DATA_YPD = LOC_DIR + "minusMMS-27Feb05-p0.02.sif";
+    static String SIF_DATA = SIF_DATA_YPD;
+
     static double DEFAULT_EXP_VAL = 0.0001;
     static double DEFAULT_BUF_VAL = 0.78;
 
@@ -473,6 +476,7 @@ public class DNADamage
             outFile = args[0];
         }
         
-        dd.run(outFile, new double[] {0.01, 0.1, 0.5, 0.78});
+        //dd.run(outFile, new double[] {0.01, 0.1, 0.5, 0.78});
+        dd.run(outFile, new double[] {0.78});
     }
 }

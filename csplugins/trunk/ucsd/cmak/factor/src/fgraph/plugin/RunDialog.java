@@ -164,7 +164,7 @@ public class RunDialog extends JDialog implements ActionListener
         // expression panel
         p = createGrid();
 
-        exprField = createField(10, "yeang2004-expression.eda");
+        exprField = createField(10, "yeang2005-expression.eda");
         exprThreshField = createPvalField(10, 0.02);
         exprBrowse = createButton("Browse...");
         
@@ -181,7 +181,7 @@ public class RunDialog extends JDialog implements ActionListener
         p = createGrid();
         
         outDirField = createField(10, "/tmp");
-        outFileField = createField(10, "yeang2004_out");
+        outFileField = createField(10, "yeang2005_out");
 
         outDirBrowse = createButton("Browse...");
         outFileBrowse = createButton("Browse...");
@@ -199,8 +199,8 @@ public class RunDialog extends JDialog implements ActionListener
         // network panel
         p = createGrid();
 
-        sifField = createField(10, "yeang2004-network.sif");
-        edgeField = createField(10, "yeang2004-network.eda");
+        sifField = createField(10, "yeang2005-network.sif");
+        edgeField = createField(10, "yeang2005-network.eda");
         sifBrowse = createButton("Browse...");
         edgeBrowse = createButton("Browse...");
         edgeThreshField = createPvalField(10, 0);
@@ -537,6 +537,7 @@ public class RunDialog extends JDialog implements ActionListener
                 //SpringEmbedder)
                 //If the SpringEmbedder implementation changes,
                 //this code may need to be removed
+                /*
                 NodeView nv;
                 double width = view.getCanvas().getLayer().getGlobalFullBounds().getWidth();
                 double height = view.getCanvas().getLayer().getGlobalFullBounds().getHeight();
@@ -549,7 +550,9 @@ public class RunDialog extends JDialog implements ActionListener
                 }
                 SpringEmbeddedLayouter lay = new SpringEmbeddedLayouter(view);
                 lay.doLayout();
+                */
                 view.fitContent();
+                
                 //Cytoscape.createNetworkView(cn);
             }
         }
