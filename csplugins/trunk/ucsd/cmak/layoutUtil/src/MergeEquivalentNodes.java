@@ -308,13 +308,14 @@ public class MergeEquivalentNodes extends CytoscapePlugin {
             // cmak 4.13.05
             // adjust node sizes -- can get rid of this because
             // this function is redundant with the ResizeNodes plugin.
+            /*
             for (Iterator nIt=network.nodesIterator(); nIt.hasNext();) {
 		int thisNodeGP = network.getIndex((CyNode)nIt.next());
 		int thisNodeRG = network.getRootGraphNodeIndex(thisNodeGP);
 		
                 adjustNodeSize(thisNodeRG);
             }
-            
+            */
             System.err.println("Finished MergeEquivalentNodes: "
                                + _edgeAttr);
 	} // end method run()
@@ -542,7 +543,7 @@ public class MergeEquivalentNodes extends CytoscapePlugin {
             if(longest.length() > 5)
             {
                 network.setNodeAttributeValue(node, "NodeWidth",
-                                              new Double(7 * longest.length()));
+                                              new Double(8 * longest.length()));
             }
             else if(longest.length() > 3)
             {

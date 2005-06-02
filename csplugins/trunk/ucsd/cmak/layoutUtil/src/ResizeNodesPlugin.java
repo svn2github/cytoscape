@@ -219,7 +219,7 @@ public class ResizeNodesPlugin extends CytoscapePlugin {
             if(longest.length() > 5)
             {
                 network.setNodeAttributeValue(node, "NodeWidth",
-                                              new Double(7 * longest.length()));
+                                              new Double(9 * longest.length()));
             }
             else if(longest.length() > 3)
             {
