@@ -70,10 +70,20 @@ public final class GraphGraphics
    * to render a new picture.  Don't try to be clever in not calling this
    * method.<p>
    * This method must be called from the AWT event handling thread.
+   * @param x0 the x component of the translation transform for the frame
+   *   about to be rendered; a node with an xMin of x0 will be rendered
+   *   such that its leftmost point is exactly on the underlying image's
+   *   left edge (assuming the node's leftmost point is not completely above
+   *   or below the image).
+   * @param y0 the y component of the translation transform for the frame
+   *   about to be rendered; a node with a yMin of y0 will be rendered such
+   *   that its topmost point is exactly on the underlying image's
+   *   top edge
    * @exception IllegalThreadStateException if the calling thread isn't the
    *   AWT event handling thread.
    */
-  public final void clear()
+  public final void clear(final double x0, final double y0,
+                          final double scaleFactor)
   {
     if (s_debug && !EventQueue.isDispatchThread())
       throw new IllegalStateException
@@ -111,12 +121,12 @@ public final class GraphGraphics
     final Shape shape;
     switch (shapeType) {
     case SHAPE_RECTANGLE:
-      shape = m_rect2d;
       m_rect2d.setRect(xMin, yMin, xMax - xMin, yMax - yMin);
+      shape = m_rect2d;
       break;
     case SHAPE_ELLIPSE:
-      shape = m_ellp2d;
       m_ellp2d.setFrame(xMin, yMin, xMax - xMin, yMax - yMin);
+      shape = m_ellp2d;
       break;
     default:
       throw new IllegalArgumentException("shapeType is not recognized"); }
