@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.Shape;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 
 /**
@@ -43,6 +44,7 @@ public final class GraphGraphics
   private Graphics2D m_g2d;
   private int m_currColor;
   private final Rectangle2D.Double m_rect2d;
+  private final Ellipse2D.Double m_ellp2d;
 
   /**
    * All rendering operations will be performed on the specified image.
@@ -59,6 +61,7 @@ public final class GraphGraphics
     m_imageHeight = this.image.getHeight(null);
     this.clear();
     m_rect2d = new Rectangle2D.Double();
+    m_ellp2d = new Ellipse2D.Double();
   }
 
   /**
@@ -112,9 +115,11 @@ public final class GraphGraphics
       m_rect2d.setRect(xMin, yMin, xMax - xMin, yMax - yMin);
       break;
     case SHAPE_ELLIPSE:
+      shape = m_ellp2d;
+      m_ellp2d.setFrame(xMin, yMin, xMax - xMin, yMax - yMin);
       break;
     default:
-      throw new IllegalArgumentException("shapeType is not recognized");
+      throw new IllegalArgumentException("shapeType is not recognized"); }
   }
 
   /**
