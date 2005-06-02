@@ -1,347 +1,310 @@
-/**  Copyright (c) 2005 Institute for Systems Biology
- **  This program is free software; you can redistribute it and/or modify
- **  it under the terms of the GNU General Public License as published by
- **  the Free Software Foundation; either version 2 of the License, or
- **  any later version.
- **
- **  This program is distributed in the hope that it will be useful,
- **  but WITHOUT ANY WARRANTY; without even the implied warranty of
- **  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  The software and
- **  documentation provided hereunder is on an "as is" basis, and the
- **  Institute for Systems Biology has no obligations to provide maintenance, 
- **  support, updates, enhancements or modifications.  In no event shall the
- **  Institute for Systems Biology be liable to any party for direct, 
- **  indirect, special,incidental or consequential damages, including 
- **  lost profits, arising out of the use of this software and its 
- **  documentation, even if the Institute for Systems Biology 
- **  has been advised of the possibility of such damage. See the
- **  GNU General Public License for more details.
- **   
- **  You should have received a copy of the GNU General Public License
- **  along with this program; if not, write to the Free Software
- **  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- **/
 /**
  * Determine pairwise genetic interactions from observed <code>Phenotypes</code>
  *
- * @author V. Thorsson
+ * @author Vesteinn Th.
+ * @author Iliana Avila refactored
+ * @version 2.0
  */
-// TODO: This class should contain static methods that take as an argument
-// a CyNetwork
-
 package phenotypeGenetics;
+
+import phenotypeGenetics.action.*;
+import cytoscape.util.*;
 import java.util.*;
+import java.lang.*;
 import java.io.*;
+import java.text.*;
 import cytoscape.*;
-import cytoscape.data.*;
+import cytoscape.data.Semantics;
+import cern.colt.list.IntArrayList;
 
-
-public class GeneticInteractionCalculator {
-
-  public final static String GENETIC_INFLUENCE_EFFECT = "geneticInfluenceEffect";
-  PhenoEnvironment phenotypeEnv;
-  Project project;
-  CyNetwork graph;
+public class GeneticInteractionCalculator{
 
   /**
-   * @param pe The PhenoEnvironment combination under consideration
-   * @param project The Project under consideration
-   * @param cy_network the CyNetwork for which genetic interactions 
-   * will be calculated
-   */
-  public GeneticInteractionCalculator (PhenoEnvironment pe, 
-                                       Project project,
-                                       CyNetwork cy_network) {
-    this.phenotypeEnv = pe;
-    this.project = project;
-    this.graph = cy_network;
-  }
-  //----------------------------------------------------------------------------------------
-  /**
-   * Identify genetic interactions, add edges attached to GeneticInteraction objects
+   * Estimates how many units it will take to calculate genetic interactions
+   * for the given Projects, mainly used for progress monitors
    *
-   * @return an array of calculated <code>GeneticInteraction</code> objects
+   * @see cytoscape.util.CytoscapeProgressMonitor
    */
-  // this method should take a CyNetwork as an argument and calculate interactions
-  // on that network
-  public GeneticInteraction [] calculate () throws Exception {
+  public static int getLengthOfTask (Project [] projects){
+    
+    int count = 0;
+    for(int i = 0; i < projects.length; i++){
+      Project pDoubleMutant = projects[i].filterByNumberOfMutants(2);
+      Experiment [] experimentsDoubleMutant = pDoubleMutant.getExperiments();
+      count += experimentsDoubleMutant.length;
+    }// for i
+    
+    return count;
+  }//getLengthOfTask
+  
+  /**
+   * Calculates genetic interactions.
+   *
+   * @param cy_net the CyNetwork to whose RootGraph genetic edges will be added
+   * @param projects an array of Projects with phenotype data to be used for the
+   * genetic interaction calculation
+   * @param pheno_enviros an array of PhenoEnvironments for each Project in the
+   * projects array
+   * @param task_progress the TaskProgress used to monitor progress
+   * @see phenotypeGenetics.action.TaskProgress
+   * @return an array of RootGraph indices for edges that were created in the
+   * RootGraph for the genetic interactions
+   * @throws IllegalArgumentException if there are no wild-type experiment(s) in a 
+   * given Project
+   */
+  public static int [] calculateInteractions 
+    (CyNetwork cy_net,
+     Project [] projects,
+     PhenoEnvironment [] pheno_enviros,
+     TaskProgress task_progress) throws IllegalArgumentException{
+    
+    IntArrayList newEdges = new IntArrayList();
+    for(int i = 0; i < pheno_enviros.length; i++){
+      int []edges = GeneticInteractionCalculator.calculateInteractions(cy_net, 
+                                                                       projects[i],
+                                                                       pheno_enviros[i],
+                                                                       task_progress);
+      for(int j = 0; j < edges.length; j++){
+        newEdges.add(edges[j]);
+      }//for j
+    }//for i
+    
+    task_progress.done = true;
+    newEdges.trimToSize();
+    
+    return newEdges.elements();
+  }//calculateInteractions
 
-    Vector geneNames = new Vector ();
-    Iterator nodeIt = this.graph.nodesIterator();
-    while(nodeIt.hasNext()) {
-      CyNode node = (CyNode)nodeIt.next();
-      String nodeName = 
-        (String)Cytoscape.getNodeAttributeValue(node, Semantics.CANONICAL_NAME);
-      geneNames.add(nodeName);
-    }
-    
-    // Total number of experiments in project
-    int numExperiments = project.getExperiments().length; 
-    
+  /**
+   * Identify genetic interactios and create edges in cy_net's RootGraph
+   * representing them
+   *
+   * @param cy_net the CyNetwork on which we are calculating interacions
+   * @param project the Project that contains the phenotype information
+   * @param pheno_environment the PhenoEnvironment
+   * @param task_progress the TaskProgress for progress monitors that may run this method
+   * @return an array of RootGraph indices of edges that where newly created to represent the
+   * genetic interactions
+   * @throws IllegalArgumentException if there are no wild-type experiments in the Project 
+  */
+  protected static int [] calculateInteractions 
+    (CyNetwork cy_net,
+     Project project,
+     PhenoEnvironment pheno_environment,
+     TaskProgress task_progress) throws IllegalArgumentException{
+        
     Project wtExperiments = project.filterByNumberOfMutants(0);
-    System.out.println("---------------Wild-type Experiments-------------\n" + wtExperiments );
     int numberWTExperiments = wtExperiments.numberOfExperiments();
 
-    // For now, assume one wild-type Experiment
-    if ( numberWTExperiments > 1 ){
-      System.out.println("Warning, more than one wild-type experiment - "+
-                         "check that wild-type phenotypevalues agree");
+    if(numberWTExperiments == 0){
+      throw new IllegalArgumentException("No wild-type experiment in data.");
+                                         
     }
-    
-    if ( numberWTExperiments == 0 ){
-      System.out.println("Error: No wild-type experiment."+
-                         " No genetic interactions will be reported ");
-    }
-
-    ArrayList calculatedInteractions = new ArrayList();
-    
-    if ( numberWTExperiments >= 1 ){
-
-      Experiment expWT =  wtExperiments.getExperiments()[0];
-      // Arbitrary choice of "first" wildtype observation
-	
-      //Filter project by single mutant experiments
-      Project pSingleMutant = project.filterByNumberOfMutants(1);
-      //Filter project by double mutant experiments
-      Project pDoubleMutant = project.filterByNumberOfMutants(2);
-      Experiment [] experimentsDoubleMutant = pDoubleMutant.getExperiments();
-        
-      // Loop over all double mutant experiments
-      for (int i=0; i < experimentsDoubleMutant.length; i++) {
-
-        Experiment expAB = experimentsDoubleMutant[i] ; 
-	    
-        // A and B are arbitrary names for the first and second manipulated gene, respectively
-        Condition condA = expAB.getGeneticConditions()[0]; 
-        Condition condB = expAB.getGeneticConditions()[1]; 
-        String geneA = condA.gene ;  
-        String geneB = condB.gene ;  
-	  
-        Project pASingle = pSingleMutant.filterByManipulatedGenes(new String[] {geneA});
-        Project pBSingle = pSingleMutant.filterByManipulatedGenes(new String[] {geneB});
-    
-        // Get observed phenotype of the double mutant
-        String phenoName = this.phenotypeEnv.getPhenoName();
-
-        Phenotype phenoAB = expAB.getPhenotypeWithName(phenoName);
-        String phenoValueAB = phenoAB.getValue();
-	      
-        // Determine if the phenotype can be converted to double
-        // If double, we *assume* for now that the same is true of pWT pA and pB 
-        // If not possible , we *assume* for now that the same is true of pWT pA and pB
-        // i.e. these are all discrete (String)
-        boolean isDouble = false; 
-        try {
-          Double.parseDouble (phenoValueAB);
-          isDouble = true; 
-        }catch (NumberFormatException e) {
-          isDouble = false; 
-        }
-	      
-        Project pApheno = pASingle.filterByPhenotypeName(phenoName);
-        Project pBpheno = pBSingle.filterByPhenotypeName(phenoName);
-
-        //AlleleForms in the double mutant experiment
-        int ab_Amanip = expAB.getGeneticConditionWithGene(geneA).getAlleleForm();
-        int ab_Bmanip = expAB.getGeneticConditionWithGene(geneB).getAlleleForm();
-        //Alleles in the double mutant experiment
-        String ab_Aalname = expAB.getGeneticConditionWithGene(geneA).getAllele();
-        String ab_Balname = expAB.getGeneticConditionWithGene(geneB).getAllele();
+            
+    // arbitrary choice of "first" wildtype observation
+    Experiment expWT =  wtExperiments.getExperiments()[0];
       
-        Experiment expA = new Experiment(); 
-        Experiment expB = new Experiment();
-
-        // Assume alleleForm and allele are not matched more than once
-        for (int k = 0; k < pApheno.numberOfExperiments(); k++){
-          Experiment expTry = pApheno.getExperiments()[k]; 
-          int a_Amanip = expTry.getGeneticConditionWithGene(geneA).getAlleleForm();
-          String a_Aalname = expTry.getGeneticConditionWithGene(geneA).getAllele();
-          boolean matchTrue = (ab_Amanip == a_Amanip);
-          if ( ab_Aalname != null && a_Aalname != null ) {
-            matchTrue = matchTrue && ab_Aalname.compareTo(a_Aalname) == 0;
-          } 
-          if (matchTrue) expA = expTry;
-        }
+    // filter project by single mutant experiments
+    Project pSingleMutant = project.filterByNumberOfMutants(1);
+      
+    // filter project by double mutant experiments
+    Project pDoubleMutant = project.filterByNumberOfMutants(2);
+    Experiment [] experimentsDoubleMutant = pDoubleMutant.getExperiments();
+      
+    // get all of the possible phenotype names
+    String [] allPhenoNames = project.getDiscretePhenotypeRanks().getPhenotypeNames();
         
-        // Assume alleleForm and allele are not matched more than once
-        for (int k = 0 ; k < pBpheno.numberOfExperiments(); k++){
-          Experiment expTry = pBpheno.getExperiments()[k]; 
-          int a_Bmanip = expTry.getGeneticConditionWithGene(geneB).getAlleleForm();
-          String a_Balname = expTry.getGeneticConditionWithGene(geneB).getAllele();
-          boolean matchTrue = (ab_Bmanip == a_Bmanip);
-          if ( ab_Balname != null && a_Balname != null ) {
-            matchTrue = matchTrue && ab_Balname.compareTo(a_Balname) == 0;
-          } 
-          if (matchTrue) expB = expTry;
-        }
-	      
-        if ( !expA.isEmpty() && !expB.isEmpty() ) { 
-          // We found the appropriate single mutants: proceed		  
-          // Identify genetic interaction
-          GeneticInteraction interaction;
-          if ( isDouble ) {
-            interaction = geneticInteractionContinuous(expWT, expA, expB, expAB, phenoName);
-          } else {
-            //Get ranking of phenotype value strings
-            PhenotypeTreeSelector phenotypeTreeSelector = new PhenotypeTreeSelector(project);
-            phenotypeTreeSelector.read ();
-            PhenotypeTree phenotypeTree = phenotypeTreeSelector.getPhenotypeTree();    
-            PhenotypeRanking pRank = phenotypeTree.getPhenotypeWithName (phenoName);
-            //Identify genetic interaction
-            interaction = geneticInteractionDiscrete(expWT, expA, expB, expAB, pRank);
-          }
-	
-          // iliana
-          // Delay creation of the edge to the point when we know what
-          // edge directions we want:
-          // Add edge for the genetic interaction
-          // (see GeneticClassVisualizer)
-          //addEdgeForInteraction(interaction);
-          // iliana
+    // get the current phenotype name
+    String currentPhenoName = pheno_environment.getPhenoName();
+    
+    // newly created edges for found genetic interactions
+    IntArrayList newEdgeIndices = new IntArrayList();
+        
+    for(int i = 0; i < experimentsDoubleMutant.length; i++){
+
+      Experiment expAB = experimentsDoubleMutant[i]; 
+      
+      // Get the names of the two genes that were deleted
+      // A and B is an arbitrary ordering for the first and second manipulated genes
+      Condition condA = expAB.getGeneticConditions()[0]; 
+      Condition condB = expAB.getGeneticConditions()[1]; 
+      String geneA = condA.gene;  
+      String geneB = condB.gene;  
+      
+      Project pASingle = pSingleMutant.filterByManipulatedGenes(new String[] {geneA});
+      Project pBSingle = pSingleMutant.filterByManipulatedGenes(new String[] {geneB});
+    
+      // filter by phenotype name the data for each gene mutation
+      Project pApheno = pASingle.filterByPhenotypeName(currentPhenoName);
+      Project pBpheno = pBSingle.filterByPhenotypeName(currentPhenoName);
+
+      //alleleForms in the double mutant experiment
+      int ab_Amanip = expAB.getGeneticConditionWithGene(geneA).getAlleleForm();
+      int ab_Bmanip = expAB.getGeneticConditionWithGene(geneB).getAlleleForm();
+      
+      //alleles in the double mutant experiment
+      String ab_Aalname = expAB.getGeneticConditionWithGene(geneA).getAllele();
+      String ab_Balname = expAB.getGeneticConditionWithGene(geneB).getAllele();
+      
+      // find single mutant experiments with the given phenotype name
+      Experiment expA = new Experiment(); 
+      Experiment expB = new Experiment();
+        
+      // assume alleleForm and allele are not matched more than once
+      for(int k = 0; k < pApheno.numberOfExperiments(); k++){
+        Experiment expTry = pApheno.getExperiments()[k]; 
+        int a_Amanip = expTry.getGeneticConditionWithGene(geneA).getAlleleForm();
+        String a_Aalname = expTry.getGeneticConditionWithGene(geneA).getAllele();
+        boolean matchTrue = (ab_Amanip == a_Amanip);
+        if(ab_Aalname != null && a_Aalname != null){
+          matchTrue = matchTrue && (ab_Aalname.compareTo(a_Aalname) == 0);
+        } 
+        if(matchTrue) expA = expTry;
+      }//for k
+
+      // assume alleleForm and allele are not matched more than once
+      for(int k = 0; k < pBpheno.numberOfExperiments(); k++){
+        Experiment expTry = pBpheno.getExperiments()[k]; 
+        int a_Bmanip = expTry.getGeneticConditionWithGene(geneB).getAlleleForm();
+        String a_Balname = expTry.getGeneticConditionWithGene(geneB).getAllele();
+        boolean matchTrue = (ab_Bmanip == a_Bmanip);
+        if(ab_Balname != null && a_Balname != null){
+          matchTrue = matchTrue && (ab_Balname.compareTo(a_Balname) == 0);
+        } 
+        if(matchTrue) expB = expTry;
+      }//for k
+      
+      if(!expA.isEmpty() && !expB.isEmpty()){ 
+        // we found the appropriate single mutants: proceed		  
+        
+        // identify genetic interaction
+        GeneticInteraction interaction;
+         
+        if(!project.getDiscretePhenotypeRanks().containsPhenotype(currentPhenoName)){
+          // continuous phenotype
+          interaction = geneticInteractionContinuous(pheno_environment,
+                                                     expWT, expA, expB, 
+                                                     expAB, currentPhenoName);
+        }else{
           
-          calculatedInteractions.add(interaction);
+          // discrete phenotype
+          interaction = geneticInteractionDiscrete(pheno_environment,expWT, 
+                                                   expA, expB, expAB, 
+                                                   project.getDiscretePhenotypeRanks());
+        }//else
+	
+        // add edge for the genetic interaction
+        CyEdge newEdge = createEdgeForInteraction(cy_net, interaction);
+        if(newEdge != null){
+          newEdgeIndices.add(newEdge.getRootGraphIndex());
         }
         
-      } // End loop over double mutants
+      }//if expA and expB found
       
-    }// End operations to perform if a wild-type experiment was found
-    int size = calculatedInteractions.size();
-    return 
-      (GeneticInteraction[])calculatedInteractions.toArray(new GeneticInteraction[size]);
-  }
-  //----------------------------------------------------------------------------------------
-  /**
-   * Interpret all <code>GeneticInteractions</code>
-   */
-  //----------------------------------------------------------------------------------------
-  public void interpret () throws Exception {
+      task_progress.currentProgress++;
+      int percent = (int)((task_progress.currentProgress * 100)/task_progress.taskLength);
+      task_progress.message = "<html>Genetic Interaction Calculation:<br>Completed " 
+        + Integer.toString(percent) + "%</html>";
       
-
-    String phenoName = this.phenotypeEnv.getPhenoName();
-    // This creates a node for the phenotype if it does not exist 
-    CyNode node = Cytoscape.getCyNode(phenoName, true);
+    }//end loop over double mutants
     
-    if(node == null){
-      throw new IllegalStateException("Phenotype node not successfully created!");
+    newEdgeIndices.trimToSize();
+    
+    return  newEdgeIndices.elements();
+  }//calculateInteractions
+    
+  /**
+   * Create an edge in cy_net's RootGraph representing the given GeneticInteraction
+   * but do not restore it in cy_net
+   *
+   * @param cy_net the CyNetwork for which to create the interaction
+   * @param interaction the interaction to add
+   * @return the newly created CyEdge in cy_net's RootGraph
+   */
+  protected static CyEdge createEdgeForInteraction (CyNetwork cy_net,
+                                                    GeneticInteraction interaction){
+    
+    DiscretePhenoValueInequality ineq = interaction.getDiscretePhenoValueInequality();
+    Mode mode = ineq.getMode();
+    if(mode.getName().equals(DiscretePhenoValueInequality.UNASSIGNED_MODE_NAME)){
+      // no edge for this interaction!
+      return null;
+    }
+    String direction = ineq.getDirection();
+    
+    CyNode source, target;
+    String sourceName, targetName;
+    if(direction.equals(DiscretePhenoValueInequality.NOT_DIRECTIONAL) ||
+       direction.equals(DiscretePhenoValueInequality.A_TO_B)){
+      sourceName = interaction.getMutantA().getName();
+      targetName = interaction.getMutantB().getName();
+      source = Cytoscape.getCyNode(sourceName, false);
+      target = Cytoscape.getCyNode(targetName, false);   
+    }else{
+      // B_TO_A
+      sourceName = interaction.getMutantB().getName();
+      targetName = interaction.getMutantA().getName();
+      target = Cytoscape.getCyNode(targetName, false);
+      source = Cytoscape.getCyNode(sourceName, false);
     }
     
-    // The node we created is in the RootGraph, so we need to restore it in the CyNetwork
-    this.graph.restoreNode(node);
-		Cytoscape.setNodeAttributeValue(node, Semantics.COMMON_NAME, phenoName);
+    if(source == null || !cy_net.containsNode(source)){
+      System.out.println("Node " + source + " does not exist in cyNetwork!!!");
+    }
+
+    if(target == null || !cy_net.containsNode(target)){
+      System.out.println("Node " + target + " does not exist in cyNetwork!!!");
+    }
     
-    // Loop over all edges 
-    int counter=0; 
-    CyEdge [] edges = getEdgesByAttributeNameValue (this.graph, "interaction", "genetic" );
-    for (int i=0; i < edges.length; i++) {
-      CyEdge edge = edges[i]; 
-      //Get genetic interaction
-      Object value = Cytoscape.getEdgeAttributeValue(edge, GeneticInteraction.ATTRIBUTE_SELF);
-      GeneticInteraction interaction = null;
-      if(value != null && value instanceof GeneticInteraction){
-        interaction = (GeneticInteraction)value;
-      }else{
-        throw new IllegalStateException("value for GeneticInteraction.ATTRIBUTE_SELF is not a" 
-                                        + " GeneticInteraction or is null");
+    String edgeName = interaction.getEdgeName();
+    // This creates the edge:
+    CyEdge newEdge = Cytoscape.getCyEdge( sourceName,
+                                          edgeName,
+                                          targetName,
+                                          interaction.getGeneticClass() );
+       
+    HashMap edgeAttributes = interaction.getEdgeAttributes();
+    Iterator it = edgeAttributes.entrySet().iterator();
+    while(it.hasNext()){
+      Map.Entry entry = (Map.Entry)it.next();
+      if(entry.getKey() instanceof String){
+        Cytoscape.setEdgeAttributeValue(newEdge, 
+                                        (String)entry.getKey(), 
+                                        entry.getValue());
       }
-	  
-      if ( !interaction.isEmpty() ){
-
-	      //Evaluate model prediction
-	      HashMap ginfo = interaction.interpret(); 
-
-	      // Add predicted edges. Each edge also inherits all information from interaction
-        CyNode nodeA = Cytoscape.getCyNode(interaction.getMutantA().getName(), false);
-        CyNode nodeB = Cytoscape.getCyNode(interaction.getMutantB().getName(), false);
-	      CyNode nodeP = Cytoscape.getCyNode(phenoName, false);
-	      addPredictedEdges ( nodeA, nodeB, nodeP, ginfo, interaction.getEdgeAttributes());
-	      counter++; 
-      } 
-
-    }//end loop over edges
-      
-    //Print statistics to standard out 
-    if ( counter != 0 ){
-      System.out.println(counter  + " genetic interactions were interpreted.");
-    } else {
-      System.out.println("Warning: No genetic interactions interpreted. "+
-                      "You may not have Identified the genetic interactions in your project");
-    }
-      
-  }
-  //-----------------------------------------------------------------------------
-  /**
-   * Add an edge in the graph corresponding to a genetic interaction
-   */
-  // NOT USED WITHIN THIS CLASS (OR ANY THAT I KNOW OF)
-  public void addEdgeForInteraction (GeneticInteraction interaction){
-    // At this point, the source and target nodes do not exist in CyNetwork!
-    CyNode source = Cytoscape.getCyNode(interaction.getMutantA().getName(), false);
-    if(source == null){
-      throw new IllegalStateException("Node with name "+ interaction.getMutantA().getName() 
-                                      + " does not exist in RootGraph!");
-    }
-    if(!this.graph.containsNode(source)){
-      throw new IllegalStateException("Node with name "+ interaction.getMutantA().getName() 
-                                      + " does not exist in CyNetwork!");
-    }
-    CyNode target = Cytoscape.getCyNode(interaction.getMutantB().getName(), false);   
-    if(target == null){
-      throw new IllegalStateException("Node with name "+ interaction.getMutantB().getName() 
-                                      + " does not exist in RootGraph!");
-    }
-    if(!this.graph.containsNode(target)){
-      throw new IllegalStateException("Node with name "+ interaction.getMutantB().getName() 
-                                      + " does not exist in CyNetwork!");
-    }
-    String sourceName = 
-      (String)Cytoscape.getNodeAttributeValue(source, Semantics.CANONICAL_NAME);
-    String targetName =
-      (String)Cytoscape.getNodeAttributeValue(target, Semantics.CANONICAL_NAME);
-    String edgeName = interaction.getEdgeName();  
-    // This should create the edge if it does not exist:
-    CyEdge edge = Cytoscape.getCyEdge(sourceName,
-                                      edgeName,
-                                      targetName,
-                                      interaction.getGeneticClass() // type of interaction
-                                      );
-    // Copy attributes to the new edge:
-    HashMap attributeMap = interaction.getEdgeAttributes();
-    Set entries = attributeMap.entrySet();
-    Iterator entryIt = entries.iterator();
-    while(entryIt.hasNext()){
-      Map.Entry entry = (Map.Entry)entryIt.next();
-      Cytoscape.setEdgeAttributeValue(edge, (String)entry.getKey(), entry.getValue()); 
-    }
-    // Restore the edge in the CyNetwork, since we created it in the RootGraph
-    this.graph.restoreEdge(edge);
-  }
-  //-----------------------------------------------------------------------------
-  /**
-   *
-   * Type of genetic interaction implied by <codea>Experiments</code> with a common 
-   * <code>Phenotype</code> name. 
-   * Phenotype values are real, and have a an associated error estimate.
-   * 
-   * @param expWT       Wild-type experiment
-   * @param expA        An experiment in which gene A was manipulated 
-   * @param expB        An experiment in which gene B was manipulated 
-   * @param expAB       An experiment in which genes A and B were manipulated 
-   * @param phenoName   The <code>Phenotype</code> name of interest 
-   *
-   * @return the GeneticInteraction object representing the interaction
-   *                    
-   * @exception IllegalArgumentException If phenotypes names do not all agree, or if 
-   * number of genetic manipulations is wrong in any experiment. 
-   *
-   * @author thorsson@systemsbiology.org
-   */
-  public GeneticInteraction geneticInteractionContinuous 
-    (Experiment expWT, 
+    }//it.hasNext()
+    
+    Cytoscape.setEdgeAttributeValue(newEdge,
+                                    DiscretePhenoValueInequality.EDGE_ATTRIBUTE, 
+                                    interaction.getDiscretePhenoValueInequality().toString()
+                                    );
+  
+    return newEdge;
+  }//createEdgeForInteraction
+  
+   /**
+    * Type of genetic interaction implied by <code>Experiments</code> with a common 
+    * <code>Phenotype</code> name. 
+    * Phenotype values are real, and have a an associated error estimate.
+    * 
+    * @param pheno_environment the PhenoEnvironment
+    * @param expWT       Wild-type experiment
+    * @param expA        an experiment in which gene A was manipulated 
+    * @param expB        an experiment in which gene B was manipulated 
+    * @param expAB       an experiment in which genes A and B were manipulated 
+    * @param phenoName   the <code>Phenotype</code> name of interest 
+    * @return the GeneticInteraction object representing the interaction
+    * @exception IllegalArgumentExceptionrgumentException if phenotypes names do 
+    * not all agree, or if number of genetic manipulations is wrong in any experiment. 
+    */
+  protected static GeneticInteraction geneticInteractionContinuous 
+    (PhenoEnvironment pheno_environment,
+     Experiment expWT, 
      Experiment expA,
      Experiment expB, 
      Experiment expAB,
      String phenoName) throws IllegalArgumentException {
-    
+
     illegalGeneticInteractionInputs(expWT, expA, expB, expAB, phenoName);
 
     Phenotype phenoWT = expWT.getPhenotypeWithName(phenoName);
@@ -360,7 +323,7 @@ public class GeneticInteractionCalculator {
     int alleleFormA = condA.getAlleleForm(); 
     int alleleFormB = condB.getAlleleForm(); 
     
-    // Get phenotype values
+    //Get phenotype values
     String phenoValueWT = phenoWT.getValue();
     String phenoValueA = phenoA.getValue(); 
     String phenoValueB = phenoB.getValue(); 	
@@ -373,29 +336,12 @@ public class GeneticInteractionCalculator {
     Phenotype phenoBdev = expB.getPhenotypeWithName(phenoNameDeviation);
     Phenotype phenoABdev = expAB.getPhenotypeWithName(phenoNameDeviation);
 
-    // Get phenotype values
+    //Get phenotype values
     String devValueWT = phenoWTdev.getValue();
     String devValueA  = phenoAdev.getValue(); 
     String devValueB  = phenoBdev.getValue(); 	
     String devValueAB = phenoABdev.getValue();
 
-    
-    /*System.out.println("\n"); 
-      System.out.println("Summarizing results of relevant phenotypes"); 
-      System.out.println("Experiment " + expAB.name + " is a double mutant" );
-      System.out.println("With observed phenotype " + "phenoName: " + phenoName + " phenoValue: "+phenoValueAB);
-      System.out.println("With observed deviation " + "phenoNameDeviation: " + phenoNameDeviation + " phenoValuedev: "+devValueAB);
-      System.out.println("Experiment " + expA.name +" is the corresponding single mutant A" );
-      System.out.println("With observed A phenotype " + "phenoNameA: " + phenoName + " phenoValueA: "+phenoValueA);
-      System.out.println("With observed deviation " + "phenoNameDeviation: " + phenoNameDeviation + " phenoValuedev: "+devValueA);
-      System.out.println("Experiment " + expB.name  +" is the corresponding single mutant B" );
-      System.out.println("With observed B phenotype " + "phenoNameB: " + phenoName + " phenoValueB: "+phenoValueB);
-      System.out.println("With observed deviation " + "phenoNameDeviation: " + phenoNameDeviation + " phenoValuedev: "+devValueB);
-      System.out.println("Experiment " + expWT.name  +" is the corresponding wildtype " );
-      System.out.println("With observed phenotype " + "phenoName: " + phenoName + " phenoValueWT: "+phenoValueWT);
-      System.out.println("With observed deviation " + "phenoNameDeviation: " + phenoNameDeviation + " phenoValuedev: "+devValueWT);
-      System.out.println("\n");*/
-    
     double pWT = Double.parseDouble(phenoValueWT);
     double pA  = Double.parseDouble(phenoValueA);
     double pB  = Double.parseDouble(phenoValueB);
@@ -408,190 +354,89 @@ public class GeneticInteractionCalculator {
 
     double [] x = {pWT, pA, pB, pAB};
     double [] e = {pWTe, pAe, pBe, pABe};
-    int [] bins = Utilities.discretize (x,e);
+    int [] bins = Utilities.discretize(x,e);
 
-    /*System.out.println("Bins:");
-      StringBuffer sb = new StringBuffer();
-      for (int i=0; i<x.length; i++) sb.append(bins[i]+" ");
-      System.out.println(sb.toString());
-
-      System.out.println("Vals:");
-      sb = new StringBuffer();
-      for (int i=0; i<x.length; i++) sb.append(x[i]+" ");
-      System.out.println(sb.toString());
-
-      System.out.println("Errs:");
-      sb = new StringBuffer();
-      for (int i=0; i<x.length; i++) sb.append(e[i]+" ");
-      System.out.println(sb.toString());*/
-
-    DiscretePhenoValueSet d = new DiscretePhenoValueSet();
-    int nlevels = Utilities.levelCount(bins);
-    d.setBase(nlevels);
-    d.setValues(bins);
-
+    DiscretePhenoValueInequality d = 
+      DiscretePhenoValueInequality.getPhenoInequality(bins[0], 
+                                                      bins[1], 
+                                                      bins[2], 
+                                                      bins[3]);
     // Create Genetic Interaction
     GeneticInteraction interaction = new GeneticInteraction();
-    interaction.setDiscretePhenoValueSet(d);
-    interaction.setPhenoEnvironment(this.phenotypeEnv);
+    interaction.setDiscretePhenoValueInequality(d);
+    interaction.setPhenoEnvironment(pheno_environment);
     
     // Create Single mutantA and attach to genetic interaction
     SingleMutant m = new SingleMutant();
     m.setName(geneA);
-    m.setCommonName(geneA);
+    CyNode nodeA = Cytoscape.getCyNode(geneA, false); // should exist already!
+    String geneAcommonName = 
+      (String)Cytoscape.getNodeAttributeValue(nodeA, Semantics.COMMON_NAME);
+    m.setCommonName(geneAcommonName);
     m.setAllele(alleleA);
     m.setAlleleForm(alleleFormA);
-    m.setPhenoEnvironment(this.phenotypeEnv);
+    //m.setPhenoEnvironment(pheno_environment);
     interaction.setMutantA(m);
 
     // Create Single mutantB and attach to genetic interaction
     m = new SingleMutant();
     m.setName(geneB);
-    m.setCommonName(geneB);
+    CyNode nodeB = Cytoscape.getCyNode(geneB, false);
+    String geneBcommonName = 
+      (String)Cytoscape.getNodeAttributeValue(nodeB, Semantics.COMMON_NAME);
+    m.setCommonName(geneBcommonName);
     m.setAllele(alleleB);
     m.setAlleleForm(alleleFormB);
-    m.setPhenoEnvironment(this.phenotypeEnv);
+    //m.setPhenoEnvironment(pheno_environment);
     interaction.setMutantB(m);
 
     interaction.setGeneticClass();
+
+    // Set observed phenotype value, including error
+    String pattern = ".####";//Allow four significant digits 
+    DecimalFormat myFormatter = 
+      new DecimalFormat(pattern);//Plus minus. 177 in Decimal. B1 in hex. 
+    //Unicode: Plus minus sign. 177 in Decimal. B1 in  hexadecimal. 
+    String plusMinus = "\u00B1"; 
     
-    return(interaction); 
-  }
+    String pveWT = myFormatter.format(pWT)+ " " + plusMinus + " " + myFormatter.format(pWTe);
+    String pveA = myFormatter.format(pA)+ " " + plusMinus + " " + myFormatter.format(pAe);
+    String pveB = myFormatter.format(pB)+ " " + plusMinus + " " + myFormatter.format(pBe);
+    String pveAB = myFormatter.format(pAB)+ " " + plusMinus + " " + myFormatter.format(pABe);
+    interaction.setPhenotypeValueWT(pveWT);
+    interaction.setPhenotypeValueA(pveA);
+    interaction.setPhenotypeValueB(pveB);
+    interaction.setPhenotypeValueAB(pveAB);
 
+    return interaction; 
+  }//geneticInteractionContinuous
 
-  //-----------------------------------------------------------------------------
   /**
-   *
-   * For interpreted genetic interaction, attach predicted edge attributes to edges 
-   * between A, B, and a phenotype node. 
-   *
-   * @param nodeA The A node
-   * @param nodeB The B node
-   * @param nodeP The phenotype node
-   * @param result set of edge annotations found by interpreting a genetic interaction
-   * @param info addtional information to be included as edge attributes
-   *
-   * @see GeneticInteraction
-   */
-  protected void addPredictedEdges ( CyNode nodeA, 
-                                     CyNode nodeB, 
-                                     CyNode nodeP, 
-                                     HashMap result, 
-                                     HashMap info ){
-
-    //Ensure that the additional info attribute set specifies that the interaction
-    //is of the type geneticInfluence. This may mean overwriting existing interaction 
-    //attributes in info 
-    info.put("interaction", "geneticInfluence");
-
-    String effect, sourceName, targetName;
-
-    if ( result.get("A to B") != null ){ 
-      effect = (String) result.get("A to B"); 
-      sourceName = (String)Cytoscape.getNodeAttributeValue(nodeA, Semantics.CANONICAL_NAME);
-      targetName = (String)Cytoscape.getNodeAttributeValue(nodeB, Semantics.CANONICAL_NAME );
-      CyEdge edge = createEdge(sourceName, targetName, effect, info);
-      Cytoscape.setEdgeAttributeValue(edge,GENETIC_INFLUENCE_EFFECT, effect);
-    }
-
-    if ( result.get("B to A") != null ){ 
-      effect = (String)result.get("B to A"); 
-      sourceName = (String)Cytoscape.getNodeAttributeValue(nodeB, Semantics.CANONICAL_NAME);
-      targetName = (String)Cytoscape.getNodeAttributeValue(nodeA, Semantics.CANONICAL_NAME);
-      CyEdge edge = createEdge(sourceName, targetName, effect, info);
-      Cytoscape.setEdgeAttributeValue(edge,GENETIC_INFLUENCE_EFFECT, effect);
-    }// if B to A
-
-    if ( result.get("AB combined") != null ){ 
-      effect = (String) result.get("AB combined"); 
-      sourceName = (String)Cytoscape.getNodeAttributeValue(nodeA, Semantics.CANONICAL_NAME);
-      targetName = (String)Cytoscape.getNodeAttributeValue(nodeB, Semantics.CANONICAL_NAME);
-      CyEdge edge = createEdge(sourceName, targetName, effect, info);
-      Cytoscape.setEdgeAttributeValue(edge,GENETIC_INFLUENCE_EFFECT, effect);
-    }// if AB combined
-
-
-    if ( result.get("A to P") != null ){ 
-      effect = (String) result.get("A to P"); 
-      sourceName = (String)Cytoscape.getNodeAttributeValue(nodeA, Semantics.CANONICAL_NAME);
-      targetName = (String)Cytoscape.getNodeAttributeValue(nodeP, Semantics.CANONICAL_NAME);
-      CyEdge edge = createEdge(sourceName, targetName, effect, info);
-      Cytoscape.setEdgeAttributeValue(edge,GENETIC_INFLUENCE_EFFECT, effect);
-    }// if A to P
-
-    if ( result.get("B to P") != null ){ 
-      effect = (String) result.get("B to P"); 
-      sourceName = (String)Cytoscape.getNodeAttributeValue(nodeB, Semantics.CANONICAL_NAME);
-      targetName = (String)Cytoscape.getNodeAttributeValue(nodeP, Semantics.CANONICAL_NAME);
-      CyEdge edge = createEdge(sourceName, targetName, effect, info);
-      Cytoscape.setEdgeAttributeValue(edge,GENETIC_INFLUENCE_EFFECT, effect);
-    }// if B to P
-
-    
-  }
-  /**
-   * Creates an edge in this.graph with the given interaction type and source and 
-   * target nodes, and it copies the attribute->value entries in the hash-map to 
-   * the edge's attributes.
-   *
-   * @return the created edge or null if the edge was not created
-   */
-  protected CyEdge createEdge 
-    (String source_name, 
-     String target_name,
-     String interaction_type,
-     HashMap attributes){
-    
-    if(source_name != null && target_name != null && interaction_type != null){
-      String edgeName = 
-        source_name + " (" + interaction_type + ") " + target_name + " " + 
-        this.phenotypeEnv.toString();
-      // This should create the edge if it does not exist already:
-      CyEdge edge = Cytoscape.getCyEdge(source_name,
-                                        edgeName,
-                                        target_name,
-                                        interaction_type); // type of interaction
-      // Should not need to do this:
-      //edgeAttributes.addNameMapping (edgeName, edge); 
-      Set entries = attributes.entrySet();
-      Iterator entryIt = entries.iterator();
-      while(entryIt.hasNext()){
-        Map.Entry entry = (Map.Entry)entryIt.next();
-        Cytoscape.setEdgeAttributeValue(edge, (String)entry.getKey(), entry.getValue());
-      }    
-      this.graph.restoreEdge(edge);
-      return edge;
-    }// if sourceName, targetName and effect are not null
-    return null;
-  }
-  //-----------------------------------------------------------------------------
-  /**
-   * Type of genetic interaction implied by <codea>Experiments</code> with a 
-   * common <code>Phenotype</code> name.
+   * Type of genetic interaction implied by 
+   * <code>Experiments</code> with a common <code>Phenotype</code> name.
    * Phenotype values are strings. 
-   * 
-   * @param expWT       Wild-type experiment
-   * @param expA        An experiment in which gene A was manipulated 
-   * @param expB        An experiment in which gene B was manipulated 
-   * @param expAB       An experiment in which genes A and B were manipulated 
-   * @param pRank       The <code>PhenotypeRanking</code> giving the relation 
-   *                    of phenotype values 
-   *                    
-   * @exception IllegalArgumentException If phenotypes names do not all agree, or if number 
-   * of genetic manipulations is wrong in any experiment. 
    *
+   * @param pheno_environment the PhenoEnvironment
+   * @param expWT wild-type experiment
+   * @param expA an experiment in which gene A was manipulated 
+   * @param expB an experiment in which gene B was manipulated 
+   * @param expAB an experiment in which genes A and B were manipulated 
+   * @param pRank the <code>PhenotypeRanking</code> giving the relation of phenotype values 
+   * @throws IllegalArgumentException If phenotypes names do not all agree, or if number 
+   * of genetic manipulations is wrong in any experiment. 
    * @see PhenotypeRanking
-   * @author thorsson@systemsbiology.org
    */
-  public GeneticInteraction geneticInteractionDiscrete 
-    (Experiment expWT, 
+  protected static GeneticInteraction geneticInteractionDiscrete 
+    (PhenoEnvironment pheno_environment,
+     Experiment expWT, 
      Experiment expA, 
      Experiment expB, 
      Experiment expAB, 
-     PhenotypeRanking pRank ) throws IllegalArgumentException
-  {
-    String phenoName = pRank.getName();
-    illegalGeneticInteractionInputs (expWT, expA, expB, expAB, phenoName);
+     DiscretePhenotypeRanking pRank) throws IllegalArgumentException{
+    //PhenotypeRanking pRank ) throws IllegalArgumentException{
+    
+    String phenoName = pheno_environment.getPhenoName();
+    illegalGeneticInteractionInputs(expWT, expA, expB, expAB, phenoName);
 
     Phenotype phenoWT = expWT.getPhenotypeWithName(phenoName);
     Phenotype phenoA = expA.getPhenotypeWithName(phenoName);
@@ -615,95 +460,53 @@ public class GeneticInteractionCalculator {
     String phenoValueB = phenoB.getValue(); 	
     String phenoValueAB = phenoAB.getValue();
   
-    //System.out.println("\n"); 
-    //System.out.println("Summarizing results of relevant phenotypes"); 
-    //System.out.println("Experiment " + expAB.name + " is a double mutant" );
-    //System.out.println("With observed phenotype " + "phenoName: " + phenoName + " phenoValue: "+phenoValueAB);
-    //System.out.println("Experiment " + expA.name +" is the corresponding single mutant A" );
-    //System.out.println("With observed A phenotype " + "phenoNameA: " + phenoName + " phenoValueA: "+phenoValueA);
-    //System.out.println("Experiment " + expB.name  +" is the corresponding single mutant B" );
-    //System.out.println("With observed B phenotype " + "phenoNameB: " + phenoName + " phenoValueB: "+phenoValueB);
-    //System.out.println("\n");
-
-    // Look for blocking of phenotype
-    // alleleFormA, alleleFormB, phenoA, phenoB, phenoAB; 
-
-
     // Get phenotype values and relations specific to phenoName
-    DiscretePhenoValueSet d = 
-      encodedPhenoValues(phenoValueWT, phenoValueA, phenoValueB, phenoValueAB, pRank );
-    //System.out.println(d); 
-
+    DiscretePhenoValueInequality d = 
+      pRank.getDiscretePhenoValueIneq(phenoName, phenoValueWT, 
+                                      phenoValueA, phenoValueB, 
+                                      phenoValueAB);
+    
     // Create Genetic Interaction
     GeneticInteraction interaction = new GeneticInteraction();
-    interaction.setDiscretePhenoValueSet(d);
-    interaction.setPhenoEnvironment(this.phenotypeEnv);
+    interaction.setDiscretePhenoValueInequality(d);
+    interaction.setPhenoEnvironment(pheno_environment);
     
     // Create Single mutantA and attach to genetic interaction
     SingleMutant m = new SingleMutant();
     m.setName(geneA);
-    m.setCommonName(geneA);
+    CyNode nodeA = Cytoscape.getCyNode(geneA, false); // should exist already
+    String geneAcommonName = 
+      (String)Cytoscape.getNodeAttributeValue(nodeA, Semantics.COMMON_NAME);
+    m.setCommonName(geneAcommonName);
     m.setAllele(alleleA);
     m.setAlleleForm(alleleFormA);
-    m.setPhenoEnvironment(this.phenotypeEnv);
+    //m.setPhenoEnvironment(pheno_environment);
     interaction.setMutantA(m);
 
     // Create Single mutantB and attach to genetic interaction
     m = new SingleMutant();
     m.setName(geneB);
-    m.setCommonName(geneB);
+    CyNode nodeB = Cytoscape.getCyNode(geneB, false); // should exist already
+    String geneBcommonName = 
+      (String)Cytoscape.getNodeAttributeValue(nodeB, Semantics.COMMON_NAME);
+    m.setCommonName(geneBcommonName);
     m.setAllele(alleleB);
     m.setAlleleForm(alleleFormB);
-    m.setPhenoEnvironment(this.phenotypeEnv);
+    //m.setPhenoEnvironment(pheno_environment);
     interaction.setMutantB(m);
 
     interaction.setGeneticClass();
+
+    interaction.setPhenotypeValueWT(phenoValueWT);
+    interaction.setPhenotypeValueA(phenoValueA);
+    interaction.setPhenotypeValueB(phenoValueB);
+    interaction.setPhenotypeValueAB(phenoValueAB);
     
     return interaction; 
-  }
-  //---------------------------------------------------------------------------------
-  /**
-   *
-   * Integer enoding of string-valued phenotype values 
-   *
-   * @param phenoWT the wild-type phenotype
-   * @param phenoA the phenotype value of geneA single mutant
-   * @param phenoB the phenotype value of geneB single mutant
-   * @param phenoAB the phenotype value of geneA geneB combined mutant
-   * @param pRank the ranking of the phenotypes under consideration
-   *
-   * @return the encoded phenotype values
-   *
-   * @see PhenotypeRanking
-   * @see DiscretePhenoValueSet
-   */
-  public DiscretePhenoValueSet encodedPhenoValues (String phenoWT, 
-                                                   String phenoA, 
-                                                   String phenoB, 
-                                                   String phenoAB, 
-                                                   PhenotypeRanking pRank )
-  {
-    
-    DiscretePhenoValueSet returnSet = new DiscretePhenoValueSet(); 
 
-    String[] vals = pRank.getPhenotypeValues ();
-    int[] intVals = new int[4];
-    String[] obs = {phenoWT, phenoA, phenoB, phenoAB};
-    for (int i=0;i<obs.length;i++) intVals[i]=Utilities.stringArrayIndex(obs[i],vals);
-
-    //System.out.println( phenoWT +" "+phenoA+" "+phenoB+" "+phenoAB);
-    //System.out.println( Utilities.stringRep(intVals) );
-    
-    int nlevels = Utilities.levelCount(intVals);
-    int[] binned = Utilities.bin(nlevels,intVals);
-    returnSet.setBase(nlevels);
-    returnSet.setValues(binned);
-					
-    return returnSet;  
-  }
-  //------------------------------------------------------------------------------------
+  }//geneticInteractionDiscrete
+  
   /**
-   *
    * A utility to identify potential problems with double mutant data
    *
    * @param expWT the wild-type experiment
@@ -711,20 +514,17 @@ public class GeneticInteractionCalculator {
    * @param expB the B experiment
    * @param expAB the double mutant experiment
    * @param phenoName the phenotype name of the phenotype under consideration 
-   *
    * @exception IllegalArgumentException If phenoName is not found in all experiments. 
    * If number of genetic mutations is incorrect. 
    * If A or B alleleForms or genes are incosistent with AB experiment. 
    */
-  public void illegalGeneticInteractionInputs 
-    (
-     Experiment expWT, 
-     Experiment expA, 
-     Experiment expB, 
-     Experiment expAB, 
-     String phenoName) throws IllegalArgumentException
-  {
-
+  protected static void illegalGeneticInteractionInputs (
+            Experiment expWT, 
+            Experiment expA, 
+            Experiment expB, 
+            Experiment expAB,
+            String phenoName) throws IllegalArgumentException{
+    
     if( expWT.getPhenotypeWithName(phenoName).isEmpty() )
       throw new IllegalArgumentException ("Phenotype name "+phenoName+ 
                                           " not found in experiment "+expWT.getName());
@@ -783,31 +583,7 @@ public class GeneticInteractionCalculator {
     if ( expAB.getGeneticConditionWithGene(geneB).isEmpty() )
       throw new IllegalArgumentException ("expAB does not contain a modification of "+geneB);
 
-  }
-  //---------------------------------------------------------------------------------------
-  /**
-   * Get edges in the given CyNetwork having a given attributeName attributeValue pair, 
-   * assuming the latter is a String.
-   * This is a general utility function and should eventually be housed elsewhere, or removed 
-   * if a corresponding cytoscape function is made available.
-   */
-  public static CyEdge[] getEdgesByAttributeNameValue 
-    (CyNetwork cy_network,
-     String attributeName, 
-     String attributeValue){
-    
-    Iterator edgeIt = cy_network.edgesIterator();
-    Vector  edgesDesired = new Vector () ; 
- 
-    while(edgeIt.hasNext()){
-      CyEdge edge = (CyEdge)edgeIt.next();
-      Object value = Cytoscape.getEdgeAttributeValue(edge, attributeName);
-      if(value != null && value.equals(attributeValue)){
-        edgesDesired.add(edge);
-      }
-    }// while there are more edges
-
-    return ( (CyEdge[]) edgesDesired.toArray( new CyEdge[edgesDesired.size()] ) ); 
-  } 
-
+  }//illegalGeneticInteractionInputs
+   
 }// class GeneticInteractionCalculator
+

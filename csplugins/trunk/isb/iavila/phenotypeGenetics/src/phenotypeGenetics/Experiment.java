@@ -1,118 +1,117 @@
-/**  This program is free software; you can redistribute it and/or modify
- **  it under the terms of the GNU General Public License as published by
- **  the Free Software Foundation; either version 2 of the License, or
- **  any later version.
- **
- **  This program is distributed in the hope that it will be useful,
- **  but WITHOUT ANY WARRANTY; without even the implied warranty of
- **  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  The software and
- **  documentation provided hereunder is on an "as is" basis, and the
- **  Institute for Systems Biology has no obligations to provide maintenance, 
- **  support, updates, enhancements or modifications.  In no event shall the
- **  Institute for Systems Biology be liable to any party for direct, 
- **  indirect, special,incidental or consequential damages, including 
- **  lost profits, arising out of the use of this software and its 
- **  documentation, even if the Institute for Systems Biology 
- **  has been advised of the possibility of such damage. See the
- **  GNU General Public License for more details.
- **   
- **  You should have received a copy of the GNU General Public License
- **  along with this program; if not, write to the Free Software
- **  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- **/
-// Experiment.java: an experiment with conditions and observations
-//------------------------------------------------------------------------------
-// $Revision$  
-// $Date$
-// $Author$
-//------------------------------------------------------------------------------
-package phenotypeGenetics;
-//------------------------------------------------------------------------------
-import java.io.*;
-import java.util.*;
-//------------------------------------------------------------------------------
 /**
  * A named collection of manipulations (<code>Condition</code>s) and their 
  * observed outcomes (<code>Phenotype</code>s) along with any number of 
  * annotations.
  *
+ * @author Paul Shannon
+ * @author Iliana Avila
+ * @version 1.0
  * @see Condition
  * @see Phenotype
- *
- * @version %I%, %G%
- * @author pshannon@systemsbiology.org
  */
+
+package phenotypeGenetics;
+import java.io.*;
+import java.util.*;
+
 public class Experiment {
 
-  String name;
-  Vector notes;
-  Vector conditions;
-  Vector observations;
-
-  //-----------------------------------------------------------------------------
-  public Experiment ()
-  {
-    this (null);
-  }
-  //-----------------------------------------------------------------------------
-  public Experiment (String name)
-  {
+  protected String name;
+  protected List notes;
+  protected List conditions;
+  protected List observations;
+  
+  /**
+   * Constructor, calls Experiment(null)
+   */
+  public Experiment (){
+    this(null);
+  }//Experiment
+  
+  /**
+   * @param name the name of this Experiment
+   */
+  public Experiment (String name){
     this.name = name;
-    notes = new Vector ();
-    conditions = new Vector ();
-    observations = new Vector ();
+    this.notes = new ArrayList();
+    this.conditions = new ArrayList();
+    this.observations = new ArrayList();
+  }//Experiment
+  
+  /**
+   * @return true if no name assigned, no notes assigned, or no observations assigned
+   * false otherwise
+   */
+  public boolean isEmpty (){
+    return( this.name == null &&  
+            this.notes.size() == 0 && 
+            this.conditions.size() == 0 && 
+            this.observations.size() == 0);
+  }//isEmpty
+  
+  /**
+   * Sets the name of this Experiment
+   */
+  public void setName (String newValue){
+    this.name = newValue;
+  }//setName
+  
+  /**
+   * @return the name of this Experiment
+   */
+  public String getName (){
+    return this.name;
+  }//getName
 
-  } // ctor
-  //-----------------------------------------------------------------------------
-  public boolean isEmpty ()
-  {
-    return( name==null &&  notes.size()==0 && conditions.size()==0 && observations.size()==0 );
-  }
-  //-----------------------------------------------------------------------------
-  public void setName (String newValue)
-  {
-    name = newValue;
-  }
-  //-----------------------------------------------------------------------------
-  public String getName ()
-  {
-    return name;
-  }
-  //-----------------------------------------------------------------------------
-  public void addNote (String note)
-  {
-    notes.add (note);
-  }
-  //-----------------------------------------------------------------------------
-  public void addCondition (Condition condition)
-  {
-    conditions.add (condition);
-  }
-  //-----------------------------------------------------------------------------
-  public void addObservation (Phenotype phenotype)
-  {
-    observations.add (phenotype);
-  }
-  //-----------------------------------------------------------------------------
-  public String [] getNotes ()
-  {
-    return (String[]) notes.toArray (new String [0]);
-  }
-  //-----------------------------------------------------------------------------
-  public Condition [] getConditions ()
-  {
-    return (Condition []) conditions.toArray (new Condition [0]);
-  }
-  //-----------------------------------------------------------------------------
-  public Phenotype [] getObservations ()
-  {
-    return (Phenotype []) observations.toArray (new Phenotype [0]);
-  }
-  //-----------------------------------------------------------------------------
-  public String toString ()
-  {
+  /**
+   * Adds a note to this Experiment
+   */
+  public void addNote (String note){
+    this.notes.add(note);
+  }//addNote
+
+  /**
+   * Adds a Condition to this Experiment
+   */
+  public void addCondition (Condition condition){
+    this.conditions.add(condition);
+  }//addCondition
+
+  /**
+   * Adds a Phenotype to this Experiment
+   */
+  public void addObservation (Phenotype phenotype){
+    this.observations.add (phenotype);
+  }//addObservation
+
+  /**
+   * @return the notes in this Experiment
+   */
+  public String [] getNotes(){
+    return (String[]) this.notes.toArray (new String [0]);
+  }//getNotes
+
+  /**
+   * @return the Condition in this Experiment
+   */
+  public Condition [] getConditions (){
+    return (Condition []) this.conditions.toArray (new Condition [0]);
+  }//getConditions
+
+  /**
+   * @return the Phenotype in this Experiment
+   */
+  public Phenotype [] getObservations (){
+    return (Phenotype []) this.observations.toArray (new Phenotype [0]);
+  }//getObservations
+
+  /**
+   * @return the String representation of this Experiment
+   */
+  public String toString (){
+    
     StringBuffer sb = new StringBuffer ();
-    sb.append ("name: " + name + "\n");
+    sb.append ("name: " + this.name + "\n");
 
     String [] notesArray = getNotes ();
     for (int i=0; i < notesArray.length; i++)
@@ -128,146 +127,102 @@ public class Experiment {
     
     return sb.toString ();
 
-  } // toString
-  //-----------------------------------------------------------------------------
+  }//toString
+
   /**
-   * <code>Condition</code>s in which the category is GENETIC;
-   *
-   * @see Condition
-   *
-   * @author thorsson@systemsbiology.org
+   * @return <code>Condition</code>s in which the category is GENETIC;
    */
-  public Condition [] getGeneticConditions () {
+  public Condition [] getGeneticConditions (){
+    
+    Condition [] allConditions = (Condition []) this.conditions.toArray (new Condition [0]);
+    List genConditions = new ArrayList() ;
+    int numConditions = this.conditions.size(); 
 
-    Condition [] allConditions = (Condition []) conditions.toArray (new Condition [0]);
-    Vector genConditions = new Vector () ;
-    int numConditions = conditions.size(); 
-
-    for ( int i=0 ; i<numConditions ; i++ ){
+    for(int i = 0; i < numConditions; i++){
       Condition cond = allConditions[i] ; 
-      if ( cond.getCategory () == Condition.GENETIC  )
+      if(cond.getCategory () == Condition.GENETIC )
         genConditions.add(cond); 
-    }
+    }//for i
   
     Condition [] genConditionsArray =  
-      (Condition []) genConditions.toArray (new Condition [0] );
+      (Condition [])genConditions.toArray(new Condition [0]);
 
-    return genConditionsArray ; 
+    return genConditionsArray; 
+  }//getGeneticConditions
 
-  }
-
-  //-----------------------------------------------------------------------------
   /**
-   * <code>Condition</code>s in which the category is ENVIRONMENTAL are returned as name-value pairs.  
-   *
-   * @see Condition
-   *
-   * @author thorsson@systemsbiology.org
+   * @return <code>Condition</code>s in which the category is ENVIRONMENTAL 
+   * as name-value pairs.  
    */
-  public HashMap getEnvironmentalConditions () {
-
-    HashMap returnMap = new HashMap() ; 
-
-    Condition [] allConditions = (Condition []) conditions.toArray (new Condition [0]);
-    Vector genConditions = new Vector () ;
-    int numConditions = conditions.size(); 
-
-    for ( int i=0 ; i<numConditions ; i++ ){
-      Condition cond = allConditions[i] ; 
-      if ( cond.getCategory () == Condition.ENVIRONMENTAL  ){
-
-        // This condition itself containts a HashMap 
-        // In practice (?), there is only one name-value pair, which we pull out and place in the returnMap
-        HashMap map=cond.getMap();
-        String  [] keys = (String [])map.keySet().toArray (new String [0]);
-        if ( keys.length != 1 )
-          System.out.println("Error: more than one environment in this single condition");
-        String environment = keys[0];
-        String value = (String) map.get( environment );
-        returnMap.put(environment,value);
-
-      }
-      //genConditions.add(cond); 
-    }
-  
-    //Condition [] genConditionsArray =  (Condition []) genConditions.toArray (new Condition [0] );
+  public Map getEnvironmentalConditions () {
     
-    //return genConditionsArray ; 
+    Map returnMap = new HashMap() ; 
+
+    Condition [] allConditions = (Condition [])this.conditions.toArray(new Condition [0]);
+    List genConditions = new ArrayList() ;
+    int numConditions = this.conditions.size(); 
+
+    for(int i = 0; i < numConditions; i++){
+      Condition cond = allConditions[i] ; 
+      if(cond.getCategory() == Condition.ENVIRONMENTAL){
+        returnMap.put(cond.getName(),cond.getValue());
+      }//if
+    }//for i
     return returnMap ; 
+  }//getEnvironmentalConditions
 
-
-  }
-
-  //-----------------------------------------------------------------------------
   /**
-   * <code>Condition</code> in which a specific genetic manipulation has been performed
-   *
-   * @param geneName   The name of the manipulated gene
-   * @exception        Should occur if gene is found in more than one condition 
-   *                   This has yet to be implemented
-   * @see Condition
-   *
-   * @author thorsson@systemsbiology.org
+   * @return <code>Condition</code>s in which a specific genetic manipulation has been 
+   * performed
+   * @param geneName the name of the manipulated gene
    */
-  public Condition getGeneticConditionWithGene ( String geneName ) {
-
-    Condition [] allConditions = (Condition []) conditions.toArray (new Condition [0]);
-    Vector genConditions = new Vector () ;
-    int numConditions = conditions.size(); 
-    Condition returnedCondition = new Condition (); 
+  public Condition getGeneticConditionWithGene (String geneName){
+    
+    Condition [] allConditions = (Condition []) this.conditions.toArray (new Condition [0]);
+    List genConditions = new ArrayList();
+    int numConditions = this.conditions.size(); 
+    Condition returnedCondition = new Condition(); 
   
     Condition cond = new Condition(); 
-    for ( int i=0 ; i<numConditions ; i++ ){
+    for(int i = 0; i < numConditions; i++){
       cond = allConditions[i] ; 
-      if ( cond.getCategory () == Condition.GENETIC && cond.getGene().equals(geneName) )
+      if(cond.getCategory () == Condition.GENETIC && cond.getGene().equals(geneName))
         genConditions.add(cond); 
-    }
-  
-    // Here, throw exception if genConditions.length is not >1
+    }//for i
 
-    if ( genConditions.size() == 1) returnedCondition = (Condition) genConditions.elementAt(0); 
-    // If no matching conditions were found, returnedCondition remains empty
-
-    return returnedCondition ; 
-
-  }
-  //-----------------------------------------------------------------------------
+    if(genConditions.size() == 1) 
+      returnedCondition = (Condition)genConditions.get(0); 
+   
+    return returnedCondition; 
+  }//getGeneticConditionWithGene
 
   /**
-   * <code>Phenotype</code> with a specific phenotype name 
-   *
+   * @return <code>Phenotype</code>s with a specific phenotype name 
    * @param phenoName   The name of the manipulated gene
-   * @exception        Should occur if phenotype is found in more than one observation
-   *                   This has yet to be implemented
-   * @see Phenotype
-   *
-   * @author thorsson@systemsbiology.org
    */
-  public Phenotype getPhenotypeWithName ( String phenoName ) {
+  public Phenotype getPhenotypeWithName ( String phenoName ){
 
-    Phenotype [] allObservations = (Phenotype []) observations.toArray (new Phenotype [0]);
-    Vector phenoObservations = new Vector () ;
-    int numObservations = observations.size(); 
+    Phenotype [] allObservations = 
+      (Phenotype [])this.observations.toArray(new Phenotype [0]);
+    
+    List phenoObservations = new ArrayList();
+    int numObservations = this.observations.size(); 
     Phenotype returnedObservation = new Phenotype (); 
-
+    
     Phenotype obs = new Phenotype(); 
-    for ( int i=0 ; i<numObservations ; i++ ){
+    for(int i = 0; i < numObservations; i++){
       obs = allObservations[i] ; 
-      if ( obs.getName().equals(phenoName) )
+      if(obs.getName().equals(phenoName))
         phenoObservations.add(obs); 
-    }
-  
-    // Here, throw exception if genObservations.length is not >1
-
+    }//for i
+    
     Phenotype [] obsWithPhenoName = 
       (Phenotype []) phenoObservations.toArray (new Phenotype [0]);
-    if ( phenoObservations.size() == 1) returnedObservation = obsWithPhenoName[0];
-    // If no matching observations were found, Observation remains unassigned
-  
+    
+    if(phenoObservations.size() == 1) 
+      returnedObservation = obsWithPhenoName[0];
+    
     return returnedObservation ; 
+  }//getPhenotypeWithName
 
-  }
-
-  //-----------------------------------------------------------------------------
-
-} // Experiment
+}//Experiment

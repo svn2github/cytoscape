@@ -1,36 +1,12 @@
-/**  Copyright (c) 2003 Institute for Systems Biology
- **  This program is free software; you can redistribute it and/or modify
- **  it under the terms of the GNU General Public License as published by
- **  the Free Software Foundation; either version 2 of the License, or
- **  any later version.
- **
- **  This program is distributed in the hope that it will be useful,
- **  but WITHOUT ANY WARRANTY; without even the implied warranty of
- **  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  The software and
- **  documentation provided hereunder is on an "as is" basis, and the
- **  Institute for Systems Biology has no obligations to provide maintenance, 
- **  support, updates, enhancements or modifications.  In no event shall the
- **  Institute for Systems Biology be liable to any party for direct, 
- **  indirect, special,incidental or consequential damages, including 
- **  lost profits, arising out of the use of this software and its 
- **  documentation, even if the Institute for Systems Biology 
- **  has been advised of the possibility of such damage. See the
- **  GNU General Public License for more details.
- **   
- **  You should have received a copy of the GNU General Public License
- **  along with this program; if not, write to the Free Software
- **  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- **/
 /**
  * A container of a MutualInfo.
  * It contains two <code>String</code>s for the node names, an <code>ArrayList</code>
  * of common neighbors, and the <code>double</code> score.
  *
  * @author Greg Carter
- * @author Iliana Avila (transfered to C2.0)
+ * @author Iliana Avila (refactored)
  */
 package phenotypeGenetics;
-
 import java.util.*;
 
 public class MutualInfo{
@@ -46,14 +22,9 @@ public class MutualInfo{
   protected String[] alleleForm = new String[2];
 
   /**
-   * The <code>ArrayList</code> of common neighbors and their alleleForms.
+   * The <code>ArrayList</code>s of common neighbors and their alleleForms.
    */
   protected ArrayList commonNeighbors;
-
-  /**
-   * The <code>ArrayList</code> of edges to those neighbors
-   */
-  protected ArrayList edges;
 
   /**
    * The <code>int</code> number of common tests.
@@ -89,16 +60,16 @@ public class MutualInfo{
    * @param neighbors
    * @param score
    */
-  public MutualInfo(String name1, String allele1, String name2, String allele2, 
-			ArrayList neighbors, ArrayList theEdges, int commonTests, 
-			double score, double pVal,
-			double mean, double sd ){
+  public MutualInfo(String name1, String allele1, 
+                    String name2, String allele2, 
+                    ArrayList neighbors, 
+                    int commonTests, 
+                    double score, double pVal,double mean, double sd ){
     setNodeName1(name1);
     setAlleleForm1(allele1);
     setNodeName2(name2);
     setAlleleForm2(allele2);
     setCommonNeighbors(neighbors);
-    setEdges(theEdges);
     setCommonTests( commonTests );
     setScore(score);
     setPValue(pVal);
@@ -180,7 +151,7 @@ public class MutualInfo{
    */
   public String getNodeName(int index){
     String name = null;
-    if ( index == 1 | index == 2 ) { name = this.nodeName[index-1];};
+    if ( index == 1 || index == 2 ) { name = this.nodeName[index-1];};
     return name;
   }//getNodeName
 
@@ -189,7 +160,7 @@ public class MutualInfo{
    */
   public String getAlleleForm(int index){
     String name = null;
-    if ( index == 1 | index == 2 ) { name = this.alleleForm[index-1];};
+    if ( index == 1 || index == 2 ) { name = this.alleleForm[index-1];};
     return name;
   }//getAlleleForm
 
@@ -227,20 +198,6 @@ public class MutualInfo{
   public ArrayList getCommonNeighbors(){
     return this.commonNeighbors;
   }//getCommonNeighbors
-
-  /**
-   * Gets the <code>ArrayList</code> of edges
-   */
-  public ArrayList getEdges(){
-    return this.edges;
-  }//getEdges
-
-  /**
-   * Sets the <code>ArrayList</code> of edges
-   */
-  public void setEdges( ArrayList theEdges ){
-    this.edges = theEdges;
-  }//setEdges
 
   /**
    * Gets the number of common tests.
@@ -283,6 +240,5 @@ public class MutualInfo{
   public double getPValue(){
     return this.pValue;
   }//getPValue
-
   
 }//MutualInfo

@@ -1,4 +1,4 @@
-/**  Copyright (c) 2005 Institute for Systems Biology
+/**  Copyright (c) 2003 Institute for Systems Biology
  **  This program is free software; you can redistribute it and/or modify
  **  it under the terms of the GNU General Public License as published by
  **  the Free Software Foundation; either version 2 of the License, or
@@ -74,22 +74,18 @@ public class Statement{
   /**
    * Constructor.
    * 
-   * @param name
-   * @param interaction
-   * @param neighbors
+   * @param common_name
+   * @param interaction_type
+   * @param neighbors 
    * @param ontology
    * @param negLogP 
    */
-  public Statement(String name, 
-                   String allele, 
-                   String[] neighbors, 
-                   String interaction, 
-                   OntologyTerm ontology, 
-                   double negLogP){
-    setCommonName(name);
+  public Statement (String common_name, String allele, String[] neighbors, 
+                    String interaction_type, OntologyTerm ontology, double negLogP){
+    setCommonName(common_name);
     setAlleleForm(allele);
     setNeighbors(neighbors);
-    setInteractionType(interaction);
+    setInteractionType(interaction_type);
     setOntologyTerm(ontology);
     setNegLogP(negLogP);
   }//Statement
@@ -111,21 +107,21 @@ public class Statement{
   /**
    * Sets the <code>String</code> alleleForm of Node
    */
-  public void setAlleleForm(String form){
+  public void setAlleleForm (String form){
     this.alleleForm = form;
   }//setAlleleForm
 
   /**
    * Returns the <code>String</code> alleleForm of Node
    */
-  public String getAlleleForm(){
+  public String getAlleleForm (){
     return this.alleleForm;
   }//getAlleleForm
 
   /**
    * Sets the <code>String</code> of the interaction type
    */
-  public void setInteractionType(String type){
+  public void setInteractionType (String type){
     this.interactionType = type;
   }//setInteractionType
 
@@ -169,26 +165,26 @@ public class Statement{
    */
   public String getInteractionType (){
     return this.interactionType;
-  }
+  }//getInteractionType
 
   /**
    * Gets the <code>OntologyTerm</code> 
    */
-  public OntologyTerm getOntologyTerm(){
+  public OntologyTerm getOntologyTerm (){
     return this.ontologyTerm;
-  }
+  }//getOntologyTerm
 
   /**
    * Gets the <code>String[]</code> of nearest neighbors
    */
-  public String[] getNeighbors(){
+  public String[] getNeighbors (){
     return this.neighbors;
   }//getNeighbors
 
   /**
    * Gets the <code>int</code> number of nearest neighbors
    */
-  public int getSize(){
+  public int getSize (){
     return this.neighbors.length;
   }//getSize
 
@@ -202,44 +198,9 @@ public class Statement{
   /**
    * @return a <code>String</code> of the verb associated with the interaction
    */
-  public String getVerb() {
+  public String getVerb (){
 
-    String theVerb = " does something ERRONEOUS to ";
-
-    if ( this.interactionType.compareTo("synthetic") == 0 ) {
-      theVerb = "is synthetic with";
-    } else if ( this.interactionType.compareTo("asynthetic") == 0 ) {
-      theVerb = "is asynthetic with";
-    } else if ( this.interactionType.compareTo("suppression+") == 0 ) {
-      theVerb = "suppresses";
-    } else if ( this.interactionType.compareTo("suppression-") == 0 ) {
-      theVerb = "is suppressed by";
-    } else if ( this.interactionType.compareTo("conditional+") == 0 ) {
-      theVerb = "conditions";
-    } else if ( this.interactionType.compareTo("conditional-") == 0 ) {
-      theVerb = "is conditioned by";
-    } else if ( this.interactionType.compareTo("epistatic+") == 0 ) {
-      theVerb = "is epistatic to";
-    } else if ( this.interactionType.compareTo("epistatic-") == 0 ) {
-      theVerb = "is hypostatic to";
-    } else if ( this.interactionType.compareTo("additive") == 0 ) {
-      theVerb = "is additive with";
-    } else if ( this.interactionType.compareTo("single-nonmonotonic") == 0 ) {
-      theVerb = "is single-nonmonotonic to";
-    } else if ( this.interactionType.compareTo("double-nonmonotonic") == 0 ) {
-      theVerb = "is double-nonmonotonic to";
-      // Not sure about this last one...
-    } else if ( this.interactionType.compareTo("non-interacting") == 0 ) {
-      theVerb = "avoids interacting with";
-    } else if ( this.interactionType.compareTo("sameClass") == 0 ) {
-      theVerb = "is in both networks, same class with";
-    } else if ( this.interactionType.compareTo("differentClass") == 0 ) {
-      theVerb = "is in both networks, different class with";
-    } else if ( this.interactionType.compareTo("env1only") == 0 ) {
-      theVerb = "is in Network 1 (but not 2) with";
-    } else if ( this.interactionType.compareTo("env2only") == 0 ) {
-      theVerb = "is in Network 2 (but not 1) with";
-    }
+    String theVerb = "is " + this.interactionType + " to";
 
     return theVerb;
   }//getVerb
@@ -247,22 +208,22 @@ public class Statement{
   /**
    * @return a <code>String</code> of the verb associated with the interaction
    */
-  public String getAlleleAction() {
+  public String getAlleleAction (){
 
     String theAction = "Not changing(?!)";
 
-    if ( this.alleleForm.compareTo("lf") == 0 ) {
+    if(this.alleleForm.compareTo("lf") == 0){
       theAction = "A loss-of-function mutation of";
-    } else if ( this.alleleForm.compareTo("gf") == 0 ) {
+    }else if(this.alleleForm.compareTo("gf") == 0){
       theAction = "A gain-of-function mutation of";
-    } else if ( this.alleleForm.compareTo("dn") == 0 ) {
+    }else if(this.alleleForm.compareTo("dn") == 0){
       theAction = "A dominant-negative mutation of"; 
-    } else if ( this.alleleForm.compareTo("lf(partial)") == 0 ) {
+    }else if(this.alleleForm.compareTo("lf(partial)") == 0){
       theAction = "A partial loss-of-function of";
-    } else if ( this.alleleForm.compareTo("gf(partial)") == 0 ) {
+    }else if(this.alleleForm.compareTo("gf(partial)") == 0){
       theAction = "A partial gain-of-function of";
     }
-
+    
     return theAction;
   }//getAlleleAction
   
