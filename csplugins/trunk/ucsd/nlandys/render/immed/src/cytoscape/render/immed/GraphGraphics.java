@@ -27,7 +27,7 @@ public final class GraphGraphics
   public static final byte BORDER_NONE = 1;
   public static final byte BORDER_SOLID = 2;
 
-  private static final boolean s_threadDebug = true;
+  private static final boolean s_debug = true;
   private static final Color s_transparent = new Color(0, 0, 0, 0);
   private static final Color s_defaultColor = new Color(0);
 
@@ -65,12 +65,12 @@ public final class GraphGraphics
    * to render a new picture.  Don't try to be clever in not calling this
    * method.<p>
    * This method must be called from the AWT event handling thread.
-   * @exception IllegalThreadStateException if the calling thread isn't hte
+   * @exception IllegalThreadStateException if the calling thread isn't the
    *   AWT event handling thread.
    */
   public final void clear()
   {
-    if (s_threadDebug && !EventQueue.isDispatchThread())
+    if (s_debug && !EventQueue.isDispatchThread())
       throw new IllegalStateException
         ("calling thread is not AWT event dispatcher");
     m_g2d = (Graphics2D) image.getGraphics();
@@ -94,19 +94,31 @@ public final class GraphGraphics
   /**
    * This is the method that will render a node very quickly.  For maximum
    * performance, use this method and render all nodes with the same color.
-   * The node shape used by this method is SHAPE_RECTANGLE.
+   * The node shape used by this method is SHAPE_RECTANGLE.<p>
+   * xMin, yMin, xMax, and yMax specify the extents of the node in the
+   * underlying image's coordinate space.
    * @param fillColorRGB 0xRRGGBB (red, green, and blue components); the most
    *   significant 8 bits are completely ignored; it is suggested to use all
    *   zero bits for the most significant 8 bits for performance reasons.
+   * @exception IllegalThreadStateException if the calling thread isn't the
+   *   AWT event handling thread.
+   * @exception IllegalArgumentException if xMin is greater than xMax or if
+   *   yMin is greater than yMax.
    */
-  public final void drawNodeLow(double width, double height, double xCenter,
-                                double yCenter, int fillColorRGB)
+  public final void drawNodeLow(final double xMin, final double yMin,
+                                final double xMax, final double yMax,
+                                final int fillColorRGB)
   {
+    if (s_debug) {
+      if (!EventQueue.isDispatchThread())
+        throw new IllegalStateException
+          ("calling thread is not AWT event dispatcher");
+      if (xMin > xMax) throw new IllegalArgumentException("xMin > xMax");
+      if (yMin > yMax) throw new IllegalArgumentException("yMin > yMax"); }
     if (fillColorRGB != m_currColor) {
       m_currColor = fillColorRGB;
       m_g2d.setColor(new Color(fillColorRGB)); }
-    m_rect2d.setRect(xCenter - (width / 2.0d), yCenter - (height / 2.0d),
-                     width, height);
+    m_rect2d.setRect(xMin, yMin, xMax - xMin, yMax - yMin);
     m_g2d.draw(m_rect2d);
   }
 
