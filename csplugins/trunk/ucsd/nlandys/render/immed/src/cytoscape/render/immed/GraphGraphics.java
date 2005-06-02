@@ -5,6 +5,7 @@ import java.awt.EventQueue;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
+import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
 
 /**
@@ -35,6 +36,7 @@ public final class GraphGraphics
    * The image that was passed into the constructor.
    */
   public final Image image;
+
   private final int m_imageWidth;
   private final int m_imageHeight;
 
@@ -82,13 +84,37 @@ public final class GraphGraphics
                            RenderingHints.VALUE_ANTIALIAS_ON);
   }
 
-  public final void drawNodeFull(byte shape, double width, double height,
-                                 double xCenter, double yCenter,
-                                 int fillColorRGB, byte borderType,
-                                 double borderWidth, int borderColorRGB)
+  /**
+   * @exception IllegalThreadStateException if the calling thread isn't the
+   *   AWT event handling thread.
+   * @exception IllegalArgumentException if xMin is greater than xMax or if
+   *   yMin is greater than yMax, or if shapeType is not one of the
+   *   SHAPE_* constants, or if borderType is not one of the BORDER_*
+   *   constants.
+   */
+  public final void drawNodeFull(final byte shapeType,
+                                 final double xMin, final double yMin,
+                                 final double xMax, final double yMax,
+                                 final int fillColorRGB, final byte borderType,
+                                 final double borderWidth,
+                                 final int borderColorRGB)
   {
-    // Problem: To draw the fill color and border color, we must switch
-    // color.  This is inefficient.
+    if (s_debug) {
+      if (!EventQueue.isDispatchThread())
+        throw new IllegalStateException
+          ("calling thread is not AWT event dispatcher");
+      if (xMin > xMax) throw new IllegalArgumentException("xMin > xMax");
+      if (yMin > yMax) throw new IllegalArgumentException("yMin > yMax"); }
+    final Shape shape;
+    switch (shapeType) {
+    case SHAPE_RECTANGLE:
+      shape = m_rect2d;
+      m_rect2d.setRect(xMin, yMin, xMax - xMin, yMax - yMin);
+      break;
+    case SHAPE_ELLIPSE:
+      break;
+    default:
+      throw new IllegalArgumentException("shapeType is not recognized");
   }
 
   /**
@@ -119,7 +145,7 @@ public final class GraphGraphics
       m_currColor = fillColorRGB;
       m_g2d.setColor(new Color(fillColorRGB)); }
     m_rect2d.setRect(xMin, yMin, xMax - xMin, yMax - yMin);
-    m_g2d.draw(m_rect2d);
+    m_g2d.fill(m_rect2d);
   }
 
 }
