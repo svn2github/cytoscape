@@ -59,7 +59,7 @@ public final class GraphGraphics
     this.image = image;
     m_imageWidth = this.image.getWidth(null);
     m_imageHeight = this.image.getHeight(null);
-    this.clear();
+    this.clear(0.0d, 0.0d, 1.0d);
     m_rect2d = new Rectangle2D.Double();
     m_ellp2d = new Ellipse2D.Double();
   }
@@ -70,24 +70,28 @@ public final class GraphGraphics
    * to render a new picture.  Don't try to be clever in not calling this
    * method.<p>
    * This method must be called from the AWT event handling thread.
-   * @param x0 the x component of the translation transform for the frame
-   *   about to be rendered; a node with an xMin of x0 will be rendered
-   *   such that its leftmost point is exactly on the underlying image's
-   *   left edge (assuming the node's leftmost point is not completely above
-   *   or below the image).
-   * @param y0 the y component of the translation transform for the frame
-   *   about to be rendered; a node with a yMin of y0 will be rendered such
-   *   that its topmost point is exactly on the underlying image's
-   *   top edge
+   * @param xCenter the x component of the translation transform for the frame
+   *   about to be rendered; a node whose center is at xCenter will be rendered
+   *   exactly halfway across the image (left-to-right).
+   * @param yCenter the y component of the translation transform for the frame
+   *   about to be rendered; a node whose center is at yCenter will be rendered
+   *   exactly halfway down the image.
+   * @param scaleFactor the scaling that is to take place when rendering nodes;
+   *   a distance of 1 in node coordinates translates to a distance of
+   *   scaleFactor in image coordinates.
    * @exception IllegalThreadStateException if the calling thread isn't the
    *   AWT event handling thread.
+   * @exception IllegalArgumentException if scaleFactor is not positive.
    */
-  public final void clear(final double x0, final double y0,
+  public final void clear(final double xCenter, final double yCenter,
                           final double scaleFactor)
   {
-    if (s_debug && !EventQueue.isDispatchThread())
-      throw new IllegalStateException
-        ("calling thread is not AWT event dispatcher");
+    if (s_debug) {
+      if (!EventQueue.isDispatchThread())
+        throw new IllegalStateException
+          ("calling thread is not AWT event dispatcher");
+      if (!(scaleFactor > 0.0d))
+        throw new IllegalArgumentException("scaleFactor is not positive"); }
     m_g2d = (Graphics2D) image.getGraphics();
     m_g2d.setBackground(s_transparent);
     m_g2d.clearRect(0, 0, m_imageWidth, m_imageHeight);
@@ -95,6 +99,7 @@ public final class GraphGraphics
     m_g2d.setColor(s_defaultColor);
     m_g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                            RenderingHints.VALUE_ANTIALIAS_ON);
+    // Todo: Set transforms.
   }
 
   /**
