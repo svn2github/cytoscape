@@ -74,9 +74,9 @@ public final class TestFastNodeRendering extends Frame
   private final RTree m_tree;
   private final double[] m_extents;
   private final int m_imgWidth = 600;
-  private final int m_imgHeight = 400;
+  private final int m_imgHeight = 480;
   private final Image m_img;
-  private final Color m_bgColor = Color.white;
+  private final GraphGraphics m_grafx;
 
   public TestFastNodeRendering(RTree tree, double[] extents)
   {
@@ -85,12 +85,17 @@ public final class TestFastNodeRendering extends Frame
     m_extents = extents;
     addNotify();
     m_img = createImage(m_imgWidth, m_imgHeight);
+    m_grafx = new GraphGraphics(m_img);
+    m_grafx.clear(0.5d, 0.5d, 100.0d);
+    m_grafx.drawNodeLow(0.45d, 0.45d, 0.51d, 0.52d, 0x00000000);
   }
 
   public void paint(final Graphics g)
   {
     final Insets insets = insets();
-    g.drawImage(m_img, insets.left, insets.top, m_bgColor, null);
+    g.setColor(Color.red);
+    g.drawLine(30, 40, 249, 387);
+    g.drawImage(m_img, insets.left, insets.top, null);
     resize(m_imgWidth + insets.left + insets.right,
            m_imgHeight + insets.top + insets.bottom);
   }
