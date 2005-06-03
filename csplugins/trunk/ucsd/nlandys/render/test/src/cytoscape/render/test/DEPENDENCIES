@@ -1,2 +1,3 @@
+lib:cytoscape-util-intr.jar
 lib:cytoscape-geom-rtree.jar
 lib:cytoscape-render-immed.jar
