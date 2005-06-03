@@ -2,10 +2,14 @@ package cytoscape.render.test;
 
 import cytoscape.geom.rtree.RTree;
 import cytoscape.render.immed.GraphGraphics;
+import java.awt.EventQueue;
+import java.awt.Frame;
+import java.awt.Graphics;
+import java.awt.Image;
 import java.io.IOException;
 import java.io.InputStream;
 
-public final class TestFastNodeRendering
+public final class TestFastNodeRendering extends Frame
 {
 
   public final static void main(String[] args) throws Exception
@@ -47,11 +51,20 @@ public final class TestFastNodeRendering
         inx++; }
       if (inx < N) throw new IOException("premature end of input");
       for (inx = 0; inx < N; inx++) {
-        // Re-insert every entry into RTree for performance gain.
+        // Re-insert every entry into tree for performance gain.
         tree.delete(inx);
         tree.insert(inx, extents[inx * 4], extents[(inx * 4) + 1],
                     extents[(inx * 4) + 2], extents[(inx * 4) + 3]); }
     }
+  }
+
+  public TestFastNodeRendering()
+  {
+    super();
+  }
+
+  public void paint(Graphics g)
+  {
   }
 
   private static int assembleInt(byte[] bytes, int offset)
