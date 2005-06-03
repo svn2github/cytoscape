@@ -2,10 +2,15 @@ package cytoscape.render.test;
 
 import cytoscape.geom.rtree.RTree;
 import cytoscape.render.immed.GraphGraphics;
+
+import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Insets;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -56,16 +61,41 @@ public final class TestFastNodeRendering extends Frame
         tree.insert(inx, extents[inx * 4], extents[(inx * 4) + 1],
                     extents[(inx * 4) + 2], extents[(inx * 4) + 3]); }
     }
+
+    EventQueue.invokeAndWait(new Runnable() {
+        public void run() {
+          Frame f = new TestFastNodeRendering(tree, extents);
+          f.show();
+          f.addWindowListener(new WindowAdapter() {
+              public void windowClosing(WindowEvent e) {
+                System.exit(0); } }); } });
   }
 
-  public TestFastNodeRendering()
+  private final RTree m_tree;
+  private final double[] m_extents;
+  private final int m_imgWidth = 600;
+  private final int m_imgHeight = 400;
+  private final Image m_img;
+  private final Color m_bgColor = Color.white;
+
+  public TestFastNodeRendering(RTree tree, double[] extents)
   {
     super();
+    m_tree = tree;
+    m_extents = extents;
+    addNotify();
+    m_img = createImage(m_imgWidth, m_imgHeight);
   }
 
-  public void paint(Graphics g)
+  public void paint(final Graphics g)
   {
+    final Insets insets = insets();
+    g.drawImage(m_img, insets.left, insets.top, m_bgColor, null);
+    resize(m_imgWidth + insets.left + insets.right,
+           m_imgHeight + insets.top + insets.bottom);
   }
+
+  public boolean isResizable() { return false; }
 
   private static int assembleInt(byte[] bytes, int offset)
   {
