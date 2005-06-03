@@ -19,6 +19,16 @@
 </table>
 <? include "nav.php"; ?>
 <div id="indent">
+<br><b>Genome Biology. March, 2005</b>
+Becky L Drees, Vesteinn Thorsson, Gregory W Carter, Alexander W Rives,
+Marisa Z Raymond, Iliana Avila-Campillo, Paul Shannon and Timothy
+Galitski.
+<BR>Derivation of genetic networks from quantitative
+phenotype data. Genome Biology.
+<br>
+[<A HREF="http://genomebiology.com/2005/6/4/R38/abstract">Abstract</A>]
+[<A HREF="http://genomebiology.com/2005/6/4/R38">Full Text</A>]
+[<A HREF="http://genomebiology.com/content/pdf/gb-2005-6-4-r38.pdf">PDF</A>]		
     <br>
 <p><b>Proc Natl Acad Sci U S A. Feb 8, 2005</b><BR>
     Sharan R, Suthram S, Kelley RM, Kuhn T, McCuine S, Uetz P, Sittler T, Karp RM, Ideker T.<br>Conserved patterns of protein interaction in multiple species.
