@@ -1,4 +1,4 @@
-package test;
+package cytoscape.render.test;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -9,7 +9,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.Line2D;
 
-public final class TestLines
+public final class DemonstrateBadLines
 {
 
   public static final void main(String[] args)
