@@ -107,13 +107,15 @@ public class RGAlgorithmGui extends JDialog {
   }//getSelectedFilters
   
   /**
-   * If the user has selected filters from the filters dialog, then this method applies the filters according to their settings.
+   * If the user has selected filters from the filters dialog, 
+   * then this method applies the filters according to their settings.
    */
   public void applySelectedFilters (){
   	if(this.filtersDialog == null){
   		return;
   	}
-  	this.filtersDialog.getFilterUsePanel().testObjects();
+    // TODO: This is protected in C2.1!!!!!!!!!!!!!!!!!!!!!!!!!!
+  	//this.filtersDialog.getFilterUsePanel().testObjects();
   }//applySelectedFilters
 
   /**
@@ -403,7 +405,7 @@ public class RGAlgorithmGui extends JDialog {
   				showErrorMessageDialog("There are no biomodules, please calculate them first.");
   				return;
   			}
-  			BioDataServer server = Cytoscape.getCytoscapeObj().getBioDataServer();
+  			BioDataServer server = Cytoscape.getBioDataServer();
   			if(server == null){
   				showErrorMessageDialog("There is no annotations server available.");
   				return;

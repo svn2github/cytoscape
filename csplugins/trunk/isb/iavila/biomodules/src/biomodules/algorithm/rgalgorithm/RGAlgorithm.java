@@ -44,6 +44,7 @@ import biomodules.algorithm.*;
 import java.util.*;
 import cytoscape.*;
 import giny.util.*;
+import giny.view.*;
 import common.algorithms.hierarchicalClustering.*;
 
 public class RGAlgorithm implements BiomodulesAlgorithm{
@@ -158,14 +159,59 @@ public class RGAlgorithm implements BiomodulesAlgorithm{
     if(network == null){
       return null;
     }
-    List nodeList = network.nodesList();
-    node_list.clear();
-    node_list.addAll(0,nodeList);
    
-    NodeDistances apspCalculator = new NodeDistances(node_list,
-            null,
-            network);
+    //TODO: NodeDistances is broken!
  
+    // my way:
+    node_list.clear();
+    Iterator it = network.nodesIterator();
+    while(it.hasNext()){
+      CyNode node = (CyNode)it.next();
+      node_list.add(node);
+    }//while it
+    
+    HashMap nodeIndexToMatrixIndexMap = new HashMap();
+    CyNode [] nodes = (CyNode[])node_list.toArray(new CyNode[0]);
+    for(int i = 0; i < nodes.length; i++){
+      nodeIndexToMatrixIndexMap.put(new Integer(nodes[i].getRootGraphIndex()),
+                                    new Integer(i));
+      System.out.println(nodes[i].getRootGraphIndex() + " -> " + i);
+    }//for i
+
+   
+    // Gary's way:
+    
+    //initialize the index map
+    //HashMap matrixIndexToNodeIndexMap = new HashMap();
+    //HashMap nodeIndexToMatrixIndexMap = new HashMap();
+    //Iterator nodes = 
+    //Cytoscape.getNetworkView(network.getIdentifier()).getNodeViewsIterator();
+    //int count=0;
+    //while (nodes.hasNext()) {
+    //NodeView nodeView = (NodeView) nodes.next();
+    //nodeIndexToMatrixIndexMap.put(new Integer(nodeView.getRootGraphIndex()), 
+    //                              new Integer(count));
+    //matrixIndexToNodeIndexMap.put(new Integer(count), 
+    //                              new Integer(nodeView.getRootGraphIndex()));
+    //count++;
+    //}
+
+    //create a list of nodes that has the same indices as the nodeIndexToMatrixIndexMap
+    //node_list.clear();
+    //Collection matrixIndices = matrixIndexToNodeIndexMap.values();
+    //int i = 0;
+    //for(Iterator iterator = matrixIndices.iterator(); iterator.hasNext();) {
+    //Integer nodeIndex = (Integer) iterator.next();
+    //node_list.add(i, network.getNode(nodeIndex.intValue()));
+    //i++;
+    //}
+    
+    NodeDistances ind = new NodeDistances(node_list, 
+                                          network, 
+                                          nodeIndexToMatrixIndexMap);
+    int[][] distances = (int[][])ind.calculate();
+    
+     
     //TODO: Monitor NodeDistances. Right now I can't, because NodeDistances is
     // a MonitorableTask, but CytoscapeProgressMonitor takes a MonitoredTask.
     
@@ -174,7 +220,10 @@ public class RGAlgorithm implements BiomodulesAlgorithm{
     //pm.startMonitor(true);
     //int [][] distances = apspCalculator.getDistances();
     
-    int [][] distances = apspCalculator.calculate();
+    if(distances == null){
+      System.out.println("Calculated apsp distances are null.");
+    }
+    
     long secs = (System.currentTimeMillis() - startTime)/1000;
     System.err.println("...done calculating APSP, time = " + secs + " secs");
     return distances;
@@ -460,7 +509,7 @@ public class RGAlgorithm implements BiomodulesAlgorithm{
     for(int i = 0; i < biomodules.length; i++){
       System.err.println("-------- Biomodule " + (i+1) + " -------------");
       for(int j = 0; j < biomodules[i].length; j++){
-        System.err.print(biomodules[i][j] + " ");
+        System.err.print(biomodules[i][j].getIdentifier() + " ");
       }//for j
       System.err.println();
     }//for i

@@ -26,8 +26,7 @@
  * A plug-in for calculating and visualizing biomodules.
  *
  * @author Iliana Avila-Campillo iavila@systemsbiology.org
- * @version %I%, %G%
- * @since 2.0
+ * @version 2.0
  */
 package biomodules;
 import cytoscape.*;
