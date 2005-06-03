@@ -1,5 +1,6 @@
 package cytoscape.render.immed;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Graphics2D;
@@ -31,7 +32,6 @@ public final class GraphGraphics
   public static final byte BORDER_SOLID = 2;
 
   private static final boolean s_debug = true;
-  private static final Color s_transparent = new Color(0, 0, 0, 0);
   private static final Color s_defaultColor = new Color(0);
 
   /**
@@ -96,8 +96,9 @@ public final class GraphGraphics
       if (!(scaleFactor > 0.0d))
         throw new IllegalArgumentException("scaleFactor is not positive"); }
     m_g2d = (Graphics2D) image.getGraphics();
-    m_g2d.setBackground(s_transparent);
+    m_g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR));
     m_g2d.clearRect(0, 0, m_imageWidth, m_imageHeight);
+    m_g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
     m_currColor = 0x00000000;
     m_g2d.setColor(s_defaultColor);
     m_g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
