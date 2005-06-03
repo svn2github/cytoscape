@@ -17,9 +17,9 @@ public final class DemonstrateBadLines
     final Frame f = new Frame() {
         public final void paint(Graphics g) {
           Graphics2D g2d = (Graphics2D) g;
-          g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                               RenderingHints.VALUE_ANTIALIAS_ON);
-          g2d.setStroke(new BasicStroke(0.5f));
+//           g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+//                                RenderingHints.VALUE_ANTIALIAS_ON);
+//           g2d.setStroke(new BasicStroke(0.5f));
           final double x1 = 22.388;
           final double y1 = 147.847;
           final double x2 = 162.904;
