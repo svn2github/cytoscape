@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.Shape;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 
@@ -43,6 +44,7 @@ public final class GraphGraphics
 
   private Graphics2D m_g2d;
   private int m_currColor;
+  private AffineTransform m_currXform;
   private final Rectangle2D.Double m_rect2d;
   private final Ellipse2D.Double m_ellp2d;
 
@@ -65,17 +67,18 @@ public final class GraphGraphics
   }
 
   /**
-   * Clears image area and makes it transparent.
+   * Clears image area to make it transparent, and sets an appropriate
+   * transformation of coordinate systems.
    * It is healthy to call this method right before starting
    * to render a new picture.  Don't try to be clever in not calling this
    * method.<p>
    * This method must be called from the AWT event handling thread.
    * @param xCenter the x component of the translation transform for the frame
-   *   about to be rendered; a node whose center is at xCenter will be rendered
-   *   exactly halfway across the image (left-to-right).
+   *   about to be rendered; a node whose center is at the X coordinate xCenter
+   *   will be rendered exactly in the middle of the image going across.
    * @param yCenter the y component of the translation transform for the frame
-   *   about to be rendered; a node whose center is at yCenter will be rendered
-   *   exactly halfway down the image.
+   *   about to be rendered; a node whose center is at the Y coordinate yCenter
+   *   will be rendered exactly in the middle of the image going top to bottom.
    * @param scaleFactor the scaling that is to take place when rendering nodes;
    *   a distance of 1 in node coordinates translates to a distance of
    *   scaleFactor in image coordinates.
@@ -99,7 +102,23 @@ public final class GraphGraphics
     m_g2d.setColor(s_defaultColor);
     m_g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                            RenderingHints.VALUE_ANTIALIAS_ON);
-    // Todo: Set transforms.
+
+    // Set transform.  This is an infrequently used method so don't optimize.
+    {
+      final AffineTransform translationPreScale = new AffineTransform();
+      translationPreScale.setToTranslation(-xCenter, -yCenter);
+      final AffineTransform scale = new AffineTransform();
+      scale.setToScale(scaleFactor, scaleFactor);
+      final AffineTransform translationPostScale = new AffineTransform();
+      translationPostScale.setToTranslation(0.5d * (double) m_imageWidth,
+                                            0.5d * (double) m_imageHeight);
+      final AffineTransform finalTransform = new AffineTransform();
+      finalTransform.concatenate(translationPostScale);
+      finalTransform.concatenate(scale);
+      finalTransform.concatenate(translationPreScale);
+      m_currXform = finalTransform;
+    }
+    m_g2d.transform(m_currXform);
   }
 
   /**
@@ -142,7 +161,9 @@ public final class GraphGraphics
    * performance, use this method and render all nodes with the same color.
    * The node shape used by this method is SHAPE_RECTANGLE.<p>
    * xMin, yMin, xMax, and yMax specify the extents of the node in the
-   * underlying image's coordinate space.
+   * node coordinate space, not the image coordinate space.  Thus, these
+   * values will likely not change from frame to frame, as zoom and pan
+   * operations are performed.
    * @param fillColorRGB 0xRRGGBB (red, green, and blue components); the most
    *   significant 8 bits are completely ignored; it is suggested to use all
    *   zero bits for the most significant 8 bits for performance reasons.
