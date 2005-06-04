@@ -11,6 +11,7 @@ import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -75,7 +76,7 @@ public final class TestFastNodeRendering extends Frame
   private final double[] m_extents;
   private final int m_imgWidth = 600;
   private final int m_imgHeight = 480;
-  private final Image m_img;
+  private final BufferedImage m_img;
   private final GraphGraphics m_grafx;
 
   public TestFastNodeRendering(RTree tree, double[] extents)
@@ -84,7 +85,8 @@ public final class TestFastNodeRendering extends Frame
     m_tree = tree;
     m_extents = extents;
     addNotify();
-    m_img = createImage(m_imgWidth, m_imgHeight);
+    m_img = new BufferedImage(m_imgWidth, m_imgHeight,
+                              BufferedImage.TYPE_INT_ARGB);
     m_grafx = new GraphGraphics(m_img);
     m_grafx.clear(0.5d, 0.5d, 100.0d);
     m_grafx.drawNodeLow(0.45d, 0.45d, 0.51d, 0.52d, 0x00000000);
