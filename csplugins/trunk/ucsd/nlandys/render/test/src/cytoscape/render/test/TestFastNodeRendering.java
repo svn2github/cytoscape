@@ -2,6 +2,7 @@ package cytoscape.render.test;
 
 import cytoscape.geom.rtree.RTree;
 import cytoscape.render.immed.GraphGraphics;
+import cytoscape.util.intr.IntEnumerator;
 
 import java.awt.Color;
 import java.awt.EventQueue;
@@ -78,28 +79,48 @@ public final class TestFastNodeRendering extends Frame
   private final int m_imgHeight = 480;
   private final BufferedImage m_img;
   private final GraphGraphics m_grafx;
+  private final Color m_bgColor = Color.white;
+  private final int m_nodeColor = 0x00000000;
+  private double m_currXCenter = 0.5d;
+  private double m_currYCenter = 0.5d;
+  private double m_currScale = 5000.0d;
 
   public TestFastNodeRendering(RTree tree, double[] extents)
   {
     super();
     m_tree = tree;
     m_extents = extents;
-    addNotify();
-    m_img = new BufferedImage(m_imgWidth, m_imgHeight,
-                              BufferedImage.TYPE_INT_ARGB);
+    m_img = new BufferedImage
+      (m_imgWidth, m_imgHeight, BufferedImage.TYPE_INT_ARGB);
     m_grafx = new GraphGraphics(m_img);
-    m_grafx.clear(0.5d, 0.5d, 100.0d);
-    m_grafx.drawNodeLow(0.45d, 0.45d, 0.51d, 0.52d, 0x00000000);
+    updateNodeImage();
   }
 
   public void paint(final Graphics g)
   {
     final Insets insets = insets();
-    g.setColor(Color.red);
-    g.drawLine(30, 40, 249, 387);
+    updateNodeImage();
+    g.setColor(m_bgColor);
+    g.fillRect(insets.left, insets.top, m_imgWidth, m_imgHeight);
     g.drawImage(m_img, insets.left, insets.top, null);
     resize(m_imgWidth + insets.left + insets.right,
            m_imgHeight + insets.top + insets.bottom);
+  }
+
+  private final void updateNodeImage()
+  {
+    m_grafx.clear(m_currXCenter, m_currYCenter, m_currScale);
+    final IntEnumerator iter = m_tree.queryOverlap
+      (m_currXCenter - ((double) (m_imgWidth / 2)) / m_currScale,
+       m_currYCenter - ((double) (m_imgHeight / 2)) / m_currScale,
+       m_currXCenter + ((double) (m_imgWidth / 2)) / m_currScale,
+       m_currYCenter + ((double) (m_imgHeight / 2)) / m_currScale,
+       null, 0);
+    while (iter.numRemaining() > 0) {
+      final int inx = iter.nextInt();
+      m_grafx.drawNodeLow(m_extents[inx * 4], m_extents[(inx * 4) + 1],
+                          m_extents[(inx * 4) + 2], m_extents[(inx * 4) + 3],
+                          m_nodeColor); }
   }
 
   public boolean isResizable() { return false; }
