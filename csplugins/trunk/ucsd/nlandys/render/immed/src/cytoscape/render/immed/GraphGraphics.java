@@ -1,6 +1,5 @@
 package cytoscape.render.immed;
 
-import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Graphics2D;
@@ -10,7 +9,6 @@ import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
 
 /**
  * This is functional programming at it's finest [sarcasm].
@@ -32,15 +30,16 @@ public final class GraphGraphics
   public static final byte BORDER_NONE = 1;
   public static final byte BORDER_SOLID = 2;
 
-  private static final boolean s_debug = true;
-  private static final Color s_transparent = new Color(0, 0, 0, 0);
   private static final Color s_defaultColor = new Color(0);
 
   /**
    * The image that was passed into the constructor.
    */
-  public final BufferedImage image;
+  public final Image image;
 
+  private final int m_bgColor;
+  private final boolean m_antialias;
+  private final boolean m_debug;
   private Graphics2D m_g2d;
   private int m_currColor;
   private AffineTransform m_currXform;
@@ -52,24 +51,39 @@ public final class GraphGraphics
    * This constructor needs to be called from the AWT event handling thread.
    * @param image an off-screen image (an image gotten via the call
    *   java.awt.Component.createImage(int, int)).
+   * @param bgColor 0xRRGGBB (red, green, and blue components); the most
+   *   significant 8 bits are completely ignored; this color is fully opaque;
+   *   this color is used when clearing the image.
+   * @param debug if this is true, extra [and time-consuming] error checking
+   *   will take place.
    * @exception IllegalThreadStateException if the calling thread isn't the
    *   AWT event handling thread.
    */
-  public GraphGraphics(final BufferedImage image)
+  public GraphGraphics(final Image image, final int bgColor,
+                       final boolean antialias, final boolean debug)
   {
     this.image = image;
-    this.clear(0.0d, 0.0d, 1.0d);
+    m_bgColor = bgColor;
+    m_antialias = antialias;
+    m_debug = debug;
+    clear(0.0d, 0.0d, 1.0d);
     m_rect2d = new Rectangle2D.Double();
     m_ellp2d = new Ellipse2D.Double();
   }
 
   /**
-   * Clears image area to make it transparent, and sets an appropriate
-   * transformation of coordinate systems.
+   * Clears image area with the specified background color, and sets an
+   * appropriate transformation of coordinate systems.
    * It is healthy to call this method right before starting
    * to render a new picture.  Don't try to be clever in not calling this
    * method.<p>
-   * This method must be called from the AWT event handling thread.
+   * This method must be called from the AWT event handling thread.<p>
+   * NOTE: Initially, I wanted to have the background always be transparent.
+   * The idea was to be able to render a complete graph scene by rendering
+   * several images on top of one another.  Unfortunately, with the Java2D
+   * architecture, this becomes a very special (and slow) case; we'd have to
+   * use BufferedImage to do this, and I want to allow any kind of image
+   * to be used by an instance of this class.
    * @param xCenter the x component of the translation transform for the frame
    *   about to be rendered; a node whose center is at the X coordinate xCenter
    *   will be rendered exactly in the middle of the image going across.
@@ -86,20 +100,20 @@ public final class GraphGraphics
   public final void clear(final double xCenter, final double yCenter,
                           final double scaleFactor)
   {
-    if (s_debug) {
+    if (m_debug) {
       if (!EventQueue.isDispatchThread())
         throw new IllegalStateException
           ("calling thread is not AWT event dispatcher");
       if (!(scaleFactor > 0.0d))
         throw new IllegalArgumentException("scaleFactor is not positive"); }
-    m_g2d = image.createGraphics();
-    m_g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
-    m_g2d.setColor(s_transparent);
-    m_g2d.fillRect(0, 0, image.getWidth(), image.getHeight());
+    m_g2d = (Graphics2D) image.getGraphics();
+    m_g2d.setBackground(new Color(m_bgColor));
+    m_g2d.clearRect(0, 0, image.getWidth(null), image.getHeight(null));
     m_currColor = 0x00000000;
     m_g2d.setColor(s_defaultColor);
-    m_g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                           RenderingHints.VALUE_ANTIALIAS_ON);
+    if (m_antialias)
+      m_g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                             RenderingHints.VALUE_ANTIALIAS_ON);
 
     // Set transform.  This is an infrequently used method so don't optimize.
     {
@@ -108,8 +122,9 @@ public final class GraphGraphics
       final AffineTransform scale = new AffineTransform();
       scale.setToScale(scaleFactor, scaleFactor);
       final AffineTransform translationPostScale = new AffineTransform();
-      translationPostScale.setToTranslation(0.5d * (double) image.getWidth(),
-                                            0.5d * (double) image.getHeight());
+      translationPostScale.setToTranslation
+        (0.5d * (double) image.getWidth(null),
+         0.5d * (double) image.getHeight(null));
       final AffineTransform finalTransform = new AffineTransform();
       finalTransform.concatenate(translationPostScale);
       finalTransform.concatenate(scale);
@@ -134,7 +149,7 @@ public final class GraphGraphics
                                  final double borderWidth,
                                  final int borderColorRGB)
   {
-    if (s_debug) {
+    if (m_debug) {
       if (!EventQueue.isDispatchThread())
         throw new IllegalStateException
           ("calling thread is not AWT event dispatcher");
@@ -174,7 +189,7 @@ public final class GraphGraphics
                                 final double xMax, final double yMax,
                                 final int fillColorRGB)
   {
-    if (s_debug) {
+    if (m_debug) {
       if (!EventQueue.isDispatchThread())
         throw new IllegalStateException
           ("calling thread is not AWT event dispatcher");
