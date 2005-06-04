@@ -89,8 +89,10 @@ public final class TestFastNodeRendering
     super();
     m_tree = tree;
     m_extents = extents;
-    m_img = new BufferedImage
-      (m_imgWidth, m_imgHeight, BufferedImage.TYPE_INT_ARGB);
+    addNotify();
+    m_img = createImage(m_imgWidth, m_imgHeight);
+//     m_img = new BufferedImage
+//       (m_imgWidth, m_imgHeight, BufferedImage.TYPE_INT_ARGB);
     m_grafx = new GraphGraphics(m_img, m_bgColor.getRGB(), true, false);
     updateNodeImage();
     addMouseListener(this);
@@ -100,13 +102,17 @@ public final class TestFastNodeRendering
   public void paint(final Graphics g)
   {
     final Insets insets = insets();
-    updateNodeImage();
     g.drawImage(m_img, insets.left, insets.top, null);
     resize(m_imgWidth + insets.left + insets.right,
            m_imgHeight + insets.top + insets.bottom);
   }
 
-  public void update(final Graphics g) { paint(g); }
+  public void update(final Graphics g)
+  {
+    final Insets insets = insets();
+    updateNodeImage();
+    g.drawImage(m_img, insets.left, insets.top, null);
+  }
 
   private final void updateNodeImage()
   {
