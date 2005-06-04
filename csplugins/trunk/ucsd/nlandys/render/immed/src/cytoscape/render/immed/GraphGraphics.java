@@ -135,10 +135,14 @@ public final class GraphGraphics
   }
 
   /**
+   * @param borderWidth the border width, in node coordinate system; if
+   *   this value is zero, the rendering engine skips over the process of
+   *   rendering the border, which gives a significant performance boost.
    * @exception IllegalThreadStateException if the calling thread isn't the
    *   AWT event handling thread.
    * @exception IllegalArgumentException if xMin is greater than xMax or if
-   *   yMin is greater than yMax, or if shapeType is not one of the
+   *   yMin is greater than yMax, or if borderWidth is negative,
+   *   or if shapeType is not one of the
    *   SHAPE_* constants, or if borderType is not one of the BORDER_*
    *   constants.
    */
@@ -154,7 +158,9 @@ public final class GraphGraphics
         throw new IllegalStateException
           ("calling thread is not AWT event dispatcher");
       if (xMin > xMax) throw new IllegalArgumentException("xMin > xMax");
-      if (yMin > yMax) throw new IllegalArgumentException("yMin > yMax"); }
+      if (yMin > yMax) throw new IllegalArgumentException("yMin > yMax");
+      if (borderWidth < 0.0d)
+        throw new IllegalArgumentException("borderWidth < 0"); }
     final Shape shape;
     switch (shapeType) {
     case SHAPE_RECTANGLE:
@@ -171,6 +177,11 @@ public final class GraphGraphics
       m_currColor = fillColorRGB;
       m_g2d.setColor(new Color(fillColorRGB)); }
     m_g2d.fill(shape);
+    if (borderWidth > 0.0d) {
+      if (borderColorRGB != m_currColor) {
+        m_currColor = borderColorRGB;
+        m_g2d.setColor(new Color(borderColorRGB)); }
+      m_g2d.draw(shape); }
   }
 
   /**
