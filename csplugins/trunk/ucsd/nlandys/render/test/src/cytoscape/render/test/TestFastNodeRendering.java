@@ -16,8 +16,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
+import java.util.Random;
 
 public final class TestFastNodeRendering
   extends Frame implements MouseListener, MouseMotionListener
@@ -34,23 +33,17 @@ public final class TestFastNodeRendering
       tree = new RTree();
       extents = new double[N * 4]; // xMin1, yMin1, xMax1, yMax1, xMin2, ....
       double sqrtN = Math.sqrt((double) N);
-      InputStream in = System.in;
-      byte[] buff = new byte[16];
       int inx = 0;
-      int off = 0;
-      int read;
-      while (inx < N && (read = in.read(buff, off, buff.length - off)) > 0) {
-        off += read;
-        if (off < buff.length) continue;
-        else off = 0;
-        int nonnegative = 0x7fffffff & assembleInt(buff, 0);
+      Random r = new Random();
+      while (inx < N) {
+        int nonnegative = 0x7fffffff & r.nextInt();
         double centerX = ((double) nonnegative) / ((double) 0x7fffffff);
-        nonnegative = 0x7fffffff & assembleInt(buff, 4);
+        nonnegative = 0x7fffffff & r.nextInt();
         double centerY = ((double) nonnegative) / ((double) 0x7fffffff);
-        nonnegative = 0x7fffffff & assembleInt(buff, 8);
+        nonnegative = 0x7fffffff & r.nextInt();
         double width =
           (((double) nonnegative) / ((double) 0x7fffffff)) / sqrtN;
-        nonnegative = 0x7fffffff & assembleInt(buff, 12);
+        nonnegative = 0x7fffffff & r.nextInt();
         double height =
           (((double) nonnegative) / ((double) 0x7fffffff)) / sqrtN;
         extents[inx * 4] = centerX - (width / 2.0d);
@@ -60,7 +53,6 @@ public final class TestFastNodeRendering
         tree.insert(inx, extents[inx * 4], extents[(inx * 4) + 1],
                     extents[(inx * 4) + 2], extents[(inx * 4) + 3]);
         inx++; }
-      if (inx < N) throw new IOException("premature end of input");
       for (inx = 0; inx < N; inx++) {
         // Re-insert every entry into tree for performance gain.
         tree.delete(inx);
@@ -177,14 +169,5 @@ public final class TestFastNodeRendering
   public void mouseMoved(MouseEvent e) {}
 
   public boolean isResizable() { return false; }
-
-  private static int assembleInt(byte[] bytes, int offset)
-  {
-    int firstByte = (((int) bytes[offset]) & 0x000000ff) << 24;
-    int secondByte = (((int) bytes[offset + 1]) & 0x000000ff) << 16;
-    int thirdByte = (((int) bytes[offset + 2]) & 0x000000ff) << 8;
-    int fourthByte = (((int) bytes[offset + 3]) & 0x000000ff) << 0;
-    return firstByte | secondByte | thirdByte | fourthByte;
-  }
 
 }
