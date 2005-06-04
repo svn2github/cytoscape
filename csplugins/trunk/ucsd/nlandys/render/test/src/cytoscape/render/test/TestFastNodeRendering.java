@@ -10,13 +10,17 @@ import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Insets;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 
-public final class TestFastNodeRendering extends Frame
+public final class TestFastNodeRendering
+  extends Frame implements MouseListener, MouseMotionListener
 {
 
   public final static void main(String[] args) throws Exception
@@ -83,7 +87,10 @@ public final class TestFastNodeRendering extends Frame
   private final int m_nodeColor = 0x00000000;
   private double m_currXCenter = 0.5d;
   private double m_currYCenter = 0.5d;
-  private double m_currScale = 5000.0d;
+  private double m_currScale = 10000.0d;
+  private int m_currMouseButton = 0; // 0: none; 1: left; 2: middle.
+  private int m_lastXMousePos = 0;
+  private int m_lastYMousePos = 0;
 
   public TestFastNodeRendering(RTree tree, double[] extents)
   {
@@ -94,18 +101,20 @@ public final class TestFastNodeRendering extends Frame
       (m_imgWidth, m_imgHeight, BufferedImage.TYPE_INT_ARGB);
     m_grafx = new GraphGraphics(m_img);
     updateNodeImage();
+    addMouseListener(this);
+    addMouseMotionListener(this);
   }
 
   public void paint(final Graphics g)
   {
     final Insets insets = insets();
     updateNodeImage();
-    g.setColor(m_bgColor);
-    g.fillRect(insets.left, insets.top, m_imgWidth, m_imgHeight);
-    g.drawImage(m_img, insets.left, insets.top, null);
+    g.drawImage(m_img, insets.left, insets.top, m_bgColor, null);
     resize(m_imgWidth + insets.left + insets.right,
            m_imgHeight + insets.top + insets.bottom);
   }
+
+  public void update(final Graphics g) { paint(g); }
 
   private final void updateNodeImage()
   {
@@ -122,6 +131,38 @@ public final class TestFastNodeRendering extends Frame
                           m_extents[(inx * 4) + 2], m_extents[(inx * 4) + 3],
                           m_nodeColor); }
   }
+
+  public void mouseClicked(MouseEvent e) {}
+  public void mouseEntered(MouseEvent e) {}
+  public void mouseExited(MouseEvent e) {}
+
+  public void mousePressed(MouseEvent e)
+  {
+    if (e.getButton() == MouseEvent.BUTTON1) {
+      m_currMouseButton = 1;
+      m_lastXMousePos = e.getX();
+      m_lastYMousePos = e.getY(); }
+  }
+
+  public void mouseReleased(MouseEvent e)
+  {
+    if (e.getButton() == MouseEvent.BUTTON1) {
+      if (m_currMouseButton == 1) m_currMouseButton = 0; }
+  }
+
+  public void mouseDragged(MouseEvent e)
+  {
+    if (m_currMouseButton == 1) {
+      double deltaX = e.getX() - m_lastXMousePos;
+      double deltaY = e.getY() - m_lastYMousePos;
+      m_lastXMousePos = e.getX();
+      m_lastYMousePos = e.getY();
+      m_currXCenter -= deltaX / m_currScale;
+      m_currYCenter -= deltaY / m_currScale;
+      repaint(); }
+  }
+
+  public void mouseMoved(MouseEvent e) {}
 
   public boolean isResizable() { return false; }
 
