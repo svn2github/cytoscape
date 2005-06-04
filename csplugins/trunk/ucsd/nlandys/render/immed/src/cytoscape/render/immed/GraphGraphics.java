@@ -10,6 +10,7 @@ import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 
 /**
  * This is functional programming at it's finest [sarcasm].
@@ -32,15 +33,13 @@ public final class GraphGraphics
   public static final byte BORDER_SOLID = 2;
 
   private static final boolean s_debug = true;
+  private static final Color s_transparent = new Color(0, 0, 0, 0);
   private static final Color s_defaultColor = new Color(0);
 
   /**
    * The image that was passed into the constructor.
    */
-  public final Image image;
-
-  private final int m_imageWidth;
-  private final int m_imageHeight;
+  public final BufferedImage image;
 
   private Graphics2D m_g2d;
   private int m_currColor;
@@ -56,11 +55,9 @@ public final class GraphGraphics
    * @exception IllegalThreadStateException if the calling thread isn't the
    *   AWT event handling thread.
    */
-  public GraphGraphics(final Image image)
+  public GraphGraphics(final BufferedImage image)
   {
     this.image = image;
-    m_imageWidth = this.image.getWidth(null);
-    m_imageHeight = this.image.getHeight(null);
     this.clear(0.0d, 0.0d, 1.0d);
     m_rect2d = new Rectangle2D.Double();
     m_ellp2d = new Ellipse2D.Double();
@@ -95,10 +92,10 @@ public final class GraphGraphics
           ("calling thread is not AWT event dispatcher");
       if (!(scaleFactor > 0.0d))
         throw new IllegalArgumentException("scaleFactor is not positive"); }
-    m_g2d = (Graphics2D) image.getGraphics();
-    m_g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR));
-    m_g2d.clearRect(0, 0, m_imageWidth, m_imageHeight);
+    m_g2d = image.createGraphics();
     m_g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
+    m_g2d.setColor(s_transparent);
+    m_g2d.fillRect(0, 0, image.getWidth(), image.getHeight());
     m_currColor = 0x00000000;
     m_g2d.setColor(s_defaultColor);
     m_g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
@@ -111,8 +108,8 @@ public final class GraphGraphics
       final AffineTransform scale = new AffineTransform();
       scale.setToScale(scaleFactor, scaleFactor);
       final AffineTransform translationPostScale = new AffineTransform();
-      translationPostScale.setToTranslation(0.5d * (double) m_imageWidth,
-                                            0.5d * (double) m_imageHeight);
+      translationPostScale.setToTranslation(0.5d * (double) image.getWidth(),
+                                            0.5d * (double) image.getHeight());
       final AffineTransform finalTransform = new AffineTransform();
       finalTransform.concatenate(translationPostScale);
       finalTransform.concatenate(scale);
