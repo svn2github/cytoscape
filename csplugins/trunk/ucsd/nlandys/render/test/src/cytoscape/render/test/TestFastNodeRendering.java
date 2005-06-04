@@ -99,7 +99,7 @@ public final class TestFastNodeRendering
     m_extents = extents;
     m_img = new BufferedImage
       (m_imgWidth, m_imgHeight, BufferedImage.TYPE_INT_ARGB);
-    m_grafx = new GraphGraphics(m_img);
+    m_grafx = new GraphGraphics(m_img, m_bgColor.getRGB(), false, false);
     updateNodeImage();
     addMouseListener(this);
     addMouseMotionListener(this);
@@ -109,7 +109,7 @@ public final class TestFastNodeRendering
   {
     final Insets insets = insets();
     updateNodeImage();
-    g.drawImage(m_img, insets.left, insets.top, m_bgColor, null);
+    g.drawImage(m_img, insets.left, insets.top, null);
     resize(m_imgWidth + insets.left + insets.right,
            m_imgHeight + insets.top + insets.bottom);
   }
@@ -126,9 +126,9 @@ public final class TestFastNodeRendering
        m_currYCenter + ((double) (m_imgHeight / 2)) / m_currScale,
        null, 0);
     while (iter.numRemaining() > 0) {
-      final int inx = iter.nextInt();
-      m_grafx.drawNodeLow(m_extents[inx * 4], m_extents[(inx * 4) + 1],
-                          m_extents[(inx * 4) + 2], m_extents[(inx * 4) + 3],
+      final int inx_x4 = iter.nextInt() * 4;
+      m_grafx.drawNodeLow(m_extents[inx_x4], m_extents[inx_x4 + 1],
+                          m_extents[inx_x4 + 2], m_extents[inx_x4 + 3],
                           m_nodeColor); }
   }
 
@@ -142,12 +142,18 @@ public final class TestFastNodeRendering
       m_currMouseButton = 1;
       m_lastXMousePos = e.getX();
       m_lastYMousePos = e.getY(); }
+    else if (e.getButton() == MouseEvent.BUTTON2) {
+      m_currMouseButton = 2;
+      m_lastXMousePos = e.getX();
+      m_lastYMousePos = e.getY(); }
   }
 
   public void mouseReleased(MouseEvent e)
   {
     if (e.getButton() == MouseEvent.BUTTON1) {
       if (m_currMouseButton == 1) m_currMouseButton = 0; }
+    else if (e.getButton() == MouseEvent.BUTTON2) {
+      if (m_currMouseButton == 2) m_currMouseButton = 0; }
   }
 
   public void mouseDragged(MouseEvent e)
@@ -159,6 +165,12 @@ public final class TestFastNodeRendering
       m_lastYMousePos = e.getY();
       m_currXCenter -= deltaX / m_currScale;
       m_currYCenter -= deltaY / m_currScale;
+      repaint(); }
+    else if (m_currMouseButton == 2) {
+      double deltaY = e.getY() - m_lastYMousePos;
+      m_lastXMousePos = e.getX();
+      m_lastYMousePos = e.getY();
+      m_currScale *= Math.pow(2, -deltaY / 300.0d);
       repaint(); }
   }
 
