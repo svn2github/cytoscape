@@ -49,8 +49,8 @@ public final class GraphGraphics
   /**
    * All rendering operations will be performed on the specified image.
    * This constructor needs to be called from the AWT event handling thread.
-   * @param image an off-screen image (an image gotten via the call
-   *   java.awt.Component.createImage(int, int)).
+   * @param image an off-screen image (an image that supports the
+   *   getGraphics() method).
    * @param bgColor 0xRRGGBB (red, green, and blue components); the most
    *   significant 8 bits are completely ignored; this color is fully opaque;
    *   this color is used when clearing the image.
