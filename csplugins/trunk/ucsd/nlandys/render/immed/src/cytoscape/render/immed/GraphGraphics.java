@@ -167,6 +167,10 @@ public final class GraphGraphics
       break;
     default:
       throw new IllegalArgumentException("shapeType is not recognized"); }
+    if (fillColorRGB != m_currColor) {
+      m_currColor = fillColorRGB;
+      m_g2d.setColor(new Color(fillColorRGB)); }
+    m_g2d.fill(shape);
   }
 
   /**
