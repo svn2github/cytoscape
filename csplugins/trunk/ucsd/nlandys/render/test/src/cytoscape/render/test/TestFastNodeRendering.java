@@ -81,7 +81,7 @@ public final class TestFastNodeRendering
   private final double[] m_extents;
   private final int m_imgWidth = 600;
   private final int m_imgHeight = 480;
-  private final BufferedImage m_img;
+  private final Image m_img;
   private final GraphGraphics m_grafx;
   private final Color m_bgColor = Color.white;
   private final int m_nodeColor = 0x00000000;
