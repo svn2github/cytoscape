@@ -99,7 +99,7 @@ public final class TestFastNodeRendering
     m_extents = extents;
     m_img = new BufferedImage
       (m_imgWidth, m_imgHeight, BufferedImage.TYPE_INT_ARGB);
-    m_grafx = new GraphGraphics(m_img, m_bgColor.getRGB(), false, false);
+    m_grafx = new GraphGraphics(m_img, m_bgColor.getRGB(), true, false);
     updateNodeImage();
     addMouseListener(this);
     addMouseMotionListener(this);
