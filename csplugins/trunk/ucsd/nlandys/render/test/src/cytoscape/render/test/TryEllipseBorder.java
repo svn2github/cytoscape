@@ -19,13 +19,13 @@ public final class TryEllipseBorder
         public final void paint(Graphics g) {
           Graphics2D g2d = (Graphics2D) g;
           AffineTransform xform = new AffineTransform();
-          xform.setToScale(100.0d, 100.0d);
+          xform.setToScale(1000.0d, 1000.0d);
           g2d.transform(xform);
           g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                                RenderingHints.VALUE_ANTIALIAS_ON);
-          g2d.setStroke(new BasicStroke(0.02f));
+          g2d.setStroke(new BasicStroke(0.002f));
           g2d.setPaint(Color.red);
-          g2d.draw(new Ellipse2D.Double(0.145, 0.384, 1.901, 1.397)); }
+          g2d.draw(new Ellipse2D.Double(0.0145d, 0.0384d, 0.1901d, 0.0597d)); }
         public boolean handleEvent(Event evt) {
           if (evt.id == Event.WINDOW_DESTROY) System.exit(0);
           return super.handleEvent(evt); } };
