@@ -30,45 +30,39 @@ public final class GraphGraphics
   public static final byte BORDER_NONE = 1;
   public static final byte BORDER_SOLID = 2;
 
-  private static final Color s_defaultColor = new Color(0);
-
   /**
    * The image that was passed into the constructor.
    */
   public final Image image;
 
-  private final int m_bgColor;
+  private final Color m_bgColor;
   private final boolean m_antialias;
   private final boolean m_debug;
-  private Graphics2D m_g2d;
-  private int m_currColor;
-  private AffineTransform m_currXform;
   private final Rectangle2D.Double m_rect2d;
   private final Ellipse2D.Double m_ellp2d;
+  private Graphics2D m_g2d;
+  private AffineTransform m_currXform; // Not sure that we will need this.
 
   /**
    * All rendering operations will be performed on the specified image.
    * This constructor needs to be called from the AWT event handling thread.
    * @param image an off-screen image (an image that supports the
    *   getGraphics() method).
-   * @param bgColor 0xRRGGBB (red, green, and blue components); the most
-   *   significant 8 bits are completely ignored; this color is fully opaque;
-   *   this color is used when clearing the image.
    * @param debug if this is true, extra [and time-consuming] error checking
    *   will take place.
    * @exception IllegalThreadStateException if the calling thread isn't the
    *   AWT event handling thread.
    */
-  public GraphGraphics(final Image image, final int bgColor,
+  public GraphGraphics(final Image image, final Color bgColor,
                        final boolean antialias, final boolean debug)
   {
     this.image = image;
     m_bgColor = bgColor;
     m_antialias = antialias;
     m_debug = debug;
-    clear(0.0d, 0.0d, 1.0d);
     m_rect2d = new Rectangle2D.Double();
     m_ellp2d = new Ellipse2D.Double();
+    clear(0.0d, 0.0d, 1.0d);
   }
 
   /**
@@ -107,10 +101,8 @@ public final class GraphGraphics
       if (!(scaleFactor > 0.0d))
         throw new IllegalArgumentException("scaleFactor is not positive"); }
     m_g2d = (Graphics2D) image.getGraphics();
-    m_g2d.setBackground(new Color(m_bgColor));
+    m_g2d.setBackground(m_bgColor);
     m_g2d.clearRect(0, 0, image.getWidth(null), image.getHeight(null));
-    m_currColor = 0x00000000;
-    m_g2d.setColor(s_defaultColor);
     if (m_antialias)
       m_g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                              RenderingHints.VALUE_ANTIALIAS_ON);
@@ -149,9 +141,9 @@ public final class GraphGraphics
   public final void drawNodeFull(final byte shapeType,
                                  final double xMin, final double yMin,
                                  final double xMax, final double yMax,
-                                 final int fillColorRGB, final byte borderType,
+                                 final Color fillColor, final byte borderType,
                                  final double borderWidth,
-                                 final int borderColorRGB)
+                                 final Color borderColor)
   {
     if (m_debug) {
       if (!EventQueue.isDispatchThread())
@@ -173,14 +165,10 @@ public final class GraphGraphics
       break;
     default:
       throw new IllegalArgumentException("shapeType is not recognized"); }
-    if (fillColorRGB != m_currColor) {
-      m_currColor = fillColorRGB;
-      m_g2d.setColor(new Color(fillColorRGB)); }
+    m_g2d.setColor(fillColor);
     m_g2d.fill(shape);
     if (borderWidth > 0.0d) {
-      if (borderColorRGB != m_currColor) {
-        m_currColor = borderColorRGB;
-        m_g2d.setColor(new Color(borderColorRGB)); }
+      m_g2d.setColor(borderColor);
       m_g2d.draw(shape); }
   }
 
@@ -192,9 +180,6 @@ public final class GraphGraphics
    * node coordinate space, not the image coordinate space.  Thus, these
    * values will likely not change from frame to frame, as zoom and pan
    * operations are performed.
-   * @param fillColorRGB 0xRRGGBB (red, green, and blue components); the most
-   *   significant 8 bits are completely ignored; it is suggested to use all
-   *   zero bits for the most significant 8 bits for performance reasons.
    * @exception IllegalThreadStateException if the calling thread isn't the
    *   AWT event handling thread.
    * @exception IllegalArgumentException if xMin is greater than xMax or if
@@ -202,7 +187,7 @@ public final class GraphGraphics
    */
   public final void drawNodeLow(final double xMin, final double yMin,
                                 final double xMax, final double yMax,
-                                final int fillColorRGB)
+                                final Color fillColor)
   {
     if (m_debug) {
       if (!EventQueue.isDispatchThread())
@@ -210,10 +195,8 @@ public final class GraphGraphics
           ("calling thread is not AWT event dispatcher");
       if (xMin > xMax) throw new IllegalArgumentException("xMin > xMax");
       if (yMin > yMax) throw new IllegalArgumentException("yMin > yMax"); }
-    if (fillColorRGB != m_currColor) {
-      m_currColor = fillColorRGB;
-      m_g2d.setColor(new Color(fillColorRGB)); }
     m_rect2d.setRect(xMin, yMin, xMax - xMin, yMax - yMin);
+    m_g2d.setColor(fillColor);
     m_g2d.fill(m_rect2d);
   }
 
