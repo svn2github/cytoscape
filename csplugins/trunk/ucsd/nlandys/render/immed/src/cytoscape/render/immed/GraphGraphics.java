@@ -38,9 +38,7 @@ public final class GraphGraphics
   private final boolean m_antialias;
   private final boolean m_debug;
   private final Rectangle2D.Double m_rect2d;
-  private final Rectangle2D.Double m_rect2d_;
   private final Ellipse2D.Double m_ellp2d;
-  private final Ellipse2D.Double m_ellp2d_;
   private Graphics2D m_g2d;
   private AffineTransform m_currXform; // Not sure that we will need this.
 
@@ -62,9 +60,7 @@ public final class GraphGraphics
     m_antialias = antialias;
     m_debug = debug;
     m_rect2d = new Rectangle2D.Double();
-    m_rect2d_ = new Rectangle2D.Double();
     m_ellp2d = new Ellipse2D.Double();
-    m_ellp2d_ = new Ellipse2D.Double();
     clear(0.0d, 0.0d, 1.0d);
   }
 
@@ -156,51 +152,20 @@ public final class GraphGraphics
       if (yMin > yMax) throw new IllegalArgumentException("yMin > yMax");
       if (borderWidth < 0.0d)
         throw new IllegalArgumentException("borderWidth < 0"); }
-    if (borderWidth == 0.0d) {
-      final Shape shape;
-      switch (shapeType) {
-      case SHAPE_RECTANGLE:
-        m_rect2d.setRect(xMin, yMin, xMax - xMin, yMax - yMin);
-        shape = m_rect2d;
-        break;
-      case SHAPE_ELLIPSE:
-        m_ellp2d.setFrame(xMin, yMin, xMax - xMin, yMax - yMin);
-        shape = m_ellp2d;
-        break;
-      default:
-        throw new IllegalArgumentException("shapeType is not recognized"); }
-      m_g2d.setColor(fillColor);
-      m_g2d.fill(shape); }
-    else { // borderWidth > 0.
-      final double borderDiv2 = borderWidth / 2.0d;
-      final Shape borderShape;
-      final Shape fillShape;
-      switch (shapeType) {
-      case SHAPE_RECTANGLE:
-        m_rect2d.setRect(xMin - borderDiv2, yMin - borderDiv2,
-                         xMax - xMin + borderWidth, yMax - yMin + borderWidth);
-        borderShape = m_rect2d;
-        m_rect2d_.setRect(xMin + borderDiv2, yMin + borderDiv2,
-                          xMax - xMin - borderWidth,
-                          yMax - yMin - borderWidth);
-        fillShape = m_rect2d_;
-        break;
-      case SHAPE_ELLIPSE:
-        m_ellp2d.setFrame(xMin - borderDiv2, yMin - borderDiv2,
-                          xMax - xMin + borderWidth,
-                          yMax - yMin + borderWidth);
-        borderShape = m_ellp2d;
-        m_ellp2d_.setFrame(xMin + borderDiv2, yMin + borderDiv2,
-                           xMax - xMin - borderWidth,
-                           yMax - yMin - borderWidth);
-        fillShape = m_ellp2d_;
-        break;
-      default:
-        throw new IllegalArgumentException("shapeType is not recognized"); }
-      m_g2d.setColor(borderColor);
-      m_g2d.fill(borderShape);
-      m_g2d.setColor(fillColor);
-      m_g2d.fill(fillShape); }
+    final Shape shape;
+    switch (shapeType) {
+    case SHAPE_RECTANGLE:
+      m_rect2d.setRect(xMin, yMin, xMax - xMin, yMax - yMin);
+      shape = m_rect2d;
+      break;
+    case SHAPE_ELLIPSE:
+      m_ellp2d.setFrame(xMin, yMin, xMax - xMin, yMax - yMin);
+      shape = m_ellp2d;
+      break;
+    default:
+      throw new IllegalArgumentException("shapeType is not recognized"); }
+    m_g2d.setColor(fillColor);
+    m_g2d.fill(shape);
   }
 
   /**
