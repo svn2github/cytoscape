@@ -59,7 +59,7 @@ public final class GraphGraphics
   {
     this.image = image;
     m_bgColor = bgColor;
-E    m_antialias = antialias;
+    m_antialias = antialias;
     m_debug = debug;
     m_rect2d = new Rectangle2D.Double();
     m_ellp2d = new Ellipse2D.Double();
