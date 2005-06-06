@@ -137,14 +137,12 @@ public final class GraphGraphics
    *   AWT event handling thread.
    * @exception IllegalArgumentException if xMin is greater than xMax or if
    *   yMin is greater than yMax, or if borderWidth is negative,
-   *   or if shapeType is not one of the
-   *   SHAPE_* constants, or if borderType is not one of the BORDER_*
-   *   constants.
+   *   or if shapeType is not one of the SHAPE_* constants.
    */
   public final void drawNodeFull(final byte shapeType,
                                  final float xMin, final float yMin,
                                  final float xMax, final float yMax,
-                                 final Color fillColor, final byte borderType,
+                                 final Color fillColor,
                                  final float borderWidth,
                                  final Color borderColor)
   {
