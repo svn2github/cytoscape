@@ -9,6 +9,7 @@ import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
+import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 
 /**
@@ -38,6 +39,7 @@ public final class GraphGraphics
   private final Rectangle2D.Float m_rect2d;
   private final Ellipse2D.Float m_ellp2d;
   private final GeneralPath m_poly2d;
+  private final Line2D.Float m_line2d;
   private Graphics2D m_g2d;
   private AffineTransform m_currXform; // Not sure that we will need this.
 
@@ -61,6 +63,7 @@ public final class GraphGraphics
     m_rect2d = new Rectangle2D.Float();
     m_ellp2d = new Ellipse2D.Float();
     m_poly2d = new GeneralPath();
+    m_line2d = new Line2D.Float();
     clear(0.0d, 0.0d, 1.0d);
   }
 
@@ -202,6 +205,15 @@ public final class GraphGraphics
     m_rect2d.setRect(xMin, yMin, xMax - xMin, yMax - yMin);
     m_g2d.setColor(fillColor);
     m_g2d.fill(m_rect2d);
+  }
+
+  public final void drawEdgeLow(final float x0, final float y0,
+                                final float x1, final float y1,
+                                final float thickness, final Color edgeColor)
+  {
+    m_line2d.setLine(x0, y0, x1, y1);
+    m_g2d.setColor(edgeColor);
+    m_g2d.draw(m_line2d);
   }
 
 }
