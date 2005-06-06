@@ -13,8 +13,6 @@ public final class TryThinPolygonFillingSpeed
 {
 
   private final static int FLAG_ANTIALIAS = 1;
-  private final static int FLAG_TRANSFORM = 2;
-  private final static int FLAG_DOUBLE_BUFFER = 4;
 
   public static final void main(String[] args)
   {
@@ -30,7 +28,7 @@ public final class TryThinPolygonFillingSpeed
       extents = new float[N * 8];
       int inx = 0;
       Random r = new Random();
-      double lineWidth = 2.0d;
+      double lineWidth = 1.0d;
       while (inx < N) {
         int nonnegative = 0x7fffffff & r.nextInt();
         double x0 =
@@ -62,6 +60,8 @@ public final class TryThinPolygonFillingSpeed
     final Frame f = new Frame() {
         public final void paint(Graphics g) {
           Graphics2D g2 = (Graphics2D) g;
+          g2.setColor(Color.white);
+          g2.fillRect(0, 0, imgW, imgH);
           if ((flags & FLAG_ANTIALIAS) != 0)
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                                 RenderingHints.VALUE_ANTIALIAS_ON);
@@ -74,8 +74,9 @@ public final class TryThinPolygonFillingSpeed
             poly.lineTo(extents[i + 6], extents[i + 7]);
             poly.closePath();
             g2.fill(poly); }
-          //repaint();
+          repaint();
         }
+        public boolean isResizable() { return false; }
         public boolean handleEvent(Event evt) {
           if (evt.id == Event.WINDOW_DESTROY) System.exit(0);
           return super.handleEvent(evt); } };
