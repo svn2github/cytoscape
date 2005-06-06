@@ -25,13 +25,13 @@ public final class TestFastNodeRendering
   public final static void main(String[] args) throws Exception
   {
     final RTree tree;
-    final double[] extents;
+    final float[] extents;
 
     // Populate the tree with entries.
     {
       int N = Integer.parseInt(args[0]);
       tree = new RTree();
-      extents = new double[N * 4]; // xMin1, yMin1, xMax1, yMax1, xMin2, ....
+      extents = new float[N * 4]; // xMin1, yMin1, xMax1, yMax1, xMin2, ....
       double sqrtN = Math.sqrt((double) N);
       int inx = 0;
       Random r = new Random();
@@ -46,10 +46,10 @@ public final class TestFastNodeRendering
         nonnegative = 0x7fffffff & r.nextInt();
         double height =
           (((double) nonnegative) / ((double) 0x7fffffff)) / sqrtN;
-        extents[inx * 4] = centerX - (width / 2.0d);
-        extents[(inx * 4) + 1] = centerY - (height / 2.0d);
-        extents[(inx * 4) + 2] = centerX + (width / 2.0d);
-        extents[(inx * 4) + 3] = centerY + (height / 2.0d);
+        extents[inx * 4] = (float) (centerX - (width / 2.0d));
+        extents[(inx * 4) + 1] = (float) (centerY - (height / 2.0d));
+        extents[(inx * 4) + 2] = (float) (centerX + (width / 2.0d));
+        extents[(inx * 4) + 3] = (float) (centerY + (height / 2.0d));
         tree.insert(inx, extents[inx * 4], extents[(inx * 4) + 1],
                     extents[(inx * 4) + 2], extents[(inx * 4) + 3]);
         inx++; }
@@ -70,7 +70,7 @@ public final class TestFastNodeRendering
   }
 
   private final RTree m_tree;
-  private final double[] m_extents;
+  private final float[] m_extents;
   private final int m_imgWidth = 600;
   private final int m_imgHeight = 480;
   private final Image m_img;
@@ -84,7 +84,7 @@ public final class TestFastNodeRendering
   private int m_lastXMousePos = 0;
   private int m_lastYMousePos = 0;
 
-  public TestFastNodeRendering(RTree tree, double[] extents)
+  public TestFastNodeRendering(RTree tree, float[] extents)
   {
     super();
     m_tree = tree;

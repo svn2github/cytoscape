@@ -27,7 +27,7 @@ public final class TestLODRendering
   public final static void main(String[] args) throws Exception
   {
     final RTree tree;
-    final double[] extents;
+    final float[] extents;
     final int N;
     final double sqrtN;
 
@@ -35,7 +35,7 @@ public final class TestLODRendering
     {
       N = Integer.parseInt(args[0]);
       tree = new RTree();
-      extents = new double[N * 4]; // xMin1, yMin1, xMax1, yMax1, xMin2, ....
+      extents = new float[N * 4]; // xMin1, yMin1, xMax1, yMax1, xMin2, ....
       sqrtN = Math.sqrt((double) N);
       int inx = 0;
       Random r = new Random();
@@ -52,10 +52,10 @@ public final class TestLODRendering
         nonnegative = 0x7fffffff & r.nextInt();
         double height =
           fudgeFactor * ((double) nonnegative) / ((double) 0x7fffffff);
-        extents[inx * 4] = centerX - (width / 2.0d);
-        extents[(inx * 4) + 1] = centerY - (height / 2.0d);
-        extents[(inx * 4) + 2] = centerX + (width / 2.0d);
-        extents[(inx * 4) + 3] = centerY + (height / 2.0d);
+        extents[inx * 4] = (float) (centerX - (width / 2.0d));
+        extents[(inx * 4) + 1] = (float) (centerY - (height / 2.0d));
+        extents[(inx * 4) + 2] = (float) (centerX + (width / 2.0d));
+        extents[(inx * 4) + 3] = (float) (centerY + (height / 2.0d));
         tree.insert(inx, extents[inx * 4], extents[(inx * 4) + 1],
                     extents[(inx * 4) + 2], extents[(inx * 4) + 3]);
         inx++; }
@@ -76,7 +76,7 @@ public final class TestLODRendering
   }
 
   private final RTree m_tree;
-  private final double[] m_extents;
+  private final float[] m_extents;
   private final float m_borderWidth = (float) (0.05d * fudgeFactor);
   private final int m_imgWidth = 600;
   private final int m_imgHeight = 600;
@@ -92,7 +92,7 @@ public final class TestLODRendering
   private int m_lastXMousePos = 0;
   private int m_lastYMousePos = 0;
 
-  public TestLODRendering(RTree tree, double[] extents, double sqrtN)
+  public TestLODRendering(RTree tree, float[] extents, double sqrtN)
   {
     super();
     m_tree = tree;
@@ -137,8 +137,7 @@ public final class TestLODRendering
       m_grafx.drawNodeFull(GraphGraphics.SHAPE_ELLIPSE,
                            m_extents[inx_x4], m_extents[inx_x4 + 1],
                            m_extents[inx_x4 + 2], m_extents[inx_x4 + 3],
-                           m_nodeColor, GraphGraphics.BORDER_SOLID,
-                           m_borderWidth, m_borderColor); }
+                           m_nodeColor, m_borderWidth, m_borderColor); }
   }
 
   public void mouseClicked(MouseEvent e) {}
