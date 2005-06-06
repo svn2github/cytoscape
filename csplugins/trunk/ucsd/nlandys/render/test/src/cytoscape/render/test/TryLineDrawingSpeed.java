@@ -2,21 +2,33 @@ package cytoscape.render.test;
 
 import java.awt.Color;
 import java.awt.Event;
+import java.awt.EventQueue;
 import java.awt.Frame;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.RenderingHints;
+import java.awt.geom.AffineTransform;
 import java.util.Random;
 
-public final class TryLineDrawingSpeed
+public final class TryLineDrawingSpeed extends Frame
 {
 
-  public static final void main(String[] args)
+  private final static int FLAG_ANTIALIAS = 1;
+  private final static int FLAG_TRANSFORM = 2;
+  private final static int FLAG_DOUBLE_BUFFER = 4;
+
+  public static final void main(String[] args) throws Exception
   {
     final int imgW = 600;
     final int imgH = 600;
     final int[] extents;
+    final int flags;
 
     {
       int N = Integer.parseInt(args[0]);
+      if (args.length > 1) flags = Integer.parseInt(args[1]);
+      else flags = 0;
       extents = new int[N * 4];
       int inx = 0;
       Random r = new Random();
@@ -35,19 +47,58 @@ public final class TryLineDrawingSpeed
         extents[(inx * 4) + 3] = y1;
         inx++; }
     }
+    
+    EventQueue.invokeAndWait(new Runnable() {
+        public void run() {
+          Frame f = new TryLineDrawingSpeed(flags, imgW, imgH, extents);
+          f.show();
+          f.resize(imgW, imgH); } });
 
-    final Frame f = new Frame() {
-        public final void paint(Graphics g) {
-          g.setColor(Color.black);
-          for (int i = 0; i < extents.length;) {
-            g.drawLine(extents[i++], extents[i++],
-                       extents[i++], extents[i++]); }
-          repaint(); }
-        public boolean handleEvent(Event evt) {
-          if (evt.id == Event.WINDOW_DESTROY) System.exit(0);
-          return super.handleEvent(evt); } };
-    f.resize(600, 600);
-    f.show();
   }
+
+  private final boolean m_antialias;
+  private final Image m_img;
+  private final AffineTransform m_xform;
+  private final int[] m_extents;
+  private int m_offset = 0;
+
+  private TryLineDrawingSpeed(int flags, int w, int h, int[] extents)
+  {
+    super();
+    m_extents = extents;
+    if ((flags & FLAG_DOUBLE_BUFFER) != 0) {
+      addNotify();
+      m_img = createImage(w, h); }
+    else { m_img = null; }
+    if ((flags & FLAG_ANTIALIAS) != 0) {
+      m_antialias = true; }
+    else { m_antialias = false; }
+    if ((flags & FLAG_TRANSFORM) != 0) {
+      m_xform = new AffineTransform();
+      m_xform.setToScale(0.9d, 0.9d); }
+    else { m_xform = null; }
+  }
+
+  public final void paint(Graphics g) {
+    final Graphics2D g2;
+    if (m_img != null) { g2 = (Graphics2D) m_img.getGraphics(); }
+    else { g2 = (Graphics2D) g; }
+    if (m_antialias) {
+      g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                          RenderingHints.VALUE_ANTIALIAS_ON); }
+    if (m_xform != null) { g2.transform(m_xform); }
+    g2.setColor(Color.black);
+    for (int i = 0; i < m_extents.length;) {
+      g2.drawLine(m_extents[i++] + m_offset, m_extents[i++] + m_offset,
+                  m_extents[i++] + m_offset, m_extents[i++] + m_offset); }
+    if (m_img != null) {
+      g.drawImage(m_img, 0, 0, null); }
+    if (m_offset == 0) { m_offset = 2; }
+    else { m_offset = 0; }
+    repaint(); }
+  public boolean isResizable() { return false; }
+  public boolean handleEvent(Event evt) {
+    if (evt.id == Event.WINDOW_DESTROY) System.exit(0);
+    return super.handleEvent(evt); }
 
 }
