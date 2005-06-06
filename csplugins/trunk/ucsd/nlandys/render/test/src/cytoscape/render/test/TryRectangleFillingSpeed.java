@@ -6,7 +6,7 @@ import java.awt.Frame;
 import java.awt.Graphics;
 import java.util.Random;
 
-public final class TryPolygonFillingSpeed
+public final class TryRectangleFillingSpeed
 {
 
   public static final void main(String[] args)
