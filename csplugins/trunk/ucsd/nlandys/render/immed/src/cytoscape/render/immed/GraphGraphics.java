@@ -1,5 +1,6 @@
 package cytoscape.render.immed;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Graphics2D;
@@ -40,6 +41,7 @@ public final class GraphGraphics
   private final Rectangle2D.Double m_rect2d;
   private final Ellipse2D.Double m_ellp2d;
   private Graphics2D m_g2d;
+  private float m_currStrokeWidth;
   private AffineTransform m_currXform; // Not sure that we will need this.
 
   /**
@@ -57,7 +59,7 @@ public final class GraphGraphics
   {
     this.image = image;
     m_bgColor = bgColor;
-    m_antialias = antialias;
+E    m_antialias = antialias;
     m_debug = debug;
     m_rect2d = new Rectangle2D.Double();
     m_ellp2d = new Ellipse2D.Double();
@@ -106,26 +108,35 @@ public final class GraphGraphics
       m_g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                              RenderingHints.VALUE_ANTIALIAS_ON);
 
+    // Set stroke.
+    m_currStrokeWidth = 1.0f;
+    final BasicStroke stroke = new BasicStroke
+      (m_currStrokeWidth, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER);
+    m_g2d.setStroke(stroke);
+
     // Set transform.  This is an infrequently used method so don't optimize.
-    {
-      final AffineTransform translationPreScale = new AffineTransform();
-      translationPreScale.setToTranslation(-xCenter, -yCenter);
-      final AffineTransform scale = new AffineTransform();
-      scale.setToScale(scaleFactor, scaleFactor);
-      final AffineTransform translationPostScale = new AffineTransform();
-      translationPostScale.setToTranslation
-        (0.5d * (double) image.getWidth(null),
-         0.5d * (double) image.getHeight(null));
-      final AffineTransform finalTransform = new AffineTransform();
-      finalTransform.concatenate(translationPostScale);
-      finalTransform.concatenate(scale);
-      finalTransform.concatenate(translationPreScale);
-      m_currXform = finalTransform;
-    }
+    final AffineTransform translationPreScale = new AffineTransform();
+    translationPreScale.setToTranslation(-xCenter, -yCenter);
+    final AffineTransform scale = new AffineTransform();
+    scale.setToScale(scaleFactor, scaleFactor);
+    final AffineTransform translationPostScale = new AffineTransform();
+    translationPostScale.setToTranslation
+      (0.5d * (double) image.getWidth(null),
+       0.5d * (double) image.getHeight(null));
+    final AffineTransform finalTransform = new AffineTransform();
+    finalTransform.concatenate(translationPostScale);
+    finalTransform.concatenate(scale);
+    finalTransform.concatenate(translationPreScale);
+    m_currXform = finalTransform;
     m_g2d.transform(m_currXform);
   }
 
   /**
+   * The xMin, yMin, xMax, and yMax parameters specify the extents of the
+   * node shape (in the node coordinate system), but not including the border
+   * width.  If a node's border is nonzero, then that node's extents will
+   * be slightly larger than specified.  The ``fill'' part of the node,
+   * however, will remain exactly as specified.
    * @param borderWidth the border width, in node coordinate system; if
    *   this value is zero, the rendering engine skips over the process of
    *   rendering the border, which gives a significant performance boost.
@@ -141,7 +152,7 @@ public final class GraphGraphics
                                  final double xMin, final double yMin,
                                  final double xMax, final double yMax,
                                  final Color fillColor, final byte borderType,
-                                 final double borderWidth,
+                                 final float borderWidth,
                                  final Color borderColor)
   {
     if (m_debug) {
@@ -150,7 +161,7 @@ public final class GraphGraphics
           ("calling thread is not AWT event dispatcher");
       if (xMin > xMax) throw new IllegalArgumentException("xMin > xMax");
       if (yMin > yMax) throw new IllegalArgumentException("yMin > yMax");
-      if (borderWidth < 0.0d)
+      if (borderWidth < 0.0f)
         throw new IllegalArgumentException("borderWidth < 0"); }
     final Shape shape;
     switch (shapeType) {
@@ -166,6 +177,14 @@ public final class GraphGraphics
       throw new IllegalArgumentException("shapeType is not recognized"); }
     m_g2d.setColor(fillColor);
     m_g2d.fill(shape);
+    if (borderWidth != 0.0f) {
+      if (borderWidth != m_currStrokeWidth) {
+        m_currStrokeWidth = borderWidth;
+        final BasicStroke stroke = new BasicStroke
+          (m_currStrokeWidth, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER);
+        m_g2d.setStroke(stroke); }
+      m_g2d.setColor(borderColor);
+      m_g2d.draw(shape); }
   }
 
   /**
