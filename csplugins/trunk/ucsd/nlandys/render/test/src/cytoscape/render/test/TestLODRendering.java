@@ -22,30 +22,36 @@ public final class TestLODRendering
   extends Frame implements MouseListener, MouseMotionListener
 {
 
+  private static final double fudgeFactor = 10.0d;
+
   public final static void main(String[] args) throws Exception
   {
     final RTree tree;
     final double[] extents;
+    final int N;
+    final double sqrtN;
 
     // Populate the tree with entries.
     {
-      int N = Integer.parseInt(args[0]);
+      N = Integer.parseInt(args[0]);
       tree = new RTree();
       extents = new double[N * 4]; // xMin1, yMin1, xMax1, yMax1, xMin2, ....
-      double sqrtN = Math.sqrt((double) N);
+      sqrtN = Math.sqrt((double) N);
       int inx = 0;
       Random r = new Random();
       while (inx < N) {
         int nonnegative = 0x7fffffff & r.nextInt();
-        double centerX = ((double) nonnegative) / ((double) 0x7fffffff);
+        double centerX =
+          fudgeFactor * sqrtN * ((double) nonnegative) / ((double) 0x7fffffff);
         nonnegative = 0x7fffffff & r.nextInt();
-        double centerY = ((double) nonnegative) / ((double) 0x7fffffff);
+        double centerY =
+          fudgeFactor * sqrtN * ((double) nonnegative) / ((double) 0x7fffffff);
         nonnegative = 0x7fffffff & r.nextInt();
         double width =
-          (((double) nonnegative) / ((double) 0x7fffffff)) / sqrtN;
+          fudgeFactor * ((double) nonnegative) / ((double) 0x7fffffff);
         nonnegative = 0x7fffffff & r.nextInt();
         double height =
-          (((double) nonnegative) / ((double) 0x7fffffff)) / sqrtN;
+          fudgeFactor * ((double) nonnegative) / ((double) 0x7fffffff);
         extents[inx * 4] = centerX - (width / 2.0d);
         extents[(inx * 4) + 1] = centerY - (height / 2.0d);
         extents[(inx * 4) + 2] = centerX + (width / 2.0d);
@@ -62,7 +68,7 @@ public final class TestLODRendering
 
     EventQueue.invokeAndWait(new Runnable() {
         public void run() {
-          Frame f = new TestLODRendering(tree, extents);
+          Frame f = new TestLODRendering(tree, extents, sqrtN);
           f.show();
           f.addWindowListener(new WindowAdapter() {
               public void windowClosing(WindowEvent e) {
@@ -71,29 +77,32 @@ public final class TestLODRendering
 
   private final RTree m_tree;
   private final double[] m_extents;
+  private final float m_borderWidth = (float) (0.05d * fudgeFactor);
   private final int m_imgWidth = 600;
-  private final int m_imgHeight = 480;
+  private final int m_imgHeight = 600;
   private final Image m_img;
   private final GraphGraphics m_grafx;
   private final Color m_bgColor = Color.white;
-  private final int m_nodeColor = 0x00000000;
-  private double m_currXCenter = 0.5d;
-  private double m_currYCenter = 0.5d;
-  private double m_currScale = 10000.0d;
+  private final Color m_nodeColor = Color.black;
+  private final Color m_borderColor = Color.red;
+  private double m_currXCenter;
+  private double m_currYCenter;
+  private double m_currScale;
   private int m_currMouseButton = 0; // 0: none; 1: left; 2: middle.
   private int m_lastXMousePos = 0;
   private int m_lastYMousePos = 0;
 
-  public TestLODRendering(RTree tree, double[] extents)
+  public TestLODRendering(RTree tree, double[] extents, double sqrtN)
   {
     super();
     m_tree = tree;
     m_extents = extents;
+    m_currXCenter = fudgeFactor * sqrtN / 2.0d;
+    m_currYCenter = fudgeFactor * sqrtN / 2.0d;
+    m_currScale = fudgeFactor * ((double) m_imgWidth) / sqrtN;
     addNotify();
     m_img = createImage(m_imgWidth, m_imgHeight);
-//     m_img = new BufferedImage
-//       (m_imgWidth, m_imgHeight, BufferedImage.TYPE_INT_ARGB);
-    m_grafx = new GraphGraphics(m_img, m_bgColor.getRGB(), true, false);
+    m_grafx = new GraphGraphics(m_img, m_bgColor, true, false);
     updateNodeImage();
     addMouseListener(this);
     addMouseMotionListener(this);
@@ -125,9 +134,11 @@ public final class TestLODRendering
        null, 0);
     while (iter.numRemaining() > 0) {
       final int inx_x4 = iter.nextInt() * 4;
-      m_grafx.drawNodeLow(m_extents[inx_x4], m_extents[inx_x4 + 1],
-                          m_extents[inx_x4 + 2], m_extents[inx_x4 + 3],
-                          m_nodeColor); }
+      m_grafx.drawNodeFull(GraphGraphics.SHAPE_ELLIPSE,
+                           m_extents[inx_x4], m_extents[inx_x4 + 1],
+                           m_extents[inx_x4 + 2], m_extents[inx_x4 + 3],
+                           m_nodeColor, GraphGraphics.BORDER_SOLID,
+                           m_borderWidth, m_borderColor); }
   }
 
   public void mouseClicked(MouseEvent e) {}
