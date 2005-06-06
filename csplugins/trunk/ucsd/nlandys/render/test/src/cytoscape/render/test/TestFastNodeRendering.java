@@ -76,7 +76,7 @@ public final class TestFastNodeRendering
   private final Image m_img;
   private final GraphGraphics m_grafx;
   private final Color m_bgColor = Color.white;
-  private final int m_nodeColor = 0x00000000;
+  private final Color m_nodeColor = Color.red;
   private double m_currXCenter = 0.5d;
   private double m_currYCenter = 0.5d;
   private double m_currScale = 10000.0d;
@@ -93,7 +93,7 @@ public final class TestFastNodeRendering
     m_img = createImage(m_imgWidth, m_imgHeight);
 //     m_img = new BufferedImage
 //       (m_imgWidth, m_imgHeight, BufferedImage.TYPE_INT_ARGB);
-    m_grafx = new GraphGraphics(m_img, m_bgColor.getRGB(), true, false);
+    m_grafx = new GraphGraphics(m_img, m_bgColor, true, false);
     updateNodeImage();
     addMouseListener(this);
     addMouseMotionListener(this);
