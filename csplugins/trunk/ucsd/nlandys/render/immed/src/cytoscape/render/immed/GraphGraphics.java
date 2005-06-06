@@ -181,7 +181,7 @@ public final class GraphGraphics
       m_poly2d.moveTo((float) xMin, (float) yMax);
       m_poly2d.lineTo((float) ((xMin + xMax) / 2.0d), (float) yMin);
       m_poly2d.lineTo((float) xMax, (float) yMax);
-      m_poly2d.lineTo((float) xMin, (float) yMax);
+      m_poly2d.closePath();
       shape = m_poly2d;
       break;
     default:
