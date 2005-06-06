@@ -9,6 +9,7 @@ import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.GeneralPath;
 import java.awt.geom.Rectangle2D;
 
 /**
@@ -40,6 +41,7 @@ public final class GraphGraphics
   private final boolean m_debug;
   private final Rectangle2D.Double m_rect2d;
   private final Ellipse2D.Double m_ellp2d;
+  private final GeneralPath m_poly2d;
   private Graphics2D m_g2d;
   private float m_currStrokeWidth;
   private AffineTransform m_currXform; // Not sure that we will need this.
@@ -63,6 +65,7 @@ public final class GraphGraphics
     m_debug = debug;
     m_rect2d = new Rectangle2D.Double();
     m_ellp2d = new Ellipse2D.Double();
+    m_poly2d = new GeneralPath();
     clear(0.0d, 0.0d, 1.0d);
   }
 
@@ -172,6 +175,14 @@ public final class GraphGraphics
     case SHAPE_ELLIPSE:
       m_ellp2d.setFrame(xMin, yMin, xMax - xMin, yMax - yMin);
       shape = m_ellp2d;
+      break;
+    case SHAPE_TRIANGLE:
+      m_poly2d.reset();
+      m_poly2d.moveTo((float) xMin, (float) yMax);
+      m_poly2d.lineTo((float) ((xMin + xMax) / 2.0d), (float) yMin);
+      m_poly2d.lineTo((float) xMax, (float) yMax);
+      m_poly2d.lineTo((float) xMin, (float) yMax);
+      shape = m_poly2d;
       break;
     default:
       throw new IllegalArgumentException("shapeType is not recognized"); }
