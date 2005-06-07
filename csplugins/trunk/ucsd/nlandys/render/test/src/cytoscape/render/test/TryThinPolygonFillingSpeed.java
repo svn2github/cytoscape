@@ -18,6 +18,7 @@ public final class TryThinPolygonFillingSpeed extends Frame
   private final static int FLAG_ANTIALIAS = 1;
   private final static int FLAG_TRANSFORM = 2;
   private final static int FLAG_DOUBLE_BUFFER = 4;
+  private final static int FLAG_THINNER = 8;
 
   public static final void main(String[] args) throws Exception
   {
@@ -34,6 +35,7 @@ public final class TryThinPolygonFillingSpeed extends Frame
       int inx = 0;
       Random r = new Random();
       double lineWidth = 1.0d;
+      if ((flags & FLAG_THINNER) != 0) lineWidth = 0.3d;
       while (inx < N) {
         int nonnegative = 0x7fffffff & r.nextInt();
         double x0 =
