@@ -21,6 +21,7 @@ public final class TryLineDrawingSpeed extends Frame
   private final static int FLAG_TRANSFORM = 2;
   private final static int FLAG_DOUBLE_BUFFER = 4;
   private final static int FLAG_STROKE = 8;
+  private final static int FLAG_LINE2D = 16;
 
   public static final void main(String[] args) throws Exception
   {
@@ -86,7 +87,9 @@ public final class TryLineDrawingSpeed extends Frame
     if ((flags & FLAG_STROKE) != 0) {
       m_stroke = new BasicStroke(0.23f); } // What about 1.0f?
     else { m_stroke = null; }
-    m_line2d = new Line2D.Float();
+    if ((flags & FLAG_LINE2D) != 0) {
+      m_line2d = new Line2D.Float(); }
+    else { m_line2d = null; }
   }
 
   public void update(Graphics g) { paint(g); }
@@ -103,12 +106,19 @@ public final class TryLineDrawingSpeed extends Frame
     g2.fillRect(0, 0, 1000, 1000); // Whatever.
     g2.setColor(Color.black);
     if (m_stroke != null) { g2.setStroke(m_stroke); }
-    for (int i = 0; i < m_extents.length;) {
-      m_line2d.setLine(m_extents[i++] + m_offset,
-                       m_extents[i++] + m_offset,
-                       m_extents[i++] + m_offset,
-                       m_extents[i++] + m_offset);
-      g2.draw(m_line2d); }
+    if (m_line2d == null) {
+      for (int i = 0; i < m_extents.length;) {
+        g2.drawLine((int) (m_extents[i++] + m_offset),
+                    (int) (m_extents[i++] + m_offset),
+                    (int) (m_extents[i++] + m_offset),
+                    (int) (m_extents[i++] + m_offset)); } }
+    else {
+      for (int i = 0; i < m_extents.length;) {
+        m_line2d.setLine(m_extents[i++] + m_offset,
+                         m_extents[i++] + m_offset,
+                         m_extents[i++] + m_offset,
+                         m_extents[i++] + m_offset);
+        g2.draw(m_line2d); } }
     if (m_img != null) {
       g.drawImage(m_img, 0, 0, null); }
     if (m_offset == 0.0f) { m_offset = 10.0f; }
