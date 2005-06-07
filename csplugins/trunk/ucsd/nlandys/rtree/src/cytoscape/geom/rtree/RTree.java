@@ -16,7 +16,7 @@ public final class RTree
    */
   public final static int DEFAULT_MAX_BRANCHES = 7;
 
-  private final double[] m_MBR; // { xMin, yMin, xMax, yMax }.
+  private final float[] m_MBR; // { xMin, yMin, xMax, yMax }.
   private final int m_maxBranches;
   private final int m_minBranches;
   private Node m_root;
@@ -28,14 +28,14 @@ public final class RTree
   // These buffers are used during node splitting.
   private final int[] m_objKeyBuff;
   private final Node[] m_childrenBuff;
-  private final double[] m_xMinBuff;
-  private final double[] m_yMinBuff;
-  private final double[] m_xMaxBuff;
-  private final double[] m_yMaxBuff;
-  private final double[] m_tempBuff1;
-  private final double[] m_tempBuff2;
+  private final float[] m_xMinBuff;
+  private final float[] m_yMinBuff;
+  private final float[] m_xMaxBuff;
+  private final float[] m_yMaxBuff;
+  private final float[] m_tempBuff1;
+  private final float[] m_tempBuff2;
 
-  private final double[] m_extentsStack;
+  private final float[] m_extentsStack;
   private final ObjStack m_nodeStack;
 
   /**
@@ -58,9 +58,8 @@ public final class RTree
   {
     if (maxBranches < 3) throw new IllegalArgumentException
                            ("maxBranches is less than three");
-    m_MBR = new double[] {
-      Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY,
-      Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY };
+    m_MBR = new float[] { Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY,
+                          Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY };
     m_maxBranches = maxBranches;
     m_minBranches = Math.max(2, (int) (((double) (m_maxBranches + 1)) * 0.4d));
     m_root = new Node(m_maxBranches, true);
@@ -69,16 +68,16 @@ public final class RTree
     m_mapExpansionThreshold = IntObjHash.maxCapacity(m_entryMap.size());
     m_objKeyBuff = new int[m_maxBranches + 1];
     m_childrenBuff = new Node[m_maxBranches + 1];
-    m_xMinBuff = new double[m_maxBranches + 1];
-    m_yMinBuff = new double[m_maxBranches + 1];
-    m_xMaxBuff = new double[m_maxBranches + 1];
-    m_yMaxBuff = new double[m_maxBranches + 1];
-    m_tempBuff1 = new double[m_maxBranches + 1];
-    m_tempBuff2 = new double[m_maxBranches + 1];
+    m_xMinBuff = new float[m_maxBranches + 1];
+    m_yMinBuff = new float[m_maxBranches + 1];
+    m_xMaxBuff = new float[m_maxBranches + 1];
+    m_yMaxBuff = new float[m_maxBranches + 1];
+    m_tempBuff1 = new float[m_maxBranches + 1];
+    m_tempBuff2 = new float[m_maxBranches + 1];
 
     // With a m_maxBranches of 7, m_minBranches will be 3, and such a tree of
     // depth 20 holds at least 3.4 billion entries.
-    m_extentsStack = new double[20 * 7 * 4];
+    m_extentsStack = new float[20 * 7 * 4];
     m_nodeStack = new ObjStack();
   }
 
@@ -99,8 +98,8 @@ public final class RTree
    * Returns the number of entries currently in this R-tree.  This method
    * returns in constant time.<p>
    * NOTE: To retrieve an enumeration of all entries in this R-tree, call
-   * queryOverlap() with Double.NEGATIVE_INFINITY minimum values and
-   * Double.POSITIVE_INFINITY maximum values.
+   * queryOverlap() with Float.NEGATIVE_INFINITY minimum values and
+   * Float.POSITIVE_INFINITY maximum values.
    */
   public final int size()
   {
@@ -135,8 +134,8 @@ public final class RTree
    *   if xMin is greater than xMax, or if yMin is greater than yMax.
    */
   public final void insert(final int objKey,
-                           final double xMin, final double yMin,
-                           final double xMax, final double yMax)
+                           final float xMin, final float yMin,
+                           final float xMax, final float yMax)
   {
     if (objKey < 0) throw new IllegalArgumentException("objKey is negative");
     if (xMin > xMax)
@@ -204,20 +203,20 @@ public final class RTree
    * overall MBR of that node.
    */
   private final static Node insert(final Node root, final int objKey,
-                                   final double xMin, final double yMin,
-                                   final double xMax, final double yMax,
+                                   final float xMin, final float yMin,
+                                   final float xMax, final float yMax,
                                    final int maxBranches,
                                    final int minBranches,
                                    final IntObjHash entryMap,
-                                   final double[] globalMBR,
+                                   final float[] globalMBR,
                                    final int[] objKeyBuff,
                                    final Node[] childrenBuff,
-                                   final double[] xMinBuff,
-                                   final double[] yMinBuff,
-                                   final double[] xMaxBuff,
-                                   final double[] yMaxBuff,
-                                   final double[] tempBuff1,
-                                   final double[] tempBuff2)
+                                   final float[] xMinBuff,
+                                   final float[] yMinBuff,
+                                   final float[] xMaxBuff,
+                                   final float[] yMaxBuff,
+                                   final float[] tempBuff1,
+                                   final float[] tempBuff2)
   {
     final int deepCountIncrease = 1;
     final Node chosenLeaf = chooseLeaf(root, xMin, yMin, xMax, yMax);
@@ -254,18 +253,18 @@ public final class RTree
    */
   private final static Node insert(final Node root, final int depth,
                                    final Node n,
-                                   final double xMin, final double yMin,
-                                   final double xMax, final double yMax,
+                                   final float xMin, final float yMin,
+                                   final float xMax, final float yMax,
                                    final int maxBranches,
                                    final int minBranches,
-                                   final double[] globalMBR,
+                                   final float[] globalMBR,
                                    final Node[] childrenBuff,
-                                   final double[] xMinBuff,
-                                   final double[] yMinBuff,
-                                   final double[] xMaxBuff,
-                                   final double[] yMaxBuff,
-                                   final double[] tempBuff1,
-                                   final double[] tempBuff2)
+                                   final float[] xMinBuff,
+                                   final float[] yMinBuff,
+                                   final float[] xMaxBuff,
+                                   final float[] yMaxBuff,
+                                   final float[] tempBuff1,
+                                   final float[] tempBuff2)
   {
     final int deepCountIncrease =
       (isLeafNode(n) ? n.entryCount : n.data.deepCount);
@@ -297,8 +296,8 @@ public final class RTree
    * which to place specified new entry.
    */
   private final static Node chooseLeaf(final Node root,
-                                       final double xMin, final double yMin,
-                                       final double xMax, final double yMax)
+                                       final float xMin, final float yMin,
+                                       final float xMax, final float yMax)
   {
     Node n = root;
     while (!isLeafNode(n))
@@ -312,8 +311,8 @@ public final class RTree
    * node in which to place specified MBR.
    */
   private final static Node chooseParent(final Node root, final int depth,
-                                         final double xMin, final double yMin,
-                                         final double xMax, final double yMax)
+                                         final float xMin, final float yMin,
+                                         final float xMax, final float yMax)
   {
     Node n = root;
     int currDepth = 0;
@@ -329,22 +328,22 @@ public final class RTree
    * by choosing the entry with the rectangle of smallest area.
    */
   private final static int chooseSubtree(final Node n,
-                                         final double xMin, final double yMin,
-                                         final double xMax, final double yMax)
+                                         final float xMin, final float yMin,
+                                         final float xMax, final float yMax)
   {
-    double bestAreaDelta = Double.POSITIVE_INFINITY;
-    double bestArea = Double.POSITIVE_INFINITY;
+    float bestAreaDelta = Float.POSITIVE_INFINITY;
+    float bestArea = Float.POSITIVE_INFINITY;
     int bestInx = -1;
     for (int i = 0; i < n.entryCount; i++) {
       // A possible optimization would be to add to each node an area cache
       // for each entry.  That way we wouldn't have to compute this area on
       // each insertion.
-      final double currArea =
+      final float currArea =
         (n.xMaxs[i] - n.xMins[i]) * (n.yMaxs[i] - n.yMins[i]);
-      final double newArea =
+      final float newArea =
         (Math.max(n.xMaxs[i], xMax) - Math.min(n.xMins[i], xMin)) *
         (Math.max(n.yMaxs[i], yMax) - Math.min(n.yMins[i], yMin));
-      final double currAreaDelta = newArea - currArea;
+      final float currAreaDelta = newArea - currArea;
       if ((currAreaDelta < bestAreaDelta) ||
           (currAreaDelta == bestAreaDelta && currArea < bestArea)) {
         bestAreaDelta = currAreaDelta;
@@ -365,19 +364,19 @@ public final class RTree
    */
   private final static Node splitLeafNode(final Node fullLeafNode,
                                           final int newObjKey,
-                                          final double newXMin,
-                                          final double newYMin,
-                                          final double newXMax,
-                                          final double newYMax,
+                                          final float newXMin,
+                                          final float newYMin,
+                                          final float newXMax,
+                                          final float newYMax,
                                           final int maxBranches,
                                           final int minBranches,
                                           final int[] objKeyBuff,
-                                          final double[] xMinBuff,
-                                          final double[] yMinBuff,
-                                          final double[] xMaxBuff,
-                                          final double[] yMaxBuff,
-                                          final double[] tempBuff1,
-                                          final double[] tempBuff2)
+                                          final float[] xMinBuff,
+                                          final float[] yMinBuff,
+                                          final float[] xMaxBuff,
+                                          final float[] yMaxBuff,
+                                          final float[] tempBuff1,
+                                          final float[] tempBuff2)
   {
     // Copy node MBRs and objKeys and new MBR and objKey into arrays.
     for (int i = 0; i < fullLeafNode.entryCount; i++) {
@@ -486,12 +485,12 @@ public final class RTree
       else { // Tie for how much group's covering rectangle will increase.
         // If we had an area cache array field in each node we could prevent
         // these two computations.
-        final double group1Area =
+        final float group1Area =
           (fullLeafNode.xMaxs[maxBranches - 1] -
            fullLeafNode.xMins[maxBranches - 1]) *
           (fullLeafNode.yMaxs[maxBranches - 1] -
            fullLeafNode.yMins[maxBranches - 1]);
-        final double group2Area =
+        final float group2Area =
           (returnThis.xMaxs[maxBranches - 1] -
            returnThis.xMins[maxBranches - 1]) *
           (returnThis.yMaxs[maxBranches - 1] -
@@ -504,7 +503,7 @@ public final class RTree
           else
             chooseGroup1 = false; }
       final Node chosenGroup;
-      final double[] validTempBuff;
+      final float[] validTempBuff;
       if (chooseGroup1) {
         chosenGroup = fullLeafNode; validTempBuff = tempBuff2;
         buff1Valid = false; buff2Valid = true; }
@@ -563,19 +562,19 @@ public final class RTree
    */
   private final static Node splitInternalNode(final Node fullInternalNode,
                                               final Node newChild,
-                                              final double newXMin,
-                                              final double newYMin,
-                                              final double newXMax,
-                                              final double newYMax,
+                                              final float newXMin,
+                                              final float newYMin,
+                                              final float newXMax,
+                                              final float newYMax,
                                               final int maxBranches,
                                               final int minBranches,
                                               final Node[] childrenBuff,
-                                              final double[] xMinBuff,
-                                              final double[] yMinBuff,
-                                              final double[] xMaxBuff,
-                                              final double[] yMaxBuff,
-                                              final double[] tempBuff1,
-                                              final double[] tempBuff2)
+                                              final float[] xMinBuff,
+                                              final float[] yMinBuff,
+                                              final float[] xMaxBuff,
+                                              final float[] yMaxBuff,
+                                              final float[] tempBuff1,
+                                              final float[] tempBuff2)
   {
     // Copy node MBRs and children and new MBR and child into arrays.
     for (int i = 0; i < fullInternalNode.entryCount; i++) {
@@ -687,12 +686,12 @@ public final class RTree
       else { // Tie for how much group's covering rectangle will increase.
         // If we had an area cache array field in each node we could prevent
         // these two computations.
-        final double group1Area =
+        final float group1Area =
           (fullInternalNode.xMaxs[maxBranches - 1] -
            fullInternalNode.xMins[maxBranches - 1]) *
           (fullInternalNode.yMaxs[maxBranches - 1] -
            fullInternalNode.yMins[maxBranches - 1]);
-        final double group2Area =
+        final float group2Area =
           (returnThis.xMaxs[maxBranches - 1] -
            returnThis.xMins[maxBranches - 1]) *
           (returnThis.yMaxs[maxBranches - 1] -
@@ -705,7 +704,7 @@ public final class RTree
           else
             chooseGroup1 = false; }
       final Node chosenGroup;
-      final double[] validTempBuff;
+      final float[] validTempBuff;
       if (chooseGroup1) {
         chosenGroup = fullInternalNode; validTempBuff = tempBuff2;
         buff1Valid = false; buff2Valid = true; }
@@ -781,23 +780,23 @@ public final class RTree
    * the areas of the MBRs.
    */
   private final static long pickSeeds(final int count,
-                                      final double[] xMins,
-                                      final double[] yMins,
-                                      final double[] xMaxs,
-                                      final double[] yMaxs,
-                                      final double[] tempBuff)
+                                      final float[] xMins,
+                                      final float[] yMins,
+                                      final float[] xMaxs,
+                                      final float[] yMaxs,
+                                      final float[] tempBuff)
   {
     for (int i = 0; i < count; i++)
       tempBuff[i] = (xMaxs[i] - xMins[i]) * (yMaxs[i] - yMins[i]); // Area.
-    double maximumD = Double.NEGATIVE_INFINITY;
+    float maximumD = Float.NEGATIVE_INFINITY;
     int maximumInx1 = -1;
     int maximumInx2 = -1;
     for (int i = 0; i < count - 1; i++)
       for (int j = i + 1; j < count; j++) {
-        final double areaJ =
+        final float areaJ =
           (Math.max(xMaxs[i], xMaxs[j]) - Math.min(xMins[i], xMins[j])) *
           (Math.max(yMaxs[i], yMaxs[j]) - Math.min(yMins[i], yMins[j]));
-        final double d = areaJ - tempBuff[i] - tempBuff[j];
+        final float d = areaJ - tempBuff[i] - tempBuff[j];
         if (d > maximumD) {
           maximumD = d;
           maximumInx1 = i;
@@ -821,19 +820,19 @@ public final class RTree
                                     final Node group2,
                                     final int count,
                                     final int maxBranches,
-                                    final double[] xMins,
-                                    final double[] yMins,
-                                    final double[] xMaxs,
-                                    final double[] yMaxs,
-                                    final double[] tempBuff1,
+                                    final float[] xMins,
+                                    final float[] yMins,
+                                    final float[] xMaxs,
+                                    final float[] yMaxs,
+                                    final float[] tempBuff1,
                                     final boolean buff1Valid,
-                                    final double[] tempBuff2,
+                                    final float[] tempBuff2,
                                     final boolean buff2Valid)
   {
     if (!buff1Valid) {
       // If we had an area cache array field in each node we could prevent
       // this computation.
-      final double group1Area =
+      final float group1Area =
         (group1.xMaxs[maxBranches - 1] - group1.xMins[maxBranches - 1]) *
         (group1.yMaxs[maxBranches - 1] - group1.yMins[maxBranches - 1]);
       for (int i = 0; i < count; i++) {
@@ -846,7 +845,7 @@ public final class RTree
     if (!buff2Valid) {
       // If we had an area cache array field in each node we could prevent
       // this computation.      
-      final double group2Area =
+      final float group2Area =
         (group2.xMaxs[maxBranches - 1] - group2.xMins[maxBranches - 1]) *
         (group2.yMaxs[maxBranches - 1] - group2.yMins[maxBranches - 1]);
       for (int i = 0; i < count; i++) {
@@ -856,10 +855,10 @@ public final class RTree
            (Math.max(group2.yMaxs[maxBranches - 1], yMaxs[i]) -
             Math.min(group2.yMins[maxBranches - 1], yMins[i]))) -
           group2Area; } }
-    double maxDDifference = Double.NEGATIVE_INFINITY;
+    float maxDDifference = Float.NEGATIVE_INFINITY;
     int maxInx = -1;
     for (int i = 0; i < count; i++) {
-      final double currDDifference = Math.abs(tempBuff1[i] - tempBuff2[i]);
+      final float currDDifference = Math.abs(tempBuff1[i] - tempBuff2[i]);
       if (currDDifference > maxDDifference) {
         maxDDifference = currDDifference;
         maxInx = i; } }
@@ -875,7 +874,7 @@ public final class RTree
    */
   private final static void adjustTreeNoSplit(final Node nodeWithNewEntry,
                                               final int deepCountIncrease,
-                                              final double[] globalMBR)
+                                              final float[] globalMBR)
   {
     int currModInx = nodeWithNewEntry.entryCount - 1;
     Node n = nodeWithNewEntry;
@@ -900,10 +899,10 @@ public final class RTree
           if (p.data.children[i] == n) { nInxInP = i; break; }
 
         // Compute the MBR that tightly encloses all entries in n.
-        final double newXMin = Math.min(p.xMins[nInxInP], n.xMins[currModInx]);
-        final double newYMin = Math.min(p.yMins[nInxInP], n.yMins[currModInx]);
-        final double newXMax = Math.max(p.xMaxs[nInxInP], n.xMaxs[currModInx]);
-        final double newYMax = Math.max(p.yMaxs[nInxInP], n.yMaxs[currModInx]);
+        final float newXMin = Math.min(p.xMins[nInxInP], n.xMins[currModInx]);
+        final float newYMin = Math.min(p.yMins[nInxInP], n.yMins[currModInx]);
+        final float newXMax = Math.max(p.xMaxs[nInxInP], n.xMaxs[currModInx]);
+        final float newYMax = Math.max(p.yMaxs[nInxInP], n.yMaxs[currModInx]);
 
         // If the overall MBR of n does not change, we don't need to
         // update any further MBRs, just deep counts.
@@ -936,14 +935,14 @@ public final class RTree
                                                 final int deepCountIncrease,
                                                 final int maxBranches,
                                                 final int minBranches,
-                                                final double[] globalMBR,
+                                                final float[] globalMBR,
                                                 final Node[] childrenBuff,
-                                                final double[] xMinBuff,
-                                                final double[] yMinBuff,
-                                                final double[] xMaxBuff,
-                                                final double[] yMaxBuff,
-                                                final double[] tempBuff1,
-                                                final double[] tempBuff2)
+                                                final float[] xMinBuff,
+                                                final float[] yMinBuff,
+                                                final float[] xMaxBuff,
+                                                final float[] yMaxBuff,
+                                                final float[] tempBuff1,
+                                                final float[] tempBuff2)
   {
     int currModInx = -1;
     boolean newNodeAdded = false; // New node added as last entry in n?
@@ -1012,10 +1011,10 @@ public final class RTree
           if (p.data.children[i] == n) { nInxInP = i; break; }
 
         // Compute the new overall MBR for n (stored in n's parent).
-        double newXMin = Math.min(p.xMins[nInxInP], n.xMins[currModInx]);
-        double newYMin = Math.min(p.yMins[nInxInP], n.yMins[currModInx]);
-        double newXMax = Math.max(p.xMaxs[nInxInP], n.xMaxs[currModInx]);
-        double newYMax = Math.max(p.yMaxs[nInxInP], n.yMaxs[currModInx]);
+        float newXMin = Math.min(p.xMins[nInxInP], n.xMins[currModInx]);
+        float newYMin = Math.min(p.yMins[nInxInP], n.yMins[currModInx]);
+        float newXMax = Math.max(p.xMaxs[nInxInP], n.xMaxs[currModInx]);
+        float newYMax = Math.max(p.yMaxs[nInxInP], n.yMaxs[currModInx]);
         if (newNodeAdded) { // Nodes added always as last index.
           final int countMin1 = n.entryCount - 1;
           newXMin = Math.min(newXMin, n.xMins[countMin1]);
@@ -1065,7 +1064,7 @@ public final class RTree
    *   extentsArr is not null, and if extentsArr cannot be written
    *   to in the index range [offset, offset+3].
    */
-  public final boolean exists(final int objKey, final double[] extentsArr,
+  public final boolean exists(final int objKey, final float[] extentsArr,
                               final int offset)
   {
     if (objKey < 0) return false;
@@ -1195,7 +1194,7 @@ public final class RTree
                                         int deepCountDecrease,
                                         final ObjStack eliminatedNodes,
                                         final int minBranches,
-                                        final double[] globalMBR)
+                                        final float[] globalMBR)
   {
     int depth = 0;
     boolean updateMBR = true;
@@ -1206,10 +1205,10 @@ public final class RTree
       // If N is the root, adjust the globalMBR and stop.
       if (p == null) { // n is the root.
         if (updateMBR) {
-          globalMBR[0] = Double.POSITIVE_INFINITY;
-          globalMBR[1] = Double.POSITIVE_INFINITY;
-          globalMBR[2] = Double.NEGATIVE_INFINITY;
-          globalMBR[3] = Double.NEGATIVE_INFINITY;
+          globalMBR[0] = Float.POSITIVE_INFINITY;
+          globalMBR[1] = Float.POSITIVE_INFINITY;
+          globalMBR[2] = Float.NEGATIVE_INFINITY;
+          globalMBR[3] = Float.NEGATIVE_INFINITY;
           for (int i = 0; i < n.entryCount; i++) {
             globalMBR[0] = Math.min(globalMBR[0], n.xMins[i]);
             globalMBR[1] = Math.min(globalMBR[1], n.yMins[i]);
@@ -1241,14 +1240,14 @@ public final class RTree
       // Keep n and adjust MBRs if necessary.
       else { // n has not been eliminated.  Adjust covering rectangle.
         if (updateMBR) {
-          final double oldXMin = p.xMins[nInxInP];
-          final double oldYMin = p.yMins[nInxInP];
-          final double oldXMax = p.xMaxs[nInxInP];
-          final double oldYMax = p.yMaxs[nInxInP];
-          p.xMins[nInxInP] = Double.POSITIVE_INFINITY;
-          p.yMins[nInxInP] = Double.POSITIVE_INFINITY;
-          p.xMaxs[nInxInP] = Double.NEGATIVE_INFINITY;
-          p.yMaxs[nInxInP] = Double.NEGATIVE_INFINITY;
+          final float oldXMin = p.xMins[nInxInP];
+          final float oldYMin = p.yMins[nInxInP];
+          final float oldXMax = p.xMaxs[nInxInP];
+          final float oldYMax = p.yMaxs[nInxInP];
+          p.xMins[nInxInP] = Float.POSITIVE_INFINITY;
+          p.yMins[nInxInP] = Float.POSITIVE_INFINITY;
+          p.xMaxs[nInxInP] = Float.NEGATIVE_INFINITY;
+          p.yMaxs[nInxInP] = Float.NEGATIVE_INFINITY;
           for (int i = 0; i < n.entryCount; i++) {
             p.xMins[nInxInP] = Math.min(p.xMins[nInxInP], n.xMins[i]);
             p.yMins[nInxInP] = Math.min(p.yMins[nInxInP], n.yMins[i]);
@@ -1280,13 +1279,13 @@ public final class RTree
    *   <tr>  <th>array index</th>  <th>value if query generates results</th>
    *           <th>value if query does not generate results</th>  </tr>
    *   <tr>  <td>offset</td>       <td>xMin of MBR</td>
-   *           <td>Double.POSITIVE_INFINITY</td>                  </tr>
+   *           <td>Float.POSITIVE_INFINITY</td>                   </tr>
    *   <tr>  <td>offset+1</td>     <td>yMin of MBR</td>
-   *           <td>Double.POSITIVE_INFINITY</td>                  </tr>
+   *           <td>Float.POSITIVE_INFINITY</td>                   </tr>
    *   <tr>  <td>offset+2</td>     <td>xMax of MBR</td>
-   *           <td>Double.NEGATIVE_INFINITY</td>                  </tr>
+   *           <td>Float.NEGATIVE_INFINITY</td>                   </tr>
    *   <tr>  <td>offset+3</td>     <td>yMax of MBR</td>
-   *           <td>Double.NEGATIVE_INFINITY</td>                  </tr>
+   *           <td>Float.NEGATIVE_INFINITY</td>                   </tr>
    * </table></blockquote><p>
    * IMPORTANT: The returned enumeration becomes invalid as soon as any
    * structure-modifying operation (insert or delete) is performed on this
@@ -1314,11 +1313,11 @@ public final class RTree
    *   and if it cannot be written to in the index range
    *   [offset, offset+3].
    */
-  public final IntEnumerator queryOverlap(final double xMin,
-                                          final double yMin,
-                                          final double xMax,
-                                          final double yMax,
-                                          final double[] extentsArr,
+  public final IntEnumerator queryOverlap(final float xMin,
+                                          final float yMin,
+                                          final float xMax,
+                                          final float yMax,
+                                          final float[] extentsArr,
                                           final int offset)
   {
     if (xMin > xMax)
@@ -1326,10 +1325,10 @@ public final class RTree
     if (yMin > yMax)
       throw new IllegalArgumentException("yMin > yMax");
     if (extentsArr != null) {
-      extentsArr[offset] = Double.POSITIVE_INFINITY;
-      extentsArr[offset + 1] = Double.POSITIVE_INFINITY;
-      extentsArr[offset + 2] = Double.NEGATIVE_INFINITY;
-      extentsArr[offset + 3] = Double.NEGATIVE_INFINITY; }
+      extentsArr[offset] = Float.POSITIVE_INFINITY;
+      extentsArr[offset + 1] = Float.POSITIVE_INFINITY;
+      extentsArr[offset + 2] = Float.NEGATIVE_INFINITY;
+      extentsArr[offset + 3] = Float.NEGATIVE_INFINITY; }
     m_nodeStack.push(m_root); // This stack should always be left empty.
     m_extentsStack[0] = m_MBR[0]; m_extentsStack[1] = m_MBR[1];
     m_extentsStack[2] = m_MBR[2]; m_extentsStack[3] = m_MBR[3];
@@ -1354,8 +1353,8 @@ public final class RTree
    * query rectangle, unless n is completely empty.  If n is completely
    * empty, it is expected that its MBR [represented by xMinN, yMinN,
    * xMaxN, and yMaxN] be the infinite inverted rectangle (that is, its
-   * min values should all be Double.POSITIVE_INFINITY and its max values
-   * should all be Double.NEGATIVE_INFINITY).
+   * min values should all be Float.POSITIVE_INFINITY and its max values
+   * should all be Float.NEGATIVE_INFINITY).
    * I'd like to discuss stackStack.  Objects of type IntStack are tossed onto
    * this stack (in other words, stackStack is a stack of IntStack).  For every
    * leaf node on nodeStack, stackStack will contain
@@ -1365,12 +1364,12 @@ public final class RTree
    * entries that overlap the query rectangle.
    */
   private final static int queryOverlap(final ObjStack unprocessedNodes,
-                                        final double[] extStack,
+                                        final float[] extStack,
                                         final ObjStack nodeStack,
                                         final ObjStack stackStack,
-                                        final double xMinQ, final double yMinQ,
-                                        final double xMaxQ, final double yMaxQ,
-                                        final double[] extents, final int off)
+                                        final float xMinQ, final float yMinQ,
+                                        final float xMaxQ, final float yMaxQ,
+                                        final float[] extents, final int off)
   { // Depth first search.
     int count = 0;
     int extOff = 4; // Into extStack.
@@ -1426,17 +1425,17 @@ public final class RTree
   {
     private Node parent;
     private int entryCount = 0;
-    private final double[] xMins;
-    private final double[] yMins;
-    private final double[] xMaxs;
-    private final double[] yMaxs;
+    private final float[] xMins;
+    private final float[] yMins;
+    private final float[] xMaxs;
+    private final float[] yMaxs;
     private final int[] objKeys; // null if and only if internal node.
     private final InternalNodeData data;
     private Node(final int maxBranches, final boolean leafNode) {
-      xMins = new double[maxBranches];
-      yMins = new double[maxBranches];
-      xMaxs = new double[maxBranches];
-      yMaxs = new double[maxBranches];
+      xMins = new float[maxBranches];
+      yMins = new float[maxBranches];
+      xMaxs = new float[maxBranches];
+      yMaxs = new float[maxBranches];
       if (leafNode) { objKeys = new int[maxBranches]; data = null; }
       else { objKeys = null; data = new InternalNodeData(maxBranches); } }
   }
