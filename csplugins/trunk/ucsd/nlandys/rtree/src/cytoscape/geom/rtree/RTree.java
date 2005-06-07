@@ -14,7 +14,7 @@ public final class RTree
   /**
    * @deprecated Use the no-arg constructor.
    */
-  public final static int DEFAULT_MAX_BRANCHES = 7;
+  public final static int DEFAULT_MAX_BRANCHES = 11;
 
   private final float[] m_MBR; // { xMin, yMin, xMax, yMax }.
   private final int m_maxBranches;
