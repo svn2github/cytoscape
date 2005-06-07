@@ -1,5 +1,6 @@
 package cytoscape.render.test;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Event;
 import java.awt.EventQueue;
@@ -8,6 +9,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
+import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 import java.util.Random;
 
@@ -17,6 +19,7 @@ public final class TryLineDrawingSpeed extends Frame
   private final static int FLAG_ANTIALIAS = 1;
   private final static int FLAG_TRANSFORM = 2;
   private final static int FLAG_DOUBLE_BUFFER = 4;
+  private final static int FLAG_STROKE = 8;
 
   public static final void main(String[] args) throws Exception
   {
@@ -59,6 +62,7 @@ public final class TryLineDrawingSpeed extends Frame
   private final boolean m_antialias;
   private final Image m_img;
   private final AffineTransform m_xform;
+  private final Stroke m_stroke;
   private final int[] m_extents;
   private int m_offset = 0;
 
@@ -75,8 +79,11 @@ public final class TryLineDrawingSpeed extends Frame
     else { m_antialias = false; }
     if ((flags & FLAG_TRANSFORM) != 0) {
       m_xform = new AffineTransform();
-      m_xform.setToScale(0.9d, 0.9d); }
+      m_xform.setToScale(0.7639d, 0.7639d); }
     else { m_xform = null; }
+    if ((flags & FLAG_STROKE) != 0) {
+      m_stroke = new BasicStroke(0.43f); } // What about 1.0f?
+    else { m_stroke = null; }
   }
 
   public final void paint(Graphics g) {
@@ -87,13 +94,16 @@ public final class TryLineDrawingSpeed extends Frame
       g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                           RenderingHints.VALUE_ANTIALIAS_ON); }
     if (m_xform != null) { g2.transform(m_xform); }
+    g2.setColor(Color.white);
+    g2.fillRect(0, 0, 1000, 1000); // Whatever.
     g2.setColor(Color.black);
+    if (m_stroke != null) { g2.setStroke(m_stroke); }
     for (int i = 0; i < m_extents.length;) {
       g2.drawLine(m_extents[i++] + m_offset, m_extents[i++] + m_offset,
                   m_extents[i++] + m_offset, m_extents[i++] + m_offset); }
     if (m_img != null) {
       g.drawImage(m_img, 0, 0, null); }
-    if (m_offset == 0) { m_offset = 2; }
+    if (m_offset == 0) { m_offset = 10; }
     else { m_offset = 0; }
     repaint(); }
   public boolean isResizable() { return false; }
