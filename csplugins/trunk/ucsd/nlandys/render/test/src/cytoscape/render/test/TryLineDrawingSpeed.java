@@ -11,6 +11,7 @@ import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Line2D;
 import java.util.Random;
 
 public final class TryLineDrawingSpeed extends Frame
@@ -25,14 +26,14 @@ public final class TryLineDrawingSpeed extends Frame
   {
     final int imgW = 600;
     final int imgH = 600;
-    final int[] extents;
+    final float[] extents;
     final int flags;
 
     {
       int N = Integer.parseInt(args[0]);
       if (args.length > 1) flags = Integer.parseInt(args[1]);
       else flags = 0;
-      extents = new int[N * 4];
+      extents = new float[N * 4];
       int inx = 0;
       Random r = new Random();
       while (inx < N) {
@@ -44,10 +45,10 @@ public final class TryLineDrawingSpeed extends Frame
         int x1 = nonnegative % imgW;
         nonnegative = 0x7fffffff & r.nextInt();
         int y1 = nonnegative % imgH;
-        extents[inx * 4] = x0;
-        extents[(inx * 4) + 1] = y0;
-        extents[(inx * 4) + 2] = x1;
-        extents[(inx * 4) + 3] = y1;
+        extents[inx * 4] = (float) x0; // Add 0.5f later.
+        extents[(inx * 4) + 1] = (float) y0;
+        extents[(inx * 4) + 2] = (float) x1;
+        extents[(inx * 4) + 3] = (float) y1;
         inx++; }
     }
     
@@ -63,10 +64,11 @@ public final class TryLineDrawingSpeed extends Frame
   private final Image m_img;
   private final AffineTransform m_xform;
   private final Stroke m_stroke;
-  private final int[] m_extents;
-  private int m_offset = 0;
+  private final float[] m_extents;
+  private final Line2D.Float m_line2d;
+  private float m_offset = 0.0f;
 
-  private TryLineDrawingSpeed(int flags, int w, int h, int[] extents)
+  private TryLineDrawingSpeed(int flags, int w, int h, float[] extents)
   {
     super();
     m_extents = extents;
@@ -84,6 +86,7 @@ public final class TryLineDrawingSpeed extends Frame
     if ((flags & FLAG_STROKE) != 0) {
       m_stroke = new BasicStroke(0.23f); } // What about 1.0f?
     else { m_stroke = null; }
+    m_line2d = new Line2D.Float();
   }
 
   public void update(Graphics g) { paint(g); }
@@ -101,12 +104,15 @@ public final class TryLineDrawingSpeed extends Frame
     g2.setColor(Color.black);
     if (m_stroke != null) { g2.setStroke(m_stroke); }
     for (int i = 0; i < m_extents.length;) {
-      g2.drawLine(m_extents[i++] + m_offset, m_extents[i++] + m_offset,
-                  m_extents[i++] + m_offset, m_extents[i++] + m_offset); }
+      m_line2d.setLine(m_extents[i++] + m_offset,
+                       m_extents[i++] + m_offset,
+                       m_extents[i++] + m_offset,
+                       m_extents[i++] + m_offset);
+      g2.draw(m_line2d); }
     if (m_img != null) {
       g.drawImage(m_img, 0, 0, null); }
-    if (m_offset == 0) { m_offset = 10; }
-    else { m_offset = 0; }
+    if (m_offset == 0.0f) { m_offset = 10.0f; }
+    else { m_offset = 0.0f; }
     repaint(); }
   public boolean isResizable() { return false; }
   public boolean handleEvent(Event evt) {
