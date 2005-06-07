@@ -116,10 +116,10 @@ public final class TestFastNodeRendering
   {
     m_grafx.clear(m_currXCenter, m_currYCenter, m_currScale);
     final IntEnumerator iter = m_tree.queryOverlap
-      (m_currXCenter - ((double) (m_imgWidth / 2)) / m_currScale,
-       m_currYCenter - ((double) (m_imgHeight / 2)) / m_currScale,
-       m_currXCenter + ((double) (m_imgWidth / 2)) / m_currScale,
-       m_currYCenter + ((double) (m_imgHeight / 2)) / m_currScale,
+      ((float) (m_currXCenter - ((double) (m_imgWidth / 2)) / m_currScale),
+       (float) (m_currYCenter - ((double) (m_imgHeight / 2)) / m_currScale),
+       (float) (m_currXCenter + ((double) (m_imgWidth / 2)) / m_currScale),
+       (float) (m_currYCenter + ((double) (m_imgHeight / 2)) / m_currScale),
        null, 0);
     while (iter.numRemaining() > 0) {
       final int inx_x4 = iter.nextInt() * 4;
