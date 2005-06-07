@@ -82,10 +82,10 @@ public final class TryLineDrawingSpeed extends Frame
     else { m_antialias = false; }
     if ((flags & FLAG_TRANSFORM) != 0) {
       m_xform = new AffineTransform();
-      m_xform.setToScale(1.7639d, 1.7639d); }
+      m_xform.setToScale(1.273d, 1.273d); }
     else { m_xform = null; }
     if ((flags & FLAG_STROKE) != 0) {
-      m_stroke = new BasicStroke(0.23f); } // What about 1.0f?
+      m_stroke = new BasicStroke(0.3f); }
     else { m_stroke = null; }
     if ((flags & FLAG_LINE2D) != 0) {
       m_line2d = new Line2D.Float(); }
