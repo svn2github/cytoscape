@@ -111,9 +111,9 @@ The networks can be viewed and manipulated in Cytoscape v2.1.
 						Release Date: May 2, 2005</font>
 				</td>
 				<td width="40%" valign="top">
-					BiNGO is a Cytoscape 2.1 plugin to determine which Gene Ontology (GO) categories are statistically over-represented in a set of genes. BiNGO maps the predominant functional themes of a given gene set on the GO hierarchy, and outputs this mapping as a Cytoscape graph. A gene set can either be selected from a Cytoscape network or compiled from other sources (e.g. a list of genes that are significantly upregulated in a microarray experiment).
+					BiNGO is a Cytoscape 2.1 plugin to determine which Gene Ontology (GO) categories are statistically over-represented in a set of genes. BiNGO maps the predominant functional themes of a given gene set on the GO hierarchy, and outputs this mapping as a Cytoscape graph. A gene set can either be selected from a Cytoscape network or compiled from other sources (e.g. a list of genes that are significantly upregulated in a microarray experiment).<BR>
 					<p>
-						Released by: <a href="http://www.psb.ugent.be/cbd/">Computational Biology Division</a>, Flanders Interuniversitary Institute for Biotechnology (VIB)
+						Released by: <a href="http://www.psb.ugent.be/cbd/">Computational Biology Division</a>, Dept. of Plant Systems Biology, Flanders Interuniversitary Institute for Biotechnology (VIB)
 					</p>
 				</td>
 				<td width="20%" valign="top">
