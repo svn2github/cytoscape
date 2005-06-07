@@ -79,14 +79,16 @@ public final class TryLineDrawingSpeed extends Frame
     else { m_antialias = false; }
     if ((flags & FLAG_TRANSFORM) != 0) {
       m_xform = new AffineTransform();
-      m_xform.setToScale(0.7639d, 0.7639d); }
+      m_xform.setToScale(1.7639d, 1.7639d); }
     else { m_xform = null; }
     if ((flags & FLAG_STROKE) != 0) {
-      m_stroke = new BasicStroke(0.43f); } // What about 1.0f?
+      m_stroke = new BasicStroke(0.23f); } // What about 1.0f?
     else { m_stroke = null; }
   }
 
-  public final void paint(Graphics g) {
+  public void update(Graphics g) { paint(g); }
+
+  public void paint(Graphics g) {
     final Graphics2D g2;
     if (m_img != null) { g2 = (Graphics2D) m_img.getGraphics(); }
     else { g2 = (Graphics2D) g; }
