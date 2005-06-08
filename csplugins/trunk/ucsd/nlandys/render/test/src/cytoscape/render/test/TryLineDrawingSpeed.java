@@ -1,7 +1,9 @@
 package cytoscape.render.test;
 
+import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Composite;
 import java.awt.Event;
 import java.awt.EventQueue;
 import java.awt.Frame;
@@ -12,6 +14,7 @@ import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
+import java.awt.image.BufferedImage;
 import java.util.Random;
 
 public final class TryLineDrawingSpeed extends Frame
@@ -75,7 +78,7 @@ public final class TryLineDrawingSpeed extends Frame
     m_extents = extents;
     if ((flags & FLAG_DOUBLE_BUFFER) != 0) {
       addNotify();
-      m_img = createImage(w, h); }
+      m_img = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB); }
     else { m_img = null; }
     if ((flags & FLAG_ANTIALIAS) != 0) {
       m_antialias = true; }
@@ -98,13 +101,17 @@ public final class TryLineDrawingSpeed extends Frame
     final Graphics2D g2;
     if (m_img != null) { g2 = (Graphics2D) m_img.getGraphics(); }
     else { g2 = (Graphics2D) g; }
+    Composite origComposite = g2.getComposite();
+    g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
+    g2.setColor(new Color(255, 255, 0, 0));
+    // Stupid fucking Java2D antialiasing must be turned off for this to work.
+    g2.fillRect(0, 0, 1000, 1000); // Whatever.
+    g2.setComposite(origComposite);
+    g2.setColor(Color.black);
     if (m_antialias) {
       g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                           RenderingHints.VALUE_ANTIALIAS_ON); }
     if (m_xform != null) { g2.transform(m_xform); }
-    g2.setColor(Color.white);
-    g2.fillRect(0, 0, 1000, 1000); // Whatever.
-    g2.setColor(Color.black);
     if (m_stroke != null) { g2.setStroke(m_stroke); }
     if (m_line2d == null) {
       for (int i = 0; i < m_extents.length;) {
@@ -120,6 +127,8 @@ public final class TryLineDrawingSpeed extends Frame
                          m_extents[i++] + m_offset);
         g2.draw(m_line2d); } }
     if (m_img != null) {
+      g.setColor(Color.blue);
+      g.fillRect(0, 0, 1000, 1000);
       g.drawImage(m_img, 0, 0, null); }
     if (m_offset == 0.0f) { m_offset = 10.0f; }
     else { m_offset = 0.0f; }
