@@ -107,7 +107,6 @@ public final class TryLineDrawingSpeed extends Frame
     // Stupid fucking Java2D antialiasing must be turned off for this to work.
     g2.fillRect(0, 0, 1000, 1000); // Whatever.
     g2.setComposite(origComposite);
-    g2.setColor(Color.black);
     if (m_antialias) {
       g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                           RenderingHints.VALUE_ANTIALIAS_ON); }
@@ -115,12 +114,14 @@ public final class TryLineDrawingSpeed extends Frame
     if (m_stroke != null) { g2.setStroke(m_stroke); }
     if (m_line2d == null) {
       for (int i = 0; i < m_extents.length;) {
+        g2.setColor(Color.black);
         g2.drawLine((int) (m_extents[i++] + m_offset),
                     (int) (m_extents[i++] + m_offset),
                     (int) (m_extents[i++] + m_offset),
                     (int) (m_extents[i++] + m_offset)); } }
     else {
       for (int i = 0; i < m_extents.length;) {
+        g2.setColor(Color.black);
         m_line2d.setLine(m_extents[i++] + m_offset,
                          m_extents[i++] + m_offset,
                          m_extents[i++] + m_offset,
