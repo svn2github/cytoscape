@@ -79,7 +79,7 @@ public final class TestFastNodeRendering
   private final Color m_nodeColor = Color.red;
   private double m_currXCenter = 0.5d;
   private double m_currYCenter = 0.5d;
-  private double m_currScale = 10000.0d;
+  private double m_currScale = 1000.0d;
   private int m_currMouseButton = 0; // 0: none; 1: left; 2: middle.
   private int m_lastXMousePos = 0;
   private int m_lastYMousePos = 0;
