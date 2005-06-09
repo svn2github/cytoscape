@@ -1,6 +1,8 @@
 package cytoscape.render.immed;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.Composite;
 import java.awt.EventQueue;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -34,7 +36,6 @@ public final class GraphGraphics
   public final Image image;
 
   private final Color m_bgColor;
-  private final boolean m_antialias;
   private final boolean m_debug;
   private final Rectangle2D.Float m_rect2d;
   private final Ellipse2D.Float m_ellp2d;
@@ -42,6 +43,7 @@ public final class GraphGraphics
   private final Line2D.Float m_line2d;
   private Graphics2D m_g2d;
   private AffineTransform m_currXform; // Not sure that we will need this.
+  private boolean m_antialias;
 
   /**
    * All rendering operations will be performed on the specified image.
@@ -54,11 +56,10 @@ public final class GraphGraphics
    *   AWT event handling thread.
    */
   public GraphGraphics(final Image image, final Color bgColor,
-                       final boolean antialias, final boolean debug)
+                       final boolean debug)
   {
     this.image = image;
     m_bgColor = bgColor;
-    m_antialias = antialias;
     m_debug = debug;
     m_rect2d = new Rectangle2D.Float();
     m_ellp2d = new Ellipse2D.Float();
@@ -73,13 +74,7 @@ public final class GraphGraphics
    * It is healthy to call this method right before starting
    * to render a new picture.  Don't try to be clever in not calling this
    * method.<p>
-   * This method must be called from the AWT event handling thread.<p>
-   * NOTE: Initially, I wanted to have the background always be transparent.
-   * The idea was to be able to render a complete graph scene by rendering
-   * several images on top of one another.  Unfortunately, with the Java2D
-   * architecture, this becomes a very special (and slow) case; we'd have to
-   * use BufferedImage to do this, and I want to allow any kind of image
-   * to be used by an instance of this class.
+   * This method must be called from the AWT event handling thread.
    * @param xCenter the x component of the translation transform for the frame
    *   about to be rendered; a node whose center is at the X coordinate xCenter
    *   will be rendered exactly in the middle of the image going across.
@@ -103,12 +98,12 @@ public final class GraphGraphics
       if (!(scaleFactor > 0.0d))
         throw new IllegalArgumentException("scaleFactor is not positive"); }
     m_g2d = (Graphics2D) image.getGraphics();
+    final Composite origComposite = m_g2d.getComposite();
+    m_g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
     m_g2d.setBackground(m_bgColor);
     m_g2d.clearRect(0, 0, image.getWidth(null), image.getHeight(null));
-    if (m_antialias)
-      m_g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                             RenderingHints.VALUE_ANTIALIAS_ON);
-
+    m_g2d.setComposite(origComposite);
+    m_antialias = false;
     // Set transform.  This is an infrequently used method so don't optimize.
     final AffineTransform translationPreScale = new AffineTransform();
     translationPreScale.setToTranslation(-xCenter, -yCenter);
