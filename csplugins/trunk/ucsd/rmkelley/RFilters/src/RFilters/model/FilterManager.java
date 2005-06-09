@@ -6,7 +6,7 @@ import javax.swing.*;
 import javax.swing.event.*;
 import java.beans.*;
 import cern.colt.map.OpenIntObjectHashMap;
-  public class FilterManager implements ListModel, ComboBoxModel, PropertyChangeListener{
+  public class FilterManager implements ListModel, PropertyChangeListener{
 
     protected static FilterManager DEFAULT_MANAGER;
     public static String FILTER_EVENT = "FILTER_EVENT";
@@ -56,28 +56,28 @@ import cern.colt.map.OpenIntObjectHashMap;
      * basically be a wrapper around the list model which they all will share
      */
     public ComboBoxModel getComboBoxModel(){
-      return defaultManager();
-    }// new ComboBoxModel(){
-// 	  Object selectedItem;
-	  public Object getSelectedItem(){
- 	    return selectedItem;
- 	  }
- 	  public void setSelectedItem(java.lang.Object anItem ) {
-      selectedItem = anItem;
- 	  }
-// 	  public void addListDataListener(ListDataListener l){
-// 	    FilterManager.this.addListDataListener(l);
-// 	  }
-// 	  public Object getElementAt(int index){
-// 	    return FilterManager.this.getElementAt(index);
-// 	  }
-// 	  public int getSize(){
-// 	    return FilterManager.this.getSize();
-// 	  }
-// 	  public void removeListDataListener(ListDataListener l){
-// 	    FilterManager.this.removeListDataListener(l);
-// 	  }};
-//     }
+      return new ComboBoxModel(){
+          
+          Object selectedItem;
+          public Object getSelectedItem(){
+            return selectedItem;
+          }
+          public void setSelectedItem(java.lang.Object anItem ) {
+            selectedItem = anItem;
+          }
+          public void addListDataListener(ListDataListener l){
+            FilterManager.this.addListDataListener(l);
+          }
+          public Object getElementAt(int index){
+            return FilterManager.this.getElementAt(index);
+          }
+          public int getSize(){
+            return FilterManager.this.getSize();
+          }
+          public void removeListDataListener(ListDataListener l){
+            FilterManager.this.removeListDataListener(l);
+          }};
+    }
 
     public void fireFilterEvent () {
       pcs.firePropertyChange( FILTER_EVENT, null, null );
