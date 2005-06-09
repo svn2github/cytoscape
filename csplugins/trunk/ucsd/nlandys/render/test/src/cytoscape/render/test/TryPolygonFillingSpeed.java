@@ -92,9 +92,9 @@ public final class TryPolygonFillingSpeed extends Frame
     else { g2 = (Graphics2D) g; }
     Composite origComposite = g2.getComposite();
     g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
-    g2.setColor(new Color(255, 255, 0, 0)); // Transparent yellow.
+    g2.setBackground(new Color(255, 255, 0, 0)); // Transparent yellow.
     // Stupid fucking Java2D antialiasing must be turned off for this to work.
-    g2.fillRect(0, 0, 1000, 1000); // Whatever.
+    g2.clearRect(0, 0, 1000, 1000); // Whatever.
     g2.setComposite(origComposite);
     if (m_antialias) {
       g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
