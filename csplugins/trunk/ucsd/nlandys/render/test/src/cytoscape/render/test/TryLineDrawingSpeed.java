@@ -77,7 +77,6 @@ public final class TryLineDrawingSpeed extends Frame
     super();
     m_extents = extents;
     if ((flags & FLAG_DOUBLE_BUFFER) != 0) {
-      addNotify();
       m_img = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB); }
     else { m_img = null; }
     if ((flags & FLAG_ANTIALIAS) != 0) {
