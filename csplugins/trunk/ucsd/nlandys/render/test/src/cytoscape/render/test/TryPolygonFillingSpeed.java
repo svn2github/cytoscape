@@ -42,13 +42,13 @@ public final class TryPolygonFillingSpeed extends Frame
         nonnegative = 0x7fffffff & r.nextInt();
         int y0 = nonnegative % imgH;
         nonnegative = 0x7fffffff & r.nextInt();
-        int x1 = nonnegative % imgW;
+        int w = nonnegative % 5;
         nonnegative = 0x7fffffff & r.nextInt();
-        int y1 = nonnegative % imgH;
-        extents[inx * 4] = (float) x0; // Add 0.5f later.
+        int h = nonnegative % 5;
+        extents[inx * 4] = (float) x0;
         extents[(inx * 4) + 1] = (float) y0;
-        extents[(inx * 4) + 2] = (float) x1;
-        extents[(inx * 4) + 3] = (float) y1;
+        extents[(inx * 4) + 2] = (float) (x0 + w);
+        extents[(inx * 4) + 3] = (float) (y0 + h);
         inx++; }
     }
     
