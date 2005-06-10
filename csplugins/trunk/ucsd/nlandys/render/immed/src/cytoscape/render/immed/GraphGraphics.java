@@ -22,12 +22,12 @@ import java.awt.geom.Rectangle2D;
 public final class GraphGraphics
 {
 
-  public static final byte SHAPE_DIAMOND = 0;
-  public static final byte SHAPE_ELLIPSE = 1;
-  public static final byte SHAPE_HEXAGON = 2;
-  public static final byte SHAPE_OCTAGON = 3;
-  public static final byte SHAPE_PARALLELOGRAM = 4;
-  public static final byte SHAPE_RECTANGLE = 5;
+  public static final byte SHAPE_RECTANGLE = 0;
+  public static final byte SHAPE_DIAMOND = 1;
+  public static final byte SHAPE_ELLIPSE = 2;
+  public static final byte SHAPE_HEXAGON = 3;
+  public static final byte SHAPE_OCTAGON = 4;
+  public static final byte SHAPE_PARALLELOGRAM = 5;
   public static final byte SHAPE_TRIANGLE = 6;
 
   /**
@@ -236,12 +236,15 @@ public final class GraphGraphics
   }
 
   /**
+   * @param dashLength a positive value representing the length of dashes
+   *   on the edge, or zero to indicate that the edge is solid.
    * @exception IllegalArgumentException if edgeThickness is less than zero.
    */
   public final void drawEdgeFull(final float x0, final float y0,
                                  final float x1, final float y1,
-//                                  final float edgeThickness,
-                                 final Color edgeColor)
+                                 final float edgeThickness,
+                                 final Color edgeColor,
+                                 final float dashLength)
   {
     if (m_debug) {
       if (!EventQueue.isDispatchThread())
@@ -250,14 +253,48 @@ public final class GraphGraphics
 //       if (edgeThickness < 0.0f)
 //         throw new IllegalArgumentException("edgeThickness < 0");
     }
-    if (!m_antialias) {
-      m_antialias = true;
-      m_g2d.setRenderingHint(RenderingHints.KEY_RENDERING,
-                             RenderingHints.VALUE_RENDER_QUALITY); }
-    // Set the stroke.
+    if (!m_antialias) setHighDetail();
+    if (m_currStrokeWidth != edgeThickness || m_dash[1] != dashLength) {
+      m_currStrokeWidth = edgeThickness;
+      m_dash[1] = m_currDashLength;
+      if (m_dash[1] == 0.0f) {
+        m_g2d.setStroke(new BasicStroke(m_currStrokeWidth,
+                                        BasicStroke.CAP_BUTT,
+                                        BasicStroke.JOIN_BEVEL, 0.0f)); }
+      else {
+        m_g2d.setStroke(new BasicStroke(m_currStrokeWidth,
+                                        BasicStroke.CAP_BUTT,
+                                        BasicStroke.JOIN_BEVEL, 0.0f,
+                                        m_dash, 0.0f));
     m_line2d.setLine(x0, y0, x1, y1);
     m_g2d.setColor(edgeColor);
     m_g2d.draw(m_line2d);
+  }
+
+  private final void setLowDetail()
+  {
+    m_antialias = false;
+    m_g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                           RenderingHints.VALUE_ANTIALIAS_DEFAULT);
+    m_g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                           RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT);
+    m_g2d.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
+                           RenderingHints.VALUE_FRACTIONALMETRICS_DEFAULT);
+    m_g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,
+                           RenderingHints.VALUE_STROKE_DEFAULT);
+  }
+
+  private final void setHighDetail()
+  {
+    m_antialias = true;
+    m_g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                           RenderingHints.VALUE_ANTIALIAS_ON);
+    m_g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                           RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+    m_g2d.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
+                           RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+    m_g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,
+                           RenderingHints.VALUE_STROKE_PURE);
   }
 
 }
