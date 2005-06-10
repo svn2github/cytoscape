@@ -38,6 +38,7 @@ public final class GraphGraphics
   private final Color m_bgColor;
   private final boolean m_debug;
   private final Rectangle2D.Float m_rect2d;
+  private final Rectangle2D.Float m_rect2d_;
   private final Ellipse2D.Float m_ellp2d;
   private final GeneralPath m_poly2d;
   private final Line2D.Float m_line2d;
@@ -50,6 +51,9 @@ public final class GraphGraphics
    * This constructor needs to be called from the AWT event handling thread.
    * @param image an off-screen image (an image that supports the
    *   getGraphics() method).
+   * @param bgColor a color to use when clearing the image before painting
+   *   a new frame; transparent colors are honored, provided that the image
+   *   argument supports transparent colors.
    * @param debug if this is true, extra [and time-consuming] error checking
    *   will take place.
    * @exception IllegalThreadStateException if the calling thread isn't the
@@ -62,6 +66,7 @@ public final class GraphGraphics
     m_bgColor = bgColor;
     m_debug = debug;
     m_rect2d = new Rectangle2D.Float();
+    m_rect2d_ = new Rectangle2D.Float();
     m_ellp2d = new Ellipse2D.Float();
     m_poly2d = new GeneralPath();
     m_line2d = new Line2D.Float();
@@ -104,6 +109,8 @@ public final class GraphGraphics
     m_g2d.clearRect(0, 0, image.getWidth(null), image.getHeight(null));
     m_g2d.setComposite(origComposite);
     m_antialias = false;
+    m_g2d.setRenderingHint(RenderingHints.KEY_RENDERING,
+                           RenderingHints.VALUE_RENDER_SPEED);
     // Set transform.  This is an infrequently used method so don't optimize.
     final AffineTransform translationPreScale = new AffineTransform();
     translationPreScale.setToTranslation(-xCenter, -yCenter);
@@ -149,28 +156,35 @@ public final class GraphGraphics
       if (yMin > yMax) throw new IllegalArgumentException("yMin > yMax");
       if (borderWidth < 0.0f)
         throw new IllegalArgumentException("borderWidth < 0"); }
-    final Shape shape;
-    switch (shapeType) {
-    case SHAPE_RECTANGLE:
-      m_rect2d.setRect(xMin, yMin, xMax - xMin, yMax - yMin);
-      shape = m_rect2d;
-      break;
-    case SHAPE_ELLIPSE:
-      m_ellp2d.setFrame(xMin, yMin, xMax - xMin, yMax - yMin);
-      shape = m_ellp2d;
-      break;
-    case SHAPE_TRIANGLE:
-      m_poly2d.reset();
-      m_poly2d.moveTo(xMin, yMax);
-      m_poly2d.lineTo((xMin + xMax) / 2.0f, yMin);
-      m_poly2d.lineTo(xMax, yMax);
-      m_poly2d.closePath();
-      shape = m_poly2d;
-      break;
-    default:
-      throw new IllegalArgumentException("shapeType is not recognized"); }
-    m_g2d.setColor(fillColor);
-    m_g2d.fill(shape);
+    if (!m_antialias) {
+      m_antialias = true;
+      m_g2d.setRenderingHint(RenderingHints.KEY_RENDERING,
+                             RenderingHints.VALUE_RENDER_QUALITY); }
+    if (borderWidth == 0.0f) { // Don't draw the border.
+      final Shape shape;
+      switch (shapeType) {
+      case SHAPE_RECTANGLE:
+        m_rect2d.setRect(xMin, yMin, xMax - xMin, yMax - yMin);
+        shape = m_rect2d;
+        break;
+      case SHAPE_ELLIPSE:
+        m_ellp2d.setFrame(xMin, yMin, xMax - xMin, yMax - yMin);
+        shape = m_ellp2d;
+        break;
+      case SHAPE_TRIANGLE:
+        m_poly2d.reset();
+        m_poly2d.moveTo(xMin, yMax);
+        m_poly2d.lineTo((xMin + xMax) / 2.0f, yMin);
+        m_poly2d.lineTo(xMax, yMax);
+        m_poly2d.closePath();
+        shape = m_poly2d;
+        break;
+      default:
+        throw new IllegalArgumentException("shapeType is not recognized"); }
+      m_g2d.setColor(fillColor);
+      m_g2d.fill(shape); }
+    else { // Must draw border.
+    }
   }
 
   /**
@@ -195,6 +209,10 @@ public final class GraphGraphics
           ("calling thread is not AWT event dispatcher");
       if (xMin > xMax) throw new IllegalArgumentException("xMin > xMax");
       if (yMin > yMax) throw new IllegalArgumentException("yMin > yMax"); }
+    if (m_antialias) {
+      m_antialias = false;
+      m_g2d.setRenderingHint(RenderingHints.KEY_RENDERING,
+                             RenderingHints.VALUE_RENDER_SPEED); }
     m_rect2d.setRect(xMin, yMin, xMax - xMin, yMax - yMin);
     m_g2d.setColor(fillColor);
     m_g2d.fill(m_rect2d);
@@ -202,8 +220,41 @@ public final class GraphGraphics
 
   public final void drawEdgeLow(final float x0, final float y0,
                                 final float x1, final float y1,
-                                final float thickness, final Color edgeColor)
+                                final Color edgeColor)
   {
+    if (m_debug) {
+      if (!EventQueue.isDispatchThread())
+        throw new IllegalStateException
+          ("calling thread is not AWT event dispatcher"); }
+    if (m_antialias) {
+      m_antialias = false;
+      m_g2d.setRenderingHint(RenderingHints.KEY_RENDERING,
+                             RenderingHints.VALUE_RENDER_SPEED); }
+    m_line2d.setLine(x0, y0, x1, y1);
+    m_g2d.setColor(edgeColor);
+    m_g2d.draw(m_line2d);
+  }
+
+  /**
+   * @exception IllegalArgumentException if edgeThickness is less than zero.
+   */
+  public final void drawEdgeFull(final float x0, final float y0,
+                                 final float x1, final float y1,
+//                                  final float edgeThickness,
+                                 final Color edgeColor)
+  {
+    if (m_debug) {
+      if (!EventQueue.isDispatchThread())
+        throw new IllegalStateException
+          ("calling thread is not AWT event dispatcher");
+//       if (edgeThickness < 0.0f)
+//         throw new IllegalArgumentException("edgeThickness < 0");
+    }
+    if (!m_antialias) {
+      m_antialias = true;
+      m_g2d.setRenderingHint(RenderingHints.KEY_RENDERING,
+                             RenderingHints.VALUE_RENDER_QUALITY); }
+    // Set the stroke.
     m_line2d.setLine(x0, y0, x1, y1);
     m_g2d.setColor(edgeColor);
     m_g2d.draw(m_line2d);
