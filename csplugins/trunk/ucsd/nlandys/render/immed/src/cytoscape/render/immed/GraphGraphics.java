@@ -108,9 +108,7 @@ public final class GraphGraphics
     m_g2d.setBackground(m_bgColor);
     m_g2d.clearRect(0, 0, image.getWidth(null), image.getHeight(null));
     m_g2d.setComposite(origComposite);
-    m_antialias = false;
-    m_g2d.setRenderingHint(RenderingHints.KEY_RENDERING,
-                           RenderingHints.VALUE_RENDER_SPEED);
+    setLowDetail();
     // Set transform.  This is an infrequently used method so don't optimize.
     final AffineTransform translationPreScale = new AffineTransform();
     translationPreScale.setToTranslation(-xCenter, -yCenter);
@@ -156,10 +154,7 @@ public final class GraphGraphics
       if (yMin > yMax) throw new IllegalArgumentException("yMin > yMax");
       if (borderWidth < 0.0f)
         throw new IllegalArgumentException("borderWidth < 0"); }
-    if (!m_antialias) {
-      m_antialias = true;
-      m_g2d.setRenderingHint(RenderingHints.KEY_RENDERING,
-                             RenderingHints.VALUE_RENDER_QUALITY); }
+    if (!m_antialias) setHighDetail();
     if (borderWidth == 0.0f) { // Don't draw the border.
       final Shape shape;
       switch (shapeType) {
@@ -209,10 +204,7 @@ public final class GraphGraphics
           ("calling thread is not AWT event dispatcher");
       if (xMin > xMax) throw new IllegalArgumentException("xMin > xMax");
       if (yMin > yMax) throw new IllegalArgumentException("yMin > yMax"); }
-    if (m_antialias) {
-      m_antialias = false;
-      m_g2d.setRenderingHint(RenderingHints.KEY_RENDERING,
-                             RenderingHints.VALUE_RENDER_SPEED); }
+    if (m_antialias) setLowDetail();
     m_rect2d.setRect(xMin, yMin, xMax - xMin, yMax - yMin);
     m_g2d.setColor(fillColor);
     m_g2d.fill(m_rect2d);
@@ -226,10 +218,7 @@ public final class GraphGraphics
       if (!EventQueue.isDispatchThread())
         throw new IllegalStateException
           ("calling thread is not AWT event dispatcher"); }
-    if (m_antialias) {
-      m_antialias = false;
-      m_g2d.setRenderingHint(RenderingHints.KEY_RENDERING,
-                             RenderingHints.VALUE_RENDER_SPEED); }
+    if (m_antialias) setLowDetail();
     m_line2d.setLine(x0, y0, x1, y1);
     m_g2d.setColor(edgeColor);
     m_g2d.draw(m_line2d);
@@ -238,7 +227,8 @@ public final class GraphGraphics
   /**
    * @param dashLength a positive value representing the length of dashes
    *   on the edge, or zero to indicate that the edge is solid.
-   * @exception IllegalArgumentException if edgeThickness is less than zero.
+   * @exception IllegalArgumentException if edgeThickness is less than zero or
+   *   if dashLength is less than zero.
    */
   public final void drawEdgeFull(final float x0, final float y0,
                                  final float x1, final float y1,
@@ -250,9 +240,10 @@ public final class GraphGraphics
       if (!EventQueue.isDispatchThread())
         throw new IllegalStateException
           ("calling thread is not AWT event dispatcher");
-//       if (edgeThickness < 0.0f)
-//         throw new IllegalArgumentException("edgeThickness < 0");
-    }
+      if (edgeThickness < 0.0f)
+        throw new IllegalArgumentException("edgeThickness < 0");
+      if (dashLength < 0.0f)
+        throw new IllegalArgumentException("dashLength < 0"); }
     if (!m_antialias) setHighDetail();
     if (m_currStrokeWidth != edgeThickness || m_dash[1] != dashLength) {
       m_currStrokeWidth = edgeThickness;
