@@ -42,9 +42,11 @@ public final class GraphGraphics
   private final Ellipse2D.Float m_ellp2d;
   private final GeneralPath m_poly2d;
   private final Line2D.Float m_line2d;
+  private final float[] m_dash;
   private Graphics2D m_g2d;
   private AffineTransform m_currXform; // Not sure that we will need this.
   private boolean m_antialias;
+  private float m_currStrokeWidth;
 
   /**
    * All rendering operations will be performed on the specified image.
@@ -70,6 +72,7 @@ public final class GraphGraphics
     m_ellp2d = new Ellipse2D.Float();
     m_poly2d = new GeneralPath();
     m_line2d = new Line2D.Float();
+    m_dash = new float[] { 0.0f, 0.0f };
     clear(0.0d, 0.0d, 1.0d);
   }
 
