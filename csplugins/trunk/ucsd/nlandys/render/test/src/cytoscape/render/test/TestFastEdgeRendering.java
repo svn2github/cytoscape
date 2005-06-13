@@ -22,7 +22,7 @@ public final class TestFastEdgeRendering
   extends Frame implements MouseListener, MouseMotionListener
 {
 
-  private final static double fudgeFactor = 1000.0d;
+  private final static double fudgeFactor = 10.0d;
 
   public final static void main(String[] args) throws Exception
   {
