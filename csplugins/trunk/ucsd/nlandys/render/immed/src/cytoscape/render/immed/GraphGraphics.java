@@ -231,7 +231,7 @@ public final class GraphGraphics
     // the simple and efficient Bresenham line drawing algorithm gets used
     // regardless of how zoomed in we are.  Otherwise, on certain zoom levels
     // the line drawing pipeline will start to fill polygons, which is slower
-    // be a factor of 100.
+    // by a factor of 100.
     if (m_dash[0] != 0.0f || m_currStrokeWidth != 0.0f) setStroke(0.0f, 0.0f);
     m_g2d.draw(m_line2d);
   }
@@ -242,7 +242,7 @@ public final class GraphGraphics
    * @exception IllegalArgumentException if edgeThickness is less than zero or
    *   if dashLength is less than zero.
    */
-  private final void drawEdgeFull(final float x0, final float y0,
+  public final void drawEdgeFull(final float x0, final float y0,
                                  final float x1, final float y1,
                                  final float edgeThickness,
                                  final Color edgeColor,
@@ -257,18 +257,8 @@ public final class GraphGraphics
       if (dashLength < 0.0f)
         throw new IllegalArgumentException("dashLength < 0"); }
     if (!m_antialias) setHighDetail();
-    if (m_currStrokeWidth != edgeThickness || m_dash[1] != dashLength) {
-      m_currStrokeWidth = edgeThickness;
-      m_dash[1] = dashLength;
-      if (m_dash[1] == 0.0f) {
-        m_g2d.setStroke(new BasicStroke(m_currStrokeWidth,
-                                        BasicStroke.CAP_BUTT,
-                                        BasicStroke.JOIN_BEVEL, 0.0f)); }
-      else {
-        m_g2d.setStroke(new BasicStroke(m_currStrokeWidth,
-                                        BasicStroke.CAP_BUTT,
-                                        BasicStroke.JOIN_BEVEL, 0.0f,
-                                        m_dash, 0.0f)); } }
+    if (m_dash[0] != dashLength || m_currStrokeWidth != edgeThickness)
+      setStroke(edgeThickness, dashLength);
     m_line2d.setLine(x0, y0, x1, y1);
     m_g2d.setColor(edgeColor);
     m_g2d.draw(m_line2d);
@@ -305,13 +295,13 @@ public final class GraphGraphics
     m_dash[0] = dashLength;
     m_dash[1] = dashLength;
     m_currStrokeWidth = width;
-    if (m_dash[0] == 0.0f) {
+    if (m_dash[0] == 0.0f)
       m_g2d.setStroke(new BasicStroke(width, BasicStroke.CAP_BUTT,
-                                      BasicStroke.JOIN_MITER, 10.0f)); }
-    else {
+                                      BasicStroke.JOIN_MITER, 10.0f));
+    else
       m_g2d.setStroke(new BasicStroke(width, BasicStroke.CAP_BUTT,
                                       BasicStroke.JOIN_MITER, 10.0f,
-                                      m_dash, 0.0f)); }
+                                      m_dash, 0.0f));
   }
 
 }
