@@ -9,6 +9,7 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.Shape;
+import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
@@ -113,6 +114,7 @@ public final class GraphGraphics
     m_g2d.clearRect(0, 0, image.getWidth(null), image.getHeight(null));
     m_g2d.setComposite(origComposite);
     setLowDetail();
+    setStroke(0.0f, 0.0f);
     // Set transform.  This is an infrequently used method so don't optimize.
     final AffineTransform translationPreScale = new AffineTransform();
     translationPreScale.setToTranslation(-xCenter, -yCenter);
@@ -225,6 +227,12 @@ public final class GraphGraphics
     if (m_antialias) setLowDetail();
     m_line2d.setLine(x0, y0, x1, y1);
     m_g2d.setColor(edgeColor);
+    // I'm setting the stroke width to zero so that I get a guarantee that
+    // the simple and efficient Bresenham line drawing algorithm gets used
+    // regardless of how zoomed in we are.  Otherwise, on certain zoom levels
+    // the line drawing pipeline will start to fill polygons, which is slower
+    // be a factor of 100.
+    if (m_dash[0] != 0.0f || m_currStrokeWidth != 0.0f) setStroke(0.0f, 0.0f);
     m_g2d.draw(m_line2d);
   }
 
@@ -290,6 +298,20 @@ public final class GraphGraphics
                            RenderingHints.VALUE_FRACTIONALMETRICS_ON);
     m_g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,
                            RenderingHints.VALUE_STROKE_PURE);
+  }
+
+  private final void setStroke(final float width, final float dashLength)
+  {
+    m_dash[0] = dashLength;
+    m_dash[1] = dashLength;
+    m_currStrokeWidth = width;
+    if (m_dash[0] == 0.0f) {
+      m_g2d.setStroke(new BasicStroke(width, BasicStroke.CAP_BUTT,
+                                      BasicStroke.JOIN_MITER, 10.0f)); }
+    else {
+      m_g2d.setStroke(new BasicStroke(width, BasicStroke.CAP_BUTT,
+                                      BasicStroke.JOIN_MITER, 10.0f,
+                                      m_dash, 0.0f)); }
   }
 
 }
