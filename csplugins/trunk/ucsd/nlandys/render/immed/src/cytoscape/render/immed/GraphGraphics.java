@@ -1,6 +1,7 @@
 package cytoscape.render.immed;
 
 import java.awt.AlphaComposite;
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Composite;
 import java.awt.EventQueue;
@@ -233,7 +234,7 @@ public final class GraphGraphics
    * @exception IllegalArgumentException if edgeThickness is less than zero or
    *   if dashLength is less than zero.
    */
-  public final void drawEdgeFull(final float x0, final float y0,
+  private final void drawEdgeFull(final float x0, final float y0,
                                  final float x1, final float y1,
                                  final float edgeThickness,
                                  final Color edgeColor,
@@ -250,7 +251,7 @@ public final class GraphGraphics
     if (!m_antialias) setHighDetail();
     if (m_currStrokeWidth != edgeThickness || m_dash[1] != dashLength) {
       m_currStrokeWidth = edgeThickness;
-      m_dash[1] = m_currDashLength;
+      m_dash[1] = dashLength;
       if (m_dash[1] == 0.0f) {
         m_g2d.setStroke(new BasicStroke(m_currStrokeWidth,
                                         BasicStroke.CAP_BUTT,
@@ -259,7 +260,7 @@ public final class GraphGraphics
         m_g2d.setStroke(new BasicStroke(m_currStrokeWidth,
                                         BasicStroke.CAP_BUTT,
                                         BasicStroke.JOIN_BEVEL, 0.0f,
-                                        m_dash, 0.0f));
+                                        m_dash, 0.0f)); } }
     m_line2d.setLine(x0, y0, x1, y1);
     m_g2d.setColor(edgeColor);
     m_g2d.draw(m_line2d);
