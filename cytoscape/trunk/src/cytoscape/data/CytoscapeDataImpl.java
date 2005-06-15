@@ -36,6 +36,12 @@ public class CytoscapeDataImpl
 
   public static final byte NODES = 1;
   public static final byte EDGES = 2;
+    /**
+     * Used to specify a CytoscapeData object that is associated with
+     * objects other than Nodes or Edges (e.g., HyperEdges):
+     */
+  public static final byte OTHER = 3;
+
   private byte type;
 
   private static final String LIST = "LIST";
@@ -677,6 +683,7 @@ public class CytoscapeDataImpl
    */
   public HashMap getNameMap () {
     
+    if (type == OTHER) return null;
     HashMap map = new HashMap();
     Iterator i;
     if ( type == NODES ) 
@@ -700,6 +707,7 @@ public class CytoscapeDataImpl
    */
   public HashMap getObjectMap () {
     
+    if (type == OTHER) return null;
     HashMap map = new HashMap();
     Iterator i;
     if ( type == NODES ) 
@@ -803,6 +811,7 @@ public class CytoscapeDataImpl
    */
   public Object getGraphObject ( String identifier ) {
 
+    if (type == OTHER) return null;
     //TODO LINEAR TIME
 
     if ( type == NODES ) {
