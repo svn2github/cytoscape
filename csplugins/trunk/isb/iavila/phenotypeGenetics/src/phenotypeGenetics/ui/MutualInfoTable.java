@@ -169,17 +169,23 @@ public class MutualInfoTable extends JFrame {
           }
         }
         MutualInfo chosenInfo = miTableView.infoSet[row];
+        ArrayList nodeList = new ArrayList();
         CyNode [] nodesToSelect = new CyNode[chosenInfo.getSize() + 2];
-        nodesToSelect[0] = Cytoscape.getCyNode(chosenInfo.getNodeName1()); 
+        nodesToSelect[0] = Cytoscape.getCyNode(chosenInfo.getNodeName1());
+        nodeList.add(nodesToSelect[0]);
         nodesToSelect[1] = Cytoscape.getCyNode(chosenInfo.getNodeName2());
+        nodeList.add(nodesToSelect[1]);
         //String[] nodeNames = new String[ chosenInfo.getSize() + 2 ];
         //nodeNames[0] = chosenInfo.getNodeName1();
         //nodeNames[1] = chosenInfo.getNodeName2();
         for (int i = 0; i<chosenInfo.getSize(); i++) {
           nodesToSelect[i+2] = 
             Cytoscape.getCyNode((String)(chosenInfo.getCommonNeighbors().get(i)));
+          nodeList.add(nodesToSelect[i+2]);
         }
-        Cytoscape.getCurrentNetworkView().setSelected(nodesToSelect);
+        // iliana changed this, to see if bug goes away:
+        //Cytoscape.getCurrentNetworkView().setSelected(nodesToSelect);
+        Cytoscape.getCurrentNetwork().setFlaggedNodes(nodeList, true);
       }
       };
     table.addMouseListener(listMouseListener);

@@ -4,7 +4,7 @@
    <property name = "src" location = "src"/>
    <property name = "build" location = "build"/>
    <property name = "build.compiler" value = "modern"/>
-   <property name = "cytoscape.lib" location = "../../../../C2.1"/>
+   <property name = "cytoscape.lib" location = "../../../../C2.1/cytoscape-v2.1"/>
    <property name = "cytoscape.lib.dev" location = "../../../../cytoscape"/>
    <property name = "local.lib" location = "lib"/>
    <property name = "dist" location = "dist"/>
@@ -101,6 +101,10 @@
    <target name = "run" depends="jar" description = "Runs with official Cytoscape 2.1">
       <java classname = "cytoscape.CyMain" classpathref = "classpath_run"
           fork = "true" maxmemory = "1g">
+          <arg line = "-b"/>
+          <arg line = "http://db.systemsbiology.net/cytoscape/annotation/yeast/manifest"/>
+          <arg line = "-s"/>
+          <arg value = "Saccharomyces cerevisiae"/>
           <arg line = "--JLD"/>
           <arg file = "${dist}/phenGen.jar"/>
           <!-- <arg line = "-JLD"/> -->

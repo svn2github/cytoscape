@@ -16,6 +16,7 @@ import java.awt.event.*;
 import cytoscape.*;
 import cytoscape.util.*;
 import cytoscape.view.*;
+import cytoscape.data.Semantics;
 import cern.colt.list.IntArrayList;
 
 public class CalculateGeneticInteractionsTask implements MonitoredTask{
@@ -109,7 +110,7 @@ public class CalculateGeneticInteractionsTask implements MonitoredTask{
     // Create nodes from phenotype data
     CyNetwork cyNet = createNodes(original_project, create_new_graph);
     pbar.setVisible(false);
-       
+    
     // Calculate the genetic interactions:
     int [] newEdges = new int[0];
     
@@ -174,7 +175,7 @@ public class CalculateGeneticInteractionsTask implements MonitoredTask{
         CyNetwork cn = (CyNetwork)it.next();
         String netTitle = cn.getTitle();
         if(netTitle.matches(pattern)){
-          System.out.println(netTitle + " matches " + pattern);
+          //System.out.println(netTitle + " matches " + pattern);
           int index = netTitle.lastIndexOf("_");
           if(index == -1 && maxNetNum < 0){
             // matches the title and does not have an ending "_"
@@ -212,6 +213,12 @@ public class CalculateGeneticInteractionsTask implements MonitoredTask{
       netView = Cytoscape.createNetworkView(cyNetwork);
     }
     Cytoscape.getDesktop().setFocus(cyNetwork.getIdentifier());
+   
+    
+    // need to call this because it could be that a CyNetworkView did
+    // not exist before!
+    PhenotypeGeneticsPlugIn.setUpCyOptions();
+    
     netView.redrawGraph(true,true); // layout and vizmaps
     
     return cyNetwork;
@@ -275,7 +282,7 @@ public class CalculateGeneticInteractionsTask implements MonitoredTask{
     SwingWorker worker = new SwingWorker (){
 
         public Object construct (){
-
+          
           calculateInteractionsAndDisplayGraph(originalProject,
                                                projectsByPhenoEnviro,
                                                phenoEnviros,

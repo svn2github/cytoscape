@@ -480,8 +480,8 @@ public class DiscretePhenoValueInequality implements Serializable {
       DiscretePhenoValueInequality.arrowMapping = 
         new DiscreteMapping(Arrow.NONE, ObjectMapping.EDGE_MAPPING);
       DiscretePhenoValueInequality.arrowMapping.setControllingAttributeName(EDGE_ATTRIBUTE,
-                                                                     vmManager.getNetwork(),
-                                                                     false);
+                                                                            vmManager.getNetwork(),
+                                                                            false);
     }//arrowMapping == null
     
     if(getDirection().equals(DiscretePhenoValueInequality.NOT_DIRECTIONAL)){
