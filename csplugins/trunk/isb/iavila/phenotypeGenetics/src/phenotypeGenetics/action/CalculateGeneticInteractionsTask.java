@@ -214,10 +214,9 @@ public class CalculateGeneticInteractionsTask implements MonitoredTask{
     }
     Cytoscape.getDesktop().setFocus(cyNetwork.getIdentifier());
    
-    
     // need to call this because it could be that a CyNetworkView did
-    // not exist before!
-    PhenotypeGeneticsPlugIn.setUpCyOptions();
+    // not exist before! NOT ANYMORE!!!!
+    //PhenotypeGeneticsPlugIn.setUpCyOptions();
     
     netView.redrawGraph(true,true); // layout and vizmaps
     

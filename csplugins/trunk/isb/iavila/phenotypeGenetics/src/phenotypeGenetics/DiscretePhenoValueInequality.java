@@ -23,13 +23,14 @@ package phenotypeGenetics;
 import java.io.*;
 import java.util.*;
 import java.awt.Color;
+import phenotypeGenetics.view.*;
 import cytoscape.*;
-import cytoscape.view.*;
-import cytoscape.visual.*;
-import cytoscape.visual.calculators.*;
-import cytoscape.visual.mappings.*;
-import cytoscape.visual.ui.*;
-import giny.view.EdgeView;
+//import cytoscape.view.*;
+//import cytoscape.visual.*;
+//import cytoscape.visual.calculators.*;
+//import cytoscape.visual.mappings.*;
+//import cytoscape.visual.ui.*;
+
 
 public class DiscretePhenoValueInequality implements Serializable {
 
@@ -62,9 +63,9 @@ public class DiscretePhenoValueInequality implements Serializable {
   protected Color color;
   protected String edgeType;
   protected String direction;
-  protected static DiscreteMapping edgeColorMapping;
-  protected static DiscreteMapping edgeTypeMapping;
-  protected static DiscreteMapping arrowMapping;
+  //protected static DiscreteMapping edgeColorMapping;
+  //protected static DiscreteMapping edgeTypeMapping;
+  //protected static DiscreteMapping arrowMapping;
   
   /**
    * Construct a new <code>DiscretePhenoValueInequality</code>
@@ -449,7 +450,9 @@ public class DiscretePhenoValueInequality implements Serializable {
   
   public void setColor (Color new_color){
     this.color = new_color;
-    setColorMapping();
+    PGVisualStyle.setColorMapping(EDGE_ATTRIBUTE,// the controlling attribute
+                                  this.toString(),// value of attribute
+                                  this.color);
   }//setColor
   
   public String getEdgeType (){
@@ -458,7 +461,9 @@ public class DiscretePhenoValueInequality implements Serializable {
   
   public void setEdgeType (String new_type){ 
     this.edgeType = new_type;
-    setEdgeTypeMapping();
+    PGVisualStyle.setEdgeTypeMapping(EDGE_ATTRIBUTE,// the controlling attribute
+                                     this.toString(),// value of attribute
+                                     this.edgeType);
   }//setEdgeType
   
   public String getDirection (){
@@ -467,103 +472,9 @@ public class DiscretePhenoValueInequality implements Serializable {
   
   public void setDirection (String new_dir){ 
     this.direction = new_dir;
-    setArrowMapping();
+    PGVisualStyle.setArrowMapping(EDGE_ATTRIBUTE, // controlling attribute
+                                  this.toString(), // value of attribute
+                                  this.direction);
   }//setDirection
 
-  private void setArrowMapping (){
-    CyNetworkView netView = Cytoscape.getCurrentNetworkView();
-    VisualMappingManager vmManager = Cytoscape.getDesktop().getVizMapManager();
-    EdgeAppearanceCalculator edgeAppCalc = 
-      vmManager.getVisualStyle().getEdgeAppearanceCalculator();
-    
-    if(DiscretePhenoValueInequality.arrowMapping == null){
-      DiscretePhenoValueInequality.arrowMapping = 
-        new DiscreteMapping(Arrow.NONE, ObjectMapping.EDGE_MAPPING);
-      DiscretePhenoValueInequality.arrowMapping.setControllingAttributeName(EDGE_ATTRIBUTE,
-                                                                            vmManager.getNetwork(),
-                                                                            false);
-    }//arrowMapping == null
-    
-    if(getDirection().equals(DiscretePhenoValueInequality.NOT_DIRECTIONAL)){
-      DiscretePhenoValueInequality.arrowMapping.putMapValue(this.toString(), 
-                                                     Arrow.NONE);
-    }else{
-      DiscretePhenoValueInequality.arrowMapping.putMapValue(this.toString(), 
-                                                     Arrow.COLOR_ARROW);
-    }
-    
-    GenericEdgeArrowCalculator earrowc =  
-      new GenericEdgeArrowCalculator(EDGE_ATTRIBUTE, DiscretePhenoValueInequality.arrowMapping);
-    
-    edgeAppCalc.setEdgeTargetArrowCalculator(earrowc);
-    
-  }//setArrowMapping
-  
-  
-  private void setEdgeTypeMapping (){
-    
-    CyNetworkView netView = Cytoscape.getCurrentNetworkView();
-    VisualMappingManager vmManager = Cytoscape.getDesktop().getVizMapManager();
-    EdgeAppearanceCalculator edgeAppCalc = 
-      vmManager.getVisualStyle().getEdgeAppearanceCalculator();
-    
-    if(DiscretePhenoValueInequality.edgeTypeMapping == null){
-      DiscretePhenoValueInequality.edgeTypeMapping = 
-        new DiscreteMapping(LineType.LINE_1,ObjectMapping.EDGE_MAPPING);
-      DiscretePhenoValueInequality.edgeTypeMapping.setControllingAttributeName(EDGE_ATTRIBUTE,
-                                                                        vmManager.getNetwork(),
-                                                                        false);
-    }//edgeTypeMapping == null
-    
-    HashMap stringToLineType = MiscDialog.getStringToLineTypeHashMap();
-    LineType lineType = (LineType)stringToLineType.get(getEdgeType());
-    
-    DiscretePhenoValueInequality.edgeTypeMapping.putMapValue(this.toString(), lineType);    
-    
-    GenericEdgeLineTypeCalculator eltc =
-	    new GenericEdgeLineTypeCalculator(EDGE_ATTRIBUTE, 
-                                        DiscretePhenoValueInequality.edgeTypeMapping);
-    
-    edgeAppCalc.setEdgeLineTypeCalculator(eltc);
-    
-  }//setEdgeTypeMapping
-  
-  private void setColorMapping (){
-    
-    CyNetworkView netView = Cytoscape.getCurrentNetworkView();
-    VisualMappingManager vmManager = Cytoscape.getDesktop().getVizMapManager();
-    VisualStyle vs = vmManager.getVisualStyle();
-   
-    
-    EdgeAppearanceCalculator edgeAppCalc = 
-      vmManager.getVisualStyle().getEdgeAppearanceCalculator();
-    
-    if(DiscretePhenoValueInequality.edgeColorMapping == null){
-      
-      DiscretePhenoValueInequality.edgeColorMapping = 
-        new DiscreteMapping(Color.BLACK, ObjectMapping.EDGE_MAPPING);
-      DiscretePhenoValueInequality.edgeColorMapping.setControllingAttributeName(
-                                                                EDGE_ATTRIBUTE,
-                                                                vmManager.getNetwork(),
-                                                                false);
-    }// if edgeColorMapping == null
-    
-    
-    DiscretePhenoValueInequality.edgeColorMapping.putMapValue(this.toString(), getColor());
-    
-    CalculatorCatalog calcCatalog = vmManager.getCalculatorCatalog();
-    
-    GenericEdgeColorCalculator colorCalculator = 
-      (GenericEdgeColorCalculator)calcCatalog.getEdgeColorCalculator(EDGE_ATTRIBUTE);
-    
-    if(colorCalculator == null){
-      colorCalculator = 
-        new GenericEdgeColorCalculator(EDGE_ATTRIBUTE,
-                                       DiscretePhenoValueInequality.edgeColorMapping);
-    }
-    
-    edgeAppCalc.setEdgeColorCalculator(colorCalculator);
-    
-  }//setColorMapping
-    
 }// class DiscretePhenoValueInequality
