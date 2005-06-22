@@ -394,9 +394,9 @@ public class AbstractMetaNodeModeler {
       //------------------------------------------------------
       
       //if(DEBUG){
-      //  System.err.println("Restored " + restoredRindices.length + "/" + 
-      //                     connectingEdgesRindices.length + " edges connecting " + 
-      //                     rootNodeIndex + " and " + gpNodes[node_i]);
+      //System.err.println("Restored " + restoredRindices.length + "/" + 
+      //                   connectingEdgesRindices.length + " edges connecting " + 
+      //                   rootNodeIndex + " and " + gpNodes[node_i]);
       //}
       
     }//for node_i
@@ -465,6 +465,39 @@ public class AbstractMetaNodeModeler {
       }
       return false;
     }
+
+    // Get the indices of the nodes that the meta-node is connected to, we will
+    // use these later
+    int[] metaEdges = 
+      cy_network.getAdjacentEdgeIndicesArray(node_index,
+                                             true,true,true);
+    IntArrayList metaNeighbors = new IntArrayList();
+    for(int i = 0; i < metaEdges.length; i++){
+      
+      Edge edge = this.rootGraph.getEdge(metaEdges[i]);
+      Node source = edge.getSource();
+      Node target = edge.getTarget();
+      
+      int neighborIndex = 0;
+      if(source.getRootGraphIndex() == node_index){
+        neighborIndex = target.getRootGraphIndex();
+      }else if(target.getRootGraphIndex() == node_index){
+        neighborIndex = source.getRootGraphIndex();
+      }
+      
+      if(neighborIndex == 0){
+        
+        if(DEBUG){
+          System.err.println("Edge " + edge + " is an adjacent edge of meta-node " + 
+                             node_index + " but we could not identify the neighbor of " +
+                             " the meta-node!!!");
+        }
+        
+      }else{
+        metaNeighbors.add(neighborIndex);
+      }
+    
+    }//for i
     
     int [] childrenRindices = null;
     
@@ -510,16 +543,48 @@ public class AbstractMetaNodeModeler {
         System.err.println("----- undoModel (CyNetwork," + node_index + "," + recursive_undo + 
                            ") returning false since the given node is not a " +
                            " meta-node -----");
-      }
+        }
       return false;
     }
     
     // Restore the children nodes and their adjacent edges that connect to other nodes
     // currently contained in CyNetwork
+    // THIS METHOD IS NOT WORKING!!!! (5/5/05)
     int [] restoredNodeRindices = cy_network.restoreNodes(childrenRindices, true);
+    
+    IntArrayList childrenAndNeighbors = new IntArrayList();
+    metaNeighbors.trimToSize();
+    childrenAndNeighbors.addAllOf(metaNeighbors);
+    for(int i = 0; i < childrenRindices.length; i++){
+      childrenAndNeighbors.add(childrenRindices[i]);
+    }//for i
+    childrenAndNeighbors.trimToSize();
+
+    // Need to call this method to get the edges that need to be restored
+    // Get the connecting edges between the children *and* the nodes in cy_network
+    // that their parent node is connected to
+    int [] connectingEdges = 
+      this.rootGraph.getConnectingEdgeIndicesArray(childrenAndNeighbors.elements());
+    int [] restoredEdges = cy_network.restoreEdges(connectingEdges);
+    
     if(DEBUG){
-      System.err.println("Restored " + restoredNodeRindices.length + " children nodes of meta-node" 
-                         + metaNodeRindex + " in cy_network");
+      int notRestored = 0;
+      for (int i = 0; i < restoredEdges.length; i++){
+        if(restoredEdges[i] == 0){
+          notRestored++;
+        }
+      }//for i
+      
+      if(notRestored > 0){
+        System.err.println(notRestored + " edges were not restored!!!");
+      }
+      
+    }//DEBUG
+    
+    if(DEBUG){
+    System.err.println("Restored " + restoredNodeRindices.length + 
+                       " children nodes of meta-node" 
+                       + metaNodeRindex + " in cy_network");
     }
     // Hide the meta-node and adjacent edges
     int hiddenNodeRindex = cy_network.hideNode(metaNodeRindex);
@@ -778,12 +843,13 @@ public class AbstractMetaNodeModeler {
   protected void removeMetaNode (CyNetwork cy_net, int meta_node_index, boolean recursive){
     
     if(DEBUG){
-      System.err.println("----- removeMetaEdges (" + meta_node_index + "," + recursive + ")-----");
+      System.err.println("----- removeMetaNode (" + meta_node_index + "," + recursive 
+                         + ")-----");
     }
     
     if(meta_node_index >= 0){
       if(DEBUG){
-        System.err.println("----- removeMetaEdges returning, meta_node_index is  positive -----");
+        System.err.println("----- removeMetaNode returning, meta_node_index is  positive -----");
       }
       return;
     }
@@ -798,7 +864,8 @@ public class AbstractMetaNodeModeler {
     }
     
     // It is a meta-node, remember that it is no longer a meta-node of cy_net
-    IntArrayList metaNodesForNetwork = (IntArrayList)cy_net.getClientData(MetaNodeFactory.METANODES_IN_NETWORK);
+    IntArrayList metaNodesForNetwork = 
+      (IntArrayList)cy_net.getClientData(MetaNodeFactory.METANODES_IN_NETWORK);
     if(metaNodesForNetwork != null){
     	metaNodesForNetwork.delete(meta_node_index);
     	metaNodesForNetwork.trimToSize();
@@ -806,8 +873,11 @@ public class AbstractMetaNodeModeler {
   
     // If recursive, get all the descendants of this meta-node, and remove their meta-edges
     if(recursive){
+      
       // This method is too slow:
-      //int [] descendants = this.rootGraph.getNodeMetaChildIndicesArray(meta_node_index,true);
+      //int [] descendants = 
+      //this.rootGraph.getNodeMetaChildIndicesArray(meta_node_index,true);
+      
       IntArrayList d = new IntArrayList();
       getDescendants(meta_node_index, d);
       d.trimToSize();
@@ -818,7 +888,8 @@ public class AbstractMetaNodeModeler {
     }// if recursive
     
     IntArrayList adjacentEdgeRindices = 
-      new IntArrayList(this.rootGraph.getAdjacentEdgeIndicesArray(meta_node_index,true, true,true));
+      new IntArrayList(this.rootGraph.getAdjacentEdgeIndicesArray(meta_node_index,
+                                                                  true, true,true));
     adjacentEdgeRindices.trimToSize();
     
     // Remember that this meta-node has no processed edges anymore so that if applyModel
@@ -829,7 +900,8 @@ public class AbstractMetaNodeModeler {
     }
     this.metaNodeToProcessedEdges.removeKey(meta_node_index);
     if(DEBUG){
-      System.err.println("after removal, metaNodeToProcessedEdges.containsKey(" + meta_node_index + 
+      System.err.println("after removal, metaNodeToProcessedEdges.containsKey(" + 
+                         meta_node_index + 
                          ") = " +
                          this.metaNodeToProcessedEdges.containsKey(meta_node_index));
     }
@@ -850,10 +922,39 @@ public class AbstractMetaNodeModeler {
     if(DEBUG){
       System.err.println("before removing edges, num e = " + this.rootGraph.getEdgeCount());
     }
-    this.rootGraph.removeEdges(adjacentEdgeRindices.elements());
+    
+    // ------------------ DISASTER AREA !!! ------------------------------------------------//
+   
+    // 5/5/05 this method crashes !!! : 
+    //this.rootGraph.removeEdges(adjacentEdgeRindices.elements());
+   
+    int notRemoved = 0;
+    for(int i = 0; i < adjacentEdgeRindices.size(); i++){
+      
+      // This method also crashes! 5/5/05
+      //this.rootGraph.removeEdge(adjacentEdgeRindices.get(i));
+      
+      // This also crashes! 5/6/05
+      //Edge edge = this.rootGraph.getEdge(adjacentEdgeRindices.get(i));
+      //if(this.rootGraph.removeEdge(edge) == null){
+      //notRemoved++;
+      //}
+      
+      //2nd argument removes the edge from the RootGraph as well
+      if( cy_net.removeEdge(adjacentEdgeRindices.get(i),true) ){
+        notRemoved++; // only removed from cy_net, but not from RootGraph!
+      }
+      
+    }//for i
+    
     if(DEBUG){
+      if(notRemoved > 0){
+        System.err.println(notRemoved + " edges where not removed!");
+      }
       System.err.println("after removing edges, num e = " + this.rootGraph.getEdgeCount());
     }
+    //----------------------END DISASTER AREA ----------------------------------------------//
+    
     // Update metaEdgesRindices
     if(DEBUG){
       System.err.println("metaEdgesRindices.size = " + this.metaEdgesRindices.size());

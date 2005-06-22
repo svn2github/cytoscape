@@ -1,23 +1,26 @@
 <?xml version = "1.0"?>
-<project name = "metaNodeViewer" default = "compile" basedir = ".">
+<project name = "metaNodeViewer" default = "compile_release" basedir = ".">
    
    <property name = "src" location = "src"/>
    <property name = "build" location = "build"/>
    <property name = "build.compiler" value = "modern"/>
-   <property name = "lib" location = "../../../../cytoscape/lib"/>
+   <!-- path to Cytoscape under development (CVS) -->
+   <property name = "lib.dev" location = "../../../../cytoscape/lib"/>
+   <!-- path to Cytoscape 2.1 official release -->
+   <property name = "lib.release" location = "../../../../C2.1/cytoscape-v2.1"/>
    <property name = "jar"  location = "jar"/>
    <property name = "doc" location = "doc"/>
 
    <property name="cytoscape.plugin.dir" value="../../../../cytoscape/plugins"/>
 
-   <path id = "classpath_compile">
-       <fileset dir = "${lib}">
+   <path id = "classpath_dev">
+       <fileset dir = "${lib.dev}">
           <include name = "**/*.jar"/>
        </fileset>
    </path>
 
-   <path id = "classpath_run">
-       <fileset dir = "${lib}">
+   <path id = "classpath_release">
+       <fileset dir = "${lib.release}">
           <include name = "**/*.jar"/>
        </fileset>
    </path>
@@ -26,10 +29,17 @@
       <mkdir dir="${build}"/>
    </target>
 
-   <target name="compile" depends = "prepare" description="Compile">
+   <target name="compile_dev" depends = "prepare" description="Compile with Cytoscape under development">
    <!-- Compile the java code from ${src} into ${build} -->
    <javac source = "1.4" debug="true" srcdir = "${src}" destdir="${build}">
-      <classpath refid = "classpath_compile"/>
+      <classpath refid = "classpath_dev"/>
+   </javac>
+   </target>
+
+   <target name="compile_release" depends = "prepare" description="Compiles with current official release of Cytoscape">
+   <!-- Compile the java code from ${src} into ${build} -->
+   <javac source = "1.4" debug="true" srcdir = "${src}" destdir="${build}">
+      <classpath refid = "classpath_release"/>
    </javac>
    </target>
    
@@ -39,19 +49,36 @@
       <delete dir="${jar}"/>
    </target>
 
-   <target name="jar" depends="compile" description="makes a jar">
+   <target name="jar_release" depends="compile_release" description="makes a jar for the current official Cytoscape release">
    <mkdir dir = "${jar}"/>
    <jar jarfile="${jar}/metanode.jar">
       <fileset dir="${build}"/>
    </jar>
-    <copy todir="${cytoscape.plugin.dir}" file="jar/metanode.jar"/>
    </target>
 
-   <target name = "run" depends="jar" description = "Run">
-      <java classname = "cytoscape.CyMain" classpathref = "classpath_run"
+   <target name="jar_dev" depends="compile_dev" description="makes a jar for Cytoscape under development">
+   <mkdir dir = "${jar}"/>
+   <jar jarfile="${jar}/metanode.jar">
+      <fileset dir="${build}"/>
+   </jar>
+   </target>
+
+   <target name = "run_dev" depends="jar_dev" description = "Run under development">
+      <java classname = "cytoscape.CyMain" classpathref = "classpath_dev"
           fork = "true" maxmemory = "1g">
       	  <arg line = "--JLD"/>
-      	  <arg line = "${cytoscape.plugin.dir}"/>
+      	  <arg line = "${jar}metanode.jar"/>
+      	  <arg line = "-vt"/>
+      	  <arg line = "5000"/>
+      </java>
+    </target>
+
+
+     <target name = "run_release" depends="jar_release" description = "Run release">
+      <java classname = "cytoscape.CyMain" classpathref = "classpath_release"
+          fork = "true" maxmemory = "1g">
+      	  <arg line = "--JLD"/>
+      	  <arg line = "${jar}/metanode.jar"/>
       	  <arg line = "-vt"/>
       	  <arg line = "5000"/>
       </java>
