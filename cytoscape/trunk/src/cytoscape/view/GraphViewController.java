@@ -373,7 +373,13 @@ public class GraphViewController
   public void graphPerspectiveChanged (GraphPerspectiveChangeEvent event){
     //TODO: Remove
     //System.out.println("In GraphViewController.graphPerspectiveChanged()");
-    GraphPerspective changedGraphPers = (GraphPerspective)event.getSource();
+    Object source = event.getSource();
+    if(! (source instanceof GraphPerspective) ){
+      // TODO: What to do? There was a change in the RootGraph, do we propagate it
+      // to all the GraphPerspectives????
+      return;
+    }
+    GraphPerspective changedGraphPers = (GraphPerspective)source;
     GraphView graphView = (GraphView)this.gpToGv.get(changedGraphPers);
     if(graphView == null){
       // Somehow, we are listening to events of a GraphPerspective that
