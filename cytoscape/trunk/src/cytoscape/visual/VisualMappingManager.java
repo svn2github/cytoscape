@@ -286,6 +286,12 @@ public class VisualMappingManager extends SubjectBase {
       visualStyle.getEdgeAppearanceCalculator();
     for (Iterator i = network_view.getEdgeViewsIterator(); i.hasNext(); ) {
       EdgeView edgeView = (EdgeView)i.next();
+      if(edgeView == null){
+        // WARNING: This is a hack, edgeView should not be null, but
+        // for now do this! (iliana)
+        continue;
+      }
+      
       Edge edge = edgeView.getEdge();
       edgeAppearanceCalculator.calculateEdgeAppearance
         (myEdgeApp,edge,network);
