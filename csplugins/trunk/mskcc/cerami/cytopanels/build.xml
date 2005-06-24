@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<!-- build.xml - Build file for Cytopanel API -->
+<project name="Cytoscape CytoPanel API" default="compile" basedir=".">
+
+    <!--  Define Check Style Task -->
+    <taskdef resource="checkstyletask.properties"/>
+
+    <!--  The directory containing library jar files -->
+    <property name="lib.dir" value="lib"/>
+
+    <!-- The directory containing source code -->
+    <property name="src.dir" value="src"/>
+
+    <!-- The directory containing the configuration files -->
+    <property name="config.dir" value="config"/>
+
+    <!-- Temporary build directories -->
+    <property name="build.dir" value="build"/>
+    <property name="build.classes" value="${build.dir}/classes"/>
+
+    <!-- Global "magic" property for <javac> -->
+    <property name="build.compiler" value="modern"/>
+
+    <!-- Classpath with all lib JAR Files -->
+    <path id="classpath">
+        <pathelement path="${build.classes}"/>
+        <pathelement path="${basedir}"/>
+        <fileset dir="${lib.dir}">
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>
+
+    <!-- Target to create the build directories prior to compilation -->
+    <target name="prepare">
+        <mkdir dir="${build.dir}"/>
+        <mkdir dir="${build.classes}"/>
+    </target>
+
+    <!--  Target to clean out all directories -->
+    <target name="clean" description="Removes all generated files.">
+        <delete dir="${build.dir}"/>
+        <delete>
+            <fileset dir="." includes="*.log"/>
+        </delete>
+    </target>
+
+    <!--  Target to compile all code -->
+    <target name="compile" depends="prepare"
+        description="Compiles all source code.">
+        <javac srcdir="${src.dir}" destdir="${build.classes}"
+            nowarn="on" debug="true" debuglevel="source,lines,var">
+            <classpath refid="classpath"/>
+        </javac>
+	<!-- Copies over image resources -->
+	<copy todir="${build.classes}">
+		<fileset dir="${src.dir}">
+			<exclude name="**/*.jar"/>
+		</fileset>
+	</copy>
+    </target>
+
+    <!--  Target to Run Demo -->
+    <target name="run" depends="compile"
+        description="Runs Demo">
+
+        <java classname="cytoscape.demo.CytoPanelDemo"
+		classpathref="classpath" fork="true" >
+        </java>
+    </target>
+
+    <!--  Target to Run CheckStyle on all Source Code -->
+    <!--  Uses the Sun Coding Conventions Configuration -->
+    <target name="check" description="Checks Sun Coding Conventions">
+        <checkstyle config="${config.dir}/sun_checks.xml">
+            <fileset dir="${src.dir}">
+                <include name="**/*.java"/>
+            </fileset>
+        </checkstyle>
+    </target>
+</project>
