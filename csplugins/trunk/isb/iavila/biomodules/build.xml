@@ -8,14 +8,18 @@
     <property name = "src" location = "src"/>
     <property name = "build" location = "build"/>
     <property name = "build.compiler" value = "modern"/>
-    <property name = "lib" value="../../../../C2.1/cytoscape-v2.1"/>
+
+    <!-- CHANGE THIS TO YOUR CYTOSCAPE PATHS: -->
+    <property name = "cytoscape" value="../../../../C2.1/source"/>
+    <property name = "cytoscape.plugins" value ="../../../../C2.1/source/plugins"/>
+
     <property name = "local.lib" value="lib"/>
     <property name = "jar"  location = "jar"/>
     <property name = "dist" location = "dist"/>
 	
     <!-- classpath for compiling -->
     <path id = "classpath_compile">
-       <fileset dir = "${lib}">
+       <fileset dir = "${cytoscape}">
           <include name = "**/*.jar"/>
        </fileset>
         <fileset dir = "${local.lib}">
@@ -91,9 +95,13 @@
           fork = "true" maxmemory = "1g">
           <arg line = "--JLD"/>
           <arg file = "${jar}/biomodules.jar"/>
+          <arg line = "--JLD"/>
+          <arg file = "${cytoscape.plugins}/core"/>
+          <arg file = "--JLD"/>
+          <arg file = "${local.lib}/metanode.jar"/>
           <arg line = "-c"/>
       	  <arg line = "-b"/>
-      	  <arg line = "/users/iavila/Cytoscape_R/cytoscape/testData/annotation/manifest"/>
+      	  <arg line = "http://db.systemsbiology.net/cytoscape/annotation/yeast/manifest"/>
       </java>
     </target>
 

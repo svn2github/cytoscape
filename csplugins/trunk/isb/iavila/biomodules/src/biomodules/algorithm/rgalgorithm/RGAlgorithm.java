@@ -35,20 +35,21 @@
  * @since 2.0
  */
 
-// TODO:
-// 1. Use progress monitors for lenghty tasks
-
 package biomodules.algorithm.rgalgorithm;
 
 import biomodules.algorithm.*;
+import biomodules.algorithm.NodeDistances;
+import cytoscape.util.CytoscapeProgressMonitor;
 import java.util.*;
 import cytoscape.*;
 import giny.util.*;
 import giny.view.*;
 import common.algorithms.hierarchicalClustering.*;
+import filter.cytoscape.CsFilter;
+import filter.model.*;
+import cern.colt.list.IntArrayList;
 
 public class RGAlgorithm implements BiomodulesAlgorithm{
-
   /**
    * The String that is used as a key to store or retrieve a <code>RGAlgorithmData</code>
    * client object contained in a <code>CyNetwork</code>
@@ -96,6 +97,14 @@ public class RGAlgorithm implements BiomodulesAlgorithm{
   	// TODO: Remove
   	System.out.println("In RGAlgorithm.calculateBiomodules: " + Thread.currentThread());
   	
+    RGAlgorithmData data = getClientData(network);
+
+    // Hide nodes and edges that pass filters
+    Filter nodeFilter = data.getNodeFilter();
+    int [] hiddenNodesIndices = hidePassingNodes(network, nodeFilter);
+    Filter edgeFilter = data.getEdgeFilter();
+    int [] hiddenEdgesIndices = hidePassingEdges(network, edgeFilter);
+    
     ArrayList nodeList = new ArrayList();
   
     // Calculate the All-Pairs-Shortest-Path matrix:
@@ -109,7 +118,7 @@ public class RGAlgorithm implements BiomodulesAlgorithm{
     
     // Set data after it has been calculated so that if there were any errors, the old
     // data is not lost:
-    RGAlgorithmData data = getClientData(network);
+    
     data.setOrderedNodes(nodeList);
     if(data.getSaveIntermediaryData()){
     	data.setAPSP(apsp);
@@ -123,7 +132,10 @@ public class RGAlgorithm implements BiomodulesAlgorithm{
     
     // Create the biomodules now that the needed data is complete in RGAlgorithmData
     CyNode [][] biomodules = createBiomodules(data);
-
+    
+    // Restore hidden nodes and edges that passed filters
+    network.restoreNodes(hiddenNodesIndices);
+    network.restoreEdges(hiddenEdgesIndices);
     
     return biomodules;
   }//calculateBiomodules
@@ -145,6 +157,88 @@ public class RGAlgorithm implements BiomodulesAlgorithm{
   }//getClientData
   
   /**
+   * Hides nodes in network that pass the filter
+   *
+   * @return an array of root graph indices of the hidden nodes
+   */
+  protected static int[] hidePassingNodes (CyNetwork network, Filter filter){
+    
+    if(filter == null){
+      return new int[0];
+    }
+    
+    System.out.println("Applying nodes filter named [" + filter + "]...");
+    
+    // Iterate over nodes, and see if they pass the filter
+    Iterator it = network.nodesIterator();
+    IntArrayList passingIndices = new IntArrayList();
+    while(it.hasNext()){
+      CyNode node = (CyNode)it.next();
+      if(filter.passesFilter(node)){
+        System.out.println("Node " + node + " passes filter");
+        passingIndices.add(node.getRootGraphIndex());
+      }
+    }//it.hasNext()
+    
+    // Hide the nodes that passed
+    passingIndices.trimToSize();
+    int [] returnArray = network.hideNodes(passingIndices.elements());
+    
+    // Make an array of nodes that were hidden
+    IntArrayList hiddenNodes = new IntArrayList();
+    for(int i = 0; i < returnArray.length; i++){
+      if(returnArray[i] != 0){// if zero that means the CyNode was not hidden
+        hiddenNodes.add(returnArray[i]);
+      }
+    }//for i
+    
+    System.out.println("Done applying nodes filter.");
+    hiddenNodes.trimToSize();
+    return hiddenNodes.elements();
+  }//hidePassingNodes
+
+  /**
+   * Hides in network the edges that pass the filter
+   *
+   * @return an array of root graph indices of the hidden CyEdges
+   */
+  protected static int[] hidePassingEdges (CyNetwork network, Filter filter){
+    
+    if(filter == null){
+      return new int[0];
+    }
+    
+    System.out.println("Applying edges filter named [" + filter + "]...");
+    
+    // Iterate over edges, and see if they pass the filter
+    Iterator it = network.edgesIterator();
+    IntArrayList passingIndices = new IntArrayList();
+    while(it.hasNext()){
+      CyEdge edge = (CyEdge)it.next();
+      if(filter.passesFilter(edge)){
+        System.out.println("Edge " + edge + " passes filter");
+        passingIndices.add(edge.getRootGraphIndex());
+      }
+    }//it.hasNext()
+    
+    // Hide the edges that passed
+    passingIndices.trimToSize();
+    int [] returnArray = network.hideEdges(passingIndices.elements());
+    
+    // Make an array of edges that were hidden
+    IntArrayList hiddenEdges = new IntArrayList();
+    for(int i = 0; i < returnArray.length; i++){
+      if(returnArray[i] != 0){// if zero that means the CyNode was not hidden
+        hiddenEdges.add(returnArray[i]);
+      }
+    }//for i
+        
+    System.out.println("Done applying edges filter.");
+    hiddenEdges.trimToSize();
+    return hiddenEdges.elements();
+  }//hidePassingEdges
+
+  /**
    * Calculates the All-Pairs-Shortest-Path table for the given network.
    *
    * @param network the <code>CyNetwork</code> for which the APSP will
@@ -160,9 +254,6 @@ public class RGAlgorithm implements BiomodulesAlgorithm{
       return null;
     }
    
-    //TODO: NodeDistances is broken!
- 
-    // my way:
     node_list.clear();
     Iterator it = network.nodesIterator();
     while(it.hasNext()){
@@ -175,50 +266,17 @@ public class RGAlgorithm implements BiomodulesAlgorithm{
     for(int i = 0; i < nodes.length; i++){
       nodeIndexToMatrixIndexMap.put(new Integer(nodes[i].getRootGraphIndex()),
                                     new Integer(i));
-      System.out.println(nodes[i].getRootGraphIndex() + " -> " + i);
     }//for i
 
    
-    // Gary's way:
-    
-    //initialize the index map
-    //HashMap matrixIndexToNodeIndexMap = new HashMap();
-    //HashMap nodeIndexToMatrixIndexMap = new HashMap();
-    //Iterator nodes = 
-    //Cytoscape.getNetworkView(network.getIdentifier()).getNodeViewsIterator();
-    //int count=0;
-    //while (nodes.hasNext()) {
-    //NodeView nodeView = (NodeView) nodes.next();
-    //nodeIndexToMatrixIndexMap.put(new Integer(nodeView.getRootGraphIndex()), 
-    //                              new Integer(count));
-    //matrixIndexToNodeIndexMap.put(new Integer(count), 
-    //                              new Integer(nodeView.getRootGraphIndex()));
-    //count++;
-    //}
-
-    //create a list of nodes that has the same indices as the nodeIndexToMatrixIndexMap
-    //node_list.clear();
-    //Collection matrixIndices = matrixIndexToNodeIndexMap.values();
-    //int i = 0;
-    //for(Iterator iterator = matrixIndices.iterator(); iterator.hasNext();) {
-    //Integer nodeIndex = (Integer) iterator.next();
-    //node_list.add(i, network.getNode(nodeIndex.intValue()));
-    //i++;
-    //}
-    
     NodeDistances ind = new NodeDistances(node_list, 
                                           network, 
                                           nodeIndexToMatrixIndexMap);
-    int[][] distances = (int[][])ind.calculate();
-    
-     
-    //TODO: Monitor NodeDistances. Right now I can't, because NodeDistances is
-    // a MonitorableTask, but CytoscapeProgressMonitor takes a MonitoredTask.
-    
-    //CytoscapeProgressMonitor pm = 
-    //new CytoscapeProgressMonitor(apspCalculator,Cytoscape.getDesktop());
-    //pm.startMonitor(true);
-    //int [][] distances = apspCalculator.getDistances();
+      
+    CytoscapeProgressMonitor pm = 
+      new CytoscapeProgressMonitor(ind,Cytoscape.getDesktop());
+    pm.startMonitor(true);
+    int [][] distances = ind.getDistances();
     
     if(distances == null){
       System.out.println("Calculated apsp distances are null.");
@@ -247,7 +305,14 @@ public class RGAlgorithm implements BiomodulesAlgorithm{
       new VectorCorrelationCalculator(matrix,
                                       VectorCorrelationCalculator.MANHATTAN,
                                       false);
-    double [][] manDistances = corrCalculator.calculate();
+    
+    //double [][] manDistances = corrCalculator.calculate();
+   
+    CytoscapeProgressMonitor pm = 
+      new CytoscapeProgressMonitor(corrCalculator,Cytoscape.getDesktop());
+    pm.startMonitor(true);
+    double [][] manDistances = corrCalculator.getCorrelations();
+
     long secs = (System.currentTimeMillis() - startTime)/1000;
     System.err.println("...done calculating manhattan-distances, time = " + secs + " secs");
     return manDistances;
@@ -300,8 +365,8 @@ public class RGAlgorithm implements BiomodulesAlgorithm{
     hClustering.setRowJoiningCondition(jCond);
     hClustering.setRowClusterCondition(cCond);
     // Cluster:
-    //hClustering.clusterAndMonitor(Cytoscape.getDesktop());
-    hClustering.cluster();
+    hClustering.clusterAndMonitor(Cytoscape.getDesktop());
+    //hClustering.cluster();
     long secs = (System.currentTimeMillis() - startTime)/1000;
     System.err.println("...done clustering, time = " + secs + " secs");
     return hClustering;
@@ -414,8 +479,20 @@ public class RGAlgorithm implements BiomodulesAlgorithm{
   // which gets us into semantics, the core does not provide a mechanism for this.
   protected static EisenClustering.ClusterCondition createClusterCondition (CyNetwork network){
     
+    int numKnownTypes = MoleculeTypeNodeAttribute.addMoleculeTypeAttribute(network);
     
-    // NEED A WAY OF KNOWING WHAT MOLECULE TYPE THE NODES REPRESENT!!!
+    final RGAlgorithmData data = getClientData(network);
+    data.setMoleculeTypeKnown(numKnownTypes > 0);
+    
+    return new EisenClustering.ClusterCondition(){
+        
+        public boolean isCluster(EisenClustering.EisenClusterNode ecNode){
+          return meetsBiomoduleCondition(data,ecNode);
+        }// isCluster
+      
+      };
+    
+    // OLD CODE
     
     //int numProts = 
     //MoleculeTypeNodeAttribute.getNumMTypeNodes(this.biomodulesManager.getGraph(),
@@ -434,14 +511,13 @@ public class RGAlgorithm implements BiomodulesAlgorithm{
     //}else{
     
     // FOR NOW, RETURN THIS:
+    //final RGAlgorithmData data = getClientData(network);
+    //return new EisenClustering.ClusterCondition(){
     
-    final RGAlgorithmData data = getClientData(network);
-    return new EisenClustering.ClusterCondition(){
-        
-        public boolean isCluster(EisenClustering.EisenClusterNode ecNode){
-          return meetsBiomoduleCondition(data,ecNode);
-        }// isCluster
-      };
+    //  public boolean isCluster(EisenClustering.EisenClusterNode ecNode){
+    //    return meetsBiomoduleCondition(data,ecNode);
+    //  }// isCluster
+    //};
     //}
     
   }//createClusterCondition
@@ -530,9 +606,9 @@ public class RGAlgorithm implements BiomodulesAlgorithm{
    * of a hierarchical-clustering subtree whose leaves meet biomodule conditions, false
    * otherwise
    */
-  // TODO: Molecule type
-  protected static boolean meetsBiomoduleCondition (RGAlgorithmData data,
-                                                EisenClustering.EisenClusterNode tree_node){
+  protected static boolean meetsBiomoduleCondition (
+                            RGAlgorithmData data,
+                            EisenClustering.EisenClusterNode tree_node){
     
     //NOTE: at this point, data does not have a HierarchicalClustering
     
@@ -540,44 +616,54 @@ public class RGAlgorithm implements BiomodulesAlgorithm{
     if(tree_node.getLeafCount() < minNumMembers){
       return false;
     }
-    return true;
+    
+    if(!data.getMoleculeTypeKnown()){
+      // there is no molecule type information, and the number of members
+      // of this biomodule is >= minNumMembers
+      return true;
+    }
+    
+    // If we got here, that means that the biomodule has more members than
+    // minNumMembers, and, there is molecule-type information. Count number
+    // of proteins:
+
     // If a child of this node meets the condition, that means that
     // the node itself meets the condition
-    //int numChildren = tree_node.getChildCount();
-    //for(int child = 0; child < numChildren; child++){
-    //EisenClustering.EisenClusterNode childNode = 
-    //  (EisenClustering.EisenClusterNode)tree_node.getChildAt(child);
-    //if(childNode.isCluster){
-    //  return true;
-    //}
-    //}//for child
+    int numChildren = tree_node.getChildCount();
+    for(int child = 0; child < numChildren; child++){
+      EisenClustering.EisenClusterNode childNode = 
+        (EisenClustering.EisenClusterNode)tree_node.getChildAt(child);
+      if(childNode.isCluster){
+        return true;
+      }
+    }//for child
 
     // None of the children pass the condition.
-    //Iterator leafIterator = tree_node.leafIterator();
-    //int numProts = 0;
-    //while(leafIterator.hasNext()){
-    //String leaf = (String)(((ClusterNode)leafIterator.next()).getUserObject());
-    //CyNode graph_node = (CyNode)Cytoscape.getCyNode(leaf);
-    //if(graph_node == null){
-    //  throw new IllegalStateException("The CyNode object that corresponds to [" +
-    //                                  leaf + "] is null.");
-    //}
+    Iterator leafIterator = tree_node.leafIterator();
+    int numProts = 0;
+    while(leafIterator.hasNext()){
+      CyNode graph_node = (CyNode)(((ClusterNode)leafIterator.next()).getUserObject());
+      //CyNode graph_node = (CyNode)Cytoscape.getCyNode(leaf);
+      if(graph_node == null){
+        throw new IllegalStateException("The CyNode object is null.");
+      }
       
-    // NEED NON-HACKY WAY OF DOING THIS:
-    //------------------------------------------------------------
-    // moleculeType = (String)nodeAtt.getValue("moleculeType",
-    //                                      leaf);
-    //if(moleculeType != null && moleculeType.equals("protein")){
-    //numProts++;
-    //}
-    //------------------------------------------------------------
-    //if(numProts >= minNumProts){
-    //  return true;
-    //}
-    //}//while leafIterator
-    
+      String moleculeType = 
+        (String)Cytoscape.getNodeAttributeValue(graph_node,
+                                                MoleculeTypeNodeAttribute.ATTRIBUTE_NAME);
+      
+      if(moleculeType != null && moleculeType.equals(MoleculeTypeNodeAttribute.PROTEIN)){
+        numProts++;
+      }
+      
+      if(numProts >= minNumMembers){
+        return true;
+      }
+    }//while leafIterator
+      
     // The number of proteins is less than minNumProteins
-    //return false;
+    return false;
+    
   }//meetsBiomoduleCondition
                                                 
 }//class RGAlgorithm

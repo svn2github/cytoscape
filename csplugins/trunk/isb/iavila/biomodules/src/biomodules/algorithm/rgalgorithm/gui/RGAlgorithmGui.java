@@ -38,6 +38,7 @@ import common.algorithms.hierarchicalClustering.*;
 import cytoscape.*;
 import cytoscape.view.*;
 import cytoscape.data.*;
+import cytoscape.util.SwingWorker;
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;
@@ -51,7 +52,7 @@ import cern.colt.list.IntArrayList;
 import annotations.ui.*;
 import cytoscape.data.servers.*;
 import filter.cytoscape.CsFilter;
-import filter.model.Filter;
+import filter.model.*;
 
 public class RGAlgorithmGui extends JDialog {
   
@@ -63,7 +64,8 @@ public class RGAlgorithmGui extends JDialog {
   protected final static boolean DEFAULT_VIEW_DATA = false;
   protected final static int APSP_TABLE = 0;
   protected final static int MD_TABLE = 1;	
-    
+  protected final static Filter dummyFilter = new DummyFilter();
+  
   protected RGAlgorithmData algorithmData;
   protected JTextField minSizeField;
   protected JPanel plotPanel;
@@ -82,7 +84,8 @@ public class RGAlgorithmGui extends JDialog {
   protected DisplayTableAction displayApspAction, displayMDAction;
   protected DisplayBiomodulesAction displayBiomodulesAction;
   protected ModuleAnnotationsDialog moduleAnnotsDialog;
-  protected CsFilter filtersDialog;
+  protected JComboBox nodesFiltersBox;
+  protected JComboBox edgesFiltersBox;
 
   /**
    * Constructor, calls <code>create()</code>.
@@ -97,27 +100,21 @@ public class RGAlgorithmGui extends JDialog {
   }//RGAlgorithmGui
   
   /**
-   * @return an array of Filter objects that the user selected from the filters dialog
+   * @return a Filter object that the user selected from the filters JComboBox, can be null
    */
-  public Filter [] getSelectedFilters (){
-  	//if(this.filtersDialog == null){
-  		return new Filter[0];
-  	//}
-  	//return this.filtersDialog.getFilterUsePanel().getFilterListPanel().getSelectedFilters();
-  }//getSelectedFilters
+  public Filter getSelectedNodesFilter (){
+    Filter filter = (Filter)this.nodesFiltersBox.getSelectedItem();
+    return filter;
+  }//getSelectedNodesFilter
   
   /**
-   * If the user has selected filters from the filters dialog, 
-   * then this method applies the filters according to their settings.
+   * @return a Filter object that the user selected from the filters JComboBox, can be null
    */
-  public void applySelectedFilters (){
-  	if(this.filtersDialog == null){
-  		return;
-  	}
-    // TODO: This is protected in C2.1!!!!!!!!!!!!!!!!!!!!!!!!!!
-  	//this.filtersDialog.getFilterUsePanel().testObjects();
-  }//applySelectedFilters
-
+  public Filter getSelectedEdgesFilter (){
+    Filter filter = (Filter)this.edgesFiltersBox.getSelectedItem();
+    return filter;
+  }//getSelectedEdgesFilter
+  
   /**
    * Creates the dialog.
    */
@@ -171,38 +168,89 @@ public class RGAlgorithmGui extends JDialog {
                                      }
                                    }
                                    );
+    
+    JLabel explanation = new JLabel("<html>If molecule-type available, biomodule size<br>is number of <b>proteins</b> within the biomodule.</html>");
+    JPanel expPanel = new JPanel();
+    expPanel.add(explanation);
+    
     sizePanel.add(minSizeLabel);
     sizePanel.add(Box.createHorizontalStrut(3));
     sizePanel.add(minSizeField);
+    paramsPanel.add(expPanel);
     paramsPanel.add(sizePanel);
     
+    
     // --------- Filters -------- //
+    
     JPanel filtersPanel = new JPanel();
-    filtersPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-    //JButton filtersButton = new JButton("Filters...");
-    JButton filtersButton = new JButton("Print all threads");
-    filtersButton.addActionListener(
-    		new AbstractAction() {
-			public void actionPerformed(ActionEvent e) {
-				//if(filtersDialog == null){
-				//filtersDialog = new CsFilter(Cytoscape.getDesktop());
-				//}
-				//filtersDialog.show();
-				//}
-				// TEST: Print All Threads !
-				int numThreads = Thread.activeCount();
-				System.out.println("num threads = " + numThreads);
-				Thread[] threads = new Thread[numThreads];
-				int returnedThreads = Thread.enumerate(threads);
-				for (int i = 0; i < threads.length; i++) {
-					if(threads[i] != null){
-						System.out.println(threads[i] + " is alive = " + threads[i].isAlive());
-					}
-				}//for i
-			}
-		}
-    );
-    filtersPanel.add(filtersButton);
+    filtersPanel.setLayout( new BoxLayout(filtersPanel, BoxLayout.X_AXIS) );
+    
+    JPanel labelsPanel = new JPanel();
+    GridLayout gl = new GridLayout(2,0);
+    labelsPanel.setLayout(gl);
+  	
+    JLabel nodeFiltersLabel = new JLabel("Node Filter:");
+    JLabel edgeFiltersLabel = new JLabel("Edge Filter:");
+    labelsPanel.add(nodeFiltersLabel);
+    labelsPanel.add(edgeFiltersLabel);
+
+    JPanel boxesPanel = new JPanel();
+    GridLayout gl2 = new GridLayout(2,0);
+    boxesPanel.setLayout(gl2);
+        
+    FilterManager defaultManager = FilterManager.defaultManager();
+    defaultManager.addFilter(dummyFilter);
+    
+    this.nodesFiltersBox = new JComboBox(defaultManager.getComboBoxModel());
+    
+    Filter nFilter = this.algorithmData.getNodeFilter();
+    
+    if(nFilter != null){
+      this.nodesFiltersBox.setSelectedItem(nFilter);
+    }else{
+      this.nodesFiltersBox.setSelectedItem(dummyFilter);
+    }
+    
+    this.edgesFiltersBox = new JComboBox(defaultManager.getComboBoxModel());
+        
+    Filter eFilter = this.algorithmData.getEdgeFilter();
+    
+    if(eFilter != null){
+      this.edgesFiltersBox.setSelectedItem(eFilter);
+    }else{
+      this.edgesFiltersBox.setSelectedItem(dummyFilter);
+    }
+    
+    boxesPanel.add(this.nodesFiltersBox);
+    boxesPanel.add(this.edgesFiltersBox);
+
+    filtersPanel.add(labelsPanel);
+    filtersPanel.add(boxesPanel);
+        
+    //------------------------------- OLD CODE -------------------------------//
+    //filtersButton.addActionListener(
+    //	new AbstractAction() {
+    //    public void actionPerformed(ActionEvent e) {
+    //      if(fqiltersDialog == null){
+    //        filtersDialog = new CsFilter(Cytoscape.getDesktop());
+    //      }
+    //      filtersDialog.show();
+    //}
+    // TEST: Print All Threads !
+    //int numThreads = Thread.activeCount();
+    //System.out.println("num threads = " + numThreads);
+    //Thread[] threads = new Thread[numThreads];
+    //int returnedThreads = Thread.enumerate(threads);
+    //for (int i = 0; i < threads.length; i++) {
+    //if(threads[i] != null){
+    //	System.out.println(threads[i] + " is alive = " + threads[i].isAlive());
+    //}
+    //}//for i
+    //    }//actionPerformed
+    //  }//AbstractAction
+    //  );
+    //filtersPanel.add(filtersButton);
+    // ---------------------------- END OF OLD CODE ----------------------------//
     paramsPanel.add(filtersPanel);
     // --------- Plots ---------- //
     JPanel optionsPanel = new JPanel();
@@ -372,8 +420,14 @@ public class RGAlgorithmGui extends JDialog {
   	JPanel dataPanel = new JPanel();
   	dataPanel.setLayout(new BorderLayout());
   	
-  	this.viewDataRadioButton = new JRadioButton("View data after it is calculated", this.algorithmData.getSaveIntermediaryData());
-  	dataPanel.add(this.viewDataRadioButton, BorderLayout.NORTH);
+    JPanel radioPanel = new JPanel();
+    
+  	this.viewDataRadioButton = 
+      new JRadioButton("<html>Select this button <b>before</b> calculating<br>biomodules to view APSP and Manhattan data.</html>", 
+                       this.algorithmData.getSaveIntermediaryData());
+  	radioPanel.add(this.viewDataRadioButton);
+    
+    dataPanel.add(radioPanel, BorderLayout.NORTH);
   	
   	JPanel buttonsPanel = new JPanel();
   	GridLayout gl = new GridLayout(4,1);
@@ -455,16 +509,16 @@ public class RGAlgorithmGui extends JDialog {
     calculateBiomodsButton.addActionListener(
                                              new AbstractAction (){
                                                public void actionPerformed (ActionEvent e){
-                                                 //SwingWorker w = new SwingWorker(){
-                                                 //  public Object construct (){
-                                                 calculateBiomodules();
-                                                 //    return null;
-                                                 //}
-                                                 //};
-                                                 //}
+                                                 SwingWorker w = new SwingWorker(){
+                                                     public Object construct (){
+                                                       calculateBiomodules();
+                                                       return null;
+                                                     }
+                                                   };
+                                                 w.start();
                                                }//actionPerformed
                                              }//AbstractAction
-                                             );
+      );
     buttonsPanel.add(calculateBiomodsButton);
     
     JButton closeWindowButton = new JButton("Dismiss");
@@ -485,76 +539,100 @@ public class RGAlgorithmGui extends JDialog {
    * Calls <code>RGAlgorithm.calculateBiomodules()</code> and updates the plots.
    */
   protected void calculateBiomodules (){
+    try{
+
+      // Calculate the biomodules
     
-    // Calculate the biomodules
-    
-    HierarchicalClustering hClustering = this.algorithmData.getHierarchicalClustering();
-    CyNode [][] biomodules = null;
-    // From the GUI, see if apsp and manhattan-distances need to be kept in memory
-    this.algorithmData.setSaveIntermediaryData(this.viewDataRadioButton.isSelected());
-    if(hClustering == null){
-      biomodules = RGAlgorithm.calculateBiomodules(this.algorithmData.getNetwork());
-      updatePlots();
-    }else{
-      biomodules = RGAlgorithm.createBiomodules(this.algorithmData);
-    }
-    
-    // Visualize them if necessary
-    
-    Map bioIdentifiersToMembers = new HashMap();
-    CyNetwork net = this.algorithmData.getNetwork();
-    
-    String netID = net.getIdentifier();
-    CyNetworkView netView = Cytoscape.getNetworkView(netID);
-  
-    if(this.abstractRbutton.isSelected() && netView != null){
-    	System.out.println("this.abstractRbutton.isSelected () = true and netView exists so create meta-nodes");
-      // Remove existent meta-nodes:
-      IntArrayList metaNodes = (IntArrayList)net.getClientData(MetaNodeFactory.METANODES_IN_NETWORK);
-      if(metaNodes != null){
-      	ViewUtils.removeMetaNodes(net,metaNodes.elements(),false);
+      HierarchicalClustering hClustering = this.algorithmData.getHierarchicalClustering();
+      CyNode [][] biomodules = null;
+      
+      // From the GUI, see if apsp and manhattan-distances need to be kept in memory
+      this.algorithmData.setSaveIntermediaryData(this.viewDataRadioButton.isSelected());
+      
+      // Set any selected filters
+      Filter nodeFilter = getSelectedNodesFilter();
+      if(nodeFilter != null && nodeFilter != dummyFilter){
+        this.algorithmData.setNodeFilter(nodeFilter);
       }
-      // Create new meta-nodes
-      int [] metaNodeRindices =  
-        ViewUtils.abstractBiomodules(this.algorithmData.getNetwork(),biomodules);
-      // Get the common names of the meta nodes
-      int numUnknowns = 0;
-      for(int i = 0; i < metaNodeRindices.length; i++){
-      	Node node = net.getNode(metaNodeRindices[i]);
-      	String canonical = (String)Cytoscape.getNodeAttributeValue(node,Semantics.CANONICAL_NAME);
-      	if(node == null || canonical == null){
-      		System.out.println("The node with index [" + metaNodeRindices[i] + "] is null");
-      		canonical = "unknown" + Integer.toString(numUnknowns);
-      		numUnknowns++;
-      	}
-      	bioIdentifiersToMembers.put(canonical,biomodules[i]);
-      }//for i
-      System.out.println("Done creating meta-nodes.");
-    }else{
-    	System.out.println("there is no view or the user does not want to abstract meta-nodes. creating names for biomodules...");
-    	// The Biomodules need to have an identifier, so lets make it the member with the highest intra-degree
-    	CyNetwork network = this.algorithmData.getNetwork();
-    	for(int i = 0; i < biomodules.length; i++){
-    		int [] memberRindices = new int[biomodules[i].length];
-    		for(int j = 0; j < biomodules[i].length; j++){
-    			memberRindices[j] = biomodules[i][j].getRootGraphIndex();
-    		}//for j
-    		SortedSet ss = IntraDegreeComparator.sortNodes(network, memberRindices);
-    		CyNode highestNode = (CyNode)ss.first();
+      Filter edgeFilter = getSelectedEdgesFilter();
+      if(edgeFilter != null && edgeFilter != dummyFilter){
+        this.algorithmData.setEdgeFilter(edgeFilter);
+      }
+      
+      if(hClustering == null){
+        biomodules = RGAlgorithm.calculateBiomodules(this.algorithmData.getNetwork());
+        updatePlots();
+      }else{
+        biomodules = RGAlgorithm.createBiomodules(this.algorithmData);
+      }
+      
+      // Visualize biomodules if necessary
+      
+      Map bioIdentifiersToMembers = new HashMap();
+      CyNetwork net = this.algorithmData.getNetwork();
+      
+      String netID = net.getIdentifier();
+      CyNetworkView netView = Cytoscape.getNetworkView(netID);
+      
+      if(this.abstractRbutton.isSelected() && netView != null){
+        //System.out.println("this.abstractRbutton.isSelected () = true and netView exists so create meta-nodes");
+        // Remove existent meta-nodes:
+        IntArrayList metaNodes = (IntArrayList)net.getClientData(MetaNodeFactory.METANODES_IN_NETWORK);
+        if(metaNodes != null){
+          ViewUtils.removeMetaNodes(net,metaNodes.elements(),false);
+        }
+        // Create new meta-nodes
+        int [] metaNodeRindices =  
+          ViewUtils.abstractBiomodules(this.algorithmData.getNetwork(),biomodules);
+        // Get the common names of the meta nodes
+        int numUnknowns = 0;
+        for(int i = 0; i < metaNodeRindices.length; i++){
+          Node node = net.getNode(metaNodeRindices[i]);
+          String canonical = (String)Cytoscape.getNodeAttributeValue(node,Semantics.CANONICAL_NAME);
+          if(node == null || canonical == null){
+            System.out.println("The node with index [" + metaNodeRindices[i] + "] is null");
+            canonical = "unknown" + Integer.toString(numUnknowns);
+            numUnknowns++;
+          }
+          bioIdentifiersToMembers.put(canonical,biomodules[i]);
+        }//for i
+        System.out.println("Done creating meta-nodes.");
+      }else{
+        //System.out.println("there is no view or the user does not want to abstract meta-nodes. creating names for biomodules...");
+        // The Biomodules need to have an identifier, so lets make it the member with the highest intra-degree
+        CyNetwork network = this.algorithmData.getNetwork();
+        for(int i = 0; i < biomodules.length; i++){
+          int [] memberRindices = new int[biomodules[i].length];
+          for(int j = 0; j < biomodules[i].length; j++){
+            memberRindices[j] = biomodules[i][j].getRootGraphIndex();
+          }//for j
+          SortedSet ss = IntraDegreeComparator.sortNodes(network, memberRindices);
+          CyNode highestNode = (CyNode)ss.first();
     	    String alias = (String)network.getNodeAttributeValue(highestNode,Semantics.COMMON_NAME);
     	    if(alias == null){
     	      alias = (String)network.getNodeAttributeValue(highestNode,Semantics.CANONICAL_NAME);
     	    }
     	    bioIdentifiersToMembers.put(alias,biomodules[i]);
-    	}//for i
-    	System.out.println("Done creating names for biomodules.");
-    }
- 
+        }//for i
+        //System.out.println("Done creating names for biomodules.");
+      }
+      
+      
+      this.algorithmData.setBiomodules(bioIdentifiersToMembers);
+      this.displayApspAction.setUpdateNeeded(true);
+      this.displayMDAction.setUpdateNeeded(true);
+      this.displayBiomodulesAction.setUpdateNeeded(true);
     
-    this.algorithmData.setBiomodules(bioIdentifiersToMembers);
-    this.displayApspAction.setUpdateNeeded(true);
-    this.displayMDAction.setUpdateNeeded(true);
-    this.displayBiomodulesAction.setUpdateNeeded(true);
+    }catch (Exception exception){
+      showErrorMessageDialog("<html>Error while calculating biomodules:<br>"+
+                             exception.getMessage() + "</html>");
+    }
+    
+    JOptionPane.showMessageDialog(this,
+                                  "Done calculating Biomodules.",
+                                  "Done!", 
+                                  JOptionPane.INFORMATION_MESSAGE);
+    
   }//calculateBiomodules
 
   /**
@@ -851,17 +929,32 @@ public class RGAlgorithmGui extends JDialog {
   		if(this.type == APSP_TABLE){ 
   			if(RGAlgorithmGui.this.apspTable == null || this.update){
   				ArrayList orderedNodes = RGAlgorithmGui.this.algorithmData.getOrderedNodes();
+          if(orderedNodes == null){
+            JOptionPane.showMessageDialog(RGAlgorithmGui.this,
+                                          "APSP not available.",
+                                          "Oops!", 
+                                          JOptionPane.INFORMATION_MESSAGE);
+            return;
+          }
   				String [] nodeNames = new String[orderedNodes.size()];
   				for(int i = 0; i < nodeNames.length; i++){
   					CyNode node = (CyNode)orderedNodes.get(i);
-  					nodeNames[i] = (String)Cytoscape.getNodeAttributeValue(node, Semantics.CANONICAL_NAME);
+  					nodeNames[i] = 
+              (String)Cytoscape.getNodeAttributeValue(node, Semantics.CANONICAL_NAME);
   				}
   				int [][] apsp = RGAlgorithmGui.this.algorithmData.getAPSP();
-  				RGAlgorithmGui.this.apspTable = 
+  				if(apsp == null || apsp.length == 0){
+            JOptionPane.showMessageDialog(RGAlgorithmGui.this,
+                                          "APSP not available.",
+                                          "Oops!", 
+                                          JOptionPane.INFORMATION_MESSAGE);
+            return;
+          }
+          RGAlgorithmGui.this.apspTable = 
   					new DataTable(nodeNames,
-  								  nodeNames,
-								  apsp,
-						          ("APSP: " + RGAlgorithmGui.this.algorithmData.getNetwork().getTitle()));
+                          nodeNames,
+                          apsp,
+                         ("APSP: "+RGAlgorithmGui.this.algorithmData.getNetwork().getTitle()));
   			}//if apspTable = null
   			RGAlgorithmGui.this.apspTable.pack();
   			RGAlgorithmGui.this.apspTable.setLocationRelativeTo(RGAlgorithmGui.this);
@@ -870,12 +963,26 @@ public class RGAlgorithmGui extends JDialog {
   		else if(this.type == MD_TABLE){
   			if(RGAlgorithmGui.this.mdTable == null || this.update){
   				ArrayList orderedNodes = RGAlgorithmGui.this.algorithmData.getOrderedNodes();
-  				String [] nodeNames = new String[orderedNodes.size()];
+  				if(orderedNodes == null){
+            JOptionPane.showMessageDialog(RGAlgorithmGui.this,
+                                          "Manhattan distances not available.",
+                                          "Oops!", 
+                                          JOptionPane.INFORMATION_MESSAGE);
+            return;
+          }
+          String [] nodeNames = new String[orderedNodes.size()];
   				for(int i = 0; i < nodeNames.length; i++){
   					CyNode node = (CyNode)orderedNodes.get(i);
   					nodeNames[i] = (String)Cytoscape.getNodeAttributeValue(node, Semantics.CANONICAL_NAME);
   				}
   				double [][] distances = RGAlgorithmGui.this.algorithmData.getManhattanDistances();
+          if(distances == null || distances.length == 0){
+            JOptionPane.showMessageDialog(RGAlgorithmGui.this,
+                                          "Manhattan Distances not available.",
+                                          "Oops!", 
+                                          JOptionPane.INFORMATION_MESSAGE);
+            return;
+          }
   				RGAlgorithmGui.this.mdTable = 
   					new DataTable(nodeNames,
   								   nodeNames,

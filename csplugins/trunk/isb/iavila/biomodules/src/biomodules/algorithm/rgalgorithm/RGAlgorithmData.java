@@ -39,13 +39,9 @@ import java.util.*;
 import cytoscape.*;
 import common.algorithms.hierarchicalClustering.*;
 import biomodules.algorithm.rgalgorithm.gui.*;
+import filter.cytoscape.CsFilter;
+import filter.model.*;
 
-/**
- * @author iliana
- *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
- */
 public class RGAlgorithmData {
   
   /**
@@ -101,10 +97,25 @@ public class RGAlgorithmData {
    */
   Map bioIdentifierToMembers;
   /**
-   * Whether or not intermediary data should be saved in memory or not. False by default (saves memory).
+   * Whether or not intermediary data should be saved in memory or not. 
+   * False by default (saves memory).
    */
   boolean saveInterData;
-  
+  /**
+   * Whether the molecule type of the nodes in the network are known.
+   * False by default.
+   */
+  boolean knownMoleculeType;
+  /**
+   * A nodes filter to use before calculating biomodules, nodes that
+   * pass the filter get ignored while calculating biomodules, null by default
+   */
+  Filter nodesFilter;
+  /**
+   * An edges filter to use before calculating biomodules, edges that
+   * pass the filter get ignored while calculating biomodules, null by default
+   */
+  Filter edgesFilter;
   
   /**
    * Constructor.
@@ -252,6 +263,29 @@ public class RGAlgorithmData {
   public void setSaveIntermediaryData (boolean save){
   	this.saveInterData = save;
   }//setSaveIntermediaryData
+
+  /**
+   *
+   */
+  public void setMoleculeTypeKnown (boolean known){
+    this.knownMoleculeType = known;
+  }//setMoleculeTypeKnown
+
+  /**
+   * Sets the filter for nodes, nodes that pass this filter will be ignored
+   * for biomodule calculations
+   */
+  public void setNodeFilter (Filter node_filter){
+    this.nodesFilter = node_filter;
+  }//setNodeFilter
+
+  /**
+   * Sets the filter for edges, edges that pass this filter will be ignored
+   * for biomodule calculations
+   */
+  public void setEdgeFilter (Filter edge_filter){
+    this.edgesFilter = edge_filter;
+  }//setEdgeFilter
   
   /**
    * @return whether or not the intermediary data (APSP, Manhattan-Distances) will be kept in memory next time
@@ -374,7 +408,30 @@ public class RGAlgorithmData {
   	}
     return this.bioIdentifierToMembers;
   }//getBiomodules
+
+  /**
+   * @return true if the molecule type attribute is known for the network, false otherwise
+   */
+  public boolean getMoleculeTypeKnown (){
+    return this.knownMoleculeType;
+  }//getMoleculeTypeKnown
   
+   /**
+   * Gets the filter for nodes, nodes that pass this filter will be ignored
+   * for biomodule calculations
+   */
+  public Filter getNodeFilter (){
+    return this.nodesFilter;
+  }//getNodeFilter
+  
+  /**
+   * Gets the filter for edges, edges that pass this filter will be ignored
+   * for biomodule calculations
+   */
+  public Filter getEdgeFilter (){
+    return this.edgesFilter;
+  }//getEdgeFilter
+ 
   /**
    * @return a String description of this <code>RGAlgorithmData</code>
    */
