@@ -7,11 +7,11 @@
    <!-- path to Cytoscape under development (CVS) -->
    <property name = "lib.dev" location = "../../../../cytoscape/lib"/>
    <!-- path to Cytoscape 2.1 official release -->
-   <property name = "lib.release" location = "../../../../C2.1/cytoscape-v2.1"/>
+   <property name = "lib.release" location = "../../../../C2.1/source"/>
    <property name = "jar"  location = "jar"/>
    <property name = "doc" location = "doc"/>
 
-   <property name="cytoscape.plugin.dir" value="../../../../cytoscape/plugins"/>
+   <property name="cytoscape.plugin.release" value="${lib.release}/plugins"/>
 
    <path id = "classpath_dev">
        <fileset dir = "${lib.dev}">
@@ -79,6 +79,8 @@
           fork = "true" maxmemory = "1g">
       	  <arg line = "--JLD"/>
       	  <arg line = "${jar}/metanode.jar"/>
+      	  <arg line = "--JLD"/>
+      	  <arg line = "${cytoscape.plugin.release}"/>
       	  <arg line = "-vt"/>
       	  <arg line = "5000"/>
       </java>

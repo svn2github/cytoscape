@@ -76,6 +76,10 @@ public class AbstractMetaNodeModeler {
   // A Map from CyNetworks to IntArrayLists that contain RootGraph indices of nodes
   // that are contained in the corresponding network
   private Map networkToNodes;
+
+  // Whether or not multiple edges between a meta-node and another node (meta or not meta)
+  // should be created when abstracting the meta-node, true by default
+  private boolean multipleEdges = true;
     
   /**
    * Since there should only be one AbstractMetaNodeModeler per/Cytoscape, the constructor
@@ -115,6 +119,22 @@ public class AbstractMetaNodeModeler {
   public void setNetworkAttributesHandler (CyNetwork cy_network, MetaNodeAttributesHandler handler){
     this.networkToAttsHandler.put(cy_network,handler);
   }//setNetworkAttributesHandler
+
+  /**
+   * Sets whether or not multiple edges between a meta-node and another node 
+   * (meta or not meta)should be created when abstracting the meta-node, true by default
+   */
+  public void setMultipleEdges (boolean multiple_edges){
+    this.multipleEdges = multiple_edges;
+  }//setMultipleEdges
+
+  /**
+   * @return whether or not multiple edges between a meta-node and another node 
+   *(meta or not meta)should be created when abstracting the meta-node, true by default
+   */
+  public boolean getMultipleEdges (){
+    return this.multipleEdges;
+  }//getMultipleEdges
 
    /**
     * Gets the MetaNodeAttributesHandler that is being used to transfer node 
@@ -232,8 +252,7 @@ public class AbstractMetaNodeModeler {
    * @return true if the node was successfuly abstracted, false otherwise (maybe the node 
    * is not a meta-node, or the node has already been abstracted)
    * 
-   * NOTE: Descendant nodes are all the nodes that are contained in the tree rooted at node with index node_index
-   * (not only the leaves).
+   * NOTE: Descendant nodes are all the nodes that are contained in the tree rooted at node with index node_index (not only the leaves).
    */
   public boolean applyModel (
                              CyNetwork cy_network,
@@ -296,7 +315,8 @@ public class AbstractMetaNodeModeler {
         
     if(REPORT_TIME){
     	long timeToPrepare = (System.currentTimeMillis() - prepareTime) / 1000;
-    	System.out.println("time in prepareNodeForModel ( " + rootNodeIndex + ") = " + timeToPrepare);
+    	System.out.println("time in prepareNodeForModel ( " + rootNodeIndex + ") = " + 
+                         timeToPrepare);
     }
     // Restore the meta-node, in case that it is not showing
     
@@ -323,8 +343,9 @@ public class AbstractMetaNodeModeler {
                          rootNodeIndex + ", from a total of " + descendants.length + 
                          " descendants");
     }
-    // Restore the edges connecting the meta-node and nodes that are in cyNetwork
     
+    // Restore the edges connecting the meta-node and nodes that are in cyNetwork
+    // NOTE: These edges are created in prepareNodeForModel
     long restoreEdgesStart = System.currentTimeMillis();
     
     int [] gpNodes = cy_network.getNodeIndicesArray();
@@ -387,6 +408,7 @@ public class AbstractMetaNodeModeler {
         edges_to_restore.add( connectingEdgesRindices[ci] );
       }
       
+      // HACK:
       //----------- For Kris Gonsalus:------------------------
       // Kris has a graph with 78 nodes, and > 2000 edges, so she
       // wants to see only one edge between metanodes...
@@ -400,10 +422,10 @@ public class AbstractMetaNodeModeler {
       //}
       
     }//for node_i
-
+    
     //if(REPORT_TIME){
-    	//long timeToRestoreEdges = (System.currentTimeMillis() - restoreEdgesStart)/1000;
-    	//System.out.println("time to restore edges = " + timeToRestoreEdges);
+    //long timeToRestoreEdges = (System.currentTimeMillis() - restoreEdgesStart)/1000;
+    //System.out.println("time to restore edges = " + timeToRestoreEdges);
     //}
    
     // now restore all edges at once
@@ -413,7 +435,8 @@ public class AbstractMetaNodeModeler {
 
     if(restoredNodeIndex != 0 || hiddenNodes.length > 0 || numRestoredEdges > 0){
       if(DEBUG){
-        System.err.println("----- applyModel (CyNetwork,"+node_index+") returning true -----");
+        System.err.println("----- applyModel (CyNetwork,"+node_index+
+                           ") returning true -----");
       }
       return true;
     }
@@ -505,8 +528,8 @@ public class AbstractMetaNodeModeler {
 
       if(!temporary_undo){
         // Remove edges that *we* created in the RootGraph for this meta-node and 
-        // its descendant meta-nodes, it also removes the meta-nodes from this networks client data
-      	// available through MetaNodeFactory.METANODES_IN_NETWORK
+        // its descendant meta-nodes, it also removes the meta-nodes from this networks 
+        // client data available through MetaNodeFactory.METANODES_IN_NETWORK
         removeMetaNode(cy_network,metaNodeRindex, true);
       }
       
@@ -549,8 +572,17 @@ public class AbstractMetaNodeModeler {
     
     // Restore the children nodes and their adjacent edges that connect to other nodes
     // currently contained in CyNetwork
-    // THIS METHOD IS NOT WORKING!!!! (5/5/05)
-    int [] restoredNodeRindices = cy_network.restoreNodes(childrenRindices, true);
+    
+    // Deprecated. Use restoreNodes(int[]) and restoreEdges(int[]) instead; 
+    // to get edges incident to specified nodes, use 
+    // RootGraph.getConnectingEdgeIndicesArray(int[]):
+    //int [] restoredNodeRindices = cy_network.restoreNodes(childrenRindices, true);
+    
+    // NEW CODE:
+    int [] restoredNodeRindices = cy_network.restoreNodes(childrenRindices);
+    // TODO: Not sure if this returns incident edges, or edges in between nodes...
+    int [] edgesToRestore = this.rootGraph.getConnectingEdgeIndicesArray(childrenRindices);
+    cy_network.restoreEdges(edgesToRestore);
     
     IntArrayList childrenAndNeighbors = new IntArrayList();
     metaNeighbors.trimToSize();
@@ -621,13 +653,14 @@ public class AbstractMetaNodeModeler {
 
   /**
    * Creates edges between the Node with index node_rindex and other nodes so that
-   * when the Node is collapsed (applyModel) or expanded (undoModel) the needed edges (between meta-nodes and
-   * non-meta-nodes, or meta-nodes and meta-nodes), will be there for hiding or unhiding
-   * as necessary.
+   * when the Node is collapsed (applyModel) or expanded (undoModel) the needed edges 
+   * (between meta-nodes and non-meta-nodes, or meta-nodes and meta-nodes), will be 
+   * there for hiding or unhiding as necessary. Uses getMultipleEdges() to decide
+   * whether or not to crealte multiple edges between a meta-node and other nodes.
    *
    * @param cy_network edges will be created in the RootGraph of the cy_network
    * @param node_rindex the RootGraph index of the Node to be prepared
-   * @return false if the node does not have any descendatns in graph_perspective
+   * @return false if the node does not have any descendants in graph_perspective
    */
   protected boolean prepareNodeForModel (
                                          CyNetwork cy_network,
@@ -689,9 +722,16 @@ public class AbstractMetaNodeModeler {
     }
     
     // Add edges to the meta-node in this.rootGraph, respect directionality
-    int numNewEdges = 0;
+    // Also, see if multiple edges are to be created
+    
+    // Indices of nodes for which we have created edges for this meta-node
+    // used for the multiple edge condition
+    IntArrayList connectedNodeRindices = new IntArrayList();
+    
     // For the attributes handler:
     AbstractIntIntMap metaEdgeToChildEdge = new OpenIntIntHashMap();
+    
+    int numNewEdges = 0;
     for(int child_i = 0; child_i < childrenRindices.length; child_i++){
       
       int childNodeRindex = childrenRindices[child_i];
@@ -707,8 +747,8 @@ public class AbstractMetaNodeModeler {
         System.err.println("Child node "+childNodeRindex+" has "+adjacentEdgeRindices.length+
                            " total adjacent edges in this.rootGraph");
       }
-      // Process each edge by creating edges in RootGraph that reflect connections of meta-node
-      // children
+      // Process each edge by creating edges in RootGraph that reflect
+      // connections of meta-node children
       for(int edge_i = 0; edge_i < adjacentEdgeRindices.length; edge_i++){
         
         int childEdgeRindex = adjacentEdgeRindices[edge_i];
@@ -718,25 +758,27 @@ public class AbstractMetaNodeModeler {
           (IntArrayList)this.metaNodeToProcessedEdges.get(node_rindex);
         if(processedEdgeRindices != null && processedEdgeRindices.contains(childEdgeRindex)){
           if(DEBUG){
-            System.out.println("Edge " + childEdgeRindex + " has already been processed before for "+
+            System.out.println("Edge " + childEdgeRindex + 
+                               " has already been processed before for "+
                                " meta-node " + node_rindex + ", skipping it.");
           }
           continue;
         }
         if(processedEdgeRindices == null){
-          // This List will be used later, so create it if null
+          // This List will be used later, so create it
           // Also, note that if the IntArrayList for a meta-node is not null, we know that 
           // prepareNodeForModel(GraphPerspective, meta-node_index) has been called before
           // for that node (which is useful for later)
           processedEdgeRindices = new IntArrayList();
         }
 
-        // If the edge connects two descendants of the meta-node, then ignore it, and remember this
-        // processed edge
+        // If the edge connects two descendants of the meta-node, then ignore it, 
+        // and remember this processed edge
         if(edgeConnectsDescendants(node_rindex,childEdgeRindex)){
           if(DEBUG){
             System.out.println("Edge " + childEdgeRindex + 
-                               " connects descendants of node " + node_rindex + ", skipping it.");
+                               " connects descendants of node " + node_rindex + 
+                               ", skipping it.");
           }
           processedEdgeRindices.add(childEdgeRindex);
           this.metaNodeToProcessedEdges.put(node_rindex,processedEdgeRindices);
@@ -756,53 +798,63 @@ public class AbstractMetaNodeModeler {
           otherNodeRindex = targetRindex;
         }
         
-        // Create an edge in rootGraph respecting directionality and remember that 
-        // we processed childEdgeRindex
-        int newEdgeRindex = 0;
-        boolean directedEdge = this.rootGraph.isEdgeDirected(childEdgeRindex);
-        if(metaNodeIsSource){
-          newEdgeRindex = 
-            this.rootGraph.createEdge(node_rindex,
-                                      otherNodeRindex,
-                                      directedEdge);
-        }else{
-          newEdgeRindex = 
-            this.rootGraph.createEdge(otherNodeRindex,
-                                      node_rindex,
-                                      directedEdge);
-        }
+        // See if an edge should be created
+        if( getMultipleEdges() ||
+            ( !getMultipleEdges() && !connectedNodeRindices.contains(otherNodeRindex) )){
+                       
+          // Create an edge in rootGraph respecting directionality
+          
+          int newEdgeRindex = 0;
+          boolean directedEdge = this.rootGraph.isEdgeDirected(childEdgeRindex);
+          if(metaNodeIsSource){
+            newEdgeRindex = 
+              this.rootGraph.createEdge(node_rindex,
+                                        otherNodeRindex,
+                                        directedEdge);
+          }else{
+            newEdgeRindex = 
+              this.rootGraph.createEdge(otherNodeRindex,
+                                        node_rindex,
+                                        directedEdge);
+          }
+          connectedNodeRindices.add(otherNodeRindex);
+          metaEdgeToChildEdge.put(newEdgeRindex, childEdgeRindex);
+          numNewEdges++;
+          // Remember that *we* created this edge, so that later, we can reset RootGraph
+          // to its original state if needed by removing edges we created
+          this.metaEdgesRindices.add(newEdgeRindex);
+          
+          // If otherNodeRindex has parents, and the parents have been processed before,
+          // then mark newEdgeRindex as a processed edge for the parents
+          // This is so that if prepareNodeForModel(GraphPerspective,otherNodeRindex) 
+          // is called after this call, a duplicate edge from otherNodeRindex to node_rindex 
+          // won't be created
+          int[] otherNodeParentsRindices = 
+            this.rootGraph.getNodeMetaParentIndicesArray(otherNodeRindex);
+          if(otherNodeParentsRindices != null){
+            for(int otherParent_i = 0; 
+                otherParent_i < otherNodeParentsRindices.length; 
+                otherParent_i++){
+              processedEdgeRindices = 
+                (IntArrayList)this.metaNodeToProcessedEdges.get(otherNodeParentsRindices[otherParent_i]);
+              if(processedEdgeRindices != null){
+                // We know that this parent has been processed before
+                processedEdgeRindices.add(newEdgeRindex);
+              }
+            }// for each otherNodeRindex parent 
+          }// if otherNodeRindex has parents
+          
+          if(DEBUG){
+            System.err.println("New edge " + newEdgeRindex + 
+                               " created in this.rootGraph:");
+            System.err.println( "Source is " + this.rootGraph.getEdgeSourceIndex(newEdgeRindex)+
+                                " Target is " + this.rootGraph.getEdgeTargetIndex(newEdgeRindex) );
+          }
+        }//if an edge should be created
+        
+        // Remember that we processed this edge
         processedEdgeRindices.add(childEdgeRindex);
         this.metaNodeToProcessedEdges.put(node_rindex,processedEdgeRindices);
-        metaEdgeToChildEdge.put(newEdgeRindex, childEdgeRindex);
-        numNewEdges++;
-        // Remember that *we* created this edge, so that later, we can reset RootGraph
-        // to its original state if needed by removing edges we created
-        this.metaEdgesRindices.add(newEdgeRindex);
-        
-        // If otherNodeRindex has parents, and the parents have been processed before,
-        // then mark newEdgeRindex as a processed edge for the parents
-        // This is so that if prepareNodeForModel(GraphPerspective,otherNodeRindex) is called
-        // after this call, a duplicate edge from otherNodeRindex to node_rindex won't be created
-        int[] otherNodeParentsRindices = this.rootGraph.getNodeMetaParentIndicesArray(otherNodeRindex);
-        if(otherNodeParentsRindices != null){
-          for(int otherParent_i = 0; 
-              otherParent_i < otherNodeParentsRindices.length; 
-              otherParent_i++){
-            processedEdgeRindices = 
-              (IntArrayList)this.metaNodeToProcessedEdges.get(otherNodeParentsRindices[otherParent_i]);
-            if(processedEdgeRindices != null){
-              // We know that this parent has been processed before
-              processedEdgeRindices.add(newEdgeRindex);
-            }
-          }// for each otherNodeRindex parent 
-        }// if otherNodeRindex has parents
-        
-        if(DEBUG){
-          System.err.println("New edge " + newEdgeRindex + 
-                             " created in this.rootGraph:");
-          System.err.println( "Source is " + this.rootGraph.getEdgeSourceIndex(newEdgeRindex)+
-                              " Target is " + this.rootGraph.getEdgeTargetIndex(newEdgeRindex) );
-        }        
         
       }//for each adjacent edge to child node
       
@@ -923,7 +975,7 @@ public class AbstractMetaNodeModeler {
       System.err.println("before removing edges, num e = " + this.rootGraph.getEdgeCount());
     }
     
-    // ------------------ DISASTER AREA !!! ------------------------------------------------//
+    // ------------------ DISASTER AREA !!! -------------------------------//
    
     // 5/5/05 this method crashes !!! : 
     //this.rootGraph.removeEdges(adjacentEdgeRindices.elements());
@@ -940,20 +992,41 @@ public class AbstractMetaNodeModeler {
       //notRemoved++;
       //}
       
-      //2nd argument removes the edge from the RootGraph as well
-      if( cy_net.removeEdge(adjacentEdgeRindices.get(i),true) ){
-        notRemoved++; // only removed from cy_net, but not from RootGraph!
+      //2nd argument removes the edge from the RootGraph as well (in theory)
+      //if( cy_net.removeEdge(adjacentEdgeRindices.get(i),true) ){
+      // the method returns true if the edge is still in rootGraph
+      // force removal from rootGraph:
+      //if(this.rootGraph.removeEdge(adjacentEdgeRindices.get(i)) == 0){
+      //notRemoved++; //it didn't get removed!
+      //}
+      //}
+      
+      // Try first removing it from CyNetwork and then from the RootGraph
+      boolean stillInRootGraph = cy_net.removeEdge(adjacentEdgeRindices.get(i), false);
+      if(!stillInRootGraph){
+        // this is not supposed to happen!
+        throw new IllegalStateException("Removed edge with index " + 
+                                        adjacentEdgeRindices.get(i) + 
+                                        " in cy_net, but it also got removed in RootGraph!!");
+      }
+      
+      if( this.rootGraph.removeEdge(adjacentEdgeRindices.get(i)) == 0 ){
+        // if it returned 0, that means there is trouble!
+        throw new IllegalStateException("Removed edge with index " + 
+                                        adjacentEdgeRindices.get(i) + 
+                                        " in this.rootGraph, but method returned 0!!!");
       }
       
     }//for i
-    
+
+   
     if(DEBUG){
       if(notRemoved > 0){
         System.err.println(notRemoved + " edges where not removed!");
       }
       System.err.println("after removing edges, num e = " + this.rootGraph.getEdgeCount());
     }
-    //----------------------END DISASTER AREA ----------------------------------------------//
+    //----------------------END DISASTER AREA ----------------------------------//
     
     // Update metaEdgesRindices
     if(DEBUG){

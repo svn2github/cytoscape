@@ -46,7 +46,8 @@ public class CollapseSelectedNodesAction extends AbstractAction {
 	protected AbstractMetaNodeModeler abstractingModeler;
 	protected boolean collapseExistentParents;
 	protected boolean collapseRecursively;
-	
+  protected boolean multipleEdges;
+
 	/**
 	 * Use metaNodeViewer.actions.ActionFactory instead
 	 *
@@ -67,6 +68,7 @@ public class CollapseSelectedNodesAction extends AbstractAction {
 		this.abstractingModeler = abstracting_modeler;
 		this.collapseExistentParents = collapse_existent_parents;
 		this.collapseRecursively = collapse_recursively;
+    this.multipleEdges = abstracting_modeler.getMultipleEdges();
 	}//CollapseSelectedNodesAction
 	
 	/**
@@ -101,6 +103,20 @@ public class CollapseSelectedNodesAction extends AbstractAction {
 	public boolean getCollapseRecursively (){
 		return this.collapseRecursively;
 	}//getCollapseRecursively
+
+  /**
+   * Sets whether multiple edges between meta-nodes and other nodes should be created
+   */
+  public void setMultipleEdges (boolean multiple_edges){
+    this.multipleEdges = multiple_edges;
+  }//setMultipleEdges
+
+  /**
+   * @return whether multiple edges between meta-nodes and other nodes should be created
+   */
+  public boolean getMultipleEdges (){
+    return this.multipleEdges;
+  }//getMultipleEdges
 	
 	/**
 	 * Sets whether or not default names should be assigned to newly created metanodes
@@ -114,8 +130,9 @@ public class CollapseSelectedNodesAction extends AbstractAction {
 	 */
 	public void actionPerformed (ActionEvent e){
 		collapseSelectedNodes(this.abstractingModeler, 
-				this.collapseExistentParents,
-				this.collapseRecursively);
+                          this.collapseExistentParents,
+                          this.collapseRecursively,
+                          this.multipleEdges);
 	}//actionPerformed
 	
 	
@@ -127,10 +144,12 @@ public class CollapseSelectedNodesAction extends AbstractAction {
 	 * of creating new meta-nodes for them
 	 * @param collapse_recursively whether or not the top-level meta-node parents of the selected nodes should be found and collapsed, ignored if
 	 * collapse_existent_parents is false
+   * @param multiple_edges whether multiple edges between meta-nodes and other nodes should be created
 	 */
 	public static void collapseSelectedNodes (AbstractMetaNodeModeler abstractModeler,
-			boolean collapse_existent_parents,
-			boolean collapse_recursively){
+                                            boolean collapse_existent_parents,
+                                            boolean collapse_recursively,
+                                            boolean multiple_edges){
 		
 		GraphView graphView = Cytoscape.getCurrentNetworkView();
 		// Pop-up a dialog if there are no selected nodes and return
@@ -153,7 +172,11 @@ public class CollapseSelectedNodesAction extends AbstractAction {
 		selectedNodeIndices.trimToSize();
 		int [] nodeIndices = selectedNodeIndices.elements();
 		
-		int numCollapsed = MetaNodeUtils.collapseNodes(cyNetwork,nodeIndices,collapse_existent_parents,collapse_recursively);
+		int numCollapsed = MetaNodeUtils.collapseNodes(cyNetwork,
+                                                   nodeIndices,
+                                                   collapse_existent_parents,
+                                                   collapse_recursively,
+                                                   multiple_edges);
 		if(numCollapsed == 0){
 			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
 			"The selected nodes do not have parent meta-nodes.");
@@ -161,9 +184,9 @@ public class CollapseSelectedNodesAction extends AbstractAction {
 		}else if(numCollapsed < 0){
 			//Something went wrong, alert user, and exit
 			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
-					"An internal error was encountered while collapsing.",
-					"Internal Error",
-					JOptionPane.ERROR_MESSAGE
+                                    "An internal error was encountered while collapsing.",
+                                    "Internal Error",
+                                    JOptionPane.ERROR_MESSAGE
 			);
 			return;
 			

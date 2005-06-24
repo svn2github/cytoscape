@@ -159,8 +159,10 @@ public class MetaNodeUtils {
 	        continue;
 	      }
 	      boolean temporary = false; // == don't remember these meta-nodes
-	      boolean ok = MetaNodeUtils.abstractModeler.undoModel(network,rindex,recursive,temporary); 
-	      if(!ok){
+	      boolean ok = 
+          MetaNodeUtils.abstractModeler.undoModel(network,rindex,recursive,temporary); 
+	      
+        if(!ok){
 	        System.err.println("Could not remove meta-node " + rindex);
 	      }else{
 	      	// Also, remove the meta-node from the RootGraph
@@ -186,7 +188,10 @@ public class MetaNodeUtils {
 	   * @param temporary whether this operation is temporary, or not, if it is not, then the meta-nodes will be removed permanently
 	   * @return the number of uncollapsed meta-nodes
 	   */
-	  public static int uncollapseNodes (CyNetwork cy_network, int [] node_rindices, boolean recursive, boolean temporary){
+	  public static int uncollapseNodes (CyNetwork cy_network, 
+                                       int [] node_rindices, 
+                                       boolean recursive, 
+                                       boolean temporary){
 	  	
 	  	// Uncollapse each node (if it is not a metanode, nothing happens)
 	  	int numUncollapsed = 0;
@@ -214,17 +219,22 @@ public class MetaNodeUtils {
 	   * of creating new meta-nodes for them
 	   * @param collapse_recursively whether or not the top-level meta-node parents of the selected nodes should be found and collapsed, ignored if
 	   * collapse_existent_parents is false
+     * @param multiple_edges whether or not multiple edges between meta-nodes and other nodes
+     * should be created
 	   * @return the number of collapsed meta-nodes, or -1 if something went wrong
 	   */
 	  public static int collapseNodes (CyNetwork cy_network, int [] node_rindices, 
-	  											boolean collapse_existent_parents,
-												boolean collapse_recursively){
+                                     boolean collapse_existent_parents,
+                                     boolean collapse_recursively,
+                                     boolean multiple_edges){
 	    
 	    // If collapse_existent_parents is true, then find parents for the selected nodes
 	    // and collapse them
 	    // NOTE: This is tricky if we have multiple GraphPerspectives, since
-	    // they share the same RootGraph. Use the fact that MetaNodeFactory stores for each network
+	    // they share the same RootGraph, 
+      // use the fact that MetaNodeFactory stores for each network
 	    // the meta-nodes that were created for it.
+      MetaNodeUtils.abstractModeler.setMultipleEdges(multiple_edges);
 	    if(collapse_existent_parents){
 	    	int [] parents = findParentMetaNodes(cy_network, node_rindices, collapse_recursively);
 	      // Collapse parents sequentially

@@ -224,7 +224,7 @@ public class SimpleMetaNodeAttributesHandler implements
 	 */
 	protected class CopyEdgeAttr implements IntIntProcedure {
 
-		public boolean apply(int metaEdgeIndex, int childEdgeIndex) {
+		public boolean apply(int metaEdgeIndex, int childEdgeIndex){
 			RootGraph rootGraph = Cytoscape.getRootGraph();
 			// get edge info
 			Edge metaEdge = rootGraph.getEdge(metaEdgeIndex);
@@ -239,9 +239,9 @@ public class SimpleMetaNodeAttributesHandler implements
 			// infer the metaNode and use it to name the metaEdge
 			String interaction = (String) Cytoscape.getEdgeAttributeValue(
 					childEdge, "interaction");
-			Node sourceNode = metaEdge.getSource();
+			Node sourceNode = metaEdge.getSource(); // null 6/24/05
 			Node targetNode = metaEdge.getTarget();
-			if (rootGraph.nodeMetaChildrenList(sourceNode) != null
+			if (rootGraph.nodeMetaChildrenList(sourceNode) != null // crash 6/24/05
 					&& rootGraph.nodeMetaChildrenList(sourceNode).size() > 0) {
 				metaEdgeName = Cytoscape.getNodeAttributeValue(sourceNode,
 						Semantics.CANONICAL_NAME)
