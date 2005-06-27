@@ -35,6 +35,8 @@ public class MergeEquivalentNodes extends CytoscapePlugin {
     boolean DEBUG=false;
 
     static String LAST_SELECTED = null;
+
+    private static String IGNORE_ATTR = "IGNORE ATTRS";
     
     /**
      * This constructor saves the cyWindow argument (the window to which this
@@ -64,7 +66,7 @@ public class MergeEquivalentNodes extends CytoscapePlugin {
         /**
          * The constructor sets the text that should appear on the menu item.
          */
-        public MergeEquivalentAction() {super("Auto-merge nodes w/ same neighbors");}
+        public MergeEquivalentAction() {super("SmartMerge nodes w/ same neighbors");}
         
         /**
          * Gives a description of this plugin.
@@ -84,22 +86,36 @@ public class MergeEquivalentNodes extends CytoscapePlugin {
 
             String[] names = Cytoscape.getEdgeAttributesList();
 
+            String[] namesPlus = new String[names.length + 1];
+            namesPlus[0] = IGNORE_ATTR;
+            for(int x=0; x < names.length; x++)
+            {
+                namesPlus[x+1] = names[x];
+            }
+
+            
             if(LAST_SELECTED == null)
             {
-                LAST_SELECTED = names[0];
+                LAST_SELECTED = namesPlus[0];
             }
 
             String selectedName = ListDialog.showDialog(Cytoscape.getDesktop(),
                                                         Cytoscape.getDesktop(),
                                                         "Edge Attributes",
                                                         "Attribute Chooser",
-                                                        names,
+                                                        namesPlus,
                                                         LAST_SELECTED,
                                                         "");
             
             LAST_SELECTED = selectedName;
-            Thread t = new MergeEquivalentNodesThread(selectedName);
-	    t.start();
+
+            // The dialog returns an empty string if the Cancel button
+            // is pressed
+            if(!selectedName.equals(""))
+            {
+                Thread t = new MergeEquivalentNodesThread(selectedName);
+                t.start();
+            }
 	}
     }
 
@@ -111,7 +127,7 @@ public class MergeEquivalentNodes extends CytoscapePlugin {
         /**
          * The constructor sets the text that should appear on the menu item.
          */
-        public MergeSelectedAction() {super("Merge selected nodes");}
+        public MergeSelectedAction() {super("Merge selected nodes (buggy)");}
         
         /**
          * Gives a description of this plugin.
@@ -184,13 +200,27 @@ public class MergeEquivalentNodes extends CytoscapePlugin {
                 int[] edges = network.getEdgeIndicesArray(neighbors[e],
                                                           node,
                                                           true);
-
+                
                 for(int x=0; x < edges.length; x++)
                 {
-                    String intType = (String) network.getEdgeAttributeValue(edges[x], attr);
-
+                    // Get the value of "attr" for edge x
+                    // unless "attr" is the special value IGNORE_ATTR,
+                    // which indicates that neighbors should not be
+                    // partitioned using an attribute.
+                    
+                    String intType;
+                    
+                    if(attr.equals(IGNORE_ATTR))
+                    {
+                        intType = IGNORE_ATTR;
+                    }
+                    else
+                    {
+                        intType = (String) network.getEdgeAttributeValue(edges[x], attr);
+                    }
+                        
                     int tgtIndex = _rootGraph.getEdgeSourceIndex(edges[x]);
-
+                    
                     Set s;
                     if(p.containsKey(intType))
                     {
@@ -204,7 +234,7 @@ public class MergeEquivalentNodes extends CytoscapePlugin {
                     s.add(new Integer(tgtIndex));
                 }
             }
-            
+        
             return p;
         }
 
@@ -302,20 +332,10 @@ public class MergeEquivalentNodes extends CytoscapePlugin {
 	    // now do the collapsing
 	    System.err.println("Collapsing node groups");
 	    for (Iterator vIt=collapseStack.iterator(); vIt.hasNext();)
+            {
 		collapse(convertIntVectorToArray((Vector) vIt.next()));
-
-
-            // cmak 4.13.05
-            // adjust node sizes -- can get rid of this because
-            // this function is redundant with the ResizeNodes plugin.
-            /*
-            for (Iterator nIt=network.nodesIterator(); nIt.hasNext();) {
-		int thisNodeGP = network.getIndex((CyNode)nIt.next());
-		int thisNodeRG = network.getRootGraphNodeIndex(thisNodeGP);
-		
-                adjustNodeSize(thisNodeRG);
             }
-            */
+            
             System.err.println("Finished MergeEquivalentNodes: "
                                + _edgeAttr);
 	} // end method run()
@@ -351,21 +371,13 @@ public class MergeEquivalentNodes extends CytoscapePlugin {
             return true;
         }
         
-        /*
-        private int[] intSetToArray(Set s)
-        {
-            int[] i = new int[s.size()];
-            int x=0;
-            for(Iterator it = s.iterator(); it.hasNext();)
-            {
-                i[x] = ((Integer) it.next()).intValue();
-                x++;
-            }
-            return i;
-            }*/
     } // end mergeEquivalentNodesThread
 
 
+    /**
+     * @return a String containing each int in the input array
+     * separated by spaces.
+     */
     private static String toString(int[] a)
     {
         StringBuffer b = new StringBuffer();
@@ -518,75 +530,6 @@ public class MergeEquivalentNodes extends CytoscapePlugin {
 	    }
 	}
     } // end method transferEdgeAttributes
-
-    /**
-     * Adjust the size of the node based on the NodeName attribute
-     *
-     * NOTE: the size multipliers (eg 7, 16, 20) are probably dependent
-     * of the font size used.  These multipliers were determined by
-     * trial and error.
-     *
-     * NOTE: This is duplicate code (see ResizeNodesPlugin).
-     * Can we call the ResizeNodesPlugin from this plugin?
-     * 
-     * @param nodeIndex root graph index of a node
-     */
-    private void adjustNodeSize(int nodeIndex)
-    {
-        RootGraph rootGraph = Cytoscape.getRootGraph();
-        giny.model.Node node = rootGraph.getNode(nodeIndex);
-        Object val = network.getNodeAttributeValue(node, "commonName");
-        if(val != null)
-        {
-            String name = (String) val;
-            String[] nameArray = name.split("\n");
-            String longest = findLongestName(nameArray);
-
-            // If the longest name has fewer than 6 chars,
-            // the node will be the default width.
-            if(longest.length() > 5)
-            {
-                network.setNodeAttributeValue(node, "NodeWidth",
-                                              new Double(8 * longest.length()));
-            }
-            else if(longest.length() > 3)
-            {
-                network.setNodeAttributeValue(node, "NodeWidth",
-                                              new Double(10 * longest.length()));
-            }
-            
-            if(nameArray.length > 5)
-            {
-                network.setNodeAttributeValue(node, "NodeHeight",
-                                              new Double(16 * nameArray.length));
-            }
-            // If there is only 1 name, the node will be the default height
-            else if(nameArray.length > 1)
-            {
-                network.setNodeAttributeValue(node, "NodeHeight",
-                                              new Double(20 * nameArray.length));
-            }
-        }
-    }
-
-
-    private String findLongestName(String[] values)
-    {
-        int max = 0;
-        String longest = "";
-        for (int x=0; x < values.length; x++) {
-	    String s = values[x];
-
-            if(s.length() > max)
-            {
-                longest = s;
-                max = s.length();
-            }
-        }
-
-        return longest;
-    }
-    
     
     private void transferNodeAttributes (int [] fromNodeIndices, int toNodeIndex) {
 	
@@ -631,16 +574,6 @@ public class MergeEquivalentNodes extends CytoscapePlugin {
 		network.setNodeAttributeValue(toNode, attrNames[i], attrVal);
 	    }
 	}
-
-        // set the shape of the node
-        /* this doesn't work
-        String name = attrs.getCanonicalName(toNode);
-
-        attrs.set(NodeAppearanceCalculator.nodeShapeBypass, name,
-                  ShapeNodeRealizer.ROUND_RECT);
-        */
-
-        
     } // end method transferNodeAttributes
 
     // utility methods to handle specific attribute object types

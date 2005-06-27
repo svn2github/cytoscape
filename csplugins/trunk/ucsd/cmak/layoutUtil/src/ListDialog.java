@@ -25,6 +25,7 @@ import java.awt.event.*;
  * ListDialogRunner.  It requires no additional files.
  * <p>
  * Copied from Java Swing examples tutorial
+ * Augmented by Craig Mak
  */
 public class ListDialog extends JDialog
                         implements ActionListener {
@@ -60,12 +61,12 @@ public class ListDialog extends JDialog
         return value;
     }
 
-    private void setValue(String newValue) {
-        value = newValue;
-        list.setSelectedValue(value, true);
-    }
-
-    // find the longest String
+    /**
+     * Each of the objects in "s" will be converted to a String
+     * using that object's toString() method.
+     *
+     * @return The longest string
+     */
     private String findLongest(Object[] s)
     {
         if(s.length == 0)
@@ -182,7 +183,7 @@ public class ListDialog extends JDialog
         contentPane.add(buttonPane, BorderLayout.PAGE_END);
 
         //Initialize values.
-        setValue(initialValue);
+        list.setSelectedValue(initialValue, true);
         pack();
         setLocationRelativeTo(locationComp);
     }
@@ -191,6 +192,9 @@ public class ListDialog extends JDialog
     public void actionPerformed(ActionEvent e) {
         if ("Set".equals(e.getActionCommand())) {
             ListDialog.value = (String)(list.getSelectedValue());
+        }
+        if("Cancel".equals(e.getActionCommand())) {
+            ListDialog.value = "";
         }
         ListDialog.dialog.setVisible(false);
     }
