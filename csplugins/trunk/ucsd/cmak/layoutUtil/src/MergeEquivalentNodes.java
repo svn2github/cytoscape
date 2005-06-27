@@ -324,12 +324,16 @@ public class MergeEquivalentNodes extends CytoscapePlugin {
         /**
          * 2 partitions are equal if every (key,value) pair
          * in partition I exists in partition J, and vice-versa.
+         *
+         * Empty partitions are NOT equal
          * 
          * @return true if 2 partitions are equal
          */
         private boolean equal(Map pi, Map pj)
         {
             if(pi.size() != pj.size()) return false;
+
+            if(pi.size() == 0 && pj.size() == 0) return false;
             
             for(Iterator i = pi.entrySet().iterator(); i.hasNext();)
             {
