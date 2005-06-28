@@ -15,7 +15,7 @@
     <!-- Inheritable properties -->
     <property name="debug" value="on"/>
     <property name="optimize" value="off"/>
-    <property name="deprecation" value="on"/>
+    <property name="deprecation" value="off"/>
     <property name="nowarn" value="true"/>
     <property name="fork" value="false"/>
     <property name="loader.root.dir" value="."/>
@@ -57,13 +57,24 @@
 
     <path id="loader.project.class.path">
       <pathelement location="${loader.classes.dir}"/>
+      <pathelement location="${cytoscape.lib.dir}/../plugins/core/filter.jar"/>
       <pathelement location="${cytoscape.lib.dir}/colt.jar"/>
-      <pathelement location="${cytoscape.lib.dir}/../cytoscape.jar"/>
-      <pathelement location="${cytoscape.lib.dir}/cytoscape-data-attr.jar"/>
-      <pathelement location="${cytoscape.lib.dir}/giny.jar"/>
-      <pathelement location="${cytoscape.lib.dir}/phoebe.jar"/>
       <pathelement location="${cytoscape.lib.dir}/coltginy.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/../cytoscape.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/giny.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/tclib.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/glf.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/com-nerius-math-xform.jar"/> 
+      <pathelement location="${cytoscape.lib.dir}/concurrent.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape-data-attr.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape-graph-dynamic.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape-graph-fixed.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape-graph-layout.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape-graph-legacy.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape-task.jar"/>
       <pathelement location="${cytoscape.lib.dir}/violinstrings-1.0.2.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape-util-intr.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/fing.jar"/>
       <pathelement path="${project.class.path}/"/>
     </path>
 

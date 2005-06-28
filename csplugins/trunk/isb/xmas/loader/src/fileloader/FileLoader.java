@@ -2,6 +2,7 @@ package fileloader;
 
 import java.io.*;
 import java.util.*;
+import java.util.regex.*;
 import java.util.zip.*;
 import javax.swing.*;
 
@@ -11,8 +12,11 @@ import cytoscape.data.readers.*;
 import cytoscape.plugin.*;
 import cytoscape.data.*;
 
+import cytoscape.data.attr.*;
+
 import giny.model.*;
 import ViolinStrings.Strings;
+
 public class FileLoader {
 
 
@@ -20,8 +24,90 @@ public class FileLoader {
 
   static String NODE_LABEL = "NODENAME";
   static String EDGE_LABEL = "EDGENAME";
-  static String COMMENTS = "#";
+  static String COMMENTS = "^#";
+  static String delim = "\t";
+
+  public static void saveNetworkToFile ( CyNetwork network,
+                                         String file_name ) {
+    try {
+      File file = new File( file_name );
+      BufferedWriter writer = new BufferedWriter(new FileWriter( file ));
+      
+      Iterator nodes_i = network.nodesIterator();
+      Iterator edges_i = network.edgesIterator();
+
+      // Node Section
+      writer.write( NODE_LABEL+delim );
+      
+      CytoscapeData data = Cytoscape.getNodeNetworkData();
+      CountedIterator atts_i = data.getDefindedAttributes();
+      while (atts_i.hasNext() ) {
+        writer.write( atts_i.next()+delim );
+      }
+      writer.newLine();
+      
+      while ( nodes_i.hasNext() ) {
+        GraphObject obj = (GraphObject)nodes_i.next();
+        writer.write( obj.getIdentifier()+delim );
+        atts_i = data.getDefindedAttributes();
+        while ( atts_i.hasNext() ) {
+          // TODO
+          Object value = data.getAttributeValueList( obj.getIdentifier(),
+                                                     atts_i.next() );
+          try {
+            writer.write( value+delim );
+          } catch ( Exception ex ) {
+            System.out.println( "Error with Network output" );
+            writer.write( delim );
+          }
+        }
+        writer.newLine();
+      }
+    
+      // Edge Section
+      writer.write( NODE_LABEL+delim+EDGE_LABEL+delim+NODE_LABEL+delim );
+      
+      data = Cytoscape.getEdgeNetworkData();
+      atts_i = data.getDefindedAttributes();
+      while (atts_i.hasNext() ) {
+        writer.write( atts_i.next()+delim );
+      }
+      writer.newLine();
+      
+      while ( edges_i.hasNext() ) {
+        Edge obj = (Edge)edges_i.next();
+        writer.write( obj.getSource().getIdentifier()+delim
+                      +obj.getIdentifier()+delim
+                      +obj.getTarget().getIdentifier()+delim);
+        
+        atts_i = data.getDefindedAttributes();
+        while ( atts_i.hasNext() ) {
+          // TODO
+          Object value = data.getAttributeValueList( obj.getIdentifier(),
+                                                     atts_i.next() );
+          try {
+            writer.write( value+delim );
+          } catch ( Exception ex ) {
+            System.out.println( "Error with Network output" );
+            writer.write( delim );
+          }
+        }
+        writer.newLine();
+      }
+
+      
+      writer.close();
+    } catch ( Exception ex ) {
+      System.out.println( "Network Write error" );
+      ex.printStackTrace();
+    }
   
+
+
+
+  }
+
+
 
   public static void saveAttributesToFile ( String file_name,
                                             boolean is_nodes,
@@ -40,6 +126,11 @@ public class FileLoader {
     Vector titles = null;
     int max_col = 0;
 
+    Pattern p_node = Pattern.compile( NODE_LABEL );
+    Pattern p_edge = Pattern.compile( EDGE_LABEL );
+    Pattern p_comment = Pattern.compile( COMMENTS );
+    
+
     try {
       File file = new File( file_name );
       BufferedReader in
@@ -47,7 +138,26 @@ public class FileLoader {
       String oneLine = in.readLine();
       int count = 0;
       while (oneLine != null  ) {
+
+        Matcher m_node = p_node.matcher( oneLine );
+        Matcher m_edge = p_edge.matcher( oneLine );
+        Matcher m_comment = p_comment.matcher( oneLine );
          
+        if ( m_comment.matches() ) {
+          // comment
+          System.out.println( "Comment line: "+oneLine );
+
+        } else if ( m_node.matches() && !m_edge.matches() ) {
+          // node header
+          System.out.println( "Node Header:" +oneLine );
+
+        } else if ( m_node.matches() && m_edge.matches() ) {
+          // edge header
+          System.out.println( "Edge Header:" +oneLine );
+        }
+
+
+
         if (oneLine.startsWith("#")) {
           // comment
         } else {
@@ -76,7 +186,8 @@ public class FileLoader {
     
   }
 
-   public static boolean loadRow ( String[] row, 
+
+  public static boolean loadRow ( String[] row, 
                                    Vector titles, 
                                    boolean is_nodes ) {
      return loadRow( row, titles, is_nodes, new int[] {} );
