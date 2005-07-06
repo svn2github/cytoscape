@@ -1,5 +1,6 @@
 package cytoscape.geom.rtree;
 
+import cytoscape.geom.rtree.ObjStack;
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntObjHash;
 import cytoscape.util.intr.IntStack;
