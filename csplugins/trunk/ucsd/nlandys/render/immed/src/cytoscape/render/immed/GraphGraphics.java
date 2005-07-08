@@ -227,8 +227,8 @@ public final class GraphGraphics
     else m_g2d.setColor(borderColor);
     m_g2d.fill(shape);
     if (borderWidth != 0.0f) { // Fill inner node.
+      final Shape innerShape;
       while (true) {
-        final Shape innerShape;
         if (shapeType == SHAPE_ELLIPSE) {
           // This is an approximation to proper border width.  It's much
           // faster than drawing a curvy path of some thickness, and this
@@ -256,10 +256,10 @@ public final class GraphGraphics
           break; }
         else { // A general polygon.
           innerShape = null;
-          break;
-        }
-      }
-    }
+          break; } }
+      if (innerShape != null) {
+        m_g2d.setColor(fillColor);
+        m_g2d.fill(innerShape); } }
   }
 
   /**
