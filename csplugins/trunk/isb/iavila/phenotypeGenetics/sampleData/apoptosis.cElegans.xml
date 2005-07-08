@@ -6,324 +6,451 @@
 <project>
 	
 	
+	
   
+	
 	
 	<name>Apoptosis</name>
 	
 	
+	
   
+	
 	
 	<organism>C. elegans</organism>
 	
 	
+	
   
+	
 	
 	<note> project note 1 </note>
 	
 	
+	
   
 	
+	
 	<note> project note 2 </note>
+	
 	
 	
 
   
 	
+	
 	<experiment name="wild type">
+		
 		
 		
      
 		
+		
 		<condition name="apoptosis_signal" value="on" category="environmental" />
+		
 		
 		 
      
 		
+		
 		<observations>
 			
 			
+			
        
+			
 			
 			<phenotype name="cell_aliveness" value="dead" />
 			
 			
+			
        
+			
 			
 			<phenotype name="cell_engulfment" value="engulfed" />
 			
 			
+			
        
+			
 			
 			<phenotype name="DNA_condition" value="degraded" />
 			
 			
+			
      
+		
 		
 		</observations>
 		
 		
+		
   
 	
+	
 	</experiment>
+	
 	
 	
  
   
 	
+	
 	<experiment name="ced-3 single mutants">
 		
 		
+		
     
+		
 		
 		<note> experiment 1, note 1 </note>
 		
 		
+		
     
 		
+		
 		<condition name="apoptosis_signal" value="on" category="environmental" />
+		
 		
 		 
     
 		
+		
 		<condition gene="ced-3" alleleForm="lf" category="genetic" />
 		
 		
+		
     
+		
 		
 		<observations>
 			
 			
+			
       
+			
 			
 			<phenotype name="cell_aliveness" value="alive" />
 			
 			
+			
     
+		
 		
 		</observations>
 		
 		
+		
   
 	
+	
 	</experiment>
+	
 	
 	
 
   
   
 	
+	
 	<experiment name="ced-2 single mutants">
+		
 		
 		
     
 		
+		
 		<condition name="apoptosis_signal" value="on" category="environmental" />
+		
 		
 		 
     
 		
+		
 		<condition gene="ced-2" alleleForm="lf" category="genetic" />
 		
 		
+		
     
+		
 		
 		<observations>
 			
 			
+			
       
+			
 			
 			<phenotype name="cell_aliveness" value="dead" />
 			
 			
+			
       
+			
 			
 			<phenotype name="cell_engulfment" value="not engulfed" />
 			
 			
+			
     
+		
 		
 		</observations>
 		
 		
+		
   
 	
+	
 	</experiment>
+	
 	
 	
 
    
   
 	
+	
 	<experiment name="nuc-1 single mutants">
+		
 		
 		
     
 		
+		
 		<condition name="apoptosis_signal" value="on" category="environmental" />
+		
 		
 		 
     
 		
+		
 		<condition gene="nuc-1" alleleForm="lf" category="genetic" />
+		
 		
 		
      
 		
+		
 		<observations>
 			
 			
+			
        
+			
 			
 			<phenotype name="cell_aliveness" value="dead" />
 			
 			
+			
        
+			
 			
 			<phenotype name="cell_engulfment" value="engulfed" />
 			
 			
+			
        
+			
 			
 			<phenotype name="DNA_condition" value="intact" />
 			
 			
+			
      
+		
 		
 		</observations>
 		
 		
+		
   
+	
 	
 	</experiment>
 	
 	
+	
 
   
+	
 	
 	<experiment name="ced-3 ced-2 double mutants">
 		
 		
+		
     
 		
+		
 		<condition name="apoptosis_signal" value="on" category="environmental" />
+		
 		
 		 
     
 		
+		
 		<condition gene="ced-3" alleleForm="lf" category="genetic" />
 		
 		
+		
     
+		
 		
 		<condition gene="ced-2" alleleForm="lf" category="genetic" />
 		
 		
+		
     
+		
 		
 		<observations>
 			
 			
+			
       
+			
 			
 			<phenotype name="cell_aliveness" value="alive" />
 			
 			
+			
     
+		
 		
 		</observations>
 		
 		
+		
   
+	
 	
 	</experiment>
 	
 	
+	
 
   
+	
 	
 	<experiment name="ced-2 nuc-1 double mutant">
 		
 		
+		
     
 		
+		
 		<condition name="apoptosis_signal" value="on" category="environmental" />
+		
 		
 		 
     
 		
+		
 		<condition gene="ced-2" alleleForm="lf" category="genetic" />
 		
 		
+		
     
+		
 		
 		<condition gene="nuc-1" alleleForm="lf" category="genetic" />
 		
 		
+		
     
+		
 		
 		<observations>
 			
 			
+			
       
+			
 			
 			<phenotype name="cell_aliveness" value="dead" />
 			
 			
+			
       
+			
 			
 			<phenotype name="cell_engulfment" value="not engulfed" />
 			
 			
+			
     
+		
 		
 		</observations>
 		
 		
+		
   
 	
+	
 	</experiment>
+	
 	
 	
 
   
   
 	
+	
 	<experiment name="ced-3 nuc-1 double mutants">
+		
 		
 		
     
 		
+		
 		<condition name="apoptosis_signal" value="on" category="environmental" />
+		
 		
 		 
     
 		
+		
 		<condition gene="ced-3" alleleForm="lf" category="genetic" />
 		
 		
+		
     
+		
 		
 		<condition gene="nuc-1" alleleForm="lf" category="genetic" />
 		
 		
+		
     
+		
 		
 		<observations>
 			
 			
+			
       
+			
 			
 			<phenotype name="cell_aliveness" value="alive" />
 			
 			
+			
     
+		
 		
 		</observations>
 		
 		
+		
   
 	
+	
 	</experiment>
+	
+	
+
 	
 
 	

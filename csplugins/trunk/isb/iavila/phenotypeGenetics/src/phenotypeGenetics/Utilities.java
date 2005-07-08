@@ -157,48 +157,48 @@ public class Utilities {
    * inconsistent with nLevels.
    * @return The mapped array 
    */
- //  public static int[] bin (int nLevels, int [] intArray) throws IllegalArgumentException {
+  public static int[] bin (int nLevels, int [] intArray) throws IllegalArgumentException {
     
-//     int n = intArray.length;
-//     int[] binnedArray = new int[n];
-//     int minval = minimum(intArray);
-//     int maxval = maximum(intArray);
-//     int current = minval; 
-//     boolean[] isFound = new boolean[n]; 
+    int n = intArray.length;
+    int[] binnedArray = new int[n];
+    int minval = minimum(intArray);
+    int maxval = maximum(intArray);
+    int current = minval; 
+    boolean[] isFound = new boolean[n]; 
 
-//     int [] drops = new int[n]; // array of yet-to-be-mapped array values
-//     for(int i = 0; i < n; i++){
-//       drops[i] = intArray[i]; // initialize yet-to-be-mapped values with intArray
-//       isFound[i] = false; 
-//     }
+    int [] drops = new int[n]; // array of yet-to-be-mapped array values
+    for(int i = 0; i < n; i++){
+      drops[i] = intArray[i]; // initialize yet-to-be-mapped values with intArray
+      isFound[i] = false; 
+    }
     
-//     for(int ilevel = 0; ilevel < nLevels ; ilevel++){// for increasing levels
-//       //sweep through and identify values corresponding to those levels
-//       for(int j = 0; j < n;j++){
-//         if (intArray[j] == current){
-//           binnedArray[j] = ilevel;
-//           if(isFound[j]) 
-//             System.out.println ("Error: value "+ intArray[j]+" was already found");
-//           isFound[j]=true; 
-//         }
-//       }
+    for(int ilevel = 0; ilevel < nLevels ; ilevel++){// for increasing levels
+      //sweep through and identify values corresponding to those levels
+      for(int j = 0; j < n;j++){
+        if (intArray[j] == current){
+          binnedArray[j] = ilevel;
+          if(isFound[j]) 
+            System.out.println ("Error: value "+ intArray[j]+" was already found");
+          isFound[j]=true; 
+        }
+      }
       
-//       if(current != maxval){
-//         drops=remove(current,drops); // find next level by removing the values just found
-//         current=minimum(drops);
-//       }
+      if(current != maxval){
+        drops=remove(current,drops); // find next level by removing the values just found
+        current=minimum(drops);
+      }
 	
-//     }
-
-//     for ( int i=0 ; i<n ; i++ ){
-//       if ( !isFound[i] ) 
-//         throw new IllegalArgumentException ("Error: value "+ intArray[i]+" was not found");
-//     }
-//     if ( current != maxval ) 
-//       throw new IllegalArgumentException ("Error: Ended at incorrect level");
+    }
     
-//     return binnedArray; 
-//   }
+    for ( int i=0 ; i<n ; i++ ){
+      if ( !isFound[i] ) 
+        throw new IllegalArgumentException ("Error: value "+ intArray[i]+" was not found");
+    }
+    if ( current != maxval ) 
+      throw new IllegalArgumentException ("Error: Ended at incorrect level");
+    
+    return binnedArray; 
+  }
   
   /**
    * Find the number of distinct levels in an integer array 

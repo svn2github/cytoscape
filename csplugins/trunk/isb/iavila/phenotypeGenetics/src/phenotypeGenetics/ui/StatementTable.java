@@ -204,21 +204,25 @@ public class StatementTable extends JFrame {
 
           Statement chosenStatement = sTableView.statementSet[row];
           CyNode[] nodesToSelect = new CyNode [ chosenStatement.getSize() + 1 ];
+          ArrayList nodeArray = new ArrayList();
           String canonicalName = chosenStatement.getCanonicalName();
           CyNode n = Cytoscape.getCyNode(canonicalName, false);
           //TODO: Error checking
           //nodeNames[0] = chosenStatement.getCanonicalName();
           nodesToSelect[0] = n;
+          nodeArray.add(n);
           for (int i = 0; i< (chosenStatement.getNeighbors()).length; i++) {
             canonicalName = (String)(chosenStatement.getNeighbors()[i]);
             n = Cytoscape.getCyNode(canonicalName,false);
             //TODO: Error checking
             nodesToSelect[i+1] = n;
+            nodeArray.add(n);
           }
-          CyNetworkView netView = 
-            Cytoscape.getNetworkView(cyNetwork.getIdentifier());
-          if(netView != null)
-            netView.setSelected(nodesToSelect);
+          cyNetwork.setFlaggedNodes(nodeArray,true);
+          //CyNetworkView netView = 
+          //Cytoscape.getNetworkView(cyNetwork.getIdentifier());
+          //if(netView != null)
+          //netView.setSelected(nodesToSelect);
         }
       };
     table.addMouseListener(listMouseListener);

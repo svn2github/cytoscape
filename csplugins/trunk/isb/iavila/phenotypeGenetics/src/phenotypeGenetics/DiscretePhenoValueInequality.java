@@ -302,9 +302,9 @@ public class DiscretePhenoValueInequality implements Serializable {
     // In theory we should not get here, since all possibilities are represented!
     throw new IllegalStateException("No DiscretePhenoValueInequality for values " +
                                     "WT = " + wt +
-                                    "A = " + a +
-                                    "B = " + b +
-                                    "AB = " + ab);
+                                    " A = " + a +
+                                    " B = " + b +
+                                    " AB = " + ab);
     
   }//getPhenoInequality
 
@@ -393,7 +393,7 @@ public class DiscretePhenoValueInequality implements Serializable {
       {1,1,2,0}, //42
       {1,0,1,1}, //43
       {0,0,1,0}, //44
-      // Repeats:
+      // Repeats: (Switch A and B)
       {0,1,0,1}, //45 nd
       {1,1,0,0}, //46 nd
       {0,2,1,0}, //47 nd

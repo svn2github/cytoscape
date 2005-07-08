@@ -212,12 +212,18 @@ public class DiscretePhenotypeRanking {
      String wt_val, String a_val,
      String b_val, String ab_val){
     
+    int [] ranks = new int[4];
+    
+    ranks[0] = getRank(phenotype_name,wt_val);
+    ranks[1] = getRank(phenotype_name,a_val);
+    ranks[2] = getRank(phenotype_name,b_val);
+    ranks[3] =  getRank(phenotype_name,ab_val);
+
+    int [] levels = Utilities.bin(Utilities.levelCount(ranks), ranks);
+    
     DiscretePhenoValueInequality ineq = 
-      DiscretePhenoValueInequality.getPhenoInequality(
-                                                      getRank(phenotype_name,wt_val),
-                                                      getRank(phenotype_name,a_val),
-                                                      getRank(phenotype_name,b_val),
-                                                      getRank(phenotype_name,ab_val));
+      DiscretePhenoValueInequality.getPhenoInequality(levels[0],levels[1], levels[2], levels[3]);
+    
     return ineq;
   }//getDiscretePhenoValueIneq
 

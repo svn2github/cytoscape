@@ -113,6 +113,27 @@ public class PGDialog extends JDialog{
     JPanel bPanel = new JPanel();
     JButton browseFilesButton = new JButton("Browse");
     bPanel.add(browseFilesButton);
+    JButton clearFilesButton = new JButton("Remove Selected Files");
+    bPanel.add(clearFilesButton);
+    
+    clearFilesButton.addActionListener(
+       new AbstractAction (){
+         
+         public void actionPerformed (ActionEvent event){
+
+           int [] selected = xmlFileList.getSelectedIndices();
+           for(int i = 0; i < selected.length; i++){
+             Object removed = ((DefaultListModel)xmlFileList.getModel()).remove(selected[i]);
+             xmlFilePaths.remove(removed);
+           }//for i
+           
+         }//actionPerformed
+         
+       }//AbstractAction
+       
+       );//addActionListener
+
+
     this.fileChooser = new JFileChooser();
     XmlFileFilter filter = new XmlFileFilter();
     fileChooser.setFileFilter(filter);
