@@ -161,72 +161,104 @@ public final class GraphGraphics
       if (borderWidth < 0.0f)
         throw new IllegalArgumentException("borderWidth < 0"); }
     if (!m_antialias) setHighDetail();
-    if (borderWidth == 0.0f) { // Don't draw the border.
-      final Shape shape;
-      switch (shapeType) {
-      case SHAPE_RECTANGLE:
-        m_rect2d.setRect(xMin, yMin, xMax - xMin, yMax - yMin);
-        shape = m_rect2d;
-        break;
-      case SHAPE_ELLIPSE:
-        m_ellp2d.setFrame(xMin, yMin, xMax - xMin, yMax - yMin);
-        shape = m_ellp2d;
-        break;
-      case SHAPE_TRIANGLE:
-        m_poly2d.reset();
-        m_poly2d.moveTo(xMin, yMax);
-        m_poly2d.lineTo((xMin + xMax) / 2.0f, yMin);
-        m_poly2d.lineTo(xMax, yMax);
-        m_poly2d.closePath();
-        shape = m_poly2d;
-        break;
-      case SHAPE_DIAMOND:
-        m_poly2d.reset();
-        m_poly2d.moveTo((xMin + xMax) / 2.0f, yMin);
-        m_poly2d.lineTo((yMin + yMax) / 2.0f, xMax);
-        m_poly2d.lineTo((xMin + xMax) / 2.0f, yMax);
-        m_poly2d.lineTo((yMin + yMax) / 2.0f, xMin);
-        m_poly2d.closePath();
-        shape = m_poly2d;
-        break;
-      case SHAPE_HEXAGON:
-        m_poly2d.reset();
-        m_poly2d.moveTo((2.0f * xMin + xMax) / 3.0f, yMin);
-        m_poly2d.lineTo((xMin + 2.0f * xMax) / 3.0f, yMin);
-        m_poly2d.lineTo(xMax, (yMin + yMax) / 2.0f);
-        m_poly2d.lineTo((xMin + 2.0f * xMax) / 3.0f, yMax);
-        m_poly2d.lineTo((2.0f * xMin + xMax) / 3.0f, yMax);
-        m_poly2d.lineTo(xMin, (yMin + yMax) / 2.0f);
-        m_poly2d.closePath();
-        shape = m_poly2d;
-        break;
-      case SHAPE_OCTAGON:
-        m_poly2d.reset();
-        m_poly2d.moveTo((2.0f * xMin + xMax) / 3.0f, yMin);
-        m_poly2d.lineTo((xMin + 2.0f * xMax) / 3.0f, yMin);
-        m_poly2d.lineTo(xMax, (2.0f * yMin + yMax) / 3.0f);
-        m_poly2d.lineTo(xMax, (yMin + 2.0f * yMax) / 3.0f);
-        m_poly2d.lineTo((xMin + 2.0f * xMax) / 3.0f, yMax);
-        m_poly2d.lineTo((2.0f * xMin + xMax) / 3.0f, yMax);
-        m_poly2d.lineTo(xMin, (yMin + 2.0f * yMax) / 3.0f);
-        m_poly2d.lineTo(xMin, (2.0f * yMin + yMax) / 3.0f);
-        m_poly2d.closePath();
-        shape = m_poly2d;
-        break;
-      case SHAPE_PARALLELOGRAM:
-        m_poly2d.reset();
-        m_poly2d.moveTo(xMin, yMin);
-        m_poly2d.lineTo((xMin + 2.0f * xMax) / 3.0f, yMin);
-        m_poly2d.lineTo(xMax, yMax);
-        m_poly2d.lineTo((2.0f * xMin + xMax) / 3.0f, yMax);
-        m_poly2d.closePath();
-        shape = m_poly2d;
-        break;
-      default:
-        throw new IllegalArgumentException("shapeType is not recognized"); }
-      m_g2d.setColor(fillColor);
-      m_g2d.fill(shape); }
-    else { // Must draw border.
+    final Shape shape;
+    switch (shapeType) {
+    case SHAPE_RECTANGLE:
+      m_rect2d.setRect(xMin, yMin, xMax - xMin, yMax - yMin);
+      shape = m_rect2d;
+      break;
+    case SHAPE_ELLIPSE:
+      m_ellp2d.setFrame(xMin, yMin, xMax - xMin, yMax - yMin);
+      shape = m_ellp2d;
+      break;
+    case SHAPE_DIAMOND:
+      m_poly2d.reset();
+      m_poly2d.moveTo((xMin + xMax) / 2.0f, yMin);
+      m_poly2d.lineTo((yMin + yMax) / 2.0f, xMax);
+      m_poly2d.lineTo((xMin + xMax) / 2.0f, yMax);
+      m_poly2d.lineTo((yMin + yMax) / 2.0f, xMin);
+      m_poly2d.closePath();
+      shape = m_poly2d;
+      break;
+    case SHAPE_HEXAGON:
+      m_poly2d.reset();
+      m_poly2d.moveTo((2.0f * xMin + xMax) / 3.0f, yMin);
+      m_poly2d.lineTo((xMin + 2.0f * xMax) / 3.0f, yMin);
+      m_poly2d.lineTo(xMax, (yMin + yMax) / 2.0f);
+      m_poly2d.lineTo((xMin + 2.0f * xMax) / 3.0f, yMax);
+      m_poly2d.lineTo((2.0f * xMin + xMax) / 3.0f, yMax);
+      m_poly2d.lineTo(xMin, (yMin + yMax) / 2.0f);
+      m_poly2d.closePath();
+      shape = m_poly2d;
+      break;
+    case SHAPE_OCTAGON:
+      m_poly2d.reset();
+      m_poly2d.moveTo((2.0f * xMin + xMax) / 3.0f, yMin);
+      m_poly2d.lineTo((xMin + 2.0f * xMax) / 3.0f, yMin);
+      m_poly2d.lineTo(xMax, (2.0f * yMin + yMax) / 3.0f);
+      m_poly2d.lineTo(xMax, (yMin + 2.0f * yMax) / 3.0f);
+      m_poly2d.lineTo((xMin + 2.0f * xMax) / 3.0f, yMax);
+      m_poly2d.lineTo((2.0f * xMin + xMax) / 3.0f, yMax);
+      m_poly2d.lineTo(xMin, (yMin + 2.0f * yMax) / 3.0f);
+      m_poly2d.lineTo(xMin, (2.0f * yMin + yMax) / 3.0f);
+      m_poly2d.closePath();
+      shape = m_poly2d;
+      break;
+    case SHAPE_PARALLELOGRAM:
+      m_poly2d.reset();
+      m_poly2d.moveTo(xMin, yMin);
+      m_poly2d.lineTo((xMin + 2.0f * xMax) / 3.0f, yMin);
+      m_poly2d.lineTo(xMax, yMax);
+      m_poly2d.lineTo((2.0f * xMin + xMax) / 3.0f, yMax);
+      m_poly2d.closePath();
+      shape = m_poly2d;
+      break;
+    case SHAPE_TRIANGLE:
+      m_poly2d.reset();
+      m_poly2d.moveTo(xMin, yMax);
+      m_poly2d.lineTo((xMin + xMax) / 2.0f, yMin);
+      m_poly2d.lineTo(xMax, yMax);
+      m_poly2d.closePath();
+      shape = m_poly2d;
+      break;
+    default:
+      throw new IllegalArgumentException("shapeType is not recognized"); }
+    if (borderWidth == 0.0f) m_g2d.setColor(fillColor);
+    else m_g2d.setColor(borderColor);
+    m_g2d.fill(shape);
+    if (borderWidth != 0.0f) { // Fill inner node.
+      while (true) {
+        final Shape innerShape;
+        if (shapeType == SHAPE_ELLIPSE) {
+          // This is an approximation to proper border width.  It's much
+          // faster than drawing a curvy path of some thickness, and this
+          // approach leads to exact intersection calculations for edges.
+          final float innerXMin = xMin + borderWidth;
+          final float innerYMin = yMin + borderWidth;
+          final float innerXMax = xMax - borderWidth;
+          final float innerYMax = yMax - borderWidth;
+          if (innerXMin >= innerXMax || innerYMin >= innerYMax) {
+            innerShape = null; break; }
+          m_ellp2d.setFrame(innerXMin, innerYMin,
+                            innerXMax - innerXMin, innerYMax - innerYMin);
+          innerShape = m_ellp2d;
+          break; }
+        else if (shapeType == SHAPE_RECTANGLE) {
+          final float innerXMin = xMin + borderWidth;
+          final float innerYMin = yMin + borderWidth;
+          final float innerXMax = xMax - borderWidth;
+          final float innerYMax = yMax - borderWidth;
+          if (innerXMin >= innerXMax || innerYMin >= innerYMax) {
+            innerShape = null; break; }
+          m_rect2d.setRect(innerXMin, innerYMin,
+                           innerXMax - innerXMin, innerYMax - innerYMin);
+          innerShape = m_rect2d;
+          break; }
+        else { // A general polygon.
+          innerShape = null;
+          break;
+        }
+      }
     }
   }
 
