@@ -180,6 +180,48 @@ public final class GraphGraphics
         m_poly2d.closePath();
         shape = m_poly2d;
         break;
+      case SHAPE_DIAMOND:
+        m_poly2d.reset();
+        m_poly2d.moveTo((xMin + xMax) / 2.0f, yMin);
+        m_poly2d.lineTo((yMin + yMax) / 2.0f, xMax);
+        m_poly2d.lineTo((xMin + xMax) / 2.0f, yMax);
+        m_poly2d.lineTo((yMin + yMax) / 2.0f, xMin);
+        m_poly2d.closePath();
+        shape = m_poly2d;
+        break;
+      case SHAPE_HEXAGON:
+        m_poly2d.reset();
+        m_poly2d.moveTo((2.0f * xMin + xMax) / 3.0f, yMin);
+        m_poly2d.lineTo((xMin + 2.0f * xMax) / 3.0f, yMin);
+        m_poly2d.lineTo(xMax, (yMin + yMax) / 2.0f);
+        m_poly2d.lineTo((xMin + 2.0f * xMax) / 3.0f, yMax);
+        m_poly2d.lineTo((2.0f * xMin + xMax) / 3.0f, yMax);
+        m_poly2d.lineTo(xMin, (yMin + yMax) / 2.0f);
+        m_poly2d.closePath();
+        shape = m_poly2d;
+        break;
+      case SHAPE_OCTAGON:
+        m_poly2d.reset();
+        m_poly2d.moveTo((2.0f * xMin + xMax) / 3.0f, yMin);
+        m_poly2d.lineTo((xMin + 2.0f * xMax) / 3.0f, yMin);
+        m_poly2d.lineTo(xMax, (2.0f * yMin + yMax) / 3.0f);
+        m_poly2d.lineTo(xMax, (yMin + 2.0f * yMax) / 3.0f);
+        m_poly2d.lineTo((xMin + 2.0f * xMax) / 3.0f, yMax);
+        m_poly2d.lineTo((2.0f * xMin + xMax) / 3.0f, yMax);
+        m_poly2d.lineTo(xMin, (yMin + 2.0f * yMax) / 3.0f);
+        m_poly2d.lineTo(xMin, (2.0f * yMin + yMax) / 3.0f);
+        m_poly2d.closePath();
+        shape = m_poly2d;
+        break;
+      case SHAPE_PARALLELOGRAM:
+        m_poly2d.reset();
+        m_poly2d.moveTo(xMin, yMin);
+        m_poly2d.lineTo((xMin + 2.0f * xMax) / 3.0f, yMin);
+        m_poly2d.lineTo(xMax, yMax);
+        m_poly2d.lineTo((2.0f * xMin + xMax) / 3.0f, yMax);
+        m_poly2d.closePath();
+        shape = m_poly2d;
+        break;
       default:
         throw new IllegalArgumentException("shapeType is not recognized"); }
       m_g2d.setColor(fillColor);
