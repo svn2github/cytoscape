@@ -228,38 +228,29 @@ public final class GraphGraphics
     m_g2d.fill(shape);
     if (borderWidth != 0.0f) { // Fill inner node.
       final Shape innerShape;
-      while (true) {
-        if (shapeType == SHAPE_ELLIPSE) {
-          // This is an approximation to proper border width.  It's much
-          // faster than drawing a curvy path of some thickness, and this
-          // approach leads to exact intersection calculations for edges.
-          final float innerXMin = xMin + borderWidth;
-          final float innerYMin = yMin + borderWidth;
-          final float innerXMax = xMax - borderWidth;
-          final float innerYMax = yMax - borderWidth;
-          if (innerXMin >= innerXMax || innerYMin >= innerYMax) {
-            innerShape = null; break; }
-          m_ellp2d.setFrame(innerXMin, innerYMin,
-                            innerXMax - innerXMin, innerYMax - innerYMin);
-          innerShape = m_ellp2d;
-          break; }
-        else if (shapeType == SHAPE_RECTANGLE) {
-          final float innerXMin = xMin + borderWidth;
-          final float innerYMin = yMin + borderWidth;
-          final float innerXMax = xMax - borderWidth;
-          final float innerYMax = yMax - borderWidth;
-          if (innerXMin >= innerXMax || innerYMin >= innerYMax) {
-            innerShape = null; break; }
-          m_rect2d.setRect(innerXMin, innerYMin,
-                           innerXMax - innerXMin, innerYMax - innerYMin);
-          innerShape = m_rect2d;
-          break; }
-        else { // A general polygon.
-          innerShape = null;
-          break; } }
-      if (innerShape != null) {
-        m_g2d.setColor(fillColor);
-        m_g2d.fill(innerShape); } }
+      if (shapeType == SHAPE_ELLIPSE) {
+        // This is an approximation to proper border width.  It's
+        // faster than drawing a curvy path of some thickness, and this
+        // approach leads to exact intersection calculations for edges.
+        final float innerXMin = xMin + borderWidth;
+        final float innerYMin = yMin + borderWidth;
+        final float innerXMax = xMax - borderWidth;
+        final float innerYMax = yMax - borderWidth;
+        m_ellp2d.setFrame(innerXMin, innerYMin,
+                          innerXMax - innerXMin, innerYMax - innerYMin);
+        innerShape = m_ellp2d; }
+      else if (shapeType == SHAPE_RECTANGLE) {
+        final float innerXMin = xMin + borderWidth;
+        final float innerYMin = yMin + borderWidth;
+        final float innerXMax = xMax - borderWidth;
+        final float innerYMax = yMax - borderWidth;
+        m_rect2d.setRect(innerXMin, innerYMin,
+                         innerXMax - innerXMin, innerYMax - innerYMin);
+        innerShape = m_rect2d; }
+      else { // A general polygon.
+        innerShape = null; }
+      m_g2d.setColor(fillColor);
+      m_g2d.fill(innerShape); }
   }
 
   /**
