@@ -14,6 +14,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
+import java.awt.geom.PathIterator;
 import java.awt.geom.Rectangle2D;
 
 /**
@@ -43,8 +44,10 @@ public final class GraphGraphics
   private final Rectangle2D.Float m_rect2d_;
   private final Ellipse2D.Float m_ellp2d;
   private final GeneralPath m_poly2d;
+  private final GeneralPath m_innerPoly2d;
   private final Line2D.Float m_line2d;
   private final float[] m_dash;
+  private final float[] m_pathBuff;
   private Graphics2D m_g2d;
   private AffineTransform m_currXform; // Not sure that we will need this.
   private boolean m_antialias;
@@ -73,8 +76,10 @@ public final class GraphGraphics
     m_rect2d_ = new Rectangle2D.Float();
     m_ellp2d = new Ellipse2D.Float();
     m_poly2d = new GeneralPath();
+    m_innerPoly2d = new GeneralPath();
     m_line2d = new Line2D.Float();
     m_dash = new float[] { 0.0f, 0.0f };
+    m_pathBuff = new float[6];
     clear(0.0d, 0.0d, 1.0d);
   }
 
@@ -236,6 +241,7 @@ public final class GraphGraphics
         final float innerYMin = yMin + borderWidth;
         final float innerXMax = xMax - borderWidth;
         final float innerYMax = yMax - borderWidth;
+        // Todo: Test to see what happens if width is negative; exception?
         m_ellp2d.setFrame(innerXMin, innerYMin,
                           innerXMax - innerXMin, innerYMax - innerYMin);
         innerShape = m_ellp2d; }
@@ -244,13 +250,70 @@ public final class GraphGraphics
         final float innerYMin = yMin + borderWidth;
         final float innerXMax = xMax - borderWidth;
         final float innerYMax = yMax - borderWidth;
+        // Todo: Test to see what happens if width is negative; exception?
         m_rect2d.setRect(innerXMin, innerYMin,
                          innerXMax - innerXMin, innerYMax - innerYMin);
         innerShape = m_rect2d; }
-      else { // A general polygon.
-        innerShape = null; }
+      else { // A general [convex] polygon with certain restrictions.
+        m_innerPoly2d.reset();
+        final PathIterator path = m_poly2d.getPathIterator(null);
+        path.currentSegment(m_pathBuff); // PathIterator.SEG_MOVETO.
+        final float xNot = m_pathBuff[0];
+        final float yNot = m_pathBuff[1];
+        path.next();
+        path.currentSegment(m_pathBuff); // PathIterator.SEG_LINETO.
+        final float xOne = m_pathBuff[0];
+        final float yOne = m_pathBuff[1];
+        float xPrev = xNot;
+        float yPrev = yNot;
+        float xCurr = xOne;
+        float yCurr = yOne;
+        path.next();
+        path.currentSegment(m_pathBuff); // PathIterator.SEG_LINETO.
+        float xNext = m_pathBuff[0];
+        float yNext = m_pathBuff[1];
+        computeInnerPoint(m_pathBuff, xPrev, yPrev, xCurr, yCurr,
+                          xNext, yNext, borderWidth);
+        m_innerPoly2d.moveTo(m_pathBuff[0], m_pathBuff[1]);
+        while (true) {
+          path.next();
+          if (path.currentSegment(m_pathBuff) == PathIterator.SEG_CLOSE) {
+            computeInnerPoint(m_pathBuff, xCurr, yCurr, xNext, yNext,
+                              xNot, yNot, borderWidth);
+            m_innerPoly2d.lineTo(m_pathBuff[0], m_pathBuff[1]);
+            computeInnerPoint(m_pathBuff, xNext, yNext, xNot, yNot,
+                              xOne, yOne, borderWidth);
+            m_innerPoly2d.lineTo(m_pathBuff[0], m_pathBuff[1]);
+            m_innerPoly2d.closePath();
+            break; }
+          else { // PathIterator.SEG_LINETO.
+            xPrev = xCurr;
+            yPrev = yCurr;
+            xCurr = xNext;
+            yCurr = yNext;
+            xNext = m_pathBuff[0];
+            yNext = m_pathBuff[1];
+            computeInnerPoint(m_pathBuff, xPrev, yPrev, xCurr, yCurr,
+                              xNext, yNext, borderWidth);
+            m_innerPoly2d.lineTo(m_pathBuff[0], m_pathBuff[1]); } }
+        innerShape = m_innerPoly2d; }
       m_g2d.setColor(fillColor);
       m_g2d.fill(innerShape); }
+  }
+
+  /*
+   * output[0] is the x return value and output[1] is the y return value.
+   * The line prev->curr cannot be parallel to curr->next.
+   */
+  private final static void computeInnerPoint(final float[] output,
+                                              final float xPrev,
+                                              final float yPrev,
+                                              final float xCurr,
+                                              final float yCurr,
+                                              final float xNext,
+                                              final float yNext,
+                                              final float borderWidth)
+  {
   }
 
   /**
