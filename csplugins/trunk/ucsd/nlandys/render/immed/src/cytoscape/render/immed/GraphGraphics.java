@@ -254,7 +254,10 @@ public final class GraphGraphics
         m_rect2d.setRect(innerXMin, innerYMin,
                          innerXMax - innerXMin, innerYMax - innerYMin);
         innerShape = m_rect2d; }
-      else { // A general [convex] polygon with certain restrictions.
+      else {
+        // A general [possibly non-convex] polygon with certain
+        // restrictions: no two consecutive line segments can be parallel,
+        // and each line segment must have nonzero length.
         m_innerPoly2d.reset();
         final PathIterator path = m_poly2d.getPathIterator(null);
         path.currentSegment(m_pathBuff); // PathIterator.SEG_MOVETO.
