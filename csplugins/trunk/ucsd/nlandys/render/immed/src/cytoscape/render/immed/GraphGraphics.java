@@ -327,8 +327,8 @@ public final class GraphGraphics
     final double segPrimeX = xNextPrime - xCurr;
     final double segPrimeY = yNextPrime - yCurr;
     final double distancePrimeToSeg1 =
-      (segY1 * xNextPrime - segX1 * yNextPrime +
-       ((double) xCurr) * yPrev - ((double) xPrev) * yCurr) / segLength1;
+      (segX1 * yNextPrime - segY1 * xNextPrime +
+       ((double) xPrev) * yCurr - ((double) xCurr) * yPrev) / segLength1;
     final double multFactor = borderWidth / distancePrimeToSeg1;
     output[0] = (float) (multFactor * segPrimeX + xCurr);
     output[1] = (float) (multFactor * segPrimeY + yCurr);
