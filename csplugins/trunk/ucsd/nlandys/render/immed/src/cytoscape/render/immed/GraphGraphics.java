@@ -179,9 +179,9 @@ public final class GraphGraphics
     case SHAPE_DIAMOND:
       m_poly2d.reset();
       m_poly2d.moveTo((xMin + xMax) / 2.0f, yMin);
-      m_poly2d.lineTo((yMin + yMax) / 2.0f, xMax);
+      m_poly2d.lineTo(xMax, (yMin + yMax) / 2.0f);
       m_poly2d.lineTo((xMin + xMax) / 2.0f, yMax);
-      m_poly2d.lineTo((yMin + yMax) / 2.0f, xMin);
+      m_poly2d.lineTo(xMin, (yMin + yMax) / 2.0f);
       m_poly2d.closePath();
       shape = m_poly2d;
       break;
