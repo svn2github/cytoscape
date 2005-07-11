@@ -409,12 +409,13 @@ public final class GraphGraphics
     m_ptsBuff[0] = xMin; m_ptsBuff[1] = yMin;
     m_ptsBuff[2] = xMax; m_ptsBuff[3] = yMax;
     m_currXform.transform(m_ptsBuff, 0, m_ptsBuff, 0, 2);
-    final int x0 = (int) m_ptsBuff[0];
-    final int y0 = (int) m_ptsBuff[1];
-    final int x1 = (int) m_ptsBuff[2];
-    final int y1 = (int) m_ptsBuff[3];
+    final int xNot = (int) m_ptsBuff[0];
+    final int yNot = (int) m_ptsBuff[1];
+    final int xOne = (int) m_ptsBuff[2];
+    final int yOne = (int) m_ptsBuff[3];
     m_gMinimal.setColor(fillColor);
-    m_gMinimal.fillRect(x0, y0, Math.max(1, x1 - x0), Math.max(1, y1 - y0));
+    m_gMinimal.fillRect(xNot, yNot, Math.max(1, xOne - xNot),
+                        Math.max(1, yOne - yNot));
   }
 
   public final void drawEdgeLow(final float x0, final float y0,
@@ -425,16 +426,18 @@ public final class GraphGraphics
       if (!EventQueue.isDispatchThread())
         throw new IllegalStateException
           ("calling thread is not AWT event dispatcher"); }
-    if (m_antialias) setLowDetail();
-    m_line2d.setLine(x0, y0, x1, y1);
-    m_g2d.setColor(edgeColor);
-    // I'm setting the stroke width to zero so that I get a guarantee that
-    // the simple and efficient Bresenham line drawing algorithm gets used
-    // regardless of how zoomed in we are.  Otherwise, on certain zoom levels
-    // the line drawing pipeline will start to fill polygons, which is slower
-    // by a factor of 100.
-    if (m_dash[0] != 0.0f || m_currStrokeWidth != 0.0f) setStroke(0.0f, 0.0f);
-    m_g2d.draw(m_line2d);
+    if (m_gMinimal == null) m_gMinimal = image.getGraphics();
+    // I'm transforming points manually because the resulting underlying
+    // graphics pipeline used is much faster.
+    m_ptsBuff[0] = x0; m_ptsBuff[1] = y0;
+    m_ptsBuff[2] = x1; m_ptsBuff[3] = y1;
+    m_currXform.transform(m_ptsBuff, 0, m_ptsBuff, 0, 2);
+    final int xNot = (int) m_ptsBuff[0];
+    final int yNot = (int) m_ptsBuff[1];
+    final int xOne = (int) m_ptsBuff[2];
+    final int yOne = (int) m_ptsBuff[3];
+    m_gMinimal.setColor(edgeColor);
+    m_gMinimal.drawLine(xNot, yNot, xOne, yOne);
   }
 
   /**
