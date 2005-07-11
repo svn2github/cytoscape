@@ -140,10 +140,14 @@ public final class TestNodeRendering
        null, 0);
     while (iter.numRemaining() > 0) {
       final int inx_x4 = iter.nextInt() * 4;
-      if (m_shape < 0) {
+      if (m_shape == -1) {
         m_grafx.drawNodeLow(m_extents[inx_x4], m_extents[inx_x4 + 1],
                             m_extents[inx_x4 + 2], m_extents[inx_x4 + 3],
                             m_nodeColor); }
+      else if (m_shape < 0) {
+        m_grafx.drawNodeMinimal(m_extents[inx_x4], m_extents[inx_x4 + 1],
+                                m_extents[inx_x4 + 2], m_extents[inx_x4 + 3],
+                                m_nodeColor); }
       else {
         m_grafx.drawNodeFull(m_shape, m_extents[inx_x4], m_extents[inx_x4 + 1],
                              m_extents[inx_x4 + 2], m_extents[inx_x4 + 3],
