@@ -26,6 +26,8 @@ public final class TestNodeRendering
   {
     final RTree tree;
     final float[] extents;
+    final byte shape;
+    final float borderWidth;
 
     // Populate the tree with entries.
     {
@@ -33,6 +35,15 @@ public final class TestNodeRendering
       tree = new RTree();
       extents = new float[N * 4]; // xMin1, yMin1, xMax1, yMax1, xMin2, ....
       double sqrtN = Math.sqrt((double) N);
+      if (args.length > 1) {
+        shape = Byte.parseByte(args[1]);
+        if (args.length > 2) {
+          borderWidth = Float.parseFloat(args[2]); }
+        else {
+          borderWidth = (float) (0.025d / sqrtN); } }
+      else {
+        shape = (byte) -1;
+        borderWidth = 0.0f; }
       int inx = 0;
       Random r = new Random();
       while (inx < N) {
@@ -62,7 +73,7 @@ public final class TestNodeRendering
 
     EventQueue.invokeAndWait(new Runnable() {
         public void run() {
-          Frame f = new TestNodeRendering(tree, extents);
+          Frame f = new TestNodeRendering(tree, extents, shape, borderWidth);
           f.show();
           f.addWindowListener(new WindowAdapter() {
               public void windowClosing(WindowEvent e) {
@@ -71,12 +82,15 @@ public final class TestNodeRendering
 
   private final RTree m_tree;
   private final float[] m_extents;
+  private final byte m_shape; // -1 if low detail.
+  private final float m_borderWidth;
   private final int m_imgWidth = 600;
   private final int m_imgHeight = 480;
   private final Image m_img;
   private final GraphGraphics m_grafx;
   private final Color m_bgColor = Color.white;
   private final Color m_nodeColor = Color.red;
+  private final Color m_borderColor = Color.black;
   private double m_currXCenter = 0.5d;
   private double m_currYCenter = 0.5d;
   private double m_currScale = 1000.0d;
@@ -84,11 +98,14 @@ public final class TestNodeRendering
   private int m_lastXMousePos = 0;
   private int m_lastYMousePos = 0;
 
-  public TestNodeRendering(RTree tree, float[] extents)
+  public TestNodeRendering(RTree tree, float[] extents,
+                           byte shape, float borderWidth)
   {
     super();
     m_tree = tree;
     m_extents = extents;
+    m_shape = shape;
+    m_borderWidth = borderWidth;
     addNotify();
     m_img = createImage(m_imgWidth, m_imgHeight);
     m_grafx = new GraphGraphics(m_img, m_bgColor, false);
@@ -123,9 +140,14 @@ public final class TestNodeRendering
        null, 0);
     while (iter.numRemaining() > 0) {
       final int inx_x4 = iter.nextInt() * 4;
-      m_grafx.drawNodeLow(m_extents[inx_x4], m_extents[inx_x4 + 1],
-                          m_extents[inx_x4 + 2], m_extents[inx_x4 + 3],
-                          m_nodeColor); }
+      if (m_shape < 0) {
+        m_grafx.drawNodeLow(m_extents[inx_x4], m_extents[inx_x4 + 1],
+                            m_extents[inx_x4 + 2], m_extents[inx_x4 + 3],
+                            m_nodeColor); }
+      else {
+        m_grafx.drawNodeFull(m_shape, m_extents[inx_x4], m_extents[inx_x4 + 1],
+                             m_extents[inx_x4 + 2], m_extents[inx_x4 + 3],
+                             m_nodeColor, m_borderWidth, m_borderColor); } }
   }
 
   public void mouseClicked(MouseEvent e) {}
