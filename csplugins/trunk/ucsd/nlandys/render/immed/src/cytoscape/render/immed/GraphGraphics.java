@@ -146,7 +146,7 @@ public final class GraphGraphics
   public final boolean contains(final byte shapeType,
                                 final float xMin, final float yMin,
                                 final float xMax, final float yMax,
-                                final double xQuery, final double yQuery)
+                                final float xQuery, final float yQuery)
   {
     if (m_debug) {
       if (!EventQueue.isDispatchThread())
