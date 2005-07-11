@@ -426,7 +426,7 @@ public final class GraphGraphics
     final int x = (int) m_ptsBuff[0];
     final int y = (int) m_ptsBuff[1];
     m_gMinimal.setColor(fillColor);
-    m_gMinimal.drawLine(x, y, x, y);
+    m_gMinimal.fillRect(x, y, 1, 1);
   }
 
   public final void drawEdgeLow(final float x0, final float y0,
