@@ -140,6 +140,8 @@ public final class GraphGraphics
   /**
    * @param xQuery the x coordinate of the query point, in the node
    *   coordinate system.
+   * @param yQuery the y coordinate of the query point, in the node
+   *   coordinate system.
    */
   public final boolean contains(final byte shapeType,
                                 final float xMin, final float yMin,
@@ -156,8 +158,22 @@ public final class GraphGraphics
                                                                 yQuery);
   }
 
-  // Here, provide a method which transforms canvas coordinates to node
-  // coordinates.
+  /**
+   * @param coords an array of length [at least] two which acts both
+   *   as the input and as the output of this method; coords[0] is the
+   *   input x coordinate in the canvas coordinate system and is written
+   *   as the x coordinate in the node coordinate system by this method;
+   *   coords[1] is the input y coordinate in the canvas coordinate system and
+   *   is written as the y coordinate in the node coordinate system by this
+   *   method.
+   */
+  public final void xformCoordsCanvasToNode(final double[] coords)
+  {
+    try {
+      m_currXform.inverseTransform(coords, 0, coords, 0, 1); }
+    catch (java.awt.geom.NoninvertibleTransformException e) {
+      throw new RuntimeException("noninvertible matrix - cannot happen"); }
+  }
 
   // This method has the side effect of setting m_rect2d, m_ellp2d, or
   // m_poly2d.
