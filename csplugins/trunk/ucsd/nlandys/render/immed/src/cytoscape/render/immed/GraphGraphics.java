@@ -53,7 +53,6 @@ public final class GraphGraphics
   private Graphics2D m_g2d;
   private Graphics m_gMinimal;
   private AffineTransform m_currXform;
-  private boolean m_antialias;
   private float m_currStrokeWidth;
 
   /**
@@ -116,16 +115,22 @@ public final class GraphGraphics
           ("calling thread is not AWT event dispatcher");
       if (!(scaleFactor > 0.0d))
         throw new IllegalArgumentException("scaleFactor is not positive"); }
+    if (m_gMinimal != null) { m_gMinimal.dispose(); m_gMinimal = null; }
     if (m_g2d != null) m_g2d.dispose();
     m_g2d = (Graphics2D) image.getGraphics();
-    if (m_gMinimal != null) m_gMinimal.dispose();
-    m_gMinimal = null;
     final Composite origComposite = m_g2d.getComposite();
     m_g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
     m_g2d.setBackground(m_bgColor);
     m_g2d.clearRect(0, 0, image.getWidth(null), image.getHeight(null));
     m_g2d.setComposite(origComposite);
-    setLowDetail();
+    m_g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                           RenderingHints.VALUE_ANTIALIAS_ON);
+    m_g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                           RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+    m_g2d.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
+                           RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+    m_g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,
+                           RenderingHints.VALUE_STROKE_PURE);
     setStroke(0.0f, 0.0f);
     // Set transform.  This is an infrequently used method so don't optimize.
     final AffineTransform translationPreScale = new AffineTransform();
@@ -174,7 +179,7 @@ public final class GraphGraphics
    *   is written as the y coordinate in the node coordinate system by this
    *   method.
    */
-  public final void xformCoordsCanvasToNode(final double[] coords)
+  public final void xformCanvasToNodeCoords(final double[] coords)
   {
     try {
       m_currXform.inverseTransform(coords, 0, coords, 0, 1); }
@@ -272,7 +277,6 @@ public final class GraphGraphics
       if (yMin > yMax) throw new IllegalArgumentException("yMin > yMax");
       if (borderWidth < 0.0f)
         throw new IllegalArgumentException("borderWidth < 0"); }
-    if (!m_antialias) setHighDetail();
     final Shape shape = getShape(shapeType, xMin, yMin, xMax, yMax);
     if (borderWidth == 0.0f) m_g2d.setColor(fillColor);
     else m_g2d.setColor(borderColor);
@@ -460,38 +464,11 @@ public final class GraphGraphics
         throw new IllegalArgumentException("edgeThickness < 0");
       if (dashLength < 0.0f)
         throw new IllegalArgumentException("dashLength < 0"); }
-    if (!m_antialias) setHighDetail();
     if (m_dash[0] != dashLength || m_currStrokeWidth != edgeThickness)
       setStroke(edgeThickness, dashLength);
     m_line2d.setLine(x0, y0, x1, y1);
     m_g2d.setColor(edgeColor);
     m_g2d.draw(m_line2d);
-  }
-
-  private final void setLowDetail()
-  {
-    m_antialias = false;
-    m_g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                           RenderingHints.VALUE_ANTIALIAS_DEFAULT);
-    m_g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-                           RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT);
-    m_g2d.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
-                           RenderingHints.VALUE_FRACTIONALMETRICS_DEFAULT);
-    m_g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,
-                           RenderingHints.VALUE_STROKE_DEFAULT);
-  }
-
-  private final void setHighDetail()
-  {
-    m_antialias = true;
-    m_g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                           RenderingHints.VALUE_ANTIALIAS_ON);
-    m_g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-                           RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-    m_g2d.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
-                           RenderingHints.VALUE_FRACTIONALMETRICS_ON);
-    m_g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,
-                           RenderingHints.VALUE_STROKE_PURE);
   }
 
   private final void setStroke(final float width, final float dashLength)
