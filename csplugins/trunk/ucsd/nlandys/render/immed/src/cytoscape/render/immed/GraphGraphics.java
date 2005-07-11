@@ -146,7 +146,7 @@ public final class GraphGraphics
   public final boolean contains(final byte shapeType,
                                 final float xMin, final float yMin,
                                 final float xMax, final float yMax,
-                                final double xQuery, final double yQuery)
+                                final float xQuery, final float yQuery)
   {
     if (m_debug) {
       if (!EventQueue.isDispatchThread())
@@ -400,6 +400,29 @@ public final class GraphGraphics
     m_rect2d.setRect(xMin, yMin, xMax - xMin, yMax - yMin);
     m_g2d.setColor(fillColor);
     m_g2d.fill(m_rect2d);
+  }
+
+  public final void drawNodeMinimal(final float xMin, final float yMin,
+                                    final float xMax, final float yMax,
+                                    final Color fillColor)
+  {
+    if (m_debug) {
+      if (!EventQueue.isDispatchThread())
+        throw new IllegalStateException
+          ("calling thread is not AWT event dispatcher");
+      if (xMin > xMax) throw new IllegalArgumentException("xMin > xMax");
+      if (yMin > yMax) throw new IllegalArgumentException("yMin > yMax"); }
+    if (m_antialias) setLowDetail();
+    m_line2d.setLine((xMin + xMax) / 2.0f, (yMin + yMax) / 2.0f,
+                     (xMin + xMax) / 2.0f, (yMin + yMax) / 2.0f);
+    m_g2d.setColor(fillColor);
+    // I'm setting the stroke width to zero so that I get a guarantee that
+    // the simple and efficient Bresenham line drawing algorithm gets used
+    // regardless of how zoomed in we are.  Otherwise, on certain zoom levels
+    // the line drawing pipeline will start to fill polygons, which is slower
+    // by a factor of 100.
+    if (m_dash[0] != 0.0f || m_currStrokeWidth != 0.0f) setStroke(0.0f, 0.0f);
+    m_g2d.draw(m_line2d);
   }
 
   public final void drawEdgeLow(final float x0, final float y0,
