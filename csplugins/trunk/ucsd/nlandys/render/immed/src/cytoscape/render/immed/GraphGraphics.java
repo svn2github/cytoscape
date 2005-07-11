@@ -112,6 +112,7 @@ public final class GraphGraphics
           ("calling thread is not AWT event dispatcher");
       if (!(scaleFactor > 0.0d))
         throw new IllegalArgumentException("scaleFactor is not positive"); }
+    if (m_g2d != null) m_g2d.dispose();
     m_g2d = (Graphics2D) image.getGraphics();
     final Composite origComposite = m_g2d.getComposite();
     m_g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
