@@ -18,7 +18,7 @@ import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.util.Random;
 
-public final class TestFastNodeRendering
+public final class TestNodeRendering
   extends Frame implements MouseListener, MouseMotionListener
 {
 
@@ -62,7 +62,7 @@ public final class TestFastNodeRendering
 
     EventQueue.invokeAndWait(new Runnable() {
         public void run() {
-          Frame f = new TestFastNodeRendering(tree, extents);
+          Frame f = new TestNodeRendering(tree, extents);
           f.show();
           f.addWindowListener(new WindowAdapter() {
               public void windowClosing(WindowEvent e) {
@@ -84,7 +84,7 @@ public final class TestFastNodeRendering
   private int m_lastXMousePos = 0;
   private int m_lastYMousePos = 0;
 
-  public TestFastNodeRendering(RTree tree, float[] extents)
+  public TestNodeRendering(RTree tree, float[] extents)
   {
     super();
     m_tree = tree;
