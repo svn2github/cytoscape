@@ -38,7 +38,7 @@ public final class TestNodeRendering
       if (args.length > 1) {
         shape = Byte.parseByte(args[1]);
         if (args.length > 2) {
-          borderWidth = Float.parseFloat(args[2]); }
+          borderWidth = (float) (Float.parseFloat(args[2]) / sqrtN); }
         else {
           borderWidth = (float) (0.025d / sqrtN); } }
       else {

@@ -18,7 +18,7 @@ import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.util.Random;
 
-public final class TestFastEdgeRendering
+public final class TestEdgeRendering
   extends Frame implements MouseListener, MouseMotionListener
 {
 
@@ -28,6 +28,8 @@ public final class TestFastEdgeRendering
   {
     final RTree tree;
     final float[] extents;
+    final byte lod;
+    final float edgeThickness;
 
     // Populate the tree with entries.
     {
@@ -35,6 +37,15 @@ public final class TestFastEdgeRendering
       tree = new RTree();
       extents = new float[N * 4]; // xMin1, yMin1, xMax1, yMax1, xMin2, ....
       double sqrtN = Math.sqrt((double) N);
+      if (args.length > 1) {
+        lod = Byte.parseByte(args[1]);
+        if (args.length > 2) {
+          edgeThickness = (float) (Float.parseFloat(args[2]) / sqrtN); }
+        else {
+          edgeThickness = (float) (0.5d / sqrtN); } }
+      else {
+        lod = (byte) -1;
+        edgeThickness = (float) (0.5d / sqrtN); }
       int inx = 0;
       Random r = new Random();
       while (inx < N) {
@@ -67,7 +78,7 @@ public final class TestFastEdgeRendering
 
     EventQueue.invokeAndWait(new Runnable() {
         public void run() {
-          Frame f = new TestFastEdgeRendering(tree, extents);
+          Frame f = new TestEdgeRendering(tree, extents, lod, edgeThickness);
           f.show();
           f.addWindowListener(new WindowAdapter() {
               public void windowClosing(WindowEvent e) {
@@ -76,6 +87,8 @@ public final class TestFastEdgeRendering
 
   private final RTree m_tree;
   private final float[] m_extents;
+  private final byte m_lod;
+  private final float m_edgeThickness;
   private final int m_imgWidth = 600;
   private final int m_imgHeight = 480;
   private final Image m_img;
@@ -89,11 +102,14 @@ public final class TestFastEdgeRendering
   private int m_lastXMousePos = 0;
   private int m_lastYMousePos = 0;
 
-  public TestFastEdgeRendering(RTree tree, float[] extents)
+  public TestEdgeRendering(RTree tree, float[] extents, byte lod,
+                           float edgeThickness)
   {
     super();
     m_tree = tree;
     m_extents = extents;
+    m_lod = lod;
+    m_edgeThickness = edgeThickness;
     addNotify();
     m_img = createImage(m_imgWidth, m_imgHeight);
     m_grafx = new GraphGraphics(m_img, m_bgColor, false);
@@ -128,9 +144,14 @@ public final class TestFastEdgeRendering
        null, 0);
     while (iter.numRemaining() > 0) {
       final int inx_x4 = iter.nextInt() * 4;
-      m_grafx.drawEdgeLow(m_extents[inx_x4], m_extents[inx_x4 + 1],
-                          m_extents[inx_x4 + 2], m_extents[inx_x4 + 3],
-                          m_edgeColor); }
+      if (m_lod < 0) {
+        m_grafx.drawEdgeLow(m_extents[inx_x4], m_extents[inx_x4 + 1],
+                            m_extents[inx_x4 + 2], m_extents[inx_x4 + 3],
+                            m_edgeColor); }
+      else {
+        m_grafx.drawEdgeFull(m_extents[inx_x4], m_extents[inx_x4 + 1],
+                             m_extents[inx_x4 + 2], m_extents[inx_x4 + 3],
+                             m_edgeThickness, m_edgeColor, 0.0f); } }
   }
 
   public void mouseClicked(MouseEvent e) {}
