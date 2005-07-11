@@ -83,7 +83,7 @@ public final class GraphGraphics
     m_line2d = new Line2D.Float();
     m_dash = new float[] { 0.0f, 0.0f };
     m_pathBuff = new float[6];
-    m_ptsBuff = new double[2];
+    m_ptsBuff = new double[4];
     clear(0.0d, 0.0d, 1.0d);
   }
 
@@ -403,12 +403,22 @@ public final class GraphGraphics
           ("calling thread is not AWT event dispatcher");
       if (xMin > xMax) throw new IllegalArgumentException("xMin > xMax");
       if (yMin > yMax) throw new IllegalArgumentException("yMin > yMax"); }
-    if (m_antialias) setLowDetail();
-    m_rect2d.setRect(xMin, yMin, xMax - xMin, yMax - yMin);
-    m_g2d.setColor(fillColor);
-    m_g2d.fill(m_rect2d);
+    if (m_gMinimal == null) m_gMinimal = image.getGraphics();
+    m_ptsBuff[0] = xMin; m_ptsBuff[1] = yMin;
+    m_ptsBuff[2] = xMax; m_ptsBuff[3] = yMax;
+    m_currXform.transform(m_ptsBuff, 0, m_ptsBuff, 0, 2);
+    final int x0 = (int) m_ptsBuff[0];
+    final int y0 = (int) m_ptsBuff[1];
+    final int x1 = (int) m_ptsBuff[2];
+    final int y1 = (int) m_ptsBuff[3];
+    m_gMinimal.setColor(fillColor);
+    m_gMinimal.fillRect(x0, y0, Math.max(1, x1 - x0), Math.max(1, y1 - y0));
   }
 
+  /**
+   * This just draws a single pixel on the screen for the specified node.
+   * Similar to drawNodeLow().
+   */
   public final void drawNodeMinimal(final float xMin, final float yMin,
                                     final float xMax, final float yMax,
                                     final Color fillColor)
