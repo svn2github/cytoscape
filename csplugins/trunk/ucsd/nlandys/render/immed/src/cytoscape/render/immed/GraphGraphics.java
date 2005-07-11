@@ -5,6 +5,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Composite;
 import java.awt.EventQueue;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
@@ -48,8 +49,10 @@ public final class GraphGraphics
   private final Line2D.Float m_line2d;
   private final float[] m_dash;
   private final float[] m_pathBuff;
+  private final double[] m_ptsBuff;
   private Graphics2D m_g2d;
-  private AffineTransform m_currXform; // Not sure that we will need this.
+  private Graphics m_gMinimal;
+  private AffineTransform m_currXform;
   private boolean m_antialias;
   private float m_currStrokeWidth;
 
@@ -80,6 +83,7 @@ public final class GraphGraphics
     m_line2d = new Line2D.Float();
     m_dash = new float[] { 0.0f, 0.0f };
     m_pathBuff = new float[6];
+    m_ptsBuff = new double[2];
     clear(0.0d, 0.0d, 1.0d);
   }
 
@@ -114,6 +118,8 @@ public final class GraphGraphics
         throw new IllegalArgumentException("scaleFactor is not positive"); }
     if (m_g2d != null) m_g2d.dispose();
     m_g2d = (Graphics2D) image.getGraphics();
+    if (m_gMinimal != null) m_gMinimal.dispose();
+    m_gMinimal = null;
     final Composite origComposite = m_g2d.getComposite();
     m_g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
     m_g2d.setBackground(m_bgColor);
@@ -401,6 +407,26 @@ public final class GraphGraphics
     m_rect2d.setRect(xMin, yMin, xMax - xMin, yMax - yMin);
     m_g2d.setColor(fillColor);
     m_g2d.fill(m_rect2d);
+  }
+
+  public final void drawNodeMinimal(final float xMin, final float yMin,
+                                    final float xMax, final float yMax,
+                                    final Color fillColor)
+  {
+    if (m_debug) {
+      if (!EventQueue.isDispatchThread())
+        throw new IllegalStateException
+          ("calling thread is not AWT event dispatcher");
+      if (xMin > xMax) throw new IllegalArgumentException("xMin > xMax");
+      if (yMin > yMax) throw new IllegalArgumentException("yMin > yMax"); }
+    if (m_gMinimal == null) m_gMinimal = image.getGraphics();
+    m_ptsBuff[0] = (xMin + xMax) / 2.0f;
+    m_ptsBuff[1] = (yMin + yMax) / 2.0f;
+    m_currXform.transform(m_ptsBuff, 0, m_ptsBuff, 0, 1);
+    final int x = (int) m_ptsBuff[0];
+    final int y = (int) m_ptsBuff[1];
+    m_gMinimal.setColor(fillColor);
+    m_gMinimal.drawLine(x, y, x + 1, y);
   }
 
   public final void drawEdgeLow(final float x0, final float y0,
