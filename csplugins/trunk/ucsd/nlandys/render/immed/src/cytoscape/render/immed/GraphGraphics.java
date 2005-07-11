@@ -404,6 +404,8 @@ public final class GraphGraphics
       if (xMin > xMax) throw new IllegalArgumentException("xMin > xMax");
       if (yMin > yMax) throw new IllegalArgumentException("yMin > yMax"); }
     if (m_gMinimal == null) m_gMinimal = image.getGraphics();
+    // I'm transforming points manually because the resulting underlying
+    // graphics pipeline used is much faster.
     m_ptsBuff[0] = xMin; m_ptsBuff[1] = yMin;
     m_ptsBuff[2] = xMax; m_ptsBuff[3] = yMax;
     m_currXform.transform(m_ptsBuff, 0, m_ptsBuff, 0, 2);
@@ -413,30 +415,6 @@ public final class GraphGraphics
     final int y1 = (int) m_ptsBuff[3];
     m_gMinimal.setColor(fillColor);
     m_gMinimal.fillRect(x0, y0, Math.max(1, x1 - x0), Math.max(1, y1 - y0));
-  }
-
-  /**
-   * This just draws a single pixel on the screen for the specified node.
-   * Similar to drawNodeLow().
-   */
-  public final void drawNodeMinimal(final float xMin, final float yMin,
-                                    final float xMax, final float yMax,
-                                    final Color fillColor)
-  {
-    if (m_debug) {
-      if (!EventQueue.isDispatchThread())
-        throw new IllegalStateException
-          ("calling thread is not AWT event dispatcher");
-      if (xMin > xMax) throw new IllegalArgumentException("xMin > xMax");
-      if (yMin > yMax) throw new IllegalArgumentException("yMin > yMax"); }
-    if (m_gMinimal == null) m_gMinimal = image.getGraphics();
-    m_ptsBuff[0] = (xMin + xMax) / 2.0f;
-    m_ptsBuff[1] = (yMin + yMax) / 2.0f;
-    m_currXform.transform(m_ptsBuff, 0, m_ptsBuff, 0, 1);
-    final int x = (int) m_ptsBuff[0];
-    final int y = (int) m_ptsBuff[1];
-    m_gMinimal.setColor(fillColor);
-    m_gMinimal.fillRect(x, y, 1, 1);
   }
 
   public final void drawEdgeLow(final float x0, final float y0,
