@@ -477,10 +477,10 @@ public final class GraphGraphics
     m_dash[1] = dashLength;
     m_currStrokeWidth = width;
     if (m_dash[0] == 0.0f)
-      m_g2d.setStroke(new BasicStroke(width, BasicStroke.CAP_BUTT,
+      m_g2d.setStroke(new BasicStroke(width, BasicStroke.CAP_ROUND,
                                       BasicStroke.JOIN_MITER, 10.0f));
     else
-      m_g2d.setStroke(new BasicStroke(width, BasicStroke.CAP_BUTT,
+      m_g2d.setStroke(new BasicStroke(width, BasicStroke.CAP_ROUND,
                                       BasicStroke.JOIN_MITER, 10.0f,
                                       m_dash, 0.0f));
   }
