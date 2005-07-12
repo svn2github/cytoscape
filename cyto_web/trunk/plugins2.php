@@ -519,6 +519,34 @@ Scardoni.
 					<hr>
 				</td>
 			</tr>
+
+     <tr>
+				<td width="20%" valign="top">
+					<b>Phenotype Genetics Plug-In</b><font size="-1">
+						<br>
+						Version: 2.0
+						<br>
+						Release Date: July, 2005</font>
+				</td>
+				<td width="40%" valign="top">
+					<p>Constructs genetic-interaction networks from large sets of phenotype measurements from cells with single and pairwise genetic perturbations. Network derivation is generalized and fully computable. It also implements network-analysis methods to find local and global interaction patterns reflecting the effects of gene perturbations on biological processes and pathways.
+					<p>
+						Released by: <a href="http://labs.systemsbiology.net/galitski/">Galitski Lab</a> at the <a href="http://www.systemsbiology.org/">Institute for Systems Biology</a>
+					</p>
+				</td>
+				<td width="20%" valign="top">
+				Verified to work in 2.1.
+				</td>
+				<td width="20%" valign="top">
+                                                                                        [<a href="http://labs.systemsbiology.net/galitski/projs/system_genetics/protected/tutorial/index_pg.html">Phenotype Genetics Web-Site and Download (includes a tutorial)</a>]
+				</td>
+			</tr>
+			<tr>
+				<td colspan="4">
+					<hr>
+				</td>
+			</tr>
+      
 			<tr>
 				<td width="20%" valign="top">
 					<b>PSI-MI Import/Export Plugin</b><font size="-1">
