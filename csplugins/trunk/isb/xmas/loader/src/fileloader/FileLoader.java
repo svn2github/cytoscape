@@ -23,7 +23,7 @@ public class FileLoader {
   static Object null_att = new String("null");
 
   static String NODE_LABEL = "NODENAME";
-  static String EDGE_LABEL = "EDGENAME";
+  static String EDGE_LABEL = "EDGETYPE";
   static String COMMENTS = "^#";
   static String delim = "\t";
 
@@ -40,7 +40,7 @@ public class FileLoader {
       writer.write( NODE_LABEL+delim );
       
       CytoscapeData data = Cytoscape.getNodeNetworkData();
-      CountedIterator atts_i = data.getDefindedAttributes();
+      CountedIterator atts_i = data.getDefinedAttributes();
       while (atts_i.hasNext() ) {
         writer.write( atts_i.next()+delim );
       }
@@ -49,11 +49,11 @@ public class FileLoader {
       while ( nodes_i.hasNext() ) {
         GraphObject obj = (GraphObject)nodes_i.next();
         writer.write( obj.getIdentifier()+delim );
-        atts_i = data.getDefindedAttributes();
+        atts_i = data.getDefinedAttributes();
         while ( atts_i.hasNext() ) {
           // TODO
           Object value = data.getAttributeValueList( obj.getIdentifier(),
-                                                     atts_i.next() );
+                                                     (String)atts_i.next() );
           try {
             writer.write( value+delim );
           } catch ( Exception ex ) {
@@ -68,7 +68,7 @@ public class FileLoader {
       writer.write( NODE_LABEL+delim+EDGE_LABEL+delim+NODE_LABEL+delim );
       
       data = Cytoscape.getEdgeNetworkData();
-      atts_i = data.getDefindedAttributes();
+      atts_i = data.getDefinedAttributes();
       while (atts_i.hasNext() ) {
         writer.write( atts_i.next()+delim );
       }
@@ -77,14 +77,14 @@ public class FileLoader {
       while ( edges_i.hasNext() ) {
         Edge obj = (Edge)edges_i.next();
         writer.write( obj.getSource().getIdentifier()+delim
-                      +obj.getIdentifier()+delim
+                      +(String)data.getAttributeValue( obj.getIdentifier(), cytoscape.data.Semantics.INTERACTION )+delim
                       +obj.getTarget().getIdentifier()+delim);
         
-        atts_i = data.getDefindedAttributes();
+        atts_i = data.getDefinedAttributes();
         while ( atts_i.hasNext() ) {
           // TODO
           Object value = data.getAttributeValueList( obj.getIdentifier(),
-                                                     atts_i.next() );
+                                                     (String)atts_i.next() );
           try {
             writer.write( value+delim );
           } catch ( Exception ex ) {
