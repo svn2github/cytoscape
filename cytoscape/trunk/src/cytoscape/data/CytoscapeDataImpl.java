@@ -1034,11 +1034,15 @@ public class CytoscapeDataImpl
 
     HashMap map = new HashMap();
 
+    if ( attributeName == null || !(attributeName instanceof String) )
+      return map;
+    
     Iterator i = getObjectKeys( attributeName );
 
     while( i.hasNext() ) {
-      GraphObject gobj = ( GraphObject )i.next();
-      map.put( gobj.getIdentifier(), getAttributeValueList( gobj.getIdentifier(), attributeName ) );
+      //GraphObject gobj = ( GraphObject )i.next();
+      String iden = (String)i.next();
+      map.put( iden, getAttributeValueList( iden, attributeName ) );
     }
     return map;
   }
