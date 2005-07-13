@@ -25,7 +25,7 @@ public class LoaderPlugin extends CytoscapePlugin {
     for ( int i = 0; i < args.length; ++i ) {
       if ( args[i].startsWith( "-ss" ) ) {
         i++;
-        FileLoader.loadFileToAttributes( args[i], true, true, "\t" );
+        FileLoader.loadFileToNetwork( args[i], "\t" );
         Cytoscape.firePropertyChange( Cytoscape.ATTRIBUTES_CHANGED, null, null );
       } else if ( args[i].startsWith( "-edge" ) ) {
         i++;
@@ -37,7 +37,7 @@ public class LoaderPlugin extends CytoscapePlugin {
 
 
 
-    Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("File.Load").add( new JMenuItem ( new AbstractAction( "Load Spread Sheet" ) {
+    Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("File.Load").add( new JMenuItem ( new AbstractAction( "Load Network" ) {
         public void actionPerformed ( java.awt.event.ActionEvent e ) {
           // Do this in the GUI Event Dispatch thread...
           SwingUtilities.invokeLater( new Runnable() {

@@ -27,6 +27,12 @@ public class FileLoader {
   static String COMMENTS = "^#";
   static String delim = "\t";
 
+  static String TYPE_BOOLEAN = "BOOLEAN";
+  static String TYPE_INTEGER = "INTEGER";
+  static String TYPE_FLOATING_POINT = "FLOATING_POINT";
+  static String TYPE_STRING = "STRING";
+
+
   public static void saveNetworkToFile ( CyNetwork network,
                                          String file_name ) {
     try {
@@ -122,14 +128,20 @@ public class FileLoader {
                                             boolean is_nodes,
                                             boolean is_delimted,
                                             String delimiter ) {
+
+  }
+
+  public static void loadFileToNetwork ( String file_name,
+                                         String delimiter ) {
+
     
+
     Vector titles = null;
     int max_col = 0;
+    boolean is_nodes = true;
 
-    Pattern p_node = Pattern.compile( NODE_LABEL );
-    Pattern p_edge = Pattern.compile( EDGE_LABEL );
-    Pattern p_comment = Pattern.compile( COMMENTS );
-    
+    List nodes = new ArrayList();
+    List edges = new ArrayList();
 
     try {
       File file = new File( file_name );
@@ -138,43 +150,62 @@ public class FileLoader {
       String oneLine = in.readLine();
       int count = 0;
       while (oneLine != null  ) {
+        
+        
 
-        Matcher m_node = p_node.matcher( oneLine );
-        Matcher m_edge = p_edge.matcher( oneLine );
-        Matcher m_comment = p_comment.matcher( oneLine );
-         
-        if ( m_comment.matches() ) {
+        // EDGE HEADER
+        if ( oneLine.startsWith( NODE_LABEL+delimiter+EDGE_LABEL+delimiter+NODE_LABEL ) ) {
+          String[] line = oneLine.split( delimiter );
+          // populate the title vector
+          titles = new Vector( line.length );
+          for ( int i = 0; i < line.length; ++i ) {
+               titles.add( line[i] );
+          }
+          titles.set(0, "Source" );
+          titles.set(2, "Target" );
+          is_nodes = false;
+        }  
+
+        // NODE HEADER
+        else if ( oneLine.startsWith( NODE_LABEL ) ) {
+          String[] line = oneLine.split( delimiter );
+          // populate the title vector
+          titles = new Vector( line.length );
+          for ( int i = 0; i < line.length; ++i ) {
+               titles.add( line[i] );
+          }
+          is_nodes = true;
+        } //node header 
+
+        // COMMENT
+        else if (oneLine.startsWith("#")) {
           // comment
-          System.out.println( "Comment line: "+oneLine );
+        }  
 
-        } else if ( m_node.matches() && !m_edge.matches() ) {
-          // node header
-          System.out.println( "Node Header:" +oneLine );
-
-        } else if ( m_node.matches() && m_edge.matches() ) {
-          // edge header
-          System.out.println( "Edge Header:" +oneLine );
+        // ATTRIBUTE TYPES
+        else if ( oneLine.startsWith ("TYPE") ) {
         }
 
+        // NETWORK NAME
+        else if ( oneLine.startsWith ("NETWORK" ) ) {
 
+        }
 
-        if (oneLine.startsWith("#")) {
-          // comment
-        } else {
-          // read nodes in
+        // LOAD LINE
+        else {
+          // load a row
           String[] line = oneLine.split( delimiter );
-          if ( titles == null ) {
-            // populate the title vector
-            titles = new Vector( line.length );
-            for ( int i = 0; i < line.length; ++i ) {
-              titles.add( line[i] );
-            }
-          } else {
-            // load a row
-            if ( !loadRow( line, titles, is_nodes ) )
-              System.out.println( "error loading: "+oneLine );
+          
+          GraphObject obj = loadRow( line, titles, is_nodes );
+          if ( obj != null && is_nodes ) {
+            System.out.println( "New Node: "+obj+" "+obj.getIdentifier() );
+            nodes.add( obj );
+          } else if ( obj != null ) {
+            edges.add( obj );
           }
-        }        
+
+        }
+        
         oneLine = in.readLine();
       }
       
@@ -184,16 +215,19 @@ public class FileLoader {
       ex.printStackTrace();
     }
     
+    CyNetwork net = Cytoscape.createNetwork( file_name );
+    net.restoreNodes( nodes, false );
+    net.restoreEdges( edges );
   }
 
 
-  public static boolean loadRow ( String[] row, 
+  public static GraphObject loadRow ( String[] row, 
                                    Vector titles, 
                                    boolean is_nodes ) {
      return loadRow( row, titles, is_nodes, new int[] {} );
    }
 
-  public static boolean loadRow ( String[] row, 
+  public static GraphObject loadRow ( String[] row, 
                                   Vector titles, 
                                   boolean is_nodes,
                                   int[] restricted_colums ) {
@@ -230,7 +264,7 @@ public class FileLoader {
         }
       }
 
-      return true;
+      return node;
     } 
 
     
@@ -251,12 +285,13 @@ public class FileLoader {
       } else {
         // load all columns
         for ( int i = 0; i < row.length; ++i ) {
+          System.out.println( "Edge: "+edge+" Title: "+titles.get( i )+" value: "+row[i] );
           loadEdgeColumn( edge,
                           ( String )titles.get( i ),
                           row[i] );
         }
       }
-      return true;
+      return edge;
     }
 
   }

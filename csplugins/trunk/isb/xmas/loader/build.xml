@@ -94,7 +94,7 @@
    <echo message=" COMPILE loader "/>
 
     <mkdir dir="${loader.classes.dir}"/>
-    <javac compiler= "jikes"
+    <javac 
            srcdir="${loader.src.dir}"
            excludes="${loader.excludes}"
            classpathref="loader.project.class.path"

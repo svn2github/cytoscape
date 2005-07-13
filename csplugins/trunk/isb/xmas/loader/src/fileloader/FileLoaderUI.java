@@ -169,10 +169,8 @@ public class FileLoaderUI
       else if ( semicolon.isSelected() )
         delim.append( ";" );
       
-      FileLoader.loadFileToAttributes( file.toString(),
-                                       nodes.isSelected(),
-                                       delimited.isSelected(),
-                                       delim.toString() );
+      FileLoader.loadFileToNetwork( file.toString(),
+                                    delim.toString() );
       Cytoscape.firePropertyChange( Cytoscape.ATTRIBUTES_CHANGED, null, null );
       return;
     }
@@ -195,7 +193,7 @@ public class FileLoaderUI
     } 
 
    
-    else if ( e.getSource() == fileField ) {
+    if ( e.getSource() == fileField ) {
       try {
         file = new File( fileField.getText() );
       } catch ( Exception ex ) {
