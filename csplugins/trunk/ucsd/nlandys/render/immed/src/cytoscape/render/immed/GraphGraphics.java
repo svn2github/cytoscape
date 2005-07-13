@@ -34,11 +34,11 @@ public final class GraphGraphics
   public static final byte SHAPE_PARALLELOGRAM = 5;
   public static final byte SHAPE_TRIANGLE = 6;
 
-  public static final byte ARROW_NONE = (byte) -1;
-  public static final byte ARROW_DISC = (byte) -2;
-  public static final byte ARROW_DELTA = (byte) -3;
-  public static final byte ARROW_DIAMOND = (byte) -4;
-  public static final byte ARROW_TEE = (byte) -5;
+  public static final byte ARROW_NONE = -1;
+  public static final byte ARROW_DISC = -2;
+  public static final byte ARROW_DELTA = -3;
+  public static final byte ARROW_DIAMOND = -4;
+  public static final byte ARROW_TEE = -5;
 
   /**
    * The image that was passed into the constructor.
@@ -470,7 +470,7 @@ public final class GraphGraphics
    *                                   is exactly at an endpoint
    *                                   specified</td>                     </tr>
    *   <tr>  <td>ARROW_TEE</td>      <td>the center of the tee intersection
-   *                                   is lies at a specified endpoint; the
+   *                                   lies at a specified endpoint; the
    *                                   span of the top of the tee is
    *                                   the arrow width specified, and the
    *                                   width of the top of the tee line
@@ -507,6 +507,12 @@ public final class GraphGraphics
         throw new IllegalArgumentException("arrow1Width < edgeThickness");
       if (dashLength < 0.0f)
         throw new IllegalArgumentException("dashLength < 0"); }
+    // We're giving CAP_BUTT ends to edge segments for the simple reason -
+    // what if one end is ARROW_NONE and the other is ARROW_DELTA with the
+    // delta arrowhead the same width as the edge?  We can't convince
+    // BasicStroke to have two different caps on both ends.  So instead, we
+    // will draw CAP_BUTT and manually fill a disc at one or both ends if
+    // we need to.
     if (m_dash[0] != dashLength || m_currStrokeWidth != edgeThickness)
       setStroke(edgeThickness, dashLength);
     m_line2d.setLine(x0, y0, x1, y1);
