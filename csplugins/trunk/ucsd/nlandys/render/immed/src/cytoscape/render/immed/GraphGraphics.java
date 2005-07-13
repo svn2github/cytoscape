@@ -34,6 +34,12 @@ public final class GraphGraphics
   public static final byte SHAPE_PARALLELOGRAM = 5;
   public static final byte SHAPE_TRIANGLE = 6;
 
+  public static final byte ARROW_NONE = (byte) -1;
+  public static final byte ARROW_DISC = (byte) -2;
+  public static final byte ARROW_DELTA = (byte) -3;
+  public static final byte ARROW_DIAMOND = (byte) -4;
+  public static final byte ARROW_TEE = (byte) -5;
+
   /**
    * The image that was passed into the constructor.
    */
@@ -85,8 +91,8 @@ public final class GraphGraphics
   }
 
   /**
-   * Clears image area with the specified background color, and sets an
-   * appropriate transformation of coordinate systems.
+   * Clears image area with background color specified in constructor,
+   * and sets an appropriate transformation of coordinate systems.
    * It is healthy to call this method right before starting
    * to render a new picture.  Don't try to be clever in not calling this
    * method.<p>
@@ -99,7 +105,7 @@ public final class GraphGraphics
    *   will be rendered exactly in the middle of the image going top to bottom.
    * @param scaleFactor the scaling that is to take place when rendering nodes;
    *   a distance of 1 in node coordinates translates to a distance of
-   *   scaleFactor in image coordinates.
+   *   scaleFactor pixels in the image.
    * @exception IllegalThreadStateException if the calling thread isn't the
    *   AWT event handling thread.
    * @exception IllegalArgumentException if scaleFactor is not positive.
@@ -443,12 +449,47 @@ public final class GraphGraphics
   }
 
   /**
+   * The arrow types must each be one of the ARROW_* constants.
+   * <blockquote><table border="1" cellpadding="5" cellspacing="0">
+   *   <tr>  <th>arrow type</th>     <th>placement of arrow</th>          </tr>
+   *   <tr>  <td>ARROW_NONE</td>     <td>the edge line segment has
+   *                                   endpoints specified, and
+   *                                   the line segment has round
+   *                                   ends (center of round
+   *                                   semicircle end exactly equal to
+   *                                   endpoint specified)</td>           </tr>
+   *   <tr>  <td>ARROW_DISC</td>     <td>the disc arrowhead is placed
+   *                                   such that its center is at a
+   *                                   specified endpoint; the diameter
+   *                                   of the disk is the arrow width
+   *                                   specified</td>                     </tr>
+   *   <tr>  <td>ARROW_DELTA</td>    <td>the sharp tip of the arrowhead
+   *                                   is exactly at an endpint
+   *                                   specified</td>                     </tr>
+   *   <tr>  <td>ARROW_DIAMOND</td>  <td>the sharp tip of the arrowhead
+   *                                   is exactly at an endpoint
+   *                                   specified</td>                     </tr>
+   *   <tr>  <td>ARROW_TEE</td>      <td>the center of the tee intersection
+   *                                   is lies at a specified endpoint; the
+   *                                   span of the top of the tee is
+   *                                   the arrow width specified, and the
+   *                                   width of the top of the tee line
+   *                                   segment is a fixed fraction of
+   *                                   its span</td></tr>
+   * <table></blockquote>
    * @param dashLength a positive value representing the length of dashes
    *   on the edge, or zero to indicate that the edge is solid.
-   * @exception IllegalArgumentException if edgeThickness is less than zero or
-   *   if dashLength is less than zero.
+   * @exception IllegalArgumentException if edgeThickness is less than zero,
+   *   if dashLength is less than zero, or if any one of the arrow widths
+   *   is less than edgeThickness.
    */
-  public final void drawEdgeFull(final float x0, final float y0,
+  public final void drawEdgeFull(final byte arrowType0,
+                                 final float arrow0Width,
+                                 final Color arrow0Color,
+                                 final byte arrowType1,
+                                 final float arrow1Width,
+                                 final Color arrow1Color,
+                                 final float x0, final float y0,
                                  final float x1, final float y1,
                                  final float edgeThickness,
                                  final Color edgeColor,
@@ -460,6 +501,10 @@ public final class GraphGraphics
           ("calling thread is not AWT event dispatcher");
       if (edgeThickness < 0.0f)
         throw new IllegalArgumentException("edgeThickness < 0");
+      if (arrow0Width < edgeThickness)
+        throw new IllegalArgumentException("arrow0Width < edgeThickness");
+      if (arrow1Width < edgeThickness)
+        throw new IllegalArgumentException("arrow1Width < edgeThickness");
       if (dashLength < 0.0f)
         throw new IllegalArgumentException("dashLength < 0"); }
     if (m_dash[0] != dashLength || m_currStrokeWidth != edgeThickness)
