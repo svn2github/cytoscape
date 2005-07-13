@@ -42,7 +42,6 @@ public final class GraphGraphics
   private final Color m_bgColor;
   private final boolean m_debug;
   private final Rectangle2D.Float m_rect2d;
-  private final Rectangle2D.Float m_rect2d_;
   private final Ellipse2D.Float m_ellp2d;
   private final GeneralPath m_poly2d;
   private final GeneralPath m_innerPoly2d;
@@ -75,7 +74,6 @@ public final class GraphGraphics
     m_bgColor = bgColor;
     m_debug = debug;
     m_rect2d = new Rectangle2D.Float();
-    m_rect2d_ = new Rectangle2D.Float();
     m_ellp2d = new Ellipse2D.Float();
     m_poly2d = new GeneralPath();
     m_innerPoly2d = new GeneralPath();
