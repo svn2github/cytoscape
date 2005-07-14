@@ -507,8 +507,8 @@ public final class GraphGraphics
         throw new IllegalArgumentException("arrow1Width < edgeThickness");
       if (dashLength < 0.0f)
         throw new IllegalArgumentException("dashLength < 0"); }
-    // We're giving CAP_BUTT ends to edge segments for the simple reason -
-    // what if one end is ARROW_NONE and the other is ARROW_DELTA with the
+    // We're giving CAP_BUTT ends to edge segments for a simple reason:
+    // What if one end is ARROW_NONE and the other is ARROW_DELTA with the
     // delta arrowhead the same width as the edge?  We can't convince
     // BasicStroke to have two different caps on both ends.  So instead, we
     // will draw CAP_BUTT and manually fill a disc at one or both ends if
