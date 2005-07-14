@@ -526,38 +526,54 @@ public final class GraphGraphics
     m_line2d.setLine(x0, y0, x1, y1);
     m_g2d.setColor(edgeColor);
     m_g2d.draw(m_line2d);
+
+    // Take care of arrow at point 0.
     if (arrowType0 == ARROW_NONE) {
       m_ellp2d.setFrame(x0 - edgeThickness / 2.0f, y0 - edgeThickness / 2.0f,
                         edgeThickness, edgeThickness);
+      // Color is already set to edge color.
       m_g2d.fill(m_ellp2d); }
     else {
-      switch (arrowType0) {
-      case ARROW_DISC:
-        break;
-      case ARROW_DELTA:
-        break;
-      case ARROW_DIAMOND:
-        break;
-      case ARROW_TEE:
-        break;
-      default:
-        throw new IllegalArgumentException("arrowType0 is not recognized"); } }
-    if (arrowType1 == ARROW_NONE) {
-      m_ellp2d.setFrame(x1 - edgeThickness / 2.0f, y1 - edgeThickness / 2.0f,
-                        edgeThickness, edgeThickness);
-      m_g2d.fill(m_ellp2d); }
-    else {
-      switch (arrowType1) {
-      case ARROW_DISC:
-        break;
-      case ARROW_DELTA:
-        break;
-      case ARROW_DIAMOND:
-        break;
-      case ARROW_TEE:
-        break;
-      default:
-        throw new IllegalArgumentException("arrowType1 is not recognized"); } }
+      m_g2d.setColor(arrow0Color);
+      final Shape arrow0Shape;
+      if (arrowType0 == ARROW_DISC) {
+        m_ellp2d.setFrame(x0 - arrow0Width / 2.0f, y0 - arrow0Width / 2.0f,
+                          arrow0Width, arrow0Width);
+        arrow0Shape = m_ellp2d; }
+      else {
+        switch (arrowType0) {
+        case ARROW_DELTA:
+          arrow0Shape = null;
+          break;
+        case ARROW_DIAMOND:
+          arrow0Shape = null;
+          break;
+        case ARROW_TEE:
+          arrow0Shape = null;
+          break;
+        default:
+          throw new IllegalArgumentException
+            ("arrowType0 is not recognized"); } }
+      m_g2d.fill(arrow0Shape); }
+
+//     // Take care of arrow at point 1.
+//     if (arrowType1 == ARROW_NONE) {
+//       m_ellp2d.setFrame(x1 - edgeThickness / 2.0f, y1 - edgeThickness / 2.0f,
+//                         edgeThickness, edgeThickness);
+//       m_g2d.fill(m_ellp2d); }
+//     else if (arrowType1 == ARROW_DISC) { }
+//     else {
+//       switch (arrowType1) {
+//       case ARROW_DISC:
+//         break;
+//       case ARROW_DELTA:
+//         break;
+//       case ARROW_DIAMOND:
+//         break;
+//       case ARROW_TEE:
+//         break;
+//       default:
+//         throw new IllegalArgumentException("arrowType1 is not recognized"); } }
   }
 
   private final void setStroke(final float width, final float dashLength)
