@@ -185,6 +185,7 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 								Some simple <a href="http://db.systemsbiology.net/cytoscape/projects/static/dreiss/cytoTalk/examples"> example Perl, Python, and R scripts</a> have been written. </li>
 			</ul>
 			Released by: David J. Reiss, Schwikowski Group, <a href="http://www.systemsbiology.org/">Institute for Systems Biology</a>.
+			Used by <a href="http://labs.systemsbiology.net/galitski/hepc/">the Hepatitis C Virus infection project.</a>
 		</td>
 		<td width="20%" valign="top">
 				 Verified to work in 2.0, 2.1.
@@ -327,6 +328,7 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 						</li>
 					</ul>
 					Released by: David J. Reiss, Galitski and Schwikowski Groups, <a href="http://www.systemsbiology.org/">Institute for Systems Biology</a>.
+                    Used by <a href="http://labs.systemsbiology.net/galitski/hepc/">the Hepatitis C Virus infection project.</a>
 				</td>
 				<td width="20%" valign="top">
 				 Verified to work in 2.0, 2.1.
@@ -546,7 +548,7 @@ Scardoni.
 					<hr>
 				</td>
 			</tr>
-      
+
 			<tr>
 				<td width="20%" valign="top">
 					<b>PSI-MI Import/Export Plugin</b><font size="-1">

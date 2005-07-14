@@ -95,7 +95,7 @@
 										<tr valign="top">
 											<td width="47%" valign="top">
 												<br>New Features include:
-<br>					
+<br>
 <ul>
   <li>Major performance improvements.</li>
   <li>Complete on-line help system.</li>
@@ -144,8 +144,21 @@
 										<b>
 											Research using Cytoscape</b>
 									</big>
-									&nbsp;&nbsp; [<a href="pubs.php">View All Publications</a>]
-									<br><br><b>Genome Biology. March, 2005</b>
+									&nbsp;&nbsp; [<a href="pubs.php">View All Publications</a>]<P>
+									<br>
+									                                    <p>
+                                                                            <b>BMC Bioinformatics, July 2005</b>
+                                                                            <br>
+                                                                            David J Reiss , Iliana Avila-Campillo , Vesteinn Thorsson , Benno Schwikowski  and Timothy Galitski
+                                                                            <br>
+                                                                            Tools enabling the elucidation of molecular pathways active in human disease: Application to Hepatitis C virus infection
+                                                                            <br>
+                                                                            BMC Bioinformatics 2005, 6:154
+                                                                            <br>
+                                                                            [<a href="http://www.genome.org/cgi/content/abstract/14/11/2221">Abstract</a>] [<a href="http://www.genome.org/cgi/reprint/14/11/2221">PDF</a>]
+                                                                            <br>
+<P>
+									<br><b>Genome Biology. March, 2005</b>
 Becky L Drees, Vesteinn Thorsson, Gregory W Carter, Alexander W Rives,
 Marisa Z Raymond, Iliana Avila-Campillo, Paul Shannon and Timothy
 Galitski.
@@ -158,11 +171,11 @@ phenotype data. Genome Biology.
 									<p><b>Proc Natl Acad Sci U S A. Feb 8, 2005</b><BR>
     Sharan R, Suthram S, Kelley RM, Kuhn T, McCuine S, Uetz P, Sittler T, Karp RM, Ideker T.<br>Conserved patterns of protein interaction in multiple species.
 <br>
-Proc Natl Acad Sci U S A. 2005 Feb 8;102(6):1974-9. Epub 2005 Feb 01. 
+Proc Natl Acad Sci U S A. 2005 Feb 8;102(6):1974-9. Epub 2005 Feb 01.
 									<br>
 									[<A HREF="http://www.pnas.org/cgi/content/abstract/102/6/1974?maxtoshow=&HITS=10&hits=10&RESULTFORMAT=&fulltext=ideker&searchid=1109093476283_4753&stored_search=&FIRSTINDEX=0&journalcode=pnas">Abstract</a>] [<A HREF="http://www.pnas.org/cgi/content/full/102/6/1974?maxtoshow=&HITS=10&hits=10&RESULTFORMAT=&fulltext=ideker&searchid=1109093562510_4765&stored_search=&FIRSTINDEX=0&journalcode=pnas">Full Text</A>] [<A HREF="http://www.pnas.org/cgi/reprint/102/6/1974?maxtoshow=&HITS=10&hits=10&RESULTFORMAT=&fulltext=ideker&searchid=1109093578097_4770&stored_search=&FIRSTINDEX=0&journalcode=pnas">PDF</A>]<br>
 								<br>
-									<p>
+                                   	<p>
                                         <b>Genome Research, November 2004 (cover article)</b>
                                         <br>
                                         Baliga NS, Bonneau R, Facciotti MT, Pan M, Glusman G, Deutsch EW, Shannon P, Chiu Y, Weng RS, Gan RR, Hung P, Date SV, Marcotte E, Hood L, Ng WV

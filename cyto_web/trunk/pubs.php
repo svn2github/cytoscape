@@ -19,7 +19,18 @@
 </table>
 <? include "nav.php"; ?>
 <div id="indent">
-<br><b>Genome Biology. March, 2005</b>
+
+<br><b>BMC Bioinformatics 2005, 6:154</b><BR>
+Tools enabling the elucidation of molecular pathways active in human disease: Application to Hepatitis C virus infection
+<BR>
+David J Reiss , Iliana Avila-Campillo , Vesteinn Thorsson , Benno Schwikowski  and Timothy Galitski
+<br>
+[<A HREF="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=pubmed&dopt=Abstract&list_uids=15967031">Abstract</A>]
+[<A HREF="http://www.biomedcentral.com/1471-2105/6/154">Full Text</A>]
+[<A HREF="http://www.biomedcentral.com/content/pdf/1471-2105-6-154.pdf">PDF</A>]
+<P>
+
+<br><b>Genome Biology. March, 2005</b><BR>
 Becky L Drees, Vesteinn Thorsson, Gregory W Carter, Alexander W Rives,
 Marisa Z Raymond, Iliana Avila-Campillo, Paul Shannon and Timothy
 Galitski.
@@ -28,14 +39,14 @@ phenotype data. Genome Biology.
 <br>
 [<A HREF="http://genomebiology.com/2005/6/4/R38/abstract">Abstract</A>]
 [<A HREF="http://genomebiology.com/2005/6/4/R38">Full Text</A>]
-[<A HREF="http://genomebiology.com/content/pdf/gb-2005-6-4-r38.pdf">PDF</A>]		
+[<A HREF="http://genomebiology.com/content/pdf/gb-2005-6-4-r38.pdf">PDF</A>]
     <br>
 <p><b>Proc Natl Acad Sci U S A. Feb 8, 2005</b><BR>
     Sharan R, Suthram S, Kelley RM, Kuhn T, McCuine S, Uetz P, Sittler T, Karp RM, Ideker T.<br>Conserved patterns of protein interaction in multiple species.
 <br>
-Proc Natl Acad Sci U S A. 2005 Feb 8;102(6):1974-9. Epub 2005 Feb 01. 
+Proc Natl Acad Sci U S A. 2005 Feb 8;102(6):1974-9. Epub 2005 Feb 01.
 									<br>
-									[<A HREF="http://www.pnas.org/cgi/content/abstract/102/6/1974?maxtoshow=&HITS=10&hits=10&RESULTFORMAT=&fulltext=ideker&searchid=1109093476283_4753&stored_search=&FIRSTINDEX=0&journalcode=pnas">Abstract</a>] [<A HREF="http://www.pnas.org/cgi/content/full/102/6/1974?maxtoshow=&HITS=10&hits=10&RESULTFORMAT=&fulltext=ideker&searchid=1109093562510_4765&stored_search=&FIRSTINDEX=0&journalcode=pnas">Full Text</A>] [<A HREF="http://www.pnas.org/cgi/reprint/102/6/1974?maxtoshow=&HITS=10&hits=10&RESULTFORMAT=&fulltext=ideker&searchid=1109093578097_4770&stored_search=&FIRSTINDEX=0&journalcode=pnas">PDF</A>]<br>    
+									[<A HREF="http://www.pnas.org/cgi/content/abstract/102/6/1974?maxtoshow=&HITS=10&hits=10&RESULTFORMAT=&fulltext=ideker&searchid=1109093476283_4753&stored_search=&FIRSTINDEX=0&journalcode=pnas">Abstract</a>] [<A HREF="http://www.pnas.org/cgi/content/full/102/6/1974?maxtoshow=&HITS=10&hits=10&RESULTFORMAT=&fulltext=ideker&searchid=1109093562510_4765&stored_search=&FIRSTINDEX=0&journalcode=pnas">Full Text</A>] [<A HREF="http://www.pnas.org/cgi/reprint/102/6/1974?maxtoshow=&HITS=10&hits=10&RESULTFORMAT=&fulltext=ideker&searchid=1109093578097_4770&stored_search=&FIRSTINDEX=0&journalcode=pnas">PDF</A>]<br>
 	<p>
 		<b>Genome Research, November 2004 (cover article)</b>
 		<br>
