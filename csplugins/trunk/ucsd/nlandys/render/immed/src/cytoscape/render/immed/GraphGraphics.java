@@ -522,19 +522,38 @@ public final class GraphGraphics
     m_line2d.setLine(x0, y0, x1, y1);
     m_g2d.setColor(edgeColor);
     m_g2d.draw(m_line2d);
-    switch (arrowType0) {
-    case ARROW_NONE:
-      break;
-    case ARROW_DISC:
-      break;
-    case ARROW_DELTA:
-      break;
-    case ARROW_DIAMOND:
-      break;
-    case ARROW_TEE:
-      break;
-    default:
-      throw new IllegalArgumentException("arrowType0 is not recognized"); }
+    if (arrowType0 == ARROW_NONE) {
+      m_ellp2d.setFrame(x0 - edgeThickness / 2.0f, y0 - edgeThickness / 2.0f,
+                        edgeThickness, edgeThickness);
+      m_g2d.fill(m_ellp2d); }
+    else {
+      switch (arrowType0) {
+      case ARROW_DISC:
+        break;
+      case ARROW_DELTA:
+        break;
+      case ARROW_DIAMOND:
+        break;
+      case ARROW_TEE:
+        break;
+      default:
+        throw new IllegalArgumentException("arrowType0 is not recognized"); } }
+    if (arrowType1 == ARROW_NONE) {
+      m_ellp2d.setFrame(x1 - edgeThickness / 2.0f, y1 - edgeThickness / 2.0f,
+                        edgeThickness, edgeThickness);
+      m_g2d.fill(m_ellp2d); }
+    else {
+      switch (arrowType1) {
+      case ARROW_DISC:
+        break;
+      case ARROW_DELTA:
+        break;
+      case ARROW_DIAMOND:
+        break;
+      case ARROW_TEE:
+        break;
+      default:
+        throw new IllegalArgumentException("arrowType1 is not recognized"); } }
   }
 
   private final void setStroke(final float width, final float dashLength)
