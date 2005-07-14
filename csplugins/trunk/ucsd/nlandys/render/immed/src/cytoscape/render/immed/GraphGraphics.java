@@ -514,12 +514,27 @@ public final class GraphGraphics
     // delta arrowhead the same width as the edge?  We can't convince
     // BasicStroke to have two different caps on both ends.  So instead, we
     // will draw CAP_BUTT and manually fill a disc at one or both ends if
-    // we need to.
+    // we need to.  My tests have shown that filling a disc takes a
+    // negligible amount of time compared to filling the thin polygon
+    // which is the edge line segment.
     if (m_dash[0] != dashLength || m_currStrokeWidth != edgeThickness)
       setStroke(edgeThickness, dashLength);
     m_line2d.setLine(x0, y0, x1, y1);
     m_g2d.setColor(edgeColor);
     m_g2d.draw(m_line2d);
+    switch (arrowType0) {
+    case ARROW_NONE:
+      break;
+    case ARROW_DISC:
+      break;
+    case ARROW_DELTA:
+      break;
+    case ARROW_DIAMOND:
+      break;
+    case ARROW_TEE:
+      break;
+    default:
+      throw new IllegalArgumentException("arrowType0 is not recognized"); }
   }
 
   private final void setStroke(final float width, final float dashLength)
