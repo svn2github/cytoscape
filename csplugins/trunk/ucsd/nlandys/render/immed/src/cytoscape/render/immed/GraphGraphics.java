@@ -55,6 +55,7 @@ public final class GraphGraphics
   private final float[] m_dash;
   private final float[] m_pathBuff;
   private final double[] m_ptsBuff;
+  private final AffineTransform m_xformUtil;
   private Graphics2D m_g2d;
   private Graphics m_gMinimal;
   private AffineTransform m_currXform;
@@ -87,6 +88,7 @@ public final class GraphGraphics
     m_dash = new float[] { 0.0f, 0.0f };
     m_pathBuff = new float[6];
     m_ptsBuff = new double[4];
+    m_xformUtil = new AffineTransform();
     clear(0.0d, 0.0d, 1.0d);
   }
 
@@ -523,38 +525,65 @@ public final class GraphGraphics
     // which is the edge line segment.
     if (m_dash[0] != dashLength || m_currStrokeWidth != edgeThickness)
       setStroke(edgeThickness, dashLength);
-    m_line2d.setLine(x0, y0, x1, y1);
-    m_g2d.setColor(edgeColor);
-    m_g2d.draw(m_line2d);
 
-    // Take care of arrow at point 0.
-    if (arrowType0 == ARROW_NONE) {
-      m_ellp2d.setFrame(x0 - edgeThickness / 2.0f, y0 - edgeThickness / 2.0f,
-                        edgeThickness, edgeThickness);
-      // Color is already set to edge color.
-      m_g2d.fill(m_ellp2d); }
-    else {
-      m_g2d.setColor(arrow0Color);
-      final Shape arrow0Shape;
-      if (arrowType0 == ARROW_DISC) {
-        m_ellp2d.setFrame(x0 - arrow0Width / 2.0f, y0 - arrow0Width / 2.0f,
-                          arrow0Width, arrow0Width);
-        arrow0Shape = m_ellp2d; }
-      else {
-        switch (arrowType0) {
-        case ARROW_DELTA:
-          arrow0Shape = null;
-          break;
-        case ARROW_DIAMOND:
-          arrow0Shape = null;
-          break;
-        case ARROW_TEE:
-          arrow0Shape = null;
-          break;
-        default:
-          throw new IllegalArgumentException
-            ("arrowType0 is not recognized"); } }
-      m_g2d.fill(arrow0Shape); }
+    // It's going to be tough to elegantly factor this code.  For now, treat
+    // each arrow type independently.  Later, see what parts are common to
+    // which arrows and try to factor the code.
+    final double len = Math.sqrt((x1 - x0) * (x1 - x0) +
+                                 (y1 - y0) * (y1 - y0));
+
+    final float x0Adj;
+    final float y0Adj;
+    switch (arrowType0) {
+    case ARROW_NONE:
+    case ARROW_DISC:
+    case ARROW_TEE:
+      // Don't change endpoint 0.
+      x0Adj = x0; y0Adj = y0;
+      break;
+    case ARROW_DELTA:
+      // Move the endpoint 0 towards endpoint 1 by arrow0Width * 2.
+      if (len == 0.0) { x0Adj = x0; y0Adj = y0; break; }
+      final double t = (2.0d * arrowWidth) / len;
+      break;
+    case ARROW_DIAMOND:
+      // Move the endpoint 0 towards endpoint 1 by arrow0Width.
+      break;
+    default:
+      throw new IllegalArgumentException("arrowType0 not recognized"); }
+
+//     m_line2d.setLine(x0, y0, x1, y1);
+//     m_g2d.setColor(edgeColor);
+//     m_g2d.draw(m_line2d);
+
+//     // Take care of arrow at point 0.
+//     if (arrowType0 == ARROW_NONE) {
+//       m_ellp2d.setFrame(x0 - edgeThickness / 2.0f, y0 - edgeThickness / 2.0f,
+//                         edgeThickness, edgeThickness);
+//       // Color is already set to edge color.
+//       m_g2d.fill(m_ellp2d); }
+//     else {
+//       m_g2d.setColor(arrow0Color);
+//       final Shape arrow0Shape;
+//       if (arrowType0 == ARROW_DISC) {
+//         m_ellp2d.setFrame(x0 - arrow0Width / 2.0f, y0 - arrow0Width / 2.0f,
+//                           arrow0Width, arrow0Width);
+//         arrow0Shape = m_ellp2d; }
+//       else {
+//         switch (arrowType0) {
+//         case ARROW_DELTA:
+//           arrow0Shape = null;
+//           break;
+//         case ARROW_DIAMOND:
+//           arrow0Shape = null;
+//           break;
+//         case ARROW_TEE:
+//           arrow0Shape = null;
+//           break;
+//         default:
+//           throw new IllegalArgumentException
+//             ("arrowType0 is not recognized"); } }
+//       m_g2d.fill(arrow0Shape); }
 
 //     // Take care of arrow at point 1.
 //     if (arrowType1 == ARROW_NONE) {
