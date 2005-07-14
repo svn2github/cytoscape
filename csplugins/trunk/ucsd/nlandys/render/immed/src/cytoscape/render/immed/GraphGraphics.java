@@ -455,29 +455,33 @@ public final class GraphGraphics
    * <blockquote><table border="1" cellpadding="5" cellspacing="0">
    *   <tr>  <th>arrow type</th>     <th>placement of arrow</th>          </tr>
    *   <tr>  <td>ARROW_NONE</td>     <td>the edge line segment has
-   *                                   endpoints specified, and
-   *                                   the line segment has round
-   *                                   ends (center of round
+   *                                   endpoint specified, and
+   *                                   the line segment has a round
+   *                                   end (center of round
    *                                   semicircle end exactly equal to
    *                                   endpoint specified)</td>           </tr>
    *   <tr>  <td>ARROW_DISC</td>     <td>the disc arrowhead is placed
-   *                                   such that its center is at a
+   *                                   such that its center is at the
    *                                   specified endpoint; the diameter
    *                                   of the disk is the arrow width
    *                                   specified</td>                     </tr>
    *   <tr>  <td>ARROW_DELTA</td>    <td>the sharp tip of the arrowhead
-   *                                   is exactly at an endpint
+   *                                   is exactly at the endpint
+   *                                   specified; the widest part of the
+   *                                   delta wedge is the arrow width
    *                                   specified</td>                     </tr>
    *   <tr>  <td>ARROW_DIAMOND</td>  <td>the sharp tip of the arrowhead
-   *                                   is exactly at an endpoint
+   *                                   is exactly at the endpoint
+   *                                   specified; the widest part of the
+   *                                   delta wedge is the arrow width
    *                                   specified</td>                     </tr>
    *   <tr>  <td>ARROW_TEE</td>      <td>the center of the tee intersection
-   *                                   lies at a specified endpoint; the
+   *                                   lies at the specified endpoint; the
    *                                   span of the top of the tee is
    *                                   the arrow width specified, and the
    *                                   width of the top of the tee line
    *                                   segment is a fixed fraction of
-   *                                   its span</td></tr>
+   *                                   its span</td>                      </tr>
    * <table></blockquote>
    * @param dashLength a positive value representing the length of dashes
    *   on the edge, or zero to indicate that the edge is solid.
