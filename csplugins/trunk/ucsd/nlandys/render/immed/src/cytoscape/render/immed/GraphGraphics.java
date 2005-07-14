@@ -454,6 +454,8 @@ public final class GraphGraphics
 
   /**
    * The arrow types must each be one of the ARROW_* constants.
+   * The arrow at endpoint 1 is always on top of the arrow at endpoint 0
+   * because the arrow at endpoint 0 gets rendered first.
    * <blockquote><table border="1" cellpadding="5" cellspacing="0">
    *   <tr>  <th>arrow type</th>     <th>placement of arrow</th>          </tr>
    *   <tr>  <td>ARROW_NONE</td>     <td>the edge line segment has
@@ -515,22 +517,14 @@ public final class GraphGraphics
         throw new IllegalArgumentException("arrow1Width < edgeThickness");
       if (dashLength < 0.0f)
         throw new IllegalArgumentException("dashLength < 0"); }
-    // We're giving CAP_BUTT ends to edge segments for a simple reason:
-    // What if one end is ARROW_NONE and the other is ARROW_DELTA with the
-    // delta arrowhead the same width as the edge?  We can't convince
-    // BasicStroke to have two different caps on both ends.  So instead, we
-    // will draw CAP_BUTT and manually fill a disc at one or both ends if
-    // we need to.  My tests have shown that filling a disc takes a
-    // negligible amount of time compared to filling the thin polygon
-    // which is the edge line segment.
-    if (m_dash[0] != dashLength || m_currStrokeWidth != edgeThickness)
-      setStroke(edgeThickness, dashLength);
 
-    // It's going to be tough to elegantly factor this code.  For now, treat
-    // each arrow type independently.  Later, see what parts are common to
-    // which arrows and try to factor the code.
     final double len = Math.sqrt((x1 - x0) * (x1 - x0) +
                                  (y1 - y0) * (y1 - y0));
+    // If the length of the edge is zero we're going to skip completely over
+    // all rendering, modulo rendering a point just to be consistent with
+    // the low detail rendering.  In the future, it would be nice to have a
+    // more elegant rendering strategy in this case.
+    if (len == 0.0d) return;
 
     final float x0Adj;
     final float y0Adj;
@@ -551,6 +545,17 @@ public final class GraphGraphics
       break;
     default:
       throw new IllegalArgumentException("arrowType0 not recognized"); }
+
+    // We're giving CAP_BUTT ends to edge segments for a simple reason:
+    // What if one end is ARROW_NONE and the other is ARROW_DELTA with the
+    // delta arrowhead the same width as the edge?  We can't convince
+    // BasicStroke to have two different caps on both ends.  So instead, we
+    // will draw CAP_BUTT and manually fill a disc at one or both ends if
+    // we need to.  My tests have shown that filling a disc takes a
+    // negligible amount of time compared to filling the thin polygon
+    // which is the edge line segment.
+    if (m_dash[0] != dashLength || m_currStrokeWidth != edgeThickness)
+      setStroke(edgeThickness, dashLength);
 
 //     m_line2d.setLine(x0, y0, x1, y1);
 //     m_g2d.setColor(edgeColor);
