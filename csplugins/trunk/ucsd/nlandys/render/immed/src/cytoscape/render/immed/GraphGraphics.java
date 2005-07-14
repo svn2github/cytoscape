@@ -521,9 +521,7 @@ public final class GraphGraphics
     final double len = Math.sqrt((x1 - x0) * (x1 - x0) +
                                  (y1 - y0) * (y1 - y0));
     // If the length of the edge is zero we're going to skip completely over
-    // all rendering, modulo rendering a point just to be consistent with
-    // the low detail rendering.  In the future, it would be nice to have a
-    // more elegant rendering strategy in this case.
+    // all rendering.  This may not be the 100% correct approach.  We'll see.
     if (len == 0.0d) return;
 
     final float x0Adj;
@@ -537,14 +535,42 @@ public final class GraphGraphics
       break;
     case ARROW_DELTA:
       // Move the endpoint 0 towards endpoint 1 by arrow0Width * 2.
-      if (len == 0.0) { x0Adj = x0; y0Adj = y0; break; }
-      final double t = (2.0d * arrowWidth) / len;
+      final double t = (2.0d * arrow0Width) / len;
+      x0Adj = (float) (t * (x1 - x0) + x0);
+      y0Adj = (float) (t * (y1 - y0) + y0);
       break;
     case ARROW_DIAMOND:
       // Move the endpoint 0 towards endpoint 1 by arrow0Width.
+      final double u = ((double) arrow0Width) / len;
+      x0Adj = (float) (u * (x1 - x0) + x0);
+      y0Adj = (float) (u * (y1 - y0) + y0);
       break;
     default:
       throw new IllegalArgumentException("arrowType0 not recognized"); }
+
+    final float x1Adj;
+    final float y1Adj;
+    switch (arrowType1) {
+    case ARROW_NONE:
+    case ARROW_DISC:
+    case ARROW_TEE:
+      // Don't change endpoint 1.
+      x1Adj = x1; y1Adj = y1;
+      break;
+    case ARROW_DELTA:
+      // Move the endpoint 1 towards endpoint 0 by arrow1Width * 2.
+      final double t = (2.0d * arrow1Width) / len;
+      x1Adj = (float) (t * (x0 - x1) + x1);
+      y1Adj = (float) (t * (y0 - y1) + y1);
+      break;
+    case ARROW_DIAMOND:
+      // Move the endpoint 1 towards endpoint 0 by arrow1Width.
+      final double u = ((double) arrow1Width) / len;
+      x1Adj = (float) (u * (x0 - x1) + x1);
+      y1Adj = (float) (u * (y0 - y1) + y1);
+      break;
+    default:
+      throw new IllegalArgumentException("arrowType1 not recognized"); }
 
     // We're giving CAP_BUTT ends to edge segments for a simple reason:
     // What if one end is ARROW_NONE and the other is ARROW_DELTA with the
