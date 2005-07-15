@@ -591,6 +591,40 @@ Scardoni.
 			</tr>
 			<tr>
 				<td width="20%" valign="top">
+					<b>ShortestPath Plugin</b><font size="-1">
+						<br>
+						Version: 0.3
+						<br>
+						Release Date: July 13, 2005</font>
+				</td>
+				<td width="40%" valign="top">
+					<p>
+					ShortestPath is a plugin for Cytoscape 2.1 to show the shortest path
+between 2 selected nodes in the current network.
+
+It supports both directed and undirected networks and it gives the
+user the possibility to choose which node (of the selected ones)
+should be used as source and target (useful for directed networks).
+
+The plugin API makes possible to use its functionality from another plugin.
+					<p>
+						Released by: Marcio Rosa da Silva
+					</p>
+				</td>
+				<td width="20%" valign="top">
+				Verified to work in 2.1.
+				</td>
+				<td width="20%" valign="top">
+					[<a href="http://csresources.sourceforge.net/ShortestPath/">Web Site and Download</a>]
+				</td>
+			</tr>
+			<tr>
+				<td colspan="4">
+					<hr>
+				</td>
+			</tr>
+			<tr>
+				<td width="20%" valign="top">
 					<b>Significant Attributes Plugin</b><font size="-1">
 						<br>
 						Version: 1
