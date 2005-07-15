@@ -519,12 +519,58 @@ public final class GraphGraphics
           ("calling thread is not AWT event dispatcher");
       if (edgeThickness < 0.0f)
         throw new IllegalArgumentException("edgeThickness < 0");
-      if (arrow0Size < edgeThickness)
-        throw new IllegalArgumentException("arrow0Size < edgeThickness");
-      if (arrow1Size < edgeThickness)
-        throw new IllegalArgumentException("arrow1Size < edgeThickness");
       if (dashLength < 0.0f)
-        throw new IllegalArgumentException("dashLength < 0"); }
+        throw new IllegalArgumentException("dashLength < 0");
+      switch (arrowType0) {
+      case ARROW_NONE:
+        break;
+      case ARROW_DELTA:
+        if (((double) edgeThickness) / arrow0Size > 4.0d / Math.sqrt(17.0d))
+          throw new IllegalArgumentException
+            ("for ARROW_DELTA e/s is greater than 4/sqrt(17)");
+        break;
+      case ARROW_DIAMOND:
+        if (((double) edgeThickness) / arrow0Size > 2.0d / Math.sqrt(5.0d))
+          throw new IllegalArgumentException
+            ("for ARROW_DIAMOND e/s is greater than 2/sqrt(5)");
+        break;
+      case ARROW_DISC:
+        if (((double) edgeThickness) / arrow0Size > 1.0d)
+          throw new IllegalArgumentException
+            ("for ARROW_DISC e/s is greater than 1");
+        break;
+      case ARROW_TEE:
+        if (((double) edgeThickness) / arrow0Size > 0.5d)
+          throw new IllegalArgumentException
+            ("for ARROW_TEE e/s is greater than 1/2");
+        break;
+      default:
+        throw new IllegalArgumentException("arrowType0 is not recognized"); }
+      switch (arrowType1) {
+      case ARROW_NONE:
+        break;
+      case ARROW_DELTA:
+        if (((double) edgeThickness) / arrow1Size > 4.0d / Math.sqrt(17.0d))
+          throw new IllegalArgumentException
+            ("for ARROW_DELTA e/s is greater than 4/sqrt(17)");
+        break;
+      case ARROW_DIAMOND:
+        if (((double) edgeThickness) / arrow1Size > 2.0d / Math.sqrt(5.0d))
+          throw new IllegalArgumentException
+            ("for ARROW_DIAMOND e/s is greater than 2/sqrt(5)");
+        break;
+      case ARROW_DISC:
+        if (((double) edgeThickness) / arrow1Size > 1.0d)
+          throw new IllegalArgumentException
+            ("for ARROW_DISC e/s is greater than 1");
+        break;
+      case ARROW_TEE:
+        if (((double) edgeThickness) / arrow1Size > 0.5d)
+          throw new IllegalArgumentException
+            ("for ARROW_TEE e/s is greater than 1/2");
+        break;
+      default:
+        throw new IllegalArgumentException("arrowType0 is not recognized"); } }
 
     final double len = Math.sqrt((x1 - x0) * (x1 - x0) +
                                  (y1 - y0) * (y1 - y0));
