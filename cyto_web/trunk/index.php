@@ -155,10 +155,12 @@
                                                                             <br>
                                                                             BMC Bioinformatics 2005, 6:154
                                                                             <br>
-                                                                            [<a href="http://www.genome.org/cgi/content/abstract/14/11/2221">Abstract</a>] [<a href="http://www.genome.org/cgi/reprint/14/11/2221">PDF</a>]
+                                                                            [<A HREF="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=pubmed&dopt=Abstract&list_uids=15967031">Abstract</A>]
+[<A HREF="http://www.biomedcentral.com/1471-2105/6/154">Full Text</A>]
+[<A HREF="http://www.biomedcentral.com/content/pdf/1471-2105-6-154.pdf">PDF</A>]
                                                                             <br>
 <P>
-									<br><b>Genome Biology. March, 2005</b>
+									<br><b>Genome Biology. March, 2005</b><BR>
 Becky L Drees, Vesteinn Thorsson, Gregory W Carter, Alexander W Rives,
 Marisa Z Raymond, Iliana Avila-Campillo, Paul Shannon and Timothy
 Galitski.
