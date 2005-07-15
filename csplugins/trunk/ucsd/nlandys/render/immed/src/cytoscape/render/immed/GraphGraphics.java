@@ -546,6 +546,8 @@ public final class GraphGraphics
         break;
       default:
         throw new IllegalArgumentException("arrowType0 is not recognized"); }
+      if (arrowType0 != ARROW_NONE && arrow0Size <= 0.0f)
+        throw new IllegalArgumentException("arrow0Size must be positive");
       switch (arrowType1) {
       case ARROW_NONE:
         break;
@@ -570,7 +572,9 @@ public final class GraphGraphics
             ("for ARROW_TEE e/s is greater than 1/2");
         break;
       default:
-        throw new IllegalArgumentException("arrowType0 is not recognized"); } }
+        throw new IllegalArgumentException("arrowType0 is not recognized"); }
+      if (arrowType1 != ARROW_NONE && arrow1Size <= 0.0f)
+        throw new IllegalArgumentException("arrow1Size must be positive"); }
 
     final double len = Math.sqrt((x1 - x0) * (x1 - x0) +
                                  (y1 - y0) * (y1 - y0));
@@ -583,9 +587,14 @@ public final class GraphGraphics
     switch (arrowType0) {
     case ARROW_NONE:
     case ARROW_DISC:
-    case ARROW_TEE:
       // Don't change endpoint 0.
       x0Adj = x0; y0Adj = y0;
+      break;
+    case ARROW_TEE:
+      // Move the endpoint 0 towards endpoint 1 by arrow0Size / 8.
+      final double v = (((double) arrow0Size) / 8.0d) / len;
+      x0Adj = (float) (v * (x1 - x0) + x0);
+      y0Adj = (float) (v * (y1 - y0) + y0);
       break;
     case ARROW_DELTA:
       // Move the endpoint 0 towards endpoint 1 by arrow0Size * 2.
@@ -607,9 +616,14 @@ public final class GraphGraphics
     switch (arrowType1) {
     case ARROW_NONE:
     case ARROW_DISC:
-    case ARROW_TEE:
       // Don't change endpoint 1.
       x1Adj = x1; y1Adj = y1;
+      break;
+    case ARROW_TEE:
+      // Move the endpoint 1 towards endpoint 0 by arrow1Size / 8.
+      final double v = (((double) arrow1Size) / 8.0d) / len;
+      x1Adj = (float) (v * (x0 - x1) + x1);
+      y1Adj = (float) (v * (y0 - y1) + y1);
       break;
     case ARROW_DELTA:
       // Move the endpoint 1 towards endpoint 0 by arrow1Size * 2.
@@ -626,68 +640,16 @@ public final class GraphGraphics
     default:
       throw new IllegalArgumentException("arrowType1 not recognized"); }
 
-    // We're giving CAP_BUTT ends to edge segments for a simple reason:
-    // What if one end is ARROW_NONE and the other is ARROW_DELTA with the
-    // delta arrowhead the same width as the edge?  We can't convince
-    // BasicStroke to have two different caps on both ends.  So instead, we
-    // will draw CAP_BUTT and manually fill a disc at one or both ends if
-    // we need to.  My tests have shown that filling a disc takes a
-    // negligible amount of time compared to filling the thin polygon
-    // which is the edge line segment.
-    if (m_dash[0] != dashLength || m_currStrokeWidth != edgeThickness)
-      setStroke(edgeThickness, dashLength);
-
-//     m_line2d.setLine(x0, y0, x1, y1);
-//     m_g2d.setColor(edgeColor);
-//     m_g2d.draw(m_line2d);
-
-//     // Take care of arrow at point 0.
-//     if (arrowType0 == ARROW_NONE) {
-//       m_ellp2d.setFrame(x0 - edgeThickness / 2.0f, y0 - edgeThickness / 2.0f,
-//                         edgeThickness, edgeThickness);
-//       // Color is already set to edge color.
-//       m_g2d.fill(m_ellp2d); }
-//     else {
-//       m_g2d.setColor(arrow0Color);
-//       final Shape arrow0Shape;
-//       if (arrowType0 == ARROW_DISC) {
-//         m_ellp2d.setFrame(x0 - arrow0Size / 2.0f, y0 - arrow0Size / 2.0f,
-//                           arrow0Size, arrow0Size);
-//         arrow0Shape = m_ellp2d; }
-//       else {
-//         switch (arrowType0) {
-//         case ARROW_DELTA:
-//           arrow0Shape = null;
-//           break;
-//         case ARROW_DIAMOND:
-//           arrow0Shape = null;
-//           break;
-//         case ARROW_TEE:
-//           arrow0Shape = null;
-//           break;
-//         default:
-//           throw new IllegalArgumentException
-//             ("arrowType0 is not recognized"); } }
-//       m_g2d.fill(arrow0Shape); }
-
-//     // Take care of arrow at point 1.
-//     if (arrowType1 == ARROW_NONE) {
-//       m_ellp2d.setFrame(x1 - edgeThickness / 2.0f, y1 - edgeThickness / 2.0f,
-//                         edgeThickness, edgeThickness);
-//       m_g2d.fill(m_ellp2d); }
-//     else if (arrowType1 == ARROW_DISC) { }
-//     else {
-//       switch (arrowType1) {
-//       case ARROW_DISC:
-//         break;
-//       case ARROW_DELTA:
-//         break;
-//       case ARROW_DIAMOND:
-//         break;
-//       case ARROW_TEE:
-//         break;
-//       default:
-//         throw new IllegalArgumentException("arrowType1 is not recognized"); } }
+    // If the vector point0->point1 is pointing opposite to
+    // adj0->adj1, then don't render the line segment.  Dot product determines.
+    if (((double) (x1 - x0)) * ((double) (x1Adj - x0Adj)) +
+        ((double) (y1 - y0)) * ((double) (y1Adj - y0Adj)) > 0.0d) {
+      // Render the line segment.
+      if (m_dash[0] != dashLength || m_currStrokeWidth != edgeThickness)
+        setStroke(edgeThickness, dashLength);
+      m_line2d.setLine(x0Adj, y0Adj, x1Adj, y1Adj);
+      m_g2d.setColor(edgeColor);
+      m_g2d.draw(m_line2d); }
   }
 
   private final void setStroke(final float width, final float dashLength)
