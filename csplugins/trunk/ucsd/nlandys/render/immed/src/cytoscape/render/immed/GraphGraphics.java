@@ -487,12 +487,13 @@ public final class GraphGraphics
    *                                   exceed 2/sqrt(5)</td>              </tr>
    *   <tr>  <td>ARROW_TEE</td>      <td>the center of the tee intersection
    *                                   lies at the specified endpoint; the
-   *                                   width of the top of the tee is exactly
+   *                                   width of the top of the tee is one
+   *                                   quarter of
    *                                   the arrow size specified, and the
    *                                   span of the top of the tee is
-   *                                   twelve times that amount; the arrow
-   *                                   size cannot be less than edge
-   *                                   thickness</td>                     </tr>
+   *                                   four times the arrow size; the ratio
+   *                                   of edge thickness to arrow
+   *                                   size cannot exceed one-half</td>   </tr>
    * <table></blockquote>
    * @param dashLength a positive value representing the length of dashes
    *   on the edge, or zero to indicate that the edge is solid.
