@@ -463,29 +463,36 @@ public final class GraphGraphics
    *                                   the line segment has a round
    *                                   end (center of round
    *                                   semicircle end exactly equal to
-   *                                   endpoint specified)</td>           </tr>
+   *                                   endpoint specified); arrow width
+   *                                   and color are ignored</td>         </tr>
    *   <tr>  <td>ARROW_DISC</td>     <td>the disc arrowhead is placed
    *                                   such that its center is at the
    *                                   specified endpoint; the diameter
    *                                   of the disk is the arrow width
-   *                                   specified</td>                     </tr>
+   *                                   specified; the arrow width cannot
+   *                                   be less than edge thickness</td>   </tr>
    *   <tr>  <td>ARROW_DELTA</td>    <td>the sharp tip of the arrowhead
    *                                   is exactly at the endpint
-   *                                   specified; the widest part of the
-   *                                   delta wedge is the arrow width
-   *                                   specified</td>                     </tr>
+   *                                   specified; the delta is as wide as
+   *                                   the arrow width specified and twice
+   *                                   that in length; the ratio of edge
+   *                                   thickness to arrow width cannot
+   *                                   exceed 4/sqrt(17)</td>             </tr>
    *   <tr>  <td>ARROW_DIAMOND</td>  <td>the sharp tip of the arrowhead
    *                                   is exactly at the endpoint
-   *                                   specified; the widest part of the
-   *                                   delta wedge is the arrow width
-   *                                   specified</td>                     </tr>
+   *                                   specified; the diamond is as wide as
+   *                                   the arrow width specified and twice
+   *                                   that in length; the ratio of edge
+   *                                   thickness to arrow width cannot
+   *                                   exceed 2/sqrt(5)</td>              </tr>
    *   <tr>  <td>ARROW_TEE</td>      <td>the center of the tee intersection
    *                                   lies at the specified endpoint; the
-   *                                   span of the top of the tee is
+   *                                   width of the top of the tee is exactly
    *                                   the arrow width specified, and the
-   *                                   width of the top of the tee line
-   *                                   segment is a fixed fraction of
-   *                                   its span</td>                      </tr>
+   *                                   span of the top of the tee is
+   *                                   twelve times that amount; the arrow
+   *                                   width cannot be less than edge
+   *                                   thickness</td>                     </tr>
    * <table></blockquote>
    * @param dashLength a positive value representing the length of dashes
    *   on the edge, or zero to indicate that the edge is solid.
