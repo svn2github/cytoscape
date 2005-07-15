@@ -463,48 +463,48 @@ public final class GraphGraphics
    *                                   the line segment has a round
    *                                   end (center of round
    *                                   semicircle end exactly equal to
-   *                                   endpoint specified); arrow width
+   *                                   endpoint specified); arrow size
    *                                   and color are ignored</td>         </tr>
    *   <tr>  <td>ARROW_DISC</td>     <td>the disc arrowhead is placed
    *                                   such that its center is at the
    *                                   specified endpoint; the diameter
-   *                                   of the disk is the arrow width
-   *                                   specified; the arrow width cannot
+   *                                   of the disk is the arrow size
+   *                                   specified; the arrow size cannot
    *                                   be less than edge thickness</td>   </tr>
    *   <tr>  <td>ARROW_DELTA</td>    <td>the sharp tip of the arrowhead
    *                                   is exactly at the endpint
    *                                   specified; the delta is as wide as
-   *                                   the arrow width specified and twice
+   *                                   the arrow size specified and twice
    *                                   that in length; the ratio of edge
-   *                                   thickness to arrow width cannot
+   *                                   thickness to arrow size cannot
    *                                   exceed 4/sqrt(17)</td>             </tr>
    *   <tr>  <td>ARROW_DIAMOND</td>  <td>the sharp tip of the arrowhead
    *                                   is exactly at the endpoint
    *                                   specified; the diamond is as wide as
-   *                                   the arrow width specified and twice
+   *                                   the arrow size specified and twice
    *                                   that in length; the ratio of edge
-   *                                   thickness to arrow width cannot
+   *                                   thickness to arrow size cannot
    *                                   exceed 2/sqrt(5)</td>              </tr>
    *   <tr>  <td>ARROW_TEE</td>      <td>the center of the tee intersection
    *                                   lies at the specified endpoint; the
    *                                   width of the top of the tee is exactly
-   *                                   the arrow width specified, and the
+   *                                   the arrow size specified, and the
    *                                   span of the top of the tee is
    *                                   twelve times that amount; the arrow
-   *                                   width cannot be less than edge
+   *                                   size cannot be less than edge
    *                                   thickness</td>                     </tr>
    * <table></blockquote>
    * @param dashLength a positive value representing the length of dashes
    *   on the edge, or zero to indicate that the edge is solid.
    * @exception IllegalArgumentException if edgeThickness is less than zero,
-   *   if dashLength is less than zero, or if any one of the arrow widths
+   *   if dashLength is less than zero, or if any one of the arrow sizes
    *   is less than edgeThickness.
    */
   public final void drawEdgeFull(final byte arrowType0,
-                                 final float arrow0Width,
+                                 final float arrow0Size,
                                  final Color arrow0Color,
                                  final byte arrowType1,
-                                 final float arrow1Width,
+                                 final float arrow1Size,
                                  final Color arrow1Color,
                                  final float x0, final float y0,
                                  final float x1, final float y1,
@@ -518,10 +518,10 @@ public final class GraphGraphics
           ("calling thread is not AWT event dispatcher");
       if (edgeThickness < 0.0f)
         throw new IllegalArgumentException("edgeThickness < 0");
-      if (arrow0Width < edgeThickness)
-        throw new IllegalArgumentException("arrow0Width < edgeThickness");
-      if (arrow1Width < edgeThickness)
-        throw new IllegalArgumentException("arrow1Width < edgeThickness");
+      if (arrow0Size < edgeThickness)
+        throw new IllegalArgumentException("arrow0Size < edgeThickness");
+      if (arrow1Size < edgeThickness)
+        throw new IllegalArgumentException("arrow1Size < edgeThickness");
       if (dashLength < 0.0f)
         throw new IllegalArgumentException("dashLength < 0"); }
 
@@ -541,14 +541,14 @@ public final class GraphGraphics
       x0Adj = x0; y0Adj = y0;
       break;
     case ARROW_DELTA:
-      // Move the endpoint 0 towards endpoint 1 by arrow0Width * 2.
-      final double t = (2.0d * arrow0Width) / len;
+      // Move the endpoint 0 towards endpoint 1 by arrow0Size * 2.
+      final double t = (2.0d * arrow0Size) / len;
       x0Adj = (float) (t * (x1 - x0) + x0);
       y0Adj = (float) (t * (y1 - y0) + y0);
       break;
     case ARROW_DIAMOND:
-      // Move the endpoint 0 towards endpoint 1 by arrow0Width.
-      final double u = ((double) arrow0Width) / len;
+      // Move the endpoint 0 towards endpoint 1 by arrow0Size.
+      final double u = ((double) arrow0Size) / len;
       x0Adj = (float) (u * (x1 - x0) + x0);
       y0Adj = (float) (u * (y1 - y0) + y0);
       break;
@@ -565,14 +565,14 @@ public final class GraphGraphics
       x1Adj = x1; y1Adj = y1;
       break;
     case ARROW_DELTA:
-      // Move the endpoint 1 towards endpoint 0 by arrow1Width * 2.
-      final double t = (2.0d * arrow1Width) / len;
+      // Move the endpoint 1 towards endpoint 0 by arrow1Size * 2.
+      final double t = (2.0d * arrow1Size) / len;
       x1Adj = (float) (t * (x0 - x1) + x1);
       y1Adj = (float) (t * (y0 - y1) + y1);
       break;
     case ARROW_DIAMOND:
-      // Move the endpoint 1 towards endpoint 0 by arrow1Width.
-      final double u = ((double) arrow1Width) / len;
+      // Move the endpoint 1 towards endpoint 0 by arrow1Size.
+      final double u = ((double) arrow1Size) / len;
       x1Adj = (float) (u * (x0 - x1) + x1);
       y1Adj = (float) (u * (y0 - y1) + y1);
       break;
@@ -604,8 +604,8 @@ public final class GraphGraphics
 //       m_g2d.setColor(arrow0Color);
 //       final Shape arrow0Shape;
 //       if (arrowType0 == ARROW_DISC) {
-//         m_ellp2d.setFrame(x0 - arrow0Width / 2.0f, y0 - arrow0Width / 2.0f,
-//                           arrow0Width, arrow0Width);
+//         m_ellp2d.setFrame(x0 - arrow0Size / 2.0f, y0 - arrow0Size / 2.0f,
+//                           arrow0Size, arrow0Size);
 //         arrow0Shape = m_ellp2d; }
 //       else {
 //         switch (arrowType0) {
