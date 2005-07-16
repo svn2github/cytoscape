@@ -44,7 +44,7 @@ public final class TestEdgeRendering
         else {
           edgeThickness = (float) (0.5d / sqrtN); } }
       else {
-        shape = (byte) -1;
+        shape = 0;
         edgeThickness = (float) (0.5d / sqrtN); }
       int inx = 0;
       Random r = new Random();
