@@ -742,4 +742,135 @@ public final class GraphGraphics
                                       m_dash, 0.0f));
   }
 
+  /*
+   * Computes the intersection of the line segment from (x1,y1)
+   * to (x2,y2) with the line segment from (x3,y3)
+   * to (x4,y4).  If no intersection exists, returns
+   * false.  Otherwise returns true, and
+   * returnVal[0] is set to be the X coordinate of the
+   * intersection point and returnVal[1] is set to be the Y
+   * coordinate of the intersection point.  If more than one intersection
+   * point exists, "the intersection point" is defined to be the
+   * intersection point closest to (x1,y1).
+   * A note about overlapping line segments.  Because of floating point
+   * numbers' inability to be totally accurate, it is quite difficult to
+   * represent overlapping line segments with floating point coordinates
+   * without using an absolute-precision math package.  Because of this,
+   * poorly behaved outcome may result when computing the intersection of
+   * two [nearly] overlapping line segments.  The only way around this
+   * would be to round intersection points to the nearest 32-bit floating
+   * point quantity.  But then dynamic range is greatly compromised.
+   */
+  private static boolean segmentIntersection(double[] returnVal,
+                                             double x1, double y1,
+                                             double x2, double y2,
+                                             double x3, double y3,
+                                             double x4, double y4)
+  {
+    // Arrange the segment endpoints such that in segment 1, y1 >= y2
+    // and such that in segment 2, y3 >= y4.
+    boolean s1reverse = false;
+    if (y2 > y1) {
+      s1reverse = !s1reverse;
+      double temp = x1; x1 = x2; x2 = temp;
+      temp = y1; y1 = y2; y2 = temp; }
+    if (y4 > y3) {
+      double temp = x3; x3 = x4; x4 = temp;
+      temp = y3; y3 = y4; y4 = temp; }
+
+    /*
+
+    Note: While this algorithm for computing an intersection is
+          completely bulletproof, it's not a straighforward 'classic'
+          bruteforce method.  This algorithm is well-suited for an
+          implementation using fixed-point arithmetic instead of
+          floating-point arithmetic because all computations are
+          contrained to a certain dynamic range relative to the input
+          parameters.
+
+    We're going to reduce the problem in the following way:
+
+
+    (x1,y1)
+      +
+       \
+        \
+         \     (x3,y3)                                 x1      x3
+ ---------+------+----------- yMax            ---------+------+----------- yMax
+           \     |                                      \     |
+            \    |                                       \    |
+             \   |                                        \   |
+              \  |                      \                  \  |
+               \ |                  =====\                  \ |
+                \|                        >                  \|
+                 +                  =====/                    + (x,y)
+                 |\                     /                     |\
+                 | \                                          | \
+                 |  \                                         |  \
+ ----------------+---+------- yMin            ----------------+---+------ yMin
+                 |  (x2,y2)                                  x4   x2
+                 |
+                 |
+                 +                If  W := (x2-x4) / ((x2-x4) + (x3-x1)) , then
+              (x4,y4)
+                                                 x = x2 + W*(x1-x2)  and
+                                                 y = yMin + W*(yMax-yMin)
+
+
+     */
+
+    final double yMax = Math.min(y1, y3);
+    final double yMin = Math.max(y2, y4);
+    if (yMin > yMax) return false;
+    if (y1 > yMax) {
+      x1 = x1 + (x2 - x1) * (yMax - y1) / (y2 - y1);
+      y1 = yMax; }
+    if (y3 > yMax) {
+      x3 = x3 + (x4 - x3) * (yMax - y3) / (y4 - y3);
+      y3 = yMax; }
+    if (y2 < yMin) {
+      x2 = x1 + (x2 - x1) * (yMin - y1) / (y2 - y1);
+      y2 = yMin; }
+    if (y4 < yMin) {
+      x4 = x3 + (x4 - x3) * (yMin - y3) / (y4 - y3);
+      y4 = yMin; }
+
+    // Handling for yMin == yMax.  That is, in the reduced problem, both
+    // segments are horizontal.
+    if (yMin == yMax) {
+      // Arrange the segment endpoints such that in segment 1, x1 <= x2
+      // and such that in segment 2, x3 <= x4.
+      if (x2 < x1) {
+        s1reverse = !s1reverse;
+        double temp = x1; x1 = x2; x2 = temp;
+        temp = y1; y1 = y2; y2 = temp; }
+      if (x4 < x3) {
+        double temp = x3; x3 = x4; x4 = temp;
+        temp = y3; y3 = y4; y4 = temp; }
+      final double xMin = Math.max(x1, x3);
+      final double xMax = Math.min(x2, x4);
+      if (xMin > xMax) return false;
+      else {
+        if (s1reverse) returnVal[0] = Math.max(xMin, xMax);
+        else returnVal[0] = Math.min(xMin, xMax);
+        returnVal[1] = yMin; // == yMax
+        return true; } }
+
+    // It is now true that yMin < yMax because we've fully handled
+    // the yMin == yMax case above.
+    // Following if statement checks for a "twist" in the line segments.
+    if ((x1 < x3 && x2 < x4) || (x3 < x1 && x4 < x2)) return false;
+
+    // The segments are guaranteed to intersect.
+    if ((x1 == x3) && (x2 == x4)) { // The segments overlap.
+      if (s1reverse) { returnVal[0] = x2; returnVal[1] = y2; }
+      else { returnVal[0] = x1; returnVal[1] = y1; } }
+
+    // The segments are guaranteed to intersect in exactly one point.
+    final double W = (x2 - x4) / ((x2 - x4) + (x3 - x1));
+    returnVal[0] = x2 + W * (x1 - x2);
+    returnVal[1] = yMin + W * (yMax - yMin);
+    return true;
+  }
+
 }
