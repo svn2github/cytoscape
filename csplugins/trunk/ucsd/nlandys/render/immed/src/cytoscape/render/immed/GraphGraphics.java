@@ -683,6 +683,36 @@ public final class GraphGraphics
         m_g2d.setColor(arrow0Color);
         m_g2d.fill(arrow0Shape); }
     }
+
+    { // Render the arrow at point 1.
+      final Shape arrow1Shape;
+      switch (arrowType1) {
+      case ARROW_DISC:
+        m_ellp2d.setFrame(x1 - arrow1Size / 2.0f, y1 - arrow1Size / 2.0f,
+                          arrow1Size, arrow1Size);
+        arrow1Shape = m_ellp2d;
+        break;
+      case ARROW_DELTA:
+      case ARROW_DIAMOND:
+      case ARROW_TEE:
+        computeUntransformedArrow(arrowType1);
+        // I want the transform to first scale, then rotate, then translate.
+        final double cosTheta = ((double) (x1 - x0)) / len;
+        final double sinTheta = ((double) (y1 - y0)) / len;
+        m_xformUtil.setTransform(cosTheta, sinTheta, -sinTheta, cosTheta,
+                                 x1, y1);
+        m_xformUtil.scale(arrow1Size, arrow1Size);
+        m_poly2d.transform(m_xformUtil);
+        arrow1Shape = m_poly2d;
+        break;
+      default: // ARROW_NONE.
+        // Don't render anything.
+        arrow1Shape = null;
+        break; }
+      if (arrow1Shape != null) {
+        m_g2d.setColor(arrow1Color);
+        m_g2d.fill(arrow1Shape); }
+    }
   }
 
   /*
