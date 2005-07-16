@@ -55,10 +55,10 @@ public final class GraphGraphics
   private final float[] m_dash;
   private final float[] m_pathBuff;
   private final double[] m_ptsBuff;
+  private final AffineTransform m_currXform;
   private final AffineTransform m_xformUtil;
   private Graphics2D m_g2d;
   private Graphics m_gMinimal;
-  private AffineTransform m_currXform;
   private float m_currStrokeWidth;
 
   /**
@@ -88,6 +88,7 @@ public final class GraphGraphics
     m_dash = new float[] { 0.0f, 0.0f };
     m_pathBuff = new float[6];
     m_ptsBuff = new double[4];
+    m_currXform = new AffineTransform();
     m_xformUtil = new AffineTransform();
     clear(0.0d, 0.0d, 1.0d);
   }
@@ -138,20 +139,11 @@ public final class GraphGraphics
     m_g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,
                            RenderingHints.VALUE_STROKE_PURE);
     setStroke(0.0f, 0.0f);
-    // Set transform.  This is an infrequently used method so don't optimize.
-    final AffineTransform translationPreScale = new AffineTransform();
-    translationPreScale.setToTranslation(-xCenter, -yCenter);
-    final AffineTransform scale = new AffineTransform();
-    scale.setToScale(scaleFactor, scaleFactor);
-    final AffineTransform translationPostScale = new AffineTransform();
-    translationPostScale.setToTranslation
-      (0.5d * (double) image.getWidth(null),
-       0.5d * (double) image.getHeight(null));
-    final AffineTransform finalTransform = new AffineTransform();
-    finalTransform.concatenate(translationPostScale);
-    finalTransform.concatenate(scale);
-    finalTransform.concatenate(translationPreScale);
-    m_currXform = finalTransform;
+
+    m_currXform.setToTranslation(0.5d * (double) image.getWidth(null),
+                                 0.5d * (double) image.getHeight(null));
+    m_currXform.scale(scaleFactor, scaleFactor);
+    m_currXform.translate(-xCenter, -yCenter);
     m_g2d.transform(m_currXform);
   }
 
