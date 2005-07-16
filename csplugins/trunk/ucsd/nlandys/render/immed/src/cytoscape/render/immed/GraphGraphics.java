@@ -656,7 +656,6 @@ public final class GraphGraphics
 
     { // Render the arrow at point 0.
       final Shape arrow0Shape;
-      double cosTheta, sinTheta;
       switch (arrowType0) {
       case ARROW_DISC:
         m_ellp2d.setFrame(x0 - arrow0Size / 2.0f, y0 - arrow0Size / 2.0f,
@@ -664,53 +663,19 @@ public final class GraphGraphics
         arrow0Shape = m_ellp2d;
         break;
       case ARROW_DELTA:
-        m_poly2d.reset();
-        m_poly2d.moveTo(-2.0f, -0.5f);
-        m_poly2d.lineTo(0.0f, 0.0f);
-        m_poly2d.lineTo(-2.0f, 0.5f);
-        m_poly2d.closePath();
-        // I want the transform to first scale, then rotate, then translate.
-        cosTheta = ((double) (x0 - x1)) / len;
-        sinTheta = ((double) (y0 - y1)) / len;
-        m_xformUtil.setTransform(cosTheta, sinTheta, -sinTheta, cosTheta,
-                                 x0, y0);
-        m_xformUtil.scale(arrow0Size, arrow0Size);
-        m_poly2d.transform(m_xformUtil);
-        arrow0Shape = m_poly2d;
-        break;
       case ARROW_DIAMOND:
-        m_poly2d.reset();
-        m_poly2d.moveTo(-1.0f, -0.5f);
-        m_poly2d.lineTo(-2.0f, 0.0f);
-        m_poly2d.lineTo(-1.0f, 0.5f);
-        m_poly2d.lineTo(0.0f, 0.0f);
-        m_poly2d.closePath();
-        // I want the transform to first scale, then rotate, then translate.
-        cosTheta = ((double) (x0 - x1)) / len;
-        sinTheta = ((double) (y0 - y1)) / len;
-        m_xformUtil.setTransform(cosTheta, sinTheta, -sinTheta, cosTheta,
-                                 x0, y0);
-        m_xformUtil.scale(arrow0Size, arrow0Size);
-        m_poly2d.transform(m_xformUtil);
-        arrow0Shape = m_poly2d;
-        break;
       case ARROW_TEE:
-        m_poly2d.reset();
-        m_poly2d.moveTo(-0.125f, -2.0f);
-        m_poly2d.lineTo(0.125f, -2.0f);
-        m_poly2d.lineTo(0.125f, 2.0f);
-        m_poly2d.lineTo(-0.125f, 2.0f);
-        m_poly2d.closePath();
+        computeUntransformedArrow(arrowType0);
         // I want the transform to first scale, then rotate, then translate.
-        cosTheta = ((double) (x0 - x1)) / len;
-        sinTheta = ((double) (y0 - y1)) / len;
+        final double cosTheta = ((double) (x0 - x1)) / len;
+        final double sinTheta = ((double) (y0 - y1)) / len;
         m_xformUtil.setTransform(cosTheta, sinTheta, -sinTheta, cosTheta,
                                  x0, y0);
         m_xformUtil.scale(arrow0Size, arrow0Size);
         m_poly2d.transform(m_xformUtil);
         arrow0Shape = m_poly2d;
         break;
-      default: // case ARROW_NONE.
+      default: // ARROW_NONE.
         // Don't render anything.
         arrow0Shape = null;
         break; }
@@ -718,6 +683,39 @@ public final class GraphGraphics
         m_g2d.setColor(arrow0Color);
         m_g2d.fill(arrow0Shape); }
     }
+  }
+
+  /*
+   * This method has the side effect of mangling m_poly2d.
+   * arrowType must be one of the following: ARROW_DELTA, ARROW_DIAMOND,
+   * or ARROW_TEE.
+   */
+  private final void computeUntransformedArrow(byte arrowType)
+  {
+    switch (arrowType) {
+    case ARROW_DELTA:
+      m_poly2d.reset();
+      m_poly2d.moveTo(-2.0f, -0.5f);
+      m_poly2d.lineTo(0.0f, 0.0f);
+      m_poly2d.lineTo(-2.0f, 0.5f);
+      m_poly2d.closePath();
+      break;
+    case ARROW_DIAMOND:
+      m_poly2d.reset();
+      m_poly2d.moveTo(-1.0f, -0.5f);
+      m_poly2d.lineTo(-2.0f, 0.0f);
+      m_poly2d.lineTo(-1.0f, 0.5f);
+      m_poly2d.lineTo(0.0f, 0.0f);
+      m_poly2d.closePath();
+      break;
+    default: // ARROW_TEE.
+      m_poly2d.reset();
+      m_poly2d.moveTo(-0.125f, -2.0f);
+      m_poly2d.lineTo(0.125f, -2.0f);
+      m_poly2d.lineTo(0.125f, 2.0f);
+      m_poly2d.lineTo(-0.125f, 2.0f);
+      m_poly2d.closePath();
+      break; }
   }
 
   private final void setStroke(final float width, final float dashLength)
