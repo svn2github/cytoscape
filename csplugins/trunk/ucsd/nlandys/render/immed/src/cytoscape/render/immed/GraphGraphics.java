@@ -742,6 +742,19 @@ public final class GraphGraphics
                                       m_dash, 0.0f));
   }
 
+  public final boolean computeEdgeIntersection(final byte nodeShape,
+                                               final float xMin,
+                                               final float yMin,
+                                               final float xMax,
+                                               final float yMax,
+                                               final float offset,
+                                               final float ptX,
+                                               final float ptY,
+                                               final float[] returnVal)
+  {
+    return false;
+  }
+
   /*
    * Computes the intersection of the line segment from (x1,y1)
    * to (x2,y2) with the line segment from (x3,y3)
@@ -761,11 +774,11 @@ public final class GraphGraphics
    * would be to round intersection points to the nearest 32-bit floating
    * point quantity.  But then dynamic range is greatly compromised.
    */
-  private static boolean segmentIntersection(double[] returnVal,
-                                             double x1, double y1,
-                                             double x2, double y2,
-                                             double x3, double y3,
-                                             double x4, double y4)
+  private final static boolean segmentIntersection(final double[] returnVal,
+                                                   double x1, double y1,
+                                                   double x2, double y2,
+                                                   double x3, double y3,
+                                                   double x4, double y4)
   {
     // Arrange the segment endpoints such that in segment 1, y1 >= y2
     // and such that in segment 2, y3 >= y4.
