@@ -582,74 +582,142 @@ public final class GraphGraphics
     // all rendering.  This may not be the 100% correct approach.  We'll see.
     if (len == 0.0d) return;
 
-    final float x0Adj;
-    final float y0Adj;
-    switch (arrowType0) {
-    case ARROW_NONE:
-    case ARROW_DISC:
-      // Don't change endpoint 0.
-      x0Adj = x0; y0Adj = y0;
-      break;
-    case ARROW_TEE:
-      // Move the endpoint 0 towards endpoint 1 by arrow0Size / 8.
-      final double v = (((double) arrow0Size) / 8.0d) / len;
-      x0Adj = (float) (v * (x1 - x0) + x0);
-      y0Adj = (float) (v * (y1 - y0) + y0);
-      break;
-    case ARROW_DELTA:
-      // Move the endpoint 0 towards endpoint 1 by arrow0Size * 2.
-      final double t = (2.0d * arrow0Size) / len;
-      x0Adj = (float) (t * (x1 - x0) + x0);
-      y0Adj = (float) (t * (y1 - y0) + y0);
-      break;
-    case ARROW_DIAMOND:
-      // Move the endpoint 0 towards endpoint 1 by arrow0Size.
-      final double u = ((double) arrow0Size) / len;
-      x0Adj = (float) (u * (x1 - x0) + x0);
-      y0Adj = (float) (u * (y1 - y0) + y0);
-      break;
-    default:
-      throw new IllegalArgumentException("arrowType0 not recognized"); }
+    { // Render the line segment if necessary.
+      final float x0Adj;
+      final float y0Adj;
+      switch (arrowType0) {
+      case ARROW_NONE:
+      case ARROW_DISC:
+        // Don't change endpoint 0.
+        x0Adj = x0; y0Adj = y0;
+        break;
+      case ARROW_TEE:
+        // Move the endpoint 0 towards endpoint 1 by arrow0Size / 8.
+        final double v = (((double) arrow0Size) / 8.0d) / len;
+        x0Adj = (float) (v * (x1 - x0) + x0);
+        y0Adj = (float) (v * (y1 - y0) + y0);
+        break;
+      case ARROW_DELTA:
+        // Move the endpoint 0 towards endpoint 1 by arrow0Size * 2.
+        final double t = (2.0d * arrow0Size) / len;
+        x0Adj = (float) (t * (x1 - x0) + x0);
+        y0Adj = (float) (t * (y1 - y0) + y0);
+        break;
+      case ARROW_DIAMOND:
+        // Move the endpoint 0 towards endpoint 1 by arrow0Size.
+        final double u = ((double) arrow0Size) / len;
+        x0Adj = (float) (u * (x1 - x0) + x0);
+        y0Adj = (float) (u * (y1 - y0) + y0);
+        break;
+      default:
+        throw new IllegalArgumentException("arrowType0 not recognized"); }
 
-    final float x1Adj;
-    final float y1Adj;
-    switch (arrowType1) {
-    case ARROW_NONE:
-    case ARROW_DISC:
-      // Don't change endpoint 1.
-      x1Adj = x1; y1Adj = y1;
-      break;
-    case ARROW_TEE:
-      // Move the endpoint 1 towards endpoint 0 by arrow1Size / 8.
-      final double v = (((double) arrow1Size) / 8.0d) / len;
-      x1Adj = (float) (v * (x0 - x1) + x1);
-      y1Adj = (float) (v * (y0 - y1) + y1);
-      break;
-    case ARROW_DELTA:
-      // Move the endpoint 1 towards endpoint 0 by arrow1Size * 2.
-      final double t = (2.0d * arrow1Size) / len;
-      x1Adj = (float) (t * (x0 - x1) + x1);
-      y1Adj = (float) (t * (y0 - y1) + y1);
-      break;
-    case ARROW_DIAMOND:
-      // Move the endpoint 1 towards endpoint 0 by arrow1Size.
-      final double u = ((double) arrow1Size) / len;
-      x1Adj = (float) (u * (x0 - x1) + x1);
-      y1Adj = (float) (u * (y0 - y1) + y1);
-      break;
-    default:
-      throw new IllegalArgumentException("arrowType1 not recognized"); }
+      final float x1Adj;
+      final float y1Adj;
+      switch (arrowType1) {
+      case ARROW_NONE:
+      case ARROW_DISC:
+        // Don't change endpoint 1.
+        x1Adj = x1; y1Adj = y1;
+        break;
+      case ARROW_TEE:
+        // Move the endpoint 1 towards endpoint 0 by arrow1Size / 8.
+        final double v = (((double) arrow1Size) / 8.0d) / len;
+        x1Adj = (float) (v * (x0 - x1) + x1);
+        y1Adj = (float) (v * (y0 - y1) + y1);
+        break;
+      case ARROW_DELTA:
+        // Move the endpoint 1 towards endpoint 0 by arrow1Size * 2.
+        final double t = (2.0d * arrow1Size) / len;
+        x1Adj = (float) (t * (x0 - x1) + x1);
+        y1Adj = (float) (t * (y0 - y1) + y1);
+        break;
+      case ARROW_DIAMOND:
+        // Move the endpoint 1 towards endpoint 0 by arrow1Size.
+        final double u = ((double) arrow1Size) / len;
+        x1Adj = (float) (u * (x0 - x1) + x1);
+        y1Adj = (float) (u * (y0 - y1) + y1);
+        break;
+      default:
+        throw new IllegalArgumentException("arrowType1 not recognized"); }
 
-    // If the vector point0->point1 is pointing opposite to
-    // adj0->adj1, then don't render the line segment.  Dot product determines.
-    if (((double) (x1 - x0)) * ((double) (x1Adj - x0Adj)) +
-        ((double) (y1 - y0)) * ((double) (y1Adj - y0Adj)) > 0.0d) {
-      // Render the line segment.
-      if (m_dash[0] != dashLength || m_currStrokeWidth != edgeThickness)
-        setStroke(edgeThickness, dashLength);
-      m_line2d.setLine(x0Adj, y0Adj, x1Adj, y1Adj);
-      m_g2d.setColor(edgeColor);
-      m_g2d.draw(m_line2d); }
+      // If the vector point0->point1 is pointing opposite to
+      // adj0->adj1, then don't render the line segment.
+      // Dot product determines this.
+      if (((double) (x1 - x0)) * ((double) (x1Adj - x0Adj)) +
+          ((double) (y1 - y0)) * ((double) (y1Adj - y0Adj)) > 0.0d) {
+        // Render the line segment.
+        if (m_dash[0] != dashLength || m_currStrokeWidth != edgeThickness)
+          setStroke(edgeThickness, dashLength);
+        m_line2d.setLine(x0Adj, y0Adj, x1Adj, y1Adj);
+        m_g2d.setColor(edgeColor);
+        m_g2d.draw(m_line2d); }
+    }
+
+    { // Render the arrow at point 0.
+      final Shape arrow0Shape;
+      double cosTheta, sinTheta;
+      switch (arrowType0) {
+      case ARROW_DISC:
+        m_ellp2d.setFrame(x0 - arrow0Size / 2.0f, y0 - arrow0Size / 2.0f,
+                          arrow0Size, arrow0Size);
+        arrow0Shape = m_ellp2d;
+        break;
+      case ARROW_DELTA:
+        m_poly2d.reset();
+        m_poly2d.moveTo(-2.0f, -0.5f);
+        m_poly2d.lineTo(0.0f, 0.0f);
+        m_poly2d.lineTo(-2.0f, 0.5f);
+        m_poly2d.closePath();
+        // I want the transform to first scale, then rotate, then translate.
+        cosTheta = ((double) (x0 - x1)) / len;
+        sinTheta = ((double) (y0 - y1)) / len;
+        m_xformUtil.setTransform(cosTheta, sinTheta, -sinTheta, cosTheta,
+                                 x0, y0);
+        m_xformUtil.scale(arrow0Size, arrow0Size);
+        m_poly2d.transform(m_xformUtil);
+        arrow0Shape = m_poly2d;
+        break;
+      case ARROW_DIAMOND:
+        m_poly2d.reset();
+        m_poly2d.moveTo(-1.0f, -0.5f);
+        m_poly2d.lineTo(-2.0f, 0.0f);
+        m_poly2d.lineTo(-1.0f, 0.5f);
+        m_poly2d.lineTo(0.0f, 0.0f);
+        m_poly2d.closePath();
+        // I want the transform to first scale, then rotate, then translate.
+        cosTheta = ((double) (x0 - x1)) / len;
+        sinTheta = ((double) (y0 - y1)) / len;
+        m_xformUtil.setTransform(cosTheta, sinTheta, -sinTheta, cosTheta,
+                                 x0, y0);
+        m_xformUtil.scale(arrow0Size, arrow0Size);
+        m_poly2d.transform(m_xformUtil);
+        arrow0Shape = m_poly2d;
+        break;
+      case ARROW_TEE:
+        m_poly2d.reset();
+        m_poly2d.moveTo(-0.125f, -2.0f);
+        m_poly2d.lineTo(0.125f, -2.0f);
+        m_poly2d.lineTo(0.125f, 2.0f);
+        m_poly2d.lineTo(-0.125f, 2.0f);
+        m_poly2d.closePath();
+        // I want the transform to first scale, then rotate, then translate.
+        cosTheta = ((double) (x0 - x1)) / len;
+        sinTheta = ((double) (y0 - y1)) / len;
+        m_xformUtil.setTransform(cosTheta, sinTheta, -sinTheta, cosTheta,
+                                 x0, y0);
+        m_xformUtil.scale(arrow0Size, arrow0Size);
+        m_poly2d.transform(m_xformUtil);
+        arrow0Shape = m_poly2d;
+        break;
+      default: // case ARROW_NONE.
+        // Don't render anything.
+        arrow0Shape = null;
+        break; }
+      if (arrow0Shape != null) {
+        m_g2d.setColor(arrow0Color);
+        m_g2d.fill(arrow0Shape); }
+    }
   }
 
   private final void setStroke(final float width, final float dashLength)
