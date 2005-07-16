@@ -567,6 +567,7 @@ public final class GraphGraphics
         throw new IllegalArgumentException("arrowType0 is not recognized"); }
       if (arrowType1 != ARROW_NONE && arrow1Size <= 0.0f)
         throw new IllegalArgumentException("arrow1Size must be positive"); }
+    // End debug.  Here the real code begins.
 
     final double len = Math.sqrt((x1 - x0) * (x1 - x0) +
                                  (y1 - y0) * (y1 - y0));
@@ -578,60 +579,32 @@ public final class GraphGraphics
       final float x0Adj;
       final float y0Adj;
       switch (arrowType0) {
-      case ARROW_NONE:
-      case ARROW_DISC:
-        // Don't change endpoint 0.
-        x0Adj = x0; y0Adj = y0;
-        break;
       case ARROW_TEE:
-        // Move the endpoint 0 towards endpoint 1 by arrow0Size / 8.
-        final double v = (((double) arrow0Size) / 8.0d) / len;
-        x0Adj = (float) (v * (x1 - x0) + x0);
-        y0Adj = (float) (v * (y1 - y0) + y0);
-        break;
       case ARROW_DELTA:
-        // Move the endpoint 0 towards endpoint 1 by arrow0Size * 2.
-        final double t = (2.0d * arrow0Size) / len;
+      case ARROW_DIAMOND:
+        final double t = getT(arrowType0) * arrow0Size / len;
         x0Adj = (float) (t * (x1 - x0) + x0);
         y0Adj = (float) (t * (y1 - y0) + y0);
         break;
-      case ARROW_DIAMOND:
-        // Move the endpoint 0 towards endpoint 1 by arrow0Size.
-        final double u = ((double) arrow0Size) / len;
-        x0Adj = (float) (u * (x1 - x0) + x0);
-        y0Adj = (float) (u * (y1 - y0) + y0);
-        break;
-      default:
-        throw new IllegalArgumentException("arrowType0 not recognized"); }
+      default: // ARROW_NONE or ARROW_DISC.
+        // Don't change endpoint 0.
+        x0Adj = x0; y0Adj = y0;
+        break; }
 
       final float x1Adj;
       final float y1Adj;
       switch (arrowType1) {
-      case ARROW_NONE:
-      case ARROW_DISC:
-        // Don't change endpoint 1.
-        x1Adj = x1; y1Adj = y1;
-        break;
       case ARROW_TEE:
-        // Move the endpoint 1 towards endpoint 0 by arrow1Size / 8.
-        final double v = (((double) arrow1Size) / 8.0d) / len;
-        x1Adj = (float) (v * (x0 - x1) + x1);
-        y1Adj = (float) (v * (y0 - y1) + y1);
-        break;
       case ARROW_DELTA:
-        // Move the endpoint 1 towards endpoint 0 by arrow1Size * 2.
-        final double t = (2.0d * arrow1Size) / len;
+      case ARROW_DIAMOND:
+        final double t = getT(arrowType1) * arrow1Size / len;
         x1Adj = (float) (t * (x0 - x1) + x1);
         y1Adj = (float) (t * (y0 - y1) + y1);
         break;
-      case ARROW_DIAMOND:
-        // Move the endpoint 1 towards endpoint 0 by arrow1Size.
-        final double u = ((double) arrow1Size) / len;
-        x1Adj = (float) (u * (x0 - x1) + x1);
-        y1Adj = (float) (u * (y0 - y1) + y1);
-        break;
-      default:
-        throw new IllegalArgumentException("arrowType1 not recognized"); }
+      default: // ARROW_NONE or ARROW_DISC.
+        // Don't change endpoint 1.
+        x1Adj = x1; y1Adj = y1;
+        break; }
 
       // If the vector point0->point1 is pointing opposite to
       // adj0->adj1, then don't render the line segment.
@@ -712,7 +685,7 @@ public final class GraphGraphics
    * arrowType must be one of the following: ARROW_DELTA, ARROW_DIAMOND,
    * or ARROW_TEE.
    */
-  private final void computeUntransformedArrow(byte arrowType)
+  private final void computeUntransformedArrow(final byte arrowType)
   {
     switch (arrowType) {
     case ARROW_DELTA:
@@ -738,6 +711,21 @@ public final class GraphGraphics
       m_poly2d.lineTo(-0.125f, 2.0f);
       m_poly2d.closePath();
       break; }
+  }
+
+  /*
+   * arrowType must be one of the following: ARROW_DELTA, ARROW_DIAMOND,
+   * or ARROW_TEE.
+   */
+  private final static double getT(final byte arrowType)
+  { // I could implement this as an array instead of a switch statement.
+    switch (arrowType) {
+    case ARROW_DELTA:
+      return 2.0d;
+    case ARROW_DIAMOND:
+      return 1.0d;
+    default: // ARROW_TEE.
+      return 0.125d; }
   }
 
   private final void setStroke(final float width, final float dashLength)
