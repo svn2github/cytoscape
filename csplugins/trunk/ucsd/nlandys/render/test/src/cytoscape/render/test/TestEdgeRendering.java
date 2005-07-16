@@ -145,7 +145,7 @@ public final class TestEdgeRendering
        null, 0);
     while (iter.numRemaining() > 0) {
       final int inx_x4 = iter.nextInt() * 4;
-      if (m_shape < 0) {
+      if (m_shape >= 0) {
         m_grafx.drawEdgeLow(m_extents[inx_x4], m_extents[inx_x4 + 1],
                             m_extents[inx_x4 + 2], m_extents[inx_x4 + 3],
                             m_edgeColor); }
