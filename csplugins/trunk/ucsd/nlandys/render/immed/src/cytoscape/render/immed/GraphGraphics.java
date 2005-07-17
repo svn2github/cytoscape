@@ -71,7 +71,7 @@ public final class GraphGraphics
    *   argument supports transparent colors.
    * @param debug if this is true, extra [and time-consuming] error checking
    *   will take place.
-   * @exception IllegalThreadStateException if the calling thread isn't the
+   * @exception IllegalStateException if the calling thread isn't the
    *   AWT event handling thread.
    */
   public GraphGraphics(final Image image, final Color bgColor,
@@ -109,7 +109,7 @@ public final class GraphGraphics
    * @param scaleFactor the scaling that is to take place when rendering nodes;
    *   a distance of 1 in node coordinates translates to a distance of
    *   scaleFactor pixels in the image.
-   * @exception IllegalThreadStateException if the calling thread isn't the
+   * @exception IllegalStateException if the calling thread isn't the
    *   AWT event handling thread.
    * @exception IllegalArgumentException if scaleFactor is not positive.
    */
@@ -254,7 +254,7 @@ public final class GraphGraphics
    * @param borderWidth the border width, in node coordinate space; if
    *   this value is zero, the rendering engine skips over the process of
    *   rendering the border, which gives a significant performance boost.
-   * @exception IllegalThreadStateException if the calling thread isn't the
+   * @exception IllegalStateException if the calling thread isn't the
    *   AWT event handling thread.
    * @exception IllegalArgumentException if xMin is greater than xMax or if
    *   yMin is greater than yMax, or if borderWidth is negative,
@@ -392,7 +392,7 @@ public final class GraphGraphics
    * node coordinate space, not the image coordinate space.  Thus, these
    * values will likely not change from frame to frame, as zoom and pan
    * operations are performed.
-   * @exception IllegalThreadStateException if the calling thread isn't the
+   * @exception IllegalStateException if the calling thread isn't the
    *   AWT event handling thread.
    * @exception IllegalArgumentException if xMin is greater than xMax or if
    *   yMin is greater than yMax.
