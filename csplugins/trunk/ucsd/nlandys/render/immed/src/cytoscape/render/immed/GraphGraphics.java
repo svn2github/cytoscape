@@ -581,8 +581,8 @@ public final class GraphGraphics
         throw new IllegalArgumentException("arrow1Size must be positive"); }
     // End debug.  Here the real code begins.
 
-    final double len = Math.sqrt((x1 - x0) * (x1 - x0) +
-                                 (y1 - y0) * (y1 - y0));
+    final double len = Math.sqrt((((double) x1) - x0) * (((double) x1) - x0) +
+                                 (((double) y1) - y0) * (((double) y1) - y0));
     // If the length of the edge is zero we're going to skip completely over
     // all rendering.  This may not be the 100% correct approach.  We'll see.
     if (len == 0.0d) return;
@@ -595,8 +595,8 @@ public final class GraphGraphics
       case ARROW_DELTA:
       case ARROW_DIAMOND:
         final double t = getT(arrowType0) * arrow0Size / len;
-        x0Adj = (float) (t * (x1 - x0) + x0);
-        y0Adj = (float) (t * (y1 - y0) + y0);
+        x0Adj = (float) (t * (((double) x1) - x0) + x0);
+        y0Adj = (float) (t * (((double) y1) - y0) + y0);
         break;
       default: // ARROW_NONE or ARROW_DISC.
         // Don't change endpoint 0.
@@ -610,8 +610,8 @@ public final class GraphGraphics
       case ARROW_DELTA:
       case ARROW_DIAMOND:
         final double t = getT(arrowType1) * arrow1Size / len;
-        x1Adj = (float) (t * (x0 - x1) + x1);
-        y1Adj = (float) (t * (y0 - y1) + y1);
+        x1Adj = (float) (t * (((double) x0) - x1) + x1);
+        y1Adj = (float) (t * (((double) y0) - y1) + y1);
         break;
       default: // ARROW_NONE or ARROW_DISC.
         // Don't change endpoint 1.
@@ -621,8 +621,8 @@ public final class GraphGraphics
       // If the vector point0->point1 is pointing opposite to
       // adj0->adj1, then don't render the line segment.
       // Dot product determines this.
-      if (((double) (x1 - x0)) * ((double) (x1Adj - x0Adj)) +
-          ((double) (y1 - y0)) * ((double) (y1Adj - y0Adj)) > 0.0d) {
+      if ((((double) x1) - x0) * (((double) x1Adj) - x0Adj) +
+          (((double) y1) - y0) * (((double) y1Adj) - y0Adj) > 0.0d) {
         // Render the line segment.
         if (m_dash[0] != dashLength || m_currStrokeWidth != edgeThickness)
           setStroke(edgeThickness, dashLength);
@@ -635,8 +635,9 @@ public final class GraphGraphics
       final Shape arrow0Shape;
       switch (arrowType0) {
       case ARROW_DISC:
-        m_ellp2d.setFrame(x0 - arrow0Size / 2.0f, y0 - arrow0Size / 2.0f,
-                          arrow0Size, arrow0Size);
+        m_ellp2d.setFrame(((double) x0) - 0.5d * arrow0Size,
+                          ((double) y0) - 0.5d * arrow0Size,
+                          (double) arrow0Size, (double) arrow0Size);
         arrow0Shape = m_ellp2d;
         break;
       case ARROW_DELTA:
@@ -644,8 +645,8 @@ public final class GraphGraphics
       case ARROW_TEE:
         computeUntransformedArrow(arrowType0);
         // I want the transform to first scale, then rotate, then translate.
-        final double cosTheta = ((double) (x0 - x1)) / len;
-        final double sinTheta = ((double) (y0 - y1)) / len;
+        final double cosTheta = (((double) x0) - x1) / len;
+        final double sinTheta = (((double) y0) - y1) / len;
         m_xformUtil.setTransform(cosTheta, sinTheta, -sinTheta, cosTheta,
                                  x0, y0);
         m_xformUtil.scale(arrow0Size, arrow0Size);
@@ -665,7 +666,8 @@ public final class GraphGraphics
       final Shape arrow1Shape;
       switch (arrowType1) {
       case ARROW_DISC:
-        m_ellp2d.setFrame(x1 - arrow1Size / 2.0f, y1 - arrow1Size / 2.0f,
+        m_ellp2d.setFrame(((double) x1) - 0.5d * arrow1Size,
+                          ((double) y1) - 0.5d * arrow1Size,
                           arrow1Size, arrow1Size);
         arrow1Shape = m_ellp2d;
         break;
@@ -674,8 +676,8 @@ public final class GraphGraphics
       case ARROW_TEE:
         computeUntransformedArrow(arrowType1);
         // I want the transform to first scale, then rotate, then translate.
-        final double cosTheta = ((double) (x1 - x0)) / len;
-        final double sinTheta = ((double) (y1 - y0)) / len;
+        final double cosTheta = (((double) x1) - x0) / len;
+        final double sinTheta = (((double) y1) - y0) / len;
         m_xformUtil.setTransform(cosTheta, sinTheta, -sinTheta, cosTheta,
                                  x1, y1);
         m_xformUtil.scale(arrow1Size, arrow1Size);
