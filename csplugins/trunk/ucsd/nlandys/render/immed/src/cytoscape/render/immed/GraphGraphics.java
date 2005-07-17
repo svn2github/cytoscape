@@ -47,8 +47,8 @@ public final class GraphGraphics
 
   private final Color m_bgColor;
   private final boolean m_debug;
-  private final Rectangle2D.Float m_rect2d;
-  private final Ellipse2D.Float m_ellp2d;
+  private final Rectangle2D.Double m_rect2d;
+  private final Ellipse2D.Double m_ellp2d;
   private final GeneralPath m_poly2d;
   private final GeneralPath m_innerPoly2d;
   private final Line2D.Float m_line2d;
@@ -83,8 +83,8 @@ public final class GraphGraphics
     this.image = image;
     m_bgColor = bgColor;
     m_debug = debug;
-    m_rect2d = new Rectangle2D.Float();
-    m_ellp2d = new Ellipse2D.Float();
+    m_rect2d = new Rectangle2D.Double();
+    m_ellp2d = new Ellipse2D.Double();
     m_poly2d = new GeneralPath();
     m_innerPoly2d = new GeneralPath();
     m_line2d = new Line2D.Float();
@@ -200,53 +200,58 @@ public final class GraphGraphics
   {
     switch (shapeType) {
     case SHAPE_RECTANGLE:
-      m_rect2d.setRect(xMin, yMin, xMax - xMin, yMax - yMin);
+      m_rect2d.setRect((double) xMin, (double) yMin,
+                       ((double) xMax) - xMin,
+                       ((double) yMax) - yMin);
       return m_rect2d;
     case SHAPE_ELLIPSE:
-      m_ellp2d.setFrame(xMin, yMin, xMax - xMin, yMax - yMin);
+      m_ellp2d.setFrame((double) xMin,
+                        (double) yMin,
+                        ((double) xMax) - xMin,
+                        ((double) yMax) - yMin);
       return m_ellp2d;
     case SHAPE_DIAMOND:
       m_poly2d.reset();
-      m_poly2d.moveTo((xMin + xMax) / 2.0f, yMin);
-      m_poly2d.lineTo(xMax, (yMin + yMax) / 2.0f);
-      m_poly2d.lineTo((xMin + xMax) / 2.0f, yMax);
-      m_poly2d.lineTo(xMin, (yMin + yMax) / 2.0f);
+      m_poly2d.moveTo((float) ((((double) xMin) + xMax) / 2.0d), yMin);
+      m_poly2d.lineTo(xMax, (float) ((((double) yMin) + yMax) / 2.0d));
+      m_poly2d.lineTo((float) ((((double) xMin) + xMax) / 2.0d), yMax);
+      m_poly2d.lineTo(xMin, (float) ((((double) yMin) + yMax) / 2.0d));
       m_poly2d.closePath();
       return m_poly2d;
     case SHAPE_HEXAGON:
       m_poly2d.reset();
-      m_poly2d.moveTo((2.0f * xMin + xMax) / 3.0f, yMin);
-      m_poly2d.lineTo((xMin + 2.0f * xMax) / 3.0f, yMin);
-      m_poly2d.lineTo(xMax, (yMin + yMax) / 2.0f);
-      m_poly2d.lineTo((xMin + 2.0f * xMax) / 3.0f, yMax);
-      m_poly2d.lineTo((2.0f * xMin + xMax) / 3.0f, yMax);
-      m_poly2d.lineTo(xMin, (yMin + yMax) / 2.0f);
+      m_poly2d.moveTo((float) ((2.0d * xMin + xMax) / 3.0d), yMin);
+      m_poly2d.lineTo((float) ((2.0d * xMax + xMin) / 3.0d), yMin);
+      m_poly2d.lineTo(xMax, (float) ((((double) yMin) + yMax) / 2.0d));
+      m_poly2d.lineTo((float) ((2.0d * xMax + xMin) / 3.0d), yMax);
+      m_poly2d.lineTo((float) ((2.0d * xMin + xMax) / 3.0d), yMax);
+      m_poly2d.lineTo(xMin, (float) ((((double) yMin) + yMax) / 2.0d));
       m_poly2d.closePath();
       return m_poly2d;
     case SHAPE_OCTAGON:
       m_poly2d.reset();
-      m_poly2d.moveTo((2.0f * xMin + xMax) / 3.0f, yMin);
-      m_poly2d.lineTo((xMin + 2.0f * xMax) / 3.0f, yMin);
-      m_poly2d.lineTo(xMax, (2.0f * yMin + yMax) / 3.0f);
-      m_poly2d.lineTo(xMax, (yMin + 2.0f * yMax) / 3.0f);
-      m_poly2d.lineTo((xMin + 2.0f * xMax) / 3.0f, yMax);
-      m_poly2d.lineTo((2.0f * xMin + xMax) / 3.0f, yMax);
-      m_poly2d.lineTo(xMin, (yMin + 2.0f * yMax) / 3.0f);
-      m_poly2d.lineTo(xMin, (2.0f * yMin + yMax) / 3.0f);
+      m_poly2d.moveTo((float) ((2.0d * xMin + xMax) / 3.0d), yMin);
+      m_poly2d.lineTo((float) ((2.0d * xMax + xMin) / 3.0d), yMin);
+      m_poly2d.lineTo(xMax, (float) ((2.0d * yMin + yMax) / 3.0d));
+      m_poly2d.lineTo(xMax, (float) ((2.0d * yMax + yMin) / 3.0d));
+      m_poly2d.lineTo((float) ((2.0d * xMax + xMin) / 3.0d), yMax);
+      m_poly2d.lineTo((float) ((2.0d * xMin + xMax) / 3.0d), yMax);
+      m_poly2d.lineTo(xMin, (float) ((2.0d * yMax + yMin) / 3.0d));
+      m_poly2d.lineTo(xMin, (float) ((2.0d * yMin + yMax) / 3.0d));
       m_poly2d.closePath();
       return m_poly2d;
     case SHAPE_PARALLELOGRAM:
       m_poly2d.reset();
       m_poly2d.moveTo(xMin, yMin);
-      m_poly2d.lineTo((xMin + 2.0f * xMax) / 3.0f, yMin);
+      m_poly2d.lineTo((float) ((2.0d * xMax + xMin) / 3.0d), yMin);
       m_poly2d.lineTo(xMax, yMax);
-      m_poly2d.lineTo((2.0f * xMin + xMax) / 3.0f, yMax);
+      m_poly2d.lineTo((float) ((2.0d * xMin + xMax) / 3.0d), yMax);
       m_poly2d.closePath();
       return m_poly2d;
     case SHAPE_TRIANGLE:
       m_poly2d.reset();
       m_poly2d.moveTo(xMin, yMax);
-      m_poly2d.lineTo((xMin + xMax) / 2.0f, yMin);
+      m_poly2d.lineTo((float) ((((double) xMin) + xMax) / 2.0d), yMin);
       m_poly2d.lineTo(xMax, yMax);
       m_poly2d.closePath();
       return m_poly2d;
