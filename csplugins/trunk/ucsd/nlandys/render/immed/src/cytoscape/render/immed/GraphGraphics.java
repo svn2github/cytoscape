@@ -297,18 +297,18 @@ public final class GraphGraphics
         // This is an approximation to proper border width.  It's
         // faster than drawing a curvy path of some thickness, and this
         // approach leads to exact intersection calculations for edges.
-        final float innerXMin = xMin + borderWidth;
-        final float innerYMin = yMin + borderWidth;
-        final float innerXMax = xMax - borderWidth;
-        final float innerYMax = yMax - borderWidth;
+        final double innerXMin = ((double) xMin) + borderWidth;
+        final double innerYMin = ((double) yMin) + borderWidth;
+        final double innerXMax = ((double) xMax) - borderWidth;
+        final double innerYMax = ((double) yMax) - borderWidth;
         m_ellp2d.setFrame(innerXMin, innerYMin,
                           innerXMax - innerXMin, innerYMax - innerYMin);
         innerShape = m_ellp2d; }
       else if (shapeType == SHAPE_RECTANGLE) {
-        final float innerXMin = xMin + borderWidth;
-        final float innerYMin = yMin + borderWidth;
-        final float innerXMax = xMax - borderWidth;
-        final float innerYMax = yMax - borderWidth;
+        final double innerXMin = ((double) xMin) + borderWidth;
+        final double innerYMin = ((double) yMin) + borderWidth;
+        final double innerXMax = ((double) xMax) - borderWidth;
+        final double innerYMax = ((double) yMax) - borderWidth;
         m_rect2d.setRect(innerXMin, innerYMin,
                          innerXMax - innerXMin, innerYMax - innerYMin);
         innerShape = m_rect2d; }
@@ -377,22 +377,22 @@ public final class GraphGraphics
                                               final float yNext,
                                               final float borderWidth)
   {
-    final double segX1 = xCurr - xPrev;
-    final double segY1 = yCurr - yPrev;
+    final double segX1 = ((double) xCurr) - xPrev;
+    final double segY1 = ((double) yCurr) - yPrev;
     final double segLength1 = Math.sqrt(segX1 * segX1 + segY1 * segY1);
-    final double segX2 = xNext - xCurr;
-    final double segY2 = yNext - yCurr;
+    final double segX2 = ((double) xNext) - xCurr;
+    final double segY2 = ((double) yNext) - yCurr;
     final double segLength2 = Math.sqrt(segX2 * segX2 + segY2 * segY2);
     final double segX2Normal = segX2 / segLength2;
     final double segY2Normal = segY2 / segLength2;
-    final double xNextPrime = xPrev + segX2Normal * segLength1;
-    final double yNextPrime = yPrev + segY2Normal * segLength1;
+    final double xNextPrime = segX2Normal * segLength1 + xPrev;
+    final double yNextPrime = segY2Normal * segLength1 + yPrev;
     final double segPrimeX = xNextPrime - xCurr;
     final double segPrimeY = yNextPrime - yCurr;
     final double distancePrimeToSeg1 =
       (segX1 * yNextPrime - segY1 * xNextPrime +
        ((double) xPrev) * yCurr - ((double) xCurr) * yPrev) / segLength1;
-    final double multFactor = borderWidth / distancePrimeToSeg1;
+    final double multFactor = ((double) borderWidth) / distancePrimeToSeg1;
     output[0] = (float) (multFactor * segPrimeX + xCurr);
     output[1] = (float) (multFactor * segPrimeY + yCurr);
   }
