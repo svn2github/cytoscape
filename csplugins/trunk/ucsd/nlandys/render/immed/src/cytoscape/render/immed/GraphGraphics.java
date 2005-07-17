@@ -77,6 +77,9 @@ public final class GraphGraphics
   public GraphGraphics(final Image image, final Color bgColor,
                        final boolean debug)
   {
+    if (!EventQueue.isDispatchThread())
+      throw new IllegalStateException
+        ("calling thread is not AWT event dispatcher");
     this.image = image;
     m_bgColor = bgColor;
     m_debug = debug;
@@ -179,6 +182,10 @@ public final class GraphGraphics
    */
   public final void xformCanvasToNodeCoords(final double[] coords)
   {
+    if (m_debug) {
+      if (!EventQueue.isDispatchThread())
+        throw new IllegalStateException
+          ("calling thread is not AWT event dispatcher"); }
     try {
       m_currXform.inverseTransform(coords, 0, coords, 0, 1); }
     catch (java.awt.geom.NoninvertibleTransformException e) {
@@ -752,7 +759,20 @@ public final class GraphGraphics
                                                final float ptY,
                                                final float[] returnVal)
   {
-    return false;
+    if (m_debug) {
+      if (!EventQueue.isDispatchThread())
+        throw new IllegalStateException
+          ("calling thread is not AWT event dispatcher");
+      if (xMin > xMax) throw new IllegalArgumentException("xMin > xMax");
+      if (yMin > yMax) throw new IllegalArgumentException("yMin > yMax");
+      if (offset < 0.0f) throw new IllegalArgumentException("offset < 0"); }
+    if (nodeShape == SHAPE_ELLIPSE) {
+      return false;
+    }
+    else {
+      final Shape polygon = getShape(nodeShape, xMin, yMin, xMax, yMax);
+      return false;
+    }
   }
 
   /*
