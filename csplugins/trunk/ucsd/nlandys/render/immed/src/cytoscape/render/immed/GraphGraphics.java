@@ -853,6 +853,13 @@ public final class GraphGraphics
       final double xsectPtPrimeY = xsectXformedPtPrimeY / yScaleFactor;
       final double tangentPtPrimeX = tangentXformedPtPrimeX / xScaleFactor;
       final double tangentPtPrimeY = tangentXformedPtPrimeY / yScaleFactor;
+      final double realDist = Math.sqrt(ptPrimeX * ptPrimeX +
+                                        ptPrimeY * ptPrimeY);
+
+
+
+
+
       final double xsectLineX = xsectPtPrimeX + ellpCenterX;
       final double xsectLineY = xsectPtPrimeY + ellpCenterY;
       return false;
