@@ -51,7 +51,7 @@ public final class GraphGraphics
   private final Ellipse2D.Double m_ellp2d;
   private final GeneralPath m_poly2d;
   private final GeneralPath m_innerPoly2d;
-  private final Line2D.Float m_line2d;
+  private final Line2D.Double m_line2d;
   private final float[] m_dash;
   private final float[] m_pathBuff;
   private final double[] m_ptsBuff;
@@ -87,7 +87,7 @@ public final class GraphGraphics
     m_ellp2d = new Ellipse2D.Double();
     m_poly2d = new GeneralPath();
     m_innerPoly2d = new GeneralPath();
-    m_line2d = new Line2D.Float();
+    m_line2d = new Line2D.Double();
     m_dash = new float[] { 0.0f, 0.0f };
     m_pathBuff = new float[6];
     m_ptsBuff = new double[4];
@@ -590,30 +590,30 @@ public final class GraphGraphics
     if (len == 0.0d) return;
 
     { // Render the line segment if necessary.
-      final float x0Adj;
-      final float y0Adj;
+      final double x0Adj;
+      final double y0Adj;
       switch (arrowType0) {
       case ARROW_TEE:
       case ARROW_DELTA:
       case ARROW_DIAMOND:
         final double t = getT(arrowType0) * arrow0Size / len;
-        x0Adj = (float) (t * (((double) x1) - x0) + x0);
-        y0Adj = (float) (t * (((double) y1) - y0) + y0);
+        x0Adj = t * (((double) x1) - x0) + x0;
+        y0Adj = t * (((double) y1) - y0) + y0;
         break;
       default: // ARROW_NONE or ARROW_DISC.
         // Don't change endpoint 0.
         x0Adj = x0; y0Adj = y0;
         break; }
 
-      final float x1Adj;
-      final float y1Adj;
+      final double x1Adj;
+      final double y1Adj;
       switch (arrowType1) {
       case ARROW_TEE:
       case ARROW_DELTA:
       case ARROW_DIAMOND:
         final double t = getT(arrowType1) * arrow1Size / len;
-        x1Adj = (float) (t * (((double) x0) - x1) + x1);
-        y1Adj = (float) (t * (((double) y0) - y1) + y1);
+        x1Adj = t * (((double) x0) - x1) + x1;
+        y1Adj = t * (((double) y0) - y1) + y1;
         break;
       default: // ARROW_NONE or ARROW_DISC.
         // Don't change endpoint 1.
@@ -623,8 +623,8 @@ public final class GraphGraphics
       // If the vector point0->point1 is pointing opposite to
       // adj0->adj1, then don't render the line segment.
       // Dot product determines this.
-      if ((((double) x1) - x0) * (((double) x1Adj) - x0Adj) +
-          (((double) y1) - y0) * (((double) y1Adj) - y0Adj) > 0.0d) {
+      if ((((double) x1) - x0) * (x1Adj - x0Adj) +
+          (((double) y1) - y0) * (y1Adj - y0Adj) > 0.0d) {
         // Render the line segment.
         if (m_dash[0] != dashLength || m_currStrokeWidth != edgeThickness)
           setStroke(edgeThickness, dashLength);
