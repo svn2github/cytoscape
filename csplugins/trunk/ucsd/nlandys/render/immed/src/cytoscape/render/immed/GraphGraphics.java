@@ -425,6 +425,8 @@ public final class GraphGraphics
     m_ptsBuff[0] = xMin; m_ptsBuff[1] = yMin;
     m_ptsBuff[2] = xMax; m_ptsBuff[3] = yMax;
     m_currXform.transform(m_ptsBuff, 0, m_ptsBuff, 0, 2);
+    // Here, double values outside of the range of ints will be case to
+    // the nearest int without overflow.
     final int xNot = (int) m_ptsBuff[0];
     final int yNot = (int) m_ptsBuff[1];
     final int xOne = (int) m_ptsBuff[2];
