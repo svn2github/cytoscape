@@ -837,7 +837,24 @@ public final class GraphGraphics
       final double ptPrimeY = ptY - ellpCenterY;
       final double ellpW = ((double) xMax) - xMin;
       final double ellpH = ((double) yMax) - yMin;
-//       if (ellpW >= ellpH)
+      final double xScaleFactor = 2.0d / ellpW;
+      final double yScaleFactor = 2.0d / ellpH;
+      final double xformedPtPrimeX = ptPrimeX * xScaleFactor;
+      final double xformedPtPrimeY = ptPrimeY * yScaleFactor;
+      final double xformedDist = Math.sqrt(xformedPtPrimeX * xformedPtPrimeX +
+                                           xformedPtPrimeY * xformedPtPrimeY);
+      final double xsectXformedPtPrimeX = xformedPtPrimeX / xformedDist;
+      final double xsectXformedPtPrimeY = xformedPtPrimeY / xformedDist;
+      final double tangentXformedPtPrimeX =
+        xsectXformedPtPrimeX + xsectXformedPtPrimeY;
+      final double tangentXformedPtPrimeY =
+        xsectXformedPtPrimeY - xsectXformedPtPrimeX;
+      final double xsectPtPrimeX = xsectXformedPtPrimeX / xScaleFactor;
+      final double xsectPtPrimeY = xsectXformedPtPrimeY / yScaleFactor;
+      final double tangentPtPrimeX = tangentXformedPtPrimeX / xScaleFactor;
+      final double tangentPtPrimeY = tangentXformedPtPrimeY / yScaleFactor;
+      final double xsectLineX = xsectPtPrimeX + ellpCenterX;
+      final double xsectLineY = xsectPtPrimeY + ellpCenterY;
       return false;
     }
     else {
