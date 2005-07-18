@@ -300,7 +300,7 @@ public final class GraphGraphics
     case SHAPE_TRIANGLE:
       m_polyNumCoords = 3;
       m_polyCoords[0] = xMin;
-      m_polyCoords[1] = yMin;
+      m_polyCoords[1] = yMax;
       m_polyCoords[2] = (((double) xMin) + xMax) / 2.0d;
       m_polyCoords[3] = yMin;
       m_polyCoords[4] = xMax;
