@@ -70,7 +70,7 @@ public final class GraphGraphics
    *   a new frame; transparent colors are honored, provided that the image
    *   argument supports transparent colors.
    * @param debug if this is true, extra [and time-consuming] error checking
-   *   will take place.
+   *   will take place in each method call.
    * @exception IllegalStateException if the calling thread isn't the
    *   AWT event handling thread.
    */
@@ -143,8 +143,8 @@ public final class GraphGraphics
                            RenderingHints.VALUE_STROKE_PURE);
     setStroke(0.0f, 0.0f);
 
-    m_currXform.setToTranslation(0.5d * (double) image.getWidth(null),
-                                 0.5d * (double) image.getHeight(null));
+    m_currXform.setToTranslation(0.5d * image.getWidth(null),
+                                 0.5d * image.getHeight(null));
     m_currXform.scale(scaleFactor, scaleFactor);
     m_currXform.translate(-xCenter, -yCenter);
     m_g2d.transform(m_currXform);
@@ -432,8 +432,8 @@ public final class GraphGraphics
     final int xOne = (int) m_ptsBuff[2];
     final int yOne = (int) m_ptsBuff[3];
     m_gMinimal.setColor(fillColor);
-    m_gMinimal.fillRect(xNot, yNot, Math.max(1, xOne - xNot),
-                        Math.max(1, yOne - yNot));
+    m_gMinimal.fillRect(xNot, yNot, Math.max(1, xOne - xNot), // Overflow will
+                        Math.max(1, yOne - yNot));            // be problem.
   }
 
   public final void drawEdgeLow(final float x0, final float y0,
@@ -776,6 +776,16 @@ public final class GraphGraphics
       if (yMin > yMax) throw new IllegalArgumentException("yMin > yMax");
       if (offset < 0.0f) throw new IllegalArgumentException("offset < 0"); }
     if (nodeShape == SHAPE_ELLIPSE) {
+      // First, compute the actual intersection of the edge with the
+      // ellipse, if it exists.  We will use this intersection point
+      // regardless of whether or not offset is zero.
+      final double ellpCenterX = (((double) xMin) + xMax) / 2.0d;
+      final double ellpCenterY = (((double) yMin) + yMax) / 2.0d;
+      final double ptPrimeX = ptX - ellpCenterX;
+      final double ptPrimeY = ptY - ellpCenterY;
+      final double ellpW = ((double) xMax) - xMin;
+      final double ellpH = ((double) yMax) - yMin;
+//       if (ellpW >= ellpH)
       return false;
     }
     else {
