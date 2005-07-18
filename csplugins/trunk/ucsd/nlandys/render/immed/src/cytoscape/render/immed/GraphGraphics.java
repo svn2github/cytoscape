@@ -161,6 +161,8 @@ public final class GraphGraphics
    *   coordinate system.
    * @param yQuery the y coordinate of the query point, in the node
    *   coordinate system.
+   * @exception IllegalArgumentException if xMin is not less than xMax
+   *   or if yMin is not less than yMax.
    */
   public final boolean contains(final byte shapeType,
                                 final float xMin, final float yMin,
@@ -171,8 +173,8 @@ public final class GraphGraphics
       if (!EventQueue.isDispatchThread())
         throw new IllegalStateException
           ("calling thread is not AWT event dispatcher");
-      if (xMin > xMax) throw new IllegalArgumentException("xMin > xMax");
-      if (yMin > yMax) throw new IllegalArgumentException("yMin > yMax"); }
+      if (xMin >= xMax) throw new IllegalArgumentException("xMin >= xMax");
+      if (yMin >= yMax) throw new IllegalArgumentException("yMin >= yMax"); }
     return getShape(shapeType, xMin, yMin, xMax, yMax).contains(xQuery,
                                                                 yQuery);
   }
@@ -325,8 +327,8 @@ public final class GraphGraphics
    *   rendering the border, which gives a significant performance boost.
    * @exception IllegalStateException if the calling thread isn't the
    *   AWT event handling thread.
-   * @exception IllegalArgumentException if xMin is greater than xMax or if
-   *   yMin is greater than yMax, or if borderWidth is negative,
+   * @exception IllegalArgumentException if xMin is not less than xMax or if
+   *   yMin is not less than yMax, or if borderWidth is negative,
    *   or if shapeType is not one of the SHAPE_* constants.
    */
   public final void drawNodeFull(final byte shapeType,
@@ -340,8 +342,8 @@ public final class GraphGraphics
       if (!EventQueue.isDispatchThread())
         throw new IllegalStateException
           ("calling thread is not AWT event dispatcher");
-      if (xMin > xMax) throw new IllegalArgumentException("xMin > xMax");
-      if (yMin > yMax) throw new IllegalArgumentException("yMin > yMax");
+      if (xMin >= xMax) throw new IllegalArgumentException("xMin >= xMax");
+      if (yMin >= yMax) throw new IllegalArgumentException("yMin >= yMax");
       if (borderWidth < 0.0f)
         throw new IllegalArgumentException("borderWidth < 0"); }
     final Shape shape = getShape(shapeType, xMin, yMin, xMax, yMax);
@@ -456,8 +458,8 @@ public final class GraphGraphics
    * operations are performed.
    * @exception IllegalStateException if the calling thread isn't the
    *   AWT event handling thread.
-   * @exception IllegalArgumentException if xMin is greater than xMax or if
-   *   yMin is greater than yMax.
+   * @exception IllegalArgumentException if xMin is not less than xMax or if
+   *   yMin is not less than yMax.
    */
   public final void drawNodeLow(final float xMin, final float yMin,
                                 final float xMax, final float yMax,
@@ -467,8 +469,8 @@ public final class GraphGraphics
       if (!EventQueue.isDispatchThread())
         throw new IllegalStateException
           ("calling thread is not AWT event dispatcher");
-      if (xMin > xMax) throw new IllegalArgumentException("xMin > xMax");
-      if (yMin > yMax) throw new IllegalArgumentException("yMin > yMax"); }
+      if (xMin >= xMax) throw new IllegalArgumentException("xMin >= xMax");
+      if (yMin >= yMax) throw new IllegalArgumentException("yMin >= yMax"); }
     if (m_gMinimal == null) m_gMinimal = image.getGraphics();
     // I'm transforming points manually because the resulting underlying
     // graphics pipeline used is much faster.
@@ -822,8 +824,8 @@ public final class GraphGraphics
       if (!EventQueue.isDispatchThread())
         throw new IllegalStateException
           ("calling thread is not AWT event dispatcher");
-      if (xMin > xMax) throw new IllegalArgumentException("xMin > xMax");
-      if (yMin > yMax) throw new IllegalArgumentException("yMin > yMax");
+      if (xMin >= xMax) throw new IllegalArgumentException("xMin >= xMax");
+      if (yMin >= yMax) throw new IllegalArgumentException("yMin >= yMax");
       if (offset < 0.0f) throw new IllegalArgumentException("offset < 0"); }
     if (nodeShape == SHAPE_ELLIPSE) {
       // First, compute the actual intersection of the edge with the
