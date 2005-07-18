@@ -50,13 +50,20 @@ public final class GraphGraphics
   private final Rectangle2D.Double m_rect2d;
   private final Ellipse2D.Double m_ellp2d;
   private final GeneralPath m_poly2d;
-  private final GeneralPath m_innerPoly2d;
+  private final double[] m_polyCoords; // I need this for extra precision.
+                                       // GeneralPath stores 32 bit floats,
+                                       // and I need more precision when
+                                       // calculating the inner polygon
+                                       // for nonzero border width so that
+                                       // edges of polygon are guaranteed to
+                                       // have nonzero length during
+                                       // computation.
   private final Line2D.Double m_line2d;
   private final float[] m_dash;
-  private final float[] m_pathBuff;
   private final double[] m_ptsBuff;
   private final AffineTransform m_currXform;
   private final AffineTransform m_xformUtil;
+  private int m_polyNumCoords; // Used with m_polyCoords.
   private Graphics2D m_g2d;
   private Graphics m_gMinimal;
   private float m_currStrokeWidth;
@@ -86,10 +93,9 @@ public final class GraphGraphics
     m_rect2d = new Rectangle2D.Double();
     m_ellp2d = new Ellipse2D.Double();
     m_poly2d = new GeneralPath();
-    m_innerPoly2d = new GeneralPath();
+    m_polyCoords = new double[2 * 8]; // Octagon has the most corners.
     m_line2d = new Line2D.Double();
     m_dash = new float[] { 0.0f, 0.0f };
-    m_pathBuff = new float[6];
     m_ptsBuff = new double[4];
     m_currXform = new AffineTransform();
     m_xformUtil = new AffineTransform();
@@ -193,7 +199,8 @@ public final class GraphGraphics
   }
 
   // This method has the side effect of setting m_rect2d, m_ellp2d, or
-  // m_poly2d.
+  // m_poly2d; if m_poly2d is set (every case but the ellipse or rectangle),
+  // then m_polyCoords and m_polyNumCoords are also set.
   private final Shape getShape(final byte shapeType,
                                final float xMin, final float yMin,
                                final float xMax, final float yMax)
@@ -211,48 +218,98 @@ public final class GraphGraphics
                         ((double) yMax) - yMin);
       return m_ellp2d;
     case SHAPE_DIAMOND:
+      m_polyNumCoords = 4;
+      m_polyCoords[0] = (((double) xMin) + xMax) / 2.0d;
+      m_polyCoords[1] = yMin;
+      m_polyCoords[2] = xMax;
+      m_polyCoords[3] = (((double) yMin) + yMax) / 2.0d;
+      m_polyCoords[4] = (((double) xMin) + xMax) / 2.0d;
+      m_polyCoords[5] = yMax;
+      m_polyCoords[6] = xMin;
+      m_polyCoords[7] = (((double) yMin) + yMax) / 2.0d;
+      // The rest of this code can be factored with other cases.
       m_poly2d.reset();
-      m_poly2d.moveTo((float) ((((double) xMin) + xMax) / 2.0d), yMin);
-      m_poly2d.lineTo(xMax, (float) ((((double) yMin) + yMax) / 2.0d));
-      m_poly2d.lineTo((float) ((((double) xMin) + xMax) / 2.0d), yMax);
-      m_poly2d.lineTo(xMin, (float) ((((double) yMin) + yMax) / 2.0d));
+      m_poly2d.moveTo((float) m_polyCoords[0], (float) m_polyCoords[1]);
+      for (int i = 2; i < m_polyNumCoords * 2;)
+        m_poly2d.lineTo((float) m_polyCoords[i++], (float) m_polyCoords[i++]);
       m_poly2d.closePath();
       return m_poly2d;
     case SHAPE_HEXAGON:
+      m_polyNumCoords = 6;
+      m_polyCoords[0] = (2.0d * xMin + xMax) / 3.0d;
+      m_polyCoords[1] = yMin;
+      m_polyCoords[2] = (2.0d * xMax + xMin) / 3.0d;
+      m_polyCoords[3] = yMin;
+      m_polyCoords[4] = xMax;
+      m_polyCoords[5] = (((double) yMin) + yMax) / 2.0d;
+      m_polyCoords[6] = (2.0d * xMax + xMin) / 3.0d;
+      m_polyCoords[7] = yMax;
+      m_polyCoords[8] = (2.0d * xMin + xMax) / 3.0d;
+      m_polyCoords[9] = yMax;
+      m_polyCoords[10] = xMin;
+      m_polyCoords[11] = (((double) yMin) + yMax) / 2.0d;
+      // The rest of this code can be factored with other cases.
       m_poly2d.reset();
-      m_poly2d.moveTo((float) ((2.0d * xMin + xMax) / 3.0d), yMin);
-      m_poly2d.lineTo((float) ((2.0d * xMax + xMin) / 3.0d), yMin);
-      m_poly2d.lineTo(xMax, (float) ((((double) yMin) + yMax) / 2.0d));
-      m_poly2d.lineTo((float) ((2.0d * xMax + xMin) / 3.0d), yMax);
-      m_poly2d.lineTo((float) ((2.0d * xMin + xMax) / 3.0d), yMax);
-      m_poly2d.lineTo(xMin, (float) ((((double) yMin) + yMax) / 2.0d));
+      m_poly2d.moveTo((float) m_polyCoords[0], (float) m_polyCoords[1]);
+      for (int i = 2; i < m_polyNumCoords * 2;)
+        m_poly2d.lineTo((float) m_polyCoords[i++], (float) m_polyCoords[i++]);
       m_poly2d.closePath();
       return m_poly2d;
     case SHAPE_OCTAGON:
+      m_polyNumCoords = 8;
+      m_polyCoords[0] = (2.0d * xMin + xMax) / 3.0d;
+      m_polyCoords[1] = yMin;
+      m_polyCoords[2] = (2.0d * xMax + xMin) / 3.0d;
+      m_polyCoords[3] = yMin;
+      m_polyCoords[4] = xMax;
+      m_polyCoords[5] = (2.0d * yMin + yMax) / 3.0d;
+      m_polyCoords[6] = xMax;
+      m_polyCoords[7] = (2.0d * yMax + yMin) / 3.0d;
+      m_polyCoords[8] = (2.0d * xMax + xMin) / 3.0d;
+      m_polyCoords[9] = yMax;
+      m_polyCoords[10] = (2.0d * xMin + xMax) / 3.0d;
+      m_polyCoords[11] = yMax;
+      m_polyCoords[12] = xMin;
+      m_polyCoords[13] = (2.0d * yMax + yMin) / 3.0d;
+      m_polyCoords[14] = xMin;
+      m_polyCoords[15] = (2.0d * yMin + yMax) / 3.0d;
+      // The rest of this code can be factored with other cases.
       m_poly2d.reset();
-      m_poly2d.moveTo((float) ((2.0d * xMin + xMax) / 3.0d), yMin);
-      m_poly2d.lineTo((float) ((2.0d * xMax + xMin) / 3.0d), yMin);
-      m_poly2d.lineTo(xMax, (float) ((2.0d * yMin + yMax) / 3.0d));
-      m_poly2d.lineTo(xMax, (float) ((2.0d * yMax + yMin) / 3.0d));
-      m_poly2d.lineTo((float) ((2.0d * xMax + xMin) / 3.0d), yMax);
-      m_poly2d.lineTo((float) ((2.0d * xMin + xMax) / 3.0d), yMax);
-      m_poly2d.lineTo(xMin, (float) ((2.0d * yMax + yMin) / 3.0d));
-      m_poly2d.lineTo(xMin, (float) ((2.0d * yMin + yMax) / 3.0d));
+      m_poly2d.moveTo((float) m_polyCoords[0], (float) m_polyCoords[1]);
+      for (int i = 2; i < m_polyNumCoords * 2;)
+        m_poly2d.lineTo((float) m_polyCoords[i++], (float) m_polyCoords[i++]);
       m_poly2d.closePath();
       return m_poly2d;
     case SHAPE_PARALLELOGRAM:
+      m_polyNumCoords = 4;
+      m_polyCoords[0] = xMin;
+      m_polyCoords[1] = yMin;
+      m_polyCoords[2] = (2.0d * xMax + xMin) / 3.0d;
+      m_polyCoords[3] = yMin;
+      m_polyCoords[4] = xMax;
+      m_polyCoords[5] = yMax;
+      m_polyCoords[6] = (2.0d * xMin + xMax) / 3.0d;
+      m_polyCoords[7] = yMax;
+      // The rest of this code can be factored with other cases.
       m_poly2d.reset();
-      m_poly2d.moveTo(xMin, yMin);
-      m_poly2d.lineTo((float) ((2.0d * xMax + xMin) / 3.0d), yMin);
-      m_poly2d.lineTo(xMax, yMax);
-      m_poly2d.lineTo((float) ((2.0d * xMin + xMax) / 3.0d), yMax);
+      m_poly2d.moveTo((float) m_polyCoords[0], (float) m_polyCoords[1]);
+      for (int i = 2; i < m_polyNumCoords * 2;)
+        m_poly2d.lineTo((float) m_polyCoords[i++], (float) m_polyCoords[i++]);
       m_poly2d.closePath();
       return m_poly2d;
     case SHAPE_TRIANGLE:
+      m_polyNumCoords = 3;
+      m_polyCoords[0] = xMin;
+      m_polyCoords[1] = yMin;
+      m_polyCoords[2] = (((double) xMin) + xMax) / 2.0d;
+      m_polyCoords[3] = yMin;
+      m_polyCoords[4] = xMax;
+      m_polyCoords[5] = yMax;
+      // The rest of this code can be factored with other cases.
       m_poly2d.reset();
-      m_poly2d.moveTo(xMin, yMax);
-      m_poly2d.lineTo((float) ((((double) xMin) + xMax) / 2.0d), yMin);
-      m_poly2d.lineTo(xMax, yMax);
+      m_poly2d.moveTo((float) m_polyCoords[0], (float) m_polyCoords[1]);
+      for (int i = 2; i < m_polyNumCoords * 2;)
+        m_poly2d.lineTo((float) m_polyCoords[i++], (float) m_polyCoords[i++]);
       m_poly2d.closePath();
       return m_poly2d;
     default:
@@ -295,8 +352,8 @@ public final class GraphGraphics
       final Shape innerShape;
       if (shapeType == SHAPE_ELLIPSE) {
         // This is an approximation to proper border width.  It's
-        // faster than drawing a curvy path of some thickness, and this
-        // approach leads to exact intersection calculations for edges.
+        // faster than drawing an elliptical path of some thickness, and this
+        // approach leads to precise intersection calculations for edges.
         final double innerXMin = ((double) xMin) + borderWidth;
         final double innerYMin = ((double) yMin) + borderWidth;
         final double innerXMax = ((double) xMax) - borderWidth;
@@ -318,48 +375,41 @@ public final class GraphGraphics
         // each line segment must have nonzero length, the polygon cannot
         // self-intersect, and the polygon must be clockwise (where +y is down
         // and +x is right).
-        m_innerPoly2d.reset();
-        final PathIterator path = m_poly2d.getPathIterator(null);
-        path.currentSegment(m_pathBuff); // PathIterator.SEG_MOVETO.
-        final float xNot = m_pathBuff[0];
-        final float yNot = m_pathBuff[1];
-        path.next();
-        path.currentSegment(m_pathBuff); // PathIterator.SEG_LINETO.
-        final float xOne = m_pathBuff[0];
-        final float yOne = m_pathBuff[1];
-        float xPrev = xNot;
-        float yPrev = yNot;
-        float xCurr = xOne;
-        float yCurr = yOne;
-        path.next();
-        path.currentSegment(m_pathBuff); // PathIterator.SEG_LINETO.
-        float xNext = m_pathBuff[0];
-        float yNext = m_pathBuff[1];
-        computeInnerPoint(m_pathBuff, xPrev, yPrev, xCurr, yCurr,
+        m_poly2d.reset();
+        final double xNot = m_polyCoords[0];
+        final double yNot = m_polyCoords[1];
+        final double xOne = m_polyCoords[2];
+        final double yOne = m_polyCoords[3];
+        double xPrev = xNot;
+        double yPrev = yNot;
+        double xCurr = xOne;
+        double yCurr = yOne;
+        double xNext = m_polyCoords[4];
+        double yNext = m_polyCoords[5];
+        computeInnerPoint(m_ptsBuff, xPrev, yPrev, xCurr, yCurr,
                           xNext, yNext, borderWidth);
-        m_innerPoly2d.moveTo(m_pathBuff[0], m_pathBuff[1]);
-        while (true) {
-          path.next();
-          if (path.currentSegment(m_pathBuff) == PathIterator.SEG_CLOSE) {
-            computeInnerPoint(m_pathBuff, xCurr, yCurr, xNext, yNext,
+        m_poly2d.moveTo((float) m_ptsBuff[0], (float) m_ptsBuff[1]);
+        for (int i = 6;;) {
+          if (i == m_polyNumCoords * 2) {
+            computeInnerPoint(m_ptsBuff, xCurr, yCurr, xNext, yNext,
                               xNot, yNot, borderWidth);
-            m_innerPoly2d.lineTo(m_pathBuff[0], m_pathBuff[1]);
-            computeInnerPoint(m_pathBuff, xNext, yNext, xNot, yNot,
+            m_poly2d.lineTo((float) m_ptsBuff[0], (float) m_ptsBuff[1]);
+            computeInnerPoint(m_ptsBuff, xNext, yNext, xNot, yNot,
                               xOne, yOne, borderWidth);
-            m_innerPoly2d.lineTo(m_pathBuff[0], m_pathBuff[1]);
-            m_innerPoly2d.closePath();
+            m_poly2d.lineTo((float) m_ptsBuff[0], (float) m_ptsBuff[1]);
+            m_poly2d.closePath();
             break; }
-          else { // PathIterator.SEG_LINETO.
+          else {
             xPrev = xCurr;
             yPrev = yCurr;
             xCurr = xNext;
             yCurr = yNext;
-            xNext = m_pathBuff[0];
-            yNext = m_pathBuff[1];
-            computeInnerPoint(m_pathBuff, xPrev, yPrev, xCurr, yCurr,
+            xNext = m_polyCoords[i++];
+            yNext = m_polyCoords[i++];
+            computeInnerPoint(m_ptsBuff, xPrev, yPrev, xCurr, yCurr,
                               xNext, yNext, borderWidth);
-            m_innerPoly2d.lineTo(m_pathBuff[0], m_pathBuff[1]); } }
-        innerShape = m_innerPoly2d; }
+            m_poly2d.lineTo((float) m_ptsBuff[0], (float) m_ptsBuff[1]); } }
+        innerShape = m_poly2d; }
       m_g2d.setColor(fillColor);
       m_g2d.fill(innerShape); }
   }
@@ -368,20 +418,20 @@ public final class GraphGraphics
    * output[0] is the x return value and output[1] is the y return value.
    * The line prev->curr cannot be parallel to curr->next.
    */
-  private final static void computeInnerPoint(final float[] output,
-                                              final float xPrev,
-                                              final float yPrev,
-                                              final float xCurr,
-                                              final float yCurr,
-                                              final float xNext,
-                                              final float yNext,
-                                              final float borderWidth)
+  private final static void computeInnerPoint(final double[] output,
+                                              final double xPrev,
+                                              final double yPrev,
+                                              final double xCurr,
+                                              final double yCurr,
+                                              final double xNext,
+                                              final double yNext,
+                                              final double borderWidth)
   {
-    final double segX1 = ((double) xCurr) - xPrev;
-    final double segY1 = ((double) yCurr) - yPrev;
+    final double segX1 = xCurr - xPrev;
+    final double segY1 = yCurr - yPrev;
     final double segLength1 = Math.sqrt(segX1 * segX1 + segY1 * segY1);
-    final double segX2 = ((double) xNext) - xCurr;
-    final double segY2 = ((double) yNext) - yCurr;
+    final double segX2 = xNext - xCurr;
+    final double segY2 = yNext - yCurr;
     final double segLength2 = Math.sqrt(segX2 * segX2 + segY2 * segY2);
     final double segX2Normal = segX2 / segLength2;
     final double segY2Normal = segY2 / segLength2;
@@ -391,10 +441,10 @@ public final class GraphGraphics
     final double segPrimeY = yNextPrime - yCurr;
     final double distancePrimeToSeg1 =
       (segX1 * yNextPrime - segY1 * xNextPrime +
-       ((double) xPrev) * yCurr - ((double) xCurr) * yPrev) / segLength1;
-    final double multFactor = ((double) borderWidth) / distancePrimeToSeg1;
-    output[0] = (float) (multFactor * segPrimeX + xCurr);
-    output[1] = (float) (multFactor * segPrimeY + yCurr);
+       xPrev * yCurr - xCurr * yPrev) / segLength1;
+    final double multFactor = borderWidth / distancePrimeToSeg1;
+    output[0] = multFactor * segPrimeX + xCurr;
+    output[1] = multFactor * segPrimeY + yCurr;
   }
 
   /**
