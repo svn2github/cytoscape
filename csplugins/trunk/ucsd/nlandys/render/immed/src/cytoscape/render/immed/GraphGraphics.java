@@ -831,6 +831,8 @@ public final class GraphGraphics
       // First, compute the actual intersection of the edge with the
       // ellipse, if it exists.  We will use this intersection point
       // regardless of whether or not offset is zero.
+      // For nonzero offsets on the ellipse, use tangent lines to approximate
+      // intersection with offset instead of solving a quartic equation.
       final double ellpCenterX = (((double) xMin) + xMax) / 2.0d;
       final double ellpCenterY = (((double) yMin) + yMax) / 2.0d;
       final double ptPrimeX = ptX - ellpCenterX;
@@ -853,17 +855,32 @@ public final class GraphGraphics
       final double xsectPtPrimeY = xsectXformedPtPrimeY / yScaleFactor;
       final double tangentPtPrimeX = tangentXformedPtPrimeX / xScaleFactor;
       final double tangentPtPrimeY = tangentXformedPtPrimeY / yScaleFactor;
-      final double realDist = Math.sqrt(ptPrimeX * ptPrimeX +
-                                        ptPrimeY * ptPrimeY);
-
-
-
-
-
-      final double xsectLineX = xsectPtPrimeX + ellpCenterX;
-      final double xsectLineY = xsectPtPrimeY + ellpCenterY;
-      return false;
-    }
+      final double vTangentX = tangentPtPrimeX - xsectPtPrimeX;
+      final double vTangentY = tangentPtPrimeY - xsectPtPrimeY;
+      final double tanLen = Math.sqrt(vTangentX * vTangentX +
+                                      vTangentY * vTangentY);
+      final double distPtPrimeToTangent =
+        (vTangentX * ptPrimeY - vTangentY * ptPrimeX +
+         xsectPtPrimeX * tangentPtPrimeY - tangentPtPrimeX * xsectPtPrimeY) /
+        tanLen;
+      if (distPtPrimeToTangent < offset) { // This includes cases where
+        // distPtPrimeToTangent is negative, which means that the true
+        // intersection point lies inside the ellipse (no intersection even
+        // with zero offset).
+        return false; }
+      if (distPtPrimeToTangent == 0.0d) { // Therefore offset is zero also.
+        returnVal[0] = (float) (xsectPtPrimeX + ellpCenterX);
+        returnVal[1] = (float) (xsectPtPrimeY + ellpCenterY);
+        return true; }
+      // Even if offset is zero, do extra computation for sake of simple code.
+      final double multFactor = offset / distPtPrimeToTangent;
+      returnVal[0] = (float)
+        (ellpCenterX +
+         (xsectPtPrimeX + multFactor * (ptPrimeX - xsectPtPrimeX)));
+      returnVal[1] = (float)
+        (ellpCenterY +
+         (xsectPtPrimeY + multFactor * (ptPrimeY - xsectPtPrimeY)));
+      return true; }
     else {
       final Shape polygon = getShape(nodeShape, xMin, yMin, xMax, yMax);
       return false;
