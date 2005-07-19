@@ -52,22 +52,36 @@ public final class TestBalls extends Frame
     m_grafx.clear(0.0d, 0.0d, 1.0d);
     float xMin = -300.0f;
     float yMin = -240.0f;
-    float xMax = -200.0f;
-    float yMax = -180.0f;
-    float offset = 10.0f;
+    float xMax = -100.0f;
+    float yMax = -130.0f;
+    float border = 10.0f;
     m_grafx.drawNodeFull(GraphGraphics.SHAPE_ELLIPSE,
                          xMin, yMin, xMax, yMax,
-                         Color.red, 5.0f, Color.black); 
+                         Color.red, border, Color.black); 
     final float[] xsectCoords = new float[2];
-    float ptX = 0.0f;
-    float ptY = 0.0f;
+    float offset = 20.0f;
+    float ptX = 200.0f;
+    float ptY = 100.0f;
+    float edgeThickness = 3.0f;
+    float dashLength = 0.0f;
     if (m_grafx.computeEdgeIntersection
         (GraphGraphics.SHAPE_ELLIPSE, xMin, yMin, xMax, yMax, offset,
          ptX, ptY, xsectCoords)) {
       m_grafx.drawEdgeFull(GraphGraphics.ARROW_NONE, 0.0f, null,
                            GraphGraphics.ARROW_DISC, offset * 2.0f, Color.blue,
                            ptX, ptY, xsectCoords[0], xsectCoords[1],
-                           1.0f, Color.green, 0.0f); }
+                           edgeThickness, Color.green, dashLength); }
+    ptX = 200.0f;
+    ptY = -50.0f;
+    float deltaSize = offset * 2.0f;
+    offset = 0.0f;
+    if (m_grafx.computeEdgeIntersection
+        (GraphGraphics.SHAPE_ELLIPSE, xMin, yMin, xMax, yMax, offset,
+         ptX, ptY, xsectCoords)) {
+      m_grafx.drawEdgeFull(GraphGraphics.ARROW_NONE, 0.0f, null,
+                           GraphGraphics.ARROW_DELTA, deltaSize, Color.orange,
+                           ptX, ptY, xsectCoords[0], xsectCoords[1],
+                           edgeThickness, Color.green, dashLength); }
   }
 
   public boolean isResizable() { return false; }
