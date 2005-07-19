@@ -62,7 +62,7 @@ public final class GraphGraphics
   private final double[] m_ptsBuff;
   private final AffineTransform m_currXform;
   private final AffineTransform m_xformUtil;
-  private int m_polyNumCoords; // Used with m_polyCoords.
+  private int m_polyNumPoints; // Used with m_polyCoords.
   private Graphics2D m_g2d;
   private Graphics m_gMinimal;
   private float m_currStrokeWidth;
@@ -200,7 +200,7 @@ public final class GraphGraphics
 
   // This method has the side effect of setting m_ellp2d or m_poly2d;
   // if m_poly2d is set (every case but the ellipse),
-  // then m_polyCoords and m_polyNumCoords are also set.
+  // then m_polyCoords and m_polyNumPoints are also set.
   private final Shape getShape(final byte shapeType,
                                final float xMin, final float yMin,
                                final float xMax, final float yMax)
@@ -213,7 +213,7 @@ public final class GraphGraphics
                         ((double) yMax) - yMin);
       return m_ellp2d;
     case SHAPE_RECTANGLE:
-      m_polyNumCoords = 4;
+      m_polyNumPoints = 4;
       m_polyCoords[0] = xMin;
       m_polyCoords[1] = yMin;
       m_polyCoords[2] = xMax;
@@ -225,12 +225,12 @@ public final class GraphGraphics
       // The rest of this code can be factored with other cases.
       m_poly2d.reset();
       m_poly2d.moveTo((float) m_polyCoords[0], (float) m_polyCoords[1]);
-      for (int i = 2; i < m_polyNumCoords * 2;)
+      for (int i = 2; i < m_polyNumPoints * 2;)
         m_poly2d.lineTo((float) m_polyCoords[i++], (float) m_polyCoords[i++]);
       m_poly2d.closePath();
       return m_poly2d;
     case SHAPE_DIAMOND:
-      m_polyNumCoords = 4;
+      m_polyNumPoints = 4;
       m_polyCoords[0] = (((double) xMin) + xMax) / 2.0d;
       m_polyCoords[1] = yMin;
       m_polyCoords[2] = xMax;
@@ -242,12 +242,12 @@ public final class GraphGraphics
       // The rest of this code can be factored with other cases.
       m_poly2d.reset();
       m_poly2d.moveTo((float) m_polyCoords[0], (float) m_polyCoords[1]);
-      for (int i = 2; i < m_polyNumCoords * 2;)
+      for (int i = 2; i < m_polyNumPoints * 2;)
         m_poly2d.lineTo((float) m_polyCoords[i++], (float) m_polyCoords[i++]);
       m_poly2d.closePath();
       return m_poly2d;
     case SHAPE_HEXAGON:
-      m_polyNumCoords = 6;
+      m_polyNumPoints = 6;
       m_polyCoords[0] = (2.0d * xMin + xMax) / 3.0d;
       m_polyCoords[1] = yMin;
       m_polyCoords[2] = (2.0d * xMax + xMin) / 3.0d;
@@ -263,12 +263,12 @@ public final class GraphGraphics
       // The rest of this code can be factored with other cases.
       m_poly2d.reset();
       m_poly2d.moveTo((float) m_polyCoords[0], (float) m_polyCoords[1]);
-      for (int i = 2; i < m_polyNumCoords * 2;)
+      for (int i = 2; i < m_polyNumPoints * 2;)
         m_poly2d.lineTo((float) m_polyCoords[i++], (float) m_polyCoords[i++]);
       m_poly2d.closePath();
       return m_poly2d;
     case SHAPE_OCTAGON:
-      m_polyNumCoords = 8;
+      m_polyNumPoints = 8;
       m_polyCoords[0] = (2.0d * xMin + xMax) / 3.0d;
       m_polyCoords[1] = yMin;
       m_polyCoords[2] = (2.0d * xMax + xMin) / 3.0d;
@@ -288,12 +288,12 @@ public final class GraphGraphics
       // The rest of this code can be factored with other cases.
       m_poly2d.reset();
       m_poly2d.moveTo((float) m_polyCoords[0], (float) m_polyCoords[1]);
-      for (int i = 2; i < m_polyNumCoords * 2;)
+      for (int i = 2; i < m_polyNumPoints * 2;)
         m_poly2d.lineTo((float) m_polyCoords[i++], (float) m_polyCoords[i++]);
       m_poly2d.closePath();
       return m_poly2d;
     case SHAPE_PARALLELOGRAM:
-      m_polyNumCoords = 4;
+      m_polyNumPoints = 4;
       m_polyCoords[0] = xMin;
       m_polyCoords[1] = yMin;
       m_polyCoords[2] = (2.0d * xMax + xMin) / 3.0d;
@@ -305,12 +305,12 @@ public final class GraphGraphics
       // The rest of this code can be factored with other cases.
       m_poly2d.reset();
       m_poly2d.moveTo((float) m_polyCoords[0], (float) m_polyCoords[1]);
-      for (int i = 2; i < m_polyNumCoords * 2;)
+      for (int i = 2; i < m_polyNumPoints * 2;)
         m_poly2d.lineTo((float) m_polyCoords[i++], (float) m_polyCoords[i++]);
       m_poly2d.closePath();
       return m_poly2d;
     case SHAPE_TRIANGLE:
-      m_polyNumCoords = 3;
+      m_polyNumPoints = 3;
       m_polyCoords[0] = xMin;
       m_polyCoords[1] = yMax;
       m_polyCoords[2] = (((double) xMin) + xMax) / 2.0d;
@@ -320,7 +320,7 @@ public final class GraphGraphics
       // The rest of this code can be factored with other cases.
       m_poly2d.reset();
       m_poly2d.moveTo((float) m_polyCoords[0], (float) m_polyCoords[1]);
-      for (int i = 2; i < m_polyNumCoords * 2;)
+      for (int i = 2; i < m_polyNumPoints * 2;)
         m_poly2d.lineTo((float) m_polyCoords[i++], (float) m_polyCoords[i++]);
       m_poly2d.closePath();
       return m_poly2d;
@@ -394,7 +394,7 @@ public final class GraphGraphics
                           xNext, yNext, borderWidth);
         m_poly2d.moveTo((float) m_ptsBuff[0], (float) m_ptsBuff[1]);
         for (int i = 6;;) {
-          if (i == m_polyNumCoords * 2) {
+          if (i == m_polyNumPoints * 2) {
             computeInnerPoint(m_ptsBuff, xCurr, yCurr, xNext, yNext,
                               xNot, yNot, borderWidth);
             m_poly2d.lineTo((float) m_ptsBuff[0], (float) m_ptsBuff[1]);
