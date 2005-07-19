@@ -50,10 +50,24 @@ public final class TestBalls extends Frame
   private final void generateImage()
   {
     m_grafx.clear(0.0d, 0.0d, 1.0d);
+    float xMin = -300.0f;
+    float yMin = -240.0f;
+    float xMax = -200.0f;
+    float yMax = -180.0f;
+    float offset = 10.0f;
     m_grafx.drawNodeFull(GraphGraphics.SHAPE_ELLIPSE,
-                         -300.0f, -240.0f,
-                         -200.0f, -180.0f,
-                         Color.red, 5.0f, Color.black);
+                         xMin, yMin, xMax, yMax,
+                         Color.red, 5.0f, Color.black); 
+    final float[] xsectCoords = new float[2];
+    float ptX = 0.0f;
+    float ptY = 0.0f;
+    if (m_grafx.computeEdgeIntersection
+        (GraphGraphics.SHAPE_ELLIPSE, xMin, yMin, xMax, yMax, offset,
+         ptX, ptY, xsectCoords)) {
+      m_grafx.drawEdgeFull(GraphGraphics.ARROW_NONE, 0.0f, null,
+                           GraphGraphics.ARROW_DISC, offset * 2.0f, Color.blue,
+                           ptX, ptY, xsectCoords[0], xsectCoords[1],
+                           1.0f, Color.green, 0.0f); }
   }
 
   public boolean isResizable() { return false; }
