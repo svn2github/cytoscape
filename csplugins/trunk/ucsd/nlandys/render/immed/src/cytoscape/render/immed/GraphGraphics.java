@@ -47,7 +47,6 @@ public final class GraphGraphics
 
   private final Color m_bgColor;
   private final boolean m_debug;
-  private final Rectangle2D.Double m_rect2d;
   private final Ellipse2D.Double m_ellp2d;
   private final GeneralPath m_poly2d;
   private final double[] m_polyCoords; // I need this for extra precision.
@@ -90,7 +89,6 @@ public final class GraphGraphics
     this.image = image;
     m_bgColor = bgColor;
     m_debug = debug;
-    m_rect2d = new Rectangle2D.Double();
     m_ellp2d = new Ellipse2D.Double();
     m_poly2d = new GeneralPath();
     m_polyCoords = new double[2 * 8]; // Octagon has the most corners.
@@ -200,25 +198,37 @@ public final class GraphGraphics
       throw new RuntimeException("noninvertible matrix - cannot happen"); }
   }
 
-  // This method has the side effect of setting m_rect2d, m_ellp2d, or
-  // m_poly2d; if m_poly2d is set (every case but the ellipse or rectangle),
+  // This method has the side effect of setting m_ellp2d or m_poly2d;
+  // if m_poly2d is set (every case but the ellipse),
   // then m_polyCoords and m_polyNumCoords are also set.
   private final Shape getShape(final byte shapeType,
                                final float xMin, final float yMin,
                                final float xMax, final float yMax)
   {
     switch (shapeType) {
-    case SHAPE_RECTANGLE:
-      m_rect2d.setRect((double) xMin, (double) yMin,
-                       ((double) xMax) - xMin,
-                       ((double) yMax) - yMin);
-      return m_rect2d;
     case SHAPE_ELLIPSE:
       m_ellp2d.setFrame((double) xMin,
                         (double) yMin,
                         ((double) xMax) - xMin,
                         ((double) yMax) - yMin);
       return m_ellp2d;
+    case SHAPE_RECTANGLE:
+      m_polyNumCoords = 4;
+      m_polyCoords[0] = xMin;
+      m_polyCoords[1] = yMin;
+      m_polyCoords[2] = xMax;
+      m_polyCoords[3] = yMin;
+      m_polyCoords[4] = xMax;
+      m_polyCoords[5] = yMax;
+      m_polyCoords[6] = xMin;
+      m_polyCoords[7] = yMax;
+      // The rest of this code can be factored with other cases.
+      m_poly2d.reset();
+      m_poly2d.moveTo((float) m_polyCoords[0], (float) m_polyCoords[1]);
+      for (int i = 2; i < m_polyNumCoords * 2;)
+        m_poly2d.lineTo((float) m_polyCoords[i++], (float) m_polyCoords[i++]);
+      m_poly2d.closePath();
+      return m_poly2d;
     case SHAPE_DIAMOND:
       m_polyNumCoords = 4;
       m_polyCoords[0] = (((double) xMin) + xMax) / 2.0d;
@@ -363,14 +373,6 @@ public final class GraphGraphics
         m_ellp2d.setFrame(innerXMin, innerYMin,
                           innerXMax - innerXMin, innerYMax - innerYMin);
         innerShape = m_ellp2d; }
-      else if (shapeType == SHAPE_RECTANGLE) {
-        final double innerXMin = ((double) xMin) + borderWidth;
-        final double innerYMin = ((double) yMin) + borderWidth;
-        final double innerXMax = ((double) xMax) - borderWidth;
-        final double innerYMax = ((double) yMax) - borderWidth;
-        m_rect2d.setRect(innerXMin, innerYMin,
-                         innerXMax - innerXMin, innerYMax - innerYMin);
-        innerShape = m_rect2d; }
       else {
         // A general [possibly non-convex] polygon with certain
         // restrictions: no two consecutive line segments can be parallel,
