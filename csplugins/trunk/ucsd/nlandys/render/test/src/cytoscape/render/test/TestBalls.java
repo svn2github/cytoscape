@@ -50,6 +50,10 @@ public final class TestBalls extends Frame
   private final void generateImage()
   {
     m_grafx.clear(0.0d, 0.0d, 1.0d);
+    m_grafx.drawNodeFull(GraphGraphics.SHAPE_ELLIPSE,
+                         -300.0f, -240.0f,
+                         -200.0f, -180.0f,
+                         Color.red, 5.0f, Color.black);
   }
 
   public boolean isResizable() { return false; }
