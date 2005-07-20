@@ -893,7 +893,8 @@ public final class GraphGraphics
       // This next method call has the side effect of settingg m_polyCoords and
       // m_polyNumPoints - this is all that we are going to use.
       getShape(nodeShape, xMin, yMin, xMax, yMax);
-      if (offset != 0.0f) {
+      final boolean handleZeroOffsetTheGeneralWay = true;
+      if (handleZeroOffsetTheGeneralWay || offset != 0.0f) {
         for (int i = 0; i < m_polyNumPoints; i++) {
           final double x0 = m_polyCoords[i * 2];
           final double y0 = m_polyCoords[i * 2 + 1];
@@ -904,10 +905,10 @@ public final class GraphGraphics
           final double len = Math.sqrt(vX * vX + vY * vY);
           final double vNormX = vX / len;
           final double vNormY = vY / len;
-          m_fooPolyCoords[i * 4] = x0 + vNormY;
-          m_fooPolyCoords[i * 4 + 1] = y0 - vNormX;
-          m_fooPolyCoords[i * 4 + 2] = x1 + vNormY;
-          m_fooPolyCoords[i * 4 + 3] = y1 - vNormX; }
+          m_fooPolyCoords[i * 4] = x0 + vNormY * offset;
+          m_fooPolyCoords[i * 4 + 1] = y0 - vNormX * offset;
+          m_fooPolyCoords[i * 4 + 2] = x1 + vNormY * offset;
+          m_fooPolyCoords[i * 4 + 3] = y1 - vNormX * offset; }
         int inx = 0;
         for (int i = 0; i < m_polyNumPoints; i++) {
           if (segmentIntersection // We could perhaps use the sign of a cross
@@ -921,17 +922,52 @@ public final class GraphGraphics
                m_fooPolyCoords[(i * 4 + 6) % (m_polyNumPoints * 4)],
                m_fooPolyCoords[(i * 4 + 7) % (m_polyNumPoints * 4)])) {
             m_foo2PolyCoords[inx++] = m_ptsBuff[0];
-            m_foo2PolyCoords[inx++] = m_ptsBuff[1]; }
+            m_foo2PolyCoords[inx++] = m_ptsBuff[1];
+            m_fooRoundedCorners[(i + 1) % m_polyNumPoints] = false; }
           else {
             m_foo2PolyCoords[inx++] = m_fooPolyCoords[i * 4 + 2];
             m_foo2PolyCoords[inx++] = m_fooPolyCoords[i * 4 + 3];
             m_foo2PolyCoords[inx++] =
               m_fooPolyCoords[(i * 4 + 4) % (m_polyNumPoints * 4)];
             m_foo2PolyCoords[inx++] =
-              m_fooPolyCoords[(i * 4 + 5) % (m_polyNumPoints * 4)]; } }
-      }
-      return false;
-    }
+              m_fooPolyCoords[(i * 4 + 5) % (m_polyNumPoints * 4)];
+            m_fooRoundedCorners[(i + 1) % m_polyNumPoints] = true; } }
+        inx = 0;
+        for (int i = 0; i < m_polyNumPoints; i++) {
+          if (m_fooRoundedCorners[i]) {
+            if (segmentIntersection // A "rounded corner".
+                (m_ptsBuff,
+                 m_foo2PolyCoords[inx++], m_foo2PolyCoords[inx++],
+                 m_foo2PolyCoords[inx++], m_foo2PolyCoords[inx++],
+                 centerX, centerY, ptX, ptY)) {
+              // in the future, we need to compute the intersection
+              // between the edge segment and the circle whose center is
+              // at (m_polyCoords[i * 2], m_polyCoords[i * 2 + 1]), containing
+              // a point
+              // (m_foo2PolyCoords[inx - 2], m_foo2PolyCoords[inx - 1]).  For
+              // now just return the intersection with the approximating line
+              // segment.
+              returnVal[0] = (float) m_ptsBuff[0];
+              returnVal[1] = (float) m_ptsBuff[1];
+              return true; }
+            else if (segmentIntersection // Test against a true line segment.
+                     (m_ptsBuff,
+                      m_foo2PolyCoords[inx++], m_foo2PolyCoords[inx++],
+                      m_foo2PolyCoords[inx++], m_foo2PolyCoords[inx++],
+                      centerX, centerY, ptX, ptY)) {
+              returnVal[0] = (float) m_ptsBuff[0];
+              returnVal[1] = (float) m_ptsBuff[1];
+              return true; } }
+          else { // Not a rounded corner here.
+            if (segmentIntersection
+                (m_ptsBuff,
+                 m_foo2PolyCoords[inx++], m_foo2PolyCoords[inx++],
+                 m_foo2PolyCoords[inx++], m_foo2PolyCoords[inx++],
+                 centerX, centerY, ptX, ptY)) {
+              returnVal[0] = (float) m_ptsBuff[0];
+              returnVal[1] = (float) m_ptsBuff[1];
+              return true; } } } }
+      return false; }
   }
 
   /*
