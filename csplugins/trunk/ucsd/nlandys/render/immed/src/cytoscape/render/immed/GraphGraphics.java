@@ -905,7 +905,29 @@ public final class GraphGraphics
           m_fooPolyCoords[i * 4] = x0 + vNormY;
           m_fooPolyCoords[i * 4 + 1] = y0 - vNormX;
           m_fooPolyCoords[i * 4 + 2] = x1 + vNormY;
-          m_fooPolyCoords[i * 4 + 3] = y1 - vNormX; } }
+          m_fooPolyCoords[i * 4 + 3] = y1 - vNormX; }
+        int inx = 0;
+        for (int i = 0; i < m_polyNumPoints; i++) {
+          if (segmentIntersection // We could perhaps use the sign of a cross
+              (m_ptsBuff,         // product to perform this test quicker.
+               m_fooPolyCoords[i * 4 + 2], // Because non-convex polygons are
+               m_fooPolyCoords[i * 4 + 3], // rare, we will almost never use
+               m_fooPolyCoords[i * 4],     // the computed intersection point.
+               m_fooPolyCoords[i * 4 + 1],
+               m_fooPolyCoords[(i * 4 + 4) % (m_polyNumPoints * 4)],
+               m_fooPolyCoords[(i * 4 + 5) % (m_polyNumPoints * 4)],
+               m_fooPolyCoords[(i * 4 + 6) % (m_polyNumPoints * 4)],
+               m_fooPolyCoords[(i * 4 + 7) % (m_polyNumPoints * 4)])) {
+            m_foo2PolyCoords[inx++] = m_ptsBuff[0];
+            m_foo2PolyCoords[inx++] = m_ptsBuff[1]; }
+          else {
+            m_foo2PolyCoords[inx++] = m_fooPolyCoords[i * 4 + 2];
+            m_foo2PolyCoords[inx++] = m_fooPolyCoords[i * 4 + 3];
+            m_foo2PolyCoords[inx++] =
+              m_fooPolyCoords[(i * 4 + 4) % (m_polyNumPoints * 4)];
+            m_foo2PolyCoords[inx++] =
+              m_fooPolyCoords[(i * 4 + 5) % (m_polyNumPoints * 4)]; } }
+      }
       return false;
     }
   }
