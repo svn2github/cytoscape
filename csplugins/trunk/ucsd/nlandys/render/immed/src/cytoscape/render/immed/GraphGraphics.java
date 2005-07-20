@@ -59,6 +59,7 @@ public final class GraphGraphics
                                        // computation.
   private final double[] m_fooPolyCoords;
   private final double[] m_foo2PolyCoords;
+  private final boolean[] m_fooRoundedCorners;
   private final Line2D.Double m_line2d;
   private final float[] m_dash;
   private final double[] m_ptsBuff;
@@ -96,6 +97,7 @@ public final class GraphGraphics
     m_polyCoords = new double[2 * 8]; // Octagon has the most corners.
     m_fooPolyCoords = new double[m_polyCoords.length * 2];
     m_foo2PolyCoords = new double[m_polyCoords.length * 2];
+    m_fooRoundedCorners = new boolean[m_polyCoords.length / 2];
     m_line2d = new Line2D.Double();
     m_dash = new float[] { 0.0f, 0.0f };
     m_ptsBuff = new double[4];
@@ -833,16 +835,16 @@ public final class GraphGraphics
       if (xMin >= xMax) throw new IllegalArgumentException("xMin >= xMax");
       if (yMin >= yMax) throw new IllegalArgumentException("yMin >= yMax");
       if (offset < 0.0f) throw new IllegalArgumentException("offset < 0"); }
+    final double centerX = (((double) xMin) + xMax) / 2.0d;
+    final double centerY = (((double) yMin) + yMax) / 2.0d;
     if (nodeShape == SHAPE_ELLIPSE) {
       // First, compute the actual intersection of the edge with the
       // ellipse, if it exists.  We will use this intersection point
       // regardless of whether or not offset is zero.
       // For nonzero offsets on the ellipse, use tangent lines to approximate
       // intersection with offset instead of solving a quartic equation.
-      final double ellpCenterX = (((double) xMin) + xMax) / 2.0d;
-      final double ellpCenterY = (((double) yMin) + yMax) / 2.0d;
-      final double ptPrimeX = ptX - ellpCenterX;
-      final double ptPrimeY = ptY - ellpCenterY;
+      final double ptPrimeX = ptX - centerX;
+      final double ptPrimeY = ptY - centerY;
       final double ellpW = ((double) xMax) - xMin;
       final double ellpH = ((double) yMax) - yMin;
       final double xScaleFactor = 2.0d / ellpW;
@@ -875,16 +877,16 @@ public final class GraphGraphics
         // with zero offset).
         return false; }
       if (distPtPrimeToTangent == 0.0d) { // Therefore offset is zero also.
-        returnVal[0] = (float) (xsectPtPrimeX + ellpCenterX);
-        returnVal[1] = (float) (xsectPtPrimeY + ellpCenterY);
+        returnVal[0] = (float) (xsectPtPrimeX + centerX);
+        returnVal[1] = (float) (xsectPtPrimeY + centerY);
         return true; }
       // Even if offset is zero, do extra computation for sake of simple code.
       final double multFactor = offset / distPtPrimeToTangent;
       returnVal[0] = (float)
-        (ellpCenterX +
+        (centerX +
          (xsectPtPrimeX + multFactor * (ptPrimeX - xsectPtPrimeX)));
       returnVal[1] = (float)
-        (ellpCenterY +
+        (centerY +
          (xsectPtPrimeY + multFactor * (ptPrimeY - xsectPtPrimeY)));
       return true; }
     else {
