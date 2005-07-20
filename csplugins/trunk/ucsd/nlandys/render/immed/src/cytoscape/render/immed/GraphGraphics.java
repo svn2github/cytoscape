@@ -886,7 +886,24 @@ public final class GraphGraphics
          (xsectPtPrimeY + multFactor * (ptPrimeY - xsectPtPrimeY)));
       return true; }
     else {
-      final Shape polygon = getShape(nodeShape, xMin, yMin, xMax, yMax);
+      // This next method call has the side effect of settingg m_polyCoords and
+      // m_polyNumPoints - this is all that we are going to use.
+      getShape(nodeShape, xMin, yMin, xMax, yMax);
+      if (offset != 0.0f) {
+        for (int i = 0; i < m_polyNumPoints; i++) {
+          final double x0 = m_polyCoords[i * 2];
+          final double y0 = m_polyCoords[i * 2 + 1];
+          final double x1 = m_polyCoords[(i * 2 + 2) % (m_polyNumPoints * 2)];
+          final double y1 = m_polyCoords[(i * 2 + 3) % (m_polyNumPoints * 2)];
+          final double vX = x1 - x0;
+          final double vY = y1 - y0;
+          final double len = Math.sqrt(vX * vX + vY * vY);
+          final double vNormX = vX / len;
+          final double vNormY = vY / len;
+          m_fooPolyCoords[i * 4] = x0 + vNormY;
+          m_fooPolyCoords[i * 4 + 1] = y0 - vNormX;
+          m_fooPolyCoords[i * 4 + 2] = x1 + vNormY;
+          m_fooPolyCoords[i * 4 + 3] = y1 - vNormX; } }
       return false;
     }
   }
