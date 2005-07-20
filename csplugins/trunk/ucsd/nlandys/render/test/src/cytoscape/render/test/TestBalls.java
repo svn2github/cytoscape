@@ -147,7 +147,7 @@ public final class TestBalls extends Frame implements Runnable
         (GraphGraphics.SHAPE_ELLIPSE, xMin, yMin, xMax, yMax, offset,
          ptX, ptY, xsectCoords)) {
       m_grafx.drawEdgeFull(GraphGraphics.ARROW_NONE, 0.0f, null,
-                           GraphGraphics.ARROW_DELTA, deltaSize, Color.orange,
+                           GraphGraphics.ARROW_DELTA, deltaSize, Color.gray,
                            ptX, ptY, xsectCoords[0], xsectCoords[1],
                            edgeThickness, Color.green, dashLength); }
   }
