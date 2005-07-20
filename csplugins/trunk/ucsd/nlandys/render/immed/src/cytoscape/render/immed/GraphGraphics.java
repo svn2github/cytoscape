@@ -973,7 +973,8 @@ public final class GraphGraphics
             else if (segmentIntersection // Test against a true line segment.
                      (m_ptsBuff,
                       m_foo2PolyCoords[inx++], m_foo2PolyCoords[inx++],
-                      m_foo2PolyCoords[inx], m_foo2PolyCoords[inx + 1],
+                      m_foo2PolyCoords[inx % (m_polyNumPoints * 4)],
+                      m_foo2PolyCoords[(inx + 1) % (m_polyNumPoints * 4)],
                       centerX, centerY, ptX, ptY)) {
               returnVal[0] = (float) m_ptsBuff[0];
               returnVal[1] = (float) m_ptsBuff[1];
@@ -982,7 +983,8 @@ public final class GraphGraphics
             if (segmentIntersection
                 (m_ptsBuff,
                  m_foo2PolyCoords[inx++], m_foo2PolyCoords[inx++],
-                 m_foo2PolyCoords[inx], m_foo2PolyCoords[inx + 1],
+                 m_foo2PolyCoords[inx % (m_polyNumPoints * 4)],
+                 m_foo2PolyCoords[(inx + 1) % (m_polyNumPoints * 4)],
                  centerX, centerY, ptX, ptY)) {
               returnVal[0] = (float) m_ptsBuff[0];
               returnVal[1] = (float) m_ptsBuff[1];
