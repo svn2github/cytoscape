@@ -941,7 +941,7 @@ public final class GraphGraphics
                m_fooPolyCoords[(i * 4 + 7) % (m_polyNumPoints * 4)])) {
             m_foo2PolyCoords[inx++] = m_ptsBuff[0];
             m_foo2PolyCoords[inx++] = m_ptsBuff[1];
-            m_fooRoundedCorners[(i + 1) % m_polyNumPoints] = false; }
+            m_fooRoundedCorners[i] = false; }
           else {
             m_foo2PolyCoords[inx++] = m_fooPolyCoords[i * 4 + 2];
             m_foo2PolyCoords[inx++] = m_fooPolyCoords[i * 4 + 3];
@@ -949,7 +949,8 @@ public final class GraphGraphics
               m_fooPolyCoords[(i * 4 + 4) % (m_polyNumPoints * 4)];
             m_foo2PolyCoords[inx++] =
               m_fooPolyCoords[(i * 4 + 5) % (m_polyNumPoints * 4)];
-            m_fooRoundedCorners[(i + 1) % m_polyNumPoints] = true; } }
+            m_fooRoundedCorners[i] = true; } }
+        final int foo2Count = inx;
         inx = 0;
         for (int i = 0; i < m_polyNumPoints; i++) {
           if (m_fooRoundedCorners[i]) {
@@ -959,12 +960,7 @@ public final class GraphGraphics
                  m_foo2PolyCoords[inx], m_foo2PolyCoords[inx + 1],
                  centerX, centerY, ptX, ptY)) {
               // in the future, we need to compute the intersection
-              // between the edge segment and the circle whose center is at
-              //   (m_polyCoords[(i * 2 + 2) % (m_polyNumPoints * 2)],
-              //    m_polyCoords[(i * 2 + 3) % (m_polyNumPoints * 2)]),
-              // containing a point
-              //   (m_foo2PolyCoords[inx],
-              //    m_foo2PolyCoords[inx + 1]).
+              // between the edge segment and a circle.
               // For now just return the intersection with the approximating
               // line segment.
               returnVal[0] = (float) m_ptsBuff[0];
@@ -973,8 +969,8 @@ public final class GraphGraphics
             else if (segmentIntersection // Test against a true line segment.
                      (m_ptsBuff,
                       m_foo2PolyCoords[inx++], m_foo2PolyCoords[inx++],
-                      m_foo2PolyCoords[inx % (m_polyNumPoints * 4)],
-                      m_foo2PolyCoords[(inx + 1) % (m_polyNumPoints * 4)],
+                      m_foo2PolyCoords[inx % foo2Count],
+                      m_foo2PolyCoords[(inx + 1) % foo2Count],
                       centerX, centerY, ptX, ptY)) {
               returnVal[0] = (float) m_ptsBuff[0];
               returnVal[1] = (float) m_ptsBuff[1];
@@ -983,8 +979,8 @@ public final class GraphGraphics
             if (segmentIntersection
                 (m_ptsBuff,
                  m_foo2PolyCoords[inx++], m_foo2PolyCoords[inx++],
-                 m_foo2PolyCoords[inx % (m_polyNumPoints * 4)],
-                 m_foo2PolyCoords[(inx + 1) % (m_polyNumPoints * 4)],
+                 m_foo2PolyCoords[inx % foo2Count],
+                 m_foo2PolyCoords[(inx + 1) % foo2Count],
                  centerX, centerY, ptX, ptY)) {
               returnVal[0] = (float) m_ptsBuff[0];
               returnVal[1] = (float) m_ptsBuff[1];
