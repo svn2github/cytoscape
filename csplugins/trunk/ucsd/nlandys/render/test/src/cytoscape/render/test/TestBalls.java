@@ -33,6 +33,8 @@ public final class TestBalls extends Frame implements Runnable
   private final GraphGraphics m_grafx;
   private final AffineTransform m_xform;
   private final float[] m_pts;
+  private final float[] m_xsect1Coords;
+  private final float[] m_xsect2Coords;
 
   // State member variables.
   private boolean m_halt = false;
@@ -49,6 +51,8 @@ public final class TestBalls extends Frame implements Runnable
     m_grafx = new GraphGraphics(m_img, Color.white, true);
     m_xform = new AffineTransform();
     m_pts = new float[2];
+    m_xsect1Coords = new float[2];
+    m_xsect2Coords = new float[2];
     generateImage(m_theta);
   }
 
@@ -105,50 +109,53 @@ public final class TestBalls extends Frame implements Runnable
   {
     m_xform.setToRotation(rotationTheta);
     m_grafx.clear(0.0d, 0.0d, 1.0d);
-    float xCenter = -180.0f;
-    float yCenter = -175.0f;
-    float widthDiv2 = 100.0f;
-    float heightDiv2 = 35.0f;
-    m_pts[0] = xCenter; m_pts[1] = yCenter;
+    float xCenter1 = -180.0f;
+    float yCenter1 = -175.0f;
+    float width1Div2 = 100.0f;
+    float height1Div2 = 35.0f;
+    m_pts[0] = xCenter1;
+    m_pts[1] = yCenter1;
     m_xform.transform(m_pts, 0, m_pts, 0, 1);
-    float xMin = m_pts[0] - widthDiv2;
-    float yMin = m_pts[1] - heightDiv2;
-    float xMax = m_pts[0] + widthDiv2;
-    float yMax = m_pts[1] + heightDiv2;
+    xCenter1 = m_pts[0];
+    yCenter1 = m_pts[1];
+    float xMin1 = xCenter1 - width1Div2;
+    float yMin1 = yCenter1 - height1Div2;
+    float xMax1 = xCenter1 + width1Div2;
+    float yMax1 = yCenter1 + height1Div2;
     float border = 10.0f;
     m_grafx.drawNodeFull(GraphGraphics.SHAPE_ELLIPSE,
-                         xMin, yMin, xMax, yMax,
+                         xMin1, yMin1, xMax1, yMax1,
                          Color.red, border, Color.black); 
 
-    final float[] xsectCoords = new float[2];
     float offset = 10.0f;
-    float ptX = 200.0f;
-    float ptY = 100.0f;
+    float xCenter2 = 200.0f;
+    float yCenter2 = 100.0f;
+    float width2Div2 = 60.0f;
+    float height2Div2 = 55.0f;
+    m_pts[0] = xCenter2;
+    m_pts[1] = yCenter2;
+    m_xform.transform(m_pts, 0, m_pts, 0, 1);
+    xCenter2 = m_pts[0];
+    yCenter2 = m_pts[1];
+    float xMin2 = xCenter2 - width2Div2;
+    float yMin2 = yCenter2 - height2Div2;
+    float xMax2 = xCenter2 + width2Div2;
+    float yMax2 = yCenter2 + height2Div2;
+    m_grafx.drawNodeFull(GraphGraphics.SHAPE_VEE,
+                         xMin2, yMin2, xMax2, yMax2,
+                         Color.red, border, Color.black);
     float edgeThickness = 2.0f;
     float dashLength = 0.0f;
-    m_pts[0] = ptX; m_pts[1] = ptY;
-    m_xform.transform(m_pts, 0, m_pts, 0, 1);
-    ptX = m_pts[0]; ptY = m_pts[1];
     if (m_grafx.computeEdgeIntersection
-        (GraphGraphics.SHAPE_ELLIPSE, xMin, yMin, xMax, yMax, offset,
-         ptX, ptY, xsectCoords)) {
-      m_grafx.drawEdgeFull(GraphGraphics.ARROW_NONE, 0.0f, null,
-                           GraphGraphics.ARROW_DISC, offset * 2.0f, Color.blue,
-                           ptX, ptY, xsectCoords[0], xsectCoords[1],
-                           edgeThickness, Color.green, dashLength); }
-    ptX = 200.0f;
-    ptY = -80.0f;
-    m_pts[0] = ptX; m_pts[1] = ptY;
-    m_xform.transform(m_pts, 0, m_pts, 0, 1);
-    ptX = m_pts[0]; ptY = m_pts[1];
-    float deltaSize = offset * 2.0f;
-    offset = 0.0f;
-    if (m_grafx.computeEdgeIntersection
-        (GraphGraphics.SHAPE_ELLIPSE, xMin, yMin, xMax, yMax, offset,
-         ptX, ptY, xsectCoords)) {
-      m_grafx.drawEdgeFull(GraphGraphics.ARROW_NONE, 0.0f, null,
-                           GraphGraphics.ARROW_DELTA, deltaSize, Color.gray,
-                           ptX, ptY, xsectCoords[0], xsectCoords[1],
+        (GraphGraphics.SHAPE_ELLIPSE, xMin1, yMin1, xMax1, yMax1, offset,
+         xCenter2, yCenter2, m_xsect1Coords) &&
+        m_grafx.computeEdgeIntersection
+        (GraphGraphics.SHAPE_VEE, xMin2, yMin2, xMax2, yMax2, offset,
+         xCenter1, yCenter1, m_xsect2Coords)) {
+      m_grafx.drawEdgeFull(GraphGraphics.ARROW_DISC, offset * 2.0f, Color.blue,
+                           GraphGraphics.ARROW_DISC, offset * 2.0f, Color.gray,
+                           m_xsect1Coords[0], m_xsect1Coords[1],
+                           m_xsect2Coords[0], m_xsect2Coords[1],
                            edgeThickness, Color.green, dashLength); }
   }
 
