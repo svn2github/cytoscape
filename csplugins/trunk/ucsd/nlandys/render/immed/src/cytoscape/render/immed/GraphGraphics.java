@@ -33,6 +33,7 @@ public final class GraphGraphics
   public static final byte SHAPE_OCTAGON = 4;
   public static final byte SHAPE_PARALLELOGRAM = 5;
   public static final byte SHAPE_TRIANGLE = 6;
+  public static final byte SHAPE_VEE = 7;
 
   public static final byte ARROW_NONE = -1;
   public static final byte ARROW_DISC = -2;
@@ -323,6 +324,23 @@ public final class GraphGraphics
       m_polyCoords[3] = yMin;
       m_polyCoords[4] = xMax;
       m_polyCoords[5] = yMax;
+      // The rest of this code can be factored with other cases.
+      m_poly2d.reset();
+      m_poly2d.moveTo((float) m_polyCoords[0], (float) m_polyCoords[1]);
+      for (int i = 2; i < m_polyNumPoints * 2;)
+        m_poly2d.lineTo((float) m_polyCoords[i++], (float) m_polyCoords[i++]);
+      m_poly2d.closePath();
+      return m_poly2d;
+    case SHAPE_VEE:
+      m_polyNumPoints = 4;
+      m_polyCoords[0] = xMin;
+      m_polyCoords[1] = yMin;
+      m_polyCoords[2] = (((double) xMin) + xMax) / 2.0d;
+      m_polyCoords[3] = (2.0d * yMin + yMax) / 3.0d;
+      m_polyCoords[4] = xMax;
+      m_polyCoords[5] = yMin;
+      m_polyCoords[6] = (((double) xMin) + xMax) / 2.0d;
+      m_polyCoords[7] = yMax;
       // The rest of this code can be factored with other cases.
       m_poly2d.reset();
       m_poly2d.moveTo((float) m_polyCoords[0], (float) m_polyCoords[1]);
