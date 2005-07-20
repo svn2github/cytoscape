@@ -58,6 +58,7 @@ public final class GraphGraphics
                                        // have nonzero length during
                                        // computation.
   private final double[] m_fooPolyCoords;
+  private final double[] m_foo2PolyCoords;
   private final Line2D.Double m_line2d;
   private final float[] m_dash;
   private final double[] m_ptsBuff;
@@ -94,6 +95,7 @@ public final class GraphGraphics
     m_poly2d = new GeneralPath();
     m_polyCoords = new double[2 * 8]; // Octagon has the most corners.
     m_fooPolyCoords = new double[m_polyCoords.length * 2];
+    m_foo2PolyCoords = new double[m_polyCoords.length * 2];
     m_line2d = new Line2D.Double();
     m_dash = new float[] { 0.0f, 0.0f };
     m_ptsBuff = new double[4];
