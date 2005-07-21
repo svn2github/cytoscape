@@ -1128,6 +1128,8 @@ public final class GraphGraphics
    *   returnVal[1] - y component of first intersection point
    *   returnVal[2] - x component of second intersection point
    *   returnVal[3] - y component of second intersection point
+   * Furthermore, if more than one point is returned, then the first point
+   * returned shall be closer to (x1,y1).
    */
   private final static int circleIntersection(final double[] returnVal,
                                               final double x1,
@@ -1140,7 +1142,7 @@ public final class GraphGraphics
   {
     final double vX = x2 - x1;
     final double vY = y2 - y1;
-    if ((float) vX == 0.0f && (float) vY == 0.0f)
+    if (vX == 0.0d && vY == 0.0d)
       throw new IllegalStateException
         ("the condition of both line segment endpoint being the same " +
          "will not occur if polygons are star-shaped with no marginal " +
@@ -1160,8 +1162,13 @@ public final class GraphGraphics
       returnVal[1] = y1 + u * vY;
       return 1; }
     else { // Two solutions for infinite line.
-      final double u1 = (-b + sqrt) / (2 * a);
-      final double u2 = (-b - sqrt) / (2 * a);
+      double u1 = (-b + sqrt) / (2 * a);
+      double u2 = (-b - sqrt) / (2 * a);
+      if (u2 < u1) {
+        double temp = u1;
+        u1 = u2;
+        u2 = temp; }
+      // Now u1 is less than or equal to u2.
       int solutions = 0;
       if (u1 <= 1.0d && u1 >= 0.0d) {
         returnVal[0] = x1 + u1 * vX;
