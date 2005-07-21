@@ -45,7 +45,7 @@ public class RowanPlugin extends CytoscapePlugin {
               } } ); } } );
     Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu( "Plugins" ).add( add );
 
-   
+    Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu( "Layout" ).add( new LayoutManager() );
  
 
 

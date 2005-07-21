@@ -58,7 +58,7 @@
     <path id="chemical.project.class.path">
       <pathelement location="${chemical.classes.dir}"/>
       <pathelement location="${cytoscape.lib.dir}/colt.jar"/>
-      <pathelement location="${cytoscape.lib.dir}/cytoscape.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/../cytoscape.jar"/>
       <pathelement location="${cytoscape.lib.dir}/../plugins/filter.jar"/>
       <pathelement location="${cytoscape.lib.dir}/giny.jar"/>
       <pathelement location="${cytoscape.lib.dir}/phoebe.jar"/>
