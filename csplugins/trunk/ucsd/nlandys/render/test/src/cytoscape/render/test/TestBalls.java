@@ -61,7 +61,7 @@ public final class TestBalls extends Frame implements Runnable
     long prevTime = System.currentTimeMillis();
     while (!m_halt) {
       final long elapsedTime = System.currentTimeMillis() - prevTime;
-      m_theta += ((double) elapsedTime) / 4000.0d;
+      m_theta += ((double) elapsedTime) / 2000.0d;
       requestUpdate();
       prevTime += elapsedTime; }
   }
@@ -122,7 +122,7 @@ public final class TestBalls extends Frame implements Runnable
     float yMin1 = yCenter1 - height1Div2;
     float xMax1 = xCenter1 + width1Div2;
     float yMax1 = yCenter1 + height1Div2;
-    float border = 10.0f;
+    float border = 6.0f;
     m_grafx.drawNodeFull(GraphGraphics.SHAPE_ELLIPSE,
                          xMin1, yMin1, xMax1, yMax1,
                          Color.red, border, Color.black); 
