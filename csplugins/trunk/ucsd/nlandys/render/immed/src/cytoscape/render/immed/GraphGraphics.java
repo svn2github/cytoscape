@@ -1119,4 +1119,26 @@ public final class GraphGraphics
     return true;
   }
 
+  /*
+   * Computes the intersection of the line segment from (x1,y1)
+   * to (x2,y2) with the circle at center (cX,cY) and radius specified.
+   * Returns the number of intersection points.  The returnVal parameter
+   * passed in should be of length 4, and values written to it are such:
+   *   returnVal[0] - x component of first intersection point
+   *   returnVal[1] - y component of first intersection point
+   *   returnVal[2] - x component of second intersection point
+   *   returnVal[3] - y component of second intersection point
+   */
+  private final static int circleIntersection(final double[] returnVal,
+                                              final double x1,
+                                              final double y1,
+                                              final double x2,
+                                              final double y2,
+                                              final double cX,
+                                              final double cY,
+                                              final double radius)
+  {
+    return 0;
+  }
+
 }
