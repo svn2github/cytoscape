@@ -542,9 +542,9 @@ public final class GraphGraphics
     // Here, double values outside of the range of ints will be cast to
     // the nearest int without overflow.
     final int xNot = (int) m_ptsBuff[0];
-    final int yNot = (int) m_ptsBuff[1];
+    final int yNot = (int) m_ptsBuff[3]; // y coordinates are inverse.
     final int xOne = (int) m_ptsBuff[2];
-    final int yOne = (int) m_ptsBuff[3];
+    final int yOne = (int) m_ptsBuff[1]; // y coordinates are inverse.
     m_gMinimal.setColor(fillColor);
     m_gMinimal.fillRect(xNot, yNot, Math.max(1, xOne - xNot), // Overflow will
                         Math.max(1, yOne - yNot));            // be problem.
