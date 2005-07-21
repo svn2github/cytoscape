@@ -959,7 +959,7 @@ public final class GraphGraphics
                  m_foo2PolyCoords[inx++], m_foo2PolyCoords[inx++],
                  m_foo2PolyCoords[inx], m_foo2PolyCoords[inx + 1],
                  centerX, centerY, ptX, ptY)) {
-              final int numXsections = circleIntersection
+              final int numXsections = bad_circleIntersection
                 (m_ptsBuff, ptX, ptY, centerX, centerY,
                  m_polyCoords[2 * ((i + 1) % m_polyNumPoints)],
                  m_polyCoords[2 * ((i + 1) % m_polyNumPoints) + 1], offset);
@@ -1136,15 +1136,21 @@ public final class GraphGraphics
    *   returnVal[3] - y component of second intersection point
    * Furthermore, if more than one point is returned, then the first point
    * returned shall be closer to (x1,y1).
+   * Note: I don't like the implementation of this method because the
+   * computation blows up when the line segment endpoints are close together.
+   * Luckily, the way that this method is used from within this class prevents
+   * such blowing up.  However, I have named this method bad_*() because
+   * I don't want this code to become a generic routine that is used outside
+   * the scope of this class.
    */
-  private final static int circleIntersection(final double[] returnVal,
-                                              final double x1,
-                                              final double y1,
-                                              final double x2,
-                                              final double y2,
-                                              final double cX,
-                                              final double cY,
-                                              final double radius)
+  private final static int bad_circleIntersection(final double[] returnVal,
+                                                  final double x1,
+                                                  final double y1,
+                                                  final double x2,
+                                                  final double y2,
+                                                  final double cX,
+                                                  final double cY,
+                                                  final double radius)
   {
     final double vX = x2 - x1;
     final double vY = y2 - y1;
