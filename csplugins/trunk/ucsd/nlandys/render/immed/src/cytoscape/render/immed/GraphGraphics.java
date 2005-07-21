@@ -959,12 +959,18 @@ public final class GraphGraphics
                  m_foo2PolyCoords[inx++], m_foo2PolyCoords[inx++],
                  m_foo2PolyCoords[inx], m_foo2PolyCoords[inx + 1],
                  centerX, centerY, ptX, ptY)) {
-              // in the future, we need to compute the intersection
-              // between the edge segment and a circle.
-              // For now just return the intersection with the approximating
-              // line segment.
-              returnVal[0] = (float) m_ptsBuff[0];
-              returnVal[1] = (float) m_ptsBuff[1];
+              final int numXsections = circleIntersection
+                (m_ptsBuff, ptX, ptY, centerX, centerY,
+                 m_polyCoords[2 * ((i + 1) % m_polyNumPoints)],
+                 m_polyCoords[2 * ((i + 1) % m_polyNumPoints) + 1], offset);
+              if (numXsections < 2) {
+                // The edge segment didn't quite make it to the outer section
+                // of the circle; only the inner part was intersected.  We
+                // don't expect tangential intersections, ever.
+                return false; }
+              returnVal[0] = (float) m_ptsBuff[0]; // The first returnVal is
+              returnVal[1] = (float) m_ptsBuff[1]; // closer to (ptX, ptY);
+                                                   // see API.
               return true; }
             else if (segmentIntersection // Test against a true line segment.
                      (m_ptsBuff,
