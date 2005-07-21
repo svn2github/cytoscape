@@ -1138,7 +1138,40 @@ public final class GraphGraphics
                                               final double cY,
                                               final double radius)
   {
-    return 0;
+    final double vX = x2 - x1;
+    final double vY = y2 - y1;
+    if ((float) vX == 0.0f && (float) vY == 0.0f)
+      throw new IllegalStateException
+        ("the condition of both line segment endpoint being the same " +
+         "will not occur if polygons are star-shaped with no marginal " +
+         "conditions");
+    final double a = vX * vX + vY * vY;
+    final double b = 2 * (vX * (x1 - cX) + vY * (y1 - cY));
+    final double c =
+      cX * cX + cY * cY + x1 * x1 + y1 * y1 -
+      2 * (cX * x1 + cY * y1) - radius * radius;
+    final double sq = b * b - 4 * a * c;
+    if (sq < 0.0d) return 0;
+    final double sqrt = Math.sqrt(sq);
+    if (sqrt == 0.0d) { // Exactly one solution for infinite line.
+      final double u = -b / (2 * a);
+      if (!(u <= 1.0d && u >= 0.0d)) return 0;
+      returnVal[0] = x1 + u * vX;
+      returnVal[1] = y1 + u * vY;
+      return 1; }
+    else { // Two solutions for infinite line.
+      final double u1 = (-b + sqrt) / (2 * a);
+      final double u2 = (-b - sqrt) / (2 * a);
+      int solutions = 0;
+      if (u1 <= 1.0d && u1 >= 0.0d) {
+        returnVal[0] = x1 + u1 * vX;
+        returnVal[1] = y1 + u1 * vY;
+        solutions++; }
+      if (u2 <= 1.0d && u2 >= 0.0d) {
+        returnVal[solutions * 2] = x1 + u2 * vX;
+        returnVal[solutions * 2 + 1] = y1 + u2 * vY;
+        solutions++; }
+      return solutions; }
   }
 
 }
