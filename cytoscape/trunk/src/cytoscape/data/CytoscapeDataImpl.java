@@ -415,26 +415,12 @@ public class CytoscapeDataImpl
   public List getAttributeValueList ( String identifier,
                                       String attribute ) {
 
-    //System.out.print( "CD: "+identifier+" "+attribute );
-    
-   
-    
-    // first find the end of the list
-    int span = data.getAttributeKeyspan( identifier, 
-                                         attribute,
-                                         null ).numRemaining();
-
-    List arraylist = new ArrayList(span);
-
-    //System.out.println( " SPAN: "+span );
-
-    for ( int i = 0; i < span; ++i ) {
+    Set keys = getAttributeKeySet( identifier, attribute );
+    List arraylist = new ArrayList(keys.size());
+    for ( Iterator i = keys.iterator(); i.hasNext(); ) {
       arraylist.add( data.getAttributeValue( identifier,
                                              attribute,
-                                             new Object[] { Integer.toString(i) } ) );
-      //System.out.println( "add "+ data.getAttributeValue( identifier,
-      //                                                   attribute,
-      //                                                    new Object[] { Integer.toString(i) } ));
+                                             new Object[] { (String)i.next() } ) );
     }
     return arraylist;
   }
