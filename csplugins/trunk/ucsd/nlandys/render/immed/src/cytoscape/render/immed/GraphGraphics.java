@@ -21,7 +21,21 @@ import java.awt.geom.Rectangle2D;
 /**
  * This is functional programming at it's finest [sarcasm].
  * The purpose of this class is to make the proper calls on a Graphics2D
- * object to efficiently render nodes, labels, and edges.
+ * object to efficiently render nodes, labels, and edges.<p>
+ * This class deals with two coordinate systems: an image coordinate system
+ * and a node coordinate system.  The programmer who uses this API will be
+ * dealing mostly with the node coordinate system, especially when rendering
+ * individual nodes and edges.  The clear() method specifies the mapping from
+ * the node coordinate system to the image coordinate system.  The two
+ * coordinate systems do not have the same orientations: while in the
+ * image coordinate system increasing y values travel towards the bottom of
+ * the image, the opposite is true in the node coordinate system.  That is,
+ * in the node coordinate system, increasing x values point to the right
+ * and increasing y values point to the top.  This is the "classical"
+ * orientation for the xy plane, while we are forced to use the native Java
+ * image coordinate system which has a different orientation.  The native
+ * Java image coordinate system dictates that (0,0) is the uppser left corner
+ * of the image and that each unit represents a pixel width (or height).
  */
 public final class GraphGraphics
 {
@@ -58,9 +72,9 @@ public final class GraphGraphics
                                        // edges of polygon are guaranteed to
                                        // have nonzero length during
                                        // computation.
-  private final double[] m_fooPolyCoords;
-  private final double[] m_foo2PolyCoords;
-  private final boolean[] m_fooRoundedCorners;
+  private final double[] m_fooPolyCoords;      // These three members are used
+  private final double[] m_foo2PolyCoords;     // by the edge intersection
+  private final boolean[] m_fooRoundedCorners; // computations.
   private final Line2D.Double m_line2d;
   private final float[] m_dash;
   private final double[] m_ptsBuff;
@@ -111,7 +125,9 @@ public final class GraphGraphics
 
   /**
    * Clears image area with background color specified in constructor,
-   * and sets an appropriate transformation of coordinate systems.
+   * and sets an appropriate transformation of coordinate systems.  See the
+   * class description for a definition of the two coordinate systems:
+   * the node coordinate system and the image coordinate system.<p>
    * It is healthy to call this method right before starting
    * to render a new picture.  Don't try to be clever in not calling this
    * method.<p>
@@ -125,7 +141,7 @@ public final class GraphGraphics
    *   about to be rendered; a node whose center is at the Y coordinate yCenter
    *   will be rendered exactly in the middle of the image going top to bottom;
    *   increasing y values (in the node coordinate system) result in movement
-   *   towards the bottom on the image.
+   *   towards the top on the image.
    * @param scaleFactor the scaling that is to take place when rendering nodes;
    *   a distance of 1 in node coordinates translates to a distance of
    *   scaleFactor pixels in the image.
@@ -162,7 +178,7 @@ public final class GraphGraphics
 
     m_currXform.setToTranslation(0.5d * image.getWidth(null),
                                  0.5d * image.getHeight(null));
-    m_currXform.scale(scaleFactor, scaleFactor);
+    m_currXform.scale(scaleFactor, -scaleFactor);
     m_currXform.translate(-xCenter, -yCenter);
     m_g2d.transform(m_currXform);
   }
@@ -193,11 +209,12 @@ public final class GraphGraphics
   /**
    * @param coords an array of length [at least] two which acts both
    *   as the input and as the output of this method; coords[0] is the
-   *   input x coordinate in the canvas coordinate system and is written
+   *   input x coordinate in the image coordinate system and is written
    *   as the x coordinate in the node coordinate system by this method;
-   *   coords[1] is the input y coordinate in the canvas coordinate system and
+   *   coords[1] is the input y coordinate in the image coordinate system and
    *   is written as the y coordinate in the node coordinate system by this
-   *   method.
+   *   method; the exact transform which takes place is defined by the
+   *   previous call to the clear() method.
    */
   public final void xformCanvasToNodeCoords(final double[] coords)
   {
@@ -211,9 +228,11 @@ public final class GraphGraphics
       throw new RuntimeException("noninvertible matrix - cannot happen"); }
   }
 
-  // This method has the side effect of setting m_ellp2d or m_poly2d;
-  // if m_poly2d is set (every case but the ellipse),
-  // then m_polyCoords and m_polyNumPoints are also set.
+  /*
+   * This method has the side effect of setting m_ellp2d or m_poly2d;
+   * if m_poly2d is set (every case but the ellipse),
+   * then m_polyCoords and m_polyNumPoints are also set.
+   */
   private final Shape getShape(final byte shapeType,
                                final float xMin, final float yMin,
                                final float xMax, final float yMax)
@@ -418,8 +437,8 @@ public final class GraphGraphics
         // A general [possibly non-convex] polygon with certain
         // restrictions: no two consecutive line segments can be parallel,
         // each line segment must have nonzero length, the polygon cannot
-        // self-intersect, and the polygon must be clockwise (where +y is down
-        // and +x is right).
+        // self-intersect, and the polygon must be counter-clockwise
+        // in the node coordinate system
         m_poly2d.reset();
         final double xNot = m_polyCoords[0];
         final double yNot = m_polyCoords[1];
@@ -520,7 +539,7 @@ public final class GraphGraphics
     m_ptsBuff[0] = xMin; m_ptsBuff[1] = yMin;
     m_ptsBuff[2] = xMax; m_ptsBuff[3] = yMax;
     m_currXform.transform(m_ptsBuff, 0, m_ptsBuff, 0, 2);
-    // Here, double values outside of the range of ints will be case to
+    // Here, double values outside of the range of ints will be cast to
     // the nearest int without overflow.
     final int xNot = (int) m_ptsBuff[0];
     final int yNot = (int) m_ptsBuff[1];
