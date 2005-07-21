@@ -355,14 +355,20 @@ public final class GraphGraphics
   /**
    * The xMin, yMin, xMax, and yMax parameters specify the extents of the
    * node shape (in the node coordinate system), including the border
-   * width.
+   * width.  That is, the drawn border won't extend beyond the extents
+   * specified.<p>
+   * There is an imposed constraint on borderWidth which, using the
+   * implemented algorithms, prevents strange-looking borders.  The
+   * constraint is that borderWidth may not exceed
+   * the minimum of the node width and node height divided by six.
    * @param borderWidth the border width, in node coordinate space; if
    *   this value is zero, the rendering engine skips over the process of
    *   rendering the border, which gives a significant performance boost.
    * @exception IllegalStateException if the calling thread isn't the
    *   AWT event handling thread.
    * @exception IllegalArgumentException if xMin is not less than xMax or if
-   *   yMin is not less than yMax, or if borderWidth is negative,
+   *   yMin is not less than yMax, or if borderWidth is negative or is greater
+   *   than Math.min(xMax - xMin, yMax - yMin) / 6,
    *   or if shapeType is not one of the SHAPE_* constants.
    */
   public final void drawNodeFull(final byte shapeType,
@@ -379,7 +385,12 @@ public final class GraphGraphics
       if (xMin >= xMax) throw new IllegalArgumentException("xMin >= xMax");
       if (yMin >= yMax) throw new IllegalArgumentException("yMin >= yMax");
       if (borderWidth < 0.0f)
-        throw new IllegalArgumentException("borderWidth < 0"); }
+        throw new IllegalArgumentException("borderWidth < 0");
+      if (borderWidth > Math.min(((double) xMax) - xMin,
+                                 ((double) yMax) - yMin) / 6.0d)
+        throw new IllegalArgumentException
+          ("borderWidth is greater than the minimum of node width and node " +
+           "height divided by six"); }
     final Shape shape = getShape(shapeType, xMin, yMin, xMax, yMax);
     if (borderWidth == 0.0f) m_g2d.setColor(fillColor);
     else m_g2d.setColor(borderColor);
@@ -539,7 +550,11 @@ public final class GraphGraphics
   /**
    * The arrow types must each be one of the ARROW_* constants.
    * The arrow at endpoint 1 is always on top of the arrow at endpoint 0
-   * because the arrow at endpoint 0 gets rendered first.
+   * because the arrow at endpoint 0 gets rendered first.<p>
+   * There are some constraints on the ratio of edge thickness to arrow
+   * size, listed in the table below.  Note that it is enough for this ratio
+   * to be less than or equall to one-half for all of the specific arrowhead
+   * constraints to pass.
    * <blockquote><table border="1" cellpadding="5" cellspacing="0">
    *   <tr>  <th>arrow type</th>     <th>placement of arrow</th>          </tr>
    *   <tr>  <td>ARROW_NONE</td>     <td>the edge line segment has
