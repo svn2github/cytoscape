@@ -80,7 +80,9 @@ public final class GraphGraphics
    *   a new frame; transparent colors are honored, provided that the image
    *   argument supports transparent colors.
    * @param debug if this is true, extra [and time-consuming] error checking
-   *   will take place in each method call.
+   *   will take place in each method call; it is recommended to have this
+   *   value set to true during the testing phase; set it to false once
+   *   you are sure that code does not mis-use this module.
    * @exception IllegalStateException if the calling thread isn't the
    *   AWT event handling thread.
    */
@@ -116,10 +118,14 @@ public final class GraphGraphics
    * This method must be called from the AWT event handling thread.
    * @param xCenter the x component of the translation transform for the frame
    *   about to be rendered; a node whose center is at the X coordinate xCenter
-   *   will be rendered exactly in the middle of the image going across.
+   *   will be rendered exactly in the middle of the image going across;
+   *   increasing x values (in the node coordinate system) result in movement
+   *   towards the right on the image.
    * @param yCenter the y component of the translation transform for the frame
    *   about to be rendered; a node whose center is at the Y coordinate yCenter
-   *   will be rendered exactly in the middle of the image going top to bottom.
+   *   will be rendered exactly in the middle of the image going top to bottom;
+   *   increasing y values (in the node coordinate system) result in movement
+   *   towards the bottom on the image.
    * @param scaleFactor the scaling that is to take place when rendering nodes;
    *   a distance of 1 in node coordinates translates to a distance of
    *   scaleFactor pixels in the image.
