@@ -113,7 +113,7 @@ public final class TestEdgeRendering
     m_edgeThickness = edgeThickness;
     addNotify();
     m_img = createImage(m_imgWidth, m_imgHeight);
-    m_grafx = new GraphGraphics(m_img, m_bgColor, false);
+    m_grafx = new GraphGraphics(m_img, m_bgColor, true);
     updateEdgeImage();
     addMouseListener(this);
     addMouseMotionListener(this);
@@ -189,7 +189,7 @@ public final class TestEdgeRendering
       m_lastXMousePos = e.getX();
       m_lastYMousePos = e.getY();
       m_currXCenter -= deltaX / m_currScale;
-      m_currYCenter -= deltaY / m_currScale;
+      m_currYCenter += deltaY / m_currScale;
       repaint(); }
     else if (m_currMouseButton == 2) {
       double deltaY = e.getY() - m_lastYMousePos;

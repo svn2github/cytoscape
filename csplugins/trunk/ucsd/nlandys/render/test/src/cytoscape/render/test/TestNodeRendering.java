@@ -54,9 +54,11 @@ public final class TestNodeRendering
         nonnegative = 0x7fffffff & r.nextInt();
         double width =
           (((double) nonnegative) / ((double) 0x7fffffff)) / sqrtN;
+        width = Math.max(width, 6.1d * borderWidth);
         nonnegative = 0x7fffffff & r.nextInt();
         double height =
           (((double) nonnegative) / ((double) 0x7fffffff)) / sqrtN;
+        height = Math.max(height, 6.1d * borderWidth);
         extents[inx * 4] = (float) (centerX - (width / 2.0d));
         extents[(inx * 4) + 1] = (float) (centerY - (height / 2.0d));
         extents[(inx * 4) + 2] = (float) (centerX + (width / 2.0d));
@@ -108,7 +110,7 @@ public final class TestNodeRendering
     m_borderWidth = borderWidth;
     addNotify();
     m_img = createImage(m_imgWidth, m_imgHeight);
-    m_grafx = new GraphGraphics(m_img, m_bgColor, false);
+    m_grafx = new GraphGraphics(m_img, m_bgColor, true);
     updateNodeImage();
     addMouseListener(this);
     addMouseMotionListener(this);
@@ -182,7 +184,7 @@ public final class TestNodeRendering
       m_lastXMousePos = e.getX();
       m_lastYMousePos = e.getY();
       m_currXCenter -= deltaX / m_currScale;
-      m_currYCenter -= deltaY / m_currScale;
+      m_currYCenter += deltaY / m_currScale; // y orientations are opposite.
       repaint(); }
     else if (m_currMouseButton == 2) {
       double deltaY = e.getY() - m_lastYMousePos;
