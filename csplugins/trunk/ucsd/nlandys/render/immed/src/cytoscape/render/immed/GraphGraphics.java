@@ -326,13 +326,13 @@ public final class GraphGraphics
       return m_poly2d;
     case SHAPE_PARALLELOGRAM:
       m_polyNumPoints = 4;
-      m_polyCoords[0] = xMin;
+      m_polyCoords[0] = (2.0d * xMin + xMax) / 3.0d;
       m_polyCoords[1] = yMin;
-      m_polyCoords[2] = (2.0d * xMax + xMin) / 3.0d;
+      m_polyCoords[2] = xMax;
       m_polyCoords[3] = yMin;
-      m_polyCoords[4] = xMax;
+      m_polyCoords[4] = (2.0d * xMax + xMin) / 3.0d;
       m_polyCoords[5] = yMax;
-      m_polyCoords[6] = (2.0d * xMin + xMax) / 3.0d;
+      m_polyCoords[6] = xMin;
       m_polyCoords[7] = yMax;
       // The rest of this code can be factored with other cases.
       m_poly2d.reset();
@@ -344,10 +344,10 @@ public final class GraphGraphics
     case SHAPE_TRIANGLE:
       m_polyNumPoints = 3;
       m_polyCoords[0] = xMin;
-      m_polyCoords[1] = yMax;
-      m_polyCoords[2] = (((double) xMin) + xMax) / 2.0d;
+      m_polyCoords[1] = yMin;
+      m_polyCoords[2] = xMax;
       m_polyCoords[3] = yMin;
-      m_polyCoords[4] = xMax;
+      m_polyCoords[4] = (((double) xMin) + xMax) / 2.0d;
       m_polyCoords[5] = yMax;
       // The rest of this code can be factored with other cases.
       m_poly2d.reset();
@@ -359,13 +359,13 @@ public final class GraphGraphics
     case SHAPE_VEE:
       m_polyNumPoints = 4;
       m_polyCoords[0] = xMin;
-      m_polyCoords[1] = yMin;
+      m_polyCoords[1] = yMax;
       m_polyCoords[2] = (((double) xMin) + xMax) / 2.0d;
-      m_polyCoords[3] = (2.0d * yMin + yMax) / 3.0d;
+      m_polyCoords[3] = yMin;
       m_polyCoords[4] = xMax;
-      m_polyCoords[5] = yMin;
+      m_polyCoords[5] = yMax;
       m_polyCoords[6] = (((double) xMin) + xMax) / 2.0d;
-      m_polyCoords[7] = yMax;
+      m_polyCoords[7] = (2.0d * yMax + yMin) / 3.0d;
       // The rest of this code can be factored with other cases.
       m_poly2d.reset();
       m_poly2d.moveTo((float) m_polyCoords[0], (float) m_polyCoords[1]);
