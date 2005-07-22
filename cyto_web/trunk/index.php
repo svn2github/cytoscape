@@ -146,6 +146,18 @@
 									</big>
 									&nbsp;&nbsp; [<a href="pubs.php">View All Publications</a>]<P>
 									<br>
+										<p>
+											<b>Proteins, 2005</b>
+											<br>
+											G Cavelier, D Anastassiou D.
+											<br>
+											Phenotype analysis using network motifs derived from changes in regulatory network dynamics.
+											<br>
+											[<A HREF="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=pubmed&dopt=Abstract&list_uids=15971229"/>Abstract</A>]
+[<A HREF="http://www3.interscience.wiley.com/cgi-bin/fulltext/110544754/HTMLSTART">Full Text</A>]
+[<A HREF="http://www3.interscience.wiley.com/cgi-bin/fulltext/110544754/PDFSTART">PDF</A>]
+<br>
+									<br>
 									                                    <p>
                                                                             <b>BMC Bioinformatics, July 2005</b>
                                                                             <br>
@@ -227,36 +239,7 @@ Proc Natl Acad Sci U S A. 2005 Feb 8;102(6):1974-9. Epub 2005 Feb 01.
 										Genome Res. 2004 14: 1025-35.
 										<br>
 										[<a href="http://www.genome.org/cgi/content/abstract/14/6/1025" class="Textlink">Abstract</a>][<a href="http://www.genome.org/cgi/reprint/14/6/1025.pdf" class="Textlink">PDF</a>][<a href="http://www.genome.org/cgi/content/full/1993504/DC1" class="Textlink">Supplemental Research Data</a>]
-									<p>
-										<br>
-									<p>
-										<b>
-											Genome Research, March 2004
-										</b>
-										<br>
-										Prinz S, Avila-Campillo I, Aldridge C, Srinivasan A, Dimitrov K, Siegel AF, and Galitski T.
-										<br>
-										Control of Yeast Filamentous-Form Growth by Modules in an Integrated Molecular Network.
-										<br>
-										Genome Res. 2004 14: 380-390.
-										<br>
-										[<a href="http://www.genome.org/cgi/content/abstract/14/3/380" class="Textlink">Abstract</a>][<a href="http://www.genome.org/cgi/reprint/14/3/380.pdf" class="Textlink">PDF</a>] [<a href="http://www.genome.org/cgi/content/full/14/3/380/DC1" class="Textlink">Supplemental Research Data</a>]
-									</p>
-									<p>
-										<br>
-									<p>
-										<b>
-											Science, Feb 2004
-										</b>
-										<br>
-										Tong AH, et al., Global mapping of the yeast genetic interaction network.
-										<br>
-										Science. 2004 Feb 6;303(5659):808-13.
-										<br>
-										[<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&amp;db=pubmed&amp;dopt=Abstract&amp;list_uids=14764870">Pub Med Entry</a>] [<a href="http://www.sciencemag.org/cgi/content/full/303/5659/808">Full Text</a>]
-										<br>
-										&nbsp;
-									<p>
+									<p><br>						
 										<b>
 											Note:
 										</b>

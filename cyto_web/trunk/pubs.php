@@ -19,6 +19,16 @@
 </table>
 <? include "nav.php"; ?>
 <div id="indent">
+<br>
+<b>Proteins, 2005</b>
+<br>G Cavelier, D Anastassiou D.
+<br>
+Phenotype analysis using network motifs derived from changes in regulatory network dynamics.
+<br>
+[<A HREF="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=pubmed&dopt=Abstract&list_uids=15971229"/>Abstract</A>]
+[<A HREF="http://www3.interscience.wiley.com/cgi-bin/fulltext/110544754/HTMLSTART">Full Text</A>]
+[<A HREF="http://www3.interscience.wiley.com/cgi-bin/fulltext/110544754/PDFSTART">PDF</A>]
+<br>
 
 <br><b>BMC Bioinformatics 2005, 6:154</b><BR>
 Tools enabling the elucidation of molecular pathways active in human disease: Application to Hepatitis C virus infection
@@ -28,7 +38,7 @@ David J Reiss , Iliana Avila-Campillo , Vesteinn Thorsson , Benno Schwikowski  a
 [<A HREF="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=pubmed&dopt=Abstract&list_uids=15967031">Abstract</A>]
 [<A HREF="http://www.biomedcentral.com/1471-2105/6/154">Full Text</A>]
 [<A HREF="http://www.biomedcentral.com/content/pdf/1471-2105-6-154.pdf">PDF</A>]
-<P>
+<BR>
 
 <br><b>Genome Biology. March, 2005</b><BR>
 Becky L Drees, Vesteinn Thorsson, Gregory W Carter, Alexander W Rives,
