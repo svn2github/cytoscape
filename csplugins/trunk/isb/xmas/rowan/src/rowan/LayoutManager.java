@@ -18,10 +18,13 @@ public class LayoutManager
   implements PropertyChangeListener,
              MenuListener{
 
-  String currentLayout = null;
+  String currentLayout = "no layout";
   CyNetwork currentNetwork = null;
   CyNetworkView currentNetworkView = null;
   ApplyMenu apply_menu;
+
+  JMenuItem layoutItem = null;
+
   public LayoutManager () {
     super( "Layout Manager", true );
 
@@ -33,6 +36,9 @@ public class LayoutManager
     add( getSaveItem() );
     add( getSaveAsItem() );
     
+    layoutItem = new JMenuItem( currentLayout );
+    layoutItem.setEnabled( false );
+
     apply_menu = new ApplyMenu( this );
     apply_menu.addMenuListener( this );
     add( apply_menu );
@@ -62,7 +68,10 @@ public class LayoutManager
     }
 
     currentLayout = layout;
-
+    remove( 0 );
+    layoutItem = new JMenuItem( currentLayout );
+    layoutItem.setEnabled( false );
+    insert( layoutItem, 0 );
   }
 
   public void applyLayout ( String layout ) {
@@ -91,6 +100,10 @@ public class LayoutManager
       view.setNodePosition(true);
     }
     currentLayout = layout;
+    remove( 0 );
+    layoutItem = new JMenuItem( currentLayout );
+    layoutItem.setEnabled( false );
+    insert( layoutItem, 0 );
   }
 
   public JMenuItem getSaveItem () {
