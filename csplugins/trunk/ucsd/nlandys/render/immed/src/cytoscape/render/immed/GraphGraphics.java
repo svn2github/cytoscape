@@ -578,7 +578,7 @@ public final class GraphGraphics
    * because the arrow at endpoint 0 gets rendered first.<p>
    * There are some constraints on the ratio of edge thickness to arrow
    * size, listed in the table below.  Note that it is enough for this ratio
-   * to be less than or equall to one-half for all of the specific arrowhead
+   * to be less than or equal to one-half for all of the specific arrowhead
    * constraints to pass.
    * <blockquote><table border="1" cellpadding="5" cellspacing="0">
    *   <tr>  <th>arrow type</th>     <th>placement of arrow</th>          </tr>
@@ -649,56 +649,52 @@ public final class GraphGraphics
       case ARROW_NONE:
         break;
       case ARROW_DELTA:
-        if (((double) edgeThickness) / arrow0Size > 4.0d / Math.sqrt(17.0d))
+        if (Math.sqrt(17.0d) * edgeThickness > 4.0d * arrow0Size)
           throw new IllegalArgumentException
             ("for ARROW_DELTA e/s is greater than 4/sqrt(17)");
         break;
       case ARROW_DIAMOND:
-        if (((double) edgeThickness) / arrow0Size > 2.0d / Math.sqrt(5.0d))
+        if (Math.sqrt(5.0d) * edgeThickness > 2.0d * arrow0Size)
           throw new IllegalArgumentException
             ("for ARROW_DIAMOND e/s is greater than 2/sqrt(5)");
         break;
       case ARROW_DISC:
-        if (((double) edgeThickness) / arrow0Size > 1.0d)
+        if (edgeThickness > arrow0Size)
           throw new IllegalArgumentException
             ("for ARROW_DISC e/s is greater than 1");
         break;
       case ARROW_TEE:
-        if (((double) edgeThickness) / arrow0Size > 0.5d)
+        if (((double) edgeThickness) > 0.5d * arrow0Size)
           throw new IllegalArgumentException
             ("for ARROW_TEE e/s is greater than 1/2");
         break;
       default:
         throw new IllegalArgumentException("arrowType0 is not recognized"); }
-      if (arrowType0 != ARROW_NONE && arrow0Size <= 0.0f)
-        throw new IllegalArgumentException("arrow0Size must be positive");
       switch (arrowType1) {
       case ARROW_NONE:
         break;
       case ARROW_DELTA:
-        if (((double) edgeThickness) / arrow1Size > 4.0d / Math.sqrt(17.0d))
+        if (Math.sqrt(17.0d) * edgeThickness > 4.0d * arrow1Size)
           throw new IllegalArgumentException
             ("for ARROW_DELTA e/s is greater than 4/sqrt(17)");
         break;
       case ARROW_DIAMOND:
-        if (((double) edgeThickness) / arrow1Size > 2.0d / Math.sqrt(5.0d))
+        if (Math.sqrt(5.0d) * edgeThickness > 2.0d * arrow1Size)
           throw new IllegalArgumentException
             ("for ARROW_DIAMOND e/s is greater than 2/sqrt(5)");
         break;
       case ARROW_DISC:
-        if (((double) edgeThickness) / arrow1Size > 1.0d)
+        if (edgeThickness > arrow1Size)
           throw new IllegalArgumentException
             ("for ARROW_DISC e/s is greater than 1");
         break;
       case ARROW_TEE:
-        if (((double) edgeThickness) / arrow1Size > 0.5d)
+        if (((double) edgeThickness) > 0.5d * arrow1Size)
           throw new IllegalArgumentException
             ("for ARROW_TEE e/s is greater than 1/2");
         break;
       default:
-        throw new IllegalArgumentException("arrowType0 is not recognized"); }
-      if (arrowType1 != ARROW_NONE && arrow1Size <= 0.0f)
-        throw new IllegalArgumentException("arrow1Size must be positive"); }
+        throw new IllegalArgumentException("arrowType1 is not recognized"); } }
     // End debug.  Here the real code begins.
 
     final double len = Math.sqrt((((double) x1) - x0) * (((double) x1) - x0) +
