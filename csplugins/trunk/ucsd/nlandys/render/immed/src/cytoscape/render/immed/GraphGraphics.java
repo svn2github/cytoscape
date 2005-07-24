@@ -816,7 +816,10 @@ public final class GraphGraphics
 
   /*
    * This method is private for now; I'm not sure what the public API for this
-   * will be yet.
+   * will be yet.  The ratio of edge thickness to arrow size cannot exceed
+   * one-half.  If this ratio is exactly one-half, then the edge will
+   * look like two parallel line segments with no arrowhead.  The edge
+   * thickness is actually the thickness of each parallel line segment.
    */
   private final void drawBidirectionalEdge(final float arrow0Size,
                                            final float arrow1Size,
