@@ -153,12 +153,17 @@ public final class TestBalls extends Frame implements Runnable
          xCenter2, yCenter2, m_xsect1Coords) &&
         m_grafx.computeEdgeIntersection
         (GraphGraphics.SHAPE_VEE, xMin2, yMin2, xMax2, yMax2, offset,
-         xCenter1, yCenter1, m_xsect2Coords)) {
+         xCenter1, yCenter1, m_xsect2Coords) &&
+        // If dot product of original line and new line is greater than zero,
+        // which means that the line orientation has not flipped or
+        // degenerated.
+        (xCenter1 - xCenter2) * (m_xsect1Coords[0] - m_xsect2Coords[0]) +
+        (yCenter1 - yCenter2) * (m_xsect1Coords[1] - m_xsect2Coords[1]) > 0.0d)
       m_grafx.drawEdgeFull(GraphGraphics.ARROW_DISC, offset * 2.0f, Color.blue,
                            GraphGraphics.ARROW_DISC, offset * 2.0f, Color.gray,
                            m_xsect1Coords[0], m_xsect1Coords[1],
                            m_xsect2Coords[0], m_xsect2Coords[1],
-                           edgeThickness, Color.green, dashLength); }
+                           edgeThickness, Color.green, dashLength);
   }
 
   public boolean isResizable() { return false; }
