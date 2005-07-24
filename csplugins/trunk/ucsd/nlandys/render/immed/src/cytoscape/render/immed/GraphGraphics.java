@@ -829,6 +829,20 @@ public final class GraphGraphics
   }
 
   /*
+   * This method is private for now; I'm not sure what the public API for this
+   * will be yet.
+   */
+  private final void drawMonoEdge(final float arrowSize,
+                                  final Color arrowColor,
+                                  final float x0, final float y0,
+                                  final float x1, final float y1,
+                                  final float edgeThickness,
+                                  final Color edgeColor,
+                                  final float dashLength)
+  {
+  }
+
+  /*
    * This method has the side effect of mangling m_poly2d.
    * arrowType must be one of the following: ARROW_DELTA, ARROW_DIAMOND,
    * or ARROW_TEE.
