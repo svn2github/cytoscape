@@ -42,6 +42,7 @@ public final class TestBalls extends Frame implements Runnable
   private boolean m_updating = false;
   private boolean m_firstPaint = true;
   private double m_theta = 0.0d;
+  private double m_scale = 1.0d;
 
   public TestBalls()
   {
@@ -53,17 +54,17 @@ public final class TestBalls extends Frame implements Runnable
     m_pts = new float[2];
     m_xsect1Coords = new float[2];
     m_xsect2Coords = new float[2];
-    generateImage(m_theta);
+    generateImage(m_theta, m_scale);
   }
 
   public void run()
   {
-    long prevTime = System.currentTimeMillis();
+    long currTime;
     while (!m_halt) {
-      final long elapsedTime = System.currentTimeMillis() - prevTime;
-      m_theta += ((double) elapsedTime) / 2000.0d;
-      requestUpdate();
-      prevTime += elapsedTime; }
+      currTime = System.currentTimeMillis();
+      m_theta = ((double) currTime) / 1500.0d;
+      m_scale = (Math.sin(((double) currTime) / 9300.0d) + 1.2d) / 2.0d;
+      requestUpdate(); }
   }
 
   public void paint(Graphics g)
@@ -82,7 +83,7 @@ public final class TestBalls extends Frame implements Runnable
     synchronized (m_lock) {
       if ((!m_requestingUpdate) || m_halt) return;
       m_updating = true; }
-    generateImage(m_theta);
+    generateImage(m_theta, m_scale);
     paint(g);
     synchronized (m_lock) {
       m_requestingUpdate = false; m_updating = false; m_lock.notify(); }
@@ -105,9 +106,10 @@ public final class TestBalls extends Frame implements Runnable
     throw new RuntimeException("could not update(Graphics)");
   }
 
-  private final void generateImage(double rotationTheta)
+  private final void generateImage(double rotationTheta, double m_scale)
   {
     m_xform.setToRotation(rotationTheta);
+    m_xform.scale(m_scale, m_scale);
     m_grafx.clear(0.0d, 0.0d, 1.0d);
     float xCenter1 = -180.0f;
     float yCenter1 = -175.0f;
