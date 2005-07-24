@@ -411,8 +411,8 @@ public final class GraphGraphics
       if (yMin >= yMax) throw new IllegalArgumentException("yMin >= yMax");
       if (borderWidth < 0.0f)
         throw new IllegalArgumentException("borderWidth < 0");
-      if (borderWidth > Math.min(((double) xMax) - xMin,
-                                 ((double) yMax) - yMin) / 6.0d)
+      if (6.0d * borderWidth > Math.min(((double) xMax) - xMin,
+                                        ((double) yMax) - yMin))
         throw new IllegalArgumentException
           ("borderWidth is greater than the minimum of node width and node " +
            "height divided by six"); }
