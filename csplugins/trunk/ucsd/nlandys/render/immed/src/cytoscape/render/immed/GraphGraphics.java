@@ -623,7 +623,7 @@ public final class GraphGraphics
    *   on the edge, or zero to indicate that the edge is solid.
    * @exception IllegalArgumentException if edgeThickness is less than zero,
    *   if dashLength is less than zero, or if any one of the arrow sizes
-   *   is less than edgeThickness.
+   *   does not meet specified criteria.
    */
   public final void drawEdgeFull(final byte arrowType0,
                                  final float arrow0Size,
