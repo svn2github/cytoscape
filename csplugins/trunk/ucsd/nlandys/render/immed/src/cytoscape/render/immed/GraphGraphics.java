@@ -634,8 +634,10 @@ public final class GraphGraphics
    *                                   of this type of neither one must be
    *                                   of this type; mono edges look
    *                                   completely different from other edges
-   *                                   because an arrowhead is placed in the
-   *                                   middle of the edge segment; the color
+   *                                   because an arrowhead (an ARROW_DELTA)
+   *                                   is placed in the middle of the edge
+   *                                   segment, pointing from (x0,y0) to
+   *                                   (x1,y1); the color
    *                                   and size of the first arrow (arrow0)
    *                                   are read and the color and size of the
    *                                   other arrow are completely ignored;
