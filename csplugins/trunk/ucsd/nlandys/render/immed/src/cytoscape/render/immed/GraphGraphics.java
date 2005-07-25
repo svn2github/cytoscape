@@ -748,8 +748,10 @@ public final class GraphGraphics
         m_xformUtil.setTransform(cosTheta, sinTheta, -sinTheta, cosTheta,
                                  x0, y0);
         m_path2d.transform(m_xformUtil);
+        if (m_dash[0] != dashLength || m_currStrokeWidth != edgeThickness)
+          setStroke(edgeThickness, dashLength);
         m_g2d.setColor(edgeColor);
-        m_g2d.draw(m_path2d); } } // We could return here, or not.
+        m_g2d.draw(m_path2d); } } // We could return here, but don't - same.
     else { // Render the line segment if necessary.
       final double x0Adj;
       final double y0Adj;
