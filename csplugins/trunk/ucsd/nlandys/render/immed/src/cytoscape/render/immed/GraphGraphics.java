@@ -421,6 +421,37 @@ public final class GraphGraphics
                                           final int offset,
                                           final int vertexCount)
   {
+    final double[] polyCoords;
+    {
+      polyCoords = new double[vertexCount * 2];
+      for (int i = 0; i < polyCoords.length; i++)
+        polyCoords[i] = coords[offset + i];
+    }
+    // From here on we can completely disregard the input parameters.
+    { // Normalize the polygon so that it spans [-0.5, 0.5] x [-0.5, 0.5].
+      double xMin = Double.POSITIVE_INFINITY;
+      double yMin = Double.POSITIVE_INFINITY;
+      double xMax = Double.NEGATIVE_INFINITY;
+      double yMax = Double.NEGATIVE_INFINITY;
+      for (int i = 0; i < polyCoords.length;) {
+        xMin = Math.min(xMin, coords[i]);
+        xMax = Math.max(xMax, coords[i++]);
+        yMin = Math.min(yMin, coords[i]);
+        yMax = Math.max(yMax, coords[i++]); }
+      final double xDist = xMax - xMin;
+      if (xDist == 0.0d) throw new IllegalArgumentException
+                           ("polygon does not move in the X direction");
+      final double yDist = yMax - yMin;
+      if (yDist == 0.0d) throw new IllegalArgumentException
+                           ("polygon does not move in the Y direction");
+      final double xMid = (xMin + xMax) / 2.0d;
+      final double yMid = (yMin + yMax) / 2.0d;
+      for (int i = 0; i < polyCoords.length;) {
+        double foo = (polyCoords[i] - xMid) / xDist;
+        polyCoords[i++] = Math.min(Math.max(-0.5d, foo), 0.5d);
+        foo = (polyCoords[i] - yMid) / yDist;
+        polyCoords[i++] = Math.min(Math.max(-0.5d, foo), 0.5d); }
+    }
     return 0;
   }
 
