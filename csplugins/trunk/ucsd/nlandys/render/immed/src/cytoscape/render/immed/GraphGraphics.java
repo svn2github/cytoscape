@@ -858,37 +858,6 @@ public final class GraphGraphics
   }
 
   /*
-   * This method is private for now; I'm not sure what the public API for this
-   * will be yet.  The ratio of edge thickness to arrow size cannot exceed
-   * one-half.  If this ratio is exactly one-half, then the edge will
-   * look like two parallel line segments with no arrowhead.  The edge
-   * thickness is actually the thickness of each parallel line segment.
-   */
-  private final void drawBidirectionalEdge(final float arrow0Size,
-                                           final float arrow1Size,
-                                           final float x0, final float y0,
-                                           final float x1, final float y1,
-                                           final float edgeThickness,
-                                           final float edgeColor,
-                                           final float dashLength)
-  {
-  }
-
-  /*
-   * This method is private for now; I'm not sure what the public API for this
-   * will be yet.
-   */
-  private final void drawMonoEdge(final float arrowSize,
-                                  final Color arrowColor,
-                                  final float x0, final float y0,
-                                  final float x1, final float y1,
-                                  final float edgeThickness,
-                                  final Color edgeColor,
-                                  final float dashLength)
-  {
-  }
-
-  /*
    * This method has the side effect of mangling m_path2d.
    * arrowType must be one of the following: ARROW_DELTA, ARROW_DIAMOND,
    * or ARROW_TEE.
