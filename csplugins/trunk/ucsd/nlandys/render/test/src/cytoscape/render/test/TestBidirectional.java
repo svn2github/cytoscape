@@ -145,7 +145,7 @@ public final class TestBidirectional extends Frame implements Runnable
     m_grafx.drawNodeFull(GraphGraphics.SHAPE_VEE,
                          xMin2, yMin2, xMax2, yMax2,
                          Color.red, border, Color.black);
-    float edgeThickness = 1.0f;
+    float edgeThickness = 1.5f;
     float dashLength = 0.0f;
     if (m_grafx.computeEdgeIntersection
         (GraphGraphics.SHAPE_ELLIPSE, xMin1, yMin1, xMax1, yMax1, 0.0f,
@@ -158,8 +158,8 @@ public final class TestBidirectional extends Frame implements Runnable
         // degenerated.
         (xCenter1 - xCenter2) * (m_xsect1Coords[0] - m_xsect2Coords[0]) +
         (yCenter1 - yCenter2) * (m_xsect1Coords[1] - m_xsect2Coords[1]) > 0.0d)
-      m_grafx.drawEdgeFull(GraphGraphics.ARROW_BIDIRECTIONAL, 10.0f, null,
-                           GraphGraphics.ARROW_BIDIRECTIONAL, 10.0f, null,
+      m_grafx.drawEdgeFull(GraphGraphics.ARROW_BIDIRECTIONAL, 6.0f, null,
+                           GraphGraphics.ARROW_BIDIRECTIONAL, 6.0f, null,
                            m_xsect1Coords[0], m_xsect1Coords[1],
                            m_xsect2Coords[0], m_xsect2Coords[1],
                            edgeThickness, Color.darkGray, dashLength);
