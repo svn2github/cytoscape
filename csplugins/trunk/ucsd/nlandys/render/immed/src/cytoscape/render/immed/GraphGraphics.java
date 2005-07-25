@@ -729,7 +729,7 @@ public final class GraphGraphics
 
     if (arrowType0 == ARROW_BIDIRECTIONAL) {
       final double a = (3.0d + Math.sqrt(5.0d) * 0.5d) * edgeThickness;
-      if (2.0d * a > len) { // Only render the edge if it has not degenerated
+      if (2.0d * a < len) { // Only render the edge if it has not degenerated
                             // or flipped in direction.
         m_path2d.reset();
         final double f = -2.0d * edgeThickness + arrow0Size;
