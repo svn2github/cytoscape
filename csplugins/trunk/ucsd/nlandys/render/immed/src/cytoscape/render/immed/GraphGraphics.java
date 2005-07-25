@@ -55,6 +55,7 @@ public final class GraphGraphics
   public static final byte ARROW_DIAMOND = -4;
   public static final byte ARROW_TEE = -5;
   public static final byte ARROW_BIDIRECTIONAL = -6;
+  public static final byte ARROW_MONO = -7;
 
   /**
    * The image that was passed into the constructor.
@@ -619,13 +620,27 @@ public final class GraphGraphics
    *                                   four times the arrow size; the ratio
    *                                   of edge thickness to arrow
    *                                   size cannot exceed one-half</td>   </tr>
-   *   <tr>  <td>ARROW_BIDIRECTIONAL <td>either both arrowheads must be
+   *   <tr>  <td>ARROW_BIDIRECTIONAL</td>
+   *                                 <td>either both arrowheads must be
    *                                   of this type of neither one must be
    *                                   of this type; bidirectional edges
    *                                   look completely different from other
-   *                                   edges; the ration of edge thickness
+   *                                   edges; arrow colors are completely
+   *                                   ignored for this type of edge;
+   *                                   the ratio of edge thickness
    *                                   to arrow size cannot exceed
    *                                   one-half</td>                      </tr>
+   *   <tr>  <td>ARROW_MONO</td>     <td>either both arrowheads must be
+   *                                   of this type of neither one must be
+   *                                   of this type; mono edges look
+   *                                   completely different from other edges
+   *                                   because an arrowhead is placed in the
+   *                                   middle of the edge segment; the color
+   *                                   and size of the first arrow (arrow0)
+   *                                   are read and the color and size of the
+   *                                   other arrow are completely ignored;
+   *                                   the ratio of edge thickness to arrow
+   *                                   size cannot exceed one</td>        </tr>
    * <table></blockquote>
    * @param dashLength a positive value representing the length of dashes
    *   on the edge, or zero to indicate that the edge is solid.
@@ -684,6 +699,14 @@ public final class GraphGraphics
           throw new IllegalArgumentException
             ("either both or neither arrows must be ARROW_BIDIRECTIONAL");
         break;
+      case ARROW_MONO:
+        if (edgeThickness > arrow0Size)
+          throw new IllegalArgumentException
+            ("for ARROW_MONO e/s is greater than 1");
+        if (arrowType1 != ARROW_MONO)
+          throw new IllegalArgumentException
+            ("either both or neither arrows must be ARROW_MONO");
+        break;
       default:
         throw new IllegalArgumentException("arrowType0 is not recognized"); }
       switch (arrowType1) {
@@ -716,6 +739,11 @@ public final class GraphGraphics
         if (arrowType0 != ARROW_BIDIRECTIONAL)
           throw new IllegalArgumentException
             ("either both or neither arrows must be ARROW_BIDIRECTIONAL");
+        break;
+      case ARROW_MONO:
+        if (arrowType0 != ARROW_MONO)
+          throw new IllegalArgumentException
+            ("either both or neither arrows must be ARROW_MONO");
         break;
       default:
         throw new IllegalArgumentException("arrowType1 is not recognized"); } }
@@ -763,7 +791,7 @@ public final class GraphGraphics
         x0Adj = t * (((double) x1) - x0) + x0;
         y0Adj = t * (((double) y1) - y0) + y0;
         break;
-      default: // ARROW_NONE or ARROW_DISC.
+      default: // ARROW_NONE, ARROW_DISC, or ARROW_MONO.
         // Don't change endpoint 0.
         x0Adj = x0; y0Adj = y0;
         break; }
@@ -778,7 +806,7 @@ public final class GraphGraphics
         x1Adj = t * (((double) x0) - x1) + x1;
         y1Adj = t * (((double) y0) - y1) + y1;
         break;
-      default: // ARROW_NONE or ARROW_DISC.
+      default: // ARROW_NONE, ARROW_DISC, or ARROW_MONO.
         // Don't change endpoint 1.
         x1Adj = x1; y1Adj = y1;
         break; }
@@ -798,6 +826,7 @@ public final class GraphGraphics
 
     { // Render the arrow at point 0.
       final Shape arrow0Shape;
+      double cosTheta, sinTheta;
       switch (arrowType0) {
       case ARROW_DISC:
         m_ellp2d.setFrame(((double) x0) - 0.5d * arrow0Size,
@@ -810,15 +839,26 @@ public final class GraphGraphics
       case ARROW_TEE:
         computeUntransformedArrow(arrowType0);
         // I want the transform to first scale, then rotate, then translate.
-        final double cosTheta = (((double) x0) - x1) / len;
-        final double sinTheta = (((double) y0) - y1) / len;
+        cosTheta = (((double) x0) - x1) / len;
+        sinTheta = (((double) y0) - y1) / len;
         m_xformUtil.setTransform(cosTheta, sinTheta, -sinTheta, cosTheta,
                                  x0, y0);
         m_xformUtil.scale(arrow0Size, arrow0Size);
         m_path2d.transform(m_xformUtil);
         arrow0Shape = m_path2d;
         break;
-      default: // ARROW_NONE.
+      case ARROW_MONO:
+        computeUntransformedArrow(arrowType0);
+        cosTheta = (((double) x1) - x0) / len;
+        sinTheta = (((double) y1) - y0) / len;
+        m_xformUtil.setTransform(cosTheta, sinTheta, -sinTheta, cosTheta,
+                                 (((double) x0) + x1) / 2.0d,
+                                 (((double) y0) + y1) / 2.0d);
+        m_xformUtil.scale(arrow0Size, arrow0Size);
+        m_path2d.transform(m_xformUtil);
+        arrow0Shape = m_path2d;
+        break;
+      default: // ARROW_NONE or ARROW_BIDIRECTIONAL.
         // Don't render anything.
         arrow0Shape = null;
         break; }
@@ -849,7 +889,7 @@ public final class GraphGraphics
         m_path2d.transform(m_xformUtil);
         arrow1Shape = m_path2d;
         break;
-      default: // ARROW_NONE.
+      default: // ARROW_NONE, ARROW_BIDIRECTIONAL, or ARROW_MONO.
         // Don't render anything.
         arrow1Shape = null;
         break; }
@@ -868,6 +908,7 @@ public final class GraphGraphics
   {
     switch (arrowType) {
     case ARROW_DELTA:
+    case ARROW_MONO:
       m_path2d.reset();
       m_path2d.moveTo(-2.0f, -0.5f);
       m_path2d.lineTo(0.0f, 0.0f);
