@@ -739,7 +739,7 @@ public final class GraphGraphics
         m_path2d.lineTo((float) (len - a), (float) (1.5d * edgeThickness));
         final double g = -2.0d * edgeThickness + arrow1Size;
         m_path2d.moveTo((float) (len - (a + 2.0d * g)),
-                        (float) (-g * -1.5d * edgeThickness));
+                        (float) (-g + -1.5d * edgeThickness));
         m_path2d.lineTo((float) (len - a), (float) (-1.5d * edgeThickness));
         m_path2d.lineTo((float) a, (float) (-1.5d * edgeThickness));
         // I want the transform to first rotate, then translate.
