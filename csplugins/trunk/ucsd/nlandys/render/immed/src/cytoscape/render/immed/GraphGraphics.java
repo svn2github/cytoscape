@@ -54,6 +54,7 @@ public final class GraphGraphics
   public static final byte ARROW_DELTA = -3;
   public static final byte ARROW_DIAMOND = -4;
   public static final byte ARROW_TEE = -5;
+  public static final byte ARROW_BIDIRECTIONAL = -6;
 
   /**
    * The image that was passed into the constructor.
@@ -438,7 +439,7 @@ public final class GraphGraphics
         // restrictions: no two consecutive line segments can be parallel,
         // each line segment must have nonzero length, the polygon cannot
         // self-intersect, and the polygon must be counter-clockwise
-        // in the node coordinate system
+        // in the node coordinate system.
         m_path2d.reset();
         final double xNot = m_polyCoords[0];
         final double yNot = m_polyCoords[1];
@@ -618,6 +619,13 @@ public final class GraphGraphics
    *                                   four times the arrow size; the ratio
    *                                   of edge thickness to arrow
    *                                   size cannot exceed one-half</td>   </tr>
+   *   <tr>  <td>ARROW_BIDIRECTIONAL <td>either both arrowheads must be
+   *                                   of this type of neither one must be
+   *                                   of this type; bidirectional edges
+   *                                   look completely different from other
+   *                                   edges; the ration of edge thickness
+   *                                   to arrow size cannot exceed
+   *                                   one-half</td>                      </tr>
    * <table></blockquote>
    * @param dashLength a positive value representing the length of dashes
    *   on the edge, or zero to indicate that the edge is solid.
@@ -668,6 +676,14 @@ public final class GraphGraphics
           throw new IllegalArgumentException
             ("for ARROW_TEE e/s is greater than 1/2");
         break;
+      case ARROW_BIDIRECTIONAL:
+        if (((double) edgeThickness) > 0.5d * arrow0Size)
+          throw new IllegalArgumentException
+            ("for ARROW_BIDIRECTIONAL e/s is greater than 1/2");
+        if (arrowType1 != ARROW_BIDIRECTIONAL)
+          throw new IllegalArgumentException
+            ("either both or neither arrows must be ARROW_BIDIRECTIONAL");
+        break;
       default:
         throw new IllegalArgumentException("arrowType0 is not recognized"); }
       switch (arrowType1) {
@@ -693,6 +709,14 @@ public final class GraphGraphics
           throw new IllegalArgumentException
             ("for ARROW_TEE e/s is greater than 1/2");
         break;
+      case ARROW_BIDIRECTIONAL:
+        if (((double) edgeThickness) > 0.5d * arrow1Size)
+          throw new IllegalArgumentException
+            ("for ARROW_BIDIRECTIONAL e/s is greater than 1/2");
+        if (arrowType0 != ARROW_BIDIRECTIONAL)
+          throw new IllegalArgumentException
+            ("either both or neither arrows must be ARROW_BIDIRECTIONAL");
+        break;
       default:
         throw new IllegalArgumentException("arrowType1 is not recognized"); } }
     // End debug.  Here the real code begins.
@@ -703,7 +727,30 @@ public final class GraphGraphics
     // all rendering.  This may not be the 100% correct approach.  We'll see.
     if (len == 0.0d) return;
 
-    { // Render the line segment if necessary.
+    if (arrowType0 == ARROW_BIDIRECTIONAL) {
+      final double a = (3.0d + Math.sqrt(5.0d) * 0.5d) * edgeThickness;
+      if (2.0d * a > len) { // Only render the edge if it has not degenerated
+                            // or flipped in direction.
+        m_path2d.reset();
+        final double f = -2.0d * edgeThickness + arrow0Size;
+        m_path2d.moveTo((float) (a + 2.0d * f),
+                        (float) (f + 1.5d * edgeThickness));
+        m_path2d.lineTo((float) a, (float) (1.5d * edgeThickness));
+        m_path2d.lineTo((float) (len - a), (float) (1.5d * edgeThickness));
+        final double g = -2.0d * edgeThickness + arrow1Size;
+        m_path2d.moveTo((float) (len - (a + 2.0d * g)),
+                        (float) (-g * -1.5d * edgeThickness));
+        m_path2d.lineTo((float) (len - a), (float) (-1.5d * edgeThickness));
+        m_path2d.lineTo((float) a, (float) (-1.5d * edgeThickness));
+        // I want the transform to first rotate, then translate.
+        final double cosTheta = (((double) x1) - x0) / len;
+        final double sinTheta = (((double) y1) - y0) / len;
+        m_xformUtil.setTransform(cosTheta, sinTheta, -sinTheta, cosTheta,
+                                 x0, y0);
+        m_path2d.transform(m_xformUtil);
+        m_g2d.setColor(edgeColor);
+        m_g2d.draw(m_path2d); } } // We could return here, or not.
+    else { // Render the line segment if necessary.
       final double x0Adj;
       final double y0Adj;
       switch (arrowType0) {
