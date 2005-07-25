@@ -395,8 +395,9 @@ public final class GraphGraphics
    *     the endpoints; this makes possible the notion of interior of the
    *     polygon (our definition of interior also includes the boundary).</li>
    *   <li>The polygon must be star-shaped with respect to the point
-   *     (xCenter, yCenter); a polygon is <i>star-shaped</i> with respect
-   *     to a point (a,b) if and only if for every point (x,y) in the interior
+   *     (xCenter, yCenter); a polygon is said to be <i>star-shaped with
+   *     respect to a point (a,b)</i>
+   *     if and only if for every point (x,y) in the interior
    *     of the polygon, the segment (a,b)->(x,y) is contained in the
    *     interior of the polygon.</li>
    *   <li>The path traversed by the polygon must be counter-clockwise where
