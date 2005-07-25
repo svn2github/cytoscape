@@ -380,6 +380,48 @@ public final class GraphGraphics
   }
 
   /**
+   * The custom node shape that is defined is a polygon specified
+   * by the coordinates supplied.  The polygon must meet several constraints
+   * listed below.<p>
+   * If we define the value xCenter to be the average of the minimum and
+   * maximum X values of the vertices and if we define yCenter likewise, then
+   * the specified polygon must meet the following constraints:
+   * <ol>
+   *   <li>no two consecutive polygon line segments can be parallel (this
+   *     essentially implies that the polygon must have at least three
+   *     vertices)</li>
+   *   <li>each polygon line segment must have nonzero length</li>
+   *   <li>no two distinct polygon line segments may intersect except at
+   *     the endpoints; this makes possible the notion of interior of the
+   *     polygon (our definition of interior also includes the boundary)</li>
+   *   <li>the polygon must be star-shaped with respect to the point
+   *     (xCenter, yCenter); a polygon is <i>star-shaped</i> with respect
+   *     to a point (a,b) if and only if for every point (x,y) in the interior
+   *     of the polygon, the segment (a,b)->(x,y) is contained in the
+   *     interior of the polygon</li>
+   *   <li>the path traversed by the polygon must be counter-clockwise where
+   *     +x points right and +y points up</li>
+   * </ol><p>
+   * In addition to these constraints, when rendering custom nodes with
+   * nonzero border width, possible problems may arise if the border width
+   * is large with respect to the kinks in the polygon.
+   * @param coords vertexCount * 2 consecutive coordinate values are read
+   *   from this array starting at coords[offset]; coords[offset],
+   *   coords[offset + 1], coords[offset + 2], coords[offset + 3] and so on
+   *   are interpreted as x0, y0, x1, y1, and so on.
+   * @param offset the starting index of where to read coordinates from
+   *   in the coords parameter.
+   * @param vertexCount the number of vertices to read from coords;
+   *   vertexCount * 2 entries in coords are read.
+   */
+  public final byte defineCustomNodeShape(final float[] coords,
+                                          final int offset,
+                                          final int vertexCount)
+  {
+    return 0;
+  }
+
+  /**
    * The xMin, yMin, xMax, and yMax parameters specify the extents of the
    * node shape (in the node coordinate system), including the border
    * width.  That is, the drawn border won't extend beyond the extents
