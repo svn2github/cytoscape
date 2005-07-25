@@ -387,20 +387,20 @@ public final class GraphGraphics
    * maximum X values of the vertices and if we define yCenter likewise, then
    * the specified polygon must meet the following constraints:
    * <ol>
-   *   <li>no two consecutive polygon line segments can be parallel (this
+   *   <li>Each polygon line segment must have nonzero length.</li>
+   *   <li>No two consecutive polygon line segments can be parallel (this
    *     essentially implies that the polygon must have at least three
-   *     vertices)</li>
-   *   <li>each polygon line segment must have nonzero length</li>
-   *   <li>no two distinct polygon line segments may intersect except at
+   *     vertices).</li>
+   *   <li>No two distinct polygon line segments may intersect except at
    *     the endpoints; this makes possible the notion of interior of the
-   *     polygon (our definition of interior also includes the boundary)</li>
-   *   <li>the polygon must be star-shaped with respect to the point
+   *     polygon (our definition of interior also includes the boundary).</li>
+   *   <li>The polygon must be star-shaped with respect to the point
    *     (xCenter, yCenter); a polygon is <i>star-shaped</i> with respect
    *     to a point (a,b) if and only if for every point (x,y) in the interior
    *     of the polygon, the segment (a,b)->(x,y) is contained in the
-   *     interior of the polygon</li>
-   *   <li>the path traversed by the polygon must be counter-clockwise where
-   *     +x points right and +y points up</li>
+   *     interior of the polygon.</li>
+   *   <li>The path traversed by the polygon must be counter-clockwise where
+   *     +x points right and +y points up.</li>
    * </ol><p>
    * In addition to these constraints, when rendering custom nodes with
    * nonzero border width, possible problems may arise if the border width
@@ -413,6 +413,8 @@ public final class GraphGraphics
    *   in the coords parameter.
    * @param vertexCount the number of vertices to read from coords;
    *   vertexCount * 2 entries in coords are read.
+   * @return the node shape identifier to be used in future rendering calls
+   *   (to be used as parameter shapeType in method drawNodeFull()).
    */
   public final byte defineCustomNodeShape(final float[] coords,
                                           final int offset,
