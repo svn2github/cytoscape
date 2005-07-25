@@ -34,7 +34,7 @@ import java.awt.geom.Rectangle2D;
  * and increasing y values point to the top.  This is the "classical"
  * orientation for the xy plane, while we are forced to use the native Java
  * image coordinate system which has a different orientation.  The native
- * Java image coordinate system dictates that (0,0) is the uppser left corner
+ * Java image coordinate system dictates that (0,0) is the upper left corner
  * of the image and that each unit represents a pixel width (or height).
  */
 public final class GraphGraphics
@@ -218,7 +218,7 @@ public final class GraphGraphics
    *   method; the exact transform which takes place is defined by the
    *   previous call to the clear() method.
    */
-  public final void xformCanvasToNodeCoords(final double[] coords)
+  public final void xformImageToNodeCoords(final double[] coords)
   {
     if (m_debug) {
       if (!EventQueue.isDispatchThread())
