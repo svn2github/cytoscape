@@ -391,15 +391,14 @@ public final class GraphGraphics
    *   <li>No two consecutive polygon line segments can be parallel (this
    *     essentially implies that the polygon must have at least three
    *     vertices).</li>
-   *   <li>No two distinct polygon line segments may intersect except at
-   *     the endpoints; this makes possible the notion of interior of the
-   *     polygon (our definition of interior also includes the boundary).</li>
+   *   <li>No two distinct non-consecutive polygon line segments may
+   *     intersect (not even at the endpoints); this makes possible the
+   *     notion of interior of the polygon.</li>
    *   <li>The polygon must be star-shaped with respect to the point
    *     (xCenter, yCenter); a polygon is said to be <i>star-shaped with
-   *     respect to a point (a,b)</i>
-   *     if and only if for every point (x,y) in the interior
-   *     of the polygon, the segment (a,b)->(x,y) is contained in the
-   *     interior of the polygon.</li>
+   *     respect to a point (a,b)</i> if and only if for every point (x,y)
+   *     in the interior or on the boundary of the polygon, the interior of
+   *     the segment (a,b)->(x,y) lies in the interior of the polygon.</li>
    *   <li>The path traversed by the polygon must be counter-clockwise where
    *     +x points right and +y points up.</li>
    * </ol><p>
@@ -416,6 +415,7 @@ public final class GraphGraphics
    *   vertexCount * 2 entries in coords are read.
    * @return the node shape identifier to be used in future rendering calls
    *   (to be used as parameter shapeType in method drawNodeFull()).
+   * @exception IllegalArgumentException if any of the constraints are not met.
    */
   public final byte defineCustomNodeShape(final float[] coords,
                                           final int offset,
@@ -426,9 +426,8 @@ public final class GraphGraphics
       polyCoords = new double[vertexCount * 2];
       for (int i = 0; i < polyCoords.length; i++)
         polyCoords[i] = coords[offset + i];
-    }
-    // From here on we can completely disregard the input parameters.
-    { // Normalize the polygon so that it spans [-0.5, 0.5] x [-0.5, 0.5].
+
+      // Normalize the polygon so that it spans [-0.5, 0.5] x [-0.5, 0.5].
       double xMin = Double.POSITIVE_INFINITY;
       double yMin = Double.POSITIVE_INFINITY;
       double xMax = Double.NEGATIVE_INFINITY;
@@ -451,7 +450,43 @@ public final class GraphGraphics
         polyCoords[i++] = Math.min(Math.max(-0.5d, foo), 0.5d);
         foo = (polyCoords[i] - yMid) / yDist;
         polyCoords[i++] = Math.min(Math.max(-0.5d, foo), 0.5d); }
+
+      // Test all criteria.
+      int yInterceptsCenter = 0;
+      for (int i = 0; i < vertexCount; i++) {
+        final double x0 = polyCoords[i * 2];
+        final double y0 = polyCoords[i * 2 + 1];
+        final double x1 = polyCoords[(i * 2 + 2) % (vertexCount * 2)];
+        final double y1 = polyCoords[(i * 2 + 3) % (vertexCount * 2)];
+        final double x2 = polyCoords[(i * 2 + 4) % (vertexCount * 2)];
+        final double y2 = polyCoords[(i * 2 + 5) % (vertexCount * 2)];
+        final double distP0P1 = Math.sqrt((x1 - x0) * (x1 - x0) +
+                                          (y1 - y0) * (y1 - y0));
+        if ((float) distP0P1 == 0.0f) { // Too close to distance zero.
+          throw new IllegalArgumentException
+            ("a line segment has distance [too close to] zero"); }
+        final double distP2fromP0P1 =
+          ((y0 - y1) * x2 + (x1 - x0) * y2 + x0 * y1 - x1 * y0) / distP0P1;
+        if ((float) distP2fromP0P1 == 0.0f) { // Too close to parallel.
+          throw new IllegalArgumentException
+            ("either a line segment has distance [too close to] zero or " +
+             "two consecutive line segments are [too close to] parallel"); }
+        final double distCenterFromP0P1 =
+          ((y0 - y1) * xMid + (x1 - x0) * yMid + x0 * y1 - x1 * y0) / distP0P1;
+        if ((float) distCenterFromP0P1 <= 0.0f) {
+          throw new IllegalArgumentException
+            ("polygon is going clockwise or is not star-shaped with " +
+             "respect to center"); }
+        if (Math.min(y0, y1) < yMid && Math.max(y0, y1) >= yMid) {
+          yInterceptsCenter++; } }
+      if (yInterceptsCenter != 2)
+        throw new IllegalArgumentException
+          ("the polygon self-intersects (we know this because the winding " +
+           "number of the center is not one)");
     }
+
+    // polyCoords now contains a polygon spanning [-0.5, 0.5] X [-0.5, 0.5]
+    // that passes all of the criteria.
     return 0;
   }
 
