@@ -17,6 +17,7 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Rectangle2D;
+import java.util.HashMap;
 
 /**
  * This is functional programming at it's finest [sarcasm].
@@ -82,10 +83,12 @@ public final class GraphGraphics
   private final double[] m_ptsBuff;
   private final AffineTransform m_currXform;
   private final AffineTransform m_xformUtil;
+  private final HashMap m_customShapes;
   private int m_polyNumPoints; // Used with m_polyCoords.
   private Graphics2D m_g2d;
   private Graphics m_gMinimal;
   private float m_currStrokeWidth;
+  private byte m_nextCustomShapeType;
 
   /**
    * All rendering operations will be performed on the specified image.
@@ -122,6 +125,8 @@ public final class GraphGraphics
     m_ptsBuff = new double[4];
     m_currXform = new AffineTransform();
     m_xformUtil = new AffineTransform();
+    m_customShapes = new HashMap();
+    m_nextCustomShapeType = 8;
     clear(0.0d, 0.0d, 1.0d);
   }
 
@@ -487,7 +492,11 @@ public final class GraphGraphics
 
     // polyCoords now contains a polygon spanning [-0.5, 0.5] X [-0.5, 0.5]
     // that passes all of the criteria.
-    return 0;
+    if (m_nextCustomShapeType < 0)
+      throw new IllegalStateException
+        ("too many custom node shapes are already defined");
+    m_customShapes.put(new Byte(m_nextCustomShapeType), polyCoords);
+    return m_nextCustomShapeType++;
   }
 
   /**
