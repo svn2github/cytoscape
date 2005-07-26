@@ -390,8 +390,8 @@ public final class GraphGraphics
       final double desiredYCenter = (((double) yMin) + yMax) / 2.0d;
       final double desiredWidth = ((double) xMax) - xMin;
       final double desiredHeight = ((double) yMax) - yMin;
-      m_xformUtil.setToScale(desiredWidth, desiredHeight);
-      m_xformUtil.translate(desiredXCenter, desiredYCenter);
+      m_xformUtil.setToTranslation(desiredXCenter, desiredYCenter);
+      m_xformUtil.scale(desiredWidth, desiredHeight);
       m_xformUtil.transform(storedPolyCoords, 0,
                             m_polyCoords, 0, m_polyNumPoints);
       // The rest of this code can be factored with other cases.
