@@ -531,7 +531,9 @@ public final class GraphGraphics
    * There is an imposed constraint on borderWidth which, using the
    * implemented algorithms, prevents strange-looking borders.  The
    * constraint is that borderWidth may not exceed
-   * the minimum of the node width and node height divided by six.
+   * the minimum of the node width and node height divided by six.  In
+   * addition, for custom node shapes, this requirement may be more
+   * constrained, depending on the kinks in the custom node shape.
    * @param borderWidth the border width, in node coordinate space; if
    *   this value is zero, the rendering engine skips over the process of
    *   rendering the border, which gives a significant performance boost.
@@ -539,8 +541,10 @@ public final class GraphGraphics
    *   AWT event handling thread.
    * @exception IllegalArgumentException if xMin is not less than xMax or if
    *   yMin is not less than yMax, or if borderWidth is negative or is greater
-   *   than Math.min(xMax - xMin, yMax - yMin) / 6,
-   *   or if shapeType is not one of the SHAPE_* constants.
+   *   than Math.min(xMax - xMin, yMax - yMin) / 6 (for custom node shapes
+   *   borderWidth may be even more limited, depending on the specific shape),
+   *   or if shapeType is neither one of the SHAPE_* constants nor a
+   *   previously defined custom node shape.
    */
   public final void drawNodeFull(final byte shapeType,
                                  final float xMin, final float yMin,
