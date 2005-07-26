@@ -116,7 +116,7 @@ public final class GraphGraphics
     m_debug = debug;
     m_ellp2d = new Ellipse2D.Double();
     m_path2d = new GeneralPath();
-    m_polyCoords = new double[2 * 8]; // Octagon has the most corners.
+    m_polyCoords = new double[2 * 100];
     m_fooPolyCoords = new double[m_polyCoords.length * 2];
     m_foo2PolyCoords = new double[m_polyCoords.length * 2];
     m_fooRoundedCorners = new boolean[m_polyCoords.length / 2];
@@ -381,7 +381,26 @@ public final class GraphGraphics
       m_path2d.closePath();
       return m_path2d;
     default:
-      throw new IllegalArgumentException("shapeType is not recognized"); }
+      final double[] storedPolyCoords =
+        (double[]) m_customShapes.get(new Byte(shapeType));
+      if (storedPolyCoords == null)
+        throw new IllegalArgumentException("shapeType is not recognized");
+      m_polyNumPoints = storedPolyCoords.length / 2;
+      final double desiredXCenter = (((double) xMin) + xMax) / 2.0d;
+      final double desiredYCenter = (((double) yMin) + yMax) / 2.0d;
+      final double desiredWidth = ((double) xMax) - xMin;
+      final double desiredHeight = ((double) yMax) - yMin;
+      m_xformUtil.setToScale(desiredWidth, desiredHeight);
+      m_xformUtil.translate(desiredXCenter, desiredYCenter);
+      m_xformUtil.transform(storedPolyCoords, 0,
+                            m_polyCoords, 0, m_polyNumPoints);
+      // The rest of this code can be factored with other cases.
+      m_path2d.reset();
+      m_path2d.moveTo((float) m_polyCoords[0], (float) m_polyCoords[1]);
+      for (int i = 2; i < m_polyNumPoints * 2;)
+        m_path2d.lineTo((float) m_polyCoords[i++], (float) m_polyCoords[i++]);
+      m_path2d.closePath();
+      return m_path2d; }
   }
 
   /**
@@ -420,12 +439,17 @@ public final class GraphGraphics
    *   vertexCount * 2 entries in coords are read.
    * @return the node shape identifier to be used in future rendering calls
    *   (to be used as parameter shapeType in method drawNodeFull()).
-   * @exception IllegalArgumentException if any of the constraints are not met.
+   * @exception IllegalArgumentException if any of the constraints are not met,
+   *   or if the specified polygon has more than 100 vertices.
+   * @exception IllegalStateException if too many custom node shapes are
+   *   already defined; about one hundered custom node shapes can be defined.
    */
   public final byte defineCustomNodeShape(final float[] coords,
                                           final int offset,
                                           final int vertexCount)
   {
+    if (vertexCount > 100) throw new IllegalArgumentException
+                             ("too many vertices (greater than 100)");
     final double[] polyCoords;
     {
       polyCoords = new double[vertexCount * 2];
