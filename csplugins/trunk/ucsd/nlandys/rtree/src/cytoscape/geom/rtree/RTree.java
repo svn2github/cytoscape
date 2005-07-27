@@ -1488,6 +1488,7 @@ public final class RTree
           currentStack = (IntStack) stackStack.pop(); // May be null.
           currentInx = 0; // If currentStack isn't null, this will be ignored.
           return; }
+//         for (int i = next.entryCount - 1; i >= 0; i--) {
         for (int i = 0; i < next.entryCount; i++) {
           // This 'if' statement could be taken out of 'for' loop for speed.
           if (isLeafNode(next.data.children[i])) stackStack.push(null);
