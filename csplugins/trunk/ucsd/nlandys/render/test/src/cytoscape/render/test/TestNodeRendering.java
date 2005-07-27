@@ -54,10 +54,12 @@ public final class TestNodeRendering
         nonnegative = 0x7fffffff & r.nextInt();
         double width =
           (((double) nonnegative) / ((double) 0x7fffffff)) / sqrtN;
+        width = Math.max(width, 2.0d * Float.MIN_VALUE);
         if (shape >= 0) width = Math.max(width, 6.1d * borderWidth);
         nonnegative = 0x7fffffff & r.nextInt();
         double height =
           (((double) nonnegative) / ((double) 0x7fffffff)) / sqrtN;
+        height = Math.max(height, 2.0d * Float.MIN_VALUE);
         if (shape >= 0) height = Math.max(height, 6.1d * borderWidth);
         extents[inx * 4] = (float) (centerX - (width / 2.0d));
         extents[(inx * 4) + 1] = (float) (centerY - (height / 2.0d));
