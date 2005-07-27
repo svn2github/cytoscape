@@ -1395,7 +1395,7 @@ public final class RTree
       else { // Cannot trivially include node; must recurse.
         if (isLeafNode(n)) {
           final IntStack stack = new IntStack();
-          for (int i = 0; i < n.entryCount; i++) {
+          for (int i = n.entryCount - 1; i >= 0; i--) {
             // Overlaps test of two rectangles.
             if ((Math.max(xMinQ, n.xMins[i]) <= Math.min(xMaxQ, n.xMaxs[i])) &&
                 (Math.max(yMinQ, n.yMins[i]) <= Math.min(yMaxQ, n.yMaxs[i]))) {
