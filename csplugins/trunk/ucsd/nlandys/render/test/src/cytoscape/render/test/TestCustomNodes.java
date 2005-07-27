@@ -53,10 +53,13 @@ public final class TestCustomNodes extends Frame implements Runnable
     m_img = createImage(m_imgWidth, m_imgHeight);
     m_grafx = new GraphGraphics(m_img, Color.white, true);
     m_customNode1 = m_grafx.defineCustomNodeShape
-      (new float[] { 0.0f, 0.0f, 1.0f, 1.0f, -1.0f, 1.0f }, 0, 3);
+      (new float[] { 0.0f, 0.0f, 0.41f, 0.4f, 0.5f, 0.1f, 0.6f, 0.3f,
+                     1.0f, 0.6f, 1.0f, 1.0f, 0.55f, 0.6f, 0.5f, 0.86f },
+       0, 8);
     m_customNode2 = m_grafx.defineCustomNodeShape
       (new float[] { -1.0f, 1.0f, -0.5f, -1.0f, 0.0f, -0.5f, 1.0f, -1.0f,
-                     0.0f, 0.5f }, 0, 5);
+                     0.0f, 0.5f },
+       0, 5);
     m_xform = new AffineTransform();
     m_pts = new float[2];
     m_xsect1Coords = new float[2];
@@ -70,7 +73,7 @@ public final class TestCustomNodes extends Frame implements Runnable
     while (!m_halt) {
       currTime = System.currentTimeMillis();
       m_theta = ((double) currTime) / 1500.0d;
-      m_scale = (Math.sin(((double) currTime) / 9300.0d) + 1.2d) / 2.0d;
+      m_scale = (Math.sin(((double) currTime) / 3300.0d) + 1.2d) / 2.0d;
       requestUpdate(); }
   }
 
@@ -120,8 +123,8 @@ public final class TestCustomNodes extends Frame implements Runnable
     m_grafx.clear(0.0d, 0.0d, 1.0d);
     float xCenter1 = -180.0f;
     float yCenter1 = -175.0f;
-    float width1Div2 = 100.0f;
-    float height1Div2 = 35.0f;
+    float width1Div2 = 70.0f;
+    float height1Div2 = 75.0f;
     m_pts[0] = xCenter1;
     m_pts[1] = yCenter1;
     m_xform.transform(m_pts, 0, m_pts, 0, 1);
@@ -136,10 +139,9 @@ public final class TestCustomNodes extends Frame implements Runnable
                          xMin1, yMin1, xMax1, yMax1,
                          Color.red, border, Color.black); 
 
-    float offset = 10.0f;
     float xCenter2 = 200.0f;
     float yCenter2 = 100.0f;
-    float width2Div2 = 60.0f;
+    float width2Div2 = 65.0f;
     float height2Div2 = 55.0f;
     m_pts[0] = xCenter2;
     m_pts[1] = yCenter2;
@@ -156,18 +158,18 @@ public final class TestCustomNodes extends Frame implements Runnable
     float edgeThickness = 2.0f;
     float dashLength = 0.0f;
     if (m_grafx.computeEdgeIntersection
-        (m_customNode1, xMin1, yMin1, xMax1, yMax1, offset,
+        (m_customNode1, xMin1, yMin1, xMax1, yMax1, 0.0f,
          xCenter2, yCenter2, m_xsect1Coords) &&
         m_grafx.computeEdgeIntersection
-        (m_customNode2, xMin2, yMin2, xMax2, yMax2, offset,
+        (m_customNode2, xMin2, yMin2, xMax2, yMax2, 0.0f,
          xCenter1, yCenter1, m_xsect2Coords) &&
         // If dot product of original line and new line is greater than zero,
         // which means that the line orientation has not flipped or
         // degenerated.
         (xCenter1 - xCenter2) * (m_xsect1Coords[0] - m_xsect2Coords[0]) +
         (yCenter1 - yCenter2) * (m_xsect1Coords[1] - m_xsect2Coords[1]) > 0.0d)
-      m_grafx.drawEdgeFull(GraphGraphics.ARROW_DISC, offset * 2.0f, Color.blue,
-                           GraphGraphics.ARROW_DISC, offset * 2.0f, Color.gray,
+      m_grafx.drawEdgeFull(GraphGraphics.ARROW_DELTA, 10.0f, Color.blue,
+                           GraphGraphics.ARROW_DELTA, 10.0f, Color.gray,
                            m_xsect1Coords[0], m_xsect1Coords[1],
                            m_xsect2Coords[0], m_xsect2Coords[1],
                            edgeThickness, Color.green, dashLength);
