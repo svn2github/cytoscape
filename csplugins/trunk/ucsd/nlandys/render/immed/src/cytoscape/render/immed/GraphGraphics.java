@@ -479,7 +479,8 @@ public final class GraphGraphics
         polyCoords[i++] = Math.min(Math.max(-0.5d, foo), 0.5d);
         foo = (polyCoords[i] - yMid) / yDist;
         polyCoords[i++] = Math.min(Math.max(-0.5d, foo), 0.5d); }
-
+    }
+    {
       // Test all criteria.
       int yInterceptsCenter = 0;
       for (int i = 0; i < vertexCount; i++) {
@@ -500,13 +501,12 @@ public final class GraphGraphics
           throw new IllegalArgumentException
             ("either a line segment has distance [too close to] zero or " +
              "two consecutive line segments are [too close to] parallel"); }
-        final double distCenterFromP0P1 =
-          ((y0 - y1) * xMid + (x1 - x0) * yMid + x0 * y1 - x1 * y0) / distP0P1;
+        final double distCenterFromP0P1 = (x0 * y1 - x1 * y0) / distP0P1;
         if ((float) distCenterFromP0P1 <= 0.0f) {
           throw new IllegalArgumentException
             ("polygon is going clockwise or is not star-shaped with " +
              "respect to center"); }
-        if (Math.min(y0, y1) < yMid && Math.max(y0, y1) >= yMid) {
+        if (Math.min(y0, y1) < 0.0d && Math.max(y0, y1) >= 0.0d) {
           yInterceptsCenter++; } }
       if (yInterceptsCenter != 2)
         throw new IllegalArgumentException
