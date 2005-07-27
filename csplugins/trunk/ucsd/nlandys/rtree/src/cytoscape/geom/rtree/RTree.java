@@ -1330,7 +1330,8 @@ public final class RTree
       extentsArr[offset + 1] = Float.POSITIVE_INFINITY;
       extentsArr[offset + 2] = Float.NEGATIVE_INFINITY;
       extentsArr[offset + 3] = Float.NEGATIVE_INFINITY; }
-    m_nodeStack.push(m_root); // This stack should always be left empty.
+    m_nodeStack.push(m_root); // This stack should always be left empty after
+                              // previous uses.
     m_extentsStack[0] = m_MBR[0]; m_extentsStack[1] = m_MBR[1];
     m_extentsStack[2] = m_MBR[2]; m_extentsStack[3] = m_MBR[3];
     final ObjStack nodeStack = new ObjStack();
