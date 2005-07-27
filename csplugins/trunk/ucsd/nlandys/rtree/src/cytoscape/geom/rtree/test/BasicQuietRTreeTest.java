@@ -1,4 +1,3 @@
-
 package cytoscape.geom.rtree.test;
 
 import cytoscape.geom.rtree.RTree;
