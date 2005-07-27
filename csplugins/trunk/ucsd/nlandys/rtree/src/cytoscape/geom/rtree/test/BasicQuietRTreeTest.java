@@ -485,7 +485,7 @@ public class BasicQuietRTreeTest
         for (int k = (j * 1000) + 28; k < stop; k++) tree.delete(k); }
     } // END DEPTH FOUR TEST.
 
-    { // BEGIN ORDER OF SUBQUERY ELEMENTS TEST.
+    { // BEGIN ORDER-PRESERVING SUBQUERY TEST.
       if (tree.size() != 28)
         throw new IllegalStateException("expected 28 elements in tree");
       final int[] allOrdered = new int[28];
@@ -508,7 +508,7 @@ public class BasicQuietRTreeTest
         for (int j = 0;; j++) {
           if (allOrdered[j] == element) { foundInx = j; break; } }
         if (!(foundInx > prevInx)) {
-          System.out.println("warning 1 - order not preserved"); }
+          throw new IllegalStateException("order in subquery not preserved"); }
         prevInx = foundInx; }
       if (iter.numRemaining() != 0)
         throw new IllegalStateException("more elements remain in iteration");
@@ -523,7 +523,7 @@ public class BasicQuietRTreeTest
         for (int j = 0;; j++) {
           if (allOrdered[j] == element) { foundInx = j; break; } }
         if (!(foundInx > prevInx)) {
-          System.out.println("warning 2 - order not preserved"); }
+          throw new IllegalStateException("order in subquery not preserved"); }
         prevInx = foundInx; }
       if (iter.numRemaining() != 0)
         throw new IllegalStateException("more elements remain in iteration");
@@ -538,7 +538,7 @@ public class BasicQuietRTreeTest
         for (int j = 0;; j++) {
           if (allOrdered[j] == element) { foundInx = j; break; } }
         if (!(foundInx > prevInx)) {
-          System.out.println("warning 3 - order not preserved"); }
+          throw new IllegalStateException("order in subquery not preserved"); }
         prevInx = foundInx; }
       if (iter.numRemaining() != 0)
         throw new IllegalStateException("more elements remain in iteration");
@@ -553,7 +553,7 @@ public class BasicQuietRTreeTest
         for (int j = 0;; j++) {
           if (allOrdered[j] == element) { foundInx = j; break; } }
         if (!(foundInx > prevInx)) {
-          System.out.println("warning 4 - order not preserved"); }
+          throw new IllegalStateException("order in subquery not preserved"); }
         prevInx = foundInx; }
       if (iter.numRemaining() != 0)
         throw new IllegalStateException("more elements remain in iteration");
