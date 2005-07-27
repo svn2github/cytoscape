@@ -1288,6 +1288,17 @@ public final class RTree
    *   <tr>  <td>offset+3</td>     <td>yMax of MBR</td>
    *           <td>Float.NEGATIVE_INFINITY</td>                   </tr>
    * </table></blockquote><p>
+   * This R-tree has the order-preserving subquery property, which can
+   * be described as follows.  Suppose the R-tree contains some entries.
+   * Suppose we query the R-tree using this method, specifying the
+   * maximum possible query rectangle; we get back all entries currently
+   * in this R-tree; the entries returned have a certain order to them.
+   * Let's remember this order.  Now if we perform any further query,
+   * specifying a different (or the same) query rectangle, then the
+   * entries that are returned in the query are returned in the same order
+   * as they were returned in the original query.  This phenomenon continues
+   * to hold true with any additional queries until the R-tree undergoes
+   * a mutating operation such as insert() or delete().<p>
    * IMPORTANT: The returned enumeration becomes invalid as soon as any
    * structure-modifying operation (insert or delete) is performed on this
    * R-tree.  Accessing an invalid enumeration's methods will result in
