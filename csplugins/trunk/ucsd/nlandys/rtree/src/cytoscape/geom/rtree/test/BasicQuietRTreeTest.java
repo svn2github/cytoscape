@@ -484,6 +484,80 @@ public class BasicQuietRTreeTest
           tree.insert(k, k, k, k + 5, k + 5);
         for (int k = (j * 1000) + 28; k < stop; k++) tree.delete(k); }
     } // END DEPTH FOUR TEST.
+
+    { // BEGIN ORDER OF SUBQUERY ELEMENTS TEST.
+      if (tree.size() != 28)
+        throw new IllegalStateException("expected 28 elements in tree");
+      final int[] allOrdered = new int[28];
+      IntEnumerator iter = tree.queryOverlap
+        (Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY,
+         Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY, null, 0);
+      if (iter.numRemaining() != 28)
+        throw new IllegalStateException("expected 28 elements in iteration");
+      for (int i = 0; i < 28; i++) allOrdered[i] = iter.nextInt();
+
+      iter = tree.queryOverlap
+        (0.0f, 0.0f, Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY,
+         null, 0);
+      if (iter.numRemaining() != 20)
+        throw new IllegalStateException("expected 20 elements in iteration");
+      int prevInx = -1;
+      for (int i = 0; i < 20; i++) {
+        final int element = iter.nextInt();
+        int foundInx = -2;
+        for (int j = 0;; j++) {
+          if (allOrdered[j] == element) { foundInx = j; break; } }
+        if (!(foundInx > prevInx)) {
+          System.out.println("warning 1 - order not preserved"); }
+        prevInx = foundInx; }
+      if (iter.numRemaining() != 0)
+        throw new IllegalStateException("more elements remain in iteration");
+
+      iter = tree.queryOverlap(-10.0f, -5.0f, 1.0f, 4.0f, null, 0);
+      if (iter.numRemaining() != 7)
+        throw new IllegalStateException("expected 7 elements in iteration");
+      prevInx = -1;
+      for (int i = 0; i < 7; i++) {
+        final int element = iter.nextInt();
+        int foundInx = -2;
+        for (int j = 0;; j++) {
+          if (allOrdered[j] == element) { foundInx = j; break; } }
+        if (!(foundInx > prevInx)) {
+          System.out.println("warning 2 - order not preserved"); }
+        prevInx = foundInx; }
+      if (iter.numRemaining() != 0)
+        throw new IllegalStateException("more elements remain in iteration");
+
+      iter = tree.queryOverlap(-99.0f, -5.0f, 1.0f, 30.0f, null, 0);
+      if (iter.numRemaining() != 14)
+        throw new IllegalStateException("expected 14 elements in iteration");
+      prevInx = -1;
+      for (int i = 0; i < 14; i++) {
+        final int element = iter.nextInt();
+        int foundInx = -2;
+        for (int j = 0;; j++) {
+          if (allOrdered[j] == element) { foundInx = j; break; } }
+        if (!(foundInx > prevInx)) {
+          System.out.println("warning 3 - order not preserved"); }
+        prevInx = foundInx; }
+      if (iter.numRemaining() != 0)
+        throw new IllegalStateException("more elements remain in iteration");
+
+      iter = tree.queryOverlap(-3.0f, 4.0f, 10.0f, 20.0f, null, 0);
+      if (iter.numRemaining() != 13)
+        throw new IllegalStateException("expected 13 elements in iteration");
+      prevInx = -1;
+      for (int i = 0; i < 13; i++) {
+        final int element = iter.nextInt();
+        int foundInx = -2;
+        for (int j = 0;; j++) {
+          if (allOrdered[j] == element) { foundInx = j; break; } }
+        if (!(foundInx > prevInx)) {
+          System.out.println("warning 4 - order not preserved"); }
+        prevInx = foundInx; }
+      if (iter.numRemaining() != 0)
+        throw new IllegalStateException("more elements remain in iteration");
+    }
   }
 
 }
