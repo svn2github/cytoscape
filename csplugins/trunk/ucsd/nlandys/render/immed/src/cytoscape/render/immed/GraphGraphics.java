@@ -480,7 +480,7 @@ public final class GraphGraphics
         foo = (polyCoords[i] - yMid) / yDist;
         polyCoords[i++] = Math.min(Math.max(-0.5d, foo), 0.5d); }
     }
-    {
+    if (m_debug) {
       // Test all criteria.
       int yInterceptsCenter = 0;
       for (int i = 0; i < vertexCount; i++) {
