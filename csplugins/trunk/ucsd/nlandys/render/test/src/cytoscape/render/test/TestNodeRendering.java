@@ -72,11 +72,11 @@ public final class TestNodeRendering
         tree.insert(inx, extents[inx * 4], extents[(inx * 4) + 1],
                     extents[(inx * 4) + 2], extents[(inx * 4) + 3]);
         inx++; }
-      for (inx = 0; inx < N; inx++) {
-        // Re-insert every entry into tree for performance gain.
-        tree.delete(inx);
-        tree.insert(inx, extents[inx * 4], extents[(inx * 4) + 1],
-                    extents[(inx * 4) + 2], extents[(inx * 4) + 3]); }
+//       for (inx = 0; inx < N; inx++) {
+//         // Re-insert every entry into tree for performance gain.
+//         tree.delete(inx);
+//         tree.insert(inx, extents[inx * 4], extents[(inx * 4) + 1],
+//                     extents[(inx * 4) + 2], extents[(inx * 4) + 3]); }
     }
 
     EventQueue.invokeAndWait(new Runnable() {
