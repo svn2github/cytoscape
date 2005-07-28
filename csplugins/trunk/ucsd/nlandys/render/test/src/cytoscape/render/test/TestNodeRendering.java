@@ -28,6 +28,7 @@ public final class TestNodeRendering
     final float[] extents;
     final byte shape;
     final float borderWidth;
+    final Color[] colors;
 
     // Populate the tree with entries.
     {
@@ -77,11 +78,16 @@ public final class TestNodeRendering
 //         tree.delete(inx);
 //         tree.insert(inx, extents[inx * 4], extents[(inx * 4) + 1],
 //                     extents[(inx * 4) + 2], extents[(inx * 4) + 3]); }
+
+      colors = new Color[256];
+      for (int i = 0; i < colors.length; i++) {
+        colors[i] = new Color(0x00ffffff & r.nextInt()); }
     }
 
     EventQueue.invokeAndWait(new Runnable() {
         public void run() {
-          Frame f = new TestNodeRendering(tree, extents, shape, borderWidth);
+          Frame f = new TestNodeRendering(tree, extents, shape, borderWidth,
+                                          colors);
           f.show();
           f.addWindowListener(new WindowAdapter() {
               public void windowClosing(WindowEvent e) {
@@ -92,12 +98,12 @@ public final class TestNodeRendering
   private final float[] m_extents;
   private final byte m_shape; // -1 if low detail.
   private final float m_borderWidth;
+  private final Color[] m_colors;
   private final int m_imgWidth = 600;
   private final int m_imgHeight = 480;
   private final Image m_img;
   private final GraphGraphics m_grafx;
   private final Color m_bgColor = Color.white;
-  private final Color m_nodeColor = Color.red;
   private final Color m_borderColor = Color.black;
   private double m_currXCenter = 0.5d;
   private double m_currYCenter = 0.5d;
@@ -107,13 +113,14 @@ public final class TestNodeRendering
   private int m_lastYMousePos = 0;
 
   public TestNodeRendering(RTree tree, float[] extents,
-                           byte shape, float borderWidth)
+                           byte shape, float borderWidth, Color[] colors)
   {
     super();
     m_tree = tree;
     m_extents = extents;
     m_shape = shape;
     m_borderWidth = borderWidth;
+    m_colors = colors;
     addNotify();
     m_img = createImage(m_imgWidth, m_imgHeight);
     m_grafx = new GraphGraphics(m_img, m_bgColor, true);
@@ -147,15 +154,17 @@ public final class TestNodeRendering
        (float) (m_currYCenter + ((double) (m_imgHeight / 2)) / m_currScale),
        null, 0);
     while (iter.numRemaining() > 0) {
-      final int inx_x4 = iter.nextInt() * 4;
+      final int inx = iter.nextInt();
+      final int inx_x4 = inx * 4;
       if (m_shape < 0) {
         m_grafx.drawNodeLow(m_extents[inx_x4], m_extents[inx_x4 + 1],
                             m_extents[inx_x4 + 2], m_extents[inx_x4 + 3],
-                            m_nodeColor); }
+                            m_colors[inx % 256]); }
       else {
         m_grafx.drawNodeFull(m_shape, m_extents[inx_x4], m_extents[inx_x4 + 1],
                              m_extents[inx_x4 + 2], m_extents[inx_x4 + 3],
-                             m_nodeColor, m_borderWidth, m_borderColor); } }
+                             m_colors[inx % 256],
+                             m_borderWidth, m_borderColor); } }
   }
 
   public void mouseClicked(MouseEvent e) {}

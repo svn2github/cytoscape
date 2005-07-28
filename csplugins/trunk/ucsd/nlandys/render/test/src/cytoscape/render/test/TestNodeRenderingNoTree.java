@@ -25,6 +25,7 @@ public final class TestNodeRenderingNoTree
     final float[] extents;
     final byte shape;
     final float borderWidth;
+    final Color[] colors;
 
     {
       int N = Integer.parseInt(args[0]);
@@ -65,11 +66,16 @@ public final class TestNodeRenderingNoTree
           extents[(inx * 4) + 3] =
             (float) (1.0d / sqrtN + extents[(inx * 4) + 1]);
         inx++; }
+
+      colors = new Color[256];
+      for (int i = 0; i < colors.length; i++) {
+        colors[i] = new Color(0x00ffffff & r.nextInt()); }
     }
 
     EventQueue.invokeAndWait(new Runnable() {
         public void run() {
-          Frame f = new TestNodeRenderingNoTree(extents, shape, borderWidth);
+          Frame f = new TestNodeRenderingNoTree(extents, shape, borderWidth,
+                                                colors);
           f.show();
           f.addWindowListener(new WindowAdapter() {
               public void windowClosing(WindowEvent e) {
@@ -79,12 +85,12 @@ public final class TestNodeRenderingNoTree
   private final float[] m_extents;
   private final byte m_shape; // -1 if low detail.
   private final float m_borderWidth;
+  private final Color[] m_colors;
   private final int m_imgWidth = 600;
   private final int m_imgHeight = 480;
   private final Image m_img;
   private final GraphGraphics m_grafx;
   private final Color m_bgColor = Color.white;
-  private final Color m_nodeColor = Color.red;
   private final Color m_borderColor = Color.black;
   private double m_currXCenter = 0.5d;
   private double m_currYCenter = 0.5d;
@@ -93,13 +99,14 @@ public final class TestNodeRenderingNoTree
   private int m_lastXMousePos = 0;
   private int m_lastYMousePos = 0;
 
-  public TestNodeRenderingNoTree(float[] extents,
-                                 byte shape, float borderWidth)
+  public TestNodeRenderingNoTree(float[] extents, byte shape,
+                                 float borderWidth, Color[] colors)
   {
     super();
     m_extents = extents;
     m_shape = shape;
     m_borderWidth = borderWidth;
+    m_colors = colors;
     addNotify();
     m_img = createImage(m_imgWidth, m_imgHeight);
     m_grafx = new GraphGraphics(m_img, m_bgColor, true);
@@ -141,11 +148,12 @@ public final class TestNodeRenderingNoTree
         if (m_shape < 0) {
           m_grafx.drawNodeLow(m_extents[i], m_extents[i + 1],
                               m_extents[i + 2], m_extents[i + 3],
-                              m_nodeColor); }
+                              m_colors[(i / 4) % 256]); }
         else {
           m_grafx.drawNodeFull(m_shape, m_extents[i], m_extents[i + 1],
                                m_extents[i + 2], m_extents[i + 3],
-                               m_nodeColor, m_borderWidth, m_borderColor); }
+                               m_colors[(i / 4) % 256],
+                               m_borderWidth, m_borderColor); }
       } }
   }
 
