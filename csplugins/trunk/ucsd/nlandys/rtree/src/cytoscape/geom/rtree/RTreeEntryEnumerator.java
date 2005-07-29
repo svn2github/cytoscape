@@ -33,7 +33,7 @@ public interface RTreeEntryEnumerator extends IntEnumerator
    * @param offset specifies the beginning index of where to write extent
    *   values into extentsArr; exactly four entries are written starting
    *   at this index (see above table).
-   * @return the next entry (object key) in the enumeration.
+   * @return the next entry (objKey) in the enumeration.
    * @exception ArrayIndexOutOfBoundsException if extentsArr cannot be
    *   written to in the index range [offset, offset+3].
    */
