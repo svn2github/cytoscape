@@ -2,6 +2,11 @@ package cytoscape.geom.rtree;
 
 import cytoscape.util.intr.IntEnumerator;
 
+/**
+ * An enumeration over a set of R-tree entries.  The purpose of this
+ * class over and beyond IntEnumerator (which it extents) is to efficiently
+ * provide minimum bounding rectangle information for each entry returned.
+ */
 public interface RTreeEntryEnumerator extends IntEnumerator
 {
 
