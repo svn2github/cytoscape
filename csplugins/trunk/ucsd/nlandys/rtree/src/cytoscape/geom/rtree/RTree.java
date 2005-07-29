@@ -1481,6 +1481,14 @@ public final class RTree
       this.stackStack = stackStack;
       computeNextLeafNode(); }
     public final int numRemaining() { return count; }
+    public final void nextMBR(float[] mbr) {
+      final int inx;
+      if (currentStack == null) inx = currentInx + 1;
+      else inx = currentStack.peek();
+      mbr[0] = currentLeafNode.xMins[inx];
+      mbr[1] = currentLeafNode.yMins[inx];
+      mbr[2] = currentLeafNode.xMaxs[inx];
+      mbr[3] = currentLeafNode.yMaxs[inx]; }
     public final int nextInt() {
       int returnThis = -1;
       if (currentStack == null) {
