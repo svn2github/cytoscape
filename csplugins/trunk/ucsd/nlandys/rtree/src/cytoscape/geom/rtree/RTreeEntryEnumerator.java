@@ -4,7 +4,7 @@ import cytoscape.util.intr.IntEnumerator;
 
 /**
  * An enumeration over a set of R-tree entries.  The purpose of this
- * class over and beyond IntEnumerator (which it extents) is to efficiently
+ * class above and beyond IntEnumerator (which it extends) is to efficiently
  * provide minimum bounding rectangle information for each entry returned.
  */
 public interface RTreeEntryEnumerator extends IntEnumerator
@@ -12,15 +12,9 @@ public interface RTreeEntryEnumerator extends IntEnumerator
 
   /**
    * Copies into the supplied array [starting at specified offset] the minimum
-   * bounding rectangle of the entry that will be returned in a call to
-   * nextInt().  This method has no effect on the enumeration of entries; that
-   * is, consecutive repeated calls to this method will each return the
-   * same extents.  In other words, to discover the next object key and
-   * corresponding extents in this enumeration, first call nextExtents() and
-   * then call nextInt().  It only makes sense to call this method when
-   * numRemaining() on this enumeration returns a positive value; otherwise,
-   * calling this method produces undefined results (maybe even a thrown
-   * exception).<p>
+   * bounding rectangle of the next entry, and returns that next entry.
+   * The behavior of this method is identical to nextInt() except that in
+   * addition to returning a value, extents information is returned as well.
    * The information written into the supplied extentsArr parameter consists
    * of the following:
    * <blockquote><table border="1" cellpadding="5" cellspacing="0">
@@ -29,15 +23,20 @@ public interface RTreeEntryEnumerator extends IntEnumerator
    *   <tr>  <td>offset+1</td>     <td>yMin of MBR</td>          </tr>
    *   <tr>  <td>offset+2</td>     <td>xMax of MBR</td>          </tr>
    *   <tr>  <td>offset+3</td>     <td>yMax of MBR</td>          </tr>
-   * </table></blockquote>
+   * </table></blockquote><p>
+   * NOTE: If the retrieval of minimum bounding rectangle information for
+   * an entry is not important to the user of this enumeration, it is
+   * preferable to call nextInt() instead of nextExtents() for performance
+   * reasons.
    * @param extentsArr an array to which extent values will be written by this
-   *   method.
+   *   method; cannot be null.
    * @param offset specifies the beginning index of where to write extent
    *   values into extentsArr; exactly four entries are written starting
    *   at this index (see above table).
+   * @return the next entry (object key) in the enumeration.
    * @exception ArrayIndexOutOfBoundsException if extentsArr cannot be
    *   written to in the index range [offset, offset+3].
    */
-  public void nextExtents(float[] extentsArr, int offset);
+  public int nextExtents(float[] extentsArr, int offset);
 
 }
