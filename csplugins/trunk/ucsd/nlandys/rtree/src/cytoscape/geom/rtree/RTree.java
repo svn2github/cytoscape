@@ -1330,12 +1330,12 @@ public final class RTree
    *   and if it cannot be written to in the index range
    *   [offset, offset+3].
    */
-  public final IntEnumerator queryOverlap(final float xMin,
-                                          final float yMin,
-                                          final float xMax,
-                                          final float yMax,
-                                          final float[] extentsArr,
-                                          final int offset)
+  public final RTreeEntryEnumerator queryOverlap(final float xMin,
+                                                 final float yMin,
+                                                 final float xMax,
+                                                 final float yMax,
+                                                 final float[] extentsArr,
+                                                 final int offset)
   {
     if (xMin > xMax)
       throw new IllegalArgumentException("xMin > xMax");
@@ -1466,7 +1466,7 @@ public final class RTree
       children = new Node[maxBranches]; }
   }
 
-  private final static class OverlapEnumerator implements IntEnumerator
+  private final static class OverlapEnumerator implements RTreeEntryEnumerator
   {
     private int count;
     private final ObjStack nodeStack;
@@ -1481,14 +1481,21 @@ public final class RTree
       this.stackStack = stackStack;
       computeNextLeafNode(); }
     public final int numRemaining() { return count; }
-    public final void nextMBR(float[] mbr) {
+    public final int nextExtents(final float[] extentsArr, final int offset) {
+      final Node leaf = currentLeafNode;
       final int inx;
-      if (currentStack == null) inx = currentInx + 1;
-      else inx = currentStack.peek();
-      mbr[0] = currentLeafNode.xMins[inx];
-      mbr[1] = currentLeafNode.yMins[inx];
-      mbr[2] = currentLeafNode.xMaxs[inx];
-      mbr[3] = currentLeafNode.yMaxs[inx]; }
+      if (currentStack == null) {
+        inx = currentInx++;
+        if (currentInx == currentLeafNode.entryCount) computeNextLeafNode(); }
+      else {
+        inx = currentStack.pop();
+        if (currentStack.size() == 0) computeNextLeafNode(); }
+      count--;
+      extentsArr[offset] = leaf.xMins[inx];
+      extentsArr[offset + 1] = leaf.yMins[inx];
+      extentsArr[offset + 2] = leaf.xMaxs[inx];
+      extentsArr[offset + 3] = leaf.yMaxs[inx];
+      return leaf.objKeys[inx]; }
     public final int nextInt() {
       int returnThis = -1;
       if (currentStack == null) {
