@@ -1,8 +1,8 @@
 package cytoscape.render.test;
 
 import cytoscape.geom.rtree.RTree;
+import cytoscape.geom.rtree.RTreeEntryEnumerator;
 import cytoscape.render.immed.GraphGraphics;
-import cytoscape.util.intr.IntEnumerator;
 
 import java.awt.Color;
 import java.awt.EventQueue;
@@ -25,7 +25,6 @@ public final class TestNodeRendering
   public final static void main(String[] args) throws Exception
   {
     final RTree tree;
-    final float[] extents;
     final byte shape;
     final float borderWidth;
     final Color[] colors;
@@ -34,7 +33,6 @@ public final class TestNodeRendering
     {
       int N = Integer.parseInt(args[0]);
       tree = new RTree();
-      extents = new float[N * 4]; // xMin1, yMin1, xMax1, yMax1, xMin2, ....
       double sqrtN = Math.sqrt((double) N);
       if (args.length > 1) {
         shape = Byte.parseByte(args[1]);
@@ -60,24 +58,14 @@ public final class TestNodeRendering
         double height =
           (((double) nonnegative) / ((double) 0x7fffffff)) / sqrtN;
         if (shape >= 0) height = Math.max(height, 6.1d * borderWidth);
-        extents[inx * 4] = (float) (centerX - (width / 2.0d));
-        extents[(inx * 4) + 1] = (float) (centerY - (height / 2.0d));
-        extents[(inx * 4) + 2] = (float) (centerX + (width / 2.0d));
-        extents[(inx * 4) + 3] = (float) (centerY + (height / 2.0d));
-        if (extents[inx * 4] == extents[(inx * 4) + 2])
-          extents[(inx * 4) + 2] =
-            (float) (1.0d / sqrtN + extents[inx * 4]);
-        if (extents[(inx * 4) + 1] == extents[(inx * 4) + 3])
-          extents[(inx * 4) + 3] =
-            (float) (1.0d / sqrtN + extents[(inx * 4) + 1]);
-        tree.insert(inx, extents[inx * 4], extents[(inx * 4) + 1],
-                    extents[(inx * 4) + 2], extents[(inx * 4) + 3]);
+        float xMin = (float) (centerX - (width / 2.0d));
+        float yMin = (float) (centerY - (height / 2.0d));
+        float xMax = (float) (centerX + (width / 2.0d));
+        float yMax = (float) (centerY + (height / 2.0d));
+        if (xMin == xMax) xMax = (float) (1.0d / sqrtN + xMin);
+        if (yMin == yMax) yMax = (float) (1.0d / sqrtN + yMin);
+        tree.insert(inx, xMin, yMin, xMax, yMax);
         inx++; }
-//       for (inx = 0; inx < N; inx++) {
-//         // Re-insert every entry into tree for performance gain.
-//         tree.delete(inx);
-//         tree.insert(inx, extents[inx * 4], extents[(inx * 4) + 1],
-//                     extents[(inx * 4) + 2], extents[(inx * 4) + 3]); }
 
       colors = new Color[256];
       for (int i = 0; i < colors.length; i++) {
@@ -86,8 +74,7 @@ public final class TestNodeRendering
 
     EventQueue.invokeAndWait(new Runnable() {
         public void run() {
-          Frame f = new TestNodeRendering(tree, extents, shape, borderWidth,
-                                          colors);
+          Frame f = new TestNodeRendering(tree, shape, borderWidth, colors);
           f.show();
           f.addWindowListener(new WindowAdapter() {
               public void windowClosing(WindowEvent e) {
@@ -95,7 +82,6 @@ public final class TestNodeRendering
   }
 
   private final RTree m_tree;
-  private final float[] m_extents;
   private final byte m_shape; // -1 if low detail.
   private final float m_borderWidth;
   private final Color[] m_colors;
@@ -105,6 +91,7 @@ public final class TestNodeRendering
   private final GraphGraphics m_grafx;
   private final Color m_bgColor = Color.white;
   private final Color m_borderColor = Color.black;
+  private final float[] m_extents = new float[4];
   private double m_currXCenter = 0.5d;
   private double m_currYCenter = 0.5d;
   private double m_currScale = 1000.0d;
@@ -112,12 +99,11 @@ public final class TestNodeRendering
   private int m_lastXMousePos = 0;
   private int m_lastYMousePos = 0;
 
-  public TestNodeRendering(RTree tree, float[] extents,
-                           byte shape, float borderWidth, Color[] colors)
+  public TestNodeRendering(RTree tree, byte shape,
+                           float borderWidth, Color[] colors)
   {
     super();
     m_tree = tree;
-    m_extents = extents;
     m_shape = shape;
     m_borderWidth = borderWidth;
     m_colors = colors;
@@ -147,22 +133,21 @@ public final class TestNodeRendering
   private final void updateNodeImage()
   {
     m_grafx.clear(m_currXCenter, m_currYCenter, m_currScale);
-    final IntEnumerator iter = m_tree.queryOverlap
+    final RTreeEntryEnumerator iter = m_tree.queryOverlap
       ((float) (m_currXCenter - ((double) (m_imgWidth / 2)) / m_currScale),
        (float) (m_currYCenter - ((double) (m_imgHeight / 2)) / m_currScale),
        (float) (m_currXCenter + ((double) (m_imgWidth / 2)) / m_currScale),
        (float) (m_currYCenter + ((double) (m_imgHeight / 2)) / m_currScale),
        null, 0);
     while (iter.numRemaining() > 0) {
-      final int inx = iter.nextInt();
-      final int inx_x4 = inx * 4;
+      final int inx = iter.nextExtents(m_extents, 0);
       if (m_shape < 0) {
-        m_grafx.drawNodeLow(m_extents[inx_x4], m_extents[inx_x4 + 1],
-                            m_extents[inx_x4 + 2], m_extents[inx_x4 + 3],
+        m_grafx.drawNodeLow(m_extents[0], m_extents[1],
+                            m_extents[2], m_extents[3],
                             m_colors[inx % 256]); }
       else {
-        m_grafx.drawNodeFull(m_shape, m_extents[inx_x4], m_extents[inx_x4 + 1],
-                             m_extents[inx_x4 + 2], m_extents[inx_x4 + 3],
+        m_grafx.drawNodeFull(m_shape, m_extents[0], m_extents[1],
+                             m_extents[2], m_extents[3],
                              m_colors[inx % 256],
                              m_borderWidth, m_borderColor); } }
   }
