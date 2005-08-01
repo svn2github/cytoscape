@@ -17,6 +17,10 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
 import java.util.HashMap;
 
+
+// BIG TO DO: CHANGE ALL TESTS FOR THE NEGATIVE CASE TO BE A TEST FOR
+// THE NEGATION OF POSITIVE CASE IN ERROR CHECKING.
+
 /**
  * This is functional programming at it's finest [sarcasm].
  * The purpose of this class is to make the proper calls on a Graphics2D
@@ -563,7 +567,10 @@ public final class GraphGraphics
    * constraint is that borderWidth may not exceed
    * the minimum of the node width and node height divided by six.  In
    * addition, for custom node shapes, this requirement may be more
-   * constrained, depending on the kinks in the custom node shape.
+   * constrained, depending on the kinks in the custom node shape.<p>
+   * There is a constraint that only applies to SHAPE_ROUNDED_RECTANGLE
+   * which imposes that the maximum of the width and height
+   * cannot exceed twice the minimum of the width and height of the node.
    * @param borderWidth the border width, in node coordinate space; if
    *   this value is zero, the rendering engine skips over the process of
    *   rendering the border, which gives a significant performance boost.
@@ -573,6 +580,8 @@ public final class GraphGraphics
    *   yMin is not less than yMax, or if borderWidth is negative or is greater
    *   than Math.min(xMax - xMin, yMax - yMin) / 6 (for custom node shapes
    *   borderWidth may be even more limited, depending on the specific shape),
+   *   if shapeType is SHAPE_ROUNDED_RECTANGLE and the condition
+   *   max(width, height) <= 2 * min(width, height) does not hold,
    *   or if shapeType is neither one of the SHAPE_* constants nor a
    *   previously defined custom node shape.
    */
@@ -595,7 +604,14 @@ public final class GraphGraphics
                                         ((double) yMax) - yMin))
         throw new IllegalArgumentException
           ("borderWidth is greater than the minimum of node width and node " +
-           "height divided by six"); }
+           "height divided by six");
+      if (shapeType == SHAPE_ROUNDED_RECTANGLE) {
+        final double width = ((double) xMax) - xMin;
+        final double height = ((double) yMax) - yMin;
+        if (!(Math.max(width, height) <= 2.0d * Math.min(width, height)))
+          throw new IllegalArgumentException
+            ("rounded rectangle does not meet constraint " +
+             "max(width, height) <= 2 * min(width, height)"); } }
     final Shape shape = getShape(shapeType, xMin, yMin, xMax, yMax);
     if (borderWidth == 0.0f) m_g2d.setColor(fillColor);
     else m_g2d.setColor(borderColor);
