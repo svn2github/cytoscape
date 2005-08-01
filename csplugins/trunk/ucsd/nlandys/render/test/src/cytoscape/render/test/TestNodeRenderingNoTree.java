@@ -55,6 +55,9 @@ public final class TestNodeRenderingNoTree
         double height =
           (((double) nonnegative) / ((double) 0x7fffffff)) / sqrtN;
         if (shape >= 0) height = Math.max(height, 6.1d * borderWidth);
+        if (shape == GraphGraphics.SHAPE_ROUNDED_RECTANGLE &&
+            !(Math.max(width, height) <= 2.0d * Math.min(width, height)))
+          continue; // Very inefficient.  x2.
         extents[inx * 4] = (float) (centerX - (width / 2.0d));
         extents[(inx * 4) + 1] = (float) (centerY - (height / 2.0d));
         extents[(inx * 4) + 2] = (float) (centerX + (width / 2.0d));

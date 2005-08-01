@@ -58,6 +58,9 @@ public final class TestNodeRendering
         double height =
           (((double) nonnegative) / ((double) 0x7fffffff)) / sqrtN;
         if (shape >= 0) height = Math.max(height, 6.1d * borderWidth);
+        if (shape == GraphGraphics.SHAPE_ROUNDED_RECTANGLE &&
+            !(Math.max(width, height) <= 2.0d * Math.min(width, height)))
+          continue; // Very inefficient.  x2.
         float xMin = (float) (centerX - (width / 2.0d));
         float yMin = (float) (centerY - (height / 2.0d));
         float xMax = (float) (centerX + (width / 2.0d));
