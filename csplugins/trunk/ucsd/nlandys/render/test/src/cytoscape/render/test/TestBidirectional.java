@@ -148,10 +148,10 @@ public final class TestBidirectional extends Frame implements Runnable
     float edgeThickness = 2.0f;
     float dashLength = 0.0f;
     if (m_grafx.computeEdgeIntersection
-        (GraphGraphics.SHAPE_ELLIPSE, xMin1, yMin1, xMax1, yMax1, 2.0f,
+        (GraphGraphics.SHAPE_ELLIPSE, xMin1, yMin1, xMax1, yMax1, 4.0f,
          xCenter2, yCenter2, m_xsect1Coords) &&
         m_grafx.computeEdgeIntersection
-        (GraphGraphics.SHAPE_VEE, xMin2, yMin2, xMax2, yMax2, 2.0f,
+        (GraphGraphics.SHAPE_VEE, xMin2, yMin2, xMax2, yMax2, 4.0f,
          xCenter1, yCenter1, m_xsect2Coords) &&
         // If dot product of original line and new line is greater than zero,
         // which means that the line orientation has not flipped or
