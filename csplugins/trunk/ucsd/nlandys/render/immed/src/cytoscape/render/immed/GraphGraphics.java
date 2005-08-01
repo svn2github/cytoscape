@@ -45,8 +45,9 @@ public final class GraphGraphics
   public static final byte SHAPE_HEXAGON = 3;
   public static final byte SHAPE_OCTAGON = 4;
   public static final byte SHAPE_PARALLELOGRAM = 5;
-  public static final byte SHAPE_TRIANGLE = 6;
-  public static final byte SHAPE_VEE = 7;
+  public static final byte SHAPE_ROUNDED_RECTANGLE = 6;
+  public static final byte SHAPE_TRIANGLE = 7;
+  public static final byte SHAPE_VEE = 8;
 
   public static final byte ARROW_NONE = -1;
   public static final byte ARROW_DISC = -2;
@@ -55,6 +56,9 @@ public final class GraphGraphics
   public static final byte ARROW_TEE = -5;
   public static final byte ARROW_BIDIRECTIONAL = -6;
   public static final byte ARROW_MONO = -7;
+
+  // A constant for Bezier curves on rounded rectangle.
+  private static final double s_a = 4.0d * (Math.sqrt(2.0d) - 1.0d) / 3.0d;
 
   /**
    * The image that was passed into the constructor.
@@ -235,7 +239,7 @@ public final class GraphGraphics
 
   /*
    * This method has the side effect of setting m_ellp2d or m_path2d;
-   * if m_path2d is set (every case but the ellipse),
+   * if m_path2d is set (every case but the ellipse and rounded rectangle),
    * then m_polyCoords and m_polyNumPoints are also set.
    */
   private final Shape getShape(final byte shapeType,
@@ -346,6 +350,34 @@ public final class GraphGraphics
         m_path2d.lineTo((float) m_polyCoords[i++], (float) m_polyCoords[i++]);
       m_path2d.closePath();
       return m_path2d;
+    case SHAPE_ROUNDED_RECTANGLE:
+      // I believe that defining local variables here causes the stack size
+      // to grow for this switch statement regardless of case chosen.
+      final double width = ((double) xMax) - xMin;
+      final double height = ((double) yMax) - yMin;
+      // A condition that must be satisfied is that
+      // max(width, height) <= 2 * min(width, height).
+      final double radius =
+        (width > height) ? (width / 4.0d) : (height / 4.0d);
+      m_path2d.reset();
+      m_path2d.moveTo((float) (-radius + xMax), yMin);
+      m_path2d.curveTo((float) ((s_a - 1.0d) * radius + xMax), yMin,
+                       xMax, (float) ((1.0d - s_a) * radius + yMin),
+                       xMax, (float) (radius + yMin));
+      m_path2d.lineTo(xMax, (float) (-radius + yMax));
+      m_path2d.curveTo(xMax, (float) ((s_a - 1.0d) * radius + yMax),
+                       (float) ((s_a - 1.0d) * radius + xMax), yMax,
+                       (float) (-radius + xMax), yMax);
+      m_path2d.lineTo((float) (radius + xMin), yMax);
+      m_path2d.curveTo((float) ((1.0d - s_a) * radius + xMin), yMax,
+                       xMin, (float) ((s_a - 1.0d) * radius + yMax),
+                       xMin, (float) (-radius + yMax));
+      m_path2d.lineTo(xMin, (float) (radius + yMin));
+      m_path2d.curveTo(xMin, (float) ((1.0d - s_a) * radius + yMin),
+                       (float) ((1.0d - s_a) * radius + xMin), yMin,
+                       (float) (radius + xMin), yMin);
+      m_path2d.closePath();
+      return m_path2d;
     case SHAPE_TRIANGLE:
       m_polyNumPoints = 3;
       m_polyCoords[0] = xMin;
@@ -378,7 +410,7 @@ public final class GraphGraphics
         m_path2d.lineTo((float) m_polyCoords[i++], (float) m_polyCoords[i++]);
       m_path2d.closePath();
       return m_path2d;
-    default:
+    default: // Try a custom node shape or throw an exception.
       final double[] storedPolyCoords =
         (double[]) m_customShapes.get(new Byte(shapeType));
       if (storedPolyCoords == null)
@@ -1182,7 +1214,7 @@ public final class GraphGraphics
          (xsectPtPrimeY + multFactor * (ptPrimeY - xsectPtPrimeY)));
       return true; }
     else {
-      // This next method call has the side effect of settingg m_polyCoords and
+      // This next method call has the side effect of setting m_polyCoords and
       // m_polyNumPoints - this is all that we are going to use.
       getShape(nodeShape, xMin, yMin, xMax, yMax);
       final boolean handleZeroOffsetTheGeneralWay = true;
