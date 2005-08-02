@@ -1253,21 +1253,11 @@ public final class GraphGraphics
          (xsectPtPrimeY + multFactor * (ptPrimeY - xsectPtPrimeY)));
       return true; }
     else {
-      final double trueOffset;
-      if (nodeShape == SHAPE_ROUNDED_RECTANGLE) {
-        final double radius = Math.max(((double) xMax) - xMin,
-                                       ((double) yMax) - yMin) / 4.0d;
-        getShape(SHAPE_RECTANGLE,
-                 (float) (radius + xMin), (float) (radius + yMin),
-                 (float) (-radius + xMax), (float) (-radius + yMax));
-        trueOffset = offset + radius; }
-      else {
-        // This next method call has the side effect of setting m_polyCoords
-        // and m_polyNumPoints - this is all that we are going to use.
-        getShape(nodeShape, xMin, yMin, xMax, yMax);
-        trueOffset = offset; }
+      // This next method call has the side effect of setting m_polyCoords and
+      // m_polyNumPoints - this is all that we are going to use.
+      getShape(nodeShape, xMin, yMin, xMax, yMax);
       final boolean handleZeroOffsetTheGeneralWay = true;
-      if (handleZeroOffsetTheGeneralWay || trueOffset != 0.0f) {
+      if (handleZeroOffsetTheGeneralWay || offset != 0.0f) {
         for (int i = 0; i < m_polyNumPoints; i++) {
           final double x0 = m_polyCoords[i * 2];
           final double y0 = m_polyCoords[i * 2 + 1];
@@ -1278,10 +1268,10 @@ public final class GraphGraphics
           final double len = Math.sqrt(vX * vX + vY * vY);
           final double vNormX = vX / len;
           final double vNormY = vY / len;
-          m_fooPolyCoords[i * 4] = x0 + vNormY * trueOffset;
-          m_fooPolyCoords[i * 4 + 1] = y0 - vNormX * trueOffset;
-          m_fooPolyCoords[i * 4 + 2] = x1 + vNormY * trueOffset;
-          m_fooPolyCoords[i * 4 + 3] = y1 - vNormX * trueOffset; }
+          m_fooPolyCoords[i * 4] = x0 + vNormY * offset;
+          m_fooPolyCoords[i * 4 + 1] = y0 - vNormX * offset;
+          m_fooPolyCoords[i * 4 + 2] = x1 + vNormY * offset;
+          m_fooPolyCoords[i * 4 + 3] = y1 - vNormX * offset; }
         int inx = 0;
         for (int i = 0; i < m_polyNumPoints; i++) {
           if (segmentIntersection // We could perhaps use the sign of a cross
@@ -1317,8 +1307,7 @@ public final class GraphGraphics
               final int numXsections = bad_circleIntersection
                 (m_ptsBuff, ptX, ptY, centerX, centerY,
                  m_polyCoords[2 * ((i + 1) % m_polyNumPoints)],
-                 m_polyCoords[2 * ((i + 1) % m_polyNumPoints) + 1],
-                 trueOffset);
+                 m_polyCoords[2 * ((i + 1) % m_polyNumPoints) + 1], offset);
               if (numXsections < 2) {
                 // The edge segment didn't quite make it to the outer section
                 // of the circle; only the inner part was intersected.  We
