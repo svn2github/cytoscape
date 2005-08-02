@@ -842,7 +842,8 @@ public final class GraphGraphics
    *                                   other arrow are completely ignored;
    *                                   the ratio of edge thickness to arrow
    *                                   size cannot exceed one</td>        </tr>
-   * <table></blockquote>
+   * <table></blockquote><p>
+   * Note that if the edge segment length is zero then nothing gets rendered.
    * @param dashLength a positive value representing the length of dashes
    *   on the edge, or zero to indicate that the edge is solid.
    * @exception IllegalArgumentException if edgeThickness is less than zero,
