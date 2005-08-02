@@ -15,12 +15,17 @@
     <property name = "local.lib" value="lib"/>
     <property name = "jar"  location = "jar"/>
     <property name = "dist" location = "dist"/>
+	<property name = "server.class" value="org.isb.xmlrpc.server.MyWebServer"/>
+	<property name = "server.args" value = "8081"/>
 	
     <!-- classpath for compiling -->
-    <path id = "classpath_compile">
+    <path id = "classpath">
         <fileset dir = "${local.lib}">
           <include name = "**/*.jar"/>
        </fileset>
+    	   <fileset dir = "${jar}">
+    	   	 <include name = "**/*.jar"/>
+    	   </fileset>
     </path>
 
     <!-- prepare target, creates necessary directories for building -->
@@ -42,7 +47,7 @@
               optimize="on"
               includeAntRuntime="false"
               deprecation="on">
-              <classpath refid="classpath_compile"/>
+              <classpath refid="classpath"/>
        </javac>
     </target>
 
@@ -52,7 +57,7 @@
     </target>
 
     <!-- jar target -->
-    <target name="jar" depends="compile" description="Creates a jar that contains only xmlRpc classes">
+    <target name="jar" description="Creates a jar that contains only xmlRpc classes">
      <mkdir dir="${jar}"/>
      <jar jarfile="${jar}/xmlrpc.jar">
        <fileset dir="${build}"/>
@@ -87,17 +92,28 @@
 
 	<!-- Run a class MYCLASS (from the ${build} directory) with the command line 'MY ARGS' via:
 	             ant run -Dclass=${class} -Dargs='MY ARGS' -->
-	        <target name="run" depends="compile">
-	                <echo message="${class} ${args}"/>
-	                <java classname="${class}" fork="no" failonerror="no">
-	                        <classpath refid="classpath"/>
-	                        <arg line="${args}"/>
-	                </java>
-	        </target>
-    <!-- Target to Run JavaDoc -->
+	<target name="runserver" depends="jar">
+	    <echo message="${server.class} ${server.args}"/>
+	    <java classname="${server.class}" fork="no" failonerror="no">
+	         <classpath refid="classpath"/>
+	         <arg line="${server.args}"/>
+	    </java>
+	</target>
+	
+	<target name="runtest">
+		    <echo message="Calling server.listServices..."/>
+		    <java classname="org.apache.xmlrpc.XmlRpcClientLite" fork="no" failonerror="no">
+		         <classpath refid="classpath"/>
+		    	     <arg line = "http://localhost:${server.args}"/>
+		         <arg line="server.listServices"/>
+		    </java>
+	</target>
+    
+	<!-- Target to Run JavaDoc -->
     <target name="doc" description="Runs JavaDoc.">
         <javadoc packagenames="org.*" sourcepath="src" source="1.4" destdir="doc"> 
         <link href = "http://java.sun.com/j2se/1.4.2/docs/api/"/>
         </javadoc>
     </target>
+
 </project>

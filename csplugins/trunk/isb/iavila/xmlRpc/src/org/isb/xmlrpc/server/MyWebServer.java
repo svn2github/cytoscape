@@ -51,8 +51,7 @@ public class MyWebServer {
 	public static void main(String args[]) {
 
 		if (args.length < 1) {
-			System.err
-					.println("Usage: java MyWebServer <port> <optional: xmlrpc.props file>");
+			System.err.println("Usage: java MyWebServer <port> <optional: xmlrpc.props file>");
 			System.exit(-1);
 		}
 
@@ -100,12 +99,12 @@ public class MyWebServer {
 		services = new Hashtable();
 		services.put(SERVICE_NAME, this);
 
-		if (xmlrpc_props == null) {
-			xmlrpc_props = XmlRpcUtils.FindPropsFile(DEFAULT_PROPS_FILE);
-		}
-		if (xmlrpc_props != null) {
-			addHandlersFromProps(xmlrpc_props);
-		}
+		//if (xmlrpc_props == null) {
+		//	xmlrpc_props = XmlRpcUtils.FindPropsFile(DEFAULT_PROPS_FILE);
+		//}
+		//if (xmlrpc_props != null && xmlrpc_props.length() > 0) {
+		//	addHandlersFromProps(xmlrpc_props);
+		//}
 
 		webserver.start();
 	}
@@ -133,7 +132,9 @@ public class MyWebServer {
 	 * hashtable) will be called
 	 */
 	protected void addHandlersFromProps(String xmlrpc_props) throws IOException {
-
+		
+		System.out.println("Adding service handlers from file " + xmlrpc_props);
+			
 		Properties props = MyUtils.readProperties(xmlrpc_props);
 
 		Enumeration propertyNames = props.propertyNames();
@@ -176,10 +177,12 @@ public class MyWebServer {
 			String className = (String) serviceToClass.get(serviceName);
 			Hashtable args = (Hashtable) serviceToArgs.get(serviceName);
 			try{
-				if (args == null)
+				if(args == null){
 					addService(serviceName, className);
-				else	
+				}else{
+					
 					addService(serviceName, className, args);
+				}
 			}catch (Exception ex){
 				ex.printStackTrace();
 			}//catch
@@ -417,6 +420,8 @@ public class MyWebServer {
 	 */
 	public boolean addService(String service, String className,
 			Vector handlerArgs) throws Exception {
+		System.out.println("addService (" + service + ", " + className + 
+				", " + " Vector handlerArgs) is not implementted!!!!");
 		return false; // for now
 	}
 

@@ -28,6 +28,7 @@ public class XmlRpcUtils {
 	public static String FindPropsFile(String file_name) {
 		boolean found;
 		File file = null;
+		
 		// 1. Try the users home
 		try {
 			file = new File(System.getProperty("user.home"), file_name);
