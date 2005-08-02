@@ -355,13 +355,12 @@ public final class GraphGraphics
       m_path2d.closePath();
       return m_path2d;
     case SHAPE_ROUNDED_RECTANGLE:
-      // I believe that defining local variables here causes the stack size
-      // to grow for this switch statement regardless of case chosen.
-      // A condition that must be satisfied is that
+      // A condition that must be satisfied (pertaining to radius) is that
       // max(width, height) <= 2 * min(width, height).
-      final double radius = Math.max(((double) xMax) - xMin,
-                                     ((double) yMax) - yMin) / 4.0d;
-      computeRoundedRectangle(xMin, yMin, xMax, yMax, radius, m_path2d);
+      computeRoundedRectangle(xMin, yMin, xMax, yMax,
+                              Math.max(((double) xMax) - xMin,
+                                       ((double) yMax) - yMin) / 4.0d,
+                              m_path2d);
       return m_path2d;
     case SHAPE_TRIANGLE:
       m_polyNumPoints = 3;
@@ -641,14 +640,11 @@ public final class GraphGraphics
                           innerXMax - innerXMin, innerYMax - innerYMin);
         innerShape = m_ellp2d; }
       else if (shapeType == SHAPE_ROUNDED_RECTANGLE) {
-        final double radius =
-          Math.max(((double) xMax) - xMin,
-                   ((double) yMax) - yMin) / 4.0d - borderWidth;
-        computeRoundedRectangle(((double) xMin) + borderWidth,
-                                ((double) yMin) + borderWidth,
-                                ((double) xMax) - borderWidth,
-                                ((double) yMax) - borderWidth,
-                                radius, m_path2d);
+        computeRoundedRectangle
+          (((double) xMin) + borderWidth, ((double) yMin) + borderWidth,
+           ((double) xMax) - borderWidth, ((double) yMax) - borderWidth,
+           Math.max(((double) xMax) - xMin,
+                    ((double) yMax) - yMin) / 4.0d - borderWidth, m_path2d);
         innerShape = m_path2d; }
       else {
         // A general [possibly non-convex] polygon with certain
