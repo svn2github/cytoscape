@@ -357,12 +357,14 @@ public final class GraphGraphics
     case SHAPE_ROUNDED_RECTANGLE:
       // I believe that defining local variables here causes the stack size
       // to grow for this switch statement regardless of case chosen.
-      final double width = ((double) xMax) - xMin;
-      final double height = ((double) yMax) - yMin;
-      // A condition that must be satisfied is that
-      // max(width, height) <= 2 * min(width, height).
-      final double radius =
-        (width > height) ? (width / 4.0d) : (height / 4.0d);
+      final double radius;
+      {
+        final double width = ((double) xMax) - xMin;
+        final double height = ((double) yMax) - yMin;
+        // A condition that must be satisfied is that
+        // max(width, height) <= 2 * min(width, height).
+        radius = (width > height) ? (width / 4.0d) : (height / 4.0d);
+      }
       m_path2d.reset();
       m_path2d.moveTo((float) (-radius + xMax), yMin);
       m_path2d.curveTo((float) ((s_a - 1.0d) * radius + xMax), yMin,
