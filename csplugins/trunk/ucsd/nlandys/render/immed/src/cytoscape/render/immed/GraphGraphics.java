@@ -1257,15 +1257,9 @@ public final class GraphGraphics
       if (nodeShape == SHAPE_ROUNDED_RECTANGLE) {
         final double radius = Math.max(((double) xMax) - xMin,
                                        ((double) yMax) - yMin) / 4.0d;
-        m_polyNumPoints = 4;
-        m_polyCoords[0] = radius + xMin;
-        m_polyCoords[1] = radius + yMin;
-        m_polyCoords[2] = -radius + xMax;
-        m_polyCoords[3] = radius + yMin;
-        m_polyCoords[4] = -radius + xMax;
-        m_polyCoords[5] = -radius + yMax;
-        m_polyCoords[6] = radius + xMin;
-        m_polyCoords[7] = -radius + yMax;
+        getShape(SHAPE_RECTANGLE,
+                 (float) (radius + xMin), (float) (radius + yMin),
+                 (float) (-radius + xMax), (float) (-radius + yMax));
         trueOffset = offset + radius; }
       else {
         // This next method call has the side effect of setting m_polyCoords
