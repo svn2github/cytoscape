@@ -139,9 +139,9 @@ public final class RTree
                            final float xMax, final float yMax)
   {
     if (objKey < 0) throw new IllegalArgumentException("objKey is negative");
-    if (xMin > xMax)
+    if (!(xMin <= xMax))
       throw new IllegalArgumentException("xMin > xMax");
-    if (yMin > yMax)
+    if (!(yMin <= yMax))
       throw new IllegalArgumentException("yMin > yMax");
     if (m_entryMap.get(objKey) != null) { // Hashtable lookups are cached.
       if (m_entryMap.get(objKey) != m_deletedEntry)
