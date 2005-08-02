@@ -132,7 +132,8 @@ public final class RTree
    * @exception IllegalStateException if objKey is already used for an
    *   existing entry in this R-tree.
    * @exception IllegalArgumentException if objKey is negative,
-   *   if xMin is greater than xMax, or if yMin is greater than yMax.
+   *   if xMin is not less than or equal to xMax, or
+   *   if yMin is not less than or equal to yMax.
    */
   public final void insert(final int objKey,
                            final float xMin, final float yMin,
@@ -140,9 +141,9 @@ public final class RTree
   {
     if (objKey < 0) throw new IllegalArgumentException("objKey is negative");
     if (!(xMin <= xMax))
-      throw new IllegalArgumentException("xMin > xMax");
+      throw new IllegalArgumentException("xMin <= xMax not true");
     if (!(yMin <= yMax))
-      throw new IllegalArgumentException("yMin > yMax");
+      throw new IllegalArgumentException("yMin <= yMax not true");
     if (m_entryMap.get(objKey) != null) { // Hashtable lookups are cached.
       if (m_entryMap.get(objKey) != m_deletedEntry)
         throw new IllegalStateException
@@ -1324,8 +1325,8 @@ public final class RTree
    *   is ignored.
    * @return a non-null enumeration of all [distinct] R-tree entries
    *   (objKeys) whose extents intersect the specified rectangular query area.
-   * @exception IllegalArgumentException if xMin is greater than xMax or if
-   *   yMin is greater than yMax.
+   * @exception IllegalArgumentException if xMin is not less than or equal to
+   *   xMax or if yMin is not less than or equal to yMax.
    * @exception ArrayIndexOutOfBoundsException if extentsArr is not null
    *   and if it cannot be written to in the index range
    *   [offset, offset+3].
@@ -1337,10 +1338,10 @@ public final class RTree
                                                  final float[] extentsArr,
                                                  final int offset)
   {
-    if (xMin > xMax)
-      throw new IllegalArgumentException("xMin > xMax");
-    if (yMin > yMax)
-      throw new IllegalArgumentException("yMin > yMax");
+    if (!(xMin <= xMax))
+      throw new IllegalArgumentException("xMin <= xMax not true");
+    if (!(yMin <= yMax))
+      throw new IllegalArgumentException("yMin <= yMax not true");
     if (extentsArr != null) {
       extentsArr[offset] = Float.POSITIVE_INFINITY;
       extentsArr[offset + 1] = Float.POSITIVE_INFINITY;
