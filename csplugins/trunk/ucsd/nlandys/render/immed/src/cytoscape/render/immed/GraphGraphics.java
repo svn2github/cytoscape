@@ -1178,12 +1178,12 @@ public final class GraphGraphics
                                       m_dash, 0.0f));
   }
 
-  public final boolean computeEdgeIntersection(final byte nodeShape,
-                                               final float xMin,
-                                               final float yMin,
-                                               final float xMax,
-                                               final float yMax,
-                                               final float offset,
+  public final boolean computeEdgeIntersection(byte nodeShape,
+                                               float xMin,
+                                               float yMin,
+                                               float xMax,
+                                               float yMax,
+                                               float offset,
                                                final float ptX,
                                                final float ptY,
                                                final float[] returnVal)
@@ -1253,6 +1253,15 @@ public final class GraphGraphics
          (xsectPtPrimeY + multFactor * (ptPrimeY - xsectPtPrimeY)));
       return true; }
     else {
+      if (nodeShape == SHAPE_ROUNDED_RECTANGLE) {
+        nodeShape = SHAPE_RECTANGLE;
+        final double radius = Math.max(((double) xMax) - xMin,
+                                       ((double) yMax) - yMin) / 4.0d;
+        xMin = (float) (radius + xMin);
+        yMin = (float) (radius + yMin);
+        xMax = (float) (-radius + xMax);
+        yMax = (float) (-radius + yMax);
+        offset = (float) (radius + offset); }
       // This next method call has the side effect of setting m_polyCoords and
       // m_polyNumPoints - this is all that we are going to use.
       getShape(nodeShape, xMin, yMin, xMax, yMax);
