@@ -49,6 +49,7 @@ public final class GraphGraphics
   public static final byte SHAPE_ROUNDED_RECTANGLE = 6;
   public static final byte SHAPE_TRIANGLE = 7;
   public static final byte SHAPE_VEE = 8;
+  private static final byte s_last_shape = SHAPE_VEE;
 
   public static final byte ARROW_NONE = -1;
   public static final byte ARROW_DISC = -2;
@@ -129,7 +130,7 @@ public final class GraphGraphics
     m_currXform = new AffineTransform();
     m_xformUtil = new AffineTransform();
     m_customShapes = new HashMap();
-    m_nextCustomShapeType = 8;
+    m_nextCustomShapeType = s_last_shape + 1;
     clear(0.0d, 0.0d, 1.0d);
   }
 
