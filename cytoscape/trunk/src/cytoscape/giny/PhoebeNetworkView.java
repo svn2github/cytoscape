@@ -65,6 +65,10 @@ public class PhoebeNetworkView
     super( (GraphPerspective)network  );
     this.title = title;
     initialize();
+
+    getComponent().setBounds(0, 0, 500, 500);
+    getCanvas().getLayer().setBounds(0, 0, 500, 500);
+
   }
 
   protected void initialize () {
