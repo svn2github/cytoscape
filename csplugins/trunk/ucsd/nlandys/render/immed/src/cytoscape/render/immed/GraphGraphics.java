@@ -18,9 +18,6 @@ import java.awt.geom.Line2D;
 import java.util.HashMap;
 
 
-// BIG TO DO: CHANGE ALL TESTS FOR THE NEGATIVE CASE TO BE A TEST FOR
-// THE NEGATION OF POSITIVE CASE IN ERROR CHECKING.
-
 /**
  * This is functional programming at it's finest [sarcasm].
  * The purpose of this class is to make the proper calls on a Graphics2D
@@ -213,8 +210,10 @@ public final class GraphGraphics
       if (!EventQueue.isDispatchThread())
         throw new IllegalStateException
           ("calling thread is not AWT event dispatcher");
-      if (xMin >= xMax) throw new IllegalArgumentException("xMin >= xMax");
-      if (yMin >= yMax) throw new IllegalArgumentException("yMin >= yMax"); }
+      if (!(xMin < xMax)) throw new IllegalArgumentException
+                            ("xMin not less than xMax");
+      if (!(yMin < yMax)) throw new IllegalArgumentException
+                            ("yMin not less than yMax"); }
     return getShape(shapeType, xMin, yMin, xMax, yMax).contains(xQuery,
                                                                 yQuery);
   }
@@ -536,7 +535,7 @@ public final class GraphGraphics
             ("either a line segment has distance [too close to] zero or " +
              "two consecutive line segments are [too close to] parallel"); }
         final double distCenterFromP0P1 = (x0 * y1 - x1 * y0) / distP0P1;
-        if ((float) distCenterFromP0P1 <= 0.0f) {
+        if (!((float) distCenterFromP0P1 > 0.0f)) {
           throw new IllegalArgumentException
             ("polygon is going clockwise or is not star-shaped with " +
              "respect to center"); }
@@ -596,14 +595,17 @@ public final class GraphGraphics
       if (!EventQueue.isDispatchThread())
         throw new IllegalStateException
           ("calling thread is not AWT event dispatcher");
-      if (xMin >= xMax) throw new IllegalArgumentException("xMin >= xMax");
-      if (yMin >= yMax) throw new IllegalArgumentException("yMin >= yMax");
-      if (borderWidth < 0.0f)
-        throw new IllegalArgumentException("borderWidth < 0");
-      if (6.0d * borderWidth > Math.min(((double) xMax) - xMin,
-                                        ((double) yMax) - yMin))
+      if (!(xMin < xMax)) throw new IllegalArgumentException
+                            ("xMin not less than xMax");
+      if (!(yMin < yMax)) throw new IllegalArgumentException
+                            ("yMin not less than yMax");
+      if (!(borderWidth >= 0.0f))
         throw new IllegalArgumentException
-          ("borderWidth is greater than the minimum of node width and node " +
+          ("borderWidth not zero or positive");
+      if (!(6.0d * borderWidth <= Math.min(((double) xMax) - xMin,
+                                           ((double) yMax) - yMin)))
+        throw new IllegalArgumentException
+          ("borderWidth is not less than the minimum of node width and node " +
            "height divided by six");
       if (shapeType == SHAPE_ROUNDED_RECTANGLE) {
         final double width = ((double) xMax) - xMin;
@@ -727,8 +729,10 @@ public final class GraphGraphics
       if (!EventQueue.isDispatchThread())
         throw new IllegalStateException
           ("calling thread is not AWT event dispatcher");
-      if (xMin >= xMax) throw new IllegalArgumentException("xMin >= xMax");
-      if (yMin >= yMax) throw new IllegalArgumentException("yMin >= yMax"); }
+      if (!(xMin < xMax)) throw new IllegalArgumentException
+                            ("xMin not less than xMax");
+      if (!(yMin < yMax)) throw new IllegalArgumentException
+                            ("yMin not less than yMax"); }
     if (m_gMinimal == null) m_gMinimal = image.getGraphics();
     // I'm transforming points manually because the resulting underlying
     // graphics pipeline used is much faster.
@@ -860,35 +864,35 @@ public final class GraphGraphics
       if (!EventQueue.isDispatchThread())
         throw new IllegalStateException
           ("calling thread is not AWT event dispatcher");
-      if (edgeThickness < 0.0f)
+      if (!(edgeThickness >= 0.0f))
         throw new IllegalArgumentException("edgeThickness < 0");
-      if (dashLength < 0.0f)
+      if (!(dashLength >= 0.0f))
         throw new IllegalArgumentException("dashLength < 0");
       switch (arrowType0) {
       case ARROW_NONE:
         break;
       case ARROW_DELTA:
-        if (Math.sqrt(17.0d) * edgeThickness > 4.0d * arrow0Size)
+        if (!(Math.sqrt(17.0d) * edgeThickness <= 4.0d * arrow0Size))
           throw new IllegalArgumentException
             ("for ARROW_DELTA e/s is greater than 4/sqrt(17)");
         break;
       case ARROW_DIAMOND:
-        if (Math.sqrt(5.0d) * edgeThickness > 2.0d * arrow0Size)
+        if (!(Math.sqrt(5.0d) * edgeThickness <= 2.0d * arrow0Size))
           throw new IllegalArgumentException
             ("for ARROW_DIAMOND e/s is greater than 2/sqrt(5)");
         break;
       case ARROW_DISC:
-        if (edgeThickness > arrow0Size)
+        if (!(edgeThickness <= arrow0Size))
           throw new IllegalArgumentException
             ("for ARROW_DISC e/s is greater than 1");
         break;
       case ARROW_TEE:
-        if (((double) edgeThickness) > 0.5d * arrow0Size)
+        if (!(((double) edgeThickness) <= 0.5d * arrow0Size))
           throw new IllegalArgumentException
             ("for ARROW_TEE e/s is greater than 1/2");
         break;
       case ARROW_BIDIRECTIONAL:
-        if (((double) edgeThickness) > 0.5d * arrow0Size)
+        if (!(((double) edgeThickness) <= 0.5d * arrow0Size))
           throw new IllegalArgumentException
             ("for ARROW_BIDIRECTIONAL e/s is greater than 1/2");
         if (arrowType1 != ARROW_BIDIRECTIONAL)
@@ -896,7 +900,7 @@ public final class GraphGraphics
             ("either both or neither arrows must be ARROW_BIDIRECTIONAL");
         break;
       case ARROW_MONO:
-        if (edgeThickness > arrow0Size)
+        if (!(edgeThickness <= arrow0Size))
           throw new IllegalArgumentException
             ("for ARROW_MONO e/s is greater than 1");
         if (arrowType1 != ARROW_MONO)
@@ -909,27 +913,27 @@ public final class GraphGraphics
       case ARROW_NONE:
         break;
       case ARROW_DELTA:
-        if (Math.sqrt(17.0d) * edgeThickness > 4.0d * arrow1Size)
+        if (!(Math.sqrt(17.0d) * edgeThickness <= 4.0d * arrow1Size))
           throw new IllegalArgumentException
             ("for ARROW_DELTA e/s is greater than 4/sqrt(17)");
         break;
       case ARROW_DIAMOND:
-        if (Math.sqrt(5.0d) * edgeThickness > 2.0d * arrow1Size)
+        if (!(Math.sqrt(5.0d) * edgeThickness <= 2.0d * arrow1Size))
           throw new IllegalArgumentException
             ("for ARROW_DIAMOND e/s is greater than 2/sqrt(5)");
         break;
       case ARROW_DISC:
-        if (edgeThickness > arrow1Size)
+        if (!(edgeThickness <= arrow1Size))
           throw new IllegalArgumentException
             ("for ARROW_DISC e/s is greater than 1");
         break;
       case ARROW_TEE:
-        if (((double) edgeThickness) > 0.5d * arrow1Size)
+        if (!(((double) edgeThickness) <= 0.5d * arrow1Size))
           throw new IllegalArgumentException
             ("for ARROW_TEE e/s is greater than 1/2");
         break;
       case ARROW_BIDIRECTIONAL:
-        if (((double) edgeThickness) > 0.5d * arrow1Size)
+        if (!(((double) edgeThickness) <= 0.5d * arrow1Size))
           throw new IllegalArgumentException
             ("for ARROW_BIDIRECTIONAL e/s is greater than 1/2");
         if (arrowType0 != ARROW_BIDIRECTIONAL)
@@ -1172,9 +1176,12 @@ public final class GraphGraphics
       if (!EventQueue.isDispatchThread())
         throw new IllegalStateException
           ("calling thread is not AWT event dispatcher");
-      if (xMin >= xMax) throw new IllegalArgumentException("xMin >= xMax");
-      if (yMin >= yMax) throw new IllegalArgumentException("yMin >= yMax");
-      if (offset < 0.0f) throw new IllegalArgumentException("offset < 0"); }
+      if (!(xMin < xMax)) throw new IllegalArgumentException
+                            ("xMin not less than xMax");
+      if (!(yMin < yMax)) throw new IllegalArgumentException
+                            ("yMin not less than yMax");
+      if (!(offset >= 0.0f))
+        throw new IllegalArgumentException("offset < 0"); }
     final double centerX = (((double) xMin) + xMax) / 2.0d;
     final double centerY = (((double) yMin) + yMax) / 2.0d;
     if (nodeShape == SHAPE_ELLIPSE) {
