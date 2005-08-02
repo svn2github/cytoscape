@@ -2,6 +2,8 @@ package org.isb.xmlrpc.handlers.interactions;
 
 import java.lang.*;
 import java.util.*;
+import org.isb.xmlrpc.handlers.*;
+import org.isb.xmlrpc.handlers.db.*;
 
 /**
  * This class assumes:<br>
@@ -24,6 +26,15 @@ public class ProlinksInteractionsSource extends MySQLDBHandler
   }//ProlinksInteractionsSource
   
   // Methods implementing DataSource interface:
+  /**
+   * @return a Vector of Strings that specify types of IDs that this InteractionsDataSource accepts
+   * for example, "ORF","GI", etc.
+   */
+  //TODO: Implement
+  public Vector getIDtypes (){
+	  return new Vector();
+  }//getIDTypes
+  
   /**
    * @return the name of the data source, for example, "KEGG", "Prolinks", etc.
    */

@@ -3,6 +3,11 @@ package org.isb.xmlrpc.server;
 import java.io.IOException;
 import java.util.*;
 import org.apache.xmlrpc.WebServer;
+import org.apache.xmlrpc.SystemHandler;
+import org.apache.xmlrpc.XmlRpc;
+
+import org.isb.xmlrpc.util.*;
+import utils.*;
 
 /**
  * Class <code>MyWebServer</code>, keeps hashes of services (service name to
@@ -52,7 +57,13 @@ public class MyWebServer {
 		}
 
 		try {
-			new MyWebServer(args);
+			if(args.length == 1){
+				// Port number
+				new MyWebServer( Integer.parseInt(args[0]) );
+			}else if(args.length == 2){
+				// Port number and xmlrpc file
+				new MyWebServer( Integer.parseInt(args[0]), args[1] );
+			}
 		} catch (IOException e) {
 			System.err.println("Could not start server: " + e.getMessage());
 		}
@@ -72,7 +83,7 @@ public class MyWebServer {
 	 * @throws IOException
 	 *             if the web-server can't start on the specified port
 	 */
-	public MyWebServer(int port, String xmlrpc_props) throws IOException {
+	public MyWebServer (int port, String xmlrpc_props) throws IOException {
 
 		// XmlRpc.setDebug( true );
 
@@ -100,15 +111,10 @@ public class MyWebServer {
 	}
 
 	/**
-	 * If args.length == 2, calls this(args[0], args[1]), else it calls
-	 * this(args[0], null)
+	 * @param port the port to which this server will be listening
 	 */
-	public MyWebServer(String args[]) throws IOException {
-		if (args.length == 2) {
-			this(Integer.parseInt(args[0]), args[1]);
-		} else {
-			this(Integer.parseInt(args[0], null));
-		}
+	public MyWebServer (int port) throws IOException {
+		this(port, null);
 	}
 
 	/**
@@ -169,10 +175,14 @@ public class MyWebServer {
 			String serviceName = (String) it.next();
 			String className = (String) serviceToClass.get(serviceName);
 			Hashtable args = (Hashtable) serviceToArgs.get(serviceName);
-			if (args == null)
-				addService(serviceName, className);
-			else
-				addService(serviceName, className, args);
+			try{
+				if (args == null)
+					addService(serviceName, className);
+				else	
+					addService(serviceName, className, args);
+			}catch (Exception ex){
+				ex.printStackTrace();
+			}//catch
 		}// while it
 
 	}
@@ -360,11 +370,12 @@ public class MyWebServer {
 				// Hashtable
 				Class[] types = new Class[1];
 				types[0] = args.getClass();
-				java.lang.reflect.Constructor constr = handlerClass
-						.getDeclaredConstructor(args.getClass());
+				java.lang.reflect.Constructor constr = 
+					handlerClass.getDeclaredConstructor(types);
 
 				if (constr != null) {
-					Object handler = constr.newInstance(args);
+					Object [] params = {args}; 
+					Object handler = constr.newInstance(params);
 					return addService(service, handler);
 				} else {
 					System.err

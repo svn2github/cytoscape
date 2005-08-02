@@ -3,8 +3,9 @@ package org.isb.xmlrpc.client;
 import java.util.Properties;
 import java.util.Vector;
 
-import org.isb.xmlrpc.db.server.*;
-import org.isb.xmlrpc.db.handlers.*;
+import org.isb.xmlrpc.server.*;
+import org.isb.xmlrpc.handlers.*;
+import org.isb.xmlrpc.util.*;
 import utils.*;
 
 /**

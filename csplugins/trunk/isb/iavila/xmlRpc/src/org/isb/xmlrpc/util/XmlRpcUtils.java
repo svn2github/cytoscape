@@ -1,8 +1,9 @@
-package org.isb.xmlrpc.utils;
+package org.isb.xmlrpc.util;
 
 import java.util.*;
 import java.io.*;
 import java.lang.reflect.*;
+import org.isb.xmlrpc.server.*;
 
 import org.apache.xmlrpc.*;
 
@@ -26,7 +27,7 @@ public class XmlRpcUtils {
 	 */
 	public static String FindPropsFile(String file_name) {
 		boolean found;
-		File file;
+		File file = null;
 		// 1. Try the users home
 		try {
 			file = new File(System.getProperty("user.home"), file_name);

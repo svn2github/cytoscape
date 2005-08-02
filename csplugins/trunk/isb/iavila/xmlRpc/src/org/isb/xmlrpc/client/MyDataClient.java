@@ -3,7 +3,7 @@ package org.isb.xmlrpc.client;
 import java.util.*;
 import java.io.IOException;
 import org.apache.xmlrpc.*;
-import org.isb.xmlrpc.utils;
+import org.isb.xmlrpc.util.*;
 
 /**
  * Class <code>MyDataClient</code>, wraps an XmlRpcClient which makes requests to the server 

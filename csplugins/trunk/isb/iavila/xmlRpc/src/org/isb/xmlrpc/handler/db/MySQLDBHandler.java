@@ -62,6 +62,13 @@ public class MySQLDBHandler implements DBHandler {
     return loaded;
   
   }//loadDriver
+  
+  /**
+   * 	For now, args are ignored. Calls setURL(db_url).
+   */
+  public void setURL (String db_url, Properties args){
+	  setURL(db_url);
+  }//setURL
 
   /**
    * Sets the url and connects to it
@@ -115,9 +122,16 @@ public class MySQLDBHandler implements DBHandler {
    * @return the status of this DB (CLOSED, OPEN)
    */
   public String getStatus (){
-    if(this.connection == null || this.connection.isClosed()){
-      return DBHandler.CLOSED;
-    }
+	  try {
+		  if(this.connection == null || this.connection.isClosed()){
+			  return DBHandler.CLOSED;
+		  }
+	  }catch (SQLException e){
+		  // Database access error
+		  e.printStackTrace();
+		  //TODO: Have a ACCESS_ERROR return value???
+		  return DBHandler.CLOSED;
+	  }
     return DBHandler.OPEN;
   }//getStatus
   

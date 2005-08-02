@@ -1,9 +1,9 @@
-package org.isb.xmlrpc.db.handlers.interactions;
+package org.isb.xmlrpc.handlers.interactions;
 
 
 import java.lang.*;
 import java.util.*;
-import org.isb.xmlrpc.db.handlers.DataSource;
+import org.isb.xmlrpc.handlers.DataSource;
 
 /**
  * @author <a href="mailto:iavila@systemsbiology.org">Iliana Avila-Campillo</a>
