@@ -101,12 +101,27 @@
 	</target>
 	
 	<target name="runtest">
+		    <echo message="---------- TESTING ----------"/>
 		    <echo message="Calling server.listServices..."/>
 		    <java classname="org.apache.xmlrpc.XmlRpcClientLite" fork="no" failonerror="no">
 		         <classpath refid="classpath"/>
 		    	     <arg line = "http://localhost:${server.args}"/>
 		         <arg line="server.listServices"/>
 		    </java>
+			<echo message="Calling server.listServiceCommands server..."/>
+		    <java classname="org.apache.xmlrpc.XmlRpcClientLite" fork="no" failonerror="no">
+				  <classpath refid="classpath"/>
+				  <arg line = "http://localhost:${server.args}"/>
+				  <arg line="server.listServiceCommands"/>
+			      <arg line = "server"/>
+		    </java>
+		    <echo message="Calling server.shutdown..."/>
+			<java classname="org.apache.xmlrpc.XmlRpcClientLite" fork="no" failonerror="no">
+				 <classpath refid="classpath"/>
+				 <arg line = "http://localhost:${server.args}"/>
+			     <arg line="server.shutdown"/>
+			</java>
+		    <echo message = "---------- Done testing ----------"/>
 	</target>
     
 	<!-- Target to Run JavaDoc -->

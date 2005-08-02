@@ -48,7 +48,7 @@ public class MyWebServer {
 	 * Starts this server on the port given at args[0] and with an optional
 	 * xmlrpc.props file given at args[1]
 	 */
-	public static void main(String args[]) {
+	public static void main (String args[]) {
 
 		if (args.length < 1) {
 			System.err.println("Usage: java MyWebServer <port> <optional: xmlrpc.props file>");
@@ -98,13 +98,13 @@ public class MyWebServer {
 
 		services = new Hashtable();
 		services.put(SERVICE_NAME, this);
-
-		//if (xmlrpc_props == null) {
-		//	xmlrpc_props = XmlRpcUtils.FindPropsFile(DEFAULT_PROPS_FILE);
-		//}
-		//if (xmlrpc_props != null && xmlrpc_props.length() > 0) {
-		//	addHandlersFromProps(xmlrpc_props);
-		//}
+		
+		if (xmlrpc_props == null) {
+			xmlrpc_props = XmlRpcUtils.FindPropsFile(DEFAULT_PROPS_FILE);
+		}
+		if (xmlrpc_props != null && xmlrpc_props.length() > 0) {
+			addHandlersFromProps(xmlrpc_props);
+		}
 
 		webserver.start();
 	}
@@ -136,7 +136,10 @@ public class MyWebServer {
 		System.out.println("Adding service handlers from file " + xmlrpc_props);
 			
 		Properties props = MyUtils.readProperties(xmlrpc_props);
-
+		
+		if(props == null)
+			return;
+		
 		Enumeration propertyNames = props.propertyNames();
 		HashMap serviceToClass = new HashMap();
 		HashMap serviceToArgs = new HashMap();
