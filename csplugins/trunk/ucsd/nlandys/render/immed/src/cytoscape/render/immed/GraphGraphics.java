@@ -640,6 +640,16 @@ public final class GraphGraphics
         m_ellp2d.setFrame(innerXMin, innerYMin,
                           innerXMax - innerXMin, innerYMax - innerYMin);
         innerShape = m_ellp2d; }
+      else if (shapeType == SHAPE_ROUNDED_RECTANGLE) {
+        final double radius =
+          Math.max(((double) xMax) - xMin,
+                   ((double) yMax) - yMin) / 4.0d - borderWidth;
+        computeRoundedRectangle(((double) xMin) + borderWidth,
+                                ((double) yMin) + borderWidth,
+                                ((double) xMax) - borderWidth,
+                                ((double) yMax) - borderWidth,
+                                radius, m_path2d);
+        innerShape = m_path2d; }
       else {
         // A general [possibly non-convex] polygon with certain
         // restrictions: no two consecutive line segments can be parallel,
