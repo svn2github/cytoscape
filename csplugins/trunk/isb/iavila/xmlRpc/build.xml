@@ -85,8 +85,15 @@
 	 <delete dir = "${local.lib}/temp"/>
 	</target>
 
-    <!-- TODO: run target, loads yeast annotations database  -->
-
+	<!-- Run a class MYCLASS (from the ${build} directory) with the command line 'MY ARGS' via:
+	             ant run -Dclass=${class} -Dargs='MY ARGS' -->
+	        <target name="run" depends="compile">
+	                <echo message="${class} ${args}"/>
+	                <java classname="${class}" fork="no" failonerror="no">
+	                        <classpath refid="classpath"/>
+	                        <arg line="${args}"/>
+	                </java>
+	        </target>
     <!-- Target to Run JavaDoc -->
     <target name="doc" description="Runs JavaDoc.">
         <javadoc packagenames="org.*" sourcepath="src" source="1.4" destdir="doc"> 
