@@ -17,7 +17,11 @@ public class ProlinksInteractionsSource extends MySQLDBHandler
 
   public static final String NAME = "Prolinks";
   
-
+  /**
+   * Empty constructor
+   */
+  public ProlinksInteractionsSource (){}
+  
   /**
    * @param mysql_url the URL of the mySQL data base
    */

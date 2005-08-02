@@ -146,11 +146,14 @@ public class MyWebServer {
 		while (propertyNames.hasMoreElements()) {
 
 			String name = (String) propertyNames.nextElement();
+			System.out.println(name);
 
-			if (name.startsWith("handler.")) {
+			if (name.startsWith("handler")) {
 
-				String[] split = name.split(".");
-
+				String [] split = name.split("[.]");
+				
+				System.out.println("split.length = " + split.length);
+				
 				if (split.length == 3) {
 					// this is an argument for the service
 					String serviceName = split[1];
@@ -437,11 +440,11 @@ public class MyWebServer {
 	 * @param handler
 	 *            the handler for service
 	 */
-	public boolean addService(String service, Object handler) throws Exception {
+	public boolean addService (String service, Object handler) throws Exception {
 		Object obj = services.get(service);
 		if (obj == null) {
 			String className = handler.getClass().getName();
-			System.out.print("Registering a " + className
+			System.out.println("Registering a " + className
 					+ " as a handler (service \"" + service + "\")...");
 			if (users == null) {
 				webserver.addHandler(service, handler);
