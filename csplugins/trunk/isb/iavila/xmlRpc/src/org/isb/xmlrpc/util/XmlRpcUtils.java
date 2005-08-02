@@ -26,14 +26,17 @@ public class XmlRpcUtils {
 	 * @return the absolute path of the file, null if not found
 	 */
 	public static String FindPropsFile(String file_name) {
-		boolean found;
+		
+		boolean found = false;
 		File file = null;
 		
 		// 1. Try the users home
 		try {
 			file = new File(System.getProperty("user.home"), file_name);
-			System.out.println(file_name + " found at: " + file);
-			found = true;
+			if(file.exists()){
+				System.out.println(file_name + " found at: " + file);
+				found = true;
+			}
 		} catch (Exception e) {
 			// not found in the current directory
 			found = false;
@@ -43,8 +46,10 @@ public class XmlRpcUtils {
 		if(!found){
 			try {
 				file = new File(System.getProperty("user.dir"), file_name);
-				System.out.println(file_name + " found at: " + file);
-				found = true;
+				if(file.exists()){
+					System.out.println(file_name + " found at: " + file);
+					found = true;
+				}
 			} catch (Exception e) {
 				// not found in the current directory
 				found = false;
