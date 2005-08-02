@@ -361,24 +361,7 @@ public final class GraphGraphics
       // max(width, height) <= 2 * min(width, height).
       final double radius = Math.max(((double) xMax) - xMin,
                                      ((double) yMax) - yMin) / 4.0d;
-      m_path2d.reset();
-      m_path2d.moveTo((float) (-radius + xMax), yMin);
-      m_path2d.curveTo((float) ((s_a - 1.0d) * radius + xMax), yMin,
-                       xMax, (float) ((1.0d - s_a) * radius + yMin),
-                       xMax, (float) (radius + yMin));
-      m_path2d.lineTo(xMax, (float) (-radius + yMax));
-      m_path2d.curveTo(xMax, (float) ((s_a - 1.0d) * radius + yMax),
-                       (float) ((s_a - 1.0d) * radius + xMax), yMax,
-                       (float) (-radius + xMax), yMax);
-      m_path2d.lineTo((float) (radius + xMin), yMax);
-      m_path2d.curveTo((float) ((1.0d - s_a) * radius + xMin), yMax,
-                       xMin, (float) ((s_a - 1.0d) * radius + yMax),
-                       xMin, (float) (-radius + yMax));
-      m_path2d.lineTo(xMin, (float) (radius + yMin));
-      m_path2d.curveTo(xMin, (float) ((1.0d - s_a) * radius + yMin),
-                       (float) ((1.0d - s_a) * radius + xMin), yMin,
-                       (float) (radius + xMin), yMin);
-      m_path2d.closePath();
+      computeRoundedRectangle(xMin, yMin, xMax, yMax, radius, m_path2d);
       return m_path2d;
     case SHAPE_TRIANGLE:
       m_polyNumPoints = 3;
@@ -433,6 +416,33 @@ public final class GraphGraphics
         m_path2d.lineTo((float) m_polyCoords[i++], (float) m_polyCoords[i++]);
       m_path2d.closePath();
       return m_path2d; }
+  }
+
+  private final static void computeRoundedRectangle(final double xMin,
+                                                    final double yMin,
+                                                    final double xMax,
+                                                    final double yMax,
+                                                    final double radius,
+                                                    final GeneralPath path2d)
+  {
+    path2d.reset();
+    path2d.moveTo((float) (xMax - radius), (float) yMin);
+    path2d.curveTo((float) ((s_a - 1.0d) * radius + xMax), (float) yMin,
+                   (float) xMax, (float) ((1.0d - s_a) * radius + yMin),
+                   (float) xMax, (float) (radius + yMin));
+    path2d.lineTo((float) xMax, (float) (yMax - radius));
+    path2d.curveTo((float) xMax, (float) ((s_a - 1.0d) * radius + yMax),
+                   (float) ((s_a - 1.0d) * radius + xMax), (float) yMax,
+                   (float) (xMax - radius), (float) yMax);
+    path2d.lineTo((float) (radius + xMin), (float) yMax);
+    path2d.curveTo((float) ((1.0d - s_a) * radius + xMin), (float) yMax,
+                   (float) xMin, (float) ((s_a - 1.0d) * radius + yMax),
+                   (float) xMin, (float) (yMax - radius));
+    path2d.lineTo((float) xMin, (float) (radius + yMin));
+    path2d.curveTo((float) xMin, (float) ((1.0d - s_a) * radius + yMin),
+                   (float) ((1.0d - s_a) * radius + xMin), (float) yMin,
+                   (float) (radius + xMin), (float) yMin);
+    path2d.closePath();
   }
 
   /**
