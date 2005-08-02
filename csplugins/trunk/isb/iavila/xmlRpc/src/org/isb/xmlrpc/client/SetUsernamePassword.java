@@ -1,4 +1,4 @@
-package org.isb.xmlrpc.db.client;
+package org.isb.xmlrpc.client;
 
 import javax.swing.*;
 import java.awt.*;

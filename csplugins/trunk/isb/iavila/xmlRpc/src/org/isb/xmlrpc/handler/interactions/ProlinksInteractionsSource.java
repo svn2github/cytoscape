@@ -10,8 +10,8 @@ import java.util.*;
  *
  * @author <a href="mailto:iavila@systemsbiology.org">Iliana Avila-Campillo</a>
  */
-public interface ProlinksInteractionsSource extends MySQLDBHandler 
-  implements InteractionsDataSource{
+public class ProlinksInteractionsSource extends MySQLDBHandler 
+	implements InteractionsDataSource{
 
   public static final String NAME = "Prolinks";
   

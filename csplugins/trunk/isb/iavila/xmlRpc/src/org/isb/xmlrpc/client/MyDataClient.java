@@ -1,4 +1,4 @@
-package org.isb.xmlrpc.db.client;
+package org.isb.xmlrpc.client;
 
 import java.util.*;
 import java.io.IOException;

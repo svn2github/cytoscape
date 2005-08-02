@@ -14,7 +14,7 @@ public class MySQLDBHandler implements DBHandler {
   protected String url;
   protected Connection connection;
   protected boolean debug = false;
-  protected static final JDBC_DRIVER = "com.mysql.jdbc.Driver";
+  protected static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
   
   /**
    * Constructor
