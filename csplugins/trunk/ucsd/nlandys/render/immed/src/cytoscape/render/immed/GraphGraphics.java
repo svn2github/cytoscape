@@ -768,6 +768,9 @@ public final class GraphGraphics
       if (!EventQueue.isDispatchThread())
         throw new IllegalStateException
           ("calling thread is not AWT event dispatcher"); }
+    // This following statement has to be consistent with the full edge
+    // rendering logic.
+    if (x0 == x1 && y0 == y1) return;
     if (m_gMinimal == null) m_gMinimal = image.getGraphics();
     // I'm transforming points manually because the resulting underlying
     // graphics pipeline used is much faster.
