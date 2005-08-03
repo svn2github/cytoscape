@@ -1,4 +1,3 @@
-
 package cytoscape.render.immed;
 
 import java.awt.AlphaComposite;
