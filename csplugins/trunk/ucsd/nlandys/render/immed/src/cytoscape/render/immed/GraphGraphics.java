@@ -1322,7 +1322,15 @@ public final class GraphGraphics
               // constraints on allowed polygons.  Therefore, if the circle
               // intersects the edge segment in only one point, then that
               // intersection point is the "outer arc" only if the point
-              // (centerX, centerY) lies inside the circle.
+              // (centerX, centerY) lies inside the circle.  The scary case
+              // is when the center of the node lies on or very close to
+              // the circle; because of floating point calculation
+              // inaccuracies, there could be a discrepancy between the test
+              // for insidedness below and the circle intersection computation.
+              // I will simply hope that this will almost never happen, which
+              // it really won't because all coordinates are specified in
+              // only 32 bits by the user, and 64 bits are used for all
+              // calculations.
               if (numXsections == 2 ||
                   (numXsections == 1 &&
                    trueOffset > Math.sqrt((cX - centerX) * (cX - centerX) +
