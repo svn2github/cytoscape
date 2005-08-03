@@ -1264,8 +1264,9 @@ public final class GraphGraphics
         // and m_polyNumPoints - this is all that we are going to use.
         getShape(nodeShape, xMin, yMin, xMax, yMax);
         trueOffset = offset; }
-      final boolean handleZeroOffsetTheGeneralWay = true;
-      if (handleZeroOffsetTheGeneralWay || trueOffset != 0.0f) {
+      // I'm handling all cases, including when offset is zero, in one
+      // chunk of code.  This is more computations than necessary for the
+      // case where offset is zero.
         for (int i = 0; i < m_polyNumPoints; i++) {
           final double x0 = m_polyCoords[i * 2];
           final double y0 = m_polyCoords[i * 2 + 1];
@@ -1358,7 +1359,7 @@ public final class GraphGraphics
                  centerX, centerY, ptX, ptY)) {
               returnVal[0] = (float) m_ptsBuff[0];
               returnVal[1] = (float) m_ptsBuff[1];
-              return true; } } } }
+              return true; } } }
       return false; }
   }
 
