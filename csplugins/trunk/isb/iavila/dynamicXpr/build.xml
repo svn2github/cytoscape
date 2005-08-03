@@ -67,11 +67,11 @@
 	 <delete dir = "${local.lib}/temp"/>
 	</target>
 
-   <target name = "run" depends="jar" description = "Run">
+   <target name = "run" depends="dist" description = "Run">
       <java classname = "cytoscape.CyMain" classpathref = "classpath"
           fork = "true" maxmemory = "1g">
           <arg line = "--JLD"/>
-          <arg file = "${jar}"/>
+          <arg file = "${dist}"/>
       </java>
     </target>
 </project>
