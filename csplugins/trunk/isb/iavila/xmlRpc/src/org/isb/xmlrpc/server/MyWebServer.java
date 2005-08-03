@@ -2,6 +2,7 @@ package org.isb.xmlrpc.server;
 
 import java.io.IOException;
 import java.util.*;
+import java.lang.reflect.*;
 import org.apache.xmlrpc.WebServer;
 import org.apache.xmlrpc.SystemHandler;
 import org.apache.xmlrpc.XmlRpc;
@@ -14,16 +15,13 @@ import utils.*;
  * handler), users (username to password), and user levels (username to
  * Integers).
  * <p>
- * It also contains a <code>org.apache.xmlrpc.WebServer</code> that knows what
+ * It contains a <code>org.apache.xmlrpc.WebServer</code> that knows what
  * service goes to what handler.
  * 
  * @author <a href="mailto:iavila@systemsbiology.org">Iliana Avila-Campillo</a>
  * @author <a href="mailto:dreiss@systemsbiology.org">David Reiss</a>
  */
 
-// TODO:
-// - if not path given for xmlrpc_props, then see
-// XmlRpcUtils.FindXmlRpcPropsFile?
 public class MyWebServer {
 
 	public static final String SERVICE_NAME = "server";
@@ -35,8 +33,8 @@ public class MyWebServer {
 	 * handler.<service name> = <handler fully described class><br>
 	 * handler.<service name>.<handler argument> = <argument><br>
 	 * For example:<br>
-	 * handler.interaction = org.isb.xmlrpc.handlers.InteractionHandler<br>
-	 * handler.interaction.url=jdbc:mysql:mysql://biounder.kaist.ac.kr<br>
+	 * handler.interactions = org.isb.xmlrpc.handlers.InteractionHandler<br>
+	 * handler.interactions.url=jdbc:mysql:mysql://biounder.kaist.ac.kr<br>
 	 */
 	public static final String DEFAULT_PROPS_FILE = "xmlrpc.props";
 
@@ -48,20 +46,21 @@ public class MyWebServer {
 	 * Starts this server on the port given at args[0] and with an optional
 	 * xmlrpc.props file given at args[1]
 	 */
-	public static void main (String args[]) {
+	public static void main(String args[]) {
 
 		if (args.length < 1) {
-			System.err.println("Usage: java MyWebServer <port> <optional: xmlrpc.props file>");
+			System.err
+					.println("Usage: java MyWebServer <port> <optional: xmlrpc.props file>");
 			System.exit(-1);
 		}
 
 		try {
-			if(args.length == 1){
+			if (args.length == 1) {
 				// Port number
-				new MyWebServer( Integer.parseInt(args[0]) );
-			}else if(args.length == 2){
+				new MyWebServer(Integer.parseInt(args[0]));
+			} else if (args.length == 2) {
 				// Port number and xmlrpc file
-				new MyWebServer( Integer.parseInt(args[0]), args[1] );
+				new MyWebServer(Integer.parseInt(args[0]), args[1]);
 			}
 		} catch (IOException e) {
 			System.err.println("Could not start server: " + e.getMessage());
@@ -82,7 +81,7 @@ public class MyWebServer {
 	 * @throws IOException
 	 *             if the web-server can't start on the specified port
 	 */
-	public MyWebServer (int port, String xmlrpc_props) throws IOException {
+	public MyWebServer(int port, String xmlrpc_props) throws IOException {
 
 		// XmlRpc.setDebug( true );
 
@@ -98,7 +97,7 @@ public class MyWebServer {
 
 		services = new Hashtable();
 		services.put(SERVICE_NAME, this);
-		
+
 		if (xmlrpc_props == null) {
 			xmlrpc_props = XmlRpcUtils.FindPropsFile(DEFAULT_PROPS_FILE);
 		}
@@ -110,9 +109,10 @@ public class MyWebServer {
 	}
 
 	/**
-	 * @param port the port to which this server will be listening
+	 * @param port
+	 *            the port to which this server will be listening
 	 */
-	public MyWebServer (int port) throws IOException {
+	public MyWebServer(int port) throws IOException {
 		this(port, null);
 	}
 
@@ -125,21 +125,21 @@ public class MyWebServer {
 	 * handler.<service name> = <handler fully described class><br>
 	 * handler.<service name>.<handler argument> = <argument><br>
 	 * For example:<br>
-	 * handler.interaction = org.isb.xmlrpc.handlers.InteractionHandler<br>
-	 * handler.interaction.url=jdbc:mysql:mysql://biounder.kaist.ac.kr<br>
+	 * handler.interactions = org.isb.xmlrpc.handlers.InteractionHandler<br>
+	 * handler.interactions.url=jdbc:mysql:mysql://biounder.kaist.ac.kr<br>
 	 * If existent, the handler arguments and their values will be added as
 	 * entries in a Hashtable and then addService(serviceName,className,
 	 * hashtable) will be called
 	 */
 	protected void addHandlersFromProps(String xmlrpc_props) throws IOException {
-		
+
 		System.out.println("Adding service handlers from file " + xmlrpc_props);
-			
+
 		Properties props = MyUtils.readProperties(xmlrpc_props);
-		
-		if(props == null)
+
+		if (props == null)
 			return;
-		
+
 		Enumeration propertyNames = props.propertyNames();
 		HashMap serviceToClass = new HashMap();
 		HashMap serviceToArgs = new HashMap();
@@ -149,8 +149,8 @@ public class MyWebServer {
 
 			if (name.startsWith("handler")) {
 
-				String [] split = name.split("[.]");
-				
+				String[] split = name.split("[.]");
+
 				if (split.length == 3) {
 					// this is an argument for the service
 					String serviceName = split[1];
@@ -179,16 +179,15 @@ public class MyWebServer {
 			String serviceName = (String) it.next();
 			String className = (String) serviceToClass.get(serviceName);
 			Hashtable args = (Hashtable) serviceToArgs.get(serviceName);
-			try{
-				if(args == null){
+			try {
+				if (args == null) {
 					addService(serviceName, className);
-				}else{
-					
+				} else {
 					addService(serviceName, className, args);
 				}
-			}catch (Exception ex){
+			} catch (Exception ex) {
 				ex.printStackTrace();
-			}//catch
+			}// catch
 		}// while it
 
 	}
@@ -376,11 +375,11 @@ public class MyWebServer {
 				// Hashtable
 				Class[] types = new Class[1];
 				types[0] = args.getClass();
-				java.lang.reflect.Constructor constr = 
-					handlerClass.getDeclaredConstructor(types);
+				java.lang.reflect.Constructor constr = handlerClass
+						.getDeclaredConstructor(types);
 
 				if (constr != null) {
-					Object [] params = {args}; 
+					Object[] params = { args };
 					Object handler = constr.newInstance(params);
 					return addService(service, handler);
 				} else {
@@ -421,13 +420,31 @@ public class MyWebServer {
 	 * @param handlerArgs
 	 *            Vector of Strings
 	 */
-	public boolean addService(String service, String className,
+public boolean addService(String service, String className,
 			Vector handlerArgs) throws Exception {
-		System.out.println("addService (" + service + ", " + className + 
-				", " + " Vector handlerArgs) is not implementted!!!!");
-		return false; // for now
-	}
+	try{
+		
+		Class theClass = Class.forName(className);
+		Class [] argTypes = new Class[handlerArgs.size()];
+		
+		int i = 0;
+		for(Iterator it = handlerArgs.iterator(); it.hasNext(); i++){
+			argTypes[i] = it.next().getClass();
+		}// for
+		
+		Constructor cons = theClass.getDeclaredConstructor(argTypes);
+		if(cons == null){
+			return false;
+		}
+		Object handler = cons.newInstance(handlerArgs.toArray());
+		return addService(service, handler);
+		
+	}catch (Exception e){
+		e.printStackTrace();
+		return false;
+	}//catch
 
+}
 	/**
 	 * If the handler for the service is already added, it does not add the new
 	 * handler
@@ -437,7 +454,7 @@ public class MyWebServer {
 	 * @param handler
 	 *            the handler for service
 	 */
-	public boolean addService (String service, Object handler) throws Exception {
+	public boolean addService(String service, Object handler) throws Exception {
 		Object obj = services.get(service);
 		if (obj == null) {
 			String className = handler.getClass().getName();
