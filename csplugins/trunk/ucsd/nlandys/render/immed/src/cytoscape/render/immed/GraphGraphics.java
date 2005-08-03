@@ -1267,99 +1267,99 @@ public final class GraphGraphics
       // I'm handling all cases, including when offset is zero, in one
       // chunk of code.  This is more computations than necessary for the
       // case where offset is zero.
-        for (int i = 0; i < m_polyNumPoints; i++) {
-          final double x0 = m_polyCoords[i * 2];
-          final double y0 = m_polyCoords[i * 2 + 1];
-          final double x1 = m_polyCoords[(i * 2 + 2) % (m_polyNumPoints * 2)];
-          final double y1 = m_polyCoords[(i * 2 + 3) % (m_polyNumPoints * 2)];
-          final double vX = x1 - x0;
-          final double vY = y1 - y0;
-          final double len = Math.sqrt(vX * vX + vY * vY);
-          final double vNormX = vX / len;
-          final double vNormY = vY / len;
-          m_fooPolyCoords[i * 4] = x0 + vNormY * trueOffset;
-          m_fooPolyCoords[i * 4 + 1] = y0 - vNormX * trueOffset;
-          m_fooPolyCoords[i * 4 + 2] = x1 + vNormY * trueOffset;
-          m_fooPolyCoords[i * 4 + 3] = y1 - vNormX * trueOffset; }
-        int inx = 0;
-        for (int i = 0; i < m_polyNumPoints; i++) {
-          if (segmentIntersection // We could perhaps use the sign of a cross
-              (m_ptsBuff,         // product to perform this test quicker.
-               m_fooPolyCoords[i * 4 + 2], // Because non-convex polygons are
-               m_fooPolyCoords[i * 4 + 3], // rare, we will almost never use
-               m_fooPolyCoords[i * 4],     // the computed intersection point.
-               m_fooPolyCoords[i * 4 + 1],
-               m_fooPolyCoords[(i * 4 + 4) % (m_polyNumPoints * 4)],
-               m_fooPolyCoords[(i * 4 + 5) % (m_polyNumPoints * 4)],
-               m_fooPolyCoords[(i * 4 + 6) % (m_polyNumPoints * 4)],
-               m_fooPolyCoords[(i * 4 + 7) % (m_polyNumPoints * 4)])) {
-            m_foo2PolyCoords[inx++] = m_ptsBuff[0];
-            m_foo2PolyCoords[inx++] = m_ptsBuff[1];
-            m_fooRoundedCorners[i] = false; }
-          else {
-            m_foo2PolyCoords[inx++] = m_fooPolyCoords[i * 4 + 2];
-            m_foo2PolyCoords[inx++] = m_fooPolyCoords[i * 4 + 3];
-            m_foo2PolyCoords[inx++] =
-              m_fooPolyCoords[(i * 4 + 4) % (m_polyNumPoints * 4)];
-            m_foo2PolyCoords[inx++] =
-              m_fooPolyCoords[(i * 4 + 5) % (m_polyNumPoints * 4)];
-            m_fooRoundedCorners[i] = true; } }
-        final int foo2Count = inx;
-        inx = 0;
-        for (int i = 0; i < m_polyNumPoints; i++) {
-          if (m_fooRoundedCorners[i]) {
-            if (segmentIntersection // A "rounded corner".
-                (m_ptsBuff,
-                 m_foo2PolyCoords[inx++], m_foo2PolyCoords[inx++],
-                 m_foo2PolyCoords[inx], m_foo2PolyCoords[inx + 1],
-                 centerX, centerY, ptX, ptY)) {
-              final double segXsectX = m_ptsBuff[0];
-              final double segXsectY = m_ptsBuff[1];
-              final int numXsections = bad_circleIntersection
-                (m_ptsBuff, ptX, ptY, centerX, centerY,
-                 m_polyCoords[2 * ((i + 1) % m_polyNumPoints)],
-                 m_polyCoords[2 * ((i + 1) % m_polyNumPoints) + 1],
-                 trueOffset);
-              // We don't expect tangential intersections because of
-              // constraints on allowed polygons.  Therefore, if the circle
-              // intersects the edge segment in only one point, then that
-              // intersection point is the "outer arc" only if the edge segment
-              // intersection point with the corner polygon segment (the arc
-              // approximation) lies between the center of the polygon and
-              // this one circle intersection point.
-              if (numXsections == 2 ||
-                  (numXsections == 1 &&
-                   Math.min(centerX, m_ptsBuff[0]) <= segXsectX &&
-                   segXsectX <= Math.max(centerX, m_ptsBuff[0]) &&
-                   Math.min(centerY, m_ptsBuff[1]) <= segXsectY &&
-                   segXsectY <= Math.max(centerY, m_ptsBuff[1]))) {
-                returnVal[0] = (float) m_ptsBuff[0]; // The first returnVal is
-                returnVal[1] = (float) m_ptsBuff[1]; // closer to (ptX, ptY);
-                                                     // see API.
-                return true; }
-              else {
-                // The edge segment didn't quite make it to the outer section
-                // of the circle; only the inner part was intersected.
-                return false; } }
-            else if (segmentIntersection // Test against a true line segment.
-                     (m_ptsBuff,
-                      m_foo2PolyCoords[inx++], m_foo2PolyCoords[inx++],
-                      m_foo2PolyCoords[inx % foo2Count],
-                      m_foo2PolyCoords[(inx + 1) % foo2Count],
-                      centerX, centerY, ptX, ptY)) {
-              returnVal[0] = (float) m_ptsBuff[0];
-              returnVal[1] = (float) m_ptsBuff[1];
-              return true; } }
-          else { // Not a rounded corner here.
-            if (segmentIntersection
-                (m_ptsBuff,
-                 m_foo2PolyCoords[inx++], m_foo2PolyCoords[inx++],
-                 m_foo2PolyCoords[inx % foo2Count],
-                 m_foo2PolyCoords[(inx + 1) % foo2Count],
-                 centerX, centerY, ptX, ptY)) {
-              returnVal[0] = (float) m_ptsBuff[0];
-              returnVal[1] = (float) m_ptsBuff[1];
-              return true; } } }
+      for (int i = 0; i < m_polyNumPoints; i++) {
+        final double x0 = m_polyCoords[i * 2];
+        final double y0 = m_polyCoords[i * 2 + 1];
+        final double x1 = m_polyCoords[(i * 2 + 2) % (m_polyNumPoints * 2)];
+        final double y1 = m_polyCoords[(i * 2 + 3) % (m_polyNumPoints * 2)];
+        final double vX = x1 - x0;
+        final double vY = y1 - y0;
+        final double len = Math.sqrt(vX * vX + vY * vY);
+        final double vNormX = vX / len;
+        final double vNormY = vY / len;
+        m_fooPolyCoords[i * 4] = x0 + vNormY * trueOffset;
+        m_fooPolyCoords[i * 4 + 1] = y0 - vNormX * trueOffset;
+        m_fooPolyCoords[i * 4 + 2] = x1 + vNormY * trueOffset;
+        m_fooPolyCoords[i * 4 + 3] = y1 - vNormX * trueOffset; }
+      int inx = 0;
+      for (int i = 0; i < m_polyNumPoints; i++) {
+        if (segmentIntersection // We could perhaps use the sign of a cross
+            (m_ptsBuff,         // product to perform this test quicker.
+             m_fooPolyCoords[i * 4 + 2], // Because non-convex polygons are
+             m_fooPolyCoords[i * 4 + 3], // rare, we will almost never use
+             m_fooPolyCoords[i * 4],     // the computed intersection point.
+             m_fooPolyCoords[i * 4 + 1],
+             m_fooPolyCoords[(i * 4 + 4) % (m_polyNumPoints * 4)],
+             m_fooPolyCoords[(i * 4 + 5) % (m_polyNumPoints * 4)],
+             m_fooPolyCoords[(i * 4 + 6) % (m_polyNumPoints * 4)],
+             m_fooPolyCoords[(i * 4 + 7) % (m_polyNumPoints * 4)])) {
+          m_foo2PolyCoords[inx++] = m_ptsBuff[0];
+          m_foo2PolyCoords[inx++] = m_ptsBuff[1];
+          m_fooRoundedCorners[i] = false; }
+        else {
+          m_foo2PolyCoords[inx++] = m_fooPolyCoords[i * 4 + 2];
+          m_foo2PolyCoords[inx++] = m_fooPolyCoords[i * 4 + 3];
+          m_foo2PolyCoords[inx++] =
+            m_fooPolyCoords[(i * 4 + 4) % (m_polyNumPoints * 4)];
+          m_foo2PolyCoords[inx++] =
+            m_fooPolyCoords[(i * 4 + 5) % (m_polyNumPoints * 4)];
+          m_fooRoundedCorners[i] = true; } }
+      final int foo2Count = inx;
+      inx = 0;
+      for (int i = 0; i < m_polyNumPoints; i++) {
+        if (m_fooRoundedCorners[i]) {
+          if (segmentIntersection // A "rounded corner".
+              (m_ptsBuff,
+               m_foo2PolyCoords[inx++], m_foo2PolyCoords[inx++],
+               m_foo2PolyCoords[inx], m_foo2PolyCoords[inx + 1],
+               centerX, centerY, ptX, ptY)) {
+            final double segXsectX = m_ptsBuff[0];
+            final double segXsectY = m_ptsBuff[1];
+            final int numXsections = bad_circleIntersection
+              (m_ptsBuff, ptX, ptY, centerX, centerY,
+               m_polyCoords[2 * ((i + 1) % m_polyNumPoints)],
+               m_polyCoords[2 * ((i + 1) % m_polyNumPoints) + 1],
+               trueOffset);
+            // We don't expect tangential intersections because of
+            // constraints on allowed polygons.  Therefore, if the circle
+            // intersects the edge segment in only one point, then that
+            // intersection point is the "outer arc" only if the edge segment
+            // intersection point with the corner polygon segment (the arc
+            // approximation) lies between the center of the polygon and
+            // this one circle intersection point.
+            if (numXsections == 2 ||
+                (numXsections == 1 &&
+                 Math.min(centerX, m_ptsBuff[0]) <= segXsectX &&
+                 segXsectX <= Math.max(centerX, m_ptsBuff[0]) &&
+                 Math.min(centerY, m_ptsBuff[1]) <= segXsectY &&
+                 segXsectY <= Math.max(centerY, m_ptsBuff[1]))) {
+              returnVal[0] = (float) m_ptsBuff[0]; // The first returnVal is
+              returnVal[1] = (float) m_ptsBuff[1]; // closer to (ptX, ptY);
+                                                   // see API.
+              return true; }
+            else {
+              // The edge segment didn't quite make it to the outer section
+              // of the circle; only the inner part was intersected.
+              return false; } }
+          else if (segmentIntersection // Test against a true line segment.
+                   (m_ptsBuff,
+                    m_foo2PolyCoords[inx++], m_foo2PolyCoords[inx++],
+                    m_foo2PolyCoords[inx % foo2Count],
+                    m_foo2PolyCoords[(inx + 1) % foo2Count],
+                    centerX, centerY, ptX, ptY)) {
+            returnVal[0] = (float) m_ptsBuff[0];
+            returnVal[1] = (float) m_ptsBuff[1];
+            return true; } }
+        else { // Not a rounded corner here.
+          if (segmentIntersection
+              (m_ptsBuff,
+               m_foo2PolyCoords[inx++], m_foo2PolyCoords[inx++],
+               m_foo2PolyCoords[inx % foo2Count],
+               m_foo2PolyCoords[(inx + 1) % foo2Count],
+               centerX, centerY, ptX, ptY)) {
+            returnVal[0] = (float) m_ptsBuff[0];
+            returnVal[1] = (float) m_ptsBuff[1];
+            return true; } } }
       return false; }
   }
 
