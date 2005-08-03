@@ -18,8 +18,7 @@ import cytoscape.data.attr.util.CyDataFactory;
 
 import giny.model.GraphObject;
 /**
- 
- CytoscapeData provides an interface for storing multi-dimensional data for any given object that has a unique String identifier.  For Cytoscape this means that all Nodes and Edges have a "getIdentifer" method that returns a unique identifer that can be used to access the data stored by CytoscapeData.<br>
+  CytoscapeData provides an interface for storing multi-dimensional data for any given object that has a unique String identifier.  For Cytoscape this means that all Nodes and Edges have a "getIdentifer" method that returns a unique identifer that can be used to access the data stored by CytoscapeData.<br>
 <br>
  The Data that is stored is restricted to being either: Boolean, Double, Integer, or String.  So this class will not be able to hold general Objects that are of a special type, and are not one of these primitives.  However, CytoscapeData does provide for limited data structures in that all data can be stored as a collection of multi-dimensional hashes, or lists.<br>
 <br>

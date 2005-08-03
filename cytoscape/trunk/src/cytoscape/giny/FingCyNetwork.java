@@ -61,12 +61,12 @@ public class FingCyNetwork
   /**
    * The NetworkData that stores node info
    */
-  protected static CytoscapeData nodeData;
+  protected CytoscapeData nodeData;
 
   /**
    * The NetworkData that stores edge info
    */
-  protected static CytoscapeData edgeData;
+  protected CytoscapeData edgeData;
 
 
   //TODO: remove
