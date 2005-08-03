@@ -1,3 +1,4 @@
+
 package cytoscape.render.immed;
 
 import java.awt.AlphaComposite;
@@ -571,8 +572,8 @@ public final class GraphGraphics
    * addition, for custom node shapes, this requirement may be more
    * constrained, depending on the kinks in the custom node shape.<p>
    * There is a constraint that only applies to SHAPE_ROUNDED_RECTANGLE
-   * which imposes that the maximum of the width and height
-   * cannot exceed twice the minimum of the width and height of the node.
+   * which imposes that the maximum of the width and height be strictly
+   * less than twice the minimum of the width and height of the node.
    * @param borderWidth the border width, in node coordinate space; if
    *   this value is zero, the rendering engine skips over the process of
    *   rendering the border, which gives a significant performance boost.
@@ -583,7 +584,7 @@ public final class GraphGraphics
    *   than Math.min(xMax - xMin, yMax - yMin) / 6 (for custom node shapes
    *   borderWidth may be even more limited, depending on the specific shape),
    *   if shapeType is SHAPE_ROUNDED_RECTANGLE and the condition
-   *   max(width, height) <= 2 * min(width, height) does not hold,
+   *   max(width, height) < 2 * min(width, height) does not hold,
    *   or if shapeType is neither one of the SHAPE_* constants nor a
    *   previously defined custom node shape.
    */
@@ -613,10 +614,10 @@ public final class GraphGraphics
       if (shapeType == SHAPE_ROUNDED_RECTANGLE) {
         final double width = ((double) xMax) - xMin;
         final double height = ((double) yMax) - yMin;
-        if (!(Math.max(width, height) <= 2.0d * Math.min(width, height)))
+        if (!(Math.max(width, height) < 2.0d * Math.min(width, height)))
           throw new IllegalArgumentException
             ("rounded rectangle does not meet constraint " +
-             "max(width, height) <= 2 * min(width, height)"); } }
+             "max(width, height) < 2 * min(width, height)"); } }
     final Shape shape = getShape(shapeType, xMin, yMin, xMax, yMax);
     if (borderWidth == 0.0f) m_g2d.setColor(fillColor);
     else m_g2d.setColor(borderColor);
@@ -1252,10 +1253,13 @@ public final class GraphGraphics
       if (nodeShape == SHAPE_ROUNDED_RECTANGLE) {
         final double radius = Math.max(((double) xMax) - xMin,
                                        ((double) yMax) - yMin) / 4.0d;
-        getShape(SHAPE_RECTANGLE,
-                 (float) (radius + xMin), (float) (radius + yMin),
-                 (float) (-radius + xMax), (float) (-radius + yMax));
-        trueOffset = offset + radius; }
+        // One of our constraints is that for rounded rectangle,
+        // max(width, height) < 2 * min(width, height) in 32 bit floating
+        // point world.  Therefore, with 64 bits of precision, the rectangle
+        // calculated below does not degenerate in width or height.
+        getShape(SHAPE_RECTANGLE, radius + xMin, radius + yMin,
+                 -radius + xMax, -radius + yMax);
+        trueOffset = radius + offset; }
       else {
         // This next method call has the side effect of setting m_polyCoords
         // and m_polyNumPoints - this is all that we are going to use.
