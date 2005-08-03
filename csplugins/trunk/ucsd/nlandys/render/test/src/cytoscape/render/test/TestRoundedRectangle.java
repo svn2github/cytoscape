@@ -130,7 +130,6 @@ public final class TestRoundedRectangle extends Frame implements Runnable
                          (float) xMax1, (float) yMax1,
                          Color.green, (float) border, Color.black); 
 
-    double offset = 10.0d;
     double xCenter2 = 200.0d;
     double yCenter2 = 100.0d;
     double width2Div2 = 50.0d;
@@ -152,7 +151,7 @@ public final class TestRoundedRectangle extends Frame implements Runnable
     if (m_grafx.computeEdgeIntersection
         (GraphGraphics.SHAPE_ROUNDED_RECTANGLE,
          (float) xMin1, (float) yMin1, (float) xMax1, (float) yMax1,
-         (float) offset, (float) xCenter2, (float) yCenter2, m_xsect1Coords) &&
+         0.0f, (float) xCenter2, (float) yCenter2, m_xsect1Coords) &&
         m_grafx.computeEdgeIntersection
         (GraphGraphics.SHAPE_ROUNDED_RECTANGLE,
          (float) xMin2, (float) yMin2, (float) xMax2, (float) yMax2,
@@ -165,10 +164,8 @@ public final class TestRoundedRectangle extends Frame implements Runnable
         (((double) m_xsect1Coords[0]) - m_xsect2Coords[0]) +
         (yCenter1 - yCenter2) *
         (((double) m_xsect1Coords[1]) - m_xsect2Coords[1]) > 0.0d)
-      m_grafx.drawEdgeFull(GraphGraphics.ARROW_DISC, (float) (offset * 2.0d),
-                           Color.blue,
-                           GraphGraphics.ARROW_DELTA, (float) (offset * 2.0d),
-                           Color.magenta,
+      m_grafx.drawEdgeFull(GraphGraphics.ARROW_DIAMOND, 20.0f, Color.blue,
+                           GraphGraphics.ARROW_DELTA, 20.0f, Color.magenta,
                            m_xsect1Coords[0], m_xsect1Coords[1],
                            m_xsect2Coords[0], m_xsect2Coords[1],
                            (float) edgeThickness, Color.orange, 0.0f);
