@@ -248,7 +248,7 @@ public class InteractionsHandler implements InteractionsDataSource {
 	 * @param method_name
 	 *            the name of the method
 	 * @param args
-	 *            the arguments for the method
+	 *            the arguments for the method (possibly empty)
 	 * @return the returned object by the called method (Java XML-RPC compliant)
 	 */
 	public Object callSourceMethod(String source_class, String method_name,
