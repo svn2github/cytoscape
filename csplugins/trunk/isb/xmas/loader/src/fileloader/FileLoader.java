@@ -22,19 +22,24 @@ public class FileLoader {
 
   static Object null_att = new String("null");
 
+  // HEADER RESERVED
   static String NODE_LABEL = "NODENAME";
   static String EDGE_LABEL = "EDGETYPE";
   static String COMMENTS = "^#";
   static String delim = "\t";
 
+  // POSITION HEADER
+  static String NODE_X = "NODE_X";
+  static String NODE_Y = "NODE_Y";
+  static String EDGE_BENDS = "EDGE_BENDS";
+
+
+
+
   static String TYPE_BOOLEAN = "BOOLEAN";
   static String TYPE_INTEGER = "INTEGER";
   static String TYPE_FLOATING_POINT = "FLOATING_POINT";
   static String TYPE_STRING = "STRING";
-
-  static String NODE_X = "NODE_X";
-  static String NODE_Y = "NODE_Y";
-
 
   public static void saveNetworkToFile ( CyNetwork network,
                                          String file_name ) {
@@ -167,8 +172,7 @@ public class FileLoader {
 
 
     CyNetwork net = Cytoscape.createNetwork( file_name, false );
-    //net.restoreNodes( nodes, false );
-    //net.restoreEdges( edges );
+
 
     CytoscapeData global_node_data = Cytoscape.getNodeNetworkData();
     CytoscapeData global_edge_data = Cytoscape.getEdgeNetworkData();
@@ -253,7 +257,8 @@ public class FileLoader {
       ex.printStackTrace();
     }
     
-    
+    net.restoreNodes( nodes, false );
+    net.restoreEdges( edges );
   }
 
 
@@ -432,37 +437,36 @@ public class FileLoader {
               return true;
             
             for ( Iterator i = ( ( List )attribute).iterator(); i.hasNext(); ) {
-              //System.out.println( "List: "+node );
               local.addAttributeListValue( node.getIdentifier(),
                                             title,
                                             i.next() );
-            } // load list data
-            
-            
+            } 
             return true;
           } 
 
-           // Load List
+          // Load Hash
           else if ( att.startsWith("{") ) {
             attribute = formMap( att );
             if ( attribute == null )
               return true;
             
-            for ( Iterator i = ( ( List )attribute).iterator(); i.hasNext(); ) {
-              //System.out.println( "List: "+node );
-              local.addAttributeListValue( node.getIdentifier(),
-                                            title,
-                                            i.next() );
-            } // load list data
-            
-            
+            Map map = (Map)attribute;
+            Iterator keys_i = map.keySet().iterator();
+            while ( keys_i.hasNext() ) {
+              String key = (String)keys_i.next();
+              local.putAttributeKeyValue( node.getIdentifier(),
+                                          title,
+                                          key,
+                                          map.get( key ) );
+              
+              System.out.println( node.getIdentifier()+" Key:" +key+" value: "+map.get(key) );
+            }
             return true;
           } 
-
-            
+          
           // load single
           else {
-            global.setAttributeValue( node.getIdentifier(), title, attribute );
+            local.setAttributeValue( node.getIdentifier(), title, attribute );
           }
           
         }
@@ -472,7 +476,7 @@ public class FileLoader {
 
           if ( attribute instanceof String ) {
 
-            // Load hash
+            // Load List
             if ( att.startsWith("[") ) {
               attribute = formList( att );
               if ( attribute == null )
@@ -483,12 +487,30 @@ public class FileLoader {
                 global.addAttributeListValue( node.getIdentifier(),
                                               title,
                                               i.next() );
-              } // load hash data
+              } // load List
               
 
               return true;
             } 
             
+            // Load Hash
+            else if ( att.startsWith("{") ) {
+              attribute = formMap( att );
+              if ( attribute == null )
+                return true;
+              
+              Map map = (Map)attribute;
+              Iterator keys_i = map.keySet().iterator();
+              while ( keys_i.hasNext() ) {
+                String key = (String)keys_i.next();
+                global.putAttributeKeyValue( node.getIdentifier(),
+                                            title,
+                                            key,
+                                            map.get( key ) );
+              }
+              return true;
+            } 
+
             // load single
             else {
               global.setAttributeValue( node.getIdentifier(), title, attribute );
@@ -562,7 +584,17 @@ public class FileLoader {
   public static Map formMap ( String value ) {
     //{key=value,key2=value2}
 
-    return null;
+    if ( value.length() < 4 ) 
+      return null;
+    Map attribute = new HashMap();
+    value = value.substring( 1,value.length()-1 );
+    String[] delim = value.split( ", " );
+    for ( int j = 0; j < delim.length; ++j ) {
+      String[] key_val = delim[j].split("=");
+      attribute.put( key_val[0], key_val[1] );
+    }
+    
+    return attribute;
   }
   public static List formList ( String value ) {
     if ( value.length() < 4 ) 
