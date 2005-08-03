@@ -121,11 +121,7 @@ public final class RTree
    * are specified by the input parameters.  "Extents" is a short way
    * of saying "minimum bounding rectangle".  The minimum bounding rectangle
    * of an entry is axis-aligned, meaning that its sides are parallel to the
-   * axes of the data space.<p>
-   * NOTE: Supplying floating point values that are "not a number"
-   * (e.g., caused by a division by zero) is not allowed; however, no
-   * error checking is done to prevent this (kind of like the drinking age of
-   * sixteen in germany).
+   * axes of the data space.
    * @param objKey a user-defined unique identifier used to refer to the entry
    *   being inserted in later operations; this identifier must be
    *   non-negative.
