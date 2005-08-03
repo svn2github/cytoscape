@@ -50,8 +50,9 @@ public class InteractionsHandler implements InteractionsDataSource {
 		InteractionsDataSource sourceToRemove = null;
 		while (it.hasNext()) {
 			InteractionsDataSource source = (InteractionsDataSource) it.next();
-			if (source.getClass().equals(source_class)) {
+			if (source.getClass().getName().equals(source_class)) {
 				sourceToRemove = source;
+				break;
 			}
 		}// while
 

@@ -146,13 +146,10 @@ public class MyWebServer {
 		while (propertyNames.hasMoreElements()) {
 
 			String name = (String) propertyNames.nextElement();
-			System.out.println(name);
 
 			if (name.startsWith("handler")) {
 
 				String [] split = name.split("[.]");
-				
-				System.out.println("split.length = " + split.length);
 				
 				if (split.length == 3) {
 					// this is an argument for the service

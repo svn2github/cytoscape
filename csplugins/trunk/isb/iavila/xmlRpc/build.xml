@@ -146,6 +146,21 @@
 						 <arg line="interactions.getSources"/>
 					  </java>
 		
+		<echo message="Calling interactions.removeSource org.isb.xmlrpc.handler.interactions.ProlinksInteractionsSource..."/>
+			          <java classname="org.apache.xmlrpc.XmlRpcClientLite" fork="no" failonerror="no">
+					     <classpath refid="classpath"/>
+						 <arg line = "http://localhost:${server.args}"/>
+						 <arg line="interactions.removeSource"/>
+						 <arg line = "org.isb.xmlrpc.handler.interactions.ProlinksInteractionsSource"/>
+					  </java>
+				
+				      <echo message="Calling interactions.getSources ..."/>
+					          <java classname="org.apache.xmlrpc.XmlRpcClientLite" fork="no" failonerror="no">
+							     <classpath refid="classpath"/>
+								 <arg line = "http://localhost:${server.args}"/>
+								 <arg line="interactions.getSources"/>
+							  </java>
+		
 		    <echo message="Calling server.shutdown..."/>
 			<java classname="org.apache.xmlrpc.XmlRpcClientLite" fork="no" failonerror="no">
 				 <classpath refid="classpath"/>
