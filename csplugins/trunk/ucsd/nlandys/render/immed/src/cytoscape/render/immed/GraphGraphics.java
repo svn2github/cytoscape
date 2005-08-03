@@ -1312,22 +1312,26 @@ public final class GraphGraphics
                  m_foo2PolyCoords[inx++], m_foo2PolyCoords[inx++],
                  m_foo2PolyCoords[inx], m_foo2PolyCoords[inx + 1],
                  centerX, centerY, ptX, ptY)) {
-              final double cX = m_polyCoords[2 * ((i + 1) % m_polyNumPoints)];
-              final double cY =
-                m_polyCoords[2 * ((i + 1) % m_polyNumPoints) + 1];
+              final double segXsectX = m_ptsBuff[0];
+              final double segXsectY = m_ptsBuff[1];
               final int numXsections = bad_circleIntersection
-                (m_ptsBuff, ptX, ptY, centerX, centerY, cX, cY, trueOffset);
+                (m_ptsBuff, ptX, ptY, centerX, centerY,
+                 m_polyCoords[2 * ((i + 1) % m_polyNumPoints)],
+                 m_polyCoords[2 * ((i + 1) % m_polyNumPoints) + 1],
+                 trueOffset);
               // We don't expect tangential intersections because of
               // constraints on allowed polygons.  Therefore, if the circle
               // intersects the edge segment in only one point, then that
               // intersection point is the "outer arc" only if the edge segment
               // intersection point with the corner polygon segment (the arc
-              // approximation) is no farther to the center of the polygon than
+              // approximation) lies between the center of the polygon and
               // this one circle intersection point.
               if (numXsections == 2 ||
                   (numXsections == 1 &&
-                   trueOffset > Math.sqrt((cX - centerX) * (cX - centerX) +
-                                          (cY - centerY) * (cY - centerY)))) {
+                   Math.min(centerX, m_ptsBuff[0]) <= segXsectX &&
+                   segXsectX <= Math.max(centerX, m_ptsBuff[0]) &&
+                   Math.min(centerY, m_ptsBuff[1]) <= segXsectY &&
+                   segXsectY <= Math.max(centerY, m_ptsBuff[1]))) {
                 returnVal[0] = (float) m_ptsBuff[0]; // The first returnVal is
                 returnVal[1] = (float) m_ptsBuff[1]; // closer to (ptX, ptY);
                                                      // see API.
