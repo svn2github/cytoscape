@@ -124,16 +124,16 @@ public final class TestRectangleBalls extends Frame implements Runnable
     float yMin1 = yCenter1 - height1Div2;
     float xMax1 = xCenter1 + width1Div2;
     float yMax1 = yCenter1 + height1Div2;
-    float border = 6.0f;
+    float border = 2.0f;
     m_grafx.drawNodeFull(GraphGraphics.SHAPE_RECTANGLE,
                          xMin1, yMin1, xMax1, yMax1,
                          Color.red, border, Color.black); 
 
-    float offset = 10.0f;
+    float offset = 20.0f;
     float xCenter2 = 200.0f;
     float yCenter2 = 100.0f;
-    float width2Div2 = 60.0f;
-    float height2Div2 = 55.0f;
+    float width2Div2 = 8.0f;
+    float height2Div2 = 8.0f;
     m_pts[0] = xCenter2;
     m_pts[1] = yCenter2;
     m_xform.transform(m_pts, 0, m_pts, 0, 1);
