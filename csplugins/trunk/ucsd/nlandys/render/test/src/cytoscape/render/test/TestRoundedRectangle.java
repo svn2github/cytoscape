@@ -32,7 +32,7 @@ public final class TestRoundedRectangle extends Frame implements Runnable
   private final Image m_img;
   private final GraphGraphics m_grafx;
   private final AffineTransform m_xform;
-  private final float[] m_pts;
+  private final double[] m_pts;
   private final float[] m_xsect1Coords;
   private final float[] m_xsect2Coords;
 
@@ -51,7 +51,7 @@ public final class TestRoundedRectangle extends Frame implements Runnable
     m_img = createImage(m_imgWidth, m_imgHeight);
     m_grafx = new GraphGraphics(m_img, Color.white, true);
     m_xform = new AffineTransform();
-    m_pts = new float[2];
+    m_pts = new double[2];
     m_xsect1Coords = new float[2];
     m_xsect2Coords = new float[2];
     generateImage(m_theta, m_scale);
@@ -111,62 +111,67 @@ public final class TestRoundedRectangle extends Frame implements Runnable
     m_xform.setToRotation(rotationTheta);
     m_xform.scale(m_scale, m_scale);
     m_grafx.clear(0.0d, 0.0d, 1.0d);
-    float xCenter1 = -180.0f;
-    float yCenter1 = -175.0f;
-    float width1Div2 = 100.0f;
-    float height1Div2 = 55.0f;
+    double xCenter1 = -180.0d;
+    double yCenter1 = -175.0d;
+    double width1Div2 = 100.0d;
+    double height1Div2 = 55.0d; // Set this to 50.0 later.
     m_pts[0] = xCenter1;
     m_pts[1] = yCenter1;
     m_xform.transform(m_pts, 0, m_pts, 0, 1);
     xCenter1 = m_pts[0];
     yCenter1 = m_pts[1];
-    float xMin1 = xCenter1 - width1Div2;
-    float yMin1 = yCenter1 - height1Div2;
-    float xMax1 = xCenter1 + width1Div2;
-    float yMax1 = yCenter1 + height1Div2;
-    float border = 6.0f;
+    double xMin1 = xCenter1 - width1Div2;
+    double yMin1 = yCenter1 - height1Div2;
+    double xMax1 = xCenter1 + width1Div2;
+    double yMax1 = yCenter1 + height1Div2;
+    double border = 6.0d;
     m_grafx.drawNodeFull(GraphGraphics.SHAPE_ROUNDED_RECTANGLE,
-                         xMin1, yMin1, xMax1, yMax1,
-                         Color.green, border, Color.black); 
+                         (float) xMin1, (float) yMin1,
+                         (float) xMax1, (float) yMax1,
+                         Color.green, (float) border, Color.black); 
 
-    float offset = 10.0f;
-    float xCenter2 = 200.0f;
-    float yCenter2 = 100.0f;
-    float width2Div2 = 60.0f;
-    float height2Div2 = 85.0f;
+    double offset = 10.0d;
+    double xCenter2 = 200.0d;
+    double yCenter2 = 100.0d;
+    double width2Div2 = 50.0d;
+    double height2Div2 = 35.0d;
     m_pts[0] = xCenter2;
     m_pts[1] = yCenter2;
     m_xform.transform(m_pts, 0, m_pts, 0, 1);
     xCenter2 = m_pts[0];
     yCenter2 = m_pts[1];
-    float xMin2 = xCenter2 - width2Div2;
-    float yMin2 = yCenter2 - height2Div2;
-    float xMax2 = xCenter2 + width2Div2;
-    float yMax2 = yCenter2 + height2Div2;
+    double xMin2 = xCenter2 - width2Div2;
+    double yMin2 = yCenter2 - height2Div2;
+    double xMax2 = xCenter2 + width2Div2;
+    double yMax2 = yCenter2 + height2Div2;
     m_grafx.drawNodeFull(GraphGraphics.SHAPE_ROUNDED_RECTANGLE,
-                         xMin2, yMin2, xMax2, yMax2,
-                         Color.red, border, Color.black);
-    float edgeThickness = 2.0f;
-    float dashLength = 0.0f;
+                         (float) xMin2, (float) yMin2,
+                         (float) xMax2, (float) yMax2,
+                         Color.red, (float) border, Color.black);
+    double edgeThickness = 2.0d;
     if (m_grafx.computeEdgeIntersection
         (GraphGraphics.SHAPE_ROUNDED_RECTANGLE,
-         xMin1, yMin1, xMax1, yMax1, offset,
-         xCenter2, yCenter2, m_xsect1Coords) &&
+         (float) xMin1, (float) yMin1, (float) xMax1, (float) yMax1,
+         (float) offset, (float) xCenter2, (float) yCenter2, m_xsect1Coords) &&
         m_grafx.computeEdgeIntersection
         (GraphGraphics.SHAPE_ROUNDED_RECTANGLE,
-         xMin2, yMin2, xMax2, yMax2, 0.0f,
-         xCenter1, yCenter1, m_xsect2Coords) &&
+         (float) xMin2, (float) yMin2, (float) xMax2, (float) yMax2,
+         (float) (Math.sqrt(25.0d * 25.0d + 10.0d * 10.0d) - 25.0d),
+         (float) xCenter1, (float) yCenter1, m_xsect2Coords) &&
         // If dot product of original line and new line is greater than zero,
         // which means that the line orientation has not flipped or
         // degenerated.
-        (xCenter1 - xCenter2) * (m_xsect1Coords[0] - m_xsect2Coords[0]) +
-        (yCenter1 - yCenter2) * (m_xsect1Coords[1] - m_xsect2Coords[1]) > 0.0d)
-      m_grafx.drawEdgeFull(GraphGraphics.ARROW_DISC, offset * 2.0f, Color.blue,
-                           GraphGraphics.ARROW_DELTA, offset * 2.0f,
+        (xCenter1 - xCenter2) *
+        (((double) m_xsect1Coords[0]) - m_xsect2Coords[0]) +
+        (yCenter1 - yCenter2) *
+        (((double) m_xsect1Coords[1]) - m_xsect2Coords[1]) > 0.0d)
+      m_grafx.drawEdgeFull(GraphGraphics.ARROW_DISC, (float) (offset * 2.0d),
+                           Color.blue,
+                           GraphGraphics.ARROW_DELTA, (float) (offset * 2.0d),
                            Color.magenta,
                            m_xsect1Coords[0], m_xsect1Coords[1],
                            m_xsect2Coords[0], m_xsect2Coords[1],
-                           edgeThickness, Color.orange, dashLength);
+                           (float) edgeThickness, Color.orange, 0.0f);
   }
 
   public boolean isResizable() { return false; }
