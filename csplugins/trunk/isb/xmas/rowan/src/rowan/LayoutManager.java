@@ -3,7 +3,7 @@ package rowan;
 import cytoscape.*;
 import cytoscape.view.*;
 import cytoscape.data.*;
-
+import cytoscape.data.attr.*;
 import javax.swing.*;
 import java.awt.event.*;
 import java.beans.*;
@@ -205,6 +205,16 @@ public class LayoutManager
     public void updateLayouts() {
       removeAll();
       
+
+      try {
+        Node node = ( Node )currentNetwork.nodesList().get(0);
+        Set keys = currentNetwork.getNodeData().getAttributeKeySet( node.getIdentifier(), "NODE_X" );
+        for ( Iterator i = keys.iterator(); i.hasNext(); ) {
+          System.out.println( "add( createLayoutItem( (String)"+i.next()+" ) );");
+        }
+      } catch ( Exception e ) {}
+      
+
       
       try {
         Node node = ( Node )currentNetwork.nodesList().get(0);

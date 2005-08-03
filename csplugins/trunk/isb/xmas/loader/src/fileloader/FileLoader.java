@@ -259,6 +259,17 @@ public class FileLoader {
     
     net.restoreNodes( nodes, false );
     net.restoreEdges( edges );
+
+
+    //// TEST
+    System.out.println( "NODE_X TEST" );
+    Node node = ( Node )net.nodesList().get(0);
+    Set keys = net.getNodeData().getAttributeKeySet( node.getIdentifier(), "NODE_X" );
+    for ( Iterator i = keys.iterator(); i.hasNext(); ) {
+      System.out.println( "add( createLayoutItem( (String)"+i.next()+" ) );");
+    }
+    System.out.println( "NODE_X TEST" );
+
   }
 
 
@@ -454,12 +465,15 @@ public class FileLoader {
             Iterator keys_i = map.keySet().iterator();
             while ( keys_i.hasNext() ) {
               String key = (String)keys_i.next();
-              local.putAttributeKeyValue( node.getIdentifier(),
-                                          title,
-                                          key,
-                                          map.get( key ) );
+              int size = local.putAttributeKeyValue( node.getIdentifier(),
+                                                     title,
+                                                     key,
+                                                     new Double((String)map.get( key )) );
               
-              System.out.println( node.getIdentifier()+" Key:" +key+" value: "+map.get(key) );
+              //System.out.println( "Title: "+title+ " "+node.getIdentifier()+" Key:" +key+" value: "+map.get(key) + "Size: "+size );
+              //System.out.println( local.getAttributeKeyValue(  node.getIdentifier(),
+              //                                                 title,
+              //                                                 key ) );
             }
             return true;
           } 

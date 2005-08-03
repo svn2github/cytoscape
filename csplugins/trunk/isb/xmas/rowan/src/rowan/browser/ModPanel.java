@@ -47,7 +47,10 @@ public class ModPanel
     this.tableModel = tableModel;
     this.attPanel = attPanel;
 
-    add( new SelectPanel( tableModel ) );
+    setLayout( new BorderLayout() );
+
+
+    add( new SelectPanel( tableModel ), BorderLayout.NORTH );
 
     JPanel panel = new JPanel();
     panel.setBorder( new TitledBorder( "Attribute Editing" ) );
@@ -73,7 +76,7 @@ public class ModPanel
     panel.add( filterBox );
     panel.add( apply );
 
-    add( panel );
+    add( panel, BorderLayout.CENTER );
 
   }
 
