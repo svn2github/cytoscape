@@ -552,8 +552,7 @@ public final class GraphGraphics
       if (yInterceptsCenter != 2)
         throw new IllegalArgumentException
           ("the polygon self-intersects (we know this because the winding " +
-           "number of the center is not one)");
-    }
+           "number of the center is not one)"); }
 
     // polyCoords now contains a polygon spanning [-0.5, 0.5] X [-0.5, 0.5]
     // that passes all of the criteria.
@@ -1314,20 +1313,28 @@ public final class GraphGraphics
                  m_foo2PolyCoords[inx++], m_foo2PolyCoords[inx++],
                  m_foo2PolyCoords[inx], m_foo2PolyCoords[inx + 1],
                  centerX, centerY, ptX, ptY)) {
+              final double cX = m_polyCoords[2 * ((i + 1) % m_polyNumPoints)];
+              final double cY =
+                m_polyCoords[2 * ((i + 1) % m_polyNumPoints) + 1];
               final int numXsections = bad_circleIntersection
-                (m_ptsBuff, ptX, ptY, centerX, centerY,
-                 m_polyCoords[2 * ((i + 1) % m_polyNumPoints)],
-                 m_polyCoords[2 * ((i + 1) % m_polyNumPoints) + 1],
-                 trueOffset);
-              if (numXsections < 2) {
+                (m_ptsBuff, ptX, ptY, centerX, centerY, cX, cY, trueOffset);
+              // We don't expect tangential intersections because of
+              // constraints on allowed polygons.  Therefore, if the circle
+              // intersects the edge segment in only one point, then that
+              // intersection point is the "outer arc" only if the point
+              // (centerX, centerY) lies inside the circle.
+              if (numXsections == 2 ||
+                  (numXsections == 1 &&
+                   trueOffset > Math.sqrt((cX - centerX) * (cX - centerX) +
+                                          (cY - centerY) * (cY - centerY)))) {
+                returnVal[0] = (float) m_ptsBuff[0]; // The first returnVal is
+                returnVal[1] = (float) m_ptsBuff[1]; // closer to (ptX, ptY);
+                                                     // see API.
+                return true; }
+              else {
                 // The edge segment didn't quite make it to the outer section
-                // of the circle; only the inner part was intersected.  We
-                // don't expect tangential intersections, ever.
-                return false; }
-              returnVal[0] = (float) m_ptsBuff[0]; // The first returnVal is
-              returnVal[1] = (float) m_ptsBuff[1]; // closer to (ptX, ptY);
-                                                   // see API.
-              return true; }
+                // of the circle; only the inner part was intersected.
+                return false; } }
             else if (segmentIntersection // Test against a true line segment.
                      (m_ptsBuff,
                       m_foo2PolyCoords[inx++], m_foo2PolyCoords[inx++],
