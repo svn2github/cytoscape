@@ -634,14 +634,21 @@ public abstract class Cytoscape {
   }
 
   protected static void addNetwork ( CyNetwork network ) {
-    addNetwork( network, null, null );
+    addNetwork( network, null, null, true );
   }
 
   protected static void addNetwork ( CyNetwork network, String title ) {
-    addNetwork( network, title, null );
+    addNetwork( network, title, null, true );
   }
 
-  protected static void addNetwork ( CyNetwork network, String title, CyNetwork parent ) {
+  protected static void addNetwork ( CyNetwork network, String title, CyNetwork parent) {
+    addNetwork( network, title, parent, true );
+  }
+
+  protected static void addNetwork ( CyNetwork network,
+                                     String title, 
+                                     CyNetwork parent,
+                                     boolean createView ) {
 
     // System.out.println( "CyNetwork Added: "+network.getIdentifier() );
 
@@ -655,8 +662,10 @@ public abstract class Cytoscape {
     firePropertyChange( NETWORK_CREATED,
                         p_id,
                         network.getIdentifier() );
-    if ( network.getNodeCount() < CytoscapeInit.getViewThreshold()  ) {
-       createNetworkView( network );
+    if ( createView ) {
+      if ( network.getNodeCount() < CytoscapeInit.getViewThreshold()  ) {
+        createNetworkView( network );
+      }
     }
 
     // createNetworkView( network );
@@ -671,6 +680,19 @@ public abstract class Cytoscape {
     addNetwork( network, title );
     return network;
   }
+
+  
+  /**
+   * Creates a new, empty Network.
+   * @param title the title of the new network.
+   * @param createView if false, defers view creation till explicitly called
+   */
+  public static CyNetwork createNetwork ( String title, boolean createView  ) {
+    CyNetwork network =  getRootGraph().createNetwork( new int[] {}, new int[] {} );
+    addNetwork( network, title, null, createView );
+    return network;
+  }
+
 
   /**
    * Creates a new Network
