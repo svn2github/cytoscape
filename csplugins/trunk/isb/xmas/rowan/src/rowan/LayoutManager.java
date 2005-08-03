@@ -28,8 +28,6 @@ public class LayoutManager
   public LayoutManager () {
     super( "Layout Manager", true );
 
-    Cytoscape.getNodeNetworkData().initializeAttributeType( "NODE_X", cytoscape.data.CytoscapeData.TYPE_FLOATING_POINT );
-    Cytoscape.getNodeNetworkData().initializeAttributeType( "NODE_Y", cytoscape.data.CytoscapeData.TYPE_FLOATING_POINT );
     Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu( "Layout" ).add( this );
     Cytoscape.getDesktop().getSwingPropertyChangeSupport().addPropertyChangeListener( this );
   
@@ -46,7 +44,7 @@ public class LayoutManager
 
   public void saveLayout ( String layout ) {
 
-    CytoscapeData data = Cytoscape.getNodeNetworkData();
+    CytoscapeData data = currentNetwork.getNodeData();
     Iterator nodes = currentNetworkView.getNodeViewsIterator();
     while ( nodes.hasNext() ) {
 
@@ -66,7 +64,7 @@ public class LayoutManager
                                  new Double(y) );
 
     }
-
+   
     currentLayout = layout;
     remove( 0 );
     layoutItem = new JMenuItem( currentLayout );
@@ -75,7 +73,7 @@ public class LayoutManager
   }
 
   public void applyLayout ( String layout ) {
-    CytoscapeData data = Cytoscape.getNodeNetworkData();
+    CytoscapeData data = currentNetwork.getNodeData();
     Iterator nodes = currentNetworkView.getNodeViewsIterator();
     while ( nodes.hasNext() ) {
 
@@ -210,7 +208,7 @@ public class LayoutManager
       
       try {
         Node node = ( Node )currentNetwork.nodesList().get(0);
-        Set keys = Cytoscape.getNodeNetworkData().getAttributeKeySet( node.getIdentifier(), "NODE_X" );
+        Set keys = currentNetwork.getNodeData().getAttributeKeySet( node.getIdentifier(), "NODE_X" );
         for ( Iterator i = keys.iterator(); i.hasNext(); ) {
           add( createLayoutItem( (String)i.next() ) );
         }

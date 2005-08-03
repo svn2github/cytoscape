@@ -32,6 +32,9 @@ public class FileLoader {
   static String TYPE_FLOATING_POINT = "FLOATING_POINT";
   static String TYPE_STRING = "STRING";
 
+  static String NODE_X = "NODE_X";
+  static String NODE_Y = "NODE_Y";
+
 
   public static void saveNetworkToFile ( CyNetwork network,
                                          String file_name ) {
@@ -47,19 +50,43 @@ public class FileLoader {
       
       CytoscapeData data = Cytoscape.getNodeNetworkData();
       CountedIterator atts_i = data.getDefinedAttributes();
+
+      CytoscapeData local = network.getNodeData();
+      CountedIterator local_i = local.getDefinedAttributes();
+      
+
       while (atts_i.hasNext() ) {
         writer.write( atts_i.next()+delim );
+      }
+      while (local_i.hasNext() ) {
+        writer.write( local_i.next()+delim );
       }
       writer.newLine();
       
       while ( nodes_i.hasNext() ) {
         GraphObject obj = (GraphObject)nodes_i.next();
         writer.write( obj.getIdentifier()+delim );
+        
+        // Global Data
         atts_i = data.getDefinedAttributes();
         while ( atts_i.hasNext() ) {
           // TODO
           Object value = data.getAttributeValueList( obj.getIdentifier(),
                                                      (String)atts_i.next() );
+          try {
+            writer.write( value+delim );
+          } catch ( Exception ex ) {
+            System.out.println( "Error with Network output" );
+            writer.write( delim );
+          }
+        }
+
+        // Network Specific Data
+        local_i = local.getDefinedAttributes();
+        while (local_i.hasNext() ) {
+          // TODO
+          Object value = local.getAttributeValuesMap( obj.getIdentifier(),
+                                                     (String)local_i.next() );
           try {
             writer.write( value+delim );
           } catch ( Exception ex ) {
@@ -86,6 +113,7 @@ public class FileLoader {
                       +(String)data.getAttributeValue( obj.getIdentifier(), cytoscape.data.Semantics.INTERACTION )+delim
                       +obj.getTarget().getIdentifier()+delim);
         
+        // Global Data
         atts_i = data.getDefinedAttributes();
         while ( atts_i.hasNext() ) {
           // TODO
@@ -98,6 +126,9 @@ public class FileLoader {
             writer.write( delim );
           }
         }
+
+        // Network Specific Data
+
         writer.newLine();
       }
 
@@ -134,7 +165,16 @@ public class FileLoader {
   public static void loadFileToNetwork ( String file_name,
                                          String delimiter ) {
 
-    
+
+    CyNetwork net = Cytoscape.createNetwork( file_name, false );
+    //net.restoreNodes( nodes, false );
+    //net.restoreEdges( edges );
+
+    CytoscapeData global_node_data = Cytoscape.getNodeNetworkData();
+    CytoscapeData global_edge_data = Cytoscape.getEdgeNetworkData();
+    CytoscapeData local_node_data = net.getNodeData();
+    CytoscapeData local_edge_data = net.getEdgeData();
+
 
     Vector titles = null;
     int max_col = 0;
@@ -151,8 +191,6 @@ public class FileLoader {
       int count = 0;
       while (oneLine != null  ) {
         
-        
-
         // EDGE HEADER
         if ( oneLine.startsWith( NODE_LABEL+delimiter+EDGE_LABEL+delimiter+NODE_LABEL ) ) {
           String[] line = oneLine.split( delimiter );
@@ -196,9 +234,9 @@ public class FileLoader {
           // load a row
           String[] line = oneLine.split( delimiter );
           
-          GraphObject obj = loadRow( line, titles, is_nodes );
+          GraphObject obj = loadRow( line, titles, is_nodes,global_node_data, local_node_data, global_edge_data, local_edge_data );
           if ( obj != null && is_nodes ) {
-            System.out.println( "New Node: "+obj+" "+obj.getIdentifier() );
+            //System.out.println( "New Node: "+obj+" "+obj.getIdentifier() );
             nodes.add( obj );
           } else if ( obj != null ) {
             edges.add( obj );
@@ -215,22 +253,28 @@ public class FileLoader {
       ex.printStackTrace();
     }
     
-    CyNetwork net = Cytoscape.createNetwork( file_name );
-    net.restoreNodes( nodes, false );
-    net.restoreEdges( edges );
+    
   }
 
 
   public static GraphObject loadRow ( String[] row, 
-                                   Vector titles, 
-                                   boolean is_nodes ) {
-     return loadRow( row, titles, is_nodes, new int[] {} );
+                                      Vector titles, 
+                                      boolean is_nodes,
+                                      CytoscapeData global_node_data,
+                                      CytoscapeData local_node_data,
+                                      CytoscapeData global_edge_data,
+                                      CytoscapeData local_edge_data) {
+     return loadRow( row, titles, is_nodes, new int[] {}, global_node_data, local_node_data, global_edge_data, local_edge_data );
    }
 
   public static GraphObject loadRow ( String[] row, 
-                                  Vector titles, 
-                                  boolean is_nodes,
-                                  int[] restricted_colums ) {
+                                      Vector titles, 
+                                      boolean is_nodes,
+                                      int[] restricted_colums,
+                                      CytoscapeData global_node_data,
+                                      CytoscapeData local_node_data,
+                                      CytoscapeData global_edge_data,
+                                      CytoscapeData local_edge_data) {
 
 
     ////////////////////
@@ -253,14 +297,18 @@ public class FileLoader {
         for ( int i = 0; i < restricted_colums.length; ++i ) {
           loadNodeColumn( node,
                           ( String )titles.get( restricted_colums[i] ),
-                          row[ restricted_colums[i] ] );
+                          row[ restricted_colums[i] ],
+                          global_node_data,
+                          local_node_data);
         }
       } else {
         // load all columns
         for ( int i = 0; i < row.length; ++i ) {
           loadNodeColumn( node,
                           ( String )titles.get( i ),
-                          row[i] );
+                          row[i],
+                          global_node_data,
+                          local_node_data);
         }
       }
 
@@ -280,15 +328,19 @@ public class FileLoader {
         for ( int i = 0; i < restricted_colums.length; ++i ) {
           loadEdgeColumn( edge,
                           ( String )titles.get( restricted_colums[i] ),
-                          row[ restricted_colums[i] ] );
+                          row[ restricted_colums[i] ],
+                          global_edge_data,
+                          local_edge_data);
         }
       } else {
         // load all columns
         for ( int i = 0; i < row.length; ++i ) {
-          System.out.println( "Edge: "+edge+" Title: "+titles.get( i )+" value: "+row[i] );
+          //System.out.println( "Edge: "+edge+" Title: "+titles.get( i )+" value: "+row[i] );
           loadEdgeColumn( edge,
                           ( String )titles.get( i ),
-                          row[i] );
+                          row[i],
+                          global_edge_data,
+                          local_edge_data );
         }
       }
       return edge;
@@ -350,7 +402,9 @@ public class FileLoader {
 
   public static boolean loadNodeColumn ( CyNode node,
                                          String title, 
-                                         String att ) {
+                                         String att,
+                                         CytoscapeData global,
+                                         CytoscapeData local ) {
 
     //System.out.println( "Load: "+node+" title: "+title+ ": "+att );
     
@@ -365,27 +419,86 @@ public class FileLoader {
     }
     try {
       if ( !attribute.equals( null_att ) ) {
-        if ( attribute instanceof String ) {
+
+        // Load LOCAL Data
+        if ( title.startsWith( "NODE_X") || title.startsWith( "NODE_Y" ) ) {
+
+          System.out.println( "LOADING NODE LOCAL DATA" );
+
+          // Load List
           if ( att.startsWith("[") ) {
             attribute = formList( att );
             if ( attribute == null )
               return true;
-
+            
             for ( Iterator i = ( ( List )attribute).iterator(); i.hasNext(); ) {
               //System.out.println( "List: "+node );
-              Cytoscape.getNodeNetworkData().addAttributeListValue( node.getIdentifier(),
-                                                                    title,
-                                                                    i.next() );
-            }
-
-
+              local.addAttributeListValue( node.getIdentifier(),
+                                            title,
+                                            i.next() );
+            } // load list data
+            
+            
             return true;
-          }
-        }
+          } 
 
-        // set value
-        //System.out.println( "Loading: "+node.getIdentifier()+" "+title+ " "+attribute );
-        Cytoscape.setNodeAttributeValue( node, title, attribute );
+           // Load List
+          else if ( att.startsWith("{") ) {
+            attribute = formMap( att );
+            if ( attribute == null )
+              return true;
+            
+            for ( Iterator i = ( ( List )attribute).iterator(); i.hasNext(); ) {
+              //System.out.println( "List: "+node );
+              local.addAttributeListValue( node.getIdentifier(),
+                                            title,
+                                            i.next() );
+            } // load list data
+            
+            
+            return true;
+          } 
+
+            
+          // load single
+          else {
+            global.setAttributeValue( node.getIdentifier(), title, attribute );
+          }
+          
+        }
+        
+        // Load GLOBAL Data
+        else {
+
+          if ( attribute instanceof String ) {
+
+            // Load hash
+            if ( att.startsWith("[") ) {
+              attribute = formList( att );
+              if ( attribute == null )
+                return true;
+              
+              for ( Iterator i = ( ( List )attribute).iterator(); i.hasNext(); ) {
+                //System.out.println( "List: "+node );
+                global.addAttributeListValue( node.getIdentifier(),
+                                              title,
+                                              i.next() );
+              } // load hash data
+              
+
+              return true;
+            } 
+            
+            // load single
+            else {
+              global.setAttributeValue( node.getIdentifier(), title, attribute );
+            }
+            
+            // load non-string, non-hash
+          } else {
+          global.setAttributeValue( node.getIdentifier(), title, attribute );
+        }
+        } // global load
       }
     }  catch ( Exception ex ) {
       ex.printStackTrace();
@@ -401,7 +514,9 @@ public class FileLoader {
   
   public static boolean loadEdgeColumn ( CyEdge edge,
                                          String title, 
-                                         String att ) {
+                                         String att,
+                                         CytoscapeData global,
+                                         CytoscapeData local) {
 
     // figure out what the Attibute is
     Object attribute;
@@ -419,9 +534,9 @@ public class FileLoader {
             if ( attribute == null )
               return false;
             for ( Iterator i = ( ( List )attribute).iterator(); i.hasNext(); ) {
-              Cytoscape.getEdgeNetworkData().addAttributeListValue( edge.getIdentifier(),
-                                                                    title,
-                                                                    i.next() );
+              global.addAttributeListValue( edge.getIdentifier(),
+                                            title,
+                                            i.next() );
             }
 
 
@@ -444,7 +559,11 @@ public class FileLoader {
   }
 
 
-      
+  public static Map formMap ( String value ) {
+    //{key=value,key2=value2}
+
+    return null;
+  }
   public static List formList ( String value ) {
     if ( value.length() < 4 ) 
       return null;
