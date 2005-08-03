@@ -1195,6 +1195,7 @@ public final class GraphGraphics
         throw new IllegalArgumentException("offset < 0"); }
     final double centerX = (((double) xMin) + xMax) / 2.0d;
     final double centerY = (((double) yMin) + yMax) / 2.0d;
+
     if (nodeShape == SHAPE_ELLIPSE) {
       // First, compute the actual intersection of the edge with the
       // ellipse, if it exists.  We will use this intersection point
@@ -1247,7 +1248,8 @@ public final class GraphGraphics
         (centerY +
          (xsectPtPrimeY + multFactor * (ptPrimeY - xsectPtPrimeY)));
       return true; }
-    else {
+
+    else { // Not ellipse.
       final double trueOffset;
       if (nodeShape == SHAPE_ROUNDED_RECTANGLE) {
         final double radius = Math.max(((double) xMax) - xMin,
@@ -1308,7 +1310,7 @@ public final class GraphGraphics
       inx = 0;
       for (int i = 0; i < m_polyNumPoints; i++) {
         if (m_fooRoundedCorners[i]) {
-          if (segmentIntersection // A "rounded corner".
+          if (segmentIntersection
               (m_ptsBuff,
                m_foo2PolyCoords[inx++], m_foo2PolyCoords[inx++],
                m_foo2PolyCoords[inx], m_foo2PolyCoords[inx + 1],
@@ -1341,8 +1343,8 @@ public final class GraphGraphics
               // The edge segment didn't quite make it to the outer section
               // of the circle; only the inner part was intersected.
               return false; } }
-          else if (segmentIntersection // Test against a true line segment.
-                   (m_ptsBuff,
+          else if (segmentIntersection // Test against the true line segment
+                   (m_ptsBuff,         // that comes after the arc.
                     m_foo2PolyCoords[inx++], m_foo2PolyCoords[inx++],
                     m_foo2PolyCoords[inx % foo2Count],
                     m_foo2PolyCoords[(inx + 1) % foo2Count],
