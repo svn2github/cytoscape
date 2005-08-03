@@ -247,15 +247,12 @@ public final class GraphGraphics
    * then m_polyCoords and m_polyNumPoints are also set.
    */
   private final Shape getShape(final byte shapeType,
-                               final float xMin, final float yMin,
-                               final float xMax, final float yMax)
+                               final double xMin, final double yMin,
+                               final double xMax, final double yMax)
   {
     switch (shapeType) {
     case SHAPE_ELLIPSE:
-      m_ellp2d.setFrame((double) xMin,
-                        (double) yMin,
-                        ((double) xMax) - xMin,
-                        ((double) yMax) - yMin);
+      m_ellp2d.setFrame(xMin, yMin, xMax - xMin, yMax - yMin);
       return m_ellp2d;
     case SHAPE_RECTANGLE:
       m_polyNumPoints = 4;
@@ -276,14 +273,14 @@ public final class GraphGraphics
       return m_path2d;
     case SHAPE_DIAMOND:
       m_polyNumPoints = 4;
-      m_polyCoords[0] = (((double) xMin) + xMax) / 2.0d;
+      m_polyCoords[0] = (xMin + xMax) / 2.0d;
       m_polyCoords[1] = yMin;
       m_polyCoords[2] = xMax;
-      m_polyCoords[3] = (((double) yMin) + yMax) / 2.0d;
-      m_polyCoords[4] = (((double) xMin) + xMax) / 2.0d;
+      m_polyCoords[3] = (yMin + yMax) / 2.0d;
+      m_polyCoords[4] = (xMin + xMax) / 2.0d;
       m_polyCoords[5] = yMax;
       m_polyCoords[6] = xMin;
-      m_polyCoords[7] = (((double) yMin) + yMax) / 2.0d;
+      m_polyCoords[7] = (yMin + yMax) / 2.0d;
       // The rest of this code can be factored with other cases.
       m_path2d.reset();
       m_path2d.moveTo((float) m_polyCoords[0], (float) m_polyCoords[1]);
@@ -298,13 +295,13 @@ public final class GraphGraphics
       m_polyCoords[2] = (2.0d * xMax + xMin) / 3.0d;
       m_polyCoords[3] = yMin;
       m_polyCoords[4] = xMax;
-      m_polyCoords[5] = (((double) yMin) + yMax) / 2.0d;
+      m_polyCoords[5] = (yMin + yMax) / 2.0d;
       m_polyCoords[6] = (2.0d * xMax + xMin) / 3.0d;
       m_polyCoords[7] = yMax;
       m_polyCoords[8] = (2.0d * xMin + xMax) / 3.0d;
       m_polyCoords[9] = yMax;
       m_polyCoords[10] = xMin;
-      m_polyCoords[11] = (((double) yMin) + yMax) / 2.0d;
+      m_polyCoords[11] = (yMin + yMax) / 2.0d;
       // The rest of this code can be factored with other cases.
       m_path2d.reset();
       m_path2d.moveTo((float) m_polyCoords[0], (float) m_polyCoords[1]);
@@ -358,8 +355,7 @@ public final class GraphGraphics
       // A condition that must be satisfied (pertaining to radius) is that
       // max(width, height) <= 2 * min(width, height).
       computeRoundedRectangle(xMin, yMin, xMax, yMax,
-                              Math.max(((double) xMax) - xMin,
-                                       ((double) yMax) - yMin) / 4.0d,
+                              Math.max(xMax - xMin, yMax - yMin) / 4.0d,
                               m_path2d);
       return m_path2d;
     case SHAPE_TRIANGLE:
@@ -368,7 +364,7 @@ public final class GraphGraphics
       m_polyCoords[1] = yMin;
       m_polyCoords[2] = xMax;
       m_polyCoords[3] = yMin;
-      m_polyCoords[4] = (((double) xMin) + xMax) / 2.0d;
+      m_polyCoords[4] = (xMin + xMax) / 2.0d;
       m_polyCoords[5] = yMax;
       // The rest of this code can be factored with other cases.
       m_path2d.reset();
@@ -381,11 +377,11 @@ public final class GraphGraphics
       m_polyNumPoints = 4;
       m_polyCoords[0] = xMin;
       m_polyCoords[1] = yMax;
-      m_polyCoords[2] = (((double) xMin) + xMax) / 2.0d;
+      m_polyCoords[2] = (xMin + xMax) / 2.0d;
       m_polyCoords[3] = yMin;
       m_polyCoords[4] = xMax;
       m_polyCoords[5] = yMax;
-      m_polyCoords[6] = (((double) xMin) + xMax) / 2.0d;
+      m_polyCoords[6] = (xMin + xMax) / 2.0d;
       m_polyCoords[7] = (2.0d * yMax + yMin) / 3.0d;
       // The rest of this code can be factored with other cases.
       m_path2d.reset();
@@ -400,10 +396,10 @@ public final class GraphGraphics
       if (storedPolyCoords == null)
         throw new IllegalArgumentException("shapeType is not recognized");
       m_polyNumPoints = storedPolyCoords.length / 2;
-      final double desiredXCenter = (((double) xMin) + xMax) / 2.0d;
-      final double desiredYCenter = (((double) yMin) + yMax) / 2.0d;
-      final double desiredWidth = ((double) xMax) - xMin;
-      final double desiredHeight = ((double) yMax) - yMin;
+      final double desiredXCenter = (xMin + xMax) / 2.0d;
+      final double desiredYCenter = (yMin + yMax) / 2.0d;
+      final double desiredWidth = xMax - xMin;
+      final double desiredHeight = yMax - yMin;
       m_xformUtil.setToTranslation(desiredXCenter, desiredYCenter);
       m_xformUtil.scale(desiredWidth, desiredHeight);
       m_xformUtil.transform(storedPolyCoords, 0,
