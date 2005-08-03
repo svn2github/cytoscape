@@ -4,28 +4,19 @@
    <property name = "src" location = "src"/>
    <property name = "build" location = "build"/>
    <property name = "build.compiler" value = "modern"/>
-   <property name = "lib" location = "../../../../cytoscape/lib"/>
+   <property name = "cytoscape" location = "../../../../C2.1/source"/>
    <property name = "local.lib" location = "lib"/>
    <property name = "jar"  location = "jar"/>
    <property name = "dist" location = "dist"/>
 
-   <property name="cytoscape.plugin.dir" value="../../../../cytoscape/plugins"/>
+   <property name="cytoscape.plugin.dir" value="../../../../C2.1/source/plugins"/>
 
-   <path id = "classpath_compile">
-       <fileset dir = "${lib}">
+   <path id = "classpath">
+       <fileset dir = "${cytoscape}">
           <include name = "**/*.jar"/>
        </fileset>
    	   <fileset dir = "${local.lib}">
    	      <include name = "**/*.jar"/>
-   	   </fileset>
-   </path>
-
-   <path id = "classpath_run">
-       <fileset dir = "${lib}">
-          <include name = "**/*.jar"/>
-       </fileset>
-   	   <fileset dir = "${local.lib}">
-   	   	  <include name = "**/*.jar"/>
    	   </fileset>
    </path>
 
@@ -36,7 +27,7 @@
    <target name="compile" depends = "prepare" description="Compile">
    <!-- Compile the java code from ${src} into ${build} -->
    <javac source = "1.4" srcdir = "${src}" destdir="${build}">
-      <classpath refid = "classpath_compile"/>
+      <classpath refid = "classpath"/>
    </javac>
    <!-- Copy icon images -->
    <mkdir dir = "${build}/dynamicXpr/dialogs/images"/>
@@ -77,10 +68,10 @@
 	</target>
 
    <target name = "run" depends="jar" description = "Run">
-      <java classname = "cytoscape.CyMain" classpathref = "classpath_run"
+      <java classname = "cytoscape.CyMain" classpathref = "classpath"
           fork = "true" maxmemory = "1g">
           <arg line = "--JLD"/>
-          <arg file = "${jar}/dynxpr.jar"/>
+          <arg file = "${jar}"/>
       </java>
     </target>
 </project>

@@ -21,7 +21,11 @@
  **  along with this program; if not, write to the Free Software
  **  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  **/
+package dynamicXpr;
 
+import cytoscape.Cytoscape;
+import cytoscape.plugin.CytoscapePlugin;
+import javax.swing.JMenuItem;
 /**
  * A plugin that allows the user to see the changes in gene expression
  * by coloring nodes according to their expression values in different 
@@ -32,13 +36,6 @@
  * @version %I%, %G%
  * @since 1.1
  */
-
-package dynamicXpr;
-
-import cytoscape.Cytoscape;
-import cytoscape.plugin.CytoscapePlugin;
-import javax.swing.JMenuItem;
-
 public class DynamicXprPlugIn extends CytoscapePlugin{
 
   /**
