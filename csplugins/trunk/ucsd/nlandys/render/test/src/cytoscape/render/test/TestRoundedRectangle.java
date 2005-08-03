@@ -114,7 +114,7 @@ public final class TestRoundedRectangle extends Frame implements Runnable
     double xCenter1 = -180.0d;
     double yCenter1 = -175.0d;
     double width1Div2 = 100.0d;
-    double height1Div2 = 55.0d; // Set this to 50.0 later.
+    double height1Div2 = 50.000012d;
     m_pts[0] = xCenter1;
     m_pts[1] = yCenter1;
     m_xform.transform(m_pts, 0, m_pts, 0, 1);
