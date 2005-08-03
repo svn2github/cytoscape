@@ -1,9 +1,9 @@
-package org.isb.xmlrpc.handlers.interactions;
+package org.isb.xmlrpc.handler.interactions;
 
 
 import java.lang.*;
 import java.util.*;
-import org.isb.xmlrpc.handlers.DataSource;
+import org.isb.xmlrpc.handler.DataSource;
 
 /**
  * Some methods take a Vector of interactors so that time is saved in making one XML-RPC

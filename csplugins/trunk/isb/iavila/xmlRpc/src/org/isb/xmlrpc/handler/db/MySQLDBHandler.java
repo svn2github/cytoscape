@@ -1,4 +1,4 @@
-package org.isb.xmlrpc.handlers.db;
+package org.isb.xmlrpc.handler.db;
 
 import java.io.*;
 import java.util.*;

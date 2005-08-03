@@ -4,7 +4,7 @@ import java.util.Properties;
 import java.util.Vector;
 
 import org.isb.xmlrpc.server.*;
-import org.isb.xmlrpc.handlers.*;
+import org.isb.xmlrpc.handler.*;
 import org.isb.xmlrpc.util.*;
 import utils.*;
 
@@ -55,7 +55,7 @@ public class DataClientFactory {
 	/**
 	 * @return the MyDataClient for the given service
 	 */
-	public static MyDataClient getClient(String service) throws Exception {
+	public static MyDataClient getClient (String service) throws Exception {
 
 		if (USERNAME == null) {
 			String password = "true";
@@ -73,7 +73,7 @@ public class DataClientFactory {
 		return getClient(service, properties);
 	}
 
-	public static void setUserNamePassword(String user, String pass) {
+	public static void setUserNamePassword (String user, String pass) {
 
 		USERNAME = user;
 		PASSWORD = pass;
@@ -138,7 +138,6 @@ public class DataClientFactory {
 
 		if (host.toLowerCase().startsWith("http://")) {
 			
-			// running on another server
 			// assumes the server already has the handler for this client running
 			Class cls = Class.forName(cName);
 			

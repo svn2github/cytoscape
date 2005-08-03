@@ -1,9 +1,9 @@
-package org.isb.xmlrpc.handlers.interactions;
+package org.isb.xmlrpc.handler.interactions;
 
 import java.lang.*;
 import java.util.*;
-import org.isb.xmlrpc.handlers.*;
-import org.isb.xmlrpc.handlers.db.*;
+import org.isb.xmlrpc.handler.*;
+import org.isb.xmlrpc.handler.db.*;
 
 /**
  * This class assumes:<br>

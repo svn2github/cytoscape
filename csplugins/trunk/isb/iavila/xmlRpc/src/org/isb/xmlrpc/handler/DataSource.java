@@ -1,5 +1,5 @@
 
-package org.isb.xmlrpc.handlers;
+package org.isb.xmlrpc.handler;
 
 import java.lang.*;
 import java.util.*;
@@ -34,6 +34,8 @@ public interface DataSource {
    */
   public static final String MEMORY = "memory";
   
+  public static final String MIXED = "mixed";
+  
   // ------------------------------- methods ----------------------------------//
 
   /**
@@ -43,7 +45,7 @@ public interface DataSource {
   
   /**
    * @return the type of backend implementation (how requests to the data source
-   * are implemented) one of WEB_SERVICE, LOCAL_DB, REMOTE_DB, MEMORY
+   * are implemented) one of WEB_SERVICE, LOCAL_DB, REMOTE_DB, MEMORY, MIXED
    */
   public String getBackendType ();
 

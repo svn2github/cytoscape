@@ -65,7 +65,7 @@ public class SetUsernamePassword extends AbstractAction {
         public void actionPerformed( ActionEvent e ) {
           try { 
             String user = userField.getText();
-            String pass = passField.getText();
+            String pass = String.valueOf(passField.getPassword());
             DataClientFactory.setUserNamePassword( user, pass );
             dialog.dispose();
             closed = true;
