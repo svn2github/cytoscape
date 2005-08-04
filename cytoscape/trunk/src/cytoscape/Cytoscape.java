@@ -25,6 +25,7 @@ import cytoscape.data.Semantics;
 import cytoscape.data.readers.GMLReader2;
 import cytoscape.data.readers.GraphReader;
 import cytoscape.data.readers.InteractionsReader;
+import cytoscape.data.servers.BioDataServer;
 
 import cytoscape.giny.CytoscapeRootGraph;
 import cytoscape.giny.CytoscapeFingRootGraph;
@@ -69,6 +70,8 @@ public abstract class Cytoscape {
   public static final int SELECT_NODES_ONLY = 1;
   public static final int SELECT_EDGES_ONLY = 2;
   public static final int SELECT_NODES_AND_EDGES = 3;
+
+  private static BioDataServer bioDataServer;
 
   // global to represent which selection mode is active
   private static int currentSelectionMode = SELECT_NODES_ONLY;
@@ -1142,6 +1145,16 @@ public abstract class Cytoscape {
 
     }
 
+  }
+
+  public static BioDataServer loadBioDataServer(String location) {
+    try {
+      bioDataServer = new BioDataServer(location);
+    } catch (Exception e) {
+      System.err.println("Could not Load BioDataServer from: " + location);
+      return null;
+    }
+    return bioDataServer;
   }
 
 }
