@@ -106,15 +106,10 @@ public final class GraphGraphics
    *   will take place in each method call; it is recommended to have this
    *   value set to true during the testing phase; set it to false once
    *   you are sure that code does not mis-use this module.
-   * @exception IllegalStateException if the calling thread isn't the
-   *   AWT event handling thread.
    */
   public GraphGraphics(final Image image, final Color bgColor,
                        final boolean debug)
   {
-    if (!EventQueue.isDispatchThread())
-      throw new IllegalStateException
-        ("calling thread is not AWT event dispatcher");
     this.image = image;
     m_bgColor = bgColor;
     m_debug = debug;
