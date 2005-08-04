@@ -17,6 +17,7 @@ public class SQLDBHandler implements DBHandler {
 	protected boolean driverIsLoaded = false;
 	protected String url;
 	protected Connection connection;
+	protected boolean debug = false;
 
 	/**
 	 * The database url can be set at a later time
@@ -76,7 +77,7 @@ public class SQLDBHandler implements DBHandler {
 
 		try {
 			// load the JDBC driver
-			Class.forName(JDBC_DRIVER).newInstance();
+			Class.forName(jdbc_driver).newInstance();
 			loaded = true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -108,8 +109,9 @@ public class SQLDBHandler implements DBHandler {
 			if (!this.connection.isClosed()) {
 				System.out.println("Successfully connected to mySQL database "
 						+ this.url);
+				return true;
 			}
-			return true;
+			return false;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -127,7 +129,7 @@ public class SQLDBHandler implements DBHandler {
 	 */
 	public boolean makeConnection(String db_url, Hashtable props) {
 		if (db_url == null) {
-			return;
+			return false;
 		}
 		this.url = db_url;
 
@@ -143,10 +145,13 @@ public class SQLDBHandler implements DBHandler {
 			if (!this.connection.isClosed()) {
 				System.out.println("Successfully connected to mySQL database "
 						+ this.url);
+				return true;
 			}
+			return false;
 
 		} catch (Exception e) {
 			e.printStackTrace();
+			return false;
 		}
 	}
 

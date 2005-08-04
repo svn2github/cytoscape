@@ -8,25 +8,51 @@ import org.isb.xmlrpc.handler.db.*;
 /**
  * This class assumes:<br>
  * - mySQL DB is the source (either local or remote)<br>
- * - DB tables look like this:(TODO)<br>
+ * - mySQL DB tables looks like this:<br>
+ *
+ * interaction tables<br>
+ * +------------+-------------+------+-----+---------+-------+<br>
+ * | Field      | Type        | Null | Key | Default | Extra |<br>
+ * +------------+-------------+------+-----+---------+-------+<br>
+ * | gene_id_a  | varchar(10) | YES  |     | NULL    |       |<br>
+ * | gene_id_b  | varchar(10) | YES  |     | NULL    |       |<br>
+ * | p          | float       | YES  |     | NULL    |       |<br>
+ * | confidence | float       | YES  |     | NULL    |       |<br>
+ * | method     | char(2)     | YES  |     | NULL    |       |<br>
+ * | species    | int(11)     | YES  |     | 0       |       |<br>
+ * +------------+-------------+------+-----+---------+-------+<br>
+ * 
+ * species<br>
+ * +------------+-------------+------+-----+---------+-------+<br>
+ * | Field      | Type        | Null | Key | Default | Extra |<br>
+ * +------------+-------------+------+-----+---------+-------+<br>
+ * | species    | varchar(70) | YES  |     | NULL    |       |<br>
+ * | species_id | int(11)     | YES  |     | NULL    |       |<br>
+ * +------------+-------------+------+-----+---------+-------+<br>
+ * 
+ * TODO: add more info about DB organization
  *
  * @author <a href="mailto:iavila@systemsbiology.org">Iliana Avila-Campillo</a>
  */
-public class ProlinksInteractionsSource extends MySQLDBHandler 
+public class ProlinksInteractionsSource extends SQLDBHandler 
 	implements InteractionsDataSource{
 
   public static final String NAME = "Prolinks";
   
+  
   /**
    * Empty constructor
    */
-  public ProlinksInteractionsSource (){}
+  public ProlinksInteractionsSource (){
+	  //TODO: Remove, this should be read from somewhere!!!
+	  this("jdbc:mysql://biounder.kaist.ac.kr/prolinks?user=bioinfo&password=qkdldhWkd");
+  }
   
   /**
    * @param mysql_url the URL of the mySQL data base
    */
   public ProlinksInteractionsSource (String mysql_url){
-    super(mysql_url);
+    super(mysql_url,SQLDBHandler.MYSQL_JDBC_DRIVER);
   }//ProlinksInteractionsSource
   
   // Methods implementing DataSource interface:
@@ -34,7 +60,6 @@ public class ProlinksInteractionsSource extends MySQLDBHandler
    * @return a Vector of Strings that specify types of IDs that this InteractionsDataSource accepts
    * for example, "ORF","GI", etc.
    */
-  //TODO: Implement
   public Vector getIDtypes (){
 	  return new Vector();
   }//getIDTypes
@@ -60,7 +85,8 @@ public class ProlinksInteractionsSource extends MySQLDBHandler
    * source contains information
    */
   public Vector getSupportedSpecies (){
-    return new Vector();
+	  
+	  return new Vector();
   }
 
   /**

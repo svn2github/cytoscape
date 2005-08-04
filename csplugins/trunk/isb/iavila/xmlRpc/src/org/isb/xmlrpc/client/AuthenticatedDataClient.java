@@ -6,7 +6,8 @@ import org.apache.xmlrpc.*;
 
 /**
  * Class <code>AuthenticatedDataClient</code> holds the username and the password
- * for a user
+ * for a user, adds a user name and a password as the 1st two elements in the
+ * parameter vector for a remote call to the server.
  *
  * @author <a href="mailto:dreiss@systemsbiology.org">David Reiss</a>
  * @version 1.0
@@ -16,17 +17,17 @@ public abstract class AuthenticatedDataClient extends MyDataClient {
   protected String username = null, password = null;
 
   /**
-   * @param url the URL for the client
+   * @param server_url the URL for the client
    */
-  public AuthenticatedDataClient (String url) throws XmlRpcException,
+  public AuthenticatedDataClient (String server_url) throws XmlRpcException,
                                                      java.net.MalformedURLException {
-    super(url);
+    super(server_url);
   }
 
-  public AuthenticatedDataClient (String url, String username, String password) 
+  public AuthenticatedDataClient (String server_url, String username, String password) 
     throws XmlRpcException,
            java.net.MalformedURLException {
-    super(url);
+    super(server_url);
     setUserNamePassword(username, password);
   }
 
