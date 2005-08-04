@@ -5,7 +5,6 @@ import java.util.*;
 
 /**
  * TODO: username, password for other methods?
- *
  * @author <a href="mailto:iavila@systemsbiology.org">Iliana Avila-Campillo</a>
  */
 
@@ -21,7 +20,7 @@ public interface DBHandler {
    * @param props a list of arbitrary string tag/value pairs as connection arguments; 
    * normally at least a "user" and "password" property should be included
    */
-  public void setURL (String db_url, Properties props);
+  public void setURL (String db_url, Hashtable props);
   
   /**
    * @return the database URL
@@ -40,7 +39,7 @@ public interface DBHandler {
    * @param props a list of arbitrary string tag/value pairs as connection arguments; 
    * normally at least a "user" and "password" property should be included
    */
-  public boolean update (Properties props);
+  public boolean update (Hashtable props);
 
   /**
    * Shuts down the DB
