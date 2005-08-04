@@ -45,7 +45,7 @@ import cytoscape.data.ExpressionData;
  * @since 1.1
  */
 
-public class DynamicExpressionDialog extends JDialog {
+public class DynamicExpressionDialog extends JFrame {
 
 	protected DynamicExpression listener;
 
@@ -105,7 +105,7 @@ public class DynamicExpressionDialog extends JDialog {
 	 *            the title for the dialog to use
 	 */
 	public DynamicExpressionDialog(DynamicExpression listener, String title) {
-		super(Cytoscape.getDesktop(), false);
+		//super(Cytoscape.getDesktop(), false);
 		this.listener = listener;
 		setTitle(title);
 		createUI();
