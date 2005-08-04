@@ -10,7 +10,7 @@
 					<a href="download.php?file=cyto2_1">
 						Download Version 2.1
 					</a>
-				</p>				
+				</p>
 				<p>
 					Requires
 					<a href="http://java.sun.com/j2se/1.4.2/index.jsp">
@@ -44,20 +44,22 @@
 			</td>
 			<td width="120">
 				<h1>
-					<a href="developer.php">
+				    <a href="cgi-bin/moin.cgi/">
 						Developers
 					</a>
 				</h1>
 				<p>
 					<a href="roadmap.php">
-						Cytoscape Roadmap
-					</a>
-				<p>
-					<a href="http://cbio.mskcc.org/cytoscape/javadoc/">
-						Cytoscape Javadoc API
-					</a>
+						Roadmap
+					</a> |
+    				<a href="http://cbio.mskcc.org/cytoscape/javadoc/">
+						Javadoc API
+					</a> |
+    			    <a href="cgi-bin/moin.cgi/">
+				        Wiki
+				    </a>
 				</p>
-        <p>
+                <p>
 					<a href="http://csbi.sourceforge.net/">
 						Graph INterface librarY (GINY)
 					</a>
