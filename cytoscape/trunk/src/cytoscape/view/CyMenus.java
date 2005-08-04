@@ -48,6 +48,8 @@ import cytoscape.plugin.AbstractPlugin;
 
 import cytoscape.actions.*;
 
+import cytoscape.data.annotation.AnnotationGui;
+
 import cytoscape.util.CytoscapeMenuBar;
 import cytoscape.util.CytoscapeToolBar;
 import cytoscape.util.CytoscapeAction;
@@ -84,7 +86,7 @@ public class CyMenus  implements GraphViewChangeListener {
 
   JButton loadButton, saveButton, zoomInButton, zoomOutButton,
 	zoomSelectedButton, zoomDisplayAllButton, showAllButton,
-	hideSelectedButton, vizButton;
+	hideSelectedButton, annotationButton, vizButton;
   JMenu opsMenu;
   CytoscapeToolBar toolBar;
   boolean nodesRequiredItemsEnabled;
@@ -410,7 +412,8 @@ public class CyMenus  implements GraphViewChangeListener {
     addAction( new LoadNodeAttributesAction() );
     addAction( new LoadEdgeAttributesAction() );
     addAction( new LoadExpressionMatrixAction() );
-    
+    addAction( new LoadBioDataServerAction() );
+
     //fill the Save submenu
     addAction( new SaveAsGMLAction() );
     addAction( new SaveAsInteractionsAction() );
@@ -618,6 +621,13 @@ public class CyMenus  implements GraphViewChangeListener {
 
     toolBar.addSeparator();
 
+    annotationButton = toolBar.add( new AnnotationGui() );
+    annotationButton.setIcon(new ImageIcon(getClass().getResource("images/new/ontology36.gif")));
+    annotationButton.setToolTipText("Add Annotation Ontology to Nodes");
+    annotationButton.setBorderPainted(false);
+
+    toolBar.addSeparator();
+
     vizButton = toolBar.add(new SetVisualPropertiesAction( false) );
     vizButton.setIcon(new ImageIcon(getClass().getResource("images/new/color_wheel36.gif")));
     vizButton.setToolTipText("Set Visual Properties");
@@ -647,6 +657,7 @@ public class CyMenus  implements GraphViewChangeListener {
     hb.enableHelp(zoomDisplayAllButton,"toolbar-zoom",null);
     hb.enableHelp(showAllButton,"toolbar-hide",null);
     hb.enableHelp(hideSelectedButton,"toolbar-hide",null);
+    hb.enableHelp(annotationButton,"toolbar-annotate",null);
     hb.enableHelp(vizButton,"toolbar-setVisProps",null);
 
     // add Help support for visual properties combo box created elsewhere

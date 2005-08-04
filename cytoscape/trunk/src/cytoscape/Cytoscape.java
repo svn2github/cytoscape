@@ -1157,4 +1157,8 @@ public abstract class Cytoscape {
     return bioDataServer;
   }
 
+  public static BioDataServer getBioDataServer() {
+    return bioDataServer;
+  }
+
 }
