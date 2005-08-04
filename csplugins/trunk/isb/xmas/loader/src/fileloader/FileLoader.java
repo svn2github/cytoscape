@@ -404,13 +404,13 @@ public class FileLoader {
     CyEdge edge = Cytoscape.getCyEdge( source, 
                                        target, 
                                        cytoscape.data.Semantics.INTERACTION,
-                                       row[2],
+                                       row[1],
                                        false );
     if ( edge == null )
       return Cytoscape.getCyEdge( source, 
                                        target, 
                                        cytoscape.data.Semantics.INTERACTION,
-                                       row[2],
+                                       row[1],
                                        true );
 
     return edge;
