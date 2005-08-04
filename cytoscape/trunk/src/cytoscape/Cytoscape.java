@@ -253,7 +253,10 @@ public abstract class Cytoscape {
 
       for ( Iterator i = edges.iterator(); i.hasNext(); ) {
         CyEdge edge = ( CyEdge )i.next();
-        if ( getEdgeAttributeValue( edge, attribute ) == attribute_value )
+
+	//System.out.println( "Att: "+attribute+" Att Value: "+attribute_value+" Edge Value:"+ getEdgeAttributeValue( edge, attribute ));
+
+        if ( getEdgeAttributeValue( edge, attribute ).equals(attribute_value) )
           return edge;
       }
     }
@@ -263,7 +266,7 @@ public abstract class Cytoscape {
 
 
     if ( attribute == Semantics.INTERACTION ) {
-      //System.out.println( "Creating edge!!!!" );
+	//System.out.println( "Creating edge!!!!" );
 
     // create the edge
       CyEdge edge =  ( CyEdge )Cytoscape.getRootGraph().getEdge( Cytoscape.getRootGraph().createEdge (node_1, node_2));
