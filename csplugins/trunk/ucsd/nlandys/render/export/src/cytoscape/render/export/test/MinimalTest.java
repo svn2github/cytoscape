@@ -2,6 +2,7 @@ package cytoscape.render.export.test;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics2D;
 import org.freehep.graphicsio.ps.PSGraphics2D;
 
 public class MinimalTest
@@ -11,15 +12,16 @@ public class MinimalTest
   {
     final int width = 200;
     final int height = 200;
-    PSGraphics2D g = new PSGraphics2D(System.out,
-                                      new Dimension(width, height));
-    g.startExport();
-    g.setBackground(Color.yellow);
-    g.clearRect(0, 0, width, height);
-    g.setColor(Color.black);
-    g.fillRect(10, 10, 100, 100);
-    g.drawString("hello", 110, 150);
-    g.endExport();
+    final PSGraphics2D psg = new PSGraphics2D(System.out,
+                                              new Dimension(width, height));
+    psg.startExport();
+    final Graphics2D grafx = (Graphics2D) psg.create();
+    grafx.setBackground(Color.yellow);
+    grafx.clearRect(0, 0, width, height);
+    grafx.setColor(Color.black);
+    grafx.fillRect(10, 10, 100, 100);
+    grafx.drawString("hello", 110, 150);
+    psg.endExport();
   }
 
 }
