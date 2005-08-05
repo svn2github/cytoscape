@@ -13,7 +13,7 @@ final class CyEdgeDepot implements FingEdgeDepot
   public Edge getEdge(RootGraph root, int index, String id)
   {
     final CyEdge returnThis = new CyEdge(root, index);
-    returnThis.setIdentifier(id);
+//     returnThis.setIdentifier(id);
     return returnThis;
   }
 

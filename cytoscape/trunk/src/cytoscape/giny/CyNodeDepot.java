@@ -13,7 +13,7 @@ final class CyNodeDepot implements FingNodeDepot
   public Node getNode(RootGraph root, int index, String id)
   {
     final CyNode returnThis = new CyNode(root, index);
-    returnThis.setIdentifier(id);
+//     returnThis.setIdentifier(id);
     return returnThis;
   }
 
