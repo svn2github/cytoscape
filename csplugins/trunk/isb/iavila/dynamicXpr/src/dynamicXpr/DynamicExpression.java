@@ -152,15 +152,28 @@ public class DynamicExpression extends AbstractAction {
 				.getVizMapManager();
 		NodeAppearanceCalculator nac = manager.getVisualStyle()
 				.getNodeAppearanceCalculator();
-		this.oldNodeColorCalculator = nac.getNodeFillColorCalculator();
-		if (this.dynamicXprCalculator == null) {
+		
+		// See if there is already a dynamic expression calculator in the catalog
+		NodeColorCalculator check = manager.getCalculatorCatalog()
+		.getNodeColorCalculator(NODE_COLOR_CALC_NAME);
+		
+		if(check != null){
+			this.dynamicXprCalculator = check;
+		}else if (this.dynamicXprCalculator == null) {
 			createCalculator();
 		}
+		
+		// Make sure we are not getting our own node color calculator:
+		NodeColorCalculator nodeColorCalc = nac.getNodeFillColorCalculator();
+		if(this.dynamicXprCalculator != null && nodeColorCalc != this.dynamicXprCalculator){
+			this.oldNodeColorCalculator = nodeColorCalc;
+		}
+		
 		nac.setNodeFillColorCalculator(this.dynamicXprCalculator);
 		// Make sure that the catalog has one copy of this calculator
-		NodeColorCalculator check = manager.getCalculatorCatalog()
+		NodeColorCalculator check2 = manager.getCalculatorCatalog()
 				.getNodeColorCalculator(NODE_COLOR_CALC_NAME);
-		if (check == null) {
+		if (check2 == null) {
 			manager.getCalculatorCatalog().addNodeColorCalculator(
 					this.dynamicXprCalculator);
 		}
