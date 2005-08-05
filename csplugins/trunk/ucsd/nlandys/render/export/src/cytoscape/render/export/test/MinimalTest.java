@@ -15,6 +15,7 @@ public class MinimalTest
     final PSGraphics2D psg = new PSGraphics2D(System.out,
                                               new Dimension(width, height));
     psg.startExport();
+    psg.create().dispose();
     final Graphics2D grafx = (Graphics2D) psg.create();
     grafx.setBackground(Color.yellow);
     grafx.clearRect(0, 0, width, height);
