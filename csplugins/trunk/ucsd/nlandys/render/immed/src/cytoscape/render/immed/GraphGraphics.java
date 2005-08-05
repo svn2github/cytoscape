@@ -35,7 +35,14 @@ import java.util.HashMap;
  * orientation for the xy plane, while we are forced to use the native Java
  * image coordinate system which has a different orientation.  The native
  * Java image coordinate system dictates that (0,0) is the upper left corner
- * of the image and that each unit represents a pixel width (or height).
+ * of the image and that each unit represents a pixel width (or height).<p>
+ * NOTE: Every method on an instance of this class needs to be called by
+ * the AWT event dispatching thread, including the constructor.  However,
+ * checks for this are made only if debug is set to true (see constructur).
+ * In fact, in certain situations [such as rendering to a non-image such
+ * as a vector graphic] it may make sense to never call any of the methods
+ * from the AWT event dispatching thread; use this class in this way at your
+ * own risk and peril.
  */
 public final class GraphGraphics
 {
@@ -96,7 +103,6 @@ public final class GraphGraphics
 
   /**
    * All rendering operations will be performed on the specified image.
-   * This constructor needs to be called from the AWT event handling thread.
    * @param image an off-screen image (an image that supports the
    *   getGraphics() method).
    * @param bgColor a color to use when clearing the image before painting
@@ -136,8 +142,7 @@ public final class GraphGraphics
    * the node coordinate system and the image coordinate system.<p>
    * It is healthy to call this method right before starting
    * to render a new picture.  Don't try to be clever in not calling this
-   * method.<p>
-   * This method must be called from the AWT event handling thread.
+   * method.
    * @param xCenter the x component of the translation transform for the frame
    *   about to be rendered; a node whose center is at the X coordinate xCenter
    *   will be rendered exactly in the middle of the image going across;
@@ -151,8 +156,6 @@ public final class GraphGraphics
    * @param scaleFactor the scaling that is to take place when rendering nodes;
    *   a distance of 1 in node coordinates translates to a distance of
    *   scaleFactor pixels in the image.
-   * @exception IllegalStateException if the calling thread isn't the
-   *   AWT event handling thread.
    * @exception IllegalArgumentException if scaleFactor is not positive.
    */
   public final void clear(final double xCenter, final double yCenter,
@@ -513,6 +516,9 @@ public final class GraphGraphics
         polyCoords[i++] = Math.min(Math.max(-0.5d, foo), 0.5d); }
     }
     if (m_debug) {
+      if (!EventQueue.isDispatchThread())
+        throw new IllegalStateException
+          ("calling thread is not AWT event dispatcher");
       // Test all criteria.
       int yInterceptsCenter = 0;
       for (int i = 0; i < vertexCount; i++) {
@@ -571,8 +577,6 @@ public final class GraphGraphics
    * @param borderWidth the border width, in node coordinate space; if
    *   this value is zero, the rendering engine skips over the process of
    *   rendering the border, which gives a significant performance boost.
-   * @exception IllegalStateException if the calling thread isn't the
-   *   AWT event handling thread.
    * @exception IllegalArgumentException if xMin is not less than xMax or if
    *   yMin is not less than yMax, or if borderWidth is negative or is greater
    *   than Math.min(xMax - xMin, yMax - yMin) / 6 (for custom node shapes
@@ -721,8 +725,6 @@ public final class GraphGraphics
    * node coordinate space, not the image coordinate space.  Thus, these
    * values will likely not change from frame to frame, as zoom and pan
    * operations are performed.
-   * @exception IllegalStateException if the calling thread isn't the
-   *   AWT event handling thread.
    * @exception IllegalArgumentException if xMin is not less than xMax or if
    *   yMin is not less than yMax.
    */
