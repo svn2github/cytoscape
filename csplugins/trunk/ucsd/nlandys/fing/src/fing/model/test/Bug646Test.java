@@ -35,6 +35,11 @@ public class Bug646Test
     if (edge7 != edge7Obj.getRootGraphIndex() ||
         edge8 != edge8Obj.getRootGraphIndex()) {
       throw new IllegalStateException("the bug is here"); }
+    if (edge7Obj.getSource() == null ||
+        edge7Obj.getTarget() == null ||
+        edge8Obj.getSource() == null ||
+        edge8Obj.getTarget() == null) {
+      throw new IllegalStateException("the bug is here"); }
   }
 
 }
