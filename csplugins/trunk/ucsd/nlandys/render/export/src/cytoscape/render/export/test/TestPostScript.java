@@ -12,14 +12,13 @@ public class TestPostScript
 
   public static void main(String[] args)
   {
-    final int width = 600;
-    final int height = 480;
+    final int width = 200;
+    final int height = 200;
     final PSGraphics2D psGrafx =
       new PSGraphics2D(System.out, new Dimension(width, height));
     final Image img = new ImageImposter(psGrafx, width, height);
-    final GraphGraphics grafx = new GraphGraphics(img, Color.white, false);
     psGrafx.startExport();
-    grafx.clear(0.0d, 0.0d, 1.0d);
+    final GraphGraphics grafx = new GraphGraphics(img, Color.white, false);
     grafx.drawNodeFull(GraphGraphics.SHAPE_ROUNDED_RECTANGLE,
                        -101.3f, -20.9f, 23.34f, 67.81f, Color.red, 1.4f,
                        Color.black);
