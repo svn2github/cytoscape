@@ -37,7 +37,7 @@ import java.util.HashMap;
  * Java image coordinate system dictates that (0,0) is the upper left corner
  * of the image and that each unit represents a pixel width (or height).<p>
  * NOTE: Every method on an instance of this class needs to be called by
- * the AWT event dispatching thread, including the constructor.  However,
+ * the AWT event dispatching thread save the constructor.  However,
  * checks for this are made only if debug is set to true (see constructur).
  * In fact, in certain situations [such as rendering to a non-image such
  * as a vector graphic] it may make sense to never call any of the methods
@@ -100,9 +100,12 @@ public final class GraphGraphics
   private Graphics m_gMinimal;
   private float m_currStrokeWidth;
   private byte m_nextCustomShapeType;
+  private boolean m_cleared = false;
 
   /**
    * All rendering operations will be performed on the specified image.
+   * No rendering operations are performed as a result of calling this
+   * constructor.  It is safe to call this constructor from any thread.
    * @param image an off-screen image (an image that supports the
    *   getGraphics() method).
    * @param bgColor a color to use when clearing the image before painting
@@ -132,7 +135,7 @@ public final class GraphGraphics
     m_xformUtil = new AffineTransform();
     m_customShapes = new HashMap();
     m_nextCustomShapeType = s_last_shape + 1;
-    clear(0.0d, 0.0d, 1.0d);
+    m_cleared = false;
   }
 
   /**
@@ -140,9 +143,8 @@ public final class GraphGraphics
    * and sets an appropriate transformation of coordinate systems.  See the
    * class description for a definition of the two coordinate systems:
    * the node coordinate system and the image coordinate system.<p>
-   * It is healthy to call this method right before starting
-   * to render a new picture.  Don't try to be clever in not calling this
-   * method.
+   * It is mandatory to call this method before starting
+   * to render a new frame.
    * @param xCenter the x component of the translation transform for the frame
    *   about to be rendered; a node whose center is at the X coordinate xCenter
    *   will be rendered exactly in the middle of the image going across;
@@ -190,6 +192,7 @@ public final class GraphGraphics
     m_currXform.scale(scaleFactor, -scaleFactor);
     m_currXform.translate(-xCenter, -yCenter);
     m_g2d.transform(m_currXform);
+    m_cleared = true;
   }
 
   /**
@@ -218,6 +221,10 @@ public final class GraphGraphics
   }
 
   /**
+   * The transform used is defined by the last call to clear().
+   * It does not make sense to call this method if clear() has not been
+   * called at least once previously, and this method will cause errors in
+   * this case.
    * @param coords an array of length [at least] two which acts both
    *   as the input and as the output of this method; coords[0] is the
    *   input x coordinate in the image coordinate system and is written
@@ -232,7 +239,9 @@ public final class GraphGraphics
     if (m_debug) {
       if (!EventQueue.isDispatchThread())
         throw new IllegalStateException
-          ("calling thread is not AWT event dispatcher"); }
+          ("calling thread is not AWT event dispatcher");
+      if (!m_cleared) throw new IllegalStateException
+                        ("clear() has not been called previously"); }
     try {
       m_currXform.inverseTransform(coords, 0, coords, 0, 1); }
     catch (java.awt.geom.NoninvertibleTransformException e) {
@@ -573,7 +582,9 @@ public final class GraphGraphics
    * constrained, depending on the kinks in the custom node shape.<p>
    * There is a constraint that only applies to SHAPE_ROUNDED_RECTANGLE
    * which imposes that the maximum of the width and height be strictly
-   * less than twice the minimum of the width and height of the node.
+   * less than twice the minimum of the width and height of the node.<p>
+   * This method will not work unless clear() has been called at least once
+   * previously.
    * @param borderWidth the border width, in node coordinate space; if
    *   this value is zero, the rendering engine skips over the process of
    *   rendering the border, which gives a significant performance boost.
@@ -597,6 +608,8 @@ public final class GraphGraphics
       if (!EventQueue.isDispatchThread())
         throw new IllegalStateException
           ("calling thread is not AWT event dispatcher");
+      if (!m_cleared) throw new IllegalStateException
+                      ("clear() has not been called previously");
       if (!(xMin < xMax)) throw new IllegalArgumentException
                             ("xMin not less than xMax");
       if (!(yMin < yMax)) throw new IllegalArgumentException
@@ -724,7 +737,9 @@ public final class GraphGraphics
    * xMin, yMin, xMax, and yMax specify the extents of the node in the
    * node coordinate space, not the image coordinate space.  Thus, these
    * values will likely not change from frame to frame, as zoom and pan
-   * operations are performed.
+   * operations are performed.<p>
+   * This method will not work unless clear() has been called at least once
+   * previously.
    * @exception IllegalArgumentException if xMin is not less than xMax or if
    *   yMin is not less than yMax.
    */
@@ -736,6 +751,8 @@ public final class GraphGraphics
       if (!EventQueue.isDispatchThread())
         throw new IllegalStateException
           ("calling thread is not AWT event dispatcher");
+      if (!m_cleared) throw new IllegalStateException
+                        ("clear() has not been called previously");
       if (!(xMin < xMax)) throw new IllegalArgumentException
                             ("xMin not less than xMax");
       if (!(yMin < yMax)) throw new IllegalArgumentException
@@ -757,6 +774,10 @@ public final class GraphGraphics
                         Math.max(1, yOne - yNot));            // be problem.
   }
 
+  /**
+   * This method will not work unless clear() has been called at least once
+   * previously.
+   */
   public final void drawEdgeLow(final float x0, final float y0,
                                 final float x1, final float y1,
                                 final Color edgeColor)
@@ -764,7 +785,9 @@ public final class GraphGraphics
     if (m_debug) {
       if (!EventQueue.isDispatchThread())
         throw new IllegalStateException
-          ("calling thread is not AWT event dispatcher"); }
+          ("calling thread is not AWT event dispatcher");
+      if (!m_cleared) throw new IllegalStateException
+                        ("clear() has not been called previously"); }
     // This following statement has to be consistent with the full edge
     // rendering logic.
     if (x0 == x1 && y0 == y1) return;
@@ -852,7 +875,10 @@ public final class GraphGraphics
    *                                   the ratio of edge thickness to arrow
    *                                   size cannot exceed one</td>        </tr>
    * <table></blockquote><p>
-   * Note that if the edge segment length is zero then nothing gets rendered.
+   * Note that if the edge segment length is zero then nothing gets
+   * rendered.<p>
+   * This method will not work unless clear() has been called at least once
+   * previously.
    * @param dashLength a positive value representing the length of dashes
    *   on the edge, or zero to indicate that the edge is solid.
    * @exception IllegalArgumentException if edgeThickness is less than zero,
@@ -875,6 +901,8 @@ public final class GraphGraphics
       if (!EventQueue.isDispatchThread())
         throw new IllegalStateException
           ("calling thread is not AWT event dispatcher");
+      if (!m_cleared) throw new IllegalStateException
+                        ("clear() has not been called previously");
       if (!(edgeThickness >= 0.0f))
         throw new IllegalArgumentException("edgeThickness < 0");
       if (!(dashLength >= 0.0f))
