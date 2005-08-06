@@ -17,11 +17,16 @@ public class TestPostScript
     final PSGraphics2D psGrafx =
       new PSGraphics2D(System.out, new Dimension(width, height));
     final Image img = new ImageImposter(psGrafx, width, height);
-    psGrafx.startExport();
     final GraphGraphics grafx = new GraphGraphics(img, Color.white, false);
+    psGrafx.startExport();
+    grafx.clear(0.0d, 0.0d, 1.0d);
     grafx.drawNodeFull(GraphGraphics.SHAPE_ROUNDED_RECTANGLE,
-                       -101.3f, -20.9f, 23.34f, 67.81f, Color.red, 1.4f,
+                       -87.3f, -20.9f, 23.34f, 67.81f, Color.red, 1.4f,
                        Color.black);
+    grafx.drawEdgeFull(GraphGraphics.ARROW_DELTA, 10.0f, Color.magenta,
+                       GraphGraphics.ARROW_TEE, 10.0f, Color.blue,
+                       71.4f, 20.83f, -10.1f, -81.3f,
+                       3.0f, Color.orange, 9.0f);
     psGrafx.endExport();
   }
 
