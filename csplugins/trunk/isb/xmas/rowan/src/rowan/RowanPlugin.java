@@ -99,16 +99,28 @@ public class RowanPlugin extends CytoscapePlugin {
     Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu( "Plugins" ).add( first );
 
 
-    JMenuItem nb = new JMenuItem( new AbstractAction( "Sort Browser" ) {
+    JMenuItem nb = new JMenuItem( new AbstractAction( "Node Browser" ) {
         public void actionPerformed ( ActionEvent e ) {
           // Do this in the GUI Event Dispatch thread...
           SwingUtilities.invokeLater( new Runnable() {
               public void run() {
                 
-                DataTable table = new DataTable();
+                DataTable table = new DataTable(Cytoscape.getNodeNetworkData(), DataTable.NODES );
 
               } } ); } } );
     Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu( "Plugins" ).add( nb );
+
+    JMenuItem eb = new JMenuItem( new AbstractAction( "Edge Browser" ) {
+        public void actionPerformed ( ActionEvent e ) {
+          // Do this in the GUI Event Dispatch thread...
+          SwingUtilities.invokeLater( new Runnable() {
+              public void run() {
+                
+                DataTable table = new DataTable(Cytoscape.getEdgeNetworkData(), DataTable.EDGES );
+
+              } } ); } } );
+    Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu( "Plugins" ).add( eb );
+
 
   }
 

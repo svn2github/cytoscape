@@ -41,7 +41,10 @@ public class ModPanel
   static String COPY = "Copy";
   static String DELETE = "Delete";
 
-  public ModPanel ( CytoscapeData data, DataTableModel tableModel, AttributePanel attPanel ) {
+  public ModPanel ( CytoscapeData data, 
+                    DataTableModel tableModel, 
+                    AttributePanel attPanel,
+                    int graphObjectType ) {
    
     this.data = data;
     this.tableModel = tableModel;
@@ -50,12 +53,12 @@ public class ModPanel
     setLayout( new BorderLayout() );
 
 
-    add( new SelectPanel( tableModel ), BorderLayout.NORTH );
+    add( new SelectPanel( tableModel, graphObjectType ), BorderLayout.NORTH );
 
     JPanel panel = new JPanel();
     panel.setBorder( new TitledBorder( "Attribute Editing" ) );
 
-    attributeBox = new JComboBox( new AttributeModel( Cytoscape.getNodeNetworkData() ) );
+    attributeBox = new JComboBox( new AttributeModel( data) );
     attributeBox.setEditable( true );
     filterBox = new JComboBox( FilterManager.defaultManager().getComboBoxModel() );
     

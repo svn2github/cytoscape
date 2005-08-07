@@ -14,7 +14,6 @@ import javax.swing.event.SwingPropertyChangeSupport;
 import cytoscape.*;
 import cytoscape.data.*;
 
-
 import cytoscape.data.attr.*;
 
 import giny.model.GraphObject;
@@ -22,15 +21,18 @@ import giny.model.GraphObject;
 public class SelectPanel extends JPanel 
   implements PropertyChangeListener,
              ActionListener {
-
+  public static int NODES = 0;
+  public static int EDGES = 1;
+  int graphObjectType;
   JComboBox networkBox;
   JComboBox filterBox;
   DataTableModel tableModel;
   Map titleIdMap;
 
-  public SelectPanel ( DataTableModel tableModel ) {
+  public SelectPanel ( DataTableModel tableModel, int graphObjectType ) {
 
     this.tableModel = tableModel;
+    this.graphObjectType = graphObjectType;
 
     titleIdMap = new HashMap();
     networkBox = getNetworkBox();
@@ -55,12 +57,12 @@ public class SelectPanel extends JPanel
     if ( e.getSource() == filterBox ) {
       Filter filter = ( Filter )filterBox.getSelectedItem();
       System.out.println( "Showing all that Pass Filter: "+filter );
-      List list = new ArrayList( Cytoscape.getRootGraph().getNodeCount() );
-      Iterator nodes = Cytoscape.getRootGraph().nodesIterator();
-      while ( nodes.hasNext() ) {
-        Object node = nodes.next();
-        if ( filter.passesFilter( node ) )
-          list.add( node );
+      List list = new ArrayList( getGraphObjectCount() );
+      Iterator objs = getGraphObjectIterator();
+      while ( objs.hasNext() ) {
+        Object obj = objs.next();
+        if ( filter.passesFilter( obj ) )
+          list.add( obj );
       }
       tableModel.setTableDataObjects( list );
     }
@@ -69,11 +71,32 @@ public class SelectPanel extends JPanel
       String network_id = ( String )titleIdMap.get( networkBox.getSelectedItem() );
       CyNetwork network = Cytoscape.getNetwork( network_id );
       System.out.println( "Showing all that Pass Network: "+network );
-      tableModel.setTableDataObjects( network.nodesList() );
+      tableModel.setTableDataObjects( getGraphObjectList(network) );
     }
-
-
   }
+
+  private List getGraphObjectList ( CyNetwork network) {
+    if ( graphObjectType == NODES ) 
+      return network.nodesList();
+    else 
+      return network.edgesList();
+  }
+
+  private Iterator getGraphObjectIterator () {
+    if ( graphObjectType == NODES ) 
+      return Cytoscape.getRootGraph().nodesIterator();
+    else 
+      return Cytoscape.getRootGraph().edgesIterator();
+  }
+
+  private int getGraphObjectCount () {
+    if ( graphObjectType == NODES ) 
+      return Cytoscape.getRootGraph().getNodeCount();
+    else 
+      return Cytoscape.getRootGraph().getEdgeCount();
+  }
+    
+
 
 
   public void propertyChange ( PropertyChangeEvent e ) {

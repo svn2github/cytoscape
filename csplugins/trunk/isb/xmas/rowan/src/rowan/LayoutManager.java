@@ -30,12 +30,15 @@ public class LayoutManager
 
     Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu( "Layout" ).add( this );
     Cytoscape.getDesktop().getSwingPropertyChangeSupport().addPropertyChangeListener( this );
-  
-    add( getSaveItem() );
-    add( getSaveAsItem() );
     
     layoutItem = new JMenuItem( currentLayout );
     layoutItem.setEnabled( false );
+
+    add( layoutItem );
+    add( getSaveItem() );
+    add( getSaveAsItem() );
+    
+    
 
     apply_menu = new ApplyMenu( this );
     apply_menu.addMenuListener( this );
@@ -209,9 +212,6 @@ public class LayoutManager
       try {
         Node node = ( Node )currentNetwork.nodesList().get(0);
         Set keys = currentNetwork.getNodeData().getAttributeKeySet( node.getIdentifier(), "NODE_X" );
-        for ( Iterator i = keys.iterator(); i.hasNext(); ) {
-          System.out.println( "add( createLayoutItem( (String)"+i.next()+" ) );");
-        }
       } catch ( Exception e ) {}
       
 
