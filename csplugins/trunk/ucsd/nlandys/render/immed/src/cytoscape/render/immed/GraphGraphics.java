@@ -996,29 +996,29 @@ public final class GraphGraphics
 
     if (arrowType0 == ARROW_BIDIRECTIONAL) {
       final double a = (3.0d + Math.sqrt(5.0d) * 0.5d) * edgeThickness;
-      if (2.0d * a < len) { // Only render the edge if it has not degenerated
-                            // or flipped in direction.
-        m_path2d.reset();
-        final double f = -2.0d * edgeThickness + arrow0Size;
-        m_path2d.moveTo((float) (a + 2.0d * f),
-                        (float) (f + 1.5d * edgeThickness));
-        m_path2d.lineTo((float) a, (float) (1.5d * edgeThickness));
-        m_path2d.lineTo((float) (len - a), (float) (1.5d * edgeThickness));
-        final double g = -2.0d * edgeThickness + arrow1Size;
-        m_path2d.moveTo((float) (len - (a + 2.0d * g)),
-                        (float) (-g + -1.5d * edgeThickness));
-        m_path2d.lineTo((float) (len - a), (float) (-1.5d * edgeThickness));
-        m_path2d.lineTo((float) a, (float) (-1.5d * edgeThickness));
-        // I want the transform to first rotate, then translate.
-        final double cosTheta = (((double) x1) - x0) / len;
-        final double sinTheta = (((double) y1) - y0) / len;
-        m_xformUtil.setTransform(cosTheta, sinTheta, -sinTheta, cosTheta,
-                                 x0, y0);
-        m_path2d.transform(m_xformUtil);
-        if (m_dash[0] != dashLength || m_currStrokeWidth != edgeThickness)
-          setStroke(edgeThickness, dashLength);
-        m_g2d.setColor(edgeColor);
-        m_g2d.draw(m_path2d); } } // We could return here, but don't - same.
+      m_path2d.reset();
+      final double f = -2.0d * edgeThickness + arrow0Size;
+      m_path2d.moveTo((float) (a + 2.0d * f),
+                      (float) (f + 1.5d * edgeThickness));
+      m_path2d.lineTo((float) a, (float) (1.5d * edgeThickness));
+      if (2.0d * a < len) {
+        m_path2d.lineTo((float) (len - a), (float) (1.5d * edgeThickness)); }
+      final double g = -2.0d * edgeThickness + arrow1Size;
+      m_path2d.moveTo((float) (len - (a + 2.0d * g)),
+                      (float) (-g + -1.5d * edgeThickness));
+      m_path2d.lineTo((float) (len - a), (float) (-1.5d * edgeThickness));
+      if (2.0d * a < len) {
+        m_path2d.lineTo((float) a, (float) (-1.5d * edgeThickness)); }
+      // I want the transform to first rotate, then translate.
+      final double cosTheta = (((double) x1) - x0) / len;
+      final double sinTheta = (((double) y1) - y0) / len;
+      m_xformUtil.setTransform(cosTheta, sinTheta, -sinTheta, cosTheta,
+                               x0, y0);
+      m_path2d.transform(m_xformUtil);
+      if (m_dash[0] != dashLength || m_currStrokeWidth != edgeThickness)
+        setStroke(edgeThickness, dashLength);
+      m_g2d.setColor(edgeColor);
+      m_g2d.draw(m_path2d); } // We could return here, but don't - same.
     else { // Render the line segment if necessary.
       final double x0Adj;
       final double y0Adj;
