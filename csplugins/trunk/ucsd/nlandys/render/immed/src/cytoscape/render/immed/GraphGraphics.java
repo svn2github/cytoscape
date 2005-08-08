@@ -1004,13 +1004,13 @@ public final class GraphGraphics
       final double a = (3.0d + Math.sqrt(5.0d) * 0.5d) * edgeThickness;
       m_path2d.reset();
       final double f = (-9.0d / 4.0d) * edgeThickness + arrow0Size;
-      m_path2d.moveTo((float) (a + 2.0d * f),
+      m_path2d.moveTo((float) (a + 4.0d * f),
                       (float) (f + 1.5d * edgeThickness));
       m_path2d.lineTo((float) a, (float) (1.5d * edgeThickness));
       if (2.0d * a < len) {
         m_path2d.lineTo((float) (len - a), (float) (1.5d * edgeThickness)); }
       final double g = (-9.0d / 4.0d) * edgeThickness + arrow1Size;
-      m_path2d.moveTo((float) (len - (a + 2.0d * g)),
+      m_path2d.moveTo((float) (len - (a + 4.0d * g)),
                       (float) (-g + -1.5d * edgeThickness));
       m_path2d.lineTo((float) (len - a), (float) (-1.5d * edgeThickness));
       if (2.0d * a < len) {
