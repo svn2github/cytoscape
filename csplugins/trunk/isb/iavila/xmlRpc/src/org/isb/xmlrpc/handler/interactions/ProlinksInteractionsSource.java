@@ -1,6 +1,7 @@
 package org.isb.xmlrpc.handler.interactions;
 
 import java.lang.*;
+import java.sql.*;
 import java.util.*;
 import org.isb.xmlrpc.handler.*;
 import org.isb.xmlrpc.handler.db.*;
@@ -30,14 +31,17 @@ import org.isb.xmlrpc.handler.db.*;
  * | species_id | int(11)     | YES  |     | NULL    |       |<br>
  * +------------+-------------+------+-----+---------+-------+<br>
  * 
- * TODO: add more info about DB organization
  *
  * @author <a href="mailto:iavila@systemsbiology.org">Iliana Avila-Campillo</a>
  */
 public class ProlinksInteractionsSource extends SQLDBHandler 
 	implements InteractionsDataSource{
 
-  public static final String NAME = "Prolinks";
+	/**
+	 * This is the same name as in the MyQSL DB
+	 */
+  public static final String NAME = "prolinks";
+  public static final String GENE_ID_TYPE = "ProlinksID";
   
   
   /**
@@ -61,7 +65,9 @@ public class ProlinksInteractionsSource extends SQLDBHandler
    * for example, "ORF","GI", etc.
    */
   public Vector getIDtypes (){
-	  return new Vector();
+	  Vector ids = new Vector();
+	  ids.add(GENE_ID_TYPE);
+	  return ids;
   }//getIDTypes
   
   /**
@@ -73,7 +79,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler
   
   /**
    * @return the type of backend implementation (how requests to the data source
-   * are implemented) one of WEB_SERVICE, LOCAL_DB, REMOTE_DB, MEMORY
+   * are implemented) one of WEB_SERVICE, LOCAL_DB, REMOTE_DB, MEMORY, MIXED
    */
   public String getBackendType (){
     // need to figure out if mySQL DB is running locally or remotely
@@ -85,8 +91,22 @@ public class ProlinksInteractionsSource extends SQLDBHandler
    * source contains information
    */
   public Vector getSupportedSpecies (){
-	  
-	  return new Vector();
+	  String sql = "SELECT species FROM species";
+	  ResultSet rs = query(sql);
+	  if(rs == null){
+		  return new Vector();
+	  }
+	  Vector species = new Vector();
+	  try{
+		  while(rs.next()){
+			  String sp = (String)rs.getObject(1);
+			  species.add(sp);
+		  }
+	  }catch (SQLException e){
+		  e.printStackTrace();
+		  return species;
+	  }
+	  return species;
   }
 
   /**
@@ -96,6 +116,14 @@ public class ProlinksInteractionsSource extends SQLDBHandler
 
   public String getVersion (){
     // db table should contains meta-information like this
+	  String sql = "SELECT timestamp FROM when_updated WHERE db=\"prolinks\"";
+	  ResultSet rs = query(sql);
+	  if(rs == null)
+		  return "ERROR";
+	  if(rs.last()){
+		  Timestamp ts = rs.getTimestamp(1);
+		  return ts.toString();
+	  }
     return "";
   }
 

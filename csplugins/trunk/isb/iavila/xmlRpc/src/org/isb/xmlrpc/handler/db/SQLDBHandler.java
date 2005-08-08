@@ -14,9 +14,13 @@ import java.lang.*;
 public class SQLDBHandler implements DBHandler {
 
 	public static final String MYSQL_JDBC_DRIVER = "com.mysql.jdbc.Driver";
+
 	protected boolean driverIsLoaded = false;
+
 	protected String url;
+
 	protected Connection connection;
+
 	protected boolean debug = false;
 
 	/**
@@ -156,22 +160,79 @@ public class SQLDBHandler implements DBHandler {
 	}
 
 	/**
+	 * Not for remote calls.
+	 * 
+	 * @param sql_statement
+	 *            the SQL statement to run
+	 * @return the ResultSet returned, or null if there was a problem
+	 */
+	protected ResultSet query(String sql_statement) {
+		ResultSet rs = null;
+		try {
+			Statement st = this.connection.createStatement();
+			rs = st.executeQuery(sql_statement);
+			return rs;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return rs;
+		}
+	}
+
+	/**
+	 * @param sql_statement
+	 *            the SQL statement to run
+	 * @throws SQLException
+	 */
+	public void queryAndDump(String sql_statement) throws SQLException {
+		if (debug)
+			System.err.println("QUERY: " + sql_statement);
+		ResultSet rs = query(sql_statement);
+		try {
+			dump(rs);
+		} catch (Exception e) {
+			;
+		}
+	}
+
+	/**
+	 * Prints the ResultSet to System.out, not for remote calls.
+	 * 
+	 * @param rs
+	 *            the ResultSet to print
+	 * @throws SQLException
+	 */
+	public static void dump(ResultSet rs) throws SQLException {
+		ResultSetMetaData meta = rs.getMetaData();
+		int colmax = meta.getColumnCount();
+		for (; rs.next();) {
+			for (int i = 0; i < colmax; ++i) {
+				Object o = rs.getObject(i + 1);
+				System.out.print(o.toString() + " ");
+			}
+			System.out.println(" ");
+		}
+	}
+
+	/**
 	 * @return the URL for this db
 	 */
 	public String getURL() {
 		return this.url;
 	}// getURL
-	
+
 	/**
 	 * Sets the database URL, and makes a new connection to it
-	 *
-	 * @param db_url the database URL
-	 * @param props a list of arbitrary string tag/value pairs as connection arguments; 
-	 * normally at least a "user" and "password" property should be included
+	 * 
+	 * @param db_url
+	 *            the database URL
+	 * @param props
+	 *            a list of arbitrary string tag/value pairs as connection
+	 *            arguments; normally at least a "user" and "password" property
+	 *            should be included
 	 */
-	public void setURL (String db_url, Hashtable props){
+	public void setURL(String db_url, Hashtable props) {
 		makeConnection(db_url, props);
-	}	
+	}
 
 	/**
 	 * Closes the connection to the DB

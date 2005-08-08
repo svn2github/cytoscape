@@ -309,7 +309,13 @@ public class InteractionsHandler implements InteractionsDataSource {
 	 *         source contains information
 	 */
 	public Vector getSupportedSpecies() {
-		return new Vector();
+		Vector species = new Vector();
+		Iterator it = this.interactionSources.iterator();
+		while(it.hasNext()){
+			Vector sp = ( (InteractionsDataSource)it.next() ).getSupportedSpecies();
+			species.addAll(sp);
+		}
+		return species;
 	}
 
 	/**
@@ -325,7 +331,23 @@ public class InteractionsHandler implements InteractionsDataSource {
 	public String getVersion() {
 		return "";
 	}
-
+	
+	/**
+	 * 
+	 * @param source_class the fully described class of the InteractionsDataSource
+	 * @return the version of the given class
+	 */
+	public String getVersion (String source_class){
+		Iterator it = this.interactionSources.iterator();
+		while(it.hasNext()){
+			InteractionsDataSource ds = (InteractionsDataSource)it.next();
+			if(ds.getClass().getName().equals(source_class)){
+				return ds.getVersion();
+			}
+		}
+		return "ERROR";
+	}
+	
 	/**
 	 * @return a Vector of Strings that specify types of IDs that this
 	 *         InteractionsDataSource accepts for example, "ORF","GI", etc.
