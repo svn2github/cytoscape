@@ -75,7 +75,12 @@ public final class TestTextRendering
     m_grafx.clear(m_currXCenter, m_currYCenter, m_currScale);
     m_grafx.drawNodeFull(GraphGraphics.SHAPE_ROUNDED_RECTANGLE,
                          -100.0f, -80.0f, 100.0f, 80.0f,
-                         Color.red, 2.0f, Color.black);
+                         Color.yellow, 2.0f, Color.black);
+    m_grafx.drawText(getFont(), "gooF", 0.0f, 0.0f, Color.black);
+    m_grafx.drawNodeFull(GraphGraphics.SHAPE_TRIANGLE,
+                         0.0f, 90.0f, 120.0f, 170.0f,
+                         Color.cyan, 2.0f, Color.black);
+    m_grafx.drawText(getFont(), "Tequst", 60.0f, 130.0f, Color.black);
   }
 
   public void mouseClicked(MouseEvent e) {}
