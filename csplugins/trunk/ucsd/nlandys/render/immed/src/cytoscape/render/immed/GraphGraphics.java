@@ -865,7 +865,7 @@ public final class GraphGraphics
    *                                   endpoint specified;
    *                                   the ratio of edge thickness
    *                                   to arrow size cannot exceed
-   *                                   four-ninths</td                    </tr>
+   *                                   8/17</td>                          </tr>
    *   <tr>  <td>ARROW_MONO</td>     <td>either both arrowheads must be
    *                                   of this type of neither one must be
    *                                   of this type; mono edges look
@@ -937,9 +937,9 @@ public final class GraphGraphics
             ("for ARROW_TEE e/s is greater than 1/2");
         break;
       case ARROW_BIDIRECTIONAL:
-        if (!(9.0d * edgeThickness <= 4.0d * arrow0Size))
+        if (!(17.0d * edgeThickness <= 8.0d * arrow0Size))
           throw new IllegalArgumentException
-            ("for ARROW_BIDIRECTIONAL e/s is greater than 4/9");
+            ("for ARROW_BIDIRECTIONAL e/s is greater than 8/17");
         if (arrowType1 != ARROW_BIDIRECTIONAL)
           throw new IllegalArgumentException
             ("either both or neither arrows must be ARROW_BIDIRECTIONAL");
@@ -978,9 +978,9 @@ public final class GraphGraphics
             ("for ARROW_TEE e/s is greater than 1/2");
         break;
       case ARROW_BIDIRECTIONAL:
-        if (!(9.0d * edgeThickness <= 4.0d * arrow1Size))
+        if (!(17.0d * edgeThickness <= 8.0d * arrow1Size))
           throw new IllegalArgumentException
-            ("for ARROW_BIDIRECTIONAL e/s is greater than 4/9");
+            ("for ARROW_BIDIRECTIONAL e/s is greater than 8/17");
         if (arrowType0 != ARROW_BIDIRECTIONAL)
           throw new IllegalArgumentException
             ("either both or neither arrows must be ARROW_BIDIRECTIONAL");
@@ -1001,15 +1001,15 @@ public final class GraphGraphics
     if (len == 0.0d) return;
 
     if (arrowType0 == ARROW_BIDIRECTIONAL) {
-      final double a = (3.0d + Math.sqrt(5.0d) * 0.5d) * edgeThickness;
+      final double a = (6.0d + Math.sqrt(17.0d) / 2.0d) * edgeThickness;
       m_path2d.reset();
-      final double f = (-9.0d / 4.0d) * edgeThickness + arrow0Size;
+      final double f = (-17.0d / 8.0d) * edgeThickness + arrow0Size;
       m_path2d.moveTo((float) (a + 4.0d * f),
                       (float) (f + 1.5d * edgeThickness));
       m_path2d.lineTo((float) a, (float) (1.5d * edgeThickness));
       if (2.0d * a < len) {
         m_path2d.lineTo((float) (len - a), (float) (1.5d * edgeThickness)); }
-      final double g = (-9.0d / 4.0d) * edgeThickness + arrow1Size;
+      final double g = (-17.0d / 8.0d) * edgeThickness + arrow1Size;
       m_path2d.moveTo((float) (len - (a + 4.0d * g)),
                       (float) (-g + -1.5d * edgeThickness));
       m_path2d.lineTo((float) (len - a), (float) (-1.5d * edgeThickness));
