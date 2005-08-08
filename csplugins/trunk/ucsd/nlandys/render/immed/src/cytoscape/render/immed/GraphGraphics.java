@@ -818,7 +818,7 @@ public final class GraphGraphics
    * because the arrow at endpoint 0 gets rendered first.<p>
    * There are some constraints on the ratio of edge thickness to arrow
    * size, listed in the table below.  Note that it is enough for this ratio
-   * to be less than or equal to one-half for all of the specific arrowhead
+   * to be less than or equal to 0.47 for all of the specific arrowhead
    * constraints to pass.
    * <blockquote><table border="1" cellpadding="5" cellspacing="0">
    *   <tr>  <th>arrow type</th>     <th>placement of arrow</th>          </tr>
