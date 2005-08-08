@@ -1423,6 +1423,7 @@ public final class GraphGraphics
     final java.awt.font.GlyphVector glyphV =
       font.layoutGlyphVector(getFontRenderContext(), m_chars, 0, text.length(),
                              java.awt.Font.LAYOUT_NO_LIMIT_CONTEXT);
+    final Shape glyphShape = glyphV.getOutline();
     final AffineTransform origXform = m_g2d.getTransform();
     m_xformUtil.setTransform(origXform);
     m_xformUtil.translate(xCenter, yCenter);
@@ -1430,7 +1431,7 @@ public final class GraphGraphics
     m_xformUtil.translate(-xCenter, -yCenter);
     m_g2d.setTransform(m_xformUtil);
     m_g2d.setColor(color);
-    m_g2d.drawGlyphVector(glyphV, xCenter, yCenter);
+    m_g2d.fill(glyphShape);
     m_g2d.setTransform(origXform);
   }
 
