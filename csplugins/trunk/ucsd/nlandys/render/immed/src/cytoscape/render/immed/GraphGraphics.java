@@ -858,15 +858,21 @@ public final class GraphGraphics
    *                                   look completely different from other
    *                                   edges; arrow colors are completely
    *                                   ignored for this type of edge;
+   *                                   the edge arrow is drawn such that
+   *                                   it fits snugly inside of an
+   *                                   ARROW_DELTA of specified size times
+   *                                   two, where the delta's tip is at edge
+   *                                   endpoint specified;
    *                                   the ratio of edge thickness
    *                                   to arrow size cannot exceed
-   *                                   one-half</td>                      </tr>
+   *                                   four-ninths</td                    </tr>
    *   <tr>  <td>ARROW_MONO</td>     <td>either both arrowheads must be
    *                                   of this type of neither one must be
    *                                   of this type; mono edges look
    *                                   completely different from other edges
    *                                   because an arrowhead (an ARROW_DELTA)
-   *                                   is placed in the middle of the edge
+   *                                   is placed such that its tip is in the
+   *                                   middle of the edge
    *                                   segment, pointing from (x0,y0) to
    *                                   (x1,y1); the color
    *                                   and size of the first arrow (arrow0)
@@ -931,9 +937,9 @@ public final class GraphGraphics
             ("for ARROW_TEE e/s is greater than 1/2");
         break;
       case ARROW_BIDIRECTIONAL:
-        if (!(((double) edgeThickness) <= 0.5d * arrow0Size))
+        if (!(9.0d * edgeThickness <= 4.0d * arrow0Size))
           throw new IllegalArgumentException
-            ("for ARROW_BIDIRECTIONAL e/s is greater than 1/2");
+            ("for ARROW_BIDIRECTIONAL e/s is greater than 4/9");
         if (arrowType1 != ARROW_BIDIRECTIONAL)
           throw new IllegalArgumentException
             ("either both or neither arrows must be ARROW_BIDIRECTIONAL");
@@ -972,9 +978,9 @@ public final class GraphGraphics
             ("for ARROW_TEE e/s is greater than 1/2");
         break;
       case ARROW_BIDIRECTIONAL:
-        if (!(((double) edgeThickness) <= 0.5d * arrow1Size))
+        if (!(9.0d * edgeThickness <= 4.0d * arrow1Size))
           throw new IllegalArgumentException
-            ("for ARROW_BIDIRECTIONAL e/s is greater than 1/2");
+            ("for ARROW_BIDIRECTIONAL e/s is greater than 4/9");
         if (arrowType0 != ARROW_BIDIRECTIONAL)
           throw new IllegalArgumentException
             ("either both or neither arrows must be ARROW_BIDIRECTIONAL");
@@ -991,19 +997,19 @@ public final class GraphGraphics
     final double len = Math.sqrt((((double) x1) - x0) * (((double) x1) - x0) +
                                  (((double) y1) - y0) * (((double) y1) - y0));
     // If the length of the edge is zero we're going to skip completely over
-    // all rendering.  This may not be the 100% correct approach.  We'll see.
+    // all rendering.
     if (len == 0.0d) return;
 
     if (arrowType0 == ARROW_BIDIRECTIONAL) {
       final double a = (3.0d + Math.sqrt(5.0d) * 0.5d) * edgeThickness;
       m_path2d.reset();
-      final double f = -2.0d * edgeThickness + arrow0Size;
+      final double f = (-9.0d / 4.0d) * edgeThickness + arrow0Size;
       m_path2d.moveTo((float) (a + 2.0d * f),
                       (float) (f + 1.5d * edgeThickness));
       m_path2d.lineTo((float) a, (float) (1.5d * edgeThickness));
       if (2.0d * a < len) {
         m_path2d.lineTo((float) (len - a), (float) (1.5d * edgeThickness)); }
-      final double g = -2.0d * edgeThickness + arrow1Size;
+      final double g = (-9.0d / 4.0d) * edgeThickness + arrow1Size;
       m_path2d.moveTo((float) (len - (a + 2.0d * g)),
                       (float) (-g + -1.5d * edgeThickness));
       m_path2d.lineTo((float) (len - a), (float) (-1.5d * edgeThickness));
