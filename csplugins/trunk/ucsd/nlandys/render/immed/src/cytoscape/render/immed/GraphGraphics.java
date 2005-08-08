@@ -828,7 +828,7 @@ public final class GraphGraphics
    *                                   end (center of round
    *                                   semicircle end exactly equal to
    *                                   endpoint specified); arrow size
-   *                                   and color are ignored</td>         </tr>
+   *                                   and arrow color are ignored</td>   </tr>
    *   <tr>  <td>ARROW_DISC</td>     <td>the disc arrowhead is placed
    *                                   such that its center is at the
    *                                   specified endpoint; the diameter
