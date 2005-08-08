@@ -148,21 +148,28 @@ public final class TestBidirectional extends Frame implements Runnable
     float edgeThickness = 2.0f;
     float dashLength = 0.0f;
     if (m_grafx.computeEdgeIntersection
-        (GraphGraphics.SHAPE_ELLIPSE, xMin1, yMin1, xMax1, yMax1, 4.0f,
+        (GraphGraphics.SHAPE_ELLIPSE, xMin1, yMin1, xMax1, yMax1, 0.0f,
          xCenter2, yCenter2, m_xsect1Coords) &&
         m_grafx.computeEdgeIntersection
-        (GraphGraphics.SHAPE_VEE, xMin2, yMin2, xMax2, yMax2, 4.0f,
+        (GraphGraphics.SHAPE_VEE, xMin2, yMin2, xMax2, yMax2, 0.0f,
          xCenter1, yCenter1, m_xsect2Coords) &&
         // If dot product of original line and new line is greater than zero,
         // which means that the line orientation has not flipped or
         // degenerated.
         (xCenter1 - xCenter2) * (m_xsect1Coords[0] - m_xsect2Coords[0]) +
         (yCenter1 - yCenter2) * (m_xsect1Coords[1] - m_xsect2Coords[1]) > 0.0d)
-      m_grafx.drawEdgeFull(GraphGraphics.ARROW_BIDIRECTIONAL, 10.0f, null,
-                           GraphGraphics.ARROW_BIDIRECTIONAL, 10.0f, null,
-                           m_xsect1Coords[0], m_xsect1Coords[1],
-                           m_xsect2Coords[0], m_xsect2Coords[1],
-                           edgeThickness, Color.darkGray, dashLength);
+      {
+//         m_grafx.drawEdgeFull(GraphGraphics.ARROW_DELTA, 40.0f, Color.blue,
+//                              GraphGraphics.ARROW_DELTA, 20.0f, Color.blue,
+//                              m_xsect1Coords[0], m_xsect1Coords[1],
+//                              m_xsect2Coords[0], m_xsect2Coords[1],
+//                              0.0f, Color.black, 2.0f);
+        m_grafx.drawEdgeFull(GraphGraphics.ARROW_BIDIRECTIONAL, 20.0f, null,
+                             GraphGraphics.ARROW_BIDIRECTIONAL, 10.0f, null,
+                             m_xsect1Coords[0], m_xsect1Coords[1],
+                             m_xsect2Coords[0], m_xsect2Coords[1],
+                             edgeThickness, Color.darkGray, dashLength);
+      }
   }
 
   public boolean isResizable() { return false; }
