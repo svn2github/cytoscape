@@ -66,8 +66,8 @@ public class PhoebeNetworkView
     this.title = title;
     initialize();
 
-    getComponent().setBounds(0, 0, 500, 500);
-    getCanvas().getLayer().setBounds(0, 0, 500, 500);
+    getComponent().setBounds(0, 0, 1, 1);
+    getCanvas().getLayer().setBounds(0, 0, 1, 1);
 
   }
 

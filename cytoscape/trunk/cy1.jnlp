@@ -3,8 +3,8 @@
   codebase="http://localhost/webstart"
                    href="cy1.jnlp">
   <information>
-    <title>Cytoscape WebStart, Figure #1</title>
-    <vendor>ISB, David J. Reiss, Galitskilab</vendor>
+    <title>Cytoscape WebStart</title>
+    <vendor>Cytoscape Collaboration</vendor>
     <homepage href="index.html"/>
     <offline-allowed/>
   </information>
@@ -14,9 +14,9 @@
   <resources>
     <j2se version="1.4+" max-heap-size="1024M"/>
 <jar href="cytoscape.jar"/>
-<jar href="data.jar"/>
 <jar href="lib/fing.jar"/>
 <jar href="lib/coltginy.jar"/>
+<jar href="lib/cytoscape-data-attr.jar"/>
 <jar href="lib/cytoscape-graph-dynamic.jar"/>
 <jar href="lib/cytoscape-graph-fixed.jar"/>
 <jar href="lib/cytoscape-graph-layout.jar"/>
