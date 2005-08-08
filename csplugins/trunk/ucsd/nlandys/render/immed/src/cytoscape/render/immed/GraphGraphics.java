@@ -1428,7 +1428,6 @@ public final class GraphGraphics
     m_xformUtil.setTransform(origXform);
     m_xformUtil.translate(xCenter, yCenter);
     m_xformUtil.scale(1.0d, -1.0d);
-    m_xformUtil.translate(-xCenter, -yCenter);
     m_g2d.setTransform(m_xformUtil);
     m_g2d.setColor(color);
     m_g2d.fill(glyphShape);
