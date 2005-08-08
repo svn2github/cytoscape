@@ -61,6 +61,12 @@ public class DynamicExpression extends AbstractAction {
 	 * each node.
 	 */
 	public static final String EXPRESSION_ATTR = "expression";
+	
+	/**
+	 * The node attribute name that is used to assign significance values to
+	 * each node
+	 */
+	public static final String SIGNIFICANCE_ATTR = "significance";
 
 	/**
 	 * The node attribute name that is used to assign an expression
@@ -465,6 +471,8 @@ public class DynamicExpression extends AbstractAction {
 			mRNAMeasurement measurement = 
 				expressionData.getMeasurement(uid,conditionName);
 			double ratio;
+			double significance;
+			boolean hasSig = expressionData.hasSignificanceValues();
 			if (measurement == null) {
 				Double[] metaNodeProfile = 
 					(Double[]) cyNetwork.getNodeAttributeValue(node,
@@ -474,10 +482,18 @@ public class DynamicExpression extends AbstractAction {
 				}
 				ratio = metaNodeProfile[conditionIndex].doubleValue();
 			} else {
-				ratio = measurement.getRatio();
+				ratio = measurement.getRatio();	
 			}
+			
 			cyNetwork.setNodeAttributeValue(node, EXPRESSION_ATTR,
 					new Double(ratio));
+			
+			if(hasSig){
+				significance = measurement.getSignificance();
+				cyNetwork.setNodeAttributeValue(node, SIGNIFICANCE_ATTR, new Double(significance));
+			}
+			
+			
 		}// for c
 		VisualMappingManager vmManager = 
 			Cytoscape.getDesktop().getVizMapManager();
