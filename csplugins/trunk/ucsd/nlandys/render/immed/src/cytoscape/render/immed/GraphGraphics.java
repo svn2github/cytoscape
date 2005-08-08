@@ -1406,6 +1406,36 @@ public final class GraphGraphics
       return false; }
   }
 
+  private char[] m_chars = new char[20];
+
+  /**
+   *
+   */
+  public final void drawText(final java.awt.Font font,
+                             final String text,
+                             final float xCenter,
+                             final float yCenter,
+                             final Color color)
+  {
+    if (text.length() > m_chars.length)
+      m_chars = new char[Math.max(m_chars.length * 2, text.length())];
+    text.getChars(0, text.length(), m_chars, 0);
+    final java.awt.font.GlyphVector glyphV =
+      font.layoutGlyphVector(getFontRenderContext(), m_chars, 0, text.length(),
+                             java.awt.Font.LAYOUT_NO_LIMIT_CONTEXT);
+    m_g2d.setColor(color);
+    m_g2d.drawGlyphVector(glyphV, xCenter, yCenter);
+  }
+
+  // This is not publicly mutable.
+  private final java.awt.font.FontRenderContext m_fontRenderContext =
+    new java.awt.font.FontRenderContext(null, true, true);
+
+  public final java.awt.font.FontRenderContext getFontRenderContext()
+  {
+    return m_fontRenderContext;
+  }
+
   /*
    * Computes the intersection of the line segment from (x1,y1)
    * to (x2,y2) with the line segment from (x3,y3)
