@@ -806,6 +806,13 @@ public final class GraphGraphics
   }
 
   /**
+   * Something is rendered in all cases except where the length of the edge
+   * is zero (because in that case directionality cannot be determined for
+   * at least some arrowheads).  However, it may make sense for higher levels
+   * of implementation to only render edges when their arrowheads do not
+   * become cluttered.  For higher levels to be able to do this, I've provided
+   * detailed information regarding the size and position of arrowheads (see
+   * table below).<p>
    * The arrow types must each be one of the ARROW_* constants.
    * The arrow at endpoint 1 is always on top of the arrow at endpoint 0
    * because the arrow at endpoint 0 gets rendered first.<p>
