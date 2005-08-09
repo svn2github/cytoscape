@@ -18,6 +18,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
+import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
 
 
@@ -1429,8 +1430,15 @@ public final class GraphGraphics
     final Shape glyphShape = glyphV.getOutline();
     final AffineTransform origXform = m_g2d.getTransform();
     m_xformUtil.setTransform(origXform);
+    final Rectangle2D glyphBounds = glyphShape.getBounds2D();
+    // We're going to put the center of the physical shape at the center point
+    // specified in the input parameters.  This may not be the ideal method
+    // because it chops white space from beginning and end of glyph area.
+    // Also think about italics.  But this may in fact be a good approach.
     m_xformUtil.translate(xCenter, yCenter);
     m_xformUtil.scale(1.0d, -1.0d);
+    m_xformUtil.translate(-glyphBounds.getCenterX(),
+                          -glyphBounds.getCenterY());
     m_g2d.setTransform(m_xformUtil);
     m_g2d.setColor(color);
     m_g2d.fill(glyphShape);
