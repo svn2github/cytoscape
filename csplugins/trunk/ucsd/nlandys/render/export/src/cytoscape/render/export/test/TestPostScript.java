@@ -18,7 +18,9 @@ public class TestPostScript
     final PSGraphics2D psGrafx =
       new PSGraphics2D(System.out, new Dimension(width, height));
     final Image img = new ImageImposter(psGrafx, width, height);
-    final GraphGraphics grafx = new GraphGraphics(img, Color.white, false);
+    final GraphGraphics grafx =
+      new GraphGraphics(img, Color.white,
+                        GraphGraphics.HINT_TEXT_AS_STRING, false);
     psGrafx.startExport();
     grafx.clear(0.0d, 0.0d, 1.0d);
     grafx.drawNodeFull(GraphGraphics.SHAPE_ROUNDED_RECTANGLE,
