@@ -52,17 +52,17 @@ public final class GraphGraphics
 {
 
   /**
-   * This hint controls the way that text is drawn to the underlying
+   * This flag controls the way that text is drawn to the underlying
    * graphics context.  By default, all text rendering operations involve
    * using a specified font to convert a given text string to be rendered
    * into a shape.  This shape is then rendered using Graphics2D.fill(Shape)
    * using the graphics context of the underlying image.  However, if this
-   * hint is set, the operation Graphics2D.drawString(String, float, float)
+   * flag is set, the operation Graphics2D.drawString(String, float, float)
    * is executed instead of the shape filling operation.  This difference
    * may have an impact on code that uses this class to generate postscript
    * for example.
    */
-  public static final int HINT_TEXT_AS_STRING = 1;
+  public static final int FLAG_TEXT_AS_STRING = 1;
 
   public static final byte SHAPE_RECTANGLE = 0;
   public static final byte SHAPE_DIAMOND = 1;
@@ -92,7 +92,7 @@ public final class GraphGraphics
   public final Image image;
 
   private final Color m_bgColor;
-  private final int m_hints;
+  private final int m_flags;
   private final boolean m_debug;
   private final Ellipse2D.Double m_ellp2d;
   private final GeneralPath m_path2d;
@@ -130,20 +130,20 @@ public final class GraphGraphics
    * @param bgColor a color to use when clearing the image before painting
    *   a new frame; transparent colors are honored, provided that the image
    *   argument supports transparent colors.
-   * @param hints HINT_* contstants can be bitwise or-ed together to
+   * @param flags FLAG_* contstants can be bitwise or-ed together to
    *   customize the behavior of this instance; if zero is passed then
-   *   no hints will be activated.
+   *   no flags will be activated.
    * @param debug if this is true, extra [and time-consuming] error checking
    *   will take place in each method call; it is recommended to have this
    *   value set to true during the testing phase; set it to false once
    *   you are sure that code does not mis-use this module.
    */
   public GraphGraphics(final Image image, final Color bgColor,
-                       final int hints, final boolean debug)
+                       final int flags, final boolean debug)
   {
     this.image = image;
     m_bgColor = bgColor;
-    m_hints = hints;
+    m_flags = flags;
     m_debug = debug;
     m_ellp2d = new Ellipse2D.Double();
     m_path2d = new GeneralPath();
@@ -1475,7 +1475,7 @@ public final class GraphGraphics
    *   rectangle with specified font is centered on this X coordinate.
    * @param yCenter the text string is drawn so that its logical bounds
    *   rectangle with specified font is centered on this Y coordinate.
-   * @see #HINT_TEXT_AS_STRING
+   * @see #FLAG_TEXT_AS_STRING
    */
   public final void drawText(final Font font,
                              final String text,
@@ -1488,7 +1488,7 @@ public final class GraphGraphics
     m_xformUtil.translate(xCenter, yCenter);
     m_xformUtil.scale(1.0d, -1.0d);
     m_g2d.setColor(color);
-    if ((m_hints & HINT_TEXT_AS_STRING) == 0) {
+    if ((m_flags & FLAG_TEXT_AS_STRING) == 0) {
       final GlyphVector glyphV;
       {
         if (text.length() > m_chars.length)
