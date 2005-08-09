@@ -204,10 +204,20 @@ public final class GraphGraphics
     m_g2d.setComposite(origComposite);
     m_g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                            RenderingHints.VALUE_ANTIALIAS_ON);
+    m_g2d.setRenderingHint(RenderingHints.KEY_RENDERING,
+                           RenderingHints.VALUE_RENDER_QUALITY);
+    m_g2d.setRenderingHint(RenderingHints.KEY_DITHERING,
+                           RenderingHints.VALUE_DITHER_ENABLE);
     m_g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
                            RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
     m_g2d.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
                            RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+    m_g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+                           RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+    m_g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION,
+                           RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+    m_g2d.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING,
+                           RenderingHints.VALUE_COLOR_RENDER_QUALITY);
     m_g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,
                            RenderingHints.VALUE_STROKE_PURE);
     setStroke(0.0f, 0.0f);
