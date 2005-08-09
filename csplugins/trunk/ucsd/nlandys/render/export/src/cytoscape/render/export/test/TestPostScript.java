@@ -19,7 +19,7 @@ public class TestPostScript
       new PSGraphics2D(System.out, new Dimension(width, height));
     final Image img = new ImageImposter(psGrafx, width, height);
     final GraphGraphics grafx =
-      new GraphGraphics(img, Color.white,
+      new GraphGraphics(img, Color.white,// 0, false);
                         GraphGraphics.HINT_TEXT_AS_STRING, false);
     psGrafx.startExport();
     grafx.clear(0.0d, 0.0d, 1.0d);
