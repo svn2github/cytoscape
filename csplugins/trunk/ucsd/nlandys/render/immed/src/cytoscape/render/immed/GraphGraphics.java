@@ -104,7 +104,8 @@ public final class GraphGraphics
   private Graphics m_gMinimal;
   private float m_currStrokeWidth;
   private byte m_nextCustomShapeType;
-  private boolean m_cleared = false;
+  private char[] m_chars;
+  private boolean m_cleared ;
 
   /**
    * All rendering operations will be performed on the specified image.
@@ -139,6 +140,7 @@ public final class GraphGraphics
     m_xformUtil = new AffineTransform();
     m_customShapes = new HashMap();
     m_nextCustomShapeType = s_last_shape + 1;
+    m_chars = new char[20];
     m_cleared = false;
   }
 
@@ -1432,8 +1434,6 @@ public final class GraphGraphics
       return false; }
   }
 
-  private char[] m_chars = new char[20];
-
   /**
    *
    */
@@ -1467,13 +1467,9 @@ public final class GraphGraphics
     m_g2d.setTransform(origXform);
   }
 
-  // This is not publicly mutable.
-  private final FontRenderContext m_fontRenderContext =
-    new FontRenderContext(null, true, true);
-
   public final FontRenderContext getFontRenderContext()
   {
-    return m_fontRenderContext;
+    return new FontRenderContext(null, true, true);
   }
 
   /*
