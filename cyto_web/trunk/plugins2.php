@@ -237,6 +237,42 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 					<hr>
 				</td>
 			</tr>
+			
+			<tr>
+				<td width="20%" valign="top">
+					<b>Dynamic Expression Plugin</b><font size="-1">
+						<br>
+						Version: 1.0
+						<br>
+						Release Date: August 9, 2005</font>
+				</td>
+				<td width="40%" valign="top">
+					This plug-in loads an expression data file (consult the Cytoscape manual to learn 
+					about the format of this type of file) and then allows the user to color the nodes
+					in a network according to their expression values. The GUI works like a VCR, with
+					play, pause, and stop buttons. If the user presses the play button, the plug-in will
+					iterate over all the conditions in the expression file and color the nodes according
+					to their corresponding expression values.
+					
+					<p>
+						Released by: Iliana Avila-Campillo, Galitski Group, <a href="http://www.systemsbiology.org/">Institute for Systems Biology</a>.
+					</p>
+				</td>
+				<td width="20%" valign="top">
+				 Verified to work in 2.1. <br>Not tested in Cytoscape 2.0.
+				</td>
+				<td width="20%" valign="top">
+					[<a href="plugins/DynamicXpr/dynxpr.jar">Download Plugin .jar</a>]
+					<br>
+					[<a href="plugins/DynamicXpr/README.txt">Download README</a>]
+				</td>
+			</tr>
+			<tr>
+				<td colspan="4">
+					<hr>
+				</td>
+			</tr>
+			
 			<tr>
 				<td width="20%" valign="top">
 					<b>Expression Correlation Network Plugin</b><font size="-1">
