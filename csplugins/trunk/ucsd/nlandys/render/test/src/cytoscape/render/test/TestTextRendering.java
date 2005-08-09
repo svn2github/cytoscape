@@ -58,7 +58,7 @@ public final class TestTextRendering
         inx++; }
 
       font = new Font((args.length > 1) ? args[1] : null, Font.PLAIN, 1);
-      fontScaleFactor = 0.2d / sqrtN;
+      fontScaleFactor = 0.1d / sqrtN;
 
       colors = new Color[256];
       for (int i = 0; i < colors.length; i++) {
