@@ -129,7 +129,7 @@ public final class TestTextRendering
   private final void updateNodeImage()
   {
     m_grafx.clear(m_currXCenter, m_currYCenter, m_currScale);
-    final RTreeEntryEnumerator iter = m_tree.queryOverlap
+    RTreeEntryEnumerator iter = m_tree.queryOverlap
       ((float) (m_currXCenter - ((double) (m_imgWidth / 2)) / m_currScale),
        (float) (m_currYCenter - ((double) (m_imgHeight / 2)) / m_currScale),
        (float) (m_currXCenter + ((double) (m_imgWidth / 2)) / m_currScale),
@@ -141,9 +141,17 @@ public final class TestTextRendering
                            m_extents[0], m_extents[1],
                            m_extents[2], m_extents[3],
                            m_colors[inx % 256],
-                           0.0f, null);
+                           0.0f, null); }
+    iter = m_tree.queryOverlap
+      ((float) (m_currXCenter - ((double) (m_imgWidth / 2)) / m_currScale),
+       (float) (m_currYCenter - ((double) (m_imgHeight / 2)) / m_currScale),
+       (float) (m_currXCenter + ((double) (m_imgWidth / 2)) / m_currScale),
+       (float) (m_currYCenter + ((double) (m_imgHeight / 2)) / m_currScale),
+       null, 0);
+    while (iter.numRemaining() > 0) {
+      final int inx = iter.nextExtents(m_extents, 0);
       m_grafx.drawText
-        (m_font, m_fontScaleFactor, "foo",
+        (m_font, m_fontScaleFactor, "" + (Integer.MAX_VALUE - inx),
          (float) ((((double) m_extents[0]) + m_extents[2]) / 2.0d),
          (float) ((((double) m_extents[1]) + m_extents[3]) / 2.0d),
          m_fontColor); }
