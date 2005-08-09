@@ -56,8 +56,12 @@ public final class TestTextRendering
         tree.insert(inx, xMin, yMin, xMax, yMax);
         inx++; }
 
+//       font = (new Font((args.length > 1) ? args[1] : null,
+//                        Font.PLAIN, 1)).deriveFont((float) (0.2d / sqrtN));
+//       font = new Font((args.length > 1) ? args[1] : null,
+//                       Font.PLAIN, 1);
       font = (new Font((args.length > 1) ? args[1] : null,
-                       Font.PLAIN, 1)).deriveFont((float) (0.2d / sqrtN));
+                       Font.PLAIN, 1)).deriveFont(0.499999999999999999999f);
 
       colors = new Color[256];
       for (int i = 0; i < colors.length; i++) {
@@ -140,7 +144,7 @@ public final class TestTextRendering
                            m_colors[inx % 256],
                            0.0f, null);
       m_grafx.drawText
-        (m_font, "foo",
+        (m_font, 1.0d, "foo",
          (float) ((((double) m_extents[0]) + m_extents[2]) / 2.0d),
          (float) ((((double) m_extents[1]) + m_extents[3]) / 2.0d),
          m_fontColor); }
