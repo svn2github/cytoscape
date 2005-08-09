@@ -1413,14 +1413,13 @@ public final class GraphGraphics
   private char[] m_chars = new char[20];
 
   /**
-   * @param outlineColor can be null.
+   *
    */
   public final void drawText(final Font font,
                              final String text,
                              final float xCenter,
                              final float yCenter,
-                             final Color color,
-                             final Color outlineColor)
+                             final Color color)
   {
     if (text.length() > m_chars.length)
       m_chars = new char[Math.max(m_chars.length * 2, text.length())];
@@ -1443,15 +1442,6 @@ public final class GraphGraphics
     m_g2d.setTransform(m_xformUtil);
     m_g2d.setColor(color);
     m_g2d.fill(glyphShape);
-    if (outlineColor != null) {
-      final Rectangle2D stringBounds =
-        font.getStringBounds(text, getFontRenderContext());
-      final double height = stringBounds.getHeight();
-      final double strokeWidth = height / 20.0d;
-      if (m_dash[0] != 0.0f || m_currStrokeWidth != strokeWidth)
-        setStroke((float) strokeWidth, 0.0f);
-      m_g2d.setColor(outlineColor);
-      m_g2d.draw(glyphShape); }
     m_g2d.setTransform(origXform);
   }
 
