@@ -20,7 +20,7 @@ public class TestPostScript
     final Image img = new ImageImposter(psGrafx, width, height);
     final GraphGraphics grafx =
       new GraphGraphics(img, Color.white,// 0, false);
-                        GraphGraphics.HINT_TEXT_AS_STRING, false);
+                        GraphGraphics.FLAG_TEXT_AS_STRING, false);
     psGrafx.startExport();
     grafx.clear(0.0d, 0.0d, 1.0d);
     grafx.drawNodeFull(GraphGraphics.SHAPE_ROUNDED_RECTANGLE,

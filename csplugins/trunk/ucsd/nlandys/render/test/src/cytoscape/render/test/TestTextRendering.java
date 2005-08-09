@@ -51,7 +51,7 @@ public final class TestTextRendering
     addNotify();
     m_img = createImage(m_imgWidth, m_imgHeight);
     m_grafx = new GraphGraphics(m_img, Color.white,// 0, true);
-                                GraphGraphics.HINT_TEXT_AS_STRING, true);
+                                GraphGraphics.FLAG_TEXT_AS_STRING, true);
     updateNodeImage();
     addMouseListener(this);
     addMouseMotionListener(this);
