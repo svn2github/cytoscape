@@ -14,6 +14,7 @@ import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
+import java.awt.font.LineMetrics;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
@@ -1494,7 +1495,22 @@ public final class GraphGraphics
       m_g2d.setColor(color);
       m_g2d.fill(glyphV.getOutline());
       m_g2d.setTransform(origXform); }
-    else { }
+    else {
+      final AffineTransform origXform = m_g2d.getTransform();
+      m_xformUtil.setTransform(origXform);
+      m_xformUtil.translate(xCenter, yCenter);
+      m_xformUtil.scale(1.0d, -1.0d);
+      final Rectangle2D textBounds =
+        font.getStringBounds(text, getFontRenderContext());
+      m_xformUtil.translate(-textBounds.getCenterX(),
+                            -textBounds.getCenterY());
+      m_g2d.setTransform(m_xformUtil);
+      m_g2d.setFont(font);
+      m_g2d.setColor(color);
+      final LineMetrics lineMetrics =
+        font.getLineMetrics(text, getFontRenderContext());
+      m_g2d.drawString(text, 0.0f, 0.0f);
+      m_g2d.setTransform(origXform); }
   }
 
   /**
