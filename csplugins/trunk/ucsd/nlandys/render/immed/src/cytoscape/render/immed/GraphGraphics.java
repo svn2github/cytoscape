@@ -60,7 +60,9 @@ public final class GraphGraphics
    * flag is set, the operation Graphics2D.drawString(String, float, float)
    * is executed instead of the shape filling operation.  This difference
    * may have an impact on code that uses this class to generate postscript
-   * for example.
+   * for example.  Note that a factor of two or more performance gain is
+   * achieved in text rendering speed on most platforms when this flag is
+   * used and text is rendered to a native image.
    */
   public static final int FLAG_TEXT_AS_STRING = 1;
 
