@@ -1472,26 +1472,28 @@ public final class GraphGraphics
                              final float yCenter,
                              final Color color)
   {
-    final AffineTransform origXform = m_g2d.getTransform();
-    m_xformUtil.setTransform(origXform);
-    m_xformUtil.translate(xCenter, yCenter);
-    m_xformUtil.scale(1.0d, -1.0d);
-    final GlyphVector glyphV;
-    {
-      if (text.length() > m_chars.length)
-        m_chars = new char[Math.max(m_chars.length * 2, text.length())];
-      text.getChars(0, text.length(), m_chars, 0);
-      glyphV = font.layoutGlyphVector
-        (getFontRenderContext(), m_chars, 0, text.length(),
-         Font.LAYOUT_NO_LIMIT_CONTEXT);
-    }
-    final Rectangle2D glyphBounds = glyphV.getLogicalBounds();
-    m_xformUtil.translate(-glyphBounds.getCenterX(),
-                          -glyphBounds.getCenterY());
-    m_g2d.setTransform(m_xformUtil);
-    m_g2d.setColor(color);
-    m_g2d.fill(glyphV.getOutline());
-    m_g2d.setTransform(origXform);
+    if ((m_hints & HINT_TEXT_AS_STRING) == 0) {
+      final AffineTransform origXform = m_g2d.getTransform();
+      m_xformUtil.setTransform(origXform);
+      m_xformUtil.translate(xCenter, yCenter);
+      m_xformUtil.scale(1.0d, -1.0d);
+      final GlyphVector glyphV;
+      {
+        if (text.length() > m_chars.length)
+          m_chars = new char[Math.max(m_chars.length * 2, text.length())];
+        text.getChars(0, text.length(), m_chars, 0);
+        glyphV = font.layoutGlyphVector
+          (getFontRenderContext(), m_chars, 0, text.length(),
+           Font.LAYOUT_NO_LIMIT_CONTEXT);
+      }
+      final Rectangle2D glyphBounds = glyphV.getLogicalBounds();
+      m_xformUtil.translate(-glyphBounds.getCenterX(),
+                            -glyphBounds.getCenterY());
+      m_g2d.setTransform(m_xformUtil);
+      m_g2d.setColor(color);
+      m_g2d.fill(glyphV.getOutline());
+      m_g2d.setTransform(origXform); }
+    else { }
   }
 
   /**
