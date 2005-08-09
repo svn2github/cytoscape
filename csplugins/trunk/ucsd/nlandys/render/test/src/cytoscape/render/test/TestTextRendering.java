@@ -23,11 +23,11 @@ public final class TestTextRendering
   extends Frame implements MouseListener, MouseMotionListener
 {
 
-  public final static void main(String[] args) throws Exception
+  public final static void main(final String[] args) throws Exception
   {
     EventQueue.invokeAndWait(new Runnable() {
         public void run() {
-          Frame f = new TestTextRendering();
+          Frame f = new TestTextRendering(args.length > 0);
           f.show();
           f.addWindowListener(new WindowAdapter() {
               public void windowClosing(WindowEvent e) {
@@ -45,13 +45,14 @@ public final class TestTextRendering
   private int m_lastXMousePos = 0;
   private int m_lastYMousePos = 0;
 
-  public TestTextRendering()
+  public TestTextRendering(boolean textAsString)
   {
     super();
     addNotify();
     m_img = createImage(m_imgWidth, m_imgHeight);
-    m_grafx = new GraphGraphics(m_img, Color.white,// 0, true);
-                                GraphGraphics.FLAG_TEXT_AS_STRING, true);
+    m_grafx = new GraphGraphics
+      (m_img, Color.white,
+       textAsString ? GraphGraphics.FLAG_TEXT_AS_STRING : 0, true);
     updateNodeImage();
     addMouseListener(this);
     addMouseMotionListener(this);
