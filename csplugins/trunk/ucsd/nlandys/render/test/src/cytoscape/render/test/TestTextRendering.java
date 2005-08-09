@@ -27,6 +27,7 @@ public final class TestTextRendering
   {
     final RTree tree;
     final Font font;
+    final double fontScaleFactor;
     final Color[] colors;
 
     // Populate the tree with entries.
@@ -56,12 +57,8 @@ public final class TestTextRendering
         tree.insert(inx, xMin, yMin, xMax, yMax);
         inx++; }
 
-//       font = (new Font((args.length > 1) ? args[1] : null,
-//                        Font.PLAIN, 1)).deriveFont((float) (0.2d / sqrtN));
-//       font = new Font((args.length > 1) ? args[1] : null,
-//                       Font.PLAIN, 1);
-      font = (new Font((args.length > 1) ? args[1] : null,
-                       Font.PLAIN, 1)).deriveFont(0.499999999999999999999f);
+      font = new Font((args.length > 1) ? args[1] : null, Font.PLAIN, 1);
+      fontScaleFactor = 0.2d / sqrtN;
 
       colors = new Color[256];
       for (int i = 0; i < colors.length; i++) {
@@ -70,7 +67,7 @@ public final class TestTextRendering
 
     EventQueue.invokeAndWait(new Runnable() {
         public void run() {
-          Frame f = new TestTextRendering(tree, font, colors,
+          Frame f = new TestTextRendering(tree, font, fontScaleFactor, colors,
                                           args.length > 2);
           f.show();
           f.addWindowListener(new WindowAdapter() {
@@ -80,6 +77,7 @@ public final class TestTextRendering
 
   private final RTree m_tree;
   private final Font m_font;
+  private final double m_fontScaleFactor;
   private final Color[] m_colors;
   private final int m_imgWidth = 600;
   private final int m_imgHeight = 480;
@@ -95,12 +93,13 @@ public final class TestTextRendering
   private int m_lastXMousePos = 0;
   private int m_lastYMousePos = 0;
 
-  public TestTextRendering(RTree tree, Font font, Color[] colors,
-                           boolean textAsString)
+  public TestTextRendering(RTree tree, Font font, double fontScaleFactor,
+                           Color[] colors, boolean textAsString)
   {
     super();
     m_tree = tree;
     m_font = font;
+    m_fontScaleFactor = fontScaleFactor;
     m_colors = colors;
     addNotify();
     m_img = createImage(m_imgWidth, m_imgHeight);
@@ -144,7 +143,7 @@ public final class TestTextRendering
                            m_colors[inx % 256],
                            0.0f, null);
       m_grafx.drawText
-        (m_font, 1.0d, "foo",
+        (m_font, m_fontScaleFactor, "foo",
          (float) ((((double) m_extents[0]) + m_extents[2]) / 2.0d),
          (float) ((((double) m_extents[1]) + m_extents[3]) / 2.0d),
          m_fontColor); }
