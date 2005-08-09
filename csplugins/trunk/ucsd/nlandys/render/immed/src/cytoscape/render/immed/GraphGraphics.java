@@ -1471,6 +1471,12 @@ public final class GraphGraphics
    *   font in addition to the scaling factor defined by clear() that
    *   determines the resulting size of text rendered to the graphics
    *   context.
+   * @param scaleFactor in order to prevent very small fonts from
+   *   "degenerating", it is necessary to allow users to specify a scale
+   *   factor in addition to the font size and transform defined by
+   *   the clear() method; if this value is 1.0, no additional scaling
+   *   is performed; otherwise, the size of the font is multiplied by this
+   *   value to yield a new virtual font size.
    * @param xCenter the text string is drawn so that its logical bounds
    *   rectangle with specified font is centered on this X coordinate.
    * @param yCenter the text string is drawn so that its logical bounds
@@ -1478,15 +1484,19 @@ public final class GraphGraphics
    * @see #FLAG_TEXT_AS_STRING
    */
   public final void drawText(final Font font,
+                             final double scaleFactor,
                              final String text,
                              final float xCenter,
                              final float yCenter,
                              final Color color)
   {
+    if (m_debug) {
+      if (!(scaleFactor >= 0.0d))
+        throw new IllegalArgumentException("scaleFactor must be positive"); }
     final AffineTransform origXform = m_g2d.getTransform();
     m_xformUtil.setTransform(origXform);
     m_xformUtil.translate(xCenter, yCenter);
-    m_xformUtil.scale(1.0d, -1.0d);
+    m_xformUtil.scale(scaleFactor, -scaleFactor);
     m_g2d.setColor(color);
     if ((m_flags & FLAG_TEXT_AS_STRING) == 0) {
       final GlyphVector glyphV;
