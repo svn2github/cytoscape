@@ -19,7 +19,7 @@ import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.util.Random;
 
-public final class TestTextRendering
+public final class TestSimpleText
   extends Frame implements MouseListener, MouseMotionListener
 {
 
@@ -27,7 +27,7 @@ public final class TestTextRendering
   {
     EventQueue.invokeAndWait(new Runnable() {
         public void run() {
-          Frame f = new TestTextRendering(args.length > 0);
+          Frame f = new TestSimpleText(args.length > 0);
           f.show();
           f.addWindowListener(new WindowAdapter() {
               public void windowClosing(WindowEvent e) {
@@ -45,7 +45,7 @@ public final class TestTextRendering
   private int m_lastXMousePos = 0;
   private int m_lastYMousePos = 0;
 
-  public TestTextRendering(boolean textAsString)
+  public TestSimpleText(boolean textAsString)
   {
     super();
     addNotify();
