@@ -6,6 +6,7 @@ import cytoscape.render.immed.GraphGraphics;
 
 import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -76,11 +77,12 @@ public final class TestTextRendering
     m_grafx.drawNodeFull(GraphGraphics.SHAPE_ROUNDED_RECTANGLE,
                          -100.0f, -80.0f, 100.0f, 80.0f,
                          Color.yellow, 2.0f, Color.black);
-    m_grafx.drawText(getFont(), "gooF", 0.0f, 0.0f, Color.black);
+    final Font font = new Font("Dialog", Font.PLAIN, 14);
+    m_grafx.drawText(font, "Tequst more text", 0.0f, 0.0f, Color.black);
     m_grafx.drawNodeFull(GraphGraphics.SHAPE_TRIANGLE,
                          0.0f, 90.0f, 120.0f, 170.0f,
                          Color.cyan, 2.0f, Color.black);
-    m_grafx.drawText(getFont(), "Tequst", 60.0f, 130.0f, Color.black);
+    m_grafx.drawText(font, "gooF", 60.0f, 130.0f, Color.black);
   }
 
   public void mouseClicked(MouseEvent e) {}
