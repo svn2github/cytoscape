@@ -652,6 +652,12 @@
                 <include name="*.jar"/>
             </fileset>
         </copy>
+        <copy todir="${webstart.dir}/plugins">
+            <fileset dir="plugins">
+                <include name="*.jar"/>
+            </fileset>
+        </copy>
+
         <copy file="plugins/core/pluginsContents.txt"
               todir="${webstart.dir}/plugins"/>
 

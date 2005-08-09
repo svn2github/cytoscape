@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jnlp
-  codebase="http://localhost/webstart"
-                   href="cy1.jnlp">
+   codebase="http://inferno.systemsbiology.net/~xmas/"
+   href="cy1.jnlp">
   <information>
     <title>Cytoscape WebStart</title>
     <vendor>Cytoscape Collaboration</vendor>
@@ -54,9 +54,11 @@
 
 <jar href="plugins/filter.jar"/>
 <jar href="plugins/yLayouts.jar"/>
+
   </resources>
   <application-desc main-class="cytoscape.CyMain">
-  
+    <argument>-rp</argument>
+    <argument>filter.cytoscape.CsFilter</argument>
    
 
   </application-desc>
