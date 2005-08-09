@@ -200,6 +200,9 @@ public final class GraphGraphics
   }
 
   /**
+   * There is a constraint that only applies to SHAPE_ROUNDED_RECTANGLE
+   * which imposes that the maximum of the width and height be strictly
+   * less than twice the minimum of the width and height of the node.<p>
    * @param xQuery the x coordinate of the query point, in the node
    *   coordinate system.
    * @param yQuery the y coordinate of the query point, in the node
@@ -207,7 +210,7 @@ public final class GraphGraphics
    * @exception IllegalArgumentException if xMin is not less than xMax
    *   or if yMin is not less than yMax.
    */
-  public final boolean contains(final byte shapeType,
+  public final boolean contains(final byte nodeShape,
                                 final float xMin, final float yMin,
                                 final float xMax, final float yMax,
                                 final float xQuery, final float yQuery)
@@ -219,8 +222,15 @@ public final class GraphGraphics
       if (!(xMin < xMax)) throw new IllegalArgumentException
                             ("xMin not less than xMax");
       if (!(yMin < yMax)) throw new IllegalArgumentException
-                            ("yMin not less than yMax"); }
-    return getShape(shapeType, xMin, yMin, xMax, yMax).contains(xQuery,
+                            ("yMin not less than yMax");
+      if (nodeShape == SHAPE_ROUNDED_RECTANGLE) {
+        final double width = ((double) xMax) - xMin;
+        final double height = ((double) yMax) - yMin;
+        if (!(Math.max(width, height) < 2.0d * Math.min(width, height)))
+          throw new IllegalArgumentException
+            ("rounded rectangle does not meet constraint " +
+             "max(width, height) < 2 * min(width, height)"); } }
+    return getShape(nodeShape, xMin, yMin, xMax, yMax).contains(xQuery,
                                                                 yQuery);
   }
 
@@ -257,11 +267,11 @@ public final class GraphGraphics
    * if m_path2d is set (every case but the ellipse and rounded rectangle),
    * then m_polyCoords and m_polyNumPoints are also set.
    */
-  private final Shape getShape(final byte shapeType,
+  private final Shape getShape(final byte nodeShape,
                                final double xMin, final double yMin,
                                final double xMax, final double yMax)
   {
-    switch (shapeType) {
+    switch (nodeShape) {
     case SHAPE_ELLIPSE:
       m_ellp2d.setFrame(xMin, yMin, xMax - xMin, yMax - yMin);
       return m_ellp2d;
@@ -403,9 +413,9 @@ public final class GraphGraphics
       return m_path2d;
     default: // Try a custom node shape or throw an exception.
       final double[] storedPolyCoords =
-        (double[]) m_customShapes.get(new Byte(shapeType));
+        (double[]) m_customShapes.get(new Byte(nodeShape));
       if (storedPolyCoords == null)
-        throw new IllegalArgumentException("shapeType is not recognized");
+        throw new IllegalArgumentException("nodeShape is not recognized");
       m_polyNumPoints = storedPolyCoords.length / 2;
       final double desiredXCenter = (xMin + xMax) / 2.0d;
       final double desiredYCenter = (yMin + yMax) / 2.0d;
@@ -486,7 +496,7 @@ public final class GraphGraphics
    * @param vertexCount the number of vertices to read from coords;
    *   vertexCount * 2 entries in coords are read.
    * @return the node shape identifier to be used in future rendering calls
-   *   (to be used as parameter shapeType in method drawNodeFull()).
+   *   (to be used as parameter nodeShape in method drawNodeFull()).
    * @exception IllegalArgumentException if any of the constraints are not met,
    *   or if the specified polygon has more than 100 vertices.
    * @exception IllegalStateException if too many custom node shapes are
@@ -596,12 +606,12 @@ public final class GraphGraphics
    *   yMin is not less than yMax, or if borderWidth is negative or is greater
    *   than Math.min(xMax - xMin, yMax - yMin) / 6 (for custom node shapes
    *   borderWidth may be even more limited, depending on the specific shape),
-   *   if shapeType is SHAPE_ROUNDED_RECTANGLE and the condition
+   *   if nodeShape is SHAPE_ROUNDED_RECTANGLE and the condition
    *   max(width, height) < 2 * min(width, height) does not hold,
-   *   or if shapeType is neither one of the SHAPE_* constants nor a
+   *   or if nodeShape is neither one of the SHAPE_* constants nor a
    *   previously defined custom node shape.
    */
-  public final void drawNodeFull(final byte shapeType,
+  public final void drawNodeFull(final byte nodeShape,
                                  final float xMin, final float yMin,
                                  final float xMax, final float yMax,
                                  final Color fillColor,
@@ -626,20 +636,20 @@ public final class GraphGraphics
         throw new IllegalArgumentException
           ("borderWidth is not less than the minimum of node width and node " +
            "height divided by six");
-      if (shapeType == SHAPE_ROUNDED_RECTANGLE) {
+      if (nodeShape == SHAPE_ROUNDED_RECTANGLE) {
         final double width = ((double) xMax) - xMin;
         final double height = ((double) yMax) - yMin;
         if (!(Math.max(width, height) < 2.0d * Math.min(width, height)))
           throw new IllegalArgumentException
             ("rounded rectangle does not meet constraint " +
              "max(width, height) < 2 * min(width, height)"); } }
-    final Shape shape = getShape(shapeType, xMin, yMin, xMax, yMax);
+    final Shape shape = getShape(nodeShape, xMin, yMin, xMax, yMax);
     if (borderWidth == 0.0f) m_g2d.setColor(fillColor);
     else m_g2d.setColor(borderColor);
     m_g2d.fill(shape);
     if (borderWidth != 0.0f) { // Fill inner node.
       final Shape innerShape;
-      if (shapeType == SHAPE_ELLIPSE) {
+      if (nodeShape == SHAPE_ELLIPSE) {
         // This is an approximation to proper border width.  It's
         // faster than drawing an elliptical path of some thickness, and this
         // approach leads to precise intersection calculations for edges.
@@ -650,7 +660,7 @@ public final class GraphGraphics
         m_ellp2d.setFrame(innerXMin, innerYMin,
                           innerXMax - innerXMin, innerYMax - innerYMin);
         innerShape = m_ellp2d; }
-      else if (shapeType == SHAPE_ROUNDED_RECTANGLE) {
+      else if (nodeShape == SHAPE_ROUNDED_RECTANGLE) {
         computeRoundedRectangle
           (((double) xMin) + borderWidth, ((double) yMin) + borderWidth,
            ((double) xMax) - borderWidth, ((double) yMax) - borderWidth,
@@ -1218,6 +1228,11 @@ public final class GraphGraphics
                                       m_dash, 0.0f));
   }
 
+  /**
+   * There is a constraint that only applies to SHAPE_ROUNDED_RECTANGLE
+   * which imposes that the maximum of the width and height be strictly
+   * less than twice the minimum of the width and height of the node.<p>
+   */
   public final boolean computeEdgeIntersection(final byte nodeShape,
                                                final float xMin,
                                                final float yMin,
@@ -1237,7 +1252,14 @@ public final class GraphGraphics
       if (!(yMin < yMax)) throw new IllegalArgumentException
                             ("yMin not less than yMax");
       if (!(offset >= 0.0f))
-        throw new IllegalArgumentException("offset < 0"); }
+        throw new IllegalArgumentException("offset < 0");
+      if (nodeShape == SHAPE_ROUNDED_RECTANGLE) {
+        final double width = ((double) xMax) - xMin;
+        final double height = ((double) yMax) - yMin;
+        if (!(Math.max(width, height) < 2.0d * Math.min(width, height)))
+          throw new IllegalArgumentException
+            ("rounded rectangle does not meet constraint " +
+             "max(width, height) < 2 * min(width, height)"); } }
     final double centerX = (((double) xMin) + xMax) / 2.0d;
     final double centerY = (((double) yMin) + yMax) / 2.0d;
 
