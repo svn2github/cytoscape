@@ -131,7 +131,8 @@ public final class GraphGraphics
    *   a new frame; transparent colors are honored, provided that the image
    *   argument supports transparent colors.
    * @param hints HINT_* contstants can be bitwise or-ed together to
-   *   customize the behavior of this instance.
+   *   customize the behavior of this instance; if zero is passed then
+   *   no hints will be activated.
    * @param debug if this is true, extra [and time-consuming] error checking
    *   will take place in each method call; it is recommended to have this
    *   value set to true during the testing phase; set it to false once
