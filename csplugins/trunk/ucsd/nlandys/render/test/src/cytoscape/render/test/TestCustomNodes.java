@@ -51,7 +51,7 @@ public final class TestCustomNodes extends Frame implements Runnable
     super();
     addNotify();
     m_img = createImage(m_imgWidth, m_imgHeight);
-    m_grafx = new GraphGraphics(m_img, Color.white, true);
+    m_grafx = new GraphGraphics(m_img, Color.white, 0, true);
     m_customNode1 = m_grafx.defineCustomNodeShape
       (new float[] { 0.0f, 0.0f, 0.41f, 0.4f, 0.5f, 0.1f, 0.6f, 0.3f,
                      1.0f, 0.6f, 1.0f, 1.0f, 0.55f, 0.6f, 0.5f, 0.86f },

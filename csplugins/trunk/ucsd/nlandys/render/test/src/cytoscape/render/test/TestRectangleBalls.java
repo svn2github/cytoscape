@@ -49,7 +49,7 @@ public final class TestRectangleBalls extends Frame implements Runnable
     super();
     addNotify();
     m_img = createImage(m_imgWidth, m_imgHeight);
-    m_grafx = new GraphGraphics(m_img, Color.white, true);
+    m_grafx = new GraphGraphics(m_img, Color.white, 0, true);
     m_xform = new AffineTransform();
     m_pts = new float[2];
     m_xsect1Coords = new float[2];

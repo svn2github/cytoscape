@@ -112,7 +112,7 @@ public final class TestNodeRenderingNoTree
     m_colors = colors;
     addNotify();
     m_img = createImage(m_imgWidth, m_imgHeight);
-    m_grafx = new GraphGraphics(m_img, m_bgColor, true);
+    m_grafx = new GraphGraphics(m_img, m_bgColor, 0, true);
     updateNodeImage();
     addMouseListener(this);
     addMouseMotionListener(this);

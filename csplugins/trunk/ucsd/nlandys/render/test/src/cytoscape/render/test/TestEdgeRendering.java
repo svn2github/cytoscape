@@ -113,7 +113,7 @@ public final class TestEdgeRendering
     m_edgeThickness = edgeThickness;
     addNotify();
     m_img = createImage(m_imgWidth, m_imgHeight);
-    m_grafx = new GraphGraphics(m_img, m_bgColor, true);
+    m_grafx = new GraphGraphics(m_img, m_bgColor, 0, true);
     updateEdgeImage();
     addMouseListener(this);
     addMouseMotionListener(this);

@@ -50,7 +50,7 @@ public final class TestTextRendering
     super();
     addNotify();
     m_img = createImage(m_imgWidth, m_imgHeight);
-    m_grafx = new GraphGraphics(m_img, Color.white, true);
+    m_grafx = new GraphGraphics(m_img, Color.white, 0, true);
     updateNodeImage();
     addMouseListener(this);
     addMouseMotionListener(this);
