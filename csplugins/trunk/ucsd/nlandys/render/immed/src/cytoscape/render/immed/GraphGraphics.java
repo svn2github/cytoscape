@@ -14,7 +14,6 @@ import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
-import java.awt.font.LineMetrics;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
@@ -1517,8 +1516,6 @@ public final class GraphGraphics
       m_g2d.setTransform(m_xformUtil);
       m_g2d.setFont(font);
       m_g2d.setColor(color);
-      final LineMetrics lineMetrics =
-        font.getLineMetrics(text, getFontRenderContext());
       m_g2d.drawString(text, 0.0f, 0.0f);
       m_g2d.setTransform(origXform); }
   }
