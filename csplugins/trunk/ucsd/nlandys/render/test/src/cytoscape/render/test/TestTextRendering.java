@@ -75,10 +75,14 @@ public final class TestTextRendering
   {
     m_grafx.clear(m_currXCenter, m_currYCenter, m_currScale);
     m_grafx.drawNodeFull(GraphGraphics.SHAPE_ROUNDED_RECTANGLE,
-                         -100.0f, -80.0f, 100.0f, 80.0f,
+                         -100.0f, -40.0f, -30.0f, 40.0f,
                          Color.yellow, 2.0f, Color.black);
     final Font font = new Font("Dialog", Font.PLAIN, 14);
-    m_grafx.drawText(font, "Tequst more text", 0.0f, 0.0f, Color.black);
+    m_grafx.drawText(font, "TEKST", -65.0f, 0.0f, Color.black);
+    m_grafx.drawNodeFull(GraphGraphics.SHAPE_ROUNDED_RECTANGLE,
+                         -20.0f, -40.0f, 40.0f, 40.0f,
+                         Color.magenta, 2.0f, Color.black);
+    m_grafx.drawText(font, "ypqg", 10.0f, 0.0f, Color.black);
     m_grafx.drawNodeFull(GraphGraphics.SHAPE_TRIANGLE,
                          0.0f, 90.0f, 120.0f, 170.0f,
                          Color.cyan, 2.0f, Color.black);
