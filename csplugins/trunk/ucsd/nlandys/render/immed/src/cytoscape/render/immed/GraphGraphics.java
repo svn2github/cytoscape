@@ -1487,6 +1487,7 @@ public final class GraphGraphics
     m_xformUtil.setTransform(origXform);
     m_xformUtil.translate(xCenter, yCenter);
     m_xformUtil.scale(1.0d, -1.0d);
+    m_g2d.setColor(color);
     if ((m_hints & HINT_TEXT_AS_STRING) == 0) {
       final GlyphVector glyphV;
       {
@@ -1501,7 +1502,6 @@ public final class GraphGraphics
       m_xformUtil.translate(-glyphBounds.getCenterX(),
                             -glyphBounds.getCenterY());
       m_g2d.setTransform(m_xformUtil);
-      m_g2d.setColor(color);
       m_g2d.fill(glyphV.getOutline()); }
     else {
       final Rectangle2D textBounds =
@@ -1510,7 +1510,6 @@ public final class GraphGraphics
                             -textBounds.getCenterY());
       m_g2d.setTransform(m_xformUtil);
       m_g2d.setFont(font);
-      m_g2d.setColor(color);
       m_g2d.drawString(text, 0.0f, 0.0f); }
     m_g2d.setTransform(origXform);
   }
