@@ -837,6 +837,8 @@ public final class GraphGraphics
   private final void makeMinimalGraphics()
   {
     m_gMinimal = image.getGraphics();
+    ((Graphics2D) m_gMinimal).setRenderingHint
+      (RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
   }
 
   /**
