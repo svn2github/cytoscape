@@ -1464,7 +1464,8 @@ public final class GraphGraphics
    *   determines the resulting size of text rendered to the graphics
    *   context.
    * @param scaleFactor in order to prevent very small fonts from
-   *   "degenerating", it is necessary to allow users to specify a scale
+   *   "degenerating" and large fonts from taking a long time to load,
+   *   it is necessary to allow users to specify a scale
    *   factor in addition to the font size and transform defined by
    *   the clear() method; if this value is 1.0, no additional scaling
    *   is performed; otherwise, the size of the font is multiplied by this
