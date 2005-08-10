@@ -5,7 +5,7 @@
    <property name = "build" location = "build"/>
    <property name = "build.compiler" value = "modern"/>
    <!-- path to Cytoscape under development (CVS) -->
-   <property name = "lib.dev" location = "../../../../cytoscape/lib"/>
+   <property name = "lib.dev" location = "../../../../cytoscape"/>
    <!-- path to Cytoscape 2.1 official release -->
    <property name = "lib.release" location = "../../../../C2.1/source"/>
    <property name = "jar"  location = "jar"/>
@@ -67,7 +67,7 @@
       <java classname = "cytoscape.CyMain" classpathref = "classpath_dev"
           fork = "true" maxmemory = "1g">
       	  <arg line = "--JLD"/>
-      	  <arg line = "${jar}metanode.jar"/>
+      	  <arg line = "${jar}/metanode.jar"/>
       	  <arg line = "-vt"/>
       	  <arg line = "5000"/>
       </java>

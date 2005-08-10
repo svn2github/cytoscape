@@ -39,36 +39,42 @@ import metaNodeViewer.data.*;
  * @since 2.0
  */
 
-//TODO: Add a tab for meta-node attribute settings.
+// TODO: Add a tab for meta-node attribute settings.
 
-
-
-public class MNcollapserDialog extends JDialog {
+public class MNcollapserDialog extends JFrame {
 
 	public static final String title = "Meta-Node Abstraction";
 
 	protected JCheckBox recursiveCheckBox;
-  protected JCheckBox multipleEdgesCheckBox;
-  protected CollapseSelectedNodesAction createMetaNodeAction;
+
+	protected JCheckBox multipleEdgesCheckBox;
+
+	protected CollapseSelectedNodesAction createMetaNodeAction;
+
 	protected CollapseSelectedNodesAction collapseAction;
+
 	protected UncollapseSelectedNodesAction expandAction;
+
 	protected UncollapseSelectedNodesAction destroyMetaNodeAction;
-	
-  protected static final String CREATE_MN_TITLE = "Create Meta-Node";
+
+	protected static final String CREATE_MN_TITLE = "Create Meta-Node";
+
 	protected static final String DESTROY_MN_TITLE = "Destroy Meta-Node(s)";
+
 	protected static final String COLLAPSE_MN_TITLE = "Collapse to Meta-Node(s)";
+
 	protected static final String EXPAND_MN_TITLE = "Expand Children";
 
 	/**
 	 * Constructor
 	 */
 	public MNcollapserDialog() {
-		super(Cytoscape.getDesktop(), title, false);
+		super(title);
 		initialize();
 		setRecursiveOperations(false);
-    setMultipleEdges(true);
+		setMultipleEdges(true);
 		AbstractMetaNodeMenu.setCollapserDialog(this);
-	}//MNcollapserDialog
+	}// MNcollapserDialog
 
 	/**
 	 * Sets whether or not the operations (that apply) should be performed
@@ -80,33 +86,33 @@ public class MNcollapserDialog extends JDialog {
 					"Apply operations recursively");
 		}
 		this.recursiveCheckBox.setSelected(recursive_operations);
-	}//setRecursiveOperations
+	}// setRecursiveOperations
 
-  /**
-   * Sets whether or not multiple edges between meta-nodes and other nodes
-   * should be created
-   */
-  public void setMultipleEdges (boolean multiple_edges){
-    if(this.multipleEdgesCheckBox == null){
-      this.multipleEdgesCheckBox = new JCheckBox("Draw Multiple Edges");
-    }
-    this.multipleEdgesCheckBox.setSelected(multiple_edges);
-  }//setMultipleEdges
+	/**
+	 * Sets whether or not multiple edges between meta-nodes and other nodes
+	 * should be created
+	 */
+	public void setMultipleEdges(boolean multiple_edges) {
+		if (this.multipleEdgesCheckBox == null) {
+			this.multipleEdgesCheckBox = new JCheckBox("Draw Multiple Edges");
+		}
+		this.multipleEdgesCheckBox.setSelected(multiple_edges);
+	}// setMultipleEdges
 
 	/**
 	 * @return whether or not the operations are to be performed recursively
 	 */
-	public boolean areOperationsRecursive () {
+	public boolean areOperationsRecursive() {
 		return this.recursiveCheckBox.isSelected();
-	}//areOperationsRecursive
+	}// areOperationsRecursive
 
-  /**
-   * @return whether or not multiple edges between meta-nodes and other nodes
-   * should be created
-   */
-  public boolean getMultipleEdges (){
-    return this.multipleEdgesCheckBox.isSelected();
-  }//getMultipleEdges
+	/**
+	 * @return whether or not multiple edges between meta-nodes and other nodes
+	 *         should be created
+	 */
+	public boolean getMultipleEdges() {
+		return this.multipleEdgesCheckBox.isSelected();
+	}// getMultipleEdges
 
 	protected void initialize() {
 
@@ -133,16 +139,18 @@ public class MNcollapserDialog extends JDialog {
 		}
 		this.recursiveCheckBox
 				.setToolTipText("Meta-nodes can have meta-nodes as children.");
-		
-    if(this.multipleEdgesCheckBox == null){
-      this.multipleEdgesCheckBox = new JCheckBox("Draw Multiple Edges");
-    }
-    this.multipleEdgesCheckBox.setSelected(true);
-    this.multipleEdgesCheckBox.setToolTipText("Multiple edges between meta-nodes and other nodes vs. single edges.");
+
+		if (this.multipleEdgesCheckBox == null) {
+			this.multipleEdgesCheckBox = new JCheckBox("Draw Multiple Edges");
+		}
+		this.multipleEdgesCheckBox.setSelected(true);
+		this.multipleEdgesCheckBox
+				.setToolTipText("Multiple edges between meta-nodes and other nodes vs. single edges.");
 
 		// Set the desired MetaNodeAttributesHandler in ActionFactory.
-		ActionFactory.setMetaNodeAttributesHandler(new AbstractMetaNodeAttsHandler());
-		
+		ActionFactory
+				.setMetaNodeAttributesHandler(new AbstractMetaNodeAttsHandler());
+
 		// Attach action listeners to the buttons
 		this.createMetaNodeAction = (CollapseSelectedNodesAction) ActionFactory
 				.createCollapseSelectedNodesAction(false,
@@ -165,42 +173,45 @@ public class MNcollapserDialog extends JDialog {
 		expandButton.addActionListener(this.expandAction);
 
 		this.recursiveCheckBox.addActionListener(new AbstractAction() {
-        public void actionPerformed (ActionEvent event) {
-          boolean recursive = MNcollapserDialog.this.recursiveCheckBox
+			public void actionPerformed(ActionEvent event) {
+				boolean recursive = MNcollapserDialog.this.recursiveCheckBox
 						.isSelected();
-          MNcollapserDialog.this.destroyMetaNodeAction
+				MNcollapserDialog.this.destroyMetaNodeAction
 						.setRecursiveUncollapse(recursive);
-          MNcollapserDialog.this.expandAction
+				MNcollapserDialog.this.expandAction
 						.setRecursiveUncollapse(recursive);
-          MNcollapserDialog.this.collapseAction
+				MNcollapserDialog.this.collapseAction
 						.setCollapseRecursively(recursive);
-        }//actionPerformed
-      }//AbstractAction
-                                             );//addActionListener
-    
-    this.multipleEdgesCheckBox.addActionListener(new AbstractAction() {
-        public void actionPerformed (ActionEvent event) {
-          boolean createMultipleEdges = MNcollapserDialog.this.multipleEdgesCheckBox
+			}// actionPerformed
+		}// AbstractAction
+				);// addActionListener
+
+		this.multipleEdgesCheckBox.addActionListener(new AbstractAction() {
+			public void actionPerformed(ActionEvent event) {
+				boolean createMultipleEdges = MNcollapserDialog.this.multipleEdgesCheckBox
 						.isSelected();
-          MNcollapserDialog.this.collapseAction.setMultipleEdges(createMultipleEdges);
-          MNcollapserDialog.this.createMetaNodeAction.setMultipleEdges(createMultipleEdges);
-        }//actionPerformed
-      }//AbstractAction
-                                                 
-                                                 );//addActionListener
-    
-    // Layout the buttons
+				MNcollapserDialog.this.collapseAction
+						.setMultipleEdges(createMultipleEdges);
+				MNcollapserDialog.this.createMetaNodeAction
+						.setMultipleEdges(createMultipleEdges);
+			}// actionPerformed
+		}// AbstractAction
+
+				);// addActionListener
+
+		// Layout the buttons
 		JPanel gridPanel = new JPanel();
-		gridPanel.setLayout(new GridLayout(2, 2)); //rows, cols
+		gridPanel.setLayout(new GridLayout(2, 2)); // rows, cols
 		gridPanel.add(createMetaNodeButton);
 		gridPanel.add(collapseButton);
 		gridPanel.add(destroyMetaNodeButton);
 		gridPanel.add(expandButton);
 
 		JPanel optionsPanel = new JPanel();
-		optionsPanel.setLayout(new FlowLayout(FlowLayout.CENTER));//rows, cols
+		optionsPanel.setLayout(new FlowLayout(FlowLayout.CENTER));// rows,
+																	// cols
 		optionsPanel.add(this.recursiveCheckBox);
-    optionsPanel.add(this.multipleEdgesCheckBox);
+		optionsPanel.add(this.multipleEdgesCheckBox);
 
 		JPanel operationsPanel = new JPanel();
 		operationsPanel.setLayout(new BoxLayout(operationsPanel,
@@ -226,23 +237,23 @@ public class MNcollapserDialog extends JDialog {
 		mainPanel.add(buttonsPanel);
 		setContentPane(mainPanel);
 
-	}//initialize
+	}// initialize
 
 	public AbstractAction getCreateMetaNodeAction() {
 		return this.createMetaNodeAction;
-	}//getCreateMetaNodeAction
+	}// getCreateMetaNodeAction
 
 	public AbstractAction getDestroyMetaNodeAction() {
 		return this.destroyMetaNodeAction;
-	}//getDestroyMetaNodeAction
+	}// getDestroyMetaNodeAction
 
 	public AbstractAction getCollapseMetaNodesAction() {
 		return this.collapseAction;
-	}//getCollapseMetaNodesAction
+	}// getCollapseMetaNodesAction
 
 	public AbstractAction getExpandChildrenAction() {
 		return this.expandAction;
-	}//getExpandChildrenAction
+	}// getExpandChildrenAction
 
 	/**
 	 * @return a JMenu with operations to create new meta-nodes, destroy
@@ -255,5 +266,5 @@ public class MNcollapserDialog extends JDialog {
 		menu.add(this.collapseAction);
 		menu.add(this.expandAction);
 		return menu;
-	}//getMenu
-}//class MNcollapserDialog
+	}// getMenu
+}// class MNcollapserDialog
