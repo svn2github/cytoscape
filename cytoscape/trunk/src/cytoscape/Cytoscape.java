@@ -72,6 +72,7 @@ public abstract class Cytoscape {
   public static final int SELECT_NODES_AND_EDGES = 3;
 
   private static BioDataServer bioDataServer;
+  private static String species;
 
   // global to represent which selection mode is active
   private static int currentSelectionMode = SELECT_NODES_ONLY;
@@ -205,6 +206,7 @@ public abstract class Cytoscape {
   public static CyNode getCyNode ( String alias, boolean create ) {
 
     String old_name =  alias;
+    alias = canonicalizeName( alias );
    
     CyNode node = ( CyNode )getNodeNetworkData().getGraphObject( alias );
     if ( node != null ) {
@@ -224,6 +226,8 @@ public abstract class Cytoscape {
     Cytoscape.getNodeNetworkData().set( cytoscape.data.Semantics.CANONICAL_NAME,
                                         alias,
                                         alias );
+//     Cytoscape.getNodeNetworkData().addNameMapping( alias, node );
+//     Semantics.assignNodeAliases( node, null, null );
     return node;
 
   }
@@ -394,6 +398,33 @@ public abstract class Cytoscape {
                                                value );
   }
 
+  /**
+   * @deprecated argh!...
+   */
+  private static String canonicalizeName ( String name ) {
+    String canonicalName = name;
+
+    //System.out.println( "Biodataserver is: "+bioDataServer+" species is: "+species );
+
+
+    if ( bioDataServer != null) {
+      canonicalName = bioDataServer.getCanonicalName (species, name);
+      if(canonicalName == null){
+        //   System.out.println( "canonicalName was null for "+name );
+        canonicalName = name;
+      }
+      //System.out.println( name+" canonicalized to: "+canonicalName );
+    }
+    return canonicalName;
+  }
+
+
+  /**
+   * @deprecated argh!...
+   */
+  public static void setSpecies () {
+    species = CytoscapeInit.getDefaultSpeciesName();
+  }
  
   //--------------------//
   // Network Methods
