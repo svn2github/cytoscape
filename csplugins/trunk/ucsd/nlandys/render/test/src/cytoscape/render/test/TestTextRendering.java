@@ -94,7 +94,7 @@ public final class TestTextRendering
   private int m_lastYMousePos = 0;
 
   public TestTextRendering(RTree tree, Font font, double fontScaleFactor,
-                           Color[] colors, boolean textAsString)
+                           Color[] colors, boolean textAsShape)
   {
     super();
     m_tree = tree;
@@ -104,7 +104,7 @@ public final class TestTextRendering
     addNotify();
     m_img = createImage(m_imgWidth, m_imgHeight);
     m_grafx = new GraphGraphics
-      (m_img, m_bgColor, textAsString ? GraphGraphics.FLAG_TEXT_AS_STRING : 0,
+      (m_img, m_bgColor, textAsShape ? GraphGraphics.FLAG_TEXT_AS_SHAPE : 0,
        true);
     updateNodeImage();
     addMouseListener(this);

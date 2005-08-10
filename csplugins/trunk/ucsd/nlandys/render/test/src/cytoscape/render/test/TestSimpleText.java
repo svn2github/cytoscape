@@ -45,14 +45,14 @@ public final class TestSimpleText
   private int m_lastXMousePos = 0;
   private int m_lastYMousePos = 0;
 
-  public TestSimpleText(boolean textAsString)
+  public TestSimpleText(boolean textAsShape)
   {
     super();
     addNotify();
     m_img = createImage(m_imgWidth, m_imgHeight);
     m_grafx = new GraphGraphics
       (m_img, Color.white,
-       textAsString ? GraphGraphics.FLAG_TEXT_AS_STRING : 0, true);
+       textAsShape ? GraphGraphics.FLAG_TEXT_AS_SHAPE : 0, true);
     updateNodeImage();
     addMouseListener(this);
     addMouseMotionListener(this);
