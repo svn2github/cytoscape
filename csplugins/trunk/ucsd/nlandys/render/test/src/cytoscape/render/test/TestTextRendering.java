@@ -79,6 +79,7 @@ public final class TestTextRendering
   private final Font m_font;
   private final double m_fontScaleFactor;
   private final Color[] m_colors;
+  private final boolean m_textAsShape;
   private final int m_imgWidth = 600;
   private final int m_imgHeight = 480;
   private final Image m_img;
@@ -101,11 +102,10 @@ public final class TestTextRendering
     m_font = font;
     m_fontScaleFactor = fontScaleFactor;
     m_colors = colors;
+    m_textAsShape = textAsShape;
     addNotify();
     m_img = createImage(m_imgWidth, m_imgHeight);
-    m_grafx = new GraphGraphics
-      (m_img, m_bgColor, textAsShape ? GraphGraphics.FLAG_TEXT_AS_SHAPE : 0,
-       true);
+    m_grafx = new GraphGraphics(m_img, m_bgColor, true);
     updateNodeImage();
     addMouseListener(this);
     addMouseMotionListener(this);
@@ -150,11 +150,11 @@ public final class TestTextRendering
        null, 0);
     while (iter.numRemaining() > 0) {
       final int inx = iter.nextExtents(m_extents, 0);
-      m_grafx.drawText
+      m_grafx.drawTextFull
         (m_font, m_fontScaleFactor, "" + (Integer.MAX_VALUE - inx),
          (float) ((((double) m_extents[0]) + m_extents[2]) / 2.0d),
          (float) ((((double) m_extents[1]) + m_extents[3]) / 2.0d),
-         m_fontColor); }
+         m_fontColor, m_textAsShape); }
   }
 
   public void mouseClicked(MouseEvent e) {}

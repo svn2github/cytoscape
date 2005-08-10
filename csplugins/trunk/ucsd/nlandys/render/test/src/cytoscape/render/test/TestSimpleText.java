@@ -34,6 +34,7 @@ public final class TestSimpleText
                 System.exit(0); } }); } });
   }
 
+  private final boolean m_textAsShape;
   private final int m_imgWidth = 600;
   private final int m_imgHeight = 480;
   private final Image m_img;
@@ -48,11 +49,10 @@ public final class TestSimpleText
   public TestSimpleText(boolean textAsShape)
   {
     super();
+    m_textAsShape = textAsShape;
     addNotify();
     m_img = createImage(m_imgWidth, m_imgHeight);
-    m_grafx = new GraphGraphics
-      (m_img, Color.white,
-       textAsShape ? GraphGraphics.FLAG_TEXT_AS_SHAPE : 0, true);
+    m_grafx = new GraphGraphics(m_img, Color.white, true);
     updateNodeImage();
     addMouseListener(this);
     addMouseMotionListener(this);
@@ -80,15 +80,18 @@ public final class TestSimpleText
                          -90.0f, -15.0f, -40.0f, 15.0f,
                          Color.yellow, 2.0f, Color.black);
     final Font font = new Font("Dialog", Font.PLAIN, 14);
-    m_grafx.drawText(font, 1.0d, "TEKST", -65.0f, 0.0f, Color.black);
+    m_grafx.drawTextFull(font, 1.0d, "TEKST", -65.0f, 0.0f, Color.black,
+                         m_textAsShape);
     m_grafx.drawNodeFull(GraphGraphics.SHAPE_ROUNDED_RECTANGLE,
                          -15.0f, -15.0f, 35.0f, 15.0f,
                          Color.magenta, 2.0f, Color.black);
-    m_grafx.drawText(font, 1.0d, "ypqg", 10.0f, 0.0f, Color.black);
+    m_grafx.drawTextFull(font, 1.0d, "ypqg", 10.0f, 0.0f, Color.black,
+                         m_textAsShape);
     m_grafx.drawNodeFull(GraphGraphics.SHAPE_TRIANGLE,
                          0.0f, 90.0f, 120.0f, 170.0f,
                          Color.cyan, 2.0f, Color.black);
-    m_grafx.drawText(font, 1.0d, "gooF", 60.0f, 130.0f, Color.black);
+    m_grafx.drawTextFull(font, 1.0d, "gooF", 60.0f, 130.0f, Color.black,
+                         m_textAsShape);
   }
 
   public void mouseClicked(MouseEvent e) {}
