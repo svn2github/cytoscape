@@ -419,13 +419,6 @@ public abstract class Cytoscape {
   }
 
 
-  /**
-   * @deprecated argh!...
-   */
-  public static void setSpecies () {
-    species = CytoscapeInit.getDefaultSpeciesName();
-  }
- 
   //--------------------//
   // Network Methods
   //--------------------//
