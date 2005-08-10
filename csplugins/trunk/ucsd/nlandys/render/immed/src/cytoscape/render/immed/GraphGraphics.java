@@ -783,7 +783,7 @@ public final class GraphGraphics
                             ("xMin not less than xMax");
       if (!(yMin < yMax)) throw new IllegalArgumentException
                             ("yMin not less than yMax"); }
-    if (m_gMinimal == null) m_gMinimal = image.getGraphics();
+    if (m_gMinimal == null) makeMinimalGraphics();
     // I'm transforming points manually because the resulting underlying
     // graphics pipeline used is much faster.
     m_ptsBuff[0] = xMin; m_ptsBuff[1] = yMin;
@@ -817,7 +817,7 @@ public final class GraphGraphics
     // This following statement has to be consistent with the full edge
     // rendering logic.
     if (x0 == x1 && y0 == y1) return;
-    if (m_gMinimal == null) m_gMinimal = image.getGraphics();
+    if (m_gMinimal == null) makeMinimalGraphics();
     // I'm transforming points manually because the resulting underlying
     // graphics pipeline used is much faster.
     m_ptsBuff[0] = x0; m_ptsBuff[1] = y0;
@@ -829,6 +829,14 @@ public final class GraphGraphics
     final int yOne = (int) m_ptsBuff[3];
     m_gMinimal.setColor(edgeColor);
     m_gMinimal.drawLine(xNot, yNot, xOne, yOne);
+  }
+
+  /*
+   * Sets m_gMinimal.
+   */
+  private final void makeMinimalGraphics()
+  {
+    m_gMinimal = image.getGraphics();
   }
 
   /**
