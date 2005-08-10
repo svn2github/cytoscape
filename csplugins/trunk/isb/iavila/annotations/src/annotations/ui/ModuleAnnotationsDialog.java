@@ -267,7 +267,7 @@ public class ModuleAnnotationsDialog extends JDialog{
     // Get the available annotaitons for the ontology options
     Object [] annotations = null;
     boolean annotationsAvailable = true;
-    BioDataServer bioDataServer = Cytoscape.getCytoscapeObj().getBioDataServer();
+    BioDataServer bioDataServer = Cytoscape.getBioDataServer();
     if(bioDataServer != null){
       annotations = bioDataServer.getAnnotationDescriptions();
     }
@@ -450,7 +450,7 @@ public class ModuleAnnotationsDialog extends JDialog{
   public void setVisible (boolean visible){
   	
   	if(visible){
-  		BioDataServer server = Cytoscape.getCytoscapeObj().getBioDataServer();
+  		BioDataServer server = Cytoscape.getBioDataServer();
   		Object [] annotations = null;
   		if(server != null){
   	      annotations = server.getAnnotationDescriptions();
@@ -497,7 +497,7 @@ public class ModuleAnnotationsDialog extends JDialog{
         return;
       }
       
-      BioDataServer bioDataServer = Cytoscape.getCytoscapeObj().getBioDataServer();
+      BioDataServer bioDataServer = Cytoscape.getBioDataServer();
       Annotation annotation = null;
       if(bioDataServer != null){
       	annotation = bioDataServer.getAnnotation(annotationDesc);

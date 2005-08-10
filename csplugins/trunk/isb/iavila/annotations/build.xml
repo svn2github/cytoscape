@@ -8,7 +8,7 @@
     <property name = "src" location = "src"/>
     <property name = "build" location = "build"/>
     <property name = "build.compiler" value = "modern"/>
-    <property name = "lib" value="../../../../cytoscape/lib"/>
+    <property name = "lib" value="../../../../cytoscape"/>
     <property name = "jar"  location = "jar"/>
 
     <!-- classpath for compiling -->
@@ -35,7 +35,8 @@
               debuglevel="source"
               source="1.4"
               optimize="on"
-              includeAntRuntime="false">
+              includeAntRuntime="false"
+       		 deprecation = "on">
               <classpath refid="classpath_compile"/>
        </javac>
     </target>
@@ -51,7 +52,6 @@
      <jar jarfile = "${jar}/annotations.jar">
        <fileset dir="${build}"/>
      </jar>
-     <copy file = "${jar}/annotations.jar" todir = "../biomodules/lib"/>
     </target>
 
     <!-- Target to Run JavaDoc -->

@@ -41,7 +41,7 @@ import annotations.action.*;
 public class FindAnnotsFromFilePlugin extends CytoscapePlugin {
 
   public FindAnnotsFromFilePlugin (){
-  	BioDataServer server = Cytoscape.getCytoscapeObj().getBioDataServer();
+  	BioDataServer server = Cytoscape.getBioDataServer();
     if(server == null){
       JOptionPane.showMessageDialog(null,
                                     "No annotations server is available.");
