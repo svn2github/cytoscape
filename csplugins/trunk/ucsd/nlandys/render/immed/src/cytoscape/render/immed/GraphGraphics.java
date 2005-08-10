@@ -54,17 +54,18 @@ public final class GraphGraphics
   /**
    * This flag controls the way that text is drawn to the underlying
    * graphics context.  By default, all text rendering operations involve
-   * using a specified font to convert a given text string to be rendered
-   * into a shape.  This shape is then rendered using Graphics2D.fill(Shape)
-   * using the graphics context of the underlying image.  However, if this
-   * flag is set, the operation Graphics2D.drawString(String, float, float)
-   * is executed instead of the shape filling operation.  This difference
-   * may have an impact on code that uses this class to generate postscript
-   * for example.  Note that a factor of two or more performance gain is
-   * achieved in text rendering speed on most platforms when this flag is
-   * used and text is rendered to a native image.
+   * calling the operation Graphics2D.drawString(String, float, float) after
+   * setting a specified font in the underlying graphics contexxt.  However,
+   * if this flag is set, the text to be rendered is converted to a primitive
+   * shape using an appropriate font, and this shape is then rendered using
+   * Graphics2D.fill(Shape).  On some systems, the shape filling method
+   * produces better-looking results when the graphics context is associated
+   * with an image that is to be rendered to the screen.  However, on all
+   * systems tested, the shape filling method results in a sybstantial
+   * performance hit when the graphics context is associated with an image
+   * that is to be rendered to the screen.
    */
-  public static final int FLAG_TEXT_AS_STRING = 1;
+  public static final int FLAG_TEXT_AS_SHAPE = 1;
 
   public static final byte SHAPE_RECTANGLE = 0;
   public static final byte SHAPE_DIAMOND = 1;
@@ -1483,7 +1484,7 @@ public final class GraphGraphics
    *   rectangle with specified font is centered on this X coordinate.
    * @param yCenter the text string is drawn so that its logical bounds
    *   rectangle with specified font is centered on this Y coordinate.
-   * @see #FLAG_TEXT_AS_STRING
+   * @see #FLAG_TEXT_AS_SHAPE
    */
   public final void drawText(final Font font,
                              final double scaleFactor,
@@ -1500,7 +1501,7 @@ public final class GraphGraphics
     m_xformUtil.translate(xCenter, yCenter);
     m_xformUtil.scale(scaleFactor, -scaleFactor);
     m_g2d.setColor(color);
-    if ((m_flags & FLAG_TEXT_AS_STRING) == 0) {
+    if ((m_flags & FLAG_TEXT_AS_SHAPE) != 0) {
       final GlyphVector glyphV;
       {
         if (text.length() > m_chars.length)
