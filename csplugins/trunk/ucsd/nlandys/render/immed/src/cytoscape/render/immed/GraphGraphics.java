@@ -1481,13 +1481,13 @@ public final class GraphGraphics
    *   has a difficult time when it needs to render text under a transformation
    *   with a very large scale factor.
    */
-  public final void drawText(final Font font,
-                             final double scaleFactor,
-                             final String text,
-                             final float xCenter,
-                             final float yCenter,
-                             final Color color,
-                             final boolean drawTextAsShape)
+  public final void drawTextFull(final Font font,
+                                 final double scaleFactor,
+                                 final String text,
+                                 final float xCenter,
+                                 final float yCenter,
+                                 final Color color,
+                                 final boolean drawTextAsShape)
   {
     if (m_debug) {
       if (!(scaleFactor >= 0.0d))
@@ -1524,7 +1524,7 @@ public final class GraphGraphics
   }
 
   /**
-   * Returns the context that is used by drawText() to produce text shapes
+   * Returns the context that is used by drawTextFull() to produce text shapes
    * to be drawn to the screen.  This context always has the identity
    * transform.
    */
