@@ -51,22 +51,6 @@ import java.util.HashMap;
 public final class GraphGraphics
 {
 
-  /**
-   * This flag controls the way that text is drawn to the underlying
-   * graphics context.  By default, all text rendering operations involve
-   * calling the operation Graphics2D.drawString(String, float, float) after
-   * setting a specified font in the underlying graphics contexxt.  However,
-   * if this flag is set, the text to be rendered is converted to a primitive
-   * shape using an appropriate font, and this shape is then rendered using
-   * Graphics2D.fill(Shape).  On some systems, the shape filling method
-   * produces better-looking results when the graphics context is associated
-   * with an image that is to be rendered to the screen.  However, on all
-   * systems tested, the shape filling method results in a sybstantial
-   * performance hit when the graphics context is associated with an image
-   * that is to be rendered to the screen.
-   */
-  public static final int FLAG_TEXT_AS_SHAPE = 1;
-
   public static final byte SHAPE_RECTANGLE = 0;
   public static final byte SHAPE_DIAMOND = 1;
   public static final byte SHAPE_ELLIPSE = 2;
@@ -95,7 +79,6 @@ public final class GraphGraphics
   public final Image image;
 
   private final Color m_bgColor;
-  private final int m_flags;
   private final boolean m_debug;
   private final Ellipse2D.Double m_ellp2d;
   private final GeneralPath m_path2d;
@@ -133,20 +116,16 @@ public final class GraphGraphics
    * @param bgColor a color to use when clearing the image before painting
    *   a new frame; transparent colors are honored, provided that the image
    *   argument supports transparent colors.
-   * @param flags FLAG_* contstants can be bitwise or-ed together to
-   *   customize the behavior of this instance; if zero is passed then
-   *   no flags will be activated.
    * @param debug if this is true, extra [and time-consuming] error checking
    *   will take place in each method call; it is recommended to have this
    *   value set to true during the testing phase; set it to false once
    *   you are sure that code does not mis-use this module.
    */
   public GraphGraphics(final Image image, final Color bgColor,
-                       final int flags, final boolean debug)
+                       final boolean debug)
   {
     this.image = image;
     m_bgColor = bgColor;
-    m_flags = flags;
     m_debug = debug;
     m_ellp2d = new Ellipse2D.Double();
     m_path2d = new GeneralPath();
@@ -1484,14 +1463,31 @@ public final class GraphGraphics
    *   rectangle with specified font is centered on this X coordinate.
    * @param yCenter the text string is drawn so that its logical bounds
    *   rectangle with specified font is centered on this Y coordinate.
-   * @see #FLAG_TEXT_AS_SHAPE
+   * @param drawTextAsShape
+   *   this flag controls the way that text is drawn to the underlying
+   *   graphics context;  by default, all text rendering operations involve
+   *   calling the operation Graphics2D.drawString(String, float, float) after
+   *   setting specified font in the underlying graphics contexxt; however,
+   *   if this flag is set, the text to be rendered is converted to a primitive
+   *   shape using font specified, and this shape is then rendered using
+   *   Graphics2D.fill(Shape); on some systems, the shape filling method
+   *   produces better-looking results when the graphics context is associated
+   *   with an image that is to be rendered to the screen; however, on all
+   *   systems tested, the shape filling method results in a sybstantial
+   *   performance hit when the graphics context is associated with an image
+   *   that is to be rendered to the screen; it is recommended to set this
+   *   flag to true when either not much text is being rendered or when
+   *   the zoom level is very high; the Graphics2D.drawString() operation
+   *   has a difficult time when it needs to render text under a transformation
+   *   with a very large scale factor.
    */
   public final void drawText(final Font font,
                              final double scaleFactor,
                              final String text,
                              final float xCenter,
                              final float yCenter,
-                             final Color color)
+                             final Color color,
+                             final boolean drawTextAsShape)
   {
     if (m_debug) {
       if (!(scaleFactor >= 0.0d))
@@ -1501,7 +1497,7 @@ public final class GraphGraphics
     m_xformUtil.translate(xCenter, yCenter);
     m_xformUtil.scale(scaleFactor, -scaleFactor);
     m_g2d.setColor(color);
-    if ((m_flags & FLAG_TEXT_AS_SHAPE) != 0) {
+    if (drawTextAsShape) {
       final GlyphVector glyphV;
       {
         if (text.length() > m_chars.length)
