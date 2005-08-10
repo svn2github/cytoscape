@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<document>
+  <body>
+	<section name="Detailed description of refactoring changes">
+    	<p>
+	    <pre>
+Removed all action classes from CytoscapeWindow, placed in a new
+directory called "actions". Each class constructor takes a
+CytoscapeWindow as an argument, using that reference to access
+everything it needs.  This should be changed to refer to the new
+classes that replace CytoscapeWindow, and all of these classes
+have no documentation or unitTests.
+
+Rearranged remaining CytoscapeWindow methods for logical coherence,
+into four main groups: (1) methods only called on initialization, or
+when loading a new graph; (2) basic get/set methods for accessing data
+members; (3) key action methods, like redrawGraph(); (4) various
+utility methods that don't particularly need to be part of
+CytoscapeWindow.
+
+Rewrote almost all methods to access class data members indirectly
+through the get methods; i.e. getGraphView().doSomething instead of
+graphView.doSomething(). This allows pulling class members away into
+different classes and redirecting the get methods.
+
+Removed the network objects (graph, attributes, expression data) into
+a CyNetwork object (unfortunately, Network is already a class
+in cytoscape.visual, so creating another Network class would create
+confusion. After all the plugins are rewritten to use CyNetwork
+instead of cytoscape.visual.Network, we'll do a global search/replace
+to rename CyNetwork back to just Network). CyNetwork lives in the
+cytoscape.data package.
+
+Removed the global objects (config, bioDataServer, etc.) to a Cytoscape
+object. Cytoscape can be constructed with just a CytoscapeConfig
+object, or with additional arguments specifying the other global
+objects.
+
+Removed all the window stuff to a CyWindow object. Most of the
+CytoscapeWindow initialization and key action methods were moved too.
+CyWindow lives in the cytoscape.view package.
+
+Plugin loading remains in CytoscapeWindow, as there are many
+different callers of the CytoscapeWindow constructor that expect
+the constructor to trigger plugin loading.
+
+Moved menu creation to a CytoscapeMenus class in cytoscape.view,
+and moved CalculatorCatalog loading to a CalculatorCatalogFactory
+class in cytoscape.visual. The former is called from CyWindow's
+constructor, while the latter is called by Cytoscape's
+constructor.
+
+Moved the public debugLog member from CytoscapeWindow to CytoscapeConfig,
+as CytoscapeConfig is the only class in all the core and plugins that
+accesses this field.
+
+
+Introduced an abstraction called NetworkView. This interface contains
+the methods involved in displaying the network, while hiding the details
+of the window and UI objects surrounding the view. The interface currently
+contains the following methods:
+
+CyNetwork getNetwork();
+Graph2DView getGraphView();
+VisualMappingManager getVizMapManager();
+
+void setInteractivity(boolean newState);
+void redrawGraph();
+void redrawGraph(boolean doLayout, boolean applyAppearances);
+
+
+other methods may be added as needed. This abstraction is useful since
+many algorithms only need this set of methods. CyWindow is one class
+that implements the NetowrkView interface.
+
+Changed view/EditGraphMode, view/ReadOnlyGraphMode, and
+browsers/NodeBrowsingMode to use this interface; the actual object
+they refer to is a CyWindow instead of a CytoscapeWindow.
+
+Changed dialogs/ShrinkExpandGraph and ShrinkExpandGraphUI to use
+this interface.
+
+	    </pre>
+    	</p>
+	</section>
+  </body>
+</document>
+
+
