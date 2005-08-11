@@ -83,7 +83,6 @@ public final class TestTextLowRendering
   private final Color m_bgColor = Color.white;
   private final Color m_fontColor = Color.black;
   private final float[] m_extents = new float[4];
-  private final char[] m_charBuff = new char[10];
   private double m_currXCenter = 0.5d;
   private double m_currYCenter = 0.5d;
   private double m_currScale = 1000.0d;
@@ -142,9 +141,8 @@ public final class TestTextLowRendering
     while (iter.numRemaining() > 0) {
       final int inx = iter.nextExtents(m_extents, 0);
       final String renderThis = Integer.toString(Integer.MAX_VALUE - inx);
-      renderThis.getChars(0, renderThis.length(), m_charBuff, 0);
       m_grafx.drawTextLow
-        (m_font, m_charBuff, 0, renderThis.length(),
+        (m_font, renderThis,
          (float) ((((double) m_extents[0]) + m_extents[2]) / 2.0d),
          (float) ((((double) m_extents[1]) + m_extents[3]) / 2.0d),
          m_fontColor); }
