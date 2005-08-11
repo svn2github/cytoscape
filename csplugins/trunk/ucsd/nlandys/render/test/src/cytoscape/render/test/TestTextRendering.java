@@ -86,8 +86,8 @@ public final class TestTextRendering
   private final Color[] m_colors;
   private final String[] m_labels;
   private final boolean m_textAsShape;
-  private final int m_imgWidth = 600;
-  private final int m_imgHeight = 480;
+  private final int m_imgWidth = 1024;
+  private final int m_imgHeight = 768;
   private final Image m_img;
   private final GraphGraphics m_grafx;
   private final Color m_bgColor = Color.white;
