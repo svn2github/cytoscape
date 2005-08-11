@@ -1,5 +1,6 @@
 package cytoscape.render.immed;
 
+import cytoscape.util.intr.IntObjHash;
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -1503,6 +1504,9 @@ public final class GraphGraphics
                                  final boolean drawTextAsShape)
   {
     if (m_debug) {
+      if (!EventQueue.isDispatchThread())
+        throw new IllegalStateException
+          ("calling thread is not AWT event dispatcher");
       if (!(scaleFactor >= 0.0d))
         throw new IllegalArgumentException("scaleFactor must be positive"); }
     final AffineTransform origXform = m_g2d.getTransform();
@@ -1543,15 +1547,108 @@ public final class GraphGraphics
    */
   public final FontRenderContext getFontRenderContextFull()
   {
+    if (m_debug) {
+      if (!EventQueue.isDispatchThread())
+        throw new IllegalStateException
+          ("calling thread is not AWT event dispatcher"); }
     return new FontRenderContext(null, true, true);
   }
 
+  // We don't reset this in clear().  The hope is that people will use
+  // the same font over multiple frames.  This is really where the performance
+  // gains are to be had.
+  private Font m_currFont;
+
+  // This is set whenever m_currFont is changed.
+  private float m_currFontYOffset;
+
+  // A key is a character. A value is GlyphAndWidth.  This cache gets reset
+  // whenever m_currFont is changed.
+  private IntObjHash m_glyphCache;
+
+  private static final class GlyphAndWidth {
+    private GlyphAndWidth(final GlyphVector glyph, final float width) {
+      m_glyph = glyph; m_width = width; }
+    private final GlyphVector m_glyph;
+    private final float m_width; }
+
+  // This is set whenever m_currFont is changed.
+  private GlyphAndWidth[] m_glyphBuff;
+
+  private final char[] m_charBuff = new char[1];
+
+  /**
+   * The same font should be used in all calls to this method
+   * within the same frame being rendered (between calls to clear()),
+   * otherwise performance degradation will result.  Further performance
+   * gains are had when the same font is used on multiple frames.  By
+   * definition, the same font is used when font.equals(oldFont), where
+   * oldFont was used in a previous call to this method.
+   */
   public final void drawTextLow(final Font font,
-                                final String text,
+                                final char[] chars,
+                                final int offset,
+                                final int length,
                                 final float xCenter,
                                 final float yCenter,
                                 final Color color)
   {
+    if (m_debug) {
+      if (!EventQueue.isDispatchThread())
+        throw new IllegalStateException
+          ("calling thread is not AWT event dispatcher"); }
+    if (m_gMinimal == null) makeMinimalGraphics();
+    if (!font.equals(m_currFont)) {
+      m_currFont = font;
+      final GlyphVector glyph = font.createGlyphVector
+        (getFontRenderContextLow(), new char[] { '0' });
+      final Rectangle2D bounds = glyph.getLogicalBounds();
+      m_currFontYOffset = (float) bounds.getCenterY();
+      m_glyphCache = new IntObjHash();
+      m_glyphBuff = new GlyphAndWidth[20]; }
+    if (m_glyphBuff.length < length) {
+      m_glyphBuff =
+        new GlyphAndWidth[Math.max(m_glyphBuff.length * 2 + 1, length)]; }
+    double runningWidth = 0.0d;
+    int buffInx = 0;
+    for (int i = offset; i < offset + length; i++) {
+      GlyphAndWidth glw = (GlyphAndWidth) m_glyphCache.get(chars[i]);
+      if (glw == null) {
+        m_charBuff[0] = chars[i];
+        final GlyphVector glVec =
+          font.createGlyphVector(getFontRenderContextLow(), m_charBuff);
+        final float glWidth = (float) glVec.getLogicalBounds().getWidth();
+        glw = new GlyphAndWidth(glVec, glWidth);
+        m_glyphCache.put(chars[i], glw); }
+      runningWidth += glw.m_width;
+      m_glyphBuff[buffInx++] = glw; }
+    m_ptsBuff[0] = xCenter;
+    m_ptsBuff[1] = yCenter;
+    m_currXform.transform(m_ptsBuff, 0, m_ptsBuff, 0, 1);
+    final float yPos = (float) (m_ptsBuff[1] - m_currFontYOffset);
+    float currXPos = (float) (m_ptsBuff[0] - runningWidth / 2.0d);
+    m_gMinimal.setColor(color);
+    for (int i = 0; i < buffInx; i++) {
+      m_gMinimal.drawGlyphVector(m_glyphBuff[i].m_glyph, currXPos, yPos);
+      currXPos += m_glyphBuff[i].m_width; }
+  }
+
+  /**
+   * Returns the context that is used by drawTextLow() to produce text shapes
+   * to be drawn to the screen.  The trasform contained in the returned
+   * context specifies the only scaling that will be done to fonts when
+   * rendering text using drawTextLow().  This transform does not change
+   * between frames no matter what scaling factor is specified in
+   * clear().
+   */
+  public final FontRenderContext getFontRenderContextLow()
+  {
+    if (m_debug) {
+      if (!EventQueue.isDispatchThread())
+        throw new IllegalStateException
+          ("calling thread is not AWT event dispatcher"); }
+    if (m_gMinimal == null) makeMinimalGraphics();
+    return m_gMinimal.getFontRenderContext();
   }
 
   /*
