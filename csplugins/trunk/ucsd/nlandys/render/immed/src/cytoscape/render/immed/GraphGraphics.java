@@ -112,7 +112,9 @@ public final class GraphGraphics
    * No rendering operations are performed as a result of calling this
    * constructor.  It is safe to call this constructor from any thread.
    * @param image an off-screen image (an image that supports the
-   *   getGraphics() method).
+   *   getGraphics() method); passing an image gotten from a call to
+   *   java.awt.Component.createImage(int, int) works well, as do
+   *   instances of java.awt.image.BufferedImage.
    * @param bgColor a color to use when clearing the image before painting
    *   a new frame; transparent colors are honored, provided that the image
    *   argument supports transparent colors.
