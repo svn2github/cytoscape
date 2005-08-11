@@ -88,8 +88,8 @@ public final class TestNodeRendering
   private final byte m_shape; // -1 if low detail.
   private final float m_borderWidth;
   private final Color[] m_colors;
-  private final int m_imgWidth = 600;
-  private final int m_imgHeight = 480;
+  private final int m_imgWidth = 1024;
+  private final int m_imgHeight = 768;
   private final Image m_img;
   private final GraphGraphics m_grafx;
   private final Color m_bgColor = Color.white;
@@ -112,7 +112,7 @@ public final class TestNodeRendering
     m_colors = colors;
     addNotify();
     m_img = createImage(m_imgWidth, m_imgHeight);
-    m_grafx = new GraphGraphics(m_img, m_bgColor, true);
+    m_grafx = new GraphGraphics(m_img, m_bgColor, false);
     updateNodeImage();
     addMouseListener(this);
     addMouseMotionListener(this);
@@ -142,16 +142,18 @@ public final class TestNodeRendering
        (float) (m_currXCenter + ((double) (m_imgWidth / 2)) / m_currScale),
        (float) (m_currYCenter + ((double) (m_imgHeight / 2)) / m_currScale),
        null, 0);
-    while (iter.numRemaining() > 0) {
-      final int inx = iter.nextExtents(m_extents, 0);
-      if (m_shape < 0) {
+    if (m_shape < 0) {
+      while (iter.numRemaining() > 0) {
+        final int inx = iter.nextExtents(m_extents, 0);
         m_grafx.drawNodeLow(m_extents[0], m_extents[1],
                             m_extents[2], m_extents[3],
-                            m_colors[inx % 256]); }
-      else {
+                            m_colors[inx & 0x000000ff]); } }
+    else {
+      while (iter.numRemaining() > 0) {
+        final int inx = iter.nextExtents(m_extents, 0);
         m_grafx.drawNodeFull(m_shape, m_extents[0], m_extents[1],
                              m_extents[2], m_extents[3],
-                             m_colors[inx % 256],
+                             m_colors[inx & 0x000000ff],
                              m_borderWidth, m_borderColor); } }
   }
 
