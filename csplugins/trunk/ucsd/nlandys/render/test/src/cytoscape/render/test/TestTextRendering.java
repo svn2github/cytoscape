@@ -29,6 +29,7 @@ public final class TestTextRendering
     final Font font;
     final double fontScaleFactor;
     final Color[] colors;
+    final String[] labels;
 
     // Populate the tree with entries.
     {
@@ -63,12 +64,16 @@ public final class TestTextRendering
       colors = new Color[256];
       for (int i = 0; i < colors.length; i++) {
         colors[i] = new Color(0x00ffffff & r.nextInt()); }
+
+      labels = new String[N];
+      for (int i = 0; i < N; i++)
+        labels[i] = Integer.toString(Integer.MAX_VALUE - i);
     }
 
     EventQueue.invokeAndWait(new Runnable() {
         public void run() {
           Frame f = new TestTextRendering(tree, font, fontScaleFactor, colors,
-                                          args.length > 2);
+                                          labels, args.length > 2);
           f.show();
           f.addWindowListener(new WindowAdapter() {
               public void windowClosing(WindowEvent e) {
@@ -79,6 +84,7 @@ public final class TestTextRendering
   private final Font m_font;
   private final double m_fontScaleFactor;
   private final Color[] m_colors;
+  private final String[] m_labels;
   private final boolean m_textAsShape;
   private final int m_imgWidth = 600;
   private final int m_imgHeight = 480;
@@ -95,17 +101,19 @@ public final class TestTextRendering
   private int m_lastYMousePos = 0;
 
   public TestTextRendering(RTree tree, Font font, double fontScaleFactor,
-                           Color[] colors, boolean textAsShape)
+                           Color[] colors, String[] labels,
+                           boolean textAsShape)
   {
     super();
     m_tree = tree;
     m_font = font;
     m_fontScaleFactor = fontScaleFactor;
     m_colors = colors;
+    m_labels = labels;
     m_textAsShape = textAsShape;
     addNotify();
     m_img = createImage(m_imgWidth, m_imgHeight);
-    m_grafx = new GraphGraphics(m_img, m_bgColor, true);
+    m_grafx = new GraphGraphics(m_img, m_bgColor, false);
     updateNodeImage();
     addMouseListener(this);
     addMouseMotionListener(this);
@@ -151,7 +159,7 @@ public final class TestTextRendering
     while (iter.numRemaining() > 0) {
       final int inx = iter.nextExtents(m_extents, 0);
       m_grafx.drawTextFull
-        (m_font, m_fontScaleFactor, "" + (Integer.MAX_VALUE - inx),
+        (m_font, m_fontScaleFactor, m_labels[inx],
          (float) ((((double) m_extents[0]) + m_extents[2]) / 2.0d),
          (float) ((((double) m_extents[1]) + m_extents[3]) / 2.0d),
          m_fontColor, m_textAsShape); }
