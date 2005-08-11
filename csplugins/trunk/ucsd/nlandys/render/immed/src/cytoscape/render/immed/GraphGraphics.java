@@ -7,6 +7,7 @@ import java.awt.Color;
 import java.awt.Composite;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -1554,41 +1555,10 @@ public final class GraphGraphics
     return new FontRenderContext(null, true, true);
   }
 
-  // We don't reset this in clear().  The hope is that people will use
-  // the same font over multiple frames.  This is really where the performance
-  // gains are to be had.
-  private Font m_currFont;
-
-  // This is set whenever m_currFont is changed.
-  private float m_currFontYOffset;
-
-  // A key is a character. A value is GlyphAndWidth.  This cache gets reset
-  // whenever m_currFont is changed.
-  private IntObjHash m_glyphCache;
-
-  private static final class GlyphAndWidth {
-    private GlyphAndWidth(final GlyphVector glyph, final float width) {
-      m_glyph = glyph; m_width = width; }
-    private final GlyphVector m_glyph;
-    private final float m_width; }
-
-  // This is set whenever m_currFont is changed.
-  private GlyphAndWidth[] m_glyphBuff;
-
-  private final char[] m_charBuff = new char[1];
-
   /**
-   * The same font should be used in all calls to this method
-   * within the same frame being rendered (between calls to clear()),
-   * otherwise performance degradation will result.  Further performance
-   * gains are had when the same font is used on multiple frames.  By
-   * definition, the same font is used when font.equals(oldFont), where
-   * oldFont was used in a previous call to this method.
    */
   public final void drawTextLow(final Font font,
-                                final char[] chars,
-                                final int offset,
-                                final int length,
+                                final String text,
                                 final float xCenter,
                                 final float yCenter,
                                 final Color color)
@@ -1598,39 +1568,16 @@ public final class GraphGraphics
         throw new IllegalStateException
           ("calling thread is not AWT event dispatcher"); }
     if (m_gMinimal == null) makeMinimalGraphics();
-    if (!font.equals(m_currFont)) {
-      m_currFont = font;
-      final GlyphVector glyph = font.createGlyphVector
-        (getFontRenderContextLow(), new char[] { '0' });
-      final Rectangle2D bounds = glyph.getLogicalBounds();
-      m_currFontYOffset = (float) bounds.getCenterY();
-      m_glyphCache = new IntObjHash();
-      m_glyphBuff = new GlyphAndWidth[20]; }
-    if (m_glyphBuff.length < length) {
-      m_glyphBuff =
-        new GlyphAndWidth[Math.max(m_glyphBuff.length * 2 + 1, length)]; }
-    double runningWidth = 0.0d;
-    int buffInx = 0;
-    for (int i = offset; i < offset + length; i++) {
-      GlyphAndWidth glw = (GlyphAndWidth) m_glyphCache.get(chars[i]);
-      if (glw == null) {
-        m_charBuff[0] = chars[i];
-        final GlyphVector glVec =
-          font.createGlyphVector(getFontRenderContextLow(), m_charBuff);
-        final float glWidth = (float) glVec.getLogicalBounds().getWidth();
-        glw = new GlyphAndWidth(glVec, glWidth);
-        m_glyphCache.put(chars[i], glw); }
-      runningWidth += glw.m_width;
-      m_glyphBuff[buffInx++] = glw; }
     m_ptsBuff[0] = xCenter;
     m_ptsBuff[1] = yCenter;
     m_currXform.transform(m_ptsBuff, 0, m_ptsBuff, 0, 1);
-    final float yPos = (float) (m_ptsBuff[1] - m_currFontYOffset);
-    float currXPos = (float) (m_ptsBuff[0] - runningWidth / 2.0d);
+    m_gMinimal.setFont(font);
+    final FontMetrics fMetrics = m_gMinimal.getFontMetrics();
     m_gMinimal.setColor(color);
-    for (int i = 0; i < buffInx; i++) {
-      m_gMinimal.drawGlyphVector(m_glyphBuff[i].m_glyph, currXPos, yPos);
-      currXPos += m_glyphBuff[i].m_width; }
+    m_gMinimal.drawString
+      (text, (int) (-0.5d * fMetrics.stringWidth(text) + m_ptsBuff[0]),
+       (int) (0.5d * fMetrics.getHeight() - fMetrics.getDescent() +
+              m_ptsBuff[1]));
   }
 
   /**
