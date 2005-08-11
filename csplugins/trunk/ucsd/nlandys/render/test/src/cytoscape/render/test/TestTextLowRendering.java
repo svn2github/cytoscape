@@ -139,7 +139,8 @@ public final class TestTextLowRendering
     while (iter.numRemaining() > 0) {
       final int inx = iter.nextExtents(m_extents, 0);
       m_grafx.drawNodeLow(m_extents[0], m_extents[1],
-                          m_extents[2], m_extents[3], m_colors[inx % 256]); }
+                          m_extents[2], m_extents[3],
+                          m_colors[inx & 0x000000ff]); }
     iter = m_tree.queryOverlap
       ((float) (m_currXCenter - ((double) (m_imgWidth / 2)) / m_currScale),
        (float) (m_currYCenter - ((double) (m_imgHeight / 2)) / m_currScale),

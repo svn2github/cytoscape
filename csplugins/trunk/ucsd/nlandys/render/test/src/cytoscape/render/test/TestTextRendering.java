@@ -148,7 +148,7 @@ public final class TestTextRendering
       m_grafx.drawNodeFull(GraphGraphics.SHAPE_RECTANGLE,
                            m_extents[0], m_extents[1],
                            m_extents[2], m_extents[3],
-                           m_colors[inx % 256],
+                           m_colors[inx & 0x000000ff],
                            0.0f, null); }
     iter = m_tree.queryOverlap
       ((float) (m_currXCenter - ((double) (m_imgWidth / 2)) / m_currScale),
