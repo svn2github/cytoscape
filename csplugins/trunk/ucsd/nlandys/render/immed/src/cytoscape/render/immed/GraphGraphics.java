@@ -101,7 +101,7 @@ public final class GraphGraphics
   private final HashMap m_customShapes;
   private int m_polyNumPoints; // Used with m_polyCoords.
   private Graphics2D m_g2d;
-  private Graphics m_gMinimal;
+  private Graphics2D m_gMinimal; // We use mostly java.awt.Graphics methods.
   private float m_currStrokeWidth;
   private byte m_nextCustomShapeType;
   private char[] m_chars;
@@ -838,8 +838,8 @@ public final class GraphGraphics
    */
   private final void makeMinimalGraphics()
   {
-    m_gMinimal = image.getGraphics();
-    ((Graphics2D) m_gMinimal).setRenderingHint
+    m_gMinimal = (Graphics2D) image.getGraphics();
+    m_gMinimal.setRenderingHint
       (RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
   }
 
@@ -1544,6 +1544,14 @@ public final class GraphGraphics
   public final FontRenderContext getFontRenderContextFull()
   {
     return new FontRenderContext(null, true, true);
+  }
+
+  public final void drawTextLow(final Font font,
+                                final String text,
+                                final float xCenter,
+                                final float yCenter,
+                                final Color color)
+  {
   }
 
   /*
