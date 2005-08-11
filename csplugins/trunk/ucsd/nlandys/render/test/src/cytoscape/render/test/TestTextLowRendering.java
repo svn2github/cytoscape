@@ -141,9 +141,8 @@ public final class TestTextLowRendering
        null, 0);
     while (iter.numRemaining() > 0) {
       final int inx = iter.nextExtents(m_extents, 0);
-      m_charBuff[0] = 'a';
-      m_charBuff[1] = 'g';
-      m_charBuff[2] = '7';
+      final String renderThis = Integer.toString(inx);
+      renderThis.getChars(0, renderThis.length(), m_charBuff, 0);
       m_grafx.drawTextLow
         (m_font, m_charBuff, 0, 3,
          (float) ((((double) m_extents[0]) + m_extents[2]) / 2.0d),
