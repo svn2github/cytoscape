@@ -144,7 +144,7 @@ public final class TestTextLowRendering
       final String renderThis = Integer.toString(Integer.MAX_VALUE - inx);
       renderThis.getChars(0, renderThis.length(), m_charBuff, 0);
       m_grafx.drawTextLow
-        (m_font, m_charBuff, 0, 3,
+        (m_font, m_charBuff, 0, renderThis.length(),
          (float) ((((double) m_extents[0]) + m_extents[2]) / 2.0d),
          (float) ((((double) m_extents[1]) + m_extents[3]) / 2.0d),
          m_fontColor); }
