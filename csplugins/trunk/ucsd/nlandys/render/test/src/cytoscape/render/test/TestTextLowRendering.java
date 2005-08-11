@@ -141,7 +141,7 @@ public final class TestTextLowRendering
        null, 0);
     while (iter.numRemaining() > 0) {
       final int inx = iter.nextExtents(m_extents, 0);
-      final String renderThis = Integer.toString(inx);
+      final String renderThis = Integer.toString(Integer.MAX_VALUE - inx);
       renderThis.getChars(0, renderThis.length(), m_charBuff, 0);
       m_grafx.drawTextLow
         (m_font, m_charBuff, 0, 3,
