@@ -1508,6 +1508,8 @@ public final class GraphGraphics
       if (!EventQueue.isDispatchThread())
         throw new IllegalStateException
           ("calling thread is not AWT event dispatcher");
+      if (!m_cleared) throw new IllegalStateException
+                        ("clear() has not been called previously");
       if (!(scaleFactor >= 0.0d))
         throw new IllegalArgumentException("scaleFactor must be positive"); }
     final AffineTransform origXform = m_g2d.getTransform();
@@ -1566,7 +1568,9 @@ public final class GraphGraphics
     if (m_debug) {
       if (!EventQueue.isDispatchThread())
         throw new IllegalStateException
-          ("calling thread is not AWT event dispatcher"); }
+          ("calling thread is not AWT event dispatcher");
+      if (!m_cleared) throw new IllegalStateException
+                        ("clear() has not been called previously"); }
     if (m_gMinimal == null) makeMinimalGraphics();
     m_ptsBuff[0] = xCenter;
     m_ptsBuff[1] = yCenter;
