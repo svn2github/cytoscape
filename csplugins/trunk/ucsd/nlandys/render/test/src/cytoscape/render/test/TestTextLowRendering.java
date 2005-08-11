@@ -28,10 +28,11 @@ public final class TestTextLowRendering
     final RTree tree;
     final Font font;
     final Color[] colors;
+    final String[] labels;
 
     // Populate the tree with entries.
     {
-      int N = Integer.parseInt(args[0]);
+      final int N = Integer.parseInt(args[0]);
       tree = new RTree();
       double sqrtN = Math.sqrt((double) N);
       int inx = 0;
@@ -61,12 +62,16 @@ public final class TestTextLowRendering
       colors = new Color[256];
       for (int i = 0; i < colors.length; i++) {
         colors[i] = new Color(0x00ffffff & r.nextInt()); }
+
+      labels = new String[N];
+      for (int i = 0; i < N; i++)
+        labels[i] = Integer.toString(Integer.MAX_VALUE - i);
     }
 
     EventQueue.invokeAndWait(new Runnable() {
         public void run() {
           Frame f = new TestTextLowRendering
-            (tree, font, colors);
+            (tree, font, colors, labels);
           f.show();
           f.addWindowListener(new WindowAdapter() {
               public void windowClosing(WindowEvent e) {
@@ -76,6 +81,7 @@ public final class TestTextLowRendering
   private final RTree m_tree;
   private final Font m_font;
   private final Color[] m_colors;
+  private final String[] m_labels;
   private final int m_imgWidth = 600;
   private final int m_imgHeight = 480;
   private final Image m_img;
@@ -90,15 +96,17 @@ public final class TestTextLowRendering
   private int m_lastXMousePos = 0;
   private int m_lastYMousePos = 0;
 
-  public TestTextLowRendering(RTree tree, Font font, Color[] colors)
+  public TestTextLowRendering(RTree tree, Font font, Color[] colors,
+                              String[] labels)
   {
     super();
     m_tree = tree;
     m_font = font;
     m_colors = colors;
+    m_labels = labels;
     addNotify();
     m_img = createImage(m_imgWidth, m_imgHeight);
-    m_grafx = new GraphGraphics(m_img, m_bgColor, true);
+    m_grafx = new GraphGraphics(m_img, m_bgColor, false);
     updateNodeImage();
     addMouseListener(this);
     addMouseMotionListener(this);
@@ -140,9 +148,8 @@ public final class TestTextLowRendering
        null, 0);
     while (iter.numRemaining() > 0) {
       final int inx = iter.nextExtents(m_extents, 0);
-      final String renderThis = Integer.toString(Integer.MAX_VALUE - inx);
       m_grafx.drawTextLow
-        (m_font, renderThis,
+        (m_font, m_labels[inx],
          (float) ((((double) m_extents[0]) + m_extents[2]) / 2.0d),
          (float) ((((double) m_extents[1]) + m_extents[3]) / 2.0d),
          m_fontColor); }
