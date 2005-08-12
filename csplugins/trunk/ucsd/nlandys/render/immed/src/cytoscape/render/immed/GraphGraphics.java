@@ -16,6 +16,7 @@ import java.awt.Stroke;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
@@ -100,6 +101,7 @@ public final class GraphGraphics
   private final AffineTransform m_currXform;
   private final AffineTransform m_xformUtil;
   private final HashMap m_customShapes;
+  private final GeneralPath m_path2dPrime; // For translucent colors.
   private int m_polyNumPoints; // Used with m_polyCoords.
   private Graphics2D m_g2d;
   private Graphics2D m_gMinimal; // We use mostly java.awt.Graphics methods.
@@ -142,6 +144,7 @@ public final class GraphGraphics
     m_currXform = new AffineTransform();
     m_xformUtil = new AffineTransform();
     m_customShapes = new HashMap();
+    m_path2dPrime = new GeneralPath();
     m_nextCustomShapeType = s_last_shape + 1;
     m_chars = new char[20];
     m_cleared = false;
@@ -650,10 +653,21 @@ public final class GraphGraphics
           throw new IllegalArgumentException
             ("rounded rectangle does not meet constraint " +
              "max(width, height) < 2 * min(width, height)"); } }
-    final Shape outerShape = getShape(nodeShape, xMin, yMin, xMax, yMax);
-    if (borderWidth == 0.0f) m_g2d.setColor(fillColor);
-    else m_g2d.setColor(borderColor);
-    m_g2d.fill(outerShape);
+
+    Shape outerShape = getShape(nodeShape, xMin, yMin, xMax, yMax);
+    final boolean renderOuterNow;
+    if (borderWidth == 0.0f) {
+      m_g2d.setColor(fillColor); renderOuterNow = true; }
+    else if (fillColor.getAlpha() == 255) { // Fill is opaque.
+      m_g2d.setColor(borderColor); renderOuterNow = true; }
+    else { // There is a border and the fill color is translucent.
+      renderOuterNow = false; }
+    if (renderOuterNow) { m_g2d.fill(outerShape); }
+    else {
+      m_path2dPrime.reset();
+      m_path2dPrime.append(outerShape, false); // Make a copy, essentially.
+      outerShape = m_path2dPrime; }
+
     if (borderWidth != 0.0f) { // Fill inner node.
       final Shape innerShape;
       if (nodeShape == SHAPE_ELLIPSE) {
@@ -716,7 +730,19 @@ public final class GraphGraphics
             m_path2d.lineTo((float) m_ptsBuff[0], (float) m_ptsBuff[1]); } }
         innerShape = m_path2d; }
       m_g2d.setColor(fillColor);
-      m_g2d.fill(innerShape); }
+      m_g2d.fill(innerShape);
+
+      if (!renderOuterNow) { // The border has not yet been rendered.
+        // For better performance I could do the area subtraction manually
+        // because I know that the two shapes are singular, non
+        // self-intersecting, and one is fully contained in the other.
+        // For the sake of less code and because this block is only reached
+        // when translucent fill colors are used, I choose the easy way of
+        // computing this border area.
+        final Area areaToRender = new Area(outerShape);
+        areaToRender.subtract(new Area(innerShape));
+        m_g2d.setColor(borderColor);
+        m_g2d.fill(areaToRender); } }
   }
 
   /*
