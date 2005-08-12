@@ -5,6 +5,7 @@ import java.net.*;
 import java.util.*;
 import corejava.*;
 
+
 /**
  * Class <code>MyUtils</code>
  * 
@@ -393,18 +394,18 @@ public class MyUtils {
 		return sb.toString();
 	}
 
-	public static void Printf(String fmt, String in) {
-		Format.print(System.out, fmt, in);
-	}
+	//public static void Printf(String fmt, String in) {
+	//	Format.print(System.out, fmt, in);
+	//}
 
-	public static String SPrintf(String fmt, String in) {
-		return (new Format(fmt)).form(in);
-	}
+	//public static String SPrintf(String fmt, String in) {
+	//	return (new Format(fmt)).form(in);
+	//}
 
-	public static void Printf(String fmt, String in[]) {
-		for (int i = 0; i < in.length; i++)
-			Format.print(System.out, fmt, in[i]);
-	}
+	//public static void Printf(String fmt, String in[]) {
+	//	for (int i = 0; i < in.length; i++)
+		//	Format.print(System.out, fmt, in[i]);
+	//}
 
 	public static void Print(String in[]) {
 		for (int i = 0; i < in.length; i++)

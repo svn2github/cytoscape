@@ -115,16 +115,25 @@ public class ProlinksInteractionsSource extends SQLDBHandler
    */
 
   public String getVersion (){
-    // db table should contains meta-information like this
-	  String sql = "SELECT timestamp FROM when_updated WHERE db=\"prolinks\"";
-	  ResultSet rs = query(sql);
-	  if(rs == null)
-		  return "ERROR";
-	  if(rs.last()){
-		  Timestamp ts = rs.getTimestamp(1);
-		  return ts.toString();
-	  }
-    return "";
+	  // TODO:
+	  // this is a problem because we connected to prolinks not metainfo!!!
+      // db table should contains meta-information like this
+	  // - Possible solution: MetaInfoHandler???
+	  //String sql = "SELECT timestamp FROM when_updated WHERE db=\"metainfo\"";
+	  //ResultSet rs = query(sql);
+	  //if(rs == null)
+		//  return "ERROR";
+	  //try{
+		//  if(rs.last()){
+			//  Timestamp ts = rs.getTimestamp(1);
+			  //return ts.toString();
+		 // }
+	  //}catch (SQLException e){
+		//  e.printStackTrace();
+		  //return "ERROR";
+	  //}
+    //return "ERROR";
+	  return "NOT IMPLEMENTED"; // for now
   }
 
   /**
@@ -139,7 +148,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler
 
   //------------------------ get interactions en masse --------------------
   /**
-   * @param species
+   * @param species the name of the species (should be one of getSupportedSpecies)
    * @return a Vector of Hashtables, each hash contains information about an
    * interaction and is required to contain the following entries:<br>
    * INTERACTOR_1 --> String <br>
@@ -148,6 +157,10 @@ public class ProlinksInteractionsSource extends SQLDBHandler
    * Each implementing class can add additional entries to the Hashtables
    */
   public Vector getAllInteractions (String species){
+	  // need to find out if the table for this species is divided into low/high
+	  // TODO: For this, we need to once more, be able to get to meta_info...
+	  // ask Jung to add this info to the prolinks DB, not meta-info
+	  
     return new Vector();
   }
   
