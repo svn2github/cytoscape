@@ -16,6 +16,7 @@ import java.awt.Stroke;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
@@ -953,7 +954,7 @@ public final class GraphGraphics
                                  final Color arrow0Color,
                                  final byte arrowType1,
                                  final float arrow1Size,
-                                 final Color arrow1Color,
+                                 Color arrow1Color,
                                  final float x0, final float y0,
                                  final float x1, final float y1,
                                  final float edgeThickness,
@@ -1057,7 +1058,7 @@ public final class GraphGraphics
     // all rendering.
     if (len == 0.0d) return;
 
-    if (arrowType0 == ARROW_BIDIRECTIONAL) {
+    if (arrowType0 == ARROW_BIDIRECTIONAL) { // Draw and return.
       final double a = (6.0d + Math.sqrt(17.0d) / 2.0d) * edgeThickness;
       m_path2d.reset();
       final double f = (-17.0d / 8.0d) * edgeThickness + arrow0Size;
@@ -1081,8 +1082,14 @@ public final class GraphGraphics
       if (m_dash[0] != dashLength || m_currStrokeWidth != edgeThickness)
         setStroke(edgeThickness, dashLength);
       m_g2d.setColor(edgeColor);
-      m_g2d.draw(m_path2d); } // We could return here, but don't - same.
-    else { // Render the line segment if necessary.
+      m_g2d.draw(m_path2d);
+      return; }
+
+    if (arrowType1 == ARROW_MONO) // This helps us avoid special cases.
+      arrow1Color = arrow0Color;
+
+    Area unrenderedSegmentArea = null;
+    { // Render the line segment if necessary.
       final double x0Adj;
       final double y0Adj;
       switch (arrowType0) {
@@ -1122,9 +1129,14 @@ public final class GraphGraphics
         if (m_dash[0] != dashLength || m_currStrokeWidth != edgeThickness)
           setStroke(edgeThickness, dashLength);
         m_line2d.setLine(x0Adj, y0Adj, x1Adj, y1Adj);
-        m_g2d.setColor(edgeColor);
-        m_g2d.draw(m_line2d); }
-    }
+        if ((arrowType0 != ARROW_NONE && arrow0Color.getAlpha() < 255) ||
+            (arrowType1 != ARROW_NONE && arrow1Color.getAlpha() < 255)) {
+          unrenderedSegmentArea =
+            new Area(m_g2d.getStroke().createStrokedShape(m_line2d)); }
+        else {
+          m_g2d.setColor(edgeColor);
+          m_g2d.draw(m_line2d); } }
+    } // End rendering of line segment.
 
     { // Render the arrow at point 0.
       final Shape arrow0Shape;
@@ -1166,7 +1178,9 @@ public final class GraphGraphics
         break; }
       if (arrow0Shape != null) {
         m_g2d.setColor(arrow0Color);
-        m_g2d.fill(arrow0Shape); }
+        m_g2d.fill(arrow0Shape);
+        if (unrenderedSegmentArea != null) {
+          unrenderedSegmentArea.subtract(new Area(arrow0Shape)); } }
     }
 
     { // Render the arrow at point 1.
@@ -1197,8 +1211,14 @@ public final class GraphGraphics
         break; }
       if (arrow1Shape != null) {
         m_g2d.setColor(arrow1Color);
-        m_g2d.fill(arrow1Shape); }
+        m_g2d.fill(arrow1Shape);
+        if (unrenderedSegmentArea != null) {
+          unrenderedSegmentArea.subtract(new Area(arrow1Shape)); } }
     }
+
+    if (unrenderedSegmentArea != null) {
+      m_g2d.setColor(edgeColor);
+      m_g2d.fill(unrenderedSegmentArea); }
   }
 
   /*
