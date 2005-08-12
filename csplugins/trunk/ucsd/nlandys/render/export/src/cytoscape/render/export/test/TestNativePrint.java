@@ -7,14 +7,20 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.print.PageFormat;
+import java.awt.print.Printable;
+import java.awt.print.PrinterJob;
+import java.awt.print.PrinterException;
 
-public class TestNativePrint extends Frame implements MouseListener
+public class TestNativePrint extends Frame
+  implements MouseListener, Printable
 {
 
   public static void main(String[] args) throws Exception
@@ -72,12 +78,30 @@ public class TestNativePrint extends Frame implements MouseListener
 
   public boolean isResizable() { return false; }
 
-  public void mouseClicked(MouseEvent e) {
-    System.out.println("Great!"); }
+  public void mouseClicked(MouseEvent e)
+  {
+    final PrinterJob printJob = PrinterJob.getPrinterJob();
+    printJob.setPrintable(this);
+    if (printJob.printDialog()) {
+      try { printJob.print(); }
+      catch (PrinterException pe) {
+        pe.printStackTrace(System.err); } }
+  }
+
   public void mouseEntered(MouseEvent e) {}
   public void mouseExited(MouseEvent e) {}
   public void mousePressed(MouseEvent e) {}
   public void mouseReleased(MouseEvent e) {}
 
+  public int print(Graphics g, PageFormat pageFormat, int pageInx)
+  {
+    if (pageInx > 0) { return Printable.NO_SUCH_PAGE; }
+    final Graphics2D g2d = (Graphics2D) g;
+    g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
+    drawGraph(new GraphGraphics
+              (new ImageImposter(g2d, m_imgWidth, m_imgHeight),
+               m_bgColor, true));
+    return Printable.PAGE_EXISTS;
+  }
 
 }
