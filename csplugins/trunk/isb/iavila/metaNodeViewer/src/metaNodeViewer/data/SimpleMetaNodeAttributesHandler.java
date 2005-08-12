@@ -32,15 +32,19 @@ import cytoscape.*;
  * (N) nodes with the same neighbor, it seems undesirable to end up with N edges
  * connecting this neighbor to the meta_node.
  * </p>
+ * 
  * @author Trey Ideker trey@bioeng.ucsd.edu
  * @author Iliana Avila iavila@systemsbiology.org
  * @version 1.0
  */
 
-// TODO: method setNodeAttributes(CyNetwork cy_network,int metanode_root_index, int[] children_nodes_root_indices) has commented
-// code that is crashing due to GraphObjAttributes. Since we think we are going to refactor/rewrite GraphObjAttrbutes, leave it
+// TODO: method setNodeAttributes(CyNetwork cy_network,int metanode_root_index,
+// int[] children_nodes_root_indices) has commented
+// code that is crashing due to GraphObjAttributes. Since we think we are going
+// to refactor/rewrite GraphObjAttrbutes, leave it
 // as it is and fix later. iliana.
-// TODO: internal class CopyEdgeAttr needs to be looked at. See comments. iliana.
+// TODO: internal class CopyEdgeAttr needs to be looked at. See comments.
+// iliana.
 // TODO: Implement removeFromAttributes() -iliana
 // TODO: Imeplemnt removeMetaEdgesFromAttributes() -iliana
 
@@ -106,7 +110,7 @@ public class SimpleMetaNodeAttributesHandler implements
 		for (int i = 0; i < children_nodes_root_indices.length; i++) {
 			int childIndex = children_nodes_root_indices[i];
 			childrenNodes[i] = rootGraph.getNode(childIndex);
-		}//for i
+		}// for i
 
 		// iterate over attributes of children nodes
 		String[] childrenAtts = Cytoscape.getNodeAttributesList(childrenNodes);
@@ -141,19 +145,26 @@ public class SimpleMetaNodeAttributesHandler implements
 				System.out.println("metaName null");
 			}
 
-			//Object[] array = uniqueValues.toArray();
-			//for ( int i = 0; i < array.length; ++i ) {
-			//System.out.println( "uv :"+i+ " "+array[i] );
-			//}
-			//nodeAttr.set(attrName, metaName, uniqueValues.toArray());
+			// Object[] array = uniqueValues.toArray();
+			// for ( int i = 0; i < array.length; ++i ) {
+			// System.out.println( "uv :"+i+ " "+array[i] );
+			// }
+			// nodeAttr.set(attrName, metaName, uniqueValues.toArray());
 			
-			// THIS IS THROWING AN EXCEPTION - GraphObjAttributes expects a String but it gets an Object
-			// need to solve this in GraphObjAttributes, or add a method in CyNetwork to 'append' values
+			// THIS IS THROWING AN EXCEPTION - GraphObjAttributes expects a
+			// String but it gets an Object
+			// need to solve this in GraphObjAttributes, or add a method in
+			// CyNetwork to 'append' values
 			// to an attribute:
 			
-			//cy_network.setNodeAttributeValue(metaNode, attrName, uniqueValues.toArray());
-			//System.err.println("DBG " +attrName+ " " +metaName+ " "
+			// cy_network.setNodeAttributeValue(metaNode, attrName,
+			// uniqueValues.toArray());
+			// System.err.println("DBG " +attrName+ " " +metaName+ " "
 			// +uniqueValues);
+			
+			// For now, simply add the "_mn" ending to the attribute name so
+			// that it is a new attribute
+			Cytoscape.setNodeAttributeValue(metaNode, (attrName + "_mn"), uniqueValues.toArray());
 		}
 		return true;
 	} // end setNodeAttributes
@@ -191,7 +202,12 @@ public class SimpleMetaNodeAttributesHandler implements
 	 * Method to encapsulate the canonical naming of meta nodes and edges
 	 */
 	protected String getCanonicalMetaName(int metanode_root_index) {
-		return "MetaNode_" + Integer.toString((metanode_root_index * -1));
+		if(metanode_root_index < 0){
+			return "MetaNode_" + Integer.toString((metanode_root_index * -1));	
+		}
+        // Cytoscape 2.1 does not have negative indeces (I think)
+		return "MetaNode_" + Integer.toString(metanode_root_index);
+		
 	}
 
 	/**
@@ -212,7 +228,7 @@ public class SimpleMetaNodeAttributesHandler implements
 			Node child = (Node) it.next();
 			commonName += cy_network.getNodeAttributeValue(child,
 					Semantics.CANONICAL_NAME);
-			//if (it.hasNext() && (count % 3) == 0) commonName += '\n';
+			// if (it.hasNext() && (count % 3) == 0) commonName += '\n';
 			if (it.hasNext())
 				commonName += ",";
 		}
@@ -225,6 +241,7 @@ public class SimpleMetaNodeAttributesHandler implements
 	protected class CopyEdgeAttr implements IntIntProcedure {
 
 		public boolean apply(int metaEdgeIndex, int childEdgeIndex){
+			
 			RootGraph rootGraph = Cytoscape.getRootGraph();
 			// get edge info
 			Edge metaEdge = rootGraph.getEdge(metaEdgeIndex);
@@ -232,26 +249,34 @@ public class SimpleMetaNodeAttributesHandler implements
 			if (metaEdge == null || childEdge == null) {
 				throw new NullPointerException("metaEdge or childEdge is null");
 			}
-			String childEdgeName = (String) Cytoscape.getEdgeAttributeValue(
-					childEdge, Semantics.CANONICAL_NAME);
+			//String childEdgeName = (String) Cytoscape.getEdgeAttributeValue(
+			//		childEdge, Semantics.CANONICAL_NAME);
 			String metaEdgeName = "unknown";
 
 			// infer the metaNode and use it to name the metaEdge
 			String interaction = (String) Cytoscape.getEdgeAttributeValue(
-					childEdge, "interaction");
-			Node sourceNode = metaEdge.getSource(); // null 6/24/05
+					childEdge, Semantics.INTERACTION);
+			Node sourceNode = metaEdge.getSource(); // null 6/24/05, passes ok
+													// now 8/10/2005
 			Node targetNode = metaEdge.getTarget();
-			if (rootGraph.nodeMetaChildrenList(sourceNode) != null // crash 6/24/05
-					&& rootGraph.nodeMetaChildrenList(sourceNode).size() > 0) {
+			// TODO: What if there are multiple edges between two nodes, then
+			// the meta-edges will have
+			// the same name! (is this a problem?)
+			if (rootGraph.nodeMetaChildrenList(sourceNode.getRootGraphIndex()) != null // crash
+																						// 6/24/05,
+																						// ok
+																						// now
+																						// 8/10/2005
+					&& rootGraph.nodeMetaChildrenList(sourceNode.getRootGraphIndex()).size() > 0) {
 				metaEdgeName = Cytoscape.getNodeAttributeValue(sourceNode,
 						Semantics.CANONICAL_NAME)
 						+ " ("
 						+ interaction
 						+ ") "
-						+ Cytoscape.getNodeAttributeValue(metaEdge.getTarget(),
+						+ Cytoscape.getNodeAttributeValue(targetNode,
 								Semantics.CANONICAL_NAME);
-			} else if (rootGraph.nodeMetaChildrenList(targetNode) != null
-					&& rootGraph.nodeMetaChildrenList(targetNode).size() > 0) {
+			} else if (rootGraph.nodeMetaChildrenList(targetNode.getRootGraphIndex()) != null
+					&& rootGraph.nodeMetaChildrenList(targetNode.getRootGraphIndex()).size() > 0) {
 				metaEdgeName = Cytoscape.getNodeAttributeValue(metaEdge
 						.getSource(), Semantics.CANONICAL_NAME)
 						+ " ("
@@ -260,127 +285,55 @@ public class SimpleMetaNodeAttributesHandler implements
 						+ Cytoscape.getNodeAttributeValue(targetNode,
 								Semantics.CANONICAL_NAME);
 			}
+			
+			Cytoscape.getEdgeNetworkData().addNameMapping(metaEdgeName, metaEdge);
+			
 			// Transfer attributes b/w edges--
 			// if edge name redundant, merge attrs with existing name and remove
 
-			if (usedEdgeNames.contains(metaEdgeName)) {
+			// if (usedEdgeNames.contains(metaEdgeName)) {
 
-				String[] allAttrNames = Cytoscape.getEdgeAttributesList();
-				for (int i = 0; i < allAttrNames.length; i++) {
-					String attrName = allAttrNames[i];
-					if (attrName.equals("interaction"))
-						continue; // reserved
-					if (attrName.equals(Semantics.CANONICAL_NAME))
-						continue; // reserved
-					Object childValue = Cytoscape.getEdgeAttributeValue(
+			String[] allAttrNames = Cytoscape.getEdgeAttributesList();
+			for (int i = 0; i < allAttrNames.length; i++) {
+				String attrName = allAttrNames[i];
+				
+				if (attrName.equals(Semantics.INTERACTION))
+					continue; // reserved
+				
+				if (attrName.equals(Semantics.CANONICAL_NAME))
+					continue; // reserved
+				 
+				Object childValue = Cytoscape.getEdgeAttributeValue(
 							childEdge, attrName);
-					Object metaValue = Cytoscape.getEdgeAttributeValue(
-							metaEdge, attrName);
+				Object metaValue = Cytoscape.getEdgeAttributeValue(
+						metaEdge, attrName);
 
-					// take union of previous and new attr values
-					HashSet uniqueValues = new HashSet();
-					if (childValue instanceof java.lang.reflect.Array) {
-						Object[] valueArray = (Object[]) childValue;
-						for (int j = 0; j < valueArray.length; j++) {
-							uniqueValues.add(valueArray[j]);
-						}
-					} else {
-						uniqueValues.add(childValue);
+				// take union of previous and new attr values
+				HashSet uniqueValues = new HashSet();
+				if (childValue instanceof java.lang.reflect.Array) {
+					Object[] valueArray = (Object[]) childValue;
+					for (int j = 0; j < valueArray.length; j++) {
+						uniqueValues.add(valueArray[j]);
 					}
-					if (metaValue instanceof java.lang.reflect.Array) {
-						Object[] valueArray = (Object[]) metaValue;
-						for (int j = 0; j < valueArray.length; j++) {
-							uniqueValues.add(valueArray[j]);
-						}
-					} else {
-						uniqueValues.add(metaValue);
-					}
-					Cytoscape.setEdgeAttributeValue(metaEdge, attrName,
-							uniqueValues.toArray());
-					// NOT SURE WHY TREY DID THIS:
-					// try {
-					//             edgeAttr.deleteAttribute(attrName, metaEdgeName);
-					//             for (Iterator it=uniqueValues.iterator(); it.hasNext(); )
-					// {
-					//               Object thisValue = it.next();
-					//               String thisValue = (String) it.next();
-					//               //System.err.println("Adding value: " + thisValue);
-					//               edgeAttr.append(attrName, metaEdgeName, thisValue);
-					//             }
-					//             System.err.println("ADDED: ");
-					//             System.err.println(" Attr Name " + attrName);
-					//             System.err.println(" MetaEdgeName " + metaEdgeName);
-					//             System.err.println(" ChildEdgeName " + childEdgeName);
-					//             System.err.println(" Values " + uniqueValues);
-					//           } catch (IllegalArgumentException exc) {
-					//             System.err.println("Caught IllegalArgumentException:");
-					//             System.err.println(" Attr Name " + attrName);
-					//             System.err.println(" MetaEdgeName " + metaEdgeName);
-					//             System.err.println(" ChildEdgeName " + childEdgeName);
-					//             System.err.println(" Values " + uniqueValues);
-					//           }
-
-					// Why do we need to do this ?
-					// remove the redundant metaEdge
-					rootGraph.removeEdge(metaEdgeIndex);
+				} else {
+					uniqueValues.add(childValue);
 				}
-			} else { // if meta edge not seen before, register name and lump
-					 // transfer attrs
-				//System.out.println("adding name mapping : " + metaEdgeName
-					//	+ "-->" + metaEdge);
-				Cytoscape.getEdgeNetworkData().addNameMapping(metaEdgeName,
-						metaEdge);
-				// NOT SURE WHY I NEED THIS AS WELL:
-				//Cytoscape.setEdgeAttributeValue(metaEdge,
-				//                              Semantics.CANONICAL_NAME,
-				//                              metaEdgeName);
-
-				// THIS METHOD IS NO LONGER THERE:
-				//Edge [] edges = {childEdge};
-				//String [] attributes =
-				// Cytoscape.getEdgeAttributesList(edges);
-				String[] attributes = Cytoscape.getEdgeAttributesList();
-				for (int i = 0; i < attributes.length; i++) {
-					if (attributes[i].equals(Semantics.CANONICAL_NAME)
-							|| attributes[i].equals(Semantics.COMMON_NAME)) {
-						continue;
+				if (metaValue instanceof java.lang.reflect.Array) {
+					Object[] valueArray = (Object[]) metaValue;
+					for (int j = 0; j < valueArray.length; j++) {
+						uniqueValues.add(valueArray[j]);
 					}
-					Object value = Cytoscape.getEdgeAttributeValue(childEdge,
-							attributes[i]);
-					Cytoscape.setEdgeAttributeValue(metaEdge, attributes[i],
-							value);
+				} else {
+					uniqueValues.add(metaValue);
 				}
-				usedEdgeNames.add(metaEdgeName);
-				//System.err.println("\nFIRST OBSERVATION-- transferring all
-				// attributes");
-			}
-
-			//System.err.println("FINISHED MetaEdge " + metaEdgeName
-			//		       + " to ChildEdge " + childEdgeName + "\n");
-			return true;
-		}
-	} // end CopyEdgeAttr
-
-	/**
-	 * If multiple edges map to the same name, merge edges and edge attrs NOTE --
-	 * CURRENTLY NOT BEING USED, FUNCTIONALITY WAS SUBSUMED BY CopyEdgeAttr
-	 * class.
-	 */
-	protected boolean mergeEdgesOfSameName(int[] metaEdgeArray) {
-		RootGraph rootGraph = Cytoscape.getRootGraph();
-		HashSet allEdgeNames = new HashSet();
-		for (int i = 0; i < metaEdgeArray.length; i++) {
-			int metaEdgeIndex = metaEdgeArray[i];
-			Edge metaEdge = rootGraph.getEdge(metaEdgeIndex);
-			String metaEdgeName = (String) Cytoscape.getEdgeAttributeValue(
-					metaEdge, Semantics.CANONICAL_NAME);
-			// if edge seen before, merge attrs
-			if (allEdgeNames.contains(metaEdgeName)) {
-				rootGraph.removeEdge(metaEdgeIndex);
-			} else
-				allEdgeNames.add(metaEdgeName);
-		}
+				// Again, do the trick to avoid an exception here
+				// by adding the "_mn" sufix to the attribute name
+				Cytoscape.setEdgeAttributeValue(metaEdge, (attrName + "_mn"),
+						uniqueValues.toArray());
+				}
 		return true;
-	} // end mergeEdgesOfSameName
+		}
+		
+	} //	 end CopyEdgeAttr
 
 } // end class

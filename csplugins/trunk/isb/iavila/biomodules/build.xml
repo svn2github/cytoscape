@@ -10,8 +10,8 @@
     <property name = "build.compiler" value = "modern"/>
 
     <!-- CHANGE THIS TO YOUR CYTOSCAPE PATHS: -->
-    <property name = "cytoscape" value="../../../../C2.1/source"/>
-    <property name = "cytoscape.plugins" value ="../../../../C2.1/source/plugins"/>
+    <property name = "cytoscape" value="../../../../cytoscape/"/>
+    <property name = "cytoscape.plugins" value ="../../../../cytoscape/plugins"/>
 
     <property name = "local.lib" value="lib"/>
     <property name = "jar"  location = "jar"/>
@@ -101,7 +101,7 @@
           <arg file = "${local.lib}/metanode.jar"/>
           <arg line = "-c"/>
       	  <arg line = "-b"/>
-      	  <arg line = "http://db.systemsbiology.net/cytoscape/annotation/yeast/manifest"/>
+      	  <arg line = "../../../../C2.1/source/testData/annotation/manifest"/>
       </java>
     </target>
 

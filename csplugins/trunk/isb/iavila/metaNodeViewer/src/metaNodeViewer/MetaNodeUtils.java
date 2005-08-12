@@ -29,8 +29,7 @@ import metaNodeViewer.data.MetaNodeAttributesHandler;
 import metaNodeViewer.model.AbstractMetaNodeModeler;
 import metaNodeViewer.model.MetaNodeFactory;
 import metaNodeViewer.model.MetaNodeModelerFactory;
-import cytoscape.CyNetwork;
-import cytoscape.CyNode;
+import cytoscape.*;
 
 /**
  * Class with easy to call static methods for meta-node operations.
@@ -99,14 +98,17 @@ public class MetaNodeUtils {
 	    }
 	    
 	    int [] metaNodeIndices = new int[children.length];
+	    
+	    //Cytoscape.getDesktop().getGraphViewController().stopListening();
+
 	    for(int i = 0; i < children.length; i++){
 	      int [] nodeIndices = new int[children[i].length]; // the children of the meta-node
 	      for(int j = 0; j < children[i].length; j++){
 	        CyNode node = children[i][j];
 	        int index = network.getIndex(node);
 	        if(index == 0){
-	          // TODO: The node is hidden, don't know what to do!
-	          System.err.println("CyNode " + node + " is hidden.");
+	          // TODO: The node is not in the RootGraph
+	          System.err.println("CyNode " + node + " is not in the RootGraph.");
 	          continue;
 	        }
 	        nodeIndices[j] = index;
@@ -118,6 +120,11 @@ public class MetaNodeUtils {
 	    
 	    long secs = (System.currentTimeMillis() - startTime)/1000;
 	    System.err.println("Done creating meta-nodes for biomodules, time = " + secs + ".");
+	    
+	    //startTime = System.currentTimeMillis();
+	    //Cytoscape.getDesktop().getGraphViewController().resumeListening();
+	    //secs = (System.currentTimeMillis() - startTime)/1000;
+	    
 	 
 	    return metaNodeIndices;
 	  }//abstractToMetaNodes

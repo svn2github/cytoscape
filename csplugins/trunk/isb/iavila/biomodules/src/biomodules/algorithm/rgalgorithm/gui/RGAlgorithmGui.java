@@ -54,7 +54,7 @@ import cytoscape.data.servers.*;
 import filter.cytoscape.CsFilter;
 import filter.model.*;
 
-public class RGAlgorithmGui extends JDialog {
+public class RGAlgorithmGui extends JFrame {
   
   protected final static String BIOMODS_PLOT = "Tree node index vs. Num biomods";
   protected final static String DISTANCES_PLOT = "Tree node index vs. Join distance";
@@ -88,36 +88,40 @@ public class RGAlgorithmGui extends JDialog {
   protected JComboBox edgesFiltersBox;
 
   /**
-   * Constructor, calls <code>create()</code>.
-   *
-   * @param network the <code>CyNetwork</code> for which this dialog displays options.
-   */
+	 * Constructor, calls <code>create()</code>.
+	 * 
+	 * @param network
+	 *            the <code>CyNetwork</code> for which this dialog displays
+	 *            options.
+	 */
   public RGAlgorithmGui (CyNetwork network){
     super();
     setTitle("Biomodules: " + network.getTitle());
     this.algorithmData = RGAlgorithm.getClientData(network);
     create();
-  }//RGAlgorithmGui
+  }// RGAlgorithmGui
   
   /**
-   * @return a Filter object that the user selected from the filters JComboBox, can be null
-   */
+	 * @return a Filter object that the user selected from the filters
+	 *         JComboBox, can be null
+	 */
   public Filter getSelectedNodesFilter (){
     Filter filter = (Filter)this.nodesFiltersBox.getSelectedItem();
     return filter;
-  }//getSelectedNodesFilter
+  }// getSelectedNodesFilter
   
   /**
-   * @return a Filter object that the user selected from the filters JComboBox, can be null
-   */
+	 * @return a Filter object that the user selected from the filters
+	 *         JComboBox, can be null
+	 */
   public Filter getSelectedEdgesFilter (){
     Filter filter = (Filter)this.edgesFiltersBox.getSelectedItem();
     return filter;
-  }//getSelectedEdgesFilter
+  }// getSelectedEdgesFilter
   
   /**
-   * Creates the dialog.
-   */
+	 * Creates the dialog.
+	 */
   protected void create (){
     
     Container mainPanel = getContentPane();
@@ -138,14 +142,14 @@ public class RGAlgorithmGui extends JDialog {
     mainPanel.add(tabbedPane,BorderLayout.CENTER);
     mainPanel.add(buttonsPanel,BorderLayout.PAGE_END);
     
-  }//create
+  }// create
 
   /**
-   * Creates and returns a panel for inputing parameters to the
-   * <code>RGAlgorithm</code>.
-   * 
-   * @return a <code>JPanel</code>
-   */
+	 * Creates and returns a panel for inputing parameters to the
+	 * <code>RGAlgorithm</code>.
+	 * 
+	 * @return a <code>JPanel</code>
+	 */
   protected JPanel createParamsPanel (){
     
     JPanel paramsPanel = new JPanel();
@@ -227,30 +231,32 @@ public class RGAlgorithmGui extends JDialog {
     filtersPanel.add(labelsPanel);
     filtersPanel.add(boxesPanel);
         
-    //------------------------------- OLD CODE -------------------------------//
-    //filtersButton.addActionListener(
-    //	new AbstractAction() {
-    //    public void actionPerformed(ActionEvent e) {
-    //      if(fqiltersDialog == null){
-    //        filtersDialog = new CsFilter(Cytoscape.getDesktop());
-    //      }
-    //      filtersDialog.show();
-    //}
+    // ------------------------------- OLD CODE
+	// -------------------------------//
+    // filtersButton.addActionListener(
+    // new AbstractAction() {
+    // public void actionPerformed(ActionEvent e) {
+    // if(fqiltersDialog == null){
+    // filtersDialog = new CsFilter(Cytoscape.getDesktop());
+    // }
+    // filtersDialog.show();
+    // }
     // TEST: Print All Threads !
-    //int numThreads = Thread.activeCount();
-    //System.out.println("num threads = " + numThreads);
-    //Thread[] threads = new Thread[numThreads];
-    //int returnedThreads = Thread.enumerate(threads);
-    //for (int i = 0; i < threads.length; i++) {
-    //if(threads[i] != null){
-    //	System.out.println(threads[i] + " is alive = " + threads[i].isAlive());
-    //}
-    //}//for i
-    //    }//actionPerformed
-    //  }//AbstractAction
-    //  );
-    //filtersPanel.add(filtersButton);
-    // ---------------------------- END OF OLD CODE ----------------------------//
+    // int numThreads = Thread.activeCount();
+    // System.out.println("num threads = " + numThreads);
+    // Thread[] threads = new Thread[numThreads];
+    // int returnedThreads = Thread.enumerate(threads);
+    // for (int i = 0; i < threads.length; i++) {
+    // if(threads[i] != null){
+    // System.out.println(threads[i] + " is alive = " + threads[i].isAlive());
+    // }
+    // }//for i
+    // }//actionPerformed
+    // }//AbstractAction
+    // );
+    // filtersPanel.add(filtersButton);
+    // ---------------------------- END OF OLD CODE
+	// ----------------------------//
     paramsPanel.add(filtersPanel);
     // --------- Plots ---------- //
     JPanel optionsPanel = new JPanel();
@@ -302,12 +308,13 @@ public class RGAlgorithmGui extends JDialog {
     paramsPanel.add(xyPanel);
     
     return paramsPanel;
-  }//createParamsPanel
+  }// createParamsPanel
 
   /**
-   * Creates and returns a <code>HCPlot</code> for number of biomodules at each join in the
-   * hierarchical-tree contained in <code>this.algorithmData</code>. 
-   */
+	 * Creates and returns a <code>HCPlot</code> for number of biomodules at
+	 * each join in the hierarchical-tree contained in
+	 * <code>this.algorithmData</code>.
+	 */
   protected HCPlot createNumBiomodulesPlot (){
     HierarchicalClustering hClustering = this.algorithmData.getHierarchicalClustering();
     
@@ -333,7 +340,7 @@ public class RGAlgorithmGui extends JDialog {
       numBiomodulesAtJoin = new double[numClustersPerJoin.length];
       for(int i = 0; i < numClustersPerJoin.length; i++){
         numBiomodulesAtJoin[i] = (double)numClustersPerJoin[i];
-      }//for i
+      }// for i
       minNumBiomods = (double)hClustering.getMinNumClusters();
       maxNumBiomods = (double)hClustering.getMaxNumClusters();
       cutJoin = this.algorithmData.getCutJoinNumber();
@@ -347,17 +354,18 @@ public class RGAlgorithmGui extends JDialog {
                       "Tree_node_index",
                       "Num_Biomods"
                       );
-  }//createNumBiomodulesPlot
+  }// createNumBiomodulesPlot
 
   /**
-   * Creates and returns a <code>HCPlot</code> for distances between children of
-   * hierarchical-tree nodes in <code>this.algorithmData</code>
-   */
+	 * Creates and returns a <code>HCPlot</code> for distances between
+	 * children of hierarchical-tree nodes in <code>this.algorithmData</code>
+	 */
   protected HCPlot createDistancesPlot (){
     HierarchicalClustering hClustering = this.algorithmData.getHierarchicalClustering();
     
     double [] distancesAtJoin = null;
-    // The smallest distance with which two nodes in the hierarchical-tree were joined
+    // The smallest distance with which two nodes in the hierarchical-tree were
+	// joined
     double minJoiningValue = 0;
     // The largest one
     double maxJoiningValue = 0;
@@ -389,13 +397,13 @@ public class RGAlgorithmGui extends JDialog {
                       "Tree_node_index",
                       "Join_Distance"
                       );
-  }//createDistancesPlot
+  }// createDistancesPlot
 
   /**
-   * Creates and returns a panel with settings for visualizing biomodules.
-   *
-   * @return a <code>JPanel</code>
-   */
+	 * Creates and returns a panel with settings for visualizing biomodules.
+	 * 
+	 * @return a <code>JPanel</code>
+	 */
   protected JPanel createVisualizationPanel (){
     JPanel visPanel = new JPanel();
     visPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -408,14 +416,14 @@ public class RGAlgorithmGui extends JDialog {
     }
     visPanel.add(this.abstractRbutton);
     return visPanel;
-  }//createVisualizationPanel
+  }// createVisualizationPanel
 
   /**
-   * Creates and returns a panel for showing the data that the <code>RGAlgorithm</code>
-   * produces.
-   *
-   * @return a <code>JPanel</code>
-   */
+	 * Creates and returns a panel for showing the data that the
+	 * <code>RGAlgorithm</code> produces.
+	 * 
+	 * @return a <code>JPanel</code>
+	 */
   protected JPanel createDataPanel (){
   	JPanel dataPanel = new JPanel();
   	dataPanel.setLayout(new BorderLayout());
@@ -475,14 +483,14 @@ public class RGAlgorithmGui extends JDialog {
   				moduleNames[i] = (String)Cytoscape.getNodeAttributeValue(metaNodes[i],Semantics.COMMON_NAME);
   				for(int j = 0; j < moduleNodes.length; j++){
   					moduleMembers[i][j] = (String)Cytoscape.getNodeAttributeValue(moduleNodes[j],Semantics.CANONICAL_NAME);
-  				}//for j
-  			}//for i
+  				}// for j
+  			}// for i
   			
   			RGAlgorithmGui.this.moduleAnnotsDialog.setCalculatorParameters(metaNodes,moduleMembers,false);
   			RGAlgorithmGui.this.moduleAnnotsDialog.pack();
   			RGAlgorithmGui.this.moduleAnnotsDialog.setLocationRelativeTo(RGAlgorithmGui.this);
   			RGAlgorithmGui.this.moduleAnnotsDialog.setVisible(true);
-  		}//actionPerformed
+  		}// actionPerformed
   	
   	});
   	
@@ -494,13 +502,13 @@ public class RGAlgorithmGui extends JDialog {
   	dataPanel.add(buttonsPanel, BorderLayout.CENTER);
   	
     return dataPanel;
-  }//createDataPanel
+  }// createDataPanel
 
   /**
-   * Creates and returns a panel with buttons (Calculate, Dismiss, etc).
-   *
-   * @return a <code>JPanel</code>
-   */
+	 * Creates and returns a panel with buttons (Calculate, Dismiss, etc).
+	 * 
+	 * @return a <code>JPanel</code>
+	 */
   protected JPanel createButtonsPanel (){
     JPanel buttonsPanel = new JPanel();
     buttonsPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -516,8 +524,8 @@ public class RGAlgorithmGui extends JDialog {
                                                      }
                                                    };
                                                  w.start();
-                                               }//actionPerformed
-                                             }//AbstractAction
+                                               }// actionPerformed
+                                             }// AbstractAction
       );
     buttonsPanel.add(calculateBiomodsButton);
     
@@ -533,20 +541,22 @@ public class RGAlgorithmGui extends JDialog {
     
     buttonsPanel.add(closeWindowButton);
     return buttonsPanel;
-  }//createButtonsPanel
+  }// createButtonsPanel
 
   /**
-   * Calls <code>RGAlgorithm.calculateBiomodules()</code> and updates the plots.
-   */
+	 * Calls <code>RGAlgorithm.calculateBiomodules()</code> and updates the
+	 * plots.
+	 */
   protected void calculateBiomodules (){
-    try{
+    // try{
 
       // Calculate the biomodules
     
       HierarchicalClustering hClustering = this.algorithmData.getHierarchicalClustering();
       CyNode [][] biomodules = null;
       
-      // From the GUI, see if apsp and manhattan-distances need to be kept in memory
+      // From the GUI, see if apsp and manhattan-distances need to be kept in
+		// memory
       this.algorithmData.setSaveIntermediaryData(this.viewDataRadioButton.isSelected());
       
       // Set any selected filters
@@ -575,7 +585,8 @@ public class RGAlgorithmGui extends JDialog {
       CyNetworkView netView = Cytoscape.getNetworkView(netID);
       
       if(this.abstractRbutton.isSelected() && netView != null){
-        //System.out.println("this.abstractRbutton.isSelected () = true and netView exists so create meta-nodes");
+        // System.out.println("this.abstractRbutton.isSelected () = true and
+		// netView exists so create meta-nodes");
         // Remove existent meta-nodes:
         IntArrayList metaNodes = (IntArrayList)net.getClientData(MetaNodeFactory.METANODES_IN_NETWORK);
         if(metaNodes != null){
@@ -589,23 +600,29 @@ public class RGAlgorithmGui extends JDialog {
         for(int i = 0; i < metaNodeRindices.length; i++){
           Node node = net.getNode(metaNodeRindices[i]);
           String canonical = (String)Cytoscape.getNodeAttributeValue(node,Semantics.CANONICAL_NAME);
-          if(node == null || canonical == null){
+          if(node == null){
             System.out.println("The node with index [" + metaNodeRindices[i] + "] is null");
             canonical = "unknown" + Integer.toString(numUnknowns);
             numUnknowns++;
+          }else if(canonical == null){
+        	  //        	 GETTING HERE 8.10.2005
+        	  System.out.println("Canonical name for node with index [" + metaNodeRindices[i] + "] is null");
+        	  	canonical = "unknown" + Integer.toString(numUnknowns);
           }
           bioIdentifiersToMembers.put(canonical,biomodules[i]);
-        }//for i
+        }// for i
         System.out.println("Done creating meta-nodes.");
       }else{
-        //System.out.println("there is no view or the user does not want to abstract meta-nodes. creating names for biomodules...");
-        // The Biomodules need to have an identifier, so lets make it the member with the highest intra-degree
+        // System.out.println("there is no view or the user does not want to
+		// abstract meta-nodes. creating names for biomodules...");
+        // The Biomodules need to have an identifier, so lets make it the member
+		// with the highest intra-degree
         CyNetwork network = this.algorithmData.getNetwork();
         for(int i = 0; i < biomodules.length; i++){
           int [] memberRindices = new int[biomodules[i].length];
           for(int j = 0; j < biomodules[i].length; j++){
             memberRindices[j] = biomodules[i][j].getRootGraphIndex();
-          }//for j
+          }// for j
           SortedSet ss = IntraDegreeComparator.sortNodes(network, memberRindices);
           CyNode highestNode = (CyNode)ss.first();
     	    String alias = (String)network.getNodeAttributeValue(highestNode,Semantics.COMMON_NAME);
@@ -613,8 +630,8 @@ public class RGAlgorithmGui extends JDialog {
     	      alias = (String)network.getNodeAttributeValue(highestNode,Semantics.CANONICAL_NAME);
     	    }
     	    bioIdentifiersToMembers.put(alias,biomodules[i]);
-        }//for i
-        //System.out.println("Done creating names for biomodules.");
+        }// for i
+        // System.out.println("Done creating names for biomodules.");
       }
       
       
@@ -623,21 +640,22 @@ public class RGAlgorithmGui extends JDialog {
       this.displayMDAction.setUpdateNeeded(true);
       this.displayBiomodulesAction.setUpdateNeeded(true);
     
-    }catch (Exception exception){
-      showErrorMessageDialog("<html>Error while calculating biomodules:<br>"+
-                             exception.getMessage() + "</html>");
-    }
+// }catch (Exception exception){
+  // showErrorMessageDialog("<html>Error while calculating biomodules:<br>"+
+    // exception.getMessage() + "</html>");
+      // return;
+    // }
     
     JOptionPane.showMessageDialog(this,
                                   "Done calculating Biomodules.",
                                   "Done!", 
                                   JOptionPane.INFORMATION_MESSAGE);
     
-  }//calculateBiomodules
+  }// calculateBiomodules
 
   /**
-   * Updates the plots.
-   */
+	 * Updates the plots.
+	 */
   protected void updatePlots (){
     
   	String currentPlotID = getCurrentPlot();
@@ -659,11 +677,11 @@ public class RGAlgorithmGui extends JDialog {
     this.distancesPlot.addJoinBarListener(this.distancesPlotListener);
     this.plotPanel.validate();
     updatePlotLabels();
-  }//updatePlots
+  }// updatePlots
 
   /**
-   * Updates the yLabel and the yField for the current plot.
-   */
+	 * Updates the yLabel and the yField for the current plot.
+	 */
   public void updatePlotLabels (){
     
     String currentPlotID = getCurrentPlot();
@@ -704,12 +722,12 @@ public class RGAlgorithmGui extends JDialog {
     
     }
   
-  }//updatePlotLabels
+  }// updatePlotLabels
 
   /**
-   * @return the currently displayed plot identifier (one of BIOMODS_PLOT or DISTANCES_PLOT),
-   * or null if neither plot is displayed
-   */
+	 * @return the currently displayed plot identifier (one of BIOMODS_PLOT or
+	 *         DISTANCES_PLOT), or null if neither plot is displayed
+	 */
   public String getCurrentPlot (){
     Component pane = this.plotPanel.getComponent(0);
     if(pane == this.numBiomodulesPlot.getContentPane()){
@@ -721,28 +739,29 @@ public class RGAlgorithmGui extends JDialog {
     }
     System.err.println("getCurrentPlot() returning null");
     return null;
-  }//getCurrentPlot
+  }// getCurrentPlot
 
   /**
-   * Pops-up an error dialog with the given message.
-   *
-   * @param message the message that will be displayed
-   */
+	 * Pops-up an error dialog with the given message.
+	 * 
+	 * @param message
+	 *            the message that will be displayed
+	 */
   protected void showErrorMessageDialog (String message){
     JOptionPane.showMessageDialog(this, 
                                   message, 
                                   "Error", 
                                   JOptionPane.ERROR_MESSAGE);
-  }//showErrorMessageDialog
+  }// showErrorMessageDialog
 
   /**
-   * @return a negative number if there was an error:
-   * <code>BOUNDS_ERROR</code> if the number entered violates its possible bounds
-   * <code>NOT_A_NUM_ERROR</code> if the input is not numeric
-   * <code>UNKNOWN_BOUNDS</code> can't asses whether the entered number meets bounds
-   * or not (because the object to do this is null)
-   * a positive number that represents the input otherwise.
-   */
+	 * @return a negative number if there was an error:
+	 *         <code>BOUNDS_ERROR</code> if the number entered violates its
+	 *         possible bounds <code>NOT_A_NUM_ERROR</code> if the input is
+	 *         not numeric <code>UNKNOWN_BOUNDS</code> can't asses whether the
+	 *         entered number meets bounds or not (because the object to do this
+	 *         is null) a positive number that represents the input otherwise.
+	 */
   protected int readInput (JTextField text_field){
     
     String text = text_field.getText();
@@ -770,12 +789,12 @@ public class RGAlgorithmGui extends JDialog {
     }
     return input;
   
-  }//readInput
+  }// readInput
 
-  //------------ Internal classes -----------//
+  // ------------ Internal classes -----------//
   /**
-   * Gets called when the user switches displayed plot using the combo-box.
-   */
+	 * Gets called when the user switches displayed plot using the combo-box.
+	 */
   protected class PlotsOptionsListener extends AbstractAction {
     PlotsOptionsListener (){
       super();
@@ -822,13 +841,13 @@ public class RGAlgorithmGui extends JDialog {
         return;
       }
       
-    }//actionPerformed
+    }// actionPerformed
   
-  }//PlotsOptionsListener
+  }// PlotsOptionsListener
 
   /**
-   * Listens to changes in the vertical bar of a HCPlot.
-   */
+	 * Listens to changes in the vertical bar of a HCPlot.
+	 */
   protected class PlotListener extends AbstractAction{
     PlotListener (){
       super();
@@ -860,17 +879,17 @@ public class RGAlgorithmGui extends JDialog {
       RGAlgorithmGui.this.algorithmData.setCutJoinNumber(joinNumber);
       updatePlotLabels();
     
-    }//actionperformed
+    }// actionperformed
   
-  }//PlotListener
+  }// PlotListener
   
   /**
-   * Listens to input to the xField.
-   */
+	 * Listens to input to the xField.
+	 */
   protected class XFieldListener extends AbstractAction {
     public XFieldListener (){
       super("");
-    }//XFieldListener
+    }// XFieldListener
     
     public void actionPerformed (ActionEvent event){
       // The user hit the 'Enter' key for the xField (maybe entered new data)
@@ -912,9 +931,9 @@ public class RGAlgorithmGui extends JDialog {
       
       RGAlgorithmGui.this.algorithmData.setCutJoinNumber(input);
       updatePlotLabels();
-    }//actionPerformed
+    }// actionPerformed
   
-  }//XFieldListener
+  }// XFieldListener
   
   protected class DisplayTableAction extends AbstractAction {
   	
@@ -955,11 +974,11 @@ public class RGAlgorithmGui extends JDialog {
                           nodeNames,
                           apsp,
                          ("APSP: "+RGAlgorithmGui.this.algorithmData.getNetwork().getTitle()));
-  			}//if apspTable = null
+  			}// if apspTable = null
   			RGAlgorithmGui.this.apspTable.pack();
   			RGAlgorithmGui.this.apspTable.setLocationRelativeTo(RGAlgorithmGui.this);
   			RGAlgorithmGui.this.apspTable.setVisible(true);
-  		}//apsp table
+  		}// apsp table
   		else if(this.type == MD_TABLE){
   			if(RGAlgorithmGui.this.mdTable == null || this.update){
   				ArrayList orderedNodes = RGAlgorithmGui.this.algorithmData.getOrderedNodes();
@@ -994,20 +1013,20 @@ public class RGAlgorithmGui extends JDialog {
   			RGAlgorithmGui.this.mdTable.pack();
   			RGAlgorithmGui.this.mdTable.setLocationRelativeTo(RGAlgorithmGui.this);
   			RGAlgorithmGui.this.mdTable.setVisible(true);
-  		}//manhattan  distances table
+  		}// manhattan distances table
   		
-  	}//actionPerformed
+  	}// actionPerformed
   	
   	/**
-  	 * Whether or not the table should be updated next time it is displayed.
-  	 *
-  	 * @param update
-  	 */
+	 * Whether or not the table should be updated next time it is displayed.
+	 * 
+	 * @param update
+	 */
   	public void setUpdateNeeded (boolean update){
   		this.update = update;
-  	}//setUpdateNeeded
+  	}// setUpdateNeeded
   
-  }//DisplayTableAction
+  }// DisplayTableAction
   
   protected class DisplayBiomodulesAction extends AbstractAction {
   	
@@ -1016,7 +1035,7 @@ public class RGAlgorithmGui extends JDialog {
   	
   	DisplayBiomodulesAction (){
   		super("");
-  	}//constructor
+  	}// constructor
   	
   	public void actionPerformed (ActionEvent event){
   		if(RGAlgorithmGui.this.biomodulesTable == null || this.update){
@@ -1044,29 +1063,29 @@ public class RGAlgorithmGui extends JDialog {
   						canonicals = canonicals + "," + can;
   	  					commons = commons + "," + com;
   					}
-  				}//for j
+  				}// for j
   				data[i][2] = canonicals;
   				data[i][3] = commons;
   				i++;
-  			}//while it.hasNext
+  			}// while it.hasNext
   			RGAlgorithmGui.this.biomodulesTable = new DataTable(null, colNames, data, ("Biomodules Table: " + net.getTitle()));
   		}// if the table is null
   		this.update = false;
   		RGAlgorithmGui.this.biomodulesTable.pack();
   		RGAlgorithmGui.this.biomodulesTable.setLocationRelativeTo(RGAlgorithmGui.this);
   		RGAlgorithmGui.this.biomodulesTable.setVisible(true);
-  	}//actionPerformed
+  	}// actionPerformed
   	
   	/**
-  	 * Whether or not the table should be updated next time it is displayed.
-  	 * 
-  	 * @param update
-  	 */
+	 * Whether or not the table should be updated next time it is displayed.
+	 * 
+	 * @param update
+	 */
   	public void setUpdateNeeded (boolean update){
   		this.update = update;	
-  	}//setUpdateNeeded
-  }//DisplayBiomodulesAction
+  	}// setUpdateNeeded
+  }// DisplayBiomodulesAction
 
 
-}//class RGAlgorithmGui
+}// class RGAlgorithmGui
 
