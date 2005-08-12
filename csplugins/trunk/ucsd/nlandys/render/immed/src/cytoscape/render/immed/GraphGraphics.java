@@ -650,10 +650,10 @@ public final class GraphGraphics
           throw new IllegalArgumentException
             ("rounded rectangle does not meet constraint " +
              "max(width, height) < 2 * min(width, height)"); } }
-    final Shape shape = getShape(nodeShape, xMin, yMin, xMax, yMax);
+    final Shape outerShape = getShape(nodeShape, xMin, yMin, xMax, yMax);
     if (borderWidth == 0.0f) m_g2d.setColor(fillColor);
     else m_g2d.setColor(borderColor);
-    m_g2d.fill(shape);
+    m_g2d.fill(outerShape);
     if (borderWidth != 0.0f) { // Fill inner node.
       final Shape innerShape;
       if (nodeShape == SHAPE_ELLIPSE) {
