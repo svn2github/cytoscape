@@ -15,7 +15,7 @@ import java.awt.*;
  *
  * @author Ethan Cerami.
  */
-public class BiModalJSplitPane extends JSplitPane {
+public class BiModalJSplitPane extends JSplitPane implements CytoPanelContainer {
     /**
      * Mode:  Show the Split Pane.
      */
@@ -32,6 +32,11 @@ public class BiModalJSplitPane extends JSplitPane {
     public static final String MODE_PROPERTY = "MODE_PROPERTY";
 
     /**
+     * Reference application frame.
+     */
+    private JFrame frame;
+
+    /**
      * The Current Mode Value.
      */
     private int currentMode;
@@ -44,6 +49,7 @@ public class BiModalJSplitPane extends JSplitPane {
     /**
      * Constructor.
      *
+     * @param frame          The Application Frame.
      * @param orientation    JSplitPane Orientation.
      *                       JSplitPane.HORIZONTAL_SPLIT or
      *                       JSplitPane.VERTICAL_SPLIT.
@@ -53,10 +59,11 @@ public class BiModalJSplitPane extends JSplitPane {
      * @param leftComponent  Left/Top Component.
      * @param rightComponent Right/Bottom Component.
      */
-    public BiModalJSplitPane(int orientation, int initialMode,
+    public BiModalJSplitPane(JFrame f, int orientation, int initialMode,
             Component leftComponent, Component rightComponent) {
         super(orientation, leftComponent, rightComponent);
         currentMode = initialMode;
+		frame = f;
 
         //  Remove the Border, by Default
         setBorder(null);
@@ -105,6 +112,61 @@ public class BiModalJSplitPane extends JSplitPane {
     public int getMode() {
         return currentMode;
     }
+
+    /**
+     * Inserts CytoPanel at Specified Compass Direction.
+     *
+     * @param cytoPanel        CytoPanel Object.
+     * @param compassDirection SwingConstants integer value.
+     */
+	public void insertCytoPanel(CytoPanel cytoPanel, int compassDirection) {
+		boolean success = false;
+
+		switch (compassDirection){
+		case SwingConstants.NORTH:
+            this.setTopComponent(cytoPanel);
+			success = true;
+			break;
+		case SwingConstants.SOUTH:
+            this.setBottomComponent(cytoPanel);
+			success = true;
+			break;
+		case SwingConstants.EAST:
+            this.setRightComponent(cytoPanel);
+			success = true;
+			break;
+		case SwingConstants.WEST:
+            this.setLeftComponent(cytoPanel);
+			success = true;
+			break;
+		}
+
+		// houston we have a problem
+		if (!success){
+			// made it here, houston, we have a problem
+			throw new IllegalArgumentException("Illegal Argument:  "
+											   + compassDirection +
+											   ".  Must be one of:  SwingConstants.{NORTH,SOUTH,EAST,WEST.");
+		}
+	}
+
+    /**
+     * Gets Location of Container, in screen coordinates.
+     *
+     * @return Point Object.
+     */
+    public Point getLocationOnScreen() {
+		return frame.getLocationOnScreen();
+	}
+
+    /**
+     * Gets Bounds of Container, relative to parent component.
+     *
+     * @return Rectangle Object.
+     */
+    public Rectangle getBounds() {
+		return frame.getBounds();
+	}
 
     /**
      * Shows the Split.

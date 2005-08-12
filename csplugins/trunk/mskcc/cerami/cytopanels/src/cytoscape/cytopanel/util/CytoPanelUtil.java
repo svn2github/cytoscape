@@ -23,8 +23,10 @@ public class CytoPanelUtil {
             Rectangle containerBounds, Dimension frameDimension,
             int compassDirection, boolean outputDiagnostics) {
         if (outputDiagnostics) {
-            outputDiagnostics(screenDimension, containerBounds,
-                    frameDimension);
+            outputDiagnostics(screenDimension,
+							  containerBounds,
+							  frameDimension,
+							  compassDirection);
         }
 
         //  Get Location and Dimension of Container
@@ -45,11 +47,7 @@ public class CytoPanelUtil {
                     (int) frameDimension.getWidth();
         } else if (compassDirection == SwingConstants.EAST) {
             p.x = containerLocation.x + INSET + (int) containerWidth;
-        } else if (compassDirection == SwingConstants.SOUTH_WEST) {
-            p.y = containerLocation.y + INSET + (int) containerHeight;
-        } else if (compassDirection == SwingConstants.SOUTH_EAST) {
-            p.x = containerLocation.x + containerWidth -
-                    (int) frameDimension.getWidth();
+        } else if (compassDirection == SwingConstants.SOUTH) {
             p.y = containerLocation.y + INSET + (int) containerHeight;
         }
 
@@ -72,10 +70,13 @@ public class CytoPanelUtil {
      * Outputs Diagnostics Related to Screen/Frame Dimensions.
      */
     private static void outputDiagnostics(Dimension screenDimension,
-            Rectangle containerBounds, Dimension preferredSizeOfPanel) {
+										  Rectangle containerBounds,
+										  Dimension preferredSizeOfPanel,
+										  int compassDirection) {
+        System.err.println("Compass Direction:  " + compassDirection);
         System.err.println("Screen Dimension:  " + screenDimension);
         System.err.println("Container Bounds:  " + containerBounds.toString());
-        System.err.println("Preferred Size of Panel:  "
-                + preferredSizeOfPanel.toString());
+        System.err.println("Preferred Size of Panel:  " +
+						   preferredSizeOfPanel.toString());
     }
 }

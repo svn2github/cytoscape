@@ -24,9 +24,9 @@ public class CytoPanelDemo {
         JFrame frame = new JFrame("Cytoscape CytoPanel API");
 
         //  Create Embedded SpitPanes
-        BiModalJSplitPane topLeftPane = createTopLeftPane();
-        BiModalJSplitPane topPane = createTopPane(topLeftPane);
-        BiModalJSplitPane masterPane = createMasterPane(topPane);
+        BiModalJSplitPane topLeftPane = createTopLeftPane(frame);
+        BiModalJSplitPane topPane = createTopPane(frame, topLeftPane);
+        BiModalJSplitPane masterPane = createMasterPane(frame, topPane);
 
         //  Add Master Pane to Frame
         Container contentPane = frame.getContentPane();
@@ -41,7 +41,7 @@ public class CytoPanelDemo {
      * Creates the TopLeft Pane.
      * @return BiModalJSplitPane Object.
      */
-    private static BiModalJSplitPane createTopLeftPane() {
+    private static BiModalJSplitPane createTopLeftPane(JFrame frame) {
         String tab1Name = "Network View";
         String tab2Name = "Attribute Browser";
 
@@ -49,18 +49,24 @@ public class CytoPanelDemo {
         CytoPanel cytoPanel = new CytoPanel(JTabbedPane.LEFT);
 
         //  Add Two Sample Tabs
-        cytoPanel.addTab(tab1Name, DemoUtil.createSamplePanel
-                (tab1Name), DemoUtil.getSampleToolTip(tab1Name));
-        cytoPanel.addTab(tab2Name, DemoUtil.createSamplePanel
-                (tab2Name), DemoUtil.getSampleToolTip(tab2Name));
+        cytoPanel.addTab(tab1Name,
+						 DemoUtil.createSamplePanel (tab1Name),
+						 DemoUtil.getSampleToolTip(tab1Name));
+        cytoPanel.addTab(tab2Name,
+						 DemoUtil.createSamplePanel (tab2Name),
+						 DemoUtil.getSampleToolTip(tab2Name));
 
         //  Get a Dummy Screenshot of a Sample Cytoscape Network
         JPanel networkViewPanel = createNetworkViewPanel();
 
         //  Create the Split Pane;  split horizontally, and sho the split
-        BiModalJSplitPane splitPane = new BiModalJSplitPane
-                (JSplitPane.HORIZONTAL_SPLIT, BiModalJSplitPane.MODE_SHOW_SPLIT,
-                        cytoPanel, networkViewPanel);
+        BiModalJSplitPane splitPane = new BiModalJSplitPane(frame,
+															JSplitPane.HORIZONTAL_SPLIT,
+															BiModalJSplitPane.MODE_SHOW_SPLIT,
+															cytoPanel,
+															networkViewPanel);
+		// BiModalSplitPane is cytoPanelContainer
+		cytoPanel.setCytoPanelContainer(splitPane);
 
         return splitPane;
     }
@@ -70,8 +76,7 @@ public class CytoPanelDemo {
      * @param topLeftPane TopLeftPane Object.
      * @return BiModalJSplitPane Object
      */
-    private static BiModalJSplitPane createTopPane(BiModalJSplitPane
-            topLeftPane) {
+    private static BiModalJSplitPane createTopPane(JFrame frame, BiModalJSplitPane topLeftPane) {
         String tab1Name = "PlugIn Example 1";
         String tab2Name = "PlugIn Example 2";
         String tab3Name = "PlugIn Example 3";
@@ -80,17 +85,24 @@ public class CytoPanelDemo {
         CytoPanel tabs = new CytoPanel(JTabbedPane.RIGHT);
 
         //  Add Three Sample Tabs
-        tabs.addTab(tab1Name, DemoUtil.createSamplePanel (tab1Name),
-                DemoUtil.getSampleToolTip(tab1Name));
-        tabs.addTab(tab2Name, DemoUtil.createSamplePanel
-                (tab2Name), DemoUtil.getSampleToolTip(tab2Name));
-        tabs.addTab(tab3Name, DemoUtil.createSamplePanel (tab3Name),
-                DemoUtil.getSampleToolTip(tab3Name));
+        tabs.addTab(tab1Name,
+					DemoUtil.createSamplePanel (tab1Name),
+					DemoUtil.getSampleToolTip(tab1Name));
+        tabs.addTab(tab2Name,
+					DemoUtil.createSamplePanel (tab2Name),
+					DemoUtil.getSampleToolTip(tab2Name));
+        tabs.addTab(tab3Name,
+					DemoUtil.createSamplePanel (tab3Name),
+					DemoUtil.getSampleToolTip(tab3Name));
 
         //  Create the Split Pane; split horizontally, hide the split
-        BiModalJSplitPane splitPane = new BiModalJSplitPane
-                (JSplitPane.HORIZONTAL_SPLIT,
-                        BiModalJSplitPane.MODE_HIDE_SPLIT, topLeftPane, tabs);
+        BiModalJSplitPane splitPane = new BiModalJSplitPane(frame,
+															JSplitPane.HORIZONTAL_SPLIT,
+															BiModalJSplitPane.MODE_HIDE_SPLIT,
+															topLeftPane,
+															tabs);
+		// BiModalSplitPane is cytoPanelContainer
+		tabs.setCytoPanelContainer(splitPane);
 
         //  Set the Resize Weight so that all extra space goes to
         //  the left component.
@@ -106,8 +118,7 @@ public class CytoPanelDemo {
      * @param topSplitPane BiModalJSplitPane Object.
      * @return BiModalJSplitPane Object.
      */
-    private static BiModalJSplitPane createMasterPane (BiModalJSplitPane
-            topSplitPane) {
+    private static BiModalJSplitPane createMasterPane (JFrame frame, BiModalJSplitPane topSplitPane) {
         String tab4Name = "PlugIn Example 4";
         String tab5Name = "PlugIn Example 5";
         String tab6Name = "PlugIn Example 6";
@@ -116,17 +127,24 @@ public class CytoPanelDemo {
         CytoPanel tabs = new CytoPanel(JTabbedPane.BOTTOM);
 
         //  Create Three Sample Tabs
-        tabs.addTab(tab4Name, DemoUtil.createSamplePanel (tab4Name),
-                DemoUtil.getSampleToolTip(tab4Name));
-        tabs.addTab(tab5Name, DemoUtil.createSamplePanel (tab5Name),
-                DemoUtil.getSampleToolTip(tab5Name));
-        tabs.addTab(tab6Name, DemoUtil.createSamplePanel (tab6Name),
-                DemoUtil.getSampleToolTip(tab6Name));
+        tabs.addTab(tab4Name,
+					DemoUtil.createSamplePanel (tab4Name),
+					DemoUtil.getSampleToolTip(tab4Name));
+        tabs.addTab(tab5Name,
+					DemoUtil.createSamplePanel (tab5Name),
+					DemoUtil.getSampleToolTip(tab5Name));
+        tabs.addTab(tab6Name,
+					DemoUtil.createSamplePanel (tab6Name),
+					DemoUtil.getSampleToolTip(tab6Name));
 
         //  Create the Split Pane;  split vertically, hide the split
-        BiModalJSplitPane splitPane = new BiModalJSplitPane
-                (JSplitPane.VERTICAL_SPLIT, BiModalJSplitPane.MODE_HIDE_SPLIT,
-                        topSplitPane, tabs);
+        BiModalJSplitPane splitPane = new BiModalJSplitPane(frame,
+															JSplitPane.VERTICAL_SPLIT,
+															BiModalJSplitPane.MODE_HIDE_SPLIT,
+															topSplitPane,
+															tabs);
+		// BiModalSplitPane is cytoPanelContainer
+		tabs.setCytoPanelContainer(splitPane);
 
         //  Set Resize Weight so that top component gets all the extra space.
         splitPane.setResizeWeight(1);
