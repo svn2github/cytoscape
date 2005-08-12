@@ -1,6 +1,5 @@
 package cytoscape.render.immed;
 
-import cytoscape.util.intr.IntObjHash;
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
