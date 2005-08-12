@@ -37,9 +37,11 @@ public final class TestAlphaBlending extends Frame implements Runnable
   private final Color m_edgeSegmentColor = new Color(0, 255, 0, 128);
   private final Color m_edgeArrow0Color = new Color(0, 0, 255, 128);
   private final Color m_edgeArrow1Color = new Color(128, 128, 128, 128);
+  private final Color m_textLabelColor = new Color(0, 0, 0, 128);
   private final Image m_img;
   private final Image m_screenBuffer;
   private final GraphGraphics m_grafx;
+  private final GraphGraphics m_buffGrafx;
   private final AffineTransform m_xform;
   private final float[] m_pts;
   private final float[] m_xsect1Coords;
@@ -61,6 +63,7 @@ public final class TestAlphaBlending extends Frame implements Runnable
     addNotify();
     m_screenBuffer = createImage(m_imgWidth, m_imgHeight);
     m_grafx = new GraphGraphics(m_img, new Color(0, 0, 0, 0), true);
+    m_buffGrafx = new GraphGraphics(m_screenBuffer, Color.white, true);
     m_xform = new AffineTransform();
     m_pts = new float[2];
     m_xsect1Coords = new float[2];
@@ -81,12 +84,10 @@ public final class TestAlphaBlending extends Frame implements Runnable
   public void paint(Graphics g)
   {
     final Insets insets = insets();
+    m_buffGrafx.clear(0.0d, 0.0d, 1.0d);
+    m_buffGrafx.drawTextFull(m_font, 1.5d, "This is background text.",
+                             0.0f, 0.0f, Color.black, true);
     final Graphics bufferGrafx = m_screenBuffer.getGraphics();
-    bufferGrafx.setColor(Color.white);
-    bufferGrafx.fillRect(0, 0, m_imgWidth, m_imgHeight);
-    bufferGrafx.setColor(Color.black);
-    bufferGrafx.setFont(m_font);
-    bufferGrafx.drawString("This is background text.", 30, 100);
     bufferGrafx.drawImage(m_img, 0, 0, null);
     g.drawImage(m_screenBuffer, insets.left, insets.top, null);
     resize(m_imgWidth + insets.left + insets.right,
@@ -145,7 +146,7 @@ public final class TestAlphaBlending extends Frame implements Runnable
     float border = 6.0f;
     m_grafx.drawNodeFull(GraphGraphics.SHAPE_ELLIPSE,
                          xMin1, yMin1, xMax1, yMax1,
-                         m_nodeFillColor, border, m_nodeBorderColor); 
+                         m_nodeFillColor, border, m_nodeBorderColor);
 
     float offset = 10.0f;
     float xCenter2 = 200.0f;
@@ -164,6 +165,9 @@ public final class TestAlphaBlending extends Frame implements Runnable
     m_grafx.drawNodeFull(GraphGraphics.SHAPE_VEE,
                          xMin2, yMin2, xMax2, yMax2,
                          m_nodeFillColor, border, m_nodeBorderColor);
+    m_grafx.drawTextFull(m_font, 1.0d, "translucent", xCenter2, yCenter2,
+                         m_textLabelColor, true);
+
     float edgeThickness = 2.0f;
     float dashLength = 0.0f;
     if (m_grafx.computeEdgeIntersection
