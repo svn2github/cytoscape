@@ -32,6 +32,8 @@ public final class TestAlphaBlending extends Frame implements Runnable
   private final int m_imgWidth = 600;
   private final int m_imgHeight = 480;
   private final Font m_font = new Font(null, Font.BOLD, 24);
+  private final Color m_nodeFillColor = new Color(255, 0, 0, 128);
+  private final Color m_nodeBorderColor = new Color(0, 0, 0, 128);
   private final Image m_img;
   private final Image m_screenBuffer;
   private final GraphGraphics m_grafx;
@@ -140,7 +142,7 @@ public final class TestAlphaBlending extends Frame implements Runnable
     float border = 6.0f;
     m_grafx.drawNodeFull(GraphGraphics.SHAPE_ELLIPSE,
                          xMin1, yMin1, xMax1, yMax1,
-                         Color.red, border, Color.black); 
+                         m_nodeFillColor, border, m_nodeBorderColor); 
 
     float offset = 10.0f;
     float xCenter2 = 200.0f;
@@ -158,7 +160,7 @@ public final class TestAlphaBlending extends Frame implements Runnable
     float yMax2 = yCenter2 + height2Div2;
     m_grafx.drawNodeFull(GraphGraphics.SHAPE_VEE,
                          xMin2, yMin2, xMax2, yMax2,
-                         Color.red, border, Color.black);
+                         m_nodeFillColor, border, m_nodeBorderColor);
     float edgeThickness = 2.0f;
     float dashLength = 0.0f;
     if (m_grafx.computeEdgeIntersection
