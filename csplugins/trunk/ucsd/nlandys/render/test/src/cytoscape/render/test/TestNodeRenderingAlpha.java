@@ -89,8 +89,8 @@ public final class TestNodeRenderingAlpha
   private final byte m_shape; // -1 if low detail.
   private final float m_borderWidth;
   private final Color[] m_colors;
-  private final int m_imgWidth = 1024;
-  private final int m_imgHeight = 768;
+  private final int m_imgWidth = 800;
+  private final int m_imgHeight = 600;
   private final Image m_img;
   private final GraphGraphics m_grafx;
   private final Color m_bgColor = Color.white;
