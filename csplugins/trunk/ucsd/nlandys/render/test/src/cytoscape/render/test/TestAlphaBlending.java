@@ -34,6 +34,9 @@ public final class TestAlphaBlending extends Frame implements Runnable
   private final Font m_font = new Font(null, Font.BOLD, 24);
   private final Color m_nodeFillColor = new Color(255, 0, 0, 128);
   private final Color m_nodeBorderColor = new Color(0, 0, 0, 128);
+  private final Color m_edgeSegmentColor = new Color(0, 255, 0, 128);
+  private final Color m_edgeArrow0Color = new Color(0, 0, 255, 128);
+  private final Color m_edgeArrow1Color = new Color(128, 128, 128, 128);
   private final Image m_img;
   private final Image m_screenBuffer;
   private final GraphGraphics m_grafx;
@@ -174,11 +177,13 @@ public final class TestAlphaBlending extends Frame implements Runnable
         // degenerated.
         (xCenter1 - xCenter2) * (m_xsect1Coords[0] - m_xsect2Coords[0]) +
         (yCenter1 - yCenter2) * (m_xsect1Coords[1] - m_xsect2Coords[1]) > 0.0d)
-      m_grafx.drawEdgeFull(GraphGraphics.ARROW_DISC, offset * 2.0f, Color.blue,
-                           GraphGraphics.ARROW_DISC, offset * 2.0f, Color.gray,
+      m_grafx.drawEdgeFull(GraphGraphics.ARROW_DISC, offset * 2.0f,
+                           m_edgeArrow0Color,
+                           GraphGraphics.ARROW_DISC, offset * 2.0f,
+                           m_edgeArrow1Color,
                            m_xsect1Coords[0], m_xsect1Coords[1],
                            m_xsect2Coords[0], m_xsect2Coords[1],
-                           edgeThickness, Color.green, dashLength);
+                           edgeThickness, m_edgeSegmentColor, dashLength);
   }
 
   public boolean isResizable() { return false; }
