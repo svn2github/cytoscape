@@ -145,6 +145,7 @@ public final class GraphGraphics
     m_xformUtil = new AffineTransform();
     m_customShapes = new HashMap();
     m_path2dPrime = new GeneralPath();
+    m_path2dPrime.setWindingRule(GeneralPath.WIND_EVEN_ODD);
     m_nextCustomShapeType = s_last_shape + 1;
     m_chars = new char[20];
     m_cleared = false;
@@ -733,16 +734,9 @@ public final class GraphGraphics
       m_g2d.fill(innerShape);
 
       if (!renderOuterNow) { // The border has not yet been rendered.
-        // For better performance I could do the area subtraction manually
-        // because I know that the two shapes are singular, non
-        // self-intersecting, and one is fully contained in the other.
-        // For the sake of less code and because this block is only reached
-        // when translucent fill colors are used, I choose the easy way of
-        // computing this border area.
-        final Area areaToRender = new Area(outerShape);
-        areaToRender.subtract(new Area(innerShape));
+        ((GeneralPath) outerShape).append(innerShape, false);
         m_g2d.setColor(borderColor);
-        m_g2d.fill(areaToRender); } }
+        m_g2d.fill(outerShape); } }
   }
 
   /*
