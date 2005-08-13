@@ -51,7 +51,7 @@ public final class TestCustomNodes extends Frame implements Runnable
     super();
     addNotify();
     m_img = createImage(m_imgWidth, m_imgHeight);
-    m_grafx = new GraphGraphics(m_img, Color.white, true);
+    m_grafx = new GraphGraphics(m_img, true);
     m_customNode1 = m_grafx.defineCustomNodeShape
       (new float[] { 0.0f, 0.0f, 0.41f, 0.4f, 0.5f, 0.1f, 0.6f, 0.3f,
                      1.0f, 0.6f, 1.0f, 1.0f, 0.55f, 0.6f, 0.5f, 0.86f },
@@ -120,7 +120,7 @@ public final class TestCustomNodes extends Frame implements Runnable
   {
     m_xform.setToRotation(rotationTheta);
     m_xform.scale(m_scale, m_scale);
-    m_grafx.clear(0.0d, 0.0d, 1.0d);
+    m_grafx.clear(Color.white, 0.0d, 0.0d, 1.0d);
     float xCenter1 = -180.0f;
     float yCenter1 = -175.0f;
     float width1Div2 = 70.0f;

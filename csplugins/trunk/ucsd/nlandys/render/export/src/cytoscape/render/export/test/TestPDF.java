@@ -18,9 +18,9 @@ public class TestPDF
     final PDFGraphics2D pdfGrafx =
       new PDFGraphics2D(System.out, new Dimension(width, height));
     final Image img = new ImageImposter(pdfGrafx, width, height);
-    final GraphGraphics gg = new GraphGraphics(img, Color.white, false);
+    final GraphGraphics gg = new GraphGraphics(img, false);
     pdfGrafx.startExport();
-    gg.clear(-80.0d, -70.0d, 1.6d);
+    gg.clear(Color.white, -80.0d, -70.0d, 1.6d);
     final int alpha = 128;
     gg.drawNodeFull(GraphGraphics.SHAPE_RECTANGLE,
                     -200.0f, -200.0f, -100.0f, -50.0f,

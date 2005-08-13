@@ -62,8 +62,8 @@ public final class TestAlphaBlending extends Frame implements Runnable
                               BufferedImage.TYPE_INT_ARGB);
     addNotify();
     m_screenBuffer = createImage(m_imgWidth, m_imgHeight);
-    m_grafx = new GraphGraphics(m_img, new Color(0, 0, 0, 0), true);
-    m_buffGrafx = new GraphGraphics(m_screenBuffer, Color.white, true);
+    m_grafx = new GraphGraphics(m_img, true);
+    m_buffGrafx = new GraphGraphics(m_screenBuffer, true);
     m_xform = new AffineTransform();
     m_pts = new float[2];
     m_xsect1Coords = new float[2];
@@ -84,7 +84,7 @@ public final class TestAlphaBlending extends Frame implements Runnable
   public void paint(Graphics g)
   {
     final Insets insets = insets();
-    m_buffGrafx.clear(0.0d, 0.0d, 1.0d);
+    m_buffGrafx.clear(Color.white, 0.0d, 0.0d, 1.0d);
     m_buffGrafx.drawTextFull(m_font, 1.5d, "This is background text.",
                              0.0f, 0.0f, Color.black, true);
     final Graphics bufferGrafx = m_screenBuffer.getGraphics();
@@ -129,7 +129,7 @@ public final class TestAlphaBlending extends Frame implements Runnable
   {
     m_xform.setToRotation(rotationTheta);
     m_xform.scale(m_scale, m_scale);
-    m_grafx.clear(0.0d, 0.0d, 1.0d);
+    m_grafx.clear(new Color(0, 0, 0, 0), 0.0d, 0.0d, 1.0d);
     float xCenter1 = -180.0f;
     float yCenter1 = -175.0f;
     float width1Div2 = 100.0f;

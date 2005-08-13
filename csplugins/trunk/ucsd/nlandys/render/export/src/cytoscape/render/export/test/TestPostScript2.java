@@ -18,8 +18,8 @@ public class TestPostScript2
     final EpsGraphics2D psGrafx = new EpsGraphics2D
       ("foo", System.out, 0, 0, width, height);
     final Image img = new ImageImposter(psGrafx, width, height);
-    final GraphGraphics gg = new GraphGraphics(img, Color.white, false);
-    gg.clear(-80.0d, -70.0d, 1.6d);
+    final GraphGraphics gg = new GraphGraphics(img, false);
+    gg.clear(Color.white, -80.0d, -70.0d, 1.6d);
     final int alpha = 128;
     gg.drawNodeFull(GraphGraphics.SHAPE_RECTANGLE,
                     -200.0f, -200.0f, -100.0f, -50.0f,

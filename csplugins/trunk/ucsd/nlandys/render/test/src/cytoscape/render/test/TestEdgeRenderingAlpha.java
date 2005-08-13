@@ -114,7 +114,7 @@ public final class TestEdgeRenderingAlpha
     m_edgeThickness = edgeThickness;
     addNotify();
     m_img = createImage(m_imgWidth, m_imgHeight);
-    m_grafx = new GraphGraphics(m_img, m_bgColor, true);
+    m_grafx = new GraphGraphics(m_img, true);
     updateEdgeImage();
     addMouseListener(this);
     addMouseMotionListener(this);
@@ -137,7 +137,7 @@ public final class TestEdgeRenderingAlpha
 
   private final void updateEdgeImage()
   {
-    m_grafx.clear(m_currXCenter, m_currYCenter, m_currScale);
+    m_grafx.clear(m_bgColor, m_currXCenter, m_currYCenter, m_currScale);
     final IntEnumerator iter = m_tree.queryOverlap
       ((float) (m_currXCenter - ((double) (m_imgWidth / 2)) / m_currScale),
        (float) (m_currYCenter - ((double) (m_imgHeight / 2)) / m_currScale),

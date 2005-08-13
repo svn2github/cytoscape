@@ -106,7 +106,7 @@ public final class TestTextLowRendering
     m_labels = labels;
     addNotify();
     m_img = createImage(m_imgWidth, m_imgHeight);
-    m_grafx = new GraphGraphics(m_img, m_bgColor, false);
+    m_grafx = new GraphGraphics(m_img, false);
     updateNodeImage();
     addMouseListener(this);
     addMouseMotionListener(this);
@@ -129,7 +129,7 @@ public final class TestTextLowRendering
 
   private final void updateNodeImage()
   {
-    m_grafx.clear(m_currXCenter, m_currYCenter, m_currScale);
+    m_grafx.clear(m_bgColor, m_currXCenter, m_currYCenter, m_currScale);
     RTreeEntryEnumerator iter = m_tree.queryOverlap
       ((float) (m_currXCenter - ((double) (m_imgWidth / 2)) / m_currScale),
        (float) (m_currYCenter - ((double) (m_imgHeight / 2)) / m_currScale),

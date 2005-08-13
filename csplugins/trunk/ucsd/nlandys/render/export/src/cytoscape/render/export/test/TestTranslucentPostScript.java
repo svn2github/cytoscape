@@ -24,10 +24,10 @@ public class TestTranslucentPostScript
     final PSGraphics2D psGrafx =
       new PSGraphics2D(System.out, new Dimension(width, height));
     final Image img = new ImageImposter(psGrafx, width, height);
-    final GraphGraphics grafx = new GraphGraphics
-      (img, args.length > 0 ? Color.white : transparentWhite, false);
+    final GraphGraphics grafx = new GraphGraphics(img, false);
     psGrafx.startExport();
-    grafx.clear(0.0d, 0.0d, 1.0d);
+    grafx.clear(args.length > 0 ? Color.white : transparentWhite,
+                0.0d, 0.0d, 1.0d);
     grafx.drawNodeFull(GraphGraphics.SHAPE_ROUNDED_RECTANGLE,
                        -87.3f, -20.9f, 23.34f, 67.81f,
                        args.length > 0 ? Color.cyan : translucentCyan,

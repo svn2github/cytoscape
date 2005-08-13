@@ -44,7 +44,7 @@ public class TestNativePrint extends Frame
     super();
     addNotify();
     m_img = createImage(m_imgWidth, m_imgHeight);
-    drawGraph(new GraphGraphics(m_img, m_bgColor, true));
+    drawGraph(new GraphGraphics(m_img, true));
     addMouseListener(this);
   }
 
@@ -58,7 +58,7 @@ public class TestNativePrint extends Frame
 
   private void drawGraph(GraphGraphics gg)
   {
-    gg.clear(-80.0d, -70.0d, 1.6d);
+    gg.clear(m_bgColor, -80.0d, -70.0d, 1.6d);
     gg.drawNodeFull(GraphGraphics.SHAPE_ROUNDED_RECTANGLE,
                     -200.0f, -200.0f, -100.0f, -50.0f,
                     new Color(255, 0, 0, 128), 3.0f,
@@ -99,8 +99,7 @@ public class TestNativePrint extends Frame
     final Graphics2D g2d = (Graphics2D) g;
     g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
     drawGraph(new GraphGraphics
-              (new ImageImposter(g2d, m_imgWidth, m_imgHeight),
-               m_bgColor, true));
+              (new ImageImposter(g2d, m_imgWidth, m_imgHeight), true));
     return Printable.PAGE_EXISTS;
   }
 

@@ -52,7 +52,7 @@ public final class TestSimpleText
     m_textAsShape = textAsShape;
     addNotify();
     m_img = createImage(m_imgWidth, m_imgHeight);
-    m_grafx = new GraphGraphics(m_img, Color.white, true);
+    m_grafx = new GraphGraphics(m_img, true);
     updateNodeImage();
     addMouseListener(this);
     addMouseMotionListener(this);
@@ -75,7 +75,7 @@ public final class TestSimpleText
 
   private final void updateNodeImage()
   {
-    m_grafx.clear(m_currXCenter, m_currYCenter, m_currScale);
+    m_grafx.clear(Color.white, m_currXCenter, m_currYCenter, m_currScale);
     m_grafx.drawNodeFull(GraphGraphics.SHAPE_ROUNDED_RECTANGLE,
                          -90.0f, -15.0f, -40.0f, 15.0f,
                          Color.yellow, 2.0f, Color.black);

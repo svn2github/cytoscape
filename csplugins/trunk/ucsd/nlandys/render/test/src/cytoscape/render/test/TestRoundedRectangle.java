@@ -49,7 +49,7 @@ public final class TestRoundedRectangle extends Frame implements Runnable
     super();
     addNotify();
     m_img = createImage(m_imgWidth, m_imgHeight);
-    m_grafx = new GraphGraphics(m_img, Color.white, true);
+    m_grafx = new GraphGraphics(m_img, true);
     m_xform = new AffineTransform();
     m_pts = new double[2];
     m_xsect1Coords = new float[2];
@@ -110,7 +110,7 @@ public final class TestRoundedRectangle extends Frame implements Runnable
   {
     m_xform.setToRotation(rotationTheta);
     m_xform.scale(m_scale, m_scale);
-    m_grafx.clear(0.0d, 0.0d, 1.0d);
+    m_grafx.clear(Color.white, 0.0d, 0.0d, 1.0d);
     double xCenter1 = -180.0d;
     double yCenter1 = -175.0d;
     double width1Div2 = 100.0d;
