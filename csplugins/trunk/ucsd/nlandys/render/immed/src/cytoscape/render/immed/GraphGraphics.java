@@ -80,7 +80,6 @@ public final class GraphGraphics
    */
   public final Image image;
 
-  private final Color m_bgColor;
   private final boolean m_debug;
   private final Ellipse2D.Double m_ellp2d;
   private final GeneralPath m_path2d;
@@ -118,19 +117,14 @@ public final class GraphGraphics
    *   getGraphics() method); passing an image gotten from a call to
    *   java.awt.Component.createImage(int, int) works well, as do
    *   instances of java.awt.image.BufferedImage.
-   * @param bgColor a color to use when clearing the image before painting
-   *   a new frame; transparent colors are honored, provided that the image
-   *   argument supports transparent colors.
    * @param debug if this is true, extra [and time-consuming] error checking
    *   will take place in each method call; it is recommended to have this
    *   value set to true during the testing phase; set it to false once
    *   you are sure that code does not mis-use this module.
    */
-  public GraphGraphics(final Image image, final Color bgColor,
-                       final boolean debug)
+  public GraphGraphics(final Image image, final boolean debug)
   {
     this.image = image;
-    m_bgColor = bgColor;
     m_debug = debug;
     m_ellp2d = new Ellipse2D.Double();
     m_path2d = new GeneralPath();
@@ -158,6 +152,9 @@ public final class GraphGraphics
    * the node coordinate system and the image coordinate system.<p>
    * It is mandatory to call this method before starting
    * to render a new frame.
+   * @param bgColor a color to use when clearing the image before painting
+   *   a new frame; transparent colors are honored, provided that the
+   *   underlying image supports transparent colors.
    * @param xCenter the x component of the translation transform for the frame
    *   about to be rendered; a node whose center is at the X coordinate xCenter
    *   will be rendered exactly in the middle of the image going across;
@@ -173,7 +170,8 @@ public final class GraphGraphics
    *   scaleFactor pixels in the image.
    * @exception IllegalArgumentException if scaleFactor is not positive.
    */
-  public final void clear(final double xCenter, final double yCenter,
+  public final void clear(final Color bgColor,
+                          final double xCenter, final double yCenter,
                           final double scaleFactor)
   {
     if (m_debug) {
@@ -187,7 +185,7 @@ public final class GraphGraphics
     m_g2d = (Graphics2D) image.getGraphics();
     final Composite origComposite = m_g2d.getComposite();
     m_g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
-    m_g2d.setBackground(m_bgColor);
+    m_g2d.setBackground(bgColor);
     m_g2d.clearRect(0, 0, image.getWidth(null), image.getHeight(null));
     m_g2d.setComposite(origComposite);
     m_g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
