@@ -657,9 +657,7 @@ public final class GraphGraphics
     final boolean renderOuterNow;
     if (borderWidth == 0.0f) {
       m_g2d.setColor(fillColor); renderOuterNow = true; }
-    else if (fillColor.getAlpha() == 255) { // Fill is opaque.
-      m_g2d.setColor(borderColor); renderOuterNow = true; }
-    else { // There is a border and the fill color is translucent.
+    else { // There is a border.
       renderOuterNow = false; }
     if (renderOuterNow) { m_g2d.fill(outerShape); }
     else {
@@ -732,6 +730,10 @@ public final class GraphGraphics
       m_g2d.fill(innerShape);
 
       if (!renderOuterNow) { // The border has not yet been rendered.
+        // Render the border such that it does not overlap with the fill
+        // region because translucent colors may be used.  Don't do
+        // things differently for opaque and translucent colors for the
+        // sake of consistency.
         ((GeneralPath) outerShape).append(innerShape, false);
         m_g2d.setColor(borderColor);
         m_g2d.fill(outerShape); } }
