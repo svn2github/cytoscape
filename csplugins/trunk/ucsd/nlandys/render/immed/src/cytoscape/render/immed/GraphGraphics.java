@@ -16,6 +16,7 @@ import java.awt.Stroke;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Arc2D;
 import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
@@ -82,6 +83,7 @@ public final class GraphGraphics
 
   private final boolean m_debug;
   private final Ellipse2D.Double m_ellp2d;
+  private final Arc2D.Double m_arc2d;
   private final GeneralPath m_path2d;
   private final double[] m_polyCoords; // I need this for extra precision.
                                        // GeneralPath stores 32 bit floats,
@@ -100,7 +102,7 @@ public final class GraphGraphics
   private final AffineTransform m_currXform;
   private final AffineTransform m_xformUtil;
   private final HashMap m_customShapes;
-  private final GeneralPath m_path2dPrime; // For translucent colors.
+  private final GeneralPath m_path2dPrime;
   private int m_polyNumPoints; // Used with m_polyCoords.
   private Graphics2D m_g2d;
   private Graphics2D m_gMinimal; // We use mostly java.awt.Graphics methods.
@@ -128,6 +130,7 @@ public final class GraphGraphics
     this.image = image;
     m_debug = debug;
     m_ellp2d = new Ellipse2D.Double();
+    m_arc2d = new Arc2D.Double();
     m_path2d = new GeneralPath();
     m_polyCoords = new double[2 * 100];
     m_fooPolyCoords = new double[m_polyCoords.length * 2];
@@ -1165,7 +1168,7 @@ public final class GraphGraphics
         arrow0Shape = m_path2d;
         break;
       case ARROW_MONO:
-        computeUntransformedArrow(arrowType0);
+        computeUntransformedArrow(ARROW_DELTA);
         cosTheta = (((double) x1) - x0) / len;
         sinTheta = (((double) y1) - y0) / len;
         m_xformUtil.setTransform(cosTheta, sinTheta, -sinTheta, cosTheta,
@@ -1233,7 +1236,6 @@ public final class GraphGraphics
   {
     switch (arrowType) {
     case ARROW_DELTA:
-    case ARROW_MONO:
       m_path2d.reset();
       m_path2d.moveTo(-2.0f, -0.5f);
       m_path2d.lineTo(0.0f, 0.0f);
@@ -1243,9 +1245,9 @@ public final class GraphGraphics
     case ARROW_DIAMOND:
       m_path2d.reset();
       m_path2d.moveTo(-1.0f, -0.5f);
-      m_path2d.lineTo(-2.0f, 0.0f);
-      m_path2d.lineTo(-1.0f, 0.5f);
       m_path2d.lineTo(0.0f, 0.0f);
+      m_path2d.lineTo(-1.0f, 0.5f);
+      m_path2d.lineTo(-2.0f, 0.0f);
       m_path2d.closePath();
       break;
     default: // ARROW_TEE.
@@ -1256,6 +1258,48 @@ public final class GraphGraphics
       m_path2d.lineTo(-0.125f, 2.0f);
       m_path2d.closePath();
       break; }
+  }
+
+  /*
+   * This method has the side effect of setting m_path2d (and mangling
+   * m_arc2d).
+   */
+  private final void computeUntransformedArrowNoneCap()
+  {
+    m_arc2d.setArc(0.0d, 0.0d, 1.0d, 1.0d, 270.0d, 90.0d, Arc2D.CHORD);
+    m_path2d.reset();
+    m_path2d.append(m_arc2d, false);
+  }
+
+  /*
+   * This method has the side effect of setting m_path2d.
+   */
+  private final void computeUntransformedArrowDiamondCap()
+  {
+    m_path2d.reset();
+    m_path2d.moveTo(0.0f, -0.5f);
+    m_path2d.lineTo(1.0f, -0.5f);
+    m_path2d.lineTo(0.0f, 0.0f);
+    m_path2d.lineTo(1.0f, 0.5f);
+    m_path2d.lineTo(0.0f, 0.5f);
+    m_path2d.closePath();
+  }
+
+  /*
+   * This method has the side effect of setting m_path2d (and mangling
+   * m_arc2d).  The ratio parameter specifies the ratio of arrow size (disc
+   * diameter) to edge thickness.
+   */
+  private final void computeUntransformedArrowDiscCap(final double ratio)
+  {
+    final double theta = Math.toDegrees(Math.asin(1.0d / ratio));
+    m_arc2d.setArc(ratio / 2.0d, 0.0d, ratio, ratio, 180.0d - theta,
+                   180.0d + theta, Arc2D.OPEN);
+    m_path2d.reset();
+    m_path2d.append(m_arc2d, false);
+    m_path2d.lineTo(0.0f, -0.5f);
+    m_path2d.lineTo(0.0f, 0.5f);
+    m_path2d.closePath();
   }
 
   /*
