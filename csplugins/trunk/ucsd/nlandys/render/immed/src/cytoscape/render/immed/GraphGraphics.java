@@ -105,6 +105,7 @@ public final class GraphGraphics
   private Graphics2D m_g2d;
   private Graphics2D m_gMinimal; // We use mostly java.awt.Graphics methods.
   private float m_currStrokeWidth;
+  private int m_currCapType;
   private byte m_nextCustomShapeType;
   private char[] m_chars;
   private boolean m_cleared ;
@@ -198,7 +199,7 @@ public final class GraphGraphics
                            RenderingHints.VALUE_FRACTIONALMETRICS_ON);
     m_g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,
                            RenderingHints.VALUE_STROKE_PURE);
-    setStroke(0.0f, 0.0f);
+    setStroke(0.0f, 0.0f, BasicStroke.CAP_ROUND);
 
     m_currXform.setToTranslation(0.5d * image.getWidth(null),
                                  0.5d * image.getHeight(null));
@@ -1079,8 +1080,9 @@ public final class GraphGraphics
       m_xformUtil.setTransform(cosTheta, sinTheta, -sinTheta, cosTheta,
                                x0, y0);
       m_path2d.transform(m_xformUtil);
-      if (m_dash[0] != dashLength || m_currStrokeWidth != edgeThickness)
-        setStroke(edgeThickness, dashLength);
+      if (m_dash[0] != dashLength || m_currStrokeWidth != edgeThickness ||
+          m_currCapType != BasicStroke.CAP_ROUND)
+        setStroke(edgeThickness, dashLength, BasicStroke.CAP_ROUND);
       m_g2d.setColor(edgeColor);
       m_g2d.draw(m_path2d);
       return; }
@@ -1126,8 +1128,9 @@ public final class GraphGraphics
       if ((((double) x1) - x0) * (x1Adj - x0Adj) +
           (((double) y1) - y0) * (y1Adj - y0Adj) > 0.0d) {
         // Render the line segment.
-        if (m_dash[0] != dashLength || m_currStrokeWidth != edgeThickness)
-          setStroke(edgeThickness, dashLength);
+        if (m_dash[0] != dashLength || m_currStrokeWidth != edgeThickness ||
+            m_currCapType != BasicStroke.CAP_ROUND)
+          setStroke(edgeThickness, dashLength, BasicStroke.CAP_ROUND);
         m_line2d.setLine(x0Adj, y0Adj, x1Adj, y1Adj);
         if ((arrowType0 != ARROW_NONE && arrow0Color.getAlpha() < 255) ||
             (arrowType1 != ARROW_NONE && arrow1Color.getAlpha() < 255)) {
@@ -1270,16 +1273,18 @@ public final class GraphGraphics
       return 0.125d; }
   }
 
-  private final void setStroke(final float width, final float dashLength)
+  private final void setStroke(final float width, final float dashLength,
+                               final int capType)
   {
     m_dash[0] = dashLength;
     m_dash[1] = dashLength;
     m_currStrokeWidth = width;
+    m_currCapType = capType;
     if (m_dash[0] == 0.0f)
-      m_g2d.setStroke(new BasicStroke(width, BasicStroke.CAP_ROUND,
+      m_g2d.setStroke(new BasicStroke(width, capType,
                                       BasicStroke.JOIN_ROUND, 10.0f));
     else
-      m_g2d.setStroke(new BasicStroke(width, BasicStroke.CAP_ROUND,
+      m_g2d.setStroke(new BasicStroke(width, capType,
                                       BasicStroke.JOIN_ROUND, 10.0f,
                                       m_dash, 0.0f));
   }
