@@ -1266,7 +1266,7 @@ public final class GraphGraphics
    */
   private final void computeUntransformedArrowNoneCap()
   {
-    m_arc2d.setArc(0.0d, 0.0d, 1.0d, 1.0d, 270.0d, 90.0d, Arc2D.CHORD);
+    m_arc2d.setArc(-0.5d, -0.5d, 1.0d, 1.0d, 270.0d, 180.0d, Arc2D.CHORD);
     m_path2d.reset();
     m_path2d.append(m_arc2d, false);
   }
@@ -1293,12 +1293,12 @@ public final class GraphGraphics
   private final void computeUntransformedArrowDiscCap(final double ratio)
   {
     final double theta = Math.toDegrees(Math.asin(1.0d / ratio));
-    m_arc2d.setArc(ratio / 2.0d, 0.0d, ratio, ratio, 180.0d - theta,
-                   180.0d + theta, Arc2D.OPEN);
+    m_arc2d.setArc(0.0d, ratio / -2.0d, ratio, ratio, 180.0d - theta,
+                   theta * 2, Arc2D.OPEN);
     m_path2d.reset();
     m_path2d.append(m_arc2d, false);
-    m_path2d.lineTo(0.0f, -0.5f);
     m_path2d.lineTo(0.0f, 0.5f);
+    m_path2d.lineTo(0.0f, -0.5f);
     m_path2d.closePath();
   }
 
