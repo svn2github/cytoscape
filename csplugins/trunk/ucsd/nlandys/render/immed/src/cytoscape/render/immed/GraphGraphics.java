@@ -17,7 +17,6 @@ import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Arc2D;
-import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
@@ -66,9 +65,9 @@ public final class GraphGraphics
   private static final byte s_last_shape = SHAPE_VEE;
 
   public static final byte ARROW_NONE = -1;
-  public static final byte ARROW_DISC = -2;
-  public static final byte ARROW_DELTA = -3;
-  public static final byte ARROW_DIAMOND = -4;
+  public static final byte ARROW_DELTA = -2;
+  public static final byte ARROW_DIAMOND = -3;
+  public static final byte ARROW_DISC = -4;
   public static final byte ARROW_TEE = -5;
   public static final byte ARROW_BIDIRECTIONAL = -6;
   public static final byte ARROW_MONO = -7;
@@ -202,6 +201,7 @@ public final class GraphGraphics
                            RenderingHints.VALUE_FRACTIONALMETRICS_ON);
     m_g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,
                            RenderingHints.VALUE_STROKE_PURE);
+    m_currStrokeWidth = -1.0f;
     setStroke(0.0f, 0.0f, BasicStroke.CAP_ROUND);
 
     m_currXform.setToTranslation(0.5d * image.getWidth(null),
@@ -958,7 +958,7 @@ public final class GraphGraphics
                                  final Color arrow0Color,
                                  final byte arrowType1,
                                  final float arrow1Size,
-                                 Color arrow1Color,
+                                 final Color arrow1Color,
                                  final float x0, final float y0,
                                  final float x1, final float y1,
                                  final float edgeThickness,
@@ -1083,176 +1083,135 @@ public final class GraphGraphics
       m_xformUtil.setTransform
         (cosTheta, sinTheta, -sinTheta, cosTheta, x0, y0);
       m_path2d.transform(m_xformUtil);
-      if (m_dash[0] != dashLength || m_currStrokeWidth != edgeThickness ||
-          m_currCapType != BasicStroke.CAP_BUTT)
-        // Right now, we're drawing bidirectional edges with butt ends instead
-        // of round ends.  If we wanted round ends, substantially more work
-        // would have to be done for the following reasons.  For dashed
-        // lines, we need butt ends to be consistent with the appearance of
-        // dashes with other edge types.  Therefore, if we wanted round
-        // ends, we would have to create shapes for these ends and render them
-        // separately.  Computing the round end for the angled arrow segment
-        // is not easy, especially for the case where this segment is very
-        // short relative to the edge thickness.  I prefer to keep things
-        // simple in the code at the expense of sacrificing a little bit of
-        // prettiness.
-        setStroke(edgeThickness, dashLength, BasicStroke.CAP_BUTT);
+      // Right now, we're drawing bidirectional edges with butt ends instead
+      // of round ends.  If we wanted round ends, substantially more work
+      // would have to be done for the following reasons.  For dashed
+      // lines, we need butt ends to be consistent with the appearance of
+      // dashes with other edge types.  Therefore, if we wanted round
+      // ends, we would have to create shapes for these ends and render them
+      // separately.  Computing the round end for the angled arrow segment
+      // is not easy, especially for the case where this segment is very
+      // short relative to the edge thickness.  I prefer to keep things
+      // simple in the code at the expense of sacrificing a little bit of
+      // prettiness.
+      setStroke(edgeThickness, dashLength, BasicStroke.CAP_BUTT);
       m_g2d.setColor(edgeColor);
       m_g2d.draw(m_path2d);
       return; }
 
-    if (arrowType1 == ARROW_MONO) // This helps us avoid special cases.
-      arrow1Color = arrow0Color;
+    if (arrowType0 == ARROW_MONO) { // To be implemented.
+      throw new IllegalStateException("mono edges not implemented yet"); }
 
-    Area unrenderedSegmentArea = null;
+    double renderedLineSegmentLength = 0.0d;
+    final double x0Adj;
+    final double y0Adj;
+    final double x1Adj;
+    final double y1Adj;
     { // Render the line segment if necessary.
-      final double x0Adj;
-      final double y0Adj;
-      switch (arrowType0) {
-      case ARROW_TEE:
-      case ARROW_DELTA:
-      case ARROW_DIAMOND:
-        final double t = getT(arrowType0) * arrow0Size / len;
-        x0Adj = t * (((double) x1) - x0) + x0;
-        y0Adj = t * (((double) y1) - y0) + y0;
-        break;
-      default: // ARROW_NONE, ARROW_DISC, or ARROW_MONO.
-        // Don't change endpoint 0.
-        x0Adj = x0; y0Adj = y0;
-        break; }
-
-      final double x1Adj;
-      final double y1Adj;
-      switch (arrowType1) {
-      case ARROW_TEE:
-      case ARROW_DELTA:
-      case ARROW_DIAMOND:
-        final double t = getT(arrowType1) * arrow1Size / len;
-        x1Adj = t * (((double) x0) - x1) + x1;
-        y1Adj = t * (((double) y0) - y1) + y1;
-        break;
-      default: // ARROW_NONE, ARROW_DISC, or ARROW_MONO.
-        // Don't change endpoint 1.
-        x1Adj = x1; y1Adj = y1;
-        break; }
-
+      final double t0 = getT(arrowType0) * arrow0Size / len;
+      x0Adj = t0 * (((double) x1) - x0) + x0;
+      y0Adj = t0 * (((double) y1) - y0) + y0;
+      final double t1 = getT(arrowType1) * arrow1Size / len;
+      x1Adj = t1 * (((double) x0) - x1) + x1;
+      y1Adj = t1 * (((double) y0) - y1) + y1;
       // If the vector point0->point1 is pointing opposite to
       // adj0->adj1, then don't render the line segment.
       // Dot product determines this.
       if ((((double) x1) - x0) * (x1Adj - x0Adj) +
           (((double) y1) - y0) * (y1Adj - y0Adj) > 0.0d) {
-        // Render the line segment.
-        if (m_dash[0] != dashLength || m_currStrokeWidth != edgeThickness ||
-            m_currCapType != BasicStroke.CAP_ROUND)
-          setStroke(edgeThickness, dashLength, BasicStroke.CAP_ROUND);
+        // Must render the line segment.
+        final boolean simpleSegment = arrowType0 == ARROW_NONE &&
+          arrowType1 == ARROW_NONE && dashLength == 0.0f;
+        setStroke(edgeThickness, dashLength,
+                  simpleSegment ? BasicStroke.CAP_ROUND :
+                  BasicStroke.CAP_BUTT);
         m_line2d.setLine(x0Adj, y0Adj, x1Adj, y1Adj);
-        if ((arrowType0 != ARROW_NONE && arrow0Color.getAlpha() < 255) ||
-            (arrowType1 != ARROW_NONE && arrow1Color.getAlpha() < 255)) {
-          unrenderedSegmentArea =
-            new Area(m_g2d.getStroke().createStrokedShape(m_line2d)); }
+        m_g2d.setColor(edgeColor);
+        m_g2d.draw(m_line2d);
+        if (simpleSegment) { return; }
         else {
-          m_g2d.setColor(edgeColor);
-          m_g2d.draw(m_line2d); } }
+          renderedLineSegmentLength =
+            (dashLength > 0.0f) ? 
+            Math.sqrt((x1Adj - x0Adj) * (x1Adj - x0Adj) +
+                      (y1Adj - y0Adj) * (y1Adj - y0Adj)) :
+            -1.0d; } }
     } // End rendering of line segment.
 
-    { // Render the arrow at point 0.
-      final Shape arrow0Shape;
-      double cosTheta, sinTheta;
-      switch (arrowType0) {
-      case ARROW_DISC:
-        m_ellp2d.setFrame(((double) x0) - 0.5d * arrow0Size,
-                          ((double) y0) - 0.5d * arrow0Size,
-                          (double) arrow0Size, (double) arrow0Size);
-        arrow0Shape = m_ellp2d;
-        break;
-      case ARROW_DELTA:
-      case ARROW_DIAMOND:
-      case ARROW_TEE:
-        computeUntransformedArrow(arrowType0);
-        // I want the transform to first scale, then rotate, then translate.
-        cosTheta = (((double) x0) - x1) / len;
-        sinTheta = (((double) y0) - y1) / len;
+    // Using x0, x1, y0, and y1 instead of the "adjusted" endpoints leads
+    // to greater accuracy in computation of cosine and sine because the
+    // length is guaranteed to be at least as large.  Remember that the
+    // original endpoint values are specified as float whereas the adjusted
+    // points are double.
+    final double cosTheta = (((double) x0) - x1) / len;
+    final double sinTheta = (((double) y0) - y1) / len;
+
+    if (renderedLineSegmentLength != 0.0d) { // Render arrow cap at point 0.
+      final GeneralPath arrow0Cap = computeUntransformedArrowCap
+        (arrowType0, ((double) arrow0Size) / edgeThickness);
+      if (arrow0Cap != null) {
+        m_xformUtil.setTransform(cosTheta, sinTheta, -sinTheta, cosTheta,
+                                 x0Adj, y0Adj);
+        m_xformUtil.scale(edgeThickness, edgeThickness);
+        arrow0Cap.transform(m_xformUtil);
+        // The color is already set to edge color.
+        m_g2d.fill(arrow0Cap); } }
+
+    if (renderedLineSegmentLength < 0.0d ||
+        (renderedLineSegmentLength > 0.0d &&
+         ((int) Math.floor(renderedLineSegmentLength /
+                           dashLength)) % 2 == 0)) { // Render pt. 1 arrow cap.
+      final GeneralPath arrow1Cap = computeUntransformedArrowCap
+        (arrowType1, ((double) arrow1Size) / edgeThickness);
+      if (arrow1Cap != null) {
+        m_xformUtil.setTransform(-cosTheta, -sinTheta, sinTheta, -cosTheta,
+                                 x1Adj, y1Adj);
+        m_xformUtil.scale(edgeThickness, edgeThickness);
+        arrow1Cap.transform(m_xformUtil);
+        // The color is already set to edge color.
+        m_g2d.fill(arrow1Cap); } }
+
+    {
+      final GeneralPath arrow0 = computeUntransformedArrow(arrowType0);
+      if (arrow0 != null) {
         m_xformUtil.setTransform(cosTheta, sinTheta, -sinTheta, cosTheta,
                                  x0, y0);
         m_xformUtil.scale(arrow0Size, arrow0Size);
-        m_path2d.transform(m_xformUtil);
-        arrow0Shape = m_path2d;
-        break;
-      case ARROW_MONO:
-        computeUntransformedArrow(ARROW_DELTA);
-        cosTheta = (((double) x1) - x0) / len;
-        sinTheta = (((double) y1) - y0) / len;
-        m_xformUtil.setTransform(cosTheta, sinTheta, -sinTheta, cosTheta,
-                                 (((double) x0) + x1) / 2.0d,
-                                 (((double) y0) + y1) / 2.0d);
-        m_xformUtil.scale(arrow0Size, arrow0Size);
-        m_path2d.transform(m_xformUtil);
-        arrow0Shape = m_path2d;
-        break;
-      default: // ARROW_NONE or ARROW_BIDIRECTIONAL.
-        // Don't render anything.
-        arrow0Shape = null;
-        break; }
-      if (arrow0Shape != null) {
+        arrow0.transform(m_xformUtil);
         m_g2d.setColor(arrow0Color);
-        m_g2d.fill(arrow0Shape);
-        if (unrenderedSegmentArea != null) {
-          unrenderedSegmentArea.subtract(new Area(arrow0Shape)); } }
+        m_g2d.fill(arrow0); }
     }
 
-    { // Render the arrow at point 1.
-      final Shape arrow1Shape;
-      switch (arrowType1) {
-      case ARROW_DISC:
-        m_ellp2d.setFrame(((double) x1) - 0.5d * arrow1Size,
-                          ((double) y1) - 0.5d * arrow1Size,
-                          arrow1Size, arrow1Size);
-        arrow1Shape = m_ellp2d;
-        break;
-      case ARROW_DELTA:
-      case ARROW_DIAMOND:
-      case ARROW_TEE:
-        computeUntransformedArrow(arrowType1);
-        // I want the transform to first scale, then rotate, then translate.
-        final double cosTheta = (((double) x1) - x0) / len;
-        final double sinTheta = (((double) y1) - y0) / len;
-        m_xformUtil.setTransform(cosTheta, sinTheta, -sinTheta, cosTheta,
+    {
+      final GeneralPath arrow1 = computeUntransformedArrow(arrowType1);
+      if (arrow1 != null) {
+        m_xformUtil.setTransform(-cosTheta, -sinTheta, sinTheta, -cosTheta,
                                  x1, y1);
         m_xformUtil.scale(arrow1Size, arrow1Size);
-        m_path2d.transform(m_xformUtil);
-        arrow1Shape = m_path2d;
-        break;
-      default: // ARROW_NONE, ARROW_BIDIRECTIONAL, or ARROW_MONO.
-        // Don't render anything.
-        arrow1Shape = null;
-        break; }
-      if (arrow1Shape != null) {
+        arrow1.transform(m_xformUtil);
         m_g2d.setColor(arrow1Color);
-        m_g2d.fill(arrow1Shape);
-        if (unrenderedSegmentArea != null) {
-          unrenderedSegmentArea.subtract(new Area(arrow1Shape)); } }
+        m_g2d.fill(arrow1); }
     }
-
-    if (unrenderedSegmentArea != null) {
-      m_g2d.setColor(edgeColor);
-      m_g2d.fill(unrenderedSegmentArea); }
   }
 
   /*
-   * This method has the side effect of mangling m_path2d.
-   * arrowType must be one of the following: ARROW_DELTA, ARROW_DIAMOND,
-   * or ARROW_TEE.
+   * Returns non-null if and only if an arrow is necessary for the arrow
+   * type specified.  If non-null is returned then m_path2d is set and
+   * returned.  m_ellp2d may be mangled as a side effect.
+   * arrowType must be one of the primitive arrow types or ARROW_NONE (no
+   * ARROW_BIDIRECTIONAL or ARROW_MONO allowed).
    */
-  private final void computeUntransformedArrow(final byte arrowType)
+  private final GeneralPath computeUntransformedArrow(final byte arrowType)
   {
     switch (arrowType) {
+    case ARROW_NONE:
+      return null;
     case ARROW_DELTA:
       m_path2d.reset();
       m_path2d.moveTo(-2.0f, -0.5f);
       m_path2d.lineTo(0.0f, 0.0f);
       m_path2d.lineTo(-2.0f, 0.5f);
       m_path2d.closePath();
-      break;
+      return m_path2d;
     case ARROW_DIAMOND:
       m_path2d.reset();
       m_path2d.moveTo(-1.0f, -0.5f);
@@ -1260,7 +1219,12 @@ public final class GraphGraphics
       m_path2d.lineTo(-1.0f, 0.5f);
       m_path2d.lineTo(-2.0f, 0.0f);
       m_path2d.closePath();
-      break;
+      return m_path2d;
+    case ARROW_DISC:
+      m_ellp2d.setFrame(-0.5d, -0.5d, 1.0d, 1.0d);
+      m_path2d.reset();
+      m_path2d.append(m_ellp2d, false);
+      return m_path2d;
     default: // ARROW_TEE.
       m_path2d.reset();
       m_path2d.moveTo(-0.125f, -2.0f);
@@ -1268,62 +1232,67 @@ public final class GraphGraphics
       m_path2d.lineTo(0.125f, 2.0f);
       m_path2d.lineTo(-0.125f, 2.0f);
       m_path2d.closePath();
-      break; }
+      return m_path2d; }
   }
 
   /*
-   * This method has the side effect of setting m_path2d (and mangling
-   * m_arc2d).
+   * The ratio parameter specifies the ratio of arrow size (disc
+   * diameter) to edge thickness (only used for some arrow types).
+   * Returns non-null if and only if a cap is necessary for the arrow type
+   * specified.  If non-null is returned then m_path2d is set and returned.
+   * m_arc2d may be mangled as a side effect.
+   * arrowType must be one of the primitive arrow types or ARROW_NONE (no
+   * ARROW_BIDIRECTIONAL or ARROW_MONO allowed).
    */
-  private final void computeUntransformedArrowNoneCap()
+  private final GeneralPath computeUntransformedArrowCap(final byte arrowType,
+                                                         final double ratio)
   {
-    m_arc2d.setArc(-0.5d, -0.5d, 1.0d, 1.0d, 270.0d, 180.0d, Arc2D.CHORD);
-    m_path2d.reset();
-    m_path2d.append(m_arc2d, false);
+    switch (arrowType) {
+    case ARROW_NONE:
+      m_arc2d.setArc(-0.5d, -0.5d, 1.0d, 1.0d, 270.0d, 180.0d, Arc2D.CHORD);
+      m_path2d.reset();
+      m_path2d.append(m_arc2d, false);      
+      return m_path2d;
+    case ARROW_DELTA:
+      return null;
+    case ARROW_DIAMOND:
+      m_path2d.reset();
+      m_path2d.moveTo(0.0f, -0.5f);
+      m_path2d.lineTo(1.0f, -0.5f);
+      m_path2d.lineTo(0.0f, 0.0f);
+      m_path2d.lineTo(1.0f, 0.5f);
+      m_path2d.lineTo(0.0f, 0.5f);
+      m_path2d.closePath();
+      return m_path2d;
+    case ARROW_DISC:
+      final double theta = Math.toDegrees(Math.asin(1.0d / ratio));
+      m_arc2d.setArc(0.0d, ratio / -2.0d, ratio, ratio, 180.0d - theta,
+                     theta * 2, Arc2D.OPEN);
+      m_path2d.reset();
+      m_path2d.append(m_arc2d, false);
+      m_path2d.lineTo(0.0f, 0.5f);
+      m_path2d.lineTo(0.0f, -0.5f);
+      m_path2d.closePath();
+      return m_path2d;
+    default: // ARROW_TEE.
+      return null; }
   }
 
   /*
-   * This method has the side effect of setting m_path2d.
-   */
-  private final void computeUntransformedArrowDiamondCap()
-  {
-    m_path2d.reset();
-    m_path2d.moveTo(0.0f, -0.5f);
-    m_path2d.lineTo(1.0f, -0.5f);
-    m_path2d.lineTo(0.0f, 0.0f);
-    m_path2d.lineTo(1.0f, 0.5f);
-    m_path2d.lineTo(0.0f, 0.5f);
-    m_path2d.closePath();
-  }
-
-  /*
-   * This method has the side effect of setting m_path2d (and mangling
-   * m_arc2d).  The ratio parameter specifies the ratio of arrow size (disc
-   * diameter) to edge thickness.
-   */
-  private final void computeUntransformedArrowDiscCap(final double ratio)
-  {
-    final double theta = Math.toDegrees(Math.asin(1.0d / ratio));
-    m_arc2d.setArc(0.0d, ratio / -2.0d, ratio, ratio, 180.0d - theta,
-                   theta * 2, Arc2D.OPEN);
-    m_path2d.reset();
-    m_path2d.append(m_arc2d, false);
-    m_path2d.lineTo(0.0f, 0.5f);
-    m_path2d.lineTo(0.0f, -0.5f);
-    m_path2d.closePath();
-  }
-
-  /*
-   * arrowType must be one of the following: ARROW_DELTA, ARROW_DIAMOND,
-   * or ARROW_TEE.
+   * arrowType must be one of the primitive arrow types or ARROW_NONE (no
+   * ARROW_BIDIRECTIONAL or ARROW_MONO allowed).
    */
   private final static double getT(final byte arrowType)
   { // I could implement this as an array instead of a switch statement.
     switch (arrowType) {
+    case ARROW_NONE:
+      return 0.0d;
     case ARROW_DELTA:
       return 2.0d;
     case ARROW_DIAMOND:
       return 1.0d;
+    case ARROW_DISC:
+      return 0.5d;
     default: // ARROW_TEE.
       return 0.125d; }
   }
@@ -1331,10 +1300,14 @@ public final class GraphGraphics
   private final void setStroke(final float width, final float dashLength,
                                final int capType)
   {
+    if (width == m_currStrokeWidth && dashLength == m_dash[0] &&
+        capType == m_currCapType) return;
+    m_currStrokeWidth = width;
     m_dash[0] = dashLength;
     m_dash[1] = dashLength;
-    m_currStrokeWidth = width;
     m_currCapType = capType;
+    // Unfortunately, BasicStroke is not mutable.  So we have to construct
+    // lots of new strokes if they constantly change.
     if (m_dash[0] == 0.0f)
       m_g2d.setStroke(new BasicStroke(width, capType,
                                       BasicStroke.JOIN_BEVEL, 10.0f));
