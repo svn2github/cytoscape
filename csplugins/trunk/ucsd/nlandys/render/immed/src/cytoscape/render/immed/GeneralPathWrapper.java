@@ -81,6 +81,13 @@ final class GeneralPathWrapper implements Shape
     m_path.lineTo(x, y);
   }
 
+  public final void curveTo(final float x1, final float y1,
+                            final float x2, final float y2,
+                            final float x3, final float y3)
+  {
+    m_path.curveTo(x1, y1, x2, y2, x3, y3);
+  }
+
   public final void closePath()
   {
     m_path.closePath();
