@@ -99,6 +99,7 @@ public final class GraphGraphics
   private final float[] m_dash;
   private final double[] m_ptsBuff;
   private final AffineTransform m_currXform;
+  private final AffineTransform m_currNativeXform;
   private final AffineTransform m_xformUtil;
   private final HashMap m_customShapes;
   private final GeneralPath m_path2dPrime;
@@ -139,6 +140,7 @@ public final class GraphGraphics
     m_dash = new float[] { 0.0f, 0.0f };
     m_ptsBuff = new double[4];
     m_currXform = new AffineTransform();
+    m_currNativeXform = new AffineTransform();
     m_xformUtil = new AffineTransform();
     m_customShapes = new HashMap();
     m_path2dPrime = new GeneralPath();
@@ -209,6 +211,7 @@ public final class GraphGraphics
     m_currXform.scale(scaleFactor, -scaleFactor);
     m_currXform.translate(-xCenter, -yCenter);
     m_g2d.transform(m_currXform);
+    m_currNativeXform.setTransform(m_g2d.getTransform());
     m_cleared = true;
   }
 
@@ -425,7 +428,7 @@ public final class GraphGraphics
       m_path2d.closePath();
       return m_path2d;
     default: // Try a custom node shape or throw an exception.
-      final double[] storedPolyCoords =
+      final double[] storedPolyCoords = // To optimize don't construct Byte.
         (double[]) m_customShapes.get(new Byte(nodeShape));
       if (storedPolyCoords == null)
         throw new IllegalArgumentException("nodeShape is not recognized");
@@ -1575,8 +1578,7 @@ public final class GraphGraphics
                         ("clear() has not been called previously");
       if (!(scaleFactor >= 0.0d))
         throw new IllegalArgumentException("scaleFactor must be positive"); }
-    final AffineTransform origXform = m_g2d.getTransform();
-    m_xformUtil.setTransform(origXform);
+    m_xformUtil.setTransform(m_currNativeXform);
     m_xformUtil.translate(xCenter, yCenter);
     m_xformUtil.scale(scaleFactor, -scaleFactor);
     m_g2d.setColor(color);
@@ -1587,7 +1589,7 @@ public final class GraphGraphics
           m_chars = new char[Math.max(m_chars.length * 2, text.length())];
         text.getChars(0, text.length(), m_chars, 0);
         glyphV = font.layoutGlyphVector
-          (getFontRenderContextFull(), m_chars, 0, text.length(),
+          (m_fontRenderContextFull, m_chars, 0, text.length(),
            Font.LAYOUT_NO_LIMIT_CONTEXT);
       }
       final Rectangle2D glyphBounds = glyphV.getLogicalBounds();
@@ -1596,15 +1598,20 @@ public final class GraphGraphics
       m_g2d.setTransform(m_xformUtil);
       m_g2d.fill(glyphV.getOutline()); }
     else {
+      // Note: A new Rectangle2D is being constructed by this method call.
+      // As far as I know this performance hit is unavoidable.
       final Rectangle2D textBounds =
-        font.getStringBounds(text, getFontRenderContextFull());
+        font.getStringBounds(text, m_fontRenderContextFull);
       m_xformUtil.translate(-textBounds.getCenterX(),
                             -textBounds.getCenterY());
       m_g2d.setTransform(m_xformUtil);
       m_g2d.setFont(font);
       m_g2d.drawString(text, 0.0f, 0.0f); }
-    m_g2d.setTransform(origXform);
+    m_g2d.setTransform(m_currNativeXform);
   }
+
+  private final FontRenderContext m_fontRenderContextFull =
+    new FontRenderContext(null, true, true);
 
   /**
    * Returns the context that is used by drawTextFull() to produce text shapes
