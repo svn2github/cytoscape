@@ -1080,12 +1080,23 @@ public final class GraphGraphics
       // I want the transform to first rotate, then translate.
       final double cosTheta = (((double) x1) - x0) / len;
       final double sinTheta = (((double) y1) - y0) / len;
-      m_xformUtil.setTransform(cosTheta, sinTheta, -sinTheta, cosTheta,
-                               x0, y0);
+      m_xformUtil.setTransform
+        (cosTheta, sinTheta, -sinTheta, cosTheta, x0, y0);
       m_path2d.transform(m_xformUtil);
       if (m_dash[0] != dashLength || m_currStrokeWidth != edgeThickness ||
-          m_currCapType != BasicStroke.CAP_ROUND)
-        setStroke(edgeThickness, dashLength, BasicStroke.CAP_ROUND);
+          m_currCapType != BasicStroke.CAP_BUTT)
+        // Right now, we're drawing bidirectional edges with butt ends instead
+        // of round ends.  If we wanted round ends, substantially more work
+        // would have to be done for the following reasons.  For dashed
+        // lines, we need butt ends to be consistent with the appearance of
+        // dashes with other edge types.  Therefore, if we wanted round
+        // ends, we would have to create shapes for these ends and render them
+        // separately.  Computing the round end for the angled arrow segment
+        // is not easy, especially for the case where this segment is very
+        // short relative to the edge thickness.  I prefer to keep things
+        // simple in the code at the expense of sacrificing a little bit of
+        // prettiness.
+        setStroke(edgeThickness, dashLength, BasicStroke.CAP_BUTT);
       m_g2d.setColor(edgeColor);
       m_g2d.draw(m_path2d);
       return; }
@@ -1326,10 +1337,10 @@ public final class GraphGraphics
     m_currCapType = capType;
     if (m_dash[0] == 0.0f)
       m_g2d.setStroke(new BasicStroke(width, capType,
-                                      BasicStroke.JOIN_ROUND, 10.0f));
+                                      BasicStroke.JOIN_BEVEL, 10.0f));
     else
       m_g2d.setStroke(new BasicStroke(width, capType,
-                                      BasicStroke.JOIN_ROUND, 10.0f,
+                                      BasicStroke.JOIN_BEVEL, 10.0f,
                                       m_dash, 0.0f));
   }
 
