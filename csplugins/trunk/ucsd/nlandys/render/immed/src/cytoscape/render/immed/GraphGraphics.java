@@ -1290,7 +1290,7 @@ public final class GraphGraphics
     case ARROW_DELTA:
       return 2.0d;
     case ARROW_DIAMOND:
-      return 1.0d;
+      return 2.0d;
     case ARROW_DISC:
       return 0.5d;
     default: // ARROW_TEE.
