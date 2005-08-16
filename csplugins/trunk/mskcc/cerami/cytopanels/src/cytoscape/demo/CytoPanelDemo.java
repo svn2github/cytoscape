@@ -15,6 +15,8 @@ import java.util.ArrayList;
  */
 public class CytoPanelDemo {
 
+	public static boolean TEST_DEFAULT_DRAW_CLOSED = false;
+
     /**
      * Main Method.
      * @param args Command Line Arguments.
@@ -36,64 +38,23 @@ public class CytoPanelDemo {
 		// pack here to get a good minimum size
 		frame.pack();
 
-		// top/right
-		//ArrayList topRightCytoSavedWidths = new ArrayList();
-		//CytoPanel topRightCyto = (CytoPanel)topPane.getRightComponent();
-		//for (int lc = 0; lc < topRightCyto.getTabCount(); lc++){
-		//	JComponent c = (JComponent)topRightCyto.getComponentAt(lc);
-		//	topRightCytoSavedWidths.add(lc, new Integer((int)c.getSize().getWidth()));
-		//	c.setMinimumSize(new Dimension(0, (int)c.getSize().getHeight()));
-		//}
-		//double topRightCytoSavedWidth = topRightCyto.getSize().getWidth();
-		//double topLeftPaneSavedWidth = topLeftPane.getSize().getWidth();
-		//topLeftPane.setMinimumSize(new Dimension((int)(topLeftPane.getSize().getWidth()+topRightCyto.getSize().getWidth()+topPane.getDefaultDividerSize()), (int)topLeftPane.getSize().getHeight()));
-		//topLeftPane.setPreferredSize(new Dimension((int)(topLeftPane.getSize().getWidth()+topRightCyto.getSize().getWidth()+topPane.getDefaultDividerSize()), (int)topLeftPane.getSize().getHeight()));
-		//topRightCyto.setMinimumSize(new Dimension(topRightCyto.getMaxWidthTabs()+topPane.getDefaultDividerSize(), (int)topRightCyto.getSize().getHeight()));
-		topPane.setStartupSizes(BiModalJSplitPane.STARTUP_HIDE_RIGHT);
+		if (TEST_DEFAULT_DRAW_CLOSED){
+			// hide appropriate cytopanels (in this case, right, bottom)
+			topPane.setStartupSizes(BiModalJSplitPane.STARTUP_HIDE_RIGHT);
+			masterPane.setStartupSizes(BiModalJSplitPane.STARTUP_HIDE_BOTTOM);
 
-		// bottom
-		//ArrayList bottomCytoSavedHeights = new ArrayList();
-		//CytoPanel bottomCyto = (CytoPanel)masterPane.getBottomComponent();
-		//for (int lc = 0; lc < bottomCyto.getTabCount(); lc++){
-		//	JComponent c = (JComponent)bottomCyto.getComponentAt(lc);
-		//	bottomCytoSavedHeights.add(lc, new Integer((int)c.getSize().getHeight()));
-		//	c.setMinimumSize(new Dimension((int)c.getSize().getWidth(), 0));
-		//}
-		//double bottomCytoSavedHeight = bottomCyto.getSize().getHeight();
-		//double topPaneSavedHeight = topPane.getSize().getHeight();
-		//topPane.setMinimumSize(new Dimension((int)topPane.getSize().getWidth(), (int)(topPane.getSize().getHeight()+bottomCyto.getSize().getHeight())));
-		//topPane.setPreferredSize(new Dimension((int)topPane.getSize().getWidth(), (int)(topPane.getSize().getHeight()+bottomCyto.getSize().getHeight())));
-		//bottomCyto.setMinimumSize(new Dimension((int)bottomCyto.getSize().getWidth(), bottomCyto.getMaxHeightTabs()+masterPane.getDefaultDividerSize()));
-		//bottomCyto.setPreferredSize(new Dimension((int)bottomCyto.getSize().getWidth(), bottomCyto.getMaxHeightTabs()+masterPane.getDefaultDividerSize()));
-		masterPane.setStartupSizes(BiModalJSplitPane.STARTUP_HIDE_BOTTOM);
+			// repack here with hidden cytopanels
+			frame.pack();
+		}
 
-		// pack again to set new minimum/preferred size
-		frame.pack();
-
-		// ok lets show it - proper default
+		// ok lets show the frame
         frame.show();
 
-		// set proper minimum/preferred sizes for subsequent presses
-		//for (int lc = 0; lc < topRightCyto.getTabCount(); lc++){
-		//	JComponent c = (JComponent)topRightCyto.getComponentAt(lc);
-		//	Integer i = (Integer)topRightCytoSavedWidths.get(lc);
-		//	c.setMinimumSize(new Dimension(i.intValue(), (int)c.getSize().getHeight()));
-		//}
-		//topLeftPane.setMinimumSize(new Dimension((int)topLeftPaneSavedWidth, (int)topLeftPane.getSize().getHeight()));
-		//topLeftPane.setPreferredSize(new Dimension((int)topLeftPaneSavedWidth, (int)topLeftPane.getSize().getHeight()));
-		//topRightCyto.setMinimumSize(new Dimension((int)topRightCytoSavedWidth, (int)topRightCyto.getSize().getHeight()));
-		topPane.restoreStartupSizes(BiModalJSplitPane.STARTUP_HIDE_RIGHT);
-
-		//for (int lc = 0; lc < bottomCyto.getTabCount(); lc++){
-		//	JComponent c = (JComponent)bottomCyto.getComponentAt(lc);
-		//	Integer i = (Integer)bottomCytoSavedHeights.get(lc);
-		//	c.setMinimumSize(new Dimension((int)c.getSize().getWidth(), i.intValue()));
-		//}
-		//topPane.setMinimumSize(new Dimension((int)topPane.getSize().getWidth(), (int)topPaneSavedHeight));
-		//topPane.setPreferredSize(new Dimension((int)topPane.getSize().getWidth(), (int)topPaneSavedHeight));
-		//bottomCyto.setMinimumSize(new Dimension((int)bottomCyto.getSize().getWidth(), (int)bottomCytoSavedHeight));
-		//bottomCyto.setPreferredSize(new Dimension((int)bottomCyto.getSize().getWidth(), (int)bottomCytoSavedHeight));
-		masterPane.restoreStartupSizes(BiModalJSplitPane.STARTUP_HIDE_BOTTOM);
+		if (TEST_DEFAULT_DRAW_CLOSED){
+			// restore swing derived cytopanel sizes
+			topPane.restoreStartupSizes(BiModalJSplitPane.STARTUP_HIDE_RIGHT);
+			masterPane.restoreStartupSizes(BiModalJSplitPane.STARTUP_HIDE_BOTTOM);
+		}
     }
 
     /**
@@ -106,7 +67,7 @@ public class CytoPanelDemo {
         String tab2Name = "Attribute Browser";
 
         //  Create CytoPanel with Tabs along the Left Side
-        CytoPanel cytoPanel = new CytoPanel(JTabbedPane.LEFT, true);
+        CytoPanel cytoPanel = new CytoPanel(JTabbedPane.LEFT);
 
         //  Add Two Sample Tabs
         cytoPanel.addTab(tab1Name,
@@ -119,14 +80,34 @@ public class CytoPanelDemo {
         //  Get a Dummy Screenshot of a Sample Cytoscape Network
         JPanel networkViewPanel = createNetworkViewPanel();
 
-        //  Create the Split Pane;  split horizontally, and sho the split
-        BiModalJSplitPane splitPane = new BiModalJSplitPane(frame,
-															JSplitPane.HORIZONTAL_SPLIT,
-															BiModalJSplitPane.MODE_SHOW_SPLIT,
-															cytoPanel,
-															networkViewPanel);
+		BiModalJSplitPane splitPane;
+		if (TEST_DEFAULT_DRAW_CLOSED){
+			//  Create the Split Pane;  split horizontally, and sho the split
+			splitPane = new BiModalJSplitPane(frame,
+											  JSplitPane.HORIZONTAL_SPLIT,
+											  BiModalJSplitPane.MODE_HIDE_SPLIT,
+											  cytoPanel,
+											  networkViewPanel);
+		}
+		else{
+			//  Create the Split Pane;  split horizontally, and sho the split
+			splitPane = new BiModalJSplitPane(frame,
+											  JSplitPane.HORIZONTAL_SPLIT,
+											  BiModalJSplitPane.MODE_SHOW_SPLIT,
+											  cytoPanel,
+											  networkViewPanel);
+		}
+
 		// BiModalSplitPane is cytoPanelContainer
 		cytoPanel.setCytoPanelContainer(splitPane);
+		
+		// open or close the draw
+		if (TEST_DEFAULT_DRAW_CLOSED){
+			cytoPanel.closeTabDrawer();
+		}
+		else{
+			cytoPanel.openTabDrawer();
+		}
 
 		// outta here
         return splitPane;
@@ -144,7 +125,7 @@ public class CytoPanelDemo {
         String tab3Name = "PlugIn Example 3";
 
         //  Create CytoPanel with Tabs along the Right Side
-        CytoPanel tabs = new CytoPanel(JTabbedPane.RIGHT, false);
+        CytoPanel tabs = new CytoPanel(JTabbedPane.RIGHT);
 
         //  Add Three Sample Tabs
         tabs.addTab(tab1Name,
@@ -157,12 +138,23 @@ public class CytoPanelDemo {
 					DemoUtil.createSamplePanel(tab3Name),
 					DemoUtil.getSampleToolTip(tab3Name));
 
-        //  Create the Split Pane; split horizontally, hide the split
-		BiModalJSplitPane splitPane = new BiModalJSplitPane(frame, 
-															JSplitPane.HORIZONTAL_SPLIT,
-															BiModalJSplitPane.MODE_SHOW_SPLIT,
-															topLeftPane,
-															tabs);
+		BiModalJSplitPane splitPane;
+		if (TEST_DEFAULT_DRAW_CLOSED){
+			//  Create the Split Pane; split horizontally, hide the split
+			splitPane = new BiModalJSplitPane(frame, 
+											  JSplitPane.HORIZONTAL_SPLIT,
+											  BiModalJSplitPane.MODE_HIDE_SPLIT,
+											  topLeftPane,
+											  tabs);
+		}
+		else{
+			//  Create the Split Pane; split horizontally, hide the split
+			splitPane = new BiModalJSplitPane(frame, 
+											  JSplitPane.HORIZONTAL_SPLIT,
+											  BiModalJSplitPane.MODE_SHOW_SPLIT,
+											  topLeftPane,
+											  tabs);
+		}
 
 		// BiModalSplitPane is cytoPanelContainer
 		tabs.setCytoPanelContainer(splitPane);
@@ -171,8 +163,15 @@ public class CytoPanelDemo {
         //  the left component.
 		splitPane.setResizeWeight(1);
 
-        //  Close the Tab Drawer
-        tabs.closeTabDrawer();
+		// open or close the draw
+		if (TEST_DEFAULT_DRAW_CLOSED){
+			tabs.closeTabDrawer();
+		}
+		else{
+			tabs.openTabDrawer();
+		}
+
+		// outta here
         return splitPane;
     }
 
@@ -188,7 +187,7 @@ public class CytoPanelDemo {
         String tab6Name = "PlugIn Example 6";
 
         //  Create CytoPanel with Tabs along the Bottom
-        CytoPanel tabs = new CytoPanel(JTabbedPane.BOTTOM, false);
+        CytoPanel tabs = new CytoPanel(JTabbedPane.BOTTOM);
 
         //  Create Three Sample Tabs
         tabs.addTab(tab4Name,
@@ -201,12 +200,21 @@ public class CytoPanelDemo {
 					DemoUtil.createSamplePanel(tab6Name),
 					DemoUtil.getSampleToolTip(tab6Name));
 
-        //  Create the Split Pane;  split vertically, hide the split
-        BiModalJSplitPane splitPane = new BiModalJSplitPane(frame,
-															JSplitPane.VERTICAL_SPLIT,
-															BiModalJSplitPane.MODE_SHOW_SPLIT,
-															topSplitPane,
-															tabs);
+		BiModalJSplitPane splitPane;
+		if (TEST_DEFAULT_DRAW_CLOSED){
+			splitPane = new BiModalJSplitPane(frame,
+											  JSplitPane.VERTICAL_SPLIT,
+											  BiModalJSplitPane.MODE_HIDE_SPLIT,
+											  topSplitPane,
+											  tabs);
+		}
+		else{
+			splitPane = new BiModalJSplitPane(frame,
+											  JSplitPane.VERTICAL_SPLIT,
+											  BiModalJSplitPane.MODE_SHOW_SPLIT,
+											  topSplitPane,
+											  tabs);
+		}
 
 		// BiModalSPiltPane is cytoPanelContainer
 		tabs.setCytoPanelContainer(splitPane);
@@ -214,8 +222,15 @@ public class CytoPanelDemo {
         //  Set Resize Weight so that top component gets all the extra space.
 		splitPane.setResizeWeight(1);
 
-        //  Close the Tab Drawer.
-        tabs.closeTabDrawer();
+		// open or close the draw
+		if (TEST_DEFAULT_DRAW_CLOSED){
+			tabs.closeTabDrawer();
+		}
+		else{
+			tabs.openTabDrawer();
+		}
+
+		// outta here
         return splitPane;
     }
 
