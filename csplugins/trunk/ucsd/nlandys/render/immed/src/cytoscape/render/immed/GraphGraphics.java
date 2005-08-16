@@ -660,31 +660,20 @@ public final class GraphGraphics
             ("rounded rectangle does not meet constraint " +
              "max(width, height) < 2 * min(width, height)"); } }
 
-    Shape outerShape = getShape(nodeShape, xMin, yMin, xMax, yMax);
-    final boolean renderOuterNow;
     if (borderWidth == 0.0f) {
-      m_g2d.setColor(fillColor); renderOuterNow = true; }
+      m_g2d.setColor(fillColor);
+      m_g2d.fill(getShape(nodeShape, xMin, yMin, xMax, yMax)); }
     else { // There is a border.
-      renderOuterNow = false; }
-    if (renderOuterNow) { m_g2d.fill(outerShape); }
-    else {
       m_path2dPrime.reset();
-      m_path2dPrime.append(outerShape, false); // Make a copy, essentially.
-      outerShape = m_path2dPrime; }
-
-    if (borderWidth != 0.0f) { // Fill inner node.
+      m_path2dPrime.append(getShape(nodeShape, xMin, yMin, xMax, yMax),
+                           false); // Make a copy, essentially.
       final Shape innerShape;
       if (nodeShape == SHAPE_ELLIPSE) {
-        // This is an approximation to proper border width.  It's
-        // faster than drawing an elliptical path of some thickness, and this
-        // approach leads to precise intersection calculations for edges.
-        final double innerXMin = ((double) xMin) + borderWidth;
-        final double innerYMin = ((double) yMin) + borderWidth;
-        final double innerXMax = ((double) xMax) - borderWidth;
-        final double innerYMax = ((double) yMax) - borderWidth;
-        m_ellp2d.setFrame(innerXMin, innerYMin,
-                          innerXMax - innerXMin, innerYMax - innerYMin);
-        innerShape = m_ellp2d; }
+        // TODO: Compute a more accurate inner area for ellipse + border.
+        innerShape = getShape
+          (SHAPE_ELLIPSE,
+           ((double) xMin) + borderWidth, ((double) yMin) + borderWidth,
+           ((double) xMax) - borderWidth, ((double) yMax) - borderWidth); }
       else if (nodeShape == SHAPE_ROUNDED_RECTANGLE) {
         computeRoundedRectangle
           (((double) xMin) + borderWidth, ((double) yMin) + borderWidth,
@@ -736,14 +725,13 @@ public final class GraphGraphics
       m_g2d.setColor(fillColor);
       m_g2d.fill(innerShape);
 
-      if (!renderOuterNow) { // The border has not yet been rendered.
-        // Render the border such that it does not overlap with the fill
-        // region because translucent colors may be used.  Don't do
-        // things differently for opaque and translucent colors for the
-        // sake of consistency.
-        ((GeneralPath) outerShape).append(innerShape, false);
-        m_g2d.setColor(borderColor);
-        m_g2d.fill(outerShape); } }
+      // Render the border such that it does not overlap with the fill
+      // region because translucent colors may be used.  Don't do
+      // things differently for opaque and translucent colors for the
+      // sake of consistency.
+      m_path2dPrime.append(innerShape, false);
+      m_g2d.setColor(borderColor);
+      m_g2d.fill(m_path2dPrime); }
   }
 
   /*
