@@ -1137,7 +1137,7 @@ public final class GraphGraphics
     final double sinTheta = (((double) y0) - y1) / len;
 
     if (renderedLineSegmentLength != 0.0d) { // Render arrow cap at point 0.
-      final GeneralPath arrow0Cap = computeUntransformedArrowCap
+      final Shape arrow0Cap = computeUntransformedArrowCap
         (arrowType0, ((double) arrow0Size) / edgeThickness);
       if (arrow0Cap != null) {
         m_xformUtil.setTransform(cosTheta, sinTheta, -sinTheta, cosTheta,
@@ -1152,7 +1152,7 @@ public final class GraphGraphics
         (renderedLineSegmentLength > 0.0d &&
          ((int) Math.floor(renderedLineSegmentLength /
                            dashLength)) % 2 == 0)) { // Render pt. 1 arrow cap.
-      final GeneralPath arrow1Cap = computeUntransformedArrowCap
+      final Shape arrow1Cap = computeUntransformedArrowCap
         (arrowType1, ((double) arrow1Size) / edgeThickness);
       if (arrow1Cap != null) {
         m_xformUtil.setTransform(-cosTheta, -sinTheta, sinTheta, -cosTheta,
@@ -1164,7 +1164,7 @@ public final class GraphGraphics
         m_g2d.setTransform(m_currNativeXform); } }
 
     {
-      final GeneralPath arrow0 = computeUntransformedArrow(arrowType0);
+      final Shape arrow0 = computeUntransformedArrow(arrowType0);
       if (arrow0 != null) {
         m_xformUtil.setTransform(cosTheta, sinTheta, -sinTheta, cosTheta,
                                  x0, y0);
@@ -1176,7 +1176,7 @@ public final class GraphGraphics
     }
 
     {
-      final GeneralPath arrow1 = computeUntransformedArrow(arrowType1);
+      final Shape arrow1 = computeUntransformedArrow(arrowType1);
       if (arrow1 != null) {
         m_xformUtil.setTransform(-cosTheta, -sinTheta, sinTheta, -cosTheta,
                                  x1, y1);
@@ -1190,12 +1190,11 @@ public final class GraphGraphics
 
   /*
    * Returns non-null if and only if an arrow is necessary for the arrow
-   * type specified.  If non-null is returned then m_path2d is set and
-   * returned.  m_ellp2d may be mangled as a side effect.
+   * type specified.  m_path2d and m_ellp2d may be mangled as a side effect.
    * arrowType must be one of the primitive arrow types or ARROW_NONE (no
    * ARROW_BIDIRECTIONAL or ARROW_MONO allowed).
    */
-  private final GeneralPath computeUntransformedArrow(final byte arrowType)
+  private final Shape computeUntransformedArrow(final byte arrowType)
   {
     switch (arrowType) {
     case ARROW_NONE:
@@ -1217,9 +1216,7 @@ public final class GraphGraphics
       return m_path2d;
     case ARROW_DISC:
       m_ellp2d.setFrame(-0.5d, -0.5d, 1.0d, 1.0d);
-      m_path2d.reset();
-      m_path2d.append(m_ellp2d, false);
-      return m_path2d;
+      return m_ellp2d;
     default: // ARROW_TEE.
       m_path2d.reset();
       m_path2d.moveTo(-0.125f, -2.0f);
@@ -1234,20 +1231,18 @@ public final class GraphGraphics
    * The ratio parameter specifies the ratio of arrow size (disc
    * diameter) to edge thickness (only used for some arrow types).
    * Returns non-null if and only if a cap is necessary for the arrow type
-   * specified.  If non-null is returned then m_path2d is set and returned.
+   * specified.  If non-null is returned then m_path2d and
    * m_arc2d may be mangled as a side effect.
    * arrowType must be one of the primitive arrow types or ARROW_NONE (no
    * ARROW_BIDIRECTIONAL or ARROW_MONO allowed).
    */
-  private final GeneralPath computeUntransformedArrowCap(final byte arrowType,
+  private final Shape computeUntransformedArrowCap(final byte arrowType,
                                                          final double ratio)
   {
     switch (arrowType) {
     case ARROW_NONE:
       m_arc2d.setArc(-0.5d, -0.5d, 1.0d, 1.0d, 270.0d, 180.0d, Arc2D.CHORD);
-      m_path2d.reset();
-      m_path2d.append(m_arc2d, false);      
-      return m_path2d;
+      return m_arc2d;
     case ARROW_DELTA:
       return null;
     case ARROW_DIAMOND:
