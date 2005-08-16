@@ -62,12 +62,16 @@ final class GeneralPathWrapper implements Shape
 
   public final PathIterator getPathIterator(final AffineTransform xform)
   {
-    return m_path.getPathIterator(xform);
+    // This is the method that is called by the graphics pipeline [I think]
+    // all of the time.  Furthermore, the xform argument is never [I think]
+    // null.
+    return new PathIteratorWrapper(m_path.getPathIterator(xform));
   }
 
   public final PathIterator getPathIterator(final AffineTransform xform,
                                             final double flatness)
   {
+    System.out.println("called flatten");
     return m_path.getPathIterator(xform, flatness);
   }
 
