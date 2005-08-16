@@ -1412,9 +1412,22 @@ public final class GraphGraphics
         // and m_polyNumPoints - this is all that we are going to use.
         getShape(nodeShape, xMin, yMin, xMax, yMax);
         trueOffset = offset; }
-      // I'm handling all cases, including when offset is zero, in one
-      // chunk of code.  This is more computations than necessary for the
-      // case where offset is zero.
+
+      if (trueOffset == 0.0d) {
+        final int twicePolyNumPoints = m_polyNumPoints * 2;
+        for (int i = 0; i < twicePolyNumPoints;) {
+          final double x0 = m_polyCoords[i++];
+          final double y0 = m_polyCoords[i++];
+          final double x1 = m_polyCoords[i % twicePolyNumPoints];
+          final double y1 = m_polyCoords[(i + 1) % twicePolyNumPoints];
+          if (segmentIntersection(m_ptsBuff, ptX, ptY, centerX, centerY,
+                                  x0, y0, x1, y1)) {
+            returnVal[0] = (float) m_ptsBuff[0];
+            returnVal[1] = (float) m_ptsBuff[1];
+            return true; } }
+        return false; }
+
+      // The rest of this code is the polygonal case where offset is nonzero.
       for (int i = 0; i < m_polyNumPoints; i++) {
         final double x0 = m_polyCoords[i * 2];
         final double y0 = m_polyCoords[i * 2 + 1];
@@ -1457,10 +1470,9 @@ public final class GraphGraphics
       for (int i = 0; i < m_polyNumPoints; i++) {
         if (m_fooRoundedCorners[i]) {
           if (segmentIntersection
-              (m_ptsBuff,
+              (m_ptsBuff, ptX, ptY, centerX, centerY,
                m_foo2PolyCoords[inx++], m_foo2PolyCoords[inx++],
-               m_foo2PolyCoords[inx], m_foo2PolyCoords[inx + 1],
-               centerX, centerY, ptX, ptY)) {
+               m_foo2PolyCoords[inx], m_foo2PolyCoords[inx + 1])) {
             final double segXsectX = m_ptsBuff[0];
             final double segXsectY = m_ptsBuff[1];
             final int numXsections = bad_circleIntersection
@@ -1491,20 +1503,19 @@ public final class GraphGraphics
               return false; } }
           else if (segmentIntersection // Test against the true line segment
                    (m_ptsBuff,         // that comes after the arc.
+                    ptX, ptY, centerX, centerY,
                     m_foo2PolyCoords[inx++], m_foo2PolyCoords[inx++],
                     m_foo2PolyCoords[inx % foo2Count],
-                    m_foo2PolyCoords[(inx + 1) % foo2Count],
-                    centerX, centerY, ptX, ptY)) {
+                    m_foo2PolyCoords[(inx + 1) % foo2Count])) {
             returnVal[0] = (float) m_ptsBuff[0];
             returnVal[1] = (float) m_ptsBuff[1];
             return true; } }
         else { // Not a rounded corner here.
           if (segmentIntersection
-              (m_ptsBuff,
+              (m_ptsBuff, ptX, ptY, centerX, centerY,
                m_foo2PolyCoords[inx++], m_foo2PolyCoords[inx++],
                m_foo2PolyCoords[inx % foo2Count],
-               m_foo2PolyCoords[(inx + 1) % foo2Count],
-               centerX, centerY, ptX, ptY)) {
+               m_foo2PolyCoords[(inx + 1) % foo2Count])) {
             returnVal[0] = (float) m_ptsBuff[0];
             returnVal[1] = (float) m_ptsBuff[1];
             return true; } } }
