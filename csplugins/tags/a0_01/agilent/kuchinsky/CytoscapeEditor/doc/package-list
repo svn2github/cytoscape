@@ -1,0 +1,5 @@
+cytoscape.editor
+cytoscape.editor.actions
+cytoscape.editor.editors
+cytoscape.editor.event
+cytoscape.editor.impl
