@@ -1,3 +1,4 @@
+<!-- A comment. -->
 <project name="ModuleFinder" default="modulefinder.jar" basedir=".">
 
   <property name="cytoscape.lib.dir"
