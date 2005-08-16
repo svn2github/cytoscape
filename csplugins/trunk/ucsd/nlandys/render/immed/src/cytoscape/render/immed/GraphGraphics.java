@@ -768,7 +768,9 @@ public final class GraphGraphics
 
   /**
    * This is the method that will render a node very quickly.
-   * The node shape used by this method is SHAPE_RECTANGLE.<p>
+   * The node shape used by this method is SHAPE_RECTANGLE.  Translucent
+   * colors are not officially supported by the low detail rendering
+   * methods, so use translucent colors at your own risk.<p>
    * xMin, yMin, xMax, and yMax specify the extents of the node in the
    * node coordinate space, not the image coordinate space.  Thus, these
    * values will likely not change from frame to frame, as zoom and pan
@@ -811,7 +813,9 @@ public final class GraphGraphics
 
   /**
    * This method will not work unless clear() has been called at least once
-   * previously.
+   * previously.  Translucent
+   * colors are not officially supported by the low detail rendering
+   * methods, so use translucent colors at your own risk.
    */
   public final void drawEdgeLow(final float x0, final float y0,
                                 final float x1, final float y1,
@@ -936,9 +940,20 @@ public final class GraphGraphics
    * Note that if the edge segment length is zero then nothing gets
    * rendered.<p>
    * This method will not work unless clear() has been called at least once
-   * previously.
+   * previously.<p>
+   * Some notes pertaining to edge anchors.  In most cases edgeAnchors will
+   * be null (or return zero in a call to numRemaining()); in this case
+   * a normal edge consisting of one straight segment will be drawn.
+   * If edge anchors are specified, then the path of the multi-segment
+   * edge is defined
+   * by the starting point (x0,y0) followed by successive and exhaustive calls
+   * to edgeAnchors.nextAnchor() followed by the point (x1,y1).  Right now
+   * edge anchors cannot be used with ARROW_BIDIRECTIONAL or with
+   * ARROW_MONO; support for these may be implemented in the future.
    * @param dashLength a positive value representing the length of dashes
    *   on the edge, or zero to indicate that the edge is solid.
+   * @param edgeAnchors the edge anchors to be used when rendering this edge,
+   *   or null to indicate that no edge anchors are to be used.
    * @exception IllegalArgumentException if edgeThickness is less than zero,
    *   if dashLength is less than zero, or if any one of the arrow sizes
    *   does not meet specified criteria.
@@ -953,7 +968,8 @@ public final class GraphGraphics
                                  final float x1, final float y1,
                                  final float edgeThickness,
                                  final Color edgeColor,
-                                 final float dashLength)
+                                 final float dashLength,
+                                 final EdgeAnchors edgeAnchors)
   {
     if (m_debug) {
       if (!EventQueue.isDispatchThread())
@@ -1620,6 +1636,8 @@ public final class GraphGraphics
   }
 
   /**
+   * Translucent colors are not officially supported by the low detail
+   * rendering methods, so use translucent colors at your own risk.
    */
   public final void drawTextLow(final Font font,
                                 final String text,
