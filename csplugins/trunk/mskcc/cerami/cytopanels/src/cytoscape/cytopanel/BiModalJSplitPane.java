@@ -13,9 +13,18 @@ import java.awt.*;
  *                       user cannot resize the split pane.
  * </UL>
  *
+ * NOTE: only one CytoPanel is supported per BiModalJSplitPane.
+ *
  * @author Ethan Cerami.
  */
 public class BiModalJSplitPane extends JSplitPane implements CytoPanelContainer {
+
+    /**
+     * Indicates which startupSize to perform.
+     */
+	public static final int STARTUP_HIDE_RIGHT = 0;
+	public static final int STARTUP_HIDE_BOTTOM = 1;
+
     /**
      * Mode:  Show the Split Pane.
      */
@@ -47,9 +56,34 @@ public class BiModalJSplitPane extends JSplitPane implements CytoPanelContainer 
     private int defaultDividerSize;
 
     /**
+     * The Divider Location just before adjusting it.
+     */
+    private int savedDividerLocation;
+
+   /**
+     * Saved dimension for left component and right components.
+     */
+    private Dimension topleftComponentSavedDimension;
+    private Dimension bottomrightComponentSavedDimension;
+	
+	/**
+	 * Values used to determine the type of hide split to perform
+     */
+	private static final int MODE_HIDE_SPLIT_LEFT = 0;
+	private static final int MODE_HIDE_SPLIT_RIGHT = 1;
+	private static final int MODE_HIDE_SPLIT_BOTTOM = 2;
+	private static final int MODE_HIDE_SPLIT_TOP = 3;
+
+	/**
+	 * String used to compare against os.name System property - 
+	 * to determine if we are running on Windows platform.
+     */
+	static final String WINDOWS = "windows";
+
+    /**
      * Constructor.
      *
-     * @param frame          The Application Frame.
+	 * @param frame          The Application Frame.
      * @param orientation    JSplitPane Orientation.
      *                       JSplitPane.HORIZONTAL_SPLIT or
      *                       JSplitPane.VERTICAL_SPLIT.
@@ -58,6 +92,7 @@ public class BiModalJSplitPane extends JSplitPane implements CytoPanelContainer 
      *                       MODE_HIDE_SPLIT.
      * @param leftComponent  Left/Top Component.
      * @param rightComponent Right/Bottom Component.
+	 *
      */
     public BiModalJSplitPane(JFrame f, int orientation, int initialMode,
             Component leftComponent, Component rightComponent) {
@@ -79,10 +114,18 @@ public class BiModalJSplitPane extends JSplitPane implements CytoPanelContainer 
     }
 
     /**
+     * Gets the default divider size
+     * @return MODE_SHOW_SPLIT or MODE_HIDE_SPLIT.
+     */
+	public int getDefaultDividerSize() {
+		return defaultDividerSize;
+	}
+
+    /**
      * Sets the Current Mode.
      * @param newMode MODE_SHOW_SPLIT or MODE_HIDE_SPLIT.
      */
-    public void setMode(int newMode) {
+    public void setMode(CytoPanel cytoPanel, int newMode) {
         //  Check Parameters
         if (newMode != MODE_SHOW_SPLIT && newMode != MODE_HIDE_SPLIT) {
             throw new IllegalArgumentException("Illegal Argument:  "
@@ -94,7 +137,7 @@ public class BiModalJSplitPane extends JSplitPane implements CytoPanelContainer 
         //  Only act on Change in Mode Status
         if (newMode != currentMode) {
             if (newMode == MODE_HIDE_SPLIT) {
-                hideSplit();
+                hideSplit(cytoPanel);
             } else if (newMode == MODE_SHOW_SPLIT) {
                 showSplit();
             }
@@ -102,7 +145,7 @@ public class BiModalJSplitPane extends JSplitPane implements CytoPanelContainer 
 
             //  Fire the Property Change to all Registered Listeners
             this.firePropertyChange(MODE_PROPERTY, oldMode, newMode);
-        }
+		}
     }
 
     /**
@@ -112,6 +155,62 @@ public class BiModalJSplitPane extends JSplitPane implements CytoPanelContainer 
     public int getMode() {
         return currentMode;
     }
+
+    /**
+     * Sets window sizes for startupu.
+	 * @param mode HideMode
+     */
+    public void setStartupSizes(int mode) {
+
+		if (mode == STARTUP_HIDE_RIGHT){
+			JComponent left = (JComponent)getLeftComponent();
+			JComponent right = (JComponent)getRightComponent();
+			CytoPanel cp = (CytoPanel)right;
+			topleftComponentSavedDimension = left.getSize();
+			bottomrightComponentSavedDimension = right.getSize();
+			cp.setStartupSizes(mode);
+			left.setMinimumSize(new Dimension((int)(left.getSize().getWidth()+right.getSize().getWidth()+getDefaultDividerSize()), (int)getSize().getHeight()));
+			left.setPreferredSize(new Dimension((int)(left.getSize().getWidth()+right.getSize().getWidth()+getDefaultDividerSize()), (int)getSize().getHeight()));
+			right.setMinimumSize(new Dimension(cp.getMaxWidthTabs()+getDefaultDividerSize(), (int)right.getSize().getHeight()));
+		}
+		else if (mode == STARTUP_HIDE_BOTTOM){
+			JComponent top = (JComponent)getTopComponent();
+			JComponent bottom = (JComponent)getBottomComponent();
+			CytoPanel cp = (CytoPanel)bottom;
+			topleftComponentSavedDimension = top.getSize();
+			bottomrightComponentSavedDimension = bottom.getSize();
+			cp.setStartupSizes(mode);
+			top.setMinimumSize(new Dimension((int)top.getSize().getWidth(), (int)(top.getSize().getHeight()+bottom.getSize().getHeight())));
+			top.setPreferredSize(new Dimension((int)top.getSize().getWidth(), (int)(top.getSize().getHeight()+bottom.getSize().getHeight())));
+			bottom.setMinimumSize(new Dimension((int)bottom.getSize().getWidth(), cp.getMaxHeightTabs()+getDefaultDividerSize()));
+		}
+		resetToPreferredSizes();
+    }
+
+    /**
+     * Restores window sizes after startup
+	 * @param mode previous HideMode
+     */
+    public void restoreStartupSizes(int mode) {
+		if (mode == STARTUP_HIDE_RIGHT){
+			JComponent left = (JComponent)getLeftComponent();
+			JComponent right = (JComponent)getRightComponent();
+			CytoPanel cp = (CytoPanel)right;
+			left.setMinimumSize(topleftComponentSavedDimension);
+			left.setPreferredSize(topleftComponentSavedDimension);
+			right.setMinimumSize(bottomrightComponentSavedDimension);
+			cp.restoreStartupSizes();
+		}
+		else if (mode == STARTUP_HIDE_BOTTOM){
+			JComponent top = (JComponent)getTopComponent();
+			JComponent bottom = (JComponent)getBottomComponent();
+			CytoPanel cp = (CytoPanel)bottom;
+			top.setMinimumSize(topleftComponentSavedDimension);
+			top.setPreferredSize(topleftComponentSavedDimension);
+			bottom.setMinimumSize(bottomrightComponentSavedDimension);
+			cp.restoreStartupSizes();
+		}
+	}
 
     /**
      * Inserts CytoPanel at Specified Compass Direction.
@@ -172,19 +271,39 @@ public class BiModalJSplitPane extends JSplitPane implements CytoPanelContainer 
      * Shows the Split.
      */
     private void showSplit() {
+		setDividerLocation(savedDividerLocation);
         setDividerSize(defaultDividerSize);
-        resetToPreferredSizes();
         validateParent();
     }
 
     /**
      * Hides the Split.
+     * @param cytoPanel used to determine type of hide to perform
      */
-    private void hideSplit() {
-        setDividerSize(0);
-        resetToPreferredSizes();
-        validateParent();
-    }
+    private void hideSplit(CytoPanel cytoPanel) {
+
+		// save the current divider location before we change it
+		savedDividerLocation = this.getDividerLocation();
+
+		// determine which hide split to perform and do it
+		switch (getHideType(cytoPanel)){
+		case MODE_HIDE_SPLIT_LEFT:
+			hideSplitLeft(cytoPanel);
+			break;
+		case MODE_HIDE_SPLIT_RIGHT:
+			hideSplitRight(cytoPanel);
+			break;
+		case MODE_HIDE_SPLIT_TOP:
+			hideSplitTop(cytoPanel);
+			break;
+		case MODE_HIDE_SPLIT_BOTTOM:
+			hideSplitBottom(cytoPanel);
+			break;
+		}
+
+		// just for sanity
+		validateParent();
+	}
 
     /**
      * Validates the Parent Container.
@@ -195,4 +314,88 @@ public class BiModalJSplitPane extends JSplitPane implements CytoPanelContainer 
             container.validate();
         }
     }
+
+    /**
+     * Determines type of hide spilt to perform.
+     * @param cytoPanel used to determine type of hide to perform
+     * @return MODE_HIDE_SPLIT_LEFT or MODE_HIDE_SPLIT_RIGHT or MODE_HIDE_SPLIT_BOTTOM MODE_HIDE_SPLIT_TOP
+     */
+    private int getHideType(CytoPanel cytoPanel) {
+		// top bottom
+		if (getOrientation() == VERTICAL_SPLIT){
+			return (cytoPanel == getTopComponent()) ? MODE_HIDE_SPLIT_TOP : MODE_HIDE_SPLIT_BOTTOM;
+		}
+		// left right
+		else{
+			return (cytoPanel == getLeftComponent()) ? MODE_HIDE_SPLIT_LEFT : MODE_HIDE_SPLIT_RIGHT;
+		}
+	}
+
+    /**
+     * Hides the Split (tabs on left)
+     * @param cytoPanel used to get tab dimensions
+     */
+    private void hideSplitLeft(CytoPanel cytoPanel){
+		// get max width of tabs on cytopanel
+		int maxWidth = cytoPanel.getMaxWidthTabs();
+
+		// compute divider location
+		int newDividerLocation = maxWidth + defaultDividerSize;
+
+		// move split pane divider all the way to left without hiding tabs
+		setDividerLocation(newDividerLocation);
+        setDividerSize(0);
+	}
+
+    /**
+     * Hides the Split (tabs on right)
+     * @param cytoPanel used to get tab dimensions
+     */
+    private void hideSplitRight(CytoPanel cytoPanel){
+		// get max width of tabs on cytopanel
+		int maxWidth = cytoPanel.getMaxWidthTabs();
+
+		// compute divider location
+		double newDividerLocation = 1.0;
+		Rectangle r = this.getBounds();
+		newDividerLocation -=  (r.getWidth() <= 0) ? 0.0 : maxWidth/r.getWidth();
+
+		// move splitpane divider all the way to right without hiding tabs
+		setDividerLocation(newDividerLocation);
+        setDividerSize(0);
+	}
+
+    /**
+     * Hides the Split (tabs on top)
+     * @param cytoPanel used to get tab dimensions
+     */
+    private void hideSplitTop(CytoPanel cytoPanel){
+		// get max height of tabs on cytopanel
+		int maxHeight = cytoPanel.getMaxHeightTabs();
+		
+		// compute divider location
+		int newDividerLocation = maxHeight + defaultDividerSize;
+
+		// move splitpane divider all the way up without hiding tabs
+		setDividerLocation(newDividerLocation);
+        setDividerSize(0);
+	}
+
+    /**
+     * Hides the Split (tabs on bottom)
+     * @param cytoPanel used to get tab dimensions
+     */
+    private void hideSplitBottom(CytoPanel cytoPanel){
+		// get max height of tabs on cytopanel
+		int maxHeight = cytoPanel.getMaxHeightTabs();
+
+		// compute divider location
+		double newDividerLocation = 1.0;
+		Rectangle r = this.getBounds();
+		newDividerLocation -=  (r.getHeight() <= 0) ? 0.0 : maxHeight/r.getHeight();
+
+		// move splitpane divider all the way to bottom without hiding tabs
+		setDividerLocation(newDividerLocation);
+        setDividerSize(0);
+	}
 }

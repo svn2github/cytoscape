@@ -1,75 +1,64 @@
 package cytoscape.cytopanel;
 
-import cytoscape.cytopanel.buttons.CustomButton;
-import cytoscape.cytopanel.buttons.VTextIcon;
-import cytoscape.cytopanel.util.CytoPanelUtil;
+import java.awt.Font;
+import java.awt.Color;
+import java.awt.Point;
+import java.awt.Insets;
+import java.awt.Toolkit;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Rectangle;
+import java.awt.Dimension;
+import java.awt.BorderLayout;
 
-import javax.swing.*;
-import javax.swing.plaf.basic.BasicTabbedPaneUI;
-import javax.swing.border.EmptyBorder;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.WindowAdapter;
+import java.awt.event.ActionListener;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JLabel;
+import javax.swing.JButton;
+import javax.swing.ImageIcon;
+import javax.swing.JComponent;
+import javax.swing.JTabbedPane;
+import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
-import java.awt.*;
-import java.awt.event.*;
-import java.util.Enumeration;
+import javax.swing.border.EmptyBorder;
+
 import java.util.ArrayList;
 import java.net.URL;
 
-public class CytoPanel extends JComponent {
+import cytoscape.cytopanel.buttons.VTextIcon;
+import cytoscape.cytopanel.util.CytoPanelUtil;
+
+/**
+ * The CytoPanel class extends JTabbedPane to provide the following functionality:
+ * <UL>
+ * <LI> Opening/Closing of draws (tabs).
+ * <LI> Floating/Docking of Panel.
+ * <UL>
+ *
+ * @author Benjamin Gross.
+ */
+public class CytoPanel extends JTabbedPane {
 
 	/**
-	 * Reference to CytoPanelContainer we live within
+	 * Reference to CytoPanelContainer, the component we live inside
 	 */
 	private CytoPanelContainer cytoPanelContainer;
 
     /**
-     * The Button Panel contains Buttons that activate specific tabs.
+     * List of contentPanels - a content panel component contains
+	 * a float/dock bar and the component passed into addTab()
      */
-    private JPanel buttonPanel;
-
-    /**
-     * The Component Panel contain the tab contents.
-     * It uses a CardLayout Manager.
-     */
-    private JPanel cytoPanelPanel;
-
-    /**
-     * Tab Placement.
-     */
-    private int tabPlacement;
-
-    /**
-     * The Card Layout, used to Flip between different Tabs.
-     */
-    private CardLayout cardLayout;
-
-    /**
-     * Selection Model Object.
-     */
-    private SingleSelectionModel model;
-
-    /**
-     * List of Tabs.
-     */
-    private ArrayList pageList;
+    private ArrayList contentPanelList;
 
 	/**
-	 * Tab currently with focus
-	 */
-    private String currentTab;
-
-    /**
-     * Background Color of Tab When Selected
-     */
-    private static final Color COLOR_TAB_SELECTED = new Color(204, 204, 255);
-
-    /**
-     * Background Color of Tab When Not Selected
-     */
-    private static final Color COLOR_TAB_NOT_SELECTED = new Color
-            (240, 240, 240);
-
-	/**
-	 * External Windown used to hold the floating CytoPanel
+	 * External Window used to hold the floating CytoPanel.
 	 */
 	private JFrame externalFrame;
 
@@ -77,11 +66,6 @@ public class CytoPanel extends JComponent {
      * Current Floating Status of CytoPanel.
      */
     private boolean isFloating = false;
-
-    /**
-     * Header Label
-     */
-    private ArrayList contentPanelList;
 
     /**
      * Float Icon.
@@ -93,7 +77,23 @@ public class CytoPanel extends JComponent {
      */
     private ImageIcon dockIcon;
 
-	/* the following constants maybe should move into common constants class */
+	/**
+	 * prevIndex maintains the index of the last tab selected.
+     */
+	private int prevIndex;
+
+	/**
+     * Is this Cytopanel draw currently opened ?
+	 */
+	private boolean drawOpened;
+
+	/* the following constants should probably move into common constants class */
+
+	/**
+	 * String used to compare against os.name System property - 
+	 * to determine if we are running on Windows platform.
+     */
+	static final String WINDOWS = "windows";
 	
     /**
      * Location of Resources, e.g. GIF Icons
@@ -118,41 +118,29 @@ public class CytoPanel extends JComponent {
     /**
      * Constructor.
      * @param tabPlacement  Tab Placement int value.
+     * @param openByDefault Is draw initially opened ?
      */
-    public CytoPanel(int tabPlacement) {
+    public CytoPanel(int tabPlacement, boolean openByDefault) {
+        super(tabPlacement);
 
 		// init some member vars
-        this.pageList = new ArrayList();
+		drawOpened = openByDefault;
+		prevIndex = -1;
 		this.contentPanelList = new ArrayList();
-
-        // Validate tabPlacement values
-		if (tabPlacement != JTabbedPane.LEFT &&
-			tabPlacement != JTabbedPane.RIGHT &&
-			tabPlacement != JTabbedPane.TOP &&
-			tabPlacement != JTabbedPane.BOTTOM){
-			throw new IllegalArgumentException("Illegal Argument:  "
-											   + tabPlacement +
-											   ".  Must be one of:  JTabbedPane.{TOP,BOTTOM,LEFT,RIGHT}.");
-		}
-        this.tabPlacement = tabPlacement;
-        model = new DefaultSingleSelectionModel();
 
 		// Initialize all Icons
 		initIcons();
-
-        //  Initialize the GUI
-        initUI();
     }
 
 	/**
-	 * Sets CytoPanelContainer inteface reference
+	 * Sets CytoPanelContainer interface reference
      * @param cytoPanelContainer Reference to CytoPanelContainer
 	 */
 	public void setCytoPanelContainer(CytoPanelContainer cytoPanelContainer){
 		// set our cytoPanelContainerReference
 		this.cytoPanelContainer = cytoPanelContainer;
 	}
-	
+
     /**
      * Adds a New Tab.
      *
@@ -162,155 +150,139 @@ public class CytoPanel extends JComponent {
      */
     public void addTab(String title, Component c, String toolTipText) {
 
-        //  Create a Custom Button
-        JButton button = null;
-        if (tabPlacement == JTabbedPane.LEFT) {
-            button = new CustomButton(title, VTextIcon.ROTATE_LEFT);
-        } else if (tabPlacement == JTabbedPane.RIGHT) {
-            button = new CustomButton(title, VTextIcon.ROTATE_RIGHT);
-        } else if (tabPlacement == JTabbedPane.BOTTOM) {
-            button = new CustomButton(title);
-        }
-
-        //  Set the Tool Tip Text
-        button.setToolTipText(toolTipText);
-
-        //  Add the Appropriate Action Listener
-        addActionListener(button);
-
-        //  Add the Button to the ButtonPanel
-        buttonPanel.add(button);
-        buttonPanel.add(Box.createRigidArea(new Dimension(2, 5)));
-
-		// create floatDockPaneList
+		// create ContentPanel
 		ContentPanel contentPanel = new ContentPanel(c, title, c.getBackground());
+		// add it to our list of content panes
 		contentPanelList.add(contentPanel);
 
-        //  Add the Component to the Component Panel
-        //cytoPanelPanel.add(c, title);
-		cytoPanelPanel.add(contentPanel, title);
+		// if windows platform and left or right tab location, use custom vertical text class
+		if (isWindows() && tabPlacement != JTabbedPane.BOTTOM && tabPlacement != JTabbedPane.TOP ){
+			int rotate = (tabPlacement == JTabbedPane.LEFT) ? VTextIcon.ROTATE_LEFT : VTextIcon.ROTATE_RIGHT;
+			VTextIcon textIcon = new VTextIcon(c, title, rotate);
+			super.addTab(null, textIcon, contentPanel);
+		}
+		else{
+			super.addTab(title, contentPanel);
+		}
 
-        //  Create a Page Object
-        //Page page = new Page (this, title, c, toolTipText, button);
-		Page page = new Page (this, title, contentPanel, toolTipText, button);
-        pageList.add(page);
-
-        //  If this is the first tab, select it.
-        if (pageList.size() == 1) {
-            model.setSelectedIndex(0);
-            button.setBackground(COLOR_TAB_SELECTED);
-            currentTab = title;
-        }
-    }
-
-    /**
-     * Open the Tab Drawer.
-     */
-    public void openTabDrawer() {
-        cytoPanelPanel.setVisible(true);
-
-        //  If the Parent Container is a BiModalSplitPane, show the split
-        Container parent = this.getParent();
-        if (parent instanceof BiModalJSplitPane) {
-            BiModalJSplitPane biModalSplitPane = (BiModalJSplitPane) parent;
-            biModalSplitPane.setMode(BiModalJSplitPane.MODE_SHOW_SPLIT);
-        }
-    }
-
-    /**
-     * Close the Tab Drawer.
-     */
-    public void closeTabDrawer() {
-        cytoPanelPanel.setVisible(false);
-        model.clearSelection();
-        this.applyBackgroundColors();
-
-        //  If the Parent Container is a BiModalSplitPane, hide the split
-        Container parent = this.getParent();
-        if (parent instanceof BiModalJSplitPane) {
-            BiModalJSplitPane biModalSplitPane = (BiModalJSplitPane) parent;
-            biModalSplitPane.setMode(BiModalJSplitPane.MODE_HIDE_SPLIT);
-        }
-    }
-
-    /**
-     * Adds the Appropriate Action Listeners.
-     *
-     * @param button JButton Object.
-     */
-    private void addActionListener(JButton button) {
-
-        //  Uses an Internal Class
-        button.addActionListener(new ActionListener() {
-
-            /**
-             * Button was Clicked.
-             *
-             * @param e ActionEvent Object
-             */
-            public void actionPerformed(ActionEvent e) {
-
-                //  Get the Source of the Event
-                JButton button = (JButton) e.getSource();
-                String action = e.getActionCommand();
-
-                //  Select the Correct Button in the Button Group
-                //  buttonGroup.setSelected(button.getModel(), true);
-
-                //  Determine the Next State in the State Machine
-                if (!isFloating && model.isSelected()) {
-                    if (currentTab.equals(action)) {
-                        model.clearSelection();
-                        closeTabDrawer();
-                    }
-                } else if (!model.isSelected()) {
-                    int index = getIndexValueByTitle (action);
-                    model.setSelectedIndex(index);
-                    openTabDrawer();
-                }
-
-                // Store Current Action
-                currentTab = action;
-
-                //  Show the Correct Component in the Card Layout
-                cardLayout.show(cytoPanelPanel, action);
-
-                //  Reset all the Background Colors
-                applyBackgroundColors();
-            }
-        });
+	    // if this is the first tab, select it
+		if (prevIndex == -1){
+			prevIndex = 0;
+			setSelectedIndex(0);
+		}
     }
 
 	/**
-	 * Gets button index (in button panel), by button title
+	 * Open the Tab Drawer.
 	 */
-    private int getIndexValueByTitle (String targetTitle) {
-        int targetIndex = -1;
-        for (int i=0; i<pageList.size(); i++) {
-            Page page = (Page) pageList.get(i);
-            if (page.getTitle().equals(targetTitle)) {
-                targetIndex = i;
-            }
-        }
-        return targetIndex;
-    }
+	public void openTabDrawer() {
+		//  If the Parent Container is a BiModalSplitPane, show the split
+		Container parent = this.getParent();
+		if (parent instanceof BiModalJSplitPane) {
+			BiModalJSplitPane biModalSplitPane = (BiModalJSplitPane) parent;
+ 			biModalSplitPane.setMode(this, BiModalJSplitPane.MODE_SHOW_SPLIT);
+		}
+		drawOpened = true;
+	}
+
+	/**
+	 * Close the Tab Drawer.
+	 */
+	public void closeTabDrawer() {
+		//  If the Parent Container is a BiModalSplitPane, hide the split
+		Container parent = this.getParent();
+		if (parent instanceof BiModalJSplitPane) {
+			BiModalJSplitPane biModalSplitPane = (BiModalJSplitPane) parent;
+			biModalSplitPane.setMode(this, BiModalJSplitPane.MODE_HIDE_SPLIT);
+		}
+		drawOpened = false;
+	}
+
+	/**
+     * Cet max width of tabs
+     * @return max width (in pixels) of largest tab on cytopanel
+     */
+    public int getMaxWidthTabs(){
+		int maxWidth = 0;
+		for (int lc = 0; lc < getTabCount(); lc++){
+			Rectangle r = getBoundsAt(lc);
+			if (r != null && r.getWidth() > maxWidth) maxWidth = (int)r.getWidth();
+		}
+		return maxWidth;
+	}
 
     /**
-     * Sets the Background of All Tab Backgrounds to indicate current State.
+     * Cet max height of tabs
+     * @return max height (in pixels) of largest tab on cytopanel
      */
-    private void applyBackgroundColors() {
+    public int getMaxHeightTabs(){
+		int maxHeight = 0;
+		for (int lc = 0; lc < getTabCount(); lc++){
+			Rectangle r = getBoundsAt(lc);
+			if (r != null && r.getHeight() > maxHeight) maxHeight = (int)r.getHeight();
+		}
+		return maxHeight;
+	}
 
-        //  Iterate through all Buttons
-        for (int i=0; i<pageList.size(); i++) {
-            Page page = (Page) pageList.get(i);
-            JButton button = page.getButton();
 
-            if (i == model.getSelectedIndex()) {
-                button.setBackground(COLOR_TAB_SELECTED);
-            } else {
-                button.setBackground(COLOR_TAB_NOT_SELECTED);
-            }
-        }
+    /**
+     * Sets window sizes for startup.
+	 * @param mode HideMode
+     */
+    public void setStartupSizes(int mode) {
+		// iterate through content panels,
+		// save all dimensions and set 
+		// proper dimension to zero
+		for (int lc = 0; lc < contentPanelList.size(); lc++) {
+			ContentPanel panel = (ContentPanel) contentPanelList.get(lc);
+			panel.setStartupSize(mode);
+		}
+	}
+
+    /**
+     * Restores window sizes after startup.
+     */
+    public void restoreStartupSizes() {
+		// iterate through content panels,
+		// save all dimensions and set 
+		// proper dimension to zero
+		for (int lc = 0; lc < contentPanelList.size(); lc++) {
+			ContentPanel panel = (ContentPanel) contentPanelList.get(lc);
+			panel.restoreStartupSize();
+		}
+	}
+
+	/**
+	 * Mouse event handler - used to open/close draws.
+     * @param evt       The Mouse Event.
+	 */
+	protected void processMouseEvent(MouseEvent evt)
+    {
+		// only process mouse clicked events
+		if (evt.getID() == MouseEvent.MOUSE_CLICKED){
+			// determine selected index(tab)
+			Component c = getSelectedComponent();
+			int selectedIndex = indexAtLocation(evt.getX(), evt.getY());
+			// based on tab selected open or close draw
+			if (selectedIndex != -1){
+				if (selectedIndex == prevIndex){
+					if (drawOpened){
+						closeTabDrawer();
+						drawOpened = false;
+					}
+					else{
+						openTabDrawer();
+						drawOpened = true;
+					}
+				}
+				else{
+					openTabDrawer();
+				}
+				prevIndex = selectedIndex;
+			}
+		}
+		// give base class chance to process event
+		super.processMouseEvent(evt);
     }
 
     /**
@@ -329,57 +301,13 @@ public class CytoPanel extends JComponent {
         dockIcon = new ImageIcon(dockIconURL);
     }
 
-    /**
-     * Initializes the GUI.
-     */
-    private void initUI() {
-
-        //  Create a Button Panel, for containing all buttons that
-        //  activate specific tabs.
-
-        //  Create a Generic Container, so that we can generate
-        //  nice looking borders
-        JPanel buttonPanelContainer = new JPanel();
-        buttonPanelContainer.setLayout(new FlowLayout(FlowLayout.LEFT));
-        buttonPanelContainer.setBorder(new EmptyBorder(3, 1, 3, 1));
-
-        //  Create the Button Panel Itself
-        buttonPanel = new JPanel();
-        buttonPanelContainer.add(buttonPanel);
-
-        //  The ButtonPanel uses a BoxLayout, because we want the
-        //  layout manager to respect the sizes of all buttons.
-        BoxLayout boxLayout = null;
-        if (tabPlacement == JTabbedPane.LEFT
-                || tabPlacement == JTabbedPane.RIGHT) {
-            boxLayout = new BoxLayout(buttonPanel, BoxLayout.Y_AXIS);
-        } else if (tabPlacement == JTabbedPane.BOTTOM) {
-            boxLayout = new BoxLayout(buttonPanel, BoxLayout.X_AXIS);
-        }
-        buttonPanel.setLayout(boxLayout);
-
-        //  Create the Component Panel.
-        //  The Component Panel uses a CardLayout so that we can flip
-        //  through all the tabs one at a time.
-        cytoPanelPanel = new JPanel();
-        cardLayout = new CardLayout();
-        cytoPanelPanel.setLayout(cardLayout);
-
-        //  Use the Border Layout for this Component
-        this.setLayout(new BorderLayout());
-
-		// layout cytopanel 
-        if (tabPlacement == JTabbedPane.LEFT) {
-            this.add(buttonPanelContainer, BorderLayout.WEST);
-            this.add(cytoPanelPanel, BorderLayout.CENTER);
-        } else if (tabPlacement == JTabbedPane.RIGHT) {
-            this.add(buttonPanelContainer, BorderLayout.EAST);
-            this.add(cytoPanelPanel, BorderLayout.CENTER);
-        } else if (tabPlacement == JTabbedPane.BOTTOM) {
-            this.add(buttonPanelContainer, BorderLayout.SOUTH);
-            this.add(cytoPanelPanel, BorderLayout.CENTER);
-        }
-    }
+	/**
+	 * Determines if we are running on Windows platform.
+	 */
+	private boolean isWindows() {
+		String os = System.getProperty("os.name");
+		return os.regionMatches(true, 0, WINDOWS, 0, WINDOWS.length());
+	}
 
     /**
      * Float/Dock cytoPanel, depending on current status.
@@ -497,51 +425,56 @@ public class CytoPanel extends JComponent {
     }
 
 
-    private class Page {
-        private CytoPanel parent;
-        private String title;
-        private Component component;
-        private String tip;
-        private JButton button;
-
-        Page(CytoPanel parent, String title, Component component, String tip,
-                JButton button) {
-            this.parent = parent;
-            this.title = title;
-            this.component = component;
-            this.tip = tip;
-            this.button = button;
-        }
-
-        public CytoPanel getParent() {
-            return parent;
-        }
-
-        public String getTitle() {
-            return title;
-        }
-
-        public Component getComponent() {
-            return component;
-        }
-
-        public String getTip() {
-            return tip;
-        }
-
-        public JButton getButton() {
-            return button;
-        }
-    }
-
+	/**
+	 * The ContentPanel class contains is a JPanel that contains
+	 * a float/dock button and the component passed into CytoPanel.addTab()
+	 */
     private class ContentPanel extends JPanel {
+
+		/**
+		 * Background color of float/dock button and label.
+		 */
 		private Color color;
+
+		/**
+		 * The component passed into CytoPanel.addTab().
+		 */
 		private Component content;
+
+		/**
+		 * The label which contains the tab title - not sure if its needed.
+		 */
         private JLabel headerLabel;
+
+		/**
+		 * The float/dock button.
+		 */
         private JButton floatButton;
+
+		JPanel floatDockPanel;
+
+		/**
+		 * Saved dimensions.
+		 */
+        private Dimension savedHeaderDim;
+        private Dimension savedButtonDim;
+        private Dimension savedContentDim;
+		private Dimension savedFloatDockPanelDim;
+		private Dimension savedContentPanelDim;
+				
+		/**
+		 * The float button tool tip.
+		 */
 		private static final String TOOL_TIP_FLOAT = "Float Window";
+
+		/**
+		 * The dock button tool tip.
+		 */
 		private static final String TOOL_TIP_DOCK = "Dock Window";
 
+		/**
+		 * Our constructor (addTab() component, title of label, background color)
+		 */
         ContentPanel(Component c, String title, Color color) {
 			// init member vars
 			this.color = color;
@@ -553,7 +486,7 @@ public class CytoPanel extends JComponent {
 
 			// add label and button components to yet another panel, 
 			// so we can layout properly
-			JPanel floatDockPanel = new JPanel(new BorderLayout());
+			floatDockPanel = new JPanel(new BorderLayout());
 			floatDockPanel.add(headerLabel, BorderLayout.WEST);
 			floatDockPanel.add(floatButton, BorderLayout.EAST);;
 			floatDockPanel.setBackground(color);
@@ -568,14 +501,71 @@ public class CytoPanel extends JComponent {
 			setBackground(color);
         }
 
+		/**
+		 * Method to return addTab component.
+		 */
         public Component getContent() {
             return content;
         }
 
+		/**
+		 * Method to return ref to float/dock button.
+		 */
         public JButton getButton() {
             return floatButton;
         }
 
+		/**
+		 * Method to return ref to header label.
+		 */
+        public JLabel getHeaderLabel() {
+            return headerLabel;
+        }
+
+		/**
+		 * Method to setStartupSize
+		 */
+        public void setStartupSize(int mode) {
+			// save current dimensions
+			savedHeaderDim = headerLabel.getSize();
+			savedButtonDim = floatButton.getSize();
+			savedContentDim = content.getSize();
+			savedFloatDockPanelDim = floatDockPanel.getSize();
+			savedContentPanelDim = this.getSize();
+			// set new dimensions
+			if (mode == BiModalJSplitPane.STARTUP_HIDE_RIGHT){
+				headerLabel.setMinimumSize(new Dimension(0, (int)savedHeaderDim.getHeight()));
+				floatButton.setMinimumSize(new Dimension(0, (int)savedButtonDim.getHeight()));
+				JComponent c = (JComponent)content;
+				c.setMinimumSize(new Dimension(0, (int)savedContentDim.getHeight()));
+				floatDockPanel.setMinimumSize(new Dimension(0, (int)savedFloatDockPanelDim.getHeight()));
+				this.setMinimumSize(new Dimension(0, (int)savedContentPanelDim.getHeight()));
+			}
+			else if (mode == BiModalJSplitPane.STARTUP_HIDE_BOTTOM){
+				headerLabel.setMinimumSize(new Dimension((int)savedHeaderDim.getWidth(), 0));
+				floatButton.setMinimumSize(new Dimension((int)savedButtonDim.getWidth(), 0));
+				JComponent c = (JComponent)content;
+				c.setMinimumSize(new Dimension((int)savedContentDim.getWidth(), 0));
+				floatDockPanel.setMinimumSize(new Dimension((int)savedFloatDockPanelDim.getWidth(), 0));
+				this.setMinimumSize(new Dimension((int)savedContentPanelDim.getWidth(), 0));
+			}
+        }
+
+		/**
+		 * Restores window sizes after startup.
+		 */
+        public void restoreStartupSize() {
+			headerLabel.setMinimumSize(savedHeaderDim);
+			floatButton.setMinimumSize(savedButtonDim);
+			JComponent c = (JComponent)content;
+			c.setMinimumSize(savedContentDim);
+			floatDockPanel.setMinimumSize(savedFloatDockPanelDim);
+			this.setMinimumSize(savedContentPanelDim);
+		}
+
+		/**
+		 * Initializes the label.
+		 */
 		private void initLabel(String title) {
 			headerLabel = new JLabel(title);
 			headerLabel.setFont(new Font("SansSerif", Font.PLAIN, 12));
@@ -583,6 +573,9 @@ public class CytoPanel extends JComponent {
 			headerLabel.setBorder(new EmptyBorder(0, 5, 0, 0));
 		}
 		
+		/**
+		 * Initializes the button.
+		 */
 		private void initButton() {
 			//  Create Float / Dock Button
 			floatButton = new JButton();
@@ -620,4 +613,4 @@ public class CytoPanel extends JComponent {
 			});
 		}
 	}
-}    // end CytoPanel
+}
