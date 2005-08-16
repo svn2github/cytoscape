@@ -1128,8 +1128,8 @@ public final class GraphGraphics
             -1.0d; } }
     } // End rendering of line segment.
 
-    // Using x0, x1, y0, and y1 instead of the "adjusted" endpoints leads
-    // to greater accuracy in computation of cosine and sine because the
+    // Using x0, x1, y0, and y1 instead of the "adjusted" endpoints is
+    // accurate enough in computation of cosine and sine because the
     // length is guaranteed to be at least as large.  Remember that the
     // original endpoint values are specified as float whereas the adjusted
     // points are double.
