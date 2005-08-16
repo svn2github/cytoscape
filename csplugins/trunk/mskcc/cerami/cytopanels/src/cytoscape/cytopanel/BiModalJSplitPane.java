@@ -288,32 +288,22 @@ public class BiModalJSplitPane extends JSplitPane implements CytoPanelContainer 
 		// determine which hide split to perform and do it
 		switch (getHideType(cytoPanel)){
 		case MODE_HIDE_SPLIT_LEFT:
-			hideSplitLeft(cytoPanel);
+			hideSplitTopLeft(cytoPanel, MODE_HIDE_SPLIT_LEFT);
 			break;
 		case MODE_HIDE_SPLIT_RIGHT:
-			hideSplitRight(cytoPanel);
+			hideSplitBottomRight(cytoPanel, MODE_HIDE_SPLIT_RIGHT);
 			break;
 		case MODE_HIDE_SPLIT_TOP:
-			hideSplitTop(cytoPanel);
+			hideSplitTopLeft(cytoPanel, MODE_HIDE_SPLIT_TOP);
 			break;
 		case MODE_HIDE_SPLIT_BOTTOM:
-			hideSplitBottom(cytoPanel);
+			hideSplitBottomRight(cytoPanel, MODE_HIDE_SPLIT_BOTTOM);
 			break;
 		}
 
 		// just for sanity
 		validateParent();
 	}
-
-    /**
-     * Validates the Parent Container.
-     */
-    private void validateParent() {
-        Container container = this.getParent();
-        if (container != null) {
-            container.validate();
-        }
-    }
 
     /**
      * Determines type of hide spilt to perform.
@@ -332,70 +322,56 @@ public class BiModalJSplitPane extends JSplitPane implements CytoPanelContainer 
 	}
 
     /**
-     * Hides the Split (tabs on left)
+     * Hides the Split (tabs on left or top)
      * @param cytoPanel used to get tab dimensions
+	 * @param hideMode left or top (width or height)
      */
-    private void hideSplitLeft(CytoPanel cytoPanel){
-		// get max width of tabs on cytopanel
-		int maxWidth = cytoPanel.getMaxWidthTabs();
+    private void hideSplitTopLeft(CytoPanel cytoPanel, int hideMode){
+		// get max width or max height of tabs on cytopanel
+		int tabSize = (hideMode == MODE_HIDE_SPLIT_LEFT) ?
+			cytoPanel.getMaxWidthTabs() : cytoPanel.getMaxHeightTabs();
 
 		// compute divider location
-		int newDividerLocation = maxWidth + defaultDividerSize;
+		int newDividerLocation = tabSize + defaultDividerSize;
 
-		// move split pane divider all the way to left without hiding tabs
+		// move split pane divider all the way to left or top without hiding tabs
 		setDividerLocation(newDividerLocation);
         setDividerSize(0);
 	}
 
     /**
-     * Hides the Split (tabs on right)
+     * Hides the Split (tabs on right or bottom)
      * @param cytoPanel used to get tab dimensions
+	 * @param hideMode bottom or right (height or width)
      */
-    private void hideSplitRight(CytoPanel cytoPanel){
-		// get max width of tabs on cytopanel
-		int maxWidth = cytoPanel.getMaxWidthTabs();
+    private void hideSplitBottomRight(CytoPanel cytoPanel, int hideMode){
 
 		// compute divider location
 		double newDividerLocation = 1.0;
 		Rectangle r = this.getBounds();
-		newDividerLocation -=  (r.getWidth() <= 0) ? 0.0 : maxWidth/r.getWidth();
 
-		// move splitpane divider all the way to right without hiding tabs
+		// are we preserving tab width or height ?
+		if (hideMode == MODE_HIDE_SPLIT_RIGHT) {
+			int maxWidth = cytoPanel.getMaxWidthTabs();
+			newDividerLocation -=  (r.getWidth() <= 0) ? 0.0 : maxWidth/r.getWidth();
+		}
+		else{
+			int maxHeight = cytoPanel.getMaxHeightTabs();
+			newDividerLocation -=  (r.getHeight() <= 0) ? 0.0 : maxHeight/r.getHeight();
+		}
+
+		// move splitpane divider all the way to bottom or right without hiding tabs
 		setDividerLocation(newDividerLocation);
         setDividerSize(0);
 	}
 
     /**
-     * Hides the Split (tabs on top)
-     * @param cytoPanel used to get tab dimensions
+     * Validates the Parent Container.
      */
-    private void hideSplitTop(CytoPanel cytoPanel){
-		// get max height of tabs on cytopanel
-		int maxHeight = cytoPanel.getMaxHeightTabs();
-		
-		// compute divider location
-		int newDividerLocation = maxHeight + defaultDividerSize;
-
-		// move splitpane divider all the way up without hiding tabs
-		setDividerLocation(newDividerLocation);
-        setDividerSize(0);
-	}
-
-    /**
-     * Hides the Split (tabs on bottom)
-     * @param cytoPanel used to get tab dimensions
-     */
-    private void hideSplitBottom(CytoPanel cytoPanel){
-		// get max height of tabs on cytopanel
-		int maxHeight = cytoPanel.getMaxHeightTabs();
-
-		// compute divider location
-		double newDividerLocation = 1.0;
-		Rectangle r = this.getBounds();
-		newDividerLocation -=  (r.getHeight() <= 0) ? 0.0 : maxHeight/r.getHeight();
-
-		// move splitpane divider all the way to bottom without hiding tabs
-		setDividerLocation(newDividerLocation);
-        setDividerSize(0);
-	}
+    private void validateParent() {
+        Container container = this.getParent();
+        if (container != null) {
+            container.validate();
+        }
+    }
 }
