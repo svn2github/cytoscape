@@ -77,6 +77,12 @@ public class CytoPanel extends JTabbedPane {
      */
     private ImageIcon dockIcon;
 
+
+	/**
+	 * Color of dock/float button panel
+	 */
+    private Color DOCK_FLOAT_PANEL_COLOR = new Color(204, 204, 204);
+
 	/**
 	 * prevIndex maintains the index of the last tab selected.
      */
@@ -118,13 +124,11 @@ public class CytoPanel extends JTabbedPane {
     /**
      * Constructor.
      * @param tabPlacement  Tab Placement int value.
-     * @param openByDefault Is draw initially opened ?
      */
-    public CytoPanel(int tabPlacement, boolean openByDefault) {
+    public CytoPanel(int tabPlacement) {
         super(tabPlacement);
 
 		// init some member vars
-		drawOpened = openByDefault;
 		prevIndex = -1;
 		this.contentPanelList = new ArrayList();
 
@@ -151,7 +155,7 @@ public class CytoPanel extends JTabbedPane {
     public void addTab(String title, Component c, String toolTipText) {
 
 		// create ContentPanel
-		ContentPanel contentPanel = new ContentPanel(c, title, c.getBackground());
+		ContentPanel contentPanel = new ContentPanel(c, title, DOCK_FLOAT_PANEL_COLOR);
 		// add it to our list of content panes
 		contentPanelList.add(contentPanel);
 
@@ -268,11 +272,9 @@ public class CytoPanel extends JTabbedPane {
 				if (selectedIndex == prevIndex){
 					if (drawOpened){
 						closeTabDrawer();
-						drawOpened = false;
 					}
 					else{
 						openTabDrawer();
-						drawOpened = true;
 					}
 				}
 				else{
