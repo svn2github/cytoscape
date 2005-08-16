@@ -102,8 +102,6 @@ public final class GraphGraphics
   private final AffineTransform m_xformUtil;
   private final HashMap m_customShapes;
   private final GeneralPath m_path2dPrime;
-  private final float[] m_floatBuff;
-  private final double[] m_edgePtsBuff;
   private int m_polyNumPoints; // Used with m_polyCoords.
   private Graphics2D m_g2d;
   private Graphics2D m_gMinimal; // We use mostly java.awt.Graphics methods.
@@ -111,8 +109,7 @@ public final class GraphGraphics
   private int m_currCapType;
   private byte m_nextCustomShapeType;
   private char[] m_chars;
-  private int m_numEdgePts;
-  private boolean m_cleared;
+  private boolean m_cleared ;
 
   /**
    * All rendering operations will be performed on the specified image.
@@ -147,8 +144,6 @@ public final class GraphGraphics
     m_customShapes = new HashMap();
     m_path2dPrime = new GeneralPath();
     m_path2dPrime.setWindingRule(GeneralPath.WIND_EVEN_ODD);
-    m_floatBuff = new float[2];
-    m_edgePtsBuff = new double[204];
     m_nextCustomShapeType = s_last_shape + 1;
     m_chars = new char[20];
     m_cleared = false;
@@ -958,8 +953,7 @@ public final class GraphGraphics
    * @param dashLength a positive value representing the length of dashes
    *   on the edge, or zero to indicate that the edge is solid.
    * @param edgeAnchors the edge anchors to be used when rendering this edge,
-   *   or null to indicate that no edge anchors are to be used; this edge
-   *   anchors cannot contain more than one hundered anchors.
+   *   or null to indicate that no edge anchors are to be used.
    * @exception IllegalArgumentException if edgeThickness is less than zero,
    *   if dashLength is less than zero, or if any one of the arrow sizes
    *   does not meet specified criteria.
@@ -987,15 +981,6 @@ public final class GraphGraphics
         throw new IllegalArgumentException("edgeThickness < 0");
       if (!(dashLength >= 0.0f))
         throw new IllegalArgumentException("dashLength < 0");
-      if (edgeAnchors != null) {
-        if (edgeAnchors.numRemaining() > 100)
-          throw new IllegalArgumentException("edge anchor count > 100");
-        if (edgeAnchors.numRemaining() > 0 &&
-            (arrowType0 == ARROW_BIDIRECTIONAL ||
-             arrowType0 == ARROW_MONO))
-          throw new IllegalArgumentException
-            ("edge anchors for ARROW_BIDIRECTIONAL and ARROW_MONO not " +
-             "implemented"); }
       switch (arrowType0) {
       case ARROW_NONE:
         break;
@@ -1077,14 +1062,13 @@ public final class GraphGraphics
         throw new IllegalArgumentException("arrowType1 is not recognized"); } }
     // End debug.  Here the real code begins.
 
-    if (arrowType0 == ARROW_MONO) { // To be implemented.
-      throw new IllegalStateException("mono edges not implemented yet"); }
+    final double len = Math.sqrt((((double) x1) - x0) * (((double) x1) - x0) +
+                                 (((double) y1) - y0) * (((double) y1) - y0));
+    // If the length of the edge is zero we're going to skip completely over
+    // all rendering.
+    if (len == 0.0d) return;
 
     if (arrowType0 == ARROW_BIDIRECTIONAL) { // Draw and return.
-      final double len =
-        Math.sqrt((((double) x1) - x0) * (((double) x1) - x0) +
-                  (((double) y1) - y0) * (((double) y1) - y0));
-      if (len == 0.0d) return;
       final double a = (6.0d + Math.sqrt(17.0d) / 2.0d) * edgeThickness;
       m_path2d.reset();
       final double f = (-17.0d / 8.0d) * edgeThickness + arrow0Size;
@@ -1121,47 +1105,21 @@ public final class GraphGraphics
       m_g2d.draw(m_path2d);
       return; }
 
-    { // Compute edge points; filter consecutive duplicates.
-      int inx = 0;
-      m_edgePtsBuff[inx++] = x0;
-      m_edgePtsBuff[inx++] = y0;
-      if (edgeAnchors != null)
-        while (edgeAnchors.numRemaining() > 0) {
-          edgeAnchors.nextAnchor(m_floatBuff, 0);
-          if (m_edgePtsBuff[inx - 2] == m_floatBuff[0] &&
-              m_edgePtsBuff[inx - 1] == m_floatBuff[1]) continue;
-          m_edgePtsBuff[inx++] = m_floatBuff[0];
-          m_edgePtsBuff[inx++] = m_floatBuff[1]; }
-      if (!(m_edgePtsBuff[inx - 2] == x1 && m_edgePtsBuff[inx - 1] == y1)) {
-        m_edgePtsBuff[inx++] = x1;
-        m_edgePtsBuff[inx++] = y1; }
-      m_numEdgePts = inx / 2;
-    }
+    if (arrowType0 == ARROW_MONO) { // To be implemented.
+      throw new IllegalStateException("mono edges not implemented yet"); }
 
-    // If the total length of the edge (summing over all segments) is zero.
-    if (m_numEdgePts < 2) return;
-
-//     double renderedLineSegmentLength = 0.0d;
+    double renderedLineSegmentLength = 0.0d;
     final double x0Adj;
     final double y0Adj;
     final double x1Adj;
     final double y1Adj;
     { // Render the line segment if necessary.
-      final double lenBegin =
-        Math.sqrt((x0 - m_edgePtsBuff[2]) * (x0 - m_edgePtsBuff[2]) +
-                  (y0 - m_edgePtsBuff[3]) * (y0 - m_edgePtsBuff[3]));
-      final double lenEnd = m_numEdgePts == 2 ? lenS1 : // Shortcut.
-        Math.sqrt((x1 - m_edgePtsBuff[m_numEdgePts * 2 - 4]) *
-                  (x1 - m_edgePtsBuff[m_numEdgePts * 2 - 4]) +
-                  (y1 - m_edgePtsBuff[m_numEdgePts * 2 - 3]) *
-                  (y1 - m_edgePtsBuff[m_numEdgePts * 2 - 3]));
-      final double t0 = getT(arrowType0) * arrow0Size / lenBegin;
-      x0Adj = t0 * (m_edgePtsBuff[2] - x0) + x0;
-      y0Adj = t0 * (m_edgePtsBuff[3] - y0) + y0;
-      final double t1 = getT(arrowType1) * arrow1Size / lenEnd;
-      x1Adj = t1 * (m_edgePtsBuff[m_numEdgePts * 2 - 4] - x1) + x1;
-      y1Adj = t1 * (m_edgePtsBuff[m_numEdgePts * 2 - 3] - y1) + y1;
-
+      final double t0 = getT(arrowType0) * arrow0Size / len;
+      x0Adj = t0 * (((double) x1) - x0) + x0;
+      y0Adj = t0 * (((double) y1) - y0) + y0;
+      final double t1 = getT(arrowType1) * arrow1Size / len;
+      x1Adj = t1 * (((double) x0) - x1) + x1;
+      y1Adj = t1 * (((double) y0) - y1) + y1;
       // If the vector point0->point1 is pointing opposite to
       // adj0->adj1, then don't render the line segment.
       // Dot product determines this.
