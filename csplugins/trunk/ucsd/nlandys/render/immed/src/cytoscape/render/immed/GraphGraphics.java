@@ -1142,10 +1142,11 @@ public final class GraphGraphics
       if (arrow0Cap != null) {
         m_xformUtil.setTransform(cosTheta, sinTheta, -sinTheta, cosTheta,
                                  x0Adj, y0Adj);
-        m_xformUtil.scale(edgeThickness, edgeThickness);
-        arrow0Cap.transform(m_xformUtil);
+        m_g2d.transform(m_xformUtil);
+        m_g2d.scale(edgeThickness, edgeThickness);
         // The color is already set to edge color.
-        m_g2d.fill(arrow0Cap); } }
+        m_g2d.fill(arrow0Cap);
+        m_g2d.setTransform(m_currNativeXform); } }
 
     if (renderedLineSegmentLength < 0.0d ||
         (renderedLineSegmentLength > 0.0d &&
@@ -1156,20 +1157,22 @@ public final class GraphGraphics
       if (arrow1Cap != null) {
         m_xformUtil.setTransform(-cosTheta, -sinTheta, sinTheta, -cosTheta,
                                  x1Adj, y1Adj);
-        m_xformUtil.scale(edgeThickness, edgeThickness);
-        arrow1Cap.transform(m_xformUtil);
+        m_g2d.transform(m_xformUtil);
+        m_g2d.scale(edgeThickness, edgeThickness);
         // The color is already set to edge color.
-        m_g2d.fill(arrow1Cap); } }
+        m_g2d.fill(arrow1Cap);
+        m_g2d.setTransform(m_currNativeXform); } }
 
     {
       final GeneralPath arrow0 = computeUntransformedArrow(arrowType0);
       if (arrow0 != null) {
         m_xformUtil.setTransform(cosTheta, sinTheta, -sinTheta, cosTheta,
                                  x0, y0);
-        m_xformUtil.scale(arrow0Size, arrow0Size);
-        arrow0.transform(m_xformUtil);
+        m_g2d.transform(m_xformUtil);
+        m_g2d.scale(arrow0Size, arrow0Size);
         m_g2d.setColor(arrow0Color);
-        m_g2d.fill(arrow0); }
+        m_g2d.fill(arrow0);
+        m_g2d.setTransform(m_currNativeXform); }
     }
 
     {
@@ -1177,10 +1180,11 @@ public final class GraphGraphics
       if (arrow1 != null) {
         m_xformUtil.setTransform(-cosTheta, -sinTheta, sinTheta, -cosTheta,
                                  x1, y1);
-        m_xformUtil.scale(arrow1Size, arrow1Size);
-        arrow1.transform(m_xformUtil);
+        m_g2d.transform(m_xformUtil);
+        m_g2d.scale(arrow1Size, arrow1Size);
         m_g2d.setColor(arrow1Color);
-        m_g2d.fill(arrow1); }
+        m_g2d.fill(arrow1);
+        m_g2d.setTransform(m_currNativeXform); }
     }
   }
 
