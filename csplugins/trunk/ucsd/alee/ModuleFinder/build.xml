@@ -1,0 +1,37 @@
+<project name="ModuleFinder" default="modulefinder.jar" basedir=".">
+
+  <property name="cytoscape.lib.dir"
+            value="${basedir}/../../../../cytoscape/lib"/>
+
+  <path id="modulefinder.classpath">
+    <pathelement location="${cytoscape.lib.dir}/../cytoscape.jar"/>
+    <pathelement location="${cytoscape.lib.dir}/phoebe.jar"/>
+    <pathelement location="${cytoscape.lib.dir}/giny.jar"/>
+    <pathelement location="${cytoscape.lib.dir}/colt.jar"/>
+  </path>
+
+  <target name="modulefinder.jar">
+    <echo>
+For this build to work, you must have 'csplugins' and
+'cytoscape' CVS projects in the same top-level directory;
+you also must execute the 'jar' target in the 'cytoscape'
+CVS project.
+    </echo>
+    <mkdir dir="${basedir}/build/classes"/>
+    <javac srcdir="${basedir}/src"
+           includes="modulefinder/*.java"
+           classpathref="modulefinder.classpath"
+           destdir="${basedir}/build/classes"
+           debug="true"
+           includeAntRuntime="no"/>
+    <jar filesonly="true"
+         destfile="${basedir}/build/modulefinder.jar">
+      <fileset dir="${basedir}/build/classes"/>
+    </jar>
+  </target>
+
+  <target name="clean">
+    <delete dir="${basedir}/build"/>
+  </target>
+
+</project>
