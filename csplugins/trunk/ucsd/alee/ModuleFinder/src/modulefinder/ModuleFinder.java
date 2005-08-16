@@ -31,7 +31,7 @@ public class ModuleFinder implements Runnable {
 				GraphObjAttributes nodeAttributes = cyNetwork.getNodeAttributes();
 			
 				for (Iterator nodeIt = cyNetwork.nodesIterator(); nodeIt.hasNext();) {
-					classMi = (Node)nodeIt.next().
+// 					classMi = (Node)nodeIt.next()
 				}
 			}
 				
