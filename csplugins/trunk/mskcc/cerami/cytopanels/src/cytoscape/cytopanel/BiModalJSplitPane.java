@@ -97,6 +97,8 @@ public class BiModalJSplitPane extends JSplitPane implements CytoPanelContainer 
     public BiModalJSplitPane(JFrame f, int orientation, int initialMode,
             Component leftComponent, Component rightComponent) {
         super(orientation, leftComponent, rightComponent);
+
+		// init some member vars
         currentMode = initialMode;
 		frame = f;
 
@@ -139,7 +141,7 @@ public class BiModalJSplitPane extends JSplitPane implements CytoPanelContainer 
             if (newMode == MODE_HIDE_SPLIT) {
                 hideSplit(cytoPanel);
             } else if (newMode == MODE_SHOW_SPLIT) {
-                showSplit();
+                showSplit(cytoPanel);
             }
             this.currentMode = newMode;
 
@@ -270,7 +272,14 @@ public class BiModalJSplitPane extends JSplitPane implements CytoPanelContainer 
     /**
      * Shows the Split.
      */
-    private void showSplit() {
+    private void showSplit(CytoPanel cytoPanel) {
+
+		// if cytopanel has no tabs, its invisible
+		if (cytoPanel.getTabCount() == 0){
+			cytoPanel.setVisible(false);
+			return;
+		}
+
 		setDividerLocation(savedDividerLocation);
         setDividerSize(defaultDividerSize);
         validateParent();
@@ -284,6 +293,12 @@ public class BiModalJSplitPane extends JSplitPane implements CytoPanelContainer 
 
 		// save the current divider location before we change it
 		savedDividerLocation = this.getDividerLocation();
+
+		// if cytopanel has no tabs, its invisible
+		if (cytoPanel.getTabCount() == 0){
+			cytoPanel.setVisible(false);
+			return;
+		}
 
 		// determine which hide split to perform and do it
 		switch (getHideType(cytoPanel)){
@@ -327,6 +342,7 @@ public class BiModalJSplitPane extends JSplitPane implements CytoPanelContainer 
 	 * @param hideMode left or top (width or height)
      */
     private void hideSplitTopLeft(CytoPanel cytoPanel, int hideMode){
+
 		// get max width or max height of tabs on cytopanel
 		int tabSize = (hideMode == MODE_HIDE_SPLIT_LEFT) ?
 			cytoPanel.getMaxWidthTabs() : cytoPanel.getMaxHeightTabs();
