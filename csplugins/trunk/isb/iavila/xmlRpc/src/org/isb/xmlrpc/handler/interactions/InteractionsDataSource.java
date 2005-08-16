@@ -17,6 +17,8 @@ public interface InteractionsDataSource extends DataSource {
   public static final String INTERACTOR_1 = "i1";
   public static final String INTERACTOR_2 = "i2";
   public static final String INTERACTION_TYPE = "itype";
+  public static final String SOURCE = "src";
+  public static final String DIRECTED = "dir";
 
   //TODO: Need to create a vocabulary of ID types????
   /**

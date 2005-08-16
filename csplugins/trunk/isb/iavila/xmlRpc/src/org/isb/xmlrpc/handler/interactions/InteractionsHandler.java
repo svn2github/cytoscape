@@ -15,6 +15,7 @@ public class InteractionsHandler implements InteractionsDataSource {
 	 */
 	protected Vector interactionSources;
 
+
 	/**
 	 * Constructor
 	 */
@@ -364,11 +365,21 @@ public class InteractionsHandler implements InteractionsDataSource {
 	 *         INTERACTOR_1 --> String <br>
 	 *         INTERACTOR_2 --> String <br>
 	 *         INTERACTION_TYPE -->String <br>
+	 *         SOURCE --> String <br>
 	 *         Each implementing class can add additional entries to the
 	 *         Hashtables
 	 */
 	public Vector getAllInteractions(String species) {
-		return new Vector();
+
+		Iterator it = interactionSources.iterator();
+		Vector allInteractions = new Vector();
+		while(it.hasNext()){
+			InteractionsDataSource dataSource = (InteractionsDataSource)it.next();
+			Vector interactions = dataSource.getAllInteractions(species);
+			allInteractions.addAll(interactions);
+		}//while it
+		
+		return allInteractions;
 	}
 
 	/**
@@ -386,12 +397,18 @@ public class InteractionsHandler implements InteractionsDataSource {
 	 *         Hashtables
 	 */
 	public Vector getAllInteractions(String species, Hashtable args) {
-		return new Vector();
+		Iterator it = interactionSources.iterator();
+		Vector allInteractions = new Vector();
+		while(it.hasNext()){
+			InteractionsDataSource dataSource = (InteractionsDataSource)it.next();
+			Vector interactions = dataSource.getAllInteractions(species, args);
+			allInteractions.addAll(interactions);
+		}//while it
+		
+		return allInteractions;
 	}
 
-	// -------------------------- 1st neighbor methods
-	// ---------------------------
-
+	// ----------- 1st neighbor methods ------------//
 	/**
 	 * @param interactor
 	 *            an id that the data source understands
@@ -403,7 +420,14 @@ public class InteractionsHandler implements InteractionsDataSource {
 	 *         or, the species is not supported
 	 */
 	public Vector getFirstNeighbors(String interactor, String species) {
-		return new Vector();
+		Iterator it = this.interactionSources.iterator();
+		Vector allInteractions = new Vector();
+		while(it.hasNext()){
+			InteractionsDataSource dataSource = (InteractionsDataSource)it.next();
+			Vector interactions = dataSource.getFirstNeighbors(interactor, species);
+			allInteractions.addAll(interactions);
+		}//while it.hasNext
+		return allInteractions;
 	}
 
 	/**
@@ -424,7 +448,14 @@ public class InteractionsHandler implements InteractionsDataSource {
 	 */
 	public Vector getFirstNeighbors(String interactor, String species,
 			Hashtable args) {
-		return new Vector();
+		Iterator it = this.interactionSources.iterator();
+		Vector allInteractions = new Vector();
+		while(it.hasNext()){
+			InteractionsDataSource dataSource = (InteractionsDataSource)it.next();
+			Vector interactions = dataSource.getFirstNeighbors(interactor, species, args);
+			allInteractions.addAll(interactions);
+		}//while it.hasNext
+		return allInteractions;
 	}
 
 	/**
@@ -438,7 +469,14 @@ public class InteractionsHandler implements InteractionsDataSource {
 	 *         (parallel vectors)
 	 */
 	public Vector getFirstNeighbors(Vector interactors, String species) {
-		return new Vector();
+		Iterator it = this.interactionSources.iterator();
+		Vector allInteractions = new Vector();
+		while(it.hasNext()){
+			InteractionsDataSource dataSource = (InteractionsDataSource)it.next();
+			Vector interactions = dataSource.getFirstNeighbors(interactors, species);
+			allInteractions.addAll(interactions);
+		}//while it.hasNext
+		return allInteractions;
 	}
 
 	/**
@@ -457,7 +495,14 @@ public class InteractionsHandler implements InteractionsDataSource {
 	 */
 	public Vector getFirstNeighbors(Vector interactors, String species,
 			Hashtable args) {
-		return new Vector();
+		Iterator it = this.interactionSources.iterator();
+		Vector allInteractions = new Vector();
+		while(it.hasNext()){
+			InteractionsDataSource dataSource = (InteractionsDataSource)it.next();
+			Vector interactions = dataSource.getFirstNeighbors(interactors, species, args);
+			allInteractions.addAll(interactions);
+		}//while it.hasNext
+		return allInteractions;
 	}
 
 	/**
@@ -474,7 +519,14 @@ public class InteractionsHandler implements InteractionsDataSource {
 	 *         Hashtables
 	 */
 	public Vector getAdjacentInteractions(String interactor, String species) {
-		return new Vector();
+		Iterator it = this.interactionSources.iterator();
+		Vector allInteractions = new Vector();
+		while(it.hasNext()){
+			InteractionsDataSource dataSource = (InteractionsDataSource)it.next();
+			Vector interactions = dataSource.getAdjacentInteractions(interactor, species);
+			allInteractions.addAll(interactions);
+		}//while it.hasNext
+		return allInteractions;
 	}
 
 	/**
@@ -496,7 +548,14 @@ public class InteractionsHandler implements InteractionsDataSource {
 	 */
 	public Vector getAdjacentInteractions(String interactor, String species,
 			Hashtable args) {
-		return new Vector();
+		Iterator it = this.interactionSources.iterator();
+		Vector allInteractions = new Vector();
+		while(it.hasNext()){
+			InteractionsDataSource dataSource = (InteractionsDataSource)it.next();
+			Vector interactions = dataSource.getAdjacentInteractions(interactor, species, args);
+			allInteractions.addAll(interactions);
+		}//while it.hasNext
+		return allInteractions;
 	}
 
 	/**
@@ -515,7 +574,14 @@ public class InteractionsHandler implements InteractionsDataSource {
 	 *         The input and output vectors are parallel.
 	 */
 	public Vector getAdjacentInteractions(Vector interactors, String species) {
-		return new Vector();
+		Iterator it = this.interactionSources.iterator();
+		Vector allInteractions = new Vector();
+		while(it.hasNext()){
+			InteractionsDataSource dataSource = (InteractionsDataSource)it.next();
+			Vector interactions = dataSource.getAdjacentInteractions(interactors, species);
+			allInteractions.addAll(interactions);
+		}//while it.hasNext
+		return allInteractions;
 	}
 
 	/**
@@ -539,11 +605,17 @@ public class InteractionsHandler implements InteractionsDataSource {
 	 */
 	public Vector getAdjacentInteractions(Vector interactors, String species,
 			Hashtable args) {
-		return new Vector();
+		Iterator it = this.interactionSources.iterator();
+		Vector allInteractions = new Vector();
+		while(it.hasNext()){
+			InteractionsDataSource dataSource = (InteractionsDataSource)it.next();
+			Vector interactions = dataSource.getAdjacentInteractions(interactors, species, args);
+			allInteractions.addAll(interactions);
+		}//while it.hasNext
+		return allInteractions;		
 	}
 
-	// -------------------------- connecting interactions methods
-	// -----------------------
+	// ------------------ connecting interactions methods ------------------- //
 
 	/**
 	 * @param interactor1
@@ -620,6 +692,23 @@ public class InteractionsHandler implements InteractionsDataSource {
 	public Vector getConnectingInteractions(Vector interactors, String species,
 			Hashtable args) {
 		return new Vector();
+	}
+	
+	/**
+	 * Calls test for each data source
+	 * @return
+	 */
+	public Vector test (){
+		
+		Iterator it = this.interactionSources.iterator();
+		Vector allResults = new Vector();
+		
+		
+		while(it.hasNext()){
+			InteractionsDataSource dataSource = (InteractionsDataSource)it.next();
+			allResults.addAll(dataSource.test());
+		}//it.hasNext
+		return allResults;
 	}
 
 }// InteractionsDataSource

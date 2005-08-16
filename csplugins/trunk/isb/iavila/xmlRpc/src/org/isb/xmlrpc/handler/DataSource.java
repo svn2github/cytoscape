@@ -36,6 +36,8 @@ public interface DataSource {
   
   public static final String MIXED = "mixed";
   
+  public static final Vector EMPTY_VECTOR = new Vector();
+  
   // ------------------------------- methods ----------------------------------//
 
   /**
@@ -68,4 +70,10 @@ public interface DataSource {
    */
   public boolean requiresPassword ();
 
+  /**
+   * Runs tests on the data source
+   * @return a vector of results
+   */
+  public Vector test ();
+  
 }//DataSource
