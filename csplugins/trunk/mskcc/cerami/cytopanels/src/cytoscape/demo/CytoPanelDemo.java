@@ -161,7 +161,7 @@ public class CytoPanelDemo {
 
         //  Set the Resize Weight so that all extra space goes to
         //  the left component.
-		splitPane.setResizeWeight(1);
+		splitPane.setResizeWeight(.75);
 
 		// open or close the draw
 		if (TEST_DEFAULT_DRAW_CLOSED){
@@ -220,7 +220,7 @@ public class CytoPanelDemo {
 		tabs.setCytoPanelContainer(splitPane);
 
         //  Set Resize Weight so that top component gets all the extra space.
-		splitPane.setResizeWeight(1);
+		splitPane.setResizeWeight(.75);
 
 		// open or close the draw
 		if (TEST_DEFAULT_DRAW_CLOSED){
