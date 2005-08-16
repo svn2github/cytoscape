@@ -1566,9 +1566,8 @@ public final class GraphGraphics
                         ("clear() has not been called previously");
       if (!(scaleFactor >= 0.0d))
         throw new IllegalArgumentException("scaleFactor must be positive"); }
-    m_xformUtil.setTransform(m_currNativeXform);
-    m_xformUtil.translate(xCenter, yCenter);
-    m_xformUtil.scale(scaleFactor, -scaleFactor);
+    m_g2d.translate(xCenter, yCenter);
+    m_g2d.scale(scaleFactor, -scaleFactor);
     m_g2d.setColor(color);
     if (drawTextAsShape) {
       final GlyphVector glyphV;
@@ -1581,18 +1580,14 @@ public final class GraphGraphics
            Font.LAYOUT_NO_LIMIT_CONTEXT);
       }
       final Rectangle2D glyphBounds = glyphV.getLogicalBounds();
-      m_xformUtil.translate(-glyphBounds.getCenterX(),
-                            -glyphBounds.getCenterY());
-      m_g2d.setTransform(m_xformUtil);
+      m_g2d.translate(-glyphBounds.getCenterX(), -glyphBounds.getCenterY());
       m_g2d.fill(glyphV.getOutline()); }
     else {
       // Note: A new Rectangle2D is being constructed by this method call.
       // As far as I know this performance hit is unavoidable.
       final Rectangle2D textBounds =
         font.getStringBounds(text, m_fontRenderContextFull);
-      m_xformUtil.translate(-textBounds.getCenterX(),
-                            -textBounds.getCenterY());
-      m_g2d.setTransform(m_xformUtil);
+      m_g2d.translate(-textBounds.getCenterX(), -textBounds.getCenterY());
       m_g2d.setFont(font);
       m_g2d.drawString(text, 0.0f, 0.0f); }
     m_g2d.setTransform(m_currNativeXform);
