@@ -1575,7 +1575,7 @@ public final class GraphGraphics
           m_chars = new char[Math.max(m_chars.length * 2, text.length())];
         text.getChars(0, text.length(), m_chars, 0);
         glyphV = font.layoutGlyphVector
-          (m_fontRenderContextFull, m_chars, 0, text.length(),
+          (getFontRenderContextFull(), m_chars, 0, text.length(),
            Font.LAYOUT_NO_LIMIT_CONTEXT);
       }
       final Rectangle2D glyphBounds = glyphV.getLogicalBounds();
@@ -1585,7 +1585,7 @@ public final class GraphGraphics
       // Note: A new Rectangle2D is being constructed by this method call.
       // As far as I know this performance hit is unavoidable.
       final Rectangle2D textBounds =
-        font.getStringBounds(text, m_fontRenderContextFull);
+        font.getStringBounds(text, getFontRenderContextFull());
       m_g2d.translate(-textBounds.getCenterX(), -textBounds.getCenterY());
       m_g2d.setFont(font);
       m_g2d.drawString(text, 0.0f, 0.0f); }
@@ -1606,7 +1606,7 @@ public final class GraphGraphics
       if (!EventQueue.isDispatchThread())
         throw new IllegalStateException
           ("calling thread is not AWT event dispatcher"); }
-    return new FontRenderContext(null, true, true);
+    return m_fontRenderContextFull;
   }
 
   /**
