@@ -102,6 +102,8 @@ public final class GraphGraphics
   private final AffineTransform m_xformUtil;
   private final HashMap m_customShapes;
   private final GeneralPath m_path2dPrime;
+  private final float[] m_floatBuff;
+  private final double[] m_edgePtsBuff;
   private int m_polyNumPoints; // Used with m_polyCoords.
   private Graphics2D m_g2d;
   private Graphics2D m_gMinimal; // We use mostly java.awt.Graphics methods.
@@ -109,7 +111,8 @@ public final class GraphGraphics
   private int m_currCapType;
   private byte m_nextCustomShapeType;
   private char[] m_chars;
-  private boolean m_cleared ;
+  private int m_numEdgePts;
+  private boolean m_cleared;
 
   /**
    * All rendering operations will be performed on the specified image.
@@ -144,6 +147,8 @@ public final class GraphGraphics
     m_customShapes = new HashMap();
     m_path2dPrime = new GeneralPath();
     m_path2dPrime.setWindingRule(GeneralPath.WIND_EVEN_ODD);
+    m_floatBuff = new float[2];
+    m_edgePtsBuff = new double[204];
     m_nextCustomShapeType = s_last_shape + 1;
     m_chars = new char[20];
     m_cleared = false;
@@ -953,7 +958,8 @@ public final class GraphGraphics
    * @param dashLength a positive value representing the length of dashes
    *   on the edge, or zero to indicate that the edge is solid.
    * @param edgeAnchors the edge anchors to be used when rendering this edge,
-   *   or null to indicate that no edge anchors are to be used.
+   *   or null to indicate that no edge anchors are to be used; this edge
+   *   anchors cannot contain more than one hundered anchors.
    * @exception IllegalArgumentException if edgeThickness is less than zero,
    *   if dashLength is less than zero, or if any one of the arrow sizes
    *   does not meet specified criteria.
@@ -981,6 +987,8 @@ public final class GraphGraphics
         throw new IllegalArgumentException("edgeThickness < 0");
       if (!(dashLength >= 0.0f))
         throw new IllegalArgumentException("dashLength < 0");
+      if (edgeAnchors != null && edgeAnchors.numRemaining() > 100)
+        throw new IllegalArgumentException("edge anchor count > 100");
       switch (arrowType0) {
       case ARROW_NONE:
         break;
@@ -1061,6 +1069,23 @@ public final class GraphGraphics
       default:
         throw new IllegalArgumentException("arrowType1 is not recognized"); } }
     // End debug.  Here the real code begins.
+
+    { // Compute edge points; filter consecutive duplicates.
+      int inx = 0;
+      m_edgePtsBuff[inx++] = x0;
+      m_edgePtsBuff[inx++] = y0;
+      if (edgeAnchors != null)
+        while (edgeAnchors.numRemaining() > 0) {
+          edgeAnchors.nextAnchor(m_floatBuff, 0);
+          if (m_edgePtsBuff[inx - 2] == m_floatBuff[0] &&
+              m_edgePtsBuff[inx - 1] == m_floatBuff[1]) continue;
+          m_edgePtsBuff[inx++] = m_floatBuff[0];
+          m_edgePtsBuff[inx++] = m_floatBuff[1]; }
+      if (!(m_edgePtsBuff[inx - 2] == x1 && m_edgePtsBuff[inx - 1] == y1)) {
+        m_edgePtsBuff[inx++] = x1;
+        m_edgePtsBuff[inx++] = y1; }
+      m_numEdgePts = inx / 2;
+    }
 
     final double len = Math.sqrt((((double) x1) - x0) * (((double) x1) - x0) +
                                  (((double) y1) - y0) * (((double) y1) - y0));
