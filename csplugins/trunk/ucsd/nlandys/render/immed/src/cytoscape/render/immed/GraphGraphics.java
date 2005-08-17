@@ -24,9 +24,9 @@ import java.util.HashMap;
 
 
 /**
- * This is functional programming at it's finest [sarcasm].
  * The purpose of this class is to make the proper calls on a Graphics2D
- * object to efficiently render nodes, labels, and edges.<p>
+ * object to efficiently render nodes, labels, and edges.
+ * This is functional programming at it's finest [sarcasm].<p>
  * This class deals with two coordinate systems: an image coordinate system
  * and a node coordinate system.  The programmer who uses this API will be
  * dealing mostly with the node coordinate system, especially when rendering
@@ -63,6 +63,11 @@ public final class GraphGraphics
   public static final byte SHAPE_VEE = 8;
   private static final byte s_last_shape = SHAPE_VEE;
 
+  /**
+   * This value is currently 100.
+   */
+  public static final int CUSTOM_SHAPE_MAX_VERTICES = 100;
+
   public static final byte ARROW_NONE = -1;
   public static final byte ARROW_DELTA = -2;
   public static final byte ARROW_DIAMOND = -3;
@@ -71,7 +76,7 @@ public final class GraphGraphics
   public static final byte ARROW_BIDIRECTIONAL = -6;
   public static final byte ARROW_MONO = -7;
 
-  // A constant for Bezier curves on rounded rectangle.
+  // An internal constant for Bezier curves on rounded rectangle.
   private static final double s_a = 4.0d * (Math.sqrt(2.0d) - 1.0d) / 3.0d;
 
   /**
@@ -80,9 +85,14 @@ public final class GraphGraphics
   public final Image image;
 
   private final boolean m_debug;
-  private final Ellipse2D.Double m_ellp2d;
+  private final AffineTransform m_currXform;
+  private final AffineTransform m_currNativeXform;
+  private final AffineTransform m_xformUtil;
   private final Arc2D.Double m_arc2d;
+  private final Ellipse2D.Double m_ellp2d;
   private final GeneralPath m_path2d;
+  private final GeneralPath m_path2dPrime;
+  private final Line2D.Double m_line2d;
   private final double[] m_polyCoords; // I need this for extra precision.
                                        // GeneralPath stores 32 bit floats,
                                        // and I need more precision when
@@ -91,25 +101,12 @@ public final class GraphGraphics
                                        // edges of polygon are guaranteed to
                                        // have nonzero length during
                                        // computation.
-  private final double[] m_fooPolyCoords;      // These three members are used
-  private final double[] m_foo2PolyCoords;     // by the edge intersection
-  private final boolean[] m_fooRoundedCorners; // computations.
-  private final Line2D.Double m_line2d;
-  private final float[] m_dash;
-  private final double[] m_ptsBuff;
-  private final AffineTransform m_currXform;
-  private final AffineTransform m_currNativeXform;
-  private final AffineTransform m_xformUtil;
   private final HashMap m_customShapes;
-  private final GeneralPath m_path2dPrime;
+  private final double[] m_ptsBuff;
   private int m_polyNumPoints; // Used with m_polyCoords.
   private Graphics2D m_g2d;
   private Graphics2D m_gMinimal; // We use mostly java.awt.Graphics methods.
-  private float m_currStrokeWidth;
-  private int m_currCapType;
-  private byte m_nextCustomShapeType;
-  private char[] m_chars;
-  private boolean m_cleared ;
+  private boolean m_cleared;
 
   /**
    * All rendering operations will be performed on the specified image.
@@ -128,24 +125,18 @@ public final class GraphGraphics
   {
     this.image = image;
     m_debug = debug;
-    m_ellp2d = new Ellipse2D.Double();
-    m_arc2d = new Arc2D.Double();
-    m_path2d = new GeneralPath();
-    m_polyCoords = new double[2 * 100];
-    m_fooPolyCoords = new double[m_polyCoords.length * 2];
-    m_foo2PolyCoords = new double[m_polyCoords.length * 2];
-    m_fooRoundedCorners = new boolean[m_polyCoords.length / 2];
-    m_line2d = new Line2D.Double();
-    m_dash = new float[] { 0.0f, 0.0f };
-    m_ptsBuff = new double[4];
     m_currXform = new AffineTransform();
     m_currNativeXform = new AffineTransform();
     m_xformUtil = new AffineTransform();
-    m_customShapes = new HashMap();
+    m_arc2d = new Arc2D.Double();
+    m_ellp2d = new Ellipse2D.Double();
+    m_path2d = new GeneralPath();
     m_path2dPrime = new GeneralPath();
     m_path2dPrime.setWindingRule(GeneralPath.WIND_EVEN_ODD);
-    m_nextCustomShapeType = s_last_shape + 1;
-    m_chars = new char[20];
+    m_line2d = new Line2D.Double();
+    m_polyCoords = new double[2 * CUSTOM_SHAPE_MAX_VERTICES];
+    m_customShapes = new HashMap();
+    m_ptsBuff = new double[4];
     m_cleared = false;
   }
 
@@ -202,8 +193,7 @@ public final class GraphGraphics
                            RenderingHints.VALUE_FRACTIONALMETRICS_ON);
     m_g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,
                            RenderingHints.VALUE_STROKE_PURE);
-    m_currStrokeWidth = -1.0f;
-    setStroke(0.0f, 0.0f, BasicStroke.CAP_ROUND);
+    setStroke(0.0f, 0.0f, BasicStroke.CAP_ROUND, true);
 
     m_currXform.setToTranslation(0.5d * image.getWidth(null),
                                  0.5d * image.getHeight(null));
@@ -476,6 +466,9 @@ public final class GraphGraphics
     path2d.closePath();
   }
 
+  // This member variable only to be used from within defineCustomNodeShape().
+  private byte m_nextCustomShapeType = s_last_shape + 1;
+
   /**
    * The custom node shape that is defined is a polygon specified
    * by the coordinates supplied.  The polygon must meet several constraints
@@ -513,7 +506,8 @@ public final class GraphGraphics
    * @return the node shape identifier to be used in future rendering calls
    *   (to be used as parameter nodeShape in method drawNodeFull()).
    * @exception IllegalArgumentException if any of the constraints are not met,
-   *   or if the specified polygon has more than 100 vertices.
+   *   or if the specified polygon has more than CUSTOM_SHAPE_MAX_VERTICES
+   *   vertices.
    * @exception IllegalStateException if too many custom node shapes are
    *   already defined; about one hundered custom node shapes can be defined.
    */
@@ -521,8 +515,9 @@ public final class GraphGraphics
                                           final int offset,
                                           final int vertexCount)
   {
-    if (vertexCount > 100) throw new IllegalArgumentException
-                             ("too many vertices (greater than 100)");
+    if (vertexCount > CUSTOM_SHAPE_MAX_VERTICES)
+      throw new IllegalArgumentException
+        ("too many vertices (greater than " + CUSTOM_SHAPE_MAX_VERTICES + ")");
     final double[] polyCoords;
     {
       polyCoords = new double[vertexCount * 2];
@@ -1088,7 +1083,7 @@ public final class GraphGraphics
       // short relative to the edge thickness.  I prefer to keep things
       // simple in the code at the expense of sacrificing a little bit of
       // prettiness.
-      setStroke(edgeThickness, dashLength, BasicStroke.CAP_BUTT);
+      setStroke(edgeThickness, dashLength, BasicStroke.CAP_BUTT, false);
       m_g2d.setColor(edgeColor);
       m_g2d.draw(m_path2d);
       return; }
@@ -1118,7 +1113,7 @@ public final class GraphGraphics
           arrowType1 == ARROW_NONE && dashLength == 0.0f;
         setStroke(edgeThickness, dashLength,
                   simpleSegment ? BasicStroke.CAP_ROUND :
-                  BasicStroke.CAP_BUTT);
+                  BasicStroke.CAP_BUTT, false);
         m_line2d.setLine(x0Adj, y0Adj, x1Adj, y1Adj);
         m_g2d.setColor(edgeColor);
         m_g2d.draw(m_line2d);
@@ -1290,25 +1285,40 @@ public final class GraphGraphics
       return 0.125d; }
   }
 
+  // The three following member variables shall only be referenced from
+  // the scope of setStroke() definition.
+  private float m_currStrokeWidth;
+  private final float[] m_currDash = new float[] { 0.0f, 0.0f };
+  private int m_currCapType;
+
   private final void setStroke(final float width, final float dashLength,
-                               final int capType)
+                               final int capType, final boolean ignoreCache)
   {
-    if (width == m_currStrokeWidth && dashLength == m_dash[0] &&
-        capType == m_currCapType) return;
+    if ((!ignoreCache) && width == m_currStrokeWidth &&
+        dashLength == m_currDash[0] && capType == m_currCapType) return;
     m_currStrokeWidth = width;
-    m_dash[0] = dashLength;
-    m_dash[1] = dashLength;
+    m_currDash[0] = dashLength;
+    m_currDash[1] = dashLength;
     m_currCapType = capType;
     // Unfortunately, BasicStroke is not mutable.  So we have to construct
     // lots of new strokes if they constantly change.
-    if (m_dash[0] == 0.0f)
+    if (m_currDash[0] == 0.0f)
       m_g2d.setStroke(new BasicStroke(width, capType,
                                       BasicStroke.JOIN_BEVEL, 10.0f));
     else
       m_g2d.setStroke(new BasicStroke(width, capType,
                                       BasicStroke.JOIN_BEVEL, 10.0f,
-                                      m_dash, 0.0f));
+                                      m_currDash, 0.0f));
   }
+
+  // The following three member variables shall only be accessed from the
+  // scope of computeEdgeIntersection() definition.
+  private final double[] m_fooPolyCoords =
+    new double[CUSTOM_SHAPE_MAX_VERTICES * 4];
+  private final double[] m_foo2PolyCoords =
+    new double[CUSTOM_SHAPE_MAX_VERTICES * 4];
+  private final boolean[] m_fooRoundedCorners =
+    new boolean[CUSTOM_SHAPE_MAX_VERTICES];
 
   /**
    * There is a constraint that only applies to SHAPE_ROUNDED_RECTANGLE
@@ -1525,6 +1535,9 @@ public final class GraphGraphics
       return false; }
   }
 
+  // This member variable shall only be used from within drawTextFull().
+  private char[] m_charBuff = new char[20];
+
   /**
    * @param font the font to be used when rendering specified text; the
    *   rendering of glyph shapes generated by this font (using the context
@@ -1585,11 +1598,12 @@ public final class GraphGraphics
     if (drawTextAsShape) {
       final GlyphVector glyphV;
       {
-        if (text.length() > m_chars.length)
-          m_chars = new char[Math.max(m_chars.length * 2, text.length())];
-        text.getChars(0, text.length(), m_chars, 0);
+        if (text.length() > m_charBuff.length)
+          m_charBuff = new char[Math.max(m_charBuff.length * 2,
+                                         text.length())];
+        text.getChars(0, text.length(), m_charBuff, 0);
         glyphV = font.layoutGlyphVector
-          (getFontRenderContextFull(), m_chars, 0, text.length(),
+          (getFontRenderContextFull(), m_charBuff, 0, text.length(),
            Font.LAYOUT_NO_LIMIT_CONTEXT);
       }
       final Rectangle2D glyphBounds = glyphV.getLogicalBounds();
