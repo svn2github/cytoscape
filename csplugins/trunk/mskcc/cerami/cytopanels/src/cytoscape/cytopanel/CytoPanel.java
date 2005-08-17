@@ -184,7 +184,7 @@ public class CytoPanel extends JTabbedPane {
 		Container parent = this.getParent();
 		if (parent instanceof BiModalJSplitPane) {
 			BiModalJSplitPane biModalSplitPane = (BiModalJSplitPane) parent;
- 			biModalSplitPane.setMode(this, BiModalJSplitPane.MODE_SHOW_SPLIT);
+ 			biModalSplitPane.setMode(BiModalJSplitPane.MODE_SHOW_SPLIT);
 		}
 		drawOpened = true;
 	}
@@ -197,7 +197,7 @@ public class CytoPanel extends JTabbedPane {
 		Container parent = this.getParent();
 		if (parent instanceof BiModalJSplitPane) {
 			BiModalJSplitPane biModalSplitPane = (BiModalJSplitPane) parent;
-			biModalSplitPane.setMode(this, BiModalJSplitPane.MODE_HIDE_SPLIT);
+			biModalSplitPane.setMode(BiModalJSplitPane.MODE_HIDE_SPLIT);
 		}
 		drawOpened = false;
 	}
