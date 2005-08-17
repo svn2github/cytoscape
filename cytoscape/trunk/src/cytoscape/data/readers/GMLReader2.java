@@ -208,15 +208,15 @@ public class GMLReader2 implements GraphReader {
 	      if (edge == null) {
 		Node node_1 = Cytoscape.getCyNode(sourceName);
 		Node node_2 = Cytoscape.getCyNode(targetName);
-		//edge = (Edge) rootGraph.getEdge
-		//  (rootGraph.createEdge(node_1, node_2));
-		edge = Cytoscape.getCyEdge(  node_1,
-                                 node_2,
-                                 Semantics.INTERACTION,
-                                 label,
-                                 true );
-                               //edgeAttributes.set(Semantics.INTERACTION, edgeName, label);
-                               //edgeAttributes.addNameMapping(edgeName, edge);
+// 		edge = Cytoscape.getCyEdge(  node_1,
+//                                  node_2,
+//                                  Semantics.INTERACTION,
+//                                  label,
+//                                  true );
+		edge = (Edge) rootGraph.getEdge
+		  (rootGraph.createEdge(node_1, node_2));
+		edgeAttributes.add(Semantics.INTERACTION, edgeName, label);
+		edgeAttributes.addNameMapping(edgeName, edge);
 	      }
 	      giny_edges.add(edge.getRootGraphIndex());
 	      ((KeyValue) edge_root_index_pairs.get(idx)).value =

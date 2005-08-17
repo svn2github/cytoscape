@@ -28,9 +28,6 @@
  **/
 
 //--------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
 //--------------------------------------------------------------------
 package cytoscape.data;
 //--------------------------------------------------------------------
@@ -736,8 +733,8 @@ public boolean loadData (String filename) throws IOException {
           String canName = (String)geneNames.get(i);
                     mRNAMeasurement mm =  getMeasurement(canName,condName);
                     if(mm!=null) {
-                      nodeAttribs.set(eStr,canName,mm.getRatio());
-                      nodeAttribs.set(sStr,canName,mm.getSignificance());
+                        nodeAttribs.add(eStr,canName,mm.getRatio());
+                        nodeAttribs.add(sStr,canName,mm.getSignificance());
                     }
                     //  Report on Progress to the Task Monitor.
                     if (taskMonitor != null) {

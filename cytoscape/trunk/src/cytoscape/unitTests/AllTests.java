@@ -9,6 +9,8 @@ import cytoscape.visual.mappings.discrete.unitTests.DiscreteMappingTestSuite;
 import cytoscape.util.unitTests.UtilSuite;
 import cytoscape.data.unitTests.DataSuite;
 import cytoscape.data.readers.unitTests.DataReaderSuite;
+import cytoscape.data.annotation.unitTests.AnnotationSuite;
+import cytoscape.data.synonyms.unitTests.SynonymSuite;
 import cytoscape.view.unitTests.ViewSuite;
 
 /**
@@ -62,6 +64,8 @@ public class AllTests extends TestCase {
         suite.addTest(CoreSuite.suite());
         suite.addTest(DataSuite.suite());
         suite.addTest(DataReaderSuite.suite());
+        suite.addTest(AnnotationSuite.suite());
+        suite.addTest(SynonymSuite.suite());
         suite.addTest(UtilSuite.suite());
         suite.addTest(VisualSuite.suite());
         suite.addTest(ContinuousMappingTestSuite.suite());

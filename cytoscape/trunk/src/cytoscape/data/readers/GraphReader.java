@@ -42,7 +42,9 @@ import java.io.IOException;
 //-----------------------------------------------------------------------------
 public interface GraphReader {
 
-  public void read ();
+  public void read() throws IOException;
+
+  public void read(boolean canonicalizeNodeNames) throws IOException;
 
   public RootGraph getRootGraph();
 

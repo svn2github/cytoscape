@@ -6,6 +6,7 @@ package cytoscape.actions;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.data.GraphObjAttributes;
+import cytoscape.data.servers.BioDataServer;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.util.TaskManager;
@@ -25,120 +26,123 @@ import java.io.IOException;
 
 public class LoadNodeAttributesAction extends CytoscapeAction {
 
-  /**
-   * Constructor.
-   */
-  public LoadNodeAttributesAction() {
-    super("Node Attributes...");
-    setPreferredMenu("File.Load");
-  }
-
-  /**
-   * User Initiated Request.
-   *
-   * @param e Action Event.
-   */
-  public void actionPerformed(ActionEvent e) {
-
-    //  Use a Default CyFileFilter:  enables user to select any file type.
-    CyFileFilter nf = new CyFileFilter();
-
-    // get the file name
-    File file = FileUtil.getFile("Load Node Attributes",
-                                 FileUtil.LOAD, new CyFileFilter[]{nf});
-
-    if (file != null) {
-
-      //  Create Load Attributes Task
-      LoadAttributesTask task = new LoadAttributesTask
-        (file, Cytoscape.getNodeNetworkData(),
-         LoadAttributesTask.NODE_ATTRIBUTES);
-
-      //  Configure JTask Dialog Pop-Up Box
-      JTaskConfig jTaskConfig = new JTaskConfig();
-      jTaskConfig.setOwner(Cytoscape.getDesktop());
-      jTaskConfig.displayCloseButton(true);
-      jTaskConfig.displayStatus(true);
-      jTaskConfig.setAutoDispose(false);
-
-      //  Execute Task in New Thread;  pop open JTask Dialog Box.
-      TaskManager.executeTask(task, jTaskConfig);
-
+    /**
+     * Constructor.
+     */
+    public LoadNodeAttributesAction() {
+        super("Node Attributes...");
+        setPreferredMenu("File.Load");
     }
-  }
+
+    /**
+     * User Initiated Request.
+     *
+     * @param e Action Event.
+     */
+    public void actionPerformed(ActionEvent e) {
+
+        //  Use a Default CyFileFilter:  enables user to select any file type.
+        CyFileFilter nf = new CyFileFilter();
+
+        // get the file name
+        File file = FileUtil.getFile("Load Node Attributes",
+                    FileUtil.LOAD, new CyFileFilter[]{nf});
+
+        if (file != null) {
+
+            //  Create Load Attributes Task
+            LoadAttributesTask task = new LoadAttributesTask
+                    (file, Cytoscape.getNodeNetworkData(),
+                            LoadAttributesTask.NODE_ATTRIBUTES);
+
+            //  Configure JTask Dialog Pop-Up Box
+            JTaskConfig jTaskConfig = new JTaskConfig();
+            jTaskConfig.setOwner(Cytoscape.getDesktop());
+            jTaskConfig.displayCloseButton(true);
+            jTaskConfig.displayStatus(true);
+            jTaskConfig.setAutoDispose(false);
+
+            //  Execute Task in New Thread;  pop open JTask Dialog Box.
+            TaskManager.executeTask(task, jTaskConfig);
+
+        }
+    }
 }
 
 /**
  * Task to Load New Node/Edge Attributes Data.
  */
 class LoadAttributesTask implements Task {
-  private TaskMonitor taskMonitor;
-  private File file;
-  private GraphObjAttributes attributes;
-  private int type;
-  static final int NODE_ATTRIBUTES = 0;
-  static final int EDGE_ATTRIBUTES = 1;
+    private TaskMonitor taskMonitor;
+    private File file;
+    private GraphObjAttributes attributes;
+    private int type;
+    static final int NODE_ATTRIBUTES = 0;
+    static final int EDGE_ATTRIBUTES = 1;
 
-  /**
-   * Constructor.
-   * @param file File Object.
-   * @param attributes Attributes Object.
-   * @param type NODE_ATTRIBUTES or EDGE_ATTRIBUTES
-   */
-  LoadAttributesTask (File file, GraphObjAttributes attributes,
-                      int type) {
-    this.file = file;
-    this.attributes = attributes;
-    this.type = type;
-  }
-
-  /**
-   * Executes Task.
-   */
-  public void run() {
-    try {
-      //  Get Defaults.
-      String speciesName = CytoscapeInit.getDefaultSpeciesName();
-          
-      //  Read in Data
-      attributes.setTaskMonitor(taskMonitor);
-      attributes.readAttributesFromFile( file.getAbsolutePath() );
-
-      //  Inform others via property change event.
-      Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED,
-                                   null, null );
-    } catch (Exception e) {
-      taskMonitor.setException(e, "Unable to load attributes file.");
+    /**
+     * Constructor.
+     * @param file File Object.
+     * @param attributes Attributes Object.
+     * @param type NODE_ATTRIBUTES or EDGE_ATTRIBUTES
+     */
+    LoadAttributesTask (File file, GraphObjAttributes attributes,
+            int type) {
+        this.file = file;
+        this.attributes = attributes;
+        this.type = type;
     }
-  }
 
-  /**
-   * Halts the Task:  Not Currently Implemented.
-   */
-  public void halt() {
-    //   Task can not currently be halted.
-  }
+    /**
+     * Executes Task.
+     */
+    public void run() {
+        try {
+            //  Get Defaults.
+            BioDataServer bioDataServer = Cytoscape.getBioDataServer();
+            String speciesName = CytoscapeInit.getDefaultSpeciesName();
+            boolean canonicalize = !CytoscapeInit.noCanonicalization();
 
-  /**
-   * Sets the Task Monitor Object.
-   * @param taskMonitor
-   * @throws IllegalThreadStateException
-   */
-  public void setTaskMonitor(TaskMonitor taskMonitor)
-    throws IllegalThreadStateException {
-    this.taskMonitor = taskMonitor;
-  }
+            //  Read in Data
+            attributes.setTaskMonitor(taskMonitor);
+            attributes.readAttributesFromFile(bioDataServer,
+                speciesName, file.getAbsolutePath(), canonicalize);
 
-  /**
-   * Gets the Task Title.
-   *
-   * @return Task Title.
-   */
-  public String getTitle() {
-    if (type == NODE_ATTRIBUTES) {
-      return new String ("Loading Node Attributes");
-    } else {
-      return new String ("Loading Edge Attributes");
+            //  Inform others via property change event.
+            Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED,
+                        null, null );
+        } catch (IOException e) {
+            taskMonitor.setException(e, "Unable to load attributes file.");
+        }
     }
-  }
+
+    /**
+     * Halts the Task:  Not Currently Implemented.
+     */
+    public void halt() {
+        //   Task can not currently be halted.
+    }
+
+    /**
+     * Sets the Task Monitor Object.
+     * @param taskMonitor
+     * @throws IllegalThreadStateException
+     */
+    public void setTaskMonitor(TaskMonitor taskMonitor)
+            throws IllegalThreadStateException {
+        this.taskMonitor = taskMonitor;
+    }
+
+    /**
+     * Gets the Task Title.
+     *
+     * @return Task Title.
+     */
+    public String getTitle() {
+        if (type == NODE_ATTRIBUTES) {
+            return new String ("Loading Node Attributes");
+        } else {
+            return new String ("Loading Edge Attributes");
+        }
+    }
 }

@@ -1,3 +1,7 @@
+//  $Revision$
+//  $Date$
+//  $Author$
+//---------------------------------------------------------------------------
 package cytoscape;
 
 import giny.model.Edge;
@@ -19,14 +23,12 @@ import javax.swing.*;
 import javax.swing.event.SwingPropertyChangeSupport;
 
 import cytoscape.data.ExpressionData;
-import cytoscape.data.CytoscapeData;
-import cytoscape.data.CytoscapeDataImpl;
+import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.Semantics;
 import cytoscape.data.readers.GMLReader2;
 import cytoscape.data.readers.GraphReader;
 import cytoscape.data.readers.InteractionsReader;
 import cytoscape.data.servers.BioDataServer;
-
 import cytoscape.giny.CytoscapeRootGraph;
 import cytoscape.giny.CytoscapeFingRootGraph;
 
@@ -44,8 +46,6 @@ import phoebe.PGraphView;
 The methods get/setNode/EdgeAttributeValue allow you to assocate data with nodes or edges. That data is then carried into all CyNetworks where that Node/Edge is present.
  */
 public abstract class Cytoscape {
-
-  public static boolean is_test = false;
 
   public static String NETWORK_CREATED = "NETWORK_CREATED";
   public static String ATTRIBUTES_CHANGED = "ATTRIBUTES_CHANGED";
@@ -71,11 +71,11 @@ public abstract class Cytoscape {
   public static final int SELECT_EDGES_ONLY = 2;
   public static final int SELECT_NODES_AND_EDGES = 3;
 
-  private static BioDataServer bioDataServer;
-  private static String species;
-
   // global to represent which selection mode is active
   private static int currentSelectionMode = SELECT_NODES_ONLY;
+
+  private static BioDataServer bioDataServer;
+  private static String species;
 
   // global flag to indicate if Squiggle is turned on
   private static boolean squiggleEnabled = false;
@@ -89,13 +89,13 @@ public abstract class Cytoscape {
    * The NetworkData that stores node info
    */
   // TODO: replace seperate objects with one
-  protected static CytoscapeData nodeData;
+  protected static GraphObjAttributes nodeData;
 
   /**
    * The NetworkData that stores edge info
    */
   // TODO: replace seperate objects with one
-  protected static CytoscapeData edgeData;
+  protected static GraphObjAttributes edgeData;
 
   //TODO: remove, replace with NetworkData
   protected static ExpressionData expressionData;
@@ -175,7 +175,25 @@ public abstract class Cytoscape {
     // getRootGraph().ensureCapacity( nodes, edges );
   }
 
- 
+  /**
+   * @deprecated
+   * WARNING: this should only be used under special circumstances.
+   */
+  public static void clearCytoscape () {
+
+    int[] edges = getRootGraph().getEdgeIndicesArray();
+    if ( edges == null ) {
+      // System.out.println( "Null Edges in clear" );
+    } else {
+      getRootGraph().removeEdges( getRootGraph().getEdgeIndicesArray() );
+    }
+
+    getRootGraph().removeNodes( getRootGraph().getNodeIndicesArray() );
+    nodeData = new GraphObjAttributes();
+    edgeData = new GraphObjAttributes();
+
+  }
+
   /**
    * @return all CyNodes that are present in Cytoscape
    */
@@ -207,7 +225,7 @@ public abstract class Cytoscape {
 
     String old_name =  alias;
     alias = canonicalizeName( alias );
-   
+
     CyNode node = ( CyNode )getNodeNetworkData().getGraphObject( alias );
     if ( node != null ) {
       //System.out.print(".");
@@ -222,12 +240,11 @@ public abstract class Cytoscape {
     //System.out.print( "|" );
     node = ( CyNode )Cytoscape.getRootGraph().getNode( Cytoscape.getRootGraph().createNode() );
     node.setIdentifier( alias );
-   
-    Cytoscape.getNodeNetworkData().set( cytoscape.data.Semantics.CANONICAL_NAME,
-                                        alias,
-                                        alias );
-//     Cytoscape.getNodeNetworkData().addNameMapping( alias, node );
-//     Semantics.assignNodeAliases( node, null, null );
+    //System.out.println( node.getRootGraphIndex()+" = Node: "+node+" alias :"+alias+" old_name: "+old_name );
+    //if ( old_name != alias )
+    //  setNodeAttributeValue( node, "alias", old_name );
+    Cytoscape.getNodeNetworkData().addNameMapping( alias, node );
+    Semantics.assignNodeAliases( node, null, null );
     return node;
 
   }
@@ -257,10 +274,7 @@ public abstract class Cytoscape {
 
       for ( Iterator i = edges.iterator(); i.hasNext(); ) {
         CyEdge edge = ( CyEdge )i.next();
-
-	//System.out.println( "Att: "+attribute+" Att Value: "+attribute_value+" Edge Value:"+ getEdgeAttributeValue( edge, attribute ));
-
-        if ( getEdgeAttributeValue( edge, attribute ).equals(attribute_value) )
+        if ( getEdgeAttributeValue( edge, attribute ) == attribute_value )
           return edge;
       }
     }
@@ -270,7 +284,7 @@ public abstract class Cytoscape {
 
 
     if ( attribute == Semantics.INTERACTION ) {
-	//System.out.println( "Creating edge!!!!" );
+      //System.out.println( "Creating edge!!!!" );
 
     // create the edge
       CyEdge edge =  ( CyEdge )Cytoscape.getRootGraph().getEdge( Cytoscape.getRootGraph().createEdge (node_1, node_2));
@@ -278,12 +292,8 @@ public abstract class Cytoscape {
       //System.out.println( "Edge Created: "+edge );
 
       String edge_name = node_1.getIdentifier()+" ("+attribute_value+") "+node_2.getIdentifier();
-      edge.setIdentifier( edge_name );
-      Cytoscape.getEdgeNetworkData().setAttributeValue( edge.getIdentifier(), 
-                                                        "interaction",
-                                                        attribute_value );
-      //Cytoscape.getEdgeNetworkData().addNameMapping(edge_name, edge);
-      
+      Cytoscape.getEdgeNetworkData().add ("interaction", edge_name, attribute_value);
+      Cytoscape.getEdgeNetworkData().addNameMapping (edge_name, edge);
       return edge;
     }
 
@@ -303,12 +313,12 @@ public abstract class Cytoscape {
                                    String target_alias,
                                    String interaction_type ) {
 
-    
-    // CyEdge edge = ( CyEdge )getEdgeNetworkData().getGraphObject( edge_name );
-//     if ( edge != null ) {
-//       //System.out.print( "`" );
-//       return edge;
-//     }
+    edge_name = canonicalizeName( edge_name );
+    CyEdge edge = ( CyEdge )getEdgeNetworkData().getGraphObject( edge_name );
+    if ( edge != null ) {
+      //System.out.print( "`" );
+      return edge;
+    }
 
     // edge does not exist, create one
     //System.out.print( "*" );
@@ -382,7 +392,9 @@ public abstract class Cytoscape {
    */
   public static boolean setNodeAttributeValue ( Node node, String attribute, Object value ) {
     return Cytoscape.getNodeNetworkData().set( attribute,
-                                               node.getIdentifier(),
+                                               Cytoscape.
+                                               getNodeNetworkData().
+                                               getCanonicalName( node ),
                                                value );
 
 
@@ -394,9 +406,12 @@ public abstract class Cytoscape {
    */
   public static boolean setEdgeAttributeValue ( Edge edge, String attribute, Object value ) {
     return Cytoscape.getEdgeNetworkData().set( attribute,
-                                               edge.getIdentifier(),
+                                               Cytoscape.
+                                               getEdgeNetworkData().
+                                               getCanonicalName( edge ),
                                                value );
   }
+
 
   /**
    * @deprecated argh!...
@@ -418,6 +433,12 @@ public abstract class Cytoscape {
     return canonicalName;
   }
 
+  /**
+   * @deprecated argh!...
+   */
+  public static void setSpecies () {
+    species = CytoscapeInit.getDefaultSpeciesName();
+  }
 
   //--------------------//
   // Network Methods
@@ -664,21 +685,14 @@ public abstract class Cytoscape {
   }
 
   protected static void addNetwork ( CyNetwork network ) {
-    addNetwork( network, null, null, true );
+    addNetwork( network, null, null );
   }
 
   protected static void addNetwork ( CyNetwork network, String title ) {
-    addNetwork( network, title, null, true );
+    addNetwork( network, title, null );
   }
 
-  protected static void addNetwork ( CyNetwork network, String title, CyNetwork parent) {
-    addNetwork( network, title, parent, true );
-  }
-
-  protected static void addNetwork ( CyNetwork network,
-                                     String title, 
-                                     CyNetwork parent,
-                                     boolean createView ) {
+  protected static void addNetwork ( CyNetwork network, String title, CyNetwork parent ) {
 
     // System.out.println( "CyNetwork Added: "+network.getIdentifier() );
 
@@ -692,10 +706,8 @@ public abstract class Cytoscape {
     firePropertyChange( NETWORK_CREATED,
                         p_id,
                         network.getIdentifier() );
-    if ( createView ) {
-      if ( network.getNodeCount() < CytoscapeInit.getViewThreshold()  ) {
-        createNetworkView( network );
-      }
+    if ( network.getNodeCount() < CytoscapeInit.getViewThreshold()  ) {
+       createNetworkView( network );
     }
 
     // createNetworkView( network );
@@ -710,19 +722,6 @@ public abstract class Cytoscape {
     addNetwork( network, title );
     return network;
   }
-
-  
-  /**
-   * Creates a new, empty Network.
-   * @param title the title of the new network.
-   * @param createView if false, defers view creation till explicitly called
-   */
-  public static CyNetwork createNetwork ( String title, boolean createView  ) {
-    CyNetwork network =  getRootGraph().createNetwork( new int[] {}, new int[] {} );
-    addNetwork( network, title, null, createView );
-    return network;
-  }
-
 
   /**
    * Creates a new Network
@@ -779,7 +778,20 @@ public abstract class Cytoscape {
     return network;
   }
 
- 
+
+  /**
+   * Creates a cytoscape.data.CyNetwork from a file. The file type is determined by
+   * the suffice of the file
+   * <ul>
+   * <li> sif -- Simple Interaction File</li>
+   * <li> gml -- Graph Markup Languange</li>
+   * <li> sbml -- SBML</li>
+   * </ul>
+   * @param location the location of the file
+   */
+  public static  CyNetwork createNetworkFromFile ( String location ) {
+    return createNetwork( location, FILE_BY_SUFFIX, false, null, null );
+  }
 
   /**
    * Creates a cytoscape.data.CyNetwork from a file.  The passed variable determines the
@@ -789,9 +801,16 @@ public abstract class Cytoscape {
    *
    * @param location the location of the file
    * @param file_type the type of file GML, SIF, SBML, etc.
+   * @param canonicalize this will set the preferred display name to what is
+   *                     on the server.
+   * @param biodataserver provides the name conversion service
+   * @param species  the species used by the BioDataServer
    */
   public static CyNetwork createNetwork ( String location,
-                                          int file_type ) {
+                                          int file_type,
+                                          boolean canonicalize,
+                                          BioDataServer biodataserver,
+                                          String species ) {
     // return null for a null file
     if ( location == null )
       return null;
@@ -801,7 +820,9 @@ public abstract class Cytoscape {
     //set the reader according to what file type was passed.
     if ( file_type == FILE_SIF
          || ( file_type == FILE_BY_SUFFIX && location.endsWith( "sif" ) ) ) {
-      reader = new InteractionsReader( location );
+      reader = new InteractionsReader( biodataserver,
+                                       species,
+                                       location );
     } else if ( file_type == FILE_GML
                 || ( file_type == FILE_BY_SUFFIX && location.endsWith( "gml" ) ) ) {
 	reader = new GMLReader2( location );
@@ -883,11 +904,9 @@ public abstract class Cytoscape {
    * @deprecated
    * This should not be used by any user-code
    */
-  public static CytoscapeData getNodeNetworkData () {
-    if ( nodeData == null ) {
-      nodeData = new CytoscapeDataImpl(CytoscapeData.NODES);
-      nodeData.initializeAttributeType( Semantics.CANONICAL_NAME, CytoscapeData.TYPE_STRING );
-    }
+  public static GraphObjAttributes getNodeNetworkData () {
+    if ( nodeData == null )
+      nodeData = new GraphObjAttributes();
     return nodeData;
   }
 
@@ -895,11 +914,9 @@ public abstract class Cytoscape {
    * @deprecated
    * This should not be used by any user-code
    */
-  public static CytoscapeData getEdgeNetworkData () {
-    if ( edgeData == null ) {
-      edgeData = new CytoscapeDataImpl(CytoscapeData.EDGES);
-      edgeData.initializeAttributeType( Semantics.CANONICAL_NAME, CytoscapeData.TYPE_STRING );
-    }
+  public static GraphObjAttributes getEdgeNetworkData () {
+    if ( edgeData == null )
+      edgeData = new GraphObjAttributes();
     return edgeData;
   }
 
@@ -958,16 +975,25 @@ public abstract class Cytoscape {
    *
    * @param nodeAttrLocations  an array of node attribute file locations. May be null.
    * @param edgeAttrLocations  an array of edge attribute file locations. May be null.
+   * @param canonicalize  convert to the preffered name on the biodataserver
+   * @param bioDataServer  provides the name conversion service
+   * @param species  the species to use with the bioDataServer's
    */
   public static void loadAttributes ( String[] nodeAttrLocations,
-                                      String[] edgeAttrLocations ) {
+                                      String[] edgeAttrLocations,
+                                      boolean canonicalize,
+                                      BioDataServer bioDataServer,
+                                      String species ) {
 
     // check to see if there are Node Attributes passed
     if ( nodeAttrLocations != null ) {
 
 	    for ( int i = 0 ; i < nodeAttrLocations.length; ++i ) {
         try {
-          nodeData.readAttributesFromFile( nodeAttrLocations[i]);
+          nodeData.readAttributesFromFile( bioDataServer,
+                                           species,
+                                           nodeAttrLocations[i],
+                                           canonicalize );
         } catch (Exception e) {
           System.err.println( "Error loading attributes into NodeData" );
           // e.printStackTrace();
@@ -994,6 +1020,104 @@ public abstract class Cytoscape {
 
   }
 
+  /**
+   * Loads Node and Edge attribute data into Cytoscape from the given
+   * file locations. Currently, the only supported attribute types are
+   * of the type "name = value".
+   *
+   * @param nodeAttrLocations  an array of node attribute file locations. May be null.
+   * @param edgeAttrLocations  an array of edge attribute file locations. May be null.
+   */
+  public static void loadAttributes( String[] nodeAttrLocations,
+                                     String[] edgeAttrLocations ) {
+    loadAttributes( nodeAttrLocations, edgeAttrLocations, false, null, null );
+  }
+
+
+
+  /**
+   * Constructs a network using information from a CyProject argument that
+   * contains information on the location of the graph file, any node/edge
+   * attribute files, and a possible expression data file.
+   * If the data server argument is non-null and the project requests
+   * canonicalization, the data server will be used for name resolution
+   * given the names in the graph/attributes files.
+   *
+   * @see CyProject
+   */
+  public static CyNetwork createNetworkFromProject( CyProject project,
+                                                    BioDataServer bioDataServer) {
+    if (project == null) {return null;}
+
+    boolean canonicalize = project.getCanonicalize();
+    String species = project.getDefaultSpeciesName();
+    CyNetwork network = null;
+    if (project.getInteractionsFilename() != null) {
+	    //read graph from interaction data
+	    String filename = project.getInteractionsFilename();
+	    network = createNetwork( filename,
+                               Cytoscape.FILE_SIF,
+                               canonicalize,
+                               bioDataServer,
+                               species);
+    }
+    else if (project.getGeometryFilename() != null) {
+	    //read a GML file
+	    String filename = project.getGeometryFilename();
+	    network = createNetwork( filename,
+                               Cytoscape.FILE_GML,
+                               false,
+                               null,
+                               null);
+
+    }
+
+    if (network == null) {//no graph specified, or unable to read
+	    //create a default network
+	    network = createNetwork(null);
+    }
+
+    //load attributes files
+    String[] nodeAttributeFilenames = project.getNodeAttributeFilenames();
+    String[] edgeAttributeFilenames = project.getEdgeAttributeFilenames();
+    loadAttributes( nodeAttributeFilenames,
+                    edgeAttributeFilenames,
+                    canonicalize,
+                    bioDataServer,
+                    species);
+
+    //load expression data
+    //ExpressionData expData = null;
+    //if (project.getExpressionFilename() != null) {
+	  //  expData = new ExpressionData( project.getExpressionFilename() );
+	  //  network.setExpressionData(expData);
+    //}
+    loadExpressionData( project.getExpressionFilename(), true );
+
+    return network;
+  }
+
+  /**
+   * A BioDataServer should be loadable from a file systems file
+   * or from a URL.
+   */
+  public static BioDataServer loadBioDataServer ( String location ) {
+     try {
+       bioDataServer = new BioDataServer ( location );
+     } catch ( Exception e ) {
+       System.err.println( "Could not Load BioDataServer from: "+location );
+       return null;
+     }
+     return bioDataServer;
+  }
+
+  /**
+   * @return the BioDataServer that was loaded, should not be null,
+   *         but not contain any data.
+   */
+  public static BioDataServer getBioDataServer () {
+    return bioDataServer;
+  }
 
   //------------------------------//
   // CyNetworkView Creation Methods
@@ -1172,20 +1296,6 @@ public abstract class Cytoscape {
 
     }
 
-  }
-
-  public static BioDataServer loadBioDataServer(String location) {
-    try {
-      bioDataServer = new BioDataServer(location);
-    } catch (Exception e) {
-      System.err.println("Could not Load BioDataServer from: " + location);
-      return null;
-    }
-    return bioDataServer;
-  }
-
-  public static BioDataServer getBioDataServer() {
-    return bioDataServer;
   }
 
 }

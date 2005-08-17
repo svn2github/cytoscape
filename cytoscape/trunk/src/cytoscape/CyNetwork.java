@@ -6,7 +6,7 @@ import giny.model.GraphPerspective;
 import java.util.*;
 
 import cytoscape.data.ExpressionData;
-import cytoscape.data.CytoscapeData;
+import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.FlagFilter;
 import cytoscape.data.FlagEventListener;
 
@@ -121,18 +121,6 @@ public interface CyNetwork extends GraphPerspective {
   //----------------------------------------//
 
   /**
-   * @deprecated
-   * This should not be used by any user-code
-   */
-  public  CytoscapeData getNodeData ();
-  
-  /**
-   * @deprecated
-   * This should not be used by any user-code
-   */
-  public  CytoscapeData getEdgeData ();
-
-  /**
    * @deprecated @see{getNetworkData}
    * Returns the expression data object associated with this network.
    */
@@ -147,12 +135,12 @@ public interface CyNetwork extends GraphPerspective {
   /**
    * @deprecated
    */
-  public CytoscapeData getNodeAttributes();
+  public GraphObjAttributes getNodeAttributes();
 
   /**
    * @deprecated
    */
-  public CytoscapeData getEdgeAttributes();
+  public GraphObjAttributes getEdgeAttributes();
 
   /**
    * @deprecated

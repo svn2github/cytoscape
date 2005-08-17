@@ -90,7 +90,8 @@ public static boolean saveVisibleNodeNames(CyNetwork network, String filename) {
     if (network == null || filename == null) {return false;}
 
     String callerID = "CyNetworkUtilities.saveVisibleNodeNames";
-        
+    network.beginActivity(callerID);
+    
     GraphPerspective theGraph = network.getGraphPerspective();
     GraphObjAttributes nodeAttributes = network.getNodeAttributes();
     String lineSep = System.getProperty("line.separator");
@@ -103,11 +104,13 @@ public static boolean saveVisibleNodeNames(CyNetwork network, String filename) {
             fout.write(canonicalName + lineSep);
         } // for i
         fout.close();
+        network.endActivity(callerID);
         return true;
     }  catch (IOException e) {
         JOptionPane.showMessageDialog(null, e.toString(),
                                       "Error Writing to \"" + filename + "\"",
                                       JOptionPane.ERROR_MESSAGE);
+        network.endActivity(callerID);
         return false;
     }
 }
@@ -126,7 +129,8 @@ public static boolean selectNodesStartingWith(CyNetwork network, String key,
     key = key.toLowerCase();
     boolean found = false;
     String callerID = "CyNetworkUtilities.selectNodesStartingWith";
-   
+    network.beginActivity(callerID);
+
     GraphPerspective theGraph = network.getGraphPerspective();
     GraphObjAttributes nodeAttributes = network.getNodeAttributes();
     for (Iterator i = theGraph.nodesIterator(); i.hasNext(); ) {
@@ -136,25 +140,25 @@ public static boolean selectNodesStartingWith(CyNetwork network, String key,
         boolean matched = false;
         if (nodeLabel != null &&  Strings.isLike(  nodeLabel, key, 0, true ) ) {
             matched = true;
-            found = true;
+	    found = true;
+        } else {
+            //this list always includes the canonical name itself
+            List synonyms = Semantics.getAllSynonyms(canonicalName, network );
+            for (Iterator synI = synonyms.iterator(); synI.hasNext(); ) {
+                String synonym = (String)synI.next();
+                if ( Strings.isLike(synonym, key, 0, true ) ) {
+                    matched = true;
+		    found = true;
+                    break;
+                }
+            }
         }
-      //} else {
-      //this list always includes the canonical name itself
-      //List synonyms = Semantics.getAllSynonyms(canonicalName, network );
-      //  for (Iterator synI = synonyms.iterator(); synI.hasNext(); ) {
-      //      String synonym = (String)synI.next();
-      //      if ( Strings.isLike(synonym, key, 0, true ) ) {
-      //          matched = true;
-      //found = true;
-      //          break;
-      //      }
-      //  }
-      //}
-      if (matched) {//only select matches, don't deselect ones that don't match
-        networkView.getView().getNodeView(node).setSelected(matched);
-      }
+        if (matched) {//only select matches, don't deselect ones that don't match
+            networkView.getView().getNodeView(node).setSelected(matched);
+        }
     }
     
+    network.endActivity(callerID);
     return found;
 }
 //-------------------------------------------------------------------------

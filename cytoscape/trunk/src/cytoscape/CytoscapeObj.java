@@ -1,5 +1,6 @@
 package cytoscape;
 
+import cytoscape.data.servers.BioDataServer;
 
 import java.io.File;
 
@@ -8,7 +9,15 @@ public class CytoscapeObj {
     public CytoscapeObj() {
     }
 
-   
+    /**
+     * Returns the (possibly null) bioDataServer.
+     *
+     * @see BioDataServer
+     */
+    public BioDataServer getBioDataServer() {
+        return Cytoscape.getBioDataServer();
+    }
+
     public CytoscapeConfig getConfiguration() {
         return new CytoscapeConfig();
     }

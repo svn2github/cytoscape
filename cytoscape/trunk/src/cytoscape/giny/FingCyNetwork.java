@@ -13,8 +13,7 @@ import cern.colt.map.*;
 import cytoscape.*;
 import cytoscape.giny.*;
 
-import cytoscape.data.CytoscapeData;
-import cytoscape.data.CytoscapeDataImpl;
+import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.ExpressionData;
 import cytoscape.data.FlagFilter;
 import cytoscape.data.FlagEventListener;
@@ -57,17 +56,6 @@ public class FingCyNetwork
    * The default object for flagging graph objects
    */
   protected FlagFilter flagger;
-  
-  /**
-   * The NetworkData that stores node info
-   */
-  protected CytoscapeData nodeData;
-
-  /**
-   * The NetworkData that stores edge info
-   */
-  protected CytoscapeData edgeData;
-
 
   //TODO: remove
   int activityCount = 0;
@@ -102,31 +90,6 @@ public class FingCyNetwork
     clientData = new HashMap();
     flagger = new FlagFilter(this);
   }
-
-  /**
-   * @deprecated
-   * This should not be used by any user-code
-   */
-  public  CytoscapeData getNodeData () {
-    if ( nodeData == null ) {
-      nodeData = new CytoscapeDataImpl(CytoscapeData.NODES);
-      nodeData.initializeAttributeType( "NODE_X", cytoscape.data.CytoscapeData.TYPE_FLOATING_POINT );
-      nodeData.initializeAttributeType( "NODE_Y", cytoscape.data.CytoscapeData.TYPE_FLOATING_POINT );
-    }
-    return nodeData;
-  }
-
-  /**
-   * @deprecated
-   * This should not be used by any user-code
-   */
-  public  CytoscapeData getEdgeData () {
-    if ( edgeData == null ) {
-      edgeData = new CytoscapeDataImpl(CytoscapeData.EDGES);
-    }
-    return edgeData;
-  }
-
 
   /**
    * Can Change
@@ -325,30 +288,30 @@ public class FingCyNetwork
    *@deprecated
    * Returns the node attributes data object for this network.
    */
-  public CytoscapeData getNodeAttributes () {
-    return ( CytoscapeData )Cytoscape.getNodeNetworkData();
+  public GraphObjAttributes getNodeAttributes () {
+    return ( GraphObjAttributes )Cytoscape.getNodeNetworkData();
   }
   
   /**
    * @deprecated
    * does nothing, all attributes are shared right now
    */
-  public void setNodeAttributes ( CytoscapeData newNodeAttributes ) {
+  public void setNodeAttributes ( GraphObjAttributes newNodeAttributes ) {
   }
 
   /**
    * @deprecated @see{getNetworkData}
    * Returns the edge attributes data object for this network.
    */
-  public CytoscapeData getEdgeAttributes () {
-    return ( CytoscapeData )Cytoscape.getEdgeNetworkData();
+  public GraphObjAttributes getEdgeAttributes () {
+    return ( GraphObjAttributes )Cytoscape.getEdgeNetworkData();
   }
   
   /**
    * @deprecated
    * does nothing, all attributes are shared right now
    */
-  public void setEdgeAttributes ( CytoscapeData newEdgeAttributes ) {
+  public void setEdgeAttributes ( GraphObjAttributes newEdgeAttributes ) {
   }
 
   /**
