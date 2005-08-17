@@ -15,8 +15,6 @@ import java.util.ArrayList;
  */
 public class CytoPanelDemo {
 
-	public static boolean TEST_DEFAULT_DRAW_CLOSED = false;
-
     /**
      * Main Method.
      * @param args Command Line Arguments.
@@ -38,23 +36,14 @@ public class CytoPanelDemo {
 		// pack here to get a good minimum size
 		frame.pack();
 
-		if (TEST_DEFAULT_DRAW_CLOSED){
-			// hide appropriate cytopanels (in this case, right, bottom)
-			topPane.setStartupSizes(BiModalJSplitPane.STARTUP_HIDE_RIGHT);
-			masterPane.setStartupSizes(BiModalJSplitPane.STARTUP_HIDE_BOTTOM);
-
-			// repack here with hidden cytopanels
-			frame.pack();
-		}
+		// hack to shut right and bottom panes on startup
+		CytoPanel cytoPanel = (CytoPanel)topPane.getRightComponent();
+		cytoPanel.closeTabDrawer();
+		cytoPanel = (CytoPanel)masterPane.getRightComponent();
+		cytoPanel.closeTabDrawer();
 
 		// ok lets show the frame
         frame.show();
-
-		if (TEST_DEFAULT_DRAW_CLOSED){
-			// restore swing derived cytopanel sizes
-			topPane.restoreStartupSizes(BiModalJSplitPane.STARTUP_HIDE_RIGHT);
-			masterPane.restoreStartupSizes(BiModalJSplitPane.STARTUP_HIDE_BOTTOM);
-		}
     }
 
     /**
@@ -80,34 +69,18 @@ public class CytoPanelDemo {
         //  Get a Dummy Screenshot of a Sample Cytoscape Network
         JPanel networkViewPanel = createNetworkViewPanel();
 
-		BiModalJSplitPane splitPane;
-		if (TEST_DEFAULT_DRAW_CLOSED){
-			//  Create the Split Pane;  split horizontally, and sho the split
-			splitPane = new BiModalJSplitPane(frame,
-											  JSplitPane.HORIZONTAL_SPLIT,
-											  BiModalJSplitPane.MODE_HIDE_SPLIT,
-											  cytoPanel,
-											  networkViewPanel);
-		}
-		else{
-			//  Create the Split Pane;  split horizontally, and sho the split
-			splitPane = new BiModalJSplitPane(frame,
-											  JSplitPane.HORIZONTAL_SPLIT,
-											  BiModalJSplitPane.MODE_SHOW_SPLIT,
-											  cytoPanel,
-											  networkViewPanel);
-		}
+		//  Create the Split Pane;  split horizontally, and show the split
+		BiModalJSplitPane splitPane = new BiModalJSplitPane(frame,
+															JSplitPane.HORIZONTAL_SPLIT,
+															BiModalJSplitPane.MODE_SHOW_SPLIT,
+															cytoPanel,
+															networkViewPanel);
 
 		// BiModalSplitPane is cytoPanelContainer
 		cytoPanel.setCytoPanelContainer(splitPane);
 		
-		// open or close the draw
-		if (TEST_DEFAULT_DRAW_CLOSED){
-			cytoPanel.closeTabDrawer();
-		}
-		else{
-			cytoPanel.openTabDrawer();
-		}
+		// open the draw
+		cytoPanel.openTabDrawer();
 
 		// outta here
         return splitPane;
@@ -138,23 +111,11 @@ public class CytoPanelDemo {
 					DemoUtil.createSamplePanel(tab3Name),
 					DemoUtil.getSampleToolTip(tab3Name));
 
-		BiModalJSplitPane splitPane;
-		if (TEST_DEFAULT_DRAW_CLOSED){
-			//  Create the Split Pane; split horizontally, hide the split
-			splitPane = new BiModalJSplitPane(frame, 
-											  JSplitPane.HORIZONTAL_SPLIT,
-											  BiModalJSplitPane.MODE_HIDE_SPLIT,
-											  topLeftPane,
-											  tabs);
-		}
-		else{
-			//  Create the Split Pane; split horizontally, hide the split
-			splitPane = new BiModalJSplitPane(frame, 
-											  JSplitPane.HORIZONTAL_SPLIT,
-											  BiModalJSplitPane.MODE_SHOW_SPLIT,
-											  topLeftPane,
-											  tabs);
-		}
+		BiModalJSplitPane splitPane = new BiModalJSplitPane(frame, 
+															JSplitPane.HORIZONTAL_SPLIT,
+															BiModalJSplitPane.MODE_SHOW_SPLIT,
+															topLeftPane,
+															tabs);
 
 		// BiModalSplitPane is cytoPanelContainer
 		tabs.setCytoPanelContainer(splitPane);
@@ -163,13 +124,8 @@ public class CytoPanelDemo {
         //  the left component.
 		splitPane.setResizeWeight(.75);
 
-		// open or close the draw
-		if (TEST_DEFAULT_DRAW_CLOSED){
-			tabs.closeTabDrawer();
-		}
-		else{
-			tabs.openTabDrawer();
-		}
+		// open the draw
+		tabs.openTabDrawer();
 
 		// outta here
         return splitPane;
@@ -200,21 +156,11 @@ public class CytoPanelDemo {
 					DemoUtil.createSamplePanel(tab6Name),
 					DemoUtil.getSampleToolTip(tab6Name));
 
-		BiModalJSplitPane splitPane;
-		if (TEST_DEFAULT_DRAW_CLOSED){
-			splitPane = new BiModalJSplitPane(frame,
-											  JSplitPane.VERTICAL_SPLIT,
-											  BiModalJSplitPane.MODE_HIDE_SPLIT,
-											  topSplitPane,
-											  tabs);
-		}
-		else{
-			splitPane = new BiModalJSplitPane(frame,
-											  JSplitPane.VERTICAL_SPLIT,
-											  BiModalJSplitPane.MODE_SHOW_SPLIT,
-											  topSplitPane,
-											  tabs);
-		}
+		BiModalJSplitPane splitPane = new BiModalJSplitPane(frame,
+															JSplitPane.VERTICAL_SPLIT,
+															BiModalJSplitPane.MODE_SHOW_SPLIT,
+															topSplitPane,
+															tabs);
 
 		// BiModalSPiltPane is cytoPanelContainer
 		tabs.setCytoPanelContainer(splitPane);
@@ -222,13 +168,8 @@ public class CytoPanelDemo {
         //  Set Resize Weight so that top component gets all the extra space.
 		splitPane.setResizeWeight(.75);
 
-		// open or close the draw
-		if (TEST_DEFAULT_DRAW_CLOSED){
-			tabs.closeTabDrawer();
-		}
-		else{
-			tabs.openTabDrawer();
-		}
+		// open the draw
+		tabs.openTabDrawer();
 
 		// outta here
         return splitPane;
