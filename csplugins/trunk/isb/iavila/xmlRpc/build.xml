@@ -139,6 +139,13 @@
 				 <arg line = "org.isb.xmlrpc.handler.interactions.ProlinksInteractionsSource"/>
 			  </java>
 		
+		<echo message="Calling interactions.printDebug"/>
+			          <java classname="org.apache.xmlrpc.XmlRpcClientLite" fork="no" failonerror="no">
+					     <classpath refid="classpath"/>
+						 <arg line = "http://localhost:${server.args}"/>
+						 <arg line="interactions.printDebug"/>
+					  </java>
+		
 		      <echo message="Calling interactions.getSources ..."/>
 			          <java classname="org.apache.xmlrpc.XmlRpcClientLite" fork="no" failonerror="no">
 					     <classpath refid="classpath"/>

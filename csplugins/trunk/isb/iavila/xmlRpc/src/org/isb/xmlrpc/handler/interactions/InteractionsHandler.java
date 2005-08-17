@@ -14,6 +14,7 @@ public class InteractionsHandler implements InteractionsDataSource {
 	 * A collection of InteractionsDataSource objects
 	 */
 	protected Vector interactionSources;
+	protected boolean debug;
 
 
 	/**
@@ -709,6 +710,34 @@ public class InteractionsHandler implements InteractionsDataSource {
 			allResults.addAll(dataSource.test());
 		}//it.hasNext
 		return allResults;
+	}
+	
+
+	/**
+	 * If called, System.out.print statements will be called for debugging
+	 */
+	public boolean printDebug() {
+		this.debug = true;
+		Iterator it = this.interactionSources.iterator();
+		while(it.hasNext()){
+			InteractionsDataSource dataSource = (InteractionsDataSource)it.next();
+			dataSource.printDebug();
+		}//while it.hasNext
+		return this.debug;
+	}
+
+	/**
+	 * If called, no System.out.print statemets will be called
+	 * 
+	 */
+	public boolean noPrintDebug() {
+		this.debug = false;
+		Iterator it = this.interactionSources.iterator();
+		while(it.hasNext()){
+			InteractionsDataSource dataSource = (InteractionsDataSource)it.next();
+			dataSource.noPrintDebug();
+		}//while it.hasNext
+		return this.debug;
 	}
 
 }// InteractionsDataSource

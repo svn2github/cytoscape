@@ -167,6 +167,9 @@ public class SQLDBHandler implements DBHandler {
 	 * @return the ResultSet returned, or null if there was a problem
 	 */
 	protected ResultSet query(String sql_statement) {
+		if(debug){
+			System.out.println(sql_statement);
+		}
 		ResultSet rs = null;
 		try {
 			Statement st = this.connection.createStatement();
