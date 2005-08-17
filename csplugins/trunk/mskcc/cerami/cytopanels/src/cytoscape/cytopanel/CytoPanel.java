@@ -9,6 +9,7 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Rectangle;
 import java.awt.Dimension;
+import java.awt.FontMetrics;
 import java.awt.BorderLayout;
 
 import java.awt.event.MouseEvent;
@@ -461,11 +462,18 @@ public class CytoPanel extends JTabbedPane {
 			// add label and button components to yet another panel, 
 			// so we can layout properly
 			JPanel floatDockPanel = new JPanel(new BorderLayout());
+			
+			// set float dock panel attributes
 			floatDockPanel.add(headerLabel, BorderLayout.WEST);
-			floatDockPanel.add(floatButton, BorderLayout.EAST);;
+			floatDockPanel.add(floatButton, BorderLayout.EAST);
 			floatDockPanel.setBackground(color);
 			floatDockPanel.setBorder(new EmptyBorder(2, 2, 2, 6));
 			floatDockPanel.setBackground(color);
+			// set minimum size of this panel
+			FontMetrics fm = headerLabel.getFontMetrics(headerLabel.getFont());
+			int headerLabelWidth = fm.stringWidth(title);
+			floatDockPanel.setMinimumSize(new Dimension((int)((headerLabelWidth + floatIcon.getIconWidth())*1.5),
+														floatIcon.getIconHeight()));
 
 			// use the border layout for this ContentPanel
 			setLayout(new BorderLayout());
