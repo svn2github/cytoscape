@@ -65,25 +65,24 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	}
 
 	/**
-	 * The species that are so big that they are divided into two tables
+	 * The species whose interactions are containes in their own separate tables
 	 */
 	public static String[] bigSpecies;
 
 	/**
 	 * A map from method of interaction (one of PP,GN,RS,GC) to a
 	 * p-value threshold, interactions with pval <= to the threshold
-	 * are located in the _low tables
+	 * are located in tables with '_low' terminations
 	 */
 	protected static Map methodThresholds;
 	
-	//protected boolean debug;
 
 	/**
 	 * Empty constructor
 	 */
 	public ProlinksInteractionsSource() {
 		// TODO: Remove, this should be read from somewhere!!!
-		this("jdbc:mysql://biounder.kaist.ac.kr/prolinks?user=bioinfo&password=qkdldhWkd");
+		this("jdbc:mysql://biounder.kaist.ac.kr/prolinks0?user=bioinfo&password=qkdldhWkd");
 	}
 
 	/**
@@ -280,6 +279,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	
 	/**
 	 * Protected helper method
+	 *
 	 * @param ResultSet contains the followign columns: gene_id_a, gene_id_b, p, method (in that order)
 	 * @return a Vector of Hashtables
 	 */
@@ -412,19 +412,17 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 		}//if pval > 1
 		else{
 			// Pvalue is restricted
-			if(debug){
-				System.out.println("getAllInteractions: PVAL=" + pval);
-			}
 			while(it.hasNext()){
 				String method = (String)it.next();
 				double th = ( (Double)ProlinksInteractionsSource.methodThresholds.get(method) ).doubleValue();
 				String sql;
+				String completeTableName = tableName + "_" + method;
+				
 				if(pval <= th){
-					// low
-					sql = "SELECT gene_id_a, gene_id_b, p FROM " + tableName + "_" + method + "_low WHERE p <= " + pval;
-				}else{
-					sql = "SELECT gene_id_a, gene_id_b, p FROM " + tableName + "_" + method + " WHERE p <= " + pval;
+					completeTableName = completeTableName + "_low";
 				}
+				
+				sql = "SELECT gene_id_a, gene_id_b, p FROM " + completeTableName + " WHERE p <= " + pval;
 				ResultSet rs = query(sql);
 				allInteractions.addAll(makeInteractionsVector(rs, method));
 				
@@ -505,7 +503,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 			directed = ( (Boolean)args.get(DIRECTED)).booleanValue();
 		}
 		
-		if(pval > 1 && methods.size() == 4 && directed == false){
+		if(pval > 1 && methods.size() == 4 && !directed){
 			// Just like calling with no args
 			return getFirstNeighbors(interactor, species);
 		}
@@ -522,12 +520,11 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 				Iterator it = methods.iterator();
 				while(it.hasNext()){
 					String method = (String)it.next();
-					if(directed){
-						sql = "SELECT DISTINCT gene_id_b FROM " + tableName + "_" + method + " WHERE gene_id_a = " + interactor;
-					}else{
-						// Only restriction is the method
-						sql = "(SELECT DISTINCT gene_id_a FROM " + tableName + "_" + method + " WHERE gene_id_b = " + interactor + ") UNION " +
-							  "(SELECT DISTINCT gene_id_b FROM " + tableName + "_" + method + " WHERE gene_id_a = " + interactor + ")";
+					String completeTableName = tableName + "_" + method;
+					sql = "(SELECT DISTINCT gene_id_b FROM " + completeTableName + " WHERE gene_id_a = " + interactor + ")";
+					if(!directed){
+					
+						sql = sql + " UNION (SELECT DISTINCT gene_id_a FROM " + completeTableName + " WHERE gene_id_b = " + interactor + ")";
 					}
 					ResultSet rs = query(sql);
 					Vector someInteractors = makeInteractorsVector(rs);
@@ -545,44 +542,22 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 		
 			// Pval restriction
 			Iterator it = methods.iterator();
-			if(directed){
-				// Directed, and pval restriction
-				while(it.hasNext()){
-					String method = (String)it.next();
-					double th = ( (Double)ProlinksInteractionsSource.methodThresholds.get(method) ).doubleValue();
-					if(pval <= th){
-						// low
-						sql = "SELECT DISTINCT gene_id_b FROM " + tableName + "_" + method + "_low" + " WHERE gene_id_a = " + interactor + " AND p <= " + pval;
-					}else{
-						sql = "SELECT DISTINCT gene_id_b FROM " + tableName + "_" + method + " WHERE gene_id_a = " + interactor + " AND p <= "  + pval;
-					}
-					ResultSet rs = query(sql);
-					Vector someInteractors = makeInteractorsVector(rs);
-					set.addAll(someInteractors);
-				}//while it.hasNext
-			}else{
-				
-				// Not directed, pval restriction
-				while(it.hasNext()){
-					String method = (String)it.next();
-					double th = ( (Double)ProlinksInteractionsSource.methodThresholds.get(method) ).doubleValue();
-					if(pval <= th){
-						// low
-						sql = "(SELECT DISTINCT gene_id_b FROM " + tableName + "_" + method + "_low WHERE gene_id_a = " + interactor +
-							"AND p <= " + pval + ") UNION " + 
-							"(SELECT DISTINCT gene_id_a FROM " + tableName + "_" + method + "_low WHERE gene_id_b = " + interactor + 
-							" AN	D p <= " + pval + ")"; 
-					}else{
-						sql = "(SELECT DISTINCT gene_id_b FROM " + tableName + "_" + method + " WHERE gene_id_a = " + interactor + " AND p <= " + pval +") UNION " +
-							  "(SELECT DISTINCT gene_id_a FROM " + tableName + "_" + method + " WHERE gene_id_b = " + interactor +" AND p <= " + pval + ")";
-					}
-					ResultSet rs = query(sql);
-					Vector someInteractors = makeInteractorsVector(rs);
-					set.addAll(someInteractors);
-				}//while it.hasNext
-				
-			}//not directed
-		
+			while(it.hasNext()){
+				String method = (String)it.next();
+				double th = ( (Double)ProlinksInteractionsSource.methodThresholds.get(method) ).doubleValue();
+				String completeTableName = tableName + "_" + method;
+				if(pval <= th){
+					completeTableName = completeTableName + "_low";
+				}
+				sql = "(SELECT DISTINCT gene_id_b FROM " + completeTableName + " WHERE gene_id_a = " + interactor + " AND p <= " + pval + ")";
+				if(!directed){
+					sql = sql + " UNION (SELECT DISTINCT gene_id_a FROM " + completeTableName + " WHERE gene_id_b = " + interactor + 
+						" AN	D p <= " + pval + ")"; 
+				}
+				ResultSet rs = query(sql);
+				Vector someInteractors = makeInteractorsVector(rs);
+				set.addAll(someInteractors);
+			}//while
 		}// pval <= 1
 		
 		Vector neighbors = new Vector(set);
@@ -600,52 +575,13 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	 *         (parallel vectors)
 	 */
 	public Vector getFirstNeighbors(Vector interactors, String species) {
-		
 		Vector vectorOfVectors = new Vector();
-		
-		if(interactors.size() == 1){
-			vectorOfVectors.add(getFirstNeighbors((String)interactors.get(0), species));
-			return vectorOfVectors;
-		}
-		
 		Iterator it = interactors.iterator();
 		while(it.hasNext()){
 			String gene = (String)it.next();
 			vectorOfVectors.add(getFirstNeighbors(gene, species));
 		}//while it.hasNext
-		
 		return vectorOfVectors;
-		
-		
-//		String sql = "(SELECT DISTINCT gene_id_a FROM " + tableName + " WHERE";
-//		
-//		Iterator it = interactors.iterator();
-//		if(it.hasNext()){
-//			String gene = (String)it.next();
-//			sql = sql + " gene_id_b = " + gene;
-//		}
-//		while(it.hasNext()){
-//			String gene = (String)it.next();
-//			sql = sql + " OR gene_id_b = " + gene;
-//		}// while it.next
-//		
-//		sql = sql + ") UNION (SELECT DISTINCT gene_id_b FROM " + tableName + " WHERE";
-//		
-//		it = interactors.iterator();
-//		if(it.hasNext()){
-//			String gene = (String)it.next();
-//			sql = sql + " gene_id_a = " + gene;
-//		}
-//		while(it.hasNext()){
-//			String gene = (String)it.next();
-//			sql = sql + " OR gene_id_a = " + gene;
-//		}// while it.next
-//		
-//		sql = sql + ")";
-//		
-//		ResultSet rs = query(sql);
-//		
-//		return makeInteractorsVector(rs);
 	}
 
 	/**
@@ -755,7 +691,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 				 ResultSet rs = query(sql);
 				 return makeInteractionsVector(rs);
 			 }else{
-				 // The method matters
+				 // The method matters, direction may matter
 				 Iterator it = methods.iterator();
 				 while(it.hasNext()){
 					 String method= (String)it.next();
@@ -775,11 +711,11 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 			 while(it.hasNext()){
 				String method = (String)it.next();
 				double pth = ( (Double)ProlinksInteractionsSource.methodThresholds.get(method) ).doubleValue();
+				completeTableName = tableName + "_" + method;
 				if(pval <= pth){
-					completeTableName = tableName + "_" + method + "_low"; 
-				}else{
-					completeTableName = tableName + "_" + method;
+					completeTableName = completeTableName + "_low"; 
 				}
+					
 				if(directed){
 					sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + completeTableName + " WHERE gene_id_a = " + interactor + " AND p <= " +  pval;
 				}else{
@@ -929,11 +865,9 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 			while(it.hasNext()){
 				String method = (String)it.next();
 				double pth = ((Double)ProlinksInteractionsSource.methodThresholds.get(method)).doubleValue();
-				String completeTableName;
+				String completeTableName = tableName + "_" + method;
 				if(pval <= pth){
-					completeTableName = tableName + "_" + method + "_low";
-				}else{
-					completeTableName = tableName + "_" + method;
+					completeTableName = completeTableName + "_low";
 				}
 				if(directed){
 					sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + completeTableName + " WHERE gene_id_a = " + 
@@ -951,12 +885,12 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 			// No pval restriction
 			if(methods.size() == 4){
 				// pval does not matter, method does not matter, only directed matters
-				if(directed){
-					sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + tableName + " WHERE gene_id_a = " + interactor1 + "AND gene_id_b = " + interactor2;
-				}else{
-					sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + tableName + " WHERE (gene_id_a = " + 
-					interactor1 + " AND gene_id_b = " + interactor2 + ") OR ( gene_id_a = " + interactor2 + " AND gene_id_b = " + interactor1 + ")";
+				sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + tableName + " WHERE (gene_id_a = " + interactor1 + "AND gene_id_b = " + interactor2 + ")";
+				if(!directed){
+					sql = sql + " OR ( gene_id_a = " + interactor2 + " AND gene_id_b = " + interactor1 + ")";
 				}
+				ResultSet rs = query(sql);
+				return makeInteractionsVector(rs);
 			}else{
 		
 			   // Method restriction, maybe direction restriction
@@ -976,8 +910,6 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 			}//else
 			
 		}//else
-		
-		return EMPTY_VECTOR;
 		
 	}
 
@@ -1068,7 +1000,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 		System.out.println();
 		System.out.println();
 		
-		System.out.println("Calling getFirstNeighbors()");
+		//System.out.println("Calling getFirstNeighbors()");
 		
 		
 		return EMPTY_VECTOR;
