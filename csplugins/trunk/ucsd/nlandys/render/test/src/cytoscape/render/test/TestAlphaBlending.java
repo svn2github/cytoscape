@@ -62,8 +62,8 @@ public final class TestAlphaBlending extends Frame implements Runnable
                               BufferedImage.TYPE_INT_ARGB);
     addNotify();
     m_screenBuffer = createImage(m_imgWidth, m_imgHeight);
-    m_grafx = new GraphGraphics(m_img, true);
-    m_buffGrafx = new GraphGraphics(m_screenBuffer, true);
+    m_grafx = new GraphGraphics(m_img, false);
+    m_buffGrafx = new GraphGraphics(m_screenBuffer, false);
     m_xform = new AffineTransform();
     m_pts = new float[2];
     m_xsect1Coords = new float[2];
