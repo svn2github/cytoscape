@@ -163,10 +163,10 @@ public class CytoPanel extends JTabbedPane {
 		if (isWindows() && tabPlacement != JTabbedPane.BOTTOM && tabPlacement != JTabbedPane.TOP ){
 			int rotate = (tabPlacement == JTabbedPane.LEFT) ? VTextIcon.ROTATE_LEFT : VTextIcon.ROTATE_RIGHT;
 			VTextIcon textIcon = new VTextIcon(c, title, rotate);
-			super.addTab(null, textIcon, contentPanel);
+			super.addTab(null, textIcon, contentPanel, toolTipText);
 		}
 		else{
-			super.addTab(title, contentPanel);
+			super.addTab(title, null, contentPanel, toolTipText);
 		}
 
 	    // if this is the first tab, select it
