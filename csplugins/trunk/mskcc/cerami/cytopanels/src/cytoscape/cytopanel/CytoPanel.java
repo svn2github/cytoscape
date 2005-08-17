@@ -228,34 +228,6 @@ public class CytoPanel extends JTabbedPane {
 		return maxHeight;
 	}
 
-
-    /**
-     * Sets window sizes for startup.
-	 * @param mode HideMode
-     */
-    public void setStartupSizes(int mode) {
-		// iterate through content panels,
-		// save all dimensions and set 
-		// proper dimension to zero
-		for (int lc = 0; lc < contentPanelList.size(); lc++) {
-			ContentPanel panel = (ContentPanel) contentPanelList.get(lc);
-			panel.setStartupSize(mode);
-		}
-	}
-
-    /**
-     * Restores window sizes after startup.
-     */
-    public void restoreStartupSizes() {
-		// iterate through content panels,
-		// save all dimensions and set 
-		// proper dimension to zero
-		for (int lc = 0; lc < contentPanelList.size(); lc++) {
-			ContentPanel panel = (ContentPanel) contentPanelList.get(lc);
-			panel.restoreStartupSize();
-		}
-	}
-
 	/**
 	 * Mouse event handler - used to open/close draws.
      * @param evt       The Mouse Event.
@@ -334,7 +306,7 @@ public class CytoPanel extends JTabbedPane {
 				panel.getButton().setToolTipText(ContentPanel.TOOL_TIP_FLOAT);
 			}
 		}
-		else{
+		else {
 			// new frame to place this CytoPanel
 			externalFrame = new JFrame();
 
@@ -426,7 +398,6 @@ public class CytoPanel extends JTabbedPane {
         externalWindow.show();
     }
 
-
 	/**
 	 * The ContentPanel class contains is a JPanel that contains
 	 * a float/dock button and the component passed into CytoPanel.addTab()
@@ -453,17 +424,6 @@ public class CytoPanel extends JTabbedPane {
 		 */
         private JButton floatButton;
 
-		JPanel floatDockPanel;
-
-		/**
-		 * Saved dimensions.
-		 */
-        private Dimension savedHeaderDim;
-        private Dimension savedButtonDim;
-        private Dimension savedContentDim;
-		private Dimension savedFloatDockPanelDim;
-		private Dimension savedContentPanelDim;
-				
 		/**
 		 * The float button tool tip.
 		 */
@@ -488,7 +448,7 @@ public class CytoPanel extends JTabbedPane {
 
 			// add label and button components to yet another panel, 
 			// so we can layout properly
-			floatDockPanel = new JPanel(new BorderLayout());
+			JPanel floatDockPanel = new JPanel(new BorderLayout());
 			floatDockPanel.add(headerLabel, BorderLayout.WEST);
 			floatDockPanel.add(floatButton, BorderLayout.EAST);;
 			floatDockPanel.setBackground(color);
@@ -496,7 +456,6 @@ public class CytoPanel extends JTabbedPane {
 			floatDockPanel.setBackground(color);
 
 			// use the border layout for this ContentPanel
-
 			setLayout(new BorderLayout());
 			add(floatDockPanel, BorderLayout.NORTH);
 			add(c, BorderLayout.CENTER);
@@ -523,47 +482,6 @@ public class CytoPanel extends JTabbedPane {
         public JLabel getHeaderLabel() {
             return headerLabel;
         }
-
-		/**
-		 * Method to setStartupSize
-		 */
-        public void setStartupSize(int mode) {
-			// save current dimensions
-			savedHeaderDim = headerLabel.getSize();
-			savedButtonDim = floatButton.getSize();
-			savedContentDim = content.getSize();
-			savedFloatDockPanelDim = floatDockPanel.getSize();
-			savedContentPanelDim = this.getSize();
-			// set new dimensions
-			if (mode == BiModalJSplitPane.STARTUP_HIDE_RIGHT){
-				headerLabel.setMinimumSize(new Dimension(0, (int)savedHeaderDim.getHeight()));
-				floatButton.setMinimumSize(new Dimension(0, (int)savedButtonDim.getHeight()));
-				JComponent c = (JComponent)content;
-				c.setMinimumSize(new Dimension(0, (int)savedContentDim.getHeight()));
-				floatDockPanel.setMinimumSize(new Dimension(0, (int)savedFloatDockPanelDim.getHeight()));
-				this.setMinimumSize(new Dimension(0, (int)savedContentPanelDim.getHeight()));
-			}
-			else if (mode == BiModalJSplitPane.STARTUP_HIDE_BOTTOM){
-				headerLabel.setMinimumSize(new Dimension((int)savedHeaderDim.getWidth(), 0));
-				floatButton.setMinimumSize(new Dimension((int)savedButtonDim.getWidth(), 0));
-				JComponent c = (JComponent)content;
-				c.setMinimumSize(new Dimension((int)savedContentDim.getWidth(), 0));
-				floatDockPanel.setMinimumSize(new Dimension((int)savedFloatDockPanelDim.getWidth(), 0));
-				this.setMinimumSize(new Dimension((int)savedContentPanelDim.getWidth(), 0));
-			}
-        }
-
-		/**
-		 * Restores window sizes after startup.
-		 */
-        public void restoreStartupSize() {
-			headerLabel.setMinimumSize(savedHeaderDim);
-			floatButton.setMinimumSize(savedButtonDim);
-			JComponent c = (JComponent)content;
-			c.setMinimumSize(savedContentDim);
-			floatDockPanel.setMinimumSize(savedFloatDockPanelDim);
-			this.setMinimumSize(savedContentPanelDim);
-		}
 
 		/**
 		 * Initializes the label.

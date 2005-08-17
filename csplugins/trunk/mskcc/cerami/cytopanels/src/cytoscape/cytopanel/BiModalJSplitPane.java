@@ -20,12 +20,6 @@ import java.awt.*;
 public class BiModalJSplitPane extends JSplitPane implements CytoPanelContainer {
 
     /**
-     * Indicates which startupSize to perform.
-     */
-	public static final int STARTUP_HIDE_RIGHT = 0;
-	public static final int STARTUP_HIDE_BOTTOM = 1;
-
-    /**
      * Mode:  Show the Split Pane.
      */
     public static final int MODE_SHOW_SPLIT = 1;
@@ -60,12 +54,6 @@ public class BiModalJSplitPane extends JSplitPane implements CytoPanelContainer 
      */
     private int savedDividerLocation;
 
-   /**
-     * Saved dimension for left component and right components.
-     */
-    private Dimension topleftComponentSavedDimension;
-    private Dimension bottomrightComponentSavedDimension;
-	
 	/**
 	 * Values used to determine the type of hide split to perform
      */
@@ -73,12 +61,6 @@ public class BiModalJSplitPane extends JSplitPane implements CytoPanelContainer 
 	private static final int MODE_HIDE_SPLIT_RIGHT = 1;
 	private static final int MODE_HIDE_SPLIT_BOTTOM = 2;
 	private static final int MODE_HIDE_SPLIT_TOP = 3;
-
-	/**
-	 * String used to compare against os.name System property - 
-	 * to determine if we are running on Windows platform.
-     */
-	static final String WINDOWS = "windows";
 
     /**
      * Constructor.
@@ -157,62 +139,6 @@ public class BiModalJSplitPane extends JSplitPane implements CytoPanelContainer 
     public int getMode() {
         return currentMode;
     }
-
-    /**
-     * Sets window sizes for startupu.
-	 * @param mode HideMode
-     */
-    public void setStartupSizes(int mode) {
-
-		if (mode == STARTUP_HIDE_RIGHT){
-			JComponent left = (JComponent)getLeftComponent();
-			JComponent right = (JComponent)getRightComponent();
-			CytoPanel cp = (CytoPanel)right;
-			topleftComponentSavedDimension = left.getSize();
-			bottomrightComponentSavedDimension = right.getSize();
-			cp.setStartupSizes(mode);
-			left.setMinimumSize(new Dimension((int)(left.getSize().getWidth()+right.getSize().getWidth()+getDefaultDividerSize()), (int)getSize().getHeight()));
-			left.setPreferredSize(new Dimension((int)(left.getSize().getWidth()+right.getSize().getWidth()+getDefaultDividerSize()), (int)getSize().getHeight()));
-			right.setMinimumSize(new Dimension(cp.getMaxWidthTabs()+getDefaultDividerSize(), (int)right.getSize().getHeight()));
-		}
-		else if (mode == STARTUP_HIDE_BOTTOM){
-			JComponent top = (JComponent)getTopComponent();
-			JComponent bottom = (JComponent)getBottomComponent();
-			CytoPanel cp = (CytoPanel)bottom;
-			topleftComponentSavedDimension = top.getSize();
-			bottomrightComponentSavedDimension = bottom.getSize();
-			cp.setStartupSizes(mode);
-			top.setMinimumSize(new Dimension((int)top.getSize().getWidth(), (int)(top.getSize().getHeight()+bottom.getSize().getHeight())));
-			top.setPreferredSize(new Dimension((int)top.getSize().getWidth(), (int)(top.getSize().getHeight()+bottom.getSize().getHeight())));
-			bottom.setMinimumSize(new Dimension((int)bottom.getSize().getWidth(), cp.getMaxHeightTabs()+getDefaultDividerSize()));
-		}
-		resetToPreferredSizes();
-    }
-
-    /**
-     * Restores window sizes after startup
-	 * @param mode previous HideMode
-     */
-    public void restoreStartupSizes(int mode) {
-		if (mode == STARTUP_HIDE_RIGHT){
-			JComponent left = (JComponent)getLeftComponent();
-			JComponent right = (JComponent)getRightComponent();
-			CytoPanel cp = (CytoPanel)right;
-			left.setMinimumSize(topleftComponentSavedDimension);
-			left.setPreferredSize(topleftComponentSavedDimension);
-			right.setMinimumSize(bottomrightComponentSavedDimension);
-			cp.restoreStartupSizes();
-		}
-		else if (mode == STARTUP_HIDE_BOTTOM){
-			JComponent top = (JComponent)getTopComponent();
-			JComponent bottom = (JComponent)getBottomComponent();
-			CytoPanel cp = (CytoPanel)bottom;
-			top.setMinimumSize(topleftComponentSavedDimension);
-			top.setPreferredSize(topleftComponentSavedDimension);
-			bottom.setMinimumSize(bottomrightComponentSavedDimension);
-			cp.restoreStartupSizes();
-		}
-	}
 
     /**
      * Inserts CytoPanel at Specified Compass Direction.
