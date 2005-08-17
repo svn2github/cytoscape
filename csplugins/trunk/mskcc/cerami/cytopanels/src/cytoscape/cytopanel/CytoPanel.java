@@ -255,6 +255,15 @@ public class CytoPanel extends JTabbedPane {
 				prevIndex = selectedIndex;
 			}
 		}
+
+		// set frame title 
+		if (isFloating){
+			String title = externalFrame.getTitle();
+			String tabTitle = getTitleAt(getSelectedIndex());
+			if (title.compareTo(tabTitle) != 0){
+				externalFrame.setTitle(tabTitle);
+			}
+		}
 		// give base class chance to process event
 		super.processMouseEvent(evt);
     }
@@ -318,6 +327,9 @@ public class CytoPanel extends JTabbedPane {
 			contentPane.add(this, BorderLayout.CENTER);
 			externalFrame.setSize(this.getSize());
 			externalFrame.validate();
+
+			// set proper title of frame
+			externalFrame.setTitle(getTitleAt(getSelectedIndex()));
 
 			// for each tab, set the correct button tooltip and icon
 			for (int lc = 0; lc < contentPanelList.size(); lc++) {
