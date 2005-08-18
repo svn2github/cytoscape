@@ -469,10 +469,12 @@ public class CytoPanel extends JTabbedPane {
 			floatDockPanel.setBackground(color);
 			floatDockPanel.setBorder(new EmptyBorder(2, 2, 2, 6));
 			floatDockPanel.setBackground(color);
-			// set minimum size of this panel
-			FontMetrics fm = headerLabel.getFontMetrics(headerLabel.getFont());
-			floatDockPanel.setMinimumSize(new Dimension((int)((fm.stringWidth(title) + floatIcon.getIconWidth())*1.5),
-														floatIcon.getIconHeight()));
+			// set minimum size of this panel - hack for now
+			if (isWindows()){
+				FontMetrics fm = headerLabel.getFontMetrics(headerLabel.getFont());
+				floatDockPanel.setMinimumSize(new Dimension((int)((fm.stringWidth(title) + floatIcon.getIconWidth())*1.5),
+															floatIcon.getIconHeight()));
+			}
 
 			// use the border layout for this ContentPanel
 			setLayout(new BorderLayout());
