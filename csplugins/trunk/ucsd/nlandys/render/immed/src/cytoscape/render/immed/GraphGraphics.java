@@ -21,6 +21,8 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.MapEntry;
 
 
 /**
@@ -113,7 +115,7 @@ public final class GraphGraphics
    * constructor.  It is safe to call this constructor from any thread.<p>
    * The image argument passed to this constructor must support only three
    * methods: getGraphics(), getWidth(ImageObserver), and
-   * getHeight(ImageObserver()).  The image.getGraphics() method must return an
+   * getHeight(ImageObserver).  The image.getGraphics() method must return an
    * instance of java.awt.Graphics2D.  The hypothetical method calls
    * image.getWidth(null) and image.getHeight(null) must return the
    * corresponding dimension immediately.<p>
@@ -255,6 +257,8 @@ public final class GraphGraphics
   }
 
   /**
+   * Uses the current transform to map the specified image coordinates to
+   * node coordinates.
    * The transform used is defined by the last call to clear().
    * It does not make sense to call this method if clear() has not been
    * called at least once previously, and this method will cause errors in
@@ -513,7 +517,8 @@ public final class GraphGraphics
    * @param coords vertexCount * 2 consecutive coordinate values are read
    *   from this array starting at coords[offset]; coords[offset],
    *   coords[offset + 1], coords[offset + 2], coords[offset + 3] and so on
-   *   are interpreted as x0, y0, x1, y1, and so on.
+   *   are interpreted as x0, y0, x1, y1, and so on; the initial vertex must
+   *   not be repeated as the last vertex specified.
    * @param offset the starting index of where to read coordinates from
    *   in the coords parameter.
    * @param vertexCount the number of vertices to read from coords;
@@ -524,7 +529,8 @@ public final class GraphGraphics
    *   or if the specified polygon has more than CUSTOM_SHAPE_MAX_VERTICES
    *   vertices.
    * @exception IllegalStateException if too many custom node shapes are
-   *   already defined; about one hundered custom node shapes can be defined.
+   *   already defined; a little over one hundered custom node shapes can be
+   *   defined.
    */
   public final byte defineCustomNodeShape(final float[] coords,
                                           final int offset,
@@ -606,6 +612,32 @@ public final class GraphGraphics
         ("too many custom node shapes are already defined");
     m_customShapes.put(new Byte(m_nextCustomShapeType), polyCoords);
     return m_nextCustomShapeType++;
+  }
+
+  /**
+   * If this is a new instance, imports the custom node shapes from the
+   * GraphGraphics specified into this GraphGraphics.
+   * @param grafx custom node shapes will be imported from this
+   *   GraphGraphics.
+   * @exception IllegalStateException if at least one custom node shape
+   *   is already defined in this GraphGraphics.
+   */
+  public final void importCustomNodeShapes(final GraphGraphics grafx)
+  {
+    if (m_debug) {
+      if (!EventQueue.isDispatchThread())
+        throw new IllegalStateException
+          ("calling thread is not AWT event dispatcher"); }
+    // I define this error check outside the scope of m_debug because
+    // clobbering existing custom node shape definitions could be a major.
+    if (m_nextCustomShapeType != s_last_shape + 1)
+      throw new IllegalStateException
+        ("a custom node shape is already defined in this GraphGraphics");
+    final Iterator oldEntries = grafx.entrySet().iterator();
+    while (oldEntries.hasNext()) {
+      final MapEntry entry = (MapEntry) oldEntries.next();
+      m_customShapes.put(entry.getKey(), entry.getValue());
+      m_nextCustomShapeType++; }
   }
 
   /**
