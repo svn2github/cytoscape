@@ -74,6 +74,11 @@ public final class GraphGraphics
   public static final byte ARROW_DISC = -4;
   public static final byte ARROW_TEE = -5;
   public static final byte ARROW_BIDIRECTIONAL = -6;
+
+  /**
+   * This arrow type is not currently supported.  It will be in the
+   * very near future.
+   */
   public static final byte ARROW_MONO = -7;
 
   // An internal constant for Bezier curves on rounded rectangle.
@@ -85,24 +90,18 @@ public final class GraphGraphics
   public final Image image;
 
   private final boolean m_debug;
-  private final AffineTransform m_currXform;
-  private final AffineTransform m_currNativeXform;
-  private final AffineTransform m_xformUtil;
-  private final Arc2D.Double m_arc2d;
-  private final Ellipse2D.Double m_ellp2d;
-  private final GeneralPath m_path2d;
-  private final GeneralPath m_path2dPrime;
-  private final Line2D.Double m_line2d;
-  private final double[] m_polyCoords; // I need this for extra precision.
-                                       // GeneralPath stores 32 bit floats,
-                                       // and I need more precision when
-                                       // calculating the inner polygon
-                                       // for nonzero border width so that
-                                       // edges of polygon are guaranteed to
-                                       // have nonzero length during
-                                       // computation.
-  private final HashMap m_customShapes;
-  private final double[] m_ptsBuff;
+  private final AffineTransform m_currXform = new AffineTransform();
+  private final AffineTransform m_currNativeXform = new AffineTransform();
+  private final AffineTransform m_xformUtil = new AffineTransform();
+  private final Arc2D.Double m_arc2d = new Arc2D.Double();
+  private final Ellipse2D.Double m_ellp2d = new Ellipse2D.Double();
+  private final GeneralPath m_path2d = new GeneralPath();
+  private final GeneralPath m_path2dPrime = new GeneralPath();
+  private final Line2D.Double m_line2d = new Line2D.Double();
+  private final double[] m_polyCoords = // I need this for extra precision.
+    new double[2 * CUSTOM_SHAPE_MAX_VERTICES];
+  private final HashMap m_customShapes = new HashMap();
+  private final double[] m_ptsBuff = new double[4];
   private int m_polyNumPoints; // Used with m_polyCoords.
   private Graphics2D m_g2d;
   private Graphics2D m_gMinimal; // We use mostly java.awt.Graphics methods.
@@ -111,11 +110,21 @@ public final class GraphGraphics
   /**
    * All rendering operations will be performed on the specified image.
    * No rendering operations are performed as a result of calling this
-   * constructor.  It is safe to call this constructor from any thread.
-   * @param image an off-screen image (an image that supports the
-   *   getGraphics() method); passing an image gotten from a call to
-   *   java.awt.Component.createImage(int, int) works well, as do
-   *   instances of java.awt.image.BufferedImage.
+   * constructor.  It is safe to call this constructor from any thread.<p>
+   * The image argument passed to this constructor must support only three
+   * methods: getGraphics(), getWidth(ImageObserver), and
+   * getHeight(ImageObserver()).  The image.getGraphics() method must return an
+   * instance of java.awt.Graphics2D.  The hypothetical method calls
+   * image.getWidth(null) and image.getHeight(null) must return the
+   * corresponding dimension immediately.<p>
+   * Notice that it is not possible to resize the image area with this API.
+   * This is not a problem; instances of this class are very lightweight and
+   * are stateless; simply instantiate a new GraphGraphics when the image
+   * area changes.
+   * @param image an off-screen image; passing an image gotten from a call to
+   *   java.awt.Component.createImage(int, int) works well, although
+   *   experience shows that for full support of non-opaque colors,
+   *   java.awt.image.BufferedImage should be used instead.
    * @param debug if this is true, extra [and time-consuming] error checking
    *   will take place in each method call; it is recommended to have this
    *   value set to true during the testing phase; set it to false once
@@ -125,28 +134,17 @@ public final class GraphGraphics
   {
     this.image = image;
     m_debug = debug;
-    m_currXform = new AffineTransform();
-    m_currNativeXform = new AffineTransform();
-    m_xformUtil = new AffineTransform();
-    m_arc2d = new Arc2D.Double();
-    m_ellp2d = new Ellipse2D.Double();
-    m_path2d = new GeneralPath();
-    m_path2dPrime = new GeneralPath();
     m_path2dPrime.setWindingRule(GeneralPath.WIND_EVEN_ODD);
-    m_line2d = new Line2D.Double();
-    m_polyCoords = new double[2 * CUSTOM_SHAPE_MAX_VERTICES];
-    m_customShapes = new HashMap();
-    m_ptsBuff = new double[4];
     m_cleared = false;
   }
 
   /**
-   * Clears image area with background color specified in constructor,
+   * Clears image area with background color specified [may be non-opaque],
    * and sets an appropriate transformation of coordinate systems.  See the
    * class description for a definition of the two coordinate systems:
    * the node coordinate system and the image coordinate system.<p>
-   * It is mandatory to call this method before starting
-   * to render a new frame.
+   * It is mandatory to call this method before making the first rendering
+   * call.
    * @param bgColor a color to use when clearing the image before painting
    *   a new frame; transparent colors are honored, provided that the
    *   underlying image supports transparent colors.
@@ -159,10 +157,11 @@ public final class GraphGraphics
    *   about to be rendered; a node whose center is at the Y coordinate yCenter
    *   will be rendered exactly in the middle of the image going top to bottom;
    *   increasing y values (in the node coordinate system) result in movement
-   *   towards the top on the image.
-   * @param scaleFactor the scaling that is to take place when rendering nodes;
+   *   towards the top on the image (not the bottom of the image!!!).
+   * @param scaleFactor the scaling that is to take place when rendering;
    *   a distance of 1 in node coordinates translates to a distance of
-   *   scaleFactor pixels in the image.
+   *   scaleFactor in the image coordinate system (usually one unit in the
+   *   image coordinate system equates to one pixel width).
    * @exception IllegalArgumentException if scaleFactor is not positive.
    */
   public final void clear(final Color bgColor,
@@ -205,13 +204,29 @@ public final class GraphGraphics
   }
 
   /**
+   * Determines whether or not the point (xQuery, yQuery) lies inside
+   * the shape of type nodeShape (may be a custom shape or one of the
+   * SHAPE_* constants) with extents (xMin, yMin) to (xMax, yMax).<p>
+   * This method can be used together with xformImageToNodeCoords()
+   * for determining whether or not user mouse clicks are inside
+   * of a node area (if the graph image generated by this instance is
+   * associated with a user interface).<p>
    * There is a constraint that only applies to SHAPE_ROUNDED_RECTANGLE
    * which imposes that the maximum of the width and height be strictly
-   * less than twice the minimum of the width and height of the node.<p>
+   * less than twice the minimum of the width and height of the node.
+   * @param nodeShape the shape (SHAPE_* constant or custom shape) of
+   *   the area to query.
+   * @param xMin an extent of the area to query.
+   * @param yMin an extent of the area to query.
+   * @param xMax an extent of the area to query.
+   * @param yMax an extent of the area to query.
    * @param xQuery the x coordinate of the query point, in the node
    *   coordinate system.
    * @param yQuery the y coordinate of the query point, in the node
    *   coordinate system.
+   * @return true if and only if the point (xQuery, yQuery) lies inside
+   *   of the area specified; if the point lies on the boundary of the
+   *   query area, the return value can be either true or false.
    * @exception IllegalArgumentException if xMin is not less than xMax
    *   or if yMin is not less than yMax.
    */
