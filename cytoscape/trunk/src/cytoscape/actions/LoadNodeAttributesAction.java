@@ -120,7 +120,7 @@ class LoadAttributesTask implements Task {
             //  Inform others via property change event.
             Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED,
                         null, null );
-        } catch (IOException e) {
+        } catch (Exception e) {
             taskMonitor.setException(e, "Unable to load attributes file.");
         }
     }

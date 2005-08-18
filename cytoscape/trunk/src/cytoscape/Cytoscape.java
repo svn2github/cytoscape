@@ -284,7 +284,7 @@ public abstract class Cytoscape {
       //System.out.println( "Edge Created: "+edge );
 
       String edge_name = node_1.getIdentifier()+" ("+attribute_value+") "+node_2.getIdentifier();
-      Cytoscape.getEdgeNetworkData().add ("interaction", edge_name, attribute_value);
+      Cytoscape.getEdgeNetworkData().append ("interaction", edge_name, attribute_value);
       Cytoscape.getEdgeNetworkData().addNameMapping (edge_name, edge);
       return edge;
     }
