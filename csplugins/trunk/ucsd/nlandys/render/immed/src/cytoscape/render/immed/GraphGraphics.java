@@ -22,7 +22,7 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.MapEntry;
+import java.util.Map;
 
 
 /**
@@ -633,9 +633,9 @@ public final class GraphGraphics
     if (m_nextCustomShapeType != s_last_shape + 1)
       throw new IllegalStateException
         ("a custom node shape is already defined in this GraphGraphics");
-    final Iterator oldEntries = grafx.entrySet().iterator();
+    final Iterator oldEntries = grafx.m_customShapes.entrySet().iterator();
     while (oldEntries.hasNext()) {
-      final MapEntry entry = (MapEntry) oldEntries.next();
+      final Map.Entry entry = (Map.Entry) oldEntries.next();
       m_customShapes.put(entry.getKey(), entry.getValue());
       m_nextCustomShapeType++; }
   }
