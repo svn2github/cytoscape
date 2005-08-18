@@ -18,7 +18,7 @@ public abstract class MyDataClient {
 	/**
 	 * The name of the service that this client uses
 	 */
-	public String SERVICE_NAME = "unknown";
+	public String serviceName = "unknown";
 	protected Vector args = new Vector();
 	protected XmlRpcClient client;
 
@@ -208,24 +208,24 @@ public abstract class MyDataClient {
 	}
 
 	/**
-	 * Requests SERVICE_NAME.query with the given argument and then returns the
+	 * Requests this.serviceName.query with the given argument and then returns the
 	 * result
 	 */
 	public Object query(String arg0) throws XmlRpcException, IOException {
-		Object out = call(SERVICE_NAME + ".query", arg0);
+		Object out = call(this.serviceName + ".query", arg0);
 		return (java.lang.Object) XmlRpcUtils
 				.GetObjectFromStruct((Hashtable) out);
 	}
 
 	/**
-	 *  Calls SERVICE_NAME.setDebug
+	 *  Calls this.serviceName.setDebug
 	 * @param arg0
 	 * @return
 	 * @throws XmlRpcException
 	 * @throws IOException
 	 */
 	public boolean setDebug(String arg0) throws XmlRpcException, IOException {
-		Object out = call(SERVICE_NAME + ".setDebug", arg0);
+		Object out = call(this.serviceName + ".setDebug", arg0);
 		return ((Boolean) out).booleanValue();
 	}
 
