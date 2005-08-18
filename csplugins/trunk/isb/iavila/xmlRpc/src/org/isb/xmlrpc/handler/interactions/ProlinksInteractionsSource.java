@@ -21,6 +21,8 @@ import org.isb.xmlrpc.handler.db.*;
  * S_gc_low <br>
  * The species that are not big contain their interactions in the "prolinks" table, which also had the divisions above. <br>
  * TODO: Describe tables
+ * TODO: Crashes for small species because views cannot be created, requested having tables for all species, wait to hear back.
+ * TODO: Test each method with small and big species
  * @author <a href="mailto:iavila@systemsbiology.org">Iliana Avila-Campillo</a>
  */
 public class ProlinksInteractionsSource extends SQLDBHandler implements
