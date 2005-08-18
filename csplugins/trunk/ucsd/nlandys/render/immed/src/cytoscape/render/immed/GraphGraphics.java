@@ -113,7 +113,7 @@ public final class GraphGraphics
    * All rendering operations will be performed on the specified image.
    * No rendering operations are performed as a result of calling this
    * constructor.  It is safe to call this constructor from any thread.<p>
-   * The image argument passed to this constructor must support only three
+   * The image argument passed to this constructor must support at least three
    * methods: getGraphics(), getWidth(ImageObserver), and
    * getHeight(ImageObserver).  The image.getGraphics() method must return an
    * instance of java.awt.Graphics2D.  The hypothetical method calls
