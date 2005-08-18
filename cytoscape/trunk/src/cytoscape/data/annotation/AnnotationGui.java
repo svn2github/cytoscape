@@ -118,6 +118,11 @@ public class AnnotationGui extends CytoscapeAction {
       return;
     } else {
       annotationDescriptions = dataServer.getAnnotationDescriptions();
+    
+      for ( int i = 0; i < annotationDescriptions.length; ++i ) {
+        System.out.println( "ad: "+i+" "+annotationDescriptions[i] );
+      }
+
     }
 
     if (this.attributeLayouter == null) {
@@ -367,8 +372,10 @@ public class AnnotationGui extends CytoscapeAction {
       // current graph:  create a 'topLevelName' which will be the branch of the JTree,
       // and a set of leaves for each logical level in that description's ontology
     {
-      if (descriptions == null || descriptions.length == 0) return;
-
+      
+      if (descriptions == null || descriptions.length == 0) {
+        return;
+      }
       Set speciesInGraph = Semantics.getSpeciesInNetwork( network );
 
       DefaultMutableTreeNode branch = null;
@@ -378,6 +385,7 @@ public class AnnotationGui extends CytoscapeAction {
       for (int i=0; i < descriptions.length; i++) {
         String species = descriptions[i].getSpecies ();
         if (!speciesInGraph.contains (species)) {
+        //  System.out.println( "Species in Graph is wrong" );
           continue;
         }
         topLevelNamesList.add (descriptions[i].getCurator () + ", " +

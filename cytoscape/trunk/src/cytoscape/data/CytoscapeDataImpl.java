@@ -1028,7 +1028,7 @@ public class CytoscapeDataImpl
     while( i.hasNext() ) {
       //GraphObject gobj = ( GraphObject )i.next();
       String iden = (String)i.next();
-      map.put( iden, getAttributeValueList( iden, attributeName ) );
+      map.put( iden, getAttributeValue( iden, attributeName ) );
     }
     return map;
   }
