@@ -67,12 +67,6 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	}
 
 	/**
-	 * The species whose interactions are containes in their own separate tables
-	 * String -> true
-	 */
-	public static Map bigSpecies;
-
-	/**
 	 * A map from method of interaction (one of PP,GN,RS,GC) to a
 	 * p-value threshold, interactions with pval <= to the threshold
 	 * are located in tables with '_low' terminations
@@ -86,21 +80,16 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	protected static Map cachedSpeciesIds;
 	
 	/**
-	 * A Map from Strings (species) to a name of a view created
-	 * for the small species (that contains all interactions for that
-	 * species).<br>
-	 * Views are not physical tables in the DB, they are "virtual tables".<br>
-	 * In this class, the views get created on demand.
+	 * A Map from species name to species table name or queried tables
 	 */
-	protected static Map smallSpeciesViews;
-	
+	protected static Map cachedTableNames;
 
 	/**
 	 * Empty constructor
 	 */
 	public ProlinksInteractionsSource() {
 		// TODO: Remove, this should be read from somewhere!!!
-		this("jdbc:mysql://biounder.kaist.ac.kr/prolinks0?user=bioinfo&password=qkdldhWkd");
+		this("jdbc:mysql://biounder.kaist.ac.kr/prolinks1?user=bioinfo&password=qkdldhWkd");
 	}
 
 	/**
@@ -116,24 +105,8 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	 * Finds the big species, and initilizes the method thresholds map
 	 */
 	protected void initialize() {
-		ProlinksInteractionsSource.bigSpecies = new Hashtable();
-		String sql = "SELECT species FROM big_species";
+		String sql = "SELECT * FROM method_threshold";
 		ResultSet rs = query(sql);
-		if (rs != null) {
-
-			try {
-				while (rs.next()) {
-					String sp = (String) rs.getObject(1);
-					ProlinksInteractionsSource.bigSpecies.put(sp, Boolean.TRUE);
-				}
-
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}// rs != null
-
-		sql = "SELECT * FROM method_threshold";
-		rs = query(sql);
 		ProlinksInteractionsSource.methodThresholds = new Hashtable();
 		if (rs != null) {
 			try {
@@ -149,90 +122,35 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 
 		}
 		ProlinksInteractionsSource.cachedSpeciesIds = new Hashtable();
-		ProlinksInteractionsSource.smallSpeciesViews = new Hashtable();
+		ProlinksInteractionsSource.cachedTableNames =  new Hashtable();
 	}// initialize
-	
-	/**
-	 * Creates a view with all the interactions for the given small species
-	 * 
-	 * @param species a small species
-	 * @return the name of the view to use, if the species is a big species, it returns species
-	 */
-	protected String getSmallSpeciesView (String species){
-		
-		String view = (String)ProlinksInteractionsSource.smallSpeciesViews.get(species);
-		
-		if(view != null){
-			return view;
-		}
-	
-		if(isBigSpecies(species)){
-			return species;
-		}
-		// Create a view
-		int speciesID = getSpeciesID(species);
-		String sql = "CREATE VIEW " + species + " AS " + "SELECT gene_id_a,gene_id_b,p,method FROM prolinks WHERE species = " + speciesID;
-		boolean ok = execute(sql);
-		if(ok){
-             ProlinksInteractionsSource.smallSpeciesViews.put(species, species);
-			return species;
-		}
-		return "ERROR";
-	}
 	
 	/**
 	 * @param species the species
 	 * @return the name of the table or view for the given species
 	 */
 	public String getTableName (String species){
-		return getSmallSpeciesView(species);
+		
+		String tableName = (String)ProlinksInteractionsSource.cachedTableNames.get(species);
+		
+		if(tableName != null)
+			return tableName;
+		
+		String sql = "SELECT tablename FROM species WHERE species = " + species;
+		ResultSet rs = query(sql);
+		
+		try{
+			if(rs.next()){
+				tableName = rs.getString(1);
+				System.out.println("Table name for species "  + species + " is : [" + tableName + "]");
+				ProlinksInteractionsSource.cachedTableNames.put(species, tableName);
+			}
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return tableName;
 	}
-	
-	/**
-	 * Creates a view with interactions for the given species for the given method
-	 * 
-	 * @param species a small species
-	 * @param one of PP, RS, GN, or GC
-	 * @param the pvalue that will be used for queries on this view
-	 * @return the name of the view to use, if the species is a big species, it returns species
-	 */
-	protected String getSmallSpeciesViewForMethod (String species, String method, double p){
 		
-		double pth = ((Double)ProlinksInteractionsSource.methodThresholds.get(method)).doubleValue();
-		String viewName = species + "_" + method;
-		if(p <= pth){
-			viewName = viewName + "_low";
-		}
-		
-		if(isBigSpecies(species)){
-			return viewName;
-		}
-		
-		String actualView = (String)ProlinksInteractionsSource.smallSpeciesViews.get(viewName);
-		
-		if(actualView != null){
-			return actualView;
-		}
-	
-		// Create a view
-		int speciesID = getSpeciesID(species);
-		String sql;
-		if(p <= pth){
-			sql = "CREATE VIEW " + viewName + " AS " + "SELECT gene_id_a,gene_id_b,p,method FROM prolinks WHERE species = " + speciesID +  
-			" AND method = " + method + " AND p <= " + pth;
-		}else{
-			sql = "CREATE VIEW " + viewName + " AS " + "SELECT gene_id_a,gene_id_b,p,method FROM prolinks WHERE species = " + speciesID +  
-			" AND method = " + method;
-		}
-		
-		boolean ok = execute(sql);
-		if(ok){
-             ProlinksInteractionsSource.smallSpeciesViews.put(viewName, viewName);
-			return viewName;
-		}
-		return "ERROR";
-	}
-	
 	/**
 	 * @param species the species
 	 * @param method one of PP, GN, GC, or RS
@@ -240,21 +158,15 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	 * @return the name of the table or view
 	 */
 	public String getTableNameForMethod (String species, String method, double query_pval){
-		return getSmallSpeciesViewForMethod(species, method, query_pval);
+
+		double pth = ((Double)ProlinksInteractionsSource.methodThresholds.get(method)).doubleValue();
+		String tableName = getTableName(species) + "_" + method;
+		if(query_pval <= pth){
+			tableName = tableName + "_low";
+		}
+		return tableName;
 	}
 
-	/**
-	 * @param species
-	 *            the name of the species
-	 * @return true if the given species is so big that its interactions are
-	 *         divided into 2 tables
-	 */
-	public boolean isBigSpecies(String species) {
-		if(ProlinksInteractionsSource.bigSpecies.containsKey(species)){
-			return true;
-		}
-		return false;
-	}// isBigSpecies
 
 	// Methods implementing DataSource interface:
 	/**
@@ -512,7 +424,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 			methods = (Vector)args.get(INTERACTION_TYPE);
 		}
 		
-		if(pval > 1 && methods.size() == 4){
+		if(pval >= 1 && methods.size() == 4){
 			// the same as calling getAllInteractions(species)
 			return getAllInteractions(species);
 		}
@@ -524,7 +436,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 			String method = (String)it.next();
 			String tableName = getTableNameForMethod(species, method, pval);
 			String sql = "SELECT gene_id_a, gene_id_b, p FROM " + tableName;
-			if(pval <= 1){
+			if(pval < 1){
 				sql = sql + " WHERE p <= " + pval;
 			}
 			ResultSet rs = query(sql);
@@ -1034,12 +946,12 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	 */
 	public Vector test (){
 		
-		String species1 = "Homo_sapiens"; // big
-		String species2 = "Saccharomyces_cerevisiae"; // small
-		String species3 = "Drosophila_melanogaster"; // big
-		String species4 = "Rickettsia_conorii"; // small
-		String species5 = "Arabidopsis_thaliana"; // big
-		String species6 = "Caenorhabditis_elegans"; // big
+		String species1 = "Homo_sapiens";
+		String species2 = "Saccharomyces_cerevisiae";
+		String species3 = "Drosophila_melanogaster";
+		String species4 = "Rickettsia_conorii";
+		String species5 = "Arabidopsis_thaliana";
+		String species6 = "Caenorhabditis_elegans";
 		String species7 = "Rattus_norvegicus";
 		
 		Hashtable args1 = new Hashtable();
@@ -1048,34 +960,34 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 		args1.put(INTERACTION_TYPE, methods);
 		args1.put(PVAL, new Double(0.0005));
 		
-		System.out.println("Calling getAllInteractions(" + species1 + "( (INTERACTION_TYPE --> PP), (PVAL --> 0.0005) )");
+		System.out.println("Calling getAllInteractions(" + species1 + ", ( (INTERACTION_TYPE --> PP), (PVAL --> 0.0005) )");
 		float start = System.currentTimeMillis();
 		Vector interactions = getAllInteractions(species1, args1);
 		float time = (System.currentTimeMillis() - start);
 		System.out.println("Done. Num interactions = " + interactions.size() + ", time = " + time);
 		interactions = null;
+		
 		System.out.println();
 		System.out.println();
 		
 		
-		// This crashed because we can't create views
-		//System.out.println("Calling getFirstNeighbors( 511014 , Saccharomyces_cerevisiae )...");
-		//start = System.currentTimeMillis();
-		//Vector fn = getFirstNeighbors("511014",species2);
-		//Iterator it = fn.iterator();
-		//time = (System.currentTimeMillis() - start)/1000;
-		//System.out.println("Done, time = " + time);
-		//while(it.hasNext()){
-		//	System.out.print(" " + it.next());
-		//}
+		System.out.println("Calling getFirstNeighbors( 511014 , Saccharomyces_cerevisiae )...");
+		start = System.currentTimeMillis();
+		Vector fn = getFirstNeighbors("511014",species2);
+		Iterator it = fn.iterator();
+		time = (System.currentTimeMillis() - start)/1000;
+		System.out.println("Done, time = " + time);
+		while(it.hasNext()){
+			System.out.print(" " + it.next());
+		}
 		
-		//System.out.println();
-		//System.out.println();
+		System.out.println();
+		System.out.println();
 		
 		System.out.println("Calling getFirstNeighbors( 445270 ," + species5 + "  )...");
 		start = System.currentTimeMillis();
-		Vector fn = getFirstNeighbors("445270",species5);
-		Iterator it = fn.iterator();
+		fn = getFirstNeighbors("445270",species5);
+		it = fn.iterator();
 		time = (System.currentTimeMillis() - start);
 		System.out.println("Done, time = " + time);
 		while(it.hasNext()){
