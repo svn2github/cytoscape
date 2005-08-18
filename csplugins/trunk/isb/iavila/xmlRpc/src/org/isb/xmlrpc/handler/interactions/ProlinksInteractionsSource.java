@@ -636,8 +636,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 				String tableName = getTableNameForMethod(species, method, pval);
 				sql = "(SELECT DISTINCT gene_id_b FROM " + tableName + " WHERE gene_id_a = " + interactor + " AND p <= " + pval + ")";
 				if(!directed){
-					sql = sql + " UNION (SELECT DISTINCT gene_id_a FROM " + tableName + " WHERE gene_id_b = " + interactor + 
-						" AN	D p <= " + pval + ")"; 
+					sql = sql + " UNION (SELECT DISTINCT gene_id_a FROM " + tableName + " WHERE gene_id_b = " + interactor + " AND p <= " + pval + ")"; 
 				}
 				ResultSet rs = query(sql);
 				Vector someInteractors = makeInteractorsVector(rs);
@@ -876,7 +875,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 		String tableName = getTableName(species);
 		
 		String sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + tableName + " WHERE (gene_id_a = " + interactor1 + " AND gene_id_b = " + interactor2 + ") OR " +
-		"(gene_id_a = " + interactor2 + "AND gene_id_b = " + interactor1 + ")";
+		"(gene_id_a = " + interactor2 + " AND gene_id_b = " + interactor1 + ")";
 		ResultSet rs = query(sql);
 		return makeInteractionsVector(rs);
 	}
@@ -944,7 +943,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 			if(methods.size() == 4){
 				// pval does not matter, method does not matter, only directed matters
 				String tableName = getTableName(species);
-				sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + tableName + " WHERE (gene_id_a = " + interactor1 + "AND gene_id_b = " + interactor2 + ")";
+				sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + tableName + " WHERE (gene_id_a = " + interactor1 + " AND gene_id_b = " + interactor2 + ")";
 				if(!directed){
 					sql = sql + " OR ( gene_id_a = " + interactor2 + " AND gene_id_b = " + interactor1 + ")";
 				}
@@ -1037,6 +1036,9 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 		String species2 = "Saccharomyces_cerevisiae"; // small
 		String species3 = "Drosophila_melanogaster"; // big
 		String species4 = "Rickettsia_conorii"; // small
+		String species5 = "Arabidopsis_thaliana"; // big
+		String species6 = "Caenorhabditis_elegans"; // big
+		String species7 = "Rattus_norvegicus";
 		
 		Hashtable args1 = new Hashtable();
 		Vector methods = new Vector();
@@ -1047,18 +1049,32 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 		System.out.println("Calling getAllInteractions(" + species1 + "( (INTERACTION_TYPE --> PP), (PVAL --> 0.0005) )");
 		float start = System.currentTimeMillis();
 		Vector interactions = getAllInteractions(species1, args1);
-		float time = (System.currentTimeMillis() - start) / 1000;
+		float time = (System.currentTimeMillis() - start);
 		System.out.println("Done. Num interactions = " + interactions.size() + ", time = " + time);
 		interactions = null;
 		System.out.println();
 		System.out.println();
 		
 		
-		System.out.println("Calling getFirstNeighbors( 511014 , Saccharomyces_cerevisiae )...");
+		// This crashed because we can't create views
+		//System.out.println("Calling getFirstNeighbors( 511014 , Saccharomyces_cerevisiae )...");
+		//start = System.currentTimeMillis();
+		//Vector fn = getFirstNeighbors("511014",species2);
+		//Iterator it = fn.iterator();
+		//time = (System.currentTimeMillis() - start)/1000;
+		//System.out.println("Done, time = " + time);
+		//while(it.hasNext()){
+		//	System.out.print(" " + it.next());
+		//}
+		
+		//System.out.println();
+		//System.out.println();
+		
+		System.out.println("Calling getFirstNeighbors( 445270 ," + species5 + "  )...");
 		start = System.currentTimeMillis();
-		Vector fn = getFirstNeighbors("511014",species2);
+		Vector fn = getFirstNeighbors("445270",species5);
 		Iterator it = fn.iterator();
-		time = (System.currentTimeMillis() - start)/1000;
+		time = (System.currentTimeMillis() - start);
 		System.out.println("Done, time = " + time);
 		while(it.hasNext()){
 			System.out.print(" " + it.next());
@@ -1067,11 +1083,13 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 		System.out.println();
 		System.out.println();
 		
+		
+		
 		args1.put(PVAL, new Double(0.05));
-		System.out.println("Calling getFirstNeighbors(511135, Saccharomyces_cerevisiae, ((INTERACTION_TYPE --> PP), (PVAL --> 0.05), (DIRECTED --> false) )");
+		System.out.println("Calling getFirstNeighbors(483602,"+ species6 +" , ((INTERACTION_TYPE --> PP), (PVAL --> 0.05), (DIRECTED --> false) )");
 		start = System.currentTimeMillis();
-		fn = getFirstNeighbors("511135", species2, args1);
-		time = (System.currentTimeMillis() - start)/1000;
+		fn = getFirstNeighbors("483602", species6, args1);
+		time = (System.currentTimeMillis() - start);
 		System.out.println("Done, time = " + time);
 		it = fn.iterator();
 		while(it.hasNext()){
@@ -1084,7 +1102,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 		System.out.println("Calling getAdjacentInteractions(495038"+species3 + ")");
 		start = System.currentTimeMillis();
 		interactions = getAdjacentInteractions("495038",species3);
-		time = (System.currentTimeMillis() - start)/1000;
+		time = (System.currentTimeMillis() - start);
 		System.out.println("Done, time = " + time);
 		it = interactions.iterator();
 		while(it.hasNext()){
@@ -1101,7 +1119,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 		System.out.println("Calling getAdjacentInteractions(495038," + species3 + ", ((INTERACTION_TYPE --> PP, GN, RS), (PVAL --> 0.07), (DIRECTED --> false) )");
 		start = System.currentTimeMillis();
 		interactions = getAdjacentInteractions("495038",species3, args1);
-		time = (System.currentTimeMillis() - start)/1000;
+		time = (System.currentTimeMillis() - start);
 		System.out.println("Done, time = " + time);
 		it = interactions.iterator();
 		while(it.hasNext()){
@@ -1111,20 +1129,12 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 		System.out.println();
 		System.out.println();
 		
-		System.out.println("Calling getConnectingInteractions(296186, 295240, " + species4 + ")");
+		System.out.println("Calling getConnectingInteractions(598388, 595923, " + species7 + ")");
 		start = System.currentTimeMillis();
-		interactions = getConnectingInteractions("296186", "295240", species4);
-		time = (System.currentTimeMillis() - start)/1000;
+		interactions = getConnectingInteractions("598388","595923", species7);
+		time = (System.currentTimeMillis() - start);
 		System.out.println("Done, time = " + time);
-		while(it.hasNext()){
-			System.out.println(it.next());
-		}
-		
-		System.out.println("Calling getConnectingInteractions(296186, 295240, " + species4 + ") (view already created...) ");
-		start = System.currentTimeMillis();
-		interactions = getConnectingInteractions("296186", "295240", species4);
-		time = (System.currentTimeMillis() - start)/1000;
-		System.out.println("Done, time = " + time);
+		it = interactions.iterator();
 		while(it.hasNext()){
 			System.out.println(it.next());
 		}
