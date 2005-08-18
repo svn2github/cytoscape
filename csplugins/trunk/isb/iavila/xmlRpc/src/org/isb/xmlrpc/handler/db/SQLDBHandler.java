@@ -180,6 +180,25 @@ public class SQLDBHandler implements DBHandler {
 			return rs;
 		}
 	}
+	
+	/**
+	 * Use for CREATE statements
+	 * 
+	 * @param sql_statement
+	 * @return true if all alright, false otherwise
+	 */
+	protected boolean execute(String sql_statement){
+		if(debug){
+			System.out.println(sql_statement);
+		}
+		try{
+			Statement st = this.connection.createStatement();
+			return st.execute(sql_statement);
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
+	}
 
 	/**
 	 * @param sql_statement

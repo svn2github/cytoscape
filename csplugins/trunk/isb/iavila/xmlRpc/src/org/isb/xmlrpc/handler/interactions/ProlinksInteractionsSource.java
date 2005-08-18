@@ -66,8 +66,9 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 
 	/**
 	 * The species whose interactions are containes in their own separate tables
+	 * String -> true
 	 */
-	public static String[] bigSpecies;
+	public static Map bigSpecies;
 
 	/**
 	 * A map from method of interaction (one of PP,GN,RS,GC) to a
@@ -75,6 +76,21 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	 * are located in tables with '_low' terminations
 	 */
 	protected static Map methodThresholds;
+	
+	/**
+	 * Usually, only a few species will be accessed during a session. This map
+	 * caches the int IDs of Strings representing hit species
+	 */
+	protected static Map cachedSpeciesIds;
+	
+	/**
+	 * A Map from Strings (species) to a name of a view created
+	 * for the small species (that contains all interactions for that
+	 * species).<br>
+	 * Views are not physical tables in the DB, they are "virtual tables".<br>
+	 * In this class, the views get created on demand.
+	 */
+	protected static Map smallSpeciesViews;
 	
 
 	/**
@@ -98,18 +114,17 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	 * Finds the big species, and initilizes the method thresholds map
 	 */
 	protected void initialize() {
+		ProlinksInteractionsSource.bigSpecies = new Hashtable();
 		String sql = "SELECT species FROM big_species";
 		ResultSet rs = query(sql);
 		if (rs != null) {
 
 			try {
-				ArrayList bSpecies = new ArrayList();
 				while (rs.next()) {
 					String sp = (String) rs.getObject(1);
-					bSpecies.add(sp);
+					ProlinksInteractionsSource.bigSpecies.put(sp, Boolean.TRUE);
 				}
-				ProlinksInteractionsSource.bigSpecies = (String[]) bSpecies
-						.toArray(new String[bSpecies.size()]);
+
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -131,7 +146,100 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 			}
 
 		}
+		ProlinksInteractionsSource.cachedSpeciesIds = new Hashtable();
+		ProlinksInteractionsSource.smallSpeciesViews = new Hashtable();
 	}// initialize
+	
+	/**
+	 * Creates a view with all the interactions for the given small species
+	 * 
+	 * @param species a small species
+	 * @return the name of the view to use, if the species is a big species, it returns species
+	 */
+	protected String getSmallSpeciesView (String species){
+		
+		String view = (String)ProlinksInteractionsSource.smallSpeciesViews.get(species);
+		
+		if(view != null){
+			return view;
+		}
+	
+		if(isBigSpecies(species)){
+			return species;
+		}
+		// Create a view
+		int speciesID = getSpeciesID(species);
+		String sql = "CREATE VIEW " + species + " AS " + "SELECT gene_id_a,gene_id_b,p,method FROM prolinks WHERE species = " + speciesID;
+		boolean ok = execute(sql);
+		if(ok){
+             ProlinksInteractionsSource.smallSpeciesViews.put(species, species);
+			return species;
+		}
+		return "ERROR";
+	}
+	
+	/**
+	 * @param species the species
+	 * @return the name of the table or view for the given species
+	 */
+	public String getTableName (String species){
+		return getSmallSpeciesView(species);
+	}
+	
+	/**
+	 * Creates a view with interactions for the given species for the given method
+	 * 
+	 * @param species a small species
+	 * @param one of PP, RS, GN, or GC
+	 * @param the pvalue that will be used for queries on this view
+	 * @return the name of the view to use, if the species is a big species, it returns species
+	 */
+	protected String getSmallSpeciesViewForMethod (String species, String method, double p){
+		
+		double pth = ((Double)ProlinksInteractionsSource.methodThresholds.get(method)).doubleValue();
+		String viewName = species + "_" + method;
+		if(p <= pth){
+			viewName = viewName + "_low";
+		}
+		
+		if(isBigSpecies(species)){
+			return viewName;
+		}
+		
+		String actualView = (String)ProlinksInteractionsSource.smallSpeciesViews.get(viewName);
+		
+		if(actualView != null){
+			return actualView;
+		}
+	
+		// Create a view
+		int speciesID = getSpeciesID(species);
+		String sql;
+		if(p <= pth){
+			sql = "CREATE VIEW " + viewName + " AS " + "SELECT gene_id_a,gene_id_b,p,method FROM prolinks WHERE species = " + speciesID +  
+			" AND method = " + method + " AND p <= " + pth;
+		}else{
+			sql = "CREATE VIEW " + viewName + " AS " + "SELECT gene_id_a,gene_id_b,p,method FROM prolinks WHERE species = " + speciesID +  
+			" AND method = " + method;
+		}
+		
+		boolean ok = execute(sql);
+		if(ok){
+             ProlinksInteractionsSource.smallSpeciesViews.put(viewName, viewName);
+			return viewName;
+		}
+		return "ERROR";
+	}
+	
+	/**
+	 * @param species the species
+	 * @param method one of PP, GN, GC, or RS
+	 * @param query_pval the pvalue that is going to be used to query the table ( >1 if pval is not important )
+	 * @return the name of the table or view
+	 */
+	public String getTableNameForMethod (String species, String method, double query_pval){
+		return getSmallSpeciesViewForMethod(species, method, query_pval);
+	}
 
 	/**
 	 * @param species
@@ -140,14 +248,9 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	 *         divided into 2 tables
 	 */
 	public boolean isBigSpecies(String species) {
-		if (ProlinksInteractionsSource.bigSpecies == null) {
-			return false;
+		if(ProlinksInteractionsSource.bigSpecies.containsKey(species)){
+			return true;
 		}
-		for (int i = 0; i < ProlinksInteractionsSource.bigSpecies.length; i++) {
-			if (ProlinksInteractionsSource.bigSpecies[i].equals(species)) {
-				return true;
-			}
-		}// for i
 		return false;
 	}// isBigSpecies
 
@@ -335,6 +438,30 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 		}
 		return EMPTY_VECTOR;
 	}
+	
+	/**
+	 * @param species the String description of the species
+	 * @return the int id of the species, or 0 if there is something wrong
+	 */
+	public int getSpeciesID (String species){
+		Integer ID = (Integer)ProlinksInteractionsSource.cachedSpeciesIds.get(species);
+		if(ID != null){
+			return ID.intValue();
+		}
+		String sql = "SELECT species_id FROM species WHERE species = \"" + species + "\"";
+		ResultSet rs = query(sql);
+		try{
+			if(rs.next()){
+				int id = rs.getInt(1);
+				ProlinksInteractionsSource.cachedSpeciesIds.put(species, new Integer(id));
+				return id;
+			}
+			return 0;
+		}catch(SQLException e){
+			e.printStackTrace();
+			return 0; // species ids start at 1
+		}
+	}
 
 	// ------------------------ get interactions en masse --------------------
 	/**
@@ -351,10 +478,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	// TODO: This is giving us a OutOfMemoryError
 	// Will need to add paging, or something like that
 	public Vector getAllInteractions(String species) {
-		String tableName = species;
-		if (!isBigSpecies(species)) {
-			tableName = "prolinks";
-		}
+		String tableName = getTableName(species);
 		String sql = "SELECT gene_id_a,gene_id_b,p,method FROM " + tableName;
 		ResultSet rs = query(sql);
 		return makeInteractionsVector(rs);
@@ -376,12 +500,6 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	 */
 	public Vector getAllInteractions(String species, Hashtable args) {
 		
-		String tableName = species;
-		
-		if(!isBigSpecies(species)){
-			tableName = "prolinks";
-		}
-		
 		double pval = 2; // PVALS' max value is 1
 		if(args.containsKey(PVAL)){
 			pval = ( (Double)args.get(PVAL) ).doubleValue();
@@ -397,38 +515,20 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 			return getAllInteractions(species);
 		}
 		
+		
 		Iterator it = methods.iterator();
-		
 		Vector allInteractions = new Vector();
+		while(it.hasNext()){
+			String method = (String)it.next();
+			String tableName = getTableNameForMethod(species, method, pval);
+			String sql = "SELECT gene_id_a, gene_id_b, p FROM " + tableName;
+			if(pval <= 1){
+				sql = sql + " WHERE p <= " + pval;
+			}
+			ResultSet rs = query(sql);
+			allInteractions.addAll(makeInteractionsVector(rs,method));
+		}//while it.hasNext
 		
-		if(pval > 1){
-			// No pvalue restriction, so get all interactions for the specified methods
-			while(it.hasNext()){
-				String method = (String)it.next();
-				String sql = "SELECT gene_id_a, gene_id_b, p FROM " + tableName + "_" + method;
-				ResultSet rs = query(sql);
-				allInteractions.addAll(makeInteractionsVector(rs,method));
-			}//while it.hasNext
-		}//if pval > 1
-		else{
-			// Pvalue is restricted
-			while(it.hasNext()){
-				String method = (String)it.next();
-				double th = ( (Double)ProlinksInteractionsSource.methodThresholds.get(method) ).doubleValue();
-				String sql;
-				String completeTableName = tableName + "_" + method;
-				
-				if(pval <= th){
-					completeTableName = completeTableName + "_low";
-				}
-				
-				sql = "SELECT gene_id_a, gene_id_b, p FROM " + completeTableName + " WHERE p <= " + pval;
-				ResultSet rs = query(sql);
-				allInteractions.addAll(makeInteractionsVector(rs, method));
-				
-			}//while it.hasNext
-			
-		}
 		return allInteractions;
 	}
 
@@ -448,11 +548,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	 */
 	public Vector getFirstNeighbors (String interactor, String species) {
 		
-		String tableName = species;
-		
-		if(!isBigSpecies(species)){
-			tableName = "prolinks";
-		}
+		String tableName = getTableName(species);
 		
 		// Get both directions with no repeats:
 		String sql = "(SELECT DISTINCT gene_id_b FROM " + tableName + " WHERE gene_id_a=" + interactor + ") UNION " + 
@@ -481,12 +577,6 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	 */
 	public Vector getFirstNeighbors(String interactor, String species,
 			Hashtable args) {
-		
-		String tableName = species;
-		
-		if(!isBigSpecies(species)){
-			tableName = "prolinks";
-		}
 		
 		double pval = 2;
 		if(args.containsKey(PVAL)){
@@ -520,19 +610,18 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 				Iterator it = methods.iterator();
 				while(it.hasNext()){
 					String method = (String)it.next();
-					String completeTableName = tableName + "_" + method;
-					sql = "(SELECT DISTINCT gene_id_b FROM " + completeTableName + " WHERE gene_id_a = " + interactor + ")";
+					String tableName = getTableNameForMethod(species, method, pval);
+					sql = "(SELECT DISTINCT gene_id_b FROM " + tableName + " WHERE gene_id_a = " + interactor + ")";
 					if(!directed){
-					
-						sql = sql + " UNION (SELECT DISTINCT gene_id_a FROM " + completeTableName + " WHERE gene_id_b = " + interactor + ")";
+						sql = sql + " UNION (SELECT DISTINCT gene_id_a FROM " + tableName + " WHERE gene_id_b = " + interactor + ")";
 					}
 					ResultSet rs = query(sql);
 					Vector someInteractors = makeInteractorsVector(rs);
 					set.addAll(someInteractors);
-				
 				}//while it.hasNext
 			}else{
 				// Only restriction is "directed"!
+				String tableName = getTableName(species);
 				sql = "SELECT DISTINCT gene_id_b FROM " + tableName + " WHERE gene_id_a=" + interactor;
 				ResultSet rs = query(sql);
 				return makeInteractorsVector(rs);
@@ -544,14 +633,10 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 			Iterator it = methods.iterator();
 			while(it.hasNext()){
 				String method = (String)it.next();
-				double th = ( (Double)ProlinksInteractionsSource.methodThresholds.get(method) ).doubleValue();
-				String completeTableName = tableName + "_" + method;
-				if(pval <= th){
-					completeTableName = completeTableName + "_low";
-				}
-				sql = "(SELECT DISTINCT gene_id_b FROM " + completeTableName + " WHERE gene_id_a = " + interactor + " AND p <= " + pval + ")";
+				String tableName = getTableNameForMethod(species, method, pval);
+				sql = "(SELECT DISTINCT gene_id_b FROM " + tableName + " WHERE gene_id_a = " + interactor + " AND p <= " + pval + ")";
 				if(!directed){
-					sql = sql + " UNION (SELECT DISTINCT gene_id_a FROM " + completeTableName + " WHERE gene_id_b = " + interactor + 
+					sql = sql + " UNION (SELECT DISTINCT gene_id_a FROM " + tableName + " WHERE gene_id_b = " + interactor + 
 						" AN	D p <= " + pval + ")"; 
 				}
 				ResultSet rs = query(sql);
@@ -624,12 +709,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	 */
 	public Vector getAdjacentInteractions(String interactor, String species) {
 	
-		String tableName = species;
-		
-		if(!isBigSpecies(species)){
-			tableName = "prolinks";
-		}
-		
+		String tableName = getTableName(species);
 		// not directed
 		String sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + tableName + " WHERE gene_id_a = " + interactor +
 		" OR gene_id_b = " + interactor;
@@ -657,12 +737,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	 */
 	public Vector getAdjacentInteractions(String interactor, String species,
 			Hashtable args) {
-		 String tableName = species;
-		 
-		 if(!isBigSpecies(species)){
-			 tableName = "prolinks";
-		 }
-		 
+		
 		 double pval = 2;
 		 if(args.containsKey(PVAL)){
 			 pval = ( (Double)args.get(PVAL)).doubleValue();
@@ -687,6 +762,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 		 if(pval > 1){
 			 if(methods.size() == 4){
 				 // Only thing that matters is that the interaction is directed
+				 String tableName = getTableName(species);
 				 sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + tableName + " WHERE gene_id_a = " + interactor;
 				 ResultSet rs = query(sql);
 				 return makeInteractionsVector(rs);
@@ -695,7 +771,8 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 				 Iterator it = methods.iterator();
 				 while(it.hasNext()){
 					 String method= (String)it.next();
-					 sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + tableName + "_" + method + " WHERE gene_id_a = " + interactor;
+					 String tableName = getTableNameForMethod(species, method, pval);
+					 sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + tableName + " WHERE gene_id_a = " + interactor;
 					 if(!directed){
 						 sql = sql + " OR gene_id_b = " + interactor;
 					 }
@@ -707,19 +784,13 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 		 }else{
 			 // Pvalue is restricted
 			 Iterator it = methods.iterator();
-			 String completeTableName;
 			 while(it.hasNext()){
 				String method = (String)it.next();
-				double pth = ( (Double)ProlinksInteractionsSource.methodThresholds.get(method) ).doubleValue();
-				completeTableName = tableName + "_" + method;
-				if(pval <= pth){
-					completeTableName = completeTableName + "_low"; 
-				}
-					
+				String tableName = getTableNameForMethod(species, method, pval);
 				if(directed){
-					sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + completeTableName + " WHERE gene_id_a = " + interactor + " AND p <= " +  pval;
+					sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + tableName + " WHERE gene_id_a = " + interactor + " AND p <= " +  pval;
 				}else{
-					sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + completeTableName + " WHERE (gene_id_a = " + interactor + 
+					sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + tableName + " WHERE (gene_id_a = " + interactor + 
 					" OR gene_id_b = " + interactor + ") AND p <= " +  pval;
 				}
 				ResultSet rs = query(sql);
@@ -802,15 +873,10 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	 */
 	public Vector getConnectingInteractions(String interactor1,
 			String interactor2, String species) {
-		String tableName = species;
-		
-		if(!isBigSpecies(species)){
-			tableName = "prolinks";
-		}
+		String tableName = getTableName(species);
 		
 		String sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + tableName + " WHERE (gene_id_a = " + interactor1 + " AND gene_id_b = " + interactor2 + ") OR " +
 		"(gene_id_a = " + interactor2 + "AND gene_id_b = " + interactor1 + ")";
-		
 		ResultSet rs = query(sql);
 		return makeInteractionsVector(rs);
 	}
@@ -834,10 +900,6 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	 */
 	public Vector getConnectingInteractions(String interactor1,
 			String interactor2, String species, Hashtable args) {
-		String tableName = species;
-		if(!isBigSpecies(species)){
-			tableName = "prolinks";
-		}
 		
 		double pval = 2;
 		if(args.containsKey(PVAL)){
@@ -864,16 +926,12 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 			Vector interactions = new Vector();
 			while(it.hasNext()){
 				String method = (String)it.next();
-				double pth = ((Double)ProlinksInteractionsSource.methodThresholds.get(method)).doubleValue();
-				String completeTableName = tableName + "_" + method;
-				if(pval <= pth){
-					completeTableName = completeTableName + "_low";
-				}
+				String tableName = getTableNameForMethod(species, method, pval);
 				if(directed){
-					sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + completeTableName + " WHERE gene_id_a = " + 
+					sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + tableName + " WHERE gene_id_a = " + 
 					interactor1 + " AND gene_id_b = " + interactor2 + " AND p <= " + pval;
 				}else{
-					sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + completeTableName + " WHERE ( (gene_id_a = " + 
+					sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + tableName + " WHERE ( (gene_id_a = " + 
 					interactor1 + " AND gene_id_b = " + interactor2 + ") OR ( gene_id_a = " + interactor2 + " AND gene_id_b = " + interactor1 + ") ) " + 
 					"AND p <= " + pval;
 				}//else
@@ -885,6 +943,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 			// No pval restriction
 			if(methods.size() == 4){
 				// pval does not matter, method does not matter, only directed matters
+				String tableName = getTableName(species);
 				sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + tableName + " WHERE (gene_id_a = " + interactor1 + "AND gene_id_b = " + interactor2 + ")";
 				if(!directed){
 					sql = sql + " OR ( gene_id_a = " + interactor2 + " AND gene_id_b = " + interactor1 + ")";
@@ -898,7 +957,8 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 				Vector interactions = new Vector();
 				while(it.hasNext()){
 					String method = (String)it.next();
-					sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + tableName + "_" + method + 
+					String tableName = getTableNameForMethod(species, method, pval);
+					sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + tableName + 
 					" WHERE (gene_id_a = " + interactor1 + " AND gene_id_b = " + interactor2 + ")";
 					if(!directed){
 						sql = sql + " OR (gene_id_a = " + interactor2 + " AND gene_id_b = " + interactor1 + ")"; 
@@ -972,20 +1032,34 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	 * Tests methods in this class.
 	 */
 	public Vector test (){
-		String species = "Homo_sapiens";
 		
-		Hashtable args = new Hashtable();
+		String species1 = "Homo_sapiens"; // big
+		String species2 = "Saccharomyces_cerevisiae"; // small
+		String species3 = "Drosophila_melanogaster"; // big
+		String species4 = "Rickettsia_conorii"; // small
+		
+		Hashtable args1 = new Hashtable();
 		Vector methods = new Vector();
 		methods.add(PP);
+		args1.put(INTERACTION_TYPE, methods);
+		args1.put(PVAL, new Double(0.0005));
 		
-		args.put(INTERACTION_TYPE, methods);
-		args.put(PVAL, new Double(0.005));
-		args.put(DIRECTED, Boolean.TRUE);
+		System.out.println("Calling getAllInteractions(" + species1 + "( (INTERACTION_TYPE --> PP), (PVAL --> 0.0005) )");
+		float start = System.currentTimeMillis();
+		Vector interactions = getAllInteractions(species1, args1);
+		float time = (System.currentTimeMillis() - start) / 1000;
+		System.out.println("Done. Num interactions = " + interactions.size() + ", time = " + time);
+		interactions = null;
+		System.out.println();
+		System.out.println();
 		
-		System.out.println("Calling getFirstNeighbors(553645, Homo_sapiens)...");
-		Vector fn = getFirstNeighbors("553645",species);
+		
+		System.out.println("Calling getFirstNeighbors( 511014 , Saccharomyces_cerevisiae )...");
+		start = System.currentTimeMillis();
+		Vector fn = getFirstNeighbors("511014",species2);
 		Iterator it = fn.iterator();
-		System.out.println("Done:");
+		time = (System.currentTimeMillis() - start)/1000;
+		System.out.println("Done, time = " + time);
 		while(it.hasNext()){
 			System.out.print(" " + it.next());
 		}
@@ -993,15 +1067,67 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 		System.out.println();
 		System.out.println();
 		
-		System.out.println("Calling getAllInteractions(Homo_sapiens, Hashtable (PP,0.005))");
-		Vector ints = getAllInteractions(species, args);
-		System.out.println("Done: interactions = " + ints.size());
+		args1.put(PVAL, new Double(0.05));
+		System.out.println("Calling getFirstNeighbors(511135, Saccharomyces_cerevisiae, ((INTERACTION_TYPE --> PP), (PVAL --> 0.05), (DIRECTED --> false) )");
+		start = System.currentTimeMillis();
+		fn = getFirstNeighbors("511135", species2, args1);
+		time = (System.currentTimeMillis() - start)/1000;
+		System.out.println("Done, time = " + time);
+		it = fn.iterator();
+		while(it.hasNext()){
+			System.out.print(" " +it.next());
+		}
 		
 		System.out.println();
 		System.out.println();
 		
-		//System.out.println("Calling getFirstNeighbors()");
+		System.out.println("Calling getAdjacentInteractions(495038"+species3 + ")");
+		start = System.currentTimeMillis();
+		interactions = getAdjacentInteractions("495038",species3);
+		time = (System.currentTimeMillis() - start)/1000;
+		System.out.println("Done, time = " + time);
+		it = interactions.iterator();
+		while(it.hasNext()){
+			System.out.println(it.next());
+		}
 		
+		System.out.println();
+		System.out.println();
+		
+		methods.add(GN);
+		methods.add(RS);
+		args1.put(INTERACTION_TYPE, methods);
+		args1.put(PVAL, new Double (0.07));
+		System.out.println("Calling getAdjacentInteractions(495038," + species3 + ", ((INTERACTION_TYPE --> PP, GN, RS), (PVAL --> 0.07), (DIRECTED --> false) )");
+		start = System.currentTimeMillis();
+		interactions = getAdjacentInteractions("495038",species3, args1);
+		time = (System.currentTimeMillis() - start)/1000;
+		System.out.println("Done, time = " + time);
+		it = interactions.iterator();
+		while(it.hasNext()){
+			System.out.println(it.next());
+		}
+		
+		System.out.println();
+		System.out.println();
+		
+		System.out.println("Calling getConnectingInteractions(296186, 295240, " + species4 + ")");
+		start = System.currentTimeMillis();
+		interactions = getConnectingInteractions("296186", "295240", species4);
+		time = (System.currentTimeMillis() - start)/1000;
+		System.out.println("Done, time = " + time);
+		while(it.hasNext()){
+			System.out.println(it.next());
+		}
+		
+		System.out.println("Calling getConnectingInteractions(296186, 295240, " + species4 + ") (view already created...) ");
+		start = System.currentTimeMillis();
+		interactions = getConnectingInteractions("296186", "295240", species4);
+		time = (System.currentTimeMillis() - start)/1000;
+		System.out.println("Done, time = " + time);
+		while(it.hasNext()){
+			System.out.println(it.next());
+		}
 		
 		return EMPTY_VECTOR;
 	}//test
