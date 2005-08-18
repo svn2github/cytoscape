@@ -982,10 +982,11 @@ public abstract class Cytoscape {
 
 	    for ( int i = 0 ; i < nodeAttrLocations.length; ++i ) {
         try {
-          nodeData.readAttributesFromFile( bioDataServer,
-                                           species,
-                                           nodeAttrLocations[i],
-                                           canonicalize );
+          // nodeData.readAttributesFromFile( bioDataServer,
+//                                            species,
+//                                            nodeAttrLocations[i],
+//                                            canonicalize );
+          nodeData.readAttributesFromFile( nodeAttrLocations[i] );
         } catch (Exception e) {
           System.err.println( "Error loading attributes into NodeData" );
           // e.printStackTrace();
