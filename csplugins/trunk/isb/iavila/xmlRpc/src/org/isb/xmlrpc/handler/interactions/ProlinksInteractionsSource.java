@@ -280,7 +280,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 				inter.put(PVAL, new Double(pval));
 				inter.put(SOURCE, ProlinksInteractionsSource.NAME);
 				interactions.add(inter);
-				if(debug && interactions.size() % 1000 == 0){
+				if(debug && interactions.size() % 10000 == 0){
 					System.out.println("interactions = "
 							+ interactions.size());
 				}
@@ -316,7 +316,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 				interaction.put(INTERACTION_TYPE, method);
 				interaction.put(SOURCE, getDataSourceName());
 				allInteractions.add(interaction);
-				if(debug && allInteractions.size() % 1000 == 0){
+				if(debug && allInteractions.size() % 10000 == 0){
 					System.out.println("interactions = "
 							+ allInteractions.size());
 				}
@@ -342,7 +342,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 			while(rs.next()){
 				String gene = rs.getString(1);
 				interactors.add(gene);
-				if(debug && interactors.size() % 1000 == 0){
+				if(debug && interactors.size() % 10000 == 0){
 					System.out.println("interactors = " + interactors.size());
 				}
 			}// while rs.next
@@ -966,7 +966,6 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 		
 		System.out.println("Calling getAllInteractions(" + species1 + ", ( (INTERACTION_TYPE --> PP), (PVAL --> 0.0005) )");
 		float start = System.currentTimeMillis();
-		System.out.println("Start = " + start);
 		Vector interactions = getAllInteractions(species1, args1);
 		float time = (System.currentTimeMillis() - start);
 		System.out.println("Done. Num interactions = " + interactions.size() + ", time = " + time);
@@ -980,7 +979,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 		start = System.currentTimeMillis();
 		Vector fn = getFirstNeighbors("511014",species2);
 		Iterator it = fn.iterator();
-		time = (System.currentTimeMillis() - start)/1000;
+		time = System.currentTimeMillis() - start;
 		System.out.println("Done, time = " + time);
 		while(it.hasNext()){
 			System.out.print(" " + it.next());
@@ -993,7 +992,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 		start = System.currentTimeMillis();
 		fn = getFirstNeighbors("445270",species5);
 		it = fn.iterator();
-		time = (System.currentTimeMillis() - start);
+		time = System.currentTimeMillis() - start;
 		System.out.println("Done, time = " + time);
 		while(it.hasNext()){
 			System.out.print(" " + it.next());
@@ -1035,9 +1034,9 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 		methods.add(RS);
 		args1.put(INTERACTION_TYPE, methods);
 		args1.put(PVAL, new Double (0.07));
-		System.out.println("Calling getAdjacentInteractions(495038," + species3 + ", ((INTERACTION_TYPE --> PP, GN, RS), (PVAL --> 0.07), (DIRECTED --> false) )");
+		System.out.println("Calling getAdjacentInteractions(507745," + species3 + ", ((INTERACTION_TYPE --> PP, GN, RS), (PVAL --> 0.07), (DIRECTED --> false) )");
 		start = System.currentTimeMillis();
-		interactions = getAdjacentInteractions("495038",species3, args1);
+		interactions = getAdjacentInteractions(" 507745",species3, args1);
 		time = (System.currentTimeMillis() - start);
 		System.out.println("Done, time = " + time);
 		it = interactions.iterator();
