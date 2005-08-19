@@ -33,4 +33,17 @@ public interface ICytoPanel {
 	 * @return cytoPanelState A CytoPanel Constants state
      */
     public int getState();
+
+	/**
+	 * Add a CytoPanel listener.
+	 * @param cytoPanelListener Reference to a ICytoPanelListener
+	 */
+	public void addCytoPanelListener(ICytoPanelListener cytoPanelListener);
+
+	/**
+	 * Remove a CytoPanel listener.
+	 * @param cytoPanelListener Reference to a ICytoPanelListener
+	 */
+	public void removeCytoPanelListener(ICytoPanelListener cytoPanelListener);
+
 }
