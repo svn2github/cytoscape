@@ -267,21 +267,21 @@ public class CytoPanelDemo {
 		};
 
 		// cytopanel west window sub menu item
-		cytoPanelMenuItemWest = new JCheckBoxMenuItem(CytoPanelConstants.CYTOPANEL_TITLE_WEST);
+		cytoPanelMenuItemWest = new JCheckBoxMenuItem("CytoPanel 1");
 		cytoPanelMenuItemWest.setMnemonic(KeyEvent.VK_1);
 		cytoPanelMenuItemWest.setSelected(true);
 		cytoPanelMenuItemWest.addActionListener(cytoPanelWestWindowMenuItemListener);
 		mWindow.add(cytoPanelMenuItemWest);
 
 		// cytopanel east window sub menu item
-		cytoPanelMenuItemEast = new JCheckBoxMenuItem(CytoPanelConstants.CYTOPANEL_TITLE_EAST);
+		cytoPanelMenuItemEast = new JCheckBoxMenuItem("CytoPanel 2");
 		cytoPanelMenuItemEast.setMnemonic(KeyEvent.VK_2);
 		cytoPanelMenuItemEast.setSelected(false);
 		cytoPanelMenuItemEast.addActionListener(cytoPanelEastWindowMenuItemListener);
 		mWindow.add(cytoPanelMenuItemEast);
 
 		// cytopanel south window sub menu item
-		cytoPanelMenuItemSouth = new JCheckBoxMenuItem(CytoPanelConstants.CYTOPANEL_TITLE_SOUTH);
+		cytoPanelMenuItemSouth = new JCheckBoxMenuItem("CytoPanel 3");
 		cytoPanelMenuItemSouth.setMnemonic(KeyEvent.VK_3);
 		cytoPanelMenuItemSouth.setSelected(false);
 		cytoPanelMenuItemSouth.addActionListener(cytoPanelSouthWindowMenuItemListener);
