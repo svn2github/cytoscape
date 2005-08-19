@@ -38,22 +38,22 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	/**
 	 * Protein-protein interaction type
 	 */
-	public static final String PP = "pp";
+	public static final String PP = "PP";
 	
 	/**
 	 * Gene-neighbor interaction type
 	 */
-	public static final String GN = "gn";
+	public static final String GN = "GN";
 	
 	/**
 	 * Rosetta-Stone interaction type
 	 */
-	public static final String RS = "rs";
+	public static final String RS = "RS";
 	
 	/**
 	 * Gene-Cluster interaction type
 	 */
-	public static final String GC = "gc";
+	public static final String GC = "GC";
 	
 	/**
 	 * All the interaction types in Prolinks
@@ -136,7 +136,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 		if(tableName != null)
 			return tableName;
 		
-		String sql = "SELECT tablename FROM species WHERE species = " + species;
+		String sql = "SELECT tablename FROM species WHERE species = \"" + species + "\"";
 		ResultSet rs = query(sql);
 		
 		try{
@@ -160,7 +160,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	public String getTableNameForMethod (String species, String method, double query_pval){
 
 		double pth = ((Double)ProlinksInteractionsSource.methodThresholds.get(method)).doubleValue();
-		String tableName = getTableName(species) + "_" + method;
+		String tableName = getTableName(species) + "_" + method.toLowerCase();
 		if(query_pval <= pth){
 			tableName = tableName + "_low";
 		}
@@ -417,11 +417,13 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 		double pval = 2; // PVALS' max value is 1
 		if(args.containsKey(PVAL)){
 			pval = ( (Double)args.get(PVAL) ).doubleValue();
+		//	System.out.println("pval = " + pval);
 		}
 		
 		Vector methods = INT_TYPES;
 		if(args.containsKey(INTERACTION_TYPE)){
 			methods = (Vector)args.get(INTERACTION_TYPE);
+			//System.out.println("methods.size() = " + methods.size());
 		}
 		
 		if(pval >= 1 && methods.size() == 4){
@@ -434,7 +436,9 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 		Vector allInteractions = new Vector();
 		while(it.hasNext()){
 			String method = (String)it.next();
+			//System.out.println(method);
 			String tableName = getTableNameForMethod(species, method, pval);
+			//System.out.println("tableName = " + tableName);
 			String sql = "SELECT gene_id_a, gene_id_b, p FROM " + tableName;
 			if(pval < 1){
 				sql = sql + " WHERE p <= " + pval;
@@ -962,6 +966,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 		
 		System.out.println("Calling getAllInteractions(" + species1 + ", ( (INTERACTION_TYPE --> PP), (PVAL --> 0.0005) )");
 		float start = System.currentTimeMillis();
+		System.out.println("Start = " + start);
 		Vector interactions = getAllInteractions(species1, args1);
 		float time = (System.currentTimeMillis() - start);
 		System.out.println("Done. Num interactions = " + interactions.size() + ", time = " + time);
