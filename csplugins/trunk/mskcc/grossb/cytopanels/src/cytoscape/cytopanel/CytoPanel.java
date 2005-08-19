@@ -150,6 +150,26 @@ public class CytoPanel extends JPanel implements ICytoPanel, ChangeListener {
      */
     private static final String FILE_SEPARATOR = "/";
 
+	/**
+	 * CytoPanelWest title.
+	 */
+    private static final String CYTOPANEL_TITLE_WEST = "CytoPanel 1";
+
+	/**
+	 * CytoPanelEast title.
+	 */
+    private static final String CYTOPANEL_TITLE_EAST = "CytoPanel 2";
+
+	/**
+	 * CytoPanelSouth title.
+	 */
+    private static final String CYTOPANEL_TITLE_SOUTH = "CytoPanel 3";
+
+	/**
+	 * CytoPanelNorth title.
+	 */
+    private static final String CYTOPANEL_TITLE_NORTH = "CytoPanel 4";
+
     /**
      * Constructor.
 	 *
@@ -451,13 +471,13 @@ public class CytoPanel extends JPanel implements ICytoPanel, ChangeListener {
 	private String getTitle(){
 		switch (compassDirection){
 		case SwingConstants.NORTH:
-            return CytoPanelConstants.CYTOPANEL_TITLE_NORTH;
+            return CYTOPANEL_TITLE_NORTH;
 		case SwingConstants.SOUTH:
-            return CytoPanelConstants.CYTOPANEL_TITLE_SOUTH;
+            return CYTOPANEL_TITLE_SOUTH;
 		case SwingConstants.EAST:
-            return CytoPanelConstants.CYTOPANEL_TITLE_EAST;
+            return CYTOPANEL_TITLE_EAST;
 		case SwingConstants.WEST:
-            return CytoPanelConstants.CYTOPANEL_TITLE_WEST;
+            return CYTOPANEL_TITLE_WEST;
 		}
 		return null;
 	}
