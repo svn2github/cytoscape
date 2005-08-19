@@ -151,8 +151,11 @@ public interface CyData
    *   definition; the order of the returned strings is arbitrary; null is
    *   never returned.
    * @exception IllegalStateException if attributeName is not an existing
-   *   attribute definition; see CyDataDefinition.
+   *   attribute definition; to test whether or not attributeName is an
+   *   existing attribute definition, use
+   *   CyDataDefinition.getAttributeValueType(attributeName).
    * @exception NullPointerException if attributeName is null.
+   * @see CyDataDefinition#getAttributeValueType(String)
    */
   public CountedIterator getObjectKeys(String attributeName);
 
