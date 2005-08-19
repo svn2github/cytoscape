@@ -33,9 +33,7 @@ public final class TryBezierCurveSelection
   private final int m_imgWidth = 640;
   private final int m_imgHeight = 480;
   private final Image m_img;
-  private final GeneralPath m_curve1;
-//   private final GeneralPath m_curve2;
-//   private final GeneralPath m_curve3;
+  private final GeneralPath[] m_curves;
   private int m_currMouseButton = 0; // 0: none; 1: left.
   private int m_initXMousePos;
   private int m_initYMousePos;
@@ -47,10 +45,11 @@ public final class TryBezierCurveSelection
     super();
     addNotify();
     m_img = createImage(m_imgWidth, m_imgHeight);
-    m_curve1 = new GeneralPath();
-    m_curve1.moveTo(10.0f, 10.0f);
-    m_curve1.curveTo(300.0f, 10.0f, 310.0f, 20.0f, 310.0f, 320.0f);
-    m_curve1.curveTo(310.0f, 620.0f, 100.0f, 300.0f, 590.0f, 150.0f);
+    m_curves = new GeneralPath[1];
+    for (int i = 0; i < m_curves.length; i++) m_curves[i] = new GeneralPath();
+    m_curves[0].moveTo(10.0f, 10.0f);
+    m_curves[0].curveTo(300.0f, 10.0f, 310.0f, 20.0f, 310.0f, 320.0f);
+    m_curves[0].curveTo(310.0f, 620.0f, 100.0f, 300.0f, 590.0f, 150.0f);
     updateImage();
     addMouseListener(this);
     addMouseMotionListener(this);
@@ -66,7 +65,7 @@ public final class TryBezierCurveSelection
     g2d.setBackground(Color.white);
     g2d.clearRect(0, 0, m_imgWidth, m_imgHeight);
     g2d.setColor(Color.black);
-    g2d.draw(m_curve1);
+    for (int i = 0; i < m_curves.length; i++) g2d.draw(m_curves[i]);
     if (m_currMouseButton == 1) {
       g2d.setColor(new Color(0, 0, 255, 55));
       g2d.fillRect(Math.min(m_initXMousePos, m_lastXMousePos),
