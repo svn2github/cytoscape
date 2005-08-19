@@ -8,7 +8,7 @@ import java.util.EventListener;
  *
  * @author Ben Gross
  */
-public interface ICytoPanelListener extensd EventListener {
+public interface ICytoPanelListener extends EventListener {
 
     /**
      * Notifies the listener on a change in the CytoPanel state.
