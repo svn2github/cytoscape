@@ -1023,6 +1023,10 @@ public class CytoscapeDataImpl
     if ( attributeName == null || !(attributeName instanceof String) )
       return map;
     
+    if ( getAttributeValueType( attributeName ) == -1 ) {
+      return map;
+    }
+
     Iterator i = getObjectKeys( attributeName );
 
     while( i.hasNext() ) {
