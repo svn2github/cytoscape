@@ -64,8 +64,16 @@ public final class TryBezierCurveSelection
                          RenderingHints.VALUE_STROKE_PURE);
     g2d.setBackground(Color.white);
     g2d.clearRect(0, 0, m_imgWidth, m_imgHeight);
-    g2d.setColor(Color.black);
-    for (int i = 0; i < m_curves.length; i++) g2d.draw(m_curves[i]);
+    for (int i = 0; i < m_curves.length; i++) {
+      if (m_currMouseButton == 1 && m_curves[i].intersects
+          (Math.min(m_initXMousePos, m_lastXMousePos),
+           Math.min(m_initYMousePos, m_lastYMousePos),
+           Math.abs(m_initXMousePos - m_lastXMousePos) + 1,
+           Math.abs(m_initYMousePos - m_lastYMousePos) + 1)) {
+        g2d.setColor(Color.red); }
+      else {
+        g2d.setColor(Color.black); }
+      g2d.draw(m_curves[i]); }
     if (m_currMouseButton == 1) {
       g2d.setColor(new Color(0, 0, 255, 55));
       g2d.fillRect(Math.min(m_initXMousePos, m_lastXMousePos),
@@ -103,7 +111,8 @@ public final class TryBezierCurveSelection
       m_initXMousePos = e.getX() - insets.left;
       m_initYMousePos = e.getY() - insets.top;
       m_lastXMousePos = m_initXMousePos;
-      m_lastYMousePos = m_initYMousePos; }
+      m_lastYMousePos = m_initYMousePos;
+      repaint(); }
   }
 
   public void mouseReleased(MouseEvent e)
