@@ -107,7 +107,7 @@ public interface ICytoPanel {
     /**
      * Set the state of the CytoPanel.
      *
-     * @param An integer representing the CytoPanel state - see CytoPanelConstants class.
+     * @param integer representing the CytoPanel state - see CytoPanelConstants class.
      */
     public void setState(int cytoPanelState);
 
