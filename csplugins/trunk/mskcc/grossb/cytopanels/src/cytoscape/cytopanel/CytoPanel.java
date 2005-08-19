@@ -30,9 +30,11 @@ import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
-import java.util.ArrayList;
 import java.net.URL;
+import java.util.ArrayList;
 
 import cytoscape.cytopanel.util.CytoPanelUtil;
 import cytoscape.cytopanel.ICytoPanel;
@@ -47,7 +49,7 @@ import cytoscape.cytopanel.ICytoPanel;
  *
  * @author Benjamin Gross.
  */
-public class CytoPanel extends JPanel implements ICytoPanel {
+public class CytoPanel extends JPanel implements ICytoPanel, ChangeListener {
 
 	/**
 	 * The JTabbedPane we hide.
@@ -62,6 +64,17 @@ public class CytoPanel extends JPanel implements ICytoPanel {
 	 * Our compass direction.
 	 */
 	private int compassDirection;
+
+	/**
+	 * An array of ICytoPanelListeners
+	 */
+	private ArrayList iCytoPanelListenerList;
+
+	/**
+	 * Types of notification.
+	 */
+	private final int NOTIFICATION_STATE_CHANGE = 0;
+	private final int NOTIFICATION_COMPONENT_SELECTED = 1;
 
 	/**
 	 * Reference to CytoPanelContainer we live in.
@@ -143,9 +156,11 @@ public class CytoPanel extends JPanel implements ICytoPanel {
      */
     public CytoPanel(int compassDirection, int tabPlacement, int cytoPanelState){
 
-		// init some member vars
+		// setup our tabbed pane
 		tabbedPane = new JTabbedPane(tabPlacement);
 		tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+		tabbedPane.addChangeListener(this);
+		// set our compass direction - limit to n,s,e,w
 		if (compassDirection == SwingConstants.NORTH ||
 			compassDirection == SwingConstants.EAST  ||
 			compassDirection == SwingConstants.WEST  ||
@@ -157,6 +172,9 @@ public class CytoPanel extends JPanel implements ICytoPanel {
 											   + compassDirection +
 											   ".  Must be one of:  SwingConstants.{NORTH,SOUTH,EAST,WEST.");
 		}
+
+		// init listener list
+		iCytoPanelListenerList = new ArrayList();
 
 		// init the icons
 		initIcons();
@@ -227,6 +245,9 @@ public class CytoPanel extends JPanel implements ICytoPanel {
 
 		// set our new state
 		this.cytoPanelState = cytoPanelState;
+
+		// let our listeners know
+		notifyListeners(NOTIFICATION_STATE_CHANGE);
 	}
 
     /**
@@ -236,6 +257,42 @@ public class CytoPanel extends JPanel implements ICytoPanel {
      */
     public int getState(){
 		return cytoPanelState;
+	}
+
+	/**
+	 * Add a CytoPanel listener.
+	 * @param cytoPanelListener Reference to a ICytoPanelListener
+	 */
+	public void addCytoPanelListener(ICytoPanelListener cytoPanelListener){
+
+		// nothing to do if listener is already in our list
+		if (iCytoPanelListenerList.contains(cytoPanelListener)){
+			return;
+		}
+
+		// add listener to our list
+		iCytoPanelListenerList.add(cytoPanelListener);
+	}
+
+	/**
+	 * Remove a CytoPanel listener.
+	 * @param cytoPanelListener Reference to a ICytoPanelListener
+	 */
+	public void removeCytoPanelListener(ICytoPanelListener cytoPanelListener){
+
+		// remove listener if they exist in our list
+		if (iCytoPanelListenerList.contains(cytoPanelListener)){
+			iCytoPanelListenerList.remove(iCytoPanelListenerList.indexOf(cytoPanelListener));
+		}
+	}
+
+	/**
+	 * Our implementation of the ChangeListener interface.
+	 * - to determine when new tab has been selected
+	 */
+	public void stateChanged(ChangeEvent e){
+		// let our listeners know
+		notifyListeners(NOTIFICATION_COMPONENT_SELECTED);
 	}
 
     /**
@@ -460,6 +517,9 @@ public class CytoPanel extends JPanel implements ICytoPanel {
 		
 		// re-layout
 		this.validate();
+
+		// let our listeners know
+		notifyListeners(NOTIFICATION_STATE_CHANGE);
 	}
 
 	/**
@@ -470,7 +530,7 @@ public class CytoPanel extends JPanel implements ICytoPanel {
 	}
 
     /**
-     * Adds the Correct Window Listener.
+     * Adds the listener to the floating window.
      */
     private void addWindowListener() {
         externalFrame.addWindowListener(new WindowAdapter() {
@@ -509,6 +569,24 @@ public class CytoPanel extends JPanel implements ICytoPanel {
         externalWindow.show();
     }
 
+    /**
+     * Code to notify our listeners of some particular event.
+	 *
+     * @param notificationType What type of notification to perform.
+     */
+    private void notifyListeners(int notificationType) {
+		for (int lc = 0; lc < iCytoPanelListenerList.size(); lc++) {
+			ICytoPanelListener cytoPanelListener = (ICytoPanelListener) iCytoPanelListenerList.get(lc);
+			switch (notificationType){
+			case NOTIFICATION_STATE_CHANGE:
+				cytoPanelListener.onStateChange(cytoPanelState);
+				break;
+			case NOTIFICATION_COMPONENT_SELECTED:
+				int selectedIndex = tabbedPane.getSelectedIndex();
+				cytoPanelListener.onComponentSelected(selectedIndex);
+				break;
+			}
 
-
+		}
+	}
 }
