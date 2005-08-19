@@ -1,5 +1,7 @@
+// our package
 package cytoscape.demo;
 
+// imports
 import java.awt.event.KeyEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,7 +19,7 @@ import java.util.ArrayList;
 /**
  * A Sample Program used to demonstrate the CytoPanel API.
  *
- * @author Ethan Cerami
+ * @author Ethan Cerami, Ben Gross
  */
 public class CytoPanelDemo {
 

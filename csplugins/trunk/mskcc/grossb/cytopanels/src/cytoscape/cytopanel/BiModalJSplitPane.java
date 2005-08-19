@@ -1,8 +1,10 @@
+// our package
 package cytoscape.cytopanel;
 
+// imports
 import javax.swing.*;
-import java.awt.*;
 
+import java.awt.*;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentAdapter;
 

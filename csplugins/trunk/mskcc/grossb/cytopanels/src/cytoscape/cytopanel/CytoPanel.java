@@ -1,5 +1,7 @@
+// our package
 package cytoscape.cytopanel;
 
+// imports
 import java.awt.Font;
 import java.awt.Color;
 import java.awt.Point;
@@ -47,7 +49,7 @@ import cytoscape.cytopanel.ICytoPanel;
  *
  * CytoPanel also implements ICytoPanel interface.
  *
- * @author Benjamin Gross.
+ * @author Ethan Cerami, Benjamin Gross
  */
 public class CytoPanel extends JPanel implements ICytoPanel, ChangeListener {
 
@@ -342,7 +344,7 @@ public class CytoPanel extends JPanel implements ICytoPanel, ChangeListener {
     /**
      * Set the state of the CytoPanel.
      *
-     * @param An integer representing the CytoPanel state - see CytoPanelConstants class.
+     * @param int representing the CytoPanel state - see CytoPanelConstants class.
      */
     public void setState(int cytoPanelState){
 		boolean success = false;
@@ -417,8 +419,8 @@ public class CytoPanel extends JPanel implements ICytoPanel, ChangeListener {
 	}
 
 	/**
-	 * Our implementation of the ChangeListener interface.
-	 * - to determine when new tab has been selected
+	 * Our implementation of the ChangeListener interface,
+	 * to determine when new tab has been selected
 	 */
 	public void stateChanged(ChangeEvent e){
 		// let our listeners know

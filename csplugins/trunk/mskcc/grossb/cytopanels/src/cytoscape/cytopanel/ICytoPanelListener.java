@@ -1,5 +1,7 @@
+// our package
 package cytoscape.cytopanel;
 
+// imports
 import java.util.EventListener;
 
 /**
