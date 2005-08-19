@@ -198,23 +198,151 @@ public class CytoPanel extends JPanel implements ICytoPanel, ChangeListener {
 	}
 
     /**
-     * Adds a new Component to the CytoPanel
+     * Adds a component to the CytoPanel.
      *
-     * @param title     Copmone title.
-	 * @param icon      Icon
      * @param component Component reference.
-     * @param tip       Tool tip text.
+	 * @return component Component reference.
      */
-    public void add(String title, Icon icon, Component component, String tip){
+    public Component add(Component component){
 
-		// add tab to JTabbedPane (string icon, component, tip)
-		tabbedPane.addTab(title, null, component, tip);
+		// add tab to JTabbedPane (component)
+		return tabbedPane.add(component);
     }
 
     /**
-     * Sets the state of the CytoPanel.
+     * Adds a component to the CytoPanel at specified index.
      *
-     * @param state A CytoPanelConstants state.
+     * @param component Component reference.
+     * @param index     Tab index.
+	 * @return component Component reference.
+     */
+    public Component add(Component component, int index){
+
+		// add tab to JTabbedPane (component, index)
+		return tabbedPane.add(component, index);
+	}
+
+    /**
+     * Adds a component to the CytoPanel with a specified title.
+     *
+     * @param title     Component title.
+     * @param component Component reference.
+	 * @return component Component reference.
+     */
+    public Component add(String title, Component component){
+
+		// add tab to JTabbedPane (title, component)
+		return tabbedPane.add(title, component);
+    }
+
+    /**
+     * Adds a component to the CytoPanel with specified title and icon.
+     *
+     * @param title     Component title (can be null).
+	 * @param icon      Component icon (can be null).
+     * @param component Component reference.
+     */
+    public void add(String title, Icon icon, Component component){
+
+		// add tab to JTabbedPane (title, icon, component)
+		tabbedPane.addTab(title, icon, component);
+	}
+
+    /**
+     * Adds a component to the CytoPanel with specified title, icon, and tool tip.
+     *
+     * @param title     Component title (can be null).
+	 * @param icon      Component icon (can be null).
+     * @param component Component reference.
+     * @param tip       Component Tool tip text.
+     */
+    public void add(String title, Icon icon, Component component, String tip){
+
+		// add tab to JTabbedPane (string, icon, component, tip)
+		tabbedPane.addTab(title, icon, component, tip);
+    }
+
+	/**
+	 * Returns the currently selected component.
+	 *
+	 * @return component Currently selected Component reference.
+	 */
+	public Component getSelectedComponent(){
+
+		// get currently selected component in the JTabbedPane.
+		return tabbedPane.getSelectedComponent();
+	}
+
+	/**
+	 * Returns the currently selected index.
+	 *
+	 * @return index Currently selected index.
+	 */
+	public int getSelectedIndex(){
+
+		// get currently selected component in the JTabbedPane.
+		return tabbedPane.getSelectedIndex();
+	}
+
+	/**
+	 * Returns the index of the tab for the specified component.
+	 *
+     * @param component Component reference.
+	 * @return int      Tab Index of the Component or -1 if not found.
+	 */
+	public int indexOfComponent(Component component){
+		
+		// get the index from JTabbedPane
+		return tabbedPane.indexOfComponent(component);
+	}
+
+	/**
+	 * Returns the first tab index with given title.
+	 *
+     * @param title Tab title.
+	 * @return int  Tab index with given title or -1 if not found.
+	 */
+	public int indexOfTab(String title){
+
+		// get the index from JTabbedPane
+		return tabbedPane.indexOfTab(title);
+	}
+
+	/**
+	 * Remove specified component from the CytoPanel.
+	 *
+	 * @param component Component reference.
+	 */
+	public void remove(Component component){
+
+		// remove tab from JTabbedPane (component)
+		tabbedPane.remove(component);
+	}
+
+	/**
+	 * Removes the tab and component from the CytoPanel at the specified index.
+	 *
+     * @param index Tab index.
+	 */
+	public void remove(int index){
+
+		// remove tab from JTabbedPane (index)
+		tabbedPane.remove(index);
+	}
+
+	/**
+	 * Removes all the tabs and corresponding components from the CytoPanel.
+	 */
+	public void removeAll(){
+
+		// remove all tabs and components from JTabbedPane
+		tabbedPane.removeAll();
+	}
+
+    /**
+     * Set the state of the CytoPanel.
+     *
+     * @param An integer representing the CytoPanel state - see CytoPanelConstants class.
      */
     public void setState(int cytoPanelState){
 		boolean success = false;
@@ -251,9 +379,9 @@ public class CytoPanel extends JPanel implements ICytoPanel, ChangeListener {
 	}
 
     /**
-     * Gets the state of the CytoPanel.
+     * Get the state of the CytoPanel.
      *
-	 * @return cytoPanelState A CytoPanel Constants state
+	 * @return An integer representing the CytoPanel state - CytoPanelConstants class.
      */
     public int getState(){
 		return cytoPanelState;
@@ -261,7 +389,8 @@ public class CytoPanel extends JPanel implements ICytoPanel, ChangeListener {
 
 	/**
 	 * Add a CytoPanel listener.
-	 * @param cytoPanelListener Reference to a ICytoPanelListener
+	 *
+	 * @param cytoPanelListener Reference to a ICytoPanelListener.
 	 */
 	public void addCytoPanelListener(ICytoPanelListener cytoPanelListener){
 
@@ -276,7 +405,8 @@ public class CytoPanel extends JPanel implements ICytoPanel, ChangeListener {
 
 	/**
 	 * Remove a CytoPanel listener.
-	 * @param cytoPanelListener Reference to a ICytoPanelListener
+	 *
+	 * @param cytoPanelListener Reference to a ICytoPanelListener.
 	 */
 	public void removeCytoPanelListener(ICytoPanelListener cytoPanelListener){
 
@@ -575,8 +705,10 @@ public class CytoPanel extends JPanel implements ICytoPanel, ChangeListener {
      * @param notificationType What type of notification to perform.
      */
     private void notifyListeners(int notificationType) {
+		// interate through all our listeners
 		for (int lc = 0; lc < iCytoPanelListenerList.size(); lc++) {
 			ICytoPanelListener cytoPanelListener = (ICytoPanelListener) iCytoPanelListenerList.get(lc);
+			// determine what event to fire
 			switch (notificationType){
 			case NOTIFICATION_STATE_CHANGE:
 				cytoPanelListener.onStateChange(cytoPanelState);
