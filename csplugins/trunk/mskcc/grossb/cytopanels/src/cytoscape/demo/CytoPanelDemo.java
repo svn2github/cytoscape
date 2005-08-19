@@ -41,8 +41,6 @@ public class CytoPanelDemo {
 
         //  Create Master Frame
         JFrame frame = new JFrame("Cytoscape CytoPanel API");
-		JMenuBar menuBar = createMenuBar();
-		frame.setJMenuBar(menuBar);
 
         //  Create Embedded SpitPanes
         BiModalJSplitPane topLeftPane = createTopLeftPane(frame);
@@ -52,6 +50,10 @@ public class CytoPanelDemo {
         //  Add Master Pane to Frame
         Container contentPane = frame.getContentPane();
         contentPane.add(masterPane, BorderLayout.CENTER);
+
+		// must come after cytopanel are created - to get the proper title.
+		JMenuBar menuBar = createMenuBar();
+		frame.setJMenuBar(menuBar);
 
 		// lets show this damn thing!
 		frame.pack();
@@ -267,21 +269,21 @@ public class CytoPanelDemo {
 		};
 
 		// cytopanel west window sub menu item
-		cytoPanelMenuItemWest = new JCheckBoxMenuItem("CytoPanel 1");
+		cytoPanelMenuItemWest = new JCheckBoxMenuItem(cytoPanelWest.getTitle(SwingConstants.WEST));
 		cytoPanelMenuItemWest.setMnemonic(KeyEvent.VK_1);
 		cytoPanelMenuItemWest.setSelected(true);
 		cytoPanelMenuItemWest.addActionListener(cytoPanelWestWindowMenuItemListener);
 		mWindow.add(cytoPanelMenuItemWest);
 
 		// cytopanel east window sub menu item
-		cytoPanelMenuItemEast = new JCheckBoxMenuItem("CytoPanel 2");
+		cytoPanelMenuItemEast = new JCheckBoxMenuItem(cytoPanelEast.getTitle(SwingConstants.EAST));
 		cytoPanelMenuItemEast.setMnemonic(KeyEvent.VK_2);
 		cytoPanelMenuItemEast.setSelected(false);
 		cytoPanelMenuItemEast.addActionListener(cytoPanelEastWindowMenuItemListener);
 		mWindow.add(cytoPanelMenuItemEast);
 
 		// cytopanel south window sub menu item
-		cytoPanelMenuItemSouth = new JCheckBoxMenuItem("CytoPanel 3");
+		cytoPanelMenuItemSouth = new JCheckBoxMenuItem(cytoPanelSouth.getTitle(SwingConstants.SOUTH));
 		cytoPanelMenuItemSouth.setMnemonic(KeyEvent.VK_3);
 		cytoPanelMenuItemSouth.setSelected(false);
 		cytoPanelMenuItemSouth.addActionListener(cytoPanelSouthWindowMenuItemListener);
