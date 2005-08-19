@@ -219,6 +219,26 @@ public class CytoPanel extends JPanel implements ICytoPanel, ChangeListener {
 		this.cytoPanelContainer = cytoPanelContainer;
 	}
 
+	/**
+	 * Returns the proper title based on our compass direction.
+	 *
+	 * @param int Compass Direction
+	 * @returns A title string
+	 */
+	public String getTitle(int compassDirection){
+		switch (compassDirection){
+		case SwingConstants.NORTH:
+            return CYTOPANEL_TITLE_NORTH;
+		case SwingConstants.SOUTH:
+            return CYTOPANEL_TITLE_SOUTH;
+		case SwingConstants.EAST:
+            return CYTOPANEL_TITLE_EAST;
+		case SwingConstants.WEST:
+            return CYTOPANEL_TITLE_WEST;
+		}
+		return null;
+	}
+
     /**
      * Adds a component to the CytoPanel.
      *
@@ -464,25 +484,6 @@ public class CytoPanel extends JPanel implements ICytoPanel, ChangeListener {
     }
 
 	/**
-	 * Returns the proper title based on our compass direction.
-	 *
-	 * @returns A title string
-	 */
-	private String getTitle(){
-		switch (compassDirection){
-		case SwingConstants.NORTH:
-            return CYTOPANEL_TITLE_NORTH;
-		case SwingConstants.SOUTH:
-            return CYTOPANEL_TITLE_SOUTH;
-		case SwingConstants.EAST:
-            return CYTOPANEL_TITLE_EAST;
-		case SwingConstants.WEST:
-            return CYTOPANEL_TITLE_WEST;
-		}
-		return null;
-	}
-
-	/**
 	 * Shows the CytoPanel.
 	 */
 	private void showCytoPanel() {
@@ -509,6 +510,11 @@ public class CytoPanel extends JPanel implements ICytoPanel, ChangeListener {
 		// if we are visible, hide
 		if (isVisible()){
 
+			// undock ourselves
+			if (isFloating()){
+				flipFloatingStatus();
+			}
+
 			// hide ourselves
 			setVisible(false);
 
@@ -520,7 +526,6 @@ public class CytoPanel extends JPanel implements ICytoPanel, ChangeListener {
 			}
 		}
 	}
-
 
 	/**
 	 * Constructs this CytoPanel.
@@ -542,9 +547,9 @@ public class CytoPanel extends JPanel implements ICytoPanel, ChangeListener {
 		floatDockPanel.setBackground(FLOAT_PANEL_COLOR);
 		// set preferred size - we can use float or dock icon diminsions - they are the same
 		FontMetrics fm = floatLabel.getFontMetrics(floatLabel.getFont());
-		floatDockPanel.setMinimumSize(new Dimension((int)((fm.stringWidth(getTitle()) + floatIcon.getIconWidth())*FLOAT_PANEL_SCALE_FACTOR),
+		floatDockPanel.setMinimumSize(new Dimension((int)((fm.stringWidth(getTitle(compassDirection)) + floatIcon.getIconWidth())*FLOAT_PANEL_SCALE_FACTOR),
 													 floatIcon.getIconHeight()));
-		floatDockPanel.setPreferredSize(new Dimension((int)((fm.stringWidth(getTitle()) + floatIcon.getIconWidth())*FLOAT_PANEL_SCALE_FACTOR),
+		floatDockPanel.setPreferredSize(new Dimension((int)((fm.stringWidth(getTitle(compassDirection)) + floatIcon.getIconWidth())*FLOAT_PANEL_SCALE_FACTOR),
 													  floatIcon.getIconHeight()+2));
 
 		// use the border layout for this CytoPanel
@@ -557,7 +562,7 @@ public class CytoPanel extends JPanel implements ICytoPanel, ChangeListener {
 	 * Initializes the label.
 	 */
 	private void initLabel() {
-		floatLabel = new JLabel(getTitle());
+		floatLabel = new JLabel(getTitle(compassDirection));
 		floatLabel.setFont(new Font("SansSerif", Font.PLAIN, 12));
 		floatLabel.setBackground(FLOAT_PANEL_COLOR);
 		floatLabel.setBorder(new EmptyBorder(0, 5, 0, 0));
@@ -627,7 +632,7 @@ public class CytoPanel extends JPanel implements ICytoPanel, ChangeListener {
 			floatButton.setToolTipText(TOOL_TIP_FLOAT);
 
 			// set float label text
-			floatLabel.setText(getTitle());
+			floatLabel.setText(getTitle(compassDirection));
 
 			// set our new state
 			this.cytoPanelState = CytoPanelConstants.CYTOPANEL_STATE_DOCK;
@@ -646,7 +651,7 @@ public class CytoPanel extends JPanel implements ICytoPanel, ChangeListener {
 			externalFrame.validate();
 
 			// set proper title of frame
-			externalFrame.setTitle(getTitle());
+			externalFrame.setTitle(getTitle(compassDirection));
 
 			// set proper button icon/text
 			floatButton.setIcon(dockIcon);
