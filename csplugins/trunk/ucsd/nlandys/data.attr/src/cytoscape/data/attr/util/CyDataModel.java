@@ -650,7 +650,7 @@ class CyDataModel implements CyDataDefinition, CyData
     final AttrDefData def = (AttrDefData) m_attrMap.get(attributeName);
     if (def == null)
       throw new IllegalStateException
-        ("no attributeName '" + attributeName + "'exists");
+        ("no attributeName '" + attributeName + "' exists");
 
     return new Iterator2Counted(def.objMap.keySet().iterator(),
                                 def.objMap.size());
