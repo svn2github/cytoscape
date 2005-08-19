@@ -1,7 +1,11 @@
+// our package
 package cytoscape.cytopanel;
 
+// imports
 import java.awt.*;
 import javax.swing.Icon;
+
+import cytoscape.cytopanel.ICytoPanelListener;
 
 /**
  * Interface to a CytoPanel.
@@ -107,7 +111,7 @@ public interface ICytoPanel {
     /**
      * Set the state of the CytoPanel.
      *
-     * @param integer representing the CytoPanel state - see CytoPanelConstants class.
+     * @param cytoPanelState representing the CytoPanel state - see CytoPanelConstants class.
      */
     public void setState(int cytoPanelState);
 
