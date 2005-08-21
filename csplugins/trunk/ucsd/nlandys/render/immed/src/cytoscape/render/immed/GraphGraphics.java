@@ -1404,6 +1404,7 @@ public final class GraphGraphics
    *
    * From our ordered list [0, 1, 2, ..., n], chop off the first and last
    * elements.  We're left with the ordered list L: [1, 2, ..., n-1].
+   * Define list B: [α, α', a, a'] and list E: [b', b, β', β].
    * If line segment αa' contains point α', chop the first
    * element from L.  If L is not empty and if line segment βb' contains
    * point β', chop the last element from L.
