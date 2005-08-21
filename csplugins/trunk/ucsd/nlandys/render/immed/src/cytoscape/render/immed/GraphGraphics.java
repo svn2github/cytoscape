@@ -1353,6 +1353,88 @@ public final class GraphGraphics
       return 0.125d; }
   }
 
+  private final float[] m_floatBuff = new float[2];
+  private final double[] m_edgePtsBuff = new double[218];
+  private int m_edgePtsCount; // Number of points stored in m_edgePtsBuff.
+
+  /*
+   * This method populates m_edgePtsBuff with alternating X and Y coordinates
+   * of points defined by the algorithm as stated.
+   *
+   * STEP 1: Arrive at an ordered list of points [0, 1, 2, ..., n].
+   *
+   * Specified in the arguments to this method are the beginning point
+   * (x0, y0), the edge anchors, and the ending point (x1, y1).
+   * Arrive at an ordered list of points [0, 1, 2, ..., n] by prepending
+   * point (x0, y0) to the beginning of the edge anchors list and appending
+   * point (x1, y1) to the ending of the edge anchors list, and then removing
+   * all duplicate consecutive points (we need to have point i is not equal to
+   * point i+1 for any i: 0 <= i < n).  Now point 0 is identical to (x0, y0)
+   * and point n is identical to (x1, y1) even if the length of this
+   * filtered ordered list is one.
+   *
+   * STEP 2: If the list computed in step 1 is degenerate, take appropriate
+   * action.
+   *
+   * If there are less than 3 elements in our computed list [0, 1, ..., n],
+   * we have either one or two points in our
+   * filtered ordered list of points.  In this case we are abort further
+   * computations and return false, indicating that this polygonal edge
+   * should be treated as a simple edge between two points.
+   *
+   * STEP 3: Define α, α', β, β', a, a', b, and b'.
+   *
+   * (Note: the length of an arrow is defined to be the distance from
+   *   the defining point of the arrow's location to the point where
+   *   the edge segment starts.)
+   * Define α to be the begin point 0.
+   * Define β to be the end point n.
+   * Define α' to be the point 1.
+   * Define β' to be the point n-1.
+   * Define a to be the point on ray α->α' that is a distance away from α
+   *   that is equal to the length of arrow0.
+   * Define a' to be the point on ray α->α' that is distance away from α
+   *   that is equal to the length of arrow0 plus arrow0Size.
+   * Define b to be the point on ray β->β' that is a distance away from β
+   *   that is equal to the length of arrow1.
+   * Define b' to be the point on ray β->β' that is a distance away from β
+   *   that is equal to the length of arrow1 plus arrow1Size.
+   *
+   * STEP 4: Finally, define what goes into m_edgePtsBuff.
+   *
+   * From our ordered list [0, 1, 2, ..., n], chop off the first and last
+   * elements.  We're left with the ordered list L: [1, 2, ..., n-1].
+   * If line segment αa' contains point 1 (which is α'), chop the first
+   * element from L.  If line segment βb' contains point n-1 (which is β'),
+   * chop the last element from L if L is not empty.
+   * L is now an ordered list of points [t, ..., s], possibly empty.
+   * Define m_edgePtsBuff to contain the ordered list of points:
+   * [α, α', a, a', t, ..., s, b', b, β', β].
+   *
+   * This list has the following useful properties:
+   * 1. The first two (α->α') and last two (β->β') elements of the list
+   *    specify the location of and direction of arrowheads.
+   * 2. If we chop the first two and last two elements from this list,
+   *    the resulting list specifies the path of the edge segment
+   *    (note that duplicate consecutive points may exist if we specify the
+   *    path in this manner).
+   * 3. If we chop the second and second-to-last elements from this list,
+   *    the resulting list specifies the overall path of the edge; this
+   *    overall path can be used as edge selection criteria (note that
+   *    duplicate consecutive points may exist if we specify the path in
+   *    this manner).
+   */
+  private final boolean computePolyEdgePath(final byte arrowType0,
+                                            final float arrow0Size,
+                                            final byte arrowType1,
+                                            final float arrow1Size,
+                                            final float x0, final float y0,
+                                            final EdgeAnchors anchors,
+                                            final float x1, final float y1)
+  {
+    return false;
+  }
+
   // The three following member variables shall only be referenced from
   // the scope of setStroke() definition.
   private float m_currStrokeWidth;
