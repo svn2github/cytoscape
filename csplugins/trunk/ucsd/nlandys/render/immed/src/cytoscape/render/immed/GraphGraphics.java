@@ -1404,12 +1404,13 @@ public final class GraphGraphics
    *
    * From our ordered list [0, 1, 2, ..., n], chop off the first and last
    * elements.  We're left with the ordered list L: [1, 2, ..., n-1].
-   * If line segment αa' contains point 1 (which is α'), chop the first
-   * element from L.  If line segment βb' contains point n-1 (which is β'),
-   * chop the last element from L if L is not empty.
-   * L is now an ordered list of points [t, ..., s], possibly empty.
-   * Define m_edgePtsBuff to contain the ordered list of points:
-   * [α, α', a, a', t, ..., s, b', b, β', β].
+   * If line segment αa' contains point α', chop the first
+   * element from L.  If L is not empty and if line segment βb' contains
+   * point β', chop the last element from L.
+   * If we did not delete the last element of L just now then chop the first
+   * element from E.  If we did not delete the first element of L just now then
+   * chop the last element from B.
+   * Define m_edgePtsBuff by concatenating B, L, and E, in that order.
    *
    * This list has the following useful properties:
    * 1. The first two (α->α') and last two (β->β') elements of the list
