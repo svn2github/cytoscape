@@ -11,7 +11,7 @@ package cytoscape.cytopanel;
  *
  * @author Ben Gross
  */
-public final class CytoPanelState {
+public class CytoPanelState {
 
 	/*
 	 * The state name.
