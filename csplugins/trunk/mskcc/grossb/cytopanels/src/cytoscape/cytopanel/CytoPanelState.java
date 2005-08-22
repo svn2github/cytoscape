@@ -25,6 +25,13 @@ public final class CytoPanelState {
 		this.name = name;
 	}
 
+	/*
+	 * In case a someone wants to translated a state into pritable strings
+	 */
+	public String toString() {
+		return name;
+	}
+
     /**
      * Hide state of a CytoPanel.
      */
