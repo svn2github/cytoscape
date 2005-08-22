@@ -14,7 +14,7 @@ public interface CytoPanelContainer {
      * @param cytoPanel        CytoPanel Object.
      * @param compassDirection SwingConstants integer value.
      */
-    void insertCytoPanel(CytoPanel cytoPanel, int compassDirection);
+    void insertCytoPanel(CytoPanelImp cytoPanel, int compassDirection);
 
     /**
      * Gets Location of Container, in screen coordinates.
