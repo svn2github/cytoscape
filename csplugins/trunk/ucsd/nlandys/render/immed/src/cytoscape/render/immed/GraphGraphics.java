@@ -83,14 +83,18 @@ public final class GraphGraphics
    */
   public static final byte ARROW_MONO = -7;
 
-  // An internal constant for Bezier curves on rounded rectangle, used for
-  // very closely approcimating circular arcs with cubic curves.
-  private static final double s_a = 4.0d * (Math.sqrt(2.0d) - 1.0d) / 3.0d;
+  /**
+   * A constant for controlling how cubic Bezier curves are drawn; This
+   * particular constant results in elliptical-looking curves.
+   */
+  public static final double CURVE_ELLIPTICAL =
+    4.0d * (Math.sqrt(2.0d) - 1.0d) / 3.0d;
 
-  // An internal constant factor used to make edge curves look nice.
-  // For smoothing of bezier curve polygonal edges, I could have an option:
-  // "elliptical" or "natural".  Use s_a for elliptical and s_b for natural.
-  private static final double s_b = 0.66d;
+  /**
+   * A constant for controlling how cubic Bezier curves are drawn; This
+   * particular constnat results in natural-looking curves.
+   */
+  public static final double CURVE_NATURAL = 0.66;
 
   /**
    * The image that was passed into the constructor.
@@ -473,20 +477,28 @@ public final class GraphGraphics
   {
     path2d.reset();
     path2d.moveTo((float) (xMax - radius), (float) yMin);
-    path2d.curveTo((float) ((s_a - 1.0d) * radius + xMax), (float) yMin,
-                   (float) xMax, (float) ((1.0d - s_a) * radius + yMin),
+    path2d.curveTo((float) ((CURVE_ELLIPTICAL - 1.0d) * radius + xMax),
+                   (float) yMin,
+                   (float) xMax,
+                   (float) ((1.0d - CURVE_ELLIPTICAL) * radius + yMin),
                    (float) xMax, (float) (radius + yMin));
     path2d.lineTo((float) xMax, (float) (yMax - radius));
-    path2d.curveTo((float) xMax, (float) ((s_a - 1.0d) * radius + yMax),
-                   (float) ((s_a - 1.0d) * radius + xMax), (float) yMax,
+    path2d.curveTo((float) xMax,
+                   (float) ((CURVE_ELLIPTICAL - 1.0d) * radius + yMax),
+                   (float) ((CURVE_ELLIPTICAL - 1.0d) * radius + xMax),
+                   (float) yMax,
                    (float) (xMax - radius), (float) yMax);
     path2d.lineTo((float) (radius + xMin), (float) yMax);
-    path2d.curveTo((float) ((1.0d - s_a) * radius + xMin), (float) yMax,
-                   (float) xMin, (float) ((s_a - 1.0d) * radius + yMax),
+    path2d.curveTo((float) ((1.0d - CURVE_ELLIPTICAL) * radius + xMin),
+                   (float) yMax,
+                   (float) xMin,
+                   (float) ((CURVE_ELLIPTICAL - 1.0d) * radius + yMax),
                    (float) xMin, (float) (yMax - radius));
     path2d.lineTo((float) xMin, (float) (radius + yMin));
-    path2d.curveTo((float) xMin, (float) ((1.0d - s_a) * radius + yMin),
-                   (float) ((1.0d - s_a) * radius + xMin), (float) yMin,
+    path2d.curveTo((float) xMin,
+                   (float) ((1.0d - CURVE_ELLIPTICAL) * radius + yMin),
+                   (float) ((1.0d - CURVE_ELLIPTICAL) * radius + xMin),
+                   (float) yMin,
                    (float) (radius + xMin), (float) yMin);
     path2d.closePath();
   }
