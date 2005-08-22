@@ -7,9 +7,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import cytoscape.cytopanel.CytoPanel;
-import cytoscape.cytopanel.ICytoPanel;
+import cytoscape.cytopanel.CytoPanelImp;
 import cytoscape.cytopanel.BiModalJSplitPane;
-import cytoscape.cytopanel.CytoPanelConstants;
+import cytoscape.cytopanel.CytoPanelState;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,14 +24,19 @@ import java.util.ArrayList;
 public class CytoPanelDemo {
 
 	// cytoPanels
-	private static CytoPanel cytoPanelWest;
-	private static CytoPanel cytoPanelEast;
-	private static CytoPanel cytoPanelSouth;
+	private static CytoPanelImp cytoPanelWest;
+	private static CytoPanelImp cytoPanelEast;
+	private static CytoPanelImp cytoPanelSouth;
 
 	// menu items used to test show/hide
 	private static JCheckBoxMenuItem cytoPanelMenuItemWest;
 	private static JCheckBoxMenuItem cytoPanelMenuItemEast;
 	private static JCheckBoxMenuItem cytoPanelMenuItemSouth;
+
+	// previous states
+	private static CytoPanelState cytoPanelWestPrevState =  CytoPanelState.DOCK;
+	private static CytoPanelState cytoPanelEastPrevState =  CytoPanelState.DOCK;
+	private static CytoPanelState cytoPanelSouthPrevState = CytoPanelState.DOCK;
 
     /**
      * Main Method.
@@ -70,9 +75,9 @@ public class CytoPanelDemo {
         String tab2Name = "Attribute Browser";
 
         //  Create CytoPanel with Tabs along the Left Side
-        cytoPanelWest = new CytoPanel(SwingConstants.WEST,
-									  JTabbedPane.TOP,
-									  CytoPanelConstants.CYTOPANEL_STATE_SHOW);
+        cytoPanelWest = new CytoPanelImp(SwingConstants.WEST,
+										 JTabbedPane.TOP,
+										 CytoPanelState.DOCK);
 
         //  Add Two Sample Tabs
         cytoPanelWest.add(tab1Name, null,
@@ -111,9 +116,9 @@ public class CytoPanelDemo {
         String tab3Name = "PlugIn Example 3";
 
         //  Create CytoPanel with CytoPanelEast along the Right Side
-        cytoPanelEast = new CytoPanel(SwingConstants.EAST,
-									  JTabbedPane.TOP,
-									  CytoPanelConstants.CYTOPANEL_STATE_HIDE);
+        cytoPanelEast = new CytoPanelImp(SwingConstants.EAST,
+										 JTabbedPane.TOP,
+										 CytoPanelState.HIDE);
 
         //  Add Three Sample CytoPanelEast
         cytoPanelEast.add(tab1Name, null,
@@ -155,9 +160,9 @@ public class CytoPanelDemo {
         String tab6Name = "PlugIn Example 6";
 
         //  Create CytoPanel with CytoPanelSouth along the Bottom
-        cytoPanelSouth = new CytoPanel(SwingConstants.SOUTH,
-									   JTabbedPane.BOTTOM,
-									   CytoPanelConstants.CYTOPANEL_STATE_HIDE);
+        cytoPanelSouth = new CytoPanelImp(SwingConstants.SOUTH,
+										  JTabbedPane.BOTTOM,
+										  CytoPanelState.HIDE);
 
         //  Create Three Sample CytoPanelSouth
         cytoPanelSouth.add(tab4Name, null,
@@ -238,10 +243,16 @@ public class CytoPanelDemo {
 		ActionListener cytoPanelWestWindowMenuItemListener = new ActionListener(){ 
 			public void actionPerformed(ActionEvent e){
 				if (cytoPanelMenuItemWest.isSelected()){
-					cytoPanelWest.setState(CytoPanelConstants.CYTOPANEL_STATE_SHOW);
+					if (cytoPanelWestPrevState == CytoPanelState.DOCK){
+						cytoPanelWest.setState(CytoPanelState.DOCK);
+					}
+					else{
+						cytoPanelWest.setState(CytoPanelState.FLOAT);
+					}
 				}
 				else{
-					cytoPanelWest.setState(CytoPanelConstants.CYTOPANEL_STATE_HIDE);
+					cytoPanelWestPrevState = cytoPanelWest.getState();
+					cytoPanelWest.setState(CytoPanelState.HIDE);
 				}
 			}
 		};
@@ -249,10 +260,16 @@ public class CytoPanelDemo {
 		ActionListener cytoPanelEastWindowMenuItemListener = new ActionListener(){ 
 			public void actionPerformed(ActionEvent e){
 				if (cytoPanelMenuItemEast.isSelected()){
-					cytoPanelEast.setState(CytoPanelConstants.CYTOPANEL_STATE_SHOW);
+					if (cytoPanelEastPrevState == CytoPanelState.DOCK){
+						cytoPanelEast.setState(CytoPanelState.DOCK);
+					}
+					else{
+						cytoPanelEast.setState(CytoPanelState.FLOAT);
+					}
 				}
 				else{
-					cytoPanelEast.setState(CytoPanelConstants.CYTOPANEL_STATE_HIDE);
+					cytoPanelEastPrevState = cytoPanelEast.getState();
+					cytoPanelEast.setState(CytoPanelState.HIDE);
 				}
 			}
 		};
@@ -260,10 +277,16 @@ public class CytoPanelDemo {
 		ActionListener cytoPanelSouthWindowMenuItemListener = new ActionListener(){ 
 			public void actionPerformed(ActionEvent e){
 				if (cytoPanelMenuItemSouth.isSelected()){
-					cytoPanelSouth.setState(CytoPanelConstants.CYTOPANEL_STATE_SHOW);
+					if (cytoPanelSouthPrevState == CytoPanelState.DOCK){
+						cytoPanelSouth.setState(CytoPanelState.DOCK);
+					}
+					else{
+						cytoPanelSouth.setState(CytoPanelState.FLOAT);
+					}
 				}
 				else{
-					cytoPanelSouth.setState(CytoPanelConstants.CYTOPANEL_STATE_HIDE);
+					cytoPanelSouthPrevState = cytoPanelSouth.getState();
+					cytoPanelSouth.setState(CytoPanelState.HIDE);
 				}
 			}
 		};
