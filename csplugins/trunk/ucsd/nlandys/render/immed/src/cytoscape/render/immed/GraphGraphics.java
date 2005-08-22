@@ -1418,6 +1418,88 @@ public final class GraphGraphics
         m_edgePtsCount--; }
       else { break; } }
     if (m_edgePtsCount < 3) { return false; }
+    final int edgePtsCount = m_edgePtsCount;
+
+    { // First set the three points related to point 1.
+      m_edgePtsCount--;
+      m_edgePtsBuff[m_edgePtsCount * 6 - 2] =
+        m_edgePtsBuff[m_edgePtsCount * 2];
+      m_edgePtsBuff[m_edgePtsCount * 6 - 1] =
+        m_edgePtsBuff[m_edgePtsCount * 2 + 1];
+      double dx = m_edgePtsBuff[m_edgePtsCount * 2 - 2] -
+        m_edgePtsBuff[m_edgePtsCount * 2];
+      double dy = m_edgePtsBuff[m_edgePtsCount * 2 - 1] -
+        m_edgePtsBuff[m_edgePtsCount * 2 + 1];
+      double len = Math.sqrt(dx * dx + dy * dy);
+      dx /= len; dy /= len; // Normalized.
+      m_edgePtsBuff[m_edgePtsCount * 6 - 4] =
+        m_edgePtsBuff[m_edgePtsCount * 6 - 2] +
+        dx * arrow1Size * getT(arrowType1);
+      m_edgePtsBuff[m_edgePtsCount * 6 - 3] =
+        m_edgePtsBuff[m_edgePtsCount * 6 - 1] +
+        dy * arrow1Size * getT(arrowType1);
+      double candX1 = m_edgePtsBuff[m_edgePtsCount * 6 - 4] +
+        dx * 2.0d * arrow1Size;
+      double candX2 = m_edgePtsBuff[m_edgePtsCount * 6 - 4] +
+        curveFactor * (m_edgePtsBuff[m_edgePtsCount * 2 - 2] -
+                       m_edgePtsBuff[m_edgePtsCount * 6 - 4]);
+      if (Math.abs(candX1 - m_edgePtsBuff[m_edgePtsCount * 2]) >
+          Math.abs(candX2 - m_edgePtsBuff[m_edgePtsCount * 2])) {
+        m_edgePtsBuff[m_edgePtsCount * 6 - 6] = candX1; }
+      else { m_edgePtsBuff[m_edgePtsCount * 6 - 6] = candX2; }
+      double candY1 = m_edgePtsBuff[m_edgePtsCount * 6 - 3] +
+        dy * 2.0d * arrow1Size;
+      double candY2 = m_edgePtsBuff[m_edgePtsCount * 6 - 3] +
+        curveFactor * (m_edgePtsBuff[m_edgePtsCount * 2 - 1] -
+                       m_edgePtsBuff[m_edgePtsCount * 6 - 3]);
+      if (Math.abs(candY1 - m_edgePtsBuff[m_edgePtsCount * 2 + 1]) >
+          Math.abs(candY2 - m_edgePtsBuff[m_edgePtsCount * 2 + 1])) {
+        m_edgePtsBuff[m_edgePtsCount * 6 - 5] = candY1; }
+      else { m_edgePtsBuff[m_edgePtsCount * 6 - 5] = candY2; }
+    }
+
+    // Next set all edge anchor information.
+    while (m_edgePtsCount > 2) {
+      m_edgePtsCount--;
+      final double midX = (m_edgePtsBuff[m_edgePtsCount * 2 - 2] +
+                           m_edgePtsBuff[m_edgePtsCount * 2]) / 2.0d;
+      final double midY = (m_edgePtsBuff[m_edgePtsCount * 2 - 1] +
+                           m_edgePtsBuff[m_edgePtsCount * 2 + 1]) / 2.0d;
+      m_edgePtsBuff[m_edgePtsCount * 6 - 2] = midX +
+        (m_edgePtsBuff[m_edgePtsCount * 2] - midX) * curveFactor;
+      m_edgePtsBuff[m_edgePtsCount * 6 - 1] = midY +
+        (m_edgePtsBuff[m_edgePtsCount * 2 + 1] - midY) * curveFactor;
+      m_edgePtsBuff[m_edgePtsCount * 6 - 4] = midX;
+      m_edgePtsBuff[m_edgePtsCount * 6 - 3] = midY;
+      m_edgePtsBuff[m_edgePtsCount * 6 - 6] = midX +
+        (m_edgePtsBuff[m_edgePtsCount * 2 - 2] - midX) * curveFactor;
+      m_edgePtsBuff[m_edgePtsCount * 6 - 5] = midY +
+        (m_edgePtsBuff[m_edgePtsCount * 2 - 1] - midY) * curveFactor; }
+
+    { // Last set the three points related to point 0.
+      double dx = m_edgePtsBuff[2] - m_edgePtsBuff[0];
+      double dy = m_edgePtsBuff[3] - m_edgePtsBuff[1];
+      double len = Math.sqrt(dx * dx + dy * dy);
+      dx /= len; dy /= len; // Normalized.
+      double segStartX = m_edgePtsBuff[0] + dx * arrow0Size * getT(arrowType0);
+      double segStartY = m_edgePtsBuff[1] + dy * arrow0Size * getT(arrowType0);
+      double candX1 = segStartX + dx * 2.0d * arrow0Size;
+      double candX2 = segStartX + curveFactor * (m_edgePtsBuff[2] - segStartX);
+      if (Math.abs(candX1 - m_edgePtsBuff[0]) >
+          Math.abs(candX2 - m_edgePtsBuff[0])) {
+        m_edgePtsBuff[4] = candX1; }
+      else { m_edgePtsBuff[4] = candX2; }
+      double candY1 = segStartY + dy * 2.0d * arrow0Size;
+      double candY2 = segStartY + curveFactor * (m_edgePtsBuff[3] - segStartY);
+      if (Math.abs(candY1 - m_edgePtsBuff[1]) >
+          Math.abs(candY2 - m_edgePtsBuff[1])) {
+        m_edgePtsBuff[5] = candY1; }
+      else { m_edgePtsBuff[5] = candY2; }
+      m_edgePtsBuff[2] = segStartX;
+      m_edgePtsBuff[3] = segStartY;
+    }
+
+    return true;
   }
 
   // The three following member variables shall only be referenced from
