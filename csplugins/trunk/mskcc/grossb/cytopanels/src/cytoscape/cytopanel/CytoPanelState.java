@@ -26,7 +26,7 @@ public final class CytoPanelState {
 	}
 
 	/*
-	 * In case a someone wants to translated a state into pritable strings
+	 * In case a someone wants to translated a state into printable strings
 	 */
 	public String toString() {
 		return name;
