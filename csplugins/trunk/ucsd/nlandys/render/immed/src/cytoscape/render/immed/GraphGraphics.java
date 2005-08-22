@@ -83,8 +83,14 @@ public final class GraphGraphics
    */
   public static final byte ARROW_MONO = -7;
 
-  // An internal constant for Bezier curves on rounded rectangle.
+  // An internal constant for Bezier curves on rounded rectangle, used for
+  // very closely approcimating circular arcs with cubic curves.
   private static final double s_a = 4.0d * (Math.sqrt(2.0d) - 1.0d) / 3.0d;
+
+  // An internal constant factor used to make edge curves look nice.
+  // For smoothing of bezier curve polygonal edges, I could have an option:
+  // "elliptical" or "natural".  Use s_a for elliptical and s_b for natural.
+  private static final double s_b = 0.66d;
 
   /**
    * The image that was passed into the constructor.
