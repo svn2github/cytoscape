@@ -1372,87 +1372,58 @@ public final class GraphGraphics
   }
 
   private final float[] m_floatBuff = new float[2];
-  private final double[] m_edgePtsBuff = new double[218];
+  private final double[] m_edgePtsBuff = new double[303];
   private int m_edgePtsCount; // Number of points stored in m_edgePtsBuff.
 
   /*
-   * This method populates m_edgePtsBuff with alternating X and Y coordinates
-   * of points defined by the algorithm as stated.
-   *
-   * STEP 1: Arrive at an ordered list of points [0, 1, 2, ..., n].
-   *
-   * Specified in the arguments to this method are the beginning point
-   * (x0, y0), the edge anchors, and the ending point (x1, y1).
-   * Arrive at an ordered list of points [0, 1, 2, ..., n] by prepending
-   * point (x0, y0) to the beginning of the edge anchors list and appending
-   * point (x1, y1) to the ending of the edge anchors list, and then removing
-   * all duplicate consecutive points (we need to have point i is not equal to
-   * point i+1 for any i: 0 <= i < n).  Now point 0 is identical to (x0, y0)
-   * and point n is identical to (x1, y1) even if the length of this
-   * filtered ordered list is one.
-   *
-   * STEP 2: If the list computed in step 1 is degenerate, take appropriate
-   * action.
-   *
-   * If there are less than 3 elements in our computed list [0, 1, ..., n],
-   * we have either one or two points in our
-   * filtered ordered list of points.  In this case we are abort further
-   * computations and return false, indicating that this polygonal edge
-   * should be treated as a simple edge between two points.
-   *
-   * STEP 3: Define α, α', β, β', a, a', b, and b'.
-   *
-   * (Note: the length of an arrow is defined to be the distance from
-   *   the defining point of the arrow's location to the point where
-   *   the edge segment starts.)
-   * Define α to be the begin point 0.
-   * Define β to be the end point n.
-   * Define α' to be the point 1.
-   * Define β' to be the point n-1.
-   * Define a to be the point on ray α->α' that is a distance away from α
-   *   that is equal to the length of arrow0.
-   * Define a' to be the point on ray α->α' that is distance away from α
-   *   that is equal to the length of arrow0 plus arrow0Size.
-   * Define b to be the point on ray β->β' that is a distance away from β
-   *   that is equal to the length of arrow1.
-   * Define b' to be the point on ray β->β' that is a distance away from β
-   *   that is equal to the length of arrow1 plus arrow1Size.
-   *
-   * STEP 4: Finally, define what goes into m_edgePtsBuff.
-   *
-   * From our ordered list [0, 1, 2, ..., n], chop off the first and last
-   * elements.  We're left with the ordered list L: [1, 2, ..., n-1].
-   * Define list B: [α, α', a, a'] and list E: [b', b, β', β].
-   * If line segment αa' contains point α', chop the first
-   * element from L.  If L is not empty and if line segment βb' contains
-   * point β', chop the last element from L.
-   * If we did not delete the last element of L just now then chop the first
-   * element from E.  If we did not delete the first element of L just now then
-   * chop the last element from B.
-   * Define m_edgePtsBuff by concatenating B, L, and E, in that order.
-   *
-   * This list has the following useful properties:
-   * 1. The first two (α->α') and last two (β->β') elements of the list
-   *    specify the location of and direction of arrowheads.
-   * 2. If we chop the first two and last two elements from this list,
-   *    the resulting list specifies the path of the edge segment
-   *    (note that duplicate consecutive points may exist if we specify the
-   *    path in this manner).
-   * 3. If we chop the second and second-to-last elements from this list,
-   *    the resulting list specifies the overall path of the edge; this
-   *    overall path can be used as edge selection criteria (note that
-   *    duplicate consecutive points may exist if we specify the path in
-   *    this manner).
+   * If arrowType0 is ARROW_NONE, arrow0Size should be zero.
+   * If arrowType1 is ARROW_NONE, arrow1Size should be zero.
+   * curveFactor should be CURVE_ELLIPTICAL or CURVE_NATURAL.
    */
-  private final boolean computePolyEdgePath(final byte arrowType0,
-                                            final float arrow0Size,
-                                            final byte arrowType1,
-                                            final float arrow1Size,
-                                            final float x0, final float y0,
-                                            final EdgeAnchors anchors,
-                                            final float x1, final float y1)
+  private final boolean computeCubicPolyEdgePath(final byte arrowType0,
+                                                 final float arrow0Size,
+                                                 final byte arrowType1,
+                                                 final float arrow1Size,
+                                                 final float x0,
+                                                 final float y0,
+                                                 final EdgeAnchors anchors,
+                                                 final float x1,
+                                                 final float y1,
+                                                 final double curveFactor)
   {
-    return false;
+    m_edgePtsBuff[0] = x0;
+    m_edgePtsBuff[1] = y0;
+    m_edgePtsCount = 1;
+    while (anchors.numRemaining() > 0) {
+      anchors.nextAnchor(m_floatBuff, 0);
+      if (!(m_floatBuff[0] == x0 && m_floatBuff[1] == y0)) {
+        m_edgePtsBuff[2] = m_floatBuff[0];
+        m_edgePtsBuff[3] = m_floatBuff[1];
+        m_edgePtsCount = 2;
+        break; } }
+    if (m_edgePtsCount == 1) {
+      // We went through the entire list of edge anchors and found only
+      // duplicates of the point 0.
+      if (!(x1 == x0 && y1 == y0)) {
+        m_edgePtsBuff[2] = x1;
+        m_edgePtsBuff[3] = y1;
+        m_edgePtsCount = 2; }
+      return false; }
+    while (anchors.numRemaining() > 0) {
+      anchors.nextAnchor(m_floatBuff, 0);
+      // Duplicate anchors are allowed.
+      m_edgePtsBuff[m_edgePtsCount * 2] = m_floatBuff[0];
+      m_edgePtsBuff[m_edgePtsCount * 2 + 1] = m_floatBuff[1];
+      m_edgePtsCount++; }
+    m_edgePtsBuff[m_edgePtsCount * 2] = x1;
+    m_edgePtsBuff[m_edgePtsCount * 2 + 1] = y1;
+    m_edgePtsCount++;
+    while (true) {
+      if (m_edgePtsBuff[m_edgePtsCount * 2 - 2] ==
+          m_edgePtsBuff[m_edgePtsCount * 2 - 4] &&
+          m_edgePtsBuff[m_edgePtsCount * 2 - 1] ==
+          m_edgePtsBuff[m_edgePtsCount * 2 - 3]) {
+        m_edgePtsCount--; } }
   }
 
   // The three following member variables shall only be referenced from
