@@ -89,7 +89,7 @@ public class BiModalJSplitPane extends JSplitPane implements CytoPanelContainer 
      * @param cytoPanel        CytoPanel reference.
      * @param compassDirection SwingConstants integer value.
      */
-	public void insertCytoPanel(CytoPanel cytoPanel, int compassDirection) {
+	public void insertCytoPanel(CytoPanelImp cytoPanel, int compassDirection) {
 		boolean success = false;
 
 		switch (compassDirection){
