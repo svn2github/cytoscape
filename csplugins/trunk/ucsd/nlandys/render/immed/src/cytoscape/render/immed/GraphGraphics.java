@@ -1401,14 +1401,6 @@ public final class GraphGraphics
         m_edgePtsBuff[3] = m_floatBuff[1];
         m_edgePtsCount = 2;
         break; } }
-    if (m_edgePtsCount == 1) {
-      // We went through the entire list of edge anchors and found only
-      // duplicates of the point 0.
-      if (!(x1 == x0 && y1 == y0)) {
-        m_edgePtsBuff[2] = x1;
-        m_edgePtsBuff[3] = y1;
-        m_edgePtsCount = 2; }
-      return false; }
     while (anchors.numRemaining() > 0) {
       anchors.nextAnchor(m_floatBuff, 0);
       // Duplicate anchors are allowed.
@@ -1418,12 +1410,14 @@ public final class GraphGraphics
     m_edgePtsBuff[m_edgePtsCount * 2] = x1;
     m_edgePtsBuff[m_edgePtsCount * 2 + 1] = y1;
     m_edgePtsCount++;
-    while (true) {
-      if (m_edgePtsBuff[m_edgePtsCount * 2 - 2] ==
-          m_edgePtsBuff[m_edgePtsCount * 2 - 4] &&
-          m_edgePtsBuff[m_edgePtsCount * 2 - 1] ==
-          m_edgePtsBuff[m_edgePtsCount * 2 - 3]) {
-        m_edgePtsCount--; } }
+    while (m_edgePtsCount > 1) {
+      if (m_edgePtsBuff[m_edgePtsCount * 2 - 2] == // Last X coord equals
+          m_edgePtsBuff[m_edgePtsCount * 2 - 4] && // eecond-to-last X coord.
+          m_edgePtsBuff[m_edgePtsCount * 2 - 1] == // Last Y coord equals
+          m_edgePtsBuff[m_edgePtsCount * 2 - 3]) { // second-to-last Y coord.
+        m_edgePtsCount--; }
+      else { break; } }
+    if (m_edgePtsCount < 3) { return false; }
   }
 
   // The three following member variables shall only be referenced from
