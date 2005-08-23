@@ -63,8 +63,8 @@ public final class TestBasicPolyEdge
     addNotify();
     m_img = createImage(m_imgWidth, m_imgHeight);
     m_grafx = new GraphGraphics(m_img, true);
-    updateImage();
     m_ptStates = new boolean[m_tree.size()];
+    updateImage();
     addMouseListener(this);
     addMouseMotionListener(this);
   }
