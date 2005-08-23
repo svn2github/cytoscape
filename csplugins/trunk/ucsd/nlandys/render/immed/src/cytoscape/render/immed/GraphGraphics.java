@@ -1272,6 +1272,23 @@ public final class GraphGraphics
     }
   }
 
+  public final void drawPolyEdgeFull(final byte arrowType0,
+                                     final float arrow0Size,
+                                     final Color arrow0Color,
+                                     final byte arrowType1,
+                                     final float arrow1Size,
+                                     final Color arrow1Color,
+                                     final float x0, final float y0,
+                                     final EdgeAnchors anchors,
+                                     final float x1, final float y1,
+                                     final float edgeThickness,
+                                     final Color edgeColor,
+                                     final float dashLength,
+                                     final double curveFactor,
+                                     final boolean detail)
+  {
+  }
+
   /*
    * Returns non-null if and only if an arrow is necessary for the arrow
    * type specified.  m_path2d and m_ellp2d may be mangled as a side effect.
