@@ -2,11 +2,12 @@ package cytoscape.render.test;
 
 import cytoscape.geom.rtree.RTree;
 import cytoscape.geom.rtree.RTreeEntryEnumerator;
-// import cytoscape.render.immed.EdgeAnchors;
+import cytoscape.render.immed.EdgeAnchors;
 import cytoscape.render.immed.GraphGraphics;
 
 import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -48,8 +49,11 @@ public final class TestBasicPolyEdge
   private final RTree m_tree;
   private final Image m_img;
   private final GraphGraphics m_grafx;
+  private final Font m_font;
   private final boolean[] m_ptStates;
+  private final String[] m_labels;
   private final int[] m_objBuff;
+  private final float[] m_anchorsBuff;
   private double m_currXCenter = 0.0d;
   private double m_currYCenter = 0.0d;
   private double m_currScale = 1.0d;
@@ -59,6 +63,7 @@ public final class TestBasicPolyEdge
 
   /**
    * The objKeys in tree must start at zero and must be contiguous.
+   * The tree must contain at least 2 elements.
    */
   public TestBasicPolyEdge(RTree tree)
   {
@@ -67,8 +72,12 @@ public final class TestBasicPolyEdge
     addNotify();
     m_img = createImage(m_imgWidth, m_imgHeight);
     m_grafx = new GraphGraphics(m_img, true);
+    m_font = new Font(null, Font.BOLD, 1);
     m_ptStates = new boolean[m_tree.size()];
+    m_labels = new String[m_tree.size()];
+    for (int i = 0; i < m_labels.length; i++) { m_labels[i] = "" + i; }
     m_objBuff = new int[m_tree.size()];
+    m_anchorsBuff = new float[(m_tree.size() - 2) * 2];
     updateImage();
     addMouseListener(this);
     addMouseMotionListener(this);
@@ -89,9 +98,44 @@ public final class TestBasicPolyEdge
     g.drawImage(m_img, insets.left, insets.top, null);
   }
 
-  public final void updateImage()
+  private void updateImage()
   {
     m_grafx.clear(Color.white, m_currXCenter, m_currYCenter, m_currScale);
+
+    // Determine endpoints.
+    m_tree.exists(0, m_floatBuff, 0);
+    float x0 = (float)
+      ((((double) m_floatBuff[0]) + m_floatBuff[2]) / 2.0d);
+    float y0 = (float)
+      ((((double) m_floatBuff[1]) + m_floatBuff[3]) / 2.0d);
+    m_tree.exists(m_tree.size() - 1, m_floatBuff, 0);
+    float x1 = (float)
+      ((((double) m_floatBuff[0]) + m_floatBuff[2]) / 2.0d);
+    float y1 = (float)
+      ((((double) m_floatBuff[1]) + m_floatBuff[3]) / 2.0d);
+
+    // Populate m_anchorsBuff.
+    int offset = 0;
+    for (int i = m_tree.size() - 2; i > 0; i--) {
+      m_tree.exists(i, m_floatBuff, 0);
+      m_anchorsBuff[offset++] = (float)
+        ((((double) m_floatBuff[0]) + m_floatBuff[2]) / 2.0d);
+      m_anchorsBuff[offset++] = (float)
+        ((((double) m_floatBuff[1]) + m_floatBuff[3]) / 2.0d); }
+
+    m_grafx.drawPolyEdgeFull
+      (GraphGraphics.ARROW_NONE, 0.0f, null,
+       GraphGraphics.ARROW_NONE, 0.0f, null,
+       x0, y0,
+       new EdgeAnchors() {
+         int num = m_tree.size() - 2;
+         public int numRemaining() { return num; }
+         public void nextAnchor(float[] anchorArr, int offset) {
+           anchorArr[offset] = m_anchorsBuff[num * 2 - 2];
+           anchorArr[offset + 1] = m_anchorsBuff[num * 2 - 1];
+           num--; } },
+       x1, y1, 0.5f, Color.black, 0.0f, GraphGraphics.CURVE_ELLIPTICAL);
+
     RTreeEntryEnumerator iter = m_tree.queryOverlap
       ((float) (m_currXCenter - ((double) (m_imgWidth / 2)) / m_currScale),
        (float) (m_currYCenter - ((double) (m_imgHeight / 2)) / m_currScale),
@@ -104,7 +148,12 @@ public final class TestBasicPolyEdge
                            m_floatBuff[0], m_floatBuff[1],
                            m_floatBuff[2], m_floatBuff[3],
                            m_ptStates[inx] ? Color.blue : Color.red,
-                           1.2f, Color.black); }
+                           0.8f, Color.black);
+      m_grafx.drawTextFull
+        (m_font, 7, m_labels[inx],
+         (float) ((((double) m_floatBuff[0]) + m_floatBuff[2]) / 2.0d),
+         (float) ((((double) m_floatBuff[1]) + m_floatBuff[3]) / 2.0d),
+         Color.black, true); }
   }
 
   public void mouseClicked(MouseEvent e) {}
