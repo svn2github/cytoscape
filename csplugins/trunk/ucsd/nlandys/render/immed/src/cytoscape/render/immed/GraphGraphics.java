@@ -94,7 +94,7 @@ public final class GraphGraphics
    * A constant for controlling how cubic Bezier curves are drawn; This
    * particular constnat results in natural-looking curves.
    */
-  public static final double CURVE_NATURAL = 0.66;
+  public static final double CURVE_NATURAL = 2.0d / 3.0d;
 
   /**
    * The image that was passed into the constructor.
@@ -1198,9 +1198,51 @@ public final class GraphGraphics
                                      final float edgeThickness,
                                      final Color edgeColor,
                                      final float dashLength,
-                                     final double curveFactor,
-                                     final boolean detail)
+                                     final double curveFactor)
   {
+    if (m_debug) {
+      edgeFullDebug(true, arrowType0, arrow0Size, arrowType1, arrow1Size,
+                    edgeThickness, dashLength);
+      if (anchors.numRemaining() > 100)
+        throw new IllegalArgumentException
+          ("at most 100 edge anchors can be specified");
+      if (!(curveFactor == CURVE_ELLIPTICAL || curveFactor == CURVE_NATURAL))
+        throw new IllegalArgumentException
+          ("curveFactor should be either CURVE_ELLIPTICAL or CURVE_NATURAL"); }
+
+    if (!computeCubicPolyEdgePath(arrowType0, arrow0Size,
+                                  arrowType1, arrow1Size,
+                                  x0, y0, anchors, x1, y1, curveFactor)) {
+      // After filtering duplicate start and end points, there are less
+      // than 3 total.
+      if (m_edgePtsCount == 2) { // Draw an ordinary edge.
+        drawEdgeFull(arrowType0, arrow0Size, arrow0Color,
+                     arrowType1, arrow1Size, arrow1Color,
+                     (float) m_edgePtsBuff[0], (float) m_edgePtsBuff[1],
+                     (float) m_edgePtsBuff[2], (float) m_edgePtsBuff[3],
+                     edgeThickness, edgeColor, dashLength); }
+      return; }
+
+    { // Render the edge polypath.
+      final boolean simpleSegment = arrowType0 == ARROW_NONE &&
+        arrowType1 == ARROW_NONE && dashLength == 0.0f;
+      setStroke(edgeThickness, dashLength,
+                simpleSegment ? BasicStroke.CAP_ROUND :
+                BasicStroke.CAP_BUTT, false);
+      // Set m_path2d to contain the cubic curves computed in m_edgePtsBuff.
+      m_path2d.reset();
+      m_path2d.moveTo((float) m_edgePtsBuff[2], (float) m_edgePtsBuff[3]);
+      int inx = 4;
+      final int count = (m_edgePtsCount - 1) * 6 - 2;
+      while (inx < count) {
+        m_path2d.curveTo
+          ((float) m_edgePtsBuff[inx++], (float) m_edgePtsBuff[inx++],
+           (float) m_edgePtsBuff[inx++], (float) m_edgePtsBuff[inx++],
+           (float) m_edgePtsBuff[inx++], (float) m_edgePtsBuff[inx++]); }
+      m_g2d.setColor(edgeColor);
+      m_g2d.draw(m_path2d);
+      if (simpleSegment) { return; }
+    }
   }
 
   private final void edgeFullDebug(final boolean polyEdge,
