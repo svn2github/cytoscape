@@ -1576,6 +1576,7 @@ public final class GraphGraphics
       m_edgePtsBuff[3] = segStartY;
     }
 
+    m_edgePtsCount = edgePtsCount;
     return true;
   }
 
