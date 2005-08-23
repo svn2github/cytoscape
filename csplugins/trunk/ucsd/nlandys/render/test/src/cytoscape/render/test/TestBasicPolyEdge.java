@@ -25,14 +25,14 @@ public final class TestBasicPolyEdge
   public final static void main(String[] args) throws Exception
   {
     final RTree tree = new RTree(3);
-    tree.insert(0, -200.0f, -200.0f, -190.0f, -190.0f); // Begin point.
-    tree.insert(1, -200.0f, 100.0f, -190.0f, 110.0f); // Anchor 1.
-    tree.insert(2, 0.0f, 0.0f, 10.0f, 10.0f); // Anchor 2.
-    tree.insert(3, 200.0f, 200.0f, 210.0f, 210.0f); // Anchor 3.
-    tree.insert(4, 50.0f, -50.0f, 60.0f, -40.0f); // Anchor 4.
-    tree.insert(5, 300.0f, -200.0f, 310.0f, -190.0f); // Anchor 5.
-    tree.insert(6, 0.0f, 200.0f, 10.0f, 210.0f); // Anchor 6.
-    tree.insert(7, 200.0f, -200.0f, 210.0f, -190.0f); // End point.
+    tree.insert(0, -200.0f, -200.0f, -180.0f, -180.0f); // Begin point.
+    tree.insert(1, -200.0f, 100.0f, -180.0f, 120.0f); // Anchor 1.
+    tree.insert(2, 0.0f, 0.0f, 20.0f, 20.0f); // Anchor 2.
+    tree.insert(3, 200.0f, 200.0f, 220.0f, 220.0f); // Anchor 3.
+    tree.insert(4, 50.0f, -50.0f, 70.0f, -30.0f); // Anchor 4.
+    tree.insert(5, 300.0f, -200.0f, 320.0f, -180.0f); // Anchor 5.
+    tree.insert(6, 0.0f, 200.0f, 20.0f, 220.0f); // Anchor 6.
+    tree.insert(7, 200.0f, -200.0f, 220.0f, -180.0f); // End point.
     EventQueue.invokeAndWait(new Runnable() {
         public void run() {
           Frame f = new TestBasicPolyEdge(tree);
@@ -44,6 +44,12 @@ public final class TestBasicPolyEdge
 
   private final int m_imgWidth = 640;
   private final int m_imgHeight = 480;
+  private final Color m_bgColor = Color.white;
+  private final Color m_fillColor = new Color(255, 0, 0, 63);
+  private final Color m_selectedFillColor = new Color(0, 0, 255, 63);
+  private final Color m_borderColor = new Color(0, 0, 0, 63);
+  private final Color m_textColor = Color.white;
+  private final Color m_edgeSegmentColor = m_borderColor;
   private final double[] m_ptBuff = new double[2];
   private final float[] m_floatBuff = new float[4];
   private final RTree m_tree;
@@ -100,7 +106,7 @@ public final class TestBasicPolyEdge
 
   private void updateImage()
   {
-    m_grafx.clear(Color.white, m_currXCenter, m_currYCenter, m_currScale);
+    m_grafx.clear(m_bgColor, m_currXCenter, m_currYCenter, m_currScale);
 
     // Determine endpoints.
     m_tree.exists(0, m_floatBuff, 0);
@@ -134,7 +140,7 @@ public final class TestBasicPolyEdge
            anchorArr[offset] = m_anchorsBuff[num * 2 - 2];
            anchorArr[offset + 1] = m_anchorsBuff[num * 2 - 1];
            num--; } },
-       x1, y1, 0.5f, Color.black, 0.0f, GraphGraphics.CURVE_ELLIPTICAL);
+       x1, y1, 1.5f, m_edgeSegmentColor, 0.0f, GraphGraphics.CURVE_ELLIPTICAL);
 
     RTreeEntryEnumerator iter = m_tree.queryOverlap
       ((float) (m_currXCenter - ((double) (m_imgWidth / 2)) / m_currScale),
@@ -147,13 +153,14 @@ public final class TestBasicPolyEdge
       m_grafx.drawNodeFull(GraphGraphics.SHAPE_ELLIPSE,
                            m_floatBuff[0], m_floatBuff[1],
                            m_floatBuff[2], m_floatBuff[3],
-                           m_ptStates[inx] ? Color.blue : Color.red,
-                           0.8f, Color.black);
+                           m_ptStates[inx] ? m_selectedFillColor :
+                           m_fillColor,
+                           1.6f, m_borderColor);
       m_grafx.drawTextFull
-        (m_font, 7, m_labels[inx],
+        (m_font, 14, m_labels[inx],
          (float) ((((double) m_floatBuff[0]) + m_floatBuff[2]) / 2.0d),
          (float) ((((double) m_floatBuff[1]) + m_floatBuff[3]) / 2.0d),
-         Color.black, true); }
+         m_textColor, true); }
   }
 
   public void mouseClicked(MouseEvent e) {}
