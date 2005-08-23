@@ -60,6 +60,13 @@ public interface CytoPanel {
     public void add(String title, Icon icon, Component component, String tip);
 
 	/**
+	 * Returns the number of components in the CytoPanel.
+	 *
+	 * @return int Number of components.
+	 */
+	public int getComponentCount();
+
+	/**
 	 * Returns the currently selected component.
 	 *
 	 * @return component Currently selected Component reference.
