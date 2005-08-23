@@ -23,12 +23,15 @@ public final class TestBasicPolyEdge
 
   public final static void main(String[] args) throws Exception
   {
-    final RTree tree = new RTree();
+    final RTree tree = new RTree(3);
     tree.insert(0, -200.0f, -200.0f, -190.0f, -190.0f); // Begin point.
     tree.insert(1, -200.0f, 100.0f, -190.0f, 110.0f); // Anchor 1.
     tree.insert(2, 0.0f, 0.0f, 10.0f, 10.0f); // Anchor 2.
     tree.insert(3, 200.0f, 200.0f, 210.0f, 210.0f); // Anchor 3.
-    tree.insert(4, 200.0f, -200.0f, 210.0f, -190.0f); // End point.
+    tree.insert(4, 50.0f, -50.0f, 60.0f, -40.0f); // Anchor 4.
+    tree.insert(5, 300.0f, -200.0f, 310.0f, -190.0f); // Anchor 5.
+    tree.insert(6, 0.0f, 200.0f, 10.0f, 210.0f); // Anchor 6.
+    tree.insert(7, 200.0f, -200.0f, 210.0f, -190.0f); // End point.
     EventQueue.invokeAndWait(new Runnable() {
         public void run() {
           Frame f = new TestBasicPolyEdge(tree);
