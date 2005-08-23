@@ -1242,6 +1242,49 @@ public final class GraphGraphics
       m_g2d.setColor(edgeColor);
       m_g2d.draw(m_path2d);
       if (simpleSegment) { return; }
+      // We need to figure out the phase at the end of the cubic poly-path
+      // for dashed segments.  For now just ignore dashed segment arrow cap
+      // issues - assume no dashes are used.
+    }
+
+    // At some point we should render arrow caps.  This is difficult to
+    // implement so I'm postponing it.
+
+    { // Render arrow at origin of poly path.
+      final double dx = m_edgePtsBuff[0] - m_edgePtsBuff[4];
+      final double dy = m_edgePtsBuff[1] - m_edgePtsBuff[5];
+      final double len = Math.sqrt(dx * dx + dy * dy);
+      final double cosTheta = dx / len;
+      final double sinTheta = dy / len;
+      final Shape arrow0 = computeUntransformedArrow(arrowType0);
+      if (arrow0 != null) {
+        m_xformUtil.setTransform(cosTheta, sinTheta, -sinTheta, cosTheta,
+                                 m_edgePtsBuff[0], m_edgePtsBuff[1]);
+        m_g2d.transform(m_xformUtil);
+        m_g2d.scale(arrow0Size, arrow0Size);
+        m_g2d.setColor(arrow0Color);
+        m_g2d.fill(arrow0);
+        m_g2d.setTransform(m_currNativeXform); }
+    }
+
+    { // Render arrow at end of poly path.
+      final double dx = m_edgePtsBuff[(m_edgePtsCount - 1) * 6 - 2] -
+        m_edgePtsBuff[(m_edgePtsCount - 1) * 6 - 6];
+      final double dy = m_edgePtsBuff[(m_edgePtsCount - 1) * 6 - 1] -
+        m_edgePtsBuff[(m_edgePtsCount - 1) * 6 - 5];
+      final double len = Math.sqrt(dx * dx + dy * dy);
+      final double cosTheta = dx / len;
+      final double sinTheta = dy / len;
+      final Shape arrow1 = computeUntransformedArrow(arrowType1);
+      if (arrow1 != null) {
+        m_xformUtil.setTransform(cosTheta, sinTheta, -sinTheta, cosTheta,
+                                 m_edgePtsBuff[(m_edgePtsCount - 1) * 6 - 2],
+                                 m_edgePtsBuff[(m_edgePtsCount - 1) * 6 - 1]);
+        m_g2d.transform(m_xformUtil);
+        m_g2d.scale(arrow1Size, arrow1Size);
+        m_g2d.setColor(arrow1Color);
+        m_g2d.fill(arrow1);
+        m_g2d.setTransform(m_currNativeXform); }
     }
   }
 
