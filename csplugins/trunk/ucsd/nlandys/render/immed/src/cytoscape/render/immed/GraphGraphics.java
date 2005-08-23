@@ -1041,94 +1041,8 @@ public final class GraphGraphics
                                  final float dashLength)
   {
     if (m_debug) {
-      if (!EventQueue.isDispatchThread())
-        throw new IllegalStateException
-          ("calling thread is not AWT event dispatcher");
-      if (!m_cleared) throw new IllegalStateException
-                        ("clear() has not been called previously");
-      if (!(edgeThickness >= 0.0f))
-        throw new IllegalArgumentException("edgeThickness < 0");
-      if (!(dashLength >= 0.0f))
-        throw new IllegalArgumentException("dashLength < 0");
-      switch (arrowType0) {
-      case ARROW_NONE:
-        break;
-      case ARROW_DELTA:
-        if (!(Math.sqrt(17.0d) * edgeThickness <= 4.0d * arrow0Size))
-          throw new IllegalArgumentException
-            ("for ARROW_DELTA e/s is greater than 4/sqrt(17)");
-        break;
-      case ARROW_DIAMOND:
-        if (!(Math.sqrt(5.0d) * edgeThickness <= 2.0d * arrow0Size))
-          throw new IllegalArgumentException
-            ("for ARROW_DIAMOND e/s is greater than 2/sqrt(5)");
-        break;
-      case ARROW_DISC:
-        if (!(edgeThickness <= arrow0Size))
-          throw new IllegalArgumentException
-            ("for ARROW_DISC e/s is greater than 1");
-        break;
-      case ARROW_TEE:
-        if (!(((double) edgeThickness) <= 0.5d * arrow0Size))
-          throw new IllegalArgumentException
-            ("for ARROW_TEE e/s is greater than 1/2");
-        break;
-      case ARROW_BIDIRECTIONAL:
-        if (!(17.0d * edgeThickness <= 8.0d * arrow0Size))
-          throw new IllegalArgumentException
-            ("for ARROW_BIDIRECTIONAL e/s is greater than 8/17");
-        if (arrowType1 != ARROW_BIDIRECTIONAL)
-          throw new IllegalArgumentException
-            ("either both or neither arrows must be ARROW_BIDIRECTIONAL");
-        break;
-      case ARROW_MONO:
-        if (!(edgeThickness <= arrow0Size))
-          throw new IllegalArgumentException
-            ("for ARROW_MONO e/s is greater than 1");
-        if (arrowType1 != ARROW_MONO)
-          throw new IllegalArgumentException
-            ("either both or neither arrows must be ARROW_MONO");
-        break;
-      default:
-        throw new IllegalArgumentException("arrowType0 is not recognized"); }
-      switch (arrowType1) {
-      case ARROW_NONE:
-        break;
-      case ARROW_DELTA:
-        if (!(Math.sqrt(17.0d) * edgeThickness <= 4.0d * arrow1Size))
-          throw new IllegalArgumentException
-            ("for ARROW_DELTA e/s is greater than 4/sqrt(17)");
-        break;
-      case ARROW_DIAMOND:
-        if (!(Math.sqrt(5.0d) * edgeThickness <= 2.0d * arrow1Size))
-          throw new IllegalArgumentException
-            ("for ARROW_DIAMOND e/s is greater than 2/sqrt(5)");
-        break;
-      case ARROW_DISC:
-        if (!(edgeThickness <= arrow1Size))
-          throw new IllegalArgumentException
-            ("for ARROW_DISC e/s is greater than 1");
-        break;
-      case ARROW_TEE:
-        if (!(((double) edgeThickness) <= 0.5d * arrow1Size))
-          throw new IllegalArgumentException
-            ("for ARROW_TEE e/s is greater than 1/2");
-        break;
-      case ARROW_BIDIRECTIONAL:
-        if (!(17.0d * edgeThickness <= 8.0d * arrow1Size))
-          throw new IllegalArgumentException
-            ("for ARROW_BIDIRECTIONAL e/s is greater than 8/17");
-        if (arrowType0 != ARROW_BIDIRECTIONAL)
-          throw new IllegalArgumentException
-            ("either both or neither arrows must be ARROW_BIDIRECTIONAL");
-        break;
-      case ARROW_MONO:
-        if (arrowType0 != ARROW_MONO)
-          throw new IllegalArgumentException
-            ("either both or neither arrows must be ARROW_MONO");
-        break;
-      default:
-        throw new IllegalArgumentException("arrowType1 is not recognized"); } }
+      edgeFullDebug(false, arrowType0, arrow0Size, arrowType1, arrow1Size,
+                    edgeThickness, dashLength); }
     // End debug.  Here the real code begins.
 
     final double len = Math.sqrt((((double) x1) - x0) * (((double) x1) - x0) +
@@ -1287,6 +1201,110 @@ public final class GraphGraphics
                                      final double curveFactor,
                                      final boolean detail)
   {
+  }
+
+  private final void edgeFullDebug(final boolean polyEdge,
+                                   final byte arrowType0,
+                                   final float arrow0Size,
+                                   final byte arrowType1,
+                                   final float arrow1Size,
+                                   final float edgeThickness,
+                                   final float dashLength)
+  {
+    if (!EventQueue.isDispatchThread())
+      throw new IllegalStateException
+        ("calling thread is not AWT event dispatcher");
+    if (!m_cleared) throw new IllegalStateException
+                      ("clear() has not been called previously");
+    if (!(edgeThickness >= 0.0f))
+      throw new IllegalArgumentException("edgeThickness < 0");
+    if (!(dashLength >= 0.0f))
+      throw new IllegalArgumentException("dashLength < 0");
+    switch (arrowType0) {
+    case ARROW_NONE:
+      break;
+    case ARROW_DELTA:
+      if (!(Math.sqrt(17.0d) * edgeThickness <= 4.0d * arrow0Size))
+        throw new IllegalArgumentException
+          ("for ARROW_DELTA e/s is greater than 4/sqrt(17)");
+      break;
+    case ARROW_DIAMOND:
+      if (!(Math.sqrt(5.0d) * edgeThickness <= 2.0d * arrow0Size))
+        throw new IllegalArgumentException
+          ("for ARROW_DIAMOND e/s is greater than 2/sqrt(5)");
+      break;
+    case ARROW_DISC:
+      if (!(edgeThickness <= arrow0Size))
+        throw new IllegalArgumentException
+          ("for ARROW_DISC e/s is greater than 1");
+      break;
+    case ARROW_TEE:
+      if (!(((double) edgeThickness) <= 0.5d * arrow0Size))
+        throw new IllegalArgumentException
+          ("for ARROW_TEE e/s is greater than 1/2");
+      break;
+    case ARROW_BIDIRECTIONAL:
+      if (polyEdge)
+        throw new IllegalArgumentException
+          ("ARROW_BIDIRECTIONAL not supported for poly edges");
+      if (!(17.0d * edgeThickness <= 8.0d * arrow0Size))
+        throw new IllegalArgumentException
+          ("for ARROW_BIDIRECTIONAL e/s is greater than 8/17");
+      if (arrowType1 != ARROW_BIDIRECTIONAL)
+        throw new IllegalArgumentException
+          ("either both or neither arrows must be ARROW_BIDIRECTIONAL");
+      break;
+    case ARROW_MONO:
+      if (polyEdge)
+        throw new IllegalArgumentException
+          ("ARROW_MONO not supported for poly edges");
+      if (!(edgeThickness <= arrow0Size))
+        throw new IllegalArgumentException
+          ("for ARROW_MONO e/s is greater than 1");
+      if (arrowType1 != ARROW_MONO)
+        throw new IllegalArgumentException
+          ("either both or neither arrows must be ARROW_MONO");
+      break;
+    default:
+      throw new IllegalArgumentException("arrowType0 is not recognized"); }
+    switch (arrowType1) {
+    case ARROW_NONE:
+      break;
+    case ARROW_DELTA:
+      if (!(Math.sqrt(17.0d) * edgeThickness <= 4.0d * arrow1Size))
+        throw new IllegalArgumentException
+          ("for ARROW_DELTA e/s is greater than 4/sqrt(17)");
+      break;
+    case ARROW_DIAMOND:
+      if (!(Math.sqrt(5.0d) * edgeThickness <= 2.0d * arrow1Size))
+        throw new IllegalArgumentException
+          ("for ARROW_DIAMOND e/s is greater than 2/sqrt(5)");
+      break;
+    case ARROW_DISC:
+      if (!(edgeThickness <= arrow1Size))
+        throw new IllegalArgumentException
+          ("for ARROW_DISC e/s is greater than 1");
+      break;
+    case ARROW_TEE:
+      if (!(((double) edgeThickness) <= 0.5d * arrow1Size))
+        throw new IllegalArgumentException
+          ("for ARROW_TEE e/s is greater than 1/2");
+      break;
+    case ARROW_BIDIRECTIONAL:
+      if (!(17.0d * edgeThickness <= 8.0d * arrow1Size))
+        throw new IllegalArgumentException
+          ("for ARROW_BIDIRECTIONAL e/s is greater than 8/17");
+      if (arrowType0 != ARROW_BIDIRECTIONAL)
+        throw new IllegalArgumentException
+          ("either both or neither arrows must be ARROW_BIDIRECTIONAL");
+      break;
+    case ARROW_MONO:
+      if (arrowType0 != ARROW_MONO)
+        throw new IllegalArgumentException
+          ("either both or neither arrows must be ARROW_MONO");
+      break;
+    default:
+      throw new IllegalArgumentException("arrowType1 is not recognized"); }
   }
 
   /*
