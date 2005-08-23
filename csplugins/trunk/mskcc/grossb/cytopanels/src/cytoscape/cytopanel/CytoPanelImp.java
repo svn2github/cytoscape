@@ -74,9 +74,13 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 	private ArrayList cytoPanelListenerList;
 
 	/**
-	 * Types of notification.
+	 * Notification state change.
 	 */
 	private final int NOTIFICATION_STATE_CHANGE = 0;
+
+	/**
+	 * Notification component selected.
+	 */
 	private final int NOTIFICATION_COMPONENT_SELECTED = 1;
 
 	/**
@@ -304,6 +308,17 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 		// add tab to JTabbedPane (string, icon, component, tip)
 		tabbedPane.addTab(title, icon, component, tip);
     }
+
+	/**
+	 * Returns the number of components in the CytoPanel.
+	 *
+	 * @return int Number of components.
+	 */
+	public int getComponentCount(){
+
+		// return the number of tabs in the JTabbedPane.
+		return tabbedPane.getTabCount();
+	}
 
 	/**
 	 * Returns the currently selected component.
