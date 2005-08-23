@@ -46,6 +46,7 @@ public final class TestBasicPolyEdge
   private final Image m_img;
   private final GraphGraphics m_grafx;
   private final boolean[] m_ptStates;
+  private final int[] m_objBuff;
   private double m_currXCenter = 0.0d;
   private double m_currYCenter = 0.0d;
   private double m_currScale = 1.0d;
@@ -64,6 +65,7 @@ public final class TestBasicPolyEdge
     m_img = createImage(m_imgWidth, m_imgHeight);
     m_grafx = new GraphGraphics(m_img, true);
     m_ptStates = new boolean[m_tree.size()];
+    m_objBuff = new int[m_tree.size()];
     updateImage();
     addMouseListener(this);
     addMouseMotionListener(this);
@@ -120,21 +122,27 @@ public final class TestBasicPolyEdge
         m_tree.queryOverlap((float) m_ptBuff[0], (float) m_ptBuff[1],
                             (float) m_ptBuff[0], (float) m_ptBuff[1],
                             null, 0);
+      // We have to "reverse" the order in which hits are returned; in
+      // rendering, we do it back to front; in selection, we would like to
+      // do it front to back.
+      int candidateCount = candidates.numRemaining();
+      for (int i = candidateCount; i > 0;) {
+        m_objBuff[--i] = candidates.nextInt(); }
       boolean mustRender = false;
-      while (candidates.numRemaining() > 0) {
-        int candidate = candidates.nextExtents(m_floatBuff, 0);
+      for (int i = 0; i < candidateCount; i++) {
+        m_tree.exists(m_objBuff[i], m_floatBuff, 0);
         if (m_grafx.contains(GraphGraphics.SHAPE_ELLIPSE,
                              m_floatBuff[0], m_floatBuff[1],
                              m_floatBuff[2], m_floatBuff[3],
                              (float) m_ptBuff[0], (float) m_ptBuff[1])) {
           mustRender = true;
-          m_ptStates[candidate] = true;
+          m_ptStates[m_objBuff[i]] = true;
           break; } }
       if (mustRender) { repaint(); } }
-//     else if (e.getButton() == MouseEvent.BUTTON2) {
-//       m_currMouseButton = 2;
-//       m_lastXMousePos = e.getX();
-//       m_lastYMousePos = e.getY(); }
+    else if (e.getButton() == MouseEvent.BUTTON2) {
+      m_currMouseButton = 2;
+      m_lastXMousePos = e.getX(); // Ignore offset caused by insets.
+      m_lastYMousePos = e.getY(); }
   }
 
   public void mouseReleased(MouseEvent e)
@@ -146,8 +154,9 @@ public final class TestBasicPolyEdge
           m_ptStates[i] = false; mustRender = true; break; } }
       m_currMouseButton = 0;
       if (mustRender) { repaint(); } }
-//     else if (e.getButton() == MouseEvent.BUTTON2) {
-//       if (m_currMouseButton == 2) m_currMouseButton = 0; }
+    else if (e.getButton() == MouseEvent.BUTTON2 &&
+             m_currMouseButton == 2) {
+      m_currMouseButton = 0; }
   }
 
   public void mouseDragged(MouseEvent e)
@@ -178,12 +187,12 @@ public final class TestBasicPolyEdge
                       (float) (deltaX + m_floatBuff[2]),
                       (float) (deltaY + m_floatBuff[3]));
         repaint(); } }
-//     else if (m_currMouseButton == 2) {
-//       double deltaY = e.getY() - m_lastYMousePos;
-//       m_lastXMousePos = e.getX();
-//       m_lastYMousePos = e.getY();
-//       m_currScale *= Math.pow(2, -deltaY / 300.0d);
-//       repaint(); }
+    else if (m_currMouseButton == 2) {
+      double deltaY = e.getY() - m_lastYMousePos;
+      m_lastXMousePos = e.getX(); // Ignore offset caused by insets.
+      m_lastYMousePos = e.getY();
+      m_currScale *= Math.pow(2, -deltaY / 300.0d);
+      repaint(); }
   }
 
   public void mouseMoved(MouseEvent e) {}
