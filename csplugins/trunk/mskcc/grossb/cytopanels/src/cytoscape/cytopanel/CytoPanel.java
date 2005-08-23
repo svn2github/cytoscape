@@ -64,7 +64,7 @@ public interface CytoPanel {
 	 *
 	 * @return int Number of components.
 	 */
-	public int getComponentCount();
+	public int getCytoPanelComponentCount();
 
 	/**
 	 * Returns the currently selected component.

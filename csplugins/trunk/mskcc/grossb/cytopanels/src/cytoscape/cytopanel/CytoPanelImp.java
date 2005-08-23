@@ -314,7 +314,7 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 	 *
 	 * @return int Number of components.
 	 */
-	public int getComponentCount(){
+	public int getCytoPanelComponentCount(){
 
 		// return the number of tabs in the JTabbedPane.
 		return tabbedPane.getTabCount();
