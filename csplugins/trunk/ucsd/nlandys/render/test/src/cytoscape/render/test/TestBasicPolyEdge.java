@@ -50,6 +50,7 @@ public final class TestBasicPolyEdge
   private final Color m_borderColor = new Color(0, 0, 0, 63);
   private final Color m_textColor = Color.white;
   private final Color m_edgeSegmentColor = m_borderColor;
+  private final Color m_edgeArrowColor = new Color(0, 255, 0, 63);
   private final double[] m_ptBuff = new double[2];
   private final float[] m_floatBuff = new float[4];
   private final RTree m_tree;
@@ -130,8 +131,8 @@ public final class TestBasicPolyEdge
         ((((double) m_floatBuff[1]) + m_floatBuff[3]) / 2.0d); }
 
     m_grafx.drawPolyEdgeFull
-      (GraphGraphics.ARROW_NONE, 0.0f, null,
-       GraphGraphics.ARROW_NONE, 0.0f, null,
+      (GraphGraphics.ARROW_DELTA, 6.0f, m_edgeArrowColor,
+       GraphGraphics.ARROW_DELTA, 6.0f, m_edgeArrowColor,
        x0, y0,
        new EdgeAnchors() {
          int num = m_tree.size() - 2;
