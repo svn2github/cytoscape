@@ -99,7 +99,7 @@ public final class TestBasicPolyEdge
                            m_floatBuff[0], m_floatBuff[1],
                            m_floatBuff[2], m_floatBuff[3],
                            m_ptStates[inx] ? Color.blue : Color.red,
-                           0.7f, Color.black); }
+                           1.2f, Color.black); }
   }
 
   public void mouseClicked(MouseEvent e) {}
@@ -110,8 +110,9 @@ public final class TestBasicPolyEdge
   {
     if (e.getButton() == MouseEvent.BUTTON1) {
       m_currMouseButton = 1;
-      m_lastXMousePos = e.getX();
-      m_lastYMousePos = e.getY();
+      Insets insets = insets();
+      m_lastXMousePos = e.getX() - insets.left;
+      m_lastYMousePos = e.getY() - insets.top;
       m_ptBuff[0] = m_lastXMousePos;
       m_ptBuff[1] = m_lastYMousePos;
       m_grafx.xformImageToNodeCoords(m_ptBuff);
@@ -154,8 +155,9 @@ public final class TestBasicPolyEdge
     if (m_currMouseButton == 1) {
       m_ptBuff[0] = m_lastXMousePos;
       m_ptBuff[1] = m_lastYMousePos;
-      m_lastXMousePos = e.getX();
-      m_lastYMousePos = e.getY();
+      Insets insets = insets();
+      m_lastXMousePos = e.getX() - insets.left;
+      m_lastYMousePos = e.getY() - insets.top;
       int selected = -1;
       for (int i = 0; i < m_ptStates.length; i++) {
         if (m_ptStates[i]) { selected = i; break; } }
