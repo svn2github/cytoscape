@@ -151,6 +151,10 @@ public final class TestBasicPolyEdge
       m_currMouseButton = 2;
       m_lastXMousePos = e.getX(); // Ignore offset caused by insets.
       m_lastYMousePos = e.getY(); }
+    else if (e.getButton() == MouseEvent.BUTTON3) {
+      m_currMouseButton = 3;
+      m_lastXMousePos = e.getX(); // Ignore offset caused by insets.
+      m_lastYMousePos = e.getY(); }
   }
 
   public void mouseReleased(MouseEvent e)
@@ -164,6 +168,9 @@ public final class TestBasicPolyEdge
       if (mustRender) { repaint(); } }
     else if (e.getButton() == MouseEvent.BUTTON2 &&
              m_currMouseButton == 2) {
+      m_currMouseButton = 0; }
+    else if (e.getButton() == MouseEvent.BUTTON3 &&
+             m_currMouseButton == 3) {
       m_currMouseButton = 0; }
   }
 
@@ -200,6 +207,14 @@ public final class TestBasicPolyEdge
       m_lastXMousePos = e.getX(); // Ignore offset caused by insets.
       m_lastYMousePos = e.getY();
       m_currScale *= Math.pow(2, -deltaY / 300.0d);
+      repaint(); }
+    else if (m_currMouseButton == 3) {
+      double deltaX = e.getX() - m_lastXMousePos; // Ignore inset offsets.
+      double deltaY = e.getY() - m_lastYMousePos;
+      m_lastXMousePos = e.getX();
+      m_lastYMousePos = e.getY();
+      m_currXCenter -= deltaX / m_currScale;
+      m_currYCenter += deltaY / m_currScale; // Y orientations are opposite.
       repaint(); }
   }
 
