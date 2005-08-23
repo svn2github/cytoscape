@@ -38,10 +38,13 @@ public final class TestBasicPolyEdge
                 System.exit(0); } }); } });
   }
 
+  private final int m_imgWidth = 640;
+  private final int m_imgHeight = 480;
   private final double[] m_ptBuff = new double[2];
   private final float[] m_floatBuff = new float[4];
   private final RTree m_tree;
-  private final GraphGraphics m_grafx = null;
+  private final Image m_img;
+  private final GraphGraphics m_grafx;
   private final boolean[] m_ptStates;
   private int m_currMouseButton; // 0: none; 1: left; 2: middle; 3: right.
   private int m_lastXMousePos;
@@ -54,9 +57,32 @@ public final class TestBasicPolyEdge
   {
     super();
     m_tree = tree;
+    addNotify();
+    m_img = createImage(m_imgWidth, m_imgHeight);
+    m_grafx = new GraphGraphics(m_img, true);
+    updateImage();
     m_ptStates = new boolean[m_tree.size()];
     addMouseListener(this);
     addMouseMotionListener(this);
+  }
+
+  public void paint(Graphics g)
+  {
+    Insets insets = insets();
+    g.drawImage(m_img, insets.left, insets.top, null);
+    resize(m_imgWidth + insets.left + insets.right,
+           m_imgHeight + insets.top + insets.bottom);
+  }
+
+  public void update(Graphics g)
+  {
+    Insets insets = insets();
+    updateImage();
+    g.drawImage(m_img, insets.left, insets.top, null);
+  }
+
+  public final void updateImage()
+  {
   }
 
   public void mouseClicked(MouseEvent e) {}
