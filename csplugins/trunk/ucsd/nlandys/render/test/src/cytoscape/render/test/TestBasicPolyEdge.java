@@ -137,6 +137,11 @@ public final class TestBasicPolyEdge
                              (float) m_ptBuff[0], (float) m_ptBuff[1])) {
           mustRender = true;
           m_ptStates[m_objBuff[i]] = true;
+          // Re-insert the entry into the R-tree so that just clicking on
+          // the node has the same effect as dragging it a little bit.
+          m_tree.delete(m_objBuff[i]);
+          m_tree.insert(m_objBuff[i], m_floatBuff[0], m_floatBuff[1],
+                        m_floatBuff[2], m_floatBuff[3]);
           break; } }
       if (mustRender) { repaint(); } }
     else if (e.getButton() == MouseEvent.BUTTON2) {
