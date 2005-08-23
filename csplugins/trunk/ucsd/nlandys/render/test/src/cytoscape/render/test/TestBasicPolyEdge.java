@@ -49,8 +49,8 @@ public final class TestBasicPolyEdge
   private final Color m_selectedFillColor = new Color(0, 0, 255, 63);
   private final Color m_borderColor = new Color(0, 0, 0, 63);
   private final Color m_textColor = Color.white;
-  private final Color m_edgeSegmentColor = m_borderColor;
-  private final Color m_edgeArrowColor = new Color(0, 255, 0, 63);
+  private final Color m_edgeSegmentColor = new Color(0, 0, 0, 127);
+  private final Color m_edgeArrowColor = new Color(0, 127, 0, 127);
   private final double[] m_ptBuff = new double[2];
   private final float[] m_floatBuff = new float[4];
   private final RTree m_tree;
@@ -131,8 +131,8 @@ public final class TestBasicPolyEdge
         ((((double) m_floatBuff[1]) + m_floatBuff[3]) / 2.0d); }
 
     m_grafx.drawPolyEdgeFull
-      (GraphGraphics.ARROW_DELTA, 6.0f, m_edgeArrowColor,
-       GraphGraphics.ARROW_DELTA, 6.0f, m_edgeArrowColor,
+      (GraphGraphics.ARROW_DELTA, 15.0f, m_edgeArrowColor,
+       GraphGraphics.ARROW_DELTA, 15.0f, m_edgeArrowColor,
        x0, y0,
        new EdgeAnchors() {
          int num = m_tree.size() - 2;
@@ -141,7 +141,7 @@ public final class TestBasicPolyEdge
            anchorArr[offset] = m_anchorsBuff[num * 2 - 2];
            anchorArr[offset + 1] = m_anchorsBuff[num * 2 - 1];
            num--; } },
-       x1, y1, 1.5f, m_edgeSegmentColor, 0.0f, GraphGraphics.CURVE_ELLIPTICAL);
+       x1, y1, 4.0f, m_edgeSegmentColor, 0.0f, GraphGraphics.CURVE_ELLIPTICAL);
 
     RTreeEntryEnumerator iter = m_tree.queryOverlap
       ((float) (m_currXCenter - ((double) (m_imgWidth / 2)) / m_currScale),
