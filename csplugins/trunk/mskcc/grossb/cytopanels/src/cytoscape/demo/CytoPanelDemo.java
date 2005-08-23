@@ -240,7 +240,7 @@ public class CytoPanelDemo {
 		mWindow.setMnemonic('W');
 
 		// our west action listener
-		ActionListener cytoPanelWestWindowMenuItemListener = new ActionListener(){ 
+		ActionListener cytoPanelWestWindowMenuItemListener = (new ActionListener(){ 
 			public void actionPerformed(ActionEvent e){
 				if (cytoPanelMenuItemWest.isSelected()){
 					if (cytoPanelWestPrevState == CytoPanelState.DOCK){
@@ -255,9 +255,9 @@ public class CytoPanelDemo {
 					cytoPanelWest.setState(CytoPanelState.HIDE);
 				}
 			}
-		};
+		});
 		// our east action listener
-		ActionListener cytoPanelEastWindowMenuItemListener = new ActionListener(){ 
+		ActionListener cytoPanelEastWindowMenuItemListener = (new ActionListener(){ 
 			public void actionPerformed(ActionEvent e){
 				if (cytoPanelMenuItemEast.isSelected()){
 					if (cytoPanelEastPrevState == CytoPanelState.DOCK){
@@ -272,9 +272,9 @@ public class CytoPanelDemo {
 					cytoPanelEast.setState(CytoPanelState.HIDE);
 				}
 			}
-		};
+		});
 		// our south action listener
-		ActionListener cytoPanelSouthWindowMenuItemListener = new ActionListener(){ 
+		ActionListener cytoPanelSouthWindowMenuItemListener = (new ActionListener(){ 
 			public void actionPerformed(ActionEvent e){
 				if (cytoPanelMenuItemSouth.isSelected()){
 					if (cytoPanelSouthPrevState == CytoPanelState.DOCK){
@@ -289,7 +289,7 @@ public class CytoPanelDemo {
 					cytoPanelSouth.setState(CytoPanelState.HIDE);
 				}
 			}
-		};
+		});
 
 		// cytopanel west window sub menu item
 		cytoPanelMenuItemWest = new JCheckBoxMenuItem(cytoPanelWest.getTitle());
