@@ -46,7 +46,10 @@ public final class TestBasicPolyEdge
   private final Image m_img;
   private final GraphGraphics m_grafx;
   private final boolean[] m_ptStates;
-  private int m_currMouseButton; // 0: none; 1: left; 2: middle; 3: right.
+  private double m_currXCenter = 0.0d;
+  private double m_currYCenter = 0.0d;
+  private double m_currScale = 1.0d;
+  private int m_currMouseButton = 0; // 0: none; 1: left; 2: middle; 3: right.
   private int m_lastXMousePos;
   private int m_lastYMousePos;
 
@@ -83,6 +86,20 @@ public final class TestBasicPolyEdge
 
   public final void updateImage()
   {
+    m_grafx.clear(Color.white, m_currXCenter, m_currYCenter, m_currScale);
+    RTreeEntryEnumerator iter = m_tree.queryOverlap
+      ((float) (m_currXCenter - ((double) (m_imgWidth / 2)) / m_currScale),
+       (float) (m_currYCenter - ((double) (m_imgHeight / 2)) / m_currScale),
+       (float) (m_currXCenter + ((double) (m_imgWidth / 2)) / m_currScale),
+       (float) (m_currYCenter + ((double) (m_imgHeight / 2)) / m_currScale),
+       null, 0);
+    while (iter.numRemaining() > 0) {
+      int inx = iter.nextExtents(m_floatBuff, 0);
+      m_grafx.drawNodeFull(GraphGraphics.SHAPE_ELLIPSE,
+                           m_floatBuff[0], m_floatBuff[1],
+                           m_floatBuff[2], m_floatBuff[3],
+                           m_ptStates[inx] ? Color.blue : Color.red,
+                           0.7f, Color.black); }
   }
 
   public void mouseClicked(MouseEvent e) {}
