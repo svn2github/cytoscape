@@ -1323,6 +1323,8 @@ public final class RTree
    *   values into extentsArr; exactly four entries are written starting at
    *   this index (see table above); if extentsArr is null then this offset
    *   is ignored.
+   * @param reverse if true, the order in which the query hits
+   *   are returned is reversed.
    * @return a non-null enumeration of all [distinct] R-tree entries
    *   (objKeys) whose extents intersect the specified rectangular query area.
    * @exception IllegalArgumentException if xMin is not less than or equal to
@@ -1336,7 +1338,8 @@ public final class RTree
                                                  final float xMax,
                                                  final float yMax,
                                                  final float[] extentsArr,
-                                                 final int offset)
+                                                 final int offset,
+                                                 final boolean reverse)
   {
     if (!(xMin <= xMax))
       throw new IllegalArgumentException("xMin <= xMax not true");
@@ -1355,9 +1358,9 @@ public final class RTree
     final ObjStack stackStack = new ObjStack();
     final int totalCount =
       queryOverlap(m_nodeStack, m_extentsStack, nodeStack, stackStack,
-                   xMin, yMin, xMax, yMax, extentsArr, offset);
+                   xMin, yMin, xMax, yMax, extentsArr, offset, reverse);
     // m_nodeStack will now be empty.
-    return new OverlapEnumerator(totalCount, nodeStack, stackStack);
+    return new OverlapEnumerator(totalCount, nodeStack, stackStack, reverse);
   }
 
   /*
@@ -1388,8 +1391,10 @@ public final class RTree
                                         final ObjStack stackStack,
                                         final float xMinQ, final float yMinQ,
                                         final float xMaxQ, final float yMaxQ,
-                                        final float[] extents, final int off)
+                                        final float[] extents, final int off,
+                                        final boolean reverse)
   { // Depth first search.
+    final int incr = reverse ? -1 : 1;
     int count = 0;
     int extOff = 4; // Into extStack.
     while (unprocessedNodes.size() > 0) {
@@ -1412,7 +1417,8 @@ public final class RTree
       else { // Cannot trivially include node; must recurse.
         if (isLeafNode(n)) {
           final IntStack stack = new IntStack();
-          for (int i = n.entryCount - 1; i >= 0; i--) {
+          for (int cntr = n.entryCount, i = reverse ? 0 : n.entryCount - 1;
+               cntr > 0; cntr--, i -= incr) {
             // Overlaps test of two rectangles.
             if ((Math.max(xMinQ, n.xMins[i]) <= Math.min(xMaxQ, n.xMaxs[i])) &&
                 (Math.max(yMinQ, n.yMins[i]) <= Math.min(yMaxQ, n.yMaxs[i]))) {
@@ -1428,7 +1434,8 @@ public final class RTree
             stackStack.push(stack);
             nodeStack.push(n); } }
         else { // Internal node.
-          for (int i = 0; i < n.entryCount; i++) {
+          for (int cntr = n.entryCount, i = reverse ? n.entryCount - 1 : 0;
+               cntr > 0; cntr--, i += incr) {
             // Overlaps test of two rectangles.
             if ((Math.max(xMinQ, n.xMins[i]) <= Math.min(xMaxQ, n.xMaxs[i])) &&
                 (Math.max(yMinQ, n.yMins[i]) <= Math.min(yMaxQ, n.yMaxs[i]))) {
@@ -1472,22 +1479,29 @@ public final class RTree
     private int count;
     private final ObjStack nodeStack;
     private final ObjStack stackStack;
+    private final boolean reverse;
+    private final int inxIncr;
     private Node currentLeafNode;
     private IntStack currentStack;
     private int currentInx;
+    private int boundaryInx;
     private OverlapEnumerator(final int totalCount, final ObjStack nodeStack,
-                              final ObjStack stackStack) {
+                              final ObjStack stackStack,
+                              final boolean reverse) {
       count = totalCount;
       this.nodeStack = nodeStack;
       this.stackStack = stackStack;
+      this.reverse = reverse;
+      inxIncr = this.reverse ? -1 : 1;
       computeNextLeafNode(); }
     public final int numRemaining() { return count; }
     public final int nextExtents(final float[] extentsArr, final int offset) {
       final Node leaf = currentLeafNode;
       final int inx;
       if (currentStack == null) {
-        inx = currentInx++;
-        if (currentInx == currentLeafNode.entryCount) computeNextLeafNode(); }
+        inx = currentInx;
+        currentInx += inxIncr;
+        if (currentInx == boundaryInx) computeNextLeafNode(); }
       else {
         inx = currentStack.pop();
         if (currentStack.size() == 0) computeNextLeafNode(); }
@@ -1500,8 +1514,9 @@ public final class RTree
     public final int nextInt() {
       int returnThis = -1;
       if (currentStack == null) {
-        returnThis = currentLeafNode.objKeys[currentInx++];
-        if (currentInx == currentLeafNode.entryCount) {
+        returnThis = currentLeafNode.objKeys[currentInx];
+        currentInx += inxIncr;
+        if (currentInx == boundaryInx) {
           computeNextLeafNode(); } }
       else {
         returnThis = currentLeafNode.objKeys[currentStack.pop()];
@@ -1518,9 +1533,14 @@ public final class RTree
         if (isLeafNode(next)) {
           currentLeafNode = next;
           currentStack = (IntStack) stackStack.pop(); // May be null.
-          currentInx = 0; // If currentStack isn't null, this will be ignored.
+          if (currentStack == null) { // Otherwise these vars are ignored.
+            if (reverse) {
+              currentInx = currentLeafNode.entryCount - 1; boundaryInx = -1; }
+            else {
+              currentInx = 0; boundaryInx = currentLeafNode.entryCount; } }
           return; }
-        for (int i = next.entryCount - 1; i >= 0; i--) {
+        for (int cntr = next.entryCount, i = reverse ? 0 : next.entryCount - 1;
+             cntr > 0; cntr--, i -= inxIncr) {
           // This 'if' statement could be taken out of 'for' loop for speed.
           if (isLeafNode(next.data.children[i])) stackStack.push(null);
           nodeStack.push(next.data.children[i]); } } }
