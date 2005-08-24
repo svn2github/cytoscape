@@ -242,56 +242,65 @@ public abstract class Cytoscape {
   }
 
   /**
-   * Gets the first CyEdge found.
+   * Gets the first CyEdge found between the two nodes (direction does not matter) that has the given value for the given attribute.
    * @param node_1 one end of the edge
    * @param node_2 the other end of the edge
    * @param attribute the attribute of the edge to be searched, a common one is {@link Semantics#INTERACTION }
    * @param attribute_value a value for the attribute, like "pp"
-   * @param create will create an edge if one does not exist
-   * @return returns an existing CyEdge if present, or creates one if <code>create</code> is true, otherwise returns null.
+   * @param create will create an edge if one does not exist and if attribute is {@Semantics#INTERACTION}
+   * @return returns an existing CyEdge if present, or creates one if <code>create</code> is true and attribute is Semantics.INTERACTION, otherwise returns null.
    */
   public static CyEdge getCyEdge ( Node node_1, Node node_2, String attribute, Object attribute_value, boolean create ) {
 
 
     //System.out.println( "node_1: "+node_1.getRootGraphIndex()+" node_2: "+node_2.getRootGraphIndex()+" attribute: "+attribute+" attribute_value: "+attribute_value+" create: "+create );
 
-    Set edges = new HashSet();
     if ( Cytoscape.getRootGraph().getEdgeCount() != 0 ) {
-      List l1 =  Cytoscape.getRootGraph().edgesList( node_1, node_2 );
-      if ( l1 != null )
-        edges.addAll( l1 );
-      List l2 =  Cytoscape.getRootGraph().edgesList( node_2, node_1 );
-      if ( l2 != null )
-        edges.addAll( l2 );
 
-      for ( Iterator i = edges.iterator(); i.hasNext(); ) {
-        CyEdge edge = ( CyEdge )i.next();
-        if ( getEdgeAttributeValue( edge, attribute ) == attribute_value )
-          return edge;
-      }
-    }
+    		int[] n1Edges =  Cytoscape.getRootGraph().getAdjacentEdgeIndicesArray(node_1.getRootGraphIndex(),true, true, true);
+    	
+    		for(int i = 0; i < n1Edges.length; i++){
+    			CyEdge edge  = (CyEdge)Cytoscape.getRootGraph().getEdge(n1Edges[i]);
+    			Object attValue = getEdgeAttributeValue(edge, attribute);
+    			
+    			if(attValue != null && attValue.equals(attribute_value)){
+    	        		CyNode otherNode = (CyNode)edge.getTarget();
+    	        		if(otherNode.getRootGraphIndex() == node_1.getRootGraphIndex()){
+    	        			otherNode = (CyNode)edge.getSource();
+    	        		}
+    	        		
+    	        		if(otherNode.getRootGraphIndex() == node_2.getRootGraphIndex()){
+    	        			return edge;
+    	        		}
+    	        	}
+    		}// for i
+    	}
 
-    if ( !create )
+    if (!create)
       return null;
 
 
-    if ( attribute == Semantics.INTERACTION ) {
-      //System.out.println( "Creating edge!!!!" );
+    if (attribute.equals(Semantics.INTERACTION)) {
+			// System.out.println( "Creating edge!!!!" );
 
-    // create the edge
-      CyEdge edge =  ( CyEdge )Cytoscape.getRootGraph().getEdge( Cytoscape.getRootGraph().createEdge (node_1, node_2));
+			// create the edge
+			CyEdge edge = (CyEdge) Cytoscape.getRootGraph().getEdge(
+					Cytoscape.getRootGraph().createEdge(node_1, node_2));
 
-      //System.out.println( "Edge Created: "+edge );
+			// System.out.println( "Edge Created: "+edge );
 
-      String edge_name = node_1.getIdentifier()+" ("+attribute_value+") "+node_2.getIdentifier();
-      Cytoscape.getEdgeNetworkData().append ("interaction", edge_name, attribute_value);
-      Cytoscape.getEdgeNetworkData().addNameMapping (edge_name, edge);
-      return edge;
+			String edge_name = node_1.getIdentifier() + " (" + attribute_value
+					+ ") " + node_2.getIdentifier();
+			Cytoscape.getEdgeNetworkData().append(Semantics.INTERACTION,
+					edge_name, attribute_value);
+			Cytoscape.getEdgeNetworkData().addNameMapping(edge_name, edge);
+			Cytoscape.setEdgeAttributeValue(edge, Semantics.INTERACTION, attribute_value);
+			Cytoscape.setEdgeAttributeValue(edge, Semantics.CANONICAL_NAME, edge_name);
+			return edge;
     }
+    	return null;
 
-    return null;
-
-  }
+  	}	
 
 
   /**
