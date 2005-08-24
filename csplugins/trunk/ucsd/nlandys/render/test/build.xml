@@ -14,7 +14,7 @@
   </target>
 
   <target name="classpath">
-    <echo message="${basedir}/lib/cytoscape-util-intr.jar:${basedir}/lib/cytoscape-geom-rtree.jar:${basedir}/lib/cytoscape-render-immed.jar:${build.dir}/cytoscape-render-test.jar:${basedir}/lib/cytoscape-render-export.jar:${basedir}/lib/freehep-base.jar:${basedir}/lib/freehep-graphics2d.jar:${basedir}/lib/freehep-graphicsio.jar:${basedir}/lib/freehep-graphicsio-pdf.jar"/>
+    <echo message="${basedir}/lib/cytoscape-util-intr.jar:${basedir}/lib/cytoscape-geom-rtree.jar:${basedir}/lib/cytoscape-render-immed.jar:${basedir}/lib/cytoscape-render-export.jar:${basedir}/lib/freehep-base.jar:${basedir}/lib/freehep-graphics2d.jar:${basedir}/lib/freehep-graphicsio.jar:${basedir}/lib/freehep-graphicsio-pdf.jar:${build.dir}/cytoscape-render-test.jar"/>
   </target>
 
   <target name="doc">
