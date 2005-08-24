@@ -155,7 +155,7 @@ public final class TestBasicPolyEdge
        (float) (m_currYCenter - ((double) (m_imgHeight / 2)) / m_currScale),
        (float) (m_currXCenter + ((double) (m_imgWidth / 2)) / m_currScale),
        (float) (m_currYCenter + ((double) (m_imgHeight / 2)) / m_currScale),
-       null, 0);
+       null, 0, false);
     while (iter.numRemaining() > 0) {
       int inx = iter.nextExtents(m_floatBuff, 0);
       grafx.drawNodeFull(GraphGraphics.SHAPE_ELLIPSE,
@@ -204,7 +204,7 @@ public final class TestBasicPolyEdge
       RTreeEntryEnumerator candidates =
         m_tree.queryOverlap((float) m_ptBuff[0], (float) m_ptBuff[1],
                             (float) m_ptBuff[0], (float) m_ptBuff[1],
-                            null, 0);
+                            null, 0, false);
       // We have to "reverse" the order in which hits are returned; in
       // rendering, we do it back to front; in selection, we would like to
       // do it front to back.

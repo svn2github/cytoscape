@@ -142,7 +142,7 @@ public final class TestEdgeRendering
        (float) (m_currYCenter - ((double) (m_imgHeight / 2)) / m_currScale),
        (float) (m_currXCenter + ((double) (m_imgWidth / 2)) / m_currScale),
        (float) (m_currYCenter + ((double) (m_imgHeight / 2)) / m_currScale),
-       null, 0);
+       null, 0, false);
     while (iter.numRemaining() > 0) {
       final int inx_x4 = iter.nextInt() * 4;
       if (m_shape >= 0) {

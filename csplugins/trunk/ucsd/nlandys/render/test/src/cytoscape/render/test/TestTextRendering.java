@@ -142,7 +142,7 @@ public final class TestTextRendering
        (float) (m_currYCenter - ((double) (m_imgHeight / 2)) / m_currScale),
        (float) (m_currXCenter + ((double) (m_imgWidth / 2)) / m_currScale),
        (float) (m_currYCenter + ((double) (m_imgHeight / 2)) / m_currScale),
-       null, 0);
+       null, 0, false);
     while (iter.numRemaining() > 0) {
       final int inx = iter.nextExtents(m_extents, 0);
       m_grafx.drawNodeFull(GraphGraphics.SHAPE_RECTANGLE,
@@ -155,7 +155,7 @@ public final class TestTextRendering
        (float) (m_currYCenter - ((double) (m_imgHeight / 2)) / m_currScale),
        (float) (m_currXCenter + ((double) (m_imgWidth / 2)) / m_currScale),
        (float) (m_currYCenter + ((double) (m_imgHeight / 2)) / m_currScale),
-       null, 0);
+       null, 0, false);
     while (iter.numRemaining() > 0) {
       final int inx = iter.nextExtents(m_extents, 0);
       m_grafx.drawTextFull

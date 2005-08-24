@@ -141,7 +141,7 @@ public final class TestNodeRendering
        (float) (m_currYCenter - ((double) (m_imgHeight / 2)) / m_currScale),
        (float) (m_currXCenter + ((double) (m_imgWidth / 2)) / m_currScale),
        (float) (m_currYCenter + ((double) (m_imgHeight / 2)) / m_currScale),
-       null, 0);
+       null, 0, false);
     if (m_shape < 0) {
       while (iter.numRemaining() > 0) {
         final int inx = iter.nextExtents(m_extents, 0);
