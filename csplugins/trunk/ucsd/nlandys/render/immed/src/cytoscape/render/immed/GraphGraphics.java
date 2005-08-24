@@ -1091,7 +1091,6 @@ public final class GraphGraphics
     if (arrowType0 == ARROW_MONO) { // To be implemented.
       throw new IllegalStateException("mono edges not implemented yet"); }
 
-    double renderedLineSegmentLength = 0.0d;
     final double x0Adj;
     final double y0Adj;
     final double x1Adj;
@@ -1117,13 +1116,7 @@ public final class GraphGraphics
         m_line2d.setLine(x0Adj, y0Adj, x1Adj, y1Adj);
         m_g2d.setColor(edgeColor);
         m_g2d.draw(m_line2d);
-        if (simpleSegment) { return; }
-        else {
-          renderedLineSegmentLength =
-            (dashLength > 0.0f) ? 
-            Math.sqrt((x1Adj - x0Adj) * (x1Adj - x0Adj) +
-                      (y1Adj - y0Adj) * (y1Adj - y0Adj)) :
-            -1.0d; } }
+        if (simpleSegment) { return; } }
     } // End rendering of line segment.
 
     // Using x0, x1, y0, and y1 instead of the "adjusted" endpoints is
@@ -1134,7 +1127,7 @@ public final class GraphGraphics
     final double cosTheta = (((double) x0) - x1) / len;
     final double sinTheta = (((double) y0) - y1) / len;
 
-    if (renderedLineSegmentLength != 0.0d) { // Render arrow cap at point 0.
+    if (dashLength == 0.0f) { // Render arrow cap at point 0.
       final Shape arrow0Cap = computeUntransformedArrowCap
         (arrowType0, ((double) arrow0Size) / edgeThickness);
       if (arrow0Cap != null) {
@@ -1146,10 +1139,7 @@ public final class GraphGraphics
         m_g2d.fill(arrow0Cap);
         m_g2d.setTransform(m_currNativeXform); } }
 
-    if (renderedLineSegmentLength < 0.0d ||
-        (renderedLineSegmentLength > 0.0d &&
-         ((int) Math.floor(renderedLineSegmentLength /
-                           dashLength)) % 2 == 0)) { // Render pt. 1 arrow cap.
+    if (dashLength == 0.0f) { // Render arrow cap at point 1.
       final Shape arrow1Cap = computeUntransformedArrowCap
         (arrowType1, ((double) arrow1Size) / edgeThickness);
       if (arrow1Cap != null) {
