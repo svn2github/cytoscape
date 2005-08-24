@@ -1,4 +1,6 @@
+/*
 $Id$
+*/
 
 // our package
 package cytoscape.actions;
