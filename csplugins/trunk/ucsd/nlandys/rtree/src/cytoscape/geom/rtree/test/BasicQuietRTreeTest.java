@@ -598,6 +598,51 @@ public class BasicQuietRTreeTest
         prevInx = foundInx; }
       if (iter.numRemaining() != 0)
         throw new IllegalStateException("more elements remain in iteration");
+
+      iter = tree.queryOverlap(-10.0f, -5.0f, 1.0f, 4.0f, null, 0, true);
+      if (iter.numRemaining() != 7)
+        throw new IllegalStateException("expected 7 elements in iteration");
+      prevInx = Integer.MAX_VALUE - 1;
+      for (int i = 0; i < 7; i++) {
+        final int element = iter.nextInt();
+        int foundInx = Integer.MAX_VALUE;
+        for (int j = 0;; j++) {
+          if (allOrdered[j] == element) { foundInx = j; break; } }
+        if (!(foundInx < prevInx)) {
+          throw new IllegalStateException("not reverse order"); }
+        prevInx = foundInx; }
+      if (iter.numRemaining() != 0)
+        throw new IllegalStateException("more elements remain in iteration");
+
+      iter = tree.queryOverlap(-99.0f, -5.0f, 1.0f, 30.0f, null, 0, true);
+      if (iter.numRemaining() != 14)
+        throw new IllegalStateException("expected 14 elements in iteration");
+      prevInx = Integer.MAX_VALUE - 1;
+      for (int i = 0; i < 14; i++) {
+        final int element = iter.nextInt();
+        int foundInx = Integer.MAX_VALUE;
+        for (int j = 0;; j++) {
+          if (allOrdered[j] == element) { foundInx = j; break; } }
+        if (!(foundInx < prevInx)) {
+          throw new IllegalStateException("not reverse order"); }
+        prevInx = foundInx; }
+      if (iter.numRemaining() != 0)
+        throw new IllegalStateException("more elements remain in iteration");
+
+      iter = tree.queryOverlap(-3.0f, 4.0f, 10.0f, 20.0f, null, 0, true);
+      if (iter.numRemaining() != 13)
+        throw new IllegalStateException("expected 13 elements in iteration");
+      prevInx = Integer.MAX_VALUE - 1;
+      for (int i = 0; i < 13; i++) {
+        final int element = iter.nextInt();
+        int foundInx = Integer.MAX_VALUE;
+        for (int j = 0;; j++) {
+          if (allOrdered[j] == element) { foundInx = j; break; } }
+        if (!(foundInx < prevInx)) {
+          throw new IllegalStateException("not reverse order"); }
+        prevInx = foundInx; }
+      if (iter.numRemaining() != 0)
+        throw new IllegalStateException("more elements remain in iteration");
     } // END REVERSE QUERY TEST.
   }
 
