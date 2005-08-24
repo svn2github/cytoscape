@@ -568,7 +568,37 @@ public class BasicQuietRTreeTest
         prevInx = foundInx; }
       if (iter.numRemaining() != 0)
         throw new IllegalStateException("more elements remain in iteration");
-    }
+    } // END ORDER-PRESERVING SUBQUERY TEST.
+
+    { // BEGIN REVERSE QUERY TEST.
+      if (tree.size() != 28)
+        throw new IllegalStateException("expected 28 elements in tree");
+      final int[] allOrdered = new int[28];
+      IntEnumerator iter = tree.queryOverlap
+        (Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY,
+         Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY,
+         null, 0, false);
+      if (iter.numRemaining() != 28)
+        throw new IllegalStateException("expected 28 elements in iteration");
+      for (int i = 0; i < 28; i++) allOrdered[i] = iter.nextInt();
+
+      iter = tree.queryOverlap
+        (0.0f, 0.0f, Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY,
+         null, 0, true);
+      if (iter.numRemaining() != 20)
+        throw new IllegalStateException("expected 20 elements in iteration");
+      int prevInx = Integer.MAX_VALUE - 1;
+      for (int i = 0; i < 20; i++) {
+        final int element = iter.nextInt();
+        int foundInx = Integer.MAX_VALUE;
+        for (int j = 0;; j++) {
+          if (allOrdered[j] == element) { foundInx = j; break; } }
+        if (!(foundInx < prevInx)) {
+          throw new IllegalStateException("not reverse order"); }
+        prevInx = foundInx; }
+      if (iter.numRemaining() != 0)
+        throw new IllegalStateException("more elements remain in iteration");
+    } // END REVERSE QUERY TEST.
   }
 
 }
