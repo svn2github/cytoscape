@@ -65,7 +65,6 @@ public final class TestBasicPolyEdge
   private final Font m_font;
   private final boolean[] m_ptStates;
   private final String[] m_labels;
-  private final int[] m_objBuff;
   private final float[] m_anchorsBuff;
   private double m_currXCenter = 0.0d;
   private double m_currYCenter = 0.0d;
@@ -89,7 +88,6 @@ public final class TestBasicPolyEdge
     m_ptStates = new boolean[m_tree.size()];
     m_labels = new String[m_tree.size()];
     for (int i = 0; i < m_labels.length; i++) { m_labels[i] = "" + i; }
-    m_objBuff = new int[m_tree.size()];
     m_anchorsBuff = new float[(m_tree.size() - 2) * 2];
     updateImage(m_grafx);
     addKeyListener(this);
@@ -201,29 +199,26 @@ public final class TestBasicPolyEdge
       m_ptBuff[0] = m_lastXMousePos;
       m_ptBuff[1] = m_lastYMousePos;
       m_grafx.xformImageToNodeCoords(m_ptBuff);
-      RTreeEntryEnumerator candidates =
-        m_tree.queryOverlap((float) m_ptBuff[0], (float) m_ptBuff[1],
-                            (float) m_ptBuff[0], (float) m_ptBuff[1],
-                            null, 0, false);
       // We have to "reverse" the order in which hits are returned; in
       // rendering, we do it back to front; in selection, we would like to
       // do it front to back.
-      int candidateCount = candidates.numRemaining();
-      for (int i = candidateCount; i > 0;) {
-        m_objBuff[--i] = candidates.nextInt(); }
+      RTreeEntryEnumerator candidates =
+        m_tree.queryOverlap((float) m_ptBuff[0], (float) m_ptBuff[1],
+                            (float) m_ptBuff[0], (float) m_ptBuff[1],
+                            null, 0, true);
       boolean mustRender = false;
-      for (int i = 0; i < candidateCount; i++) {
-        m_tree.exists(m_objBuff[i], m_floatBuff, 0);
+      while (candidates.numRemaining() > 0) {
+        int objKey = candidates.nextExtents(m_floatBuff, 0);
         if (m_grafx.contains(GraphGraphics.SHAPE_ELLIPSE,
                              m_floatBuff[0], m_floatBuff[1],
                              m_floatBuff[2], m_floatBuff[3],
                              (float) m_ptBuff[0], (float) m_ptBuff[1])) {
           mustRender = true;
-          m_ptStates[m_objBuff[i]] = true;
+          m_ptStates[objKey] = true;
           // Re-insert the entry into the R-tree so that just clicking on
           // the node has the same effect as dragging it a little bit.
-          m_tree.delete(m_objBuff[i]);
-          m_tree.insert(m_objBuff[i], m_floatBuff[0], m_floatBuff[1],
+          m_tree.delete(objKey);
+          m_tree.insert(objKey, m_floatBuff[0], m_floatBuff[1],
                         m_floatBuff[2], m_floatBuff[3]);
           break; } }
       if (mustRender) { repaint(); } }
