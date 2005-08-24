@@ -2,24 +2,30 @@ package cytoscape.render.test;
 
 import cytoscape.geom.rtree.RTree;
 import cytoscape.geom.rtree.RTreeEntryEnumerator;
+import cytoscape.render.export.ImageImposter;
 import cytoscape.render.immed.EdgeAnchors;
 import cytoscape.render.immed.GraphGraphics;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Insets;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import org.freehep.graphicsio.pdf.PDFGraphics2D;
+
 public final class TestBasicPolyEdge
-  extends Frame implements MouseListener, MouseMotionListener
+  extends Frame implements KeyListener, MouseListener, MouseMotionListener
 {
 
   public final static void main(String[] args) throws Exception
@@ -85,7 +91,8 @@ public final class TestBasicPolyEdge
     for (int i = 0; i < m_labels.length; i++) { m_labels[i] = "" + i; }
     m_objBuff = new int[m_tree.size()];
     m_anchorsBuff = new float[(m_tree.size() - 2) * 2];
-    updateImage();
+    updateImage(m_grafx);
+    addKeyListener(this);
     addMouseListener(this);
     addMouseMotionListener(this);
   }
@@ -101,13 +108,13 @@ public final class TestBasicPolyEdge
   public void update(Graphics g)
   {
     Insets insets = insets();
-    updateImage();
+    updateImage(m_grafx);
     g.drawImage(m_img, insets.left, insets.top, null);
   }
 
-  private void updateImage()
+  private void updateImage(GraphGraphics grafx)
   {
-    m_grafx.clear(m_bgColor, m_currXCenter, m_currYCenter, m_currScale);
+    grafx.clear(m_bgColor, m_currXCenter, m_currYCenter, m_currScale);
 
     // Determine endpoints.
     m_tree.exists(0, m_floatBuff, 0);
@@ -130,7 +137,7 @@ public final class TestBasicPolyEdge
       m_anchorsBuff[offset++] = (float)
         ((((double) m_floatBuff[1]) + m_floatBuff[3]) / 2.0d); }
 
-    m_grafx.drawPolyEdgeFull
+    grafx.drawPolyEdgeFull
       (GraphGraphics.ARROW_DELTA, 15.0f, m_edgeArrowColor,
        GraphGraphics.ARROW_DELTA, 15.0f, m_edgeArrowColor,
        x0, y0,
@@ -151,18 +158,34 @@ public final class TestBasicPolyEdge
        null, 0);
     while (iter.numRemaining() > 0) {
       int inx = iter.nextExtents(m_floatBuff, 0);
-      m_grafx.drawNodeFull(GraphGraphics.SHAPE_ELLIPSE,
+      grafx.drawNodeFull(GraphGraphics.SHAPE_ELLIPSE,
                            m_floatBuff[0], m_floatBuff[1],
                            m_floatBuff[2], m_floatBuff[3],
                            m_ptStates[inx] ? m_selectedFillColor :
                            m_fillColor,
                            1.6f, m_borderColor);
-      m_grafx.drawTextFull
+      grafx.drawTextFull
         (m_font, 14, m_labels[inx],
          (float) ((((double) m_floatBuff[0]) + m_floatBuff[2]) / 2.0d),
          (float) ((((double) m_floatBuff[1]) + m_floatBuff[3]) / 2.0d),
          m_textColor, true); }
   }
+
+  public void keyTyped(KeyEvent e) { }
+
+  public void keyPressed(KeyEvent e)
+  {
+    if (e.getKeyCode() == KeyEvent.VK_P) {
+      PDFGraphics2D pdfGrafx =
+        new PDFGraphics2D(System.out, new Dimension(m_imgWidth, m_imgHeight));
+      Image img = new ImageImposter(pdfGrafx, m_imgWidth, m_imgHeight);
+      GraphGraphics gg = new GraphGraphics(img, true);
+      pdfGrafx.startExport();
+      updateImage(gg);
+      pdfGrafx.endExport(); }
+  }
+
+  public void keyReleased(KeyEvent e) {}
 
   public void mouseClicked(MouseEvent e) {}
   public void mouseEntered(MouseEvent e) {}
