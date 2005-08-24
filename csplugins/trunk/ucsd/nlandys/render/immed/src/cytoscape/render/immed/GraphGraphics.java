@@ -1265,7 +1265,8 @@ public final class GraphGraphics
     final double cosTheta1 = dx1 / len1;
     final double sinTheta1 = dy1 / len1;
 
-    { // Render arrow cap at origin of poly path.  Dashed lines?  So what.
+    if (dashLength == 0.0f)
+    { // Render arrow cap at origin of poly path.
       final Shape arrow0Cap = computeUntransformedArrowCap
         (arrowType0, ((double) arrow0Size) / edgeThickness);
       if (arrow0Cap != null) {
@@ -1278,7 +1279,8 @@ public final class GraphGraphics
         m_g2d.setTransform(m_currNativeXform); }
     }
 
-    { // Render arrow cap at end of poly path.  Dashed lines?  So what.
+    if (dashLength == 0.0f)
+    { // Render arrow cap at end of poly path.
       final Shape arrow1Cap = computeUntransformedArrowCap
         (arrowType1, ((double) arrow1Size) / edgeThickness);
       if (arrow1Cap != null) {
