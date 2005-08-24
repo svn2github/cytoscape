@@ -59,6 +59,13 @@ public interface CytoPanel {
     public void add(String title, Icon icon, Component component, String tip);
 
 	/**
+	 * Returns the title of the CytoPanel.
+	 *
+	 * @return String Title.
+	 */
+	public String getTitle();
+
+	/**
 	 * Returns the number of components in the CytoPanel.
 	 *
 	 * @return int Number of components.
