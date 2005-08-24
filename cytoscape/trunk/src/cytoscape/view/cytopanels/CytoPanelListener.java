@@ -34,14 +34,14 @@ public interface CytoPanelListener extends EventListener {
     /**
      * Notifies the listener when a component is added to the CytoPanel.
      *
-	 * @param count The number of components on the CytoPanel.
+	 * @param count The number of components on the CytoPanel after the add.
      */
     public void onComponentAdded(int count);
 
     /**
      * Notifies the listener when a component is removed from the CytoPanel.
      *
-	 * @param count The number of components on the CytoPanel.
+	 * @param count The number of components on the CytoPanel after the remove.
      */
     public void onComponentRemoved(int count);
 }
