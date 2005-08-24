@@ -42,8 +42,8 @@ public final class TestBasicPolyEdge
                 System.exit(0); } }); } });
   }
 
-  private final int m_imgWidth = 640;
-  private final int m_imgHeight = 480;
+  private final int m_imgWidth = 800;
+  private final int m_imgHeight = 600;
   private final Color m_bgColor = Color.white;
   private final Color m_fillColor = new Color(255, 0, 0, 63);
   private final Color m_selectedFillColor = new Color(0, 0, 255, 63);
