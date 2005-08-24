@@ -136,7 +136,7 @@ public final class TestBasicPolyEdge
         ((((double) m_floatBuff[1]) + m_floatBuff[3]) / 2.0d); }
 
     grafx.drawPolyEdgeFull
-      (GraphGraphics.ARROW_DELTA, 15.0f, m_edgeArrowColor,
+      (GraphGraphics.ARROW_DIAMOND, 15.0f, m_edgeArrowColor,
        GraphGraphics.ARROW_DELTA, 15.0f, m_edgeArrowColor,
        x0, y0,
        new EdgeAnchors() {
