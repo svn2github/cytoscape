@@ -1,3 +1,7 @@
+//     
+// $Id$
+//------------------------------------------------------------------------------
+
 // our package
 package cytoscape.view.cytopanel;
 
@@ -82,6 +86,16 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 	 * Notification component selected.
 	 */
 	private final int NOTIFICATION_COMPONENT_SELECTED = 1;
+
+	/**
+	 * Notification component added.
+	 */
+	private final int NOTIFICATION_COMPONENT_ADDED = 2;
+
+	/**
+	 * Notification component removed.
+	 */
+	private final int NOTIFICATION_COMPONENT_REMOVED = 3;
 
 	/**
 	 * Reference to CytoPanelContainer we live in.
@@ -253,7 +267,13 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
     public Component add(Component component){
 
 		// add tab to JTabbedPane (component)
-		return tabbedPane.add(component);
+		Component c = tabbedPane.add(component);
+
+		// send out a notification
+		notifyListeners(NOTIFICATION_COMPONENT_ADDED);
+
+		// outta here
+		return c;
     }
 
     /**
@@ -266,7 +286,13 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
     public Component add(Component component, int index){
 
 		// add tab to JTabbedPane (component, index)
-		return tabbedPane.add(component, index);
+		Component c = tabbedPane.add(component, index);
+
+		// send out a notification
+		notifyListeners(NOTIFICATION_COMPONENT_ADDED);
+
+		// outta here
+		return c;
 	}
 
     /**
@@ -279,7 +305,13 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
     public Component add(String title, Component component){
 
 		// add tab to JTabbedPane (title, component)
-		return tabbedPane.add(title, component);
+		Component c = tabbedPane.add(title, component);
+
+		// send out a notification
+		notifyListeners(NOTIFICATION_COMPONENT_ADDED);
+
+		// outta here
+		return c;
     }
 
     /**
@@ -293,6 +325,9 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 
 		// add tab to JTabbedPane (title, icon, component)
 		tabbedPane.addTab(title, icon, component);
+
+		// send out a notification
+		notifyListeners(NOTIFICATION_COMPONENT_ADDED);
 	}
 
     /**
@@ -307,6 +342,9 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 
 		// add tab to JTabbedPane (string, icon, component, tip)
 		tabbedPane.addTab(title, icon, component, tip);
+
+		// send out a notification
+		notifyListeners(NOTIFICATION_COMPONENT_ADDED);
     }
 
 	/**
@@ -375,6 +413,9 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 
 		// remove tab from JTabbedPane (component)
 		tabbedPane.remove(component);
+
+		// send out a notification
+		notifyListeners(NOTIFICATION_COMPONENT_REMOVED);
 	}
 
 	/**
@@ -386,6 +427,9 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 
 		// remove tab from JTabbedPane (index)
 		tabbedPane.remove(index);
+
+		// send out a notification
+		notifyListeners(NOTIFICATION_COMPONENT_REMOVED);
 	}
 
 	/**
@@ -395,6 +439,9 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 
 		// remove all tabs and components from JTabbedPane
 		tabbedPane.removeAll();
+
+		// send out a notification
+		notifyListeners(NOTIFICATION_COMPONENT_REMOVED);
 	}
 
     /**
@@ -788,6 +835,12 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 			case NOTIFICATION_COMPONENT_SELECTED:
 				int selectedIndex = tabbedPane.getSelectedIndex();
 				cytoPanelListener.onComponentSelected(selectedIndex);
+				break;
+			case NOTIFICATION_COMPONENT_ADDED:
+				cytoPanelListener.onComponentAdded(getCytoPanelComponentCount());
+				break;
+			case NOTIFICATION_COMPONENT_REMOVED:
+				cytoPanelListener.onComponentRemoved(getCytoPanelComponentCount());
 				break;
 			}
 
