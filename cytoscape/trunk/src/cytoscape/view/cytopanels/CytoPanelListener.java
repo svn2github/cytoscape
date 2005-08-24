@@ -1,3 +1,7 @@
+//     
+// $Id$
+//------------------------------------------------------------------------------
+
 // our package
 package cytoscape.view.cytopanel;
 
@@ -16,7 +20,7 @@ public interface CytoPanelListener extends EventListener {
     /**
      * Notifies the listener on a change in the CytoPanel state.
      *
-     * @param newState The new CytoPanel state - see CytoPanelConstants class.
+     * @param CytoPanelState The new CytoPanel state - see CytoPanelState class.
      */
     public void onStateChange(CytoPanelState newState);
 
@@ -26,4 +30,18 @@ public interface CytoPanelListener extends EventListener {
 	 * @param componentIndex The index of the component selected.
      */
     public void onComponentSelected(int componentIndex);
+
+    /**
+     * Notifies the listener when a component is added to the CytoPanel.
+     *
+	 * @param count The number of components on the CytoPanel.
+     */
+    public void onComponentAdded(int count);
+
+    /**
+     * Notifies the listener when a component is removed from the CytoPanel.
+     *
+	 * @param count The number of components on the CytoPanel.
+     */
+    public void onComponentRemoved(int count);
 }
