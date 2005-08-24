@@ -148,7 +148,7 @@ public final class TestBasicPolyEdge
            anchorArr[offset] = m_anchorsBuff[num * 2 - 2];
            anchorArr[offset + 1] = m_anchorsBuff[num * 2 - 1];
            num--; } },
-       x1, y1, 4.0f, m_edgeSegmentColor, 0.0f, GraphGraphics.CURVE_NATURAL);
+       x1, y1, 4.0f, m_edgeSegmentColor, 0.0f, GraphGraphics.CURVE_ELLIPTICAL);
 
     RTreeEntryEnumerator iter = m_tree.queryOverlap
       ((float) (m_currXCenter - ((double) (m_imgWidth / 2)) / m_currScale),
