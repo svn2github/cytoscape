@@ -1304,6 +1304,69 @@ public final class GraphGraphics
     }
   }
 
+  /**
+   * Computes the path that an edge takes; this method is useful if a user
+   * interface would allow user selection of edges, for example.  The returned
+   * path is the path along the center of the edge segment, extending to the
+   * points which specify the arrow locations.  Note that this path therefore
+   * disregards edge thickness and arrow outline.
+   * @param anchors specifies the edge anchors.
+   * @param path the computed path is returned in this parameter.
+   * @return true if and only if the specified edge would be drawn (which
+   *   is if and only if any two points from the edge anchor set plus the
+   *   beginning and end point are distinct); if false is returned, path is
+   *   not set.
+   */
+  public final boolean getPolyEdgePath(final byte arrowType0,
+                                       final float arrow0Size,
+                                       final byte arrowType1,
+                                       final float arrow1Size,
+                                       final float x0, final float y0,
+                                       final EdgeAnchors anchors,
+                                       final float x1, final float y1,
+                                       final double curveFactor,
+                                       final GeneralPath path)
+  {
+    if (m_debug) {
+      if (!EventQueue.isDispatchThread())
+        throw new IllegalStateException
+          ("calling thread is not AWT event dispatcher");
+      switch (arrowType0) {
+      case ARROW_NONE:
+      case ARROW_DELTA:
+      case ARROW_DIAMOND:
+      case ARROW_DISC:
+      case ARROW_TEE:
+        break;
+      case ARROW_BIDIRECTIONAL:
+      case ARROW_MONO:
+        throw new IllegalArgumentException
+          ("ARROW_BIDIRECTIONAL and ARROW_MONO not supported in poly edges");
+      default:
+        throw new IllegalArgumentException("arrowType0 is not recognized"); }
+      switch (arrowType1) {
+      case ARROW_NONE:
+      case ARROW_DELTA:
+      case ARROW_DIAMOND:
+      case ARROW_DISC:
+      case ARROW_TEE:
+        break;
+      case ARROW_BIDIRECTIONAL:
+      case ARROW_MONO:
+        throw new IllegalArgumentException
+          ("ARROW_BIDIRECTIONAL and ARROW_MONO not supported in poly edges");
+      default:
+        throw new IllegalArgumentException("arrowType1 is not recognized"); }
+      if (anchors.numRemaining() > 100)
+        throw new IllegalArgumentException
+          ("at most 100 edge anchors can be specified");
+      if (!(curveFactor == CURVE_ELLIPTICAL || curveFactor == CURVE_NATURAL))
+        throw new IllegalArgumentException
+          ("curveFactor should be either CURVE_ELLIPTICAL or CURVE_NATURAL"); }
+
+    return false;
+  }
+
   private final void edgeFullDebug(final boolean polyEdge,
                                    final byte arrowType0,
                                    final float arrow0Size,
