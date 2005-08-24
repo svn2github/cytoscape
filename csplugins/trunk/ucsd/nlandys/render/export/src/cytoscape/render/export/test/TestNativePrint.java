@@ -61,16 +61,22 @@ public class TestNativePrint extends Frame
     gg.clear(m_bgColor, -80.0d, -70.0d, 1.6d);
     gg.drawNodeFull(GraphGraphics.SHAPE_ROUNDED_RECTANGLE,
                     -200.0f, -200.0f, -100.0f, -50.0f,
-                    new Color(255, 0, 0, 128), 3.0f,
-                    new Color(0, 0, 0, 128));
+                    new Color(255, 0, 0, 127), 3.0f,
+                    new Color(0, 0, 0, 127));
     gg.drawNodeFull(GraphGraphics.SHAPE_ROUNDED_RECTANGLE,
                     -220.0f, -100.0f, -30.0f, 0.0f,
-                    new Color(0, 0, 255, 128), 3.0f,
-                    new Color(0, 0, 0, 128));
+                    new Color(0, 0, 255, 127), 3.0f,
+                    new Color(0, 0, 0, 127));
     gg.drawNodeFull(GraphGraphics.SHAPE_ROUNDED_RECTANGLE,
                     -130.0f, -150.0f, -15.0f, 10.0f,
-                    new Color(0, 255, 0, 128), 3.0f,
-                    new Color(0, 0, 0, 128));
+                    new Color(0, 255, 0, 127), 3.0f,
+                    new Color(0, 0, 0, 127));
+    gg.drawEdgeFull(GraphGraphics.ARROW_DELTA, 10.0f,
+                    new Color(255, 0, 255, 127),
+                    GraphGraphics.ARROW_TEE, 10.0f,
+                    new Color(0, 0, 255, 127),
+                    71.4f, 20.83f, -10.1f, -81.3f, 3.0f,
+                    new Color(255, 255, 0, 127), 9.0f);
     gg.drawTextFull(new Font("Dialog", Font.PLAIN, 12),
                     2.0d, "Click here to print.",
                     -20.0f, 35.0f, Color.black, true);
