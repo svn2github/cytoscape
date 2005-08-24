@@ -1,0 +1,11 @@
+--- org/freehep/graphicsio/AbstractVectorGraphicsIO.java-orig	2005-08-23 20:45:17.274831904 -0700
++++ org/freehep/graphicsio/AbstractVectorGraphicsIO.java	2005-08-23 20:46:45.842367592 -0700
+@@ -579,7 +579,7 @@
+         } catch (IOException e) {
+             handleException(e);
+         }
+-        currentTransform = transform;
++        currentTransform = new AffineTransform(transform);
+     }
+ 
+     /**
