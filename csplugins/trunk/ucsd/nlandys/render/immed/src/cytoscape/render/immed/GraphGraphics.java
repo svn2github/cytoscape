@@ -1161,7 +1161,7 @@ public final class GraphGraphics
         m_g2d.fill(arrow1Cap);
         m_g2d.setTransform(m_currNativeXform); } }
 
-    {
+    { // Render arrow at point 0.
       final Shape arrow0 = computeUntransformedArrow(arrowType0);
       if (arrow0 != null) {
         m_xformUtil.setTransform(cosTheta, sinTheta, -sinTheta, cosTheta,
@@ -1173,7 +1173,7 @@ public final class GraphGraphics
         m_g2d.setTransform(m_currNativeXform); }
     }
 
-    {
+    { // Render arrow at point 1.
       final Shape arrow1 = computeUntransformedArrow(arrowType1);
       if (arrow1 != null) {
         m_xformUtil.setTransform(-cosTheta, -sinTheta, sinTheta, -cosTheta,
