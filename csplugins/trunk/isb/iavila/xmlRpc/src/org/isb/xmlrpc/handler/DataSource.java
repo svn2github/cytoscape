@@ -80,12 +80,12 @@ public interface DataSource {
    * If called, System.out.print statements will be called
    * for debugging
    */
-  public boolean printDebug ();
+  public Boolean printDebug ();
   
   /**
    * If calles, no System.out.print statemets will be called
    *
    */
-  public boolean noPrintDebug ();
+  public Boolean noPrintDebug ();
   
 }//DataSource

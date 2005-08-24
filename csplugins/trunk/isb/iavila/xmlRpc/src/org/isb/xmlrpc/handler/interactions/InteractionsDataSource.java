@@ -19,6 +19,7 @@ public interface InteractionsDataSource extends DataSource {
   public static final String INTERACTION_TYPE = "itype";
   public static final String SOURCE = "src";
   public static final String DIRECTED = "dir";
+  public static final String CONFIDENCE = "confidence";
 
   //TODO: Need to create a vocabulary of ID types????
   /**

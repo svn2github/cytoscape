@@ -3,10 +3,9 @@ package org.isb.xmlrpc.client;
 import java.util.Properties;
 import java.util.Vector;
 
-import org.isb.xmlrpc.server.*;
-import org.isb.xmlrpc.handler.*;
 import org.isb.xmlrpc.util.*;
 import utils.*;
+import org.apache.xmlrpc.XmlRpc;
 
 /**
  * Class <code>DataClientFactory</code>
@@ -34,21 +33,25 @@ public class DataClientFactory {
 
 	public static String USERNAME = null, PASSWORD = null;
 
-	public static Vector dataClients = new Vector();
-
-	public static Properties properties;
+	public static Vector DATA_CLIENTS = new Vector();
+	
+	public static Properties PROPERTIES;
 
 	static {
+		//XmlRpc.setDebug(true);
 		String propertiesFilePath = XmlRpcUtils
 				.FindPropsFile(DEFAULT_CLIENT_PROPS);
-		properties = MyUtils.readProperties(propertiesFilePath);
+		PROPERTIES = MyUtils.readProperties(propertiesFilePath);
 
-		try {
-			DEFAULT_HOST = (String) properties.get("host");
-		} catch (Exception ee) {
-			ee.printStackTrace();
+		if(PROPERTIES != null){
+			DEFAULT_HOST = (String) PROPERTIES.get("host");
+		}
+		
+		if(DEFAULT_HOST == null){
+			System.out.println("Setting DEFAULT_HOST to \"local\"");
 			DEFAULT_HOST = "local";
 		}
+		
 		STATIC_HOST = DEFAULT_HOST;
 	}
 
@@ -59,18 +62,20 @@ public class DataClientFactory {
 
 		if (USERNAME == null) {
 			String password = "true";
-			try {
-				password = (String) properties.get("password");
-			} catch (Exception ee) {
+			if(PROPERTIES != null){
+				password = (String) PROPERTIES.get("password");
+			}else{
+				System.out.println("PROPERTIES are null. Setting password to false.");
 				password = "false";
 			}
+			
 			if ("true".equals(password))
 				askForUserNamePassword();
 			else
 				USERNAME = PASSWORD = "";
 		}
 
-		return getClient(service, properties);
+		return getClient (service, PROPERTIES);
 	}
 
 	public static void setUserNamePassword (String user, String pass) {
@@ -81,8 +86,8 @@ public class DataClientFactory {
 		if ("".equals(PASSWORD))
 			return;
 
-		for (int i = 0; i < dataClients.size(); i++) {
-			MyDataClient dc = (MyDataClient) dataClients.get(i);
+		for (int i = 0; i < DATA_CLIENTS.size(); i++) {
+			MyDataClient dc = (MyDataClient) DATA_CLIENTS.get(i);
 			if (dc instanceof AuthenticatedDataClient)
 				((AuthenticatedDataClient) dc).setUserNamePassword(USERNAME,
 						PASSWORD);
@@ -129,7 +134,7 @@ public class DataClientFactory {
 			host = DEFAULT_HOST;
 
 		System.err.println("HOST = " + host);
-
+		
 		String cName = props.getProperty("client." + service);
 		if (cName == null || cName.length() <= 0)
 			throw new IllegalArgumentException(
@@ -152,7 +157,7 @@ public class DataClientFactory {
 				if (!"".equals(PASSWORD))
 					((AuthenticatedDataClient) dc).setUserNamePassword(
 							USERNAME, PASSWORD);
-			dataClients.add(dc);
+			DATA_CLIENTS.add(dc);
 
 			return dc;
 
@@ -178,7 +183,7 @@ public class DataClientFactory {
 			// TODO: This needs cleaning up!!!! (iliana)
 			
 			if (!running) {
-				
+				System.out.println("Service " + service + " is not running in localhost");
 				if(service.equalsIgnoreCase("blast")) {
 					// For now, we are not using BLAST (Iliana)
 					System.err
@@ -213,6 +218,7 @@ public class DataClientFactory {
 					// Iliana's comment: this is dependant on the table names!!! we will
 					// need to have static variables with table names
 					// Why in the local case, do we make sure that the handler is running?
+					System.out.println("Starting service " + service + " on localhost.");
 					XmlRpcUtils.startService(service, localhost, cName,
 							new String[] { service + "s" });
 					
@@ -232,7 +238,9 @@ public class DataClientFactory {
 						((AuthenticatedDataClient) dc).setUserNamePassword(
 								USERNAME, PASSWORD);
 
-				dataClients.add(dc);
+				DATA_CLIENTS.add(dc);
+				
+				System.out.println("getClient returning client = " + dc);
 
 				return dc;
 			}

@@ -1,6 +1,5 @@
 package org.isb.xmlrpc.handler.interactions;
 
-import java.lang.*;
 import java.util.*;
 import java.lang.reflect.*;
 import org.isb.xmlrpc.handler.DataSource;
@@ -47,7 +46,7 @@ public class InteractionsHandler implements InteractionsDataSource {
 	 * @return true if the InteractionsDataSource with the given class was found
 	 *         and removed
 	 */
-	public boolean removeSource(String source_class) {
+	public Boolean removeSource(String source_class) {
 		Iterator it = this.interactionSources.iterator();
 		InteractionsDataSource sourceToRemove = null;
 		while (it.hasNext()) {
@@ -59,9 +58,9 @@ public class InteractionsHandler implements InteractionsDataSource {
 		}// while
 
 		if (sourceToRemove != null) {
-			return this.interactionSources.remove(sourceToRemove);
+			return new Boolean(this.interactionSources.remove(sourceToRemove));
 		}
-		return false;
+		return Boolean.FALSE;
 	}
 
 	/**
@@ -72,7 +71,7 @@ public class InteractionsHandler implements InteractionsDataSource {
 	 * @return true if the source was added, false if it was not added (e.g. if
 	 *         it was already there or there was an exception during creation)
 	 */
-	public boolean addSource(String source_class) {
+	public Boolean addSource(String source_class) {
 
 		try {
 
@@ -80,17 +79,17 @@ public class InteractionsHandler implements InteractionsDataSource {
 			Object obj = classForName.newInstance();
 			if (obj instanceof InteractionsDataSource) {
 				this.interactionSources.add(obj);
-				return true;
+				return Boolean.TRUE;
 			}
 
 			System.err
 					.println("Requested class for source is not an InteractionsDataSource:"
 							+ source_class);
-			return false;
+			return Boolean.FALSE;
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			return false; // for now
+			return Boolean.FALSE; // for now
 		}// catch
 
 	}
@@ -105,7 +104,7 @@ public class InteractionsHandler implements InteractionsDataSource {
 	 * @return true if the source was added, false if it was not added (e.g. if
 	 *         it was already there or there was an exception during creation)
 	 */
-	public boolean addSource(String source_class, Object arg) {
+	public Boolean addSource(String source_class, Object arg) {
 
 		try {
 
@@ -115,17 +114,17 @@ public class InteractionsHandler implements InteractionsDataSource {
 			Object obj = cons.newInstance(new Object[] { arg });
 			if (obj instanceof InteractionsDataSource) {
 				this.interactionSources.add(obj);
-				return true;
+				return Boolean.TRUE;
 			}
 
 			System.out
 					.println("Requested class for source is not an InteractionsDataSource:"
 							+ source_class);
-			return false;
+			return Boolean.FALSE;
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			return false; // for now
+			return Boolean.FALSE; // for now
 		}// catch
 
 	}
@@ -142,7 +141,7 @@ public class InteractionsHandler implements InteractionsDataSource {
 	 * @return true if the source was added, false if it was not added (e.g. if
 	 *         it was already there or there was an exception during creation)
 	 */
-	public boolean addSource(String source_class, Object arg1, Object arg2) {
+	public Boolean addSource(String source_class, Object arg1, Object arg2) {
 
 		try {
 
@@ -152,17 +151,17 @@ public class InteractionsHandler implements InteractionsDataSource {
 			Object obj = cons.newInstance(new Object[] { arg1, arg2 });
 			if (obj instanceof InteractionsDataSource) {
 				this.interactionSources.add(obj);
-				return true;
+				return Boolean.TRUE;
 			}
 
 			System.out
 					.println("Requested class for source is not an InteractionsDataSource:"
 							+ source_class);
-			return false;
+			return Boolean.FALSE;
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			return false; // for now
+			return Boolean.FALSE; // for now
 		}// catch
 
 	}
@@ -181,7 +180,7 @@ public class InteractionsHandler implements InteractionsDataSource {
 	 * @return true if the source was added, false if it was not added (e.g. if
 	 *         it was already there or there was an exception during creation)
 	 */
-	public boolean addSource(String source_class, Object arg1, Object arg2,
+	public Boolean addSource(String source_class, Object arg1, Object arg2,
 			Object arg3) {
 
 		try {
@@ -192,17 +191,17 @@ public class InteractionsHandler implements InteractionsDataSource {
 			Object obj = cons.newInstance(new Object[] { arg1, arg2, arg3 });
 			if (obj instanceof InteractionsDataSource) {
 				this.interactionSources.add(obj);
-				return true;
+				return Boolean.TRUE;
 			}
 
 			System.out
 					.println("Requested class for source is not an InteractionsDataSource:"
 							+ source_class);
-			return false;
+			return Boolean.FALSE;
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			return false; // for now
+			return Boolean.FALSE; // for now
 		}// catch
 
 	}
@@ -229,16 +228,16 @@ public class InteractionsHandler implements InteractionsDataSource {
 	 * @return true if an InteractionsDataSource with the given class already
 	 *         exists, false otherwise
 	 */
-	public boolean containsSource(String source_class) {
+	public Boolean containsSource(String source_class) {
 		Iterator it = this.interactionSources.iterator();
 		while (it.hasNext()) {
 			InteractionsDataSource dataSource = (InteractionsDataSource) it
 					.next();
 			if (dataSource.equals(source_class)) {
-				return true;
+				return Boolean.TRUE;
 			}
 		}// while it.hasNext()
-		return false;
+		return Boolean.FALSE;
 	}
 
 	/**
@@ -716,28 +715,36 @@ public class InteractionsHandler implements InteractionsDataSource {
 	/**
 	 * If called, System.out.print statements will be called for debugging
 	 */
-	public boolean printDebug() {
+	public Boolean printDebug() {
 		this.debug = true;
 		Iterator it = this.interactionSources.iterator();
 		while(it.hasNext()){
 			InteractionsDataSource dataSource = (InteractionsDataSource)it.next();
 			dataSource.printDebug();
 		}//while it.hasNext
-		return this.debug;
+		return new Boolean(this.debug);
 	}
 
 	/**
 	 * If called, no System.out.print statemets will be called
 	 * 
 	 */
-	public boolean noPrintDebug() {
+	public Boolean noPrintDebug() {
 		this.debug = false;
 		Iterator it = this.interactionSources.iterator();
 		while(it.hasNext()){
 			InteractionsDataSource dataSource = (InteractionsDataSource)it.next();
 			dataSource.noPrintDebug();
 		}//while it.hasNext
-		return this.debug;
+		return new Boolean(this.debug);
+	}
+	
+	public Vector testHashAsArg (Hashtable a_hash){
+		Vector out = new Vector();
+		out.add("it");
+		out.add("worked");
+		out.add("!!!");
+		return out;
 	}
 
 }// InteractionsDataSource

@@ -50,7 +50,9 @@ public abstract class MyDataClient {
 			throws XmlRpcException, IOException {
 
 		Object out = null;
-
+		
+		System.out.println("MyDataClient.execute(" + method + ", params = " + params + ")");
+		
 		if (nCallsPerBatch > 0)
 			out = doMultiCall(method, params);
 		else
@@ -143,9 +145,11 @@ public abstract class MyDataClient {
 
 	public synchronized Object call(String method, Object arg0, Object arg1)
 			throws XmlRpcException, IOException {
+		System.out.println("----- MyDataClient.call(" + method + ", " + arg0 + ", " + arg1 + ")");
 		args.clear();
 		args.add(arg0);
 		args.add(arg1);
+		System.out.println("----- Calling execute with args = " + args);
 		return execute(method, args);
 	}
 

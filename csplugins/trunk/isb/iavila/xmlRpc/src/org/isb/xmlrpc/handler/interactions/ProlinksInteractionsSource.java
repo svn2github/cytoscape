@@ -413,6 +413,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	 *         SOURCE --> String <br>
 	 */
 	public Vector getAllInteractions(String species, Hashtable args) {
+		//System.out.println("ProlinksInteractionsSource.getAllInteractions (" + species + ", " + args + ")");
 		
 		double pval = 2; // PVALS' max value is 1
 		if(args.containsKey(PVAL)){
@@ -496,15 +497,19 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	public Vector getFirstNeighbors(String interactor, String species,
 			Hashtable args) {
 		
+		//System.out.println("ProlinksInteractionsSource.getFirstNeighbors(" + interactor + ", " + species + ", " + args + ")...");
+		
 		double pval = 2;
 		if(args.containsKey(PVAL)){
 			pval = ( (Double)args.get(PVAL) ).doubleValue();
 		}
+		//System.out.println(pval);
 		
 		Vector methods = INT_TYPES;
 		if(args.containsKey(INTERACTION_TYPE)){
 			methods = (Vector)args.get(INTERACTION_TYPE);
 		}
+		//System.out.println(methods);
 		
 		boolean directed = false;
 		if(args.containsKey(DIRECTED)){
@@ -551,6 +556,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 			Iterator it = methods.iterator();
 			while(it.hasNext()){
 				String method = (String)it.next();
+				//System.out.println(method);
 				String tableName = getTableNameForMethod(species, method, pval);
 				sql = "(SELECT DISTINCT gene_id_b FROM " + tableName + " WHERE gene_id_a = " + interactor + " AND p <= " + pval + ")";
 				if(!directed){
@@ -563,6 +569,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 		}// pval <= 1
 		
 		Vector neighbors = new Vector(set);
+	//	System.out.println("returning Vector = " + neighbors);
 		return neighbors;
 	}
 
@@ -1065,18 +1072,18 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	   * If called, System.out.print statements will be called
 	   * for debugging
 	   */
-	  public boolean printDebug (){
+	  public Boolean printDebug (){
 		  this.debug = true;
-		  return this.debug;
+		  return new Boolean(this.debug);
 	  }
 	  
 	  /**
 	   * If calles, no System.out.print statemets will be called
 	   *
 	   */
-	  public boolean noPrintDebug () {
+	  public Boolean noPrintDebug () {
 		  this.debug = false;
-		  return this.debug;
+		  return new Boolean(this.debug);
 	  }
 
 }// ProlinksInteractionsSource

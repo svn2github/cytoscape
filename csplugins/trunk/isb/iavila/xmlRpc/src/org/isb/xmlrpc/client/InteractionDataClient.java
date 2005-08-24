@@ -1,14 +1,10 @@
 package org.isb.xmlrpc.client;
 
 import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.Vector;
 
 import org.apache.xmlrpc.XmlRpcException;
-import org.isb.xmlrpc.handler.interactions.InteractionsDataSource;
 
 /**
  * The class that applications use to get interactions from the server
@@ -185,7 +181,7 @@ public class InteractionDataClient extends AuthenticatedDataClient {
 	   * Each implementing class can add additional entries to the Hashtables
 	   */
 	  public Vector getAllInteractions (String species, Hashtable args) throws XmlRpcException, IOException{
-		  Object out = call(this.serviceName + "getAllInteractions", species, args);
+		  Object out = call(this.serviceName + ".getAllInteractions", species, args);
 		  return (Vector)out;
 	  }
 	  
@@ -390,5 +386,10 @@ public class InteractionDataClient extends AuthenticatedDataClient {
 	 * classes)
 	 */
 	public void test() throws Exception{}
+	
+	public Vector testHashAsArg (Hashtable a_hash) throws XmlRpcException, IOException{
+		Object out = call(this.serviceName + ".testHashAsArg", a_hash);
+		return (Vector)out;
+	}
 
 }
