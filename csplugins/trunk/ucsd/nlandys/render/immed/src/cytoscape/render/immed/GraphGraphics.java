@@ -1955,12 +1955,7 @@ public final class GraphGraphics
       m_g2d.translate(-textBounds.getCenterX(), -textBounds.getCenterY());
       m_g2d.setFont(font);
       m_g2d.drawString(text, 0.0f, 0.0f); }
-    // Originally the plan was to set the transform of m_g2d to
-    // m_currNativeXform.  The problem is that some implementations of
-    // Graphics2D (FreeHEP PDF writer comes to mind) in some cases
-    // mutates the transform being passed in.
-    m_xformUtil.setTransform(m_currNativeXform);
-    m_g2d.setTransform(m_xformUtil);
+    m_g2d.setTransform(m_currNativeXform);
   }
 
   private final FontRenderContext m_fontRenderContextFull =
