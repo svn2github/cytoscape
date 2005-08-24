@@ -1210,9 +1210,10 @@ public final class GraphGraphics
         throw new IllegalArgumentException
           ("curveFactor should be either CURVE_ELLIPTICAL or CURVE_NATURAL"); }
 
-    if (!computeCubicPolyEdgePath(arrowType0, arrow0Size,
-                                  arrowType1, arrow1Size,
-                                  x0, y0, anchors, x1, y1, curveFactor)) {
+    if (!computeCubicPolyEdgePath
+        (arrowType0, arrowType0 == ARROW_NONE ? 0.0f : arrow0Size,
+         arrowType1, arrowType1 == ARROW_NONE ? 0.0f : arrow1Size,
+         x0, y0, anchors, x1, y1, curveFactor)) {
       // After filtering duplicate start and end points, there are less
       // than 3 total.
       if (m_edgePtsCount == 2) { // Draw an ordinary edge.
