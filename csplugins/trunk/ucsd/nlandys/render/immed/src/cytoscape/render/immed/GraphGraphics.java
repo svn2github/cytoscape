@@ -1955,7 +1955,9 @@ public final class GraphGraphics
       m_g2d.translate(-textBounds.getCenterX(), -textBounds.getCenterY());
       m_g2d.setFont(font);
       m_g2d.drawString(text, 0.0f, 0.0f); }
-    m_g2d.setTransform(m_currNativeXform);
+    AffineTransform fuck = new AffineTransform();
+    fuck.setTransform(m_currNativeXform);
+    m_g2d.setTransform(fuck);
   }
 
   private final FontRenderContext m_fontRenderContextFull =
