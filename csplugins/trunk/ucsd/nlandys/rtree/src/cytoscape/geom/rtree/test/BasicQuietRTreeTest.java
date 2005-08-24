@@ -16,7 +16,8 @@ public class BasicQuietRTreeTest
       float[] extentsArr = new float[4];
       IntEnumerator iter = tree.queryOverlap
         (Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY,
-         Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY, extentsArr, 0);
+         Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY,
+         extentsArr, 0, false);
       if (iter.numRemaining() != 0)
         throw new IllegalStateException
           ("did not expect query to generate results");
@@ -62,7 +63,8 @@ public class BasicQuietRTreeTest
 
       IntEnumerator iter = tree.queryOverlap
         (Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY,
-         Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY, extentsArr, 0);
+         Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY,
+         extentsArr, 0, false);
       if (iter.numRemaining() != 3)
         throw new IllegalStateException("expected query to generate 3 hits");
       IntBTree cache = new IntBTree();
@@ -77,7 +79,7 @@ public class BasicQuietRTreeTest
           extentsArr[2] != 3.0 || extentsArr[3] != 3.0)
         throw new IllegalStateException("extents from query wrong");
 
-      iter = tree.queryOverlap(1.25f, 2.0f, 2.1f, 3.3f, extentsArr, 1);
+      iter = tree.queryOverlap(1.25f, 2.0f, 2.1f, 3.3f, extentsArr, 1, false);
       if (iter.numRemaining() != 2)
         throw new IllegalStateException("exptected query to return 2 hits");
       cache.insert(1); cache.insert(2); foo = 0;
@@ -117,7 +119,8 @@ public class BasicQuietRTreeTest
 
       IntEnumerator iter = tree.queryOverlap
         (Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY,
-         Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY, extentsArr, 0);
+         Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY,
+         extentsArr, 0, false);
       if (iter.numRemaining() != 4)
         throw new IllegalStateException("expected query to generate 4 hits");
       IntBTree cache = new IntBTree();
@@ -132,7 +135,7 @@ public class BasicQuietRTreeTest
           extentsArr[2] != 3.5 || extentsArr[3] != 3.0)
         throw new IllegalStateException("extents from query wrong");
 
-      iter = tree.queryOverlap(2.0f, 0.5f, 2.2f, 1.9f, extentsArr, 0);
+      iter = tree.queryOverlap(2.0f, 0.5f, 2.2f, 1.9f, extentsArr, 0, false);
       if (iter.numRemaining() != 0)
         throw new IllegalStateException("expected query to generate 0 hits");
       if (extentsArr[0] != Float.POSITIVE_INFINITY ||
@@ -144,7 +147,7 @@ public class BasicQuietRTreeTest
 
       iter = tree.queryOverlap
         (Float.NEGATIVE_INFINITY, 1.1f, Float.POSITIVE_INFINITY, 1.2f,
-         extentsArr, 0);
+         extentsArr, 0, false);
       if (iter.numRemaining() != 2)
         throw new IllegalStateException("expected query to generate 2 hits");
       cache.insert(2); cache.insert(3); foo = 0;
@@ -157,7 +160,7 @@ public class BasicQuietRTreeTest
           extentsArr[2] != 3.5 || extentsArr[3] != 2.0)
         throw new IllegalStateException("extents from query wrong");
 
-      iter = tree.queryOverlap(1.0f, 1.0f, 1.0f, 1.0f, extentsArr, 0);
+      iter = tree.queryOverlap(1.0f, 1.0f, 1.0f, 1.0f, extentsArr, 0, false);
       if (iter.numRemaining() != 2)
         throw new IllegalStateException("expected query to generate 2 hits");
       cache.insert(0); cache.insert(2); foo = 0;
@@ -222,7 +225,8 @@ public class BasicQuietRTreeTest
 
       IntEnumerator iter = tree.queryOverlap
         (Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY,
-         Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY, extentsArr, 0);
+         Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY,
+         extentsArr, 0, false);
       if (iter.numRemaining() != 10)
         throw new IllegalStateException("expected query to generate 10 hits");
       IntBTree cache = new IntBTree();
@@ -237,7 +241,7 @@ public class BasicQuietRTreeTest
           extentsArr[2] != 4.0 || extentsArr[3] != 7.0)
         throw new IllegalStateException("extents from query wrong");
 
-      iter = tree.queryOverlap(1.0f, 1.25f, 3.0f, 5.0f, extentsArr, 0);
+      iter = tree.queryOverlap(1.0f, 1.25f, 3.0f, 5.0f, extentsArr, 0, false);
       if (iter.numRemaining() != 5)
         throw new IllegalStateException("expected query to generate 5 hits");
       cache.insert(1); cache.insert(2); cache.insert(3); cache.insert(6);
@@ -251,7 +255,7 @@ public class BasicQuietRTreeTest
           extentsArr[2] != 3.75 || extentsArr[3] != 3.25)
         throw new IllegalStateException("extents from query wrong");
 
-      iter = tree.queryOverlap(-1.5f, 0.25f, 0.25f, 3.0f, extentsArr, 0);
+      iter = tree.queryOverlap(-1.5f, 0.25f, 0.25f, 3.0f, extentsArr, 0, false);
       if (iter.numRemaining() != 3)
         throw new IllegalStateException("expected query to generate 3 hits");
       cache.insert(0); cache.insert(5); cache.insert(9); foo = 0;
@@ -264,7 +268,7 @@ public class BasicQuietRTreeTest
           extentsArr[2] != 1.0 || extentsArr[3] != 3.5)
         throw new IllegalStateException("extents from query wrong");
 
-      iter = tree.queryOverlap(1.5f, 6.5f, 1.5f, 6.5f, extentsArr, 0);
+      iter = tree.queryOverlap(1.5f, 6.5f, 1.5f, 6.5f, extentsArr, 0, false);
       if (iter.numRemaining() != 1)
         throw new IllegalStateException("expected query to generate 1 hit");
       cache.insert(8); foo = 0;
@@ -277,16 +281,16 @@ public class BasicQuietRTreeTest
           extentsArr[2] != 2.0 || extentsArr[3] != 7.0)
         throw new IllegalStateException("extents from query wrong");
 
-      iter = tree.queryOverlap(3.0f, 5.0f, 8.0f, 9.0f, extentsArr, 0);
+      iter = tree.queryOverlap(3.0f, 5.0f, 8.0f, 9.0f, extentsArr, 0, false);
       if (iter.numRemaining() != 0)
         throw new IllegalStateException("did not expect any query hits");
 
       iter = tree.queryOverlap(-100.0f, -100.0f, -99.0f, -99.0f,
-                               extentsArr, 0);
+                               extentsArr, 0, false);
       if (iter.numRemaining() != 0)
         throw new IllegalStateException("did not expect any query hits");
 
-      iter = tree.queryOverlap(-1.0f, 0.75f, 3.0f, 6.0f, extentsArr, 0);
+      iter = tree.queryOverlap(-1.0f, 0.75f, 3.0f, 6.0f, extentsArr, 0, false);
       if (iter.numRemaining() != 10)
         throw new IllegalStateException("expected 10 query hits");
 
@@ -341,7 +345,8 @@ public class BasicQuietRTreeTest
 
       IntEnumerator iter = tree.queryOverlap
         (Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY,
-         Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY, extentsArr, 0);
+         Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY,
+         extentsArr, 0, false);
       if (iter.numRemaining() != 28)
         throw new IllegalStateException("expected query to give 28 hits");
       IntBTree cache = new IntBTree();
@@ -356,7 +361,7 @@ public class BasicQuietRTreeTest
           extentsArr[2] != 5.0 || extentsArr[3] != 10.0)
         throw new IllegalStateException("extents from query wrong");
 
-      iter = tree.queryOverlap(-2.0f, 6.0f, -2.0f, 6.0f, extentsArr, 0);
+      iter = tree.queryOverlap(-2.0f, 6.0f, -2.0f, 6.0f, extentsArr, 0, false);
       if (iter.numRemaining() != 4)
         throw new IllegalStateException("expected query to generate 4 hits");
       cache.insert(13); cache.insert(14); cache.insert(26); cache.insert(27);
@@ -370,7 +375,7 @@ public class BasicQuietRTreeTest
           extentsArr[2] != 2.25 || extentsArr[3] != 9.25)
         throw new IllegalStateException("extents from query wrong");
 
-      iter = tree.queryOverlap(2.5f, 3.75f, 6.0f, 6.0f, extentsArr, 0);
+      iter = tree.queryOverlap(2.5f, 3.75f, 6.0f, 6.0f, extentsArr, 0, false);
       if (iter.numRemaining() != 5)
         throw new IllegalStateException("expected query to generate 5 hits");
       cache.insert(10); cache.insert(11); cache.insert(12); cache.insert(20);
@@ -384,7 +389,8 @@ public class BasicQuietRTreeTest
           extentsArr[2] != 5.0 || extentsArr[3] != 5.5)
         throw new IllegalStateException("extents from query wrong");
 
-      iter = tree.queryOverlap(1.75f, -1.5f, 3.25f, -0.5f, extentsArr, 0);
+      iter = tree.queryOverlap(1.75f, -1.5f, 3.25f, -0.5f,
+                               extentsArr, 0, false);
       if (iter.numRemaining() != 2)
         throw new IllegalStateException("expected query to generate 2 hits");
       cache.insert(15); cache.insert(22); foo = 0;
@@ -397,7 +403,8 @@ public class BasicQuietRTreeTest
           extentsArr[2] != 5.0 || extentsArr[3] != -1.0)
         throw new IllegalStateException("extents from query wrong");
 
-      iter = tree.queryOverlap(-3.0f, -5.0f, 7.0f, 2.75f, extentsArr, 0);
+      iter = tree.queryOverlap(-3.0f, -5.0f, 7.0f, 2.75f,
+                               extentsArr, 0, false);
       if (iter.numRemaining() != 16)
         throw new IllegalStateException("expected query to generate 16 hits");
       cache.insert(0); cache.insert(1); cache.insert(2); cache.insert(3);
@@ -414,7 +421,7 @@ public class BasicQuietRTreeTest
           extentsArr[2] != 5.0 || extentsArr[3] != 5.0)
         throw new IllegalStateException("extents from query wrong");
 
-      iter = tree.queryOverlap(1.0f, 4.5f, 3.0f, 6.25f, extentsArr, 0);
+      iter = tree.queryOverlap(1.0f, 4.5f, 3.0f, 6.25f, extentsArr, 0, false);
       if (iter.numRemaining() != 5)
         throw new IllegalStateException("expected query to generate 5 hits");
       cache.insert(8); cache.insert(10); cache.insert(12); cache.insert(14);
@@ -428,7 +435,8 @@ public class BasicQuietRTreeTest
           extentsArr[2] != 3.0 || extentsArr[3] != 8.25)
         throw new IllegalStateException("extents from query wrong");
 
-      iter = tree.queryOverlap(0.75f, 0.25f, 1.5f, 0.75f, extentsArr, 0);
+      iter = tree.queryOverlap(0.75f, 0.25f, 1.5f, 0.75f,
+                               extentsArr, 0, false);
       if (iter.numRemaining() != 3)
         throw new IllegalStateException("expected query to generate 3 hits");
       cache.insert(0); cache.insert(17); cache.insert(23); foo = 0;
@@ -441,7 +449,8 @@ public class BasicQuietRTreeTest
           extentsArr[2] != 2.25 || extentsArr[3] != 1.25)
         throw new IllegalStateException("extents from query wrong");
 
-      iter = tree.queryOverlap(1.75f, -10.0f, 1.75f, 30.0f, extentsArr, 0);
+      iter = tree.queryOverlap(1.75f, -10.0f, 1.75f, 30.0f,
+                               extentsArr, 0, false);
       if (iter.numRemaining() != 6)
         throw new IllegalStateException("expected query to generate 6 hits");
       cache.insert(7); cache.insert(8); cache.insert(11); cache.insert(14);
@@ -455,15 +464,16 @@ public class BasicQuietRTreeTest
           extentsArr[2] != 3.5 || extentsArr[3] != 10.0)
         throw new IllegalStateException("extents from query wrong");
 
-      iter = tree.queryOverlap(0.75f, 3.0f, 1.75f, 3.5f, extentsArr, 0);
+      iter = tree.queryOverlap(0.75f, 3.0f, 1.75f, 3.5f, extentsArr, 0, false);
       if (iter.numRemaining() != 0)
         throw new IllegalStateException("did not expect query results");
 
-      iter = tree.queryOverlap(2.5f, 1.75f, 3.75f, 1.75f, null, -1);
+      iter = tree.queryOverlap(2.5f, 1.75f, 3.75f, 1.75f, null, -1, false);
       if (iter.numRemaining() != 0)
         throw new IllegalStateException("did not expect query results");
 
-      iter = tree.queryOverlap(-2.0f, -1.0f, 4.25f, 9.0f, extentsArr, 0);
+      iter = tree.queryOverlap(-2.0f, -1.0f, 4.25f, 9.0f,
+                               extentsArr, 0, false);
       if (iter.numRemaining() != 28)
         throw new IllegalStateException("expected 28 (all) query hits");
       for (int i = 0; i < 28; i++) cache.insert(i);
@@ -491,14 +501,15 @@ public class BasicQuietRTreeTest
       final int[] allOrdered = new int[28];
       IntEnumerator iter = tree.queryOverlap
         (Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY,
-         Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY, null, 0);
+         Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY,
+         null, 0, false);
       if (iter.numRemaining() != 28)
         throw new IllegalStateException("expected 28 elements in iteration");
       for (int i = 0; i < 28; i++) allOrdered[i] = iter.nextInt();
 
       iter = tree.queryOverlap
         (0.0f, 0.0f, Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY,
-         null, 0);
+         null, 0, false);
       if (iter.numRemaining() != 20)
         throw new IllegalStateException("expected 20 elements in iteration");
       int prevInx = -1;
@@ -513,7 +524,7 @@ public class BasicQuietRTreeTest
       if (iter.numRemaining() != 0)
         throw new IllegalStateException("more elements remain in iteration");
 
-      iter = tree.queryOverlap(-10.0f, -5.0f, 1.0f, 4.0f, null, 0);
+      iter = tree.queryOverlap(-10.0f, -5.0f, 1.0f, 4.0f, null, 0, false);
       if (iter.numRemaining() != 7)
         throw new IllegalStateException("expected 7 elements in iteration");
       prevInx = -1;
@@ -528,7 +539,7 @@ public class BasicQuietRTreeTest
       if (iter.numRemaining() != 0)
         throw new IllegalStateException("more elements remain in iteration");
 
-      iter = tree.queryOverlap(-99.0f, -5.0f, 1.0f, 30.0f, null, 0);
+      iter = tree.queryOverlap(-99.0f, -5.0f, 1.0f, 30.0f, null, 0, false);
       if (iter.numRemaining() != 14)
         throw new IllegalStateException("expected 14 elements in iteration");
       prevInx = -1;
@@ -543,7 +554,7 @@ public class BasicQuietRTreeTest
       if (iter.numRemaining() != 0)
         throw new IllegalStateException("more elements remain in iteration");
 
-      iter = tree.queryOverlap(-3.0f, 4.0f, 10.0f, 20.0f, null, 0);
+      iter = tree.queryOverlap(-3.0f, 4.0f, 10.0f, 20.0f, null, 0, false);
       if (iter.numRemaining() != 13)
         throw new IllegalStateException("expected 13 elements in iteration");
       prevInx = -1;

@@ -74,7 +74,7 @@ public class RTreeQueryPerformance
         for (int j = 0; j < 11; j++) {
           currY += 0.1f;
           final IntEnumerator iter =
-            tree.queryOverlap(currX, currY, currX, currY, null, 0);
+            tree.queryOverlap(currX, currY, currX, currY, null, 0, false);
           final MinIntHeap heap = pointQueries[inx++];
           while (iter.numRemaining() > 0) heap.toss(iter.nextInt()); } }
       final long millisEnd = System.currentTimeMillis();
@@ -96,7 +96,7 @@ public class RTreeQueryPerformance
           tree.queryOverlap(((float) i) * 0.1f,
                             ((float) i) * 0.1f,
                             ((float) (i + 1)) * 0.1f,
-                            ((float) (i + 1)) * 0.1f, null, 0);
+                            ((float) (i + 1)) * 0.1f, null, 0, false);
         final MinIntHeap heap = areaQueries[i];
         while (iter.numRemaining() > 0) heap.toss(iter.nextInt()); }
       final long millisEnd = System.currentTimeMillis();
@@ -116,7 +116,7 @@ public class RTreeQueryPerformance
           tree.queryOverlap(((float) i) * 0.1f,
                             ((float) i) * 0.1f,
                             ((float) (i + 6)) * 0.1f,
-                            ((float) (i + 6)) * 0.1f, null, 0);
+                            ((float) (i + 6)) * 0.1f, null, 0, false);
         countQueries[i] = iter.numRemaining(); }
       final long millisEnd = System.currentTimeMillis();
       System.err.println("count queries took " + (millisEnd - millisBegin) +

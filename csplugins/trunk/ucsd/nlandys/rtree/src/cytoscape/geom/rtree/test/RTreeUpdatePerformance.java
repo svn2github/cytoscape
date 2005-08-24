@@ -78,7 +78,7 @@ public class RTreeUpdatePerformance
         tree.queryOverlap(((float) i) * 0.1f,
                           ((float) i) * 0.1f,
                           ((float) (i + 1)) * 0.1f,
-                          ((float) (i + 1)) * 0.1f, null, 0); }
+                          ((float) (i + 1)) * 0.1f, null, 0, false); }
       final long millisEnd = System.currentTimeMillis();
       System.err.println("initial area queries (5) took " +
                          (millisEnd - millisBegin) + " milliseconds");
@@ -92,7 +92,7 @@ public class RTreeUpdatePerformance
         tree.queryOverlap(((float) i) * 0.1f,
                           ((float) i) * 0.1f,
                           ((float) i) * 0.1f,
-                          ((float) i) * 0.1f, null, 0); }
+                          ((float) i) * 0.1f, null, 0, false); }
       final long millisEnd = System.currentTimeMillis();
       System.err.println("initial point queries (5) took " +
                          (millisEnd - millisBegin) + " milliseconds");
@@ -125,21 +125,21 @@ public class RTreeUpdatePerformance
               tree.queryOverlap(((float) i) * 0.1f,
                                 ((float) (9 - i)) * 0.1f,
                                 ((float) (i + 1)) * 0.1f,
-                                ((float) (10 - i)) * 0.1f, null, 0); }
+                                ((float) (10 - i)) * 0.1f, null, 0, false); }
             break;
           case 1:
             for (int i = 0; i < 5; i++) {
               tree.queryOverlap(((float) (9 - i)) * 0.1f,
                                 ((float) i) * 0.1f,
                                 ((float) (10 - i)) * 0.1f,
-                                ((float) (i + 1)) * 0.1f, null, 0); }
+                                ((float) (i + 1)) * 0.1f, null, 0, false); }
             break;
           case 2:
             for (int i = 0; i < 5; i++) {
               tree.queryOverlap(((float) (9 - i)) * 0.1f,
                                 ((float) (9 - i)) * 0.1f,
                                 ((float) (10 - i)) * 0.1f,
-                                ((float) (10 - i)) * 0.1f, null, 0); }
+                                ((float) (10 - i)) * 0.1f, null, 0, false); }
             break; }
         final long millisEnd = System.currentTimeMillis();
         System.err.println("repeated area queries (5) took " +
@@ -156,21 +156,21 @@ public class RTreeUpdatePerformance
               tree.queryOverlap(((float) i) * 0.1f,
                                 ((float) (10 - i)) * 0.1f,
                                 ((float) i) * 0.1f,
-                                ((float) (10 - i)) * 0.1f, null, 0); }
+                                ((float) (10 - i)) * 0.1f, null, 0, false); }
             break;
           case 1:
             for (int i = 0; i < 5; i++) {
               tree.queryOverlap(((float) (10 - i)) * 0.1f,
                                 ((float) i) * 0.1f,
                                 ((float) (10 - i)) * 0.1f,
-                                ((float) i) * 0.1f, null, 0); }
+                                ((float) i) * 0.1f, null, 0, false); }
             break;
           case 2:
             for (int i = 0; i < 5; i++) {
               tree.queryOverlap(((float) (10 - i)) * 0.1f,
                                 ((float) (10 - i)) * 0.1f,
                                 ((float) (10 - i)) * 0.1f,
-                                ((float) (10 - i)) * 0.1f, null, 0); }
+                                ((float) (10 - i)) * 0.1f, null, 0, false); }
             break; }
         final long millisEnd = System.currentTimeMillis();
         System.err.println("repeated point queries (5) took " +
