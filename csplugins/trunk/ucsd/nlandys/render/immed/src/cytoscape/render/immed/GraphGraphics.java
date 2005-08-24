@@ -1042,7 +1042,7 @@ public final class GraphGraphics
   {
     if (m_debug) {
       edgeFullDebug(false, arrowType0, arrow0Size, arrowType1, arrow1Size,
-                    edgeThickness, dashLength); }
+                    edgeThickness, dashLength, null, 0.0d); }
     // End debug.  Here the real code begins.
 
     final double len = Math.sqrt((((double) x1) - x0) * (((double) x1) - x0) +
@@ -1192,13 +1192,7 @@ public final class GraphGraphics
   {
     if (m_debug) {
       edgeFullDebug(true, arrowType0, arrow0Size, arrowType1, arrow1Size,
-                    edgeThickness, dashLength);
-      if (anchors.numRemaining() > 100)
-        throw new IllegalArgumentException
-          ("at most 100 edge anchors can be specified");
-      if (!(curveFactor == CURVE_ELLIPTICAL || curveFactor == CURVE_NATURAL))
-        throw new IllegalArgumentException
-          ("curveFactor should be either CURVE_ELLIPTICAL or CURVE_NATURAL"); }
+                    edgeThickness, dashLength, anchors, curveFactor); }
 
     if (!computeCubicPolyEdgePath
         (arrowType0, arrowType0 == ARROW_NONE ? 0.0f : arrow0Size,
@@ -1316,7 +1310,9 @@ public final class GraphGraphics
                                    final byte arrowType1,
                                    final float arrow1Size,
                                    final float edgeThickness,
-                                   final float dashLength)
+                                   final float dashLength,
+                                   final EdgeAnchors anchors,
+                                   final double curveFactor)
   {
     if (!EventQueue.isDispatchThread())
       throw new IllegalStateException
@@ -1412,6 +1408,13 @@ public final class GraphGraphics
       break;
     default:
       throw new IllegalArgumentException("arrowType1 is not recognized"); }
+    if (polyEdge) {
+      if (anchors.numRemaining() > 100)
+        throw new IllegalArgumentException
+          ("at most 100 edge anchors can be specified");
+      if (!(curveFactor == CURVE_ELLIPTICAL || curveFactor == CURVE_NATURAL))
+        throw new IllegalArgumentException
+          ("curveFactor should be either CURVE_ELLIPTICAL or CURVE_NATURAL"); }
   }
 
   /*
