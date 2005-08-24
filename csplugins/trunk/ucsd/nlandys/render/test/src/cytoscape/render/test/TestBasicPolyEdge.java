@@ -31,14 +31,14 @@ public final class TestBasicPolyEdge
   public final static void main(String[] args) throws Exception
   {
     final RTree tree = new RTree(3);
-    tree.insert(0, -200.0f, -200.0f, -180.0f, -180.0f); // Begin point.
-    tree.insert(1, -200.0f, 100.0f, -180.0f, 120.0f); // Anchor 1.
-    tree.insert(2, 0.0f, 0.0f, 20.0f, 20.0f); // Anchor 2.
-    tree.insert(3, 200.0f, 200.0f, 220.0f, 220.0f); // Anchor 3.
-    tree.insert(4, 50.0f, -50.0f, 70.0f, -30.0f); // Anchor 4.
-    tree.insert(5, 300.0f, -200.0f, 320.0f, -180.0f); // Anchor 5.
-    tree.insert(6, 0.0f, 200.0f, 20.0f, 220.0f); // Anchor 6.
-    tree.insert(7, 200.0f, -200.0f, 220.0f, -180.0f); // End point.
+    tree.insert(0, -200.0f, -200.0f, -180.0f, -180.0f);
+    tree.insert(1, -200.0f, 100.0f, -180.0f, 120.0f);
+    tree.insert(2, 0.0f, 0.0f, 20.0f, 20.0f);
+    tree.insert(3, 200.0f, 200.0f, 220.0f, 220.0f);
+    tree.insert(4, 50.0f, -50.0f, 70.0f, -30.0f);
+//     tree.insert(5, 300.0f, -200.0f, 320.0f, -180.0f);
+//     tree.insert(6, 0.0f, 200.0f, 20.0f, 220.0f);
+//     tree.insert(7, 200.0f, -200.0f, 220.0f, -180.0f);
     EventQueue.invokeAndWait(new Runnable() {
         public void run() {
           Frame f = new TestBasicPolyEdge(tree);
@@ -55,7 +55,7 @@ public final class TestBasicPolyEdge
   private final Color m_selectedFillColor = new Color(0, 0, 255, 63);
   private final Color m_borderColor = new Color(0, 0, 0, 63);
   private final Color m_textColor = Color.white;
-  private final Color m_edgeSegmentColor = new Color(0, 0, 0, 127);
+  private final Color m_edgeSegmentColor = new Color(127, 127, 127, 127);
   private final Color m_edgeArrowColor = new Color(0, 127, 0, 127);
   private final double[] m_ptBuff = new double[2];
   private final float[] m_floatBuff = new float[4];
@@ -148,7 +148,7 @@ public final class TestBasicPolyEdge
            anchorArr[offset] = m_anchorsBuff[num * 2 - 2];
            anchorArr[offset + 1] = m_anchorsBuff[num * 2 - 1];
            num--; } },
-       x1, y1, 4.0f, m_edgeSegmentColor, 0.0f, GraphGraphics.CURVE_ELLIPTICAL);
+       x1, y1, 4.0f, m_edgeSegmentColor, 0.0f, GraphGraphics.CURVE_NATURAL);
 
     RTreeEntryEnumerator iter = m_tree.queryOverlap
       ((float) (m_currXCenter - ((double) (m_imgWidth / 2)) / m_currScale),
