@@ -1,3 +1,8 @@
 lib:cytoscape-util-intr.jar
 lib:cytoscape-geom-rtree.jar
 lib:cytoscape-render-immed.jar
+lib:cytoscape-render-export.jar
+lib:freehep-base.jar
+lib:freehep-graphics2d.jar
+lib:freehep-graphicsio.jar
+lib:freehep-graphicsio-pdf.jar

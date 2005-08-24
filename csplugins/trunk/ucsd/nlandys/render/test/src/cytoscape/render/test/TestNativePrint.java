@@ -1,4 +1,4 @@
-package cytoscape.render.export.test;
+package cytoscape.render.test;
 
 import cytoscape.render.export.ImageImposter;
 import cytoscape.render.immed.GraphGraphics;
