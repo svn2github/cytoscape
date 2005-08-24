@@ -1243,22 +1243,58 @@ public final class GraphGraphics
       m_g2d.draw(m_path2d);
       if (simpleSegment) { return; }
       // We need to figure out the phase at the end of the cubic poly-path
-      // for dashed segments.  For now just ignore dashed segment arrow cap
-      // issues - assume no dashes are used.
+      // for dashed segments.  I cannot find a Java API to do this; our best
+      // bet would be to implement our own cubic curve length calculating
+      // function, but our computation may not agree with BasicStroke's
+      // computation.  So what we're going to do is always render the arrow
+      // caps.
     }
 
-    // At some point we should render arrow caps.  This is difficult to
-    // implement so I'm postponing it.
+    final double dx0 = m_edgePtsBuff[0] - m_edgePtsBuff[4];
+    final double dy0 = m_edgePtsBuff[1] - m_edgePtsBuff[5];
+    final double len0 = Math.sqrt(dx0 * dx0 + dy0 * dy0);
+    final double cosTheta0 = dx0 / len0;
+    final double sinTheta0 = dy0 / len0;
+
+    final double dx1 = m_edgePtsBuff[(m_edgePtsCount - 1) * 6 - 2] -
+      m_edgePtsBuff[(m_edgePtsCount - 1) * 6 - 6];
+    final double dy1 = m_edgePtsBuff[(m_edgePtsCount - 1) * 6 - 1] -
+      m_edgePtsBuff[(m_edgePtsCount - 1) * 6 - 5];
+    final double len1 = Math.sqrt(dx1 * dx1 + dy1 * dy1);
+    final double cosTheta1 = dx1 / len1;
+    final double sinTheta1 = dy1 / len1;
+
+    { // Render arrow cap at origin of poly path.  Dashed lines?  So what.
+      final Shape arrow0Cap = computeUntransformedArrowCap
+        (arrowType0, ((double) arrow0Size) / edgeThickness);
+      if (arrow0Cap != null) {
+        m_xformUtil.setTransform(cosTheta0, sinTheta0, -sinTheta0, cosTheta0,
+                                 m_edgePtsBuff[2], m_edgePtsBuff[3]);
+        m_g2d.transform(m_xformUtil);
+        m_g2d.scale(edgeThickness, edgeThickness);
+        // The color is already set to edge color.
+        m_g2d.fill(arrow0Cap);
+        m_g2d.setTransform(m_currNativeXform); }
+    }
+
+    { // Render arrow cap at end of poly path.  Dashed lines?  So what.
+      final Shape arrow1Cap = computeUntransformedArrowCap
+        (arrowType1, ((double) arrow1Size) / edgeThickness);
+      if (arrow1Cap != null) {
+        m_xformUtil.setTransform(cosTheta1, sinTheta1, -sinTheta1, cosTheta1,
+                                 m_edgePtsBuff[(m_edgePtsCount - 1) * 6 - 4],
+                                 m_edgePtsBuff[(m_edgePtsCount - 1) * 6 - 3]);
+        m_g2d.transform(m_xformUtil);
+        m_g2d.scale(edgeThickness, edgeThickness);
+        // The color is already set to edge color.
+        m_g2d.fill(arrow1Cap);
+        m_g2d.setTransform(m_currNativeXform); }
+    }
 
     { // Render arrow at origin of poly path.
-      final double dx = m_edgePtsBuff[0] - m_edgePtsBuff[4];
-      final double dy = m_edgePtsBuff[1] - m_edgePtsBuff[5];
-      final double len = Math.sqrt(dx * dx + dy * dy);
-      final double cosTheta = dx / len;
-      final double sinTheta = dy / len;
       final Shape arrow0 = computeUntransformedArrow(arrowType0);
       if (arrow0 != null) {
-        m_xformUtil.setTransform(cosTheta, sinTheta, -sinTheta, cosTheta,
+        m_xformUtil.setTransform(cosTheta0, sinTheta0, -sinTheta0, cosTheta0,
                                  m_edgePtsBuff[0], m_edgePtsBuff[1]);
         m_g2d.transform(m_xformUtil);
         m_g2d.scale(arrow0Size, arrow0Size);
@@ -1268,16 +1304,9 @@ public final class GraphGraphics
     }
 
     { // Render arrow at end of poly path.
-      final double dx = m_edgePtsBuff[(m_edgePtsCount - 1) * 6 - 2] -
-        m_edgePtsBuff[(m_edgePtsCount - 1) * 6 - 6];
-      final double dy = m_edgePtsBuff[(m_edgePtsCount - 1) * 6 - 1] -
-        m_edgePtsBuff[(m_edgePtsCount - 1) * 6 - 5];
-      final double len = Math.sqrt(dx * dx + dy * dy);
-      final double cosTheta = dx / len;
-      final double sinTheta = dy / len;
       final Shape arrow1 = computeUntransformedArrow(arrowType1);
       if (arrow1 != null) {
-        m_xformUtil.setTransform(cosTheta, sinTheta, -sinTheta, cosTheta,
+        m_xformUtil.setTransform(cosTheta1, sinTheta1, -sinTheta1, cosTheta1,
                                  m_edgePtsBuff[(m_edgePtsCount - 1) * 6 - 2],
                                  m_edgePtsBuff[(m_edgePtsCount - 1) * 6 - 1]);
         m_g2d.transform(m_xformUtil);
