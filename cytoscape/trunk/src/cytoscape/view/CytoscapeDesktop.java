@@ -748,7 +748,7 @@ public class CytoscapeDesktop
   /**
    * Gets a cytoPanel given a Compass direction.
    *
-   * @param int Compass Direction (SwingConstants.{SOUTH,EAST,WEST}).
+   * @param compassDirection Compass Direction (SwingConstants.{SOUTH,EAST,WEST}).
    * @return CytoPanel The CytoPanel that lives in the region specified by compass direction.
    */
   public CytoPanel getCytoPanel(int compassDirection){
@@ -771,8 +771,8 @@ public class CytoscapeDesktop
   
   /**
    * Create the CytoPanels UI.
-   * @param NetworkViewManager to load on left side (CytoPanel West).
-   * @param NetworkPanel to load on right side.
+   * @param networkPanel to load on right side.
+   * @param networkViewManager to load on left side (CytoPanel West).
    * @return BiModalJSplitPane Object.
    */
   protected BiModalJSplitPane setupCytoPanels (NetworkPanel networkPanel,
@@ -788,9 +788,8 @@ public class CytoscapeDesktop
 
   /**
    * Creates the TopLeft Pane.
-   * @param frame Application Frame.
-   * @param NetworkViewManager to load on left side (CytoPanel West).
-   * @param NetworkPanel to load on right side.
+   * @param networkPanel to load on right side.
+   * @param networkViewManager to load on left side (CytoPanel West).
    * @return BiModalJSplitPane Object.
    */
   protected BiModalJSplitPane createTopLeftPane(NetworkPanel networkPanel,
@@ -853,6 +852,9 @@ public class CytoscapeDesktop
 	  // set the cytopanel container
 	  cytoPanelEast.setCytoPanelContainer(splitPane);
 
+	  // set the resize weight
+	  splitPane.setResizeWeight(1.0);
+
 	  // outta here
 	  return splitPane;
   }
@@ -878,6 +880,9 @@ public class CytoscapeDesktop
 
 	  // set the cytopanel container
 	  cytoPanelSouth.setCytoPanelContainer(splitPane);
+
+	  // set the resize weight
+	  splitPane.setResizeWeight(1.0);
 
 	  // outta here
 	  return splitPane;
