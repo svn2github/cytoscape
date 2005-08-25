@@ -6,7 +6,7 @@
 package cytoscape.view.cytopanels;
 
 // imports
-import java.awt.*;
+import java.awt.Component;
 import javax.swing.Icon;
 
 /**
@@ -89,6 +89,13 @@ public interface CytoPanel {
 	 */
 	public int getSelectedIndex();
 
+    /**
+     * Gets the state of the CytoPanel.
+     *
+	 * @return A CytoPanelState.
+     */
+    public CytoPanelState getState();
+
 	/**
 	 * Returns the index for the specified component.
 	 *
@@ -125,18 +132,18 @@ public interface CytoPanel {
 	public void removeAll();
 
     /**
+     * Sets the selected index on the CytoPanel.
+     *
+     * @param index The desired index.
+     */
+    public void setSelectedIndex(int index);
+
+    /**
      * Sets the state of the CytoPanel.
      *
      * @param cytoPanelState A CytoPanelState.
      */
     public void setState(CytoPanelState cytoPanelState);
-
-    /**
-     * Gets the state of the CytoPanel.
-     *
-	 * @return A CytoPanelState.
-     */
-    public CytoPanelState getState();
 
 	/**
 	 * Adds a CytoPanel listener.
