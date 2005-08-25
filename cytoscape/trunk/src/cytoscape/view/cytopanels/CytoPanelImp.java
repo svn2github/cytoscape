@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------------
 
 // our package
-package cytoscape.view.cytopanel;
+package cytoscape.view.cytopanels;
 
 // imports
 import java.awt.Font;
@@ -42,9 +42,9 @@ import javax.swing.event.ChangeListener;
 import java.net.URL;
 import java.util.ArrayList;
 
-import cytoscape.view.cytopanel.CytoPanelUtil;
-import cytoscape.view.cytopanel.CytoPanelImp;
-import cytoscape.view.cytopanel.CytoPanelState;
+import cytoscape.view.cytopanels.CytoPanelUtil;
+import cytoscape.view.cytopanels.CytoPanelImp;
+import cytoscape.view.cytopanels.CytoPanelState;
 
 /**
  * The CytoPanel class extends JPanel to provide the following functionality:

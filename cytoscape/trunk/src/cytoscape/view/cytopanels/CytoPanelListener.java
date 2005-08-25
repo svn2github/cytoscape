@@ -3,11 +3,11 @@
 //------------------------------------------------------------------------------
 
 // our package
-package cytoscape.view.cytopanel;
+package cytoscape.view.cytopanels;
 
 // imports
 import java.util.EventListener;
-import cytoscape.view.cytopanel.CytoPanelState;
+import cytoscape.view.cytopanels.CytoPanelState;
 
 /**
  * This listener interface provides the
