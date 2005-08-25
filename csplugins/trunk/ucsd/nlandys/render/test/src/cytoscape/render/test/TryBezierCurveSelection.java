@@ -151,8 +151,8 @@ public final class TryBezierCurveSelection
   public void mouseMoved(MouseEvent e) {}
 
   private final static float[] s_floatTemp = new float[6];
-  private final static float[] s_floatBuff = new float[100];
-  private final static int[] s_segTypeBuff = new int[100];
+  private final static float[] s_floatBuff = new float[2000]; // I dunno.
+  private final static int[] s_segTypeBuff = new int[200]; // I dunno.
 
   /*
    * This method sets returnPath to be the forwards and backwards traversal
