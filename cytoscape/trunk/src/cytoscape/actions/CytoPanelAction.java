@@ -7,14 +7,8 @@ package cytoscape.actions;
 
 // imports
 import java.awt.event.ActionEvent;
-import javax.swing.JMenu;
 import javax.swing.JCheckBoxMenuItem;
-import javax.swing.AbstractAction;
-import javax.swing.SwingConstants;
-
-import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
-import cytoscape.view.CyMenus;
 import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.view.cytopanels.CytoPanelState;
 import cytoscape.view.cytopanels.CytoPanelListener;
@@ -97,6 +91,7 @@ public class CytoPanelAction extends CytoscapeAction implements CytoPanelListene
 		// if no more components on cytopanel, disable menu item
 		if (count == 0){
 			menuItem.setEnabled(false);
+			menuItem.setSelected(false);
 		}
 	}
 
@@ -106,6 +101,10 @@ public class CytoPanelAction extends CytoscapeAction implements CytoPanelListene
      * @param newState The new CytoPanel state - see CytoPanelState class.
      */
     public void onStateChange(CytoPanelState newState){
+		if (newState == CytoPanelState.DOCK ||
+			newState == CytoPanelState.FLOAT){
+			menuItem.setSelected(true);
+		}
 	}
 
     /**
