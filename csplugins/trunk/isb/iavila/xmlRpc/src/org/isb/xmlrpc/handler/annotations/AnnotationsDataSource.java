@@ -3,8 +3,6 @@
  */
 package org.isb.xmlrpc.handler.annotations;
 
-import java.lang.*;
-import java.util.*;
 import org.isb.xmlrpc.handler.DataSource;
 
 /**

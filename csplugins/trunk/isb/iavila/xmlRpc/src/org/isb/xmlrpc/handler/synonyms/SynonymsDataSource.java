@@ -7,13 +7,7 @@ import org.isb.xmlrpc.handler.DataSource;
 
 
 public interface SynonymsDataSource extends DataSource{
-	public static final String INTERACTOR_1 = "i1";
-	public static final String INTERACTOR_2 = "i2";
-	public static final String INTERACTION_TYPE = "itype";
-	public static final String SOURCE = "src";
-	public static final String DIRECTED = "dir";
-	public static final String CONFIDENCE = "confidence";
-	
+
 	/**
 	 * @return a Vector of Strings that specify types of IDs that this SynonymsDataSource accepts
 	 * for example, "ORF","GI", etc.

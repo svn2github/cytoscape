@@ -960,7 +960,6 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 		String species1 = "Homo_sapiens";
 		String species2 = "Saccharomyces_cerevisiae";
 		String species3 = "Drosophila_melanogaster";
-		String species4 = "Rickettsia_conorii";
 		String species5 = "Arabidopsis_thaliana";
 		String species6 = "Caenorhabditis_elegans";
 		String species7 = "Rattus_norvegicus";

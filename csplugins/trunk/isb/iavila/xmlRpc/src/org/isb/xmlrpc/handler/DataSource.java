@@ -1,7 +1,6 @@
 
 package org.isb.xmlrpc.handler;
 
-import java.lang.*;
 import java.util.*;
 
 /**
