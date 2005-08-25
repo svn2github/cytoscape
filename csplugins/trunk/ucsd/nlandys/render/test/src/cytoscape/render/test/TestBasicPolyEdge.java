@@ -57,6 +57,7 @@ public final class TestBasicPolyEdge
   private final Color m_textColor = Color.white;
   private final Color m_edgeSegmentColor = new Color(127, 127, 127, 127);
   private final Color m_edgeArrowColor = new Color(0, 127, 0, 127);
+  private final Color m_edgeSelectionWindowColor = new Color(0, 0, 255, 63);
   private final double[] m_ptBuff = new double[2];
   private final float[] m_floatBuff = new float[4];
   private final RTree m_tree;
@@ -72,6 +73,8 @@ public final class TestBasicPolyEdge
   private int m_currMouseButton = 0; // 0: none; 1: left; 2: middle; 3: right.
   private int m_lastXMousePos;
   private int m_lastYMousePos;
+  private int m_initXMousePos; // For edge selection window.
+  private int m_initYMousePos; // For edge selection window.
 
   /**
    * The objKeys in tree must start at zero and must be contiguous.
@@ -107,6 +110,17 @@ public final class TestBasicPolyEdge
   {
     Insets insets = insets();
     updateImage(m_grafx);
+    if (m_currMouseButton == 1) {
+      boolean anchorSelected = false;
+      for (int i = 0; i < m_ptStates.length; i++) {
+        if (m_ptStates[i]) { anchorSelected = true; break; } }
+      if (!anchorSelected) { // Draw the edge selection window.
+        Graphics imgGrafx = m_img.getGraphics();
+        imgGrafx.setColor(m_edgeSelectionWindowColor);
+        imgGrafx.fillRect(Math.min(m_initXMousePos, m_lastXMousePos),
+                          Math.min(m_initYMousePos, m_lastYMousePos),
+                          Math.abs(m_initXMousePos - m_lastXMousePos) + 1,
+                          Math.abs(m_initYMousePos - m_lastYMousePos) + 1); } }
     g.drawImage(m_img, insets.left, insets.top, null);
   }
 
@@ -206,14 +220,14 @@ public final class TestBasicPolyEdge
         m_tree.queryOverlap((float) m_ptBuff[0], (float) m_ptBuff[1],
                             (float) m_ptBuff[0], (float) m_ptBuff[1],
                             null, 0, true);
-      boolean mustRender = false;
+      boolean anchorSelected = false;
       while (candidates.numRemaining() > 0) {
         int objKey = candidates.nextExtents(m_floatBuff, 0);
         if (m_grafx.contains(GraphGraphics.SHAPE_ELLIPSE,
                              m_floatBuff[0], m_floatBuff[1],
                              m_floatBuff[2], m_floatBuff[3],
                              (float) m_ptBuff[0], (float) m_ptBuff[1])) {
-          mustRender = true;
+          anchorSelected = true;
           m_ptStates[objKey] = true;
           // Re-insert the entry into the R-tree so that just clicking on
           // the node has the same effect as dragging it a little bit.
@@ -221,7 +235,10 @@ public final class TestBasicPolyEdge
           m_tree.insert(objKey, m_floatBuff[0], m_floatBuff[1],
                         m_floatBuff[2], m_floatBuff[3]);
           break; } }
-      if (mustRender) { repaint(); } }
+      if (!anchorSelected) { // Start drawing the edge selection window.
+        m_initXMousePos = m_lastXMousePos;
+        m_initYMousePos = m_lastYMousePos; }
+      repaint(); }
     else if (e.getButton() == MouseEvent.BUTTON2) {
       m_currMouseButton = 2;
       m_lastXMousePos = e.getX(); // Ignore offset caused by insets.
@@ -235,12 +252,11 @@ public final class TestBasicPolyEdge
   public void mouseReleased(MouseEvent e)
   {
     if (e.getButton() == MouseEvent.BUTTON1 && m_currMouseButton == 1) {
-      boolean mustRender = false;
       for (int i = 0; i < m_ptStates.length; i++) {
         if (m_ptStates[i]) { // In our world at most one node is selected.
-          m_ptStates[i] = false; mustRender = true; break; } }
+          m_ptStates[i] = false; break; } }
       m_currMouseButton = 0;
-      if (mustRender) { repaint(); } }
+      repaint(); }
     else if (e.getButton() == MouseEvent.BUTTON2 &&
              m_currMouseButton == 2) {
       m_currMouseButton = 0; }
@@ -275,8 +291,9 @@ public final class TestBasicPolyEdge
                       (float) (deltaX + m_floatBuff[0]),
                       (float) (deltaY + m_floatBuff[1]),
                       (float) (deltaX + m_floatBuff[2]),
-                      (float) (deltaY + m_floatBuff[3]));
-        repaint(); } }
+                      (float) (deltaY + m_floatBuff[3])); }
+      else { } // We're dragging the edge selection window.
+      repaint(); }
     else if (m_currMouseButton == 2) {
       double deltaY = e.getY() - m_lastYMousePos;
       m_lastXMousePos = e.getX(); // Ignore offset caused by insets.
