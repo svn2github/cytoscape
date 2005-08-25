@@ -75,9 +75,11 @@ public class CyMenus  implements GraphViewChangeListener {
   JMenu layoutMenu;
   JMenu vizMenu;
   JMenu helpMenu;
+  JMenu cytoPanelMenu;
 
   CytoscapeAction menuPrintAction, menuExportAction;
   JMenuItem vizMenuItem,vizMapperItem;
+  JCheckBoxMenuItem cytoPanelWestItem, cytoPanelEastItem, cytoPanelSouthItem;
   JMenuItem helpContentsMenuItem, helpContextSensitiveMenuItem,
 		helpAboutMenuItem;
 
@@ -255,6 +257,43 @@ public class CyMenus  implements GraphViewChangeListener {
   }
 
   /**
+   * Returns the cytopanels menu.
+   */
+  public JMenu getCytoPanelMenu() {return cytoPanelMenu;}
+  /*
+   * Sets up the CytoPanelMenu items.
+   * This is put into its own public method so it
+   * can be called from CytoscapeInit.Init(), because
+   * we need the CytoscapeDesktop to be instantiated first.
+   */
+  public void initCytoPanelMenus() {
+	  // cytopanel west is selected (shown by default)
+	  cytoPanelWestItem = new JCheckBoxMenuItem(Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).getTitle());
+	  cytoPanelWestItem.addActionListener(new CytoPanelAction(cytoPanelWestItem,
+															  Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST)));
+	  cytoPanelWestItem.setSelected(true);
+	  //setAccelerator( javax.swing.KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_1, 0 ) );
+	  // cytopanel east is hidden and disabled by default
+	  cytoPanelEastItem = new JCheckBoxMenuItem(Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST).getTitle());
+	  cytoPanelEastItem.addActionListener(new CytoPanelAction(cytoPanelEastItem,
+															  Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST)));
+	  cytoPanelEastItem.setSelected(false);
+	  cytoPanelEastItem.setEnabled(false);
+	  //setAccelerator( javax.swing.KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_2, 0 ) );
+	  // cytopanel south is hidden and disabled by default
+	  cytoPanelSouthItem = new JCheckBoxMenuItem(Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH).getTitle());
+	  cytoPanelSouthItem.addActionListener(new CytoPanelAction(cytoPanelSouthItem,
+															  Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH)));
+	  cytoPanelSouthItem.setSelected(false);
+	  cytoPanelSouthItem.setEnabled(false);
+	  //setAccelerator( javax.swing.KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_3, 0 ) );
+	  // add cytopanel menu items to CytoPanels Menu
+	  menuBar.getMenu( "CytoPanels" ).add( cytoPanelWestItem );
+	  menuBar.getMenu( "CytoPanels" ).add( cytoPanelEastItem );
+	  menuBar.getMenu( "CytoPanels" ).add( cytoPanelSouthItem );
+  }
+
+  /**
    * Creates the menu bar and the various menus and submenus, but
    * defers filling those menus with items until later.
    */
@@ -368,9 +407,10 @@ public class CyMenus  implements GraphViewChangeListener {
                 if (inactive) ((JMenuItem) submenus[i]).setEnabled(false);
                 else ((JMenuItem) submenus[i]).setEnabled(true); } } }
         } });
-    vizMenu     = menuBar.getMenu( "Visualization" );
-    opsMenu     = menuBar.getMenu( "Plugins" );
-    helpMenu    = menuBar.getMenu( "Help" );
+    vizMenu       = menuBar.getMenu( "Visualization" );
+    opsMenu       = menuBar.getMenu( "Plugins" );
+    cytoPanelMenu = menuBar.getMenu( "CytoPanels" );
+    helpMenu      = menuBar.getMenu( "Help" );
   }
 
   /**
