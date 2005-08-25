@@ -31,6 +31,31 @@
     </javadoc>
   </target>
 
+  <target name="doc-dependency-recursive">
+    <echo>
+*********************** ATTENTION! ATTENTION! *********************
+**  For the dependency-recursize Javadoc to be generated you must
+**  have this project (rtree) reside together with project
+**  util.intr in the same directory.  If this is not the case,
+**  Javadoc will fail.
+*******************************************************************
+    </echo>
+    <javadoc destdir="${javadoc.dir}"
+             source="1.4">
+      <fileset dir="${src.dir}">
+        <include name="cytoscape/geom/rtree/*.java"/>
+      </fileset>
+      <fileset dir="${basedir}/../util.intr/src">
+        <include name="cytoscape/util/intr/IntEnumerator.java"/>
+      </fileset>
+      <classpath>
+        <fileset dir="${lib.dir}">
+          <include name="*.jar"/>
+        </fileset>
+      </classpath>
+    </javadoc>
+  </target>
+
   <!-- This does not do anything useful by itself; used by other targets. -->
   <target name="init">
     <uptodate property="buildfile-generated"
