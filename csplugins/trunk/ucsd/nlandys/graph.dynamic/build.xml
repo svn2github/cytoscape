@@ -32,6 +32,30 @@
     </javadoc>
   </target>
 
+  <target name="doc-dependency-recursive">
+    <echo>
+*********************** ATTENTION! ATTENTION! *********************
+**  For the dependency-recursize Javadoc to be generated you must
+**  have this project (graph.dynamic) reside together with projects
+**  graph.fixed and util.intr in the same directory.  If this is
+**  not the case, Javadoc will fail.
+*******************************************************************
+    </echo>
+    <javadoc destdir="${javadoc.dir}"
+             source="1.4">
+      <fileset dir="${src.dir}">
+        <include name="cytoscape/graph/dynamic/*.java"/>
+        <include name="cytoscape/graph/dynamic/util/*.java"/>
+      </fileset>
+      <fileset dir="${basedir}/../graph.fixed/src">
+        <include name="cytoscape/graph/fixed/*.java"/>
+      </fileset>
+      <fileset dir="${basedir}/../util.intr/src">
+        <include name="cytoscape/util/intr/*.java"/>
+      </fileset>
+    </javadoc>
+  </target>
+
   <!-- This does not do anything useful by itself; used by other targets. -->
   <target name="init">
     <uptodate property="buildfile-generated"
