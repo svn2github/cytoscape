@@ -3,6 +3,8 @@
  */
 package org.isb.xmlrpc.handler.synonyms;
 
+import java.lang.*;
+import java.util.*;
 import org.isb.xmlrpc.handler.DataSource;
 
 /**
@@ -10,6 +12,8 @@ import org.isb.xmlrpc.handler.DataSource;
  *
  */
 public class SynonymsHandler implements SynonymsDataSource {
+	private static final String dataSourceName = "Synonyms";
+	private static final Vector idTypes = new Vector("")
 	/**
 	 * @return a Vector of Strings that specify types of IDs that this SynonymsDataSource accepts
 	 * for example, "ORF","GI", etc.
@@ -43,7 +47,7 @@ public class SynonymsHandler implements SynonymsDataSource {
 	 * @return the name of the data source, for example, "KEGG", "Prolinks", etc.
 	 */
 	public String getDataSourceName () {
-		return null;
+		return dataSourceName;
 	}
 	
 	/**
@@ -76,7 +80,7 @@ public class SynonymsHandler implements SynonymsDataSource {
 	 * in order to access it
 	 */
 	public boolean requiresPassword () {
-		return null;
+		return false;
 	}
 	
 	/**
