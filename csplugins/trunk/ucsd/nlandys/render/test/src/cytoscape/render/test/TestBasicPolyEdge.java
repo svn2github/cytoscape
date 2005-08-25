@@ -177,12 +177,11 @@ public final class TestBasicPolyEdge
        null, 0, false);
     while (iter.numRemaining() > 0) {
       int inx = iter.nextExtents(m_floatBuff, 0);
-      grafx.drawNodeFull(GraphGraphics.SHAPE_ELLIPSE,
-                           m_floatBuff[0], m_floatBuff[1],
-                           m_floatBuff[2], m_floatBuff[3],
-                           m_ptStates[inx] ? m_selectedFillColor :
-                           m_fillColor,
-                           1.6f, m_borderColor);
+      grafx.drawNodeFull
+        (GraphGraphics.SHAPE_ELLIPSE,
+         m_floatBuff[0], m_floatBuff[1], m_floatBuff[2], m_floatBuff[3],
+         m_ptStates[inx] ? m_selectedFillColor : m_fillColor,
+         1.6f, m_borderColor);
       grafx.drawTextFull
         (m_font, 14, m_labels[inx],
          (float) ((((double) m_floatBuff[0]) + m_floatBuff[2]) / 2.0d),
