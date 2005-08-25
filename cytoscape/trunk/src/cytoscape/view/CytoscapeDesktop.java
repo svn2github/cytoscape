@@ -1,9 +1,6 @@
 package cytoscape.view;
 
-import cytoscape.Cytoscape;
-import cytoscape.CyNetwork;
-import cytoscape.CyNode;
-import cytoscape.CyEdge;
+import cytoscape.*;
 
 import cytoscape.view.CyMenus;
 import cytoscape.view.CyNetworkView;
@@ -28,6 +25,7 @@ import java.util.*;
 import java.util.List;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.*;
 import java.beans.*;
 
@@ -152,6 +150,9 @@ public class CytoscapeDesktop
   protected CytoPanelImp cytoPanelEast;
   protected CytoPanelImp cytoPanelSouth;
 
+  //  Status Bar
+  protected JLabel statusBar;
+
   //----------------------------------------//
   // Constructors
   //----------------------------------------//
@@ -252,7 +253,8 @@ public class CytoscapeDesktop
 		 VIEW_TYPE == INTERNAL_VIEW ) {
 		main_panel.add( masterPane, BorderLayout.CENTER );
 		main_panel.add(cyMenus.getToolBar(), BorderLayout.NORTH);
-		setJMenuBar(cyMenus.getMenuBar());
+        initStatusBar(main_panel);
+        setJMenuBar(cyMenus.getMenuBar());
 	}
 	// not sure if this is correct
 	else if ( VIEW_TYPE == EXTERNAL_VIEW ) {
@@ -336,6 +338,30 @@ public class CytoscapeDesktop
       setSize( 800, 700 );
     setVisible( true );
 
+  }
+
+  private void initStatusBar(JPanel main_panel) {
+      statusBar = new JLabel();
+      statusBar.setBorder(new EmptyBorder(0, 7, 5, 7));
+      statusBar.setForeground(new Color(75, 75, 75));
+      main_panel.add(statusBar, BorderLayout.SOUTH);
+      setStatusBarMsg ("Welcome to Cytoscape " + CytoscapeVersion.version);
+  }
+
+  /**
+  * Sets the Status Bar Message.
+  * @param msg Status Bar Message.
+  */
+  public void setStatusBarMsg (String msg) {
+      statusBar.setText(msg);
+  }
+
+  /**
+   * Clears the Status Bar Message.
+   */
+  public void clearStatusBar() {
+      //  By using mutiple white spaces, layout for the statusBar is preserved.
+      statusBar.setText("   ");
   }
 
   public NetworkPanel getNetworkPanel () {
