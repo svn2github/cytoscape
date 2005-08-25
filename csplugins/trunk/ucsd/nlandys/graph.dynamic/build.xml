@@ -48,11 +48,17 @@
         <include name="cytoscape/graph/dynamic/util/*.java"/>
       </fileset>
       <fileset dir="${basedir}/../graph.fixed/src">
-        <include name="cytoscape/graph/fixed/*.java"/>
+        <include name="cytoscape/graph/fixed/FixedGraph.java"/>
       </fileset>
       <fileset dir="${basedir}/../util.intr/src">
-        <include name="cytoscape/util/intr/*.java"/>
+        <include name="cytoscape/util/intr/IntEnumerator.java"/>
+        <include name="cytoscape/util/intr/IntIterator.java"/>
       </fileset>
+      <classpath>
+        <fileset dir="${lib.dir}">
+          <include name="*.jar"/>
+        </fileset>
+      </classpath>
     </javadoc>
   </target>
 
