@@ -162,8 +162,8 @@ public final class TryBezierCurveSelection
    * PathIterator.SEG_CLOSE is expected.  Only 32 bit floating point accuracy
    * is honored from origPath.
    */
-  private final static void foo(final PathIterator origPath,
-                                final GeneralPath returnPath)
+  final static void foo(final PathIterator origPath,
+                        final GeneralPath returnPath)
   {
     // First fill our buffers with the coordinates and segment types.
     int segs = 0;
