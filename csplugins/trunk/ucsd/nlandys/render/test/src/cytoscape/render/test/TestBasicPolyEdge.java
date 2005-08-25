@@ -124,6 +124,20 @@ public final class TestBasicPolyEdge
     g.drawImage(m_img, insets.left, insets.top, null);
   }
 
+  private static final class MyAnchors implements EdgeAnchors
+  {
+    private final float[] anchorsBuff;
+    private int num;
+    private MyAnchors(float[] anchorsBuff, int size) {
+      this.num = size;
+      this.anchorsBuff = anchorsBuff; }
+    public int numRemaining() { return num; }
+    public void nextAnchor(float[] anchorArr, int offset) {
+      anchorArr[offset] = anchorsBuff[num * 2 - 2];
+      anchorArr[offset + 1] = anchorsBuff[num * 2 - 1];
+      num--; }
+  }
+
   private void updateImage(GraphGraphics grafx)
   {
     grafx.clear(m_bgColor, m_currXCenter, m_currYCenter, m_currScale);
@@ -152,14 +166,7 @@ public final class TestBasicPolyEdge
     grafx.drawPolyEdgeFull
       (GraphGraphics.ARROW_DIAMOND, 15.0f, m_edgeArrowColor,
        GraphGraphics.ARROW_DELTA, 15.0f, m_edgeArrowColor,
-       x0, y0,
-       new EdgeAnchors() {
-         int num = m_tree.size() - 2;
-         public int numRemaining() { return num; }
-         public void nextAnchor(float[] anchorArr, int offset) {
-           anchorArr[offset] = m_anchorsBuff[num * 2 - 2];
-           anchorArr[offset + 1] = m_anchorsBuff[num * 2 - 1];
-           num--; } },
+       x0, y0, new MyAnchors(m_anchorsBuff, m_tree.size() - 2),
        x1, y1, 4.0f, m_edgeSegmentColor, 0.0f, GraphGraphics.CURVE_ELLIPTICAL);
 
     RTreeEntryEnumerator iter = m_tree.queryOverlap
