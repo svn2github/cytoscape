@@ -1315,7 +1315,7 @@ public final class GraphGraphics
    * @return true if and only if the specified edge would be drawn (which
    *   is if and only if any two points from the edge anchor set plus the
    *   beginning and end point are distinct); if false is returned, path is
-   *   not set.
+   *   not touched.
    */
   public final boolean getPolyEdgePath(final byte arrowType0,
                                        final float arrow0Size,
@@ -1364,7 +1364,32 @@ public final class GraphGraphics
         throw new IllegalArgumentException
           ("curveFactor should be either CURVE_ELLIPTICAL or CURVE_NATURAL"); }
 
-    return false;
+    if (!computeCubicPolyEdgePath
+        (arrowType0, arrowType0 == ARROW_NONE ? 0.0f : arrow0Size,
+         arrowType1, arrowType1 == ARROW_NONE ? 0.0f : arrow1Size,
+         x0, y0, anchors, x1, y1, curveFactor)) {
+      // After filtering duplicate start and end points, there are less then
+      // 3 total.
+      if (m_edgePtsCount == 2) {
+        path.reset();
+        path.moveTo((float) m_edgePtsBuff[0], (float) m_edgePtsBuff[1]);
+        path.lineTo((float) m_edgePtsBuff[2], (float) m_edgePtsBuff[3]);
+        return true; }
+      return false; }
+
+    path.reset();
+    path.moveTo((float) m_edgePtsBuff[0], (float) m_edgePtsBuff[1]);
+    path.lineTo((float) m_edgePtsBuff[2], (float) m_edgePtsBuff[3]);
+    int inx = 4;
+    final int count = (m_edgePtsCount - 1) * 6 - 2;
+    while (inx < count) {
+      path.curveTo
+        ((float) m_edgePtsBuff[inx++], (float) m_edgePtsBuff[inx++],
+         (float) m_edgePtsBuff[inx++], (float) m_edgePtsBuff[inx++],
+         (float) m_edgePtsBuff[inx++], (float) m_edgePtsBuff[inx++]); }
+    path.lineTo((float) m_edgePtsBuff[count],
+                (float) m_edgePtsBuff[count + 1]);
+    return true;
   }
 
   private final void edgeFullDebug(final boolean polyEdge,
