@@ -170,7 +170,6 @@ public final class TestBasicPolyEdge
     final float arrow0Size = 15.0f;
     final byte arrow1 = GraphGraphics.ARROW_DELTA;
     final float arrow1Size = 15.0f;
-    final double curveFactor = GraphGraphics.CURVE_ELLIPTICAL;
 
     boolean edgeSelected = false;
     if (m_currMouseButton == 1) {
@@ -181,7 +180,7 @@ public final class TestBasicPolyEdge
           grafx.getPolyEdgePath
           (arrow0, arrow0Size, arrow1, arrow1Size,
            x0, y0, new MyAnchors(m_anchorsBuff, m_tree.size() - 2),
-           x1, y1, curveFactor, m_path2d)) {
+           x1, y1, m_path2d)) {
         TryBezierCurveSelection.foo(m_path2d.getPathIterator(null), m_path2d);
         m_ptBuff[0] = m_initXMousePos;
         m_ptBuff[1] = m_initYMousePos;
@@ -204,7 +203,7 @@ public final class TestBasicPolyEdge
        x0, y0, new MyAnchors(m_anchorsBuff, m_tree.size() - 2),
        x1, y1, 4.0f,
        edgeSelected ? m_selectedEdgeSegmentColor : m_edgeSegmentColor,
-       0.0f, curveFactor);
+       0.0f);
 
     RTreeEntryEnumerator iter = m_tree.queryOverlap
       ((float) (m_currXCenter - ((double) (m_imgWidth / 2)) / m_currScale),
