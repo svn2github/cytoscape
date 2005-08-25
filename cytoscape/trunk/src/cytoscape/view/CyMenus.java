@@ -272,25 +272,28 @@ public class CyMenus  implements GraphViewChangeListener {
 	  cytoPanelWestItem.addActionListener(new CytoPanelAction(cytoPanelWestItem,
 															  Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST)));
 	  cytoPanelWestItem.setSelected(true);
-	  //setAccelerator( javax.swing.KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_1, 0 ) );
+	  cytoPanelWestItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_1,
+																		  java.awt.event.InputEvent.CTRL_MASK));
 	  // cytopanel east is hidden and disabled by default
 	  cytoPanelEastItem = new JCheckBoxMenuItem(Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST).getTitle());
 	  cytoPanelEastItem.addActionListener(new CytoPanelAction(cytoPanelEastItem,
 															  Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST)));
 	  cytoPanelEastItem.setSelected(false);
 	  cytoPanelEastItem.setEnabled(false);
-	  //setAccelerator( javax.swing.KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_2, 0 ) );
+	  cytoPanelEastItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_2,
+																		  java.awt.event.InputEvent.CTRL_MASK));
 	  // cytopanel south is hidden and disabled by default
 	  cytoPanelSouthItem = new JCheckBoxMenuItem(Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH).getTitle());
 	  cytoPanelSouthItem.addActionListener(new CytoPanelAction(cytoPanelSouthItem,
 															  Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH)));
 	  cytoPanelSouthItem.setSelected(false);
 	  cytoPanelSouthItem.setEnabled(false);
-	  //setAccelerator( javax.swing.KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_3, 0 ) );
+	  cytoPanelSouthItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_3,
+																		   java.awt.event.InputEvent.CTRL_MASK));
 	  // add cytopanel menu items to CytoPanels Menu
-	  menuBar.getMenu( "CytoPanels" ).add( cytoPanelWestItem );
-	  menuBar.getMenu( "CytoPanels" ).add( cytoPanelEastItem );
-	  menuBar.getMenu( "CytoPanels" ).add( cytoPanelSouthItem );
+	  menuBar.getMenu("CytoPanels").add(cytoPanelWestItem);
+	  menuBar.getMenu("CytoPanels").add(cytoPanelEastItem);
+	  menuBar.getMenu("CytoPanels").add(cytoPanelSouthItem);
   }
 
   /**
