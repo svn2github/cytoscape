@@ -148,7 +148,7 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
     /**
      * Location of our icons.
      */
-    private static final String RESOURCE_DIR = "images";
+    private static final String RESOURCE_DIR = "/cytoscape/images/";
 
     /**
      * The float icon gif filename.
@@ -529,12 +529,12 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
      */
     private void initIcons() {
 		// icon strings
-        String floatIconStr = new String (RESOURCE_DIR + FILE_SEPARATOR + FLOAT_GIF);
-        String dockIconStr = new String (RESOURCE_DIR + FILE_SEPARATOR + DOCK_GIF);
+        String floatIconStr = new String (RESOURCE_DIR + FLOAT_GIF);
+        String dockIconStr = new String (RESOURCE_DIR + DOCK_GIF);
 
 		// create our icon objects
-        floatIcon = new ImageIcon(floatIconStr);
-        dockIcon = new ImageIcon(dockIconStr);
+        floatIcon = new ImageIcon(getClass().getResource(floatIconStr));
+        dockIcon = new ImageIcon(getClass().getResource(dockIconStr));
     }
 
 	/**
