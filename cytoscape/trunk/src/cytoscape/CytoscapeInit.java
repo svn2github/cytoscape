@@ -162,6 +162,13 @@ public class CytoscapeInit
       ImageIcon image = new ImageIcon( getClass().getResource("/cytoscape/images/CytoscapeSplashScreen.png") );
       WindowUtilities.showSplash( image, 8000 );
       Cytoscape.getDesktop();
+	  // setup CytoPanels menu -
+	  // this cannot be done in CytoscapeDesktop construction (like the other menus)
+	  // because we need CytoscapeDesktop created first.  this is so because CytoPanel
+	  // menu item listeners need to register for CytoPanel events via a CytoPanel reference, 
+	  // and the only way to get a CytoPanel reference is via CytoscapeDeskop:
+	  // Cytoscape.getDesktop().getCytoPanel(...)
+	  Cytoscape.getDesktop().getCyMenus().initCytoPanelMenus();
     }
 
     //now that we are properly set up,

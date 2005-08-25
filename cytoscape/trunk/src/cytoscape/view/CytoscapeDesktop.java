@@ -9,6 +9,10 @@ import cytoscape.view.CyMenus;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CyNodeView;
 import cytoscape.view.CyEdgeView;
+import cytoscape.view.cytopanel.CytoPanel;
+import cytoscape.view.cytopanel.CytoPanelImp;
+import cytoscape.view.cytopanel.CytoPanelState;
+import cytoscape.view.cytopanel.BiModalJSplitPane;
 import cytoscape.plugin.*;
 import cytoscape.visual.*;
 import cytoscape.visual.ui.*;
@@ -142,6 +146,11 @@ public class CytoscapeDesktop
   protected String currentNetworkID;
   protected String currentNetworkViewID;
 
+  //--------------------//
+  // CytoPanel Variables
+  protected CytoPanelImp cytoPanelWest;
+  protected CytoPanelImp cytoPanelEast;
+  protected CytoPanelImp cytoPanelSouth;
 
   //----------------------------------------//
   // Constructors
@@ -237,6 +246,24 @@ public class CytoscapeDesktop
     cyMenus.initializeHelp(cyHelpBroker.getHelpBroker());
 
     // create the CytoscapeDesktop
+	BiModalJSplitPane masterPane = setupCytoPanels(networkPanel, networkViewManager);
+	// note - proper networkViewManager has been properly selected in setupCytoPanels()
+	if ( VIEW_TYPE == TABBED_VIEW ||
+		 VIEW_TYPE == INTERNAL_VIEW ) {
+		main_panel.add( masterPane, BorderLayout.CENTER );
+		main_panel.add(cyMenus.getToolBar(), BorderLayout.NORTH);
+		setJMenuBar(cyMenus.getMenuBar());
+	}
+	// not sure if this is correct
+	else if ( VIEW_TYPE == EXTERNAL_VIEW ) {
+		main_panel.add( masterPane );
+		cyMenus.getToolBar().setOrientation( JToolBar.VERTICAL );
+		main_panel.add(cyMenus.getToolBar(), BorderLayout.EAST);
+		setJMenuBar(cyMenus.getMenuBar());
+	}
+
+	/* leave following code commented out for now - until CytoPanels integration is correct */
+	/*
     if ( VIEW_TYPE == TABBED_VIEW ) {
       // eveything gets put into this one window
       //JScrollPane scroll_panel = new JScrollPane( networkPanel );
@@ -249,9 +276,9 @@ public class CytoscapeDesktop
                                          scroll_tab );
       split.setOneTouchExpandable( true );
     //   JSplitPane split = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT,
-//                                          false,
-//                                          networkPanel,
-//                                          networkViewManager.getTabbedPane() );
+    //                                          false,
+    //                                          networkPanel,
+    //                                          networkViewManager.getTabbedPane() );
       main_panel.add( split, BorderLayout.CENTER );
       main_panel.add(cyMenus.getToolBar(), BorderLayout.NORTH);
       setJMenuBar(cyMenus.getMenuBar());
@@ -285,6 +312,7 @@ public class CytoscapeDesktop
         //}
       
     }
+	*/
 
     //------------------------------//
     // Set up the VizMapper
@@ -688,8 +716,148 @@ public class CytoscapeDesktop
    
   }
   
- 
+  //---------------------------------------------------------------------------//
+  // Cytopanels - Public and Protected methods
 
+  /**
+   * Gets a cytoPanel given a Compass direction.
+   *
+   * @param int Compass Direction (SwingConstants.{SOUTH,EAST,WEST}).
+   * @return CytoPanel The CytoPanel that lives in the region specified by compass direction.
+   */
+  public CytoPanel getCytoPanel(int compassDirection){
+	  
+	  // return appropriate cytoPanel based on compass direction
+	  switch (compassDirection){
+	  case SwingConstants.SOUTH:
+		  return (CytoPanel)cytoPanelSouth;
+	  case SwingConstants.EAST:
+		  return (CytoPanel)cytoPanelEast;
+	  case SwingConstants.WEST:
+		  return (CytoPanel)cytoPanelWest;
+	  }
 
+	  // houston we have a problem
+	  throw new IllegalArgumentException("Illegal Argument:  "
+										 + compassDirection +
+										 ".  Must be one of:  SwingConstants.{SOUTH,EAST,WEST}.");
+  }
+  
+  /**
+   * Create the CytoPanels UI.
+   * @param NetworkViewManager to load on left side (CytoPanel West).
+   * @param NetworkPanel to load on right side.
+   * @return BiModalJSplitPane Object.
+   */
+  protected BiModalJSplitPane setupCytoPanels (NetworkPanel networkPanel,
+											   NetworkViewManager networkViewManager){
+
+	  // bimodals that our Cytopanels Live within
+	  BiModalJSplitPane topLeftPane = createTopLeftPane(networkPanel, networkViewManager);
+	  BiModalJSplitPane topPane = createTopPane(topLeftPane);
+	  BiModalJSplitPane masterPane = createMasterPane(topPane);
+
+	  return masterPane;
+  } 
+
+  /**
+   * Creates the TopLeft Pane.
+   * @param frame Application Frame.
+   * @param NetworkViewManager to load on left side (CytoPanel West).
+   * @param NetworkPanel to load on right side.
+   * @return BiModalJSplitPane Object.
+   */
+  protected BiModalJSplitPane createTopLeftPane(NetworkPanel networkPanel,
+												NetworkViewManager networkViewManager){
+
+	  //  create cytopanel with tabs along the left side
+	  cytoPanelWest = new CytoPanelImp(SwingConstants.WEST,
+									   JTabbedPane.TOP,
+									   CytoPanelState.DOCK);
+
+	  // add the network panel to our tab
+	  String tab1Name = new String("Network");
+	  cytoPanelWest.add(tab1Name, networkPanel);
+
+	  //  determine proper network view manager component
+	  Component networkViewComp = null;
+	  if (VIEW_TYPE == TABBED_VIEW){
+		  networkViewComp = (Component)networkViewManager.getTabbedPane();
+	  }
+	  else if (VIEW_TYPE == INTERNAL_VIEW){
+		  networkViewComp = (Component)networkViewManager.getDesktopPane();
+	  }
+	  else if (VIEW_TYPE == EXTERNAL_VIEW){
+		  // do nothing
+	  }
+
+	  //  create the split pane - we show this on startup
+	  BiModalJSplitPane splitPane = new BiModalJSplitPane(this,
+														  JSplitPane.HORIZONTAL_SPLIT,
+														  BiModalJSplitPane.MODE_SHOW_SPLIT,
+														  cytoPanelWest,
+														  networkViewComp);
+
+	  // set the cytopanelcontainer
+	  cytoPanelWest.setCytoPanelContainer(splitPane);
+
+	  // outta here
+	  return splitPane;
+  }
+
+  /**
+   * Creates the Top Panel.
+   * @param topLeftPane TopLeftPane Object.
+   * @return BiModalJSplitPane Object
+   */
+  protected BiModalJSplitPane createTopPane(BiModalJSplitPane topLeftPane){
+
+	  //  create cytopanel with tabs along the top
+	  cytoPanelEast = new CytoPanelImp(SwingConstants.EAST,
+									   JTabbedPane.TOP,
+									   CytoPanelState.HIDE);
+
+	  //  create the split pane - hidden by default
+	  BiModalJSplitPane splitPane = new BiModalJSplitPane(this,
+														  JSplitPane.HORIZONTAL_SPLIT,
+														  BiModalJSplitPane.MODE_HIDE_SPLIT,
+														  topLeftPane,
+														  cytoPanelEast);
+
+	  // set the cytopanel container
+	  cytoPanelEast.setCytoPanelContainer(splitPane);
+
+	  // outta here
+	  return splitPane;
+  }
+
+  /**
+   * Creates the Master Split Pane.
+   * @param topSplitPane BiModalJSplitPane Object.
+   * @return BiModalJSplitPane Object.
+   */
+  protected BiModalJSplitPane createMasterPane(BiModalJSplitPane topSplitPane){
+
+	  //  create cytopanel with tabs along the bottom
+	  cytoPanelSouth = new CytoPanelImp(SwingConstants.SOUTH,
+									   JTabbedPane.BOTTOM,
+									   CytoPanelState.HIDE);
+
+	  //  create the split pane - hidden by default
+	  BiModalJSplitPane splitPane = new BiModalJSplitPane(this,
+														  JSplitPane.VERTICAL_SPLIT,
+														  BiModalJSplitPane.MODE_HIDE_SPLIT,
+														  topSplitPane,
+														  cytoPanelSouth);
+
+	  // set the cytopanel container
+	  cytoPanelSouth.setCytoPanelContainer(splitPane);
+
+	  // outta here
+	  return splitPane;
+  }
+
+  // End Cytopanels - Public and Protected methods
+  //---------------------------------------------------------------------------// 
 
 }
