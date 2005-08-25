@@ -31,15 +31,12 @@ import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
-import javax.swing.JComponent;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-
-import java.net.URL;
 import java.util.ArrayList;
 
 /**
@@ -190,7 +187,7 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 	 *
      * @param compassDirection  Compass direction of this CytoPanel.
      * @param tabPlacement      Tab placement of this CytoPanel.
-     * @param CytoPanelState    The starting CytoPanel state.
+     * @param cytoPanelState    The starting CytoPanel state.
      */
     public CytoPanelImp(int compassDirection, int tabPlacement, CytoPanelState cytoPanelState){
 
@@ -238,7 +235,7 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 	/**
 	 * Returns the proper title based on our compass direction.
 	 *
-	 * @returns A title string
+	 * @return A title string
 	 */
 	public String getTitle(){
 		switch (compassDirection){
@@ -441,9 +438,22 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 	}
 
     /**
+     * Sets the selected index on the CytoPanel.
+     *
+     * @param index The desired index.
+     */
+    public void setSelectedIndex(int index){
+
+		// set selected index
+		tabbedPane.setSelectedIndex(index);
+		
+		// do not have to sent out notification - the tabbedPane will let us know.
+	}
+
+    /**
      * Sets the state of the CytoPanel.
      *
-     * @param A CytoPanelState.
+     * @param cytoPanelState A CytoPanelState.
      */
     public void setState(CytoPanelState cytoPanelState){
 		boolean success = false;
