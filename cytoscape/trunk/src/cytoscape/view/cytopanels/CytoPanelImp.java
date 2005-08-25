@@ -42,10 +42,6 @@ import javax.swing.event.ChangeListener;
 import java.net.URL;
 import java.util.ArrayList;
 
-import cytoscape.view.cytopanels.CytoPanelUtil;
-import cytoscape.view.cytopanels.CytoPanelImp;
-import cytoscape.view.cytopanels.CytoPanelState;
-
 /**
  * The CytoPanel class extends JPanel to provide the following functionality:
  * <UL>

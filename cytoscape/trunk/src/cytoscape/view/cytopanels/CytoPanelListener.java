@@ -7,7 +7,6 @@ package cytoscape.view.cytopanels;
 
 // imports
 import java.util.EventListener;
-import cytoscape.view.cytopanels.CytoPanelState;
 
 /**
  * This listener interface provides the

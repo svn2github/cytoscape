@@ -8,7 +8,6 @@ package cytoscape.view.cytopanels;
 // imports
 import java.awt.*;
 import javax.swing.Icon;
-import cytoscape.view.cytopanels.CytoPanelListener;
 
 /**
  * Interface to a CytoPanel.
