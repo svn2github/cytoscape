@@ -6,10 +6,13 @@
 package cytoscape.view.cytopanels;
 
 // imports
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentAdapter;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.Component;
+import java.awt.Container;
+import javax.swing.JFrame; 
+import javax.swing.SwingConstants;
+import javax.swing.JSplitPane;
 
 /**
  * The BiModalJSplitPane class extends JSplitPane to provide two modes:

@@ -6,7 +6,8 @@
 package cytoscape.view.cytopanels;
 
 // imports
-import java.awt.*;
+import java.awt.Point;
+import java.awt.Rectangle;
 
 /**
  * Interface for Container of CytoPanel Objects.

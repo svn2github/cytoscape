@@ -6,8 +6,10 @@
 package cytoscape.view.cytopanels;
 
 // imports
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Point;
+import java.awt.Dimension;
+import java.awt.Rectangle;
+import javax.swing.SwingConstants;
 
 public class CytoPanelUtil {
 
