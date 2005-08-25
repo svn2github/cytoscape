@@ -21,7 +21,7 @@ CVS project.
            includes="csplugins/layout/SouravPlugin.java"
            classpathref="sourav.plugin.classpath"
            destdir="${basedir}/build/classes"
-           debug="true"
+           debug="on"
            includeAntRuntime="no"/>
     <jar filesonly="true"
          destfile="${basedir}/build/sourav-plugin.jar">

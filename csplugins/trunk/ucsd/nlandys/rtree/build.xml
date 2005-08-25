@@ -71,7 +71,7 @@
     <mkdir dir="${classes.dir}/buildgen"/>
     <javac destdir="${classes.dir}/buildgen"
            srcdir="${temp.src.dir}/buildgen"
-           debug="true"
+           debug="on"
            includeAntRuntime="no"/>
     <delete file="${build.dir}/build.xml"/>
     <java fork="true" classname="GenerateBuildFile" failonerror="true"
