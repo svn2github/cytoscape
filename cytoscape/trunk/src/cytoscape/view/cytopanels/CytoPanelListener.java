@@ -19,7 +19,7 @@ public interface CytoPanelListener extends EventListener {
     /**
      * Notifies the listener on a change in the CytoPanel state.
      *
-     * @param CytoPanelState The new CytoPanel state - see CytoPanelState class.
+     * @param newState The new CytoPanel state - see CytoPanelState class.
      */
     public void onStateChange(CytoPanelState newState);
 
