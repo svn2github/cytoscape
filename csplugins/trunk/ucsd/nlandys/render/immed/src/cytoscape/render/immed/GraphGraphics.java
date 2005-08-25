@@ -1570,7 +1570,7 @@ public final class GraphGraphics
    * ARROW_BIDIRECTIONAL or ARROW_MONO allowed).
    */
   private final Shape computeUntransformedArrowCap(final byte arrowType,
-                                                         final double ratio)
+                                                   final double ratio)
   {
     switch (arrowType) {
     case ARROW_NONE:
@@ -1599,6 +1599,29 @@ public final class GraphGraphics
       return m_path2d;
     default: // ARROW_TEE.
       return null; }
+  }
+
+  /*
+   *   ---|
+   *    \ |
+   *     \|
+   *     /|
+   *    / |
+   *   ---|
+   *
+   * The same transform that was used to draw the delta arrowhead can be used
+   * modulo scaling to edge thickness.
+   */
+  private final Shape computeUntransformedDeltaWedgeCap()
+  {
+    m_path2d.reset();
+    m_path2d.moveTo(-2.0f, -0.5f);
+    m_path2d.lineTo(0.0f, -0.5f);
+    m_path2d.lineTo(0.0f, 0.5f);
+    m_path2d.lineTo(-2.0f, 0.5f);
+    m_path2d.lineTo(0.0f, 0.0f);
+    m_path2d.closePath();
+    return m_path2d;
   }
 
   /*
