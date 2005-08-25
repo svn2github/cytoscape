@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------------
 
 // our package
-package cytoscape.view.cytopanel;
+package cytoscape.view.cytopanels;
 
 /**
  *  CytoPanelState Class.  The following States are supported:
