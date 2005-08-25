@@ -1326,7 +1326,8 @@ public final class GraphGraphics
    * points which specify the arrow locations.  Note that this path therefore
    * disregards edge thickness and arrow outline.
    * @param anchors specifies the edge anchors.
-   * @param path the computed path is returned in this parameter.
+   * @param path the computed path is returned in this parameter; note that
+   *   the computed path is not closed.
    * @return true if and only if the specified edge would be drawn (which
    *   is if and only if any two points from the edge anchor set plus the
    *   beginning and end point are distinct); if false is returned, path is
