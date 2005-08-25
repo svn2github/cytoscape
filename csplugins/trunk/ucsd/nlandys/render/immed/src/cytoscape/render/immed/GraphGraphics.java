@@ -1305,6 +1305,21 @@ public final class GraphGraphics
   }
 
   /**
+   * This is a ridiculously simple method that only exists for
+   * consistency.
+   */
+  public final boolean getEdgePath(final float x0, final float y0,
+                                   final float x1, final float y1,
+                                   final GeneralPath path)
+  {
+    if (x0 == x1 && y0 == y1) { return false; }
+    path.reset();
+    path.moveTo(x0, y0);
+    path.lineTo(x1, y1);
+    return true;
+  }
+
+  /**
    * Computes the path that an edge takes; this method is useful if a user
    * interface would allow user selection of edges, for example.  The returned
    * path is the path along the center of the edge segment, extending to the
