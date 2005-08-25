@@ -21,6 +21,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.geom.GeneralPath;
 
 import org.freehep.graphicsio.pdf.PDFGraphics2D;
 
@@ -56,10 +57,12 @@ public final class TestBasicPolyEdge
   private final Color m_borderColor = new Color(0, 0, 0, 63);
   private final Color m_textColor = Color.white;
   private final Color m_edgeSegmentColor = new Color(127, 127, 127, 127);
+  private final Color m_selectedEdgeSegmentColor = new Color(127, 0, 0, 127);
   private final Color m_edgeArrowColor = new Color(0, 127, 0, 127);
   private final Color m_edgeSelectionWindowColor = new Color(0, 0, 255, 63);
   private final double[] m_ptBuff = new double[2];
   private final float[] m_floatBuff = new float[4];
+  private final GeneralPath m_path2d = new GeneralPath();
   private final RTree m_tree;
   private final Image m_img;
   private final GraphGraphics m_grafx;
@@ -163,11 +166,45 @@ public final class TestBasicPolyEdge
       m_anchorsBuff[offset++] = (float)
         ((((double) m_floatBuff[1]) + m_floatBuff[3]) / 2.0d); }
 
+    final byte arrow0 = GraphGraphics.ARROW_DIAMOND;
+    final float arrow0Size = 15.0f;
+    final byte arrow1 = GraphGraphics.ARROW_DELTA;
+    final float arrow1Size = 15.0f;
+    final double curveFactor = GraphGraphics.CURVE_ELLIPTICAL;
+
+    boolean edgeSelected = false;
+    if (m_currMouseButton == 1) {
+      boolean anchorSelected = false;
+      for (int i = 0; i < m_ptStates.length; i++) {
+        if (m_ptStates[i]) { anchorSelected = true; break; } }
+      if ((!anchorSelected) &&
+          grafx.getPolyEdgePath
+          (arrow0, arrow0Size, arrow1, arrow1Size,
+           x0, y0, new MyAnchors(m_anchorsBuff, m_tree.size() - 2),
+           x1, y1, curveFactor, m_path2d)) {
+        TryBezierCurveSelection.foo(m_path2d.getPathIterator(null), m_path2d);
+        m_ptBuff[0] = m_initXMousePos;
+        m_ptBuff[1] = m_initYMousePos;
+        grafx.xformImageToNodeCoords(m_ptBuff);
+        double initX = m_ptBuff[0];
+        double initY = m_ptBuff[1];
+        m_ptBuff[0] = m_lastXMousePos;
+        m_ptBuff[1] = m_lastYMousePos;
+        grafx.xformImageToNodeCoords(m_ptBuff);
+        double lastX = m_ptBuff[0];
+        double lastY = m_ptBuff[1];
+        if (m_path2d.intersects
+            (Math.min(initX, lastX), Math.min(initY, lastY),
+             Math.abs(initX - lastX) + 1.0d, Math.abs(initY - lastY) + 1.0d)) {
+          edgeSelected = true; } } }
+
     grafx.drawPolyEdgeFull
-      (GraphGraphics.ARROW_DIAMOND, 15.0f, m_edgeArrowColor,
-       GraphGraphics.ARROW_DELTA, 15.0f, m_edgeArrowColor,
+      (arrow0, arrow0Size, m_edgeArrowColor,
+       arrow1, arrow1Size, m_edgeArrowColor,
        x0, y0, new MyAnchors(m_anchorsBuff, m_tree.size() - 2),
-       x1, y1, 4.0f, m_edgeSegmentColor, 0.0f, GraphGraphics.CURVE_ELLIPTICAL);
+       x1, y1, 4.0f,
+       edgeSelected ? m_selectedEdgeSegmentColor : m_edgeSegmentColor,
+       0.0f, curveFactor);
 
     RTreeEntryEnumerator iter = m_tree.queryOverlap
       ((float) (m_currXCenter - ((double) (m_imgWidth / 2)) / m_currScale),
