@@ -7,7 +7,7 @@ import org.isb.xmlrpc.util.*;
 
 /**
  * Class <code>MyDataClient</code>, wraps an XmlRpcClient which makes
- * requests to the server throught the execute method
+ * requests to the server through the execute method
  * 
  * @author <a href="mailto:iavila@systemsbiology.org">Iliana Avila-Campillo</a>
  * @author <a href="mailto:dreiss@systemsbiology.org">David Reiss</a>
@@ -19,7 +19,13 @@ public abstract class MyDataClient {
 	 * The name of the service that this client uses
 	 */
 	public String serviceName = "unknown";
+    /**
+     * Arguments to the method to be called
+     */
 	protected Vector args = new Vector();
+    /**
+     * The actual client that sends requests to the server
+     */
 	protected XmlRpcClient client;
 
 	/**
@@ -51,7 +57,7 @@ public abstract class MyDataClient {
 
 		Object out = null;
 		
-		System.out.println("MyDataClient.execute(" + method + ", params = " + params + ")");
+		//System.out.println("MyDataClient.execute(" + method + ", params = " + params + ")");
 		
 		if (nCallsPerBatch > 0)
 			out = doMultiCall(method, params);
@@ -145,11 +151,9 @@ public abstract class MyDataClient {
 
 	public synchronized Object call(String method, Object arg0, Object arg1)
 			throws XmlRpcException, IOException {
-		System.out.println("----- MyDataClient.call(" + method + ", " + arg0 + ", " + arg1 + ")");
 		args.clear();
 		args.add(arg0);
 		args.add(arg1);
-		System.out.println("----- Calling execute with args = " + args);
 		return execute(method, args);
 	}
 

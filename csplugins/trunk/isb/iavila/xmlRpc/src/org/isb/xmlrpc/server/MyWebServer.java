@@ -15,8 +15,10 @@ import utils.*;
  * handler), users (username to password), and user levels (username to
  * Integers).
  * <p>
- * It contains a <code>org.apache.xmlrpc.WebServer</code> that knows what
- * service goes to what handler.
+ * It contains a <code>org.apache.xmlrpc.WebServer</code> that knows what handler
+ * handles what service.
+ * <p>
+ * The WebService uses http to send XML requests and to receive XML answers.
  * 
  * @author <a href="mailto:iavila@systemsbiology.org">Iliana Avila-Campillo</a>
  * @author <a href="mailto:dreiss@systemsbiology.org">David Reiss</a>
@@ -24,22 +26,24 @@ import utils.*;
 
 public class MyWebServer {
 
+    /**
+     * MyWebServer is a service itself
+     */
 	public static final String SERVICE_NAME = "server";
 
 	/**
 	 * The name of the file that contais information about services and their
 	 * handlers the format of this file is as follows:<br>
 	 * 
-	 * handler.<service name> = <handler fully described class><br>
-	 * handler.<service name>.<handler argument> = <argument><br>
+	 * handler.<service name> = <handler's fully described class><br>
+	 * handler.<service name>.<handler argument name> = <argument><br>
 	 * For example:<br>
 	 * handler.interactions = org.isb.xmlrpc.handlers.InteractionHandler<br>
 	 * handler.interactions.url=jdbc:mysql:mysql://biounder.kaist.ac.kr<br>
 	 */
 	public static final String DEFAULT_PROPS_FILE = "xmlrpc.props";
-
 	protected WebServer webserver;
-
+ 
 	protected Hashtable services, users, levels;
 
 	/**
@@ -123,7 +127,7 @@ public class MyWebServer {
 	 * <p>
 	 * 
 	 * handler.<service name> = <handler fully described class><br>
-	 * handler.<service name>.<handler argument> = <argument><br>
+	 * handler.<service name>.<handler argument name> = <argument><br>
 	 * For example:<br>
 	 * handler.interactions = org.isb.xmlrpc.handlers.InteractionHandler<br>
 	 * handler.interactions.url=jdbc:mysql:mysql://biounder.kaist.ac.kr<br>
@@ -133,7 +137,7 @@ public class MyWebServer {
 	 */
 	protected void addHandlersFromProps(String xmlrpc_props) throws IOException {
 
-		System.out.println("Adding service handlers from file " + xmlrpc_props);
+		System.out.println("Adding service handlers from file " + xmlrpc_props + "...");
 
 		Properties props = MyUtils.readProperties(xmlrpc_props);
 
@@ -296,6 +300,10 @@ public class MyWebServer {
 		return out;
 	}
 
+    /**
+     * @param service the service name
+     * @return true if the service was added through this MyWebServer
+     */
 	public boolean hasService(String service) {
 		return services.get(service) != null;
 	}
@@ -400,7 +408,6 @@ public class MyWebServer {
 	 * responses.
 	 */
 	public boolean addMultiCallService() throws Exception {
-		boolean out = false;
 		Object obj = services.get(SERVICE_NAME);
 		if (obj == null) {
 			SystemHandler system = new SystemHandler();
@@ -458,7 +465,7 @@ public boolean addService(String service, String className,
 		Object obj = services.get(service);
 		if (obj == null) {
 			String className = handler.getClass().getName();
-			System.out.println("Registering a " + className
+			System.out.print("Registering a " + className
 					+ " as a handler (service \"" + service + "\")...");
 			if (users == null) {
 				webserver.addHandler(service, handler);
@@ -476,7 +483,7 @@ public boolean addService(String service, String className,
 				services.put(service, ai);
 			}
 
-			System.out.println("...success!");
+			System.out.println("success!");
 			return true;
 		}
 		return false;

@@ -1,6 +1,5 @@
 package org.isb.xmlrpc.server;
 
-import java.io.IOException;
 import java.util.*;
 import org.apache.xmlrpc.*;
 
@@ -8,6 +7,7 @@ import org.apache.xmlrpc.*;
  * An Invoker introspects (learns about the properties, events, and methods)
  * handlers using Java Reflection to call methods matching a XML-RPC call.<br>
  * This one also contains information about users and their access level to DBs
+ * @see org.isb.xmlrpc.client.AuthenticatedDataClient
  */
 
 public class AuthenticatedInvoker extends Invoker {

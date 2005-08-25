@@ -4,11 +4,12 @@ import java.util.Properties;
 import java.util.Vector;
 
 import org.isb.xmlrpc.util.*;
+import org.isb.xmlrpc.server.*;
 import utils.*;
-import org.apache.xmlrpc.XmlRpc;
+
 
 /**
- * Class <code>DataClientFactory</code>
+ * Class <code>DataClientFactory</code>, to use, first start MyWebServer.
  * 
  * @author <a href="mailto:dreiss@systemsbiology.org">David Reiss</a>
  * @author <a href="mailto:iavila@systemsbiology.org">Iliana Avila-Campillo</a>
@@ -16,9 +17,14 @@ import org.apache.xmlrpc.XmlRpc;
  */
 
 // TODO:
-// -getClient method needs to be less table dependant
+// - check to see if MyWebServer is running, if so, then create clients, if not, give a warning?
+
 public class DataClientFactory {
 
+          // TODO: Have a single file called "xmlservices.props" that contains:
+          // service.client = class
+          //  service.handler = class
+          // etc.
 	/**
 	 * The default name of the file containing the client information:<br>
 	 * host=<server url><br>
@@ -27,7 +33,7 @@ public class DataClientFactory {
 	 * service><br>
 	 * If a host is not specified, then a host running locally is assumed.
 	 */
-	public static final String DEFAULT_CLIENT_PROPS = "client.props";
+	public static final String DEFAULT_CLIENT_PROPS = "xmlrpc.props";
 
 	public static String DEFAULT_HOST, STATIC_HOST;
 
@@ -38,7 +44,6 @@ public class DataClientFactory {
 	public static Properties PROPERTIES;
 
 	static {
-		//XmlRpc.setDebug(true);
 		String propertiesFilePath = XmlRpcUtils
 				.FindPropsFile(DEFAULT_CLIENT_PROPS);
 		PROPERTIES = MyUtils.readProperties(propertiesFilePath);
@@ -48,20 +53,29 @@ public class DataClientFactory {
 		}
 		
 		if(DEFAULT_HOST == null){
-			System.out.println("Setting DEFAULT_HOST to \"local\"");
 			DEFAULT_HOST = "local";
 		}
 		
 		STATIC_HOST = DEFAULT_HOST;
 	}
+    
+    /**
+     * Sets the URL of the host
+     * 
+     * @param host
+     */
+    public static void setHost (String host){
+        STATIC_HOST = host;
+    }
 
 	/**
-	 * @return the MyDataClient for the given service
+	 * @return the MyDataClient for the given service, the class of the given service is obtained from PROPERTIES
+     * returns null if the web-server is not running
 	 */
 	public static MyDataClient getClient (String service) throws Exception {
-
+	   
 		if (USERNAME == null) {
-			String password = "true";
+			String password;
 			if(PROPERTIES != null){
 				password = (String) PROPERTIES.get("password");
 			}else{
@@ -69,15 +83,31 @@ public class DataClientFactory {
 				password = "false";
 			}
 			
-			if ("true".equals(password))
+			if ("true".equals(password)){
 				askForUserNamePassword();
-			else
+            }else{
 				USERNAME = PASSWORD = "";
+            }
 		}
+        
+        if(PROPERTIES != null){
+            String className = PROPERTIES.getProperty("client." + service);
+            if (className == null || className.length() <= 0)
+                throw new IllegalArgumentException(
+                        "DataClientFactory could not find class for service "
+                        + service);
+            return getClient (service, className);
+        }
+        return null;
+    }
+    
 
-		return getClient (service, PROPERTIES);
-	}
-
+    /**
+     * For all AuthenticatedDataClients, it sets their username and password.
+     * 
+     * @param user
+     * @param pass
+     */
 	public static void setUserNamePassword (String user, String pass) {
 
 		USERNAME = user;
@@ -94,57 +124,32 @@ public class DataClientFactory {
 		}
 	}
 
+    /**
+     * 
+     *
+     */
 	public static void askForUserNamePassword() {
 		SetUsernamePassword sunp = new SetUsernamePassword(null);
 		sunp.setUsernameAndPassword(null);
 	}
 
-	// Iliana comments: this method contains a bunch of Strings that should be
-	// user params
-
+	
 	/**
-	 * @param props
-	 *            contains client.props settings
+	 * @param service the name of the service
+     * @param className the fully described class of the client class
 	 * @return a MyDataClient for the given service
-	 * 
-	 * client.props file sample for this method:<br>
-	 * 
-	 * host = http://localhost:8081 #host = local # This is for a local
-	 * hsqldb-based server<br>
-	 * client.favoriteHomolog = org.isb.xmlrpc.client.FavoriteHomologClient<br>
-	 * client.sequence = org.isb.xmlrpc.client.SequenceClient<br>
-	 * client.synonym = org.isb.xmlrpc.client.SynonymClient<br>
-	 * client.interaction = org.isb.xmlrpc.client.InteractionClient<br>
-	 * client.homolog = org.isb.xmlrpc.client.HomologClient<br>
-	 * client.blast = org.isb.xmlrpc.client.BlastClient<br> # You only need
-	 * these props if you're running the servers locally (within a cytoscape
-	 * instance):<br>
-	 * #client.blast.pathToExe=/local/dreiss/packages/biostuff/blast-2.2.6/blastall<br>
-	 * #client.blast.dataDir=/data/seqdb/blastformat/<br>
-	 * #client.blast.useSGDBlast=false<br>
-	 * 
-	 * Then call, e.g.: InteractionClient interactionFetcher =<br>
-	 * (InteractionClient)DataClientFactory.getClient("interaction", props);<br>
 	 */
-	public static synchronized MyDataClient getClient (String service,
-			Properties props) throws Exception {
-
+    public static synchronized MyDataClient getClient (String service,
+			String className) throws Exception {
+        
 		String host = STATIC_HOST;
 		if (host == null || host.length() == 0)
 			host = DEFAULT_HOST;
 
-		System.err.println("HOST = " + host);
-		
-		String cName = props.getProperty("client." + service);
-		if (cName == null || cName.length() <= 0)
-			throw new IllegalArgumentException(
-					"DataClientFactory could not find class for service "
-							+ service);
-
 		if (host.toLowerCase().startsWith("http://")) {
 			
 			// assumes the server already has the handler for this client running
-			Class cls = Class.forName(cName);
+			Class cls = Class.forName(className);
 			
 			// Constructor for clients takes a String representing the URL
 			java.lang.reflect.Constructor constr = cls
@@ -204,9 +209,9 @@ public class DataClientFactory {
 					// "fetchers.blast.useSGDBlast", useSGDblast );
 					// }
 					// if ( "false".equals( useSGDblast ) )
-					// XmlRpcUtils.startService( "blast", localhost, cName,
+					// XmlRpcUtils.startService( "blast", localhost, className,
 					// new String[] { blastExe, sequenceDataDir } );
-					// else XmlRpcUtils.startService( "blast", localhost, cName,
+					// else XmlRpcUtils.startService( "blast", localhost, className,
 					// null );
 					// okay = true;
 					// Thread.sleep( 1000 );
@@ -219,7 +224,7 @@ public class DataClientFactory {
 					// need to have static variables with table names
 					// Why in the local case, do we make sure that the handler is running?
 					System.out.println("Starting service " + service + " on localhost.");
-					XmlRpcUtils.startService(service, localhost, cName,
+					XmlRpcUtils.startService(service, localhost, className,
 							new String[] { service + "s" });
 					
 					okay = true;
@@ -227,7 +232,7 @@ public class DataClientFactory {
 			}// !running
 
 			if (okay){
-				Class cls = Class.forName(cName);
+				Class cls = Class.forName(className);
 				java.lang.reflect.Constructor constr = cls
 						.getDeclaredConstructor(new Class[] { String.class });
 				MyDataClient dc = (MyDataClient) constr

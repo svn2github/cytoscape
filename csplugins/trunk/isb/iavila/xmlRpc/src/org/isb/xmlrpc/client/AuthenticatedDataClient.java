@@ -7,7 +7,7 @@ import org.apache.xmlrpc.*;
 /**
  * Class <code>AuthenticatedDataClient</code> holds the username and the
  * password for a user, adds a user name and a password as the 1st two elements
- * in the parameter vector for a remote call to the server.
+ * in the parameter vector for a remote call to the server before calling MyDataClient.execute
  * 
  * @author <a href="mailto:dreiss@systemsbiology.org">David Reiss</a>
  * @version 1.0
@@ -56,13 +56,10 @@ public abstract class AuthenticatedDataClient extends MyDataClient {
 	 */
 	public synchronized Object execute(String method, Vector params)
 			throws XmlRpcException, IOException {
-		System.out.println("AuthenticatedDataClient.execute(" + params + ")");
 		if (password != null) {
-			System.out.println("Inserting password [" + password + "]");
 			params.insertElementAt(password, 0);
 		}
 		if (username != null) {
-			System.out.println("Inserting username [" + username + "]");
 			params.insertElementAt(username, 0);
 		}
 		return super.execute(method, params);
