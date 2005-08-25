@@ -76,11 +76,6 @@ public final class GraphGraphics
   public static final byte ARROW_DISC = -4;
   public static final byte ARROW_TEE = -5;
   public static final byte ARROW_BIDIRECTIONAL = -6;
-
-  /**
-   * This arrow type is not currently supported.  It will be in the
-   * very near future.
-   */
   public static final byte ARROW_MONO = -7;
 
   /**
@@ -1016,7 +1011,7 @@ public final class GraphGraphics
    *                                   are read and the color and size of the
    *                                   other arrow are completely ignored;
    *                                   the ratio of edge thickness to arrow
-   *                                   size cannot exceed one</td>        </tr>
+   *                                   size cannot exceed 4/sqrt(17)</td> </tr>
    * </table></blockquote><p>
    * Note that if the edge segment length is zero then nothing gets
    * rendered.<p>
@@ -1088,8 +1083,56 @@ public final class GraphGraphics
       m_g2d.draw(m_path2d);
       return; }
 
-    if (arrowType0 == ARROW_MONO) { // To be implemented.
-      throw new IllegalStateException("mono edges not implemented yet"); }
+    if (arrowType0 == ARROW_MONO) { // Draw and return.
+      m_g2d.setColor(edgeColor); // We're going to render at least one segment.
+      setStroke(edgeThickness, dashLength, BasicStroke.CAP_BUTT, false);
+      final double deltaLen = getT(ARROW_DELTA) * arrow0Size;
+      final double tDeltaLenFactor = 0.5d - deltaLen / len;
+      if (tDeltaLenFactor > 0.0d) { // We must render the "pre" line segment.
+        final double x0Prime = tDeltaLenFactor * (((double) x1) - x0) + x0;
+        final double y0Prime = tDeltaLenFactor * (((double) y1) - y0) + y0;
+        m_line2d.setLine(x0, y0, x0Prime, y0Prime);
+        m_g2d.draw(m_line2d); }
+      // Render the "post" segment.
+      final double midX = (((double) x0) + x1) / 2.0d;
+      final double midY = (((double) y0) + y1) / 2.0d;
+      m_line2d.setLine(x1, y1, midX, midY);
+      m_g2d.draw(m_line2d);
+      final double cosTheta = (((double) x0) - x1) / len;
+      final double sinTheta = (((double) y0) - y1) / len;
+      if (tDeltaLenFactor > 0.0d && dashLength == 0.0f) { // Render begin cap.
+        m_xformUtil.setTransform(cosTheta, sinTheta, -sinTheta, cosTheta,
+                                 x0, y0);
+        m_g2d.transform(m_xformUtil);
+        m_g2d.scale(edgeThickness, edgeThickness);
+        // The color is already set to edge color.
+        m_g2d.fill(computeUntransformedArrowCap(ARROW_NONE, 0.0d));
+        m_g2d.setTransform(m_currNativeXform); }
+      if (dashLength == 0.0f) { // Render end cap.
+        m_xformUtil.setTransform(-cosTheta, -sinTheta, sinTheta, -cosTheta,
+                                 x1, y1);
+        m_g2d.transform(m_xformUtil);
+        m_g2d.scale(edgeThickness, edgeThickness);
+        // The color is already set to edge color.
+        m_g2d.fill(computeUntransformedArrowCap(ARROW_NONE, 0.0d));
+        m_g2d.setTransform(m_currNativeXform); }
+      if (dashLength == 0.0f) { // Render delta wedge cap.
+        m_xformUtil.setTransform(-cosTheta, -sinTheta, sinTheta, -cosTheta,
+                                 midX, midY);
+        m_g2d.transform(m_xformUtil);
+        m_g2d.scale(edgeThickness, edgeThickness);
+        // The color is already set to edge color.
+        m_g2d.fill(computeUntransformedDeltaWedgeCap());
+        m_g2d.setTransform(m_currNativeXform); }
+      // Finally, render the mono delta wedge.
+      { m_xformUtil.setTransform(-cosTheta, -sinTheta, sinTheta, -cosTheta,
+                                 midX, midY);
+        m_g2d.transform(m_xformUtil);
+        m_g2d.scale(arrow0Size, arrow0Size);
+        m_g2d.setColor(arrow0Color);
+        m_g2d.fill(computeUntransformedArrow(ARROW_DELTA));
+        m_g2d.setTransform(m_currNativeXform); }
+      return; }
 
     final double x0Adj;
     final double y0Adj;
@@ -1465,9 +1508,9 @@ public final class GraphGraphics
       if (polyEdge)
         throw new IllegalArgumentException
           ("ARROW_MONO not supported for poly edges");
-      if (!(edgeThickness <= arrow0Size))
+      if (!(Math.sqrt(17.0d) * edgeThickness <= 4.0d * arrow0Size))
         throw new IllegalArgumentException
-          ("for ARROW_MONO e/s is greater than 1");
+          ("for ARROW_MONO e/s is greater than 4/sqrt(17)");
       if (arrowType1 != ARROW_MONO)
         throw new IllegalArgumentException
           ("either both or neither arrows must be ARROW_MONO");
