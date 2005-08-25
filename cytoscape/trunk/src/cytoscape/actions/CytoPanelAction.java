@@ -15,9 +15,9 @@ import javax.swing.SwingConstants;
 import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CyMenus;
-import cytoscape.view.cytopanel.CytoPanel;
-import cytoscape.view.cytopanel.CytoPanelState;
-import cytoscape.view.cytopanel.CytoPanelListener;
+import cytoscape.view.cytopanels.CytoPanel;
+import cytoscape.view.cytopanels.CytoPanelState;
+import cytoscape.view.cytopanels.CytoPanelListener;
 
 /**
  * Menu item handler for CytoPanels
