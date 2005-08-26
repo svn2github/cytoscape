@@ -1,0 +1,3 @@
+handler.interactions=org.isb.bionet.datasource.interactions.InteractionsHandler
+host=http://localhost:8081
+client.interactions=org.isb.bionet.datasource.interactions.InteractionDataClient
