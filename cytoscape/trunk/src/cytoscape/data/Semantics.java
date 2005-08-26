@@ -152,7 +152,10 @@ public class Semantics {
         species = CytoscapeInit.getDefaultSpeciesName();
       }
     }
-    Cytoscape.setNodeAttributeValue( node, SPECIES, species );
+    //  Check for the case when we don't have a default species
+    if (species != null) {
+        Cytoscape.setNodeAttributeValue( node, SPECIES, species );
+    }
 
     if ( bds == null )
       bds = Cytoscape.getBioDataServer();
