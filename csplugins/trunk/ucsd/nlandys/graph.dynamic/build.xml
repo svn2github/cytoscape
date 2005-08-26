@@ -65,9 +65,10 @@
     <echo>
 *********************** ATTENTION! ATTENTION! *********************
 **  For full Javadoc to be generated you must have this project
-**  (graph.dynamic) reside together with projects graph.fixed and
-**  util.intr in the same directory.  If this is not the case,
-**  only Javadoc without recursive dependencies will be generated.
+**  ('graph.dynamic') reside together with projects 'graph.fixed'
+**  and 'util.intr' in the same directory.  If this is not the
+**  case, only Javadoc without recursive dependencies will be
+**  generated.
 *******************************************************************
     </echo>
     <javadoc destdir="${javadoc.dir}"
