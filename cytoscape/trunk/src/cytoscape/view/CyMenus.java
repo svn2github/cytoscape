@@ -28,6 +28,7 @@
 //------------------------------------------------------------------------------
 package cytoscape.view;
 //------------------------------------------------------------------------------
+
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.MenuListener;
@@ -56,6 +57,8 @@ import cytoscape.visual.ui.VizMapUI;
 
 import giny.view.GraphViewChangeListener;
 import giny.view.GraphViewChangeEvent;
+
+import cytoscape.view.cytopanels.CytoPanel;
 //------------------------------------------------------------------------------
 /**
  * This class creates the menu and tool bars for a Cytoscape window object. It
@@ -267,33 +270,48 @@ public class CyMenus  implements GraphViewChangeListener {
    * we need the CytoscapeDesktop to be instantiated first.
    */
   public void initCytoPanelMenus() {
-	  // cytopanel west is selected (shown by default)
-	  cytoPanelWestItem = new JCheckBoxMenuItem(Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).getTitle());
-	  cytoPanelWestItem.addActionListener(new CytoPanelAction(cytoPanelWestItem,
-															  Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST)));
-	  cytoPanelWestItem.setSelected(true);
-	  cytoPanelWestItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_1,
-																		  java.awt.event.InputEvent.CTRL_MASK));
-	  // cytopanel east is hidden and disabled by default
-	  cytoPanelEastItem = new JCheckBoxMenuItem(Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST).getTitle());
-	  cytoPanelEastItem.addActionListener(new CytoPanelAction(cytoPanelEastItem,
-															  Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST)));
-	  cytoPanelEastItem.setSelected(false);
-	  cytoPanelEastItem.setEnabled(false);
-	  cytoPanelEastItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_2,
-																		  java.awt.event.InputEvent.CTRL_MASK));
-	  // cytopanel south is hidden and disabled by default
-	  cytoPanelSouthItem = new JCheckBoxMenuItem(Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH).getTitle());
-	  cytoPanelSouthItem.addActionListener(new CytoPanelAction(cytoPanelSouthItem,
-															  Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH)));
-	  cytoPanelSouthItem.setSelected(false);
-	  cytoPanelSouthItem.setEnabled(false);
-	  cytoPanelSouthItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_3,
-																		   java.awt.event.InputEvent.CTRL_MASK));
+	  CytoPanel cytoPanel;
+
+	  // setup cytopanel west (enabled/shown by default)
+	  cytoPanel = Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST);
+	  cytoPanelWestItem = new JCheckBoxMenuItem(cytoPanel.getTitle());
+	  initCytoPanelMenuItem(cytoPanel, cytoPanelWestItem, true, true, "cytoPanelWest", KeyEvent.VK_1);
+
+	  // setup cytopanel east (disabled/hidden by default)
+	  cytoPanel = Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST);
+	  cytoPanelEastItem = new JCheckBoxMenuItem(cytoPanel.getTitle());
+	  initCytoPanelMenuItem(cytoPanel, cytoPanelEastItem, false, false, "cytoPanelEast", KeyEvent.VK_2);
+
+	  // setup cytopanel south (disabled/hidden by default)
+	  cytoPanel = Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH);
+	  cytoPanelSouthItem = new JCheckBoxMenuItem(cytoPanel.getTitle());
+	  initCytoPanelMenuItem(cytoPanel, cytoPanelSouthItem, false, false, "cytoPanelSouth", KeyEvent.VK_3);
+
 	  // add cytopanel menu items to CytoPanels Menu
 	  menuBar.getMenu("CytoPanels").add(cytoPanelWestItem);
 	  menuBar.getMenu("CytoPanels").add(cytoPanelEastItem);
 	  menuBar.getMenu("CytoPanels").add(cytoPanelSouthItem);
+  }
+
+  private void initCytoPanelMenuItem(CytoPanel cytoPanel,
+									 JCheckBoxMenuItem menuItem,
+									 boolean selected,
+									 boolean enabled,
+									 String mapObject,
+									 int keyCode){
+
+	  // setup action
+	  CytoPanelAction cytoPanelAction = new CytoPanelAction(menuItem, cytoPanel);
+	  menuItem.addActionListener(cytoPanelAction);
+	  // enabled/disabled - shown/hidden
+	  menuItem.setSelected(selected);
+	  menuItem.setEnabled(enabled);
+	  // setup menu item key accel
+	  KeyStroke accel = KeyStroke.getKeyStroke(keyCode, java.awt.event.InputEvent.CTRL_MASK);
+	  menuItem.setAccelerator(accel);
+	  // setup global key accel
+	  menuItem.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(accel, mapObject);
+	  menuItem.getActionMap().put(mapObject, cytoPanelAction);
   }
 
   /**
