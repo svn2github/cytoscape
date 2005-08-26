@@ -1,3 +1,6 @@
+lib:cytoscape-geom-rtree.jar
 lib:cytoscape-graph-dynamic.jar
 lib:cytoscape-graph-fixed.jar
+lib:cytoscape-render-export.jar
+lib:cytoscape-render-immed.jar
 lib:cytoscape-util-intr.jar

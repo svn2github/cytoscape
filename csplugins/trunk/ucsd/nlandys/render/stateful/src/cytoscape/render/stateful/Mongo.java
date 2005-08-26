@@ -1,8 +1,10 @@
 package cytoscape.render.stateful;
 
+import cytoscape.geom.rtree.RTree;
 import cytoscape.graph.dynamic.DynamicGraph;
 import cytoscape.graph.dynamic.util.DynamicGraphFactory;
 import cytoscape.graph.fixed.FixedGraph;
+import cytoscape.render.immed.GraphGraphics;
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntIterator;
 
