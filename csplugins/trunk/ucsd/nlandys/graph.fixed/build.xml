@@ -13,7 +13,53 @@
     <delete dir="${build.dir}"/>
   </target>
 
-  <target name="doc">
+  <target name="doc"
+          depends="doc-recursive, doc-nonrecursive">
+  </target>
+
+  <!-- Not useful as an externally invoked target. -->
+  <target name="dependent-project-check">
+    <condition property="dependencies-available">
+      <and>
+        <available file="${basedir}/../util.intr/src"
+                   type="dir"/>
+      </and>
+    </condition>
+  </target>
+
+  <!-- Not to be invoked externally. -->
+  <target name="doc-recursive"
+          depends="dependent-project-check"
+          if="dependencies-available">
+    <javadoc destdir="${javadoc.dir}"
+             source="1.4">
+      <fileset dir="${basedir}/../util.intr/src">
+        <include name="cytoscape/util/intr/IntEnumerator.java"/>
+        <include name="cytoscape/util/intr/IntIterator.java"/>
+      </fileset>
+      <fileset dir="${src.dir}">
+        <include name="cytoscape/graph/fixed/*.java"/>
+      </fileset>
+      <classpath>
+        <fileset dir="${lib.dir}">
+          <include name="*.jar"/>
+        </fileset>
+      </classpath>
+    </javadoc>
+  </target>
+
+  <!-- Not to be invoked externally. -->
+  <target name="doc-nonrecursive"
+          depends="dependent-project-check"
+          unless="dependencies-available">
+    <echo>
+*********************** ATTENTION! ATTENTION! *********************
+**  For full Javadoc to be generated you must have this project
+**  ('graph.fixed') reside together with project 'util.intr' in the
+**  same directory.  If this is not the case, only Javadoc without
+**  recursive dependencies will be generated.
+*******************************************************************
+    </echo>
     <javadoc destdir="${javadoc.dir}"
              source="1.4">
       <fileset dir="${src.dir}">
