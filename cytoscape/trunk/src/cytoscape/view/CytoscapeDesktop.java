@@ -802,7 +802,10 @@ public class CytoscapeDesktop
 
 	  // add the network panel to our tab
 	  String tab1Name = new String("Network");
-	  cytoPanelWest.add(tab1Name, networkPanel);
+	  cytoPanelWest.add(tab1Name,
+						new ImageIcon(getClass().getResource("images/class_hi.gif")),
+									  networkPanel,
+									  "Cytoscape Network List");
 
 	  //  determine proper network view manager component
 	  Component networkViewComp = null;
