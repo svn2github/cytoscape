@@ -124,6 +124,9 @@ public class BiModalJSplitPane extends JSplitPane implements CytoPanelContainer 
 											   + compassDirection +
 											   ".  Must be one of:  SwingConstants.{NORTH,SOUTH,EAST,WEST.");
 		}
+
+		// hack to set divider size back to what it should be
+		setDividerSize(defaultDividerSize);
 	}
 
     /**
@@ -149,7 +152,7 @@ public class BiModalJSplitPane extends JSplitPane implements CytoPanelContainer 
 	 *
      * @param newMode MODE_SHOW_SPLIT or MODE_HIDE_SPLIT.
      */
-    public void setMode(int newMode) {
+    public void setMode(CytoPanelState cytoPanelState, int newMode) {
 
         //  check args
         if (newMode != MODE_SHOW_SPLIT && newMode != MODE_HIDE_SPLIT) {
@@ -171,6 +174,11 @@ public class BiModalJSplitPane extends JSplitPane implements CytoPanelContainer 
             //  fire a property change
             this.firePropertyChange(MODE_PROPERTY, oldMode, newMode);
         }
+
+		// hack to make sure divider is zero when we go from dock to float
+		if (cytoPanelState == cytoPanelState.FLOAT){
+			setDividerSize(0);
+		}
     }
 
     /**

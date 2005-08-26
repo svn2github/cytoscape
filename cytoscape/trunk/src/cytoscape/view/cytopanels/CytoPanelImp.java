@@ -460,7 +460,7 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 
 		// 'switch' on the state
 		if (cytoPanelState == CytoPanelState.HIDE){
-			hideCytoPanel();
+			hideCytoPanel(cytoPanelState);
 			success = true;
 		}
 		else if (cytoPanelState == CytoPanelState.FLOAT){
@@ -550,10 +550,7 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 	/**
 	 * Shows the CytoPanel.
 	 */
-	private void showCytoPanel() {
-
-		// if we are already visible, lets bail.
-		if (isVisible()) return;
+	private void showCytoPanel(CytoPanelState cytoPanelState) {
 
 		// make ourselves visible
 		setVisible(true);
@@ -562,32 +559,28 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 		Container parent = this.getParent();
 		if (parent instanceof BiModalJSplitPane) {
 			BiModalJSplitPane biModalSplitPane = (BiModalJSplitPane) parent;
- 			biModalSplitPane.setMode(BiModalJSplitPane.MODE_SHOW_SPLIT);
+ 			biModalSplitPane.setMode(cytoPanelState, BiModalJSplitPane.MODE_SHOW_SPLIT);
 		}
 	}
 
 	/**
 	 * Hides the CytoPanel.
 	 */
-	private void hideCytoPanel() {
+	private void hideCytoPanel(CytoPanelState cytoPanelState) {
 
-		// if we are visible, hide
-		if (isVisible()){
+		// dock ourselves
+		if (isFloating()){
+			DockCytoPanel();
+		}
 
-			// undock ourselves
-			if (isFloating()){
-				DockCytoPanel();
-			}
+		// hide ourselves
+		setVisible(false);
 
-			// hide ourselves
-			setVisible(false);
-
-			//  if our Parent Container is a BiModalSplitPane, hide the split
-			Container parent = this.getParent();
-			if (parent instanceof BiModalJSplitPane) {
-				BiModalJSplitPane biModalSplitPane = (BiModalJSplitPane) parent;
-				biModalSplitPane.setMode(BiModalJSplitPane.MODE_HIDE_SPLIT);
-			}
+		//  if our Parent Container is a BiModalSplitPane, hide the split
+		Container parent = this.getParent();
+		if (parent instanceof BiModalJSplitPane) {
+			BiModalJSplitPane biModalSplitPane = (BiModalJSplitPane) parent;
+			biModalSplitPane.setMode(cytoPanelState, BiModalJSplitPane.MODE_HIDE_SPLIT);
 		}
 	}
 
@@ -683,10 +676,9 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 	 * Float cytoPanel
 	 */
 	private void FloatCytoPanel(){
-
-		if (isHidden()){
-			showCytoPanel();
-		}
+		
+		// show ourselves
+		showCytoPanel(CytoPanelState.FLOAT);
 
 		if (! isFloating()){
 			// new frame to place this CytoPanel
@@ -732,9 +724,8 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
      */
 	private void DockCytoPanel() {
 
-		if (isHidden()){
-			showCytoPanel();
-		}
+		// show ourselves
+		showCytoPanel(CytoPanelState.DOCK);
 		
 		if (isFloating()){
 			// remove cytopanel from external view
