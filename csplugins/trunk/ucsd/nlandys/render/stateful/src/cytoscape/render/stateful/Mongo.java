@@ -10,15 +10,28 @@ import cytoscape.util.intr.IntIterator;
 
 import java.awt.Graphics2D;
 
+/**
+ * This module aggregates several smaller modules into a very powerful
+ * framework for rendering graphs.  To understand the public API of this
+ * framework, it helps to understand the public API of the package
+ * cytoscape.render.immed.
+ */
 public final class Mongo implements FixedGraph
 {
 
+  private final ImageSource m_imgSource;
   private final DynamicGraph m_graph;
+  private final RTree m_tree;
+  private GraphGraphics m_grafx;
 
   public Mongo(final int width, final int height,
                final ImageSource imgSource)
   {
+    m_imgSource = imgSource;
     m_graph = DynamicGraphFactory.instantiateDynamicGraph();
+    m_tree = new RTree();
+    m_grafx = new GraphGraphics
+      (m_imgSource.createImageBuffer(width, height), true);
   }
 
   public final IntEnumerator nodes() {
