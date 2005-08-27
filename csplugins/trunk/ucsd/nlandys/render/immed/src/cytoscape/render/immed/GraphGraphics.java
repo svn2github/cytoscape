@@ -28,7 +28,7 @@ import java.util.Map;
 /**
  * The purpose of this class is to make the proper calls on a Graphics2D
  * object to efficiently render nodes, labels, and edges.
- * This is functional programming at it's finest [sarcasm].<p>
+ * This is functional programming at its finest [sarcasm].<p>
  * This class deals with two coordinate systems: an image coordinate system
  * and a node coordinate system.  The programmer who uses this API will be
  * dealing mostly with the node coordinate system, especially when rendering
