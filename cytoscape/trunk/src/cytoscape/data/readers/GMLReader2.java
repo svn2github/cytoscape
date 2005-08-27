@@ -20,65 +20,140 @@ import java.io.StringWriter;
 import java.io.IOException;
 import java.text.ParseException;
 
+import cytoscape.visual.*;
+import cytoscape.visual.calculators.*;
+import cytoscape.visual.mappings.discrete.*;
+import cytoscape.visual.mappings.*;
+
+import cytoscape.view.*;
+
+import cytoscape.visual.ShapeNodeRealizer;
+
+import cytoscape.data.CytoscapeDataImpl;
+import giny.model.GraphObject;
+
+
 /**
  * This class is responsible for converting a gml object tree into cytoscape objects
+ * 		New features to the current version:
+ * 			1. Small bug fixes.
+ * 			2. Translate all features in the GML file.
+ * 				This includes
+ * 			3. New Visual Style will be generated when you call this class.
+ * 				The new style saves all visual features (like node shape)
+ * 				and will not be lost even after other style selected.
  */
 public class GMLReader2 implements GraphReader {
   /**
    * The following are all taken to be reserved keywords
    * for gml (note that not all of them are actually 
-   * keywords according ot the spec
+   * keywords according to the spec)
+   * 
+   * Currently, only keywords below are supported by the 
+   * Visual Style generation methods.
+   * 
+   * (Maybe we need some documents on "cytoscape-style"
+   * GML format...)
    */
+  
+  // Graph Tags
   protected static String GRAPH = "graph";
   protected static String NODE = "node";
   protected static String EDGE = "edge";
+  
   protected static String GRAPHICS = "graphics";
+  
   protected static String LABEL = "label";
   protected static String SOURCE = "source";
   protected static String TARGET = "target";
+  
+  // The following elements are in "graphics" section of GML
   protected static String X = "x";
   protected static String Y = "y";
   protected static String H = "h";
   protected static String W = "w";
   protected static String TYPE = "type";
   protected static String ID = "id";
+  protected static String ROOT_INDEX = "root_index";
+  
+  // Shapes used in Cytoscape (not GML standard)
+  // In GML, they are called "type"
   protected static String RECTANGLE = "rectangle";
   protected static String ELLIPSE = "ellipse";
-  protected static String ROOT_INDEX = "root_index";
-  protected static String LINE = "Line";
+  protected static String LINE = "Line";	// This is the Polyline object.
+  											// no support for now...
   protected static String POINT = "point";
   protected static String DIAMOND = "diamond";
   protected static String HEXAGON = "hexagon";
   protected static String OCTAGON = "octagon";
   protected static String PARALELLOGRAM = "parallelogram";
   protected static String TRIANGLE = "triangle";
-  protected static String VERSION = "Version";
-  protected static String CREATOR = "Creator";
+  
+  // Other GML "graphics" attributes
   protected static String FILL = "fill";
   protected static String WIDTH = "width";
   protected static String STRAIGHT_LINES = "line";
   protected static String CURVED_LINES = "curved";
   protected static String SOURCE_ARROW = "source_arrow";
   protected static String TARGET_ARROW = "target_arrow";
+  
+  // States of the ends of arrows
+  protected static String ARROW = "arrow";
+  protected static String ARROW_NONE = "none";
+  protected static String ARROW_FIRST = "first";
+  protected static String ARROW_LAST = "last";
+  protected static String ARROW_BOTH = "both";
+  
   protected static String OUTLINE = "outline";
   protected static String OUTLINE_WIDTH = "outline_width";
   protected static String DEFAULT_EDGE_INTERACTION = "pp";
+  
+  protected static String VERSION = "Version";
+  protected static String CREATOR = "Creator";
 
+  // GML file name
   String filename;
+  // Entries in the file
   List keyVals;
+  // Node ID's
   OpenIntIntHashMap nodeIDMap;
+  
   IntArrayList nodes,sources,targets;
   Vector node_labels,edge_labels,edge_root_index_pairs,node_root_index_pairs;
+  Vector edge_names,node_names;
   IntArrayList giny_nodes,giny_edges;
+  
   private TaskMonitor taskMonitor;
   private PercentUtil percentUtil;
 
+  // Name for the new visual style
+  String stylename;
+  // New Visual Style comverted from GML file.
+  VisualStyle gmlstyle;
+  // Node appearence
+  NodeAppearanceCalculator nac;
+  // Edge appearence
+  EdgeAppearanceCalculator eac;
+  // Global appearence
+  GlobalAppearanceCalculator gac;
+  
+  CalculatorCatalog catalog;
+  
+  // Hashes for node & edge attributes
+  HashMap nodeW, nodeH, nodeShape, nodeCol, nodeBWidth, nodeBCol;
+  HashMap edgeCol, edgeWidth, edgeArrow, edgeShape; 
+  
   /**
    * Constructor.
    * @param filename File name.
    */
   public GMLReader2 ( String filename ) {
-    this.filename = filename;
+	  this.filename = filename;
+	  
+	  // Set new style name
+	  stylename = createVSName();
+	  initializeHash();
+	  initStyle();
   }
 
   /**
@@ -87,15 +162,340 @@ public class GMLReader2 implements GraphReader {
    * @param taskMonitor TaskMonitor Object.
    */
   public GMLReader2 (String filename, TaskMonitor taskMonitor) {
-    this.filename = filename;
-    this.taskMonitor = taskMonitor;
-    percentUtil = new PercentUtil (5);
+	  this.filename = filename;
+	  
+	  // Set new style name
+	  stylename = createVSName();
+	  initializeHash();
+	  initStyle();
+ 
+	  this.taskMonitor = taskMonitor;
+	  percentUtil = new PercentUtil (5);
+  }
+  
+  private String createVSName() {
+	  // Create new style name
+	  String fileSeparator = System.getProperty("file.separator");
+	  String[] tempstr = filename.split(fileSeparator);
+	  return tempstr[tempstr.length - 1].concat(".style");
+  }
+  
+  private void initializeHash() {
+	  // Initialize HashMap for new visual style
+	  nodeW = new HashMap();
+	  nodeH = new HashMap();
+	  nodeShape = new HashMap();
+	  nodeCol = new HashMap();
+	  nodeBWidth = new HashMap();
+	  nodeBCol = new HashMap();
+	  edgeCol = new HashMap();
+	  edgeWidth = new HashMap();
+	  edgeArrow = new HashMap();
+	  edgeShape  = new HashMap(); 
+    
+	  edge_names = new Vector();
+	  node_names = new Vector();
+  }
+  
+  // 	Initialize variables for the new style created from GML
+  //
+  private void initStyle() {
+	  nac = new NodeAppearanceCalculator();
+	  eac = new EdgeAppearanceCalculator();
+	  gac = new GlobalAppearanceCalculator();
+
+	  // Unlock the size object, then we can modify the both width and height.
+	  nac.setNodeSizeLocked( false );
   }
 
+  // Create maps for the node attribute and set it as a Visual Style.
+  //
+  //
+  public void setNodeMaps( VisualMappingManager vizmapper ) {
+	  //
+	  // Set label for the nodes.  (Uses "label" tag in the GML file)
+	  //
+	  String cName = "GML Labels";
+	  NodeLabelCalculator nlc = catalog.getNodeLabelCalculator(cName);
+	  if (nlc == null) {
+	      PassThroughMapping m =
+	        new PassThroughMapping(new String(), Semantics.COMMON_NAME);
+	      nlc = new GenericNodeLabelCalculator(cName, m);
+	  }
+	  nac.setNodeLabelCalculator(nlc);
+	  
+	  //
+	  //	Set node shapes (Uses "type" tag in the GML file)
+	  //
+	  DiscreteMapping nodeShapeMapping = 
+		  new DiscreteMapping(new Byte(ShapeNodeRealizer.ELLIPSE),
+				  				"commonName", ObjectMapping.NODE_MAPPING);
+	  nodeShapeMapping.setControllingAttributeName( Semantics.COMMON_NAME, vizmapper.getNetwork(), false );
+
+	  for( int i = 0; i < node_names.size(); i++ ) {
+		  String key = (String)node_names.get( i );
+		  Byte value;
+		  if( nodeShape.containsKey(key) == true ) {
+			  value = (Byte)nodeShape.get(key);
+		  } else
+			  value = new Byte(ShapeNodeRealizer.ELLIPSE);	  
+		  
+		  nodeShapeMapping.putMapValue( key, value );
+	  }
+	  GenericNodeShapeCalculator shapeCalculator = 
+	      new GenericNodeShapeCalculator("GML Node Shape", nodeShapeMapping);
+	  nac.setNodeShapeCalculator( shapeCalculator );
+	  
+	  //
+	  //	Set the color of the node
+	  //
+	  Color defcol = Color.WHITE;
+	  
+	  DiscreteMapping nodeColorMapping = new DiscreteMapping( defcol,
+			  ObjectMapping.NODE_MAPPING);
+	  nodeColorMapping.setControllingAttributeName( Semantics.COMMON_NAME, vizmapper.getNetwork(), true );
+	  
+	  for( int i = 0; i < node_names.size(); i++ ) {
+		  String key = (String)node_names.get( i );
+		  String col;
+		  Color c;
+		  
+		  if( nodeCol.containsKey(key) == true ) {
+			  col = nodeCol.get(key).toString();
+			  c = getColor( col );
+		  } else
+			  c = defcol;
+		  nodeColorMapping.putMapValue( key, c );
+	  }
+	  GenericNodeColorCalculator nodeColorCalculator = 
+		  new GenericNodeColorCalculator("GML Node Color", nodeColorMapping);
+	  nac.setNodeFillColorCalculator( nodeColorCalculator );
+	  
+	  //
+	  //	Set the color of the node border
+	  //
+	  Color defbcol = Color.BLACK;
+	  DiscreteMapping nodeBorderColorMapping = new DiscreteMapping( defcol,
+			  ObjectMapping.NODE_MAPPING);
+	  nodeBorderColorMapping.setControllingAttributeName( Semantics.COMMON_NAME, vizmapper.getNetwork(), true );
+	  
+	  for( int i = 0; i < node_names.size(); i++ ) {
+		  String key = (String)node_names.get( i );
+		  String col;
+		  Color c;
+		  if( nodeBCol.containsKey(key) == true ) {
+			  col = nodeBCol.get(key).toString();
+			  c = getColor( col );
+		  } else
+			  c = defbcol;
+		  nodeBorderColorMapping.putMapValue( key, c );
+	  }
+	  GenericNodeColorCalculator nodeBorderColorCalculator = 
+		  new GenericNodeColorCalculator("GML Node Border Color", nodeBorderColorMapping);
+	  nac.setNodeBorderColorCalculator( nodeBorderColorCalculator );
+	  
+	  //
+	  //	Set the size of the nodes
+	  //
+	  Double defaultWidth = new Double(nac.getDefaultNodeWidth());
+	  
+	  // First, set the width of the node
+	  DiscreteMapping nodeWMapping = new DiscreteMapping( defaultWidth,
+			  ObjectMapping.NODE_MAPPING);
+	  
+	  nodeWMapping.setControllingAttributeName( Semantics.COMMON_NAME, vizmapper.getNetwork(), true );
+	  // Set atrributes to each node
+	  for( int i = 0; i<node_names.size(); i++ ){
+		  String key = (String)node_names.get( i );
+		  Double w;
+		  
+		  if( nodeW.containsKey(key) == true ) {
+			  w = new Double( Double.parseDouble( nodeW.get(key).toString() ) );
+		  } else
+			  w = defaultWidth;
+		  nodeWMapping.putMapValue( key, w );
+	  }
+	  GenericNodeSizeCalculator nodeSizeCalculatorW =
+		  new GenericNodeSizeCalculator("GML Node Width", nodeWMapping);
+	  nac.setNodeWidthCalculator( nodeSizeCalculatorW );
+	  
+	  // Then set the height
+	  Double defaultHeight = new Double(nac.getDefaultNodeHeight());
+	  
+	  DiscreteMapping nodeHMapping = new DiscreteMapping( defaultHeight,
+			  ObjectMapping.NODE_MAPPING);
+	  nodeHMapping.setControllingAttributeName( Semantics.COMMON_NAME, vizmapper.getNetwork(), true );
+	  // Set node height to each node
+	  for( int i = 0; i<node_names.size(); i++ ){
+		  String key = (String)node_names.get( i );
+		  Double h;
+		  
+		  if( nodeH.containsKey(key) == true ) {
+			  h = new Double( Double.parseDouble( nodeH.get(key).toString() ) );
+		  } else
+			  h = defaultHeight;
+		  nodeHMapping.putMapValue( key, h );
+	  }
+	  
+	  GenericNodeSizeCalculator nodeSizeCalculatorH = new GenericNodeSizeCalculator (
+			  "GML Node Height", nodeHMapping);
+	  nac.setNodeHeightCalculator( nodeSizeCalculatorH );
+	  
+	  //
+	  //	Set node border line type
+	  //
+	  DiscreteMapping nodeBorderTypeMapping = 
+		  new DiscreteMapping( LineType.LINE_1, ObjectMapping.NODE_MAPPING);
+	  nodeBorderTypeMapping.setControllingAttributeName( Semantics.COMMON_NAME, vizmapper.getNetwork(), false );
+
+	  for( int i = 0; i < node_names.size(); i++ ) {
+		  String key = (String)node_names.get( i );
+		  double value = 1;
+		  int ivalue = 1;
+		  if( nodeBWidth.containsKey(key) == true ) {
+			  value = Double.parseDouble( nodeBWidth.get(key).toString() );
+		  }
+		  ivalue = (int)value;
+		  
+		  LineType lt = getLineType( ivalue );
+		  nodeBorderTypeMapping.putMapValue( key, lt );
+	  }
+	  GenericNodeLineTypeCalculator nodeBoderTypeCalculator = 
+		  new GenericNodeLineTypeCalculator( "GML Node Border", nodeBorderTypeMapping );
+	  nac.setNodeLineTypeCalculator( nodeBoderTypeCalculator );
+  }
+  
+  //
+  // Create maps for the edges
+  //
+  public void setEdgeMaps( VisualMappingManager vizmapper ) {
+	  //
+	  //	Set the color of the edges
+	  //
+	  Color defcol = eac.getDefaultEdgeColor();
+	  
+	  DiscreteMapping edgeColorMapping = new DiscreteMapping( defcol, 
+			  ObjectMapping.EDGE_MAPPING);
+	  edgeColorMapping.setControllingAttributeName( Semantics.CANONICAL_NAME, vizmapper.getNetwork(), false );
+	  
+	  for( int i = 0; i < edge_names.size(); i++ ) {
+		  String key = (String)edge_names.get( i );
+		  String col;
+		  Color c;
+		  if( edgeCol.containsKey(key) == true ) {
+			  col = edgeCol.get(key).toString();
+			  c = getColor( col );
+		  } else
+			  c = defcol;
+		  edgeColorMapping.putMapValue( key, c );
+	  }
+	  GenericEdgeColorCalculator edgeColorCalculator = 
+		  new GenericEdgeColorCalculator("GML Edge Color", edgeColorMapping);
+	  eac.setEdgeColorCalculator( edgeColorCalculator );
+	  
+	  // 
+	  // Set line type based on the given width
+	  //
+	  DiscreteMapping edgeLineTypeMapping = new DiscreteMapping( LineType.LINE_1, 
+			  ObjectMapping.EDGE_MAPPING);
+	  edgeLineTypeMapping.setControllingAttributeName( Semantics.CANONICAL_NAME, vizmapper.getNetwork(), false );
+	  
+	  for( int i = 0; i < edge_names.size(); i++ ) {
+		  String key = (String)edge_names.get( i );
+		  double value = 1;
+		  if( edgeWidth.containsKey(key) == true ) {
+			  value = Double.parseDouble( edgeWidth.get(key).toString() );
+		  }
+		  int ivalue = (int)value;
+		  LineType lt = getLineType( ivalue );
+		  edgeLineTypeMapping.putMapValue( key, lt );
+	  }
+	  GenericEdgeLineTypeCalculator edgeLineTypeCalculator = 
+		  new GenericEdgeLineTypeCalculator("GML Line Type", edgeLineTypeMapping);
+	  eac.setEdgeLineTypeCalculator( edgeLineTypeCalculator );
+	  
+	  // 
+	  // Set arrow type.
+	  //	GML does not include shape of the arrow, so the type is fixed.
+	  //	Just determine the direction (node, both, source or target).
+	  //
+	  
+	  // For source
+	  DiscreteMapping edgeSourceArrowMapping = new DiscreteMapping(Arrow.NONE, 
+			  ObjectMapping.EDGE_MAPPING);
+	  edgeSourceArrowMapping.setControllingAttributeName( Semantics.CANONICAL_NAME,
+              vizmapper.getNetwork(), false );
+	  
+	  // For target
+	  DiscreteMapping edgeTargetArrowMapping = new DiscreteMapping(Arrow.NONE, 
+			  ObjectMapping.EDGE_MAPPING);
+	  edgeTargetArrowMapping.setControllingAttributeName( Semantics.CANONICAL_NAME,
+              vizmapper.getNetwork(), false );
+	  
+	  for( int i = 0; i < edge_names.size(); i++ ) {
+		  // Determine direction and arrow type
+		  String key = (String)edge_names.get( i );
+		  String value = null;
+		  if( edgeArrow.containsKey(key) == true ) {
+			  value = edgeArrow.get(key).toString();
+		  } else
+			  value = "none";
+		  if( value.equals("none") ){
+			  edgeSourceArrowMapping.putMapValue( key, Arrow.NONE );
+			  edgeTargetArrowMapping.putMapValue( key, Arrow.NONE );
+		  } else if( value.equals("both") ) {
+			  edgeSourceArrowMapping.putMapValue( key, Arrow.COLOR_ARROW );
+			  edgeTargetArrowMapping.putMapValue( key, Arrow.COLOR_ARROW );
+		  } else if( value.equals("last") ) {
+			  edgeSourceArrowMapping.putMapValue( key, Arrow.NONE );
+			  edgeTargetArrowMapping.putMapValue( key, Arrow.COLOR_ARROW );
+		  } else if( value.equals("first") ) {
+			  edgeSourceArrowMapping.putMapValue( key, Arrow.COLOR_ARROW );
+			  edgeTargetArrowMapping.putMapValue( key, Arrow.NONE );
+		  }
+		  
+		  // Alternative syntax: source and target with 0 || 1
+		  
+		  
+		  GenericEdgeArrowCalculator edgeSourceArrowCalculator = 
+			  new GenericEdgeArrowCalculator("GML Source Arrow Type", edgeSourceArrowMapping);
+		  GenericEdgeArrowCalculator edgeTargetArrowCalculator = 
+			  new GenericEdgeArrowCalculator("GML Target Arrow Type", edgeTargetArrowMapping);
+		  eac.setEdgeTargetArrowCalculator( edgeTargetArrowCalculator );
+		  eac.setEdgeSourceArrowCalculator( edgeSourceArrowCalculator );
+	  }
+  }
+  
+  //
+  // Apply node and edge maps by creating new visual style.
+  public void applyMaps() {
+	  CytoscapeDesktop cyDesktop = Cytoscape.getDesktop();
+	  VisualMappingManager vizmapper = cyDesktop.getVizMapManager();
+	  catalog = vizmapper.getCalculatorCatalog();
+	  
+	  setNodeMaps( vizmapper );
+	  setEdgeMaps( vizmapper );
+	  
+	  //
+	  // Create new VS and apply it
+	  //
+	  gac.setDefaultBackgroundColor( new Color(255,255,204) );
+	  gmlstyle = new VisualStyle( stylename, nac, eac, gac );
+	  
+	  //System.out.println(nac.getDescription());
+	  //System.out.println(eac.getDescription());
+	  
+	  vizmapper.setVisualStyle( gmlstyle );
+  }
+  
   public void read( boolean canonicalize ){
     read();
   }
 
+  //
+  // Read graph data from GML file.
+  // VS will be created here.
+  //
   public void read(){
     try{
       keyVals = (new GMLParser(filename)).parseList();
@@ -103,8 +503,19 @@ public class GMLReader2 implements GraphReader {
       throw new RuntimeException(io.getMessage());
     }
     initializeStructures();
-    readGML(keyVals);
-    createGraph();
+    
+    readGML(keyVals);	// read the GML file
+    createGraph();		// create the graph AND new visual style
+    
+    //
+    // New features are called here:
+    //		1 Extract (virtually) all attributes from the GML file
+    //		2 Generate new VS
+    //		3 Apply the new VS to the current window of Cytoscape
+    //
+    extract();			// Extract node & edge attributes
+    applyMaps();		// generate new VS and epply it.
+    
     releaseStructures();
   }
 
@@ -196,37 +607,40 @@ public class GMLReader2 implements GraphReader {
                       (sources.get(idx)));
               String targetName = (String) node_labels.get
                       (gml_id2order.get(targets.get(idx)));
-              String edgeName = sourceName + " (" + label + ") " + targetName;
+              String edgeName = sourceName.toUpperCase() + " (" + label + ") " + targetName.toUpperCase();
               int duplicate_count = 1;
-	      while(!edgeNameSet.add(edgeName)) {
-		edgeName = sourceName + " (" + label + 
-		  ") " + targetName + "_" + duplicate_count;
-		duplicate_count += 1;
-	      }
-	      Edge edge = (Edge) Cytoscape.getEdgeNetworkData().
-		getGraphObject(edgeName);
-	      if (edge == null) {
-		Node node_1 = Cytoscape.getCyNode(sourceName);
-		Node node_2 = Cytoscape.getCyNode(targetName);
-		//edge = (Edge) rootGraph.getEdge
-		//  (rootGraph.createEdge(node_1, node_2));
-		edge = Cytoscape.getCyEdge(  node_1,
+              while(!edgeNameSet.add(edgeName)) {
+            	  edgeName = sourceName + " (" + label + 
+            	  	") " + targetName + "_" + duplicate_count;
+            	  duplicate_count += 1;
+              }
+	      
+              //String tempstr = "E name is :" + idx + "==" + edgeName;
+              edge_names.add( idx, edgeName );
+	      
+              Edge edge = (Edge) Cytoscape.getEdgeNetworkData().
+              getGraphObject(edgeName);
+              if (edge == null) {
+            	  Node node_1 = Cytoscape.getCyNode(sourceName);
+            	  Node node_2 = Cytoscape.getCyNode(targetName);
+            	  //edge = (Edge) rootGraph.getEdge
+            	  //  (rootGraph.createEdge(node_1, node_2));
+            	  edge = Cytoscape.getCyEdge(  node_1,
                                  node_2,
                                  Semantics.INTERACTION,
                                  label,
                                  true );
                                //edgeAttributes.set(Semantics.INTERACTION, edgeName, label);
                                //edgeAttributes.addNameMapping(edgeName, edge);
-	      }
-	      giny_edges.add(edge.getRootGraphIndex());
-	      ((KeyValue) edge_root_index_pairs.get(idx)).value =
-		(new Integer(edge.getRootGraphIndex()));
-	  } else {
-	    throw new GMLException("Non-existant source/target node for edge with gml (source,target): " + sources.get(idx) + "," + targets.get(idx));
-	  }
-      }
-      edgeNameSet = null;
-
+              }
+              giny_edges.add(edge.getRootGraphIndex());
+              ((KeyValue) edge_root_index_pairs.get(idx)).value =
+            	  (new Integer(edge.getRootGraphIndex()));
+          } else {
+        	  throw new GMLException("Non-existant source/target node for edge with gml (source,target): " + sources.get(idx) + "," + targets.get(idx));
+          }
+      	}
+      	edgeNameSet = null;
   }
 
   /**
@@ -236,6 +650,7 @@ public class GMLReader2 implements GraphReader {
   protected void readGML(List list){
     //  Report Progress Message
     int counter = 0;
+    System.out.println("Reading GML list...");
     for(Iterator it = list.iterator();it.hasNext();){
 
       //  Report Progress Value
@@ -312,6 +727,7 @@ public class GMLReader2 implements GraphReader {
       node_root_index_pairs.add(root_index_pair);
       nodes.add(id);
       node_labels.add(label);
+      node_names.add( label.toUpperCase() );
     }
   }
   
@@ -360,6 +776,7 @@ public class GMLReader2 implements GraphReader {
     else{
       sources.add(source);
       targets.add(target);
+      
       edge_labels.add(label);
       edge_root_index_pairs.add(root_index_pair);
     }
@@ -380,19 +797,109 @@ public class GMLReader2 implements GraphReader {
     }
       
   }
+  
+  
+  //
+  // Extract all attributes of nodes and edges
+  //
+  public void extract(){
+	  if(keyVals == null){
+		  throw new RuntimeException("Failed to read gml file on initialization");
+	  }
+	  for( Iterator it = keyVals.iterator(); it.hasNext(); ){
+		  KeyValue keyVal = (KeyValue)it.next();
+		  if(keyVal.key.equals(GRAPH)){
+			  extractGraph( (List)keyVal.value );
+	      }
+	  }      
+  }
+  
+  protected void extractGraph( List list ) {
+	  String edgeName = null;
+	  
+	  // Count the current edge
+	  int ePtr = 0;
+      for( Iterator it = list.iterator(); it.hasNext(); ) {
+    	  final KeyValue keyVal = (KeyValue) it.next();
+          if( keyVal.key.equals(NODE) ) {
+        	  extractNode( (List) keyVal.value );
+          } else if ( keyVal.key.equals(EDGE) ) {
+        	  edgeName = (String)edge_names.get( ePtr );
+        	  ePtr++;
+        	  extractEdge( (List) keyVal.value, edgeName );
+          }
+      }
+  }
+  
+  protected void extractNode( List list ){
+	  Integer root_index = null;
+	  List graphics_list = null;
+	  String label = null;
+
+	  for( Iterator it = list.iterator(); it.hasNext(); ){
+		  KeyValue keyVal = (KeyValue)it.next();
+		  if( keyVal.key.equals(ROOT_INDEX) ){
+			  if( keyVal.value == null ){
+				  return;
+			  }
+			  root_index = (Integer)keyVal.value;
+	      }else if(keyVal.key.equals(GRAPHICS)){
+	    	  graphics_list = (List)keyVal.value;
+	      }else if(keyVal.key.equals(LABEL)){
+	    	  label = (String)keyVal.value;
+	      }
+	  }
+	  if( graphics_list != null ){
+		  extractNodeAttributes( graphics_list, label.toUpperCase() );
+	  }
+  }
+  
+  protected void extractEdge( List list, String edgeName ){
+	  EdgeView edgeView = null;
+	  List graphics_list = null;
+	    
+	  for( Iterator it = list.iterator(); it.hasNext(); ){
+		  KeyValue keyVal = (KeyValue)it.next();
+		  if(keyVal.key.equals(ROOT_INDEX)){
+			  if(keyVal.value == null){
+				  return;
+			  }
+		  }else if( keyVal.key.equals(GRAPHICS) ){
+			  graphics_list = (List)keyVal.value;
+		  }
+	  }  
+	    
+	  if( graphics_list != null ){
+		  extractEdgeAttributes( graphics_list, edgeName );
+	  }
+  }
+
 
     /**
      * Lays Out the Graph, based on GML.
      */
     protected void layoutGraph(final GraphView myView, List list) {
+    	
+    	String edgeName = null;
+    	// Count the current edge
+    	int ePtr = 0;
+    	//for( int i = 0; i < edge_names.size(); i++ ) {
+    	//	System.out.println( (String)edge_names.get(i) );
+    	//}
+    	//System.out.println( tempstr );
+    	
         for (Iterator it = list.iterator(); it.hasNext();) {
             final KeyValue keyVal = (KeyValue) it.next();
             if (keyVal.key.equals(NODE)) {
                 layoutNode(myView, (List) keyVal.value);
             } else if (keyVal.key.equals(EDGE)) {
-                layoutEdge(myView, (List) keyVal.value);
+            	
+            	edgeName = (String)edge_names.get( ePtr );
+            	ePtr++;
+                layoutEdge(myView, (List) keyVal.value, edgeName );
             }
         }
+        
     }
 
   /**
@@ -429,19 +936,31 @@ public class GMLReader2 implements GraphReader {
     }
     if(graphics_list != null){
       layoutNodeGraphics(myView,graphics_list,view);
+      //extractNodeAttributes( graphics_list, label );
+      
+ 
     }
     
   }
 
+  
+  
+
+  
   /**
    * This will assign node graphic properties based on the values in the
    * list matches to the "graphics" key word
    */
   protected void layoutNodeGraphics(GraphView myView, List list, NodeView nodeView){
+	  // Store 
+	  List nodeprop;
+	  
     for(Iterator it = list.iterator();it.hasNext();){
+
       KeyValue keyVal = (KeyValue)it.next();
+      
       if(keyVal.key.equals(X)){
-	nodeView.setXPosition(((Number)keyVal.value).doubleValue());
+    nodeView.setXPosition(((Number)keyVal.value).doubleValue());
       }else if(keyVal.key.equals(Y)){
 	nodeView.setYPosition(((Number)keyVal.value).doubleValue());
       }else if(keyVal.key.equals(H)){
@@ -455,7 +974,10 @@ public class GMLReader2 implements GraphReader {
       }else if(keyVal.key.equals(OUTLINE_WIDTH)){
 	nodeView.setBorderWidth(((Number)keyVal.value).floatValue());
       }else if(keyVal.key.equals(TYPE)){
+    	  
+    	  
 	String type = (String)keyVal.value;
+	
 	if(type.equals(ELLIPSE)){
 	  nodeView.setShape(NodeView.ELLIPSE);
 	}else if(type.equals(RECTANGLE)){
@@ -475,61 +997,250 @@ public class GMLReader2 implements GraphReader {
     }
   }
 
+  
+  
+  //
+  // Extract node attributes from GML file
+  protected void extractNodeAttributes( List list, String nodeName ){
+	  String key = stylename;
+	  String value = null;
+	  Properties nProps;
+	  nProps = new Properties();
+	  
+	  String temp = null;
+	  
+	  // Put all attributes into hashes.
+	  // Key is the node name
+	  // (Assume we do not have duplicate node name.)
+	  for(Iterator it = list.iterator();it.hasNext();){
+		  KeyValue keyVal = (KeyValue)it.next();  
+		  if(keyVal.key.equals(X) || keyVal.key.equals(Y)){
+			  // Do nothing.
+		  }
+		  else if(keyVal.key.equals(H)){
+			  nodeH.put( nodeName, keyVal.value );
+		  }else if(keyVal.key.equals(W)){
+			  nodeW.put( nodeName, keyVal.value );
+		  }else if(keyVal.key.equals(FILL)){
+			  nodeCol.put( nodeName, keyVal.value );
+		  }else if(keyVal.key.equals(OUTLINE)){
+			  nodeBCol.put( nodeName, keyVal.value );
+		  }else if(keyVal.key.equals(OUTLINE_WIDTH)){
+			  nodeBWidth.put( nodeName, keyVal.value );
+		  }else if(keyVal.key.equals(TYPE)){
+			  String type = (String)keyVal.value;
+			  if(type.equals(ELLIPSE)){
+				  nodeShape.put( nodeName, new Byte(ShapeNodeRealizer.ELLIPSE) );
+			  }else if(type.equals(RECTANGLE)){
+				  nodeShape.put( nodeName, new Byte(ShapeNodeRealizer.RECT) );
+			  }else if(type.equals(DIAMOND)){
+				  nodeShape.put( nodeName, new Byte(ShapeNodeRealizer.DIAMOND) );
+			  }else if(type.equals(HEXAGON)){
+				  nodeShape.put( nodeName, new Byte(ShapeNodeRealizer.HEXAGON) );
+			  }else if(type.equals(OCTAGON)){
+				  nodeShape.put( nodeName, new Byte(ShapeNodeRealizer.OCTAGON) );
+			  }else if(type.equals(PARALELLOGRAM)){
+				  nodeShape.put( nodeName, new Byte(ShapeNodeRealizer.PARALLELOGRAM) );
+			  }else if(type.equals(TRIANGLE)){
+				  nodeShape.put( nodeName, new Byte(ShapeNodeRealizer.TRIANGLE) );
+			  }
+		  }
+      
+	  	}
+  	}
+
+  //
+  // Extract edge attributes from GML input
+  //
+  
+  protected void extractEdgeAttributes( List list, String edgeName ){
+	  String value = null;
+	  
+	  for( Iterator it = list.iterator();it.hasNext(); ){
+	      KeyValue keyVal = (KeyValue)it.next();
+	      if(keyVal.key.equals(LINE)){
+	    	  // This represents "Polyline," which is a line (usually an edge)
+	    	  // with arbitrary number of anchors.
+	    	  // Current version of CS does not support this, so ignore this
+	    	  // at this point of time...
+	      }else if(keyVal.key.equals(WIDTH)){
+	    	  edgeWidth.put( edgeName, (Number)keyVal.value );
+	      }else if(keyVal.key.equals(FILL)){
+	    	  edgeCol.put( edgeName, (String)keyVal.value );
+	      }else if(keyVal.key.equals(ARROW)){
+	    	  edgeArrow.put( edgeName, (String)keyVal.value ); 
+	      }else if(keyVal.key.equals(TYPE)){
+	    	  value = (String)keyVal.value;
+	    	  if(value.equals(STRAIGHT_LINES)){
+	    		  edgeShape.put( edgeName, (String)keyVal.value ); 
+	    	  }else if(value.equals(CURVED_LINES)){
+	    		  //edgeView.setLineType(EdgeView.CURVED_LINES);
+	    	  }
+	      }else if(keyVal.value.equals(SOURCE_ARROW)){
+	      		//edgeView.setSourceEdgeEnd(((Number)keyVal.value).intValue());
+	      }else if(keyVal.value.equals(TARGET_ARROW)){
+	      		//edgeView.setTargetEdgeEnd(((Number)keyVal.value).intValue());
+	      }
+	  }
+
+  	}
+
+  //
+  //	Since GML represents line type as width, we need to 
+  //	convert it to "LINE_TYPE"
+  public static LineType getLineType( int width ) {
+	  if( width == 1 ) {
+		  return LineType.LINE_1;
+	  } else if( width == 2 ) {
+		  return LineType.LINE_2;
+	  } else if( width == 3 ) {
+		  return LineType.LINE_3;
+	  } else if( width == 4 ) {
+		  return LineType.LINE_4;
+	  } else if( width == 5 ) {
+		  return LineType.LINE_5;
+	  } else if( width == 6 ) {
+		  return LineType.LINE_6;
+	  } else if( width == 7 ) {
+		  return LineType.LINE_7;
+	  } else {
+		  return LineType.LINE_1;
+	  }
+  }
+  
+  //
+  // The arrow infomation in GML is only directions.
+  // this method convert 
+  /*
+  public int getArrowType( String arrow ) {
+	  int arrowtype = 0;
+	  
+	  if( arrow.equals( "none" ) ) {
+		  return 0;
+	  } else if( arrow.equals( "source" ) ) {
+		  return 1;
+	  } else if( arrow.equals( "target" ) ) {
+		  return 2
+	  } else if( arrow.equals( "both" ) ) {
+		  return 3;
+	  } else
+		  return 0;
+  }
+  
+  */
+  
+  // Testing
+  public void showMaps() {
+	  
+	  String e = null;
+	  String n = null;
+	  String temp = null;
+	  
+	  
+	  for( int i = 0; i < edge_names.size(); i++ ) {
+		e = (String)edge_names.get( i );
+		temp = e + ": ";
+		temp = temp + edgeCol.get(e) + ", ";
+		temp = temp + edgeWidth.get(e) + ", ";
+		temp = temp + edgeArrow.get(e) + ", ";
+		temp = temp + edgeShape.get(e) + ", ";
+		System.out.println( temp );
+		temp = null;
+	  }
+  }
+  
   /**
    * Assign edge visual properties based on pairs in the 
    * list matched to the "edge" key world
    */
-  protected void layoutEdge(GraphView myView, List list){
+  protected void layoutEdge(GraphView myView, List list, String edgeName ){
     EdgeView edgeView = null;
     List graphics_list = null;
+    
     for(Iterator it = list.iterator();it.hasNext();){
-      KeyValue keyVal = (KeyValue)it.next();
-      if(keyVal.key.equals(ROOT_INDEX)){
-	/*
-	 * Previously, we didn't make an object for this edge for
-	 * some reason. Don't try to go any further.
-	 */
-	if(keyVal.value == null){
-	  return;
-	}
-	edgeView = myView.getEdgeView(((Integer)keyVal.value).intValue());
-      }else if(keyVal.key.equals(GRAPHICS)){
-	graphics_list = (List)keyVal.value;
-      }
+    	KeyValue keyVal = (KeyValue)it.next();
+    	if(keyVal.key.equals(ROOT_INDEX)){
+    		/*
+    		 * Previously, we didn't make an object for this edge for
+    		 * some reason. Don't try to go any further.
+    		 */
+    		if(keyVal.value == null){
+    			return;
+    		}
+    		edgeView = myView.getEdgeView(((Integer)keyVal.value).intValue());
+    	}else if(keyVal.key.equals(GRAPHICS)){
+    		graphics_list = (List)keyVal.value;
+    	}
     }
     
     if(edgeView != null && graphics_list != null){
-      layoutEdgeGraphics(myView,graphics_list,edgeView);
+    	layoutEdgeGraphics(myView,graphics_list,edgeView);
+    	//extractEdgeAttributes( graphics_list, edgeName );
     }
   }
+  
 
 
   /**
    * Assign edge graphics properties
    */
+  
+  // Bug fix by Kei
+  //	Some of the conditions used "value."
+  //	They should be key.
+  //	Now this method correctly translate the GML input file
+  //	into graphics.
+  //
   protected void layoutEdgeGraphics(GraphView myView, List list, EdgeView edgeView){
-    for(Iterator it = list.iterator();it.hasNext();){
-      KeyValue keyVal = (KeyValue)it.next();
-      if(keyVal.key.equals(LINE)){
-	layoutEdgeGraphicsLine(myView,(List)keyVal.value,edgeView);
-      }else if(keyVal.value.equals(WIDTH)){
-	edgeView.setStrokeWidth(((Number)keyVal.value).floatValue());
-      }else if(keyVal.value.equals(FILL)){
-	edgeView.setUnselectedPaint(getColor((String)keyVal.value));
-      }
-      else if(keyVal.value.equals(TYPE)){
-	String value = (String)keyVal.value;
-	if(value.equals(STRAIGHT_LINES)){
-	  edgeView.setLineType(EdgeView.STRAIGHT_LINES);
-	}else if(value.equals(CURVED_LINES)){
-	  edgeView.setLineType(EdgeView.CURVED_LINES);
-	}
-      }else if(keyVal.value.equals(SOURCE_ARROW)){
-	edgeView.setSourceEdgeEnd(((Number)keyVal.value).intValue());
-      }else if(keyVal.value.equals(TARGET_ARROW)){
-	edgeView.setTargetEdgeEnd(((Number)keyVal.value).intValue());
-      }
-    }
+	  // Local vars.
+	  String value = null;
+	  KeyValue keyVal = null;
+	  
+	  for(Iterator it = list.iterator();it.hasNext();){
+		  keyVal = (KeyValue)it.next();
+		  
+		  // This is a polyline obj. However, it will be translated into
+		  // straight line.
+		  if(keyVal.key.equals(LINE)){
+			  layoutEdgeGraphicsLine(myView,(List)keyVal.value,edgeView);
+		  }else if(keyVal.key.equals(WIDTH)){
+			  edgeView.setStrokeWidth(((Number)keyVal.value).floatValue());
+		  }else if(keyVal.key.equals(FILL)){
+			  edgeView.setUnselectedPaint(getColor((String)keyVal.value));
+		  }
+		  
+		  else if(keyVal.key.equals(TYPE)){
+			  value = (String)keyVal.value;
+			  if(value.equals(STRAIGHT_LINES)){
+				  edgeView.setLineType(EdgeView.STRAIGHT_LINES);
+			  }else if(value.equals(CURVED_LINES)){
+				  edgeView.setLineType(EdgeView.CURVED_LINES);
+			  }
+		  }
+		  
+		  else if( keyVal.key.equals(ARROW) ){
+			  // The position of the arrow.
+			  //	There are 4 states: no arrows, both ends have arrows, source, or target.  
+			  //
+			  //	The arrow type below is hard-coded since GML does not
+			  //	support shape of the arrow.
+			  if(keyVal.value.equals(ARROW_FIRST)){
+				  edgeView.setSourceEdgeEnd( 2 );
+			  }else if(keyVal.value.equals(ARROW_LAST)){
+				  edgeView.setTargetEdgeEnd( 2 );
+			  }else if(keyVal.value.equals(ARROW_BOTH)){
+				  edgeView.setSourceEdgeEnd( 2 );
+				  edgeView.setTargetEdgeEnd( 2 );
+			  }else if(keyVal.value.equals(ARROW_NONE)){
+				  // Do nothing.  No arrows.
+			  }
+			  if(keyVal.key.equals(SOURCE_ARROW)){
+				  edgeView.setSourceEdgeEnd(((Number)keyVal.value).intValue());
+			  }else if(keyVal.value.equals(TARGET_ARROW)){
+				  edgeView.setTargetEdgeEnd(((Number)keyVal.value).intValue());
+			  }
+		  }
+	  }
   }
 
   /**
