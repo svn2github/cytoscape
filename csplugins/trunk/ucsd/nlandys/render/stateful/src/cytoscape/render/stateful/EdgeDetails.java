@@ -9,7 +9,7 @@ import java.awt.Color;
  * are called at an extemely high frequency; the same method with the same
  * arguments on the same instance may be called in intervals of nanoseconds.
  * Therefore, the implementation of this interface must be extremely optimized
- * for speed if there is to be any hope of rendering large graphcs at high
+ * for speed if there is to be any hope of rendering large graphs at high
  * speed.  This interface only makes sense in the context of a Mongo.
  */
 public interface EdgeDetails
