@@ -210,6 +210,11 @@ class LoadNetworkTask implements Task {
     /**
      * Inform User of Network Stats.
      */
+    // Mod. by Kei 08/26/2005
+    //
+    //	For the new GML format import function, added some messages
+    //	for the users.
+    //
     private void informUserOfGraphStats(CyNetwork newNetwork) {
         NumberFormat formatter = new DecimalFormat("#,###,###");
         StringBuffer sb = new StringBuffer();
@@ -220,6 +225,12 @@ class LoadNetworkTask implements Task {
                 (newNetwork.getNodeCount()));
         sb.append(" nodes and " + formatter.format(newNetwork.getEdgeCount()));
         sb.append(" edges.\n\n");
+        
+        // If GML file imported, give some info. about the import result
+        if( fileType == Cytoscape.FILE_GML ) {
+        	sb.append("Succesfully created new Visual Style \"" + file.getName() + ".style\"");
+        	sb.append(" from your GML file.\n\n");
+        }
 
         if (newNetwork.getNodeCount() < CytoscapeInit.getViewThreshold()) {
             sb.append("Network is under "
