@@ -34,6 +34,26 @@ public final class Mongo
     m_grafx = new GraphGraphics(img, m_debug);
   }
 
+  public final void setViewingTransform(final double xCenter,
+                                        final double yCenter,
+                                        final double scaleFactor)
+  {
+  }
+
+  public final IntIterator getExactNodeHits(final int imageX,
+                                            final int imageY)
+  {
+    return null;
+  }
+
+  public final IntEnumerator getRoughNodeHits(final int imageXMin,
+                                              final int imageYMin,
+                                              final int imageXMax,
+                                              final int imageYMax)
+  {
+    return null;
+  }
+
   public final void print(final Graphics2D graphics,
                           final Color bgColor,
                           final GraphLOD lod,
