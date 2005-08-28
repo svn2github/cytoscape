@@ -1,39 +1,43 @@
 package cytoscape.render.stateful;
 
 import cytoscape.render.immed.EdgeAnchors;
-
+import cytoscape.render.immed.GraphGraphics;
 import java.awt.Color;
 
 /**
- * Defines the visual properties of an edge.  The methods on this interface
- * are called at an extemely high frequency; the same method with the same
- * arguments on the same instance may be called in intervals of nanoseconds.
- * Therefore, the implementation of this interface must be extremely optimized
- * for speed if there is to be any hope of rendering large graphs at high
- * speed.  This interface only makes sense in the context of a Mongo.
+ * Defines the visual properties of an edge.
  */
-public interface EdgeDetails
+public abstract class EdgeDetails
 {
 
-  public byte arrow0(int edge);
+  public byte arrow0(final int edge) {
+    return GraphGraphics.ARROW_NONE; }
 
-  public float arrow0Size(int edge);
+  public float arrow0Size(final int edge) {
+    return 0.0f; }
 
-  public Color arrow0Color(int edge);
+  public Color arrow0Color(final int edge) {
+    return null; }
 
-  public byte arrow1(int edge);
+  public byte arrow1(final int edge) {
+    return GraphGraphics.ARROW_NONE; }
 
-  public float arrow1Size(int edge);
+  public float arrow1Size(final int edge) {
+    return 0.0f; }
 
-  public Color arrow1Color(int edge);
+  public Color arrow1Color(final int edge) {
+    return null; }
 
-  public EdgeAnchors anchors(int edge);
+  public EdgeAnchors anchors(final int edge) {
+    return null; }
 
-  public float thickness(int edge);
+  public abstract float thickness(final int edge);
 
-  public Color color(int edge);
+  public Color color(final int edge) {
+    return Color.blue; }
 
-  public float dashLength(int edge);
+  public float dashLength(final int edge) {
+    return 0.0f; }
 
   // What about edge label?
 
