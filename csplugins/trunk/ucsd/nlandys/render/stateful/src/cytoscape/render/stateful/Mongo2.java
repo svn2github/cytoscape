@@ -1,0 +1,29 @@
+package cytoscape.render.stateful;
+
+import cytoscape.geom.rtree.RTree;
+import cytoscape.graph.fixed.FixedGraph;
+import cytoscape.render.immed.GraphGraphics;
+import cytoscape.util.intr.IntHash;
+import java.awt.Color;
+
+public final class Mongo2
+{
+
+  /**
+   * @return the edges that were rendered.
+   */
+  public final static IntHash renderGraph(final GraphGraphics grafx,
+                                          final Color bgColor,
+                                          final double xCenter,
+                                          final double yCenter,
+                                          final double scaleFactor,
+                                          final FixedGraph graph,
+                                          final RTree nodePositions,
+                                          final GraphLOD lod,
+                                          final NodeDetails nodeDetails,
+                                          final EdgeDetails edgeDetails)
+  {
+    return null;
+  }
+
+}
