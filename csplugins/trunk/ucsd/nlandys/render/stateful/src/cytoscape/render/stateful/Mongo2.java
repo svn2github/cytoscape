@@ -13,17 +13,33 @@ public final class Mongo2
    * @return the edges that were rendered.
    */
   public final static IntHash renderGraph(final GraphGraphics grafx,
-                                          final Color bgColor,
-                                          final double xCenter,
-                                          final double yCenter,
-                                          final double scaleFactor,
                                           final FixedGraph graph,
                                           final RTree nodePositions,
                                           final GraphLOD lod,
                                           final NodeDetails nodeDetails,
-                                          final EdgeDetails edgeDetails)
+                                          final EdgeDetails edgeDetails,
+                                          final Color bgColor,
+                                          final double xCenter,
+                                          final double yCenter,
+                                          final double scaleFactor)
   {
     return null;
+  }
+
+  public final static boolean queryEdgeIntersect(final GraphGraphics grafx,
+                                                 final FixedGraph graph,
+                                                 final RTree nodePositions,
+                                                 final GraphLOD lod,
+                                                 final NodeDetails nodeDetails,
+                                                 final EdgeDetails edgeDetails,
+                                                 final int edge,
+                                                 final float xMinQuery,
+                                                 final float yMinQuery,
+                                                 final float xMaxQuery,
+                                                 final float yMaxQuery)
+                                                 
+  {
+    return false;
   }
 
 }
