@@ -8,21 +8,18 @@ import org.isb.xmlrpc.handler.db.*;
 /**
  * This class assumes:<br> 
  * - mySQL DB is the source (either local or remote)<br> 
- * - Each "big" species (specified in table "big_species") has the following tables (suppose the species is S):<br>
+ * - Each species has the following tables (suppose the species is S):<br>
  * S (all interactions) <br>
- * S_pp (all protein-protein interactions)<br>
+ * S_pp (all phylogenetic profile interactions)<br>
  * S_gn (all gene-neighbor interactions)<br>
  * S_rs (all rosetta-stone interactions)<br>
  * S_gc (all gene-cluster interactions)<br>
- * and, for each of the 4 interactions, there is also a table with lower pvals (see table "method_threshold") :<br>
+ * and, for each of the 4 interactions, there is also a table with lower pvals (see table "interaction_types" to find out pvalue thresholds) :<br>
  * S_pp_low <br>
  * S_gn_low <br>
  * S_rs_low <br>
  * S_gc_low <br>
- * The species that are not big contain their interactions in the "prolinks" table, which also had the divisions above. <br>
  * TODO: Describe tables
- * TODO: Crashes for small species because views cannot be created, requested having tables for all species, wait to hear back.
- * TODO: Test each method with small and big species
  * @author <a href="mailto:iavila@systemsbiology.org">Iliana Avila-Campillo</a>
  */
 public class ProlinksInteractionsSource extends SQLDBHandler implements
@@ -36,7 +33,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	public static final String PVAL = "p";
 	
 	/**
-	 * Protein-protein interaction type
+	 * Phylogenetic profile interaction type
 	 */
 	public static final String PP = "PP";
 	
@@ -56,16 +53,16 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	public static final String GC = "GC";
 	
 	/**
-	 * All the interaction types in Prolinks
+	 * A map from an interactio type (String) to its description (String), contains all interaction types in Prolinks
 	 */
-	public static final Vector INT_TYPES = new Vector();
-	static {
-		INT_TYPES.add(PP);
-		INT_TYPES.add(GN);
-		INT_TYPES.add(RS);
-		INT_TYPES.add(GC);
-	}
-
+	public static final Hashtable INT_TYPES = new Hashtable();
+    static{
+        INT_TYPES.put(PP, "phylogenetic profile");
+        INT_TYPES.put(RS, "rosetta stone");
+        INT_TYPES.put(GN, "gene neighbor");
+        INT_TYPES.put(GC, "gene cluster");
+    }
+	
 	/**
 	 * A map from method of interaction (one of PP,GN,RS,GC) to a
 	 * p-value threshold, interactions with pval <= to the threshold
@@ -80,7 +77,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	protected static Map cachedSpeciesIds;
 	
 	/**
-	 * A Map from species name to species table name or queried tables
+	 * A Map from species name to species table name
 	 */
 	protected static Map cachedTableNames;
 
@@ -105,16 +102,19 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	 * Finds the big species, and initilizes the method thresholds map
 	 */
 	protected void initialize() {
-		String sql = "SELECT * FROM method_threshold";
+		String sql = "SELECT * FROM interaction_types";
 		ResultSet rs = query(sql);
 		ProlinksInteractionsSource.methodThresholds = new Hashtable();
-		if (rs != null) {
+		ProlinksInteractionsSource.INT_TYPES.clear();
+        if (rs != null) {
 			try {
 				while (rs.next()) {
 					String method = rs.getString(1);
 					double pval = rs.getFloat(2);
+                     String desc = rs.getString(3);
 					ProlinksInteractionsSource.methodThresholds.put(method,
 							new Double(pval));
+                    ProlinksInteractionsSource.INT_TYPES.put(method, desc);
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -421,11 +421,13 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 		//	System.out.println("pval = " + pval);
 		}
 		
-		Vector methods = INT_TYPES;
-		if(args.containsKey(INTERACTION_TYPE)){
-			methods = (Vector)args.get(INTERACTION_TYPE);
-			//System.out.println("methods.size() = " + methods.size());
-		}
+        Vector methods;
+        if(args.containsKey(INTERACTION_TYPE)){
+            methods = (Vector)args.get(INTERACTION_TYPE);
+        }else{
+           methods = new Vector(INT_TYPES.keySet());
+        }
+
 		
 		if(pval >= 1 && methods.size() == 4){
 			// the same as calling getAllInteractions(species)
@@ -504,12 +506,13 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 			pval = ( (Double)args.get(PVAL) ).doubleValue();
 		}
 		//System.out.println(pval);
-		
-		Vector methods = INT_TYPES;
-		if(args.containsKey(INTERACTION_TYPE)){
-			methods = (Vector)args.get(INTERACTION_TYPE);
-		}
-		//System.out.println(methods);
+        
+        Vector methods;
+        if(args.containsKey(INTERACTION_TYPE)){
+            methods = (Vector)args.get(INTERACTION_TYPE);
+        }else{
+           methods = new Vector(INT_TYPES.keySet());
+        }
 		
 		boolean directed = false;
 		if(args.containsKey(DIRECTED)){
@@ -666,11 +669,14 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 		 if(args.containsKey(PVAL)){
 			 pval = ( (Double)args.get(PVAL)).doubleValue();
 		 }
-		 
-		 Vector methods = INT_TYPES;
+
+		 Vector methods;
 		 if(args.containsKey(INTERACTION_TYPE)){
-			 methods = (Vector)args.get(INTERACTION_TYPE);
-		 }
+		     methods = (Vector)args.get(INTERACTION_TYPE);
+         }else{
+             methods = new Vector(INT_TYPES.keySet());
+         }
+
 		 
 		 boolean directed = false;
 		 if(args.containsKey(DIRECTED)){
@@ -830,10 +836,12 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 			pval = ((Double)args.get(PVAL)).doubleValue();
 		}
 		
-		Vector methods = INT_TYPES;
+		Vector methods;
 		if(args.containsKey(INTERACTION_TYPE)){
 			methods = (Vector)args.get(INTERACTION_TYPE);
-		}
+		}else{
+           methods = new Vector(INT_TYPES.keySet());
+        }
 		
 		boolean directed = false;
 		if(args.containsKey(DIRECTED)){

@@ -112,7 +112,7 @@ public class ProlinksGui extends JFrame {
      */
     protected JPanel createInteractionsPanel (){
         
-        Vector interactionTypes = ProlinksInteractionsSource.INT_TYPES;
+        Hashtable interactionTypes = ProlinksInteractionsSource.INT_TYPES;
         this.interactionToCheckBox = new HashMap();
         JPanel panel = new JPanel();
         int rows = interactionTypes.size()/2;
@@ -122,20 +122,23 @@ public class ProlinksGui extends JFrame {
         int cols = 2;
         panel.setLayout(new GridLayout(rows,cols));
         
-        Iterator it = interactionTypes.iterator();
+        Iterator it = interactionTypes.keySet().iterator();
         while(it.hasNext()){
             String type = (String)it.next();
             JCheckBox cb = new JCheckBox();
-            cb.setText(type);
+            cb.setText(type + " (" + interactionTypes.get(type) + ")");
             cb.setSelected(true);
             panel.add(cb);
             this.interactionToCheckBox.put(type, cb);
         }//while it
         
         JLabel label = new JLabel("Select desired interaction types:");
+        JPanel labelPanel = new JPanel();
+        labelPanel.add(label);
+        
         JPanel p = new JPanel();
         p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
-        p.add(label);
+        p.add(labelPanel);
         p.add(panel);
         return p;
     }//createInteractionsPanel
@@ -149,7 +152,7 @@ public class ProlinksGui extends JFrame {
         
         JPanel panel = new JPanel();
         
-        JLabel label = new JLabel("P-value threshold:");
+        JLabel label = new JLabel("Enter a p-value threshold:");
         panel.add(label);
         panel.add(Box.createHorizontalStrut(5));
         
