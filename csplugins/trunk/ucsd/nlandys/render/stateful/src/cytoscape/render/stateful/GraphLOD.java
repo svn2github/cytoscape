@@ -10,7 +10,7 @@ public class GraphLOD
 {
 
   /**
-   * Determines whether or not to render the graph at full detail.
+   * Determines whether or not to render a graph at full detail.
    * By default this method returns true if and only if the sum of visible
    * nodes and visible edges is less than 1200.<p>
    * The following table describes the difference between full and low
@@ -41,7 +41,7 @@ public class GraphLOD
   }
 
   /**
-   * Determines whether or not the render node borders.  By default this
+   * Determines whether or not to render node borders.  By default this
    * method returns true if and only if the sum of visible nodes and visible
    * edges is less than 500.<p>
    * Note that it is only possible to draw node borders at the full detail
@@ -76,13 +76,13 @@ public class GraphLOD
 
   /**
    * Determines whether or not to honor dashed edges.  By default this
-   * method always returns true.  If false is returned, edges which
-   * are claiming themselves as dahsed will be rendered as solid.<p>
+   * method always returns true.  If false is returned, edges that
+   * claim to be dashed will be rendered as solid.<p>
    * Note that it is only possible to draw dashed edges at the full detail
    * level.  If low detail is chosen, the output of this method is ignored.
-   * Note also that are computationally very expensive; the default
-   * implementation of this method makes a poor performance-minded choice if
-   * a lot of edges happen to be dashed.
+   * Note also that drawing dashed edges is computationally expensive;
+   * the default implementation of this method does not make a very
+   * performance-minded decision if a lot of edges happen to be dashed.
    * @param visibleNodeCount the number of nodes that are about to be rendered.
    * @param visibleEdgeCount the number of edges that are about to be rendered.
    * @return true if and only if dashed edges are to be honored.
@@ -96,8 +96,8 @@ public class GraphLOD
 
   /**
    * Determines whether or not to honor edge anchors.  By default this
-   * method always returns true.  If false is returned, edges which are
-   * claiming to have edge anchors will be rendered as simple straight
+   * method always returns true.  If false is returned, edges that
+   * claim to have edge anchors will be rendered as simple straight
    * edges.<p>
    * Note that it is only possible to draw poly-edges at the full detail
    * level.  If low detail is chosen, the output of this method is ignored.
