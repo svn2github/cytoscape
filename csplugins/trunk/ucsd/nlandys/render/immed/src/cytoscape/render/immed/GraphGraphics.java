@@ -78,6 +78,11 @@ public final class GraphGraphics
   public static final byte ARROW_BIDIRECTIONAL = -6;
   public static final byte ARROW_MONO = -7;
 
+  /**
+   * This value is currently 100.
+   */
+  public static final int MAX_EDGE_ANCHORS = 100;
+
   /*
    * A constant for controlling how cubic Bezier curves are drawn; This
    * particular constant results in elliptical-looking curves.
@@ -1420,9 +1425,9 @@ public final class GraphGraphics
           ("ARROW_BIDIRECTIONAL and ARROW_MONO not supported in poly edges");
       default:
         throw new IllegalArgumentException("arrowType1 is not recognized"); }
-      if (anchors.numRemaining() > 100)
+      if (anchors.numRemaining() > MAX_EDGE_ANCHORS)
         throw new IllegalArgumentException
-          ("at most 100 edge anchors can be specified"); }
+          ("at most MAX_EDGE_ANCHORS edge anchors can be specified"); }
 
     if (!computeCubicPolyEdgePath
         (arrowType0, arrowType0 == ARROW_NONE ? 0.0f : arrow0Size,
@@ -1556,9 +1561,9 @@ public final class GraphGraphics
     default:
       throw new IllegalArgumentException("arrowType1 is not recognized"); }
     if (polyEdge) {
-      if (anchors.numRemaining() > 100)
+      if (anchors.numRemaining() > MAX_EDGE_ANCHORS)
         throw new IllegalArgumentException
-          ("at most 100 edge anchors can be specified"); }
+          ("at most MAX_EDGE_ANCHORS edge anchors can be specified"); }
   }
 
   /*
@@ -1684,7 +1689,8 @@ public final class GraphGraphics
   }
 
   private final float[] m_floatBuff = new float[2];
-  private final double[] m_edgePtsBuff = new double[303];
+  private final double[] m_edgePtsBuff =
+    new double[(MAX_EDGE_ANCHORS + 1) * 3];
   private int m_edgePtsCount; // Number of points stored in m_edgePtsBuff.
 
   /*
