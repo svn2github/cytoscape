@@ -1011,6 +1011,8 @@ public final class GraphGraphics
    * rendered.<p>
    * This method will not work unless clear() has been called at least once
    * previously.
+   * @param anchors anchor points between the two edge endpoints, or null
+   *   if none.
    * @param dashLength a positive value representing the length of dashes
    *   on the edge, or zero to indicate that the edge is solid.
    * @exception IllegalArgumentException if edgeThickness is less than zero,
@@ -1024,11 +1026,19 @@ public final class GraphGraphics
                                  final float arrow1Size,
                                  final Color arrow1Color,
                                  final float x0, final float y0,
+                                 final EdgeAnchors anchors,
                                  final float x1, final float y1,
                                  final float edgeThickness,
                                  final Color edgeColor,
                                  final float dashLength)
   {
+    if (anchors != null) {
+      drawPolyEdgeFull(arrowType0, arrow0Size, arrow0Color,
+                       arrowType1, arrow1Size, arrow1Color,
+                       x0, y0, anchors, x1, y1,
+                       edgeThickness, edgeColor, dashLength);
+      return; }
+
     if (m_debug) {
       edgeFullDebug(false, arrowType0, arrow0Size, arrowType1, arrow1Size,
                     edgeThickness, dashLength, null); }
@@ -1213,18 +1223,18 @@ public final class GraphGraphics
     }
   }
 
-  public final void drawPolyEdgeFull(final byte arrowType0,
-                                     final float arrow0Size,
-                                     final Color arrow0Color,
-                                     final byte arrowType1,
-                                     final float arrow1Size,
-                                     final Color arrow1Color,
-                                     final float x0, final float y0,
-                                     final EdgeAnchors anchors,
-                                     final float x1, final float y1,
-                                     final float edgeThickness,
-                                     final Color edgeColor,
-                                     final float dashLength)
+  private final void drawPolyEdgeFull(final byte arrowType0,
+                                      final float arrow0Size,
+                                      final Color arrow0Color,
+                                      final byte arrowType1,
+                                      final float arrow1Size,
+                                      final Color arrow1Color,
+                                      final float x0, final float y0,
+                                      final EdgeAnchors anchors,
+                                      final float x1, final float y1,
+                                      final float edgeThickness,
+                                      final Color edgeColor,
+                                      final float dashLength)
   {
     final double curveFactor = CURVE_ELLIPTICAL;
     if (m_debug) {
@@ -1241,6 +1251,7 @@ public final class GraphGraphics
         drawEdgeFull(arrowType0, arrow0Size, arrow0Color,
                      arrowType1, arrow1Size, arrow1Color,
                      (float) m_edgePtsBuff[0], (float) m_edgePtsBuff[1],
+                     null,
                      (float) m_edgePtsBuff[2], (float) m_edgePtsBuff[3],
                      edgeThickness, edgeColor, dashLength); }
       return; }
@@ -1341,13 +1352,9 @@ public final class GraphGraphics
     }
   }
 
-  /**
-   * This is a ridiculously simple method that only exists for
-   * consistency.
-   */
-  public final boolean getEdgePath(final float x0, final float y0,
-                                   final float x1, final float y1,
-                                   final GeneralPath path)
+  private final boolean getSimpleEdgePath(final float x0, final float y0,
+                                          final float x1, final float y1,
+                                          final GeneralPath path)
   {
     if (x0 == x1 && y0 == y1) { return false; }
     path.reset();
@@ -1362,7 +1369,7 @@ public final class GraphGraphics
    * path is the path along the center of the edge segment, extending to the
    * points which specify the arrow locations.  Note that this path therefore
    * disregards edge thickness and arrow outline.
-   * @param anchors specifies the edge anchors.
+   * @param anchors the edge anchors or null if there aren't any.
    * @param path the computed path is returned in this parameter; note that
    *   the computed path is not closed.
    * @return true if and only if the specified edge would be drawn (which
@@ -1370,15 +1377,18 @@ public final class GraphGraphics
    *   beginning and end point are distinct); if false is returned, path is
    *   not touched.
    */
-  public final boolean getPolyEdgePath(final byte arrowType0,
-                                       final float arrow0Size,
-                                       final byte arrowType1,
-                                       final float arrow1Size,
-                                       final float x0, final float y0,
-                                       final EdgeAnchors anchors,
-                                       final float x1, final float y1,
-                                       final GeneralPath path)
+  public final boolean getEdgePath(final byte arrowType0,
+                                   final float arrow0Size,
+                                   final byte arrowType1,
+                                   final float arrow1Size,
+                                   final float x0, final float y0,
+                                   final EdgeAnchors anchors,
+                                   final float x1, final float y1,
+                                   final GeneralPath path)
   {
+    if (anchors == null) {
+      return getSimpleEdgePath(x0, y0, x1, y1, path); }
+
     final double curveFactor = CURVE_ELLIPTICAL;
     if (m_debug) {
       if (!EventQueue.isDispatchThread())
