@@ -1348,17 +1348,6 @@ public final class GraphGraphics
     }
   }
 
-  private final boolean getSimpleEdgePath(final float x0, final float y0,
-                                          final float x1, final float y1,
-                                          final GeneralPath path)
-  {
-    if (x0 == x1 && y0 == y1) { return false; }
-    path.reset();
-    path.moveTo(x0, y0);
-    path.lineTo(x1, y1);
-    return true;
-  }
-
   /**
    * Computes the path that an edge takes; this method is useful if a user
    * interface would allow user selection of edges, for example.  The returned
@@ -1378,14 +1367,12 @@ public final class GraphGraphics
                                    final byte arrowType1,
                                    final float arrow1Size,
                                    final float x0, final float y0,
-                                   final EdgeAnchors anchors,
+                                   EdgeAnchors anchors,
                                    final float x1, final float y1,
                                    final GeneralPath path)
   {
-    if (anchors == null) {
-      return getSimpleEdgePath(x0, y0, x1, y1, path); }
-
     final double curveFactor = CURVE_ELLIPTICAL;
+    if (anchors == null) { anchors = m_noAnchors; }
     if (m_debug) {
       if (!EventQueue.isDispatchThread())
         throw new IllegalStateException
