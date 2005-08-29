@@ -1,45 +1,21 @@
 package cytoscape.render.stateful;
 
+/**
+ * An instance of this class defines the level of detail that goes into
+ * a single rendering of a graph.  This class is meant to be subclassed; its
+ * methods are meant to be overridden; nonetheless, sane defaults are
+ * used in the default method implementations.
+ */
 public class GraphLOD
 {
 
   /**
-   * Defines the visible node count threshold at which node label text is
-   * rendered as primitive shapes; text is renderes as shapes only if [node
-   * labels are rendered altogether and] the
-   * number of nodes visible is less than the number returned by this method.
-   * By default this method returns 30.
-   */
-  public int textAsShapeThreshold() {
-    return 30; }
-
-  /**
-   * Defines the visible node count threshold at which node labels are
-   * rendered; node labels are only rendered if the number of nodes visible
-   * is less than the number returned by this method and if we're rendering in
-   * full detail.  By default this method returns 80.
-   */
-  public int nodeLabelThreshold() {
-    return 80; }
-
-  /**
-   * Defines the threshold of low detail rendering versus full detail
-   * rendering; the integer returned relates to the sum of visible nodes
-   * and visible edges; if this sum is less than the value returned by this
-   * method, full detail is used, otherwise low detail is used.
-   * By default this method returns 1200.
-   */
-  public int fullDetailThreshold() {
-    return 1200; }
-
-
-  /**
-   * This method determines whether or not to render the graph at full detail.
+   * Determines whether or not to render the graph at full detail.
    * By default this method returns true if and only if the sum of visible
    * nodes and visible edges is less than 1200.<p>
    * The following table describes the difference between full and low
-   * rendering detail, in terms of what methods on an instance of
-   * cytoscape.render.immed.GraphGraphics get called:
+   * rendering detail in terms of what methods on an instance of
+   * GraphGraphics get called:
    * <blockquote><table border="1" cellpadding="5" cellspacing="0">
    *   <tr>  <td></td>
    *         <th>full detail</th>
@@ -54,7 +30,6 @@ public class GraphLOD
    *         <td>drawTextFull()</td>
    *         <td>not rendered</td>                                        </tr>
    * </table></blockquote>
-   *
    * @param visibleNodeCount the number of nodes that are about to be rendered.
    * @param visibleEdgeCount the number of edges that are about to be rendered.
    * @return true for full detail, false for low detail.
@@ -63,6 +38,42 @@ public class GraphLOD
                         final int visibleEdgeCount)
   {
     return visibleNodeCount + visibleEdgeCount < 1200;
+  }
+
+  /**
+   * Determines whether or not to render node labels.  By default this method
+   * returns true if and only if the number of visible nodes is less than
+   * 80.<p>
+   * Node labels are only rendered at the full detail level.  If low detail is
+   * chosen, the output of this method is ignored.
+   * @param visibleNodeCount the number of nodes that are about to be rendered.
+   * @param visibleEdgeCount the number of edges that are about to be rendered.
+   * @return true if and only if node labels are to be rendered.
+   * @see #detail(int, int)
+   */
+  public boolean nodeLabels(final int visibleNodeCount,
+                            final int visibleEdgeCount)
+  {
+    return visibleNodeCount < 80;
+  }
+
+  /**
+   * Determines whether or not to draw text as shape when rendering node
+   * labels.  By default this method returns true if and only if the number
+   * of visible nodes is less than 30.<p>
+   * This method affects the boolean parameter drawTextAsShape in the method
+   * call GraphGraphics.drawTextFull().  If node labels are not rendered
+   * altogether, the output of this method is ignored.
+   * @param visibleNodeCount the number of nodes that are about to be rendered.
+   * @param visibleEdgeCount the number of edges that are about to be rendered.
+   * @return true if and only if rendered node labels should be drawn as
+   *   primitive shapes.
+   * @see #nodeLabels(int, int)
+   */
+  public boolean textAsShape(final int visibleNodeCount,
+                             final int visibleEdgeCount)
+  {
+    return visibleNodeCount < 30;
   }
 
 }
