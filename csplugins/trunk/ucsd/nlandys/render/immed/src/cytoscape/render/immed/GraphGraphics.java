@@ -108,6 +108,9 @@ public final class GraphGraphics
     new double[2 * CUSTOM_SHAPE_MAX_VERTICES];
   private final HashMap m_customShapes = new HashMap();
   private final double[] m_ptsBuff = new double[4];
+  private final EdgeAnchors m_noAnchors = new EdgeAnchors() {
+      public final int numRemaining() { return 0; }
+      public final void nextAnchor(final float[] arr, final int off) { } };
   private int m_polyNumPoints; // Used with m_polyCoords.
   private Graphics2D m_g2d;
   private Graphics2D m_gMinimal; // We use mostly java.awt.Graphics methods.
@@ -929,6 +932,198 @@ public final class GraphGraphics
       (RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
   }
 
+  private final void drawSimpleEdgeFull(final byte arrowType0,
+                                        final float arrow0Size,
+                                        final Color arrow0Color,
+                                        final byte arrowType1,
+                                        final float arrow1Size,
+                                        final Color arrow1Color,
+                                        final float x0, final float y0,
+                                        final float x1, final float y1,
+                                        final float edgeThickness,
+                                        final Color edgeColor,
+                                        final float dashLength)
+  {
+    final double len = Math.sqrt((((double) x1) - x0) * (((double) x1) - x0) +
+                                 (((double) y1) - y0) * (((double) y1) - y0));
+    // If the length of the edge is zero we're going to skip completely over
+    // all rendering.  This check is now redundant because the code that calls
+    // us makes this check automatically.
+    if (len == 0.0d) return;
+
+    if (arrowType0 == ARROW_BIDIRECTIONAL) { // Draw and return.
+      final double a = (6.0d + Math.sqrt(17.0d) / 2.0d) * edgeThickness;
+      m_path2d.reset();
+      final double f = (-17.0d / 8.0d) * edgeThickness + arrow0Size;
+      m_path2d.moveTo((float) (a + 4.0d * f),
+                      (float) (f + 1.5d * edgeThickness));
+      m_path2d.lineTo((float) a, (float) (1.5d * edgeThickness));
+      if (2.0d * a < len) {
+        m_path2d.lineTo((float) (len - a), (float) (1.5d * edgeThickness)); }
+      final double g = (-17.0d / 8.0d) * edgeThickness + arrow1Size;
+      m_path2d.moveTo((float) (len - (a + 4.0d * g)),
+                      (float) (-g + -1.5d * edgeThickness));
+      m_path2d.lineTo((float) (len - a), (float) (-1.5d * edgeThickness));
+      if (2.0d * a < len) {
+        m_path2d.lineTo((float) a, (float) (-1.5d * edgeThickness)); }
+      // I want the transform to first rotate, then translate.
+      final double cosTheta = (((double) x1) - x0) / len;
+      final double sinTheta = (((double) y1) - y0) / len;
+      m_xformUtil.setTransform
+        (cosTheta, sinTheta, -sinTheta, cosTheta, x0, y0);
+      m_path2d.transform(m_xformUtil);
+      // Right now, we're drawing bidirectional edges with butt ends instead
+      // of round ends.  If we wanted round ends, substantially more work
+      // would have to be done for the following reasons.  For dashed
+      // lines, we need butt ends to be consistent with the appearance of
+      // dashes with other edge types.  Therefore, if we wanted round
+      // ends, we would have to create shapes for these ends and render them
+      // separately.  Computing the round end for the angled arrow segment
+      // is not easy, especially for the case where this segment is very
+      // short relative to the edge thickness.  I prefer to keep things
+      // simple in the code at the expense of sacrificing a little bit of
+      // prettiness.
+      setStroke(edgeThickness, dashLength, BasicStroke.CAP_BUTT, false);
+      m_g2d.setColor(edgeColor);
+      m_g2d.draw(m_path2d);
+      return; } // End ARROW_BIDIRECTIONAL.
+
+    if (arrowType0 == ARROW_MONO) { // Draw and return.
+      m_g2d.setColor(edgeColor); // We're going to render at least one segment.
+      setStroke(edgeThickness, dashLength, BasicStroke.CAP_BUTT, false);
+      final double deltaLen = getT(ARROW_DELTA) * arrow0Size;
+      final double tDeltaLenFactor = 0.5d - deltaLen / len;
+      if (tDeltaLenFactor > 0.0d) { // We must render the "pre" line segment.
+        final double x0Prime = tDeltaLenFactor * (((double) x1) - x0) + x0;
+        final double y0Prime = tDeltaLenFactor * (((double) y1) - y0) + y0;
+        m_line2d.setLine(x0, y0, x0Prime, y0Prime);
+        m_g2d.draw(m_line2d); }
+      // Render the "post" segment.
+      final double midX = (((double) x0) + x1) / 2.0d;
+      final double midY = (((double) y0) + y1) / 2.0d;
+      m_line2d.setLine(x1, y1, midX, midY);
+      m_g2d.draw(m_line2d);
+      final double cosTheta = (((double) x0) - x1) / len;
+      final double sinTheta = (((double) y0) - y1) / len;
+      if (tDeltaLenFactor > 0.0d && dashLength == 0.0f) { // Render begin cap.
+        m_xformUtil.setTransform(cosTheta, sinTheta, -sinTheta, cosTheta,
+                                 x0, y0);
+        m_g2d.transform(m_xformUtil);
+        m_g2d.scale(edgeThickness, edgeThickness);
+        // The color is already set to edge color.
+        m_g2d.fill(computeUntransformedArrowCap(ARROW_NONE, 0.0d));
+        m_g2d.setTransform(m_currNativeXform); }
+      if (dashLength == 0.0f) { // Render end cap.
+        m_xformUtil.setTransform(-cosTheta, -sinTheta, sinTheta, -cosTheta,
+                                 x1, y1);
+        m_g2d.transform(m_xformUtil);
+        m_g2d.scale(edgeThickness, edgeThickness);
+        // The color is already set to edge color.
+        m_g2d.fill(computeUntransformedArrowCap(ARROW_NONE, 0.0d));
+        m_g2d.setTransform(m_currNativeXform); }
+      if (dashLength == 0.0f) { // Render delta wedge cap.
+        m_xformUtil.setTransform(-cosTheta, -sinTheta, sinTheta, -cosTheta,
+                                 midX, midY);
+        m_g2d.transform(m_xformUtil);
+        m_g2d.scale(edgeThickness, edgeThickness);
+        // The color is already set to edge color.
+        m_g2d.fill(computeUntransformedDeltaWedgeCap());
+        m_g2d.setTransform(m_currNativeXform); }
+      // Finally, render the mono delta wedge.
+      { m_xformUtil.setTransform(-cosTheta, -sinTheta, sinTheta, -cosTheta,
+                                 midX, midY);
+        m_g2d.transform(m_xformUtil);
+        m_g2d.scale(arrow0Size, arrow0Size);
+        m_g2d.setColor(arrow0Color);
+        m_g2d.fill(computeUntransformedArrow(ARROW_DELTA));
+        m_g2d.setTransform(m_currNativeXform); }
+      return; } // End ARROW_MONO.
+
+    final double x0Adj;
+    final double y0Adj;
+    final double x1Adj;
+    final double y1Adj;
+    { // Render the line segment if necessary.
+      final double t0 = getT(arrowType0) * arrow0Size / len;
+      x0Adj = t0 * (((double) x1) - x0) + x0;
+      y0Adj = t0 * (((double) y1) - y0) + y0;
+      final double t1 = getT(arrowType1) * arrow1Size / len;
+      x1Adj = t1 * (((double) x0) - x1) + x1;
+      y1Adj = t1 * (((double) y0) - y1) + y1;
+      // If the vector point0->point1 is pointing opposite to
+      // adj0->adj1, then don't render the line segment.
+      // Dot product determines this.
+      if ((((double) x1) - x0) * (x1Adj - x0Adj) +
+          (((double) y1) - y0) * (y1Adj - y0Adj) > 0.0d) {
+        // Must render the line segment.
+        final boolean simpleSegment = arrowType0 == ARROW_NONE &&
+          arrowType1 == ARROW_NONE && dashLength == 0.0f;
+        setStroke(edgeThickness, dashLength,
+                  simpleSegment ? BasicStroke.CAP_ROUND :
+                  BasicStroke.CAP_BUTT, false);
+        m_line2d.setLine(x0Adj, y0Adj, x1Adj, y1Adj);
+        m_g2d.setColor(edgeColor);
+        m_g2d.draw(m_line2d);
+        if (simpleSegment) { return; } }
+    } // End rendering of line segment.
+
+    // Using x0, x1, y0, and y1 instead of the "adjusted" endpoints is
+    // accurate enough in computation of cosine and sine because the
+    // length is guaranteed to be at least as large.  Remember that the
+    // original endpoint values are specified as float whereas the adjusted
+    // points are double.
+    final double cosTheta = (((double) x0) - x1) / len;
+    final double sinTheta = (((double) y0) - y1) / len;
+
+    if (dashLength == 0.0f) { // Render arrow cap at point 0.
+      final Shape arrow0Cap = computeUntransformedArrowCap
+        (arrowType0, ((double) arrow0Size) / edgeThickness);
+      if (arrow0Cap != null) {
+        m_xformUtil.setTransform(cosTheta, sinTheta, -sinTheta, cosTheta,
+                                 x0Adj, y0Adj);
+        m_g2d.transform(m_xformUtil);
+        m_g2d.scale(edgeThickness, edgeThickness);
+        // The color is already set to edge color.
+        m_g2d.fill(arrow0Cap);
+        m_g2d.setTransform(m_currNativeXform); } }
+
+    if (dashLength == 0.0f) { // Render arrow cap at point 1.
+      final Shape arrow1Cap = computeUntransformedArrowCap
+        (arrowType1, ((double) arrow1Size) / edgeThickness);
+      if (arrow1Cap != null) {
+        m_xformUtil.setTransform(-cosTheta, -sinTheta, sinTheta, -cosTheta,
+                                 x1Adj, y1Adj);
+        m_g2d.transform(m_xformUtil);
+        m_g2d.scale(edgeThickness, edgeThickness);
+        // The color is already set to edge color.
+        m_g2d.fill(arrow1Cap);
+        m_g2d.setTransform(m_currNativeXform); } }
+
+    { // Render arrow at point 0.
+      final Shape arrow0 = computeUntransformedArrow(arrowType0);
+      if (arrow0 != null) {
+        m_xformUtil.setTransform(cosTheta, sinTheta, -sinTheta, cosTheta,
+                                 x0, y0);
+        m_g2d.transform(m_xformUtil);
+        m_g2d.scale(arrow0Size, arrow0Size);
+        m_g2d.setColor(arrow0Color);
+        m_g2d.fill(arrow0);
+        m_g2d.setTransform(m_currNativeXform); }
+    }
+
+    { // Render arrow at point 1.
+      final Shape arrow1 = computeUntransformedArrow(arrowType1);
+      if (arrow1 != null) {
+        m_xformUtil.setTransform(-cosTheta, -sinTheta, sinTheta, -cosTheta,
+                                 x1, y1);
+        m_g2d.transform(m_xformUtil);
+        m_g2d.scale(arrow1Size, arrow1Size);
+        m_g2d.setColor(arrow1Color);
+        m_g2d.fill(arrow1);
+        m_g2d.setTransform(m_currNativeXform); }
+    }
+  }
+
   /**
    * Something is rendered in all cases except where the length of the edge
    * is zero (because in that case directionality cannot be determined for
@@ -1016,8 +1211,8 @@ public final class GraphGraphics
    * rendered.<p>
    * This method will not work unless clear() has been called at least once
    * previously.
-   * @param anchors anchor points between the two edge endpoints, or null
-   *   if none.
+   * @param anchors anchor points between the two edge endpoints; null is
+   *   an acceptable value to indicate no edge anchors.
    * @param dashLength a positive value representing the length of dashes
    *   on the edge, or zero to indicate that the edge is solid.
    * @exception IllegalArgumentException if edgeThickness is less than zero,
@@ -1031,219 +1226,16 @@ public final class GraphGraphics
                                  final float arrow1Size,
                                  final Color arrow1Color,
                                  final float x0, final float y0,
-                                 final EdgeAnchors anchors,
+                                 EdgeAnchors anchors,
                                  final float x1, final float y1,
                                  final float edgeThickness,
                                  final Color edgeColor,
                                  final float dashLength)
   {
-    if (anchors != null) {
-      drawPolyEdgeFull(arrowType0, arrow0Size, arrow0Color,
-                       arrowType1, arrow1Size, arrow1Color,
-                       x0, y0, anchors, x1, y1,
-                       edgeThickness, edgeColor, dashLength);
-      return; }
-
-    if (m_debug) {
-      edgeFullDebug(false, arrowType0, arrow0Size, arrowType1, arrow1Size,
-                    edgeThickness, dashLength, null); }
-    // End debug.  Here the real code begins.
-
-    final double len = Math.sqrt((((double) x1) - x0) * (((double) x1) - x0) +
-                                 (((double) y1) - y0) * (((double) y1) - y0));
-    // If the length of the edge is zero we're going to skip completely over
-    // all rendering.
-    if (len == 0.0d) return;
-
-    if (arrowType0 == ARROW_BIDIRECTIONAL) { // Draw and return.
-      final double a = (6.0d + Math.sqrt(17.0d) / 2.0d) * edgeThickness;
-      m_path2d.reset();
-      final double f = (-17.0d / 8.0d) * edgeThickness + arrow0Size;
-      m_path2d.moveTo((float) (a + 4.0d * f),
-                      (float) (f + 1.5d * edgeThickness));
-      m_path2d.lineTo((float) a, (float) (1.5d * edgeThickness));
-      if (2.0d * a < len) {
-        m_path2d.lineTo((float) (len - a), (float) (1.5d * edgeThickness)); }
-      final double g = (-17.0d / 8.0d) * edgeThickness + arrow1Size;
-      m_path2d.moveTo((float) (len - (a + 4.0d * g)),
-                      (float) (-g + -1.5d * edgeThickness));
-      m_path2d.lineTo((float) (len - a), (float) (-1.5d * edgeThickness));
-      if (2.0d * a < len) {
-        m_path2d.lineTo((float) a, (float) (-1.5d * edgeThickness)); }
-      // I want the transform to first rotate, then translate.
-      final double cosTheta = (((double) x1) - x0) / len;
-      final double sinTheta = (((double) y1) - y0) / len;
-      m_xformUtil.setTransform
-        (cosTheta, sinTheta, -sinTheta, cosTheta, x0, y0);
-      m_path2d.transform(m_xformUtil);
-      // Right now, we're drawing bidirectional edges with butt ends instead
-      // of round ends.  If we wanted round ends, substantially more work
-      // would have to be done for the following reasons.  For dashed
-      // lines, we need butt ends to be consistent with the appearance of
-      // dashes with other edge types.  Therefore, if we wanted round
-      // ends, we would have to create shapes for these ends and render them
-      // separately.  Computing the round end for the angled arrow segment
-      // is not easy, especially for the case where this segment is very
-      // short relative to the edge thickness.  I prefer to keep things
-      // simple in the code at the expense of sacrificing a little bit of
-      // prettiness.
-      setStroke(edgeThickness, dashLength, BasicStroke.CAP_BUTT, false);
-      m_g2d.setColor(edgeColor);
-      m_g2d.draw(m_path2d);
-      return; }
-
-    if (arrowType0 == ARROW_MONO) { // Draw and return.
-      m_g2d.setColor(edgeColor); // We're going to render at least one segment.
-      setStroke(edgeThickness, dashLength, BasicStroke.CAP_BUTT, false);
-      final double deltaLen = getT(ARROW_DELTA) * arrow0Size;
-      final double tDeltaLenFactor = 0.5d - deltaLen / len;
-      if (tDeltaLenFactor > 0.0d) { // We must render the "pre" line segment.
-        final double x0Prime = tDeltaLenFactor * (((double) x1) - x0) + x0;
-        final double y0Prime = tDeltaLenFactor * (((double) y1) - y0) + y0;
-        m_line2d.setLine(x0, y0, x0Prime, y0Prime);
-        m_g2d.draw(m_line2d); }
-      // Render the "post" segment.
-      final double midX = (((double) x0) + x1) / 2.0d;
-      final double midY = (((double) y0) + y1) / 2.0d;
-      m_line2d.setLine(x1, y1, midX, midY);
-      m_g2d.draw(m_line2d);
-      final double cosTheta = (((double) x0) - x1) / len;
-      final double sinTheta = (((double) y0) - y1) / len;
-      if (tDeltaLenFactor > 0.0d && dashLength == 0.0f) { // Render begin cap.
-        m_xformUtil.setTransform(cosTheta, sinTheta, -sinTheta, cosTheta,
-                                 x0, y0);
-        m_g2d.transform(m_xformUtil);
-        m_g2d.scale(edgeThickness, edgeThickness);
-        // The color is already set to edge color.
-        m_g2d.fill(computeUntransformedArrowCap(ARROW_NONE, 0.0d));
-        m_g2d.setTransform(m_currNativeXform); }
-      if (dashLength == 0.0f) { // Render end cap.
-        m_xformUtil.setTransform(-cosTheta, -sinTheta, sinTheta, -cosTheta,
-                                 x1, y1);
-        m_g2d.transform(m_xformUtil);
-        m_g2d.scale(edgeThickness, edgeThickness);
-        // The color is already set to edge color.
-        m_g2d.fill(computeUntransformedArrowCap(ARROW_NONE, 0.0d));
-        m_g2d.setTransform(m_currNativeXform); }
-      if (dashLength == 0.0f) { // Render delta wedge cap.
-        m_xformUtil.setTransform(-cosTheta, -sinTheta, sinTheta, -cosTheta,
-                                 midX, midY);
-        m_g2d.transform(m_xformUtil);
-        m_g2d.scale(edgeThickness, edgeThickness);
-        // The color is already set to edge color.
-        m_g2d.fill(computeUntransformedDeltaWedgeCap());
-        m_g2d.setTransform(m_currNativeXform); }
-      // Finally, render the mono delta wedge.
-      { m_xformUtil.setTransform(-cosTheta, -sinTheta, sinTheta, -cosTheta,
-                                 midX, midY);
-        m_g2d.transform(m_xformUtil);
-        m_g2d.scale(arrow0Size, arrow0Size);
-        m_g2d.setColor(arrow0Color);
-        m_g2d.fill(computeUntransformedArrow(ARROW_DELTA));
-        m_g2d.setTransform(m_currNativeXform); }
-      return; }
-
-    final double x0Adj;
-    final double y0Adj;
-    final double x1Adj;
-    final double y1Adj;
-    { // Render the line segment if necessary.
-      final double t0 = getT(arrowType0) * arrow0Size / len;
-      x0Adj = t0 * (((double) x1) - x0) + x0;
-      y0Adj = t0 * (((double) y1) - y0) + y0;
-      final double t1 = getT(arrowType1) * arrow1Size / len;
-      x1Adj = t1 * (((double) x0) - x1) + x1;
-      y1Adj = t1 * (((double) y0) - y1) + y1;
-      // If the vector point0->point1 is pointing opposite to
-      // adj0->adj1, then don't render the line segment.
-      // Dot product determines this.
-      if ((((double) x1) - x0) * (x1Adj - x0Adj) +
-          (((double) y1) - y0) * (y1Adj - y0Adj) > 0.0d) {
-        // Must render the line segment.
-        final boolean simpleSegment = arrowType0 == ARROW_NONE &&
-          arrowType1 == ARROW_NONE && dashLength == 0.0f;
-        setStroke(edgeThickness, dashLength,
-                  simpleSegment ? BasicStroke.CAP_ROUND :
-                  BasicStroke.CAP_BUTT, false);
-        m_line2d.setLine(x0Adj, y0Adj, x1Adj, y1Adj);
-        m_g2d.setColor(edgeColor);
-        m_g2d.draw(m_line2d);
-        if (simpleSegment) { return; } }
-    } // End rendering of line segment.
-
-    // Using x0, x1, y0, and y1 instead of the "adjusted" endpoints is
-    // accurate enough in computation of cosine and sine because the
-    // length is guaranteed to be at least as large.  Remember that the
-    // original endpoint values are specified as float whereas the adjusted
-    // points are double.
-    final double cosTheta = (((double) x0) - x1) / len;
-    final double sinTheta = (((double) y0) - y1) / len;
-
-    if (dashLength == 0.0f) { // Render arrow cap at point 0.
-      final Shape arrow0Cap = computeUntransformedArrowCap
-        (arrowType0, ((double) arrow0Size) / edgeThickness);
-      if (arrow0Cap != null) {
-        m_xformUtil.setTransform(cosTheta, sinTheta, -sinTheta, cosTheta,
-                                 x0Adj, y0Adj);
-        m_g2d.transform(m_xformUtil);
-        m_g2d.scale(edgeThickness, edgeThickness);
-        // The color is already set to edge color.
-        m_g2d.fill(arrow0Cap);
-        m_g2d.setTransform(m_currNativeXform); } }
-
-    if (dashLength == 0.0f) { // Render arrow cap at point 1.
-      final Shape arrow1Cap = computeUntransformedArrowCap
-        (arrowType1, ((double) arrow1Size) / edgeThickness);
-      if (arrow1Cap != null) {
-        m_xformUtil.setTransform(-cosTheta, -sinTheta, sinTheta, -cosTheta,
-                                 x1Adj, y1Adj);
-        m_g2d.transform(m_xformUtil);
-        m_g2d.scale(edgeThickness, edgeThickness);
-        // The color is already set to edge color.
-        m_g2d.fill(arrow1Cap);
-        m_g2d.setTransform(m_currNativeXform); } }
-
-    { // Render arrow at point 0.
-      final Shape arrow0 = computeUntransformedArrow(arrowType0);
-      if (arrow0 != null) {
-        m_xformUtil.setTransform(cosTheta, sinTheta, -sinTheta, cosTheta,
-                                 x0, y0);
-        m_g2d.transform(m_xformUtil);
-        m_g2d.scale(arrow0Size, arrow0Size);
-        m_g2d.setColor(arrow0Color);
-        m_g2d.fill(arrow0);
-        m_g2d.setTransform(m_currNativeXform); }
-    }
-
-    { // Render arrow at point 1.
-      final Shape arrow1 = computeUntransformedArrow(arrowType1);
-      if (arrow1 != null) {
-        m_xformUtil.setTransform(-cosTheta, -sinTheta, sinTheta, -cosTheta,
-                                 x1, y1);
-        m_g2d.transform(m_xformUtil);
-        m_g2d.scale(arrow1Size, arrow1Size);
-        m_g2d.setColor(arrow1Color);
-        m_g2d.fill(arrow1);
-        m_g2d.setTransform(m_currNativeXform); }
-    }
-  }
-
-  private final void drawPolyEdgeFull(final byte arrowType0,
-                                      final float arrow0Size,
-                                      final Color arrow0Color,
-                                      final byte arrowType1,
-                                      final float arrow1Size,
-                                      final Color arrow1Color,
-                                      final float x0, final float y0,
-                                      final EdgeAnchors anchors,
-                                      final float x1, final float y1,
-                                      final float edgeThickness,
-                                      final Color edgeColor,
-                                      final float dashLength)
-  {
     final double curveFactor = CURVE_ELLIPTICAL;
+    if (anchors == null) { anchors = m_noAnchors; }
     if (m_debug) {
-      edgeFullDebug(true, arrowType0, arrow0Size, arrowType1, arrow1Size,
+      edgeFullDebug(arrowType0, arrow0Size, arrowType1, arrow1Size,
                     edgeThickness, dashLength, anchors); }
 
     if (!computeCubicPolyEdgePath
@@ -1253,12 +1245,11 @@ public final class GraphGraphics
       // After filtering duplicate start and end points, there are less
       // than 3 total.
       if (m_edgePtsCount == 2) { // Draw an ordinary edge.
-        drawEdgeFull(arrowType0, arrow0Size, arrow0Color,
-                     arrowType1, arrow1Size, arrow1Color,
-                     (float) m_edgePtsBuff[0], (float) m_edgePtsBuff[1],
-                     null,
-                     (float) m_edgePtsBuff[2], (float) m_edgePtsBuff[3],
-                     edgeThickness, edgeColor, dashLength); }
+        drawSimpleEdgeFull(arrowType0, arrow0Size, arrow0Color,
+                           arrowType1, arrow1Size, arrow1Color,
+                           (float) m_edgePtsBuff[0], (float) m_edgePtsBuff[1],
+                           (float) m_edgePtsBuff[2], (float) m_edgePtsBuff[3],
+                           edgeThickness, edgeColor, dashLength); }
       return; }
 
     { // Render the edge polypath.
@@ -1284,8 +1275,8 @@ public final class GraphGraphics
       // for dashed segments.  I cannot find a Java API to do this; our best
       // bet would be to implement our own cubic curve length calculating
       // function, but our computation may not agree with BasicStroke's
-      // computation.  So what we're going to do is always render the arrow
-      // caps.
+      // computation.  So what we're going to do is never render the arrow
+      // caps for dashed edges.
     }
 
     final double dx0 = m_edgePtsBuff[0] - m_edgePtsBuff[4];
@@ -1457,8 +1448,7 @@ public final class GraphGraphics
     return true;
   }
 
-  private final void edgeFullDebug(final boolean polyEdge,
-                                   final byte arrowType0,
+  private final void edgeFullDebug(final byte arrowType0,
                                    final float arrow0Size,
                                    final byte arrowType1,
                                    final float arrow1Size,
@@ -1499,7 +1489,7 @@ public final class GraphGraphics
           ("for ARROW_TEE e/s is greater than 1/2");
       break;
     case ARROW_BIDIRECTIONAL:
-      if (polyEdge)
+      if (anchors.numRemaining() > 0)
         throw new IllegalArgumentException
           ("ARROW_BIDIRECTIONAL not supported for poly edges");
       if (!(17.0d * edgeThickness <= 8.0d * arrow0Size))
@@ -1510,7 +1500,7 @@ public final class GraphGraphics
           ("either both or neither arrows must be ARROW_BIDIRECTIONAL");
       break;
     case ARROW_MONO:
-      if (polyEdge)
+      if (anchors.numRemaining() > 0)
         throw new IllegalArgumentException
           ("ARROW_MONO not supported for poly edges");
       if (!(Math.sqrt(17.0d) * edgeThickness <= 4.0d * arrow0Size))
@@ -1560,10 +1550,9 @@ public final class GraphGraphics
       break;
     default:
       throw new IllegalArgumentException("arrowType1 is not recognized"); }
-    if (polyEdge) {
-      if (anchors.numRemaining() > MAX_EDGE_ANCHORS)
-        throw new IllegalArgumentException
-          ("at most MAX_EDGE_ANCHORS edge anchors can be specified"); }
+    if (anchors.numRemaining() > MAX_EDGE_ANCHORS)
+      throw new IllegalArgumentException
+        ("at most MAX_EDGE_ANCHORS edge anchors can be specified");
   }
 
   /*
