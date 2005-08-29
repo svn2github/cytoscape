@@ -34,12 +34,33 @@ public class GraphLOD
 
 
   /**
-   * This method answers the question: do we render the graph at full [or
-   * low] detail?
-   * @param
+   * This method determines whether or not to render the graph at full detail.
+   * By default this method returns true if and only if the sum of visible
+   * nodes and visible edges is less than 1200.<p>
+   * The following table describes the difference between full and low
+   * rendering detail, in terms of what methods on an instance of
+   * cytoscape.render.immed.GraphGraphics get called:
+   * <blockquote><table border="1" cellpadding="5" cellspacing="0">
+   *   <tr>  <td></td>
+   *         <th>full detail</th>
+   *         <th>low detail</th>                                          </tr>
+   *   <tr>  <th>nodes</th>
+   *         <td>drawNodeFull()</td>
+   *         <td>drawNodeLow()</td>                                       </tr>
+   *   <tr>  <th>edges</th>
+   *         <td>drawEdgeFull()</td>
+   *         <td>drawEdgeLow()</td>                                       </tr>
+   *   <tr>  <th>node labels</th>
+   *         <td>drawTextFull()</td>
+   *         <td>not rendered</td>                                        </tr>
+   * </table></blockquote>
+   *
+   * @param visibleNodeCount the number of nodes that are about to be rendered.
+   * @param visibleEdgeCount the number of edges that are about to be rendered.
+   * @return true for full detail, false for low detail.
    */
-  public boolean fullDetail(final int visibleNodeCount,
-                            final int visibleEdgeCount)
+  public boolean detail(final int visibleNodeCount,
+                        final int visibleEdgeCount)
   {
     return visibleNodeCount + visibleEdgeCount < 1200;
   }
