@@ -262,6 +262,16 @@ public final class GraphGraphics
                         Math.max(1, yOne - yNot));            // be problem.
   }
 
+  /*
+   * Sets m_gMinimal.
+   */
+  private final void makeMinimalGraphics()
+  {
+    m_gMinimal = (Graphics2D) image.getGraphics();
+    m_gMinimal.setRenderingHint
+      (RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
+  }
+
   /**
    * Draws a node with medium to high detail, depending on parameters
    * specified.
@@ -617,10 +627,21 @@ public final class GraphGraphics
   }
 
   /**
+   * This is the method that will render an edge very quickly.
+   * Translucent colors are not officially supported by the low detail
+   * rendering methods, so use translucent colors at your own risk.<p>
+   * The points (x0, y0) and (x1, y1) specify the endpoints of edge to
+   * be rendered in the node coordinate space, not the image coordinate
+   * space.  Thus, these values will likely not change from frame to frame,
+   * as zoom and pan operations are performed.  If these two points are
+   * identical, nothing is drawn.<p>
    * This method will not work unless clear() has been called at least once
-   * previously.  Translucent
-   * colors are not officially supported by the low detail rendering
-   * methods, so use translucent colors at your own risk.
+   * previously.
+   * @param x0 the X coordinate of the begin point of edge to render.
+   * @param y0 the Y coordinate of the begin point of edge to render.
+   * @param x1 the X coordinate of the end point of edge to render.
+   * @param y1 the Y coordinate of the end point of edge to render.
+   * @param edgeColor the color to use when drawing the edge.
    */
   public final void drawEdgeLow(final float x0, final float y0,
                                 final float x1, final float y1,
@@ -649,14 +670,226 @@ public final class GraphGraphics
     m_gMinimal.drawLine(xNot, yNot, xOne, yOne);
   }
 
-  /*
-   * Sets m_gMinimal.
+  /**
+   * Draws an edge with medium to high detail, depending on parameters
+   * specified.
+   * Something is rendered in all cases except where the length of the edge
+   * is zero (because in that case directionality cannot be determined for
+   * at least some arrowheads).<p>
+   * The arrow types must each be one of the ARROW_* constants.
+   * The arrow at endpoint 1 is always "on top of" the arrow at endpoint 0
+   * because the arrow at endpoint 0 gets rendered first.<p>
+   * There are some constraints on the ratio of edge thickness to arrow
+   * size, listed in the table below.  Note that it is enough for this ratio
+   * to be less than or equal to 0.47 for all of the specific arrowhead
+   * constraints to pass.
+   * <blockquote><table border="1" cellpadding="5" cellspacing="0">
+   *   <tr>  <th>arrow type</th>     <th>placement of arrow</th>          </tr>
+   *   <tr>  <td>ARROW_NONE</td>     <td>the edge line segment has
+   *                                   endpoint specified, and
+   *                                   the line segment has a round
+   *                                   end (center of round
+   *                                   semicircle end exactly equal to
+   *                                   endpoint specified); arrow size
+   *                                   and arrow color are ignored</td>   </tr>
+   *   <tr>  <td>ARROW_DISC</td>     <td>the disc arrowhead is placed
+   *                                   such that its center is at the
+   *                                   specified endpoint; the diameter
+   *                                   of the disk is the arrow size
+   *                                   specified; the arrow size cannot
+   *                                   be less than edge thickness</td>   </tr>
+   *   <tr>  <td>ARROW_DELTA</td>    <td>the sharp tip of the arrowhead
+   *                                   is exactly at the endpint
+   *                                   specified; the delta is as wide as
+   *                                   the arrow size specified and twice
+   *                                   that in length; the ratio of edge
+   *                                   thickness to arrow size cannot
+   *                                   exceed 4/sqrt(17)</td>             </tr>
+   *   <tr>  <td>ARROW_DIAMOND</td>  <td>the sharp tip of the arrowhead
+   *                                   is exactly at the endpoint
+   *                                   specified; the diamond is as wide as
+   *                                   the arrow size specified and twice
+   *                                   that in length; the ratio of edge
+   *                                   thickness to arrow size cannot
+   *                                   exceed 2/sqrt(5)</td>              </tr>
+   *   <tr>  <td>ARROW_TEE</td>      <td>the center of the tee intersection
+   *                                   lies at the specified endpoint; the
+   *                                   width of the top of the tee is one
+   *                                   quarter of
+   *                                   the arrow size specified, and the
+   *                                   span of the top of the tee is
+   *                                   four times the arrow size; the ratio
+   *                                   of edge thickness to arrow
+   *                                   size cannot exceed one-half</td>   </tr>
+   *   <tr>  <td>ARROW_BIDIRECTIONAL</td>
+   *                                 <td>either both arrowheads must be
+   *                                   of this type or neither one must be
+   *                                   of this type; bidirectional edges
+   *                                   look completely different from other
+   *                                   edges; arrow colors are completely
+   *                                   ignored for this type of edge;
+   *                                   the edge arrow is drawn such that
+   *                                   it fits snugly inside of an
+   *                                   ARROW_DELTA of specified size times
+   *                                   two, where the delta's tip is at edge
+   *                                   endpoint specified;
+   *                                   the ratio of edge thickness
+   *                                   to arrow size cannot exceed
+   *                                   8/17</td>                          </tr>
+   *   <tr>  <td>ARROW_MONO</td>     <td>either both arrowheads must be
+   *                                   of this type of neither one must be
+   *                                   of this type; mono edges look
+   *                                   completely different from other edges
+   *                                   because an arrowhead (an ARROW_DELTA)
+   *                                   is placed such that its tip is in the
+   *                                   middle of the edge
+   *                                   segment, pointing from (x0,y0) to
+   *                                   (x1,y1); the color
+   *                                   and size of the first arrow (arrow0)
+   *                                   are read and the color and size of the
+   *                                   other arrow are completely ignored;
+   *                                   the ratio of edge thickness to arrow
+   *                                   size cannot exceed 4/sqrt(17)</td> </tr>
+   * </table></blockquote><p>
+   * Note that if the edge segment length is zero then nothing gets
+   * rendered.<p>
+   * This method will not work unless clear() has been called at least once
+   * previously.
+   * @param anchors anchor points between the two edge endpoints; null is
+   *   an acceptable value to indicate no edge anchors.
+   * @param dashLength a positive value representing the length of dashes
+   *   on the edge, or zero to indicate that the edge is solid.
+   * @exception IllegalArgumentException if edgeThickness is less than zero,
+   *   if dashLength is less than zero, or if any one of the arrow sizes
+   *   does not meet specified criteria.
    */
-  private final void makeMinimalGraphics()
+  public final void drawEdgeFull(final byte arrowType0,
+                                 final float arrow0Size,
+                                 final Color arrow0Color,
+                                 final byte arrowType1,
+                                 final float arrow1Size,
+                                 final Color arrow1Color,
+                                 final float x0, final float y0,
+                                 EdgeAnchors anchors,
+                                 final float x1, final float y1,
+                                 final float edgeThickness,
+                                 final Color edgeColor,
+                                 final float dashLength)
   {
-    m_gMinimal = (Graphics2D) image.getGraphics();
-    m_gMinimal.setRenderingHint
-      (RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
+    final double curveFactor = CURVE_ELLIPTICAL;
+    if (anchors == null) { anchors = m_noAnchors; }
+    if (m_debug) {
+      edgeFullDebug(arrowType0, arrow0Size, arrowType1, arrow1Size,
+                    edgeThickness, dashLength, anchors); }
+
+    if (!computeCubicPolyEdgePath
+        (arrowType0, arrowType0 == ARROW_NONE ? 0.0f : arrow0Size,
+         arrowType1, arrowType1 == ARROW_NONE ? 0.0f : arrow1Size,
+         x0, y0, anchors, x1, y1, curveFactor)) {
+      // After filtering duplicate start and end points, there are less
+      // than 3 total.
+      if (m_edgePtsCount == 2) { // Draw an ordinary edge.
+        drawSimpleEdgeFull(arrowType0, arrow0Size, arrow0Color,
+                           arrowType1, arrow1Size, arrow1Color,
+                           (float) m_edgePtsBuff[0], (float) m_edgePtsBuff[1],
+                           (float) m_edgePtsBuff[2], (float) m_edgePtsBuff[3],
+                           edgeThickness, edgeColor, dashLength); }
+      return; }
+
+    { // Render the edge polypath.
+      final boolean simpleSegment = arrowType0 == ARROW_NONE &&
+        arrowType1 == ARROW_NONE && dashLength == 0.0f;
+      setStroke(edgeThickness, dashLength,
+                simpleSegment ? BasicStroke.CAP_ROUND :
+                BasicStroke.CAP_BUTT, false);
+      // Set m_path2d to contain the cubic curves computed in m_edgePtsBuff.
+      m_path2d.reset();
+      m_path2d.moveTo((float) m_edgePtsBuff[2], (float) m_edgePtsBuff[3]);
+      int inx = 4;
+      final int count = (m_edgePtsCount - 1) * 6 - 2;
+      while (inx < count) {
+        m_path2d.curveTo
+          ((float) m_edgePtsBuff[inx++], (float) m_edgePtsBuff[inx++],
+           (float) m_edgePtsBuff[inx++], (float) m_edgePtsBuff[inx++],
+           (float) m_edgePtsBuff[inx++], (float) m_edgePtsBuff[inx++]); }
+      m_g2d.setColor(edgeColor);
+      m_g2d.draw(m_path2d);
+      if (simpleSegment) { return; }
+      // We need to figure out the phase at the end of the cubic poly-path
+      // for dashed segments.  I cannot find a Java API to do this; our best
+      // bet would be to implement our own cubic curve length calculating
+      // function, but our computation may not agree with BasicStroke's
+      // computation.  So what we're going to do is never render the arrow
+      // caps for dashed edges.
+    }
+
+    final double dx0 = m_edgePtsBuff[0] - m_edgePtsBuff[4];
+    final double dy0 = m_edgePtsBuff[1] - m_edgePtsBuff[5];
+    final double len0 = Math.sqrt(dx0 * dx0 + dy0 * dy0);
+    final double cosTheta0 = dx0 / len0;
+    final double sinTheta0 = dy0 / len0;
+
+    final double dx1 = m_edgePtsBuff[(m_edgePtsCount - 1) * 6 - 2] -
+      m_edgePtsBuff[(m_edgePtsCount - 1) * 6 - 6];
+    final double dy1 = m_edgePtsBuff[(m_edgePtsCount - 1) * 6 - 1] -
+      m_edgePtsBuff[(m_edgePtsCount - 1) * 6 - 5];
+    final double len1 = Math.sqrt(dx1 * dx1 + dy1 * dy1);
+    final double cosTheta1 = dx1 / len1;
+    final double sinTheta1 = dy1 / len1;
+
+    if (dashLength == 0.0f)
+    { // Render arrow cap at origin of poly path.
+      final Shape arrow0Cap = computeUntransformedArrowCap
+        (arrowType0, ((double) arrow0Size) / edgeThickness);
+      if (arrow0Cap != null) {
+        m_xformUtil.setTransform(cosTheta0, sinTheta0, -sinTheta0, cosTheta0,
+                                 m_edgePtsBuff[2], m_edgePtsBuff[3]);
+        m_g2d.transform(m_xformUtil);
+        m_g2d.scale(edgeThickness, edgeThickness);
+        // The color is already set to edge color.
+        m_g2d.fill(arrow0Cap);
+        m_g2d.setTransform(m_currNativeXform); }
+    }
+
+    if (dashLength == 0.0f)
+    { // Render arrow cap at end of poly path.
+      final Shape arrow1Cap = computeUntransformedArrowCap
+        (arrowType1, ((double) arrow1Size) / edgeThickness);
+      if (arrow1Cap != null) {
+        m_xformUtil.setTransform(cosTheta1, sinTheta1, -sinTheta1, cosTheta1,
+                                 m_edgePtsBuff[(m_edgePtsCount - 1) * 6 - 4],
+                                 m_edgePtsBuff[(m_edgePtsCount - 1) * 6 - 3]);
+        m_g2d.transform(m_xformUtil);
+        m_g2d.scale(edgeThickness, edgeThickness);
+        // The color is already set to edge color.
+        m_g2d.fill(arrow1Cap);
+        m_g2d.setTransform(m_currNativeXform); }
+    }
+
+    { // Render arrow at origin of poly path.
+      final Shape arrow0 = computeUntransformedArrow(arrowType0);
+      if (arrow0 != null) {
+        m_xformUtil.setTransform(cosTheta0, sinTheta0, -sinTheta0, cosTheta0,
+                                 m_edgePtsBuff[0], m_edgePtsBuff[1]);
+        m_g2d.transform(m_xformUtil);
+        m_g2d.scale(arrow0Size, arrow0Size);
+        m_g2d.setColor(arrow0Color);
+        m_g2d.fill(arrow0);
+        m_g2d.setTransform(m_currNativeXform); }
+    }
+
+    { // Render arrow at end of poly path.
+      final Shape arrow1 = computeUntransformedArrow(arrowType1);
+      if (arrow1 != null) {
+        m_xformUtil.setTransform(cosTheta1, sinTheta1, -sinTheta1, cosTheta1,
+                                 m_edgePtsBuff[(m_edgePtsCount - 1) * 6 - 2],
+                                 m_edgePtsBuff[(m_edgePtsCount - 1) * 6 - 1]);
+        m_g2d.transform(m_xformUtil);
+        m_g2d.scale(arrow1Size, arrow1Size);
+        m_g2d.setColor(arrow1Color);
+        m_g2d.fill(arrow1);
+        m_g2d.setTransform(m_currNativeXform); }
+    }
   }
 
   private final void drawSimpleEdgeFull(final byte arrowType0,
@@ -843,230 +1076,6 @@ public final class GraphGraphics
       if (arrow1 != null) {
         m_xformUtil.setTransform(-cosTheta, -sinTheta, sinTheta, -cosTheta,
                                  x1, y1);
-        m_g2d.transform(m_xformUtil);
-        m_g2d.scale(arrow1Size, arrow1Size);
-        m_g2d.setColor(arrow1Color);
-        m_g2d.fill(arrow1);
-        m_g2d.setTransform(m_currNativeXform); }
-    }
-  }
-
-  /**
-   * Something is rendered in all cases except where the length of the edge
-   * is zero (because in that case directionality cannot be determined for
-   * at least some arrowheads).  However, it may make sense for higher levels
-   * of implementation to only render edges when their arrowheads do not
-   * become cluttered.  For higher levels to be able to do this, I've provided
-   * detailed information regarding the size and position of arrowheads (see
-   * table below).<p>
-   * The arrow types must each be one of the ARROW_* constants.
-   * The arrow at endpoint 1 is always on top of the arrow at endpoint 0
-   * because the arrow at endpoint 0 gets rendered first.<p>
-   * There are some constraints on the ratio of edge thickness to arrow
-   * size, listed in the table below.  Note that it is enough for this ratio
-   * to be less than or equal to 0.47 for all of the specific arrowhead
-   * constraints to pass.
-   * <blockquote><table border="1" cellpadding="5" cellspacing="0">
-   *   <tr>  <th>arrow type</th>     <th>placement of arrow</th>          </tr>
-   *   <tr>  <td>ARROW_NONE</td>     <td>the edge line segment has
-   *                                   endpoint specified, and
-   *                                   the line segment has a round
-   *                                   end (center of round
-   *                                   semicircle end exactly equal to
-   *                                   endpoint specified); arrow size
-   *                                   and arrow color are ignored</td>   </tr>
-   *   <tr>  <td>ARROW_DISC</td>     <td>the disc arrowhead is placed
-   *                                   such that its center is at the
-   *                                   specified endpoint; the diameter
-   *                                   of the disk is the arrow size
-   *                                   specified; the arrow size cannot
-   *                                   be less than edge thickness</td>   </tr>
-   *   <tr>  <td>ARROW_DELTA</td>    <td>the sharp tip of the arrowhead
-   *                                   is exactly at the endpint
-   *                                   specified; the delta is as wide as
-   *                                   the arrow size specified and twice
-   *                                   that in length; the ratio of edge
-   *                                   thickness to arrow size cannot
-   *                                   exceed 4/sqrt(17)</td>             </tr>
-   *   <tr>  <td>ARROW_DIAMOND</td>  <td>the sharp tip of the arrowhead
-   *                                   is exactly at the endpoint
-   *                                   specified; the diamond is as wide as
-   *                                   the arrow size specified and twice
-   *                                   that in length; the ratio of edge
-   *                                   thickness to arrow size cannot
-   *                                   exceed 2/sqrt(5)</td>              </tr>
-   *   <tr>  <td>ARROW_TEE</td>      <td>the center of the tee intersection
-   *                                   lies at the specified endpoint; the
-   *                                   width of the top of the tee is one
-   *                                   quarter of
-   *                                   the arrow size specified, and the
-   *                                   span of the top of the tee is
-   *                                   four times the arrow size; the ratio
-   *                                   of edge thickness to arrow
-   *                                   size cannot exceed one-half</td>   </tr>
-   *   <tr>  <td>ARROW_BIDIRECTIONAL</td>
-   *                                 <td>either both arrowheads must be
-   *                                   of this type of neither one must be
-   *                                   of this type; bidirectional edges
-   *                                   look completely different from other
-   *                                   edges; arrow colors are completely
-   *                                   ignored for this type of edge;
-   *                                   the edge arrow is drawn such that
-   *                                   it fits snugly inside of an
-   *                                   ARROW_DELTA of specified size times
-   *                                   two, where the delta's tip is at edge
-   *                                   endpoint specified;
-   *                                   the ratio of edge thickness
-   *                                   to arrow size cannot exceed
-   *                                   8/17</td>                          </tr>
-   *   <tr>  <td>ARROW_MONO</td>     <td>either both arrowheads must be
-   *                                   of this type of neither one must be
-   *                                   of this type; mono edges look
-   *                                   completely different from other edges
-   *                                   because an arrowhead (an ARROW_DELTA)
-   *                                   is placed such that its tip is in the
-   *                                   middle of the edge
-   *                                   segment, pointing from (x0,y0) to
-   *                                   (x1,y1); the color
-   *                                   and size of the first arrow (arrow0)
-   *                                   are read and the color and size of the
-   *                                   other arrow are completely ignored;
-   *                                   the ratio of edge thickness to arrow
-   *                                   size cannot exceed 4/sqrt(17)</td> </tr>
-   * </table></blockquote><p>
-   * Note that if the edge segment length is zero then nothing gets
-   * rendered.<p>
-   * This method will not work unless clear() has been called at least once
-   * previously.
-   * @param anchors anchor points between the two edge endpoints; null is
-   *   an acceptable value to indicate no edge anchors.
-   * @param dashLength a positive value representing the length of dashes
-   *   on the edge, or zero to indicate that the edge is solid.
-   * @exception IllegalArgumentException if edgeThickness is less than zero,
-   *   if dashLength is less than zero, or if any one of the arrow sizes
-   *   does not meet specified criteria.
-   */
-  public final void drawEdgeFull(final byte arrowType0,
-                                 final float arrow0Size,
-                                 final Color arrow0Color,
-                                 final byte arrowType1,
-                                 final float arrow1Size,
-                                 final Color arrow1Color,
-                                 final float x0, final float y0,
-                                 EdgeAnchors anchors,
-                                 final float x1, final float y1,
-                                 final float edgeThickness,
-                                 final Color edgeColor,
-                                 final float dashLength)
-  {
-    final double curveFactor = CURVE_ELLIPTICAL;
-    if (anchors == null) { anchors = m_noAnchors; }
-    if (m_debug) {
-      edgeFullDebug(arrowType0, arrow0Size, arrowType1, arrow1Size,
-                    edgeThickness, dashLength, anchors); }
-
-    if (!computeCubicPolyEdgePath
-        (arrowType0, arrowType0 == ARROW_NONE ? 0.0f : arrow0Size,
-         arrowType1, arrowType1 == ARROW_NONE ? 0.0f : arrow1Size,
-         x0, y0, anchors, x1, y1, curveFactor)) {
-      // After filtering duplicate start and end points, there are less
-      // than 3 total.
-      if (m_edgePtsCount == 2) { // Draw an ordinary edge.
-        drawSimpleEdgeFull(arrowType0, arrow0Size, arrow0Color,
-                           arrowType1, arrow1Size, arrow1Color,
-                           (float) m_edgePtsBuff[0], (float) m_edgePtsBuff[1],
-                           (float) m_edgePtsBuff[2], (float) m_edgePtsBuff[3],
-                           edgeThickness, edgeColor, dashLength); }
-      return; }
-
-    { // Render the edge polypath.
-      final boolean simpleSegment = arrowType0 == ARROW_NONE &&
-        arrowType1 == ARROW_NONE && dashLength == 0.0f;
-      setStroke(edgeThickness, dashLength,
-                simpleSegment ? BasicStroke.CAP_ROUND :
-                BasicStroke.CAP_BUTT, false);
-      // Set m_path2d to contain the cubic curves computed in m_edgePtsBuff.
-      m_path2d.reset();
-      m_path2d.moveTo((float) m_edgePtsBuff[2], (float) m_edgePtsBuff[3]);
-      int inx = 4;
-      final int count = (m_edgePtsCount - 1) * 6 - 2;
-      while (inx < count) {
-        m_path2d.curveTo
-          ((float) m_edgePtsBuff[inx++], (float) m_edgePtsBuff[inx++],
-           (float) m_edgePtsBuff[inx++], (float) m_edgePtsBuff[inx++],
-           (float) m_edgePtsBuff[inx++], (float) m_edgePtsBuff[inx++]); }
-      m_g2d.setColor(edgeColor);
-      m_g2d.draw(m_path2d);
-      if (simpleSegment) { return; }
-      // We need to figure out the phase at the end of the cubic poly-path
-      // for dashed segments.  I cannot find a Java API to do this; our best
-      // bet would be to implement our own cubic curve length calculating
-      // function, but our computation may not agree with BasicStroke's
-      // computation.  So what we're going to do is never render the arrow
-      // caps for dashed edges.
-    }
-
-    final double dx0 = m_edgePtsBuff[0] - m_edgePtsBuff[4];
-    final double dy0 = m_edgePtsBuff[1] - m_edgePtsBuff[5];
-    final double len0 = Math.sqrt(dx0 * dx0 + dy0 * dy0);
-    final double cosTheta0 = dx0 / len0;
-    final double sinTheta0 = dy0 / len0;
-
-    final double dx1 = m_edgePtsBuff[(m_edgePtsCount - 1) * 6 - 2] -
-      m_edgePtsBuff[(m_edgePtsCount - 1) * 6 - 6];
-    final double dy1 = m_edgePtsBuff[(m_edgePtsCount - 1) * 6 - 1] -
-      m_edgePtsBuff[(m_edgePtsCount - 1) * 6 - 5];
-    final double len1 = Math.sqrt(dx1 * dx1 + dy1 * dy1);
-    final double cosTheta1 = dx1 / len1;
-    final double sinTheta1 = dy1 / len1;
-
-    if (dashLength == 0.0f)
-    { // Render arrow cap at origin of poly path.
-      final Shape arrow0Cap = computeUntransformedArrowCap
-        (arrowType0, ((double) arrow0Size) / edgeThickness);
-      if (arrow0Cap != null) {
-        m_xformUtil.setTransform(cosTheta0, sinTheta0, -sinTheta0, cosTheta0,
-                                 m_edgePtsBuff[2], m_edgePtsBuff[3]);
-        m_g2d.transform(m_xformUtil);
-        m_g2d.scale(edgeThickness, edgeThickness);
-        // The color is already set to edge color.
-        m_g2d.fill(arrow0Cap);
-        m_g2d.setTransform(m_currNativeXform); }
-    }
-
-    if (dashLength == 0.0f)
-    { // Render arrow cap at end of poly path.
-      final Shape arrow1Cap = computeUntransformedArrowCap
-        (arrowType1, ((double) arrow1Size) / edgeThickness);
-      if (arrow1Cap != null) {
-        m_xformUtil.setTransform(cosTheta1, sinTheta1, -sinTheta1, cosTheta1,
-                                 m_edgePtsBuff[(m_edgePtsCount - 1) * 6 - 4],
-                                 m_edgePtsBuff[(m_edgePtsCount - 1) * 6 - 3]);
-        m_g2d.transform(m_xformUtil);
-        m_g2d.scale(edgeThickness, edgeThickness);
-        // The color is already set to edge color.
-        m_g2d.fill(arrow1Cap);
-        m_g2d.setTransform(m_currNativeXform); }
-    }
-
-    { // Render arrow at origin of poly path.
-      final Shape arrow0 = computeUntransformedArrow(arrowType0);
-      if (arrow0 != null) {
-        m_xformUtil.setTransform(cosTheta0, sinTheta0, -sinTheta0, cosTheta0,
-                                 m_edgePtsBuff[0], m_edgePtsBuff[1]);
-        m_g2d.transform(m_xformUtil);
-        m_g2d.scale(arrow0Size, arrow0Size);
-        m_g2d.setColor(arrow0Color);
-        m_g2d.fill(arrow0);
-        m_g2d.setTransform(m_currNativeXform); }
-    }
-
-    { // Render arrow at end of poly path.
-      final Shape arrow1 = computeUntransformedArrow(arrowType1);
-      if (arrow1 != null) {
-        m_xformUtil.setTransform(cosTheta1, sinTheta1, -sinTheta1, cosTheta1,
-                                 m_edgePtsBuff[(m_edgePtsCount - 1) * 6 - 2],
-                                 m_edgePtsBuff[(m_edgePtsCount - 1) * 6 - 1]);
         m_g2d.transform(m_xformUtil);
         m_g2d.scale(arrow1Size, arrow1Size);
         m_g2d.setColor(arrow1Color);
