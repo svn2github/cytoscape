@@ -9,6 +9,8 @@ package cytoscape.view.cytopanels;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Component;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentAdapter;
 import java.awt.Container;
 import javax.swing.JFrame; 
 import javax.swing.SwingConstants;
@@ -57,6 +59,11 @@ public class BiModalJSplitPane extends JSplitPane implements CytoPanelContainer 
     private int defaultDividerSize;
 
     /**
+     * The saved divider location.
+     */
+    private int dividerLocation;
+
+    /**
      * Constructor.
      *
      * @param orientation    JSplitPane Orientation.
@@ -75,6 +82,9 @@ public class BiModalJSplitPane extends JSplitPane implements CytoPanelContainer 
 		// init some member vars
         currentMode = initialMode;
 		frame = f;
+
+		// add component listener to get resize events
+		addComponentListener();
 
         //  remove the border
         setBorder(null);
@@ -127,6 +137,11 @@ public class BiModalJSplitPane extends JSplitPane implements CytoPanelContainer 
 
 		// hack to set divider size back to what it should be
 		setDividerSize(defaultDividerSize);
+
+		// hack to set divider location back to what it was
+		if (dividerLocation != -1){
+			setDividerLocation(dividerLocation);
+		}
 	}
 
     /**
@@ -176,8 +191,10 @@ public class BiModalJSplitPane extends JSplitPane implements CytoPanelContainer 
         }
 
 		// hack to make sure divider is zero when we go from dock to float
+		// and divider location is set properly when we go back to dock
 		if (cytoPanelState == cytoPanelState.FLOAT){
 			setDividerSize(0);
+			dividerLocation = getDividerLocation();
 		}
     }
 
@@ -195,6 +212,9 @@ public class BiModalJSplitPane extends JSplitPane implements CytoPanelContainer 
      */
     private void showSplit() {
         setDividerSize(defaultDividerSize);
+		if (dividerLocation != -1){
+			setDividerLocation(dividerLocation);
+		}
         resetToPreferredSizes();
         validateParent();
     }
@@ -204,6 +224,7 @@ public class BiModalJSplitPane extends JSplitPane implements CytoPanelContainer 
      */
     private void hideSplit() {
         setDividerSize(0);
+		dividerLocation = getDividerLocation();
         resetToPreferredSizes();
         validateParent();
     }
@@ -216,5 +237,22 @@ public class BiModalJSplitPane extends JSplitPane implements CytoPanelContainer 
         if (container != null) {
             container.validate();
         }
+    }
+
+    /**
+     * Add a component listener to the app frame to get windows resize events.
+     */
+    private void addComponentListener() {
+        frame.addComponentListener(new ComponentAdapter() {
+
+            /**
+             * Frame is resized.
+             *
+             * @param e Component Event.
+             */
+            public void componentResized(ComponentEvent e) {
+				dividerLocation = -1;		
+            }
+        });
     }
 }
