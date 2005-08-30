@@ -11,14 +11,6 @@ import java.util.ArrayList;
 public class QtClust
 {
     private static DecimalFormat dformat = new DecimalFormat("0.###");
-    
-    private double var(DoubleArrayList a)
-    {
-        double sum = Descriptive.sum(a);
-        double ss = Descriptive.sumOfSquares(a);
-
-        return Descriptive.variance(a.size(), sum, ss);
-    }
 
     double jackknife(DoubleArrayList a1, DoubleArrayList a2)
     {
@@ -32,19 +24,16 @@ public class QtClust
 
         double sigma1 =
             Descriptive.standardDeviation(Descriptive.variance(N, sum1, ss1));
-
         double sigma2 =
             Descriptive.standardDeviation(Descriptive.variance(N, sum2, ss2));
-
-        double u1 = sum1/N;
-        double u2 = sum2/N;
 
         double sumOfProd = 0;
         for(int x=0; x < N; x++)
         {
             sumOfProd += a1.getQuick(x) * a2.getQuick(x);
         }
-        
+
+        // compute the jackknife correlations
         double[] jn = new double[N];
 
         double v1, v2;
@@ -67,9 +56,13 @@ public class QtClust
             jn[x] = cov/(v1*v2);
         }
 
+        // compute the correlation
+        double u1 = sum1/N;
+        double u2 = sum2/N;
         double min = ((sumOfProd/N) - u1*u2)/(sigma1 * sigma2);
 
-        //        System.out.println("  jn: " + min);
+        // find min{cor(x,y), jn}
+        //System.out.println("  jn: " + min);
         for(int x=0; x < N; x++)
         {
             //System.out.println("  jn" + x + ": " + jn[x]);
@@ -104,7 +97,20 @@ public class QtClust
         return d;
     }
 
-    
+    /**
+     * Find max {dist[row][row+1], dist[row][row+2], ..., dist[row][N]}
+     * Return the column that contains the max.  Additionally, filter columns
+     * using the okCols bit vector.  okCols[max] must be set to 1.
+     *
+     * @param row a row in the dist matrix
+     * @param okCols a vector of bits that identify columns that are
+     * ok to check.
+     * @param dist a matrix of doubles
+     * @return the column containing the max element of row "row" in the
+     * dist array [only , or -1 if dist contains no elements larger than
+     * Double.NEGATIVE_INFINITY
+     * @throws
+     */
     private int whichMax(double[][] dist, int row, BitVector okCols)
     {
         double max = Double.NEGATIVE_INFINITY;
@@ -127,6 +133,10 @@ public class QtClust
     }
 
 
+    /**
+     * @return the index of the max element in data, or -1 if data contains
+     * no elements or none of them are larger than Integer.MIN_VALUE
+     */
     private int whichMax(int[] data)
     {
         int max = Integer.MIN_VALUE;

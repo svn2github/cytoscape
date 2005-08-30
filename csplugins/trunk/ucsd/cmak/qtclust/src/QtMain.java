@@ -14,6 +14,45 @@ import java.io.IOException;
 
 public class QtMain
 {
+    public static void main(String[] argv) throws Exception
+    {
+        if(argv.length == 0)
+        {
+            System.err.println("Usage: <logratio file> [outputfile]");
+            System.exit(1);
+        }
+
+        String input = argv[0];
+        
+        QtClust qt = new QtClust();
+        
+        DoubleArrayList[] data = readInput(input);
+        
+        System.out.println("Computing distances");
+        double[][] d = qt.computeDistances(data);
+        System.out.println("done");
+
+        System.out.println("Clustering");
+        List clusters = qt.cluster(0.3, d); 
+        System.out.println("done");
+        
+        PrintStream out = System.out;
+        if(argv.length > 1)
+        {
+            out = new PrintStream(new FileOutputStream(argv[1]));
+        }
+
+        writeClusters(out, clusters);
+    }
+
+
+    /**
+     * Read input produced by R script
+     *
+     * @param
+     * @return
+     * @throws
+     */
     private static DoubleArrayList[] readInput(String file) throws IOException
     {
         BufferedReader in = new BufferedReader(new FileReader(file));
@@ -47,36 +86,6 @@ public class QtMain
         return data;
     }
     
-    public static void main(String[] argv) throws Exception
-    {
-        if(argv.length == 0)
-        {
-            System.err.println("Usage: <logratio file> [outputfile]");
-            System.exit(1);
-        }
-
-        String input = argv[0];
-        
-        QtClust qt = new QtClust();
-        
-        DoubleArrayList[] data = readInput(input);
-        
-        System.out.println("Computing distances");
-        double[][] d = qt.computeDistances(data);
-        System.out.println("done");
-
-        System.out.println("Clustering");
-        List clusters = qt.cluster(0.3, d); 
-        System.out.println("done");
-        
-        PrintStream out = System.out;
-        if(argv.length > 1)
-        {
-            out = new PrintStream(new FileOutputStream(argv[1]));
-        }
-
-        writeClusters(out, clusters);
-    }
 
     public static void writeClusters(PrintStream out, List clusters)
     {
