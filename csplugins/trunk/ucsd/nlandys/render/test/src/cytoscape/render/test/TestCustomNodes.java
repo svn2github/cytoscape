@@ -170,7 +170,7 @@ public final class TestCustomNodes extends Frame implements Runnable
         (yCenter1 - yCenter2) * (m_xsect1Coords[1] - m_xsect2Coords[1]) > 0.0d)
       m_grafx.drawEdgeFull(GraphGraphics.ARROW_DELTA, 10.0f, Color.blue,
                            GraphGraphics.ARROW_DELTA, 10.0f, Color.gray,
-                           m_xsect1Coords[0], m_xsect1Coords[1],
+                           m_xsect1Coords[0], m_xsect1Coords[1], null,
                            m_xsect2Coords[0], m_xsect2Coords[1],
                            edgeThickness, Color.green, dashLength);
   }

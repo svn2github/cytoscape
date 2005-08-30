@@ -75,7 +75,7 @@ public class TestNativePrint extends Frame
                     new Color(255, 0, 255, 127),
                     GraphGraphics.ARROW_TEE, 10.0f,
                     new Color(0, 0, 255, 127),
-                    71.4f, 20.83f, -10.1f, -81.3f, 3.0f,
+                    71.4f, 20.83f, null, -10.1f, -81.3f, 3.0f,
                     new Color(255, 255, 0, 127), 9.0f);
     gg.drawTextFull(new Font("Dialog", Font.PLAIN, 12),
                     2.0d, "Click here to print.",

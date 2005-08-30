@@ -159,14 +159,9 @@ public final class TestBidirectional extends Frame implements Runnable
         (xCenter1 - xCenter2) * (m_xsect1Coords[0] - m_xsect2Coords[0]) +
         (yCenter1 - yCenter2) * (m_xsect1Coords[1] - m_xsect2Coords[1]) > 0.0d)
       {
-//         m_grafx.drawEdgeFull(GraphGraphics.ARROW_DELTA, 40.0f, Color.blue,
-//                              GraphGraphics.ARROW_DELTA, 20.0f, Color.blue,
-//                              m_xsect1Coords[0], m_xsect1Coords[1],
-//                              m_xsect2Coords[0], m_xsect2Coords[1],
-//                              0.0f, Color.black, 2.0f);
         m_grafx.drawEdgeFull(GraphGraphics.ARROW_BIDIRECTIONAL, 20.0f, null,
                              GraphGraphics.ARROW_BIDIRECTIONAL, 10.0f, null,
-                             m_xsect1Coords[0], m_xsect1Coords[1],
+                             m_xsect1Coords[0], m_xsect1Coords[1], null,
                              m_xsect2Coords[0], m_xsect2Coords[1],
                              edgeThickness, Color.darkGray, dashLength);
       }

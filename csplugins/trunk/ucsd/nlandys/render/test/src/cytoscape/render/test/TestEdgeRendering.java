@@ -152,7 +152,7 @@ public final class TestEdgeRendering
       else {
         m_grafx.drawEdgeFull(m_shape, m_edgeThickness * 4, m_arrowColor,
                              m_shape, m_edgeThickness * 4, m_arrowColor,
-                             m_extents[inx_x4], m_extents[inx_x4 + 1],
+                             m_extents[inx_x4], m_extents[inx_x4 + 1], null,
                              m_extents[inx_x4 + 2], m_extents[inx_x4 + 3],
                              m_edgeThickness, m_edgeColor, 0.0f); } }
   }

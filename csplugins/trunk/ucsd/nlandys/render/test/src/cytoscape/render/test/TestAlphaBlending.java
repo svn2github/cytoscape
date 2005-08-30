@@ -185,7 +185,7 @@ public final class TestAlphaBlending extends Frame implements Runnable
                            m_edgeArrow0Color,
                            GraphGraphics.ARROW_DISC, offset * 2.0f,
                            m_edgeArrow1Color,
-                           m_xsect1Coords[0], m_xsect1Coords[1],
+                           m_xsect1Coords[0], m_xsect1Coords[1], null,
                            m_xsect2Coords[0], m_xsect2Coords[1],
                            edgeThickness, m_edgeSegmentColor, dashLength);
   }

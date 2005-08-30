@@ -177,7 +177,7 @@ public final class TestBasicPolyEdge
       for (int i = 0; i < m_ptStates.length; i++) {
         if (m_ptStates[i]) { anchorSelected = true; break; } }
       if ((!anchorSelected) &&
-          grafx.getPolyEdgePath
+          grafx.getEdgePath
           (arrow0, arrow0Size, arrow1, arrow1Size,
            x0, y0, new MyAnchors(m_anchorsBuff, m_tree.size() - 2),
            x1, y1, m_path2d)) {
@@ -197,7 +197,7 @@ public final class TestBasicPolyEdge
              Math.abs(initX - lastX) + 1.0d, Math.abs(initY - lastY) + 1.0d)) {
           edgeSelected = true; } } }
 
-    grafx.drawPolyEdgeFull
+    grafx.drawEdgeFull
       (arrow0, arrow0Size, m_edgeArrowColor,
        arrow1, arrow1Size, m_edgeArrowColor,
        x0, y0, new MyAnchors(m_anchorsBuff, m_tree.size() - 2),

@@ -166,7 +166,7 @@ public final class TestRoundedRectangle extends Frame implements Runnable
         (((double) m_xsect1Coords[1]) - m_xsect2Coords[1]) > 0.0d)
       m_grafx.drawEdgeFull(GraphGraphics.ARROW_DIAMOND, 20.0f, Color.blue,
                            GraphGraphics.ARROW_DELTA, 20.0f, Color.magenta,
-                           m_xsect1Coords[0], m_xsect1Coords[1],
+                           m_xsect1Coords[0], m_xsect1Coords[1], null,
                            m_xsect2Coords[0], m_xsect2Coords[1],
                            (float) edgeThickness, Color.orange, 0.0f);
   }
