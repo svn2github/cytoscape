@@ -13,7 +13,8 @@ import cern.colt.map.*;
 import cytoscape.*;
 import cytoscape.giny.*;
 
-import cytoscape.data.GraphObjAttributes;
+import cytoscape.data.CytoscapeData;
+import cytoscape.data.CytoscapeDataImpl;
 import cytoscape.data.ExpressionData;
 import cytoscape.data.FlagFilter;
 import cytoscape.data.FlagEventListener;
@@ -56,6 +57,9 @@ public class FingCyNetwork
    * The default object for flagging graph objects
    */
   protected FlagFilter flagger;
+
+  CytoscapeData nodeData;
+  CytoscapeData edgeData;
 
   //TODO: remove
   int activityCount = 0;
@@ -115,6 +119,26 @@ public class FingCyNetwork
   public String setIdentifier ( String new_id ) {
     identifier = new_id;
     return identifier;
+  }
+
+  /**
+   * @deprecated
+   * This should not be used by any user-code
+   */
+  public  CytoscapeData getNodeData () {
+    if ( nodeData == null )
+      nodeData = new CytoscapeDataImpl( CytoscapeDataImpl.NODES );
+    return nodeData;
+  }
+
+  /**
+   * @deprecated
+   * This should not be used by any user-code
+   */
+  public  CytoscapeData getEdgeData () {
+    if ( edgeData == null )
+      edgeData = new CytoscapeDataImpl( CytoscapeDataImpl.EDGES );
+    return edgeData;
   }
 
 
@@ -288,30 +312,30 @@ public class FingCyNetwork
    *@deprecated
    * Returns the node attributes data object for this network.
    */
-  public GraphObjAttributes getNodeAttributes () {
-    return ( GraphObjAttributes )Cytoscape.getNodeNetworkData();
+  public CytoscapeData getNodeAttributes () {
+    return Cytoscape.getNodeNetworkData();
   }
   
   /**
    * @deprecated
    * does nothing, all attributes are shared right now
    */
-  public void setNodeAttributes ( GraphObjAttributes newNodeAttributes ) {
+  public void setNodeAttributes ( CytoscapeData newNodeAttributes ) {
   }
 
   /**
    * @deprecated @see{getNetworkData}
    * Returns the edge attributes data object for this network.
    */
-  public GraphObjAttributes getEdgeAttributes () {
-    return ( GraphObjAttributes )Cytoscape.getEdgeNetworkData();
+  public CytoscapeData getEdgeAttributes () {
+    return Cytoscape.getEdgeNetworkData();
   }
   
   /**
    * @deprecated
    * does nothing, all attributes are shared right now
    */
-  public void setEdgeAttributes ( GraphObjAttributes newEdgeAttributes ) {
+  public void setEdgeAttributes ( CytoscapeData newEdgeAttributes ) {
   }
 
   /**

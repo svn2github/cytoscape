@@ -256,7 +256,6 @@ public abstract class Cytoscape {
     //System.out.println( "node_1: "+node_1.getRootGraphIndex()+" node_2: "+node_2.getRootGraphIndex()+" attribute: "+attribute+" attribute_value: "+attribute_value+" create: "+create );
 
     if ( Cytoscape.getRootGraph().getEdgeCount() != 0 ) {
-
     		int[] n1Edges =  Cytoscape.getRootGraph().getAdjacentEdgeIndicesArray(node_1.getRootGraphIndex(),true, true, true);
     	
     		for(int i = 0; i < n1Edges.length; i++){
@@ -686,14 +685,22 @@ public abstract class Cytoscape {
   }
 
   protected static void addNetwork ( CyNetwork network ) {
-    addNetwork( network, null, null );
+    addNetwork( network, null, true );
+  }
+
+  protected static void addNetwork ( CyNetwork network, String title, boolean create_view ) {
+    addNetwork( network, title, null, create_view );
   }
 
   protected static void addNetwork ( CyNetwork network, String title ) {
-    addNetwork( network, title, null );
+    addNetwork( network, title, true );
   }
 
   protected static void addNetwork ( CyNetwork network, String title, CyNetwork parent ) {
+    addNetwork( network, title, parent, true );
+  }
+
+  protected static void addNetwork ( CyNetwork network, String title, CyNetwork parent, boolean create_view ) {
 
     // System.out.println( "CyNetwork Added: "+network.getIdentifier() );
 
@@ -707,7 +714,7 @@ public abstract class Cytoscape {
     firePropertyChange( NETWORK_CREATED,
                         p_id,
                         network.getIdentifier() );
-    if ( network.getNodeCount() < CytoscapeInit.getViewThreshold()  ) {
+    if ( network.getNodeCount() < CytoscapeInit.getViewThreshold()  && create_view ) {
        createNetworkView( network );
     }
 
@@ -719,6 +726,15 @@ public abstract class Cytoscape {
    * @param title the title of the new network.
    */
   public static CyNetwork createNetwork ( String title ) {
+    return createNetwork( title, true );
+  }
+
+  /**
+   * Creates a new, empty Network.
+   * @param title the title of the new network.
+   * @param create_view if the size of the network is under the node limit, create a view
+   */
+  public static CyNetwork createNetwork ( String title, boolean create_view ) {
     CyNetwork network =  getRootGraph().createNetwork( new int[] {}, new int[] {} );
     addNetwork( network, title );
     return network;

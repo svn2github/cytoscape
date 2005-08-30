@@ -494,7 +494,7 @@ public class CytoscapeInit
     // Configuration variables
     viewThreshold = (new Integer(properties.getProperty( "viewThreshold", "500" ) ) ).intValue();
     secondaryViewThreshold = (new Integer(properties.getProperty( "secondaryViewThreshold", "2000" ) ) ).intValue();
-    viewType = properties.getProperty( "viewType", "tabbed" );
+    viewType = properties.getProperty( "viewType", "internal" );
 
 
     // View Only Variables

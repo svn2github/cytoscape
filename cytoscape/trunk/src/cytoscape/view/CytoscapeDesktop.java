@@ -176,6 +176,9 @@ public class CytoscapeDesktop
   
   protected void initialize () {
   
+    /////////////TODO: REMOVE
+    this.VIEW_TYPE = INTERNAL_VIEW;
+
     setIconImage( Toolkit.getDefaultToolkit().getImage(
 			getClass().getResource("images/c16.png") ) );
 
