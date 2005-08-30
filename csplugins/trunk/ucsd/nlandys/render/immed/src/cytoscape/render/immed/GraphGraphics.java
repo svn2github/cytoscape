@@ -679,12 +679,11 @@ public final class GraphGraphics
    * The arrow types must each be one of the ARROW_* constants.
    * The arrow at endpoint 1 is always "on top of" the arrow at endpoint 0
    * because the arrow at endpoint 0 gets rendered first.<p>
-   * There are some constraints on the ratio of edge thickness to arrow
-   * size, listed in the table below.  Note that it is enough for this ratio
-   * to be less than or equal to 0.47 for all of the specific arrowhead
-   * constraints to pass.
+   * If an arrow other than ARROW_NONE is rendered, its size must be
+   * greater than or equal to edge thickness specified.  The table below
+   * describes, to some extent, the nature of each arrow type.
    * <blockquote><table border="1" cellpadding="5" cellspacing="0">
-   *   <tr>  <th>arrow type</th>     <th>placement of arrow</th>          </tr>
+   *   <tr>  <th>arrow type</th>     <th>description</th>                 </tr>
    *   <tr>  <td>ARROW_NONE</td>     <td>the edge line segment has
    *                                   endpoint specified, and
    *                                   the line segment has a round
@@ -696,31 +695,24 @@ public final class GraphGraphics
    *                                   such that its center is at the
    *                                   specified endpoint; the diameter
    *                                   of the disk is the arrow size
-   *                                   specified; the arrow size cannot
-   *                                   be less than edge thickness</td>   </tr>
+   *                                   specified</td>                     </tr>
    *   <tr>  <td>ARROW_DELTA</td>    <td>the sharp tip of the arrowhead
    *                                   is exactly at the endpint
    *                                   specified; the delta is as wide as
    *                                   the arrow size specified and twice
-   *                                   that in length; the ratio of edge
-   *                                   thickness to arrow size cannot
-   *                                   exceed 4/sqrt(17)</td>             </tr>
+   *                                   that in length</td>                </tr>
    *   <tr>  <td>ARROW_DIAMOND</td>  <td>the sharp tip of the arrowhead
    *                                   is exactly at the endpoint
    *                                   specified; the diamond is as wide as
    *                                   the arrow size specified and twice
-   *                                   that in length; the ratio of edge
-   *                                   thickness to arrow size cannot
-   *                                   exceed 2/sqrt(5)</td>              </tr>
+   *                                   that in length</td>                </tr>
    *   <tr>  <td>ARROW_TEE</td>      <td>the center of the tee intersection
    *                                   lies at the specified endpoint; the
    *                                   width of the top of the tee is one
    *                                   quarter of
    *                                   the arrow size specified, and the
    *                                   span of the top of the tee is
-   *                                   four times the arrow size; the ratio
-   *                                   of edge thickness to arrow
-   *                                   size cannot exceed one-half</td>   </tr>
+   *                                   four times the arrow size</td>     </tr>
    *   <tr>  <td>ARROW_BIDIRECTIONAL</td>
    *                                 <td>either both arrowheads must be
    *                                   of this type or neither one must be
@@ -1192,24 +1184,12 @@ public final class GraphGraphics
     case ARROW_NONE:
       break;
     case ARROW_DELTA:
-      if (!(Math.sqrt(17.0d) * edgeThickness <= 4.0d * arrow0Size))
-        throw new IllegalArgumentException
-          ("for ARROW_DELTA e/s is greater than 4/sqrt(17)");
-      break;
     case ARROW_DIAMOND:
-      if (!(Math.sqrt(5.0d) * edgeThickness <= 2.0d * arrow0Size))
-        throw new IllegalArgumentException
-          ("for ARROW_DIAMOND e/s is greater than 2/sqrt(5)");
-      break;
     case ARROW_DISC:
-      if (!(edgeThickness <= arrow0Size))
-        throw new IllegalArgumentException
-          ("for ARROW_DISC e/s is greater than 1");
-      break;
     case ARROW_TEE:
-      if (!(((double) edgeThickness) <= 0.5d * arrow0Size))
+      if (!(arrow0Size >= edgeThickness))
         throw new IllegalArgumentException
-          ("for ARROW_TEE e/s is greater than 1/2");
+          ("arrow size must be at least as large as edge thickness");
       break;
     case ARROW_BIDIRECTIONAL:
       if (anchors.numRemaining() > 0)
@@ -1239,24 +1219,12 @@ public final class GraphGraphics
     case ARROW_NONE:
       break;
     case ARROW_DELTA:
-      if (!(Math.sqrt(17.0d) * edgeThickness <= 4.0d * arrow1Size))
-        throw new IllegalArgumentException
-          ("for ARROW_DELTA e/s is greater than 4/sqrt(17)");
-      break;
     case ARROW_DIAMOND:
-      if (!(Math.sqrt(5.0d) * edgeThickness <= 2.0d * arrow1Size))
-        throw new IllegalArgumentException
-          ("for ARROW_DIAMOND e/s is greater than 2/sqrt(5)");
-      break;
     case ARROW_DISC:
-      if (!(edgeThickness <= arrow1Size))
-        throw new IllegalArgumentException
-          ("for ARROW_DISC e/s is greater than 1");
-      break;
     case ARROW_TEE:
-      if (!(((double) edgeThickness) <= 0.5d * arrow1Size))
+      if (!(arrow0Size >= edgeThickness))
         throw new IllegalArgumentException
-          ("for ARROW_TEE e/s is greater than 1/2");
+          ("arrow size must be at least as large as edge thickness");
       break;
     case ARROW_BIDIRECTIONAL:
       if (!(17.0d * edgeThickness <= 8.0d * arrow1Size))
