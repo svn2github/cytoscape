@@ -722,12 +722,11 @@ public final class GraphGraphics
    *                                   ignored for this type of edge;
    *                                   the edge arrow is drawn such that
    *                                   it fits snugly inside of an
-   *                                   ARROW_DELTA of specified size times
-   *                                   two, where the delta's tip is at edge
-   *                                   endpoint specified;
-   *                                   the ratio of edge thickness
-   *                                   to arrow size cannot exceed
-   *                                   8/17</td>                          </tr>
+   *                                   ARROW_DELTA of size 2s + 9e/14 where
+   *                                   s is the arrow size specified and e
+   *                                   is edge thickness specified;
+   *                                   the delta's tip is at edge
+   *                                   endpoint specified</td>            </tr>
    *   <tr>  <td>ARROW_MONO</td>     <td>either both arrowheads must be
    *                                   of this type of neither one must be
    *                                   of this type; mono edges look
@@ -739,9 +738,8 @@ public final class GraphGraphics
    *                                   (x1,y1); the color
    *                                   and size of the first arrow (arrow0)
    *                                   are read and the color and size of the
-   *                                   other arrow are completely ignored;
-   *                                   the ratio of edge thickness to arrow
-   *                                   size cannot exceed 4/sqrt(17)</td> </tr>
+   *                                   other arrow are completely
+   *                                   ignored</td>                       </tr>
    * </table></blockquote><p>
    * Note that if the edge segment length is zero then nothing gets
    * rendered.<p>
@@ -1166,7 +1164,7 @@ public final class GraphGraphics
   private final void edgeFullDebug(final byte arrowType0,
                                    final float arrow0Size,
                                    final byte arrowType1,
-                                   final float arrow1Size,
+                                   float arrow1Size,
                                    final float edgeThickness,
                                    final float dashLength,
                                    final EdgeAnchors anchors)
@@ -1183,6 +1181,18 @@ public final class GraphGraphics
     switch (arrowType0) {
     case ARROW_NONE:
       break;
+    case ARROW_MONO:
+      arrow1Size = arrow0Size;
+      // Don't break; fall through.
+    case ARROW_BIDIRECTIONAL:
+      if (anchors.numRemaining() > 0)
+        throw new IllegalArgumentException
+          ("ARROW_BIDIRECTIONAL and ARROW_MONO not supported for poly edges");
+      if (arrowType1 != arrowType0)
+        throw new IllegalArgumentException
+          ("for ARROW_BIDIRECTIONAL and ARROW_MONO, both arrows must be " +
+           "identical");
+      // Don't break; fall through.
     case ARROW_DELTA:
     case ARROW_DIAMOND:
     case ARROW_DISC:
@@ -1190,54 +1200,26 @@ public final class GraphGraphics
       if (!(arrow0Size >= edgeThickness))
         throw new IllegalArgumentException
           ("arrow size must be at least as large as edge thickness");
-      break;
-    case ARROW_BIDIRECTIONAL:
-      if (anchors.numRemaining() > 0)
-        throw new IllegalArgumentException
-          ("ARROW_BIDIRECTIONAL not supported for poly edges");
-      if (!(17.0d * edgeThickness <= 8.0d * arrow0Size))
-        throw new IllegalArgumentException
-          ("for ARROW_BIDIRECTIONAL e/s is greater than 8/17");
-      if (arrowType1 != ARROW_BIDIRECTIONAL)
-        throw new IllegalArgumentException
-          ("either both or neither arrows must be ARROW_BIDIRECTIONAL");
-      break;
-    case ARROW_MONO:
-      if (anchors.numRemaining() > 0)
-        throw new IllegalArgumentException
-          ("ARROW_MONO not supported for poly edges");
-      if (!(Math.sqrt(17.0d) * edgeThickness <= 4.0d * arrow0Size))
-        throw new IllegalArgumentException
-          ("for ARROW_MONO e/s is greater than 4/sqrt(17)");
-      if (arrowType1 != ARROW_MONO)
-        throw new IllegalArgumentException
-          ("either both or neither arrows must be ARROW_MONO");
       break;
     default:
       throw new IllegalArgumentException("arrowType0 is not recognized"); }
     switch (arrowType1) {
     case ARROW_NONE:
       break;
+    case ARROW_BIDIRECTIONAL:
+    case ARROW_MONO:
+      if (arrowType0 != arrowType1)
+        throw new IllegalArgumentException
+          ("for ARROW_BIDIRECTIONAL and ARROW_MONO, both arrows must be " +
+           "identical");
+      // Don't break; fall through.
     case ARROW_DELTA:
     case ARROW_DIAMOND:
     case ARROW_DISC:
     case ARROW_TEE:
-      if (!(arrow0Size >= edgeThickness))
+      if (!(arrow1Size >= edgeThickness))
         throw new IllegalArgumentException
           ("arrow size must be at least as large as edge thickness");
-      break;
-    case ARROW_BIDIRECTIONAL:
-      if (!(17.0d * edgeThickness <= 8.0d * arrow1Size))
-        throw new IllegalArgumentException
-          ("for ARROW_BIDIRECTIONAL e/s is greater than 8/17");
-      if (arrowType0 != ARROW_BIDIRECTIONAL)
-        throw new IllegalArgumentException
-          ("either both or neither arrows must be ARROW_BIDIRECTIONAL");
-      break;
-    case ARROW_MONO:
-      if (arrowType0 != ARROW_MONO)
-        throw new IllegalArgumentException
-          ("either both or neither arrows must be ARROW_MONO");
       break;
     default:
       throw new IllegalArgumentException("arrowType1 is not recognized"); }
