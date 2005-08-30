@@ -722,7 +722,8 @@ public final class GraphGraphics
    *                                   ignored for this type of edge;
    *                                   the edge arrow is drawn such that
    *                                   it fits snugly inside of an
-   *                                   ARROW_DELTA of size 2s + 9e/14 where
+   *                                   ARROW_DELTA of size 2s +
+   *                                   ((sqrt(17)+5)/4)e where
    *                                   s is the arrow size specified and e
    *                                   is edge thickness specified;
    *                                   the delta's tip is at edge
