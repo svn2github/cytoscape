@@ -1,5 +1,9 @@
 package cytoscape.render.immed;
 
+/**
+ * Specifies edge anchor points to use when rendering edges in full detail
+ * mode.
+ */
 public interface EdgeAnchors
 {
 
