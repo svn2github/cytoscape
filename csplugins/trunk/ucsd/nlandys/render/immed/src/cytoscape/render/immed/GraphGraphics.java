@@ -35,11 +35,11 @@ import java.util.Map;
  * individual nodes and edges.  The clear() method specifies the mapping from
  * the node coordinate system to the image coordinate system.  The two
  * coordinate systems do not have the same orientations: while in the
- * image coordinate system increasing y values travel towards the bottom of
+ * image coordinate system increasing Y values travel towards the bottom of
  * the image, the opposite is true in the node coordinate system.  That is,
- * in the node coordinate system, increasing x values point to the right
- * and increasing y values point to the top.  This is the "classical"
- * orientation for the xy plane, while we are forced to use the native Java
+ * in the node coordinate system, increasing X values point to the right
+ * and increasing Y values point to the top.  This is the "classical"
+ * orientation for the XY plane, while we are forced to use the native Java
  * image coordinate system which has a different orientation.  The native
  * Java image coordinate system dictates that (0,0) is the upper left corner
  * of the image and that each unit represents a pixel width (or height).<p>
@@ -48,8 +48,7 @@ import java.util.Map;
  * checks for this are made only if debug is set to true (see constructur).
  * In fact, in certain situations [such as rendering to a non-image such
  * as a vector graphic] it may make sense to never call any of the methods
- * from the AWT event dispatching thread; use this class in this way at your
- * own risk and peril.
+ * from the AWT event dispatching thread.
  */
 public final class GraphGraphics
 {
@@ -160,15 +159,15 @@ public final class GraphGraphics
    * @param bgColor a color to use when clearing the image before painting
    *   a new frame; transparent colors are honored, provided that the
    *   underlying image supports transparent colors.
-   * @param xCenter the x component of the translation transform for the frame
+   * @param xCenter the X component of the translation transform for the frame
    *   about to be rendered; a node whose center is at the X coordinate xCenter
    *   will be rendered exactly in the middle of the image going across;
-   *   increasing x values (in the node coordinate system) result in movement
+   *   increasing X values (in the node coordinate system) result in movement
    *   towards the right on the image.
-   * @param yCenter the y component of the translation transform for the frame
+   * @param yCenter the Y component of the translation transform for the frame
    *   about to be rendered; a node whose center is at the Y coordinate yCenter
    *   will be rendered exactly in the middle of the image going top to bottom;
-   *   increasing y values (in the node coordinate system) result in movement
+   *   increasing Y values (in the node coordinate system) result in movement
    *   towards the top on the image (not the bottom of the image!!!).
    * @param scaleFactor the scaling that is to take place when rendering;
    *   a distance of 1 in node coordinates translates to a distance of
