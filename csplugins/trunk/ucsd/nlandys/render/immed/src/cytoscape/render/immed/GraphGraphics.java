@@ -486,6 +486,135 @@ public final class GraphGraphics
       m_g2d.fill(m_path2dPrime); }
   }
 
+  // This member variable only to be used from within defineCustomNodeShape().
+  private byte m_nextCustomShapeType = s_last_shape + 1;
+
+  /**
+   * The custom node shape that is defined is a polygon specified
+   * by the coordinates supplied.  The polygon must meet several constraints
+   * listed below.<p>
+   * If we define the value xCenter to be the average of the minimum and
+   * maximum X values of the vertices and if we define yCenter likewise, then
+   * the specified polygon must meet the following constraints:
+   * <ol>
+   *   <li>Each polygon line segment must have nonzero length.</li>
+   *   <li>No two consecutive polygon line segments can be parallel (this
+   *     essentially implies that the polygon must have at least three
+   *     vertices).</li>
+   *   <li>No two distinct non-consecutive polygon line segments may
+   *     intersect (not even at the endpoints); this makes possible the
+   *     notion of interior of the polygon.</li>
+   *   <li>The polygon must be star-shaped with respect to the point
+   *     (xCenter, yCenter); a polygon is said to be <i>star-shaped with
+   *     respect to a point (a,b)</i> if and only if for every point (x,y)
+   *     in the interior or on the boundary of the polygon, the interior of
+   *     the segment (a,b)->(x,y) lies in the interior of the polygon.</li>
+   *   <li>The path traversed by the polygon must be counter-clockwise where
+   *     +x points right and +y points up.</li>
+   * </ol><p>
+   * In addition to these constraints, when rendering custom nodes with
+   * nonzero border width, possible problems may arise if the border width
+   * is large with respect to the kinks in the polygon.
+   * @param coords vertexCount * 2 consecutive coordinate values are read
+   *   from this array starting at coords[offset]; coords[offset],
+   *   coords[offset + 1], coords[offset + 2], coords[offset + 3] and so on
+   *   are interpreted as x0, y0, x1, y1, and so on; the initial vertex need
+   *   not be repeated as the last vertex specified.
+   * @param offset the starting index of where to read coordinates from
+   *   in the coords parameter.
+   * @param vertexCount the number of vertices to read from coords;
+   *   vertexCount * 2 entries in coords are read.
+   * @return the node shape identifier to be used in future rendering calls
+   *   (to be used as parameter nodeShape in method drawNodeFull()).
+   * @exception IllegalArgumentException if any of the constraints are not met,
+   *   or if the specified polygon has more than CUSTOM_SHAPE_MAX_VERTICES
+   *   vertices.
+   * @exception IllegalStateException if too many custom node shapes are
+   *   already defined; a little over one hundered custom node shapes can be
+   *   defined.
+   */
+  public final byte defineCustomNodeShape(final float[] coords,
+                                          final int offset,
+                                          final int vertexCount)
+  {
+    if (vertexCount > CUSTOM_SHAPE_MAX_VERTICES)
+      throw new IllegalArgumentException
+        ("too many vertices (greater than " + CUSTOM_SHAPE_MAX_VERTICES + ")");
+    final double[] polyCoords;
+    {
+      polyCoords = new double[vertexCount * 2];
+      for (int i = 0; i < polyCoords.length; i++)
+        polyCoords[i] = coords[offset + i];
+
+      // Normalize the polygon so that it spans [-0.5, 0.5] x [-0.5, 0.5].
+      double xMin = Double.POSITIVE_INFINITY;
+      double yMin = Double.POSITIVE_INFINITY;
+      double xMax = Double.NEGATIVE_INFINITY;
+      double yMax = Double.NEGATIVE_INFINITY;
+      for (int i = 0; i < polyCoords.length;) {
+        xMin = Math.min(xMin, coords[i]);
+        xMax = Math.max(xMax, coords[i++]);
+        yMin = Math.min(yMin, coords[i]);
+        yMax = Math.max(yMax, coords[i++]); }
+      final double xDist = xMax - xMin;
+      if (xDist == 0.0d) throw new IllegalArgumentException
+                           ("polygon does not move in the X direction");
+      final double yDist = yMax - yMin;
+      if (yDist == 0.0d) throw new IllegalArgumentException
+                           ("polygon does not move in the Y direction");
+      final double xMid = (xMin + xMax) / 2.0d;
+      final double yMid = (yMin + yMax) / 2.0d;
+      for (int i = 0; i < polyCoords.length;) {
+        double foo = (polyCoords[i] - xMid) / xDist;
+        polyCoords[i++] = Math.min(Math.max(-0.5d, foo), 0.5d);
+        foo = (polyCoords[i] - yMid) / yDist;
+        polyCoords[i++] = Math.min(Math.max(-0.5d, foo), 0.5d); }
+    }
+    if (m_debug) {
+      if (!EventQueue.isDispatchThread())
+        throw new IllegalStateException
+          ("calling thread is not AWT event dispatcher");
+      // Test all criteria.
+      int yInterceptsCenter = 0;
+      for (int i = 0; i < vertexCount; i++) {
+        final double x0 = polyCoords[i * 2];
+        final double y0 = polyCoords[i * 2 + 1];
+        final double x1 = polyCoords[(i * 2 + 2) % (vertexCount * 2)];
+        final double y1 = polyCoords[(i * 2 + 3) % (vertexCount * 2)];
+        final double x2 = polyCoords[(i * 2 + 4) % (vertexCount * 2)];
+        final double y2 = polyCoords[(i * 2 + 5) % (vertexCount * 2)];
+        final double distP0P1 = Math.sqrt((x1 - x0) * (x1 - x0) +
+                                          (y1 - y0) * (y1 - y0));
+        if ((float) distP0P1 == 0.0f) { // Too close to distance zero.
+          throw new IllegalArgumentException
+            ("a line segment has distance [too close to] zero"); }
+        final double distP2fromP0P1 =
+          ((y0 - y1) * x2 + (x1 - x0) * y2 + x0 * y1 - x1 * y0) / distP0P1;
+        if ((float) distP2fromP0P1 == 0.0f) { // Too close to parallel.
+          throw new IllegalArgumentException
+            ("either a line segment has distance [too close to] zero or " +
+             "two consecutive line segments are [too close to] parallel"); }
+        final double distCenterFromP0P1 = (x0 * y1 - x1 * y0) / distP0P1;
+        if (!((float) distCenterFromP0P1 > 0.0f)) {
+          throw new IllegalArgumentException
+            ("polygon is going clockwise or is not star-shaped with " +
+             "respect to center"); }
+        if (Math.min(y0, y1) < 0.0d && Math.max(y0, y1) >= 0.0d) {
+          yInterceptsCenter++; } }
+      if (yInterceptsCenter != 2)
+        throw new IllegalArgumentException
+          ("the polygon self-intersects (we know this because the winding " +
+           "number of the center is not one)"); }
+
+    // polyCoords now contains a polygon spanning [-0.5, 0.5] X [-0.5, 0.5]
+    // that passes all of the criteria.
+    if (m_nextCustomShapeType < 0)
+      throw new IllegalStateException
+        ("too many custom node shapes are already defined");
+    m_customShapes.put(new Byte(m_nextCustomShapeType), polyCoords);
+    return m_nextCustomShapeType++;
+  }
+
   /*
    * This method has the side effect of setting m_ellp2d or m_path2d;
    * if m_path2d is set (every case but the ellipse and rounded rectangle),
@@ -2301,135 +2430,6 @@ public final class GraphGraphics
              "max(width, height) < 2 * min(width, height)"); } }
     return getShape(nodeShape, xMin, yMin, xMax, yMax).contains(xQuery,
                                                                 yQuery);
-  }
-
-  // This member variable only to be used from within defineCustomNodeShape().
-  private byte m_nextCustomShapeType = s_last_shape + 1;
-
-  /**
-   * The custom node shape that is defined is a polygon specified
-   * by the coordinates supplied.  The polygon must meet several constraints
-   * listed below.<p>
-   * If we define the value xCenter to be the average of the minimum and
-   * maximum X values of the vertices and if we define yCenter likewise, then
-   * the specified polygon must meet the following constraints:
-   * <ol>
-   *   <li>Each polygon line segment must have nonzero length.</li>
-   *   <li>No two consecutive polygon line segments can be parallel (this
-   *     essentially implies that the polygon must have at least three
-   *     vertices).</li>
-   *   <li>No two distinct non-consecutive polygon line segments may
-   *     intersect (not even at the endpoints); this makes possible the
-   *     notion of interior of the polygon.</li>
-   *   <li>The polygon must be star-shaped with respect to the point
-   *     (xCenter, yCenter); a polygon is said to be <i>star-shaped with
-   *     respect to a point (a,b)</i> if and only if for every point (x,y)
-   *     in the interior or on the boundary of the polygon, the interior of
-   *     the segment (a,b)->(x,y) lies in the interior of the polygon.</li>
-   *   <li>The path traversed by the polygon must be counter-clockwise where
-   *     +x points right and +y points up.</li>
-   * </ol><p>
-   * In addition to these constraints, when rendering custom nodes with
-   * nonzero border width, possible problems may arise if the border width
-   * is large with respect to the kinks in the polygon.
-   * @param coords vertexCount * 2 consecutive coordinate values are read
-   *   from this array starting at coords[offset]; coords[offset],
-   *   coords[offset + 1], coords[offset + 2], coords[offset + 3] and so on
-   *   are interpreted as x0, y0, x1, y1, and so on; the initial vertex must
-   *   not be repeated as the last vertex specified.
-   * @param offset the starting index of where to read coordinates from
-   *   in the coords parameter.
-   * @param vertexCount the number of vertices to read from coords;
-   *   vertexCount * 2 entries in coords are read.
-   * @return the node shape identifier to be used in future rendering calls
-   *   (to be used as parameter nodeShape in method drawNodeFull()).
-   * @exception IllegalArgumentException if any of the constraints are not met,
-   *   or if the specified polygon has more than CUSTOM_SHAPE_MAX_VERTICES
-   *   vertices.
-   * @exception IllegalStateException if too many custom node shapes are
-   *   already defined; a little over one hundered custom node shapes can be
-   *   defined.
-   */
-  public final byte defineCustomNodeShape(final float[] coords,
-                                          final int offset,
-                                          final int vertexCount)
-  {
-    if (vertexCount > CUSTOM_SHAPE_MAX_VERTICES)
-      throw new IllegalArgumentException
-        ("too many vertices (greater than " + CUSTOM_SHAPE_MAX_VERTICES + ")");
-    final double[] polyCoords;
-    {
-      polyCoords = new double[vertexCount * 2];
-      for (int i = 0; i < polyCoords.length; i++)
-        polyCoords[i] = coords[offset + i];
-
-      // Normalize the polygon so that it spans [-0.5, 0.5] x [-0.5, 0.5].
-      double xMin = Double.POSITIVE_INFINITY;
-      double yMin = Double.POSITIVE_INFINITY;
-      double xMax = Double.NEGATIVE_INFINITY;
-      double yMax = Double.NEGATIVE_INFINITY;
-      for (int i = 0; i < polyCoords.length;) {
-        xMin = Math.min(xMin, coords[i]);
-        xMax = Math.max(xMax, coords[i++]);
-        yMin = Math.min(yMin, coords[i]);
-        yMax = Math.max(yMax, coords[i++]); }
-      final double xDist = xMax - xMin;
-      if (xDist == 0.0d) throw new IllegalArgumentException
-                           ("polygon does not move in the X direction");
-      final double yDist = yMax - yMin;
-      if (yDist == 0.0d) throw new IllegalArgumentException
-                           ("polygon does not move in the Y direction");
-      final double xMid = (xMin + xMax) / 2.0d;
-      final double yMid = (yMin + yMax) / 2.0d;
-      for (int i = 0; i < polyCoords.length;) {
-        double foo = (polyCoords[i] - xMid) / xDist;
-        polyCoords[i++] = Math.min(Math.max(-0.5d, foo), 0.5d);
-        foo = (polyCoords[i] - yMid) / yDist;
-        polyCoords[i++] = Math.min(Math.max(-0.5d, foo), 0.5d); }
-    }
-    if (m_debug) {
-      if (!EventQueue.isDispatchThread())
-        throw new IllegalStateException
-          ("calling thread is not AWT event dispatcher");
-      // Test all criteria.
-      int yInterceptsCenter = 0;
-      for (int i = 0; i < vertexCount; i++) {
-        final double x0 = polyCoords[i * 2];
-        final double y0 = polyCoords[i * 2 + 1];
-        final double x1 = polyCoords[(i * 2 + 2) % (vertexCount * 2)];
-        final double y1 = polyCoords[(i * 2 + 3) % (vertexCount * 2)];
-        final double x2 = polyCoords[(i * 2 + 4) % (vertexCount * 2)];
-        final double y2 = polyCoords[(i * 2 + 5) % (vertexCount * 2)];
-        final double distP0P1 = Math.sqrt((x1 - x0) * (x1 - x0) +
-                                          (y1 - y0) * (y1 - y0));
-        if ((float) distP0P1 == 0.0f) { // Too close to distance zero.
-          throw new IllegalArgumentException
-            ("a line segment has distance [too close to] zero"); }
-        final double distP2fromP0P1 =
-          ((y0 - y1) * x2 + (x1 - x0) * y2 + x0 * y1 - x1 * y0) / distP0P1;
-        if ((float) distP2fromP0P1 == 0.0f) { // Too close to parallel.
-          throw new IllegalArgumentException
-            ("either a line segment has distance [too close to] zero or " +
-             "two consecutive line segments are [too close to] parallel"); }
-        final double distCenterFromP0P1 = (x0 * y1 - x1 * y0) / distP0P1;
-        if (!((float) distCenterFromP0P1 > 0.0f)) {
-          throw new IllegalArgumentException
-            ("polygon is going clockwise or is not star-shaped with " +
-             "respect to center"); }
-        if (Math.min(y0, y1) < 0.0d && Math.max(y0, y1) >= 0.0d) {
-          yInterceptsCenter++; } }
-      if (yInterceptsCenter != 2)
-        throw new IllegalArgumentException
-          ("the polygon self-intersects (we know this because the winding " +
-           "number of the center is not one)"); }
-
-    // polyCoords now contains a polygon spanning [-0.5, 0.5] X [-0.5, 0.5]
-    // that passes all of the criteria.
-    if (m_nextCustomShapeType < 0)
-      throw new IllegalStateException
-        ("too many custom node shapes are already defined");
-    m_customShapes.put(new Byte(m_nextCustomShapeType), polyCoords);
-    return m_nextCustomShapeType++;
   }
 
   /**
