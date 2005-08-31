@@ -693,11 +693,6 @@ public final class GraphGraphics
    *                                   semicircle end exactly equal to
    *                                   endpoint specified); arrow size
    *                                   and arrow color are ignored</td>   </tr>
-   *   <tr>  <td>ARROW_DISC</td>     <td>the disc arrowhead is placed
-   *                                   such that its center is at the
-   *                                   specified endpoint; the diameter
-   *                                   of the disk is the arrow size
-   *                                   specified</td>                     </tr>
    *   <tr>  <td>ARROW_DELTA</td>    <td>the sharp tip of the arrowhead
    *                                   is exactly at the endpint
    *                                   specified; the delta is as wide as
@@ -708,6 +703,11 @@ public final class GraphGraphics
    *                                   specified; the diamond is as wide as
    *                                   the arrow size specified and twice
    *                                   that in length</td>                </tr>
+   *   <tr>  <td>ARROW_DISC</td>     <td>the disc arrowhead is placed
+   *                                   such that its center is at the
+   *                                   specified endpoint; the diameter
+   *                                   of the disk is the arrow size
+   *                                   specified</td>                     </tr>
    *   <tr>  <td>ARROW_TEE</td>      <td>the center of the tee intersection
    *                                   lies at the specified endpoint; the
    *                                   width of the top of the tee is one
@@ -729,9 +729,11 @@ public final class GraphGraphics
    *                                   s is the arrow size specified and e
    *                                   is edge thickness specified;
    *                                   the delta's tip is at edge
-   *                                   endpoint specified</td>            </tr>
+   *                                   endpoint specified; note that edge
+   *                                   anchors are not supported for this
+   *                                   type of edge</td>                  </tr>
    *   <tr>  <td>ARROW_MONO</td>     <td>either both arrowheads must be
-   *                                   of this type of neither one must be
+   *                                   of this type or neither one must be
    *                                   of this type; mono edges look
    *                                   completely different from other edges
    *                                   because an arrowhead (an ARROW_DELTA)
@@ -741,19 +743,26 @@ public final class GraphGraphics
    *                                   (x1,y1); the color
    *                                   and size of the first arrow (arrow0)
    *                                   are read and the color and size of the
-   *                                   other arrow are completely
-   *                                   ignored</td>                       </tr>
+   *                                   other arrow are completely ignored;
+   *                                   note that edge anchors are not
+   *                                   supported for this type of
+   *                                   edge</td>                          </tr>
    * </table></blockquote><p>
    * Note that if the edge segment length is zero then nothing gets
    * rendered.<p>
    * This method will not work unless clear() has been called at least once
    * previously.<p>
-   * A discussion pertaining to edge anchors.  At most MAX_EDGE_ANCHORS
+   * A discussion pertaining to edge anchors.  Edge anchors are only
+   * supported for the primitive arrow types (ARROW_NONE, ARROW_DELTA,
+   * ARROW_DIAMOND, ARROW_DISC, and ARROW_TEE);
+   * <font color="red">ARROW_BIDIRECTIONAL and ARROW_MONO do not support edge
+   * anchors</font>.  At most MAX_EDGE_ANCHORS
    * edge anchors may be specified.  The edge anchors are used to
    * define cubic Bezier curves.  The exact algorithm for determining
    * the Bezier curves from the input parameters is too complicated to
    * describe in this Javadoc.  Some parts of the algorithm:
-   * <ol><li>the conglomerated curve is [probably] not going to pass
+   * <blockquote><ul>
+   *     <li>the conglomerated curve is [probably] not going to pass
    *       through the edge anchors points specified; the curve will pass
    *       through the midpoint between every consecutive pair of anchors</li>
    *     <li>when determining the edge path as a whole, an ordered list of
@@ -765,7 +774,8 @@ public final class GraphGraphics
    *       the arrow direction at point (x0, y0) and the initial curve
    *       direction; likewise, the last two points in this list define
    *       the arrow direction at point (x1, y1) and the ending curve
-   *       direction</li></ol>
+   *       direction</li>
+   * </ul></blockquote>
    * In order to specify a straight-line edge path, simply duplicate
    * each edge anchor in the EdgeAnchors instance.  For example, a smooth
    * curve would be drawn by specifying consecutive-pairwise disctinct points
