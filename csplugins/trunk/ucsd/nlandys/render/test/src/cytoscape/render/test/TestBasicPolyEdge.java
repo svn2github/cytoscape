@@ -265,10 +265,10 @@ public final class TestBasicPolyEdge
       boolean anchorSelected = false;
       while (candidates.numRemaining() > 0) {
         int objKey = candidates.nextExtents(m_floatBuff, 0);
-        if (m_grafx.contains(GraphGraphics.SHAPE_ELLIPSE,
-                             m_floatBuff[0], m_floatBuff[1],
-                             m_floatBuff[2], m_floatBuff[3],
-                             (float) m_ptBuff[0], (float) m_ptBuff[1])) {
+        if (m_grafx.nodeContains(GraphGraphics.SHAPE_ELLIPSE,
+                                 m_floatBuff[0], m_floatBuff[1],
+                                 m_floatBuff[2], m_floatBuff[3],
+                                 (float) m_ptBuff[0], (float) m_ptBuff[1])) {
           anchorSelected = true;
           m_ptStates[objKey] = true;
           // Re-insert the entry into the R-tree so that just clicking on
