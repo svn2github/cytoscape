@@ -81,13 +81,13 @@ public final class TestThoroughBidirectional
        (float) (arrow1Size * 2.0d +
                 edgeThickness * (Math.sqrt(17.0d) + 5.0d) / 4.0d),
        new Color(255, 0, 0, 63),
-       -200.0f, -200.0f, null, 130.0f, 140.0f,
+       -100.0f, -100.0f, null, 30.0f, 40.0f,
        0.0f, Color.black, 0.0f);
     m_grafx.drawEdgeFull
       (GraphGraphics.ARROW_BIDIRECTIONAL, (float) arrow0Size, null,
        GraphGraphics.ARROW_BIDIRECTIONAL, (float) arrow1Size, null,
-       -200.0f, -200.0f, null, 130.0f, 140.0f,
-       (float) edgeThickness, Color.black, 0.0f);
+       -100.0f, -100.0f, null, 30.0f, 40.0f,
+       (float) edgeThickness, new Color(0, 0, 0, 63), 0.0f);
   }
 
   public void mouseClicked(MouseEvent e) {}
