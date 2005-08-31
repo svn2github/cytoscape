@@ -1624,8 +1624,8 @@ public final class GraphGraphics
 
   /**
    * Returns the context that is used by drawTextLow() to produce text shapes
-   * to be drawn to the screen.  The trasform contained in the returned
-   * context specifies the only scaling that will be done to fonts when
+   * to be drawn to the screen.  The transform contained in the returned
+   * context specifies the <i>only</i> scaling that will be done to fonts when
    * rendering text using drawTextLow().  This transform does not change
    * between frames no matter what scaling factor is specified in
    * clear().
