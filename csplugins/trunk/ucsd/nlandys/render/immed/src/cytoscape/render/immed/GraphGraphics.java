@@ -1575,8 +1575,27 @@ public final class GraphGraphics
   }
 
   /**
+   * This method will render text very quickly.
    * Translucent colors are not officially supported by the low detail
-   * rendering methods, so use translucent colors at your own risk.
+   * rendering methods, so use translucent colors at your own risk.<p>
+   * For the sake of maximum performance, this method works differently from
+   * the other rendering methods with respect to the scaling factor
+   * specified in clear().  That is, the font used to render the specified
+   * text will not be scaled; its exact size will be used when the text
+   * is rendered onto the underlying image.  On the other hand, the parameters
+   * xCenter and yCenter specify coordinates in the node coordinate system, and
+   * so the point (xCenter, yCenter) will be transformed according the
+   * clear() transform in determining the location of the text
+   * on the underlying image.
+   * @param font the font to use in drawing text; the size of this font
+   *   specifies the actual point size of what will be rendered onto the
+   *   underlying image.
+   * @param text the text to render.
+   * @param xCenter the X coordinate of the center point of where to place the
+   *   rendered text; specified in the node coordinate system.
+   * @param yCenter the Y coordinate of the center point of where to place the
+   *   rendered text; specified in the node coordinate system.
+   * @param color the color to use in rendering the text.
    */
   public final void drawTextLow(final Font font,
                                 final String text,
