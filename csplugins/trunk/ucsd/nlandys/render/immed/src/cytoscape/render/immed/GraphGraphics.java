@@ -1132,14 +1132,30 @@ public final class GraphGraphics
    * interface would allow user selection of edges, for example.  The returned
    * path is the path along the center of the edge segment, extending to the
    * points which specify the arrow locations.  Note that this path therefore
-   * disregards edge thickness and arrow outline.
-   * @param anchors the edge anchors or null if there aren't any.
+   * disregards edge thickness and arrow outline.  Use the same parameter
+   * values that were used to render corresponding edge.
+   * @param arrowType0 the type of arrow shape used for drawing the arrow
+   *   at point (x0, y0); this value must be one of the ARROW_*
+   *   constants.
+   * @param arrow0Size the size of arrow at point (x0, y0).
+   * @param arrowType1 the type of arrow shape used for drawing the arrow
+   *   at point (x1, y1); this value must be one of the ARROW_*
+   *   constants.
+   * @param arrow1Size the size of arrow at point (x1, y1).
+   * @param x0 the X coordinate of the first edge endpoint.
+   * @param y0 the Y coordinate of the first edge endpoint.
+   * @param anchors anchor points between the two edge endpoints; null is
+   *   an acceptable value to indicate no edge anchors.
+   * @param x1 the X coordinate of the second edge endpoint.
+   * @param y1 the Y coordinate of the second edge endpoint.
    * @param path the computed path is returned in this parameter; note that
    *   the computed path is not closed.
    * @return true if and only if the specified edge would be drawn (which
    *   is if and only if any two points from the edge anchor set plus the
-   *   beginning and end point are distinct); if false is returned, path is
-   *   not touched.
+   *   beginning and end point are distinct); if false is returned, the path
+   *   parameter is not modified.
+   * @exception IllegalArgumentException if any one of the edge arrow criteria
+   *   specified in drawEdgeFull() is not satisfied.
    */
   public final boolean getEdgePath(final byte arrowType0,
                                    final float arrow0Size,
@@ -1165,8 +1181,14 @@ public final class GraphGraphics
         break;
       case ARROW_BIDIRECTIONAL:
       case ARROW_MONO:
-        throw new IllegalArgumentException
-          ("ARROW_BIDIRECTIONAL and ARROW_MONO not supported in poly edges");
+        if (arrowType1 != arrowType0)
+          throw new IllegalArgumentException
+            ("for ARROW_BIDIRECTIONAL and ARROW_MONO, both arrows must be " +
+             "identical");
+        if (anchors.numRemaining() > 0)
+          throw new IllegalArgumentException
+            ("ARROW_BIDIRECTIONAL and ARROW_MONO not supported in poly edges");
+        break;
       default:
         throw new IllegalArgumentException("arrowType0 is not recognized"); }
       switch (arrowType1) {
@@ -1178,17 +1200,33 @@ public final class GraphGraphics
         break;
       case ARROW_BIDIRECTIONAL:
       case ARROW_MONO:
-        throw new IllegalArgumentException
-          ("ARROW_BIDIRECTIONAL and ARROW_MONO not supported in poly edges");
+        if (arrowType0 != arrowType1)
+          throw new IllegalArgumentException
+            ("for ARROW_BIDIRECTIONAL and ARROW_MONO, both arrows must be " +
+             "identical");
+        if (anchors.numRemaining() > 0)
+          throw new IllegalArgumentException
+            ("ARROW_BIDIRECTIONAL and ARROW_MONO not supported in poly edges");
+        break;
       default:
         throw new IllegalArgumentException("arrowType1 is not recognized"); }
       if (anchors.numRemaining() > MAX_EDGE_ANCHORS)
         throw new IllegalArgumentException
           ("at most MAX_EDGE_ANCHORS edge anchors can be specified"); }
 
+    byte arrow0 = arrowType0;
+    byte arrow1 = arrowType1;
+    if (arrow0 == ARROW_BIDIRECTIONAL) { // Assume arrow1 is also.
+      // If we wanted to start our path where the bidirectional edge
+      // actually started, we'd have to pass edge thickness into this method.
+      // So instead we do a quick and simple approximation by extending the
+      // bidirectional edge to the tip of the encapsulating delta.
+      arrow0 = ARROW_NONE; arrow1 = ARROW_NONE; }
+    if (arrow0 == ARROW_MONO) { // Assume arrow1 is also.
+      arrow0 = ARROW_NONE; arrow1 = ARROW_NONE; }
     if (!computeCubicPolyEdgePath
-        (arrowType0, arrowType0 == ARROW_NONE ? 0.0f : arrow0Size,
-         arrowType1, arrowType1 == ARROW_NONE ? 0.0f : arrow1Size,
+        (arrow0, arrow0 == ARROW_NONE ? 0.0f : arrow0Size,
+         arrow1, arrow1 == ARROW_NONE ? 0.0f : arrow1Size,
          x0, y0, anchors, x1, y1, curveFactor)) {
       // After filtering duplicate start and end points, there are less then
       // 3 total.
