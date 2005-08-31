@@ -9,6 +9,9 @@ import java.awt.Color;
 public final class Mongo2
 {
 
+  // No constructor.
+  private Mongo2() { }
+
   /**
    * @return the edges that were rendered.
    */
