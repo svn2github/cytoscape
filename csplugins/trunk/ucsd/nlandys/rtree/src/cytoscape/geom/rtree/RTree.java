@@ -139,15 +139,15 @@ public final class RTree
                            final float xMin, final float yMin,
                            final float xMax, final float yMax)
   {
-//     if (objKey < 0) throw new IllegalArgumentException("objKey is negative");
-//     if (!(xMin <= xMax))
-//       throw new IllegalArgumentException("xMin <= xMax not true");
-//     if (!(yMin <= yMax))
-//       throw new IllegalArgumentException("yMin <= yMax not true");
+    if (objKey < 0) throw new IllegalArgumentException("objKey is negative");
+    if (!(xMin <= xMax))
+      throw new IllegalArgumentException("xMin <= xMax not true");
+    if (!(yMin <= yMax))
+      throw new IllegalArgumentException("yMin <= yMax not true");
     if (m_entryMap.get(objKey) != null) { // Hashtable lookups are cached.
-//       if (m_entryMap.get(objKey) != m_deletedEntry)
-//         throw new IllegalStateException
-//           ("objkey " + objKey + " is already in this tree");
+      if (m_entryMap.get(objKey) != m_deletedEntry)
+        throw new IllegalStateException
+          ("objkey " + objKey + " is already in this tree");
       m_deletedEntries--; } // Old entry is m_deletedEntry.
 
     // We only allow underlying hashtable expansions if the number of deleted
@@ -1341,10 +1341,10 @@ public final class RTree
                                                  final int offset,
                                                  final boolean reverse)
   {
-//     if (!(xMin <= xMax))
-//       throw new IllegalArgumentException("xMin <= xMax not true");
-//     if (!(yMin <= yMax))
-//       throw new IllegalArgumentException("yMin <= yMax not true");
+    if (!(xMin <= xMax))
+      throw new IllegalArgumentException("xMin <= xMax not true");
+    if (!(yMin <= yMax))
+      throw new IllegalArgumentException("yMin <= yMax not true");
     if (extentsArr != null) {
       extentsArr[offset] = Float.POSITIVE_INFINITY;
       extentsArr[offset + 1] = Float.POSITIVE_INFINITY;
