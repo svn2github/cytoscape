@@ -517,10 +517,10 @@ public final class GraphGraphics
    *   or if nodeShape is neither one of the SHAPE_* constants nor a
    *   previously defined custom node shape.
    */
-  public final boolean contains(final byte nodeShape,
-                                final float xMin, final float yMin,
-                                final float xMax, final float yMax,
-                                final float xQuery, final float yQuery)
+  public final boolean nodeContains(final byte nodeShape,
+                                    final float xMin, final float yMin,
+                                    final float xMax, final float yMax,
+                                    final float xQuery, final float yQuery)
   {
     if (m_debug) {
       if (!EventQueue.isDispatchThread())
