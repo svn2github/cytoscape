@@ -28,7 +28,7 @@ import java.util.Map;
 /**
  * The purpose of this class is to make the proper calls on a Graphics2D
  * object to efficiently render nodes, labels, and edges.
- * This is functional programming at its finest [sarcasm].<p>
+ * This is procedural programming at its finest [sarcasm].<p>
  * This class deals with two coordinate systems: an image coordinate system
  * and a node coordinate system.  The programmer who uses this API will be
  * dealing mostly with the node coordinate system, especially when rendering
@@ -213,6 +213,32 @@ public final class GraphGraphics
     m_g2d.transform(m_currXform);
     m_currNativeXform.setTransform(m_g2d.getTransform());
     m_cleared = true;
+  }
+
+  // The three following member variables shall only be referenced from
+  // the scope of setStroke() definition.
+  private float m_currStrokeWidth;
+  private final float[] m_currDash = new float[] { 0.0f, 0.0f };
+  private int m_currCapType;
+
+  private final void setStroke(final float width, final float dashLength,
+                               final int capType, final boolean ignoreCache)
+  {
+    if ((!ignoreCache) && width == m_currStrokeWidth &&
+        dashLength == m_currDash[0] && capType == m_currCapType) return;
+    m_currStrokeWidth = width;
+    m_currDash[0] = dashLength;
+    m_currDash[1] = dashLength;
+    m_currCapType = capType;
+    // Unfortunately, BasicStroke is not mutable.  So we have to construct
+    // lots of new strokes if they constantly change.
+    if (m_currDash[0] == 0.0f)
+      m_g2d.setStroke(new BasicStroke(width, capType,
+                                      BasicStroke.JOIN_ROUND, 10.0f));
+    else
+      m_g2d.setStroke(new BasicStroke(width, capType,
+                                      BasicStroke.JOIN_ROUND, 10.0f,
+                                      m_currDash, 0.0f));
   }
 
   /**
@@ -1743,32 +1769,6 @@ public final class GraphGraphics
         throw new IllegalStateException
           ("calling thread is not AWT event dispatcher"); }
     return m_fontRenderContextFull;
-  }
-
-  // The three following member variables shall only be referenced from
-  // the scope of setStroke() definition.
-  private float m_currStrokeWidth;
-  private final float[] m_currDash = new float[] { 0.0f, 0.0f };
-  private int m_currCapType;
-
-  private final void setStroke(final float width, final float dashLength,
-                               final int capType, final boolean ignoreCache)
-  {
-    if ((!ignoreCache) && width == m_currStrokeWidth &&
-        dashLength == m_currDash[0] && capType == m_currCapType) return;
-    m_currStrokeWidth = width;
-    m_currDash[0] = dashLength;
-    m_currDash[1] = dashLength;
-    m_currCapType = capType;
-    // Unfortunately, BasicStroke is not mutable.  So we have to construct
-    // lots of new strokes if they constantly change.
-    if (m_currDash[0] == 0.0f)
-      m_g2d.setStroke(new BasicStroke(width, capType,
-                                      BasicStroke.JOIN_ROUND, 10.0f));
-    else
-      m_g2d.setStroke(new BasicStroke(width, capType,
-                                      BasicStroke.JOIN_ROUND, 10.0f,
-                                      m_currDash, 0.0f));
   }
 
   // The following three member variables shall only be accessed from the
