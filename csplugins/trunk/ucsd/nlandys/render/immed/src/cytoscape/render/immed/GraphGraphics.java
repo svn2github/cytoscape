@@ -905,13 +905,13 @@ public final class GraphGraphics
     if (arrowType0 == ARROW_BIDIRECTIONAL) { // Draw and return.
       final double a = (6.0d + Math.sqrt(17.0d) / 2.0d) * edgeThickness;
       m_path2d.reset();
-      final double f = 4.0d * (((double) arrow0Size) - edgeThickness);
+      final double f = 1.0d * (((double) arrow0Size) - edgeThickness);
       m_path2d.moveTo((float) (a + 4.0d * f),
                       (float) (f + 1.5d * edgeThickness));
       m_path2d.lineTo((float) a, (float) (1.5d * edgeThickness));
       if (2.0d * a < len) {
         m_path2d.lineTo((float) (len - a), (float) (1.5d * edgeThickness)); }
-      final double g = 4.0d * (((double) arrow1Size) - edgeThickness);
+      final double g = 1.0d * (((double) arrow1Size) - edgeThickness);
       m_path2d.moveTo((float) (len - (a + 4.0d * g)),
                       (float) (-g + -1.5d * edgeThickness));
       m_path2d.lineTo((float) (len - a), (float) (-1.5d * edgeThickness));
