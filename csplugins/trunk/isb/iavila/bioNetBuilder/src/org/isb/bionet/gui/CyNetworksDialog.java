@@ -16,6 +16,7 @@ public class CyNetworksDialog extends JDialog {
     
     public CyNetworksDialog (){
         setTitle("Cytoscape Networks");
+        setModal(true);
         create();
     }
     
