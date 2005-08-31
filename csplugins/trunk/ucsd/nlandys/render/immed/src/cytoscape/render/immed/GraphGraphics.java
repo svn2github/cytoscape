@@ -905,13 +905,13 @@ public final class GraphGraphics
     if (arrowType0 == ARROW_BIDIRECTIONAL) { // Draw and return.
       final double a = (6.0d + Math.sqrt(17.0d) / 2.0d) * edgeThickness;
       m_path2d.reset();
-      final double f = (-17.0d / 8.0d) * edgeThickness + arrow0Size;
+      final double f = 4.0d * (((double) arrow0Size) - edgeThickness);
       m_path2d.moveTo((float) (a + 4.0d * f),
                       (float) (f + 1.5d * edgeThickness));
       m_path2d.lineTo((float) a, (float) (1.5d * edgeThickness));
       if (2.0d * a < len) {
         m_path2d.lineTo((float) (len - a), (float) (1.5d * edgeThickness)); }
-      final double g = (-17.0d / 8.0d) * edgeThickness + arrow1Size;
+      final double g = 4.0d * (((double) arrow1Size) - edgeThickness);
       m_path2d.moveTo((float) (len - (a + 4.0d * g)),
                       (float) (-g + -1.5d * edgeThickness));
       m_path2d.lineTo((float) (len - a), (float) (-1.5d * edgeThickness));
@@ -923,18 +923,9 @@ public final class GraphGraphics
       m_xformUtil.setTransform
         (cosTheta, sinTheta, -sinTheta, cosTheta, x0, y0);
       m_path2d.transform(m_xformUtil);
-      // Right now, we're drawing bidirectional edges with butt ends instead
-      // of round ends.  If we wanted round ends, substantially more work
-      // would have to be done for the following reasons.  For dashed
-      // lines, we need butt ends to be consistent with the appearance of
-      // dashes with other edge types.  Therefore, if we wanted round
-      // ends, we would have to create shapes for these ends and render them
-      // separately.  Computing the round end for the angled arrow segment
-      // is not easy, especially for the case where this segment is very
-      // short relative to the edge thickness.  I prefer to keep things
-      // simple in the code at the expense of sacrificing a little bit of
-      // prettiness.
-      setStroke(edgeThickness, dashLength, BasicStroke.CAP_BUTT, false);
+      setStroke(edgeThickness, dashLength,
+                dashLength == 0.0f ? BasicStroke.CAP_ROUND :
+                BasicStroke.CAP_BUTT, false);
       m_g2d.setColor(edgeColor);
       m_g2d.draw(m_path2d);
       return; } // End ARROW_BIDIRECTIONAL.
@@ -1502,10 +1493,10 @@ public final class GraphGraphics
     // lots of new strokes if they constantly change.
     if (m_currDash[0] == 0.0f)
       m_g2d.setStroke(new BasicStroke(width, capType,
-                                      BasicStroke.JOIN_BEVEL, 10.0f));
+                                      BasicStroke.JOIN_ROUND, 10.0f));
     else
       m_g2d.setStroke(new BasicStroke(width, capType,
-                                      BasicStroke.JOIN_BEVEL, 10.0f,
+                                      BasicStroke.JOIN_ROUND, 10.0f,
                                       m_currDash, 0.0f));
   }
 
