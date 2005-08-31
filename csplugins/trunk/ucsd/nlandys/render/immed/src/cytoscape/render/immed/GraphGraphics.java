@@ -1639,9 +1639,38 @@ public final class GraphGraphics
     new boolean[CUSTOM_SHAPE_MAX_VERTICES];
 
   /**
+   * Computes the intersection point between a node outline and a line
+   * segment; one point of the line segment lies at the center of the node
+   * outline.<p>
    * There is a constraint that only applies to SHAPE_ROUNDED_RECTANGLE
    * which imposes that the maximum of the width and height be strictly
-   * less than twice the minimum of the width and height of the node.<p>
+   * less than twice the minimum of the width and height of the node.
+   * @param nodeShape the shape of the node in question; this must be
+   *   one of the SHAPE_* constants or a custom node shape.
+   * @param xMin an extent of the node in question, in node coordinate space.
+   * @param yMin an extent of the node in question, in node coordinate space.
+   * @param xMax an extent of the node in question, in node coordinate space.
+   * @param yMax an extent of the node in question, in node coordinate space.
+   * @param offset most of the time this value will be zero, in which case
+   *   the point computed is the exact intersection point of line segment and
+   *   node outline; if this value is greater than zero, the point computed
+   *   is one that lies on the line segment, is "outside" of the node outline,
+   *   and is distance offset from the node outline.
+   * @param ptX specifies the X coordinate of the endpoint of the line
+   *   segment that is not the endpoint lying in the center of the node shape.
+   * @param ptY specifies the Y coordinate of the endpoint of the line
+   *   segment that is not the endpoint lying in the center of the node shape.
+   * @param returnVal if true is returned, returnVal[0] is set to be the
+   *   X coordinate of the computed point and returnVal[1] is set to be the
+   *   Y coordinate of the computed point; if false is returned, this
+   *   array is not modified.
+   * @return true if and only if a point matching our criteria exists.
+   * @exception IllegalArgumentException if xMin is not less than xMax or if
+   *   yMin is not less than yMax, if offset is negative, if nodeShape is
+   *   SHAPE_ROUNDED_RECTANGLE and the condition
+   *   max(width, height) < 2 * min(width, height) does not hold, or if
+   *   nodeShape is neither one of the SHAPE_* constants nor a previously
+   *   defined custom node shape.
    */
   public final boolean computeEdgeIntersection(final byte nodeShape,
                                                final float xMin,
