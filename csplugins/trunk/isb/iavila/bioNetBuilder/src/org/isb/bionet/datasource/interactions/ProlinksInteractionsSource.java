@@ -28,7 +28,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	/**
 	 * This is the same name as in the MyQSL DB
 	 */
-	public static final String NAME = "prolinks";
+	public static final String NAME = "Prolinks";
 	public static final String GENE_ID_TYPE = "ProlinksID";
 	public static final String PVAL = "p";
 	
@@ -202,7 +202,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	 *         source contains information
 	 */
 	public Vector getSupportedSpecies() {
-		String sql = "SELECT species FROM species";
+		String sql = "SELECT DISTINCT species FROM species";
 		ResultSet rs = query(sql);
 		if (rs == null) {
 			return EMPTY_VECTOR;

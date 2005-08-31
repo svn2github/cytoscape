@@ -313,11 +313,41 @@ public class InteractionsHandler implements InteractionsDataSource {
 		Vector species = new Vector();
 		Iterator it = this.interactionSources.iterator();
 		while(it.hasNext()){
-			Vector sp = ( (InteractionsDataSource)it.next() ).getSupportedSpecies();
+             InteractionsDataSource dataSource = (InteractionsDataSource)it.next();
+			Vector sp = dataSource.getSupportedSpecies();
 			species.addAll(sp);
 		}
 		return species;
 	}
+    
+    /**
+     * @return a Hashtable from the fully described class of the data source (String) to
+     * a Vector of Strings that are the species that that data source supports
+     */
+    public Hashtable getSupportedSpeciesForEachSource(){
+        Hashtable table = new Hashtable();
+        Iterator it = this.interactionSources.iterator();
+        while(it.hasNext()){
+            InteractionsDataSource dataSource = (InteractionsDataSource)it.next();
+            Vector sp = dataSource.getSupportedSpecies();
+            table.put(dataSource.getClass().toString(), sp);
+        }
+        return table;
+    }
+    
+    /**
+     * @return a Hashtable from a data source's fully specified class to the data sources name available throug the getDataSourceName method
+     */
+    public Hashtable getSourcesNames(){
+        Hashtable table = new Hashtable();
+        Iterator it = this.interactionSources.iterator();
+        while(it.hasNext()){
+            InteractionsDataSource dataSource = (InteractionsDataSource)it.next();
+            String name = (String)dataSource.getDataSourceName();
+            table.put(dataSource.getClass().toString(), name);
+        }
+        return table;
+    }
 
 	/**
 	 * @return false always

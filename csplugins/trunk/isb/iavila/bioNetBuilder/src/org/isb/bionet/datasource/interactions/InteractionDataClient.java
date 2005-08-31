@@ -2,6 +2,7 @@ package org.isb.bionet.datasource.interactions;
 
 import java.io.IOException;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Vector;
 
 import org.apache.xmlrpc.XmlRpcException;
@@ -154,6 +155,35 @@ public class InteractionDataClient extends AuthenticatedDataClient{
 		  Object out = call( this.serviceName + ".getIDtypes" );
 	      return (Vector)out;
 	  }
+      
+
+        /**
+         * @return a Vector of Strings representing the species for which the data
+         *         source contains information
+         */
+        public Vector getSupportedSpecies() throws XmlRpcException, IOException{
+            Object out = call(this.serviceName + ".getSupportedSpecies");
+            return (Vector)out;
+        }
+        
+        /**
+         * @return a Hashtable from the fully described class of the data source (String) to
+         * a Vector of Strings that are the species that that data source supports
+         * @throws XmlRpcException
+         * @throws IOException
+         */
+        public Hashtable getSupportedSpeciesForEachSource() throws XmlRpcException, IOException{
+            Object out = call(this.serviceName + ".getSupportedSpeciesForEachSource");
+            return (Hashtable)out;
+        }
+        
+        /**
+         * @return a Hashtable from a data source's fully specified class to the data sources name available throug the getDataSourceName method
+         */
+        public Hashtable getSourcesNames() throws XmlRpcException, IOException{
+            Object out = call(this.serviceName + ".getSourcesNames");
+            return (Hashtable)out;
+        }
 	  
 	  //------------------------ get interactions en masse --------------------
 	  /**
