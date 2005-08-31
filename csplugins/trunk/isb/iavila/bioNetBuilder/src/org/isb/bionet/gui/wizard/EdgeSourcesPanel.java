@@ -36,11 +36,17 @@ public class EdgeSourcesPanel extends JPanel {
      * this Map with a Vector of species as a value
      */
     protected Map sourceToSpecies;
+    
+    /**
+     * A Map of edge data source's names to the dialogs that contains their parameters
+     */
+    protected Map sourceToDialog;
 
     /**
      * The list of buttons
      */
     protected List buttons;
+    
     
     /**
      * 
@@ -54,7 +60,15 @@ public class EdgeSourcesPanel extends JPanel {
     public EdgeSourcesPanel(Map edgeSourceToName, Map sourceToSelectedSpecies) {
         this.sourceToName = edgeSourceToName;
         this.sourceToSpecies = sourceToSelectedSpecies;
+        this.sourceToDialog = new Hashtable();
         create();
+    }
+    
+    /**
+     * @return a Map of edge data source's names to the dialogs that contains their parameters
+     */
+    public Map getSourcesDialogs (){
+        return this.sourceToDialog;
     }
     
     /**
@@ -91,6 +105,7 @@ public class EdgeSourcesPanel extends JPanel {
                         pDialog.pack();
                         pDialog.setLocationRelativeTo(EdgeSourcesPanel.this);
                         pDialog.setVisible(true);
+                        sourceToDialog.put(ProlinksInteractionsSource.NAME,pDialog);
                     }//actionPerformed
                 });//AbstractAction
             }
@@ -99,6 +114,15 @@ public class EdgeSourcesPanel extends JPanel {
         }//while it
         
         JButton netsButton = new JButton("Loaded Networks...");
+        netsButton.addActionListener(
+                new AbstractAction(){
+                    
+                    public void actionPerformed (ActionEvent event){
+                        CyNetworksDialog.showDialog(EdgeSourcesPanel.this);
+                    }
+                    
+                }
+        );
         this.buttons.add(netsButton);
         
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));

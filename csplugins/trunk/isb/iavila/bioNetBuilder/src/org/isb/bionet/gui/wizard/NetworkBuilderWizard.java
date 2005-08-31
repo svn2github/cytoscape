@@ -20,6 +20,7 @@ public class NetworkBuilderWizard {
     protected List dialogs;
     protected SpeciesPanel speciesPanel;
     protected EdgeSourcesPanel edgeSourcesPanel;
+    protected NetworkSettingsPanel networkPanel;
     protected int currentStep;
     protected boolean onLastStep = false;
     
@@ -75,22 +76,28 @@ public class NetworkBuilderWizard {
     public void createDialogs (){
         this.dialogs = new ArrayList();
         
+        this.currentStep = -1;
+        
         // Create the dialog for selecting species
-        this.currentStep = 0;
+        this.currentStep++;
         JDialog speciesDialog = createSpeciesDialog();
         this.dialogs.add(this.currentStep, speciesDialog);
         
         // Create the dialog to select nodes
-        this.currentStep = 1;
+        this.currentStep++;
         JDialog nodesDialog = createNodeSourcesDialog();
         this.dialogs.add(this.currentStep, nodesDialog);
         
         // Create the dialog to select edges
-        this.currentStep = 2;
-        this.onLastStep = true;
+        this.currentStep++;
         JDialog edgesDialog = createEdgeSourcesDialog();
         this.dialogs.add(this.currentStep, edgesDialog);
         
+        // Create the dialog for network settings
+        this.currentStep++;
+        this.onLastStep = true;
+        JDialog netDialog = createNetworkSettingsDialog();
+        this.dialogs.add(this.currentStep,netDialog);
     }//start
     
     
@@ -102,7 +109,7 @@ public class NetworkBuilderWizard {
         
         JDialog dialog = new JDialog(Cytoscape.getDesktop());
         dialog.setTitle("BioNetwork Builder");
-        dialog.setSize(400, 600);
+        dialog.setSize(400, 500);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         
         JPanel panel = new JPanel();
@@ -294,6 +301,30 @@ public class NetworkBuilderWizard {
         
         return dialog;
         
+    }
+    
+    protected JDialog createNetworkSettingsDialog (){
+        AbstractAction back, next;
+        back = DEFAULT_BACK_ACTION;
+        next = DEFAULT_NEXT_ACTION; // for now
+        
+        JDialog dialog = createWizardDialog(back, next);
+        
+        JPanel explanation = createExplanationPanel(
+                "<html><br>Set parameters for your new biological network.<br></html>"
+        );
+        
+        dialog.getContentPane().add(explanation, BorderLayout.NORTH);
+        
+        this.networkPanel = new NetworkSettingsPanel();
+        
+        JPanel bigPanel = new JPanel();
+        bigPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        bigPanel.add(this.networkPanel);
+       
+        dialog.getContentPane().add(bigPanel, BorderLayout.CENTER);
+        
+        return dialog;
     }
     
 }//NetworkBuilderWizard

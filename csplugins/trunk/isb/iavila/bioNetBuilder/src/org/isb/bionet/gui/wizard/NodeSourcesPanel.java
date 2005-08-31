@@ -16,21 +16,59 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.JFileChooser;
+import java.io.File;
+
+import org.isb.bionet.gui.*;
 
 public class NodeSourcesPanel extends JPanel {
 
+    protected File myListFile;
     
+    /**
+     *  Creates a panel with node sources
+     */
     public NodeSourcesPanel (){
         create();
     }
     
+    /**
+     * @return if a file has been selected, it returns it, returns null otherwise
+     */
+    public File getMyListFile (){
+        return this.myListFile;
+    }
+    
+    /**
+     * Creates the panel
+     */
     protected void create() {
         
         final JButton annotsButton = new JButton("Nodes with selected annotations...");
         annotsButton.setEnabled(false);
         final JButton listButton = new JButton("Nodes from my list...");
+        final JFileChooser fileChooser = new JFileChooser();
+        listButton.addActionListener(
+                new AbstractAction (){
+                    
+                    public void actionPerformed (ActionEvent event){
+                        int returnVal = fileChooser.showOpenDialog(NodeSourcesPanel.this);
+                        if(returnVal == JFileChooser.APPROVE_OPTION) {
+                            myListFile = fileChooser.getSelectedFile();
+                        }
+                    }//actionPerformed
+                    
+                }//AbstractAction
+        );
         listButton.setEnabled(false);
         final JButton netsButton  =  new JButton("Nodes from loaded networks...");
+        netsButton.addActionListener(
+                new AbstractAction (){
+                    public void actionPerformed (ActionEvent event){
+                        CyNetworksDialog.showDialog(NodeSourcesPanel.this);
+                    }//actionPerformed
+                }
+        );
         netsButton.setEnabled(false);
         
         this.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
