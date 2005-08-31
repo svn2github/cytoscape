@@ -946,6 +946,73 @@ public final class GraphGraphics
     }
   }
 
+  private final void edgeFullDebug(final byte arrowType0,
+                                   final float arrow0Size,
+                                   final byte arrowType1,
+                                   float arrow1Size,
+                                   final float edgeThickness,
+                                   final float dashLength,
+                                   final EdgeAnchors anchors)
+  {
+    if (!EventQueue.isDispatchThread())
+      throw new IllegalStateException
+        ("calling thread is not AWT event dispatcher");
+    if (!m_cleared) throw new IllegalStateException
+                      ("clear() has not been called previously");
+    if (!(edgeThickness >= 0.0f))
+      throw new IllegalArgumentException("edgeThickness < 0");
+    if (!(dashLength >= 0.0f))
+      throw new IllegalArgumentException("dashLength < 0");
+    switch (arrowType0) {
+    case ARROW_NONE:
+      break;
+    case ARROW_MONO:
+      arrow1Size = arrow0Size;
+      // Don't break; fall through.
+    case ARROW_BIDIRECTIONAL:
+      if (anchors.numRemaining() > 0)
+        throw new IllegalArgumentException
+          ("ARROW_BIDIRECTIONAL and ARROW_MONO not supported for poly edges");
+      if (arrowType1 != arrowType0)
+        throw new IllegalArgumentException
+          ("for ARROW_BIDIRECTIONAL and ARROW_MONO, both arrows must be " +
+           "identical");
+      // Don't break; fall through.
+    case ARROW_DELTA:
+    case ARROW_DIAMOND:
+    case ARROW_DISC:
+    case ARROW_TEE:
+      if (!(arrow0Size >= edgeThickness))
+        throw new IllegalArgumentException
+          ("arrow size must be at least as large as edge thickness");
+      break;
+    default:
+      throw new IllegalArgumentException("arrowType0 is not recognized"); }
+    switch (arrowType1) {
+    case ARROW_NONE:
+      break;
+    case ARROW_BIDIRECTIONAL:
+    case ARROW_MONO:
+      if (arrowType0 != arrowType1)
+        throw new IllegalArgumentException
+          ("for ARROW_BIDIRECTIONAL and ARROW_MONO, both arrows must be " +
+           "identical");
+      // Don't break; fall through.
+    case ARROW_DELTA:
+    case ARROW_DIAMOND:
+    case ARROW_DISC:
+    case ARROW_TEE:
+      if (!(arrow1Size >= edgeThickness))
+        throw new IllegalArgumentException
+          ("arrow size must be at least as large as edge thickness");
+      break;
+    default:
+      throw new IllegalArgumentException("arrowType1 is not recognized"); }
+    if (anchors.numRemaining() > MAX_EDGE_ANCHORS)
+      throw new IllegalArgumentException
+        ("at most MAX_EDGE_ANCHORS edge anchors can be specified");
+  }
+
   private final void drawSimpleEdgeFull(final byte arrowType0,
                                         final float arrow0Size,
                                         final Color arrow0Color,
@@ -1255,73 +1322,6 @@ public final class GraphGraphics
     return true;
   }
 
-  private final void edgeFullDebug(final byte arrowType0,
-                                   final float arrow0Size,
-                                   final byte arrowType1,
-                                   float arrow1Size,
-                                   final float edgeThickness,
-                                   final float dashLength,
-                                   final EdgeAnchors anchors)
-  {
-    if (!EventQueue.isDispatchThread())
-      throw new IllegalStateException
-        ("calling thread is not AWT event dispatcher");
-    if (!m_cleared) throw new IllegalStateException
-                      ("clear() has not been called previously");
-    if (!(edgeThickness >= 0.0f))
-      throw new IllegalArgumentException("edgeThickness < 0");
-    if (!(dashLength >= 0.0f))
-      throw new IllegalArgumentException("dashLength < 0");
-    switch (arrowType0) {
-    case ARROW_NONE:
-      break;
-    case ARROW_MONO:
-      arrow1Size = arrow0Size;
-      // Don't break; fall through.
-    case ARROW_BIDIRECTIONAL:
-      if (anchors.numRemaining() > 0)
-        throw new IllegalArgumentException
-          ("ARROW_BIDIRECTIONAL and ARROW_MONO not supported for poly edges");
-      if (arrowType1 != arrowType0)
-        throw new IllegalArgumentException
-          ("for ARROW_BIDIRECTIONAL and ARROW_MONO, both arrows must be " +
-           "identical");
-      // Don't break; fall through.
-    case ARROW_DELTA:
-    case ARROW_DIAMOND:
-    case ARROW_DISC:
-    case ARROW_TEE:
-      if (!(arrow0Size >= edgeThickness))
-        throw new IllegalArgumentException
-          ("arrow size must be at least as large as edge thickness");
-      break;
-    default:
-      throw new IllegalArgumentException("arrowType0 is not recognized"); }
-    switch (arrowType1) {
-    case ARROW_NONE:
-      break;
-    case ARROW_BIDIRECTIONAL:
-    case ARROW_MONO:
-      if (arrowType0 != arrowType1)
-        throw new IllegalArgumentException
-          ("for ARROW_BIDIRECTIONAL and ARROW_MONO, both arrows must be " +
-           "identical");
-      // Don't break; fall through.
-    case ARROW_DELTA:
-    case ARROW_DIAMOND:
-    case ARROW_DISC:
-    case ARROW_TEE:
-      if (!(arrow1Size >= edgeThickness))
-        throw new IllegalArgumentException
-          ("arrow size must be at least as large as edge thickness");
-      break;
-    default:
-      throw new IllegalArgumentException("arrowType1 is not recognized"); }
-    if (anchors.numRemaining() > MAX_EDGE_ANCHORS)
-      throw new IllegalArgumentException
-        ("at most MAX_EDGE_ANCHORS edge anchors can be specified");
-  }
-
   /*
    * Returns non-null if and only if an arrow is necessary for the arrow
    * type specified.  m_path2d and m_ellp2d may be mangled as a side effect.
@@ -1410,8 +1410,8 @@ public final class GraphGraphics
    *    / |
    *   ---|
    *
-   * The same transform that was used to draw the delta arrowhead can be used
-   * modulo scaling to edge thickness.
+   * The same transform that was used to draw the delta arrowhead (for
+   * ARROW_MONO) can be used modulo scaling to edge thickness.
    */
   private final Shape computeUntransformedDeltaWedgeCap()
   {
