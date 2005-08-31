@@ -723,7 +723,7 @@ public final class GraphGraphics
    *                                   the edge arrow is drawn such that
    *                                   it fits snugly inside of an
    *                                   ARROW_DELTA of size 2s +
-   *                                   ((sqrt(17)+5)/4)e where
+   *                                   e[sqrt(17)+5]/4 where
    *                                   s is the arrow size specified and e
    *                                   is edge thickness specified;
    *                                   the delta's tip is at edge
@@ -905,13 +905,13 @@ public final class GraphGraphics
     if (arrowType0 == ARROW_BIDIRECTIONAL) { // Draw and return.
       final double a = (6.0d + Math.sqrt(17.0d) / 2.0d) * edgeThickness;
       m_path2d.reset();
-      final double f = 1.0d * (((double) arrow0Size) - edgeThickness);
+      final double f = ((double) arrow0Size) - edgeThickness;
       m_path2d.moveTo((float) (a + 4.0d * f),
                       (float) (f + 1.5d * edgeThickness));
       m_path2d.lineTo((float) a, (float) (1.5d * edgeThickness));
       if (2.0d * a < len) {
         m_path2d.lineTo((float) (len - a), (float) (1.5d * edgeThickness)); }
-      final double g = 1.0d * (((double) arrow1Size) - edgeThickness);
+      final double g = ((double) arrow1Size) - edgeThickness;
       m_path2d.moveTo((float) (len - (a + 4.0d * g)),
                       (float) (-g + -1.5d * edgeThickness));
       m_path2d.lineTo((float) (len - a), (float) (-1.5d * edgeThickness));
@@ -923,9 +923,10 @@ public final class GraphGraphics
       m_xformUtil.setTransform
         (cosTheta, sinTheta, -sinTheta, cosTheta, x0, y0);
       m_path2d.transform(m_xformUtil);
-      setStroke(edgeThickness, dashLength,
-                dashLength == 0.0f ? BasicStroke.CAP_ROUND :
-                BasicStroke.CAP_BUTT, false);
+      setStroke
+        (edgeThickness, dashLength,
+         dashLength == 0.0f ? BasicStroke.CAP_ROUND : BasicStroke.CAP_BUTT,
+         false);
       m_g2d.setColor(edgeColor);
       m_g2d.draw(m_path2d);
       return; } // End ARROW_BIDIRECTIONAL.
