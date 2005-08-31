@@ -550,6 +550,7 @@ public final class GraphGraphics
       m_xformUtil.transform(storedPolyCoords, 0,
                             m_polyCoords, 0, m_polyNumPoints);
       break; }
+
     m_path2d.reset();
     m_path2d.moveTo((float) m_polyCoords[0], (float) m_polyCoords[1]);
     for (int i = 2; i < m_polyNumPoints * 2;)
@@ -678,6 +679,7 @@ public final class GraphGraphics
    * at least some arrowheads).<p>
    * The arrow types must each be one of the ARROW_* constants.
    * The arrow at endpoint 1 is always "on top of" the arrow at endpoint 0
+   * if they overlap
    * because the arrow at endpoint 0 gets rendered first.<p>
    * If an arrow other than ARROW_NONE is rendered, its size must be
    * greater than or equal to edge thickness specified.  The table below
@@ -745,14 +747,62 @@ public final class GraphGraphics
    * Note that if the edge segment length is zero then nothing gets
    * rendered.<p>
    * This method will not work unless clear() has been called at least once
-   * previously.
+   * previously.<p>
+   * A discussion pertaining to edge anchors.  At most MAX_EDGE_ANCHORS
+   * edge anchors may be specified.  The edge anchors are used to
+   * define cubic Bezier curves.  The exact algorithm for determining
+   * the Bezier curves from the input parameters is too complicated to
+   * describe in this Javadoc.  Some parts of the algorithm:
+   * <ol><li>the conglomerated curve is [probably] not going to pass
+   *       through the edge anchors points specified; the curve will pass
+   *       through the midpoint between every consecutive pair of anchors</li>
+   *     <li>when determining the edge path as a whole, an ordered list of
+   *       points is created by putting point (x0, y0) at the beginning of
+   *       the list, followed by the anchor points, followed by point
+   *       (x1, y1); then, duplicate points are removed from the beginning
+   *       and end of this list</li>
+   *     <li>from the list described above, the first two points define
+   *       the arrow direction at point (x0, y0) and the initial curve
+   *       direction; likewise, the last two points in this list define
+   *       the arrow direction at point (x1, y1) and the ending curve
+   *       direction</li></ol>
+   * In order to specify a straight-line edge path, simply duplicate
+   * each edge anchor in the EdgeAnchors instance.  For example, a smooth
+   * curve would be drawn by specifying consecutive-pairwise disctinct points
+   * {(x0,y0), A1, A2, A3, (x1,y1)}; a straight-line edge path would be
+   * drawn by specifying {(x0, y0), A1, A1, A2, A2, A3, A3, (x1, y1)}.
+   * @param arrowType0 the type of arrow shape to use for drawing the
+   *   arrow at point (x0, y0); this value must be one of the ARROW_*
+   *   constants.
+   * @param arrow0Size the size of arrow at point (x0, y0); how size is
+   *   interpreted for different arrow types is described in the table
+   *   above.
+   * @param arrow0Color the color to use when drawing the arrow at point
+   *   (x0, y0).
+   * @param arrowType1 the type of arrow shape to use for drawing the
+   *   arrow at point (x1, y1); this value must be one of the ARROW_*
+   *   constants.
+   * @param arrow1Size the size of arrow at point (x1, y1); how size is
+   *   interpreted for different arrow types is described in the table
+   *   above.
+   * @param arrow1Color the color to use when drawing the arrow at point
+   *   (x1, y1).
+   * @param x0 the X coordinate of the first edge endpoint.
+   * @param y0 the Y coordinate of the first edge endpoint.
    * @param anchors anchor points between the two edge endpoints; null is
    *   an acceptable value to indicate no edge anchors.
+   * @param x1 the X coordinate of the second edge endpoint.
+   * @param y1 the Y coordinate of the second edge endpoint.
+   * @param edgeThickness the thickness of the edge segment; the edge segment
+   *   is the part of the edge between the two endpoint arrows.
+   * @param edgeColor the color to use when drawing the edge segment.
    * @param dashLength a positive value representing the length of dashes
-   *   on the edge, or zero to indicate that the edge is solid.
+   *   on the edge, or zero to indicate that the edge is solid; note that
+   *   drawing dashed segments is computationally expensive.
    * @exception IllegalArgumentException if edgeThickness is less than zero,
-   *   if dashLength is less than zero, or if any one of the arrow sizes
-   *   does not meet specified criteria.
+   *   if dashLength is less than zero, if any one of the arrow configurations
+   *   does not meet specified criteria, or if more than
+   *   MAX_EDGE_ANCHORS anchors are specified.
    */
   public final void drawEdgeFull(final byte arrowType0,
                                  final float arrow0Size,
