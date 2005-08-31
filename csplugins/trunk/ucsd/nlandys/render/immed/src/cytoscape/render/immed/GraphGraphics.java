@@ -242,6 +242,36 @@ public final class GraphGraphics
   }
 
   /**
+   * Uses the current transform to map the specified image coordinates to
+   * node coordinates.
+   * The transform used is defined by the last call to clear().
+   * It does not make sense to call this method if clear() has not been
+   * called at least once previously, and this method will cause errors in
+   * this case.
+   * @param coords an array of length [at least] two which acts both
+   *   as the input and as the output of this method; coords[0] is the
+   *   input X coordinate in the image coordinate system and is written
+   *   as the X coordinate in the node coordinate system by this method;
+   *   coords[1] is the input Y coordinate in the image coordinate system and
+   *   is written as the Y coordinate in the node coordinate system by this
+   *   method; the exact transform which takes place is defined by the
+   *   previous call to the clear() method.
+   */
+  public final void xformImageToNodeCoords(final double[] coords)
+  {
+    if (m_debug) {
+      if (!EventQueue.isDispatchThread())
+        throw new IllegalStateException
+          ("calling thread is not AWT event dispatcher");
+      if (!m_cleared) throw new IllegalStateException
+                        ("clear() has not been called previously"); }
+    try {
+      m_currXform.inverseTransform(coords, 0, coords, 0, 1); }
+    catch (java.awt.geom.NoninvertibleTransformException e) {
+      throw new RuntimeException("noninvertible matrix - cannot happen"); }
+  }
+
+  /**
    * This is the method that will render a node very quickly.
    * The node shape used by this method is SHAPE_RECTANGLE.  Translucent
    * colors are not officially supported by the low detail rendering
@@ -2243,36 +2273,6 @@ public final class GraphGraphics
              "max(width, height) < 2 * min(width, height)"); } }
     return getShape(nodeShape, xMin, yMin, xMax, yMax).contains(xQuery,
                                                                 yQuery);
-  }
-
-  /**
-   * Uses the current transform to map the specified image coordinates to
-   * node coordinates.
-   * The transform used is defined by the last call to clear().
-   * It does not make sense to call this method if clear() has not been
-   * called at least once previously, and this method will cause errors in
-   * this case.
-   * @param coords an array of length [at least] two which acts both
-   *   as the input and as the output of this method; coords[0] is the
-   *   input x coordinate in the image coordinate system and is written
-   *   as the x coordinate in the node coordinate system by this method;
-   *   coords[1] is the input y coordinate in the image coordinate system and
-   *   is written as the y coordinate in the node coordinate system by this
-   *   method; the exact transform which takes place is defined by the
-   *   previous call to the clear() method.
-   */
-  public final void xformImageToNodeCoords(final double[] coords)
-  {
-    if (m_debug) {
-      if (!EventQueue.isDispatchThread())
-        throw new IllegalStateException
-          ("calling thread is not AWT event dispatcher");
-      if (!m_cleared) throw new IllegalStateException
-                        ("clear() has not been called previously"); }
-    try {
-      m_currXform.inverseTransform(coords, 0, coords, 0, 1); }
-    catch (java.awt.geom.NoninvertibleTransformException e) {
-      throw new RuntimeException("noninvertible matrix - cannot happen"); }
   }
 
   // This member variable only to be used from within defineCustomNodeShape().
