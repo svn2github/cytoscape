@@ -90,8 +90,8 @@ public final class TestEdgeRenderingAlpha
   private final float[] m_extents;
   private final byte m_shape;
   private final float m_edgeThickness;
-  private final int m_imgWidth = 600;
-  private final int m_imgHeight = 480;
+  private final int m_imgWidth = 800;
+  private final int m_imgHeight = 600;
   private final Image m_img;
   private final GraphGraphics m_grafx;
   private final Color m_bgColor = Color.white;

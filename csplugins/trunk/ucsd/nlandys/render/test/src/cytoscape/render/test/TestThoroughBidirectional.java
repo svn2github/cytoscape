@@ -29,8 +29,8 @@ public final class TestThoroughBidirectional
                 System.exit(0); } }); } });
   }
 
-  private final int m_imgWidth = 600;
-  private final int m_imgHeight = 480;
+  private final int m_imgWidth = 800;
+  private final int m_imgHeight = 600;
   private final Image m_img;
   private final GraphGraphics m_grafx;
   private double m_currXCenter = 0.0d;
