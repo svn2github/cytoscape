@@ -1,4 +1,5 @@
 lib:cytoscape-util-intr.jar
+lib:cytoscape-geom-spacial.jar
 lib:cytoscape-geom-rtree.jar
 lib:cytoscape-render-immed.jar
 lib:cytoscape-render-export.jar

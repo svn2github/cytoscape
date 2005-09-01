@@ -1,7 +1,5 @@
 package cytoscape.render.test;
 
-import cytoscape.geom.rtree.RTree;
-import cytoscape.geom.rtree.RTreeEntryEnumerator;
 import cytoscape.render.immed.GraphGraphics;
 
 import java.awt.Color;

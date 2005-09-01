@@ -1,7 +1,7 @@
 package cytoscape.render.test;
 
 import cytoscape.geom.rtree.RTree;
-import cytoscape.geom.rtree.RTreeEntryEnumerator;
+import cytoscape.geom.spacial.SpacialEntry2DEnumerator;
 import cytoscape.render.export.ImageImposter;
 import cytoscape.render.immed.EdgeAnchors;
 import cytoscape.render.immed.GraphGraphics;
@@ -205,7 +205,7 @@ public final class TestBasicPolyEdge
        edgeSelected ? m_selectedEdgeSegmentColor : m_edgeSegmentColor,
        0.0f);
 
-    RTreeEntryEnumerator iter = m_tree.queryOverlap
+    SpacialEntry2DEnumerator iter = m_tree.queryOverlap
       ((float) (m_currXCenter - ((double) (m_imgWidth / 2)) / m_currScale),
        (float) (m_currYCenter - ((double) (m_imgHeight / 2)) / m_currScale),
        (float) (m_currXCenter + ((double) (m_imgWidth / 2)) / m_currScale),
@@ -258,7 +258,7 @@ public final class TestBasicPolyEdge
       // We have to "reverse" the order in which hits are returned; in
       // rendering, we do it back to front; in selection, we would like to
       // do it front to back.
-      RTreeEntryEnumerator candidates =
+      SpacialEntry2DEnumerator candidates =
         m_tree.queryOverlap((float) m_ptBuff[0], (float) m_ptBuff[1],
                             (float) m_ptBuff[0], (float) m_ptBuff[1],
                             null, 0, true);

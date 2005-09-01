@@ -1,7 +1,7 @@
 package cytoscape.render.test;
 
 import cytoscape.geom.rtree.RTree;
-import cytoscape.geom.rtree.RTreeEntryEnumerator;
+import cytoscape.geom.spacial.SpacialEntry2DEnumerator;
 import cytoscape.render.immed.GraphGraphics;
 
 import java.awt.Color;
@@ -137,7 +137,7 @@ public final class TestNodeRenderingAlpha
   private final void updateNodeImage()
   {
     m_grafx.clear(m_bgColor, m_currXCenter, m_currYCenter, m_currScale);
-    final RTreeEntryEnumerator iter = m_tree.queryOverlap
+    final SpacialEntry2DEnumerator iter = m_tree.queryOverlap
       ((float) (m_currXCenter - ((double) (m_imgWidth / 2)) / m_currScale),
        (float) (m_currYCenter - ((double) (m_imgHeight / 2)) / m_currScale),
        (float) (m_currXCenter + ((double) (m_imgWidth / 2)) / m_currScale),
