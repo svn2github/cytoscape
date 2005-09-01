@@ -8,6 +8,9 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.List;
 import org.isb.bionet.datasource.interactions.*;
+import org.isb.bionet.gui.ProlinksGui;
+import org.isb.bionet.Utils;
+
 import cytoscape.*;
 /**
  * 
@@ -19,6 +22,7 @@ public class NetworkBuilderWizard {
     protected InteractionDataClient interactionsClient;
     protected List dialogs;
     protected SpeciesPanel speciesPanel;
+    protected NodeSourcesPanel nodeSourcesPanel;
     protected EdgeSourcesPanel edgeSourcesPanel;
     protected NetworkSettingsPanel networkPanel;
     protected int currentStep;
@@ -39,12 +43,22 @@ public class NetworkBuilderWizard {
         
     };
     
+    protected AbstractAction FINISH_ACTION;
+    
     /**
      * 
      * @param interactions_client
      */
     public NetworkBuilderWizard (InteractionDataClient interactions_client){
         this.interactionsClient = interactions_client;
+        FINISH_ACTION = new AbstractAction (){
+            public void actionPerformed (ActionEvent event){
+                createNetwork();
+                JDialog currentDialog = (JDialog)dialogs.get(currentStep);
+                currentDialog.setVisible(false);
+            }
+            
+        };
         createDialogs();
     }//constructor
     
@@ -52,6 +66,7 @@ public class NetworkBuilderWizard {
      * Starts the wizard.
      */
     public void startWizard (){
+        this.onLastStep = false;
         displayStep(0);
     }//startWizard
     
@@ -62,6 +77,11 @@ public class NetworkBuilderWizard {
     protected void displayStep (int step){      
         JDialog prevDialog = (JDialog)this.dialogs.get(this.currentStep);
         this.currentStep = step;
+        if(this.currentStep == this.dialogs.size()-1){
+            this.onLastStep = true;
+        }else{
+            this.onLastStep = false;
+        }
         JDialog dialog = (JDialog)this.dialogs.get(this.currentStep);
         dialog.setLocationRelativeTo(prevDialog);
         if(prevDialog.isVisible()){
@@ -71,7 +91,7 @@ public class NetworkBuilderWizard {
     }//dsiplayStep
     
     /**
-     * Creates all the dialogs
+     * Creates all the dialogs in order of steps
      */
     public void createDialogs (){
         this.dialogs = new ArrayList();
@@ -192,20 +212,28 @@ public class NetworkBuilderWizard {
                 if(table.size() == 0){
                     JOptionPane.showMessageDialog(speciesPanel,"Please select a species", "Error", JOptionPane.ERROR_MESSAGE);
                 }else{
-//                  enable edge sources in the edges dialog
+                    // enable edge sources in the edges dialog
                     if(edgeSourcesPanel == null)
                         return;
                     Map sourceToName = (Map)speciesPanel.getSourcesNames();
                     Iterator it = table.keySet().iterator();
                     while(it.hasNext()){
                         String name = (String)sourceToName.get(it.next());
-                        System.out.println("------------- " + name);
                         edgeSourcesPanel.setSourceButtonEnabled(name, true);
                     }//while it
-                    DEFAULT_NEXT_ACTION.actionPerformed(event);
-                }//else
+                    
+                    // TODO: Disable the ones that are not used!
+                    
+                    
+                    if(onLastStep){
+                        FINISH_ACTION.actionPerformed(event);
+                    }else{
+                        DEFAULT_NEXT_ACTION.actionPerformed(event);
+                    }
+                  }//else
             }//actionPerformed
         };
+        
         
         
         
@@ -220,6 +248,9 @@ public class NetworkBuilderWizard {
             this.speciesPanel = new SpeciesPanel(sourceToSp, sourceToName);
         }catch (Exception e){
             e.printStackTrace();
+            JOptionPane.showMessageDialog(this.speciesPanel,
+                    "<html>There was an error while attempting to obtain supported species!<br>"+ e.getMessage() +"<br></html>", 
+                    "Error",JOptionPane.ERROR_MESSAGE);
             Hashtable emptyTable = new Hashtable();
             this.speciesPanel = new SpeciesPanel(emptyTable, emptyTable);
         }
@@ -234,8 +265,18 @@ public class NetworkBuilderWizard {
     protected JDialog createNodeSourcesDialog (){
         
         AbstractAction back, next;
-        back = DEFAULT_BACK_ACTION;
-        next = DEFAULT_NEXT_ACTION;
+        if(this.currentStep == 0){
+            back = null;
+        }else{
+            back = DEFAULT_BACK_ACTION;
+        }
+        
+        // For next, we don't need to check that the user entered input!
+        if(this.onLastStep){
+            next = FINISH_ACTION;
+        }else{
+            next = DEFAULT_NEXT_ACTION;
+        }
         
         JDialog dialog = createWizardDialog(back, next);
         
@@ -248,11 +289,11 @@ public class NetworkBuilderWizard {
         
         dialog.getContentPane().add(explanation,BorderLayout.NORTH);
         
-        JPanel nodeSourcesPanel = new NodeSourcesPanel();
+        this.nodeSourcesPanel = new NodeSourcesPanel();
         
         JPanel bigPanel = new JPanel();
         bigPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-        bigPanel.add(nodeSourcesPanel);
+        bigPanel.add(this.nodeSourcesPanel);
        
         dialog.getContentPane().add(bigPanel, BorderLayout.CENTER);
         
@@ -263,8 +304,19 @@ public class NetworkBuilderWizard {
     protected JDialog createEdgeSourcesDialog (){
         
         AbstractAction back, next;
-        back = DEFAULT_BACK_ACTION;
-        next = DEFAULT_NEXT_ACTION;
+        if(this.currentStep == 0){
+            back = null;
+        }else{
+            back = DEFAULT_BACK_ACTION;
+        }
+        
+        // Data sources contain default parameters, so even if the user does not
+        // change anything here, we are OK
+        if(this.onLastStep){
+            next =  FINISH_ACTION;
+        }else{
+            next = DEFAULT_NEXT_ACTION;
+        }
         
         JDialog dialog = createWizardDialog(back, next);
         
@@ -304,9 +356,30 @@ public class NetworkBuilderWizard {
     }
     
     protected JDialog createNetworkSettingsDialog (){
+        
         AbstractAction back, next;
-        back = DEFAULT_BACK_ACTION;
-        next = DEFAULT_NEXT_ACTION; // for now
+        
+        if(this.currentStep == 0){
+            back = null;
+        }else{
+            back = DEFAULT_BACK_ACTION;
+        }
+
+        
+        next = new AbstractAction (){
+            public void actionPerformed (ActionEvent event){
+                String name = networkPanel.getNetworkName();
+                if(name == null || name.length() == 0){
+                    JOptionPane.showMessageDialog(networkPanel,"Please enter a name for your network.", "Error", JOptionPane.ERROR_MESSAGE);
+                }else{
+                    if(onLastStep){
+                        FINISH_ACTION.actionPerformed(event);
+                    }else{
+                        DEFAULT_NEXT_ACTION.actionPerformed(event);
+                    }
+                 }//else
+            }//actionPerformed
+        };//AbstractAction
         
         JDialog dialog = createWizardDialog(back, next);
         
@@ -326,5 +399,67 @@ public class NetworkBuilderWizard {
         
         return dialog;
     }
+    
+    
+    
+    protected void createNetwork (){
+    
+        // Get the species for each source
+        Map sourceToSpecies = this.speciesPanel.getSourcesSelectedSpecies();
+        Map sourceToNames = this.speciesPanel.getSourcesNames();
+        
+        // ILIANA LEFT HERE!!! Use node sources
+        // Get the starting nodes
+        // TODO
+        
+        // Get the edge data source settings
+        Map sourceToSettings = this.edgeSourcesPanel.getSourcesDialogs();
+        Iterator it = sourceToSettings.keySet().iterator();
+        
+        // Get the network name
+        String netName = this.networkPanel.getNetworkName();
+        
+        while(it.hasNext()){
+            
+            String sourceClass = (String)it.next();
+            List sourceSpecies = (List)sourceToSpecies.get(sourceClass);
+            String sourceName = (String)sourceToNames.get(sourceClass);
+            
+            //System.out.println("sourceClass = " + sourceClass + " sourceName = " + sourceName);
+            
+            if(sourceName.equals(ProlinksInteractionsSource.NAME)){
+                
+                ProlinksGui prolinksGui = (ProlinksGui)sourceToSettings.get(sourceClass);
+                Vector interactionTypes = prolinksGui.getSelectedInteractionTypes();
+                double pvalTh = prolinksGui.getPval(false);
+                System.out.println("------- Prolinks settings ----------");
+                System.out.println("interactionTypes = " + interactionTypes);
+                System.out.println("pval = " + pvalTh);
+                System.out.println("species = " + sourceSpecies);
+                System.out.println("------------------------------------");
+                
+                Hashtable args = new Hashtable();
+                
+                if(pvalTh != 1){
+                    args.put(ProlinksInteractionsSource.PVAL, new Double(pvalTh));
+                }
+                
+                if(interactionTypes.size() < 4){
+                    args.put(ProlinksInteractionsSource.INTERACTION_TYPE, interactionTypes);
+                }
+                
+                try{
+                    //TODO: This will need to change when node sources are specified!!!
+                    Vector interactions = this.interactionsClient.getAllInteractions((String)sourceSpecies.get(0),args);
+                    Utils.makeNewNetwork(interactions, netName);
+                }catch(Exception ex){
+                    ex.printStackTrace();
+                }
+            }
+            
+        }//while it
+        
+    }
+    
     
 }//NetworkBuilderWizard

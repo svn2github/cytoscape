@@ -38,7 +38,7 @@ public class EdgeSourcesPanel extends JPanel {
     protected Map sourceToSpecies;
     
     /**
-     * A Map of edge data source's names to the dialogs that contains their parameters
+     * A Map from an edge data source's fully described class to the dialog that contains its parameters
      */
     protected Map sourceToDialog;
 
@@ -65,7 +65,7 @@ public class EdgeSourcesPanel extends JPanel {
     }
     
     /**
-     * @return a Map of edge data source's names to the dialogs that contains their parameters
+     * @return A Map from an edge data source's fully described class to the dialog that contains its parameters
      */
     public Map getSourcesDialogs (){
         return this.sourceToDialog;
@@ -94,18 +94,21 @@ public class EdgeSourcesPanel extends JPanel {
         this.buttons = new ArrayList();
         Iterator it = this.sourceToName.keySet().iterator();
         while(it.hasNext()){
-            String sourceClass = (String)it.next();
+            final String sourceClass = (String)it.next();
             String buttonName = (String)this.sourceToName.get(sourceClass);
             boolean enabled = this.sourceToSpecies.containsKey(sourceClass);
             JButton button = new JButton(buttonName + "...");
             if(buttonName.equals(ProlinksInteractionsSource.NAME)){
                 button.addActionListener(new AbstractAction(){
                     public void actionPerformed(ActionEvent event){
-                        ProlinksGui pDialog  = new ProlinksGui();
+                        ProlinksGui pDialog  = (ProlinksGui)sourceToDialog.get(sourceClass);
+                        if(pDialog == null){
+                            pDialog = new ProlinksGui();
+                            sourceToDialog.put(sourceClass, pDialog);
+                        }
                         pDialog.pack();
                         pDialog.setLocationRelativeTo(EdgeSourcesPanel.this);
                         pDialog.setVisible(true);
-                        sourceToDialog.put(ProlinksInteractionsSource.NAME,pDialog);
                     }//actionPerformed
                 });//AbstractAction
             }

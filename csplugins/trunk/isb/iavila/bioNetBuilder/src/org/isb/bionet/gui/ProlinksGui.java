@@ -170,6 +170,7 @@ public class ProlinksGui extends JFrame {
         OK.addActionListener(new AbstractAction (){
            
             public void actionPerformed (ActionEvent e){
+                ProlinksGui.this.getPval(true); // make sure the entered pval is correct
                 ProlinksGui.this.dispose();
             }//actionPerformed
             
