@@ -27,6 +27,8 @@
       <and>
         <available file="${basedir}/../util.intr/src"
                    type="dir"/>
+        <available file="${basedir}/../geom.spacial/src"
+                   type="dir"/>
       </and>
     </condition>
   </target>
@@ -39,6 +41,9 @@
              source="1.4">
       <fileset dir="${basedir}/../util.intr/src">
         <include name="cytoscape/util/intr/IntEnumerator.java"/>
+      </fileset>
+      <fileset dir="${basedir}/../geom.spacial/src">
+        <include name="cytoscape/geom/spacial/*.java"/>
       </fileset>
       <fileset dir="${src.dir}">
         <include name="cytoscape/geom/rtree/*.java"/>
@@ -55,14 +60,6 @@
   <target name="doc-nonrecursive"
           depends="dependent-project-check"
           unless="dependencies-available">
-    <echo>
-*********************** ATTENTION! ATTENTION! *********************
-**  For full Javadoc to be generated you must have this project
-**  ('rtree') reside together with project 'util.intr' in the same
-**  directory.  If this is not the case, only Javadoc without
-**  recursive dependencies will be generated.
-*******************************************************************
-    </echo>
     <javadoc destdir="${javadoc.dir}"
              source="1.4">
       <fileset dir="${src.dir}">

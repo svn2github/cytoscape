@@ -1,6 +1,7 @@
 package cytoscape.geom.rtree;
 
-import cytoscape.geom.rtree.ObjStack;
+import cytoscape.geom.spacial.SpacialEntry2DEnumerator;
+import cytoscape.geom.spacial.SpacialIndex2D;
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntObjHash;
 import cytoscape.util.intr.IntStack;
@@ -9,7 +10,7 @@ import java.util.Iterator;
 /**
  * An in-memory R-tree over real numbers in two dimensions.
  */
-public final class RTree
+public final class RTree implements SpacialIndex2D
 {
 
   /**
@@ -1333,13 +1334,13 @@ public final class RTree
    *   and if it cannot be written to in the index range
    *   [offset, offset+3].
    */
-  public final RTreeEntryEnumerator queryOverlap(final float xMin,
-                                                 final float yMin,
-                                                 final float xMax,
-                                                 final float yMax,
-                                                 final float[] extentsArr,
-                                                 final int offset,
-                                                 final boolean reverse)
+  public final SpacialEntry2DEnumerator queryOverlap(final float xMin,
+                                                     final float yMin,
+                                                     final float xMax,
+                                                     final float yMax,
+                                                     final float[] extentsArr,
+                                                     final int offset,
+                                                     final boolean reverse)
   {
     if (!(xMin <= xMax))
       throw new IllegalArgumentException("xMin <= xMax not true");
@@ -1474,7 +1475,8 @@ public final class RTree
       children = new Node[maxBranches]; }
   }
 
-  private final static class OverlapEnumerator implements RTreeEntryEnumerator
+  private final static class OverlapEnumerator
+    implements SpacialEntry2DEnumerator
   {
     private int count;
     private final ObjStack nodeStack;
