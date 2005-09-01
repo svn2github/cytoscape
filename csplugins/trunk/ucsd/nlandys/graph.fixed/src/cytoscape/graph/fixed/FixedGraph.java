@@ -4,7 +4,7 @@ import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntIterator;
 
 /**
- * A graph whose topology cannot be modified.
+ * A graph topology.
  * Edges and nodes are non-negative integers; a given node and a given edge
  * in a single graph can be the same integer.
  */
