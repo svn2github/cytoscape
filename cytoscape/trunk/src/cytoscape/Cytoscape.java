@@ -736,7 +736,7 @@ public abstract class Cytoscape {
    */
   public static CyNetwork createNetwork ( String title, boolean create_view ) {
     CyNetwork network =  getRootGraph().createNetwork( new int[] {}, new int[] {} );
-    addNetwork( network, title );
+    addNetwork( network, title, false );
     return network;
   }
 
