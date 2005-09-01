@@ -87,7 +87,9 @@ public interface SpacialIndex2D
    *   and if it cannot be written to in the index range
    *   [offset, offset+3].
    */
-  public Object queryOverlap(float xMin, float yMin, float xMax, float yMax,
-                             float[] extentsArr, int offset, boolean reverse);
+  public SpacialEntry2DEnumerator queryOverlap(float xMin, float yMin,
+                                               float xMax, float yMax,
+                                               float[] extentsArr, int offset,
+                                               boolean reverse);
 
 }
