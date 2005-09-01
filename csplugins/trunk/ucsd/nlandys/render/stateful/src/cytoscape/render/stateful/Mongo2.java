@@ -1,6 +1,6 @@
 package cytoscape.render.stateful;
 
-import cytoscape.geom.rtree.RTree;
+import cytoscape.geom.spacial.SpacialIndex2D;
 import cytoscape.graph.fixed.FixedGraph;
 import cytoscape.render.immed.GraphGraphics;
 import cytoscape.util.intr.IntHash;
@@ -17,7 +17,7 @@ public final class Mongo2
    */
   public final static IntHash renderGraph(final GraphGraphics grafx,
                                           final FixedGraph graph,
-                                          final RTree nodePositions,
+                                          final SpacialIndex2D nodePositions,
                                           final GraphLOD lod,
                                           final NodeDetails nodeDetails,
                                           final EdgeDetails edgeDetails,
@@ -29,18 +29,18 @@ public final class Mongo2
     return null;
   }
 
-  public final static boolean queryEdgeIntersect(final GraphGraphics grafx,
-                                                 final FixedGraph graph,
-                                                 final RTree nodePositions,
-                                                 final GraphLOD lod,
-                                                 final NodeDetails nodeDetails,
-                                                 final EdgeDetails edgeDetails,
-                                                 final int edge,
-                                                 final float xMinQuery,
-                                                 final float yMinQuery,
-                                                 final float xMaxQuery,
-                                                 final float yMaxQuery)
-                                                 
+  public final static boolean queryEdgeIntersect(
+                                            final GraphGraphics grafx,
+                                            final FixedGraph graph,
+                                            final SpacialIndex2D nodePositions,
+                                            final GraphLOD lod,
+                                            final NodeDetails nodeDetails,
+                                            final EdgeDetails edgeDetails,
+                                            final int edge,
+                                            final float xMinQuery,
+                                            final float yMinQuery,
+                                            final float xMaxQuery,
+                                            final float yMaxQuery)
   {
     return false;
   }

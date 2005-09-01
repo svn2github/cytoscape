@@ -21,13 +21,13 @@
   <target name="dependent-project-check">
     <condition property="dependencies-available">
       <and>
-        <available file="${basedir}/../immed/src"
-                   type="dir"/>
         <available file="${basedir}/../../util.intr/src"
                    type="dir"/>
-        <available file="${basedir}/../../rtree/src"
+        <available file="${basedir}/../../geom.spacial/src"
                    type="dir"/>
         <available file="${basedir}/../../graph.fixed/src"
+                   type="dir"/>
+        <available file="${basedir}/../immed/src"
                    type="dir"/>
       </and>
     </condition>
@@ -39,19 +39,19 @@
           if="dependencies-available">
     <javadoc destdir="${javadoc.dir}"
              source="1.4">
-      <fileset dir="${basedir}/../immed/src">
-        <include name="cytoscape/render/immed/*.java"/>
-      </fileset>
       <fileset dir="${basedir}/../../util.intr/src">
         <include name="cytoscape/util/intr/IntEnumerator.java"/>
         <include name="cytoscape/util/intr/IntHash.java"/>
         <include name="cytoscape/util/intr/IntIterator.java"/>
       </fileset>
-      <fileset dir="${basedir}/../../rtree/src">
-        <include name="cytoscape/geom/rtree/*.java"/>
+      <fileset dir="${basedir}/../../geom.spacial/src">
+        <include name="cytoscape/geom/spacial/*.java"/>
       </fileset>
       <fileset dir="${basedir}/../../graph.fixed/src">
         <include name="cytoscape/graph/fixed/*.java"/>
+      </fileset>
+      <fileset dir="${basedir}/../immed/src">
+        <include name="cytoscape/render/immed/*.java"/>
       </fileset>
       <fileset dir="${src.dir}">
         <include name="cytoscape/render/stateful/*.java"/>
