@@ -35,7 +35,7 @@ public final class TestSimpleText
   }
 
   private final boolean m_textAsShape;
-  private final int m_imgWidth = 600;
+  private final int m_imgWidth = 640;
   private final int m_imgHeight = 480;
   private final Image m_img;
   private final GraphGraphics m_grafx;

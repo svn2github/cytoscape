@@ -29,7 +29,7 @@ public final class TestAlphaBlending extends Frame implements Runnable
   }
 
   private final Object m_lock = new Object();
-  private final int m_imgWidth = 600;
+  private final int m_imgWidth = 640;
   private final int m_imgHeight = 480;
   private final Font m_font = new Font(null, Font.BOLD, 24);
   private final Color m_nodeFillColor = new Color(255, 0, 0, 128);
