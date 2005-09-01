@@ -7,7 +7,7 @@ public interface SpacialIndex2D
 {
 
   /**
-   * Returns the number of entries currently in this structure.<p>
+   * Returns the number of entries (objKeys) currently in this structure.<p>
    * NOTE: To retrieve an enumeration of all entries in this structure, call
    * queryOverlap() with Float.NEGATIVE_INFINITY minimum values and
    * Float.POSITIVE_INFINITY maximum values.
