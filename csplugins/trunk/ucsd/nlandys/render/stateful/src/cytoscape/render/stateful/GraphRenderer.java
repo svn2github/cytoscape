@@ -6,11 +6,11 @@ import cytoscape.render.immed.GraphGraphics;
 import cytoscape.util.intr.IntHash;
 import java.awt.Color;
 
-public final class Mongo2
+public final class GraphRenderer
 {
 
   // No constructor.
-  private Mongo2() { }
+  private GraphRenderer() { }
 
   /**
    * Renders a graph.
