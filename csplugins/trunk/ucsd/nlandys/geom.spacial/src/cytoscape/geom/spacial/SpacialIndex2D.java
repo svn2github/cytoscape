@@ -36,8 +36,7 @@ public interface SpacialIndex2D
    *   extentsArr is not null, and if extentsArr cannot be written
    *   to in the index range [offset, offset+3].
    */
-  public boolean exists(final int objKey, final float[] extentsArr,
-                        final int offset);
+  public boolean exists(int objKey, float[] extentsArr, int offset);
 
   /**
    * Returns an enumeration of entries whose extents intersect the
@@ -88,12 +87,7 @@ public interface SpacialIndex2D
    *   and if it cannot be written to in the index range
    *   [offset, offset+3].
    */
-  public final Object queryOverlap(final float xMin,
-                                   final float yMin,
-                                   final float xMax,
-                                   final float yMax,
-                                   final float[] extentsArr,
-                                   final int offset,
-                                   final boolean reverse);
+  public Object queryOverlap(float xMin, float yMin, float xMax, float yMax,
+                             float[] extentsArr, int offset, boolean reverse);
 
 }
