@@ -7,7 +7,10 @@ public interface SpacialIndex2D
 {
 
   /**
-   * Returns the number of entries currently in this structure.
+   * Returns the number of entries currently in this structure.<p>
+   * NOTE: To retrieve an enumeration of all entries in this structure, call
+   * queryOverlap() with Float.NEGATIVE_INFINITY minimum values and
+   * Float.POSITIVE_INFINITY maximum values.
    */
   public int size();
 
