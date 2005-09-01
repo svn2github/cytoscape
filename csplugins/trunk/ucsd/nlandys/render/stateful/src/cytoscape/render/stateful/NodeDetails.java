@@ -23,7 +23,7 @@ public class NodeDetails
 
   /**
    * Returns the color of the interior of the node shape.  By default this
-   * method returns Color.red.
+   * method returns Color.red.  It is an error to return null in this method.
    */
   public Color fillColor(final int node) {
     return Color.red; }
