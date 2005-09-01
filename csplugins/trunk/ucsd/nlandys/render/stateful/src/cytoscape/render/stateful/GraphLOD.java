@@ -58,6 +58,41 @@ public class GraphLOD
   }
 
   /**
+   * Determines whether or not to render node labels.  By default this method
+   * returns true if and only if the number of visible nodes is less than
+   * 80.<p>
+   * Node labels are only rendered at the full detail level.  If low detail is
+   * chosen, the output of this method is ignored.
+   * @param visibleNodeCount the number of nodes that are about to be rendered.
+   * @param visibleEdgeCount the number of edges that are about to be rendered.
+   * @return true if and only if node labels are to be rendered.
+   * @see #detail(int, int)
+   */
+  public boolean nodeLabels(final int visibleNodeCount,
+                            final int visibleEdgeCount)
+  {
+    return visibleNodeCount < 80;
+  }
+
+  /**
+   * Determines whether or not to draw text as shape when rendering node
+   * labels.  By default this method always returns false.<p>
+   * This method affects the boolean parameter drawTextAsShape in the method
+   * call GraphGraphics.drawTextFull().  If node labels are not rendered
+   * altogether, the output of this method is ignored.
+   * @param visibleNodeCount the number of nodes that are about to be rendered.
+   * @param visibleEdgeCount the number of edges that are about to be rendered.
+   * @return true if and only if rendered node label text should be drawn as
+   *   primitive shapes.
+   * @see #nodeLabels(int, int)
+   */
+  public boolean textAsShape(final int visibleNodeCount,
+                             final int visibleEdgeCount)
+  {
+    return false;
+  }
+
+  /**
    * Determines whether or not to render edge arrows.  By default this
    * method returns true if and only if the sum of visible nodes and visible
    * edges is less than 500.<p>
@@ -110,41 +145,6 @@ public class GraphLOD
                              final int visibleEdgeCount)
   {
     return true;
-  }
-
-  /**
-   * Determines whether or not to render node labels.  By default this method
-   * returns true if and only if the number of visible nodes is less than
-   * 80.<p>
-   * Node labels are only rendered at the full detail level.  If low detail is
-   * chosen, the output of this method is ignored.
-   * @param visibleNodeCount the number of nodes that are about to be rendered.
-   * @param visibleEdgeCount the number of edges that are about to be rendered.
-   * @return true if and only if node labels are to be rendered.
-   * @see #detail(int, int)
-   */
-  public boolean nodeLabels(final int visibleNodeCount,
-                            final int visibleEdgeCount)
-  {
-    return visibleNodeCount < 80;
-  }
-
-  /**
-   * Determines whether or not to draw text as shape when rendering node
-   * labels.  By default this method always returns false.<p>
-   * This method affects the boolean parameter drawTextAsShape in the method
-   * call GraphGraphics.drawTextFull().  If node labels are not rendered
-   * altogether, the output of this method is ignored.
-   * @param visibleNodeCount the number of nodes that are about to be rendered.
-   * @param visibleEdgeCount the number of edges that are about to be rendered.
-   * @return true if and only if rendered node label text should be drawn as
-   *   primitive shapes.
-   * @see #nodeLabels(int, int)
-   */
-  public boolean textAsShape(final int visibleNodeCount,
-                             final int visibleEdgeCount)
-  {
-    return false;
   }
 
 }
