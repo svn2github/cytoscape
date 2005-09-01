@@ -1381,6 +1381,7 @@ public final class GraphGraphics
     final double y0Adj;
     final double x1Adj;
     final double y1Adj;
+    final byte simpleSegment;
     { // Render the line segment if necessary.
       final double t0 = getT(arrowType0) * arrow0Size / len;
       x0Adj = t0 * (((double) x1) - x0) + x0;
@@ -1394,15 +1395,18 @@ public final class GraphGraphics
       if ((((double) x1) - x0) * (x1Adj - x0Adj) +
           (((double) y1) - y0) * (y1Adj - y0Adj) > 0.0d) {
         // Must render the line segment.
-        final boolean simpleSegment = arrowType0 == ARROW_NONE &&
-          arrowType1 == ARROW_NONE && dashLength == 0.0f;
+        if (arrowType0 == ARROW_NONE &&
+            arrowType1 == ARROW_NONE && dashLength == 0.0f) {
+          simpleSegment = 1; }
+        else { simpleSegment = -1; }
         setStroke(edgeThickness, dashLength,
-                  simpleSegment ? BasicStroke.CAP_ROUND :
+                  simpleSegment > 0 ? BasicStroke.CAP_ROUND :
                   BasicStroke.CAP_BUTT, false);
         m_line2d.setLine(x0Adj, y0Adj, x1Adj, y1Adj);
         m_g2d.setColor(edgeColor);
         m_g2d.draw(m_line2d);
-        if (simpleSegment) { return; } }
+        if (simpleSegment > 0) { return; } }
+      else { simpleSegment = 0; } // Did not render segment.
     } // End rendering of line segment.
 
     // Using x0, x1, y0, and y1 instead of the "adjusted" endpoints is
@@ -1413,7 +1417,7 @@ public final class GraphGraphics
     final double cosTheta = (((double) x0) - x1) / len;
     final double sinTheta = (((double) y0) - y1) / len;
 
-    if (dashLength == 0.0f) { // Render arrow cap at point 0.
+    if (simpleSegment < 0 && dashLength == 0.0f) { // Arrow cap at point 0.
       final Shape arrow0Cap = computeUntransformedArrowCap
         (arrowType0, ((double) arrow0Size) / edgeThickness);
       if (arrow0Cap != null) {
@@ -1425,7 +1429,7 @@ public final class GraphGraphics
         m_g2d.fill(arrow0Cap);
         m_g2d.setTransform(m_currNativeXform); } }
 
-    if (dashLength == 0.0f) { // Render arrow cap at point 1.
+    if (simpleSegment < 0 && dashLength == 0.0f) { // Arrow cap at point 1.
       final Shape arrow1Cap = computeUntransformedArrowCap
         (arrowType1, ((double) arrow1Size) / edgeThickness);
       if (arrow1Cap != null) {
