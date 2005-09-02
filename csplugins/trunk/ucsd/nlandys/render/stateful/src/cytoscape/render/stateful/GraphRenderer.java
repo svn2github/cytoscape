@@ -31,7 +31,8 @@ public final class GraphRenderer
    * @param nodeBuff this is a computational helper that is required in the
    *   implementation of this method; this method starts by emptying this
    *   hashtable, and when this method returns, the hashtable will contain
-   *   exactly the nodes that were rendered.
+   *   exactly the nodes that were rendered; an edge is rendered by this method
+   *   if and only if it touches at least one node in this nodeBuff set.
    * @param grafx the graphics context that is to render this graph.
    * @param bgColor the background color to use when calling grafx.clear().
    * @param xCenter the xCenter parameter to use when calling grafx.clear().
