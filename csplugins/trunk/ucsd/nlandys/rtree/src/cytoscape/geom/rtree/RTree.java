@@ -1,7 +1,7 @@
 package cytoscape.geom.rtree;
 
 import cytoscape.geom.spacial.SpacialEntry2DEnumerator;
-import cytoscape.geom.spacial.SpacialIndex2D;
+import cytoscape.geom.spacial.MutableSpacialIndex2D;
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntObjHash;
 import cytoscape.util.intr.IntStack;
@@ -10,7 +10,7 @@ import java.util.Iterator;
 /**
  * An in-memory R-tree over real numbers in two dimensions.
  */
-public final class RTree implements SpacialIndex2D
+public final class RTree implements MutableSpacialIndex2D
 {
 
   /**
