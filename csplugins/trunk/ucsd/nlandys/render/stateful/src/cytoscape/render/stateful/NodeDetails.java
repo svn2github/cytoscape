@@ -20,6 +20,8 @@ public class NodeDetails
    * instance of GraphGraphics understands); this defines the shape that this
    * node takes.
    * By default this method returns GraphGraphics.SHAPE_RECTANGLE.
+   * Take note of certain constraints specified in
+   * GraphGraphics.drawNodeFull() that pertain to roounded rectangles.
    */
   public byte shape(final int node) {
     return GraphGraphics.SHAPE_RECTANGLE; }
@@ -33,7 +35,8 @@ public class NodeDetails
 
   /**
    * Returns the border width of the node shape.  By default this method
-   * returns zero.
+   * returns zero.  Take note of certain constraints specified in
+   * GraphGraphics.drawNodeFull().
    */
   public float borderWidth(final int node) {
     return 0.0f; }
