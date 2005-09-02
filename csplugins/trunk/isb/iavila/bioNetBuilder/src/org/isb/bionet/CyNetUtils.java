@@ -1,5 +1,5 @@
 /**
- * Utils.java
+ * CyNetUtils.java
  */
 package org.isb.bionet;
 import java.util.*;
@@ -9,11 +9,11 @@ import cytoscape.data.*;
 import org.isb.bionet.datasource.interactions.*;
 
 /**
- * A class with utility methods for this package.
+ * A class with utility methods that manipulate CyNetworks for this plugin
  * 
  * @author <a href="mailto:iavila@systemsbiology.org">Iliana Avila-Campillo</a>
  */
-public class Utils {
+public class CyNetUtils {
     
     /**
      * @param interactions a Vector of Hashtables, each representing an interaction
@@ -21,8 +21,8 @@ public class Utils {
      * @return a new CyNetwork
      * @see org.isb.xmlrpc.client.InteractionDataClient for examples on  how the Hashtables look
      */
-	public static CyNetwork makeNewNetwork (Vector interactions, String networkName){
-	    CyNetwork net = null;
+    public static CyNetwork makeNewNetwork (Vector interactions, String networkName){
+        CyNetwork net = null;
         IntArrayList nodes = new IntArrayList();
         IntArrayList edges = new IntArrayList();
         Iterator it = interactions.iterator();
@@ -126,5 +126,5 @@ public class Utils {
         }//for i
         return edge;
     }//createEdge
-	
-}//Utils
+    
+}//CyNetUtils

@@ -23,6 +23,7 @@ public class NodeSourcesPanel extends JPanel {
     protected File myListFile;
     protected Vector myListNodes;
     protected CyNetworksDialog netsDialog;
+    protected JTextField listNodes, annotsNodes, netsNodes; 
     /**
      *  Creates a panel with node sources
      */
@@ -80,11 +81,13 @@ public class NodeSourcesPanel extends JPanel {
                             myListFile = fileChooser.getSelectedFile();
                             try{
                                 myListNodes = MyUtils.ReadFileLines(myListFile.getAbsolutePath());
+                                int numRead = myListNodes.size();
+                                listNodes.setText(Integer.toString(numRead));
                             }catch (Exception ex){
                                 ex.printStackTrace();
                                 JOptionPane.showMessageDialog(NodeSourcesPanel.this, "Could not read nodes in file " + myListFile.getName() + "!", "Error", JOptionPane.ERROR_MESSAGE);
                             }
-                        }
+                        }// APPROVE_OPTION
                     }//actionPerformed
                     
                 }//AbstractAction
@@ -94,6 +97,7 @@ public class NodeSourcesPanel extends JPanel {
         netsButton.addActionListener(
                 new AbstractAction (){
                     public void actionPerformed (ActionEvent event){
+                        // Make netsDialog modal
                         if(netsDialog == null){
                             netsDialog = new CyNetworksDialog();
                         }
@@ -101,6 +105,13 @@ public class NodeSourcesPanel extends JPanel {
                         netsDialog.setLocationRelativeTo(NodeSourcesPanel.this);
                         netsDialog.pack();
                         netsDialog.setVisible(true);
+                        // netsDialog is modal
+                        CyNetwork [] nets = netsDialog.getSelectedNetworks();
+                        int numNodes = 0;
+                        for(int i = 0; i < nets.length; i++){
+                            numNodes += nets[i].getNodeCount();
+                        }//for i
+                        netsNodes.setText(Integer.toString(numNodes));
                     }//actionPerformed
                 }//AbstractAction
         );
@@ -148,10 +159,11 @@ public class NodeSourcesPanel extends JPanel {
         this.add(annotsButton);
 
         c.gridwidth = GridBagConstraints.REMAINDER;
-        JTextField annotsNodes = new JTextField(4);
-        annotsNodes.setEditable(false);
-        gridbag.setConstraints(annotsNodes, c);
-        this.add(annotsNodes);
+        this.annotsNodes = new JTextField(4);
+        this.annotsNodes.setText("0");
+        this.annotsNodes.setEditable(false);
+        gridbag.setConstraints(this.annotsNodes, c);
+        this.add(this.annotsNodes);
 
         c.gridwidth = 1;
 
@@ -176,10 +188,11 @@ public class NodeSourcesPanel extends JPanel {
         this.add(listButton);
 
         c.gridwidth = GridBagConstraints.REMAINDER;
-        JTextField listNodes = new JTextField(4);
-        listNodes.setEditable(false);
-        gridbag.setConstraints(listNodes, c);
-        this.add(listNodes);
+        this.listNodes = new JTextField(4);
+        this.listNodes.setEditable(false);
+        this.listNodes.setText("0");
+        gridbag.setConstraints(this.listNodes, c);
+        this.add(this.listNodes);
 
         c.gridwidth = 1;
 
@@ -203,9 +216,10 @@ public class NodeSourcesPanel extends JPanel {
         this.add(netsButton);
 
         c.gridwidth = GridBagConstraints.REMAINDER;
-        JTextField netsNodes = new JTextField(4);
-        netsNodes.setEditable(false);
-        gridbag.setConstraints(netsNodes, c);
-        this.add(netsNodes);
+        this.netsNodes = new JTextField(4);
+        this.netsNodes.setEditable(false);
+        this.netsNodes.setText("0");
+        gridbag.setConstraints(this.netsNodes, c);
+        this.add(this.netsNodes);
     }
 }

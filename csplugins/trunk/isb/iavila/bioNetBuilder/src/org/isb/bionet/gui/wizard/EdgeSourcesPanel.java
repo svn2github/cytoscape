@@ -51,6 +51,8 @@ public class EdgeSourcesPanel extends JPanel {
     
     protected CyNetworksDialog netsDialog;
     
+    protected Map buttonToTextField;
+    
     
     /**
      * 
@@ -65,6 +67,7 @@ public class EdgeSourcesPanel extends JPanel {
         this.sourceToName = edgeSourceToName;
         this.sourceToSpecies = sourceToSelectedSpecies;
         this.sourceToDialog = new Hashtable();
+        this.buttonToTextField = new Hashtable();
         create();
     }
     
@@ -121,6 +124,8 @@ public class EdgeSourcesPanel extends JPanel {
                         pDialog.pack();
                         pDialog.setLocationRelativeTo(EdgeSourcesPanel.this);
                         pDialog.setVisible(true);
+                        // pDialog is modal
+                        // TODO: Calculate number of edges!!!
                     }//actionPerformed
                 });//AbstractAction
             }
@@ -140,9 +145,16 @@ public class EdgeSourcesPanel extends JPanel {
                         netsDialog.setLocationRelativeTo(EdgeSourcesPanel.this);
                         netsDialog.pack();
                         netsDialog.setVisible(true);
-                    }
-                    
-                }
+                        // netsDialog is modal
+                        CyNetwork [] nets = netsDialog.getSelectedNetworks();
+                        int numEdges = 0;
+                        for(int i = 0; i < nets.length; i++){
+                            numEdges += nets[i].getEdgeCount();
+                        }//for i
+                        JButton source = (JButton)event.getSource();
+                        ( (JTextField)buttonToTextField.get(source) ).setText(Integer.toString(numEdges));
+                    }//actionPerformed
+                }//AbstractAction
         );
         this.buttons.add(netsButton);
         
@@ -172,6 +184,8 @@ public class EdgeSourcesPanel extends JPanel {
             add(button);
             c.gridwidth = GridBagConstraints.REMAINDER;
             JTextField edgesNum = new JTextField(4);
+            edgesNum.setText("0");
+            this.buttonToTextField.put(button, edgesNum);
             edgesNum.setEditable(false);
             gridbag.setConstraints(edgesNum, c);
             add(edgesNum);

@@ -12,10 +12,11 @@ import java.awt.event.*;
 import java.awt.*;
 
 /**
+ * A modal dialog that displays Prolinks parameters.
  * 
  * @author <a href="mailto:iavila@systemsbiology.org">Iliana Avila-Campillo</a>
  */
-public class ProlinksGui extends JFrame {
+public class ProlinksGui extends JDialog {
     
     /**
      * The title of this JFrame
@@ -35,7 +36,8 @@ public class ProlinksGui extends JFrame {
      * @param interactions_source
      */
     public ProlinksGui (){
-        super(TITLE);
+        setTitle(TITLE);
+        setModal(true);
         createGUI();
     }//ProlinksGui
     

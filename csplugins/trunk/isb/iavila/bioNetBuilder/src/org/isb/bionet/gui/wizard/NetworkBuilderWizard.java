@@ -9,7 +9,7 @@ import java.awt.event.*;
 import java.util.List;
 import org.isb.bionet.datasource.interactions.*;
 import org.isb.bionet.gui.ProlinksGui;
-import org.isb.bionet.Utils;
+import org.isb.bionet.CyNetUtils;
 import java.io.*;
 
 import cytoscape.*;
@@ -404,14 +404,14 @@ public class NetworkBuilderWizard {
     }
     
     
-    
+    // TODO: Organize this better, this is quick and dirty, maybe a new class???
     protected void createNetwork (){
     
-        // Get the species for each edge data source
+        // 1. Get the species for each edge data source
         Map sourceToSpecies = this.speciesPanel.getSourcesSelectedSpecies();
         Map sourceToNames = this.speciesPanel.getSourcesNames();
         
-        // Get the starting nodes for the network (if any)
+        // 2. Get the starting nodes for the network (if any)
         Vector myListNodes = this.nodeSourcesPanel.getNodesFromMyList();
         CyNetwork [] nodeNets = this.nodeSourcesPanel.getSelectedNetworks();
         // TODO: Do checks: selected networks species must match to the species the user selected in this sesion
@@ -432,14 +432,14 @@ public class NetworkBuilderWizard {
             }//for i
         }// if nodeNets != null
         
-        // Get the edge data source parameter settings
+        // 3. Get the edge data source parameter settings
         Map sourceToSettings = this.edgeSourcesPanel.getSourcesDialogs();
         Iterator it = sourceToSettings.keySet().iterator();
         
-        // Get the network name
+        // 4. Get the network name
         String netName = this.networkPanel.getNetworkName();
         
-        // Iterate over all the edge data sources and accumulate interactions
+        // 5. Iterate over all the edge data sources and accumulate interactions
         Vector interactions = new Vector();
         while(it.hasNext()){
             
@@ -483,7 +483,8 @@ public class NetworkBuilderWizard {
             
         }//while it
         
-        Utils.makeNewNetwork(interactions, netName);
+        // 6. Make a network!
+        CyNetUtils.makeNewNetwork(interactions, netName);
         
     }//createNetwork
     
