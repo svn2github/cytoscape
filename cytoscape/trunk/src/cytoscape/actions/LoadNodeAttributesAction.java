@@ -106,22 +106,27 @@ class LoadAttributesTask implements Task {
 
             //  Read in Data
             attributes.setTaskMonitor(taskMonitor);
-            //attributes.readAttributesFromFile(bioDataServer,
-            //                                  speciesName, 
-            //                                  file.getAbsolutePath(), 
-            //                                  canonicalize);
-            
-            Cytoscape.loadAttributes( new String[] { file.getAbsolutePath() },
-                                      new String[] {},
-                                      canonicalize,
-                                      bioDataServer,
-                                      speciesName );
+          
+            if ( type == NODE_ATTRIBUTES ) 
+                Cytoscape.loadAttributes( new String[] { file.getAbsolutePath() },
+                                          new String[] {},
+                                          canonicalize,
+                                          bioDataServer,
+                                          speciesName );
+            else if ( type == EDGE_ATTRIBUTES ) 
+                Cytoscape.loadAttributes( new String[] {},
+	                                      new String[] { file.getAbsolutePath() },
+                                          canonicalize,
+                                          bioDataServer,
+                                          speciesName );
+            else
+                throw new Exception("Unknown attribute type: " + Integer.toString(type) );
 
             //  Inform others via property change event.
-            Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED,
-                        null, null );
+            Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null );
+
         } catch (Exception e) {
-            taskMonitor.setException(e, "Unable to load attributes file.");
+            taskMonitor.setException(e, e.getMessage());
         }
     }
 

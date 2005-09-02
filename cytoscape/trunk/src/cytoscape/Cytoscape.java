@@ -1004,38 +1004,29 @@ public abstract class Cytoscape {
 
     // check to see if there are Node Attributes passed
     if ( nodeAttrLocations != null ) {
-
 	    for ( int i = 0 ; i < nodeAttrLocations.length; ++i ) {
-        try {
-          // nodeData.readAttributesFromFile( bioDataServer,
-//                                            species,
-//                                            nodeAttrLocations[i],
-//                                            canonicalize );
-          nodeData.readAttributesFromFile( nodeAttrLocations[i] );
-        } catch (Exception e) {
-          System.err.println( "Error loading attributes into NodeData" );
-          // e.printStackTrace();
-        }
+          try {
+            nodeData.readAttributesFromFile( nodeAttrLocations[i] );
+          } catch (Exception e) {
+            throw new IllegalArgumentException("Failure loading node attribute data: " + nodeAttrLocations[i]); 
+          }
 	    }
     }
 
     // Check to see if there are Edge Attributes Passed
     if (edgeAttrLocations != null) {
-
 	    for ( int  j = 0 ; j < edgeAttrLocations.length; ++j ) {
-        try {
-          edgeData.readAttributesFromFile( edgeAttrLocations[j] );
-        } catch (Exception e) {
-          System.err.println( "Error loading attributes into EdgeData" );
-          //e.printStackTrace();
-        }
+          try {
+            edgeData.readAttributesFromFile( edgeAttrLocations[j] );
+          } catch (Exception e) {
+            throw new IllegalArgumentException("Failure loading edge attribute data: " + edgeAttrLocations[j]); 
+          }
 	    }
     }
 
     firePropertyChange( ATTRIBUTES_CHANGED,
                         null,
                         null );
-
   }
 
   /**
@@ -1103,7 +1094,6 @@ public abstract class Cytoscape {
                     canonicalize,
                     bioDataServer,
                     species);
-
     //load expression data
     //ExpressionData expData = null;
     //if (project.getExpressionFilename() != null) {

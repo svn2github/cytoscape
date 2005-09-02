@@ -47,7 +47,7 @@ public class LoadEdgeAttributesAction extends CytoscapeAction {
             //  Create Load Attributes Task
             LoadAttributesTask task = new LoadAttributesTask
                     (file, Cytoscape.getEdgeNetworkData(),
-                    LoadAttributesTask.NODE_ATTRIBUTES);
+                    LoadAttributesTask.EDGE_ATTRIBUTES);
 
             //  Configure JTask Dialog Pop-Up Box
             JTaskConfig jTaskConfig = new JTaskConfig();
