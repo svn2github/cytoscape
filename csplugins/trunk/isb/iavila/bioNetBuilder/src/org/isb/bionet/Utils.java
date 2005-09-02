@@ -96,6 +96,8 @@ public class Utils {
         if(node1 == null){
             throw new IllegalStateException("CyNode for interactor1 = [" + interactor1 + "] is null!");
         }
+        //TODO: Set a node attribute that tells me the unique ID the node has
+        
         CyNode node2 = Cytoscape.getCyNode(interactor2, true);
         if(node2 == null){
             throw new IllegalStateException("CyNode for interactor2 = [" + interactor2 + "] is null!");

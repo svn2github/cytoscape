@@ -131,7 +131,7 @@ public interface InteractionsDataSource extends DataSource {
     /**
    * @param interactors a Vector of Strings (ids that the data source understands)
    * @param species the species
-   * @return a Vector of Vectors of Hashtables, each hash contains information about an
+   * @return a Vector of Hashtables, each hash contains information about an
    * interaction (they are required to contain the following entries:)<br>
    * INTERACTOR_1 --> String <br>
    * INTERACTOR_2 --> String <br>
@@ -147,7 +147,7 @@ public interface InteractionsDataSource extends DataSource {
    * @param species the species
    * @param args a table of String->Object entries that the implementing
    * class understands (for example, p-value thresholds, directed interactions only, etc)
-   * @return a Vector of Vectors of Hashtables, each hash contains information about an
+   * @return a Vector of Hashtables, each hash contains information about an
    * interaction (they are required to contain the following entries:)<br>
    * INTERACTOR_1 --> String <br>
    * INTERACTOR_2 --> String <br>

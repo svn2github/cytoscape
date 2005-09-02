@@ -19,9 +19,10 @@ import org.isb.xmlrpc.handler.db.*;
  * S_gn_low <br>
  * S_rs_low <br>
  * S_gc_low <br>
- * TODO: Describe tables
+ * In Prolinks, edge direction does not mean anything<br>
  * @author <a href="mailto:iavila@systemsbiology.org">Iliana Avila-Campillo</a>
  */
+// TODO: Ignore directed argument, since it does not mean anything!
 public class ProlinksInteractionsSource extends SQLDBHandler implements
 		InteractionsDataSource {
 
@@ -470,10 +471,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	public Vector getFirstNeighbors (String interactor, String species) {
 		
 		String tableName = getTableName(species);
-		
-		// Get both directions with no repeats:
-		String sql = "(SELECT DISTINCT gene_id_b FROM " + tableName + " WHERE gene_id_a=" + interactor + ") UNION " + 
-			"(SELECT DISTINCT gene_id_a FROM " + tableName + " WHERE gene_id_b=" + interactor + ")";
+		String sql = "SELECT DISTINCT gene_id_b FROM " + tableName + " WHERE gene_id_a=" + interactor;
 		ResultSet rs = query(sql);
 		Vector neighbors = makeInteractorsVector(rs);
 		return neighbors;
@@ -488,7 +486,6 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	 *            a table of String->Object, understood args are: <br>
 	 *			 PVAL-->Double only interactions with p-values <= PVAL will be returned <br>
 	 *            INTERACTION_TYPE-->Vector of Strings which can be: PP,GN,RS,or GC, only interactions of these types will be returned <br>
-	 *			 DIRECTED-->Boolean if TRUE, then, only interactions where interactor1 = interactor are included<br>
 	 * @return a Vector of Strings of all the nodes that have a direct
 	 *         interaction with "interactor" and that take into account
 	 *         additional parameters given in the Hashtable (an empty vector if
@@ -513,22 +510,16 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
         }else{
            methods = new Vector(INT_TYPES.keySet());
         }
-		
-		boolean directed = false;
-		if(args.containsKey(DIRECTED)){
-			directed = ( (Boolean)args.get(DIRECTED)).booleanValue();
-		}
-		
-		if(pval > 1 && methods.size() == 4 && !directed){
+	
+		if(pval >= 1 && methods.size() == 4){
 			// Just like calling with no args
 			return getFirstNeighbors(interactor, species);
 		}
 		
-		
 		String sql;
 		HashSet set = new HashSet();
 		
-		if(pval > 1){
+		if(pval >= 1){
 			
 			// No pval restriction
 			if(methods.size() < 4){
@@ -537,34 +528,20 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 				while(it.hasNext()){
 					String method = (String)it.next();
 					String tableName = getTableNameForMethod(species, method, pval);
-					sql = "(SELECT DISTINCT gene_id_b FROM " + tableName + " WHERE gene_id_a = " + interactor + ")";
-					if(!directed){
-						sql = sql + " UNION (SELECT DISTINCT gene_id_a FROM " + tableName + " WHERE gene_id_b = " + interactor + ")";
-					}
+					sql = "SELECT DISTINCT gene_id_b FROM " + tableName + " WHERE gene_id_a = " + interactor;
 					ResultSet rs = query(sql);
 					Vector someInteractors = makeInteractorsVector(rs);
 					set.addAll(someInteractors);
 				}//while it.hasNext
-			}else{
-				// Only restriction is "directed"!
-				String tableName = getTableName(species);
-				sql = "SELECT DISTINCT gene_id_b FROM " + tableName + " WHERE gene_id_a=" + interactor;
-				ResultSet rs = query(sql);
-				return makeInteractorsVector(rs);
 			}
-		
 		}else{
 		
 			// Pval restriction
 			Iterator it = methods.iterator();
 			while(it.hasNext()){
 				String method = (String)it.next();
-				//System.out.println(method);
 				String tableName = getTableNameForMethod(species, method, pval);
-				sql = "(SELECT DISTINCT gene_id_b FROM " + tableName + " WHERE gene_id_a = " + interactor + " AND p <= " + pval + ")";
-				if(!directed){
-					sql = sql + " UNION (SELECT DISTINCT gene_id_a FROM " + tableName + " WHERE gene_id_b = " + interactor + " AND p <= " + pval + ")"; 
-				}
+				sql = "SELECT DISTINCT gene_id_b FROM " + tableName + " WHERE gene_id_a = " + interactor + " AND p <= " + pval;
 				ResultSet rs = query(sql);
 				Vector someInteractors = makeInteractorsVector(rs);
 				set.addAll(someInteractors);
@@ -572,7 +549,6 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 		}// pval <= 1
 		
 		Vector neighbors = new Vector(set);
-	//	System.out.println("returning Vector = " + neighbors);
 		return neighbors;
 	}
 
@@ -586,7 +562,8 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	 *         vector, positions in the input and output vectors are matched
 	 *         (parallel vectors)
 	 */
-	public Vector getFirstNeighbors(Vector interactors, String species) {
+    // TODO: Optimize???
+	public Vector getFirstNeighbors(Vector interactors, String species) {        
 		Vector vectorOfVectors = new Vector();
 		Iterator it = interactors.iterator();
 		while(it.hasNext()){
@@ -610,6 +587,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	 *         vector, positions in the input and output vectors are matched
 	 *         (parallel vectors)
 	 */
+    //TODO: Optimize???
 	public Vector getFirstNeighbors(Vector interactors, String species,
 			Hashtable args) {
 		Iterator it = interactors.iterator();
@@ -637,9 +615,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	public Vector getAdjacentInteractions(String interactor, String species) {
 	
 		String tableName = getTableName(species);
-		// not directed
-		String sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + tableName + " WHERE gene_id_a = " + interactor +
-		" OR gene_id_b = " + interactor;
+		String sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + tableName + " WHERE gene_id_a = " + interactor;
 		ResultSet rs = query(sql);
 		return makeInteractionsVector(rs);
 	}
@@ -653,7 +629,6 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	 *            a table of String->Object entries, this class understands:<br>
 	 *            PVAL-->Double only interactions with p-values <= PVAL will be returned <br>
 	 *            INTERACTION_TYPE-->Vector of Strings which can be: PP,GN,RS,or GC, only interactions of these types will be returned <br>
-	 *            DIRECTED--> Boolean that specifies whether both interactor --> GENEX and GENEX-->interactor should be returned          
 	 * @return a Vector of Hashtables, each hash contains information about an
 	 *         interaction (they are required to contain the following entries:)<br>
 	 *	       INTERACTOR_1 --> String <br>
@@ -676,53 +651,31 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
          }else{
              methods = new Vector(INT_TYPES.keySet());
          }
-
 		 
-		 boolean directed = false;
-		 if(args.containsKey(DIRECTED)){
-			 directed = ((Boolean)args.get(DIRECTED)).booleanValue();
-		 }
-		 
-		 if(pval > 1 && methods.size() == 4 && !directed){
+		 if(pval >= 1 && methods.size() == 4){
 			 return getAdjacentInteractions(interactor,species,args);
 		 }
 		 
 		 String sql;
 		 Vector allInteractions = new Vector();
-		 if(pval > 1){
-			 if(methods.size() == 4){
-				 // Only thing that matters is that the interaction is directed
-				 String tableName = getTableName(species);
-				 sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + tableName + " WHERE gene_id_a = " + interactor;
-				 ResultSet rs = query(sql);
-				 return makeInteractionsVector(rs);
-			 }else{
-				 // The method matters, direction may matter
+		 if(pval >= 1){
+			 	 // The method matters
 				 Iterator it = methods.iterator();
 				 while(it.hasNext()){
 					 String method= (String)it.next();
 					 String tableName = getTableNameForMethod(species, method, pval);
-					 sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + tableName + " WHERE gene_id_a = " + interactor;
-					 if(!directed){
-						 sql = sql + " OR gene_id_b = " + interactor;
-					 }
-					 ResultSet rs = query(sql);
+                     sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + tableName + " WHERE gene_id_a = " + interactor;
+                     ResultSet rs = query(sql);
 					 allInteractions.addAll(makeInteractionsVector(rs));
 				 }//while
 				 return allInteractions;
-			 }//else
 		 }else{
 			 // Pvalue is restricted
 			 Iterator it = methods.iterator();
 			 while(it.hasNext()){
 				String method = (String)it.next();
 				String tableName = getTableNameForMethod(species, method, pval);
-				if(directed){
-					sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + tableName + " WHERE gene_id_a = " + interactor + " AND p <= " +  pval;
-				}else{
-					sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + tableName + " WHERE (gene_id_a = " + interactor + 
-					" OR gene_id_b = " + interactor + ") AND p <= " +  pval;
-				}
+				sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + tableName + " WHERE gene_id_a = " + interactor + " AND p <= " +  pval;
 				ResultSet rs = query(sql);
 				allInteractions.addAll(makeInteractionsVector(rs));
 			 }//while
@@ -736,7 +689,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	 *            a Vector of Strings (ids that the data source understands)
 	 * @param species
 	 *            the species
-	 * @return a Vector of Vectors of Hashtables, each hash contains information
+	 * @return a Vector of Hashtables, each hash contains information
 	 *         about an interaction (they are required to contain the following
 	 *         entries:)<br>
 	 *         INTERACTOR_1 --> String <br>
@@ -747,13 +700,31 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	 *         The input and output vectors are parallel.
 	 */
 	public Vector getAdjacentInteractions(Vector interactors, String species) {
-		Iterator it = interactors.iterator();
+		
+        if(interactors.size() == 0){
+            return new Vector();
+        }
+        
+        Iterator it = interactors.iterator();
+        String geneName = (String)it.next();
+        String orStatement_a = " gene_id_a = " + geneName;
+        while(it.hasNext()){
+            geneName = (String)it.next();
+            orStatement_a += " OR gene_id_a = " + geneName;
+        }//while it.hasNext
+        
+        String tableName = getTableName(species);
+        String sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + tableName + " WHERE " + orStatement_a;
+        ResultSet rs = query(sql);
+        return makeInteractionsVector(rs);
+       
+        /*Iterator it = interactors.iterator();
 		Vector vOfv = new Vector();
 		while(it.hasNext()){
 			String gene = (String)it.next();
 			vOfv.add(getAdjacentInteractions(gene, species));
 		}//while
-		return vOfv;
+		return vOfv;*/
 	}
 
 	/**
@@ -765,7 +736,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	 *            a table of String->Object entries that the implementing class
 	 *            understands (for example, p-value thresholds, directed
 	 *            interactions only, etc)
-	 * @return a Vector of Vectors of Hashtables, each hash contains information
+	 * @return a Vector of Hashtables, each hash contains information
 	 *         about an interaction (they are required to contain the following
 	 *         entries:)<br>
 	 *         INTERACTOR_1 --> String <br>
@@ -777,13 +748,71 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	 */
 	public Vector getAdjacentInteractions(Vector interactors, String species,
 			Hashtable args) {
-		Iterator it = interactors.iterator();
+		
+        if(interactors.size() == 0){
+            return new Vector();
+        }
+        
+        Iterator it = interactors.iterator();
+        String geneName = (String)it.next();
+        String orStatement_a = " gene_id_a = " + geneName;
+        while(it.hasNext()){
+            geneName = (String)it.next();
+            orStatement_a += " OR gene_id_a = " + geneName;
+        }//while it.hasNext
+        
+        double pval = 2;
+        if(args.containsKey(PVAL)){
+            pval = ((Double)args.get(PVAL)).doubleValue();
+        }
+        
+        Vector methods;
+        if(args.containsKey(INTERACTION_TYPE)){
+            methods = (Vector)args.get(INTERACTION_TYPE);
+        }else{
+           methods = new Vector(INT_TYPES.keySet());
+        }
+        
+        if(pval >= 1 && methods.size() == 4){
+            return getConnectingInteractions(interactors, species);
+        }
+        
+        String sql;
+        if(pval < 1){
+            it = methods.iterator();
+            Vector interactions = new Vector();
+            while(it.hasNext()){
+                String method = (String)it.next();
+                String tableName = getTableNameForMethod(species, method, pval);
+                sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + tableName + " WHERE p <= " + pval + " AND " + orStatement_a;
+                ResultSet rs = query(sql);
+                interactions.addAll(makeInteractionsVector(rs));
+            }//while
+            return interactions;
+        }else{
+            // No pval restriction
+            // Method restriction!
+            it = methods.iterator();
+            Vector interactions = new Vector();
+            while(it.hasNext()){
+                String method = (String)it.next();
+                String tableName = getTableNameForMethod(species, method, pval);
+                sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + tableName + 
+                " WHERE " + orStatement_a;
+                ResultSet rs = query(sql);
+                interactions.addAll(makeInteractionsVector(rs));
+            }//while
+            return interactions;             
+        }//else
+        
+        
+        /*Iterator it = interactors.iterator();
 		Vector vOfv = new Vector();
 		while(it.hasNext()){
 			String gene = (String)it.next();
 			vOfv.add(getAdjacentInteractions(gene, species, args));
 		}//while
-		return vOfv;
+		return vOfv;*/
 	}
 
 	// ------------ connecting interactions methods --------------//
@@ -805,8 +834,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 			String interactor2, String species) {
 		String tableName = getTableName(species);
 		
-		String sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + tableName + " WHERE (gene_id_a = " + interactor1 + " AND gene_id_b = " + interactor2 + ") OR " +
-		"(gene_id_a = " + interactor2 + " AND gene_id_b = " + interactor1 + ")";
+		String sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + tableName + " WHERE gene_id_a = " + interactor1 + " AND gene_id_b = " + interactor2;
 		ResultSet rs = query(sql);
 		return makeInteractionsVector(rs);
 	}
@@ -843,64 +871,37 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
            methods = new Vector(INT_TYPES.keySet());
         }
 		
-		boolean directed = false;
-		if(args.containsKey(DIRECTED)){
-			directed = ((Boolean)args.get(DIRECTED)).booleanValue();
-		}
-		
-		if(pval > 1 && methods.size() == 4 && !directed){
+		if(pval >= 1 && methods.size() == 4){
 			return getConnectingInteractions(interactor1, interactor2, species);
 		}
 		
 		String sql;
-		if(pval <= 1){
+		if(pval < 1){
 			Iterator it = methods.iterator();
 			Vector interactions = new Vector();
 			while(it.hasNext()){
 				String method = (String)it.next();
 				String tableName = getTableNameForMethod(species, method, pval);
-				if(directed){
-					sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + tableName + " WHERE gene_id_a = " + 
-					interactor1 + " AND gene_id_b = " + interactor2 + " AND p <= " + pval;
-				}else{
-					sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + tableName + " WHERE ( (gene_id_a = " + 
-					interactor1 + " AND gene_id_b = " + interactor2 + ") OR ( gene_id_a = " + interactor2 + " AND gene_id_b = " + interactor1 + ") ) " + 
-					"AND p <= " + pval;
-				}//else
+				sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + tableName + " WHERE gene_id_a = " + 
+				interactor1 + " AND gene_id_b = " + interactor2 + " AND p <= " + pval;
 				ResultSet rs = query(sql);
 				interactions.addAll(makeInteractionsVector(rs));
 			}//while
 			return interactions;
 		}else{
 			// No pval restriction
-			if(methods.size() == 4){
-				// pval does not matter, method does not matter, only directed matters
-				String tableName = getTableName(species);
-				sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + tableName + " WHERE (gene_id_a = " + interactor1 + " AND gene_id_b = " + interactor2 + ")";
-				if(!directed){
-					sql = sql + " OR ( gene_id_a = " + interactor2 + " AND gene_id_b = " + interactor1 + ")";
-				}
-				ResultSet rs = query(sql);
-				return makeInteractionsVector(rs);
-			}else{
-		
-			   // Method restriction, maybe direction restriction
-				Iterator it = methods.iterator();
-				Vector interactions = new Vector();
-				while(it.hasNext()){
-					String method = (String)it.next();
-					String tableName = getTableNameForMethod(species, method, pval);
-					sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + tableName + 
-					" WHERE (gene_id_a = " + interactor1 + " AND gene_id_b = " + interactor2 + ")";
-					if(!directed){
-						sql = sql + " OR (gene_id_a = " + interactor2 + " AND gene_id_b = " + interactor1 + ")"; 
-					}
-					ResultSet rs = query(sql);
-					interactions.addAll(makeInteractionsVector(rs));
-				}//while
-				return interactions;
-			}//else
-			
+		    // Method restriction!
+		    Iterator it = methods.iterator();
+		    Vector interactions = new Vector();
+		    while(it.hasNext()){
+		        String method = (String)it.next();
+		        String tableName = getTableNameForMethod(species, method, pval);
+		        sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + tableName + 
+		        " WHERE gene_id_a = " + interactor1 + " AND gene_id_b = " + interactor2;
+		        ResultSet rs = query(sql);
+		        interactions.addAll(makeInteractionsVector(rs));
+		    }//while
+		    return interactions;			 
 		}//else
 		
 	}
@@ -918,16 +919,27 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	 *         Hashtables
 	 */
 	public Vector getConnectingInteractions(Vector interactors, String species) {
-		String [] genes = (String[])interactors.toArray(new String [interactors.size()]);
-		Vector interactions = new Vector();
-		for(int i = 0; i < genes.length; i++){
-			String gene1 = genes[i];
-			for(int j = i; j < genes.length; j++){
-				String gene2 = genes[j];
-				interactions.addAll(getConnectingInteractions(gene1, gene2, species));
-			}//for j
-		}//for i
-		return interactions;
+        
+        if(interactors.size() == 0){
+            return new Vector();
+        }
+        
+        Iterator it = interactors.iterator();
+        String geneName = (String)it.next();
+        String orStatement_a = " gene_id_a = " + geneName;
+        String orStatement_b = " gene_id_b = " + geneName;
+        while(it.hasNext()){
+            geneName = (String)it.next();
+            orStatement_a += " OR gene_id_a = " + geneName;
+            orStatement_b += " OR gene_id_b = " + geneName;
+        }//while it.hasNext
+        
+        String tableName = getTableName(species);
+        String sql = 
+           "SELECT gene_id_a, gene_id_b, p, method FROM " + tableName + " WHERE (" + orStatement_a + " ) AND (" + orStatement_b + ")";
+        ResultSet rs = query(sql);
+        
+        return makeInteractionsVector(rs);
 	}
 
 	/**
@@ -947,17 +959,63 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	 *         Hashtables
 	 */
 	public Vector getConnectingInteractions(Vector interactors, String species,
-			Hashtable args) {
-		String [] genes = (String[])interactors.toArray(new String [interactors.size()]);
-		Vector interactions = new Vector();
-		for(int i = 0; i < genes.length; i++){
-			String gene1 = genes[i];
-			for(int j = i; j < genes.length; j++){
-				String gene2 = genes[j];
-				interactions.addAll(getConnectingInteractions(gene1, gene2, species, args));
-			}//for j
-		}//for i
-		return interactions;
+	        Hashtable args) {
+
+        if(interactors.size() == 0){
+            return new Vector();
+        }
+        
+        double pval = 2;
+        if(args.contains(PVAL)){
+            pval = ((Double)args.get(PVAL)).doubleValue();
+        }
+  
+        Vector methods;
+        if(args.containsKey(INTERACTION_TYPE)){
+            methods = (Vector)args.get(INTERACTION_TYPE);
+        }else{
+            methods = new Vector(INT_TYPES.keySet());
+        }
+        
+        if(pval >= 1 && methods.size() == 4){
+            return getConnectingInteractions(interactors, species);
+        }
+        
+        Iterator it = interactors.iterator();
+        String geneName = (String)it.next();
+        String orStatement_a = " gene_id_a = " + geneName;
+        String orStatement_b = " gene_id_b = " + geneName;
+        while(it.hasNext()){
+            geneName = (String)it.next();
+            orStatement_a += " OR gene_id_a = " + geneName;
+            orStatement_b += " OR gene_id_b = " + geneName;
+        }//while it.hasNext
+        
+        if(pval >= 1){
+            // pval does not matter
+            it = methods.iterator();
+            Vector interactions = new Vector();
+            while(it.hasNext()){
+                String method = (String)it.next();
+                String tableName = getTableNameForMethod(species, method, pval);
+                String sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + tableName + " WHERE (" + orStatement_a + " ) AND (" + orStatement_b + ")";
+                ResultSet rs = query(sql);
+                interactions.addAll(makeInteractionsVector(rs, method));
+            }//while
+            return interactions;
+        }else{
+            // pval matters
+            it = methods.iterator();
+            Vector interactions = new Vector();
+            while(it.hasNext()){
+                String method = (String)it.next();
+                String tableName = getTableNameForMethod(species, method, pval);
+                String sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + tableName + " WHERE p <= " + pval + " AND (" + orStatement_a + " ) AND (" + orStatement_b + ")";
+                ResultSet rs = query(sql);
+                interactions.addAll(makeInteractionsVector(rs, method));
+            }//while
+            return interactions;
+        }//else
 	}
 	
 	/**

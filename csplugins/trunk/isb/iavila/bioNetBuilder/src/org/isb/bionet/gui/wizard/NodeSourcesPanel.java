@@ -8,23 +8,21 @@ import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.JFileChooser;
+import javax.swing.*;
+
 import java.io.File;
+import java.util.Vector;
 
 import org.isb.bionet.gui.*;
+
+import utils.MyUtils;
+import cytoscape.*;
 
 public class NodeSourcesPanel extends JPanel {
 
     protected File myListFile;
-    
+    protected Vector myListNodes;
+    protected CyNetworksDialog netsDialog;
     /**
      *  Creates a panel with node sources
      */
@@ -40,12 +38,37 @@ public class NodeSourcesPanel extends JPanel {
     }
     
     /**
+     * 
+     * @return the CyNetworks to be used as sources for nodes
+     */
+    public CyNetwork [] getSelectedNetworks (){
+        if(this.netsDialog != null)
+            return this.netsDialog.getSelectedNetworks();
+        return new CyNetwork[0];
+    }
+    
+    /**
+     * 
+     * @return a Vector with the node names in "myList" file
+     */
+    public Vector getNodesFromMyList (){
+        return this.myListNodes;
+    }
+    
+    /**
      * Creates the panel
      */
     protected void create() {
         
         final JButton annotsButton = new JButton("Nodes with selected annotations...");
         annotsButton.setEnabled(false);
+        annotsButton.addActionListener(new AbstractAction(){
+            
+            public void actionPerformed (ActionEvent event){
+                JOptionPane.showMessageDialog(NodeSourcesPanel.this, "Not implemented yet!", "Oops!", JOptionPane.ERROR_MESSAGE);
+            }//actionPerformed
+            
+        });
         final JButton listButton = new JButton("Nodes from my list...");
         final JFileChooser fileChooser = new JFileChooser();
         listButton.addActionListener(
@@ -55,6 +78,12 @@ public class NodeSourcesPanel extends JPanel {
                         int returnVal = fileChooser.showOpenDialog(NodeSourcesPanel.this);
                         if(returnVal == JFileChooser.APPROVE_OPTION) {
                             myListFile = fileChooser.getSelectedFile();
+                            try{
+                                myListNodes = MyUtils.ReadFileLines(myListFile.getAbsolutePath());
+                            }catch (Exception ex){
+                                ex.printStackTrace();
+                                JOptionPane.showMessageDialog(NodeSourcesPanel.this, "Could not read nodes in file " + myListFile.getName() + "!", "Error", JOptionPane.ERROR_MESSAGE);
+                            }
                         }
                     }//actionPerformed
                     
@@ -65,9 +94,15 @@ public class NodeSourcesPanel extends JPanel {
         netsButton.addActionListener(
                 new AbstractAction (){
                     public void actionPerformed (ActionEvent event){
-                        CyNetworksDialog.showDialog(NodeSourcesPanel.this);
+                        if(netsDialog == null){
+                            netsDialog = new CyNetworksDialog();
+                        }
+                        netsDialog.update();
+                        netsDialog.setLocationRelativeTo(NodeSourcesPanel.this);
+                        netsDialog.pack();
+                        netsDialog.setVisible(true);
                     }//actionPerformed
-                }
+                }//AbstractAction
         );
         netsButton.setEnabled(false);
         

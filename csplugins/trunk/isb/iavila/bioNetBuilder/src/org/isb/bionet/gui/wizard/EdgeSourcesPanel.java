@@ -16,7 +16,9 @@ import javax.swing.JTextField;
 
 import org.isb.bionet.datasource.interactions.ProlinksInteractionsSource;
 import org.isb.bionet.gui.*;
+
 import java.util.*;
+import cytoscape.*;
 
 /**
  * 
@@ -46,6 +48,8 @@ public class EdgeSourcesPanel extends JPanel {
      * The list of buttons
      */
     protected List buttons;
+    
+    protected CyNetworksDialog netsDialog;
     
     
     /**
@@ -87,6 +91,14 @@ public class EdgeSourcesPanel extends JPanel {
             }
         }//while it.hasNext
     }
+    
+    /**
+     * 
+     * @return the CyNetworks to be used as sources of edges
+     */
+    public CyNetwork [] getSelectedNetworks (){
+        return this.netsDialog.getSelectedNetworks();
+    }
 
     protected void create() {
 
@@ -121,7 +133,13 @@ public class EdgeSourcesPanel extends JPanel {
                 new AbstractAction(){
                     
                     public void actionPerformed (ActionEvent event){
-                        CyNetworksDialog.showDialog(EdgeSourcesPanel.this);
+                        if(netsDialog == null){
+                            netsDialog = new CyNetworksDialog();
+                        }
+                        netsDialog.update();
+                        netsDialog.setLocationRelativeTo(EdgeSourcesPanel.this);
+                        netsDialog.pack();
+                        netsDialog.setVisible(true);
                     }
                     
                 }

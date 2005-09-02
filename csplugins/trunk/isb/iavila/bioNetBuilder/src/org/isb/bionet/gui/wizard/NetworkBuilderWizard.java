@@ -10,8 +10,11 @@ import java.util.List;
 import org.isb.bionet.datasource.interactions.*;
 import org.isb.bionet.gui.ProlinksGui;
 import org.isb.bionet.Utils;
+import java.io.*;
 
 import cytoscape.*;
+import cytoscape.data.Semantics;
+import utils.MyUtils;
 /**
  * 
  * @author iavila
@@ -129,7 +132,7 @@ public class NetworkBuilderWizard {
         
         JDialog dialog = new JDialog(Cytoscape.getDesktop());
         dialog.setTitle("BioNetwork Builder");
-        dialog.setSize(400, 500);
+        dialog.setSize(400, 400);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         
         JPanel panel = new JPanel();
@@ -404,21 +407,40 @@ public class NetworkBuilderWizard {
     
     protected void createNetwork (){
     
-        // Get the species for each source
+        // Get the species for each edge data source
         Map sourceToSpecies = this.speciesPanel.getSourcesSelectedSpecies();
         Map sourceToNames = this.speciesPanel.getSourcesNames();
         
-        // ILIANA LEFT HERE!!! Use node sources
-        // Get the starting nodes
-        // TODO
+        // Get the starting nodes for the network (if any)
+        Vector myListNodes = this.nodeSourcesPanel.getNodesFromMyList();
+        CyNetwork [] nodeNets = this.nodeSourcesPanel.getSelectedNetworks();
+        // TODO: Do checks: selected networks species must match to the species the user selected in this sesion
+        // TODO: Nodes from annotations!
+        Vector startingNodes = new Vector();
+        if(myListNodes != null){
+            startingNodes.addAll(myListNodes);
+        }
+        if(nodeNets != null){
+            for(int i = 0; i < nodeNets.length; i++){
+                Iterator it = nodeNets[i].nodesIterator();
+                while(it.hasNext()){
+                    CyNode node = (CyNode)it.next();
+                    String nodeName = (String)Cytoscape.getNodeAttributeValue(node, Semantics.CANONICAL_NAME);
+                    if(!startingNodes.contains(nodeName))
+                        startingNodes.add(nodeName);
+                }//while it
+            }//for i
+        }// if nodeNets != null
         
-        // Get the edge data source settings
+        // Get the edge data source parameter settings
         Map sourceToSettings = this.edgeSourcesPanel.getSourcesDialogs();
         Iterator it = sourceToSettings.keySet().iterator();
         
         // Get the network name
         String netName = this.networkPanel.getNetworkName();
         
+        // Iterate over all the edge data sources and accumulate interactions
+        Vector interactions = new Vector();
         while(it.hasNext()){
             
             String sourceClass = (String)it.next();
@@ -426,7 +448,7 @@ public class NetworkBuilderWizard {
             String sourceName = (String)sourceToNames.get(sourceClass);
             
             //System.out.println("sourceClass = " + sourceClass + " sourceName = " + sourceName);
-            
+            //TODO: Other data sources need to be added
             if(sourceName.equals(ProlinksInteractionsSource.NAME)){
                 
                 ProlinksGui prolinksGui = (ProlinksGui)sourceToSettings.get(sourceClass);
@@ -449,9 +471,11 @@ public class NetworkBuilderWizard {
                 }
                 
                 try{
-                    //TODO: This will need to change when node sources are specified!!!
-                    Vector interactions = this.interactionsClient.getAllInteractions((String)sourceSpecies.get(0),args);
-                    Utils.makeNewNetwork(interactions, netName);
+                    if(startingNodes == null || startingNodes.size() == 0){
+                        interactions.addAll(this.interactionsClient.getAllInteractions((String)sourceSpecies.get(0),args));
+                    }else{
+                        interactions.addAll(this.interactionsClient.getConnectingInteractions(startingNodes,(String)sourceSpecies.get(0), args));
+                    }
                 }catch(Exception ex){
                     ex.printStackTrace();
                 }
@@ -459,7 +483,9 @@ public class NetworkBuilderWizard {
             
         }//while it
         
-    }
+        Utils.makeNewNetwork(interactions, netName);
+        
+    }//createNetwork
     
     
 }//NetworkBuilderWizard
