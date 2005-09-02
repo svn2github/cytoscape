@@ -6,6 +6,10 @@ import cytoscape.render.immed.GraphGraphics;
 import cytoscape.util.intr.IntHash;
 import java.awt.Color;
 
+/**
+ * This class contains a chunk of procedural code that stiches together
+ * several external modules in an effort to efficiently render graphs.
+ */
 public final class GraphRenderer
 {
 
