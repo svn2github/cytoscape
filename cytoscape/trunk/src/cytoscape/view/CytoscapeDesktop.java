@@ -774,7 +774,7 @@ public class CytoscapeDesktop
   
   /**
    * Create the CytoPanels UI.
-   * @param networkPanel to load on right side.
+   * @param networkPanel to load on left side of right bimodal.
    * @param networkViewManager to load on left side (CytoPanel West).
    * @return BiModalJSplitPane Object.
    */
@@ -782,33 +782,26 @@ public class CytoscapeDesktop
 											   NetworkViewManager networkViewManager){
 
 	  // bimodals that our Cytopanels Live within
-	  BiModalJSplitPane topLeftPane = createTopLeftPane(networkPanel, networkViewManager);
-	  BiModalJSplitPane topPane = createTopPane(topLeftPane);
-	  BiModalJSplitPane masterPane = createMasterPane(topPane);
+	  BiModalJSplitPane topRightPane = createTopRightPane(networkViewManager);
+	  BiModalJSplitPane rightPane = createRightPane(topRightPane);
+	  BiModalJSplitPane masterPane = createMasterPane(networkPanel, rightPane);
 
 	  return masterPane;
   } 
 
   /**
-   * Creates the TopLeft Pane.
-   * @param networkPanel to load on right side.
-   * @param networkViewManager to load on left side (CytoPanel West).
+   * Creates the TopRight Pane.
+   * @param networkViewManager to load on left side of top right bimodal.
    * @return BiModalJSplitPane Object.
    */
-  protected BiModalJSplitPane createTopLeftPane(NetworkPanel networkPanel,
-												NetworkViewManager networkViewManager){
+  protected BiModalJSplitPane createTopRightPane(NetworkViewManager networkViewManager){
 
 	  //  create cytopanel with tabs along the left side
-	  cytoPanelWest = new CytoPanelImp(SwingConstants.WEST,
-									   JTabbedPane.TOP,
-									   CytoPanelState.DOCK);
+	  cytoPanelEast = new CytoPanelImp(SwingConstants.EAST,
+									   JTabbedPane.RIGHT,
+									   CytoPanelState.HIDE);
 
-	  // add the network panel to our tab
-	  String tab1Name = new String("Network");
-	  cytoPanelWest.add(tab1Name,
-						new ImageIcon(getClass().getResource("images/class_hi.gif")),
-									  networkPanel,
-									  "Cytoscape Network List");
+
 
 	  //  determine proper network view manager component
 	  Component networkViewComp = null;
@@ -825,40 +818,14 @@ public class CytoscapeDesktop
 	  //  create the split pane - we show this on startup
 	  BiModalJSplitPane splitPane = new BiModalJSplitPane(this,
 														  JSplitPane.HORIZONTAL_SPLIT,
-														  BiModalJSplitPane.MODE_SHOW_SPLIT,
-														  cytoPanelWest,
-														  networkViewComp);
-
-	  // set the cytopanelcontainer
-	  cytoPanelWest.setCytoPanelContainer(splitPane);
-
-	  // outta here
-	  return splitPane;
-  }
-
-  /**
-   * Creates the Top Panel.
-   * @param topLeftPane TopLeftPane Object.
-   * @return BiModalJSplitPane Object
-   */
-  protected BiModalJSplitPane createTopPane(BiModalJSplitPane topLeftPane){
-
-	  //  create cytopanel with tabs along the top
-	  cytoPanelEast = new CytoPanelImp(SwingConstants.EAST,
-									   JTabbedPane.TOP,
-									   CytoPanelState.HIDE);
-
-	  //  create the split pane - hidden by default
-	  BiModalJSplitPane splitPane = new BiModalJSplitPane(this,
-														  JSplitPane.HORIZONTAL_SPLIT,
 														  BiModalJSplitPane.MODE_HIDE_SPLIT,
-														  topLeftPane,
+														  networkViewComp,
 														  cytoPanelEast);
 
-	  // set the cytopanel container
+	  // set the cytopanelcontainer
 	  cytoPanelEast.setCytoPanelContainer(splitPane);
 
-	  // set the resize weight
+	  // set the resize weight - left component gets extra space
 	  splitPane.setResizeWeight(1.0);
 
 	  // outta here
@@ -866,13 +833,13 @@ public class CytoscapeDesktop
   }
 
   /**
-   * Creates the Master Split Pane.
-   * @param topSplitPane BiModalJSplitPane Object.
-   * @return BiModalJSplitPane Object.
+   * Creates the Right Panel.
+   * @param topRightPane TopRightPane Object.
+   * @return BiModalJSplitPane Object
    */
-  protected BiModalJSplitPane createMasterPane(BiModalJSplitPane topSplitPane){
+  protected BiModalJSplitPane createRightPane(BiModalJSplitPane topRightPane){
 
-	  //  create cytopanel with tabs along the bottom
+	  //  create cytopanel with tabs along the top
 	  cytoPanelSouth = new CytoPanelImp(SwingConstants.SOUTH,
 									   JTabbedPane.BOTTOM,
 									   CytoPanelState.HIDE);
@@ -881,14 +848,48 @@ public class CytoscapeDesktop
 	  BiModalJSplitPane splitPane = new BiModalJSplitPane(this,
 														  JSplitPane.VERTICAL_SPLIT,
 														  BiModalJSplitPane.MODE_HIDE_SPLIT,
-														  topSplitPane,
+														  topRightPane,
 														  cytoPanelSouth);
 
 	  // set the cytopanel container
 	  cytoPanelSouth.setCytoPanelContainer(splitPane);
 
-	  // set the resize weight
+	  //  set resize weight - top component gets all the extra space.
 	  splitPane.setResizeWeight(1.0);
+
+	  // outta here
+	  return splitPane;
+  }
+
+  /**
+   * Creates the Master Split Pane.
+   * @param networkPanel to load on left side of CytoPanel (cytoPanelWest).
+   * @param rightPane BiModalJSplitPane Object.
+   * @return BiModalJSplitPane Object.
+   */
+  protected BiModalJSplitPane createMasterPane(NetworkPanel networkPanel, BiModalJSplitPane rightPane){
+
+	  //  create cytopanel with tabs along the bottom
+	  cytoPanelWest = new CytoPanelImp(SwingConstants.WEST,
+									   JTabbedPane.TOP,
+									   CytoPanelState.DOCK);
+
+	  // add the network panel to our tab
+	  String tab1Name = new String("Network");
+	  cytoPanelWest.add(tab1Name,
+						new ImageIcon(getClass().getResource("images/class_hi.gif")),
+									  networkPanel,
+									  "Cytoscape Network List");
+
+	  //  create the split pane - hidden by default
+	  BiModalJSplitPane splitPane = new BiModalJSplitPane(this,
+														  JSplitPane.HORIZONTAL_SPLIT,
+														  BiModalJSplitPane.MODE_SHOW_SPLIT,
+														  cytoPanelWest,
+														  rightPane);
+
+	  // set the cytopanel container
+	  cytoPanelWest.setCytoPanelContainer(splitPane);
 
 	  // outta here
 	  return splitPane;
