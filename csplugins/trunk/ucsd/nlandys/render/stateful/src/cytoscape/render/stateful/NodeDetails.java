@@ -8,14 +8,17 @@ import java.awt.Font;
  * Defines visual properties of a node modulo the node size and location.
  * Even though this class is not declared abstract, in most situations it
  * makes sense to override at least some of its methods in order to gain
- * control over graph visual properties.
+ * control over node visual properties.<p>
+ * To understand the significance of each method's return value, it makes
+ * sense to become familiar with the API cytoscape.render.immed.GraphGraphics.
  */
 public class NodeDetails
 {
 
   /**
-   * Returns a GraphGraphics.SHAPE_* constant (or a custom node shape) that an
-   * instance of GraphGraphics understands.
+   * Returns a GraphGraphics.SHAPE_* constant (or a custom node shape that an
+   * instance of GraphGraphics understands); this defines the shape that this
+   * node takes.
    * By default this method returns GraphGraphics.SHAPE_RECTANGLE.
    */
   public byte shape(final int node) {

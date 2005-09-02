@@ -4,7 +4,9 @@ package cytoscape.render.stateful;
  * An instance of this class defines the level of detail that goes into
  * a single rendering of a graph.  This class is meant to be subclassed; its
  * methods are meant to be overridden; nonetheless, sane defaults are
- * used in the default method implementations.
+ * used in the default method implementations.<p>
+ * To understand the significance of each method's return value, it makes
+ * sense to become familiar with the API cytoscape.render.immed.GraphGraphics.
  */
 public class GraphLOD
 {
