@@ -6,6 +6,7 @@ import cytoscape.graph.fixed.FixedGraph;
 import cytoscape.render.immed.GraphGraphics;
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntHash;
+import cytoscape.util.intr.IntStack;
 import java.awt.Color;
 
 /**
@@ -48,6 +49,9 @@ public final class GraphRenderer
    *   hashtable, and when this method returns, the hashtable will contain
    *   exactly the nodes that were rendered; an edge is rendered by this method
    *   if and only if it touches at least one node in this nodeBuff set.
+   * @param nodeStack this is a computational helper that is required in the
+   *   implementation of this method; no guarantee is made as to the values on
+   *   this stack when this method returns.
    * @param grafx the graphics context that is to render this graph.
    * @param bgColor the background color to use when calling grafx.clear().
    * @param xCenter the xCenter parameter to use when calling grafx.clear().
@@ -61,6 +65,7 @@ public final class GraphRenderer
                                        final NodeDetails nodeDetails,
                                        final EdgeDetails edgeDetails,
                                        final IntHash nodeBuff,
+                                       final IntStack nodeStack,
                                        final GraphGraphics grafx,
                                        final Color bgColor,
                                        final double xCenter,
@@ -121,6 +126,15 @@ public final class GraphRenderer
         if (lod.edgeAnchors(visibleNodeCount, visibleEdgeCount)) {
           lodTemp |= LOD_EDGE_ANCHORS; } }
       lodBits = lodTemp;
+    }
+
+    // Clear the background.
+    {
+      grafx.clear(bgColor, xCenter, yCenter, scaleFactor);
+    }
+
+    // Render the edges first.  No two edges shall be rendered twice.
+    {
     }
   }
 
