@@ -13,7 +13,6 @@ public final class IntStack
 
   private int[] m_stack;
   private int m_currentSize;
-  private int m_mark;
 
   /**
    * Creates a new stack of integers.
@@ -31,7 +30,6 @@ public final class IntStack
   public final void empty()
   {
     m_currentSize = 0;
-    m_mark = -1;
   }
 
   /**
@@ -78,32 +76,6 @@ public final class IntStack
     catch (ArrayIndexOutOfBoundsException e) {
       m_currentSize++;
       throw e; }
-  }
-
-  /**
-   * Marks this stack in such a way that a later call to reset() would
-   * restore this stack to the exact current state.  Marking and resetting
-   * a stack only works if push() is not called between the
-   * marking and resetting.  A call to empty() will automatically remove
-   * a mark from this stack.  Marks do not stack; only the most recent mark
-   * is kept.
-   */
-  public final void mark()
-  {
-    m_mark = m_currentSize;
-  }
-
-  /**
-   * Resets the stack to a state it was in at the time that the last call
-   * to mark() was made.  reset() only works if push() is not
-   * called between the last call to mark() and this reset() call; otherwise,
-   * results of calling this method are undefined.  Also note that a call
-   * to empty() will automatically remove a mark from this stack.
-   * Resetting an unmarked stack has no effect on the stack.
-   */
-  public final void reset()
-  {
-    if (m_mark >= 0) { m_currentSize = m_mark; }
   }
 
   private final void checkSize()
