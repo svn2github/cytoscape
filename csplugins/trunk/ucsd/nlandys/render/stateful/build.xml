@@ -45,7 +45,8 @@
         <include name="cytoscape/util/intr/IntIterator.java"/>
       </fileset>
       <fileset dir="${basedir}/../../geom.spacial/src">
-        <include name="cytoscape/geom/spacial/*.java"/>
+        <include name="cytoscape/geom/spacial/SpacialEntry2DEnumerator.java"/>
+        <include name="cytoscape/geom/spacial/SpacialIndex2D.java"/>
       </fileset>
       <fileset dir="${basedir}/../../graph.fixed/src">
         <include name="cytoscape/graph/fixed/*.java"/>
