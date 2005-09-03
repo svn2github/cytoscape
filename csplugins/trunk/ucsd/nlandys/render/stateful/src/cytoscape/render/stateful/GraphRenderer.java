@@ -72,26 +72,19 @@ public final class GraphRenderer
                                        final double yCenter,
                                        final double scaleFactor)
   {
-    // Define the visible window in node coordinate space.
-    final float xMin, yMin, xMax, yMax;
-    {
-      xMin = (float)
-        (xCenter - 0.5d * grafx.image.getWidth(null) / scaleFactor);
-      yMin = (float)
-        (yCenter - 0.5d * grafx.image.getHeight(null) / scaleFactor);
-      xMax = (float)
-        (xCenter + 0.5d * grafx.image.getWidth(null) / scaleFactor);
-      yMax = (float)
-        (yCenter + 0.5d * grafx.image.getHeight(null) / scaleFactor);
-    }
-
     // Determine the number of nodes and edges that we are about to render.
+    // Populate nodeStack with all visible node hits.
     final int visibleNodeCount;
     final int visibleEdgeCount;
     {
       nodeBuff.empty();
+      nodeStack.empty();
       final SpacialEntry2DEnumerator nodeHits = nodePositions.queryOverlap
-        (xMin, yMin, xMax, yMax, null, 0, false);
+        ((float) (xCenter - 0.5d * grafx.image.getWidth(null) / scaleFactor),
+         (float) (yCenter - 0.5d * grafx.image.getHeight(null) / scaleFactor),
+         (float) (xCenter + 0.5d * grafx.image.getWidth(null) / scaleFactor),
+         (float) (yCenter + 0.5d * grafx.image.getHeight(null) / scaleFactor),
+         null, 0, false);
       int runningEdgeCount = 0;
       while (nodeHits.numRemaining() > 0) {
         final int nextNodeHit = nodeHits.nextInt();
@@ -102,8 +95,9 @@ public final class GraphRenderer
           final int otherNode =
             nextNodeHit ^ graph.edgeSource(edge) ^ graph.edgeTarget(edge);
           if (nodeBuff.get(otherNode) < 0) { runningEdgeCount++; } }
-        nodeBuff.put(nextNodeHit); }
-      visibleNodeCount = nodeBuff.size();
+        nodeBuff.put(nextNodeHit);
+        nodeStack.push(nextNodeHit); }
+      visibleNodeCount = nodeStack.size();
       visibleEdgeCount = runningEdgeCount;
     }
 
