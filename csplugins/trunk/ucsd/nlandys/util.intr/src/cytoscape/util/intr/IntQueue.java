@@ -76,9 +76,37 @@ public final class IntQueue
    */
   public final int dequeue()
   {
-    int returnThis = m_queue[m_tail++];
+    final int returnThis = m_queue[m_tail++];
     if (m_tail == m_queue.length) m_tail = 0;
     return returnThis;
+  }
+
+  /**
+   * Returns an enumeration of all elements currently in this queue.  The
+   * first element returned in the enumeration is the first element waiting
+   * to be dequeued; the order of the other elements in the enumeration
+   * is based on the elements' dequeue order.<p>
+   * No operation on this queue will have an effect on the returned
+   * enumeration except for enqueue().  If calls to enqueue() are mingled with
+   * calls to iterate over the returned enumeration, the contents of this
+   * enumeration become undefined.  Iterating over the returned enumeration
+   * never has an affect on this queue.
+   */
+  public final IntEnumerator elements()
+  {
+    final int[] queue = m_queue;
+    final int head = m_head;
+    final int tail = m_tail;
+    return new IntEnumerator() {
+        private int inx = tail;
+        public final int numRemaining() {
+          int absHead = head;
+          if (absHead < inx) absHead += queue.length;
+          return absHead - inx; }
+        public final int nextInt() {
+          final int returnThis = queue[inx++];
+          if (inx == queue.length) inx = 0;
+          return returnThis; } };
   }
 
   private final void checkSize()
