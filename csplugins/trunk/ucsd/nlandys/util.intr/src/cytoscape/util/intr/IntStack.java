@@ -78,6 +78,27 @@ public final class IntStack
       throw e; }
   }
 
+  /**
+   * Returns an enumeration of all elements currently on this stack.  The
+   * first element returned in the enumeration is the first element waiting to
+   * be popped off the stack; the order of the other elements in the
+   * enumeration is based on the elements' popping order on the stack.<p>
+   * No operation on this stack will have an effect on the returned
+   * enumeration except for push().  If calls to push() are mingled with
+   * calls to iterate over the returned enumeration, the contents of this
+   * enumeration become undefined.  Iterating over the returned enumeration
+   * never has an affect on this stack.
+   */
+  public final IntEnumerator elements()
+  {
+    final int[] stack = m_stack;
+    final int size = m_currentSize;
+    return new IntEnumerator() {
+        private int inx = size;
+        public final int numRemaining() { return inx; }
+        public final int nextInt() { return stack[--inx]; } };
+  }
+
   private final void checkSize()
   {
     if (m_currentSize < m_stack.length) return;
