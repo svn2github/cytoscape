@@ -1,7 +1,7 @@
 package cytoscape.util.intr;
 
 /**
- * A B<sup>+</sup>-tree that stores integers.<p>
+ * An in-memory B<sup>+</sup>-tree that stores integers.<p>
  * The motivation behind the implementation of this tree is not usefulness.
  * The motivation is to get to know the algorithms associated with this tree
  * structure, so that implementing variants of this structure would become
