@@ -43,7 +43,6 @@
         <include name="cytoscape/util/intr/IntEnumerator.java"/>
         <include name="cytoscape/util/intr/IntHash.java"/>
         <include name="cytoscape/util/intr/IntIterator.java"/>
-        <include name="cytoscape/util/intr/IntStack.java"/>
       </fileset>
       <fileset dir="${basedir}/../../geom.spacial/src">
         <include name="cytoscape/geom/spacial/SpacialEntry2DEnumerator.java"/>
