@@ -15,6 +15,9 @@ import java.awt.Color;
 public class EdgeDetails
 {
 
+  public Color colorLowDetail(final int edge) {
+    return Color.blue; }
+
   /**
    * Returns a GraphGraphics.ARROW_* constant; this defines the arrow
    * to use when rendering the edge endpoint touching source node.

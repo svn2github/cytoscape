@@ -151,7 +151,16 @@ public final class GraphRenderer
             nextNodeHit ^ graph.edgeSource(edge) ^ graph.edgeTarget(edge);
           if (nodeBuff.get(otherNode) < 0) { // We must render this edge.
             nodePositions.exists(otherNode, floatBuff2, 0);
-            
+            if ((lodBits & LOD_HIGH_DETAIL) == 0) { // Low detail.
+              // In low detail mode don't cast 32 bit floats to 64 bits
+              // to do midpoint calculations.
+              grafx.drawEdgeLow((floatBuff1[0] + floatBuff1[2]) / 2.0f,
+                                (floatBuff1[1] + floatBuff1[3]) / 2.0f,
+                                (floatBuff2[0] + floatBuff2[2]) / 2.0f,
+                                (floatBuff2[1] + floatBuff2[3]) / 2.0f,
+                                edgeDetails.colorLowDetail(edge)); }
+            else { // High detail.
+            }
           } }
         nodeBuff.put(nextNodeHit); }
     }
