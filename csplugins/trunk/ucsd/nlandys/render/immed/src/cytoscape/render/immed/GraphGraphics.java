@@ -1048,8 +1048,8 @@ public final class GraphGraphics
    * In order to specify a straight-line edge path, simply duplicate
    * each edge anchor in the EdgeAnchors instance.  For example, a smooth
    * curve would be drawn by specifying consecutive-pairwise disctinct points
-   * {(x0,y0), A1, A2, A3, (x1,y1)}; a straight-line edge path would be
-   * drawn by specifying {(x0, y0), A1, A1, A2, A2, A3, A3, (x1, y1)}.
+   * {(x0,y0), A0, A1, A2, (x1,y1)}; a straight-line edge path would be
+   * drawn by specifying {(x0, y0), A0, A0, A1, A1, A2, A2, (x1, y1)}.
    * @param arrowType0 the type of arrow shape to use for drawing the
    *   arrow at point (x0, y0); this value must be one of the ARROW_*
    *   constants.
