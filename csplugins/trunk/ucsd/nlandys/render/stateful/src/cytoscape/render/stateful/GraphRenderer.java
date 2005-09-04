@@ -130,10 +130,11 @@ public final class GraphRenderer
 
     // Define buffers.  These are of the few objects we're instantiating
     // directly in this method.
-    final float[] floatBuff1, floatBuff2;
+    final float[] floatBuff1, floatBuff2, floatBuff3;
     {
       floatBuff1 = new float[4];
       floatBuff2 = new float[4];
+      floatBuff3 = new float[2];
     }
 
     // Render the edges first.  No edge shall be rendered twice.
@@ -141,30 +142,112 @@ public final class GraphRenderer
       nodeBuff.empty();
       final SpacialEntry2DEnumerator nodeHits = nodePositions.queryOverlap
         (xMin, yMin, xMax, yMax, null, 0, false);
-      while (nodeHits.numRemaining() > 0) {
-        final int nextNodeHit = nodeHits.nextExtents(floatBuff1, 0);
-        final IntEnumerator touchingEdges = graph.edgesAdjacent
-          (nextNodeHit, true, true, true);
-        while (touchingEdges.numRemaining() > 0) {
-          final int edge = touchingEdges.nextInt();
-          final int otherNode =
-            nextNodeHit ^ graph.edgeSource(edge) ^ graph.edgeTarget(edge);
-          if (nodeBuff.get(otherNode) < 0) { // We must render this edge.
-            if (!nodePositions.exists(otherNode, floatBuff2, 0))
-              throw new IllegalStateException
-                ("nodePositions not recognizing a node that exists in graph");
-            if ((lodBits & LOD_HIGH_DETAIL) == 0) { // Low detail.
-              // In low detail mode don't cast 32 bit floats to 64 bits
-              // to do midpoint calculations.
-              grafx.drawEdgeLow((floatBuff1[0] + floatBuff1[2]) / 2.0f,
-                                (floatBuff1[1] + floatBuff1[3]) / 2.0f,
-                                (floatBuff2[0] + floatBuff2[2]) / 2.0f,
-                                (floatBuff2[1] + floatBuff2[3]) / 2.0f,
-                                edgeDetails.colorLowDetail(edge)); }
-            else { // High detail.
-            }
-          } }
-        nodeBuff.put(nextNodeHit); }
+      if ((lodBits & LOD_HIGH_DETAIL) == 0) {
+        final int nodeHitCount = nodeHits.numRemaining();
+        for (int i = 0; i < nodeHitCount; i++) {
+          final int node = nodeHits.nextExtents(floatBuff1, 0);
+          final float nodeX = (floatBuff1[0] + floatBuff1[2]) / 2;
+          final float nodeY = (floatBuff1[1] + floatBuff1[3]) / 2;
+          final IntEnumerator touchingEdges =
+            graph.edgesAdjacent(node, true, true, true);
+          final int touchingEdgeCount = touchingEdges.numRemaining();
+          for (int j = 0; j < touchingEdgeCount; j++) {
+            final int edge = touchingEdges.nextInt();
+            final int otherNode =
+              node ^ graph.edgeSource(edge) ^ graph.edgeTarget(edge);
+            if (nodeBuff.get(otherNode) < 0) { // Has not yet been rendered.
+              nodePositions.exists(otherNode, floatBuff2, 0);
+              grafx.drawEdgeLow(nodeX, nodeY,
+                                (floatBuff2[0] + floatBuff2[2]) / 2,
+                                (floatBuff2[1] + floatBuff2[3]) / 2,
+                                edgeDetails.colorLowDetail(edge)); } }
+          nodeBuff.put(node); } }
+      else { // High detail.
+//         while (nodeHits.numRemaining() > 0) {
+//           final int node = nodeHits.nextExtents(floatBuff1, 0);
+//           final byte nodeShape = nodeDetails.shape(node);
+//           final float nodeX = (float)
+//             ((((double) floatBuff1[0]) + floatBuff1[2]) / 2.0d);
+//           final float nodeY = (float)
+//             ((((double) floatBuff1[1]) + floatBuff1[3]) / 2.0d);
+//           final IntEnumerator touchingEdges =
+//             graph.edgesAdjacent(node, true, true, true);
+//           while (touchingEdges.numRemaining() > 0) {
+//             final int edge = touchingEdges.nextInt();
+//             final int otherNode =
+//               node ^ graph.edgeSource(edge) ^ graph.edgeTarget(edge);
+//             if (nodeBuff.get(otherNode) < 0) { // Has not yet been rendered.
+//               if (!nodePositions.exists(otherNode, floatBuff2, 0))
+//                 throw new IllegalStateException
+//                   ("nodePositions not recognizing node that exists in graph");
+//               final byte otherNodeShape = nodeDetails.shape(otherNode);
+//               final float otherNodeX = (float)
+//                 ((((double) floatBuff2[0]) + floatBuff2[2]) / 2.0d);
+//               final float otherNodeY = (float)
+//                 ((((double) floatBuff2[1]) + floatBuff2[3]) / 2.0d);
+
+//               // Compute visual attributes that do not depend on LOD.
+//               final float thickness = edgeDetails.thickness(edge);
+//               final Color color = edgeDetails.color(edge);
+
+//               // Compute arrows.
+//               final byte arrow, otherArrow;
+//               final float arrowSize, otherArrowSize;
+//               final Color arrowColor, otherArrowColor;
+//               if ((lodBits & LOD_EDGE_ARROWS) == 0) { // Not rendering arrows.
+//                 otherArrow = arrow = GraphGraphics.ARROW_NONE;
+//                 otherArrowSize = arrowSize = 0.0f;
+//                 otherArrowColor = arrowColor = null; }
+//               else { // Render edge arrows.
+//                 if (node == graph.edgeSource(edge)) {
+//                   arrow = edgeDetails.arrow0(edge);
+//                   arrowSize = edgeDetails.arrow0Size(edge);
+//                   arrowColor = edgeDetails.arrow0Color(edge);
+//                   otherArrow = edgeDetails.arrow1(edge);
+//                   otherArrowSize = edgeDetails.arrow1Size(edge);
+//                   otherArrowColor = edgeDetails.arrow1Color(edge); }
+//                 else { // otherNode == graph.edgeSource(edge).
+//                   arrow = edgeDetails.arrow1(edge);
+//                   arrowSize = edgeDetails.arrow1Size(edge);
+//                   arrowColor = edgeDetails.arrow1Color(edge);
+//                   otherArrow = edgeDetails.arrow0(edge);
+//                   otherArrowSize = edgeDetails.arrow0Size(edge);
+//                   otherArrowColor = edgeDetails.arrow0Color(edge); } }
+
+//               // Compute dash length.
+//               final float dashLength;
+//               if ((lodBits & LOD_DASHED_EDGES) == 0) { // Not rendering dashes.
+//                 dashLength = 0.0f; }
+//               else {
+//                 dashLength = edgeDetails.dashLength(edge); }
+
+//               // Compute the anchors to use when rendering edge.
+//               final EdgeAnchors anchors;
+//               if ((lodBits & LOD_EDGE_ANCHORS) == 0) [ anchors = null; }
+//               else {
+//                 EdgeAnchors anchorsTemp = edgeDetails.anchors(edge);
+//                 if (anchorsTemp != null && anchorsTemp.numAnchors() == 0) {
+//                   anchorsTemp = null; }
+//                 anchors = anchorsTemp; }
+//               // Now anchors is null if and only if no anchors to be rendered.
+
+//               final float nodeXOut, nodeYOut, otherNodeXOut, otherNodeYOut;
+//               if (anchors == null) {
+//                 nodeXOut = otherNodeX;
+//                 nodeYOut = otherNodeY;
+//                 otherNodeXOut = nodeX;
+//                 otherNodeYOut = nodeY; }
+//               else {
+//                 anchors.getAnchor(0, floatBuff3, 0);
+//                 nodeXOut = floatBuff3[0];
+//                 nodeYOut = floatBuff3[1];
+//                 anchors.getAnchor(anchors.numAnchors() - 1, floatBuff3, 0);
+//                 otherNodeXOut = floatBuff3[0];
+//                 otherNodeYOut = floatBuff3[1]; }
+//             }
+//           }
+//         }
+      }
     }
   }
 
