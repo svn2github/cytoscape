@@ -108,8 +108,9 @@ public final class GraphGraphics
   private final HashMap m_customShapes = new HashMap();
   private final double[] m_ptsBuff = new double[4];
   private final EdgeAnchors m_noAnchors = new EdgeAnchors() {
-      public final int numRemaining() { return 0; }
-      public final void nextAnchor(final float[] arr, final int off) { } };
+      public final int numAnchors() { return 0; }
+      public final void getAnchor(final int inx,
+                                  final float[] arr, final int off) { } };
   private final double[] m_edgePtsBuff =
     new double[(MAX_EDGE_ANCHORS + 1) * 3];
   private int m_polyNumPoints; // Used with m_polyCoords.
@@ -1235,7 +1236,7 @@ public final class GraphGraphics
       arrow1Size = arrow0Size;
       // Don't break; fall through.
     case ARROW_BIDIRECTIONAL:
-      if (anchors.numRemaining() > 0)
+      if (anchors.numAnchors() > 0)
         throw new IllegalArgumentException
           ("ARROW_BIDIRECTIONAL and ARROW_MONO not supported for poly edges");
       if (arrowType1 != arrowType0)
@@ -1273,7 +1274,7 @@ public final class GraphGraphics
       break;
     default:
       throw new IllegalArgumentException("arrowType1 is not recognized"); }
-    if (anchors.numRemaining() > MAX_EDGE_ANCHORS)
+    if (anchors.numAnchors() > MAX_EDGE_ANCHORS)
       throw new IllegalArgumentException
         ("at most MAX_EDGE_ANCHORS edge anchors can be specified");
   }
@@ -1524,7 +1525,7 @@ public final class GraphGraphics
           throw new IllegalArgumentException
             ("for ARROW_BIDIRECTIONAL and ARROW_MONO, both arrows must be " +
              "identical");
-        if (anchors.numRemaining() > 0)
+        if (anchors.numAnchors() > 0)
           throw new IllegalArgumentException
             ("ARROW_BIDIRECTIONAL and ARROW_MONO not supported in poly edges");
         break;
@@ -1543,13 +1544,10 @@ public final class GraphGraphics
           throw new IllegalArgumentException
             ("for ARROW_BIDIRECTIONAL and ARROW_MONO, both arrows must be " +
              "identical");
-        if (anchors.numRemaining() > 0)
-          throw new IllegalArgumentException
-            ("ARROW_BIDIRECTIONAL and ARROW_MONO not supported in poly edges");
         break;
       default:
         throw new IllegalArgumentException("arrowType1 is not recognized"); }
-      if (anchors.numRemaining() > MAX_EDGE_ANCHORS)
+      if (anchors.numAnchors() > MAX_EDGE_ANCHORS)
         throw new IllegalArgumentException
           ("at most MAX_EDGE_ANCHORS edge anchors can be specified"); }
 
@@ -1731,18 +1729,20 @@ public final class GraphGraphics
                                                  final float y1,
                                                  final double curveFactor)
   {
+    final int numAnchors = anchors.numAnchors();
     m_edgePtsBuff[0] = x0;
     m_edgePtsBuff[1] = y0;
     m_edgePtsCount = 1;
-    while (anchors.numRemaining() > 0) {
-      anchors.nextAnchor(m_floatBuff, 0);
+    int anchorInx = 0;
+    while (anchorInx < numAnchors) {
+      anchors.getAnchor(anchorInx++, m_floatBuff, 0);
       if (!(m_floatBuff[0] == x0 && m_floatBuff[1] == y0)) {
         m_edgePtsBuff[2] = m_floatBuff[0];
         m_edgePtsBuff[3] = m_floatBuff[1];
         m_edgePtsCount = 2;
         break; } }
-    while (anchors.numRemaining() > 0) {
-      anchors.nextAnchor(m_floatBuff, 0);
+    while (anchorInx < numAnchors) {
+      anchors.getAnchor(anchorInx++, m_floatBuff, 0);
       // Duplicate anchors are allowed.
       m_edgePtsBuff[m_edgePtsCount * 2] = m_floatBuff[0];
       m_edgePtsBuff[m_edgePtsCount * 2 + 1] = m_floatBuff[1];

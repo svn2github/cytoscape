@@ -8,13 +8,12 @@ public interface EdgeAnchors
 {
 
   /**
-   * Returns an integer N such that nextAnchor() can be successfully
-   * called no more and no less than N times.
+   * Returns the number of edge anchors.
    */
-  public int numRemaining();
+  public int numAnchors();
 
   /**
-   * Writes the next edge anchor point into the array provided, at offset
+   * Writes an edge anchor point into the array provided, at offset
    * specified.  The information written into the supplied anchorArr parameter
    * consists of the following:
    * <blockquote><table border="1" cellpadding="5" cellspacing="0">
@@ -22,7 +21,9 @@ public interface EdgeAnchors
    *   <tr>  <td>offset</td>       <td>X coordinate of anchor</td>  </tr>
    *   <tr>  <td>offset+1</td>     <td>Y coordinate of anchor</td>  </tr>
    * </table></blockquote>
+   * @exception IllegalArgumentException if anchorIndex is not in the
+   *   range [0, numAnchors()-1].
    */
-  public void nextAnchor(float[] anchorArr, int offset);
+  public void getAnchor(int anchorIndex, float[] anchorArr, int offset);
 
 }
