@@ -79,10 +79,10 @@ public final class IntStack
   }
 
   /**
-   * Returns an enumeration of all elements currently on this stack.  The
-   * first element returned in the enumeration is the first element waiting to
-   * be popped off the stack; the order of the other elements in the
-   * enumeration is based on the elements' popping order on the stack.<p>
+   * Returns an enumeration of all elements currently on this stack.
+   * The order of elements in the returned enumeration is based on the
+   * elements' popping order on the stack; the first element returned is
+   * the element waiting to be popped off the stack.<p>
    * No operation on this stack will have an effect on the returned
    * enumeration except for push().  If calls to push() are mingled with
    * calls to iterate over the returned enumeration, the contents of this

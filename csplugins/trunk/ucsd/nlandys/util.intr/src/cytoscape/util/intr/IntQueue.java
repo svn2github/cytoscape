@@ -82,10 +82,10 @@ public final class IntQueue
   }
 
   /**
-   * Returns an enumeration of all elements currently in this queue.  The
-   * first element returned in the enumeration is the first element waiting
-   * to be dequeued; the order of the other elements in the enumeration
-   * is based on the elements' dequeue order.<p>
+   * Returns an enumeration of all elements currently in this queue.
+   * The order of elements in the returned enumeration is based on the
+   * elements' dequeue order; the first element returned is the element
+   * waiting to be dequeued.<p>
    * No operation on this queue will have an effect on the returned
    * enumeration except for enqueue().  If calls to enqueue() are mingled with
    * calls to iterate over the returned enumeration, the contents of this
