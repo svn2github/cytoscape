@@ -190,29 +190,29 @@ public final class GraphRenderer
               final float thickness = edgeDetails.thickness(edge);
               final Color color = edgeDetails.color(edge);
 
-//               // Compute arrows.
-//               final byte arrow, otherArrow;
-//               final float arrowSize, otherArrowSize;
-//               final Color arrowColor, otherArrowColor;
-//               if ((lodBits & LOD_EDGE_ARROWS) == 0) { // Not rendering arrows.
-//                 otherArrow = arrow = GraphGraphics.ARROW_NONE;
-//                 otherArrowSize = arrowSize = 0.0f;
-//                 otherArrowColor = arrowColor = null; }
-//               else { // Render edge arrows.
-//                 if (node == graph.edgeSource(edge)) {
-//                   arrow = edgeDetails.arrow0(edge);
-//                   arrowSize = edgeDetails.arrow0Size(edge);
-//                   arrowColor = edgeDetails.arrow0Color(edge);
-//                   otherArrow = edgeDetails.arrow1(edge);
-//                   otherArrowSize = edgeDetails.arrow1Size(edge);
-//                   otherArrowColor = edgeDetails.arrow1Color(edge); }
-//                 else { // otherNode == graph.edgeSource(edge).
-//                   arrow = edgeDetails.arrow1(edge);
-//                   arrowSize = edgeDetails.arrow1Size(edge);
-//                   arrowColor = edgeDetails.arrow1Color(edge);
-//                   otherArrow = edgeDetails.arrow0(edge);
-//                   otherArrowSize = edgeDetails.arrow0Size(edge);
-//                   otherArrowColor = edgeDetails.arrow0Color(edge); } }
+              // Compute arrows.
+              final byte arrow, otherArrow;
+              final float arrowSize, otherArrowSize;
+              final Color arrowColor, otherArrowColor;
+              if ((lodBits & LOD_EDGE_ARROWS) == 0) { // Not rendering arrows.
+                otherArrow = arrow = GraphGraphics.ARROW_NONE;
+                otherArrowSize = arrowSize = 0.0f;
+                otherArrowColor = arrowColor = null; }
+              else { // Render edge arrows.
+                if (node == graph.edgeSource(edge)) {
+                  arrow = edgeDetails.arrow0(edge);
+                  arrowSize = edgeDetails.arrow0Size(edge);
+                  arrowColor = edgeDetails.arrow0Color(edge);
+                  otherArrow = edgeDetails.arrow1(edge);
+                  otherArrowSize = edgeDetails.arrow1Size(edge);
+                  otherArrowColor = edgeDetails.arrow1Color(edge); }
+                else { // otherNode == graph.edgeSource(edge).
+                  arrow = edgeDetails.arrow1(edge);
+                  arrowSize = edgeDetails.arrow1Size(edge);
+                  arrowColor = edgeDetails.arrow1Color(edge);
+                  otherArrow = edgeDetails.arrow0(edge);
+                  otherArrowSize = edgeDetails.arrow0Size(edge);
+                  otherArrowColor = edgeDetails.arrow0Color(edge); } }
 
 //               // Compute dash length.
 //               final float dashLength;
