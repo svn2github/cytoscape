@@ -214,12 +214,12 @@ public final class GraphRenderer
                   otherArrowSize = edgeDetails.arrow0Size(edge);
                   otherArrowColor = edgeDetails.arrow0Color(edge); } }
 
-//               // Compute dash length.
-//               final float dashLength;
-//               if ((lodBits & LOD_DASHED_EDGES) == 0) { // Not rendering dashes.
-//                 dashLength = 0.0f; }
-//               else {
-//                 dashLength = edgeDetails.dashLength(edge); }
+              // Compute dash length.
+              final float dashLength;
+              if ((lodBits & LOD_DASHED_EDGES) == 0) { // Not rendering dashes.
+                dashLength = 0.0f; }
+              else {
+                dashLength = edgeDetails.dashLength(edge); }
 
 //               // Compute the anchors to use when rendering edge.
 //               final EdgeAnchors anchors;
