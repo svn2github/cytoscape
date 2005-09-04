@@ -130,15 +130,14 @@ public final class TestBasicPolyEdge
   private static final class MyAnchors implements EdgeAnchors
   {
     private final float[] anchorsBuff;
-    private int num;
+    private final int num;
     private MyAnchors(float[] anchorsBuff, int size) {
       this.num = size;
       this.anchorsBuff = anchorsBuff; }
-    public int numRemaining() { return num; }
-    public void nextAnchor(float[] anchorArr, int offset) {
-      anchorArr[offset] = anchorsBuff[num * 2 - 2];
-      anchorArr[offset + 1] = anchorsBuff[num * 2 - 1];
-      num--; }
+    public int numAnchors() { return num; }
+    public void getAnchor(int inx, float[] anchorArr, int offset) {
+      anchorArr[offset] = anchorsBuff[inx * 2];
+      anchorArr[offset + 1] = anchorsBuff[inx * 2 + 1]; }
   }
 
   private void updateImage(GraphGraphics grafx)
