@@ -150,7 +150,9 @@ public final class GraphRenderer
           final int otherNode =
             nextNodeHit ^ graph.edgeSource(edge) ^ graph.edgeTarget(edge);
           if (nodeBuff.get(otherNode) < 0) { // We must render this edge.
-            nodePositions.exists(otherNode, floatBuff2, 0);
+            if (!nodePositions.exists(otherNode, floatBuff2, 0))
+              throw new IllegalStateException
+                ("nodePositions not recognizing a node that exists in graph");
             if ((lodBits & LOD_HIGH_DETAIL) == 0) { // Low detail.
               // In low detail mode don't cast 32 bit floats to 64 bits
               // to do midpoint calculations.
