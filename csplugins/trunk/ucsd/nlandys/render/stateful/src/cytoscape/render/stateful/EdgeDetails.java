@@ -15,6 +15,17 @@ import java.awt.Color;
 public class EdgeDetails
 {
 
+  /**
+   * Returns the color of edge in low detail rendering mode.
+   * By default this method returns Color.blue.  It is an error to return null
+   * in this method.<p>
+   * In low detail rendering mode, this is the only method from this class
+   * that is looked at.  The rest of the methods in this class define visual
+   * properties that are used in full detail rendering mode.  In low detail
+   * rendering mode translucent colors are not supported whereas in full
+   * detail rendering mode they are; therefore, colorLowDetail(edge) and
+   * color(edge) may return two different colors.
+   */
   public Color colorLowDetail(final int edge) {
     return Color.blue; }
 
