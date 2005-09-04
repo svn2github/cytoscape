@@ -136,8 +136,8 @@ public final class TestBasicPolyEdge
       this.anchorsBuff = anchorsBuff; }
     public int numAnchors() { return num; }
     public void getAnchor(int inx, float[] anchorArr, int offset) {
-      anchorArr[offset] = anchorsBuff[inx * 2];
-      anchorArr[offset + 1] = anchorsBuff[inx * 2 + 1]; }
+      anchorArr[offset] = anchorsBuff[(num - inx - 1) * 2];
+      anchorArr[offset + 1] = anchorsBuff[(num - inx - 1) * 2 + 1]; }
   }
 
   private void updateImage(GraphGraphics grafx)
