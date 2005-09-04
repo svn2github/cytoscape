@@ -163,28 +163,28 @@ public final class GraphRenderer
                                 edgeDetails.colorLowDetail(edge)); } }
           nodeBuff.put(node); } }
       else { // High detail.
-//         while (nodeHits.numRemaining() > 0) {
-//           final int node = nodeHits.nextExtents(floatBuff1, 0);
-//           final byte nodeShape = nodeDetails.shape(node);
-//           final float nodeX = (float)
-//             ((((double) floatBuff1[0]) + floatBuff1[2]) / 2.0d);
-//           final float nodeY = (float)
-//             ((((double) floatBuff1[1]) + floatBuff1[3]) / 2.0d);
-//           final IntEnumerator touchingEdges =
-//             graph.edgesAdjacent(node, true, true, true);
-//           while (touchingEdges.numRemaining() > 0) {
-//             final int edge = touchingEdges.nextInt();
-//             final int otherNode =
-//               node ^ graph.edgeSource(edge) ^ graph.edgeTarget(edge);
-//             if (nodeBuff.get(otherNode) < 0) { // Has not yet been rendered.
-//               if (!nodePositions.exists(otherNode, floatBuff2, 0))
-//                 throw new IllegalStateException
-//                   ("nodePositions not recognizing node that exists in graph");
-//               final byte otherNodeShape = nodeDetails.shape(otherNode);
-//               final float otherNodeX = (float)
-//                 ((((double) floatBuff2[0]) + floatBuff2[2]) / 2.0d);
-//               final float otherNodeY = (float)
-//                 ((((double) floatBuff2[1]) + floatBuff2[3]) / 2.0d);
+        while (nodeHits.numRemaining() > 0) {
+          final int node = nodeHits.nextExtents(floatBuff1, 0);
+          final byte nodeShape = nodeDetails.shape(node);
+          final float nodeX = (float)
+            ((((double) floatBuff1[0]) + floatBuff1[2]) / 2.0d);
+          final float nodeY = (float)
+            ((((double) floatBuff1[1]) + floatBuff1[3]) / 2.0d);
+          final IntEnumerator touchingEdges =
+            graph.edgesAdjacent(node, true, true, true);
+          while (touchingEdges.numRemaining() > 0) {
+            final int edge = touchingEdges.nextInt();
+            final int otherNode =
+              node ^ graph.edgeSource(edge) ^ graph.edgeTarget(edge);
+            if (nodeBuff.get(otherNode) < 0) { // Has not yet been rendered.
+              if (!nodePositions.exists(otherNode, floatBuff2, 0))
+                throw new IllegalStateException
+                  ("nodePositions not recognizing node that exists in graph");
+              final byte otherNodeShape = nodeDetails.shape(otherNode);
+              final float otherNodeX = (float)
+                ((((double) floatBuff2[0]) + floatBuff2[2]) / 2.0d);
+              final float otherNodeY = (float)
+                ((((double) floatBuff2[1]) + floatBuff2[3]) / 2.0d);
 
 //               // Compute visual attributes that do not depend on LOD.
 //               final float thickness = edgeDetails.thickness(edge);
@@ -244,9 +244,9 @@ public final class GraphRenderer
 //                 anchors.getAnchor(anchors.numAnchors() - 1, floatBuff3, 0);
 //                 otherNodeXOut = floatBuff3[0];
 //                 otherNodeYOut = floatBuff3[1]; }
-//             }
-//           }
-//         }
+            }
+          }
+        }
       }
     }
   }
