@@ -128,8 +128,32 @@ public final class GraphRenderer
       grafx.clear(bgColor, xCenter, yCenter, scaleFactor);
     }
 
-    // Render the edges first.  No two edges shall be rendered twice.
+    // Define buffers.  These are of the few objects we're instantiating
+    // directly in this method.
+    final float[] floatBuff1, floatBuff2;
     {
+      floatBuff1 = new float[4];
+      floatBuff2 = new float[4];
+    }
+
+    // Render the edges first.  No edge shall be rendered twice.
+    {
+      nodeBuff.empty();
+      final SpacialEntry2DEnumerator nodeHits = nodePositions.queryOverlap
+        (xMin, yMin, xMax, yMax, null, 0, false);
+      while (nodeHits.numRemaining() > 0) {
+        final int nextNodeHit = nodeHits.nextExtents(floatBuff1, 0);
+        final IntEnumerator touchingEdges = graph.edgesAdjacent
+          (nextNodeHit, true, true, true);
+        while (touchingEdges.numRemaining() > 0) {
+          final int edge = touchingEdges.nextInt();
+          final int otherNode =
+            nextNodeHit ^ graph.edgeSource(edge) ^ graph.edgeTarget(edge);
+          if (nodeBuff.get(otherNode) < 0) { // We must render this edge.
+            nodePositions.exists(otherNode, floatBuff2, 0);
+            
+          } }
+        nodeBuff.put(nextNodeHit); }
     }
   }
 
