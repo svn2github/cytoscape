@@ -3,6 +3,7 @@ package cytoscape.render.stateful;
 import cytoscape.geom.spacial.SpacialEntry2DEnumerator;
 import cytoscape.geom.spacial.SpacialIndex2D;
 import cytoscape.graph.fixed.FixedGraph;
+import cytoscape.render.immed.EdgeAnchors;
 import cytoscape.render.immed.GraphGraphics;
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntHash;
@@ -221,29 +222,29 @@ public final class GraphRenderer
               else {
                 dashLength = edgeDetails.dashLength(edge); }
 
-//               // Compute the anchors to use when rendering edge.
-//               final EdgeAnchors anchors;
-//               if ((lodBits & LOD_EDGE_ANCHORS) == 0) [ anchors = null; }
-//               else {
-//                 EdgeAnchors anchorsTemp = edgeDetails.anchors(edge);
-//                 if (anchorsTemp != null && anchorsTemp.numAnchors() == 0) {
-//                   anchorsTemp = null; }
-//                 anchors = anchorsTemp; }
-//               // Now anchors is null if and only if no anchors to be rendered.
+              // Compute the anchors to use when rendering edge.
+              final EdgeAnchors anchors;
+              if ((lodBits & LOD_EDGE_ANCHORS) == 0) { anchors = null; }
+              else {
+                EdgeAnchors anchorsTemp = edgeDetails.anchors(edge);
+                if (anchorsTemp != null && anchorsTemp.numAnchors() == 0) {
+                  anchorsTemp = null; }
+                anchors = anchorsTemp; }
+              // Now anchors is null if and only if no anchors to be rendered.
 
-//               final float nodeXOut, nodeYOut, otherNodeXOut, otherNodeYOut;
-//               if (anchors == null) {
-//                 nodeXOut = otherNodeX;
-//                 nodeYOut = otherNodeY;
-//                 otherNodeXOut = nodeX;
-//                 otherNodeYOut = nodeY; }
-//               else {
-//                 anchors.getAnchor(0, floatBuff3, 0);
-//                 nodeXOut = floatBuff3[0];
-//                 nodeYOut = floatBuff3[1];
-//                 anchors.getAnchor(anchors.numAnchors() - 1, floatBuff3, 0);
-//                 otherNodeXOut = floatBuff3[0];
-//                 otherNodeYOut = floatBuff3[1]; }
+              final float nodeXOut, nodeYOut, otherNodeXOut, otherNodeYOut;
+              if (anchors == null) {
+                nodeXOut = otherNodeX;
+                nodeYOut = otherNodeY;
+                otherNodeXOut = nodeX;
+                otherNodeYOut = nodeY; }
+              else {
+                anchors.getAnchor(0, floatBuff3, 0);
+                nodeXOut = floatBuff3[0];
+                nodeYOut = floatBuff3[1];
+                anchors.getAnchor(anchors.numAnchors() - 1, floatBuff3, 0);
+                otherNodeXOut = floatBuff3[0];
+                otherNodeYOut = floatBuff3[1]; }
             }
           }
         }
