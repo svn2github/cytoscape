@@ -186,9 +186,9 @@ public final class GraphRenderer
               final float otherNodeY = (float)
                 ((((double) floatBuff2[1]) + floatBuff2[3]) / 2.0d);
 
-//               // Compute visual attributes that do not depend on LOD.
-//               final float thickness = edgeDetails.thickness(edge);
-//               final Color color = edgeDetails.color(edge);
+              // Compute visual attributes that do not depend on LOD.
+              final float thickness = edgeDetails.thickness(edge);
+              final Color color = edgeDetails.color(edge);
 
 //               // Compute arrows.
 //               final byte arrow, otherArrow;
