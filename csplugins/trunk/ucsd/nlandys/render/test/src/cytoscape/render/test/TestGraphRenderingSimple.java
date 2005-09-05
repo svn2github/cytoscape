@@ -9,6 +9,7 @@ import cytoscape.render.stateful.GraphLOD;
 import cytoscape.render.stateful.GraphRenderer;
 import cytoscape.render.stateful.NodeDetails;
 import cytoscape.util.intr.IntHash;
+import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Frame;
 import java.awt.Graphics;
@@ -37,12 +38,29 @@ public class TestGraphRenderingSimple
 
   private final int m_imgWidth = 800;
   private final int m_imgHeight = 600;
+  private final DynamicGraph m_graph;
+  private final RTree m_rtree;
+  private final GraphLOD m_lod;
+  private final NodeDetails m_nodeDetails;
+  private final EdgeDetails m_edgeDetails;
+  private final IntHash m_hash;
   private final Image m_img;
   private final GraphGraphics m_grafx;
 
   public TestGraphRenderingSimple()
   {
     super();
+    m_graph = DynamicGraphFactory.instantiateDynamicGraph();
+    m_rtree = new RTree();
+    m_lod = new GraphLOD();
+    m_nodeDetails = new NodeDetails() {
+        private final Color m_fillColor = new Color(255, 0, 0, 127);
+        public Color fillColor(int node) { return m_fillColor; } };
+    m_edgeDetails = new EdgeDetails() {
+        private final Color m_color = new Color(0, 0, 255, 127);
+        public float thickness(int edge) { return 1.0f; }
+        public Color color(int edge) { return m_color; } };
+    m_hash = new IntHash();
     addNotify();
     m_img = createImage(m_imgWidth, m_imgHeight);
     m_grafx = new GraphGraphics(m_img, true);
@@ -68,6 +86,9 @@ public class TestGraphRenderingSimple
 
   private void updateImage()
   {
+    GraphRenderer.renderGraph(m_graph, m_rtree, m_lod, m_nodeDetails,
+                              m_edgeDetails, m_hash, m_grafx, Color.white,
+                              0, 0, 1);
   }
 
   public void mouseClicked(MouseEvent e) {}
