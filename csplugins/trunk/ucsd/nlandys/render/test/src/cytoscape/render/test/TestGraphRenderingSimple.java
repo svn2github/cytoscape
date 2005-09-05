@@ -1,5 +1,14 @@
 package cytoscape.render.test;
 
+import cytoscape.geom.rtree.RTree;
+import cytoscape.graph.dynamic.DynamicGraph;
+import cytoscape.graph.dynamic.util.DynamicGraphFactory;
+import cytoscape.render.immed.GraphGraphics;
+import cytoscape.render.stateful.EdgeDetails;
+import cytoscape.render.stateful.GraphLOD;
+import cytoscape.render.stateful.GraphRenderer;
+import cytoscape.render.stateful.NodeDetails;
+import cytoscape.util.intr.IntHash;
 import java.awt.EventQueue;
 import java.awt.Frame;
 import java.awt.Graphics;
@@ -29,12 +38,14 @@ public class TestGraphRenderingSimple
   private final int m_imgWidth = 800;
   private final int m_imgHeight = 600;
   private final Image m_img;
+  private final GraphGraphics m_grafx;
 
   public TestGraphRenderingSimple()
   {
     super();
     addNotify();
     m_img = createImage(m_imgWidth, m_imgHeight);
+    m_grafx = new GraphGraphics(m_img, true);
     updateImage();
     addMouseListener(this);
     addMouseMotionListener(this);
