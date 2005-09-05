@@ -84,6 +84,11 @@ public class TestGraphRenderingSimple
     m_rtree.insert(node3, -230, 100, -214, 130);
     m_rtree.insert(node4, 180, 110, 198, 132);
     m_rtree.insert(node5, -140, -220, -125, -200);
+    m_graph.edgeCreate(node1, node2, true);
+    m_graph.edgeCreate(node2, node3, true);
+    m_graph.edgeCreate(node3, node4, true);
+    m_graph.edgeCreate(node4, node5, true);
+    m_graph.edgeCreate(node5, node1, true);
   }
 
   public void paint(Graphics g)
