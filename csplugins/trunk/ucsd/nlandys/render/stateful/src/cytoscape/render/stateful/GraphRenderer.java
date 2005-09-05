@@ -317,6 +317,24 @@ public final class GraphRenderer
                                  thickness, color, dashLength); } }
           nodeBuff.put(node); } }
     }
+
+    // Render nodes.
+    {
+      final SpacialEntry2DEnumerator nodeHits = nodePositions.queryOverlap
+        (xMin, yMin, xMax, yMax, null, 0, false);
+
+      if ((lodBits & LOD_HIGH_DETAIL) == 0) { // Low detail.
+        final int nodeHitCount = nodeHits.numRemaining();
+        for (int i = 0; i < nodeHitCount; i++) {
+          final int node = nodeHits.nextExtents(floatBuff1, 0);
+          grafx.drawNodeLow(floatBuff1[0], floatBuff1[1],
+                            floatBuff1[2], floatBuff1[3],
+                            nodeDetails.colorLowDetail(node)); } }
+
+      else { // High detail.
+      }
+    }
+
   }
 
 //   public final static boolean queryEdgeIntersect(
