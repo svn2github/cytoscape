@@ -8,6 +8,7 @@ import cytoscape.render.immed.GraphGraphics;
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntHash;
 import java.awt.Color;
+import java.awt.Font;
 
 /**
  * This class contains a chunk of procedural code that stiches together
@@ -318,7 +319,8 @@ public final class GraphRenderer
           nodeBuff.put(node); } }
     }
 
-    // Render nodes.
+    // Render nodes and labels.  A label is not necessarily on top of every
+    // node; it is only on top of the node it belongs to.
     {
       final SpacialEntry2DEnumerator nodeHits = nodePositions.queryOverlap
         (xMin, yMin, xMax, yMax, null, 0, false);
@@ -332,7 +334,60 @@ public final class GraphRenderer
                             nodeDetails.colorLowDetail(node)); } }
 
       else { // High detail.
-      }
+        while (nodeHits.numRemaining() > 0) {
+          final int node = nodeHits.nextExtents(floatBuff1, 0);
+
+          // Compute visual attributes that do not depend on LOD.
+          final byte shape = nodeDetails.shape(node);
+          final Color fillColor = nodeDetails.fillColor(node);
+
+          // Compute node border information.
+          final float borderWidth;
+          final Color borderColor;
+          if ((lodBits & LOD_NODE_BORDERS) == 0) { // Not rendering borders.
+            borderWidth = 0.0f;
+            borderColor = null; }
+          else { // Rendering node borders.
+            borderWidth = nodeDetails.borderWidth(node);
+            if (borderWidth == 0.0f) {
+              borderColor = null; }
+            else {
+              borderColor = nodeDetails.borderColor(node); } }
+
+          // Draw the node.
+          grafx.drawNodeFull(shape, floatBuff1[0], floatBuff1[1],
+                             floatBuff1[2], floatBuff1[3], fillColor,
+                             borderWidth, borderColor);
+
+          // Take care of label rendering.
+          if ((lodBits & LOD_NODE_LABELS) != 0) { // Potential label rendering.
+
+            // Compute node label, font, scale factor, and label color.
+            final String label;
+            final Font font;
+            final double fontScaleFactor;
+            final Color labelColor;
+            {
+              String labelTemp = nodeDetails.label(node);
+              if ("".equals(labelTemp)) { labelTemp = null; }
+              label = labelTemp;
+              if (label == null) {
+                font = null;
+                fontScaleFactor = 1.0d;
+                labelColor = null; }
+              else {
+                font = nodeDetails.font(node);
+                fontScaleFactor = nodeDetails.fontScaleFactor(node);
+                labelColor = nodeDetails.labelColor(node); }
+            }
+            // Now label is not null if and only if we need to render label.
+
+            if (label != null) {
+              grafx.drawTextFull
+                (font, scaleFactor, label,
+                 (float) ((((double) floatBuff1[0]) + floatBuff1[2]) / 2.0d),
+                 (float) ((((double) floatBuff1[1]) + floatBuff1[3]) / 2.0d),
+                 labelColor, (lodBits & LOD_TEXT_AS_SHAPE) != 0); } } } }
     }
 
   }
