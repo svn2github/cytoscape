@@ -94,7 +94,10 @@ public class EdgeDetails
    * By default this method returns null; returning null is the optimal
    * way to specify that this edge has no anchors.  Take note of certain
    * constraints, specified in GraphGraphics.drawEdgeFull(), pertaining to
-   * edge anchors.
+   * edge anchors.<p>
+   * The anchors returned are interpreted such that the anchor at index 0
+   * is the anchor next to the source node of this edge; the last anchor
+   * is the anchor next to the target node of this edge.
    */
   public EdgeAnchors anchors(final int edge) {
     return null; }
