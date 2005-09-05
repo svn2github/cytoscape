@@ -35,7 +35,7 @@ public class NodeDetails
    * node takes.
    * By default this method returns GraphGraphics.SHAPE_RECTANGLE.
    * Take note of certain constraints specified in
-   * GraphGraphics.drawNodeFull() that pertain to roounded rectangles.
+   * GraphGraphics.drawNodeFull() that pertain to rounded rectangles.
    */
   public byte shape(final int node) {
     return GraphGraphics.SHAPE_RECTANGLE; }
