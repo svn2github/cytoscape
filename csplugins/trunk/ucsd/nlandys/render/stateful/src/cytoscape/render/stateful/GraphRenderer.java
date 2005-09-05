@@ -251,10 +251,52 @@ public final class GraphRenderer
                 anchors.getAnchor(anchors.numAnchors() - 1, floatBuff3, 0);
                 trgXOut = floatBuff3[0];
                 trgYOut = floatBuff3[1]; }
-            }
-          }
-        }
-      }
+
+              final float srcOffset;
+              if (srcArrow == GraphGraphics.ARROW_DISC) {
+                srcOffset = (float) (0.5d * srcArrowSize); }
+              else if (srcArrow == GraphGraphics.ARROW_TEE) {
+                srcOffset = (float) (2.0d * srcArrowSize); }
+              else {
+                srcOffset = 0.0f; }
+
+              if (!grafx.computeEdgeIntersection
+                  (srcShape,
+                   srcExtents[0], srcExtents[1], srcExtents[2], srcExtents[3],
+                   srcOffset, srcXOut, srcYOut, floatBuff3)) {
+                continue; }
+              final float srcXAdj = floatBuff3[0];
+              final float srcYAdj = floatBuff3[1];
+
+              final float trgOffset;
+              if (trgArrow == GraphGraphics.ARROW_DISC) {
+                trgOffset = (float) (0.5d * trgArrowSize); }
+              else if (trgArrow == GraphGraphics.ARROW_TEE) {
+                trgOffset = (float) (2.0d * trgArrowSize); }
+              else {
+                trgOffset = 0.0f; }
+
+              if (!grafx.computeEdgeIntersection
+                  (trgShape,
+                   trgExtents[0], trgExtents[1], trgExtents[2], trgExtents[3],
+                   trgOffset, trgXOut, trgYOut, floatBuff3)) {
+                continue; }
+              final float trgXAdj = floatBuff3[0];
+              final float trgYAdj = floatBuff3[1];
+
+              if (anchors == null &&
+                  !((((double) srcX) - trgX) *
+                    (((double) srcXAdj) - trgXAdj) +
+                    (((double) srcY) - trgY) *
+                    (((double) srcYAdj) - trgYAdj) > 0.0d)) {
+                // The direction of the chopped segment has flipped.
+                continue; }
+
+              grafx.drawEdgeFull(srcArrow, srcArrowSize, srcArrowColor,
+                                 trgArrow, trgArrowSize, trgArrowColor,
+                                 srcXAdj, srcYAdj, anchors, trgXAdj, trgYAdj,
+                                 thickness, color, dashLength); } }
+          nodeBuff.put(node); } }
     }
   }
 
