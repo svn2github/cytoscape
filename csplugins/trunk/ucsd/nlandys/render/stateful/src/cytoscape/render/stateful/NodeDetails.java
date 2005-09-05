@@ -16,6 +16,20 @@ public class NodeDetails
 {
 
   /**
+   * Returns the color of node in low detail rendering mode.
+   * By default this method returns Color.red.  It is an error to return
+   * null in this method.<p>
+   * In low detail rendering mode, this is the only method from this class
+   * that is looked at.  The rest of the methods in this class define visual
+   * properties that are used in full detail rendering mode.  In low detail
+   * rendering mode translucent colrs are not supported whereas in full
+   * detail rendering mode they are; therefore, colorLowDetail(node) and
+   * fillColor(node) may return two different colors.
+   */
+  public Color colorLowDetail(final int node) {
+    return Color.red; }
+
+  /**
    * Returns a GraphGraphics.SHAPE_* constant (or a custom node shape that an
    * instance of GraphGraphics understands); this defines the shape that this
    * node takes.
