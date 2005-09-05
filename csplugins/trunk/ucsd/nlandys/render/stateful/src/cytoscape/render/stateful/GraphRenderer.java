@@ -89,16 +89,18 @@ public final class GraphRenderer
       final SpacialEntry2DEnumerator nodeHits = nodePositions.queryOverlap
         (xMin, yMin, xMax, yMax, null, 0, false);
       int runningEdgeCount = 0;
-      while (nodeHits.numRemaining() > 0) {
-        final int nextNodeHit = nodeHits.nextInt();
-        final IntEnumerator touchingEdges = graph.edgesAdjacent
-          (nextNodeHit, true, true, true);
-        while (touchingEdges.numRemaining() > 0) {
+      final int nodeHitCount = nodeHits.numRemaining();
+      for (int i = 0; i < nodeHitCount; i++) {
+        final int node = nodeHits.nextInt();
+        final IntEnumerator touchingEdges =
+          graph.edgesAdjacent(node, true, true, true);
+        final int touchingEdgeCount = touchingEdges.numRemaining();
+        for (int j = 0; j < touchingEdgeCount; j++) {
           final int edge = touchingEdges.nextInt();
           final int otherNode =
-            nextNodeHit ^ graph.edgeSource(edge) ^ graph.edgeTarget(edge);
+            node ^ graph.edgeSource(edge) ^ graph.edgeTarget(edge);
           if (nodeBuff.get(otherNode) < 0) { runningEdgeCount++; } }
-        nodeBuff.put(nextNodeHit); }
+        nodeBuff.put(node); }
       visibleNodeCount = nodeBuff.size();
       visibleEdgeCount = runningEdgeCount;
     }
