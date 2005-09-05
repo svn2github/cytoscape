@@ -52,6 +52,7 @@ public class TestGraphRenderingSimple
     super();
     m_graph = DynamicGraphFactory.instantiateDynamicGraph();
     m_rtree = new RTree();
+    assembleGraph();
     m_lod = new GraphLOD();
     m_nodeDetails = new NodeDetails() {
         private final Color m_fillColor = new Color(255, 0, 0, 127);
@@ -67,6 +68,22 @@ public class TestGraphRenderingSimple
     updateImage();
     addMouseListener(this);
     addMouseMotionListener(this);
+  }
+
+  // This is called once by the constructor.  This simply populates
+  // m_graph and m_rtree.
+  private void assembleGraph()
+  {
+    final int node1 = m_graph.nodeCreate();
+    final int node2 = m_graph.nodeCreate();
+    final int node3 = m_graph.nodeCreate();
+    final int node4 = m_graph.nodeCreate();
+    final int node5 = m_graph.nodeCreate();
+    m_rtree.insert(node1, -12, 250, 12, 270);
+    m_rtree.insert(node2, 100, -200, 120, -176);
+    m_rtree.insert(node3, -230, 100, -214, 130);
+    m_rtree.insert(node4, 180, 110, 198, 132);
+    m_rtree.insert(node5, -140, -220, -125, -200);
   }
 
   public void paint(Graphics g)
