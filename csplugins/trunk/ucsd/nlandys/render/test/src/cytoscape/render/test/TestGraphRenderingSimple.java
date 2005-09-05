@@ -47,6 +47,13 @@ public class TestGraphRenderingSimple
   private final Image m_img;
   private final GraphGraphics m_grafx;
 
+  private double m_currXCenter = 0.0d;
+  private double m_currYCenter = 0.0d;
+  private double m_currScale = 1.0d;
+  private int m_currMouseButton = 0; // 0: none; 2: middle; 3: right.
+  private int m_lastXMousePos = 0;
+  private int m_lastYMousePos = 0;
+
   public TestGraphRenderingSimple()
   {
     super();
@@ -89,6 +96,11 @@ public class TestGraphRenderingSimple
     m_graph.edgeCreate(node3, node4, true);
     m_graph.edgeCreate(node4, node5, true);
     m_graph.edgeCreate(node5, node1, true);
+    m_graph.edgeCreate(node1, node4, true);
+    m_graph.edgeCreate(node4, node2, true);
+    m_graph.edgeCreate(node2, node5, true);
+    m_graph.edgeCreate(node5, node3, true);
+    m_graph.edgeCreate(node3, node1, true);
   }
 
   public void paint(Graphics g)
@@ -110,7 +122,7 @@ public class TestGraphRenderingSimple
   {
     GraphRenderer.renderGraph(m_graph, m_rtree, m_lod, m_nodeDetails,
                               m_edgeDetails, m_hash, m_grafx, Color.white,
-                              0, 0, 1);
+                              m_currXCenter, m_currYCenter, m_currScale);
   }
 
   public void mouseClicked(MouseEvent e) {}
@@ -119,40 +131,40 @@ public class TestGraphRenderingSimple
 
   public void mousePressed(MouseEvent e)
   {
-//     if (e.getButton() == MouseEvent.BUTTON1) {
-//       m_currMouseButton = 1;
-//       m_lastXMousePos = e.getX();
-//       m_lastYMousePos = e.getY(); }
-//     else if (e.getButton() == MouseEvent.BUTTON2) {
-//       m_currMouseButton = 2;
-//       m_lastXMousePos = e.getX();
-//       m_lastYMousePos = e.getY(); }
+    if (e.getButton() == MouseEvent.BUTTON3) {
+      m_currMouseButton = 3;
+      m_lastXMousePos = e.getX();
+      m_lastYMousePos = e.getY(); }
+    else if (e.getButton() == MouseEvent.BUTTON2) {
+      m_currMouseButton = 2;
+      m_lastXMousePos = e.getX();
+      m_lastYMousePos = e.getY(); }
   }
 
   public void mouseReleased(MouseEvent e)
   {
-//     if (e.getButton() == MouseEvent.BUTTON1) {
-//       if (m_currMouseButton == 1) m_currMouseButton = 0; }
-//     else if (e.getButton() == MouseEvent.BUTTON2) {
-//       if (m_currMouseButton == 2) m_currMouseButton = 0; }
+    if (e.getButton() == MouseEvent.BUTTON3) {
+      if (m_currMouseButton == 3) m_currMouseButton = 0; }
+    else if (e.getButton() == MouseEvent.BUTTON2) {
+      if (m_currMouseButton == 2) m_currMouseButton = 0; }
   }
 
   public void mouseDragged(MouseEvent e)
   {
-//     if (m_currMouseButton == 1) {
-//       double deltaX = e.getX() - m_lastXMousePos;
-//       double deltaY = e.getY() - m_lastYMousePos;
-//       m_lastXMousePos = e.getX();
-//       m_lastYMousePos = e.getY();
-//       m_currXCenter -= deltaX / m_currScale;
-//       m_currYCenter += deltaY / m_currScale; // y orientations are opposite.
-//       repaint(); }
-//     else if (m_currMouseButton == 2) {
-//       double deltaY = e.getY() - m_lastYMousePos;
-//       m_lastXMousePos = e.getX();
-//       m_lastYMousePos = e.getY();
-//       m_currScale *= Math.pow(2, -deltaY / 300.0d);
-//       repaint(); }
+    if (m_currMouseButton == 3) {
+      double deltaX = e.getX() - m_lastXMousePos;
+      double deltaY = e.getY() - m_lastYMousePos;
+      m_lastXMousePos = e.getX();
+      m_lastYMousePos = e.getY();
+      m_currXCenter -= deltaX / m_currScale;
+      m_currYCenter += deltaY / m_currScale; // y orientations are opposite.
+      repaint(); }
+    else if (m_currMouseButton == 2) {
+      double deltaY = e.getY() - m_lastYMousePos;
+      m_lastXMousePos = e.getX();
+      m_lastYMousePos = e.getY();
+      m_currScale *= Math.pow(2, -deltaY / 300.0d);
+      repaint(); }
   }
 
   public void mouseMoved(MouseEvent e) {}
