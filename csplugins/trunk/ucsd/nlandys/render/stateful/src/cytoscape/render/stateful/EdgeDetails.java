@@ -36,27 +36,27 @@ public class EdgeDetails
    * Take note of certain constraints specified in
    * GraphGraphics.drawEdgeFull().
    */
-  public byte arrow0(final int edge) {
+  public byte sourceArrow(final int edge) {
     return GraphGraphics.ARROW_NONE; }
 
   /**
    * Returns the size of the arrow at edge endpoint touching source node.
    * By default this method returns zero.  This return value is ignored
-   * if arrow0(edge) returns GraphGraphics.ARROW_NONE.
+   * if sourceArrow(edge) returns GraphGraphics.ARROW_NONE.
    * Take note of certain constraints specified in
    * GraphGraphics.drawEdgeFull().
    */
-  public float arrow0Size(final int edge) {
+  public float sourceArrowSize(final int edge) {
     return 0.0f; }
 
   /**
    * Returns the color of the arrow at edge endpoint touching source node.
    * By default this method returns null.  This return value is ignored if
-   * arrow0(edge) returns GraphGraphics.ARROW_NONE or
+   * sourceArrow(edge) returns GraphGraphics.ARROW_NONE or
    * GraphGraphics.ARROW_BIDIRECTIONAL; otherwise, it is an error to return
    * null.
    */
-  public Color arrow0Color(final int edge) {
+  public Color sourceArrowColor(final int edge) {
     return null; }
 
   /**
@@ -66,27 +66,27 @@ public class EdgeDetails
    * Take note of certain constraints specified in
    * GraphGraphics.drawEdgeFull().
    */
-  public byte arrow1(final int edge) {
+  public byte targetArrow(final int edge) {
     return GraphGraphics.ARROW_NONE; }
 
   /**
    * Returns the size of the arrow at edge endpoint touching target node.
    * By default this method returns zero.  This return value is ignored
-   * if arrow1(edge) returns GraphGraphics.ARROW_NONE or
+   * if targetArrow(edge) returns GraphGraphics.ARROW_NONE or
    * GraphGraphics.ARROW_MONO.  Take note of certain constraints specified
    * in GraphGraphics.drawEdgeFull().
    */
-  public float arrow1Size(final int edge) {
+  public float targetArrowSize(final int edge) {
     return 0.0f; }
 
   /**
    * Returns the color of the arrow at edge endpoint touching target node.
    * By default this method returns null.  This return value is ignored if
-   * arrow1(edge) returns GraphGraphics.ARROW_NONE,
+   * targetArrow(edge) returns GraphGraphics.ARROW_NONE,
    * GraphGraphics.ARROW_BIDIRECTIONAL, or GraphGraphics.ARROW_MONO;
    * otherwise, it is an error to return null.
    */
-  public Color arrow1Color(final int edge) {
+  public Color targetArrowColor(final int edge) {
     return null; }
 
   /**
@@ -95,9 +95,9 @@ public class EdgeDetails
    * way to specify that this edge has no anchors.  Take note of certain
    * constraints, specified in GraphGraphics.drawEdgeFull(), pertaining to
    * edge anchors.<p>
-   * The anchors returned are interpreted such that the anchor at index 0
-   * is the anchor next to the source node of this edge; the last anchor
-   * is the anchor next to the target node of this edge.
+   * The anchors returned are interpreted such that the anchor at index zero
+   * (the "first" anchor) is the anchor next to the source node of this edge;
+   * the last anchor is the anchor next to the target node of this edge.
    */
   public EdgeAnchors anchors(final int edge) {
     return null; }

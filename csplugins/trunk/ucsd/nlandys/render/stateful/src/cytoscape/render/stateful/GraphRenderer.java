@@ -216,12 +216,28 @@ public final class GraphRenderer
                 trgArrowSize = srcArrowSize = 0.0f;
                 trgArrowColor = srcArrowColor = null; }
               else { // Rendering edge arrows.
-                srcArrow = edgeDetails.arrow0(edge);
-                trgArrow = edgeDetails.arrow1(edge);
-                srcArrowSize = edgeDetails.arrow0Size(edge);
-                trgArrowSize = edgeDetails.arrow1Size(edge);
-                srcArrowColor = edgeDetails.arrow0Color(edge);
-                trgArrowColor = edgeDetails.arrow1Color(edge); }
+                srcArrow = edgeDetails.sourceArrow(edge);
+                trgArrow = edgeDetails.targetArrow(edge);
+                if (srcArrow == GraphGraphics.ARROW_NONE) {
+                  srcArrowSize = 0.0f; }
+                else {
+                  srcArrowSize = edgeDetails.sourceArrowSize(edge); }
+                if (trgArrow == GraphGraphics.ARROW_NONE ||
+                    trgArrow == GraphGraphics.ARROW_MONO) {
+                  trgArrowSize = 0.0f; }
+                else {
+                  trgArrowSize = edgeDetails.targetArrowSize(edge); }
+                if (srcArrow == GraphGraphics.ARROW_NONE ||
+                    srcArrow == GraphGraphics.ARROW_BIDIRECTIONAL) {
+                  srcArrowColor = null; }
+                else {
+                  srcArrowColor = edgeDetails.sourceArrowColor(edge); }
+                if (trgArrow == GraphGraphics.ARROW_NONE ||
+                    trgArrow == GraphGraphics.ARROW_BIDIRECTIONAL ||
+                    trgArrow == GraphGraphics.ARROW_MONO) {
+                  trgArrowColor = null; }
+                else {
+                  trgArrowColor = edgeDetails.targetArrowColor(edge); } }
 
               // Compute dash length.
               final float dashLength;
