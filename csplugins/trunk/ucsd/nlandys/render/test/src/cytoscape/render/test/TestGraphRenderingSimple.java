@@ -35,6 +35,7 @@ public class TestGraphRenderingSimple
     super();
     addNotify();
     m_img = createImage(m_imgWidth, m_imgHeight);
+    updateImage();
     addMouseListener(this);
     addMouseMotionListener(this);
   }
@@ -45,6 +46,17 @@ public class TestGraphRenderingSimple
     g.drawImage(m_img, insets.left, insets.top, null);
     resize(m_imgWidth + insets.left + insets.right,
            m_imgHeight + insets.top + insets.bottom);
+  }
+
+  public void update(Graphics g)
+  {
+    final Insets insets = insets();
+    updateImage();
+    g.drawImage(m_img, insets.left, insets.top, null);
+  }
+
+  private void updateImage()
+  {
   }
 
   public void mouseClicked(MouseEvent e) {}
