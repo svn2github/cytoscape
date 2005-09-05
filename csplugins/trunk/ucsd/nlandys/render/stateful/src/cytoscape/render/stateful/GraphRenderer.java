@@ -163,6 +163,7 @@ public final class GraphRenderer
                                 (floatBuff2[1] + floatBuff2[3]) / 2,
                                 edgeDetails.colorLowDetail(edge)); } }
           nodeBuff.put(node); } }
+
       else { // High detail.
         while (nodeHits.numRemaining() > 0) {
           final int node = nodeHits.nextExtents(floatBuff1, 0);
@@ -187,33 +188,40 @@ public final class GraphRenderer
               final float otherNodeY = (float)
                 ((((double) floatBuff2[1]) + floatBuff2[3]) / 2.0d);
 
+              // Compute node shapes, center positions, and extents.
+              final byte srcShape, trgShape;
+              final float srcX, srcY, trgX, trgY;
+              final float[] srcExtents, trgExtents;
+              if (node == graph.edgeSource(edge)) {
+                srcShape = nodeShape; trgShape = otherNodeShape;
+                srcX = nodeX; srcY = nodeY;
+                trgX = otherNodeX; trgY = otherNodeY;
+                srcExtents = floatBuff1; trgExtents = floatBuff2; }
+              else { // node == graph.edgeTarget(edge).
+                srcShape = otherNodeShape; trgShape = nodeShape;
+                srcX = otherNodeX; srcY = otherNodeY;
+                trgX = nodeX; trgY = nodeY;
+                srcExtents = floatBuff2; trgExtents = floatBuff1; }
+
               // Compute visual attributes that do not depend on LOD.
               final float thickness = edgeDetails.thickness(edge);
               final Color color = edgeDetails.color(edge);
 
               // Compute arrows.
-              final byte arrow, otherArrow;
-              final float arrowSize, otherArrowSize;
-              final Color arrowColor, otherArrowColor;
+              final byte srcArrow, trgArrow;
+              final float srcArrowSize, trgArrowSize;
+              final Color srcArrowColor, trgArrowColor;
               if ((lodBits & LOD_EDGE_ARROWS) == 0) { // Not rendering arrows.
-                otherArrow = arrow = GraphGraphics.ARROW_NONE;
-                otherArrowSize = arrowSize = 0.0f;
-                otherArrowColor = arrowColor = null; }
-              else { // Render edge arrows.
-                if (node == graph.edgeSource(edge)) {
-                  arrow = edgeDetails.arrow0(edge);
-                  arrowSize = edgeDetails.arrow0Size(edge);
-                  arrowColor = edgeDetails.arrow0Color(edge);
-                  otherArrow = edgeDetails.arrow1(edge);
-                  otherArrowSize = edgeDetails.arrow1Size(edge);
-                  otherArrowColor = edgeDetails.arrow1Color(edge); }
-                else { // otherNode == graph.edgeSource(edge).
-                  arrow = edgeDetails.arrow1(edge);
-                  arrowSize = edgeDetails.arrow1Size(edge);
-                  arrowColor = edgeDetails.arrow1Color(edge);
-                  otherArrow = edgeDetails.arrow0(edge);
-                  otherArrowSize = edgeDetails.arrow0Size(edge);
-                  otherArrowColor = edgeDetails.arrow0Color(edge); } }
+                trgArrow = srcArrow = GraphGraphics.ARROW_NONE;
+                trgArrowSize = srcArrowSize = 0.0f;
+                trgArrowColor = srcArrowColor = null; }
+              else { // Rendering edge arrows.
+                srcArrow = edgeDetails.arrow0(edge);
+                trgArrow = edgeDetails.arrow1(edge);
+                srcArrowSize = edgeDetails.arrow0Size(edge);
+                trgArrowSize = edgeDetails.arrow1Size(edge);
+                srcArrowColor = edgeDetails.arrow0Color(edge);
+                trgArrowColor = edgeDetails.arrow1Color(edge); }
 
               // Compute dash length.
               final float dashLength;
@@ -232,19 +240,17 @@ public final class GraphRenderer
                 anchors = anchorsTemp; }
               // Now anchors is null if and only if no anchors to be rendered.
 
-              final float nodeXOut, nodeYOut, otherNodeXOut, otherNodeYOut;
+              final float srcXOut, srcYOut, trgXOut, trgYOut;
               if (anchors == null) {
-                nodeXOut = otherNodeX;
-                nodeYOut = otherNodeY;
-                otherNodeXOut = nodeX;
-                otherNodeYOut = nodeY; }
+                srcXOut = trgX; srcYOut = trgY;
+                trgXOut = srcX; trgYOut = srcY; }
               else {
                 anchors.getAnchor(0, floatBuff3, 0);
-                nodeXOut = floatBuff3[0];
-                nodeYOut = floatBuff3[1];
+                srcXOut = floatBuff3[0];
+                srcYOut = floatBuff3[1];
                 anchors.getAnchor(anchors.numAnchors() - 1, floatBuff3, 0);
-                otherNodeXOut = floatBuff3[0];
-                otherNodeYOut = floatBuff3[1]; }
+                trgXOut = floatBuff3[0];
+                trgYOut = floatBuff3[1]; }
             }
           }
         }
