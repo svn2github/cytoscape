@@ -145,7 +145,8 @@ public final class GraphRenderer
       nodeBuff.empty();
       final SpacialEntry2DEnumerator nodeHits = nodePositions.queryOverlap
         (xMin, yMin, xMax, yMax, null, 0, false);
-      if ((lodBits & LOD_HIGH_DETAIL) == 0) {
+
+      if ((lodBits & LOD_HIGH_DETAIL) == 0) { // Low detail.
         final int nodeHitCount = nodeHits.numRemaining();
         for (int i = 0; i < nodeHitCount; i++) {
           final int node = nodeHits.nextExtents(floatBuff1, 0);
