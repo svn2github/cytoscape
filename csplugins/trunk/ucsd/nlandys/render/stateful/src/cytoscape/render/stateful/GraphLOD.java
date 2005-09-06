@@ -57,7 +57,7 @@ public class GraphLOD
    * @param renderNodeCount the number of nodes that are about to be rendered.
    * @param renderEdgeCount the number of edges that are about to be rendered.
    * @return true for full detail, false for low detail.
-   * @see #renderAllEdges(int, int)
+   * @see #renderAllEdges(int, int, int)
    */
   public boolean detail(final int renderNodeCount, final int renderEdgeCount)
   {
@@ -77,7 +77,7 @@ public class GraphLOD
    * @param renderEdgeCount the number of edges that are about to be rendered.
    * @return true if and only if node borders are to be rendered.
    * @see #detail(int, int)
-   * @see #renderAllEdges(int, int)
+   * @see #renderAllEdges(int, int, int)
    */
   public boolean nodeBorders(final int renderNodeCount,
                              final int renderEdgeCount)
@@ -98,7 +98,7 @@ public class GraphLOD
    * @param renderEdgeCount the number of edges that are about to be rendered.
    * @return true if and only if node labels are to be rendered.
    * @see #detail(int, int)
-   * @see #renderAllEdges(int, int)
+   * @see #renderAllEdges(int, int, int)
    */
   public boolean nodeLabels(final int renderNodeCount,
                             final int renderEdgeCount)
@@ -120,7 +120,7 @@ public class GraphLOD
    * @return true if and only if rendered node label text should be drawn as
    *   primitive shapes.
    * @see #nodeLabels(int, int)
-   * @see #renderAllEdges(int, int)
+   * @see #renderAllEdges(int, int, int)
    */
   public boolean textAsShape(final int renderNodeCount,
                              final int renderEdgeCount)
@@ -141,7 +141,7 @@ public class GraphLOD
    * @param renderEdgeCount the number of edges that are about to be rendered.
    * @return true if and only if edge arrows are to be rendered.
    * @see #detail(int, int)
-   * @see #renderAllEdges(int, int)
+   * @see #renderAllEdges(int, int, int)
    */
   public boolean edgeArrows(final int renderNodeCount,
                             final int renderEdgeCount)
@@ -165,7 +165,7 @@ public class GraphLOD
    * @param renderEdgeCount the number of edges that are about to be rendered.
    * @return true if and only if dashed edges are to be honored.
    * @see #detail(int, int)
-   * @see #renderAllEdges(int, int)
+   * @see #renderAllEdges(int, int, int)
    */
   public boolean dashedEdges(final int renderNodeCount,
                              final int renderEdgeCount)
@@ -187,7 +187,7 @@ public class GraphLOD
    * @param renderEdgeCount the number of edges that are about to be rendered.
    * @return true if and only if edge anchors are to be honored.
    * @see #detail(int, int)
-   * @see #renderAllEdges(int, int)
+   * @see #renderAllEdges(int, int, int)
    */
   public boolean edgeAnchors(final int renderNodeCount,
                              final int renderEdgeCount)
