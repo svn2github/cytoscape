@@ -384,7 +384,7 @@ public final class GraphRenderer
 
             if (label != null) {
               grafx.drawTextFull
-                (font, scaleFactor, label,
+                (font, fontScaleFactor, label,
                  (float) ((((double) floatBuff1[0]) + floatBuff1[2]) / 2.0d),
                  (float) ((((double) floatBuff1[1]) + floatBuff1[3]) / 2.0d),
                  labelColor, (lodBits & LOD_TEXT_AS_SHAPE) != 0); } } } }
