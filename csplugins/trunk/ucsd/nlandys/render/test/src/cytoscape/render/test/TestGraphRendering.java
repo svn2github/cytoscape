@@ -120,19 +120,20 @@ public class TestGraphRendering
         private final float thickness = (float) (minDim / 24);
         private final Color colorLowDetail = new Color(0, 0, 255, 255);
         private final Color color = new Color(0, 0, 255, 127);
+        private final Color arrowColor = new Color(0, 0, 0, 127);
         public Color colorLowDetail(int edge) { return colorLowDetail; }
         public byte sourceArrow(int edge) {
           return arrows[edge % arrows.length]; }
         public float sourceArrowSize(int edge) {
-          return thickness * 3; }
+          return thickness * 5; }
         public Color sourceArrowColor(int edge) {
-          return colors[edge % colors.length]; }
+          return arrowColor; }
         public byte targetArrow(int edge) {
           return arrows[edge % arrows.length]; }
         public float targetArrowSize(int edge) {
-          return thickness * 3; }
+          return thickness * 5; }
         public Color targetArrowColor(int edge) {
-          return colors[(edge * 7) % colors.length]; }
+          return arrowColor; }
         public float thickness(int edge) { return thickness; }
         public Color color(int edge) { return color; } };
     EventQueue.invokeAndWait(new Runnable() {
