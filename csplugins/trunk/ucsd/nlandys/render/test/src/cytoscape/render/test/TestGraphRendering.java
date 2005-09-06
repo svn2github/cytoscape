@@ -6,12 +6,15 @@ import cytoscape.geom.spacial.SpacialIndex2D;
 import cytoscape.graph.dynamic.DynamicGraph;
 import cytoscape.graph.dynamic.util.DynamicGraphFactory;
 import cytoscape.graph.fixed.FixedGraph;
+import cytoscape.render.immed.EdgeAnchors;
 import cytoscape.render.immed.GraphGraphics;
 import cytoscape.render.stateful.EdgeDetails;
 import cytoscape.render.stateful.GraphLOD;
 import cytoscape.render.stateful.GraphRenderer;
 import cytoscape.render.stateful.NodeDetails;
 import cytoscape.util.intr.IntHash;
+import cytoscape.util.intr.IntIterator;
+import cytoscape.util.intr.IntObjHash;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -56,6 +59,7 @@ public class TestGraphRendering
       final float yMax = (float) (centerY + (height / 2));
       rtree.insert(graph.nodeCreate(), xMin, yMin, xMax, yMax); }
     final float[] floatBuff = new float[4];
+    final IntObjHash anchorsHash = new IntObjHash();
     for (int i = 0; i < N * 2; i++) {
       final int node = (r.nextInt() & 0x7fffffff) % N;
       rtree.exists(node, floatBuff, 0);
@@ -75,7 +79,33 @@ public class TestGraphRendering
         for (int k = 0; k < chosenEntry; k++) {
           spacialNeighbors.nextInt(); }
         final int chosenObj = spacialNeighbors.nextInt();
-        graph.edgeCreate(node, chosenObj, true); } }
+        int numExistingSuchEdges = 0;
+        final IntIterator iter =
+          graph.edgesConnecting(node, chosenObj, true, true, true);
+        while (iter.hasNext()) {
+          iter.nextInt();
+          numExistingSuchEdges++; }
+        final int edge = graph.edgeCreate(node, chosenObj, true);
+        if (numExistingSuchEdges > 0) {
+          rtree.exists(chosenObj, floatBuff, 0);
+          final double chosenXCenter =
+            (((double) floatBuff[0]) + floatBuff[2]) / 2;
+          final double chosenYCenter =
+            (((double) floatBuff[1]) + floatBuff[3]) / 2;
+          final double dx = chosenXCenter - xCenter;
+          final double dy = chosenYCenter - yCenter;
+          final double midX = (chosenXCenter + xCenter) / 2;
+          final double midY = (chosenYCenter + yCenter) / 2;
+          final double factor = (numExistingSuchEdges + 1) / 2 *
+            (numExistingSuchEdges % 2 == 0 ? 1 : -1) * 0.2d;
+          final double anchorX = midX + factor * dy;
+          final double anchorY = midY - factor * dx;
+          anchorsHash.put(edge,
+                   new EdgeAnchors() {
+                     public int numAnchors() { return 1; }
+                     public void getAnchor(int inx, float[] arr, int off) {
+                       arr[off] = (float) anchorX; 
+                       arr[off + 1] = (float) anchorY; } }); } } }
 
     final byte[] shapes = new byte[9];
     shapes[0] = GraphGraphics.SHAPE_RECTANGLE;
@@ -134,6 +164,8 @@ public class TestGraphRendering
           return thickness * 5; }
         public Color targetArrowColor(int edge) {
           return arrowColor; }
+        public EdgeAnchors anchors(int edge) {
+          return (EdgeAnchors) anchorsHash.get(edge); }
         public float thickness(int edge) { return thickness; }
         public Color color(int edge) { return color; } };
     EventQueue.invokeAndWait(new Runnable() {
