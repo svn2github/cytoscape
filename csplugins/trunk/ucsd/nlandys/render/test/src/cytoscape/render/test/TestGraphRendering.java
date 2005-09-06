@@ -149,6 +149,7 @@ public class TestGraphRendering
     if (args.length > 1) {
       lod = new GraphLOD() {
           public boolean renderAllEdges(int renderNodeCount,
+                                        int totalNodeCount,
                                         int totalEdgeCount) {
             return true; }
           public boolean detail(int renderNodeCount,
