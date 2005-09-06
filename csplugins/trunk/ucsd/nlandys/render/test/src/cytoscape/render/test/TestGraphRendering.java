@@ -130,7 +130,10 @@ public class TestGraphRendering
       final int color = (0x00ffffff & r.nextInt()) | 0x7f000000;
       colors[i] = new Color(color, true);
       colorsLow[i] = new Color(color, false); }
-    final GraphLOD lod = new GraphLOD();
+    final GraphLOD lod = new GraphLOD() {
+        public boolean textAsShape(int visibleNodeCount,
+                                   int visibleEdgeCount) {
+          return visibleNodeCount < 30; } };
     final NodeDetails nodeDetails = new NodeDetails() {
         private final float borderWidth = (float) (minDim / 12);
         private final Color borderColor = new Color(63, 63, 63, 127);
