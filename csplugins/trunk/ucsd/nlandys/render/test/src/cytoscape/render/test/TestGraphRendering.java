@@ -256,7 +256,7 @@ public class TestGraphRendering
     m_hash = new IntHash();
     addNotify();
     m_img = createImage(m_imgWidth, m_imgHeight);
-    m_grafx = new GraphGraphics(m_img, true);
+    m_grafx = new GraphGraphics(m_img, false);
     updateImage();
     addMouseListener(this);
     addMouseMotionListener(this);
