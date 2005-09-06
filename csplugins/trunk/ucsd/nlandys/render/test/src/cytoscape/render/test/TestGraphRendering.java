@@ -1,6 +1,7 @@
 package cytoscape.render.test;
 
 import cytoscape.geom.rtree.RTree;
+import cytoscape.geom.spacial.SpacialEntry2DEnumerator;
 import cytoscape.geom.spacial.SpacialIndex2D;
 import cytoscape.graph.dynamic.DynamicGraph;
 import cytoscape.graph.dynamic.util.DynamicGraphFactory;
@@ -54,9 +55,27 @@ public class TestGraphRendering
       final float xMax = (float) (centerX + (width / 2));
       final float yMax = (float) (centerY + (height / 2));
       rtree.insert(graph.nodeCreate(), xMin, yMin, xMax, yMax); }
+    final float[] floatBuff = new float[4];
     for (int i = 0; i < N * 2; i++) {
-      graph.edgeCreate((r.nextInt() & 0x7fffffff) % N,
-                       (r.nextInt() & 0x7fffffff) % N, true); }
+      final int node = (r.nextInt() & 0x7fffffff) % N;
+      rtree.exists(node, floatBuff, 0);
+      final double xCenter = (((double) floatBuff[0]) + floatBuff[2]) / 2;
+      final double yCenter = (((double) floatBuff[1]) + floatBuff[3]) / 2;
+      final double radius = maxDim * 4;
+      final SpacialEntry2DEnumerator spacialNeighbors =
+        rtree.queryOverlap((float) (xCenter - radius),
+                           (float) (yCenter - radius),
+                           (float) (xCenter + radius),
+                           (float) (yCenter + radius),
+                           null, 0, false);
+      final int numNeighbors = spacialNeighbors.numRemaining();
+      if (numNeighbors > 0) {
+        final int chosenEntry =
+          (r.nextInt() & 0x7fffffff) % spacialNeighbors.numRemaining();
+        for (int k = 0; k < chosenEntry; k++) {
+          spacialNeighbors.nextInt(); }
+        final int chosenObj = spacialNeighbors.nextInt();
+        graph.edgeCreate(node, chosenObj, true); } }
 
     final byte[] shapes = new byte[9];
     shapes[0] = GraphGraphics.SHAPE_RECTANGLE;
@@ -68,12 +87,12 @@ public class TestGraphRendering
     shapes[6] = GraphGraphics.SHAPE_ROUNDED_RECTANGLE;
     shapes[7] = GraphGraphics.SHAPE_TRIANGLE;
     shapes[8] = GraphGraphics.SHAPE_VEE;
-    final Color[] nodeColors = new Color[256];
-    final Color[] nodeColorsLow = new Color[256];
-    for (int i = 0; i < nodeColors.length; i++) {
+    final Color[] colors = new Color[256];
+    final Color[] colorsLow = new Color[256];
+    for (int i = 0; i < colors.length; i++) {
       final int color = (0x00ffffff & r.nextInt()) | 0x7f000000;
-      nodeColors[i] = new Color(color, true);
-      nodeColorsLow[i] = new Color(color, false); }
+      colors[i] = new Color(color, true);
+      colorsLow[i] = new Color(color, false); }
     final GraphLOD lod = new GraphLOD();
     final NodeDetails nodeDetails = new NodeDetails() {
         private final float borderWidth = (float) (minDim / 12);
@@ -82,26 +101,41 @@ public class TestGraphRendering
         private final double fontScaleFactor = minDim / 2;
         private final Color labelColor = new Color(0, 0, 0, 255);
         public Color colorLowDetail(int node) {
-          return nodeColorsLow[node % nodeColorsLow.length]; }
-        public byte shape(int node) {
-          return shapes[node % shapes.length]; }
+          return colorsLow[node % colorsLow.length]; }
+        public byte shape(int node) { return shapes[node % shapes.length]; }
         public Color fillColor(int node) {
-          return nodeColors[node % nodeColors.length]; }
-        public float borderWidth(int node) {
-          return borderWidth; }
-        public Color borderColor(int node) {
-          return borderColor; }
-        public String label(int node) {
-          return "" + node; }
-        public Font font(int node) {
-          return font; }
-        public double fontScaleFactor(int node) {
-          return fontScaleFactor; }
-        public Color labelColor(int node) {
-          return labelColor; } };
+          return colors[node % colors.length]; }
+        public float borderWidth(int node) { return borderWidth; }
+        public Color borderColor(int node) { return borderColor; }
+        public String label(int node) { return "" + node; }
+        public Font font(int node) { return font; }
+        public double fontScaleFactor(int node) { return fontScaleFactor; }
+        public Color labelColor(int node) { return labelColor; } };
+    final byte[] arrows = new byte[5];
+    arrows[0] = GraphGraphics.ARROW_NONE;
+    arrows[1] = GraphGraphics.ARROW_DELTA;
+    arrows[2] = GraphGraphics.ARROW_DIAMOND;
+    arrows[3] = GraphGraphics.ARROW_DISC;
+    arrows[4] = GraphGraphics.ARROW_TEE;
     final EdgeDetails edgeDetails = new EdgeDetails() {
         private final float thickness = (float) (minDim / 24);
-        public float thickness(int edge) { return thickness; } };
+        private final Color colorLowDetail = new Color(0, 0, 255, 255);
+        private final Color color = new Color(0, 0, 255, 127);
+        public Color colorLowDetail(int edge) { return colorLowDetail; }
+        public byte sourceArrow(int edge) {
+          return arrows[(edge * 2) % arrows.length]; }
+        public float sourceArrowSize(int edge) {
+          return ((edge % 5) + 1) * thickness; }
+        public Color sourceArrowColor(int edge) {
+          return colors[edge % colors.length]; }
+        public byte targetArrow(int edge) {
+          return arrows[edge % arrows.length]; }
+        public float targetArrowSize(int edge) {
+          return (((edge * 2) % 5) + 1) * thickness; }
+        public Color targetArrowColor(int edge) {
+          return colors[(edge * 2) % colors.length]; }
+        public float thickness(int edge) { return thickness; }
+        public Color color(int edge) { return color; } };
     EventQueue.invokeAndWait(new Runnable() {
         public void run() {
           Frame f = new TestGraphRendering(graph, rtree, lod,
