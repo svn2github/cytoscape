@@ -276,7 +276,7 @@ public final class GraphRenderer
               if (srcArrow == GraphGraphics.ARROW_DISC) {
                 srcOffset = (float) (0.5d * srcArrowSize); }
               else if (srcArrow == GraphGraphics.ARROW_TEE) {
-                srcOffset = (float) (2.0d * srcArrowSize); }
+                srcOffset = (float) (srcArrowSize); }
               else {
                 srcOffset = 0.0f; }
 
@@ -292,7 +292,7 @@ public final class GraphRenderer
               if (trgArrow == GraphGraphics.ARROW_DISC) {
                 trgOffset = (float) (0.5d * trgArrowSize); }
               else if (trgArrow == GraphGraphics.ARROW_TEE) {
-                trgOffset = (float) (2.0d * trgArrowSize); }
+                trgOffset = (float) (trgArrowSize); }
               else {
                 trgOffset = 0.0f; }
 
