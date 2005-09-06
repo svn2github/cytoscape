@@ -18,10 +18,13 @@ public class GraphLOD
    * rendering all edges leads to a dramatic performance decrease when
    * rendering large graphs.
    * @param renderNodeCount the number of nodes that are about to be rendered.
+   * @param totalNodeCount the total number of nodes in the graph that is
+   *   being rendered.
    * @param totalEdgeCount the total number of edges in the graph that is
    *   being rendered.
    */
   public boolean renderAllEdges(final int renderNodeCount,
+                                final int totalNodeCount,
                                 final int totalEdgeCount)
   {
     return false;

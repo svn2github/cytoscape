@@ -91,8 +91,10 @@ public final class GraphRenderer
       final SpacialEntry2DEnumerator nodeHitsTemp = nodePositions.queryOverlap
         (xMin, yMin, xMax, yMax, null, 0, false);
       renderNodeCount = nodeHitsTemp.numRemaining();
+      final int totalNodeCount = graph.nodes().numRemaining();
       final int totalEdgeCount = graph.edges().numRemaining();
-      renderAllEdges = lod.renderAllEdges(renderNodeCount, totalEdgeCount);
+      renderAllEdges = lod.renderAllEdges
+        (renderNodeCount, totalNodeCount, totalEdgeCount);
       if (renderAllEdges) {
         renderEdgeCount = totalEdgeCount;
         nodeHits = nodeHitsTemp; }
