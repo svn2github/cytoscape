@@ -87,17 +87,24 @@ public class TestGraphRendering
           numExistingSuchEdges++; }
         final int edge = graph.edgeCreate(node, chosenObj, true);
         if (numExistingSuchEdges > 0) {
-          rtree.exists(chosenObj, floatBuff, 0);
-          final double chosenXCenter =
+          final int node0 = Math.min(node, chosenObj);
+          final int node1 = Math.max(node, chosenObj);
+          rtree.exists(node0, floatBuff, 0);
+          final double node0XCenter =
             (((double) floatBuff[0]) + floatBuff[2]) / 2;
-          final double chosenYCenter =
+          final double node0YCenter =
             (((double) floatBuff[1]) + floatBuff[3]) / 2;
-          final double dx = chosenXCenter - xCenter;
-          final double dy = chosenYCenter - yCenter;
-          final double midX = (chosenXCenter + xCenter) / 2;
-          final double midY = (chosenYCenter + yCenter) / 2;
+          rtree.exists(node1, floatBuff, 0);
+          final double node1XCenter =
+            (((double) floatBuff[0]) + floatBuff[2]) / 2;
+          final double node1YCenter =
+            (((double) floatBuff[1]) + floatBuff[3]) / 2;
+          final double dx = node1XCenter - node0XCenter;
+          final double dy = node1YCenter - node0YCenter;
+          final double midX = (node0XCenter + node1XCenter) / 2;
+          final double midY = (node0YCenter + node1YCenter) / 2;
           final double factor = (numExistingSuchEdges + 1) / 2 *
-            (numExistingSuchEdges % 2 == 0 ? 1 : -1) * 0.2d;
+            (numExistingSuchEdges % 2 == 0 ? 1 : -1) * 0.1d;
           final double anchorX = midX + factor * dy;
           final double anchorY = midY - factor * dx;
           anchorsHash.put(edge,
