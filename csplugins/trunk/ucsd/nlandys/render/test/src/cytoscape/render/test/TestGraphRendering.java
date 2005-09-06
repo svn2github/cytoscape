@@ -13,6 +13,7 @@ import cytoscape.render.stateful.NodeDetails;
 import cytoscape.util.intr.IntHash;
 import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -34,7 +35,7 @@ public class TestGraphRendering
     final RTree rtree = new RTree();
     final int N = Integer.parseInt(args[0]);
     final double maxDim = 10;
-    final double minDim = 6;
+    final double minDim = 5.01;
     final double areaDim = Math.sqrt((double) N) * maxDim * 2;
     final Random r = new Random();
     for (int i = 0; i < N; i++) {
@@ -54,8 +55,48 @@ public class TestGraphRendering
       final float yMax = (float) (centerY + (height / 2));
       rtree.insert(graph.nodeCreate(), xMin, yMin, xMax, yMax); }
 
+    final byte[] shapes = new byte[9];
+    shapes[0] = GraphGraphics.SHAPE_RECTANGLE;
+    shapes[1] = GraphGraphics.SHAPE_DIAMOND;
+    shapes[2] = GraphGraphics.SHAPE_ELLIPSE;
+    shapes[3] = GraphGraphics.SHAPE_HEXAGON;
+    shapes[4] = GraphGraphics.SHAPE_OCTAGON;
+    shapes[5] = GraphGraphics.SHAPE_PARALLELOGRAM;
+    shapes[6] = GraphGraphics.SHAPE_ROUNDED_RECTANGLE;
+    shapes[7] = GraphGraphics.SHAPE_TRIANGLE;
+    shapes[8] = GraphGraphics.SHAPE_VEE;
+    final Color[] nodeColors = new Color[256];
+    final Color[] nodeColorsLow = new Color[256];
+    for (int i = 0; i < nodeColors.length; i++) {
+      final int color = (0x00ffffff & r.nextInt()) | 0x7f000000;
+      nodeColors[i] = new Color(color, true);
+      nodeColorsLow[i] = new Color(color, false); }
     final GraphLOD lod = new GraphLOD();
-    final NodeDetails nodeDetails = new NodeDetails();
+    final NodeDetails nodeDetails = new NodeDetails() {
+        private final float borderWidth = (float) (minDim / 12);
+        private final Color borderColor = new Color(63, 63, 63, 127);
+        private final Font font = new Font(null, Font.PLAIN, 1);
+        private final double fontScaleFactor = minDim / 2;
+        private final Color labelColor = new Color(0, 0, 0, 255);
+        public Color colorLowDetail(int node) {
+          return nodeColorsLow[node % nodeColorsLow.length]; }
+        public byte shape(int node) {
+          return shapes[node % shapes.length]; }
+        public Color fillColor(int node) {
+          return nodeColors[node % nodeColors.length]; }
+        public float borderWidth(int node) {
+          return borderWidth; }
+        public Color borderColor(int node) {
+          return borderColor; }
+        public String label(int node) {
+          return "" + node; }
+        public Font font(int node) {
+          return font; }
+        public double fontScaleFactor(int node) {
+          return fontScaleFactor; }
+        public Color labelColor(int node) {
+          return labelColor; } };
+        
     final EdgeDetails edgeDetails = new EdgeDetails();
     EventQueue.invokeAndWait(new Runnable() {
         public void run() {
