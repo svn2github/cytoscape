@@ -54,6 +54,9 @@ public class TestGraphRendering
       final float xMax = (float) (centerX + (width / 2));
       final float yMax = (float) (centerY + (height / 2));
       rtree.insert(graph.nodeCreate(), xMin, yMin, xMax, yMax); }
+    for (int i = 0; i < N * 2; i++) {
+      graph.edgeCreate((r.nextInt() & 0x7fffffff) % N,
+                       (r.nextInt() & 0x7fffffff) % N, true); }
 
     final byte[] shapes = new byte[9];
     shapes[0] = GraphGraphics.SHAPE_RECTANGLE;
@@ -96,8 +99,9 @@ public class TestGraphRendering
           return fontScaleFactor; }
         public Color labelColor(int node) {
           return labelColor; } };
-        
-    final EdgeDetails edgeDetails = new EdgeDetails();
+    final EdgeDetails edgeDetails = new EdgeDetails() {
+        private final float thickness = (float) (minDim / 24);
+        public float thickness(int edge) { return thickness; } };
     EventQueue.invokeAndWait(new Runnable() {
         public void run() {
           Frame f = new TestGraphRendering(graph, rtree, lod,
