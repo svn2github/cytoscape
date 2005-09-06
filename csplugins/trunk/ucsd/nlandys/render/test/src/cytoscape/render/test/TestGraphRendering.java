@@ -111,29 +111,28 @@ public class TestGraphRendering
         public Font font(int node) { return font; }
         public double fontScaleFactor(int node) { return fontScaleFactor; }
         public Color labelColor(int node) { return labelColor; } };
-    final byte[] arrows = new byte[5];
-    arrows[0] = GraphGraphics.ARROW_NONE;
-    arrows[1] = GraphGraphics.ARROW_DELTA;
-    arrows[2] = GraphGraphics.ARROW_DIAMOND;
-    arrows[3] = GraphGraphics.ARROW_DISC;
-    arrows[4] = GraphGraphics.ARROW_TEE;
+    final byte[] arrows = new byte[4];
+    arrows[0] = GraphGraphics.ARROW_DELTA;
+    arrows[1] = GraphGraphics.ARROW_DIAMOND;
+    arrows[2] = GraphGraphics.ARROW_DISC;
+    arrows[3] = GraphGraphics.ARROW_TEE;
     final EdgeDetails edgeDetails = new EdgeDetails() {
         private final float thickness = (float) (minDim / 24);
         private final Color colorLowDetail = new Color(0, 0, 255, 255);
         private final Color color = new Color(0, 0, 255, 127);
         public Color colorLowDetail(int edge) { return colorLowDetail; }
         public byte sourceArrow(int edge) {
-          return arrows[(edge * 2) % arrows.length]; }
+          return arrows[edge % arrows.length]; }
         public float sourceArrowSize(int edge) {
-          return ((edge % 5) + 1) * thickness; }
+          return thickness * 3; }
         public Color sourceArrowColor(int edge) {
           return colors[edge % colors.length]; }
         public byte targetArrow(int edge) {
           return arrows[edge % arrows.length]; }
         public float targetArrowSize(int edge) {
-          return (((edge * 2) % 5) + 1) * thickness; }
+          return thickness * 3; }
         public Color targetArrowColor(int edge) {
-          return colors[(edge * 2) % colors.length]; }
+          return colors[(edge * 7) % colors.length]; }
         public float thickness(int edge) { return thickness; }
         public Color color(int edge) { return color; } };
     EventQueue.invokeAndWait(new Runnable() {
