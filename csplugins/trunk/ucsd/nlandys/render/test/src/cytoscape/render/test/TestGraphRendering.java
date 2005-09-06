@@ -22,6 +22,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Random;
 
 public class TestGraphRendering
   extends Frame implements MouseListener, MouseMotionListener
@@ -31,9 +32,31 @@ public class TestGraphRendering
   {
     final DynamicGraph graph = DynamicGraphFactory.instantiateDynamicGraph();
     final RTree rtree = new RTree();
-    final GraphLOD lod = null;
-    final NodeDetails nodeDetails = null;
-    final EdgeDetails edgeDetails = null;
+    final int N = Integer.parseInt(args[0]);
+    final double maxDim = 10;
+    final double minDim = 6;
+    final double areaDim = Math.sqrt((double) N) * maxDim * 2;
+    final Random r = new Random();
+    for (int i = 0; i < N; i++) {
+      final double centerX =
+        ((double) r.nextInt()) / Integer.MAX_VALUE * (areaDim / 2.0d);
+      final double centerY =
+        ((double) r.nextInt()) / Integer.MAX_VALUE * (areaDim / 2.0d);
+      final double width =
+        ((double) (0x7fffffff & r.nextInt())) / Integer.MAX_VALUE *
+        (maxDim - minDim) + minDim;
+      final double height =
+        ((double) (0x7fffffff & r.nextInt())) / Integer.MAX_VALUE *
+        (maxDim - minDim) + minDim;
+      final float xMin = (float) (centerX - (width / 2));
+      final float yMin = (float) (centerY - (height / 2));
+      final float xMax = (float) (centerX + (width / 2));
+      final float yMax = (float) (centerY + (height / 2));
+      rtree.insert(graph.nodeCreate(), xMin, yMin, xMax, yMax); }
+
+    final GraphLOD lod = new GraphLOD();
+    final NodeDetails nodeDetails = new NodeDetails();
+    final EdgeDetails edgeDetails = new EdgeDetails();
     EventQueue.invokeAndWait(new Runnable() {
         public void run() {
           Frame f = new TestGraphRendering(graph, rtree, lod,
