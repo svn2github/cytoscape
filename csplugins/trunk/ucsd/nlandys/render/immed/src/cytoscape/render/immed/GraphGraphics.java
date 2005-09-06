@@ -983,7 +983,7 @@ public final class GraphGraphics
    *                                   quarter of
    *                                   the arrow size specified, and the
    *                                   span of the top of the tee is
-   *                                   four times the arrow size</td>     </tr>
+   *                                   two times the arrow size</td>      </tr>
    *   <tr>  <td>ARROW_BIDIRECTIONAL</td>
    *                                 <td>either both arrowheads must be
    *                                   of this type or neither one must be
@@ -1620,10 +1620,10 @@ public final class GraphGraphics
       return m_ellp2d;
     default: // ARROW_TEE.
       m_path2d.reset();
-      m_path2d.moveTo(-0.125f, -2.0f);
-      m_path2d.lineTo(0.125f, -2.0f);
-      m_path2d.lineTo(0.125f, 2.0f);
-      m_path2d.lineTo(-0.125f, 2.0f);
+      m_path2d.moveTo(-0.125f, -1.0f);
+      m_path2d.lineTo(0.125f, -1.0f);
+      m_path2d.lineTo(0.125f, 1.0f);
+      m_path2d.lineTo(-0.125f, 1.0f);
       m_path2d.closePath();
       return m_path2d; }
   }
