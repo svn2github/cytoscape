@@ -87,32 +87,47 @@ public class TestGraphRendering
           numExistingSuchEdges++; }
         final int edge = graph.edgeCreate(node, chosenObj, true);
         if (numExistingSuchEdges > 0) {
-          final int node0 = Math.min(node, chosenObj);
-          final int node1 = Math.max(node, chosenObj);
-          rtree.exists(node0, floatBuff, 0);
-          final double node0XCenter =
-            (((double) floatBuff[0]) + floatBuff[2]) / 2;
-          final double node0YCenter =
-            (((double) floatBuff[1]) + floatBuff[3]) / 2;
-          rtree.exists(node1, floatBuff, 0);
-          final double node1XCenter =
-            (((double) floatBuff[0]) + floatBuff[2]) / 2;
-          final double node1YCenter =
-            (((double) floatBuff[1]) + floatBuff[3]) / 2;
-          final double dx = node1XCenter - node0XCenter;
-          final double dy = node1YCenter - node0YCenter;
-          final double midX = (node0XCenter + node1XCenter) / 2;
-          final double midY = (node0YCenter + node1YCenter) / 2;
           final double factor = (numExistingSuchEdges + 1) / 2 *
             (numExistingSuchEdges % 2 == 0 ? 1 : -1) * 0.1d;
-          final double anchorX = midX + factor * dy;
-          final double anchorY = midY - factor * dx;
-          anchorsHash.put(edge,
-                   new EdgeAnchors() {
-                     public int numAnchors() { return 1; }
-                     public void getAnchor(int inx, float[] arr, int off) {
-                       arr[off] = (float) anchorX; 
-                       arr[off + 1] = (float) anchorY; } }); } } }
+          if (node != chosenObj) {
+            final int node0 = Math.min(node, chosenObj);
+            final int node1 = Math.max(node, chosenObj);
+            rtree.exists(node0, floatBuff, 0);
+            final double node0XCenter =
+              (((double) floatBuff[0]) + floatBuff[2]) / 2;
+            final double node0YCenter =
+              (((double) floatBuff[1]) + floatBuff[3]) / 2;
+            rtree.exists(node1, floatBuff, 0);
+            final double node1XCenter =
+              (((double) floatBuff[0]) + floatBuff[2]) / 2;
+            final double node1YCenter =
+              (((double) floatBuff[1]) + floatBuff[3]) / 2;
+            final double dx = node1XCenter - node0XCenter;
+            final double dy = node1YCenter - node0YCenter;
+            final double midX = (node0XCenter + node1XCenter) / 2;
+            final double midY = (node0YCenter + node1YCenter) / 2;
+            final double anchorX = midX + factor * dy;
+            final double anchorY = midY - factor * dx;
+            anchorsHash.put
+              (edge,
+               new EdgeAnchors() {
+                 public int numAnchors() { return 1; }
+                 public void getAnchor(int inx, float[] arr, int off) {
+                   arr[off] = (float) anchorX; 
+                   arr[off + 1] = (float) anchorY; } }); }
+          else { // node == chosenObj, i.e. self-edge.
+            final float[] twoAnchors = new float[4];
+            twoAnchors[0] = (float) (xCenter + factor * 10 * maxDim);
+            twoAnchors[1] = (float) yCenter;
+            twoAnchors[2] = (float) xCenter;
+            twoAnchors[3] = (float) (yCenter + factor * 10 * maxDim);
+            anchorsHash.put
+              (edge,
+               new EdgeAnchors() {
+                 public int numAnchors() { return twoAnchors.length / 2; }
+                 public void getAnchor(int inx, float[] arr, int off) {
+                   arr[off] = twoAnchors[inx * 2];
+                   arr[off + 1] = twoAnchors[inx * 2 + 1]; } }); } } } }
 
     final byte[] shapes = new byte[9];
     shapes[0] = GraphGraphics.SHAPE_RECTANGLE;
