@@ -296,12 +296,14 @@ public class TestGraphRendering
   {
     if (e.getButton() == MouseEvent.BUTTON3) {
       m_currMouseButton = 3;
-      m_lastXMousePos = e.getX();
-      m_lastYMousePos = e.getY(); }
+      final Insets insets = insets();
+      m_lastXMousePos = e.getX() - insets.left;
+      m_lastYMousePos = e.getY() - insets.top; }
     else if (e.getButton() == MouseEvent.BUTTON2) {
       m_currMouseButton = 2;
-      m_lastXMousePos = e.getX();
-      m_lastYMousePos = e.getY(); }
+      final Insets insets = insets();
+      m_lastXMousePos = e.getX() - insets.left;
+      m_lastYMousePos = e.getY() - insets.top; }
   }
 
   public void mouseReleased(MouseEvent e)
@@ -315,17 +317,19 @@ public class TestGraphRendering
   public void mouseDragged(MouseEvent e)
   {
     if (m_currMouseButton == 3) {
-      double deltaX = e.getX() - m_lastXMousePos;
-      double deltaY = e.getY() - m_lastYMousePos;
-      m_lastXMousePos = e.getX();
-      m_lastYMousePos = e.getY();
+      final Insets insets = insets();
+      final double deltaX = (e.getX() - insets.left) - m_lastXMousePos;
+      final double deltaY = (e.getY() - insets.top) - m_lastYMousePos;
+      m_lastXMousePos = e.getX() - insets.left;
+      m_lastYMousePos = e.getY() - insets.top;
       m_currXCenter -= deltaX / m_currScale;
       m_currYCenter += deltaY / m_currScale; // y orientations are opposite.
       repaint(); }
     else if (m_currMouseButton == 2) {
-      double deltaY = e.getY() - m_lastYMousePos;
-      m_lastXMousePos = e.getX();
-      m_lastYMousePos = e.getY();
+      final Insets insets = insets();
+      final double deltaY = (e.getY() - insets.top) - m_lastYMousePos;
+      m_lastXMousePos = e.getX() - insets.left;
+      m_lastYMousePos = e.getY() - insets.top;
       m_currScale *= Math.pow(2, -deltaY / 300.0d);
       repaint(); }
   }
