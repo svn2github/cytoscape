@@ -76,8 +76,8 @@ public final class SynonymReader extends Reader
         fromIndex = 1 + line.indexOf('\t', fromIndex); }
       final String canon =
         line.substring(fromIndex, line.indexOf('\t', fromIndex));
-      if (m_dupsFilter.get(canon) != null) { // This synonym new.
-        for (int i = 0; i < 6; i++) {
+      if (m_dupsFilter.get(canon) == null) { // This synonym new.
+        for (int i = 0; i < 8; i++) {
           fromIndex = 1 + line.indexOf('\t', fromIndex); }
         final String delimitedList =
           line.substring(fromIndex, line.indexOf('\t', fromIndex));
