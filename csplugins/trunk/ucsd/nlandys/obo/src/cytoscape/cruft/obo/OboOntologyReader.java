@@ -11,7 +11,7 @@ import java.io.Reader;
  * the content read from this reader is the crufty old 'go.onto' file.<p>
  * Please note that this code was not written with performance in mind.
  * Therefore, evaluating this code will not give a good indication of the
- * programming ability of the author of this code, Nerius Landys.
+ * author's programming ability.
  */
 public final class OboOntologyReader extends Reader
 {
