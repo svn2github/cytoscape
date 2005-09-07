@@ -241,8 +241,10 @@ public class TestGraphRendering
   private double m_currYCenter = 0.0d;
   private double m_currScale = 1.0d;
   private int m_currMouseButton = 0; // 0: none; 2: middle; 3: right.
-  private int m_lastXMousePos = 0;
-  private int m_lastYMousePos = 0;
+  private int m_lastXMousePos;
+  private int m_lastYMousePos;
+  private double m_nodeXMouseOver;
+  private double m_nodeYMouseOver;
 
   public TestGraphRendering(FixedGraph graph,
                             SpacialIndex2D spacial,
@@ -303,7 +305,11 @@ public class TestGraphRendering
       m_currMouseButton = 2;
       final Insets insets = insets();
       m_lastXMousePos = e.getX() - insets.left;
-      m_lastYMousePos = e.getY() - insets.top; }
+      m_lastYMousePos = e.getY() - insets.top;
+      m_nodeXMouseOver =
+        m_currXCenter + (m_lastXMousePos - m_imgWidth / 2) / m_currScale;
+      m_nodeYMouseOver =
+        m_currYCenter - (m_lastYMousePos - m_imgHeight / 2) / m_currScale; }
   }
 
   public void mouseReleased(MouseEvent e)
@@ -330,7 +336,12 @@ public class TestGraphRendering
       final double deltaY = (e.getY() - insets.top) - m_lastYMousePos;
       m_lastXMousePos = e.getX() - insets.left;
       m_lastYMousePos = e.getY() - insets.top;
-      m_currScale *= Math.pow(2, -deltaY / 300.0d);
+      final double scaleIncr = Math.pow(2, -deltaY / 300.0d);
+      m_currScale *= scaleIncr;
+      m_currXCenter =
+        m_nodeXMouseOver + (m_currXCenter - m_nodeXMouseOver) / scaleIncr;
+      m_currYCenter =
+        m_nodeYMouseOver + (m_currYCenter - m_nodeYMouseOver) / scaleIncr;
       repaint(); }
   }
 
