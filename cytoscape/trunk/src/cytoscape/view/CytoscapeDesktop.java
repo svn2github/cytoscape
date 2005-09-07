@@ -796,9 +796,9 @@ public class CytoscapeDesktop
    */
   protected BiModalJSplitPane createTopRightPane(NetworkViewManager networkViewManager){
 
-	  //  create cytopanel with tabs along the left side
+	  //  create cytopanel with tabs along the top
 	  cytoPanelEast = new CytoPanelImp(SwingConstants.EAST,
-									   JTabbedPane.RIGHT,
+									   JTabbedPane.TOP,
 									   CytoPanelState.HIDE);
 
 
@@ -839,7 +839,7 @@ public class CytoscapeDesktop
    */
   protected BiModalJSplitPane createRightPane(BiModalJSplitPane topRightPane){
 
-	  //  create cytopanel with tabs along the top
+	  //  create cytopanel with tabs along the bottom
 	  cytoPanelSouth = new CytoPanelImp(SwingConstants.SOUTH,
 									   JTabbedPane.BOTTOM,
 									   CytoPanelState.HIDE);
@@ -869,7 +869,7 @@ public class CytoscapeDesktop
    */
   protected BiModalJSplitPane createMasterPane(NetworkPanel networkPanel, BiModalJSplitPane rightPane){
 
-	  //  create cytopanel with tabs along the bottom
+	  //  create cytopanel with tabs along the top
 	  cytoPanelWest = new CytoPanelImp(SwingConstants.WEST,
 									   JTabbedPane.TOP,
 									   CytoPanelState.DOCK);
