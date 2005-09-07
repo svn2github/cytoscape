@@ -37,7 +37,25 @@ public final class MolecularFunctionAnnotationReader extends Reader
                         final int off,
                         final int len) throws IOException
   {
-    return -1;
+    if (m_file == null) throw new IOException("this stream is closed");
+    if (m_readString == null) return -1;
+    final int returnThis;
+    if (m_readString.length() - m_readInx >= len) {
+      m_readString.getChars(m_readInx, m_readInx + len,
+                            cbuf, off);
+      returnThis = len;
+      m_readInx += len; }
+    else { // len is greater than the number of chars left in m_readString.
+      m_readString.getChars(m_readInx, m_readString.length(),
+                            cbuf, off);
+      returnThis = m_readString.length() - m_readInx;
+      m_readInx = m_readString.length(); }
+    if (m_readInx == m_readString.length()) readMore();
+    return returnThis;
+  }
+
+  private final void readMore() throws IOException
+  {
   }
 
   /**
