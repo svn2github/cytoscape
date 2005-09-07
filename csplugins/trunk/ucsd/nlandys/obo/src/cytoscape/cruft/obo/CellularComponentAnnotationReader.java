@@ -14,7 +14,7 @@ import java.io.Reader;
  * Therefore, evaluating this code will not give a good indication of the
  * author's programming ability.
  */
-public final class CellularComponentAnnotationReader
+public final class CellularComponentAnnotationReader extends Reader
 {
 
   private final String NL = System.getProperty("line.separator");
@@ -56,6 +56,37 @@ public final class CellularComponentAnnotationReader
 
   private final void readMore() throws IOException
   {
+    while (true)
+    {
+      String line;
+      while (true) // Read comments and possibly blank lines.
+      {
+        line = m_file.readLine();
+        if (line == null) { // End of underlying stream.
+          m_readString = null;
+          return; }
+        line = line.trim();
+        if (line.length() > 0 && !line.startsWith("!")) {
+          break; }
+      }
+
+      // Now line contains a line of data.
+      int fromIndex = 0;
+      for (int i = 0; i < 2; i++) {
+        fromIndex = 1 + line.indexOf('\t', fromIndex); }
+      final String canon =
+        line.substring(fromIndex, line.indexOf('\t', fromIndex));
+      for (int i = 0; i < 2; i++) {
+        fromIndex = 1 + line.indexOf('\t', fromIndex); }
+      final String goid = line.substring(fromIndex + 3, fromIndex + 10);
+      for (int i = 0; i < 4; i++) {
+        fromIndex = 1 + line.indexOf('\t', fromIndex); }
+      final String type = line.substring(fromIndex, fromIndex + 1);
+      if (type.equals("C")) { // Cellular Component.  We found one.
+        m_readString = canon + " = " + goid + NL;
+        m_readInx = 0;
+        break; }
+    }
   }
 
   /**
