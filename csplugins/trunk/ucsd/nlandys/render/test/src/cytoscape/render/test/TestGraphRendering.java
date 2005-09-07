@@ -144,7 +144,10 @@ public class TestGraphRendering
     for (int i = 0; i < colors.length; i++) {
       final int color = (0x00ffffff & r.nextInt()) | 0x7f000000;
       colors[i] = new Color(color, true);
-      colorsLow[i] = new Color(color, false); }
+      colorsLow[i] = new Color((colors[i].getRed() + 255) / 2,
+                               (colors[i].getGreen() + 255) / 2,
+                               (colors[i].getBlue() + 255) / 2,
+                               255); }
     final GraphLOD lod;
     if (args.length > 1) {
       lod = new GraphLOD() {
@@ -192,21 +195,21 @@ public class TestGraphRendering
     arrows[2] = GraphGraphics.ARROW_DISC;
     arrows[3] = GraphGraphics.ARROW_TEE;
     final EdgeDetails edgeDetails = new EdgeDetails() {
-        private final float thickness = (float) (minDim / 24);
-        private final Color colorLowDetail = new Color(0, 0, 255, 255);
+        private final float thickness = (float) (minDim / 18);
+        private final Color colorLowDetail = new Color(127, 127, 255, 255);
         private final Color color = new Color(0, 0, 255, 127);
         private final Color arrowColor = new Color(0, 0, 0, 127);
         public Color colorLowDetail(int edge) { return colorLowDetail; }
         public byte sourceArrow(int edge) {
           return arrows[edge % arrows.length]; }
         public float sourceArrowSize(int edge) {
-          return thickness * 5; }
+          return thickness * 4; }
         public Color sourceArrowColor(int edge) {
           return arrowColor; }
         public byte targetArrow(int edge) {
           return arrows[edge % arrows.length]; }
         public float targetArrowSize(int edge) {
-          return thickness * 5; }
+          return thickness * 4; }
         public Color targetArrowColor(int edge) {
           return arrowColor; }
         public EdgeAnchors anchors(int edge) {
