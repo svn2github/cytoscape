@@ -3,9 +3,13 @@ package cytoscape.util.intr;
 /**
  * A first-in, last-out container of 32 bit integers.  In the underlying
  * implementation, the memory consumed by an instance of this class may
- * increase, but does never decrease.
+ * increase, but does never decrease.<p>
+ * An instance of this class is serializable; however, serialized instances of
+ * this class should not be stored in a persistent manner because the
+ * serialization implemented in this class makes no attempt at handling
+ * different class versions.
  */
-public final class IntStack
+public final class IntStack implements java.io.Serializable
 {
 
   // This must be a non-negative integer.
