@@ -98,6 +98,19 @@ public class RTreeUpdatePerformance
                          (millisEnd - millisBegin) + " milliseconds");
     }
 
+    // Initial extents test.
+    {
+      for (int i = 0; i < 2; i++) { System.gc(); Thread.sleep(1000); }
+      final float[] extents = new float[4];
+      final long millisBegin = System.currentTimeMillis();
+      int objKey = 0;
+      while (objKey < N) {
+        tree.exists(objKey++, extents, 0); }
+      final long millisEnd = System.currentTimeMillis();
+      System.err.println("all extents queries took " +
+                         (millisEnd - millisBegin) + " milliseconds");
+    }
+
     for (byte a = 0; a < 3; a++)
     {
       // Update test.
