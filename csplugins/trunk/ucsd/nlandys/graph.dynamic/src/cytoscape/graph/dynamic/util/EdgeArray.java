@@ -1,7 +1,7 @@
 package cytoscape.graph.dynamic.util;
 
 // Valid indices: [0, Integer.MAX_VALUE - 1].
-class EdgeArray
+class EdgeArray implements java.io.Serializable
 {
 
   private final static int INITIAL_CAPACITY = 0; // Must be non-negative.

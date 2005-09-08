@@ -1,6 +1,6 @@
 package cytoscape.graph.dynamic.util;
 
-final class NodeDepot
+final class NodeDepot implements java.io.Serializable
 {
 
   private final Node m_head;

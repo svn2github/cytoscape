@@ -1,7 +1,7 @@
 package cytoscape.graph.dynamic.util;
 
 // Valid indices: [0, Integer.MAX_VALUE - 1].
-class NodeArray
+class NodeArray implements java.io.Serializable
 {
 
   private final static int INITIAL_CAPACITY = 0; // Must be non-negative.
@@ -10,6 +10,7 @@ class NodeArray
 
   NodeArray()
   {
+    System.out.println("foo");
     m_nodeArr = new Node[INITIAL_CAPACITY];
   }
 

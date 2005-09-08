@@ -5,7 +5,8 @@ import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntIterator;
 import cytoscape.util.intr.IntStack;
 
-final class DynamicGraphRepresentation implements DynamicGraph
+final class DynamicGraphRepresentation
+  implements DynamicGraph, java.io.Serializable
 {
 
   private int m_nodeCount;

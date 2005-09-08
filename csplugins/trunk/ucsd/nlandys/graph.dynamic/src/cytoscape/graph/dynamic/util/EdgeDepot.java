@@ -1,6 +1,6 @@
 package cytoscape.graph.dynamic.util;
 
-final class EdgeDepot
+final class EdgeDepot implements java.io.Serializable
 {
 
   private final Edge m_head;

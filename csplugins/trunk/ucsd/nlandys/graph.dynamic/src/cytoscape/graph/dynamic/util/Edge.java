@@ -1,7 +1,7 @@
 package cytoscape.graph.dynamic.util;
 
 // Package visible.
-final class Edge
+final class Edge implements java.io.Serializable
 {
 
   int edgeId;

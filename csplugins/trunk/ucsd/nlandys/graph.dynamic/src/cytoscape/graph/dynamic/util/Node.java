@@ -1,7 +1,7 @@
 package cytoscape.graph.dynamic.util;
 
 // Package visible.
-final class Node
+final class Node implements java.io.Serializable
 {
 
   int nodeId;
