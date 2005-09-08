@@ -8,9 +8,13 @@ package cytoscape.util.intr;
  * simpler (an example of a variant of this structure is the R-tree).  The
  * implementation of this tree uses recursion (as opposed to the iterative
  * approach).  While there is a performance penalty paid by using recursion,
- * recursion does make the code much more understandable.
+ * recursion does make the code much more understandable.<p>
+ * An instance of this class is serializable; however, serialized instances of
+ * this class should not be stored in a persistent manner because the
+ * serialization implemented in this class makes no attempt at handling
+ * class versioning.
  */
-public final class IntBTree
+public final class IntBTree implements java.io.Serializable
 {
 
   // This quantity must be at least 3.
@@ -729,7 +733,7 @@ public final class IntBTree
     return count;
   }
 
-  private final static class Node
+  private final static class Node implements java.io.Serializable
   {
     private int sliceCount = 0;
     private final int[] values; // null if and only if internal node.
@@ -739,7 +743,7 @@ public final class IntBTree
       else { values = null; data = new InternalNodeData(maxBranches); } }
   }
 
-  private final static class InternalNodeData
+  private final static class InternalNodeData implements java.io.Serializable
   {
     private int deepCount;
     private final int[] splitVals;

@@ -3,6 +3,7 @@ package cytoscape.util.intr.test;
 import cytoscape.util.intr.ArrayIntEnumerator;
 import cytoscape.util.intr.ArrayIntIterator;
 import cytoscape.util.intr.IntArray;
+import cytoscape.util.intr.IntBTree;
 import cytoscape.util.intr.IntHash;
 import cytoscape.util.intr.IntIntHash;
 import cytoscape.util.intr.IntObjHash;
@@ -25,6 +26,8 @@ public class SerializationTests
       new ArrayIntIterator(new int[] { 2, 6, 3}, 1, 2);
     IntArray intArray = new IntArray();
     intArray.setIntAtIndex(-3, 5);
+    IntBTree intBTree = new IntBTree();
+    for (int i = 0; i < 200; i++) intBTree.insert((i * 77) % 1001);
     IntHash intHash = new IntHash();
     intHash.put(23);
     IntIntHash intIntHash = new IntIntHash();
@@ -42,6 +45,7 @@ public class SerializationTests
     objOut.writeObject(arrayIntEnumerator);
     objOut.writeObject(arrayIntIterator);
     objOut.writeObject(intArray);
+    objOut.writeObject(intBTree);
     objOut.writeObject(intHash);
     objOut.writeObject(intIntHash);
     objOut.writeObject(intObjHash);
@@ -55,6 +59,7 @@ public class SerializationTests
     arrayIntEnumerator = (ArrayIntEnumerator) objIn.readObject();
     arrayIntIterator = (ArrayIntIterator) objIn.readObject();
     intArray = (IntArray) objIn.readObject();
+    intBTree = (IntBTree) objIn.readObject();
     intHash = (IntHash) objIn.readObject();
     intIntHash = (IntIntHash) objIn.readObject();
     intObjHash = (IntObjHash) objIn.readObject();
@@ -75,6 +80,11 @@ public class SerializationTests
     if (intArray.getIntAtIndex(5) != -3 ||
         intArray.getIntAtIndex(4) != 0)
       throw new IllegalStateException("IntArray not good");
+    if (intBTree.size() != 200 ||
+        (!intBTree.delete(154)) ||
+        (!intBTree.delete(77)) ||
+        intBTree.size() != 198)
+      throw new IllegalStateException("IntBTree not good");
     if (intHash.size() != 1 ||
         intHash.get(23) != 23 ||
         intHash.get(7) != -1)
