@@ -399,6 +399,9 @@
                 <include name="cellcomp.anno"/>
                 <include name="kegg.anno"/>
                 <include name="yeast.syno"/>
+                <include name="manifest2"/>
+                <include name="gene_ontology.obo"/>
+                <include name="gene_association.sgd"/>
             </fileset>
         </copy>
 
