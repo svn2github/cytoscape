@@ -15,8 +15,14 @@ import java.util.NoSuchElementException;
  * Underlying size expansions are implemented such that the operation of
  * expanding in size is amortized over the contstant time complexity needed to
  * insert new elements.<p>
+ * An instance of this class is serializable; however, serialized instances of
+ * this class should not be stored in a persistent manner because the
+ * serialization implemented in this class makes no attempt at handling
+ * class versioning.  For an instance of this class to be properly
+ * serialized, all object values stored in that instance must be
+ * serializable.
  */
-public final class IntObjHash
+public final class IntObjHash implements java.io.Serializable
 {
 
 

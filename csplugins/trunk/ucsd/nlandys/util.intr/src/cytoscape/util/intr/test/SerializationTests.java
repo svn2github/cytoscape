@@ -5,6 +5,7 @@ import cytoscape.util.intr.ArrayIntIterator;
 import cytoscape.util.intr.IntArray;
 import cytoscape.util.intr.IntHash;
 import cytoscape.util.intr.IntIntHash;
+import cytoscape.util.intr.IntObjHash;
 import cytoscape.util.intr.IntQueue;
 import cytoscape.util.intr.IntStack;
 import cytoscape.util.intr.MinIntHeap;
@@ -28,6 +29,8 @@ public class SerializationTests
     intHash.put(23);
     IntIntHash intIntHash = new IntIntHash();
     intIntHash.put(2, 3);
+    IntObjHash intObjHash = new IntObjHash();
+    intObjHash.put(1, "foo");
     IntQueue intQueue = new IntQueue();
     intQueue.enqueue(-43);
     IntStack intStack = new IntStack();
@@ -41,6 +44,7 @@ public class SerializationTests
     objOut.writeObject(intArray);
     objOut.writeObject(intHash);
     objOut.writeObject(intIntHash);
+    objOut.writeObject(intObjHash);
     objOut.writeObject(intQueue);
     objOut.writeObject(intStack);
     objOut.writeObject(minIntHeap);
@@ -53,6 +57,7 @@ public class SerializationTests
     intArray = (IntArray) objIn.readObject();
     intHash = (IntHash) objIn.readObject();
     intIntHash = (IntIntHash) objIn.readObject();
+    intObjHash = (IntObjHash) objIn.readObject();
     intQueue = (IntQueue) objIn.readObject();
     intStack = (IntStack) objIn.readObject();
     minIntHeap = (MinIntHeap) objIn.readObject();
@@ -78,6 +83,10 @@ public class SerializationTests
         intIntHash.get(2) != 3 ||
         intIntHash.get(0) != -1)
       throw new IllegalStateException("IntIntHash not good");
+    if (intObjHash.size() != 1 ||
+        !(new String("foo")).equals(intObjHash.get(1)) ||
+        intObjHash.get(2) != null)
+      throw new IllegalStateException("IntObjHash not good");
     if (intQueue.dequeue() != -43 ||
         intQueue.size() != 0)
       throw new IllegalStateException("IntQueue not good");
