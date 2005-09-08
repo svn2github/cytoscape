@@ -7,7 +7,7 @@ package cytoscape.util.intr;
  * An instance of this class is serializable; however, serialized instances of
  * this class should not be stored in a persistent manner because the
  * serialization implemented in this class makes no attempt at handling
- * different class versions.
+ * class versioning.
  */
 public final class IntStack implements java.io.Serializable
 {

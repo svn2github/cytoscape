@@ -10,9 +10,13 @@ package cytoscape.util.intr;
  * dynamic array never decreases in size.  Underlying size expansions are
  * implemented such that the operation of expanding in size is amortized over
  * the constant time complexity of inserting new elements into this
- * dynamic array.
+ * dynamic array.<p>
+ * An instance of this class is serializable; however, serialized instances of
+ * this class should not be stored in a persistent manner because the
+ * serialization implemented in this class makes no attempt at handling
+ * class versioning.
  */
-public final class IntArray
+public final class IntArray implements java.io.Serializable
 {
 
   private final static int INITIAL_CAPACITY = 0; // Must be non-negative.

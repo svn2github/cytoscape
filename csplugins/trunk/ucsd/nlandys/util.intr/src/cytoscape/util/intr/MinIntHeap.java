@@ -15,9 +15,13 @@ package cytoscape.util.intr;
  * operations will effect the state of the heap.  Please read
  * the documentation of each method to better understand the time
  * complexity of each operation and the operation's relationship to the state
- * of the heap.
+ * of the heap.<p>
+ * An instance of this class is serializable; however, serialized instances of
+ * this class should not be stored in a persistent manner because the
+ * serialization implemented in this class makes no attempt at handling
+ * class versioning.
  */
-public final class MinIntHeap
+public final class MinIntHeap implements java.io.Serializable
 {
 
   // This must be a non-negative integer.

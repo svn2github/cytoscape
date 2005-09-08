@@ -11,9 +11,13 @@ package cytoscape.util.intr;
  * to store the hashtable's keys and values in a perfectly-sized array.
  * Underlying size expansions are implemented such that the operation of
  * expanding in size is amortized over the contstant time complexity needed to
- * insert new elements.
+ * insert new elements.<p>
+ * An instance of this class is serializable; however, serialized instances of
+ * this class should not be stored in a persistent manner because the
+ * serialization implemented in this class makes no attempt at handling
+ * class versioning.
  */
-public final class IntIntHash
+public final class IntIntHash implements java.io.Serializable
 {
   
   private static final int[] PRIMES = { 11, 23, 53, 113, 251, 509, 1019, 2039,

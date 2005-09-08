@@ -6,9 +6,13 @@ package cytoscape.util.intr;
  * increase, but does never decrease.<p>
  * While other container classes in this package are able to hold up
  * to Integer.MAX_VALUE elements, this class is only able to hold
- * Integer.MAX_VALUE-1 elements.
+ * Integer.MAX_VALUE-1 elements.<p>
+ * An instance of this class is serializable; however, serialized instances of
+ * this class should not be stored in a persistent manner because the
+ * serialization implemented in this class makes no attempt at handling
+ * class versioning.
  */
-public final class IntQueue
+public final class IntQueue implements java.io.Serializable
 {
 
   // This must be a non-negative integer.
