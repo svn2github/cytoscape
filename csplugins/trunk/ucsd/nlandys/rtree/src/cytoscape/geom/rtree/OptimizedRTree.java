@@ -3,7 +3,6 @@ package cytoscape.geom.rtree;
 import cytoscape.geom.spacial.SpacialEntry2DEnumerator;
 import cytoscape.geom.spacial.MutableSpacialIndex2D;
 import cytoscape.util.intr.IntEnumerator;
-import cytoscape.util.intr.IntObjHash;
 import cytoscape.util.intr.IntStack;
 import java.util.Iterator;
 
@@ -22,10 +21,7 @@ public final class OptimizedRTree implements MutableSpacialIndex2D
   private final int m_maxBranches;
   private final int m_minBranches;
   private Node m_root;
-  private IntObjHash m_entryMap; // Keys are objKey, values are type Node,
-  private final Object m_deletedEntry = new Object(); // except when "deleted".
-  private int m_deletedEntries;
-  private int m_mapExpansionThreshold;
+  private NodeArray m_entryMap;
 
   // These buffers are used during node splitting.
   private final int[] m_objKeyBuff;
@@ -65,9 +61,7 @@ public final class OptimizedRTree implements MutableSpacialIndex2D
     m_maxBranches = maxBranches;
     m_minBranches = Math.max(2, (int) (((double) (m_maxBranches + 1)) * 0.4d));
     m_root = new Node(m_maxBranches, true);
-    m_entryMap = new IntObjHash();
-    m_deletedEntries = 0;
-    m_mapExpansionThreshold = IntObjHash.maxCapacity(m_entryMap.size());
+    m_entryMap = new NodeArray();
     m_objKeyBuff = new int[m_maxBranches + 1];
     m_childrenBuff = new Node[m_maxBranches + 1];
     m_xMinBuff = new float[m_maxBranches + 1];
@@ -91,9 +85,7 @@ public final class OptimizedRTree implements MutableSpacialIndex2D
   public final void empty()
   {
     m_root = new Node(m_maxBranches, true);
-    m_entryMap = new IntObjHash();
-    m_deletedEntries = 0;
-    m_mapExpansionThreshold = IntObjHash.maxCapacity(m_entryMap.size());
+    m_entryMap = new NodeArray();
   }
 
   /**
@@ -140,33 +132,16 @@ public final class OptimizedRTree implements MutableSpacialIndex2D
                            final float xMin, final float yMin,
                            final float xMax, final float yMax)
   {
-    if (objKey < 0) throw new IllegalArgumentException("objKey is negative");
     if (!(xMin <= xMax))
       throw new IllegalArgumentException("xMin <= xMax not true");
     if (!(yMin <= yMax))
       throw new IllegalArgumentException("yMin <= yMax not true");
-    if (m_entryMap.get(objKey) != null) { // Hashtable lookups are cached.
-      if (m_entryMap.get(objKey) != m_deletedEntry)
+    try {
+      if (m_entryMap.getNodeAtIndex(objKey) != null) {
         throw new IllegalStateException
-          ("objkey " + objKey + " is already in this tree");
-      m_deletedEntries--; } // Old entry is m_deletedEntry.
-
-    // We only allow underlying hashtable expansions if the number of deleted
-    // keys in the table is one quarter or less of the total number of keys.
-    else {
-      if (m_entryMap.size() == m_mapExpansionThreshold) { // Expansion.
-        if (m_deletedEntries * 4 > m_entryMap.size()) { // Prune map.
-          final IntObjHash newEntryMap = new IntObjHash();
-          final IntEnumerator objKeys = m_entryMap.keys();
-          final Iterator leafNodes = m_entryMap.values();
-          while (objKeys.numRemaining() > 0) {
-            final Object leafNode = leafNodes.next();
-            if (leafNode == m_deletedEntry) { objKeys.nextInt(); continue; }
-            newEntryMap.put(objKeys.nextInt(), leafNode); }
-          m_entryMap = newEntryMap;
-          m_deletedEntries = 0; }
-        m_mapExpansionThreshold =
-          IntObjHash.maxCapacity(m_entryMap.size() + 1); } }
+          ("objkey " + objKey + " is already in this tree"); } }
+    catch (ArrayIndexOutOfBoundsException e) {
+      throw new IllegalArgumentException("objKey is negative"); }
 
     final Node rootSplit = insert
       (m_root, objKey, xMin, yMin, xMax, yMax, m_maxBranches, m_minBranches,
@@ -210,7 +185,7 @@ public final class OptimizedRTree implements MutableSpacialIndex2D
                                    final float xMax, final float yMax,
                                    final int maxBranches,
                                    final int minBranches,
-                                   final IntObjHash entryMap,
+                                   final NodeArray entryMap,
                                    final float[] globalMBR,
                                    final int[] objKeyBuff,
                                    final Node[] childrenBuff,
@@ -228,7 +203,7 @@ public final class OptimizedRTree implements MutableSpacialIndex2D
       chosenLeaf.objKeys[newInx] = objKey;
       chosenLeaf.xMins[newInx] = xMin; chosenLeaf.yMins[newInx] = yMin;
       chosenLeaf.xMaxs[newInx] = xMax; chosenLeaf.yMaxs[newInx] = yMax;
-      entryMap.put(objKey, chosenLeaf);
+      entryMap.setNodeAtIndex(chosenLeaf, objKey);
       adjustTreeNoSplit(chosenLeaf, deepCountIncrease, globalMBR);
       return null; }
     else { // A split is necessary.
@@ -237,9 +212,9 @@ public final class OptimizedRTree implements MutableSpacialIndex2D
          objKeyBuff, xMinBuff, yMinBuff, xMaxBuff, yMaxBuff, tempBuff1,
          tempBuff2);
       for (int i = 0; i < chosenLeaf.entryCount; i++)
-        entryMap.put(chosenLeaf.objKeys[i], chosenLeaf);
+        entryMap.setNodeAtIndex(chosenLeaf, chosenLeaf.objKeys[i]);
       for (int i = 0; i < newLeaf.entryCount; i++)
-        entryMap.put(newLeaf.objKeys[i], newLeaf);
+        entryMap.setNodeAtIndex(newLeaf, newLeaf.objKeys[i]);
       return adjustTreeWithSplit
         (chosenLeaf, newLeaf, deepCountIncrease, maxBranches, minBranches,
          globalMBR, childrenBuff, xMinBuff, yMinBuff, xMaxBuff, yMaxBuff,
@@ -1071,10 +1046,9 @@ public final class OptimizedRTree implements MutableSpacialIndex2D
                               final int offset)
   {
     if (objKey < 0) return false;
-    final Object o = m_entryMap.get(objKey);
-    if (o == null || o == m_deletedEntry) return false;
+    final Node n = m_entryMap.getNodeAtIndex(objKey);
+    if (n == null) return false;
     if (extentsArr != null) {
-      final Node n = (Node) o;
       int i = -1;
       while (n.objKeys[++i] != objKey);
       extentsArr[offset] = n.xMins[i];
@@ -1096,9 +1070,8 @@ public final class OptimizedRTree implements MutableSpacialIndex2D
     if (objKey < 0) return false;
     final Node n; // Todo: Rename 'n' to 'leafNode'.
     {
-      final Object o = m_entryMap.get(objKey);
-      if (o == null || o == m_deletedEntry) return false;
-      n = (Node) o;
+      n = m_entryMap.getNodeAtIndex(objKey);
+      if (n == null) return false;
     }
 
     // Delete record from leaf node.
@@ -1166,20 +1139,7 @@ public final class OptimizedRTree implements MutableSpacialIndex2D
       m_root = newRoot; }
 
     // Finally, delete the objKey from m_entryMap.
-    // If m_entryMap contains too many deleted entries, prune.
-    m_entryMap.put(objKey, m_deletedEntry);
-    if (++m_deletedEntries * 2 > m_entryMap.size() &&
-        m_deletedEntries > 5) {
-      final IntObjHash newEntryMap = new IntObjHash();
-      final IntEnumerator objKeys = m_entryMap.keys();
-      final Iterator leafNodes = m_entryMap.values();
-      while (objKeys.numRemaining() > 0) {
-        final Object leafNode = leafNodes.next();
-        if (leafNode == m_deletedEntry) { objKeys.nextInt(); continue; }
-        newEntryMap.put(objKeys.nextInt(), leafNode); }
-      m_entryMap = newEntryMap;
-      m_deletedEntries = 0;
-      m_mapExpansionThreshold = IntObjHash.maxCapacity(m_entryMap.size()); }
+    m_entryMap.setNodeAtIndex(null, objKey);
 
     return true;
   }
