@@ -10,7 +10,6 @@ class NodeArray implements java.io.Serializable
 
   NodeArray()
   {
-    System.out.println("foo");
     m_nodeArr = new Node[INITIAL_CAPACITY];
   }
 
