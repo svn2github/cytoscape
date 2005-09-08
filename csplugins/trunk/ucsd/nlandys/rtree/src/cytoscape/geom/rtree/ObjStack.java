@@ -50,7 +50,7 @@ final class ObjStack
    * call will return the specified object.  An object pushed onto this
    * stack may be null.
    */
-  public final void push(Object obj)
+  public final void push(final Object obj)
   {
     try { m_stack[m_currentSize++] = obj; }
     catch (ArrayIndexOutOfBoundsException e) {
