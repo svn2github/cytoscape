@@ -37,6 +37,36 @@ public class SerializationTests
     objOut.writeObject(intStack);
     objOut.writeObject(minIntHeap);
     objOut.flush(); objOut.close();
+    ByteArrayInputStream byteIn =
+      new ByteArrayInputStream(byteOut.toByteArray());
+    ObjectInputStream objIn = new ObjectInputStream(byteIn);
+    intArray = (IntArray) objIn.readObject();
+    intHash = (IntHash) objIn.readObject();
+    intIntHash = (IntIntHash) objIn.readObject();
+    intQueue = (IntQueue) objIn.readObject();
+    intStack = (IntStack) objIn.readObject();
+    minIntHeap = (MinIntHeap) objIn.readObject();
+    objIn.close();
+    if (intArray.getIntAtIndex(5) != -3 ||
+        intArray.getIntAtIndex(4) != 0)
+      throw new IllegalStateException("IntArray not good");
+    if (intHash.size() != 1 ||
+        intHash.get(23) != 23 ||
+        intHash.get(7) != -1)
+      throw new IllegalStateException("IntHash not good");
+    if (intIntHash.size() != 1 ||
+        intIntHash.get(2) != 3 ||
+        intIntHash.get(0) != -1)
+      throw new IllegalStateException("IntIntHash not good");
+    if (intQueue.dequeue() != -43 ||
+        intQueue.size() != 0)
+      throw new IllegalStateException("IntQueue not good");
+    if (intStack.pop() != 72 ||
+        intStack.size() != 0)
+      throw new IllegalStateException("IntStack not good");
+    if (minIntHeap.deleteMin() != 4 ||
+        minIntHeap.size() != 0)
+      throw new IllegalStateException("MinIntHeap not good");
   }
 
 }
