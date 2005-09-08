@@ -25,7 +25,7 @@ public final class OboOntologyReader extends Reader
   {
     if (oboFile == null) throw new NullPointerException("oboFile is null");
     m_obo = new BufferedReader(oboFile);
-    m_readString = "(curator=??) (type=all)" + NL;
+    m_readString = "(curator=GO) (type=all)" + NL;
     m_readInx = 0;
   }
 

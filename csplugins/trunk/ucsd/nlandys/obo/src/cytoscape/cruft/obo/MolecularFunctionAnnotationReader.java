@@ -29,7 +29,7 @@ public final class MolecularFunctionAnnotationReader extends Reader
       throw new NullPointerException("geneAssociationFile is null");
     m_file = new BufferedReader(geneAssociationFile);
     m_readString = "(species=" + speciesName +
-      ") (type=Molecular Function) (curator=??)" + NL;
+      ") (type=Molecular Function) (curator=GO)" + NL;
     m_readInx = 0;
   }
 

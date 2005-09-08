@@ -29,7 +29,7 @@ public final class BiologicalProcessAnnotationReader extends Reader
       throw new NullPointerException("geneAssociationFile is null");
     m_file = new BufferedReader(geneAssociationFile);
     m_readString = "(species=" + speciesName +
-      ") (type=Biological Process) (curator=??)" + NL;
+      ") (type=Biological Process) (curator=GO)" + NL;
     m_readInx = 0;
   }
 

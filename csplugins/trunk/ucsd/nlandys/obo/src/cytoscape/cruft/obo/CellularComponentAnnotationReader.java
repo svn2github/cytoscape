@@ -29,7 +29,7 @@ public final class CellularComponentAnnotationReader extends Reader
       throw new NullPointerException("geneAssociationFile is null");
     m_file = new BufferedReader(geneAssociationFile);
     m_readString = "(species=" + speciesName +
-      ") (type=Cellular Component) (curator=??)" + NL;
+      ") (type=Cellular Component) (curator=GO)" + NL;
     m_readInx = 0;
   }
 
