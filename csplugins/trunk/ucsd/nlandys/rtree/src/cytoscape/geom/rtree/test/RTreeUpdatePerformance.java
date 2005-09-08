@@ -1,8 +1,6 @@
 package cytoscape.geom.rtree.test;
 
-import cytoscape.geom.rtree.OptimizedRTree;
 import cytoscape.geom.rtree.RTree;
-import cytoscape.geom.spacial.MutableSpacialIndex2D;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -56,10 +54,7 @@ public class RTreeUpdatePerformance
       if (inx < N) throw new IOException("premature end of input");
     }
 
-    final MutableSpacialIndex2D tree =
-      ((args.length > 2) ?
-       ((MutableSpacialIndex2D) new OptimizedRTree(branches)) :
-       ((MutableSpacialIndex2D) new RTree(branches)));
+    final RTree tree = new RTree(branches);
 
     // Initial insertion test.
     {
