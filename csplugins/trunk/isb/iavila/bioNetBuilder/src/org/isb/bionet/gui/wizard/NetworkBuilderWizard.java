@@ -18,7 +18,7 @@ import utils.MyUtils;
 /**
  * 
  * @author iavila
- * TODO: Add actions to buttons
+ * TODO: "Estimate" buttons to calculate num nodes and edges
  */
 public class NetworkBuilderWizard {
     
@@ -219,6 +219,8 @@ public class NetworkBuilderWizard {
                     if(edgeSourcesPanel == null)
                         return;
                     Map sourceToName = (Map)speciesPanel.getSourcesNames();
+                    Map sourcesToSpecies = speciesPanel.getSourcesSelectedSpecies();
+                    edgeSourcesPanel.setSourcesToSpecies(sourcesToSpecies);
                     Iterator it = table.keySet().iterator();
                     while(it.hasNext()){
                         String name = (String)sourceToName.get(it.next());
@@ -236,9 +238,6 @@ public class NetworkBuilderWizard {
                   }//else
             }//actionPerformed
         };
-        
-        
-        
         
         JDialog dialog = createWizardDialog(back, next);
         
@@ -274,12 +273,40 @@ public class NetworkBuilderWizard {
             back = DEFAULT_BACK_ACTION;
         }
         
+        
+        next = new AbstractAction (){
+            
+            public void actionPerformed (ActionEvent event){
+                
+                Vector nodes = nodeSourcesPanel.getAllNodes();
+               
+                if(edgeSourcesPanel != null){
+                    edgeSourcesPanel.setNodes(nodes);
+                    if(nodes.size() > 0){
+                        edgeSourcesPanel.setEdgeMethod(InteractionsDataSource.CONNECTING_EDGES);
+                    }else{
+                        edgeSourcesPanel.setEdgeMethod(InteractionsDataSource.ALL_EDGES);
+                    }
+                    edgeSourcesPanel.estimateNumEdges();
+                }// edgeSourcesPanel != null
+                
+                if(onLastStep){
+                    FINISH_ACTION.actionPerformed(event);
+                }else{
+                    DEFAULT_NEXT_ACTION.actionPerformed(event);
+                }
+                
+            }//actionPerformed
+            
+        };
+        
+        
         // For next, we don't need to check that the user entered input!
-        if(this.onLastStep){
-            next = FINISH_ACTION;
-        }else{
-            next = DEFAULT_NEXT_ACTION;
-        }
+        //if(this.onLastStep){
+           // next = FINISH_ACTION;
+       // }else{
+            //next = DEFAULT_NEXT_ACTION;  
+        //}
         
         JDialog dialog = createWizardDialog(back, next);
         
@@ -331,22 +358,24 @@ public class NetworkBuilderWizard {
         
         dialog.getContentPane().add(explanation,BorderLayout.NORTH);
         
-        Map sourcesToNames;
         Map sourcesToSpecies;
+        
         if(this.speciesPanel != null){
             sourcesToSpecies = this.speciesPanel.getSourcesSelectedSpecies();
-            sourcesToNames = this.speciesPanel.getSourcesNames();
         }else{
-            try{
-                sourcesToSpecies = new Hashtable();
-                sourcesToNames = this.interactionsClient.getSourcesNames();
-            }catch(Exception ex){
-                ex.printStackTrace();
-                sourcesToNames = new Hashtable();
-                sourcesToSpecies = sourcesToNames;
-            }
+           sourcesToSpecies = new Hashtable();
         }
-        this.edgeSourcesPanel = new EdgeSourcesPanel(sourcesToNames, sourcesToSpecies);
+        
+        Vector nodes = null;
+        int method;
+        if(this.nodeSourcesPanel != null){
+            nodes = this.nodeSourcesPanel.getAllNodes();
+            method = InteractionsDataSource.CONNECTING_EDGES;
+        }else{
+            method = InteractionsDataSource.ALL_EDGES;
+        }
+        
+        this.edgeSourcesPanel = new EdgeSourcesPanel(this.interactionsClient, sourcesToSpecies, nodes, method);
         
         JPanel bigPanel = new JPanel();
         bigPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -412,25 +441,7 @@ public class NetworkBuilderWizard {
         Map sourceToNames = this.speciesPanel.getSourcesNames();
         
         // 2. Get the starting nodes for the network (if any)
-        Vector myListNodes = this.nodeSourcesPanel.getNodesFromMyList();
-        CyNetwork [] nodeNets = this.nodeSourcesPanel.getSelectedNetworks();
-        // TODO: Do checks: selected networks species must match to the species the user selected in this sesion
-        // TODO: Nodes from annotations!
-        Vector startingNodes = new Vector();
-        if(myListNodes != null){
-            startingNodes.addAll(myListNodes);
-        }
-        if(nodeNets != null){
-            for(int i = 0; i < nodeNets.length; i++){
-                Iterator it = nodeNets[i].nodesIterator();
-                while(it.hasNext()){
-                    CyNode node = (CyNode)it.next();
-                    String nodeName = (String)Cytoscape.getNodeAttributeValue(node, Semantics.CANONICAL_NAME);
-                    if(!startingNodes.contains(nodeName))
-                        startingNodes.add(nodeName);
-                }//while it
-            }//for i
-        }// if nodeNets != null
+        Vector startingNodes = this.nodeSourcesPanel.getAllNodes();
         
         // 3. Get the edge data source parameter settings
         Map sourceToSettings = this.edgeSourcesPanel.getSourcesDialogs();

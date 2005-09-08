@@ -255,19 +255,21 @@ public class InteractionsHandler implements InteractionsDataSource {
 	 */
 	public Object callSourceMethod(String source_class, String method_name,
 			Vector args) {
+        
 		Iterator it = this.interactionSources.iterator();
 		InteractionsDataSource dataSource = null;
 		while (it.hasNext()) {
 			InteractionsDataSource source = (InteractionsDataSource) it.next();
-			if (source.getClass().equals(source_class)) {
+			if (source.getClass().toString().equals(source_class)) {
 				dataSource = source;
 				break;
 			}
 		}// while
 
-		if (dataSource == null)
-			return Boolean.FALSE;
-
+		if (dataSource == null){
+		    System.err.println("Could not find data source of class " + source_class);
+            return Boolean.FALSE;
+        }
 		try {
 
 			Class[] argTypes = new Class[args.size()];
@@ -278,7 +280,8 @@ public class InteractionsHandler implements InteractionsDataSource {
 			Method method = dataSource.getClass().getDeclaredMethod(
 					method_name, argTypes);
 			Object returnedObject = method.invoke(dataSource, args.toArray());
-			return returnedObject;
+			
+            return returnedObject;
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -411,6 +414,22 @@ public class InteractionsHandler implements InteractionsDataSource {
 		
 		return allInteractions;
 	}
+    
+    /**
+     * @param species
+     * @return new Integer(num)ber of interactions
+     */
+    public Integer getNumAllInteractions(String species) {
+
+        Iterator it = interactionSources.iterator();
+        int num = 0;
+        while(it.hasNext()){
+            InteractionsDataSource dataSource = (InteractionsDataSource)it.next();
+            num+= dataSource.getNumAllInteractions(species).intValue();
+        }//while it
+        
+        return new Integer(num);
+    }
 
 	/**
 	 * @param species
@@ -437,6 +456,25 @@ public class InteractionsHandler implements InteractionsDataSource {
 		
 		return allInteractions;
 	}
+    
+    /**
+     * @param species
+     * @param args
+     *            a table of String->Object entries that the implementing class
+     *            understands (for example, p-value thresholds, directed
+     *            interactions, etc)
+     * @return the number of interactions
+     */
+    public Integer getNumAllInteractions(String species, Hashtable args) {
+        Iterator it = interactionSources.iterator();
+        int num = 0;
+        while(it.hasNext()){
+            InteractionsDataSource dataSource = (InteractionsDataSource)it.next();
+            num += (dataSource.getNumAllInteractions(species, args)).intValue();
+        }//while it
+        
+        return new Integer(num);
+    }
 
 	// ----------- 1st neighbor methods ------------//
 	/**
@@ -458,7 +496,25 @@ public class InteractionsHandler implements InteractionsDataSource {
 			allInteractions.addAll(interactions);
 		}//while it.hasNext
 		return allInteractions;
-	}
+    }
+	
+        /**
+         * @param interactor
+         *            an id that the data source understands
+         * @param species
+         *            the species
+         * @return the number of 1st neighbors
+         */
+        public Integer getNumFirstNeighbors(String interactor, String species) {
+            Iterator it = this.interactionSources.iterator();
+            int num = 0;
+            while(it.hasNext()){
+                InteractionsDataSource dataSource = (InteractionsDataSource)it.next();
+                num += dataSource.getNumFirstNeighbors(interactor, species).intValue();
+            }//while it.hasNext
+            return new Integer(num);
+        }
+    
 
 	/**
 	 * @param interactor
@@ -487,6 +543,29 @@ public class InteractionsHandler implements InteractionsDataSource {
 		}//while it.hasNext
 		return allInteractions;
 	}
+    
+
+    /**
+     * @param interactor
+     *            an id that the data source understands
+     * @param species
+     *            the species
+     * @param args
+     *            a table of String->Object entries that the implementing class
+     *            understands (for example, p-value thresholds, directed
+     *            interactions, etc)
+     * @return the number of neighbors
+     */
+    public Integer getNumFirstNeighbors(String interactor, String species,
+            Hashtable args) {
+        Iterator it = this.interactionSources.iterator();
+       int num = 0;
+        while(it.hasNext()){
+            InteractionsDataSource dataSource = (InteractionsDataSource)it.next();
+            num += dataSource.getNumFirstNeighbors(interactor, species, args).intValue();
+        }//while it.hasNext
+        return new Integer(num);
+    }
 
 	/**
 	 * @param interactors
@@ -508,6 +587,23 @@ public class InteractionsHandler implements InteractionsDataSource {
 		}//while it.hasNext
 		return allInteractions;
 	}
+    
+    /**
+     * @param interactors
+     *            a Vector of Strings (ids that the data source understands)
+     * @param species
+     *            the species
+     * @return the number of 1st neighbors
+     */
+    public Integer getNumFirstNeighbors(Vector interactors, String species) {
+        Iterator it = this.interactionSources.iterator();
+       int num = 0;
+        while(it.hasNext()){
+            InteractionsDataSource dataSource = (InteractionsDataSource)it.next();
+            num += dataSource.getNumFirstNeighbors(interactors, species).intValue();
+        }//while it.hasNext
+        return new Integer(num);
+    }
 
 	/**
 	 * @param interactor
@@ -534,6 +630,28 @@ public class InteractionsHandler implements InteractionsDataSource {
 		}//while it.hasNext
 		return allInteractions;
 	}
+    
+    /**
+     * @param interactor
+     *            a Vector of Strings (ids that the data source understands)
+     * @param species
+     *            the species
+     * @param args
+     *            a table of String->Object entries that the implementing class
+     *            understands (for example, p-value thresholds, directed
+     *            interactions, etc)
+     * @return the number of 1st neighbors
+     */
+    public Integer getNumFirstNeighbors(Vector interactors, String species,
+            Hashtable args) {
+        Iterator it = this.interactionSources.iterator();
+       int num = 0;
+        while(it.hasNext()){
+            InteractionsDataSource dataSource = (InteractionsDataSource)it.next();
+            num += dataSource.getNumFirstNeighbors(interactors, species, args).intValue();
+        }//while it.hasNext
+        return new Integer(num);
+    }
 
 	/**
 	 * @param interactor
@@ -559,6 +677,23 @@ public class InteractionsHandler implements InteractionsDataSource {
 		return allInteractions;
 	}
 
+    /**
+     * @param interactor
+     *            an id that the data source understands
+     * @param species
+     *            the species
+     * @return the number of adjacent interactions
+     */
+    public Integer getNumAdjacentInteractions(String interactor, String species) {
+        Iterator it = this.interactionSources.iterator();
+        int num = 0;  
+        while(it.hasNext()){
+            InteractionsDataSource dataSource = (InteractionsDataSource)it.next();
+            num += dataSource.getNumAdjacentInteractions(interactor, species).intValue();
+        }//while it.hasNext
+        return new Integer(num);
+    }
+    
 	/**
 	 * @param interactor
 	 *            an id that the data source understands
@@ -587,6 +722,28 @@ public class InteractionsHandler implements InteractionsDataSource {
 		}//while it.hasNext
 		return allInteractions;
 	}
+    
+    /**
+     * @param interactor
+     *            an id that the data source understands
+     * @param species
+     *            the species
+     * @param args
+     *            a table of String->Object entries that the implementing class
+     *            understands (for example, p-value thresholds, directed
+     *            interactions only, etc)
+     * @return the number of adjacent interactions
+     */
+    public Integer getNumAdjacentInteractions(String interactor, String species,
+            Hashtable args) {
+        Iterator it = this.interactionSources.iterator();
+        int num = 0;
+        while(it.hasNext()){
+            InteractionsDataSource dataSource = (InteractionsDataSource)it.next();
+           num += dataSource.getNumAdjacentInteractions(interactor, species, args).intValue();
+        }//while it.hasNext
+        return new Integer(num);
+    }
 
 	/**
 	 * @param interactors
@@ -612,36 +769,75 @@ public class InteractionsHandler implements InteractionsDataSource {
 		}//while it.hasNext
 		return allInteractions;
 	}
+    
+    /**
+     * @param interactors
+     *            a Vector of Strings (ids that the data source understands)
+     * @param species
+     *            the species
+     * @return the number of adjacent interactions
+     */
+    public Integer getNumAdjacentInteractions(Vector interactors, String species) {
+        Iterator it = this.interactionSources.iterator();
+        int num = 0;
+        while(it.hasNext()){
+            InteractionsDataSource dataSource = (InteractionsDataSource)it.next();
+            num += dataSource.getNumAdjacentInteractions(interactors, species).intValue();
+        }//while it.hasNext
+        return new Integer(num);
+    }
 
-	/**
-	 * @param interactor
-	 *            a Vector of Strings (ids that the data source understands)
-	 * @param species
-	 *            the species
-	 * @param args
-	 *            a table of String->Object entries that the implementing class
-	 *            understands (for example, p-value thresholds, directed
-	 *            interactions only, etc)
-	 * @return a Vector of Hashtables, each hash contains information
-	 *         about an interaction (they are required to contain the following
-	 *         entries:)<br>
-	 *         INTERACTOR_1 --> String <br>
-	 *         INTERACTOR_2 --> String <br>
-	 *         INTERACTION_TYPE -->String <br>
-	 *         Each implementing class can add additional entries to the
-	 *         Hashtables.<br>
-	 */
-	public Vector getAdjacentInteractions(Vector interactors, String species,
-			Hashtable args) {
-		Iterator it = this.interactionSources.iterator();
-		Vector allInteractions = new Vector();
-		while(it.hasNext()){
-			InteractionsDataSource dataSource = (InteractionsDataSource)it.next();
-			Vector interactions = dataSource.getAdjacentInteractions(interactors, species, args);
-			allInteractions.addAll(interactions);
-		}//while it.hasNext
-		return allInteractions;		
-	}
+    /**
+     * @param interactor
+     *            a Vector of Strings (ids that the data source understands)
+     * @param species
+     *            the species
+     * @param args
+     *            a table of String->Object entries that the implementing class
+     *            understands (for example, p-value thresholds, directed
+     *            interactions only, etc)
+     * @return a Vector of Hashtables, each hash contains information
+     *         about an interaction (they are required to contain the following
+     *         entries:)<br>
+     *         INTERACTOR_1 --> String <br>
+     *         INTERACTOR_2 --> String <br>
+     *         INTERACTION_TYPE -->String <br>
+     *         Each implementing class can add additional entries to the
+     *         Hashtables.<br>
+     */
+    public Vector getAdjacentInteractions(Vector interactors, String species,
+            Hashtable args) {
+        Iterator it = this.interactionSources.iterator();
+        Vector allInteractions = new Vector();
+        while(it.hasNext()){
+            InteractionsDataSource dataSource = (InteractionsDataSource)it.next();
+            Vector interactions = dataSource.getAdjacentInteractions(interactors, species, args);
+            allInteractions.addAll(interactions);
+        }//while it.hasNext
+        return allInteractions;     
+    }
+    
+    /**
+     * @param interactor
+     *            a Vector of Strings (ids that the data source understands)
+     * @param species
+     *            the species
+     * @param args
+     *            a table of String->Object entries that the implementing class
+     *            understands (for example, p-value thresholds, directed
+     *            interactions only, etc)
+     * @return the number of adjacent interactions
+     */
+    public Integer getNumAdjacentInteractions(Vector interactors, String species,
+            Hashtable args) {
+        Iterator it = this.interactionSources.iterator();
+        int num = 0;
+        while(it.hasNext()){
+            InteractionsDataSource dataSource = (InteractionsDataSource)it.next();
+           num += dataSource.getNumAdjacentInteractions(interactors, species, args).intValue();
+        }//while it.hasNext
+        return new Integer(num);
+    }
 
 	// ------------------ connecting interactions methods ------------------- //
 
@@ -669,6 +865,23 @@ public class InteractionsHandler implements InteractionsDataSource {
         }//while it.hasNext
         return allInteractions;  
 	}
+    
+    /**
+     * @param interactor1
+     * @param interactor2
+     * @param species
+     * @return the number of connecting interactions
+     */
+    public Integer getNumConnectingInteractions(String interactor1,
+            String interactor2, String species) {
+        Iterator it = this.interactionSources.iterator();
+        int num = 0;
+        while(it.hasNext()){
+            InteractionsDataSource dataSource = (InteractionsDataSource)it.next();
+            num += dataSource.getNumConnectingInteractions(interactor1, interactor2, species).intValue();
+        }//while it.hasNext
+        return new Integer(num);
+    }
 
 	/**
 	 * @param interactor1
@@ -698,6 +911,27 @@ public class InteractionsHandler implements InteractionsDataSource {
         }//while it.hasNext
         return allInteractions;
 	}
+    
+    /**
+     * @param interactor1
+     * @param interactor2
+     * @param species
+     * @param args
+     *            a table of String->Object entries that the implementing class
+     *            understands (for example, p-value thresholds, directed
+     *            interactions only, etc)
+     * @return the number of connecting interactions
+     */
+    public Integer getNumConnectingInteractions(String interactor1,
+            String interactor2, String species, Hashtable args) {
+        Iterator it = this.interactionSources.iterator();
+        int num = 0;
+        while(it.hasNext()){
+            InteractionsDataSource dataSource = (InteractionsDataSource)it.next();
+            num += dataSource.getNumConnectingInteractions(interactor1, interactor2, species, args).intValue();
+        }//while it.hasNext
+        return new Integer(num);
+    }
 
 	/**
 	 * @param interactors
@@ -721,6 +955,26 @@ public class InteractionsHandler implements InteractionsDataSource {
         }//while it.hasNext
         return allInteractions;     
 	}
+    
+    /**
+     * @param interactor1
+     * @param interactor2
+     * @param species
+     * @param args
+     *            a table of String->Object entries that the implementing class
+     *            understands (for example, p-value thresholds, directed
+     *            interactions only, etc)
+     * @return the number of connecting interactions
+     */
+    public Integer getNumConnectingInteractions(Vector interactors, String species) {
+        Iterator it = this.interactionSources.iterator();
+        int num = 0;
+        while(it.hasNext()){
+            InteractionsDataSource dataSource = (InteractionsDataSource)it.next();
+            num += dataSource.getNumConnectingInteractions(interactors, species).intValue();
+        }//while it.hasNext
+        return new Integer(num);
+    }
 
 	/**
 	 * @param interactors
@@ -750,7 +1004,27 @@ public class InteractionsHandler implements InteractionsDataSource {
         }//while it.hasNext
         return allInteractions;  
 	}
-	
+
+    /**
+     * @param interactors
+     * @param species
+     * @param args
+     *            a table of String->Object entries that the implementing class
+     *            understands (for example, p-value thresholds, directed
+     *            interactions only, etc)
+     * @return new Integer(num)ber of connecting interactions
+     */
+    public Integer getNumConnectingInteractions(Vector interactors, String species,
+            Hashtable args) {
+        
+        Iterator it = this.interactionSources.iterator();
+        int num = 0;
+        while(it.hasNext()){
+            InteractionsDataSource dataSource = (InteractionsDataSource)it.next();
+            num += dataSource.getNumConnectingInteractions(interactors, species, args).intValue();
+        }//while it.hasNext
+        return new Integer(num);
+    }
 	/**
 	 * Calls test for each data source
 	 * @return

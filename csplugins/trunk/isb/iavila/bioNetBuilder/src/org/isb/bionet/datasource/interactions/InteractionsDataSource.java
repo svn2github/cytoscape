@@ -1,7 +1,5 @@
 package org.isb.bionet.datasource.interactions;
 
-
-
 import java.util.*;
 import org.isb.bionet.datasource.*;
 
@@ -20,8 +18,10 @@ public interface InteractionsDataSource extends DataSource {
   public static final String SOURCE = "src";
   public static final String DIRECTED = "dir";
   public static final String CONFIDENCE = "confidence";
+  public static final int CONNECTING_EDGES = 0;
+  public static final int ADJACENT_EDGES = 1;
+  public static final int ALL_EDGES = 2;
 
-  //TODO: Need to create a vocabulary of ID types????
   /**
    * @return a Vector of Strings that specify types of IDs that this InteractionsDataSource accepts
    * for example, "ORF","GI", etc.
@@ -39,6 +39,12 @@ public interface InteractionsDataSource extends DataSource {
    * Each implementing class can add additional entries to the Hashtables
    */
   public Vector getAllInteractions (String species);
+
+  /**
+   * @param species
+   * @return the number of interactions
+   */
+  public Integer getNumAllInteractions (String species);
   
   /**
    * @param species
@@ -52,6 +58,15 @@ public interface InteractionsDataSource extends DataSource {
    * Each implementing class can add additional entries to the Hashtables
    */
   public Vector getAllInteractions (String species, Hashtable args);
+  
+  /**
+   * @param species
+   * @param args a table of String->Object entries that the implementing
+   * class understands (for example, p-value thresholds, directed interactions, etc)
+   * @return the number of interactions
+   */
+  public Integer getNumAllInteractions (String species, Hashtable args);
+ 
   
   
   //-------------------------- 1st neighbor methods ---------------------------
@@ -69,6 +84,14 @@ public interface InteractionsDataSource extends DataSource {
   /**
    * @param interactor an id that the data source understands
    * @param species the species
+   * @return the number of interactors
+   */
+  public Integer getNumFirstNeighbors (String interactor, String species);
+  
+  
+  /**
+   * @param interactor an id that the data source understands
+   * @param species the species
    * @param args a table of String->Object entries that the implementing
    * class understands (for example, p-value thresholds, directed interactions, etc)
    * @return a Vector of Strings of all the nodes that
@@ -79,27 +102,54 @@ public interface InteractionsDataSource extends DataSource {
    */
   public Vector getFirstNeighbors (String interactor, String species, Hashtable args);
 
+  /**
+   * @param interactor an id that the data source understands
+   * @param species the species
+   * @param args a table of String->Object entries that the implementing
+   * class understands (for example, p-value thresholds, directed interactions, etc)
+   * @return the number of interactors
+   */
+  public Integer getNumFirstNeighbors (String interactor, String species, Hashtable args);
 
   /**
    * @param interactors a Vector of Strings (ids that the data source understands)
    * @param species the species
-   * @return a Vector of Vectors of String ids of all the nodes that
+   * @return a Vectors of String ids of all the nodes that
    * have a direct interaction with the interactors in the given input vector, positions
    * in the input and output vectors are matched (parallel vectors)
    */
   public Vector getFirstNeighbors (Vector interactors, String species);
   
   /**
+   * @param interactors a Vector of Strings (ids that the data source understands)
+   * @param species the species
+   * @return the number of interactors
+   */
+  public Integer getNumFirstNeighbors (Vector interactors, String species);
+  
+  
+  /**
    * @param interactor a Vector of Strings (ids that the data source understands)
    * @param species the species
    * @param args a table of String->Object entries that the implementing
    * class understands (for example, p-value thresholds, directed interactions, etc)
-   * @return a Vector of Vectors of String ids of all the nodes that
+   * @return a Vector of String ids of all the nodes that
    * have a direct interaction with the interactors in the given input vector, positions
    * in the input and output vectors are matched (parallel vectors)
    */
   public Vector getFirstNeighbors (Vector interactors, String species, Hashtable args);
 
+  
+  /**
+   * @param interactor a Vector of Strings (ids that the data source understands)
+   * @param species the species
+   * @param args a table of String->Object entries that the implementing
+   * class understands (for example, p-value thresholds, directed interactions, etc)
+   * @return the number of interactors
+   */
+  public Integer getNumFirstNeighbors (Vector interactors, String species, Hashtable args);
+
+  
   /**
    * @param interactor an id that the data source understands
    * @param species the species
@@ -112,6 +162,12 @@ public interface InteractionsDataSource extends DataSource {
    */
   public Vector getAdjacentInteractions (String interactor, String species);
 
+  /**
+   * @param interactor an id that the data source understands
+   * @param species the species
+   * @return the number of adjacent interactions
+   */
+  public Integer getNumAdjacentInteractions (String interactor, String species);
 
   /**
    * @param interactor an id that the data source understands
@@ -127,8 +183,16 @@ public interface InteractionsDataSource extends DataSource {
    */
   public Vector getAdjacentInteractions (String interactor, String species, Hashtable args);
 
+  /**
+   * @param interactor an id that the data source understands
+   * @param species the species
+   * @param args a table of String->Object entries that the implementing
+   * class understands (for example, p-value thresholds, directed interactions only, etc)
+   * @return the number of adjacent interactions
+   */
+  public Integer getNumAdjacentInteractions (String interactor, String species, Hashtable args);
 
-    /**
+  /**
    * @param interactors a Vector of Strings (ids that the data source understands)
    * @param species the species
    * @return a Vector of Hashtables, each hash contains information about an
@@ -141,6 +205,12 @@ public interface InteractionsDataSource extends DataSource {
    */
   public Vector getAdjacentInteractions (Vector interactors, String species);
 
+  /**
+   * @param interactors a Vector of Strings (ids that the data source understands)
+   * @param species the species
+   * @return the number of adjacent interactions
+   */
+  public Integer getNumAdjacentInteractions (Vector interactors, String species);
 
   /**
    * @param interactor a Vector of Strings (ids that the data source understands)
@@ -156,6 +226,15 @@ public interface InteractionsDataSource extends DataSource {
    * The input and output vectors are parallel.
    */
   public Vector getAdjacentInteractions (Vector interactors, String species, Hashtable args);
+
+  /**
+   * @param interactor a Vector of Strings (ids that the data source understands)
+   * @param species the species
+   * @param args a table of String->Object entries that the implementing
+   * class understands (for example, p-value thresholds, directed interactions only, etc)
+   * @return the number of adjacent interations
+   */
+  public Integer getNumAdjacentInteractions (Vector interactors, String species, Hashtable args);
 
   //-------------------------- connecting interactions methods -----------------------
 
@@ -176,6 +255,15 @@ public interface InteractionsDataSource extends DataSource {
    * @param interactor1
    * @param interactor2
    * @param species
+   * @return the number of connecting interactions
+   */
+  public Integer getNumConnectingInteractions (String interactor1, String interactor2, String species);
+  
+  
+  /**
+   * @param interactor1
+   * @param interactor2
+   * @param species
    * @param args a table of String->Object entries that the implementing
    * class understands (for example, p-value thresholds, directed interactions only, etc)
    * @return a Vector of Hashtables, each hash contains information about an
@@ -187,6 +275,19 @@ public interface InteractionsDataSource extends DataSource {
    */
   public Vector getConnectingInteractions (String interactor1, String interactor2, 
                                            String species, Hashtable args);
+  
+  /**
+   * @param interactor1
+   * @param interactor2
+   * @param species
+   * @param args a table of String->Object entries that the implementing
+   * class understands (for example, p-value thresholds, directed interactions only, etc)
+   * @return the number of connecting interactions
+   */
+  public Integer getNumConnectingInteractions (String interactor1, String interactor2, 
+                                           String species, Hashtable args);
+  
+  
   /**
    * @param interactors
    * @param species
@@ -202,6 +303,13 @@ public interface InteractionsDataSource extends DataSource {
   /**
    * @param interactors
    * @param species
+   * @return the number of connecting interactions
+   */
+  public Integer getNumConnectingInteractions (Vector interactors, String species);
+  
+  /**
+   * @param interactors
+   * @param species
    * @param args a table of String->Object entries that the implementing
    * class understands (for example, p-value thresholds, directed interactions only, etc)
    * @return a Vector of Hashtables, each hash contains information about an
@@ -212,5 +320,14 @@ public interface InteractionsDataSource extends DataSource {
    * Each implementing class can add additional entries to the Hashtables 
    */
   public Vector getConnectingInteractions (Vector interactors, String species, Hashtable args);
+  
+  /**
+   * @param interactors
+   * @param species
+   * @param args a table of String->Object entries that the implementing
+   * class understands (for example, p-value thresholds, directed interactions only, etc)
+   * @return the number of connecting interactions
+   */
+  public Integer getNumConnectingInteractions (Vector interactors, String species, Hashtable args);
   
 }//InteractionsDataSource

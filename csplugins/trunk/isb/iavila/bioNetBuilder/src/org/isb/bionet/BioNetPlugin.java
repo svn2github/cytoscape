@@ -39,7 +39,7 @@ public class BioNetPlugin extends CytoscapePlugin {
                         .println("Successfully got an InteractionDataClient!!!");
             } else {
                 System.out
-                        .println(":-) Could not get an InteractionDataClient!!!");
+                        .println("Could not get an InteractionDataClient!!!");
             }
 
             this.interactionsClient

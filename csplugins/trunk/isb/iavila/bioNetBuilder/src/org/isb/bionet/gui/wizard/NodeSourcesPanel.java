@@ -11,12 +11,14 @@ import java.awt.GridBagLayout;
 import javax.swing.*;
 
 import java.io.File;
+import java.util.Iterator;
 import java.util.Vector;
 
 import org.isb.bionet.gui.*;
 
 import utils.MyUtils;
 import cytoscape.*;
+import cytoscape.data.Semantics;
 
 public class NodeSourcesPanel extends JPanel {
 
@@ -36,6 +38,33 @@ public class NodeSourcesPanel extends JPanel {
      */
     public File getMyListFile (){
         return this.myListFile;
+    }
+    
+    /**
+     * 
+     * @return a Vector of gene ids from the selected sources
+     */
+    public Vector getAllNodes (){
+        Vector myListNodes = getNodesFromMyList();
+        CyNetwork [] nodeNets = getSelectedNetworks();
+        // TODO: Do checks: selected networks species must match to the species the user selected in this sesion
+        // TODO: Nodes from annotations!
+        Vector startingNodes = new Vector();
+        if(myListNodes != null){
+            startingNodes.addAll(myListNodes);
+        }
+        if(nodeNets != null){
+            for(int i = 0; i < nodeNets.length; i++){
+                Iterator it = nodeNets[i].nodesIterator();
+                while(it.hasNext()){
+                    CyNode node = (CyNode)it.next();
+                    String nodeName = (String)Cytoscape.getNodeAttributeValue(node, Semantics.CANONICAL_NAME);
+                    if(!startingNodes.contains(nodeName))
+                        startingNodes.add(nodeName);
+                }//while it
+            }//for i
+        }// if nodeNets != null
+        return startingNodes;
     }
     
     /**
