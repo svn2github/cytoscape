@@ -25,6 +25,29 @@ public class GraphSerializationTest
     if (graph.nodes().numRemaining() != 0 ||
         graph.edges().numRemaining() != 0)
       throw new IllegalStateException("expected restored graph to be empty");
+
+    graph = DynamicGraphFactory.instantiateDynamicGraph();
+    int[] nodes = new int[10];
+    for (int i = 0; i < nodes.length; i++)
+      nodes[i] = graph.nodeCreate();
+    int[] edges = new int[20];
+    for (int i = 0; i < edges.length; i++)
+      edges[i] = graph.edgeCreate(nodes[i % nodes.length],
+                                  nodes[(i * 3) % nodes.length],
+                                  true);
+    byteOut = new ByteArrayOutputStream();
+    objOut = new ObjectOutputStream(byteOut);
+    objOut.writeObject(graph); objOut.flush(); objOut.close();
+    System.out.println("A graph with " + nodes.length + " nodes and " +
+                       edges.length + " edges takes " + byteOut.size() +
+                       " bytes in serialized form.");
+    byteIn = new ByteArrayInputStream(byteOut.toByteArray());
+    objIn = new ObjectInputStream(byteIn);
+    graph = (DynamicGraph) objIn.readObject(); objIn.close();
+    if (graph.nodes().numRemaining() != nodes.length ||
+        graph.edges().numRemaining() != edges.length)
+      throw new IllegalStateException
+        ("expected restored graph to have proper number of nodes and edges");
   }
 
 }
