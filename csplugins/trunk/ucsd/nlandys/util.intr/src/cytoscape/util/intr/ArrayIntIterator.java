@@ -2,14 +2,9 @@ package cytoscape.util.intr;
 
 /**
  * A utility class which conveniently converts an array of integers into
- * an IntIterator (an iteration of integers).<p>
- * An instance of this class is serializable; however, serialized instances of
- * this class should not be stored in a persistent manner because the
- * serialization implemented in this class makes no attempt at handling
- * class versioning.
+ * an IntIterator (an iteration of integers).
  */
-public final class ArrayIntIterator
-  implements IntIterator, java.io.Serializable
+public final class ArrayIntIterator implements IntIterator
 {
 
   private final int[] m_elements;

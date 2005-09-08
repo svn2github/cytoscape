@@ -1,7 +1,5 @@
 package cytoscape.util.intr.test;
 
-import cytoscape.util.intr.ArrayIntEnumerator;
-import cytoscape.util.intr.ArrayIntIterator;
 import cytoscape.util.intr.IntArray;
 import cytoscape.util.intr.IntBTree;
 import cytoscape.util.intr.IntHash;
@@ -20,10 +18,6 @@ public class SerializationTests
 
   public static void main(String[] args) throws Exception
   {
-    ArrayIntEnumerator arrayIntEnumerator =
-      new ArrayIntEnumerator(new int[] { 2, 6, 3 }, 1, 2);
-    ArrayIntIterator arrayIntIterator =
-      new ArrayIntIterator(new int[] { 2, 6, 3}, 1, 2);
     IntArray intArray = new IntArray();
     intArray.setIntAtIndex(-3, 5);
     IntBTree intBTree = new IntBTree();
@@ -42,8 +36,6 @@ public class SerializationTests
     minIntHeap.insert(4);
     ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
     ObjectOutputStream objOut = new ObjectOutputStream(byteOut);
-    objOut.writeObject(arrayIntEnumerator);
-    objOut.writeObject(arrayIntIterator);
     objOut.writeObject(intArray);
     objOut.writeObject(intBTree);
     objOut.writeObject(intHash);
@@ -56,8 +48,6 @@ public class SerializationTests
     ByteArrayInputStream byteIn =
       new ByteArrayInputStream(byteOut.toByteArray());
     ObjectInputStream objIn = new ObjectInputStream(byteIn);
-    arrayIntEnumerator = (ArrayIntEnumerator) objIn.readObject();
-    arrayIntIterator = (ArrayIntIterator) objIn.readObject();
     intArray = (IntArray) objIn.readObject();
     intBTree = (IntBTree) objIn.readObject();
     intHash = (IntHash) objIn.readObject();
@@ -67,16 +57,6 @@ public class SerializationTests
     intStack = (IntStack) objIn.readObject();
     minIntHeap = (MinIntHeap) objIn.readObject();
     objIn.close();
-    if (arrayIntEnumerator.numRemaining() != 2 ||
-        arrayIntEnumerator.nextInt() != 6 ||
-        arrayIntEnumerator.nextInt() != 3)
-      throw new IllegalStateException("ArrayIntEnumerator not good");
-    if ((!arrayIntIterator.hasNext()) ||
-        arrayIntIterator.nextInt() != 6 ||
-        (!arrayIntIterator.hasNext()) ||
-        arrayIntIterator.nextInt() != 3 ||
-        arrayIntIterator.hasNext())
-      throw new IllegalStateException("ArrayIntIterator not good");
     if (intArray.getIntAtIndex(5) != -3 ||
         intArray.getIntAtIndex(4) != 0)
       throw new IllegalStateException("IntArray not good");
