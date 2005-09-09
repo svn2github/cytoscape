@@ -291,14 +291,39 @@ final class DynamicGraphRepresentation
   public final void writeExternal(final java.io.ObjectOutput out)
     throws java.io.IOException
   {
-    // Start by serializing m_nodeDepot and m_edgeDepot - they have
-    // no dependencies and no shared references.
+    { // m_nodeDepot.
+      for (Node currNode = m_nodeDepot.m_head.nextNode; currNode != null;
+           currNode = currNode.nextNode) out.writeInt(currNode.nodeId);
+      out.writeInt(-1);
+    }
+    { // m_edgeDepot.
+      for (Edge currEdge = m_edgeDepot.m_head.nextOutEdge; currEdge != null;
+           currEdge = currEdge.nextOutEdge) out.writeInt(currEdge.edgeId);
+      out.writeInt(-1);
+    }
   }
 
   public final void readExternal(final java.io.ObjectInput in)
     throws java.io.IOException
   {
-    // Unserialize m_nodeDepot and m_edgeDepot.
+    { // m_nodeDepot.
+      Node currNode = m_nodeDepot.m_head;
+      while (true) {
+        final int id = in.readInt();
+        if (id < 0) break;
+        currNode.nextNode = new Node();
+        currNode = currNode.nextNode;
+        currNode.nodeId = id; }
+    }
+    { // m_edgeDepot.
+      Edge currEdge = m_edgeDepot.m_head;
+      while (true) {
+        final int id = in.readInt();
+        if (id < 0) break;
+        currEdge.nextOutEdge = new Edge();
+        currEdge = currEdge.nextOutEdge;
+        currEdge.edgeId = id; }
+    }
   }
 
 }
