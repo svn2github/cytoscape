@@ -4,7 +4,7 @@ package cytoscape.graph.dynamic.util;
 final class NodeDepot
 {
 
-  final Node m_head;
+  /* private */ final Node m_head; // Not private for serialization.
 
   NodeDepot()
   {

@@ -4,7 +4,7 @@ package cytoscape.graph.dynamic.util;
 final class EdgeDepot
 {
 
-  final Edge m_head;
+  /* private */ final Edge m_head; // Not private for serialization.
 
   EdgeDepot()
   {
