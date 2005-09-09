@@ -77,16 +77,4 @@ public interface DataSource {
    */
   public Vector test ();
   
-  /**
-   * If called, System.out.print statements will be called
-   * for debugging
-   */
-  public Boolean printDebug ();
-  
-  /**
-   * If calles, no System.out.print statemets will be called
-   *
-   */
-  public Boolean noPrintDebug ();
-  
 }//DataSource

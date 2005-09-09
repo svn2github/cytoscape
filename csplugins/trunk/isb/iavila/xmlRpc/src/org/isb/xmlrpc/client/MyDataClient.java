@@ -57,7 +57,7 @@ public abstract class MyDataClient {
 
 		Object out = null;
 		
-		//System.out.println("MyDataClient.execute(" + method + ", params = " + params + ")");
+		System.out.println("MyDataClient.execute(" + method + ", params = " + params + ")");
 		
 		if (nCallsPerBatch > 0)
 			out = doMultiCall(method, params);

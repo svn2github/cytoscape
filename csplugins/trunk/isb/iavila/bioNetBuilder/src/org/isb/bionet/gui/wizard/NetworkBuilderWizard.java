@@ -199,7 +199,9 @@ public class NetworkBuilderWizard {
         return panel;
     }
     
-    
+    //TODO: Each data source should have a dialog that pops-up with the species
+    //TODO: Explanation: must choose same species for each data source
+    //TODO: In the Synonyms db, have a species table? This would solve the above two items
     protected JDialog createSpeciesDialog (){
         
         AbstractAction back, next;
@@ -299,14 +301,6 @@ public class NetworkBuilderWizard {
             }//actionPerformed
             
         };
-        
-        
-        // For next, we don't need to check that the user entered input!
-        //if(this.onLastStep){
-           // next = FINISH_ACTION;
-       // }else{
-            //next = DEFAULT_NEXT_ACTION;  
-        //}
         
         JDialog dialog = createWizardDialog(back, next);
         
@@ -457,9 +451,22 @@ public class NetworkBuilderWizard {
             String sourceClass = (String)it.next();
             List sourceSpecies = (List)sourceToSpecies.get(sourceClass);
             String sourceName = (String)sourceToNames.get(sourceClass);
+            Vector params = new Vector();
+            
+            if(sourceSpecies == null || sourceSpecies.size() == 0){
+                continue;
+            }
+            
+            if(startingNodes != null && startingNodes.size() > 0){
+                params.add(startingNodes); 
+            }
+            
+            params.add((String)sourceSpecies.get(0));
             
             //System.out.println("sourceClass = " + sourceClass + " sourceName = " + sourceName);
             //TODO: Other data sources need to be added
+            
+            Hashtable args = new Hashtable();
             if(sourceName.equals(ProlinksInteractionsSource.NAME)){
                 
                 ProlinksGui prolinksGui = (ProlinksGui)sourceToSettings.get(sourceClass);
@@ -471,8 +478,6 @@ public class NetworkBuilderWizard {
                 System.out.println("species = " + sourceSpecies);
                 System.out.println("------------------------------------");
                 
-                Hashtable args = new Hashtable();
-                
                 if(pvalTh != 1){
                     args.put(ProlinksInteractionsSource.PVAL, new Double(pvalTh));
                 }
@@ -481,15 +486,21 @@ public class NetworkBuilderWizard {
                     args.put(ProlinksInteractionsSource.INTERACTION_TYPE, interactionTypes);
                 }
                 
-                try{
-                    if(startingNodes == null || startingNodes.size() == 0){
-                        interactions.addAll(this.interactionsClient.getAllInteractions((String)sourceSpecies.get(0),args));
-                    }else{
-                        interactions.addAll(this.interactionsClient.getConnectingInteractions(startingNodes,(String)sourceSpecies.get(0), args));
-                    }
-                }catch(Exception ex){
-                    ex.printStackTrace();
-                }
+                params.add(args);
+            
+            }//if prolinks
+                
+            String method;
+            if(startingNodes == null || startingNodes.size() == 0){
+                method = "getAllInteractions";
+            }else{
+                method = "getConnectingInteractions";
+            }
+            try{
+                Vector sourceInteractions = (Vector)this.interactionsClient.callSourceMethod(sourceClass,method,params);
+                interactions.addAll(sourceInteractions);
+            }catch (Exception e){
+                e.printStackTrace();
             }
             
         }//while it

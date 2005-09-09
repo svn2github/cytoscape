@@ -58,7 +58,16 @@ public class SpeciesPanel extends JPanel {
         
         
         Iterator it = this.sourceToSpecies.keySet().iterator();
-        Vector listItems = new Vector();
+        TreeSet sortedSpecies = new TreeSet( 
+                new Comparator(){
+                   public int compare(Object o1, Object o2){
+                       return ((ListItem)o1).species.compareTo( ((ListItem)o2).species );
+                   }
+                    
+                   public boolean equals(Object obj){
+                       return obj == this;
+                   }
+        });
         while(it.hasNext()){
             String sourceClass = (String)it.next();
             String sourceName = (String)this.sourceToName.get(sourceClass);
@@ -68,13 +77,12 @@ public class SpeciesPanel extends JPanel {
                 String species = (String)it2.next();
                 ListItem item = new ListItem( species + " (" + sourceName + ")",
                                               species, sourceClass);
-                listItems.add(item);
+                sortedSpecies.add(item);
                 
             }//while it2
         }// while it
         
-        
-        sList = new JList(listItems.toArray());
+        sList = new JList(sortedSpecies.toArray());
         sList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         sList.setLayoutOrientation(JList.VERTICAL);
         sList.setVisibleRowCount(-1);

@@ -188,6 +188,25 @@ public class EdgeSourcesPanel extends JPanel {
         List species = (List)this.sourceToSpecies.get(sourceClass);
         Integer numEdges = null;
         
+        
+        
+        Vector params = new Vector();
+        
+        if (this.nodes != null && this.nodes.size() > 0 && this.edgeMethod != InteractionsDataSource.ALL_EDGES) {    
+            params.add(this.nodes);
+        }
+        
+        params.add(species.get(0));
+        
+        String methodName = "";
+        if(this.edgeMethod == InteractionsDataSource.ALL_EDGES){
+            methodName = "getNumAllInteractions";
+        }else if(this.edgeMethod == InteractionsDataSource.ADJACENT_EDGES){
+            methodName = "getNumAdjacentInteractions";
+        }else if(this.edgeMethod == InteractionsDataSource.CONNECTING_EDGES){
+            methodName = "getNumConnectingInteractions";
+        }
+        
         if (sourceClass.equals(ProlinksInteractionsSource.class.toString())) {
             
             ProlinksGui pDialog = (ProlinksGui)dialog;
@@ -197,40 +216,21 @@ public class EdgeSourcesPanel extends JPanel {
             Hashtable args = new Hashtable();
             args.put(ProlinksInteractionsSource.INTERACTION_TYPE, types);
             args.put(ProlinksInteractionsSource.PVAL, new Double(pval));
-            
-            Vector params = new Vector();
-          
-            
-            String methodName = "";
-            if(this.edgeMethod == InteractionsDataSource.ALL_EDGES){
-                methodName = "getNumAllInteractions";
-            }else if(this.edgeMethod == InteractionsDataSource.ADJACENT_EDGES){
-                methodName = "getNumAdjacentInteractions";
-            }else if(this.edgeMethod == InteractionsDataSource.CONNECTING_EDGES){
-                methodName = "getNumConnectingInteractions";
-            }
-
-            if (this.nodes != null && this.nodes.size() > 0 && this.edgeMethod != InteractionsDataSource.ALL_EDGES) {    
-                params.add(this.nodes);
-            }
-            
-            params.add(species.get(0));
             params.add(args);
-            
-            try{
-                Object obj = this.interactionsClient.callSourceMethod(sourceClass, methodName, params);
-                if(obj instanceof Integer){
-                    numEdges = (Integer)obj;
-                }
-            }catch(Exception e){
-                e.printStackTrace();
-                numEdges = new Integer(0);
-            }finally{
-                JTextField tf = (JTextField)this.buttonToTextField.get(button);
-                tf.setText(numEdges.toString());
-            }
-            
         }//Prolinks
+            
+        try{
+            Object obj = this.interactionsClient.callSourceMethod(sourceClass, methodName, params);
+            if(obj instanceof Integer){
+                numEdges = (Integer)obj;
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+            numEdges = new Integer(0);
+        }finally{
+            JTextField tf = (JTextField)this.buttonToTextField.get(button);
+            tf.setText(numEdges.toString());
+        }
     } 
 
     protected void create() {

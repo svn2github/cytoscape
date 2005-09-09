@@ -239,59 +239,7 @@ public class InteractionDataClient extends AuthenticatedDataClient{
 	  
 	  //-------------------------- 1st neighbor methods ---------------------------
 	    
-	  /**
-	   * @param interactor an id that the data source understands
-	   * @param species the species
-	   * @return a Vector of Strings of all the nodes that
-	   * have a direct interaction with "interactor", or an empty vector
-	   * if no interactors are found, the interactor is not in the
-	   * data source, or, the species is not supported
-	   */
-	  public Vector getFirstNeighbors (String interactor, String species) throws XmlRpcException, IOException {
-		  Object out = call(this.serviceName + ".getFirstNeighbors", interactor, species);
-		  return (Vector) out;
-	  }
-      
-      /**
-       * @param interactor an id that the data source understands
-       * @param species the species
-       * @return number of neighbors
-       */
-      public int getNumFirstNeighbors (String interactor, String species) throws XmlRpcException, IOException {
-          Object out = call(this.serviceName + ".getNumFirstNeighbors", interactor, species);
-          return ((Integer)out).intValue();
-      }
 	  
-	  /**
-	   * @param interactor an id that the data source understands
-	   * @param species the species
-	   * @param args a table of String->Object entries that the implementing
-	   * class understands (for example, p-value thresholds, directed interactions, etc)
-	   * @return a Vector of Strings of all the nodes that
-	   * have a direct interaction with "interactor" and that take into
-	   * account additional parameters given in the Hashtable (an empty
-	   * vector if the interactor is not found, the interactor has no interactions,
-	   * or the data source does not contain infomation for the given interactor)
-	   */
-	  public Vector getFirstNeighbors (String interactor, String species, Hashtable args) throws XmlRpcException, IOException{
-		  Object out = call(this.serviceName + ".getFirstNeighbors", interactor, species, args);
-		  return (Vector) out;
-	  }
-      
-      /**
-       * @param interactor an id that the data source understands
-       * @param species the species
-       * @param args a table of String->Object entries that the implementing
-       * class understands (for example, p-value thresholds, directed interactions, etc)
-       * @return number of neighbors
-       */
-      public int getNumFirstNeighbors (String interactor, String species, Hashtable args) throws XmlRpcException, IOException{
-          Object out = call(this.serviceName + ".getNumFirstNeighbors", interactor, species, args);
-          return ((Integer)out).intValue();
-      }
-
-
-
 	  /**
 	   * @param interactors a Vector of Strings (ids that the data source understands)
 	   * @param species the species
@@ -340,63 +288,7 @@ public class InteractionDataClient extends AuthenticatedDataClient{
           return ((Integer)out).intValue();
       }
 
-	  /**
-	   * @param interactor an id that the data source understands
-	   * @param species the species
-	   * @return a Vector of Hashtables, each hash contains information about an
-	   * interaction (they are required to contain the following entries:)<br>
-	   * INTERACTOR_1 --> String <br>
-	   * INTERACTOR_2 --> String <br>
-	   * INTERACTION_TYPE -->String <br>
-	   * Each implementing class can add additional entries to the Hashtables
-	   */
-	  public Vector getAdjacentInteractions (String interactor, String species) throws XmlRpcException, IOException{
-		  Object out = call(this.serviceName + ".getAdjacentInteractions", interactor, species);
-		  return (Vector) out;
-	  }
-      
-      /**
-       * @param interactor an id that the data source understands
-       * @param species the species
-       * @return the number of adjacent interactions
-       */
-      public int getNumAdjacentInteractions (String interactor, String species) throws XmlRpcException, IOException{
-          Object out = call(this.serviceName + ".getNumAdjacentInteractions", interactor, species);
-          return ((Integer)out).intValue();
-      }
-
-
-
-	  /**
-	   * @param interactor an id that the data source understands
-	   * @param species the species
-	   * @param args a table of String->Object entries that the implementing
-	   * class understands (for example, p-value thresholds, directed interactions only, etc)
-	   * @return a Vector of Hashtables, each hash contains information about an
-	   * interaction (they are required to contain the following entries:)<br>
-	   * INTERACTOR_1 --> String <br>
-	   * INTERACTOR_2 --> String <br>
-	   * INTERACTION_TYPE -->String <br>
-	   * Each implementing class can add additional entries to the Hashtables
-	   */
-	  public Vector getAdjacentInteractions (String interactor, String species, Hashtable args) throws XmlRpcException, IOException{
-		  Object out = call(this.serviceName + ".getAdjacentInteractions", interactor, species, args);
-		  return (Vector) out;
-	  }
-      
-      /**
-       * @param interactor an id that the data source understands
-       * @param species the species
-       * @param args a table of String->Object entries that the implementing
-       * class understands (for example, p-value thresholds, directed interactions only, etc)
-       * @return number of interactions
-       */
-      public int getNumAdjacentInteractions (String interactor, String species, Hashtable args) throws XmlRpcException, IOException{
-          Object out = call(this.serviceName + ".getNumAdjacentInteractions", interactor, species, args);
-          return ((Integer)out).intValue();
-      }
-
-
+	 
 	    /**
 	   * @param interactors a Vector of Strings (ids that the data source understands)
 	   * @param species the species
@@ -456,66 +348,7 @@ public class InteractionDataClient extends AuthenticatedDataClient{
 
 	  //-------------------------- connecting interactions methods -----------------------
 
-	  /**
-	   * @param interactor1
-	   * @param interactor2
-	   * @param species
-	   * @return a Vector of Hashtables, each hash contains information about an
-	   * interaction between the two interactors, each hash contains these entries:<br>
-	   * INTERACTOR_1 --> String <br>
-	   * INTERACTOR_2 --> String <br>
-	   * INTERACTION_TYPE -->String <br>
-	   * Each implementing class can add additional entries to the Hashtables 
-	   */
-	  public Vector getConnectingInteractions (String interactor1, String interactor2, String species) throws XmlRpcException, IOException{
-		  Object out = call(this.serviceName + ".getConnectingInteractions", interactor1, interactor2, species);
-		  return (Vector) out;
-	  }
-      
-      /**
-       * @param interactor1
-       * @param interactor2
-       * @param species
-       * @return the number of connecting interactions
-       */
-      public int getNumConnectingInteractions (String interactor1, String interactor2, String species) throws XmlRpcException, IOException{
-          Object out = call(this.serviceName + ".getNumConnectingInteractions", interactor1, interactor2, species);
-          return ((Integer)out).intValue();
-      }
-	  
-	  /**
-	   * @param interactor1
-	   * @param interactor2
-	   * @param species
-	   * @param args a table of String->Object entries that the implementing
-	   * class understands (for example, p-value thresholds, directed interactions only, etc)
-	   * @return a Vector of Hashtables, each hash contains information about an
-	   * interaction between the two interactors, each hash contains these entries:<br>
-	   * INTERACTOR_1 --> String <br>
-	   * INTERACTOR_2 --> String <br>
-	   * INTERACTION_TYPE -->String <br>
-	   * Each implementing class can add additional entries to the Hashtables 
-	   */
-	  public Vector getConnectingInteractions (String interactor1, String interactor2, 
-	                                           String species, Hashtable args) throws XmlRpcException, IOException{
-		  Object out = call(this.serviceName + ".getConnectingInteractions", interactor1, interactor2, species, args);
-		  return (Vector) out;
-	  }
-      
-      /**
-       * @param interactor1
-       * @param interactor2
-       * @param species
-       * @param args a table of String->Object entries that the implementing
-       * class understands (for example, p-value thresholds, directed interactions only, etc)
-       * @return the number of connecting interactions
-       */
-      public int getNumConnectingInteractions (String interactor1, String interactor2, 
-                                               String species, Hashtable args) throws XmlRpcException, IOException{
-          Object out = call(this.serviceName + ".getNumConnectingInteractions", interactor1, interactor2, species, args);
-          return ((Integer)out).intValue();
-      }
-      
+	 
 	  /**
 	   * @param interactors
 	   * @param species

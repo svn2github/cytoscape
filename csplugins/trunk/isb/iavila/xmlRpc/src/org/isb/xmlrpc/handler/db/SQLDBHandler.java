@@ -2,7 +2,6 @@ package org.isb.xmlrpc.handler.db;
 
 import java.sql.*;
 import java.util.*;
-import java.lang.*;
 
 /**
  * A handler for any SQL based database, it requires a fully described database
@@ -21,7 +20,7 @@ public class SQLDBHandler implements DBHandler {
 
 	protected Connection connection;
 
-	protected boolean debug = false;
+	protected boolean debug = true;
 
 	/**
 	 * The database url can be set at a later time

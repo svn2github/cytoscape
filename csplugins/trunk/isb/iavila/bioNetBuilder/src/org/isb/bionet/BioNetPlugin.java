@@ -44,6 +44,8 @@ public class BioNetPlugin extends CytoscapePlugin {
 
             this.interactionsClient
                     .addSource("org.isb.bionet.datasource.interactions.ProlinksInteractionsSource");
+            this.interactionsClient
+            .addSource("org.isb.bionet.datasource.interactions.KeggInteractionsSource");
             System.out.println(interactionsClient.getSources());
         } catch (Exception ex) {
             ex.printStackTrace();
