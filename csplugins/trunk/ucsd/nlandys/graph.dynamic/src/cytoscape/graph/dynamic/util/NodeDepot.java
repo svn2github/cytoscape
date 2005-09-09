@@ -4,7 +4,7 @@ package cytoscape.graph.dynamic.util;
 final class NodeDepot
 {
 
-  private final Node m_head;
+  final Node m_head;
 
   NodeDepot()
   {
@@ -15,7 +15,7 @@ final class NodeDepot
   // Don't forget to initialize the node's member variables!
   // Node.nextNode is used internally and will point to some undefined node
   // in the returned Node.
-  Node getNode()
+  final Node getNode()
   {
     final Node returnThis = m_head.nextNode;
     if (returnThis == null) { return new Node(); }
@@ -24,7 +24,7 @@ final class NodeDepot
   }
 
   // node.nextNode is used internally and does not need to be deinitialized.
-  void recycleNode(Node node)
+  final void recycleNode(final Node node)
   {
     node.nextNode = m_head.nextNode;
     m_head.nextNode = node;
