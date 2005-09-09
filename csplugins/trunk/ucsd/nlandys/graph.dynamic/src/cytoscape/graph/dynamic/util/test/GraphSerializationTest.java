@@ -51,44 +51,44 @@ public class GraphSerializationTest
           ("expected restored graph to have proper number of nodes and edges");
     }
 
-//     {
-//       DynamicGraph graph = DynamicGraphFactory.instantiateDynamicGraph();
-//       int[] nodes = new int[100000];
-//       int[] edges = new int[1000000];
-//       for (int i = 0; i < nodes.length; i++) nodes[i] = graph.nodeCreate();
-//       for (int i = 0; i < edges.length; i++)
-//         edges[i] = graph.edgeCreate(nodes[i % nodes.length],
-//                                     nodes[(i * 3) % nodes.length],
-//                                     true);
-//       for (int i = 0; i < nodes.length; i += 2) graph.nodeRemove(nodes[i]);
-//       System.out.println("graph has " + graph.nodes().numRemaining() +
-//                          " nodes and " + graph.edges().numRemaining() +
-//                          " edges");
-//       System.out.println("at one point graph had " + nodes.length +
-//                          " nodes and " + edges.length + " edges");
+    {
+      DynamicGraph graph = DynamicGraphFactory.instantiateDynamicGraph();
+      int[] nodes = new int[100000];
+      int[] edges = new int[1000000];
+      for (int i = 0; i < nodes.length; i++) nodes[i] = graph.nodeCreate();
+      for (int i = 0; i < edges.length; i++)
+        edges[i] = graph.edgeCreate(nodes[i % nodes.length],
+                                    nodes[(i * 3) % nodes.length],
+                                    true);
+      for (int i = 0; i < nodes.length; i += 2) graph.nodeRemove(nodes[i]);
+      System.out.println("graph has " + graph.nodes().numRemaining() +
+                         " nodes and " + graph.edges().numRemaining() +
+                         " edges");
+      System.out.println("at one point graph had " + nodes.length +
+                         " nodes and " + edges.length + " edges");
 
-//       ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
-//       ObjectOutputStream objOut = new ObjectOutputStream(byteOut);
-//       long millisBegin = System.currentTimeMillis();
-//       objOut.writeObject(graph); objOut.flush(); objOut.close();
-//       long millisEnd = System.currentTimeMillis();
-//       System.out.println("serializing graph took " +
-//                          (millisEnd - millisBegin) + " milliseconds");
-//       byte[] serializedData = byteOut.toByteArray();
-//       System.out.println("in serialized form, graph takes " +
-//                          serializedData.length + " bytes");
+      ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+      ObjectOutputStream objOut = new ObjectOutputStream(byteOut);
+      long millisBegin = System.currentTimeMillis();
+      objOut.writeObject(graph); objOut.flush(); objOut.close();
+      long millisEnd = System.currentTimeMillis();
+      System.out.println("serializing graph took " +
+                         (millisEnd - millisBegin) + " milliseconds");
+      byte[] serializedData = byteOut.toByteArray();
+      System.out.println("in serialized form, graph takes " +
+                         serializedData.length + " bytes");
 
-//       ByteArrayInputStream byteIn = new ByteArrayInputStream(serializedData);
-//       millisBegin = System.currentTimeMillis();
-//       ObjectInputStream objIn = new ObjectInputStream(byteIn);
-//       graph = (DynamicGraph) objIn.readObject(); objIn.close();
-//       millisEnd = System.currentTimeMillis();
-//       System.out.println("deserializeing graph took " +
-//                          (millisEnd - millisBegin) + " milliseconds");
-//       System.out.println("deserialized graph has " +
-//                          graph.nodes().numRemaining() + " nodes and " +
-//                          graph.edges().numRemaining() + " edges");
-//     }
+      ByteArrayInputStream byteIn = new ByteArrayInputStream(serializedData);
+      millisBegin = System.currentTimeMillis();
+      ObjectInputStream objIn = new ObjectInputStream(byteIn);
+      graph = (DynamicGraph) objIn.readObject(); objIn.close();
+      millisEnd = System.currentTimeMillis();
+      System.out.println("deserializeing graph took " +
+                         (millisEnd - millisBegin) + " milliseconds");
+      System.out.println("deserialized graph has " +
+                         graph.nodes().numRemaining() + " nodes and " +
+                         graph.edges().numRemaining() + " edges");
+    }
   }
 
 }
