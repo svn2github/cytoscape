@@ -2,48 +2,8 @@ package cytoscape.graph.dynamic.util;
 
 // Package visible.
 // Valid indices: [0, Integer.MAX_VALUE - 1].
-final class EdgeArray implements java.io.Externalizable
+final class EdgeArray
 {
-
-  // Externalizable.
-  public final void writeExternal(final java.io.ObjectOutput out)
-    throws java.io.IOException {
-    out.writeInt(m_edgeArr.length);
-    for (int i = 0; i < m_edgeArr.length; i++) {
-      final Edge edge = m_edgeArr[i];
-      if (edge == null) { out.writeInt(-1); continue; }
-      out.writeInt(edge.sourceNode);
-      out.writeInt(edge.targetNode);
-      out.writeBoolean(edge.directed); }
-    for (int i = 0; i < m_edgeArr.length; i++) {
-      final Edge edge = m_edgeArr[i];
-      if (edge == null) continue;
-      out.writeInt(edge.nextOutEdge == null ? -1 : edge.nextOutEdge.edgeId);
-      out.writeInt(edge.prevOutEdge == null ? -1 : edge.prevOutEdge.edgeId);
-      out.writeInt(edge.nextInEdge == null ? -1 : edge.nextInEdge.edgeId);
-      out.writeInt(edge.prevInEdge == null ? -1 : edge.prevInEdge.edgeId); } }
-  public final void readExternal(final java.io.ObjectInput in)
-    throws java.io.IOException {
-    m_edgeArr = new Edge[in.readInt()];
-    for (int i = 0; i < m_edgeArr.length; i++) {
-      final int sourceNode = in.readInt();
-      if (sourceNode < 0) continue;
-      final Edge edge = (m_edgeArr[i] = new Edge());
-      edge.edgeId = i;
-      edge.sourceNode = sourceNode;
-      edge.targetNode = in.readInt();
-      edge.directed = in.readBoolean(); }
-    for (int i = 0; i < m_edgeArr.length; i++) {
-      final Edge edge = m_edgeArr[i];
-      if (edge == null) continue;
-      final int nextOutEdge = in.readInt();
-      final int prevOutEdge = in.readInt();
-      final int nextInEdge = in.readInt();
-      final int prevInEdge = in.readInt();
-      if (nextOutEdge >= 0) edge.nextOutEdge = m_edgeArr[nextOutEdge];
-      if (prevOutEdge >= 0) edge.prevOutEdge = m_edgeArr[prevOutEdge];
-      if (nextInEdge >= 0) edge.nextInEdge = m_edgeArr[nextInEdge];
-      if (prevInEdge >= 0) edge.prevInEdge = m_edgeArr[prevInEdge]; } }
 
   private final static int INITIAL_CAPACITY = 0; // Must be non-negative.
 
