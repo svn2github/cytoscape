@@ -291,11 +291,14 @@ final class DynamicGraphRepresentation
   public final void writeExternal(final java.io.ObjectOutput out)
     throws java.io.IOException
   {
+    // Start by serializing m_nodeDepot and m_edgeDepot - they have
+    // no dependencies and no shared references.
   }
 
   public final void readExternal(final java.io.ObjectInput in)
     throws java.io.IOException
   {
+    // Unserialize m_nodeDepot and m_edgeDepot.
   }
 
 }
