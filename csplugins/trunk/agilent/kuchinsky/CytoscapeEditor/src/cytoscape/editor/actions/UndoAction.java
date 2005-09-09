@@ -11,6 +11,8 @@ import javax.swing.Action;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
 
+import cytoscape.editor.CytoscapeEditorManager;
+
 /**
  * action called when user invokes "undo" operation
  * 
@@ -43,10 +45,15 @@ public class UndoAction extends AbstractAction {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		try {
-			undo.undo();
+			// AJK: 09/05/05 BEGIN
+			// accommodate one UndoManager per NetworkView
+//			undo.undo();
+			UndoManager undoMgr = CytoscapeEditorManager.getCurrentUndoManager();
+			undoMgr.undo();
+			// AJK: 09/05/05 END
 		} catch (CannotUndoException ex) {
 			System.out.println("Unable to undo: " + ex);
-			ex.printStackTrace();
+//			ex.printStackTrace();
 		}
 		update();
 		redoAction.update();
@@ -57,7 +64,12 @@ public class UndoAction extends AbstractAction {
 	 *
 	 */
 	public void update() {
-		if (undo.canUndo()) {
+		// AJK: 09/05/05
+		// accommodate one UndoManager per NetworkView
+//		if (undo.canUndo()) {
+		UndoManager undoMgr = CytoscapeEditorManager.getCurrentUndoManager();
+		if (undoMgr.canUndo()) {
+		// AJK: 09/05/05 END		
 			setEnabled(true);
 			putValue(Action.NAME, undo.getUndoPresentationName());
 		} else {

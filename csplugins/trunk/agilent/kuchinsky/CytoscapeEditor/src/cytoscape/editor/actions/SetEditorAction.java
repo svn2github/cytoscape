@@ -72,6 +72,7 @@ public class SetEditorAction extends CytoscapeAction {
 		catch (InvalidEditorException ex)
 		{
 		    // TODO: put some error handling here	
+			ex.printStackTrace();
 		}
 	}
 }	

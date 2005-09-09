@@ -7,30 +7,14 @@ package cytoscape.editor.event;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.geom.Point2D;
-
-import javax.swing.JPanel;
 
 import phoebe.PGraphView;
-import phoebe.PNodeView;
 import phoebe.PhoebeCanvasDropEvent;
 import phoebe.PhoebeCanvasDropListener;
-import cytoscape.CyNode;
-import cytoscape.Cytoscape;
-import cytoscape.data.Semantics;
 import edu.umd.cs.piccolo.PCanvas;
-import edu.umd.cs.piccolo.PNode;
 import edu.umd.cs.piccolo.event.PBasicInputEventHandler;
 import edu.umd.cs.piccolo.event.PInputEvent;
-import edu.umd.cs.piccolo.event.PInputEventFilter;
-import edu.umd.cs.piccolo.nodes.PPath;
-import edu.umd.cs.piccolox.util.PFixedWidthStroke;
 import edu.umd.cs.piccolox.util.PNodeLocator;
-import giny.model.Node;
-import giny.view.NodeView;
 
 /**
  * 

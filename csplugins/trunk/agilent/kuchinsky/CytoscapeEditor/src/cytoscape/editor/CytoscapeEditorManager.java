@@ -53,6 +53,8 @@ public abstract class CytoscapeEditorManager {
 	 * holding area for deleted nodes
 	 * used when undo-ing deletes.
 	 */
+	// AJK: 09/05/05: nodeClipBoard, edgeClipBoard, and networkClipBoard seem to be set but never referenced 
+	//                so I will not bother making one per NetworkView
 	private static IntArrayList nodeClipBoard;
 
 	/**
@@ -74,6 +76,11 @@ public abstract class CytoscapeEditorManager {
 	 * be undone.  Undo is multi-level.  There is also a multi-level redo
 	 */
 	private static UndoManager undo;
+	
+	/**
+	 * extension to support one UndoManager per NetworkView
+	 */
+	private static UndoManager currentUndoManager;
 
 	
 	/**
@@ -125,6 +132,12 @@ public abstract class CytoscapeEditorManager {
 	 * map that associates a network view with its editor
 	 */
 	protected static HashMap editorViewMap = new HashMap();
+	
+	
+	/*
+	 * map that associates a network view with its UndoManager
+	 */
+	protected static HashMap undoManagerViewMap = new HashMap();
 
 	/**
 	 * map that associates a network with its editor
@@ -146,6 +159,19 @@ public abstract class CytoscapeEditorManager {
 	 */
 	private static int networkNameCounter = 0;
 	
+	
+	/**
+	 * CytoscapeAttribute: NODE_TYPE
+	 */
+	public static final String NODE_TYPE = "NODE_TYPE";
+	
+	
+	/**
+	 * CytoscapeAttribute: EDGE_TYPE
+	 *
+	 */
+	public static final String EDGE_TYPE = "EDGE_TYPE";
+	
 	/**
 	 * initial setup of controls, menu items, undo/redo actions, and keyboard accelerators
 	 *
@@ -158,11 +184,14 @@ public abstract class CytoscapeEditorManager {
 		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("File.New");
 		Cytoscape.getDesktop().getCyMenus().addAction(newNetwork);
 
+
 		undo = new UndoManager();
 		undoAction = new UndoAction(undo);
 		redoAction = new RedoAction(undo);
 		undoAction.setRedoAction(redoAction);
 		redoAction.setUndoAction(undoAction);
+		// AJK: 09/06/05 accommodate one undo manager per network view.  Set the global one here.
+		setCurrentUndoManager(undo);
 
 		JMenuItem undoItem = new JMenuItem(undoAction);
 		JMenuItem redoItem = new JMenuItem(redoAction);
@@ -296,6 +325,21 @@ public abstract class CytoscapeEditorManager {
 			event.start((PGraphView) newView);
 			canvas.addPhoebeCanvasDropListener(event);
 		}
+		
+		// AJK: 09/06/05 BEGIN
+		//   setup and undo manager for this network view
+		Object undoObj = getUndoManagerForView(newView);
+		if (undoObj instanceof UndoManager)
+		{
+			setCurrentUndoManager ((UndoManager) undoObj);
+		}
+		else
+		{
+			UndoManager newUndo = new UndoManager();
+			setUndoManagerForView (newView, newUndo);
+			setCurrentUndoManager (newUndo);
+		}
+		// AJK: 09/06/05 END
 
 		canvas.getLayer().setBounds(0, 0, canvasWidth, canvasHeight);
 
@@ -457,14 +501,17 @@ public abstract class CytoscapeEditorManager {
 		CyNetwork net = Cytoscape.getCurrentNetwork();
 		if (attribute != null) {
 			net.setNodeAttributeValue(cn, attribute, value);
-			net.setNodeAttributeValue(cn, "NodeType", value);
+			net.setNodeAttributeValue(cn, NODE_TYPE, value);
+			net.restoreNode(cn);
 		}
 
 		// hack for BioPAX
 		// TODO: move this hack for BIOPAX into the PaletteNetworkEditEventHandler code
+		/*
 		if (attribute.equals("BIOPAX_NODE_TYPE")) {
 			net.setNodeAttributeValue(cn, "BIOPAX_NAME", nodeName);
 		}
+		*/
 
 		return cn;
 	}
@@ -487,10 +534,11 @@ public abstract class CytoscapeEditorManager {
 			String nodeType) {
 		CyNode cn = Cytoscape.getCyNode(nodeName, create);
 		CyNetwork net = Cytoscape.getCurrentNetwork();
+		net.restoreNode(cn);
 		if (nodeType != null) {
-			net.setNodeAttributeValue(cn, "NodeType", nodeType);
-			System.out.println ("NodeType set to " + 
-					net.getNodeAttributeValue(cn, "NodeType"));
+			net.setNodeAttributeValue(cn, NODE_TYPE, nodeType);
+			System.out.println ("NodeType for CyNode " + cn + " set to " + 
+					net.getNodeAttributeValue(cn, NODE_TYPE));
 		}
 		return cn;
 	}
@@ -563,7 +611,7 @@ public abstract class CytoscapeEditorManager {
 		CyNetwork net = Cytoscape.getCurrentNetwork();
 		net.restoreEdge(edge);
 		if (edgeType != null) {
-			net.setEdgeAttributeValue(edge, "EdgeType", edgeType);
+			net.setEdgeAttributeValue(edge, EDGE_TYPE, edgeType);
 		}
 		return edge;
 	}
@@ -683,7 +731,7 @@ public abstract class CytoscapeEditorManager {
 
 	/**
 	 * get the editor that is assigned to this CyNetworkView
-	 * @param net a CyNetworkView
+	 * @param view a CyNetworkView
 	 * @return the editor assigned to this CyNetworkView
 	 */
 	public static CytoscapeEditor getEditorForView(CyNetworkView view) {
@@ -698,7 +746,7 @@ public abstract class CytoscapeEditorManager {
 	 
 	/**
      * set the editor for a CyNetworkView
-     * @param net the CyNetworkView
+     * @param view the CyNetworkView
      * @param editor the editor to be assigned to the CyNetworkView
      */
 	public static void setEditorForView(CyNetworkView view,
@@ -706,6 +754,34 @@ public abstract class CytoscapeEditorManager {
 		editorViewMap.put(view, editor);
 	}
 
+
+	/**
+	 * get the UndoManager that is assigned to this CyNetworkView
+	 * @param view a CyNetworkView
+	 * @return the editor assigned to this CyNetworkView
+	 */
+	public static UndoManager getUndoManagerForView(CyNetworkView view) {
+		Object obj = editorViewMap.get(view);
+		if (obj != null) {
+			if (obj instanceof UndoManager) {
+				return (UndoManager) obj;
+			}
+		}
+		return null;
+	}
+	 
+	/**
+     * set the UndoManager for a CyNetworkView
+     * @param view the CyNetworkView
+     * @param editor the editor to be assigned to the CyNetworkView
+     */
+	public static void setUndoManagerForView(CyNetworkView view,
+			UndoManager undo) {
+		editorViewMap.put(view, undo);
+	}
+
+	
+	
 	/**
 	 * adds an undoable edit to the UndoManager.  Currently the Cytoscape Editor framework
 	 * supports undo/redo for deletion operations.  This method is typically invoked 
@@ -713,7 +789,13 @@ public abstract class CytoscapeEditorManager {
 	 * @param edit the edit method to be added to the UndoManager.  
 	 */
 	public static void addEdit(UndoableEdit edit) {
-		undo.addEdit(edit);
+		// AJK: 09/05/05 BEGIN 
+		// accommodate one UndoManager per each Network view
+//		undo.addEdit(edit);
+		UndoManager undoMgr = getCurrentUndoManager();
+		undoMgr.addEdit(edit);
+		// AJK: 09/05/05 END
+		
 		undoAction.update();
 		redoAction.update();
 	}
@@ -828,5 +910,17 @@ public abstract class CytoscapeEditorManager {
 	 */
 	public static void setRunningEditorFramework(boolean runningEditorFramework) {
 		CytoscapeEditorManager.runningEditorFramework = runningEditorFramework;
+	}
+	/**
+	 * @return Returns the currentUndoManager.
+	 */
+	public static UndoManager getCurrentUndoManager() {
+		return currentUndoManager;
+	}
+	/**
+	 * @param currentUndoManager The currentUndoManager to set.
+	 */
+	public static void setCurrentUndoManager(UndoManager currentUndoManager) {
+		CytoscapeEditorManager.currentUndoManager = currentUndoManager;
 	}
 }

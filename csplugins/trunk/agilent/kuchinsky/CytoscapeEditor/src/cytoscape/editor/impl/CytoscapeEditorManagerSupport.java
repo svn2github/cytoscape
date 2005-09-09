@@ -55,6 +55,14 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener {
 		if (e.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_CREATED))
 		{
 		}
+		else if (e.getPropertyName().equals(Cytoscape.ATTRIBUTES_CHANGED))
+		{
+			// implement ATTRIBUTES_CHANGED handler
+			System.out.println ("Property changed: " + e.getPropertyName());
+			System.out.println ("Old value = " + e.getOldValue());
+			System.out.println ("New value = " + e.getNewValue());
+			
+		}
 		else if (e.getPropertyName().equals(
 				CytoscapeDesktop.NETWORK_VIEW_FOCUSED)) {
 

@@ -196,7 +196,7 @@ public class DeleteAction extends CytoscapeAction {
 					network.hideEdges(edges);
 					network.hideNodes(nodes);
 					CytoscapeEditorManager.getNodeClipBoard().elements(nodes);
-					CytoscapeEditorManager.getEdgeClipBoard().elements(edges);
+					CytoscapeEditorManager.getEdgeClipBoard().elements(edges); // sets elements
 				}
 
 			}

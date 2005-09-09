@@ -157,7 +157,8 @@ public class BasicCytoscapeEditor implements CytoscapeEditor {
 		_addNodeButton = _toolBar.add(new AddNodeAction());
 		_addNodeButton.setIcon(new ImageIcon(getClass().getResource(
 //				ICONS_REL_LOC + "rect.gif")));
-				ICONS_REL_LOC + "ovalNodeCursor.gif")));
+//				ICONS_REL_LOC + "ovalNodeCursor.gif")));
+		ICONS_REL_LOC + "node16_centered.gif")));
 		_addNodeButton.setToolTipText("Add a new Node");
 		_addNodeButton.setDisabledIcon(new ImageIcon(getClass().getResource(
 				ICONS_REL_LOC + "Disabledrect.gif")));
@@ -169,7 +170,8 @@ public class BasicCytoscapeEditor implements CytoscapeEditor {
 
 		_addEdgeButton = _toolBar.add(new AddEdgeAction());
 		_addEdgeButton.setIcon(new ImageIcon(getClass().getResource(
-				ICONS_REL_LOC + "UpRightWhite.gif")));
+//				ICONS_REL_LOC + "UpRightWhite.gif")));
+				ICONS_REL_LOC + "UpRightBlue.gif")));
 		_addEdgeButton.setToolTipText("Add a new Edge");
 		_addEdgeButton.setDisabledIcon(new ImageIcon(getClass().getResource(
 				ICONS_REL_LOC + "DisabledUpRightWhite.gif")));
@@ -190,7 +192,7 @@ public class BasicCytoscapeEditor implements CytoscapeEditor {
 				"NodePointer");
 
 		img = new ImageIcon(getClass().getResource(
-				ICONS_REL_LOC + "fit36.gif"));
+				ICONS_REL_LOC + "fit36_blue_cursor.gif"));
 		Image edgePointer = img.getImage();
 		_edgeCursor = tk.createCustomCursor(edgePointer, new Point(30, 1),
 				"EdgePointer");
@@ -366,6 +368,13 @@ public class BasicCytoscapeEditor implements CytoscapeEditor {
 			} else {
 				event.setMode(event.SELECT_MODE);
 				event.clearNodeLabeler();
+			}
+			
+			// clear any partial edges
+			if (event.isEdgeStarted())
+			{
+				event.setEdgeStarted(false);
+				event.getCanvas().getLayer().removeChild(event.getEdge());
 			}
 		}
 	}

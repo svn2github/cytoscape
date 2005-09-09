@@ -26,6 +26,7 @@ import javax.swing.JPanel;
 
 import phoebe.PGraphView;
 import phoebe.PNodeView;
+import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
@@ -126,6 +127,17 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 	CytoscapeEditor _caller;
 
 	/**
+	 * CytoscapeAttribute: NODE_TYPE
+	 */
+	public static final String NODE_TYPE = "NODE_TYPE";
+
+	/**
+	 * CytoscapeAttribute: EDGE_TYPE
+	 *  
+	 */
+	public static final String EDGE_TYPE = "EDGE_TYPE";
+
+	/**
 	 * flag that indicates whether we are currently in the process of handling a
 	 * dropped edge TODO: handling dropped edges should probably be moved to the
 	 * PaletteNetworkEditEventHandler
@@ -203,7 +215,8 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 				locator.locatePoint(nextPoint);
 				nextPoint = e.getPickedNode().localToGlobal(nextPoint);
 			}
-			if (onNode && !edgeStarted) {
+			if (onNode && !edgeStarted && (e.isControlDown()
+					|| (getMode() == CONNECT_MODE))) {
 				// Begin Edge creation
 				edgeStarted = true;
 				node = (NodeView) e.getPickedNode();
@@ -227,9 +240,10 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 				Node source_node = source.getNode();
 				Node target_node = target.getNode();
 
-				CytoscapeEditorManager.addEdge(source_node, target_node,
-						cytoscape.data.Semantics.INTERACTION, "default", true,
-						"DefaultEdge");
+				CyEdge myEdge = CytoscapeEditorManager.addEdge(source_node,
+						target_node, cytoscape.data.Semantics.INTERACTION,
+						"default", true, "DefaultEdge");
+				//				Cytoscape.getCurrentNetwork().restoreEdge(myEdge);
 
 				getCanvas().getLayer().removeChild(edge);
 				edge = null;
@@ -248,7 +262,7 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 
 				} else if (getMode() == LABEL_MODE) {
 
-					// add a freestanding label 
+					// add a freestanding label
 					// functionality not available in Cytoscape 2.2
 					cn = CytoscapeEditorManager.addNode("node" + counter, true,
 							"Label");
@@ -256,13 +270,13 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 
 				counter++;
 				double zoom = Cytoscape.getCurrentNetworkView().getZoom();
-				Cytoscape.getCurrentNetwork().restoreNode(cn);
+				//				Cytoscape.getCurrentNetwork().restoreNode(cn);
 				NodeView nv = Cytoscape.getCurrentNetworkView().getNodeView(cn);
 
 				// do node labeling
 				_nodeBeingLabeled = cn;
 				_nodeViewBeingLabeled = nv;
-				nv.setOffset(nextPoint.getX(), nextPoint.getY());	
+				nv.setOffset(nextPoint.getX(), nextPoint.getY());
 				canvas.add(_nodeLabelerPanel);
 				_nodeLabelerPanel.setVisible(true);
 				_nodeLabeler.setText(cn.getIdentifier());
@@ -313,8 +327,6 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 		}
 	}
 
-
-
 	/**
 	 * updates rendering of edge if an edge is under construction
 	 */
@@ -332,7 +344,8 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 	}
 
 	/**
-	 * if hovering over a node, then highlight the node by temporarily thickening its border
+	 * if hovering over a node, then highlight the node by temporarily
+	 * thickening its border
 	 */
 	public void mouseEntered(PInputEvent e) {
 		if (e.getPickedNode() instanceof NodeView) {
@@ -352,7 +365,8 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 	}
 
 	/**
-	 * if a node was being highlighted due to mouseEnter() event, then reset its width back to default width
+	 * if a node was being highlighted due to mouseEnter() event, then reset its
+	 * width back to default width
 	 */
 	public void mouseExited(PInputEvent e) {
 		if (e.getPickedNode() instanceof NodeView) {
@@ -374,7 +388,6 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 		if (e.getPickedNode() instanceof NodeView) {
 		}
 	}
-
 
 	/**
 	 * updates the rubberbanded edge line as the mouse is moved
@@ -399,11 +412,9 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 		edge.setPathToPolyline(new Point2D[] { startPoint, nextPoint });
 	}
 
-
-
 	/**
 	 * resets the variables associated with the NodeLabeler object for a node
-	 *
+	 *  
 	 */
 	public void clearNodeLabeler() {
 
@@ -433,8 +444,8 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 	}
 
 	/**
-	 * called when a change is made in the NodeLabeler, either by typing or by hitting RETURN
-	 * update the text field to reflect the changes made
+	 * called when a change is made in the NodeLabeler, either by typing or by
+	 * hitting RETURN update the text field to reflect the changes made
 	 */
 	public void actionPerformed(ActionEvent evt) {
 		String text = _nodeLabeler.getText();
@@ -448,14 +459,21 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 				//    hack to restore NodeType attribute, which seems to be
 				//    obliterated by the adding of name mapping
 				CyNetwork net = Cytoscape.getCurrentNetwork();
-				Object nodeType = net.getNodeAttributeValue(
-						_nodeBeingLabeled, "NodeType");
-				System.out.println("NodeType = " + nodeType);
+				net.setNodeAttributeValue(_nodeBeingLabeled, "canonicalName",
+						text);
+
+				//				Object nodeType = net.getNodeAttributeValue(
+				//						_nodeBeingLabeled, NODE_TYPE);
+				//				System.out.println ("Node being labeled = " +
+				// _nodeBeingLabeled);
+				//				System.out.println("NodeType = " + nodeType);
 				// AJK: 07/17/05 END
-				
-				_nodeBeingLabeled.setIdentifier(text);
-				net.setNodeAttributeValue(_nodeBeingLabeled, "NodeType",
-						nodeType);
+
+				//				_nodeBeingLabeled.setIdentifier(text);
+				//				System.out.println ("Node being labeled after set Identifier
+				// = " + _nodeBeingLabeled);
+				//				net.setNodeAttributeValue(_nodeBeingLabeled, NODE_TYPE,
+				//						nodeType);
 				// TODO: check if this is obsolete in Cytoscape 2.1?
 				//					Semantics.assignNodeAliases(_nodeBeingLabeled, null, null);
 				clearNodeLabeler();
@@ -472,7 +490,8 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 	}
 
 	/**
-	 * @param edge the edge to set.
+	 * @param edge
+	 *            the edge to set.
 	 */
 	public void setEdge(PPath edge) {
 		this.edge = edge;
@@ -487,8 +506,9 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 
 	/**
 	 * set the flag that indicates whether an edge is under construction
+	 * 
 	 * @param edgeStarted
-	 *           
+	 *  
 	 */
 	public void setEdgeStarted(boolean edgeStarted) {
 		this.edgeStarted = edgeStarted;
@@ -502,8 +522,9 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 	}
 
 	/**
-	 * @param locator The locator to set.
-	 *            
+	 * @param locator
+	 *            The locator to set.
+	 *  
 	 */
 	public void setLocator(PNodeLocator locator) {
 		this.locator = locator;
@@ -517,8 +538,9 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 	}
 
 	/**
-	 * @param nextPoint The nextPoint to set
-	 *            
+	 * @param nextPoint
+	 *            The nextPoint to set
+	 *  
 	 */
 	public void setNextPoint(Point2D nextPoint) {
 		this.nextPoint = nextPoint;
@@ -532,8 +554,9 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 	}
 
 	/**
-	 * @param node The node to set.
-	 *            
+	 * @param node
+	 *            The node to set.
+	 *  
 	 */
 	public void setNode(NodeView node) {
 		this.node = node;
@@ -547,8 +570,9 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 	}
 
 	/**
-	 * @param startPoint  The startPoint to set.
-	 *           
+	 * @param startPoint
+	 *            The startPoint to set.
+	 *  
 	 */
 	public void setStartPoint(Point2D startPoint) {
 		this.startPoint = startPoint;
@@ -562,35 +586,40 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 	}
 
 	/**
-	 * @param view The view to set.
-	 *            
+	 * @param view
+	 *            The view to set.
+	 *  
 	 */
 	public void setView(PGraphView view) {
 		this.view = view;
 	}
 
 	/**
-	 * @return Returns the flag that indicates whether we are handling the drop of an edge onto the canvas
-	 * TODO: move edge drop handling into PaletteNetworkEditEventHandler
+	 * @return Returns the flag that indicates whether we are handling the drop
+	 *         of an edge onto the canvas TODO: move edge drop handling into
+	 *         PaletteNetworkEditEventHandler
 	 */
 	public boolean isHandlingEdgeDrop() {
 		return handlingEdgeDrop;
 	}
 
 	/**
-	 * @param handlingEdgeDrop sets the flag that indicates whether we are handling the drop of 
-	 * an edge onto the canvas
+	 * @param handlingEdgeDrop
+	 *            sets the flag that indicates whether we are handling the drop
+	 *            of an edge onto the canvas
 	 * 
-	 *            
+	 *  
 	 */
 	public void setHandlingEdgeDrop(boolean handlingEdgeDrop) {
 		this.handlingEdgeDrop = handlingEdgeDrop;
 	}
 
 	/**
-	 * starts up the event handler on the input network view
-	 * adds an input event listener to the view's canvas
-	 * @param view a Cytoscape network view
+	 * starts up the event handler on the input network view adds an input event
+	 * listener to the view's canvas
+	 * 
+	 * @param view
+	 *            a Cytoscape network view
 	 */
 	public void start(PGraphView view) {
 		this.view = view;
@@ -599,9 +628,9 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 	}
 
 	/**
-	 * stops the event handler by removing the input event listener from the canvas
-	 * this is called when the user switches between editors
-	 *
+	 * stops the event handler by removing the input event listener from the
+	 * canvas this is called when the user switches between editors
+	 *  
 	 */
 	public void stop() {
 		if (canvas != null) {
@@ -611,11 +640,10 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 		}
 	}
 
-
 	private class EnterKeyListener extends KeyAdapter {
 		// Although using keyTyped is the preferred way of doing things,
 		// the DELETE key is not supported.
-		
+
 		/**
 		 * pressing the enter key clears the NodeLabeler
 		 */
@@ -629,9 +657,48 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 	protected class LabelFieldListener extends TextFieldListener {
 		protected void setDataObjValue(String field_val) {
 
-			// shift to uppercase?
-			//				String _field_val = field_val.toUpperCase();
-			_nodeBeingLabeled.setIdentifier(field_val);
+			// AJK: 09/08/05 BEGIN
+			//    diagnostic to debug attribute setting
+			CyNetwork net = Cytoscape.getCurrentNetwork();
+			Object nodeType = net.getNodeAttributeValue(_nodeBeingLabeled,
+					NODE_TYPE);
+			//			System.out.println ("Node being labeled before setIdentifier = "
+			// + _nodeBeingLabeled);
+			//			System.out.println("NodeType = " + nodeType);
+			// AJK: 09/08/05 END
+
+			/*
+			 * // AJK: 09/08/05 BEGIN // hack to copy and restore attributes
+			 * when identifier is changed. Node [] n = new Node [1]; n[0] =
+			 * _nodeBeingLabeled; String [] attribs =
+			 * net.getNodeAttributesList(n); Object [] values = new
+			 * Object[attribs.length]; for (int i = 0; i < attribs.length; i++ ) {
+			 * values[i] = net.getNodeAttributeValue(_nodeBeingLabeled,
+			 * attribs[i]); System.out.println ("Attribute = " + attribs[i] + ",
+			 * Value = " + values[i]); } // AJK: END first part of hack
+			 *  // shift to uppercase? // String _field_val =
+			 * field_val.toUpperCase();
+			 * _nodeBeingLabeled.setIdentifier(field_val);
+			 * 
+			 *  // AJK: 09/08/05 BEGIN // hack for restoring node attributes
+			 * when identifier is changed for (int i = 0; i < attribs.length;
+			 * i++ ) { System.out.println ("For node " + _nodeBeingLabeled + ",
+			 * setting attribute " + attribs [i] + " to " + values[i]); if
+			 * (values[i] != null) {
+			 * net.setNodeAttributeValue(_nodeBeingLabeled, attribs[i],
+			 * values[i]); } } // AJK: 09/08/05 END
+			 * 
+			 * 
+			 * 
+			 * nodeType = net.getNodeAttributeValue( _nodeBeingLabeled,
+			 * NODE_TYPE); System.out.println ("Node being labeled after
+			 * setIdentifier = " + _nodeBeingLabeled);
+			 * System.out.println("NodeType = " + nodeType);
+			 */
+
+			net.setNodeAttributeValue(_nodeBeingLabeled, "canonicalName",
+					field_val);
+
 			PNodeView pnv = (PNodeView) _nodeViewBeingLabeled;
 			pnv.setLabelText(field_val);
 		}

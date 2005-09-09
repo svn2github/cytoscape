@@ -123,7 +123,7 @@
 <copy file="${build.dir}/${plugin.name}.jar" todir="${cytoroot.dir}/cytoscape-2.1/plugins"/>
    		<copy file="${build.dir}/${plugin.name}.jar" todir="../cytoscape-2.1/release/plugins"/>
    		-->
-   		<copy file="${build.dir}/${plugin.name}.jar" todir="../cytoscape/plugins/extras"/>
+   		<copy file="${build.dir}/${plugin.name}.jar" todir="../cytoscape/plugins/core"/>
 	</target>
 
 </project>

@@ -58,8 +58,7 @@ public class NewNetworkAction extends CytoscapeAction {
 
 		CytoscapeEditor cyEditor = CytoscapeEditorManager.getCurrentEditor();
 		if (cyEditor == null) {
-			// TODO: set up a dialog box for the user to prompt that they must
-			// first set up an editor
+
 			String expDescript = "You must first set up an editor for Cytoscape via the File->SetEditor menu item.";
 			String title = "Cytoscape Editor not yet set";
 			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), expDescript,

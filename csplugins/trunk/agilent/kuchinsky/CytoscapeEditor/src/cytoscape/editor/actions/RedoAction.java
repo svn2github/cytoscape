@@ -11,6 +11,8 @@ import javax.swing.Action;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.UndoManager;
 
+import cytoscape.editor.CytoscapeEditorManager;
+
 /**
  * redo an operation that has been undone
  * @author Allan Kuchinsky, Agilent Technologies
@@ -38,7 +40,12 @@ public class RedoAction extends AbstractAction {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		try {
-			undo.redo();
+			// AJK: 09/05/05 BEGIN
+			// accommodate one UndoManager per NetworkView
+//			undo.redo();
+			UndoManager undoMgr = CytoscapeEditorManager.getCurrentUndoManager();
+			undoMgr.redo();
+			// AJK: 09/05/05 END			
 		} catch (CannotRedoException ex) {
 			System.out.println("Unable to redo: " + ex);
 			ex.printStackTrace();
@@ -55,7 +62,11 @@ public class RedoAction extends AbstractAction {
 
 		System.out.println("REDO: " + undo.canRedo());
 
-		if (undo.canRedo()) {
+		// accommodate one UndoManager per NetworkView
+//		if (undo.canRedo()) {
+		UndoManager undoMgr = CytoscapeEditorManager.getCurrentUndoManager();
+		if (undoMgr.canRedo()) {
+		// AJK: 09/05/05 END			if (undo.canRedo()) {
 			setEnabled(true);
 			putValue(Action.NAME, undo.getRedoPresentationName());
 		} else {
