@@ -3,11 +3,15 @@ package cytoscape.geom.rtree.test;
 import cytoscape.geom.rtree.RTree;
 import cytoscape.util.intr.IntBTree;
 import cytoscape.util.intr.IntEnumerator;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 public class BasicQuietRTreeTest
 {
 
-  public static void main(String[] args)
+  public static void main(String[] args) throws Exception
   {
     RTree tree = new RTree(3);
 
@@ -255,7 +259,8 @@ public class BasicQuietRTreeTest
           extentsArr[2] != 3.75 || extentsArr[3] != 3.25)
         throw new IllegalStateException("extents from query wrong");
 
-      iter = tree.queryOverlap(-1.5f, 0.25f, 0.25f, 3.0f, extentsArr, 0, false);
+      iter = tree.queryOverlap(-1.5f, 0.25f, 0.25f, 3.0f,
+                               extentsArr, 0, false);
       if (iter.numRemaining() != 3)
         throw new IllegalStateException("expected query to generate 3 hits");
       cache.insert(0); cache.insert(5); cache.insert(9); foo = 0;
@@ -494,6 +499,17 @@ public class BasicQuietRTreeTest
           tree.insert(k, k, k, k + 5, k + 5);
         for (int k = (j * 1000) + 28; k < stop; k++) tree.delete(k); }
     } // END DEPTH FOUR TEST.
+
+    { // BEGIN SERIALIZATION TEST.
+      ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+      ObjectOutputStream objOut = new ObjectOutputStream(byteOut);
+      objOut.writeObject(tree); objOut.flush(); objOut.close();
+      ByteArrayInputStream byteIn =
+        new ByteArrayInputStream(byteOut.toByteArray());
+      ObjectInputStream objIn = new ObjectInputStream(byteIn);
+      tree = (RTree) objIn.readObject();
+      objIn.close();
+    } // END SERIALIZATION TEST.
 
     { // BEGIN ORDER-PRESERVING SUBQUERY TEST.
       if (tree.size() != 28)
