@@ -1,7 +1,12 @@
 package cytoscape.graph.dynamic.util;
 
+// Package visible.
 final class NodeDepot implements java.io.Serializable
 {
+
+//   // Externalizable.  Docs say instantiated using public no-arg constructor.
+//   public final void writeExternal(final java.io.ObjectOutput out) {}
+//   public final void readExternal(final java.io.ObjectInput in) {}
 
   private final Node m_head;
 
@@ -22,7 +27,6 @@ final class NodeDepot implements java.io.Serializable
     return returnThis;
   }
 
-  // Deinitialize the object's members yourself if you need or want to.
   // node.nextNode is used internally and does not need to be deinitialized.
   void recycleNode(Node node)
   {

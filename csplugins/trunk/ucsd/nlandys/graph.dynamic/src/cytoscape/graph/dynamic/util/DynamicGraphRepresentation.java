@@ -16,8 +16,6 @@ final class DynamicGraphRepresentation
   private int m_maxEdge;
   private final NodeArray m_nodes;
   private final EdgeArray m_edges;
-  private final IntStack m_freeNodes;
-  private final IntStack m_freeEdges;
   private final EdgeDepot m_edgeDepot;
   private final NodeDepot m_nodeDepot;
 
@@ -34,8 +32,6 @@ final class DynamicGraphRepresentation
     m_maxEdge = -1;
     m_nodes = new NodeArray();
     m_edges = new EdgeArray();
-    m_freeNodes = new IntStack();
-    m_freeEdges = new IntStack();
     m_edgeDepot = new EdgeDepot();
     m_nodeDepot = new NodeDepot();
     m_stack = new IntStack();
@@ -83,14 +79,13 @@ final class DynamicGraphRepresentation
   {
     final Node n = m_nodeDepot.getNode();
     final int returnThis;
-    if (m_freeNodes.size() > 0) returnThis = m_freeNodes.pop();
-    else returnThis = ++m_maxNode;
+    if (n.nodeId < 0) returnThis = (n.nodeId = ++m_maxNode);
+    else returnThis = n.nodeId;
     m_nodes.setNodeAtIndex(n, returnThis);
     m_nodeCount++;
     n.nextNode = m_firstNode;
     if (m_firstNode != null) m_firstNode.prevNode = n;
     m_firstNode = n;
-    n.nodeId = returnThis;
     n.outDegree = 0; n.inDegree = 0; n.undDegree = 0; n.selfEdges = 0;
     return returnThis;
   }
@@ -107,7 +102,6 @@ final class DynamicGraphRepresentation
     else m_firstNode = n.nextNode;
     if (n.nextNode != null) n.nextNode.prevNode = n.prevNode;
     m_nodes.setNodeAtIndex(null, node);
-    m_freeNodes.push(node);
     n.prevNode = null; n.firstOutEdge = null; n.firstInEdge = null;
     m_nodeDepot.recycleNode(n);
     m_nodeCount--;
@@ -123,8 +117,8 @@ final class DynamicGraphRepresentation
     if (source == null || target == null) return -1;
     final Edge e = m_edgeDepot.getEdge();
     final int returnThis;
-    if (m_freeEdges.size() > 0) returnThis = m_freeEdges.pop();
-    else returnThis = ++m_maxEdge;
+    if (e.edgeId < 0) returnThis = (e.edgeId = ++m_maxEdge);
+    else returnThis = e.edgeId;
     m_edges.setEdgeAtIndex(e, returnThis);
     m_edgeCount++;
     if (directed) { source.outDegree++; target.inDegree++; }
@@ -138,7 +132,6 @@ final class DynamicGraphRepresentation
     e.nextInEdge = target.firstInEdge;
     if (target.firstInEdge != null) target.firstInEdge.prevInEdge = e;
     target.firstInEdge = e;
-    e.edgeId = returnThis;
     e.directed = directed;
     e.sourceNode = sourceNode;
     e.targetNode = targetNode;
@@ -164,7 +157,6 @@ final class DynamicGraphRepresentation
       if (e.directed) source.selfEdges--;
       else source.undDegree++; }
     m_edges.setEdgeAtIndex(null, edge);
-    m_freeEdges.push(edge);
     e.prevOutEdge = null; e.nextInEdge = null; e.prevInEdge = null;
     m_edgeDepot.recycleEdge(e);
     m_edgeCount--;

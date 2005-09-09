@@ -1,5 +1,6 @@
 package cytoscape.graph.dynamic.util;
 
+// Package visible.
 final class EdgeDepot implements java.io.Serializable
 {
 
@@ -22,7 +23,6 @@ final class EdgeDepot implements java.io.Serializable
     return returnThis;
   }
 
-  // Deinitialize the object's members yourself if you need or want to.
   // edge.nextOutEdge is used internally and does not need to be deinitialized.
   void recycleEdge(Edge edge)
   {

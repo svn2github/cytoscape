@@ -13,6 +13,6 @@ final class Edge implements java.io.Serializable
   int sourceNode;
   int targetNode;
 
-  Edge() { }
+  Edge() { edgeId = -1; }
 
 }

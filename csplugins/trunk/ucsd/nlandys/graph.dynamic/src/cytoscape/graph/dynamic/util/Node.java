@@ -22,6 +22,6 @@ final class Node implements java.io.Serializable
   // The number of directed self-edges on this node.
   int selfEdges;
 
-  Node() { }
+  Node() { nodeId = -1; }
 
 }
