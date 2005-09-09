@@ -1,25 +1,8 @@
 package cytoscape.graph.dynamic.util;
 
 // Package visible.
-final class NodeDepot implements java.io.Externalizable
+final class NodeDepot
 {
-
-  // Externalizable.  Docs say instantiated using public no-arg constructor.
-  // No other references to the nodes in this depot exist.
-  public final void writeExternal(final java.io.ObjectOutput out)
-    throws java.io.IOException {
-    for (Node currNode = m_head.nextNode; currNode != null;
-         currNode = currNode.nextNode) out.writeInt(currNode.nodeId);
-    out.writeInt(-1); }
-  public final void readExternal(final java.io.ObjectInput in)
-    throws java.io.IOException {
-    Node currNode = m_head;
-    while (true) {
-      final int id = in.readInt();
-      if (id < 0) break;
-      currNode.nextNode = new Node();
-      currNode = currNode.nextNode;
-      currNode.nodeId = id; } }
 
   private final Node m_head;
 
