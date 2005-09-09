@@ -7,7 +7,7 @@ final class EdgeArray
 
   private final static int INITIAL_CAPACITY = 0; // Must be non-negative.
 
-  private Edge[] m_edgeArr;
+  /* private */ Edge[] m_edgeArr; // Not private for serialization.
 
   EdgeArray()
   {
