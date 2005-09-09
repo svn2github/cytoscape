@@ -89,6 +89,25 @@ public class GraphSerializationTest
                          graph.nodes().numRemaining() + " nodes and " +
                          graph.edges().numRemaining() + " edges");
     }
+
+    {
+      DynamicGraph[] graphs = new DynamicGraph[2];
+      graphs[0] = DynamicGraphFactory.instantiateDynamicGraph();
+      graphs[1] = graphs[0];
+      ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+      ObjectOutputStream objOut = new ObjectOutputStream(byteOut);
+      objOut.writeObject(graphs); objOut.flush(); objOut.close();
+      ByteArrayInputStream byteIn =
+        new ByteArrayInputStream(byteOut.toByteArray());
+      ObjectInputStream objIn = new ObjectInputStream(byteIn);
+      graphs = (DynamicGraph[]) objIn.readObject(); objIn.close();
+      if (graphs.length != 2)
+        throw new IllegalStateException("graphs.length is not 2");
+      if (graphs[0] == null || graphs[1] == null)
+        throw new NullPointerException();
+      if (graphs[0] != graphs[1])
+        throw new IllegalStateException("not the same reference");
+    }
   }
 
 }
