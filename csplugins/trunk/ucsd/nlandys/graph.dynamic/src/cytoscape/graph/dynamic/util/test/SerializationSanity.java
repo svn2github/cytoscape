@@ -31,6 +31,43 @@ public class SerializationSanity implements Serializable
     ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
     ObjectOutputStream objOut = new ObjectOutputStream(byteOut);
     objOut.writeObject(ss); objOut.flush(); objOut.close();
+
+    ByteArrayInputStream byteIn =
+      new ByteArrayInputStream(byteOut.toByteArray());
+    ObjectInputStream objIn = new ObjectInputStream(byteIn);
+    SerializationSanity ss2 = (SerializationSanity) objIn.readObject();
+    objIn.close();
+
+    final Node[] nodes = new Node[loopSize];
+    Node currNode = ss2.m_node;
+    while (true) {
+      if (currNode == null) throw new NullPointerException();
+      boolean timeToBreak = false;
+      for (int i = 0;; i++) {
+        if (nodes[i] == currNode) {
+          timeToBreak = true; break; }
+        if (nodes[i] == null) {
+          nodes[i] = currNode; break; } }
+      if (timeToBreak) break;
+      currNode = currNode.m_next; }
+    for (int i = 0; i < nodes.length; i++) {
+      if (nodes[i] == null) {
+        throw new IllegalStateException("bad juju in next list"); }
+      nodes[i] = null; }
+    currNode = ss2.m_node;
+    while (true) {
+      if (currNode == null) throw new NullPointerException();
+      boolean timeToBreak = false;
+      for (int i = 0;; i++) {
+        if (nodes[i] == currNode) {
+          timeToBreak = true; break; }
+        if (nodes[i] == null) {
+          nodes[i] = currNode; break; } }
+      if (timeToBreak) break;
+      currNode = currNode.m_prev; }
+    for (int i = 0; i < nodes.length; i++) {
+      if (nodes[i] == null) {
+        throw new IllegalStateException("bad juju in prev list"); } }
   }
 
   private Node m_node;
