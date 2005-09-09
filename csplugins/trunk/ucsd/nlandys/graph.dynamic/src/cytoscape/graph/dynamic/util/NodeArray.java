@@ -2,7 +2,7 @@ package cytoscape.graph.dynamic.util;
 
 // Package visible.
 // Valid indices: [0, Integer.MAX_VALUE - 1].
-class NodeArray
+final class NodeArray
 {
 
   private final static int INITIAL_CAPACITY = 0; // Must be non-negative.
@@ -19,7 +19,7 @@ class NodeArray
   // Throws ArrayIndexOutOfBoundsException if index is negative.
   // The package-level agreement for this class is that Integer.MAX_VALUE
   // will never be passed to this method.
-  Node getNodeAtIndex(int index)
+  final Node getNodeAtIndex(final int index)
   {
     if (index >= m_nodeArr.length) return null;
     return m_nodeArr[index];
@@ -32,7 +32,7 @@ class NodeArray
   // Throws ArrayIndexOutOfBoundsException if index is negative.
   // The package-level agreement for this class is that Integer.MAX_VALUE
   // will never be passed to this method.
-  void setNodeAtIndex(Node node, int index)
+  final void setNodeAtIndex(final Node node, final int index)
   {
     if (index >= m_nodeArr.length && node == null) return;
     try { m_nodeArr[index] = node; }
@@ -43,7 +43,7 @@ class NodeArray
         Math.min((long) Integer.MAX_VALUE,
                  Math.max(((long) m_nodeArr.length) * 2l + 1l,
                           ((long) index) + 1l + (long) INITIAL_CAPACITY));
-      Node[] newArr = new Node[newArrSize];
+      final Node[] newArr = new Node[newArrSize];
       System.arraycopy(m_nodeArr, 0, newArr, 0, m_nodeArr.length);
       m_nodeArr = newArr;
       m_nodeArr[index] = node;

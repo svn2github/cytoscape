@@ -19,7 +19,7 @@ final class EdgeArray
   // Throws ArrayIndexOutOfBoundsException if index is negative.
   // The package-level agreement for this class is that Integer.MAX_VALUE
   // will never be passed to this method.
-  Edge getEdgeAtIndex(int index)
+  final Edge getEdgeAtIndex(final int index)
   {
     if (index >= m_edgeArr.length) return null;
     return m_edgeArr[index];
@@ -32,7 +32,7 @@ final class EdgeArray
   // Throws ArrayIndexOutOfBoundsException if index is negative.
   // The package-level agreement for this class is that Integer.MAX_VALUE
   // will never be passed to this method.
-  void setEdgeAtIndex(Edge edge, int index)
+  final void setEdgeAtIndex(final Edge edge, final int index)
   {
     if (index >= m_edgeArr.length && edge == null) return;
     try { m_edgeArr[index] = edge; }
@@ -43,7 +43,7 @@ final class EdgeArray
         Math.min((long) Integer.MAX_VALUE,
                  Math.max(((long) m_edgeArr.length) * 2l + 1l,
                           ((long) index) + 1l + (long) INITIAL_CAPACITY));
-      Edge[] newArr = new Edge[newArrSize];
+      final Edge[] newArr = new Edge[newArrSize];
       System.arraycopy(m_edgeArr, 0, newArr, 0, m_edgeArr.length);
       m_edgeArr = newArr;
       m_edgeArr[index] = edge;
