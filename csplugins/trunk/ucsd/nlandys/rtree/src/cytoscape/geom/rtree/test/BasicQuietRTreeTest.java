@@ -331,6 +331,17 @@ public class BasicQuietRTreeTest
       for (int k = 10; k < 28; k++) tree.delete(k); }
     // There are now 28 entries in the R-tree.  Depth must be at least 4.
 
+    { // BEGIN SERIALIZATION TEST.
+      ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+      ObjectOutputStream objOut = new ObjectOutputStream(byteOut);
+      objOut.writeObject(tree); objOut.flush(); objOut.close();
+      ByteArrayInputStream byteIn =
+        new ByteArrayInputStream(byteOut.toByteArray());
+      ObjectInputStream objIn = new ObjectInputStream(byteIn);
+      tree = (RTree) objIn.readObject();
+      objIn.close();
+    } // END SERIALIZATION TEST.
+
     for (int a = 0;; a++)
     { // BEGIN DEPTH FOUR TEST.
       float[] extentsArr = new float[4];
@@ -499,17 +510,6 @@ public class BasicQuietRTreeTest
           tree.insert(k, k, k, k + 5, k + 5);
         for (int k = (j * 1000) + 28; k < stop; k++) tree.delete(k); }
     } // END DEPTH FOUR TEST.
-
-    { // BEGIN SERIALIZATION TEST.
-      ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
-      ObjectOutputStream objOut = new ObjectOutputStream(byteOut);
-      objOut.writeObject(tree); objOut.flush(); objOut.close();
-      ByteArrayInputStream byteIn =
-        new ByteArrayInputStream(byteOut.toByteArray());
-      ObjectInputStream objIn = new ObjectInputStream(byteIn);
-      tree = (RTree) objIn.readObject();
-      objIn.close();
-    } // END SERIALIZATION TEST.
 
     { // BEGIN ORDER-PRESERVING SUBQUERY TEST.
       if (tree.size() != 28)
