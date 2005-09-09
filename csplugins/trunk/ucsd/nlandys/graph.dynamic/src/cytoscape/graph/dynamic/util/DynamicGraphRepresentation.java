@@ -6,7 +6,7 @@ import cytoscape.util.intr.IntIterator;
 import cytoscape.util.intr.IntStack;
 
 final class DynamicGraphRepresentation
-  implements DynamicGraph, java.io.Serializable
+  implements DynamicGraph, java.io.Externalizable
 {
 
   private int m_nodeCount;
@@ -284,6 +284,18 @@ final class DynamicGraphRepresentation
           final int returnThis = nextEdge;
           nextEdge = -1;
           return returnThis; } };
+  }
+
+  // Externalizable methods.
+
+  public final void writeExternal(final java.io.ObjectOutput out)
+    throws java.io.IOException
+  {
+  }
+
+  public final void readExternal(final java.io.ObjectInput in)
+    throws java.io.IOException
+  {
   }
 
 }
