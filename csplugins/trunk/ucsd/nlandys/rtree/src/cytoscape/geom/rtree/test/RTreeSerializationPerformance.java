@@ -14,7 +14,7 @@ public class RTreeSerializationPerformance
   public static void main(String[] args) throws Exception
   {
     RTree tree = new RTree();
-    final int N = Integer.parseInt(args[1]);
+    final int N = Integer.parseInt(args[0]);
 
     // Populate the tree with entries.
     {
@@ -61,6 +61,9 @@ public class RTreeSerializationPerformance
       serializedData = byteOut.toByteArray();
     }
 
+    System.err.println("serialized stream is " + serializedData.length +
+                       " bytes long");
+
     {
       ByteArrayInputStream byteIn =
         new ByteArrayInputStream(serializedData);
@@ -69,7 +72,7 @@ public class RTreeSerializationPerformance
       tree = (RTree) objIn.readObject();
       objIn.close();
       final long millisEnd = System.currentTimeMillis();
-      System.err.println("deserializatoin took " + (millisEnd - millisBegin) +
+      System.err.println("deserialization took " + (millisEnd - millisBegin) +
                          " milliseconds");
     }
   }
