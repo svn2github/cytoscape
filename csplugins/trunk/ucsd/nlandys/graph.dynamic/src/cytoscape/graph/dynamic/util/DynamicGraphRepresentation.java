@@ -10,14 +10,14 @@ final class DynamicGraphRepresentation
 {
 
   private int m_nodeCount;
-  private Node m_firstNode;
   private int m_maxNode;
   private int m_edgeCount;
   private int m_maxEdge;
+  private Node m_firstNode;
   private final NodeArray m_nodes;
+  private final NodeDepot m_nodeDepot;
   private final EdgeArray m_edges;
   private final EdgeDepot m_edgeDepot;
-  private final NodeDepot m_nodeDepot;
 
   // Use this as a bag of integers in various operations.  Don't forget to
   // empty() it before using it.
