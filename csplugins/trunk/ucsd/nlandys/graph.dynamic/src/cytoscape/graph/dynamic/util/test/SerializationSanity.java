@@ -30,13 +30,18 @@ public class SerializationSanity implements Serializable
 
     ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
     ObjectOutputStream objOut = new ObjectOutputStream(byteOut);
-    objOut.writeObject(ss); objOut.flush(); objOut.close();
+    objOut.writeObject(ss);
+    objOut.writeObject(null);
+    objOut.flush(); objOut.close();
 
     ByteArrayInputStream byteIn =
       new ByteArrayInputStream(byteOut.toByteArray());
     ObjectInputStream objIn = new ObjectInputStream(byteIn);
     SerializationSanity ss2 = (SerializationSanity) objIn.readObject();
+    Object nullObj = objIn.readObject();
     objIn.close();
+    if (nullObj != null) throw new IllegalStateException
+                           ("expected a null object");
 
     final Node[] nodes = new Node[loopSize];
     Node currNode = ss2.m_node;
