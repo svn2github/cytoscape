@@ -8,9 +8,13 @@ import cytoscape.util.intr.IntStack;
 import java.util.Iterator;
 
 /**
- * An in-memory R-tree over real numbers in two dimensions.
+ * An in-memory R-tree over real numbers in two dimensions.<p>
+ * An instance of this class is serializable; however, serialized instances of
+ * this class should not be stored in a persistent manner because the
+ * serialization implemented in this class makes no attempt at handling
+ * class versioning.
  */
-public final class RTree implements MutableSpacialIndex2D
+public final class RTree implements MutableSpacialIndex2D, java.io.Serializable
 {
 
   /**
@@ -23,7 +27,7 @@ public final class RTree implements MutableSpacialIndex2D
   private final int m_minBranches;
   private Node m_root;
   private IntObjHash m_entryMap; // Keys are objKey, values are type Node,
-  private final Object m_deletedEntry = new Object(); // except when "deleted".
+  private final Object m_deletedEntry = ""; // except when "deleted".
   private int m_deletedEntries;
   private int m_mapExpansionThreshold;
 
@@ -1448,7 +1452,7 @@ public final class RTree implements MutableSpacialIndex2D
     return count;
   }
 
-  private final static class Node
+  private final static class Node implements java.io.Serializable
   {
     private Node parent;
     private int entryCount = 0;
@@ -1467,7 +1471,7 @@ public final class RTree implements MutableSpacialIndex2D
       else { objKeys = null; data = new InternalNodeData(maxBranches); } }
   }
 
-  private final static class InternalNodeData
+  private final static class InternalNodeData implements java.io.Serializable
   {
     private int deepCount = 0;
     private final Node[] children;

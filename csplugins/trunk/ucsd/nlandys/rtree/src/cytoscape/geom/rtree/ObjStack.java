@@ -8,7 +8,7 @@ package cytoscape.geom.rtree;
  * a way so as to be suitable to become public at some point, once a proper
  * package location for it is found.
  */
-final class ObjStack
+final class ObjStack implements java.io.Serializable
 {
 
   // This must be a non-negative integer.
