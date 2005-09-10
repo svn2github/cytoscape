@@ -7,7 +7,7 @@ final class NodeArray
 
   private final static int INITIAL_CAPACITY = 0; // Must be non-negative.
 
-  private Node[] m_nodeArr;
+  /* private */ Node[] m_nodeArr; // Not private for serialization.
 
   NodeArray()
   {
