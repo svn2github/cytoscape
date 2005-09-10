@@ -451,6 +451,7 @@ final class DynamicGraphRepresentation
     }
   }
 
+  /*
   private final boolean equalsInternal(final Object o)
   {
     if (this == o) return true;
@@ -564,5 +565,6 @@ final class DynamicGraphRepresentation
     }
     return true;
   }
+  */
 
 }
