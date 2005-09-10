@@ -354,6 +354,7 @@ final class DynamicGraphRepresentation
     out.write(75773);
     { // m_stack.  This is a helper with no relevant data.
     }
+    out.flush();
   }
 
   public final void readExternal(final java.io.ObjectInput in)
