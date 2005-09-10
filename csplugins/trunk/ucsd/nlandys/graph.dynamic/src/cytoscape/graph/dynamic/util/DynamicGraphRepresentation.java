@@ -303,6 +303,23 @@ final class DynamicGraphRepresentation
            currEdge = currEdge.nextOutEdge) out.writeInt(currEdge.edgeId);
       out.writeInt(-1);
     }
+    { // m_edges.
+      final int arrLen = m_edges.m_edgeArr.length;
+      out.writeInt(arrLen);
+      for (int i = 0; i < arrLen; i++) {
+        final Edge edge = m_edges.m_edgeArr[i];
+        if (edge == null) { out.writeInt(-1); continue; }
+        out.writeInt(edge.sourceNode);
+        out.writeInt(edge.targetNode);
+        out.writeBoolean(edge.directed); }
+      for (int i = 0; i < arrLen; i++) {
+        final Edge edge = m_edges.m_edgeArr[i];
+        if (edge == null) continue;
+        out.writeInt(edge.nextOutEdge == null ? -1 : edge.nextOutEdge.edgeId);
+        out.writeInt(edge.prevOutEdge == null ? -1 : edge.prevOutEdge.edgeId);
+        out.writeInt(edge.nextInEdge == null ? -1 : edge.nextInEdge.edgeId);
+        out.writeInt(edge.prevInEdge == null ? -1 : edge.prevInEdge.edgeId); }
+    }
   }
 
   public final void readExternal(final java.io.ObjectInput in)
@@ -325,6 +342,29 @@ final class DynamicGraphRepresentation
         currEdge.nextOutEdge = new Edge();
         currEdge = currEdge.nextOutEdge;
         currEdge.edgeId = id; }
+    }
+    { // m_edges.
+      final int arrLen = in.readInt();
+      final Edge[] arr = (m_edges.m_edgeArr = new Edge[arrLen]);
+      for (int i = 0; i < arrLen; i++) {
+        final int source = in.readInt();
+        if (source < 0) continue;
+        final Edge edge = (arr[i] = new Edge());
+        edge.edgeId = i;
+        edge.sourceNode = source;
+        edge.targetNode = in.readInt();
+        edge.directed = in.readBoolean(); }
+      for (int i = 0; i < arrLen; i++) {
+        final Edge edge = arr[i];
+        if (edge == null) continue;
+        final int nextOutEdge = in.readInt();
+        final int prevOutEdge = in.readInt();
+        final int nextInEdge = in.readInt();
+        final int prevInEdge = in.readInt();
+        if (nextOutEdge >= 0) edge.nextOutEdge = arr[nextOutEdge];
+        if (prevOutEdge >= 0) edge.prevOutEdge = arr[prevOutEdge];
+        if (nextInEdge >= 0) edge.nextInEdge = arr[nextInEdge];
+        if (prevInEdge >= 0) edge.prevInEdge = arr[prevInEdge]; }
     }
   }
 
