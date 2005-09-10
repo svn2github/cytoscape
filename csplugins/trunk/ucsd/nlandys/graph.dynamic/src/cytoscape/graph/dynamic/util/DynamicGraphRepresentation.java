@@ -364,6 +364,7 @@ final class DynamicGraphRepresentation
 
   private final boolean equalsInternal(final Object o)
   {
+    if (this == o) return true;
     if (o == null || !(o instanceof DynamicGraphRepresentation)) return false;
     final DynamicGraphRepresentation graph = (DynamicGraphRepresentation) o;
     if (m_nodeCount != graph.m_nodeCount ||
