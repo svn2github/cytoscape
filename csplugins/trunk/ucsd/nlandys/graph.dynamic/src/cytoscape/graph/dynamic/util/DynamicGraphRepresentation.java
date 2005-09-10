@@ -359,6 +359,7 @@ final class DynamicGraphRepresentation
   public final void readExternal(final java.io.ObjectInput in)
     throws java.io.IOException
   {
+    if (in.readInt() != 991122) throw new IOException("991122");
     { // m_nodeDepot.
       Node currNode = m_nodeDepot.m_head;
       while (true) {
@@ -368,6 +369,7 @@ final class DynamicGraphRepresentation
         currNode = currNode.nextNode;
         currNode.nodeId = id; }
     }
+    if (in.readInt() != 93245) throw new IOException("93245");
     { // m_edgeDepot.
       Edge currEdge = m_edgeDepot.m_head;
       while (true) {
@@ -377,6 +379,7 @@ final class DynamicGraphRepresentation
         currEdge = currEdge.nextOutEdge;
         currEdge.edgeId = id; }
     }
+    if (in.readInt() != 100423) throw new IOException("100423");
     { // m_edges.
       final int arrLen = in.readInt();
       final Edge[] arr = (m_edges.m_edgeArr = new Edge[arrLen]);
@@ -400,6 +403,7 @@ final class DynamicGraphRepresentation
         if (nextInEdge >= 0) edge.nextInEdge = arr[nextInEdge];
         if (prevInEdge >= 0) edge.prevInEdge = arr[prevInEdge]; }
     }
+    if (in.readInt() != 484848) throw new IOException("484848");
     { // m_nodes.
       final int arrLen = in.readInt();
       final Node[] arr = (m_nodes.m_nodeArr = new Node[arrLen]);
@@ -425,10 +429,12 @@ final class DynamicGraphRepresentation
         if (firstOutEdge >= 0) node.firstOutEdge = edgeArr[firstOutEdge];
         if (firstInEdge >= 0) node.firstInEdge = edgeArr[firstInEdge]; }
     }
+    if (in.readInt() != 390390) throw new IOException("390390");
     { // m_firstNode.
       final int firstNode = in.readInt();
       if (firstNode >= 0) m_firstNode = m_nodes.m_nodeArr[firstNode];
     }
+    if (in.readInt() != 75773) throw new IOException("75773");
     { // m_stack.  It's already instantiated.
     }
   }
