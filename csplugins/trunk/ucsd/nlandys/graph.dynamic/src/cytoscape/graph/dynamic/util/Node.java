@@ -1,23 +1,8 @@
 package cytoscape.graph.dynamic.util;
 
 // Package visible.
-final class Node implements java.io.Externalizable
+final class Node
 {
-
-  public final void writeExternal(final java.io.ObjectOutput out)
-    throws java.io.IOException {
-    out.writeInt(nodeId);
-    out.writeInt(outDegree);
-    out.writeInt(inDegree);
-    out.writeInt(undDegree);
-    out.writeInt(selfEdges); }
-  public final void readExternal(final java.io.ObjectInput in)
-    throws java.io.IOException {
-    nodeId = in.readInt();
-    outDegree = in.readInt();
-    inDegree = in.readInt();
-    undDegree = in.readInt();
-    selfEdges = in.readInt(); }
 
   int nodeId;
   Node nextNode;
