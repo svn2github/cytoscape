@@ -362,6 +362,95 @@ final class DynamicGraphRepresentation
     }
   }
 
+  public final void readExternal(final java.io.ObjectInput in)
+    throws java.io.IOException
+  {
+    { // m_nodeCount.
+      m_nodeCount = in.readInt();
+    }
+    { // m_maxNode.
+      m_maxNode = in.readInt();
+    }
+    { // m_edgeCount.
+      m_edgeCount = in.readInt();
+    }
+    { // m_maxEdge.
+      m_maxEdge = in.readInt();
+    }
+    { // m_nodeDepot.
+      Node currNode = m_nodeDepot.m_head;
+      while (true) {
+        final int id = in.readInt();
+        if (id < 0) break;
+        currNode.nextNode = new Node();
+        currNode = currNode.nextNode;
+        currNode.nodeId = id; }
+    }
+    { // m_edgeDepot.
+      Edge currEdge = m_edgeDepot.m_head;
+      while (true) {
+        final int id = in.readInt();
+        if (id < 0) break;
+        currEdge.nextOutEdge = new Edge();
+        currEdge = currEdge.nextOutEdge;
+        currEdge.edgeId = id; }
+    }
+    { // m_edges.
+      final int arrLen = in.readInt();
+      final Edge[] arr = (m_edges.m_edgeArr = new Edge[arrLen]);
+      for (int i = 0; i < arrLen; i++) {
+        final int source = in.readInt();
+        if (source < 0) continue;
+        final Edge edge = (arr[i] = new Edge());
+        edge.edgeId = i;
+        edge.sourceNode = source;
+        edge.targetNode = in.readInt();
+        edge.directed = in.readBoolean(); }
+      for (int i = 0; i < arrLen; i++) {
+        final Edge edge = arr[i];
+        if (edge == null) continue;
+        final int nextOutEdge = in.readInt();
+        final int prevOutEdge = in.readInt();
+        final int nextInEdge = in.readInt();
+        final int prevInEdge = in.readInt();
+        if (nextOutEdge >= 0) edge.nextOutEdge = arr[nextOutEdge];
+        if (prevOutEdge >= 0) edge.prevOutEdge = arr[prevOutEdge];
+        if (nextInEdge >= 0) edge.nextInEdge = arr[nextInEdge];
+        if (prevInEdge >= 0) edge.prevInEdge = arr[prevInEdge]; }
+    }
+    { // m_nodes.
+      final int arrLen = in.readInt();
+      final Node[] arr = (m_nodes.m_nodeArr = new Node[arrLen]);
+      for (int i = 0; i < arrLen; i++) {
+        final int outDeg = in.readInt();
+        if (outDeg < 0) continue;
+        final Node node = (arr[i] = new Node());
+        node.nodeId = i;
+        node.outDegree = outDeg;
+        node.inDegree = in.readInt();
+        node.undDegree = in.readInt();
+        node.selfEdges = in.readInt(); }
+      final Edge[] edgeArr = m_edges.m_edgeArr;
+      for (int i = 0; i < arrLen; i++) {
+        final Node node = arr[i];
+        if (node == null) continue;
+        final int nextNode = in.readInt();
+        final int prevNode = in.readInt();
+        final int firstOutEdge = in.readInt();
+        final int firstInEdge = in.readInt();
+        if (nextNode >= 0) node.nextNode = arr[nextNode];
+        if (prevNode >= 0) node.prevNode = arr[prevNode];
+        if (firstOutEdge >= 0) node.firstOutEdge = edgeArr[firstOutEdge];
+        if (firstInEdge >= 0) node.firstInEdge = edgeArr[firstInEdge]; }
+    }
+    { // m_firstNode.
+      final int firstNode = in.readInt();
+      if (firstNode >= 0) m_firstNode = m_nodes.m_nodeArr[firstNode];
+    }
+    { // m_stack.  It's already instantiated.
+    }
+  }
+
   private final boolean equalsInternal(final Object o)
   {
     if (this == o) return true;
@@ -474,95 +563,6 @@ final class DynamicGraphRepresentation
             m_firstNode.nodeId != graph.m_firstNode.nodeId) return false; }
     }
     return true;
-  }
-
-  public final void readExternal(final java.io.ObjectInput in)
-    throws java.io.IOException
-  {
-    { // m_nodeCount.
-      m_nodeCount = in.readInt();
-    }
-    { // m_maxNode.
-      m_maxNode = in.readInt();
-    }
-    { // m_edgeCount.
-      m_edgeCount = in.readInt();
-    }
-    { // m_maxEdge.
-      m_maxEdge = in.readInt();
-    }
-    { // m_nodeDepot.
-      Node currNode = m_nodeDepot.m_head;
-      while (true) {
-        final int id = in.readInt();
-        if (id < 0) break;
-        currNode.nextNode = new Node();
-        currNode = currNode.nextNode;
-        currNode.nodeId = id; }
-    }
-    { // m_edgeDepot.
-      Edge currEdge = m_edgeDepot.m_head;
-      while (true) {
-        final int id = in.readInt();
-        if (id < 0) break;
-        currEdge.nextOutEdge = new Edge();
-        currEdge = currEdge.nextOutEdge;
-        currEdge.edgeId = id; }
-    }
-    { // m_edges.
-      final int arrLen = in.readInt();
-      final Edge[] arr = (m_edges.m_edgeArr = new Edge[arrLen]);
-      for (int i = 0; i < arrLen; i++) {
-        final int source = in.readInt();
-        if (source < 0) continue;
-        final Edge edge = (arr[i] = new Edge());
-        edge.edgeId = i;
-        edge.sourceNode = source;
-        edge.targetNode = in.readInt();
-        edge.directed = in.readBoolean(); }
-      for (int i = 0; i < arrLen; i++) {
-        final Edge edge = arr[i];
-        if (edge == null) continue;
-        final int nextOutEdge = in.readInt();
-        final int prevOutEdge = in.readInt();
-        final int nextInEdge = in.readInt();
-        final int prevInEdge = in.readInt();
-        if (nextOutEdge >= 0) edge.nextOutEdge = arr[nextOutEdge];
-        if (prevOutEdge >= 0) edge.prevOutEdge = arr[prevOutEdge];
-        if (nextInEdge >= 0) edge.nextInEdge = arr[nextInEdge];
-        if (prevInEdge >= 0) edge.prevInEdge = arr[prevInEdge]; }
-    }
-    { // m_nodes.
-      final int arrLen = in.readInt();
-      final Node[] arr = (m_nodes.m_nodeArr = new Node[arrLen]);
-      for (int i = 0; i < arrLen; i++) {
-        final int outDeg = in.readInt();
-        if (outDeg < 0) continue;
-        final Node node = (arr[i] = new Node());
-        node.nodeId = i;
-        node.outDegree = outDeg;
-        node.inDegree = in.readInt();
-        node.undDegree = in.readInt();
-        node.selfEdges = in.readInt(); }
-      final Edge[] edgeArr = m_edges.m_edgeArr;
-      for (int i = 0; i < arrLen; i++) {
-        final Node node = arr[i];
-        if (node == null) continue;
-        final int nextNode = in.readInt();
-        final int prevNode = in.readInt();
-        final int firstOutEdge = in.readInt();
-        final int firstInEdge = in.readInt();
-        if (nextNode >= 0) node.nextNode = arr[nextNode];
-        if (prevNode >= 0) node.prevNode = arr[prevNode];
-        if (firstOutEdge >= 0) node.firstOutEdge = edgeArr[firstOutEdge];
-        if (firstInEdge >= 0) node.firstInEdge = edgeArr[firstInEdge]; }
-    }
-    { // m_firstNode.
-      final int firstNode = in.readInt();
-      if (firstNode >= 0) m_firstNode = m_nodes.m_nodeArr[firstNode];
-    }
-    { // m_stack.  It's already instantiated.
-    }
   }
 
 }
