@@ -60,10 +60,8 @@ import cytoscape.graph.dynamic.DynamicGraph;
  *     the DynamicGraph increases in its total node count.</td>
  * </tr><tr>
  * <td>nodeRemove(int)</td>
- * <td>A node is removed in amortized O(E) time, where E is the number of
- *     edges touching the node being removed.  Amortized because a data
- *     structure is used to keep track of free node slots; doubling
- *     the size of this data structure is necessary at certain points.</td>
+ * <td>A node is removed in O(E) time, where E is the number of
+ *     edges touching the node being removed.</td>
  * </tr><tr>
  * <td>edgeCreate(int, int, boolean)</td>
  * <td>An edge is created in amortized constant time.  Amortized because
@@ -71,9 +69,7 @@ import cytoscape.graph.dynamic.DynamicGraph;
  *     DynamicGraph increases in its total edge count.</td>
  * </tr><tr>
  * <td>edgeRemove(int)</td>
- * <td>An edge is removed in amortized constant time.  Amortized because
- *     a data structure is used to keep track of free edge slots; doubling
- *     the size of this data structure is necessary at certain points.</td>
+ * <td>An edge is removed in constant time.</td>
  * </tr><tr>
  * <td>nodeExists(int)</td>
  * <td>The existence of a node is determined in constant time.</td>
