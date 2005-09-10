@@ -23,7 +23,7 @@ final class DynamicGraphRepresentation
   // empty() it before using it.
   private final IntStack m_stack;
 
-  DynamicGraphRepresentation()
+  public DynamicGraphRepresentation() // Must be public for Externalizable.
   {
     m_nodeCount = 0;
     m_firstNode = null;
