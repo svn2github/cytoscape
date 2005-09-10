@@ -293,6 +293,18 @@ final class DynamicGraphRepresentation
   public final void writeExternal(final java.io.ObjectOutput out)
     throws java.io.IOException
   {
+    { // m_nodeCount.
+      out.writeInt(m_nodeCount);
+    }
+    { // m_maxNode.
+      out.writeInt(m_maxNode);
+    }
+    { // m_edgeCount.
+      out.writeInt(m_edgeCount);
+    }
+    { // m_maxEdge.
+      out.writeInt(m_maxEdge);
+    }
     out.writeInt(991122);
     { // m_nodeDepot.
       for (Node currNode = m_nodeDepot.m_head.nextNode; currNode != null;
@@ -360,6 +372,18 @@ final class DynamicGraphRepresentation
   public final void readExternal(final java.io.ObjectInput in)
     throws java.io.IOException
   {
+    { // m_nodeCount.
+      m_nodeCount = in.readInt();
+    }
+    { // m_maxNode.
+      m_maxNode = in.readInt();
+    }
+    { // m_edgeCount.
+      m_edgeCount = in.readInt();
+    }
+    { // m_maxEdge.
+      m_maxEdge = in.readInt();
+    }
     if (in.readInt() != 991122) throw new java.io.IOException("991122");
     { // m_nodeDepot.
       Node currNode = m_nodeDepot.m_head;
