@@ -304,21 +304,49 @@ final class DynamicGraphRepresentation
       out.writeInt(-1);
     }
     { // m_edges.
-      final int arrLen = m_edges.m_edgeArr.length;
+      final Edge[] arr = m_edges.m_edgeArr;
+      final int arrLen = arr.length;
       out.writeInt(arrLen);
       for (int i = 0; i < arrLen; i++) {
-        final Edge edge = m_edges.m_edgeArr[i];
+        final Edge edge = arr[i];
         if (edge == null) { out.writeInt(-1); continue; }
         out.writeInt(edge.sourceNode);
         out.writeInt(edge.targetNode);
         out.writeBoolean(edge.directed); }
       for (int i = 0; i < arrLen; i++) {
-        final Edge edge = m_edges.m_edgeArr[i];
+        final Edge edge = arr[i];
         if (edge == null) continue;
         out.writeInt(edge.nextOutEdge == null ? -1 : edge.nextOutEdge.edgeId);
         out.writeInt(edge.prevOutEdge == null ? -1 : edge.prevOutEdge.edgeId);
         out.writeInt(edge.nextInEdge == null ? -1 : edge.nextInEdge.edgeId);
         out.writeInt(edge.prevInEdge == null ? -1 : edge.prevInEdge.edgeId); }
+    }
+    { // m_nodes.
+      final Node[] arr = m_nodes.m_nodeArr;
+      final int arrLen = arr.length;
+      out.writeInt(arrLen);
+      for (int i = 0; i < arrLen; i++) {
+        final Node node = arr[i];
+        if (node == null) { out.write(-1); continue; }
+        out.writeInt(node.outDegree);
+        out.writeInt(node.inDegree);
+        out.writeInt(node.undDegree);
+        out.writeInt(node.selfEdges); }
+      for (int i = 0; i < arrLen; i++) {
+        final Node node = arr[i];
+        if (node == null) continue;
+        out.writeInt(node.nextNode == null ? -1 : node.nextNode.nodeId);
+        out.writeInt(node.prevNode == null ? -1 : node.prevNode.nodeId);
+        out.writeInt(node.firstOutEdge == null ? -1 :
+                     node.firstOutEdge.edgeId);
+        out.writeInt(node.firstInEdge == null ? -1 :
+                     node.firstInEdge.edgeId); }
+    }
+    { // m_firstNode.
+      if (m_firstNode == null) out.writeInt(-1);
+      else out.writeInt(m_firstNode.nodeId);
+    }
+    { // m_stack.  This is a helper with no relevant data.
     }
   }
 
@@ -365,6 +393,37 @@ final class DynamicGraphRepresentation
         if (prevOutEdge >= 0) edge.prevOutEdge = arr[prevOutEdge];
         if (nextInEdge >= 0) edge.nextInEdge = arr[nextInEdge];
         if (prevInEdge >= 0) edge.prevInEdge = arr[prevInEdge]; }
+    }
+    { // m_nodes.
+      final int arrLen = in.readInt();
+      final Node[] arr = (m_nodes.m_nodeArr = new Node[arrLen]);
+      for (int i = 0; i < arrLen; i++) {
+        final int outDeg = in.readInt();
+        if (outDeg < 0) continue;
+        final Node node = (arr[i] = new Node());
+        node.nodeId = i;
+        node.outDegree = outDeg;
+        node.inDegree = in.readInt();
+        node.undDegree = in.readInt();
+        node.selfEdges = in.readInt(); }
+      final Edge[] edgeArr = m_edges.m_edgeArr;
+      for (int i = 0; i < arrLen; i++) {
+        final Node node = arr[i];
+        if (node == null) continue;
+        final int nextNode = in.readInt();
+        final int prevNode = in.readInt();
+        final int firstOutEdge = in.readInt();
+        final int firstInEdge = in.readInt();
+        if (nextNode >= 0) node.nextNode = arr[nextNode];
+        if (prevNode >= 0) node.prevNode = arr[prevNode];
+        if (firstOutEdge >= 0) node.firstOutEdge = edgeArr[firstOutEdge];
+        if (firstInEdge >= 0) node.firstInEdge = edgeArr[firstInEdge]; }
+    }
+    { // m_firstNode.
+      final int firstNode = in.readInt();
+      if (firstNode >= 0) m_firstNode = m_nodes.m_nodeArr[firstNode];
+    }
+    { // m_stack.  It's already instantiated.
     }
   }
 
