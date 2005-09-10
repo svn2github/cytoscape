@@ -331,7 +331,7 @@ final class DynamicGraphRepresentation
       out.writeInt(arrLen);
       for (int i = 0; i < arrLen; i++) {
         final Node node = arr[i];
-        if (node == null) { out.write(-1); continue; }
+        if (node == null) { out.writeInt(-1); continue; }
         out.writeInt(node.outDegree);
         out.writeInt(node.inDegree);
         out.writeInt(node.undDegree);
@@ -351,7 +351,7 @@ final class DynamicGraphRepresentation
       if (m_firstNode == null) out.writeInt(-1);
       else out.writeInt(m_firstNode.nodeId);
     }
-    out.write(75773);
+    out.writeInt(75773);
     { // m_stack.  This is a helper with no relevant data.
     }
     out.flush();
