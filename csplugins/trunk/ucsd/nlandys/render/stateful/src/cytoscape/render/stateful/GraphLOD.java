@@ -14,7 +14,10 @@ public class GraphLOD
   /**
    * Determines whether or not to render all edges in a graph.  By default
    * this method returns false, which leads the rendering engine to render
-   * only those edges that touch at least one visible node.  Note that
+   * only those edges that touch at least one visible node.  If this method
+   * returns true then the renderEdgeCount parameter passed to other methods
+   * will have a value which is equal to the total number of edges in the
+   * graph that is being rendered.  Note that
    * rendering all edges leads to a dramatic performance decrease when
    * rendering large graphs.
    * @param renderNodeCount the number of nodes that are about to be rendered.
@@ -22,6 +25,8 @@ public class GraphLOD
    *   being rendered.
    * @param totalEdgeCount the total number of edges in the graph that is
    *   being rendered.
+   * @return true if and only if all edges are to be rendered, one by one,
+   *   regardless of how many nodes are visible.
    */
   public boolean renderAllEdges(final int renderNodeCount,
                                 final int totalNodeCount,
