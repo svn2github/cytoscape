@@ -69,6 +69,8 @@ public final class GraphRenderer
                                        final double yCenter,
                                        final double scaleFactor)
   {
+    nodeBuff.empty(); // Make sure we keep our promise.
+
     // Define the visible window in node coordinate space.
     final float xMin, yMin, xMax, yMax;
     {
@@ -85,24 +87,22 @@ public final class GraphRenderer
     // Determine the number of nodes and edges that we are about to render.
     final int renderNodeCount;
     final int renderEdgeCount;
-    final boolean renderAllEdges;
+    final byte renderEdges;
     SpacialEntry2DEnumerator nodeHits;
     {
-      final SpacialEntry2DEnumerator nodeHitsTemp = nodePositions.queryOverlap
+      nodeHits = nodePositions.queryOverlap
         (xMin, yMin, xMax, yMax, null, 0, false);
-      renderNodeCount = nodeHitsTemp.numRemaining();
+      renderNodeCount = nodeHits.numRemaining();
       final int totalNodeCount = graph.nodes().numRemaining();
       final int totalEdgeCount = graph.edges().numRemaining();
-      renderAllEdges = lod.renderAllEdges
+      renderEdges = lod.renderEdges
         (renderNodeCount, totalNodeCount, totalEdgeCount);
-      if (renderAllEdges) {
-        renderEdgeCount = totalEdgeCount;
-        nodeHits = nodeHitsTemp; }
+      if (renderEdges > 0) { renderEdgeCount = totalEdgeCount; }
+      else if (renderEdges < 0) { renderEdgeCount = 0; }
       else {
-        nodeBuff.empty();
         int runningEdgeCount = 0;
         for (int i = 0; i < renderNodeCount; i++) {
-          final int node = nodeHitsTemp.nextInt();
+          final int node = nodeHits.nextInt();
           final IntEnumerator touchingEdges =
             graph.edgesAdjacent(node, true, true, true);
           final int touchingEdgeCount = touchingEdges.numRemaining();
@@ -113,8 +113,8 @@ public final class GraphRenderer
             if (nodeBuff.get(otherNode) < 0) { runningEdgeCount++; } }
           nodeBuff.put(node); }
         renderEdgeCount = runningEdgeCount;
-        nodeHits = nodePositions.queryOverlap
-          (xMin, yMin, xMax, yMax, null, 0, false); }
+        nodeHits = null;
+        nodeBuff.empty(); }
     }
 
     // Based on number of objects we are going to render, determine LOD.
@@ -153,10 +153,9 @@ public final class GraphRenderer
     }
 
     // Render the edges first.  No edge shall be rendered twice.
-    {
-      nodeBuff.empty();
+    if (renderEdges >= 0) {
       final SpacialEntry2DEnumerator nodeHitsTemp;
-      if (renderAllEdges) {
+      if (renderEdges > 0) {
         // We want to render edges in the same order (back to front) that
         // we would use to render just edges on visible nodes; this is assuming
         // that our spacial index has the subquery order-preserving property.
@@ -164,8 +163,13 @@ public final class GraphRenderer
           (Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY,
            Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY,
            null, 0, false); }
-      else {
-        nodeHitsTemp = nodeHits; }
+      else { // renderEdges == 0.
+        if (nodeHits == null) {
+          nodeHitsTemp = nodePositions.queryOverlap
+            (xMin, yMin, xMax, yMax, null, 0, false); }
+        else {
+          nodeHitsTemp = nodeHits;
+          nodeHits = null; } }
 
       if ((lodBits & LOD_HIGH_DETAIL) == 0) { // Low detail.
         final int nodeHitCount = nodeHitsTemp.numRemaining();
@@ -342,24 +346,21 @@ public final class GraphRenderer
     // Render nodes and labels.  A label is not necessarily on top of every
     // node; it is only on top of the node it belongs to.
     {
-      final SpacialEntry2DEnumerator nodeHitsTemp;
-      if (renderAllEdges) {
-        nodeHitsTemp = nodeHits; }
-      else {
-        nodeHitsTemp = nodePositions.queryOverlap
+      if (nodeHits == null) {
+        nodeHits = nodePositions.queryOverlap
           (xMin, yMin, xMax, yMax, null, 0, false); }
 
       if ((lodBits & LOD_HIGH_DETAIL) == 0) { // Low detail.
-        final int nodeHitCount = nodeHitsTemp.numRemaining();
+        final int nodeHitCount = nodeHits.numRemaining();
         for (int i = 0; i < nodeHitCount; i++) {
-          final int node = nodeHitsTemp.nextExtents(floatBuff1, 0);
+          final int node = nodeHits.nextExtents(floatBuff1, 0);
           grafx.drawNodeLow(floatBuff1[0], floatBuff1[1],
                             floatBuff1[2], floatBuff1[3],
                             nodeDetails.colorLowDetail(node)); } }
 
       else { // High detail.
-        while (nodeHitsTemp.numRemaining() > 0) {
-          final int node = nodeHitsTemp.nextExtents(floatBuff1, 0);
+        while (nodeHits.numRemaining() > 0) {
+          final int node = nodeHits.nextExtents(floatBuff1, 0);
 
           // Compute visual attributes that do not depend on LOD.
           final byte shape = nodeDetails.shape(node);
