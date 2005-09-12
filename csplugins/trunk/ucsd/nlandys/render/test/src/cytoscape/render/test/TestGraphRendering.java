@@ -151,10 +151,10 @@ public class TestGraphRendering
     final GraphLOD lod;
     if (args.length > 1) {
       lod = new GraphLOD() {
-          public boolean renderAllEdges(int renderNodeCount,
-                                        int totalNodeCount,
-                                        int totalEdgeCount) {
-            return true; }
+          public byte renderEdges(int renderNodeCount,
+                                  int totalNodeCount,
+                                  int totalEdgeCount) {
+            return 1; }
           public boolean detail(int renderNodeCount,
                                 int renderEdgeCount) {
             return renderNodeCount < 600; }
@@ -169,6 +169,11 @@ public class TestGraphRendering
             return renderNodeCount < 250; } }; }
     else {
       lod = new GraphLOD() {
+          public byte renderEdges(int renderNodeCount,
+                                  int totalNodeCount,
+                                  int totalEdgeCount) {
+            if (renderNodeCount >= 30000) return -1;
+            return 0; }
           public boolean textAsShape(int renderNodeCount,
                                      int renderEdgeCount) {
             return renderNodeCount < 30; } }; }
