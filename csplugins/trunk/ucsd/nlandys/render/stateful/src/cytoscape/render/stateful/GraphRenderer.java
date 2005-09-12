@@ -157,6 +157,9 @@ public final class GraphRenderer
       nodeBuff.empty();
       final SpacialEntry2DEnumerator nodeHitsTemp;
       if (renderAllEdges) {
+        // We want to render edges in the same order (back to front) that
+        // we would use to render just edges on visible nodes; this is assuming
+        // that our spacial index has the subquery order-preserving property.
         nodeHitsTemp = nodePositions.queryOverlap
           (Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY,
            Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY,
