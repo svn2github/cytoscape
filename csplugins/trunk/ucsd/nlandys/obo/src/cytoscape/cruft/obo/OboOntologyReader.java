@@ -6,7 +6,7 @@ import java.io.Reader;
 
 /**
  * The purpose of this class is to convert a 'gene_ontology.obo' file
- * to a crufty old 'go.onto' file.
+ * to a crufty old 'go.onto' file that Cytoscape's BioDataServer understands.
  * The parameter passed to the constructor is the 'gene_ontology.obo' file and
  * the content read from this reader is the crufty old 'go.onto' file.<p>
  * Please note that this code was not written with performance in mind.

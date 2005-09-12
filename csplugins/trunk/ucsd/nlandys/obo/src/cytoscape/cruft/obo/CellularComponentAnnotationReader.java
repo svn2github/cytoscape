@@ -6,7 +6,8 @@ import java.io.Reader;
 
 /**
  * The purpose of this class is to convert a 'gene_association.*' file
- * (for example 'gene_association.sgd') into a crufty old 'cellcomp.anno' file.
+ * (for example 'gene_association.sgd') into a crufty old 'cellcomp.anno' file
+ * that Cytoscape's BioDataServer understands.
  * The parameter passed to the constructor is the 'gene_association.*' file
  * and the content read from this reader is the crufty old 'cellcomp.anno'
  * file.<p>

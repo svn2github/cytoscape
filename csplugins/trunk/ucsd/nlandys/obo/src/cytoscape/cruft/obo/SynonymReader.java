@@ -7,7 +7,8 @@ import java.util.HashMap;
 
 /**
  * The purpose of this class is to convert a 'gene_association.*' file
- * (for example 'gene_association.sgd') into a crufty old '*.syno' file.
+ * (for example 'gene_association.sgd') into a crufty old '*.syno' file that
+ * Cytoscape's BioDataServer understands.
  * The parameter passed to the constructor is the 'gene_association.*' file
  * and the content read from this reader is the crufty old '*.syno' file.<p>
  * Please note that this code was not written with performance in mind.
