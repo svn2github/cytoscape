@@ -14,7 +14,9 @@ public class GraphLOD
   /**
    * Determines whether or not to render all edges in a graph.  By default
    * this method returns false, which leads the rendering engine to render
-   * only those edges that touch at least one visible node.  If this method
+   * only those edges that touch at least one visible node.  This is the first
+   * method called on an instance of GraphLOD by the rendering engine;
+   * if this method
    * returns true then the renderEdgeCount parameter passed to other methods
    * will have a value which is equal to the total number of edges in the
    * graph that is being rendered.  Note that
