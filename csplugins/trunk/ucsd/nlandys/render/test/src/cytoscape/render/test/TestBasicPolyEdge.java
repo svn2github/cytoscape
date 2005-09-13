@@ -11,9 +11,11 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Frame;
+import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Insets;
+import java.awt.Paint;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
@@ -51,7 +53,8 @@ public final class TestBasicPolyEdge
 
   private final int m_imgWidth = 800;
   private final int m_imgHeight = 600;
-  private final Color m_bgColor = Color.white;
+  private final Paint m_bgPaint = new GradientPaint
+    (0, 0, Color.cyan, 100, 100, Color.yellow, true);
   private final Color m_fillColor = new Color(255, 0, 0, 63);
   private final Color m_selectedFillColor = new Color(0, 0, 255, 63);
   private final Color m_borderColor = new Color(0, 0, 0, 63);
@@ -142,7 +145,7 @@ public final class TestBasicPolyEdge
 
   private void updateImage(GraphGraphics grafx)
   {
-    grafx.clear(m_bgColor, m_currXCenter, m_currYCenter, m_currScale);
+    grafx.clear(m_bgPaint, m_currXCenter, m_currYCenter, m_currScale);
 
     // Determine endpoints.
     m_tree.exists(0, m_floatBuff, 0);
