@@ -10,6 +10,7 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Paint;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.font.FontRenderContext;
@@ -151,15 +152,15 @@ public final class GraphGraphics
   }
 
   /**
-   * Clears image area with background color specified [may be non-opaque],
+   * Clears image area with background paint specified [may be non-opaque],
    * and sets an appropriate transformation of coordinate systems.  See the
    * class description for a definition of the two coordinate systems:
    * the node coordinate system and the image coordinate system.<p>
    * It is mandatory to call this method before making the first rendering
    * call.
-   * @param bgColor a color to use when clearing the image before painting
-   *   a new frame; transparent colors are honored, provided that the
-   *   underlying image supports transparent colors.
+   * @param bgPaint paint to use when clearing the image before painting
+   *   a new frame; translucency is honored, provided that the
+   *   underlying image supports it.
    * @param xCenter the X component of the translation transform for the frame
    *   about to be rendered; a node whose center is at the X coordinate xCenter
    *   will be rendered exactly in the middle of the image going across;
@@ -176,7 +177,7 @@ public final class GraphGraphics
    *   image coordinate system equates to one pixel width).
    * @exception IllegalArgumentException if scaleFactor is not positive.
    */
-  public final void clear(final Color bgColor,
+  public final void clear(final Paint bgPaint,
                           final double xCenter, final double yCenter,
                           final double scaleFactor)
   {
@@ -191,8 +192,8 @@ public final class GraphGraphics
     m_g2d = (Graphics2D) image.getGraphics();
     final Composite origComposite = m_g2d.getComposite();
     m_g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
-    m_g2d.setBackground(bgColor);
-    m_g2d.clearRect(0, 0, image.getWidth(null), image.getHeight(null));
+    m_g2d.setPaint(bgPaint);
+    m_g2d.fillRect(0, 0, image.getWidth(null), image.getHeight(null));
     m_g2d.setComposite(origComposite);
     m_g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                            RenderingHints.VALUE_ANTIALIAS_ON);
