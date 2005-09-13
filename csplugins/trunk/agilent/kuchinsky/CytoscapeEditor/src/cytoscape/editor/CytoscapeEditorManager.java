@@ -5,7 +5,6 @@
 package cytoscape.editor;
 
 import giny.model.Node;
-import giny.view.NodeView;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -15,6 +14,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.swing.JMenuItem;
+import javax.swing.undo.AbstractUndoableEdit;
 import javax.swing.undo.UndoManager;
 import javax.swing.undo.UndoableEdit;
 
@@ -26,6 +26,8 @@ import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
+import cytoscape.data.CytoscapeData;
+import cytoscape.data.attr.CyData;
 import cytoscape.editor.actions.NewNetworkAction;
 import cytoscape.editor.actions.RedoAction;
 import cytoscape.editor.actions.SetEditorAction;
@@ -36,7 +38,6 @@ import cytoscape.giny.PhoebeNetworkView;
 import cytoscape.view.CyNetworkView;
 
 /**
-
  * The <b>CytoscapeEditorManager</b> is the central class in the editor framework
  * API.  It maintains the state of the editing environment, maintains global state information,
  * and implements static methods for editor registration, editor invocation (via
@@ -191,6 +192,7 @@ public abstract class CytoscapeEditorManager {
 		undoAction.setRedoAction(redoAction);
 		redoAction.setUndoAction(undoAction);
 		// AJK: 09/06/05 accommodate one undo manager per network view.  Set the global one here.
+		undoManagerViewMap.put(Cytoscape.getCurrentNetworkView(), undo);
 		setCurrentUndoManager(undo);
 
 		JMenuItem undoItem = new JMenuItem(undoAction);
@@ -262,14 +264,14 @@ public abstract class CytoscapeEditorManager {
 	public static boolean hasContextMethods(CyNetworkView view) {
 		Object[] methods = view.getContextMethods("class phoebe.PNodeView",
 				false);
-		System.out.println("Checking for context methods: Methods[] = "
-				+ methods);
+//		System.out.println("Checking for context methods: Methods[] = "
+//				+ methods);
 		if (methods != null) {
 			for (int i = 0; i < methods.length; i++) {
 				Object[] methodObj = (Object[]) methods[i];
 				String methodClassName = methodObj[0].toString();
 
-				System.out.println("methodClassName = " + methodClassName);
+//				System.out.println("methodClassName = " + methodClassName);
 				if ((methodClassName != null)
 						&& (methodClassName
 								.equals("cytoscape.editor.actions.NodeAction"))) {
@@ -304,12 +306,16 @@ public abstract class CytoscapeEditorManager {
 					CytoscapeInit.getClassLoader());
 		}
 
+		// AJK: 09/09/05: BEGIN
+		//    comment this out; just use newView's bounds to set bounds for canvas
+		/*
 		int canvasWidth = Cytoscape.getDesktop().getWidth()
 				- Cytoscape.getDesktop().getNetworkPanel().getWidth();
 
 		int canvasHeight = Cytoscape.getDesktop().getHeight()
 				- Cytoscape.getDesktop().getCyMenus().getToolBar().getHeight();
-
+		*/
+		
 		CytoscapeEditor cyEditor = CytoscapeEditorManager.getCurrentEditor();
 
 		PhoebeCanvas canvas = ((PhoebeCanvas) ((PhoebeNetworkView) newView)
@@ -324,6 +330,18 @@ public abstract class CytoscapeEditorManager {
 
 			event.start((PGraphView) newView);
 			canvas.addPhoebeCanvasDropListener(event);
+			
+			// AJK: 09/09/05: BEGIN
+			//    setup listeners for changes to attributes
+			CyNetwork net = newView.getNetwork();
+			CyData nodeAttribs = net.getNodeData();
+			nodeAttribs.addDataListener(event);
+
+			CyData edgeAttribs = net.getEdgeData();
+			edgeAttribs.addDataListener(event);	
+	
+			
+			//
 		}
 		
 		// AJK: 09/06/05 BEGIN
@@ -341,7 +359,14 @@ public abstract class CytoscapeEditorManager {
 		}
 		// AJK: 09/06/05 END
 
-		canvas.getLayer().setBounds(0, 0, canvasWidth, canvasHeight);
+//		canvas.getLayer().setBounds(0, 0, canvasWidth, canvasHeight);
+//		canvas.getLayer().setBounds(0, 0, newView.getComponent().getWidth() / 2,
+//				newView.getComponent().getHeight() / 2);
+		
+//	
+		canvas.getLayer().setBounds(newView.getComponent().getBounds());
+
+
 
 //		Color myColor = new Color(225, 225, 250);
 		Color myColor = new Color(225, 250, 200);
@@ -352,6 +377,8 @@ public abstract class CytoscapeEditorManager {
 		canvas.setEnabled(true);
 
 	}
+	
+	
 
 
 
@@ -369,7 +396,7 @@ public abstract class CytoscapeEditorManager {
 		while (it.hasNext()) {
 			Object key = it.next();
 			Object entryObj = viewMap.get(key);
-			System.out.println("Got entry obj = " + entryObj);
+//			System.out.println("Got entry obj = " + entryObj);
 			if (entryObj instanceof PhoebeNetworkView) {
 
 				PhoebeNetworkView entryView = (PhoebeNetworkView) entryObj;
@@ -512,6 +539,8 @@ public abstract class CytoscapeEditorManager {
 			net.setNodeAttributeValue(cn, "BIOPAX_NAME", nodeName);
 		}
 		*/
+		
+		manager.setupUndoableAdditionEdit(net, cn, null);
 
 		return cn;
 	}
@@ -537,10 +566,12 @@ public abstract class CytoscapeEditorManager {
 		net.restoreNode(cn);
 		if (nodeType != null) {
 			net.setNodeAttributeValue(cn, NODE_TYPE, nodeType);
-			System.out.println ("NodeType for CyNode " + cn + " set to " + 
-					net.getNodeAttributeValue(cn, NODE_TYPE));
+//			System.out.println ("NodeType for CyNode " + cn + " set to " + 
+//					net.getNodeAttributeValue(cn, NODE_TYPE));
 		}
+		manager.setupUndoableAdditionEdit(net, cn, null);
 		return cn;
+		
 	}
 
 	/**
@@ -613,6 +644,7 @@ public abstract class CytoscapeEditorManager {
 		if (edgeType != null) {
 			net.setEdgeAttributeValue(edge, EDGE_TYPE, edgeType);
 		}
+		manager.setupUndoableAdditionEdit(net, null, edge);
 		return edge;
 	}
 
@@ -761,7 +793,8 @@ public abstract class CytoscapeEditorManager {
 	 * @return the editor assigned to this CyNetworkView
 	 */
 	public static UndoManager getUndoManagerForView(CyNetworkView view) {
-		Object obj = editorViewMap.get(view);
+		Object obj = undoManagerViewMap.get(view);
+		System.out.println ("Get undoManager for view: " + view + " = " + obj);
 		if (obj != null) {
 			if (obj instanceof UndoManager) {
 				return (UndoManager) obj;
@@ -777,7 +810,8 @@ public abstract class CytoscapeEditorManager {
      */
 	public static void setUndoManagerForView(CyNetworkView view,
 			UndoManager undo) {
-		editorViewMap.put(view, undo);
+		undoManagerViewMap.put(view, undo);
+		System.out.println("Setting undo manager for view: " + view + " = " + undo);
 	}
 
 	
@@ -915,7 +949,8 @@ public abstract class CytoscapeEditorManager {
 	 * @return Returns the currentUndoManager.
 	 */
 	public static UndoManager getCurrentUndoManager() {
-		return currentUndoManager;
+//		return currentUndoManager;
+		return getUndoManagerForView(Cytoscape.getCurrentNetworkView());
 	}
 	/**
 	 * @param currentUndoManager The currentUndoManager to set.

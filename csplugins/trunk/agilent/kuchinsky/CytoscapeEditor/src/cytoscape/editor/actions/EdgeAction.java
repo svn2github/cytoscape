@@ -21,6 +21,8 @@ import cytoscape.view.CyNetworkView;
  * 
  * @author Allan Kuchinsky, Agilent Technologies
  * @version 1.0
+ * 
+ * 
  *  
  */
 public class EdgeAction {

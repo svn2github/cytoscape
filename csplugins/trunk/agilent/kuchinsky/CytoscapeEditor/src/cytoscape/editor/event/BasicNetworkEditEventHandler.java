@@ -30,6 +30,7 @@ import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
+import cytoscape.data.attr.CyDataListener;
 import cytoscape.editor.CyNodeLabeler;
 import cytoscape.editor.CytoscapeEditor;
 import cytoscape.editor.CytoscapeEditorManager;
@@ -48,7 +49,7 @@ import cytoscape.editor.editors.BasicCytoscapeEditor;
  *  
  */
 public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
-		implements ActionListener {
+		implements ActionListener, CyDataListener {
 
 	/**
 	 * the node that will be dropped
@@ -197,136 +198,178 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 	 * rubber-banded line will snap to a connection point on that second node.
 	 * Control-click the mouse again and the connection is established.
 	 * 
+	 * @param e inputEvent for mouse pressed
 	 * @see BasicCytoscapeEditor
 	 */
 	public void mousePressed(PInputEvent e) {
 		// TODO: break this into smaller routines
-
+		nextPoint = e.getPosition();
+//		System.out.println("Mouse pressed at: " + e.getPosition());
 		if ((e.isControlDown()) || (getMode() == ADD_MODE)
 				|| (getMode() == LABEL_MODE) || (getMode() == CONNECT_MODE))
-
 		{
-			nextPoint = e.getPosition();
+			// user wants to add a node or an edge
 			boolean onNode = false;
-
 			if (e.getPickedNode() instanceof NodeView) {
 				onNode = true;
 				locator.setNode(e.getPickedNode());
 				locator.locatePoint(nextPoint);
 				nextPoint = e.getPickedNode().localToGlobal(nextPoint);
 			}
-			if (onNode && !edgeStarted && (e.isControlDown()
-					|| (getMode() == CONNECT_MODE))) {
-				// Begin Edge creation
-				edgeStarted = true;
-				node = (NodeView) e.getPickedNode();
-				edge = new PPath();
-				getCanvas().getLayer().addChild(edge);
-
-				edge.setStroke(new PFixedWidthStroke(3));
-				edge.setPaint(Color.black);
-				startPoint = nextPoint;
-				updateEdge();
+			if (onNode && !edgeStarted
+					&& (e.isControlDown() || (getMode() == CONNECT_MODE))) {
+				// begin edge creation
+				beginEdge(e);
 			} else if (onNode && edgeStarted && (e.getPickedNode() != node)) {
 				// Finish Edge Creation
-				edgeStarted = false;
-				updateEdge();
+				finishEdge(e);
 
-				// From the Pick Path
-				NodeView target = (NodeView) e.getPickedNode();
-				// From Earlier
-				NodeView source = node;
-
-				Node source_node = source.getNode();
-				Node target_node = target.getNode();
-
-				CyEdge myEdge = CytoscapeEditorManager.addEdge(source_node,
-						target_node, cytoscape.data.Semantics.INTERACTION,
-						"default", true, "DefaultEdge");
-				//				Cytoscape.getCurrentNetwork().restoreEdge(myEdge);
-
-				getCanvas().getLayer().removeChild(edge);
-				edge = null;
-				node = null;
-				if (isHandlingEdgeDrop()) {
-					setMode(SELECT_MODE);
-					this.setHandlingEdgeDrop(false);
-				}
 			} else if (!onNode && !edgeStarted && (getMode() != CONNECT_MODE)) {
 				// Create a Node on Click
-				CyNode cn = null;
-				if ((getMode() == ADD_MODE) || (e.isControlDown())) {
-					// add a node
-					cn = CytoscapeEditorManager.addNode("node" + counter, true,
-							"DefaultNode");
-
-				} else if (getMode() == LABEL_MODE) {
-
-					// add a freestanding label
-					// functionality not available in Cytoscape 2.2
-					cn = CytoscapeEditorManager.addNode("node" + counter, true,
-							"Label");
-				}
-
-				counter++;
-				double zoom = Cytoscape.getCurrentNetworkView().getZoom();
-				//				Cytoscape.getCurrentNetwork().restoreNode(cn);
-				NodeView nv = Cytoscape.getCurrentNetworkView().getNodeView(cn);
-
-				// do node labeling
-				_nodeBeingLabeled = cn;
-				_nodeViewBeingLabeled = nv;
-				nv.setOffset(nextPoint.getX(), nextPoint.getY());
-				canvas.add(_nodeLabelerPanel);
-				_nodeLabelerPanel.setVisible(true);
-				_nodeLabeler.setText(cn.getIdentifier());
-				Point2D scaledPoint = canvas.getCamera().viewToLocal(nextPoint);
-				_nodeLabelerPanel.setBounds((int) scaledPoint.getX(),
-						(int) scaledPoint.getY(), (int) (nv.getWidth() * 2.0),
-						(int) nv.getHeight());
-				_nodeLabeler.setVisible(true);
-				_nodeLabeler.setEditable(true);
-				_nodeLabeler.setCaretPosition(cn.getIdentifier().length());
-				_nodeLabeler.requestFocus();
-				_nodeLabeler.selectAll();
-			}
+				createNodeAtPoint (e);
+			}				
 		}
 		// doubleclick sets up node labeling
 		// TODO: perhaps hook doubleclick into attribute editor/browser
-		// TODO: fold node labeling into one common method
 		else if (e.getClickCount() >= 2) // open node for labeling
 		{
-			if (e.getPickedNode() instanceof NodeView) {
-				locator.setNode(e.getPickedNode());
-				locator.locatePoint(nextPoint);
-				nextPoint = e.getPickedNode().localToGlobal(nextPoint);
-				NodeView nv = (NodeView) e.getPickedNode();
-				CyNode cyNode = (CyNode) nv.getNode();
-				_nodeBeingLabeled = cyNode;
-				_nodeViewBeingLabeled = nv;
-				_nodeLabeler.setText(cyNode.getIdentifier());
-
-				Point2D scaledPoint = canvas.getCamera().viewToLocal(nextPoint);
-				_nodeLabelerPanel.setBounds((int) scaledPoint.getX(),
-						(int) scaledPoint.getY(), (int) (nv.getWidth() * 2.0),
-						(int) nv.getHeight());
-				canvas.add(_nodeLabelerPanel);
-				_nodeLabelerPanel.setVisible(true);
-				_nodeLabeler.setVisible(true);
-				_nodeLabeler.setEditable(true);
-				_nodeLabeler.setCaretPosition(cyNode.getIdentifier().length());
-				_nodeLabeler.requestFocus();
-				_nodeLabeler.selectAll();
-			}
-
-			else // clicking anywhere on screen will turn off node Labeling
-			{
-				clearNodeLabeler();
-				super.mousePressed(e);
-			}
+			labelNode(e, nextPoint);
+		}
+		else // clicking anywhere on screen will turn off node Labeling
+		{
+			clearNodeLabeler();
+//			System.out.println ("Calling mouse pressed on class " + super.toString());
+			super.mousePressed(e);
 		}
 	}
+	
 
+	/**
+	 * begin drawing an edge from the node containing input point
+	 * @param e input event for mouse press
+	 */
+	private void beginEdge(PInputEvent e)
+	{
+		edgeStarted = true;
+		node = (NodeView) e.getPickedNode();
+		edge = new PPath();
+		getCanvas().getLayer().addChild(edge);
+
+		edge.setStroke(new PFixedWidthStroke(3));
+		edge.setPaint(Color.black);
+		startPoint = nextPoint;
+		updateEdge();		
+	}
+	
+	
+	/**
+	 * finish edge on node containing input point
+	 * @param e input event for mouse press
+	 */
+	private void finishEdge (PInputEvent e)
+	{
+		edgeStarted = false;
+		updateEdge();
+
+		// From the Pick Path
+		NodeView target = (NodeView) e.getPickedNode();
+		// From Earlier
+		NodeView source = node;
+
+		Node source_node = source.getNode();
+		Node target_node = target.getNode();
+
+		CyEdge myEdge = CytoscapeEditorManager.addEdge(source_node,
+				target_node, cytoscape.data.Semantics.INTERACTION,
+				"default", true, "DefaultEdge");
+
+		//				Cytoscape.getCurrentNetwork().restoreEdge(myEdge);
+
+		getCanvas().getLayer().removeChild(edge);
+		edge = null;
+		node = null;
+		if (isHandlingEdgeDrop()) {
+			setMode(SELECT_MODE);
+			this.setHandlingEdgeDrop(false);
+		}		
+	}
+	
+	/**
+	 * create a new node at the point where mouse was pressed
+	 * @param e event for mouse press
+	 */
+	private void createNodeAtPoint (PInputEvent e)
+	{
+		CyNode cn = null;
+		if ((getMode() == ADD_MODE) || (e.isControlDown())) {
+			// add a node
+			cn = CytoscapeEditorManager.addNode("node" + counter, true,
+					"DefaultNode");
+
+		} else if (getMode() == LABEL_MODE) {
+
+			// add a freestanding label
+			// functionality not available in Cytoscape 2.2
+			cn = CytoscapeEditorManager.addNode("node" + counter, true,
+					"Label");
+		}
+
+		counter++;
+		double zoom = Cytoscape.getCurrentNetworkView().getZoom();
+		//				Cytoscape.getCurrentNetwork().restoreNode(cn);
+		NodeView nv = Cytoscape.getCurrentNetworkView().getNodeView(cn);
+
+		// do node labeling
+//		_nodeBeingLabeled = cn;
+//		_nodeViewBeingLabeled = nv;
+		nv.setOffset(nextPoint.getX(), nextPoint.getY());
+//		canvas.add(_nodeLabelerPanel);
+//		_nodeLabelerPanel.setVisible(true);
+//		_nodeLabeler.setText(cn.getIdentifier());
+		initializeNodeLabeler(cn, nv);		
+	}
+	
+	/**
+	 * opens a node for editing of its name/label
+	 * @param e mouse click event
+	 * @param nextPoint point at which the mouse was clicked
+	 */
+	private void labelNode (PInputEvent e, Point2D nextPoint)
+	{
+		nextPoint = e.getPosition();
+		if (e.getPickedNode() instanceof NodeView) {
+			locator.setNode(e.getPickedNode());
+			locator.locatePoint(nextPoint);
+			nextPoint = e.getPickedNode().localToGlobal(nextPoint);
+			NodeView nv = (NodeView) e.getPickedNode();
+			CyNode cyNode = (CyNode) nv.getNode();
+//			_nodeLabeler.setText(cyNode.getIdentifier());
+			initializeNodeLabeler(cyNode, nv);
+		}
+	}
+	
+	/**
+	 * setup user interface for node labeler
+	 * @param cyNode the node to be labeled
+	 * @param nv the view for the node to be labeled
+	 */
+	private void initializeNodeLabeler (CyNode cyNode, NodeView nv)
+	{	
+		    _nodeBeingLabeled = cyNode;
+		    _nodeViewBeingLabeled = nv;
+			Point2D scaledPoint = canvas.getCamera().viewToLocal(nextPoint);
+			_nodeLabelerPanel.setBounds((int) scaledPoint.getX(),
+					(int) scaledPoint.getY(), (int) (nv.getWidth() * 2.0),
+					(int) nv.getHeight());
+			canvas.add(_nodeLabelerPanel);
+			_nodeLabeler.setText(cyNode.getIdentifier());
+			_nodeLabelerPanel.setVisible(true);
+			_nodeLabeler.setVisible(true);
+			_nodeLabeler.setEditable(true);
+			_nodeLabeler.setCaretPosition(cyNode.getIdentifier().length());
+			_nodeLabeler.requestFocus();
+			_nodeLabeler.selectAll();
+	}
 	/**
 	 * updates rendering of edge if an edge is under construction
 	 */
@@ -378,6 +421,7 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 
 	public void mouseDragged(PInputEvent e) {
 		if (!edgeStarted) {
+
 			super.mouseDragged(e);
 		}
 		if (edgeStarted) {
@@ -388,6 +432,8 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 		if (e.getPickedNode() instanceof NodeView) {
 		}
 	}
+	
+
 
 	/**
 	 * updates the rubberbanded edge line as the mouse is moved
@@ -440,7 +486,7 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 	 */
 	public void setMode(int mode) {
 		this.mode = mode;
-		System.out.println("drop mode set to: " + mode);
+//		System.out.println("drop mode set to: " + mode);
 	}
 
 	/**
@@ -479,6 +525,29 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 				clearNodeLabeler();
 			}
 		}
+
+	}
+
+	/**
+	 * 
+	 * CyDataListener methods
+	 */
+	public void attributeValueAssigned(java.lang.String objectKey,
+			java.lang.String attributeName, java.lang.Object[] keyIntoValue,
+			java.lang.Object oldAttributeValue,
+			java.lang.Object newAttributeValue) {
+		System.out.println("attributeValueAssigned: " + newAttributeValue);
+
+	}
+
+	public void attributeValueRemoved(java.lang.String objectKey,
+			java.lang.String attributeName, java.lang.Object[] keyIntoValue,
+			java.lang.Object attributeValue) {
+
+	}
+
+	public void allAttributeValuesRemoved(java.lang.String objectKey,
+			java.lang.String attributeName) {
 
 	}
 
@@ -675,17 +744,14 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 			 * Object[attribs.length]; for (int i = 0; i < attribs.length; i++ ) {
 			 * values[i] = net.getNodeAttributeValue(_nodeBeingLabeled,
 			 * attribs[i]); System.out.println ("Attribute = " + attribs[i] + ",
-			 * Value = " + values[i]); } // AJK: END first part of hack
-			 *  // shift to uppercase? // String _field_val =
-			 * field_val.toUpperCase();
-			 * _nodeBeingLabeled.setIdentifier(field_val);
-			 * 
-			 *  // AJK: 09/08/05 BEGIN // hack for restoring node attributes
-			 * when identifier is changed for (int i = 0; i < attribs.length;
-			 * i++ ) { System.out.println ("For node " + _nodeBeingLabeled + ",
-			 * setting attribute " + attribs [i] + " to " + values[i]); if
-			 * (values[i] != null) {
-			 * net.setNodeAttributeValue(_nodeBeingLabeled, attribs[i],
+			 * Value = " + values[i]); } // AJK: END first part of hack // shift
+			 * to uppercase? // String _field_val = field_val.toUpperCase();
+			 * _nodeBeingLabeled.setIdentifier(field_val); // AJK: 09/08/05
+			 * BEGIN // hack for restoring node attributes when identifier is
+			 * changed for (int i = 0; i < attribs.length; i++ ) {
+			 * System.out.println ("For node " + _nodeBeingLabeled + ", setting
+			 * attribute " + attribs [i] + " to " + values[i]); if (values[i] !=
+			 * null) { net.setNodeAttributeValue(_nodeBeingLabeled, attribs[i],
 			 * values[i]); } } // AJK: 09/08/05 END
 			 * 
 			 * 

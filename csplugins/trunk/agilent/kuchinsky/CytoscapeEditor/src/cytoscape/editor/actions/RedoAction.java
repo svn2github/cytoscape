@@ -48,7 +48,7 @@ public class RedoAction extends AbstractAction {
 			// AJK: 09/05/05 END			
 		} catch (CannotRedoException ex) {
 			System.out.println("Unable to redo: " + ex);
-			ex.printStackTrace();
+//			ex.printStackTrace();
 		}
 		update();
 		undoAction.update();

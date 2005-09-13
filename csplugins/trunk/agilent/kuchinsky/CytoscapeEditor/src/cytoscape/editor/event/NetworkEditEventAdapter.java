@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import phoebe.PGraphView;
 import phoebe.PhoebeCanvasDropEvent;
 import phoebe.PhoebeCanvasDropListener;
+import cytoscape.data.attr.CyDataListener;
 import edu.umd.cs.piccolo.PCanvas;
 import edu.umd.cs.piccolo.event.PBasicInputEventHandler;
 import edu.umd.cs.piccolo.event.PInputEvent;
@@ -29,9 +30,11 @@ import edu.umd.cs.piccolox.util.PNodeLocator;
  * @version 1.0
  * 
  */
-public class NetworkEditEventAdapter extends PBasicInputEventHandler implements
+public class NetworkEditEventAdapter 
+   extends PBasicInputEventHandler implements
 		ActionListener,
-		PhoebeCanvasDropListener
+		PhoebeCanvasDropListener,
+		CyDataListener
 		{
 
 	protected PCanvas canvas;
@@ -80,6 +83,7 @@ public class NetworkEditEventAdapter extends PBasicInputEventHandler implements
 
 
 	public void mousePressed(PInputEvent e) {
+//		System.out.println ("Calling mousePressed on: " + super.getClass());
 		super.mousePressed(e);
 	}
 
@@ -125,6 +129,30 @@ public class NetworkEditEventAdapter extends PBasicInputEventHandler implements
 	public void itemDropped (PhoebeCanvasDropEvent dte)
 	{
 		
+	}
+
+	
+	/**
+	 * 
+	 * CyDataListener methods
+	 */
+	public void attributeValueAssigned(java.lang.String objectKey,
+			java.lang.String attributeName, java.lang.Object[] keyIntoValue,
+			java.lang.Object oldAttributeValue,
+			java.lang.Object newAttributeValue) {
+		System.out.println("attributeValueAssigned");
+
+	}
+
+	public void attributeValueRemoved(java.lang.String objectKey,
+			java.lang.String attributeName, java.lang.Object[] keyIntoValue,
+			java.lang.Object attributeValue) {
+
+	}
+
+	public void allAttributeValuesRemoved(java.lang.String objectKey,
+			java.lang.String attributeName) {
+
 	}
 
 }
