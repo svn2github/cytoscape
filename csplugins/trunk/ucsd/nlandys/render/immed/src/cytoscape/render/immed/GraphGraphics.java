@@ -1480,7 +1480,8 @@ public final class GraphGraphics
    *   an acceptable value to indicate no edge anchors.
    * @param x1 the X coordinate of the second edge endpoint.
    * @param y1 the Y coordinate of the second edge endpoint.
-   * @param path the computed path is returned in this parameter; note that
+   * @param path the computed path is returned in this parameter; the
+   *   computed path's coordinate system is the node coordinate system;
    *   the computed path is not closed.
    * @return true if and only if the specified edge would be drawn (which
    *   is if and only if any two points from the edge anchor set plus the
