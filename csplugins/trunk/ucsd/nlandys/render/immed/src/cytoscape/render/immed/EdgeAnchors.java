@@ -21,7 +21,7 @@ public interface EdgeAnchors
    *   <tr>  <td>offset</td>       <td>X coordinate of anchor</td>  </tr>
    *   <tr>  <td>offset+1</td>     <td>Y coordinate of anchor</td>  </tr>
    * </table></blockquote>
-   * @exception IllegalArgumentException if anchorIndex is not in the
+   * @exception IndexOutOfBoundsException if anchorIndex is not in the
    *   range [0, numAnchors()-1].
    */
   public void getAnchor(int anchorIndex, float[] anchorArr, int offset);
