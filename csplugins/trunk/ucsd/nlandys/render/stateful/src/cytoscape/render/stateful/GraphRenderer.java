@@ -21,10 +21,11 @@ public final class GraphRenderer
   private final static int LOD_HIGH_DETAIL = 0x1;
   private final static int LOD_NODE_BORDERS = 0x2;
   private final static int LOD_NODE_LABELS = 0x4;
-  private final static int LOD_TEXT_AS_SHAPE = 0x8;
-  private final static int LOD_EDGE_ARROWS = 0x10;
-  private final static int LOD_DASHED_EDGES = 0x20;
-  private final static int LOD_EDGE_ANCHORS = 0x40;
+  private final static int LOD_EDGE_ARROWS = 0x8;
+  private final static int LOD_DASHED_EDGES = 0x10;
+  private final static int LOD_EDGE_ANCHORS = 0x20;
+  private final static int LOD_EDGE_LABELS = 0x40;
+  private final static int LOD_TEXT_AS_SHAPE = 0x80;
 
   // No constructor.
   private GraphRenderer() { }
@@ -127,15 +128,19 @@ public final class GraphRenderer
         if (lod.nodeBorders(renderNodeCount, renderEdgeCount)) {
           lodTemp |= LOD_NODE_BORDERS; }
         if (lod.nodeLabels(renderNodeCount, renderEdgeCount)) {
-          lodTemp |= LOD_NODE_LABELS;
-          if (lod.textAsShape(renderNodeCount, renderEdgeCount)) {
-            lodTemp |= LOD_TEXT_AS_SHAPE; } }
+          lodTemp |= LOD_NODE_LABELS; }
         if (lod.edgeArrows(renderNodeCount, renderEdgeCount)) {
           lodTemp |= LOD_EDGE_ARROWS; }
         if (lod.dashedEdges(renderNodeCount, renderEdgeCount)) {
           lodTemp |= LOD_DASHED_EDGES; }
         if (lod.edgeAnchors(renderNodeCount, renderEdgeCount)) {
-          lodTemp |= LOD_EDGE_ANCHORS; } }
+          lodTemp |= LOD_EDGE_ANCHORS; }
+        if (lod.edgeLabels(renderNodeCount, renderEdgeCount)) {
+          lodTemp |= LOD_EDGE_LABELS; }
+        if (((lodTemp & LOD_NODE_LABELS) != 0 ||
+             (lodTemp & LOD_EDGE_LABELS) != 0) &&
+            lod.textAsShape(renderNodeCount, renderEdgeCount)) {
+          lodTemp |= LOD_TEXT_AS_SHAPE; } }
       lodBits = lodTemp;
     }
 
