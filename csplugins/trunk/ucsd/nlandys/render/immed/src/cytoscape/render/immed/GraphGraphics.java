@@ -278,8 +278,8 @@ public final class GraphGraphics
   /**
    * This is the method that will render a node very quickly.
    * The node shape used by this method is SHAPE_RECTANGLE.  Translucent
-   * colors are not officially supported by the low detail rendering
-   * methods, so use translucent colors at your own risk.<p>
+   * colors are not supported by the low detail rendering
+   * methods.<p>
    * xMin, yMin, xMax, and yMax specify the extents of the node in the
    * node coordinate space, not the image coordinate space.  Thus, these
    * values will likely not change from frame to frame, as zoom and pan
@@ -290,7 +290,7 @@ public final class GraphGraphics
    * @param yMin an extent of the node to draw, in node coordinate space.
    * @param xMax an extent of the node to draw, in node coordinate space.
    * @param yMax an extent of the node to draw, in node coordinate space.
-   * @param fillColor the color to use when drawing the node.
+   * @param fillColor the [fully opaque] color to use when drawing the node.
    * @exception IllegalArgumentException if xMin is not less than xMax or if
    *   yMin is not less than yMax.
    */
@@ -367,12 +367,12 @@ public final class GraphGraphics
    * @param yMax an extent of the node shape to draw, in node coordinate
    *   space; the drawn shape will theoretically contain a point that lies
    *   on this Y coordinate.
-   * @param fillColor the color to use when drawing the node area minus
+   * @param fillPaint the paint to use when drawing the node area minus
    *   the border (the "interior" of the node).
    * @param borderWidth the border width, in node coordinate space; if
    *   this value is zero, the rendering engine skips over the process of
    *   rendering the border, which gives a significant performance boost.
-   * @param borderColor if borderWidth is not zero, this color is used for
+   * @param borderPaint if borderWidth is not zero, this paint is used for
    *   rendering the node border; otherwise, this parameter is ignored (and
    *   may be null).
    * @exception IllegalArgumentException if xMin is not less than xMax or if
@@ -387,9 +387,9 @@ public final class GraphGraphics
   public final void drawNodeFull(final byte nodeShape,
                                  final float xMin, final float yMin,
                                  final float xMax, final float yMax,
-                                 final Color fillColor,
+                                 final Paint fillPaint,
                                  final float borderWidth,
-                                 final Color borderColor)
+                                 final Paint borderPaint)
   {
     if (m_debug) {
       if (!EventQueue.isDispatchThread())
@@ -418,7 +418,7 @@ public final class GraphGraphics
              "max(width, height) < 2 * min(width, height)"); } }
 
     if (borderWidth == 0.0f) {
-      m_g2d.setColor(fillColor);
+      m_g2d.setPaint(fillPaint);
       m_g2d.fill(getShape(nodeShape, xMin, yMin, xMax, yMax)); }
     else { // There is a border.
       m_path2dPrime.reset();
@@ -479,7 +479,7 @@ public final class GraphGraphics
                               xNext, yNext, borderWidth);
             m_path2d.lineTo((float) m_ptsBuff[0], (float) m_ptsBuff[1]); } }
         innerShape = m_path2d; }
-      m_g2d.setColor(fillColor);
+      m_g2d.setPaint(fillPaint);
       m_g2d.fill(innerShape);
 
       // Render the border such that it does not overlap with the fill
@@ -487,10 +487,11 @@ public final class GraphGraphics
       // things differently for opaque and translucent colors for the
       // sake of consistency.
       m_path2dPrime.append(innerShape, false);
-      m_g2d.setColor(borderColor);
+      m_g2d.setPaint(borderPaint);
       m_g2d.fill(m_path2dPrime); }
   }
 
+  // TODO: Replace this with getNodeShape().
   /**
    * Determines whether or not the point (xQuery, yQuery) lies inside
    * the shape of type nodeShape (may be a custom shape or one of the
@@ -902,8 +903,8 @@ public final class GraphGraphics
 
   /**
    * This is the method that will render an edge very quickly.
-   * Translucent colors are not officially supported by the low detail
-   * rendering methods, so use translucent colors at your own risk.<p>
+   * Translucent colors are not supported by the low detail
+   * rendering methods.<p>
    * The points (x0, y0) and (x1, y1) specify the endpoints of edge to
    * be rendered in the node coordinate space, not the image coordinate
    * space.  Thus, these values will likely not change from frame to frame,
@@ -915,7 +916,7 @@ public final class GraphGraphics
    * @param y0 the Y coordinate of the begin point of edge to render.
    * @param x1 the X coordinate of the end point of edge to render.
    * @param y1 the Y coordinate of the end point of edge to render.
-   * @param edgeColor the color to use when drawing the edge.
+   * @param edgeColor the [fully opaque] color to use when drawing the edge.
    */
   public final void drawEdgeLow(final float x0, final float y0,
                                 final float x1, final float y1,
@@ -965,7 +966,7 @@ public final class GraphGraphics
    *                                   end (center of round
    *                                   semicircle end exactly equal to
    *                                   endpoint specified); arrow size
-   *                                   and arrow color are ignored</td>   </tr>
+   *                                   and arrow paint are ignored</td>   </tr>
    *   <tr>  <td>ARROW_DELTA</td>    <td>the sharp tip of the arrowhead
    *                                   is exactly at the endpint
    *                                   specified; the delta is as wide as
@@ -993,7 +994,7 @@ public final class GraphGraphics
    *                                   of this type or neither one must be
    *                                   of this type; bidirectional edges
    *                                   look completely different from other
-   *                                   edges; arrow colors are completely
+   *                                   edges; arrow paints are completely
    *                                   ignored for this type of edge;
    *                                   the edge arrow is drawn such that
    *                                   it fits snugly inside of an
@@ -1013,9 +1014,9 @@ public final class GraphGraphics
    *                                   is placed such that its tip is in the
    *                                   middle of the edge
    *                                   segment, pointing from (x0,y0) to
-   *                                   (x1,y1); the color
+   *                                   (x1,y1); the paint
    *                                   and size of the first arrow (arrow0)
-   *                                   are read and the color and size of the
+   *                                   are read and the paint and size of the
    *                                   other arrow are completely ignored;
    *                                   note that edge anchors are not
    *                                   supported for this type of
@@ -1060,7 +1061,7 @@ public final class GraphGraphics
    * @param arrow0Size the size of arrow at point (x0, y0); how size is
    *   interpreted for different arrow types is described in the table
    *   above.
-   * @param arrow0Color the color to use when drawing the arrow at point
+   * @param arrow0Paint the paint to use when drawing the arrow at point
    *   (x0, y0).
    * @param arrowType1 the type of arrow shape to use for drawing the
    *   arrow at point (x1, y1); this value must be one of the ARROW_*
@@ -1068,7 +1069,7 @@ public final class GraphGraphics
    * @param arrow1Size the size of arrow at point (x1, y1); how size is
    *   interpreted for different arrow types is described in the table
    *   above.
-   * @param arrow1Color the color to use when drawing the arrow at point
+   * @param arrow1Paint the paint to use when drawing the arrow at point
    *   (x1, y1).
    * @param x0 the X coordinate of the first edge endpoint.
    * @param y0 the Y coordinate of the first edge endpoint.
@@ -1078,7 +1079,7 @@ public final class GraphGraphics
    * @param y1 the Y coordinate of the second edge endpoint.
    * @param edgeThickness the thickness of the edge segment; the edge segment
    *   is the part of the edge between the two endpoint arrows.
-   * @param edgeColor the color to use when drawing the edge segment.
+   * @param edgePaint the paint to use when drawing the edge segment.
    * @param dashLength a positive value representing the length of dashes
    *   on the edge, or zero to indicate that the edge is solid; note that
    *   drawing dashed segments is computationally expensive.
@@ -1089,15 +1090,15 @@ public final class GraphGraphics
    */
   public final void drawEdgeFull(final byte arrowType0,
                                  final float arrow0Size,
-                                 final Color arrow0Color,
+                                 final Paint arrow0Paint,
                                  final byte arrowType1,
                                  final float arrow1Size,
-                                 final Color arrow1Color,
+                                 final Paint arrow1Paint,
                                  final float x0, final float y0,
                                  EdgeAnchors anchors,
                                  final float x1, final float y1,
                                  final float edgeThickness,
-                                 final Color edgeColor,
+                                 final Paint edgePaint,
                                  final float dashLength)
   {
     final double curveFactor = CURVE_ELLIPTICAL;
@@ -1113,11 +1114,11 @@ public final class GraphGraphics
       // After filtering duplicate start and end points, there are less
       // than 3 total.
       if (m_edgePtsCount == 2) { // Draw an ordinary edge.
-        drawSimpleEdgeFull(arrowType0, arrow0Size, arrow0Color,
-                           arrowType1, arrow1Size, arrow1Color,
+        drawSimpleEdgeFull(arrowType0, arrow0Size, arrow0Paint,
+                           arrowType1, arrow1Size, arrow1Paint,
                            (float) m_edgePtsBuff[0], (float) m_edgePtsBuff[1],
                            (float) m_edgePtsBuff[2], (float) m_edgePtsBuff[3],
-                           edgeThickness, edgeColor, dashLength); }
+                           edgeThickness, edgePaint, dashLength); }
       return; }
 
     { // Render the edge polypath.
@@ -1136,7 +1137,7 @@ public final class GraphGraphics
           ((float) m_edgePtsBuff[inx++], (float) m_edgePtsBuff[inx++],
            (float) m_edgePtsBuff[inx++], (float) m_edgePtsBuff[inx++],
            (float) m_edgePtsBuff[inx++], (float) m_edgePtsBuff[inx++]); }
-      m_g2d.setColor(edgeColor);
+      m_g2d.setPaint(edgePaint);
       m_g2d.draw(m_path2d);
       if (simpleSegment) { return; }
       // We need to figure out the phase at the end of the cubic poly-path
@@ -1170,7 +1171,7 @@ public final class GraphGraphics
                                  m_edgePtsBuff[2], m_edgePtsBuff[3]);
         m_g2d.transform(m_xformUtil);
         m_g2d.scale(edgeThickness, edgeThickness);
-        // The color is already set to edge color.
+        // The paint is already set to edge paint.
         m_g2d.fill(arrow0Cap);
         m_g2d.setTransform(m_currNativeXform); }
     }
@@ -1185,7 +1186,7 @@ public final class GraphGraphics
                                  m_edgePtsBuff[(m_edgePtsCount - 1) * 6 - 3]);
         m_g2d.transform(m_xformUtil);
         m_g2d.scale(edgeThickness, edgeThickness);
-        // The color is already set to edge color.
+        // The paint is already set to edge paint.
         m_g2d.fill(arrow1Cap);
         m_g2d.setTransform(m_currNativeXform); }
     }
@@ -1197,7 +1198,7 @@ public final class GraphGraphics
                                  m_edgePtsBuff[0], m_edgePtsBuff[1]);
         m_g2d.transform(m_xformUtil);
         m_g2d.scale(arrow0Size, arrow0Size);
-        m_g2d.setColor(arrow0Color);
+        m_g2d.setPaint(arrow0Paint);
         m_g2d.fill(arrow0);
         m_g2d.setTransform(m_currNativeXform); }
     }
@@ -1210,7 +1211,7 @@ public final class GraphGraphics
                                  m_edgePtsBuff[(m_edgePtsCount - 1) * 6 - 1]);
         m_g2d.transform(m_xformUtil);
         m_g2d.scale(arrow1Size, arrow1Size);
-        m_g2d.setColor(arrow1Color);
+        m_g2d.setPaint(arrow1Paint);
         m_g2d.fill(arrow1);
         m_g2d.setTransform(m_currNativeXform); }
     }
@@ -1285,14 +1286,14 @@ public final class GraphGraphics
 
   private final void drawSimpleEdgeFull(final byte arrowType0,
                                         final float arrow0Size,
-                                        final Color arrow0Color,
+                                        final Paint arrow0Paint,
                                         final byte arrowType1,
                                         final float arrow1Size,
-                                        final Color arrow1Color,
+                                        final Paint arrow1Paint,
                                         final float x0, final float y0,
                                         final float x1, final float y1,
                                         final float edgeThickness,
-                                        final Color edgeColor,
+                                        final Paint edgePaint,
                                         final float dashLength)
   {
     final double len = Math.sqrt((((double) x1) - x0) * (((double) x1) - x0) +
@@ -1327,12 +1328,12 @@ public final class GraphGraphics
         (edgeThickness, dashLength,
          dashLength == 0.0f ? BasicStroke.CAP_ROUND : BasicStroke.CAP_BUTT,
          false);
-      m_g2d.setColor(edgeColor);
+      m_g2d.setPaint(edgePaint);
       m_g2d.draw(m_path2d);
       return; } // End ARROW_BIDIRECTIONAL.
 
     if (arrowType0 == ARROW_MONO) { // Draw and return.
-      m_g2d.setColor(edgeColor); // We're going to render at least one segment.
+      m_g2d.setPaint(edgePaint); // We're going to render at least one segment.
       setStroke(edgeThickness, dashLength, BasicStroke.CAP_BUTT, false);
       final double deltaLen = getT(ARROW_DELTA) * arrow0Size;
       final double tDeltaLenFactor = 0.5d - deltaLen / len;
@@ -1353,7 +1354,7 @@ public final class GraphGraphics
                                  x0, y0);
         m_g2d.transform(m_xformUtil);
         m_g2d.scale(edgeThickness, edgeThickness);
-        // The color is already set to edge color.
+        // The paint is already set to edge paint.
         m_g2d.fill(computeUntransformedArrowCap(ARROW_NONE, 0.0d));
         m_g2d.setTransform(m_currNativeXform); }
       if (dashLength == 0.0f) { // Render end cap.
@@ -1361,7 +1362,7 @@ public final class GraphGraphics
                                  x1, y1);
         m_g2d.transform(m_xformUtil);
         m_g2d.scale(edgeThickness, edgeThickness);
-        // The color is already set to edge color.
+        // The paint is already set to edge paint.
         m_g2d.fill(computeUntransformedArrowCap(ARROW_NONE, 0.0d));
         m_g2d.setTransform(m_currNativeXform); }
       if (dashLength == 0.0f) { // Render delta wedge cap.
@@ -1369,7 +1370,7 @@ public final class GraphGraphics
                                  midX, midY);
         m_g2d.transform(m_xformUtil);
         m_g2d.scale(edgeThickness, edgeThickness);
-        // The color is already set to edge color.
+        // The paint is already set to edge paint.
         m_g2d.fill(computeUntransformedDeltaWedgeCap());
         m_g2d.setTransform(m_currNativeXform); }
       // Finally, render the mono delta wedge.
@@ -1377,7 +1378,7 @@ public final class GraphGraphics
                                  midX, midY);
         m_g2d.transform(m_xformUtil);
         m_g2d.scale(arrow0Size, arrow0Size);
-        m_g2d.setColor(arrow0Color);
+        m_g2d.setPaint(arrow0Paint);
         m_g2d.fill(computeUntransformedArrow(ARROW_DELTA));
         m_g2d.setTransform(m_currNativeXform); }
       return; } // End ARROW_MONO.
@@ -1408,7 +1409,7 @@ public final class GraphGraphics
                   simpleSegment > 0 ? BasicStroke.CAP_ROUND :
                   BasicStroke.CAP_BUTT, false);
         m_line2d.setLine(x0Adj, y0Adj, x1Adj, y1Adj);
-        m_g2d.setColor(edgeColor);
+        m_g2d.setPaint(edgePaint);
         m_g2d.draw(m_line2d);
         if (simpleSegment > 0) { return; } }
       else { simpleSegment = 0; } // Did not render segment.
@@ -1430,7 +1431,7 @@ public final class GraphGraphics
                                  x0Adj, y0Adj);
         m_g2d.transform(m_xformUtil);
         m_g2d.scale(edgeThickness, edgeThickness);
-        // The color is already set to edge color.
+        // The paint is already set to edge paint.
         m_g2d.fill(arrow0Cap);
         m_g2d.setTransform(m_currNativeXform); } }
 
@@ -1442,7 +1443,7 @@ public final class GraphGraphics
                                  x1Adj, y1Adj);
         m_g2d.transform(m_xformUtil);
         m_g2d.scale(edgeThickness, edgeThickness);
-        // The color is already set to edge color.
+        // The paint is already set to edge paint.
         m_g2d.fill(arrow1Cap);
         m_g2d.setTransform(m_currNativeXform); } }
 
@@ -1453,7 +1454,7 @@ public final class GraphGraphics
                                  x0, y0);
         m_g2d.transform(m_xformUtil);
         m_g2d.scale(arrow0Size, arrow0Size);
-        m_g2d.setColor(arrow0Color);
+        m_g2d.setPaint(arrow0Paint);
         m_g2d.fill(arrow0);
         m_g2d.setTransform(m_currNativeXform); }
     }
@@ -1465,7 +1466,7 @@ public final class GraphGraphics
                                  x1, y1);
         m_g2d.transform(m_xformUtil);
         m_g2d.scale(arrow1Size, arrow1Size);
-        m_g2d.setColor(arrow1Color);
+        m_g2d.setPaint(arrow1Paint);
         m_g2d.fill(arrow1);
         m_g2d.setTransform(m_currNativeXform); }
     }
@@ -2301,8 +2302,8 @@ public final class GraphGraphics
 
   /**
    * This method will render text very quickly.
-   * Translucent colors are not officially supported by the low detail
-   * rendering methods, so use translucent colors at your own risk.<p>
+   * Translucent colors are not supported by the low detail
+   * rendering methods.<p>
    * For the sake of maximum performance, this method works differently from
    * the other rendering methods with respect to the scaling factor
    * specified in clear().  That is, the font used to render the specified
@@ -2320,7 +2321,7 @@ public final class GraphGraphics
    *   rendered text; specified in the node coordinate system.
    * @param yCenter the Y coordinate of the center point of where to place the
    *   rendered text; specified in the node coordinate system.
-   * @param color the color to use in rendering the text.
+   * @param color the [fully opaque] color to use in rendering the text.
    */
   public final void drawTextLow(final Font font,
                                 final String text,
@@ -2390,7 +2391,7 @@ public final class GraphGraphics
    *   rectangle with specified font is centered on this X coordinate.
    * @param yCenter the text string is drawn such that its logical bounds
    *   rectangle with specified font is centered on this Y coordinate.
-   * @param color the color to use in rendering the text.
+   * @param paint the paint to use in rendering the text.
    * @param drawTextAsShape
    *   this flag controls the way that text is drawn to the underlying
    *   graphics context;  by default, all text rendering operations involve
@@ -2414,7 +2415,7 @@ public final class GraphGraphics
                                  final String text,
                                  final float xCenter,
                                  final float yCenter,
-                                 final Color color,
+                                 final Paint paint,
                                  final boolean drawTextAsShape)
   {
     if (m_debug) {
@@ -2427,7 +2428,7 @@ public final class GraphGraphics
         throw new IllegalArgumentException("scaleFactor must be positive"); }
     m_g2d.translate(xCenter, yCenter);
     m_g2d.scale(scaleFactor, -scaleFactor);
-    m_g2d.setColor(color);
+    m_g2d.setPaint(paint);
     if (drawTextAsShape) {
       final GlyphVector glyphV;
       {
