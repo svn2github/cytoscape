@@ -3,6 +3,7 @@ package cytoscape.render.stateful;
 import cytoscape.render.immed.EdgeAnchors;
 import cytoscape.render.immed.GraphGraphics;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Paint;
 
 /**
@@ -126,5 +127,46 @@ public class EdgeDetails
    */
   public float dashLength(final int edge) {
     return 0.0f; }
+
+  /**
+   * Returns the text label this edge has.  By default this method returns
+   * null; returning null is the optimal way to specify that this
+   * edge has no text label.  An edge's text label is rendered such that the
+   * text is centered at at point lying on the edge path; the point on
+   * edge path is chosen such that it is close to the "middle" of the edge
+   * path.
+   */
+  public String label(final int edge) {
+    return null; }
+
+  /**
+   * Returns the font to use when rendering a text label on this edge.
+   * By default this method returns null.
+   * This return value is ignored if label(edge) returns either null or the
+   * empty string; it is an error the return null if label(edge) returns a
+   * non-empty string.
+   */
+  public Font font(final int edge) {
+    return null; }
+
+  /**
+   * Returns an additional scaling factor that is to be applied to the font
+   * used to render text labels; this scaling factor, applied to the point
+   * size of the font returned by font(edge), yields a new virtual font that
+   * is used to actually render text labels.  By default this method returns
+   * 1.0.  This return value is ignored if label(edge) returns either null or
+   * the empty string.
+   */
+  public double fontScaleFactor(final int edge) {
+    return 1.0d; }
+
+  /**
+   * Returns the paint of the text label on this edge.  By default this method
+   * returns null.  This return value is ignored if label(edge) returns
+   * either null or the empty string; it is an error to return null if
+   * label(edge) returns a non-empty string.
+   */
+  public Paint labelPaint(final int edge) {
+    return null; }
 
 }
