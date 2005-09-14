@@ -60,6 +60,9 @@ public class GraphLOD
    *   <tr>  <th>node labels</th>
    *         <td>drawTextFull()</td>
    *         <td>not rendered</td>                                        </tr>
+   *   <tr>  <th>edge labels</th>
+   *         <td> drawTextFull()</td>
+   *         <td>not rendered</td>                                        </tr>
    * </table></blockquote>
    * @param renderNodeCount the number of nodes that are about to be rendered.
    * @param renderEdgeCount the number of edges that are about to be rendered.
@@ -89,8 +92,8 @@ public class GraphLOD
 
   /**
    * Determines whether or not to render node labels.  By default this method
-   * returns true if and only if the number of rendered nodes is less than
-   * 80.<p>
+   * returns true if and only if the sum of rendered nodes and rendered edges
+   * is less than 120.<p>
    * Node labels are only rendered at the full detail level.  If low detail is
    * chosen, the output of this method is ignored.
    * @param renderNodeCount the number of nodes that are about to be rendered.
@@ -101,25 +104,7 @@ public class GraphLOD
   public boolean nodeLabels(final int renderNodeCount,
                             final int renderEdgeCount)
   {
-    return renderNodeCount < 80;
-  }
-
-  /**
-   * Determines whether or not to draw text as shape when rendering node
-   * labels.  By default this method always returns false.<p>
-   * This method affects the boolean parameter drawTextAsShape in the method
-   * call GraphGraphics.drawTextFull().  If node labels are not rendered
-   * altogether, the output of this method is ignored.
-   * @param renderNodeCount the number of nodes that are about to be rendered.
-   * @param renderEdgeCount the number of edges that are about to be rendered.
-   * @return true if and only if rendered node label text should be drawn as
-   *   primitive shapes.
-   * @see #nodeLabels(int, int)
-   */
-  public boolean textAsShape(final int renderNodeCount,
-                             final int renderEdgeCount)
-  {
-    return false;
+    return renderNodeCount + renderEdgeCount < 120;
   }
 
   /**
@@ -175,6 +160,42 @@ public class GraphLOD
                              final int renderEdgeCount)
   {
     return true;
+  }
+
+  /**
+   * Determines whether or not to render edge labels.  By default this method
+   * returns true if and only if the sum of rendered nodes and rendered edges
+   * is less than 120.<p>
+   * Edge labels are only rendered at the full detail level.  If low detail is
+   * chosen, the output of this method is ignored.
+   * @param renderNodeCount the number of nodes that are about to be rendered.
+   * @param renderEdgeCount the number of edges that are about to be rendered.
+   * @return true if and only if edge labels are to be rendered.
+   * @see #detail(int, int)
+   */
+  public boolean edgeLabels(final int renderNodeCount,
+                            final int renderEdgeCount)
+  {
+    return renderNodeCount + renderEdgeCount < 120;
+  }
+
+  /**
+   * Determines whether or not to draw text as shape when rendering node and
+   * edge labels.  By default this method always returns false.<p>
+   * This method affects the boolean parameter drawTextAsShape in the method
+   * call GraphGraphics.drawTextFull().  If neither node nor edge labels are
+   * rendered then the output of this method is ignored.
+   * @param renderNodeCount the number of nodes that are about to be rendered.
+   * @param renderEdgeCount the number of edges that are about to be rendered.
+   * @return true if and only if rendered label text should be drawn as
+   *   primitive shapes.
+   * @see #nodeLabels(int, int)
+   * @see #edgeLabels(int, int)
+   */
+  public boolean textAsShape(final int renderNodeCount,
+                             final int renderEdgeCount)
+  {
+    return false;
   }
 
 }
