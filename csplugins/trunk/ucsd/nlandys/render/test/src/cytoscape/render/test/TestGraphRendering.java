@@ -164,7 +164,7 @@ public class TestGraphRendering
             return renderNodeCount < 250; }
           public boolean textAsShape(int renderNodeCount,
                                      int renderEdgeCount) {
-            return renderNodeCount < 30; }
+            return renderNodeCount + renderEdgeCount < 30; }
           public boolean edgeArrows(int renderNodeCount,
                                     int renderEdgeCount) {
             return renderNodeCount < 250; } }; }
@@ -177,7 +177,7 @@ public class TestGraphRendering
             return 0; }
           public boolean textAsShape(int renderNodeCount,
                                      int renderEdgeCount) {
-            return renderNodeCount < 30; } }; }
+            return renderNodeCount + renderEdgeCount < 30; } }; }
     final NodeDetails nodeDetails = new NodeDetails() {
         private final float borderWidth = (float) (minDim / 12);
         private final Color borderColor = new Color(63, 63, 63, 127);
