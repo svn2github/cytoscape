@@ -3,6 +3,7 @@ package cytoscape.render.stateful;
 import cytoscape.render.immed.EdgeAnchors;
 import cytoscape.render.immed.GraphGraphics;
 import java.awt.Color;
+import java.awt.Paint;
 
 /**
  * Defines the visual properties of an edge.  Even though this class is not
@@ -24,7 +25,7 @@ public class EdgeDetails
    * properties that are used in full detail rendering mode.  In low detail
    * rendering mode translucent colors are not supported whereas in full
    * detail rendering mode they are; therefore, colorLowDetail(edge) and
-   * color(edge) may return two different colors.
+   * paint(edge) may return two different colors.
    */
   public Color colorLowDetail(final int edge) {
     return Color.blue; }
@@ -50,13 +51,13 @@ public class EdgeDetails
     return 0.0f; }
 
   /**
-   * Returns the color of the arrow at edge endpoint touching source node.
+   * Returns the paint of the arrow at edge endpoint touching source node.
    * By default this method returns null.  This return value is ignored if
    * sourceArrow(edge) returns GraphGraphics.ARROW_NONE or
    * GraphGraphics.ARROW_BIDIRECTIONAL; otherwise, it is an error to return
    * null.
    */
-  public Color sourceArrowColor(final int edge) {
+  public Paint sourceArrowPaint(final int edge) {
     return null; }
 
   /**
@@ -80,13 +81,13 @@ public class EdgeDetails
     return 0.0f; }
 
   /**
-   * Returns the color of the arrow at edge endpoint touching target node.
+   * Returns the paint of the arrow at edge endpoint touching target node.
    * By default this method returns null.  This return value is ignored if
    * targetArrow(edge) returns GraphGraphics.ARROW_NONE,
    * GraphGraphics.ARROW_BIDIRECTIONAL, or GraphGraphics.ARROW_MONO;
    * otherwise, it is an error to return null.
    */
-  public Color targetArrowColor(final int edge) {
+  public Paint targetArrowPaint(final int edge) {
     return null; }
 
   /**
@@ -112,11 +113,11 @@ public class EdgeDetails
     return 0.0f; }
 
   /**
-   * Returns the color of the edge segment.
+   * Returns the paint of the edge segment.
    * By default this method returns Color.blue.  It is an error to
    * return null in this method.
    */
-  public Color color(final int edge) {
+  public Paint paint(final int edge) {
     return Color.blue; }
 
   /**

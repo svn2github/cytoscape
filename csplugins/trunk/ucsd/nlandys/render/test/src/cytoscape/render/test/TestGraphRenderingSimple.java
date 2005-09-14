@@ -15,6 +15,7 @@ import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Insets;
+import java.awt.Paint;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
@@ -63,11 +64,11 @@ public class TestGraphRenderingSimple
     m_lod = new GraphLOD();
     m_nodeDetails = new NodeDetails() {
         private final Color m_fillColor = new Color(255, 0, 0, 127);
-        public Color fillColor(int node) { return m_fillColor; } };
+        public Paint fillPaint(int node) { return m_fillColor; } };
     m_edgeDetails = new EdgeDetails() {
         private final Color m_color = new Color(0, 0, 255, 127);
         public float thickness(int edge) { return 1.0f; }
-        public Color color(int edge) { return m_color; } };
+        public Paint paint(int edge) { return m_color; } };
     m_hash = new IntHash();
     addNotify();
     m_img = createImage(m_imgWidth, m_imgHeight);

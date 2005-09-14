@@ -22,6 +22,7 @@ import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Insets;
+import java.awt.Paint;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
@@ -186,14 +187,14 @@ public class TestGraphRendering
         public Color colorLowDetail(int node) {
           return colorsLow[node % colorsLow.length]; }
         public byte shape(int node) { return shapes[node % shapes.length]; }
-        public Color fillColor(int node) {
+        public Paint fillPaint(int node) {
           return colors[node % colors.length]; }
         public float borderWidth(int node) { return borderWidth; }
-        public Color borderColor(int node) { return borderColor; }
+        public Paint borderPaint(int node) { return borderColor; }
         public String label(int node) { return "" + node; }
         public Font font(int node) { return font; }
         public double fontScaleFactor(int node) { return fontScaleFactor; }
-        public Color labelColor(int node) { return labelColor; } };
+        public Paint labelPaint(int node) { return labelColor; } };
     final byte[] arrows = new byte[4];
     arrows[0] = GraphGraphics.ARROW_DELTA;
     arrows[1] = GraphGraphics.ARROW_DIAMOND;
@@ -209,18 +210,18 @@ public class TestGraphRendering
           return arrows[edge % arrows.length]; }
         public float sourceArrowSize(int edge) {
           return thickness * 4; }
-        public Color sourceArrowColor(int edge) {
+        public Paint sourceArrowPaint(int edge) {
           return arrowColor; }
         public byte targetArrow(int edge) {
           return arrows[edge % arrows.length]; }
         public float targetArrowSize(int edge) {
           return thickness * 4; }
-        public Color targetArrowColor(int edge) {
+        public Paint targetArrowPaint(int edge) {
           return arrowColor; }
         public EdgeAnchors anchors(int edge) {
           return (EdgeAnchors) anchorsHash.get(edge); }
         public float thickness(int edge) { return thickness; }
-        public Color color(int edge) { return color; } };
+        public Paint paint(int edge) { return color; } };
     EventQueue.invokeAndWait(new Runnable() {
         public void run() {
           Frame f = new TestGraphRendering(graph, rtree, lod,

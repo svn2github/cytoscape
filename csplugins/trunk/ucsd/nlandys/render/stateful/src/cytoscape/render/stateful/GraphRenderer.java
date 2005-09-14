@@ -9,6 +9,7 @@ import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntHash;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Paint;
 
 /**
  * This class contains a chunk of procedural code that stiches together
@@ -51,7 +52,7 @@ public final class GraphRenderer
    *   if and only if it touches at least one node in this nodeBuff set;
    *   no guarantee made regarding edgeless nodes.
    * @param grafx the graphics context that is to render this graph.
-   * @param bgColor the background color to use when calling grafx.clear().
+   * @param bgPaint the background paint to use when calling grafx.clear().
    * @param xCenter the xCenter parameter to use when calling grafx.clear().
    * @param yCenter the yCenter parameter to use when calling grafx.clear().
    * @param scaleFactor the scaleFactor parameter to use when calling
@@ -64,7 +65,7 @@ public final class GraphRenderer
                                        final EdgeDetails edgeDetails,
                                        final IntHash nodeBuff,
                                        final GraphGraphics grafx,
-                                       final Color bgColor,
+                                       final Paint bgPaint,
                                        final double xCenter,
                                        final double yCenter,
                                        final double scaleFactor)
@@ -140,7 +141,7 @@ public final class GraphRenderer
 
     // Clear the background.
     {
-      grafx.clear(bgColor, xCenter, yCenter, scaleFactor);
+      grafx.clear(bgPaint, xCenter, yCenter, scaleFactor);
     }
 
     // Define buffers.  These are of the few objects we're instantiating
@@ -233,16 +234,16 @@ public final class GraphRenderer
 
               // Compute visual attributes that do not depend on LOD.
               final float thickness = edgeDetails.thickness(edge);
-              final Color color = edgeDetails.color(edge);
+              final Paint paint = edgeDetails.paint(edge);
 
               // Compute arrows.
               final byte srcArrow, trgArrow;
               final float srcArrowSize, trgArrowSize;
-              final Color srcArrowColor, trgArrowColor;
+              final Paint srcArrowPaint, trgArrowPaint;
               if ((lodBits & LOD_EDGE_ARROWS) == 0) { // Not rendering arrows.
                 trgArrow = srcArrow = GraphGraphics.ARROW_NONE;
                 trgArrowSize = srcArrowSize = 0.0f;
-                trgArrowColor = srcArrowColor = null; }
+                trgArrowPaint = srcArrowPaint = null; }
               else { // Rendering edge arrows.
                 srcArrow = edgeDetails.sourceArrow(edge);
                 trgArrow = edgeDetails.targetArrow(edge);
@@ -257,15 +258,15 @@ public final class GraphRenderer
                   trgArrowSize = edgeDetails.targetArrowSize(edge); }
                 if (srcArrow == GraphGraphics.ARROW_NONE ||
                     srcArrow == GraphGraphics.ARROW_BIDIRECTIONAL) {
-                  srcArrowColor = null; }
+                  srcArrowPaint = null; }
                 else {
-                  srcArrowColor = edgeDetails.sourceArrowColor(edge); }
+                  srcArrowPaint = edgeDetails.sourceArrowPaint(edge); }
                 if (trgArrow == GraphGraphics.ARROW_NONE ||
                     trgArrow == GraphGraphics.ARROW_BIDIRECTIONAL ||
                     trgArrow == GraphGraphics.ARROW_MONO) {
-                  trgArrowColor = null; }
+                  trgArrowPaint = null; }
                 else {
-                  trgArrowColor = edgeDetails.targetArrowColor(edge); } }
+                  trgArrowPaint = edgeDetails.targetArrowPaint(edge); } }
 
               // Compute dash length.
               final float dashLength;
@@ -336,10 +337,10 @@ public final class GraphRenderer
                 // The direction of the chopped segment has flipped.
                 continue; }
 
-              grafx.drawEdgeFull(srcArrow, srcArrowSize, srcArrowColor,
-                                 trgArrow, trgArrowSize, trgArrowColor,
+              grafx.drawEdgeFull(srcArrow, srcArrowSize, srcArrowPaint,
+                                 trgArrow, trgArrowSize, trgArrowPaint,
                                  srcXAdj, srcYAdj, anchors, trgXAdj, trgYAdj,
-                                 thickness, color, dashLength); } }
+                                 thickness, paint, dashLength); } }
           nodeBuff.put(node); } }
     }
 
@@ -364,34 +365,34 @@ public final class GraphRenderer
 
           // Compute visual attributes that do not depend on LOD.
           final byte shape = nodeDetails.shape(node);
-          final Color fillColor = nodeDetails.fillColor(node);
+          final Paint fillPaint = nodeDetails.fillPaint(node);
 
           // Compute node border information.
           final float borderWidth;
-          final Color borderColor;
+          final Paint borderPaint;
           if ((lodBits & LOD_NODE_BORDERS) == 0) { // Not rendering borders.
             borderWidth = 0.0f;
-            borderColor = null; }
+            borderPaint = null; }
           else { // Rendering node borders.
             borderWidth = nodeDetails.borderWidth(node);
             if (borderWidth == 0.0f) {
-              borderColor = null; }
+              borderPaint = null; }
             else {
-              borderColor = nodeDetails.borderColor(node); } }
+              borderPaint = nodeDetails.borderPaint(node); } }
 
           // Draw the node.
           grafx.drawNodeFull(shape, floatBuff1[0], floatBuff1[1],
-                             floatBuff1[2], floatBuff1[3], fillColor,
-                             borderWidth, borderColor);
+                             floatBuff1[2], floatBuff1[3], fillPaint,
+                             borderWidth, borderPaint);
 
           // Take care of label rendering.
           if ((lodBits & LOD_NODE_LABELS) != 0) { // Potential label rendering.
 
-            // Compute node label, font, scale factor, and label color.
+            // Compute node label, font, scale factor, and label paint.
             final String label;
             final Font font;
             final double fontScaleFactor;
-            final Color labelColor;
+            final Paint labelPaint;
             {
               String labelTemp = nodeDetails.label(node);
               if ("".equals(labelTemp)) { labelTemp = null; }
@@ -399,11 +400,11 @@ public final class GraphRenderer
               if (label == null) {
                 font = null;
                 fontScaleFactor = 1.0d;
-                labelColor = null; }
+                labelPaint = null; }
               else {
                 font = nodeDetails.font(node);
                 fontScaleFactor = nodeDetails.fontScaleFactor(node);
-                labelColor = nodeDetails.labelColor(node); }
+                labelPaint = nodeDetails.labelPaint(node); }
             }
             // Now label is not null if and only if we need to render label.
 
@@ -412,7 +413,7 @@ public final class GraphRenderer
                 (font, fontScaleFactor, label,
                  (float) ((((double) floatBuff1[0]) + floatBuff1[2]) / 2.0d),
                  (float) ((((double) floatBuff1[1]) + floatBuff1[3]) / 2.0d),
-                 labelColor, (lodBits & LOD_TEXT_AS_SHAPE) != 0); } } } }
+                 labelPaint, (lodBits & LOD_TEXT_AS_SHAPE) != 0); } } } }
     }
 
   }

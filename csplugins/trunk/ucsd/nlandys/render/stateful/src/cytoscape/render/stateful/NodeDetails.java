@@ -3,6 +3,7 @@ package cytoscape.render.stateful;
 import cytoscape.render.immed.GraphGraphics;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Paint;
 
 /**
  * Defines visual properties of a node modulo the node size and location.
@@ -24,7 +25,7 @@ public class NodeDetails
    * properties that are used in full detail rendering mode.  In low detail
    * rendering mode translucent colrs are not supported whereas in full
    * detail rendering mode they are; therefore, colorLowDetail(node) and
-   * fillColor(node) may return two different colors.
+   * fillPaint(node) may return two different colors.
    */
   public Color colorLowDetail(final int node) {
     return Color.red; }
@@ -41,10 +42,10 @@ public class NodeDetails
     return GraphGraphics.SHAPE_RECTANGLE; }
 
   /**
-   * Returns the color of the interior of the node shape.  By default this
+   * Returns the paint of the interior of the node shape.  By default this
    * method returns Color.red.  It is an error to return null in this method.
    */
-  public Color fillColor(final int node) {
+  public Paint fillPaint(final int node) {
     return Color.red; }
 
   /**
@@ -56,18 +57,19 @@ public class NodeDetails
     return 0.0f; }
 
   /**
-   * Returns the color of the border of the node shape.  By default this method
+   * Returns the paint of the border of the node shape.  By default this method
    * returns null.  This return value is ignored if borderWidth(node)
    * returns zero; it is an error to return null if borderWidth(node) returns
    * a value greater than zero.
    */
-  public Color borderColor(final int node) {
+  public Paint borderPaint(final int node) {
     return null; }
 
   /**
    * Returns the text label this node has.  By default this method returns
    * null; returning null is the optimal way to specify that this
-   * node has no text label.
+   * node has no text label.  A node's text label is rendered such that
+   * the text is centered on the center of the node.
    */
   public String label(final int node) {
     return null; }
@@ -94,12 +96,12 @@ public class NodeDetails
     return 1.0d; }
 
   /**
-   * Returns the color of the text label on this node.  By default this method
+   * Returns the paint of the text label on this node.  By default this method
    * returns null.  This return value is ignored if label(node) returns
    * either null or the empty string; it is an error to return null if
    * label(node) returns a non-empty string.
    */
-  public Color labelColor(final int node) {
+  public Paint labelPaint(final int node) {
     return null; }
 
 }
