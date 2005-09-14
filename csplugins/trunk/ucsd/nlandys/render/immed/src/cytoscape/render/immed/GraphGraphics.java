@@ -152,10 +152,13 @@ public final class GraphGraphics
   }
 
   /**
-   * Clears image area with background paint specified [may be non-opaque],
+   * Clears image area with background paint specified
    * and sets an appropriate transformation of coordinate systems.  See the
    * class description for a definition of the two coordinate systems:
    * the node coordinate system and the image coordinate system.<p>
+   * The background paint is not blended with colors that may already be
+   * on the underlying image; if a translucent color is used in the background
+   * paint, the underlying image itself becomes translucent.<p>
    * It is mandatory to call this method before making the first rendering
    * call.
    * @param bgPaint paint to use when clearing the image before painting
