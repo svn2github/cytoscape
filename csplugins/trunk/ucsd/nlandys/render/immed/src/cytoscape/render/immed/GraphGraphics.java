@@ -291,8 +291,8 @@ public final class GraphGraphics
    * @param xMax an extent of the node to draw, in node coordinate space.
    * @param yMax an extent of the node to draw, in node coordinate space.
    * @param fillColor the [fully opaque] color to use when drawing the node.
-   * @exception IllegalArgumentException if xMin is not less than xMax or if
-   *   yMin is not less than yMax.
+   * @exception IllegalArgumentException if xMin is not less than xMax, if
+   *   yMin is not less than yMax, or if fillColor is not opaque.
    */
   public final void drawNodeLow(final float xMin, final float yMin,
                                 final float xMax, final float yMax,
@@ -307,7 +307,9 @@ public final class GraphGraphics
       if (!(xMin < xMax)) throw new IllegalArgumentException
                             ("xMin not less than xMax");
       if (!(yMin < yMax)) throw new IllegalArgumentException
-                            ("yMin not less than yMax"); }
+                            ("yMin not less than yMax");
+      if (fillColor.getAlpha() != 255)
+        throw new IllegalArgumentException("fillColor is not opaque"); }
     if (m_gMinimal == null) makeMinimalGraphics();
     // I'm transforming points manually because the resulting underlying
     // graphics pipeline used is much faster.
@@ -917,6 +919,7 @@ public final class GraphGraphics
    * @param x1 the X coordinate of the end point of edge to render.
    * @param y1 the Y coordinate of the end point of edge to render.
    * @param edgeColor the [fully opaque] color to use when drawing the edge.
+   * @exception IllegalArgumentException if edgeColor is not opaque.
    */
   public final void drawEdgeLow(final float x0, final float y0,
                                 final float x1, final float y1,
@@ -927,7 +930,9 @@ public final class GraphGraphics
         throw new IllegalStateException
           ("calling thread is not AWT event dispatcher");
       if (!m_cleared) throw new IllegalStateException
-                        ("clear() has not been called previously"); }
+                        ("clear() has not been called previously");
+      if (edgeColor.getAlpha() != 255)
+        throw new IllegalArgumentException("edgeColor is not opaque"); }
     // This following statement has to be consistent with the full edge
     // rendering logic.
     if (x0 == x1 && y0 == y1) return;
@@ -2322,6 +2327,7 @@ public final class GraphGraphics
    * @param yCenter the Y coordinate of the center point of where to place the
    *   rendered text; specified in the node coordinate system.
    * @param color the [fully opaque] color to use in rendering the text.
+   * @exception IllegalArgumentException if color is not opaque.
    */
   public final void drawTextLow(final Font font,
                                 final String text,
@@ -2334,7 +2340,9 @@ public final class GraphGraphics
         throw new IllegalStateException
           ("calling thread is not AWT event dispatcher");
       if (!m_cleared) throw new IllegalStateException
-                        ("clear() has not been called previously"); }
+                        ("clear() has not been called previously");
+      if (color.getAlpha() != 255)
+        throw new IllegalStateException("color is not opaque"); }
     if (m_gMinimal == null) makeMinimalGraphics();
     m_ptsBuff[0] = xCenter;
     m_ptsBuff[1] = yCenter;
