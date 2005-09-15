@@ -1,7 +1,7 @@
 package cytoscape.util.intr;
 
 /**
- * An enumeration over a set of 32 bit integers.
+ * An enumeration over a list of 32 bit integers.
  */
 public interface IntEnumerator
 {

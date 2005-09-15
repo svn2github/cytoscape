@@ -1,7 +1,7 @@
 package cytoscape.util.intr;
 
 /**
- * An iteration over a set of 32 bit integers.
+ * An iteration over a list of 32 bit integers.
  */
 public interface IntIterator
 {
