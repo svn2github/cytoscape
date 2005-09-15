@@ -2429,7 +2429,7 @@ public final class GraphGraphics
         throw new IllegalArgumentException("scaleFactor must be positive"); }
     m_g2d.translate(xCenter, yCenter);
     m_g2d.scale(scaleFactor, -scaleFactor);
-    if (theta != 0.0f) { m_g2d.rotate(theta); }
+    if (theta != 0.0f) { m_g2d.rotate(-theta); }
     m_g2d.setPaint(paint);
     if (drawTextAsShape) {
       final GlyphVector glyphV;
