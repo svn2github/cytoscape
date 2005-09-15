@@ -390,10 +390,10 @@ public final class GraphRenderer
                   final int numPaths;
                   {
                     final PathIterator pathIter = path2d.getPathIterator(null);
-                    int numPathsTemp = 1;
+                    int numPathsTemp = 0;
                     while (!pathIter.isDone()) {
-                      pathIter.next();
-                      numPathsTemp++; }
+                      numPathsTemp++; // pathIter.currentSegment().
+                      pathIter.next(); }
                     numPaths = numPathsTemp;
                   }
 
@@ -443,9 +443,9 @@ public final class GraphRenderer
                       pathIter.currentSegment(floatBuff4);
                     if (subPathType == PathIterator.SEG_LINETO) {
                       labelXCenter = (float)
-                        ((((double) floatBuff4[6]) + floatBuff4[0]) / 2.0d);
+                        (0.5d * floatBuff4[6] + 0.5d * floatBuff4[0]);
                       labelYCenter = (float)
-                        ((((double) floatBuff4[7]) + floatBuff4[1]) / 2.0d); }
+                        (0.5d * floatBuff4[7] + 0.5d * floatBuff4[1]); }
                     else if (subPathType == PathIterator.SEG_QUADTO) {
                       labelXCenter = (float)
                         (0.25d * floatBuff4[6] + 0.5d * floatBuff4[0] +
