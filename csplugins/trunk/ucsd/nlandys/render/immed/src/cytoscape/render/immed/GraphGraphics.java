@@ -2384,13 +2384,13 @@ public final class GraphGraphics
    * @param yCenter the text string is drawn such that its logical bounds
    *   rectangle with specified font is centered on this Y coordinate
    *   (in the node coordinate system).
-   * @param angle in radians, specifies the angle of the text; if nonzero,
-   *   drawTextAsShape is automatically chosen; angle orientation is such that
-   *   zero radians implies that the text will be written horizontally from
-   *   lesser X coordinates to greater X coordinates (in the node coordinate
-   *   system) and pi/2 radians implies that the text will be written
-   *   vertically from lesser Y coordinates to greater Y coordinates (again
-   *   in the node coordinate system).
+   * @param theta in radians, specifies the angle of the text;
+   *   angle orientation is such that zero radians implies that the text will
+   *   be written starting at lesser X coordinates and ending at greater X
+   *   coordinates with no change in Y coordinate values and pi/2 radians
+   *   implies that the text will be written starting at lesser Y coordinates
+   *   and ending at greater Y coordinates with no change in X coordinate
+   *   values (in the node coordinate system).
    * @param paint the paint to use in rendering the text.
    * @param drawTextAsShape
    *   this flag controls the way that text is drawn to the underlying
@@ -2415,7 +2415,7 @@ public final class GraphGraphics
                                  final String text,
                                  final float xCenter,
                                  final float yCenter,
-                                 final float angle,
+                                 final float theta,
                                  final Paint paint,
                                  final boolean drawTextAsShape)
   {
@@ -2429,6 +2429,7 @@ public final class GraphGraphics
         throw new IllegalArgumentException("scaleFactor must be positive"); }
     m_g2d.translate(xCenter, yCenter);
     m_g2d.scale(scaleFactor, -scaleFactor);
+    if (theta != 0.0f) { m_g2d.rotate(theta); }
     m_g2d.setPaint(paint);
     if (drawTextAsShape) {
       final GlyphVector glyphV;
