@@ -89,7 +89,7 @@ public class TestGraphRendering
         final int edge = graph.edgeCreate(node, chosenObj, true);
         if (numExistingSuchEdges > 0) {
           final double factor = (numExistingSuchEdges + 1) / 2 *
-            (numExistingSuchEdges % 2 == 0 ? 1 : -1) * 0.1d;
+            (numExistingSuchEdges % 2 == 0 ? 1 : -1) * 0.15d;
           if (node != chosenObj) {
             final int node0 = Math.min(node, chosenObj);
             final int node1 = Math.max(node, chosenObj);
