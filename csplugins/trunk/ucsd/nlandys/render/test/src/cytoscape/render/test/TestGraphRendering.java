@@ -164,7 +164,7 @@ public class TestGraphRendering
             return renderNodeCount < 250; }
           public boolean textAsShape(int renderNodeCount,
                                      int renderEdgeCount) {
-            return renderNodeCount + renderEdgeCount < 30; }
+            return renderNodeCount + renderEdgeCount < 50; }
           public boolean edgeArrows(int renderNodeCount,
                                     int renderEdgeCount) {
             return renderNodeCount < 250; } }; }
@@ -177,7 +177,7 @@ public class TestGraphRendering
             return 0; }
           public boolean textAsShape(int renderNodeCount,
                                      int renderEdgeCount) {
-            return renderNodeCount + renderEdgeCount < 30; } }; }
+            return renderNodeCount + renderEdgeCount < 50; } }; }
     final NodeDetails nodeDetails = new NodeDetails() {
         private final float borderWidth = (float) (minDim / 12);
         private final Color borderColor = new Color(63, 63, 63, 127);
@@ -205,6 +205,9 @@ public class TestGraphRendering
         private final Color colorLowDetail = new Color(127, 127, 255, 255);
         private final Color color = new Color(0, 0, 255, 127);
         private final Color arrowColor = new Color(0, 0, 0, 127);
+        private final Font font = new Font(null, Font.PLAIN, 1);
+        private final double fontScaleFactor = minDim / 3;
+        private final Color labelColor = new Color(0, 0, 0, 255);
         public Color colorLowDetail(int edge) { return colorLowDetail; }
         public byte sourceArrow(int edge) {
           return arrows[edge % arrows.length]; }
@@ -221,7 +224,11 @@ public class TestGraphRendering
         public EdgeAnchors anchors(int edge) {
           return (EdgeAnchors) anchorsHash.get(edge); }
         public float thickness(int edge) { return thickness; }
-        public Paint paint(int edge) { return color; } };
+        public Paint paint(int edge) { return color; }
+        public String label(int edge) { return "" + edge; }
+        public Font font(int edge) { return font; }
+        public double fontScaleFactor(int edge) { return fontScaleFactor; }
+        public Paint labelPaint(int edge) { return labelColor; } };
     EventQueue.invokeAndWait(new Runnable() {
         public void run() {
           Frame f = new TestGraphRendering(graph, rtree, lod,
