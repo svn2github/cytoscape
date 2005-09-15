@@ -86,7 +86,7 @@ public final class TestAlphaBlending extends Frame implements Runnable
     final Insets insets = insets();
     m_buffGrafx.clear(Color.white, 0.0d, 0.0d, 1.0d);
     m_buffGrafx.drawTextFull(m_font, 1.5d, "This is background text.",
-                             0.0f, 0.0f, 1.0f, Color.black, true);
+                             0.0f, 0.0f, 0.2f, Color.black, true);
     final Graphics bufferGrafx = m_screenBuffer.getGraphics();
     bufferGrafx.drawImage(m_img, 0, 0, null);
     g.drawImage(m_screenBuffer, insets.left, insets.top, null);
