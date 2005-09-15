@@ -468,7 +468,7 @@ public final class GraphRenderer
                   // Finally, draw the text.
                   grafx.drawTextFull
                     (font, fontScaleFactor, label,
-                     labelXCenter, labelYCenter, labelPaint,
+                     labelXCenter, labelYCenter, 0.0f, labelPaint,
                      (lodBits & LOD_TEXT_AS_SHAPE) != 0); } } } }
 
           nodeBuff.put(node); } }
@@ -543,7 +543,7 @@ public final class GraphRenderer
                 (font, fontScaleFactor, label,
                  (float) ((((double) floatBuff1[0]) + floatBuff1[2]) / 2.0d),
                  (float) ((((double) floatBuff1[1]) + floatBuff1[3]) / 2.0d),
-                 labelPaint, (lodBits & LOD_TEXT_AS_SHAPE) != 0); } } } }
+                 0.0f, labelPaint, (lodBits & LOD_TEXT_AS_SHAPE) != 0); } } } }
     }
 
   }

@@ -78,17 +78,17 @@ public final class TestSimpleText
                          -90.0f, -15.0f, -40.0f, 15.0f,
                          Color.yellow, 2.0f, Color.black);
     final Font font = new Font("Dialog", Font.PLAIN, 14);
-    m_grafx.drawTextFull(font, 1.0d, "TEKST", -65.0f, 0.0f, Color.black,
+    m_grafx.drawTextFull(font, 1.0d, "TEKST", -65.0f, 0.0f, 0.0f, Color.black,
                          m_textAsShape);
     m_grafx.drawNodeFull(GraphGraphics.SHAPE_ROUNDED_RECTANGLE,
                          -15.0f, -15.0f, 35.0f, 15.0f,
                          Color.magenta, 2.0f, Color.black);
-    m_grafx.drawTextFull(font, 1.0d, "ypqg", 10.0f, 0.0f, Color.black,
+    m_grafx.drawTextFull(font, 1.0d, "ypqg", 10.0f, 0.0f, 0.0f, Color.black,
                          m_textAsShape);
     m_grafx.drawNodeFull(GraphGraphics.SHAPE_TRIANGLE,
                          0.0f, 90.0f, 120.0f, 170.0f,
                          Color.cyan, 2.0f, Color.black);
-    m_grafx.drawTextFull(font, 1.0d, "gooF", 60.0f, 130.0f, Color.black,
+    m_grafx.drawTextFull(font, 1.0d, "gooF", 60.0f, 130.0f, 0.0f, Color.black,
                          m_textAsShape);
   }
 

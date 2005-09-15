@@ -162,7 +162,7 @@ public final class TestTextRendering
         (m_font, m_fontScaleFactor, m_labels[inx],
          (float) ((((double) m_extents[0]) + m_extents[2]) / 2.0d),
          (float) ((((double) m_extents[1]) + m_extents[3]) / 2.0d),
-         m_fontColor, m_textAsShape); }
+         0.0f, m_fontColor, m_textAsShape); }
   }
 
   public void mouseClicked(MouseEvent e) {}

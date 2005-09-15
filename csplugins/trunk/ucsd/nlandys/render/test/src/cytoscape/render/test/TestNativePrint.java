@@ -79,7 +79,7 @@ public class TestNativePrint extends Frame
                     new Color(255, 255, 0, 127), 9.0f);
     gg.drawTextFull(new Font("Dialog", Font.PLAIN, 12),
                     2.0d, "Click here to print.",
-                    -20.0f, 35.0f, Color.black, true);
+                    -20.0f, 35.0f, 0.0f, Color.black, true);
   }
 
   public boolean isResizable() { return false; }

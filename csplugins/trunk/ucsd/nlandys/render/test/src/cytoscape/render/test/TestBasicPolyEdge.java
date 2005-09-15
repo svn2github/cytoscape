@@ -224,7 +224,7 @@ public final class TestBasicPolyEdge
         (m_font, 14, m_labels[inx],
          (float) ((((double) m_floatBuff[0]) + m_floatBuff[2]) / 2.0d),
          (float) ((((double) m_floatBuff[1]) + m_floatBuff[3]) / 2.0d),
-         m_textColor, true); }
+         0.0f, m_textColor, true); }
   }
 
   public void keyTyped(KeyEvent e) { }
