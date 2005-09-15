@@ -59,7 +59,7 @@
       <pathelement location="${context.classes.dir}"/>
       <pathelement location="${cytoscape.lib.dir}/colt.jar"/>
       <pathelement location="${cytoscape.lib.dir}/../cytoscape.jar"/>
-      <pathelement location="${cytoscape.lib.dir}/y.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape-data-attr.jar"/>
       <pathelement location="${cytoscape.lib.dir}/giny.jar"/>
       <pathelement location="${cytoscape.lib.dir}/phoebe.jar"/>
       <pathelement location="${cytoscape.lib.dir}/coltginy.jar"/>

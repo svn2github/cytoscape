@@ -80,7 +80,7 @@ public class DataTableModel
     Object[][] data_vector = new Object[go_length][att_length];  
     Object[] column_names = new Object[att_length];
     
-    column_names[0] = "ID";
+    column_names[0] = "NODENAME";
     for ( int j = 0; j < go_length; ++j ) {
       GraphObject obj = ( GraphObject )graph_objects.get(j);
         
@@ -105,6 +105,57 @@ public class DataTableModel
      
   }
 
+  public String exportTable () {
+    return exportTable( "\t", "\n" );
+  }
+
+  public String exportTable ( String element_delim, String eol_delim ) {
+    
+    StringBuffer export = new StringBuffer();
+
+    int att_length = attributes.size()+1;
+    int go_length = graph_objects.size();
+
+    Object[][] data_vector = new Object[go_length][att_length];  
+    Object[] column_names = new Object[att_length];
+    
+    column_names[0] = "NODENAME";
+    for ( int j = 0; j < go_length; ++j ) {
+      GraphObject obj = ( GraphObject )graph_objects.get(j);
+        
+      data_vector[j][0] = obj.getIdentifier();
+    }
+
+
+    for ( int i1 = 0; i1 < attributes.size(); ++i1 ) {
+      int i = i1 + 1;
+      column_names[i] = attributes.get(i1);
+      String attribute = ( String )attributes.get(i1);
+      for ( int j = 0; j < go_length; ++j ) {
+        GraphObject obj = ( GraphObject )graph_objects.get(j);
+        
+        Object value = data.getAttributeValueList( obj.getIdentifier(),
+                                               attribute );
+        data_vector[j][i] = value;
+      }
+    }
+
+    for ( int i = 0; i < column_names.length; ++i ) {
+      export.append( column_names[i]+element_delim );
+    }
+    export.append(eol_delim );
+  
+    for ( int i = 0; i < data_vector.length; i++ ) {
+      for ( int j = 0; j < data_vector[i].length; ++j ) {
+        export.append( data_vector[i][j]+element_delim );
+      }
+      export.append( eol_delim );
+    }
+    
+    return export.toString();
+
+  }
+
 
   public List getGraphObjects() {
     return graph_objects;
@@ -116,19 +167,19 @@ public class DataTableModel
                                      java.lang.Object[] keyIntoValue,
                                      java.lang.Object oldAttributeValue,
                                      java.lang.Object newAttributeValue) {
-    System.out.println( "attributeValueAssigned" );
-    setTable();
+    //System.out.println( "attributeValueAssigned" );
+    //setTable();
   }
   public void attributeValueRemoved(java.lang.String objectKey,
                                     java.lang.String attributeName,
                                     java.lang.Object[] keyIntoValue,
                                     java.lang.Object attributeValue ) {
-    setTable();
+    //setTable();
   }
 
   public void allAttributeValuesRemoved(java.lang.String objectKey,
                                         java.lang.String attributeName) {
-    setTable();
+    //setTable();
   }
 
 

@@ -115,7 +115,7 @@ public class LayoutManager
           SwingUtilities.invokeLater( new Runnable() {
               public void run() {
                 
-                if ( currentNetworkView != null && currentLayout == null ) {
+                if ( currentNetworkView != null && currentLayout ==  "no layout") {
                   showNameDialog();
                 } else {
                   saveLayout( currentLayout );

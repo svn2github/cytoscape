@@ -31,6 +31,24 @@ public class RowanPlugin extends CytoscapePlugin {
 
     System.out.println( "initialize rowan plugin" );
 
+    
+
+    // SBML Loading
+    String[] args = CytoscapeInit.getArgs();
+    boolean inSBML = false;
+    ArrayList sbmls = new ArrayList(); 
+    for ( int i = 0; i < args.length; ++i ) {
+      if ( args[i].startsWith( "-sbml" ) ) {
+        inSBML = true;
+      }  else if ( args[i].startsWith("-") && inSBML ) {
+        inSBML = false;
+      } else if ( inSBML ) {
+        sbmls.add( args[i] );
+      }
+    }
+    SBMLParser sp = new SBMLParser();
+    sp.parseSBML( sbmls );
+   
 
     JMenuItem add = new JMenuItem( new AbstractAction( "Add Atts" ) {
         public void actionPerformed ( ActionEvent e ) {
