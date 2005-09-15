@@ -6,7 +6,7 @@ import java.util.*;
 
 import giny.model.*;
 import cytoscape.data.*;
-import cytoscape.data.servers.*;
+//import cytoscape.data.servers.*;
 import cytoscape.data.readers.*;
 //import cytoscape.undo.*;
 import csplugins.jActiveModules.data.*;

@@ -13,7 +13,7 @@ import junit.framework.*;
 import cytoscape.view.*;
 import cytoscape.*;
 import cytoscape.data.*;
-import cytoscape.data.servers.*;
+//import cytoscape.data.servers.*;
 import cytoscape.data.readers.*;
 import cytoscape.plugin.*;
 import csplugins.jActiveModules.data.*;

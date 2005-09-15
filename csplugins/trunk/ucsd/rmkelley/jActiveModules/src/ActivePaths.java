@@ -18,7 +18,7 @@ import java.io.*;
 import java.util.*;
 import cytoscape.view.*;
 import cytoscape.data.*;
-import cytoscape.data.servers.*;
+//import cytoscape.data.servers.*;
 import cytoscape.data.readers.*;
 //import cytoscape.undo.*;
 import csplugins.jActiveModules.data.*;
@@ -103,6 +103,14 @@ public class ActivePaths implements ActivePathViewer, Runnable {
    * distribution
    */
   protected Component getHighScoringPath(){
+    System.err.println("High Scoring Path:");
+    System.err.println(activePaths);
+    System.err.println("Score: "+activePaths[0].getScore());
+    int size = activePaths[0].getNodes().size();
+    System.err.println("Size: "+size);
+    System.err.println("Raw score: "+activePaths[0].calculateSimpleScore());
+    System.err.println("Mean: "+Component.pStats.getMean(size));
+    System.err.println("Std: "+Component.pStats.getStd(size));
     return activePaths[0];
   }
 
