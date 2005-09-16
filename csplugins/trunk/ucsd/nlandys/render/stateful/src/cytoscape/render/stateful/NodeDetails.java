@@ -84,7 +84,7 @@ public class NodeDetails
   public static final byte LABEL_ANCHOR_TEXT_NORTHWEST = 8;
 
   /**
-   * Specifies that a node anchor point lies in the center of a node's
+   * Specifies that a node anchor point lies at the center of a node's
    * extents rectangle.
    * @see #labelNodeAnchor(int)
    */
@@ -267,6 +267,7 @@ public class NodeDetails
    * point.<p>
    * By default this method returns LABEL_ANCHOR_TEXT_CENTER.  This return
    * value is ignored if label(node) returns either null or the empty string.
+   * @see #LABEL_ANCHOR_TEXT_CENTER
    * @see #labelNodeAnchor(int)
    * @see #labelOffsetVector(int, Point2D.Float)
    */
@@ -275,7 +276,7 @@ public class NodeDetails
 
   /**
    * By returning one of the LABEL_ANCHOR_NODE_* constants, specifies
-   * where on the node's extents box an anchor point lies.  This
+   * where on the node's extents rectangle an anchor point lies.  This
    * <i>node anchor point</i> together with the text anchor point and label
    * offset vector determines where, relative to the node, the text's logical
    * bounds box is to be placed.  The text's logical bounds box is placed
@@ -283,6 +284,7 @@ public class NodeDetails
    * text anchor point.<p>
    * By default this method returns LABEL_ANCHOR_NODE_CENTER.  This return
    * value is ignored if label(node) returns either null or the empty string.
+   * @see #LABEL_ANCHOR_NODE_CENTER
    * @see #labelTextAnchor(int)
    * @see #labelOffsetVector(int, Point2D.Float)
    */
@@ -316,6 +318,7 @@ public class NodeDetails
    * By default this method returns LABEL_WRAP_JUSTIFY_CENTER.  This return
    * value is ignored if label(node) returns a text string that does not
    * span multiple lines.
+   * @see #LABEL_WRAP_JUSTIFY_CENTER
    */
   public byte labelJustify(final int node) {
     return LABEL_WRAP_JUSTIFY_CENTER; }
