@@ -127,7 +127,7 @@ public class EdgeDetails
    * Returns the length of dashes on edge segment, or zero to indicate
    * that the edge segment is solid.  By default this method returns zero.
    */
-  public float dashLength(final int edge) {
+  public float segmentDashLength(final int edge) {
     return 0.0f; }
 
   /**

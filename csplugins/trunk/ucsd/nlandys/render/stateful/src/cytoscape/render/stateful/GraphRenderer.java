@@ -285,7 +285,7 @@ public final class GraphRenderer
               if ((lodBits & LOD_DASHED_EDGES) == 0) { // Not rendering dashes.
                 dashLength = 0.0f; }
               else {
-                dashLength = edgeDetails.dashLength(edge); }
+                dashLength = edgeDetails.segmentDashLength(edge); }
 
               // Compute the anchors to use when rendering edge.
               final EdgeAnchors anchors;
