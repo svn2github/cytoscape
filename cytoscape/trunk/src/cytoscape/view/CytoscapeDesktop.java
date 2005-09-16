@@ -60,6 +60,11 @@ public class CytoscapeDesktop
   public static String VISUAL_STYLE = "VISUAL_STYLE";
   public static String VIZMAP_ENABLED = "VIZMAP_ENABLED";
 
+  /**
+   * Cytoscape UndoManager
+   */
+  public static cytoscape.util.UndoManager undo;
+
 
   /**
    * Displays all network views in TabbedPanes
@@ -206,6 +211,7 @@ public class CytoscapeDesktop
     // enable context-sensitive help for menus/menubar
     getHelpBroker().enableHelp(cyMenus.getMenuBar(),"menus", null);
 
+    
     networkViewManager = new NetworkViewManager( this );
 
 
@@ -243,12 +249,15 @@ public class CytoscapeDesktop
     networkPanel.getSwingPropertyChangeSupport().addPropertyChangeListener( this );
 
 
+    // initialize undo manager
+    undo = new cytoscape.util.UndoManager( cyMenus );
+    
     // initialize Menus
     cyMenus.initializeMenus();
 
     // initialize Help Menu
     cyMenus.initializeHelp(cyHelpBroker.getHelpBroker());
-
+    
     // create the CytoscapeDesktop
 	BiModalJSplitPane masterPane = setupCytoPanels(networkPanel, networkViewManager);
 	// note - proper networkViewManager has been properly selected in setupCytoPanels()
@@ -265,7 +274,11 @@ public class CytoscapeDesktop
 		cyMenus.getToolBar().setOrientation( JToolBar.VERTICAL );
 		main_panel.add(cyMenus.getToolBar(), BorderLayout.EAST);
 		setJMenuBar(cyMenus.getMenuBar());
-	}
+	
+
+    
+
+  }
 
 	/* leave following code commented out for now - until CytoPanels integration is correct */
 	/*
@@ -334,12 +347,17 @@ public class CytoscapeDesktop
         }
     });
     
+
+   
+
     // show the Desktop
     setContentPane( main_panel );
     pack();
     if ( VIEW_TYPE != EXTERNAL_VIEW )
       setSize( 800, 700 );
     setVisible( true );
+
+    
 
   }
 
@@ -380,6 +398,12 @@ public class CytoscapeDesktop
 
   //----------------------------------------//
   // Common Desktop Variables
+
+  public void addEdit ( javax.swing.undo.UndoableEdit edit) {
+    // if ( undo == null )
+    // undo = new cytoscape.util.UndoManager();
+    undo.addEdit( edit );
+  }
 
 
   /**

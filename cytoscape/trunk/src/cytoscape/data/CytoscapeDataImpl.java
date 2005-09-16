@@ -1116,17 +1116,23 @@ public class CytoscapeDataImpl
    *  and return that here
    */
   public Class getClass ( String attributeName ) {
-    byte type = definition.getAttributeValueType( attributeName );
-    if ( type == TYPE_BOOLEAN )
-      return Boolean.class;
-    else if ( type == TYPE_FLOATING_POINT )
-      return Double.class;
-    else if ( type == TYPE_INTEGER )
-      return Integer.class;
-    else if ( type == TYPE_STRING )
-      return String.class;
-    else
+    try {
+      byte type = definition.getAttributeValueType( attributeName );
+      if ( type == TYPE_BOOLEAN )
+        return Boolean.class;
+      else if ( type == TYPE_FLOATING_POINT )
+        return Double.class;
+      else if ( type == TYPE_INTEGER )
+        return Integer.class;
+      else if ( type == TYPE_STRING )
+        return String.class;
+      else
+        return Object.class;
+    } catch ( Exception e ) {
       return Object.class;
+    }
+
+   
     
   }
 
