@@ -98,7 +98,10 @@ public class EdgeDetails
    * edge anchors.<p>
    * The anchors returned are interpreted such that the anchor at index zero
    * (the "first" anchor) is the anchor next to the source node of this edge;
-   * the last anchor is the anchor next to the target node of this edge.
+   * the last anchor is the anchor next to the target node of this edge.  The
+   * rendering engine works such that if the first anchor lies inside
+   * the source node shape or if the last anchor lies inside the target
+   * node shape, the edge is not rendered.
    */
   public EdgeAnchors anchors(final int edge) {
     return null; }
