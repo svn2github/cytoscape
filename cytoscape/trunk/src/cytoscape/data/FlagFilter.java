@@ -348,7 +348,15 @@ public class FlagFilter implements Filter, GraphPerspectiveChangeListener {
     public void removeFlagEventListener(FlagEventListener listener) {
         listeners.remove(listener);
     }
-    
+
+    /**
+     * Gets a List of All Registered Listeners.
+     * @return
+     */
+    public List getFlagEventListeners() {
+        return listeners;
+    }
+
     /**
      * Fires an event to all registered listeners that represents the operation
      * described by the arguments. The first argument should be the graph object
