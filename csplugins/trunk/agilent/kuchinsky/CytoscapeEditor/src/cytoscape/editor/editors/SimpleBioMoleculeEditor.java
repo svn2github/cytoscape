@@ -35,13 +35,13 @@ import cytoscape.editor.impl.ShapePalette;
  * @see PaletteNetworkEditEventHandler
  * 
  */
-public class SimpleBioPAXEditor extends BasicCytoscapeEditor {
+public class SimpleBioMoleculeEditor extends BasicCytoscapeEditor {
 
 
 	private ShapePalette shapePalette;
 	private static final String ICONS_REL_LOC = "images/";
 	
-	public SimpleBioPAXEditor() {
+	public SimpleBioMoleculeEditor() {
 		super();		
 	}
 	

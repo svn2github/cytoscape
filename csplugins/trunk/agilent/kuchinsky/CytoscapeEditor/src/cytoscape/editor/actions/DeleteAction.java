@@ -16,6 +16,7 @@ import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
+import cytoscape.CytoscapeModifiedNetworkManager;
 import cytoscape.editor.CytoscapeEditorManager;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CyNetworkView;
@@ -210,6 +211,8 @@ public class DeleteAction extends CytoscapeAction {
 			}
 
 		});
+
+		Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, cyNet);
 
 	}
 

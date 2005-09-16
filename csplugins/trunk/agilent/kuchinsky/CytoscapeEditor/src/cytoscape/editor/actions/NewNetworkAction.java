@@ -45,7 +45,7 @@ public class NewNetworkAction extends CytoscapeAction {
 	}
 
 	public NewNetworkAction(boolean label) {
-		super();
+		super(); 
 	}
 
 
@@ -73,7 +73,7 @@ public class NewNetworkAction extends CytoscapeAction {
 			CyNetworkView newView = Cytoscape.createNetworkView(_newNet);
 
 			CytoscapeEditorManager.setEditorForNetwork(_newNet, cyEditor);
-			CytoscapeEditorManager.setEditorForView(newView, cyEditor);
+			CytoscapeEditorManager.setEditorForView(newView, cyEditor); 
 		}
 	}
 

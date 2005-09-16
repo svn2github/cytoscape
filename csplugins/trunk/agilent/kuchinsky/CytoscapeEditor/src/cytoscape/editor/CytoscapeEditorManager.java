@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.swing.JMenuItem;
-import javax.swing.undo.AbstractUndoableEdit;
 import javax.swing.undo.UndoManager;
 import javax.swing.undo.UndoableEdit;
 
@@ -26,6 +25,7 @@ import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
+import cytoscape.CytoscapeModifiedNetworkManager;
 import cytoscape.data.CytoscapeData;
 import cytoscape.data.attr.CyData;
 import cytoscape.editor.actions.NewNetworkAction;
@@ -45,14 +45,14 @@ import cytoscape.view.CyNetworkView;
  * 
  * @author Allan Kuchinsky, Agilent Technologies
  * @version 1.0
- * @see CytoscapeEditorFactory
+ * @see CytoscapeEditorFactory, CytoscapeEditorManagerSupport
  * 
  */
 public abstract class CytoscapeEditorManager {
 
 	/**
 	 * holding area for deleted nodes
-	 * used when undo-ing deletes.
+	 * used when undo-ing deletes.  
 	 */
 	// AJK: 09/05/05: nodeClipBoard, edgeClipBoard, and networkClipBoard seem to be set but never referenced 
 	//                so I will not bother making one per NetworkView
@@ -179,6 +179,8 @@ public abstract class CytoscapeEditorManager {
 	 */
 	public static void initialize() {
 		manager = new CytoscapeEditorManagerSupport();
+		
+		CytoscapeModifiedNetworkManager modifiedManager = new CytoscapeModifiedNetworkManager();
 
 		NewNetworkAction newNetwork = new NewNetworkAction("Network",
 				CytoscapeEditorFactory.INSTANCE);
@@ -334,14 +336,16 @@ public abstract class CytoscapeEditorManager {
 			// AJK: 09/09/05: BEGIN
 			//    setup listeners for changes to attributes
 			CyNetwork net = newView.getNetwork();
-			CyData nodeAttribs = net.getNodeData();
+			CytoscapeData nodeAttribs = Cytoscape.getNodeNetworkData();
+//			CyData nodeAttribs = net.getNodeData();
 			nodeAttribs.addDataListener(event);
 
-			CyData edgeAttribs = net.getEdgeData();
+			CytoscapeData edgeAttribs = Cytoscape.getEdgeNetworkData();
+//			CyData edgeAttribs = net.getEdgeData();
 			edgeAttribs.addDataListener(event);	
 	
 			
-			//
+			// AJK: 09/09/05: END
 		}
 		
 		// AJK: 09/06/05 BEGIN
@@ -541,6 +545,7 @@ public abstract class CytoscapeEditorManager {
 		*/
 		
 		manager.setupUndoableAdditionEdit(net, cn, null);
+		Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, net);
 
 		return cn;
 	}
@@ -570,6 +575,7 @@ public abstract class CytoscapeEditorManager {
 //					net.getNodeAttributeValue(cn, NODE_TYPE));
 		}
 		manager.setupUndoableAdditionEdit(net, cn, null);
+		Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, net);
 		return cn;
 		
 	}
@@ -645,6 +651,7 @@ public abstract class CytoscapeEditorManager {
 			net.setEdgeAttributeValue(edge, EDGE_TYPE, edgeType);
 		}
 		manager.setupUndoableAdditionEdit(net, null, edge);
+		Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, net);
 		return edge;
 	}
 
@@ -729,6 +736,8 @@ public abstract class CytoscapeEditorManager {
 	public static void deleteEdge(CyEdge edge) {
 		CyNetwork net = Cytoscape.getCurrentNetwork();
 		net.hideEdge(edge);
+		CytoscapeModifiedNetworkManager.setModified(net, CytoscapeModifiedNetworkManager.MODIFIED);
+
 		// TODO: if number of networks containing edges falls to zero,
 		//    delete it from the root graph
 		//    how to find out how many networks contain edge, is there an easy way
@@ -794,7 +803,7 @@ public abstract class CytoscapeEditorManager {
 	 */
 	public static UndoManager getUndoManagerForView(CyNetworkView view) {
 		Object obj = undoManagerViewMap.get(view);
-		System.out.println ("Get undoManager for view: " + view + " = " + obj);
+//		System.out.println ("Get undoManager for view: " + view + " = " + obj);
 		if (obj != null) {
 			if (obj instanceof UndoManager) {
 				return (UndoManager) obj;
@@ -811,7 +820,7 @@ public abstract class CytoscapeEditorManager {
 	public static void setUndoManagerForView(CyNetworkView view,
 			UndoManager undo) {
 		undoManagerViewMap.put(view, undo);
-		System.out.println("Setting undo manager for view: " + view + " = " + undo);
+//		System.out.println("Setting undo manager for view: " + view + " = " + undo);
 	}
 
 	

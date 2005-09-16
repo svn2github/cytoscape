@@ -30,6 +30,9 @@ import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
+import cytoscape.data.CytoscapeData;
+import cytoscape.data.attr.CountedIterator;
+import cytoscape.data.attr.CyDataDefinition;
 import cytoscape.data.attr.CyDataListener;
 import cytoscape.editor.CyNodeLabeler;
 import cytoscape.editor.CytoscapeEditor;
@@ -233,11 +236,13 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 		// TODO: perhaps hook doubleclick into attribute editor/browser
 		else if (e.getClickCount() >= 2) // open node for labeling
 		{
-			labelNode(e, nextPoint);
+			// AJK: 09/16/05 disable node labeler, rely on attribute editor/browser
+//			labelNode(e, nextPoint);
 		}
 		else // clicking anywhere on screen will turn off node Labeling
 		{
-			clearNodeLabeler();
+//			 AJK: 09/16/05 disable node labeler, rely on attribute editor/browser
+//			clearNodeLabeler();
 //			System.out.println ("Calling mouse pressed on class " + super.toString());
 			super.mousePressed(e);
 		}
@@ -326,7 +331,9 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 //		canvas.add(_nodeLabelerPanel);
 //		_nodeLabelerPanel.setVisible(true);
 //		_nodeLabeler.setText(cn.getIdentifier());
-		initializeNodeLabeler(cn, nv);		
+
+//		 AJK: 09/16/05 disable node labeler, rely on attribute editor/browser
+//		initializeNodeLabeler(cn, nv);		
 	}
 	
 	/**
@@ -537,6 +544,7 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 			java.lang.Object oldAttributeValue,
 			java.lang.Object newAttributeValue) {
 		System.out.println("attributeValueAssigned: " + newAttributeValue);
+		Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
 
 	}
 
@@ -762,8 +770,28 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 			 * System.out.println("NodeType = " + nodeType);
 			 */
 
-			net.setNodeAttributeValue(_nodeBeingLabeled, "canonicalName",
-					field_val);
+			
+			// AJK: 09/14/05 BEGIN
+			//      save and restore attribute values when identifier for node is changed
+			CytoscapeData nodeAttribs = Cytoscape.getNodeNetworkData();
+			String [] nodeAttrNames = nodeAttribs.getAttributeNames();
+			Object [] nodeAttrValues = new Object [nodeAttrNames.length];
+			
+			for (int i = 0; i < nodeAttrNames.length; i++)
+			{
+				nodeAttrValues[i] = net.getNodeAttributeValue(_nodeBeingLabeled, nodeAttrNames[i]);
+			}	
+			
+//			net.setNodeAttributeValue(_nodeBeingLabeled, "canonicalName",
+//					field_val);
+			_nodeBeingLabeled.setIdentifier(field_val);
+			
+			for (int i = 0; i < nodeAttrNames.length; i++)
+			{
+				net.setNodeAttributeValue(_nodeBeingLabeled, nodeAttrNames[i], nodeAttrValues[i]);
+			}	
+			
+			// AJK: 09/14/05 END
 
 			PNodeView pnv = (PNodeView) _nodeViewBeingLabeled;
 			pnv.setLabelText(field_val);

@@ -25,8 +25,10 @@ public class CytoscapeEditorPlugin extends CytoscapePlugin {
 	 *  
 	 */
 	public CytoscapeEditorPlugin() {
-		Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add(
-				new MainPluginAction());
+//		Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add(
+		MainPluginAction mpa = new MainPluginAction();
+		CytoscapeEditorManager.setRunningEditorFramework(true);
+		mpa.enableCytoscapeEditor();
 	}
 
 	public class MainPluginAction extends AbstractAction {
@@ -69,7 +71,7 @@ public class CytoscapeEditorPlugin extends CytoscapePlugin {
 			CytoscapeEditorManager.register("BasicCytoscapeEditor",
 					"BasicNetworkEditEventHandler");
 
-			CytoscapeEditorManager.register("SimpleBioPAXEditor",
+			CytoscapeEditorManager.register("SimpleBioMoleculeEditor",
 					"PaletteNetworkEditEventHandler");
 
 			// AJK: 08/12/05 BEGIN

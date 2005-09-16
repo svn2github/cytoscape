@@ -38,7 +38,7 @@ import cytoscape.editor.impl.ShapePalette;
  * This functionality is not available in Cytoscape 2.2.
  * @author Allan Kuchinsky, Agilent Technologies
  * @version 1.0
- * @see SimpleBioPAXEditor
+ * @see SimpleBioMoleculeEditor
  * 
  * 
  */
@@ -123,7 +123,7 @@ public class PaletteNetworkEditEventHandler extends
 			args = new Object []{ "LOCATION", location};
 			if (attributeName.equals("NodeType") ||
 					(attributeName.equals("BIOPAX_NODE_TYPE")))  // TODO: incorporate the processing
-				// of BIOPAX_NODE_TYPE into the SimpleBioPAXEditor class
+				// of BIOPAX_NODE_TYPE into the SimpleBioMoleculeEditor class
 			{
 				CyNode cn = CytoscapeEditorManager.addNode("node" + counter, 
 						true, attributeName, attributeValue);

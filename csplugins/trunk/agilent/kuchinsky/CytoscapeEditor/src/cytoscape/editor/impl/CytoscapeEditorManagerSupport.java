@@ -4,7 +4,7 @@
  */
 package cytoscape.editor.impl;
 
-import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeEvent;  
 import java.beans.PropertyChangeListener;
 
 import javax.swing.undo.AbstractUndoableEdit;
@@ -21,11 +21,11 @@ import cytoscape.view.CytoscapeDesktop;
 /**
  * provides non-static methods needed by the CytoscapeEditorManager, in
  * particular those methods associated with the PropertyChangeListener class
- * 
+ *  
  * @author Allan Kuchinsky, Agilent Technologies
  * @version 1.0
  * @see CytoscapeEditorManager
- * 
+ *      
  */
 public class CytoscapeEditorManagerSupport implements PropertyChangeListener {
 
