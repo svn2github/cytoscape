@@ -920,6 +920,13 @@ public class CytoscapeDesktop
   }
 
   // End Cytopanels - Public and Protected methods
-  //---------------------------------------------------------------------------// 
-
+  //---------------------------------------------------------------------------//
+    
+  /**
+   * Gets the NetworkView Manager.
+   * @return NetworkViewManager Object.
+  */
+  public NetworkViewManager getNetworkViewManager() {
+      return this.networkViewManager;
+  }
 }
