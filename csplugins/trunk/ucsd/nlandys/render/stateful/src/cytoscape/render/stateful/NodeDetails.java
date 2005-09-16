@@ -149,19 +149,21 @@ public class NodeDetails
   /**
    * Specifies that the lines in a multi-line node label should each have
    * a center point with similar X coordinate.
-   * @see labelJustify(int)
+   * @see #labelJustify(int)
    */
   public static final byte LABEL_WRAP_JUSTIFY_CENTER = 64;
 
   /**
    * Specifies that the lines of a multi-line node label should each have
    * a leftmost point with similar X coordinate.
+   * @see #labelJustify(int)
    */
   public static final byte LABEL_WRAP_JUSTIFY_LEFT = 65;
 
   /**
    * Specifies that the lines of a multi-line node label should each have
    * a rightmost point with similar X coordinate.
+   * @see #labelJustify(int)
    */
   public static final byte LABEL_WRAP_JUSTIFY_RIGHT = 66;
 
@@ -265,6 +267,8 @@ public class NodeDetails
    * point.<p>
    * By default this method returns LABEL_ANCHOR_TEXT_CENTER.  This return
    * value is ignored if label(node) returns either null or the empty string.
+   * @see #labelNodeAnchor(int)
+   * @see #labelOffsetVector(int, Point2D.Float)
    */
   public byte labelTextAnchor(final int node) {
     return LABEL_ANCHOR_TEXT_CENTER; }
@@ -279,13 +283,15 @@ public class NodeDetails
    * text anchor point.<p>
    * By default this method returns LABEL_ANCHOR_NODE_CENTER.  This return
    * value is ignored if label(node) returns either null or the empty string.
+   * @see #labelTextAnchor(int)
+   * @see #labelOffsetVector(int, Point2D.Float)
    */
   public byte labelNodeAnchor(final int node) {
     return LABEL_ANCHOR_NODE_CENTER; }
 
   /**
-   * By modifying the contents of the Point2D parameter, specifies the
-   * vector that separates the text anchor point from the node anchor point.
+   * By modifying the contents of the vector parameter, specifies the
+   * distance that separates the text anchor point from the node anchor point.
    * This <i>label offset vector</i> together with the text anchor point and
    * node anchor point determines where, relative to the node, the text's
    * logical bounds box is to be placed.  The text's logical bounds box is
@@ -295,6 +301,8 @@ public class NodeDetails
    * method is not invoked if label(node) returns either null or the empty
    * string.  It is a mistake to not modify the vector parameter when this
    * method is invoked.
+   * @see #labelTextAnchor(int)
+   * @see #labelNodeAnchor(int)
    */
   public void labelOffsetVector(final int node, final Point2D.Float vector) {
     vector.setLocation(0.0f, 0.0f); }
