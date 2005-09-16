@@ -48,6 +48,8 @@ public class PaletteNetworkEditEventHandler extends
 	
 	BasicNetworkEditEventHandler editEvent;
 	
+	public static final String NODE_TYPE = "NODE_TYPE";
+	
 	/**
 	 *  
 	 */
@@ -121,9 +123,11 @@ public class PaletteNetworkEditEventHandler extends
 			String attributeValue = myShape.getAttributeValue();
 
 			args = new Object []{ "LOCATION", location};
-			if (attributeName.equals("NodeType") ||
-					(attributeName.equals("BIOPAX_NODE_TYPE")))  // TODO: incorporate the processing
+			if (attributeName.equals(NODE_TYPE)
+//					||
+//					(attributeName.equals("BIOPAX_NODE_TYPE")))  // TODO: incorporate the processing
 				// of BIOPAX_NODE_TYPE into the SimpleBioMoleculeEditor class
+					)
 			{
 				CyNode cn = CytoscapeEditorManager.addNode("node" + counter, 
 						true, attributeName, attributeValue);

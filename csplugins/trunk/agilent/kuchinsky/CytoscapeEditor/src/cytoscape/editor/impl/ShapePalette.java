@@ -10,13 +10,12 @@ import java.awt.Rectangle;
 import java.util.HashMap;
 
 import javax.swing.DefaultListModel;
-import javax.swing.ImageIcon;
+import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
-import javax.swing.table.DefaultTableCellRenderer;
 
 import cytoscape.Cytoscape;
 import cytoscape.editor.event.BasicCytoShapeTransferHandler;
@@ -59,6 +58,10 @@ public class ShapePalette extends JPanel
 		dataList.setCellRenderer(new MyCellRenderer());
 		dataList.setDragEnabled(true);
     	dataList.setTransferHandler(new PaletteListTransferHandler());
+    	// AJK: 09/16/05 BEGIN
+    	//     set internal spacing via fixed cell height and width
+    	dataList.setFixedCellHeight(CytoShapeIcon.HEIGHT + 5);
+    	// AJK: 09/16/05 END
 		this.add(dataList);
 		dataList.setBackground(Cytoscape.getDesktop().getBackground());
 		this.setBackground(Cytoscape.getDesktop().getBackground());
@@ -72,8 +75,9 @@ public class ShapePalette extends JPanel
 	 * @param img the icon for the shape
 	 * @param name the title of the shape
 	 */
-	public void addShape(String attributeName, String attributeValue, ImageIcon img, String name)
-	{
+//	public void addShape(String attributeName, String attributeValue, ImageIcon img, String name)
+	public void addShape(String attributeName, String attributeValue, Icon img, String name)
+		{
 		BasicCytoShapeEntity cytoShape = new BasicCytoShapeEntity(attributeName, 
 				attributeValue, img, name);
 		cytoShape.setTransferHandler(new BasicCytoShapeTransferHandler(cytoShape,
@@ -81,6 +85,7 @@ public class ShapePalette extends JPanel
 		_shapeMap.put(cytoShape.getTitle(), cytoShape);
 		listModel.addElement(cytoShape);
 		Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+
 	}
 	
 	/**

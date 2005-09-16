@@ -166,6 +166,8 @@ public abstract class CytoscapeEditorManager {
 	 */
 	public static final String NODE_TYPE = "NODE_TYPE";
 	
+	public static final String BIOPAX_NODE_TYPE = "BIOPAX_NODE_TYPE";
+	
 	
 	/**
 	 * CytoscapeAttribute: EDGE_TYPE
@@ -533,6 +535,8 @@ public abstract class CytoscapeEditorManager {
 		if (attribute != null) {
 			net.setNodeAttributeValue(cn, attribute, value);
 			net.setNodeAttributeValue(cn, NODE_TYPE, value);
+			// hack for BioPAX visual style
+			net.setNodeAttributeValue(cn, BIOPAX_NODE_TYPE, value);
 			net.restoreNode(cn);
 		}
 
@@ -571,7 +575,9 @@ public abstract class CytoscapeEditorManager {
 		net.restoreNode(cn);
 		if (nodeType != null) {
 			net.setNodeAttributeValue(cn, NODE_TYPE, nodeType);
-//			System.out.println ("NodeType for CyNode " + cn + " set to " + 
+			// hack for BioPAX visual style
+			net.setNodeAttributeValue(cn, BIOPAX_NODE_TYPE, nodeType);
+			//			System.out.println ("NodeType for CyNode " + cn + " set to " + 
 //					net.getNodeAttributeValue(cn, NODE_TYPE));
 		}
 		manager.setupUndoableAdditionEdit(net, cn, null);

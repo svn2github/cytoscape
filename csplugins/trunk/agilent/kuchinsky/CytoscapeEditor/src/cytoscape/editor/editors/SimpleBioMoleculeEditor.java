@@ -4,13 +4,24 @@
  */
 package cytoscape.editor.editors;
 
+import java.awt.Color;
 import java.util.List;
+import java.util.Vector;
 
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 
 import cytoscape.Cytoscape;
 import cytoscape.editor.event.PaletteNetworkEditEventHandler;
+import cytoscape.editor.impl.CytoShapeIcon;
 import cytoscape.editor.impl.ShapePalette;
+import cytoscape.visual.CalculatorCatalog;
+import cytoscape.visual.NodeAppearanceCalculator;
+import cytoscape.visual.VisualMappingManager;
+import cytoscape.visual.VisualStyle;
+import cytoscape.visual.calculators.GenericNodeColorCalculator;
+import cytoscape.visual.calculators.GenericNodeShapeCalculator;
+import cytoscape.visual.mappings.DiscreteMapping;
 
 
 /**
@@ -41,6 +52,8 @@ public class SimpleBioMoleculeEditor extends BasicCytoscapeEditor {
 	private ShapePalette shapePalette;
 	private static final String ICONS_REL_LOC = "images/";
 	
+	public static final String NODE_TYPE = "NODE_TYPE";
+	
 	public SimpleBioMoleculeEditor() {
 		super();		
 	}
@@ -54,28 +67,132 @@ public class SimpleBioMoleculeEditor extends BasicCytoscapeEditor {
 	{
 		
 		shapePalette = new ShapePalette();
+		
+        VisualMappingManager manager =
+            Cytoscape.getDesktop().getVizMapManager();
+    
+        CalculatorCatalog catalog = manager.getCalculatorCatalog();
+        
+        VisualStyle vizStyle = manager.getVisualStyle();
+        NodeAppearanceCalculator nac = vizStyle.getNodeAppearanceCalculator();
+        if (nac == null)
+        {
+    		String expDescript = "Cannot build palette.  You need to set up a Visual Style that maps Node Color to NODE_TYPE attribute.";
+			String title = "Cannot build palette for SimpleBioMoleculeEditor";
+			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), expDescript,
+					title, JOptionPane.PLAIN_MESSAGE);
+        	return;
+        }
+        GenericNodeColorCalculator nfill = (GenericNodeColorCalculator) nac.getNodeFillColorCalculator();
+        if (nfill == null)
+        {
+    		String expDescript = "Cannot build palette.  You need to set up a Visual Style that maps Node Color to NODE_TYPE attribute.";
+			String title = "Cannot build palette for SimpleBioMoleculeEditor";
+			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), expDescript,
+					title, JOptionPane.PLAIN_MESSAGE);
+        	return;
+        }        Vector mappings = nfill.getMappings();
+        DiscreteMapping dfill = null;
+        for (int i = 0; i < mappings.size(); i++)
+        {
+        	DiscreteMapping dfillCandidate = (DiscreteMapping) mappings.get(i);
+        	String attr = dfillCandidate.getControllingAttributeName();
+        	if (attr.equals(NODE_TYPE))
+        	{
+        		dfill = dfillCandidate;
+        		break;
+        	}       	
+        }
+        if (dfill == null)
+        {
+    		String expDescript = "Cannot build palette.  You need to set up a Visual Style that maps Node Shape to NODE_TYPE attribute.";
+			String title = "Cannot build palette for SimpleBioMoleculeEditor";
+			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), expDescript,
+					title, JOptionPane.PLAIN_MESSAGE);
+        	return;
+        }
+        
+ 
+        GenericNodeShapeCalculator nshape = (GenericNodeShapeCalculator) nac.getNodeShapeCalculator();       
+        if (nshape == null)
+        {
+    		String expDescript = "Cannot build palette.  You need to set up a Visual Style that maps Node Color to NODE_TYPE attribute.";
+			String title = "Cannot build palette for SimpleBioMoleculeEditor";
+			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), expDescript,
+					title, JOptionPane.PLAIN_MESSAGE);
+        	return;
+        }        mappings = nshape.getMappings();
+        DiscreteMapping dshape = null;
+        for (int i = 0; i < mappings.size(); i++)
+        {
+        	DiscreteMapping dshapeCandidate = (DiscreteMapping) mappings.get(i);
+        	String attr = dshapeCandidate.getControllingAttributeName();
+        	if (attr.equals(NODE_TYPE))
+        	{
+        		dshape = dshapeCandidate;
+        		break;
+        	}       	
+        }
+        if (dshape == null)
+        {
+    		String expDescript = "Cannot build palette.  You need to set up a Visual Style that maps Node Shape to NODE_TYPE attribute.";
+			String title = "Cannot build palette for SimpleBioMoleculeEditor";
+			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), expDescript,
+					title, JOptionPane.PLAIN_MESSAGE);
+        	return;
+        }
+                
+        
+        Color nodeColor;
+        byte nodeShape;
+        
+        // AJK: 09/16/05 BEGIN
+        //     oy vey, what a hack.  To get at the node color for the style, it looks as if I
+        //     have to calculateNodeColor for a node 
+
 
 		ImageIcon img = new ImageIcon(getClass().getResource(
 		ICONS_REL_LOC + "edgeIcon1.gif"));
-		shapePalette.addShape("EdgeType", "DirectedEdge", img, "Directed Edge");		
+//		shapePalette.addShape("EdgeType", "DirectedEdge", img, "Directed Edge");		
+		shapePalette.addShape("EdgeType", "DirectedEdge", 
+             new CytoShapeIcon(img.getImage()), "Directed Edge");			
 		
+//		img = new ImageIcon(getClass().getResource(
+//				ICONS_REL_LOC + "BioPAX_protein.gif"));
+//		shapePalette.addShape("BIOPAX_NODE_TYPE", "protein", img, "Protein");
+		nodeShape = ((Byte) dshape.getMapValue("protein")).byteValue();
+//		System.out.println ("Got mapping for nodeShape: " + nodeObj.getClass());
 		
-		img = new ImageIcon(getClass().getResource(
-				ICONS_REL_LOC + "BioPAX_protein.gif"));
-		shapePalette.addShape("BIOPAX_NODE_TYPE", "protein", img, "Protein");
+		nodeColor = (Color) dfill.getMapValue("protein");	
+		shapePalette.addShape("NODE_TYPE", "protein", 
+//               new CytoShapeIcon(CytoShapeIcon.RECTANGLE, Color.BLUE), // hard code for first pass
+	            new CytoShapeIcon(nodeShape, nodeColor), 
+			   "Protein");
 
-		img = new ImageIcon(getClass().getResource(
-				ICONS_REL_LOC + "BioPAX_catalysis.gif"));
-		shapePalette.addShape("BIOPAX_NODE_TYPE", "catalysis", img, "Catalysis");
+//		img = new ImageIcon(getClass().getResource(
+//				ICONS_REL_LOC + "BioPAX_catalysis.gif"));
+//		shapePalette.addShape("BIOPAX_NODE_TYPE", "catalysis", img, "Catalysis");
+		nodeShape = ((Byte) dshape.getMapValue("catalysis")).byteValue();
+		nodeColor = (Color) dfill.getMapValue("catalysis");	
+		shapePalette.addShape("NODE_TYPE", "catalysis", 
+//               new CytoShapeIcon(CytoShapeIcon.ROUNDED_RECTANGLE, Color.YELLOW), "Catalysis");
+	              new CytoShapeIcon(nodeShape, nodeColor), "Catalysis");
 
-		img = new ImageIcon(getClass().getResource
-				(ICONS_REL_LOC + "BioPAX_small_molecule.gif"));
-		shapePalette.addShape("BIOPAX_NODE_TYPE", "smallMolecule", img, "Small Molecule");
+		nodeShape = ((Byte) dshape.getMapValue("smallMolecule")).byteValue();
+		nodeColor = (Color) dfill.getMapValue("smallMolecule");				
+		shapePalette.addShape("NODE_TYPE", "smallMolecule", 
+//               new CytoShapeIcon (CytoShapeIcon.DIAMOND, Color.MAGENTA), "Small Molecule");
+	              new CytoShapeIcon (nodeShape, nodeColor), "Small Molecule");
 
-		img = new ImageIcon(getClass().getResource
-				(ICONS_REL_LOC + "BioPAX_biochemicalReaction.gif"));
-		shapePalette.addShape("BIOPAX_NODE_TYPE", "biochemicalReaction",
-				img, "Biochemical Reaction");
+//		img = new ImageIcon(getClass().getResource
+//				(ICONS_REL_LOC + "BioPAX_biochemicalReaction.gif"));
+//		shapePalette.addShape("BIOPAX_NODE_TYPE", "biochemicalReaction",
+//				img, "Biochemical Reaction");
+		nodeShape = ((Byte) dshape.getMapValue("biochemicalReaction")).byteValue();
+		nodeColor = (Color) dfill.getMapValue("biochemicalReaction");	
+		shapePalette.addShape("NODE_TYPE", "biochemicalReaction",
+//				new CytoShapeIcon(CytoShapeIcon.ELLIPSE, Color.RED), "Biochemical Reaction");
+				new CytoShapeIcon(nodeShape, nodeColor), "Biochemical Reaction");
 
 		shapePalette.showPalette();
 		
