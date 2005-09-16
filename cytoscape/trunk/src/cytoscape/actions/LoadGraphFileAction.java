@@ -32,6 +32,10 @@ import java.text.DecimalFormat;
 
 import edu.umd.cs.piccolo.PCanvas;
 import edu.umd.cs.piccolo.PLayer;
+
+// AJK: 09/10/05
+import edu.umd.cs.piccolo.util.PBounds;
+
 import phoebe.PGraphView;
 
 /**
@@ -384,7 +388,15 @@ class LoadNetworkTask implements Task {
               (cytoscape.view.CytoscapeDesktop.NETWORK_VIEW_CREATED,null, view);
 
       //  Instead of calling fitContent(), access PGraphView directly.
-      view.getCanvas().getCamera().animateViewToCenterBounds
-                    (view.getCanvas().getLayer().getFullBounds(), true, 0);
+      // AJK: 09/10/05 BEGIN:
+      //    try fix to check for empty PBounds before animatingToCenter
+      PLayer layer = view.getCanvas().getLayer();
+      PBounds pb = layer.getFullBounds();
+      if (!pb.isEmpty()) {
+                view.getCanvas().getCamera().animateViewToCenterBounds(pb, true, 500);
+      }
+//      view.getCanvas().getCamera().animateViewToCenterBounds
+//                    (view.getCanvas().getLayer().getFullBounds(), true, 0);
     }
+    // AJK: 09/10/09 END
 }
