@@ -4,7 +4,6 @@ import cytoscape.render.immed.GraphGraphics;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Paint;
-import java.awt.geom.Point2D;
 
 /**
  * Defines visual properties of a node modulo the node size and location.
@@ -174,9 +173,8 @@ public class NodeDetails
    * In low detail rendering mode, this is the only method from this class
    * that is looked at.  The rest of the methods in this class define visual
    * properties that are used in full detail rendering mode.  In low detail
-   * rendering mode translucent colrs are not supported whereas in full
-   * detail rendering mode they are; therefore, colorLowDetail(node) and
-   * fillPaint(node) may return two different colors.
+   * rendering mode translucent colors are not supported whereas in full
+   * detail rendering mode they are.
    */
   public Color colorLowDetail(final int node) {
     return Color.red; }
@@ -223,35 +221,35 @@ public class NodeDetails
    * To specify multiple lines of text in a node label, simply insert the
    * '\n' character between lines of text.
    */
-  public String label(final int node) {
+  public String labelText(final int node) {
     return null; }
 
   /**
    * Returns the font to use when rendering a text label on this node.
    * By default this method returns null.
-   * This return value is ignored if label(node) returns either null or the
-   * empty string; it is an error to return null if label(node) returns a
+   * This return value is ignored if labelText(node) returns either null or the
+   * empty string; it is an error to return null if labelText(node) returns a
    * non-empty string.
    */
-  public Font font(final int node) {
+  public Font labelFont(final int node) {
     return null; }
 
   /**
    * Returns an additional scaling factor that is to be applied to the font
    * used to render text labels; this scaling factor, applied to the point
-   * size of the font returned by font(node), yields a new virtual font that
-   * is used to actually render text labels.  By default this method returns
-   * 1.0.  This return value is ignored if label(node) returns either null or
-   * the empty string.
+   * size of the font returned by labelFont(node), yields a new virtual font
+   * that is used to actually render text labels.  By default this method
+   * returns 1.0.  This return value is ignored if labelText(node) returns
+   * either null or the empty string.
    */
-  public double fontScaleFactor(final int node) {
+  public double labelScaleFactor(final int node) {
     return 1.0d; }
 
   /**
    * Returns the paint of the text label on this node.  By default this method
-   * returns null.  This return value is ignored if label(node) returns
+   * returns null.  This return value is ignored if labelText(node) returns
    * either null or the empty string; it is an error to return null if
-   * label(node) returns a non-empty string.
+   * labelText(node) returns a non-empty string.
    */
   public Paint labelPaint(final int node) {
     return null; }
@@ -266,10 +264,12 @@ public class NodeDetails
    * the label offset vector plus the node anchor point equals the text anchor
    * point.<p>
    * By default this method returns LABEL_ANCHOR_TEXT_CENTER.  This return
-   * value is ignored if label(node) returns either null or the empty string.
+   * value is ignored if labelText(node) returns either null or the empty
+   * string.
    * @see #LABEL_ANCHOR_TEXT_CENTER
    * @see #labelNodeAnchor(int)
-   * @see #labelOffsetVector(int, Point2D.Float)
+   * @see #labelOffsetVectorX(int)
+   * @see #labelOffsetVectorY(int)
    */
   public byte labelTextAnchor(final int node) {
     return LABEL_ANCHOR_TEXT_CENTER; }
@@ -283,31 +283,49 @@ public class NodeDetails
    * such that the label offset vector plus the node anchor point equals the
    * text anchor point.<p>
    * By default this method returns LABEL_ANCHOR_NODE_CENTER.  This return
-   * value is ignored if label(node) returns either null or the empty string.
+   * value is ignored if labelText(node) returns either null or the empty
+   * string.
    * @see #LABEL_ANCHOR_NODE_CENTER
    * @see #labelTextAnchor(int)
-   * @see #labelOffsetVector(int, Point2D.Float)
+   * @see #labelOffsetVectorX(int)
+   * @see #labelOffsetVectorY(int)
    */
   public byte labelNodeAnchor(final int node) {
     return LABEL_ANCHOR_NODE_CENTER; }
 
   /**
-   * By modifying the contents of the vector parameter, specifies the
-   * distance that separates the text anchor point from the node anchor point.
+   * Specifies the X component of the vector that separates the text anchor
+   * point from the node anchor point.
    * This <i>label offset vector</i> together with the text anchor point and
    * node anchor point determines where, relative to the node, the text's
    * logical bounds box is to be placed.  The text's logical bounds box is
    * placed such that the label offset vector plus the node anchor point
    * equals the text anchor point.<p>
-   * By default this method sets the vector to be of distance zero.  This
-   * method is not invoked if label(node) returns either null or the empty
-   * string.  It is a mistake to not modify the vector parameter when this
-   * method is invoked.
+   * By default this method returns zero.  This return value is ignored if
+   * labelText(node) returns either null or the empty string.
+   * @see #labelOffsetVectorY(int)
    * @see #labelTextAnchor(int)
    * @see #labelNodeAnchor(int)
    */
-  public void labelOffsetVector(final int node, final Point2D.Float vector) {
-    vector.setLocation(0.0f, 0.0f); }
+  public float labelOffsetVectorX(final int node) {
+    return 0.0f; }
+
+  /**
+   * Specifies the Y component of the vector that separates the text anchor
+   * point from the node anchor point.
+   * This <i>label offset vector</i> together with the text anchor point and
+   * node anchor point determines where, relative to the node, the text's
+   * logical bounds box is to be placed.  The text's logical bounds box is
+   * placed such that the label offset vector plus the node anchor point
+   * equals the text anchor point.<p>
+   * By default this method returns zero.  This return value is ignored if
+   * labelText(node) returns either null or the empty string.
+   * @see #labelOffsetVectorX(int)
+   * @see #labelTextAnchor(int)
+   * @see #labelNodeAnchor(int)
+   */
+  public float labelOffsetVectorY(final int node) {
+    return 0.0f; }
 
   /**
    * By returning one of the LABEL_WRAP_JUSTIFY_* constants, determines
@@ -316,17 +334,11 @@ public class NodeDetails
    * text.  The lines of text are justified within that logical bounding
    * box.<p>
    * By default this method returns LABEL_WRAP_JUSTIFY_CENTER.  This return
-   * value is ignored if label(node) returns a text string that does not
+   * value is ignored if labelText(node) returns a text string that does not
    * span multiple lines.
    * @see #LABEL_WRAP_JUSTIFY_CENTER
    */
   public byte labelJustify(final int node) {
     return LABEL_WRAP_JUSTIFY_CENTER; }
-
-  /**
-   * Readers: please ignore this for now; this is a reminder to myself.
-   */
-  public NodeLabelAreaCallback labelAreaCallback(final int node) {
-    return null; }
 
 }

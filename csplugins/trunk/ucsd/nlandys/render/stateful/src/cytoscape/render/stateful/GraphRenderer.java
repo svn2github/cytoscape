@@ -524,7 +524,7 @@ public final class GraphRenderer
             final double fontScaleFactor;
             final Paint labelPaint;
             {
-              String labelTemp = nodeDetails.label(node);
+              String labelTemp = nodeDetails.labelText(node);
               if ("".equals(labelTemp)) { labelTemp = null; }
               label = labelTemp;
               if (label == null) {
@@ -532,8 +532,8 @@ public final class GraphRenderer
                 fontScaleFactor = 1.0d;
                 labelPaint = null; }
               else {
-                font = nodeDetails.font(node);
-                fontScaleFactor = nodeDetails.fontScaleFactor(node);
+                font = nodeDetails.labelFont(node);
+                fontScaleFactor = nodeDetails.labelScaleFactor(node);
                 labelPaint = nodeDetails.labelPaint(node); }
             }
             // Now label is not null if and only if we need to render label.
