@@ -53,6 +53,13 @@ public abstract class Cytoscape {
   public static String NETWORK_DESTROYED = "NETWORK_DESTROYED";
   public static String CYTOSCAPE_EXIT = "CYTOSCAPE_EXIT";
 
+	// AJK: 09/12/05 BEGIN
+	//     events for network modification 
+	public static String NETWORK_MODIFIED = "NETWORK_MODIFIED";
+	public static String NETWORK_SAVED = "NETWORK_SAVED";	
+	// AJK: 09/12/05 END
+	
+	
   /**
    * When creating a network, use one of the standard suffixes
    * to have it parsed correctly<BR>
@@ -124,23 +131,74 @@ public abstract class Cytoscape {
   protected static CyNetworkView nullNetworkView =  new PhoebeNetworkView ( nullNetwork, "null" );
 
 
-  /**
-   * Shuts down Cytoscape, after giving plugins time to react.
-   */
-  public static void exit () {
+	/**
+	 * Shuts down Cytoscape, after giving plugins time to react.
+	 */
+	public static void exit() {
+		// AJK: 09/12/05 BEGIN
+		//     prompt the user about saving modified files before quitting
+		if (confirmQuit()) {
+			System.out.println("Cytoscape Exiting....");
+			try {
+				firePropertyChange(CYTOSCAPE_EXIT, null, "now");
+			} catch (Exception e) {
+				System.out.println("Errors on close, closed anyways.");
+			}
 
-    System.out.println( "Cytoscape Exiting...." );
-    try {
-      firePropertyChange( CYTOSCAPE_EXIT,
-                          null,
-                          "now" );
-    } catch ( Exception e ) {
-      System.out.println( "Errors on close, closed anyways." );
-    }
 
-    System.exit(0);
+			System.exit(0);
+		}
+		//    System.exit(0);
+		// AJK: 09/12/05 END
+	}
 
-  }
+	// AJK: 09/12/05 BEGIN
+	//     prompt the user about saving modified files before quitting
+	/**
+	 * prompt the user about saving modified files before quitting
+	 *     
+	 * @return
+	 */
+	private static boolean confirmQuit() {
+		String msg = "You have made modifications to the following networks:\n";
+		Set netSet = Cytoscape.getNetworkSet();
+		Iterator it = netSet.iterator();
+		int networkCount = 0;
+		// TODO: filter networks for only those modified
+		while (it.hasNext()) {
+			CyNetwork net = (CyNetwork) it.next();
+			boolean modified = CytoscapeModifiedNetworkManager.isModified(net);
+			if (modified)
+			{
+			    String name = net.getTitle();    
+			    msg += "     " + name + "\n";
+			    networkCount ++;
+			}
+		}
+		if (networkCount == 0)
+		{
+			System.out.println("ConfirmQuit = " + true);
+			return true;  // no networks have been modified
+		}
+		msg += "Are you sure you want to exit without saving?";
+      Object[] options = {"Yes, quit anyway.", "No, do not quit."};
+		int n = JOptionPane.showOptionDialog(Cytoscape.getDesktop(),
+				msg, "Save Networks Before Quitting?",
+				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+				options, options[0]);
+		if (n == JOptionPane.YES_OPTION) {
+			System.out.println("ConfirmQuit = " + true);
+			return true;
+		} else if (n == JOptionPane.NO_OPTION) {
+			System.out.println("ConfirmQuit = " + false);
+			return false;
+		} else {
+			System.out.println("ConfirmQuit = " + false);
+			return false;  // default if dialog box is closed
+		}
+	}
+
+	// AJK: 09/12/05 END
 
   //--------------------//
   // Root Graph Methods
