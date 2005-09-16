@@ -4,6 +4,7 @@ import cytoscape.render.immed.GraphGraphics;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Paint;
+import java.awt.geom.Point2D;
 
 /**
  * Defines visual properties of a node modulo the node size and location.
@@ -15,6 +16,42 @@ import java.awt.Paint;
  */
 public class NodeDetails
 {
+
+  /**
+   * Specifies that the text anchor point lies in the center of the text
+   * label's logical bounds box.
+   */
+  public static final byte LABEL_ANCHOR_TEXT_CENTER = 0;
+  public static final byte LABEL_ANCHOR_TEXT_NORTH = 1;
+  public static final byte LABEL_ANCHOR_TEXT_NORTHEAST = 2;
+  public static final byte LABEL_ANCHOR_TEXT_EAST = 3;
+  public static final byte LABEL_ANCHOR_TEXT_SOUTHEAST = 4;
+  public static final byte LABEL_ANCHOR_TEXT_SOUTH = 5;
+  public static final byte LABEL_ANCHOR_TEXT_SOUTHWEST = 6;
+  public static final byte LABEL_ANCHOR_TEXT_WEST = 7;
+  public static final byte LABEL_ANCHOR_TEXT_NORTHWEST = 8;
+
+  /**
+   * Specifies that the node anchor point lies in the center of the node's
+   * extents rectangle.
+   */
+  public static final byte LABEL_ANCHOR_NODE_CENTER = -1;
+  public static final byte LABEL_ANCHOR_NODE_NORTH = -2;
+  public static final byte LABEL_ANCHOR_NODE_NORTHEAST = -3;
+  public static final byte LABEL_ANCHOR_NODE_EAST = -4;
+  public static final byte LABEL_ANCHOR_NODE_SOUTHEAST = -5;
+  public static final byte LABEL_ANCHOR_NODE_SOUTH = -6;
+  public static final byte LABEL_ANCHOR_NODE_SOUTHWEST = -7;
+  public static final byte LABEL_ANCHOR_NODE_WEST = -8;
+  public static final byte LABEL_ANCHOR_NODE_NORTHWEST = -9;
+
+  /**
+   * Specifies that the lines in a multi-line node label should each have
+   * a center point with identical X coordinate.
+   */
+  public static final byte LABEL_WRAP_JUSTIFY_CENTER = 64;
+  public static final byte LABEL_WRAP_JUSTIFY_LEFT = 65;
+  public static final byte LABEL_WRAP_JUSTIFY_RIGHT = 66;
 
   /**
    * Returns the color of node in low detail rendering mode.
@@ -68,8 +105,9 @@ public class NodeDetails
   /**
    * Returns the text label this node has.  By default this method returns
    * null; returning null is the optimal way to specify that this
-   * node has no text label.  A node's text label is rendered such that
-   * the text is centered on the center of the node.
+   * node has no text label.<p>
+   * To specify multiple lines of text in a node label, simply insert the
+   * '\n' character between lines of text.
    */
   public String label(final int node) {
     return null; }
@@ -102,6 +140,70 @@ public class NodeDetails
    * label(node) returns a non-empty string.
    */
   public Paint labelPaint(final int node) {
+    return null; }
+
+  /**
+   * By returning one of the LABEL_ANCHOR_TEXT_* constants, specifies
+   * where on the text label's logical bounds box an anchor point lies.  This
+   * <i>text anchor point</i> together with the
+   * node anchor point and label offset vector
+   * determines where, relative to the node, the text's logical bounds
+   * box is to be placed.  The text's logical bounds box is placed such that
+   * the label offset vector plus the node anchor point equals the text anchor
+   * point.<p>
+   * By default this method returns LABEL_ANCHOR_TEXT_CENTER.  This return
+   * value is ignored if label(node) returns either null or the empty string.
+   */
+  public byte labelTextAnchor(final int node) {
+    return LABEL_ANCHOR_TEXT_CENTER; }
+
+  /**
+   * By returning one of the LABEL_ANCHOR_NODE_* constants, specifies
+   * where on the node's extents box an anchor point lies.  This
+   * <i>node anchor point</i> together with the text anchor point and label
+   * offset vector determines where, relative to the node, the text's logical
+   * bounds box is to be placed.  The text's logical bounds box is placed
+   * such that the label offset vector plus the node anchor point equals the
+   * text anchor point.<p>
+   * By default this method returns LABEL_ANCHOR_NODE_CENTER.  This return
+   * value is ignored if label(node) returns either null or the empty string.
+   */
+  public byte labelNodeAnchor(final int node) {
+    return LABEL_ANCHOR_NODE_CENTER; }
+
+  /**
+   * By modifying the contents of the Point2D parameter, specifies the
+   * vector that separates the text anchor point from the node anchor point.
+   * This <i>label offset vector</i> together with the text anchor point and
+   * node anchor point determines where, relative to the node, the text's
+   * logical bounds box is to be placed.  The text's logical bounds box is
+   * placed such that the label offset vector plus the node anchor point
+   * equals the text anchor point.<p>
+   * By default this method sets the vector to be of distance zero.  This
+   * method is not invoked if label(node) returns either null or the empty
+   * string.  It is a mistake to not modify the vector parameter when this
+   * method is invoked.
+   */
+  public void labelOffsetVector(final int node, final Point2D.Float vector) {
+    vector.setLocation(0.0f, 0.0f); }
+
+  /**
+   * By returning one of the LABEL_WRAP_JUSTIFY_* constants, determines
+   * how to justify node labels spanning multiple lines.  The choice made here
+   * does not affect the size of the logical bounding box of a node label's
+   * text.  The lines of text are justified within that logical bounding
+   * box.<p>
+   * By default this method returns LABEL_WRAP_JUSTIFY_CENTER.  This return
+   * value is ignored if label(node) returns a text string that does not
+   * span multiple lines.
+   */
+  public byte labelJustify(final int node) {
+    return LABEL_WRAP_JUSTIFY_CENTER; }
+
+  /**
+   * Readers: please ignore this for now; this is a reminder to myself.
+   */
+  public NodeLabelAreaCallback labelAreaCallback(final int node) {
     return null; }
 
 }
