@@ -67,8 +67,8 @@ public class TestGraphRenderingSimple
         public Paint fillPaint(int node) { return m_fillColor; } };
     m_edgeDetails = new EdgeDetails() {
         private final Color m_color = new Color(0, 0, 255, 127);
-        public float thickness(int edge) { return 1.0f; }
-        public Paint paint(int edge) { return m_color; } };
+        public float segmentThickness(int edge) { return 1.0f; }
+        public Paint segmentPaint(int edge) { return m_color; } };
     m_hash = new IntHash();
     addNotify();
     m_img = createImage(m_imgWidth, m_imgHeight);

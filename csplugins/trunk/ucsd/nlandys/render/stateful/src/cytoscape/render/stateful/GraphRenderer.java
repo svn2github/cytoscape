@@ -245,8 +245,8 @@ public final class GraphRenderer
                 srcExtents = floatBuff2; trgExtents = floatBuff1; }
 
               // Compute visual attributes that do not depend on LOD.
-              final float thickness = edgeDetails.thickness(edge);
-              final Paint paint = edgeDetails.paint(edge);
+              final float thickness = edgeDetails.segmentThickness(edge);
+              final Paint paint = edgeDetails.segmentPaint(edge);
 
               // Compute arrows.
               final byte srcArrow, trgArrow;
@@ -363,7 +363,7 @@ public final class GraphRenderer
                 final double fontScaleFactor;
                 final Paint labelPaint;
                 {
-                  String labelTemp = edgeDetails.label(edge);
+                  String labelTemp = edgeDetails.labelText(edge);
                   if ("".equals(labelTemp)) { labelTemp = null; }
                   label = labelTemp;
                   if (label == null) {
@@ -371,8 +371,8 @@ public final class GraphRenderer
                     fontScaleFactor = 1.0d;
                     labelPaint = null; }
                   else {
-                    font = edgeDetails.font(edge);
-                    fontScaleFactor = edgeDetails.fontScaleFactor(edge);
+                    font = edgeDetails.labelFont(edge);
+                    fontScaleFactor = edgeDetails.labelScaleFactor(edge);
                     labelPaint = edgeDetails.labelPaint(edge); }
                 }
                 // Now label is not null if and only if we need to render.

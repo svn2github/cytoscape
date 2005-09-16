@@ -9,8 +9,8 @@ import java.awt.Paint;
 /**
  * Defines the visual properties of an edge.  Even though this class is not
  * declared abstract, in most situations it makes sense to override at least
- * some of its methods (especially thickness()) in order to gain control over
- * edge visual properties.<p>
+ * some of its methods (especially segmentThickness()) in order to gain
+ * control over edge visual properties.<p>
  * To understand the significance of each method's return value, it makes
  * sense to become familiar with the API cytoscape.render.immed.GraphGraphics.
  */
@@ -25,8 +25,7 @@ public class EdgeDetails
    * that is looked at.  The rest of the methods in this class define visual
    * properties that are used in full detail rendering mode.  In low detail
    * rendering mode translucent colors are not supported whereas in full
-   * detail rendering mode they are; therefore, colorLowDetail(edge) and
-   * paint(edge) may return two different colors.
+   * detail rendering mode they are.
    */
   public Color colorLowDetail(final int edge) {
     return Color.blue; }
@@ -110,7 +109,7 @@ public class EdgeDetails
    * Take note of certain constraints specified in
    * GraphGraphics.drawEdgeFull().
    */
-  public float thickness(final int edge) {
+  public float segmentThickness(final int edge) {
     return 0.0f; }
 
   /**
@@ -118,7 +117,7 @@ public class EdgeDetails
    * By default this method returns Color.blue.  It is an error to
    * return null in this method.
    */
-  public Paint paint(final int edge) {
+  public Paint segmentPaint(final int edge) {
     return Color.blue; }
 
   /**
@@ -136,35 +135,35 @@ public class EdgeDetails
    * edge path is chosen such that it is close to the "middle" of the edge
    * path.
    */
-  public String label(final int edge) {
+  public String labelText(final int edge) {
     return null; }
 
   /**
    * Returns the font to use when rendering a text label on this edge.
    * By default this method returns null.
-   * This return value is ignored if label(edge) returns either null or the
-   * empty string; it is an error the return null if label(edge) returns a
+   * This return value is ignored if labelText(edge) returns either null or the
+   * empty string; it is an error the return null if labelText(edge) returns a
    * non-empty string.
    */
-  public Font font(final int edge) {
+  public Font labelFont(final int edge) {
     return null; }
 
   /**
    * Returns an additional scaling factor that is to be applied to the font
    * used to render text labels; this scaling factor, applied to the point
-   * size of the font returned by font(edge), yields a new virtual font that
-   * is used to actually render text labels.  By default this method returns
-   * 1.0.  This return value is ignored if label(edge) returns either null or
-   * the empty string.
+   * size of the font returned by labelFont(edge), yields a new virtual font
+   * that is used to actually render text labels.  By default this method
+   * returns 1.0.  This return value is ignored if labelText(edge) returns
+   * either null or the empty string.
    */
-  public double fontScaleFactor(final int edge) {
+  public double labelScaleFactor(final int edge) {
     return 1.0d; }
 
   /**
    * Returns the paint of the text label on this edge.  By default this method
-   * returns null.  This return value is ignored if label(edge) returns
+   * returns null.  This return value is ignored if labelText(edge) returns
    * either null or the empty string; it is an error to return null if
-   * label(edge) returns a non-empty string.
+   * labelText(edge) returns a non-empty string.
    */
   public Paint labelPaint(final int edge) {
     return null; }
