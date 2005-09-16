@@ -16,8 +16,9 @@ public class DataTableModel
   private CytoscapeData data;
   private List graph_objects;
   private List attributes;
-
-
+ 
+  private int graphObjectType = 0;
+ 
   public DataTableModel () {}
 
   public DataTableModel ( int rows, int cols ) {
@@ -71,7 +72,9 @@ public class DataTableModel
     setTable();
   }
 
-
+  public void setGraphObjectType( int got ) {
+    graphObjectType = got;
+  }
 
   protected void setTable () {
     int att_length = attributes.size()+1;
@@ -95,7 +98,7 @@ public class DataTableModel
       for ( int j = 0; j < go_length; ++j ) {
         GraphObject obj = ( GraphObject )graph_objects.get(j);
         
-        Object value = data.getAttributeValueList( obj.getIdentifier(),
+        Object value = data.getAttributeValue( obj.getIdentifier(),
                                                attribute );
         data_vector[j][i] = value;
       }
@@ -134,7 +137,7 @@ public class DataTableModel
       for ( int j = 0; j < go_length; ++j ) {
         GraphObject obj = ( GraphObject )graph_objects.get(j);
         
-        Object value = data.getAttributeValueList( obj.getIdentifier(),
+        Object value = data.getAttributeValue( obj.getIdentifier(),
                                                attribute );
         data_vector[j][i] = value;
       }
@@ -203,10 +206,20 @@ public class DataTableModel
   public void setValueAt ( Object aValue,
                            int rowIndex,
                            int columnIndex ) {
-    System.out.println( "SetValueAt  row "+rowIndex+" : "+getValueAt(rowIndex, columnIndex )+" column "+columnIndex+" : "+attributes.get( columnIndex - 1)+ "ID: "+getValueAt( rowIndex, 0 ) );
+    //System.out.println( "SetValueAt  row "+rowIndex+" : "+getValueAt(rowIndex, columnIndex )+" column "+columnIndex+" : "+attributes.get( columnIndex - 1)+ "ID: "+getValueAt( rowIndex, 0 ) );
     
     // TODO: set the edit
-    super.setValueAt( aValue, rowIndex, columnIndex );
+    //super.setValueAt( aValue, rowIndex, columnIndex );
+    
+    DataEditAction edit = new DataEditAction( this, 
+                                              (String)getValueAt( rowIndex, 0 ),
+                                              (String)attributes.get( columnIndex - 1),
+                                              null,
+                                              getValueAt(rowIndex, columnIndex ),
+                                              aValue,
+                                              graphObjectType );
+    cytoscape.Cytoscape.getDesktop().addEdit( edit );
+    
   }
 
 

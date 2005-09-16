@@ -17,13 +17,13 @@ public class DataTable {
 
   AttributePanel attributePanel;
   ModPanel modPanel;
+  SelectPanel selectionPanel;
   DataTableModel tableModel;
 
   int attributePanelIndex;
   int modPanelIndex;
   int tableIndex;
 
-  
   // Each Attribute Browser operates on one CytoscapeData object, and on either Nodes or Edges.
   CytoscapeData data;
 
@@ -33,57 +33,56 @@ public class DataTable {
 
   public DataTable ( CytoscapeData data, int graphObjectType ) {
 
+    // set up CytoscapeData Object and GraphObject Type
     this.data = data;
     this.graphObjectType = graphObjectType;
 
-    //setLayout(new BorderLayout());
-    //setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
-    //setPreferredSize(new Dimension(400, 400));
     
-
     tableModel = (DataTableModel)makeModel( data );
+    tableModel.setGraphObjectType( graphObjectType );
+
+    // List of attributes and labels: CytoPanel 1
     attributePanel =  new AttributePanel( data, 
                                           new AttributeModel( data ),
                                           new LabelModel( data ) );
     attributePanel.setTableModel( tableModel );
     
+    // the attribute table display: CytoPanel 2
+    JScrollPane scroll = new JScrollPane(new JSortTable( tableModel ) );
 
+    // Modifications and Selection: CytoPanel 3
+    JTabbedPane cp3 = new JTabbedPane();
     modPanel = new ModPanel(  data, tableModel, attributePanel, graphObjectType );
+    selectionPanel = new SelectPanel( tableModel, graphObjectType );
+    cp3.add( "Selection", selectionPanel );
+    cp3.add( "Modification", modPanel );
+
+
     
-
-    //add( attributePanel, BorderLayout.WEST );
-    //add( modPanel, BorderLayout.NORTH );
-    //add(new JScrollPane(new JSortTable( tableModel ) ), BorderLayout.CENTER );
-    //add( new JButton(getFileSaveAction()), BorderLayout.SOUTH );
-
+    // make display sane
     String type = "Node";
     if ( graphObjectType != NODES )
       type = "Edge";
 
-    JScrollPane scroll = new JScrollPane(new JSortTable( tableModel ) );
+    
 
     Cytoscape.getDesktop().getCytoPanel( SwingConstants.WEST ).add( type+"Attributes" ,attributePanel );
-    Cytoscape.getDesktop().getCytoPanel( SwingConstants.SOUTH ).add( type+"Attribute Modifications", modPanel );
+    Cytoscape.getDesktop().getCytoPanel( SwingConstants.SOUTH ).add( type+"Attr Mod/ Object Select", cp3 );
     Cytoscape.getDesktop().getCytoPanel( SwingConstants.EAST ).add( type+"Browser",  scroll);
     Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu( "Plugins" ).add(  new JMenuItem(getFileSaveAction(type)) );
     
 
     attributePanelIndex = Cytoscape.getDesktop().getCytoPanel( SwingConstants.WEST ).indexOfComponent( attributePanel );
-    modPanelIndex = Cytoscape.getDesktop().getCytoPanel( SwingConstants.SOUTH ).indexOfComponent( modPanel );
+    modPanelIndex = Cytoscape.getDesktop().getCytoPanel( SwingConstants.SOUTH ).indexOfComponent( cp3 );
     tableIndex =  Cytoscape.getDesktop().getCytoPanel( SwingConstants.EAST ).indexOfComponent( scroll );
 
     Cytoscape.getDesktop().getCytoPanel( SwingConstants.WEST ).addCytoPanelListener( new Listener( -1, modPanelIndex, tableIndex, attributePanelIndex ) );
     Cytoscape.getDesktop().getCytoPanel( SwingConstants.SOUTH ).addCytoPanelListener( new Listener( attributePanelIndex, -1, tableIndex, modPanelIndex ) );
     Cytoscape.getDesktop().getCytoPanel( SwingConstants.EAST ).addCytoPanelListener( new Listener( attributePanelIndex, modPanelIndex, -1, tableIndex ) );
-
     
-    // JFrame frame = new JFrame("DataTable");
-//     frame.getContentPane().setLayout(new GridLayout());
-//     frame.getContentPane().add(this);
-    
-//     frame.pack();
-//     frame.setSize( 900, 700 );
-//     frame.show();
+    Cytoscape.getDesktop().getCytoPanel( SwingConstants.WEST ).setState(CytoPanelState.DOCK);
+    Cytoscape.getDesktop().getCytoPanel( SwingConstants.SOUTH ).setState(CytoPanelState.DOCK);
+    Cytoscape.getDesktop().getCytoPanel( SwingConstants.EAST ).setState(CytoPanelState.DOCK);
 
   }
 

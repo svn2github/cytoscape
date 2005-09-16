@@ -165,7 +165,9 @@ public class AttributePanel
 
     }
     
-    } catch ( Exception ex ) {}
+    } catch ( Exception ex ) {
+      ex.printStackTrace();
+    }
   }
 
   public void contentsChanged(ListDataEvent e){}

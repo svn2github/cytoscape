@@ -1,10 +1,8 @@
 package rowan.browser;
 
 import cytoscape.*;
-import cytoscape.plugin.*;
-import cytoscape.util.*;
-import cern.colt.list.*;
-import cern.colt.map.*;
+import cytoscape.data.*;
+
  
 
 import java.util.*;
@@ -14,43 +12,78 @@ import javax.swing.undo.*;
 
 public class DataEditAction extends AbstractUndoableEdit {
 
+  final String object;
+  final String attribute;
+  final Object old_value;
+  final Object new_value;
+  final String[] keys;
+  final int graphObjectType;
+  final DataTableModel table;
 
-  final ArrayList changes;
+  public DataEditAction ( DataTableModel table, 
+                          String object, 
+                          String attribute,
+                          String[] keys,
+                          Object old_value, 
+                          Object new_value, 
+                          int graphObjectType ) {
+    this.table = table;
+    this.object = object;
+    this.attribute = attribute;
+    this.keys = keys;
+    this.old_value = old_value;
+    this.new_value = new_value;
+    this.graphObjectType = graphObjectType;
 
-  public DataEditAction () {
-    changes = new ArrayList();
+    redo();
+
   }
 
-
-  public void addChange ( String object, String attribute, Object old_value, Object new_value ) {
-    changes.add( new Object[] { object, attribute, old_value, new_value } );
-  }
 
   public String	getPresentationName () {
-    return ""+changes.size()+" Data Modifications";
+    return object+" attribute "+attribute+" changed.";
   }
           
   public String getRedoPresentationName () {
-    return "Redo Data Modifications";
+    return "Redo: "+object+":"+attribute+" to:"+new_value+" from "+old_value;
   }
         
   public String getUndoPresentationName () {
-    return "Undo Data Modifications";
+    return "Undo: "+object+":"+attribute+" back to:"+old_value+" from "+new_value;
   }
         
+  // this sets the new value
   public void	redo () {
-    // this puts the new values back in
-    for ( Iterator i = changes.iterator(); i.hasNext(); ) {
-
+    
+    CytoscapeData data;
+    
+    if ( graphObjectType == 0 ) {
+      //node
+      data = Cytoscape.getNodeNetworkData();
+    } else {
+      //edge
+      data = Cytoscape.getEdgeNetworkData();
     }
-            
+    
+    data.setAttributeValue( object, attribute, new_value );
+    table.setTable();
   }
         
+  // this sets the old value
   public void undo () {
-    // this puts the old values back in
-    for ( Iterator i = changes.iterator(); i.hasNext(); ) {
-
+    
+    CytoscapeData data;
+    
+    if ( graphObjectType == 0 ) {
+      //node
+      data = Cytoscape.getNodeNetworkData();
+    } else {
+      //edge
+      data = Cytoscape.getEdgeNetworkData();
     }
+    
+    data.setAttributeValue( object, attribute, old_value );
+    table.setTable();
   }
 
 

@@ -50,10 +50,9 @@ public class ModPanel
     this.tableModel = tableModel;
     this.attPanel = attPanel;
 
+
     setLayout( new BorderLayout() );
 
-
-    add( new SelectPanel( tableModel, graphObjectType ), BorderLayout.NORTH );
 
     JPanel panel = new JPanel();
     panel.setBorder( new TitledBorder( "Attribute Editing" ) );
