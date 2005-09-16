@@ -160,5 +160,8 @@ class SaveAsGMLTask implements Task {
         gmlWriter.writeGML(network, view, list);
         GMLParser.printList(list, fileWriter);
         fileWriter.close();
+        // AJK: 09/14/05 BEGIN
+        Cytoscape.firePropertyChange(Cytoscape.NETWORK_SAVED, null, network);
+		// AJK: 09/14/05 END
     }
 }

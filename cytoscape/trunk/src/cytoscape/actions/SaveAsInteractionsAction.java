@@ -204,5 +204,8 @@ class SaveAsSifTask implements Task {
             //System.out.println(" WRITE: "+ sb.toString() );
         }  // for i
         fileWriter.close();
+        // AJK: 09/14/05 BEGIN
+        Cytoscape.firePropertyChange(Cytoscape.NETWORK_SAVED, null, network);
+		// AJK: 09/14/05 END
     }
 }
