@@ -17,6 +17,22 @@ import java.awt.Paint;
 public class EdgeDetails
 {
 
+//   public static final int LABEL_HORIZONTAL = 0x0;
+//   public static final int LABEL_ANGLED = 0x1;
+//   public static final int LABEL_BELOW_EDGE = 0x2;
+//   public static final int LABEL_ABOVE_EDGE = 23;
+
+  public static final int ENDPOINT_LABEL_ANGLED_CENTERED = 0;
+  public static final int ENDPOINT_LABEL_ANGLED_ABOVE = 0;
+  public static final int ENDPOINT_LABEL_ANGLED_BELOW = 0;
+
+  public static final int ENDPOINT_LABEL_HORIZONTAL_END_CLEAR = 0;
+  public static final int ENDPOINT_LABEL_HORIZONTAL_END_INTERSECTING = 0;
+  public static final int ENDPOINT_LABEL_HORIZONTAL_END_NEUTRAL = 0;
+
+  public static final int ENDPOINT_LABEL_HORIZONTAL_CENTER_NEAR = 0;
+  public static final int ENDPOINT_LABEL_HORIZONTAL_CENTER_FAR = 0;
+
   /**
    * Returns the color of edge in low detail rendering mode.
    * By default this method returns Color.blue.  It is an error to return null
