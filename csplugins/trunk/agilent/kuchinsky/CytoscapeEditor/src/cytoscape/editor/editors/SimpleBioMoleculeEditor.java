@@ -39,7 +39,7 @@ import cytoscape.visual.mappings.DiscreteMapping;
  * simple "BioPAX-like" editor, there are node types for proteins, catalysis, small molecules, and biochemical 
  * reactions, as well as a directed edge type.
  * <p>
- * This functionality is not available in Cytoscape 2.2
+ * 
  *
  * @author Allan Kuchinsky
  * @version 1.0

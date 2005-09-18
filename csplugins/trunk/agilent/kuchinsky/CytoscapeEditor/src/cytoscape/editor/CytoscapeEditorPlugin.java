@@ -8,7 +8,8 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
 
-import cytoscape.Cytoscape;
+import org.mskcc.biopax_plugin.mapping.MapBioPaxToVisualStyle;
+
 import cytoscape.CytoscapeInit;
 import cytoscape.plugin.CytoscapePlugin;
 
@@ -73,6 +74,14 @@ public class CytoscapeEditorPlugin extends CytoscapePlugin {
 
 			CytoscapeEditorManager.register("SimpleBioMoleculeEditor",
 					"PaletteNetworkEditEventHandler");
+			
+			// Bring in MSKCC BioPAX visual style so to drive definition of SimpleBioPAX_Editor
+			MapBioPaxToVisualStyle mpb = new MapBioPaxToVisualStyle();
+			mpb.createVizMapper();
+			
+			CytoscapeEditorManager.register("SimpleBioPAX_Editor", 
+					"BioPAXNetworkEditEventHandler", 
+					"BIOPAX_NODE_TYPE", "BIOPAX_EDGE_TYPE");
 
 			// AJK: 08/12/05 BEGIN
 			//      for version 2.2, just enable the BasicCytoscapeEditor and have it

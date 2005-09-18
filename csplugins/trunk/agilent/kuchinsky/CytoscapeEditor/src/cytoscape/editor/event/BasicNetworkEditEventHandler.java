@@ -229,7 +229,7 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 
 			} else if (!onNode && !edgeStarted && (getMode() != CONNECT_MODE)) {
 				// Create a Node on Click
-				createNodeAtPoint (e);
+				createNode (e);
 			}				
 		}
 		// doubleclick sets up node labeling
@@ -253,7 +253,7 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 	 * begin drawing an edge from the node containing input point
 	 * @param e input event for mouse press
 	 */
-	private void beginEdge(PInputEvent e)
+	public void beginEdge(PInputEvent e)
 	{
 		edgeStarted = true;
 		node = (NodeView) e.getPickedNode();
@@ -271,7 +271,7 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 	 * finish edge on node containing input point
 	 * @param e input event for mouse press
 	 */
-	private void finishEdge (PInputEvent e)
+	public CyEdge finishEdge (PInputEvent e)
 	{
 		edgeStarted = false;
 		updateEdge();
@@ -296,14 +296,15 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 		if (isHandlingEdgeDrop()) {
 			setMode(SELECT_MODE);
 			this.setHandlingEdgeDrop(false);
-		}		
+		}
+		return myEdge;
 	}
 	
 	/**
 	 * create a new node at the point where mouse was pressed
 	 * @param e event for mouse press
 	 */
-	private void createNodeAtPoint (PInputEvent e)
+	public CyNode createNode (PInputEvent e)
 	{
 		CyNode cn = null;
 		if ((getMode() == ADD_MODE) || (e.isControlDown())) {
@@ -333,7 +334,8 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 //		_nodeLabeler.setText(cn.getIdentifier());
 
 //		 AJK: 09/16/05 disable node labeler, rely on attribute editor/browser
-//		initializeNodeLabeler(cn, nv);		
+//		initializeNodeLabeler(cn, nv);	
+		return cn;
 	}
 	
 	/**

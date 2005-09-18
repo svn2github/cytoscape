@@ -154,6 +154,17 @@ public abstract class CytoscapeEditorManager {
 	 * associates a view with its NetworkEditEventAdapter
 	 */
 	protected static HashMap viewNetworkEditEventAdapterMap = new HashMap();
+	
+	
+	/**
+	 * associates an editor with the controlling NodeAttribute that drives rendering of icons on palette
+	 */
+	protected static HashMap editorControllingNodeAttributeMap = new HashMap();
+	
+	/**
+	 * associates an editor with the controlling EdgeAttribute that drives rendering of icons on palette
+	 */
+	protected static HashMap editorControllingEdgeAttributeMap = new HashMap();	
 
 	/**
 	 * counter variable used in generating names for new networks invoked by the New->Network menu item.
@@ -253,6 +264,14 @@ public abstract class CytoscapeEditorManager {
 
 		CytoscapeEditorManager.setNetworkEditEventAdapterType(editorName,
 				networkEditAdapterName);
+	}
+	
+	public static void register (String editorName, String networkEditAdapterName, 
+			String controllingNodeAttribute, String controllingEdgeAttribute)
+	{
+		register(editorName, networkEditAdapterName);
+		CytoscapeEditorManager.setControllingNodeAttribute(editorName, controllingNodeAttribute);
+		CytoscapeEditorManager.setControllingEdgeAttribute(editorName, controllingEdgeAttribute);
 	}
 	
 	
@@ -790,6 +809,72 @@ public abstract class CytoscapeEditorManager {
 		}
 		return null;
 	}
+	
+
+	/**
+	 * gets the controlling NodeAttribute that drives rendering of node icon in editor palette
+	 * @param editor
+	 * @return name of controlling NodeAttribute
+	 */
+	public static String getControllingNodeAttribute (CytoscapeEditor editor)
+	{
+		String editorName = editor.getEditorName();
+		Object obj =  editorControllingNodeAttributeMap.get(editorName);
+		if (obj != null)
+		{
+			return obj.toString();
+		}
+		return null;
+	}
+	
+	
+	
+	/**
+	 * gets the controlling EdgeAttribute that drives rendering of node icon in editor palette
+	 * @param editor
+	 * @return name of controlling EdgeAttribute
+	 */
+	public static String getControllingEdgeAttribute (CytoscapeEditor editor)
+	{
+		System.out.println ("get controlling edge attribute for editor: " + editor);
+		String editorName = editor.getEditorName();
+		Object obj =  editorControllingEdgeAttributeMap.get(editorName);
+		System.out.println ("returned: " + obj);
+		if (obj != null)
+		{
+			return obj.toString();
+		}
+		return null;
+	}	
+	
+	
+
+	/**
+	 * sets the controlling NodeAttribute that drives rendering of node icon in editor palette
+	 * @param editorName
+	 * @param attribute
+	 */
+	public static void setControllingNodeAttribute (String editorName, String attribute)
+	{
+		editorControllingNodeAttributeMap.put(editorName, attribute);
+	}
+	
+	
+	/**
+	 * sets the controlling EdgeAttribute that drives rendering of node icon in editor palette
+	 * @param editorName
+	 * @param attribute
+	 */
+	public static void setControllingEdgeAttribute (String editorName, String attribute)
+	{
+		System.out.println("Setting controlling edge attribute: " + attribute + " for editor: " + editorName);
+		editorControllingEdgeAttributeMap.put(editorName, attribute);
+	}
+	
+	
+		
+	
+	
 	 
 	/**
      * set the editor for a CyNetworkView
