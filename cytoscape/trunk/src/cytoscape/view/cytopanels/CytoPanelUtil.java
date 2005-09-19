@@ -11,6 +11,12 @@ import java.awt.Dimension;
 import java.awt.Rectangle;
 import javax.swing.SwingConstants;
 
+/**
+ * Contains methods to assist with various
+ * tasks performed by the CytoPanel API.
+ *
+ * @author Ethan Cerami, Ben Gross
+ */
 public class CytoPanelUtil {
 
 	/**
