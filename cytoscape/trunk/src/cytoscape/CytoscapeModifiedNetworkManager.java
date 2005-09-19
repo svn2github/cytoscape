@@ -63,7 +63,10 @@ public class CytoscapeModifiedNetworkManager  implements PropertyChangeListener 
 				setModified(net, MODIFIED);
 				}
 			} else if (e.getPropertyName().equals(Cytoscape.NETWORK_SAVED)) {
-				CyNetwork net = (CyNetwork) e.getNewValue();
+			    // MLC 09/19/05 BEGIN:
+			    // CyNetwork net = (CyNetwork) e.getNewValue();
+			    CyNetwork net = (CyNetwork)(((Object[]) e.getNewValue())[0]);
+			    // MLC 09/19/05 END.
 				if (net instanceof CyNetwork) {
 					setModified(net, CLEAN);
 				}
