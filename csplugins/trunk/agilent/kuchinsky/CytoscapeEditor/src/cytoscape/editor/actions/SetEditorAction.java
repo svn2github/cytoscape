@@ -5,11 +5,15 @@ package cytoscape.editor.actions;
 
 import java.awt.event.ActionEvent;
 
+import cytoscape.Cytoscape;
 import cytoscape.editor.CytoscapeEditor;
 import cytoscape.editor.CytoscapeEditorFactory;
 import cytoscape.editor.CytoscapeEditorManager;
 import cytoscape.editor.InvalidEditorException;
 import cytoscape.util.CytoscapeAction;
+import cytoscape.visual.CalculatorCatalog;
+import cytoscape.visual.VisualMappingManager;
+import cytoscape.visual.VisualStyle;
 
 /**
  * 
@@ -44,34 +48,57 @@ public class SetEditorAction extends CytoscapeAction {
 
 	/**
 	 * 
-	 * sets up the selected editor from the File -> SetEditor menu.  Disables controls for any previously assigned 
-	 * editors.  Initializes controls for the new editor.  Goes through all existing Network views and resets 
-	 * their NetworkEditEventHandlers to the handler associated with the new editor.
-	 * @param e ActionEvent fired by the selection of the editor from File -> SetEditor menu item.
+	 * sets up the selected editor from the File -> SetEditor menu. Disables
+	 * controls for any previously assigned editors. Initializes controls for
+	 * the new editor. Goes through all existing Network views and resets their
+	 * NetworkEditEventHandlers to the handler associated with the new editor.
+	 * 
+	 * @param e
+	 *            ActionEvent fired by the selection of the editor from File ->
+	 *            SetEditor menu item.
 	 */
 	public void actionPerformed(ActionEvent e) {
-		
+
 		CytoscapeEditor oldEditor = CytoscapeEditorManager.getCurrentEditor();
-		if (oldEditor != null)
-		{
+		if (oldEditor != null) {
 			oldEditor.disableControls(null);
 		}
-		try
-		{
-			
+		try {
+
 			// setup a new editor
 			CytoscapeEditor cyEditor = factory.getEditor(editorName);
+
+			// AJK: 09/19/05 BEGIN
+			//     setup visual style for this editor
+			String visualStyleName = CytoscapeEditorManager
+					.getVisualStyleForEditorType(editorName);
+			System.out.println("getting visual style for: " + visualStyleName);
+			if ((visualStyleName != null)
+					&& (!(visualStyleName
+							.equals(CytoscapeEditorManager.ANY_VISUAL_STYLE)))) {
+				VisualMappingManager manager = Cytoscape.getDesktop()
+						.getVizMapManager();
+				CalculatorCatalog catalog = manager.getCalculatorCatalog();
+				VisualStyle existingStyle = catalog
+						.getVisualStyle(visualStyleName);
+				System.out.println("Got visual style: " + existingStyle);
+				if (existingStyle != null) {
+					manager.setVisualStyle(existingStyle);
+				}
+			}
+
+			// AJK: 09/19/05 END
+
 			CytoscapeEditorManager.setCurrentEditor(cyEditor);
-//			System.out.println ("Set current editor to: " + CytoscapeEditorManager.getCurrentEditor());
-//			System.out.println ("for editor name: " + editorName);
+			//			System.out.println ("Set current editor to: " +
+			// CytoscapeEditorManager.getCurrentEditor());
+			//			System.out.println ("for editor name: " + editorName);
 			cyEditor.initializeControls(null);
-			
+
 			CytoscapeEditorManager.resetEventHandlerForExistingViews();
-			
-		}
-		catch (InvalidEditorException ex)
-		{
-		    // TODO: put some error handling here	
+
+		} catch (InvalidEditorException ex) {
+			// TODO: put some error handling here
 			ex.printStackTrace();
 		}
 	}

@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 
 import org.mskcc.biopax_plugin.mapping.MapBioPaxToVisualStyle;
+import org.mskcc.biopax_plugin.plugin.BioPaxPlugIn;
 
 import cytoscape.CytoscapeInit;
 import cytoscape.editor.editors.MapBioMoleculeEditorToVisualStyle;
@@ -22,6 +23,13 @@ import cytoscape.plugin.CytoscapePlugin;
  *  
  */
 public class CytoscapeEditorPlugin extends CytoscapePlugin {
+	
+	// TODO: code cloned from BioPAX importer; need to ask Ethan to make BIOPAX_VISUAL_STYLE string public
+    private static final String VERSION_POST_FIX =
+        " v " + BioPaxPlugIn.VERSION_MAJOR_NUM
+        + "_" + BioPaxPlugIn.VERSION_MINOR_NUM;
+    private static final String BIO_PAX_VISUAL_STYLE =
+        "BioPAX" + VERSION_POST_FIX;
 
 	/**
 	 *  
@@ -72,12 +80,14 @@ public class CytoscapeEditorPlugin extends CytoscapePlugin {
 
 			CytoscapeEditorManager.register("BasicCytoscapeEditor",
 					"BasicNetworkEditEventHandler");
+			CytoscapeEditorManager.setVisualStyleNameForEditorType("BasicCytoscapeEditor", CytoscapeEditorManager.ANY_VISUAL_STYLE);
 			
 			// Bring in BioMoleculeEditor visual style so to drive definition of SimpleBioMoleculeEditor
 			MapBioMoleculeEditorToVisualStyle mpbv = new MapBioMoleculeEditorToVisualStyle();
 			mpbv.createVizMapper();			
 			CytoscapeEditorManager.register("SimpleBioMoleculeEditor",
 					"PaletteNetworkEditEventHandler");
+			CytoscapeEditorManager.setVisualStyleNameForEditorType("SimpleBioMoleculeEditor", MapBioMoleculeEditorToVisualStyle.BIOMOLECULE_VISUAL_STYLE);
 			
 			// Bring in MSKCC BioPAX visual style so to drive definition of SimpleBioPAX_Editor
 			MapBioPaxToVisualStyle mpb = new MapBioPaxToVisualStyle();
@@ -86,6 +96,12 @@ public class CytoscapeEditorPlugin extends CytoscapePlugin {
 			CytoscapeEditorManager.register("SimpleBioPAX_Editor", 
 					"BioPAXNetworkEditEventHandler", 
 					"BIOPAX_NODE_TYPE", "BIOPAX_EDGE_TYPE");
+			// TODO: ask Ethan to make BIO_PAX_VISUAL_STYLE constant public, so that we don't need this hardcoded hack.
+			CytoscapeEditorManager.setVisualStyleNameForEditorType("SimpleBioPAX_Editor", BIO_PAX_VISUAL_STYLE);
+			
+			/**
+			 * set visual styles for the editors
+			 */
 
 			// AJK: 08/12/05 BEGIN
 			//      for version 2.2, just enable the BasicCytoscapeEditor and have it

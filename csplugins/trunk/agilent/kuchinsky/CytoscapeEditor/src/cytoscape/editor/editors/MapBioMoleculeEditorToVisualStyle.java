@@ -35,7 +35,7 @@ import cytoscape.visual.mappings.PassThroughMapping;
  */
 public class MapBioMoleculeEditorToVisualStyle {
 
-	private static final String BIOMOLECULE_VISUAL_STYLE = "BioMoleculeEditor";
+	public static final String BIOMOLECULE_VISUAL_STYLE = "BioMoleculeEditor";
 
 	/**
      * Cytoscape Attribute:  Node Type.

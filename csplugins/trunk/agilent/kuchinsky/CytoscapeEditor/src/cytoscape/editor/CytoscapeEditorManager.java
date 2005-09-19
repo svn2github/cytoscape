@@ -27,7 +27,6 @@ import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.CytoscapeModifiedNetworkManager;
 import cytoscape.data.CytoscapeData;
-import cytoscape.data.attr.CyData;
 import cytoscape.editor.actions.NewNetworkAction;
 import cytoscape.editor.actions.RedoAction;
 import cytoscape.editor.actions.SetEditorAction;
@@ -36,6 +35,7 @@ import cytoscape.editor.event.NetworkEditEventAdapter;
 import cytoscape.editor.impl.CytoscapeEditorManagerSupport;
 import cytoscape.giny.PhoebeNetworkView;
 import cytoscape.view.CyNetworkView;
+import cytoscape.visual.VisualStyle;
 
 /**
  * The <b>CytoscapeEditorManager</b> is the central class in the editor framework
@@ -165,12 +165,17 @@ public abstract class CytoscapeEditorManager {
 	 * associates an editor with the controlling EdgeAttribute that drives rendering of icons on palette
 	 */
 	protected static HashMap editorControllingEdgeAttributeMap = new HashMap();	
-
+	
 	/**
 	 * counter variable used in generating names for new networks invoked by the New->Network menu item.
 	 */
 	private static int networkNameCounter = 0;
 	
+	
+	/**
+	 * associates an editor type with a visual style name
+	 */
+	protected static HashMap editorTypeVisualStyleNameMap = new HashMap();
 	
 	/**
 	 * CytoscapeAttribute: NODE_TYPE
@@ -185,6 +190,8 @@ public abstract class CytoscapeEditorManager {
 	 *
 	 */
 	public static final String EDGE_TYPE = "EDGE_TYPE";
+	
+	public static final String ANY_VISUAL_STYLE = "ANY_VISUAL_STYLE";
 	
 	/**
 	 * initial setup of controls, menu items, undo/redo actions, and keyboard accelerators
@@ -808,6 +815,37 @@ public abstract class CytoscapeEditorManager {
 			}
 		}
 		return null;
+	}
+	
+	
+	
+	/**
+	 * 
+	 * @param editorType
+	 * @return CytoscapeVisualStyle that is associated with this Editor type
+	 */
+	public static String getVisualStyleForEditorType(String editorType)
+	{
+		Object obj =  editorTypeVisualStyleNameMap.get(editorType);
+		if (obj != null)
+		{
+			return obj.toString();
+		}
+		else
+		{
+			return null;
+		}
+	}
+	
+	/**
+	 * sets the visual style that is to be associated with an editor type.
+	 * this enables visual style to be automatically loaded when an editor is set
+	 * @param editorType
+	 * @param vizStyle
+	 */
+	public static void setVisualStyleNameForEditorType (String editorType, String vizStyle)
+	{
+		editorTypeVisualStyleNameMap.put(editorType, vizStyle);
 	}
 	
 
