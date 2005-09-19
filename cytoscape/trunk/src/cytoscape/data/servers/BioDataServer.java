@@ -85,6 +85,8 @@ public class BioDataServer {
 	File taxonFile; // Table for the NCBI Taxonomy number <-> Taxonomy Name
 	File start;  //Start dir of the Cytoscape
 	
+	Thesaurus thesaurus; // for flipping the names
+	
 	// ----------------------------------------------------------------------------------------
 	/**
 	 * serverName is either an RMI URI, or a manifest file which says what files
@@ -101,6 +103,7 @@ public class BioDataServer {
 		// Flip the names or not.  Will be given from the Wizard.
 		flip = false;
 		
+		thesaurus = new Thesaurus( CytoscapeInit.getDefaultSpeciesName() );
 		
 		taxonName = null;
 		taxonNumber = null;
@@ -144,7 +147,6 @@ public class BioDataServer {
 					// Extract file names from the manifest
 					String[] flags = parseLoadFile(serverName, "flip");
 					String[] tempStrs = flags[0].split( separator );
-				    
 					
 					//System.out.println( "Flip State is " + tempStrs[ tempStrs.length - 1] );
 					if( tempStrs[ tempStrs.length - 1].equals( "true" ) ){
@@ -152,7 +154,16 @@ public class BioDataServer {
 					} else {
 						flip = false;
 					}
-					System.out.println( "Flip State is " + flip );
+					//System.out.println( "Flip State is " + flip );
+					
+					// Extract species names from the manifest
+					String[] spNames = parseLoadFile(serverName, "species");
+					tempStrs = spNames[0].split( separator );
+					taxonName = tempStrs[ tempStrs.length - 1];
+					
+					//System.out.println( "SpNames is " + tempStrs[ tempStrs.length - 1] );
+					//System.out.println( "Flip State is " + flip );
+					
 					
 					String[] oboFile = parseLoadFile(serverName, OBO_FILE );
 					String[] geneAssociationFile = parseLoadFile(serverName,
@@ -160,17 +171,19 @@ public class BioDataServer {
 
 					// Read files
 					try {
-						loadObo(geneAssociationFile, oboFile );
-					} catch (Exception e) {
-						e.printStackTrace(System.err);
-						throw e;
-					}
-					try {
 						loadThesaurusFiles2(geneAssociationFile);
 					} catch (Exception e) {
 						e.printStackTrace(System.err);
 						throw e;
 					}
+					
+					try {
+						loadObo(geneAssociationFile, oboFile );
+					} catch (Exception e) {
+						e.printStackTrace(System.err);
+						throw e;
+					}
+					
 					
 
 				} else {
@@ -425,7 +438,7 @@ public class BioDataServer {
 			oboReaders[i] = new BufferedReader(
 					new OboOntologyReader( new FileReader( ontologyFilenames[i] )));
 		}
-		Ontology[] ontologies = readOntologyFlatFiles2(ontologyFilenames);
+		Ontology[] ontologies = readOntologyFlatFiles2(ontologyFilenames );
 
 		/*
 		 * Since one Gene Association file is equal to the follwing:
@@ -443,7 +456,7 @@ public class BioDataServer {
 			BufferedReader gaFileReader = new BufferedReader(
 					new FileReader( filename ));
 			
-			taxonName = checkSpecies( gaFileReader );
+			//taxonName = checkSpecies( gaFileReader );
 			System.out.println("Taxonomy Name for this GA file is: " + taxonName);
 			
 			// Reader for the "gene_association" file
@@ -460,11 +473,11 @@ public class BioDataServer {
 							new FileReader( filename )));
 			
 			AnnotationFlatFileReader bpReader = new AnnotationFlatFileReader(
-					bpRd);
+					bpRd, thesaurus, flip );
 			AnnotationFlatFileReader ccReader = new AnnotationFlatFileReader(
-					ccRd);
+					ccRd, thesaurus, flip );
 			AnnotationFlatFileReader mfReader = new AnnotationFlatFileReader(
-					mfRd);
+					mfRd, thesaurus, flip );
 
 			bpAnnotation = bpReader.getAnnotation();
 			ccAnnotation = ccReader.getAnnotation();
@@ -538,8 +551,8 @@ public class BioDataServer {
 					new SynonymReader(taxonName,
 							new FileReader( filename )));
 			
-			ThesaurusFlatFileReader reader = new ThesaurusFlatFileReader( thRd );
-			Thesaurus thesaurus = reader.getThesaurus();
+			ThesaurusFlatFileReader reader = new ThesaurusFlatFileReader( thRd, flip );
+			thesaurus = reader.getThesaurus();
 	
 			server.addThesaurus(thesaurus.getSpecies(), thesaurus);
 			
