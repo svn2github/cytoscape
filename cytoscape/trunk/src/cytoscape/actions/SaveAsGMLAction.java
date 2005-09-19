@@ -39,6 +39,7 @@ public class SaveAsGMLAction extends CytoscapeAction {
         super();
     }
 
+    // MLC: 09/19/05 BEGIN:
     /**
      * User-initiated action to save the current network in GML format
      * to a user-specified file.  If successfully saved, fires a
@@ -52,6 +53,7 @@ public class SaveAsGMLAction extends CytoscapeAction {
      * </OL>
      * @param e ActionEvent Object.
      */
+    // MLC: 09/19/05 END.
 
     public void actionPerformed(ActionEvent e) {
         String name;
