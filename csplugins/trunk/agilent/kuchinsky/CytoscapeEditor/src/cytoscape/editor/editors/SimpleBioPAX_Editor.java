@@ -73,6 +73,7 @@ public class SimpleBioPAX_Editor extends BasicCytoscapeEditor {
 		
 		shapePalette = new ShapePalette();
 		
+		// TODO: need to ensure that we have BioPAX visual style loaded
         VisualMappingManager manager =
             Cytoscape.getDesktop().getVizMapManager();
     

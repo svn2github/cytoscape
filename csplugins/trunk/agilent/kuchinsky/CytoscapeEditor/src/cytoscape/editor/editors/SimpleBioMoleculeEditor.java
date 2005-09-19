@@ -5,23 +5,39 @@
 package cytoscape.editor.editors;
 
 import java.awt.Color;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
+import org.mskcc.biopax_plugin.mapping.MapBioPaxToCytoscape;
+import org.mskcc.biopax_plugin.plugin.BioPaxPlugIn;
+import org.mskcc.biopax_plugin.util.biopax.BioPaxConstants;
+import org.mskcc.biopax_plugin.util.biopax.ControlTypeConstants;
+
 import cytoscape.Cytoscape;
 import cytoscape.editor.event.PaletteNetworkEditEventHandler;
 import cytoscape.editor.impl.CytoShapeIcon;
 import cytoscape.editor.impl.ShapePalette;
+import cytoscape.visual.Arrow;
 import cytoscape.visual.CalculatorCatalog;
+import cytoscape.visual.EdgeAppearanceCalculator;
 import cytoscape.visual.NodeAppearanceCalculator;
+import cytoscape.visual.ShapeNodeRealizer;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
+import cytoscape.visual.calculators.GenericEdgeArrowCalculator;
+import cytoscape.visual.calculators.GenericEdgeLabelCalculator;
 import cytoscape.visual.calculators.GenericNodeColorCalculator;
+import cytoscape.visual.calculators.GenericNodeLabelCalculator;
 import cytoscape.visual.calculators.GenericNodeShapeCalculator;
+import cytoscape.visual.calculators.NodeShapeCalculator;
 import cytoscape.visual.mappings.DiscreteMapping;
+import cytoscape.visual.mappings.ObjectMapping;
+import cytoscape.visual.mappings.PassThroughMapping;
 
 
 /**
@@ -67,7 +83,7 @@ public class SimpleBioMoleculeEditor extends BasicCytoscapeEditor {
 	{
 		
 		shapePalette = new ShapePalette();
-		
+
         VisualMappingManager manager =
             Cytoscape.getDesktop().getVizMapManager();
     
@@ -220,5 +236,10 @@ public class SimpleBioMoleculeEditor extends BasicCytoscapeEditor {
 		shapePalette.setVisible(true);
 		
 	}	
+
 	
+	
+	
+	
+
 }
