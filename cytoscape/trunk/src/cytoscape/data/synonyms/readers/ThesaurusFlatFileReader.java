@@ -45,6 +45,8 @@ import cytoscape.data.readers.*;
 public class ThesaurusFlatFileReader { 
   Thesaurus thesaurus;
   String fullText;
+  String [] lines;
+  
 //-------------------------------------------------------------------------
 public ThesaurusFlatFileReader (String filename) throws Exception
 {
@@ -73,13 +75,44 @@ public ThesaurusFlatFileReader (String filename) throws Exception
 
   read ();
 }
+
+public ThesaurusFlatFileReader ( final BufferedReader rd ) throws Exception
+{
+	Vector extractedLines = null;
+	
+	fullText = null;
+	extractedLines = new Vector();
+
+	String curLine = null;
+
+	while (null != (curLine = rd.readLine())) {
+		extractedLines.add(curLine);
+		// System.out.println( curLine );
+	}
+	rd.close();
+	
+	Object[] entireFile = extractedLines.toArray();
+	lines = new String[entireFile.length];
+	try {
+		System.arraycopy(entireFile, 0, lines, 0, lines.length);
+	} catch (Exception e) {
+		e.printStackTrace(System.err);
+		throw e;
+	}
+
+	read ();
+}
+
+
 //-------------------------------------------------------------------------
 private void read () throws Exception
 {
-  String [] lines = fullText.split ("\n");
-
-  String species = lines [0].trim();
-  thesaurus = new Thesaurus (species);
+	if( fullText != null ) {
+		lines = fullText.split ("\n");
+	}
+	String species = lines [0].trim();
+	//System.out.println("Thesaurus reader found taxon: " + species );
+	thesaurus = new Thesaurus (species);
 
   for (int i=1; i < lines.length; i++) {
     String line = lines [i].trim();

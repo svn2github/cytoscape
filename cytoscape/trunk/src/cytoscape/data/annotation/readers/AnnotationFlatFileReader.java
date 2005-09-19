@@ -47,11 +47,45 @@ public class AnnotationFlatFileReader {
   File directoryAbsolute;
   String fullText;
   String [] lines;
+  
+  Vector extractedLines;
 //-------------------------------------------------------------------------
 public AnnotationFlatFileReader (File file) throws Exception
 {
   this (file.getPath ());
 }
+
+/* 
+ * New const. written by Kei Ono (kono@uscd.edu)
+ * This accept new readers written by Nerius.
+ */
+public AnnotationFlatFileReader ( final BufferedReader rd ) throws Exception
+{
+	fullText = null;
+	extractedLines = new Vector();
+
+	String curLine = null;
+
+	while (null != (curLine = rd.readLine())) {
+
+		extractedLines.add(curLine);
+		// System.out.println( curLine );
+	}
+	rd.close();
+	
+	//System.out.println("Making array.");
+	Object[] entireFile = extractedLines.toArray();
+	lines = new String[entireFile.length];
+	try {
+		System.arraycopy(entireFile, 0, lines, 0, lines.length);
+	} catch (Exception e) {
+		e.printStackTrace(System.err);
+		throw e;
+	}
+	parseHeader(lines [0]);
+	parse();
+}
+
 //-------------------------------------------------------------------------
 public AnnotationFlatFileReader (String filename) throws Exception
 {
