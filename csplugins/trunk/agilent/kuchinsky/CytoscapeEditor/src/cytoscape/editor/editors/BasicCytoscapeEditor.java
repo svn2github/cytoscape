@@ -203,12 +203,20 @@ public class BasicCytoscapeEditor implements CytoscapeEditor {
 
 	/**
 	 * sets controls invisible when editor type is switched
-	 * @param args args an arbitrary list of arguments (not used in this editor)
+	 * 
+	 * @param args
+	 *            args an arbitrary list of arguments (not used in this editor)
 	 */
 	public void disableControls(List args) {
-		_addNodeButton.setVisible(false);
-		_addEdgeButton.setVisible(false);
-		_resetCursorButton.setVisible(false);
+		if (_addNodeButton != null) { // make sure we have buttons before disabling them
+			_addNodeButton.setVisible(false);
+		}
+		if (_addEdgeButton != null)  {
+			_addEdgeButton.setVisible(false);
+		}
+		if (_resetCursorButton != null)  {
+			_resetCursorButton.setVisible(false);
+		}
 	}
 
 	/**

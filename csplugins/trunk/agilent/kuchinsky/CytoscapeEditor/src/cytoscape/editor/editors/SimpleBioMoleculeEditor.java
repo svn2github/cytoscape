@@ -218,12 +218,15 @@ public class SimpleBioMoleculeEditor extends BasicCytoscapeEditor {
 
 	/**
 	 * sets controls invisible when editor type is switched
-	 * @param args args an arbitrary list of arguments (not used in this editor)
+	 * 
+	 * @param args
+	 *            args an arbitrary list of arguments (not used in this editor)
 	 */
-	public void disableControls (List args)
-	{
+	public void disableControls(List args) {
 		super.disableControls(args);
-		shapePalette.setVisible(false);	
+		if (shapePalette != null) {
+			shapePalette.setVisible(false);
+		}
 	}
 	
 	/**
