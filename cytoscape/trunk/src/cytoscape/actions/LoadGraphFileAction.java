@@ -110,11 +110,21 @@ public class LoadGraphFileAction extends CytoscapeAction {
   }
 
 
+    // MLC 09/19/05 BEGIN:
     /**
-     * User Initiated Request.
-     *
-     * @param e Action Event.
+     * User-initiated action to load a CyNetwork into Cytoscape.  If
+     * successfully loaded, fires a PropertyChange event with
+     * property=Cytoscape.NETWORK_LOADED, old_value=null, and
+     * new_value=a three element Object array containing:
+     * <OL>
+     * <LI>first element = CyNetwork loaded
+     * <LI>second element = URI of the location from which the network was loaded
+     * <LI>third element = an Integer representing the format in which the
+     * Network was loaded (e.g., Cytoscape.FILE_SIF).
+     * </OL>
+     * @param e ActionEvent Object.
      */
+    // MLC 09/19/05 END.
     public void actionPerformed(ActionEvent e) {
 
         // Create FileFilters
@@ -332,6 +342,15 @@ class LoadNetworkTask implements Task {
         if (file_type == Cytoscape.FILE_GML) {
             network.putClientData("GML", reader);
         }
+
+	// MLC 09/19/05 BEGIN:
+	System.out.println ("ABOUT TO FIRE PROP EVENT");
+    Object[] ret_val = new Object[3];
+	ret_val[0] = network;
+	ret_val[1] = file.toURI();
+	ret_val[2] = new Integer (file_type);
+	Cytoscape.firePropertyChange (Cytoscape.NETWORK_LOADED,null, ret_val);
+	// MLC 09/19/05 END.
 
         //  Conditionally, Create the CyNetworkView
         if (network.getNodeCount() < CytoscapeInit.getViewThreshold()  ) {
