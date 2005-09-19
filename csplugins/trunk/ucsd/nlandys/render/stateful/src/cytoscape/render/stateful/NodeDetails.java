@@ -72,21 +72,18 @@ public class NodeDetails
   /**
    * Specifies that the lines in a multi-line node label should each have
    * a center point with similar X coordinate.
-   * @see #labelJustify(int)
    */
   public static final byte LABEL_WRAP_JUSTIFY_CENTER = 64;
 
   /**
    * Specifies that the lines of a multi-line node label should each have
    * a leftmost point with similar X coordinate.
-   * @see #labelJustify(int)
    */
   public static final byte LABEL_WRAP_JUSTIFY_LEFT = 65;
 
   /**
    * Specifies that the lines of a multi-line node label should each have
    * a rightmost point with similar X coordinate.
-   * @see #labelJustify(int)
    */
   public static final byte LABEL_WRAP_JUSTIFY_RIGHT = 66;
 
