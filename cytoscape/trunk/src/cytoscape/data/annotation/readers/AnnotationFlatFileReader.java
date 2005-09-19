@@ -68,7 +68,7 @@ public AnnotationFlatFileReader ( final BufferedReader rd, Thesaurus th, boolean
 	fullText = null;
 	extractedLines = new Vector();
 	this.thr = th;
-	flip = isFlip;
+	this.flip = isFlip;
 	
 	String curLine = null;
 
