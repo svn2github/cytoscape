@@ -40,11 +40,21 @@ public class SaveAsInteractionsAction extends CytoscapeAction {
         super("Network as Interactions...");
         setPreferredMenu("File.Save");
     }
-
+    // MLC 09/19/05 BEGIN:
     /**
-     * User-initiated Action.
+     * User-initiated action to save the current network in SIF format
+     * to a user-specified file.  If successfully saved, fires a
+     * PropertyChange event with property=Cytoscape.NETWORK_SAVED,
+     * old_value=null, and new_value=a three element Object array containing:
+     * <OL>
+     * <LI>first element = CyNetwork saved
+     * <LI>second element = URI of the location where saved
+     * <LI>third element = an Integer representing the format in which the
+     * Network was saved (e.g., Cytoscape.FILE_SIF).
+     * </OL>
      * @param e ActionEvent Object.
      */
+    // MLC 09/19/05 END.
     public void actionPerformed(ActionEvent e) {
 
         // get the file name
@@ -204,8 +214,15 @@ class SaveAsSifTask implements Task {
             //System.out.println(" WRITE: "+ sb.toString() );
         }  // for i
         fileWriter.close();
-        // AJK: 09/14/05 BEGIN
-        Cytoscape.firePropertyChange(Cytoscape.NETWORK_SAVED, null, network);
-		// AJK: 09/14/05 END
+	// MLC: 09/19/05 BEGIN:
+	//        // AJK: 09/14/05 BEGIN
+	//        Cytoscape.firePropertyChange(Cytoscape.NETWORK_SAVED, null, network);
+	//		// AJK: 09/14/05 END
+	Object[] ret_val = new Object[3];
+	ret_val[0] = network;
+	ret_val[1] = new File (fileName).toURI();
+	ret_val[2] = new Integer (Cytoscape.FILE_SIF);
+        Cytoscape.firePropertyChange(Cytoscape.NETWORK_SAVED, null, ret_val);
+	// MLC: 09/19/05 END.
     }
 }

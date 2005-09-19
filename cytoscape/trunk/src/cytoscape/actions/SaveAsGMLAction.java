@@ -39,6 +39,20 @@ public class SaveAsGMLAction extends CytoscapeAction {
         super();
     }
 
+    /**
+     * User-initiated action to save the current network in GML format
+     * to a user-specified file.  If successfully saved, fires a
+     * PropertyChange event with property=Cytoscape.NETWORK_SAVED,
+     * old_value=null, and new_value=a three element Object array containing:
+     * <OL>
+     * <LI>first element = CyNetwork saved
+     * <LI>second element = URI of the location where saved
+     * <LI>third element = an Integer representing the format in which the
+     * Network was saved (e.g., Cytoscape.FILE_GML).
+     * </OL>
+     * @param e ActionEvent Object.
+     */
+
     public void actionPerformed(ActionEvent e) {
         String name;
         try {
@@ -160,8 +174,15 @@ class SaveAsGMLTask implements Task {
         gmlWriter.writeGML(network, view, list);
         GMLParser.printList(list, fileWriter);
         fileWriter.close();
-        // AJK: 09/14/05 BEGIN
-        Cytoscape.firePropertyChange(Cytoscape.NETWORK_SAVED, null, network);
-		// AJK: 09/14/05 END
+	// MLC: 09/19/05 BEGIN:
+	//        // AJK: 09/14/05 BEGIN
+	//        Cytoscape.firePropertyChange(Cytoscape.NETWORK_SAVED, null, network);
+	//		// AJK: 09/14/05 END
+	Object[] ret_val = new Object[3];
+	ret_val[0] = network;
+	ret_val[1] = new File (fileName).toURI();
+	ret_val[2] = new Integer (Cytoscape.FILE_GML);
+        Cytoscape.firePropertyChange(Cytoscape.NETWORK_SAVED, null, ret_val);
+	// MLC: 09/19/05 END.
     }
 }
