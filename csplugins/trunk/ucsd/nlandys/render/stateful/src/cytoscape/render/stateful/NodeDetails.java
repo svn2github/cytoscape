@@ -17,133 +17,57 @@ public class NodeDetails
 {
 
   /**
-   * Specifies that a text anchor point lies at the center of a text
-   * label's logical bounds box.
-   * @see #labelTextAnchor(int)
+   * Specifies that an anchor point lies at the center of a bounding box.
    */
-  public static final byte LABEL_ANCHOR_TEXT_CENTER = 0;
+  public static final byte LABEL_ANCHOR_CENTER = 0;
 
   /**
-   * Specifies that a text anchor point lies on the north edge of a
-   * text label's logical bounds box, halfway between the east and west edges.
-   * @see #labelTextAnchor(int)
+   * Specifies that an anchor point lies on the north edge of a
+   * bounding box, halfway between the east and west edges.
    */
-  public static final byte LABEL_ANCHOR_TEXT_NORTH = 1;
+  public static final byte LABEL_ANCHOR_NORTH = 1;
 
   /**
-   * Specifies that a text anchor point lies on the northeast corner of
-   * a text label's logical bounds box.
-   * @see #labelTextAnchor(int)
+   * Specifies that an anchor point lies on the northeast corner of
+   * a bounding box.
    */
-  public static final byte LABEL_ANCHOR_TEXT_NORTHEAST = 2;
+  public static final byte LABEL_ANCHOR_NORTHEAST = 2;
 
   /**
-   * Specifies that a text anchor point lies on the east edge of a
-   * text label's logical bounds box, halfway between the north and south
-   * edges.
-   * @see #labelTextAnchor(int)
+   * Specifies that an anchor point lies on the east edge of a
+   * bounding box, halfway between the north and south edges.
    */
-  public static final byte LABEL_ANCHOR_TEXT_EAST = 3;
+  public static final byte LABEL_ANCHOR_EAST = 3;
 
   /**
-   * Specifies that a text anchor point lies on the southeast corner of
-   * a text label's logical bounds box.
-   * @see #labelTextAnchor(int)
+   * Specifies that an anchor point lies on the southeast corner of
+   * a bounding box.
    */
-  public static final byte LABEL_ANCHOR_TEXT_SOUTHEAST = 4;
+  public static final byte LABEL_ANCHOR_SOUTHEAST = 4;
 
   /**
-   * Specifies that a text anchor point lies on the south edge of a
-   * text label's logical bounds box, halfway between the east and west
-   * edges.
-   * @see #labelTextAnchor(int)
+   * Specifies that an anchor point lies on the south edge of a
+   * bounding box, halfway between the east and west edges.
    */
-  public static final byte LABEL_ANCHOR_TEXT_SOUTH = 5;
+  public static final byte LABEL_ANCHOR_SOUTH = 5;
 
   /**
-   * Specifies that a text anchor point lies on the southwest corner of a
-   * text label's logical bounds box.
-   * @see #labelTextAnchor(int)
+   * Specifies that an anchor point lies on the southwest corner of a
+   * bounding box.
    */
-  public static final byte LABEL_ANCHOR_TEXT_SOUTHWEST = 6;
+  public static final byte LABEL_ANCHOR_SOUTHWEST = 6;
 
   /**
-   * Specifies that a text anchor point lies on the west edge of a
-   * text label's logical bounds box, halfway between the north and south
-   * edges.
-   * @see #labelTextAnchor(int)
+   * Specifies that an anchor point lies on the west edge of a
+   * bounding box, halfway between the north and south edges.
    */
-  public static final byte LABEL_ANCHOR_TEXT_WEST = 7;
+  public static final byte LABEL_ANCHOR_WEST = 7;
 
   /**
-   * Specifies that a text anchor point lies on the northwest corner of a
-   * text label's logical bounds box.
-   * @see #labelTextAnchor(int)
+   * Specifies that an anchor point lies on the northwest corner of a
+   * bounding box.
    */
-  public static final byte LABEL_ANCHOR_TEXT_NORTHWEST = 8;
-
-  /**
-   * Specifies that a node anchor point lies at the center of a node's
-   * extents rectangle.
-   * @see #labelNodeAnchor(int)
-   */
-  public static final byte LABEL_ANCHOR_NODE_CENTER = -1;
-
-  /**
-   * Specifies that a node anchor point lies on the north edge of a
-   * node's extents rectangle, halfway between the east and west edges.
-   * @see #labelNodeAnchor(int)
-   */
-  public static final byte LABEL_ANCHOR_NODE_NORTH = -2;
-
-  /**
-   * Specifies that a node anchor point lies on the northeast corner of
-   * a node's extents rectangle.
-   * @see #labelNodeAnchor(int)
-   */
-  public static final byte LABEL_ANCHOR_NODE_NORTHEAST = -3;
-
-  /**
-   * Specifies that a node anchor point lies on the east edge of a
-   * node's extents rectangle, halfway between the north and south edges.
-   * @see #labelNodeAnchor(int)
-   */
-  public static final byte LABEL_ANCHOR_NODE_EAST = -4;
-
-  /**
-   * Specifies that a node anchor point lies on the southeast corner of
-   * a node's extents rectangle.
-   * @see #labelNodeAnchor(int)
-   */
-  public static final byte LABEL_ANCHOR_NODE_SOUTHEAST = -5;
-
-  /**
-   * Specifies that a node anchor point lies on the south edge of a
-   * node's extents rectangle, halfway between the east and west edges.
-   * @see #labelNodeAnchor(int)
-   */
-  public static final byte LABEL_ANCHOR_NODE_SOUTH = -6;
-
-  /**
-   * Specifies that a node anchor point lies on the southwest corner of
-   * a node's extents rectangle.
-   * @see #labelNodeAnchor(int)
-   */
-  public static final byte LABEL_ANCHOR_NODE_SOUTHWEST = -7;
-
-  /**
-   * Specifies that a node anchor point lies on the west edge of a
-   * node's extents rectangle, halfway between the north and south edges.
-   * @see #labelNodeAnchor(int)
-   */
-  public static final byte LABEL_ANCHOR_NODE_WEST = -8;
-
-  /**
-   * Specifies that a node anchor point lies on the northwest corner of
-   * a node's extents rectangle.
-   * @see #labelNodeAnchor(int)
-   */
-  public static final byte LABEL_ANCHOR_NODE_NORTHWEST = -9;
+  public static final byte LABEL_ANCHOR_NORTHWEST = 8;
 
   /**
    * Specifies that the lines in a multi-line node label should each have
@@ -255,7 +179,7 @@ public class NodeDetails
     return null; }
 
   /**
-   * By returning one of the LABEL_ANCHOR_TEXT_* constants, specifies
+   * By returning one of the LABEL_ANCHOR_* constants, specifies
    * where on the text label's logical bounds box an anchor point lies.  This
    * <i>text anchor point</i> together with the
    * node anchor point and label offset vector
@@ -263,35 +187,35 @@ public class NodeDetails
    * box is to be placed.  The text's logical bounds box is placed such that
    * the label offset vector plus the node anchor point equals the text anchor
    * point.<p>
-   * By default this method returns LABEL_ANCHOR_TEXT_CENTER.  This return
+   * By default this method returns LABEL_ANCHOR_CENTER.  This return
    * value is ignored if labelText(node) returns either null or the empty
    * string.
-   * @see #LABEL_ANCHOR_TEXT_CENTER
+   * @see #LABEL_ANCHOR_CENTER
    * @see #labelNodeAnchor(int)
    * @see #labelOffsetVectorX(int)
    * @see #labelOffsetVectorY(int)
    */
   public byte labelTextAnchor(final int node) {
-    return LABEL_ANCHOR_TEXT_CENTER; }
+    return LABEL_ANCHOR_CENTER; }
 
   /**
-   * By returning one of the LABEL_ANCHOR_NODE_* constants, specifies
+   * By returning one of the LABEL_ANCHOR_* constants, specifies
    * where on the node's extents rectangle an anchor point lies.  This
    * <i>node anchor point</i> together with the text anchor point and label
    * offset vector determines where, relative to the node, the text's logical
    * bounds box is to be placed.  The text's logical bounds box is placed
    * such that the label offset vector plus the node anchor point equals the
    * text anchor point.<p>
-   * By default this method returns LABEL_ANCHOR_NODE_CENTER.  This return
+   * By default this method returns LABEL_ANCHOR_CENTER.  This return
    * value is ignored if labelText(node) returns either null or the empty
    * string.
-   * @see #LABEL_ANCHOR_NODE_CENTER
+   * @see #LABEL_ANCHOR_CENTER
    * @see #labelTextAnchor(int)
    * @see #labelOffsetVectorX(int)
    * @see #labelOffsetVectorY(int)
    */
   public byte labelNodeAnchor(final int node) {
-    return LABEL_ANCHOR_NODE_CENTER; }
+    return LABEL_ANCHOR_CENTER; }
 
   /**
    * Specifies the X component of the vector that separates the text anchor
