@@ -344,8 +344,7 @@ class LoadNetworkTask implements Task {
         }
 
 	// MLC 09/19/05 BEGIN:
-	System.out.println ("ABOUT TO FIRE PROP EVENT");
-    Object[] ret_val = new Object[3];
+	Object[] ret_val = new Object[3];
 	ret_val[0] = network;
 	ret_val[1] = file.toURI();
 	ret_val[2] = new Integer (file_type);
