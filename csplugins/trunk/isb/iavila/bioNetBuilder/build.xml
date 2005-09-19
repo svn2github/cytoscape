@@ -122,7 +122,7 @@
 	    </java>
 	</target>
 	
-	<target name="run">
+	<target name="run" depends = "runserver">
 		
 		<java classname = "cytoscape.CyMain" classpathref = "classpath"
 		          fork = "true" maxmemory = "1g">
