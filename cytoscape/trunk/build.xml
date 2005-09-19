@@ -245,6 +245,7 @@
                 <include name="cytoscape/view/CytoscapeDesktop.java" />
                 <include name="cytoscape/view/CyNetworkView.java" />
                 <include name="cytoscape/view/CyMenus.java" />
+                <include name="cytoscape/view/cytopanels/*.java" />
                 <include name="cytoscape/visual/VisualStyle.java" />
                 <include name="cytoscape/visual/VisualMappingManager.java" />
                 <include name="cytoscape/layout/*.java" />
