@@ -47,9 +47,12 @@ public class ThesaurusFlatFileReader {
   String fullText;
   String [] lines;
   
+  boolean flip;
+  
 //-------------------------------------------------------------------------
 public ThesaurusFlatFileReader (String filename) throws Exception
 {
+	flip = false;
   try {
     if (filename.trim().startsWith ("jar://")) {
       TextJarReader reader = new TextJarReader (filename);
@@ -76,15 +79,20 @@ public ThesaurusFlatFileReader (String filename) throws Exception
   read ();
 }
 
-public ThesaurusFlatFileReader ( final BufferedReader rd ) throws Exception
+public ThesaurusFlatFileReader ( final BufferedReader rd, boolean isFlip ) throws Exception
 {
 	Vector extractedLines = null;
+	
+	// Flip or not
+	flip = isFlip;
 	
 	fullText = null;
 	extractedLines = new Vector();
 
 	String curLine = null;
 
+	System.out.println("Tr get flip State: " + flip );
+	
 	while (null != (curLine = rd.readLine())) {
 		extractedLines.add(curLine);
 		// System.out.println( curLine );
@@ -124,11 +132,26 @@ private void read () throws Exception
     String commonName = tokens [1].trim();
     if (canonicalName.length () == 0) continue;
     if (commonName.length () == 0) continue;
-    thesaurus.add (canonicalName, commonName);
-    for (int t=2; t < tokens.length; t++) 
-      thesaurus.addAlternateCommonName (canonicalName, tokens [t].trim());
-    } // for i
-  
+    
+    // The following is for "Flipping, but this does not work correctly now, we need to re-write
+    // the entire Reader system...
+    if( flip == false ){
+    		thesaurus.add (canonicalName, commonName);
+    		//System.out.println("Cannonical = " + canonicalName + " Common 1 = " +commonName );
+    		for (int t=2; t < tokens.length; t++) {
+    		      thesaurus.addAlternateCommonName (canonicalName, tokens [t].trim());
+    		      //System.out.println("    Cannonical = " + canonicalName + " Common " + t + " = " + tokens [t].trim() );
+    		} // for i
+    } else {
+    		// If flip is true, swap the fields.
+    		thesaurus.add ( commonName, canonicalName );
+    		for (int t=2; t < tokens.length; t++) {
+  		      thesaurus.addAlternateCommonName (tokens [t].trim(), canonicalName );
+  		      //System.out.println("    Cannonical = " + canonicalName + " Common " + t + " = " + tokens [t].trim() );
+  		} // for i
+    }
+    
+  }  
 
 } // read
 //-------------------------------------------------------------------------

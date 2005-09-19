@@ -37,6 +37,7 @@ import java.util.*;
 
 import cytoscape.data.annotation.*;
 import cytoscape.data.readers.*;
+import cytoscape.data.synonyms.Thesaurus;
 //-------------------------------------------------------------------------
 public class AnnotationFlatFileReader { 
   Annotation annotation;
@@ -49,6 +50,9 @@ public class AnnotationFlatFileReader {
   String [] lines;
   
   Vector extractedLines;
+  boolean flip;
+  
+  Thesaurus thr;
 //-------------------------------------------------------------------------
 public AnnotationFlatFileReader (File file) throws Exception
 {
@@ -59,11 +63,13 @@ public AnnotationFlatFileReader (File file) throws Exception
  * New const. written by Kei Ono (kono@uscd.edu)
  * This accept new readers written by Nerius.
  */
-public AnnotationFlatFileReader ( final BufferedReader rd ) throws Exception
+public AnnotationFlatFileReader ( final BufferedReader rd, Thesaurus th, boolean isFlip ) throws Exception
 {
 	fullText = null;
 	extractedLines = new Vector();
-
+	this.thr = th;
+	flip = isFlip;
+	
 	String curLine = null;
 
 	while (null != (curLine = rd.readLine())) {
@@ -171,14 +177,29 @@ private void parse () throws Exception
 {
   annotation = new Annotation (species, annotationType, curator);
 
+  String key = null;
+  
   for (int i=1; i < lines.length; i++) {
     String line = lines [i];
+    //System.out.println (lines[i]);
     if (line.length () < 2) continue;
     String [] tokens = line.split ("=");
     String entityName = tokens [0].trim ();
-    int id = stringToInt (tokens [1].trim());    
-    annotation.add (entityName, id);
+    int id = stringToInt (tokens [1].trim());
+    
+    if( flip == false ) {
+    		annotation.add (entityName, id);
+    } else {
+    		key = thr.getCommonName( entityName );
+    		if( key != null ) {
+    			//System.out.println ("Key is " + key );
+    			annotation.add ( key, id );
+    		} else {
+    			
+    			//annotation.add ( "Undef", id);
+    		}
     }
+  }
 
   // System.out.println ("AnnotationFlatFileReader.parse, annotation:\n" + annotation);
 
