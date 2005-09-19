@@ -18,15 +18,16 @@ public class BioDataServerPanel3Descriptor
 
 	public BioDataServerPanel3Descriptor() {
 
-		spName = null;
 		panel3 = new BioDataServerPanel3();
-		//panel3.addSpButtonActionListener( this );
 		panel3.addSpComboBoxActionListener(this);
 		panel3.addRadioButtonActionListener(this);
 		panel3.addSetButtonActionListener(this);
 		
 		setPanelDescriptorIdentifier(IDENTIFIER);
 		setPanelComponent(panel3);
+		
+		// Set default name
+		spName = panel3.getSpNameFromComboBox();
 	}
 
 	public Object getNextPanelDescriptor() {
@@ -39,10 +40,8 @@ public class BioDataServerPanel3Descriptor
 
 	public void aboutToDisplayPanel() {
 		//System.out.println("Creating Manifest...");
-
 		getWizard().setNextFinishButtonEnabled(true);
 		getWizard().setBackButtonEnabled(true);
-
 	}
 
 	

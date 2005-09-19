@@ -1,5 +1,10 @@
 package cytoscape.util.swing;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+
 import com.nexes.wizard.Wizard;
 import com.nexes.wizard.WizardPanelDescriptor;
 
@@ -22,6 +27,8 @@ public class BioDataServerWizard {
 	private String species;
 	private int finalState;
 	private String oldManifest;
+	
+	private final String FS = System.getProperty("file.separator");
 	
 	public BioDataServerWizard() {
 		flip = false;
@@ -64,6 +71,15 @@ public class BioDataServerWizard {
 			oldManifest = ((BioDataServerPanel4Descriptor) descriptor4).getManifestFileName();
 			species = ((BioDataServerPanel3Descriptor)descriptor3).getSpeciesName();
 			finalState = ((BioDataServerPanel4Descriptor) descriptor4).getFinalState();
+			
+			System.out.println( "Species set to: " + species );
+			File mfTest = new File(manifest);
+			String mParent = null;
+			if(mfTest.canRead()) {
+				mParent = mfTest.getParent();
+				//ystem.out.println( "Parent is " + mParent );
+				appendSpecies( mParent );
+			}
 			if( finalState == 1 ) {
 				Cytoscape.loadBioDataServer(manifest);
 			} else {
@@ -71,6 +87,23 @@ public class BioDataServerWizard {
 			}
 		}
 		return ret;
+	}
+	
+	/*
+	 * This file append species name to the end of new manifest files
+	 */
+	public void appendSpecies( String parentPath ) {
+		boolean append = true;
+		String autoManifest = parentPath + FS + "auto_generated_manifest";
+		try {
+			FileWriter fw = new FileWriter(autoManifest, append );
+			BufferedWriter br = new BufferedWriter( fw );
+			PrintWriter pw = new PrintWriter( br );
+			pw.println("species=" + species );
+			pw.close();
+		} catch (Exception e) {
+			e.printStackTrace(System.err);
+		}
 	}
 	
 	public boolean getFlip() {
