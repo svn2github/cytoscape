@@ -53,12 +53,14 @@ public abstract class Cytoscape {
   public static String NETWORK_DESTROYED = "NETWORK_DESTROYED";
   public static String CYTOSCAPE_EXIT = "CYTOSCAPE_EXIT";
 
-	// AJK: 09/12/05 BEGIN
-	//     events for network modification 
-	public static String NETWORK_MODIFIED = "NETWORK_MODIFIED";
-	public static String NETWORK_SAVED = "NETWORK_SAVED";	
-	// AJK: 09/12/05 END
-	
+    // MLC 09/19/05 BEGIN:	
+    // AJK: 09/12/05 BEGIN
+    //     events for network modification 
+    public static final String NETWORK_MODIFIED = "NETWORK_MODIFIED";
+    public static final String NETWORK_SAVED = "NETWORK_SAVED";	
+    // AJK: 09/12/05 END
+    public static final String NETWORK_LOADED = "NETWORK_LOADED";	
+    // MLC 09/19/05 END.
 	
   /**
    * When creating a network, use one of the standard suffixes
