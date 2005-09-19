@@ -73,14 +73,15 @@ public class BioDataServerWizard {
 			finalState = ((BioDataServerPanel4Descriptor) descriptor4).getFinalState();
 			
 			System.out.println( "Species set to: " + species );
-			File mfTest = new File(manifest);
-			String mParent = null;
-			if(mfTest.canRead()) {
-				mParent = mfTest.getParent();
-				//ystem.out.println( "Parent is " + mParent );
-				appendSpecies( mParent );
-			}
+			
 			if( finalState == 1 ) {
+				File mfTest = new File(manifest);
+				String mParent = null;
+				if(mfTest.canRead()) {
+					mParent = mfTest.getParent();
+					//ystem.out.println( "Parent is " + mParent );
+					appendSpecies( mParent );
+				}
 				Cytoscape.loadBioDataServer(manifest);
 			} else {
 				Cytoscape.loadBioDataServer(oldManifest);
