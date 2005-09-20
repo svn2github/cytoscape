@@ -74,6 +74,7 @@ public class CyNetUtils {
      * @return a CyEdge with edge attributes obtained from the Hashtable
      * @see org.isb.xmlrpc.client.InteractionDataClient for examples on  how the Hashtables look
      */
+    //TODO: The canonical name should be a GI number!!!
     public static CyEdge createEdge (Hashtable interaction){
         String interactor1 = (String)interaction.get(InteractionsDataSource.INTERACTOR_1);
         if(interactor1 == null){
@@ -126,5 +127,21 @@ public class CyNetUtils {
         }//for i
         return edge;
     }//createEdge
+    
+    /**
+     * For all nodes in the given network, it creates as a node attribute Rosetta Benchmark URLs 
+     */
+   
+    public static void createRosettaURLNodeAttribute (CyNetwork net){
+        
+        Iterator it = net.nodesIterator();
+        
+        while(it.hasNext()){
+          CyNode node = (CyNode)it.next();
+          String nodeID = (String)Cytoscape.getNodeAttributeValue(node, Semantics.CANONICAL_NAME);
+          String url = "http://bench.bakerlab.org/cgi-bin/2ddb/bddb.cgi?si=112682726728836&s=cytoscape&ac="+nodeID;
+          Cytoscape.setNodeAttributeValue(node,"RosettaBenchmark",url);
+        }//while it.hasNext
+    }
     
 }//CyNetUtils

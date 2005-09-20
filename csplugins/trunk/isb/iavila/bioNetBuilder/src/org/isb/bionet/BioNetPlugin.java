@@ -11,7 +11,7 @@ import cytoscape.plugin.*;
 import org.isb.xmlrpc.client.*;
 import org.isb.bionet.datasource.interactions.*;
 import org.isb.bionet.gui.wizard.*;
-
+import org.isb.iavila.ontology.xmlrpc.*;
 import java.lang.Exception;
 
 /**
@@ -21,6 +21,7 @@ import java.lang.Exception;
 public class BioNetPlugin extends CytoscapePlugin {
 
     protected InteractionDataClient interactionsClient;
+    protected GOClient goClient;
 
     protected NetworkBuilderWizard wizard;
 
@@ -33,6 +34,7 @@ public class BioNetPlugin extends CytoscapePlugin {
 
             this.interactionsClient = (InteractionDataClient) DataClientFactory
                     .getClient("interactions");
+            
 
             if (this.interactionsClient != null) {
                 System.out
@@ -41,12 +43,27 @@ public class BioNetPlugin extends CytoscapePlugin {
                 System.out
                         .println("Could not get an InteractionDataClient!!!");
             }
-
+            
+            this.goClient = (GOClient)DataClientFactory.getClient("geneOntology");
+            if (this.interactionsClient != null) {
+                System.out
+                        .println("Successfully got a GOClient!!!");
+            } else {
+                System.out
+                        .println("Could not get a GOClient!!!");
+            }
+            
+           // ------------ TEST ------------- //
+          // System.out.println(goClient.getTermsChildren());
+            
+            
             this.interactionsClient
                     .addSource("org.isb.bionet.datasource.interactions.ProlinksInteractionsSource");
             this.interactionsClient
             .addSource("org.isb.bionet.datasource.interactions.KeggInteractionsSource");
             System.out.println(interactionsClient.getSources());
+            
+            
         } catch (Exception ex) {
             ex.printStackTrace();
         }

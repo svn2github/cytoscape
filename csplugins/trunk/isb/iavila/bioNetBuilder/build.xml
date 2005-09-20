@@ -126,7 +126,7 @@
 	<!-- Shuts down the server -->
 	<target name="killserver">
 		    <echo message="${server.class} ${server.args}"/>
-		    <java classname="org.apache.xmlrpc.XmlRpcClientLite" fork="no" failonerror="no">
+		    <java classname="org.apache.xmlrpc.XmlRpcClientLite" fork="true" failonerror="no">
 		         <classpath refid="server_classpath"/>
 		         <arg line="http://localhost:${server.args}"/>
 		    	     <arg line="server.shutdown"/>

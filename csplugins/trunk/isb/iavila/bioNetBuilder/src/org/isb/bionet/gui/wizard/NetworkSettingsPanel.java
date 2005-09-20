@@ -7,6 +7,7 @@ public class NetworkSettingsPanel extends JPanel{
     
     protected JTextField nameField;
     protected JRadioButton createView;
+    protected JRadioButton createRosettaUrl;
     
     /**
      * Constructor, calls create()
@@ -20,6 +21,13 @@ public class NetworkSettingsPanel extends JPanel{
      */
     public boolean createView (){
         return this.createView.isSelected();
+    }
+    
+    /**
+     * @return whether or not to create a Rosetta Benchmark URL for node attributes
+     */
+    public boolean createRosettaURLAttribute (){
+        return this.createRosettaUrl.isSelected();
     }
     
     /**
@@ -51,7 +59,13 @@ public class NetworkSettingsPanel extends JPanel{
         createView.setSelected(true);
         viewPanel.add(this.createView);
         
+        JPanel attsPanel = new JPanel();
+        this.createRosettaUrl = new JRadioButton("<html>Create Rosetta Benchmark URL node attribute<br>(currently, only for yeast)</html>");
+        this.createRosettaUrl.setSelected(true);
+        attsPanel.add(createRosettaUrl);
+        
         add(viewPanel);
+        add(attsPanel);
     }
     
 }
