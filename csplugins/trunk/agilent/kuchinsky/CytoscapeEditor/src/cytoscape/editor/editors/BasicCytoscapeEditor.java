@@ -11,11 +11,11 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 
-import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
-import cytoscape.CytoscapeObj;
 import cytoscape.data.Semantics;
 import cytoscape.editor.CytoscapeEditor;
 import cytoscape.editor.CytoscapeEditorManager;
@@ -134,13 +134,37 @@ public class BasicCytoscapeEditor implements CytoscapeEditor {
 	/**
 	 * specialized initialization code for editor, called by
 	 * CytoscapeEditorManager when a new editor is built, should be overridden
-	 * @param args an arbitrary list of arguments passed to initialization routine.  Not used in this editor
+	 * 
+	 * @param args
+	 *            an arbitrary list of arguments passed to initialization
+	 *            routine. Not used in this editor
 	 */
 	public void initializeControls(List args) {
 
-		ConnectSelectedNodesAction connectAction = new ConnectSelectedNodesAction();
-		connectAction.setPreferredMenu("Edit");
-		Cytoscape.getDesktop().getCyMenus().addAction(connectAction);
+		// first, check to see if there already is a menu item to "Connect Selected Nodes"
+		//    if not, then add an item
+		// TODO: look for routines to find a menu item given a string; there should be such a utility
+		JMenu editMenu = Cytoscape.getDesktop().getCyMenus().getEditMenu();
+		boolean foundConnectSelected = false;
+//		System.out.println("checking against edit menu: " + editMenu);
+		System.out.println("item count = " + editMenu.getItemCount());
+		for (int i = 0; i < editMenu.getItemCount(); i++) {
+			JMenuItem jIt = editMenu.getItem(i);
+			if (jIt != null) {
+				String name = jIt.getText();
+//				System.out
+//						.println("Checking for get selected against: " + name);
+				if (name.equals("Connect Selected Nodes")) {
+					foundConnectSelected = true;
+					break;
+				}
+			}
+		}
+		if (!foundConnectSelected) {
+			ConnectSelectedNodesAction connectAction = new ConnectSelectedNodesAction();
+			connectAction.setPreferredMenu("Edit");
+			Cytoscape.getDesktop().getCyMenus().addAction(connectAction);
+		}
 
 		_cyMenus = Cytoscape.getDesktop().getCyMenus();
 		_toolBar = _cyMenus.getToolBar();
@@ -156,9 +180,9 @@ public class BasicCytoscapeEditor implements CytoscapeEditor {
 
 		_addNodeButton = _toolBar.add(new AddNodeAction());
 		_addNodeButton.setIcon(new ImageIcon(getClass().getResource(
-//				ICONS_REL_LOC + "rect.gif")));
-//				ICONS_REL_LOC + "ovalNodeCursor.gif")));
-		ICONS_REL_LOC + "node16_centered.gif")));
+		//				ICONS_REL_LOC + "rect.gif")));
+				//				ICONS_REL_LOC + "ovalNodeCursor.gif")));
+				ICONS_REL_LOC + "node16_centered.gif")));
 		_addNodeButton.setToolTipText("Add a new Node");
 		_addNodeButton.setDisabledIcon(new ImageIcon(getClass().getResource(
 				ICONS_REL_LOC + "Disabledrect.gif")));
@@ -170,7 +194,7 @@ public class BasicCytoscapeEditor implements CytoscapeEditor {
 
 		_addEdgeButton = _toolBar.add(new AddEdgeAction());
 		_addEdgeButton.setIcon(new ImageIcon(getClass().getResource(
-//				ICONS_REL_LOC + "UpRightWhite.gif")));
+		//				ICONS_REL_LOC + "UpRightWhite.gif")));
 				ICONS_REL_LOC + "UpRightBlue.gif")));
 		_addEdgeButton.setToolTipText("Add a new Edge");
 		_addEdgeButton.setDisabledIcon(new ImageIcon(getClass().getResource(
@@ -185,7 +209,7 @@ public class BasicCytoscapeEditor implements CytoscapeEditor {
 		//				"LabelPointer");
 
 		img = new ImageIcon(getClass().getResource(
-//				ICONS_REL_LOC + "rect.gif"));
+		//				ICONS_REL_LOC + "rect.gif"));
 				ICONS_REL_LOC + "node32.gif"));
 		Image nodePointer = img.getImage();
 		_nodeCursor = tk.createCustomCursor(nodePointer, new Point(1, 1),
@@ -401,6 +425,11 @@ public class BasicCytoscapeEditor implements CytoscapeEditor {
 
 		public ConnectSelectedNodesAction(boolean label) {
 			super();
+		}
+		
+		public String getName ()
+		{
+			return "Connect Selected Nodes";
 		}
 
 		public void actionPerformed(ActionEvent e) {
