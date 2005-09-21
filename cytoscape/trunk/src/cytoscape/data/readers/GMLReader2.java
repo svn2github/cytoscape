@@ -32,6 +32,7 @@ import cytoscape.visual.ShapeNodeRealizer;
 import cytoscape.data.CytoscapeDataImpl;
 import giny.model.GraphObject;
 
+import java.io.File;
 
 /**
  * This class is responsible for converting a gml object tree into cytoscape objects
@@ -175,9 +176,14 @@ public class GMLReader2 implements GraphReader {
   
   private String createVSName() {
 	  // Create new style name
-	  String fileSeparator = System.getProperty("file.separator");
-	  String[] tempstr = filename.split(fileSeparator);
-	  return tempstr[tempstr.length - 1].concat(".style");
+
+	  String target = null;
+	  
+	  File fileTest = new File( filename );
+	  target = fileTest.getName();
+	  System.out.println( "Target GML file is " + target );
+	  
+	  return target.concat(".style");
   }
   
   private void initializeHash() {
