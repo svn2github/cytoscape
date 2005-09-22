@@ -17,6 +17,10 @@ import javax.swing.ImageIcon;
 /**
  * Cytoscape Init is responsible for starting Cytoscape in a way that makes sense.
  *
+ * The comments below are more hopeful than accurate.  We currently do not support a "headless" mode 
+ * (meaning there is no GUI).  We do, however, hope to support this in the future.
+ *
+ *
  * The two main modes of running Cytoscape are either in "headless" mode or in "script" mode. This class will use the command-line options to figure out which mode is desired, and run things accordingly.
  *
  * The order for doing things will be the following:
@@ -141,9 +145,10 @@ public class CytoscapeInit
     loadProjectFiles( cli.getProjectFiles() );
 
     useView = cli.useView();
-    if ( System.getProperty( "java.awt.headless" ) == "true" ) {
-      useView = false;
-    }
+// We currently don't support headless mode, so no sense allowing a property to do anything.    
+//    if ( System.getProperty( "java.awt.headless" ) == "true" ) {
+//      useView = false;
+//    }
     suppressView = cli.suppressView();
 
 

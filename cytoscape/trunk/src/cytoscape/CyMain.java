@@ -74,7 +74,7 @@ public class CyMain implements WindowListener {
   protected CytoscapeVersion version = new CytoscapeVersion();
   protected Logger logger;
    
-  protected boolean headless = false;
+  protected boolean headless = false; 
 
   protected String[] args;
 

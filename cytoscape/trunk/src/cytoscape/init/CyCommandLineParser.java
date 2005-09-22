@@ -296,6 +296,7 @@ public class CyCommandLineParser {
 	i++;
       } 	     
 
+      /*  headless mode is currently not supported so there is no sense having the option
       // useView
       else if ( Strings.isLike( args[i], "-headless", 0, true ) ||
                 Strings.isLike( args[i], "-noView", 0, true ) ) {
@@ -303,6 +304,7 @@ public class CyCommandLineParser {
         //System.out.println( "there will be no view" );
         useView = false;
       }
+      */
 
       // noDialog
       else if ( Strings.isLike( args[i], "-noDialog", 0, true ) ||
