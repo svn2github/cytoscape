@@ -23,7 +23,7 @@
     <property name = "jar"  location = "jar"/>
     <property name = "dist" location = "dist"/>
 	<property name = "server.class" value="org.isb.xmlrpc.server.MyWebServer"/>
-	<property name = "server.args" value = "8081"/>
+	<property name = "server.args" value = "8081 /Users/iavila/Documents/workspace/csplugins/isb/iavila/bioNetBuilder/xmlrpc.props"/>
 	
     <!-- classpath for compiling -->
     <path id = "classpath">

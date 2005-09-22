@@ -45,20 +45,17 @@ public class BioNetPlugin extends CytoscapePlugin {
             }
             
             this.goClient = (GOClient)DataClientFactory.getClient("geneOntology");
-            if (this.interactionsClient != null) {
+            if (this.goClient != null) {
                 System.out
                         .println("Successfully got a GOClient!!!");
             } else {
                 System.out
                         .println("Could not get a GOClient!!!");
             }
-            
-           // ------------ TEST ------------- //
-          // System.out.println(goClient.getTermsChildren());
-            
-            
+ 
             this.interactionsClient
                     .addSource("org.isb.bionet.datasource.interactions.ProlinksInteractionsSource");
+        
             this.interactionsClient
             .addSource("org.isb.bionet.datasource.interactions.KeggInteractionsSource");
             System.out.println(interactionsClient.getSources());

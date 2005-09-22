@@ -428,8 +428,7 @@ public class NetworkBuilderWizard {
     
     
     // TODO: Organize this better, this is quick and dirty, maybe a new class???
-    // TODO: Need to pass to the interactions source handler a list of genes with id's that it understands!
-    // I think the above is related to the synonyms handler.
+    // TODO: Need to pass to the interactions source handler a list of genes with id's that it understands (synonyms handler)
     protected void createNetwork (){
     
         // 1. Get the species for each edge data source
