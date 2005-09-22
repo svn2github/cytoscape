@@ -39,5 +39,6 @@
 
 	<mapID target="attributes" url="html/Node_and_Edge_Attributes.html" />
 	<mapID target="visual-styles" url="html/Visual_Styles.html" />
+	<mapID target="cytoscape-editor" url="html/Editing_Networks.html" />
 	<mapID target="acknowledgements" url="html/Acknowledgements.html" />
 </map>

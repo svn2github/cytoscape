@@ -32,6 +32,7 @@
 
         <tocitem target="attributes" text="Node and Edge Attributes" />
         <tocitem target="visual-styles" text="Visual Styles" />
+        	<tocitem target="cytoscape-editor" text="Editing Networks" />
         <tocitem target="acknowledgements" text="Acknowledgements" />
 
   </tocitem>
