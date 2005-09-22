@@ -84,7 +84,27 @@
 						<div id="content">
 							<div id="indent">
 								<div class="item">
+									<P>&nbsp;</P>
+									<big>
+										<b>
+											Cytoscape Retreat, 2005
+										</b>
+									</big>
 									<br>
+									<br>
+									<p>
+										<B>San Diego - November 30 - December 1st, 2005</B>
+										<P>&nbsp;</P>
+										The 3rd Annual Cytoscape Retreat will be held November 30 and December 1st, 2005 (Wed-Thurs) at UCSD in San Diego. [<A HREF="http://www.cytoscape.org/cgi-bin/moin.cgi/Cytoscape_Retreat">View Retreat Details</A>]</P>
+									</p>
+									<p>
+										<br>
+									</p>
+								</div>
+								<P>
+								<div class="item">
+									<br>
+									<p>	
 									<big>
 										<b>
 											<i>
