@@ -856,6 +856,12 @@ public class GMLReader2 implements GraphReader {
 	      }
 	  }
 	  if( graphics_list != null ){
+		  //System.out.println( "Checking list: " + graphics_list.toString() );
+		  //System.out.println( "Checking label: " + label );
+		  if( label == null ) {
+			  label = "UNDEF";
+			  System.out.println( "Warning: node name is missing for index number: " + root_index );
+		  }
 		  extractNodeAttributes( graphics_list, label.toUpperCase() );
 	  }
   }
