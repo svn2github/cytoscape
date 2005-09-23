@@ -33,132 +33,116 @@
 // $Author$
 //--------------------------------------------------------------------------------------
 package cytoscape.data.unitTests;
-//--------------------------------------------------------------------------------------
-import junit.framework.*;
-import java.io.*;
-import java.util.Vector;
-import java.util.Hashtable;
-import java.util.Enumeration;
 
-import cytoscape.data.mRNAMeasurement;
 import cytoscape.data.ExpressionData;
+import cytoscape.data.mRNAMeasurement;
 import cytoscape.unitTests.AllTests;
-//------------------------------------------------------------------------------
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
+import java.io.File;
+import java.util.Vector;
+
+/**
+ * Tests the ExpressionData Object.
+ *
+ */
 public class ExpressionDataTest extends TestCase {
 
-  private static String testDataDir = "testData";
-  private static String testDataFilename = "/gal1.22x5.mRNA";
+    /**
+     * Test Data Directory.
+     */
+    private static String testDataDir = "testData";
 
-//------------------------------------------------------------------------------
-public ExpressionDataTest (String name) 
-{
-  super (name);
-}
+    /**
+     * Test File Name.
+     */
+    private static String testDataFilename = "/gal1.22x5.mRNA";
 
-//------------------------------------------------------------------------------
-public void setUp () throws Exception
-{
-  }
-//------------------------------------------------------------------------------
-public void tearDown () throws Exception
-{
-}
-//------------------------------------------------------------------------------
-public void testCtor () throws Exception
-{ 
-  AllTests.standardOut ("testCtor");
-  ExpressionData data = new ExpressionData (testDataDir + testDataFilename);
-  Vector measurements = data.getAllMeasurements ();
-  assertTrue (data.getNumberOfGenes () == measurements.size ());
-  if ( data.getNumberOfGenes() > 0 ) {
-      //String gene = "YHR051W";
-      String gene = data.getGeneNames () [0];
-      Vector geneInfo = (Vector) measurements.get(0);
-      if ( data.getNumberOfConditions() > 0 ) {
-	  //String condition = "gal1RG.sig";
-	  String condition = data.getConditionNames () [0];
-	  mRNAMeasurement measurement = (mRNAMeasurement) geneInfo.get (0);
-	  //System.out.println ("----------" + gene + ": " + measurement);
-	  assertTrue (measurement.getRatio () >= -200.0);
-	  assertTrue (measurement.getSignificance () >= 0.0);
-      }
-  }
+    /**
+     * Tests Loading of Sample Data.
+     * @throws Exception    All Errors.
+     */
+    public void testExpressionDataLoading() throws Exception {
+        //  Load the specified Expression Data File
+        ExpressionData data = new ExpressionData
+                (testDataDir + testDataFilename);
+        Vector measurements = data.getAllMeasurements();
+        assertTrue(data.getNumberOfGenes() == measurements.size());
+        assertTrue (data.getNumberOfGenes() > 0);
 
-} // testCtor
-//-------------------------------------------------------------------------
-public void testGetConditionNames () throws Exception
-{
-  AllTests.standardOut ("testGetConditionNames");
-  ExpressionData data = new ExpressionData (testDataDir + testDataFilename);
-  String [] conditionNames = data.getConditionNames ();
-  assertTrue (conditionNames.length == data.getNumberOfConditions ());
+        //  Validate the first row of data
+        String geneName = data.getGeneNames()[0];
+        assertTrue(data.getGeneNames().length == data.getNumberOfGenes());
 
-} // testGetConditionNames
-//-------------------------------------------------------------------------
-public void testGetGeneNames () throws Exception
-{
-  AllTests.standardOut ("testGetGeneNames");
-  ExpressionData data = new ExpressionData (testDataDir + testDataFilename);
-  String [] geneNames = data.getGeneNames ();
-  //for (int i=0; i < geneNames.length; i++)
-  //  System.out.println (geneNames [i]);
-  //System.out.println ("geneNames.length: " + geneNames.length);
-  //System.out.println ("numberOfGenes: " + data.getNumberOfGenes ());
-  assertTrue (geneNames.length == data.getNumberOfGenes ());
+        //  Validate the Gene Name
+        assertEquals ("YHR051W", geneName);
 
-} // testGetGeneNames
-//-------------------------------------------------------------------------
-public void testGetGeneDescriptors () throws Exception
-{
-  AllTests.standardOut ("testGetGeneDescriptors");
-  ExpressionData data = new ExpressionData (testDataDir + testDataFilename);
-  String [] geneDescriptors = data.getGeneDescriptors ();
-  //for (int i=0; i < geneDescriptors.length; i++)
-  //  System.out.println (geneDescriptors [i]);
-  //System.out.println ("geneDescriptors.length: " + geneDescriptors.length);
-  //System.out.println ("numberOfGenes: " + data.getNumberOfGenes ());
-  assertTrue (geneDescriptors.length == data.getNumberOfGenes ());
+        //  Validate the Gene Descriptor.
+        String geneDescriptor = data.getGeneDescriptors()[0];
+        assertEquals ("COX6", geneDescriptor);
 
-} // testGetGeneNames
-//-------------------------------------------------------------------------
-public void testGetMeasurement () throws Exception
-{
-  AllTests.standardOut ("testGetMeasurement");
-  ExpressionData data = new ExpressionData (testDataDir + testDataFilename);
+        //  Validate the 0th Experimental Condition
+        String conditionName = data.getConditionNames()[0];
+        assertEquals ("gal1RG.sig", conditionName);
+        assertTrue(data.getConditionNames().length
+                == data.getNumberOfConditions());
 
-  if ( data.getNumberOfGenes() > 0 && data.getNumberOfConditions() > 0) {
-      String gene = data.getGeneNames () [0];
-      String condition = data.getConditionNames () [0];
+        //  Validate data for the 0th Experimental Condition
+        Vector geneInfo = (Vector) measurements.get(0);
+        mRNAMeasurement measurement = (mRNAMeasurement) geneInfo.get(0);
+        assertEquals (-0.034, measurement.getRatio(), 0.001);
+        assertEquals (1.177, measurement.getSignificance(), 0.001);
 
-      mRNAMeasurement measurement = data.getMeasurement (gene, condition);
-      // System.out.println ("---------- measurement: " + measurement);
-      double ratio = measurement.getRatio ();
-      double sig = measurement.getSignificance ();
-
-      assertTrue (ratio > -100.0);
-      assertTrue (ratio < 1000.0);
-
-      assertTrue (sig >= 0.0);
-      assertTrue (sig < 10000.0);
-  }
-  
-} // testGetMeasurement
-//-------------------------------------------------------------------------
-public static void main (String [] args) 
-{
-  if (args.length == 1)
-    testDataDir = args [0];
-
-  File tester = new File (testDataDir);
-  if (!(tester.canRead () && tester.isDirectory ())) {
-    System.err.println ("error! ExpressionDataTest cannot read relative directory '" + 
-                         testDataDir + "'");
-    System.exit (1);
+        //  Validate the extreme values
+        double extremes[][] = data.getExtremeValues();
+        assertEquals (-0.71, extremes[0][0], 0.01);
+        assertEquals (0.432, extremes[0][1], 0.01);
+        assertEquals (-0.717, extremes[1][0], 0.01);
+        assertEquals (27.075, extremes[1][1], 0.01);        
     }
 
-  junit.textui.TestRunner.run (new TestSuite (ExpressionDataTest.class));
+    /**
+     * Tests Loading of Sample Data.
+     * @throws Exception    All Errors.
+     */
+    public void testGetMeasurement() throws Exception {
+        ExpressionData data = new ExpressionData
+                (testDataDir + testDataFilename);
 
-}// main
+        //  Validate data for all rows.
+        for (int i=0; i<data.getGeneNames().length; i++) {
+            String gene = data.getGeneNames()[i];
+            String condition = data.getConditionNames()[0];
 
-//------------------------------------------------------------------------------
-} // ExpressionDataTest
+            mRNAMeasurement measurement = data.getMeasurement(gene, condition);
+            double ratio = measurement.getRatio();
+            double sig = measurement.getSignificance();
+
+            assertTrue(ratio > -100.0);
+            assertTrue(ratio < 1000.0);
+
+            assertTrue(sig >= -1);
+            assertTrue(sig < 10000.0);
+        }
+    }
+
+    /**
+     * Main method, used for testing from the command line.
+     * @param args Command Line Arguments.
+     */
+    public static void main(String[] args) {
+        if (args.length == 1)
+            testDataDir = args[0];
+
+        File tester = new File(testDataDir);
+        if (!(tester.canRead() && tester.isDirectory())) {
+            System.err.println
+                    ("error! ExpressionDataTest cannot read relative directory '" +
+                    testDataDir + "'");
+            System.exit(1);
+        }
+
+        junit.textui.TestRunner.run(new TestSuite(ExpressionDataTest.class));
+    }
+}
