@@ -134,6 +134,9 @@ public class CytoscapeDataImpl
  
   public Object objectAsType ( Object value, byte type ) {
    
+    if ( value == null )
+      return null;
+
     if ( type == TYPE_BOOLEAN && value instanceof Boolean ) {
       return value;
     } else if ( type == TYPE_FLOATING_POINT && value instanceof Double ) {

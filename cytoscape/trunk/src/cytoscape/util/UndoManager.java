@@ -53,7 +53,7 @@ public class UndoManager {
         undo.undo();
 	    } catch (CannotUndoException ex) {
         //System.out.println("Unable to undo: " + ex);
-        ex.printStackTrace();
+        //ex.printStackTrace();
 	    }
 	    update();
 	    redoAction.update();
@@ -82,7 +82,7 @@ public class UndoManager {
         undo.redo();
 	    } catch (CannotRedoException ex) {
         //System.out.println("Unable to redo: " + ex);
-        ex.printStackTrace();
+        //ex.printStackTrace();
 	    }
 	    update();
 	    undoAction.update();
