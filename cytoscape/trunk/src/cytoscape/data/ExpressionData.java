@@ -879,7 +879,7 @@ public class ExpressionData implements Serializable {
         maxVals[0][0] = minExp;
         maxVals[0][1] = maxExp;
         maxVals[1][0] = minSig;
-        maxVals[0][1] = maxSig;
+        maxVals[1][1] = maxSig;
         return maxVals;
     }
 
