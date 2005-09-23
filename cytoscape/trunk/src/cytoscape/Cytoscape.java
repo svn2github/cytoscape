@@ -1034,6 +1034,10 @@ public abstract class Cytoscape {
        firePropertyChange( ATTRIBUTES_CHANGED,null,null );
      }
 
+     //  Fire off an EXPRESSION_DATA_LOADED event.
+     Cytoscape.firePropertyChange(Cytoscape.EXPRESSION_DATA_LOADED,
+            null, expressionData);
+
      if ( CytoscapeInit.suppressView() ) {
        //display a description of the data in a dialog
        String expDescript = expressionData.getDescription();
