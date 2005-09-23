@@ -87,6 +87,37 @@ public class JSortTable extends JTable
 
     setSelectionMode( ListSelectionModel.MULTIPLE_INTERVAL_SELECTION );
 
+    addMouseListener( new MouseListener() {
+        
+        public void mouseClicked(MouseEvent e) {
+          TableColumnModel columnModel = getColumnModel();
+          int column = columnModel.getColumnIndexAtX(e.getX());
+          int row = e.getY() / getRowHeight();
+          if (row >= getRowCount() || row < 0
+              || column >= getColumnCount() || column < 0)
+            return;
+
+          Object cellValue = getValueAt(row, column);
+          try {
+            if (cellValue != null
+                && cellValue.getClass() == Class.forName("java.lang.String")) {
+              // see if the String representation is a URL
+              // if it is not, a MalformedURLException gets thrown, and we
+              // ignore it
+              java.net.URL url = new java.net.URL((String) cellValue);
+              cytoscape.util.OpenBrowser.openURL( url.toString() );
+            }
+
+          } catch (Exception ignore) {}
+        
+        } // mouseClicked 
+        public void mouseExited(MouseEvent e) {}
+        public void mousePressed(MouseEvent e) {}
+				public void mouseEntered(MouseEvent e) {} 
+        public void mouseReleased(MouseEvent e) {}
+      }
+                      );
+
 
   }
 

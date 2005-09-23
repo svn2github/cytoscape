@@ -1,14 +1,19 @@
 package rowan.browser;
 
+import java.awt.event.*;
+import java.util.*;
+import java.util.List;
+import java.beans.*;
+import javax.swing.event.SwingPropertyChangeSupport;
+import javax.swing.*;
+import javax.swing.undo.*; 
+
 import cytoscape.*;
 import cytoscape.data.*;
+import cytoscape.data.attr.*;
 
- 
+import giny.model.GraphObject;
 
-import java.util.*;
-
-import javax.swing.*;
-import javax.swing.undo.*;
 
 public class DataEditAction extends AbstractUndoableEdit {
 

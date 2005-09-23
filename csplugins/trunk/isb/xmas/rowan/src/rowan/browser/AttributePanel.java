@@ -24,12 +24,18 @@ public class AttributePanel
   CytoscapeData data;
   DataTableModel tableModel;
   
-  JList attributeList;
-  JList labelList;
+  // create new attribute
+  JTextField newAttField;
+  JButton newAttButton;
+  JComboBox newAttType;
 
+  // attributes
+  JList attributeList;
+  
+  // labels
+  JList labelList;
   JButton addToLabel;
   JButton removeFromLabel;
-  
   JTextField newLabel;
   JButton newLabelButton;
 
@@ -42,6 +48,22 @@ public class AttributePanel
 
     setLayout( new BorderLayout() );
     
+    // new attribute
+    JPanel new_att_panel = new JPanel();
+    newAttField = new JTextField( 10 );
+    newAttField.addActionListener( this );
+    newAttButton = new JButton( "Create" );
+    newAttButton.addActionListener( this );
+    newAttType = new JComboBox( new String[] {"String", "Floating Point", "Integer", "Boolean"} );
+    new_att_panel.setLayout( new BorderLayout() );
+    new_att_panel.setBorder( new TitledBorder( "Create New Attribute" ) );
+    new_att_panel.add( newAttField, BorderLayout.WEST );
+    new_att_panel.add( newAttType, BorderLayout.CENTER );
+    JPanel bp = new JPanel();
+    bp.add( newAttButton );
+    new_att_panel.add( bp, BorderLayout.SOUTH );
+
+
     // attributes
     JPanel attPanel = new JPanel();
     attPanel.setBorder( new TitledBorder( "Attributes" ) );
@@ -50,19 +72,18 @@ public class AttributePanel
     attributeList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION );
     JScrollPane a_scroll = new JScrollPane( attributeList );
     attPanel.add( a_scroll, BorderLayout.CENTER );
-    a_scroll.setPreferredSize(new Dimension(200,300));
+    a_scroll.setPreferredSize(new Dimension(200,180));
 
 
     // labels
     JPanel labPanel = new JPanel();
-    labPanel.setBorder( new TitledBorder( "Labels" ) );
     labelList = new JList( l_model );
     labelList.addListSelectionListener( this );
     labelList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
     JScrollPane l_scroll = new JScrollPane( labelList );
     labPanel.add( l_scroll, BorderLayout.CENTER );
-    l_scroll.setPreferredSize(new Dimension(200,100));
+    l_scroll.setPreferredSize(new Dimension(200,50));
     
     // label control
     JPanel lcp = new JPanel();
@@ -83,15 +104,16 @@ public class AttributePanel
     ln.add( newLabelButton );
     
     JPanel one = new JPanel();
+    one.setBorder( new TitledBorder( "Labels" ) );
     one.setLayout( new BorderLayout() );
-    one.add( ln, BorderLayout.NORTH );
+    one.add( ln, BorderLayout.SOUTH );
     one.add( labPanel, BorderLayout.CENTER );
-    one.add( lcp, BorderLayout.SOUTH );
+    one.add( lcp, BorderLayout.NORTH );
 
     setLayout( new BorderLayout() );
-    add( one, BorderLayout.NORTH );
+    add( new_att_panel, BorderLayout.NORTH );
     add( attPanel, BorderLayout.CENTER );
-
+    add( one, BorderLayout.SOUTH );
 
   }
 
@@ -100,8 +122,6 @@ public class AttributePanel
   }
   
   public void actionPerformed ( ActionEvent e ) {
-
-    try {
     
     if ( e.getSource() == newLabel || e.getSource() == newLabelButton ) {
       // create a new label, and add the attributes to it
@@ -111,28 +131,41 @@ public class AttributePanel
         data.applyLabel( (String)atts[i], label_name );
       }
 
-    }
-
-    if ( e.getSource() == addToLabel ) {
+    } else  if ( e.getSource() == addToLabel ) {
       String label = labelList.getSelectedValue().toString();
       Object[] atts = attributeList.getSelectedValues();
       for ( int i = 0; i < atts.length; ++i ) {
         data.applyLabel( (String)atts[i], label );
       }
 
-    }
-
-    if ( e.getSource() == removeFromLabel ) {
+    } else  if ( e.getSource() == removeFromLabel ) {
       String label = labelList.getSelectedValue().toString();
       Object[] atts = attributeList.getSelectedValues();
       for ( int i = 0; i < atts.length; ++i ) {
         data.removeLabel( (String)atts[i], label );
       }
 
+    } else  if ( e.getSource() == newAttButton || e.getSource() == newAttField ) {
+      String name = newAttField.getText();
+      if ( name.length() < 1 ) 
+        return;
+
+      String type = (String)newAttType.getSelectedItem();
+      byte t;
+      if ( type.equals( "String" ) )
+        t = CytoscapeData.TYPE_STRING;
+      else if ( type.equals( "Floating Point" ) )
+        t = CytoscapeData.TYPE_FLOATING_POINT;
+      else if ( type.equals( "Integer" ) )
+        t = CytoscapeData.TYPE_INTEGER;
+      else if ( type.equals( "Boolean" ) )
+        t = CytoscapeData.TYPE_BOOLEAN;
+      else
+        t = CytoscapeData.TYPE_STRING;
+
+      data.initializeAttributeType( name, t );
+
     }
-
-
-    } catch ( Exception ex ) {}
 
   }
 

@@ -54,6 +54,10 @@ public class DataTableModel
     setTable();
   }
 
+  public List getObjects () {
+    return graph_objects;
+  }
+
   public void setTableData ( List graph_objects,
                              List attributes ) {
 
