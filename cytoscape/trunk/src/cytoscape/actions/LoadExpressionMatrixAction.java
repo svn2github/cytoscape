@@ -99,6 +99,8 @@ class LoadExpressionDataTask implements Task {
                     taskMonitor);
             Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED,
                     null, null);
+            Cytoscape.firePropertyChange(Cytoscape.EXPRESSION_DATA_LOADED,
+                    null, expressionData);
 
             //  We are done;  inform user of expression data details.
             taskMonitor.setPercentCompleted(100);
