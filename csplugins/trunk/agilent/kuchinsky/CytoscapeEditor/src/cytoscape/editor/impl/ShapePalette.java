@@ -16,9 +16,11 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
+import javax.swing.SwingConstants;
 
 import cytoscape.Cytoscape;
 import cytoscape.editor.event.BasicCytoShapeTransferHandler;
+import cytoscape.view.CytoscapeDesktop;
 
 
 
@@ -94,13 +96,25 @@ public class ShapePalette extends JPanel
 	 *
 	 */
 	public void showPalette() {
-		Cytoscape.getDesktop().getNetworkPanel().setNavigator(this);
+		
+		// remove old existing editor palette from Cytopanel and replace with new one
+        int idx = Cytoscape.getDesktop().getCytoPanel( SwingConstants.WEST ).indexOfComponent("Editor");
+        if (idx >= 0)
+        {
+        	Cytoscape.getDesktop().getCytoPanel( SwingConstants.WEST ).remove(idx);
+        }
+		
+		Cytoscape.getDesktop().getCytoPanel( SwingConstants.WEST ).add( "Editor", this);
+		Cytoscape.getDesktop().getCytoPanel( SwingConstants.WEST ).setSelectedIndex(
+				Cytoscape.getDesktop().getCytoPanel( SwingConstants.WEST ).indexOfComponent(this));
 
-		Rectangle bounds = Cytoscape.getDesktop().getNetworkPanel()
-				.getNavigatorPanel().getBounds();
-		Cytoscape.getDesktop().getNetworkPanel().getNavigatorPanel()
-				.setPreferredSize(
-						new Dimension(bounds.width, 3 * bounds.height));
+//		Cytoscape.getDesktop().getNetworkPanel().setNavigator(this);
+//
+//		Rectangle bounds = Cytoscape.getDesktop().getNetworkPanel()
+//				.getNavigatorPanel().getBounds();
+//		Cytoscape.getDesktop().getNetworkPanel().getNavigatorPanel()
+//				.setPreferredSize(
+//						new Dimension(bounds.width, 3 * bounds.height));
 	}	
 	
 
