@@ -263,7 +263,7 @@ private JPanel getContentPanel() {
         taxonNameBox = new JTextField();
         taxonNameBox.setEnabled( false );
         
-        currentSpBox = new JTextField(50);
+        currentSpBox = new JTextField(30);
         currentSpBox.setEditable( false );
         
         //test

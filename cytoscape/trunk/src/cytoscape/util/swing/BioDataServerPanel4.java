@@ -2,7 +2,9 @@ package cytoscape.util.swing;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -27,7 +29,6 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.JLabel;
-
 
 import cytoscape.CytoscapeInit;
 
@@ -72,13 +73,13 @@ public class BioDataServerPanel4 extends JPanel {
 	private JComboBox spList;
 
 	File start;
-	
+
 	String species;
 
 	private JTextField taxonNameBox;
 
 	private JButton setButton;
-	
+
 	private ButtonGroup selectionType;
 
 	private JRadioButton comboBoxButton;
@@ -99,7 +100,10 @@ public class BioDataServerPanel4 extends JPanel {
 
 	private JFileChooser jc1;
 	
+	static final String TAXON_FILE = "tax_report.txt"; 
 
+	private final String FS = System.getProperty("file.separator");
+	
 	public BioDataServerPanel4() {
 
 		super();
@@ -137,97 +141,96 @@ public class BioDataServerPanel4 extends JPanel {
 
 		add(titlePanel, BorderLayout.NORTH);
 		JPanel secondaryPanel = new JPanel();
-		secondaryPanel.add(contentPanel, BorderLayout.NORTH);
+		secondaryPanel.add(contentPanel, BorderLayout.SOUTH);
 		add(secondaryPanel, BorderLayout.WEST);
 
 	}
-	
+
 	public void createManifestFileChooser() {
-		jc1 = new JFileChooser( start );
+		jc1 = new JFileChooser(start);
 		jc1.setDialogTitle("Select Manifest File");
 	}
-	
+
 	public String getManifestFileNameFromTextBox() {
 		manifestName = manifestFileName.getText();
 		return manifestName;
 	}
-	
-	public void addSelectButtonActionListener( ActionListener l ) {
-        selectManifestFile.addActionListener(l);
-    }
 
-	
-	public File getManifestFile( boolean show ) {
+	public void addSelectButtonActionListener(ActionListener l) {
+		selectManifestFile.addActionListener(l);
+	}
+
+	public File getManifestFile(boolean show) {
 		File targetFile = null;
-		if( show == true ) {
+		if (show == true) {
 			int result = jc1.showOpenDialog(null);
 		}
 		targetFile = jc1.getSelectedFile();
 		return targetFile;
 	}
-	
-	public void setManifestFileName( String fileName ) {
-		manifestFileName.setText( fileName );
+
+	public void setManifestFileName(String fileName) {
+		manifestFileName.setText(fileName);
 		manifestName = fileName;
 	}
-	
+
 	public String getManifestFileName() {
 		return manifestName;
 	}
-	
-	
+
 	private JPanel getContentPanel() {
-	
+
 		JPanel contentPanel1 = new JPanel();
-		String filePath = start + "/testData/annotation/tax_report.txt";
-	    File taxonFile = new File(filePath);
-	    
-	    manifestFileName = new JTextField(40);
+		contentPanel1.setLayout(new GridLayout(3,1));
+		
+		//String filePath = start + "/testData/annotation/tax_report.txt";
+		String filePath = start + FS + TAXON_FILE;
+		//System.out.println( "Taxon file is: " + filePath );
+		File taxonFile = new File(filePath);
+
+		manifestFileName = new JTextField(20);
 		selectManifestFile = new JButton("Select Manifest File");
-        
-        welcomeTitle = new JLabel();
-        jPanel1 = new JPanel();
-        
-        blankSpace = new JLabel();
-        anotherBlankSpace = new JLabel();
-        yetAnotherBlankSpace1 = new JLabel();
-        
-        jLabel1 = new JLabel();
-        jLabel2 = new JLabel();
-        jLabel3 = new JLabel();
-        
-        contentPanel1.setLayout(new java.awt.BorderLayout());
 
-        welcomeTitle.setText("Please select the manifest file:");
-        contentPanel1.add(welcomeTitle, java.awt.BorderLayout.NORTH);
-        
-        jLabel2.setText("The old manifest file should include both annotation and ontology files.");
-                
-        jPanel1.setLayout(new java.awt.GridLayout(8, 0));
-                
-        jPanel1.add(blankSpace);
-        jPanel1.add(jLabel2);
-        jPanel1.add(anotherBlankSpace);
-        jPanel1.add(manifestFileName);
-        jPanel1.add(selectManifestFile);
-        jPanel1.add(anotherBlankSpace);
-        contentPanel1.add(jPanel1, java.awt.BorderLayout.CENTER);
+		jPanel1 = new JPanel();
+		jPanel1.setLayout( new FlowLayout());
+		
+		blankSpace = new JLabel();
+		anotherBlankSpace = new JLabel();
+		yetAnotherBlankSpace1 = new JLabel();
 
-        jLabel1.setText("Please press the Finish button to load the files in the manifest.");
-        contentPanel1.add(jLabel1, java.awt.BorderLayout.SOUTH);
-        
-        return contentPanel1;
-    }	
+		jLabel1 = new JLabel();
+		jLabel2 = new JLabel();
+		jLabel3 = new JLabel();
 
-	public void setComboBoxState( boolean state ) {
-		spList.setEnabled( state );
+		jLabel1.setText("Manifest file should include both annotation and ontology files.");
+
+		
+
+		contentPanel1.add(jLabel1);
+		jPanel1.add(blankSpace);
+		
+		//jPanel1.add(jLabel2);
+		jPanel1.add(anotherBlankSpace);
+		jPanel1.add(manifestFileName);
+		jPanel1.add(selectManifestFile);
+		//jPanel1.add(anotherBlankSpace);
+		contentPanel1.add(jPanel1);
+
+		jLabel3
+				.setText("Please press the Finish button to load BioDataServer.");
+		contentPanel1.add(jLabel3);
+
+		return contentPanel1;
 	}
 
-	public void setTextBoxState( boolean state ) {
-		taxonNameBox.setEnabled( state );
+	public void setComboBoxState(boolean state) {
+		spList.setEnabled(state);
 	}
 
-	
+	public void setTextBoxState(boolean state) {
+		taxonNameBox.setEnabled(state);
+	}
+
 	private ImageIcon getImageIcon() {
 		return null;
 	}

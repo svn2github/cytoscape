@@ -14,6 +14,9 @@ public class BioDataServerPanel1Descriptor extends WizardPanelDescriptor {
 	    public Object getNextPanelDescriptor() {
 	    		String fileType = null;
 	    		panel1 = new BioDataServerPanel1();
+	    		
+	    		panel1.reshape(10,10,10,10);
+	    		
 	    		panel1 = (BioDataServerPanel1)super.getPanelComponent();
 	    	
 	    		fileType = panel1.getFileFormatRadioButtonSelected();

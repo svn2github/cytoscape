@@ -133,11 +133,11 @@ public class BioDataServerPanel2 extends JPanel {
 
 		JPanel contentPanel1 = new JPanel();
 		
-		oboFileName = new JTextField(40);
-		selectOboFile = new JButton("Select Obo File");
+		oboFileName = new JTextField(20);
+		selectOboFile = new JButton("Obo");
 		
-		gaFileName = new JTextField(40);
-		selectGaFile = new JButton("Select Gene Association File");
+		gaFileName = new JTextField(20);
+		selectGaFile = new JButton("Gene Association");
 		
 		panelTitle = new javax.swing.JLabel();
 		
@@ -154,8 +154,8 @@ public class BioDataServerPanel2 extends JPanel {
 		jPanel3 = new JPanel();
 		
 		jPanel1.setLayout( new BorderLayout() );
-		jPanel2.setLayout( new GridLayout(2, 1) );
-		jPanel3.setLayout( new GridLayout(2, 1) );
+		jPanel2.setLayout( new GridLayout(2, 0) );
+		jPanel3.setLayout( new GridLayout(2, 0) );
 		//jc1.addChoosableFileFilter( oboFilter );
 
 		anotherBlankSpace = new javax.swing.JLabel();
@@ -163,7 +163,7 @@ public class BioDataServerPanel2 extends JPanel {
 		contentPanel1.setLayout(new java.awt.BorderLayout());
 
 		panelTitle
-				.setText("Please select ontology (.obo) and annotation (gene association) file:");
+				.setText("Please push the button to select ontology and annotation file:");
 		jPanel2.add(oboFileName);
 		jPanel3.add(selectOboFile);
 		jPanel2.add(gaFileName);
