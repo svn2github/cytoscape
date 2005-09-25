@@ -7,28 +7,20 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.net.URL;
-import java.util.StringTokenizer;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JRadioButton;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.EtchedBorder;
-import javax.swing.JLabel;
 
 import cytoscape.CytoscapeInit;
 
@@ -99,11 +91,11 @@ public class BioDataServerPanel4 extends JPanel {
 	private String manifestName;
 
 	private JFileChooser jc1;
-	
-	static final String TAXON_FILE = "tax_report.txt"; 
+
+	static final String TAXON_FILE = "tax_report.txt";
 
 	private final String FS = System.getProperty("file.separator");
-	
+
 	public BioDataServerPanel4() {
 
 		super();
@@ -181,19 +173,19 @@ public class BioDataServerPanel4 extends JPanel {
 	private JPanel getContentPanel() {
 
 		JPanel contentPanel1 = new JPanel();
-		contentPanel1.setLayout(new GridLayout(3,1));
-		
-		//String filePath = start + "/testData/annotation/tax_report.txt";
+		contentPanel1.setLayout(new GridLayout(3, 1));
+
+		// String filePath = start + "/testData/annotation/tax_report.txt";
 		String filePath = start + FS + TAXON_FILE;
-		//System.out.println( "Taxon file is: " + filePath );
+		// System.out.println( "Taxon file is: " + filePath );
 		File taxonFile = new File(filePath);
 
 		manifestFileName = new JTextField(20);
 		selectManifestFile = new JButton("Select Manifest File");
 
 		jPanel1 = new JPanel();
-		jPanel1.setLayout( new FlowLayout());
-		
+		jPanel1.setLayout(new FlowLayout());
+
 		blankSpace = new JLabel();
 		anotherBlankSpace = new JLabel();
 		yetAnotherBlankSpace1 = new JLabel();
@@ -202,18 +194,17 @@ public class BioDataServerPanel4 extends JPanel {
 		jLabel2 = new JLabel();
 		jLabel3 = new JLabel();
 
-		jLabel1.setText("Manifest file should include both annotation and ontology files.");
-
-		
+		jLabel1
+				.setText("Manifest file should include both annotation and ontology files.");
 
 		contentPanel1.add(jLabel1);
 		jPanel1.add(blankSpace);
-		
-		//jPanel1.add(jLabel2);
+
+		// jPanel1.add(jLabel2);
 		jPanel1.add(anotherBlankSpace);
 		jPanel1.add(manifestFileName);
 		jPanel1.add(selectManifestFile);
-		//jPanel1.add(anotherBlankSpace);
+		// jPanel1.add(anotherBlankSpace);
 		contentPanel1.add(jPanel1);
 
 		jLabel3

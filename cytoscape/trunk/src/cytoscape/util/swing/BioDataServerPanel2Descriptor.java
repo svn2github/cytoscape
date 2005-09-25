@@ -23,8 +23,13 @@ public class BioDataServerPanel2Descriptor extends WizardPanelDescriptor
 
 	String manifestFullPath;
 
+	// Define file sepalator, which is system dependent.
 	private final String FS = System.getProperty("file.separator");
-
+	
+	public final String OBO_BUTTON = "Obo";
+	public final String GA_BUTTON = "Gene Association";
+	public final String AUTO_MANIFEST = "auto_generated_manifest";
+	
 	public BioDataServerPanel2Descriptor() {
 
 		oboFlag = false;
@@ -53,18 +58,29 @@ public class BioDataServerPanel2Descriptor extends WizardPanelDescriptor
 		setNextButtonAccordingToFileChooser(false, false);
 	}
 
+	/*
+	 *  (non-Javadoc)
+	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 * Handle acctions.
+	 * 
+	 * Commands are defined in the Panel2 class.
+	 */
 	public void actionPerformed(ActionEvent e) {
-
-		if (e.getActionCommand().equals("Select Obo File") && oboFlag == false
+		if (e.getActionCommand().equals(OBO_BUTTON)
 				&& !(oboFlag == true && gaFlag == true)) {
 			panel2.setOboFileName(null);
 			panel2.createOboFileChooser();
 			File oboFile = panel2.getOboFile(true);
-			panel2.setOboFileName(oboFile.getPath());
-			oboFlag = true;
-			setNextButtonAccordingToFileChooser(oboFlag, gaFlag);
-		} else if (e.getActionCommand().equals("Select Gene Association File")
-				&& gaFlag == false && !(oboFlag == true && gaFlag == true)) {
+			
+			if(oboFile == null ){
+				System.out.println("Obo is null.");
+			} else {
+				panel2.setOboFileName(oboFile.getPath());
+				oboFlag = true;
+				setNextButtonAccordingToFileChooser(oboFlag, gaFlag);
+			}
+		} else if (e.getActionCommand().equals(GA_BUTTON)
+				&& !(oboFlag == true && gaFlag == true)) {
 			panel2.setGaFileName(null);
 			panel2.createGaFileChooser();
 			File gaFile = panel2.getGaFile(true);
@@ -72,7 +88,7 @@ public class BioDataServerPanel2Descriptor extends WizardPanelDescriptor
 			gaFlag = true;
 			setNextButtonAccordingToFileChooser(oboFlag, gaFlag);
 		} else if (flip != panel2.getCheckBoxStatus()) {
-			// checkbox
+			// For "flip" checkbox status check.
 			//System.out.println("*******checked");
 			flip = panel2.getCheckBoxStatus();
 		}
@@ -90,13 +106,19 @@ public class BioDataServerPanel2Descriptor extends WizardPanelDescriptor
 		}
 	}
 
+	/*
+	 * Create a temp. file called auto_generated_manifest.
+	 * This manifest file is different from the old manifest.
+	 * By writing proper parser in other classes, it can store arbitrary many
+	 * arguments.
+	 */
 	public void createManifest(File obo, File gA) throws IOException {
-		File manifest;
+		
 		String parentPath = null;
 
 		if (obo.canRead() == true && gA.canRead() == true) {
 			parentPath = obo.getParent() + FS;
-			manifestFullPath = parentPath + "auto_generated_manifest";
+			manifestFullPath = parentPath + AUTO_MANIFEST;
 
 			PrintWriter wt = new PrintWriter(new BufferedWriter(new FileWriter(
 					manifestFullPath)));

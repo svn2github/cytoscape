@@ -71,18 +71,16 @@ public class BioDataServerPanel2 extends JPanel {
 	
 	File start;
 	
-	
-	
-	/* This panel is for old file format.
+	/* 
+	 * This panel is for old biodataserver format.
 	 * Old files always cpntains species in the file, we do not need to
 	 * care about it.
 	 */
 	public BioDataServerPanel2() {
-
 		super();
 
+		// get default dir of cytoscape.
 		start = CytoscapeInit.getMRUD();
-		
 		
 		contentPanel = getContentPanel();
 		contentPanel.setBorder(new EmptyBorder(new Insets(10, 10, 10, 10)));
@@ -134,9 +132,14 @@ public class BioDataServerPanel2 extends JPanel {
 		JPanel contentPanel1 = new JPanel();
 		
 		oboFileName = new JTextField(20);
+		
+		// Button to load the Obo file.  This becomes the command in the
+		// action listner.
 		selectOboFile = new JButton("Obo");
 		
 		gaFileName = new JTextField(20);
+		
+		// Button to load the Gene Assiciation file.
 		selectGaFile = new JButton("Gene Association");
 		
 		panelTitle = new javax.swing.JLabel();
@@ -178,7 +181,6 @@ public class BioDataServerPanel2 extends JPanel {
 		contentPanel1.add(flipCheck, java.awt.BorderLayout.SOUTH);
 		//contentPanel1.add(jc1, java.awt.BorderLayout.CENTER);
 		
-
 		return contentPanel1;
 	}
 	
@@ -190,6 +192,9 @@ public class BioDataServerPanel2 extends JPanel {
 		return gaFileName.getText();
 	}
 	
+	/*
+	 * Create file choosers for obo and gene association files.
+	 */
 	public void createOboFileChooser() {
 		jc1 = new JFileChooser( start );
 		jc1.setDialogTitle("Select OBO File");
@@ -200,6 +205,9 @@ public class BioDataServerPanel2 extends JPanel {
 		jc2.setDialogTitle("Select Gene Association File");
 	}
 	
+	/*
+	 * Display file chooser and return name of the OBO file.
+	 */
 	public File getOboFile( boolean show ) {
 		File targetFile = null;
 		if( show == true ) {
@@ -222,8 +230,6 @@ public class BioDataServerPanel2 extends JPanel {
 	public boolean getCheckBoxStatus() {
 		return flipCheck.isSelected();
 	}
-	
-	
 	
 	public void setOboFileName( String fileName ) {
 		oboFileName.setText( fileName );
