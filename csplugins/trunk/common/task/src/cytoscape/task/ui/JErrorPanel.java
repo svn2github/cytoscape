@@ -148,11 +148,19 @@ public class JErrorPanel extends JPanel {
 
             //  Get Stack Trace
             StackTraceElement ste[] = t.getStackTrace();
-
-            //  Create a Tree of Stack Trace Elements
-            StringBuffer rootBuffer = new StringBuffer(t.getClass().getName());
-            if (t.getMessage() != null) {
-                rootBuffer.append(":  " + t.getMessage());
+            Throwable cause = t.getCause();
+            StringBuffer rootBuffer = null;
+            if (cause != null) {
+                rootBuffer = new StringBuffer ("Root Cause:  "
+                        + cause.getClass().getName());
+                if (cause.getMessage() != null) {
+                    rootBuffer.append(":  " + cause.getMessage());
+                }
+            } else {
+                rootBuffer = new StringBuffer(t.getClass().getName());
+                if (t.getMessage() != null) {
+                    rootBuffer.append(":  " + t.getMessage());
+                }
             }
             DefaultMutableTreeNode top =
                     new DefaultMutableTreeNode(rootBuffer.toString());
