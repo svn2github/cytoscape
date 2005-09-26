@@ -7,7 +7,9 @@ import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.List;
+import org.isb.iavila.ontology.gui.*;
 import org.isb.bionet.datasource.interactions.*;
+import org.isb.iavila.ontology.xmlrpc.*;
 import org.isb.bionet.gui.ProlinksGui;
 import org.isb.bionet.CyNetUtils;
 import java.io.*;
@@ -23,6 +25,7 @@ import utils.MyUtils;
 public class NetworkBuilderWizard {
     
     protected InteractionDataClient interactionsClient;
+    protected GOClient goClient;
     protected List dialogs;
     protected SpeciesPanel speciesPanel;
     protected NodeSourcesPanel nodeSourcesPanel;
@@ -52,8 +55,9 @@ public class NetworkBuilderWizard {
      * 
      * @param interactions_client
      */
-    public NetworkBuilderWizard (InteractionDataClient interactions_client){
+    public NetworkBuilderWizard (InteractionDataClient interactions_client, GOClient go_client){
         this.interactionsClient = interactions_client;
+        this.goClient = go_client;
         FINISH_ACTION = new AbstractAction (){
             public void actionPerformed (ActionEvent event){
                 createNetwork();
@@ -313,7 +317,7 @@ public class NetworkBuilderWizard {
         
         dialog.getContentPane().add(explanation,BorderLayout.NORTH);
         
-        this.nodeSourcesPanel = new NodeSourcesPanel();
+        this.nodeSourcesPanel = new NodeSourcesPanel(this.goClient);
         
         JPanel bigPanel = new JPanel();
         bigPanel.setLayout(new FlowLayout(FlowLayout.CENTER));

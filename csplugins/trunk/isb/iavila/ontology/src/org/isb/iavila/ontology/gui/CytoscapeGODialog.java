@@ -298,7 +298,42 @@ public class CytoscapeGODialog extends JFrame {
     }
 
     // ----------- Public methods that should be in a separate class
+    
+    /**
+     * @return an array of gene ids that are annotated with the selected terms for the selected species
+     */
+    public String [] getGenesWithTerms (){
+        OntologyTerm[] terms = this.goViewer.getSelectedTerms();
 
+        Vector termIDs = new Vector();
+        for (int i = 0; i < terms.length; i++) {
+            termIDs.add(Integer.toString(terms[i].getID()));
+        }// for
+
+        String spID = Integer.toString(this.selectedSpecies.getID());
+        Hashtable termToGenes = null;
+
+        try {
+            termToGenes = goClient.getGenesWithTerms(termIDs, spID);
+          //  System.out.println(termToGenes);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        Iterator it = termToGenes.keySet().iterator();
+        ArrayList geneIDs = new ArrayList();
+        while (it.hasNext()) {
+            String termID = (String) it.next();
+            Vector genes = (Vector) termToGenes.get(termID);
+            Iterator it2 = genes.iterator();
+            while (it2.hasNext()) {
+                String gene = (String) it2.next();
+                geneIDs.add(gene);
+                }// while it2
+        }// while it.hasNext
+        return (String[])geneIDs.toArray(new String[geneIDs.size()]);
+    }
+   
     /**
      * Creates nodes that are annotated with the selected ontology terms and
      * belog to the selected species

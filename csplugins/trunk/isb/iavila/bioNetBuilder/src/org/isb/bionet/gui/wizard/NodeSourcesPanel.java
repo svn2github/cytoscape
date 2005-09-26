@@ -13,8 +13,11 @@ import javax.swing.*;
 import java.io.File;
 import java.util.Iterator;
 import java.util.Vector;
+import java.util.ArrayList;
 
 import org.isb.bionet.gui.*;
+import org.isb.iavila.ontology.gui.*;
+import org.isb.iavila.ontology.xmlrpc.*;
 
 import utils.MyUtils;
 import cytoscape.*;
@@ -25,12 +28,14 @@ public class NodeSourcesPanel extends JPanel {
     protected File myListFile;
     protected Vector myListNodes;
     protected CyNetworksDialog netsDialog;
-    protected JTextField listNodes, annotsNodes, netsNodes; 
+    protected JTextField listNodes, annotsNodes, netsNodes;
+    protected CytoscapeGODialog annotationsDialog;
+    protected String [] annotationNodeIDs = new String[0];
     /**
      *  Creates a panel with node sources
      */
-    public NodeSourcesPanel (){
-        create();
+    public NodeSourcesPanel (GOClient go_client){
+        create(go_client);
     }
     
     /**
@@ -64,6 +69,9 @@ public class NodeSourcesPanel extends JPanel {
                 }//while it
             }//for i
         }// if nodeNets != null
+        for(int i = 0; i < this.annotationNodeIDs.length; i++){
+            startingNodes.add(this.annotationNodeIDs[i]);
+        }
         return startingNodes;
     }
     
@@ -88,14 +96,23 @@ public class NodeSourcesPanel extends JPanel {
     /**
      * Creates the panel
      */
-    protected void create() {
+    protected void create(GOClient go_client) {
         
         final JButton annotsButton = new JButton("Nodes with selected annotations...");
         annotsButton.setEnabled(false);
+        final GOClient finalGoClient = go_client;
         annotsButton.addActionListener(new AbstractAction(){
             
             public void actionPerformed (ActionEvent event){
-                JOptionPane.showMessageDialog(NodeSourcesPanel.this, "Not implemented yet!", "Oops!", JOptionPane.ERROR_MESSAGE);
+                //JOptionPane.showMessageDialog(NodeSourcesPanel.this, "Not implemented yet!", "Oops!", JOptionPane.ERROR_MESSAGE);
+                if(annotationsDialog == null){
+                    createAnnotationsDialog(finalGoClient);
+                }
+                annotationsDialog.pack();
+                annotationsDialog.setLocationRelativeTo(NodeSourcesPanel.this);
+                annotationsDialog.setVisible(true);
+                // The dialog is modal
+            
             }//actionPerformed
             
         });
@@ -250,5 +267,46 @@ public class NodeSourcesPanel extends JPanel {
         this.netsNodes.setText("0");
         gridbag.setConstraints(this.netsNodes, c);
         this.add(this.netsNodes);
+    }
+    
+   /**
+    * Creates a CycotscapeGODialog with custom buttons
+    * @param go_client
+    */ 
+    protected void createAnnotationsDialog (GOClient go_client){
+        JPanel buttonsPanel = new JPanel();
+        JButton ok = new JButton("OK");
+        ok.addActionListener(
+                new AbstractAction (){
+                    
+                    public void actionPerformed (ActionEvent event){
+                        int [] newNodes = annotationsDialog.createNodes();
+                        ArrayList canonicals = new ArrayList();
+                        for(int i = 0; i < newNodes.length; i++){
+                            CyNode node = (CyNode)Cytoscape.getRootGraph().getNode(newNodes[i]);
+                            String canonical = (String)Cytoscape.getNodeAttributeValue(node, Semantics.CANONICAL_NAME);
+                            canonicals.add(canonical);
+                        }
+                        annotationNodeIDs = (String[])canonicals.toArray(new String[canonicals.size()]);
+                        annotsNodes.setText(Integer.toString(annotationNodeIDs.length));
+                        annotationsDialog.dispose();
+                    }
+                    
+                }
+        );
+        JButton cancel = new JButton("Cancel");
+        cancel.addActionListener(
+                new AbstractAction (){
+                    
+                    public void actionPerformed (ActionEvent event){
+                        annotationsDialog.dispose();
+                    }
+                }
+        );
+        buttonsPanel.add(ok);
+        buttonsPanel.add(cancel);
+        
+        this.annotationsDialog = new CytoscapeGODialog(go_client,buttonsPanel);
+        
     }
 }

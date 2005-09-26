@@ -65,7 +65,7 @@ public class BioNetPlugin extends CytoscapePlugin {
             ex.printStackTrace();
         }
 
-        this.wizard = new NetworkBuilderWizard(this.interactionsClient);
+        this.wizard = new NetworkBuilderWizard(this.interactionsClient, this.goClient);
 
         Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add(
                 new AbstractAction("Build a Biological Network...") {
