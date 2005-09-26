@@ -136,63 +136,82 @@ public class NodeDetails
     return null; }
 
   /**
-   * Returns the text label this node has.  By default this method returns
-   * null; returning null is the optimal way to specify that this
-   * node has no text label.<p>
+   * Returns the number of labels that this node has.  By default this method
+   * returns zero.
+   */
+  public int labelCount(final int node) {
+    return 0; }
+
+  /**
+   * Returns a label's text.  By default this method
+   * always returns null.  This method is only called by the rendering engine
+   * if labelCount(node) returns a value greater than zero.  It is an error
+   * to return null if this method is called by the rendering engine.<p>
    * To specify multiple lines of text in a node label, simply insert the
    * '\n' character between lines of text.
+   * @param labelInx a value in the range [0, labelCount(node)-1] indicating
+   *   which node label in question.
    */
-  public String labelText(final int node) {
+  public String labelText(final int node, final int labelInx) {
     return null; }
 
   /**
-   * Returns the font to use when rendering a text label on this node.
-   * By default this method returns null.
-   * This return value is ignored if labelText(node) returns either null or the
-   * empty string; it is an error to return null if labelText(node) returns a
-   * non-empty string.
+   * Returns the font to use when rendering this label.
+   * By default this method always returns null.  This method is only called
+   * by the rendering engine if labelCount(node) returns a value greater than
+   * zero.  It is an error to return null if this method is called by the
+   * rendering engine.<p>
+   * @param labelInx a value in the range [0, labelCount(node)-1] indicating
+   *  which node label in question.
    */
-  public Font labelFont(final int node) {
+  public Font labelFont(final int node, final int labelInx) {
     return null; }
 
   /**
    * Returns an additional scaling factor that is to be applied to the font
-   * used to render text labels; this scaling factor, applied to the point
-   * size of the font returned by labelFont(node), yields a new virtual font
-   * that is used to actually render text labels.  By default this method
-   * returns 1.0.  This return value is ignored if labelText(node) returns
-   * either null or the empty string.
+   * used to render this label; this scaling factor, applied to the point
+   * size of the font returned by labelFont(node, labelInx), yields a new
+   * virtual font that is used to actually render text labels.
+   * By default this method always returns 1.0.  This method is only called
+   * by the rendering engine if labelCount(node) returns a value greater than
+   * zero.
+   * @param labelInx a value in the range [0, labelCount(node)-1] indicating
+   *   which node label in question.
    */
-  public double labelScaleFactor(final int node) {
+  public double labelScaleFactor(final int node, final int labelInx) {
     return 1.0d; }
 
   /**
-   * Returns the paint of the text label on this node.  By default this method
-   * returns null.  This return value is ignored if labelText(node) returns
-   * either null or the empty string; it is an error to return null if
-   * labelText(node) returns a non-empty string.
+   * Returns the paint of a text label.  By default this method
+   * always returns null.  This method is only called by the rendering engine
+   * if labelCount(node) returns a value greater than zero.  It is an error to
+   * return null if this method is called by the rendering engine.
+   * @param labelInx a value in the range [0, labelCount(node)-1] indicating
+   *   which node label in question.
    */
-  public Paint labelPaint(final int node) {
+  public Paint labelPaint(final int node, final int labelInx) {
     return null; }
 
   /**
    * By returning one of the LABEL_ANCHOR_* constants, specifies
-   * where on the text label's logical bounds box an anchor point lies.  This
+   * where on a text label's logical bounds box an anchor point lies.  This
    * <i>text anchor point</i> together with the
    * node anchor point and label offset vector
    * determines where, relative to the node, the text's logical bounds
    * box is to be placed.  The text's logical bounds box is placed such that
    * the label offset vector plus the node anchor point equals the text anchor
    * point.<p>
-   * By default this method returns LABEL_ANCHOR_CENTER.  This return
-   * value is ignored if labelText(node) returns either null or the empty
-   * string.
+   * By default this method always returns LABEL_ANCHOR_CENTER.
+   * This method is only called by the rendering engine if labelCount(node)
+   * returns a value greater than zero.
+   * @param labelInx a value in the range [0, labelCount(node)-1] indicating
+   *   which node label in question.
    * @see #LABEL_ANCHOR_CENTER
-   * @see #labelNodeAnchor(int)
-   * @see #labelOffsetVectorX(int)
-   * @see #labelOffsetVectorY(int)
+   * @see #labelNodeAnchor(int, int)
+   * @see #labelOffsetVectorX(int, int)
+   * @see #labelOffsetVectorY(int, int)
    */
-  public byte labelTextAnchor(final int node) {
+  public byte labelTextAnchor(final int node, final int labelInx) {
     return LABEL_ANCHOR_CENTER; }
 
   /**
@@ -203,32 +222,37 @@ public class NodeDetails
    * bounds box is to be placed.  The text's logical bounds box is placed
    * such that the label offset vector plus the node anchor point equals the
    * text anchor point.<p>
-   * By default this method returns LABEL_ANCHOR_CENTER.  This return
-   * value is ignored if labelText(node) returns either null or the empty
-   * string.
+   * By default this method always returns LABEL_ANCHOR_CENTER.
+   * This method is only called by the rendering engine if labelCount(node)
+   * returns a value greater than zero.
+   * @param labelInx a value in the range [0, labelCount(node)-1] indicating
+   *   which node label in question.
    * @see #LABEL_ANCHOR_CENTER
-   * @see #labelTextAnchor(int)
-   * @see #labelOffsetVectorX(int)
-   * @see #labelOffsetVectorY(int)
+   * @see #labelTextAnchor(int, int)
+   * @see #labelOffsetVectorX(int, int)
+   * @see #labelOffsetVectorY(int, int)
    */
-  public byte labelNodeAnchor(final int node) {
+  public byte labelNodeAnchor(final int node, final int labelInx) {
     return LABEL_ANCHOR_CENTER; }
 
   /**
-   * Specifies the X component of the vector that separates the text anchor
-   * point from the node anchor point.
+   * Specifies the X component of the vector that separates a text anchor
+   * point from a node anchor point.
    * This <i>label offset vector</i> together with the text anchor point and
    * node anchor point determines where, relative to the node, the text's
    * logical bounds box is to be placed.  The text's logical bounds box is
    * placed such that the label offset vector plus the node anchor point
    * equals the text anchor point.<p>
-   * By default this method returns zero.  This return value is ignored if
-   * labelText(node) returns either null or the empty string.
-   * @see #labelOffsetVectorY(int)
-   * @see #labelTextAnchor(int)
-   * @see #labelNodeAnchor(int)
+   * By default this method always returns zero.
+   * This method is only called by the rendering engine if labelCount(node)
+   * returns a value greater than zero.
+   * @param labelInx a value in the range [0, labelCount(node)-1] indicating
+   *   which node label in question.
+   * @see #labelOffsetVectorY(int, int)
+   * @see #labelTextAnchor(int, int)
+   * @see #labelNodeAnchor(int, int)
    */
-  public float labelOffsetVectorX(final int node) {
+  public float labelOffsetVectorX(final int node, final int labelInx) {
     return 0.0f; }
 
   /**
