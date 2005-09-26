@@ -1,0 +1,3 @@
+handler.geneOntology=org.isb.iavila.ontology.xmlrpc.GOHandler
+host=http://localhost:8081
+client.geneOntology=org.isb.iavila.ontology.xmlrpc.GOClient
