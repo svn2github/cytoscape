@@ -369,7 +369,9 @@ class FGraphPerspective implements GraphPerspective, FixedGraph
     final MinIntHeap restoredNodeRootInx = m_heap__restoreEdge;
     if (nativeSourceNodeInx < 0 || nativeSourceNodeInx == Integer.MAX_VALUE) {
       nativeSourceNodeInx = ~(_restoreNode(rootGraphSourceNodeInx));
-      restoredNodeRootInx.toss(rootGraphSourceNodeInx); }
+      restoredNodeRootInx.toss(rootGraphSourceNodeInx);
+      if (rootGraphSourceNodeInx == rootGraphTargetNodeInx) {
+        nativeTargetNodeInx = nativeSourceNodeInx; } }
     if (nativeTargetNodeInx < 0 || nativeTargetNodeInx == Integer.MAX_VALUE) {
       nativeTargetNodeInx = ~(_restoreNode(rootGraphTargetNodeInx));
       restoredNodeRootInx.toss(rootGraphTargetNodeInx); }
