@@ -67,7 +67,7 @@ public class Paste extends CytoscapeAction {
           
 
 
-    EditPlugin.addEdit(new AbstractUndoableEdit () {
+    Cytoscape.getDesktop().addEdit(new AbstractUndoableEdit () {
          
         
         final String network_id = network.getIdentifier();

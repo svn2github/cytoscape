@@ -54,7 +54,7 @@ public class Cut extends CytoscapeAction {
     EditPlugin.setNetworkClipBoard( network.getIdentifier() );
     
 
-    EditPlugin.addEdit(new AbstractUndoableEdit () {
+    Cytoscape.getDesktop().addEdit(new AbstractUndoableEdit () {
          
         
         final String network_id = network.getIdentifier();

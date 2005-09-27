@@ -260,16 +260,6 @@ public class FileLoader {
     net.restoreNodes( nodes, false );
     net.restoreEdges( edges );
 
-
-    //// TEST
-    //System.out.println( "NODE_X TEST" );
-    //Node node = ( Node )net.nodesList().get(0);
-    // Set keys = net.getNodeData().getAttributeKeySet( node.getIdentifier(), "NODE_X" );
-    //for ( Iterator i = keys.iterator(); i.hasNext(); ) {
-    //  System.out.println( "add( createLayoutItem( (String)"+i.next()+" ) );");
-    //}
-    //System.out.println( "NODE_X TEST" );
-
   }
 
 

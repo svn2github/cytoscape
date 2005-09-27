@@ -1,0 +1,28 @@
+package browser;
+
+import cytoscape.*;
+import cytoscape.data.*;
+import cytoscape.view.*;
+import cytoscape.util.*;
+import cytoscape.plugin.*;
+
+
+import java.util.*;
+import java.awt.event.*;
+import java.awt.*;
+import java.beans.*;
+import java.io.*;
+import java.util.List;
+import giny.view.*;
+import edu.umd.cs.piccolo.PNode;
+import javax.swing.*;
+import phoebe.*;
+
+import rowan.browser.*;
+
+public class RowanPlugin extends CytoscapePlugin {
+
+  public RowanPlugin () {
+
+    initialize();
+  }
