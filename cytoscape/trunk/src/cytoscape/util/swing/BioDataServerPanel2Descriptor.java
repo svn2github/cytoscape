@@ -8,7 +8,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import javax.swing.AbstractAction;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+
 import com.nexes.wizard.WizardPanelDescriptor;
+
+import cytoscape.util.FileUtil;
 
 public class BioDataServerPanel2Descriptor extends WizardPanelDescriptor
 		implements ActionListener {
@@ -25,11 +31,13 @@ public class BioDataServerPanel2Descriptor extends WizardPanelDescriptor
 
 	// Define file sepalator, which is system dependent.
 	private final String FS = System.getProperty("file.separator");
-	
+
 	public final String OBO_BUTTON = "Obo";
+
 	public final String GA_BUTTON = "Gene Association";
+
 	public final String AUTO_MANIFEST = "auto_generated_manifest";
-	
+
 	public BioDataServerPanel2Descriptor() {
 
 		oboFlag = false;
@@ -40,6 +48,12 @@ public class BioDataServerPanel2Descriptor extends WizardPanelDescriptor
 		panel2 = new BioDataServerPanel2();
 		panel2.addButtonActionListener(this);
 		panel2.addCheckBoxActionListener(this);
+
+		panel2.addOboTextFieldActionListener(new oboFileNameAction());
+		panel2.addGaTextFieldActionListener(new oboFileNameAction());
+
+		panel2.addOboTextFieldDocumentListener(new oboFileNameAction());
+		panel2.addGaTextFieldDocumentListener(new gaFileNameAction());
 
 		setPanelDescriptorIdentifier(IDENTIFIER);
 		setPanelComponent(panel2);
@@ -59,46 +73,62 @@ public class BioDataServerPanel2Descriptor extends WizardPanelDescriptor
 	}
 
 	/*
-	 *  (non-Javadoc)
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-	 * Handle acctions.
+	 * (non-Javadoc)
 	 * 
-	 * Commands are defined in the Panel2 class.
+	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 * 
+	 * Handle actions
 	 */
 	public void actionPerformed(ActionEvent e) {
-		if (e.getActionCommand().equals(OBO_BUTTON)
-				&& !(oboFlag == true && gaFlag == true)) {
-			panel2.setOboFileName(null);
-			panel2.createOboFileChooser();
-			File oboFile = panel2.getOboFile(true);
-			
-			if(oboFile == null ){
-				System.out.println("Obo is null.");
+
+		File oboFile = null;
+		File gaFile = null;
+
+		if ( e.getActionCommand().equals(OBO_BUTTON) ) {
+
+			//panel2.setOboFileName(null);
+			oboFile = FileUtil.getFile("Select OBO File...", FileUtil.LOAD);
+			if (oboFile == null) {
+				oboFlag = false;
 			} else {
 				panel2.setOboFileName(oboFile.getPath());
-				oboFlag = true;
+				if( oboFile.canRead() ) {
+					oboFlag = true;
+				} else {
+					oboFlag = false;
+				}
 				setNextButtonAccordingToFileChooser(oboFlag, gaFlag);
 			}
-		} else if (e.getActionCommand().equals(GA_BUTTON)
-				&& !(oboFlag == true && gaFlag == true)) {
-			panel2.setGaFileName(null);
-			panel2.createGaFileChooser();
-			File gaFile = panel2.getGaFile(true);
-			panel2.setGaFileName(gaFile.getPath());
-			gaFlag = true;
-			setNextButtonAccordingToFileChooser(oboFlag, gaFlag);
+		} else if (e.getActionCommand().equals(GA_BUTTON) ) {
+			//panel2.setGaFileName(null);
+			gaFile = FileUtil.getFile("Select Gene Association File...",
+					FileUtil.LOAD);
+			if (gaFile == null) {
+				gaFlag = false;
+			} else {
+				panel2.setGaFileName(gaFile.getPath());
+				if( gaFile.canRead() ) {
+					System.out.println("GA flag is true.");
+					gaFlag = true;
+				} else {
+					gaFlag = false;
+				}
+				setNextButtonAccordingToFileChooser(oboFlag, gaFlag);
+			}
 		} else if (flip != panel2.getCheckBoxStatus()) {
 			// For "flip" checkbox status check.
-			//System.out.println("*******checked");
 			flip = panel2.getCheckBoxStatus();
 		}
 
-		if (oboFlag == true && gaFlag == true) {
-			File obo = panel2.getOboFile(false);
-			File gA = panel2.getGaFile(false);
-
+		if (oboFlag == true && gaFlag == true && oboFile != null && gaFile != null ) {
+			
 			try {
-				createManifest(obo, gA);
+				if (oboFile.canRead() && gaFile.canRead()) {
+					createManifest(oboFile, gaFile);
+					System.out.println("Manifest Created.");
+				} else {
+					System.out.println("Cannot read obo or ga.");
+				}
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -107,13 +137,12 @@ public class BioDataServerPanel2Descriptor extends WizardPanelDescriptor
 	}
 
 	/*
-	 * Create a temp. file called auto_generated_manifest.
-	 * This manifest file is different from the old manifest.
-	 * By writing proper parser in other classes, it can store arbitrary many
-	 * arguments.
+	 * Create a temp. file called auto_generated_manifest. This manifest file is
+	 * different from the old manifest. By writing proper parser in other
+	 * classes, it can store arbitrary many arguments.
 	 */
 	public void createManifest(File obo, File gA) throws IOException {
-		
+
 		String parentPath = null;
 
 		if (obo.canRead() == true && gA.canRead() == true) {
@@ -122,7 +151,7 @@ public class BioDataServerPanel2Descriptor extends WizardPanelDescriptor
 
 			PrintWriter wt = new PrintWriter(new BufferedWriter(new FileWriter(
 					manifestFullPath)));
-			wt.println("flip=" + flip );
+			wt.println("flip=" + flip);
 			wt.println("obo=" + obo.getName());
 			wt.println("gene_association=" + gA.getName());
 			wt.close();
@@ -144,6 +173,116 @@ public class BioDataServerPanel2Descriptor extends WizardPanelDescriptor
 			getWizard().setNextFinishButtonEnabled(true);
 	}
 
-	//
+	private class oboFileNameAction extends AbstractAction implements
+			DocumentListener {
 
-}
+		oboFileNameAction() {
+			super();
+		}
+
+		// any change that is made is handled the same - parameter is updated
+		private void handleChange() {
+			String value = panel2.getOboTextField();
+			
+			if (value != null) {
+				File oboFile = new File(value);
+				if (oboFile.canRead()) {
+					System.out.println("Valid Obo file");
+					oboFlag = true;
+				} else {
+					System.out.println("Invalid Obo file");
+					oboFlag = false;
+				}
+				
+				if (oboFlag == true && gaFlag == true) {
+					try {
+						File gaFile = new File( panel2.getGaTextField() );
+						
+						if (oboFile.canRead() && gaFile.canRead()) {
+							createManifest(oboFile, gaFile);
+							System.out.println("Manifest Created.");
+						} else {
+							System.out.println("Cannot read obo or ga.");
+						}
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+				setNextButtonAccordingToFileChooser(oboFlag, gaFlag);
+			}
+		}
+
+		public void actionPerformed(ActionEvent e) {
+			handleChange();
+		}
+
+		public void changedUpdate(DocumentEvent e) {
+			handleChange();
+		}
+
+		public void insertUpdate(DocumentEvent e) {
+			handleChange();
+		}
+
+		public void removeUpdate(DocumentEvent e) {
+			handleChange();
+		}
+	}
+
+	private class gaFileNameAction extends AbstractAction implements
+			DocumentListener {
+
+		gaFileNameAction() {
+			super();
+		}
+
+		private void handleChange() {
+			String value = panel2.getGaTextField();
+
+			if (value != null) {
+				File gaFile = new File(value);
+				if (gaFile.canRead()) {
+					System.out.println("Valid GA file");
+					gaFlag = true;
+				} else {
+					System.out.println("Invalid GA file");
+					gaFlag = false;
+				}
+				
+				if (oboFlag == true && gaFlag == true) {
+					try {
+						File oboFile = new File( panel2.getOboTextField() );
+						
+						if (oboFile.canRead() && gaFile.canRead()) {
+							createManifest(oboFile, gaFile);
+							System.out.println("Manifest Created.");
+						} else {
+							System.out.println("Cannot read obo or ga.");
+						}
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+				setNextButtonAccordingToFileChooser(oboFlag, gaFlag);
+			}
+		}
+
+		public void actionPerformed(ActionEvent e) {
+			handleChange();
+		}
+
+		public void changedUpdate(DocumentEvent e) {
+			handleChange();
+		}
+
+		public void insertUpdate(DocumentEvent e) {
+			handleChange();
+		}
+
+		public void removeUpdate(DocumentEvent e) {
+			handleChange();
+		}
+	}
+} // end of class BioDataServerPanel2Descriptor

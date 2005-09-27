@@ -6,10 +6,12 @@ import java.awt.Container;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.net.URL;
 
+import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -19,6 +21,9 @@ import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
+import javax.swing.event.AncestorListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.JLabel;
 
 import cytoscape.CytoscapeInit;
@@ -30,21 +35,12 @@ public class BioDataServerPanel2 extends JPanel {
 
 	private javax.swing.JLabel blankSpace;
 
-	private javax.swing.ButtonGroup connectorGroup;
-
-
-	private javax.swing.JCheckBox jCheckBox1;
-
 	private javax.swing.JLabel jLabel1;
 
 	private javax.swing.JPanel jPanel1;
 	private javax.swing.JPanel jPanel2;
 
 	private javax.swing.JLabel panelTitle;
-
-	private javax.swing.JRadioButton wirelessRadioButton;
-
-	private javax.swing.JLabel yetAnotherBlankSpace1;
 
 	private JPanel contentPanel;
 
@@ -119,9 +115,27 @@ public class BioDataServerPanel2 extends JPanel {
 	}
 
 	public void addButtonActionListener( ActionListener l ) {
-        selectOboFile.addActionListener(l);
-        selectGaFile.addActionListener(l);
+        selectOboFile.addActionListener( l );
+        selectGaFile.addActionListener( l );
     }
+	
+	// For checking status of the text fields.
+	//
+	public void addOboTextFieldActionListener( ActionListener l ) {
+		oboFileName.addActionListener( l );
+	}
+	
+	public void addGaTextFieldActionListener( ActionListener l ) {
+		gaFileName.addActionListener( l );
+	}
+	
+	public void addOboTextFieldDocumentListener( DocumentListener l ) {
+		oboFileName.getDocument().addDocumentListener( l );
+	}
+	
+	public void addGaTextFieldDocumentListener( DocumentListener l ) {
+		gaFileName.getDocument().addDocumentListener( l );
+	}
 	
 	public void addCheckBoxActionListener( ActionListener l ) {
         flipCheck.addActionListener(l);
@@ -248,5 +262,7 @@ public class BioDataServerPanel2 extends JPanel {
 
 		return null;
 	}
+
+	
 
 }

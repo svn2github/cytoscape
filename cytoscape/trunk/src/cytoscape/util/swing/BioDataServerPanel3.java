@@ -29,6 +29,7 @@ import javax.swing.JLabel;
 
 
 import cytoscape.CytoscapeInit;
+import cytoscape.util.FileUtil;
 
 /*
  * Final Step for the new file format.
@@ -40,8 +41,6 @@ public class BioDataServerPanel3 extends JPanel {
 
 	private JLabel blankSpace;
 
-	private ButtonGroup connectorGroup;
-
 	private JLabel jLabel1;
 
 	private JPanel jPanel1;
@@ -49,11 +48,7 @@ public class BioDataServerPanel3 extends JPanel {
 	private JLabel progressDescription;
 
 	private JProgressBar progressSent;
-
-	private JLabel welcomeTitle;
-
-	private JLabel yetAnotherBlankSpace1;
-
+	
 	private JPanel contentPanel;
 
 	private JLabel iconLabel;
@@ -84,16 +79,18 @@ public class BioDataServerPanel3 extends JPanel {
 
 	private JRadioButton textBoxButton;
 
-	private JPanel jPanel2;
-
-	private JPanel jPanel3;
-
 	private JTextField currentSpBox;
 	
 	private final String FS = System.getProperty("file.separator");
 	
 	// lookup table for the taxon number <-> name 
 	public final String TAXON_FILE = "tax_report.txt";
+
+	private JLabel yetAnotherBlankSpace1;
+
+	private JPanel jPanel2;
+
+	private JPanel jPanel3;
 
 	public BioDataServerPanel3() {
 
@@ -198,7 +195,6 @@ public class BioDataServerPanel3 extends JPanel {
 			} else {
 				spList.addItem(name1);
 			}
-
 		}
 	}
 
@@ -208,26 +204,27 @@ private JPanel getContentPanel() {
 	String filePath = start + FS +TAXON_FILE;
     File taxonFile = new File(filePath);
     
-	if( taxonFile.canRead() == true ) {
-		BufferedReader spListReader = null;
-        try {
-        	spListReader = new BufferedReader(
-					new FileReader( filePath ));
-        } catch (FileNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-        try {
-			setSpList( spListReader );
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	} else {
-		spList.addItem( "Sorry, could not found taxonomy table...");
-		spList.addItem( "Please enter species in the box below.");
-		
+	if( taxonFile.canRead() == false ) {
+		taxonFile = FileUtil.getFile("Could not locate tax_report.  Please specify...", FileUtil.LOAD);
 	}
+	
+	System.out.println( "Tax Report = " + taxonFile.getAbsolutePath() );
+	BufferedReader spListReader = null;
+    try {
+    	spListReader = new BufferedReader(
+				new FileReader( taxonFile ));
+    } catch (FileNotFoundException e1) {
+		// TODO Auto-generated catch block
+		e1.printStackTrace();
+	}
+    try {
+		setSpList( spListReader );
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+		
+	
         
 		setButton = new JButton("Set Species");
 	
@@ -246,7 +243,6 @@ private JPanel getContentPanel() {
         // Default selection is pull-down menu
         comboBoxButton.setSelected(true);
         
-        welcomeTitle = new JLabel();
         jPanel1 = new JPanel();
         blankSpace = new JLabel();
         progressSent = new JProgressBar();
@@ -270,22 +266,12 @@ private JPanel getContentPanel() {
         spList.setEnabled(true);
         species = (String)(spList.getSelectedItem());
         contentPanel1.setLayout(new java.awt.BorderLayout());
-
-        welcomeTitle.setText("Specify the Species...");
-        contentPanel1.add(welcomeTitle, java.awt.BorderLayout.NORTH);
         
         jLabel2.setText("Please select the species for the data source:");
         jLabel3.setText("Or, enter species:");
         
         jPanel1.setLayout(new java.awt.GridLayout(8, 0));
-        
-        /*
-        jPanel2.add(comboBoxButton);
-        jPanel2.add(jLabel2);
-        jPanel3.add(textBoxButton);
-        jPanel3.add(jLabel3);
-        */
-        
+              
         currentSpBox.setText("Species will be set to " + spList.getSelectedItem() );
         
         jPanel1.add(blankSpace);
