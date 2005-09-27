@@ -17,7 +17,6 @@ public class ARowanBugTest
     final int e1 = root.createEdge(n1, n1, /* directed */ true);
     final GraphPerspective persp =
       root.createGraphPerspective((int[]) null, (int[]) null);
-    System.out.println("now attempting to restore edge " + e1);
     if (persp.restoreEdge(e1) == 0)
       throw new IllegalStateException("could not restore valid edge");
   }
