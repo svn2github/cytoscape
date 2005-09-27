@@ -256,34 +256,37 @@ public class NodeDetails
     return 0.0f; }
 
   /**
-   * Specifies the Y component of the vector that separates the text anchor
-   * point from the node anchor point.
+   * Specifies the Y component of the vector that separates a text anchor
+   * point from a node anchor point.
    * This <i>label offset vector</i> together with the text anchor point and
    * node anchor point determines where, relative to the node, the text's
    * logical bounds box is to be placed.  The text's logical bounds box is
    * placed such that the label offset vector plus the node anchor point
    * equals the text anchor point.<p>
-   * By default this method returns zero.  This return value is ignored if
-   * labelText(node) returns either null or the empty string.
-   * @see #labelOffsetVectorX(int)
-   * @see #labelTextAnchor(int)
-   * @see #labelNodeAnchor(int)
+   * By default this method always returns zero.
+   * This method is only called by the rendering engine if labelCount(node)
+   * returns a value greater than zero.
+   * @param labelInx a value in the range [0, labelCount(node)-1] indicating
+   *   which node label in question.
+   * @see #labelOffsetVectorX(int, int)
+   * @see #labelTextAnchor(int, int)
+   * @see #labelNodeAnchor(int, int)
    */
-  public float labelOffsetVectorY(final int node) {
+  public float labelOffsetVectorY(final int node, final int labelInx) {
     return 0.0f; }
 
   /**
    * By returning one of the LABEL_WRAP_JUSTIFY_* constants, determines
-   * how to justify node labels spanning multiple lines.  The choice made here
+   * how to justify a node label spanning multiple lines.  The choice made here
    * does not affect the size of the logical bounding box of a node label's
    * text.  The lines of text are justified within that logical bounding
    * box.<p>
-   * By default this method returns LABEL_WRAP_JUSTIFY_CENTER.  This return
-   * value is ignored if labelText(node) returns a text string that does not
-   * span multiple lines.
+   * By default this method always returns LABEL_WRAP_JUSTIFY_CENTER.
+   * This return value is ignored if labelText(node, labelInx) returns a text
+   * string that does not span multiple lines.
    * @see #LABEL_WRAP_JUSTIFY_CENTER
    */
-  public byte labelJustify(final int node) {
+  public byte labelJustify(final int node, final int labelInx) {
     return LABEL_WRAP_JUSTIFY_CENTER; }
 
 }
