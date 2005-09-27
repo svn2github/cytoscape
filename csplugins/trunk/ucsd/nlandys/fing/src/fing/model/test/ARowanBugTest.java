@@ -19,6 +19,10 @@ public class ARowanBugTest
       root.createGraphPerspective((int[]) null, (int[]) null);
     if (persp.restoreEdge(e1) == 0)
       throw new IllegalStateException("could not restore valid edge");
+    final GraphPerspective persp2 =
+      root.createGraphPerspective(null, new int[] { e1 });
+    if (!(persp2.getNodeCount() == 1 && persp2.getEdgeCount() == 1))
+      throw new IllegalStateException("bad counts in perspective");
   }
 
 }
