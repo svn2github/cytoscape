@@ -10,6 +10,7 @@ import cytoscape.*;
 import cytoscape.plugin.*;
 import org.isb.xmlrpc.client.*;
 import org.isb.bionet.datasource.interactions.*;
+import org.isb.bionet.datasource.synonyms.*;
 import org.isb.bionet.gui.wizard.*;
 import org.isb.iavila.ontology.xmlrpc.*;
 import java.lang.Exception;
@@ -22,6 +23,7 @@ public class BioNetPlugin extends CytoscapePlugin {
 
     protected InteractionDataClient interactionsClient;
     protected GOClient goClient;
+    protected SynonymsClient synClient;
 
     protected NetworkBuilderWizard wizard;
 
@@ -51,6 +53,15 @@ public class BioNetPlugin extends CytoscapePlugin {
             } else {
                 System.out
                         .println("Could not get a GOClient!!!");
+            }
+            
+            this.synClient = (SynonymsClient)DataClientFactory.getClient("synonyms");
+            if (this.synClient != null) {
+                System.out
+                        .println("Successfully got a SynonymsClient!!!");
+            } else {
+                System.out
+                        .println("Could not get a SynonymsClient!!!");
             }
  
             this.interactionsClient

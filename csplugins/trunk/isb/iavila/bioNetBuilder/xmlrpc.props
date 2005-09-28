@@ -1,5 +1,7 @@
 handler.interactions=org.isb.bionet.datasource.interactions.InteractionsHandler
 handler.geneOntology=org.isb.iavila.ontology.xmlrpc.GOHandler
+handler.synonyms=org.isb.bionet.datasource.synonyms.SQLSynonymsSource
 host=http://localhost:8081
 client.interactions=org.isb.bionet.datasource.interactions.InteractionDataClient
 client.geneOntology=org.isb.iavila.ontology.xmlrpc.GOClient
+client.synonyms=org.isb.bionet.datasource.synonyms.SynonymsClient

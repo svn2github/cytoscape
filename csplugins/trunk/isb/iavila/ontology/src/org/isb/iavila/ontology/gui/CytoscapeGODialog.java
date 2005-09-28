@@ -12,6 +12,7 @@ import cytoscape.CyNode;
 import cytoscape.view.*;
 import cytoscape.data.Semantics;
 import cern.colt.list.IntArrayList;
+import cytoscape.data.CytoscapeData;
 
 public class CytoscapeGODialog extends JFrame {
 
@@ -157,7 +158,8 @@ public class CytoscapeGODialog extends JFrame {
         createNodesButton.addActionListener(new AbstractAction() {
 
             public void actionPerformed(ActionEvent action) {
-                String netName = askForNetworkName();
+               // String netName = askForNetworkName();
+                String netName = "GO NET";
                 createNetwork(netName);
             }
 
@@ -481,6 +483,10 @@ public class CytoscapeGODialog extends JFrame {
 
         Iterator it = termToGenes.keySet().iterator();
         ArrayList nodes = new ArrayList();
+        //Test new CytoscapeData:
+        //CytoscapeData cyData = Cytoscape.getCurrentNetwork().getNodeData(); 
+        //cyData.initializeAttributeType(ATTRIBUTE_NAME, CytoscapeData.TYPE_STRING);
+        
         while (it.hasNext()) {
             String termID = (String) it.next();
             Vector genes = (Vector) termToGenes.get(termID);
@@ -491,6 +497,8 @@ public class CytoscapeGODialog extends JFrame {
                 String gene = (String) it2.next();
                 CyNode node = (CyNode) Cytoscape.getCyNode(gene, false);
                 nodes.add(node);
+                // Test the new methods in CytoscapeData: (DID NOT WORK!!!)
+               // cyData.addAttributeListValue(gene,ATTRIBUTE_NAME,termName);      
                 String termList = (String) Cytoscape.getNodeAttributeValue(
                         node, ATTRIBUTE_NAME);
                 if (termList != null) {
@@ -511,7 +519,7 @@ public class CytoscapeGODialog extends JFrame {
                 Cytoscape.setNodeAttributeValue(node, ATTRIBUTE_NAME, termList);
             }// while it2
         }// while it.hasNext
-
+        System.out.println("Done setting attribuets!!!!");
         if (nodes.size() == 0) {
             JOptionPane
                     .showMessageDialog(
