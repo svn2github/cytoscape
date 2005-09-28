@@ -108,7 +108,7 @@ public class BioDataServerPanel2Descriptor extends WizardPanelDescriptor
 			} else {
 				panel2.setGaFileName(gaFile.getPath());
 				if( gaFile.canRead() ) {
-					System.out.println("GA flag is true.");
+					//System.out.println("GA flag is true.");
 					gaFlag = true;
 				} else {
 					gaFlag = false;
@@ -190,7 +190,6 @@ public class BioDataServerPanel2Descriptor extends WizardPanelDescriptor
 					System.out.println("Valid Obo file");
 					oboFlag = true;
 				} else {
-					System.out.println("Invalid Obo file");
 					oboFlag = false;
 				}
 				
@@ -246,7 +245,6 @@ public class BioDataServerPanel2Descriptor extends WizardPanelDescriptor
 					System.out.println("Valid GA file");
 					gaFlag = true;
 				} else {
-					System.out.println("Invalid GA file");
 					gaFlag = false;
 				}
 				

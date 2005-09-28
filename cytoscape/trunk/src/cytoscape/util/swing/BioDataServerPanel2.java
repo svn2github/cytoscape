@@ -205,40 +205,7 @@ public class BioDataServerPanel2 extends JPanel {
 	public String getGaTextField() {
 		return gaFileName.getText();
 	}
-	
-	/*
-	 * Create file choosers for obo and gene association files.
-	 */
-	public void createOboFileChooser() {
-		jc1 = new JFileChooser( start );
-		jc1.setDialogTitle("Select OBO File");
-	}
-	
-	public void createGaFileChooser() {
-		jc2 = new JFileChooser( start );
-		jc2.setDialogTitle("Select Gene Association File");
-	}
-	
-	/*
-	 * Display file chooser and return name of the OBO file.
-	 */
-	public File getOboFile( boolean show ) {
-		File targetFile = null;
-		if( show == true ) {
-			int result = jc1.showOpenDialog(null);
-		}
-		targetFile = jc1.getSelectedFile();
-		return targetFile;
-	}
-	
-	public File getGaFile( boolean show ) {
-		File targetFile = null;
-		if( show == true ) {
-			int result = jc2.showOpenDialog(null);
-		}
-		targetFile = jc2.getSelectedFile();
-		return targetFile;
-	}
+
 	
 	
 	public boolean getCheckBoxStatus() {

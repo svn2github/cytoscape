@@ -2,6 +2,7 @@ package cytoscape.util.swing;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
@@ -27,7 +28,6 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.JLabel;
 
-
 import cytoscape.CytoscapeInit;
 import cytoscape.util.FileUtil;
 
@@ -48,7 +48,7 @@ public class BioDataServerPanel3 extends JPanel {
 	private JLabel progressDescription;
 
 	private JProgressBar progressSent;
-	
+
 	private JPanel contentPanel;
 
 	private JLabel iconLabel;
@@ -66,13 +66,13 @@ public class BioDataServerPanel3 extends JPanel {
 	private JComboBox spList;
 
 	File start;
-	
+
 	String species;
 
 	private JTextField taxonNameBox;
 
 	private JButton setButton;
-	
+
 	private ButtonGroup selectionType;
 
 	private JRadioButton comboBoxButton;
@@ -80,10 +80,10 @@ public class BioDataServerPanel3 extends JPanel {
 	private JRadioButton textBoxButton;
 
 	private JTextField currentSpBox;
-	
+
 	private final String FS = System.getProperty("file.separator");
-	
-	// lookup table for the taxon number <-> name 
+
+	// lookup table for the taxon number <-> name
 	public final String TAXON_FILE = "tax_report.txt";
 
 	private JLabel yetAnotherBlankSpace1;
@@ -91,6 +91,16 @@ public class BioDataServerPanel3 extends JPanel {
 	private JPanel jPanel2;
 
 	private JPanel jPanel3;
+
+	private JPanel jPanel4;
+
+	private JLabel jLabel4;
+
+	private JLabel jLabel5;
+
+	private JLabel yetAnotherBlankSpace2;
+
+	private Component yetAnotherBlankSpace3;
 
 	public BioDataServerPanel3() {
 
@@ -141,40 +151,40 @@ public class BioDataServerPanel3 extends JPanel {
 	public void setProgressValue(int i) {
 		progressSent.setValue(i);
 	}
-	
+
 	public String getSpNameFromComboBox() {
-		species = (String)(spList.getSelectedItem());
+		species = (String) (spList.getSelectedItem());
 		return species;
 	}
-	
+
 	public String getSpNameFromTextBox() {
 		species = taxonNameBox.getText();
 		return species;
 	}
-	
-	public void addSpButtonActionListener( ActionListener l ) {
-        setButton.addActionListener( l );
-    }
-	
-	public void addSpComboBoxActionListener( ActionListener l ) {
-        spList.addActionListener(l);
-    }
-	
-	public void addSetButtonActionListener( ActionListener l ) {
-        setButton.addActionListener(l);
-    }
-	
-	public void addRadioButtonActionListener( ActionListener l ) {
-		comboBoxButton.addActionListener( l );
-        textBoxButton.addActionListener(l); 
-    }
-	
+
+	public void addSpButtonActionListener(ActionListener l) {
+		setButton.addActionListener(l);
+	}
+
+	public void addSpComboBoxActionListener(ActionListener l) {
+		spList.addActionListener(l);
+	}
+
+	public void addSetButtonActionListener(ActionListener l) {
+		setButton.addActionListener(l);
+	}
+
+	public void addRadioButtonActionListener(ActionListener l) {
+		comboBoxButton.addActionListener(l);
+		textBoxButton.addActionListener(l);
+	}
+
 	public Object getRadioButtonSelected() {
 		return selectionType.getSelection().getSelectedObjects();
 	}
-	
-	public void setCurrentSpBox( String newSp ) {
-		currentSpBox.setText( "Species will be set to " + newSp );
+
+	public void setCurrentSpBox(String newSp) {
+		currentSpBox.setText("Species will be set to " + newSp);
 	}
 
 	protected void setSpList(final BufferedReader rd) throws IOException {
@@ -198,108 +208,121 @@ public class BioDataServerPanel3 extends JPanel {
 		}
 	}
 
-private JPanel getContentPanel() {
-	
-	JPanel contentPanel1 = new JPanel();
-	String filePath = start + FS +TAXON_FILE;
-    File taxonFile = new File(filePath);
-    
-	if( taxonFile.canRead() == false ) {
-		taxonFile = FileUtil.getFile("Could not locate tax_report.  Please specify...", FileUtil.LOAD);
-	}
-	
-	System.out.println( "Tax Report = " + taxonFile.getAbsolutePath() );
-	BufferedReader spListReader = null;
-    try {
-    	spListReader = new BufferedReader(
-				new FileReader( taxonFile ));
-    } catch (FileNotFoundException e1) {
-		// TODO Auto-generated catch block
-		e1.printStackTrace();
-	}
-    try {
-		setSpList( spListReader );
-	} catch (IOException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
-		
-	
-        
+	private JPanel getContentPanel() {
+
+		JPanel contentPanel1 = new JPanel();
+		String filePath = start + FS + TAXON_FILE;
+		File taxonFile = new File(filePath);
+
+		if (taxonFile.canRead() == false) {
+			taxonFile = FileUtil.getFile(
+					"Could not locate tax_report.  Please specify...",
+					FileUtil.LOAD);
+		}
+
+		System.out.println("Tax Report = " + taxonFile.getAbsolutePath());
+		BufferedReader spListReader = null;
+		try {
+			spListReader = new BufferedReader(new FileReader(taxonFile));
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		try {
+			setSpList(spListReader);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		setButton = new JButton("Set Species");
-	
-        selectionType = new ButtonGroup();
-        comboBoxButton = new JRadioButton();
-        textBoxButton = new JRadioButton();
-        selectionType.add( comboBoxButton );
-        selectionType.add( textBoxButton );
-        
-        comboBoxButton.setText("Please select the species for the data source:");
-        comboBoxButton.setName("combo");
-        textBoxButton.setText("Or, enter species:");
-        textBoxButton.setName("textbox");
-        
-        
-        // Default selection is pull-down menu
-        comboBoxButton.setSelected(true);
-        
-        jPanel1 = new JPanel();
-        blankSpace = new JLabel();
-        progressSent = new JProgressBar();
-        progressDescription = new JLabel();
-        anotherBlankSpace = new JLabel();
-        yetAnotherBlankSpace1 = new JLabel();
-        jLabel1 = new JLabel();
-        jLabel2 = new JLabel();
-        jLabel3 = new JLabel();
-        
-        jPanel2 = new JPanel();
-        jPanel3 = new JPanel();
-        
-        taxonNameBox = new JTextField();
-        taxonNameBox.setEnabled( false );
-        
-        currentSpBox = new JTextField(30);
-        currentSpBox.setEditable( false );
-        
-        //test
-        spList.setEnabled(true);
-        species = (String)(spList.getSelectedItem());
-        contentPanel1.setLayout(new java.awt.BorderLayout());
-        
-        jLabel2.setText("Please select the species for the data source:");
-        jLabel3.setText("Or, enter species:");
-        
-        jPanel1.setLayout(new java.awt.GridLayout(8, 0));
-              
-        currentSpBox.setText("Species will be set to " + spList.getSelectedItem() );
-        
-        jPanel1.add(blankSpace);
-        jPanel1.add(comboBoxButton);
-        jPanel1.add(spList);
 
-        jPanel1.add(anotherBlankSpace);
-        jPanel1.add(textBoxButton);
-        jPanel1.add(taxonNameBox);
-        jPanel1.add(setButton);
-        jPanel1.add(currentSpBox);
-        contentPanel1.add(jPanel1, java.awt.BorderLayout.CENTER);
+		selectionType = new ButtonGroup();
+		comboBoxButton = new JRadioButton();
+		textBoxButton = new JRadioButton();
+		selectionType.add(comboBoxButton);
+		selectionType.add(textBoxButton);
 
-        jLabel1.setText("Please press the Finish button to load the files.");
-        contentPanel1.add(jLabel1, java.awt.BorderLayout.SOUTH);
-        
-        return contentPanel1;
-    }	
+		comboBoxButton
+				.setText("Please select the species for the data source:");
+		comboBoxButton.setName("combo");
+		textBoxButton.setText("Or, enter species:");
+		textBoxButton.setName("textbox");
 
-	public void setComboBoxState( boolean state ) {
-		spList.setEnabled( state );
+		// Default selection is pull-down menu
+		comboBoxButton.setSelected(true);
+
+		jPanel1 = new JPanel();
+		blankSpace = new JLabel();
+		progressSent = new JProgressBar();
+		progressDescription = new JLabel();
+		anotherBlankSpace = new JLabel();
+		yetAnotherBlankSpace1 = new JLabel();
+		yetAnotherBlankSpace2 = new JLabel();
+		yetAnotherBlankSpace3 = new JLabel();
+		
+		jLabel1 = new JLabel();
+		jLabel2 = new JLabel();
+		jLabel3 = new JLabel();
+		jLabel4 = new JLabel();
+		jLabel5 = new JLabel();
+		
+		jPanel2 = new JPanel();
+		jPanel3 = new JPanel();
+		jPanel3 = new JPanel();
+
+		taxonNameBox = new JTextField();
+		taxonNameBox.setEnabled(false);
+
+		currentSpBox = new JTextField(30);
+		currentSpBox.setEditable(false);
+
+		// test
+		spList.setEnabled(true);
+		species = (String) (spList.getSelectedItem());
+		contentPanel1.setLayout(new java.awt.BorderLayout());
+
+		jLabel2.setText("Please select the species for the data source:");
+		jLabel3.setText("Or, enter species:");
+		jLabel4.setText("Current list of gene_association files is available at:" );
+		jLabel5.setText("http://www.geneontology.org/GO.current.annotations.shtml");
+		
+		jPanel1.setLayout(new java.awt.GridLayout(13, 0));
+
+		currentSpBox.setText("Species will be set to "
+				+ spList.getSelectedItem());
+
+		jPanel1.add(blankSpace);
+		jPanel1.add(comboBoxButton);
+		jPanel1.add(spList);
+
+		jPanel1.add(anotherBlankSpace);
+		jPanel1.add(textBoxButton);
+		jPanel1.add(taxonNameBox);
+		jPanel1.add(setButton);
+		jPanel1.add(currentSpBox);
+		jPanel1.add(yetAnotherBlankSpace1);
+		jPanel1.add(jLabel4);
+		jPanel1.add(yetAnotherBlankSpace2);
+		jPanel1.add(jLabel5);
+		jPanel1.add(yetAnotherBlankSpace3);
+		
+		contentPanel1.add(jPanel1, java.awt.BorderLayout.CENTER);
+
+		jLabel1.setText("Please press the Finish button to load the files.");
+		contentPanel1.add(jLabel1, java.awt.BorderLayout.SOUTH);
+
+		return contentPanel1;
 	}
 
-	public void setTextBoxState( boolean state ) {
-		taxonNameBox.setEnabled( state );
+	public void setComboBoxState(boolean state) {
+		spList.setEnabled(state);
 	}
 
-	
+	public void setTextBoxState(boolean state) {
+		taxonNameBox.setEnabled(state);
+	}
+
 	private ImageIcon getImageIcon() {
 		return null;
 	}
