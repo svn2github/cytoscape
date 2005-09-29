@@ -5,12 +5,15 @@ package cytoscape.editor.actions;
 
 import java.awt.event.ActionEvent;
 
+import javax.swing.undo.UndoManager;
+
 import cytoscape.Cytoscape;
 import cytoscape.editor.CytoscapeEditor;
 import cytoscape.editor.CytoscapeEditorFactory;
 import cytoscape.editor.CytoscapeEditorManager;
 import cytoscape.editor.InvalidEditorException;
 import cytoscape.util.CytoscapeAction;
+import cytoscape.view.CyNetworkView;
 import cytoscape.visual.CalculatorCatalog;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
@@ -96,6 +99,22 @@ public class SetEditorAction extends CytoscapeAction {
 			cyEditor.initializeControls(null);
 
 			CytoscapeEditorManager.resetEventHandlerForExistingViews();
+			
+			// AJK: 09/29/05 BEGIN
+			//   setup and undo manager for this network view
+			CyNetworkView view = Cytoscape.getCurrentNetworkView();
+			Object undoObj = CytoscapeEditorManager.getUndoManagerForView(view);
+			if (undoObj instanceof UndoManager)
+			{
+				CytoscapeEditorManager.setCurrentUndoManager ((UndoManager) undoObj);
+			}
+			else
+			{
+				UndoManager newUndo = new UndoManager();
+				CytoscapeEditorManager.setUndoManagerForView (view, newUndo);
+				CytoscapeEditorManager.setCurrentUndoManager (newUndo);
+			}
+			// AJK: 09/29/05 END
 
 		} catch (InvalidEditorException ex) {
 			// TODO: put some error handling here
