@@ -446,6 +446,7 @@ public class CytoscapeDataImpl
       return removeAttributeValue( identifier,
                                    attribute,
                                    new Object[] { Integer.toString(position) } );
+      // @bug We're not plugging the hole.
     } catch ( Exception e ) {
       return null;
     }
