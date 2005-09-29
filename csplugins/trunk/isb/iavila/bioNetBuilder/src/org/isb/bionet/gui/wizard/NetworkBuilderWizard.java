@@ -7,16 +7,14 @@ import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.List;
-import org.isb.iavila.ontology.gui.*;
 import org.isb.bionet.datasource.interactions.*;
+import org.isb.bionet.datasource.synonyms.*;
 import org.isb.iavila.ontology.xmlrpc.*;
 import org.isb.bionet.gui.ProlinksGui;
 import org.isb.bionet.CyNetUtils;
-import java.io.*;
-
 import cytoscape.*;
-import cytoscape.data.Semantics;
-import utils.MyUtils;
+
+
 /**
  * 
  * @author iavila
@@ -24,6 +22,7 @@ import utils.MyUtils;
  */
 public class NetworkBuilderWizard {
     
+    protected SynonymsClient synonymsClient;
     protected InteractionDataClient interactionsClient;
     protected GOClient goClient;
     protected List dialogs;
@@ -55,7 +54,9 @@ public class NetworkBuilderWizard {
      * 
      * @param interactions_client
      */
-    public NetworkBuilderWizard (InteractionDataClient interactions_client, GOClient go_client){
+    public NetworkBuilderWizard (SynonymsClient synonyms_client,
+                InteractionDataClient interactions_client, GOClient go_client){
+        this.synonymsClient = synonyms_client;
         this.interactionsClient = interactions_client;
         this.goClient = go_client;
         FINISH_ACTION = new AbstractAction (){

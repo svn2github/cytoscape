@@ -6,12 +6,12 @@ import java.sql.*;
 import org.isb.bionet.datasource.*;
 import org.isb.xmlrpc.handler.db.*;
 
-public class SQLSynonymsSource extends SQLDBHandler implements SynonymsSource {
+public class SQLSynonymsHandler extends SQLDBHandler implements SynonymsSource {
     
     /**
      * Empty constructor
      */
-    public SQLSynonymsSource() {
+    public SQLSynonymsHandler() {
         // TODO: Remove, this should be read from somewhere!!!
         this("jdbc:mysql://biounder.kaist.ac.kr/synonym3?user=bioinfo&password=qkdldhWkd");
     }
@@ -20,7 +20,7 @@ public class SQLSynonymsSource extends SQLDBHandler implements SynonymsSource {
      * @param mysql_url
      *            the URL of the mySQL data base
      */
-    public SQLSynonymsSource(String mysql_url) {
+    public SQLSynonymsHandler(String mysql_url) {
         super(mysql_url, SQLDBHandler.MYSQL_JDBC_DRIVER);
     }
     
