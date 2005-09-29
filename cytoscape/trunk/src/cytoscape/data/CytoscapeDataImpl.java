@@ -150,40 +150,40 @@ public class CytoscapeDataImpl
     }
   }
 
-  /**
-   * If we are guessing, first try to cast as a Double. 
-   * Then Boolean, then default to String. We never guess Integer.
-   */
-  public byte wildGuessAndDefineObjectType ( Object value, String attributeName ) {
+//   /**
+//    * If we are guessing, first try to cast as a Double. 
+//    * Then Boolean, then default to String. We never guess Integer.
+//    */
+//   public byte wildGuessAndDefineObjectType ( Object value, String attributeName ) {
    
-    Object attribute;
-    // Test for Double
-    try { 
-      attribute = new Double( value.toString() );
-      defineAttribute( attributeName,
-                       TYPE_FLOATING_POINT,
-                       new byte[] {TYPE_STRING} );
-      return TYPE_FLOATING_POINT;
-    } catch ( Exception e ) {}
+//     Object attribute;
+//     // Test for Double
+//     try { 
+//       attribute = new Double( value.toString() );
+//       defineAttribute( attributeName,
+//                        TYPE_FLOATING_POINT,
+//                        new byte[] {TYPE_STRING} );
+//       return TYPE_FLOATING_POINT;
+//     } catch ( Exception e ) {}
     
-    // Test for Boolean
-    try { 
-      if ( value.toString().equals("true") || 
-           value.toString().equals("false") ) {
-        defineAttribute( attributeName,
-                         TYPE_BOOLEAN,
-                         new byte[] {TYPE_STRING} );
-        return TYPE_BOOLEAN;
-      }
-    } catch ( Exception e ) {}
+//     // Test for Boolean
+//     try { 
+//       if ( value.toString().equals("true") || 
+//            value.toString().equals("false") ) {
+//         defineAttribute( attributeName,
+//                          TYPE_BOOLEAN,
+//                          new byte[] {TYPE_STRING} );
+//         return TYPE_BOOLEAN;
+//       }
+//     } catch ( Exception e ) {}
     
-    // Default is String
-    defineAttribute( attributeName,
-                     TYPE_STRING,
-                     new byte[] {TYPE_STRING} );
-    return TYPE_STRING;
+//     // Default is String
+//     defineAttribute( attributeName,
+//                      TYPE_STRING,
+//                      new byte[] {TYPE_STRING} );
+//     return TYPE_STRING;
     
-  }
+//   }
   
 
 
