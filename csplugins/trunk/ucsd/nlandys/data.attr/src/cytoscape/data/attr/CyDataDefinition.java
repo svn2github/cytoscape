@@ -33,7 +33,7 @@ public interface CyDataDefinition
    * Perhaps the most common type of attribute definition is one where the
    * key space has zero dimensions.  For example, if I want to identify each
    * object as having a color, I would create an attribute definition which
-   * stores values of TYPE_STRING (for storing "red", "blue", and so on),
+   * stores values of TYPE_STRING (for storing "red", "blue", and so on)
    * and has no key sequence mapping color
    * values.  By "no key sequence" I mean that the input parameter
    * keyTypes would be either null or the empty array for my
