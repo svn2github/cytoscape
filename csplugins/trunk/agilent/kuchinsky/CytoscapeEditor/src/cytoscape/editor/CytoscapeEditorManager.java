@@ -35,7 +35,6 @@ import cytoscape.editor.event.NetworkEditEventAdapter;
 import cytoscape.editor.impl.CytoscapeEditorManagerSupport;
 import cytoscape.giny.PhoebeNetworkView;
 import cytoscape.view.CyNetworkView;
-import cytoscape.visual.VisualStyle;
 
 /**
  * The <b>CytoscapeEditorManager</b> is the central class in the editor framework
@@ -229,6 +228,8 @@ public abstract class CytoscapeEditorManager {
 				undoItem);
 		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("Edit").add(
 				redoItem);
+		
+
 	}
 
 	/**
@@ -259,14 +260,17 @@ public abstract class CytoscapeEditorManager {
 		// AJK: 08/11/05 BEGIN
 		//     for version 2.2, only add ability to set editors if we are running
 		// the framework
-		if (isRunningEditorFramework()) {
+		// AJK: 09/26/05 we are now implementing the framework in 2.2
+//		if (isRunningEditorFramework()) {
 			SetEditorAction editNetwork = new SetEditorAction(editorName,
 					CytoscapeEditorFactory.INSTANCE);
 			// create With menu if not already there
 			Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu(
 					"File.SetEditor");
+			Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu(
+			"File.SetEditor").setEnabled(true);
 			Cytoscape.getDesktop().getCyMenus().addAction(editNetwork);
-		}
+//		}
 		// AJK: 08/11/05 END
 
 		CytoscapeEditorManager.setNetworkEditEventAdapterType(editorName,

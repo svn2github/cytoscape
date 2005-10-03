@@ -23,6 +23,7 @@ import cytoscape.editor.CytoscapeEditorManager;
 import cytoscape.editor.impl.BasicCytoShapeEntity;
 import cytoscape.editor.impl.ShapePalette;
 import edu.umd.cs.piccolo.event.PInputEvent;
+import giny.model.Node;
 import giny.view.NodeView;
 
 /**
@@ -61,16 +62,42 @@ public class BioPAXNetworkEditEventHandler extends
 				cn.getIdentifier());
 		return cn;
 	}
-
+	
+	
+	/**
+	 * finish edge on node containing input point
+	 * @param e input event for mouse press
+	 */
 	public CyEdge finishEdge (PInputEvent e)
 	{
-		CyEdge edge = super.finishEdge(e);
-		CyNetwork net = Cytoscape.getCurrentNetwork();
-		Cytoscape.setEdgeAttributeValue(edge, "BIOPAX_EDGE_TYPE",
-				attributeValue);
-		
-		return edge;
-	}
+		edgeStarted = false;
+		updateEdge();
+
+		// From the Pick Path
+		NodeView target = (NodeView) e.getPickedNode();
+		// From Earlier
+		NodeView source = node;
+
+		Node source_node = source.getNode();
+		Node target_node = target.getNode();
+
+		CyEdge myEdge = CytoscapeEditorManager.addEdge(source_node,
+				target_node, cytoscape.data.Semantics.INTERACTION,
+				"default", true, attributeValue);   // set to BIOPAX_EDGE_TYPE
+
+		Cytoscape.setEdgeAttributeValue(myEdge, "BIOPAX_EDGE_TYPE",
+				attributeValue);		//				Cytoscape.getCurrentNetwork().restoreEdge(myEdge);
+
+		getCanvas().getLayer().removeChild(edge);
+		edge = null;
+		node = null;
+		if (isHandlingEdgeDrop()) {
+			setMode(SELECT_MODE);
+			this.setHandlingEdgeDrop(false);
+		}
+		return myEdge;
+	}	
+	
 	
 	/**
 	 * The <b>itemDropped()</b> method is at the heart of the palette-based editor.  The method can
