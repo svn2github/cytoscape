@@ -458,9 +458,9 @@ public interface CyAttributes {
     public Map getAttributeMap(String id, String attributeName);
 
     /**
-     * Gets the MuliHashMap Object, where we store attribute values.
+     * Gets the MultiHashMap Object, where we store attribute values.
      *
-     * <P>By using MultiHashMap and MuliHashMapDefinition directly,
+     * <P>By using MultiHashMap and MultiHashMapDefinition directly,
      * you can store arbitrarily complex data structures.
      * Recommended for advanced coders only.
      *
@@ -472,10 +472,10 @@ public interface CyAttributes {
     public Object getMultiHashMap();
 
     /**
-     * Gets the MuliHashMapDefinition Object, where we store attribute
+     * Gets the MultiHashMapDefinition Object, where we store attribute
      * definitions.
      * <P>
-     * <P>By using MuliHashMap and MuliHashMapDefinition directly, you can
+     * <P>By using MuliHashMap and MultiHashMapDefinition directly, you can
      * store arbitrarily complex data structures (e.g. anything more
      * complicated that 'simple' lists and 'simple' maps).  Recommended for
      * advanced coders only.
