@@ -8,6 +8,7 @@ import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -214,13 +215,63 @@ public class BioDataServerPanel3 extends JPanel {
 		String filePath = start + FS + TAXON_FILE;
 		File taxonFile = new File(filePath);
 
+		// Find tax_report.
+		boolean taxonFound = false;
+		
+		// In case taxon file is not readable...
 		if (taxonFile.canRead() == false) {
-			taxonFile = FileUtil.getFile(
-					"Could not locate tax_report.  Please specify...",
-					FileUtil.LOAD);
+			try {
+				File file = new File(System.getProperty("user.dir"), TAXON_FILE);
+				if (!taxonFound) {
+					taxonFile = file;
+					System.out.println("Taxonomy table found at: " + taxonFile);
+					taxonFound = true;
+				}
+
+			} catch (Exception e) {
+				taxonFound = false;
+			}
+			
+			try {
+				File file = new File(System.getProperty("CYTOSCAPE_HOME"),
+						TAXON_FILE);
+				if (!taxonFound) {
+					taxonFile = file;
+					System.out.println("Taxonomy table found at: " + taxonFile);
+					taxonFound = true;
+				}
+
+			} catch (Exception e) {
+				taxonFound = false;
+			}
+
+			try {
+				File file = CytoscapeInit.getConfigFile(TAXON_FILE);
+				if (!taxonFound) {
+					taxonFile = file;
+					System.out.println("Taxonomy table found at: " + taxonFile);
+					taxonFound = true;
+				}
+
+			} catch (Exception e) {
+				taxonFound = false;
+			}
+			
+			try {
+				String fileLocation = CytoscapeInit.getPropertiesLocation() + FS + TAXON_FILE;
+				File file = new File( fileLocation );
+				if (!taxonFound) {
+					taxonFile = file;
+					System.out.println("Taxonomy table found at: " + taxonFile);
+					taxonFound = true;
+				}
+
+			} catch (Exception e) {
+				taxonFound = false;
+			}
 		}
 
-		System.out.println("Tax Report = " + taxonFile.getAbsolutePath());
+		System.out.println("Taxonomy file found at: " + taxonFile.getAbsolutePath());
 		BufferedReader spListReader = null;
 		try {
 			spListReader = new BufferedReader(new FileReader(taxonFile));
@@ -260,13 +311,13 @@ public class BioDataServerPanel3 extends JPanel {
 		yetAnotherBlankSpace1 = new JLabel();
 		yetAnotherBlankSpace2 = new JLabel();
 		yetAnotherBlankSpace3 = new JLabel();
-		
+
 		jLabel1 = new JLabel();
 		jLabel2 = new JLabel();
 		jLabel3 = new JLabel();
 		jLabel4 = new JLabel();
 		jLabel5 = new JLabel();
-		
+
 		jPanel2 = new JPanel();
 		jPanel3 = new JPanel();
 		jPanel3 = new JPanel();
@@ -284,9 +335,11 @@ public class BioDataServerPanel3 extends JPanel {
 
 		jLabel2.setText("Please select the species for the data source:");
 		jLabel3.setText("Or, enter species:");
-		jLabel4.setText("Current list of gene_association files is available at:" );
-		jLabel5.setText("http://www.geneontology.org/GO.current.annotations.shtml");
-		
+		jLabel4
+				.setText("Current list of gene_association files is available at:");
+		jLabel5
+				.setText("http://www.geneontology.org/GO.current.annotations.shtml");
+
 		jPanel1.setLayout(new java.awt.GridLayout(13, 0));
 
 		currentSpBox.setText("Species will be set to "
@@ -306,7 +359,7 @@ public class BioDataServerPanel3 extends JPanel {
 		jPanel1.add(yetAnotherBlankSpace2);
 		jPanel1.add(jLabel5);
 		jPanel1.add(yetAnotherBlankSpace3);
-		
+
 		contentPanel1.add(jPanel1, java.awt.BorderLayout.CENTER);
 
 		jLabel1.setText("Please press the Finish button to load the files.");
