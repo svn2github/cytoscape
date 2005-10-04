@@ -289,6 +289,8 @@
               todir="${basedir}"/>
         <copy file="${basedir}/props/vizmap.props"
               todir="${basedir}"/>
+        <copy file="${basedir}/props/tax_report.txt"
+    	              todir="${basedir}"/>
     </target>
 
     <!-- ======================================================= -->
@@ -356,7 +358,8 @@
               tofile="${release.dir}/cytoscape.props"/>
         <copy file="${basedir}/props/vizmap.props"
               tofile="${release.dir}/vizmap.props"/>
-
+    		 <copy file="${basedir}/props/tax_report.txt"
+    	         tofile="${release.dir}/tax_report.txt"/>
         <!-- Copy over Txt/PDF files -->
         <echo>
             ---------------------------------------
@@ -644,7 +647,8 @@
               tofile="${webstart.dir}/cytoscape.props"/>
         <copy file="${basedir}/vizmap.props"
               tofile="${webstart.dir}/vizmap.props"/>
-
+    	   <copy file="${basedir}/tax_report.txt"
+    	              tofile="${webstart.dir}/tax_report.txt"/>
    
 
         <!-- Copy over Webstart PlugIns -->
