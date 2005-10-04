@@ -48,11 +48,11 @@ import java.util.Map;
  * the following code snippet sets and gets an Integer attribute value:
  * <PRE>
  * cyAttributes.setAttribute (node.getIdentifier(),
- *      "Rank", new Integer(3));
+ * "Rank", new Integer(3));
  * Integer value = cyAttributes.getIntegerAttribute
- *      (node.getIdentifier(), "Rank");
+ * (node.getIdentifier(), "Rank");
  * </PRE>
- *
+ * <p/>
  * <h3>Getting / Setting Simple Lists:</h3>
  * <P>
  * A 'simple' list is defined as follows:
@@ -73,7 +73,7 @@ import java.util.Map;
  * list.add (new Integer(22));
  * list.add (new Integer(5));
  * cyAttributes.setList (node.getIdentifier(),
- *      "Rank List", list).
+ * "Rank List", list).
  * </PRE>
  * At run-time, the <CODE>setList</CODE> method will check that all items in
  * the list are of the same type, and are chosen from the following list:
@@ -104,9 +104,9 @@ import java.util.Map;
  * map.put("name", "Reactome");
  * map.put("url", "http://www.reactome.org");
  * map.put("description", "Reactome - a knowledgebase of "
- *      + "biological processes");
+ * + "biological processes");
  * cyAttributes.setAttributeMap(node.getIdentifier(),
- *      "external_db", map);
+ * "external_db", map);
  * </PRE>
  * To get a simple map, use the
  * {@link CyAttributes#getAttributeMap(String, String)} method.
@@ -159,6 +159,7 @@ import java.util.Map;
  * and then register a listener via
  * {@link MulitHashMap#addDataListener()}
  * <P>
+ *
  * @author Cytoscape Development Team
  */
 public interface CyAttributes {
@@ -204,7 +205,7 @@ public interface CyAttributes {
      * from one of the following: <CODE>Boolean</CODE>, <CODE>Integer</CODE>,
      * <CODE>Double</CODE> or <CODE>String</CODE>.
      * </UL>
-    */
+     */
     public final byte TYPE_SIMPLE_MAP = 5;
 
     /**
@@ -375,6 +376,7 @@ public interface CyAttributes {
 
     /**
      * Sets a simple list of attributes.
+     * <p/>
      * <P>A simple list is defined as follows:
      * <UL>
      * <LI>All items within the list are of the same type, and are chosen
@@ -399,12 +401,14 @@ public interface CyAttributes {
 
     /**
      * Gets a 'simple' list of attributes for the id/attributeName pair.
+     * <p/>
      * <P>A 'simple' list is defined as follows:
      * <UL>
      * <LI>All items within the list are of the same type, and are chosen
      * from one of the following: <CODE>Boolean</CODE>, <CODE>Integer</CODE>,
      * <CODE>Double</CODE> or <CODE>String</CODE>.
      * </UL>
+     *
      * @param id            unique identifier.
      * @param attributeName attribute name.
      * @return List object.
@@ -442,13 +446,15 @@ public interface CyAttributes {
 
     /**
      * Gets a 'simple' map of attribute values.
-     * <P>A simple map is defined as follows:
+     * <p/>
+     * <P>A 'simple' map is defined as follows:
      * <UL>
      * <LI>All keys within the map are of type:  String.
      * <LI>All values within the map are of the same type, and are chosen
      * from one of the following: <CODE>Boolean</CODE>, <CODE>Integer</CODE>,
      * <CODE>Double</CODE> or <CODE>String</CODE>.
      * </UL>
+     *
      * @param id            unique identifier.
      * @param attributeName attribute name.
      * @return Map Object.
@@ -459,11 +465,11 @@ public interface CyAttributes {
 
     /**
      * Gets the MultiHashMap Object, where we store attribute values.
-     *
+     * <p/>
      * <P>By using MultiHashMap and MultiHashMapDefinition directly,
      * you can store arbitrarily complex data structures.
      * Recommended for advanced coders only.
-     *
+     * <p/>
      * // TODO:  This method currently returns an Object.
      * // TODO:  Waiting for MultiHashMap to be checked into CVS
      *
@@ -479,11 +485,11 @@ public interface CyAttributes {
      * store arbitrarily complex data structures (e.g. anything more
      * complicated that 'simple' lists and 'simple' maps).  Recommended for
      * advanced coders only.
-     *
+     * <p/>
      * // TODO:  This method currently returns an Object.
      * // TODO:  Waiting for MultiHashMapDefinition to be checked into CVS
      *
      * @return MultiHashMapDefinition Object.
      */
-    public Object getMultiHashMapDefinition ();
+    public Object getMultiHashMapDefinition();
 }
