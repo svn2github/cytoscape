@@ -238,6 +238,62 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 				</td>
 			</tr>
 			
+			
+			
+			<tr>
+				<td width="20%" valign="top">
+					<b>DomainNetworkBuilder Plugin</b><font size="-1">
+						<br>
+						Version: 1.0
+						<br>
+						Release Date: September 21, 2005</font>
+				</td>
+				<td width="40%" valign="top">
+					<P>This plugin works in Cytoscape 2.1 and
+						decomposes protein networks into domain-domain interactions.
+						Basically, it transforms each protein node into a chain of
+						consecutive domain nodes and constructs a putative network of
+						interacting domain nodes. Parameter settings support the
+						selection of various visualization modes.
+					</P>
+					<P>	Another plugin named DomainWebLinks
+						provides context-dependent web links to Pfam, InterDom, and 3did
+						for DomainNetworkBuilder.
+					</P>
+					<P>	Reference:<BR>Mario Albrecht, Carola
+						Huthmacher, Silvio C.E. Tosatto, Thomas<BR>Lengauer:<BR>Decomposing
+						protein networks into domain-domain interactions. ECCB 2005
+						Proceedings. To be published in Bioinformatics, 21, Suppl. 2,
+						2005.
+					</P>
+					<P>
+						Project web site is <A HREF="http://med.bioinf.mpi-sb.mpg.de/domainnet/index.html">here</A>.
+					</P>
+					<P>Released by: Mario Albrecht, Carola
+						Huthmacher Group, <A HREF="http://www.mpi-sb.mpg.de/">Max-Planck-Institut
+						f&uuml;r Informatik</A>.
+					</P>
+				</td>
+				<TD WIDTH=20%>
+					<P>Verified to work in 2.1.
+					<BR>Nottested in Cytoscape 2.0
+					</P>
+				</TD>
+				<TD WIDTH=20%>
+					<P>[<A HREF="http://med.bioinf.mpi-sb.mpg.de/domainnet/index.html">
+						Download from Project Web Site</A>]
+					</P>
+				</TD>
+			</tr>
+			<tr>
+				<td colspan="4">
+					<hr>
+				</td>
+			</tr>
+			
+			
+			
+			
 			<tr>
 				<td width="20%" valign="top">
 					<b>Dynamic Expression Plugin</b><font size="-1">
@@ -479,7 +535,7 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 		<td width="40%" valign="top">
 			This plugin supports features found in Cytoscape 2.0 for editing
 Networks using Filters.  Available on the "Filters" Menu, "Network
-±" will allow you to create new Networks, and modify existing
+ï¿½" will allow you to create new Networks, and modify existing
 Networks by using Filters that you have created.
 			<P>Released by: Rowan Christmas, <a href="http://www.systemsbiology.org/">Institute for Systems Biology</a>.
 		</td>
