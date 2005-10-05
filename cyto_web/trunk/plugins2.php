@@ -237,9 +237,9 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 					<hr>
 				</td>
 			</tr>
-			
-			
-			
+
+
+
 			<tr>
 				<td width="20%" valign="top">
 					<b>DomainNetworkBuilder Plugin</b><font size="-1">
@@ -263,20 +263,19 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 					<P>	Reference:<BR>Mario Albrecht, Carola
 						Huthmacher, Silvio C.E. Tosatto, Thomas<BR>Lengauer:<BR>Decomposing
 						protein networks into domain-domain interactions. ECCB 2005
-						Proceedings. To be published in Bioinformatics, 21, Suppl. 2,
-						2005.
+						Proceedings. <a href="http://bioinformatics.oxfordjournals.org/cgi/content/abstract/21/suppl_2/ii220">Bioinformatics, 21, Suppl. 2,
+						2005</a>.
 					</P>
 					<P>
 						Project web site is <A HREF="http://med.bioinf.mpi-sb.mpg.de/domainnet/index.html">here</A>.
 					</P>
 					<P>Released by: Mario Albrecht, Carola
-						Huthmacher Group, <A HREF="http://www.mpi-sb.mpg.de/">Max-Planck-Institut
-						f&uuml;r Informatik</A>.
+						Huthmacher, Lengauer Group, <A HREF="http://www.mpi-sb.mpg.de/">Max Planck Institute for Informatics</A>.
 					</P>
 				</td>
 				<TD WIDTH=20%>
 					<P>Verified to work in 2.1.
-					<BR>Nottested in Cytoscape 2.0
+					<BR>Not tested in Cytoscape 2.0
 					</P>
 				</TD>
 				<TD WIDTH=20%>
@@ -290,10 +289,10 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 					<hr>
 				</td>
 			</tr>
-			
-			
-			
-			
+
+
+
+
 			<tr>
 				<td width="20%" valign="top">
 					<b>Dynamic Expression Plugin</b><font size="-1">
@@ -303,13 +302,13 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 						Release Date: August 9, 2005</font>
 				</td>
 				<td width="40%" valign="top">
-					This plug-in loads an expression data file (consult the Cytoscape manual to learn 
+					This plug-in loads an expression data file (consult the Cytoscape manual to learn
 					about the format of this type of file) and then allows the user to color the nodes
 					in a network according to their expression values. The GUI works like a VCR, with
 					play, pause, and stop buttons. If the user presses the play button, the plug-in will
 					iterate over all the conditions in the expression file and color the nodes according
 					to their corresponding expression values.
-					
+
 					<p>
 						Released by: Iliana Avila-Campillo, Galitski Group, <a href="http://www.systemsbiology.org/">Institute for Systems Biology</a>.
 					</p>
@@ -328,7 +327,7 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 					<hr>
 				</td>
 			</tr>
-			
+
 			<tr>
 				<td width="20%" valign="top">
 					<b>Expression Correlation Network Plugin</b><font size="-1">
