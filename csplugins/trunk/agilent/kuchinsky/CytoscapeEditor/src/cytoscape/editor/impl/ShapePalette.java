@@ -4,23 +4,25 @@
  */
 package cytoscape.editor.impl;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Rectangle;
 import java.util.HashMap;
 
+import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 
 import cytoscape.Cytoscape;
 import cytoscape.editor.event.BasicCytoShapeTransferHandler;
-import cytoscape.view.CytoscapeDesktop;
 
 
 
@@ -55,6 +57,10 @@ public class ShapePalette extends JPanel
 	  
 	public ShapePalette() {
 		super();
+		
+	    JPanel _controlPane = new JPanel();
+	    _controlPane.setLayout (new BorderLayout());
+	    
 		listModel = new DefaultListModel();
 		dataList = new JList (listModel);
 		dataList.setCellRenderer(new MyCellRenderer());
@@ -64,8 +70,41 @@ public class ShapePalette extends JPanel
     	//     set internal spacing via fixed cell height and width
     	dataList.setFixedCellHeight(CytoShapeIcon.HEIGHT + 5);
     	// AJK: 09/16/05 END
-		this.add(dataList);
-		dataList.setBackground(Cytoscape.getDesktop().getBackground());
+    	
+    	// AJK: 10/04/05 do via a control pane with scroll pane
+//		this.add(dataList);
+    	
+        JTextArea instructionsArea = new JTextArea();
+
+        instructionsArea.setLineWrap(true);
+        instructionsArea.setWrapStyleWord(true);
+        instructionsArea.setText("Cytoscape Editor\n\nTo add a node to a network, click on a shape on the palette, " +
+        		"then drag and drop the shape onto the canvas." +
+				"\n\nTo connect two nodes with an edge, click on an arrow on the palette, " +
+				"drag and drop the arrow onto a node on the canvas, " + 
+				"then move the cursor over a second node and click the mouse.");
+        instructionsArea.setBorder(BorderFactory.createEtchedBorder());
+        instructionsArea.setBackground(Cytoscape.getDesktop().getBackground());
+        instructionsArea.setPreferredSize(new Dimension(
+        		((JPanel) Cytoscape.getDesktop().getCytoPanel( SwingConstants.WEST )).getSize().width - 5,
+				160));
+    	
+        JScrollPane scrollPane = new JScrollPane(dataList);
+        _controlPane.add (instructionsArea, BorderLayout.NORTH);
+        scrollPane.setBorder(BorderFactory.createEtchedBorder());
+//        scrollPane.setBorder (BorderFactory.createEmptyBorder (0, 0,
+//                                                               10, 0));
+        dataList.setBackground(Cytoscape.getDesktop().getBackground());
+        scrollPane.setBackground(Cytoscape.getDesktop().getBackground());
+        scrollPane.setPreferredSize (new Dimension(
+        		((JPanel) Cytoscape.getDesktop().getCytoPanel( SwingConstants.WEST )).getSize().width - 5,
+        		((JPanel) Cytoscape.getDesktop().getCytoPanel( SwingConstants.WEST )).getSize().height
+				    - instructionsArea.getPreferredSize().height - 5));
+        
+       _controlPane.add (scrollPane, BorderLayout.SOUTH);
+       
+
+		this.add(_controlPane);
 		this.setBackground(Cytoscape.getDesktop().getBackground());
 		this.setVisible(true);		
 	}

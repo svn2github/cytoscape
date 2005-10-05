@@ -41,7 +41,7 @@ import cytoscape.visual.mappings.PassThroughMapping;
 
 
 /**
- * An example "BioPAX-like" editor that extends the basic Cytoscape editor and is based upon
+ * An example editor that extends the basic Cytoscape editor and is based upon
  * a drag-and-drop and palette framework into which developers plug in semantics. The framework consists of
  * <ul> 
  * <li> a palette, from which the user drags and drops shapes onto the canvas

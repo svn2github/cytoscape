@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.undo.UndoManager;
 
+import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.editor.CytoscapeEditor;
 import cytoscape.editor.CytoscapeEditorFactory;
@@ -14,6 +15,7 @@ import cytoscape.editor.CytoscapeEditorManager;
 import cytoscape.editor.InvalidEditorException;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CyNetworkView;
+import cytoscape.view.NetworkPanel;
 import cytoscape.visual.CalculatorCatalog;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
@@ -93,16 +95,38 @@ public class SetEditorAction extends CytoscapeAction {
 			// AJK: 09/19/05 END
 
 			CytoscapeEditorManager.setCurrentEditor(cyEditor);
+			
 			//			System.out.println ("Set current editor to: " +
 			// CytoscapeEditorManager.getCurrentEditor());
 			//			System.out.println ("for editor name: " + editorName);
 			cyEditor.initializeControls(null);
 
 			CytoscapeEditorManager.resetEventHandlerForExistingViews();
+
+			CyNetworkView view = Cytoscape.getCurrentNetworkView();
+			
+			// AJK: 10/05/05 BEGIN
+			//    create a new network if there are no networks yet
+			if (view.getTitle().equals("null"))
+			{
+
+				//			CyNetwork newNet = Cytoscape.getCurrentNetwork();
+				//			System.out.println ("Got current network: " + newNet);
+				CyNetwork newNet = Cytoscape.createNetwork("Net:"
+						+ CytoscapeEditorManager.getNetworkNameCounter());
+				CytoscapeEditorManager.incrementNetworkNameCounter();
+				view = Cytoscape.createNetworkView(newNet);
+
+				CytoscapeEditorManager.setEditorForNetwork(newNet, cyEditor);
+				CytoscapeEditorManager.setEditorForView(view, cyEditor);
+			}
+
+
+//			// AJK: 10/04/05 END
 			
 			// AJK: 09/29/05 BEGIN
 			//   setup and undo manager for this network view
-			CyNetworkView view = Cytoscape.getCurrentNetworkView();
+
 			Object undoObj = CytoscapeEditorManager.getUndoManagerForView(view);
 			if (undoObj instanceof UndoManager)
 			{

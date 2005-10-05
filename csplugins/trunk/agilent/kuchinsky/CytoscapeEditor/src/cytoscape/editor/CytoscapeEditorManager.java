@@ -192,6 +192,8 @@ public abstract class CytoscapeEditorManager {
 	
 	public static final String ANY_VISUAL_STYLE = "ANY_VISUAL_STYLE";
 	
+//	public static final String DEFAULT_VISUAL_STYLE = CytoscapeInit.getDefaultVisualStyle();
+	
 	/**
 	 * initial setup of controls, menu items, undo/redo actions, and keyboard accelerators
 	 *

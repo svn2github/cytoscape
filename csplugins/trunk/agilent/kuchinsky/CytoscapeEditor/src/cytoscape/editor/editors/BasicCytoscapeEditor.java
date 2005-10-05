@@ -167,6 +167,11 @@ public class BasicCytoscapeEditor implements CytoscapeEditor {
 		}
 
 		_cyMenus = Cytoscape.getDesktop().getCyMenus();
+		
+		// AJK: 10/03/05 BEGIN
+		//       comment out toolbar icons; disable the 'stamp editor'
+		//       remove this code later
+		/*
 		_toolBar = _cyMenus.getToolBar();
 
 		_toolBar.addSeparator();
@@ -220,6 +225,8 @@ public class BasicCytoscapeEditor implements CytoscapeEditor {
 		Image edgePointer = img.getImage();
 		_edgeCursor = tk.createCustomCursor(edgePointer, new Point(30, 1),
 				"EdgePointer");
+				*/
+		// AJK: 10/03/05 END
 
 		_originalCursor = Cytoscape.getDesktop().getCursor();
 
