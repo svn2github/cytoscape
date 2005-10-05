@@ -249,8 +249,7 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 						Release Date: September 21, 2005</font>
 				</td>
 				<td width="40%" valign="top">
-					<P>This plugin works in Cytoscape 2.1 and
-						decomposes protein networks into domain-domain interactions.
+					<P>This plugin decomposes protein networks into domain-domain interactions.
 						Basically, it transforms each protein node into a chain of
 						consecutive domain nodes and constructs a putative network of
 						interacting domain nodes. Parameter settings support the
@@ -261,13 +260,13 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 						for DomainNetworkBuilder.
 					</P>
 					<P>	Reference:<BR>Mario Albrecht, Carola
-						Huthmacher, Silvio C.E. Tosatto, Thomas<BR>Lengauer:<BR>Decomposing
+						Huthmacher, Silvio C.E. Tosatto, Thomas Lengauer<BR>Decomposing
 						protein networks into domain-domain interactions. ECCB 2005
 						Proceedings. <a href="http://bioinformatics.oxfordjournals.org/cgi/content/abstract/21/suppl_2/ii220">Bioinformatics, 21, Suppl. 2,
-						2005</a>.
+						2005</a>
 					</P>
 					<P>
-						Project web site is <A HREF="http://med.bioinf.mpi-sb.mpg.de/domainnet/index.html">here</A>.
+						<A HREF="http://med.bioinf.mpi-sb.mpg.de/domainnet/index.html">Project web site</A>.
 					</P>
 					<P>Released by: Mario Albrecht, Carola
 						Huthmacher, Lengauer Group, <A HREF="http://www.mpi-sb.mpg.de/">Max Planck Institute for Informatics</A>.
