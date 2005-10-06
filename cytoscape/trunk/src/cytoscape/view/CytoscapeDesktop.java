@@ -65,7 +65,6 @@ public class CytoscapeDesktop
    */
   public static cytoscape.util.UndoManager undo;
 
-
   /**
    * Displays all network views in TabbedPanes
    * ( like Mozilla )
@@ -211,7 +210,6 @@ public class CytoscapeDesktop
     // enable context-sensitive help for menus/menubar
     getHelpBroker().enableHelp(cyMenus.getMenuBar(),"menus", null);
 
-    
     networkViewManager = new NetworkViewManager( this );
 
 
@@ -257,7 +255,7 @@ public class CytoscapeDesktop
 
     // initialize Help Menu
     cyMenus.initializeHelp(cyHelpBroker.getHelpBroker());
-    
+
     // create the CytoscapeDesktop
 	BiModalJSplitPane masterPane = setupCytoPanels(networkPanel, networkViewManager);
 	// note - proper networkViewManager has been properly selected in setupCytoPanels()
@@ -274,11 +272,7 @@ public class CytoscapeDesktop
 		cyMenus.getToolBar().setOrientation( JToolBar.VERTICAL );
 		main_panel.add(cyMenus.getToolBar(), BorderLayout.EAST);
 		setJMenuBar(cyMenus.getMenuBar());
-	
-
-    
-
-  }
+	}
 
 	/* leave following code commented out for now - until CytoPanels integration is correct */
 	/*
@@ -338,6 +332,10 @@ public class CytoscapeDesktop
     
     
     final CytoscapeDesktop thisWindow = this;
+    // AJK: 09/13/05 BEGIN
+    //      don't automatically close window.  Let Cytoscape.exit() handle this, based upon user confirmation.
+    setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+    // AJK: 09/13/05 END
     addWindowListener(new WindowAdapter() {
         public void windowClosing(WindowEvent we) {
           Cytoscape.exit();
@@ -347,17 +345,12 @@ public class CytoscapeDesktop
         }
     });
     
-
-   
-
     // show the Desktop
     setContentPane( main_panel );
     pack();
     if ( VIEW_TYPE != EXTERNAL_VIEW )
       setSize( 800, 700 );
     setVisible( true );
-
-    
 
   }
 
@@ -404,7 +397,6 @@ public class CytoscapeDesktop
     // undo = new cytoscape.util.UndoManager();
     undo.addEdit( edit );
   }
-
 
   /**
    * This will return the network currently under focus. however use this:
@@ -920,13 +912,6 @@ public class CytoscapeDesktop
   }
 
   // End Cytopanels - Public and Protected methods
-  //---------------------------------------------------------------------------//
-    
-  /**
-   * Gets the NetworkView Manager.
-   * @return NetworkViewManager Object.
-  */
-  public NetworkViewManager getNetworkViewManager() {
-      return this.networkViewManager;
-  }
+  //---------------------------------------------------------------------------// 
+
 }
