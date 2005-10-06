@@ -51,9 +51,9 @@ import java.util.Map;
  * the following code snippet sets and gets an Integer attribute value:
  * <PRE>
  * cyAttributes.setAttribute (node.getIdentifier(),
- * "Rank", new Integer(3));
+ *     "Rank", new Integer(3));
  * Integer value = cyAttributes.getIntegerAttribute
- * (node.getIdentifier(), "Rank");
+ *     (node.getIdentifier(), "Rank");
  * </PRE>
  * <p/>
  * <h3>Getting / Setting Simple Lists:</h3>
@@ -76,7 +76,7 @@ import java.util.Map;
  * list.add (new Integer(22));
  * list.add (new Integer(5));
  * cyAttributes.setList (node.getIdentifier(),
- * "Rank List", list).
+ *     "Rank List", list).
  * </PRE>
  * At run-time, the <CODE>setList</CODE> method will check that all items in
  * the list are of the same type, and are chosen from the following list:
@@ -107,9 +107,9 @@ import java.util.Map;
  * map.put("name", "Reactome");
  * map.put("url", "http://www.reactome.org");
  * map.put("description", "Reactome - a knowledgebase of "
- * + "biological processes");
+ *     + "biological processes");
  * cyAttributes.setAttributeMap(node.getIdentifier(),
- * "external_db", map);
+ *     "external_db", map);
  * </PRE>
  * To get a simple map, use the
  * {@link CyAttributes#getAttributeMap(String, String)} method.
@@ -125,7 +125,8 @@ import java.util.Map;
  * </PRE>
  * Later on, Plugin 2 executes the following code:
  * <PRE>
- * cyAttributes.setAttribute (node.getIdentifier(), "Rank", new String("Three"));
+ * cyAttributes.setAttribute (node.getIdentifier(), "Rank",
+ *     new String("Three"));
  * </PRE>
  * We are now attempting to set "RANK" to a String value, but "RANK" is already
  * fixed as an <CODE>Integer</CODE> data type.  Hence, the call is considered
@@ -174,10 +175,8 @@ public interface CyAttributes {
 
     /**
      * This type corresponds to java.lang.Double.
-     * // TODO:  Do want to change this to TYPE_FLOATING, so that it matches MultiHashMap?
-     * // TODO:  Or, vice versa (Emailed Nerius on 10/06/05)
      */
-    public final byte TYPE_DOUBLE = 2;
+    public final byte TYPE_FLOATING = 2;
 
     /**
      * This type corresponds to java.lang.Integer.
@@ -281,7 +280,7 @@ public interface CyAttributes {
      * @throws IllegalArgumentException Indicates that this attribute has
      *                                  already been defined with a data type,
      *                                  and this data type is not of type:
-     *                                  TYPE_DOUBLE.
+     *                                  TYPE_FLOATING.
      */
     public void setAttribute(String id, String attributeName, Double value)
             throws IllegalArgumentException;
@@ -331,7 +330,7 @@ public interface CyAttributes {
      * @param attributeName attribute name.
      * @return Double object, or null if no id/attributeName pair is found..
      * @throws ClassCastException Indicates that the specified attribute
-     *                            is not of type:  TYPE_DOUBLE.
+     *                            is not of type:  TYPE_FLOATING.
      */
     public Double getDoubleAttribute(String id, String attributeName)
             throws ClassCastException;
@@ -352,7 +351,7 @@ public interface CyAttributes {
      * Gets the data type of the specified attribute.
      *
      * @param attributeName Attribute Name.
-     * @return one of: TYPE_BOOLEAN, TYPE_INTEGER, TYPE_DOUBLE,
+     * @return one of: TYPE_BOOLEAN, TYPE_INTEGER, TYPE_FLOATING,
      *         TYPE_STRING, TYPE_SIMPLE_LIST, TYPE_SIMPLE_MAP, TYPE_COMPLEX,
      *         TYPE_UNDEFINED.
      */
