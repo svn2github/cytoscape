@@ -1,5 +1,8 @@
 package cytoscape.data;
 
+import cytoscape.data.attr.MultiHashMap;
+import cytoscape.data.attr.MultiHashMapDefinition;
+
 import java.util.List;
 import java.util.Map;
 
@@ -133,7 +136,7 @@ import java.util.Map;
  * type <I>before</I> setting any new attributes.
  * <P>
  * To reset an attribute's data type, use
- * {@link CyAttributes#resetAttribute(String)}.  Note that calling this method
+ * {@link CyAttributes#deleteAttribute(String)}.  Note that calling this method
  * will delete all attributes with this name, preparing the way for a clean
  * slate.  Please use with caution!
  * <P>
@@ -157,7 +160,8 @@ import java.util.Map;
  * data structure to store attributes.  To listen to attribute events,
  * first obtain the MultiHashMap via {@link CyAttributes#getMultiHashMap()},
  * and then register a listener via
- * {@link MulitHashMap#addDataListener()}
+ * {@link
+ * MultiHashMap#addDataListener(cytoscape.data.attr.MultiHashMapListener)}
  * <P>
  *
  * @author Cytoscape Development Team
@@ -170,6 +174,8 @@ public interface CyAttributes {
 
     /**
      * This type corresponds to java.lang.Double.
+     * // TODO:  Do want to change this to TYPE_FLOATING, so that it matches MultiHashMap?
+     * // TODO:  Or, vice versa (Emailed Nerius on 10/06/05)
      */
     public final byte TYPE_DOUBLE = 2;
 
@@ -363,16 +369,16 @@ public interface CyAttributes {
     public boolean deleteAttribute(String id, String attributeName);
 
     /**
-     * Resets the specified attribute.
+     * Deletes the specified attribute.
      * <P>
      * Calling this method deletes all id/attributeName pairs with this
      * attributeName, and resets the specified attribute data type to:
-     * TYPE_UNDEFINED.
+     * TYPE_UNDEFINED.  Please use with caution!
      *
      * @param attributeName attribute name.
      * @return true indicates attribute was successfully reset.
      */
-    public boolean resetAttribute(String attributeName);
+    public boolean deleteAttribute(String attributeName);
 
     /**
      * Sets a simple list of attributes.
@@ -470,26 +476,22 @@ public interface CyAttributes {
      * you can store arbitrarily complex data structures.
      * Recommended for advanced coders only.
      * <p/>
-     * // TODO:  This method currently returns an Object.
-     * // TODO:  Waiting for MultiHashMap to be checked into CVS
      *
      * @return MultiHashMap Object.
      */
-    public Object getMultiHashMap();
+    public MultiHashMap getMultiHashMap();
 
     /**
      * Gets the MultiHashMapDefinition Object, where we store attribute
      * definitions.
      * <P>
-     * <P>By using MuliHashMap and MultiHashMapDefinition directly, you can
+     * <P>By using MultiHashMap and MultiHashMapDefinition directly, you can
      * store arbitrarily complex data structures (e.g. anything more
      * complicated that 'simple' lists and 'simple' maps).  Recommended for
      * advanced coders only.
      * <p/>
-     * // TODO:  This method currently returns an Object.
-     * // TODO:  Waiting for MultiHashMapDefinition to be checked into CVS
      *
      * @return MultiHashMapDefinition Object.
      */
-    public Object getMultiHashMapDefinition();
+    public MultiHashMapDefinition getMultiHashMapDefinition();
 }
