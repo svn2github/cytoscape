@@ -10,6 +10,7 @@ public interface MultiHashMap
 {
 
   /**
+   * Binds an attribute value to an object.
    * @param objectKey the object to which to bind a new attribute value.
    * @param attributeName the attribute definition in which to assign an
    *   attribute value.
@@ -41,6 +42,7 @@ public interface MultiHashMap
                                   Object[] keyIntoValue);
 
   /**
+   * Retrieves a bound attribute value from an object.
    * @param objectKey the object from which to retrieve a bound attribute
    *   value.
    * @param attributeName the attribute definition in which assigned

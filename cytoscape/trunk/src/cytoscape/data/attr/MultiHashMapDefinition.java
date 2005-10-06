@@ -88,6 +88,8 @@ public interface MultiHashMapDefinition
   public CountedIterator getDefinedAttributes();
 
   /**
+   * Returns the type of attribute values that exist in specified attribute
+   * space.
    * @return the type (TYPE_*) of values bound to objects by this attribute
    *   definition, or -1 if specified attribute definition does not exist;
    *   note that all of the TYPE_* constants are positive.
