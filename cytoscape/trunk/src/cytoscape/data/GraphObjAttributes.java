@@ -7,10 +7,73 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * @deprecated
+ * GraphObjAttributes provides access to node and edge attributes within
+ * Cytoscape.
+ * <P>
+ * GraphObjAttributes will be replaced by {@link CyAttributes}, and
+ * will be officially removed from the Cytoscape core in
+ * September, 2006.
+ *
+ * @deprecated Use {@link CyAttributes} instead.
+ *
  */
 public interface GraphObjAttributes {
 
+    //**********************************************************************
+    //  The following set of methods have clear equivalent methods and/or
+    //  functionality in CyAttributes.
+    //  For each method, the @deprecated tag indicates which method in
+    //  CyAttributes to use instead.
+    //**********************************************************************
+
+    /**
+     * Set an attribute of the specified name to the graph object with the
+     * specified id.  The attribute may be any java type, or an array of any
+     * java type; it can be neither a primitive value nor an array of primitves.
+     * If this attribute has not previously been assigned a class, either
+     * explicitly or implicitly, then the class is deduced from
+     * the object (or the first element in the array of objects).  once a
+     * class has been assigned for this attribute, every subsequent addition
+     * must be an object of that same class.
+     *
+     * @param attributeName   Attribute Name.
+     * @param id              Unique Identifier.
+     * @param value           The value of this attribute, either a java object
+     *                        or an array of java objects
+     * @return                true indicates that the attribute was set.
+     * @throws IllegalArgumentException if the class of obj (or of obj [0],
+     *                                  if obj is an array) does not match the
+     *                                  already assigned or deduced java class
+     *                                  for this attribute.
+     * @deprecated Storing arbitrary Java objects as attribute values will
+     * no longer be supported in CyAttributes.  However, you will be able
+     * to store arbitrarily complex trees of Boolean, Integer, Double,
+     * and String Objects.  For details, refer to {@link CyAttributes}.
+     */
+    public boolean set(String attributeName, String id, Object value);
+
+    /**
+     * Appends to specified object to an implicit list of attribute values.
+     *
+     * @param attributeName     Attribute Name.
+     * @param id                Unique Identifier.
+     * @param value             The value of this attribute.
+     * @return                true indicates that the attribute was set.
+     * @deprecated Use {@link CyAttributes#setAttributeList(String, String, java.util.List)}  for equivalent functionality.
+    */
+    public boolean append(String attributeName, String id, Object value);
+
+    /**
+     * Sets an id/attributeName pair of type double
+     * <P>Value will be promoted to Double.
+     *
+     * @param attributeName     Attribute Name.
+     * @param id                Unique Identifier.
+     * @param value             Attribute double value.
+     * @return true indicates that the attribute was set.
+     * @deprecated  Use {@link CyAttributes#setAttribute(String, String, Double)} instead.
+     */
+    public boolean set(String attributeName, String id, double value);
 
     /**
      * Sets a TaskMonitor for tracking loading of node attribute files.
@@ -20,304 +83,255 @@ public interface GraphObjAttributes {
     public void setTaskMonitor(TaskMonitor taskMonitor);
 
     /**
-     * establish mapping between a java object (a graph node or edge) and
-     * its canonical (standard) name.
-     * <ul>
-     * <li> clients of this class (CyWindow, or cytoscape plugins) usually
-     * deal with graph nodes and edges, and only secondarily with names;
-     * <li> attributes are stored and retrieved by canonical name
-     * <li> the client must be able to translate from the node or edge object
-     * to the name, in order to get at the attributes
-     * <li> this method allows a new mapping between object and canonical name.
+     * Gets the number of different attributes currently registered.
+     * @deprecated Use {@link CyAttributes#getAttributeNames()}.length instead.
+     */
+    public int numberOfAttributes();
+
+    /**
+     * Get the names of all registered attributes
+     * @deprecated Use {@link CyAttributes#getAttributeNames()} instead.
+     */
+    public String[] getAttributeNames();
+
+    /**
+     * Determines if the specified attribute has been set/registered.
      *
-     * @see #getCanonicalName
+     * @param attributeName     Attribute Name.
+     * @return  true indicates that the attribute has been set/registered.
+     * @deprecated Use {@link CyAttributes#getType(String)} instead.
      */
-    public void addNameMapping(String canonicalName, Object graphObject);
+    public boolean hasAttribute(String attributeName);
 
     /**
-     * removes a mapping between a java object (a graph node or edge) and
-     * its canonical (standard) name
+     * Determines if the specified attributeName/id has been set.
+     * @param attributeName     Attribute Name.
+     * @param id                Unique Identifier.
+     * @return true indicates that the attributeName/id has been set.
+     * @deprecated Use {@link CyAttributes#hasAttribute(String, String)} instead.
      */
-    public void removeNameMapping(String canonicalName);
+    public boolean hasAttribute(String attributeName, String id);
 
     /**
-     * removes a mapping between a canonical name and its graph object
+     * Remove the entire second level Hashmap whose key is the specified
+     * attributeName.
+     * @param attributeName     AttributeName
+     * @deprecated Use {@link CyAttributes#deleteAttribute(String)} instead.
      */
-    public void removeObjectMapping(Object graphObj);
+    public void deleteAttribute(String attributeName);
 
     /**
-     * remove all entries from the nameMap
+     * Removes the specified attribute from the specified node or edge.
+     * @param attributeName     AttributeName
+     * @param id                Unique Identifier.
+     * @deprecated Use {@link CyAttributes#deleteAttribute(String, String)}  instead.
+     */
+    public void deleteAttribute(String attributeName, String id);
+
+    /**
+     * All attributes are lists (java.lang.Vector) sharing the same base
+     * type; discover and return that here.
+     * @param attributeName     AttributeName
+     * @return Class Object.
+     * @deprecated Use {@link CyAttributes#getType(String)} instead.
+     */
+    public Class getClass(String attributeName);
+
+    /**
+     * Gets all values associated with this graphObjectName and this
+     * attributeName.
+     *
+     * @param attributeName AttributeName.
+     * @param id            Unique Identifier.
+     * @return a java.util.Vector of size zero or more, containing java objects
+     *         whose types may be learned via a call to getType
+     * @deprecated Use {@link CyAttributes#getAttributeList(String, String)} instead.
+     */
+    public List getList(String attributeName, String id);
+
+    /**
+     * For backwards compatibility:  the value of an attribute used to be
+     * strictly a single scalar; now -- even though attributes are all lists
+     * of scalars -- we support the old idiom by retrieving the first scalar
+     * from the list.
+     * @param attributeName     AttributeName.
+     * @param id                Unique Identifier.
+     * @return Java Object.
+     * @deprecated Use {@link CyAttributes} instead.  It provides several getter methods for retrieving Boolean, Integer, Double and String values.
+     */
+    public Object getValue(String attributeName, String id);
+
+    /**
+     * Equivalent to getValue() method.
+     * @param attributeName     Attribute Name.
+     * @param id                Unique Identifier.
+     * @return Java Object.
+     * @deprecated Use {@link CyAttributes} instead.  It provides several getter methods for retrieving Boolean, Integer, Double and String values.
+     */
+    public Object get(String attributeName, String id);
+
+    /**
+     * Gets an attribute Double value.
+     * @param attributeName     Attribute Name.
+     * @param id                Unique Identifier.
+     * @return Double Object.
+     * @deprecated Use {@link CyAttributes#getDoubleAttribute(String, String)} instead.
+     */
+    public Double getDoubleValue(String attributeName, String id);
+
+    /**
+     * Gets an attribute Integer value.
+     * @param attributeName     Attribute Name.
+     * @param id                Unique Identifier.
+     * @return Integer Object.
+     * @deprecated Use {@link CyAttributes#getIntegerAttribute(String, String)} instead.
+     */
+    public Integer getIntegerValue(String attributeName, String id);
+
+     /**
+      * Gets an attribute String value.
+      * @param attributeName     Attribute Name.
+      * @param id                Unique Identifier.
+      * @return Integer Object.
+      * @deprecated Use {@link CyAttributes#getStringAttribute(String, String)} instead.
+     */
+    public String getStringValue(String attributeName, String id);
+
+    /**
+     * Return a hash whose keys are graphObjectName Strings, and whose values
+     * are  a Vector of java objects the class of these objects, and
+     * the category of the attribute (annotation, data, URL) may be learned
+     * by calling getClass and getCategory.
+     *
+     * @param attributeName     Attribute Name.
+     *
+     * @return a HashMap whose keys are graph object names (typically canonical
+     * names for nodes and edges) and whose values are Vectors of java objects.
+     * @deprecated Use {@link CyAttributes#getAttributeMap(String, String)} instead.
+     */
+    public HashMap getAttribute(String attributeName);
+
+    /**
+     * A convenience method, useful if you are certain that the attribute stores
+     * Strings; convert the Vector of Objects into an array of Strings
+     *
+     * @param attributeName         Attribute Name.
+     * @param id                    Unique Identifier.
+     * @return Array of Strings.
+     * @deprecated Use {@link CyAttributes#getAttributeList(String, String)} instead.
+     */
+    public String[] getStringArrayValues(String attributeName, String id);
+
+    /**
+     * Creates a human readable version.
+     * @return Human Readable String.
+     */
+    public String toString();
+
+    //**********************************************************************
+    //  The following set of methods do *not* (yet) have clear equivalent
+    //  methods and/or functionality in CyAttributes.
+    //  These methods also have 0 usages within the core.
+    //  My guess is that these methods will be deprecated, and we will simply
+    //  say that no equivalent functionality in CyAttributes exists.
+    //  Nonetheless, these methods will be need to be implemented and working
+    //  in GraphObjAttributesImpl.
+    //**********************************************************************
+
+    /**
+     * A convenience method allowing the addition of multiple
+     * different attributes for  one graphObject at the same time.
+     *
+     * Deprecation note:  This method has 0 usages in the core.
+     */
+    public boolean set(String graphObjectName, HashMap bundle);
+
+    /**
+     * Removes all entries from the nameMap.
+     *
+     * Deprecation note:  This method has 0 usages in the core.
+     *
      */
     public void clearNameMap();
 
     /**
-     * remove all entries in the canonicalToGraphObject map
+     * Remove all entries in the canonicalToGraphObject map
+     *
+     * Deprecation note:  This method has 0 usages in the core.
+     *
      */
     public void clearObjectMap();
 
-    public HashMap getNameMap();
-
+    /**
+     * Deprecation note:  This method has 0 usages in the core.
+     *
+     */
     public HashMap getClassMap();
 
+    /**
+     * Deprecation note:  This method has 0 usages in the core.
+     *
+     */
     public void addClassMap(HashMap newClassMap);
 
+    /**
+     * Deprecation note:  This method has 0 usages in the core.
+     *
+     */
     public HashMap getObjectMap();
 
     /**
-     * a wholesale addition of all entries in a <graphObject> -> <canonicalName>
+     * A wholesale addition of all entries in a <graphObject> -> <canonicalName>
      * HashMap.
+     *
+     * Deprecation note:  This method has 0 usages in the core.
+     *
      */
     public void addNameMap(HashMap nameMapping);
 
     /**
      * add all entries in the given HashMap (entry: <canonicalName> -> <graphObject>)
      * to the canonicalToGraphObject HashMap.
+     *
+     * Deprecation note:  This method has 0 usages in the core.
+     *
      */
     public void addObjectMap(HashMap objectMapping);
-
-    /**
-     * return the canonical name associated with this graphObject (a node or edge,
-     * previously stored with a call to addNameMapping).  if no mapping exists, null
-     * is returned.
-     */
-    public String getCanonicalName(Object graphObject);
-
-    /**
-     * return the graph object (node or edge) associated with this canonical name,
-     * previously stored with a call to addNameMapping. if no mapping exists, null
-     * is returned.
-     */
-    public Object getGraphObject(String canonicalName);
 
     /**
      * copy all attributes in the supplied GraphObjAttributes object into this
      * GraphObjAttributes.  any pre-existing attributes survive intact as long
      * as they do not have the same attribute name as the attributes passed
-     * in
+     * in.
+     *
+     * Deprecation note:  This method has 0 usages in the core.
+     *
      */
     public void set(GraphObjAttributes attributes);
-
-
-    /**
-     * set an attribute of the specified name to the graph object with the specified name.
-     * the attribute may be any java type, or an array of any java type; it can be neither
-     * a primitive value nor an array of primitves.  if this attribute has not previously
-     * been assigned a class, either explicitly or implicitly, then the class is deduced from
-     * the object (or the first element in the array of objects).  once a class has been
-     * assigned for this attribute, every subsequent addition must be
-     * an object of that same class.
-     *
-     * @param attributeName   eg, "expression", "GO molecular function level 4", "tissue count"
-     * @param graphObjectName the canonical name of a node or edge
-     * @param obj             the value of this attribute, either a java object or an array of java
-     *                        objects
-     * @throws IllegalArgumentException if the class of obj (or of obj [0], if obj is an array)
-     *                                  does not match the already assigned or deduced java class
-     *                                  for this attribute
-     */
-    public boolean set(String attributeName, String graphObjectName, Object obj);
-
-
-    public boolean append(String attributeName, String graphObjectName, Object obj);
-
-    /**
-     * a convenience method; value will be promoted to Double
-     */
-    public boolean set(String attributeName, String graphObjectName, double value);
-
-    /**
-     * a convenience method allowing the addition of multiple different attributes for
-     * one graphObject at the same time.
-     */
-    public boolean set(String graphObjectName, HashMap bundle);
-
-    /**
-     * the number of different attributes currently registered
-     */
-    public int numberOfAttributes();
-
-    /**
-     * get the names of all of the attributes
-     */
-    public String[] getAttributeNames();
-
-    /**
-     * return the canonical names of all objects with a given attribute.
-     */
-    public String[] getObjectNames(String attributeName);
-
-    /**
-     * return the unique values among the values of all objects with a given attribute.
-     */
-    public Object[] getUniqueValues(String attributeName);
-
-    /**
-     * return the unique Strings among the values of all objects with a given attribute.
-     */
-    public String[] getUniqueStringValues(String attributeName);
-
-    /**
-     * return the number of graph objects with the specified attribute.
-     */
-    public int getObjectCount(String attributeName);
-
-    /**
-     *
-     */
-    public boolean hasAttribute(String attributeName);
-
-    /**
-     *
-     */
-    public boolean hasAttribute(String attributeName, String graphObjName);
-
-    /**
-     * return a hash whose keys are graphObjectName Strings, and whose values are
-     * a Vector of java objects the class of these objects, and
-     * the category of the attribute (annotation, data, URL) may be learned
-     * by calling getClass and getCategory
-     *
-     * @return a HashMap whose keys are graph object names (typically canonical names
-     *         for nodes and edges) and whose values are Vectors of java objects.
-     * @see #getClass
-     * @see #getCategory
-     */
-    public HashMap getAttribute(String attributeName);
-
-    /**
-     * remove the entire second level Hashmap whose key is the specified attributeName
-     */
-    public void deleteAttribute(String attributeName);
-
-    /**
-     * remove the specified attribute from the specified node or edge
-     */
-    public void deleteAttribute(String attributeName, String graphObjectName);
 
     /**
      * remove the specified attribute value from the specified node or edge.
      * there may be multiple values associated with the attribute, so search through
-     * the list, and if it is found, remove it
-     */
-    public void deleteAttributeValue(String attributeName, String graphObjectName, Object value);
-
-    /**
-     * specify the class of this attribute.  all subsequently added attribute
-     * values must be of the exactly this class
-     */
-    public boolean setClass(String attributeName, Class attributeClass);
-
-    /**
-     * all attributes are lists (java.lang.Vector) sharing the same base type; discover
-     * and return that here
-     */
-    public Class getClass(String attributeName);
-
-    /**
-     * get all values associated with this graphObjectName and this attributeName
+     * the list, and if it is found, remove it.
      *
-     * @return a java.util.Vector of size zero or more, containing java objects
-     *         whose types may be learned via a call to getType
-     * @see #getCategory
+     * Deprecation note:  This method has 0 usages in the core.
+     *
      */
-    public List getList(String attributeName,
-            String graphObjectName);
+    public void deleteAttributeValue(String attributeName,
+            String graphObjectName, Object value);
 
     /**
-     * for backwards compatibility:  the value of an attribute used to be
-     * strictly a single scalar; now -- even though attributes are all lists
-     * of scalars -- we support the old idiom by retrieving the first scalar
-     * from the list.
+     * Deprecation note:  This method has 0 usages in the core.
+     * @param file  File Object.
      */
-    public Object getValue(String attributeName,
-            String graphObjectName);
-
-    public Object get(String attributeName,
-            String graphObjectName);
-
-    /**
-     * a convenience method:  convert the Vector of objects into an array
-     */
-    public Object[] getArrayValues(String attributeName,
-            String graphObjectName);
-
-    /**
-     * a convenience method, useful if you are certain that the attribute stores
-     * Strings; convert the Vector of Objects into an array of Strings
-     */
-    public String[] getStringArrayValues(String attributeName,
-            String graphObjectName);
-
-    /**
-     * construe the possibly multiple values of the attribute as a scalar Double,
-     * if possible
-     */
-    public Double getDoubleValue(String attributeName,
-            String graphObjectName);
-
-    /**
-     * construe the possibly multiple values of the attribute as a scalar Integer,
-     * if possible
-     */
-    public Integer getIntegerValue(String attributeName,
-            String graphObjectName);
-
-    /**
-     * construe the possibly multiple values of the attribute as a scalar String
-     */
-    public String getStringValue(String attributeName,
-            String graphObjectName);
-
-    /**
-     * deduce attribute name, category, and java class from the first
-     * line of the attributes file.   the form of the first line is
-     * <pre>
-     *  attribute name  (category=xxxx) (class=yyyy)
-     *  </pre>
-     * category and class are optional; if absent, class will be inferred
-     * (see deduceClass), and category set to DEFAULT_CATEGORY
-     * every attribute file must have, at minimum, the name attribute in the first line,
-     * possibly with embedded spaces
-     * in addition, the first line may have category and class information, as in
-     * homologene  (category=staticWebPage) (class=java.net.URL)
-     * the present method extracts the mandatory attribute name, and the optional
-     * category and class information.
-     * <p/>
-     * note: category and class information, if present, are not only parsed here:  the
-     * information is also stored as appropriate in the current class data members
-     */
-    public String processFileHeader(String text);
-
-
     public void readAttributesFromFile(File file);
 
-
     /**
-     * Reads attributes from a file.  There is one basic format for attribute
-     * files, but a few aspects of the format are flexible.
-     * <p/>
-     * The simplest form looks like this:
-     * <pre>
-     *  expresssion ratio
-     *  geneA = 0.1
-     *  geneB = 8.9
-     *  ...
-     *  geneZ = 23.2
-     *  </pre>
-     */
-    public void readAttributesFromFile(String filename);
-
-    /**
-     * return attributeName/attributeClass pairs, for every known attribute
+     * Return attributeName/attributeClass pairs, for every known attribute
+     *
+     * Deprecation note:  This method has 0 usages in the core.
      */
     public HashMap getSummary();
-
-    /**
-     * for the graphObject named by canonicalName, extract and return all attributes
-     *
-     * @see #getValue
-     */
-    public HashMap getAttributes(String canonicalName);
 
     /**
      * multiple GraphObj's (edges in particular) may have the same name; this method
@@ -343,17 +357,184 @@ public interface GraphObjAttributes {
      * <p/>
      * whoever calls this method must construct the new object's name -first-
      * and then is expected to append "_N" where N is the value returned here
-     * (and of course, if the result is 0, there is no need to append '_0'
+     * (and of course, if the result is 0, there is no need to append '_0'.
+     *
+     * Deprecation note:  This method has 0 usages in the core.
      */
     public int countIdentical(String graphObjectName);
 
+
+    //**********************************************************************
+    //  The following set of methods do *not* (yet) have clear equivalent
+    //  methods and/or functionality in CyAttributes.
+    //  These method also have >0 usages within the core.
+    //  The methods are ordered by usage, e.g. those with the greatest usage
+    //  appear first.
+    //**********************************************************************
+
     /**
-     * create a human readable version.
+     * Returns the canonical name associated with this graphObject
+     * (a node or edge, previously stored with a call to addNameMapping).
+     * if no mapping exists, null is returned.
+     *
+     * Deprecation notes:  This method has _62_ usages in the core.
+     * Canonical name is now the same thing as node/edge identifier.
+     * Calling this method is therefore equivalent to calling:
+     * node.getIdentifier();
+     * edge.getIdentifier();
+     * See implementation in Rowan's CytocapeDataImpl for details.
      */
-    public String toString();
+    public String getCanonicalName(Object graphObject);
 
+    /**
+     * for the graphObject named by canonicalName, extract and return
+     * all attributes.
+     *
+     * Deprecation note:  This method has 18 usages in the core. most
+     * of which are in the VizMapper.  Yikes!
+     *
+     */
+    public HashMap getAttributes(String canonicalName);
 
-} 
+    /**
+     * establish mapping between a java object (a graph node or edge) and
+     * its canonical (standard) name.
+     * <ul>
+     * <li> clients of this class (CyWindow, or cytoscape plugins) usually
+     * deal with graph nodes and edges, and only secondarily with names;
+     * <li> attributes are stored and retrieved by canonical name
+     * <li> the client must be able to translate from the node or edge object
+     * to the name, in order to get at the attributes
+     * <li> this method allows a new mapping between object and canonical name.
+     *
+     * Deprecation note:  This method has 6 usages in the core.
+     *
+     * @see #getCanonicalName
+     */
+    public void addNameMapping(String canonicalName, Object graphObject);
 
+    /**
+     * return the graph object (node or edge) associated with this canonical name,
+     * previously stored with a call to addNameMapping. if no mapping exists, null
+     * is returned.
+     *
+     * Deprecation note:  This method has 3 usages in the core.
+     * Canonical name is now the same thing as node/edge identifier.
+     * This method is therefore equivalent to:
+     * Cytoscape.getRootGraph().getNode( identifier );
+     * Cytoscape.getRootGraph().getEdge( identifier );
+     * See implementation in Rowan's CytocapeDataImpl for details.
+     *
+     */
+    public Object getGraphObject(String canonicalName);
 
+    /**
+     * return the canonical names of all objects with a given attribute.
+     *
+     * Deprecation note:  This method has 3 usages in the core.
+     *
+     */
+    public String[] getObjectNames(String attributeName);
 
+    /**
+     * removes a mapping between a java object (a graph node or edge) and
+     * its canonical (standard) name.
+     *
+     * Deprecation note:  This method has 2 usages in the core.
+     */
+    public void removeNameMapping(String canonicalName);
+
+    /**
+     * specify the class of this attribute.  all subsequently added attribute
+     * values must be of the exactly this class.
+     *
+     * Deprecation note:  This method has 2 usages in the core.
+     *
+     */
+    public boolean setClass(String attributeName, Class attributeClass);
+
+    /**
+     * removes a mapping between a canonical name and its graph object
+     *
+     * Deprecation note:  This method has 2 usages in the core.
+     */
+    public void removeObjectMapping(Object graphObj);
+
+    /**
+     * a convenience method:  convert the Vector of objects into an array.
+     *
+     * Deprecation note:  This method has 2 usages in the core.
+    */
+    public Object[] getArrayValues(String attributeName,
+            String graphObjectName);
+
+    /**
+     * Reads attributes from a file.  There is one basic format for attribute
+     * files, but a few aspects of the format are flexible.
+     * <p/>
+     * The simplest form looks like this:
+     * <pre>
+     *  expresssion ratio
+     *  geneA = 0.1
+     *  geneB = 8.9
+     *  ...
+     *  geneZ = 23.2
+     *  </pre>
+     *
+     *
+     * Deprecation note:  This method has 2 usages in the core.
+     */
+    public void readAttributesFromFile(String filename);
+
+    /**
+     * Deprecation note:  This method has 1 usage in the core.
+     *
+     */
+    public HashMap getNameMap();
+
+    /**
+     * return the unique values among the values of all objects with a given attribute.
+     *
+     * Deprecation note:  This method has 1 usage in the core.
+     *
+     */
+    public Object[] getUniqueValues(String attributeName);
+
+    /**
+     * return the unique Strings among the values of all objects with a given attribute.
+     *
+     * Deprecation note:  This method has 1 usage in the core.
+     *
+     */
+    public String[] getUniqueStringValues(String attributeName);
+
+    /**
+     * return the number of graph objects with the specified attribute.
+     *
+     * Deprecation note:  This method has 1 usage in the core.
+     *
+     */
+    public int getObjectCount(String attributeName);
+
+    /**
+     * deduce attribute name, category, and java class from the first
+     * line of the attributes file.   the form of the first line is
+     * <pre>
+     *  attribute name  (category=xxxx) (class=yyyy)
+     *  </pre>
+     * category and class are optional; if absent, class will be inferred
+     * (see deduceClass), and category set to DEFAULT_CATEGORY
+     * every attribute file must have, at minimum, the name attribute in the first line,
+     * possibly with embedded spaces
+     * in addition, the first line may have category and class information, as in
+     * homologene  (category=staticWebPage) (class=java.net.URL)
+     * the present method extracts the mandatory attribute name, and the optional
+     * category and class information.
+     * <p/>
+     * note: category and class information, if present, are not only parsed here:  the
+     * information is also stored as appropriate in the current class data members
+     *
+     * Deprecation note:  This method has 1 usage in the core.
+     */
+    public String processFileHeader(String text);
+}
