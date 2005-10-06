@@ -253,7 +253,11 @@
             </fileset>
 	    <packageset dir="${src.dir}" defaultexcludes="yes">
 		    <include name="cytoscape/task/**" />
-    	    </packageset>      
+    	    </packageset>
+            <packageset dir="${src.dir}" defaultexcludes="yes">
+                <include name="cytoscape/data/attr/**"/>
+                <exclude name="cytoscape/data/attr/util/test/**"/>
+            </packageset>
 
          <link href="http://java.sun.com/j2se/1.4.2/docs/api/" />
          <link href="http://csbi.sourceforge.net/API/" />

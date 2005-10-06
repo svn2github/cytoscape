@@ -121,9 +121,19 @@ public interface MultiHashMapDefinition
    */
   public boolean undefineAttribute(String attributeName);
 
+  /**
+   * Registers a listener for receiving events having to do with
+   * attribute definitions being created and deleted.
+   * @param listener the listener to register.
+   */
   public void addDataDefinitionListener(
                                       MultiHashMapDefinitionListener listener);
 
+  /**
+   * Unregisters a listener; this method has the opposite effect as
+   * addDataDefinitionListener(listener).
+   * @param listener the listener to unregister.
+   */
   public void removeDataDefinitionListener(
                                       MultiHashMapDefinitionListener listener);
 

@@ -43,8 +43,8 @@ public interface MultiHashMap
   /**
    * @param objectKey the object from which to retrieve a bound attribute
    *   value.
-   * @param attributeName the attribute definition in which to assign an
-   *   attribute value.
+   * @param attributeName the attribute definition in which assigned
+   *   attribute value exists.
    * @param keyIntoValue an array of length equal to the dimensionality of
    *   the key space of specified attribute definition; entry at index i
    *   is a "representative" from dimension i + 1 of the key space; if
@@ -179,8 +179,18 @@ public interface MultiHashMap
 //                                     String attributeName,
 //                                     Object[] keyPrefix);
 
+  /**
+   * Registers a listener for receiving events having to do with
+   * attribute values being assigned and removed.
+   * @param listener the listener to register.
+   */
   public void addDataListener(MultiHashMapListener listener);
 
+  /**
+   * Unregisters a listener; this method has the opposite effect as
+   * addDataListener(listener).
+   * @param listener the listener to unregister.
+   */
   public void removeDataListener(MultiHashMapListener listener);
 
 }
