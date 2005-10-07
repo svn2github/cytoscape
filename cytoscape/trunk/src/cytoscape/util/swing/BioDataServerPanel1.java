@@ -44,13 +44,32 @@ public class BioDataServerPanel1 extends JPanel {
 
 	private javax.swing.ButtonGroup connectorGroup;
 
+	private JLabel yetAnotherBlankSpace3;
+
+	private JLabel yetAnotherBlankSpace4;
+
+	private JLabel yetAnotherBlankSpace8;
+
+	private JLabel yetAnotherBlankSpace7;
+
+	private JLabel yetAnotherBlankSpace6;
+
+	private JLabel yetAnotherBlankSpace5;
+
+	private JLabel yetAnotherBlankSpace9;
+
+	private JLabel yetAnotherBlankSpace10;
+
+	private JLabel yetAnotherBlankSpace11;
+
+	private JLabel yetAnotherBlankSpace12;
+
+	private JLabel yetAnotherBlankSpace13;
+
 	public BioDataServerPanel1() {
 
 		iconLabel = new JLabel();
 		contentPanel = getContentPanel();
-		
-		
-		
 		
 		contentPanel.setBorder(new EmptyBorder(new Insets(10, 10, 10, 10)));
 
@@ -83,7 +102,18 @@ public class BioDataServerPanel1 extends JPanel {
 		anotherBlankSpace = new JLabel();
 		yetAnotherBlankSpace1 = new JLabel();
 		yetAnotherBlankSpace2 = new JLabel();
-
+		yetAnotherBlankSpace3 = new JLabel();
+		yetAnotherBlankSpace4 = new JLabel();
+		yetAnotherBlankSpace5 = new JLabel();
+		yetAnotherBlankSpace6 = new JLabel();
+		yetAnotherBlankSpace7 = new JLabel();
+		yetAnotherBlankSpace8 = new JLabel();
+		yetAnotherBlankSpace9 = new JLabel();
+		yetAnotherBlankSpace10 = new JLabel();
+		yetAnotherBlankSpace11 = new JLabel();
+		yetAnotherBlankSpace12 = new JLabel();
+		yetAnotherBlankSpace13 = new JLabel();
+		
 		jLabel1 = new JLabel();
 		jLabel2 = new JLabel();
 		jLabel9 = new JLabel();
@@ -99,7 +129,7 @@ public class BioDataServerPanel1 extends JPanel {
 		contentPanel1.setLayout(new java.awt.BorderLayout());
 
 		welcomeTitle.setFont(new java.awt.Font("Sans Serif", Font.BOLD, 15));
-		welcomeTitle.setText("Welcome to Bio Data Server Wizard");
+		welcomeTitle.setText("Welcome to Gene Ontology Wizard");
 		contentPanel1.add(welcomeTitle, java.awt.BorderLayout.NORTH);
 
 		jPanel1.setLayout(new java.awt.GridLayout(0, 1));
@@ -109,7 +139,8 @@ public class BioDataServerPanel1 extends JPanel {
 		jPanel1.add(anotherBlankSpace);
 		jLabel2.setText("Which file format do you want to load?");
 		jPanel1.add(jLabel2);
-
+		jPanel1.add(yetAnotherBlankSpace5);
+		
 		jPanel1.add(yetAnotherBlankSpace1);
 
 		oldFileRadioButton.setText("Cytoscape BioDataServer (.anno and .anno)");
@@ -121,9 +152,20 @@ public class BioDataServerPanel1 extends JPanel {
 		jPanel1.add(newFileRadioButton);
 
 		jPanel1.add(yetAnotherBlankSpace2);
+		jPanel1.add(yetAnotherBlankSpace6);
+		jPanel1.add(yetAnotherBlankSpace7);
+		jPanel1.add(yetAnotherBlankSpace8);
+		jPanel1.add(yetAnotherBlankSpace9);
+		jPanel1.add(yetAnotherBlankSpace10);
+		jPanel1.add(yetAnotherBlankSpace11);
+		jPanel1.add(yetAnotherBlankSpace12);
+		jPanel1.add(yetAnotherBlankSpace13);
+		
 		jLabel9.setText("Press the 'Next' button to continue....");
 		jPanel1.add(jLabel9);
-
+		//jPanel1.add(yetAnotherBlankSpace3);
+		//jPanel1.add(yetAnotherBlankSpace4);
+		
 		contentPanel1.add(jPanel1, java.awt.BorderLayout.CENTER);
 
 		return contentPanel1;

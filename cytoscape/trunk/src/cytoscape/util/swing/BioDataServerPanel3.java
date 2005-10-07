@@ -107,6 +107,7 @@ public class BioDataServerPanel3 extends JPanel {
 
 		super();
 
+		
 		species = null;
 		start = CytoscapeInit.getMRUD();
 		spList = new JComboBox();
@@ -142,7 +143,7 @@ public class BioDataServerPanel3 extends JPanel {
 		JPanel secondaryPanel = new JPanel();
 		secondaryPanel.add(contentPanel, BorderLayout.NORTH);
 		add(secondaryPanel, BorderLayout.WEST);
-
+		
 	}
 
 	public void setProgressText(String s) {

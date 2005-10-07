@@ -22,7 +22,7 @@ public class BioDataServerPanel1Descriptor extends WizardPanelDescriptor {
 	    		fileType = panel1.getFileFormatRadioButtonSelected();
 	    	
 	    		if( fileType.equals("oboAndGa") ) {
-	    			return BioDataServerPanel2Descriptor.IDENTIFIER;
+	    			return BioDataServerPanel6Descriptor.IDENTIFIER;
 	    		} else {
 	    			return BioDataServerPanel4Descriptor.IDENTIFIER;
 	    		}

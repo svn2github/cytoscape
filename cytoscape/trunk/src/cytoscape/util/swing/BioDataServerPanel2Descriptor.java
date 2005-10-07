@@ -187,7 +187,7 @@ public class BioDataServerPanel2Descriptor extends WizardPanelDescriptor
 			if (value != null) {
 				File oboFile = new File(value);
 				if (oboFile.canRead()) {
-					System.out.println("Valid Obo file");
+					//System.out.println("Valid Obo file");
 					oboFlag = true;
 				} else {
 					oboFlag = false;

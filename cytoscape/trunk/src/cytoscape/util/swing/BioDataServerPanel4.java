@@ -180,7 +180,7 @@ public class BioDataServerPanel4 extends JPanel {
 		// System.out.println( "Taxon file is: " + filePath );
 		File taxonFile = new File(filePath);
 
-		manifestFileName = new JTextField(20);
+		manifestFileName = new JTextField(35);
 		selectManifestFile = new JButton("Select Manifest File");
 
 		jPanel1 = new JPanel();

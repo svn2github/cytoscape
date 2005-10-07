@@ -19,14 +19,21 @@ public class BioDataServerWizard {
 	// The wizard object
 	Wizard wizard;
 
+	// 1st panel to select BDS source type.
 	WizardPanelDescriptor descriptor1;
 
-	WizardPanelDescriptor descriptor2;
+	//WizardPanelDescriptor descriptor2;
 
-	WizardPanelDescriptor descriptor3;
+	//WizardPanelDescriptor descriptor3;
 
+	// Panel to select old-style manifest file
 	WizardPanelDescriptor descriptor4;
 
+	//WizardPanelDescriptor descriptor5;
+	
+	// Panel to select OBO and GA file
+	WizardPanelDescriptor descriptor6;
+	
 	// Parameters obtained from the wizard session
 	private boolean flip;
 
@@ -49,24 +56,36 @@ public class BioDataServerWizard {
 
 		// Constructor for the wizard
 		wizard = new Wizard();
-		wizard.getDialog().setTitle("Bio Data Server Wizard");
+		//wizard.getDialog().getParent().setSize(1000, 1000);
+		
+		wizard.getDialog().setTitle("Gene Ontology Wizard");
 
 		descriptor1 = new BioDataServerPanel1Descriptor();
 		wizard.registerWizardPanel(BioDataServerPanel1Descriptor.IDENTIFIER,
 				descriptor1);
 		
-		descriptor2 = new BioDataServerPanel2Descriptor();
-		wizard.registerWizardPanel(BioDataServerPanel2Descriptor.IDENTIFIER,
-				descriptor2);
+//		descriptor2 = new BioDataServerPanel2Descriptor();
+//		wizard.registerWizardPanel(BioDataServerPanel2Descriptor.IDENTIFIER,
+//				descriptor2);
 
-		descriptor3 = new BioDataServerPanel3Descriptor();
-		wizard.registerWizardPanel(BioDataServerPanel3Descriptor.IDENTIFIER,
-				descriptor3);
+//		descriptor3 = new BioDataServerPanel3Descriptor();
+//		wizard.registerWizardPanel(BioDataServerPanel3Descriptor.IDENTIFIER,
+//				descriptor3);
 
 		descriptor4 = new BioDataServerPanel4Descriptor();
 		wizard.registerWizardPanel(BioDataServerPanel4Descriptor.IDENTIFIER,
 				descriptor4);
-
+		
+//		descriptor5 = new BioDataServerPanel5Descriptor();
+//		wizard.registerWizardPanel(BioDataServerPanel5Descriptor.IDENTIFIER,
+//				descriptor5);
+		
+		descriptor6 = new BioDataServerPanel6Descriptor();
+		wizard.registerWizardPanel(BioDataServerPanel6Descriptor.IDENTIFIER,
+				descriptor6);
+		
+		
+		// Set the start panel
 		wizard.setCurrentPanel(BioDataServerPanel1Descriptor.IDENTIFIER);
 
 	}
@@ -78,26 +97,23 @@ public class BioDataServerWizard {
 		// Getting the species name
 
 		if (ret == Wizard.FINISH_RETURN_CODE) {
-			flip = ((BioDataServerPanel2Descriptor) descriptor2).isFlip();
+			flip = ((BioDataServerPanel6Descriptor) descriptor6).isFlip();
 
-			manifest = ((BioDataServerPanel2Descriptor) descriptor2)
+			manifest = ((BioDataServerPanel6Descriptor) descriptor6)
 					.getManifestName();
 			oldManifest = ((BioDataServerPanel4Descriptor) descriptor4)
 					.getManifestFileName();
-			species = ((BioDataServerPanel3Descriptor) descriptor3)
-					.getSpeciesName();
+//			species = ((BioDataServerPanel3Descriptor) descriptor3)
+//					.getSpeciesName();
 			finalState = ((BioDataServerPanel4Descriptor) descriptor4)
 					.getFinalState();
-
-			System.out.println("Species set to: " + species);
-
+			
 			if (finalState == 1) {
 				File mfTest = new File(manifest);
 				String mParent = null;
 				if (mfTest.canRead()) {
 					mParent = mfTest.getParent();
-					// ystem.out.println( "Parent is " + mParent );
-					appendSpecies(mParent);
+					//appendSpecies(mParent);
 				}
 				Cytoscape.loadBioDataServer(manifest);
 			} else {
