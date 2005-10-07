@@ -364,6 +364,9 @@
               tofile="${release.dir}/vizmap.props"/>
     		 <copy file="${basedir}/props/tax_report.txt"
     	         tofile="${release.dir}/tax_report.txt"/>
+    	   <copy file="${basedir}/props/tax_report.txt"
+    	    	         tofile="${release.dir}/annotation/tax_report.txt"/>
+    	
         <!-- Copy over Txt/PDF files -->
         <echo>
             ---------------------------------------
@@ -653,7 +656,6 @@
               tofile="${webstart.dir}/vizmap.props"/>
     	   <copy file="${basedir}/tax_report.txt"
     	              tofile="${webstart.dir}/tax_report.txt"/>
-   
 
         <!-- Copy over Webstart PlugIns -->
         <echo>
