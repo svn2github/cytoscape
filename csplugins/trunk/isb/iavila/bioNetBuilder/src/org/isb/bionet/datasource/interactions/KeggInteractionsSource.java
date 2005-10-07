@@ -3,14 +3,14 @@ package org.isb.bionet.datasource.interactions;
 import java.util.*;
 
 import org.isb.xmlrpc.handler.db.SQLDBHandler;
+import org.isb.bionet.datasource.synonyms.*;
 import java.sql.*;
 import org.isb.xmlrpc.handler.db.*;
 
 public class KeggInteractionsSource extends SQLDBHandler implements InteractionsDataSource {
    
     public static final String NAME = "KEGG";
-    //TODO: the id type needs to come from a synonyms class
-    public static final String GENE_ID_TYPE = "KEGG";
+    public static final String GENE_ID_TYPE = SynonymsSource.KEGG_ID;
     public static final String KEGG_INTERACTION_TYPE = "sharedCompound";
     public static final String COMPOUND = "compound";
     /**
@@ -39,7 +39,7 @@ public class KeggInteractionsSource extends SQLDBHandler implements Interactions
     
     /**
      * @param species_fullname the "fullname" entry in "org_name" table
-     * @return the "org" entry that has species_fullname as "fullname"
+     * @return the "org" entry that has species_fullname as "fullname", or null if not found
      */
     protected String getSpeciesID (String species_fullname){
        String id = (String)SPECIES_CACHE.get(species_fullname);
@@ -51,8 +51,10 @@ public class KeggInteractionsSource extends SQLDBHandler implements Interactions
                    id = rs.getString(1);
                    SPECIES_CACHE.put(species_fullname, id);
                }
+               return id;
            }catch (SQLException e){
                e.printStackTrace();
+               return null;
            }//catch
        }//id == null
        return id;
@@ -69,8 +71,8 @@ public class KeggInteractionsSource extends SQLDBHandler implements Interactions
         try{
             Vector interactions = new Vector();
             while (rs.next()) {
-                String gene1 = rs.getString(1);
-                String gene2 = rs.getString(2);
+                String gene1 = GENE_ID_TYPE + ":" + rs.getString(1);
+                String gene2 = GENE_ID_TYPE + ":" + rs.getString(2);
                 String cpd = rs.getString(3);
                 Hashtable inter = new Hashtable();
                 inter.put(INTERACTOR_1, gene1);
@@ -101,7 +103,7 @@ public class KeggInteractionsSource extends SQLDBHandler implements Interactions
         try{
             Vector interactors = new Vector();
             while(rs.next()){
-                interactors.add(rs.getString(1));
+                interactors.add(GENE_ID_TYPE + ":" + rs.getString(1));
             }//while
             return interactors;
         }catch(SQLException e){
@@ -149,6 +151,18 @@ public class KeggInteractionsSource extends SQLDBHandler implements Interactions
         }//if rs != null
         return species;
     }
+    
+    /**
+     * 
+     * @param species
+     * @return TRUE if the given species is supported by this data source, FALSE otherwise
+     */
+    public Boolean supportsSpecies (String species){
+        if(getSpeciesID(species) != null){
+            return Boolean.TRUE;
+        }
+        return Boolean.FALSE;
+    }
 
     /**
      * @return a String denoting the version of the data source (could be a release date,
@@ -177,15 +191,10 @@ public class KeggInteractionsSource extends SQLDBHandler implements Interactions
     
     // --------------- InteractionsDataSource methods ---------------------//
     /**
-     * @return a Vector of Strings that specify types of IDs that this InteractionsDataSource accepts
-     * for example, "ORF","GI", etc.
+     * @return the type of gene ID that this handler understands
      */
-    //TODO: GENE_ID_TYPE needs to come from a Synonyms class
-    //TODO: What other ids does KEGG support, if any?
-    public Vector getIDtypes (){
-        Vector ids = new Vector();
-        ids.add(GENE_ID_TYPE);
-        return ids;
+    public String getIDtype (){
+        return GENE_ID_TYPE;
     }
     
     //------------------------ get interactions en masse --------------------
@@ -202,6 +211,7 @@ public class KeggInteractionsSource extends SQLDBHandler implements Interactions
      */
     public Vector getAllInteractions (String species_fullname){
         String spID = getSpeciesID(species_fullname);
+        if(spID == null) return EMPTY_VECTOR;
         String sql = "SELECT gene1, gene2, cpd FROM  gene_cpd_gene_score WHERE org = \"" + spID + "\"";
         ResultSet rs = query(sql);
         return makeInteractionsVector(rs);
@@ -213,6 +223,7 @@ public class KeggInteractionsSource extends SQLDBHandler implements Interactions
      */
     public Integer getNumAllInteractions (String species_fullname){
         String spID = getSpeciesID(species_fullname);
+        if(spID == null) return new Integer(0);
         String sql = "SELECT COUNT(*) FROM  gene_cpd_gene_score WHERE org = \"" + spID + "\"";
         ResultSet rs = query(sql);
         // Contains both directions...
@@ -246,7 +257,33 @@ public class KeggInteractionsSource extends SQLDBHandler implements Interactions
         return getNumAllInteractions(species);
     }
    
-    
+    /**
+     * 
+     * @param interactors list of gene ids with the prefix GENE_ID_TYPE:
+     * @return or statement that uses gene ids without the prefix
+     */
+    protected String getOrStatementGene1 (Vector interactors){
+        Iterator it = interactors.iterator();
+        if(!it.hasNext()) return "";
+        String orStatement = "";
+        String geneID = (String)it.next();
+        int index = geneID.indexOf(GENE_ID_TYPE + ":");
+        if(index >= 0){
+            geneID = geneID.substring(index + GENE_ID_TYPE.length() + 1);
+            orStatement = "gene1 = \"" + geneID + "\"";
+        }
+        
+        while(it.hasNext()){
+            geneID = (String)it.next();
+            index = geneID.indexOf(GENE_ID_TYPE + ":");
+            if(index >= 0){
+                geneID = geneID.substring(index + GENE_ID_TYPE.length() + 1);
+                orStatement += " OR gene1 = \"" + geneID + "\"";
+            }
+        }
+        
+        return orStatement;
+    }
     
     //-------------------------- 1st neighbor methods ---------------------------
 
@@ -258,13 +295,12 @@ public class KeggInteractionsSource extends SQLDBHandler implements Interactions
      * in the input and output vectors are matched (parallel vectors)
      */
     public Vector getFirstNeighbors (Vector interactors, String species){
-        Iterator it = interactors.iterator();
-        if(!it.hasNext()) return EMPTY_VECTOR;
-        String orStatement = "gene1 = \"" + (String)it.next() + "\"";
-        while(it.hasNext()){
-            orStatement += " OR gene1 = \"" + (String)it.next() + "\"";
-        }
         String spID = getSpeciesID(species);
+        if(spID == null) return EMPTY_VECTOR;
+        
+        String orStatement = getOrStatementGene1(interactors);
+        if(orStatement.length() == 0) return EMPTY_VECTOR;
+       
         String sql = "SELECT gene2 FROM gene_cpd_gene_score WHERE org = \"" + spID + "\"" + " AND (" + orStatement + ")"; 
         ResultSet rs = query(sql);
         return makeInteractorsVector(rs);
@@ -276,13 +312,12 @@ public class KeggInteractionsSource extends SQLDBHandler implements Interactions
      * @return the number of interactors
      */
     public Integer getNumFirstNeighbors (Vector interactors, String species){
-        Iterator it = interactors.iterator();
-        if(!it.hasNext()) return new Integer(0);
-        String orStatement = "gene1 = \"" + (String)it.next() + "\"";
-        while(it.hasNext()){
-            orStatement += " OR gene1 = \"" + (String)it.next() + "\"";
-        }
         String spID = getSpeciesID(species);
+        if(spID == null) return new Integer(0);
+       
+        String orStatement = getOrStatementGene1(interactors);
+        if(orStatement.length() == 0) return new Integer(0);
+        
         String sql = "SELECT COUNT(gene2) FROM gene_cpd_gene_score WHERE org = \"" + spID + "\"" + " AND (" + orStatement + ")"; 
         ResultSet rs = query(sql);
         return new Integer(SQLUtils.getInt(rs));
@@ -328,13 +363,12 @@ public class KeggInteractionsSource extends SQLDBHandler implements Interactions
      * The input and output vectors are parallel.
      */
     public Vector getAdjacentInteractions (Vector interactors, String species){
-        Iterator it = interactors.iterator();
-        if(!it.hasNext()) return EMPTY_VECTOR;
-        String orStatement = "gene1 = \"" + (String)it.next() + "\"";
-        while(it.hasNext()){
-            orStatement += " OR gene1 = \"" + (String)it.next() + "\"";
-        }
         String spID = getSpeciesID(species);
+        if(spID == null) return EMPTY_VECTOR;
+        
+        String orStatement = getOrStatementGene1(interactors);
+        if(orStatement.length() == 0) return EMPTY_VECTOR;
+      
         String sql = "SELECT gene1, gene2, cpd FROM gene_cpd_gene_score WHERE org = \"" + spID + "\"" + " AND (" + orStatement + ")"; 
         ResultSet rs = query(sql);
         return makeInteractorsVector(rs);
@@ -346,13 +380,12 @@ public class KeggInteractionsSource extends SQLDBHandler implements Interactions
      * @return the number of adjacent interactions
      */
     public Integer getNumAdjacentInteractions (Vector interactors, String species){
-        Iterator it = interactors.iterator();
-        if(!it.hasNext()) return new Integer(0);
-        String orStatement = "gene1 = \"" + (String)it.next() + "\"";
-        while(it.hasNext()){
-            orStatement += " OR gene1 = \"" + (String)it.next() + "\"";
-        }
         String spID = getSpeciesID(species);
+        if(spID == null) return new Integer(0);
+       
+        String orStatement = getOrStatementGene1(interactors);
+        if(orStatement.length() == 0) return new Integer(0);
+        
         String sql = "SELECT gene2 FROM gene_cpd_gene_score WHERE org = \"" + spID + "\"" + " AND (" + orStatement + ")"; 
         ResultSet rs = query(sql);
         return new Integer(SQLUtils.getInt(rs));
@@ -390,6 +423,40 @@ public class KeggInteractionsSource extends SQLDBHandler implements Interactions
 
     //-------------------------- connecting interactions methods -----------------------
 
+    protected String [] getOrStatementsGenes12 (Vector interactors){
+        
+        String [] statements = new String[2];
+        statements[0] = "";
+        statements[1] = "";
+        Iterator it = interactors.iterator();
+        if(!it.hasNext()) return statements;
+        
+        String gene = (String)it.next();
+        int index = gene.indexOf(GENE_ID_TYPE + ":");
+        String orStatement1 = "";
+        String orStatement2 = "";
+        
+        if(index >= 0){
+            gene = gene.substring(index + GENE_ID_TYPE.length() + 1);
+            orStatement1 = "gene1 = \"" + gene + "\"";
+            orStatement2 = "gene2 = \"" + gene + "\"";
+        }
+        
+        while(it.hasNext()){
+         
+            gene = (String)it.next();
+            index = gene.indexOf(GENE_ID_TYPE + ":");
+            if(index >= 0){
+                gene = gene.substring(index + GENE_ID_TYPE.length() + 1);
+                orStatement1 += " OR gene1 = \"" + gene + "\"";
+                orStatement2 += " OR gene2 = \"" + gene + "\"";
+            }
+        }
+            
+        return statements;
+    }
+    
+    
     /**
      * @param interactors
      * @param species
@@ -401,19 +468,13 @@ public class KeggInteractionsSource extends SQLDBHandler implements Interactions
      * Each implementing class can add additional entries to the Hashtables 
      */
     public Vector getConnectingInteractions (Vector interactors, String species){
-       
-        Iterator it = interactors.iterator();
-        if(!it.hasNext()) return EMPTY_VECTOR;
-        String gene = (String)it.next();
-        String orStatement1 = "gene1 = \"" + gene + "\"";
-        String orStatement2 = "gene2 = \"" + gene + "\"";; 
-        while(it.hasNext()){
-            gene = (String)it.next();
-            orStatement1 += " OR gene1 = \"" + gene + "\"";
-            orStatement2 += " OR gene2 = \"" + gene + "\"";
-        }
         String spID = getSpeciesID(species);
-        String sql = "SELECT gene1, gene2, cpd FROM gene_cpd_gene_score WHERE org = \"" + spID + "\"" + " AND (" + orStatement1 + ") AND (" + orStatement2 + ")"; 
+        if(spID == null) return EMPTY_VECTOR;
+        
+        String [] ors = getOrStatementsGenes12(interactors); 
+        if(ors[0].length() == 0) return EMPTY_VECTOR;
+        
+        String sql = "SELECT gene1, gene2, cpd FROM gene_cpd_gene_score WHERE org = \"" + spID + "\"" + " AND (" + ors[0] + ") AND (" + ors[1] + ")"; 
         ResultSet rs = query(sql);
         return makeInteractorsVector(rs);
     }
@@ -424,18 +485,12 @@ public class KeggInteractionsSource extends SQLDBHandler implements Interactions
      * @return the number of connecting interactions
      */
     public Integer getNumConnectingInteractions (Vector interactors, String species){
-        Iterator it = interactors.iterator();
-        if(!it.hasNext()) return new Integer(0);
-        String gene = (String)it.next();
-        String orStatement1 = "gene1 = \"" + gene + "\"";
-        String orStatement2 = "gene2 = \"" + gene + "\"";; 
-        while(it.hasNext()){
-            gene = (String)it.next();
-            orStatement1 += " OR gene1 = \"" + gene + "\"";
-            orStatement2 += " OR gene2 = \"" + gene + "\"";
-        }
         String spID = getSpeciesID(species);
-        String sql = "SELECT COUNT(*) FROM gene_cpd_gene_score WHERE org = \"" + spID + "\"" + " AND (" + orStatement1 + ") AND (" + orStatement2 + ")"; 
+        if(spID == null) return new Integer(0);
+        String [] ors = getOrStatementsGenes12(interactors); 
+        if(ors[0].length() == 0) return new Integer(0);
+     
+        String sql = "SELECT COUNT(*) FROM gene_cpd_gene_score WHERE org = \"" + spID + "\"" + " AND (" + ors[0]+ ") AND (" + ors[1] + ")"; 
         ResultSet rs = query(sql);
         return new Integer(SQLUtils.getInt(rs)/2);
     }

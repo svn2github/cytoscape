@@ -31,6 +31,10 @@ public class NodeSourcesPanel extends JPanel {
     protected JTextField listNodes, annotsNodes, netsNodes;
     protected CytoscapeGODialog annotationsDialog;
     protected String [] annotationNodeIDs = new String[0];
+    protected JCheckBox useAnnotations;
+    protected JCheckBox useList;
+    protected JCheckBox useNets;
+    
     /**
      *  Creates a panel with node sources
      */
@@ -55,10 +59,10 @@ public class NodeSourcesPanel extends JPanel {
         // TODO: Do checks: selected networks species must match to the species the user selected in this sesion
         // TODO: Nodes from annotations!
         Vector startingNodes = new Vector();
-        if(myListNodes != null){
+        if(myListNodes != null && useList.isSelected()){
             startingNodes.addAll(myListNodes);
         }
-        if(nodeNets != null){
+        if(nodeNets != null && useNets.isSelected()){
             for(int i = 0; i < nodeNets.length; i++){
                 Iterator it = nodeNets[i].nodesIterator();
                 while(it.hasNext()){
@@ -69,8 +73,10 @@ public class NodeSourcesPanel extends JPanel {
                 }//while it
             }//for i
         }// if nodeNets != null
-        for(int i = 0; i < this.annotationNodeIDs.length; i++){
-            startingNodes.add(this.annotationNodeIDs[i]);
+        if(this.useAnnotations.isSelected()){
+            for(int i = 0; i < this.annotationNodeIDs.length; i++){
+                startingNodes.add(this.annotationNodeIDs[i]);
+            }
         }
         return startingNodes;
     }
@@ -186,8 +192,8 @@ public class NodeSourcesPanel extends JPanel {
 
         c.gridwidth = 1; // reset to the default
 
-        JCheckBox useAnnotations = new JCheckBox();
-        useAnnotations.addActionListener(
+        this.useAnnotations = new JCheckBox();
+        this.useAnnotations.addActionListener(
                 new AbstractAction(){
                     public void actionPerformed(ActionEvent event){
                         JCheckBox source = (JCheckBox)event.getSource();
@@ -195,7 +201,7 @@ public class NodeSourcesPanel extends JPanel {
                     }
                 }
         );
-        useAnnotations.setSelected(false);
+        this.useAnnotations.setSelected(false);
         gridbag.setConstraints(useAnnotations, c);
         this.add(useAnnotations);
 
@@ -214,7 +220,7 @@ public class NodeSourcesPanel extends JPanel {
         c.gridwidth = 1;
 
         c.fill = GridBagConstraints.NONE;
-        JCheckBox useList = new JCheckBox();
+        this.useList = new JCheckBox();
         useList.addActionListener(
                 new AbstractAction(){
                     public void actionPerformed(ActionEvent event){
@@ -243,7 +249,7 @@ public class NodeSourcesPanel extends JPanel {
         c.gridwidth = 1;
 
         c.fill = GridBagConstraints.NONE;
-        JCheckBox useNets = new JCheckBox();
+        this.useNets = new JCheckBox();
         useNets.addActionListener(
                 new AbstractAction(){
                     public void actionPerformed(ActionEvent event){
@@ -267,6 +273,19 @@ public class NodeSourcesPanel extends JPanel {
         this.netsNodes.setText("0");
         gridbag.setConstraints(this.netsNodes, c);
         this.add(this.netsNodes);
+        
+//        JButton numNodes = new JButton("Calculate number of nodes");
+//        numNodes.addActionListener(
+//        
+//                   new AbstractAction (){
+//                       
+//                       public void actionPerformed (ActionEvent event){
+//                           NodeSourcesPanel.this.
+//                       }//actionPerformed
+//                       
+//                   }//AbstractAction
+//        
+//        );//addActionListener
     }
     
    /**

@@ -10,8 +10,8 @@ public interface SynonymsSource extends DataSource {
     /**
      * The supported IDs
      */   
-    public static final String PROLINKS_ID = "ProlinksID";
-    public static final String KEGG_ID = "KEGG ID";
+    public static final String PROLINKS_ID = "PL";
+    public static final String KEGG_ID = "KEGG";
     public static final String GI_ID = "GI";
     public static final String ID_NOT_FOUND = "ID not found";
     
@@ -23,5 +23,13 @@ public interface SynonymsSource extends DataSource {
      * @return a Hashtable from the input source_ids to the resulting translation
      */
     public Hashtable getSynonyms (String source_id_type, Vector source_ids, String target_id_type);
+    
+    /**
+     * 
+     * @param id an ID
+     * @return one of:<br>
+     * PROLINKS_ID, KEGG_ID, GI_ID, or ID_NOT_FOUND
+     */
+    public String getIdType (String id);
     
 }

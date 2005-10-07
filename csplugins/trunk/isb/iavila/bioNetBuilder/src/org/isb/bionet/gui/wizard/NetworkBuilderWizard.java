@@ -1,19 +1,17 @@
-
 package org.isb.bionet.gui.wizard;
 
 import java.util.*;
+import java.util.List;
 import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.List;
 import org.isb.bionet.datasource.interactions.*;
 import org.isb.bionet.datasource.synonyms.*;
 import org.isb.iavila.ontology.xmlrpc.*;
 import org.isb.bionet.gui.ProlinksGui;
 import org.isb.bionet.CyNetUtils;
 import cytoscape.*;
-
 
 /**
  * 
@@ -22,17 +20,23 @@ import cytoscape.*;
  */
 public class NetworkBuilderWizard {
     
+    // Clients
     protected SynonymsClient synonymsClient;
     protected InteractionDataClient interactionsClient;
     protected GOClient goClient;
+    
+    // Panels and dialogs
     protected List dialogs;
     protected SpeciesPanel speciesPanel;
     protected NodeSourcesPanel nodeSourcesPanel;
     protected EdgeSourcesPanel edgeSourcesPanel;
     protected NetworkSettingsPanel networkPanel;
+    
+    // Bookkeeping
     protected int currentStep;
     protected boolean onLastStep = false;
     
+    // Actions
     protected AbstractAction DEFAULT_BACK_ACTION = new AbstractAction(){
             
             public void actionPerformed (ActionEvent e){
@@ -52,7 +56,7 @@ public class NetworkBuilderWizard {
     
     /**
      * 
-     * @param interactions_client
+     * @param 
      */
     public NetworkBuilderWizard (SynonymsClient synonyms_client,
                 InteractionDataClient interactions_client, GOClient go_client){
@@ -248,7 +252,8 @@ public class NetworkBuilderWizard {
         
         JDialog dialog = createWizardDialog(back, next);
         
-        JPanel explanation = createExplanationPanel("<html><br>Select a species for your biological network from your<br>desired data sources.<br></html>");
+        JPanel explanation = 
+            createExplanationPanel("<html><br>Select a species for your biological network from your<br>desired data sources.<br></html>");
         dialog.getContentPane().add(explanation, BorderLayout.NORTH);
         
         try{
@@ -284,7 +289,7 @@ public class NetworkBuilderWizard {
         next = new AbstractAction (){
             
             public void actionPerformed (ActionEvent event){
-                
+               // if()
                 Vector nodes = nodeSourcesPanel.getAllNodes();
                
                 if(edgeSourcesPanel != null){
@@ -294,7 +299,8 @@ public class NetworkBuilderWizard {
                     }else{
                         edgeSourcesPanel.setEdgeMethod(InteractionsDataSource.ALL_EDGES);
                     }
-                    edgeSourcesPanel.estimateNumEdges();
+                    // This takes too long, so there is a "Calculate number of edges" button instead
+                    //edgeSourcesPanel.estimateNumEdges();
                 }// edgeSourcesPanel != null
                 
                 if(onLastStep){
@@ -309,7 +315,8 @@ public class NetworkBuilderWizard {
         
         JDialog dialog = createWizardDialog(back, next);
         
-        JPanel explanation = createExplanationPanel("<html><br>Select the sources for the nodes in your biological network.<br>"+
+        JPanel explanation = 
+            createExplanationPanel("<html><br>Select the sources for the nodes in your biological network.<br>"+
                     "Advanced settings for some sources are available if you"+
                     "<br>press the source's corresponding button.<br><br>"+
                     "If you don't select any node sources, then nodes will be"+
@@ -374,7 +381,9 @@ public class NetworkBuilderWizard {
             method = InteractionsDataSource.ALL_EDGES;
         }
         
-        this.edgeSourcesPanel = new EdgeSourcesPanel(this.interactionsClient, sourcesToSpecies, nodes, method);
+        this.edgeSourcesPanel = 
+            new EdgeSourcesPanel(this.interactionsClient, this.synonymsClient, 
+                    sourcesToSpecies, nodes, method);
         
         JPanel bigPanel = new JPanel();
         bigPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -435,13 +444,13 @@ public class NetworkBuilderWizard {
     // TODO: Organize this better, this is quick and dirty, maybe a new class???
     // TODO: Need to pass to the interactions source handler a list of genes with id's that it understands (synonyms handler)
     protected void createNetwork (){
-    
         // 1. Get the species for each edge data source
         Map sourceToSpecies = this.speciesPanel.getSourcesSelectedSpecies();
         Map sourceToNames = this.speciesPanel.getSourcesNames();
         
         // 2. Get the starting nodes for the network (if any)
         Vector startingNodes = this.nodeSourcesPanel.getAllNodes();
+        
         
         // 3. Get the edge data source parameter settings
         Map sourceToSettings = this.edgeSourcesPanel.getSourcesDialogs();
@@ -455,34 +464,27 @@ public class NetworkBuilderWizard {
         while(it.hasNext()){
             
             String sourceClass = (String)it.next();
+            if(!this.edgeSourcesPanel.isSourceSelected(sourceClass)) continue;
+          
             List sourceSpecies = (List)sourceToSpecies.get(sourceClass);
+            if(sourceSpecies == null || sourceSpecies.size() == 0) continue;
+            
+            
+            String species = (String)sourceSpecies.get(0);
             String sourceName = (String)sourceToNames.get(sourceClass);
-            Vector params = new Vector();
             
-            if(sourceSpecies == null || sourceSpecies.size() == 0){
-                continue;
-            }
-            
-            if(startingNodes != null && startingNodes.size() > 0){
-                params.add(startingNodes); 
-            }
-            
-            params.add((String)sourceSpecies.get(0));
-            
-            //System.out.println("sourceClass = " + sourceClass + " sourceName = " + sourceName);
-            //TODO: Other data sources need to be added
-            
+      
             Hashtable args = new Hashtable();
             if(sourceName.equals(ProlinksInteractionsSource.NAME)){
                 
                 ProlinksGui prolinksGui = (ProlinksGui)sourceToSettings.get(sourceClass);
                 Vector interactionTypes = prolinksGui.getSelectedInteractionTypes();
                 double pvalTh = prolinksGui.getPval(false);
-                System.out.println("------- Prolinks settings ----------");
+                System.out.println("------- Prolinks settings (createNetwork)----------");
                 System.out.println("interactionTypes = " + interactionTypes);
                 System.out.println("pval = " + pvalTh);
                 System.out.println("species = " + sourceSpecies);
-                System.out.println("------------------------------------");
+                System.out.println("---------------------------------------------------");
                 
                 if(pvalTh != 1){
                     args.put(ProlinksInteractionsSource.PVAL, new Double(pvalTh));
@@ -492,22 +494,41 @@ public class NetworkBuilderWizard {
                     args.put(ProlinksInteractionsSource.INTERACTION_TYPE, interactionTypes);
                 }
                 
-                params.add(args);
+            //    params.add(args);
             
             }//if prolinks
                 
-            String method;
-            if(startingNodes == null || startingNodes.size() == 0){
-                method = "getAllInteractions";
-            }else{
-                method = "getConnectingInteractions";
-            }
+            //String method;
+            Vector sourceInteractions = null;
             try{
-                Vector sourceInteractions = (Vector)this.interactionsClient.callSourceMethod(sourceClass,method,params);
+                if(startingNodes == null || startingNodes.size() == 0){
+                    //method = "getAllInteractions";
+                    if(args.size() > 0){
+                        sourceInteractions = (Vector)this.interactionsClient.getAllInteractions(species, args);
+                    }else{
+                        sourceInteractions = (Vector)this.interactionsClient.getAllInteractions(species);
+                    }
+                }else{
+                    if(args.size() > 0){
+                        sourceInteractions = (Vector)this.interactionsClient.getConnectingInteractions(startingNodes, species, args);
+                    }else{
+                        sourceInteractions = (Vector)this.interactionsClient.getConnectingInteractions(startingNodes, species);
+                    }
+                 //   method = "getConnectingInteractions";
+                }
                 interactions.addAll(sourceInteractions);
-            }catch (Exception e){
-                e.printStackTrace();
+            }catch (Exception ex){
+                ex.printStackTrace();
             }
+            
+            //try{
+              //  Vector sourceInteractions = (Vector)this.interactionsClient.callSourceMethod(sourceClass,method,params);
+                //TODO: Translate to GI ids
+                //translateToGI(sourceInteractions, targetID);
+                //interactions.addAll(sourceInteractions);
+            //}catch (Exception e){
+              //  e.printStackTrace();
+           // }
             
         }//while it
         
@@ -521,6 +542,64 @@ public class NetworkBuilderWizard {
         
         
     }//createNetwork
+    
+    /**
+     * 
+     * @param id an ID
+     * @return one of:<br>
+     * PROLINKS_ID, KEGG_ID, GI_ID, or ID_NOT_FOUND
+     */
+    public String getIdType (String id){
+        String [] tokens = id.split(":");
+        if(tokens.length == 0) return SynonymsSource.ID_NOT_FOUND;
+        if(tokens[0].equals(SynonymsSource.PROLINKS_ID)) return SynonymsSource.PROLINKS_ID;
+        if(tokens[0].equals(SynonymsSource.KEGG_ID)) return SynonymsSource.KEGG_ID;
+        if(tokens[0].equals(SynonymsSource.GI_ID)) return SynonymsSource.GI_ID;
+        return SynonymsSource.ID_NOT_FOUND;
+    }
+    
+    //TODO: Remove?
+    private void translateToGI (Vector interactions, String id_type){
+     
+        Iterator it = interactions.iterator();
+        Set genes = new HashSet (); 
+        while(it.hasNext()){
+            Hashtable anInteraction = (Hashtable)it.next();
+            String gene1 = (String)anInteraction.get(InteractionsDataSource.INTERACTOR_1);
+            String gene2 = (String)anInteraction.get(InteractionsDataSource.INTERACTOR_2);
+            genes.add(gene1);
+            genes.add(gene2);
+        }//while it.hasNext
+        Hashtable synonyms = null;
+        try{
+           synonyms = this.synonymsClient.getSynonyms(id_type, new Vector(genes), SynonymsSource.GI_ID);
+        }catch(Exception ex){
+            System.err.println("There was a problem while translating gene names to GI_IDs!!!");
+            ex.printStackTrace();
+            return;
+        }
+        
+        it = interactions.iterator();
+        while(it.hasNext()){
+            Hashtable anInteraction = (Hashtable)it.next();
+            String gene1 = (String)anInteraction.get(InteractionsDataSource.INTERACTOR_1);
+            String gene2 = (String)anInteraction.get(InteractionsDataSource.INTERACTOR_2);
+            String gi1 = (String)synonyms.get(gene1);
+            if(gi1 == null){
+                System.err.println("No gi id found for " + gene1);
+            }else{
+                anInteraction.put(InteractionsDataSource.INTERACTOR_1, gi1);
+            }
+            String gi2 = (String)synonyms.get(gene2);
+            if(gi2 == null){
+                System.err.println("No gi id found for " + gene2);
+            }else{
+                anInteraction.put(InteractionsDataSource.INTERACTOR_2, gi2);
+            }
+                        
+        }//while it.hasNext
+        
+    }
     
     
 }//NetworkBuilderWizard

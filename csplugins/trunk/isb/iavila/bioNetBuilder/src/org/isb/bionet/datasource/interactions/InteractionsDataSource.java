@@ -23,10 +23,10 @@ public interface InteractionsDataSource extends DataSource {
   public static final int ALL_EDGES = 2;
 
   /**
-   * @return a Vector of Strings that specify types of IDs that this InteractionsDataSource accepts
-   * for example, "ORF","GI", etc.
+   * @return String to specify type of ID that this InteractionsDataSource accepts
+   * for example, SynonymsSource.GI_ID, etc.
    */
-  public Vector getIDtypes ();
+  public String getIDtype ();
   
   //------------------------ get interactions en masse --------------------
   /**

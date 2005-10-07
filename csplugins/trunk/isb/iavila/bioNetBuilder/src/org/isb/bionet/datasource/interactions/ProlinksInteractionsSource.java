@@ -3,6 +3,7 @@ package org.isb.bionet.datasource.interactions;
 import java.sql.*;
 import java.util.*;
 import org.isb.xmlrpc.handler.db.*;
+import org.isb.bionet.datasource.synonyms.*;
 
 
 /**
@@ -26,8 +27,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 		InteractionsDataSource {
 
 	public static final String NAME = "Prolinks";
-    // TODO: the id type needs to be obtained from a Synonyms class.
-	public static final String GENE_ID_TYPE = "ProlinksID";
+	public static final String GENE_ID_TYPE = SynonymsSource.PROLINKS_ID; 
 	public static final String PVAL = "p";
 	
 	/**
@@ -125,7 +125,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	
 	/**
 	 * @param species the species
-	 * @return the name of the table or view for the given species
+	 * @return the name of the table or view for the given species, or null if not found
 	 */
 	public String getTableName (String species){
 		
@@ -153,28 +153,29 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	 * @param species the species
 	 * @param method one of PP, GN, GC, or RS
 	 * @param query_pval the pvalue that is going to be used to query the table ( >1 if pval is not important )
-	 * @return the name of the table or view
+	 * @return the name of the table, or null if not found
 	 */
 	public String getTableNameForMethod (String species, String method, double query_pval){
-
-		double pth = ((Double)ProlinksInteractionsSource.methodThresholds.get(method)).doubleValue();
-		String tableName = getTableName(species) + "_" + method.toLowerCase();
-		if(query_pval <= pth){
+        String tableName = getTableName(species);
+		if(tableName == null) return null;
+         
+        tableName += "_" + method.toLowerCase();
+        
+        double pth = ((Double)ProlinksInteractionsSource.methodThresholds.get(method)).doubleValue();
+         if(query_pval <= pth){
 			tableName = tableName + "_low";
 		}
-		return tableName;
+		
+         return tableName;
 	}
 
 
 	// Methods implementing DataSource interface:
 	/**
-	 * @return a Vector of Strings that specify types of IDs that this
-	 *         InteractionsDataSource accepts for example, "ORF","GI", etc.
+	 * @return String the type of id that this handler understands
 	 */
-	public Vector getIDtypes() {
-		Vector ids = new Vector();
-		ids.add(GENE_ID_TYPE);
-		return ids;
+	public String getIDtype () {
+		return GENE_ID_TYPE;
 	}// getIDTypes
 
 	/**
@@ -217,6 +218,18 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 		}
 		return species;
 	}
+    
+    /**
+     * 
+     * @param species
+     * @return TRUE if the given species is supported by this data source, FALSE otherwise
+     */
+    public Boolean supportsSpecies (String species){
+        if(getTableName(species) != null){
+            return Boolean.TRUE;
+        }
+        return Boolean.FALSE;
+    }
 
 	/**
 	 * @return a String denoting the version of the data source (could be a
@@ -255,6 +268,73 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	}
 
 	// Methods implementing InteractionsDataSource interface:
+    
+    /**
+     * @return an or statement
+     */
+    protected String getOrStatementA (Vector interactors){
+        
+        Iterator it = interactors.iterator();
+        
+        if(!it.hasNext()) return "";
+        
+        String geneID = (String)it.next();
+        int index = geneID.indexOf(GENE_ID_TYPE + ":",0);
+        String orStatement = "";
+        if(index >= 0){
+            geneID = geneID.substring(index + (GENE_ID_TYPE.length() + 1));
+            orStatement = "gene_id_a = " + geneID;
+        }
+       
+        while(it.hasNext()){
+            geneID = (String)it.next();
+            index = geneID.indexOf(GENE_ID_TYPE + ":",0);
+            if(index >= 0){
+                geneID = geneID.substring(index + (GENE_ID_TYPE.length() + 1));
+                orStatement += "gene_id_a = " + geneID;
+            }
+        }//while it.hasNext
+        return orStatement;
+    }
+    
+    /**
+     * 
+     * @param interactors
+     * @return array of Strings of size 2, [0] contains orStatement_a, [1] contains orStatement_b
+     */
+    protected String[] getOrStatementsAB (Vector interactors){
+        
+        String [] statements = new String[2];
+        statements[0] = "";
+        statements[1] = "";
+        
+        Iterator it = interactors.iterator();
+        if(!it.hasNext()) return  statements;
+        String geneName = (String)it.next();
+        String orStatement_a = "";
+        String orStatement_b = "";
+        int index = geneName.indexOf(GENE_ID_TYPE + ":", 0);
+        if(index >= 0){
+            geneName = geneName.substring(index + GENE_ID_TYPE.length() + 1);
+            orStatement_a = " gene_id_a = " + geneName;
+            orStatement_b = " gene_id_b = " + geneName;
+        }
+        
+        while(it.hasNext()){
+            geneName = (String)it.next();
+            index = geneName.indexOf(GENE_ID_TYPE + ":", 0);
+            if(index >= 0){
+                geneName = geneName.substring(index + GENE_ID_TYPE.length() + 1);
+                orStatement_a += " OR gene_id_a = " + geneName;
+                orStatement_b += " OR gene_id_b = " + geneName;
+            }
+            
+        }//while it.hasNext
+       
+        statements[0] = orStatement_a;
+        statements[1] = orStatement_b;
+        return statements;
+    }
 	
 	/**
 	 * Protected helper method
@@ -268,8 +348,8 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 		try{
 			Vector interactions = new Vector();
 			while (rs.next()) {
-				String gene1 = rs.getString(1);
-				String gene2 = rs.getString(2);
+				String gene1 = GENE_ID_TYPE + ":" + rs.getString(1);
+				String gene2 = GENE_ID_TYPE + ":" + rs.getString(2);
 				double pval = rs.getDouble(3);
 				Hashtable inter = new Hashtable();
 				inter.put(INTERACTOR_1, gene1);
@@ -303,8 +383,8 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 		try{
 			Vector allInteractions =  new Vector();
 			while(rs.next()){
-				String geneA = rs.getString(1);
-				String geneB = rs.getString(2);
+				String geneA = GENE_ID_TYPE + ":" + rs.getString(1);
+				String geneB = GENE_ID_TYPE + ":" + rs.getString(2);
 				double p = rs.getDouble(3);
 				String method = rs.getString(4);
 				Hashtable interaction = new Hashtable();
@@ -338,7 +418,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 		try{
 			Vector interactors = new Vector();
 			while(rs.next()){
-				String gene = rs.getString(1);
+				String gene = GENE_ID_TYPE + ":" + rs.getString(1);
 				interactors.add(gene);
 				if(debug && interactors.size() % 10000 == 0){
 					System.out.println("interactors = " + interactors.size());
@@ -391,7 +471,8 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	// Will need to add paging, or something like that
 	public Vector getAllInteractions(String species) {
 		String tableName = getTableName(species);
-		String sql = "SELECT gene_id_a,gene_id_b,p,method FROM " + tableName;
+        if(tableName == null) return EMPTY_VECTOR;
+        String sql = "SELECT gene_id_a,gene_id_b,p,method FROM " + tableName;
 		ResultSet rs = query(sql);
 		return makeInteractionsVector(rs);
 	}
@@ -403,6 +484,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
      */
     public Integer getNumAllInteractions(String species) {
         String tableName = getTableName(species);
+        if(tableName == null) return new Integer(0);
         String sql = "SELECT COUNT (*) FROM " + tableName;
         ResultSet rs = query(sql);
         // Prolinks contains a->b, b->a for the same edge
@@ -452,6 +534,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 			String method = (String)it.next();
 			//System.out.println(method);
 			String tableName = getTableNameForMethod(species, method, pval);
+             if(tableName == null) continue;
 			//System.out.println("tableName = " + tableName);
 			String sql = "SELECT gene_id_a, gene_id_b, p FROM " + tableName;
 			if(pval < 1){
@@ -474,7 +557,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
      * @return the number of interactions
      */
     public Integer getNumAllInteractions(String species, Hashtable args) {
-        System.out.println("ProlinksInteractionsSource.getAllInteractions (" + species + ", " + args + ")");
+        //System.out.println("ProlinksInteractionsSource.getAllInteractions (" + species + ", " + args + ")");
         
         double pval = 2; // PVALS' max value is 1
         if(args.containsKey(PVAL)){
@@ -502,6 +585,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
             String method = (String)it.next();
             //System.out.println(method);
             String tableName = getTableNameForMethod(species, method, pval);
+            if(tableName == null) continue;
             //System.out.println("tableName = " + tableName);
             String sql = "SELECT COUNT(*) FROM " + tableName;
             if(pval < 1){
@@ -530,16 +614,16 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	 * @return the number of 1st neighbors
 	 */
 	public Integer getNumFirstNeighbors(Vector interactors, String species) {        
+        
+        String tableName = getTableName(species);
+        if(tableName == null) return new Integer(0);
+        
         Iterator it = interactors.iterator();
         if(!it.hasNext())
             return new Integer(0);
         
-        String orStatement = "gene_id_a = " + (String) it.next();
-        while(it.hasNext()){
-            orStatement = " OR gene_id_a = " + (String)it.next();
-        }//while it.hasNext
-        
-        String tableName = getTableName(species);
+        String orStatement = getOrStatementA(interactors);
+        if(orStatement.length() == 0) return new Integer(0);
         String sql = "SELECT COUNT (DISTINCT gene_id_b) FROM " + tableName + " WHERE " + orStatement;
         ResultSet rs = query(sql);
         return new Integer(SQLUtils.getInt(rs));
@@ -556,17 +640,15 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
      *         (parallel vectors)
      */
     public Vector getFirstNeighbors(Vector interactors, String species) {        
+        String tableName = getTableName(species);
+        if(tableName == null) return EMPTY_VECTOR;
         
         Iterator it = interactors.iterator();
-        if(!it.hasNext())
-            return new Vector();
+        if(!it.hasNext()) return EMPTY_VECTOR;
         
-        String orStatement = "gene_id_a = " + (String) it.next();
-        while(it.hasNext()){
-            orStatement = " OR gene_id_a = " + (String)it.next();
-        }//while it.hasNext
-        
-        String tableName = getTableName(species);
+        String orStatement = getOrStatementA(interactors);
+       
+        if(orStatement.length() == 0) return EMPTY_VECTOR;
         String sql = "SELECT DISTINCT gene_id_b FROM " + tableName + " WHERE " + orStatement;
         ResultSet rs = query(sql);
         return makeInteractorsVector(rs);
@@ -611,10 +693,8 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
             return getFirstNeighbors(interactors, species);
         }
         
-        String orStatement = "gene_id_a = " + (String) it.next();
-        while(it.hasNext()){
-            orStatement = " OR gene_id_a = " + (String)it.next();
-        }//while it.hasNext
+        String orStatement = getOrStatementA(interactors);
+        if(orStatement.length() == 0) return EMPTY_VECTOR;
         
         String sql;
         Set interactions = new HashSet();
@@ -628,6 +708,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
                 while(it.hasNext()){
                     String method = (String)it.next();
                     String tableName = getTableNameForMethod(species, method, pval);
+                    if(tableName == null) continue;
                     sql = "SELECT DISTINCT gene_id_b FROM " + tableName + " WHERE " + orStatement;
                     ResultSet rs = query(sql);
                     interactions.addAll(makeInteractionsVector(rs, method));
@@ -640,6 +721,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
             while(it.hasNext()){
                 String method = (String)it.next();
                 String tableName = getTableNameForMethod(species, method, pval);
+                if(tableName == null) continue;
                 sql = "SELECT DISTINCT gene_id_b FROM " + tableName + " WHERE p <= " + pval + " AND (" + orStatement + ")";
                 ResultSet rs = query(sql);
                 interactions.addAll(makeInteractionsVector(rs, method));
@@ -684,11 +766,8 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
             // Just like calling with no args
             return getNumFirstNeighbors(interactors, species);
         }
-        
-        String orStatement = "gene_id_a = " + (String) it.next();
-        while(it.hasNext()){
-            orStatement = " OR gene_id_a = " + (String)it.next();
-        }//while it.hasNext
+        String orStatement = getOrStatementA(interactors);
+        if(orStatement.length() == 0) return new Integer(0);
         
         String sql;
         int num = 0;
@@ -702,6 +781,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
                 while(it.hasNext()){
                     String method = (String)it.next();
                     String tableName = getTableNameForMethod(species, method, pval);
+                    if(tableName == null) continue;
                     sql = "SELECT COUNT (DISTINCT gene_id_b) FROM " + tableName + " WHERE " + orStatement;
                     ResultSet rs = query(sql);
                     num += SQLUtils.getInt(rs);
@@ -714,6 +794,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
             while(it.hasNext()){
                 String method = (String)it.next();
                 String tableName = getTableNameForMethod(species, method, pval);
+                if(tableName == null) continue;
                 sql = "SELECT COUNT (DISTINCT gene_id_b) FROM " + tableName + " WHERE p <= " + pval + " AND (" + orStatement + ")";
                 ResultSet rs = query(sql);
                 num += SQLUtils.getInt(rs);
@@ -739,20 +820,13 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	 *         The input and output vectors are parallel.
 	 */
 	public Vector getAdjacentInteractions(Vector interactors, String species) {
-		
-        if(interactors.size() == 0){
-            return new Vector();
-        }
-        
-        Iterator it = interactors.iterator();
-        String geneName = (String)it.next();
-        String orStatement_a = " gene_id_a = " + geneName;
-        while(it.hasNext()){
-            geneName = (String)it.next();
-            orStatement_a += " OR gene_id_a = " + geneName;
-        }//while it.hasNext
-        
         String tableName = getTableName(species);
+        if(tableName == null) return EMPTY_VECTOR;
+        if(interactors.size() == 0) return EMPTY_VECTOR;
+         
+        String orStatement_a = getOrStatementA(interactors);
+        if(orStatement_a.length() == 0) return EMPTY_VECTOR;
+        
         String sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + tableName + " WHERE " + orStatement_a;
         ResultSet rs = query(sql);
         return makeInteractionsVector(rs);
@@ -766,20 +840,13 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
      * @return the number of adjacent interactions
      */
     public Integer getNumAdjacentInteractions(Vector interactors, String species) {
-        
-        if(interactors.size() == 0){
-            return new Integer(0);
-        }
-        
-        Iterator it = interactors.iterator();
-        String geneName = (String)it.next();
-        String orStatement_a = " gene_id_a = " + geneName;
-        while(it.hasNext()){
-            geneName = (String)it.next();
-            orStatement_a += " OR gene_id_a = " + geneName;
-        }//while it.hasNext
-        
         String tableName = getTableName(species);
+        if(tableName == null) return new Integer(0);
+        if(interactors.size() == 0) return new Integer(0);
+        
+        String orStatement_a = getOrStatementA(interactors);
+        if(orStatement_a.length() == 0) return new Integer(0);
+        
         String sql = "SELECT COUNT(*) FROM " + tableName + " WHERE " + orStatement_a;
         ResultSet rs = query(sql);
         return new Integer(SQLUtils.getInt(rs));
@@ -808,17 +875,10 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	public Vector getAdjacentInteractions(Vector interactors, String species,
 			Hashtable args) {
 		
-        if(interactors.size() == 0){
-            return new Vector();
-        }
+        if(interactors.size() == 0) return EMPTY_VECTOR;
         
-        Iterator it = interactors.iterator();
-        String geneName = (String)it.next();
-        String orStatement_a = " gene_id_a = " + geneName;
-        while(it.hasNext()){
-            geneName = (String)it.next();
-            orStatement_a += " OR gene_id_a = " + geneName;
-        }//while it.hasNext
+        String orStatement_a = getOrStatementA(interactors);
+        if(orStatement_a.length() == 0) return EMPTY_VECTOR;
         
         double pval = 2;
         if(args.containsKey(PVAL)){
@@ -838,11 +898,12 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
         
         String sql;
         if(pval < 1){
-            it = methods.iterator();
+            Iterator it = methods.iterator();
             Vector interactions = new Vector();
             while(it.hasNext()){
                 String method = (String)it.next();
                 String tableName = getTableNameForMethod(species, method, pval);
+                if(tableName == null) continue;
                 sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + tableName + " WHERE p <= " + pval + " AND " + orStatement_a;
                 ResultSet rs = query(sql);
                 interactions.addAll(makeInteractionsVector(rs));
@@ -851,11 +912,12 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
         }else{
             // No pval restriction
             // Method restriction!
-            it = methods.iterator();
+            Iterator it = methods.iterator();
             Vector interactions = new Vector();
             while(it.hasNext()){
                 String method = (String)it.next();
                 String tableName = getTableNameForMethod(species, method, pval);
+                if(tableName == null) continue;
                 sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + tableName + 
                 " WHERE " + orStatement_a;
                 ResultSet rs = query(sql);
@@ -883,13 +945,8 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
             return new Integer(0);
         }
         
-        Iterator it = interactors.iterator();
-        String geneName = (String)it.next();
-        String orStatement_a = " gene_id_a = " + geneName;
-        while(it.hasNext()){
-            geneName = (String)it.next();
-            orStatement_a += " OR gene_id_a = " + geneName;
-        }//while it.hasNext
+        String orStatement_a = getOrStatementA(interactors);
+        if(orStatement_a.length() == 0) return new Integer(0);
         
         double pval = 2;
         if(args.containsKey(PVAL)){
@@ -909,11 +966,12 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
         
         String sql;
         if(pval < 1){
-            it = methods.iterator();
+            Iterator it = methods.iterator();
            int num = 0;
             while(it.hasNext()){
                 String method = (String)it.next();
                 String tableName = getTableNameForMethod(species, method, pval);
+                if(tableName == null) continue;
                 sql = "SELECT COUNT(*) FROM " + tableName + " WHERE p <= " + pval + " AND " + orStatement_a;
                 ResultSet rs = query(sql);
                 num += SQLUtils.getInt(rs);
@@ -922,11 +980,12 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
         }else{
             // No pval restriction
             // Method restriction!
-            it = methods.iterator();
+            Iterator it = methods.iterator();
             int num = 0;
             while(it.hasNext()){
                 String method = (String)it.next();
                 String tableName = getTableNameForMethod(species, method, pval);
+                if(tableName == null) continue;
                 sql = "SELECT COUNT(*) FROM " + tableName + 
                 " WHERE " + orStatement_a;
                 ResultSet rs = query(sql);
@@ -953,23 +1012,15 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	 */
 	public Vector getConnectingInteractions(Vector interactors, String species) {
         
-        if(interactors.size() == 0){
-            return new Vector();
-        }
-        
-        Iterator it = interactors.iterator();
-        String geneName = (String)it.next();
-        String orStatement_a = " gene_id_a = " + geneName;
-        String orStatement_b = " gene_id_b = " + geneName;
-        while(it.hasNext()){
-            geneName = (String)it.next();
-            orStatement_a += " OR gene_id_a = " + geneName;
-            orStatement_b += " OR gene_id_b = " + geneName;
-        }//while it.hasNext
-        
         String tableName = getTableName(species);
+        if(tableName == null) return EMPTY_VECTOR;
+        if(interactors.size() == 0) return EMPTY_VECTOR;
+        
+       String [] ors = getOrStatementsAB(interactors);
+       if(ors[0].length() == 0) return EMPTY_VECTOR;
+        
         String sql = 
-           "SELECT gene_id_a, gene_id_b, p, method FROM " + tableName + " WHERE (" + orStatement_a + " ) AND (" + orStatement_b + ")";
+           "SELECT gene_id_a, gene_id_b, p, method FROM " + tableName + " WHERE (" + ors[0] + " ) AND (" + ors[1] + ")";
         ResultSet rs = query(sql);
         
         return makeInteractionsVector(rs);
@@ -982,23 +1033,15 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
      */
     public Integer getNumConnectingInteractions(Vector interactors, String species) {
         
-        if(interactors.size() == 0){
-            return new Integer(0);
-        }
-        
-        Iterator it = interactors.iterator();
-        String geneName = (String)it.next();
-        String orStatement_a = " gene_id_a = " + geneName;
-        String orStatement_b = " gene_id_b = " + geneName;
-        while(it.hasNext()){
-            geneName = (String)it.next();
-            orStatement_a += " OR gene_id_a = " + geneName;
-            orStatement_b += " OR gene_id_b = " + geneName;
-        }//while it.hasNext
-        
         String tableName = getTableName(species);
+        if(tableName == null) return new Integer(0);
+        if(interactors.size() == 0) return new Integer(0);
+        
+        String [] ors = getOrStatementsAB(interactors);
+        if(ors[0].length() == 0) return new Integer(0);
+        
         String sql = 
-           "SELECT COUNT(*) FROM " + tableName + " WHERE (" + orStatement_a + " ) AND (" + orStatement_b + ")";
+           "SELECT COUNT(*) FROM " + tableName + " WHERE (" + ors[0] + " ) AND (" + ors[1] + ")";
         ResultSet rs = query(sql);
         
         return new Integer(SQLUtils.getInt(rs)/2);
@@ -1028,7 +1071,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
         }
         
         double pval = 2;
-        if(args.contains(PVAL)){
+        if(args.containsKey(PVAL)){
             pval = ((Double)args.get(PVAL)).doubleValue();
         }
   
@@ -1043,36 +1086,31 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
             return getConnectingInteractions(interactors, species);
         }
         
-        Iterator it = interactors.iterator();
-        String geneName = (String)it.next();
-        String orStatement_a = " gene_id_a = " + geneName;
-        String orStatement_b = " gene_id_b = " + geneName;
-        while(it.hasNext()){
-            geneName = (String)it.next();
-            orStatement_a += " OR gene_id_a = " + geneName;
-            orStatement_b += " OR gene_id_b = " + geneName;
-        }//while it.hasNext
+        String [] ors = getOrStatementsAB(interactors);
+        if(ors[0].length() == 0) return EMPTY_VECTOR;
         
         if(pval >= 1){
             // pval does not matter
-            it = methods.iterator();
+           Iterator it = methods.iterator();
             Vector interactions = new Vector();
             while(it.hasNext()){
                 String method = (String)it.next();
                 String tableName = getTableNameForMethod(species, method, pval);
-                String sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + tableName + " WHERE (" + orStatement_a + " ) AND (" + orStatement_b + ")";
+                if(tableName == null) continue;
+                String sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + tableName + " WHERE (" + ors[0] + " ) AND (" + ors[1]+ ")";
                 ResultSet rs = query(sql);
                 interactions.addAll(makeInteractionsVector(rs, method));
             }//while
             return interactions;
         }else{
             // pval matters
-            it = methods.iterator();
+            Iterator it = methods.iterator();
             Vector interactions = new Vector();
             while(it.hasNext()){
                 String method = (String)it.next();
                 String tableName = getTableNameForMethod(species, method, pval);
-                String sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + tableName + " WHERE p <= " + pval + " AND (" + orStatement_a + " ) AND (" + orStatement_b + ")";
+                if(tableName == null) continue;
+                String sql = "SELECT gene_id_a, gene_id_b, p, method FROM " + tableName + " WHERE p <= " + pval + " AND (" + ors[0] + " ) AND (" + ors[1] + ")";
                 ResultSet rs = query(sql);
                 interactions.addAll(makeInteractionsVector(rs, method));
             }//while
@@ -1091,14 +1129,17 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
      */
     public Integer getNumConnectingInteractions(Vector interactors, String species,
             Hashtable args) {
-
+        
+        System.err.println("In Prolinks handler, getNumConnectingInteractions with args = " + args);
+        
         if(interactors.size() == 0){
             return new Integer(0);
         }
         
         double pval = 2;
-        if(args.contains(PVAL)){
+        if(args.containsKey(PVAL)){
             pval = ((Double)args.get(PVAL)).doubleValue();
+            System.err.println("PVAL = " + pval);
         }
   
         Vector methods;
@@ -1112,36 +1153,35 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
             return getNumConnectingInteractions(interactors, species);
         }
         
-        Iterator it = interactors.iterator();
-        String geneName = (String)it.next();
-        String orStatement_a = " gene_id_a = " + geneName;
-        String orStatement_b = " gene_id_b = " + geneName;
-        while(it.hasNext()){
-            geneName = (String)it.next();
-            orStatement_a += " OR gene_id_a = " + geneName;
-            orStatement_b += " OR gene_id_b = " + geneName;
-        }//while it.hasNext
+        String [] ors = getOrStatementsAB(interactors);
+        if(ors[0].length() == 0) return new Integer(0);
+       // System.err.println(ors[0]);
+       // System.err.println(ors[1]);
         
         if(pval >= 1){
             // pval does not matter
-            it = methods.iterator();
+            Iterator it = methods.iterator();
             int num = 0;
             while(it.hasNext()){
                 String method = (String)it.next();
                 String tableName = getTableNameForMethod(species, method, pval);
-                String sql = "SELECT COUNT(*) FROM " + tableName + " WHERE (" + orStatement_a + " ) AND (" + orStatement_b + ")";
+                if(tableName == null) continue;
+                String sql = "SELECT COUNT(*) FROM " + tableName + " WHERE (" + ors[0] + " ) AND (" + ors[1] + ")";
+                System.err.println("p val >= 1: " + pval);
                 ResultSet rs = query(sql);
                 num += SQLUtils.getInt(rs);
             }//while
             return new Integer(num/2);
         }else{
             // pval matters
-            it = methods.iterator();
+            Iterator it = methods.iterator();
             int num = 0;
             while(it.hasNext()){
                 String method = (String)it.next();
                 String tableName = getTableNameForMethod(species, method, pval);
-                String sql = "SELECT COUNT(*) FROM " + tableName + " WHERE p <= " + pval + " AND (" + orStatement_a + " ) AND (" + orStatement_b + ")";
+                if(tableName == null) continue;
+                String sql = "SELECT COUNT(*) FROM " + tableName + " WHERE p <= " + pval + " AND (" + ors[0] + " ) AND (" + ors[1] + ")";
+                System.err.println("pval < 1 : " + pval);
                 ResultSet rs = query(sql);
                 num+= SQLUtils.getInt(rs);
             }//while

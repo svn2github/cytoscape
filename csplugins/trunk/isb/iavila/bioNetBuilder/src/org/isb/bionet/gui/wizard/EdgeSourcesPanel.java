@@ -10,9 +10,11 @@ import java.awt.GridBagLayout;
 
 import javax.swing.*;
 import org.isb.bionet.datasource.interactions.*;
+import org.isb.bionet.datasource.synonyms.*;
 import org.isb.bionet.gui.*;
 
 import java.util.*;
+
 import cytoscape.*;
 
 /**
@@ -54,6 +56,11 @@ public class EdgeSourcesPanel extends JPanel {
      * JButton to JCheckBox to select data sources
      */
     protected Map buttonToCheckBox;
+    
+    /**
+     * A map from fully specified edge source class to its check box
+     */
+    protected Map sourceToCheckBox;
 
     /**
      * JButton to String describing fully specified class of data source
@@ -75,6 +82,11 @@ public class EdgeSourcesPanel extends JPanel {
      * Used to display Cytoscape loaded networks
      */
     protected CyNetworksDialog netsDialog;
+    
+    /**
+     * The client for gene synonyms
+     */
+    protected SynonymsClient synonymsClient;
 
     /**
      * 
@@ -92,13 +104,20 @@ public class EdgeSourcesPanel extends JPanel {
      *            how edges are going to be obtained (used to estimate number of
      *            edges)
      */
-    public EdgeSourcesPanel(InteractionDataClient interactions_client,
-            Map sourceToSelectedSpecies, Vector nodeIds, int method) {
+    public EdgeSourcesPanel(
+            InteractionDataClient interactions_client,
+            SynonymsClient synonyms_client,
+            Map sourceToSelectedSpecies,
+            Vector nodeIds,
+            int method) {
+        
         this.interactionsClient = interactions_client;
+        this.synonymsClient = synonyms_client;
         this.sourceToSpecies = sourceToSelectedSpecies;
         this.sourceToDialog = new Hashtable();
         this.buttonToTextField = new Hashtable();
         this.buttonToCheckBox = new Hashtable();
+        this.sourceToCheckBox = new Hashtable();
         this.nodes = nodeIds;
         this.edgeMethod = method;
         create();
@@ -138,6 +157,17 @@ public class EdgeSourcesPanel extends JPanel {
     public Map getSourcesDialogs() {
         return this.sourceToDialog;
     }
+    
+    /**
+     * 
+     * @param source_class the fully specified class of the source
+     * @return 
+     */
+    public boolean isSourceSelected (String source_class){
+        JCheckBox cb = (JCheckBox)this.sourceToCheckBox.get(source_class);
+        if(cb != null) return cb.isSelected();
+        return false;
+    }
 
     /**
      * @param buttonName
@@ -175,7 +205,7 @@ public class EdgeSourcesPanel extends JPanel {
     protected void estimateNumEdges(JButton button) {
         
         String sourceClass = (String) this.buttonToSourceClass.get(button);
-        
+        System.err.println("sourceClass = " + sourceClass);
         if(sourceClass == null){
             return;
         }
@@ -186,50 +216,45 @@ public class EdgeSourcesPanel extends JPanel {
         
         JDialog dialog = (JDialog) this.sourceToDialog.get(sourceClass);
         List species = (List)this.sourceToSpecies.get(sourceClass);
-        Integer numEdges = null;
         
-        
-        
-        Vector params = new Vector();
-        
-        if (this.nodes != null && this.nodes.size() > 0 && this.edgeMethod != InteractionsDataSource.ALL_EDGES) {    
-            params.add(this.nodes);
-        }
-        
-        params.add(species.get(0));
-        
-        String methodName = "";
-        if(this.edgeMethod == InteractionsDataSource.ALL_EDGES){
-            methodName = "getNumAllInteractions";
-        }else if(this.edgeMethod == InteractionsDataSource.ADJACENT_EDGES){
-            methodName = "getNumAdjacentInteractions";
-        }else if(this.edgeMethod == InteractionsDataSource.CONNECTING_EDGES){
-            methodName = "getNumConnectingInteractions";
-        }
-        
+        Hashtable args = new Hashtable();
+        System.err.println("ProlinksInteractionsSource.class = " + ProlinksInteractionsSource.class.toString());
         if (sourceClass.equals(ProlinksInteractionsSource.class.toString())) {
-            
             ProlinksGui pDialog = (ProlinksGui)dialog;
-            
             Vector types = pDialog.getSelectedInteractionTypes();
             double pval = pDialog.getPval(false);
-            Hashtable args = new Hashtable();
             args.put(ProlinksInteractionsSource.INTERACTION_TYPE, types);
             args.put(ProlinksInteractionsSource.PVAL, new Double(pval));
-            params.add(args);
+            System.out.println("------- Prolinks settings (estimateNumEdges)----------");
+            System.out.println("interactionTypes = " + types);
+            System.out.println("pval = " + pval);
+            System.out.println("species = " + (String)species.get(0));
+            System.out.println("------------------------------------------------------");
         }//Prolinks
-            
+        
+        int numEdges = 0;
         try{
-            Object obj = this.interactionsClient.callSourceMethod(sourceClass, methodName, params);
-            if(obj instanceof Integer){
-                numEdges = (Integer)obj;
+            if(this.edgeMethod == InteractionsDataSource.ALL_EDGES){
+                if(args.size() == 0)
+                    numEdges = this.interactionsClient.getNumAllInteractions((String)species.get(0));
+                else
+                    numEdges = this.interactionsClient.getNumAllInteractions((String)species.get(0), args);
+            }else if(this.edgeMethod == InteractionsDataSource.ADJACENT_EDGES){
+                if(args.size() == 0)
+                    numEdges = this.interactionsClient.getNumAdjacentInteractions(this.nodes,(String)species.get(0));
+                else
+                    numEdges = this.interactionsClient.getNumAdjacentInteractions(this.nodes,(String)species.get(0), args);
+            }else if(this.edgeMethod == InteractionsDataSource.CONNECTING_EDGES){
+                if(args.size() == 0)
+                    numEdges = this.interactionsClient.getNumConnectingInteractions(this.nodes,(String)species.get(0));
+                else
+                    numEdges = this.interactionsClient.getNumConnectingInteractions(this.nodes,(String)species.get(0), args);
             }
         }catch(Exception e){
             e.printStackTrace();
-            numEdges = new Integer(0);
         }finally{
             JTextField tf = (JTextField)this.buttonToTextField.get(button);
-            tf.setText(numEdges.toString());
+            tf.setText(Integer.toString(numEdges));
         }
     } 
 
@@ -254,7 +279,8 @@ public class EdgeSourcesPanel extends JPanel {
             final  ProlinksGui pDialog = new ProlinksGui();
             this.sourceToDialog.put(sourceClass, pDialog);
             if (buttonName.equals(ProlinksInteractionsSource.NAME)) {
-                button.addActionListener(new AbstractAction() {
+                button.addActionListener(
+                 new AbstractAction() {
                     public void actionPerformed(ActionEvent event) {
                         ProlinksGui pDialog = (ProlinksGui) sourceToDialog
                                 .get(sourceClass);
@@ -263,12 +289,13 @@ public class EdgeSourcesPanel extends JPanel {
                         pDialog.setVisible(true);
                         // Dialog is modal, so we get back when the user closes
                         // it:
-                        estimateNumEdges(button);
+                        //estimateNumEdges(button);
                     }// actionPerformed
                 });// AbstractAction
             }
             button.setEnabled(enabled);
             this.buttonToSourceClass.put(button, sourceClass);
+          
         }// while it
 
         JButton netsButton = new JButton("Loaded Networks...");
@@ -324,13 +351,16 @@ public class EdgeSourcesPanel extends JPanel {
         c.fill = GridBagConstraints.HORIZONTAL;
         it = this.buttonToSourceClass.keySet().iterator();
         while (it.hasNext()) {
-
+            
+            final JButton button = (JButton) it.next();
+            String sourceClass = (String)this.buttonToSourceClass.get(button);
+            
             c.gridwidth = 1; // reset to the default
             JCheckBox cb = new JCheckBox();
             gridbag.setConstraints(cb, c);
             add(cb);
-
-            final JButton button = (JButton) it.next();
+            if(sourceClass != null) this.sourceToCheckBox.put(sourceClass, cb);
+            
             gridbag.setConstraints(button, c);
             add(button);
 
@@ -354,6 +384,20 @@ public class EdgeSourcesPanel extends JPanel {
             gridbag.setConstraints(edgesNum, c);
             add(edgesNum);
         }// while it buttons
+        
+        JButton numEdgesButton = new JButton("Calculate number of edges from selected databases");
+        numEdgesButton.addActionListener(
+                new AbstractAction (){
+                    
+                    public void actionPerformed (ActionEvent event){
+                        estimateNumEdges();
+                    }
+                    
+                }
+        );
+        c.gridwidth = GridBagConstraints.REMAINDER;
+        gridbag.setConstraints(numEdgesButton,c);
+        add(numEdgesButton);
 
     }// create
     

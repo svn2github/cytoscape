@@ -14,6 +14,7 @@ import org.isb.bionet.datasource.synonyms.*;
 import org.isb.bionet.gui.wizard.*;
 import org.isb.iavila.ontology.xmlrpc.*;
 import java.lang.Exception;
+import org.apache.xmlrpc.*;
 
 /**
  * 
@@ -32,6 +33,8 @@ public class BioNetPlugin extends CytoscapePlugin {
      */
     public BioNetPlugin() {
 
+       // XmlRpc.setDebug(true);
+        
         try {
 
             this.interactionsClient = (InteractionDataClient) DataClientFactory

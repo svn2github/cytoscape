@@ -57,6 +57,13 @@ public interface DataSource {
    * source contains information
    */
   public Vector getSupportedSpecies ();
+  
+  /**
+   * 
+   * @param species
+   * @return TRUE if the given species is supported by this data source, FALSE otherwise
+   */
+  public Boolean supportsSpecies (String species);
 
   /**
    * @return a String denoting the version of the data source (could be a release date,

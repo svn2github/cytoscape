@@ -2,6 +2,7 @@ package org.isb.bionet.datasource.synonyms;
 
 import java.io.IOException;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Vector;
 
 import org.apache.xmlrpc.XmlRpcException;
@@ -37,6 +38,5 @@ public class SynonymsClient extends AuthenticatedDataClient{
      * classes)
      */
     public void test() throws Exception{}
-    
-    
+   
 }
