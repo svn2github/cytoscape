@@ -250,7 +250,7 @@ public interface GraphObjAttributes {
      * different attributes for  one graphObject at the same time.
      *
      * Deprecation note:  This method has 0 usages in the core.
-     * @deprecated Method is no longer used with the Cytoscape core, and no
+     * @deprecated Method is no longer needed in the Cytoscape core, and no
      * equivalent method will be provided.
      */
     public boolean set(String graphObjectName, HashMap bundle);
@@ -259,7 +259,7 @@ public interface GraphObjAttributes {
      * Removes all entries from the nameMap.
      *
      * Deprecation note:  This method has 0 usages in the core.
-     * @deprecated Method is no longer used with the Cytoscape core, and no
+     * @deprecated Method is no longer needed in the Cytoscape core, and no
      * equivalent method will be provided.
      */
     public void clearNameMap();
@@ -268,28 +268,28 @@ public interface GraphObjAttributes {
      * Remove all entries in the canonicalToGraphObject map
      *
      * Deprecation note:  This method has 0 usages in the core.
-     * @deprecated Method is no longer used with the Cytoscape core, and no
+     * @deprecated Method is no longer needed in the Cytoscape core, and no
      * equivalent method will be provided.
      */
     public void clearObjectMap();
 
     /**
      * Deprecation note:  This method has 0 usages in the core.
-     * @deprecated Method is no longer used with the Cytoscape core, and no
+     * @deprecated Method is no longer needed in the Cytoscape core, and no
      * equivalent method will be provided.
      */
     public HashMap getClassMap();
 
     /**
      * Deprecation note:  This method has 0 usages in the core.
-     * @deprecated Method is no longer used with the Cytoscape core, and no
+     * @deprecated Method is no longer needed in the Cytoscape core, and no
      * equivalent method will be provided.
      */
     public void addClassMap(HashMap newClassMap);
 
     /**
      * Deprecation note:  This method has 0 usages in the core.
-     * @deprecated Method is no longer used with the Cytoscape core, and no
+     * @deprecated Method is no longer needed in the Cytoscape core, and no
      * equivalent method will be provided.
      */
     public HashMap getObjectMap();
@@ -299,7 +299,7 @@ public interface GraphObjAttributes {
      * HashMap.
      *
      * Deprecation note:  This method has 0 usages in the core.
-     * @deprecated Method is no longer used with the Cytoscape core, and no
+     * @deprecated Method is no longer needed in the Cytoscape core, and no
      * equivalent method will be provided.
      */
     public void addNameMap(HashMap nameMapping);
@@ -309,7 +309,7 @@ public interface GraphObjAttributes {
      * to the canonicalToGraphObject HashMap.
      *
      * Deprecation note:  This method has 0 usages in the core.
-     * @deprecated Method is no longer used with the Cytoscape core, and no
+     * @deprecated Method is no longer needed in the Cytoscape core, and no
      * equivalent method will be provided.
      */
     public void addObjectMap(HashMap objectMapping);
@@ -321,7 +321,7 @@ public interface GraphObjAttributes {
      * in.
      *
      * Deprecation note:  This method has 0 usages in the core.
-     * @deprecated Method is no longer used with the Cytoscape core, and no
+     * @deprecated Method is no longer needed in the Cytoscape core, and no
      * equivalent method will be provided.
      */
     public void set(GraphObjAttributes attributes);
@@ -332,7 +332,7 @@ public interface GraphObjAttributes {
      * the list, and if it is found, remove it.
      *
      * Deprecation note:  This method has 0 usages in the core.
-     * @deprecated Method is no longer used with the Cytoscape core, and no
+     * @deprecated Method is no longer needed in the Cytoscape core, and no
      * equivalent method will be provided.
      */
     public void deleteAttributeValue(String attributeName,
@@ -341,7 +341,7 @@ public interface GraphObjAttributes {
     /**
      * Deprecation note:  This method has 0 usages in the core.
      * @param file  File Object.
-     * @deprecated Method is no longer used with the Cytoscape core, and no
+     * @deprecated Method is no longer needed in the Cytoscape core, and no
      * equivalent method will be provided.
      */
     public void readAttributesFromFile(File file);
@@ -350,7 +350,7 @@ public interface GraphObjAttributes {
      * Return attributeName/attributeClass pairs, for every known attribute
      *
      * Deprecation note:  This method has 0 usages in the core.
-     * @deprecated Method is no longer used with the Cytoscape core, and no
+     * @deprecated Method is no longer needed in the Cytoscape core, and no
      * equivalent method will be provided.
      */
     public HashMap getSummary();
@@ -382,7 +382,7 @@ public interface GraphObjAttributes {
      * (and of course, if the result is 0, there is no need to append '_0'.
      *
      * Deprecation note:  This method has 0 usages in the core.
-     * @deprecated Method is no longer used with the Cytoscape core, and no
+     * @deprecated Method is no longer needed in the Cytoscape core, and no
      * equivalent method will be provided.
      */
     public int countIdentical(String graphObjectName);
@@ -445,7 +445,7 @@ public interface GraphObjAttributes {
      * Deprecation note:  This method has 6 usages in the core.
      *
      * @see #getCanonicalName
-     * @deprecated Method is no longer needed with the Cytoscape core, and no
+     * @deprecated Method is no longer needed in the Cytoscape core, and no
      * equivalent method will be provided.
      */
     public void addNameMapping(String canonicalName, Object graphObject);
@@ -462,8 +462,8 @@ public interface GraphObjAttributes {
      * Cytoscape.getRootGraph().getEdge( identifier );
      * See implementation in Rowan's CytocapeDataImpl for details.
      *
-     * @deprecated Use {@link cytoscape.Cytoscape#getCyNode(String) or
-     * Cytoscape#getCyEdge(String)} instead.
+     * @deprecated Use {@link cytoscape.Cytoscape#getCyNode(String)} or
+     * {@link cytoscape.Cytoscape#getCyEdge(String, String, String, String)} instead.
      */
     public Object getGraphObject(String canonicalName);
 
@@ -481,7 +481,7 @@ public interface GraphObjAttributes {
      * its canonical (standard) name.
      *
      * Deprecation note:  This method has 2 usages in the core.
-     * @deprecated Method is no longer needed with the Cytoscape core, and no
+     * @deprecated Method is no longer needed in the Cytoscape core, and no
      * equivalent method will be provided.
      */
     public void removeNameMapping(String canonicalName);
@@ -491,7 +491,7 @@ public interface GraphObjAttributes {
      * values must be of the exactly this class.
      *
      * Deprecation note:  This method has 2 usages in the core.
-     * @deprecated Method is no longer needed with the Cytoscape core, and no
+     * @deprecated Method is no longer needed in the Cytoscape core, and no
      * equivalent method will be provided.
      */
     public boolean setClass(String attributeName, Class attributeClass);
@@ -500,7 +500,7 @@ public interface GraphObjAttributes {
      * removes a mapping between a canonical name and its graph object
      *
      * Deprecation note:  This method has 2 usages in the core.
-     * @deprecated Method is no longer needed with the Cytoscape core, and no
+     * @deprecated Method is no longer needed in the Cytoscape core, and no
      * equivalent method will be provided.
      */
     public void removeObjectMapping(Object graphObj);
