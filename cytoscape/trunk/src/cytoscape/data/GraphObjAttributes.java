@@ -59,7 +59,9 @@ public interface GraphObjAttributes {
      * @param id                Unique Identifier.
      * @param value             The value of this attribute.
      * @return                true indicates that the attribute was set.
-     * @deprecated Use {@link CyAttributes#setAttributeList(String, String, java.util.List)}  for equivalent functionality.
+     * @deprecated Use
+     * {@link CyAttributes#setAttributeList(String, String, java.util.List)}
+     * for equivalent functionality.
     */
     public boolean append(String attributeName, String id, Object value);
 
@@ -71,7 +73,8 @@ public interface GraphObjAttributes {
      * @param id                Unique Identifier.
      * @param value             Attribute double value.
      * @return true indicates that the attribute was set.
-     * @deprecated  Use {@link CyAttributes#setAttribute(String, String, Double)} instead.
+     * @deprecated  Use
+     * {@link CyAttributes#setAttribute(String, String, Double)} instead.
      */
     public boolean set(String attributeName, String id, double value);
 
@@ -145,7 +148,8 @@ public interface GraphObjAttributes {
      * @param id            Unique Identifier.
      * @return a java.util.Vector of size zero or more, containing java objects
      *         whose types may be learned via a call to getType
-     * @deprecated Use {@link CyAttributes#getAttributeList(String, String)} instead.
+     * @deprecated Use {@link CyAttributes#getAttributeList(String, String)}
+     * instead.
      */
     public List getList(String attributeName, String id);
 
@@ -157,7 +161,8 @@ public interface GraphObjAttributes {
      * @param attributeName     AttributeName.
      * @param id                Unique Identifier.
      * @return Java Object.
-     * @deprecated Use {@link CyAttributes} instead.  It provides several getter methods for retrieving Boolean, Integer, Double and String values.
+     * @deprecated Use {@link CyAttributes} instead.  It provides several
+     * getter methods for retrieving Boolean, Integer, Double and String values.
      */
     public Object getValue(String attributeName, String id);
 
@@ -166,7 +171,8 @@ public interface GraphObjAttributes {
      * @param attributeName     Attribute Name.
      * @param id                Unique Identifier.
      * @return Java Object.
-     * @deprecated Use {@link CyAttributes} instead.  It provides several getter methods for retrieving Boolean, Integer, Double and String values.
+     * @deprecated Use {@link CyAttributes} instead.  It provides several
+     * getter methods for retrieving Boolean, Integer, Double and String values.
      */
     public Object get(String attributeName, String id);
 
@@ -175,7 +181,8 @@ public interface GraphObjAttributes {
      * @param attributeName     Attribute Name.
      * @param id                Unique Identifier.
      * @return Double Object.
-     * @deprecated Use {@link CyAttributes#getDoubleAttribute(String, String)} instead.
+     * @deprecated Use
+     * {@link CyAttributes#getDoubleAttribute(String, String)} instead.
      */
     public Double getDoubleValue(String attributeName, String id);
 
@@ -184,7 +191,8 @@ public interface GraphObjAttributes {
      * @param attributeName     Attribute Name.
      * @param id                Unique Identifier.
      * @return Integer Object.
-     * @deprecated Use {@link CyAttributes#getIntegerAttribute(String, String)} instead.
+     * @deprecated Use {@link CyAttributes#getIntegerAttribute(String, String)}
+     * instead.
      */
     public Integer getIntegerValue(String attributeName, String id);
 
@@ -193,7 +201,8 @@ public interface GraphObjAttributes {
       * @param attributeName     Attribute Name.
       * @param id                Unique Identifier.
       * @return Integer Object.
-      * @deprecated Use {@link CyAttributes#getStringAttribute(String, String)} instead.
+      * @deprecated Use {@link CyAttributes#getStringAttribute(String, String)}
+      * instead.
      */
     public String getStringValue(String attributeName, String id);
 
@@ -207,7 +216,8 @@ public interface GraphObjAttributes {
      *
      * @return a HashMap whose keys are graph object names (typically canonical
      * names for nodes and edges) and whose values are Vectors of java objects.
-     * @deprecated Use {@link CyAttributes#getAttributeMap(String, String)} instead.
+     * @deprecated Use {@link CyAttributes#getAttributeMap(String, String)}
+     * instead.
      */
     public HashMap getAttribute(String attributeName);
 
@@ -218,7 +228,8 @@ public interface GraphObjAttributes {
      * @param attributeName         Attribute Name.
      * @param id                    Unique Identifier.
      * @return Array of Strings.
-     * @deprecated Use {@link CyAttributes#getAttributeList(String, String)} instead.
+     * @deprecated Use {@link CyAttributes#getAttributeList(String, String)}
+     * instead.
      */
     public String[] getStringArrayValues(String attributeName, String id);
 
@@ -232,10 +243,6 @@ public interface GraphObjAttributes {
     //  The following set of methods do *not* (yet) have clear equivalent
     //  methods and/or functionality in CyAttributes.
     //  These methods also have 0 usages within the core.
-    //  My guess is that these methods will be deprecated, and we will simply
-    //  say that no equivalent functionality in CyAttributes exists.
-    //  Nonetheless, these methods will be need to be implemented and working
-    //  in GraphObjAttributesImpl.
     //**********************************************************************
 
     /**
@@ -243,6 +250,8 @@ public interface GraphObjAttributes {
      * different attributes for  one graphObject at the same time.
      *
      * Deprecation note:  This method has 0 usages in the core.
+     * @deprecated Method is no longer used with the Cytoscape core, and no
+     * equivalent method will be provided.
      */
     public boolean set(String graphObjectName, HashMap bundle);
 
@@ -250,7 +259,8 @@ public interface GraphObjAttributes {
      * Removes all entries from the nameMap.
      *
      * Deprecation note:  This method has 0 usages in the core.
-     *
+     * @deprecated Method is no longer used with the Cytoscape core, and no
+     * equivalent method will be provided.
      */
     public void clearNameMap();
 
@@ -258,25 +268,29 @@ public interface GraphObjAttributes {
      * Remove all entries in the canonicalToGraphObject map
      *
      * Deprecation note:  This method has 0 usages in the core.
-     *
+     * @deprecated Method is no longer used with the Cytoscape core, and no
+     * equivalent method will be provided.
      */
     public void clearObjectMap();
 
     /**
      * Deprecation note:  This method has 0 usages in the core.
-     *
+     * @deprecated Method is no longer used with the Cytoscape core, and no
+     * equivalent method will be provided.
      */
     public HashMap getClassMap();
 
     /**
      * Deprecation note:  This method has 0 usages in the core.
-     *
+     * @deprecated Method is no longer used with the Cytoscape core, and no
+     * equivalent method will be provided.
      */
     public void addClassMap(HashMap newClassMap);
 
     /**
      * Deprecation note:  This method has 0 usages in the core.
-     *
+     * @deprecated Method is no longer used with the Cytoscape core, and no
+     * equivalent method will be provided.
      */
     public HashMap getObjectMap();
 
@@ -285,7 +299,8 @@ public interface GraphObjAttributes {
      * HashMap.
      *
      * Deprecation note:  This method has 0 usages in the core.
-     *
+     * @deprecated Method is no longer used with the Cytoscape core, and no
+     * equivalent method will be provided.
      */
     public void addNameMap(HashMap nameMapping);
 
@@ -294,7 +309,8 @@ public interface GraphObjAttributes {
      * to the canonicalToGraphObject HashMap.
      *
      * Deprecation note:  This method has 0 usages in the core.
-     *
+     * @deprecated Method is no longer used with the Cytoscape core, and no
+     * equivalent method will be provided.
      */
     public void addObjectMap(HashMap objectMapping);
 
@@ -305,7 +321,8 @@ public interface GraphObjAttributes {
      * in.
      *
      * Deprecation note:  This method has 0 usages in the core.
-     *
+     * @deprecated Method is no longer used with the Cytoscape core, and no
+     * equivalent method will be provided.
      */
     public void set(GraphObjAttributes attributes);
 
@@ -315,7 +332,8 @@ public interface GraphObjAttributes {
      * the list, and if it is found, remove it.
      *
      * Deprecation note:  This method has 0 usages in the core.
-     *
+     * @deprecated Method is no longer used with the Cytoscape core, and no
+     * equivalent method will be provided.
      */
     public void deleteAttributeValue(String attributeName,
             String graphObjectName, Object value);
@@ -323,6 +341,8 @@ public interface GraphObjAttributes {
     /**
      * Deprecation note:  This method has 0 usages in the core.
      * @param file  File Object.
+     * @deprecated Method is no longer used with the Cytoscape core, and no
+     * equivalent method will be provided.
      */
     public void readAttributesFromFile(File file);
 
@@ -330,6 +350,8 @@ public interface GraphObjAttributes {
      * Return attributeName/attributeClass pairs, for every known attribute
      *
      * Deprecation note:  This method has 0 usages in the core.
+     * @deprecated Method is no longer used with the Cytoscape core, and no
+     * equivalent method will be provided.
      */
     public HashMap getSummary();
 
@@ -360,9 +382,19 @@ public interface GraphObjAttributes {
      * (and of course, if the result is 0, there is no need to append '_0'.
      *
      * Deprecation note:  This method has 0 usages in the core.
+     * @deprecated Method is no longer used with the Cytoscape core, and no
+     * equivalent method will be provided.
      */
     public int countIdentical(String graphObjectName);
 
+    /**
+     * return the number of graph objects with the specified attribute.
+     *
+     * Deprecation note:  This method has 0 usage in the core.
+     * @deprecated There is no one method in {@link CyAttributes} that provides
+     * this functionality, but it can be recreated via several calls.
+    */
+    public int getObjectCount(String attributeName);
 
     //**********************************************************************
     //  The following set of methods do *not* (yet) have clear equivalent
@@ -382,7 +414,8 @@ public interface GraphObjAttributes {
      * Calling this method is therefore equivalent to calling:
      * node.getIdentifier();
      * edge.getIdentifier();
-     * See implementation in Rowan's CytocapeDataImpl for details.
+     * @deprecated Use {@link cytoscape.CyNode#getIdentifier()} or
+     * {@link cytoscape.CyEdge#getIdentifier()} instead.
      */
     public String getCanonicalName(Object graphObject);
 
@@ -391,8 +424,10 @@ public interface GraphObjAttributes {
      * all attributes.
      *
      * Deprecation note:  This method has 18 usages in the core. most
-     * of which are in the VizMapper.  Yikes!
+     * of which are in the VizMapper.
      *
+     * @deprecated There is no one method in {@link CyAttributes} that provides
+     * this functionality, but it can be recreated via several calls.
      */
     public HashMap getAttributes(String canonicalName);
 
@@ -410,6 +445,8 @@ public interface GraphObjAttributes {
      * Deprecation note:  This method has 6 usages in the core.
      *
      * @see #getCanonicalName
+     * @deprecated Method is no longer needed with the Cytoscape core, and no
+     * equivalent method will be provided.
      */
     public void addNameMapping(String canonicalName, Object graphObject);
 
@@ -425,6 +462,8 @@ public interface GraphObjAttributes {
      * Cytoscape.getRootGraph().getEdge( identifier );
      * See implementation in Rowan's CytocapeDataImpl for details.
      *
+     * @deprecated Use {@link cytoscape.Cytoscape#getCyNode(String) or
+     * Cytoscape#getCyEdge(String)} instead.
      */
     public Object getGraphObject(String canonicalName);
 
@@ -432,7 +471,8 @@ public interface GraphObjAttributes {
      * return the canonical names of all objects with a given attribute.
      *
      * Deprecation note:  This method has 3 usages in the core.
-     *
+     * @deprecated Use {@link cytoscape.data.attr.MultiHashMap#getObjectKeys(String)}
+     * instead.
      */
     public String[] getObjectNames(String attributeName);
 
@@ -441,6 +481,8 @@ public interface GraphObjAttributes {
      * its canonical (standard) name.
      *
      * Deprecation note:  This method has 2 usages in the core.
+     * @deprecated Method is no longer needed with the Cytoscape core, and no
+     * equivalent method will be provided.
      */
     public void removeNameMapping(String canonicalName);
 
@@ -449,7 +491,8 @@ public interface GraphObjAttributes {
      * values must be of the exactly this class.
      *
      * Deprecation note:  This method has 2 usages in the core.
-     *
+     * @deprecated Method is no longer needed with the Cytoscape core, and no
+     * equivalent method will be provided.
      */
     public boolean setClass(String attributeName, Class attributeClass);
 
@@ -457,6 +500,8 @@ public interface GraphObjAttributes {
      * removes a mapping between a canonical name and its graph object
      *
      * Deprecation note:  This method has 2 usages in the core.
+     * @deprecated Method is no longer needed with the Cytoscape core, and no
+     * equivalent method will be provided.
      */
     public void removeObjectMapping(Object graphObj);
 
@@ -464,6 +509,8 @@ public interface GraphObjAttributes {
      * a convenience method:  convert the Vector of objects into an array.
      *
      * Deprecation note:  This method has 2 usages in the core.
+     * @deprecated There is no one method in {@link CyAttributes} that provides
+     * this functionality, but it can be recreated via several calls.
     */
     public Object[] getArrayValues(String attributeName,
             String graphObjectName);
@@ -483,38 +530,36 @@ public interface GraphObjAttributes {
      *
      *
      * Deprecation note:  This method has 2 usages in the core.
+     * @deprecated Use {@link CyAttributesReader} instead.
      */
     public void readAttributesFromFile(String filename);
 
     /**
      * Deprecation note:  This method has 1 usage in the core.
-     *
+     * @deprecated Use {@link cytoscape.CyNetwork#nodesIterator()} or
+     * {@link cytoscape.CyNetwork#edgesIterator()} instead.
      */
     public HashMap getNameMap();
 
     /**
-     * return the unique values among the values of all objects with a given attribute.
+     * return the unique values among the values of all objects with a
+     * given attribute.
      *
      * Deprecation note:  This method has 1 usage in the core.
-     *
-     */
+     * @deprecated There is no one method in {@link CyAttributes} that provides
+     * this functionality, but it can be recreated via several calls.
+    */
     public Object[] getUniqueValues(String attributeName);
 
     /**
-     * return the unique Strings among the values of all objects with a given attribute.
+     * return the unique Strings among the values of all objects with a given
+     * attribute.
      *
      * Deprecation note:  This method has 1 usage in the core.
-     *
-     */
+     * @deprecated There is no one method in {@link CyAttributes} that provides
+     * this functionality, but it can be recreated via several calls.
+    */
     public String[] getUniqueStringValues(String attributeName);
-
-    /**
-     * return the number of graph objects with the specified attribute.
-     *
-     * Deprecation note:  This method has 1 usage in the core.
-     *
-     */
-    public int getObjectCount(String attributeName);
 
     /**
      * deduce attribute name, category, and java class from the first
@@ -524,17 +569,19 @@ public interface GraphObjAttributes {
      *  </pre>
      * category and class are optional; if absent, class will be inferred
      * (see deduceClass), and category set to DEFAULT_CATEGORY
-     * every attribute file must have, at minimum, the name attribute in the first line,
-     * possibly with embedded spaces
+     * every attribute file must have, at minimum, the name attribute in the
+     * first line, possibly with embedded spaces
      * in addition, the first line may have category and class information, as in
      * homologene  (category=staticWebPage) (class=java.net.URL)
      * the present method extracts the mandatory attribute name, and the optional
      * category and class information.
      * <p/>
-     * note: category and class information, if present, are not only parsed here:  the
-     * information is also stored as appropriate in the current class data members
+     * note: category and class information, if present, are not only parsed here:
+     * the information is also stored as appropriate in the current class data
+     * members.
      *
      * Deprecation note:  This method has 1 usage in the core.
+     * @deprecated Use {@link CyAttributesReader} instead.
      */
     public String processFileHeader(String text);
 }
