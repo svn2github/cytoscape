@@ -80,7 +80,7 @@ public class BioDataServerPanel5 extends JPanel{
 		// get default dir of cytoscape.
 		start = CytoscapeInit.getMRUD();
 		
-		contentPanel = new VETestPanel();
+		//contentPanel = new VETestPanel();
 		//contentPanel.setBorder(new EmptyBorder(new Insets(10, 10, 10, 10)));
 
 		ImageIcon icon = getImageIcon();
