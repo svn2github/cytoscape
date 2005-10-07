@@ -90,8 +90,6 @@ public ThesaurusFlatFileReader ( final BufferedReader rd, boolean isFlip ) throw
 	extractedLines = new Vector();
 
 	String curLine = null;
-
-	System.out.println("Tr get flip State: " + flip );
 	
 	while (null != (curLine = rd.readLine())) {
 		extractedLines.add(curLine);

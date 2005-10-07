@@ -23,6 +23,8 @@ import cytoscape.util.swing.BioDataServerWizard;
  */
 public class LoadBioDataServerAction extends CytoscapeAction {
 
+	static final int SUCCESS = 0;
+	
 	BioDataServerWizard wiz;
 	
 	public LoadBioDataServerAction() {
@@ -43,6 +45,8 @@ public class LoadBioDataServerAction extends CytoscapeAction {
 		// Create the wizard to choose biodataserver
 		wiz = new BioDataServerWizard();
 		wizardResult = wiz.show();
-		System.out.println( "Wizard returned: " + wizardResult );
+		if( wizardResult == SUCCESS ) {
+			System.out.println( "Succesfully loaded Data Server.");
+		}
 	}
 }
