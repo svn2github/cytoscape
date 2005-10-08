@@ -266,21 +266,19 @@ public class KeggInteractionsSource extends SQLDBHandler implements Interactions
         Iterator it = interactors.iterator();
         if(!it.hasNext()) return "";
         String orStatement = "";
-        String geneID = (String)it.next();
-        int index = geneID.indexOf(GENE_ID_TYPE + ":");
-        if(index >= 0){
-            geneID = geneID.substring(index + GENE_ID_TYPE.length() + 1);
-            orStatement = "gene1 = \"" + geneID + "\"";
-        }
-        
+        String geneID;
         while(it.hasNext()){
             geneID = (String)it.next();
-            index = geneID.indexOf(GENE_ID_TYPE + ":");
+            int index = geneID.indexOf(GENE_ID_TYPE + ":");
             if(index >= 0){
                 geneID = geneID.substring(index + GENE_ID_TYPE.length() + 1);
-                orStatement += " OR gene1 = \"" + geneID + "\"";
-            }
-        }
+                if(orStatement.length() > 0){
+                    orStatement += " OR gene1 = \"" + geneID + "\"";
+                }else{
+                    orStatement = " gene1 = \"" + geneID + "\"";
+                }//else
+            }//if
+        }//while
         
         return orStatement;
     }
@@ -426,33 +424,33 @@ public class KeggInteractionsSource extends SQLDBHandler implements Interactions
     protected String [] getOrStatementsGenes12 (Vector interactors){
         
         String [] statements = new String[2];
-        statements[0] = "";
-        statements[1] = "";
-        Iterator it = interactors.iterator();
-        if(!it.hasNext()) return statements;
-        
-        String gene = (String)it.next();
-        int index = gene.indexOf(GENE_ID_TYPE + ":");
         String orStatement1 = "";
         String orStatement2 = "";
+        statements[0] = orStatement1;
+        statements[1] = orStatement2;
+        Iterator it = interactors.iterator();
+        if(!it.hasNext()) return statements;
+      
         
-        if(index >= 0){
-            gene = gene.substring(index + GENE_ID_TYPE.length() + 1);
-            orStatement1 = "gene1 = \"" + gene + "\"";
-            orStatement2 = "gene2 = \"" + gene + "\"";
-        }
-        
-        while(it.hasNext()){
-         
+        String gene;
+        while(it.hasNext()){ 
             gene = (String)it.next();
-            index = gene.indexOf(GENE_ID_TYPE + ":");
+            int index = gene.indexOf(GENE_ID_TYPE + ":");
             if(index >= 0){
                 gene = gene.substring(index + GENE_ID_TYPE.length() + 1);
-                orStatement1 += " OR gene1 = \"" + gene + "\"";
-                orStatement2 += " OR gene2 = \"" + gene + "\"";
-            }
-        }
-            
+                if(orStatement1.length() > 0){
+                    orStatement1 += " OR gene1 = \"" + gene + "\"";
+                    orStatement2 += " OR gene2 = \"" + gene + "\"";
+                }else{
+                    orStatement1 = " gene1 = \"" + gene + "\"";
+                    orStatement2 = " gene2 = \"" + gene + "\"";
+                }//else
+            }//if
+        }//while
+        
+        statements[0] = orStatement1;
+        statements[1] = orStatement2;
+        
         return statements;
     }
     
@@ -476,7 +474,7 @@ public class KeggInteractionsSource extends SQLDBHandler implements Interactions
         
         String sql = "SELECT gene1, gene2, cpd FROM gene_cpd_gene_score WHERE org = \"" + spID + "\"" + " AND (" + ors[0] + ") AND (" + ors[1] + ")"; 
         ResultSet rs = query(sql);
-        return makeInteractorsVector(rs);
+        return makeInteractionsVector(rs);
     }
     
     /**
@@ -487,7 +485,7 @@ public class KeggInteractionsSource extends SQLDBHandler implements Interactions
     public Integer getNumConnectingInteractions (Vector interactors, String species){
         String spID = getSpeciesID(species);
         if(spID == null) return new Integer(0);
-        String [] ors = getOrStatementsGenes12(interactors); 
+        String [] ors = getOrStatementsGenes12(interactors);
         if(ors[0].length() == 0) return new Integer(0);
      
         String sql = "SELECT COUNT(*) FROM gene_cpd_gene_score WHERE org = \"" + spID + "\"" + " AND (" + ors[0]+ ") AND (" + ors[1] + ")"; 

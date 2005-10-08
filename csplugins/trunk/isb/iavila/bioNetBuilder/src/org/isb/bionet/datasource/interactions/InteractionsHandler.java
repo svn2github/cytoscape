@@ -800,12 +800,9 @@ public class InteractionsHandler implements InteractionsDataSource {
         while(it.hasNext()){
             InteractionsDataSource dataSource = (InteractionsDataSource)it.next();
             if(!dataSource.supportsSpecies(species).booleanValue()){
-                System.err.println(dataSource.getDataSourceName() + " does not support species " + species + ", skipping.");
                 continue;
             }
-            //System.err.println("Interactors = " + interactors);
             Vector translatedInteractors = translateInteractorsFromUniversalGeneID(interactors,dataSource.getIDtype());
-           // System.err.println("Translated interactors = " + translatedInteractors);
             Vector interactions = dataSource.getConnectingInteractions(translatedInteractors, species, args);
             allInteractions.addAll(translateInteractionsToUniversalGeneID(dataSource.getIDtype(),interactions));
         }//while it.hasNext
@@ -823,19 +820,15 @@ public class InteractionsHandler implements InteractionsDataSource {
      */
     public Integer getNumConnectingInteractions(Vector interactors, String species,
             Hashtable args) {
-        System.err.println("In getNumConnectingInteractions()");
+       
         Iterator it = this.interactionSources.iterator();
         int num = 0;
         while(it.hasNext()){
             InteractionsDataSource dataSource = (InteractionsDataSource)it.next();
             if(!dataSource.supportsSpecies(species).booleanValue()){
-                System.err.println(dataSource.getDataSourceName() + " does not support species " + species + ", skipping.");
                 continue;
             }
-           // System.err.println("Interactors = " + interactors);
             Vector translatedInteractors = translateInteractorsFromUniversalGeneID(interactors,dataSource.getIDtype());
-            //System.err.println("Translated interactors = " + translatedInteractors);
-            System.err.println("Calling dataSource.getNumConnectingInteractions with args = " + args);
             num += dataSource.getNumConnectingInteractions(translatedInteractors, species, args).intValue();
         }//while it.hasNext
         return new Integer(num);
@@ -869,7 +862,7 @@ public class InteractionsHandler implements InteractionsDataSource {
     protected Vector translateInteractionsToUniversalGeneID (String sourceIDtype, Vector interactions){
         
         Vector translated = new Vector();
-        
+        HashSet alreadyTranslated = new HashSet();
         HashSet interactorsToTranslate = new HashSet();
         Iterator it = interactions.iterator();
         while(it.hasNext()){
@@ -880,18 +873,29 @@ public class InteractionsHandler implements InteractionsDataSource {
             if(i1 != null){  
                 if(!this.dbToUniversalCache.containsKey(i1)){
                     interactorsToTranslate.add(i1);
+                }else{
+                    alreadyTranslated.add(i1);
                 }
+                
             }// if i1 != null
             
             if(i2 != null){
                 if(!this.dbToUniversalCache.containsKey(i2)){
                     interactorsToTranslate.add(i2);
-                } 
+                }else{
+                    alreadyTranslated.add(i2);
+                }
+                
             }
         }//while it.hasNext
         
+        // To make sure this is working: 
+        System.out.println("Num already translated ids = " + alreadyTranslated.size() + " num ids to translate = " + interactorsToTranslate.size());
+        
         Hashtable translation = 
             this.synonymsSource.getSynonyms(sourceIDtype,new Vector(interactorsToTranslate),UNIVERSAL_GENE_ID_TYPE);
+        
+        System.out.println("Num translated = " + translation.size());
         
         it = interactions.iterator();
         
@@ -913,7 +917,12 @@ public class InteractionsHandler implements InteractionsDataSource {
                 interaction.put(INTERACTOR_1,  u1);
             }else{
                 u1 = (String)this.dbToUniversalCache.get(d1);
-                if(u1 != null) interaction.put(INTERACTOR_1,  u1);
+                if(u1 != null){ 
+                    interaction.put(INTERACTOR_1,  u1);
+                }else{
+                    // remember that it does not have a synonym
+                    this.dbToUniversalCache.put(d1,d1);
+                }
             }
             if(u2 != null){
                 HashSet set = (HashSet)this.universalToDbCache.get(u2);
@@ -927,11 +936,17 @@ public class InteractionsHandler implements InteractionsDataSource {
                 interaction.put(INTERACTOR_2,  u2);
             }else{
                 u2 = (String)this.dbToUniversalCache.get(d2);
-                if(u2 != null) interaction.put(INTERACTOR_2,  u2);
+                if(u2 != null){
+                    interaction.put(INTERACTOR_2,  u2);
+                }else{
+                    // remember that it does not have a synonym
+                    this.dbToUniversalCache.put(d2,d2);
+                }
             }
             translated.add(interaction);
         }
          
+      
         return translated;
     }
     
@@ -942,7 +957,7 @@ public class InteractionsHandler implements InteractionsDataSource {
      */
     protected Vector translateInteractorsToUniversalGeneID (Vector interactors, String sourceIDtype){
        
-        Vector translatedInteractors = new Vector();
+        HashSet translatedInteractors = new HashSet();
         HashSet toTranslate = new HashSet(); 
         Iterator it = interactors.iterator();
         while(it.hasNext()){
@@ -954,7 +969,12 @@ public class InteractionsHandler implements InteractionsDataSource {
             }
         }
         
+        System.out.println("Num already translated = " + translatedInteractors.size() + " num ids to translate = " + toTranslate.size());
+        
+        
         Hashtable translation =  this.synonymsSource.getSynonyms(sourceIDtype,new Vector(toTranslate),UNIVERSAL_GENE_ID_TYPE);
+        System.out.println("Num translated = " + translation.size());
+        
         it = toTranslate.iterator();
         while(it.hasNext()){
             String dbID = (String)it.next();
@@ -973,9 +993,11 @@ public class InteractionsHandler implements InteractionsDataSource {
                 // no synonym for this id
                 // what to do?
                 translatedInteractors.add(dbID);
+                // remember that it does not have a synonym
+                this.dbToUniversalCache.put(dbID, dbID); 
             }
         }
-        return translatedInteractors;
+        return new Vector(translatedInteractors);
     }
     
     /**
@@ -984,10 +1006,9 @@ public class InteractionsHandler implements InteractionsDataSource {
      * @return a Vector of Strings, converted ids (if available)
      */
     protected Vector translateInteractorsFromUniversalGeneID (Vector interactors, String targetIDtype){
+
         
-     //   System.err.println(interactors);
-        
-        Vector translatedInteractors = new Vector();
+        HashSet translatedInteractors = new HashSet();
         HashSet toTranslate = new HashSet(); 
         Iterator it = interactors.iterator();
         while(it.hasNext()){
@@ -1004,10 +1025,11 @@ public class InteractionsHandler implements InteractionsDataSource {
                 toTranslate.add(uID);
             }
         }
-        //System.err.println("cached = " + translatedInteractors);
-        //System.err.println("toTranslate = " + toTranslate);
+        
+        System.out.println("Num already translated = " + translatedInteractors.size() + " num ids to translate = " + toTranslate.size());
         
         Hashtable translation =  this.synonymsSource.getSynonyms(UNIVERSAL_GENE_ID_TYPE, new Vector(toTranslate),targetIDtype);
+        System.out.println("Num translated = " + translation.size());
         
         it = toTranslate.iterator();
         while(it.hasNext()){
@@ -1028,7 +1050,7 @@ public class InteractionsHandler implements InteractionsDataSource {
                 translatedInteractors.add(uID);
             }
         }
-        return translatedInteractors;
+        return new Vector(translatedInteractors);
      }
     
     /**

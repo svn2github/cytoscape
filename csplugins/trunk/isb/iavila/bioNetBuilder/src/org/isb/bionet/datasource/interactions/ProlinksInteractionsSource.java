@@ -275,24 +275,19 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
     protected String getOrStatementA (Vector interactors){
         
         Iterator it = interactors.iterator();
-        
         if(!it.hasNext()) return "";
-        
-        String geneID = (String)it.next();
-        int index = geneID.indexOf(GENE_ID_TYPE + ":",0);
         String orStatement = "";
-        if(index >= 0){
-            geneID = geneID.substring(index + (GENE_ID_TYPE.length() + 1));
-            orStatement = "gene_id_a = " + geneID;
-        }
-       
         while(it.hasNext()){
-            geneID = (String)it.next();
-            index = geneID.indexOf(GENE_ID_TYPE + ":",0);
+            String geneID = (String)it.next();
+            int index = geneID.indexOf(GENE_ID_TYPE + ":");
             if(index >= 0){
                 geneID = geneID.substring(index + (GENE_ID_TYPE.length() + 1));
-                orStatement += "gene_id_a = " + geneID;
-            }
+                if(orStatement.length() > 0){
+                    orStatement += " OR gene_id_a = " + geneID;
+                }else{
+                    orStatement = " gene_id_a = " + geneID;
+                }//else
+            }//if
         }//while it.hasNext
         return orStatement;
     }
@@ -313,7 +308,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
         String geneName = (String)it.next();
         String orStatement_a = "";
         String orStatement_b = "";
-        int index = geneName.indexOf(GENE_ID_TYPE + ":", 0);
+        int index = geneName.indexOf(GENE_ID_TYPE + ":");
         if(index >= 0){
             geneName = geneName.substring(index + GENE_ID_TYPE.length() + 1);
             orStatement_a = " gene_id_a = " + geneName;
@@ -322,7 +317,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
         
         while(it.hasNext()){
             geneName = (String)it.next();
-            index = geneName.indexOf(GENE_ID_TYPE + ":", 0);
+            index = geneName.indexOf(GENE_ID_TYPE + ":");
             if(index >= 0){
                 geneName = geneName.substring(index + GENE_ID_TYPE.length() + 1);
                 orStatement_a += " OR gene_id_a = " + geneName;
@@ -330,7 +325,6 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
             }
             
         }//while it.hasNext
-       
         statements[0] = orStatement_a;
         statements[1] = orStatement_b;
         return statements;
@@ -1129,8 +1123,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
      */
     public Integer getNumConnectingInteractions(Vector interactors, String species,
             Hashtable args) {
-        
-        System.err.println("In Prolinks handler, getNumConnectingInteractions with args = " + args);
+
         
         if(interactors.size() == 0){
             return new Integer(0);
@@ -1139,7 +1132,6 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
         double pval = 2;
         if(args.containsKey(PVAL)){
             pval = ((Double)args.get(PVAL)).doubleValue();
-            System.err.println("PVAL = " + pval);
         }
   
         Vector methods;
@@ -1155,8 +1147,6 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
         
         String [] ors = getOrStatementsAB(interactors);
         if(ors[0].length() == 0) return new Integer(0);
-       // System.err.println(ors[0]);
-       // System.err.println(ors[1]);
         
         if(pval >= 1){
             // pval does not matter
@@ -1167,7 +1157,6 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
                 String tableName = getTableNameForMethod(species, method, pval);
                 if(tableName == null) continue;
                 String sql = "SELECT COUNT(*) FROM " + tableName + " WHERE (" + ors[0] + " ) AND (" + ors[1] + ")";
-                System.err.println("p val >= 1: " + pval);
                 ResultSet rs = query(sql);
                 num += SQLUtils.getInt(rs);
             }//while
@@ -1181,7 +1170,6 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
                 String tableName = getTableNameForMethod(species, method, pval);
                 if(tableName == null) continue;
                 String sql = "SELECT COUNT(*) FROM " + tableName + " WHERE p <= " + pval + " AND (" + ors[0] + " ) AND (" + ors[1] + ")";
-                System.err.println("pval < 1 : " + pval);
                 ResultSet rs = query(sql);
                 num+= SQLUtils.getInt(rs);
             }//while

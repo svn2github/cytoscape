@@ -86,27 +86,21 @@ public class SQLSynonymsHandler extends SQLDBHandler implements SynonymsSource {
         if(!it.hasNext())
             return new Hashtable();
         
-        String id = (String)it.next();
-       // System.err.println(id);
-        int index = id.indexOf(PROLINKS_ID + ":");
         String or = "";
-        if(index >= 0){
-            id = id.substring(index+PROLINKS_ID.length() + 1);
-            or = " prolinksid = " + id;
-        }
-        
-        if(or.length() == 0) return new Hashtable();
-        
         while(it.hasNext()){
-            id = (String)it.next();
-            index = id.indexOf(PROLINKS_ID + ":");
+            String id = (String)it.next();
+            int index = id.indexOf(PROLINKS_ID + ":");
             if(index >= 0){
                 id = id.substring(index+PROLINKS_ID.length() + 1);
-                or += " OR prolinksid = " + id;
-            }
+                if(or.length() > 0){
+                    or += " OR prolinksid = " + id;
+                }else{
+                    or = " prolinksid = " + id;
+                }//else
+            }//if
+        }//while
         
-        }
-        
+        if(or.length() == 0) return new Hashtable();
         String sql = "SELECT prolinksid, gi FROM key_prolinks WHERE" + or;
         
         ResultSet rs = query(sql);
@@ -128,20 +122,16 @@ public class SQLSynonymsHandler extends SQLDBHandler implements SynonymsSource {
         Iterator it = gi_ids.iterator();
         if(!it.hasNext())
             return new Hashtable();
-        String id = (String)it.next();
         String or = "";
-        int index = id.indexOf(GI_ID + ":");
-        if(index >= 0){
-            id = id.substring(index + GI_ID.length() + 1);
-            or = " gi = " + id;
-        }
-        
         while(it.hasNext()){
-            id = (String)it.next();
-            index = id.indexOf(GI_ID + ":");
+            String id = (String)it.next();
+            int index = id.indexOf(GI_ID + ":");
             if(index >= 0){
                 id = id.substring(index + GI_ID.length() + 1);
-                or += " OR gi = " + id;
+                if(or.length() > 0)
+                    or += " OR gi = " + id;
+                else
+                    or = " gi = " + id;
             }
          
         }
@@ -169,21 +159,17 @@ public class SQLSynonymsHandler extends SQLDBHandler implements SynonymsSource {
         Iterator it = kegg_ids.iterator();
         
         if(!it.hasNext()) return new Hashtable();
-        
-        String id = (String)it.next();
-        int index = id.indexOf(KEGG_ID + ":");
-        String or = "";
-        if(index >= 0){
-            id = id.substring(index + KEGG_ID.length() + 1);
-            or = " kegg_id = \"" + id + "\"";
-        }
-            
+       
+        String or = ""; 
         while(it.hasNext()){
-            id = (String)it.next();
-            index = id.indexOf(KEGG_ID + ":");
+            String id = (String)it.next();
+            int index = id.indexOf(KEGG_ID + ":");
             if(index >= 0){
                 id = id.substring(index + KEGG_ID.length() + 1);
-                or += " OR kegg_id = \"" + id + "\"";
+                if(or.length() > 0)
+                    or += " OR kegg_id = \"" + id + "\"";
+                else
+                    or = " kegg_id = \"" + id + "\"";
             }
             
         }
@@ -212,20 +198,16 @@ public class SQLSynonymsHandler extends SQLDBHandler implements SynonymsSource {
         
         if(!it.hasNext()) return new Hashtable();
         
-        String id = (String)it.next();
-        int index = id.indexOf(GI_ID + ":");
         String or = "";
-        if(index >= 0){
-            id = id.substring(index + GI_ID.length() + 1);
-            or = " gi = " + id;
-        }
-        
         while(it.hasNext()){
-            id = (String)it.next();
-            index = id.indexOf(GI_ID + ":");
+            String id = (String)it.next();
+            int index = id.indexOf(GI_ID + ":");
             if(index >= 0){
                 id = id.substring(index + GI_ID.length() + 1);
-                or += " OR gi = " + id;
+                if(or.length() > 0)
+                    or += " OR gi = " + id;
+                else
+                    or = " gi = " + id;
             }
             
         }
@@ -249,20 +231,17 @@ public class SQLSynonymsHandler extends SQLDBHandler implements SynonymsSource {
     protected Hashtable prolinksToKegg (Vector prolinks_ids){
         Iterator it = prolinks_ids.iterator();
         if(!it.hasNext()) return new Hashtable();
-        String id = (String)it.next();
-        int index = id.indexOf(PROLINKS_ID + ":");
-        String or = "";
-        if(index >= 0){
-            id = id.substring(index + PROLINKS_ID.length() + 1);
-            or = "p.prolinksid = " + id;
-        }
        
+        String or = "";
         while(it.hasNext()){
-            id = (String)it.next();
-            index = id.indexOf(PROLINKS_ID + ":");
+            String id = (String)it.next();
+            int index = id.indexOf(PROLINKS_ID + ":");
             if(index >= 0){
                 id = id.substring(index + PROLINKS_ID.length() + 1);
-                or += " OR p.prolinksid = " + id;
+                if(or.length() > 0)
+                    or += " OR p.prolinksid = " + id;
+                else
+                    or = " p.prolinksid = " + id;
             }
         }
         if(or.length() == 0) return new Hashtable();
@@ -285,20 +264,17 @@ public class SQLSynonymsHandler extends SQLDBHandler implements SynonymsSource {
     protected Hashtable keggToProlinks (Vector kegg_ids){
         Iterator it = kegg_ids.iterator();
         if(!it.hasNext()) return new Hashtable();
-        String id = (String)it.next();
-        int index = id.indexOf(KEGG_ID + ":");
-        String or = "";
-        if(index >= 0){
-            id = id.substring(index + KEGG_ID.length() + 1);
-            or = "k.kegg_id = \"" + id + "\"";
-        }
         
+        String or = "";
         while(it.hasNext()){
-            id = (String)it.next();
-            id.indexOf(KEGG_ID + ":");
+            String id = (String)it.next();
+            int index = id.indexOf(KEGG_ID + ":");
             if(index >= 0){
                 id = id.substring(index + KEGG_ID.length() + 1);
-                or += " OR k.kegg_id = \"" + id + "\"";
+                if(or.length() > 0)
+                    or += " OR k.kegg_id = \"" + id + "\"";
+                else
+                    or = " k.kegg_id = \"" + id + "\"";
             }
         }
         if(or.length() == 0) return new Hashtable();
