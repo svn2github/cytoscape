@@ -31,6 +31,8 @@ import javax.swing.JTextPane;
 import javax.swing.ListModel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.JScrollPane;
 
@@ -173,14 +175,18 @@ public class BioDataServerPanel6 extends JPanel {
 			jTextPane1.setText(page);
 			jTextPane1.setBackground(java.awt.SystemColor.window);
 			jTextPane1.setEditable(false);
-
-			jTextPane1.addHyperlinkListener(new javax.swing.event.HyperlinkListener() {
-				public void hyperlinkUpdate(javax.swing.event.HyperlinkEvent e) {
-					String targetUrl = e.getURL().toString();
-					cytoscape.util.OpenBrowser.openURL(targetUrl.toString());
-					//System.out.println("hyperlinkUpdate() = " + targetUrl.toString() ); // TODO Auto-generated Event stub hyperlinkUpdate()
-				}
-			});
+			
+			
+			jTextPane1.addHyperlinkListener(new HyperlinkListener() {
+                public void hyperlinkUpdate(HyperlinkEvent e) {
+                    if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+                        //hyperlinkActivated(e.getURL());
+                        cytoscape.util.OpenBrowser.openURL(e.getURL().toString());
+                        System.out.println("Opening Web Page: " + e.getURL().toString() );
+                    }
+                }
+            });
+			
 		}
 		return jTextPane1;
 	}
@@ -394,7 +400,7 @@ public class BioDataServerPanel6 extends JPanel {
 								e1.printStackTrace();
 							}
 						}
-						System.out.println("Clicked on Item " + selectedFileName );
+						//System.out.println("Clicked on Item " + selectedFileName );
 					}
 				}
 			};
