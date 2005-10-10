@@ -248,29 +248,95 @@ public class GOHandler extends SQLDBHandler {
      */
     public Hashtable getGenesWithTerms (Vector termIDs, String speciesID){
         
-        Iterator it = termIDs.iterator();
-        Hashtable termToGenes = new Hashtable();
-        while(it.hasNext()){
-            String termID = (String)it.next();
-            String sql = "SELECT a.gene_product_id " + 
-                "FROM association AS a, gene_product AS gene " + 
-                "WHERE a.term_id = " +  termID +
-                " AND gene.id = a.gene_product_id " +
-                " AND gene.species_id = " + speciesID;
-            ResultSet rs = query(sql);
-            try{
-                Vector genes = new Vector();
-                while(rs.next()){
-                    int gene_id = rs.getInt(1);
-                    genes.add(Integer.toString(gene_id));
-                }//while rs.next
-                termToGenes.put(termID,genes);
-            }catch(SQLException ex){
-                ex.printStackTrace();
-            }//catch
+        Hashtable termToGenes  = new Hashtable();
+        Hashtable accToTermID = new Hashtable();
         
-        }//while it.hasNext
+        // The term ids are Strings parsable as Integers. Get the GO: term identifiers.
+        String or = "";
+        Iterator it = termIDs.iterator();
+        
+        if(!it.hasNext()) return termToGenes;
+        
+        or = " id = " + (String)it.next();
+        while(it.hasNext()){
+            or += " OR id = " + (String)it.next();
+        }//it.hasNext
+        
+        System.err.println(or);
+        
+        if(or.length() == 0) return termToGenes;
+        
+        String sql = "SELECT acc, id FROM term WHERE " + or;
+        ResultSet rs = query(sql);
+        
+        or = "";
+        try{
+            while(rs.next()){
+                String goID = rs.getString(1);
+                int intID = rs.getInt(2);
+                if (or.length() == 0){
+                         or = " acc = \"" + goID + "\"";
+                }else{
+                    or += " acc = \"" + goID + "\"";
+                }//else
+                accToTermID.put(goID, new Integer(intID));
+            }// while rs.next
+        }catch(Exception ex){
+            ex.printStackTrace();
+            return termToGenes;
+        }//catch
+        
+        System.err.println(or);
+        
+        if(or.length() == 0) return termToGenes;
+        
+        sql = "SELECT acc,gi FROM gi2go WHERE " + or;
+        rs = query(sql);
+        
+        try{
+            while(rs.next()){
+                String acc = rs.getString(1);
+                int giID = rs.getInt(2);
+                Integer intTermID = (Integer)accToTermID.get(acc);
+                Vector genes = (Vector)termToGenes.get(intTermID.toString());
+                if(genes == null){
+                    genes = new Vector();
+                    termToGenes.put(intTermID.toString(), genes);
+                }
+                genes.add("GI:"+Integer.toString(giID));
+            }
+        }catch(Exception ex){
+            ex.printStackTrace();
+            return new Hashtable();
+        }
+        
+        System.err.println(termToGenes);
+        
         return termToGenes;
+        
+//        Iterator it = termIDs.iterator();
+//        Hashtable termToGenes = new Hashtable();
+//        while(it.hasNext()){
+//            String termID = (String)it.next();
+//            String sql = "SELECT a.gene_product_id " + 
+//                "FROM association AS a, gene_product AS gene " + 
+//                "WHERE a.term_id = " +  termID +
+//                " AND gene.id = a.gene_product_id " +
+//                " AND gene.species_id = " + speciesID;
+//            ResultSet rs = query(sql);
+//            try{
+//                Vector genes = new Vector();
+//                while(rs.next()){
+//                    int gene_id = rs.getInt(1);
+//                    genes.add(Integer.toString(gene_id));
+//                }//while rs.next
+//                termToGenes.put(termID,genes);
+//            }catch(SQLException ex){
+//                ex.printStackTrace();
+//            }//catch
+//        
+//        }//while it.hasNext
+//        return termToGenes;
     }
     
     /**
