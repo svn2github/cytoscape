@@ -133,17 +133,35 @@ public class CyAttributesImpl implements CyAttributes
 
   public Integer getIntegerAttribute(String id, String attributeName)
   {
-    return null;
+    final byte type = mmapDef.getAttributeValueType(attributeName);
+    if (type < 0) { return null; }
+    if (type != MultiHashMapDefinition.TYPE_INTEGER) {
+      throw new ClassCastException
+        ("definition for attributeName '" + attributeName +
+         "' is not of TYPE_INTEGER"); }
+    return (Integer) mmap.getAttributeValue(id, attributeName, null);
   }
 
   public Double getDoubleAttribute(String id, String attributeName)
   {
-    return null;
+    final byte type = mmapDef.getAttributeValueType(attributeName);
+    if (type < 0) { return null; }
+    if (type != MultiHashMapDefinition.TYPE_FLOATING_POINT) {
+      throw new ClassCastException
+        ("definition for attributeName '" + attributeName +
+         "' is not of TYPE_FLOATING"); }
+    return (Double) mmap.getAttributeValue(id, attributeName, null);
   }
 
   public String getStringAttribute(String id, String attributeName)
   {
-    return null;
+    final byte type = mmapDef.getAttributeValueType(attributeName);
+    if (type < 0) { return null; }
+    if (type != MultiHashMapDefinition.TYPE_STRING) {
+      throw new ClassCastException
+        ("definition for attributeName '" + attributeName +
+         "' is not of TYPE_STRING"); }
+    return (String) mmap.getAttributeValue(id, attributeName, null);
   }
 
   public byte getType(String attributeName)
