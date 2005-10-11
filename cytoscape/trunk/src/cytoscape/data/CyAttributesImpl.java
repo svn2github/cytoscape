@@ -1,10 +1,10 @@
-
 package cytoscape.data;
 
 import cytoscape.data.attr.CountedIterator;
 import cytoscape.data.attr.MultiHashMap;
 import cytoscape.data.attr.MultiHashMapDefinition;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -188,6 +188,44 @@ public class CyAttributesImpl implements CyAttributes
 
   public void setAttributeList(String id, String attributeName, List list)
   {
+    Iterator itor = list.iterator();
+    final byte type;
+    Object obj = itor.next();
+    if (obj instanceof Double) { type = TYPE_FLOATING; }
+    else if (obj instanceof Integer) { type = TYPE_INTEGER; }
+    else if (obj instanceof Boolean) { type = TYPE_BOOLEAN; }
+    else if (obj instanceof String) { type = TYPE_STRING; }
+    else throw new IllegalArgumentException
+           ("objects in list are of unrecognized type");
+    while (itor.hasNext()) {
+      obj = itor.next();
+      if ((type == TYPE_FLOATING && (!(obj instanceof Double))) ||
+          (type == TYPE_INTEGER && (!(obj instanceof Integer))) ||
+          (type == TYPE_BOOLEAN && (!(obj instanceof Boolean))) ||
+          (type == TYPE_STRING && (!(obj instanceof String))))
+        throw new IllegalArgumentException
+          ("items in list are not all of the same type"); }
+    final byte valType = mmapDef.getAttributeValueType(attributeName);
+    if (valType < 0) {
+      mmapDef.defineAttribute
+        (attributeName,
+         type,
+         new byte[] { MultiHashMapDefinition.TYPE_INTEGER } ); }
+    else {
+      final byte[] keyTypes =
+        mmapDef.getAttributeKeyspaceDimensionTypes(attributeName);
+      if (keyTypes.length != 1 ||
+          keyTypes[0] != MultiHashMapDefinition.TYPE_INTEGER) {
+        throw new IllegalArgumentException
+          ("existing definition for attributeName '" + attributeName +
+           "' is not of TYPE_SIMPLE_LIST"); } }
+    mmap.removeAllAttributeValues(id, attributeName);
+    itor = list.iterator();
+    int inx = 0;
+    final Object[] key = new Object[1];
+    while (itor.hasNext()) {
+      key[0] = new Integer(inx++);
+      mmap.setAttributeValue(id, attributeName, itor.next(), key); }
   }
 
   public List getAttributeList(String id, String attributeName)
