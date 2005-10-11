@@ -2,6 +2,9 @@ package cytoscape.util.swing;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -54,7 +57,7 @@ public class BioDataServerPanel6Descriptor extends WizardPanelDescriptor
 	public final String GA_BUTTON = "Gene Association";
 
 	public final String AUTO_MANIFEST = "auto_generated_manifest";
-
+	
 	public BioDataServerPanel6Descriptor() {
 
 		oboFlag = false;
@@ -141,26 +144,32 @@ public class BioDataServerPanel6Descriptor extends WizardPanelDescriptor
 		} else if (e.getActionCommand().equals("overwrite")) {
 			// "Overwrite" check box state changed.
 			
-			/*
-			 * The following codes do changes the properties, but changes will be reflected only
-			 * after the cytoscape restarts...
-			 */
-			
 			panel6.setOverwriteState();
 			speciesName = panel6.getOverwiteComboBox();
 			//System.out.println("Combo box is " + panel6.getOverwiteComboBox());
+//			System.out.println("Current def. species name is: " 
+//					+ CytoscapeInit.getProperties().getProperty("defaultSpeciesName") );
+
+			String oldVal = CytoscapeInit.getProperties().getProperty("defaultSpeciesName");
+			String newVal = speciesName;
 			
-			System.out.println("Current def. species name is: " + CytoscapeInit.getProperties().getProperty("defaultSpeciesName") );
-			CytoscapeInit.getProperties().setProperty("defaultSpeciesName", speciesName );
-			System.out.println("Now changed to: " + CytoscapeInit.getProperties().getProperty("defaultSpeciesName") );
+			// Update properties
+			CytoscapeInit.getProperties().setProperty("defaultSpeciesName", newVal );
+			Cytoscape.firePropertyChange( Cytoscape.PREFERENCE_MODIFIED, oldVal, newVal );
+			CytoscapeInit.setDefaultSpeciesName();		
 			
 		} else if (e.getActionCommand().equals("comboBoxChanged")) {
 			System.out.println(panel6.getOverwiteComboBox());
 			speciesName = panel6.getOverwiteComboBox();
+//			System.out.println("Current def. species name is: " 
+//					+ CytoscapeInit.getProperties().getProperty("defaultSpeciesName") );
+			String oldVal = CytoscapeInit.getProperties().getProperty("defaultSpeciesName");
+			String newVal = speciesName;
 			
-			System.out.println("Current def. species name is: " + CytoscapeInit.getProperties().getProperty("defaultSpeciesName") );
-			CytoscapeInit.getProperties().setProperty("defaultSpeciesName", speciesName );
-			System.out.println("Now changed to: " + CytoscapeInit.getProperties().getProperty("defaultSpeciesName") );
+			// Update properties
+			CytoscapeInit.getProperties().setProperty("defaultSpeciesName", newVal );
+			Cytoscape.firePropertyChange( Cytoscape.PREFERENCE_MODIFIED, oldVal, newVal );
+			CytoscapeInit.setDefaultSpeciesName();
 			
 		} else if (e.getActionCommand().equals("flip")) {
 			flip = panel6.getFlipCheckBoxStatus();
