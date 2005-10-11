@@ -122,7 +122,13 @@ public class CyAttributesImpl implements CyAttributes
 
   public Boolean getBooleanAttribute(String id, String attributeName)
   {
-    return null;
+    final byte type = mmapDef.getAttributeValueType(attributeName);
+    if (type < 0) { return null; }
+    if (type != MultiHashMapDefinition.TYPE_BOOLEAN) {
+      throw new ClassCastException
+        ("definition for attributeName '" + attributeName +
+         "' is not of TYPE_BOOLEAN"); }
+    return (Boolean) mmap.getAttributeValue(id, attributeName, null);
   }
 
   public Integer getIntegerAttribute(String id, String attributeName)
