@@ -59,14 +59,65 @@ public class CyAttributesImpl implements CyAttributes
 
   public void setAttribute(String id, String attributeName, Integer value)
   {
+    final byte type = mmapDef.getAttributeValueType(attributeName);
+    if (type < 0) {
+      mmapDef.defineAttribute(attributeName,
+                              MultiHashMapDefinition.TYPE_INTEGER,
+                              null); }
+    else {
+      if (type != MultiHashMapDefinition.TYPE_INTEGER) {
+        throw new IllegalArgumentException
+          ("definition for attributeName '" + attributeName +
+           "' already exists and it is not of TYPE_INTEGER"); }
+      final byte[] dimTypes = mmapDef.getAttributeKeyspaceDimensionTypes
+        (attributeName);
+      if (dimTypes.length != 0) {
+        throw new IllegalArgumentException
+          ("definition for attributeName '" + attributeName +
+           "' already exists and it is not of TYPE_INTEGER"); } }
+    mmap.setAttributeValue(id, attributeName, value, null);
   }
 
   public void setAttribute(String id, String attributeName, Double value)
   {
+    final byte type = mmapDef.getAttributeValueType(attributeName);
+    if (type < 0) {
+      mmapDef.defineAttribute(attributeName,
+                              MultiHashMapDefinition.TYPE_FLOATING_POINT,
+                              null); }
+    else {
+      if (type != MultiHashMapDefinition.TYPE_FLOATING_POINT) {
+        throw new IllegalArgumentException
+          ("definition for attributeName '" + attributeName +
+           "' already exists and it is not of TYPE_FLOATING"); }
+      final byte[] dimTypes = mmapDef.getAttributeKeyspaceDimensionTypes
+        (attributeName);
+      if (dimTypes.length != 0) {
+        throw new IllegalArgumentException
+          ("definition for attributeName '" + attributeName +
+           "' already exists and it is not of TYPE_FLOATING"); } }
+    mmap.setAttributeValue(id, attributeName, value, null);
   }
 
   public void setAttribute(String id, String attributeName, String value)
   {
+    final byte type = mmapDef.getAttributeValueType(attributeName);
+    if (type < 0) {
+      mmapDef.defineAttribute(attributeName,
+                              MultiHashMapDefinition.TYPE_STRING,
+                              null); }
+    else {
+      if (type != MultiHashMapDefinition.TYPE_STRING) {
+        throw new IllegalArgumentException
+          ("definition for attributeName '" + attributeName +
+           "' already exists and it is not of TYPE_STRING"); }
+      final byte[] dimTypes = mmapDef.getAttributeKeyspaceDimensionTypes
+        (attributeName);
+      if (dimTypes.length != 0) {
+        throw new IllegalArgumentException
+          ("definition for attributeName '" + attributeName +
+           "' already exists and it is not of TYPE_STRING"); } }
+    mmap.setAttributeValue(id, attributeName, value, null);
   }
 
   public Boolean getBooleanAttribute(String id, String attributeName)
