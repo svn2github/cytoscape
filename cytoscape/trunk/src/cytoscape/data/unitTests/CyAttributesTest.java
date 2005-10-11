@@ -118,10 +118,10 @@ public class CyAttributesTest extends TestCase {
                 assertEquals (CyAttributes.TYPE_BOOLEAN, type);
         assertEquals (CyAttributes.TYPE_BOOLEAN, type);
 
-        //  Now try deleting all attribute of this name
+        //  Now try deleting all attributes of this name
         success = cyAttributes.deleteAttribute(DUMMY_BOOLEAN_ATTRIBUTE);
 
-        //  Verify that type is now UNDEFINED
+        //  Verify that type is now TYPE_UNDEFINED
         type = cyAttributes.getType(DUMMY_BOOLEAN_ATTRIBUTE);
                 assertEquals (CyAttributes.TYPE_BOOLEAN, type);
         assertEquals (CyAttributes.TYPE_UNDEFINED, type);
@@ -146,7 +146,7 @@ public class CyAttributesTest extends TestCase {
 
         //  Verify Type
         byte type = cyAttributes.getType(DUMMY_STRING_ATTRIBUTE);
-        assertEquals (CyAttributes.TYPE_BOOLEAN, type);
+        assertEquals (CyAttributes.TYPE_STRING, type);
 
         //  Verify value stored
         String value = cyAttributes.getStringAttribute(DUMMY_ID,
