@@ -4,9 +4,7 @@ import junit.framework.TestCase;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.CyAttributesImpl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Tests Implementation of CyAttributes.
@@ -20,6 +18,7 @@ public class CyAttributesTest extends TestCase {
     private static final String DUMMY_BOOLEAN_ATTRIBUTE = "attribute1";
     private static final String DUMMY_STRING_ATTRIBUTE = "attribute2";
     private static final String DUMMY_LIST_ATTRIBUTE = "attribute3";
+    private static final String DUMMY_MAP_ATTRIBUTE = "attribute4";
 
     /**
      * Set things up.
@@ -38,7 +37,17 @@ public class CyAttributesTest extends TestCase {
                 DUMMY_BOOLEAN_ATTRIBUTE);
         assertEquals (false, exists);
 
-        //  First, try with a null ID;  should fail
+        //  Since the attribute does not yet exist, this should be null
+        Boolean value = cyAttributes.getBooleanAttribute
+                (DUMMY_ID, DUMMY_BOOLEAN_ATTRIBUTE);
+        assertEquals (null, value);
+
+        //  This should be null too
+        Double value2 = cyAttributes.getDoubleAttribute
+                (DUMMY_ID, DUMMY_BOOLEAN_ATTRIBUTE);
+        assertEquals (null, value2);
+
+        //  Try setting an attribute with a null ID;  should fail
         try {
             cyAttributes.setAttribute(null, DUMMY_BOOLEAN_ATTRIBUTE,
                     new Boolean(true));
@@ -47,7 +56,7 @@ public class CyAttributesTest extends TestCase {
             assertTrue (e != null);
         }
 
-        //  Next, try with a null Attribute Name;  should fail
+        //  Try setting an attribute with a null attribute name;  should fail
         try {
             cyAttributes.setAttribute(DUMMY_ID, null, new Boolean(true));
             fail ("IllegalArgumentException should have been thrown.");
@@ -68,7 +77,7 @@ public class CyAttributesTest extends TestCase {
         assertEquals (CyAttributes.TYPE_BOOLEAN, type);
 
         //  Verify value stored
-        Boolean value = cyAttributes.getBooleanAttribute(DUMMY_ID,
+        value = cyAttributes.getBooleanAttribute(DUMMY_ID,
                 DUMMY_BOOLEAN_ATTRIBUTE);
         assertEquals (true, value.booleanValue());
 
@@ -228,5 +237,73 @@ public class CyAttributesTest extends TestCase {
         Integer int1 = (Integer) storedList.get(1);
         assertEquals (5, int0.intValue());
         assertEquals (6, int1.intValue());
+    }
+
+    /**
+     * Tests Simple Maps.
+     */
+    public void testSimpleMaps() {
+        //  First, try setting a not-so simple map
+        //  The following map is considered invalid because all keys must
+        //  be of type String.
+        Map map = new HashMap();
+        map.put(new Integer(1), new String ("One"));
+        map.put(new Integer(2), new String ("Two"));
+
+        //  This should fail, b/c of invalid keys
+        try {
+            cyAttributes.setAttributeMap(DUMMY_ID, DUMMY_MAP_ATTRIBUTE, map);
+            fail ("IllegalArgumentException should have been thrown.");
+        } catch (IllegalArgumentException e) {
+            assertTrue (e != null);
+        }
+
+        //  Now, try another invalid map.  This map is invalid because the
+        //  values are not all of one type
+        map = new HashMap();
+        map.put(new String("first"), new String ("One"));
+        map.put(new String("second"), new Integer (2));
+
+        //  This should fail too, b/c of invalid values
+        try {
+            cyAttributes.setAttributeMap(DUMMY_ID, DUMMY_MAP_ATTRIBUTE, map);
+            fail ("IllegalArgumentException should have been thrown.");
+        } catch (IllegalArgumentException e) {
+            assertTrue (e != null);
+        }
+
+        // Now, try a valid map
+        map = new HashMap();
+        map.put(new String("first"), new Integer(1));
+        map.put(new String("second"), new Integer (2));
+        cyAttributes.setAttributeMap(DUMMY_ID, DUMMY_MAP_ATTRIBUTE, map);
+
+        //  Verify type
+        byte type = cyAttributes.getType(DUMMY_MAP_ATTRIBUTE);
+        assertEquals (CyAttributes.TYPE_SIMPLE_MAP, type);
+
+        //  Get Stored value as a Simple List;  this should fail
+        try {
+            List list = cyAttributes.getAttributeList(DUMMY_ID,
+                DUMMY_MAP_ATTRIBUTE);
+            fail ("ClassCastException should have been thrown.");
+        } catch (ClassCastException e) {
+            assertTrue (e != null);
+        }
+
+        //  Get map back, and verify contents
+        Map storedMap = cyAttributes.getAttributeMap(DUMMY_ID,
+                DUMMY_MAP_ATTRIBUTE);
+        assertEquals (2, storedMap.keySet().size());
+        Set keySet = storedMap.keySet();
+        Iterator iterator = keySet.iterator();
+        String key = (String) iterator.next();
+        Integer value =  (Integer) storedMap.get(key);
+        assertEquals ("first", key);
+        assertEquals (1, value.intValue());
+        key = (String) iterator.next();
+        value =  (Integer) storedMap.get(key);
+        assertEquals ("second", key);
+        assertEquals (2, value.intValue());
     }
 }
