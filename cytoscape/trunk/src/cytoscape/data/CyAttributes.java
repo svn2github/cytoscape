@@ -199,7 +199,7 @@ public interface CyAttributes {
      * <CODE>Double</CODE> or <CODE>String</CODE>.
      * </UL>
      */
-    public final byte TYPE_SIMPLE_LIST = 5;
+    public final byte TYPE_SIMPLE_LIST = -2;
 
     /**
      * This type corresponds to a 'simple' hash map.
@@ -212,7 +212,7 @@ public interface CyAttributes {
      * <CODE>Double</CODE> or <CODE>String</CODE>.
      * </UL>
      */
-    public final byte TYPE_SIMPLE_MAP = 5;
+    public final byte TYPE_SIMPLE_MAP = -3;
 
     /**
      * This type corresponds to a data structure of arbitrary complexity,
@@ -221,12 +221,12 @@ public interface CyAttributes {
      * For complete details, refer to the class comments, or
      * {@link CyAttributes#getMultiHashMap()}.
      */
-    public final byte TYPE_COMPLEX = 6;
+    public final byte TYPE_COMPLEX = -4;
 
     /**
      * This type corresponds to an attribute which has not been defined.
      */
-    public final byte TYPE_UNDEFINED = 7;
+    public final byte TYPE_UNDEFINED = -1;
 
     /**
      * Gets an array of all attribute names.
