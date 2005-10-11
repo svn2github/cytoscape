@@ -10,7 +10,6 @@ import java.util.*;
  * Tests Implementation of CyAttributes.
  *
  * TODO:  Add to DataSuite
- * TODO:  Add Tests for Simple Maps
  */
 public class CyAttributesTest extends TestCase {
     private CyAttributes cyAttributes;
