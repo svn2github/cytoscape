@@ -171,22 +171,23 @@ public interface CyAttributes {
     /**
      * This type corresponds to java.lang.Boolean.
      */
-    public final byte TYPE_BOOLEAN = 1;
+    public final byte TYPE_BOOLEAN = MultiHashMapDefinition.TYPE_BOOLEAN;
 
     /**
      * This type corresponds to java.lang.Double.
      */
-    public final byte TYPE_FLOATING = 2;
+    public final byte TYPE_FLOATING =
+      MultiHashMapDefinition.TYPE_FLOATING_POINT;
 
     /**
      * This type corresponds to java.lang.Integer.
      */
-    public final byte TYPE_INTEGER = 3;
+    public final byte TYPE_INTEGER = MultiHashMapDefinition.TYPE_INTEGER;
 
     /**
      * This type corresponds to java.lang.String.
      */
-    public final byte TYPE_STRING = 4;
+    public final byte TYPE_STRING = MultiHashMapDefinition.TYPE_STRING;
 
     /**
      * This type corresponds to a 'simple' list.
