@@ -1,5 +1,6 @@
 package cytoscape.data;
 
+import cytoscape.data.attr.CountedIterator;
 import cytoscape.data.attr.MultiHashMap;
 import cytoscape.data.attr.MultiHashMapDefinition;
 
@@ -9,14 +10,30 @@ import java.util.Map;
 public class CyAttributesImpl implements CyAttributes
 {
 
+  private MultiHashMap mmap;
+  private MultiHashMapDefinition mmapDef;
+
   public String[] getAttributeNames()
   {
-    return null;
+    final CountedIterator citer = mmapDef.getDefinedAttributes();
+    final String[] names = new String[citer.numRemaining()];
+    int inx = 0;
+    while (citer.hasNext()) {
+      names[inx++] = (String) citer.next(); }
+    return names;
   }
 
   public boolean hasAttribute(String id, String attributeName)
   {
-    return false;
+    final byte valType = mmapDef.getAttributeValueType(attributeName);
+    if (valType < 0) return false;
+    final byte[] dimTypes = mmapDef.getAttributeKeyspaceDimensionTypes
+      (attributeName);
+    if (dimTypes.length == 0) {
+      return mmap.getAttributeValue(id, attributeName, null) != null; }
+    else {
+      return mmap.getAttributeKeyspan
+        (id, attributeName, null).numRemaining() > 0; }
   }
 
   public void setAttribute(String id, String attributeName, Boolean value)
