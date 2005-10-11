@@ -242,6 +242,7 @@
                 <include name="cytoscape/plugin/jar/SimpleClassLoader.java" />
                 <include name="cytoscape/data/ExpressionData.java" />
                 <include name="cytoscape/data/Semantics.java" />
+                <include name="cytoscape/data/CyAttributes.java" />
                 <include name="cytoscape/view/CytoscapeDesktop.java" />
                 <include name="cytoscape/view/CyNetworkView.java" />
                 <include name="cytoscape/view/CyMenus.java" />
