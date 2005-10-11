@@ -1,3 +1,4 @@
+
 package cytoscape.data;
 
 import cytoscape.data.attr.CountedIterator;
@@ -166,17 +167,23 @@ public class CyAttributesImpl implements CyAttributes
 
   public byte getType(String attributeName)
   {
-    return 0;
+    final byte valType = mmapDef.getAttributeValueType(attributeName);
+    if (valType < 0) { return TYPE_UNDEFINED; }
+    final byte[] dimTypes = mmapDef.getAttributeKeyspaceDimensionTypes
+      (attributeName);
+    if (dimTypes.length == 0) { return valType; }
+    // fixme.
+    return -99;
   }
 
   public boolean deleteAttribute(String id, String attributeName)
   {
-    return false;
+    return mmap.removeAllAttributeValues(id, attributeName);
   }
 
   public boolean deleteAttribute(String attributeName)
   {
-    return false;
+    return mmapDef.undefineAttribute(attributeName);
   }
 
   public void setAttributeList(String id, String attributeName, List list)
