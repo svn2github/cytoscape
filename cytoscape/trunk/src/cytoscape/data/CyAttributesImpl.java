@@ -38,6 +38,23 @@ public class CyAttributesImpl implements CyAttributes
 
   public void setAttribute(String id, String attributeName, Boolean value)
   {
+    final byte type = mmapDef.getAttributeValueType(attributeName);
+    if (type < 0) {
+      mmapDef.defineAttribute(attributeName,
+                              MultiHashMapDefinition.TYPE_BOOLEAN,
+                              null); }
+    else {
+      if (type != MultiHashMapDefinition.TYPE_BOOLEAN) {
+        throw new IllegalArgumentException
+          ("definition for attributeName '" + attributeName +
+           "' already exists and it is not of TYPE_BOOLEAN"); }
+      final byte[] dimTypes = mmapDef.getAttributeKeyspaceDimensionTypes
+        (attributeName);
+      if (dimTypes.length != 0) {
+        throw new IllegalArgumentException
+          ("definition for attributeName '" + attributeName +
+           "' already exists and it is not of TYPE_BOOLEAN"); } }
+    mmap.setAttributeValue(id, attributeName, value, null);
   }
 
   public void setAttribute(String id, String attributeName, Integer value)
