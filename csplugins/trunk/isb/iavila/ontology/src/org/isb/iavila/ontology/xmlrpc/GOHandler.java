@@ -47,7 +47,44 @@ public class GOHandler extends SQLDBHandler {
     public GOHandler (String mysql_url) {
         super(mysql_url, SQLDBHandler.MYSQL_JDBC_DRIVER);
         initialize();
+        //temp:
+        //createGi2Go();
     }// ProlinksInteractionsSource
+    
+    protected void createGi2Go (){
+        //String sql = "CREATE TABLE giToAcc ( gi bigint (20), acc varchar(10));";
+        //execute(sql);
+        //System.out.println("Created giToAcc table.");
+        
+        String sql = "SELECT g.gi, o.goid FROM synonym3.xref_ontology as o, synonym3.xref_gi as g WHERE g.oid = o.oid";
+        ResultSet rs = query(sql);
+        System.out.println("Finished getting gis and gos");
+        
+        sql = "INSERT INTO giToAcc VALUES ";
+        String vals = null;
+        try{
+            while(rs.next()){
+                int gi = rs.getInt(1);
+                String go = rs.getString(2);
+                if(go.startsWith("GO:")){
+                    int index = go.lastIndexOf(":");//look for the 2nd ":"
+                    if(index >= 0){
+                        go = go.substring(0,index);
+                        if(vals.length() == 0)
+                            vals = " (" + gi + "," + go + ")";
+                        else
+                            vals +=  ", (" + gi + "," + go + ")";
+                    }
+                }
+            }
+        }catch(Exception ex){ ex.printStackTrace();}
+        
+        if(vals.length() == 0) return;
+        System.out.println("Adding values to giToAcc table...");
+        execute(sql+vals);
+        System.out.println("..done adding values to giToAcc.");
+        
+    }
     
     /**
      * Initializes  internal variables
@@ -247,8 +284,26 @@ public class GOHandler extends SQLDBHandler {
      * with the given key term
      */
     public Hashtable getGenesWithTerms (Vector termIDs, String speciesID){
+         
         
-        Hashtable termToGenes  = new Hashtable();
+       Hashtable termToGenes  = new Hashtable();
+        // Find the taxonomy id for the given species
+        String sql = "SELECT ncbi_taxa_id FROM species WHERE id = " + speciesID;
+        ResultSet rs = query(sql);
+        int speciesTaxaID = 0;
+        boolean foundSpecies = false;
+        try{
+            if(rs.next()){
+                speciesTaxaID = rs.getInt(1);
+                foundSpecies = true;
+            }
+        }catch(Exception ex){
+            ex.printStackTrace();
+            return termToGenes;
+        }
+        
+        if(!foundSpecies) return termToGenes;
+        
         Hashtable accToTermID = new Hashtable();
         
         // The term ids are Strings parsable as Integers. Get the GO: term identifiers.
@@ -266,8 +321,8 @@ public class GOHandler extends SQLDBHandler {
         
         if(or.length() == 0) return termToGenes;
         
-        String sql = "SELECT acc, id FROM term WHERE " + or;
-        ResultSet rs = query(sql);
+        sql = "SELECT acc, id FROM term WHERE " + or;
+        rs = query(sql);
         
         or = "";
         try{
@@ -277,7 +332,7 @@ public class GOHandler extends SQLDBHandler {
                 if (or.length() == 0){
                          or = " acc = \"" + goID + "\"";
                 }else{
-                    or += " acc = \"" + goID + "\"";
+                    or += " OR acc = \"" + goID + "\"";
                 }//else
                 accToTermID.put(goID, new Integer(intID));
             }// while rs.next
@@ -290,7 +345,10 @@ public class GOHandler extends SQLDBHandler {
         
         if(or.length() == 0) return termToGenes;
         
-        sql = "SELECT acc,gi FROM gi2go WHERE " + or;
+        sql = "SELECT gg.acc, gg.gi"+
+             " FROM gi2go AS gg, nrTaxonomy AS nr"+
+             " WHERE " + or + 
+             " AND nr.gi =  gg.gi AND nr.taxonomy_id  = " +  speciesTaxaID;
         rs = query(sql);
         
         try{
@@ -313,6 +371,8 @@ public class GOHandler extends SQLDBHandler {
         System.err.println(termToGenes);
         
         return termToGenes;
+  
+        
         
 //        Iterator it = termIDs.iterator();
 //        Hashtable termToGenes = new Hashtable();

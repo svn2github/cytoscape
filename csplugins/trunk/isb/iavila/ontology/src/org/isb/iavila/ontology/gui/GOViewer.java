@@ -117,7 +117,7 @@ public class GOViewer extends JPanel{
         
         TreePath [] paths = this.tree.getSelectionPaths();
         
-        if(paths.length == 0) return new OntologyTerm[0];
+        if(paths == null || paths.length == 0) return new OntologyTerm[0];
         
         ArrayList list = new ArrayList();
         for(int i = 0; i < paths.length; i++){
@@ -126,7 +126,7 @@ public class GOViewer extends JPanel{
             list.add( ( (DefaultMutableTreeNode)treeNode ).getUserObject());
         }//for i
         
-        return (OntologyTerm [])list.toArray(new OntologyTerm[0]);
+        return (OntologyTerm [])list.toArray(new OntologyTerm[list.size()]);
     }
    
 }

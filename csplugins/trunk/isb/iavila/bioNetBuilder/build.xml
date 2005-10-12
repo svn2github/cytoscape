@@ -141,6 +141,8 @@
 		          <arg file = "${jar}/bionet.jar"/>
 		          <arg line = "--JLD"/>
 		          <arg file = "${cytoscape.plugins}/core"/>
+				  <arg line = "--JLD"/>
+			      <arg file = "lib/ontology.jar"/>
 		          <arg line = "-c"/>
 		      	  <arg line = "-b"/>
 		      	  <arg line = "../../../../C2.1/source/testData/annotation/manifest"/>

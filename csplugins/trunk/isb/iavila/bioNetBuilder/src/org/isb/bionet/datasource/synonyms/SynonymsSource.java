@@ -14,6 +14,7 @@ public interface SynonymsSource extends DataSource {
     public static final String KEGG_ID = "KEGG";
     public static final String GI_ID = "GI";
     public static final String ID_NOT_FOUND = "ID not found";
+    public static final String COMMON_NAME = "CN";
     
     /**
      * 

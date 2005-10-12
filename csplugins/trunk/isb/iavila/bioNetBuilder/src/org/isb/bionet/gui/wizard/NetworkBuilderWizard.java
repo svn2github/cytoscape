@@ -424,7 +424,8 @@ public class NetworkBuilderWizard {
         JDialog dialog = createWizardDialog(back, next);
         
         JPanel explanation = createExplanationPanel(
-                "<html><br>Set parameters for your new biological network.<br></html>"
+                "<html><br>Set parameters for your biological network.<br>"+
+                          "If you enter the name of an existing network, the new <br>interactions will be added to it.<br></html>"
         );
         
         dialog.getContentPane().add(explanation, BorderLayout.NORTH);
@@ -450,7 +451,6 @@ public class NetworkBuilderWizard {
         
         // 2. Get the starting nodes for the network (if any)
         Vector startingNodes = this.nodeSourcesPanel.getAllNodes();
-        
         
         // 3. Get the edge data source parameter settings
         Map sourceToSettings = this.edgeSourcesPanel.getSourcesDialogs();
@@ -494,15 +494,13 @@ public class NetworkBuilderWizard {
                     args.put(ProlinksInteractionsSource.INTERACTION_TYPE, interactionTypes);
                 }
                 
-            //    params.add(args);
             
             }//if prolinks
                 
-            //String method;
+          
             Vector sourceInteractions = null;
             try{
                 if(startingNodes == null || startingNodes.size() == 0){
-                    //method = "getAllInteractions";
                     if(args.size() > 0){
                         sourceInteractions = (Vector)this.interactionsClient.getAllInteractions(species, args);
                     }else{
@@ -514,30 +512,36 @@ public class NetworkBuilderWizard {
                     }else{
                         sourceInteractions = (Vector)this.interactionsClient.getConnectingInteractions(startingNodes, species);
                     }
-                 //   method = "getConnectingInteractions";
                 }
                 interactions.addAll(sourceInteractions);
             }catch (Exception ex){
                 ex.printStackTrace();
             }
             
-            //try{
-              //  Vector sourceInteractions = (Vector)this.interactionsClient.callSourceMethod(sourceClass,method,params);
-                //TODO: Translate to GI ids
-                //translateToGI(sourceInteractions, targetID);
-                //interactions.addAll(sourceInteractions);
-            //}catch (Exception e){
-              //  e.printStackTrace();
-           // }
-            
         }//while it
         
-        // 6. Make a network!
-        CyNetwork newNet = CyNetUtils.makeNewNetwork(interactions, netName);
+        // 6. Make a network, or add interactions if the network already exists
+        Set nets = Cytoscape.getNetworkSet();
+        it = nets.iterator();
+        CyNetwork net = null;
+        boolean found = false;
+        while(it.hasNext()){
+            net = (CyNetwork)it.next();
+            if(net.getTitle().equals(netName)){
+                found = true;
+                break;
+            }
+        }
+        
+        if(found){
+            CyNetUtils.addInteractionsToNetwork(net,interactions, this.synonymsClient);
+        }else{
+            net = CyNetUtils.makeNewNetwork(interactions, netName, this.synonymsClient);
+        }
         
         //7. If requested, create Rosetta attribute
         if(this.networkPanel.createRosettaURLAttribute()){
-            CyNetUtils.createRosettaURLNodeAttribute(newNet);
+            CyNetUtils.createRosettaURLNodeAttribute(net);
         }
         
         
@@ -557,49 +561,5 @@ public class NetworkBuilderWizard {
         if(tokens[0].equals(SynonymsSource.GI_ID)) return SynonymsSource.GI_ID;
         return SynonymsSource.ID_NOT_FOUND;
     }
-    
-    //TODO: Remove?
-    private void translateToGI (Vector interactions, String id_type){
-     
-        Iterator it = interactions.iterator();
-        Set genes = new HashSet (); 
-        while(it.hasNext()){
-            Hashtable anInteraction = (Hashtable)it.next();
-            String gene1 = (String)anInteraction.get(InteractionsDataSource.INTERACTOR_1);
-            String gene2 = (String)anInteraction.get(InteractionsDataSource.INTERACTOR_2);
-            genes.add(gene1);
-            genes.add(gene2);
-        }//while it.hasNext
-        Hashtable synonyms = null;
-        try{
-           synonyms = this.synonymsClient.getSynonyms(id_type, new Vector(genes), SynonymsSource.GI_ID);
-        }catch(Exception ex){
-            System.err.println("There was a problem while translating gene names to GI_IDs!!!");
-            ex.printStackTrace();
-            return;
-        }
-        
-        it = interactions.iterator();
-        while(it.hasNext()){
-            Hashtable anInteraction = (Hashtable)it.next();
-            String gene1 = (String)anInteraction.get(InteractionsDataSource.INTERACTOR_1);
-            String gene2 = (String)anInteraction.get(InteractionsDataSource.INTERACTOR_2);
-            String gi1 = (String)synonyms.get(gene1);
-            if(gi1 == null){
-                System.err.println("No gi id found for " + gene1);
-            }else{
-                anInteraction.put(InteractionsDataSource.INTERACTOR_1, gi1);
-            }
-            String gi2 = (String)synonyms.get(gene2);
-            if(gi2 == null){
-                System.err.println("No gi id found for " + gene2);
-            }else{
-                anInteraction.put(InteractionsDataSource.INTERACTOR_2, gi2);
-            }
-                        
-        }//while it.hasNext
-        
-    }
-    
     
 }//NetworkBuilderWizard

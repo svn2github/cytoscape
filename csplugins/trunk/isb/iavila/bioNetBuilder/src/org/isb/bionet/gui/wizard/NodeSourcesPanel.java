@@ -118,7 +118,8 @@ public class NodeSourcesPanel extends JPanel {
                 annotationsDialog.setLocationRelativeTo(NodeSourcesPanel.this);
                 annotationsDialog.setVisible(true);
                 // The dialog is modal
-            
+               annotationNodeIDs = annotationsDialog.getGenesWithTerms();
+               System.out.println("There are " + annotationNodeIDs.length + " nodes from annotations.");
             }//actionPerformed
             
         });

@@ -32,7 +32,11 @@ public class SQLSynonymsHandler extends SQLDBHandler implements SynonymsSource {
      * @param source_ids a Vector of ids of type source_id_type
      * @param target_id_type the type of id that the input ids should be translated to
      * @return a Hashtable from the input source_ids to the resulting translation
+     * NOTE: source_id_type cannot be COMMON_NAME.
      */
+    // This is not very elegant. For every new ID type, need to add all pairs. Maybe we only care from
+    // gi to all others, and back? This would mean Synonyms would need to have a "canonical" id type.
+    // Not nice. What is the best way?????
     public Hashtable getSynonyms (String source_id_type, Vector source_ids, String target_id_type){
         
         if(source_ids.size() == 0) return new Hashtable();
@@ -60,6 +64,19 @@ public class SQLSynonymsHandler extends SQLDBHandler implements SynonymsSource {
         if(source_id_type.equals(PROLINKS_ID) && target_id_type.equals(KEGG_ID)){
             return prolinksToKegg(source_ids);
         }
+        
+        // Common name to id? Not reliable. User needs to keep track of this map.
+        if(source_id_type.equals(GI_ID) && target_id_type.equals(COMMON_NAME)){
+            return giToCommonName(source_ids);
+        }
+        
+         if(source_id_type.equals(PROLINKS_ID) && target_id_type.equals(COMMON_NAME)){
+             return prolinksToCommonName(source_ids);
+         }
+         
+         if(source_id_type.equals(KEGG_ID) && target_id_type.equals(COMMON_NAME)){
+             return keggToCommonName(source_ids);
+         }
          
         return new Hashtable();
     
@@ -77,6 +94,7 @@ public class SQLSynonymsHandler extends SQLDBHandler implements SynonymsSource {
         if(tokens[0].equals(PROLINKS_ID)) return PROLINKS_ID;
         if(tokens[0].equals(KEGG_ID)) return KEGG_ID;
         if(tokens[0].equals(GI_ID)) return GI_ID;
+        if(tokens[0].equals(COMMON_NAME)) return COMMON_NAME;
         return ID_NOT_FOUND;
     }
     //--------- Helper protected methods -----------//
@@ -293,6 +311,160 @@ public class SQLSynonymsHandler extends SQLDBHandler implements SynonymsSource {
         
         return new Hashtable();
     }
+    
+    protected Hashtable giToCommonName (Vector gi_ids){
+        Iterator it = gi_ids.iterator();
+        if(!it.hasNext()) return new Hashtable();
+        
+        // transfer gi_ids to oids, and then oids to genename
+        String or = "";
+        while(it.hasNext()){
+            String id = (String)it.next();
+            int index = id.indexOf(GI_ID + ":");
+            if(index >= 0){
+                id = id.substring(index + GI_ID.length() + 1);
+                if(or.length() > 0)
+                    or += " OR gi = " + id;
+                else
+                    or = " gi = " + id;
+            }
+        }//while
+        
+        if(or.length() == 0) return new Hashtable();
+        String sql = "SELECT gi, oid FROM xref_gi WHERE " + or;
+        ResultSet rs = query(sql);
+        
+        Hashtable oidToGi = new Hashtable();
+        or = "";
+        try{
+            while(rs.next()){
+                int gi = rs.getInt(1);
+                int oid = rs.getInt(2);
+                oidToGi.put(new Integer(oid), Integer.toString(gi));
+                if(or.length() == 0){
+                    or = " oid = " + oid;
+                }else{
+                    or += " OR oid = " + oid;
+                }
+            }
+        }catch(Exception ex){
+            ex.printStackTrace();
+            return new Hashtable();
+        }
+        
+        if(or.length() == 0) return new Hashtable();
+        
+        sql = "SELECT oid, genename FROM gn_genename WHERE " + or;
+        rs = query(sql);
+        
+        Hashtable giToCn = new Hashtable();
+        try{
+            while(rs.next()){
+                int oid = rs.getInt(1);
+                String cn = rs.getString(2);
+                String gi = (String)oidToGi.get(new Integer(oid));
+                giToCn.put(GI_ID+":"+gi,cn);
+            }
+        }catch(Exception ex){ex.printStackTrace(); return new Hashtable();}
+        System.out.print("Num translated to common names = " + giToCn.size());
+        return giToCn;
+    } 
+    
+    
+    protected Hashtable prolinksToCommonName (Vector prolinks_ids){
+        Hashtable prToCN = new Hashtable();
+        
+        Iterator it = prolinks_ids.iterator();
+        
+        if(!it.hasNext()) return prToCN;
+        
+        String or = "";
+        while(it.hasNext()){
+            String id = (String)it.next();
+            int index = id.indexOf(PROLINKS_ID + ":");
+            if(index >= 0){
+                id = id.substring(index + PROLINKS_ID.length() + 1);
+                if(or.length() == 0){
+                    or = " prolinksid = " + id;
+                }else{
+                    or += " OR prolinksid = " + id;
+                }//else
+            }//index >=0
+        }//while
+        
+        if(or.length() == 0) return prToCN;
+        
+        String sql = "SELECT prolinksid, genename FROM key_prolinks WHERE " + or;
+        ResultSet rs = query(sql);
+        
+        try{
+            while(rs.next()){
+                String prolinksid = rs.getString(1);
+                String cn = rs.getString(2);
+                prToCN.put(PROLINKS_ID + ":" + prolinksid, cn);
+            }
+        }catch(Exception ex){ex.printStackTrace(); return new Hashtable();}
+        
+        return prToCN;
+    }
+    
+    protected Hashtable keggToCommonName (Vector kegg_ids){
+        
+        Hashtable kToCN = new Hashtable();
+        
+        Iterator it = kegg_ids.iterator();
+        
+        if(!it.hasNext()) return kToCN;
+        
+        String or = "";
+        while(it.hasNext()){
+            String id = (String)it.next();
+            int index = id.indexOf(KEGG_ID + ":");
+            if(index >= 0){
+                id = id.substring(index + KEGG_ID.length() + 1);
+                if(or.length() == 0){
+                    or = " kegg_id = \"" + id + "\"";
+                }else{
+                    or += " OR kegg_id = \"" + id + "\"";
+                }//else
+            }//if index
+        }//while
+       
+        if(or.length() == 0) return kToCN;
+        
+        String sql = "SELECT oid, kegg_id FROM xref_kegg WHERE " + or;
+        ResultSet rs = query(sql);
+        Hashtable oidToKegg = new Hashtable();
+        or = "";
+        try{
+            while(rs.next()){
+                int oid = rs.getInt(1);
+                String kegg = rs.getString(2);
+                oidToKegg.put(new Integer(oid), kegg);
+                if(or.length() == 0){
+                    or = " oid = " + oid;
+                }else{
+                    or += " OR oid = " + oid;
+                }//else
+            }//while
+        }catch(Exception ex){ ex.printStackTrace(); return kToCN;}
+        
+        if(or.length() == 0) return kToCN;
+        
+        sql = "SELECT oid, genename FROM gn_genename WHERE " + or;
+        rs = query(sql);
+        try{
+            while(rs.next()){
+                int oid = rs.getInt(1);
+                String cn = rs.getString(2);
+                String keggid = (String)oidToKegg.get(new Integer(oid));
+                kToCN.put(KEGG_ID + ":" + keggid,cn);
+            }//while
+        }catch(Exception ex){ ex.printStackTrace(); return new Hashtable();}
+        
+        return kToCN;
+    }
+    
   
     //------------- DataSource methods -------------//
 
