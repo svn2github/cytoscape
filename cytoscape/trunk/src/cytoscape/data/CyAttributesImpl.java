@@ -5,6 +5,7 @@ import cytoscape.data.attr.MultiHashMap;
 import cytoscape.data.attr.MultiHashMapDefinition;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -308,7 +309,21 @@ public class CyAttributesImpl implements CyAttributes
 
   public Map getAttributeMap(String id, String attributeName)
   {
-    return null;
+    if (mmapDef.getAttributeValueType(attributeName) < 0) { return null; }
+    final byte[] keyTypes = mmapDef.getAttributeKeyspaceDimensionTypes
+      (attributeName);
+    if (keyTypes.length != 1 ||
+        keyTypes[0] != MultiHashMapDefinition.TYPE_STRING) {
+      throw new ClassCastException
+        ("attributeName '" + attributeName +
+         "' is not of TYPE_SIMPLE_MAP"); }
+    final Map returnThis = new HashMap();
+    final Iterator keyspan = mmap.getAttributeKeyspan(id, attributeName, null);
+    final Object[] key = new Object[1];
+    while (keyspan.hasNext()) {
+      key[0] = keyspan.next();
+      returnThis.put(key[0], mmap.getAttributeValue(id, attributeName, key)); }
+    return returnThis;
   }
 
   public MultiHashMap getMultiHashMap()
