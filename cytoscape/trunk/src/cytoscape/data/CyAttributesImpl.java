@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class CyAttributesImpl implements CyAttributes
 {
@@ -213,6 +214,10 @@ public class CyAttributesImpl implements CyAttributes
          type,
          new byte[] { MultiHashMapDefinition.TYPE_INTEGER } ); }
     else {
+      if (valType != type) {
+        throw new IllegalArgumentException
+          ("existing definition for attributeName '" + attributeName +
+           "' is a TYPE_SIMPLE_LIST that stores other value types"); }
       final byte[] keyTypes =
         mmapDef.getAttributeKeyspaceDimensionTypes(attributeName);
       if (keyTypes.length != 1 ||
@@ -251,7 +256,55 @@ public class CyAttributesImpl implements CyAttributes
 
   public void setAttributeMap(String id, String attributeName, Map map)
   {
-  }
+    final Set entrySet = map.entrySet();
+    Iterator itor = entrySet.iterator();
+    final byte type;
+    Map.Entry entry = (Map.Entry) itor.next();
+    if (!(entry.getKey() instanceof String)) {
+      throw new IllegalArgumentException("keys in map are not all String"); }
+    Object val = entry.getValue();
+    if (val instanceof Double) { type = TYPE_FLOATING; }
+    else if (val instanceof Integer) { type = TYPE_INTEGER; }
+    else if (val instanceof Boolean) { type = TYPE_BOOLEAN; }
+    else if (val instanceof String) { type = TYPE_STRING; }
+    else throw new IllegalArgumentException
+           ("values in map are of unrecognized type");
+    while (itor.hasNext()) {
+      entry = (Map.Entry) itor.next();
+      if (!(entry.getKey() instanceof String)) {
+        throw new IllegalArgumentException("keys in map are not all String"); }
+      val = entry.getValue();
+      if ((type == TYPE_FLOATING && (!(val instanceof Double))) ||
+          (type == TYPE_INTEGER && (!(val instanceof Integer))) ||
+          (type == TYPE_BOOLEAN && (!(val instanceof Boolean))) ||
+          (type == TYPE_STRING && (!(val instanceof String))))
+        throw new IllegalArgumentException
+          ("values in map are not all of the same type"); }
+    final byte valType = mmapDef.getAttributeValueType(attributeName);
+    if (valType < 0) {
+      mmapDef.defineAttribute
+        (attributeName, type,
+         new byte[] { MultiHashMapDefinition.TYPE_STRING } ); }
+    else {
+      if (valType != type) {
+        throw new IllegalArgumentException
+          ("existing definition for attributeName '" + attributeName +
+           "' is a TYPE_SIMPLE_MAP that stores other value types"); }
+      final byte[] keyTypes =
+        mmapDef.getAttributeKeyspaceDimensionTypes(attributeName);
+      if (keyTypes.length != 1 ||
+          keyTypes[0] != MultiHashMapDefinition.TYPE_STRING) {
+        throw new IllegalArgumentException
+          ("existing definition for attributeName '" + attributeName +
+           "' is not of TYPE_SIMPLE_MAP"); } }
+    mmap.removeAllAttributeValues(id, attributeName);
+    itor = entrySet.iterator();
+    final Object[] key = new Object[1];
+    while (itor.hasNext()) {
+      entry = (Map.Entry) itor.next();
+      key[0] = entry.getKey();
+      mmap.setAttributeValue(id, attributeName, entry.getValue(), key); }
+   }
 
   public Map getAttributeMap(String id, String attributeName)
   {
