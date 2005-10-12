@@ -175,8 +175,12 @@ public class CyAttributesImpl implements CyAttributes
     final byte[] dimTypes = mmapDef.getAttributeKeyspaceDimensionTypes
       (attributeName);
     if (dimTypes.length == 0) { return valType; }
-    // fixme.
-    return -99;
+    if (dimTypes.length > 1) { return TYPE_COMPLEX; }
+    if (dimTypes[0] == MultiHashMapDefinition.TYPE_INTEGER) {
+      return TYPE_SIMPLE_LIST; }
+    if (dimTypes[0] == MultiHashMapDefinition.TYPE_STRING) {
+      return TYPE_SIMPLE_MAP; }
+    return TYPE_COMPLEX;
   }
 
   public boolean deleteAttribute(String id, String attributeName)
@@ -328,12 +332,12 @@ public class CyAttributesImpl implements CyAttributes
 
   public MultiHashMap getMultiHashMap()
   {
-    return null;
+    return mmap;
   }
 
   public MultiHashMapDefinition getMultiHashMapDefinition()
   {
-    return null;
+    return mmapDef;
   }
 
 }
