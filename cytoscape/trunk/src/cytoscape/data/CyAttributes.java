@@ -11,16 +11,12 @@ import java.util.Map;
  * <P>
  * CyAttributes is a replacement for {@link GraphObjAttributes}, which will be
  * officially removed from the Cytoscape core in September, 2006.
- * <P>
  * <h3>Basic Concepts:</h3>
- * <P>
  * Each node and edge within Cytoscape can be annotated with one or more
  * attributes.  For example, a node representing a protein could have
  * attributes for description, species, NCBI Gene ID, UniProt ID, etc.
  * These attributes are set and retrieved via the CyAttributes interface.
- * <P>
  * <h3>Unique Identifiers:</h3>
- * <P>
  * CyAttributes uses unique identifiers to attach attributes to specific
  * nodes and edges.  The unique identifiers for nodes and edges are available
  * via the <CODE>getIdentifier()</CODE> method:
@@ -28,8 +24,20 @@ import java.util.Map;
  * <LI>For nodes, use {@link cytoscape.CyNode#getIdentifier()}.
  * <LI>For edges, use {@link cytoscape.CyEdge#getIdentifier()}.
  * </UL>
+ * <h3>Data Type Restrictions:</h3>
+ * CyAttributes uses a {@link cytoscape.data.attr.MultiHashMap} data structure,
+ * which restricts attribute values to four data types:  <CODE>Boolean</CODE>,
+ * <CODE>Integer</CODE>, <CODE>Double</CODE>, and <CODE>String</CODE>.  It does
+ * not store arbitrary Java Objects.  We do this for three reasons:
+ * <UL>
+ * <LI>We want to provide complete import/export of all attribute values,
+ * without having to rely on Java serialization.
+ * <LI>We want to enable inter-plugin communication, such that plugins can
+ * share attribute data without having to agree to use some predefined or
+ * custom data structure ahead of time.
+ * <LI>We want to build a universal node/edge attribute browser.
+ * </UL>
  * <h3>Getting / Setting Attributes:  An Overview</h3>
- * <P>
  * There are three ways to get/set attributes.  They are (in order
  * of increasing complexity):
  * <UL>
@@ -38,9 +46,7 @@ import java.util.Map;
  * <LI>Getting / setting arbitrarily complex data structures.</LI>
  * </UL>
  * Each of these approaches is detailed below.
- * <P>
  * <h3>Getting / Setting Individual Values:</h3>
- * <P>
  * This is the simplest option.  Attributes are restricted to the following four
  * types:
  * <UL>
@@ -55,9 +61,7 @@ import java.util.Map;
  * Integer value = cyAttributes.getIntegerAttribute
  *     (node.getIdentifier(), "Rank");
  * </PRE>
- * <p/>
  * <h3>Getting / Setting Simple Lists:</h3>
- * <P>
  * A 'simple' list is defined as follows:
  * <UL>
  * <LI>All items within the list are of the same type, and are chosen
@@ -86,9 +90,7 @@ import java.util.Map;
  * <P>
  * To get a simple list, use the
  * {@link CyAttributes#getAttributeList(String, String)} method.
- * <P>
  * <h3>Getting / Setting Simple Maps:</h3>
- * <P>
  * A 'simple' map is defined as follows:
  * <UL>
  * <LI>All keys within the map are of type:  <CODE>String</CODE>.
@@ -113,9 +115,7 @@ import java.util.Map;
  * </PRE>
  * To get a simple map, use the
  * {@link CyAttributes#getAttributeMap(String, String)} method.
- * <P>
  * <h3>Working with Fixed Attribute Types:</h3>
- * <P>
  * Each attribute is bound to a specific data type, and this data type
  * is set and fixed the first time the attribute is used.  For example,
  * in Plugin 1, the following code sets "RANK" to be of type
@@ -132,6 +132,12 @@ import java.util.Map;
  * fixed as an <CODE>Integer</CODE> data type.  Hence, the call is considered
  * invalid, and an <CODE>IllegalArgumentException</CODE> will be thrown.
  * <P>
+ * The same situation can occur with simple lists and simple maps.  For example,
+ * if PlugIn 1 defines a simple list of all <CODE>Integer</CODE> values, and
+ * PlugIn 2 attempts to re-use this attribute with a list of <CODE>Double</CODE>
+ * values, the call is considered invalid, and an
+ * <CODE>IllegalArgumentException</CODE> will be thrown.
+ * <P>
  * To prevent this type of problem, use
  * {@link CyAttributes#getType(String)} to determine the attribute's data
  * type <I>before</I> setting any new attributes.
@@ -140,9 +146,7 @@ import java.util.Map;
  * {@link CyAttributes#deleteAttribute(String)}.  Note that calling this method
  * will delete all attributes with this name, preparing the way for a clean
  * slate.  Please use with caution!
- * <P>
  * <h3>Working with Arbitrarily Complex Data Structures:</h3>
- * <P>
  * CyAttributes uses a {@link cytoscape.data.attr.MultiHashMap} data structure
  * to store attributes.  This data structure enables you to store arbitrarily
  * complex trees of data, but restricts the tree to Objects of type:
@@ -155,7 +159,6 @@ import java.util.Map;
  * and {@link CyAttributes#getMultiHashMapDefinition()},
  * and working on the data structure directly.  Complete information is
  * available in the {@link cytoscape.data.attr.MultiHashMap} javadocs.
- * <P>
  * <h3>Listening for Attribute Events:</h3>
  * As noted above, CyAttributes uses a {@link cytoscape.data.attr.MultiHashMap}
  * data structure to store attributes.  To listen to attribute events,
