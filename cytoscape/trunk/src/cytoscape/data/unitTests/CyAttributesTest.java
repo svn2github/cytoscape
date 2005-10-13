@@ -305,4 +305,11 @@ public class CyAttributesTest extends TestCase {
         assertEquals ("second", key);
         assertEquals (2, value.intValue());
     }
+
+    /**
+     * Runs just this one unit test.
+     */
+    public static void main(String[] args) {
+        junit.textui.TestRunner.run(CyAttributesTest.class);
+    }
 }
