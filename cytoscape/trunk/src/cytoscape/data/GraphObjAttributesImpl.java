@@ -100,12 +100,26 @@ public class GraphObjAttributesImpl implements GraphObjAttributes
 
   public List getList(String attributeName, String id)
   {
-    return null;
+    return m_cyAttrs.getAttributeList(id, attributeName);
   }
 
   public Object getValue(String attributeName, String id)
   {
-    return null;
+    switch (m_cyAttrs.getType(attributeName)) {
+    case CyAttributes.TYPE_BOOLEAN:
+      return m_cyAttrs.getBooleanAttribute(id, attributeName);
+    case CyAttributes.TYPE_INTEGER:
+      return m_cyAttrs.getIntegerAttribute(id, attributeName);
+    case CyAttributes.TYPE_FLOATING:
+      return m_cyAttrs.getDoubleAttribute(id, attributeName);
+    case CyAttributes.TYPE_STRING:
+      return m_cyAttrs.getStringAttribute(id, attributeName);
+    case CyAttributes.TYPE_SIMPLE_LIST:
+      return m_cyAttrs.getAttributeList(id, attributeName);
+    case CyAttributes.TYPE_SIMPLE_MAP:
+      return m_cyAttrs.getAttributeMap(id, attributeName);
+    default:
+      return null; }
   }
 
   public Object get(String attributeName, String id)
