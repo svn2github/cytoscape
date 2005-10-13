@@ -85,7 +85,16 @@ public class GraphObjAttributesImpl implements GraphObjAttributes
 
   public Class getClass(String attributeName)
   {
-    return null;
+    switch (m_cyAttrs.getMultiHashMapDefinition().
+            getAttributeValueType(attributeName)) {
+    case MultiHashMapDefinition.TYPE_BOOLEAN:
+      return Boolean.class;
+    case MultiHashMapDefinition.TYPE_INTEGER:
+      return Integer.class;
+    case MultiHashMapDefinition.TYPE_FLOATING_POINT:
+      return Double.class;
+    default: // case MultiHashMapDefinition.TYPE_STRING:
+      return String.class; }
   }
 
   public List getList(String attributeName, String id)
