@@ -124,22 +124,22 @@ public class GraphObjAttributesImpl implements GraphObjAttributes
 
   public Object get(String attributeName, String id)
   {
-    return null;
+    return getValue(attributeName, id);
   }
 
   public Double getDoubleValue(String attributeName, String id)
   {
-    return null;
+    return m_cyAttrs.getDoubleAttribute(id, attributeName);
   }
 
   public Integer getIntegerValue(String attributeName, String id)
   {
-    return null;
+    return m_cyAttrs.getIntegerAttribute(id, attributeName);
   }
 
   public String getStringValue(String attributeName, String id)
   {
-    return null;
+    return m_cyAttrs.getStringAttribute(id, attributeName);
   }
 
   public HashMap getAttribute(String attributeName)
