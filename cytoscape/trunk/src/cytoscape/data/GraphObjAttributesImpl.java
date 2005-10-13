@@ -144,17 +144,21 @@ public class GraphObjAttributesImpl implements GraphObjAttributes
 
   public HashMap getAttribute(String attributeName)
   {
-    return null;
+    throw new IllegalStateException("no this method - so sorry");
   }
 
   public String[] getStringArrayValues(String attributeName, String id)
   {
-    return null;
+    List l = m_cyAttrs.getAttributeList(id, attributeName);
+    final String[] returnThis = new String[l.size()];
+    final Object[] arr = l.toArray();
+    System.arraycopy(arr, 0, returnThis, 0, arr.length);
+    return returnThis;
   }
 
   public String toString()
   {
-    return null;
+    return "Greetings.  This is a human readable string.";
   }
 
   public boolean set(String graphObjName, HashMap bundle)
