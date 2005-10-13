@@ -17,12 +17,28 @@ public class GraphObjAttributesImpl implements GraphObjAttributes
 
   public boolean set(String attributeName, String id, Object value)
   {
-    return false;
+    if (value instanceof Boolean) {
+      m_cyAttrs.setAttribute(id, attributeName, (Boolean) value);
+      return true; }
+    else if (value instanceof Integer) {
+      m_cyAttrs.setAttribute(id, attributeName, (Integer) value);
+      return true; }
+    else if (value instanceof Double) {
+      m_cyAttrs.setAttribute(id, attributeName, (Double) value);
+      return true; }
+    else if (value instanceof String) {
+      m_cyAttrs.setAttribute(id, attributeName, (String) value);
+      return true; }
+    throw new IllegalArgumentException
+      ("this Object type is not supported - so sorry");
   }
 
   public boolean append(String attributeName, String id, Object value)
   {
-    return false;
+    List l = m_cyAttrs.getAttributeList(id, attributeName);
+    l.add(value);
+    m_cyAttrs.setAttributeList(id, attributeName, l);
+    return true;
   }
 
   public boolean set(String attributeName, String id, double value)
