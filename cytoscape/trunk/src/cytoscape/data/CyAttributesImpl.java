@@ -50,6 +50,9 @@ public class CyAttributesImpl implements CyAttributes
 
   public void setAttribute(String id, String attributeName, Boolean value)
   {
+    if (id == null) throw new IllegalArgumentException("id is null");
+    if (attributeName == null)
+      throw new IllegalArgumentException("attributeName is null");
     final byte type = mmapDef.getAttributeValueType(attributeName);
     if (type < 0) {
       mmapDef.defineAttribute(attributeName,
@@ -71,6 +74,9 @@ public class CyAttributesImpl implements CyAttributes
 
   public void setAttribute(String id, String attributeName, Integer value)
   {
+    if (id == null) throw new IllegalArgumentException("id is null");
+    if (attributeName == null)
+      throw new IllegalArgumentException("attributeName is null");
     final byte type = mmapDef.getAttributeValueType(attributeName);
     if (type < 0) {
       mmapDef.defineAttribute(attributeName,
@@ -92,6 +98,9 @@ public class CyAttributesImpl implements CyAttributes
 
   public void setAttribute(String id, String attributeName, Double value)
   {
+    if (id == null) throw new IllegalArgumentException("id is null");
+    if (attributeName == null)
+      throw new IllegalArgumentException("attributeName is null");
     final byte type = mmapDef.getAttributeValueType(attributeName);
     if (type < 0) {
       mmapDef.defineAttribute(attributeName,
@@ -113,6 +122,9 @@ public class CyAttributesImpl implements CyAttributes
 
   public void setAttribute(String id, String attributeName, String value)
   {
+    if (id == null) throw new IllegalArgumentException("id is null");
+    if (attributeName == null)
+      throw new IllegalArgumentException("attributeName is null");
     final byte type = mmapDef.getAttributeValueType(attributeName);
     if (type < 0) {
       mmapDef.defineAttribute(attributeName,
@@ -203,6 +215,10 @@ public class CyAttributesImpl implements CyAttributes
 
   public void setAttributeList(String id, String attributeName, List list)
   {
+    if (id == null) throw new IllegalArgumentException("id is null");
+    if (attributeName == null)
+      throw new IllegalArgumentException("attributeName is null");
+    if (list == null) throw new IllegalArgumentException("list is null");
     Iterator itor = list.iterator();
     final byte type;
     Object obj = itor.next();
@@ -269,6 +285,9 @@ public class CyAttributesImpl implements CyAttributes
 
   public void setAttributeMap(String id, String attributeName, Map map)
   {
+    if (id == null) throw new IllegalArgumentException("id is null");
+    if (attributeName == null)
+      throw new IllegalArgumentException("attributeName is null");
     final Set entrySet = map.entrySet();
     Iterator itor = entrySet.iterator();
     final byte type;

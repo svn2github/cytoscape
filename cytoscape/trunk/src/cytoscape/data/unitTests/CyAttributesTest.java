@@ -123,7 +123,6 @@ public class CyAttributesTest extends TestCase {
 
         //  Verify that type is now TYPE_UNDEFINED
         type = cyAttributes.getType(DUMMY_BOOLEAN_ATTRIBUTE);
-                assertEquals (CyAttributes.TYPE_BOOLEAN, type);
         assertEquals (CyAttributes.TYPE_UNDEFINED, type);
     }
 
