@@ -310,6 +310,16 @@
     </target>
 
     <!-- ======================================================= -->
+    <!-- Run All of the Latest CyAttributes Unit Tests           -->
+    <!-- ======================================================= -->
+    <target name="test_cy_attributes" depends="compile"
+            description="Runs all the Latest CyAttribute Unit Tests">
+        <java classname="cytoscape.data.unitTests.CyAttributesTest"
+              classpathref="classpath" fork="true">
+        </java>
+    </target>
+
+    <!-- ======================================================= -->
     <!-- Create Cytoscape Distribution                           -->
     <!-- Use the 'zip_release' target to build zipped releases   -->
     <!-- Questions?  email:  cerami@cbio.mskcc.org	         -->
