@@ -9,6 +9,7 @@ public class GraphObjAttributesImpl implements GraphObjAttributes
 {
 
   private final CyAttributes m_cyAttrs;
+  private TaskMonitor m_taskMonitor;
 
   public GraphObjAttributesImpl(CyAttributes cyAttrs)
   {
@@ -43,39 +44,43 @@ public class GraphObjAttributesImpl implements GraphObjAttributes
 
   public boolean set(String attributeName, String id, double value)
   {
-    return false;
+    return set(attributeName, id, new Double(value));
   }
 
   public void setTaskMonitor(TaskMonitor taskMonitor)
   {
+    m_taskMonitor = taskMonitor;
   }
 
   public int numberOfAttributes()
   {
-    return 0;
+    return m_cyAttrs.getMultiHashMapDefinition().getDefinedAttributes().
+      numRemaining();
   }
 
   public String[] getAttributeNames()
   {
-    return null;
+    return m_cyAttrs.getAttributeNames();
   }
 
   public boolean hasAttribute(String attributeName)
   {
-    return false;
+    return m_cyAttrs.getType(attributeName) != CyAttributes.TYPE_UNDEFINED;
   }
 
   public boolean hasAttribute(String attributeName, String id)
   {
-    return false;
+    return m_cyAttrs.hasAttribute(id, attributeName);
   }
 
   public void deleteAttribute(String attributeName)
   {
+    m_cyAttrs.deleteAttribute(attributeName);
   }
 
   public void deleteAttribute(String attributeName, String id)
   {
+    m_cyAttrs.deleteAttribute(id, attributeName);
   }
 
   public Class getClass(String attributeName)
