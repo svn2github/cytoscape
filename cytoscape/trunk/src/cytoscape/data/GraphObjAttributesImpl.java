@@ -1,5 +1,6 @@
 package cytoscape.data;
 
+import cytoscape.data.attr.MultiHashMapDefinition;
 import cytoscape.task.TaskMonitor;
 import java.io.File;
 import java.util.HashMap;
