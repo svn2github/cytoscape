@@ -18,6 +18,7 @@ import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.editor.editors.MapBioMoleculeEditorToVisualStyle;
 import cytoscape.plugin.CytoscapePlugin;
+import cytoscape.view.CytoscapeDesktop;
 
 /**
  * core plugin for CytoscapeEditor.
@@ -154,6 +155,13 @@ public class CytoscapeEditorPlugin extends CytoscapePlugin {
 
 			// AJK: 08/12/05
 
+			// AJK: 10/12/05 BEGIN
+			//     reset to default visual style
+			//     TODO: set default visual style programmatically, not with a hardcoded name!
+			Cytoscape.getDesktop().setVisualStyle(
+					Cytoscape.getDesktop().getVizMapManager().getCalculatorCatalog().getVisualStyle(CytoscapeInit.getDefaultVisualStyle()));			
+			// AJK: 10/12/05 END
+			
 			
 		}
 	}
