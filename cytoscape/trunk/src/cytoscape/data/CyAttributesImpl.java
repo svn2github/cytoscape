@@ -3,6 +3,7 @@ package cytoscape.data;
 import cytoscape.data.attr.CountedIterator;
 import cytoscape.data.attr.MultiHashMap;
 import cytoscape.data.attr.MultiHashMapDefinition;
+import cytoscape.data.attr.util.MultiHashMapFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,8 +15,15 @@ import java.util.Set;
 public class CyAttributesImpl implements CyAttributes
 {
 
-  private MultiHashMap mmap;
-  private MultiHashMapDefinition mmapDef;
+  private final MultiHashMap mmap;
+  private final MultiHashMapDefinition mmapDef;
+
+  public CyAttributesImpl()
+  {
+    Object model = MultiHashMapFactory.instantiateDataModel();
+    mmap = (MultiHashMap) model;
+    mmapDef = (MultiHashMapDefinition) model;
+  }
 
   public String[] getAttributeNames()
   {
