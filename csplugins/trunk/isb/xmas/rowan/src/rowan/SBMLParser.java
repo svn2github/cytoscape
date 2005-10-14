@@ -143,6 +143,9 @@ public class SBMLParser {
       cynode = Cytoscape.getCyNode( (String)elements.get( "id" ), true );
       network.restoreNode( cynode );
 
+      nodeData.setAttributeValue( cynode.getIdentifier(), "InSBML", "true" );
+      nodeData.setAttributeValue( cynode.getIdentifier(), "SBML_type", "reaction" );
+
       Iterator atts = elements.keySet().iterator();
       while ( atts.hasNext() ) {
         String attribute = (String)atts.next();
@@ -258,10 +261,13 @@ public class SBMLParser {
        
        cynode = Cytoscape.getCyNode( (String)elements.get( "id" ), true );
        
+       nodeData.setAttributeValue( cynode.getIdentifier(), "InSBML", "true" );
        if ( gene ) {
+         nodeData.setAttributeValue( cynode.getIdentifier(), "SBML_type", "gene" );
          nodeData.setAttributeValue( cynode.getIdentifier(), "SBMLName", elements.get( "id") );
        } else {
          nodeData.setAttributeValue( cynode.getIdentifier(), "SBMLName", elements.get( "name") );
+         nodeData.setAttributeValue( cynode.getIdentifier(), "SBML_type", "metabolite" );
        }
        
        // add node to network
