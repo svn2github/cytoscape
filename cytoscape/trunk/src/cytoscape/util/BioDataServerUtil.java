@@ -20,9 +20,14 @@ public class BioDataServerUtil {
 
 	private static final String TAXON_FILE = "tax_report.txt";
 
+	// Constructor
 	public BioDataServerUtil() {
 	}
 
+	/*
+	 * Takes readers (for tax_report and gene_association) and returns species
+	 * name in the GA file.
+	 */
 	public String getSpecies(final BufferedReader taxRd,
 			final BufferedReader gaRd) throws IOException {
 		String sp = null;
@@ -60,9 +65,9 @@ public class BioDataServerUtil {
 		return sp;
 	}
 
-	// Taxonomy to name.
+	// Convert taxonomy ID number to species name.
 	// taxId is an NCBI taxon ID
-	// All info is availabe at:
+	// All info about taxonomy ID is availabe at:
 	// http://www.ncbi.nlm.nih.gov/Taxonomy/TaxIdentifier/tax_identifier.cgi
 	//
 	public String taxIdToName(String taxId, final BufferedReader taxRd)
@@ -90,26 +95,16 @@ public class BioDataServerUtil {
 		return name;
 	}
 
-	public String checkSpecies( BufferedReader gaReader, File taxonFile)
-			throws IOException {
+	public String checkSpecies(BufferedReader gaReader,
+			BufferedReader taxonFileReader) throws IOException {
 
 		String txName = null;
 		// Get taxon name
-		if (taxonFile.canRead() == true) {
-			final BufferedReader taxonFileReader = new BufferedReader(
-					new FileReader(taxonFile));
 
-			txName = getSpecies(taxonFileReader, gaReader);
-			if (txName == null) {
-				System.out
-						.println("Warning: Cannot recognized speices.  Speices field is set to \"unknown.\"");
-				System.out
-						.println("Warning: Please check your tax_report.txt file.");
-				txName = "unknown";
-			}
-		} else {
-			System.out.println("Warning: Cannot read taxon file.");
-			System.out.println("Warning: Speices field is set to \"unknown.\"");
+		txName = getSpecies(taxonFileReader, gaReader);
+		if (txName == null) {
+			System.out
+					.println("Warning: Cannot recognized speices.  Speices field is set to \"unknown.\"");
 			System.out
 					.println("Warning: Please check your tax_report.txt file.");
 			txName = "unknown";
