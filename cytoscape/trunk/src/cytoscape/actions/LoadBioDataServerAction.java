@@ -28,7 +28,7 @@ public class LoadBioDataServerAction extends CytoscapeAction {
 	BioDataServerWizard wiz;
 	
 	public LoadBioDataServerAction() {
-		super("Bio Data Server...");
+		super("Gene Ontology Server...");
 		setPreferredMenu("File.Load");
 	}
 
