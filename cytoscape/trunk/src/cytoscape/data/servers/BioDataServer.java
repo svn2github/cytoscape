@@ -30,6 +30,7 @@
 package cytoscape.data.servers;
 
 // -----------------------------------------------------------------------------------------
+import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -39,10 +40,14 @@ import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.Naming;
+import java.util.Arrays;
 import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.regex.Pattern;
 
+import javax.swing.JOptionPane;
+
+import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.cruft.obo.BiologicalProcessAnnotationReader;
 import cytoscape.cruft.obo.CellularComponentAnnotationReader;
@@ -60,6 +65,8 @@ import cytoscape.data.readers.TextHttpReader;
 import cytoscape.data.readers.TextJarReader;
 import cytoscape.data.synonyms.Thesaurus;
 import cytoscape.data.synonyms.readers.ThesaurusFlatFileReader;
+import cytoscape.util.BioDataServerUtil;
+import cytoscape.util.swing.AttributeListPane;
 
 // ----------------------------------------------------------------------------------------
 public class BioDataServer {
@@ -68,27 +75,29 @@ public class BioDataServer {
 	private static String OBO_FILE = "obo";
 
 	protected BioDataServerInterface server;
-	
+
 	// Flip the file content (names) or not.
 	private boolean flip;
-	
+
 	// This is for taxon name-number conversion over the net
-	private static final String NCBI_TAXON_SERVER = 
-		"http://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=";
-	private static final String TAXON_FILE = "tax_report.txt"; 
+	private static final String NCBI_TAXON_SERVER = "http://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=";
+	private static final String TAXON_RESOURCE_FILE = "/cytoscape/resources/tax_report.txt";
 
 	private final String FS = System.getProperty("file.separator");
-	
+
 	String taxonName;
 	String taxonNumber;
-	
+
 	String absPath;
-	String taxonFileName; //Filename of taxonomy table
+	String taxonFileName; // Filename of taxonomy table
 	File taxonFile; // Table for the NCBI Taxonomy number <-> Taxonomy Name
-	File start;  //Start dir of the Cytoscape
-	
+	File start; // Start dir of the Cytoscape
+
 	Thesaurus thesaurus; // for flipping the names
 	
+	BioDataServerUtil bdsu; // Utilities for the Biodataserver
+	BufferedReader taxonFileReader;
+
 	// ----------------------------------------------------------------------------------------
 	/**
 	 * serverName is either an RMI URI, or a manifest file which says what files
@@ -101,16 +110,20 @@ public class BioDataServer {
 	 * is based on the list in the file, users need to put the file in the dir.
 	 */
 	public BioDataServer(String serverName) throws Exception {
-
-		// Flip the names or not.  Will be given from the Wizard.
+		
+		bdsu = new BioDataServerUtil();
+		
+		taxonFileReader = null;
+		
+		// Flip the names or not. Will be given from the Wizard.
 		flip = false;
-		
-		thesaurus = new Thesaurus( CytoscapeInit.getDefaultSpeciesName() );
-		
+
+		thesaurus = new Thesaurus(CytoscapeInit.getDefaultSpeciesName());
+
 		taxonName = null;
 		taxonNumber = null;
 		start = CytoscapeInit.getMRUD();
-		
+
 		if (serverName.indexOf("rmi://") >= 0)
 			server = (BioDataServerInterface) Naming.lookup(serverName);
 		else {
@@ -118,8 +131,9 @@ public class BioDataServer {
 			server = new BioDataServerRmi(); // actually runs in process
 			File fileTester = new File(serverName);
 			final String separator = fileTester.separator;
-			absPath = start.getPath() + separator;
-
+			//absPath = start.getPath() + separator;
+			absPath = start.getPath() + FS;
+			
 			if ((serverName.startsWith("jar://"))
 					|| (serverName.startsWith("http://"))
 					|| (!fileTester.isDirectory() && fileTester.canRead())) {
@@ -137,62 +151,51 @@ public class BioDataServer {
 				fileFlag = checkFileType(manFileIn);
 
 				if (fileFlag == true) {
-					// System.out.println("New format manifest file found...");
 
-					// Get default sp. name
-					String defSpName = CytoscapeInit.getDefaultSpeciesName();
+//					taxonFileName = absPath + TAXON_FILE;
+//					taxonFile = new File(taxonFileName);
+//					System.out.println("Taxon File Name is " + taxonFileName);
 					
-					taxonFileName = absPath + TAXON_FILE;
-					taxonFile = new File(taxonFileName);
-					System.out.println( "Taxon File Name is " + taxonFileName);
-
 					// Extract file names and flip state from the manifest file
 					String[] flags = parseLoadFile(serverName, "flip");
-					String[] tempStrs = flags[0].split( separator );
+					//String[] tempStrs = flags[0].split(separator);
+					String[] tempStrs = flags[0].split(FS);
 					
-					if( tempStrs[ tempStrs.length - 1].equals( "true" ) ){
+					if (tempStrs[tempStrs.length - 1].equals("true")) {
 						flip = true;
-						System.out.println( "Cannonical and common names will be fliped..." );
+						System.out
+								.println("Cannonical and common names will be fliped...");
 					} else {
 						flip = false;
 					}
-					
+
 					// Extract species names from the manifest
-					//String[] spNames = parseLoadFile(serverName, "species");
-					//tempStrs = spNames[0].split( separator );
-					//taxonName = tempStrs[ tempStrs.length - 1];
-					
+					// String[] spNames = parseLoadFile(serverName, "species");
+					// tempStrs = spNames[0].split( separator );
+					// taxonName = tempStrs[ tempStrs.length - 1];
+
 					// Extract obo file name
-					String[] oboFile = parseLoadFile(serverName, OBO_FILE );
-					
+					String[] oboFile = parseLoadFile(serverName, OBO_FILE);
+
 					// Extract gene association file name
 					String[] geneAssociationFile = parseLoadFile(serverName,
-							GENE_ASSOCIATION_FILE );					
-					
+							GENE_ASSOCIATION_FILE);
+
 					try {
-						loadObo( geneAssociationFile, oboFile );
+						loadObo(geneAssociationFile, oboFile);
 					} catch (Exception e) {
 						e.printStackTrace(System.err);
 						throw e;
 					}
-					
-//					try {
-//						loadThesaurusFiles2(geneAssociationFile);
-//					} catch (Exception e) {
-//						e.printStackTrace(System.err);
-//						throw e;
-//					}
-					
-					
 
 				} else {
-					// This section of code lodes the old-style manifest file.
+					// Lode old-style manifest file (for backword compatibility).
 					String[] ontologyFiles = parseLoadFile(serverName,
 							"ontology");
 					String[] annotationFilenames = parseLoadFile(serverName,
 							"annotation");
 					loadAnnotationFiles(annotationFilenames, ontologyFiles);
-					
+
 					String[] thesaurusFilenames = parseLoadFile(serverName,
 							"synonyms");
 					loadThesaurusFiles(thesaurusFilenames);
@@ -202,15 +205,73 @@ public class BioDataServer {
 				System.err.println("Could not read BioDataServer load file '"
 						+ serverName + "'");
 			}
+
+			//
+			// Display the summary of the Gene Ontology Server
+			//
+			String message = server.describe();
+			String newMessage = "";
+			
+			String[] oneEntry = message.split("\n");
+			Arrays.sort(oneEntry);
+			
+			for( int i = 0; i < oneEntry.length; i++ ) {
+				String[] element = oneEntry[i].split(",");
+				
+				if( element.length >2 ) {
+					for( int j = 0; j < element.length; j++ ) {
+						//System.out.println("Elem =  " + element[j] );
+						if( element[j].startsWith("annotation") == false ) {
+							newMessage = newMessage + element[j] + "    ";
+						}
+					}
+					newMessage = newMessage + "\n";
+				}
+				
+			}
+			if (server.getAnnotationCount() != 0) {
+				
+				
+				JOptionPane
+						.showMessageDialog(
+								Cytoscape.getDesktop(),
+								"Summary of the Gene Ontology Server:\n\n"
+										+ newMessage
+										+ "\nDefault Species Name is set to " 
+										+ CytoscapeInit.getDefaultSpeciesName() + "\n",
+								"Gene Ontology Server Loaded.",
+								JOptionPane.PLAIN_MESSAGE);
+//				if (n == JOptionPane.YES_OPTION) {
+////					// do something here
+////					JOptionPane annoList = new JOptionPane();
+////					AttributeListPane al = new AttributeListPane();
+////					
+////					al.setBackground(Color.black);
+////					
+////					String[] colNames = { "Cannonical Name", "test1", "test2" };
+////					Annotation[] ano = server.getAllAnnotations()
+////					//annoList.add(al);
+////					JOptionPane.showMessageDialog(
+////							Cytoscape.getDesktop(),
+////							al,
+////							"Gene Ontology Server Loaded.", JOptionPane.PLAIN_MESSAGE );
+//				} else {
+//					//
+//					// JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+//					// "Create View Request Cancelled by User.");
+//				}
+			}
+
 		} // else: look for a readable file
 	} // ctor
-
+	
+	
 	//
 	// Determine whether given file is new format or old.
 	//
 	protected boolean checkFileType(final BufferedReader br) throws IOException {
 		String curLine = null;
-		//System.out.println("Manifest: " + curLine);
+		// System.out.println("Manifest: " + curLine);
 		while (null != (curLine = br.readLine())) {
 			if (curLine.startsWith(OBO_FILE)
 					|| curLine.startsWith(GENE_ASSOCIATION_FILE)) {
@@ -221,8 +282,6 @@ public class BioDataServer {
 		br.close();
 		return false;
 	}
-
-	
 
 	// ----------------------------------------------------------------------------------------
 
@@ -353,7 +412,7 @@ public class BioDataServer {
 	// Read new obo file format.
 	public Ontology[] readOntologyFlatFiles2(String[] ontologyFilenames)
 			throws Exception {
-		//System.out.println("Reading Ontology flat file...");
+		// System.out.println("Reading Ontology flat file...");
 		Vector list = new Vector();
 
 		for (int i = 0; i < ontologyFilenames.length; i++) {
@@ -364,10 +423,10 @@ public class BioDataServer {
 					new OboOntologyReader(new FileReader(filename)));
 
 			OntologyFlatFileReader reader = new OntologyFlatFileReader(
-					oboReader );
+					oboReader);
 			list.add(reader.getOntology());
 			oboReader.close();
-			
+
 		}
 		return (Ontology[]) list.toArray(new Ontology[0]);
 
@@ -389,14 +448,14 @@ public class BioDataServer {
 
 	public void loadObo(String[] annotationFilenames, String[] ontologyFilenames)
 			throws Exception {
-		
-		//System.out.println("Loading OBO file...");
-		BufferedReader [] oboReaders = new BufferedReader[ontologyFilenames.length];
-		for( int i = 0; i< ontologyFilenames.length; i++ ) {
-			oboReaders[i] = new BufferedReader(
-					new OboOntologyReader( new FileReader( ontologyFilenames[i] )));
+
+		// System.out.println("Loading OBO file...");
+		BufferedReader[] oboReaders = new BufferedReader[ontologyFilenames.length];
+		for (int i = 0; i < ontologyFilenames.length; i++) {
+			oboReaders[i] = new BufferedReader(new OboOntologyReader(
+					new FileReader(ontologyFilenames[i])));
 		}
-		Ontology[] ontologies = readOntologyFlatFiles2( ontologyFilenames );
+		Ontology[] ontologies = readOntologyFlatFiles2(ontologyFilenames);
 
 		/*
 		 * Since one Gene Association file is equal to the follwing:
@@ -412,35 +471,45 @@ public class BioDataServer {
 
 			String[] thFileName = new String[1];
 			thFileName[0] = annotationFilenames[i];
-			
+
 			// Extract taxon name.
-			BufferedReader gaFileReader = new BufferedReader(
-					new FileReader( filename ));
+			BufferedReader gaFileReader = new BufferedReader(new FileReader(
+					filename));
+
+			// Create tax_report file reader
+			URL taxURL = getClass().getResource(
+					TAXON_RESOURCE_FILE);
+
+			taxonFileReader = new BufferedReader(
+					new InputStreamReader(taxURL
+							.openStream()));
 			
-			taxonName = checkSpecies( gaFileReader );
+			//taxonName = checkSpecies(gaFileReader);
+			taxonName = bdsu.checkSpecies(gaFileReader, taxonFileReader);
 			loadThesaurusFiles2(thFileName);
-			
-			System.out.println("Loading: " + annotationFilenames[i] + " (Species = " + taxonName + ")" );
-			
+
+			System.out.println("Loading: " + annotationFilenames[i]
+					+ " (Species = " + taxonName + ")");
+
 			// Reader for the "gene_association" file
 			BufferedReader bpRd = new BufferedReader(
 					new BiologicalProcessAnnotationReader(taxonName,
-							new FileReader( filename )));
-			
+							new FileReader(filename)));
+
 			BufferedReader ccRd = new BufferedReader(
 					new CellularComponentAnnotationReader(taxonName,
-							new FileReader( filename )));
+							new FileReader(filename)));
 
 			BufferedReader mfRd = new BufferedReader(
 					new MolecularFunctionAnnotationReader(taxonName,
-							new FileReader( filename )));
-			
+							new FileReader(filename)));
+
 			AnnotationFlatFileReader bpReader = new AnnotationFlatFileReader(
-					bpRd, thesaurus, flip );
+					bpRd, thesaurus, flip);
 			AnnotationFlatFileReader ccReader = new AnnotationFlatFileReader(
-					ccRd, thesaurus, flip );
+					ccRd, thesaurus, flip);
 			AnnotationFlatFileReader mfReader = new AnnotationFlatFileReader(
-					mfRd, thesaurus, flip );
+					mfRd, thesaurus, flip);
 
 			bpAnnotation = bpReader.getAnnotation();
 			ccAnnotation = ccReader.getAnnotation();
@@ -453,7 +522,7 @@ public class BioDataServer {
 			server.addAnnotation(bpAnnotation);
 			server.addAnnotation(ccAnnotation);
 			server.addAnnotation(mfAnnotation);
-			
+
 			bpRd.close();
 			ccRd.close();
 			mfRd.close();
@@ -495,33 +564,33 @@ public class BioDataServer {
 			ThesaurusFlatFileReader reader = new ThesaurusFlatFileReader(
 					filename);
 			Thesaurus thesaurus = reader.getThesaurus();
-			//System.out.print( "=========Thesaurus is : " + thesaurus.getSpecies() );
+			// System.out.print( "=========Thesaurus is : " +
+			// thesaurus.getSpecies() );
 			server.addThesaurus(thesaurus.getSpecies(), thesaurus);
 		}
 
 	} // loadThesaurusFiles
-	
-	
+
 	/*
-	 * Accept new gene association file.  And create Thesaurus file from it.
+	 * Accept new gene association file. And create Thesaurus file from it.
 	 */
-	public void loadThesaurusFiles2( String[] thesaurusFilenames )
-		throws Exception {
+	public void loadThesaurusFiles2(String[] thesaurusFilenames)
+			throws Exception {
 		for (int i = 0; i < thesaurusFilenames.length; i++) {
 			String filename = thesaurusFilenames[i];
-			
-			BufferedReader thRd = new BufferedReader(
-					new SynonymReader(taxonName,
-							new FileReader( filename )));
-			
-			ThesaurusFlatFileReader reader = new ThesaurusFlatFileReader( thRd, flip );
+
+			BufferedReader thRd = new BufferedReader(new SynonymReader(
+					taxonName, new FileReader(filename)));
+
+			ThesaurusFlatFileReader reader = new ThesaurusFlatFileReader(thRd,
+					flip);
 			thesaurus = reader.getThesaurus();
-			//server.addThesaurus(thesaurus.getSpecies(), thesaurus);
-			server.addThesaurus( taxonName, thesaurus);
+			// server.addThesaurus(thesaurus.getSpecies(), thesaurus);
+			server.addThesaurus(taxonName, thesaurus);
 			thRd.close();
 		}
 
-} // loadThesaurusFiles
+	} // loadThesaurusFiles
 
 	// ----------------------------------------------------------------------------------------
 
@@ -625,6 +694,7 @@ public class BioDataServer {
 			return "error connecting to data server";
 		}
 	}
+	// ----------------------------------------------------------------------------------------
 
 	// ----------------------------------------------------------------------------------------
 	public void addThesaurus(String species, Thesaurus thesaurus) {
@@ -668,97 +738,101 @@ public class BioDataServer {
 
 	// ----------------------------------------------------------------------------------------
 
-	public String getSpecies(final BufferedReader taxRd,
-			final BufferedReader gaRd) throws IOException {
-		String sp = null;
-		String curLine = null;
-
-		while (null != (curLine = gaRd.readLine().trim())) {
-			// Skip comment
-			if (curLine.startsWith("!")) {
-				// do nothing
-				//System.out.println("Comment: " + curLine);
-			} else {
-				StringTokenizer st = new StringTokenizer(curLine, "\t");
-				while (st.hasMoreTokens()) {
-					String curToken = st.nextToken();
-					if (curToken.startsWith("taxon")) {
-						st = new StringTokenizer(curToken, ":");
-						st.nextToken();
-						curToken = st.nextToken();
-						st = new StringTokenizer(curToken, "|");
-						curToken = st.nextToken();
-						//System.out.println("Taxon ID found: " + curToken);
-						sp = curToken;
-						sp = taxIdToName(sp, taxRd);
-						taxRd.close();
-						gaRd.close();
-						return sp;
-					}
-				}
-			}
-
-		}
-
-		taxRd.close();
-		gaRd.close();
-		return sp;
-	}
-
-	// Taxonomy to name.
-	// taxId is an NCBI taxon ID
-	// All info is availabe at:
-	// http://www.ncbi.nlm.nih.gov/Taxonomy/TaxIdentifier/tax_identifier.cgi
-	//
-	public String taxIdToName(String taxId, final BufferedReader taxRd)
-			throws IOException {
-		String name = null;
-		String curLine = null;
-
-		taxRd.readLine();
-
-		while (null != (curLine = taxRd.readLine().trim())) {
-			StringTokenizer st = new StringTokenizer(curLine, "|");
-			String[] oneEntry = new String[st.countTokens()];
-			int counter = 0;
-
-			while (st.hasMoreTokens()) {
-				String curToken = st.nextToken().trim();
-				oneEntry[counter] = curToken;
-				counter++;
-				if (curToken.equals(taxId)) {
-					
-					name = oneEntry[1];
-					return name;
-				}
-			}
-		}
-		return name;
-	}
-	
-	public String checkSpecies( final BufferedReader gaReader ) throws IOException {
-		
-		String txName = null;
-		// Get taxon name
-		if (taxonFile.canRead() == true) {
-			final BufferedReader taxonFileReader = new BufferedReader(
-					new FileReader(taxonFile));
-
-			txName = getSpecies(taxonFileReader, gaReader);
-			if (txName == null) {
-				System.out.println("Warning: Cannot recognized speices.  Speices field is set to \"unknown.\"");
-				System.out.println("Warning: Please check your tax_report.txt file.");
-				txName = "unknown";
-			}
-		} else {
-			System.out.println("Warning: Cannot read taxon file.");
-			System.out.println("Warning: Speices field is set to \"unknown.\"");
-			System.out.println("Warning: Please check your tax_report.txt file.");
-			txName = "unknown";
-		}
-		
-		return txName;
-	}
+//	public String getSpecies(final BufferedReader taxRd,
+//			final BufferedReader gaRd) throws IOException {
+//		String sp = null;
+//		String curLine = null;
+//
+//		while (null != (curLine = gaRd.readLine().trim())) {
+//			// Skip comment
+//			if (curLine.startsWith("!")) {
+//				// do nothing
+//				// System.out.println("Comment: " + curLine);
+//			} else {
+//				StringTokenizer st = new StringTokenizer(curLine, "\t");
+//				while (st.hasMoreTokens()) {
+//					String curToken = st.nextToken();
+//					if (curToken.startsWith("taxon")) {
+//						st = new StringTokenizer(curToken, ":");
+//						st.nextToken();
+//						curToken = st.nextToken();
+//						st = new StringTokenizer(curToken, "|");
+//						curToken = st.nextToken();
+//						// System.out.println("Taxon ID found: " + curToken);
+//						sp = curToken;
+//						sp = taxIdToName(sp, taxRd);
+//						taxRd.close();
+//						gaRd.close();
+//						return sp;
+//					}
+//				}
+//			}
+//
+//		}
+//
+//		taxRd.close();
+//		gaRd.close();
+//		return sp;
+//	}
+//
+//	// Taxonomy to name.
+//	// taxId is an NCBI taxon ID
+//	// All info is availabe at:
+//	// http://www.ncbi.nlm.nih.gov/Taxonomy/TaxIdentifier/tax_identifier.cgi
+//	//
+//	public String taxIdToName(String taxId, final BufferedReader taxRd)
+//			throws IOException {
+//		String name = null;
+//		String curLine = null;
+//
+//		taxRd.readLine();
+//
+//		while (null != (curLine = taxRd.readLine().trim())) {
+//			StringTokenizer st = new StringTokenizer(curLine, "|");
+//			String[] oneEntry = new String[st.countTokens()];
+//			int counter = 0;
+//
+//			while (st.hasMoreTokens()) {
+//				String curToken = st.nextToken().trim();
+//				oneEntry[counter] = curToken;
+//				counter++;
+//				if (curToken.equals(taxId)) {
+//
+//					name = oneEntry[1];
+//					return name;
+//				}
+//			}
+//		}
+//		return name;
+//	}
+//
+//	public String checkSpecies(final BufferedReader gaReader)
+//			throws IOException {
+//
+//		String txName = null;
+//		// Get taxon name
+//		if (taxonFile.canRead() == true) {
+//			final BufferedReader taxonFileReader = new BufferedReader(
+//					new FileReader(taxonFile));
+//
+//			txName = getSpecies(taxonFileReader, gaReader);
+//			if (txName == null) {
+//				System.out
+//						.println("Warning: Cannot recognized speices.  Speices field is set to \"unknown.\"");
+//				System.out
+//						.println("Warning: Please check your tax_report.txt file.");
+//				txName = "unknown";
+//			}
+//		} else {
+//			System.out.println("Warning: Cannot read taxon file.");
+//			System.out.println("Warning: Speices field is set to \"unknown.\"");
+//			System.out
+//					.println("Warning: Please check your tax_report.txt file.");
+//			txName = "unknown";
+//		}
+//
+//		return txName;
+//	}
 
 } // BioDataServer
 

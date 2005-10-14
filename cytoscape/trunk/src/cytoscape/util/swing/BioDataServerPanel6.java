@@ -16,8 +16,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.JarURLConnection;
+import java.net.URL;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import java.util.jar.JarFile;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -37,26 +42,23 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.JScrollPane;
 
 import cytoscape.CytoscapeInit;
+import cytoscape.data.readers.TextJarReader;
 import cytoscape.util.BioDataServerUtil;
 
 public class BioDataServerPanel6 extends JPanel {
 
 	File start;
-	
-	
-	private final String FS = System.getProperty("file.separator");
 
-	private final String ANNOTATION_DIR = "/testData/annotation/";
+	private final String FS = System.getProperty("file.separator");
 
 	// lookup table for the taxon number <-> name
 	public final String TAXON_FILE = "tax_report.txt";
-	
+
 	private String taxonFileLocation;
-	
+
 	private BioDataServerUtil bdsUtil;
-	
+
 	private boolean gaFileSelectedFlag = false;
-	
 
 	private JCheckBox overwriteCheckBox = null;
 
@@ -124,6 +126,7 @@ public class BioDataServerPanel6 extends JPanel {
 	 * This method initializes this
 	 * 
 	 * @return void
+	 * @throws IOException
 	 */
 	private void initialize() {
 
@@ -166,27 +169,30 @@ public class BioDataServerPanel6 extends JPanel {
 			page = page + "Current Annotations</A></STRONG></P></UL>";
 
 			page = page + "Taxonomy tabele is available from NCBI:";
-			page = page + "<UL><LI><P><STRONG><A HREF=\"http://www.ncbi.nlm.nih.gov/Taxonomy/TaxIdentifier/tax_identifier.cgi\" TARGET=\"_blank\">";
-			page = page + "Taxonomy name/id Status Report Page</A></STRONG></P></UL></BODY></HTML>";
-			
+			page = page
+					+ "<UL><LI><P><STRONG><A HREF=\"http://www.ncbi.nlm.nih.gov/Taxonomy/TaxIdentifier/tax_identifier.cgi\" TARGET=\"_blank\">";
+			page = page
+					+ "Taxonomy name/id Status Report Page</A></STRONG></P></UL></BODY></HTML>";
+
 			jTextPane1 = new JTextPane();
 			jTextPane1.setContentType("text/html");
-			jTextPane1.setBounds(new java.awt.Rectangle(7,207,504,110));
+			jTextPane1.setBounds(new java.awt.Rectangle(7, 207, 504, 110));
 			jTextPane1.setText(page);
 			jTextPane1.setBackground(java.awt.SystemColor.window);
 			jTextPane1.setEditable(false);
-			
-			
+
 			jTextPane1.addHyperlinkListener(new HyperlinkListener() {
-                public void hyperlinkUpdate(HyperlinkEvent e) {
-                    if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-                        //hyperlinkActivated(e.getURL());
-                        cytoscape.util.OpenBrowser.openURL(e.getURL().toString());
-                        System.out.println("Opening Web Page: " + e.getURL().toString() );
-                    }
-                }
-            });
-			
+				public void hyperlinkUpdate(HyperlinkEvent e) {
+					if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+						// hyperlinkActivated(e.getURL());
+						cytoscape.util.OpenBrowser.openURL(e.getURL()
+								.toString());
+						System.out.println("Opening Web Page: "
+								+ e.getURL().toString());
+					}
+				}
+			});
+
 		}
 		return jTextPane1;
 	}
@@ -202,7 +208,7 @@ public class BioDataServerPanel6 extends JPanel {
 			borderLayout2.setHgap(5);
 			borderLayout2.setVgap(5);
 			oboPanel = new JPanel();
-			oboPanel.setBounds(new java.awt.Rectangle(4,5,508,23));
+			oboPanel.setBounds(new java.awt.Rectangle(4, 5, 508, 23));
 			oboPanel.setLayout(borderLayout2);
 			oboPanel.add(getOboFileName(), java.awt.BorderLayout.CENTER);
 			oboPanel.add(getJButton(), java.awt.BorderLayout.EAST);
@@ -231,13 +237,14 @@ public class BioDataServerPanel6 extends JPanel {
 	private JPanel getGaPanel() {
 		if (gaPanel == null) {
 			jLabel = new JLabel();
-			jLabel.setText("The Gene Association files listed below will be loaded:");
+			jLabel
+					.setText("The Gene Association files listed below will be loaded:");
 			jLabel.setFont(new java.awt.Font("Dialog", java.awt.Font.BOLD, 14));
 			BorderLayout borderLayout1 = new BorderLayout();
 			borderLayout1.setHgap(5);
 			borderLayout1.setVgap(5);
 			gaPanel = new JPanel();
-			gaPanel.setBounds(new java.awt.Rectangle(5,32,507,125));
+			gaPanel.setBounds(new java.awt.Rectangle(5, 32, 507, 125));
 			gaPanel.setLayout(borderLayout1);
 			gaPanel.add(getJPanel13(), java.awt.BorderLayout.EAST);
 			gaPanel.add(getJScrollPane(), java.awt.BorderLayout.CENTER);
@@ -257,7 +264,7 @@ public class BioDataServerPanel6 extends JPanel {
 			gridLayout.setRows(1);
 			gridLayout.setColumns(2);
 			overwritePanel = new JPanel();
-			overwritePanel.setBounds(new java.awt.Rectangle(5,180,505,26));
+			overwritePanel.setBounds(new java.awt.Rectangle(5, 180, 505, 26));
 			overwritePanel.setLayout(gridLayout);
 			overwritePanel.add(getOverwriteCheckBox(), null);
 			overwritePanel.add(getOverwriteComboBox(), null);
@@ -289,7 +296,8 @@ public class BioDataServerPanel6 extends JPanel {
 		if (selectOboButton == null) {
 			selectOboButton = new JButton();
 			selectOboButton.setActionCommand("selectObo");
-			selectOboButton.setFont(new java.awt.Font("Dialog", java.awt.Font.BOLD, 12));
+			selectOboButton.setFont(new java.awt.Font("Dialog",
+					java.awt.Font.BOLD, 12));
 			selectOboButton.setText("Select Obo File");
 		}
 		return selectOboButton;
@@ -319,7 +327,8 @@ public class BioDataServerPanel6 extends JPanel {
 		if (addGAButton == null) {
 			addGAButton = new JButton();
 			addGAButton.setActionCommand("addGA");
-			addGAButton.setFont(new java.awt.Font("Dialog", java.awt.Font.BOLD, 12));
+			addGAButton.setFont(new java.awt.Font("Dialog", java.awt.Font.BOLD,
+					12));
 			addGAButton.setText("Add Gene Association File");
 		}
 		return addGAButton;
@@ -347,11 +356,11 @@ public class BioDataServerPanel6 extends JPanel {
 	public void addOverwriteCheckBoxActionListener(ActionListener l) {
 		overwriteCheckBox.addActionListener(l);
 	}
-	
+
 	public void addFlipCheckBoxActionListener(ActionListener l) {
 		flipCheckBox.addActionListener(l);
 	}
-	
+
 	public void addOverwriteComboBoxActionListener(ActionListener l) {
 		overwriteComboBox.addActionListener(l);
 	}
@@ -363,44 +372,52 @@ public class BioDataServerPanel6 extends JPanel {
 	 */
 	private JList getGaFileList() {
 		String taxonMessage = null;
-		
+
 		if (gaFileList == null) {
-			
+
 			gaListItems.add("No Gene Association file selected.");
 			gaFileList = new JList(gaListItems);
 
 			MouseListener mouseListener = new MouseAdapter() {
 				public void mouseClicked(MouseEvent e) {
 					if (e.getClickCount() == 1) {
-						String selectedFileName = (String) gaFileList.getSelectedValue();
+						String selectedFileName = (String) gaFileList
+								.getSelectedValue();
 						File selectedFile = new File(selectedFileName);
-						
+
 						if (selectedFile.canRead() == true) {
 							try {
 								final BufferedReader gaFileReader = new BufferedReader(
 										new FileReader(selectedFile));
-								
-								File taxonTarget = new File(taxonFileLocation);
-								try {
-									//messageTextArea.setText( selectedFile.getName() + 
-									//		" is an annotation file for " + bdsUtil.checkSpecies( gaFileReader, taxonTarget ));
-									
-									messageArea2.setText( selectedFile.getName() + 
-											" is an annotation file for " + bdsUtil.checkSpecies( gaFileReader, taxonTarget ));
-									
-									gaFileReader.close();
-									//System.out.print( "Target is : " + bdsUtil.checkSpecies( gaFileReader, taxonTarget ));
-								} catch (IOException e1) {
-									// TODO Auto-generated catch block
-									e1.printStackTrace();
-								}
-								
-							} catch (FileNotFoundException e1) {
+
+								//File taxonTarget = new File(taxonFileLocation);
+
+								BufferedReader spListReader = null;
+
+								URL taxURL = getClass().getResource(
+										"/cytoscape/resources/tax_report.txt");
+
+								spListReader = new BufferedReader(
+										new InputStreamReader(taxURL
+												.openStream()));
+
+								messageArea2.setText(selectedFile.getName()
+										+ " is an annotation file for "
+										+ bdsUtil.checkSpecies(gaFileReader,
+												spListReader));
+
+								gaFileReader.close();
+								// System.out.print( "Target is : " +
+								// bdsUtil.checkSpecies( gaFileReader,
+								// taxonTarget ));
+							} catch (IOException e1) {
 								// TODO Auto-generated catch block
 								e1.printStackTrace();
 							}
+
 						}
-						//System.out.println("Clicked on Item " + selectedFileName );
+						// System.out.println("Clicked on Item " +
+						// selectedFileName );
 					}
 				}
 			};
@@ -469,15 +486,15 @@ public class BioDataServerPanel6 extends JPanel {
 	}
 
 	public void addGaFile(String newGaFile) {
-		if(gaFileSelectedFlag == false ) {
+		if (gaFileSelectedFlag == false) {
 			gaListItems = new Vector();
 			gaFileSelectedFlag = true;
 		}
 		gaListItems.add(newGaFile);
 		gaFileList.setListData(gaListItems);
-		
+
 		gaFileList.setSelectedValue(newGaFile, true);
-		
+
 	}
 
 	/**
@@ -492,20 +509,34 @@ public class BioDataServerPanel6 extends JPanel {
 		}
 		return jScrollPane;
 	}
-	
-	
+
 	// ======================================================================
 	// ======================================================================
-	
+
 	public void setTaxonomyTable() {
 		String filePath = start + FS + TAXON_FILE;
 		File taxonFile = new File(filePath);
 		taxonFileLocation = taxonFile.getAbsolutePath();
 		// Find tax_report.
 		boolean taxonFound = false;
-		
-		// In case taxon file is not readable...
-		if (taxonFile.canRead() == false) {
+		BufferedReader spListReader = null;
+
+		// First, try the file in the jar file
+		try {
+
+			URL taxURL = getClass().getResource(
+					"/cytoscape/resources/tax_report.txt");
+
+			spListReader = new BufferedReader(new InputStreamReader(taxURL
+					.openStream()));
+
+			taxonFound = true;
+			System.out.println("Taxonomy table found in jar file...");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		if (taxonFound == false) {
 			try {
 				File file = new File(System.getProperty("user.dir"), TAXON_FILE);
 				if (!taxonFound) {
@@ -518,7 +549,7 @@ public class BioDataServerPanel6 extends JPanel {
 			} catch (Exception e) {
 				taxonFound = false;
 			}
-			
+
 			try {
 				File file = new File(System.getProperty("CYTOSCAPE_HOME"),
 						TAXON_FILE);
@@ -545,10 +576,11 @@ public class BioDataServerPanel6 extends JPanel {
 			} catch (Exception e) {
 				taxonFound = false;
 			}
-			
+
 			try {
-				String fileLocation = CytoscapeInit.getPropertiesLocation() + FS + TAXON_FILE;
-				File file = new File( fileLocation );
+				String fileLocation = CytoscapeInit.getPropertiesLocation()
+						+ FS + TAXON_FILE;
+				File file = new File(fileLocation);
 				if (!taxonFound) {
 					taxonFile = file;
 					System.out.println("Taxonomy table found at: " + taxonFile);
@@ -559,16 +591,20 @@ public class BioDataServerPanel6 extends JPanel {
 			} catch (Exception e) {
 				taxonFound = false;
 			}
+
+			if (taxonFound) {
+				try {
+					spListReader = new BufferedReader(new FileReader(taxonFile));
+				} catch (FileNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			} else {
+				return;
+			}
+
 		}
 
-		System.out.println("Taxonomy file found at: " + taxonFile.getAbsolutePath());
-		BufferedReader spListReader = null;
-		try {
-			spListReader = new BufferedReader(new FileReader(taxonFile));
-		} catch (FileNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
 		try {
 			setSpList(spListReader);
 		} catch (IOException e) {
@@ -577,7 +613,7 @@ public class BioDataServerPanel6 extends JPanel {
 		}
 
 	}
-	
+
 	protected void setSpList(final BufferedReader rd) throws IOException {
 		String curLine = null;
 		String name1 = null;
@@ -591,74 +627,72 @@ public class BioDataServerPanel6 extends JPanel {
 			st.nextToken();
 			name1 = st.nextToken().trim();
 			name2 = st.nextToken().trim();
-			//if (name2.length() > 1) {
-			//	overwriteComboBox.addItem(name2);
-			//} else {
-				overwriteComboBox.addItem(name1);
-			//}
+			// if (name2.length() > 1) {
+			// overwriteComboBox.addItem(name2);
+			// } else {
+			overwriteComboBox.addItem(name1);
+			// }
 		}
 	}
-	
+
 	public void setOverwriteState() {
-		if(overwriteCheckBox.isSelected()) {
+		if (overwriteCheckBox.isSelected()) {
 			overwriteComboBox.setEnabled(true);
 			// Set def sp. name here...
-			
-			
+
 		} else {
 			overwriteComboBox.setEnabled(false);
 		}
 	}
 
 	/**
-	 * This method initializes jTextArea	
-	 * 	
-	 * @return javax.swing.JTextArea	
+	 * This method initializes jTextArea
+	 * 
+	 * @return javax.swing.JTextArea
 	 */
 	private JTextArea getMessageArea2() {
 		if (messageArea2 == null) {
 			messageArea2 = new JTextArea();
 			messageArea2.setLineWrap(true);
-			messageArea2.setFont(new java.awt.Font("Dialog", java.awt.Font.BOLD, 12));
-			messageArea2.setText("Please click file name on the left to check species... ");
+			messageArea2.setFont(new java.awt.Font("Dialog",
+					java.awt.Font.BOLD, 12));
+			messageArea2
+					.setText("Please click file name on the left to check species... ");
 			messageArea2.setWrapStyleWord(true);
 		}
 		return messageArea2;
 	}
-	
-	
+
 	public String getOverwiteComboBox() {
 		return (String) overwriteComboBox.getSelectedItem();
 	}
 
 	/**
-	 * This method initializes jCheckBox	
-	 * 	
-	 * @return javax.swing.JCheckBox	
+	 * This method initializes jCheckBox
+	 * 
+	 * @return javax.swing.JCheckBox
 	 */
 	private JCheckBox getFlipCheckBox() {
 		if (flipCheckBox == null) {
 			flipCheckBox = new JCheckBox();
 			flipCheckBox.setText("Flip Cannonical Name and Common Name");
-			flipCheckBox.setBounds(new java.awt.Rectangle(5,160,508,20));
+			flipCheckBox.setBounds(new java.awt.Rectangle(5, 160, 508, 20));
 			flipCheckBox.setActionCommand("flip");
 		}
 		return flipCheckBox;
 	}
-	
+
 	public boolean getFlipCheckBoxStatus() {
 		return flipCheckBox.isSelected();
 	}
-	
+
 	public String[] getGAFileList() {
 		ListModel model = gaFileList.getModel();
 		String[] gaList = new String[model.getSize()];
-		for (int i = 0; i<model.getSize(); i++ ) {
-			gaList[i] = (String) model.getElementAt( i );
+		for (int i = 0; i < model.getSize(); i++) {
+			gaList[i] = (String) model.getElementAt(i);
 		}
 		return gaList;
 	}
-	
 
-	
 } // @jve:decl-index=0:visual-constraint="10,10"

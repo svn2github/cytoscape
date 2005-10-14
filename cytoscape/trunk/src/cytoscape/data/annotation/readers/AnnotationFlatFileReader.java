@@ -183,16 +183,18 @@ private void parse () throws Exception
     String line = lines [i];
     //System.out.println (lines[i]);
     if (line.length () < 2) continue;
+    
     String [] tokens = line.split ("=");
     String entityName = tokens [0].trim ();
     int id = stringToInt (tokens [1].trim());
     
     if( flip == false ) {
     		annotation.add (entityName, id);
-    } else {
-    		key = thr.getCommonName( entityName );
+    } else if( flip == true ){
+    		//System.out.println ( "EntityName is " + entityName );
+    		key = thr.getCanonicalName( entityName );
     		if( key != null ) {
-    			//System.out.println ("Key is " + key );
+    			//System.out.println ("Found: Key is " + key );
     			annotation.add ( key, id );
     		} else {
     			

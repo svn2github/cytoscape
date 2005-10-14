@@ -66,6 +66,14 @@ public class BioDataServerPanel1 extends JPanel {
 
 	private JLabel yetAnotherBlankSpace13;
 
+	private JLabel noteLabel;
+
+	private JLabel noteLabel1;
+
+	private JLabel noteLabel2;
+
+	private JLabel noteLabel3;
+
 	public BioDataServerPanel1() {
 
 		iconLabel = new JLabel();
@@ -117,6 +125,9 @@ public class BioDataServerPanel1 extends JPanel {
 		jLabel1 = new JLabel();
 		jLabel2 = new JLabel();
 		jLabel9 = new JLabel();
+		noteLabel1 =  new JLabel();
+		noteLabel2 =  new JLabel();
+		noteLabel3 =  new JLabel();
 
 		connectorGroup = new javax.swing.ButtonGroup();
 		oldFileRadioButton = new javax.swing.JRadioButton();
@@ -142,23 +153,32 @@ public class BioDataServerPanel1 extends JPanel {
 		jPanel1.add(yetAnotherBlankSpace5);
 		
 		jPanel1.add(yetAnotherBlankSpace1);
-
-		oldFileRadioButton.setText("Cytoscape BioDataServer (.anno and .anno)");
+		jPanel1.add(yetAnotherBlankSpace2);
+		jPanel1.add(yetAnotherBlankSpace6);
+		
+		oldFileRadioButton.setText("Cytoscape BioDataServer (.anno and .onto)");
 		connectorGroup.add(oldFileRadioButton);
 		jPanel1.add(oldFileRadioButton);
-
+		
+		jPanel1.add(yetAnotherBlankSpace7);
+		
 		newFileRadioButton.setText("Gene Ontology (.obo and gene_association)");
 		connectorGroup.add(newFileRadioButton);
 		jPanel1.add(newFileRadioButton);
+		
+		noteLabel1.setText("Note: Please put all data files (both annotation and ontology)");
+		noteLabel2.setText("      in the same directory.  Otherwise, Gene Ontology Server" );
+		noteLabel3.setText("      cannot load the files." );
 
-		jPanel1.add(yetAnotherBlankSpace2);
-		jPanel1.add(yetAnotherBlankSpace6);
-		jPanel1.add(yetAnotherBlankSpace7);
+		
 		jPanel1.add(yetAnotherBlankSpace8);
 		jPanel1.add(yetAnotherBlankSpace9);
 		jPanel1.add(yetAnotherBlankSpace10);
-		jPanel1.add(yetAnotherBlankSpace11);
-		jPanel1.add(yetAnotherBlankSpace12);
+		jPanel1.add(noteLabel1);
+		jPanel1.add(noteLabel2);
+		jPanel1.add(noteLabel3);
+		//jPanel1.add(yetAnotherBlankSpace11);
+		//jPanel1.add(yetAnotherBlankSpace12);
 		jPanel1.add(yetAnotherBlankSpace13);
 		
 		jLabel9.setText("Press the 'Next' button to continue....");
