@@ -143,6 +143,7 @@
 	<echo>Copying resources/ directory to build</echo>
 	<copy todir="${build.classes}/cytoscape/resources">
 	  <fileset dir="${basedir}/resources"/>
+		<fileset file="${basedir}/props/tax_report.txt"/>
 	</copy>
 
 
@@ -424,6 +425,7 @@
                 <include name="manifest2"/>
                 <include name="gene_ontology.obo"/>
                 <include name="gene_association.sgd"/>
+            	    <include name="gene_association.goa_human"/>
             </fileset>
         </copy>
 
