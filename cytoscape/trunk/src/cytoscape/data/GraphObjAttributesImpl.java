@@ -1,14 +1,23 @@
 package cytoscape.data;
 
+import cytoscape.data.attr.CountedIterator;
+import cytoscape.data.attr.MultiHashMap;
 import cytoscape.data.attr.MultiHashMapDefinition;
+import cytoscape.data.readers.CyAttributesReader;
 import cytoscape.task.TaskMonitor;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class GraphObjAttributesImpl implements GraphObjAttributes
 {
 
+  private final HashMap m_localMap = new HashMap();
   private final CyAttributes m_cyAttrs;
   private TaskMonitor m_taskMonitor;
 
@@ -226,68 +235,151 @@ public class GraphObjAttributesImpl implements GraphObjAttributes
 
   public String getCanonicalName(Object graphObj)
   {
-    return null;
+    return ((giny.model.GraphObject) graphObj).getIdentifier();
   }
 
   public HashMap getAttributes(String canonicalName)
   {
-    return null;
+    // Populate hashmap with single-valued attributes.
+
+    final HashMap returnThis = new HashMap();
+    final String[] attrNames = m_cyAttrs.getAttributeNames();
+    for (int i = 0; i < attrNames.length; i++) {
+      final byte type = m_cyAttrs.getType(attrNames[i]);
+      if (m_cyAttrs.hasAttribute(canonicalName, attrNames[i])) {
+        if (type == CyAttributes.TYPE_BOOLEAN) {
+          returnThis.put
+            (attrNames[i],
+             m_cyAttrs.getBooleanAttribute(canonicalName, attrNames[i])); }
+        else if (type == CyAttributes.TYPE_INTEGER) {
+          returnThis.put
+            (attrNames[i],
+             m_cyAttrs.getIntegerAttribute(canonicalName, attrNames[i])); }
+        else if (type == CyAttributes.TYPE_FLOATING) {
+          returnThis.put
+            (attrNames[i],
+             m_cyAttrs.getDoubleAttribute(canonicalName, attrNames[i])); }
+        else if (type == CyAttributes.TYPE_STRING) {
+          returnThis.put
+            (attrNames[i],
+             m_cyAttrs.getStringAttribute(canonicalName, attrNames[i])); } } }
+    return returnThis;
   }
 
   public void addNameMapping(String canonicalName, Object graphObject)
   {
+    m_localMap.put(canonicalName, graphObject);
   }
 
   public Object getGraphObject(String canonicalName)
   {
-    return null;
+    return m_localMap.get(canonicalName);
   }
 
   public String[] getObjectNames(String attributeName)
   {
-    return null;
+    final MultiHashMap mmap = m_cyAttrs.getMultiHashMap();
+    final CountedIterator keys = mmap.getObjectKeys(attributeName);
+    final String[] returnThis = new String[keys.numRemaining()];
+    int inx = 0;
+    while (keys.hasNext()) {
+      returnThis[inx++] = (String) keys.next(); }
+    return returnThis;
   }
 
   public void removeNameMapping(String canonicalName)
   {
+    m_localMap.remove(canonicalName);
   }
 
   public boolean setClass(String attributeName, Class attributeClass)
   {
-    return false;
+    final MultiHashMapDefinition mmapDef =
+      m_cyAttrs.getMultiHashMapDefinition();
+    try {
+      if (attributeClass.equals(Boolean.class)) {
+        mmapDef.defineAttribute(attributeName,
+                                MultiHashMapDefinition.TYPE_BOOLEAN, null); }
+      else if (attributeClass.equals(Integer.class)) {
+        mmapDef.defineAttribute(attributeName,
+                                MultiHashMapDefinition.TYPE_INTEGER, null); }
+      else if (attributeClass.equals(Double.class)) {
+        mmapDef.defineAttribute(attributeName,
+                                MultiHashMapDefinition.TYPE_FLOATING_POINT,
+                                null); }
+      else if (attributeClass.equals(String.class)) {
+        mmapDef.defineAttribute(attributeName,
+                                MultiHashMapDefinition.TYPE_STRING, null); }
+      else return false; }
+    catch (Exception e) { return false; }
+    return true;        
   }
 
   public void removeObjectMapping(Object graphObj)
   {
+    final Set entrySet = m_localMap.entrySet();
+    final Iterator setIter = entrySet.iterator();
+    Object key = null;
+    while (setIter.hasNext()) {
+      final Map.Entry entry = (Map.Entry) setIter.next();
+      if (entry.getValue() == graphObj) {
+        key = entry.getKey();
+        break; } }
+    if (key != null) m_localMap.remove(key);
   }
 
   public Object[] getArrayValues(String attributeName,
                                  String graphObjectName)
   {
-    return null;
+    // If this attributeName is List, convert to array.
+    // Otherwise return new Object[0].
+    if (m_cyAttrs.getType(attributeName) != CyAttributes.TYPE_SIMPLE_LIST) {
+      return new Object[0]; }
+    return m_cyAttrs.getAttributeList(graphObjectName,
+                                      attributeName).toArray();
   }
 
   public void readAttributesFromFile(String filename)
   {
+    // I may only want to read and write simple values or maybe even lists.
+    //
+    // CyAttributesReader
+    //   public static void loadAttributes(CyAttributes, InputStream)
+    //
+    // CyAttributesWriter
+    //   public static void writeAttributes(CyAttributes, OutputStream)
+    //
+    // AttributesSaverDialog - split apart
+    try {
+      FileInputStream fin = new FileInputStream(filename);
+      CyAttributesReader.loadAttributes(m_cyAttrs, fin); }
+    catch (IOException e) { }
   }
 
   public HashMap getNameMap()
   {
-    return null;
+    // Returns reference to local name/obj hashmap.
+    return m_localMap;
   }
 
   public Object[] getUniqueValues(String attributeName)
   {
+    // Collapse lists.
+    // E.g. if obj1->0,1
+    //     and obj2->4,5,6,0
+    // Then I return 0,1,4,5,6.
     return null;
   }
 
   public String[] getUniqueStringValues(String attributeName)
   {
+    // Same as getUniqueValues() only with String.
     return null;
   }
 
   public String processFileHeader(String text)
   {
+    // Copy old code from old GraphObjAttributes.
     return null;
   }
 
