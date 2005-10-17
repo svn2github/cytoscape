@@ -5,10 +5,7 @@ import giny.model.Edge;
 import giny.model.GraphPerspective;
 import java.util.*;
 
-import cytoscape.data.ExpressionData;
-import cytoscape.data.CytoscapeData;
-import cytoscape.data.FlagFilter;
-import cytoscape.data.FlagEventListener;
+import cytoscape.data.*;
 
 /**
  *CyNetwork is the primary class for algorithm writing.&nbsp; All
@@ -65,9 +62,6 @@ public interface CyNetwork extends GraphPerspective {
    */
   public void appendNetwork ( CyNetwork network );
 
-  public  CytoscapeData getNodeData ();
-  public  CytoscapeData getEdgeData ();
-  
   //------------------------------//
   // Listener Methods
   //------------------------------//
@@ -136,12 +130,12 @@ public interface CyNetwork extends GraphPerspective {
   /**
    * @deprecated
    */
-  public CytoscapeData getNodeAttributes();
+  public GraphObjAttributes getNodeAttributes();
 
   /**
    * @deprecated
    */
-  public CytoscapeData getEdgeAttributes();
+  public GraphObjAttributes getEdgeAttributes();
 
   /**
    * @deprecated
