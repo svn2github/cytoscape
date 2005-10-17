@@ -291,4 +291,26 @@ public class GraphObjAttributesImpl implements GraphObjAttributes
     return null;
   }
 
+  public void add(GraphObjAttributes attributes) {}
+
+  public boolean add(String attributeName, String id, Object value)
+  {
+    return false;
+  }
+
+  public boolean add(String attributeName, String id, double value)
+  {
+    return false;
+  }
+
+  public boolean add(String graphObjectName, HashMap bundle)
+  {
+    return false;
+  }
+
+  public void setCategory(String attributeName, String newValue) {}
+
+  public String getCategory(String attributeName) {
+    return null;
+  }
 }
