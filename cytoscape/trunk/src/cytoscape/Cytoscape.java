@@ -461,13 +461,13 @@ public abstract class Cytoscape {
 	}
 
 	/**
-	 * Return the requested Attribute for the given Node
+	 * Returns the requested Attribute for the given Node
 	 * 
-	 * @param node
-	 *            the given CyNode
-	 * @param attribute
-	 *            the name of the requested attribute
-	 * @return the value for the give node, for the given attribute
+	 * @param node          the given CyNode
+	 * @param attribute     the name of the requested attribute
+	 * @return the value for the give node, for the given attribute.
+     * @deprecated Use {@link CyAttributes} directly.  This method will
+     * be removed in September, 2006.
 	 */
 	public static Object getNodeAttributeValue(Node node, String attribute) {
 		return Cytoscape.getNodeNetworkData().get(attribute,
@@ -475,7 +475,9 @@ public abstract class Cytoscape {
 	}
 
 	/**
-	 * Return the requested Attribute for the given Edge
+	 * Returns the requested Attribute for the given Edge
+     * @deprecated Use {@link CyAttributes} directly.  This method will
+     * be removed in September, 2006.
 	 */
 	public static Object getEdgeAttributeValue(Edge edge, String attribute) {
 		return Cytoscape.getEdgeNetworkData().get(attribute,
@@ -483,21 +485,27 @@ public abstract class Cytoscape {
 	}
 
 	/**
-	 * Return all availble Attributes for the Nodes in this CyNetwork
+	 * Return all availble Attributes for the Nodes in this CyNetwork.
+     * @deprecated Use {@link CyAttributes} directly.  This method will
+     * be removed in September, 2006.
 	 */
 	public static String[] getNodeAttributesList() {
 		return Cytoscape.getNodeNetworkData().getAttributeNames();
 	}
 
 	/**
-	 * Return all available Attributes for the given Nodes
+	 * Return all available Attributes for the given Nodes.
+     * @deprecated Use {@link CyAttributes} directly.  This method will
+     * be removed in September, 2006.
 	 */
 	public static String[] getNodeAttributesList(Node[] nodes) {
 		return Cytoscape.getNodeNetworkData().getAttributeNames();
 	}
 
 	/**
-	 * Return all availble Attributes for the Edges in this CyNetwork
+	 * Return all availble Attributes for the Edges in this CyNetwork.
+     * @deprecated Use {@link CyAttributes} directly.  This method will
+     * be removed in September, 2006.
 	 */
 	public static String[] getEdgeAttributesList() {
 		return Cytoscape.getEdgeNetworkData().getAttributeNames();
@@ -505,6 +513,8 @@ public abstract class Cytoscape {
 
 	/**
 	 * Return all available Attributes for the given Edges
+     * @deprecated Use {@link CyAttributes} directly.  This method will
+     * be removed in September, 2006.
 	 */
 	public static String[] getNodeAttributesList(Edge[] edges) {
 		return Cytoscape.getEdgeNetworkData().getAttributeNames();
@@ -520,16 +530,19 @@ public abstract class Cytoscape {
 	 * @param value
 	 *            the value to be set
 	 * @return if it overwrites a previous value
+     * @deprecated Use {@link CyAttributes} directly.  This method will
+     * be removed in September, 2006.
 	 */
 	public static boolean setNodeAttributeValue(Node node, String attribute,
 			Object value) {
 		return Cytoscape.getNodeNetworkData().set(attribute,
 				Cytoscape.getNodeNetworkData().getCanonicalName(node), value);
-
 	}
 
 	/**
 	 * Return the requested Attribute for the given Edge
+     * @deprecated Use {@link CyAttributes} directly.  This method will
+     * be removed in September, 2006.
 	 */
 	public static boolean setEdgeAttributeValue(Edge edge, String attribute,
 			Object value) {
