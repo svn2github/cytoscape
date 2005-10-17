@@ -128,12 +128,18 @@ public interface CyNetwork extends GraphPerspective {
   public void setExpressionData ( ExpressionData newData );
 
   /**
-   * @deprecated
+   * Gets Global Node Attributes:  GraphObjAttributes.
+   *
+   * @deprecated Use {@link Cytoscape#getNodeAttributes()} instead.  This
+   * method will be removed in September, 2006.
    */
   public GraphObjAttributes getNodeAttributes();
 
   /**
-   * @deprecated
+   * Gets Global Edge Attributes:  GraphObjAttributes.
+   *
+   * @deprecated Use {@link Cytoscape#getEdgeAttributes()} instead.  This
+   * method will be removed in September, 2006.
    */
   public GraphObjAttributes getEdgeAttributes();
 
@@ -217,41 +223,57 @@ public interface CyNetwork extends GraphPerspective {
    * @param node the given CyNode
    * @param attribute the name of the requested attribute
    * @return the value for the give node, for the given attribute
-   */
+   * @deprecated Use {@link CyAttributes} directly.  This method will
+   * be removed in September, 2006.
+  */
   public Object getNodeAttributeValue ( Node node, String attribute );
 
   /**
    * Return the requested Attribute for the given Node
+   * @deprecated Use {@link CyAttributes} directly.  This method will
+   * be removed in September, 2006.
    */
   public Object getNodeAttributeValue ( int node, String attribute );
 
   /**
    * Return the requested Attribute for the given Edge
+   * @deprecated Use {@link CyAttributes} directly.  This method will
+   * be removed in September, 2006.
    */
   public Object getEdgeAttributeValue ( Edge edge, String attribute );
 
   /**
    * Return the requested Attribute for the given Edge
+   * @deprecated Use {@link CyAttributes} directly.  This method will
+   * be removed in September, 2006.
    */
   public Object getEdgeAttributeValue ( int edge, String attribute );
  
   /**
    * Return all availble Attributes for the Nodes in this CyNetwork
+   * @deprecated Use {@link CyAttributes} directly.  This method will
+   * be removed in September, 2006.
    */
   public String[] getNodeAttributesList ();
 
   /**
    * Return all available Attributes for the given Nodes
+   * @deprecated Use {@link CyAttributes} directly.  This method will
+   * be removed in September, 2006.
    */
   public String[] getNodeAttributesList ( Node[] nodes);
 
   /**
    * Return all availble Attributes for the Edges in this CyNetwork
+   * @deprecated Use {@link CyAttributes} directly.  This method will
+   * be removed in September, 2006.
    */
   public String[] getEdgeAttributesList ();
 
   /**
    * Return all available Attributes for the given Edges
+   * @deprecated Use {@link CyAttributes} directly.  This method will
+   * be removed in September, 2006.
    */
   public String[] getNodeAttributesList ( Edge[] edges );
 
@@ -263,31 +285,43 @@ public interface CyNetwork extends GraphPerspective {
    * @param attribute the name of the requested attribute
    * @param value the value to be set
    * @return if it overwrites a previous value
+   * @deprecated Use {@link CyAttributes} directly.  This method will
+   * be removed in September, 2006.
    */
   public boolean setNodeAttributeValue ( Node node, String attribute, Object value );
 
   /**
    * Return the requested Attribute for the given Node
+   * @deprecated Use {@link CyAttributes} directly.  This method will
+   * be removed in September, 2006.
    */
   public boolean setNodeAttributeValue ( int node, String attribute, Object value );
 
   /**
    * Return the requested Attribute for the given Edge
+   * @deprecated Use {@link CyAttributes} directly.  This method will
+   * be removed in September, 2006.
    */
   public boolean setEdgeAttributeValue ( Edge edge, String attribute, Object value );
 
   /**
    * Return the requested Attribute for the given Edge
+   * @deprecated Use {@link CyAttributes} directly.  This method will
+   * be removed in September, 2006.
    */
   public boolean setEdgeAttributeValue ( int edge, String attribute, Object value );
  
   /**
    * Deletes the attribute with the given name from node attributes
+   * @deprecated Use {@link CyAttributes} directly.  This method will
+   * be removed in September, 2006.
    */
   public void deleteNodeAttribute (String attribute);
 
   /**
    * Deleted the attribute with the given name from edge attributes
+   * @deprecated Use {@link CyAttributes} directly.  This method will
+   * be removed in September, 2006.
    */
   public void deleteEdgeAttribute (String attribute);
 
