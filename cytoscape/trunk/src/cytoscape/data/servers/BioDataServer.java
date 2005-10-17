@@ -66,7 +66,6 @@ import cytoscape.data.readers.TextJarReader;
 import cytoscape.data.synonyms.Thesaurus;
 import cytoscape.data.synonyms.readers.ThesaurusFlatFileReader;
 import cytoscape.util.BioDataServerUtil;
-import cytoscape.util.swing.AttributeListPane;
 
 // ----------------------------------------------------------------------------------------
 public class BioDataServer {
