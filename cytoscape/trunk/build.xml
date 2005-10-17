@@ -315,7 +315,12 @@
     <!-- ======================================================= -->
     <target name="test_cy_attributes" depends="compile"
             description="Runs all the Latest CyAttribute Unit Tests">
+        <echo>Testing CyAttributes Implementation</echo>
         <java classname="cytoscape.data.unitTests.CyAttributesTest"
+              classpathref="classpath" fork="true">
+        </java>
+        <echo>Testing GraphObjAttributes Implementation</echo>
+        <java classname="cytoscape.data.unitTests.GraphObjAttributesTest"
               classpathref="classpath" fork="true">
         </java>
     </target>
