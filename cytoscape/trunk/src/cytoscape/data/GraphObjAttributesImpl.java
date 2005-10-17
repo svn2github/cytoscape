@@ -364,16 +364,41 @@ public class GraphObjAttributesImpl implements GraphObjAttributes
 
   public Object[] getUniqueValues(String attributeName)
   {
-    // Collapse lists.
-    // E.g. if obj1->0,1
-    //     and obj2->4,5,6,0
-    // Then I return 0,1,4,5,6.
-    return null;
+    final HashMap dupsFilter = new HashMap();
+    final MultiHashMapDefinition mmapDef =
+      m_cyAttrs.getMultiHashMapDefinition();
+    final MultiHashMap mmap = m_cyAttrs.getMultiHashMap();
+    final byte type = mmapDef.getAttributeValueType(attributeName);
+    if (type == CyAttributes.TYPE_SIMPLE_LIST) {
+      final Iterator objs = mmap.getObjectKeys(attributeName);
+      while (objs.hasNext()) {
+        final String obj = (String) objs.next();
+        final List l = m_cyAttrs.getAttributeList(obj, attributeName);
+        final Iterator liter = l.iterator();
+        while (liter.hasNext()) {
+          final Object val = liter.next();
+          dupsFilter.put(val, val); } } }
+    else if (type == CyAttributes.TYPE_BOOLEAN ||
+             type == CyAttributes.TYPE_FLOATING ||
+             type == CyAttributes.TYPE_INTEGER ||
+             type == CyAttributes.TYPE_STRING) {
+      final Iterator objs = mmap.getObjectKeys(attributeName);
+      while (objs.hasNext()) {
+        final String obj = (String) objs.next();
+        final Object val = mmap.getAttributeValue(obj, attributeName, null);
+        dupsFilter.put(val, val); } }
+    else { return new Object[0]; }
+    final Object[] returnThis = new Object[dupsFilter.size()];
+    Iterator uniqueIter = dupsFilter.keySet().iterator();
+    int inx = 0;
+    while (uniqueIter.hasNext()) { returnThis[inx++] = uniqueIter.next(); }
+    return returnThis;
   }
 
   public String[] getUniqueStringValues(String attributeName)
   {
     // Same as getUniqueValues() only with String.
+    final HashMap dupsFilter = new HashMap();
     return null;
   }
 
