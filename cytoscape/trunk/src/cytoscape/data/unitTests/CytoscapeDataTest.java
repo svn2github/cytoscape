@@ -30,8 +30,7 @@ public class CytoscapeDataTest extends TestCase {
   public void testSingle () {
 
 
-    CytoscapeData node_data = Cytoscape.getNodeNetworkData();
-
+    CytoscapeData node_data = new CytoscapeDataImpl(CytoscapeDataImpl.NODES);
 
     // Single Values:
     // create node and test attribute creation, for a single value
@@ -72,7 +71,7 @@ public class CytoscapeDataTest extends TestCase {
   public void testList () {
 
 
-    CytoscapeData node_data = Cytoscape.getNodeNetworkData();
+    CytoscapeData node_data = new CytoscapeDataImpl(CytoscapeDataImpl.NODES);
 
 
     // List Values:
@@ -179,8 +178,7 @@ public class CytoscapeDataTest extends TestCase {
   public void testKey () {
 
 
-    CytoscapeData node_data = Cytoscape.getNodeNetworkData();
-
+    CytoscapeData node_data = new CytoscapeDataImpl(CytoscapeDataImpl.NODES);
 
     // Key Values:
     // create node and test attribute creation, for a key value
