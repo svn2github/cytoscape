@@ -13,11 +13,7 @@ import cern.colt.map.*;
 import cytoscape.*;
 import cytoscape.giny.*;
 
-import cytoscape.data.CytoscapeData;
-import cytoscape.data.CytoscapeDataImpl;
-import cytoscape.data.ExpressionData;
-import cytoscape.data.FlagFilter;
-import cytoscape.data.FlagEventListener;
+import cytoscape.data.*;
 
 import cytoscape.util.intr.*;
 
@@ -120,27 +116,6 @@ public class FingCyNetwork
     identifier = new_id;
     return identifier;
   }
-
-  /**
-   * @deprecated
-   * This should not be used by any user-code
-   */
-  public  CytoscapeData getNodeData () {
-    if ( nodeData == null )
-      nodeData = new CytoscapeDataImpl( CytoscapeDataImpl.NODES );
-    return nodeData;
-  }
-
-  /**
-   * @deprecated
-   * This should not be used by any user-code
-   */
-  public  CytoscapeData getEdgeData () {
-    if ( edgeData == null )
-      edgeData = new CytoscapeDataImpl( CytoscapeDataImpl.EDGES );
-    return edgeData;
-  }
-
 
   //------------------------------//
   // Client Data
@@ -312,7 +287,7 @@ public class FingCyNetwork
    *@deprecated
    * Returns the node attributes data object for this network.
    */
-  public CytoscapeData getNodeAttributes () {
+  public GraphObjAttributes getNodeAttributes () {
     return Cytoscape.getNodeNetworkData();
   }
   
@@ -327,7 +302,7 @@ public class FingCyNetwork
    * @deprecated @see{getNetworkData}
    * Returns the edge attributes data object for this network.
    */
-  public CytoscapeData getEdgeAttributes () {
+  public GraphObjAttributes getEdgeAttributes () {
     return Cytoscape.getEdgeNetworkData();
   }
   
