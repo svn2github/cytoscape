@@ -323,6 +323,10 @@
         <java classname="cytoscape.data.unitTests.GraphObjAttributesTest"
               classpathref="classpath" fork="true">
         </java>
+        <echo>Testing Equivalence between CyAttributes and GraphObjAttributes</echo>
+        <java classname="cytoscape.data.unitTests.CyAttributesBridgeTest"
+              classpathref="classpath" fork="true">
+        </java>
     </target>
 
     <!-- ======================================================= -->
