@@ -1560,4 +1560,27 @@ public class CytoscapeDataImpl
     
   } // unpackPossiblyCompoundAttributeValue
 
+    public void add(GraphObjAttributes attributes) {
+        //  No-op
+    }
+
+    public boolean add(String attributeName, String id, Object value) {
+        return false;
+    }
+
+    public boolean add(String attributeName, String id, double value) {
+        return false;
+    }
+
+    public boolean add(String graphObjectName, HashMap bundle) {
+        return false;
+    }
+
+    public void setCategory(String attributeName, String newValue) {
+        // No-op
+    }
+
+    public String getCategory(String attributeName) {
+        return null;
+    }
 }
