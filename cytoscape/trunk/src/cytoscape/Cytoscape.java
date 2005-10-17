@@ -23,10 +23,7 @@ import java.lang.reflect.InvocationTargetException;
 import javax.swing.*;
 import javax.swing.event.SwingPropertyChangeSupport;
 
-import cytoscape.data.ExpressionData;
-import cytoscape.data.CytoscapeData;
-import cytoscape.data.CytoscapeDataImpl;
-import cytoscape.data.Semantics;
+import cytoscape.data.*;
 import cytoscape.data.readers.GMLReader2;
 import cytoscape.data.readers.GraphReader;
 import cytoscape.data.readers.InteractionsReader;
@@ -123,16 +120,23 @@ public abstract class Cytoscape {
 	/**
 	 * The NetworkData that stores node info
 	 */
-	// TODO: replace seperate objects with one
 	protected static CytoscapeData nodeData;
 
 	/**
 	 * The NetworkData that stores edge info
 	 */
-	// TODO: replace seperate objects with one
 	protected static CytoscapeData edgeData;
 
-	// TODO: remove, replace with NetworkData
+    /**
+     * Node CyAttributes.
+     */
+    private static CyAttributes nodeAttributes;
+
+    /**
+     * Edge CyAttributes.
+     */
+    private static CyAttributes edgeAttributes;
+
 	protected static ExpressionData expressionData;
 
 	protected static Object pcsO = new Object();
@@ -1067,22 +1071,54 @@ public abstract class Cytoscape {
 	}
 
 	/**
-	 * @deprecated This should not be used by any user-code
+     * Gets Node Network Data:  GraphObjAttributes.
+     * @return GraphObjAttributes Object.
+	 * @deprecated Use {@link Cytoscape#getNodeAttributes()} instead.  This
+     * method will be removed in September, 2006.
 	 */
-	public static CytoscapeData getNodeNetworkData() {
-		if (nodeData == null)
+	public static GraphObjAttributes getNodeNetworkData() {
+		if (nodeAttributes == null) {
 			nodeData = new CytoscapeDataImpl(CytoscapeDataImpl.NODES);
+        }
 		return nodeData;
 	}
 
 	/**
-	 * @deprecated This should not be used by any user-code
+     * Gets Edge Network Data:  GraphObjAttributes.
+     * @return GraphObjAttributes Object.
+     * @deprecated Use {@link Cytoscape#getEdgeAttributes()} instead.  This
+     * method will be removed in September, 2006.
 	 */
-	public static CytoscapeData getEdgeNetworkData() {
-		if (edgeData == null)
+	public static GraphObjAttributes getEdgeNetworkData() {
+		if (edgeData == null) {
 			edgeData = new CytoscapeDataImpl(CytoscapeDataImpl.EDGES);
+        }
 		return edgeData;
 	}
+
+    /**
+     * Gets Global Node Attributes.
+     * @return CyAttributes Object.
+     */
+    public static CyAttributes getNodeAttributes() {
+        if (nodeAttributes == null) {
+            nodeAttributes = new CyAttributesImpl();
+            // TODO create nodeData here too
+        }
+        return nodeAttributes;
+    }
+
+    /**
+     * Gets Global Edge Attributes
+     * @return CyAttributes Object.
+     */
+    public static CyAttributes getEdgeAttributes() {
+        if (edgeAttributes == null) {
+            edgeAttributes = new CyAttributesImpl();
+            // TODO create edgeData here too
+        }
+        return edgeAttributes;
+    }
 
 	public static ExpressionData getExpressionData() {
 		return expressionData;
