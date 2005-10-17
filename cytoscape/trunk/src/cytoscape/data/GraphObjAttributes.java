@@ -649,4 +649,6 @@ public interface GraphObjAttributes {
      * @return Category name.
      */
     public String getCategory(String attributeName);
+    
+    public final static String DEFAULT_CATEGORY = "unknown";
 }
