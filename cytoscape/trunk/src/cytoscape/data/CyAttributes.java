@@ -16,6 +16,13 @@ import java.util.Map;
  * attributes.  For example, a node representing a protein could have
  * attributes for description, species, NCBI Gene ID, UniProt ID, etc.
  * These attributes are set and retrieved via the CyAttributes interface.
+ * <h3>Global Attributes:</h3>
+ * There are two sets of global attributes, one for nodes, and one for edges.
+ * To access these global attributes, use:
+ * <UL>
+ * <LI>{@link cytoscape.Cytoscape#getNodeAttributes()}
+ * <LI>{@link cytoscape.Cytoscape#getEdgeAttributes()}
+ * </UL>
  * <h3>Unique Identifiers:</h3>
  * CyAttributes uses unique identifiers to attach attributes to specific
  * nodes and edges.  The unique identifiers for nodes and edges are available
