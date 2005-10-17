@@ -584,4 +584,69 @@ public interface GraphObjAttributes {
      * @deprecated Use {@link CyAttributesReader} instead.
      */
     public String processFileHeader(String text);
+
+
+    /**
+     * Adds a set of attributes.
+     *
+     * @param attributes GraphObjAttributes Object.
+     *                   Deprecation note:  This method has 0 usages in the core.
+     * @deprecated Method is no longer needed in the Cytoscape core, and no
+     *             equivalent method will be provided.
+     */
+    public void add(GraphObjAttributes attributes);
+
+    /**
+     * Adds a new Attribute.
+     *
+     * @param attributeName Attribute Name
+     * @param id            Unique Identifier
+     * @param value         Value
+     * @return true indicates success.
+     * @deprecated Storing arbitrary Java objects as attribute values will
+     *             no longer be supported in CyAttributes.  However, you will be able
+     *             to store arbitrarily complex trees of Boolean, Integer, Double,
+     *             and String Objects.  For details, refer to {@link CyAttributes}.
+     */
+    public boolean add(String attributeName, String id, Object value);
+
+    /**
+     * Sets an id/attributeName pair of type double
+     * <P>Value will be promoted to Double.
+     *
+     * @param attributeName Attribute Name.
+     * @param id            Unique Identifier.
+     * @param value         Attribute double value.
+     * @return true indicates that the attribute was set.
+     * @deprecated Use
+     * {@link CyAttributes#setAttribute(String, String, Double)} instead.
+     */
+    public boolean add(String attributeName, String id, double value);
+
+    /**
+     * A convenience method allowing the addition of multiple
+     * different attributes for  one graphObject at the same time.
+     * <p/>
+     * Deprecation note:  This method has 0 usages in the core.
+     *
+     * @deprecated Method is no longer needed in the Cytoscape core, and no
+     *             equivalent method will be provided.
+     */
+    public boolean add(String graphObjectName, HashMap bundle);
+
+    /**
+     * Assigns an arbitrary category name to the specified attribute.
+     * @param attributeName     Attribute name
+     * @param newValue          New value.
+     * @deprecated Method is no longer needed in the Cytoscape core, and no
+     *             equivalent method will be provided.
+     */
+    public void setCategory(String attributeName, String newValue);
+
+    /**
+     * Gets a category for the specified attribute.
+     * @param attributeName     Attribute name
+     * @return Category name.
+     */
+    public String getCategory(String attributeName);
 }
