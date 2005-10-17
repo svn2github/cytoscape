@@ -7,6 +7,7 @@ import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.data.CytoscapeDataImpl;
 import cytoscape.data.CytoscapeData;
+import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.servers.BioDataServer;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
@@ -76,7 +77,7 @@ public class LoadNodeAttributesAction extends CytoscapeAction {
 class LoadAttributesTask implements Task {
     private TaskMonitor taskMonitor;
     private File file;
-    private CytoscapeData attributes;
+    private GraphObjAttributes attributes;
     private int type;
     static final int NODE_ATTRIBUTES = 0;
     static final int EDGE_ATTRIBUTES = 1;
@@ -87,7 +88,7 @@ class LoadAttributesTask implements Task {
      * @param attributes Attributes Object.
      * @param type NODE_ATTRIBUTES or EDGE_ATTRIBUTES
      */
-    LoadAttributesTask (File file, CytoscapeData attributes,
+    LoadAttributesTask (File file, GraphObjAttributes attributes,
             int type) {
         this.file = file;
         this.attributes = attributes;
