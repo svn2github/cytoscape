@@ -151,7 +151,17 @@ public class GraphObjAttributesImpl implements GraphObjAttributes
 
   public String getStringValue(String attributeName, String id)
   {
-    return m_cyAttrs.getStringAttribute(id, attributeName);
+    if (m_cyAttrs.getType(attributeName) == CyAttributes.TYPE_STRING) {
+      return m_cyAttrs.getStringAttribute(id, attributeName); }
+    else if (m_cyAttrs.getType(attributeName) ==
+             CyAttributes.TYPE_SIMPLE_LIST &&
+             m_cyAttrs.getMultiHashMapDefinition().
+             getAttributeValueType(attributeName) ==
+             MultiHashMapDefinition.TYPE_STRING) {
+      List l = m_cyAttrs.getAttributeList(id, attributeName);
+      if (l != null && l.size() > 0) {
+        return (String) l.get(0); } }
+    return null;
   }
 
   public HashMap getAttribute(String attributeName)
