@@ -368,7 +368,7 @@ public class GraphObjAttributesImpl implements GraphObjAttributes
     final MultiHashMapDefinition mmapDef =
       m_cyAttrs.getMultiHashMapDefinition();
     final MultiHashMap mmap = m_cyAttrs.getMultiHashMap();
-    final byte type = mmapDef.getAttributeValueType(attributeName);
+    final byte type = m_cyAttrs.getType(attributeName);
     if (type == CyAttributes.TYPE_SIMPLE_LIST) {
       final Iterator objs = mmap.getObjectKeys(attributeName);
       while (objs.hasNext()) {
@@ -397,9 +397,35 @@ public class GraphObjAttributesImpl implements GraphObjAttributes
 
   public String[] getUniqueStringValues(String attributeName)
   {
-    // Same as getUniqueValues() only with String.
     final HashMap dupsFilter = new HashMap();
-    return null;
+    final MultiHashMapDefinition mmapDef =
+      m_cyAttrs.getMultiHashMapDefinition();
+    final MultiHashMap mmap = m_cyAttrs.getMultiHashMap();
+    final byte type = m_cyAttrs.getType(attributeName);
+    if (type == CyAttributes.TYPE_SIMPLE_LIST &&
+        mmapDef.getAttributeValueType(attributeName) ==
+        MultiHashMapDefinition.TYPE_STRING) {
+      final Iterator objs = mmap.getObjectKeys(attributeName);
+      while (objs.hasNext()) {
+        final String obj = (String) objs.next();
+        final List l = m_cyAttrs.getAttributeList(obj, attributeName);
+        final Iterator liter = l.iterator();
+        while (liter.hasNext()) {
+          final Object val = liter.next();
+          dupsFilter.put(val, val); } } }
+    else if (type == CyAttributes.TYPE_STRING) {
+      final Iterator objs = mmap.getObjectKeys(attributeName);
+      while (objs.hasNext()) {
+        final String obj = (String) objs.next();
+        final Object val = mmap.getAttributeValue(obj, attributeName, null);
+        dupsFilter.put(val, val); } }
+    else { return new String[0]; }
+    final String[] returnThis = new String[dupsFilter.size()];
+    Iterator uniqueIter = dupsFilter.keySet().iterator();
+    int inx = 0;
+    while (uniqueIter.hasNext()) {
+      returnThis[inx++] = (String) uniqueIter.next(); }
+    return returnThis;
   }
 
   public String processFileHeader(String text)
