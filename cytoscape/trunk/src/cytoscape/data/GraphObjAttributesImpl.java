@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringTokenizer;
 
 public class GraphObjAttributesImpl implements GraphObjAttributes
 {
@@ -431,7 +432,40 @@ public class GraphObjAttributesImpl implements GraphObjAttributes
   public String processFileHeader(String text)
   {
     // Copy old code from old GraphObjAttributes.
-    return null;
+    String attributeName = "";
+    String attributeCategory = DEFAULT_CATEGORY;
+    Class  attributeClass = null;
+
+    if (text.indexOf ("(") < 0)
+      attributeName = text.trim ();
+    else {
+      StringTokenizer strtok = new StringTokenizer (text, "(");
+      attributeName = strtok.nextToken ().trim();
+      while (strtok.hasMoreElements ()) {
+        String rawValuePair = strtok.nextToken().trim();
+        if (!rawValuePair.endsWith (")")) continue;
+        String valuePair = rawValuePair.substring (0,rawValuePair.length()-1);
+        int locationOfEqualSign = valuePair.indexOf ("=");
+        if (locationOfEqualSign < 0) continue;
+        if (valuePair.endsWith ("=")) continue;
+        StringTokenizer strtok2 = new StringTokenizer (valuePair, "=");
+        String name = strtok2.nextToken ();
+        String value = strtok2.nextToken ();
+        if (name.equals ("category"))
+          attributeCategory = value;
+        if (name.equals ("class")) {
+          try {
+            attributeClass = Class.forName (value);
+          }
+          catch (ClassNotFoundException ignore) {;}
+        } // if name == 'class'                                                                                                                
+      } // while strtok                                                                                                                         
+    } // else: at least one (x=y) found                                                                                                         
+
+    setCategory (attributeName, attributeCategory);
+    setClass (attributeName, attributeClass); // ******* Could fail *********                                                                     
+
+    return attributeName;
   }
 
   public void add(GraphObjAttributes attributes) {}
