@@ -8,6 +8,7 @@ import cytoscape.task.TaskMonitor;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -48,6 +49,7 @@ public class GraphObjAttributesImpl implements GraphObjAttributes
   public boolean append(String attributeName, String id, Object value)
   {
     List l = m_cyAttrs.getAttributeList(id, attributeName);
+    if (l == null) { l = new ArrayList(); }
     l.add(value);
     m_cyAttrs.setAttributeList(id, attributeName, l);
     return true;
