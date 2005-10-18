@@ -458,13 +458,11 @@ public class GraphObjAttributesImpl implements GraphObjAttributes
             attributeClass = Class.forName (value);
           }
           catch (ClassNotFoundException ignore) {;}
-        } // if name == 'class'                                                                                                                
-      } // while strtok                                                                                                                         
-    } // else: at least one (x=y) found                                                                                                         
-
+        } // if name == 'class'
+      } // while strtok
+    } // else: at least one (x=y) found
     setCategory (attributeName, attributeCategory);
-    setClass (attributeName, attributeClass); // ******* Could fail *********                                                                     
-
+    setClass (attributeName, attributeClass); // ******* Could fail *********
     return attributeName;
   }
 
