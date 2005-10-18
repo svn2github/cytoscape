@@ -97,7 +97,8 @@ public class CytoscapeEditorPlugin extends CytoscapePlugin {
 
 			// add default palette-based editor
 			CytoscapeEditorManager.register("DefaultCytoscapeEditor",
-					"PaletteNetworkEditEventHandler");
+					"PaletteNetworkEditEventHandler",
+					CytoscapeInit.getDefaultVisualStyle());
 			
 			
 			CytoscapeEditorManager.setVisualStyleNameForEditorType(
@@ -111,7 +112,8 @@ public class CytoscapeEditorPlugin extends CytoscapePlugin {
 			MapBioMoleculeEditorToVisualStyle mpbv = new MapBioMoleculeEditorToVisualStyle();
 			mpbv.createVizMapper();
 			CytoscapeEditorManager.register("SimpleBioMoleculeEditor",
-					"PaletteNetworkEditEventHandler");
+					"PaletteNetworkEditEventHandler",
+					MapBioMoleculeEditorToVisualStyle.BIOMOLECULE_VISUAL_STYLE);
 			CytoscapeEditorManager.setVisualStyleNameForEditorType(
 					"SimpleBioMoleculeEditor",
 					MapBioMoleculeEditorToVisualStyle.BIOMOLECULE_VISUAL_STYLE);
@@ -120,10 +122,13 @@ public class CytoscapeEditorPlugin extends CytoscapePlugin {
 			// SimpleBioPAX_Editor
 			MapBioPaxToVisualStyle mpb = new MapBioPaxToVisualStyle();
 			mpb.createVizMapper();
+			
+			
+			// hack: make Canonical name visible
 
 			CytoscapeEditorManager.register("SimpleBioPAX_Editor",
 					"BioPAXNetworkEditEventHandler", "BIOPAX_NODE_TYPE",
-					"BIOPAX_EDGE_TYPE");
+					"BIOPAX_EDGE_TYPE", BIO_PAX_VISUAL_STYLE);
 			// TODO: ask Ethan to make BIO_PAX_VISUAL_STYLE constant public, so
 			// that we don't need this hardcoded hack.
 			CytoscapeEditorManager.setVisualStyleNameForEditorType(

@@ -165,6 +165,7 @@ public class PaletteNetworkEditEventHandler extends
 			return;
 		}
 		NodeView targetNode = findEdgeDropTarget (locn);
+		System.out.println ("drop target = " + targetNode);
 		if (targetNode == null)
 		{
 			return;

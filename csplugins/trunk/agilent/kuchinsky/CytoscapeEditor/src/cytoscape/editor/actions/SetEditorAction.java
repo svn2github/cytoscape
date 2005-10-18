@@ -63,6 +63,8 @@ public class SetEditorAction extends CytoscapeAction {
 	 *            SetEditor menu item.
 	 */
 	public void actionPerformed(ActionEvent e) {
+		
+		CytoscapeEditorManager.setEditingEnabled(true);
 
 		CytoscapeEditor oldEditor = CytoscapeEditorManager.getCurrentEditor();
 		if (oldEditor != null) {
@@ -89,6 +91,8 @@ public class SetEditorAction extends CytoscapeAction {
 				System.out.println("Got visual style: " + existingStyle);
 				if (existingStyle != null) {
 					manager.setVisualStyle(existingStyle);
+					// AJK: 10/15/05 set editor for visual style
+					CytoscapeEditorManager.setEditorForVisualStyle(existingStyle, cyEditor);
 				}
 			}
 

@@ -17,6 +17,8 @@ import javax.swing.JMenuItem;
 import javax.swing.undo.UndoManager;
 import javax.swing.undo.UndoableEdit;
 
+import org.mskcc.biopax_plugin.mapping.MapBioPaxToCytoscape;
+
 import phoebe.PGraphView;
 import phoebe.PhoebeCanvas;
 import cern.colt.list.IntArrayList;
@@ -33,8 +35,10 @@ import cytoscape.editor.actions.SetEditorAction;
 import cytoscape.editor.actions.UndoAction;
 import cytoscape.editor.event.NetworkEditEventAdapter;
 import cytoscape.editor.impl.CytoscapeEditorManagerSupport;
+import cytoscape.editor.impl.ShapePalette;
 import cytoscape.giny.PhoebeNetworkView;
 import cytoscape.view.CyNetworkView;
+import cytoscape.visual.VisualStyle;
 
 /**
  * The <b>CytoscapeEditorManager</b> is the central class in the editor framework
@@ -133,6 +137,15 @@ public abstract class CytoscapeEditorManager {
 	 */
 	protected static HashMap editorViewMap = new HashMap();
 	
+	/**
+	 * 
+	 */
+	protected static boolean editingEnabled = false;
+	
+	/**
+	 * 
+	 */
+	protected static ShapePalette currentShapePalette;
 	
 	/*
 	 * map that associates a network view with its UndoManager
@@ -175,6 +188,23 @@ public abstract class CytoscapeEditorManager {
 	 * associates an editor type with a visual style name
 	 */
 	protected static HashMap editorTypeVisualStyleNameMap = new HashMap();
+	
+	/**
+	 * associate a CyNetworkView with a ShapePalette
+	 */
+	protected static HashMap viewShapePaletteMap = new HashMap();
+	
+	/**
+	 * associates a visual style with an editor
+	 */
+	protected static HashMap visualStyleEditorMap = new HashMap();
+	
+	
+	/**
+	 * associates a visual style with an editor type
+	 */
+	protected static HashMap visualStyleNameEditorTypeMap = new HashMap();
+	
 	
 	/**
 	 * CytoscapeAttribute: NODE_TYPE
@@ -272,6 +302,7 @@ public abstract class CytoscapeEditorManager {
 			Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu(
 			"File.SetEditor").setEnabled(true);
 			Cytoscape.getDesktop().getCyMenus().addAction(editNetwork);
+			
 //		}
 		// AJK: 08/11/05 END
 
@@ -279,12 +310,31 @@ public abstract class CytoscapeEditorManager {
 				networkEditAdapterName);
 	}
 	
+	
+	public static void register (String editorName, String networkEditAdapterName, String visualStyleName)
+	{
+		register(editorName, networkEditAdapterName);
+        CytoscapeEditorManager.setEditorTypeForVisualStyleName(visualStyleName, editorName);
+	}
+	
+	
 	public static void register (String editorName, String networkEditAdapterName, 
 			String controllingNodeAttribute, String controllingEdgeAttribute)
 	{
 		register(editorName, networkEditAdapterName);
 		CytoscapeEditorManager.setControllingNodeAttribute(editorName, controllingNodeAttribute);
 		CytoscapeEditorManager.setControllingEdgeAttribute(editorName, controllingEdgeAttribute);
+	}
+	
+	
+	public static void register (String editorName, String networkEditAdapterName, 
+			String controllingNodeAttribute, String controllingEdgeAttribute,
+			String visualStyleName)
+	{
+		register(editorName, networkEditAdapterName);
+		CytoscapeEditorManager.setControllingNodeAttribute(editorName, controllingNodeAttribute);
+		CytoscapeEditorManager.setControllingEdgeAttribute(editorName, controllingEdgeAttribute);
+	      CytoscapeEditorManager.setEditorTypeForVisualStyleName(visualStyleName, editorName);
 	}
 	
 	
@@ -409,8 +459,8 @@ public abstract class CytoscapeEditorManager {
 //		Color myColor = new Color(225, 225, 250);
 		Color myColor = new Color(225, 250, 200);
 
-		canvas.setBackground(myColor);
-		canvas.getCamera().setPaint(myColor);
+//		canvas.setBackground(myColor);
+//		canvas.getCamera().setPaint(myColor);
 
 		canvas.setEnabled(true);
 
@@ -569,6 +619,8 @@ public abstract class CytoscapeEditorManager {
 			net.setNodeAttributeValue(cn, NODE_TYPE, value);
 			// hack for BioPAX visual style
 			net.setNodeAttributeValue(cn, BIOPAX_NODE_TYPE, value);
+			net.setNodeAttributeValue(cn, MapBioPaxToCytoscape.BIOPAX_NAME_ATTRIBUTE,
+					net.getNodeAttributeValue(cn, "canonicalName"));
 			net.restoreNode(cn);
 		}
 
@@ -609,6 +661,8 @@ public abstract class CytoscapeEditorManager {
 			net.setNodeAttributeValue(cn, NODE_TYPE, nodeType);
 			// hack for BioPAX visual style
 			net.setNodeAttributeValue(cn, BIOPAX_NODE_TYPE, nodeType);
+			net.setNodeAttributeValue(cn, MapBioPaxToCytoscape.BIOPAX_NAME_ATTRIBUTE,
+					net.getNodeAttributeValue(cn, "canonicalName"));
 			//			System.out.println ("NodeType for CyNode " + cn + " set to " + 
 //					net.getNodeAttributeValue(cn, NODE_TYPE));
 		}
@@ -823,6 +877,23 @@ public abstract class CytoscapeEditorManager {
 		return null;
 	}
 	
+
+	/**
+	 * get the ShapePalette that is associated with a CyNetworkView
+	 * needed when a view changes
+	 * @param view
+	 * @return
+	 */
+	public static ShapePalette getShapePaletteForView (CyNetworkView view)
+	{
+		return (ShapePalette) viewShapePaletteMap.get(view);
+	}
+	
+	
+	public static void setShapePaletteForView (CyNetworkView view, ShapePalette shape)
+	{
+		viewShapePaletteMap.put(view, shape);
+	}
 	
 	
 	/**
@@ -843,6 +914,7 @@ public abstract class CytoscapeEditorManager {
 		}
 	}
 	
+	
 	/**
 	 * sets the visual style that is to be associated with an editor type.
 	 * this enables visual style to be automatically loaded when an editor is set
@@ -854,7 +926,67 @@ public abstract class CytoscapeEditorManager {
 		editorTypeVisualStyleNameMap.put(editorType, vizStyle);
 	}
 	
+	/**
+	 * get the editor that is associated with the visual style
+	 * this enables editor to be switched when a visual style changes
+	 * @param style
+	 * @return
+	 */
+	public static CytoscapeEditor getEditorForVisualStyle (VisualStyle style)
+	{
+		return ((CytoscapeEditor) visualStyleEditorMap.get(style));
+	}
+	
 
+	/**
+	 * 
+	 * set the editor that is associated with the visual style
+	 * this enables editor to be switched when a visual style changes	 * @param style
+	 * @param editor
+	 */
+	public static void setEditorForVisualStyle (VisualStyle style, CytoscapeEditor editor)
+	{
+		visualStyleEditorMap.put(style, editor);
+	}
+
+	
+	/**
+	 * get the editor type that is associated with the visual style
+	 * this enables editor to be switched when a visual style changes,
+	 * in the situation where editor and visual style have not yet been instantiated
+	 * for that visual style
+	 * @param styleName
+	 * @return
+	 */
+	public static String getEditorTypeForVisualStyleName (String styleName)
+	{
+		Object editorType = visualStyleNameEditorTypeMap.get(styleName);
+		if (editorType != null)
+		{
+			return editorType.toString();
+		}
+		else
+		{
+			return null;
+		}
+	}
+	
+
+	/**
+	 * 
+	 * get the editor type that is associated with the visual style
+	 * this enables editor to be switched when a visual style changes,
+	 * in the situation where an editor and visual style have not yet been instantiated
+	 * for that visual style
+	 * @param styleName
+	 * @param editorType
+	 */
+	public static void setEditorTypeForVisualStyleName (String styleName, String editorType)
+	{
+		visualStyleNameEditorTypeMap.put(styleName, editorType);
+	}
+	
+	
 	/**
 	 * gets the controlling NodeAttribute that drives rendering of node icon in editor palette
 	 * @param editor
@@ -1101,5 +1233,29 @@ public abstract class CytoscapeEditorManager {
 	 */
 	public static void setCurrentUndoManager(UndoManager currentUndoManager) {
 		CytoscapeEditorManager.currentUndoManager = currentUndoManager;
+	}
+	/**
+	 * @return Returns the editingEnabled.
+	 */
+	public static boolean isEditingEnabled() {
+		return editingEnabled;
+	}
+	/**
+	 * @param editingEnabled The editingEnabled to set.
+	 */
+	public static void setEditingEnabled(boolean editingEnabled) {
+		CytoscapeEditorManager.editingEnabled = editingEnabled;
+	}
+	/**
+	 * @return Returns the currentShapePalette.
+	 */
+	public static ShapePalette getCurrentShapePalette() {
+		return currentShapePalette;
+	}
+	/**
+	 * @param currentShapePalette The currentShapePalette to set.
+	 */
+	public static void setCurrentShapePalette(ShapePalette currentShapePalette) {
+		CytoscapeEditorManager.currentShapePalette = currentShapePalette;
 	}
 }

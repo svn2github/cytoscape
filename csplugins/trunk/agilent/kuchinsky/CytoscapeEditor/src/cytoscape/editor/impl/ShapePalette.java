@@ -22,7 +22,9 @@ import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 
 import cytoscape.Cytoscape;
+import cytoscape.editor.CytoscapeEditorManager;
 import cytoscape.editor.event.BasicCytoShapeTransferHandler;
+import cytoscape.view.CyNetworkView;
 
 
 
@@ -103,6 +105,10 @@ public class ShapePalette extends JPanel
         
        _controlPane.add (scrollPane, BorderLayout.SOUTH);
        
+        CytoscapeEditorManager.setCurrentShapePalette(this);
+        CyNetworkView view = Cytoscape.getCurrentNetworkView();
+        CytoscapeEditorManager.setShapePaletteForView(view, this);
+       
 
 		this.add(_controlPane);
 		this.setBackground(Cytoscape.getDesktop().getBackground());
@@ -138,14 +144,20 @@ public class ShapePalette extends JPanel
 		
 		// remove old existing editor palette from Cytopanel and replace with new one
         int idx = Cytoscape.getDesktop().getCytoPanel( SwingConstants.WEST ).indexOfComponent("Editor");
+        System.out.println ("index of current palette = " + idx);
         if (idx >= 0)
         {
         	Cytoscape.getDesktop().getCytoPanel( SwingConstants.WEST ).remove(idx);
+        	System.out.println ("removing palette at Cytopanel indes: " + idx);
         }
 		
 		Cytoscape.getDesktop().getCytoPanel( SwingConstants.WEST ).add( "Editor", this);
 		Cytoscape.getDesktop().getCytoPanel( SwingConstants.WEST ).setSelectedIndex(
 				Cytoscape.getDesktop().getCytoPanel( SwingConstants.WEST ).indexOfComponent(this));
+		System.out.println ("Set new selected component on Cytopanel: " +
+				Cytoscape.getDesktop().getCytoPanel( SwingConstants.WEST ).getSelectedComponent());
+		
+		this.setVisible(true);
 
 //		Cytoscape.getDesktop().getNetworkPanel().setNavigator(this);
 //

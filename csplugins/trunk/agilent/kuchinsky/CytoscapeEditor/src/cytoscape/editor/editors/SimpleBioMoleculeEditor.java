@@ -223,7 +223,7 @@ public class SimpleBioMoleculeEditor extends BasicCytoscapeEditor {
 	 *            args an arbitrary list of arguments (not used in this editor)
 	 */
 	public void disableControls(List args) {
-		super.disableControls(args);
+//		super.disableControls(args);
 		if (shapePalette != null) {
 			shapePalette.setVisible(false);
 		}
@@ -235,7 +235,8 @@ public class SimpleBioMoleculeEditor extends BasicCytoscapeEditor {
 	 */
 	public void enableControls (List args)
 	{
-		super.enableControls(args);
+//		super.enableControls(args);
+		shapePalette.showPalette();
 		shapePalette.setVisible(true);
 		
 	}	

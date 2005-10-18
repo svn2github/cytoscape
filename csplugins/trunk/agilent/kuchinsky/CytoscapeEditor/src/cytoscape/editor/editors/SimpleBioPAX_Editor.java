@@ -347,7 +347,7 @@ public class SimpleBioPAX_Editor extends BasicCytoscapeEditor {
 		
 		
 		
-		super.initializeControls(null);
+//		super.initializeControls(null);
 
 	}
 
@@ -357,7 +357,7 @@ public class SimpleBioPAX_Editor extends BasicCytoscapeEditor {
 	 */
 	public void disableControls (List args)
 	{
-		super.disableControls(args);
+//		super.disableControls(args);
 		shapePalette.setVisible(false);	
 	}
 	
@@ -367,7 +367,8 @@ public class SimpleBioPAX_Editor extends BasicCytoscapeEditor {
 	 */
 	public void enableControls (List args)
 	{
-		super.enableControls(args);
+//		super.enableControls(args);
+		shapePalette.showPalette();
 		shapePalette.setVisible(true);
 		
 	}	
