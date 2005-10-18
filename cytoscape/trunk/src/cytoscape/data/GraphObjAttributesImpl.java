@@ -141,7 +141,17 @@ public class GraphObjAttributesImpl implements GraphObjAttributes
 
   public Double getDoubleValue(String attributeName, String id)
   {
-    return m_cyAttrs.getDoubleAttribute(id, attributeName);
+    if (m_cyAttrs.getType(attributeName) == CyAttributes.TYPE_FLOATING) {
+      return m_cyAttrs.getDoubleAttribute(id, attributeName); }
+    else if (m_cyAttrs.getType(attributeName) ==
+             CyAttributes.TYPE_SIMPLE_LIST &&
+             m_cyAttrs.getMultiHashMapDefinition().
+             getAttributeValueType(attributeName) ==
+             MultiHashMapDefinition.TYPE_FLOATING_POINT) {
+      List l = m_cyAttrs.getAttributeList(id, attributeName);
+      if (l != null && l.size() > 0) {
+        return (Double) l.get(0); } }
+    return null;
   }
 
   public Integer getIntegerValue(String attributeName, String id)
