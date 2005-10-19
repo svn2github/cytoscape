@@ -176,7 +176,13 @@ public class GraphObjAttributesImpl implements GraphObjAttributes
 
   public HashMap getAttribute(String attributeName)
   {
-    throw new IllegalStateException("no this method - so sorry");
+    final HashMap returnThis = new HashMap();
+    final MultiHashMap mmap = m_cyAttrs.getMultiHashMap();
+    final Iterator objs = mmap.getObjectKeys(attributeName);
+    while (objs.hasNext()) {
+      final String obj = (String) objs.next();
+      returnThis.put(obj, get(attributeName, obj)); }
+    return returnThis;
   }
 
   public String[] getStringArrayValues(String attributeName, String id)
