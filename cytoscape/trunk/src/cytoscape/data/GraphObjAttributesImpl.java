@@ -178,10 +178,13 @@ public class GraphObjAttributesImpl implements GraphObjAttributes
   {
     final HashMap returnThis = new HashMap();
     final MultiHashMap mmap = m_cyAttrs.getMultiHashMap();
-    final Iterator objs = mmap.getObjectKeys(attributeName);
-    while (objs.hasNext()) {
-      final String obj = (String) objs.next();
-      returnThis.put(obj, get(attributeName, obj)); }
+    final MultiHashMapDefinition mmapDef =
+      m_cyAttrs.getMultiHashMapDefinition();
+    if (mmapDef.getAttributeValueType(attributeName) != -1) {
+      final Iterator objs = mmap.getObjectKeys(attributeName);
+      while (objs.hasNext()) {
+        final String obj = (String) objs.next();
+        returnThis.put(obj, get(attributeName, obj)); } }
     return returnThis;
   }
 
