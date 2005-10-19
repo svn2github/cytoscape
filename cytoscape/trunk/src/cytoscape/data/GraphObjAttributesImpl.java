@@ -204,7 +204,11 @@ public class GraphObjAttributesImpl implements GraphObjAttributes
 
   public boolean set(String graphObjName, HashMap bundle)
   {
-    return false;
+    final Iterator keys = bundle.keySet().iterator();
+    while (keys.hasNext()) {
+      final String attrName = (String) keys.next();
+      set(attrName, graphObjName, bundle.get(attrName)); }
+    return true;
   }
 
   public void clearNameMap()
