@@ -241,10 +241,15 @@ public class GraphObjAttributesImpl implements GraphObjAttributes
   public String[] getStringArrayValues(String attributeName, String id)
   {
     List l = m_cyAttrs.getAttributeList(id, attributeName);
-    final String[] returnThis = new String[l.size()];
-    final Object[] arr = l.toArray();
-    System.arraycopy(arr, 0, returnThis, 0, arr.length);
-    return returnThis;
+    if (l == null) {
+      final String strVal = m_cyAttrs.getStringAttribute(id, attributeName);
+      if (strVal == null) return new String[0];
+      else return new String[] { strVal }; }
+    else {
+      final String[] returnThis = new String[l.size()];
+      final Object[] arr = l.toArray();
+      System.arraycopy(arr, 0, returnThis, 0, arr.length);
+      return returnThis; }
   }
 
   public String toString()
