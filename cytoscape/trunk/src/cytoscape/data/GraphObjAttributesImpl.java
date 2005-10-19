@@ -534,9 +534,15 @@ public class GraphObjAttributesImpl implements GraphObjAttributes
     return false;
   }
 
-  public void setCategory(String attributeName, String newValue) {}
+  private final HashMap m_categoryMap = new HashMap();
 
-  public String getCategory(String attributeName) {
-    return null;
+  public void setCategory(String attributeName, String newValue)
+  {
+    m_categoryMap.put(attributeName, newValue);
+  }
+
+  public String getCategory(String attributeName)
+  {
+    return (String) m_categoryMap.get(attributeName);
   }
 }
