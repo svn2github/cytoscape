@@ -686,6 +686,8 @@ public class GraphObjAttributesImpl implements GraphObjAttributes
 
   public String getCategory(String attributeName)
   {
-    return (String) m_categoryMap.get(attributeName);
+    final String returnThis =  (String) m_categoryMap.get(attributeName);
+    if (returnThis == null) { return GraphObjAttributes.DEFAULT_CATEGORY; }
+    return returnThis;
   }
 }
