@@ -131,7 +131,9 @@ public class GraphObjAttributesImpl implements GraphObjAttributes
     case CyAttributes.TYPE_STRING:
       return m_cyAttrs.getStringAttribute(id, attributeName);
     case CyAttributes.TYPE_SIMPLE_LIST:
-      return m_cyAttrs.getAttributeList(id, attributeName);
+      List l = m_cyAttrs.getAttributeList(id, attributeName);
+      if (l.size() > 0) return l.get(0);
+      else return null;
     case CyAttributes.TYPE_SIMPLE_MAP:
       return m_cyAttrs.getAttributeMap(id, attributeName);
     default:
