@@ -30,20 +30,24 @@ public class GraphObjAttributesImpl implements GraphObjAttributes
 
   public boolean set(String attributeName, String id, Object value)
   {
-    if (value instanceof Boolean) {
-      m_cyAttrs.setAttribute(id, attributeName, (Boolean) value);
-      return true; }
-    else if (value instanceof Integer) {
-      m_cyAttrs.setAttribute(id, attributeName, (Integer) value);
-      return true; }
-    else if (value instanceof Double) {
-      m_cyAttrs.setAttribute(id, attributeName, (Double) value);
-      return true; }
-    else if (value instanceof String) {
-      m_cyAttrs.setAttribute(id, attributeName, (String) value);
-      return true; }
-    throw new IllegalArgumentException
-      ("this Object type is not supported - so sorry");
+//     if (value instanceof Boolean) {
+//       m_cyAttrs.setAttribute(id, attributeName, (Boolean) value);
+//       return true; }
+//     else if (value instanceof Integer) {
+//       m_cyAttrs.setAttribute(id, attributeName, (Integer) value);
+//       return true; }
+//     else if (value instanceof Double) {
+//       m_cyAttrs.setAttribute(id, attributeName, (Double) value);
+//       return true; }
+//     else if (value instanceof String) {
+//       m_cyAttrs.setAttribute(id, attributeName, (String) value);
+//       return true; }
+//     throw new IllegalArgumentException
+//       ("this Object type is not supported - so sorry");
+    List l = new ArrayList();
+    l.add(value);
+    m_cyAttrs.setAttributeList(id, attributeName, l);
+    return true;
   }
 
   public boolean append(String attributeName, String id, Object value)
@@ -156,7 +160,17 @@ public class GraphObjAttributesImpl implements GraphObjAttributes
 
   public Integer getIntegerValue(String attributeName, String id)
   {
-    return m_cyAttrs.getIntegerAttribute(id, attributeName);
+    if (m_cyAttrs.getType(attributeName) == CyAttributes.TYPE_INTEGER) {
+      return m_cyAttrs.getIntegerAttribute(id, attributeName); }
+    else if (m_cyAttrs.getType(attributeName) ==
+             CyAttributes.TYPE_SIMPLE_LIST &&
+             m_cyAttrs.getMultiHashMapDefinition().
+             getAttributeValueType(attributeName) ==
+             MultiHashMapDefinition.TYPE_INTEGER) {
+      List l = m_cyAttrs.getAttributeList(id, attributeName);
+      if (l != null && l.size() > 0) {
+        return (Integer) l.get(0); } }
+    return null;
   }
 
   public String getStringValue(String attributeName, String id)
