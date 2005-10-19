@@ -3,11 +3,15 @@ package cytoscape.data;
 import cytoscape.data.attr.CountedIterator;
 import cytoscape.data.attr.MultiHashMap;
 import cytoscape.data.attr.MultiHashMapDefinition;
-import cytoscape.data.readers.CyAttributesReader;
+import cytoscape.data.readers.TextFileReader;
+import cytoscape.data.readers.TextHttpReader;
+import cytoscape.data.readers.TextJarReader;
 import cytoscape.task.TaskMonitor;
+import cytoscape.util.Misc;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -26,6 +30,36 @@ public class GraphObjAttributesImpl implements GraphObjAttributes
   public GraphObjAttributesImpl(CyAttributes cyAttrs)
   {
     m_cyAttrs = cyAttrs;
+  }
+
+  private Class deduceClass(String string)
+  {
+    String[] classNames = { "java.net.URL",
+                            "java.lang.Integer",
+                            "java.lang.Double",
+                            "java.lang.String" };
+
+    for (int i = 0; i < classNames.length; i++) {
+      try {
+        Object obj = createInstanceFromString
+          (Class.forName(classNames[i]), string);
+        return obj.getClass(); }
+      catch (Exception e) {
+        ;
+      }
+    }
+    return null;
+  }
+
+  private Object createInstanceFromString(Class requestedClass,
+                                          String ctorArg) throws Exception
+  {
+    Class[] ctorArgsClasses = new Class[1];
+    ctorArgsClasses[0] = Class.forName("java.lang.String");
+    Object[] ctorArgs = new Object[1];
+    ctorArgs[0] = new String(ctorArg);
+    Constructor ctor = requestedClass.getConstructor(ctorArgsClasses);
+    return ctor.newInstance(ctorArgs);
   }
 
   public boolean set(String attributeName, String id, Object value)
@@ -391,21 +425,130 @@ public class GraphObjAttributesImpl implements GraphObjAttributes
                                       attributeName).toArray();
   }
 
-  public void readAttributesFromFile(String filename)
+  public void readAttributesFromFile(String filename) throws IOException
   {
-    // I may only want to read and write simple values or maybe even lists.
-    //
-    // CyAttributesReader
-    //   public static void loadAttributes(CyAttributes, InputStream)
-    //
-    // CyAttributesWriter
-    //   public static void writeAttributes(CyAttributes, OutputStream)
-    //
-    // AttributesSaverDialog - split apart
-    try {
-      FileInputStream fin = new FileInputStream(filename);
-      CyAttributesReader.loadAttributes(m_cyAttrs, fin); }
-    catch (IOException e) { }
+//     // I may only want to read and write simple values or maybe even lists.
+//     //
+//     // CyAttributesReader
+//     //   public static void loadAttributes(CyAttributes, InputStream)
+//     //
+//     // CyAttributesWriter
+//     //   public static void writeAttributes(CyAttributes, OutputStream)
+//     //
+//     // AttributesSaverDialog - split apart
+//     try {
+//       FileInputStream fin = new FileInputStream(filename);
+//       CyAttributesReader.loadAttributes(m_cyAttrs, fin); }
+//     catch (IOException e) { }
+
+    if (m_taskMonitor != null) {
+      m_taskMonitor.setStatus("Importing Attributes..."); }
+
+    String rawText;
+    if (filename.trim().startsWith("jar://")) {
+      TextJarReader reader = new TextJarReader(filename);
+      reader.read();
+      rawText = reader.getText();
+    } else if ( filename.trim().startsWith("http://") || filename.trim().startsWith( "file://") ) {
+      try {
+        TextHttpReader reader = new TextHttpReader( filename );
+        rawText = reader.getText();
+      } catch ( Exception e ) {
+        throw new IOException( e.getMessage() );
+      } // end of try-catch
+
+    } else {
+      TextFileReader reader = new TextFileReader(filename);
+      reader.read();
+      rawText = reader.getText();
+    }
+
+    StringTokenizer lineTokenizer = new StringTokenizer(rawText, "\n");
+
+    int lineNumber = 0;
+    if (lineTokenizer.countTokens() < 2) {
+      throw new IllegalArgumentException
+        (filename + " must have at least 2 lines");
+    }
+
+    String attributeName = processFileHeader
+      (lineTokenizer.nextToken().trim());
+    boolean extractingFirstValue = true;
+
+    int numTokens = lineTokenizer.countTokens();
+
+    while (lineTokenizer.hasMoreElements()) {
+      String newLine = (String) lineTokenizer.nextElement();
+
+      //  Track Progress
+      if (m_taskMonitor != null) {
+        double percent = ((double) lineNumber / numTokens) * 100.0;
+        m_taskMonitor.setPercentCompleted((int) percent);
+      }
+
+      if (newLine.trim().startsWith("#")) continue;
+      lineNumber++;
+      StringTokenizer strtok2 = new StringTokenizer(newLine, "=");
+      if (strtok2.countTokens() < 2) {
+        throw new IOException
+          ("Cannot parse line number " + lineNumber
+           + ":\n\t" + newLine + ".  This may not be a valid "
+           + "attributes file.");
+      }
+      String graphObjectName = strtok2.nextToken().trim();
+
+      String rawString = newLine.substring(newLine.indexOf("=") + 1).trim();
+      String[] rawList;
+      boolean isList = false;
+      if (Misc.isList(rawString, "(", ")", "::")) {
+        rawList = Misc.parseList(rawString, "(", ")", "::");
+        isList = true;
+      } else {
+        rawList = new String[1];
+        rawList[0] = rawString;
+      }
+      if (extractingFirstValue && getClass(attributeName) == null) {
+        extractingFirstValue = false;  // henceforth
+        Class deducedClass = deduceClass(rawList[0]);
+        setClass(attributeName, deducedClass); // ***** Could fail ******* //
+      }
+      Object[] objs = new Object[rawList.length];
+      Class stringClass = (new String()).getClass();
+
+      if (getClass(attributeName).equals(stringClass)) {
+        for (int i = 0; i < rawList.length; i++) {
+          rawList[i] = rawList[i].replaceAll("\\\\n", "\n");
+        }
+      }
+
+      for (int i = 0; i < rawList.length; i++) {
+        try {
+          objs[i] = createInstanceFromString
+            (getClass(attributeName), rawList[i]);
+          if (isList) {
+            append(attributeName, graphObjectName, objs[i]);
+          } else {
+            set(attributeName, graphObjectName, objs[i]);
+          }
+        } catch (Exception e) {
+          throw new IllegalArgumentException
+            ("Could not create an instance of " +
+             getClass(attributeName) + " from " + rawList[i]);
+        }
+      }
+    }
+
+    //  Inform User of What Just Happened.
+    if (m_taskMonitor != null) {
+      File  file = new File (filename);
+      m_taskMonitor.setPercentCompleted (100);
+      StringBuffer sb = new StringBuffer();
+      sb.append("Succesfully loaded attributes from:  "
+                + file.getName());
+      sb.append("\n\nAttribute Name:  " + attributeName);
+      sb.append("\n\nNumber of Attributes:  " + lineNumber);
+      m_taskMonitor.setStatus(sb.toString());
+    }
   }
 
   public HashMap getNameMap()

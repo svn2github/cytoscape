@@ -3,6 +3,7 @@ package cytoscape.data;
 import cytoscape.task.TaskMonitor;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -532,7 +533,7 @@ public interface GraphObjAttributes {
      * Deprecation note:  This method has 2 usages in the core.
      * @deprecated Use {@link CyAttributesReader} instead.
      */
-    public void readAttributesFromFile(String filename);
+    public void readAttributesFromFile(String filename) throws IOException;
 
     /**
      * Deprecation note:  This method has 1 usage in the core.
