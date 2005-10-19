@@ -669,12 +669,12 @@ public class GraphObjAttributesImpl implements GraphObjAttributes
 
   public boolean add(String attributeName, String id, Object value)
   {
-    return false;
+    return append(attributeName, id, value);
   }
 
   public boolean add(String attributeName, String id, double value)
   {
-    return false;
+    return append(attributeName, id, new Double(value));
   }
 
   public boolean add(String graphObjectName, HashMap bundle)
