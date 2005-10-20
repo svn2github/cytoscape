@@ -34,7 +34,7 @@ public class GraphObjAttributesImpl implements GraphObjAttributes
 
   private Class deduceClass(String string)
   {
-    String[] classNames = { "java.net.URL",
+    String[] classNames = { //"java.net.URL",
                             "java.lang.Integer",
                             "java.lang.Double",
                             "java.lang.String" };
