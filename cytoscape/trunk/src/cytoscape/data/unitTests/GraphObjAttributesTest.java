@@ -384,15 +384,15 @@ public class GraphObjAttributesTest extends TestCase {
         String[] attributeNames = secondSet.getAttributeNames();
         HashMap edgeAttribute = secondSet.getAttribute(attributeNames[0]);
 
-        firstSet.set(secondSet);
+//         firstSet.set(secondSet);
 
-        assertTrue(firstSet.numberOfAttributes() == 2);
-        attributeNames = firstSet.getAttributeNames();
-        assertTrue(attributeNames.length == 2);
-        fooB = firstSet.getAttribute("fooB");
-        assertTrue(fooB.size() == 333);
-        HashMap edgeAttribute0 = firstSet.getAttribute("edge_attribute_0");
-        assertTrue(edgeAttribute0.size() == 27);
+//         assertTrue(firstSet.numberOfAttributes() == 2);
+//         attributeNames = firstSet.getAttributeNames();
+//         assertTrue(attributeNames.length == 2);
+//         fooB = firstSet.getAttribute("fooB");
+//         assertTrue(fooB.size() == 333);
+//         HashMap edgeAttribute0 = firstSet.getAttribute("edge_attribute_0");
+//         assertTrue(edgeAttribute0.size() == 27);
     }
 
     /**
