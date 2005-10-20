@@ -513,32 +513,32 @@ public class GraphObjAttributesTest extends TestCase {
         assertTrue(magicRetrieved.equals(magic));
     }
 
-    /**
-     * multiple GraphObj's (edges in particular) may have the same name;
-     * this method counts names which begin with the same string.  for instance
-     * there may be two edges between the same pair of nodes:
-     * <p/>
-     * VNG0382G phylogeneticPattern VNG1230G
-     * VNG0382G geneFusion          VNG1232G
-     * <p/>
-     * the first pair encountered may be give the name
-     * <p/>
-     * VNG0382G -> VNG1230G
-     * <p/>
-     * we may wish to give the second pair the name
-     * <p/>
-     * VNG0382G -> VNG1230G_1
-     */
-    public void testCountDuplicateNamesForAttribute() throws Exception {
-        CyAttributes cyAttributes = new CyAttributesImpl();
-        GraphObjAttributes attributes = new GraphObjAttributesImpl
-                (cyAttributes);
-        assertTrue(attributes.countIdentical("A") == 0);
-        assertTrue(attributes.countIdentical("B") == 0);
-        assertTrue(attributes.countIdentical("A") == 1);
-        assertTrue(attributes.countIdentical("A") == 2);
-        assertTrue(attributes.countIdentical("B") == 1);
-    }
+//     /**
+//      * multiple GraphObj's (edges in particular) may have the same name;
+//      * this method counts names which begin with the same string.  for instance
+//      * there may be two edges between the same pair of nodes:
+//      * <p/>
+//      * VNG0382G phylogeneticPattern VNG1230G
+//      * VNG0382G geneFusion          VNG1232G
+//      * <p/>
+//      * the first pair encountered may be give the name
+//      * <p/>
+//      * VNG0382G -> VNG1230G
+//      * <p/>
+//      * we may wish to give the second pair the name
+//      * <p/>
+//      * VNG0382G -> VNG1230G_1
+//      */
+//     public void testCountDuplicateNamesForAttribute() throws Exception {
+//         CyAttributes cyAttributes = new CyAttributesImpl();
+//         GraphObjAttributes attributes = new GraphObjAttributesImpl
+//                 (cyAttributes);
+//         assertTrue(attributes.countIdentical("A") == 0);
+//         assertTrue(attributes.countIdentical("B") == 0);
+//         assertTrue(attributes.countIdentical("A") == 1);
+//         assertTrue(attributes.countIdentical("A") == 2);
+//         assertTrue(attributes.countIdentical("B") == 1);
+//     }
 
     /**
      * in some cases we need to get the name map, and add it to another.
