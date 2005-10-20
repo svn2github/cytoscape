@@ -351,7 +351,11 @@ public class GraphObjAttributesImpl implements GraphObjAttributes
     for (int i = 0; i < attrNames.length; i++) {
       final byte type = m_cyAttrs.getType(attrNames[i]);
       if (m_cyAttrs.hasAttribute(canonicalName, attrNames[i])) {
-        if (type == CyAttributes.TYPE_BOOLEAN) {
+        if (type == CyAttributes.TYPE_SIMPLE_LIST) {
+          List l = m_cyAttrs.getAttributeList(canonicalName, attrNames[i]);
+          if (l != null && l.size() > 0) {
+            returnThis.put(attrNames[i], l.get(0)); } }
+        else if (type == CyAttributes.TYPE_BOOLEAN) {
           returnThis.put
             (attrNames[i],
              m_cyAttrs.getBooleanAttribute(canonicalName, attrNames[i])); }
