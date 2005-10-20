@@ -345,7 +345,7 @@ public interface GraphObjAttributes {
      * @deprecated Method is no longer needed in the Cytoscape core, and no
      * equivalent method will be provided.
      */
-    public void readAttributesFromFile(File file);
+    public void readAttributesFromFile(File file) throws IOException;
 
     /**
      * Return attributeName/attributeClass pairs, for every known attribute

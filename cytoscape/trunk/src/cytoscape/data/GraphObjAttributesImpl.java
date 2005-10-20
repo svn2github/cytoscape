@@ -235,7 +235,7 @@ public class GraphObjAttributesImpl implements GraphObjAttributes
       while (objs.hasNext()) {
         final String obj = (String) objs.next();
         returnThis.put(obj, get(attributeName, obj)); } }
-    return returnThis;
+    return returnThis.size() == 0 ? null : returnThis;
   }
 
   public String[] getStringArrayValues(String attributeName, String id)
@@ -305,8 +305,9 @@ public class GraphObjAttributesImpl implements GraphObjAttributes
   {
   }
 
-  public void readAttributesFromFile(File file)
+  public void readAttributesFromFile(File file) throws IOException
   {
+    readAttributesFromFile(file.getPath());
   }
 
   public HashMap getSummary()
@@ -321,7 +322,10 @@ public class GraphObjAttributesImpl implements GraphObjAttributes
 
   public int getObjectCount(String attributeName)
   {
-    return 0;
+    try {
+      return m_cyAttrs.getMultiHashMap().
+        getObjectKeys(attributeName).numRemaining(); }
+    catch (RuntimeException e) { return 0; }
   }
 
   public String getCanonicalName(Object graphObj)
