@@ -307,6 +307,13 @@ public class GraphObjAttributesImpl implements GraphObjAttributes
   public void deleteAttributeValue(String attributeName,
                                    String graphObjName, Object value)
   {
+    List l = m_cyAttrs.getAttributeList(graphObjName, attributeName);
+    if (l == null) return;
+    l.remove(value);
+    if (l.size() > 0) {
+      m_cyAttrs.setAttributeList(graphObjName, attributeName, l); }
+    else {
+      m_cyAttrs.deleteAttribute(graphObjName, attributeName); }
   }
 
   public void readAttributesFromFile(File file) throws IOException
