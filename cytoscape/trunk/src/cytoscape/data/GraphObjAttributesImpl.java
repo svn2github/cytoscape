@@ -290,6 +290,10 @@ public class GraphObjAttributesImpl implements GraphObjAttributes
 
   public void addNameMap(HashMap nameMapping)
   {
+    Iterator keys = nameMapping.keySet().iterator();
+    while (keys.hasNext()) {
+      Object key = keys.next();
+      addNameMapping((String) nameMapping.get(key), key); }
   }
 
   public void addObjectMap(HashMap objectMapping)
@@ -331,15 +335,18 @@ public class GraphObjAttributesImpl implements GraphObjAttributes
   public String getCanonicalName(Object graphObj)
   {
 //     return ((giny.model.GraphObject) graphObj).getIdentifier();
-    final Set entrySet = m_localMap.entrySet();
-    final Iterator setIter = entrySet.iterator();
-    Object key = null;
-    while (setIter.hasNext()) {
-      final Map.Entry entry = (Map.Entry) setIter.next();
-      if (entry.getValue() == graphObj) {
-        key = entry.getKey();
-        break; } }
-    return (String) key;
+
+//     final Set entrySet = m_localMap.entrySet();
+//     final Iterator setIter = entrySet.iterator();
+//     Object key = null;
+//     while (setIter.hasNext()) {
+//       final Map.Entry entry = (Map.Entry) setIter.next();
+//       if (entry.getValue() == graphObj) {
+//         key = entry.getKey();
+//         break; } }
+//     return (String) key;
+
+    return (String) m_localMap.get(graphObj);
   }
 
   public HashMap getAttributes(String canonicalName)
@@ -376,12 +383,22 @@ public class GraphObjAttributesImpl implements GraphObjAttributes
 
   public void addNameMapping(String canonicalName, Object graphObject)
   {
-    m_localMap.put(canonicalName, graphObject);
+    m_localMap.put(graphObject, canonicalName);
   }
 
   public Object getGraphObject(String canonicalName)
   {
-    return m_localMap.get(canonicalName);
+//     return m_localMap.get(canonicalName);
+
+    final Set entrySet = m_localMap.entrySet();
+    final Iterator setIter = entrySet.iterator();
+    Object key = null;
+    while (setIter.hasNext()) {
+      final Map.Entry entry = (Map.Entry) setIter.next();
+      if (entry.getValue().equals(canonicalName)) {
+        key = entry.getKey();
+        break; } }
+    return key;
   }
 
   public String[] getObjectNames(String attributeName)
@@ -397,7 +414,17 @@ public class GraphObjAttributesImpl implements GraphObjAttributes
 
   public void removeNameMapping(String canonicalName)
   {
-    m_localMap.remove(canonicalName);
+//     m_localMap.remove(canonicalName);
+
+    final Set entrySet = m_localMap.entrySet();
+    final Iterator setIter = entrySet.iterator();
+    Object key = null;
+    while (setIter.hasNext()) {
+      final Map.Entry entry = (Map.Entry) setIter.next();
+      if (entry.getValue().equals(canonicalName)) {
+        key = entry.getKey();
+        break; } }
+    if (key != null) m_localMap.remove(key);
   }
 
   public boolean setClass(String attributeName, Class attributeClass)
@@ -432,15 +459,17 @@ public class GraphObjAttributesImpl implements GraphObjAttributes
 
   public void removeObjectMapping(Object graphObj)
   {
-    final Set entrySet = m_localMap.entrySet();
-    final Iterator setIter = entrySet.iterator();
-    Object key = null;
-    while (setIter.hasNext()) {
-      final Map.Entry entry = (Map.Entry) setIter.next();
-      if (entry.getValue() == graphObj) {
-        key = entry.getKey();
-        break; } }
-    if (key != null) m_localMap.remove(key);
+//     final Set entrySet = m_localMap.entrySet();
+//     final Iterator setIter = entrySet.iterator();
+//     Object key = null;
+//     while (setIter.hasNext()) {
+//       final Map.Entry entry = (Map.Entry) setIter.next();
+//       if (entry.getValue() == graphObj) {
+//         key = entry.getKey();
+//         break; } }
+//     if (key != null) m_localMap.remove(key);
+
+    m_localMap.remove(graphObj);
   }
 
   public Object[] getArrayValues(String attributeName,
@@ -582,7 +611,7 @@ public class GraphObjAttributesImpl implements GraphObjAttributes
 
   public HashMap getNameMap()
   {
-    // Returns reference to local name/obj hashmap.
+    // Returns reference to local obj->name hashmap.
     return m_localMap;
   }
 
