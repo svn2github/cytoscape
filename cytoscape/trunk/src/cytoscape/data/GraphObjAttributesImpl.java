@@ -144,8 +144,10 @@ public class GraphObjAttributesImpl implements GraphObjAttributes
       return Integer.class;
     case MultiHashMapDefinition.TYPE_FLOATING_POINT:
       return Double.class;
-    default: // case MultiHashMapDefinition.TYPE_STRING:
-      return String.class; }
+    case MultiHashMapDefinition.TYPE_STRING:
+      return String.class;
+    default:
+      return null; }
   }
 
   public List getList(String attributeName, String id)
