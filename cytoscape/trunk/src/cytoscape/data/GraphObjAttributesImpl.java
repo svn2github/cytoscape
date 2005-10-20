@@ -402,18 +402,25 @@ public class GraphObjAttributesImpl implements GraphObjAttributes
       m_cyAttrs.getMultiHashMapDefinition();
     try {
       if (attributeClass.equals(Boolean.class)) {
-        mmapDef.defineAttribute(attributeName,
-                                MultiHashMapDefinition.TYPE_BOOLEAN, null); }
+        mmapDef.defineAttribute
+          (attributeName,
+           MultiHashMapDefinition.TYPE_BOOLEAN,
+           new byte[] { MultiHashMapDefinition.TYPE_INTEGER }); }
       else if (attributeClass.equals(Integer.class)) {
-        mmapDef.defineAttribute(attributeName,
-                                MultiHashMapDefinition.TYPE_INTEGER, null); }
+        mmapDef.defineAttribute
+          (attributeName,
+           MultiHashMapDefinition.TYPE_INTEGER,
+           new byte[] { MultiHashMapDefinition.TYPE_INTEGER }); }
       else if (attributeClass.equals(Double.class)) {
-        mmapDef.defineAttribute(attributeName,
-                                MultiHashMapDefinition.TYPE_FLOATING_POINT,
-                                null); }
+        mmapDef.defineAttribute
+          (attributeName,
+           MultiHashMapDefinition.TYPE_FLOATING_POINT,
+           new byte[] { MultiHashMapDefinition.TYPE_INTEGER }); }
       else if (attributeClass.equals(String.class)) {
-        mmapDef.defineAttribute(attributeName,
-                                MultiHashMapDefinition.TYPE_STRING, null); }
+        mmapDef.defineAttribute
+          (attributeName,
+           MultiHashMapDefinition.TYPE_STRING,
+           new byte[] { MultiHashMapDefinition.TYPE_INTEGER }); }
       else return false; }
     catch (Exception e) { return false; }
     return true;        
