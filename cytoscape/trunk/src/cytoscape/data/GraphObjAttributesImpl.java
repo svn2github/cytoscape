@@ -330,7 +330,16 @@ public class GraphObjAttributesImpl implements GraphObjAttributes
 
   public String getCanonicalName(Object graphObj)
   {
-    return ((giny.model.GraphObject) graphObj).getIdentifier();
+//     return ((giny.model.GraphObject) graphObj).getIdentifier();
+    final Set entrySet = m_localMap.entrySet();
+    final Iterator setIter = entrySet.iterator();
+    Object key = null;
+    while (setIter.hasNext()) {
+      final Map.Entry entry = (Map.Entry) setIter.next();
+      if (entry.getValue() == graphObj) {
+        key = entry.getKey();
+        break; } }
+    return (String) key;
   }
 
   public HashMap getAttributes(String canonicalName)
