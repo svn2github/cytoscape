@@ -1090,9 +1090,7 @@ public abstract class Cytoscape {
      * method will be removed in September, 2006.
 	 */
 	public static GraphObjAttributes getNodeNetworkData() {
-		if (nodeAttributes == null) {
-			nodeData = new CytoscapeDataImpl(CytoscapeDataImpl.NODES);
-        }
+        initNodeAttributes();
 		return nodeData;
 	}
 
@@ -1103,9 +1101,7 @@ public abstract class Cytoscape {
      * method will be removed in September, 2006.
 	 */
 	public static GraphObjAttributes getEdgeNetworkData() {
-		if (edgeData == null) {
-			edgeData = new CytoscapeDataImpl(CytoscapeDataImpl.EDGES);
-        }
+        initEdgeAttributes();
 		return edgeData;
 	}
 
@@ -1114,10 +1110,7 @@ public abstract class Cytoscape {
      * @return CyAttributes Object.
      */
     public static CyAttributes getNodeAttributes() {
-        if (nodeAttributes == null) {
-            nodeAttributes = new CyAttributesImpl();
-            // TODO create nodeData here too
-        }
+        initNodeAttributes();
         return nodeAttributes;
     }
 
@@ -1126,11 +1119,28 @@ public abstract class Cytoscape {
      * @return CyAttributes Object.
      */
     public static CyAttributes getEdgeAttributes() {
+        initEdgeAttributes();
+        return edgeAttributes;
+    }
+
+    /**
+     * One-time initialization of Node Attributes.
+     */
+    private static void initNodeAttributes() {
+        if (nodeAttributes == null) {
+            nodeAttributes = new CyAttributesImpl();
+            nodeData = new GraphObjAttributesImpl(nodeAttributes);
+        }
+    }
+
+    /**
+     * One-time initialization of Edge Attributes.
+     */
+    private static void initEdgeAttributes() {
         if (edgeAttributes == null) {
             edgeAttributes = new CyAttributesImpl();
-            // TODO create edgeData here too
+            edgeData = new GraphObjAttributesImpl(edgeAttributes);
         }
-        return edgeAttributes;
     }
 
 	public static ExpressionData getExpressionData() {
