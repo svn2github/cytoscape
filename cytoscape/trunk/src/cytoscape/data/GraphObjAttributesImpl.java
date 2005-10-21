@@ -78,11 +78,23 @@ public class GraphObjAttributesImpl implements GraphObjAttributes
 //       return true; }
 //     throw new IllegalArgumentException
 //       ("this Object type is not supported - so sorry");
-    List l = new ArrayList();
-    l.add(value);
-    m_cyAttrs.setAttributeList(id, attributeName, l);
-    return true;
+    try {
+      List l = new ArrayList();
+      l.add(value);
+      m_cyAttrs.setAttributeList(id, attributeName, l);
+      return true; }
+    catch (IllegalArgumentException e) {
+      if (m_cyAttrs.getType(attributeName) != CyAttributes.TYPE_UNDEFINED)
+        throw e;
+      HashMap stupidMap = (HashMap) m_stupidMaps.get(attributeName);
+      if (stupidMap == null) {
+        stupidMap = new HashMap();
+        m_stupidMaps.put(attributeName, stupidMap); }
+      stupidMap.put(id, value);
+      return true; }
   }
+
+  private final HashMap m_stupidMaps = new HashMap();
 
   public boolean append(String attributeName, String id, Object value)
   {
@@ -178,6 +190,9 @@ public class GraphObjAttributesImpl implements GraphObjAttributes
 
   public Object get(String attributeName, String id)
   {
+    HashMap stupidMap;
+    if ((stupidMap = (HashMap) m_stupidMaps.get(attributeName)) != null) {
+      return stupidMap.get(id); }
     return getValue(attributeName, id);
   }
 
