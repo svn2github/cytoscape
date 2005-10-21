@@ -5,8 +5,6 @@ package cytoscape.actions;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-import cytoscape.data.CytoscapeDataImpl;
-import cytoscape.data.CytoscapeData;
 import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.servers.BioDataServer;
 import cytoscape.task.Task;
