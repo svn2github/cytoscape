@@ -56,38 +56,62 @@ public class DataEditAction extends AbstractUndoableEdit {
   public String getUndoPresentationName () {
     return "Undo: "+object+":"+attribute+" back to:"+old_value+" from "+new_value;
   }
-        
+  
+  private void setAttributeValue( CyAttributes data, 
+                                  String id, 
+                                  String att,
+                                  Object object ) {
+    if ( object instanceof Integer )
+      data.setAttribute( id, att, (Integer)object );
+    else if ( object instanceof Double )
+      data.setAttribute( id, att, (Double)object );
+    else if ( object instanceof Boolean )
+      data.setAttribute( id, att, (Boolean)object );
+    else if ( object instanceof String )
+       data.setAttribute( id, att, (String)object );
+    else if ( object instanceof List )
+      data.setAttributeList( id, att, (List)object );
+    else if ( object instanceof Map )
+      data.setAttributeMap( id, att, (Map)object );
+  }
+
+  
+      
   // this sets the new value
   public void	redo () {
     
-    CytoscapeData data;
+    CyAttributes data;
     
     if ( graphObjectType == 0 ) {
       //node
-      data = Cytoscape.getNodeNetworkData();
+      data = Cytoscape.getNodeAttributes();
     } else {
       //edge
-      data = Cytoscape.getEdgeNetworkData();
+      data = Cytoscape.getEdgeAttributes();
     }
     
-    data.setAttributeValue( object, attribute, new_value );
+    setAttributeValue( data, object, attribute, new_value );
     table.setTable();
   }
         
+
+  
+
+
   // this sets the old value
   public void undo () {
     
-    CytoscapeData data;
+    CyAttributes data;
     
     if ( graphObjectType == 0 ) {
       //node
-      data = Cytoscape.getNodeNetworkData();
+      data = Cytoscape.getNodeAttributes();
     } else {
       //edge
-      data = Cytoscape.getEdgeNetworkData();
+      data = Cytoscape.getEdgeAttributes();
     }
     
-    data.setAttributeValue( object, attribute, old_value );
+    setAttributeValue( data, object, attribute, old_value );
     table.setTable();
   }
 

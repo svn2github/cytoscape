@@ -24,7 +24,7 @@ public class ModPanel
   extends JPanel 
   implements ActionListener {
 
-  CytoscapeData data;
+  CyAttributes data;
   DataTableModel tableModel;
   AttributePanel attPanel;
   int graphObjectType;
@@ -51,7 +51,7 @@ public class ModPanel
   static String COPY = "Copy";
   static String DELETE = "Delete";
 
-  public ModPanel ( CytoscapeData data, 
+  public ModPanel ( CyAttributes data, 
                     DataTableModel tableModel, 
                     AttributePanel attPanel,
                     int graphObjectType ) {

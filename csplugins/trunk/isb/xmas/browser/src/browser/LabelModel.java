@@ -10,45 +10,47 @@ import javax.swing.event.*;
 
 import cytoscape.data.attr.*;
 
+import exesto.*;
+
 public class LabelModel 
   implements ListModel,
              ComboBoxModel,
-             CytoscapeDataListener {
+             TagListener {
 
   Vector listeners = new Vector();
-  CytoscapeData data;
+  CyAttributes data;
 
-  Vector labels;
+  Vector tags;
   Object selection = null;
   
-  public LabelModel ( CytoscapeData data ) {
+  public LabelModel ( CyAttributes data ) {
     this.data = data;
-    data.addCytoscapeDataListener( this );
-    sortLabels();
+    AttributeTags.addTagListener( this );
+    sortTags();
   }
 
-  protected void sortLabels () {
+  protected void sortTags () {
     
-    labels = new Vector( data.getLabelNames() );
-    Collections.sort( labels );
+    tags = new Vector( AttributeTags.getTagNames( data ) );
+    Collections.sort( tags );
     notifyListeners 
       ( new ListDataEvent ( this,
                             ListDataEvent.CONTENTS_CHANGED,
                             0,
-                            labels.size() ) );
+                            tags.size() ) );
   }
 
   // implements ListModel
   
   public Object getElementAt ( int i ) {
-    if ( i > labels.size() )
+    if ( i > tags.size() )
       return null;
 
-    return labels.get(i);
+    return tags.get(i);
   }
 
   public int getSize () {
-    return labels.size();
+    return tags.size();
   }
 
   // implements ComboBoxModel
@@ -67,8 +69,8 @@ public class LabelModel
 
   // implements CyDataDefinitionListener
 
-  public void labelStateChange ( ) {
-    sortLabels();
+  public void tagStateChange ( ) {
+    sortTags();
   }
     
  

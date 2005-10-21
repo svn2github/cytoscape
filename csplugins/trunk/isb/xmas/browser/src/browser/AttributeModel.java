@@ -1,6 +1,6 @@
 package browser;
 
-import cytoscape.data.CytoscapeData;
+import cytoscape.data.CyAttributes;
 
 import filter.model.FilterManager;
 
@@ -13,25 +13,26 @@ import cytoscape.data.attr.*;
 public class AttributeModel 
   implements ListModel,
              ComboBoxModel,
-             CyDataDefinitionListener {
+             MultiHashMapDefinitionListener {
 
   Vector listeners = new Vector();
-  CytoscapeData data;
+  CyAttributes data;
 
   Vector attributes;
   Object selection = null;
   
-  public AttributeModel ( CytoscapeData data ) {
+  public AttributeModel ( CyAttributes data ) {
     this.data = data;
-    data.addDataDefinitionListener( this );
+    data.getMultiHashMapDefinition().addDataDefinitionListener( this );
     sortAtttributes();
   }
 
   protected void sortAtttributes () {
-    CountedIterator ci = data.getDefinedAttributes();
-    attributes = new Vector( ci.numRemaining() );
-    while ( ci.hasNext() ) {
-      attributes.add( ci.next() );
+    
+    String[] att_names = data.getAttributeNames();
+    attributes = new Vector( att_names.length );
+    for ( int i = 0; i < att_names.length; ++i ) {
+      attributes.add( att_names[i] );
     }
     Collections.sort( attributes );
     notifyListeners 

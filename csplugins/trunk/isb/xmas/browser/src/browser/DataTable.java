@@ -7,7 +7,7 @@ import java.util.*;
 import java.io.*;
 
 import cytoscape.Cytoscape;
-import cytoscape.data.CytoscapeData;
+import cytoscape.data.CyAttributes;
 import cytoscape.util.FileUtil;
 import cytoscape.util.CyFileFilter;
 import javax.swing.*;
@@ -25,13 +25,13 @@ public class DataTable {
   int tableIndex;
 
   // Each Attribute Browser operates on one CytoscapeData object, and on either Nodes or Edges.
-  CytoscapeData data;
+  CyAttributes data;
 
   public static int NODES = 0;
   public static int EDGES = 1;
   public int graphObjectType;
 
-  public DataTable ( CytoscapeData data, int graphObjectType ) {
+  public DataTable ( CyAttributes data, int graphObjectType ) {
 
     // set up CytoscapeData Object and GraphObject Type
     this.data = data;
@@ -163,12 +163,12 @@ public class DataTable {
     return graphObjectType;
   }
 
-  public CytoscapeData getData () {
+  public CyAttributes getData () {
     return data;
   }
 
 
-  protected SortTableModel makeModel ( CytoscapeData data ) {
+  protected SortTableModel makeModel ( CyAttributes data ) {
 
     List attributes = Arrays.asList( data.getAttributeNames() );
     List graph_objects = getFlaggedGraphObjects();

@@ -28,8 +28,8 @@ public class BrowserPlugin extends CytoscapePlugin {
   protected void initialize () {
 
 
-    DataTable table_nodes = new DataTable(Cytoscape.getNodeNetworkData(), DataTable.NODES );
-    DataTable table_edges = new DataTable(Cytoscape.getEdgeNetworkData(), DataTable.EDGES );
+    DataTable table_nodes = new DataTable(Cytoscape.getNodeAttributes(), DataTable.NODES );
+    DataTable table_edges = new DataTable(Cytoscape.getEdgeAttributes(), DataTable.EDGES );
 
   }
 

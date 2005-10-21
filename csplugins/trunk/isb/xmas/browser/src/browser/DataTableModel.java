@@ -3,7 +3,7 @@ package browser;
 import java.util.*;
 
 import giny.model.GraphObject;
-import cytoscape.data.CytoscapeData;
+import cytoscape.data.CyAttributes;
 
 import javax.swing.table.DefaultTableModel;
 import cytoscape.data.attr.*;
@@ -11,9 +11,9 @@ import cytoscape.data.attr.*;
 public class DataTableModel 
   extends DefaultTableModel
   implements SortTableModel,
-             CyDataListener {
+             MultiHashMapListener {
 
-  private CytoscapeData data;
+  private CyAttributes data;
   private List graph_objects;
   private List attributes;
  
@@ -44,13 +44,13 @@ public class DataTableModel
   
 
 
-  public void setTableData ( CytoscapeData data, 
+  public void setTableData ( CyAttributes data, 
                              List graph_objects,
                              List attributes ) {
     this.data = data;
     this.graph_objects = graph_objects;
     this.attributes = attributes;
-    data.addDataListener( this );
+    data.getMultiHashMap().addDataListener( this );
     setTable();
   }
 
@@ -99,11 +99,13 @@ public class DataTableModel
       int i = i1 + 1;
       column_names[i] = attributes.get(i1);
       String attribute = ( String )attributes.get(i1);
+      byte type = data.getType( attribute );
       for ( int j = 0; j < go_length; ++j ) {
         GraphObject obj = ( GraphObject )graph_objects.get(j);
-        
-        Object value = data.getAttributeValue( obj.getIdentifier(),
-                                               attribute );
+     
+        Object value = getAttributeValue( type,
+                                          obj.getIdentifier(),
+                                          attribute );
         data_vector[j][i] = value;
       }
     }
@@ -114,6 +116,22 @@ public class DataTableModel
 
   public String exportTable () {
     return exportTable( "\t", "\n" );
+  }
+
+  private Object getAttributeValue( byte type, String id, String att ) {
+    if ( type == CyAttributes.TYPE_INTEGER ) 
+      return data.getIntegerAttribute( id, att );
+    else if ( type == CyAttributes.TYPE_FLOATING ) 
+      return data.getDoubleAttribute( id, att );
+    else if ( type == CyAttributes.TYPE_BOOLEAN ) 
+      return data.getBooleanAttribute( id, att );
+    else if ( type == CyAttributes.TYPE_STRING ) 
+      return data.getStringAttribute( id, att );
+    else if ( type == CyAttributes.TYPE_SIMPLE_LIST ) 
+      return data.getAttributeList( id, att );
+    else if ( type == CyAttributes.TYPE_SIMPLE_MAP ) 
+      return data.getAttributeMap( id, att );
+    return null;
   }
 
   public String exportTable ( String element_delim, String eol_delim ) {
@@ -138,11 +156,13 @@ public class DataTableModel
       int i = i1 + 1;
       column_names[i] = attributes.get(i1);
       String attribute = ( String )attributes.get(i1);
+      byte type = data.getType( attribute );
       for ( int j = 0; j < go_length; ++j ) {
         GraphObject obj = ( GraphObject )graph_objects.get(j);
         
-        Object value = data.getAttributeValue( obj.getIdentifier(),
-                                               attribute );
+        Object value = getAttributeValue( type,
+                                          obj.getIdentifier(),
+                                          attribute );
         data_vector[j][i] = value;
       }
     }

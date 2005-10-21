@@ -14,6 +14,9 @@ import cytoscape.data.*;
 
 import ViolinStrings.Strings;
 
+import exesto.*;
+
+
 public class AttributePanel 
   extends JPanel
   implements PropertyChangeListener,
@@ -21,7 +24,7 @@ public class AttributePanel
              ListDataListener,
              ActionListener {
   
-  CytoscapeData data;
+  CyAttributes data;
   DataTableModel tableModel;
   
   // create new attribute
@@ -32,16 +35,16 @@ public class AttributePanel
   // attributes
   JList attributeList;
   
-  // labels
-  JList labelList;
-  JButton addToLabel;
-  JButton removeFromLabel;
-  JTextField newLabel;
-  JButton newLabelButton;
+  // tags
+  JList tagList;
+  JButton addToTag;
+  JButton removeFromTag;
+  JTextField newTag;
+  JButton newTagButton;
 
   protected SwingPropertyChangeSupport pcs = new SwingPropertyChangeSupport( this );
     
-  public AttributePanel ( CytoscapeData data, AttributeModel a_model, LabelModel l_model ) {
+  public AttributePanel ( CyAttributes data, AttributeModel a_model, LabelModel l_model ) {
   
     
     this.data = data;
@@ -75,36 +78,36 @@ public class AttributePanel
     a_scroll.setPreferredSize(new Dimension(200,180));
 
 
-    // labels
+    // tags
     JPanel labPanel = new JPanel();
-    labelList = new JList( l_model );
-    labelList.addListSelectionListener( this );
-    labelList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    tagList = new JList( l_model );
+    tagList.addListSelectionListener( this );
+    tagList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-    JScrollPane l_scroll = new JScrollPane( labelList );
+    JScrollPane l_scroll = new JScrollPane( tagList );
     labPanel.add( l_scroll, BorderLayout.CENTER );
     l_scroll.setPreferredSize(new Dimension(200,50));
     
-    // label control
+    // tag control
     JPanel lcp = new JPanel();
-    addToLabel = new JButton( "+" );
-    addToLabel.addActionListener( this );
-    removeFromLabel = new JButton( "-" );
-    removeFromLabel.addActionListener( this );
-    lcp.add( addToLabel );
-    lcp.add( removeFromLabel );
+    addToTag = new JButton( "+" );
+    addToTag.addActionListener( this );
+    removeFromTag = new JButton( "-" );
+    removeFromTag.addActionListener( this );
+    lcp.add( addToTag );
+    lcp.add( removeFromTag );
 
-    // new Label
-    newLabel = new JTextField( 10 );
-    newLabel.addActionListener( this );
-    newLabelButton = new JButton( "New" );
-    newLabelButton.addActionListener( this );
+    // new Tag
+    newTag = new JTextField( 10 );
+    newTag.addActionListener( this );
+    newTagButton = new JButton( "New" );
+    newTagButton.addActionListener( this );
     JPanel ln = new JPanel();
-    ln.add( newLabel );
-    ln.add( newLabelButton );
+    ln.add( newTag );
+    ln.add( newTagButton );
     
     JPanel one = new JPanel();
-    one.setBorder( new TitledBorder( "Labels" ) );
+    one.setBorder( new TitledBorder( "Tags" ) );
     one.setLayout( new BorderLayout() );
     one.add( ln, BorderLayout.SOUTH );
     one.add( labPanel, BorderLayout.CENTER );
@@ -123,26 +126,26 @@ public class AttributePanel
   
   public void actionPerformed ( ActionEvent e ) {
     
-    if ( e.getSource() == newLabel || e.getSource() == newLabelButton ) {
-      // create a new label, and add the attributes to it
-      String label_name = newLabel.getText();
+    if ( e.getSource() == newTag || e.getSource() == newTagButton ) {
+      // create a new tag, and add the attributes to it
+      String tag_name = newTag.getText();
       Object[] atts = attributeList.getSelectedValues();
       for ( int i = 0; i < atts.length; ++i ) {
-        data.applyLabel( (String)atts[i], label_name );
+        AttributeTags.applyTag( data, (String)atts[i], tag_name );
       }
 
-    } else  if ( e.getSource() == addToLabel ) {
-      String label = labelList.getSelectedValue().toString();
+    } else  if ( e.getSource() == addToTag ) {
+      String tag = tagList.getSelectedValue().toString();
       Object[] atts = attributeList.getSelectedValues();
       for ( int i = 0; i < atts.length; ++i ) {
-        data.applyLabel( (String)atts[i], label );
+        AttributeTags.applyTag( data, (String)atts[i], tag );
       }
 
-    } else  if ( e.getSource() == removeFromLabel ) {
-      String label = labelList.getSelectedValue().toString();
+    } else  if ( e.getSource() == removeFromTag ) {
+      String tag = tagList.getSelectedValue().toString();
       Object[] atts = attributeList.getSelectedValues();
       for ( int i = 0; i < atts.length; ++i ) {
-        data.removeLabel( (String)atts[i], label );
+        AttributeTags.removeTag( data, (String)atts[i], tag );
       }
 
     } else  if ( e.getSource() == newAttButton || e.getSource() == newAttField ) {
@@ -153,17 +156,17 @@ public class AttributePanel
       String type = (String)newAttType.getSelectedItem();
       byte t;
       if ( type.equals( "String" ) )
-        t = CytoscapeData.TYPE_STRING;
+        t = CyAttributes.TYPE_STRING;
       else if ( type.equals( "Floating Point" ) )
-        t = CytoscapeData.TYPE_FLOATING_POINT;
+        t = CyAttributes.TYPE_FLOATING;
       else if ( type.equals( "Integer" ) )
-        t = CytoscapeData.TYPE_INTEGER;
+        t = CyAttributes.TYPE_INTEGER;
       else if ( type.equals( "Boolean" ) )
-        t = CytoscapeData.TYPE_BOOLEAN;
+        t = CyAttributes.TYPE_BOOLEAN;
       else
-        t = CytoscapeData.TYPE_STRING;
+        t = CyAttributes.TYPE_STRING;
 
-      data.initializeAttributeType( name, t );
+      //data.initializeAttributeType( name, t );
 
     }
 
@@ -182,9 +185,9 @@ public class AttributePanel
       tableModel.setTableDataAttributes( Arrays.asList( atts ) );
     }
 
-    if ( e.getSource() == labelList ) {
-      String label = labelList.getSelectedValue().toString();
-      Set atts = data.getAttributesByLabel( label );
+    if ( e.getSource() == tagList ) {
+      String tag = tagList.getSelectedValue().toString();
+      Set atts = AttributeTags.getAttributesByTag(data, tag );
       int[] indices = new int[ atts.size() ];
 
       int count = 0;
