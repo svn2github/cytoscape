@@ -108,13 +108,31 @@ public class CyAttributesEquivalenceTest extends TestCase {
                 DUMMY_ID_1);
         assertEquals (false, exists);
 
-        //  Now, try setting a value via GraphObjAttributes
+        //  Try setting an Integer value;  this should fail
+        try {
+            graphAttributes.set(DUMMY_BOOLEAN_ATTRIBUTE, DUMMY_ID_2, new
+                Integer (5));
+            fail ("Illegal Argument Exception should have been thrown.");
+        } catch (IllegalArgumentException e) {
+            assertTrue (e != null);
+        }
+    }
+
+    /**
+     * Tests Boolean Values, Take 2.
+     */
+    public void testBooleanValues2() {
+        //  Try setting a value via GraphObjAttributes
         graphAttributes.set(DUMMY_BOOLEAN_ATTRIBUTE, DUMMY_ID_2,
                 new Boolean(false));
 
         //  Verify value stored in CyAttributes
-        value = cyAttributes.getBooleanAttribute(DUMMY_ID_2,
+        //  Due to workaround, single values stored via graphObjAttributes
+        //  are stored as lists.
+        List list = cyAttributes.getAttributeList(DUMMY_ID_2,
                 DUMMY_BOOLEAN_ATTRIBUTE);
+        assertEquals (1, list.size());
+        Boolean value = (Boolean) list.get(0);
         assertEquals (false, value.booleanValue());
 
         //  Verify value stored in GraphObjAttributes
@@ -130,6 +148,7 @@ public class CyAttributesEquivalenceTest extends TestCase {
         } catch (IllegalArgumentException e) {
             assertTrue (e != null);
         }
+
     }
 
     /**
@@ -163,13 +182,10 @@ public class CyAttributesEquivalenceTest extends TestCase {
                 DUMMY_ID_1);
         assertEquals ("Cytoscape", value);
 
-        //  This should fail, as we are trying to cast a String to a Double
-        try {
-            graphAttributes.getDoubleValue(DUMMY_STRING_ATTRIBUTE, DUMMY_ID_1);
-            fail ("ClassCastException should have been thrown");
-        } catch (ClassCastException e) {
-            assertTrue (e != null);
-        }
+        //  Try getting as a Double;  should result in a null;
+        Double d = graphAttributes.getDoubleValue(DUMMY_STRING_ATTRIBUTE,
+                DUMMY_ID_1);
+        assertTrue (d==null);
     }
 
     /**
