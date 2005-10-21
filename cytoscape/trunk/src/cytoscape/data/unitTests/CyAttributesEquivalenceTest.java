@@ -275,7 +275,7 @@ public class CyAttributesEquivalenceTest extends TestCase {
         //  Get it back
         button = (JButton) graphAttributes.get(DUMMY_BUTTON_ATTRIBUTE,
                 DUMMY_ID_1);
-        assertEquals ("Hello World", button.getText());
+        assertEquals ("Hello World!", button.getText());
     }
 
     /**
