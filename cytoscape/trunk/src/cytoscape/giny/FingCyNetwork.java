@@ -54,8 +54,8 @@ public class FingCyNetwork
    */
   protected FlagFilter flagger;
 
-  CytoscapeData nodeData;
-  CytoscapeData edgeData;
+  GraphObjAttributes nodeData;
+  GraphObjAttributes edgeData;
 
   //TODO: remove
   int activityCount = 0;
@@ -295,7 +295,7 @@ public class FingCyNetwork
    * @deprecated
    * does nothing, all attributes are shared right now
    */
-  public void setNodeAttributes ( CytoscapeData newNodeAttributes ) {
+  public void setNodeAttributes ( GraphObjAttributes newNodeAttributes ) {
   }
 
   /**
@@ -310,7 +310,7 @@ public class FingCyNetwork
    * @deprecated
    * does nothing, all attributes are shared right now
    */
-  public void setEdgeAttributes ( CytoscapeData newEdgeAttributes ) {
+  public void setEdgeAttributes ( GraphObjAttributes newEdgeAttributes ) {
   }
 
   /**

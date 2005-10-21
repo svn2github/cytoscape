@@ -120,12 +120,12 @@ public abstract class Cytoscape {
 	/**
 	 * The NetworkData that stores node info
 	 */
-	protected static CytoscapeData nodeData;
+	protected static GraphObjAttributes nodeData;
 
 	/**
 	 * The NetworkData that stores edge info
 	 */
-	protected static CytoscapeData edgeData;
+	protected static GraphObjAttributes edgeData;
 
     /**
      * Node CyAttributes.
