@@ -159,7 +159,7 @@ public class BioDataServerPanel6Descriptor extends WizardPanelDescriptor
 			CytoscapeInit.setDefaultSpeciesName();		
 			
 		} else if (e.getActionCommand().equals("comboBoxChanged")) {
-			System.out.println(panel6.getOverwiteComboBox());
+			//System.out.println(panel6.getOverwiteComboBox());
 			speciesName = panel6.getOverwiteComboBox();
 //			System.out.println("Current def. species name is: " 
 //					+ CytoscapeInit.getProperties().getProperty("defaultSpeciesName") );

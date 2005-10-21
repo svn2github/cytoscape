@@ -390,7 +390,8 @@ public class BioDataServerPanel6 extends JPanel {
 								final BufferedReader gaFileReader = new BufferedReader(
 										new FileReader(selectedFile));
 
-								//File taxonTarget = new File(taxonFileLocation);
+								// File taxonTarget = new
+								// File(taxonFileLocation);
 
 								BufferedReader spListReader = null;
 
@@ -521,21 +522,6 @@ public class BioDataServerPanel6 extends JPanel {
 		boolean taxonFound = false;
 		BufferedReader spListReader = null;
 
-		// First, try the file in the jar file
-		try {
-
-			URL taxURL = getClass().getResource(
-					"/cytoscape/resources/tax_report.txt");
-
-			spListReader = new BufferedReader(new InputStreamReader(taxURL
-					.openStream()));
-
-			taxonFound = true;
-			System.out.println("Taxonomy table found in jar file...");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
 		if (taxonFound == false) {
 			try {
 				File file = new File(System.getProperty("user.dir"), TAXON_FILE);
@@ -603,6 +589,24 @@ public class BioDataServerPanel6 extends JPanel {
 				return;
 			}
 
+		}
+
+		// If user taxon table is not found, try the file in the jar file
+
+		if (taxonFound == false) {
+			try {
+
+				URL taxURL = getClass().getResource(
+						"/cytoscape/resources/tax_report.txt");
+
+				spListReader = new BufferedReader(new InputStreamReader(taxURL
+						.openStream()));
+
+				taxonFound = true;
+				System.out.println("Taxonomy table found in jar file...");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 
 		try {
