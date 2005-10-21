@@ -884,31 +884,31 @@ public class GraphObjAttributesTest extends TestCase {
                 (cyAttributes);
         a.readAttributesFromFile(new File
                 ("testData/implicitStringNoCategory.attribute"));
-        assertTrue(a.getClass("sample zero") == "string".getClass());
-        assertTrue(a.getCategory("sample zero").equals
+        assertTrue(a.getClass("sample_zero") == "string".getClass());
+        assertTrue(a.getCategory("sample_zero").equals
                 (GraphObjAttributes.DEFAULT_CATEGORY));
 
         cyAttributes = new CyAttributesImpl();
         a = new GraphObjAttributesImpl (cyAttributes);
         a.readAttributesFromFile(new File
                 ("testData/explicitStringNoCategory.attribute"));
-        assertTrue(a.getClass("sample zero") == "string".getClass());
-        assertTrue(a.getCategory("sample zero").equals
+        assertTrue(a.getClass("sample_zero") == "string".getClass());
+        assertTrue(a.getCategory("sample_zero").equals
                 (GraphObjAttributes.DEFAULT_CATEGORY));
 
         cyAttributes = new CyAttributesImpl();
         a = new GraphObjAttributesImpl (cyAttributes);
         a.readAttributesFromFile(new File
                 ("testData/implicitStringWithCategory.attribute"));
-        assertTrue(a.getClass("sample zero") == "string".getClass());
-        assertTrue(a.getCategory("sample zero").equals("annotation"));
+        assertTrue(a.getClass("sample_zero") == "string".getClass());
+        assertTrue(a.getCategory("sample_zero").equals("annotation"));
 
         cyAttributes = new CyAttributesImpl();
         a = new GraphObjAttributesImpl (cyAttributes);
         a.readAttributesFromFile(new File
                 ("testData/explicitStringWithCategory.attribute"));
-        assertTrue(a.getClass("sample zero") == "string".getClass());
-        assertTrue(a.getCategory("sample zero").equals("annotation"));
+        assertTrue(a.getClass("sample_zero") == "string".getClass());
+        assertTrue(a.getCategory("sample_zero").equals("annotation"));
 
         cyAttributes = new CyAttributesImpl();
         a = new GraphObjAttributesImpl (cyAttributes);
@@ -938,7 +938,7 @@ public class GraphObjAttributesTest extends TestCase {
      * GO molecular function
      */
     public void testReadArrayAttributes() throws IOException {
-        String name = "GO molecular function, level 4";
+        String name = "GO_molecular_function_level_4";
         CyAttributes cyAttributes = new CyAttributesImpl();
         GraphObjAttributes a = new GraphObjAttributesImpl
                 (cyAttributes);
