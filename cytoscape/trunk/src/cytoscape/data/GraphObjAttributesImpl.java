@@ -32,7 +32,7 @@ public class GraphObjAttributesImpl implements GraphObjAttributes
     m_cyAttrs = cyAttrs;
   }
 
-  private Class deduceClass(String string)
+  public static Class deduceClass(String string)
   {
     String[] classNames = { //"java.net.URL",
                             "java.lang.Integer",
@@ -51,7 +51,7 @@ public class GraphObjAttributesImpl implements GraphObjAttributes
     return null;
   }
 
-  private Object createInstanceFromString(Class requestedClass,
+  private static Object createInstanceFromString(Class requestedClass,
                                           String ctorArg) throws Exception
   {
     Class[] ctorArgsClasses = new Class[1];
