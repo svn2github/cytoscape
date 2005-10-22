@@ -111,6 +111,7 @@ public class BioPAXNetworkEditEventHandler extends
 		Object shape;
 		String shapeName = null;
 
+
 		Point location = e.getLocation();
 		Point2D locn = (Point2D) location.clone();
 		locn = canvas.getCamera().localToView(locn);
@@ -147,6 +148,7 @@ public class BioPAXNetworkEditEventHandler extends
 				}
 				
 		BasicCytoShapeEntity myShape = ShapePalette.getBasicCytoShapeEntity(shapeName);
+
 
         Object [] args = null;
 		if (myShape != null)

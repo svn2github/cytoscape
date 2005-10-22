@@ -11,7 +11,9 @@ import javax.swing.Action;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.UndoManager;
 
+import cytoscape.Cytoscape;
 import cytoscape.editor.CytoscapeEditorManager;
+import cytoscape.editor.impl.ShapePalette;
 
 /**
  * redo an operation that has been undone
@@ -28,7 +30,7 @@ public class RedoAction extends AbstractAction {
 	 * @param undo
 	 */
 	public RedoAction(UndoManager undo) {
-		super("Redo");
+		super("");
 		this.undo = undo;
 		setEnabled(false);
 	}
@@ -43,16 +45,23 @@ public class RedoAction extends AbstractAction {
 			// AJK: 09/05/05 BEGIN
 			// accommodate one UndoManager per NetworkView
 //			undo.redo();
-			UndoManager undoMgr = CytoscapeEditorManager.getCurrentUndoManager();
+//			UndoManager undoMgr = CytoscapeEditorManager.getCurrentUndoManager();
+			UndoManager undoMgr =
+				CytoscapeEditorManager.getUndoManagerForView(Cytoscape.getCurrentNetworkView());
 			undoMgr.redo();
+			// AJK: 10/21/05 send end message to undo manager 
+//			undoMgr.end();
 			// AJK: 09/05/05 END			
 		} catch (CannotRedoException ex) {
 			System.out.println("Unable to redo: " + ex);
 //			ex.printStackTrace();
 		}
+
+		
 		update();
 		undoAction.update();
 	}
+	
 
 	/**
 	 * enables and disables undo and redo operations, according to the last operation performed.
@@ -60,19 +69,62 @@ public class RedoAction extends AbstractAction {
 	 */
 	public void update() {
 
-		System.out.println("REDO: " + undo.canRedo());
+    
 
 		// accommodate one UndoManager per NetworkView
 //		if (undo.canRedo()) {
-		UndoManager undoMgr = CytoscapeEditorManager.getCurrentUndoManager();
+		UndoManager undoMgr = CytoscapeEditorManager.getUndoManagerForView(
+				Cytoscape.getCurrentNetworkView());
+		ShapePalette palette = CytoscapeEditorManager.getShapePaletteForView(
+				Cytoscape.getCurrentNetworkView());
+		System.out.println ("for redo: " + this);
+		System.out.println("REDO: " + undo.canRedo());
 		if (undoMgr.canRedo()) {
 		// AJK: 09/05/05 END			if (undo.canRedo()) {
 			setEnabled(true);
-			putValue(Action.NAME, undo.getRedoPresentationName());
+			// AJK: 10/21/05 No name, just use button
+//			putValue(Action.NAME, undo.getRedoPresentationName());
+			if (palette != null)
+			{
+				palette.getRedoButton().setEnabled(true);
+			}
 		} else {
 			setEnabled(false);
-			putValue(Action.NAME, "Redo");
+			// AJK: 10/21/05 
+//			putValue(Action.NAME, "Redo");
+			if (palette != null)
+			{
+				palette.getRedoButton().setEnabled(false);
+			}
 		}
+	}
+	
+	public void update (boolean redoFlag)
+	{
+		UndoManager undoMgr = CytoscapeEditorManager.getUndoManagerForView(
+				Cytoscape.getCurrentNetworkView());
+		ShapePalette palette = CytoscapeEditorManager.getShapePaletteForView(
+				Cytoscape.getCurrentNetworkView());
+		System.out.println ("for redo: " + this);
+		System.out.println("REDO: " + undo.canRedo());
+		if ((undoMgr.canRedo() || (redoFlag))) {
+		// AJK: 09/05/05 END			if (undo.canRedo()) {
+			setEnabled(true);
+			// AJK: 10/21/05 No name, just use button
+//			putValue(Action.NAME, undo.getRedoPresentationName());
+			if (palette != null)
+			{
+				palette.getRedoButton().setEnabled(true);
+			}
+		} else {
+			setEnabled(false);
+			// AJK: 10/21/05 
+//			putValue(Action.NAME, "Redo");
+			if (palette != null)
+			{
+				palette.getRedoButton().setEnabled(false);
+			}
+		}		
 	}
 	
 	/**

@@ -97,6 +97,7 @@ public class PaletteNetworkEditEventHandler extends
 		try
 		{
 		    shape = t.getTransferData(DataFlavor.stringFlavor);
+
 		    if (shape != null)
 		    {
 		    	shapeName = shape.toString();
@@ -139,7 +140,7 @@ public class PaletteNetworkEditEventHandler extends
 			}
 			else if (attributeName.equals("EdgeType"))
 			{
-				handleDroppedEdge (attributeValue, e);
+					handleDroppedEdge (attributeValue, e);
 			}
 		}	
 	}

@@ -140,7 +140,7 @@ public class NetworkEditEventAdapter
 			java.lang.String attributeName, java.lang.Object[] keyIntoValue,
 			java.lang.Object oldAttributeValue,
 			java.lang.Object newAttributeValue) {
-		System.out.println("attributeValueAssigned");
+//		System.out.println("attributeValueAssigned");
 
 	}
 

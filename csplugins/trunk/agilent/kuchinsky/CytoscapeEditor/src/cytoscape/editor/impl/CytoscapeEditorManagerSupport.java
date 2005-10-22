@@ -11,6 +11,7 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.undo.AbstractUndoableEdit;
+import javax.swing.undo.UndoManager;
 
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
@@ -20,6 +21,8 @@ import cytoscape.editor.CytoscapeEditor;
 import cytoscape.editor.CytoscapeEditorFactory;
 import cytoscape.editor.CytoscapeEditorManager;
 import cytoscape.editor.InvalidEditorException;
+import cytoscape.editor.actions.RedoAction;
+import cytoscape.editor.actions.UndoAction;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.visual.VisualMappingManager;
@@ -62,87 +65,100 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
 	// AJK: 10/15/05 BEGIN
 	//    handle change of visual style
 	//    if new visual style has an editor associated with it, then switch to it.
-public void stateChanged(ChangeEvent e)
-	{
+	public void stateChanged(ChangeEvent e) {
+		
+
 		boolean newEditor = false;
-		
-		System.out.println ("Got stateChange event: " + e);
-		
-		if (!CytoscapeEditorManager.isEditingEnabled())
-		{
+
+		System.out.println("Got stateChange event: " + e);
+
+		if (!CytoscapeEditorManager.isEditingEnabled()) {
 			return;
 		}
 		CytoscapeEditor oldEditor = CytoscapeEditorManager.getCurrentEditor();
-		
+
 		VisualMappingManager VMM = (VisualMappingManager) e.getSource();
-		if (VMM != null)
-		{
+		if (VMM != null) {
 			VisualStyle style = VMM.getVisualStyle();
-			CytoscapeEditor editor = CytoscapeEditorManager.getEditorForVisualStyle(style);
-			if (editor == null)
-			{
+			CytoscapeEditor editor = CytoscapeEditorManager
+					.getEditorForVisualStyle(style);
+			if (editor == null) {
 				// setup an editor for the visual style
-				String editorType = 
-					CytoscapeEditorManager.getEditorTypeForVisualStyleName(
-							style.getName());
-				// if no editor exists for this visual type, then just disable the old editor and return
-				// except by shortcut, this network will not be editable unless another editor is set
-				if (editorType == null)
-				{
-					System.out.println("have visual style without editorType: " + style.getName());
-					oldEditor.disableControls(null);
-			        int idx = Cytoscape.getDesktop().getCytoPanel( SwingConstants.WEST ).indexOfComponent("Editor");
-			        System.out.println ("index of current palette = " + idx);
-			        if (idx >= 0)
-			        {
-			        	Cytoscape.getDesktop().getCytoPanel( SwingConstants.WEST ).remove(idx);
-			        	System.out.println ("removing palette at Cytopanel index: " + idx);
-			        }
+				String editorType = CytoscapeEditorManager
+						.getEditorTypeForVisualStyleName(style.getName());
+				
+				
+				// AJK: 10/21/05 BEGIN
+				//    modify: if no editor exists, then just use default editor
+				/*
+				// if no editor exists for this visual type, then just disable
+				// the old editor and return
+				// except by shortcut, this network will not be editable unless
+				// another editor is set
+				if (editorType == null) {
+					System.out.println("have visual style without editorType: "
+							+ style.getName());
+					if (oldEditor != null) {
+						oldEditor.disableControls(null);
+					}
+					int idx = Cytoscape.getDesktop().getCytoPanel(
+							SwingConstants.WEST).indexOfComponent("Editor");
+					System.out.println("index of current palette = " + idx);
+					if (idx >= 0) {
+						Cytoscape.getDesktop()
+								.getCytoPanel(SwingConstants.WEST).remove(idx);
+						System.out
+								.println("removing palette at Cytopanel index: "
+										+ idx);
+					}
 					CytoscapeEditorManager.setCurrentEditor(null);
 					return;
-				}
-				
-				try
+					*/
+				// AJK: 10/21/05 END
+				if (editorType == null)
 				{
-				editor = CytoscapeEditorFactory.INSTANCE.getEditor(editorType);
-				CytoscapeEditorManager.setEditorForVisualStyle(style, editor);
-				System.out.println ("built new editor: " + editor +   
-						", for visual Style = " + style);
-				newEditor = true;
+					editorType = CytoscapeEditorManager.DEFAULT_EDITOR_TYPE;
 				}
-				catch (InvalidEditorException ex)
-				{
-					System.out.println ("Error building editor for editor type = " + 
-							editorType + ", error = "+ ex);
+
+				try {
+					editor = CytoscapeEditorFactory.INSTANCE
+							.getEditor(editorType);
+					CytoscapeEditorManager.setEditorForVisualStyle(style,
+							editor);
+					System.out.println("built new editor: " + editor
+							+ ", for visual Style = " + style);
+					newEditor = true;
+				} catch (InvalidEditorException ex) {
+					System.out
+							.println("Error building editor for editor type = "
+									+ editorType + ", error = " + ex);
 					ex.printStackTrace();
-				}			
+				}
 			}
-			if (editor != null)
-			{
+			if (editor != null) {
 				CyNetworkView view = Cytoscape.getCurrentNetworkView();
 				CytoscapeEditorManager.setEditorForView(view, editor);
 				CytoscapeEditorManager.setupNewNetworkView(view);
-				if (oldEditor == editor)
-				{
-					return;
+				if (oldEditor == editor) {
+					// AJK: 10/21/05 always switch palette when visual style changes
+//					return;
 				}
-				if (oldEditor != null)
-				{
+				if ((oldEditor != null) && (!CytoscapeEditorManager.isSettingUpEditor())){
 
 					oldEditor.disableControls(null);
 				}
-				if (newEditor)
-				{
+				// AJK: 10/21/05 always build a new shape palette when changing visual styles
+//				if (newEditor) {
 					editor.initializeControls(null);
-				}
-				else
-				{
-				    editor.enableControls(null);
-				}
+//				} else {
+//					editor.enableControls(null);
+//				}
 				CytoscapeEditorManager.setCurrentEditor(editor);
+				CytoscapeEditorManager.setEventHandlerForView(view);
 			}
 		}
 	}
+
 	// AJK: 10/15/05 END
 
 	public void propertyChange(PropertyChangeEvent e) {
@@ -150,16 +166,46 @@ public void stateChanged(ChangeEvent e)
 		if (e.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_CREATED)) {
 		} else if (e.getPropertyName().equals(Cytoscape.ATTRIBUTES_CHANGED)) {
 			// implement ATTRIBUTES_CHANGED handler
-			System.out.println("Property changed: " + e.getPropertyName());
-			System.out.println("Old value = " + e.getOldValue());
-			System.out.println("New value = " + e.getNewValue());
+//			System.out.println("Property changed: " + e.getPropertyName());
+//			System.out.println("Old value = " + e.getOldValue());
+//			System.out.println("New value = " + e.getNewValue());
 
 		} else if (e.getPropertyName().equals(
 				CytoscapeDesktop.NETWORK_VIEW_FOCUSED)) {
+			
+
 
 			CyNetworkView view = Cytoscape.getCurrentNetworkView();
 			CytoscapeEditor cyEditor = CytoscapeEditorManager
 					.getEditorForView(view);
+
+			// AJK: 09/06/05 BEGIN
+			//   setup an undo manager for this network view
+			Object undoObj = CytoscapeEditorManager.getUndoManagerForView(view);
+			if (undoObj instanceof UndoManager) {
+				CytoscapeEditorManager.setCurrentUndoManager((UndoManager) undoObj);
+			} else {
+				UndoManager newUndo = new UndoManager();
+				CytoscapeEditorManager.setUndoManagerForView(view, newUndo);
+//				System.out.println ("SetUndoManagerForView: " + Cytoscape.getCurrentNetworkView());
+				CytoscapeEditorManager.setCurrentUndoManager(newUndo);
+				UndoAction undoAction = new UndoAction(newUndo);
+				CytoscapeEditorManager.setUndoActionForView (view, undoAction);
+	    		RedoAction redoAction = new RedoAction(newUndo);
+	    		undoAction.setRedoAction(redoAction);
+	    		redoAction.setUndoAction(undoAction);
+	    		CytoscapeEditorManager.setRedoActionForView (view, redoAction);
+	    		System.out.println ("Set redo manager for view: " + redoAction);
+	    		}
+			// AJK: 09/06/05 END
+			
+    		// set the buttons on the shapePalette to undo, redo actions
+    		ShapePalette palette = CytoscapeEditorManager.getShapePaletteForView(view);
+    		if (palette != null)
+    		{
+    			palette.getUndoButton().setAction(CytoscapeEditorManager.getUndoActionForView(view));
+    			palette.getRedoButton().setAction(CytoscapeEditorManager.getRedoActionForView(view));
+    		}
 
 			if (cyEditor == null) {
 				cyEditor = CytoscapeEditorManager.getCurrentEditor();
@@ -169,6 +215,8 @@ public void stateChanged(ChangeEvent e)
 				// this would be because no editor has been set yet. Just return
 				return;
 			}
+			
+			
 
 			// at this point there is an editor but it is not assigned to this
 			// view
@@ -218,43 +266,57 @@ public void stateChanged(ChangeEvent e)
 			final String network_id = cyNet.getIdentifier();
 
 			public String getPresentationName() {
-				return "Add";
+				// AJK: 10/21/05 return null as presentation name because we are using iconic buttons
+//				return "Add";
+				return null;
 			}
 
 			public String getRedoPresentationName() {
 				if (isNode)
-					return "Redo: Added Node";
-				else
-					return "Redo: Added Edge";
-			}
+					// AJK: 10/21/05 return null as presentation name because we are using iconic buttons
+//					return "Redo: Added Node";
+					return null;
+			else
+				// AJK: 10/21/05 return null as presentation name because we are using iconic buttons
+//					return "Redo: Added Edge";
+				return null;
+		}
 
 			public String getUndoPresentationName() {
 
 				if (isNode)
-					return "Undo: Added Node";
-				else
-					return "Undo: Added Edge";
+					// AJK: 10/21/05 return null as presentation name because we are using iconic buttons
+//					return "Undo: Added Node";
+					return null;
+			else
+				// AJK: 10/21/05 return null as presentation name because we are using iconic buttons
+//					return "Undo: Added Edge";
+				return null;
 
 			}
 
 			public void undo() {
 				// removes the removed nodes and edges from the network
+				super.undo();
 				CyNetwork network = Cytoscape.getNetwork(network_id);
 				if (network != null) {
 					network.hideEdges(edges);
 					network.hideNodes(nodes);
 					CytoscapeEditorManager.getNodeClipBoard().elements(nodes);
 					CytoscapeEditorManager.getEdgeClipBoard().elements(edges); // sets
-																			   // elements
+					// elements
 				}
 
 			}
 
 			public void redo() {
+				super.redo();
 				CyNetwork network = Cytoscape.getNetwork(network_id);
 				if (network != null) {
 					network.restoreNodes(nodes);
 					network.restoreEdges(edges);
+				    // signal end to Undo Manager; this enables redo
+
 				}
 			}
 

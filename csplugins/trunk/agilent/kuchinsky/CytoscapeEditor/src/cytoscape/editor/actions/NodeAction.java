@@ -48,6 +48,7 @@ public class NodeAction {
 	   * @return the menu item that is associated with the input NodeView
 	   */
 	  public static JMenuItem getContextMenuItem (Object[] args, PNode node) {
+	  	
 
 		    final CyNetworkView nv = ( CyNetworkView )args[0];
 		    CyNode cyNode;
@@ -64,5 +65,6 @@ public class NodeAction {
 
 		    }
 			return (new JMenuItem(new DeleteAction ())) ;
+	
 		}	 
 }

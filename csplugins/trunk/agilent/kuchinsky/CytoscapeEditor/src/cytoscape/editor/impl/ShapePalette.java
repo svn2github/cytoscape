@@ -4,14 +4,17 @@
  */
 package cytoscape.editor.impl;
 
-import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.util.HashMap;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -20,9 +23,14 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
+import javax.swing.border.Border;
+import javax.swing.border.TitledBorder;
 
 import cytoscape.Cytoscape;
 import cytoscape.editor.CytoscapeEditorManager;
+import cytoscape.editor.actions.DeleteAction;
+import cytoscape.editor.actions.RedoAction;
+import cytoscape.editor.actions.UndoAction;
 import cytoscape.editor.event.BasicCytoShapeTransferHandler;
 import cytoscape.view.CyNetworkView;
 
@@ -55,13 +63,17 @@ public class ShapePalette extends JPanel
 	 */
 	protected JList dataList;
 	protected DefaultListModel listModel;
-	 
+	
+	private static final String ICONS_REL_LOC = "images/";
+
+    private JButton deleteButton, undoButton, redoButton;
+    private ImageIcon deleteIcon, undoIcon, redoIcon;
 	  
 	public ShapePalette() {
 		super();
 		
 	    JPanel _controlPane = new JPanel();
-	    _controlPane.setLayout (new BorderLayout());
+	    _controlPane.setLayout (new BoxLayout(_controlPane, BoxLayout.Y_AXIS));
 	    
 		listModel = new DefaultListModel();
 		dataList = new JList (listModel);
@@ -80,19 +92,25 @@ public class ShapePalette extends JPanel
 
         instructionsArea.setLineWrap(true);
         instructionsArea.setWrapStyleWord(true);
-        instructionsArea.setText("Cytoscape Editor\n\nTo add a node to a network, click on a shape on the palette, " +
+        instructionsArea.setText("To add a node to a network, click on a shape on the palette, " +
         		"then drag and drop the shape onto the canvas." +
 				"\n\nTo connect two nodes with an edge, click on an arrow on the palette, " +
 				"drag and drop the arrow onto a node on the canvas, " + 
 				"then move the cursor over a second node and click the mouse.");
-        instructionsArea.setBorder(BorderFactory.createEtchedBorder());
+//        instructionsArea.setBorder(BorderFactory.createEtchedBorder());
+        Border       blackline = BorderFactory.createLineBorder (Color.black);
+        TitledBorder title = BorderFactory.createTitledBorder (blackline,
+                                                               "Cytoscape Editor");
+        instructionsArea.setBorder (title);
         instructionsArea.setBackground(Cytoscape.getDesktop().getBackground());
         instructionsArea.setPreferredSize(new Dimension(
         		((JPanel) Cytoscape.getDesktop().getCytoPanel( SwingConstants.WEST )).getSize().width - 5,
 				160));
     	
         JScrollPane scrollPane = new JScrollPane(dataList);
-        _controlPane.add (instructionsArea, BorderLayout.NORTH);
+ 
+        _controlPane.add (instructionsArea);
+        _controlPane.add(buildEditControlsPanel());
         scrollPane.setBorder(BorderFactory.createEtchedBorder());
 //        scrollPane.setBorder (BorderFactory.createEmptyBorder (0, 0,
 //                                                               10, 0));
@@ -103,7 +121,7 @@ public class ShapePalette extends JPanel
         		((JPanel) Cytoscape.getDesktop().getCytoPanel( SwingConstants.WEST )).getSize().height
 				    - instructionsArea.getPreferredSize().height - 5));
         
-       _controlPane.add (scrollPane, BorderLayout.SOUTH);
+       _controlPane.add (scrollPane);
        
         CytoscapeEditorManager.setCurrentShapePalette(this);
         CyNetworkView view = Cytoscape.getCurrentNetworkView();
@@ -114,7 +132,58 @@ public class ShapePalette extends JPanel
 		this.setBackground(Cytoscape.getDesktop().getBackground());
 		this.setVisible(true);		
 	}
+  
 	
+	   private JPanel buildEditControlsPanel ()
+	    {
+	        JPanel editControlsPanel;
+	        editControlsPanel = new JPanel();
+	        editControlsPanel.setLayout (new BoxLayout(editControlsPanel, BoxLayout.X_AXIS));
+
+	        Border       blackline = BorderFactory.createLineBorder (Color.black);
+	        TitledBorder title = BorderFactory.createTitledBorder (blackline,
+	                                                               "Delete/Undo/Redo");
+	        editControlsPanel.setBorder (title);
+
+			deleteButton = new JButton ();
+			deleteButton.setAction(new DeleteAction());
+			deleteIcon = new ImageIcon(getClass().getResource(
+					ICONS_REL_LOC + "deleteIcon.gif"));
+			deleteButton.setIcon(deleteIcon);
+			deleteButton.setToolTipText("Delete Selected Nodes and Edges");
+			editControlsPanel.add(deleteButton);
+
+//			deleteButton.setDisabledIcon(new ImageIcon(getClass()
+//					.getResource(ICONS_REL_LOC + "DisabledUpLeftWhite.gif")));
+
+			undoButton = new JButton();
+			// AJK: 10/21/05 BEGIN
+			//   comment out, couple actions to buttons in showPalette().
+//			undoButton.setAction(new UndoAction
+//					(CytoscapeEditorManager.getUndoManagerForView(Cytoscape.getCurrentNetworkView())));
+            // AJK: 10/21/05 END
+			undoIcon = 
+			    new ImageIcon(getClass().getResource(
+					ICONS_REL_LOC + "undo.gif"));
+			undoButton.setIcon(undoIcon);
+			undoButton.setToolTipText("Undo");
+			editControlsPanel.add(undoButton);
+			
+			redoButton = new JButton();
+			// AJK: 10/21/05 BEGIN
+			//   comment out, couple actions to buttons in showPalette().
+//			redoButton.setAction(new RedoAction
+//					(CytoscapeEditorManager.getUndoManagerForView(Cytoscape.getCurrentNetworkView())));	
+			// AJK: 10/21/05
+			editControlsPanel.add(redoButton);
+						redoIcon = 
+			new ImageIcon(getClass().getResource(
+					ICONS_REL_LOC + "redo.gif"));
+			redoButton.setIcon(redoIcon);
+			redoButton.setToolTipText("redo");
+	        return editControlsPanel;   
+	    }
+
 	/**
 	 * add a shape to the palette
 	 * @param attributeName attribute name for the shape, should be one of "NodeType" or "EdgeType"
@@ -156,6 +225,28 @@ public class ShapePalette extends JPanel
 				Cytoscape.getDesktop().getCytoPanel( SwingConstants.WEST ).indexOfComponent(this));
 		System.out.println ("Set new selected component on Cytopanel: " +
 				Cytoscape.getDesktop().getCytoPanel( SwingConstants.WEST ).getSelectedComponent());
+		
+		CyNetworkView view = Cytoscape.getCurrentNetworkView();
+		CytoscapeEditorManager.setShapePaletteForView(view, this);
+		
+		// 
+		this.getUndoButton().setAction(
+//				new UndoAction
+//				(CytoscapeEditorManager.getUndoManagerForView(
+				CytoscapeEditorManager.getUndoActionForView(
+						Cytoscape.getCurrentNetworkView()));
+
+		this.getUndoButton().setIcon(undoIcon);
+//		this.getUndoButton().setEnabled(true);
+		
+		this.getRedoButton().setAction(
+//				new RedoAction
+//				(CytoscapeEditorManager.getUndoManagerForView(
+//						Cytoscape.getCurrentNetworkView())));
+				CytoscapeEditorManager.getRedoActionForView(
+						Cytoscape.getCurrentNetworkView()));
+		this.getRedoButton().setIcon(redoIcon);
+//		this.getRedoButton().setEnabled(true);
 		
 		this.setVisible(true);
 
@@ -259,5 +350,24 @@ public class ShapePalette extends JPanel
 	        }
 	    }
 	 }	
+
+	 /**
+	 * @return Returns the deleteButton.
+	 */
+	public JButton getDeleteButton() {
+		return deleteButton;
+	}
+	/**
+	 * @return Returns the redoButton.
+	 */
+	public JButton getRedoButton() {
+		return redoButton;
+	}
+	/**
+	 * @return Returns the undoButton.
+	 */
+	public JButton getUndoButton() {
+		return undoButton;
+	}
 }
 

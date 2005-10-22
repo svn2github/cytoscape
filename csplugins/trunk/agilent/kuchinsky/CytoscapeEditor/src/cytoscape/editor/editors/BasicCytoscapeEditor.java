@@ -306,7 +306,6 @@ public class BasicCytoscapeEditor implements CytoscapeEditor {
 								+ view);
 			} else {
 				event.setMode(event.ADD_MODE);
-				event.clearNodeLabeler();
 			}
 		}
 	}
@@ -340,7 +339,7 @@ public class BasicCytoscapeEditor implements CytoscapeEditor {
 								+ view);
 			} else {
 				event.setMode(event.LABEL_MODE);
-				event.clearNodeLabeler();
+
 			}
 		}
 	}
@@ -371,7 +370,6 @@ public class BasicCytoscapeEditor implements CytoscapeEditor {
 								+ view);
 			} else {
 				event.setMode(event.CONNECT_MODE);
-				event.clearNodeLabeler();
 			}
 		}
 	}
@@ -406,7 +404,6 @@ public class BasicCytoscapeEditor implements CytoscapeEditor {
 								+ view);
 			} else {
 				event.setMode(event.SELECT_MODE);
-				event.clearNodeLabeler();
 			}
 			
 			// clear any partial edges

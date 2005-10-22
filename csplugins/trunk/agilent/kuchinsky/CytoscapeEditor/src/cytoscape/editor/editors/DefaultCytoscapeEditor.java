@@ -78,7 +78,7 @@ public class DefaultCytoscapeEditor  extends BasicCytoscapeEditor {
         if (nac == null)
         {
     		String expDescript = "Cannot build palette.  You need to set up a Visual Style that maps Node Color to NODE_TYPE attribute.";
-			String title = "Cannot build palette for SimpleBioMoleculeEditor";
+			String title = "Cannot build palette for Default Cytoscape Editor";
 			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), expDescript,
 					title, JOptionPane.PLAIN_MESSAGE);
         	return;

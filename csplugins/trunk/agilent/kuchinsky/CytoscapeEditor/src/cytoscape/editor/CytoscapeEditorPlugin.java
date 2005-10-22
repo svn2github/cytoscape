@@ -96,13 +96,13 @@ public class CytoscapeEditorPlugin extends CytoscapePlugin {
 			 */
 
 			// add default palette-based editor
-			CytoscapeEditorManager.register("DefaultCytoscapeEditor",
+			CytoscapeEditorManager.register(CytoscapeEditorManager.DEFAULT_EDITOR_TYPE,
 					"PaletteNetworkEditEventHandler",
 					CytoscapeInit.getDefaultVisualStyle());
 			
 			
 			CytoscapeEditorManager.setVisualStyleNameForEditorType(
-					"DefaultCytoscapeEditor",
+					CytoscapeEditorManager.DEFAULT_EDITOR_TYPE,
 					CytoscapeInit.getDefaultVisualStyle());
 
 			// AJK: 10/05/05 END
@@ -139,10 +139,10 @@ public class CytoscapeEditorPlugin extends CytoscapePlugin {
 			 */
 
 			// AJK: 08/12/05 BEGIN
-			//      for version 2.2, just enable the BasicCytoscapeEditor and have it
+			//      for version 2.2, just enable the DefaultCytoscapeEditor and have it
 			// setup for all network views
-			if (!CytoscapeEditorManager.isRunningEditorFramework()) {
-				String editorName = "BasicCytoscapeEditor";
+
+				String editorName = CytoscapeEditorManager.DEFAULT_EDITOR_TYPE;
 				try {
 					CytoscapeEditor cyEditor = CytoscapeEditorFactory.INSTANCE
 							.getEditor(editorName);
@@ -150,13 +150,13 @@ public class CytoscapeEditorPlugin extends CytoscapePlugin {
 					//		System.out.println ("Set current editor to: " +
 					// CytoscapeEditorManager.getCurrentEditor());
 					//		System.out.println ("for editor name: " + editorName);
-					cyEditor.initializeControls(null);
+//					cyEditor.initializeControls(null);
+					CytoscapeEditorManager.setDefaultEditor(cyEditor);
 				} catch (InvalidEditorException ex) {
 					System.out
 							.println("Error: cannot set up Cytoscape Editor: "
 									+ editorName);
 				}
-			}
 
 			// AJK: 08/12/05
 
