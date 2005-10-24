@@ -2,7 +2,6 @@ package cytoscape.data.readers.unitTests;
 
 import cytoscape.data.CyAttributesImpl;
 import cytoscape.data.CyAttributes;
-import cytoscape.data.unitTests.CyAttributesTest;
 import cytoscape.data.readers.CyAttributesReader;
 
 import java.io.File;
@@ -19,7 +18,7 @@ public class CyAttributesReaderTest extends TestCase {
 
     /**
      * Testing Reading, Take 1.
-     * @throws IOException IOExceptions.
+     * @throws IOException IO Errors.
      */
     public void testRead1() throws IOException {
         String attributeName = "TestNodeAttribute1";
@@ -30,7 +29,7 @@ public class CyAttributesReaderTest extends TestCase {
         byte type = cyAttributes.getType(attributeName);
         assertEquals (CyAttributes.TYPE_INTEGER, type);
 
-        //  Test a First value
+        //  Test a value
         Integer value = cyAttributes.getIntegerAttribute("YKR026C",
                 attributeName);
         assertEquals (1, value.intValue());
@@ -40,7 +39,7 @@ public class CyAttributesReaderTest extends TestCase {
                 attributeName);
         assertEquals (2, value.intValue());
 
-        //  Test a Third value
+        //  Test the last value in the file
         value = cyAttributes.getIntegerAttribute("YBR043C",
                 attributeName);
         assertEquals (3, value.intValue());
@@ -53,7 +52,7 @@ public class CyAttributesReaderTest extends TestCase {
 
     /**
      * Testing Reading, Take 2.
-     * @throws IOException IOExceptions.
+     * @throws IOException IO Errors.
      */
     public void testRead2() throws IOException {
         CyAttributes cyAttributes = new CyAttributesImpl();
@@ -63,7 +62,7 @@ public class CyAttributesReaderTest extends TestCase {
         byte type = cyAttributes.getType("TestNodeAttribute2");
         assertEquals (CyAttributes.TYPE_INTEGER, type);
 
-        //  Test a First value
+        //  Test a value
         Integer value = cyAttributes.getIntegerAttribute("YKR026C (pp) YGL122C",
                 "TestNodeAttribute2");
         assertEquals (2, value.intValue());
@@ -73,7 +72,7 @@ public class CyAttributesReaderTest extends TestCase {
                 "TestNodeAttribute2");
         assertEquals (3, value.intValue());
 
-        //  Test a Third value
+        //  Test the last value in the file
         value = cyAttributes.getIntegerAttribute("YBL026W (pp) YOR127C",
                 "TestNodeAttribute2");
         assertEquals (3, value.intValue());
@@ -85,8 +84,33 @@ public class CyAttributesReaderTest extends TestCase {
     }
 
     /**
+     * Testing Read, Take 3
+     * @throws IOException IO Errors.
+     */
+    public void testRead3() throws IOException {
+        CyAttributes cyAttributes = new CyAttributesImpl();
+
+        //  This file contains an explicit class declaration, like so:
+        //  Score (class=Java.lang.Double)
+        //  All the integer values should therefore be stored as Doubles.
+        File file =  new File ("testData/explicitDouble.attribute");
+        FileInputStream reader = new FileInputStream (file);
+        CyAttributesReader.loadAttributes(cyAttributes, reader);
+        byte type = cyAttributes.getType("Score");
+        assertEquals (CyAttributes.TYPE_FLOATING, type);
+
+        //  Test a value
+        Double value = cyAttributes.getDoubleAttribute("a", "Score");
+        assertEquals (1.0, value.doubleValue(), 0.01);
+
+        //  Test the last value in the file
+        value = cyAttributes.getDoubleAttribute("c", "Score");
+        assertEquals (3.7, value.doubleValue(), 0.01);
+    }
+
+    /**
      * Testing Reading of Simple Lists.
-     * @throws IOException IOExceptions.
+     * @throws IOException IO Errors.
      */
     public void testReadSimpleLists() throws IOException {
         String attributeName = "GO_molecular_function_level_4";
