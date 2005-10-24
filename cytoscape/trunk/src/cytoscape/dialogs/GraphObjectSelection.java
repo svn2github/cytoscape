@@ -76,12 +76,7 @@ public class GraphObjectSelection extends JPanel implements ActionListener {
     ArrayList other_attributes = new ArrayList( node_attribute_names.length );
 
     for ( int i = 0; i < node_attribute_names.length; ++i ) {
-<<<<<<< GraphObjectSelection.java
       Class type = deduceClass( node_attribute_names[i] );
-=======
-      Class type = GraphObjAttributesImpl.deduceClass( node_attribute_names[i] );
->>>>>>> 1.13
-
       System.out.println( "Attr: "+node_attribute_names[i]+" Class: "+type.getName() );
 
 
