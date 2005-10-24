@@ -9,6 +9,7 @@ import java.awt.event.*;
 
 import java.util.*;
 import java.awt.*;
+import java.lang.reflect.Constructor;
 
 import ViolinStrings.Strings;
 
@@ -75,7 +76,11 @@ public class GraphObjectSelection extends JPanel implements ActionListener {
     ArrayList other_attributes = new ArrayList( node_attribute_names.length );
 
     for ( int i = 0; i < node_attribute_names.length; ++i ) {
+<<<<<<< GraphObjectSelection.java
+      Class type = deduceClass( node_attribute_names[i] );
+=======
       Class type = GraphObjAttributesImpl.deduceClass( node_attribute_names[i] );
+>>>>>>> 1.13
 
       System.out.println( "Attr: "+node_attribute_names[i]+" Class: "+type.getName() );
 
@@ -300,4 +305,47 @@ public class GraphObjectSelection extends JPanel implements ActionListener {
     
   }
 
+    /**
+     *  determine (heuristically) the most-specialized class instance which can be
+     *  constructed from the supplied string.
+     */
+    static private Class deduceClass (String string) {
+      String [] classNames = {"java.net.URL",
+                              "java.lang.Integer",    // using this breaks the vizmapper, see below
+                              "java.lang.Double",
+                              "java.lang.String"};
+
+      /** vizmapper error:
+       * Exception in thread "main" java.lang.ClassCastException: java.lang.Double
+       *  at java.lang.Integer.compareTo(Integer.java:913)
+       * at cytoscape.vizmap.ContinuousMapper.getRangeValue(ContinuousMapper.java:78)
+       */
+
+      for (int i=0; i < classNames.length; i++) {
+        try {
+          Object obj = createInstanceFromString (Class.forName (classNames [i]), string);
+          return obj.getClass ();
+          }
+        catch (Exception e) {
+          ; // try the next class
+          }
+        } // for i
+
+      return null;
+
+    } // deduceClass
+
+    /**
+     *  given a string and a class, dynamically create an instance of that class from
+     *  the string
+     */
+    static private Object createInstanceFromString (Class requestedClass,
+            String ctorArg) throws Exception {
+      Class [] ctorArgsClasses = new Class [1];
+      ctorArgsClasses [0] =  Class.forName ("java.lang.String");
+      Object [] ctorArgs = new Object [1];
+      ctorArgs [0] = new String (ctorArg);
+      Constructor ctor = requestedClass.getConstructor (ctorArgsClasses);
+      return ctor.newInstance (ctorArgs);
+    }
 }
