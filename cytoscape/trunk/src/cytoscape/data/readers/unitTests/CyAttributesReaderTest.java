@@ -2,6 +2,7 @@ package cytoscape.data.readers.unitTests;
 
 import cytoscape.data.CyAttributesImpl;
 import cytoscape.data.CyAttributes;
+import cytoscape.data.unitTests.CyAttributesTest;
 import cytoscape.data.readers.CyAttributesReader;
 
 import java.io.File;
@@ -112,5 +113,12 @@ public class CyAttributesReaderTest extends TestCase {
         assertEquals (1, list.size());
         value = (String) list.get(0);
         assertEquals ("cell adhesion molecule", value);
+    }
+
+    /**
+     * Runs just this one unit test.
+     */
+    public static void main(String[] args) {
+        junit.textui.TestRunner.run(CyAttributesReaderTest.class);
     }
 }
