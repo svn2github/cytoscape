@@ -5,7 +5,7 @@ import cytoscape.data.CyAttributes;
 import cytoscape.data.readers.CyAttributesReader;
 
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 
@@ -24,7 +24,7 @@ public class CyAttributesReaderTest extends TestCase {
         String attributeName = "TestNodeAttribute1";
         CyAttributes cyAttributes = new CyAttributesImpl();
         File file =  new File ("testData/galFiltered.nodeAttrs1");
-        FileInputStream reader = new FileInputStream (file);
+        FileReader reader = new FileReader(file);
         CyAttributesReader.loadAttributes(cyAttributes, reader);
         byte type = cyAttributes.getType(attributeName);
         assertEquals (CyAttributes.TYPE_INTEGER, type);
@@ -57,7 +57,7 @@ public class CyAttributesReaderTest extends TestCase {
     public void testRead2() throws IOException {
         CyAttributes cyAttributes = new CyAttributesImpl();
         File file =  new File ("testData/galFiltered.edgeAttrs2");
-        FileInputStream reader = new FileInputStream (file);
+        FileReader reader = new FileReader(file);
         CyAttributesReader.loadAttributes(cyAttributes, reader);
         byte type = cyAttributes.getType("TestNodeAttribute2");
         assertEquals (CyAttributes.TYPE_INTEGER, type);
@@ -94,7 +94,7 @@ public class CyAttributesReaderTest extends TestCase {
         //  Score (class=Java.lang.Double)
         //  All the integer values should therefore be stored as Doubles.
         File file =  new File ("testData/explicitDouble.attribute");
-        FileInputStream reader = new FileInputStream (file);
+        FileReader reader = new FileReader(file);
         CyAttributesReader.loadAttributes(cyAttributes, reader);
         byte type = cyAttributes.getType("Score");
         assertEquals (CyAttributes.TYPE_FLOATING, type);
@@ -116,7 +116,7 @@ public class CyAttributesReaderTest extends TestCase {
         String attributeName = "GO_molecular_function_level_4";
         CyAttributes cyAttributes = new CyAttributesImpl();
         File file =  new File ("testData/implicitStringArray.attribute");
-        FileInputStream reader = new FileInputStream (file);
+        FileReader reader = new FileReader(file);
         CyAttributesReader.loadAttributes(cyAttributes, reader);
         byte type = cyAttributes.getType(attributeName);
         assertEquals (CyAttributes.TYPE_SIMPLE_LIST, type);

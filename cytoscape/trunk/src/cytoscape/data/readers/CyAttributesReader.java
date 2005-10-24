@@ -1,13 +1,14 @@
 package cytoscape.data.readers;
 
 import cytoscape.data.CyAttributes;
-import java.io.InputStream;
+import java.io.IOException;
+import java.io.Reader;
 
 public class CyAttributesReader
 {
 
   public static void loadAttributes(CyAttributes cyAttrs,
-                                    InputStream fileIn)
+                                    Reader fileIn) throws IOException
   {
   }
 
