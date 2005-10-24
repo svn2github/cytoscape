@@ -9,6 +9,7 @@ import cytoscape.data.GraphObjAttributesImpl;
 import javax.swing.*;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Stack;
 
 /**
  * Tests that attributes set via CyAttributes are accessible via
@@ -23,7 +24,6 @@ public class CyAttributesEquivalenceTest extends TestCase {
     private static final String DUMMY_BOOLEAN_ATTRIBUTE = "attribute1";
     private static final String DUMMY_STRING_ATTRIBUTE = "attribute2";
     private static final String DUMMY_LIST_ATTRIBUTE = "attribute3";
-    private static final String DUMMY_MAP_ATTRIBUTE = "attribute4";
     private static final String DUMMY_BUTTON_ATTRIBUTE = "attribute5";
 
     /**
@@ -276,6 +276,16 @@ public class CyAttributesEquivalenceTest extends TestCase {
         button = (JButton) graphAttributes.get(DUMMY_BUTTON_ATTRIBUTE,
                 DUMMY_ID_1);
         assertEquals ("Hello World!", button.getText());
+
+        //  Test another arbitrary Object
+        Stack stack = new Stack();
+        stack.push(new String ("Apple"));
+        graphAttributes.set(DUMMY_BUTTON_ATTRIBUTE, DUMMY_ID_2, stack);
+
+        //  Get it back
+        stack = (Stack) graphAttributes.get(DUMMY_BUTTON_ATTRIBUTE, DUMMY_ID_2);
+        String value = (String) stack.pop();
+        assertEquals ("Apple", value);
     }
 
     /**
