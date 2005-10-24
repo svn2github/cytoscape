@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jnlp
-   codebase="http://cytoscape.org/tut/expression/webstart/"
+   codebase="http://www.cytoscape.org/tut/expression/webstart/"
    href="expression.jnlp">
   <information>
     <title>Cytoscape WebStart</title>
@@ -38,8 +38,6 @@
 <jar href="lib/giny.jar"/>
 <jar href="lib/glf.jar"/>
 <jar href="lib/jdom.jar"/>
-<jar href="lib/jfreechart-0.9.20.jar"/>
-<jar href="lib/jfreechart-common-0.9.5.jar"/>
 <jar href="lib/jhall.jar"/>
 <jar href="lib/jnlp.jar"/>
 <jar href="lib/junit.jar"/>
