@@ -1,13 +1,14 @@
 package cytoscape.data.readers;
 
 import cytoscape.data.CyAttributes;
-import java.io.OutputStream;
+import java.io.Writer;
 
 public class CyAttributesWriter
 {
 
   public static void writeAttributes(CyAttributes cyAttrs,
-                                     OutputStream fileOut)
+                                     String attributeName,
+                                     Writer fileOut)
   {
   }
 
