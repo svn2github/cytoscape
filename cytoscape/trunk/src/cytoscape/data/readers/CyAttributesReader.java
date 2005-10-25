@@ -46,6 +46,7 @@ public class CyAttributesReader
     while (true) {
       final String line = reader.readLine();
       if (line == null) { break; }
+      if ("".equals(line.trim())) { continue; }
       int inx = line.indexOf('=');
       final String key = line.substring(0, inx).trim();
       String val = line.substring(inx + 1).trim();
@@ -71,11 +72,11 @@ public class CyAttributesReader
                 type = MultiHashMapDefinition.TYPE_FLOATING_POINT;
                 break; }
               catch (Exception e) {}
-              try {
-                new Boolean((String) elmsBuff.get(0));
-                type = MultiHashMapDefinition.TYPE_BOOLEAN;
-                break; }
-              catch (Exception e) {}
+//               try {
+//                 new Boolean((String) elmsBuff.get(0));
+//                 type = MultiHashMapDefinition.TYPE_BOOLEAN;
+//                 break; }
+//               catch (Exception e) {}
               type = MultiHashMapDefinition.TYPE_STRING;
               break; } }
           firstLine = false; }
@@ -104,11 +105,11 @@ public class CyAttributesReader
                 type = MultiHashMapDefinition.TYPE_FLOATING_POINT;
                 break; }
               catch (Exception e) {}
-              try {
-                new Boolean(val);
-                type = MultiHashMapDefinition.TYPE_BOOLEAN;
-                break; }
-              catch (Exception e) {}
+//               try {
+//                 new Boolean(val);
+//                 type = MultiHashMapDefinition.TYPE_BOOLEAN;
+//                 break; }
+//               catch (Exception e) {}
               type = MultiHashMapDefinition.TYPE_STRING;
               break; } }
           firstLine = false; }
