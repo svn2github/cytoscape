@@ -59,7 +59,7 @@ public class CyAttributesReaderTest extends TestCase {
         File file =  new File ("testData/galFiltered.edgeAttrs2");
         FileReader reader = new FileReader(file);
         CyAttributesReader.loadAttributes(cyAttributes, reader);
-        byte type = cyAttributes.getType("TestNodeAttribute2");
+        byte type = cyAttributes.getType("TestEdgeAttributes2");
         assertEquals (CyAttributes.TYPE_INTEGER, type);
 
         //  Test a value
