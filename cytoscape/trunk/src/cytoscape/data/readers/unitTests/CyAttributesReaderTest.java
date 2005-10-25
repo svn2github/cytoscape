@@ -59,27 +59,27 @@ public class CyAttributesReaderTest extends TestCase {
         File file =  new File ("testData/galFiltered.edgeAttrs2");
         FileReader reader = new FileReader(file);
         CyAttributesReader.loadAttributes(cyAttributes, reader);
-        byte type = cyAttributes.getType("TestEdgeAttributes2");
+        byte type = cyAttributes.getType("TestEdgeAttribute2");
         assertEquals (CyAttributes.TYPE_INTEGER, type);
 
         //  Test a value
         Integer value = cyAttributes.getIntegerAttribute("YKR026C (pp) YGL122C",
-                "TestNodeAttribute2");
+                "TestEdgeAttribute2");
         assertEquals (2, value.intValue());
 
         //  Test a Second value
         value = cyAttributes.getIntegerAttribute("YDR382W (pp) YFL029C",
-                "TestNodeAttribute2");
+                "TestEdgeAttribute2");
         assertEquals (3, value.intValue());
 
         //  Test the last value in the file
         value = cyAttributes.getIntegerAttribute("YBL026W (pp) YOR127C",
-                "TestNodeAttribute2");
+                "TestEdgeAttribute2");
         assertEquals (3, value.intValue());
 
         //  Test a non-existent value
         value = cyAttributes.getIntegerAttribute("Nerius",
-                "TestNodeAttribute2");
+                "TestEdgeAttribute2");
         assertTrue (value == null);
     }
 
