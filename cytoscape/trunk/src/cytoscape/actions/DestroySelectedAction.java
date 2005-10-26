@@ -18,7 +18,9 @@ import cytoscape.util.CytoscapeAction;
 public class DestroySelectedAction extends CytoscapeAction {
 
 	public DestroySelectedAction() {
-		super("Destroy Selected Nodes/Edges");
+		// AJK: 10/24/05 change name to "Delete" rather than "Destroy"
+//		super("Destroy Selected Nodes/Edges");
+		super("Delete Selected Nodes/Edges");
 		setPreferredMenu("Edit");
 	}
 
