@@ -1,0 +1,226 @@
+<project name="exesto" default="exesto" basedir=".">
+
+  <!-- =================================================================== -->
+  <!-- Initialization target                                               -->
+  <!-- =================================================================== -->
+  <target name="init-exesto">
+    <tstamp/>
+    <property name="exesto.Name" value="exesto"/>
+    <property name="exesto.name" value="exesto"/>
+    <property name="exesto.version" value="0.1"/>
+    <property name="exesto.year" value="200"/>
+
+    <echo message="Building ${exesto.name} version ${exesto.version}."/>
+
+    <!-- Inheritable properties -->
+    <property name="debug" value="on"/>
+    <property name="optimize" value="off"/>
+    <property name="deprecation" value="on"/>
+    <property name="nowarn" value="true"/>
+    <property name="fork" value="false"/>
+    <property name="exesto.root.dir" value="."/>
+    <property name="exesto.lib.dir" value="${exesto.root.dir}/lib"/>
+    <property name="cytoscape.dir" value="${exesto.root.dir}/../../../../cytoscape"/>
+    <property name="cytoscape.lib.dir" value="${exesto.root.dir}/../../../../cytoscape/lib"/>
+    <property name="cytoscape.plugin.dir" value="${exesto.root.dir}/../../../../cytoscape/plugins"/>
+    <path id="project.class.path">
+      <pathelement path="${java.class.path}/"/>
+    </path>
+
+    <!-- Define the directories -->
+    <property name="exesto.root.dir" value="./"/>
+    <property name="exesto.src.dir" value="${exesto.root.dir}/src"/>
+    <property name="exesto.classes.dir" value="${exesto.root.dir}/classes"/>
+    <property name="exesto.javadoc.dir" value="${javadoc.dir}/exesto"/>
+    <property name="exesto.resources.dir" value="${exesto.root.dir}/resources"/>
+    <property name="exesto.manifest.dir" value="${exesto.root.dir}/manifest"/>
+    <property name="exesto.packages" value="exesto.*"/>
+    <!-- Subdirectory for test reports -->
+    <property name="exesto.tests.reports.dir" value="${exesto.root.dir}/reports/tests" />
+    <property name="cytoscape.lib" value="../../cytoscape/lib" />
+
+    <!-- Define the condition for compilation -->
+    <property name="cytoscape.jar" value="${exesto.lib.dir}/cytoscape.jar"/>
+    <property name="colt.jar" value="${exesto.lib.dir}/colt.jar"/>
+    
+
+    <condition property="cytoscape.present">
+      <and> 
+	  		<available file="${cytoscape.jar}"/> 
+				<available file="${colt.jar}"/> 
+		  </and>
+    </condition>
+
+    <!-- Define excludes for exesto compile and javadoc -->
+    <property name="exesto.excludes" value="**/notyet/*"/>
+    <property name="exesto.tests.excludes" value="**/notyet/*"/>
+    <property name="exesto.packages.excludes" value="**.test.*,**.notyet.*"/>
+
+    <path id="exesto.project.class.path">
+      <pathelement location="${exesto.classes.dir}"/>
+      <pathelement location="${cytoscape.lib.dir}/../plugins/core/filter.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/colt.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/coltginy.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/../cytoscape.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/giny.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/tclib.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/glf.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/com-nerius-math-xform.jar"/> 
+      <pathelement location="${cytoscape.lib.dir}/concurrent.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape-data-attr.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape-graph-dynamic.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape-graph-fixed.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape-graph-layout.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape-graph-legacy.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape-task.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/violinstrings-1.0.2.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape-util-intr.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/fing.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/phoebe.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/piccolo.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/piccolox.jar"/>      
+      <pathelement path="${project.class.path}/"/>
+    </path>
+
+  
+
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the exesto project                                           -->
+  <!-- =================================================================== -->
+  <target name="compile-exesto" depends="init-exesto"  >
+
+   <echo message=" COMPILE exesto "/>
+
+    <mkdir dir="${exesto.classes.dir}"/>
+    <javac srcdir="${exesto.src.dir}"
+           excludes="${exesto.excludes}"
+           classpathref="exesto.project.class.path"
+           destdir="${exesto.classes.dir}"
+           debug="${debug}"
+           nowarn="${nowarn}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the exesto.jar file                                           -->
+  <!-- =================================================================== -->
+  <target name="exesto" depends="compile-exesto"  >
+    <jar destfile="exesto.jar" manifest="${exesto.manifest.dir}/exesto.manifest">
+      <fileset
+        dir="${exesto.classes.dir}"
+        includes="**"/>
+      <fileset
+        dir="${exesto.root.dir}/lib"
+        includes="resources/**"/>
+     </jar>
+    <copy todir="${exesto.lib.dir}" file="exesto.jar"/>
+    <copy todir="${cytoscape.plugin.dir}" file="exesto.jar"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the exesto tests                                             -->
+  <!-- =================================================================== -->
+  <target name="compile-tests" depends="exesto"  >
+    <mkdir dir="${exesto.classes.dir}"/>
+    <javac srcdir="${exesto.src.dir}"
+           includes="**/test/*"
+           excludes="${exesto.tests.excludes}"
+           classpathref="exesto.project.class.path"
+           destdir="${exesto.classes.dir}"
+           debug="${debug}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the exesto-tests.jar file                                     -->
+  <!-- =================================================================== -->
+  <target name="tests" depends="compile-tests"  >
+    <jar jarfile="exesto-tests.jar"
+         basedir="${exesto.classes.dir}"
+         includes="**/test/*"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Build all jars                                                      -->
+  <!-- =================================================================== -->
+  <target name="all" depends="exesto"/>
+
+   <!-- =================================================================== -->
+  <!-- Run the Plugin                                                      -->
+  <!-- =================================================================== -->
+  <target name="run" depends="exesto" >
+     
+     <java classname="cytoscape.cytoscape" 
+           classpathref="exesto.project.class.path"
+           fork="true"/>
+           <arg line = "-y giny"/>
+           <arg line = "--JLD"/>
+           <arg line = "${exesto.lib.dir}/exesto.jar"/>
+           
+
+  </target>
+
+
+
+  <!-- =================================================================== -->
+  <!-- Runs the tests in exesto-tests.jar                                    -->
+  <!-- =================================================================== -->
+  <target name="runtests" depends="tests"  >
+    <mkdir dir="${exesto.tests.reports.dir}"/>
+    <junit
+       printsummary="yes"
+       haltonfailure="no"
+       dir="${exesto.classes.dir}"
+       maxmemory="1G"
+    >
+      <formatter type="plain" usefile="true" />
+      <classpath refid="exesto.project.class.path"/>
+      <!-- The junit task doesn't support 'if' so we test for JUnit here -->
+      <batchtest fork="yes" todir="${exesto.tests.reports.dir}" if="junit.present">
+        <fileset
+           dir="${exesto.classes.dir}"
+           includes="**/test/*"
+           excludes="${exesto.tests.excludes}"
+        />
+      </batchtest>
+    </junit>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the API documentation                                       -->
+  <!-- =================================================================== -->
+  <target name="docs" depends="init-exesto" >
+    <mkdir dir="${exesto.javadoc.dir}"/>
+    <javadoc packagenames="${exesto.packages}"
+             excludepackagenames="${exesto.packages.excludes}"
+             sourcepath="${exesto.src.dir}"
+             destdir="${exesto.javadoc.dir}"
+             classpathref="exesto.project.class.path"
+             author="true"
+             version="true"
+             use="true"
+             splitindex="true"
+             noindex="false"
+             windowtitle="${exesto.Name} API"
+             doctitle="${exesto.Name}"
+    />
+  </target>
+ 
+  <!-- =================================================================== -->
+  <!-- Clean up, get back to original state                                -->
+  <!-- =================================================================== -->
+  <target name="clean" depends="init-exesto">
+    <delete dir="${exesto.classes.dir}"/>
+    <delete file="exesto.jar"/>
+    <delete file="exesto-tests.jar"/>
+  </target>
+
+</project>
+
+<!-- End of file -->

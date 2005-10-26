@@ -184,6 +184,10 @@ public class FileLoader {
     int max_col = 0;
     boolean is_nodes = true;
 
+    List types = new ArrayList(); // a list of byte types, if defined
+    List labels = new ArrayList(); // a lists of lists of the labels an attribute belongs to
+
+
     List nodes = new ArrayList();
     List edges = new ArrayList();
 
@@ -228,10 +232,16 @@ public class FileLoader {
         else if ( oneLine.startsWith ("TYPE") ) {
         }
 
+        // ATTRIBUTE LABELS
+        else if ( oneLine.startsWith( "LABEL") ) {
+        }
+        
         // NETWORK NAME
         else if ( oneLine.startsWith ("NETWORK" ) ) {
 
         }
+
+        
 
         // LOAD LINE
         else {
