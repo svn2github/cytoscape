@@ -174,30 +174,30 @@ public class DeleteAction extends // CytoscapeAction {
 			public String getPresentationName() {
 				// AJK: 10/21/05 return null as presentation name because we are using iconic buttons
 //				return "Delete";
-				return  " ";
+				return  "Delete";
 			}
 
 			public String getRedoPresentationName() {
 				if (edges.length == 0)
 					// AJK: 10/21/05 return null as presentation name because we are using iconic buttons
-//					return "Redo: Deleted Nodes";
-					return " ";
+					return "Redo: Deleted Nodes";
+//					return " ";
 				else
 					// AJK: 10/21/05 return null as presentation name because we are using iconic buttons
-//					return "Redo: Deleted Nodes and Edges";
-					return " ";
+					return "Redo: Deleted Nodes and Edges";
+//					return " ";
 		}
 
 			public String getUndoPresentationName() {
 
 				if (edges.length == 0)
 					// AJK: 10/21/05 return null as presentation name because we are using iconic buttons
-//					return "Undo: Deleted Nodes";
-					return null;
+					return "Undo: Deleted Nodes";
+//					return null;
 				else
 					// AJK: 10/21/05 return null as presentation name because we are using iconic buttons
-//					return "Undo: Deleted Nodes and Edges";
-					return null;
+					return "Undo: Deleted Nodes and Edges";
+//					return null;
 			}
 
 			public void redo() {

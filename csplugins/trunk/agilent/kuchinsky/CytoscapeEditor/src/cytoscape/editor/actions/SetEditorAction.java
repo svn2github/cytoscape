@@ -152,8 +152,9 @@ public class SetEditorAction extends CytoscapeAction {
 		ShapePalette palette = CytoscapeEditorManager.getShapePaletteForView(view);
 		if (palette != null)
 		{
-			palette.getUndoButton().setAction(CytoscapeEditorManager.getUndoActionForView(view));
-			palette.getRedoButton().setAction(CytoscapeEditorManager.getRedoActionForView(view));
+			// AJK: 10/24/05 comment this out, undo functionality moving to Cytoscape
+//			palette.getUndoButton().setAction(CytoscapeEditorManager.getUndoActionForView(view));
+//			palette.getRedoButton().setAction(CytoscapeEditorManager.getRedoActionForView(view));
 		}
 		
 			CytoscapeEditorManager.setEventHandlerForView(view);

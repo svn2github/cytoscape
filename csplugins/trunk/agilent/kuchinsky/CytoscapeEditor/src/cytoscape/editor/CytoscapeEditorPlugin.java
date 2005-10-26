@@ -5,9 +5,6 @@
 package cytoscape.editor;
 
 import java.awt.event.ActionEvent;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 
 import javax.swing.AbstractAction;
 
@@ -18,7 +15,6 @@ import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.editor.editors.MapBioMoleculeEditorToVisualStyle;
 import cytoscape.plugin.CytoscapePlugin;
-import cytoscape.view.CytoscapeDesktop;
 
 /**
  * core plugin for CytoscapeEditor.

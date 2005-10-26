@@ -110,7 +110,11 @@ public class ShapePalette extends JPanel
         JScrollPane scrollPane = new JScrollPane(dataList);
  
         _controlPane.add (instructionsArea);
-        _controlPane.add(buildEditControlsPanel());
+        
+        // AJK: 10/24/05 comment this out, moving undo controls into Cytoscape
+//        _controlPane.add(buildEditControlsPanel());
+        
+        
         scrollPane.setBorder(BorderFactory.createEtchedBorder());
 //        scrollPane.setBorder (BorderFactory.createEmptyBorder (0, 0,
 //                                                               10, 0));
@@ -229,7 +233,9 @@ public class ShapePalette extends JPanel
 		CyNetworkView view = Cytoscape.getCurrentNetworkView();
 		CytoscapeEditorManager.setShapePaletteForView(view, this);
 		
-		// 
+		// AJK: 10/24/05 BEGIN
+		//    comment out, undo functionality is moving to Cytoscape
+		/*
 		this.getUndoButton().setAction(
 //				new UndoAction
 //				(CytoscapeEditorManager.getUndoManagerForView(
@@ -247,6 +253,7 @@ public class ShapePalette extends JPanel
 						Cytoscape.getCurrentNetworkView()));
 		this.getRedoButton().setIcon(redoIcon);
 //		this.getRedoButton().setEnabled(true);
+		*/
 		
 		this.setVisible(true);
 

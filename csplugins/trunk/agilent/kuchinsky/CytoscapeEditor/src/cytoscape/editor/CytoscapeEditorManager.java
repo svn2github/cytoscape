@@ -7,13 +7,13 @@ package cytoscape.editor;
 import giny.model.Node;
 
 import java.awt.Color;
-import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.swing.JMenuItem;
 import javax.swing.undo.UndoManager;
 import javax.swing.undo.UndoableEdit;
 
@@ -28,9 +28,9 @@ import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.CytoscapeModifiedNetworkManager;
-import cytoscape.data.CytoscapeData;
 import cytoscape.editor.actions.NewNetworkAction;
 import cytoscape.editor.actions.RedoAction;
+import cytoscape.editor.actions.RestoreAction;
 import cytoscape.editor.actions.SetEditorAction;
 import cytoscape.editor.actions.UndoAction;
 import cytoscape.editor.event.NetworkEditEventAdapter;
@@ -227,6 +227,19 @@ public abstract class CytoscapeEditorManager {
 	 * associates a visual style with an editor type
 	 */
 	protected static HashMap visualStyleNameEditorTypeMap = new HashMap();
+	
+	/**
+	 * associates a network with all nodes hidden from it
+	 */
+	protected static HashMap networkHiddenNodesMap = new HashMap();
+	
+
+	/**
+	 * associates a network with all edges hidden from it
+	 */
+	protected static HashMap networkHiddenEdgesMap = new HashMap();
+	
+	
 
 	/**
 	 * CytoscapeAttribute: NODE_TYPE
@@ -244,6 +257,14 @@ public abstract class CytoscapeEditorManager {
 	public static final String ANY_VISUAL_STYLE = "ANY_VISUAL_STYLE";
 	
 	public static final String DEFAULT_EDITOR_TYPE = "DefaultCytoscapeEditor";
+	
+	/**
+	 * main data structures for all node and edge attributes
+	 */
+	public static cytoscape.data.CyAttributes nodeAttribs = Cytoscape.getNodeAttributes();
+	public static cytoscape.data.CyAttributes edgeAttribs = Cytoscape.getEdgeAttributes();	
+	
+	
 
 	//	public static final String DEFAULT_VISUAL_STYLE =
 	// CytoscapeInit.getDefaultVisualStyle();
@@ -265,6 +286,10 @@ public abstract class CytoscapeEditorManager {
 	
 		// initially disable New Network creation until an editor is set
 		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("File.New").setEnabled(false);
+		
+		
+		RestoreAction restoreAction = new RestoreAction();
+		Cytoscape.getDesktop().getCyMenus().addAction(restoreAction);
 
 		// AJK: 09/06/05 BEGIN
 		//               accommodate one undo manager per network view. No global one, no accelerators
@@ -461,13 +486,12 @@ public abstract class CytoscapeEditorManager {
 			// AJK: 09/09/05: BEGIN
 			//    setup listeners for changes to attributes
 			CyNetwork net = newView.getNetwork();
-			CytoscapeData nodeAttribs = Cytoscape.getNodeNetworkData();
+//			nodeAttribs = Cytoscape.getNodeAttributes();
 			//			CyData nodeAttribs = net.getNodeData();
-			nodeAttribs.addDataListener(event);
+			nodeAttribs.getMultiHashMap().addDataListener(event);
 
-			CytoscapeData edgeAttribs = Cytoscape.getEdgeNetworkData();
-			//			CyData edgeAttribs = net.getEdgeData();
-			edgeAttribs.addDataListener(event);
+//			edgeAttribs = Cytoscape.getEdgeAttributes();
+			edgeAttribs.getMultiHashMap().addDataListener(event);
 
 			// AJK: 09/09/05: END
 		}
@@ -686,13 +710,17 @@ public abstract class CytoscapeEditorManager {
 		CyNode cn = Cytoscape.getCyNode(nodeName, create);
 		CyNetwork net = Cytoscape.getCurrentNetwork();
 		if (attribute != null) {
-			net.setNodeAttributeValue(cn, attribute, value);
-			net.setNodeAttributeValue(cn, NODE_TYPE, value);
+			nodeAttribs.setAttribute(cn.getIdentifier(), attribute, value);
+			nodeAttribs.setAttribute(cn.getIdentifier(), NODE_TYPE, value);
 			// hack for BioPAX visual style
-			net.setNodeAttributeValue(cn, BIOPAX_NODE_TYPE, value);
-			net.setNodeAttributeValue(cn,
-					MapBioPaxToCytoscape.BIOPAX_NAME_ATTRIBUTE, net
-							.getNodeAttributeValue(cn, "canonicalName"));
+			nodeAttribs.setAttribute(cn.getIdentifier(), BIOPAX_NODE_TYPE, value);
+//			String canonicalName = nodeAttribs.getStringAttribute(cn.getIdentifier(), 
+//                      Semantics.CANONICAL_NAME);
+//			System.out.println ("Got canonical name: " + canonicalName);
+			nodeAttribs.setAttribute(cn.getIdentifier(),
+					MapBioPaxToCytoscape.BIOPAX_NAME_ATTRIBUTE, 
+//					canonicalName);
+					cn.getIdentifier());
 			net.restoreNode(cn);
 		}
 
@@ -737,12 +765,14 @@ public abstract class CytoscapeEditorManager {
 		CyNetwork net = Cytoscape.getCurrentNetwork();
 		net.restoreNode(cn);
 		if (nodeType != null) {
-			net.setNodeAttributeValue(cn, NODE_TYPE, nodeType);
+			cytoscape.data.CyAttributes nodeAttribs = Cytoscape.getNodeAttributes();
+			nodeAttribs.setAttribute(cn.getIdentifier(), NODE_TYPE, nodeType);
 			// hack for BioPAX visual style
-			net.setNodeAttributeValue(cn, BIOPAX_NODE_TYPE, nodeType);
-			net.setNodeAttributeValue(cn,
-					MapBioPaxToCytoscape.BIOPAX_NAME_ATTRIBUTE, net
-							.getNodeAttributeValue(cn, "canonicalName"));
+			nodeAttribs.setAttribute(cn.getIdentifier(), BIOPAX_NODE_TYPE, nodeType);
+			nodeAttribs.setAttribute(cn.getIdentifier(),
+					MapBioPaxToCytoscape.BIOPAX_NAME_ATTRIBUTE, 
+//					nodeAttribs.getStringAttribute(cn.getIdentifier(), "canonicalName"));
+					cn.getIdentifier());
 			//			System.out.println ("NodeType for CyNode " + cn + " set to " +
 			//					net.getNodeAttributeValue(cn, NODE_TYPE));
 		}
@@ -844,7 +874,7 @@ public abstract class CytoscapeEditorManager {
 		CyNetwork net = Cytoscape.getCurrentNetwork();
 		net.restoreEdge(edge);
 		if (edgeType != null) {
-			net.setEdgeAttributeValue(edge, EDGE_TYPE, edgeType);
+			edgeAttribs.setAttribute(edge.getIdentifier(), EDGE_TYPE, edgeType);
 		}
 		manager.setupUndoableAdditionEdit(net, null, edge);
 		Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, net);
@@ -1115,7 +1145,78 @@ public abstract class CytoscapeEditorManager {
 			String editorType) {
 		visualStyleNameEditorTypeMap.put(styleName, editorType);
 	}
+	
+	
+	/**
+	 * returns nodes hidden from network
+	 * @param net
+	 * @return
+	 */
+	public static int[] getHiddenNodesForNetwork (CyNetwork net)
+	{
+		List hiddenNodesList = (List) networkHiddenNodesMap.get(net);
+		if (hiddenNodesList == null) { return new int[0]; }
+		int [] nodeIndices = new int [hiddenNodesList.size()];
+		for (int i = 0; i < hiddenNodesList.size(); i++)
+		{
+			nodeIndices[i] = ((Integer) hiddenNodesList.get(i)).intValue();
+		}
+		return nodeIndices;
+	}
+	
+	/**
+	 * returns edges hidden from network
+	 * @param net
+	 * @return
+	 */
+	public static int[] getHiddenEdgesForNetwork (CyNetwork net)
+	{
+		List hiddenEdgesList = (List) networkHiddenEdgesMap.get(net);
+		if (hiddenEdgesList == null) { return new int[0]; }
+		int [] edgeIndices = new int [hiddenEdgesList.size()];
+		for (int i = 0; i < hiddenEdgesList.size(); i++)
+		{
+			edgeIndices[i] = ((Integer) hiddenEdgesList.get(i)).intValue();
+		}
+		return edgeIndices;
+	}
+	
+	/**
+	 * adds a node to the list of nodes hidden from network
+	 * @param net
+	 * @param nodeIdx index of the node to be added
+	 */
+	public static void addHiddenNodeForNetwork (CyNetwork net, int nodeIdx)
+	{
+		List hiddenNodesList = (List) networkHiddenNodesMap.get(net);
+		if (hiddenNodesList == null)
+		{
+			hiddenNodesList = new ArrayList();
+		}
+		hiddenNodesList.add(new Integer(nodeIdx));  // don't worry about duplicates
+		networkHiddenNodesMap.put(net, hiddenNodesList);
+//		System.out.println("HiddenNodes for Network: " + net + " = " + hiddenNodesList);
+	}
+	
 
+	/**
+	 * adds an edge to the list of edges hidden from network
+	 * @param net
+	 * @param edgeIdx index of the edge to be added
+	 */
+	public static void addHiddenEdgeForNetwork (CyNetwork net, int edgeIdx)
+	{
+		List hiddenEdgesList = (List) networkHiddenEdgesMap.get(net);
+		if (hiddenEdgesList == null)
+		{
+			hiddenEdgesList = new ArrayList();
+		}
+		hiddenEdgesList.add(new Integer(edgeIdx));  // don't worry about duplicates
+		networkHiddenEdgesMap.put(net, hiddenEdgesList);
+//		System.out.println("HiddenEdges for Network: " + net + " = " + hiddenEdgesList);
+	}	
+	
+	
 	/**
 	 * gets the controlling NodeAttribute that drives rendering of node icon in
 	 * editor palette
@@ -1282,6 +1383,8 @@ public abstract class CytoscapeEditorManager {
 	 * framework supports undo/redo for deletion operations. This method is
 	 * typically invoked from within the code for performing deletion.
 	 * 
+	 * 
+	 * 
 	 * @param edit
 	 *            the edit method to be added to the UndoManager.
 	 */
@@ -1289,6 +1392,14 @@ public abstract class CytoscapeEditorManager {
 		// AJK: 09/05/05 BEGIN
 		// accommodate one UndoManager per each Network view
 		//		undo.addEdit(edit);
+		
+		// AJK: 10/24/05 BEGIN
+		//      comment this out.  Move multiple UndoManager functionality into Cytoscape
+		
+		// AJK: 10/25/05 actually, don't even do this in 'plan C'.  Just use Restore deleted nodes/edges submenu item
+//		Cytoscape.getDesktop().addEdit(edit);
+		
+		/*
 		UndoManager undoMgr = getUndoManagerForView (Cytoscape.getCurrentNetworkView());
 		System.out.println ("Getting Undo Manager for View: "  + Cytoscape.getCurrentNetworkView());
 		System.out.println ("UndoManager = " + undoMgr);
@@ -1300,6 +1411,7 @@ public abstract class CytoscapeEditorManager {
 		undoAction.update();
 		RedoAction redoAction = getRedoActionForView(Cytoscape.getCurrentNetworkView());
 		redoAction.update();
+		*/
 	}
 
 	/**
@@ -1328,7 +1440,7 @@ public abstract class CytoscapeEditorManager {
 	public static IntArrayList getNodeClipBoard() {
 		if (nodeClipBoard == null)
 			nodeClipBoard = new IntArrayList();
-		return nodeClipBoard;
+		return nodeClipBoard;  
 	}
 
 	/**

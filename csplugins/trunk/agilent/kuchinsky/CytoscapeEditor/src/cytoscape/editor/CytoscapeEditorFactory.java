@@ -7,7 +7,7 @@ package cytoscape.editor;
 
 import java.util.Collection;
 
-import cytoscape.CyNetwork;
+
 import cytoscape.editor.event.NetworkEditEventAdapter;
 import cytoscape.editor.impl.CytoscapeEditorFactoryImpl;
 

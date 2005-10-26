@@ -15,25 +15,16 @@ import giny.model.Node;
 import giny.view.NodeView;
 
 import java.awt.Color;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.awt.geom.Point2D;
 
 import javax.swing.JPanel;
 
 import phoebe.PGraphView;
-import phoebe.PNodeView;
 import cytoscape.CyEdge;
-import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
-import cytoscape.data.CytoscapeData;
-import cytoscape.data.attr.CountedIterator;
-import cytoscape.data.attr.CyDataDefinition;
-import cytoscape.data.attr.CyDataListener;
 import cytoscape.editor.CytoscapeEditor;
 import cytoscape.editor.CytoscapeEditorManager;
 import cytoscape.editor.editors.BasicCytoscapeEditor;
@@ -51,7 +42,7 @@ import cytoscape.editor.editors.BasicCytoscapeEditor;
  *  
  */
 public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
-		implements ActionListener, CyDataListener {
+		implements ActionListener, cytoscape.data.attr.MultiHashMapListener {
 
 	/**
 	 * the node that will be dropped
@@ -443,7 +434,7 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 
 	/**
 	 * 
-	 * CyDataListener methods
+	 * MultiHashMapListener methods
 	 */
 	public void attributeValueAssigned(java.lang.String objectKey,
 			java.lang.String attributeName, java.lang.Object[] keyIntoValue,

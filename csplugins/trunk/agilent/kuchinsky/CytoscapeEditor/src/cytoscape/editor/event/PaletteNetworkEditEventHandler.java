@@ -88,7 +88,7 @@ public class PaletteNetworkEditEventHandler extends
 		for (int i = 0; i < dfl.length; i++)
 		{
 		    		 DataFlavor d = dfl[i];
-		    		 if (d.equals("application/x-java-url"))
+		    		 if (d.isMimeTypeEqual("application/x-java-url"))
 		    		 {
 		    		 	handleDroppedURL(t, d, location);
 		    		 }
@@ -243,11 +243,13 @@ public class PaletteNetworkEditEventHandler extends
 		Object URL;
 		try
 		{
+			
 		    URL = t.getTransferData(d);
 		    if (URL != null)
 		    {
 		    	String URLString = URL.toString();
-				CyNode cn = CytoscapeEditorManager.addNode("node" + counter, 
+			    System.out.println ("Handling dropped URL = " + URLString);
+		    	CyNode cn = CytoscapeEditorManager.addNode("node" + counter, 
 						true, "URL");
 			    counter++;				
 				double zoom = Cytoscape.getCurrentNetworkView().getZoom();

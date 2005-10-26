@@ -37,7 +37,14 @@ public class BioPAXNetworkEditEventHandler extends
 	
 	private String attributeName;
 	private String attributeValue;
+	
+	/**
+	 * main data structures for all node and edge attributes
+	 */
+	public static cytoscape.data.CyAttributes nodeAttribs = Cytoscape.getNodeAttributes();	
+	public static cytoscape.data.CyAttributes edgeAttribs = Cytoscape.getNodeAttributes();	
 
+	
 	/**
 	 * 
 	 */
@@ -58,7 +65,7 @@ public class BioPAXNetworkEditEventHandler extends
 	{
 		CyNode cn = super.createNode(e);
 		CyNetwork net = Cytoscape.getCurrentNetwork();
-		Cytoscape.setNodeAttributeValue(cn, "BIOPAX_NAME",
+		nodeAttribs.setAttribute(cn.getIdentifier(), "BIOPAX_NAME",
 				cn.getIdentifier());
 		return cn;
 	}
@@ -85,7 +92,7 @@ public class BioPAXNetworkEditEventHandler extends
 				target_node, cytoscape.data.Semantics.INTERACTION,
 				"default", true, attributeValue);   // set to BIOPAX_EDGE_TYPE
 
-		Cytoscape.setEdgeAttributeValue(myEdge, "BIOPAX_EDGE_TYPE",
+		edgeAttribs.setAttribute(myEdge.getIdentifier(), "BIOPAX_EDGE_TYPE",
 				attributeValue);		//				Cytoscape.getCurrentNetwork().restoreEdge(myEdge);
 
 		getCanvas().getLayer().removeChild(edge);
@@ -122,7 +129,7 @@ public class BioPAXNetworkEditEventHandler extends
 		for (int i = 0; i < dfl.length; i++)
 		{
 		    		 DataFlavor d = dfl[i];
-		    		 if (d.equals("application/x-java-url"))
+		    		 if (d.isMimeTypeEqual("application/x-java-url"))
 		    		 {
 		    		 	handleDroppedURL(t, d, location);
 		    		 }
@@ -175,7 +182,7 @@ public class BioPAXNetworkEditEventHandler extends
 				NodeView nv = Cytoscape.getCurrentNetworkView().getNodeView(cn);
 				nv.setOffset(locn.getX(), locn.getY());
 				// hack for biopax, fix later
-				Cytoscape.setNodeAttributeValue(cn, "BIOPAX_NAME", cn.getIdentifier());
+				nodeAttribs.setAttribute(cn.getIdentifier(), "BIOPAX_NAME", cn.getIdentifier());
 			}
 			else if ( (attributeName.equals("EdgeType")) ||
 					(attributeName.equals("BIOPAX_EDGE_TYPE")))

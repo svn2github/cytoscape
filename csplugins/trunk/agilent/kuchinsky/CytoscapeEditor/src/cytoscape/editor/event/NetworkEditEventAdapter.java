@@ -11,7 +11,6 @@ import java.awt.event.ActionListener;
 import phoebe.PGraphView;
 import phoebe.PhoebeCanvasDropEvent;
 import phoebe.PhoebeCanvasDropListener;
-import cytoscape.data.attr.CyDataListener;
 import edu.umd.cs.piccolo.PCanvas;
 import edu.umd.cs.piccolo.event.PBasicInputEventHandler;
 import edu.umd.cs.piccolo.event.PInputEvent;
@@ -34,7 +33,7 @@ public class NetworkEditEventAdapter
    extends PBasicInputEventHandler implements
 		ActionListener,
 		PhoebeCanvasDropListener,
-		CyDataListener
+		cytoscape.data.attr.MultiHashMapListener
 		{
 
 	protected PCanvas canvas;
@@ -134,7 +133,7 @@ public class NetworkEditEventAdapter
 	
 	/**
 	 * 
-	 * CyDataListener methods
+	 * MultiHashMapListener methods
 	 */
 	public void attributeValueAssigned(java.lang.String objectKey,
 			java.lang.String attributeName, java.lang.Object[] keyIntoValue,
