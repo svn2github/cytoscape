@@ -4,11 +4,12 @@
 package cytoscape.actions;
 
 import cytoscape.Cytoscape;
+import cytoscape.data.Semantics;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.util.TaskManager;
 import cytoscape.task.ui.JTaskConfig;
-import cytoscape.data.GraphObjAttributes;
+import cytoscape.data.CyAttributes;
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.FileUtil;
@@ -66,12 +67,8 @@ public class SaveAsInteractionsAction extends CytoscapeAction {
             if (!fileName.endsWith(".sif"))
                 fileName = fileName + ".sif";
 
-            GraphObjAttributes nodeAttributes = Cytoscape.getNodeNetworkData();
-            GraphObjAttributes edgeAttributes = Cytoscape.getEdgeNetworkData();
-
             //  Create LoadNetwork Task
-            SaveAsSifTask task = new SaveAsSifTask(fileName,
-                    nodeAttributes, edgeAttributes);
+            SaveAsSifTask task = new SaveAsSifTask(fileName);
 
             //  Configure JTask Dialog Pop-Up Box
             JTaskConfig jTaskConfig = new JTaskConfig();
@@ -92,21 +89,14 @@ public class SaveAsInteractionsAction extends CytoscapeAction {
  */
 class SaveAsSifTask implements Task {
     private String fileName;
-    private GraphObjAttributes nodeAttributes;
-    private GraphObjAttributes edgeAttributes;
     private TaskMonitor taskMonitor;
 
     /**
      * Constructor.
      * @param fileName          Filename to save to
-     * @param nodeAttributes    All Node Attributes
-     * @param edgeAttributes    All Edge Attributes
      */
-    SaveAsSifTask (String fileName, GraphObjAttributes nodeAttributes,
-        GraphObjAttributes edgeAttributes) {
+    SaveAsSifTask (String fileName) {
         this.fileName = fileName;
-        this.nodeAttributes = nodeAttributes;
-        this.edgeAttributes = edgeAttributes;
     }
 
     /**
@@ -169,8 +159,11 @@ class SaveAsSifTask implements Task {
             throw new IOException ("Network is empty.");
         }
 
-        giny.model.Node[] nodes = (giny.model.Node[]) nodeList.toArray
-                (new giny.model.Node[0]);
+        CyAttributes nodeAtts = Cytoscape.getNodeAttributes();
+        CyAttributes edgeAtts = Cytoscape.getEdgeAttributes();
+        giny.model.Node[] nodes = 
+        	(giny.model.Node[]) nodeList.toArray(new giny.model.Node[0]);
+        
         for (int i = 0; i < nodes.length; i++) {
 
             //  Report on Progress
@@ -179,9 +172,9 @@ class SaveAsSifTask implements Task {
 
             StringBuffer sb = new StringBuffer();
             giny.model.Node node = nodes[i];
-            String canonicalName = nodeAttributes.getCanonicalName(node);
-            List edges = network.getAdjacentEdgesList
-                    (node, true, true, true);
+            String canonicalName = 
+            	nodeAtts.getStringAttribute(node.getIdentifier(),Semantics.CANONICAL_NAME);
+            List edges = network.getAdjacentEdgesList(node, true, true, true);
 
             if (edges.size() == 0) {
                 sb.append(canonicalName + lineSep);
@@ -191,12 +184,16 @@ class SaveAsSifTask implements Task {
                     giny.model.Edge edge = (giny.model.Edge) it.next();
                     if (node == edge.getSource()) { //do only for outgoing edges
                         giny.model.Node target = edge.getTarget();
-                        String canonicalTargetName =
-                                nodeAttributes.getCanonicalName(target);
-                        String edgeName = edgeAttributes.getCanonicalName(edge);
+                        
+                        String canonicalTargetName = 
+                        	nodeAtts.getStringAttribute(target.getIdentifier(),Semantics.CANONICAL_NAME);
+                        
+                        String edgeName = 
+                        	edgeAtts.getStringAttribute(edge.getIdentifier(), Semantics.CANONICAL_NAME);
+                        
                         String interactionName =
-                                (String) (edgeAttributes.getValue
-                                ("interaction", edgeName));
+                                edgeAtts.getStringAttribute(edge.getIdentifier(),Semantics.INTERACTION);
+                        
                         if (interactionName == null) {
                             interactionName = "xx";
                         }
