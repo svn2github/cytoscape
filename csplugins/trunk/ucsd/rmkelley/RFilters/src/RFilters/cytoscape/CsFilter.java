@@ -19,17 +19,13 @@ import java.io.*;
 
 public class CsFilter 
   extends 
-    AbstractPlugin 
+    CytoscapePlugin 
   implements 
     PropertyChangeListener {
  protected JFrame frame;
-  protected CyWindow window;
-  protected CyNetwork network;
-  protected FilterUsePanel filterUsePanel;
+ protected FilterUsePanel filterUsePanel;
 
-  public CsFilter ( CyWindow window ) {
-    this.window = window;
-    this.network = window.getNetwork();
+  public CsFilter () {
     initialize();
   }
 
@@ -86,17 +82,17 @@ public class CsFilter
     }
     
 
+    // create icons
     ImageIcon icon = new ImageIcon( getClass().getResource( "/filter36.gif" ) );
     ImageIcon icon2 = new ImageIcon( getClass().getResource( "/filter16.gif" ) );
-                                    //getClass().getResource("filter16.gif") );
-    FilterPlugin action = new FilterPlugin( network, window, icon, this );
-    FilterMenuItem menu_action = new FilterMenuItem(  network, window, icon2, this );
-    
-    window.getCyMenus().addCytoscapeAction( ( CytoscapeAction )action );
-    window.getCyMenus().addCytoscapeAction( ( CytoscapeAction )menu_action );
+    // 
+    FilterPlugin action = new FilterPlugin( icon, this );
+    FilterMenuItem menu_action = new FilterMenuItem( icon2, this );
+    Cytoscape.getDesktop().getCyMenus().addCytoscapeAction( ( CytoscapeAction )action );
+    Cytoscape.getDesktop().getCyMenus().addCytoscapeAction( ( CytoscapeAction )menu_action );
 
-    FilterEditorManager.defaultManager().addEditor( new NumericAttributeFilterEditor( window ) );
-    FilterEditorManager.defaultManager().addEditor( new StringPatternFilterEditor (window)); 
+    FilterEditorManager.defaultManager().addEditor( new NumericAttributeFilterEditor() );
+    FilterEditorManager.defaultManager().addEditor( new StringPatternFilterEditor ()); 
     FilterEditorManager.defaultManager().addEditor( new NodeTopologyFilterEditor ());
     FilterEditorManager.defaultManager().addEditor( new BooleanMetaFilterEditor ());
     FilterEditorManager.defaultManager().addEditor( new NodeInteractionFilterEditor());
@@ -110,7 +106,7 @@ public class CsFilter
 
   public  FilterUsePanel getFilterUsePanel () {
     if ( filterUsePanel == null ) {
-      filterUsePanel = new FilterUsePanel( frame,network, window );
+      filterUsePanel = new FilterUsePanel( frame );
     }
     return filterUsePanel;
   }
@@ -118,12 +114,11 @@ public class CsFilter
   public void show () {
     if ( frame == null ) {
       frame = new JFrame( "Use Filters" );
-      //frame.getContentPane().add( getFilterUsePanel() );
-      //frame.pack();
-      Cytoscape.getDesktop().getCytoPanel( SwingConstants.SOUTH ).add(getFilterUsePanel()); 
+      frame.getContentPane().add( getFilterUsePanel() );
+      frame.pack();
+      //Cytoscape.getDesktop().getCytoPanel( SwingConstants.SOUTH ).add(getFilterUsePanel()); 
     }
-    //frame.setVisible( true );
-
+    frame.setVisible( true );
   }
 
 }

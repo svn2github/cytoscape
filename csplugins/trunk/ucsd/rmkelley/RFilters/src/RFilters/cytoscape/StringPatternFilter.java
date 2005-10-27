@@ -10,10 +10,8 @@ import javax.swing.border.*;
 import java.beans.*;
 import javax.swing.event.SwingPropertyChangeSupport;
 
-import cytoscape.*;
-import cytoscape.data.GraphObjAttributes;
-import cytoscape.view.CyWindow;
-import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
 import giny.model.*;
 
 import ViolinStrings.Strings;
@@ -45,11 +43,6 @@ public class StringPatternFilter
   public static String FILTER_DESCRIPTION = "Select nodes or edges based on the value of a text attribute";
 
   //----------------------------------------//
-  // Cytoscape specific Variables
-  //----------------------------------------//
-  protected CyWindow cyWindow;
-
-  //----------------------------------------//
   // Needed Variables
   //----------------------------------------//
   protected String identifier = "default";
@@ -63,13 +56,10 @@ public class StringPatternFilter
   /**
    * Creates a new StringPatternFilter
    */  
-  public StringPatternFilter ( CyWindow cyWindow,
-                               String classString,
+  public StringPatternFilter ( String classString,
                                String selectedAttribute, 
                                String searchString,
                                String identifier) {
-    this.cyWindow = cyWindow;
-    //this.classType = classType;
     try{
       NODE_CLASS = Node.class;
       EDGE_CLASS = Edge.class;
@@ -88,8 +78,6 @@ public class StringPatternFilter
 
 
   public StringPatternFilter ( String desc){
-    this.cyWindow = Cytoscape.getDesktop();
-    //this.classType = classType;
     try{
       NODE_CLASS = Class.forName("giny.model.Node");
       EDGE_CLASS = Class.forName("giny.model.Edge");
@@ -139,32 +127,31 @@ public class StringPatternFilter
     if (!classType.isInstance(object)) {
       return false;
     }
-    GraphObjAttributes objectAttributes = null;
+    
+    CyAttributes  data = null;
     if(classType.equals(NODE_CLASS)){
-      objectAttributes = Cytoscape.getNodeNetworkData();
+      data = Cytoscape.getNodeAttributes();
     }
     else{
-      objectAttributes = Cytoscape.getEdgeNetworkData();
+      data = Cytoscape.getEdgeAttributes();
     }
 			
-    String name = objectAttributes.getCanonicalName(object);
+    String name = ((GraphObject)object).getIdentifier();
     if(name == null){
       return false;
     }
 				
-    Object valueObj = objectAttributes.getValue( selectedAttribute, name );//.toString();
+    value = data.getStringAttribute( name, selectedAttribute );//.toString();
 			
-    if (valueObj == null ){
+    if (value == null ){
       return false;
     }
-
-    value = valueObj.toString();
 
     // I think that * and ? are better for now....
     String[] pattern = searchString.split("\\s");
     for ( int p = 0; p < pattern.length; ++p ) {
       if ( Strings.isLike( ( String )value, pattern[p], 0, true ) ) {
-	// this is an OR function
+        // this is an OR function
         return true;
       }
     }
@@ -185,7 +172,7 @@ public class StringPatternFilter
   }
   
   public Object clone () {
-    return new StringPatternFilter ( cyWindow, getClassType(),selectedAttribute, searchString, identifier+"_new" );
+    return new StringPatternFilter ( getClassType(),selectedAttribute, searchString, identifier+"_new" );
   }
   
   public SwingPropertyChangeSupport getSwingPropertyChangeSupport() {

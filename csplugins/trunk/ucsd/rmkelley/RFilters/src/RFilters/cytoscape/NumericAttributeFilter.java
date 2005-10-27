@@ -12,9 +12,7 @@ import java.beans.*;
 import javax.swing.event.SwingPropertyChangeSupport;
 
 import cytoscape.*;
-import cytoscape.data.*;
-import cytoscape.view.CyWindow;
-import cytoscape.data.GraphObjAttributes;
+import cytoscape.data.CyAttributes;
 import giny.model.*;
 import cytoscape.CyNetwork;
 import ViolinStrings.Strings;
@@ -50,12 +48,6 @@ public class NumericAttributeFilter
   public static String COMPARISON_EVENT = "COMPARISON_EVENT";
 		
   //----------------------------------------//
-  // Cytoscape specific Variables
-  //----------------------------------------//
-  protected CyWindow cyWindow;
-
-
-  //----------------------------------------//
   // Needed Variables
   //----------------------------------------//
   protected String identifier = "default";
@@ -69,13 +61,11 @@ public class NumericAttributeFilter
   /**
    * Creates a new NumericAttributeFilter
    */  
-  public NumericAttributeFilter ( CyWindow cyWindow,
-				  String comparison,
-				  String classString,
-				  String selectedAttribute, 
-				  Number searchNumber,
-				  String identifier){
-    this.cyWindow = cyWindow;
+  public NumericAttributeFilter ( String comparison,
+                                  String classString,
+                                  String selectedAttribute, 
+                                  Number searchNumber,
+                                  String identifier){
     this.comparison = comparison;
     
     try{
@@ -94,7 +84,6 @@ public class NumericAttributeFilter
    * Creates a new NumericAttributeFilter
    */  
   public NumericAttributeFilter ( String desc){
-    this.cyWindow = Cytoscape.getDesktop();
     try{
       NODE_CLASS = Node.class;
       EDGE_CLASS = Edge.class;
@@ -146,21 +135,28 @@ public class NumericAttributeFilter
     if ( !classType.isInstance(object)) {
       return false;
     }
-    GraphObjAttributes objectAttributes = null;
+    CyAttributes data = null;
     if(classType.equals(NODE_CLASS)){
-      objectAttributes = cyWindow.getNetwork().getNodeAttributes();
+      data = Cytoscape.getNodeAttributes();
     }
     else{
-      objectAttributes = cyWindow.getNetwork().getEdgeAttributes();
+      data = Cytoscape.getEdgeAttributes();
     }
-    String name = objectAttributes.getCanonicalName(object);
+    String name = ((GraphObject)object).getIdentifier();
     if(name == null){
       return false;
     }
-    Number value = (Number)objectAttributes.getValue( selectedAttribute,name );
+    Number value;
+
+    if ( data.getType( selectedAttribute ) == CyAttributes.TYPE_FLOATING )
+      value = (Number)data.getDoubleAttribute( name, selectedAttribute );
+    else 
+      value = (Number)data.getIntegerAttribute( name, selectedAttribute );
+    
     if( value == null){
       return false;
     }
+    
     if(comparison == EQUAL){
       return searchNumber.doubleValue() == value.doubleValue();
     }
@@ -187,7 +183,7 @@ public class NumericAttributeFilter
   }
   
   public Object clone () {
-    return new NumericAttributeFilter ( cyWindow, comparison,getClassType(),selectedAttribute, searchNumber, identifier+"_new" );
+    return new NumericAttributeFilter ( comparison,getClassType(),selectedAttribute, searchNumber, identifier+"_new" );
   }
   
   public SwingPropertyChangeSupport getSwingPropertyChangeSupport() {

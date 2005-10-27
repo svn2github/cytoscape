@@ -6,7 +6,7 @@ import javax.swing.*;
 import javax.swing.event.*;
 import java.beans.*;
 import cytoscape.Cytoscape;
-import cytoscape.data.GraphObjAttributes;
+import cytoscape.data.CyAttributes;
 
 public abstract class AttributeComboBoxModel implements ComboBoxModel, PropertyChangeListener{
 
@@ -60,10 +60,11 @@ public abstract class AttributeComboBoxModel implements ComboBoxModel, PropertyC
 
 class NodeAttributeComboBoxModel extends AttributeComboBoxModel{
   Class attributeClass;
-  GraphObjAttributes nodeAttributes;
+  
+  CyAttributes nodeAttributes;
   public NodeAttributeComboBoxModel(Class attributeClass){
     super();
-    nodeAttributes = Cytoscape.getNodeNetworkData();
+    nodeAttributes = Cytoscape.getNodeAttributes();
     this.attributeClass = attributeClass;
     updateAttributes();
   }
@@ -72,12 +73,22 @@ class NodeAttributeComboBoxModel extends AttributeComboBoxModel{
   }
 
   protected void updateAttributes(){
-    String [] nodeAttributes = Cytoscape.getNodeAttributesList();
+    byte type;
+    if ( attributeClass == Double.class )
+      type = CyAttributes.TYPE_FLOATING;
+    else if ( attributeClass == Integer.class )
+      type = CyAttributes.TYPE_INTEGER;
+    else if ( attributeClass == String.class )
+      type = CyAttributes.TYPE_STRING;
+    else 
+      return;
+
+    String [] na = Cytoscape.getNodeAttributesList();
     attributeList = new Vector();
-    for ( int idx = 0; idx < nodeAttributes.length; idx++) {
-      if (attributeClass.isAssignableFrom(this.nodeAttributes.getClass(nodeAttributes[idx]))) {
-	attributeList.add(nodeAttributes[idx]);
-      } // end of for ()
+    for ( int idx = 0; idx < na.length; idx++) {
+      if ( nodeAttributes.getType( na[idx] ) == type ) {
+        attributeList.add(na[idx]);
+      } 
       notifyListeners();
     }
   }
@@ -85,10 +96,12 @@ class NodeAttributeComboBoxModel extends AttributeComboBoxModel{
 
 class EdgeAttributeComboBoxModel extends AttributeComboBoxModel{
   Class attributeClass;
-  GraphObjAttributes edgeAttributes;
+  
+
+  CyAttributes edgeAttributes;
   public EdgeAttributeComboBoxModel(Class attributeClass){
     super();
-    edgeAttributes = Cytoscape.getEdgeNetworkData();
+    edgeAttributes = Cytoscape.getEdgeAttributes();
     this.attributeClass = attributeClass;
     updateAttributes();
   }
@@ -97,12 +110,22 @@ class EdgeAttributeComboBoxModel extends AttributeComboBoxModel{
   }
   
   protected void updateAttributes(){
-    String [] edgeAttributes = Cytoscape.getEdgeAttributesList();
+    byte type;
+    if ( attributeClass == String.class )
+      type = CyAttributes.TYPE_STRING;
+    else if ( attributeClass == Double.class )
+      type = CyAttributes.TYPE_FLOATING;
+    else if ( attributeClass == Integer.class )
+      type = CyAttributes.TYPE_INTEGER;
+    else 
+      return;
+
+    String [] ea = Cytoscape.getEdgeAttributesList();
     attributeList = new Vector();
-    for ( int idx = 0; idx < edgeAttributes.length; idx++) {
-      if (attributeClass.isAssignableFrom(this.edgeAttributes.getClass(edgeAttributes[idx]))) {
-	attributeList.add(edgeAttributes[idx]);
-      } // end of for ()
+    for ( int idx = 0; idx < ea.length; idx++) {
+      if ( edgeAttributes.getType( ea[idx] ) == type ) {
+        attributeList.add(ea[idx]);
+      } 
       notifyListeners();
     }
   }

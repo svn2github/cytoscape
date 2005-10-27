@@ -12,7 +12,6 @@ import javax.swing.event.SwingPropertyChangeSupport;
 
 import cytoscape.*;
 import cytoscape.data.*;
-import cytoscape.view.CyWindow;
 import cytoscape.data.GraphObjAttributes;
 import filter.view.*;
 import filter.model.*;
@@ -42,9 +41,6 @@ public class NumericAttributeFilterEditor
 
   protected NumericAttributeFilter filter;
 
-  protected CyWindow cyWindow;
-  //protected GraphObjAttributes objectAttributes;
-
   protected Number DEFAULT_SEARCH_NUMBER = new Double(0);
   protected String DEFAULT_FILTER_NAME = "Numeric: ";
   protected String DEFAULT_SELECTED_ATTRIBUTE = "";
@@ -58,9 +54,8 @@ public class NumericAttributeFilterEditor
   protected ComboBoxModel nodeAttributeModel;
   protected ComboBoxModel edgeAttributeModel;
 
-  public NumericAttributeFilterEditor ( CyWindow cyWindow ) {
+  public NumericAttributeFilterEditor () {
     super();
-    this.cyWindow = cyWindow;
     try{
       NUMBER_CLASS = Class.forName("java.lang.Number");
       NODE_CLASS = Class.forName("giny.model.Node");
@@ -155,7 +150,7 @@ public class NumericAttributeFilterEditor
    * Create a new filter with the given name initialized to the default values
    */
   public Filter createDefaultFilter(){
-    return new NumericAttributeFilter(cyWindow,DEFAULT_COMPARISON,DEFAULT_CLASS,DEFAULT_SELECTED_ATTRIBUTE,DEFAULT_SEARCH_NUMBER,DEFAULT_FILTER_NAME);
+    return new NumericAttributeFilter(DEFAULT_COMPARISON,DEFAULT_CLASS,DEFAULT_SELECTED_ATTRIBUTE,DEFAULT_SEARCH_NUMBER,DEFAULT_FILTER_NAME);
   }
 
   /**

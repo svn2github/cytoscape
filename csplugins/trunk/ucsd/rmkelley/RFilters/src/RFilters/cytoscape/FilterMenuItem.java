@@ -6,19 +6,14 @@ import cytoscape.*;
 import cytoscape.data.*;
 import cytoscape.view.*;
 import cytoscape.util.*;
-import cytoscape.CyNetwork;
 public class FilterMenuItem extends CytoscapeAction {
 
  
   protected JFrame frame;
-  protected CyNetwork network;
-  protected CyWindow window;
   protected CsFilter csfilter;
 
-  public FilterMenuItem ( CyNetwork network, CyWindow window, ImageIcon icon, CsFilter csfilter ) {
+  public FilterMenuItem ( ImageIcon icon, CsFilter csfilter ) {
     super( "Use Filters", icon );
-    this.network = network;
-    this.window = window;
     this.csfilter = csfilter;
     setPreferredMenu( "Filters" );
     setAcceleratorCombo( java.awt.event.KeyEvent.VK_F7, 0 );
@@ -30,7 +25,6 @@ public class FilterMenuItem extends CytoscapeAction {
                                             
 
   public void actionPerformed (ActionEvent e) {
-   
     csfilter.show();
   }
 

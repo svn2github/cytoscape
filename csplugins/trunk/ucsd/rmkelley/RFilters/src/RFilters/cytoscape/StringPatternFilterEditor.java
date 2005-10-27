@@ -11,11 +11,9 @@ import java.beans.*;
 import javax.swing.event.SwingPropertyChangeSupport;
 
 import cytoscape.*;
-import cytoscape.data.GraphObjAttributes;
-import cytoscape.view.CyWindow;
+import cytoscape.data.CyAttributes;
 import filter.view.*;
 import filter.model.*;
-import cytoscape.CyNetwork;
 import ViolinStrings.Strings;
 
 /**
@@ -40,11 +38,9 @@ public class StringPatternFilterEditor
 
   protected StringPatternFilter filter;
 
-  protected CyWindow cyWindow;
   protected String DEFAULT_SEARCH_STRING = "";
   protected String DEFAULT_FILTER_NAME = "Pattern: ";
   protected String DEFAULT_SELECTED_ATTRIBUTE = "";
-
 
   protected Class NODE_CLASS;
   protected Class EDGE_CLASS;
@@ -56,9 +52,8 @@ public class StringPatternFilterEditor
   protected ComboBoxModel edgeAttributeModel;
 
 
-  public StringPatternFilterEditor ( CyWindow cyWindow ) {
+  public StringPatternFilterEditor () {
     super();
-    this.cyWindow = cyWindow;
     try{
       STRING_CLASS = Class.forName("java.lang.String");
       NODE_CLASS = Class.forName("giny.model.Node");
@@ -143,7 +138,7 @@ public class StringPatternFilterEditor
    * Creates a new filter initialized to the default values with the given name
    */
   public Filter createDefaultFilter(){
-    return new StringPatternFilter(cyWindow,DEFAULT_CLASS,DEFAULT_SELECTED_ATTRIBUTE,DEFAULT_SEARCH_STRING,DEFAULT_FILTER_NAME);
+    return new StringPatternFilter(DEFAULT_CLASS,DEFAULT_SELECTED_ATTRIBUTE,DEFAULT_SEARCH_STRING,DEFAULT_FILTER_NAME);
   }
   /**
    * Accepts a Filter for editing
