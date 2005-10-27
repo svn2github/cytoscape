@@ -45,7 +45,7 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.awt.datatransfer.*;
 
-import cytoscape.data.GraphObjAttributes;
+import cytoscape.data.CyAttributes;
 import cytoscape.util.*;
 
 //---------------------------------------------------------------------------------------
@@ -62,7 +62,7 @@ import cytoscape.util.*;
 public class TabbedBrowser extends JFrame implements ClipboardOwner {
 	protected Object[] graphObjects; // nodes or edges
 
-	protected GraphObjAttributes attributes;
+	protected CyAttributes attributes;
 
 	// protected Vector attributeCategoriesToIgnore;
 	protected int preferredTableWidth = 600;
@@ -113,7 +113,7 @@ public class TabbedBrowser extends JFrame implements ClipboardOwner {
 	public static final int BROWSING_EDGES = 2;
 
 	// ---------------------------------------------------------------------------------------
-	public TabbedBrowser(Object[] graphObjects, GraphObjAttributes attributes,
+	public TabbedBrowser(Object[] graphObjects, CyAttributes attributes,
 			Vector attributeCategoriesToIgnore, String webBrowserScript,
 			int browseObjectClass) {
 		super();
@@ -149,7 +149,7 @@ public class TabbedBrowser extends JFrame implements ClipboardOwner {
 	}
 
 	// ---------------------------------------------------------------------------------------
-	JTabbedPane createGui(GraphObjAttributes attributes) {
+	JTabbedPane createGui(CyAttributes attributes) {
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP,
 				JTabbedPane.SCROLL_TAB_LAYOUT);
 		tabbedPane.addChangeListener(new TabbedPaneListener());

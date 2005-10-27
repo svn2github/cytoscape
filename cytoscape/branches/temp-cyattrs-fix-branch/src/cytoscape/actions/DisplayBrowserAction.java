@@ -77,7 +77,7 @@ public class DisplayBrowserAction extends CytoscapeAction  {
         
     if (selectedNodes.length > 0) {
       nodeBrowser = new TabbedBrowser (selectedNodes, 
-                                       Cytoscape.getNodeNetworkData(),
+                                       Cytoscape.getNodeAttributes(),
                                        attributeCategoriesToIgnore, 
                                        webBrowserScript, 
                                        TabbedBrowser.BROWSING_NODES);
@@ -85,7 +85,7 @@ public class DisplayBrowserAction extends CytoscapeAction  {
         
     if (selectedEdges.length > 0) {
       edgeBrowser = new TabbedBrowser (selectedEdges, 
-                                       Cytoscape.getEdgeNetworkData(),
+                                       Cytoscape.getEdgeAttributes(),
                                        attributeCategoriesToIgnore, 
                                        webBrowserScript, 
                                        TabbedBrowser.BROWSING_EDGES);
