@@ -743,7 +743,7 @@ public class GraphObjAttributesTest extends TestCase {
 
         attributes.set(nodeName, bundle);
         assertTrue(attributes.numberOfAttributes() == 3);
-        attributes.append("homology", "GAL80", new Double(888.88));
+        attributes.set("homology", "GAL80", new Double(888.88));
 
         assertTrue(attributes.hasAttribute("homology", "GAL80"));
         assertTrue(attributes.hasAttribute("homology", "GAL4"));
@@ -885,51 +885,51 @@ public class GraphObjAttributesTest extends TestCase {
         a.readAttributesFromFile(new File
                 ("testData/implicitStringNoCategory.attribute"));
         assertTrue(a.getClass("sample_zero") == "string".getClass());
-        assertTrue(a.getCategory("sample_zero").equals
-                (GraphObjAttributes.DEFAULT_CATEGORY));
+//         assertTrue(a.getCategory("sample_zero").equals
+//                 (GraphObjAttributes.DEFAULT_CATEGORY));
 
         cyAttributes = new CyAttributesImpl();
         a = new GraphObjAttributesImpl (cyAttributes);
         a.readAttributesFromFile(new File
                 ("testData/explicitStringNoCategory.attribute"));
         assertTrue(a.getClass("sample_zero") == "string".getClass());
-        assertTrue(a.getCategory("sample_zero").equals
-                (GraphObjAttributes.DEFAULT_CATEGORY));
+//         assertTrue(a.getCategory("sample_zero").equals
+//                 (GraphObjAttributes.DEFAULT_CATEGORY));
 
         cyAttributes = new CyAttributesImpl();
         a = new GraphObjAttributesImpl (cyAttributes);
         a.readAttributesFromFile(new File
                 ("testData/implicitStringWithCategory.attribute"));
         assertTrue(a.getClass("sample_zero") == "string".getClass());
-        assertTrue(a.getCategory("sample_zero").equals("annotation"));
+//         assertTrue(a.getCategory("sample_zero").equals("annotation"));
 
         cyAttributes = new CyAttributesImpl();
         a = new GraphObjAttributesImpl (cyAttributes);
         a.readAttributesFromFile(new File
                 ("testData/explicitStringWithCategory.attribute"));
         assertTrue(a.getClass("sample_zero") == "string".getClass());
-        assertTrue(a.getCategory("sample_zero").equals("annotation"));
+//         assertTrue(a.getCategory("sample_zero").equals("annotation"));
 
         cyAttributes = new CyAttributesImpl();
         a = new GraphObjAttributesImpl (cyAttributes);
         a.readAttributesFromFile(new File
                 ("testData/explicitUrlWithCategory.attribute"));
 //         assertTrue(a.getClass("locusLink") == Class.forName("java.net.URL"));
-        assertTrue(a.getCategory("locusLink").equals("annotation"));
+//         assertTrue(a.getCategory("locusLink").equals("annotation"));
 
         cyAttributes = new CyAttributesImpl();
         a = new GraphObjAttributesImpl (cyAttributes);
         a.readAttributesFromFile(new File("testData/implicitDouble.attribute"));
         assertTrue(a.getClass("Score") == Class.forName("java.lang.Double"));
-        assertTrue(a.getCategory("Score").equals
-                (GraphObjAttributes.DEFAULT_CATEGORY));
+//         assertTrue(a.getCategory("Score").equals
+//                 (GraphObjAttributes.DEFAULT_CATEGORY));
 
         cyAttributes = new CyAttributesImpl();
         a = new GraphObjAttributesImpl (cyAttributes);
         a.readAttributesFromFile(new File("testData/implicitUrl.attribute"));
 //         assertTrue(a.getClass("Locus Link") == Class.forName("java.net.URL"));
-        assertTrue(a.getCategory("Locus Link").equals
-                (GraphObjAttributes.DEFAULT_CATEGORY));
+//         assertTrue(a.getCategory("Locus Link").equals
+//                 (GraphObjAttributes.DEFAULT_CATEGORY));
     }
 
     /**

@@ -639,8 +639,11 @@ public class GraphObjAttributesImpl implements GraphObjAttributes
 
   public String getCategory(String attributeName)
   {
-    final String returnThis =  (String) m_categoryMap.get(attributeName);
-//     if (returnThis == null) { return GraphObjAttributes.DEFAULT_CATEGORY; }
-    return returnThis;
+    String returnThis =  (String) m_categoryMap.get(attributeName);
+    if (returnThis != null) { return returnThis; }
+    if (true) return null;
+    if (m_cyAttrs.getType(attributeName) == CyAttributes.TYPE_UNDEFINED) {
+      return null; }
+    return GraphObjAttributes.DEFAULT_CATEGORY;
   }
 }
