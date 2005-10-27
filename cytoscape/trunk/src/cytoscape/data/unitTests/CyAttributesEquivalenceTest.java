@@ -127,28 +127,14 @@ public class CyAttributesEquivalenceTest extends TestCase {
                 new Boolean(false));
 
         //  Verify value stored in CyAttributes
-        //  Due to workaround, single values stored via graphObjAttributes
-        //  are stored as lists.
-        List list = cyAttributes.getAttributeList(DUMMY_ID_2,
+        Boolean value = cyAttributes.getBooleanAttribute(DUMMY_ID_2,
                 DUMMY_BOOLEAN_ATTRIBUTE);
-        assertEquals (1, list.size());
-        Boolean value = (Boolean) list.get(0);
         assertEquals (false, value.booleanValue());
 
         //  Verify value stored in GraphObjAttributes
         value = (Boolean) graphAttributes.get(DUMMY_BOOLEAN_ATTRIBUTE,
                 DUMMY_ID_2);
         assertEquals (false, value.booleanValue());
-
-        //  Try setting an Integer value;  this should fail
-        try {
-            graphAttributes.set(DUMMY_BOOLEAN_ATTRIBUTE, DUMMY_ID_2, new
-                Integer (5));
-            fail ("Illegal Argument Exception should have been thrown.");
-        } catch (IllegalArgumentException e) {
-            assertTrue (e != null);
-        }
-
     }
 
     /**
