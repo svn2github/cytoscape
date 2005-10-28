@@ -932,7 +932,7 @@ public class ExpressionData implements Serializable {
      * @param nodeAttribs Node Attributes Object.
      * @param taskMonitor Task Monitor.  Can be null.
      */
-    public void copyToAttribs(GraphObjAttributes nodeAttribs,
+    public void copyToAttribs(CyAttributes nodeAttribs,
             TaskMonitor taskMonitor) {
         String[] condNames = getConditionNames();
         for (int condNum = 0; condNum < condNames.length; condNum++) {
@@ -943,8 +943,8 @@ public class ExpressionData implements Serializable {
                 String canName = (String) geneNames.get(i);
                 mRNAMeasurement mm = getMeasurement(canName, condName);
                 if (mm != null) {
-                    nodeAttribs.set(eStr, canName, mm.getRatio());
-                    nodeAttribs.set(sStr, canName, mm.getSignificance());
+                    nodeAttribs.setAttribute(canName, sStr, new Double(mm.getRatio()));
+                    nodeAttribs.setAttribute(canName, eStr, new Double(mm.getSignificance()));
                 }
                 //  Report on Progress to the Task Monitor.
                 if (taskMonitor != null) {
@@ -955,8 +955,6 @@ public class ExpressionData implements Serializable {
                     taskMonitor.setPercentCompleted((int) percent);
                 }
             }
-            nodeAttribs.setClass(eStr, Double.class);
-            nodeAttribs.setClass(sStr, Double.class);
         }
     }
 }
