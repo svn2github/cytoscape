@@ -253,8 +253,8 @@ public class Semantics {
     if (network == null || e == null) {
       return null;
     }
-    String canonicalName = Cytoscape.getEdgeNetworkData().getCanonicalName(e);
-    return Cytoscape.getEdgeNetworkData().getStringValue(Semantics.INTERACTION, canonicalName);
+    String canonicalName = e.getIdentifier();
+    return Cytoscape.getEdgeAttributes().getStringAttribute(canonicalName, Semantics.INTERACTION);
   }
   //-------------------------------------------------------------------------
   /**
