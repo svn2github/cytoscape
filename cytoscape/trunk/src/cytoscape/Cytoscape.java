@@ -117,25 +117,19 @@ public abstract class Cytoscape {
 	 */
 	protected static CytoscapeRootGraph cytoscapeRootGraph;
 
-	/**
-	 * The NetworkData that stores node info
-	 */
-	protected static GraphObjAttributes nodeData;
-
-	/**
-	 * The NetworkData that stores edge info
-	 */
-	protected static GraphObjAttributes edgeData;
-
     /**
      * Node CyAttributes.
      */
-    private static CyAttributes nodeAttributes;
+    private static CyAttributes nodeAttributes = new CyAttributesImpl();
+    private static GraphObjAttributes nodeData = new GraphObjAttributesImpl
+            (nodeAttributes);
 
     /**
      * Edge CyAttributes.
      */
-    private static CyAttributes edgeAttributes;
+    private static CyAttributes edgeAttributes = new CyAttributesImpl();
+    private static GraphObjAttributes edgeData = new GraphObjAttributesImpl
+            (edgeAttributes);
 
 	protected static ExpressionData expressionData;
 
@@ -342,7 +336,6 @@ public abstract class Cytoscape {
 		Cytoscape.getNodeNetworkData().addNameMapping(alias, node);
 		Semantics.assignNodeAliases(node, null, null);
 		return node;
-
 	}
 
 	/**
@@ -535,6 +528,7 @@ public abstract class Cytoscape {
 	 */
 	public static boolean setNodeAttributeValue(Node node, String attribute,
 			Object value) {
+
 		return Cytoscape.getNodeNetworkData().set(attribute,
 				Cytoscape.getNodeNetworkData().getCanonicalName(node), value);
 	}
@@ -1090,7 +1084,6 @@ public abstract class Cytoscape {
      * method will be removed in September, 2006.
 	 */
 	public static GraphObjAttributes getNodeNetworkData() {
-        initNodeAttributes();
 		return nodeData;
 	}
 
@@ -1101,7 +1094,6 @@ public abstract class Cytoscape {
      * method will be removed in September, 2006.
 	 */
 	public static GraphObjAttributes getEdgeNetworkData() {
-        initEdgeAttributes();
 		return edgeData;
 	}
 
@@ -1110,7 +1102,6 @@ public abstract class Cytoscape {
      * @return CyAttributes Object.
      */
     public static CyAttributes getNodeAttributes() {
-        initNodeAttributes();
         return nodeAttributes;
     }
 
@@ -1119,28 +1110,7 @@ public abstract class Cytoscape {
      * @return CyAttributes Object.
      */
     public static CyAttributes getEdgeAttributes() {
-        initEdgeAttributes();
         return edgeAttributes;
-    }
-
-    /**
-     * One-time initialization of Node Attributes.
-     */
-    private static void initNodeAttributes() {
-        if (nodeAttributes == null) {
-            nodeAttributes = new CyAttributesImpl();
-            nodeData = new GraphObjAttributesImpl(nodeAttributes);
-        }
-    }
-
-    /**
-     * One-time initialization of Edge Attributes.
-     */
-    private static void initEdgeAttributes() {
-        if (edgeAttributes == null) {
-            edgeAttributes = new CyAttributesImpl();
-            edgeData = new GraphObjAttributesImpl(edgeAttributes);
-        }
     }
 
 	public static ExpressionData getExpressionData() {
