@@ -33,7 +33,8 @@ import giny.model.Edge;
 
 import cytoscape.*;
 import cytoscape.CytoscapeInit;
-import cytoscape.data.GraphObjAttributes;
+import cytoscape.data.CyAttributes;
+import cytoscape.data.attr.CountedIterator;
 import cytoscape.data.servers.BioDataServer;
 
 /**
@@ -95,13 +96,17 @@ public class Semantics {
     
     String callerID = "Semantics.assignSpecies";
     //    network.beginActivity(callerID);
-    GraphObjAttributes nodeAttributes = Cytoscape.getNodeNetworkData();
-    String[] canonicalNames = nodeAttributes.getObjectNames(CANONICAL_NAME);
+    CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+    CountedIterator keys = nodeAttributes.getMultiHashMap().getObjectKeys(CANONICAL_NAME);
+    String[] canonicalNames = new String[keys.numRemaining()];
+    int inx = 0;
+    while (keys.hasNext()) {
+      canonicalNames[inx++] = (String) keys.next(); }
     for (int i=0; i<canonicalNames.length; i++) {
       String canonicalName = canonicalNames[i];
-      String species = nodeAttributes.getStringValue(SPECIES, canonicalName);
+      String species = nodeAttributes.getStringAttribute(canonicalName, SPECIES);
       if (species == null) { //only do something if no value exists
-        nodeAttributes.set(SPECIES, canonicalName, defaultSpecies);
+        nodeAttributes.setAttribute(canonicalName, SPECIES, defaultSpecies);
       }
     }
     // network.endActivity(callerID);
