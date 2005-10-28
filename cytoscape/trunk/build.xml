@@ -331,6 +331,10 @@
         <java classname="cytoscape.data.readers.unitTests.CyAttributesReaderTest"
               classpathref="classpath" fork="true">
         </java>
+        <echo>Testing CyAttributes Writer</echo>
+        <java classname="cytoscape.data.writers.unitTests.CyAttributesWriterTest"
+              classpathref="classpath" fork="true">
+        </java>
     </target>
 
     <!-- ======================================================= -->
