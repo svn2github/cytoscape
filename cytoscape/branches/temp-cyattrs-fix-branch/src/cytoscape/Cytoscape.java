@@ -505,7 +505,7 @@ public abstract class Cytoscape {
      * be removed in September, 2006.
 	 */
 	public static String[] getNodeAttributesList() {
-		return Cytoscape.getNodeNetworkData().getAttributeNames();
+          return Cytoscape.getNodeAttributes().getAttributeNames();
 	}
 
 	/**
@@ -514,7 +514,7 @@ public abstract class Cytoscape {
      * be removed in September, 2006.
 	 */
 	public static String[] getNodeAttributesList(Node[] nodes) {
-		return Cytoscape.getNodeNetworkData().getAttributeNames();
+          return Cytoscape.getNodeAttributes().getAttributeNames();
 	}
 
 	/**
@@ -523,7 +523,7 @@ public abstract class Cytoscape {
      * be removed in September, 2006.
 	 */
 	public static String[] getEdgeAttributesList() {
-		return Cytoscape.getEdgeNetworkData().getAttributeNames();
+          return Cytoscape.getEdgeAttributes().getAttributeNames();
 	}
 
 	/**
@@ -532,7 +532,7 @@ public abstract class Cytoscape {
      * be removed in September, 2006.
 	 */
 	public static String[] getNodeAttributesList(Edge[] edges) {
-		return Cytoscape.getEdgeNetworkData().getAttributeNames();
+          return Cytoscape.getEdgeAttributes().getAttributeNames();
 	}
 
 	/**
