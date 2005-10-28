@@ -35,6 +35,7 @@ import cytoscape.*;
 import cytoscape.CytoscapeInit;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.attr.CountedIterator;
+import cytoscape.data.attr.MultiHashMap;
 import cytoscape.data.servers.BioDataServer;
 
 /**
@@ -225,7 +226,21 @@ public class Semantics {
    */
   public static String[] getInteractionTypes( cytoscape.CyNetwork network) {
     if (network == null) {return new String[0];}
-    return Cytoscape.getEdgeNetworkData().getUniqueStringValues(Semantics.INTERACTION);
+    final HashMap dupsFilter = new HashMap();
+    final CyAttributes attrs = Cytoscape.getEdgeAttributes();
+    final MultiHashMap mmap = attrs.getMultiHashMap();
+    final byte type = attrs.getType(Semantics.INTERACTION);
+    final CountedIterator objs = mmap.getObjectKeys(Semantics.INTERACTION);
+    while (objs.hasNext()) {
+      final String obj = (String) objs.next();;
+      final Object val = mmap.getAttributeValue(obj, Semantics.INTERACTION, null);
+      dupsFilter.put(val, val); }
+    final String[] returnThis = new String[dupsFilter.size()];
+    final Iterator uniqueIter = dupsFilter.keySet().iterator();
+    int inx = 0;
+    while (uniqueIter.hasNext()) {
+      returnThis[inx++] = (String) uniqueIter.next(); }
+    return returnThis;
   }
   //-------------------------------------------------------------------------
   /**
@@ -301,9 +316,9 @@ public class Semantics {
     String species = null;
     if (network != null) {
       String callerID = "Semantics.getAllSynonyms";
-      String commonName = Cytoscape.getNodeNetworkData().getStringValue(COMMON_NAME, name);
+      String commonName = Cytoscape.getNodeAttributes().getStringAttribute(name, COMMON_NAME);
       if (commonName != null) {returnList.add(commonName);}
-      species = Cytoscape.getNodeNetworkData().getStringValue(SPECIES, name);
+      species = Cytoscape.getNodeAttributes().getStringAttribute(name, SPECIES);
     }
     BioDataServer bioDataServer = Cytoscape.getBioDataServer();
     species = CytoscapeInit.getDefaultSpeciesName();
