@@ -78,12 +78,6 @@ public class GraphObjAttributesImpl implements GraphObjAttributes
     else if (value instanceof String) {
       m_cyAttrs.setAttribute(id, attributeName, (String) value);
       return true; }
-    else if (value instanceof List) {
-      m_cyAttrs.setAttributeList(id, attributeName, (List) value);
-      return true; }
-    else if (value instanceof Map) {
-      m_cyAttrs.setAttributeMap(id, attributeName, (Map) value);
-      return true; }
     HashMap stupidMap = (HashMap) m_stupidMaps.get(attributeName);
     if (stupidMap == null) {
       stupidMap = new HashMap();
