@@ -411,13 +411,15 @@ public abstract class Cytoscape {
 
 			String edge_name = node_1.getIdentifier() + " (" + attribute_value
 					+ ") " + node_2.getIdentifier();
-			Cytoscape.getEdgeNetworkData().append(Semantics.INTERACTION,
-					edge_name, attribute_value);
-			Cytoscape.getEdgeNetworkData().addNameMapping(edge_name, edge);
-			Cytoscape.setEdgeAttributeValue(edge, Semantics.INTERACTION,
-					attribute_value);
-			Cytoscape.setEdgeAttributeValue(edge, Semantics.CANONICAL_NAME,
-					edge_name);
+                        final CyAttributes edgeAttrs = Cytoscape.getEdgeAttributes();
+                        if (attribute_value instanceof Boolean) {
+                          edgeAttrs.setAttribute(Semantics.INTERACTION, edge_name, (Boolean) attribute_value); }
+                        else if (attribute_value instanceof Integer) {
+                          edgeAttrs.setAttribute(Semantics.INTERACTION, edge_name, (Integer) attribute_value); }
+                        else if (attribute_value instanceof Double) {
+                          edgeAttrs.setAttribute(Semantics.INTERACTION, edge_name, (Double) attribute_value); }
+                        else if (attribute_value instanceof String) {
+                          edgeAttrs.setAttribute(Semantics.INTERACTION, edge_name, (String) attribute_value); }
 			return edge;
 		}
 		return null;
