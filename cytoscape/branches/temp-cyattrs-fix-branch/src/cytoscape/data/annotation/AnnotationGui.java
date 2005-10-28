@@ -35,22 +35,18 @@ package cytoscape.data.annotation;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
-import javax.swing.border.*;
 import java.awt.*;
-import java.awt.event.*;
 import javax.swing.tree.*;
 import javax.swing.JOptionPane;
-
-import java.io.*;
 import java.util.*;
+import java.util.List;
 
 import giny.view.*;
 
 import cytoscape.*;
 
-import cytoscape.data.GraphObjAttributes;
+import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
-import cytoscape.data.annotation.*;
 import cytoscape.data.servers.*;
 
 import cytoscape.layout.*;
@@ -277,7 +273,6 @@ public class AnnotationGui extends CytoscapeAction {
 				if (!node.isLeaf())
 					return;
 				annotationPath = availableAnnotationsTree.getSelectionPaths()[0];
-				Object nodeInfo = node.getUserObject();
 				annotateNodesButton.setEnabled(true);
 			}
 
@@ -286,8 +281,8 @@ public class AnnotationGui extends CytoscapeAction {
 		class SelectNodesTreeSelectionListener implements TreeSelectionListener {
 
 			public void valueChanged(TreeSelectionEvent e) {
-				DefaultMutableTreeNode node = (DefaultMutableTreeNode) currentAnnotationsTree
-						.getLastSelectedPathComponent();
+				DefaultMutableTreeNode node = 
+					(DefaultMutableTreeNode)currentAnnotationsTree.getLastSelectedPathComponent();
 				if (node == null)
 					return;
 				layoutByAnnotationButton.setEnabled(!node.isLeaf());
@@ -295,9 +290,8 @@ public class AnnotationGui extends CytoscapeAction {
 				if (!node.isLeaf())
 					return;
 
-				GraphObjAttributes nodeAttributes = Cytoscape
-						.getNodeNetworkData();
-
+				CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+				
 				// unselect every node in the graph
 				for (Iterator nvi = networkView.getNodeViewsIterator(); nvi
 						.hasNext();) {
@@ -310,8 +304,9 @@ public class AnnotationGui extends CytoscapeAction {
 						.hasNext();) {
 					// get the particular node view
 					NodeView nv = (NodeView) nvi.next();
-					String canonicalName = nodeAttributes.getCanonicalName(nv
-							.getNode());
+					String canonicalName = 
+						nodeAttributes.getStringAttribute(nv.getNode().getIdentifier(),
+									Semantics.CANONICAL_NAME);
 					if (canonicalName == null) {
 						continue;
 					}
@@ -319,24 +314,17 @@ public class AnnotationGui extends CytoscapeAction {
 					for (Iterator mi = selectionHash.keySet().iterator(); mi
 							.hasNext();) {
 						String name = (String) mi.next();
-						Object attributeValue = nodeAttributes.getValue(name,
-								canonicalName);
-						if (attributeValue == null) {
-							continue;
-						}
+						
 						Vector categoryList = (Vector) selectionHash.get(name);
-						// see if and entry in the attribute value for this node
-						// is contained
-						// in the list of categories to select for the attribute
-						// have to handle the cases of a String or a List of
-						// Strings
-						if ((attributeValue instanceof String)
-								&& categoryList.contains(attributeValue)) {
-							nv.setSelected(true);
+						byte type = nodeAttributes.getType(name);
+						if(type == CyAttributes.TYPE_STRING){
+							String attributeValue = nodeAttributes.getStringAttribute(canonicalName, name);
+							if(attributeValue != null && categoryList.contains(attributeValue))
+								nv.setSelected(true);
 							break; // no point in checking other attributes
-						} else if (attributeValue instanceof java.util.List) {
+						}else if(type == CyAttributes.TYPE_SIMPLE_LIST){
 							boolean hit = false;
-							java.util.List attributeList = (java.util.List) attributeValue;
+							List attributeList = nodeAttributes.getAttributeList(canonicalName, name);
 							for (Iterator ali = attributeList.iterator(); ali
 									.hasNext();) {
 								if (categoryList.contains(ali.next())) {
@@ -345,13 +333,15 @@ public class AnnotationGui extends CytoscapeAction {
 									break; // no point in checking the rest of
 											// the list
 								}
-							}
+							}// ali iterator
+							
 							if (hit) {
 								break;
 							} // no point in checking other attributes
-						}
-					}
-				}
+							
+						}// if list
+					}//mi iterator
+				}// nvi iterator
 
 				networkView.redrawGraph(false, false);
 
@@ -387,8 +377,6 @@ public class AnnotationGui extends CytoscapeAction {
 					list.add(annotationValue);
 				} // for i
 
-				String[] keys = (String[]) hash.keySet().toArray(new String[0]);
-
 				return hash;
 
 			} // extractAnnotationsFromSelection
@@ -411,7 +399,6 @@ public class AnnotationGui extends CytoscapeAction {
 			Set speciesInGraph = Semantics.getSpeciesInNetwork(network);
 
 			DefaultMutableTreeNode branch = null;
-			DefaultMutableTreeNode leaf = null;
 			Vector topLevelNamesList = new Vector();
 
 			for (int i = 0; i < descriptions.length; i++) {
@@ -505,19 +492,26 @@ public class AnnotationGui extends CytoscapeAction {
 	public String addAnnotationToNodes(AnnotationDescription aDesc, int level) {
 		String callerID = "AnnotationGui.addAnnotationToNodes";
 
-		GraphObjAttributes nodeAttributes = Cytoscape.getNodeNetworkData();
+		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 		// something like "GO biological process" or "KEGG metabolic pathway"
 		String baseAnnotationName = aDesc.getCurator() + " " + aDesc.getType();
-		String annotationNameAtLevel = baseAnnotationName + " (level " + level
-				+ ")";
+		String annotationNameAtLevel = baseAnnotationName + " (level " + level + ")";
 		String annotationNameForLeafIDs = baseAnnotationName + " leaf IDs";
+		
 		// make a fresh start
 		nodeAttributes.deleteAttribute(annotationNameAtLevel);
 		nodeAttributes.deleteAttribute(annotationNameForLeafIDs);
 
-		HashMap nodeNameMap = nodeAttributes.getNameMap();
-		String[] canonicalNodeNames = (String[]) nodeNameMap.values().toArray(
-				new String[0]);
+		Iterator it = Cytoscape.getRootGraph().nodesIterator();
+		ArrayList canonicals = new ArrayList();
+		while(it.hasNext()){
+			CyNode node = (CyNode)it.next();
+			String canonical = nodeAttributes.getStringAttribute(node.getIdentifier(), Semantics.CANONICAL_NAME);
+			if(canonical != null)
+				canonicals.add(canonical);
+		}
+		
+		String[] canonicalNodeNames = (String[])canonicals.toArray(new String[canonicals.size()]);
 
 		int unAnnotatedNodeCount = 0;
 		for (int i = 0; i < canonicalNodeNames.length; i++) {
@@ -529,20 +523,24 @@ public class AnnotationGui extends CytoscapeAction {
 				String[] uniqueAnnotationsAtLevel = collapseToUniqueAnnotationsAtLevel(
 						fullAnnotations, level);
 				for (int j = 0; j < uniqueAnnotationsAtLevel.length; j++) {
-					nodeAttributes.append(annotationNameAtLevel,
-							canonicalNodeNames[i], uniqueAnnotationsAtLevel[j]);
-				}
+					
+					// we can do this because at the begining of the method we deleted the attribute annotationNameAtLevel:
+					List annotsList = nodeAttributes.getAttributeList(canonicalNodeNames[i], annotationNameAtLevel);
+					if(annotsList == null){
+						annotsList = new ArrayList();
+						nodeAttributes.setAttributeList(canonicalNodeNames[i], annotationNameAtLevel,annotsList);
+					}
+					annotsList.add(uniqueAnnotationsAtLevel[j]);
+				
+				}//for j
 				int[] annotationIDs = dataServer.getClassifications(aDesc,
 						canonicalNodeNames[i]);
 				Integer[] integerArray = new Integer[annotationIDs.length];
 				for (int j = 0; j < annotationIDs.length; j++)
 					integerArray[j] = new Integer(annotationIDs[j]);
-				// nodeAttributes.add (annotationNameForLeafIDs,
-				// canonicalNodeNames [i], integerArray);
 			} // else: this node is annotated
 		} // for i
 
-		// nodeAttributes.setCategory (annotationNameAtLevel, "annotation");
 		System.err
 				.println("Warning: a method has been called whose functionality "
 						+ "has been partially removed "
@@ -631,12 +629,39 @@ public class AnnotationGui extends CytoscapeAction {
 			//    there is no match in the annotation.
 			//    Now it creates pop-up window when no match error found.
 			//
+			
+			// Above modification commented out by iavila@systemsbiology.org
+			// The exception was thrown by GraphObjAttributes, but now, we use CyAttributes
+			
 			Object[] uniqueAnnotationValues = null;
 
-			try {
-				uniqueAnnotationValues = Cytoscape.getNodeNetworkData()
-						.getUniqueValues(currentAnnotationCategory);
-			} catch (Exception e1) {
+		//	try {
+			CyAttributes nodeAtts = Cytoscape.getNodeAttributes();
+			Iterator it = Cytoscape.getRootGraph().nodesIterator();
+			HashSet values = new HashSet();
+			while(it.hasNext()){
+				CyNode node = (CyNode)it.next();
+				byte type = nodeAtts.getType(currentAnnotationCategory);
+				if(type == CyAttributes.TYPE_STRING){
+					String strVal = nodeAtts.getStringAttribute(node.getIdentifier(), currentAnnotationCategory);
+					if(strVal != null)
+						values.add(strVal);
+				 	}else if(type == CyAttributes.TYPE_SIMPLE_LIST){
+				 		List vals = nodeAtts.getAttributeList(node.getIdentifier(), currentAnnotationCategory);
+				 		if(vals.size() > 0){
+				 			Object val = vals.get(0);
+				 			if(val instanceof String)
+				 				values.addAll(vals);
+				 		}	
+				 	}
+					
+			}//while it.hasNext
+			
+			uniqueAnnotationValues = values.toArray();
+			
+			//} catch (Exception e1) {
+			
+			if(uniqueAnnotationValues.length == 0){
 				System.err.println( "No match exception" + e1 );
 				JOptionPane.showMessageDialog(null,
 						"There is no match between the selected annotation \n"
@@ -691,7 +716,6 @@ public class AnnotationGui extends CytoscapeAction {
 			if (e.getValueIsAdjusting())
 				return;
 			ListSelectionModel lsm = (ListSelectionModel) e.getSource();
-			Vector selectedCategoryNames = new Vector();
 			if (!lsm.isSelectionEmpty()) {
 				int minIndex = lsm.getMinSelectionIndex();
 				int maxIndex = lsm.getMaxSelectionIndex();
