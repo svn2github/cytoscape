@@ -120,15 +120,11 @@ public class Semantics {
   public static Set getSpeciesInNetwork( cytoscape.CyNetwork network) {
     Set returnSet = new HashSet();
     if (network == null) {return returnSet;}
-    GraphObjAttributes nodeAttributes = Cytoscape.getNodeNetworkData();
-    if (nodeAttributes == null) {return returnSet;}
+    CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
     //in the following map, keys are objects names and values are the species
-    Map speciesAttribute = nodeAttributes.getAttribute(SPECIES);
-    if (speciesAttribute == null) {return returnSet;}
-    //we will return each unique value stored in this map, without worrying
-    //about the type; thus, for example, if some node has several species
-    //defined as an array of Strings, we'll quietly add the array to our set
-    returnSet.addAll(speciesAttribute.values());
+    CountedIterator keys = nodeAttributes.getMultiHashMap().getObjectKeys(SPECIES);
+    while (keys.hasNext()) {
+      returnSet.add(nodeAttributes.getStringAttribute((String) keys.next(), SPECIES)); }
     return returnSet;
   }
 
