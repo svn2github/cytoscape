@@ -172,8 +172,7 @@ class SaveAsSifTask implements Task {
 
             StringBuffer sb = new StringBuffer();
             giny.model.Node node = nodes[i];
-            String canonicalName = 
-            	nodeAtts.getStringAttribute(node.getIdentifier(),Semantics.CANONICAL_NAME);
+            String canonicalName = node.getIdentifier();
             List edges = network.getAdjacentEdgesList(node, true, true, true);
 
             if (edges.size() == 0) {
@@ -185,11 +184,9 @@ class SaveAsSifTask implements Task {
                     if (node == edge.getSource()) { //do only for outgoing edges
                         giny.model.Node target = edge.getTarget();
                         
-                        String canonicalTargetName = 
-                        	nodeAtts.getStringAttribute(target.getIdentifier(),Semantics.CANONICAL_NAME);
+                        String canonicalTargetName = target.getIdentifier();
                         
-                        String edgeName = 
-                        	edgeAtts.getStringAttribute(edge.getIdentifier(), Semantics.CANONICAL_NAME);
+                        String edgeName = edge.getIdentifier();
                         
                         String interactionName =
                                 edgeAtts.getStringAttribute(edge.getIdentifier(),Semantics.INTERACTION);

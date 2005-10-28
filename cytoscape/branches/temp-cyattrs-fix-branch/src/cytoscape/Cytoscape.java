@@ -420,6 +420,7 @@ public abstract class Cytoscape {
                           edgeAttrs.setAttribute(Semantics.INTERACTION, edge_name, (Double) attribute_value); }
                         else if (attribute_value instanceof String) {
                           edgeAttrs.setAttribute(Semantics.INTERACTION, edge_name, (String) attribute_value); }
+                        edgeAttrs.setAttribute(Semantics.CANONICAL_NAME,  edge_name, edge_name);
 			return edge;
 		}
 		return null;
