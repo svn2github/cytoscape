@@ -320,7 +320,7 @@ public abstract class Cytoscape {
 		String old_name = alias;
 		alias = canonicalizeName(alias);
 
-		CyNode node = (CyNode) getNodeNetworkData().getGraphObject(alias);
+                CyNode node = Cytoscape.getRootGraph().getNode(alias);
 		if (node != null) {
 			// System.out.print(".");
 			return node;
@@ -339,7 +339,7 @@ public abstract class Cytoscape {
 		// :"+alias+" old_name: "+old_name );
 		// if ( old_name != alias )
 		// setNodeAttributeValue( node, "alias", old_name );
-		Cytoscape.getNodeNetworkData().addNameMapping(alias, node);
+// 		Cytoscape.getNodeNetworkData().addNameMapping(alias, node);
 		Semantics.assignNodeAliases(node, null, null);
 		return node;
 
@@ -470,8 +470,23 @@ public abstract class Cytoscape {
      * be removed in September, 2006.
 	 */
 	public static Object getNodeAttributeValue(Node node, String attribute) {
-		return Cytoscape.getNodeNetworkData().get(attribute,
-				Cytoscape.getNodeNetworkData().getCanonicalName(node));
+          final CyAttributes nodeAttrs = Cytoscape.getNodeAttributes();
+          final String canonName = node.getIdentifier();
+          final byte cyType = nodeAttrs.getType(attribute);
+          if (cyType == CyAttributes.TYPE_BOOLEAN) {
+            return nodeAttrs.getBooleanAttribute(canonName, attribute); }
+          else if (cyType == CyAttributes.TYPE_FLOATING) {
+            return nodeAttrs.getDoubleAttribute(canonName, attribute); }
+          else if (cyType == CyAttributes.TYPE_INTEGER) {
+            return nodeAttrs.getIntegerAttribute(canonName, attribute); }
+          else if (cyType == CyAttributes.TYPE_STRING) {
+            return nodeAttrs.getStringAttribute(canonName, attribute); }
+          else if (cyType == CyAttributes.TYPE_SIMPLE_LIST) {
+            return nodeAttrs.getAttributeList(canonName, attribute); }
+          else if (cyType == CyAttributes.TYPE_SIMPLE_MAP) {
+            return nodeAttrs.getAttributeMap(canonName, attribute); }
+          else {
+            return null; }
 	}
 
 	/**
