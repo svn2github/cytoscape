@@ -662,7 +662,7 @@ public class AnnotationGui extends CytoscapeAction {
 			//} catch (Exception e1) {
 			
 			if(uniqueAnnotationValues.length == 0){
-				System.err.println( "No match exception" + e1 );
+				//System.err.println( "No match exception" + e1 );
 				JOptionPane.showMessageDialog(null,
 						"There is no match between the selected annotation \n"
 						+ "and current nodes in the network.\n"
