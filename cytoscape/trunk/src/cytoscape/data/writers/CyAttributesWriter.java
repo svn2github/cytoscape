@@ -69,6 +69,8 @@ public class CyAttributesWriter
           if (listElms.hasNext()) { writer.write("::"); } }
         writer.write(")"); }
       writer.newLine();; }
+      writer.flush();
+      writer.close();
   }
 
 }
