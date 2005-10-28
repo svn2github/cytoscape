@@ -550,8 +550,21 @@ public abstract class Cytoscape {
 	 */
 	public static boolean setNodeAttributeValue(Node node, String attribute,
 			Object value) {
-		return Cytoscape.getNodeNetworkData().set(attribute,
-				Cytoscape.getNodeNetworkData().getCanonicalName(node), value);
+          final CyAttributes nodeAttrs = Cytoscape.getNodeAttributes();
+          final String canonName = node.getIdentifier();
+          if (value instanceof Boolean) {
+            nodeAttrs.setAttribute(canonName, attribute, (Boolean) value);
+            return true; }
+          else if (value instanceof Integer) {
+            nodeAttrs.setAttribute(canonName, attribute, (Integer) value);
+            return true; }
+          else if (value instanceof Double) {
+            nodeAttrs.setAttribute(canonName, attribute, (Double) value);
+            return true; }
+          else if (value instanceof String) {
+            nodeAttrs.setAttribute(canonName, attribute, (String) value);
+            return true; }
+          return false;
 	}
 
 	/**
