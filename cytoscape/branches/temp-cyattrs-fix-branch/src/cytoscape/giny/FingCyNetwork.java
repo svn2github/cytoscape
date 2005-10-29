@@ -470,8 +470,22 @@ public class FingCyNetwork
    * Return the requested Attribute for the given Node
    */
   public Object getNodeAttributeValue ( int node, String attribute ) {
-    return Cytoscape.getNodeNetworkData().get( attribute, 
-                                               Cytoscape.getNodeNetworkData().getCanonicalName( getNode( node ) ) );
+    final String canonName = getNode(node).getIdentifier();
+    final CyAttributes attrs = Cytoscape.getNodeAttributes();
+    final byte cyType = attrs.getType(attribute);
+    if (cyType == CyAttributes.TYPE_BOOLEAN) {
+      return attrs.getBooleanAttribute(canonName, attribute); }
+    else if (cyType == CyAttributes.TYPE_FLOATING) {
+      return attrs.getDoubleAttribute(canonName, attribute); }
+    else if (cyType == CyAttributes.TYPE_INTEGER) {
+      return attrs.getIntegerAttribute(canonName, attribute); }
+    else if (cyType == CyAttributes.TYPE_STRING) {
+      return attrs.getStringAttribute(canonName, attribute); }
+    else if (cyType == CyAttributes.TYPE_SIMPLE_LIST) {
+      return attrs.getAttributeList(canonName, attribute); }
+    else if (cyType == CyAttributes.TYPE_SIMPLE_MAP) {
+      return attrs.getAttributeMap(canonName, attribute); }
+    else { return null; }
   }
 
   /**
