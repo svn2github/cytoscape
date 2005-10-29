@@ -28,7 +28,6 @@
 // $Revision$
 // $Date$
 // $Author$
-
 package cytoscape.data;
 
 import java.util.*;
@@ -47,120 +46,153 @@ import ViolinStrings.Strings;
 //-------------------------------------------------------------------------
 /**
  * This class provides static methods that operate on a CyNetwork to perform
- * various useful tasks. Many of these methods make assumptions about the
- * data types that are available in the node and edge attributes of the network.
+ * various useful tasks. Many of these methods make assumptions about the data
+ * types that are available in the node and edge attributes of the network.
  */
 public class CyNetworkUtilities {
-//-------------------------------------------------------------------------   
-/**
- * Saves all selected nodes in the current view to a file with the given name.
- */
-public static boolean saveSelectedNodeNames( CyNetworkView networkView, CyNetwork network, String filename) {
-    if (networkView == null || network == null || filename == null) {return false;}
-    
-    GraphView graphView = networkView.getView();
-    GraphObjAttributes nodeAttributes = network.getNodeAttributes();
-    String lineSep = System.getProperty("line.separator");
-    try {
-        File file = new File(filename);
-        FileWriter fout = new FileWriter(file);
-        for (Iterator i = graphView.getNodeViewsIterator(); i.hasNext(); ) {
-            NodeView nodeView = (NodeView)i.next();
-            if (nodeView.isSelected()) {
-                Node node = nodeView.getNode();
-                String canonicalName = nodeAttributes.getCanonicalName(node);
-                fout.write(canonicalName + lineSep);
-            }
-        } // for i
-        fout.close();
-        return true;
-    }  catch (IOException e) {
-        JOptionPane.showMessageDialog(null, e.toString(),
-                                      "Error Writing to \"" + filename + "\"",
-                                      JOptionPane.ERROR_MESSAGE);
-        return false;
-    }
-	    
-} // saveSelectedNodeNames
-//-------------------------------------------------------------------------
-/**
- * Saves all visible nodes in the current view to a file with the given name.
- */
-public static boolean saveVisibleNodeNames(CyNetwork network, String filename) {
-    if (network == null || filename == null) {return false;}
+	// -------------------------------------------------------------------------
+	/**
+	 * Saves all selected nodes in the current view to a file with the given
+	 * name.
+	 */
+	public static boolean saveSelectedNodeNames(CyNetworkView networkView,
+			CyNetwork network, String filename) {
+		if (networkView == null || network == null || filename == null) {
+			return false;
+		}
 
-    String callerID = "CyNetworkUtilities.saveVisibleNodeNames";
-    network.beginActivity(callerID);
-    
-    GraphPerspective theGraph = network.getGraphPerspective();
-    GraphObjAttributes nodeAttributes = network.getNodeAttributes();
-    String lineSep = System.getProperty("line.separator");
-    try {
-        File file = new File(filename);
-        FileWriter fout = new FileWriter(file);
-        for (Iterator i = theGraph.nodesIterator(); i.hasNext(); ) {
-            Node node = (Node)i.next();
-            String canonicalName = nodeAttributes.getCanonicalName(node);
-            fout.write(canonicalName + lineSep);
-        } // for i
-        fout.close();
-        network.endActivity(callerID);
-        return true;
-    }  catch (IOException e) {
-        JOptionPane.showMessageDialog(null, e.toString(),
-                                      "Error Writing to \"" + filename + "\"",
-                                      JOptionPane.ERROR_MESSAGE);
-        network.endActivity(callerID);
-        return false;
-    }
-}
-//-------------------------------------------------------------------------
-/**
- * Selects every node in the current view whose canonical name, label, or
- * any known synonym starts with the string specified by the second argument.
- * Note that synonyms are only available if a naming server is available.
- *
- * This method does not change the selection state of any node that doesn't
- * match the given key, allowing multiple selection queries to be concatenated.
- */
-public static boolean selectNodesStartingWith(CyNetwork network, String key,
-                                              CyNetworkView networkView) {
-    if (network == null || key == null || networkView == null) {return false;}
-    key = key.toLowerCase();
-    boolean found = false;
-    String callerID = "CyNetworkUtilities.selectNodesStartingWith";
-    network.beginActivity(callerID);
+		GraphView graphView = networkView.getView();
+		// GraphObjAttributes nodeAttributes = network.getNodeAttributes();
 
-    GraphPerspective theGraph = network.getGraphPerspective();
-    GraphObjAttributes nodeAttributes = network.getNodeAttributes();
-    for (Iterator i = theGraph.nodesIterator(); i.hasNext(); ) {
-        Node node = (Node)i.next();
-        String nodeLabel = node.getIdentifier();
-        String canonicalName = nodeAttributes.getCanonicalName(node);
-        boolean matched = false;
-        if (nodeLabel != null &&  Strings.isLike(  nodeLabel, key, 0, true ) ) {
-            matched = true;
-	    found = true;
-        } else {
-            //this list always includes the canonical name itself
-            List synonyms = Semantics.getAllSynonyms(canonicalName, network );
-            for (Iterator synI = synonyms.iterator(); synI.hasNext(); ) {
-                String synonym = (String)synI.next();
-                if ( Strings.isLike(synonym, key, 0, true ) ) {
-                    matched = true;
-		    found = true;
-                    break;
-                }
-            }
-        }
-        if (matched) {//only select matches, don't deselect ones that don't match
-            networkView.getView().getNodeView(node).setSelected(matched);
-        }
-    }
-    
-    network.endActivity(callerID);
-    return found;
-}
-//-------------------------------------------------------------------------
-}
+		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 
+		String lineSep = System.getProperty("line.separator");
+		try {
+			File file = new File(filename);
+			FileWriter fout = new FileWriter(file);
+			for (Iterator i = graphView.getNodeViewsIterator(); i.hasNext();) {
+				NodeView nodeView = (NodeView) i.next();
+				if (nodeView.isSelected()) {
+					Node node = nodeView.getNode();
+					// String canonicalName =
+					// nodeAttributes.getCanonicalName(node);
+					String canonicalName = nodeAttributes.getStringAttribute(
+							node.getIdentifier(), "cannonicalName");
+
+					fout.write(canonicalName + lineSep);
+				}
+			} // for i
+			fout.close();
+			return true;
+		} catch (IOException e) {
+			JOptionPane.showMessageDialog(null, e.toString(),
+					"Error Writing to \"" + filename + "\"",
+					JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+
+	} // saveSelectedNodeNames
+	// -------------------------------------------------------------------------
+
+	/**
+	 * Saves all visible nodes in the current view to a file with the given
+	 * name.
+	 */
+	public static boolean saveVisibleNodeNames(CyNetwork network,
+			String filename) {
+		if (network == null || filename == null) {
+			return false;
+		}
+
+		String callerID = "CyNetworkUtilities.saveVisibleNodeNames";
+		network.beginActivity(callerID);
+
+		GraphPerspective theGraph = network.getGraphPerspective();
+
+		// GraphObjAttributes nodeAttributes = network.getNodeAttributes();
+		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+
+		String lineSep = System.getProperty("line.separator");
+		try {
+			File file = new File(filename);
+			FileWriter fout = new FileWriter(file);
+			for (Iterator i = theGraph.nodesIterator(); i.hasNext();) {
+				Node node = (Node) i.next();
+				// String canonicalName = nodeAttributes.getCanonicalName(node);
+				String canonicalName = nodeAttributes.getStringAttribute(node
+						.getIdentifier(), "cannonicalName");
+
+				fout.write(canonicalName + lineSep);
+			} // for i
+			fout.close();
+			network.endActivity(callerID);
+			return true;
+		} catch (IOException e) {
+			JOptionPane.showMessageDialog(null, e.toString(),
+					"Error Writing to \"" + filename + "\"",
+					JOptionPane.ERROR_MESSAGE);
+			network.endActivity(callerID);
+			return false;
+		}
+	}
+
+	// -------------------------------------------------------------------------
+	/**
+	 * Selects every node in the current view whose canonical name, label, or
+	 * any known synonym starts with the string specified by the second
+	 * argument. Note that synonyms are only available if a naming server is
+	 * available.
+	 * 
+	 * This method does not change the selection state of any node that doesn't
+	 * match the given key, allowing multiple selection queries to be
+	 * concatenated.
+	 */
+	public static boolean selectNodesStartingWith(CyNetwork network,
+			String key, CyNetworkView networkView) {
+		if (network == null || key == null || networkView == null) {
+			return false;
+		}
+		key = key.toLowerCase();
+		boolean found = false;
+		String callerID = "CyNetworkUtilities.selectNodesStartingWith";
+		network.beginActivity(callerID);
+
+		GraphPerspective theGraph = network.getGraphPerspective();
+		//GraphObjAttributes nodeAttributes = network.getNodeAttributes();
+		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+		
+		for (Iterator i = theGraph.nodesIterator(); i.hasNext();) {
+			Node node = (Node) i.next();
+			String nodeLabel = node.getIdentifier();
+			//String canonicalName = nodeAttributes.getCanonicalName(node);
+			String canonicalName = nodeAttributes.getStringAttribute(node
+					.getIdentifier(), "cannonicalName");
+			
+			boolean matched = false;
+			if (nodeLabel != null && Strings.isLike(nodeLabel, key, 0, true)) {
+				matched = true;
+				found = true;
+			} else {
+				// this list always includes the canonical name itself
+				List synonyms = Semantics
+						.getAllSynonyms(canonicalName, network);
+				for (Iterator synI = synonyms.iterator(); synI.hasNext();) {
+					String synonym = (String) synI.next();
+					if (Strings.isLike(synonym, key, 0, true)) {
+						matched = true;
+						found = true;
+						break;
+					}
+				}
+			}
+			if (matched) {// only select matches, don't deselect ones that
+							// don't match
+				networkView.getView().getNodeView(node).setSelected(matched);
+			}
+		}
+
+		network.endActivity(callerID);
+		return found;
+	}
+	// -------------------------------------------------------------------------
+}
