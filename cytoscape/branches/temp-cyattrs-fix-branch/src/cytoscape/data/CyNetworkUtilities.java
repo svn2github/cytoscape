@@ -82,7 +82,7 @@ public class CyNetworkUtilities {
 					// String canonicalName =
 					// nodeAttributes.getCanonicalName(node);
 					String canonicalName = nodeAttributes.getStringAttribute(
-							node.getIdentifier(), "cannonicalName");
+							node.getIdentifier(), "canonicalName");
 
 					fout.write(canonicalName + lineSep);
 				}
@@ -125,7 +125,7 @@ public class CyNetworkUtilities {
 				Node node = (Node) i.next();
 				// String canonicalName = nodeAttributes.getCanonicalName(node);
 				String canonicalName = nodeAttributes.getStringAttribute(node
-						.getIdentifier(), "cannonicalName");
+						.getIdentifier(), "canonicalName");
 
 				fout.write(canonicalName + lineSep);
 			} // for i
@@ -171,7 +171,7 @@ public class CyNetworkUtilities {
 			String nodeLabel = node.getIdentifier();
 			//String canonicalName = nodeAttributes.getCanonicalName(node);
 			String canonicalName = nodeAttributes.getStringAttribute(node
-					.getIdentifier(), "cannonicalName");
+					.getIdentifier(), "canonicalName");
 			
 			boolean matched = false;
 			if (nodeLabel != null && Strings.isLike(nodeLabel, key, 0, true)) {
