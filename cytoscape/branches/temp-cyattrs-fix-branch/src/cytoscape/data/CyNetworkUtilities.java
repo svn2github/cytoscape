@@ -30,18 +30,23 @@
 // $Author$
 package cytoscape.data;
 
-import java.util.*;
-import java.io.*;
+import giny.model.GraphPerspective;
+import giny.model.Node;
+import giny.view.GraphView;
+import giny.view.NodeView;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
+
 import javax.swing.JOptionPane;
 
-import giny.model.*;
-import giny.view.*;
-
-import cytoscape.Cytoscape;
-import cytoscape.data.GraphObjAttributes;
-import cytoscape.view.CyNetworkView;
-import cytoscape.CyNetwork;
 import ViolinStrings.Strings;
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+import cytoscape.view.CyNetworkView;
 
 //-------------------------------------------------------------------------
 /**
