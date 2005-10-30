@@ -34,17 +34,22 @@
 //-----------------------------------------------------------------------------------
 package cytoscape.data.readers;
 //-----------------------------------------------------------------------------------------
-import java.util.*;
+import giny.model.Edge;
+import giny.model.Node;
+import giny.model.RootGraph;
+import giny.view.EdgeView;
+import giny.view.GraphView;
+import giny.view.NodeView;
+
 import java.awt.geom.Point2D;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Vector;
 
-import giny.model.*;
-import giny.view.*;
-import cytoscape.*;
-
-import cytoscape.data.CyAttributes;
-import cytoscape.data.GraphObjAttributes;
 import cern.colt.list.IntArrayList;
 import cern.colt.map.OpenIntIntHashMap;
+import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
 
 
 //-------------------------------------------------------------------------------------
