@@ -12,7 +12,7 @@ import java.awt.event.ItemEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
 import java.util.*;
-import cytoscape.data.GraphObjAttributes;
+import cytoscape.data.CyAttributes;
 import cytoscape.dialogs.GridBagGroup;
 import cytoscape.dialogs.MiscGB;
 import cytoscape.visual.mappings.ObjectMapping;
@@ -261,14 +261,14 @@ public abstract class AbstractCalculator implements Calculator {
 
     /**
      * Get the UI for calculators. Display a JComboBox with attributes in the given
-     * GraphObjAttributes whose data are instances of the classes accepted by each
+     * CyAttributes whose data are instances of the classes accepted by each
      * ObjectMapping. The resulting JComboBox calls
      * {@link #updateAttribute(String, CyNetwork, int)} when frobbed.
      *
-     * @param	attr	GraphObjAttributes to look up attributes from
+     * @param	attr	CyAttributes to look up attributes from
      * @return	UI with controlling attribute selection facilities
      */
-    protected JPanel getUI(GraphObjAttributes attr, JDialog parent, CyNetwork network) {
+    protected JPanel getUI(CyAttributes attr, JDialog parent, CyNetwork network) {
 	return new CalculatorUI(attr, parent, network);
     }
 
@@ -281,7 +281,7 @@ public abstract class AbstractCalculator implements Calculator {
 	 */
 	protected GridBagGroup myGBG;
 	
-	public CalculatorUI(GraphObjAttributes attr, JDialog parent, CyNetwork network) {
+	public CalculatorUI(CyAttributes attr, JDialog parent, CyNetwork network) {
 	    this.myGBG = new GridBagGroup(this);
 	    String[] attrNames = attr.getAttributeNames();
             // 20030916 cworkman added Arrays.sort()
@@ -299,7 +299,24 @@ public abstract class AbstractCalculator implements Calculator {
 		if (okClass != null) {
 		    Vector validAttrV = new Vector(attrNames.length);
 		    for (int j = 0; j < attrNames.length; j++) {
-			Class attrClass = attr.getClass(attrNames[j]);
+			//Class attrClass = attr.getClass(attrNames[j]);
+
+			// TODO Should this logic be here?  Seems very redundant.
+			byte attrType = attr.getType(attrNames[j]);
+			Class attrClass = null;
+			if ( attrType == CyAttributes.TYPE_BOOLEAN )
+				attrClass = Boolean.class;
+			else if ( attrType == CyAttributes.TYPE_FLOATING )
+				attrClass = Float.class;
+			else if ( attrType == CyAttributes.TYPE_INTEGER )
+				attrClass = Integer.class;
+			else if ( attrType == CyAttributes.TYPE_STRING )
+				attrClass = String.class;
+		 	// TODO What about the other types?  This will probably cause 
+			// a NullPointerException to be thrown.
+			else
+				attrClass = null;
+
 			for (int k = 0; k < okClass.length; k++) {
 			    if (okClass[k].isAssignableFrom(attrClass)) {
 				validAttrV.add(attrNames[j]);
@@ -421,5 +438,41 @@ public abstract class AbstractCalculator implements Calculator {
 		this.changeEvent = new ChangeEvent(this);
 	    listener.stateChanged(this.changeEvent);
         }
+    }
+
+    /**
+     * Manually constructs a map of attribute names to single values.  
+     * TODO Should this be here or in CyAttributes?  
+     * @param canonicalName The attribute name returned from the CyNode or CyEdge.
+     * @return Map of the attribute names to values.
+     */
+    protected Map getAttrBundle(String canonicalName, CyAttributes cyAttrs) {
+        final HashMap returnThis = new HashMap();
+        final String[] attrNames = cyAttrs.getAttributeNames();
+
+        for (int i = 0; i < attrNames.length; i++) {
+          final byte type = cyAttrs.getType(attrNames[i]);
+          if (cyAttrs.hasAttribute(canonicalName, attrNames[i])) {
+            if (type == CyAttributes.TYPE_SIMPLE_LIST) {
+              List l = cyAttrs.getAttributeList(canonicalName, attrNames[i]);
+              if (l != null && l.size() > 0) {
+                returnThis.put(attrNames[i], l.get(0)); } }
+            else if (type == CyAttributes.TYPE_BOOLEAN) {
+              returnThis.put
+                (attrNames[i],
+                 cyAttrs.getBooleanAttribute(canonicalName, attrNames[i])); }
+            else if (type == CyAttributes.TYPE_INTEGER) {
+              returnThis.put
+                (attrNames[i],
+                     cyAttrs.getIntegerAttribute(canonicalName, attrNames[i])); }
+            else if (type == CyAttributes.TYPE_FLOATING) {
+              returnThis.put
+                (attrNames[i],
+                 cyAttrs.getDoubleAttribute(canonicalName, attrNames[i])); }
+            else if (type == CyAttributes.TYPE_STRING) {
+              returnThis.put
+                (attrNames[i],
+                 cyAttrs.getStringAttribute(canonicalName, attrNames[i])); } } }
+        return returnThis;
     }
 }

@@ -8,11 +8,13 @@ package cytoscape.visual.calculators;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Properties;
+import java.util.Map;
 import cytoscape.dialogs.MiscGB;
 import cytoscape.dialogs.GridBagGroup;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.mappings.MappingFactory;
 import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
 import cytoscape.visual.parsers.ValueParser;
 //------------------------------------------------------------------------------
 /**
@@ -45,10 +47,10 @@ public abstract class NodeCalculator extends AbstractCalculator {
      */
     public JPanel getUI(JDialog parent, CyNetwork n) {
 	// everything comes straight from the superclass
-	return super.getUI(n.getNodeAttributes(), parent, n);
+	return super.getUI(Cytoscape.getNodeAttributes(), parent, n);
 	/*
 	// attribute select combo box - delivered complete from the superclass
-	JPanel selectAttributePanel = super.getUI(n.getNodeAttributes());
+	JPanel selectAttributePanel = super.getUI(Cytoscape.getNodeAttributes());
 	
 	// underlying mapper's UI
 	JPanel mapperUI = super.getMapping().getUI(parent, n);
@@ -59,5 +61,13 @@ public abstract class NodeCalculator extends AbstractCalculator {
 	MiscGB.insert(g, mapperUI, 0, 1, GridBagConstraints.REMAINDER, GridBagConstraints.REMAINDER, 5, 5, GridBagConstraints.BOTH);
 	return g.panel;
 	*/
+    }
+
+    /**
+     * Simple passthrough method that is specific to nodes. See AbstractCalculator.getAttrBundle()
+     * for more details.
+     */
+    protected Map getAttrBundle(String name) {
+    	return super.getAttrBundle(name,Cytoscape.getNodeAttributes());
     }
 }

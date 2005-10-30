@@ -38,8 +38,8 @@ public class GenericNodeLineTypeCalculator extends NodeCalculator implements Nod
     }
     
     public LineType calculateNodeLineType(Node node, CyNetwork network) {
-        String canonicalName = network.getNodeAttributes().getCanonicalName(node);
-        Map attrBundle = network.getNodeAttributes().getAttributes(canonicalName);
+        String canonicalName = node.getIdentifier();
+        Map attrBundle = getAttrBundle(canonicalName);
         return (LineType)super.getMapping().calculateRangeValue(attrBundle);
     }
 }

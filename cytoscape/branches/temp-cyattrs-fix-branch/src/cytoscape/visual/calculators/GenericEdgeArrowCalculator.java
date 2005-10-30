@@ -38,8 +38,8 @@ public class GenericEdgeArrowCalculator extends EdgeCalculator implements EdgeAr
     }
     
     public Arrow calculateEdgeArrow(Edge edge, CyNetwork network) {
-        String canonicalName = network.getEdgeAttributes().getCanonicalName(edge);
-        Map attrBundle = network.getEdgeAttributes().getAttributes(canonicalName);
+        String canonicalName = edge.getIdentifier();
+        Map attrBundle = getAttrBundle(canonicalName); 
         return (Arrow) super.getMapping().calculateRangeValue(attrBundle);
     }
 }

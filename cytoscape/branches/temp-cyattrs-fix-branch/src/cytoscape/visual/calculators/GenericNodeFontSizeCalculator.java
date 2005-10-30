@@ -42,8 +42,8 @@ public class GenericNodeFontSizeCalculator extends NodeCalculator
      *  NodeAppearanceCalculator.
      */
     public float calculateNodeFontSize(Node node, CyNetwork network) {
-	String canonicalName = network.getNodeAttributes().getCanonicalName(node);
-	Map attrBundle = network.getNodeAttributes().getAttributes(canonicalName);
+        String canonicalName = node.getIdentifier();
+        Map attrBundle = getAttrBundle(canonicalName);
 	Object rangeValue = super.getMapping().calculateRangeValue(attrBundle);
 	if (rangeValue != null)
 	    return ((Number) rangeValue).floatValue();
