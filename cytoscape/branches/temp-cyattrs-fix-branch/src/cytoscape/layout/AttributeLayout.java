@@ -40,6 +40,8 @@ import giny.model.*;
 import giny.view.*;
 import giny.util.SpringEmbeddedLayouter;
 
+import cytoscape.data.CyAttributes;
+import cytoscape.data.CyAttributesUtils;
 import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.Semantics;
 import cytoscape.view.CyNetworkView;
@@ -125,7 +127,7 @@ public class AttributeLayout {
         GraphPerspective realGP = cyWindow.getNetwork().getGraphPerspective();
         GraphPerspective layoutGP = (GraphPerspective)realGP.clone();
         RootGraph rootGraph = realGP.getRootGraph();
-        GraphObjAttributes nodeAttributes = cyWindow.getNetwork().getNodeAttributes();
+        CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
         
         int[] currentEdges = layoutGP.getEdgeIndicesArray();
         layoutGP.hideEdges(currentEdges);//hide all the current edges
@@ -161,9 +163,8 @@ public class AttributeLayout {
             }
             //and add node and name to the node attributes
             Node node = rootGraph.getNode(categoryInt);
-            nodeAttributes.addNameMapping(categoryName, node);
             //set the common name to the same value in case that's being used
-            nodeAttributes.set(Semantics.COMMON_NAME, categoryName, categoryName);
+            nodeAttributes.setAttribute(categoryName, Semantics.COMMON_NAME, categoryName);
             //now process the set of nodes that have this attribute value
             Set nodeSet = (Set)valueMap.get(category);
             for (Iterator si = nodeSet.iterator(); si.hasNext(); ) {
@@ -222,8 +223,8 @@ public class AttributeLayout {
         
         GraphPerspective gp = cyWindow.getNetwork().getGraphPerspective();
         RootGraph rootGraph = gp.getRootGraph();
-        GraphObjAttributes nodeAttributes = cyWindow.getNetwork().getNodeAttributes();
-        GraphObjAttributes edgeAttributes = cyWindow.getNetwork().getEdgeAttributes();
+        CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+        CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
         
         //count up how many edges to create
         int edgeCount = 0;
@@ -248,10 +249,10 @@ public class AttributeLayout {
             Node[] nodeArray = (Node[])nodeSet.toArray(new Node[0]);
             for (int i=0; i<nodeArray.length-1; i++) {
                 Node firstNode = nodeArray[i];
-                String firstName = nodeAttributes.getCanonicalName(firstNode);
+                String firstName = firstNode.getIdentifier();
                 for (int j=i+1; j<nodeArray.length; j++) {
                     Node secondNode = nodeArray[j];
-                    String secondName = nodeAttributes.getCanonicalName(secondNode);
+                    String secondName = secondNode.getIdentifier();
                     int edgeInt = rootGraph.createEdge(firstNode, secondNode);
                     this.createdEdges[edgeIndex] = edgeInt;
                     edgeIndex++;
@@ -260,7 +261,6 @@ public class AttributeLayout {
                     //and add it to the edge attributes
                     Edge edge = rootGraph.getEdge(edgeInt);
                     gp.restoreEdge(edge);
-                    edgeAttributes.addNameMapping(edgeName, edge);
                 }
             }
         }
@@ -284,12 +284,12 @@ public class AttributeLayout {
     public Map buildValueMap(String attributeName) {
         Map returnMap = new HashMap();
         if (attributeName == null) {return returnMap;}
-        GraphObjAttributes nodeAttributes = cyWindow.getNetwork().getNodeAttributes();
+        CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
         GraphPerspective gp = cyWindow.getNetwork().getGraphPerspective();
         
         //get the attribute, which is a map of object names to data values
         //return an empty map if there is no such attribute
-        Map attrMap = nodeAttributes.getAttribute(attributeName);
+        Map attrMap = CyAttributesUtils.getAttribute(attributeName, nodeAttributes);
         if (attrMap == null || attrMap.size() == 0) {return returnMap;}
         
         //iterate over all the nodes and process their attribute value, creating
