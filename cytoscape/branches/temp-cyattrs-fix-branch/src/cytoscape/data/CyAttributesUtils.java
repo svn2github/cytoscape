@@ -1,8 +1,8 @@
 package cytosccape.data;
 
 import cytoscape.data.CyAttributes;
-import cytoscape.data.MultiHashMap;
-import cytoscape.data.MultiHashMapDefinition;
+import cytoscape.data.attr.MultiHashMap;
+import cytoscape.data.attr.MultiHashMapDefinition;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
