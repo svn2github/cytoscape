@@ -166,6 +166,8 @@ public class GMLReader implements GraphReader {
 
   /**
    * @return the node attributes that were read in from the GML file.
+   * @deprecated Use {@link Cytoscape#getNodeAttributes()} instead.  This
+   * method will be removed in September, 2006.
    */
   public GraphObjAttributes getNodeAttributes () {
     return Cytoscape.getNodeNetworkData();
@@ -173,6 +175,8 @@ public class GMLReader implements GraphReader {
 
   /**
    * @return the edge attributes that were read in from the GML file.
+   * @deprecated Use {@link Cytoscape#getNodeAttributes()} instead.  This
+   * method will be removed in September, 2006.
    */
   public GraphObjAttributes getEdgeAttributes () {
     return Cytoscape.getEdgeNetworkData();
