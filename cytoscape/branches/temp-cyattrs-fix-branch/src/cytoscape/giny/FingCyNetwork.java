@@ -284,31 +284,35 @@ public class FingCyNetwork
   }
     
    /**
-   *@deprecated
    * Returns the node attributes data object for this network.
+   * @deprecated Use {@link Cytoscape#getNodeAttributes()} instead.  This
+   * method will be removed in September, 2006.
    */
   public GraphObjAttributes getNodeAttributes () {
     return Cytoscape.getNodeNetworkData();
   }
   
   /**
-   * @deprecated
    * does nothing, all attributes are shared right now
+   * @deprecated This
+   * method will be removed in September, 2006.
    */
   public void setNodeAttributes ( GraphObjAttributes newNodeAttributes ) {
   }
 
   /**
-   * @deprecated @see{getNetworkData}
    * Returns the edge attributes data object for this network.
+   * @deprecated Use {@link Cytoscape#getEdgeAttributes()} instead.  This
+   * method will be removed in September, 2006.
    */
   public GraphObjAttributes getEdgeAttributes () {
     return Cytoscape.getEdgeNetworkData();
   }
   
   /**
-   * @deprecated
    * does nothing, all attributes are shared right now
+   * @deprecated This
+   * method will be removed in September, 2006.
    */
   public void setEdgeAttributes ( GraphObjAttributes newEdgeAttributes ) {
   }
@@ -462,8 +466,7 @@ public class FingCyNetwork
    * @return the value for the give node, for the given attribute
    */
   public Object getNodeAttributeValue ( Node node, String attribute ) {
-    return Cytoscape.getNodeNetworkData().get( attribute, 
-                                               Cytoscape.getNodeNetworkData().getCanonicalName( node ) );
+    return getNodeAttributeValue(node.getRootGraphIndex(), attribute);
   }
 
   /**
@@ -492,16 +495,29 @@ public class FingCyNetwork
    * Return the requested Attribute for the given Edge
    */
   public Object getEdgeAttributeValue ( Edge edge, String attribute ) {
-    return Cytoscape.getEdgeNetworkData().get( attribute, 
-                                               Cytoscape.getEdgeNetworkData().getCanonicalName( edge ) );
+    return getEdgeAttributeValue(edge.getRootGraphIndex(), attribute);
   }
 
   /**
    * Return the requested Attribute for the given Edge
    */
   public Object getEdgeAttributeValue ( int edge, String attribute ) {
-    return Cytoscape.getEdgeNetworkData().get( attribute, 
-                                               Cytoscape.getEdgeNetworkData().getCanonicalName( getEdge( edge ) ) );
+    final String canonName = getEdge(edge).getIdentifier();
+    final CyAttributes attrs = Cytoscape.getEdgeAttributes();
+    final byte cyType = attrs.getType(attribute);
+    if (cyType == CyAttributes.TYPE_BOOLEAN) {
+      return attrs.getBooleanAttribute(canonName, attribute); }
+    else if (cyType == CyAttributes.TYPE_FLOATING) {
+      return attrs.getDoubleAttribute(canonName, attribute); }
+    else if (cyType == CyAttributes.TYPE_INTEGER) {
+      return attrs.getIntegerAttribute(canonName, attribute); }
+    else if (cyType == CyAttributes.TYPE_STRING) {
+      return attrs.getStringAttribute(canonName, attribute); }
+    else if (cyType == CyAttributes.TYPE_SIMPLE_LIST) {
+      return attrs.getAttributeList(canonName, attribute); }
+    else if (cyType == CyAttributes.TYPE_SIMPLE_MAP) {
+      return attrs.getAttributeMap(canonName, attribute); }
+    else { return null; }
   }
 
   /**
