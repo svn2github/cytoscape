@@ -1,4 +1,4 @@
-package cytosccape.data;
+package cytoscape.data;
 
 import cytoscape.data.CyAttributes;
 import cytoscape.data.attr.MultiHashMap;
