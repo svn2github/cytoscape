@@ -45,7 +45,7 @@ public class CyAttributesUtils
           returnThis.put(obj, val); } }
       attrMap = returnThis.size() == 0 ? null : returnThis;
     }
-    return returnThis;
+    return attrMap;
   }
 
 }
