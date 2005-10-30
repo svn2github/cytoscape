@@ -167,7 +167,7 @@ public class NodeAppearanceCalculator implements Cloneable {
     CyAttributes cyAttrs = Cytoscape.getNodeAttributes();
     String name = node.getIdentifier();
     String attrValue = cyAttrs.getStringAttribute(name, nodeFillColorBypass);
-    {
+    if ( attrValue != null ) { 
       Color c = (new ColorParser()).parseColor(attrValue);
       if (c != null) { return c; }
     }
@@ -189,7 +189,7 @@ public class NodeAppearanceCalculator implements Cloneable {
     CyAttributes cyAttrs = Cytoscape.getNodeAttributes();
     String name = node.getIdentifier();
     String attrValue = cyAttrs.getStringAttribute(name, nodeBorderColorBypass);
-    {
+    if ( attrValue != null ) {
       Color c = (new ColorParser()).parseColor(attrValue);
       if (c != null) { return c; }
     }
@@ -211,7 +211,7 @@ public class NodeAppearanceCalculator implements Cloneable {
     CyAttributes cyAttrs = Cytoscape.getNodeAttributes();
     String name = node.getIdentifier();
     String attrValue = cyAttrs.getStringAttribute(name, nodeLineTypeBypass);
-    {
+    if (attrValue != null ) {
       LineType lt = (new LineTypeParser()).parseLineType(attrValue);
       if (lt != null) { return lt; }
     }
@@ -233,8 +233,8 @@ public class NodeAppearanceCalculator implements Cloneable {
     CyAttributes cyAttrs = Cytoscape.getNodeAttributes();
     String name = node.getIdentifier();
     String attrValue = cyAttrs.getStringAttribute(name, nodeShapeBypass);
-    Byte b = (new NodeShapeParser()).parseNodeShape(attrValue);
-    {
+    if (attrValue != null )   {
+      Byte b = (new NodeShapeParser()).parseNodeShape(attrValue);
       byte s = b.byteValue();
       if (isValidShape(s)) { return s; }
     }
@@ -279,8 +279,10 @@ public class NodeAppearanceCalculator implements Cloneable {
     CyAttributes cyAttrs = Cytoscape.getNodeAttributes();
     String name = node.getIdentifier();
     String attrValue = cyAttrs.getStringAttribute(name, nodeWidthBypass);
-    Double dObj = (new DoubleParser()).parseDouble(attrValue);
-    if (dObj != null) { return dObj.doubleValue(); }
+    if (attrValue != null ) {
+        Double dObj = (new DoubleParser()).parseDouble(attrValue);
+        if (dObj != null) { return dObj.doubleValue(); }
+    }
 
     //try to get a value from the calculator
     if (nodeWidthCalculator == null) {return defaultNodeWidth;}
@@ -299,8 +301,10 @@ public class NodeAppearanceCalculator implements Cloneable {
     CyAttributes cyAttrs = Cytoscape.getNodeAttributes();
     String name = node.getIdentifier();
     String attrValue = cyAttrs.getStringAttribute(name, nodeHeightBypass);
-    Double dObj = (new DoubleParser()).parseDouble(attrValue);
-    if (dObj != null) { return dObj.doubleValue(); }
+    if (attrValue != null ) {
+        Double dObj = (new DoubleParser()).parseDouble(attrValue);
+        if (dObj != null) { return dObj.doubleValue(); }
+    }
 
     //try to get a value from the calculator
     if (nodeHeightCalculator == null) {return defaultNodeHeight;}
@@ -381,7 +385,7 @@ public class NodeAppearanceCalculator implements Cloneable {
     CyAttributes cyAttrs = Cytoscape.getNodeAttributes();
     String name = node.getIdentifier();
     String attrValue = cyAttrs.getStringAttribute(name, nodeFontBypass);
-    {
+    if (attrValue != null ) {
       Font f = (new FontParser()).parseFont(attrValue);
       if (f != null) { return f; }
     }
@@ -427,7 +431,7 @@ public class NodeAppearanceCalculator implements Cloneable {
     CyAttributes cyAttrs = Cytoscape.getNodeAttributes();
     String name = node.getIdentifier();
     String attrValue = cyAttrs.getStringAttribute(name, nodeLabelColorBypass);
-    {
+    if (attrValue != null ) {
       Color c = (new ColorParser()).parseColor(attrValue);
       if (c != null) { return c; }
     }
