@@ -30,13 +30,18 @@
 package cytoscape.dialogs;
 
 // ---------------------------------------------------------------------------------------
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.event.*;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+
+import javax.swing.AbstractAction;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 import cytoscape.data.CyAttributes;
-import cytoscape.data.GraphObjAttributes;
+import cytoscape.data.Semantics;
 import cytoscape.util.MutableString;
 
 // --------------------------------------------------------------------------------------
@@ -60,8 +65,8 @@ public class LabelTextPanel extends JPanel {
 		DefaultComboBoxModel boxModel = new DefaultComboBoxModel();
 		for (int i = 0; i < attributeNames.length; i++)
 			boxModel.addElement(new String(attributeNames[i]));
-		boxModel.addElement(new String("canonicalName"));
-
+		//boxModel.addElement(new String("canonicalName"));
+		boxModel.addElement( Semantics.CANONICAL_NAME);
 		theBox = new JComboBox(boxModel);
 		theBox.setSelectedItem(nodeLabelKey.getString());
 		theBox.addActionListener(new BoxAction());

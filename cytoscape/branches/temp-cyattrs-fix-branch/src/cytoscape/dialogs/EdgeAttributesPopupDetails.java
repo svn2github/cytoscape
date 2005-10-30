@@ -33,73 +33,95 @@
 // $Date$
 // $Author$
 //
-
-
 package cytoscape.dialogs;
 
-import cytoscape.*;
-import cytoscape.data.GraphObjAttributes;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Frame;
+import java.awt.event.ActionEvent;
 
+import javax.swing.AbstractAction;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+
+import cytoscape.data.CyAttributes;
 
 /**
- * This class provides a detailed list of attribute information for a
- * given edge.
+ * This class provides a detailed list of attribute information for a given
+ * edge.
  */
 public class EdgeAttributesPopupDetails extends JDialog {
 
-    public EdgeAttributesPopupDetails (Frame parentFrame, String name,
-				       GraphObjAttributes edgeAttributes) {
-	super (parentFrame, "Edge Attributes - "+name, false);
+	public EdgeAttributesPopupDetails(Frame parentFrame, String name,
+			CyAttributes edgeAttributes) {
+		super(parentFrame, "Edge Attributes - " + name, false);
 
-	JScrollPane scrollPanel = new JScrollPane(getContentComponent(edgeAttributes, name));
+		JScrollPane scrollPanel = new JScrollPane(getContentComponent(
+				edgeAttributes, name));
 
-	JPanel buttonPanel = new JPanel();
-	JButton okButton = new JButton ("OK");
-	okButton.addActionListener (new OKAction (this));
-	buttonPanel.add(okButton, BorderLayout.CENTER);
+		JPanel buttonPanel = new JPanel();
+		JButton okButton = new JButton("OK");
+		okButton.addActionListener(new OKAction(this));
+		buttonPanel.add(okButton, BorderLayout.CENTER);
 
-	JPanel panel = new JPanel();
-	panel.setLayout (new BorderLayout());
-	panel.add(scrollPanel, BorderLayout.CENTER);
-	panel.add(buttonPanel, BorderLayout.SOUTH);
+		JPanel panel = new JPanel();
+		panel.setLayout(new BorderLayout());
+		panel.add(scrollPanel, BorderLayout.CENTER);
+		panel.add(buttonPanel, BorderLayout.SOUTH);
 
-	setContentPane(panel);
-    }
-
-    protected Component getContentComponent
-	(GraphObjAttributes edgeAttributes, String name) {
-
-	String contents = name;
-
-	if (name.length() == 0) {
-	    contents = "Unable to locate attributes for selected edge";
-	} else {
-	    String attributes[] = edgeAttributes.getAttributeNames();
-	    for (int i = 0; i < attributes.length; i++) {
-		Object value = edgeAttributes.getValue(attributes[i], name);
-
-		if (value != null)
-		    contents += "\n\n" + attributes[i] + ":\n" + value;
-	    }
+		setContentPane(panel);
 	}
 
-	JTextArea textArea = new JTextArea(contents, 8, 40);
+	protected Component getContentComponent(CyAttributes edgeAttributes,
+			String name) {
 
-	return textArea;
-    }
+		String contents = name;
 
-    protected class OKAction extends AbstractAction {
-	private JDialog dialog;
+		if (name.length() == 0) {
+			contents = "Unable to locate attributes for selected edge";
+		} else {
+			String attributes[] = edgeAttributes.getAttributeNames();
+			for (int i = 0; i < attributes.length; i++) {
+				// Object value = edgeAttributes.getValue(attributes[i], name);
+				Object value = null;
+				byte attrType = edgeAttributes.getType(attributes[i]);
+				if (attrType == CyAttributes.TYPE_BOOLEAN) {
+					value = edgeAttributes.getBooleanAttribute(attributes[i],
+							name);
+				} else if (attrType == CyAttributes.TYPE_FLOATING) {
+					value = edgeAttributes.getDoubleAttribute(attributes[i],
+							name);
+				} else if (attrType == CyAttributes.TYPE_INTEGER) {
+					value = edgeAttributes.getIntegerAttribute(attributes[i],
+							name);
+				} else if (attrType == CyAttributes.TYPE_STRING) {
+					value = edgeAttributes.getStringAttribute(attributes[i],
+							name);
+				}
 
-	OKAction (JDialog dialog) { super(""); this.dialog = dialog; }
+				if (value != null)
+					contents += "\n\n" + attributes[i] + ":\n" + value;
+			}
+		}
 
-	public void actionPerformed (ActionEvent e) {
-	    dialog.dispose();
+		JTextArea textArea = new JTextArea(contents, 8, 40);
+
+		return textArea;
 	}
-    }
+
+	protected class OKAction extends AbstractAction {
+		private JDialog dialog;
+
+		OKAction(JDialog dialog) {
+			super("");
+			this.dialog = dialog;
+		}
+
+		public void actionPerformed(ActionEvent e) {
+			dialog.dispose();
+		}
+	}
 }
-
-
