@@ -16,29 +16,29 @@ public class CyAttributesUtils
     Map attrMap;
     {
       final HashMap returnThis = new HashMap();
-      final MultiHashMap mmap = nodeAttributes.getMultiHashMap();
-      final MultiHashMapDefinition mmapDef = nodeAttributes.getMultiHashMapDefinition();
+      final MultiHashMap mmap = attrs.getMultiHashMap();
+      final MultiHashMapDefinition mmapDef = attrs.getMultiHashMapDefinition();
       if (mmapDef.getAttributeValueType(attributeName) != -1) {
         final Iterator objs = mmap.getObjectKeys(attributeName);
         while (objs.hasNext()) {
           final String obj = (String) objs.next();
           Object val;
           {
-            switch (nodeAttributes.getType(attributeName)) {
+            switch (attrs.getType(attributeName)) {
             case CyAttributes.TYPE_BOOLEAN:
-              val = nodeAttributes.getBooleanAttribute(obj, attributeName);
+              val = attrs.getBooleanAttribute(obj, attributeName);
             case CyAttributes.TYPE_INTEGER:
-              val = nodeAttributes.getIntegerAttribute(obj, attributeName);
+              val = attrs.getIntegerAttribute(obj, attributeName);
             case CyAttributes.TYPE_FLOATING:
-              val = nodeAttributes.getDoubleAttribute(obj, attributeName);
+              val = attrs.getDoubleAttribute(obj, attributeName);
             case CyAttributes.TYPE_STRING:
-              val = nodeAttributes.getStringAttribute(obj, attributeName);
+              val = attrs.getStringAttribute(obj, attributeName);
             case CyAttributes.TYPE_SIMPLE_LIST:
-              List l = nodeAttributes.getAttributeList(obj, attributeName);
+              List l = attrs.getAttributeList(obj, attributeName);
               if (l.size() > 0) val = l.get(0);
               else val = null;
             case CyAttributes.TYPE_SIMPLE_MAP:
-              val = nodeAttributes.getAttributeMap(obj, attributeName);
+              val = attrs.getAttributeMap(obj, attributeName);
             default:
               val = null; }
           }
