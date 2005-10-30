@@ -1143,7 +1143,7 @@ public abstract class Cytoscape {
 	 * @deprecated Use {@link Cytoscape#getNodeAttributes()} instead.  This
      * method will be removed in September, 2006.
 	 */
-	public static GraphObjAttributes getNodeNetworkData(int foofart) {
+	public static GraphObjAttributes getNodeNetworkData() {
         initNodeAttributes();
 		return nodeData;
 	}
