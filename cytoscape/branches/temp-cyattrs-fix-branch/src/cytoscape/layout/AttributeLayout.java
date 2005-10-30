@@ -40,6 +40,7 @@ import giny.model.*;
 import giny.view.*;
 import giny.util.SpringEmbeddedLayouter;
 
+import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.CyAttributesUtils;
 import cytoscape.data.GraphObjAttributes;
@@ -297,7 +298,7 @@ public class AttributeLayout {
         //map entry that it matches
         for (Iterator ni = gp.nodesIterator(); ni.hasNext(); ) {
             Node node = (Node)ni.next();
-            String canonicalName = nodeAttributes.getCanonicalName(node);
+            String canonicalName = node.getIdentifier();
             if (canonicalName == null || canonicalName.length() == 0) {continue;}
             Object attrValue = attrMap.get(canonicalName); //this is the attribute value
             if (attrValue == null) {continue;}
