@@ -54,9 +54,6 @@ public class FingCyNetwork
    */
   protected FlagFilter flagger;
 
-  GraphObjAttributes nodeData;
-  GraphObjAttributes edgeData;
-
   //TODO: remove
   int activityCount = 0;
 
@@ -524,28 +521,28 @@ public class FingCyNetwork
    * Return all availble Attributes for the Nodes in this CyNetwork
    */
   public String[] getNodeAttributesList () {
-    return Cytoscape.getNodeNetworkData().getAttributeNames();
+    return Cytoscape.getNodeAttributes().getAttributeNames();
   }
   
   /**
    * Return all available Attributes for the given Nodes
    */
   public String[] getNodeAttributesList ( Node[] nodes ) {
-    return Cytoscape.getNodeNetworkData().getAttributeNames();
+    return Cytoscape.getNodeAttributes().getAttributeNames();
   }
 
   /**
    * Return all availble Attributes for the Edges in this CyNetwork
    */
   public String[] getEdgeAttributesList () {
-    return Cytoscape.getEdgeNetworkData().getAttributeNames();
+    return Cytoscape.getEdgeAttributes().getAttributeNames();
   }
 
   /**
    * Return all available Attributes for the given Edges
    */
   public String[] getNodeAttributesList ( Edge[] edges ) {
-    return Cytoscape.getEdgeNetworkData().getAttributeNames();
+    return Cytoscape.getEdgeAttributes().getAttributeNames();
   }
 
 
@@ -557,64 +554,84 @@ public class FingCyNetwork
    * @return if it overwrites a previous value
    */
   public boolean setNodeAttributeValue ( Node node, String attribute, Object value ) {
-    return Cytoscape.getNodeNetworkData().set( attribute, 
-                                               Cytoscape.
-                                               getNodeNetworkData().
-                                               getCanonicalName( node ),
-                                               value );
-    
-
+    return setNodeAttributeValue(node.getRootGraphIndex(), attribute, value);
   }
 
   /**
    * Return the requested Attribute for the given Node
    */
   public boolean setNodeAttributeValue ( int node, String attribute, Object value ) {
-    return Cytoscape.getNodeNetworkData().set( attribute, 
-                                               Cytoscape.
-                                               getNodeNetworkData().
-                                               getCanonicalName( getNode(node) ),
-                                               value );
-    
-
+    final String canonName = getNode(node).getIdentifier();
+    final CyAttributes attrs = Cytoscape.getNodeAttributes();
+    if (value instanceof Boolean) {
+      attrs.setAttribute(canonName, attribute, (Boolean) value);
+      return true; }
+    else if (value instanceof Integer) {
+      attrs.setAttribute(canonName, attribute, (Integer) value);
+      return true; }
+    else if (value instanceof Double) {
+      attrs.setAttribute(canonName, attribute, (Double) value);
+      return true; }
+    else if (value instanceof String) {
+      attrs.setAttribute(canonName, attribute, (String) value);
+      return true; }
+    else if (value instanceof List) {
+      attrs.setAttributeList(canonName, attribute, (List) value);
+      return true; }
+    else if (value instanceof Map) {
+      attrs.setAttributeMap(canonName, attribute, (Map) value);
+      return true; }
+    else {
+      return false; }
   }
 
   /**
    * Return the requested Attribute for the given Edge
    */
   public boolean setEdgeAttributeValue ( Edge edge, String attribute, Object value ) {
-    return Cytoscape.getEdgeNetworkData().set( attribute, 
-                                               Cytoscape.
-                                               getEdgeNetworkData().
-                                               getCanonicalName( edge ),
-                                               value );
+    return setEdgeAttributeValue(edge.getRootGraphIndex(), attribute, value);
   }
 
   /**
    * Return the requested Attribute for the given Edge
    */
   public boolean setEdgeAttributeValue ( int edge, String attribute, Object value ) {
-    return Cytoscape.getEdgeNetworkData().set( attribute, 
-                                               Cytoscape.
-                                               getEdgeNetworkData().
-                                               getCanonicalName( getEdge(edge) ),
-                                               value );
-    
-
+    final String canonName = getEdge(edge).getIdentifier();
+    final CyAttributes attrs = Cytoscape.getEdgeAttributes();
+    if (value instanceof Boolean) {
+      attrs.setAttribute(canonName, attribute, (Boolean) value);
+      return true; }
+    else if (value instanceof Integer) {
+      attrs.setAttribute(canonName, attribute, (Integer) value);
+      return true; }
+    else if (value instanceof Double) {
+      attrs.setAttribute(canonName, attribute, (Double) value);
+      return true; }
+    else if (value instanceof String) {
+      attrs.setAttribute(canonName, attribute, (String) value);
+      return true; }
+    else if (value instanceof List) {
+      attrs.setAttributeList(canonName, attribute, (List) value);
+      return true; }
+    else if (value instanceof Map) {
+      attrs.setAttributeMap(canonName, attribute, (Map) value);
+      return true; }
+    else {
+      return false; }
   }
  
   /**
    * Deletes the attribute with the given name from node attributes
    */
   public void deleteNodeAttribute (String attribute){
-    Cytoscape.getNodeNetworkData().deleteAttribute(attribute);
+    Cytoscape.getNodeAttributes().deleteAttribute(attribute);
   }
   
   /**
    * Deletes the attribute with the given name from edge attributes
    */
   public void deleteEdgeAttribute (String attribute){
-    Cytoscape.getEdgeNetworkData().deleteAttribute(attribute);
+    Cytoscape.getEdgeAttributes().deleteAttribute(attribute);
   }
 
 
