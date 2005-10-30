@@ -16,7 +16,6 @@ import cytoscape.visual.LineType;
 import cytoscape.visual.Arrow;
 import cytoscape.visual.ShapeNodeRealizer;
 
-import cytoscape.data.GraphObjAttributes;
 import cytoscape.*;
 import cytoscape.visual.calculators.*;
 import cytoscape.visual.parsers.*;
@@ -173,17 +172,6 @@ public class NodeAppearanceCalculator implements Cloneable {
       if (c != null) { return c; }
     }
 
-//     if (node == null || network == null) {return defaultNodeFillColor;}
-//     //look for a suitable value in a specific data attribute
-//     GraphObjAttributes nodeAttributes = network.getNodeAttributes();
-//     String name = nodeAttributes.getCanonicalName(node);
-//     Object attrValue = nodeAttributes.getValue(nodeFillColorBypass, name);
-//     if (attrValue instanceof Color) {return (Color)attrValue;}
-//     if (attrValue instanceof String) {
-//       Color c = (new ColorParser()).parseColor((String)attrValue);
-//       if (c != null) {return c;}
-//     }
-
     //try to get a value from the calculator
     if (nodeFillColorCalculator == null) {return defaultNodeFillColor;}
     Color c = nodeFillColorCalculator.calculateNodeColor(node, network);
@@ -205,17 +193,6 @@ public class NodeAppearanceCalculator implements Cloneable {
       Color c = (new ColorParser()).parseColor(attrValue);
       if (c != null) { return c; }
     }
-
-//     if (node == null || network == null) {return defaultNodeBorderColor;}
-//     //look for a suitable value in a specific data attribute
-//     GraphObjAttributes nodeAttributes = network.getNodeAttributes();
-//     String name = nodeAttributes.getCanonicalName(node);
-//     Object attrValue = nodeAttributes.getValue(nodeBorderColorBypass, name);
-//     if (attrValue instanceof Color) {return (Color)attrValue;}
-//     if (attrValue instanceof String) {
-//       Color c = (new ColorParser()).parseColor((String)attrValue);
-//       if (c != null) {return c;}
-//     }
 
     //try to get a value from the calculator
     if (nodeBorderColorCalculator == null) {return defaultNodeBorderColor;}
@@ -239,17 +216,6 @@ public class NodeAppearanceCalculator implements Cloneable {
       if (lt != null) { return lt; }
     }
 
-//     if (node == null || network == null) {return defaultNodeLineType;}
-//     //look for a suitable value in a specific data attribute
-//     GraphObjAttributes nodeAttributes = network.getNodeAttributes();
-//     String name = nodeAttributes.getCanonicalName(node);
-//     Object attrValue = nodeAttributes.getValue(nodeLineTypeBypass, name);
-//     if (attrValue instanceof LineType) {return (LineType)attrValue;}
-//     if (attrValue instanceof String) {
-//       LineType lt = (new LineTypeParser()).parseLineType((String)attrValue);
-//       if (lt != null) {return lt;}
-//     }
-
     //try to get a value from the calculator
     if (nodeLineTypeCalculator == null) {return defaultNodeLineType;}
     LineType lt = nodeLineTypeCalculator.calculateNodeLineType(node, network);
@@ -272,21 +238,6 @@ public class NodeAppearanceCalculator implements Cloneable {
       byte s = b.byteValue();
       if (isValidShape(s)) { return s; }
     }
-
-//     if (node == null || network == null) {return defaultNodeShape;}
-//     //look for a suitable value in a specific data attribute
-//     GraphObjAttributes nodeAttributes = network.getNodeAttributes();
-//     String name = nodeAttributes.getCanonicalName(node);
-//     Object attrValue = nodeAttributes.getValue(nodeShapeBypass, name);
-//     if (attrValue instanceof Byte) {
-//       byte s = ((Byte)attrValue).byteValue();
-//       if (isValidShape(s)) {return s;}
-//     }
-//     if (attrValue instanceof String) {
-//       Byte b = (new NodeShapeParser()).parseNodeShape((String)attrValue);
-//       byte s = b.byteValue();
-//       if (isValidShape(s)) {return s;}
-//     }
 
     //try to get a value from the calculator
     if (nodeShapeCalculator == null) {return defaultNodeShape;}
@@ -331,17 +282,6 @@ public class NodeAppearanceCalculator implements Cloneable {
     Double dObj = (new DoubleParser()).parseDouble(attrValue);
     if (dObj != null) { return dObj.doubleValue(); }
 
-//     if (node == null || network == null) {return defaultNodeWidth;}
-//     //look for a suitable value in a specific data attribute
-//     GraphObjAttributes nodeAttributes = network.getNodeAttributes();
-//     String name = nodeAttributes.getCanonicalName(node);
-//     Object attrValue = nodeAttributes.getValue(nodeWidthBypass, name);
-//     if (attrValue instanceof Double) {return ((Double)attrValue).doubleValue();}
-//     if (attrValue instanceof String) {
-//       Double dObj = (new DoubleParser()).parseDouble((String)attrValue);
-//       if (dObj != null) {return dObj.doubleValue();}
-//     }
-
     //try to get a value from the calculator
     if (nodeWidthCalculator == null) {return defaultNodeWidth;}
     double d = nodeWidthCalculator.calculateNodeSize(node, network);
@@ -361,17 +301,6 @@ public class NodeAppearanceCalculator implements Cloneable {
     String attrValue = cyAttrs.getStringAttribute(name, nodeHeightBypass);
     Double dObj = (new DoubleParser()).parseDouble(attrValue);
     if (dObj != null) { return dObj.doubleValue(); }
-
-//     if (node == null || network == null) {return defaultNodeHeight;}
-//     //look for a suitable value in a specific data attribute
-//     GraphObjAttributes nodeAttributes = network.getNodeAttributes();
-//     String name = nodeAttributes.getCanonicalName(node);
-//     Object attrValue = nodeAttributes.getValue(nodeHeightBypass, name);
-//     if (attrValue instanceof Double) {return ((Double)attrValue).doubleValue();}
-//     if (attrValue instanceof String) {
-//       Double dObj = (new DoubleParser()).parseDouble((String)attrValue);
-//       if (dObj != null) {return dObj.doubleValue();}
-//     }
 
     //try to get a value from the calculator
     if (nodeHeightCalculator == null) {return defaultNodeHeight;}
@@ -399,13 +328,6 @@ public class NodeAppearanceCalculator implements Cloneable {
     String attrValue = cyAttrs.getStringAttribute(name, nodeLabelBypass);
     if (attrValue != null) { return attrValue; }
 
-//     if (node == null || network == null) {return defaultNodeLabel;}
-//     //look for a suitable value in a specific data attribute
-//     GraphObjAttributes nodeAttributes = network.getNodeAttributes();
-//     String name = nodeAttributes.getCanonicalName(node);
-//     Object attrValue = nodeAttributes.getValue(nodeLabelBypass, name);
-//     if (attrValue instanceof String) {return (String)attrValue;}
-
     //try to get a value from the calculator
     if (nodeLabelCalculator == null) {return defaultNodeLabel;}
     String s = nodeLabelCalculator.calculateNodeLabel(node, network);
@@ -424,13 +346,6 @@ public class NodeAppearanceCalculator implements Cloneable {
     String name = node.getIdentifier();
     String attrValue = cyAttrs.getStringAttribute(name, nodeToolTipBypass);
     if (attrValue != null) { return attrValue; }
-
-//     if (node == null || network == null) {return defaultNodeToolTip;}
-//     //look for a suitable value in a specific data attribute
-//     GraphObjAttributes nodeAttributes = network.getNodeAttributes();
-//     String name = nodeAttributes.getCanonicalName(node);
-//     Object attrValue = nodeAttributes.getValue(nodeToolTipBypass, name);
-//     if (attrValue instanceof String) {return (String)attrValue;}
 
     //try to get a value from the calculator
     if (nodeToolTipCalculator == null) {return defaultNodeToolTip;}
@@ -470,17 +385,6 @@ public class NodeAppearanceCalculator implements Cloneable {
       Font f = (new FontParser()).parseFont(attrValue);
       if (f != null) { return f; }
     }
-
-//     if (node == null || network == null) {return defaultNodeFont;}
-//     //look for a suitable value in a specific data attribute
-//     GraphObjAttributes nodeAttributes = network.getNodeAttributes();
-//     String name = nodeAttributes.getCanonicalName(node);
-//     Object attrValue = nodeAttributes.getValue(nodeFontBypass, name);
-//     if (attrValue instanceof Font) {return (Font)attrValue;}
-//     if (attrValue instanceof String) {
-//       Font f = (new FontParser()).parseFont((String)attrValue);
-//       if (f != null) {return f;}
-//     }
 
     //try to get a value from the calculators
     if (nodeFontFaceCalculator == null && nodeFontSizeCalculator == null) {
@@ -527,17 +431,6 @@ public class NodeAppearanceCalculator implements Cloneable {
       Color c = (new ColorParser()).parseColor(attrValue);
       if (c != null) { return c; }
     }
-
-//     if (node == null || network == null) {return defaultNodeLabelColor;}
-//     //look for a suitable value in a specific data attribute
-//     GraphObjAttributes nodeAttributes = network.getNodeAttributes();
-//     String name = nodeAttributes.getCanonicalName(node);
-//     Object attrValue = nodeAttributes.getValue(nodeLabelColorBypass, name);
-//     if (attrValue instanceof Color) {return (Color)attrValue;}
-//     if (attrValue instanceof String) {
-//       Color c = (new ColorParser()).parseColor((String)attrValue);
-//       if (c != null) {return c;}
-//     }
 
     //try to get a value from the calculator
     if (nodeLabelColorCalculator == null) {return defaultNodeLabelColor;}
