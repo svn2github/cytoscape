@@ -23,7 +23,7 @@ import java.util.Vector;
 import cern.colt.list.IntArrayList;
 import cern.colt.map.OpenIntIntHashMap;
 import cytoscape.Cytoscape;
-import cytoscape.data.GraphObjAttributes;
+import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
 import cytoscape.task.TaskMonitor;
 import cytoscape.util.PercentUtil;
@@ -658,7 +658,10 @@ public class GMLReader2 implements GraphReader {
 
 		giny_edges = new IntArrayList(sources.size());
 		Set edgeNameSet = new HashSet(sources.size());
-		GraphObjAttributes edgeAttributes = Cytoscape.getEdgeNetworkData();
+		
+		//GraphObjAttributes edgeAttributes = Cytoscape.getEdgeNetworkData();
+		CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
+		
 		RootGraph rootGraph = Cytoscape.getRootGraph();
 
 		// Add All Edges to Network
@@ -1371,15 +1374,15 @@ public class GMLReader2 implements GraphReader {
 	/**
 	 * @return the node attributes that were read in from the GML file.
 	 */
-	public GraphObjAttributes getNodeAttributes() {
-		return Cytoscape.getNodeNetworkData();
+	public CyAttributes getNodeAttributes() {
+		return Cytoscape.getNodeAttributes();
 	}
 
 	/**
 	 * @return the edge attributes that were read in from the GML file.
 	 */
-	public GraphObjAttributes getEdgeAttributes() {
-		return Cytoscape.getEdgeNetworkData();
+	public CyAttributes getEdgeAttributes() {
+		return Cytoscape.getEdgeAttributes();
 	}
 
 	/**
