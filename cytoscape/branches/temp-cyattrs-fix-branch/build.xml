@@ -206,7 +206,6 @@
         <javadoc destdir="${javadoc.private.dir}"
                  source="1.4"
                  classpathref="classpath"
-                 overview="${src.dir}/org/mskcc/dataservices/overview.html"
                  link="http://java.sun.com/j2se/1.4.2/docs/api/">
 
             <packageset dir="${src.dir}">

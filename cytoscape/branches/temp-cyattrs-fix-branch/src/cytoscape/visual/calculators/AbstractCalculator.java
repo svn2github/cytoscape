@@ -13,6 +13,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
 import java.util.*;
 import cytoscape.data.CyAttributes;
+import cytoscape.data.CyAttributesUtils;
 import cytoscape.dialogs.GridBagGroup;
 import cytoscape.dialogs.MiscGB;
 import cytoscape.visual.mappings.ObjectMapping;
@@ -300,22 +301,7 @@ public abstract class AbstractCalculator implements Calculator {
 		    Vector validAttrV = new Vector(attrNames.length);
 		    for (int j = 0; j < attrNames.length; j++) {
 			//Class attrClass = attr.getClass(attrNames[j]);
-
-			// TODO Should this logic be here?  Seems very redundant.
-			byte attrType = attr.getType(attrNames[j]);
-			Class attrClass = null;
-			if ( attrType == CyAttributes.TYPE_BOOLEAN )
-				attrClass = Boolean.class;
-			else if ( attrType == CyAttributes.TYPE_FLOATING )
-				attrClass = Float.class;
-			else if ( attrType == CyAttributes.TYPE_INTEGER )
-				attrClass = Integer.class;
-			else if ( attrType == CyAttributes.TYPE_STRING )
-				attrClass = String.class;
-		 	// TODO What about the other types?  This will probably cause 
-			// a NullPointerException to be thrown.
-			else
-				attrClass = null;
+			Class attrClass = CyAttributesUtils.getClass(attrNames[j],attr);
 
 			for (int k = 0; k < okClass.length; k++) {
 			    if (okClass[k].isAssignableFrom(attrClass)) {
@@ -441,38 +427,11 @@ public abstract class AbstractCalculator implements Calculator {
     }
 
     /**
-     * Manually constructs a map of attribute names to single values.  
-     * TODO Should this be here or in CyAttributes?  
+     * Returns a map of attribute names to single values.  
      * @param canonicalName The attribute name returned from the CyNode or CyEdge.
      * @return Map of the attribute names to values.
      */
     protected Map getAttrBundle(String canonicalName, CyAttributes cyAttrs) {
-        final HashMap returnThis = new HashMap();
-        final String[] attrNames = cyAttrs.getAttributeNames();
-
-        for (int i = 0; i < attrNames.length; i++) {
-          final byte type = cyAttrs.getType(attrNames[i]);
-          if (cyAttrs.hasAttribute(canonicalName, attrNames[i])) {
-            if (type == CyAttributes.TYPE_SIMPLE_LIST) {
-              List l = cyAttrs.getAttributeList(canonicalName, attrNames[i]);
-              if (l != null && l.size() > 0) {
-                returnThis.put(attrNames[i], l.get(0)); } }
-            else if (type == CyAttributes.TYPE_BOOLEAN) {
-              returnThis.put
-                (attrNames[i],
-                 cyAttrs.getBooleanAttribute(canonicalName, attrNames[i])); }
-            else if (type == CyAttributes.TYPE_INTEGER) {
-              returnThis.put
-                (attrNames[i],
-                     cyAttrs.getIntegerAttribute(canonicalName, attrNames[i])); }
-            else if (type == CyAttributes.TYPE_FLOATING) {
-              returnThis.put
-                (attrNames[i],
-                 cyAttrs.getDoubleAttribute(canonicalName, attrNames[i])); }
-            else if (type == CyAttributes.TYPE_STRING) {
-              returnThis.put
-                (attrNames[i],
-                 cyAttrs.getStringAttribute(canonicalName, attrNames[i])); } } }
-        return returnThis;
+    	return CyAttributesUtils.getAttributes(canonicalName, cyAttrs);
     }
 }

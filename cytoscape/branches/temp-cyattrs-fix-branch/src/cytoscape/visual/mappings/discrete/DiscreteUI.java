@@ -6,7 +6,11 @@
 package cytoscape.visual.mappings.discrete;
 
 import cytoscape.CyNetwork;
-import cytoscape.data.GraphObjAttributes;
+import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
+import cytoscape.data.CyAttributesUtils;
+import cytoscape.data.attr.MultiHashMap;
+import cytoscape.data.attr.MultiHashMapDefinition;
 import cytoscape.visual.mappings.DiscreteMapping;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.ui.ValueDisplayer;
@@ -173,20 +177,24 @@ public class DiscreteUI extends JPanel implements ChangeListener {
         if (network == null) {
             return;
         }
-        GraphObjAttributes attrs;
+        CyAttributes attrs;
         if (mapType == ObjectMapping.EDGE_MAPPING) {
-            attrs = network.getEdgeAttributes();
+            attrs = Cytoscape.getEdgeAttributes();
         } else {
-            attrs = network.getNodeAttributes();
+            attrs = Cytoscape.getNodeAttributes();
         }
 
-        HashMap mapAttrs = attrs.getAttribute(attrName);
-        if (mapAttrs == null) { // no attribute found <sob>
+        //HashMap mapAttrs = attrs.getAttribute(attrName);
+	Map mapAttrs = CyAttributesUtils.getAttribute(attrName,attrs);
+
+        if (mapAttrs.size() == 0) { // no attribute found <sob>
             return;
         }
 
         List acceptedClasses = Arrays.asList(dm.getAcceptedDataClasses());
-        Class mapAttrClass = attrs.getClass(attrName);
+        //Class mapAttrClass = attrs.getClass(attrName);
+	Class mapAttrClass = CyAttributesUtils.getClass(attrName,attrs);
+	
         if (mapAttrClass == null || !(acceptedClasses.contains(mapAttrClass))) {
             return;
         }
@@ -196,7 +204,7 @@ public class DiscreteUI extends JPanel implements ChangeListener {
     /**
      * Loads the Key Set.
      */
-    private void loadKeySet(HashMap mapAttrs) {
+    private void loadKeySet(Map mapAttrs) {
         // get the set of keys being mapped from
         Iterator keyIter = mapAttrs.values().iterator();
 
