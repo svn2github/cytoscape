@@ -692,8 +692,7 @@ public class GMLReader2 implements GraphReader {
 				// String tempstr = "E name is :" + idx + "==" + edgeName;
 				edge_names.add(idx, edgeName);
 
-				Edge edge = (Edge) Cytoscape.getEdgeNetworkData()
-						.getGraphObject(edgeName);
+                                Edge edge = Cytoscape.getRootGraph().getEdge(edgeName);
 				if (edge == null) {
 					Node node_1 = Cytoscape.getCyNode(sourceName);
 					Node node_2 = Cytoscape.getCyNode(targetName);
