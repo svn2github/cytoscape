@@ -169,8 +169,8 @@ public class DiscreteUI extends JPanel implements ChangeListener {
 
     /**
      * This method grabs all the data values for the current controlling
-     * attribute from the appropriate GraphObjAttributes member of the
-     * supplied network. Any data value that is not already a key in this
+     * attribute from the appropriate CyAttributes member of the
+     * Cytoscape object. Any data value that is not already a key in this
      * mapping is added with a null visual attribute value.
      */
     private void loadKeys(CyNetwork network) {

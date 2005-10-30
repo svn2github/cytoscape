@@ -16,7 +16,7 @@ import cytoscape.visual.parsers.ValueParser;
 /**
  * Mappings should implement this interface. Mappings are classes that map from
  * a value stored in the edge attributes or node attributes HashMap in
- * {@link cytoscape.GraphObjAttributes}. The range of the mapping depends on the
+ * {@link cytoscape.CyAttributes}. The range of the mapping depends on the
  * {@link cytoscape.visual.calculators.AbstractCalculator} that owns
  * the mapping.
  * <p>
