@@ -91,6 +91,8 @@ class LoadAttributesTask implements Task {
      */
     public void run() {
         try {
+            taskMonitor.setPercentCompleted(-1);
+            taskMonitor.setStatus("Reading in Attributes");
             //  Get Defaults.
             BioDataServer bioDataServer = Cytoscape.getBioDataServer();
             String speciesName = CytoscapeInit.getDefaultSpeciesName();
@@ -120,7 +122,8 @@ class LoadAttributesTask implements Task {
 
             //  Inform others via property change event.
             Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null );
-
+            taskMonitor.setPercentCompleted(100);
+            taskMonitor.setStatus("Done");
         } catch (Exception e) {
             taskMonitor.setException(e, e.getMessage());
         }
