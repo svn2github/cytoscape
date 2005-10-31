@@ -187,7 +187,7 @@ public class DiscreteUI extends JPanel implements ChangeListener {
         //HashMap mapAttrs = attrs.getAttribute(attrName);
 	Map mapAttrs = CyAttributesUtils.getAttribute(attrName,attrs);
 
-        if (mapAttrs.size() == 0) { // no attribute found <sob>
+        if (mapAttrs == null || mapAttrs.size() == 0) { // no attribute found <sob>
             return;
         }
 
