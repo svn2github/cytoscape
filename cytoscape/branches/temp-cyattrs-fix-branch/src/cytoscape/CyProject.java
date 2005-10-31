@@ -161,7 +161,6 @@ public String[] getOtherArgs() {return otherArgs;}
  *
  * graph interactions file format: cytoscape.data.readers.InteractionsReader
  * graph GML file format: cytoscape.data.readers.GMLReader
- * node/edge attributes files: cytoscape.GraphObjAttributes
  * customization properties file: cytoscape.CytoscapeConfig
  * visual mappings properties file: cytoscape.visual.CalculatorIO
  */

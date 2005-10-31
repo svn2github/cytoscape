@@ -659,7 +659,6 @@ public class GMLReader2 implements GraphReader {
 		giny_edges = new IntArrayList(sources.size());
 		Set edgeNameSet = new HashSet(sources.size());
 		
-		//GraphObjAttributes edgeAttributes = Cytoscape.getEdgeNetworkData();
 		CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
 		
 		RootGraph rootGraph = Cytoscape.getRootGraph();

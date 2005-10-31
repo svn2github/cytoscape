@@ -17,7 +17,6 @@ import java.util.Vector;
 
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
-import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.Semantics;
 import cytoscape.view.CyNetworkView;
 
@@ -83,7 +82,6 @@ public class GMLTree {
 		DecimalFormat df = new DecimalFormat("####0.0#");
 		GraphView myView = networkView.getView();
 
-		// GraphObjAttributes nodeAttributes =
 		// networkView.getNetwork().getNodeAttributes();
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 
@@ -162,8 +160,6 @@ public class GMLTree {
 		// "fill" edge color
 
 		viewIt = myView.getEdgeViewsIterator();
-//		GraphObjAttributes edgeAttributes = networkView.getNetwork()
-//				.getEdgeAttributes();
 		
 		CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
 		

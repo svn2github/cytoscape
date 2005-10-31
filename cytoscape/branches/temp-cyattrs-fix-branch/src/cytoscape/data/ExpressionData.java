@@ -927,7 +927,7 @@ public class ExpressionData implements Serializable {
 
     /**
      * Copies ExpressionData data structure into
-     * GraphObjAttributes data structure.
+     * CyAttributes data structure.
      *
      * @param nodeAttribs Node Attributes Object.
      * @param taskMonitor Task Monitor.  Can be null.

@@ -56,7 +56,6 @@ import cytoscape.util.*;
  * tabbed table, they do not get their own tabbed table. furthermore,
  * cytoscape.props may contain a list of other attribute categories to ignore.
  * 
- * @see cytoscape.GraphObjAttributes#setCategory(String,String)
  * 
  */
 public class TabbedBrowser extends JFrame implements ClipboardOwner {

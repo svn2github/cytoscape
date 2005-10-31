@@ -44,7 +44,6 @@ import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 import cytoscape.data.Interaction;
 import cytoscape.data.readers.InteractionsReader;
-import cytoscape.data.GraphObjAttributes;
 import cytoscape.unitTests.AllTests;
 import cytoscape.data.servers.BioDataServer;
 //-----------------------------------------------------------------------------------------
@@ -122,9 +121,9 @@ public void testGetGraph () throws Exception
 //-------------------------------------------------------------------------
 public void testGetGraphAndEdgeAttributes () throws Exception
 // when an interactions file is read, and a graph created, an
-// GraphObjAttributes hash is created, and all of the edge types are added
+// GraphObjAttrib*tes hash is created, and all of the edge types are added
 // to it.  make sure that works:  make sure the reader returns an
-// GraphObjAttributes object; that it has the right size; that the keys
+// GraphObjAttrib*tes object; that it has the right size; that the keys
 // look like "node1::node2", and that the values are simple strings
 { 
   AllTests.standardOut ("testGetGraphAndEdgeAttributes");
@@ -139,7 +138,6 @@ public void testGetGraphAndEdgeAttributes () throws Exception
   assertTrue ("node count", network.getNodeCount () == 31);
   assertTrue ("edge count", network.getEdgeCount () == 27);
 
-  //  GraphObjAttributes edgeProps = network.getEdgeAttributes ();
   //  assertTrue ("attribute count", Cytoscape.getEdgeNetworkData().size () == 2);
 
 //   HashMap interactions = Cytoscape.getEdgeNetworkData().getAttribute ("interaction");

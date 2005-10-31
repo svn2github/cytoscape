@@ -43,7 +43,6 @@ import giny.util.SpringEmbeddedLayouter;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.CyAttributesUtils;
-import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.Semantics;
 import cytoscape.view.CyNetworkView;
 //----------------------------------------------------------------------------------------

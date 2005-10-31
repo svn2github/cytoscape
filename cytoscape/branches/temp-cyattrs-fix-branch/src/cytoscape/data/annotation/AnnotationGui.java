@@ -631,7 +631,7 @@ public class AnnotationGui extends CytoscapeAction {
 			//
 			
 			// Above modification commented out by iavila@systemsbiology.org
-			// The exception was thrown by GraphObjAttributes, but now, we use CyAttributes
+			// The exception was thrown by GraphObjAttrib*tes, but now, we use CyAttributes
 			
 			Object[] uniqueAnnotationValues = null;
 

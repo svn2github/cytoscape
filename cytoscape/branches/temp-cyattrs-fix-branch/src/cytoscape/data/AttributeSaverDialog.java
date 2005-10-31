@@ -2,7 +2,6 @@ package cytoscape.data;
 
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
-import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.attr.MultiHashMap;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.CytoscapeInit;
@@ -285,7 +284,6 @@ class AttributeSaverState implements TableModel {
 	public int writeState(int[] selectedRows) {
 		List graphObjects = null;
 
-		// GraphObjAttributes graphObjAttributes = null;
 		CyAttributes cyAttributes = null;
 
 		if (type == AttributeSaverDialog.NODES) {

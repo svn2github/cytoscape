@@ -67,7 +67,6 @@ public class CyNetworkUtilities {
 		}
 
 		GraphView graphView = networkView.getView();
-		// GraphObjAttributes nodeAttributes = network.getNodeAttributes();
 
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 
@@ -114,7 +113,6 @@ public class CyNetworkUtilities {
 
 		GraphPerspective theGraph = network.getGraphPerspective();
 
-		// GraphObjAttributes nodeAttributes = network.getNodeAttributes();
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 
 		String lineSep = System.getProperty("line.separator");
@@ -163,7 +161,6 @@ public class CyNetworkUtilities {
 		network.beginActivity(callerID);
 
 		GraphPerspective theGraph = network.getGraphPerspective();
-		//GraphObjAttributes nodeAttributes = network.getNodeAttributes();
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 		
 		for (Iterator i = theGraph.nodesIterator(); i.hasNext();) {
