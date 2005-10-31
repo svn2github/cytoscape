@@ -70,7 +70,6 @@ public class CyAttributesWriter
         writer.write(")"); }
       writer.newLine();; }
       writer.flush();
-      writer.close();
   }
 
 }
