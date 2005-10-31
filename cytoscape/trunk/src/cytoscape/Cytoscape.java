@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.lang.reflect.InvocationTargetException;
+import java.io.FileReader;
 
 import javax.swing.*;
 import javax.swing.event.SwingPropertyChangeSupport;
@@ -24,6 +25,7 @@ import cytoscape.data.*;
 import cytoscape.data.readers.GMLReader2;
 import cytoscape.data.readers.GraphReader;
 import cytoscape.data.readers.InteractionsReader;
+import cytoscape.data.readers.CyAttributesReader;
 import cytoscape.data.servers.BioDataServer;
 import cytoscape.giny.CytoscapeRootGraph;
 import cytoscape.giny.CytoscapeFingRootGraph;
@@ -1235,7 +1237,8 @@ public abstract class Cytoscape {
 		if (nodeAttrLocations != null) {
 			for (int i = 0; i < nodeAttrLocations.length; ++i) {
 				try {
-					nodeData.readAttributesFromFile(nodeAttrLocations[i]);
+                    FileReader reader = new FileReader (nodeAttrLocations[i]);
+                    CyAttributesReader.loadAttributes(nodeAttributes, reader);
 				} catch (Exception e) {
 					throw new IllegalArgumentException(
 							"Failure loading node attribute data: "
@@ -1248,7 +1251,8 @@ public abstract class Cytoscape {
 		if (edgeAttrLocations != null) {
 			for (int j = 0; j < edgeAttrLocations.length; ++j) {
 				try {
-					edgeData.readAttributesFromFile(edgeAttrLocations[j]);
+                    FileReader reader = new FileReader (edgeAttrLocations[j]);
+                    CyAttributesReader.loadAttributes(edgeAttributes, reader);
 				} catch (Exception e) {
 					throw new IllegalArgumentException(
 							"Failure loading edge attribute data: "
