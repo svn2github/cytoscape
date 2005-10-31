@@ -1,6 +1,3 @@
-//  $Revision$
-//  $Date$
-//  $Author$
 //---------------------------------------------------------------------------
 package cytoscape;
 
@@ -314,7 +311,7 @@ public abstract class Cytoscape {
 		String old_name = alias;
 		alias = canonicalizeName(alias);
 
-		CyNode node = (CyNode) getNodeNetworkData().getGraphObject(alias);
+                CyNode node = Cytoscape.getRootGraph().getNode(alias);
 		if (node != null) {
 			// System.out.print(".");
 			return node;
@@ -329,11 +326,12 @@ public abstract class Cytoscape {
 		node = (CyNode) Cytoscape.getRootGraph().getNode(
 				Cytoscape.getRootGraph().createNode());
 		node.setIdentifier(alias);
+                getNodeAttributes().setAttribute(alias, Semantics.CANONICAL_NAME, alias);
 		// System.out.println( node.getRootGraphIndex()+" = Node: "+node+" alias
 		// :"+alias+" old_name: "+old_name );
 		// if ( old_name != alias )
 		// setNodeAttributeValue( node, "alias", old_name );
-		Cytoscape.getNodeNetworkData().addNameMapping(alias, node);
+// 		Cytoscape.getNodeNetworkData().addNameMapping(alias, node);
 		Semantics.assignNodeAliases(node, null, null);
 		return node;
 	}
@@ -404,13 +402,16 @@ public abstract class Cytoscape {
 
 			String edge_name = node_1.getIdentifier() + " (" + attribute_value
 					+ ") " + node_2.getIdentifier();
-			Cytoscape.getEdgeNetworkData().append(Semantics.INTERACTION,
-					edge_name, attribute_value);
-			Cytoscape.getEdgeNetworkData().addNameMapping(edge_name, edge);
-			Cytoscape.setEdgeAttributeValue(edge, Semantics.INTERACTION,
-					attribute_value);
-			Cytoscape.setEdgeAttributeValue(edge, Semantics.CANONICAL_NAME,
-					edge_name);
+                        final CyAttributes edgeAttrs = Cytoscape.getEdgeAttributes();
+                        if (attribute_value instanceof Boolean) {
+                          edgeAttrs.setAttribute(Semantics.INTERACTION, edge_name, (Boolean) attribute_value); }
+                        else if (attribute_value instanceof Integer) {
+                          edgeAttrs.setAttribute(Semantics.INTERACTION, edge_name, (Integer) attribute_value); }
+                        else if (attribute_value instanceof Double) {
+                          edgeAttrs.setAttribute(Semantics.INTERACTION, edge_name, (Double) attribute_value); }
+                        else if (attribute_value instanceof String) {
+                          edgeAttrs.setAttribute(Semantics.INTERACTION, edge_name, (String) attribute_value); }
+                        edgeAttrs.setAttribute(edge_name, Semantics.CANONICAL_NAME, edge_name);
 			return edge;
 		}
 		return null;
@@ -430,7 +431,7 @@ public abstract class Cytoscape {
 			String target_alias, String interaction_type) {
 
 		edge_name = canonicalizeName(edge_name);
-		CyEdge edge = (CyEdge) getEdgeNetworkData().getGraphObject(edge_name);
+                CyEdge edge = Cytoscape.getRootGraph().getEdge(edge_name);
 		if (edge != null) {
 			// System.out.print( "`" );
 			return edge;
@@ -463,8 +464,23 @@ public abstract class Cytoscape {
      * be removed in September, 2006.
 	 */
 	public static Object getNodeAttributeValue(Node node, String attribute) {
-		return Cytoscape.getNodeNetworkData().get(attribute,
-				Cytoscape.getNodeNetworkData().getCanonicalName(node));
+          final CyAttributes nodeAttrs = Cytoscape.getNodeAttributes();
+          final String canonName = node.getIdentifier();
+          final byte cyType = nodeAttrs.getType(attribute);
+          if (cyType == CyAttributes.TYPE_BOOLEAN) {
+            return nodeAttrs.getBooleanAttribute(canonName, attribute); }
+          else if (cyType == CyAttributes.TYPE_FLOATING) {
+            return nodeAttrs.getDoubleAttribute(canonName, attribute); }
+          else if (cyType == CyAttributes.TYPE_INTEGER) {
+            return nodeAttrs.getIntegerAttribute(canonName, attribute); }
+          else if (cyType == CyAttributes.TYPE_STRING) {
+            return nodeAttrs.getStringAttribute(canonName, attribute); }
+          else if (cyType == CyAttributes.TYPE_SIMPLE_LIST) {
+            return nodeAttrs.getAttributeList(canonName, attribute); }
+          else if (cyType == CyAttributes.TYPE_SIMPLE_MAP) {
+            return nodeAttrs.getAttributeMap(canonName, attribute); }
+          else {
+            return null; }
 	}
 
 	/**
@@ -473,8 +489,23 @@ public abstract class Cytoscape {
      * be removed in September, 2006.
 	 */
 	public static Object getEdgeAttributeValue(Edge edge, String attribute) {
-		return Cytoscape.getEdgeNetworkData().get(attribute,
-				Cytoscape.getEdgeNetworkData().getCanonicalName(edge));
+          final CyAttributes edgeAttrs = Cytoscape.getEdgeAttributes();
+          final String canonName = edge.getIdentifier();
+          final byte cyType = edgeAttrs.getType(attribute);
+          if (cyType == CyAttributes.TYPE_BOOLEAN) {
+            return edgeAttrs.getBooleanAttribute(canonName, attribute); }
+          else if (cyType == CyAttributes.TYPE_FLOATING) {
+            return edgeAttrs.getDoubleAttribute(canonName, attribute); }
+          else if (cyType == CyAttributes.TYPE_INTEGER) {
+            return edgeAttrs.getIntegerAttribute(canonName, attribute); }
+          else if (cyType == CyAttributes.TYPE_STRING) {
+            return edgeAttrs.getStringAttribute(canonName, attribute); }
+          else if (cyType == CyAttributes.TYPE_SIMPLE_LIST) {
+            return edgeAttrs.getAttributeList(canonName, attribute); }
+          else if (cyType == CyAttributes.TYPE_SIMPLE_MAP) {
+            return edgeAttrs.getAttributeMap(canonName, attribute); }
+          else {
+            return null; }
 	}
 
 	/**
@@ -483,7 +514,7 @@ public abstract class Cytoscape {
      * be removed in September, 2006.
 	 */
 	public static String[] getNodeAttributesList() {
-		return Cytoscape.getNodeNetworkData().getAttributeNames();
+          return Cytoscape.getNodeAttributes().getAttributeNames();
 	}
 
 	/**
@@ -492,7 +523,7 @@ public abstract class Cytoscape {
      * be removed in September, 2006.
 	 */
 	public static String[] getNodeAttributesList(Node[] nodes) {
-		return Cytoscape.getNodeNetworkData().getAttributeNames();
+          return Cytoscape.getNodeAttributes().getAttributeNames();
 	}
 
 	/**
@@ -501,7 +532,7 @@ public abstract class Cytoscape {
      * be removed in September, 2006.
 	 */
 	public static String[] getEdgeAttributesList() {
-		return Cytoscape.getEdgeNetworkData().getAttributeNames();
+          return Cytoscape.getEdgeAttributes().getAttributeNames();
 	}
 
 	/**
@@ -510,7 +541,7 @@ public abstract class Cytoscape {
      * be removed in September, 2006.
 	 */
 	public static String[] getNodeAttributesList(Edge[] edges) {
-		return Cytoscape.getEdgeNetworkData().getAttributeNames();
+          return Cytoscape.getEdgeAttributes().getAttributeNames();
 	}
 
 	/**
@@ -528,9 +559,21 @@ public abstract class Cytoscape {
 	 */
 	public static boolean setNodeAttributeValue(Node node, String attribute,
 			Object value) {
-
-		return Cytoscape.getNodeNetworkData().set(attribute,
-				Cytoscape.getNodeNetworkData().getCanonicalName(node), value);
+          final CyAttributes nodeAttrs = Cytoscape.getNodeAttributes();
+          final String canonName = node.getIdentifier();
+          if (value instanceof Boolean) {
+            nodeAttrs.setAttribute(canonName, attribute, (Boolean) value);
+            return true; }
+          else if (value instanceof Integer) {
+            nodeAttrs.setAttribute(canonName, attribute, (Integer) value);
+            return true; }
+          else if (value instanceof Double) {
+            nodeAttrs.setAttribute(canonName, attribute, (Double) value);
+            return true; }
+          else if (value instanceof String) {
+            nodeAttrs.setAttribute(canonName, attribute, (String) value);
+            return true; }
+          return false;
 	}
 
 	/**
@@ -540,8 +583,21 @@ public abstract class Cytoscape {
 	 */
 	public static boolean setEdgeAttributeValue(Edge edge, String attribute,
 			Object value) {
-		return Cytoscape.getEdgeNetworkData().set(attribute,
-				Cytoscape.getEdgeNetworkData().getCanonicalName(edge), value);
+          final CyAttributes edgeAttrs = Cytoscape.getEdgeAttributes();
+          final String canonName = edge.getIdentifier();
+          if (value instanceof Boolean) {
+            edgeAttrs.setAttribute(canonName, attribute, (Boolean) value);
+            return true; }
+          else if (value instanceof Integer) {
+            edgeAttrs.setAttribute(canonName, attribute, (Integer) value);
+            return true; }
+          else if (value instanceof Double) {
+            edgeAttrs.setAttribute(canonName, attribute, (Double) value);
+            return true; }
+          else if (value instanceof String) {
+            edgeAttrs.setAttribute(canonName, attribute, (String) value);
+            return true; }
+          return false;
 	}
 
 	/**
@@ -749,9 +805,6 @@ public abstract class Cytoscape {
 				}
 				if (add) {
 					nodes.add(node);
-					getNodeNetworkData()
-							.removeNameMapping(node.getIdentifier());
-					getNodeNetworkData().removeObjectMapping(node);
 					getRootGraph().removeNode(node);
 				}
 			}
@@ -768,9 +821,6 @@ public abstract class Cytoscape {
 				}
 				if (add) {
 					edges.add(edge);
-					getEdgeNetworkData()
-							.removeNameMapping(edge.getIdentifier());
-					getEdgeNetworkData().removeObjectMapping(edge);
 					getRootGraph().removeEdge(edge);
 				}
 			}
@@ -1143,7 +1193,7 @@ public abstract class Cytoscape {
 		}
 
 		if (copy_atts) {
-			expressionData.copyToAttribs(getNodeNetworkData(), null);
+			expressionData.copyToAttribs(getNodeAttributes(), null);
 			firePropertyChange(ATTRIBUTES_CHANGED, null, null);
 		}
 

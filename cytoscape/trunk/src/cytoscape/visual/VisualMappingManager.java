@@ -15,7 +15,6 @@ import giny.view.EdgeView;
 import giny.view.Label;
 
 import cytoscape.*;
-import cytoscape.data.GraphObjAttributes;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CyNodeView;
 import cytoscape.view.CyEdgeView;

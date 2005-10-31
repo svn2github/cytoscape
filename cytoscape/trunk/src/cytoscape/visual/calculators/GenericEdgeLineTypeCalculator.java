@@ -38,8 +38,8 @@ public class GenericEdgeLineTypeCalculator extends EdgeCalculator implements Edg
     }
     
     public LineType calculateEdgeLineType(Edge edge, CyNetwork network) {
-        String canonicalName = network.getEdgeAttributes().getCanonicalName(edge);
-        Map attrBundle = network.getEdgeAttributes().getAttributes(canonicalName);
+        String canonicalName = edge.getIdentifier();
+        Map attrBundle = getAttrBundle(canonicalName);
         return (LineType)super.getMapping().calculateRangeValue(attrBundle);
     }
 }

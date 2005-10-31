@@ -43,8 +43,8 @@ public class GenericNodeSizeCalculator extends NodeCalculator implements NodeSiz
      *  NodeAppearanceCalculator.
      */
     public double calculateNodeSize(Node node, CyNetwork network) {
-        String canonicalName = network.getNodeAttributes().getCanonicalName(node);
-        Map attrBundle = network.getNodeAttributes().getAttributes(canonicalName);
+        String canonicalName = node.getIdentifier();
+        Map attrBundle = getAttrBundle(canonicalName);
 	Object rangeValue = super.getMapping().calculateRangeValue(attrBundle);
 	if(rangeValue!=null)
 	    return ((Number)rangeValue).doubleValue();

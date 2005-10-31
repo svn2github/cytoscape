@@ -46,7 +46,8 @@ import java.util.*;
 import giny.view.*;
 import giny.model.*;
 
-import cytoscape.data.GraphObjAttributes;
+import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
 import cytoscape.view.NetworkView;
 import cytoscape.actions.GinyUtils;
 //--------------------------------------------------------------------------------------
@@ -62,7 +63,7 @@ public class GinyEdgeControlDialog extends JDialog {
   String [] edgeNames;
   HashMap edgeNamesHash;
   TreePath [] selectedTreePaths;
-  GraphObjAttributes edgeAttributes;
+  CyAttributes edgeAttributes;
   JTree tree;
 //--------------------------------------------------------------------------------------
 public GinyEdgeControlDialog (NetworkView networkView,
@@ -74,7 +75,7 @@ public GinyEdgeControlDialog (NetworkView networkView,
   this.edgeNamesHash = edgeNamesHash;
   this.view = networkView.getView();
   //this.graphHider = networkView.getGraphHider ();
-  this.edgeAttributes = networkView.getNetwork().getEdgeAttributes ();
+  this.edgeAttributes = Cytoscape.getEdgeAttributes();
   setTitle (title);
   setContentPane (createTreeViewGui ());
 
@@ -211,7 +212,7 @@ class HideAction extends AbstractAction {
 
 } // HideButtonAction
 //------------------------------------------------------------------------------
-boolean pathMatchesEdge (String edgeName, TreePath treePath, GraphObjAttributes edgeAttributes)
+boolean pathMatchesEdge (String edgeName, TreePath treePath, CyAttributes edgeAttributes)
 {
   Object [] objPath = treePath.getPath ();
   String [] pathNames = new String [objPath.length];
@@ -224,14 +225,15 @@ boolean pathMatchesEdge (String edgeName, TreePath treePath, GraphObjAttributes 
   if (pathLength < 2)
     return false;
 
-  if (!edgeAttributes.hasAttribute (pathNames [1], edgeName))
+  if (!edgeAttributes.hasAttribute (edgeName, pathNames [1]))
     return false;
 
   if (pathLength == 2)
     return true;
 
   if (pathLength == 3) {
-    String [] values = edgeAttributes.getStringArrayValues (pathNames [1], edgeName);
+    java.util.List l = edgeAttributes.getAttributeList(edgeName, pathNames[1]);
+    String[] values = (String[]) l.toArray(new String[0]);
     for (int i=0; i < values.length; i++)
       if (values [i].equalsIgnoreCase (pathNames [2]))
         return true;
@@ -248,7 +250,7 @@ protected void hideEdgesByName (TreePath treePath)
   for (Iterator i = list.iterator(); i.hasNext(); ) {
     EdgeView ev = (EdgeView)i.next();
 
-    String edgeName = edgeAttributes.getCanonicalName (ev.getEdge());
+    String edgeName = ev.getEdge().getIdentifier();
     if (pathMatchesEdge (edgeName, treePath, edgeAttributes))
       view.hideGraphObject( ev );
     } // for ec
@@ -264,7 +266,7 @@ protected void hideOtherEdges ()
   for (Iterator i = list.iterator(); i.hasNext(); ) {
     EdgeView ev = (EdgeView)i.next();
 
-    String canonicalName = edgeAttributes.getCanonicalName (ev.getEdge());
+    String canonicalName = ev.getEdge().getIdentifier();
     for (int p=0; p < selectedTreePaths.length; p++) {
       TreePath treePath = selectedTreePaths [p];
       if (pathMatchesEdge (canonicalName, treePath, edgeAttributes))
@@ -289,7 +291,7 @@ protected void inverseHideEdgesByName (TreePath treePath)
   for (Iterator i = list.iterator(); i.hasNext(); ) {
     EdgeView ev = (EdgeView)i.next();
 
-    String edgeName = edgeAttributes.getCanonicalName (ev.getEdge());
+    String edgeName = ev.getEdge().getIdentifier();
     if (!pathMatchesEdge (edgeName, treePath, edgeAttributes))
       view.hideGraphObject( ev );
     } // for ec
@@ -302,7 +304,7 @@ protected void selectEdgesByName (TreePath treePath)
   Vector vector = new Vector();
   for (Iterator i = list.iterator(); i.hasNext(); ) {
     EdgeView ev = (EdgeView)i.next();
-    String canonicalName = edgeAttributes.getCanonicalName (ev.getEdge());
+    String canonicalName = ev.getEdge().getIdentifier();
     if (pathMatchesEdge (canonicalName, treePath, edgeAttributes))
       vector.add (ev);
     } // for ec
@@ -397,7 +399,7 @@ protected void selectOtherEdges ()
 
   for (Iterator i = list.iterator(); i.hasNext(); ) {
     EdgeView ev = (EdgeView)i.next();
-    String canonicalName = edgeAttributes.getCanonicalName (ev.getEdge());
+    String canonicalName = ev.getEdge().getIdentifier();
     for (int p=0; p < selectedTreePaths.length; p++) {
       TreePath treePath = selectedTreePaths [p];
       if (pathMatchesEdge (canonicalName, treePath, edgeAttributes))

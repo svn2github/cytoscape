@@ -7,10 +7,10 @@ import java.awt.BorderLayout;
 import java.awt.*;
 import java.awt.event.*;
 
-import java.util.*;
+import java.util.List;
 import java.lang.reflect.Array;
 
-import cytoscape.data.GraphObjAttributes;
+import cytoscape.data.CyAttributes;
 
 public class BrowserTableModel extends AbstractTableModel {
 
@@ -25,7 +25,7 @@ public class BrowserTableModel extends AbstractTableModel {
 
 
   public BrowserTableModel (Object [] graphObjects,
-                            GraphObjAttributes objAttributes,
+                            CyAttributes cyAttributes,
                             String [] attributeNames) 
   {
     int graphObjectCount = graphObjects.length;
@@ -35,14 +35,14 @@ public class BrowserTableModel extends AbstractTableModel {
       columnNames [i+1] = attributeNames [i];
 
     int numberOfColumns = columnNames.length;
-    int numberOfRows = calculateMaxRowsNeeded (graphObjects, objAttributes, attributeNames);
+    int numberOfRows = calculateMaxRowsNeeded (graphObjects, cyAttributes, attributeNames);
     data = new Object [numberOfRows][numberOfColumns];
 
-    if (objAttributes != null) {
+    if (cyAttributes != null) {
       for (int i=0; i < columnNames.length; i++) {
         preferredTableWidth += defaultColumnWidth;
       } // for i
-    } // if objAttributes
+    } // if cyAttributes
 
 
     //-----------------------------------------------------------------
@@ -50,7 +50,8 @@ public class BrowserTableModel extends AbstractTableModel {
     //-----------------------------------------------------------------
     String [] canonicalNames = new String [graphObjectCount];
     for (int i=0; i < graphObjectCount; i++) {
-      canonicalNames [i] = objAttributes.getCanonicalName (graphObjects [i]);
+      canonicalNames[i] =
+        ((giny.model.GraphObject) graphObjects[i]).getIdentifier();
     }
 
     //-----------------------------------------------------------------
@@ -61,12 +62,13 @@ public class BrowserTableModel extends AbstractTableModel {
     // todo: so we look for that 'attribute' and assign the table cell outside
     // todo: of the normal table flow
     //-----------------------------------------------------------------
-    if (objAttributes != null) {
+    if (cyAttributes != null) {
       int currentRowBase = 0;
       for (int graphObject=0; graphObject < graphObjects.length; graphObject++) {
         int maxRowsUsedThisObject = 1;
-        String canonicalName = objAttributes.getCanonicalName (graphObjects [graphObject]);
-        String commonName = objAttributes.getStringValue ("commonName", canonicalName);
+        String canonicalName =
+          ((giny.model.GraphObject) graphObjects[graphObject]).getIdentifier();
+        String commonName = cyAttributes.getStringAttribute(canonicalName, "commonName");
         if (commonName == null || commonName.length () == 0)
           commonName = canonicalName;
         data [currentRowBase][0] = commonName;
@@ -74,7 +76,8 @@ public class BrowserTableModel extends AbstractTableModel {
           if (columnNames [i].equals ("canonicalName"))
             data [currentRowBase][i] = canonicalName;
           else {
-            Object [] attributeValuesThisObject = objAttributes.getArrayValues (columnNames [i], canonicalName);
+            List l = cyAttributes.getAttributeList(canonicalName, columnNames[i]);
+            Object[] attributeValuesThisObject = l.toArray();
             int attributeCount = attributeValuesThisObject.length;
             for (int a=0; a < attributeCount; a++)
               if (attributeValuesThisObject [a] != null) {
@@ -86,22 +89,22 @@ public class BrowserTableModel extends AbstractTableModel {
         } // for i
         currentRowBase += maxRowsUsedThisObject;
       } // for object:  each attribute name
-    } // if objAttributes
+    } // if cyAttributes
 
 
   } // ObjectBrowserTableModel
  
   protected int calculateMaxRowsNeeded (Object [] graphObjects,
-                                        GraphObjAttributes objAttributes,
+                                        CyAttributes cyAttributes,
                                         String [] attributeNames) 
   {
     int max = 0;
     for (int graphObject=0; graphObject < graphObjects.length; graphObject++) {
       int maxRowsUsedThisObject = 1;
-      String canonicalName = objAttributes.getCanonicalName (graphObjects [graphObject]);
+      String canonicalName = ((giny.model.GraphObject) graphObjects[graphObject]).getIdentifier();
       for (int i=0; i < attributeNames.length; i++) {
         String attributeName = attributeNames [i];
-        int attributeCount = objAttributes.getArrayValues (attributeName, canonicalName).length;
+        int attributeCount = cyAttributes.getAttributeList(canonicalName, attributeName).size();
         if (attributeCount > maxRowsUsedThisObject)
           maxRowsUsedThisObject = attributeCount;
       } // for i

@@ -137,7 +137,7 @@ public interface GraphObjAttributes {
      * type; discover and return that here.
      * @param attributeName     AttributeName
      * @return Class Object.
-     * @deprecated Use {@link CyAttributes#getType(String)} instead.
+     * @deprecated Use {@link CyAttributesUtils#getClass(String,CyAttributes)} instead.
      */
     public Class getClass(String attributeName);
 
@@ -217,7 +217,7 @@ public interface GraphObjAttributes {
      *
      * @return a HashMap whose keys are graph object names (typically canonical
      * names for nodes and edges) and whose values are Vectors of java objects.
-     * @deprecated Use {@link CyAttributes#getAttributeMap(String, String)}
+     * @deprecated Use {@link CyAttributesUtils#getAttribute(String, CyAttributes)}
      * instead.
      */
     public HashMap getAttribute(String attributeName);
@@ -427,8 +427,7 @@ public interface GraphObjAttributes {
      * Deprecation note:  This method has 18 usages in the core. most
      * of which are in the VizMapper.
      *
-     * @deprecated There is no one method in {@link CyAttributes} that provides
-     * this functionality, but it can be recreated via several calls.
+     * @deprecated use {@link CyAttributeUtils.getAttributes(String,CyAttributes)}.
      */
     public HashMap getAttributes(String canonicalName);
 

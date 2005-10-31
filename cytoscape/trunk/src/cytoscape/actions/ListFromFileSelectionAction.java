@@ -64,8 +64,7 @@ public class ListFromFileSelectionAction extends CytoscapeAction {
       for (int i=0; i < nodes.length; i++) {
         giny.model.Node node = nodes[i];
         boolean select = false;
-        String canonicalName =
-          network.getNodeAttributes().getCanonicalName(node);
+        String canonicalName = node.getIdentifier();
         List synonyms =
           Semantics.getAllSynonyms(canonicalName, network );
         for (Iterator synI=synonyms.iterator(); synI.hasNext(); ) {

@@ -33,7 +33,9 @@ import giny.model.Edge;
 
 import cytoscape.*;
 import cytoscape.CytoscapeInit;
-import cytoscape.data.GraphObjAttributes;
+import cytoscape.data.CyAttributes;
+import cytoscape.data.attr.CountedIterator;
+import cytoscape.data.attr.MultiHashMap;
 import cytoscape.data.servers.BioDataServer;
 
 /**
@@ -95,13 +97,17 @@ public class Semantics {
     
     String callerID = "Semantics.assignSpecies";
     //    network.beginActivity(callerID);
-    GraphObjAttributes nodeAttributes = Cytoscape.getNodeNetworkData();
-    String[] canonicalNames = nodeAttributes.getObjectNames(CANONICAL_NAME);
+    CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+    CountedIterator keys = nodeAttributes.getMultiHashMap().getObjectKeys(CANONICAL_NAME);
+    String[] canonicalNames = new String[keys.numRemaining()];
+    int inx = 0;
+    while (keys.hasNext()) {
+      canonicalNames[inx++] = (String) keys.next(); }
     for (int i=0; i<canonicalNames.length; i++) {
       String canonicalName = canonicalNames[i];
-      String species = nodeAttributes.getStringValue(SPECIES, canonicalName);
+      String species = nodeAttributes.getStringAttribute(canonicalName, SPECIES);
       if (species == null) { //only do something if no value exists
-        nodeAttributes.set(SPECIES, canonicalName, defaultSpecies);
+        nodeAttributes.setAttribute(canonicalName, SPECIES, defaultSpecies);
       }
     }
     // network.endActivity(callerID);
@@ -115,15 +121,11 @@ public class Semantics {
   public static Set getSpeciesInNetwork( cytoscape.CyNetwork network) {
     Set returnSet = new HashSet();
     if (network == null) {return returnSet;}
-    GraphObjAttributes nodeAttributes = Cytoscape.getNodeNetworkData();
-    if (nodeAttributes == null) {return returnSet;}
+    CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
     //in the following map, keys are objects names and values are the species
-    Map speciesAttribute = nodeAttributes.getAttribute(SPECIES);
-    if (speciesAttribute == null) {return returnSet;}
-    //we will return each unique value stored in this map, without worrying
-    //about the type; thus, for example, if some node has several species
-    //defined as an array of Strings, we'll quietly add the array to our set
-    returnSet.addAll(speciesAttribute.values());
+    CountedIterator keys = nodeAttributes.getMultiHashMap().getObjectKeys(SPECIES);
+    while (keys.hasNext()) {
+      returnSet.add(nodeAttributes.getStringAttribute((String) keys.next(), SPECIES)); }
     return returnSet;
   }
 
@@ -224,7 +226,21 @@ public class Semantics {
    */
   public static String[] getInteractionTypes( cytoscape.CyNetwork network) {
     if (network == null) {return new String[0];}
-    return Cytoscape.getEdgeNetworkData().getUniqueStringValues(Semantics.INTERACTION);
+    final HashMap dupsFilter = new HashMap();
+    final CyAttributes attrs = Cytoscape.getEdgeAttributes();
+    final MultiHashMap mmap = attrs.getMultiHashMap();
+    final byte type = attrs.getType(Semantics.INTERACTION);
+    final CountedIterator objs = mmap.getObjectKeys(Semantics.INTERACTION);
+    while (objs.hasNext()) {
+      final String obj = (String) objs.next();;
+      final Object val = mmap.getAttributeValue(obj, Semantics.INTERACTION, null);
+      dupsFilter.put(val, val); }
+    final String[] returnThis = new String[dupsFilter.size()];
+    final Iterator uniqueIter = dupsFilter.keySet().iterator();
+    int inx = 0;
+    while (uniqueIter.hasNext()) {
+      returnThis[inx++] = (String) uniqueIter.next(); }
+    return returnThis;
   }
   //-------------------------------------------------------------------------
   /**
@@ -237,8 +253,8 @@ public class Semantics {
     if (network == null || e == null) {
       return null;
     }
-    String canonicalName = Cytoscape.getEdgeNetworkData().getCanonicalName(e);
-    return Cytoscape.getEdgeNetworkData().getStringValue(Semantics.INTERACTION, canonicalName);
+    String canonicalName = e.getIdentifier();
+    return Cytoscape.getEdgeAttributes().getStringAttribute(canonicalName, Semantics.INTERACTION);
   }
   //-------------------------------------------------------------------------
   /**
@@ -300,9 +316,9 @@ public class Semantics {
     String species = null;
     if (network != null) {
       String callerID = "Semantics.getAllSynonyms";
-      String commonName = Cytoscape.getNodeNetworkData().getStringValue(COMMON_NAME, name);
+      String commonName = Cytoscape.getNodeAttributes().getStringAttribute(name, COMMON_NAME);
       if (commonName != null) {returnList.add(commonName);}
-      species = Cytoscape.getNodeNetworkData().getStringValue(SPECIES, name);
+      species = Cytoscape.getNodeAttributes().getStringAttribute(name, SPECIES);
     }
     BioDataServer bioDataServer = Cytoscape.getBioDataServer();
     species = CytoscapeInit.getDefaultSpeciesName();

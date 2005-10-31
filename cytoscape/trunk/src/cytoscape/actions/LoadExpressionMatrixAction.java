@@ -95,7 +95,7 @@ class LoadExpressionDataTask implements Task {
             //  Copy Expression Data to Attributes
             taskMonitor.setStatus("Mapping Expression Data to "
                     + "Node Attributes...");
-            expressionData.copyToAttribs(Cytoscape.getNodeNetworkData(),
+            expressionData.copyToAttribs(Cytoscape.getNodeAttributes(),
                     taskMonitor);
             Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED,
                     null, null);

@@ -11,7 +11,6 @@ import java.util.*;
 
 import giny.model.*;
 
-import cytoscape.data.GraphObjAttributes;
 import cytoscape.CyNetwork;
 import cytoscape.CyNetworkEvent;
 import cytoscape.CyNetworkListener;
@@ -60,10 +59,8 @@ public class CyNetworkTest extends TestCase {
 //     GraphPerspective newPerspective = GinyFactory.createGraphPerspective(rootGraph);
 //     network.setGraphPerspective(newPerspective);
 //     assertTrue( network.getGraphPerspective() == newPerspective );
-//     GraphObjAttributes newNodeAttributes = new GraphObjAttributes();
 //     network.setNodeAttributes(newNodeAttributes);
 //     assertTrue( Cytoscape.getNodeNetworkData() == newNodeAttributes );
-//     GraphObjAttributes newEdgeAttributes = new GraphObjAttributes();
 //     network.setEdgeAttributes(newEdgeAttributes);
 //     assertTrue( network.getEdgeAttributes() == newEdgeAttributes );
 //     ExpressionData expData = new ExpressionData("testData/gal1.22x5.mRNA");
@@ -116,8 +113,6 @@ public class CyNetworkTest extends TestCase {
 //     assertTrue(nullNetwork.getExpressionData() == null);
 //     //test setting new graph, preserving old attributes
 //     //first install some attributes so we can do the test
-//     GraphObjAttributes nullNodeAttributes = nullNetwork.getNodeAttributes();
-//     GraphObjAttributes nullEdgeAttributes = nullNetwork.getEdgeAttributes();
 //     Node n1 = rootGraph.getNode( rootGraph.createNode() );
 //     nullNodeAttributes.addNameMapping("YGR074W", n1);
 //     Node n2 = newGraph.getNode( newGraph.createNode() );

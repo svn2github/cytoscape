@@ -5,7 +5,6 @@ package cytoscape.actions;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.servers.BioDataServer;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
@@ -17,7 +16,6 @@ import cytoscape.util.FileUtil;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.io.IOException;
 
 /* 
  * Added by T. Ideker April 16, 2003
@@ -51,9 +49,8 @@ public class LoadNodeAttributesAction extends CytoscapeAction {
         if (file != null) {
 
             //  Create Load Attributes Task
-            LoadAttributesTask task = new LoadAttributesTask
-                    (file, Cytoscape.getNodeNetworkData(),
-                            LoadAttributesTask.NODE_ATTRIBUTES);
+            LoadAttributesTask task = 
+            	new LoadAttributesTask (file, LoadAttributesTask.NODE_ATTRIBUTES);
 
             //  Configure JTask Dialog Pop-Up Box
             JTaskConfig jTaskConfig = new JTaskConfig();
@@ -75,7 +72,6 @@ public class LoadNodeAttributesAction extends CytoscapeAction {
 class LoadAttributesTask implements Task {
     private TaskMonitor taskMonitor;
     private File file;
-    private GraphObjAttributes attributes;
     private int type;
     static final int NODE_ATTRIBUTES = 0;
     static final int EDGE_ATTRIBUTES = 1;
@@ -83,13 +79,10 @@ class LoadAttributesTask implements Task {
     /**
      * Constructor.
      * @param file File Object.
-     * @param attributes Attributes Object.
      * @param type NODE_ATTRIBUTES or EDGE_ATTRIBUTES
      */
-    LoadAttributesTask (File file, GraphObjAttributes attributes,
-            int type) {
+    LoadAttributesTask (File file, int type) {
         this.file = file;
-        this.attributes = attributes;
         this.type = type;
     }
 
@@ -104,7 +97,11 @@ class LoadAttributesTask implements Task {
             boolean canonicalize = !CytoscapeInit.noCanonicalization();
 
             //  Read in Data
-            attributes.setTaskMonitor(taskMonitor);
+            
+            // track progress. CyAttributes has separation between
+            // reading attributes and storing them
+            // so we need to find a different way of monitoring this task:
+            // attributes.setTaskMonitor(taskMonitor);
           
             if ( type == NODE_ATTRIBUTES ) 
                 Cytoscape.loadAttributes( new String[] { file.getAbsolutePath() },

@@ -42,8 +42,8 @@ public class GenericEdgeFontSizeCalculator extends EdgeCalculator
      *  NodeAppearanceCalculator.
      */
     public float calculateEdgeFontSize(Edge edge, CyNetwork network) {
-	String canonicalName = network.getEdgeAttributes().getCanonicalName(edge);
-	Map attrBundle = network.getEdgeAttributes().getAttributes(canonicalName);
+        String canonicalName = edge.getIdentifier();
+        Map attrBundle = getAttrBundle(canonicalName);
 	Object rangeValue = super.getMapping().calculateRangeValue(attrBundle);
 	if (rangeValue != null)
 	    return ((Number) rangeValue).floatValue();

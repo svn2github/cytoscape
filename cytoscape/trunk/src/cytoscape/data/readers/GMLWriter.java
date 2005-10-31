@@ -7,7 +7,6 @@ import java.awt.Color;
 import java.text.DecimalFormat;
 import giny.view.*;
 import giny.model.*;
-import cytoscape.data.GraphObjAttributes;
 import cytoscape.view.CyNetworkView;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;

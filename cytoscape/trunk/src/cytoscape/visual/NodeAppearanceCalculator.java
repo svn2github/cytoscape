@@ -11,11 +11,11 @@ import java.awt.Color;
 import java.awt.Font;
 
 import giny.model.Node;
+import cytoscape.data.CyAttributes;
 import cytoscape.visual.LineType;
 import cytoscape.visual.Arrow;
 import cytoscape.visual.ShapeNodeRealizer;
 
-import cytoscape.data.GraphObjAttributes;
 import cytoscape.*;
 import cytoscape.visual.calculators.*;
 import cytoscape.visual.parsers.*;
@@ -163,16 +163,15 @@ public class NodeAppearanceCalculator implements Cloneable {
   public NodeColorCalculator getNodeFillColorCalculator() {return nodeFillColorCalculator;}
   public void setNodeFillColorCalculator(NodeColorCalculator c) {nodeFillColorCalculator = c;}
   public Color calculateNodeFillColor(Node node, CyNetwork network) {
-    if (node == null || network == null) {return defaultNodeFillColor;}
-    //look for a suitable value in a specific data attribute
-    GraphObjAttributes nodeAttributes = network.getNodeAttributes();
-    String name = nodeAttributes.getCanonicalName(node);
-    Object attrValue = nodeAttributes.getValue(nodeFillColorBypass, name);
-    if (attrValue instanceof Color) {return (Color)attrValue;}
-    if (attrValue instanceof String) {
-      Color c = (new ColorParser()).parseColor((String)attrValue);
-      if (c != null) {return c;}
+    if (node == null) { return defaultNodeFillColor; }
+    CyAttributes cyAttrs = Cytoscape.getNodeAttributes();
+    String name = node.getIdentifier();
+    String attrValue = cyAttrs.getStringAttribute(name, nodeFillColorBypass);
+    if ( attrValue != null ) { 
+      Color c = (new ColorParser()).parseColor(attrValue);
+      if (c != null) { return c; }
     }
+
     //try to get a value from the calculator
     if (nodeFillColorCalculator == null) {return defaultNodeFillColor;}
     Color c = nodeFillColorCalculator.calculateNodeColor(node, network);
@@ -186,16 +185,15 @@ public class NodeAppearanceCalculator implements Cloneable {
   public NodeColorCalculator getNodeBorderColorCalculator() {return nodeBorderColorCalculator;}
   public void setNodeBorderColorCalculator(NodeColorCalculator c) {nodeBorderColorCalculator = c;}
   public Color calculateNodeBorderColor(Node node, CyNetwork network) {
-    if (node == null || network == null) {return defaultNodeBorderColor;}
-    //look for a suitable value in a specific data attribute
-    GraphObjAttributes nodeAttributes = network.getNodeAttributes();
-    String name = nodeAttributes.getCanonicalName(node);
-    Object attrValue = nodeAttributes.getValue(nodeBorderColorBypass, name);
-    if (attrValue instanceof Color) {return (Color)attrValue;}
-    if (attrValue instanceof String) {
-      Color c = (new ColorParser()).parseColor((String)attrValue);
-      if (c != null) {return c;}
+    if (node == null) { return defaultNodeBorderColor; }
+    CyAttributes cyAttrs = Cytoscape.getNodeAttributes();
+    String name = node.getIdentifier();
+    String attrValue = cyAttrs.getStringAttribute(name, nodeBorderColorBypass);
+    if ( attrValue != null ) {
+      Color c = (new ColorParser()).parseColor(attrValue);
+      if (c != null) { return c; }
     }
+
     //try to get a value from the calculator
     if (nodeBorderColorCalculator == null) {return defaultNodeBorderColor;}
     Color c = nodeBorderColorCalculator.calculateNodeColor(node, network);
@@ -209,16 +207,15 @@ public class NodeAppearanceCalculator implements Cloneable {
   public NodeLineTypeCalculator getNodeLineTypeCalculator() {return nodeLineTypeCalculator;}
   public void setNodeLineTypeCalculator(NodeLineTypeCalculator c) {nodeLineTypeCalculator = c;}
   public LineType calculateNodeLineType(Node node, CyNetwork network) {
-    if (node == null || network == null) {return defaultNodeLineType;}
-    //look for a suitable value in a specific data attribute
-    GraphObjAttributes nodeAttributes = network.getNodeAttributes();
-    String name = nodeAttributes.getCanonicalName(node);
-    Object attrValue = nodeAttributes.getValue(nodeLineTypeBypass, name);
-    if (attrValue instanceof LineType) {return (LineType)attrValue;}
-    if (attrValue instanceof String) {
-      LineType lt = (new LineTypeParser()).parseLineType((String)attrValue);
-      if (lt != null) {return lt;}
+    if (node == null) { return defaultNodeLineType; }
+    CyAttributes cyAttrs = Cytoscape.getNodeAttributes();
+    String name = node.getIdentifier();
+    String attrValue = cyAttrs.getStringAttribute(name, nodeLineTypeBypass);
+    if (attrValue != null ) {
+      LineType lt = (new LineTypeParser()).parseLineType(attrValue);
+      if (lt != null) { return lt; }
     }
+
     //try to get a value from the calculator
     if (nodeLineTypeCalculator == null) {return defaultNodeLineType;}
     LineType lt = nodeLineTypeCalculator.calculateNodeLineType(node, network);
@@ -232,20 +229,16 @@ public class NodeAppearanceCalculator implements Cloneable {
   public NodeShapeCalculator getNodeShapeCalculator() {return nodeShapeCalculator;}
   public void setNodeShapeCalculator(NodeShapeCalculator c) {nodeShapeCalculator = c;}
   public byte calculateNodeShape(Node node, CyNetwork network) {
-    if (node == null || network == null) {return defaultNodeShape;}
-    //look for a suitable value in a specific data attribute
-    GraphObjAttributes nodeAttributes = network.getNodeAttributes();
-    String name = nodeAttributes.getCanonicalName(node);
-    Object attrValue = nodeAttributes.getValue(nodeShapeBypass, name);
-    if (attrValue instanceof Byte) {
-      byte s = ((Byte)attrValue).byteValue();
-      if (isValidShape(s)) {return s;}
-    }
-    if (attrValue instanceof String) {
-      Byte b = (new NodeShapeParser()).parseNodeShape((String)attrValue);
+    if (node == null) { return defaultNodeShape; }
+    CyAttributes cyAttrs = Cytoscape.getNodeAttributes();
+    String name = node.getIdentifier();
+    String attrValue = cyAttrs.getStringAttribute(name, nodeShapeBypass);
+    if (attrValue != null )   {
+      Byte b = (new NodeShapeParser()).parseNodeShape(attrValue);
       byte s = b.byteValue();
-      if (isValidShape(s)) {return s;}
+      if (isValidShape(s)) { return s; }
     }
+
     //try to get a value from the calculator
     if (nodeShapeCalculator == null) {return defaultNodeShape;}
     byte s = nodeShapeCalculator.calculateNodeShape(node, network);
@@ -282,16 +275,15 @@ public class NodeAppearanceCalculator implements Cloneable {
   public NodeSizeCalculator getNodeWidthCalculator() {return nodeWidthCalculator;}
   public void setNodeWidthCalculator(NodeSizeCalculator c) {nodeWidthCalculator = c;}
   public double calculateNodeWidth(Node node, CyNetwork network) {
-    if (node == null || network == null) {return defaultNodeWidth;}
-    //look for a suitable value in a specific data attribute
-    GraphObjAttributes nodeAttributes = network.getNodeAttributes();
-    String name = nodeAttributes.getCanonicalName(node);
-    Object attrValue = nodeAttributes.getValue(nodeWidthBypass, name);
-    if (attrValue instanceof Double) {return ((Double)attrValue).doubleValue();}
-    if (attrValue instanceof String) {
-      Double dObj = (new DoubleParser()).parseDouble((String)attrValue);
-      if (dObj != null) {return dObj.doubleValue();}
+    if (node == null) { return defaultNodeWidth; }
+    CyAttributes cyAttrs = Cytoscape.getNodeAttributes();
+    String name = node.getIdentifier();
+    String attrValue = cyAttrs.getStringAttribute(name, nodeWidthBypass);
+    if (attrValue != null ) {
+        Double dObj = (new DoubleParser()).parseDouble(attrValue);
+        if (dObj != null) { return dObj.doubleValue(); }
     }
+
     //try to get a value from the calculator
     if (nodeWidthCalculator == null) {return defaultNodeWidth;}
     double d = nodeWidthCalculator.calculateNodeSize(node, network);
@@ -305,16 +297,15 @@ public class NodeAppearanceCalculator implements Cloneable {
   public NodeSizeCalculator getNodeHeightCalculator() {return nodeHeightCalculator;}
   public void setNodeHeightCalculator(NodeSizeCalculator c) {nodeHeightCalculator = c;}
   public double calculateNodeHeight(Node node, CyNetwork network) {
-    if (node == null || network == null) {return defaultNodeHeight;}
-    //look for a suitable value in a specific data attribute
-    GraphObjAttributes nodeAttributes = network.getNodeAttributes();
-    String name = nodeAttributes.getCanonicalName(node);
-    Object attrValue = nodeAttributes.getValue(nodeHeightBypass, name);
-    if (attrValue instanceof Double) {return ((Double)attrValue).doubleValue();}
-    if (attrValue instanceof String) {
-      Double dObj = (new DoubleParser()).parseDouble((String)attrValue);
-      if (dObj != null) {return dObj.doubleValue();}
+    if (node == null) { return defaultNodeHeight; }
+    CyAttributes cyAttrs = Cytoscape.getNodeAttributes();
+    String name = node.getIdentifier();
+    String attrValue = cyAttrs.getStringAttribute(name, nodeHeightBypass);
+    if (attrValue != null ) {
+        Double dObj = (new DoubleParser()).parseDouble(attrValue);
+        if (dObj != null) { return dObj.doubleValue(); }
     }
+
     //try to get a value from the calculator
     if (nodeHeightCalculator == null) {return defaultNodeHeight;}
     double d = nodeHeightCalculator.calculateNodeSize(node, network);
@@ -335,12 +326,12 @@ public class NodeAppearanceCalculator implements Cloneable {
   public NodeLabelCalculator getNodeLabelCalculator() {return nodeLabelCalculator;}
   public void setNodeLabelCalculator(NodeLabelCalculator c) {nodeLabelCalculator = c;}
   public String calculateNodeLabel(Node node, CyNetwork network) {
-    if (node == null || network == null) {return defaultNodeLabel;}
-    //look for a suitable value in a specific data attribute
-    GraphObjAttributes nodeAttributes = network.getNodeAttributes();
-    String name = nodeAttributes.getCanonicalName(node);
-    Object attrValue = nodeAttributes.getValue(nodeLabelBypass, name);
-    if (attrValue instanceof String) {return (String)attrValue;}
+    if (node == null) { return defaultNodeLabel; }
+    CyAttributes cyAttrs = Cytoscape.getNodeAttributes();
+    String name = node.getIdentifier();
+    String attrValue = cyAttrs.getStringAttribute(name, nodeLabelBypass);
+    if (attrValue != null) { return attrValue; }
+
     //try to get a value from the calculator
     if (nodeLabelCalculator == null) {return defaultNodeLabel;}
     String s = nodeLabelCalculator.calculateNodeLabel(node, network);
@@ -354,12 +345,12 @@ public class NodeAppearanceCalculator implements Cloneable {
   public NodeToolTipCalculator getNodeToolTipCalculator() {return nodeToolTipCalculator;}
   public void setNodeToolTipCalculator(NodeToolTipCalculator c) {nodeToolTipCalculator = c;}
   public String calculateNodeToolTip(Node node, CyNetwork network) {
-    if (node == null || network == null) {return defaultNodeToolTip;}
-    //look for a suitable value in a specific data attribute
-    GraphObjAttributes nodeAttributes = network.getNodeAttributes();
-    String name = nodeAttributes.getCanonicalName(node);
-    Object attrValue = nodeAttributes.getValue(nodeToolTipBypass, name);
-    if (attrValue instanceof String) {return (String)attrValue;}
+    if (node == null) { return defaultNodeToolTip; }
+    CyAttributes cyAttrs = Cytoscape.getNodeAttributes();
+    String name = node.getIdentifier();
+    String attrValue = cyAttrs.getStringAttribute(name, nodeToolTipBypass);
+    if (attrValue != null) { return attrValue; }
+
     //try to get a value from the calculator
     if (nodeToolTipCalculator == null) {return defaultNodeToolTip;}
     String s = nodeToolTipCalculator.calculateNodeToolTip(node, network);
@@ -390,16 +381,15 @@ public class NodeAppearanceCalculator implements Cloneable {
   public void setNodeFontSizeCalculator(NodeFontSizeCalculator c) {nodeFontSizeCalculator = c;}
     
   public Font calculateNodeFont(Node node, CyNetwork network) {
-    if (node == null || network == null) {return defaultNodeFont;}
-    //look for a suitable value in a specific data attribute
-    GraphObjAttributes nodeAttributes = network.getNodeAttributes();
-    String name = nodeAttributes.getCanonicalName(node);
-    Object attrValue = nodeAttributes.getValue(nodeFontBypass, name);
-    if (attrValue instanceof Font) {return (Font)attrValue;}
-    if (attrValue instanceof String) {
-      Font f = (new FontParser()).parseFont((String)attrValue);
-      if (f != null) {return f;}
+    if (node == null) { return defaultNodeFont; }
+    CyAttributes cyAttrs = Cytoscape.getNodeAttributes();
+    String name = node.getIdentifier();
+    String attrValue = cyAttrs.getStringAttribute(name, nodeFontBypass);
+    if (attrValue != null ) {
+      Font f = (new FontParser()).parseFont(attrValue);
+      if (f != null) { return f; }
     }
+
     //try to get a value from the calculators
     if (nodeFontFaceCalculator == null && nodeFontSizeCalculator == null) {
 	    return defaultNodeFont;
@@ -437,16 +427,15 @@ public class NodeAppearanceCalculator implements Cloneable {
   public NodeLabelColorCalculator getNodeLabelColorCalculator() {return nodeLabelColorCalculator;}
   public void setNodeLabelColorCalculator(NodeLabelColorCalculator c) {nodeLabelColorCalculator = c;}
   public Color calculateNodeLabelColor(Node node, CyNetwork network) {
-    if (node == null || network == null) {return defaultNodeLabelColor;}
-    //look for a suitable value in a specific data attribute
-    GraphObjAttributes nodeAttributes = network.getNodeAttributes();
-    String name = nodeAttributes.getCanonicalName(node);
-    Object attrValue = nodeAttributes.getValue(nodeLabelColorBypass, name);
-    if (attrValue instanceof Color) {return (Color)attrValue;}
-    if (attrValue instanceof String) {
-      Color c = (new ColorParser()).parseColor((String)attrValue);
-      if (c != null) {return c;}
+    if (node == null) { return defaultNodeLabelColor; }
+    CyAttributes cyAttrs = Cytoscape.getNodeAttributes();
+    String name = node.getIdentifier();
+    String attrValue = cyAttrs.getStringAttribute(name, nodeLabelColorBypass);
+    if (attrValue != null ) {
+      Color c = (new ColorParser()).parseColor(attrValue);
+      if (c != null) { return c; }
     }
+
     //try to get a value from the calculator
     if (nodeLabelColorCalculator == null) {return defaultNodeLabelColor;}
     Color c = nodeLabelColorCalculator.calculateNodeLabelColor(node, network);

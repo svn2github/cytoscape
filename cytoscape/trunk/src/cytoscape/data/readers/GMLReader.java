@@ -34,16 +34,22 @@
 //-----------------------------------------------------------------------------------
 package cytoscape.data.readers;
 //-----------------------------------------------------------------------------------------
-import java.util.*;
+import giny.model.Edge;
+import giny.model.Node;
+import giny.model.RootGraph;
+import giny.view.EdgeView;
+import giny.view.GraphView;
+import giny.view.NodeView;
+
 import java.awt.geom.Point2D;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Vector;
 
-import giny.model.*;
-import giny.view.*;
-import cytoscape.*;
-
-import cytoscape.data.GraphObjAttributes;
 import cern.colt.list.IntArrayList;
 import cern.colt.map.OpenIntIntHashMap;
+import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
 
 
 //-------------------------------------------------------------------------------------
@@ -166,16 +172,20 @@ public class GMLReader implements GraphReader {
 
   /**
    * @return the node attributes that were read in from the GML file.
+   * @deprecated Use {@link Cytoscape#getNodeAttributes()} instead.  This
+   * method will be removed in September, 2006.
    */
-  public GraphObjAttributes getNodeAttributes () {
-    return Cytoscape.getNodeNetworkData();
+  public CyAttributes getNodeAttributes () {
+    return Cytoscape.getNodeAttributes();
   }
 
   /**
    * @return the edge attributes that were read in from the GML file.
+   * @deprecated Use {@link Cytoscape#getNodeAttributes()} instead.  This
+   * method will be removed in September, 2006.
    */
-  public GraphObjAttributes getEdgeAttributes () {
-    return Cytoscape.getEdgeNetworkData();
+  public CyAttributes getEdgeAttributes () {
+    return Cytoscape.getEdgeAttributes();
   }
   public void layout(GraphView myView){
     

@@ -8,11 +8,13 @@ package cytoscape.visual.calculators;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Properties;
+import java.util.Map;
 import cytoscape.dialogs.MiscGB;
 import cytoscape.dialogs.GridBagGroup;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.mappings.MappingFactory;
 import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
 import cytoscape.visual.parsers.ValueParser;
 //------------------------------------------------------------------------------
 /**
@@ -45,10 +47,10 @@ public abstract class EdgeCalculator extends AbstractCalculator {
      * @return	JPanel containing JComboBox
      */
     public JPanel getUI(JDialog parent, CyNetwork n) {
-	return super.getUI(n.getEdgeAttributes(), parent, n);
+	return super.getUI(Cytoscape.getEdgeAttributes(), parent, n);
 	/*
 	// attribute select combo box - delivered complete from the superclass
-	JPanel selectAttributePanel = super.getUI(n.getEdgeAttributes());
+	JPanel selectAttributePanel = super.getUI(Cytoscape.getEdgeAttributes());
 	
 	// underlying mapper's UI
 	JPanel mapperUI = super.getMapping().getUI(parent, n);
@@ -59,5 +61,13 @@ public abstract class EdgeCalculator extends AbstractCalculator {
 	MiscGB.insert(g, mapperUI, 0, 1, 1, 1, 5, 5, GridBagConstraints.BOTH);
 	return g.panel;
 	*/
+    }
+
+    /**
+     * Simple passthrough method that is specific to edges. See AbstractCalculator.getAttrBundle()
+     * for more details.
+     */
+    protected Map getAttrBundle(String name) {
+        return super.getAttrBundle(name,Cytoscape.getEdgeAttributes());
     }
 }
