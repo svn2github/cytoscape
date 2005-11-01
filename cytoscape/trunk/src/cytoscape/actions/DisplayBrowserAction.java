@@ -12,6 +12,14 @@ import cytoscape.CytoscapeInit;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.view.cytopanels.CytoPanelState;
 
+/**
+ * 
+ *  This class is enabled only when browser plugin is loaded.
+ *  User can on/off browser panel (CytoPanel3) by using f5 key.
+ * 
+ * @author kono
+ *
+ */
 public class DisplayBrowserAction extends CytoscapeAction {
 
 	Vector attributeCategoriesToIgnore = new Vector();
