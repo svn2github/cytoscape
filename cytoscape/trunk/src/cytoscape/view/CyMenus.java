@@ -599,8 +599,12 @@ public class CyMenus implements GraphViewChangeListener {
 		editMenu.add(new JSeparator());
 		addAction(new PreferenceAction());
 
-		// fill the Data menu
-		addAction(new DisplayBrowserAction());
+		// fill the Data menu --> moved to the browser plugin.
+		//addAction(new DisplayBrowserAction());
+		
+		
+		
+		
 		// addAction( new GraphObjectSelectionAction() );
 
 		// fill the Select menu
