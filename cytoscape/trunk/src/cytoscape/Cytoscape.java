@@ -339,32 +339,22 @@ public abstract class Cytoscape {
 	}
 
 	/**
-	 * Gets the first CyEdge found between the two nodes (direction does not
-	 * matter) that has the given value for the given attribute.
-	 * 
-	 * @param node_1
-	 *            one end of the edge
-	 * @param node_2
-	 *            the other end of the edge
-	 * @param attribute
-	 *            the attribute of the edge to be searched, a common one is
-	 *            {@link Semantics#INTERACTION }
-	 * @param attribute_value
-	 *            a value for the attribute, like "pp"
-	 * @param create
-	 *            will create an edge if one does not exist and if attribute is
-	 *            {@Semantics#INTERACTION}
-	 * @return returns an existing CyEdge if present, or creates one if
-	 *         <code>create</code> is true and attribute is
-	 *         Semantics.INTERACTION, otherwise returns null.
-	 */
+     * Gets the first CyEdge found between the two nodes (direction does not
+     * matter) that has the given value for the given attribute.
+     *
+     * @param node_1          one end of the edge
+     * @param node_2          the other end of the edge
+     * @param attribute       the attribute of the edge to be searched, a
+     *                        common one is {@link Semantics#INTERACTION }
+     * @param attribute_value a value for the attribute, like "pp"
+     * @param create          will create an edge if one does not exist and
+     *                        if attribute is {@link Semantics#INTERACTION}
+     * @return returns an existing CyEdge if present, or creates one if
+     *         <code>create</code> is true and attribute is
+     *         Semantics.INTERACTION, otherwise returns null.
+     */
 	public static CyEdge getCyEdge(Node node_1, Node node_2, String attribute,
 			Object attribute_value, boolean create) {
-
-		// System.out.println( "node_1: "+node_1.getRootGraphIndex()+" node_2:
-		// "+node_2.getRootGraphIndex()+" attribute: "+attribute+"
-		// attribute_value: "+attribute_value+" create: "+create );
-
 		if (Cytoscape.getRootGraph().getEdgeCount() != 0) {
 			int[] n1Edges = Cytoscape.getRootGraph()
 					.getAdjacentEdgeIndicesArray(node_1.getRootGraphIndex(),
@@ -390,34 +380,25 @@ public abstract class Cytoscape {
 			}// for i
 		}
 
-		if (!create)
-			return null;
-
-		if (attribute.equals(Semantics.INTERACTION)) {
-			// System.out.println( "Creating edge!!!!" );
-
-			// create the edge
-			CyEdge edge = (CyEdge) Cytoscape.getRootGraph().getEdge(
+		if (create && attribute instanceof String && attribute.equals
+                (Semantics.INTERACTION)) {
+		    // create the edge
+            CyEdge edge = (CyEdge) Cytoscape.getRootGraph().getEdge(
 					Cytoscape.getRootGraph().createEdge(node_1, node_2));
 
-			// System.out.println( "Edge Created: "+edge );
-
+            //  create the edge id
 			String edge_name = node_1.getIdentifier() + " (" + attribute_value
 					+ ") " + node_2.getIdentifier();
-                        final CyAttributes edgeAttrs = Cytoscape.getEdgeAttributes();
-                        if (attribute_value instanceof Boolean) {
-                          edgeAttrs.setAttribute(Semantics.INTERACTION, edge_name, (Boolean) attribute_value); }
-                        else if (attribute_value instanceof Integer) {
-                          edgeAttrs.setAttribute(Semantics.INTERACTION, edge_name, (Integer) attribute_value); }
-                        else if (attribute_value instanceof Double) {
-                          edgeAttrs.setAttribute(Semantics.INTERACTION, edge_name, (Double) attribute_value); }
-                        else if (attribute_value instanceof String) {
-                          edgeAttrs.setAttribute(Semantics.INTERACTION, edge_name, (String) attribute_value); }
-                        edgeAttrs.setAttribute(edge_name, Semantics.CANONICAL_NAME, edge_name);
+            edge.setIdentifier(edge_name);
+
+            //  store edge id as INTERACTION / CANONICAL_NAME Attributes
+            edgeAttributes.setAttribute(edge_name, Semantics.INTERACTION,
+                    (String) attribute_value);
+            edgeAttributes.setAttribute(edge_name, Semantics.CANONICAL_NAME,
+                    edge_name);
 			return edge;
 		}
 		return null;
-
 	}
 
 	/**
