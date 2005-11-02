@@ -479,7 +479,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
     public Integer getNumAllInteractions(String species) {
         String tableName = getTableName(species);
         if(tableName == null) return new Integer(0);
-        String sql = "SELECT COUNT (*) FROM " + tableName;
+        String sql = "SELECT COUNT(*) FROM " + tableName;
         ResultSet rs = query(sql);
         // Prolinks contains a->b, b->a for the same edge
         return new Integer(SQLUtils.getInt(rs)/2);
@@ -618,7 +618,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
         
         String orStatement = getOrStatementA(interactors);
         if(orStatement.length() == 0) return new Integer(0);
-        String sql = "SELECT COUNT (DISTINCT gene_id_b) FROM " + tableName + " WHERE " + orStatement;
+        String sql = "SELECT COUNT(DISTINCT gene_id_b) FROM " + tableName + " WHERE " + orStatement;
         ResultSet rs = query(sql);
         return new Integer(SQLUtils.getInt(rs));
 	}
@@ -691,7 +691,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
         if(orStatement.length() == 0) return EMPTY_VECTOR;
         
         String sql;
-        Set interactions = new HashSet();
+        Set neighbors = new HashSet();
         
         if(pval >= 1){
             
@@ -705,7 +705,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
                     if(tableName == null) continue;
                     sql = "SELECT DISTINCT gene_id_b FROM " + tableName + " WHERE " + orStatement;
                     ResultSet rs = query(sql);
-                    interactions.addAll(makeInteractionsVector(rs, method));
+                    neighbors.addAll(makeInteractorsVector(rs));
                 }//while it.hasNext
             }
         }else{
@@ -718,11 +718,11 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
                 if(tableName == null) continue;
                 sql = "SELECT DISTINCT gene_id_b FROM " + tableName + " WHERE p <= " + pval + " AND (" + orStatement + ")";
                 ResultSet rs = query(sql);
-                interactions.addAll(makeInteractionsVector(rs, method));
+                neighbors.addAll(makeInteractorsVector(rs));
             }//while
         }// pval <= 1
         
-        return new Vector(interactions);
+        return new Vector(neighbors);
 	}
     
     /**
@@ -776,7 +776,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
                     String method = (String)it.next();
                     String tableName = getTableNameForMethod(species, method, pval);
                     if(tableName == null) continue;
-                    sql = "SELECT COUNT (DISTINCT gene_id_b) FROM " + tableName + " WHERE " + orStatement;
+                    sql = "SELECT COUNT(DISTINCT gene_id_b) FROM " + tableName + " WHERE " + orStatement;
                     ResultSet rs = query(sql);
                     num += SQLUtils.getInt(rs);
                 }//while it.hasNext
@@ -789,7 +789,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
                 String method = (String)it.next();
                 String tableName = getTableNameForMethod(species, method, pval);
                 if(tableName == null) continue;
-                sql = "SELECT COUNT (DISTINCT gene_id_b) FROM " + tableName + " WHERE p <= " + pval + " AND (" + orStatement + ")";
+                sql = "SELECT COUNT(DISTINCT gene_id_b) FROM " + tableName + " WHERE p <= " + pval + " AND (" + orStatement + ")";
                 ResultSet rs = query(sql);
                 num += SQLUtils.getInt(rs);
             }//while

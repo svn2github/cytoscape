@@ -125,7 +125,10 @@ public class SQLSynonymsHandler extends SQLDBHandler implements SynonymsSource {
         try{
             Hashtable pToG = new Hashtable();
             while(rs.next()){
-                pToG.put(PROLINKS_ID + ":" + rs.getString(1), GI_ID + ":" + rs.getString(2));
+                String p = rs.getString(1);
+                String gi = rs.getString(2);
+                if(!gi.equals("0"))
+                    pToG.put(PROLINKS_ID + ":" + rs.getString(1), GI_ID + ":" + rs.getString(2));
             }
             return pToG;
         }catch(SQLException e){

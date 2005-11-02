@@ -51,7 +51,7 @@ public class NodeSourcesPanel extends JPanel {
     
     /**
      * 
-     * @return a Vector of gene ids from the selected sources
+     * @return a Vector of gene ids from the user selected sources
      */
     public Vector getAllNodes (){
         Vector myListNodes = getNodesFromMyList();

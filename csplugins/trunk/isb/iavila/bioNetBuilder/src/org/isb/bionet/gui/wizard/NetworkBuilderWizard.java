@@ -20,6 +20,9 @@ import cytoscape.*;
  */
 public class NetworkBuilderWizard {
     
+    protected static final int X_SIZE = 400;
+    protected static final int Y_SIZE = 425;
+    
     // Clients
     protected SynonymsClient synonymsClient;
     protected InteractionDataClient interactionsClient;
@@ -141,7 +144,7 @@ public class NetworkBuilderWizard {
         
         JDialog dialog = new JDialog(Cytoscape.getDesktop());
         dialog.setTitle("BioNetwork Builder");
-        dialog.setSize(400, 400);
+        dialog.setSize(X_SIZE, Y_SIZE);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         
         JPanel panel = new JPanel();
@@ -289,18 +292,10 @@ public class NetworkBuilderWizard {
         next = new AbstractAction (){
             
             public void actionPerformed (ActionEvent event){
-               // if()
                 Vector nodes = nodeSourcesPanel.getAllNodes();
                
                 if(edgeSourcesPanel != null){
                     edgeSourcesPanel.setNodes(nodes);
-                    if(nodes.size() > 0){
-                        edgeSourcesPanel.setEdgeMethod(InteractionsDataSource.CONNECTING_EDGES);
-                    }else{
-                        edgeSourcesPanel.setEdgeMethod(InteractionsDataSource.ALL_EDGES);
-                    }
-                    // This takes too long, so there is a "Calculate number of edges" button instead
-                    //edgeSourcesPanel.estimateNumEdges();
                 }// edgeSourcesPanel != null
                 
                 if(onLastStep){
@@ -351,7 +346,24 @@ public class NetworkBuilderWizard {
         if(this.onLastStep){
             next =  FINISH_ACTION;
         }else{
-            next = DEFAULT_NEXT_ACTION;
+            next = 
+                    new AbstractAction (){
+                    
+                        public void actionPerformed (ActionEvent e){
+                            
+                            if( !NetworkBuilderWizard.this.edgeSourcesPanel.isFirstNeighborsSelected() &&
+                                 !NetworkBuilderWizard.this.edgeSourcesPanel.isConnectingEdgesSelected() ){
+                                JOptionPane.showMessageDialog(NetworkBuilderWizard.this.edgeSourcesPanel,
+                                        "Please select a method for adding edges.", 
+                                        "BioNetBuilder Message", JOptionPane.ERROR_MESSAGE);
+                            }else{
+                                DEFAULT_NEXT_ACTION.actionPerformed(e);
+                            }
+                            
+                        }//actionPerformed
+                
+                    }; 
+                
         }
         
         JDialog dialog = createWizardDialog(back, next);
@@ -359,7 +371,7 @@ public class NetworkBuilderWizard {
         JPanel explanation = createExplanationPanel(
                 "<html><br>The edge sources that you selected when specifying species<br>"+
                 "are available here.<br>"+
-                "You can set their parameters by pressing on their corresponding<br>buttons.<br></htlm>"
+                "You can set their parameters by pressing on their<br>corresponding buttons.<br></htlm>"
         ); 
         
         dialog.getContentPane().add(explanation,BorderLayout.NORTH);
@@ -372,18 +384,12 @@ public class NetworkBuilderWizard {
            sourcesToSpecies = new Hashtable();
         }
         
-        Vector nodes = null;
-        int method;
+        Vector nodes = new Vector();
         if(this.nodeSourcesPanel != null){
-            nodes = this.nodeSourcesPanel.getAllNodes();
-            method = InteractionsDataSource.CONNECTING_EDGES;
-        }else{
-            method = InteractionsDataSource.ALL_EDGES;
+            nodes = this.nodeSourcesPanel.getAllNodes();  
         }
         
-        this.edgeSourcesPanel = 
-            new EdgeSourcesPanel(this.interactionsClient, this.synonymsClient, 
-                    sourcesToSpecies, nodes, method);
+        this.edgeSourcesPanel = new EdgeSourcesPanel(this.interactionsClient, this.synonymsClient, sourcesToSpecies, nodes);
         
         JPanel bigPanel = new JPanel();
         bigPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -455,6 +461,8 @@ public class NetworkBuilderWizard {
         // 3. Get the edge data source parameter settings
         Map sourceToSettings = this.edgeSourcesPanel.getSourcesDialogs();
         Iterator it = sourceToSettings.keySet().iterator();
+        boolean firstNeighbors = this.edgeSourcesPanel.isFirstNeighborsSelected();
+        boolean connectingEdges = this.edgeSourcesPanel.isConnectingEdgesSelected();
         
         // 4. Get the network name
         String netName = this.networkPanel.getNetworkName();
@@ -469,11 +477,9 @@ public class NetworkBuilderWizard {
             List sourceSpecies = (List)sourceToSpecies.get(sourceClass);
             if(sourceSpecies == null || sourceSpecies.size() == 0) continue;
             
-            
             String species = (String)sourceSpecies.get(0);
             String sourceName = (String)sourceToNames.get(sourceClass);
             
-      
             Hashtable args = new Hashtable();
             if(sourceName.equals(ProlinksInteractionsSource.NAME)){
                 
@@ -501,17 +507,41 @@ public class NetworkBuilderWizard {
             Vector sourceInteractions = null;
             try{
                 if(startingNodes == null || startingNodes.size() == 0){
+                    
                     if(args.size() > 0){
                         sourceInteractions = (Vector)this.interactionsClient.getAllInteractions(species, args);
                     }else{
                         sourceInteractions = (Vector)this.interactionsClient.getAllInteractions(species);
                     }
+                
                 }else{
-                    if(args.size() > 0){
-                        sourceInteractions = (Vector)this.interactionsClient.getConnectingInteractions(startingNodes, species, args);
-                    }else{
-                        sourceInteractions = (Vector)this.interactionsClient.getConnectingInteractions(startingNodes, species);
+                    
+                    Vector adjacentNodes = null;
+                    
+                    if(firstNeighbors){ 
+                            if(args.size() > 0)
+                                adjacentNodes = this.interactionsClient.getFirstNeighbors(startingNodes,species, args);
+                            else
+                                adjacentNodes = this.interactionsClient.getFirstNeighbors(startingNodes,species);
+                            
+                            System.err.println("Num first neighbors = " + adjacentNodes.size());
                     }
+                   
+                    // If only firstNeighbors is selected, and we have startingNodes, then we want to find the edges connecting
+                    // the nodes in first neighbors and staring nodes.
+                    // If connectingEdges is selected as well, then we want the same thing but only for nodes in staring nodes
+                    
+                    
+                    Vector nodesToConnect = startingNodes;
+                    if(adjacentNodes != null)
+                        nodesToConnect.addAll(adjacentNodes);
+                        
+                    if(args.size() > 0){
+                        sourceInteractions = (Vector)this.interactionsClient.getConnectingInteractions(nodesToConnect, species, args);
+                    }else{
+                        sourceInteractions = (Vector)this.interactionsClient.getConnectingInteractions(nodesToConnect, species);
+                    }
+                    
                 }
                 interactions.addAll(sourceInteractions);
             }catch (Exception ex){
