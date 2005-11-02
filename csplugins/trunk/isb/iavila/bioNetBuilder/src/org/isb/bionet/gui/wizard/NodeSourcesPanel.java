@@ -21,6 +21,7 @@ import org.isb.iavila.ontology.xmlrpc.*;
 
 import utils.MyUtils;
 import cytoscape.*;
+import cytoscape.view.*;
 import cytoscape.data.Semantics;
 
 public class NodeSourcesPanel extends JPanel {
@@ -34,6 +35,7 @@ public class NodeSourcesPanel extends JPanel {
     protected JCheckBox useAnnotations;
     protected JCheckBox useList;
     protected JCheckBox useNets;
+    protected JCheckBox useSelectedNodes;
     
     /**
      *  Creates a panel with node sources
@@ -63,15 +65,29 @@ public class NodeSourcesPanel extends JPanel {
             startingNodes.addAll(myListNodes);
         }
         if(nodeNets != null && useNets.isSelected()){
-            for(int i = 0; i < nodeNets.length; i++){
-                Iterator it = nodeNets[i].nodesIterator();
-                while(it.hasNext()){
-                    CyNode node = (CyNode)it.next();
-                    String nodeName = (String)Cytoscape.getNodeAttributeValue(node, Semantics.CANONICAL_NAME);
-                    if(!startingNodes.contains(nodeName))
-                        startingNodes.add(nodeName);
-                }//while it
-            }//for i
+            if(!this.useSelectedNodes.isSelected()){
+                for(int i = 0; i < nodeNets.length; i++){
+                    Iterator it = nodeNets[i].nodesIterator();
+                    while(it.hasNext()){
+                        CyNode node = (CyNode)it.next();
+                        String nodeName = Cytoscape.getNodeAttributes().getStringAttribute(node.getIdentifier(), Semantics.CANONICAL_NAME);
+                        if(!startingNodes.contains(nodeName))
+                            startingNodes.add(nodeName);
+                    }//while it
+                }//for i
+            }else{
+                //get the selected nodes
+                for(int i = 0; i < nodeNets.length; i++){
+                    Iterator it = nodeNets[i].getFlaggedNodes().iterator();
+                    while(it.hasNext()){
+                        CyNode node = (CyNode)it.next();
+                        String nodeName = Cytoscape.getNodeAttributes().getStringAttribute(node.getIdentifier(), Semantics.CANONICAL_NAME);
+                        if(!startingNodes.contains(nodeName))
+                            startingNodes.add(nodeName);
+                    }//while it
+                }//for i
+            
+            }
         }// if nodeNets != null
         if(this.useAnnotations.isSelected()){
             for(int i = 0; i < this.annotationNodeIDs.length; i++){
@@ -256,6 +272,7 @@ public class NodeSourcesPanel extends JPanel {
                     public void actionPerformed(ActionEvent event){
                         JCheckBox source = (JCheckBox)event.getSource();
                         netsButton.setEnabled(source.isSelected());
+                        useSelectedNodes.setEnabled(useNets.isSelected());
                     }
                 }
         );
@@ -274,6 +291,36 @@ public class NodeSourcesPanel extends JPanel {
         this.netsNodes.setText("0");
         gridbag.setConstraints(this.netsNodes, c);
         this.add(this.netsNodes);
+        
+        this.useSelectedNodes = new JCheckBox("Use selected nodes in networks");
+        if(this.useNets.isSelected())
+            this.useSelectedNodes.setEnabled(true);
+        else
+            this.useSelectedNodes.setEnabled(false);
+        this.useSelectedNodes.addActionListener(
+                
+                new AbstractAction(){
+                    
+                    public void actionPerformed (ActionEvent e){
+                        int numNodes = 0;
+                        if(useSelectedNodes.isSelected()){
+                            CyNetwork [] nets = netsDialog.getSelectedNetworks();
+                            for(int i = 0; i < nets.length; i++){
+                                numNodes += nets[i].getFlaggedNodes().size();
+                            }//for i
+                        }else{
+                            CyNetwork [] nets = netsDialog.getSelectedNetworks();
+                            for(int i = 0; i < nets.length; i++){
+                                numNodes += nets[i].getNodeCount();
+                            }//for i
+                        }
+                        netsNodes.setText(Integer.toString(numNodes));
+                    }
+            
+                });
+        
+        gridbag.setConstraints(this.useSelectedNodes,c);
+        this.add(this.useSelectedNodes);
         
 //        JButton numNodes = new JButton("Calculate number of nodes");
 //        numNodes.addActionListener(
