@@ -658,9 +658,9 @@ public class GMLReader2 implements GraphReader {
 
 		giny_edges = new IntArrayList(sources.size());
 		Set edgeNameSet = new HashSet(sources.size());
-		
+
 		CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
-		
+
 		RootGraph rootGraph = Cytoscape.getRootGraph();
 
 		// Add All Edges to Network
@@ -690,8 +690,9 @@ public class GMLReader2 implements GraphReader {
 
 				// String tempstr = "E name is :" + idx + "==" + edgeName;
 				edge_names.add(idx, edgeName);
+				
+				Edge edge = Cytoscape.getRootGraph().getEdge(edgeName);
 
-                                Edge edge = Cytoscape.getRootGraph().getEdge(edgeName);
 				if (edge == null) {
 					Node node_1 = Cytoscape.getCyNode(sourceName);
 					Node node_2 = Cytoscape.getCyNode(targetName);
@@ -699,10 +700,18 @@ public class GMLReader2 implements GraphReader {
 					// (rootGraph.createEdge(node_1, node_2));
 					edge = Cytoscape.getCyEdge(node_1, node_2,
 							Semantics.INTERACTION, label, true);
+
+					//					
 					// edgeAttributes.set(Semantics.INTERACTION, edgeName,
 					// label);
 					// edgeAttributes.addNameMapping(edgeName, edge);
 				}
+
+				// Put correct ID and interaction name
+				edge.setIdentifier(edgeName);
+				edgeAttributes.setAttribute(edgeName, Semantics.INTERACTION, label);
+				
+				
 				giny_edges.add(edge.getRootGraphIndex());
 				((KeyValue) edge_root_index_pairs.get(idx)).value = (new Integer(
 						edge.getRootGraphIndex()));
@@ -899,7 +908,7 @@ public class GMLReader2 implements GraphReader {
 		Integer root_index = null;
 		List graphics_list = null;
 		String label = null;
-		
+
 		int tempid = 0;
 
 		for (Iterator it = list.iterator(); it.hasNext();) {
@@ -913,7 +922,7 @@ public class GMLReader2 implements GraphReader {
 				graphics_list = (List) keyVal.value;
 			} else if (keyVal.key.equals(LABEL)) {
 				label = (String) keyVal.value;
-				
+
 			} else if (keyVal.key.equals(ID)) {
 				tempid = ((Integer) keyVal.value).intValue();
 			}
@@ -923,7 +932,7 @@ public class GMLReader2 implements GraphReader {
 				label = "node" + tempid;
 				System.out
 						.println("Warning: node label is missing for node ID: "
-								+ tempid );
+								+ tempid);
 			}
 			extractNodeAttributes(graphics_list, label.toUpperCase());
 		}
@@ -985,8 +994,7 @@ public class GMLReader2 implements GraphReader {
 		List graphics_list = null;
 		String label = null;
 		int tempid = 0;
-		
-		
+
 		NodeView view = null;
 		for (Iterator it = list.iterator(); it.hasNext();) {
 			KeyValue keyVal = (KeyValue) it.next();
@@ -1008,13 +1016,13 @@ public class GMLReader2 implements GraphReader {
 			}
 		}
 
-		//System.out.print( "In layout, Root index is: " + root_index );
-		//System.out.print( "    Checking label: " + label );
+		// System.out.print( "In layout, Root index is: " + root_index );
+		// System.out.print( " Checking label: " + label );
 		view = myView.getNodeView(root_index.intValue());
 		if (label != null) {
 			view.getLabel().setText(label);
 		} else {
-			view.getLabel().setText( "node(" + tempid + ")" );
+			view.getLabel().setText("node(" + tempid + ")");
 		}
 		if (graphics_list != null) {
 			layoutNodeGraphics(myView, graphics_list, view);
