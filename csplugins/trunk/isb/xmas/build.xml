@@ -45,21 +45,12 @@
     <echo message=""/>
     <echo message=" Available targets are:"/>
     <echo message="   all        -> creates all the jars"/>
-    <echo message="   sbw        -> Compile the SBW plugin"/>
     <echo message="   control    -> Compile the Control plugin"/>
-    <echo message="   datamap    -> Compile the DataPropertyMap plugin"/>
     <echo message="   filter     -> Compile the Filter plugin"/>
-    <echo message="   integration-> Compile the Integration Test plugin"/>
-    <echo message="   metaviz    -> Compile the MetaNode Viz plugin"/>
-    <echo message="   weka       -> Compile the WEKA plugin"/>
-    <echo message="   tests      -> creates the *-test jar files"/>
-    <echo message="   runtests   -> runs the test cases in the *-test jar"/>
-    <echo message="                 files"/>
-    <echo message="   fix        -> changes the file types to be "/>
-    <echo message="                 consistent with the OS"/>
-    <echo message="   docs       -> generates the javadoc documentation"/>
-    <echo message="                 in ./doc/api"/>
-    <echo message="   clean      -> restores the giny project to its"/>
+    <echo message="   rowan     -> Compile the Rowan plugin"/>
+    <echo message="   browser     -> Compile the Browser plugin"/>
+    <echo message="   loader     -> Compile the Loader plugin"/>
+    <echo message="   clean      -> restores the project to its"/>
     <echo message="                 original and clean state"/>
     <echo message="   usage      -> (default) displays this screen"/>
     <echo message="--------------------------------------------------"/>
@@ -67,28 +58,71 @@
     <echo message="--------------------------------------------------"/>
   </target>
 
+
   <!-- =================================================================== -->
-  <!-- Create the datamap/datamap.jar file                                 -->
+  <!-- Create the rowan/rowan.jar file                                   -->
   <!-- =================================================================== -->
-  <target name="datamap" depends="init">
-    <ant dir="datamap" target="datamap"/>
-    <copy todir="./lib" file="datamap/datamap.jar"/>
+  <target name="rowan" depends="init">
+    <ant dir="rowan" target="rowan"/>
+    <copy todir="${shared.lib.dir}" file="rowan/rowan.jar"/>
   </target>
 
   <!-- =================================================================== -->
-  <!-- Create the API documentation for datamap                            -->
+  <!-- Clean the rowan directory                                          -->
   <!-- =================================================================== -->
-  <target name="docs-datamap" depends="init">
-    <ant dir="datamap" target="docs"/>
+  <target name="clean-rowan" depends="init">
+    <ant dir="rowan" target="clean"/>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- Create the browser/browser.jar file                                   -->
+  <!-- =================================================================== -->
+  <target name="browser" depends="exesto">
+    <ant dir="browser" target="browser"/>
+    <copy todir="${shared.lib.dir}" file="browser/browser.jar"/>
   </target>
 
   <!-- =================================================================== -->
-  <!-- Clean the datamap directory                                         -->
+  <!-- Clean the browser directory                                          -->
   <!-- =================================================================== -->
-  <target name="clean-datamap" depends="init">
-    <ant dir="datamap" target="clean"/>
+  <target name="clean-browser" depends="init">
+    <ant dir="browser" target="clean"/>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- Create the loader/loader.jar file                                   -->
+  <!-- =================================================================== -->
+  <target name="loader" depends="exesto">
+    <ant dir="loader" target="loader"/>
+    <copy todir="${shared.lib.dir}" file="loader/loader.jar"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Clean the loader directory                                          -->
+  <!-- =================================================================== -->
+  <target name="clean-loader" depends="init">
+    <ant dir="loader" target="clean"/>
   </target>
   
+
+  <!-- =================================================================== -->
+  <!-- Create the exesto/exesto.jar file                                   -->
+  <!-- =================================================================== -->
+  <target name="exesto" depends="init">
+    <ant dir="exesto" target="exesto"/>
+    <copy todir="${shared.lib.dir}" file="exesto/exesto.jar"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Clean the exesto directory                                          -->
+  <!-- =================================================================== -->
+  <target name="clean-exesto" depends="init">
+    <ant dir="exesto" target="clean"/>
+  </target>
+
+
   <!-- =================================================================== -->
   <!-- Create the filter/filter.jar file                                   -->
   <!-- =================================================================== -->
@@ -97,19 +131,7 @@
     <copy todir="${shared.lib.dir}" file="filter/filter.jar"/>
   </target>
 
-  <!-- =================================================================== -->
-  <!-- Create and run the tests for filter                                 -->
-  <!-- =================================================================== -->
-  <target name="runtests-filter" depends="filter">
-    <ant dir="filter" target="runtests"/>
-  </target>
-
-  <!-- =================================================================== -->
-  <!-- Create the API documentation for filter                             -->
-  <!-- =================================================================== -->
-  <target name="docs-filter" depends="init">
-    <ant dir="filter" target="docs"/>
-  </target>
+  
 
   <!-- =================================================================== -->
   <!-- Clean the filter directory                                          -->
@@ -120,203 +142,9 @@
 
 
   <!-- =================================================================== -->
-  <!-- Create the integration/integration.jar file                         -->
-  <!-- =================================================================== -->
-  <target name="integration" depends="init">
-    <ant dir="integration" target="integration"/>
-    <copy todir="${shared.lib.dir}" file="integration/integration.jar"/>
-  </target>
-
-  <!-- =================================================================== -->
-  <!-- Create the API documentation for integration                        -->
-  <!-- =================================================================== -->
-  <target name="docs-integration" depends="init">
-    <ant dir="integration" target="docs"/>
-  </target>
-
-  <!-- =================================================================== -->
-  <!-- Clean the integration directory                                     -->
-  <!-- =================================================================== -->
-  <target name="clean-integration" depends="init">
-    <ant dir="integration" target="clean"/>
-  </target>
-
-  <!-- =================================================================== -->
-  <!-- Create the metaviz/metaviz.jar file                                   -->
-  <!-- =================================================================== -->
-  <target name="metaviz" depends="init">
-    <ant dir="metaviz" target="metaviz"/>
-    <copy todir="${shared.lib.dir}" file="metaviz/metaviz.jar"/>
-  </target>
-
-  <!-- =================================================================== -->
-  <!-- Create the API documentation for metaviz                             -->
-  <!-- =================================================================== -->
-  <target name="docs-metaviz" depends="init">
-    <ant dir="metaviz" target="docs"/>
-  </target>
-
-  <!-- =================================================================== -->
-  <!-- Clean the metaviz directory                                          -->
-  <!-- =================================================================== -->
-  <target name="clean-metaviz" depends="init">
-    <ant dir="metaviz" target="clean"/>
-  </target>
-
-  <!-- =================================================================== -->
-  <!-- Create and run the tests for metaviz                                 -->
-  <!-- =================================================================== -->
-  <target name="runtests-metaviz" depends="metaviz">
-    <ant dir="metaviz" target="runtests"/>
-  </target>
-
-  <!-- =================================================================== -->
-  <!-- Create the weka/weka.jar file                                       -->
-  <!-- =================================================================== -->
-  <target name="weka" depends="init">
-    <ant dir="weka" target="weka"/>
-    <copy todir="${shared.lib.dir}" file="weka/weka.jar"/>
-  </target>
-
-  <!-- =================================================================== -->
-  <!-- Create the API documentation for weka                               -->
-  <!-- =================================================================== -->
-  <target name="docs-weka" depends="init">
-    <ant dir="weka" target="docs"/>
-  </target>
-
-  <!-- =================================================================== -->
-  <!-- Clean the weka directory                                            -->
-  <!-- =================================================================== -->
-  <target name="clean-weka" depends="init">
-    <ant dir="weka" target="clean"/>
-  </target>
-
-   <!-- =================================================================== -->
-  <!-- Create the yfiles/yfiles.jar file                                       -->
-  <!-- =================================================================== -->
-  <target name="yfiles" depends="init">
-    <ant dir="yfiles" target="yfiles"/>
-    <copy todir="${shared.lib.dir}" file="yfiles/yfiles.jar"/>
-  </target>
-
-  <!-- =================================================================== -->
-  <!-- Create the API documentation for yfiles                               -->
-  <!-- =================================================================== -->
-  <target name="docs-yfiles" depends="init">
-    <ant dir="yfiles" target="docs"/>
-  </target>
-
-  <!-- =================================================================== -->
-  <!-- Clean the yfiles directory                                            -->
-  <!-- =================================================================== -->
-  <target name="clean-yfiles" depends="init">
-    <ant dir="yfiles" target="clean"/>
-  </target>
-
-   <!-- =================================================================== -->
-  <!-- Create thew sbw/sbw.jar file                                       -->
-  <!-- =================================================================== -->
-  <target name="sbw" depends="init">
-    <ant dir="sbw" target="sbw"/>
-    <copy todir="${shared.lib.dir}" file="sbw/sbw.jar"/>
-  </target>
-
-  <!-- =================================================================== -->
-  <!-- Create the API documentation for sbw                               -->
-  <!-- =================================================================== -->
-  <target name="docs-sbw" depends="init">
-    <ant dir="sbw" target="docs"/>
-  </target>
-
-  <!-- =================================================================== -->
-  <!-- Clean the sbw directory                                            -->
-  <!-- =================================================================== -->
-  <target name="clean-sbw" depends="init">
-    <ant dir="sbw" target="clean"/>
-  </target>
-
-
-  <!-- =================================================================== -->
-  <!-- Create the control/control.jar file                                       -->
-  <!-- =================================================================== -->
-  <target name="control" depends="init">
-    <ant dir="control" target="control"/>
-    <copy todir="${shared.lib.dir}" file="control/control.jar"/>
-  </target>
-
-  <!-- =================================================================== -->
-  <!-- Create the API documentation for control                               -->
-  <!-- =================================================================== -->
-  <target name="docs-control" depends="init">
-    <ant dir="control" target="docs"/>
-  </target>
-
-  <!-- =================================================================== -->
-  <!-- Clean the control directory                                            -->
-  <!-- =================================================================== -->
-  <target name="clean-control" depends="init">
-    <ant dir="control" target="clean"/>
-  </target>
-
-  <!-- =================================================================== -->
-  <!-- Create the metabolic/metabolic.jar file                                       -->
-  <!-- =================================================================== -->
-  <target name="metabolic" depends="init">
-    <ant dir="metabolic" target="metabolic"/>
-    <copy todir="${shared.lib.dir}" file="metabolic/metabolic.jar"/>
-  </target>
-
-  <!-- =================================================================== -->
-  <!-- Create the API documentation for metabolic                               -->
-  <!-- =================================================================== -->
-  <target name="docs-metabolic" depends="init">
-    <ant dir="metabolic" target="docs"/>
-  </target>
-
-  <!-- =================================================================== -->
-  <!-- Clean the metabolic directory                                            -->
-  <!-- =================================================================== -->
-  <target name="clean-metabolic" depends="init">
-    <ant dir="metabolic" target="clean"/>
-  </target>
-
-  <!-- =================================================================== -->
-  <!-- Create the sbml/sbml.jar file                                       -->
-  <!-- =================================================================== -->
-  <target name="sbml" depends="metabolic">
-    <ant dir="sbml" target="sbml"/>
-    <copy todir="${shared.lib.dir}" file="sbml/sbml.jar"/>
-  </target>
-
-  <!-- =================================================================== -->
-  <!-- Create the API documentation for sbml                               -->
-  <!-- =================================================================== -->
-  <target name="docs-sbml" depends="init">
-    <ant dir="sbml" target="docs"/>
-  </target>
-
-  <!-- =================================================================== -->
-  <!-- Clean the sbml directory                                            -->
-  <!-- =================================================================== -->
-  <target name="clean-sbml" depends="init">
-    <ant dir="sbml" target="clean"/>
-  </target>
-
-  <!-- =================================================================== -->
-  <!-- Build all jars                                                      -->
-  <!-- =================================================================== -->
-  <target name="all" depends="filter, control, metabolic, sbml"/>
-
-  <!-- =================================================================== -->
-  <!-- Create all API documentation                                        -->
-  <!-- =================================================================== -->
-  <target name="docs" depends="docs-datamap, docs-integration, docs-filter, docs-metaviz, docs-weka"/>
-
-  <!-- =================================================================== -->
   <!-- Clean up, get back to original state                                -->
   <!-- =================================================================== -->
-  <target name="clean" depends="clean-yfiles, clean-filter, clean-sbw, clean-control"/>
+  <target name="clean" depends="clean-browser, clean-filter, clean-rowan, clean-exesto,clean-loader"/>
 
 </project>
 

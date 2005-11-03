@@ -34,8 +34,8 @@ public class SBMLParser {
   };
 
   CyNetwork network;
-  CytoscapeData nodeData = Cytoscape.getNodeNetworkData();
-  CytoscapeData edgeData = Cytoscape.getEdgeNetworkData();
+  CyAttributes nodeData = Cytoscape.getNodeAttributes();
+  CyAttributes edgeData = Cytoscape.getEdgeAttributes();
 
 
   public SBMLParser () {
@@ -143,13 +143,16 @@ public class SBMLParser {
       cynode = Cytoscape.getCyNode( (String)elements.get( "id" ), true );
       network.restoreNode( cynode );
 
-      nodeData.setAttributeValue( cynode.getIdentifier(), "InSBML", "true" );
-      nodeData.setAttributeValue( cynode.getIdentifier(), "SBML_type", "reaction" );
+      nodeData.setAttribute( cynode.getIdentifier(), "InSBML", "true" );
+      nodeData.setAttribute( cynode.getIdentifier(), "SBML_type", "reaction" );
 
       Iterator atts = elements.keySet().iterator();
       while ( atts.hasNext() ) {
         String attribute = (String)atts.next();
-        nodeData.setAttributeValue( cynode.getIdentifier(), attribute, elements.get(attribute) );
+        insertValue( nodeData,    
+                     cynode.getIdentifier(),
+                     attribute,
+                     elements.get(attribute) );
       }
     } else {
       return;
@@ -170,6 +173,7 @@ public class SBMLParser {
              CyNode inode = Cytoscape.getCyNode( ichild );
              CyEdge edge =Cytoscape.getCyEdge( inode, cynode, Semantics.INTERACTION, "reactant-reaction", true );
              network.restoreEdge( edge );
+             edgeData.setAttribute( edge.getIdentifier(), "InSBML", "true" );
            }
          }
       }
@@ -183,6 +187,7 @@ public class SBMLParser {
              CyNode inode = Cytoscape.getCyNode( ichild );
              CyEdge edge = Cytoscape.getCyEdge( cynode, inode, Semantics.INTERACTION, "reaction-product", true );
              network.restoreEdge( edge ); 
+             edgeData.setAttribute( edge.getIdentifier(), "InSBML", "true" );
            }
          }
       }
@@ -196,6 +201,7 @@ public class SBMLParser {
              CyNode inode = Cytoscape.getCyNode( ichild );
              CyEdge edge = Cytoscape.getCyEdge( inode, cynode, Semantics.INTERACTION, "modifier-reaction", true );
              network.restoreEdge( edge );
+             edgeData.setAttribute( edge.getIdentifier(), "InSBML", "true" );
            }
          }
       }
@@ -261,13 +267,13 @@ public class SBMLParser {
        
        cynode = Cytoscape.getCyNode( (String)elements.get( "id" ), true );
        
-       nodeData.setAttributeValue( cynode.getIdentifier(), "InSBML", "true" );
+       nodeData.setAttribute( cynode.getIdentifier(), "InSBML", "true" );
        if ( gene ) {
-         nodeData.setAttributeValue( cynode.getIdentifier(), "SBML_type", "gene" );
-         nodeData.setAttributeValue( cynode.getIdentifier(), "SBMLName", elements.get( "id") );
+         nodeData.setAttribute( cynode.getIdentifier(), "SBML_type", "gene" );
+         nodeData.setAttribute( cynode.getIdentifier(), "SBMLName", (String)elements.get( "id") );
        } else {
-         nodeData.setAttributeValue( cynode.getIdentifier(), "SBMLName", elements.get( "name") );
-         nodeData.setAttributeValue( cynode.getIdentifier(), "SBML_type", "metabolite" );
+         nodeData.setAttribute( cynode.getIdentifier(), "SBMLName", (String)elements.get( "name") );
+         nodeData.setAttribute( cynode.getIdentifier(), "SBML_type", "metabolite" );
        }
        
        // add node to network
@@ -276,7 +282,10 @@ public class SBMLParser {
        Iterator atts = elements.keySet().iterator();
        while ( atts.hasNext() ) {
          String attribute = (String)atts.next();
-         nodeData.setAttributeValue( cynode.getIdentifier(), attribute, elements.get(attribute) );
+         insertValue( nodeData, 
+                      cynode.getIdentifier(),
+                      attribute,
+                      elements.get(attribute)  );
        }
          
 
@@ -284,6 +293,41 @@ public class SBMLParser {
   }
 
 
+  private void insertValue ( CyAttributes data, String id, String attribute, Object value ) {
+    byte type = data.getType( attribute );
+    if ( type == CyAttributes.TYPE_UNDEFINED ) {
+      type = guessObjectType( value );
+    }
     
+    if ( type == CyAttributes.TYPE_FLOATING ) {
+      data.setAttribute( id, attribute, new Double(value.toString() ) );
+    } else if ( type == CyAttributes.TYPE_BOOLEAN ) {
+      data.setAttribute( id, attribute, new Boolean(value.toString() ) );
+    } else if ( type == CyAttributes.TYPE_INTEGER ) {
+      data.setAttribute( id, attribute, new Integer(value.toString() ) );
+    } else {
+      data.setAttribute( id, attribute, value.toString() );
+    }
+  }
+
+  
+  private byte guessObjectType ( Object value ) {
+   
+      Object attribute;
+      // Test for Double
+      try { 
+        attribute = new Double( value.toString() );
+        return CyAttributes.TYPE_FLOATING;
+      } catch ( Exception e ) {}
+      
+      // Test for Boolean
+      try { 
+        attribute = new Boolean( value.toString() );
+        return CyAttributes.TYPE_BOOLEAN;
+      } catch ( Exception e ) {}
+      
+      return CyAttributes.TYPE_STRING;
+    }
+      
 
 }

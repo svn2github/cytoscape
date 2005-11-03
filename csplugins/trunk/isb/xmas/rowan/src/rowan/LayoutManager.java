@@ -13,6 +13,8 @@ import javax.swing.event.*;
 import giny.view.*;
 import giny.model.*;
 
+import exesto.*;
+
 public class LayoutManager 
   extends JMenu 
   implements PropertyChangeListener,
@@ -47,7 +49,7 @@ public class LayoutManager
 
   public void saveLayout ( String layout ) {
 
-    CytoscapeData data = currentNetwork.getNodeData();
+    CyAttributes data = NetworkAttributes.getNodeAttributes( currentNetwork );
     Iterator nodes = currentNetworkView.getNodeViewsIterator();
     while ( nodes.hasNext() ) {
 
@@ -56,15 +58,12 @@ public class LayoutManager
 
       double x = view.getXPosition();
       double y = view.getYPosition();
+
+      Map mapx = data.getAttributeMap( node.getIdentifier(), "NODE_X" );
+      mapx.put( layout, new Double(x) );
       
-      data.putAttributeKeyValue( node.getIdentifier(),
-                                 "NODE_X",
-                                 layout,
-                                 new Double(x) ); 
-      data.putAttributeKeyValue( node.getIdentifier(),
-                                 "NODE_Y",
-                                 layout,
-                                 new Double(y) );
+      Map mapy = data.getAttributeMap( node.getIdentifier(), "NODE_Y" );
+      mapy.put( layout, new Double(y) );
 
     }
    
@@ -76,20 +75,21 @@ public class LayoutManager
   }
 
   public void applyLayout ( String layout ) {
-    CytoscapeData data = currentNetwork.getNodeData();
+    
+    CyAttributes data = NetworkAttributes.getNodeAttributes( currentNetwork );
     Iterator nodes = currentNetworkView.getNodeViewsIterator();
     while ( nodes.hasNext() ) {
 
       NodeView view = ( NodeView )nodes.next();
       Node node = view.getNode();
 
-      double x = ((Double)data.getAttributeKeyValue( node.getIdentifier(),
-                                                     "NODE_X",
-                                                     layout ) ).doubleValue();
-                  
-      double y = ((Double)data.getAttributeKeyValue( node.getIdentifier(),
-                                                     "NODE_Y",
-                                                     layout ) ).doubleValue();
+
+      Map mapx = data.getAttributeMap( node.getIdentifier(), "NODE_X" );
+      double x = ((Double)mapx.get( layout )).doubleValue();
+      
+      Map mapy = data.getAttributeMap( node.getIdentifier(), "NODE_Y" );
+      double y = ((Double)mapy.get( layout )).doubleValue();
+
 
       view.setXPosition( x , false );
       view.setYPosition( y , false );
@@ -211,14 +211,8 @@ public class LayoutManager
 
       try {
         Node node = ( Node )currentNetwork.nodesList().get(0);
-        Set keys = currentNetwork.getNodeData().getAttributeKeySet( node.getIdentifier(), "NODE_X" );
-      } catch ( Exception e ) {}
-      
-
-      
-      try {
-        Node node = ( Node )currentNetwork.nodesList().get(0);
-        Set keys = currentNetwork.getNodeData().getAttributeKeySet( node.getIdentifier(), "NODE_X" );
+        CyAttributes data = NetworkAttributes.getNodeAttributes(currentNetwork );
+        Set keys = data.getAttributeMap( node.getIdentifier(), "NODE_X" ).keySet();
         for ( Iterator i = keys.iterator(); i.hasNext(); ) {
           add( createLayoutItem( (String)i.next() ) );
         }

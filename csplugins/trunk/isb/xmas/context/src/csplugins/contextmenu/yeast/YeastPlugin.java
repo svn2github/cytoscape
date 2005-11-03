@@ -33,66 +33,12 @@ public class YeastPlugin
                              CytoscapeInit.getClassLoader() );
 
 
-    view.addContextMethod( "class phoebe.PNodeView",
-                           "csplugins.contextmenu.yeast.NodeAction",
-                           "viewNodeAttributeBrowser",
-                           new Object[] { view } ,
-                             CytoscapeInit.getClassLoader() );
-
-    view.addContextMethod( "class phoebe.PNodeView",
-                           "csplugins.contextmenu.yeast.NodeAction",
-                           "editNode",
-                           new Object[] { view } ,
-                             CytoscapeInit.getClassLoader() );
-
-    view.addContextMethod( "class phoebe.PNodeView",
-                           "csplugins.contextmenu.yeast.NodeAction",
-                           "changeFirstNeighbors",
-                           new Object[] {  view } ,
-                             CytoscapeInit.getClassLoader() );
-
-    view.addContextMethod( "edu.umd.cs.piccolo.PNodeView",
-                           "csplugins.contextmenu.yeast.NodeAction",
-                           "zoomToNode",
-                           new Object[] { view } ,
-                             CytoscapeInit.getClassLoader() );
-
     // Add some Edge Context Menus
     view.addContextMethod( "class phoebe.PEdgeView",
                            "csplugins.contextmenu.yeast.EdgeAction",
                            "getTitle",
                            new Object[] { view } ,
                              CytoscapeInit.getClassLoader() );
-    view.addContextMethod( "class phoebe.PEdgeView",
-                           "csplugins.contextmenu.yeast.EdgeAction",
-                           "editEdge",
-                           new Object[] { view } ,
-                             CytoscapeInit.getClassLoader() );
-    view.addContextMethod( "class phoebe.PEdgeView",
-                           "csplugins.contextmenu.yeast.EdgeAction",
-                           "viewEdgeAttributeBrowser",
-                           new Object[] { view } ,
-                             CytoscapeInit.getClassLoader() );
-   //  view.addContextMethod( "class phoebe.PEdgeView",
-//                            "csplugins.contextmenu.yeast.EdgeAction",
-//                            "openWebInfo",
-//                            new Object[] { view } ,
-//                             CytoscapeInit.getClassLoader() );
-
-
-    // Add some Edge-end Context menus
-    view.addContextMethod( "class phoebe.util.PEdgeEndIcon",
-                           "csplugins.contextmenu.yeast.EdgeAction",
-                           "edgeEndColor",
-                           new Object[] { view } ,
-                             CytoscapeInit.getClassLoader() );
-    view.addContextMethod( "class phoebe.util.PEdgeEndIcon",
-                           "csplugins.contextmenu.yeast.EdgeAction",
-                           "edgeEndBorderColor",
-                           new Object[] { view } ,
-                             CytoscapeInit.getClassLoader() );
-
-
     }
 
   }

@@ -127,39 +127,7 @@ public class EdgeAction {
     return "";
   }
 
-  public static JMenuItem viewEdgeAttributeBrowser ( Object[] args, PNode node ) {
-    final CyNetworkView network = ( CyNetworkView )args[0];
-    final PEdgeView view = ( PEdgeView )node;
-    return new JMenuItem( new AbstractAction( "Attribute Browser" ) {
-          public void actionPerformed ( ActionEvent e ) {
-            // Do this in the GUI Event Dispatch thread...
-            SwingUtilities.invokeLater( new Runnable() {
-                public void run() {
-
-                  List edges = network.getView().getSelectedEdges();
-                  Object[] objects;
-                  if ( !edges.isEmpty() ) {
-                    if ( !view.isSelected() ) {
-                      edges.add( view );
-                    }
-                    objects = new Object[ edges.size() ];
-                    for ( int i = 0; i < edges.size(); ++i ) {
-                      objects[i] = ( ( EdgeView )edges.get(i) ).getEdge();
-                    }
-
-                  } else {
-                    objects =  new Object[] { view.getEdge() };
-                  }
-                  TabbedBrowser nodeBrowser = new TabbedBrowser (objects,
-                                                    network.getNetwork().getEdgeAttributes(),
-                                                    new Vector(),
-                                                    CytoscapeInit.getProperties().
-                                                    getProperty("webBrowserScript",
-                                                                 "noScriptDefined") ,
-                                                    TabbedBrowser.BROWSING_NODES );
-     } } ); } } );
-  }
-
+ 
   public static JMenuItem editEdge ( Object[] args, PNode node ) {
     final CyNetworkView network = ( CyNetworkView )args[0];
     final GraphView v = network.getView();

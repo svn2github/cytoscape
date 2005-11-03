@@ -87,7 +87,7 @@ public class DataTableModel
     Object[][] data_vector = new Object[go_length][att_length];  
     Object[] column_names = new Object[att_length];
     
-    column_names[0] = "NODENAME";
+    column_names[0] = "ID";
     for ( int j = 0; j < go_length; ++j ) {
       GraphObject obj = ( GraphObject )graph_objects.get(j);
         
@@ -144,7 +144,7 @@ public class DataTableModel
     Object[][] data_vector = new Object[go_length][att_length];  
     Object[] column_names = new Object[att_length];
     
-    column_names[0] = "NODENAME";
+    column_names[0] = "ID";
     for ( int j = 0; j < go_length; ++j ) {
       GraphObject obj = ( GraphObject )graph_objects.get(j);
         

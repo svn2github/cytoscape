@@ -27,14 +27,8 @@ public class LoaderPlugin extends CytoscapePlugin {
         i++;
         FileLoader.loadFileToNetwork( args[i], "\t" );
         Cytoscape.firePropertyChange( Cytoscape.ATTRIBUTES_CHANGED, null, null );
-      } else if ( args[i].startsWith( "-edge" ) ) {
-        i++;
-        FileLoader.loadFileToAttributes( args[i], false, true, "\t" );
-        Cytoscape.firePropertyChange( Cytoscape.ATTRIBUTES_CHANGED, null, null );
-      }
+      } 
     }
-
-
 
 
     Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("File.Load").add( new JMenuItem ( new AbstractAction( "Load Network" ) {
@@ -66,49 +60,6 @@ public class LoaderPlugin extends CytoscapePlugin {
               }
             } ); } } ) );
     
-//     Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("File.Load").add( new JMenuItem ( new AbstractAction( "Load Cytoscape Project" ) {
-//         public void actionPerformed ( java.awt.event.ActionEvent e ) {
-//           // Do this in the GUI Event Dispatch thread...
-//           SwingUtilities.invokeLater( new Runnable() {
-//               public void run() {
-
-//                 // get the file name
-//                 final String name;
-//                 try {
-//                   name = FileUtil.getFile( "Load Project",
-//                                            FileUtil.LOAD,
-//                                            new CyFileFilter[] {} ).toString();
-//                 } catch ( Exception exp ) {
-//                   // this is because the selection was canceled
-//                   return;
-//                 }
-//                 FileLoader.loadCytoscape( name );
-//                 Cytoscape.firePropertyChange( Cytoscape.ATTRIBUTES_CHANGED, null, null );
-//               }
-//             } ); } } ) );
-
-
-
-//     Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("File.Save").add( new JMenuItem ( new AbstractAction( "Save Cytoscape Project" ) {
-//         public void actionPerformed ( java.awt.event.ActionEvent e ) {
-//           // Do this in the GUI Event Dispatch thread...
-//           SwingUtilities.invokeLater( new Runnable() {
-//               public void run() {
-//                 // get the file name
-//                 final String name;
-//                 try {
-//                   name = FileUtil.getFile( "save Project",
-//                                            FileUtil.SAVE,
-//                                            new CyFileFilter[] {} ).toString();
-//                 } catch ( Exception exp ) {
-//                   // this is because the selection was canceled
-//                   return;
-//                 }
-//                 FileLoader.saveCytoscape( name );
-//                 Cytoscape.firePropertyChange( Cytoscape.ATTRIBUTES_CHANGED,null, null );
-//               }
-//             } ); } } ) );
-
 
   }
 

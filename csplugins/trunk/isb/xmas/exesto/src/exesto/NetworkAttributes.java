@@ -15,13 +15,16 @@ public abstract class NetworkAttributes {
   static Map edge_netToAtt = new HashMap();
   static Map node_netToAtt = new HashMap();
 
+  static Map attsToData = new HashMap();
+
+
   public static CyAttributes getNodeAttributes ( CyNetwork net ) {
     CyAttributes ca;
     if ( node_netToAtt.get( net ) == null ) {
       ca = new CyAttributesImpl();
       node_netToAtt.put( net, ca );
     } else {
-      ca = ( CyAttributes )node_netToAtt.get( null );
+      ca = ( CyAttributes )node_netToAtt.get( net );
     } 
     return ca;
   }
@@ -32,10 +35,22 @@ public abstract class NetworkAttributes {
       ca = new CyAttributesImpl();
       edge_netToAtt.put( net, ca );
     } else {
-      ca = ( CyAttributes )edge_netToAtt.get( null );
+      ca = ( CyAttributes )edge_netToAtt.get( net );
     } 
     return ca;
   }
+
+  public static CytoscapeData getCytoscapeData ( CyAttributes atts ) {
+    CytoscapeData data;
+    if ( attsToData.get( atts ) == null ) {
+      data = new CytoscapeDataImpl( atts );
+      attsToData.put( atts, data );
+    } else {
+      data = (CytoscapeData)attsToData.get( atts );
+    }
+    return data;
+  }
+
 
 
 }

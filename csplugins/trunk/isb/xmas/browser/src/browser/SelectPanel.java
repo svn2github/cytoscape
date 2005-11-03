@@ -60,6 +60,9 @@ public class SelectPanel extends JPanel
     filterBox.addActionListener( this );
     networkBox.addActionListener( this );
 
+    current_network = Cytoscape.getCurrentNetwork();
+    current_network.addFlagEventListener( this );
+
     
   }
   
@@ -84,8 +87,10 @@ public class SelectPanel extends JPanel
       Iterator objs = getGraphObjectIterator();
       while ( objs.hasNext() ) {
         Object obj = objs.next();
-        if ( filter.passesFilter( obj ) )
-          list.add( obj );
+        try {
+          if ( filter.passesFilter( obj ) )
+            list.add( obj );
+        } catch ( Exception nulle ) {}
       }
       tableModel.setTableDataObjects( list );
     }
@@ -137,6 +142,8 @@ public class SelectPanel extends JPanel
       }
       current_network = Cytoscape.getCurrentNetwork();
       current_network.addFlagEventListener( this );
+
+
     }
 
 

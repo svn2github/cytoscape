@@ -18,8 +18,6 @@ import edu.umd.cs.piccolo.PNode;
 import javax.swing.*;
 import phoebe.*;
 
-import rowan.browser.*;
-
 public class RowanPlugin extends CytoscapePlugin {
 
   public RowanPlugin () {
@@ -69,11 +67,7 @@ public class RowanPlugin extends CytoscapePlugin {
 
     CreateAddNetwork can = new CreateAddNetwork( null );
     Cytoscape.getDesktop().getCyMenus().addCytoscapeAction( can );
-    FilterDataView fdv = new FilterDataView( null );
-    Cytoscape.getDesktop().getCyMenus().addCytoscapeAction( fdv );
-
-
-  
+     
 
 
     JMenuItem group = new JMenuItem( new AbstractAction( "Group" ) {
@@ -116,9 +110,7 @@ public class RowanPlugin extends CytoscapePlugin {
               } } ); } } );
     Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu( "Plugins" ).add( first );
 
-    DataTable table_nodes = new DataTable(Cytoscape.getNodeNetworkData(), DataTable.NODES );
-    DataTable table_edges = new DataTable(Cytoscape.getEdgeNetworkData(), DataTable.EDGES );
-
+  
   }
 
 

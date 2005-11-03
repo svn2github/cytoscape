@@ -20,29 +20,7 @@ import javax.swing.*;
 import java.awt.event.*;
 
 public class NodeAction {
-    final static String SHAPEMENUCAPTION[] = {
-        "Diamond","Ellipse","Hexagon","Octagon","Triangle","Parallelogram","Rectangle"};
-    final static int SHAPEMENUVALUE[] = {
-        PNodeView.DIAMOND,PNodeView.ELLIPSE,PNodeView.HEXAGON,PNodeView.OCTAGON,
-        PNodeView.TRIANGLE,PNodeView.PARALELLOGRAM,PNodeView.RECTANGLE};
-    private static class ShapeMenuAction extends AbstractAction {
-        private int i;
-        private PNodeView nv;
-        public ShapeMenuAction(int index, PNodeView nodeview) {
-            super(SHAPEMENUCAPTION[index]);
-            i = index;
-            nv = nodeview;
-        }
-        public void actionPerformed(ActionEvent e) {
-            // Do this in the GUI Event Dispatch thread...
-            SwingUtilities.invokeLater( new Runnable() {
-                public void run() {
-                    nv.setShape(SHAPEMENUVALUE[i]);
-                }
-            });
-        }
-    }
-
+    
   public NodeAction () {
   }
 
@@ -57,74 +35,7 @@ public class NodeAction {
       }
   }
 
-  /**
-   * This will open a Node Attribute browser
-   */
-  public static JMenuItem viewNodeAttributeBrowser ( Object[] args, PNode node ) {
-    final CyNetworkView network = ( CyNetworkView )args[0];
-    final PNodeView view = ( PNodeView )node;
-    return new JMenuItem( new AbstractAction( "Attribute Browser" ) {
-          public void actionPerformed ( ActionEvent e ) {
-            // Do this in the GUI Event Dispatch thread...
-            SwingUtilities.invokeLater( new Runnable() {
-                public void run() {
-
-                  List nodes = network.getSelectedNodes();
-                  Object[] objects;
-                  if ( !nodes.isEmpty() ) {
-                    if ( !view.isSelected() ) {
-                      nodes.add( view );
-                    }
-                    objects = new Object[ nodes.size() ];
-                    for ( int i = 0; i < nodes.size(); ++i ) {
-                      objects[i] = ( ( NodeView )nodes.get(i) ).getNode();
-                    }
-                  } else {
-                    objects = new Object[] { view.getNode() };
-                  }
-
-    TabbedBrowser nodeBrowser = new TabbedBrowser ( objects,
-                                                    network.getNetwork().getNodeAttributes(),
-                                                    new Vector(),
-                                                    CytoscapeInit.getProperties().
-                                                    getProperty("webBrowserScript",
-                                                                 "noScriptDefined") ,
-                                                    TabbedBrowser.BROWSING_NODES );
-     } } ); } } );
-  }
-
-
-  /**
-   * Instant Node Editing
-   */
-  public static JMenuItem editNode ( Object[] args, PNode node ) {
-    final CyNetworkView network = ( CyNetworkView )args[0];
-    final GraphView v = network;
-    final PNodeView nv = ( PNodeView )node;
-
-    JMenu editMenu = new JMenu( "<html>Node Editing <I><small>(short-term)</I></small></html>");
-    editMenu.add( new JMenuItem( new AbstractAction( "Color" ) {
-         public void actionPerformed ( ActionEvent e ) {
-           // Do this in the GUI Event Dispatch thread...
-           SwingUtilities.invokeLater( new Runnable() {
-               public void run() {
-                 JColorChooser color = new JColorChooser();
-                 nv.setUnselectedPaint( color.showDialog( v.getComponent() , "Choose a Node Color", (java.awt.Color)nv.getUnselectedPaint() ) );
-               } } ); } } ) );
-
-    int i;
-    JCheckBoxMenuItem jmi;
-    JMenu shapeMenu = new JMenu( "Shape" );
-    for (i = 0; i < SHAPEMENUCAPTION.length; i++) {
-        jmi = new JCheckBoxMenuItem( new ShapeMenuAction(i, nv));
-        jmi.setSelected(nv.getShape() == SHAPEMENUVALUE[i]);
-        shapeMenu.add(jmi);
-    }
-    editMenu.add(shapeMenu);
-    return editMenu;
-}
-
-
+  
   /**
    * This will open an web page that will give you more info.
    */
@@ -143,11 +54,8 @@ public class NodeAction {
                   if ( nv instanceof PNodeView ) {
                     gene = ( ( PNodeView ) nv).getLabel().getText();
                   }
-                  //System.out.println( "Node: "+nv.getLabel() );
-                  //System.out.println( "GEne: "+gene );
                   if ( gene == null ) {
                     gene = ( String )nv.getClientProperty("tooltip");
-                    //System.out.println( "Gene: "+gene );
                   }
                   OpenBrowser.openURL( "http://db.yeastgenome.org/cgi-bin/SGD/locus.pl?locus="+gene );
 
@@ -162,19 +70,16 @@ public class NodeAction {
                   if ( nv instanceof PNodeView ) {
                     gene = ( ( PNodeView ) nv).getLabel().getText();
                   }
-                  //System.out.println( "Node: "+nv.getLabel() );
-                  //System.out.println( "GEne: "+gene );
                   if ( gene == null ) {
                     gene = ( String )nv.getClientProperty("tooltip");
-                    //System.out.println( "Gene: "+gene );
                   }
                   OpenBrowser.openURL( "http://www.google.com/search?q="+gene);
 
                 } } ); } } ) );
 
 
-    JMenu go_menu = new JMenu( "<html>AmiGO <small><i>yeast only</i></small></html>" );
-    go_menu.add(  new JMenuItem( new AbstractAction( "<html>SGD <small><i>yeast only</i></small></html>" ) {
+    
+    web_menu.add(  new JMenuItem( new AbstractAction( "Amigo" ) {
         public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
@@ -183,21 +88,19 @@ public class NodeAction {
                   if ( nv instanceof PNodeView ) {
                     gene = ( ( PNodeView ) nv).getLabel().getText();
                   }
-                  //System.out.println( "Node: "+nv.getLabel() );
-                  //System.out.println( "GEne: "+gene );
                   if ( gene == null ) {
                     gene = ( String )nv.getClientProperty("tooltip");
-                    //System.out.println( "Gene: "+gene );
                   }
                    
                   OpenBrowser.openURL( "http://godatabase.org/cgi-bin/go.cgi?query="+gene+"&view=query&action=query&search_constraint=gp" );
                 } } ); } } ) );
-    web_menu.add( go_menu );
+
+    
 
     
 
     JMenu gn_menu = new JMenu( "GenomeNet" );
-    web_menu.add( gn_menu );
+    //web_menu.add( gn_menu );
     gn_menu.add(  new JMenuItem( new AbstractAction( "Pathway" ) {
             public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
@@ -207,11 +110,8 @@ public class NodeAction {
                   if ( nv instanceof PNodeView ) {
                     gene = ( ( PNodeView ) nv).getLabel().getText();
                   }
-                  //System.out.println( "Node: "+nv.getLabel() );
-                  //System.out.println( "GEne: "+gene );
                   if ( gene == null ) {
                     gene = ( String )nv.getClientProperty("tooltip");
-                    //System.out.println( "Gene: "+gene );
                   }
                   OpenBrowser.openURL("http://www.genome.ad.jp/dbget-bin/www_bfind_sub?mode=bfind&max_hit=1000&dbkey=pathway&keywords="+gene );
 

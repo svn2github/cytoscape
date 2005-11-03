@@ -220,7 +220,6 @@ public class NeighborView
   protected void updateNetworkBox () {
     Iterator i = Cytoscape.getNetworkSet().iterator();
     Vector vector = new Vector();
-    vector.add( "Current Network" );
     while ( i.hasNext() ) {
       //System.out.println( i.next().getClass() );
       CyNetwork net = ( CyNetwork )i.next();
@@ -237,7 +236,6 @@ public class NeighborView
   protected JComboBox getNetworkBox () {
     Iterator i = Cytoscape.getNetworkSet().iterator();
     Vector vector = new Vector();
-    vector.add( "Current Network" );
     while ( i.hasNext() ) {
       CyNetwork net = ( CyNetwork )i.next();
       titleIdMap.put( net.getTitle(), net.getIdentifier() );
