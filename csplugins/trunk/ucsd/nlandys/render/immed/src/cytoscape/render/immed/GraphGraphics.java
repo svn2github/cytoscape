@@ -2396,7 +2396,7 @@ public final class GraphGraphics
    *   this flag controls the way that text is drawn to the underlying
    *   graphics context;  by default, all text rendering operations involve
    *   calling the operation Graphics2D.drawString(String, float, float) after
-   *   setting specified font in the underlying graphics contexxt; however,
+   *   setting specified font in the underlying graphics context; however,
    *   if this flag is set, the text to be rendered is converted to a primitive
    *   shape using font specified, and this shape is then rendered using
    *   Graphics2D.fill(Shape); on some systems, the shape filling method
