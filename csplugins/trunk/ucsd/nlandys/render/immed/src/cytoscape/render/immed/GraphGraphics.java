@@ -362,10 +362,10 @@ public final class GraphGraphics
    *   on this X coordinate.
    * @param yMin an extent of the node shape to draw, in node coordinate
    *   space; the drawn shape will theoretically contain a point that lies
-   *   on this X coordinate.
+   *   on this Y coordinate.
    * @param xMax an extent of the node shape to draw, in node coordinate
    *   space; the drawn shape will theoretically contain a point that lies
-   *   on this Y coordinate.
+   *   on this X coordinate.
    * @param yMax an extent of the node shape to draw, in node coordinate
    *   space; the drawn shape will theoretically contain a point that lies
    *   on this Y coordinate.
