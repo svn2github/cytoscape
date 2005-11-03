@@ -518,6 +518,24 @@ public final class GraphRenderer
           // Take care of label rendering.
           if ((lodBits & LOD_NODE_LABELS) != 0) { // Potential label rendering.
 
+            final int labelCount = nodeDetails.labelCount(node);
+            for (int labelInx = 0; labelInx < labelCount; labelInx++) {
+              final String text = nodeDetails.labelText(node, labelInx);
+              final Font font = nodeDetails.labelFont(node, labelInx);
+              final double scaleFactor =
+                nodeDetails.labelScaleFactor(node, labelInx);
+              final Paint paint = nodeDetails.labelPaint(node, labelInx);
+              final byte textAnchor =
+                nodeDetails.labelTextAnchor(node, labelInx);
+              final byte nodeAnchor =
+                nodeDetails.labelNodeAnchor(node, labelInx);
+              final float offsetVectorX =
+                nodeDetails.labelOffsetVectorX(node, labelInx);
+              final float offsetVectorY =
+                nodeDetails.labelOffsetVectorY(node, labelInx);
+            }
+              
+
             // Compute node label, font, scale factor, and label paint.
             final String label;
             final Font font;
