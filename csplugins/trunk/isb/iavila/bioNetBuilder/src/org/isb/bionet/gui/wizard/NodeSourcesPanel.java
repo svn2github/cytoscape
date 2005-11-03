@@ -14,6 +14,7 @@ import java.io.File;
 import java.util.Iterator;
 import java.util.Vector;
 import java.util.ArrayList;
+import java.util.Set;
 
 import org.isb.bionet.gui.*;
 import org.isb.iavila.ontology.gui.*;
@@ -116,6 +117,29 @@ public class NodeSourcesPanel extends JPanel {
     }
     
     /**
+     * Updated the number of nodes from selected networks
+     */
+    public void updateNumNodesFromNetwork (){
+        int numNodes = 0;
+        if(useSelectedNodes.isSelected()){
+            CyNetwork [] nets = netsDialog.getSelectedNetworks();
+            if(nets == null) return;
+            for(int i = 0; i < nets.length; i++){
+                Set flaggedNodes = nets[i].getFlaggedNodes();
+                if(flaggedNodes != null)
+                    numNodes += flaggedNodes.size();
+            }//for i
+        }else{
+            CyNetwork [] nets = netsDialog.getSelectedNetworks();
+            if(nets == null) return;
+            for(int i = 0; i < nets.length; i++){
+                numNodes += nets[i].getNodeCount();
+            }//for i
+        }
+        netsNodes.setText(Integer.toString(numNodes));
+    }
+    
+    /**
      * Creates the panel
      */
     protected void create(GOClient go_client) {
@@ -154,7 +178,8 @@ public class NodeSourcesPanel extends JPanel {
                                 listNodes.setText(Integer.toString(numRead));
                             }catch (Exception ex){
                                 ex.printStackTrace();
-                                JOptionPane.showMessageDialog(NodeSourcesPanel.this, "Could not read nodes in file " + myListFile.getName() + "!", "Error", JOptionPane.ERROR_MESSAGE);
+                                JOptionPane.showMessageDialog(NodeSourcesPanel.this, "Could not read nodes in file " + 
+                                        myListFile.getName() + "!", "Error", JOptionPane.ERROR_MESSAGE);
                             }
                         }// APPROVE_OPTION
                     }//actionPerformed
@@ -175,12 +200,7 @@ public class NodeSourcesPanel extends JPanel {
                         netsDialog.pack();
                         netsDialog.setVisible(true);
                         // netsDialog is modal
-                        CyNetwork [] nets = netsDialog.getSelectedNetworks();
-                        int numNodes = 0;
-                        for(int i = 0; i < nets.length; i++){
-                            numNodes += nets[i].getNodeCount();
-                        }//for i
-                        netsNodes.setText(Integer.toString(numNodes));
+                        updateNumNodesFromNetwork();
                     }//actionPerformed
                 }//AbstractAction
         );
@@ -300,40 +320,13 @@ public class NodeSourcesPanel extends JPanel {
         this.useSelectedNodes.addActionListener(
                 
                 new AbstractAction(){
-                    
                     public void actionPerformed (ActionEvent e){
-                        int numNodes = 0;
-                        if(useSelectedNodes.isSelected()){
-                            CyNetwork [] nets = netsDialog.getSelectedNetworks();
-                            for(int i = 0; i < nets.length; i++){
-                                numNodes += nets[i].getFlaggedNodes().size();
-                            }//for i
-                        }else{
-                            CyNetwork [] nets = netsDialog.getSelectedNetworks();
-                            for(int i = 0; i < nets.length; i++){
-                                numNodes += nets[i].getNodeCount();
-                            }//for i
-                        }
-                        netsNodes.setText(Integer.toString(numNodes));
+                      updateNumNodesFromNetwork();
                     }
-            
                 });
         
         gridbag.setConstraints(this.useSelectedNodes,c);
         this.add(this.useSelectedNodes);
-        
-//        JButton numNodes = new JButton("Calculate number of nodes");
-//        numNodes.addActionListener(
-//        
-//                   new AbstractAction (){
-//                       
-//                       public void actionPerformed (ActionEvent event){
-//                           NodeSourcesPanel.this.
-//                       }//actionPerformed
-//                       
-//                   }//AbstractAction
-//        
-//        );//addActionListener
     }
     
    /**
@@ -351,7 +344,7 @@ public class NodeSourcesPanel extends JPanel {
                         ArrayList canonicals = new ArrayList();
                         for(int i = 0; i < newNodes.length; i++){
                             CyNode node = (CyNode)Cytoscape.getRootGraph().getNode(newNodes[i]);
-                            String canonical = (String)Cytoscape.getNodeAttributeValue(node, Semantics.CANONICAL_NAME);
+                            String canonical = Cytoscape.getNodeAttributes().getStringAttribute(node.getIdentifier(), Semantics.CANONICAL_NAME);
                             canonicals.add(canonical);
                         }
                         annotationNodeIDs = (String[])canonicals.toArray(new String[canonicals.size()]);

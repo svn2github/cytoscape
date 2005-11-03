@@ -88,11 +88,6 @@ public class EdgeSourcesPanel extends JPanel {
     protected JCheckBox fnCB;
     
     /**
-     * The connecting edges checkbox
-     */
-    protected JCheckBox cCB;
-
-    /**
      * 
      * @param interactions_client
      * @param sourceToSelectedSpecies
@@ -138,13 +133,6 @@ public class EdgeSourcesPanel extends JPanel {
         return this.fnCB.isSelected();
     }
     
-    /**
-     * 
-     * @return whether or not the user selected the connecting edges method 
-     */
-    public boolean isConnectingEdgesSelected (){
-        return this.cCB.isSelected();
-    }
     
     /**
      * 
@@ -206,23 +194,22 @@ public class EdgeSourcesPanel extends JPanel {
      * @param button
      *            the button for the data source for which to estimate edges
      */
-    protected void estimateNumEdges(JButton button) {
+    protected void estimateNumEdges (JButton button) {
         
         String sourceClass = (String) this.buttonToSourceClass.get(button);
-        System.err.println("sourceClass = " + sourceClass);
         if(sourceClass == null){
             return;
         }
         
         if(this.sourceToDialog == null || this.sourceToSpecies == null){
-            System.err.println("ERROR: this.sourceToDialog = " + this.sourceToDialog + " this.sourceToSpecies = " + this.sourceToSpecies);
+            System.err.println("ERROR: this.sourceToDialog = " + this.sourceToDialog + " this.sourceToSpecies = " 
+                        + this.sourceToSpecies);
         }
         
         JDialog dialog = (JDialog) this.sourceToDialog.get(sourceClass);
         List species = (List)this.sourceToSpecies.get(sourceClass);
         
         Hashtable args = new Hashtable();
-        System.err.println("ProlinksInteractionsSource.class = " + ProlinksInteractionsSource.class.toString());
         if (sourceClass.equals(ProlinksInteractionsSource.class.toString())) {
             ProlinksGui pDialog = (ProlinksGui)dialog;
             Vector types = pDialog.getSelectedInteractionTypes();
@@ -246,41 +233,27 @@ public class EdgeSourcesPanel extends JPanel {
             // To calculate num of edges, we need to get the actual 1st neighbors, and then getNumConnectingInteractions
             Vector firstNeighbors = null;
             if(this.fnCB.isSelected()){
-                
-                if(this.cCB.isSelected()){
-                    if(args.size() == 0)
+                     if(args.size() == 0)
                         firstNeighbors = this.interactionsClient.getFirstNeighbors(this.nodes,(String)species.get(0));
-                    else
-                        firstNeighbors = this.interactionsClient.getFirstNeighbors(this.nodes,(String)species.get(0), args);
-                }else{
-                    
-                    if(this.nodes.size() > 0){
-                     if(args.size() > 0)
-                         numEdges += this.interactionsClient.getNumAdjacentInteractions(this.nodes,(String)species.get(0), args);
                      else
-                         numEdges += this.interactionsClient.getNumAdjacentInteractions(this.nodes,(String)species.get(0));
-                
-                    }
-                }
-               
+                        firstNeighbors = this.interactionsClient.getFirstNeighbors(this.nodes,(String)species.get(0), args);
             }
             
             // Connecting edges
             
-            // If only firstNeighbors is selected, and this.nodes is not empty, then we want to find the edges connecting
-            // the nodes in first neighbors and this.nodes.
-            // If connectingEdges is selected as well, then we want the same thing but only for nodes in this.nodes
-                
             Vector nodesToConnect = this.nodes;
-            if(firstNeighbors != null)
+            if(firstNeighbors != null && firstNeighbors.size() > 0){
+                // make sure we don't have repeated nodes in nodedToConnect
+                firstNeighbors.removeAll(this.nodes);
                 nodesToConnect.addAll(firstNeighbors);
-                
+            }    
             if(nodesToConnect.size() > 0){
                 
+                // NOTE: This number will include already existing edges in the network, so it is not the number of new edges, just total edges
                 if(args.size() > 0)
-                    numEdges += this.interactionsClient.getNumConnectingInteractions(this.nodes,(String)species.get(0), args);
+                    numEdges += this.interactionsClient.getNumConnectingInteractions(nodesToConnect,(String)species.get(0), args);
                 else
-                    numEdges += this.interactionsClient.getNumConnectingInteractions(this.nodes,(String)species.get(0));
+                    numEdges += this.interactionsClient.getNumConnectingInteractions(nodesToConnect,(String)species.get(0));
                 
             }else{
                     
@@ -441,27 +414,16 @@ public class EdgeSourcesPanel extends JPanel {
                 }
         );
         c.gridwidth = GridBagConstraints.REMAINDER;
-        //gridbag.setConstraints(numEdgesButton,c);
-        //gridLayoutPanel.add(numEdgesButton);
         
-        // make a panel that displays options of how to add new edges
-        JPanel edgeAddingOpsPanel = new JPanel();
-        edgeAddingOpsPanel.setLayout(new BoxLayout(edgeAddingOpsPanel, BoxLayout.Y_AXIS));
-        JLabel label = new JLabel("Methods to add new edges:");
-        edgeAddingOpsPanel.add(label);     
-     
-        fnCB = new JCheckBox("First neighbors of nodes from the previous step");
+        fnCB = new JCheckBox("Add first neighbors of nodes");
         fnCB.setSelected(false);
         if(this.nodes.size() == 0){
             fnCB.setEnabled(false);
         }
-        edgeAddingOpsPanel.add(fnCB);
-        
-        cCB = new JCheckBox("Connecting edges between nodes");
-        cCB.setSelected(true);
-        edgeAddingOpsPanel.add(cCB);
-        
-        edgeAddingOpsPanel.add(numEdgesButton);
+        gridbag.setConstraints(fnCB, c);
+        gridLayoutPanel.add(fnCB);
+        gridbag.setConstraints(numEdgesButton, c);
+        gridLayoutPanel.add(numEdgesButton);
         
         // set layout for this panel and add the two main panels
         GridBagLayout gbl = new GridBagLayout();
@@ -471,14 +433,6 @@ public class EdgeSourcesPanel extends JPanel {
         
         gbl.setConstraints(gridLayoutPanel,c);
         add(gridLayoutPanel);
-        
-        gbl.setConstraints(edgeAddingOpsPanel,c);
-        add(edgeAddingOpsPanel);
-        
-        //JPanel numEdgesPanel = new JPanel();
-        //numEdgesPanel.add(numEdgesButton);
-        //gbl.setConstraints(numEdgesPanel,c);
-        //add(numEdgesPanel);
         
     }// create
     

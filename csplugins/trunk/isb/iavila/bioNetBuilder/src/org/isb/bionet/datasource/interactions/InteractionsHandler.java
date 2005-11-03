@@ -905,6 +905,7 @@ public class InteractionsHandler implements InteractionsDataSource {
             String d2 = (String)interaction.get(INTERACTOR_2);
             String u1 = (String)translation.get(d1);
             String u2 = (String)translation.get(d2);
+          
             if(u1 != null){
                 HashSet set = (HashSet)this.universalToDbCache.get(u1);
                 if(set == null){
@@ -924,6 +925,7 @@ public class InteractionsHandler implements InteractionsDataSource {
                     this.dbToUniversalCache.put(d1,d1);
                 }
             }
+            
             if(u2 != null){
                 HashSet set = (HashSet)this.universalToDbCache.get(u2);
                 if(set == null){
@@ -981,7 +983,6 @@ public class InteractionsHandler implements InteractionsDataSource {
             String uID = (String)translation.get(dbID);
             if(uID != null){
                 this.dbToUniversalCache.put(dbID, uID);
-                //this.cachedGeneIDs.put(value, key);
                 HashSet set = (HashSet)this.universalToDbCache.get(uID);
                 if(set == null){
                     set = new HashSet();
@@ -992,7 +993,8 @@ public class InteractionsHandler implements InteractionsDataSource {
             }else{
                 // no synonym for this id
                 // what to do?
-                translatedInteractors.add(dbID);
+                // THIS MAY BE CAUSING A BUG!!!
+                //translatedInteractors.add(dbID);
                 // remember that it does not have a synonym
                 this.dbToUniversalCache.put(dbID, dbID); 
             }
@@ -1047,7 +1049,8 @@ public class InteractionsHandler implements InteractionsDataSource {
                 translatedInteractors.add(dbID);
             }else{
                 // no synonym for id, what to do?
-                translatedInteractors.add(uID);
+                // THIS MAY BE CAUSING A BUG
+                //translatedInteractors.add(uID);
             }
         }
         return new Vector(translatedInteractors);

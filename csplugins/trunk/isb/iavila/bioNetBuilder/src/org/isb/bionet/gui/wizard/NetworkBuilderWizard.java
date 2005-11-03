@@ -346,23 +346,7 @@ public class NetworkBuilderWizard {
         if(this.onLastStep){
             next =  FINISH_ACTION;
         }else{
-            next = 
-                    new AbstractAction (){
-                    
-                        public void actionPerformed (ActionEvent e){
-                            
-                            if( !NetworkBuilderWizard.this.edgeSourcesPanel.isFirstNeighborsSelected() &&
-                                 !NetworkBuilderWizard.this.edgeSourcesPanel.isConnectingEdgesSelected() ){
-                                JOptionPane.showMessageDialog(NetworkBuilderWizard.this.edgeSourcesPanel,
-                                        "Please select a method for adding edges.", 
-                                        "BioNetBuilder Message", JOptionPane.ERROR_MESSAGE);
-                            }else{
-                                DEFAULT_NEXT_ACTION.actionPerformed(e);
-                            }
-                            
-                        }//actionPerformed
-                
-                    }; 
+            next = DEFAULT_NEXT_ACTION; 
                 
         }
         
@@ -411,7 +395,6 @@ public class NetworkBuilderWizard {
             back = DEFAULT_BACK_ACTION;
         }
 
-        
         next = new AbstractAction (){
             public void actionPerformed (ActionEvent event){
                 String name = networkPanel.getNetworkName();
@@ -449,7 +432,6 @@ public class NetworkBuilderWizard {
     
     
     // TODO: Organize this better, this is quick and dirty, maybe a new class???
-    // TODO: Need to pass to the interactions source handler a list of genes with id's that it understands (synonyms handler)
     protected void createNetwork (){
         // 1. Get the species for each edge data source
         Map sourceToSpecies = this.speciesPanel.getSourcesSelectedSpecies();
@@ -462,7 +444,6 @@ public class NetworkBuilderWizard {
         Map sourceToSettings = this.edgeSourcesPanel.getSourcesDialogs();
         Iterator it = sourceToSettings.keySet().iterator();
         boolean firstNeighbors = this.edgeSourcesPanel.isFirstNeighborsSelected();
-        boolean connectingEdges = this.edgeSourcesPanel.isConnectingEdgesSelected();
         
         // 4. Get the network name
         String netName = this.networkPanel.getNetworkName();
@@ -524,18 +505,26 @@ public class NetworkBuilderWizard {
                             else
                                 adjacentNodes = this.interactionsClient.getFirstNeighbors(startingNodes,species);
                             
+                            //TODO: Remove
                             System.err.println("Num first neighbors = " + adjacentNodes.size());
+                            Iterator it2 = adjacentNodes.iterator();
+                            while(it2.hasNext()){
+                                System.err.println(it.next());
+                            }//while it.hasNext
+                            // remove
                     }
                    
-                    // If only firstNeighbors is selected, and we have startingNodes, then we want to find the edges connecting
-                    // the nodes in first neighbors and staring nodes.
-                    // If connectingEdges is selected as well, then we want the same thing but only for nodes in staring nodes
-                    
+                    // If firstNeighbors is selected, and we have startingNodes, then we want to find the edges connecting
+                    // the nodes in first neighbors and starting nodes: CAVEAT: The nodes in startingNodes could be a subset of
+                    // selected nodes in a network. Connecting edges would only be found for these selected nodes, not for the
+                    // whole network.
                     
                     Vector nodesToConnect = startingNodes;
-                    if(adjacentNodes != null)
+                    if(adjacentNodes != null){
+                        // make sure we don't have repeated nodes in nodesToConnect
+                        adjacentNodes.removeAll(startingNodes);
                         nodesToConnect.addAll(adjacentNodes);
-                        
+                    }
                     if(args.size() > 0){
                         sourceInteractions = (Vector)this.interactionsClient.getConnectingInteractions(nodesToConnect, species, args);
                     }else{

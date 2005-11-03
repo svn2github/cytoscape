@@ -5,6 +5,8 @@ import java.util.*;
 import java.sql.*;
 import org.isb.bionet.datasource.*;
 import org.isb.xmlrpc.handler.db.*;
+// TODO:
+// Some GI ids in the db (xref_gi) are not numbers. They start with the letter Q. This messes up some of the code here and sometimes throws exceptions.
 
 public class SQLSynonymsHandler extends SQLDBHandler implements SynonymsSource {
     

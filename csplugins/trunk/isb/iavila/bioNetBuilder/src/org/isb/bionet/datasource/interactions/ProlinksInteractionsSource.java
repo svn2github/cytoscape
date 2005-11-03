@@ -630,8 +630,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
      *            the species
      * @return a Vector of String ids of all the nodes that have a
      *         direct interaction with the interactors in the given input
-     *         vector, positions in the input and output vectors are matched
-     *         (parallel vectors)
+     *         vector
      */
     public Vector getFirstNeighbors(Vector interactors, String species) {        
         String tableName = getTableName(species);
@@ -659,8 +658,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	 *            interactions, etc)
 	 * @return a Vector of String ids of all the nodes that have a
 	 *         direct interaction with the interactors in the given input
-	 *         vector, positions in the input and output vectors are matched
-	 *         (parallel vectors)
+	 *         vector
 	 */
 	public Vector getFirstNeighbors(Vector interactors, String species,
 			    Hashtable args) {
