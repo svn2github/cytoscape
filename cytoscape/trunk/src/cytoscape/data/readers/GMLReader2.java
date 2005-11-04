@@ -679,17 +679,18 @@ public class GMLReader2 implements GraphReader {
 						.get(sources.get(idx)));
 				String targetName = (String) node_labels.get(gml_id2order
 						.get(targets.get(idx)));
-//				String edgeName = sourceName.toUpperCase() + " (" + label
-//						+ ") " + targetName.toUpperCase();
+				String edgeName = sourceName.toUpperCase() + " (" + label
+						+ ") " + targetName.toUpperCase();
 				
-				String edgeName = sourceName + " " + label + " " + targetName;
+				// If () is not required, we need to use this...
+//				String edgeName = sourceName + " " + label + " " + targetName;
 				
 				int duplicate_count = 1;
 				while (!edgeNameSet.add(edgeName)) {
-//					edgeName = sourceName + " (" + label + ") " + targetName
-//							+ "_" + duplicate_count;
-					edgeName = sourceName + " " + label + " " + targetName
-						+ "_" + duplicate_count;
+					edgeName = sourceName + " (" + label + ") " + targetName
+							+ "_" + duplicate_count;
+//					edgeName = sourceName + " " + label + " " + targetName
+//						+ "_" + duplicate_count;
 					
 					duplicate_count += 1;
 				}
