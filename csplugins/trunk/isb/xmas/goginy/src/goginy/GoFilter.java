@@ -106,7 +106,7 @@ public class GoFilter
         update_cache = false;
       }
 
-      List cc = Cytoscape.getNodeNetworkData().getAttributeValueList( node.getIdentifier(), type );
+      List cc = Cytoscape.getNodeAttributes().getAttributeList( node.getIdentifier(), type );
       for ( Iterator j = cc.iterator(); j.hasNext(); ) {
         try {
           String go = ( String )j.next();

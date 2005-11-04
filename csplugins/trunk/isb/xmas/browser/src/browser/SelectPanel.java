@@ -81,6 +81,7 @@ public class SelectPanel extends JPanel
 
   public void actionPerformed ( ActionEvent e ) {
     if ( e.getSource() == filterBox ) {
+      
       Filter filter = ( Filter )filterBox.getSelectedItem();
       System.out.println( "Showing all that Pass Filter: "+filter );
       List list = new ArrayList( getGraphObjectCount() );

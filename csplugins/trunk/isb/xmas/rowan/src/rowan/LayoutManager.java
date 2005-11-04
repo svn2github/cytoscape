@@ -60,9 +60,17 @@ public class LayoutManager
       double y = view.getYPosition();
 
       Map mapx = data.getAttributeMap( node.getIdentifier(), "NODE_X" );
+      if ( mapx == null ) {
+        mapx = new HashMap();
+        data.setAttributeMap( node.getIdentifier(), "NODE_X", mapx );
+      }
       mapx.put( layout, new Double(x) );
       
       Map mapy = data.getAttributeMap( node.getIdentifier(), "NODE_Y" );
+      if ( mapy == null ) {
+        mapy = new HashMap();
+        data.setAttributeMap( node.getIdentifier(), "NODE_Y", mapy );
+      }
       mapy.put( layout, new Double(y) );
 
     }

@@ -21,14 +21,28 @@ public class LoaderPlugin extends CytoscapePlugin {
 
   protected void initialize () {
 
+
+    // get command line files
     String[] args = CytoscapeInit.getArgs();
+    boolean inFiles = false;
+    ArrayList files = new ArrayList(); 
     for ( int i = 0; i < args.length; ++i ) {
       if ( args[i].startsWith( "-ss" ) ) {
-        i++;
-        FileLoader.loadFileToNetwork( args[i], "\t" );
-        Cytoscape.firePropertyChange( Cytoscape.ATTRIBUTES_CHANGED, null, null );
-      } 
+        inFiles = true;
+      }  else if ( args[i].startsWith("-") && inFiles ) {
+        inFiles = false;
+      } else if ( inFiles ) {
+        files.add( args[i] );
+      }
     }
+    // load files
+    for ( Iterator i = files.iterator(); i.hasNext(); ) {
+      String file = (String)i.next();
+      System.out.println( "Laoding Spreadsheet File: "+file );
+      FileLoader.loadFileToNetwork( file, "\t" );
+    }
+    Cytoscape.firePropertyChange( Cytoscape.ATTRIBUTES_CHANGED, null, null );
+
 
 
     Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("File.Load").add( new JMenuItem ( new AbstractAction( "Load Network" ) {

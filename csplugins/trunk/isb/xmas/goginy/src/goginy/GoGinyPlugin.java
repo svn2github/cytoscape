@@ -50,6 +50,40 @@ public class GoGinyPlugin extends CytoscapePlugin {
       }
     }
     
+    JMenuItem ac = new JMenuItem( new AbstractAction( "Add Selected Node Children" ) {
+        public void actionPerformed ( ActionEvent e ) {
+          // Do this in the GUI Event Dispatch thread...
+          SwingUtilities.invokeLater( new Runnable() {
+              public void run() {
+                go.show();
+                // get selected terms and add children
+                Ontology cc = go.getCC();
+                GoGinyView ccview = go.getCCView();
+                cc.addChildrenOfUID( ccview.getSelectedNodeIndices() ); 
+
+                
+
+              } } ); } } );
+    Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu( "GO" ).add( ac );
+
+  JMenuItem rc = new JMenuItem( new AbstractAction( "Remove Selected Node Children" ) {
+        public void actionPerformed ( ActionEvent e ) {
+          // Do this in the GUI Event Dispatch thread...
+          SwingUtilities.invokeLater( new Runnable() {
+              public void run() {
+                go.show();
+                // get selected terms and add children
+                Ontology cc = go.getCC();
+                GoGinyView ccview = go.getCCView();
+                cc.removeChildrenOfUID( ccview.getSelectedNodeIndices() ); 
+
+                
+
+              } } ); } } );
+    Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu( "GO" ).add( rc );
+
+
+
     JMenuItem add = new JMenuItem( new AbstractAction( "Show Go Categories for Selected Nodes" ) {
         public void actionPerformed ( ActionEvent e ) {
           // Do this in the GUI Event Dispatch thread...
@@ -116,8 +150,8 @@ public class GoGinyPlugin extends CytoscapePlugin {
                 int[] subset = Cytoscape.getCurrentNetwork().getFlaggedNodeIndicesArray();
                 int node = subset[0];
 
-                 List term_list = Cytoscape.getNodeNetworkData().getAttributeValueList( Cytoscape.getRootGraph().getNode( node ).getIdentifier(),
-                                                                                         CELLULAR_COMPONENT);
+                List term_list = Cytoscape.getNodeAttributes().getAttributeList( Cytoscape.getRootGraph().getNode( node ).getIdentifier(),
+                                                                                 CELLULAR_COMPONENT);
 
                  System.out.println( "node: "+Cytoscape.getRootGraph().getNode( node ).getIdentifier()+" list size: "+term_list.size()+" LIST: "+term_list );
                  for ( Iterator t = term_list.iterator(); t.hasNext(); ) {
@@ -178,9 +212,9 @@ public class GoGinyPlugin extends CytoscapePlugin {
     while ( i.hasNext() ) {
 
       Node node = ( Node )i.next();
-      List mf = Cytoscape.getNodeNetworkData().getAttributeValueList( node.getIdentifier(), MOLECULAR_FUNCTION );
-      List bp = Cytoscape.getNodeNetworkData().getAttributeValueList( node.getIdentifier(), BIOLOGICAL_PROCESS );
-      List cc = Cytoscape.getNodeNetworkData().getAttributeValueList( node.getIdentifier(), CELLULAR_COMPONENT );
+      List mf = Cytoscape.getNodeAttributes().getAttributeList( node.getIdentifier(), MOLECULAR_FUNCTION );
+      List bp = Cytoscape.getNodeAttributes().getAttributeList( node.getIdentifier(), BIOLOGICAL_PROCESS );
+      List cc = Cytoscape.getNodeAttributes().getAttributeList( node.getIdentifier(), CELLULAR_COMPONENT );
 
       for ( Iterator j = mf.iterator(); j.hasNext(); ) {
         String go = ( String )j.next();
@@ -217,15 +251,26 @@ public class GoGinyPlugin extends CytoscapePlugin {
     bp_list.trimToSize();
     cc_list.trimToSize();
     
-    Ontology mfo = go.getMF();
-    mfo.showTerms( mf_list.elements() );
+    try {
+      Ontology mfo = go.getMF();
+      mfo.showTerms( mf_list.elements() );
+    } catch ( Exception e ) {
+      System.out.println( "ERROR IN GO MF Tree" );
+    }
     
-    Ontology cco = go.getCC();
-    cco.showTerms( cc_list.elements() );
-    
-    Ontology bpo = go.getBP();
-    bpo.showTerms( bp_list.elements() );
-    
+    try {
+      Ontology cco = go.getCC();
+      cco.showTerms( cc_list.elements() );
+    } catch ( Exception e ) {
+      System.out.println( "ERROR IN GO CC Tree" );
+    }  
+
+    try {
+      Ontology bpo = go.getBP();
+      bpo.showTerms( bp_list.elements() );
+    } catch ( Exception e ) {
+      System.out.println( "ERROR IN GO BP Tree" );
+    }
   }
 
 

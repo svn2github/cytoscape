@@ -264,8 +264,8 @@ public class GoGinyView
 
     OpenIntIntHashMap match = new OpenIntIntHashMap();
     for ( int i = 0; i < subset.length; ++i ) {
-      List term_list = Cytoscape.getNodeNetworkData().getAttributeValueList( Cytoscape.getRootGraph().getNode( subset[i] ).getIdentifier(),
-                                                                             category );
+      List term_list = Cytoscape.getNodeAttributes().getAttributeList( Cytoscape.getRootGraph().getNode( subset[i] ).getIdentifier(),
+                                                                       category );
       for ( Iterator t = term_list.iterator(); t.hasNext(); ) {
         String term = ( String )t.next();
         try {
@@ -287,11 +287,12 @@ public class GoGinyView
 
   }
 
+  // TODO: use a property
   public String locusFromNodes ( int[] nodes ) {
     String tip = "";
     
     for ( int i = 0; i < nodes.length; ++i ) {
-      String locus = ( String )Cytoscape.getNodeNetworkData().getAttributeValue( Cytoscape.getRootGraph().getNode( nodes[i] ).getIdentifier(), "Locus" );
+      String locus = ( String )Cytoscape.getNodeAttributes().getStringAttribute( Cytoscape.getRootGraph().getNode( nodes[i] ).getIdentifier(), "Locus" );
       if ( i % 5 == 0 && i != 0) {
         tip = tip+" "+locus+"\n";
       } else {

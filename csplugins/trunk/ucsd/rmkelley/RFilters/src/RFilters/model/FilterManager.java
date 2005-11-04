@@ -59,24 +59,32 @@ import cern.colt.map.OpenIntObjectHashMap;
       return new ComboBoxModel(){
           
           Object selectedItem;
+          
+           //implements ListModel
+          Vector listeners = new Vector();
+          public void addListDataListener(ListDataListener l){
+            listeners.add(l);
+          }
+          
+          
+          public void removeListDataListener(ListDataListener l){
+            listeners.remove(l);
+          }
+
           public Object getSelectedItem(){
             return selectedItem;
           }
           public void setSelectedItem(java.lang.Object anItem ) {
             selectedItem = anItem;
           }
-          public void addListDataListener(ListDataListener l){
-            FilterManager.this.addListDataListener(l);
-          }
+         
           public Object getElementAt(int index){
             return FilterManager.this.getElementAt(index);
           }
           public int getSize(){
             return FilterManager.this.getSize();
           }
-          public void removeListDataListener(ListDataListener l){
-            FilterManager.this.removeListDataListener(l);
-          }};
+        };
     }
 
     public void fireFilterEvent () {

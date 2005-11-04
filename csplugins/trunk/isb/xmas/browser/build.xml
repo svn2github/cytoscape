@@ -116,8 +116,6 @@
       <fileset
         dir="${browser.root.dir}/lib"
         includes="resources/**"/>
-      <fileset 
-        dir="${browser.root.dir}/images"/>
     </jar>
     <copy todir="${browser.lib.dir}" file="browser.jar"/>
     <copy todir="${cytoscape.plugin.dir}" file="browser.jar"/>

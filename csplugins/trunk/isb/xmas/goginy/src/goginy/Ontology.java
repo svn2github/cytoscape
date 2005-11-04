@@ -81,6 +81,36 @@ public class Ontology {
     return go_terms.elements();
   }
 
+  public void addChildrenOfUID ( int uid[] ) {
+    
+    for ( int i = 0; i < uid.length; ++i ) {
+      
+      GraphPerspective new_gp  = getUIDChildrenAsGP( uid[i], 0 );
+      gp.restoreNodes( new_gp.getNodeIndicesArray() );
+      gp.restoreEdges( new_gp.getEdgeIndicesArray() );
+
+     
+
+    }
+
+    pcs.firePropertyChange( "layout", null, null);
+
+  }
+
+  public void removeChildrenOfUID ( int uid[] ) {
+    for ( int i = 0; i < uid.length; ++i ) {
+      
+      GraphPerspective new_gp  = getUIDChildrenAsGP( uid[i], 0 );
+      gp.hideNodes( new_gp.getNodeIndicesArray() );
+      gp.restoreNode( uid[i] );
+    }
+    
+    pcs.firePropertyChange( "layout", null, null );
+    
+
+  }
+
+
   public void showTerms ( int[] go_terms ) {
 
 
@@ -102,7 +132,12 @@ public class Ontology {
     if ( gp == null ) {
       System.out.println( "GP is null??" );
     }
+    
+    if ( new_gp == null ) {
+      System.out.println ( " NEW GP is null???!!?!?!??!" );
+    }
 
+   
     IntArrayList diff = Diff.diff( new IntArrayList( gp.getNodeIndicesArray() ),
                                    new IntArrayList( new_gp.getNodeIndicesArray() ),
                                    inOld_notNew,
@@ -112,6 +147,7 @@ public class Ontology {
     gp.restoreEdges( new_gp.getEdgeIndicesArray() );
     gp.hideNodes( inOld_notNew.elements() );
     gp.restoreNode( root_node );
+   
     
     pcs.firePropertyChange( "layout", null, mat.elements() );
     
@@ -218,9 +254,15 @@ public class Ontology {
       }
 
     }
+
+    //System.out.println ( "Nodes: "+nodes.size() );
+    //System.out.println ( "Edges: "+edges.size() );
+
     nodes.trimToSize();
     edges.trimToSize();
-    
+ 
+    //System.out.println( "Nodes: "+nodes.elements() );
+    //System.out.println( "Edges: "+edges.elements() );
     return root.createGraphPerspective( nodes.elements(), 
                                         edges.elements());
   }
@@ -293,7 +335,7 @@ public class Ontology {
     if ( incoming_edges.length == 0 )
       return false;
 
-      // add the parents
+    // add the parents
     for ( int i = 0; i < incoming_edges.length; ++i ) {
       int parent = root.getEdgeSourceIndex( incoming_edges[i] );
       if ( !nodes.contains( parent ) ) {

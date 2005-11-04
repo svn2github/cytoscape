@@ -590,34 +590,42 @@ public class FileLoader {
           title = title.substring(6);
           
           // Load List
-          if ( att.startsWith("[") ) {
-            attribute = formList( att );
-            if ( attribute == null )
-              return true;
+            if ( att.startsWith("[") ) {
+              attribute = formList( att );
+              if ( attribute == null )
+                return true;
+              
+              try {
+                local.setAttributeList( gob.getIdentifier(), title, (List)attribute );
+                return true;
+              } catch ( Exception e ) {
+                // if this wasn't supposed to be a list...i.e. somone broke the rules
+              }
+            } // load list
             
-            local.setAttributeList( gob.getIdentifier(), title, (List)attribute );
-            return true;
-          } // load list
-
-          // Load Hash
-          else if ( att.startsWith("{") ) {
-            attribute = formMap( att );
-            if ( attribute == null )
-              return true;
+            // Load Hash
+            else if ( att.startsWith("{") ) {
+              attribute = formMap( att );
+              if ( attribute == null )
+                return true;
+              
+              try {
+                local.setAttributeMap( gob.getIdentifier(), title, (Map)attribute );
+                return true;
+              } catch ( Exception e ) {
+                // if this wasn't supposed to be a Hash...i.e. somone broke the rules
+              }
+            } 
             
-            local.setAttributeMap( gob.getIdentifier(), title, (Map)attribute );
-            return true;
-          } 
-          
-          // load single
-          else {
-            if ( attribute instanceof Double ) {
-              local.setAttribute( gob.getIdentifier(), title, (Double)attribute );
-            } else {
-              local.setAttribute( gob.getIdentifier(), title, (String)attribute );
+            // load single
+            else {
+              if ( attribute instanceof Double ) {
+                local.setAttribute( gob.getIdentifier(), title, (Double)attribute );
+              } else {
+                local.setAttribute( gob.getIdentifier(), title, (String)attribute );
+              }
             }
-          }
-        } // end load LOCAL data
+          } // end load LOCAL data
         
         ////////////////////
         // Load GLOBAL Data
@@ -629,8 +637,13 @@ public class FileLoader {
             if ( attribute == null )
               return true;
             
-            global.setAttributeList( gob.getIdentifier(), title, (List)attribute );
-                       return true;
+            try {
+              global.setAttributeList( gob.getIdentifier(), title, (List)attribute );
+              return true;
+            } catch ( Exception e ) {
+              // if this wasn't supposed to be a List...i.e. somone broke the rules
+            }
+
           } 
 
           // Load Hash
@@ -638,9 +651,12 @@ public class FileLoader {
             attribute = formMap( att );
             if ( attribute == null )
               return true;
-            
-            global.setAttributeMap( gob.getIdentifier(), title, (Map)attribute );
-            return true;
+            try {
+              global.setAttributeMap( gob.getIdentifier(), title, (Map)attribute );
+              return true;
+            } catch ( Exception e ) {
+              // if this wasn't supposed to be a Hash...i.e. somone broke the rules
+            }
           } 
           
           // load single
