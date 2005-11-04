@@ -679,12 +679,18 @@ public class GMLReader2 implements GraphReader {
 						.get(sources.get(idx)));
 				String targetName = (String) node_labels.get(gml_id2order
 						.get(targets.get(idx)));
-				String edgeName = sourceName.toUpperCase() + " (" + label
-						+ ") " + targetName.toUpperCase();
+//				String edgeName = sourceName.toUpperCase() + " (" + label
+//						+ ") " + targetName.toUpperCase();
+				
+				String edgeName = sourceName + " " + label + " " + targetName;
+				
 				int duplicate_count = 1;
 				while (!edgeNameSet.add(edgeName)) {
-					edgeName = sourceName + " (" + label + ") " + targetName
-							+ "_" + duplicate_count;
+//					edgeName = sourceName + " (" + label + ") " + targetName
+//							+ "_" + duplicate_count;
+					edgeName = sourceName + " " + label + " " + targetName
+						+ "_" + duplicate_count;
+					
 					duplicate_count += 1;
 				}
 
@@ -707,10 +713,10 @@ public class GMLReader2 implements GraphReader {
 					// edgeAttributes.addNameMapping(edgeName, edge);
 				}
 
-				// Put correct ID and interaction name
+				// Set correct ID, canonical name and interaction name
 				edge.setIdentifier(edgeName);
 				edgeAttributes.setAttribute(edgeName, Semantics.INTERACTION, label);
-				
+				edgeAttributes.setAttribute(edgeName, Semantics.CANONICAL_NAME, edgeName);
 				
 				giny_edges.add(edge.getRootGraphIndex());
 				((KeyValue) edge_root_index_pairs.get(idx)).value = (new Integer(
