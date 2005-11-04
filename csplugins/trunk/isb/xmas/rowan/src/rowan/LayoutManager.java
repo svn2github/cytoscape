@@ -49,7 +49,8 @@ public class LayoutManager
 
   public void saveLayout ( String layout ) {
 
-    CyAttributes data = NetworkAttributes.getNodeAttributes( currentNetwork );
+    //CyAttributes data = NetworkAttributes.getNodeAttributes( currentNetwork );
+    CyAttributes data = Cytoscape.getNodeAttributes();
     Iterator nodes = currentNetworkView.getNodeViewsIterator();
     while ( nodes.hasNext() ) {
 
@@ -61,18 +62,23 @@ public class LayoutManager
 
       Map mapx = data.getAttributeMap( node.getIdentifier(), "NODE_X" );
       if ( mapx == null ) {
+        System.out.println( "MAP was null for NODE_X making a new one" );
         mapx = new HashMap();
+        mapx.put( layout, new Double(x) );
         data.setAttributeMap( node.getIdentifier(), "NODE_X", mapx );
+      } else {
+        mapx.put( layout, new Double(x) );
       }
-      mapx.put( layout, new Double(x) );
-      
+
       Map mapy = data.getAttributeMap( node.getIdentifier(), "NODE_Y" );
       if ( mapy == null ) {
         mapy = new HashMap();
+        mapy.put( layout, new Double(y) );
         data.setAttributeMap( node.getIdentifier(), "NODE_Y", mapy );
+      } else {
+        mapy.put( layout, new Double(y) );
       }
-      mapy.put( layout, new Double(y) );
-
+     
     }
    
     currentLayout = layout;

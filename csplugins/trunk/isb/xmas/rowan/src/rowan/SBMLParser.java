@@ -174,6 +174,7 @@ public class SBMLParser {
              CyEdge edge =Cytoscape.getCyEdge( inode, cynode, Semantics.INTERACTION, "reactant-reaction", true );
              network.restoreEdge( edge );
              edgeData.setAttribute( edge.getIdentifier(), "InSBML", "true" );
+             nodeData.setAttribute( inode.getIdentifier(), "SBML_type", "metabolite" );
            }
          }
       }
@@ -188,6 +189,7 @@ public class SBMLParser {
              CyEdge edge = Cytoscape.getCyEdge( cynode, inode, Semantics.INTERACTION, "reaction-product", true );
              network.restoreEdge( edge ); 
              edgeData.setAttribute( edge.getIdentifier(), "InSBML", "true" );
+             nodeData.setAttribute( inode.getIdentifier(), "SBML_type", "metabolite" );
            }
          }
       }
@@ -202,6 +204,7 @@ public class SBMLParser {
              CyEdge edge = Cytoscape.getCyEdge( inode, cynode, Semantics.INTERACTION, "modifier-reaction", true );
              network.restoreEdge( edge );
              edgeData.setAttribute( edge.getIdentifier(), "InSBML", "true" );
+             nodeData.setAttribute( inode.getIdentifier(), "SBML_type", "gene" );
            }
          }
       }
@@ -219,7 +222,7 @@ public class SBMLParser {
         String iname = elem.getNodeName();
         String ivalue = elem.getNodeValue();
       
-        System.out.println( "Node: "+node+" name: "+iname+" value:" +ivalue );
+        //System.out.println( "Node: "+node+" name: "+iname+" value:" +ivalue );
 
         if ( iname.equals( "species") ) {
           return ivalue;
@@ -259,6 +262,9 @@ public class SBMLParser {
            if ( Character.isDigit( c1 ) && !Character.isLetter( c2 )){
              gene = true;
            } 
+           if ( ivalue.startsWith( "_" ) ) {
+             gene = false;
+           }
          } 
          
          elements.put( iname, ivalue );
@@ -269,11 +275,11 @@ public class SBMLParser {
        
        nodeData.setAttribute( cynode.getIdentifier(), "InSBML", "true" );
        if ( gene ) {
-         nodeData.setAttribute( cynode.getIdentifier(), "SBML_type", "gene" );
+         //nodeData.setAttribute( cynode.getIdentifier(), "SBML_type", "gene" );
          nodeData.setAttribute( cynode.getIdentifier(), "SBMLName", (String)elements.get( "id") );
        } else {
          nodeData.setAttribute( cynode.getIdentifier(), "SBMLName", (String)elements.get( "name") );
-         nodeData.setAttribute( cynode.getIdentifier(), "SBML_type", "metabolite" );
+         //nodeData.setAttribute( cynode.getIdentifier(), "SBML_type", "metabolite" );
        }
        
        // add node to network
