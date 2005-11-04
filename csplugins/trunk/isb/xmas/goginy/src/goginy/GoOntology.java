@@ -32,8 +32,7 @@ public class GoOntology {
   public OpenIntIntHashMap cc_uid_gid_map;
   public OpenIntIntHashMap bp_uid_gid_map;
   public OpenIntIntHashMap mf_uid_gid_map;
-   
-
+  
   // This converts a GO id to a RootGraphIndex
   public OpenIntIntHashMap cc_gid_uid_map;
   public OpenIntIntHashMap bp_gid_uid_map;
@@ -44,7 +43,6 @@ public class GoOntology {
   public OpenIntObjectHashMap bp_gid_desc_map;
   public OpenIntObjectHashMap mf_gid_desc_map;
   
-
   public Ontology cc_ontology;
   public Ontology bp_ontology;
   public Ontology mf_ontology;

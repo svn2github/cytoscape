@@ -82,30 +82,41 @@ public class Ontology {
   }
 
   public void addChildrenOfUID ( int uid[] ) {
-    
+    IntArrayList added = new IntArrayList();
     for ( int i = 0; i < uid.length; ++i ) {
       
       GraphPerspective new_gp  = getUIDChildrenAsGP( uid[i], 0 );
       gp.restoreNodes( new_gp.getNodeIndicesArray() );
       gp.restoreEdges( new_gp.getEdgeIndicesArray() );
 
-     
+      int [] nodes = new_gp.getNodeIndicesArray();
+      for ( int j = 0; j < nodes.length; ++j ) {
+        added.add( nodes[j] );
+      }
 
     }
-
-    pcs.firePropertyChange( "layout", null, null);
+    added.trimToSize();
+    pcs.firePropertyChange( "layout", null, added.elements());
 
   }
 
   public void removeChildrenOfUID ( int uid[] ) {
+    
+   
     for ( int i = 0; i < uid.length; ++i ) {
       
       GraphPerspective new_gp  = getUIDChildrenAsGP( uid[i], 0 );
       gp.hideNodes( new_gp.getNodeIndicesArray() );
       gp.restoreNode( uid[i] );
+
+      gp.restoreEdges( root.getAdjacentEdgeIndicesArray(uid[i], 
+                                                        false, 
+                                                        true, 
+                                                        false) );
+
     }
     
-    pcs.firePropertyChange( "layout", null, null );
+    pcs.firePropertyChange( "layout", null, uid );
     
 
   }
