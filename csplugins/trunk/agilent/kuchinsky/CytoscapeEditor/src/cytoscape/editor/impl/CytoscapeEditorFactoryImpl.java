@@ -115,8 +115,9 @@ public class CytoscapeEditorFactoryImpl implements CytoscapeEditorFactory {
 		String adapterName = CytoscapeEditorManager
 				.getNetworkEditEventAdapterType(editorType);
 		try {
-			Class eventAdapterClass = Class.forName("cytoscape.editor.event."
-					+ adapterName);
+//			Class eventAdapterClass = Class.forName("cytoscape.editor.event."
+//					+ adapterName);
+			Class eventAdapterClass = Class.forName(adapterName);
 			event = (NetworkEditEventAdapter) eventAdapterClass
 					.newInstance();
 		} catch (ClassNotFoundException ex) {

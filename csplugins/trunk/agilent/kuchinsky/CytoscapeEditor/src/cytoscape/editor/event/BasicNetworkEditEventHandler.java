@@ -28,6 +28,7 @@ import cytoscape.Cytoscape;
 import cytoscape.editor.CytoscapeEditor;
 import cytoscape.editor.CytoscapeEditorManager;
 import cytoscape.editor.editors.BasicCytoscapeEditor;
+import cytoscape.view.CyNetworkView;
 
 /**
  * 
@@ -43,6 +44,7 @@ import cytoscape.editor.editors.BasicCytoscapeEditor;
  */
 public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 		implements ActionListener, cytoscape.data.attr.MultiHashMapListener {
+//        implements ActionListener {
 
 	/**
 	 * the node that will be dropped
@@ -441,8 +443,11 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 			java.lang.Object oldAttributeValue,
 			java.lang.Object newAttributeValue) {
 //		System.out.println("attributeValueAssigned: " + newAttributeValue);
-		Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
-
+		CyNetworkView view = Cytoscape.getCurrentNetworkView();
+		if (view != null)
+		{
+//		   view.redrawGraph(true, true);
+		}
 	}
 
 	public void attributeValueRemoved(java.lang.String objectKey,

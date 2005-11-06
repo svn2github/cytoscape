@@ -1391,13 +1391,16 @@ public abstract class CytoscapeEditorManager {
 	public static void addEdit(UndoableEdit edit) {
 		// AJK: 09/05/05 BEGIN
 		// accommodate one UndoManager per each Network view
-		//		undo.addEdit(edit);
+//				undo.addEdit(edit);
 		
 		// AJK: 10/24/05 BEGIN
 		//      comment this out.  Move multiple UndoManager functionality into Cytoscape
 		
 		// AJK: 10/25/05 actually, don't even do this in 'plan C'.  Just use Restore deleted nodes/edges submenu item
-//		Cytoscape.getDesktop().addEdit(edit);
+		Cytoscape.getDesktop().addEdit(edit);
+//		cytoscape.util.UndoManager undo = CytoscapeDesktop.undo;
+
+		
 		
 		/*
 		UndoManager undoMgr = getUndoManagerForView (Cytoscape.getCurrentNetworkView());

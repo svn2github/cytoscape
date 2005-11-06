@@ -204,7 +204,7 @@ public class ShapePalette extends JPanel
 				null));
 		_shapeMap.put(cytoShape.getTitle(), cytoShape);
 		listModel.addElement(cytoShape);
-		Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+//		Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 
 	}
 	

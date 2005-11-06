@@ -177,7 +177,13 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
 			//			System.out.println("Old value = " + e.getOldValue());
 			//			System.out.println("New value = " + e.getNewValue());
 
-		} else if (e.getPropertyName().equals(
+		}
+		// redraw graph if the network is modified, e.g. by an undoable edit
+		else if (e.getPropertyName().equals(Cytoscape.NETWORK_MODIFIED)) {
+			Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
+		}
+		
+		else if (e.getPropertyName().equals(
 				CytoscapeDesktop.NETWORK_VIEW_FOCUSED)) {
 
 			CyNetworkView view = Cytoscape.getCurrentNetworkView();
@@ -268,6 +274,7 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
 		CytoscapeEditorManager.getEdgeClipBoard().elements(edges);
 		CytoscapeEditorManager.setNetworkClipBoard(cyNet.getIdentifier());
 
+		System.out.println("Adding an ADD edit to " + cyNet);
 		CytoscapeEditorManager.addEdit(new AbstractUndoableEdit() {
 
 			final String network_id = cyNet.getIdentifier();
@@ -308,7 +315,9 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
 			}
 
 			public void undo() {
-				// removes the removed nodes and edges from the network
+				// removes the removed nodes and edges from the network 
+				System.out.println("Trying to UNDO add on: " +  
+						Cytoscape.getNetwork(network_id));
 				super.undo();
 				CyNetwork network = Cytoscape.getNetwork(network_id);
 				if (network != null) {
