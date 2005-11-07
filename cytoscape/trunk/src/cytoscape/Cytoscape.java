@@ -120,14 +120,14 @@ public abstract class Cytoscape {
      * Node CyAttributes.
      */
     private static CyAttributes nodeAttributes = new CyAttributesImpl();
-    private static GraphObjAttributes nodeData = new GraphObjAttributesImpl
+    private static GraphObjAttributes nodeData = new GraphObjAttributes
             (nodeAttributes);
 
     /**
      * Edge CyAttributes.
      */
     private static CyAttributes edgeAttributes = new CyAttributesImpl();
-    private static GraphObjAttributes edgeData = new GraphObjAttributesImpl
+    private static GraphObjAttributes edgeData = new GraphObjAttributes
             (edgeAttributes);
 
 	protected static ExpressionData expressionData;
