@@ -540,55 +540,9 @@ public final class GraphRenderer
                 else {
                   justify = 0; }
               }
-              final double nodeAnchorPointX;
-              final double nodeAnchorPointY;
-              switch (nodeAnchor) {
-              case NodeDetails.LABEL_ANCHOR_CENTER:
-                nodeAnchorPointX =
-                  (((double) floatBuff1[0]) + floatBuff1[2]) / 2.0d;
-                nodeAnchorPointY =
-                  (((double) floatBuff1[1]) + floatBuff1[3]) / 2.0d;
-                break;
-              case NodeDetails.LABEL_ANCHOR_NORTH:
-                nodeAnchorPointX =
-                  (((double) floatBuff1[0]) + floatBuff1[2]) / 2.0d;
-                nodeAnchorPointY = floatBuff1[3];
-                break;
-              case NodeDetails.LABEL_ANCHOR_NORTHEAST:
-                nodeAnchorPointX = floatBuff1[2];
-                nodeAnchorPointY = floatBuff1[3];
-                break;
-              case NodeDetails.LABEL_ANCHOR_EAST:
-                nodeAnchorPointX = floatBuff1[2];
-                nodeAnchorPointY =
-                  (((double) floatBuff1[1]) + floatBuff1[3]) / 2.0d;
-                break;
-              case NodeDetails.LABEL_ANCHOR_SOUTHEAST:
-                nodeAnchorPointX = floatBuff1[2];
-                nodeAnchorPointY = floatBuff1[1];
-                break;
-              case NodeDetails.LABEL_ANCHOR_SOUTH:
-                nodeAnchorPointX =
-                  (((double) floatBuff1[0]) + floatBuff1[2]) / 2.0d;
-                nodeAnchorPointY = floatBuff1[1];
-                break;
-              case NodeDetails.LABEL_ANCHOR_SOUTHWEST:
-                nodeAnchorPointX = floatBuff1[0];
-                nodeAnchorPointY = floatBuff1[1];
-                break;
-              case NodeDetails.LABEL_ANCHOR_WEST:
-                nodeAnchorPointX = floatBuff1[0];
-                nodeAnchorPointY =
-                  (((double) floatBuff1[1]) + floatBuff1[3]) / 2.0d;
-                break;
-              case NodeDetails.LABEL_ANCHOR_NORTHWEST:
-                nodeAnchorPointX = floatBuff1[0];
-                nodeAnchorPointY = floatBuff1[3];
-                break;
-              default:
-                throw new IllegalStateException
-                  ("encoutered an invalid LABEL_ANCHOR_* constant: " +
-                   nodeAnchor); }
+              lemma_computeAnchor(nodeAnchor, floatBuff1, floatBuff3);
+              final double nodeAnchorPointX = floatBuff3[0];
+              final double nodeAnchorPointY = floatBuff3[1];
               float textXCenter = 0;
               float textYCenter = 0;
               grafx.drawTextFull
@@ -596,6 +550,52 @@ public final class GraphRenderer
                  textXCenter, textYCenter, 0, paint,
                  (lodBits & LOD_TEXT_AS_SHAPE) != 0); } } } }
     }
+  }
+
+  private final static void lemma_computeAnchor(final byte anchor,
+                                                final float[] input4x,
+                                                final float[] rtrn2x)
+  {
+    switch (anchor) {
+    case NodeDetails.LABEL_ANCHOR_CENTER:
+      rtrn2x[0] = (float) ((((double) input4x[0]) + input4x[2]) / 2.0d);
+      rtrn2x[1] = (float) ((((double) input4x[1]) + input4x[3]) / 2.0d);
+      break;
+    case NodeDetails.LABEL_ANCHOR_NORTH:
+      rtrn2x[0] = (float) ((((double) input4x[0]) + input4x[2]) / 2.0d);
+      rtrn2x[1] = input4x[3];
+      break;
+    case NodeDetails.LABEL_ANCHOR_NORTHEAST:
+      rtrn2x[0] = input4x[2];
+      rtrn2x[1] = input4x[3];
+      break;
+    case NodeDetails.LABEL_ANCHOR_EAST:
+      rtrn2x[0] = input4x[2];
+      rtrn2x[1] = (float) ((((double) input4x[1]) + input4x[3]) / 2.0d);
+      break;
+    case NodeDetails.LABEL_ANCHOR_SOUTHEAST:
+      rtrn2x[0] = input4x[2];
+      rtrn2x[1] = input4x[1];
+      break;
+    case NodeDetails.LABEL_ANCHOR_SOUTH:
+      rtrn2x[0] = (float) ((((double) input4x[0]) + input4x[2]) / 2.0d);
+      rtrn2x[1] = input4x[1];
+      break;
+    case NodeDetails.LABEL_ANCHOR_SOUTHWEST:
+      rtrn2x[0] = input4x[0];
+      rtrn2x[1] = input4x[1];
+      break;
+    case NodeDetails.LABEL_ANCHOR_WEST:
+      rtrn2x[0] = input4x[0];
+      rtrn2x[1] = (float) ((((double) input4x[1]) + input4x[3]) / 2.0d);
+      break;
+    case NodeDetails.LABEL_ANCHOR_NORTHWEST:
+      rtrn2x[0] = input4x[0];
+      rtrn2x[1] = input4x[3];
+      break;
+    default:
+      throw new IllegalStateException
+        ("encoutered an invalid LABEL_ANCHOR_* constant: " + anchor); }
   }
 
 //   public final static boolean queryEdgeIntersect(
