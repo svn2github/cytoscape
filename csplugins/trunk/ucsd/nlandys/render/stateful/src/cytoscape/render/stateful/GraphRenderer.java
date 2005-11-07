@@ -540,6 +540,55 @@ public final class GraphRenderer
                 else {
                   justify = 0; }
               }
+              final double nodeAnchorPointX;
+              final double nodeAnchorPointY;
+              switch (nodeAnchor) {
+              case NodeDetails.LABEL_ANCHOR_CENTER:
+                nodeAnchorPointX =
+                  (((double) floatBuff1[0]) + floatBuff1[2]) / 2.0d;
+                nodeAnchorPointY =
+                  (((double) floatBuff1[1]) + floatBuff1[3]) / 2.0d;
+                break;
+              case NodeDetails.LABEL_ANCHOR_NORTH:
+                nodeAnchorPointX =
+                  (((double) floatBuff1[0]) + floatBuff1[2]) / 2.0d;
+                nodeAnchorPointY = floatBuff1[3];
+                break;
+              case NodeDetails.LABEL_ANCHOR_NORTHEAST:
+                nodeAnchorPointX = floatBuff1[2];
+                nodeAnchorPointY = floatBuff1[3];
+                break;
+              case NodeDetails.LABEL_ANCHOR_EAST:
+                nodeAnchorPointX = floatBuff1[2];
+                nodeAnchorPointY =
+                  (((double) floatBuff1[1]) + floatBuff1[3]) / 2.0d;
+                break;
+              case NodeDetails.LABEL_ANCHOR_SOUTHEAST:
+                nodeAnchorPointX = floatBuff1[2];
+                nodeAnchorPointY = floatBuff1[1];
+                break;
+              case NodeDetails.LABEL_ANCHOR_SOUTH:
+                nodeAnchorPointX =
+                  (((double) floatBuff1[0]) + floatBuff1[2]) / 2.0d;
+                nodeAnchorPointY = floatBuff1[1];
+                break;
+              case NodeDetails.LABEL_ANCHOR_SOUTHWEST:
+                nodeAnchorPointX = floatBuff1[0];
+                nodeAnchorPointY = floatBuff1[1];
+                break;
+              case NodeDetails.LABEL_ANCHOR_WEST:
+                nodeAnchorPointX = floatBuff1[0];
+                nodeAnchorPointY =
+                  (((double) floatBuff1[1]) + floatBuff1[3]) / 2.0d;
+                break;
+              case NodeDetails.LABEL_ANCHOR_NORTHWEST:
+                nodeAnchorPointX = floatBuff1[0];
+                nodeAnchorPointY = floatBuff1[3];
+                break;
+              default:
+                throw new IllegalStateException
+                  ("encoutered an invalid LABEL_ANCHOR_* constant: " +
+                   nodeAnchor); }
               float textXCenter = 0;
               float textYCenter = 0;
               grafx.drawTextFull
