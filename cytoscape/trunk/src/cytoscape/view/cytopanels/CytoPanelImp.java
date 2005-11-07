@@ -170,12 +170,12 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 	/**
 	 * CytoPanelEast title.
 	 */
-    private static final String CYTOPANEL_TITLE_EAST = "CytoPanel 2";
+    private static final String CYTOPANEL_TITLE_EAST = "CytoPanel 3";
 
 	/**
 	 * CytoPanelSouth title.
 	 */
-    private static final String CYTOPANEL_TITLE_SOUTH = "CytoPanel 3";
+    private static final String CYTOPANEL_TITLE_SOUTH = "CytoPanel 2";
 
 	/**
 	 * CytoPanelNorth title.

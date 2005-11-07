@@ -318,18 +318,18 @@ public class CyMenus implements GraphViewChangeListener {
 		cytoPanel = Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST);
 		cytoPanelEastItem = new JCheckBoxMenuItem(cytoPanel.getTitle());
 		initCytoPanelMenuItem(cytoPanel, cytoPanelEastItem, false, false,
-				"cytoPanelEast", KeyEvent.VK_2);
+				"cytoPanelEast", KeyEvent.VK_3);
 
 		// setup cytopanel south (disabled/hidden by default)
 		cytoPanel = Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH);
 		cytoPanelSouthItem = new JCheckBoxMenuItem(cytoPanel.getTitle());
 		initCytoPanelMenuItem(cytoPanel, cytoPanelSouthItem, false, false,
-				"cytoPanelSouth", KeyEvent.VK_3);
+				"cytoPanelSouth", KeyEvent.VK_2);
 
 		// add cytopanel menu items to CytoPanels Menu
 		menuBar.getMenu("CytoPanels").add(cytoPanelWestItem);
-		menuBar.getMenu("CytoPanels").add(cytoPanelEastItem);
 		menuBar.getMenu("CytoPanels").add(cytoPanelSouthItem);
+		menuBar.getMenu("CytoPanels").add(cytoPanelEastItem);
 	}
 
 	private void initCytoPanelMenuItem(CytoPanel cytoPanel,

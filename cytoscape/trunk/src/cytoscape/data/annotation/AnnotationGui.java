@@ -32,28 +32,53 @@
 // $Author$
 package cytoscape.data.annotation;
 
-import java.awt.event.*;
-import javax.swing.*;
-import javax.swing.event.*;
-import java.awt.*;
-import javax.swing.tree.*;
-import javax.swing.JOptionPane;
-import java.util.*;
+import giny.view.NodeView;
+
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.Vector;
 
-import giny.view.*;
+import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTree;
+import javax.swing.ListSelectionModel;
+import javax.swing.WindowConstants;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
 
-import cytoscape.*;
-
+import cytoscape.CyNetwork;
+import cytoscape.CyNode;
+import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
-import cytoscape.data.servers.*;
-
-import cytoscape.layout.*;
-
-import cytoscape.view.CyNetworkView;
-
+import cytoscape.data.servers.BioDataServer;
+import cytoscape.layout.AttributeLayout;
 import cytoscape.util.CytoscapeAction;
+import cytoscape.view.CyNetworkView;
 
 //----------------------------------------------------------------------------------------
 /**
@@ -80,7 +105,7 @@ public class AnnotationGui extends CytoscapeAction {
 
 	CyNetworkView networkView;
 	CyNetwork network;
-
+	
 	// ----------------------------------------------------------------------------------------
 	public AnnotationGui() {
 		super();
@@ -99,6 +124,7 @@ public class AnnotationGui extends CytoscapeAction {
 	// ----------------------------------------------------------------------------------------
 	public void actionPerformed(ActionEvent e) {
 
+		
 		networkView = Cytoscape.getCurrentNetworkView();
 		network = networkView.getNetwork();
 
@@ -120,8 +146,9 @@ public class AnnotationGui extends CytoscapeAction {
 		if (this.attributeLayouter == null) {
 			this.attributeLayouter = new AttributeLayout(networkView);
 		}
+		
 		Semantics.applyNamingServices(network);
-
+		
 		defaultSpecies = CytoscapeInit.getDefaultSpeciesName();
 		// if (this.mainDialog == null) {
 		mainDialog = new Gui("Annotation");
@@ -129,7 +156,6 @@ public class AnnotationGui extends CytoscapeAction {
 		mainDialog.setLocationRelativeTo(Cytoscape.getDesktop());
 		// }
 		mainDialog.setVisible(true);
-
 	} // actionPerformed
 	// ----------------------------------------------------------------------------------------
 	protected class Gui extends JDialog {
@@ -281,8 +307,8 @@ public class AnnotationGui extends CytoscapeAction {
 		class SelectNodesTreeSelectionListener implements TreeSelectionListener {
 
 			public void valueChanged(TreeSelectionEvent e) {
-				DefaultMutableTreeNode node = 
-					(DefaultMutableTreeNode)currentAnnotationsTree.getLastSelectedPathComponent();
+				DefaultMutableTreeNode node = (DefaultMutableTreeNode) currentAnnotationsTree
+						.getLastSelectedPathComponent();
 				if (node == null)
 					return;
 				layoutByAnnotationButton.setEnabled(!node.isLeaf());
@@ -291,7 +317,7 @@ public class AnnotationGui extends CytoscapeAction {
 					return;
 
 				CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
-				
+
 				// unselect every node in the graph
 				for (Iterator nvi = networkView.getNodeViewsIterator(); nvi
 						.hasNext();) {
@@ -304,9 +330,9 @@ public class AnnotationGui extends CytoscapeAction {
 						.hasNext();) {
 					// get the particular node view
 					NodeView nv = (NodeView) nvi.next();
-					String canonicalName = 
-						nodeAttributes.getStringAttribute(nv.getNode().getIdentifier(),
-									Semantics.CANONICAL_NAME);
+					String canonicalName = nodeAttributes.getStringAttribute(nv
+							.getNode().getIdentifier(),
+							Semantics.CANONICAL_NAME);
 					if (canonicalName == null) {
 						continue;
 					}
@@ -314,33 +340,36 @@ public class AnnotationGui extends CytoscapeAction {
 					for (Iterator mi = selectionHash.keySet().iterator(); mi
 							.hasNext();) {
 						String name = (String) mi.next();
-						
+
 						Vector categoryList = (Vector) selectionHash.get(name);
 						byte type = nodeAttributes.getType(name);
-						if(type == CyAttributes.TYPE_STRING){
-							String attributeValue = nodeAttributes.getStringAttribute(canonicalName, name);
-							if(attributeValue != null && categoryList.contains(attributeValue))
+						if (type == CyAttributes.TYPE_STRING) {
+							String attributeValue = nodeAttributes
+									.getStringAttribute(canonicalName, name);
+							if (attributeValue != null
+									&& categoryList.contains(attributeValue))
 								nv.setSelected(true);
 							break; // no point in checking other attributes
-						}else if(type == CyAttributes.TYPE_SIMPLE_LIST){
+						} else if (type == CyAttributes.TYPE_SIMPLE_LIST) {
 							boolean hit = false;
-							List attributeList = nodeAttributes.getAttributeList(canonicalName, name);
+							List attributeList = nodeAttributes
+									.getAttributeList(canonicalName, name);
 							for (Iterator ali = attributeList.iterator(); ali
 									.hasNext();) {
 								if (categoryList.contains(ali.next())) {
 									nv.setSelected(true);
 									hit = true;
 									break; // no point in checking the rest of
-											// the list
+									// the list
 								}
 							}// ali iterator
-							
+
 							if (hit) {
 								break;
 							} // no point in checking other attributes
-							
+
 						}// if list
-					}//mi iterator
+					}// mi iterator
 				}// nvi iterator
 
 				networkView.redrawGraph(false, false);
@@ -495,23 +524,26 @@ public class AnnotationGui extends CytoscapeAction {
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 		// something like "GO biological process" or "KEGG metabolic pathway"
 		String baseAnnotationName = aDesc.getCurator() + " " + aDesc.getType();
-		String annotationNameAtLevel = baseAnnotationName + " (level " + level + ")";
+		String annotationNameAtLevel = baseAnnotationName + " (level " + level
+				+ ")";
 		String annotationNameForLeafIDs = baseAnnotationName + " leaf IDs";
-		
+
 		// make a fresh start
 		nodeAttributes.deleteAttribute(annotationNameAtLevel);
 		nodeAttributes.deleteAttribute(annotationNameForLeafIDs);
 
 		Iterator it = Cytoscape.getRootGraph().nodesIterator();
 		ArrayList canonicals = new ArrayList();
-		while(it.hasNext()){
-			CyNode node = (CyNode)it.next();
-			String canonical = nodeAttributes.getStringAttribute(node.getIdentifier(), Semantics.CANONICAL_NAME);
-			if(canonical != null)
+		while (it.hasNext()) {
+			CyNode node = (CyNode) it.next();
+			String canonical = nodeAttributes.getStringAttribute(node
+					.getIdentifier(), Semantics.CANONICAL_NAME);
+			if (canonical != null)
 				canonicals.add(canonical);
 		}
-		
-		String[] canonicalNodeNames = (String[])canonicals.toArray(new String[canonicals.size()]);
+
+		String[] canonicalNodeNames = (String[]) canonicals
+				.toArray(new String[canonicals.size()]);
 
 		int unAnnotatedNodeCount = 0;
 		for (int i = 0; i < canonicalNodeNames.length; i++) {
@@ -522,17 +554,49 @@ public class AnnotationGui extends CytoscapeAction {
 			else {
 				String[] uniqueAnnotationsAtLevel = collapseToUniqueAnnotationsAtLevel(
 						fullAnnotations, level);
-				for (int j = 0; j < uniqueAnnotationsAtLevel.length; j++) {
-					
-					// we can do this because at the begining of the method we deleted the attribute annotationNameAtLevel:
-					List annotsList = nodeAttributes.getAttributeList(canonicalNodeNames[i], annotationNameAtLevel);
-					if(annotsList == null){
-						annotsList = new ArrayList();
-						nodeAttributes.setAttributeList(canonicalNodeNames[i], annotationNameAtLevel,annotsList);
+
+				// List to save values in the current level
+				List annotsList = new ArrayList();
+				if (uniqueAnnotationsAtLevel.length == 0) {
+					// No attribute available for this node
+					nodeAttributes.setAttribute(canonicalNodeNames[i],
+							annotationNameAtLevel, "");
+				} else {
+					// Extract all values in the current level
+					for (int j = 0; j < uniqueAnnotationsAtLevel.length; j++) {
+
+//						System.out.print("node cn = " + canonicalNodeNames[i]
+//								+ ",  and an@level = " + annotationNameAtLevel);
+//						System.out.println(",  an value@level = "
+//								+ uniqueAnnotationsAtLevel[j]);
+
+						// we can do this because at the begining of the method
+						// we deleted the attribute annotationNameAtLevel:
+						// annotsList =
+						// nodeAttributes.getAttributeList(canonicalNodeNames[i],
+						// annotationNameAtLevel);
+
+						// annotsList =
+						// nodeAttributes.getAttributeList(canonicalNodeNames[i],
+						// annotationNameAtLevel);
+						//					
+						// if(annotsList == null){
+						// annotsList = new ArrayList();
+						// //nodeAttributes.setAttributeList(canonicalNodeNames[i],
+						// annotationNameAtLevel,annotsList);
+						// annotsList.add(uniqueAnnotationsAtLevel[j]);
+						// }
+						annotsList.add(uniqueAnnotationsAtLevel[j]);
+
+					}// for j
+
+					if (annotsList.size() != 0) {
+						nodeAttributes.setAttributeList(canonicalNodeNames[i],
+								annotationNameAtLevel, annotsList);
 					}
-					annotsList.add(uniqueAnnotationsAtLevel[j]);
-				
-				}//for j
+
+				}
+
 				int[] annotationIDs = dataServer.getClassifications(aDesc,
 						canonicalNodeNames[i]);
 				Integer[] integerArray = new Integer[annotationIDs.length];
@@ -625,56 +689,61 @@ public class AnnotationGui extends CytoscapeAction {
 			// Modified by kono@ucsd.edu
 			// 10/20/2005
 			//
-			// - The following line of code throws exception when 
-			//    there is no match in the annotation.
-			//    Now it creates pop-up window when no match error found.
+			// - The following line of code throws exception when
+			// there is no match in the annotation.
+			// Now it creates pop-up window when no match error found.
 			//
-			
+
 			// Above modification commented out by iavila@systemsbiology.org
-			// The exception was thrown by GraphObjAttrib*tes, but now, we use CyAttributes
-			
+			// The exception was thrown by GraphObjAttrib*tes, but now, we use
+			// CyAttributes
+
 			Object[] uniqueAnnotationValues = null;
 
-		//	try {
+			// try {
 			CyAttributes nodeAtts = Cytoscape.getNodeAttributes();
 			Iterator it = Cytoscape.getRootGraph().nodesIterator();
 			HashSet values = new HashSet();
-			while(it.hasNext()){
-				CyNode node = (CyNode)it.next();
+			while (it.hasNext()) {
+				CyNode node = (CyNode) it.next();
 				byte type = nodeAtts.getType(currentAnnotationCategory);
-				if(type == CyAttributes.TYPE_STRING){
-					String strVal = nodeAtts.getStringAttribute(node.getIdentifier(), currentAnnotationCategory);
-					if(strVal != null)
+				if (type == CyAttributes.TYPE_STRING) {
+					String strVal = nodeAtts.getStringAttribute(node
+							.getIdentifier(), currentAnnotationCategory);
+					if (strVal != null)
 						values.add(strVal);
-				 	}else if(type == CyAttributes.TYPE_SIMPLE_LIST){
-				 		List vals = nodeAtts.getAttributeList(node.getIdentifier(), currentAnnotationCategory);
-				 		if(vals.size() > 0){
-				 			Object val = vals.get(0);
-				 			if(val instanceof String)
-				 				values.addAll(vals);
-				 		}	
-				 	}
-					
-			}//while it.hasNext
-			
+				} else if (type == CyAttributes.TYPE_SIMPLE_LIST) {
+					List vals = nodeAtts.getAttributeList(node.getIdentifier(),
+							currentAnnotationCategory);
+					if (vals.size() > 0) {
+						Object val = vals.get(0);
+						if (val instanceof String)
+							values.addAll(vals);
+					}
+				}
+
+			}// while it.hasNext
+
 			uniqueAnnotationValues = values.toArray();
-			
-			//} catch (Exception e1) {
-			
-			if(uniqueAnnotationValues.length == 0){
-				//System.err.println( "No match exception" + e1 );
-				JOptionPane.showMessageDialog(null,
-						"There is no match between the selected annotation \n"
-						+ "and current nodes in the network.\n"
-						+ "\nMake sure that your network data file \n"
-						+ "and Gene Association files use same naming scheme.\n\n"
-						+ "Please compare the 3rd column of Gene Association\n"
-						+"file (DB_Object_Symbol) and node names in your network."
-						, "No match in Gene Ontology Database",
-						JOptionPane.ERROR_MESSAGE);
-				
+
+			// } catch (Exception e1) {
+
+			if (uniqueAnnotationValues.length == 0) {
+				// System.err.println( "No match exception" + e1 );
+				JOptionPane
+						.showMessageDialog(
+								null,
+								"There is no match between the selected annotation \n"
+										+ "and current nodes in the network.\n"
+										+ "\nMake sure that your network data file \n"
+										+ "and Gene Association files use same naming scheme.\n\n"
+										+ "Please compare the 3rd column of Gene Association\n"
+										+ "file (DB_Object_Symbol) and node names in your network.",
+								"No match in Gene Ontology Database",
+								JOptionPane.ERROR_MESSAGE);
+
 			} // Mod by kono end (10/20/2005)
-			
+
 			if (uniqueAnnotationValues != null
 					&& uniqueAnnotationValues.length > 0
 					&& uniqueAnnotationValues[0].getClass() == "string"
