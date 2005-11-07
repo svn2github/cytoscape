@@ -16,7 +16,6 @@ import java.util.HashMap;
 /**
  * Tests Implementation of GraphObjAttributes.
  *
- * TODO:  Add Tests for equivalent access via CyAttributes and GraphObjAttributes
  * TODO:  Add to DataSuite
  */
 public class GraphObjAttributesTest extends TestCase {
@@ -27,7 +26,7 @@ public class GraphObjAttributesTest extends TestCase {
      */
     public void testConstructor() throws Exception {
         CyAttributes cyAttributes = new CyAttributesImpl();
-        GraphObjAttributes attributes = new GraphObjAttributesImpl(cyAttributes);
+        GraphObjAttributes attributes = new GraphObjAttributes(cyAttributes);
         assertTrue(attributes.numberOfAttributes() == 0);
     }
 
@@ -36,7 +35,7 @@ public class GraphObjAttributesTest extends TestCase {
      */
     public void testSet() {
         CyAttributes cyAttributes = new CyAttributesImpl();
-        GraphObjAttributes attributes = new GraphObjAttributesImpl
+        GraphObjAttributes attributes = new GraphObjAttributes
                 (cyAttributes);
         assertTrue(attributes.numberOfAttributes() == 0);
 
@@ -55,7 +54,7 @@ public class GraphObjAttributesTest extends TestCase {
      */
     public void testGetSingleStringValueFromVector() {
         CyAttributes cyAttributes = new CyAttributesImpl();
-        GraphObjAttributes attributes = new GraphObjAttributesImpl
+        GraphObjAttributes attributes = new GraphObjAttributes
                 (cyAttributes);
         assertTrue(attributes.numberOfAttributes() == 0);
 
@@ -75,7 +74,7 @@ public class GraphObjAttributesTest extends TestCase {
      */
     public void testGetSingleDoubleValueFromVector() throws Exception {
         CyAttributes cyAttributes = new CyAttributesImpl();
-        GraphObjAttributes attributes = new GraphObjAttributesImpl
+        GraphObjAttributes attributes = new GraphObjAttributes
                 (cyAttributes);
         assertTrue(attributes.numberOfAttributes() == 0);
 
@@ -103,7 +102,7 @@ public class GraphObjAttributesTest extends TestCase {
      */
     public void testAdd() {
         CyAttributes cyAttributes = new CyAttributesImpl();
-        GraphObjAttributes attributes = new GraphObjAttributesImpl
+        GraphObjAttributes attributes = new GraphObjAttributes
                 (cyAttributes);
 
         //--------------------------------------------------------------------
@@ -134,7 +133,7 @@ public class GraphObjAttributesTest extends TestCase {
      */
     public void testAddGraphObjAttributes() {
         CyAttributes cyAttributes = new CyAttributesImpl();
-        GraphObjAttributes original = new GraphObjAttributesImpl
+        GraphObjAttributes original = new GraphObjAttributes
                 (cyAttributes);
         original.set("expressionLevel", "GAL4", 1.8);
         original.set("expressionLevel", "GAL80", 0.01);
@@ -161,7 +160,7 @@ public class GraphObjAttributesTest extends TestCase {
                 .equals("The Columbia City Ale House"));
 
         CyAttributes cyAttributes2 = new CyAttributesImpl();
-        GraphObjAttributes additional = new GraphObjAttributesImpl
+        GraphObjAttributes additional = new GraphObjAttributes
                 (cyAttributes2);
         Double homology = new Double(99.32);
         Integer count = new Integer(33);
@@ -220,7 +219,7 @@ public class GraphObjAttributesTest extends TestCase {
      */
     public void testHasAttribute() {
         CyAttributes cyAttributes = new CyAttributesImpl();
-        GraphObjAttributes attributes = new GraphObjAttributesImpl
+        GraphObjAttributes attributes = new GraphObjAttributes
                 (cyAttributes);
         attributes.set("expressionLevel", "GAL4", 1.8);
         attributes.set("expressionLevel", "GAL80", 0.01);
@@ -247,7 +246,7 @@ public class GraphObjAttributesTest extends TestCase {
      */
     public void testGetAttributeNames() {
         CyAttributes cyAttributes = new CyAttributesImpl();
-        GraphObjAttributes attributes = new GraphObjAttributesImpl
+        GraphObjAttributes attributes = new GraphObjAttributes
                 (cyAttributes);
         attributes.set("expressionLevel", "GAL4", 1.8);
         attributes.set("expressionLevel", "GAL80", 0.01);
@@ -262,7 +261,7 @@ public class GraphObjAttributesTest extends TestCase {
      */
     public void testGetAttributeByName() throws ClassNotFoundException {
         CyAttributes cyAttributes = new CyAttributesImpl();
-        GraphObjAttributes attributes = new GraphObjAttributesImpl
+        GraphObjAttributes attributes = new GraphObjAttributes
                 (cyAttributes);
         attributes.set("expressionLevel", "GAL4", 1.8);
         attributes.set("expressionLevel", "GAL80", 0.01);
@@ -293,7 +292,7 @@ public class GraphObjAttributesTest extends TestCase {
      */
     public void testGetOneGeneAttribute() {
         CyAttributes cyAttributes = new CyAttributesImpl();
-        GraphObjAttributes attributes = new GraphObjAttributesImpl
+        GraphObjAttributes attributes = new GraphObjAttributes
                 (cyAttributes);
 
         double gal4_exp = 1.8;
@@ -329,7 +328,7 @@ public class GraphObjAttributesTest extends TestCase {
     public void testTextFileReaderOnNodeAttributeData() throws
             IOException {
         CyAttributes cyAttributes = new CyAttributesImpl();
-        GraphObjAttributes attributes = new GraphObjAttributesImpl
+        GraphObjAttributes attributes = new GraphObjAttributes
                 (cyAttributes);
         assertTrue(attributes.numberOfAttributes() == 0);
         attributes.readAttributesFromFile(new File("testData/noLabels.fooB"));
@@ -344,7 +343,7 @@ public class GraphObjAttributesTest extends TestCase {
     public void testTextFileReaderOnEdgeAttributeData()
         throws IOException {
         CyAttributes cyAttributes = new CyAttributesImpl();
-        GraphObjAttributes attributes = new GraphObjAttributesImpl
+        GraphObjAttributes attributes = new GraphObjAttributes
                 (cyAttributes);
         assertTrue(attributes.numberOfAttributes() == 0);
         File file = new File("testData/yeastSmall.edgeAttr.0");
@@ -364,7 +363,7 @@ public class GraphObjAttributesTest extends TestCase {
     public void testAddAttributeHash() throws IOException {
         // first: read in and add fooB
         CyAttributes cyAttributes = new CyAttributesImpl();
-        GraphObjAttributes firstSet = new GraphObjAttributesImpl
+        GraphObjAttributes firstSet = new GraphObjAttributes
                 (cyAttributes);
         assertTrue(firstSet.numberOfAttributes() == 0);
         String attributeName = "fooB";
@@ -377,7 +376,7 @@ public class GraphObjAttributesTest extends TestCase {
         File file = new File("testData/yeastSmall.edgeAttr.0");
 
         CyAttributes cyAttributes2 = new CyAttributesImpl();
-        GraphObjAttributes secondSet = new GraphObjAttributesImpl
+        GraphObjAttributes secondSet = new GraphObjAttributes
                 (cyAttributes2);
         secondSet.readAttributesFromFile(file);
         assertTrue(secondSet.numberOfAttributes() == 1);
@@ -405,7 +404,7 @@ public class GraphObjAttributesTest extends TestCase {
     public void testNodeToNameMapping() throws IOException {
         // set up a single attribute 'fooB', with 333 node-value pairs
         CyAttributes cyAttributes = new CyAttributesImpl();
-        GraphObjAttributes nodeAttributes = new GraphObjAttributesImpl
+        GraphObjAttributes nodeAttributes = new GraphObjAttributes
                 (cyAttributes);
         assertTrue(nodeAttributes.numberOfAttributes() == 0);
         String attributeName = "fooB";
@@ -450,7 +449,7 @@ public class GraphObjAttributesTest extends TestCase {
      */
     public void testGetAttributesBundle() {
         CyAttributes cyAttributes = new CyAttributesImpl();
-        GraphObjAttributes attributes = new GraphObjAttributesImpl
+        GraphObjAttributes attributes = new GraphObjAttributes
                 (cyAttributes);
 
         Double homology = new Double(99.32);
@@ -483,7 +482,7 @@ public class GraphObjAttributesTest extends TestCase {
      */
     public void testAddAttributesBundle() {
         CyAttributes cyAttributes = new CyAttributesImpl();
-        GraphObjAttributes attributes = new GraphObjAttributesImpl
+        GraphObjAttributes attributes = new GraphObjAttributes
                 (cyAttributes);
 
         Double homology = new Double(99.32);
@@ -531,7 +530,7 @@ public class GraphObjAttributesTest extends TestCase {
 //      */
 //     public void testCountDuplicateNamesForAttribute() throws Exception {
 //         CyAttributes cyAttributes = new CyAttributesImpl();
-//         GraphObjAttributes attributes = new GraphObjAttributesImpl
+//         GraphObjAttributes attributes = new GraphObjAttributes
 //                 (cyAttributes);
 //         assertTrue(attributes.countIdentical("A") == 0);
 //         assertTrue(attributes.countIdentical("B") == 0);
@@ -549,7 +548,7 @@ public class GraphObjAttributesTest extends TestCase {
     public void testGetAndAddNameMapping() throws IOException {
         // set up a single attribute 'fooB', with 333 node-value pairs
         CyAttributes cyAttributes = new CyAttributesImpl();
-        GraphObjAttributes nodeAttributes = new GraphObjAttributesImpl
+        GraphObjAttributes nodeAttributes = new GraphObjAttributes
                 (cyAttributes);
         assertTrue(nodeAttributes.numberOfAttributes() == 0);
         String attributeName = "fooB";
@@ -626,7 +625,7 @@ public class GraphObjAttributesTest extends TestCase {
      */
     public void testGetAttributeClass() throws IOException {
         CyAttributes cyAttributes = new CyAttributesImpl();
-        GraphObjAttributes attributes = new GraphObjAttributesImpl
+        GraphObjAttributes attributes = new GraphObjAttributes
                 (cyAttributes);
 
         Double homology = new Double(99.32);
@@ -658,7 +657,7 @@ public class GraphObjAttributesTest extends TestCase {
      */
     public void testCloning() {
         CyAttributes cyAttributes = new CyAttributesImpl();
-        GraphObjAttributes original = new GraphObjAttributesImpl
+        GraphObjAttributes original = new GraphObjAttributes
                 (cyAttributes);
 
         Double homology = new Double(99.32);
@@ -692,7 +691,7 @@ public class GraphObjAttributesTest extends TestCase {
      */
     public void testDeleteAttribute() {
         CyAttributes cyAttributes = new CyAttributesImpl();
-        GraphObjAttributes attributes = new GraphObjAttributesImpl
+        GraphObjAttributes attributes = new GraphObjAttributes
                 (cyAttributes);
 
         Double homology = new Double(99.32);
@@ -727,7 +726,7 @@ public class GraphObjAttributesTest extends TestCase {
      */
     public void testDeleteAttributeForOneGraphObject() {
         CyAttributes cyAttributes = new CyAttributesImpl();
-        GraphObjAttributes attributes = new GraphObjAttributesImpl
+        GraphObjAttributes attributes = new GraphObjAttributes
                 (cyAttributes);
 
         Double homology = new Double(99.32);
@@ -765,7 +764,7 @@ public class GraphObjAttributesTest extends TestCase {
      */
     public void testDeleteAttributeValueForOneGraphObject() {
         CyAttributes cyAttributes = new CyAttributesImpl();
-        GraphObjAttributes attributes = new GraphObjAttributesImpl
+        GraphObjAttributes attributes = new GraphObjAttributes
                 (cyAttributes);
 
         attributes.append("homolog", "GAL4", "h0");
@@ -819,7 +818,7 @@ public class GraphObjAttributesTest extends TestCase {
      */
     public void testAttributeCategories() {
         CyAttributes cyAttributes = new CyAttributesImpl();
-        GraphObjAttributes attributes = new GraphObjAttributesImpl
+        GraphObjAttributes attributes = new GraphObjAttributes
                 (cyAttributes);
 
         Double homology = new Double(99.32);
@@ -861,7 +860,7 @@ public class GraphObjAttributesTest extends TestCase {
         String s3 = "SNP Count (category=data) (class=java.lang.Integer)";
 
         CyAttributes cyAttributes = new CyAttributesImpl();
-        GraphObjAttributes a = new GraphObjAttributesImpl
+        GraphObjAttributes a = new GraphObjAttributes
                 (cyAttributes);
         a.processFileHeader(s0);
         a.processFileHeader(s1);
@@ -880,7 +879,7 @@ public class GraphObjAttributesTest extends TestCase {
      */
     public void testAttributeCategoryAndClassDetection() throws Exception {
         CyAttributes cyAttributes = new CyAttributesImpl();
-        GraphObjAttributes a = new GraphObjAttributesImpl
+        GraphObjAttributes a = new GraphObjAttributes
                 (cyAttributes);
         a.readAttributesFromFile(new File
                 ("testData/implicitStringNoCategory.attribute"));
@@ -889,7 +888,7 @@ public class GraphObjAttributesTest extends TestCase {
 //                 (GraphObjAttributes.DEFAULT_CATEGORY));
 
         cyAttributes = new CyAttributesImpl();
-        a = new GraphObjAttributesImpl (cyAttributes);
+        a = new GraphObjAttributes (cyAttributes);
         a.readAttributesFromFile(new File
                 ("testData/explicitStringNoCategory.attribute"));
         assertTrue(a.getClass("sample_zero") == "string".getClass());
@@ -897,35 +896,35 @@ public class GraphObjAttributesTest extends TestCase {
 //                 (GraphObjAttributes.DEFAULT_CATEGORY));
 
         cyAttributes = new CyAttributesImpl();
-        a = new GraphObjAttributesImpl (cyAttributes);
+        a = new GraphObjAttributes (cyAttributes);
         a.readAttributesFromFile(new File
                 ("testData/implicitStringWithCategory.attribute"));
         assertTrue(a.getClass("sample_zero") == "string".getClass());
 //         assertTrue(a.getCategory("sample_zero").equals("annotation"));
 
         cyAttributes = new CyAttributesImpl();
-        a = new GraphObjAttributesImpl (cyAttributes);
+        a = new GraphObjAttributes (cyAttributes);
         a.readAttributesFromFile(new File
                 ("testData/explicitStringWithCategory.attribute"));
         assertTrue(a.getClass("sample_zero") == "string".getClass());
 //         assertTrue(a.getCategory("sample_zero").equals("annotation"));
 
         cyAttributes = new CyAttributesImpl();
-        a = new GraphObjAttributesImpl (cyAttributes);
+        a = new GraphObjAttributes (cyAttributes);
         a.readAttributesFromFile(new File
                 ("testData/explicitUrlWithCategory.attribute"));
 //         assertTrue(a.getClass("locusLink") == Class.forName("java.net.URL"));
 //         assertTrue(a.getCategory("locusLink").equals("annotation"));
 
         cyAttributes = new CyAttributesImpl();
-        a = new GraphObjAttributesImpl (cyAttributes);
+        a = new GraphObjAttributes (cyAttributes);
         a.readAttributesFromFile(new File("testData/implicitDouble.attribute"));
         assertTrue(a.getClass("Score") == Class.forName("java.lang.Double"));
 //         assertTrue(a.getCategory("Score").equals
 //                 (GraphObjAttributes.DEFAULT_CATEGORY));
 
         cyAttributes = new CyAttributesImpl();
-        a = new GraphObjAttributesImpl (cyAttributes);
+        a = new GraphObjAttributes (cyAttributes);
         a.readAttributesFromFile(new File("testData/implicitUrl.attribute"));
 //         assertTrue(a.getClass("Locus Link") == Class.forName("java.net.URL"));
 //         assertTrue(a.getCategory("Locus Link").equals
@@ -940,7 +939,7 @@ public class GraphObjAttributesTest extends TestCase {
     public void testReadArrayAttributes() throws IOException {
         String name = "GO_molecular_function_level_4";
         CyAttributes cyAttributes = new CyAttributesImpl();
-        GraphObjAttributes a = new GraphObjAttributesImpl
+        GraphObjAttributes a = new GraphObjAttributes
                 (cyAttributes);
         a.readAttributesFromFile(new File
                 ("testData/implicitStringArray.attribute"));
@@ -976,7 +975,7 @@ public class GraphObjAttributesTest extends TestCase {
      */
     public void testGetUniqueValues() {
         CyAttributes cyAttributes = new CyAttributesImpl();
-        GraphObjAttributes a = new GraphObjAttributesImpl
+        GraphObjAttributes a = new GraphObjAttributes
                 (cyAttributes);
 
         // using 'append' ensures that each attribute value is a list,

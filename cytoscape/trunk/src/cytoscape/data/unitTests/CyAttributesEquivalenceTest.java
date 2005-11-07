@@ -4,7 +4,6 @@ import junit.framework.TestCase;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.CyAttributesImpl;
 import cytoscape.data.GraphObjAttributes;
-import cytoscape.data.GraphObjAttributesImpl;
 
 import javax.swing.*;
 import java.util.List;
@@ -32,7 +31,7 @@ public class CyAttributesEquivalenceTest extends TestCase {
      */
     protected void setUp() throws Exception {
         cyAttributes = new CyAttributesImpl();
-        graphAttributes = new GraphObjAttributesImpl (cyAttributes);
+        graphAttributes = new GraphObjAttributes (cyAttributes);
     }
 
     /**
