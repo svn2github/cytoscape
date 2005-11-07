@@ -533,6 +533,13 @@ public final class GraphRenderer
                 nodeDetails.labelOffsetVectorX(node, labelInx);
               final float offsetVectorY =
                 nodeDetails.labelOffsetVectorY(node, labelInx);
+              final byte justify;
+              {
+                if (text.indexOf('\n') >= 0) {
+                  justify = nodeDetails.labelJustify(node, labelInx); }
+                else {
+                  justify = 0; }
+              }
             }
               
 
