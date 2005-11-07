@@ -522,7 +522,7 @@ public final class GraphRenderer
             for (int labelInx = 0; labelInx < labelCount; labelInx++) {
               final String text = nodeDetails.labelText(node, labelInx);
               final Font font = nodeDetails.labelFont(node, labelInx);
-              final double scaleFactor =
+              final double fontScaleFactor =
                 nodeDetails.labelScaleFactor(node, labelInx);
               final Paint paint = nodeDetails.labelPaint(node, labelInx);
               final byte textAnchor =
@@ -540,37 +540,13 @@ public final class GraphRenderer
                 else {
                   justify = 0; }
               }
-            }
-              
-
-            // Compute node label, font, scale factor, and label paint.
-            final String label;
-            final Font font;
-            final double fontScaleFactor;
-            final Paint labelPaint;
-            {
-              String labelTemp = nodeDetails.labelText(node);
-              if ("".equals(labelTemp)) { labelTemp = null; }
-              label = labelTemp;
-              if (label == null) {
-                font = null;
-                fontScaleFactor = 1.0d;
-                labelPaint = null; }
-              else {
-                font = nodeDetails.labelFont(node);
-                fontScaleFactor = nodeDetails.labelScaleFactor(node);
-                labelPaint = nodeDetails.labelPaint(node); }
-            }
-            // Now label is not null if and only if we need to render label.
-
-            if (label != null) {
+              float textXCenter = 0;
+              float textYCenter = 0;
               grafx.drawTextFull
-                (font, fontScaleFactor, label,
-                 (float) ((((double) floatBuff1[0]) + floatBuff1[2]) / 2.0d),
-                 (float) ((((double) floatBuff1[1]) + floatBuff1[3]) / 2.0d),
-                 0.0f, labelPaint, (lodBits & LOD_TEXT_AS_SHAPE) != 0); } } } }
+                (font, fontScaleFactor, text,
+                 textXCenter, textYCenter, 0, paint,
+                 (lodBits & LOD_TEXT_AS_SHAPE) != 0); } } } }
     }
-
   }
 
 //   public final static boolean queryEdgeIntersect(
