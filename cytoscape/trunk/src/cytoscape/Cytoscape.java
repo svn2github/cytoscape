@@ -391,6 +391,9 @@ public abstract class Cytoscape {
 					+ ") " + node_2.getIdentifier();
             edge.setIdentifier(edge_name);
 
+            //  Store Edge Name Mapping within GOB.
+            Cytoscape.getEdgeNetworkData().addNameMapping(edge_name, edge);
+
             //  store edge id as INTERACTION / CANONICAL_NAME Attributes
             edgeAttributes.setAttribute(edge_name, Semantics.INTERACTION,
                     (String) attribute_value);
