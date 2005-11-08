@@ -4,6 +4,10 @@ import junit.framework.TestCase;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.CyAttributesImpl;
 import cytoscape.data.GraphObjAttributes;
+import cytoscape.data.Semantics;
+import cytoscape.Cytoscape;
+import cytoscape.CyNode;
+import cytoscape.CyEdge;
 
 import javax.swing.*;
 import java.util.List;
@@ -24,6 +28,7 @@ public class CyAttributesEquivalenceTest extends TestCase {
     private static final String DUMMY_STRING_ATTRIBUTE = "attribute2";
     private static final String DUMMY_LIST_ATTRIBUTE = "attribute3";
     private static final String DUMMY_BUTTON_ATTRIBUTE = "attribute5";
+    private static final String DUMMY_STACK_ATTRIBUTE = "attribute6";
 
     /**
      * Set things up.
@@ -270,6 +275,31 @@ public class CyAttributesEquivalenceTest extends TestCase {
         //  Get it back
         stack = (Stack) graphAttributes.get(DUMMY_BUTTON_ATTRIBUTE, DUMMY_ID_2);
         String value = (String) stack.pop();
+        assertEquals ("Apple", value);
+
+        //  Verify that you can store arbitary objects via Cytoscape.java
+        //  First test node attributes
+        stack = new Stack();
+        stack.push(new String ("Apple"));
+        CyNode node = Cytoscape.getCyNode(DUMMY_ID_1, true);
+        Cytoscape.setNodeAttributeValue(node, DUMMY_STACK_ATTRIBUTE,
+                stack);
+        stack = (Stack) Cytoscape.getNodeAttributeValue
+                (node, DUMMY_STACK_ATTRIBUTE);
+        value = (String) stack.pop();
+        assertEquals ("Apple", value);
+
+        //  Then test edge attributes
+        stack = new Stack();
+        stack.push(new String ("Apple"));
+        CyNode node1 = Cytoscape.getCyNode("1", true);
+        CyNode node2 = Cytoscape.getCyNode("2", true);
+        CyEdge edge = Cytoscape.getCyEdge(node1, node2, Semantics.INTERACTION,
+                "pp", true);
+        Cytoscape.setEdgeAttributeValue(edge, DUMMY_STACK_ATTRIBUTE, stack);
+        stack = (Stack) Cytoscape.getEdgeAttributeValue
+                (edge, DUMMY_STACK_ATTRIBUTE);
+        value = (String) stack.pop();
         assertEquals ("Apple", value);
     }
 
