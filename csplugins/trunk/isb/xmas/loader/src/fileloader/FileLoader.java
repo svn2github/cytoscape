@@ -390,7 +390,6 @@ public class FileLoader {
           // assign types
           for ( int i = 0; i < line.length; ++i ) {
             types.add( line[i] );
-            System.out.println( "Type: "+titles.get(i)+" "+line[i] );
           }
         }
 
