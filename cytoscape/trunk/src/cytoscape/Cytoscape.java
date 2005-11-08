@@ -356,7 +356,7 @@ public abstract class Cytoscape {
 			for (int i = 0; i < n1Edges.length; i++) {
 				CyEdge edge = (CyEdge) Cytoscape.getRootGraph().getEdge(
 						n1Edges[i]);
-				Object attValue = getEdgeAttributeValue(edge, attribute);
+				Object attValue = private_getEdgeAttributeValue(edge, attribute);
 
 				if (attValue != null && attValue.equals(attribute_value)) {
 					CyNode otherNode = (CyNode) edge.getTarget();
@@ -488,6 +488,27 @@ public abstract class Cytoscape {
           else {
               //  As a last resort, check the GOB for arbitary objects.
               return edgeData.get(attribute, canonName);
+          }
+	}
+
+	private static Object private_getEdgeAttributeValue(Edge edge, String attribute) {
+          final CyAttributes edgeAttrs = Cytoscape.getEdgeAttributes();
+          final String canonName = edge.getIdentifier();
+          final byte cyType = edgeAttrs.getType(attribute);
+          if (cyType == CyAttributes.TYPE_BOOLEAN) {
+            return edgeAttrs.getBooleanAttribute(canonName, attribute); }
+          else if (cyType == CyAttributes.TYPE_FLOATING) {
+            return edgeAttrs.getDoubleAttribute(canonName, attribute); }
+          else if (cyType == CyAttributes.TYPE_INTEGER) {
+            return edgeAttrs.getIntegerAttribute(canonName, attribute); }
+          else if (cyType == CyAttributes.TYPE_STRING) {
+            return edgeAttrs.getStringAttribute(canonName, attribute); }
+          else if (cyType == CyAttributes.TYPE_SIMPLE_LIST) {
+            return edgeAttrs.getAttributeList(canonName, attribute); }
+          else if (cyType == CyAttributes.TYPE_SIMPLE_MAP) {
+            return edgeAttrs.getAttributeMap(canonName, attribute); }
+          else {
+            return null;
           }
 	}
 
