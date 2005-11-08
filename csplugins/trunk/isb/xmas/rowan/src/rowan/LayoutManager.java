@@ -2,7 +2,7 @@ package rowan;
 
 import cytoscape.*;
 import cytoscape.view.*;
-import cytoscape.data.*;
+
 import cytoscape.data.attr.*;
 import javax.swing.*;
 import java.awt.event.*;
@@ -14,6 +14,7 @@ import giny.view.*;
 import giny.model.*;
 
 import exesto.*;
+
 
 public class LayoutManager 
   extends JMenu 
@@ -49,8 +50,7 @@ public class LayoutManager
 
   public void saveLayout ( String layout ) {
 
-    //CyAttributes data = NetworkAttributes.getNodeAttributes( currentNetwork );
-    CyAttributes data = Cytoscape.getNodeAttributes();
+    CytoscapeData data = NetworkAttributes.getCytoscapeData( NetworkAttributes.getNodeAttributes( currentNetwork ) );
     Iterator nodes = currentNetworkView.getNodeViewsIterator();
     while ( nodes.hasNext() ) {
 
@@ -59,26 +59,16 @@ public class LayoutManager
 
       double x = view.getXPosition();
       double y = view.getYPosition();
+      
+      data.putAttributeKeyValue( node.getIdentifier(),
+                                 "NODE_X",
+                                 layout,
+                                 new Double(x) ); 
+      data.putAttributeKeyValue( node.getIdentifier(),
+                                 "NODE_Y",
+                                 layout,
+                                 new Double(y) );
 
-      Map mapx = data.getAttributeMap( node.getIdentifier(), "NODE_X" );
-      if ( mapx == null ) {
-        System.out.println( "MAP was null for NODE_X making a new one" );
-        mapx = new HashMap();
-        mapx.put( layout, new Double(x) );
-        data.setAttributeMap( node.getIdentifier(), "NODE_X", mapx );
-      } else {
-        mapx.put( layout, new Double(x) );
-      }
-
-      Map mapy = data.getAttributeMap( node.getIdentifier(), "NODE_Y" );
-      if ( mapy == null ) {
-        mapy = new HashMap();
-        mapy.put( layout, new Double(y) );
-        data.setAttributeMap( node.getIdentifier(), "NODE_Y", mapy );
-      } else {
-        mapy.put( layout, new Double(y) );
-      }
-     
     }
    
     currentLayout = layout;
@@ -89,21 +79,21 @@ public class LayoutManager
   }
 
   public void applyLayout ( String layout ) {
-    
-    CyAttributes data = NetworkAttributes.getNodeAttributes( currentNetwork );
+    CytoscapeData data = NetworkAttributes.getCytoscapeData( NetworkAttributes.getNodeAttributes( currentNetwork ) );
     Iterator nodes = currentNetworkView.getNodeViewsIterator();
     while ( nodes.hasNext() ) {
 
       NodeView view = ( NodeView )nodes.next();
       Node node = view.getNode();
 
-
-      Map mapx = data.getAttributeMap( node.getIdentifier(), "NODE_X" );
-      double x = ((Double)mapx.get( layout )).doubleValue();
       
-      Map mapy = data.getAttributeMap( node.getIdentifier(), "NODE_Y" );
-      double y = ((Double)mapy.get( layout )).doubleValue();
-
+      double x = ((Double)data.getAttributeKeyValue( node.getIdentifier(),
+                                                     "NODE_X",
+                                                     layout ) ).doubleValue();
+                  
+      double y = ((Double)data.getAttributeKeyValue( node.getIdentifier(),
+                                                     "NODE_Y",
+                                                     layout ) ).doubleValue();
 
       view.setXPosition( x , false );
       view.setYPosition( y , false );
@@ -222,11 +212,10 @@ public class LayoutManager
     public void updateLayouts() {
       removeAll();
       
-
+      
       try {
         Node node = ( Node )currentNetwork.nodesList().get(0);
-        CyAttributes data = NetworkAttributes.getNodeAttributes(currentNetwork );
-        Set keys = data.getAttributeMap( node.getIdentifier(), "NODE_X" ).keySet();
+       Set keys =  NetworkAttributes.getCytoscapeData( NetworkAttributes.getNodeAttributes( currentNetwork ) ).getAttributeKeySet( node.getIdentifier(), "NODE_X" );
         for ( Iterator i = keys.iterator(); i.hasNext(); ) {
           add( createLayoutItem( (String)i.next() ) );
         }
