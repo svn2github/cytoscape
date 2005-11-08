@@ -279,7 +279,8 @@ public class GMLWriter{
       labelPair = new KeyValue(GMLReader2.LABEL,null);
       oldList.add(labelPair);
     }
-    labelPair.value = network.getEdgeAttributeValue(edge,Semantics.INTERACTION);
+    labelPair.value = edge.getIdentifier();
+//     labelPair.value = network.getEdgeAttributeValue(edge,Semantics.INTERACTION);
     return true;
 
   }
