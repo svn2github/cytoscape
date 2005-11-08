@@ -207,7 +207,8 @@ public class GMLWriter{
       labelPair = new KeyValue(GMLReader2.LABEL,null);
       oldList.add(labelPair);
     }
-    labelPair.value = network.getNodeAttributeValue(node,Semantics.CANONICAL_NAME);
+    labelPair.value = node.getIdentifier();
+//     labelPair.value = network.getNodeAttributeValue(node,Semantics.CANONICAL_NAME);
     return true;
     
   }
