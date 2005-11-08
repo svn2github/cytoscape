@@ -172,7 +172,15 @@ import java.util.Map;
  * first obtain the MultiHashMap via {@link CyAttributes#getMultiHashMap()},
  * and then register a listener via
  * {@link
- * MultiHashMap#addDataListener(cytoscape.data.attr.MultiHashMapListener)}
+ * MultiHashMap#addDataListener(cytoscape.data.attr.MultiHashMapListener)}.
+ * <P>Note that calls to
+ * {@link CyAttributes#setAttributeList(String, String, java.util.List)}
+ * and
+ * {@link CyAttributes#setAttributeMap(String, String, java.util.Map)}
+ * result in many calls to the MultiHashMap object.  For example, if you have
+ * five elements in a List, the implementation code makes five calls to
+ * the MultiHashMap, and you will therefore be notified of five separate
+ * events, rathern than one global list event.
  * <P>
  *
  * @author Cytoscape Development Team
@@ -402,6 +410,13 @@ public interface CyAttributes {
      * <P>
      * If the above requirements are not met, an IllegalArgumentException
      * will be thrown.
+     * <P>
+     * Implementation note:   calling this method results in many calls to the
+     * MultiHashMap back-end data store.  For example, if you have
+     * five elements in a List, the implementation code makes five calls to
+     * the MultiHashMap.  Therefore, if you are listening to MultiHashMap
+     * events, you will be notified of five separate events, rather than one
+     * global list event.
      *
      * @param id   unique identifier.
      * @param list attribute name.
@@ -448,6 +463,14 @@ public interface CyAttributes {
      * If the above requirements are not met, an
      * <CODE>IllegalArgumentException</CODE> will be thrown.
      *
+     * <P>
+     * Implementation note:   calling this method results in
+     * many calls to the MultiHashMap back-end data store.  For example, if
+     * you have five elements in a Map, the implementation code makes five
+     * calls to the MultiHashMap.  Therefore, if you are listening to
+     * MultiHashMap events, you will be notified of five separate events,
+     * rather than one global map event.
+     *
      * @param id            unique identifier.
      * @param attributeName attribute name.
      * @param map           Map Object.
@@ -456,6 +479,7 @@ public interface CyAttributes {
      *                                  been defined with a data type, and this
      *                                  data type is not of type:
      *                                  TYPE_SIMPLE_MAP.
+     *
      */
     public void setAttributeMap(String id, String attributeName,
             Map map) throws IllegalArgumentException;
