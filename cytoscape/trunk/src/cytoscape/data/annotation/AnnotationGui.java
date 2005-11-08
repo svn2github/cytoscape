@@ -605,10 +605,10 @@ public class AnnotationGui extends CytoscapeAction {
 			} // else: this node is annotated
 		} // for i
 
-		System.err
-				.println("Warning: a method has been called whose functionality "
-						+ "has been partially removed "
-						+ "(AnnotationGui.addAnnotationToNodes()).");
+// 		System.err
+// 				.println("Warning: a method has been called whose functionality "
+// 						+ "has been partially removed "
+// 						+ "(AnnotationGui.addAnnotationToNodes()).");
 
 		network.endActivity(callerID);
 
