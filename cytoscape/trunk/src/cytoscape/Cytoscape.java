@@ -7,14 +7,7 @@ import giny.view.GraphView;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeSupport;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.lang.reflect.InvocationTargetException;
 import java.io.FileReader;
 
@@ -466,7 +459,9 @@ public abstract class Cytoscape {
           else if (cyType == CyAttributes.TYPE_SIMPLE_MAP) {
             return nodeAttrs.getAttributeMap(canonName, attribute); }
           else {
-            return null; }
+            //  As a last resort, check the GOB for arbitary objects.
+            return nodeData.get(attribute, canonName);
+          }
 	}
 
 	/**
@@ -491,7 +486,9 @@ public abstract class Cytoscape {
           else if (cyType == CyAttributes.TYPE_SIMPLE_MAP) {
             return edgeAttrs.getAttributeMap(canonName, attribute); }
           else {
-            return null; }
+              //  As a last resort, check the GOB for arbitary objects.
+              return edgeData.get(attribute, canonName);
+          }
 	}
 
 	/**
@@ -559,6 +556,11 @@ public abstract class Cytoscape {
           else if (value instanceof String) {
             nodeAttrs.setAttribute(canonName, attribute, (String) value);
             return true; }
+          else {
+            //  If this is an arbitary object, use GOB for backward
+            //  compatibility.
+            nodeData.set(attribute, canonName, value);
+          }
           return false;
 	}
 
@@ -583,6 +585,11 @@ public abstract class Cytoscape {
           else if (value instanceof String) {
             edgeAttrs.setAttribute(canonName, attribute, (String) value);
             return true; }
+          else {
+            //  If this is an arbitary object, use GOB for backward
+            //  compatibility.
+            edgeData.set(attribute, canonName, value);
+          }
           return false;
 	}
 
