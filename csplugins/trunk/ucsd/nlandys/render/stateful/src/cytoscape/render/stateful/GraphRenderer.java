@@ -541,13 +541,24 @@ public final class GraphRenderer
                   justify = 0; }
               }
               lemma_computeAnchor(nodeAnchor, floatBuff1, floatBuff3);
-              final double nodeAnchorPointX = floatBuff3[0];
-              final double nodeAnchorPointY = floatBuff3[1];
-              float textXCenter = 0;
-              float textYCenter = 0;
-              grafx.drawTextFull
-                (font, fontScaleFactor, text,
-                 textXCenter, textYCenter, 0, paint,
+              final float nodeAnchorPointX = floatBuff3[0];
+              final float nodeAnchorPointY = floatBuff3[1];
+              TextRenderingUtils.computeTextDimensions
+                (text, font, fontScaleFactor, floatBuff3);
+              floatBuff1[0] = (float) (-0.5d * floatBuff3[0]);
+              floatBuff1[1] = (float) (-0.5d * floatBuff3[1]);
+              floatBuff1[2] = (float) (0.5d * floatBuff3[0]);
+              floatBuff1[3] = (float) (0.5d * floatBuff3[1]);
+              lemma_computeAnchor(textAnchor, floatBuff1, floatBuff3);
+              final float textAnchorPointX = floatBuff3[0];
+              final float textAnchorPointY = floatBuff3[1];
+              final float textXCenter =
+                nodeAnchorPointX - textAnchorPointX + offsetVectorX;
+              final float textYCenter =
+                nodeAnchorPointY - textAnchorPointY + offsetVectorY;
+              TextRenderingUtils.renderHorizontalText
+                (grafx, text, font, fontScaleFactor,
+                 textXCenter, textYCenter, justify, paint,
                  (lodBits & LOD_TEXT_AS_SHAPE) != 0); } } } }
     }
   }
