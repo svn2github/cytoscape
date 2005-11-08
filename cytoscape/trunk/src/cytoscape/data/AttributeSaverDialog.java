@@ -124,19 +124,23 @@ public class AttributeSaverDialog extends JDialog {
 		CyNetwork currentNetwork = Cytoscape.getCurrentNetwork();
 
 		// get the graph attributes
-		String[] edgeAttributes = currentNetwork.getEdgeAttributesList();
-		String[] nodeAttributes = currentNetwork.getNodeAttributesList();
+                String[] edgeAttributes = Cytoscape.getEdgeAttributes().getAttributeNames();
+// 		String[] edgeAttributes = currentNetwork.getEdgeAttributesList();
+                String[] nodeAttributes = Cytoscape.getNodeAttributes().getAttributeNames();
+// 		String[] nodeAttributes = currentNetwork.getNodeAttributesList();
 
 		// create the objects which will maintain the state of the dialog
 		String suffix = null;
 		String[] attributes = null;
 		if (type == NODES) {
 			suffix = NODE_SUFFIX;
-			attributes = currentNetwork.getNodeAttributesList();
+                        attributes = Cytoscape.getNodeAttributes().getAttributeNames();
+// 			attributes = currentNetwork.getNodeAttributesList();
 		} // end of if ()
 		else {
 			suffix = EDGE_SUFFIX;
-			attributes = currentNetwork.getEdgeAttributesList();
+                        attributes = Cytoscape.getEdgeAttributes().getAttributeNames();
+// 			attributes = currentNetwork.getEdgeAttributesList();
 		} // end of else
 
 		state = new AttributeSaverState(attributes, suffix, type, Cytoscape
