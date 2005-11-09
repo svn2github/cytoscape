@@ -544,7 +544,8 @@ public final class GraphRenderer
               final float nodeAnchorPointX = floatBuff3[0];
               final float nodeAnchorPointY = floatBuff3[1];
               TextRenderingUtils.computeTextDimensions
-                (text, font, fontScaleFactor, floatBuff3);
+                (grafx, text, font, fontScaleFactor,
+                 (lodBits & LOD_TEXT_AS_SHAPE) != 0, floatBuff3);
               floatBuff1[0] = (float) (-0.5d * floatBuff3[0]);
               floatBuff1[1] = (float) (-0.5d * floatBuff3[1]);
               floatBuff1[2] = (float) (0.5d * floatBuff3[0]);
