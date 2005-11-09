@@ -3,3 +3,5 @@ build
 cytoscape.jar
 cytoscape.props
 vizmap.props
+.classpath
+.project

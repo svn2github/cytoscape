@@ -333,7 +333,7 @@ public class CyCommandLineParser {
         i++;
         if ( badArgs(args, i ) )
           return;
-        //System.out.println( "Project file specified" );
+        System.out.println( "Project file specified, but will be ignored because its usage is deprecated!!!" );
         projectFiles.add( args[i] );
         i++;
       }

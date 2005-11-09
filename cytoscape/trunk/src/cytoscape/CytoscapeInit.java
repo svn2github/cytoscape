@@ -43,7 +43,7 @@ public class CytoscapeInit implements PropertyChangeListener {
 
 	private static URLClassLoader classLoader;
 
-	// Most-Recently-Used
+	// Most-Recently-Used directories and files
 	private static File mrud;
 
 	private static File mruf;
@@ -141,18 +141,22 @@ public class CytoscapeInit implements PropertyChangeListener {
 			return false;
 		}
 
-		// read in properties, and assign variables from them
+		// 1. Properties from cytoscape.props
+		// read in properties in cytoscape.props, and assign variables from them
 		CyPropertiesReader propReader = new CyPropertiesReader();
-		propReader.readProperties(cli.getSpecifiedPropsFile());
-
+		// getSpecifiedPropsFile returns the location of cytoscape.props
+		propReader.readProperties(cli.getSpecifiedPropsFile()); 
 		properties = propReader.getProperties();
 		propertiesLocation = propReader.getPropertiesLocation();
 		setVariablesFromProperties();
 
+		//2. Command line. Overwrites properties set from cytoscape.props
 		setVariablesFromCommandLine(cli);
+		
+		// THIS IS DEPRECATED. The Project files are no longer supported!!!
 		// this loads project files, whic are essentially an extension of the
 		// command line
-		loadProjectFiles(cli.getProjectFiles());
+		//loadProjectFiles(cli.getProjectFiles());
 
 		useView = cli.useView();
 		// We currently don't support headless mode, so no sense allowing a
@@ -165,12 +169,45 @@ public class CytoscapeInit implements PropertyChangeListener {
 		// store key property values into main Properties object for
 		// for visual (via Preferences Dialog) communication and later storage
 		//
-		// project -overrides- command line -overrides- cytoscape.props...
+		// command line -overrides- cytoscape.props
 		// hence it is now safe to store those values
 		storeVariablesInProperties();
-
+		
+		// if the command line specified a location for the vizmap.props file, set it
 		vizmapPropertiesLocation = cli.getVizPropsFile();
+		if(vizmapPropertiesLocation != null && vizmapPropertiesLocation.length() > 0){
+			File vizmaps = new File(vizmapPropertiesLocation);
+			if(vizmaps.exists()){
+				vizmapPropertiesLocation = vizmaps.getAbsolutePath();
+			}else{
+				// Does not exist!
+				System.out.println("The command line argument for vizmaps.props does not contain a valid file name:" + vizmapPropertiesLocation);
+				vizmapPropertiesLocation = null;
+			}
+		}
+		
+		if(vizmapPropertiesLocation == null || vizmapPropertiesLocation.length() == 0){
+			// the user did not specify a location for the vizmap.props (or the location is incorrect)
+			// try to see if there is one in ~/.cytoscape
+			
+			// get ~/.cytoscape directory (or create it if it does not exist)
+			File cytoscape = getConfigDirectoy();
+			
+			// look for vizmap.props in this directory
+			File vizmap = new File(cytoscape,"vizmap.props");
+			
+			if(vizmap.exists()){
+				vizmapPropertiesLocation = vizmap.getAbsolutePath();
+			}else{
+				// create an empy vizmap.props in ~/.cytoscape
+				// the CalculatorCatalogFactory will create a default visual style
+				vizmapPropertiesLocation = getConfigFile("vizmap.props").getAbsolutePath();
+	        }
+	            
+		}
 
+		 System.out.println("vizmap.props is located in " + vizmapPropertiesLocation);
+		
 		// see if we are in headless mode
 		// show splash screen, if appropriate
 		if (!isHeadless()) {
@@ -409,45 +446,50 @@ public class CytoscapeInit implements PropertyChangeListener {
 		return defaultVisualStyle;
 	}
 
+	/**
+	 * This method does absolutely nothing.
+	 * @param project_files
+	 * @deprecated the project file has been deprecated, do not call this method
+	 */
 	private void loadProjectFiles(List project_files) {
 
-		ArrayList tokens = new ArrayList();
-		for (Iterator i = project_files.iterator(); i.hasNext();) {
-			String file = (String) i.next();
-			try {
-				BufferedReader in = new BufferedReader(new FileReader(file));
-				String oneLine = in.readLine();
-				while (oneLine != null) {
-
-					if (oneLine.startsWith("#")) {
-						// comment
-					} else {
-
-						boolean returnTokens = true;
-						String currentDelims = fWHITESPACE_AND_QUOTES;
-						StringTokenizer parser = new StringTokenizer(oneLine,
-								currentDelims, returnTokens);
-
-						while (parser.hasMoreTokens()) {
-							String token = parser.nextToken(currentDelims);
-							if (!isDoubleQuote(token)) {
-								if (!token.trim().equals("")) {
-									tokens.add(token);
-								}
-							} else {
-								currentDelims = flipDelimiters(currentDelims);
-							}
-						}
-					}
-					oneLine = in.readLine();
-				}
-				in.close();
-			} catch (Exception ex) {
-				System.out.println("Filter Read error");
-				ex.printStackTrace();
-			}
-
-		}
+//		ArrayList tokens = new ArrayList();
+//		for (Iterator i = project_files.iterator(); i.hasNext();) {
+//			String file = (String) i.next();
+//			try {
+//				BufferedReader in = new BufferedReader(new FileReader(file));
+//				String oneLine = in.readLine();
+//				while (oneLine != null) {
+//
+//					if (oneLine.startsWith("#")) {
+//						// comment
+//					} else {
+//
+//						boolean returnTokens = true;
+//						String currentDelims = fWHITESPACE_AND_QUOTES;
+//						StringTokenizer parser = new StringTokenizer(oneLine,
+//								currentDelims, returnTokens);
+//
+//						while (parser.hasMoreTokens()) {
+//							String token = parser.nextToken(currentDelims);
+//							if (!isDoubleQuote(token)) {
+//								if (!token.trim().equals("")) {
+//									tokens.add(token);
+//								}
+//							} else {
+//								currentDelims = flipDelimiters(currentDelims);
+//							}
+//						}
+//					}
+//					oneLine = in.readLine();
+//				}
+//				in.close();
+//			} catch (Exception ex) {
+//				System.out.println("Filter Read error");
+//				ex.printStackTrace();
+//			}
+//
+//		}
 	}
 
 	private void setVariablesFromCommandLine(CyCommandLineParser parser) {
@@ -728,6 +770,8 @@ public class CytoscapeInit implements PropertyChangeListener {
 	// Config Directory Acces
 
 	/**
+	 * If .cytoscape directory does not exist, it creates it and returns it
+	 * 
 	 * @return the directory ".cytoscape" in the users home directory.
 	 */
 	public static File getConfigDirectoy() {
