@@ -60,8 +60,6 @@
     <argument>jar://galFiltered.sif</argument>
     <argument>-e</argument>
     <argument>jar://gal.5936x20.mrna</argument>
-    <argument>-props</argument>
-    <argument>jar://cytoscape.props</argument>
     <argument>-s</argument>
     <argument>Saccharomyces cerevisiae</argument>
     <argument>-rp</argument>
