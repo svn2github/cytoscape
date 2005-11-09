@@ -254,6 +254,7 @@ public class CyAttributesImpl implements CyAttributes
       throw new IllegalArgumentException("attributeName is null");
     if (list == null) throw new IllegalArgumentException("list is null");
     Iterator itor = list.iterator();
+    if (!itor.hasNext()) { return; }
     final byte type;
     Object obj = itor.next();
     if (obj instanceof Double) { type = TYPE_FLOATING; }
@@ -324,6 +325,7 @@ public class CyAttributesImpl implements CyAttributes
       throw new IllegalArgumentException("attributeName is null");
     final Set entrySet = map.entrySet();
     Iterator itor = entrySet.iterator();
+    if (!itor.hasNext()) { return; }
     final byte type;
     Map.Entry entry = (Map.Entry) itor.next();
     if (!(entry.getKey() instanceof String)) {
