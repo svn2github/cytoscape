@@ -376,6 +376,18 @@ public interface CyAttributes {
      */
     public byte getType(String attributeName);
 
+//     /**
+//      * Sets the data type of a new attribute.
+//      *
+//      * @param attributeName Attribute Name.
+//      * @param type one of: TYPE_BOOLEAN, TYPE_INTEGER, TYPE_FLOATING,
+//      *         TYPE_STRING, TYPE_SIMPLE_LIST, TYPE_SIMPLE_MAP, TYPE_COMPLEX,
+//      *         TYPE_UNDEFINED.
+//      * @exception IllegalStateException if attributeName is already defined
+//      *   and is not of the specified type.
+//      */
+//     public void setType(String attributeName, byte type);
+
     /**
      * Deletes the id/attributeName pair.
      *

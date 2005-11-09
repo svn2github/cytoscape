@@ -203,6 +203,40 @@ public class CyAttributesImpl implements CyAttributes
     return TYPE_COMPLEX;
   }
 
+//   public void setType(String attributeName, byte type)
+//   {
+//     final byte oldType = getType(attributeName);
+//     final String id = "31347a3d99acb3dc1b7c0849081f1ddb";
+//     if (oldType == TYPE_UNDEFINED) {
+//       switch (type) {
+//       case TYPE_BOOLEAN:
+//         setAttribute(id, attributeName, new Boolean(false));
+//         deleteAttribute(id, attributeName);
+//         break;
+//       case TYPE_FLOATING:
+//         setAttribute(id, attributeName, new Double(0));
+//         deleteAttribute(id, attributeName);
+//         break;
+//       case TYPE_INTEGER:
+//         setAttribute(id, attributeName, new Integer(0));
+//         deleteAttribute(id, attributeName);
+//         break;
+//       case TYPE_STRING:
+//         setAttribute(id, attributeName, "");
+//         deleteAttribute(id, attributeName);
+//         break;
+//       case TYPE_SIMPLE_LIST:
+//         break;
+//       case TYPE_SIMPLE_MAP:
+//         break;
+//       case TYPE_COMPLEX:
+//         break;
+//       case TYPE_UNDEFINED:
+//         break;
+//       default:
+//         throw new IllegalStateException("type not recognized"); } }
+//   }
+
   public boolean deleteAttribute(String id, String attributeName)
   {
     return mmap.removeAllAttributeValues(id, attributeName);
