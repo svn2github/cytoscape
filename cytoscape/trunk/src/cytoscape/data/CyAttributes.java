@@ -451,6 +451,21 @@ public interface CyAttributes {
      * from one of the following: <CODE>Boolean</CODE>, <CODE>Integer</CODE>,
      * <CODE>Double</CODE> or <CODE>String</CODE>.
      * </UL>
+     * <P>
+     * <B>Note:</B>  The returned List is useful for read operations only.
+     * If you add, edit, or delete elements within this list, these changes
+     * will not be stored, unless you explicitly call setAttributeList() again.
+     * For example:
+     *
+     * <PRE>
+     * List list = nodeAttributes.getAttributeList(id, attributeName);
+     *
+     * //  Add new item
+     * list.add(new String("Hello, World");
+     *
+     * //  Save modified list back
+     * nodeAttributes.setAttributeList(id, attributeName, list);
+     * </PRE>
      *
      * @param id            unique identifier.
      * @param attributeName attribute name.
@@ -506,6 +521,21 @@ public interface CyAttributes {
      * from one of the following: <CODE>Boolean</CODE>, <CODE>Integer</CODE>,
      * <CODE>Double</CODE> or <CODE>String</CODE>.
      * </UL>
+     * <P>
+     * <B>Note:</B>  The returned Map is useful for read operations only.
+     * If you add, edit, or delete elements within this Map, these changes
+     * will not be stored, unless you explicitly call setAttributeMap()
+     * again.  For example:
+     *
+     * <PRE>
+     * Map map = nodeAttributes.getAttributeMap(id, attributeName);
+     *
+     * //  Add new item
+     * map.put(new String("Message"), new String("Hello, World"));
+     *
+     * //  Save modified map back
+     * nodeAttributes.setAttributeMap(id, attributeName, map);
+     * </PRE>
      *
      * @param id            unique identifier.
      * @param attributeName attribute name.
