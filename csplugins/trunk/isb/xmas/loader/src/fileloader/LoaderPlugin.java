@@ -39,7 +39,7 @@ public class LoaderPlugin extends CytoscapePlugin {
     for ( Iterator i = files.iterator(); i.hasNext(); ) {
       String file = (String)i.next();
       System.out.println( "Laoding Spreadsheet File: "+file );
-      FileLoader.loadFileToNetwork( file, "\t" );
+      Import.loadFileToNetwork( file, "\t" );
     }
     Cytoscape.firePropertyChange( Cytoscape.ATTRIBUTES_CHANGED, null, null );
 
@@ -69,7 +69,7 @@ public class LoaderPlugin extends CytoscapePlugin {
                    // this is because the selection was canceled
                    return;
                  }
-                 FileLoader.saveNetworkToFile( Cytoscape.getCurrentNetwork(), name );
+                 Export.saveNetworkToFile( Cytoscape.getCurrentNetwork(), name );
                  Cytoscape.firePropertyChange( Cytoscape.ATTRIBUTES_CHANGED,null, null );
               }
             } ); } } ) );

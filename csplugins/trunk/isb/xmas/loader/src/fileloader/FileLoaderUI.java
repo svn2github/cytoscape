@@ -169,8 +169,8 @@ public class FileLoaderUI
       else if ( semicolon.isSelected() )
         delim.append( ";" );
       
-      FileLoader.loadFileToNetwork( file.toString(),
-                                    delim.toString() );
+      Import.loadFileToNetwork( file.toString(),
+                                delim.toString() );
       Cytoscape.firePropertyChange( Cytoscape.ATTRIBUTES_CHANGED, null, null );
       return;
     }
@@ -186,6 +186,7 @@ public class FileLoaderUI
                                  new cytoscape.util.CyFileFilter[] {} ).toString();
       } catch ( Exception exp ) {
         // this is because the selection was canceled
+        updatePreview();
         return;
       }
       fileField.setText( name );

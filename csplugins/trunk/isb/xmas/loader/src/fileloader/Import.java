@@ -19,7 +19,7 @@ import exesto.*;
 import giny.model.*;
 import ViolinStrings.Strings;
 
-public class FileLoader {
+public class Import {
 
 
   static Object null_att = new String("null");
@@ -43,259 +43,8 @@ public class FileLoader {
   static String TYPE_FLOATING_POINT = "FLOATING_POINT";
   static String TYPE_STRING = "STRING";
 
-  public static void saveNetworkToFile ( CyNetwork network,
-                                         String file_name ) {
-    try {
-      File file = new File( file_name );
-      BufferedWriter writer = new BufferedWriter(new FileWriter( file ));
-      
-            
-      //Iterator nodes_i = network.nodesIterator();
-      //Iterator edges_i = network.edgesIterator();
-      int[] nodes_i = network.getNodeIndicesArray();
-      int[] edges_i = network.getEdgeIndicesArray();
-      
 
-      // Node Section
-           
-      // Global Data
-      CyAttributes data = Cytoscape.getNodeAttributes();
-      String[] atts_i = data.getAttributeNames();
-      Arrays.sort( atts_i );
-
-      // Local Data
-      CyAttributes local = NetworkAttributes.getNodeAttributes( network );
-      String[] local_i = local.getAttributeNames();
-      Arrays.sort( local_i );
-
-      // Header
-
-      // write network name
-      //writer.write( network.getIdentifier() );
-
-      //////////////////
-      // Node Attributes
-
-      writer.write( NODE_LABEL+delim );
-
-      // write global names
-      for ( int i = 0; i < atts_i.length; i++ ) {
-        writer.write( atts_i[i]+delim );
-      }
-     
-      // write local names, e.g. "LOCAL:____"
-      for ( int i = 0; i < local_i.length; i++ ) {
-        writer.write( "LOCAL:"+local_i[i]+delim );
-      }
-      writer.newLine();
-
-      writer.write( "TYPES"+delim );
-
-       // global tags
-      for ( int i = 0; i < atts_i.length; i++ ) {
-        writer.write( getTypeAsString( data.getType( atts_i[i] ) )+delim );
-      }
-      
-      // local tags
-      for ( int i = 0; i < local_i.length; i++ ) {
-        writer.write( getTypeAsString( local.getType( local_i[i] ) )+delim );
-      }
-      writer.newLine();
-
-
-      
-      //////////////
-      // Node Values
-
-      // iterate through nodes
-      //while ( nodes_i.hasNext() ) {
-      //  GraphObject obj = (GraphObject)nodes_i.next();
-      for ( int j = nodes_i.length-1; j >= 0; j-- ) {
-        GraphObject obj = (GraphObject)network.getNode( nodes_i[j] );
-        writer.write( obj.getIdentifier()+delim );
-        
-        // Global Data
-        for ( int i = 0; i < atts_i.length; i++ ) {
-          
-          Object value = getPrintableValue( data, 
-                                            obj.getIdentifier(),
-                                            atts_i[i] );
-          if ( value == null )
-            value = new String("");
-
-          try {
-            writer.write( value.toString()+delim );
-          } catch ( Exception ex ) {
-            System.out.println( "Error with Network output" );
-            writer.write( delim );
-          }
-        }
-
-        // Network Specific Data
-        for ( int i = 0; i < local_i.length; i++ ) {
-          
-          Object value = getPrintableValue( local,
-                                            obj.getIdentifier(),
-                                            local_i[i] );
-          if ( value == null )
-            value = new String("");
-          try {
-            writer.write( value.toString()+delim );
-          } catch ( Exception ex ) {
-            System.out.println( "Error with Network output" );
-            writer.write( delim );
-          }
-        }
-        writer.newLine();
-      }
-    
-      ////////////////////
-      // Edge Section
-      
-      // Global Data
-      data = Cytoscape.getEdgeAttributes();
-      atts_i = data.getAttributeNames();
-      Arrays.sort( atts_i );
-
-      // Local Data
-      local = NetworkAttributes.getEdgeAttributes( network );
-      local_i = local.getAttributeNames();
-      Arrays.sort( local_i );
-
-      // Header
- 
-      writer.write( NODE_LABEL+delim+EDGE_LABEL+delim+NODE_LABEL+delim );
-
-     // write global names
-      for ( int i = 0; i < atts_i.length; i++ ) {
-        writer.write( atts_i[i]+delim );
-      }
-     
-      // write local names, e.g. "LOCAL:____"
-      for ( int i = 0; i < local_i.length; i++ ) {
-        writer.write( "LOCAL:"+local_i[i]+delim );
-      }
-      writer.newLine();
-
-      // Edge Attribute Types
-      
-      writer.write( "TYPES"+delim+"TYPE_STRING"+delim+"TYPE_STRING"+delim );
-
-       // global tags
-      for ( int i = 0; i < atts_i.length; i++ ) {
-        writer.write( getTypeAsString( data.getType( atts_i[i] ) )+delim );
-      }
-      
-      // local tags
-      for ( int i = 0; i < local_i.length; i++ ) {
-        writer.write( getTypeAsString( local.getType( local_i[i] ) )+delim );
-      }
-      writer.newLine();
-
-      
-      
-      // Edge Values
-      //while ( edges_i.hasNext() ) {
-      //  Edge obj = (Edge)edges_i.next();
-      for ( int j = edges_i.length -1; j >= 0; j-- ) {
-        Edge obj = network.getEdge( edges_i[j] );
-        writer.write( obj.getSource().getIdentifier()+delim
-                      +data.getStringAttribute( obj.getIdentifier(), cytoscape.data.Semantics.INTERACTION )+delim
-                      +obj.getTarget().getIdentifier()+delim);
-        
-        // Global Data
-        for ( int i = 0; i < atts_i.length; i++ ) {
-          
-          Object value = getPrintableValue( data, 
-                                            obj.getIdentifier(),
-                                            atts_i[i] );
-          if ( value == null )
-            value = new String("");
-          try {
-            writer.write( value.toString()+delim );
-          } catch ( Exception ex ) {
-            System.out.println( "Error with Network output" );
-            writer.write( delim );
-          }
-        }
-
-        // Network Specific Data
-        for ( int i = 0; i < local_i.length; i++ ) {
-          
-          Object value = getPrintableValue( local,
-                                            obj.getIdentifier(),
-                                            local_i[i] );
-          if ( value == null )
-            value = new String("");
-          try {
-            writer.write( value.toString()+delim );
-          } catch ( Exception ex ) {
-            System.out.println( "Error with Network output" );
-            writer.write( delim );
-          }
-        }
-        writer.newLine();
-      }
-
-      
-      writer.close();
-    } catch ( Exception ex ) {
-      System.out.println( "Network Write error" );
-      ex.printStackTrace();
-    }
   
-  }
-
-  private static Object getPrintableValue ( CyAttributes data, String id, String att ) {
-    byte type = data.getType(att);
-
-    // Integer
-    if ( type == CyAttributes.TYPE_INTEGER ) {
-      return data.getIntegerAttribute( id, att );
-    } 
-
-    // Double
-    else if ( type == CyAttributes.TYPE_FLOATING ) {
-      return data.getDoubleAttribute( id, att );
-    }
-
-    // String
-    else if ( type == CyAttributes.TYPE_STRING ) {
-      return data.getStringAttribute( id, att );
-    }
-
-    // Boolean
-    else if ( type == CyAttributes.TYPE_BOOLEAN ) {
-      return data.getBooleanAttribute( id, att );
-    }
-
-    // List
-    else if ( type == CyAttributes.TYPE_SIMPLE_LIST ) {
-      return data.getAttributeList( id, att );
-    }
-    
-    // Map
-    else if ( type == CyAttributes.TYPE_SIMPLE_MAP ) {
-      return data.getAttributeMap( id, att );
-    }
-    
-    else {
-      return "";
-    }
-
-  }
-
-  private static String setAsListString ( Set set ) {
-    String s = "[";
-    Iterator i = set.iterator();
-    while ( i.hasNext() ) {
-      s.concat( i.next().toString()+";" );
-    }
-    s.concat( "]" );
-    return s;
-  }
-
-
   /**
    * NETWORK
    * 
@@ -303,8 +52,8 @@ public class FileLoader {
    * TAGS
    * TYPE
    */
-  public static void loadFileToNetwork ( String file_name,
-                                         String delimiter ) {
+  public static CyNetwork loadFileToNetwork ( String file_name,
+                                              String delimiter ) {
 
 
     // defer net creation until we know that there is no specified name
@@ -444,7 +193,7 @@ public class FileLoader {
     
     net.restoreNodes( nodes, false );
     net.restoreEdges( edges );
-
+    return net;
   }
 
 
@@ -906,6 +655,7 @@ public class FileLoader {
     }
   }
   
+
 
 
 }
