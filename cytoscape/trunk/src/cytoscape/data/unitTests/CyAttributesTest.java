@@ -235,6 +235,11 @@ public class CyAttributesTest extends TestCase {
         Integer int1 = (Integer) storedList.get(1);
         assertEquals (5, int0.intValue());
         assertEquals (6, int1.intValue());
+
+        //  Try storing an Empty List;  previously, this resulted in
+        //  a NoSuchElementException.
+        list = new ArrayList();
+        cyAttributes.setAttributeList(DUMMY_ID, DUMMY_LIST_ATTRIBUTE, list);
     }
 
     /**
@@ -303,6 +308,11 @@ public class CyAttributesTest extends TestCase {
         value =  (Integer) storedMap.get(key);
         assertEquals ("second", key);
         assertEquals (2, value.intValue());
+
+        //  Try storing an Empty Map;  previously, this resulted in
+        //  a NoSuchElementException.
+        map = new HashMap();
+        cyAttributes.setAttributeMap(DUMMY_ID, DUMMY_LIST_ATTRIBUTE, map);        
     }
 
     /**
