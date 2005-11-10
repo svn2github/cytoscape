@@ -173,10 +173,16 @@ public class Semantics {
 		String id = node.getIdentifier();
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 
+//		System.out.print("ID in graph node = " + node.getIdentifier());
+//		System.out.println(", CN in CyAttr = "
+//				+ nodeAttributes.getStringAttribute(node.getIdentifier(),
+//						Semantics.CANONICAL_NAME));
+
 		// can't have a null node
 		if (node == null)
 			return;
 
+		// If species are null, use default species name
 		if (species == null) {
 
 			species = nodeAttributes.getStringAttribute(id, SPECIES);
@@ -190,6 +196,7 @@ public class Semantics {
 			// Cytoscape.setNodeAttributeValue(node, SPECIES, species);
 		}
 
+		// Get Gene Ontology Server
 		if (bds == null)
 			bds = Cytoscape.getBioDataServer();
 
@@ -200,26 +207,33 @@ public class Semantics {
 		// now do the name assignment
 
 		// String name = node.getIdentifier().toUpperCase();
+
 		String cname = bds.getCanonicalName(species, id);
 		// name was not canonical name
-		if (id != cname)
-			node.setIdentifier(cname);
+		// if (id != cname)
+		// node.setIdentifier(cname);
 
-		nodeAttributes.setAttribute(id, CANONICAL_NAME, cname);
-
-		String[] synonyms = bds.getAllCommonNames(species, cname);
-		StringBuffer concat = new StringBuffer();
-		String common_name = null;
-		for (int j = 0; j < synonyms.length; ++j) {
-			concat.append(synonyms[j] + " ");
-			if (common_name == null)
-				common_name = synonyms[j];
+		if (id != nodeAttributes.getStringAttribute(id, CANONICAL_NAME)) {
+			nodeAttributes.setAttribute(id, CANONICAL_NAME, id);
 		}
-		if (common_name == null)
-			common_name = cname;
 
-		nodeAttributes.setAttribute(id, "ALIASES", concat.toString());
-		nodeAttributes.setAttribute(id, COMMON_NAME, common_name);
+		// nodeAttributes.setAttribute(id, CANONICAL_NAME, cname);
+
+		if (cname != null) {
+			String[] synonyms = bds.getAllCommonNames(species, cname);
+			StringBuffer concat = new StringBuffer();
+			String common_name = null;
+			for (int j = 0; j < synonyms.length; ++j) {
+				concat.append(synonyms[j] + " ");
+				if (common_name == null)
+					common_name = synonyms[j];
+			}
+			if (common_name == null)
+				common_name = cname;
+
+			nodeAttributes.setAttribute(id, "ALIASES", concat.toString());
+			nodeAttributes.setAttribute(id, COMMON_NAME, common_name);
+		}
 	}
 
 	/**
@@ -243,6 +257,7 @@ public class Semantics {
 		}
 		List nodes = network.nodesList();
 
+		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 		for (Iterator i = nodes.iterator(); i.hasNext();) {
 
 			CyNode node = (CyNode) i.next();
