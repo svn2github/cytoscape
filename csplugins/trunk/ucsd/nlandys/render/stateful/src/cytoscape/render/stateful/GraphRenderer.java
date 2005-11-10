@@ -14,7 +14,7 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
 
 /**
- * This class contains a chunk of procedural code that stiches together
+ * This class contains a chunk of procedural code that stitches together
  * several external modules in an effort to efficiently render graphs.
  */
 public final class GraphRenderer
