@@ -191,11 +191,12 @@ public class TestGraphRendering
           return colors[node % colors.length]; }
         public float borderWidth(int node) { return borderWidth; }
         public Paint borderPaint(int node) { return borderColor; }
-        public String labelText(int node) { return "" + node; }
-        public Font labelFont(int node) { return font; }
-        public double labelScaleFactor(int node) {
+        public int labelCount(int node) { return 1; }
+        public String labelText(int node, int inx) { return "" + node; }
+        public Font labelFont(int node, int inx) { return font; }
+        public double labelScaleFactor(int node, int inx) {
           return fontScaleFactor; }
-        public Paint labelPaint(int node) { return labelColor; } };
+        public Paint labelPaint(int node, int inx) { return labelColor; } };
     final byte[] arrows = new byte[4];
     arrows[0] = GraphGraphics.ARROW_DELTA;
     arrows[1] = GraphGraphics.ARROW_DIAMOND;
