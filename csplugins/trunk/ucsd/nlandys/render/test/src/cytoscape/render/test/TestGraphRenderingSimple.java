@@ -68,7 +68,7 @@ public class TestGraphRenderingSimple
     m_nodeDetails = new NodeDetails() {
         private final Color m_fillColor = new Color(255, 0, 0, 127);
         public Paint fillPaint(int node) { return m_fillColor; }
-        public int labelCount(int node) { return 1; }
+        public int labelCount(int node) { return 2; }
         public String labelText(int node, int inx) {
           return "foo\ncytoscape\n" + (2048 + (node << 8)); }
         public Font labelFont(int node, int inx) {
@@ -77,17 +77,16 @@ public class TestGraphRenderingSimple
         public Paint labelPaint(int node, int inx) {
           return new Color(0, 0, 0, 255); }
         public byte labelTextAnchor(int node, int inx) {
-          return NodeDetails.LABEL_ANCHOR_SOUTHWEST;
-//           return NodeDetails.LABEL_ANCHOR_CENTER;
-        }
+          if (inx == 0) { return NodeDetails.LABEL_ANCHOR_SOUTHWEST; }
+          else { return NodeDetails.LABEL_ANCHOR_CENTER; } }
         public byte labelNodeAnchor(int node, int inx) {
-          return NodeDetails.LABEL_ANCHOR_NORTHWEST;
-//           return NodeDetails.LABEL_ANCHOR_CENTER;
-        }
+          if (inx == 0) { return NodeDetails.LABEL_ANCHOR_NORTHWEST; }
+          else { return NodeDetails.LABEL_ANCHOR_CENTER; } }
         public float labelOffsetVectorX(int node, int inx) { return 0.0f; }
         public float labelOffsetVectorY(int node, int inx) { return 0.0f; }
         public byte labelJustify(int node, int inx) {
-          return NodeDetails.LABEL_WRAP_JUSTIFY_RIGHT; } };
+          if (inx == 0) { return NodeDetails.LABEL_WRAP_JUSTIFY_RIGHT; }
+          else { return NodeDetails.LABEL_WRAP_JUSTIFY_LEFT; } } };
     m_edgeDetails = new EdgeDetails() {
         private final Color m_color = new Color(0, 0, 255, 127);
         public float segmentThickness(int edge) { return 1.0f; }
