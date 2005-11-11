@@ -546,11 +546,11 @@ public final class GraphRenderer
               TextRenderingUtils.computeTextDimensions
                 (grafx, text, font, fontScaleFactor,
                  (lodBits & LOD_TEXT_AS_SHAPE) != 0, floatBuff3);
-              floatBuff1[0] = (float) (-0.5d * floatBuff3[0]);
-              floatBuff1[1] = (float) (-0.5d * floatBuff3[1]);
-              floatBuff1[2] = (float) (0.5d * floatBuff3[0]);
-              floatBuff1[3] = (float) (0.5d * floatBuff3[1]);
-              lemma_computeAnchor(textAnchor, floatBuff1, floatBuff3);
+              floatBuff2[0] = (float) (-0.5d * floatBuff3[0]);
+              floatBuff2[1] = (float) (-0.5d * floatBuff3[1]);
+              floatBuff2[2] = (float) (0.5d * floatBuff3[0]);
+              floatBuff2[3] = (float) (0.5d * floatBuff3[1]);
+              lemma_computeAnchor(textAnchor, floatBuff2, floatBuff3);
               final float textAnchorPointX = floatBuff3[0];
               final float textAnchorPointY = floatBuff3[1];
               final float textXCenter =
