@@ -40,7 +40,7 @@ final class TextRenderingUtils
         }
         bounds = glyphV.getLogicalBounds(); }
       else {
-        bounds = font.getStringBounds(text,
+        bounds = font.getStringBounds(token,
                                       grafx.getFontRenderContextFull()); }
       width = Math.max(width, bounds.getWidth());
       height += bounds.getHeight(); }
@@ -85,7 +85,7 @@ final class TextRenderingUtils
         textHeight = (float) (bounds.getHeight() * fontScaleFactor); }
       else {
         final Rectangle2D bounds = font.getStringBounds
-          (text, grafx.getFontRenderContextFull());
+          (token, grafx.getFontRenderContextFull());
         textWidth = (float) (bounds.getWidth() * fontScaleFactor);
         textHeight = (float) (bounds.getHeight() * fontScaleFactor); }
       final float yCenter = (float)
