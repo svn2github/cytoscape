@@ -62,25 +62,32 @@ public class TestGraphRenderingSimple
     m_graph = DynamicGraphFactory.instantiateDynamicGraph();
     m_rtree = new RTree();
     assembleGraph();
-    m_lod = new GraphLOD();
+    m_lod = new GraphLOD() {
+        public boolean textAsShape(int renderNodeCount,
+                                   int renderEdgeCount) { return true; } };
     m_nodeDetails = new NodeDetails() {
         private final Color m_fillColor = new Color(255, 0, 0, 127);
         public Paint fillPaint(int node) { return m_fillColor; }
         public int labelCount(int node) { return 1; }
-        public String labelText(int node, int inx) { return "" + (node << 8); }
+        public String labelText(int node, int inx) {
+          return "foo\ncytoscape\n" + (2048 + (node << 8)); }
         public Font labelFont(int node, int inx) {
           return new Font(null, Font.PLAIN, 1); }
-        public double labelScaleFactor(int node, int inx) { return 1.0d; }
+        public double labelScaleFactor(int node, int inx) { return 5.0d; }
         public Paint labelPaint(int node, int inx) {
           return new Color(0, 0, 0, 255); }
         public byte labelTextAnchor(int node, int inx) {
-          return NodeDetails.LABEL_ANCHOR_CENTER; }
+          return NodeDetails.LABEL_ANCHOR_SOUTHWEST;
+//           return NodeDetails.LABEL_ANCHOR_CENTER;
+        }
         public byte labelNodeAnchor(int node, int inx) {
-          return NodeDetails.LABEL_ANCHOR_CENTER; }
+          return NodeDetails.LABEL_ANCHOR_NORTHWEST;
+//           return NodeDetails.LABEL_ANCHOR_CENTER;
+        }
         public float labelOffsetVectorX(int node, int inx) { return 0.0f; }
         public float labelOffsetVectorY(int node, int inx) { return 0.0f; }
         public byte labelJustify(int node, int inx) {
-          return NodeDetails.LABEL_WRAP_JUSTIFY_CENTER; } };
+          return NodeDetails.LABEL_WRAP_JUSTIFY_RIGHT; } };
     m_edgeDetails = new EdgeDetails() {
         private final Color m_color = new Color(0, 0, 255, 127);
         public float segmentThickness(int edge) { return 1.0f; }
