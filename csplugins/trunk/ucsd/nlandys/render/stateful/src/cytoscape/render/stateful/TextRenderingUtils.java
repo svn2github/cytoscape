@@ -69,7 +69,8 @@ final class TextRenderingUtils
     final StringTokenizer tokenizer = new StringTokenizer(text, "\n");
     while (tokenizer.hasMoreTokens()) {
       final String token = tokenizer.nextToken();
-      final Rectangle2D bounds;
+      final float textWidth;
+      final float textHeight;
       if (textAsShape) {
         final GlyphVector glyphV;
         {
@@ -79,26 +80,30 @@ final class TextRenderingUtils
             (grafx.getFontRenderContextFull(), charBuff, 0, charBuff.length,
              Font.LAYOUT_NO_LIMIT_CONTEXT);
         }
-        bounds = glyphV.getLogicalBounds(); }
+        final Rectangle2D bounds = glyphV.getLogicalBounds();
+        textWidth = (float) (bounds.getWidth() * fontScaleFactor);
+        textHeight = (float) (bounds.getHeight() * fontScaleFactor); }
       else {
-        bounds = font.getStringBounds(text,
-                                      grafx.getFontRenderContextFull()); }
+        final Rectangle2D bounds = font.getStringBounds
+          (text, grafx.getFontRenderContextFull());
+        textWidth = (float) (bounds.getWidth() * fontScaleFactor);
+        textHeight = (float) (bounds.getHeight() * fontScaleFactor); }
       final float yCenter = (float)
-        (textYCenter + currHeight - (bounds.getHeight() / 2.0f));
+        (textYCenter + currHeight - (textHeight / 2.0f));
       final float xCenter;
       if (textJustify == NodeDetails.LABEL_WRAP_JUSTIFY_CENTER) {
         xCenter = textXCenter; }
       else if (textJustify == NodeDetails.LABEL_WRAP_JUSTIFY_LEFT) {
         xCenter = (float)
-          (textXCenter - (overallWidth - bounds.getWidth()) / 2.0f); }
+          (textXCenter - (overallWidth - textWidth) / 2.0f); }
       else if (textJustify == NodeDetails.LABEL_WRAP_JUSTIFY_RIGHT) {
         xCenter = (float)
-          (textXCenter + (overallWidth - bounds.getWidth()) / 2.0f); }
+          (textXCenter + (overallWidth - textWidth) / 2.0f); }
       else {
         throw new IllegalStateException("textJustify value unrecognized"); }
       grafx.drawTextFull(font, fontScaleFactor, token, xCenter, yCenter, 0,
                          paint, textAsShape);
-      currHeight += bounds.getHeight(); }
+      currHeight += textHeight; }
   }
 
 }

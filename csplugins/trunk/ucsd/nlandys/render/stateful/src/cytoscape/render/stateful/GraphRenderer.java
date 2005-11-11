@@ -538,7 +538,7 @@ public final class GraphRenderer
                 if (text.indexOf('\n') >= 0) {
                   justify = nodeDetails.labelJustify(node, labelInx); }
                 else {
-                  justify = 0; }
+                  justify = NodeDetails.LABEL_WRAP_JUSTIFY_CENTER; }
               }
               lemma_computeAnchor(nodeAnchor, floatBuff1, floatBuff3);
               final float nodeAnchorPointX = floatBuff3[0];
