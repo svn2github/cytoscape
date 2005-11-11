@@ -17,7 +17,7 @@ public class SetVisualPropertiesAction extends CytoscapeAction   {
 
    
   public SetVisualPropertiesAction () {
-    super("Set Visual Properties");
+    super("Set Visual Style");
     setPreferredMenu( "Visualization" );
   }
   

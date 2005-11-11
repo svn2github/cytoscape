@@ -63,7 +63,7 @@ public class CytoscapeVersion {
       "0.9   (2002/11/01) first beta release",
       "0.95  (2002/11/04) added generic annotation",
       "0.97  (2002/12/05) added LGPL to all source",
-      "1.0   (2003/03/05) added visual properties UI, attributes filter.",
+      "1.0   (2003/03/05) added visual styles UI, attributes filter.",
       "1.1   (2003/05/12) jar loader; visual styles.",
       };
 

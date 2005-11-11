@@ -810,7 +810,7 @@ public class CyMenus implements GraphViewChangeListener {
 		vizButton = toolBar.add(new SetVisualPropertiesAction(false));
 		vizButton.setIcon(new ImageIcon(getClass().getResource(
 				"images/new/color_wheel36.gif")));
-		vizButton.setToolTipText("Set Visual Properties");
+		vizButton.setToolTipText("Set Visual Style");
 		vizButton.setBorderPainted(false);
 
 	}// createToolBar

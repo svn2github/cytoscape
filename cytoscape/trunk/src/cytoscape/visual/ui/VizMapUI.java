@@ -80,7 +80,7 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
    *	@param	VMM	VisualMappingManager for the graph
    */
   public VizMapUI(VisualMappingManager VMM, JFrame mainFrame) {
-    super(mainFrame, "Set Visual Properties");
+    super(mainFrame, "Set Visual Style");
     this.VMM = VMM;
 
     //  Register to Listen for Changes in Underlying Network.

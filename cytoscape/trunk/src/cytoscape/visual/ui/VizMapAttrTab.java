@@ -601,7 +601,14 @@ public class VizMapAttrTab extends VizMapTab {
                                                         JOptionPane.QUESTION_MESSAGE,
                                                         null, null,
                                                         suggestedName);
-	    if (ret == null) {return null;}
+	    if (ret == null){
+	    		// user hit cancel
+	    		return null;
+	    }else if(ret.length() == 0) {
+	    		// user hit OK but entered no name
+	    		JOptionPane.showMessageDialog(mainUIDialog, "Please enter a name for the calculator.", "Calculator Name Input Error", JOptionPane.ERROR_MESSAGE);
+	    		continue;// ask again
+	    	}
 	    String newName = catalog.checkCalculatorName(ret, this.type);
 	    if (newName.equals(ret)) {return ret;}
 	    int alt = JOptionPane.showConfirmDialog(mainUIDialog,
