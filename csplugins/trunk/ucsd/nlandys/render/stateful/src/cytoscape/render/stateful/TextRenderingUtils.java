@@ -103,7 +103,7 @@ final class TextRenderingUtils
         throw new IllegalStateException("textJustify value unrecognized"); }
       grafx.drawTextFull(font, fontScaleFactor, token, xCenter, yCenter, 0,
                          paint, textAsShape);
-      currHeight += textHeight; }
+      currHeight -= textHeight; }
   }
 
 }
