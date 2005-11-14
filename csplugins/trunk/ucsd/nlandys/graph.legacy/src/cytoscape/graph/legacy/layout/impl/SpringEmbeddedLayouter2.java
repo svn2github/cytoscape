@@ -745,6 +745,27 @@ public final class SpringEmbeddedLayouter2 implements Task
     m_taskMonitor.setPercentCompleted(2);
     m_taskMonitor.setStatus("Calculating node distances");
 
+    {
+      final java.util.Random rand = new java.util.Random();
+      final double maxX = m_graph.getMaxWidth();
+      final double maxY = m_graph.getMaxHeight();
+      for (int i = 0; i < m_graph.getNumNodes(); i++) {
+        if (m_graph.isMovableNode(i)) {
+          final double deltaX =
+            ((double) rand.nextInt()) / 0x80000000;
+          final double deltaY =
+            ((double) rand.nextInt()) / 0x80000000;
+          final double oldX = m_graph.getNodePosition(i, true);
+          final double oldY = m_graph.getNodePosition(i, false);
+          double newX = oldX + deltaX;
+          double newY = oldY + deltaY;
+          newX = Math.max(0.0d, newX);
+          newY = Math.max(0.0d, newY);
+          newX = Math.min(newX, maxX);
+          newY = Math.min(newY, maxY);
+          m_graph.setNodePosition(i, newX, newY); } }
+    }
+
     int[][] nodeDistances = calculateNodeDistances(m_graph);
 
     if (m_halt) return;
