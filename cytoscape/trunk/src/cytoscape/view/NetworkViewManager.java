@@ -136,10 +136,7 @@ public class NetworkViewManager
                         network_id );
   }
   
-  public void 	internalFrameClosed(InternalFrameEvent e) {
-    //TODO: graphview closing code
-  }
-
+  public void 	internalFrameClosed(InternalFrameEvent e) {}
   public void 	internalFrameClosing(InternalFrameEvent e) {}
   public void 	internalFrameDeactivated(InternalFrameEvent e) {}
   public void 	internalFrameDeiconified(InternalFrameEvent e) {}
@@ -294,7 +291,7 @@ public class NetworkViewManager
   /**
    * Contains a CyNetworkView according to the view type of this NetworkViewManager
    */
-  protected void createContainer ( CyNetworkView view ) {
+  protected void createContainer ( final CyNetworkView view ) {
 
    
     if ( networkViewMap.containsKey( view.getNetwork().getIdentifier() ) ) {
@@ -314,6 +311,9 @@ public class NetworkViewManager
       // create a new InternalFrame and put the CyNetworkViews Component into it
       JInternalFrame iframe = new JInternalFrame( view.getTitle(), 
                                                   true, true, true, true );
+      iframe.addInternalFrameListener(new InternalFrameAdapter() {
+          public void internalFrameClosing(InternalFrameEvent e) {
+            Cytoscape.destroyNetwork(view.getNetwork()); } } );
       ( ( JDesktopPane )container ).add( iframe );
       iframe.getContentPane().add( view.getComponent() );
       iframe.pack();
