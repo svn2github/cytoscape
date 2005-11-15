@@ -96,6 +96,7 @@ public class CyNetworkUtilities {
 		}
 
 	} // saveSelectedNodeNames
+
 	// -------------------------------------------------------------------------
 
 	/**
@@ -162,14 +163,14 @@ public class CyNetworkUtilities {
 
 		GraphPerspective theGraph = network.getGraphPerspective();
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
-		
+
 		for (Iterator i = theGraph.nodesIterator(); i.hasNext();) {
 			Node node = (Node) i.next();
 			String nodeLabel = node.getIdentifier();
-			//String canonicalName = nodeAttributes.getCanonicalName(node);
+			// String canonicalName = nodeAttributes.getCanonicalName(node);
 			String canonicalName = nodeAttributes.getStringAttribute(node
 					.getIdentifier(), "canonicalName");
-			
+
 			boolean matched = false;
 			if (nodeLabel != null && Strings.isLike(nodeLabel, key, 0, true)) {
 				matched = true;
@@ -187,10 +188,21 @@ public class CyNetworkUtilities {
 					}
 				}
 			}
-			if (matched) {// only select matches, don't deselect ones that
-							// don't match
-				networkView.getView().getNodeView(node).setSelected(matched);
+			
+			//	Mod. by kono@ucsd.edu
+			// This code assumes existence of view, so I changed it to 
+			// compatible with both with or without view.
+			if (matched && networkView.getView()
+					.getNodeView(node) != null) {// only select matches, don't deselect ones that
+				// don't match
+				
+				networkView.getView()
+						.getNodeView(node).setSelected(matched);
+			} else if(matched) {
+				Cytoscape.getCurrentNetwork().setFlagged(node, true);
 			}
+			
+			
 		}
 
 		network.endActivity(callerID);
