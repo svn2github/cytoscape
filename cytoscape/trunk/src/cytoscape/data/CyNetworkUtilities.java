@@ -164,6 +164,8 @@ public class CyNetworkUtilities {
 		GraphPerspective theGraph = network.getGraphPerspective();
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 
+		int nodeFound = 0;
+
 		for (Iterator i = theGraph.nodesIterator(); i.hasNext();) {
 			Node node = (Node) i.next();
 			String nodeLabel = node.getIdentifier();
@@ -188,22 +190,27 @@ public class CyNetworkUtilities {
 					}
 				}
 			}
-			
-			//	Mod. by kono@ucsd.edu
-			// This code assumes existence of view, so I changed it to 
+
+			// Mod. by kono@ucsd.edu
+			// This code assumes existence of view, so I changed it to
 			// compatible with both with or without view.
-			if (matched && networkView.getView()
-					.getNodeView(node) != null) {// only select matches, don't deselect ones that
-				// don't match
-				
-				networkView.getView()
-						.getNodeView(node).setSelected(matched);
-			} else if(matched) {
+			if (matched && networkView.getView().getNodeView(node) != null) {
+
+				networkView.getView().getNodeView(node).setSelected(matched);
+				nodeFound++;
+			} else if (matched) {
 				Cytoscape.getCurrentNetwork().setFlagged(node, true);
+				nodeFound++;
 			}
-			
-			
+
 		}
+
+		if (nodeFound == 0) {
+			JOptionPane.showMessageDialog(null, "No match for the string \""
+					+ key + "\"", "Error: Node Not Found", JOptionPane.ERROR_MESSAGE);
+		}
+
+		//System.out.println("node found = " + nodeFound);
 
 		network.endActivity(callerID);
 		return found;
