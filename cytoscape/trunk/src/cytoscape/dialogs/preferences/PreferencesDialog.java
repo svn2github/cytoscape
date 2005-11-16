@@ -35,7 +35,7 @@ import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 
 public class PreferencesDialog extends JDialog implements
-	PropertyChangeListener {
+		PropertyChangeListener {
 
 	String[] pluginTypes = { "Local", "Remote/URL" };
 
@@ -82,21 +82,37 @@ public class PreferencesDialog extends JDialog implements
 	private ListSelectionModel lsm = null;
 
 	private ListSelectionModel lsmA = null;
-	
-	
+
 	// When properties are changed, it will be processed here.
-	public void propertyChange ( PropertyChangeEvent e ) {
-		if ( e.getPropertyName().equals( Cytoscape.PREFERENCE_MODIFIED ) ) {
+	public void propertyChange(PropertyChangeEvent e) {
+		if (e.getPropertyName().equals(Cytoscape.PREFERENCE_MODIFIED)) {
 			System.out.println("Cytoscape Prop. has changed: ");
 			System.out.println(" - Old value is " + e.getOldValue());
 			System.out.println(" - New value is " + e.getNewValue());
-			
-			// Set to new val
-			CytoscapeInit.getProperties().setProperty("defaultSpeciesName", (String)e.getNewValue() );
-			prefsTM.setProperty("defaultSpeciesName", (String)e.getNewValue() );
-			//refresh();
-			System.out.println("DefaultSpeciesName updated to " + 
-					CytoscapeInit.getProperties().getProperty("defaultSpeciesName") );
+
+			String propName = null;
+			if (CytoscapeInit.getProperties().getProperty("defaultSpeciesName") == e
+					.getOldValue() || CytoscapeInit.getProperties().getProperty("defaultSpeciesName") == e
+					.getNewValue()) {
+				propName = "defaultSpeciesName";
+			} else if (CytoscapeInit.getProperties().getProperty(
+					"defaultWebBrowser") == e.getOldValue() ||
+					CytoscapeInit.getProperties().getProperty(
+					"defaultWebBrowser") == e.getNewValue()) {
+				propName = "defaultWebBrowser";
+			}
+
+			if (propName != null) {
+				// Set to new val
+				CytoscapeInit.getProperties().setProperty( propName,
+						(String) e.getNewValue());
+				prefsTM.setProperty( propName, (String) e
+						.getNewValue());
+				// refresh();
+				System.out.println(propName + " updated to "
+						+ CytoscapeInit.getProperties().getProperty(
+								propName));
+			}
 		}
 	}
 
@@ -123,12 +139,13 @@ public class PreferencesDialog extends JDialog implements
 
 			// preferences/properties
 		} else if (tm == prefsTM) {
-			
-			Cytoscape.firePropertyChange( Cytoscape.PREFERENCE_MODIFIED, prefsTM.getProperty(preferenceName), preferenceValue );
+
+			Cytoscape.firePropertyChange(Cytoscape.PREFERENCE_MODIFIED, prefsTM
+					.getProperty(preferenceName), preferenceValue);
 			prefsTM.setProperty(preferenceName, preferenceValue);
 		}
 
-		//refresh();
+		// refresh();
 
 		// reset state of Modify and Delete buttons to inactive
 		// since update of parameter will clear any selections
@@ -220,12 +237,10 @@ public class PreferencesDialog extends JDialog implements
 
 	public PreferencesDialog(Frame owner) {
 		super(owner);
-		
-		
-		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener( this );
-		
-		
-		
+
+		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(
+				this);
+
 		initButtonPane();
 		initTable();
 		try {
