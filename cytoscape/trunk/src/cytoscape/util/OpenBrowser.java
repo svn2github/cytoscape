@@ -7,6 +7,9 @@
 package cytoscape.util;
 
 import java.io.IOException;
+import java.util.Properties;
+
+import cytoscape.CytoscapeInit;
 
 public abstract class OpenBrowser {
 
@@ -15,15 +18,16 @@ public abstract class OpenBrowser {
 	//static String UNIX_PATH = "firefox";
 	static String UNIX_FLAG = "-remote openURL";
 
-	static String WINDOWS_PATH = "cmd.exe /c start";
+	//static String WINDOWS_PATH = "cmd.exe /c start";
 	static String MAC_PATH = "open";
 
 	private static final String WIN_PATH = "rundll32";
 	private static final String WIN_FLAG = "url.dll,FileProtocolHandler";
 
 	public static void openURL(String url) {
-
-		System.out.println("Opening URL: " + url);
+		
+		Properties prop = CytoscapeInit.getProperties();
+		String defBrowser = prop.getProperty("defaultWebBrowser");
 
 		String osName = System.getProperty("os.name");
 
@@ -38,7 +42,13 @@ public abstract class OpenBrowser {
 				cmd = MAC_PATH + " " + url;
 			} else {
 				// cmd = UNIX_PATH + " " + UNIX_FLAG + "(" + url + ")";
-				cmd = UNIX_PATH + " " + url;
+				if(defBrowser != null) {
+					cmd = defBrowser + " " + url;
+					System.out.println("Opening URL by command \"" + defBrowser + "\"");
+				} else { 
+					cmd = UNIX_PATH + " " + url;
+					System.out.println("Opening URL by command \"" + UNIX_PATH + "\"");
+				}
 			}
 			// System.out.println("cmd=" + cmd);
 			Process p = Runtime.getRuntime().exec(cmd);
