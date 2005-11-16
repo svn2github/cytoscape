@@ -17,6 +17,9 @@ final class CyEdgeDepot implements FingEdgeDepot
     return returnThis;
   }
 
-  public void recycleEdge(Edge edge) { }
+  public void recycleEdge(Edge edge)
+  {
+    edge.setIdentifier(null);
+  }
 
 }

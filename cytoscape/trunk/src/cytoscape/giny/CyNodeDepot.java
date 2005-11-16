@@ -17,6 +17,9 @@ final class CyNodeDepot implements FingNodeDepot
     return returnThis;
   }
 
-  public void recycleNode(Node node) { }
+  public void recycleNode(Node node)
+  {
+    node.setIdentifier(null);
+  }
 
 }

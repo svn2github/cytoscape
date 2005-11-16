@@ -88,14 +88,15 @@ public class CytoscapeFingRootGraph
   }
 
   public void setNodeIdentifier ( String identifier, int index ) {
-    node_name_index_map.add( identifier, index );
-  }
+    if (index == 0) {
+      node_name_index_map.remove(identifier); }
+    else {
+      node_name_index_map.add(identifier, index); } }
 
   public void setEdgeIdentifier ( String identifier, int index ) {
-    edge_name_index_map.add( identifier, index );
-  }
+    if (index == 0) {
+      edge_name_index_map.remove(identifier); }
+    else {
+      edge_name_index_map.add(identifier, index); } }
 
 }
-  
-
-

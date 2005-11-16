@@ -61,8 +61,11 @@ public class CyEdge implements cytoscape.giny.Edge {
   }
 
   public boolean setIdentifier ( String new_id ) {
+    if (new_id == null) {
+      m_rootGraph.setEdgeIdentifier(m_identifier, 0); }
+    else {
+      m_rootGraph.setEdgeIdentifier(new_id, m_rootGraphIndex); }
     m_identifier = new_id;
-    m_rootGraph.setEdgeIdentifier( new_id, m_rootGraphIndex );
     return true;
   }
 

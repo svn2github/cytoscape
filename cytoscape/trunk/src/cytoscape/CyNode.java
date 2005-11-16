@@ -56,8 +56,11 @@ public class CyNode implements cytoscape.giny.Node
 
   public boolean setIdentifier(String new_id)
   {
+    if (new_id == null) {
+      m_rootGraph.setNodeIdentifier(m_identifier, 0); }
+    else {
+      m_rootGraph.setNodeIdentifier(new_id, m_rootGraphIndex); }
     m_identifier = new_id;
-    m_rootGraph.setNodeIdentifier( new_id, m_rootGraphIndex );
     return true;
   }
 
