@@ -253,7 +253,7 @@ class LoadNetworkTask implements Task {
         } else {
             sb.append("Network is over "
                     + CytoscapeInit.getViewThreshold()
-                    + " nodes.  A view will not been created."
+                    + " nodes.  A view has not been created."
                     + "  If you wish to view this network, use "
                     + "\"Create View\" from the \"Edit\" menu.");
         }
