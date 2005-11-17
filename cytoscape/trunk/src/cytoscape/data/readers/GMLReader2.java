@@ -679,8 +679,8 @@ public class GMLReader2 implements GraphReader {
 						.get(sources.get(idx)));
 				String targetName = (String) node_labels.get(gml_id2order
 						.get(targets.get(idx)));
-				String edgeName = sourceName.toUpperCase() + " (" + label
-						+ ") " + targetName.toUpperCase();
+				String edgeName = sourceName + " (" + label
+						+ ") " + targetName;
 				
 				// If () is not required, we need to use this...
 //				String edgeName = sourceName + " " + label + " " + targetName;
@@ -811,7 +811,7 @@ public class GMLReader2 implements GraphReader {
 			node_root_index_pairs.add(root_index_pair);
 			nodes.add(id);
 			node_labels.add(label);
-			node_names.add(label.toUpperCase());
+			node_names.add(label);
 		}
 	}
 
@@ -941,7 +941,7 @@ public class GMLReader2 implements GraphReader {
 						.println("Warning: node label is missing for node ID: "
 								+ tempid);
 			}
-			extractNodeAttributes(graphics_list, label.toUpperCase());
+			extractNodeAttributes(graphics_list, label);
 		}
 	}
 
