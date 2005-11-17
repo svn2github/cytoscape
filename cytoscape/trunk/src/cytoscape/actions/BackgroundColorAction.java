@@ -51,8 +51,10 @@ public class BackgroundColorAction extends CytoscapeAction {
 
             //  Update the Current Background Color
             //  and Synchronize with current Visual Style
-            Cytoscape.getCurrentNetworkView().setBackgroundPaint(newPaint);
-            synchronizeVisualStyle(newPaint);
+            if (newPaint != null) {
+                Cytoscape.getCurrentNetworkView().setBackgroundPaint(newPaint);
+                synchronizeVisualStyle(newPaint);
+            }
             }
         });
     }//action performed
@@ -62,10 +64,15 @@ public class BackgroundColorAction extends CytoscapeAction {
      * @param newColor New Color
      */
     private void synchronizeVisualStyle(Color newColor) {
-        VisualMappingManager vmm = Cytoscape.getCurrentNetworkView().getVizMapManager();
-        VisualStyle style = vmm.getVisualStyle();
-        GlobalAppearanceCalculator gCalc =
-                style.getGlobalAppearanceCalculator();
-        gCalc.setDefaultBackgroundColor(newColor);
+        VisualMappingManager vmm = Cytoscape.getDesktop().getVizMapManager();
+        if (vmm != null) {
+            VisualStyle style = vmm.getVisualStyle();
+            if (style != null) {
+                GlobalAppearanceCalculator gCalc =
+                    style.getGlobalAppearanceCalculator();
+                gCalc.setDefaultBackgroundColor(newColor);
+                vmm.applyGlobalAppearances();
+            }
+        }
     }
 }
