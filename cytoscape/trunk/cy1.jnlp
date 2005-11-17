@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jnlp
-   codebase="http://inferno.systemsbiology.net/~xmas/"
+   codebase="http://chianti.ucsd.edu/kono/"
    href="cy1.jnlp">
   <information>
     <title>Cytoscape WebStart</title>
@@ -16,7 +16,7 @@
 <jar href="cytoscape.jar"/>
 <jar href="lib/fing.jar"/>
 <jar href="lib/coltginy.jar"/>
-<jar href="lib/cytoscape-data-attr.jar"/>
+<jar href="lib/cytoscape-cruft-obo.jar"/>
 <jar href="lib/cytoscape-graph-dynamic.jar"/>
 <jar href="lib/cytoscape-graph-fixed.jar"/>
 <jar href="lib/cytoscape-graph-layout.jar"/>
