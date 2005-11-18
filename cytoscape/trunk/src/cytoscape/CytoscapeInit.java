@@ -5,14 +5,17 @@ import cytoscape.plugin.*;
 import cytoscape.util.shadegrown.WindowUtilities;
 import cytoscape.data.servers.BioDataServer;
 import cytoscape.view.CytoscapeDesktop;
+import cytoscape.view.NetworkPanel;
 
 import java.io.*;
 import java.util.*;
 import java.util.jar.*;
 import java.net.*;
+import java.awt.event.ActionEvent;
 import java.beans.*;
 
 import javax.swing.ImageIcon;
+import javax.swing.event.SwingPropertyChangeSupport;
 
 /**
  * Cytoscape Init is responsible for starting Cytoscape in a way that makes
@@ -249,6 +252,7 @@ public class CytoscapeInit implements PropertyChangeListener {
 				new String[] {}), (String[]) getEdgeAttributes().toArray(
 				new String[] {}), !noCanonicalization(), bds,
 				getDefaultSpeciesName());
+		
 
 		Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
 
@@ -267,7 +271,7 @@ public class CytoscapeInit implements PropertyChangeListener {
 		}
 
 		loadPlugins(pluginURLs);
-
+		
 		// attempt to load resource plugins
 		List rp = cli.getResourcePlugins();
 		for (Iterator rpi = rp.iterator(); rpi.hasNext();) {
@@ -286,7 +290,11 @@ public class CytoscapeInit implements PropertyChangeListener {
 		if (!isHeadless()) {
 			WindowUtilities.hideSplash();
 		}
-
+		
+		// This is for browser and other plugins.
+		Cytoscape.firePropertyChange( Cytoscape.NETWORK_LOADED, null, null );
+		
+		System.out.println("Cytoscape initialized successfully.");
 		return true;
 	}
 
