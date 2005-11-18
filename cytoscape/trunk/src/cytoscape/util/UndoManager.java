@@ -8,7 +8,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.undo.*;
 
-public class UndoManager {
+public class UndoManager   {
 
   private  javax.swing.undo.UndoManager undo;
   private  UndoAction undoAction;
@@ -38,8 +38,10 @@ public class UndoManager {
 
   public  void addEdit ( UndoableEdit edit ) {
     undo.addEdit( edit );
-    undoAction.update();
+    undoAction.update();   
     redoAction.update();
+	Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, 
+			Cytoscape.getCurrentNetwork());
   }
 
   protected class UndoAction extends AbstractAction {
@@ -57,7 +59,9 @@ public class UndoManager {
 	    }
 	    update();
 	    redoAction.update();
-    }
+		Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, 
+				Cytoscape.getCurrentNetwork());
+		}
 
     protected void update() {
 	    if(undo.canUndo()) {
@@ -86,6 +90,8 @@ public class UndoManager {
 	    }
 	    update();
 	    undoAction.update();
+		Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, 
+				Cytoscape.getCurrentNetwork());
     }
 
     protected void update() {
