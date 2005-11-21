@@ -313,7 +313,7 @@ public class NetworkViewManager
                                                   true, true, true, true );
       iframe.addInternalFrameListener(new InternalFrameAdapter() {
           public void internalFrameClosing(InternalFrameEvent e) {
-            Cytoscape.destroyNetwork(view.getNetwork()); } } );
+            Cytoscape.destroyNetworkView(view); } } );
       ( ( JDesktopPane )container ).add( iframe );
       iframe.getContentPane().add( view.getComponent() );
       iframe.pack();
