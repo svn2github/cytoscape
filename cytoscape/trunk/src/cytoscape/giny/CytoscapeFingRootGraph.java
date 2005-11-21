@@ -33,7 +33,7 @@ public class CytoscapeFingRootGraph
 
   public CyNetwork createNetwork ( Collection nodes, Collection edges ) {
     Node[] node = ( Node[] )  nodes.toArray( new Node[] {} );
-    Edge[] edge = ( Edge[] )  nodes.toArray( new Edge[] {} );
+    Edge[] edge = ( Edge[] )  edges.toArray( new Edge[] {} );
     return  createNetwork( node, edge ) ;
 
   }
