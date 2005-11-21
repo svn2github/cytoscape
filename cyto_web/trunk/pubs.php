@@ -10,7 +10,7 @@
 <table id="feature" border="0" cellpadding="0" cellspacing="0" summary="">
 	<tr>
 		<td width="10">
-			 
+			ï¿½
 		</td>
 		<td valign="center">
 			<h1> Research using Cytoscape </h1>
@@ -19,8 +19,53 @@
 </table>
 <? include "nav.php"; ?>
 <div id="indent">
-<br>
-<b>Proteins, 2005</b>
+
+	<p>
+			<b>Nature Nov. 2005</b>
+			<br>
+			Suthram S, Sittler T, Ideker T.
+			<br>
+			Plasmodium protein network diverges from those of other eukaryotes.
+			<br>
+			[<A HREF="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=pubmed&dopt=Abstract&list_uids=16267557&query_hl=5"/>Abstract</A>]
+			[<A HREF="">Full Text</A>]
+			[<A HREF="">PDF</A>]
+			<br>
+	<p>		
+			<b>J Comput Biol. Jul-Aug 2005</b>
+			<br>
+			Sharan R, Ideker T, Kelley B, Shamir R, Karp RM.
+			<br>
+			Identification of protein complexes by comparative analysis of yeast and bacterial protein interaction data.
+			<br>
+			[<A HREF="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=pubmed&dopt=Abstract&list_uids=16108720&query_hl=5"/>Abstract</A>]
+			[<A HREF="http://www.liebertonline.com/doi/pdf/10.1089/cmb.2005.12.835">Full Text</A>]
+			[<A HREF="http://www.liebertonline.com/doi/pdf/10.1089/cmb.2005.12.835">PDF</A>]
+			<br>
+	<p>
+			<b>Genome Biology. July 2005</b>
+			<br>
+			Yeang CH, Mak HC, McCuine S, Workman C, Jaakkola T, Ideker T.
+			<br>
+			Validation and refinement of gene-regulatory pathways on a network of physical interactions.
+			<br>
+			[<A HREF="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=pubmed&dopt=Abstract&list_uids=15998451&query_hl=5"/>Abstract</A>]
+			[<A HREF="http://www.pubmedcentral.gov/articlerender.fcgi?tool=pubmed&pubmedid=15998451">Full Text</A>]
+			[<A HREF="http://www.pubmedcentral.gov/picrender.fcgi?artid=1175993&blobtype=pdf">PDF</A>]
+			<br>
+	<p>
+			<b>Nature Biotechnology. May 2005</b>
+			<br>
+			Kelley R, Ideker T.
+			<br>
+			Systematic interpretation of genetic interactions using protein networks.
+			<br>
+			[<A HREF="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=pubmed&dopt=Abstract&list_uids=15877074&query_hl=5"/>Abstract</A>]
+			[<A HREF="http://www.nature.com/nbt/journal/v23/n5/full/nbt1096.html">Full Text</A>]
+			[<A HREF="http://www.nature.com/nbt/journal/v23/n5/pdf/nbt1096.pdf">PDF</A>]
+			<br>
+
+<p><b>Proteins, 2005</b>
 <br>G Cavelier, D Anastassiou D.
 <br>
 Phenotype analysis using network motifs derived from changes in regulatory network dynamics.
@@ -73,7 +118,7 @@ Proc Natl Acad Sci U S A. 2005 Feb 8;102(6):1974-9. Epub 2005 Feb 01.
 		<br>
 		Reiss David, Schwikowski Benno
 		<br>
-		Predicting protein–peptide interactions via a network-based motif sampler
+		Predicting proteinï¿½peptide interactions via a network-based motif sampler
 		<br>
 		Bioinformatics. 2004 Aug 4;20 Suppl 1:I274-I282
 		<br>

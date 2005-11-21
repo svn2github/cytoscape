@@ -1,4 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<! Updateb by kono 11-21-2005 >
+
 <html>
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
@@ -61,19 +63,22 @@
 <table cellpadding="8" cellspacing="0" border="0">
   <tr><!-- Stupid table wants to put itself all the way to the left lol! -->
     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- Hack, hack, cough, cough. --></td>
-    <td>Mark Anderson</td>
     <td>Iliana<br />Avila-Campillo</td>
     <td>Gary Bader</td>
     <td>Ethan Cerami</td>
     <td>Rowan<br />Christmas</td>
+    <td>Mike Smoot</td>
+    <td>Keiichiro Ono</td>
   </tr>
   <tr>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- Hack, hack, cough, cough. --></td>
-    <td><img src="people_photos/mark.jpg"></img></td>
+    
     <td><img src="people_photos/iliana.jpg"></img></td>
     <td><img src="people_photos/gary.jpg"></img></td>
     <td><img src="people_photos/ethan.jpg"></img></td>
     <td><img src="people_photos/rowan.jpg"></img></td>
+    <td><img src="people_photos/printing.jpg"></img></td>
+    <td><img src="people_photos/printing.jpg"></img></td>
   </tr>
   <tr><td colspan=6>&nbsp;</td></tr>
   <tr>
@@ -83,6 +88,7 @@
     <td>Robert<br />Sheridan</td>
     <td>Chris Workman</td>
     <td>Richard<br />Bonneau</td>
+    <td>Melissa Cline</td>
   </tr>
   <tr>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- Hack, hack, cough, cough. --></td>
@@ -91,6 +97,7 @@
     <td><img src="people_photos/robert.jpg"></img></td>
     <td><img src="people_photos/chris.jpg"></img></td>
     <td><img src="people_photos/rich.jpg"></img></td>
+    <td><img src="people_photos/printing.jpg"></img></td>
   </tr>
 </table>
 <blockquote>
@@ -104,6 +111,8 @@
 				<tbody>
 					<tr>
 						<td>
+						Mark Anderson
+						<br>
 						Nada Amin
 						<br>
 						Larissa Kamenkovich
