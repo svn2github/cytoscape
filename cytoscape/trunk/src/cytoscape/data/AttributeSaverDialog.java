@@ -300,7 +300,8 @@ class AttributeSaverState implements TableModel {
 
 		Vector canonicalNames = new Vector();
 		for (Iterator objIt = graphObjects.iterator(); objIt.hasNext();) {
-			String canonicalName = cyAttributes.getStringAttribute((String) objIt.next(),"canonicalName");
+			String canonicalName = cyAttributes.getStringAttribute
+                          (((giny.model.GraphObject) objIt.next()).getIdentifier(), "canonicalName");
 			if (canonicalName != null) {
 				canonicalNames.add(canonicalName);
 			} // end of if ()
@@ -326,7 +327,7 @@ class AttributeSaverState implements TableModel {
 								.hasNext();) {
 							String name = (String) canonicalIt.next();
 							//Object value = attributeMap..get(name);
-							Object value = attributeMap.getAttributeValue(attribute,name,null);
+							Object value = attributeMap.getAttributeValue(name,attribute,null);
 							
 							if (value != null) {
 								if (value instanceof Collection) {
