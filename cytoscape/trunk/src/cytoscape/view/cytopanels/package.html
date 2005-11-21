@@ -1,27 +1,27 @@
 <html>
 <body>
-Cyto Panels Framework.
+CytoPanels Framework.
 <P>
 <UL>
-<LI><A HREF="#whatarecytopanels">What are Cyto Panels ?</A></LI>
+<LI><A HREF="#whatarecytopanels">What are CytoPanels ?</A></LI>
 <LI><A HREF="#basicusage">Basic Usage</A></LI>
-<LI><A HREF="#workingwith">Working with the Cyto Panel API</A></LI>
-<LI><A HREF="#events">Cyto Panel Events</A></LI>
+<LI><A HREF="#workingwith">Working with the CytoPanel API</A></LI>
+<LI><A HREF="#events">CytoPanel Events</A></LI>
 </UL>
 
 <TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0">
 <TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
 <TD COLSPAN=2><FONT SIZE="+1">
-<B><A NAME="whatarecytopanels">What are Cyto Panels ?</A></B></FONT></TD>
+<B><A NAME="whatarecytopanels">What are CytoPanels ?</A></B></FONT></TD>
 </TR>
 </TABLE>
 <P>
-Cyto Panels are floatable / dockable panels, which will be available in Cytoscape 2.2. We built the Cyto Panel API to cut down on the number of pop-up windows within Cytoscape, and create a more unified user experience. For example, in Cytoscape 2.1, the cPath Plugin enables users to click on a node and immediately view node details in a pop-up window. Using the Cyto Panel API, we can now show these node details in an embedded Cyto Panel, and present a more integrated experience to the user. For example, the image below shows a screenshot of the latest BioPAX Plugin. When you click on a node, the node details appear directly in the left Cyto Panel.
+CytoPanels are floatable / dockable panels, which will be available in Cytoscape 2.2. We built the CytoPanel API to cut down on the number of pop-up windows within Cytoscape, and create a more unified user experience. For example, in Cytoscape 2.1, the cPath Plugin enables users to click on a node and immediately view node details in a pop-up window. Using the CytoPanel API, we can now show these node details in an embedded CytoPanel, and present a more integrated experience to the user. For example, the image below shows a screenshot of the latest BioPAX Plugin. When you click on a node, the node details appear directly in the left CytoPanel.
 
 <P>
 <IMG SRC="http://cbio.mskcc.org/~cerami/biopax/bp_plugin1.png" BORDER=0/>
 <P>
-The user can then chose to resize, hide or float the left Cyto Panel. For example, in the screenshot below, the user has chosen to float it:
+The user can then chose to resize, hide or float the left CytoPanel. For example, in the screenshot below, the user has chosen to float it:
 <P>
 <IMG SRC="http://cbio.mskcc.org/~cerami/biopax/bp_plugin2.png" BORDER=0/>
 <P>
@@ -33,23 +33,23 @@ The user can then chose to resize, hide or float the left Cyto Panel. For exampl
 </TR>
 </TABLE>
 <P>
-Cytoscape 2.2 now includes three Cyto Panels: Cyto Panel 1 (appears on the left), Cyto Panel 2 (appears on the bottom), and Cyto Panel 3 (appears on the right). By default, only Cyto Panel 1 will appear, and it will automatically contain the network list and bird's eye view component. The other panels will be hidden.
+Cytoscape 2.2 now includes three CytoPanels: CytoPanel 1 (appears on the left), CytoPanel 2 (appears on the bottom), and CytoPanel 3 (appears on the right). By default, only CytoPanel 1 will appear, and it will automatically contain the network list and bird's eye view component. The other panels will be hidden.
 
-The end-user can show / hide any panel via the new Cyto Panel menu, or via the keyboard accelerator short-cuts. 
+The end-user can show / hide any panel via the new CytoPanel menu, or via the keyboard accelerator short-cuts. 
 <P>
 
 <TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0">
 <TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
 <TD COLSPAN=2><FONT SIZE="+1">
-<B><A NAME="workingwith">Working with the Cyto Panel API</A></B></FONT></TD>
+<B><A NAME="workingwith">Working with the CytoPanel API</A></B></FONT></TD>
 </TR>
 </TABLE>
 <P>
-The Cyto Panel API is straightforward and fully documented. If you are a core Cytoscape coder or a Plugin writer, here are a few tips to get started.
+The CytoPanel API is straightforward and fully documented. If you are a core Cytoscape coder or a Plugin writer, here are a few tips to get started.
 <P>
-<h2>Step 1:  Obtain a Cyto Panel</h2>
+<h2>Step 1:  Obtain a CytoPanel</h2>
 <P>
-As noted above, the Cytoscape Desktop contains three default Cyto Panels. To obtain one, use the CytoscapeDesktop.getCytoPanel() method. This method takes a SwingConstants integer value, indicating a compass direction (this enables us to add additional Cyto Panels in the future, if we decide that's necessary.) Here is sample code for accessing the left Cyto Panel:
+As noted above, the Cytoscape Desktop contains three default CytoPanels. To obtain one, use the CytoscapeDesktop.getCytoPanel() method. This method takes a SwingConstants integer value, indicating a compass direction (this enables us to add additional CytoPanels in the future, if we decide that's necessary.) Here is sample code for accessing the left CytoPanel:
 <P>
 <TABLE WIDTH="100%" CELLPADDING="3" CELLSPACING="0">
 <TR BGCOLOR="#EEEEEE">
@@ -61,7 +61,7 @@ CytoPanel cytoPanel = desktop.getCytoPanel (SwingConstants.WEST);
 <P>
 <h2>Step 2:  Add your Component</h2>
 <P>
-You can place any Swing <tt>Component</tt> object in a Cyto Panel, and it will automatically get its own tab. For example, in the code below, I create a BioPAX component, and add it the left Cyto Panel. The code also adds an icon and a tooltip:
+You can place any Swing <tt>Component</tt> object in a CytoPanel, and it will automatically get its own tab. For example, in the code below, I create a BioPAX component, and add it the left CytoPanel. The code also adds an icon and a tooltip:
 <P>
 <TABLE WIDTH="100%" CELLPADDING="3" CELLSPACING="0">
 <TR BGCOLOR="#EEEEEE">
@@ -75,9 +75,9 @@ cytoPanel.add("BioPax PlugIn", icon, bpContainer, "BioPax PlugIn");
 </TR>
 </TABLE>
 <P>
-<h2>Step 3: Set the Cyto Panel State</h2>
+<h2>Step 3: Set the CytoPanel State</h2>
 <P>
-You can also (optionally) set the Cyto Panel state.  Each Cyto Panel exists in one of three states:
+You can also (optionally) set the CytoPanel state.  Each CytoPanel exists in one of three states:
 <ul>
 <li><p> <tt>CytoPanelState.HIDE</tt>:  The panel is hidden from the user's view. </p>
 </li>
@@ -94,7 +94,7 @@ You can also (optionally) set the Cyto Panel state.  Each Cyto Panel exists in o
 </TR>
 </TABLE>
 <P>
-If you want, you can also activate your tab within a Cyto Panel. To do so, first determine the index value of your component. Then, call setSelectedIndex(). For example:
+If you want, you can also activate your tab within a CytoPanel. To do so, first determine the index value of your component. Then, call setSelectedIndex(). For example:
 <P>
 <TABLE WIDTH="100%" CELLPADDING="3" CELLSPACING="0">
 <TR BGCOLOR="#EEEEEE">
@@ -106,11 +106,11 @@ cytoPanel.setSelectedIndex(index);</TD>
 <TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0">
 <TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
 <TD COLSPAN=2><FONT SIZE="+1">
-<B><A NAME="events">Cyto Panel Events</A></B></FONT></TD>
+<B><A NAME="events">CytoPanel Events</A></B></FONT></TD>
 </TR>
 </TABLE>
 <P>
-You can also (optionally) register to receive Cyto Panel Events. In order to do so, you must implement the <A HREF="../../../cytoscape/view/cytopanels/CytoPanelListener.html" title="interface in cytoscape.view.cytopanels">CytoPanelListener</A> interface and make the following call:
+You can also (optionally) register to receive CytoPanel Events. In order to do so, you must implement the <A HREF="../../../cytoscape/view/cytopanels/CytoPanelListener.html" title="interface in cytoscape.view.cytopanels">CytoPanelListener</A> interface and make the following call:
 <P>
 <TABLE WIDTH="100%" CELLPADDING="3" CELLSPACING="0">
 <TR BGCOLOR="#EEEEEE">
@@ -118,19 +118,19 @@ You can also (optionally) register to receive Cyto Panel Events. In order to do 
 </TR>
 </TABLE>
 <P>
-Once you are registered to receive Cyto Panel events, you will be notified of the following:
+Once you are registered to receive CytoPanel events, you will be notified of the following:
 <ul>
-<li><p> <tt>a Cyto Panel State has changed.</tt> </p>
+<li><p> <tt>a CytoPanel State has changed.</tt> </p>
 </li>
-<li><p> <tt>a Component has been added to a Cyto Panel.</tt> </p>
+<li><p> <tt>a Component has been added to a CytoPanel.</tt> </p>
 </li>
-<li><p> <tt>a Component has been removed from a Cyto Panel.</tt> </p>
+<li><p> <tt>a Component has been removed from a CytoPanel.</tt> </p>
 </li>
-<li><p> <tt>a Component on a Cyto Panel has been selected.</tt> </p>
+<li><p> <tt>a Component on a CytoPanel has been selected.</tt> </p>
 </li>
 </ul>
 <P>
-A Cyto Panel Listener can choose to stop receiving Cyto Panel Events. To do so, call:
+A CytoPanel Listener can choose to stop receiving CytoPanel Events. To do so, call:
 <P>
 <TABLE WIDTH="100%" CELLPADDING="3" CELLSPACING="0">
 <TR BGCOLOR="#EEEEEE">
