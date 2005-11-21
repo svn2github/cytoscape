@@ -12,7 +12,10 @@ public abstract class AttributeComboBoxModel implements ComboBoxModel, PropertyC
 
   protected Object selectedObject;
   protected Vector attributeList;
- 
+
+		protected Class [] type2Class = new Class[]{Boolean.class,Double.class,Integer.class,String.class};
+
+		
   protected AttributeComboBoxModel () {
     attributeList = new Vector();
     Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
@@ -73,7 +76,7 @@ class NodeAttributeComboBoxModel extends AttributeComboBoxModel{
   }
 
   protected void updateAttributes(){
-    byte type;
+    /*byte type;
     if ( attributeClass == Double.class )
       type = CyAttributes.TYPE_FLOATING;
     else if ( attributeClass == Integer.class )
@@ -82,13 +85,14 @@ class NodeAttributeComboBoxModel extends AttributeComboBoxModel{
       type = CyAttributes.TYPE_STRING;
     else 
       return;
+						*/
 
-    String [] na = Cytoscape.getNodeAttributesList();
-    attributeList = new Vector();
-    for ( int idx = 0; idx < na.length; idx++) {
-      if ( nodeAttributes.getType( na[idx] ) == type ) {
-        attributeList.add(na[idx]);
-      } 
+				String [] na = Cytoscape.getNodeAttributesList();
+				attributeList = new Vector();
+				for ( int idx = 0; idx < na.length; idx++) {
+						if(attributeClass.isAssignableFrom(type2Class[nodeAttributes.getType(na[idx])-1])){
+										attributeList.add(na[idx]);
+						}
       notifyListeners();
     }
   }
@@ -110,7 +114,11 @@ class EdgeAttributeComboBoxModel extends AttributeComboBoxModel{
   }
   
   protected void updateAttributes(){
-    byte type;
+    /*
+					* This part isn't really necessary  anymore
+					* now that we have the class lookup
+					* table
+				byte type;
     if ( attributeClass == String.class )
       type = CyAttributes.TYPE_STRING;
     else if ( attributeClass == Double.class )
@@ -119,13 +127,13 @@ class EdgeAttributeComboBoxModel extends AttributeComboBoxModel{
       type = CyAttributes.TYPE_INTEGER;
     else 
       return;
-
+						*/
     String [] ea = Cytoscape.getEdgeAttributesList();
     attributeList = new Vector();
     for ( int idx = 0; idx < ea.length; idx++) {
-      if ( edgeAttributes.getType( ea[idx] ) == type ) {
-        attributeList.add(ea[idx]);
-      } 
+								if(attributeClass.isAssignableFrom(type2Class[edgeAttributes.getType(ea[idx])-1])){
+												attributeList.add(ea[idx]);
+								}
       notifyListeners();
     }
   }
