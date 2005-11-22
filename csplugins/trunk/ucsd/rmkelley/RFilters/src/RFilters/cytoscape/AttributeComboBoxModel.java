@@ -21,6 +21,30 @@ public abstract class AttributeComboBoxModel implements ComboBoxModel, PropertyC
     Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
   }
 
+		/**
+			* This function will map from a type in the CyAttributes class to an actual
+			* class instance
+			*/
+		protected Class type2Class(int type){
+						switch(type){
+						case CyAttributes.TYPE_BOOLEAN: 
+										return Boolean.class;
+						case CyAttributes.TYPE_COMPLEX: 
+										return Object.class;
+						case CyAttributes.TYPE_FLOATING:
+										return Double.class;
+						case CyAttributes.TYPE_INTEGER:
+										return Integer.class;
+						case CyAttributes.TYPE_SIMPLE_LIST:
+										return java.util.List.class;
+						case CyAttributes.TYPE_SIMPLE_MAP:
+										return java.util.Map.class;
+						case CyAttributes.TYPE_UNDEFINED:
+										return Object.class;
+						default:
+										return Object.class;
+						}
+		}								
 
   public void notifyListeners(){
     for(Iterator listenIt = listeners.iterator();listenIt.hasNext();){
@@ -90,7 +114,7 @@ class NodeAttributeComboBoxModel extends AttributeComboBoxModel{
 				String [] na = Cytoscape.getNodeAttributesList();
 				attributeList = new Vector();
 				for ( int idx = 0; idx < na.length; idx++) {
-						if(attributeClass.isAssignableFrom(type2Class[nodeAttributes.getType(na[idx])-1])){
+						if(attributeClass.isAssignableFrom(type2Class(nodeAttributes.getType(na[idx])))){
 										attributeList.add(na[idx]);
 						}
       notifyListeners();
@@ -131,7 +155,7 @@ class EdgeAttributeComboBoxModel extends AttributeComboBoxModel{
     String [] ea = Cytoscape.getEdgeAttributesList();
     attributeList = new Vector();
     for ( int idx = 0; idx < ea.length; idx++) {
-								if(attributeClass.isAssignableFrom(type2Class[edgeAttributes.getType(ea[idx])-1])){
+								if(attributeClass.isAssignableFrom(type2Class(edgeAttributes.getType(ea[idx])))){
 												attributeList.add(ea[idx]);
 								}
       notifyListeners();
