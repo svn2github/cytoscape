@@ -1,4 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<! Updated for 2.2 by kono >
 <html>
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
@@ -20,17 +21,18 @@
 <? include "nav.php"; ?>
 <div id="indent">
 	<p>
-		The screenshot below shows the main window of <i>Cytoscape</i> displaying a network of protein-protein and protein-DNA interactions among 332 yeast genes.
+		The screenshot below shows the main window of <i>Cytoscape</i> displaying a network of protein-protein and protein-DNA interactions among 331 yeast genes.
 	</p>
 	<p>
-		<img src="screenshots/cytoscapeWindow2.gif" width="726" height="737" alt="main cytoscape window"> 
+		<img src="screenshots/cyto_2_2_main.png" alt="main cytoscape window"> 
 	</p>
 	<hr width="100%" size="2">
 	<p>
-		You can flip through different visual styles by making a selection from the Visual Style pull down menu. "Sample2" will give gene expression values for each node will be colored along a color gradient between red and green. 
+		The window below is called Attribute Browser.  You can see node/edge attributes by selecting them using mouse or filters.  
+		(The sample shows some of GO annotations for yeast genes.)  
 		<br>
 		<br>
-		<img src="screenshots/sample2.gif" width="608" height="681" alt="Sample2">
+		<img src="screenshots/cyto_2_2_browser.png" alt="Attribute Browser">
 	</p>
 	<hr width="100%" size="2">
 	<p>
