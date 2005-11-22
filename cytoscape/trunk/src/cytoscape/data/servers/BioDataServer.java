@@ -149,9 +149,11 @@ public class BioDataServer {
 				// If the manifest contains obo or gene_association entry,
 				// handle it as a new manifest file format.
 				fileFlag = checkFileType(manFileIn);
-
+				
+				
+				// New File Type found.
 				if (fileFlag == true) {
-
+					
 					// taxonFileName = absPath + TAXON_FILE;
 					// taxonFile = new File(taxonFileName);
 					// System.out.println("Taxon File Name is " +
@@ -159,10 +161,14 @@ public class BioDataServer {
 
 					// Extract file names and flip state from the manifest file
 					String[] flags = parseLoadFile(serverName, "flip");
+					
 					// String[] tempStrs = flags[0].split(separator);
-					String[] tempStrs = flags[0].split(FS);
-
-					if (tempStrs[tempStrs.length - 1].equals("true")) {
+					//String[] tempStrs = flags[0].split(FS);
+					//System.out.println("###########flags incl = " + tempStrs[0] );
+					//if (tempStrs[tempStrs.length - 1].equals("true")) {
+					if (flags[0].endsWith("true")) {
+						
+						
 						flip = true;
 						System.out
 								.println("Cannonical and common names will be fliped...");
@@ -217,8 +223,9 @@ public class BioDataServer {
 	//
 	protected boolean checkFileType(final BufferedReader br) throws IOException {
 		String curLine = null;
-		// System.out.println("Manifest: " + curLine);
+		
 		while (null != (curLine = br.readLine())) {
+			
 			if (curLine.startsWith(OBO_FILE)
 					|| curLine.startsWith(GENE_ASSOCIATION_FILE)) {
 				br.close();
