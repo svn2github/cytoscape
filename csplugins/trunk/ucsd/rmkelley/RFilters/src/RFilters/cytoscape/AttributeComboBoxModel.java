@@ -39,6 +39,8 @@ public abstract class AttributeComboBoxModel implements ComboBoxModel, PropertyC
 										return java.util.List.class;
 						case CyAttributes.TYPE_SIMPLE_MAP:
 										return java.util.Map.class;
+						case CyAttributes.TYPE_STRING:
+										return String.class;
 						case CyAttributes.TYPE_UNDEFINED:
 										return Object.class;
 						default:
