@@ -36,10 +36,12 @@
 	</p>
 	<hr width="100%" size="2">
 	<p>
-		With the Cytoscape Visual Style feature, you can easily customize the visual appearance of your graph. Cytoscape can also map values such as probabilities, confidence levels, and expression values to the visualization of networks. 
+		With the Cytoscape Visual Style feature, you can easily customize the visual 
+		appearance of your graph. Cytoscape can also map values such as probabilities, 
+		confidence levels, and expression values to the visualization of networks. 
 		<br>
 		<br>
-		<img src="screenshots/VisualStyles.gif" width="888" height="777" alt="Visual Styles"> 
+		<img src="screenshots/cyto_2_2_vs.png" alt="Visual Styles"> 
  
 	</p>
 </div>
