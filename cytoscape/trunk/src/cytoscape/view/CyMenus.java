@@ -417,12 +417,12 @@ public class CyMenus implements GraphViewChangeListener {
 					for (int i = 0; i < submenus.length; i++) {
 						if (submenus[i] instanceof JMenuItem) {
 							JMenuItem item = (JMenuItem) submenus[i];
-							if (!item.getText().equals(
-									PreferenceAction.MENU_LABEL)) {
-								if (inactive)
-									item.setEnabled(false);
-								else
-									item.setEnabled(true);
+							if (inactive &&
+                                                            item.getText().equals
+                                                            ("Delete Selected Nodes/Edges")) {
+                                                          item.setEnabled(false); }
+                                                        else {
+                                                          item.setEnabled(true);
 							}
 						}
 					}
