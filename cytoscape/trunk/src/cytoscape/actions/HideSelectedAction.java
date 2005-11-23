@@ -28,8 +28,19 @@ public class HideSelectedAction extends CytoscapeAction  {
     }
     
     public void actionPerformed (ActionEvent e) {
-        GinyUtils.hideSelectedNodes( Cytoscape.getCurrentNetworkView() );
-        GinyUtils.hideSelectedEdges( Cytoscape.getCurrentNetworkView() );
+        // Get the selected nodes:
+    		Set selectedNodes = Cytoscape.getCurrentNetwork().getFlaggedNodes();
+    		Set selectedEdges = Cytoscape.getCurrentNetwork().getFlaggedEdges();
+    		GinyUtils.hideSelectedNodes( Cytoscape.getCurrentNetworkView() );
+    		GinyUtils.hideSelectedEdges( Cytoscape.getCurrentNetworkView() );
+        // unselect the nodes and edges
+        if(selectedNodes != null){
+        		Cytoscape.getCurrentNetwork().setFlaggedNodes(selectedNodes, false);
+        }
+        
+        if(selectedEdges != null){
+        		Cytoscape.getCurrentNetwork().setFlaggedEdges(selectedEdges,false);
+        }
     }//action performed
 }
 
