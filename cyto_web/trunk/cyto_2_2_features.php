@@ -29,7 +29,8 @@
 	Cytoscape Graph Editor v1.0, Support for Gene Ontology OBO and gene annotation files, 
 	Cytoscape panels (CytoPanels) to ease window management, Independent internal network 
 	windows for easy comparison, New GML visual style to manage visual attributes from 
-	GML files, and many bugs fixes.
+	GML files, Simplified mechanism for saving Visual Styles in between sessions, Many 
+	performance improvements, Improved attribute API (CyAttributes), and many bugs fixes.
 </p>
 <table style="margin-left: 30;margin-right:30;border: dotted gray 1px;padding-left: 10px;font-size:small" cellpadding="5" cellspacing="5" width="90%">
 <tr>
@@ -59,8 +60,13 @@
 <tr>
 	<td>
 		<big><b>Improved node/edge attribute browsing:</b></big>
-		<p>Improved Attribute Browser is on CytoPanel 2.  Users can browse, edit, 
-		and export attributes in the table.</p>
+		<p>
+			Improved 
+			<a href="screenshots/cyto_2_2_browser.png">
+				Attribute Browser
+			</a> is on CytoPanel 2.  Users can browse, edit, 
+			and export attributes in the table.
+		</p>
 	</td>
 </tr>
 </table>
@@ -69,7 +75,12 @@
 <tr>
 	<td>
 		<big><b>Cytoscape Graph Editor v1.0</b></big>
-		<p>New network files can be created visually by Cytoscape Editor.</p>
+		<p>
+			New network files can be created visually by 
+			<a href="screenshots/cyto_2_2_cseditor.png">
+				Cytoscape Editor
+			</a>.
+		</p>
 	</td>
 </tr>
 </table>
@@ -103,7 +114,12 @@
 <tr>
 	<td>
 		<big><b>Independent internal network windows for easy comparison</b></big>
-		<p>Ecah network is displayed in a independent window.</p>
+		<p>
+			Ecah network is displayed in a independent window.
+		</p>
+		<p>
+			Multiple network windows can be displayed in the main panel.
+		</p>
 	</td>
 </tr>
 </table>
@@ -122,6 +138,32 @@
 </table>
 
 <P>
+<table style="margin-left: 30;margin-right:30;border: dotted gray 1px;padding-left: 10px;font-size:small" cellpadding="5" cellspacing="5" width="90%">
+<tr>
+	<td>
+		<big><b>Improved mechanism to save users' custom Visual Styles</b></big>
+		<p>
+			Visual styles property files (vizmap.props) are saved to the same place 
+			they were loaded from.
+		</p>
+	</td>
+</tr>
+</table>
+<P>
+
+<table style="margin-left: 30;margin-right:30;border: dotted gray 1px;padding-left: 10px;font-size:small" cellpadding="5" cellspacing="5" width="90%">
+<tr>
+	<td>
+		<big><b>Improved Attribute API (CyAttributes)</b></big>
+		<p>
+			New attribute API (CyAttributes)
+			is now available for plugin developers.
+		</p>
+	</td>
+</tr>
+</table>
+
+<P>
 
 
 <table style="margin-left: 30;margin-right:30;border: dotted gray 1px;padding-left: 10px;font-size:small" cellpadding="5" cellspacing="5" width="90%">
@@ -129,7 +171,7 @@
 		<td>
 			<big><b>Core Plug-Ins:</b></big>
 			<p>
-				Five "core" plug-ins are bundled and distributed with Cytoscape 2.2. These
+				Seven "core" plug-ins are bundled and distributed with Cytoscape 2.2. These
 				plug-ins offer fundamental operations of value to many users,
 				and are included in the basic distribution.
 			</p>
