@@ -1,6 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
         "http://www.w3.org/TR/html4/loose.dtd">
 <? include "config.php"; ?>
+<! Updated by kono for 2.2 on 11_23_2005 >
 <html>
 	<head>
 		<title>
@@ -46,6 +47,7 @@
 							</a>
 						</div>
 					</td>
+					
 					<td width="440" valign="bottom" align="right">
 						<div id="article">
 							<h2>
@@ -77,59 +79,107 @@
 		</table>
 <? include "nav.php"; ?>
 <? include "detailed_nav.php"; ?>
-		<table width="100%" border="0" cellpadding="5" cellspacing="1">
-			<tr valign="top">
-				<td width="65%">
-					<div id="contents">
-						<div id="content">
-							<div id="indent">
-								<div class="item">
-									<P>&nbsp;</P>
-									<big>
-										<b>
-											Cytoscape Retreat, 2005
-										</b>
-									</big>
-									<br>
-									<br>
-									<p>
-										<B>San Diego - November 30 - December 1st, 2005</B>
-										<P>&nbsp;</P>
-										The 3rd Annual Cytoscape Retreat will be held November 30 and December 1st, 2005 (Wed-Thurs) at UCSD in San Diego. [<A HREF="http://www.cytoscape.org/cgi-bin/moin.cgi/Cytoscape_Retreat">View Retreat Details</A>]</P>
-									</p>
-									<p>
-										<br>
-									</p>
-								</div>
+	<table width="100%" border="0" cellpadding="5" cellspacing="5">
+		<tr valign="top">
+			<td width="65%">
+				<div id="contents">
+					<div id="content">
+						<div id="indent">
+							<div class="item">
+								<br>
+								<p>	
+								<big><b>
+									<i>Coming Soon...</i>&nbsp;&nbsp;Cytoscape 2.2
+								</b></big>
+								<table width="100%">
+									<tr valign="top">
+										<td width="47%" valign="top">
+											<br>
+											(Updated 11/23/2005)
+											<br>
+											New Features include:
+											<br>
+
+											<ul>
+												<li	>Improved node/edge attribute browsing.</li>
+												<li>Cytoscape Graph Editor v1.0</li>
+												<li>Support for 
+													<A HREF="http://www.geneontology.org/GO.downloads.shtml#ont" 
+														target="_blank">
+														Gene Ontology OBO
+													</A> 
+													and 
+													<A HREF="http://www.geneontology.org/GO.current.annotations.shtml" 
+														target="_blank">gene annotation (association)
+													</A> files
+												</li>
+												<li>Cytoscape panels (CytoPanels) to ease window management</li>
+												<li>Each network now in independent internal window for easy comparison</li>
+												<li>New GML visual style to manage visual attributes from GML files</li>
+												<li>Independent internal network windows for easy comparison</li>
+												<li>Simplified mechanism for saving Visual Styles in between sessions</li>
+												<li>Improved Attribute API (CyAttributes)</li>
+												<li>Improved performance</li>
+												<li>Many bugs fixed </li>
+											</ul>
+											<A HREF="cyto_2_2_features.php">Cytoscape 2.2 Release Notes</A>
+										</td>
+										<td valign="top">
+											<A HREF="screenshots/cytoscapeMainWindowv2_2.png">
+												<img src="screenshots/cyto_2_2_thumb.png" border="0" align="left" alt="Cytoscape 2.2 Screenshot" />
+											</A>
+										</td>
+									</tr>
+								</table>
+							</div>
+							<P>
+							<div class="item">
+								<P>&nbsp;</P>
+								<big><b>Cytoscape Retreat, 2005</b></big>
+								<br>
+								<br>
+								<p>
+								<B>San Diego - November 30 - December 1st, 2005</B>
+								<P>&nbsp;</P>
+								The 3rd Annual Cytoscape Retreat will be held November 30 and December 1st, 2005 (Wed-Thurs) 
+								at UCSD in San Diego. [<A HREF="http://www.cytoscape.org/cgi-bin/moin.cgi/Cytoscape_Retreat">
+								View Retreat Details</A>]
+								</P>
+								</p>
+								<p>
+								<br>
+								</p>
+							</div>
 								<P>
 								<div class="item">
 									<br>
 									<p>	
-									<big>
-										<b>
-											<i>
-												New!</i>&nbsp;&nbsp;Announcing Cytoscape 2.1
-										</b>
-									</big>
+									<big><b><i>New!</i>&nbsp;&nbsp;Announcing Cytoscape 2.1</b></big>
 									<table width="100%">
 										<tr valign="top">
 											<td width="47%" valign="top">
 												<br>New Features include:
-<br>
-<ul>
-  <li>Major performance improvements.</li>
-  <li>Complete on-line help system.</li>
-  <li>cPath plugin for downloading protein-protein interactions. (<A HREF="http://www.cbio.mskcc.org/cpath/cytoscape.do">View details</A>)</li>
-  <li>Better network filtering, including large network support.</li>
-  <li>Layout and rotate selected nodes.</li>
-  <li>Progress bars on long tasks.</li>
-  <li>Support for very large networks (&gt;100K nodes, edges).</li>
-  <li>Numerous Bug Fixes</li>
-</ul>
-<A HREF="cyto_2_1_features.php">Cytoscape 2.1 Release Notes</A>
+												<br>
+												<ul>
+  													<li>Major performance improvements.</li>
+  													<li>Complete on-line help system.</li>
+  													<li>cPath plugin for downloading protein-protein interactions. (
+  														<A HREF="http://www.cbio.mskcc.org/cpath/cytoscape.do">
+  															View details
+  														</A>)
+  													</li>
+  													<li>Better network filtering, including large network support.</li>
+  													<li>Layout and rotate selected nodes.</li>
+  													<li>Progress bars on long tasks.</li>
+  													<li>Support for very large networks (&gt;100K nodes, edges).</li>
+  													<li>Numerous Bug Fixes</li>
+												</ul>
+												<A HREF="cyto_2_1_features.php">Cytoscape 2.1 Release Notes</A>
 											</td>
 											<td valign="top">
-												<A HREF="images/cyto_2_1.png"><img src="images/cyto_2_1_thumb.png" border="0" align="left" alt="Cytoscape 2.1 Screenshot" /></A>
+												<A HREF="images/cyto_2_1.png">
+													<img src="images/cyto_2_1_thumb.png" border="0" align="left" alt="Cytoscape 2.1 Screenshot" />
+												</A>
 											</td>
 										</tr>
 									</table>
@@ -159,107 +209,81 @@
 									</p>
 								</div>
 								<p>
+								
 								<div class="item">
-									<big>
-										<b>
-											Research using Cytoscape</b>
-									</big>
-									&nbsp;&nbsp; [<a href="pubs.php">View All Publications</a>]<P>
+									<big><b><i>Updated!</i>&nbsp;&nbsp;Research using Cytoscape</b></big>
+									&nbsp;&nbsp;
+									[<a href="pubs.php">View All Publications</a>]
+									<P>
 									<br>
-										<p>
-											<b>Proteins, 2005</b>
-											<br>
-											G Cavelier, D Anastassiou D.
-											<br>
-											Phenotype analysis using network motifs derived from changes in regulatory network dynamics.
-											<br>
-											[<A HREF="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=pubmed&dopt=Abstract&list_uids=15971229"/>Abstract</A>]
-[<A HREF="http://www3.interscience.wiley.com/cgi-bin/fulltext/110544754/HTMLSTART">Full Text</A>]
-[<A HREF="http://www3.interscience.wiley.com/cgi-bin/fulltext/110544754/PDFSTART">PDF</A>]
-<br>
-									<br>
-									                                    <p>
-                                                                            <b>BMC Bioinformatics, July 2005</b>
-                                                                            <br>
-                                                                            David J Reiss , Iliana Avila-Campillo , Vesteinn Thorsson , Benno Schwikowski  and Timothy Galitski
-                                                                            <br>
-                                                                            Tools enabling the elucidation of molecular pathways active in human disease: Application to Hepatitis C virus infection
-                                                                            <br>
-                                                                            BMC Bioinformatics 2005, 6:154
-                                                                            <br>
-                                                                            [<A HREF="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=pubmed&dopt=Abstract&list_uids=15967031">Abstract</A>]
-[<A HREF="http://www.biomedcentral.com/1471-2105/6/154">Full Text</A>]
-[<A HREF="http://www.biomedcentral.com/content/pdf/1471-2105-6-154.pdf">PDF</A>]
-                                                                            <br>
-<P>
-									<br><b>Genome Biology. March, 2005</b><BR>
-Becky L Drees, Vesteinn Thorsson, Gregory W Carter, Alexander W Rives,
-Marisa Z Raymond, Iliana Avila-Campillo, Paul Shannon and Timothy
-Galitski.
-<BR>Derivation of genetic networks from quantitative
-phenotype data. Genome Biology.
-<br>
-[<A HREF="http://genomebiology.com/2005/6/4/R38/abstract">Abstract</A>]
-[<A HREF="http://genomebiology.com/2005/6/4/R38">Full Text</A>]
-[<A HREF="http://genomebiology.com/content/pdf/gb-2005-6-4-r38.pdf">PDF</A>]		<br><br>
-									<p><b>Proc Natl Acad Sci U S A. Feb 8, 2005</b><BR>
-    Sharan R, Suthram S, Kelley RM, Kuhn T, McCuine S, Uetz P, Sittler T, Karp RM, Ideker T.<br>Conserved patterns of protein interaction in multiple species.
-<br>
-Proc Natl Acad Sci U S A. 2005 Feb 8;102(6):1974-9. Epub 2005 Feb 01.
-									<br>
-									[<A HREF="http://www.pnas.org/cgi/content/abstract/102/6/1974?maxtoshow=&HITS=10&hits=10&RESULTFORMAT=&fulltext=ideker&searchid=1109093476283_4753&stored_search=&FIRSTINDEX=0&journalcode=pnas">Abstract</a>] [<A HREF="http://www.pnas.org/cgi/content/full/102/6/1974?maxtoshow=&HITS=10&hits=10&RESULTFORMAT=&fulltext=ideker&searchid=1109093562510_4765&stored_search=&FIRSTINDEX=0&journalcode=pnas">Full Text</A>] [<A HREF="http://www.pnas.org/cgi/reprint/102/6/1974?maxtoshow=&HITS=10&hits=10&RESULTFORMAT=&fulltext=ideker&searchid=1109093578097_4770&stored_search=&FIRSTINDEX=0&journalcode=pnas">PDF</A>]<br>
-								<br>
-                                   	<p>
-                                        <b>Genome Research, November 2004 (cover article)</b>
-                                        <br>
-                                        Baliga NS, Bonneau R, Facciotti MT, Pan M, Glusman G, Deutsch EW, Shannon P, Chiu Y, Weng RS, Gan RR, Hung P, Date SV, Marcotte E, Hood L, Ng WV
-                                        <br>
-                                        Genome sequence of Haloarcula marismortui: a halophilic archaeon from the Dead Sea
-                                        <br>
-                                        Genome Res. 2004 Nov;14(11):2221-34
-                                        <br>
-                                        [<a href="http://www.genome.org/cgi/content/abstract/14/11/2221">Abstract</a>] [<a href="http://www.genome.org/cgi/reprint/14/11/2221">PDF</a>]
-                                        <br>
-                                        &nbsp;
-                                   	<p>
-                                   		<b>Bioinformatics August 2004</b>
-                                   		<br>
-                                   		Reiss David, Schwikowski Benno
-                                   		<br>
-                                   		Predicting protein–peptide interactions via a network-based motif sampler
-                                   		<br>
-                                   		Bioinformatics. 2004 Aug 4;20 Suppl 1:I274-I282
-                                   		<br>
-                                   		[<a href="http://bioinformatics.oupjournals.org/cgi/content/abstract/20/suppl_1/i274">Abstract</a>] [<a href="http://bioinformatics.oupjournals.org/cgi/reprint/20/suppl_1/i274">PDF</a>]
-								        <br>
-                                        &nbsp;
 									<p>
-										<b>
-											Genome Biology, July 2004
-										</b>
-										<br>
-										Bonneau, Richard, Baliga Nitin S, Deutsch, Eric W, Shannon Paul and Hood, Leroy
-										<br>
-										Comprehensive de novo structure prediction in a systems-biology context for the archaea Halobacterium sp. NRC-1
-										<br>
-										Genome Biology 2004, 5:R52
-										<br>
-										[<a href="http://genomebiology.com/2004/5/8/r52/abstract">Abstract</a>] [<a href="http://genomebiology.com/2004/5/8/r52">Full Text</a>] [<a href="http://genomebiology.com/content/pdf/gb-2004-5-8-r52.pdf">PDF</a>]
-										<br>
-										&nbsp;
-									<p>
-										<b>
-											Genome Research, June 2004 (cover article)
-										</b>
-										<br>
-										Baliga, NS, Bjork, SJ, Bonneau, R, Pan, M, Iloanusi, C, Kottemann, MCH, Hood, L, and DiRuggiero, J.
-										<br>
-										Systems level insights into the stress ersponds to UV radiation in the halophilic archaeon Halobacterium NRC-1.
-										<br>
-										Genome Res. 2004 14: 1025-35.
-										<br>
-										[<a href="http://www.genome.org/cgi/content/abstract/14/6/1025" class="Textlink">Abstract</a>][<a href="http://www.genome.org/cgi/reprint/14/6/1025.pdf" class="Textlink">PDF</a>][<a href="http://www.genome.org/cgi/content/full/1993504/DC1" class="Textlink">Supplemental Research Data</a>]
-									<p><br>						
+										<b>Nature Nov. 2005</b>
+			<br>
+			Suthram S, Sittler T, Ideker T.
+			<br>
+			Plasmodium protein network diverges from those of other eukaryotes.
+			<br>
+			[<A HREF="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=pubmed&dopt=Abstract&list_uids=16267557&query_hl=5"/>Abstract</A>]
+			[<A HREF="">Full Text</A>]
+			[<A HREF="">PDF</A>]
+			<br>
+			<br>
+		<p>
+		
+		<p>
+			<b>J Comput Biol. Jul-Aug 2005</b>
+			<br>
+			Sharan R, Ideker T, Kelley B, Shamir R, Karp RM.
+			<br>
+			Identification of protein complexes by comparative analysis of yeast and bacterial protein interaction data.
+			<br>
+			[<A HREF="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=pubmed&dopt=Abstract&list_uids=16108720&query_hl=5"/>Abstract</A>]
+			[<A HREF="http://www.liebertonline.com/doi/pdf/10.1089/cmb.2005.12.835">Full Text</A>]
+			[<A HREF="http://www.liebertonline.com/doi/pdf/10.1089/cmb.2005.12.835">PDF</A>]
+			<br>
+			<br>
+		<p>
+		<p>
+			<b>Genome Biology. July 2005</b>
+			<br>
+			Yeang CH, Mak HC, McCuine S, Workman C, Jaakkola T, Ideker T.
+			<br>
+			Validation and refinement of gene-regulatory pathways on a network of physical interactions.
+			<br>
+			[<A HREF="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=pubmed&dopt=Abstract&list_uids=15998451&query_hl=5"/>Abstract</A>]
+			[<A HREF="http://www.pubmedcentral.gov/articlerender.fcgi?tool=pubmed&pubmedid=15998451">Full Text</A>]
+			[<A HREF="http://www.pubmedcentral.gov/picrender.fcgi?artid=1175993&blobtype=pdf">PDF</A>]
+			<br>
+			<br>
+		<p>
+		
+		<p>
+			<b>Nature Biotechnology. May 2005</b>
+			<br>
+			Kelley R, Ideker T.
+			<br>
+			Systematic interpretation of genetic interactions using protein networks.
+			<br>
+			[<A HREF="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=pubmed&dopt=Abstract&list_uids=15877074&query_hl=5"/>Abstract</A>]
+			[<A HREF="http://www.nature.com/nbt/journal/v23/n5/full/nbt1096.html">Full Text</A>]
+			[<A HREF="http://www.nature.com/nbt/journal/v23/n5/pdf/nbt1096.pdf">PDF</A>]
+			<br>
+			<br>
+		<p>
+			<b>BMC Bioinformatics, July 2005</b>
+			<br>
+			David J Reiss , Iliana Avila-Campillo , Vesteinn Thorsson , Benno Schwikowski  and Timothy Galitski
+			<br>
+			Tools enabling the elucidation of molecular pathways active in human disease: Application to Hepatitis C virus infection
+			<br>
+			BMC Bioinformatics 2005, 6:154
+			<br>
+			[<A HREF="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=pubmed&dopt=Abstract&list_uids=15967031">Abstract</A>]
+			[<A HREF="http://www.biomedcentral.com/1471-2105/6/154">Full Text</A>]
+			[<A HREF="http://www.biomedcentral.com/content/pdf/1471-2105-6-154.pdf">PDF</A>]
+			<br>
+		<P>
+								<br>						
 										<b>
 											Note:
 										</b>
@@ -275,15 +299,15 @@ Proc Natl Acad Sci U S A. 2005 Feb 8;102(6):1974-9. Epub 2005 Feb 01.
 				</td>
 				<td>
 <?
-	if ($news_option == "atom") {
-		include "feed.php";
-		include "community_box.php";
-	} else {
-		include "news.php";
-		include "community_box.php";
-	}
-	echo "<P>";
-	include "collab.php";
+if ($news_option == "atom") {
+	include "feed.php";
+	include "community_box.php";
+} else {
+	include "news.php";
+	include "community_box.php";
+}
+echo "<P>";
+include "collab.php";
 ?>
 				</td>
 			</tr>
@@ -291,3 +315,8 @@ Proc Natl Acad Sci U S A. 2005 Feb 8;102(6):1974-9. Epub 2005 Feb 01.
 <? include "footer.php"; ?>
 	</body>
 </html>
+
+
+
+
+
