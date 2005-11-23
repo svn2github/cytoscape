@@ -15,7 +15,8 @@
         <tocitem target="cmd-line-args" text="Command Line Arguments and Properties" />
         <tocitem target="building-networks" text="Building and Storing Interaction Networks" />
         <tocitem target="loading-expression-data" text="Loading Gene Expression Data" />
-        <tocitem target="filters" text="Filters" />
+        <tocitem target="attributes" text="Node and Edge Attributes" />
+       
         <tocitem target="navigation" text="Navigation and Layout">
            <tocitem target="toolbar" text="The Toolbar">
              <tocitem target="toolbar-load" text="Load and Store Graphs" />
@@ -30,10 +31,14 @@
            <tocitem target="networkLayout" text="Network Layout" />
 	</tocitem>
 
-        <tocitem target="attributes" text="Node and Edge Attributes" />
+
         <tocitem target="visual-styles" text="Visual Styles" />
         	<tocitem target="cytoscape-editor" text="Editing Networks" />
-        <tocitem target="acknowledgements" text="Acknowledgements" />
+         	<tocitem target="cytopanels" text="CytoPanels" />
+          	<tocitem target="annotation" text="Annotation" />
+ 
+         <tocitem target="filters" text="Filters" />
+                 <tocitem target="acknowledgements" text="Acknowledgements" />
 
   </tocitem>
 </toc>
