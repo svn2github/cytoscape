@@ -12,8 +12,7 @@ easily customize the visual appearance of your network. For example,
 you can specify a default color and shape for all nodes, use specific
 line types to indicate different types of interactions, or visualize
 gene expression data using a color gradient. All these features are
-available by selecting Visualization <font face="Wingdings">&#61664;</font>
-Set Visual Properties from the main menu or clicking on the color
+available by selecting Visualization => Set Visual Properties from the main menu or clicking on the color
 wheel in the main button bar menu.
 <h2 class="western">Introduction to Visual Styles</h2>
 The Cytoscape distribution you have
@@ -21,12 +20,10 @@ downloaded includes three predefined visual styles to get you
 started. To demonstrate these styles, try out the following example:
 <ol>
   <li> Load a sample network: From the
-main menu, select File <font face="Wingdings">&#61664;</font> Load <font
- face="Wingdings">&#61664;</font> Graph, and select
+main menu, select File => Graph, and select
 sampleData/galFiltered.sif. </li>
   <li>Load a sample set of expression
-data: From the main menu, select File <font face="Wingdings">&#61664;</font>
-Load <font face="Wingdings">&#61664;</font> Expression Matrix File, and
+data: From the main menu, select File => Load => Expression Matrix File, and
 select sampleData/galExpData.pvals.</li>
 </ol>
 By default, the Visual Style labeled
@@ -39,26 +36,10 @@ edges (see sample screenshot below).
 <p class="western" align="center"><font size="2" style="font-size: 9pt;">Figure:
 Using the default Visual Style.</font></p>
 <p class="western" align="left"><font size="2"><b>The vizmap.props
-File:</b> All Cytoscape Visual Style settings are automatically stored
-in a file called vizmap.props. Upon startup, Cytoscape will first try
-to locate the vizmap.props file in the &#8220;user home&#8221; directory. For
-example, on Windows XP, this corresponds to the user &#8220;Documents and
-Settings&#8221; directory, e.g. c:\Documents and Settings\cerami. On Linux or
-Mac OS X, this corresponds to the user home directory, e.g.
-/Users/cerami or ~. If no vizmap.props file is found in the user&#8217;s home
-directory, Cytoscape will next search the current local directory.
-Note: vizmap.props is a text file that can be edited, but it is not
-recommended. If you do edit this file, make sure it is saved in text
-format and not that of any other editor.</font></p>
-<p></p>
+File:</b> All Cytoscape Visual Style settings are automatically loaded from a file called vizmap.props.  The location of this file can be specified from the command line (‘-vp). If it is not specified through the command line, then Cytoscape looks for this file in the Cytoscape distribution directory (“.cytoscape”, located in the users’ home directory). If you start Cytoscape for the first time, and you do not start it using one of the start-up scripts (cytoscape.sh or cytoscape.bat), then, a very simple visual style will be automatically created. When you exit Cytoscape, any modifications you made to the visual styles, and any new visual styles you created, are automatically saved to the loaded vizmap.props file.</p>
+<p>
 <p class="western" align="left"><b><font size="4">[!]</font><font
- size="2"> If you are upgrading from Cytoscape 1.1:</font></b><font
- size="2"> If you are upgrading from Cytoscape 1.1, you may have an
-existing vizmap.props file in your home directory. If this is the case,
-you will not have the sample1 and sample2 visual styles described
-below. To get around this issue, backup your current vizmap.props file
-to safe place, and copy the new Cytoscape 2.1 vizmap.props file to your
-home directory.</font></p>
+ size="2"> If you are upgrading from Cytoscape 2.1:</font></b>If you are upgrading from Cytoscape 2.1, you may want to use your vizmap.props file that is located in your home directory, since this file was used in 2.1 to store visual styles. To do this, you can either specify its location in the command line (edit cytoscape.sh or cytoscape.bat), or copy the file to the Cytoscape distribution directory (named “.cytoscape”) located in your home directory (on Windows XP, this is the “Documents and Settings” directory, on Linux or Mac this is your home directory, for example, /Users/iavila, or ~/). </p>
 <br>
 You can flip through different visual styles by
 making a selection from the Visual Style pull down menu. For
@@ -440,14 +421,11 @@ partially supported for specified visual property. Support for
 <br>
 <h2 class="western">Tutorial: Creating a New Visual Style</h2>
 To
-create a new visual style, select Visualization <font face="Wingdings">&#61664;</font>
-<br>
-<br>
+create a new visual style, select Visualization =>
 Set Visual Properties from the main
 menu, or select the color wheel
-icon in the main button bar. You will<br>
-&nbsp;now see a new Visual Styles
-dialog box (shown at right.)
+icon in the main button bar. You will now see a new Visual Styles
+dialog box.
 <p lang="" class="western" align="left"><img
  src="images/Cytoscape2_0Manual_html_m320c4332.jpg"
  name="Graphic24"
@@ -472,7 +450,7 @@ visual property, or define a new custom mapping.&nbsp;
 <br>
 <br>
 For example, to set the default node
-shape to triangles, select Node Attributes <font face="Wingdings">&#61664;</font>
+shape to triangles, select Node Attributes =>
 Node Shape. Then, click the &#8220;Change Default&#8221; button, and select
 the Triangle icon from the selection list.
 <h3>Applying Changes to the Network</h3>
@@ -500,16 +478,15 @@ interactions with red edges.
 <br>
 <ol>
   <li> Load a sample network: From the
-main menu, select File <font face="Wingdings">&#61664;</font> Load <font
- face="Wingdings">&#61664;</font> Graph, and select sampleData/galFiltered.sif.</li>
-  <li> Select Visualization <font face="Wingdings">&#61664;</font> Set Visual
+main menu, select File => Load => Graph, and select sampleData/galFiltered.sif.</li>
+  <li> Select Visualization => Set Visual
 Properties.</li>
   <li> Select &#8220;New&#8221; to create a new Visual
 Style. Name your new style: &#8220;Sample3&#8221;. </li>
   <li> Click the &#8220;Define&#8221; button to define
 the newly created Visual Style. </li>
   <li> In the &#8220;Set Visual Properties&#8221;
-Dialog box, select Edge Attributes <font face="Wingdings">&#61664;</font>
+Dialog box, select Edge Attributes =>
 Edge Color. </li>
   <li> Click the New button in the mapping
 panel. </li>
@@ -522,16 +499,17 @@ name. For example, enter: &#8220;InteractionTypeColor&#8221;. </li>
 menu, select &#8220;interaction.&#8221; You should now see two buttons, one for pd
 (Protein-DNA interactions), and one for pp (Protein-Protein
 interactions). </li>
-  <li><img src="images/Cytoscape2_0Manual_html_438d85eb.jpg"
+<p>
+  <img src="images/Cytoscape2_0Manual_html_438d85eb.jpg"
  name="Graphic29"
- style="border: 0px solid ; width: 322px; height: 211px;" title=""
- alt=""> </li>
+ alt=""> 
+<p>
   <li> Click
 the &#8220;pd&#8221; button and select a blue color. </li>
   <li> Click the &#8220;pp&#8221; button and select a
 red color. </li>
   <li> Click the &#8220;Apply to Graph&#8221; button. </li>
-  <li>You network should now show &#8220;pd&#8221;
+  <li>Your network should now show &#8220;pd&#8221;
 interactions in blue, and &#8220;pp&#8221; interactions in red. Sample
 screenshot is shown above.</li>
 </ol>
@@ -548,21 +526,20 @@ along a color gradient.
 </p>
 <ol>
   <li> Load a sample network: From the
-main menu, select File <font face="Wingdings">&#61664;</font> Load <font
- face="Wingdings">&#61664;</font> Graph, and select
+main menu, select File => Load => Graph, and select
 sampleData/galFiltered.sif. </li>
   <li> Load a sample set of expression
-data: From the main menu, select File <font face="Wingdings">&#61664;</font>
-Load <font face="Wingdings">&#61664;</font> Expression Matrix File, and
+data: From the main menu, select File =>
+Load => Expression Matrix File, and
 select sampleData/galExpData.pvals. </li>
-  <li> Select Visualization <font face="Wingdings">&#61664;</font> Set Visual
+  <li> Select Visualization => Set Visual
 Properties. </li>
   <li> Select &#8220;New&#8221; to create a new Visual
 Style. Name your new style: &#8220;Sample4&#8221;. </li>
   <li> Click the &#8220;Define&#8221; button to define
 the newly created Visual Style. </li>
   <li> In the &#8220;Set Visual Properties&#8221;
-Dialog box, select Node Attributes <font face="Wingdings">&#61664;</font>
+Dialog box, select Node Attributes =>
 Node Color. </li>
   <li> Click the New button in the mapping
 panel. </li>
@@ -581,16 +558,16 @@ to add two data points. </li>
 = Red, Above = Black. </li>
   <li> Click the &#8220;Apply to Graph&#8221; button. </li>
 </ol>
-<p lang="" class="western" align="left"><img
- src="images/Cytoscape2_0Manual_html_2d6d3659.png" name="Graphic31"
- style="border: 0px solid ; width: 310px; height: 197px;" title=""
- alt=""><br>
-</p>
+
 This visual mapper will set all nodes
 with a gal1RGexp value less than &#8211;1 to Yellow, and all nodes with a
 gal1RGExp value greater than 2 to Black. Additionally, all values
 between &#8211;1 and 2 will be painted with a white/red color gradient.
-Sample screenshot is shown at right.
+Sample screenshot is shown below.
+<p lang="" class="western" align="left"><img
+ src="images/Cytoscape2_0Manual_html_2d6d3659.png" name="Graphic31"
+ alt=""><br>
+</p>
 <p class="western" align="left"></p>
 <p class="western" align="left"><br>
 </p>
