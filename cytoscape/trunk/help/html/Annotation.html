@@ -10,7 +10,12 @@
 <p>
 Annotations in Cytoscape are stored as a set of ontologies (e.g. the Gene Ontology). 
 An ontology consists of a set of controlled vocabulary terms that annotate the genes for a given organism and a synonym table for 
-gene names. For example, using the Gene Ontology, the Saccharomyces Cerevisiae <b>GAL4</b> gene’s biological process is described as “regulation of transcription”, to which GO has assigned the number 45449 (a GO ID). You can see below that “regulation of transcription” is a subcategory of “transcription”, which is a subcategory of “nucleobase, nucleoside, nucleotide and nucleic acid metabolism”, etc.
+gene names. For example, using the Gene Ontology, the Saccharomyces 
+Cerevisiae <b>GAL4</b> gene's biological process is 
+described as "regulation of transcription", to which GO has assigned the 
+number 45449 (a GO ID). You can see below that "regulation of transcription" is 
+a subcategory of "transcription", which is a subcategory of "nucleobase, nucleoside, 
+nucleotide and nucleic acid metabolism", etc.
 <p>
 <pre>
 GO 8150  biological_process 
@@ -20,7 +25,7 @@ GO 8150  biological_process
         GO 6350  transcription
          GO 45449  regulation of transcription
 </pre>
-Cytoscape can use this ‘hierarchical’ ontology to annotate recognized genes if the user chooses a level of the hierarchy to use for a given set of annotations. The ontology provided to Cytoscape does not have to be hierarchical, but if it is not, there is no real advantage to storing annotations this way compared to just storing the annotation terms in a node attribute file.
+Cytoscape can use this "hierarchical" ontology to annotate recognized genes if the user chooses a level of the hierarchy to use for a given set of annotations. The ontology provided to Cytoscape does not have to be hierarchical, but if it is not, there is no real advantage to storing annotations this way compared to just storing the annotation terms in a node attribute file.
 <p>
 The Gene Ontology Server (originally called the biodata server) is a Cytoscape feature which allows you to load, navigate, and assign annotation terms to nodes in a network.
 <p>
