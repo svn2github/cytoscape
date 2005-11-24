@@ -217,9 +217,9 @@ packages. The GML file format specification is available at:
 It is generally not necessary to
 modify the content of a GML file directly. Once a network is built
 in SIF format and then laid out, the layout is preserved by saving to
-and loading from GML. Colors and other visual attribute defined in
-the GML file are not currently honored by Cytoscape, only the node
-labels and layout information.
+and loading from GML.
+Visual attributes specified in a GML file will result in a new visual style
+named "<i>Filename</i>.style" when that GML file is loaded.
 <br>
 <br>
 <b>COMMANDS:</b>
@@ -239,11 +239,11 @@ options.
 <br>
 To
 load a sample molecular interaction network in SIF format, use the
-menu <u>File / Load / Graph</u>.<b> </b> In the resulting file
+menu <u>File / Load / Network</u>.<b> </b> In the resulting file
 dialog box, select the file &#8220;sampleData/galFiltered.sif&#8221;. After a
 few seconds, a small network of 331 nodes should appear in the main
 window. To load the same interaction network as a GML, use the menu:
-<u>File / Load / Graph</u> again. In the resulting file dialog box,
+<u>File / Load / Network</u> again. In the resulting file dialog box,
 select the file &#8220;sampleData/galFiltered.gml&#8221;. Node and edge
 attribute files as well as expression data and extra annotation can
 be loaded as well.
@@ -303,8 +303,8 @@ Cytoscape can easily connect all of the different data sources.
 To handle data sources with
 different sets of names, as is usually the case when manually
 integrating gene information from different sources, Cytoscape needs
-a data server that provides synonym information (See section <i>Appendix:
-Annotation Server Format</i>).
+a data server that provides synonym information (See section on
+Annotation Server Format).
 A synonym table gives a canonical name for each object in a given
 organism and one or more recognized synonyms for that object. Note
 that the synonym table itself defines what set of names are the
