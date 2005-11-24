@@ -140,7 +140,7 @@ public class BioDataServerPanel1 extends JPanel {
 		contentPanel1.setLayout(new java.awt.BorderLayout());
 
 		welcomeTitle.setFont(new java.awt.Font("Sans Serif", Font.BOLD, 15));
-		welcomeTitle.setText("Welcome to Gene Ontology Wizard");
+		welcomeTitle.setText("Welcome to the Gene Ontology Wizard");
 		contentPanel1.add(welcomeTitle, java.awt.BorderLayout.NORTH);
 
 		jPanel1.setLayout(new java.awt.GridLayout(0, 1));
@@ -167,7 +167,7 @@ public class BioDataServerPanel1 extends JPanel {
 		jPanel1.add(newFileRadioButton);
 		
 		noteLabel1.setText("Note: Please put all data files (both annotation and ontology)");
-		noteLabel2.setText("      in the same directory.  Otherwise, Gene Ontology Server" );
+		noteLabel2.setText("      in the same directory.  Otherwise, the Gene Ontology Wizard" );
 		noteLabel3.setText("      cannot load the files." );
 
 		

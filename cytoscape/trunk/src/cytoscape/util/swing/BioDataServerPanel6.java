@@ -168,7 +168,7 @@ public class BioDataServerPanel6 extends JPanel {
 					+ "<UL><LI><P><STRONG>The Gene Ontology Project: <A HREF=\"http://www.geneontology.org/GO.current.annotations.shtml\" TARGET=\"_blank\">";
 			page = page + "Current Annotations</A></STRONG></P></UL>";
 
-			page = page + "Taxonomy tabele is available from NCBI:";
+			page = page + "Taxonomy table is available from NCBI:";
 			page = page
 					+ "<UL><LI><P><STRONG><A HREF=\"http://www.ncbi.nlm.nih.gov/Taxonomy/TaxIdentifier/tax_identifier.cgi\" TARGET=\"_blank\">";
 			page = page
@@ -298,7 +298,7 @@ public class BioDataServerPanel6 extends JPanel {
 			selectOboButton.setActionCommand("selectObo");
 			selectOboButton.setFont(new java.awt.Font("Dialog",
 					java.awt.Font.BOLD, 12));
-			selectOboButton.setText("Select Obo File");
+			selectOboButton.setText("Select OBO File");
 		}
 		return selectOboButton;
 	}
@@ -475,7 +475,7 @@ public class BioDataServerPanel6 extends JPanel {
 			textLabel = new JLabel();
 			textLabel.setBackground(Color.gray);
 			textLabel.setFont(new Font("Sans Serif", Font.BOLD, 15));
-			textLabel.setText("Select Ontology And Annotation File");
+			textLabel.setText("Select Ontology and Annotation Files");
 			textLabel.setBorder(new EmptyBorder(new Insets(10, 10, 10, 10)));
 			textLabel.setOpaque(true);
 		}
@@ -679,7 +679,7 @@ public class BioDataServerPanel6 extends JPanel {
 	private JCheckBox getFlipCheckBox() {
 		if (flipCheckBox == null) {
 			flipCheckBox = new JCheckBox();
-			flipCheckBox.setText("Flip Cannonical Name and Common Name");
+			flipCheckBox.setText("Flip Canonical Name and Common Name");
 			flipCheckBox.setBounds(new java.awt.Rectangle(5, 160, 508, 20));
 			flipCheckBox.setActionCommand("flip");
 		}
