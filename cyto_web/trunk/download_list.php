@@ -26,28 +26,30 @@
 			<P>
 			<big><b>For Users:  Download Cytoscape Releases</b></big>
 			<P>You can download Cytoscape from the links below.
-			
-			<P>To download Cytoscape, you will be required to read and agree with 
+
+			<P>To download Cytoscape, you will be required to read and agree with
 			our license terms, and supply basic contact information, including name,
 			organization and email address.
-			
-			
+
+
 			<UL>
+			<!--
 				<LI>
 					Download Cytoscape 2.2 [Binaries and/or Source Files]
 				</LI>
+		    -->
 				<LI>
 					<A HREF="download.php?file=cyto2_1">Download Cytoscape 2.1</A>
 					[Binaries and/or Source Files]
-				</LI> 			
+				</LI>
 			<LI><A HREF="download.php?file=cyto2">Download Cytoscape 2.0</A>
-				[Binaries and/or Source Files] 
+				[Binaries and/or Source Files]
 			<LI><A HREF="download.php?file=cyto1">Download Cytoscape 1.1</A>
 				[Binaries and/or Source Files]
 			</UL>
-			
+
 			<P>
-			<big><A NAME="cvs"><b>For Developers:  Download Latest Source Code from our CVS Server</A></b></big>			
+			<big><A NAME="cvs"><b>For Developers:  Download Latest Source Code from our CVS Server</A></b></big>
 			<P>Instructions for downloading the latest Cytoscape source code
 			from our CVS server are provided below.
 			When prompted for a password for anonymous, simply press the
