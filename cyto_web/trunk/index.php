@@ -47,7 +47,7 @@
 							</a>
 						</div>
 					</td>
-					
+
 					<td width="440" valign="bottom" align="right">
 						<div id="article">
 							<h2>
@@ -87,7 +87,7 @@
 						<div id="indent">
 							<div class="item">
 								<br>
-								<p>	
+								<p>
 								<big><b>
 									<i>Coming Soon...</i>&nbsp;&nbsp;Cytoscape 2.2
 								</b></big>
@@ -103,18 +103,17 @@
 											<ul>
 												<li	>Improved node/edge attribute browsing.</li>
 												<li>Cytoscape Graph Editor v1.0</li>
-												<li>Support for 
-													<A HREF="http://www.geneontology.org/GO.downloads.shtml#ont" 
+												<li>Support for
+													<A HREF="http://www.geneontology.org/GO.downloads.shtml#ont"
 														target="_blank">
 														Gene Ontology OBO
-													</A> 
-													and 
-													<A HREF="http://www.geneontology.org/GO.current.annotations.shtml" 
+													</A>
+													and
+													<A HREF="http://www.geneontology.org/GO.current.annotations.shtml"
 														target="_blank">gene annotation (association)
 													</A> files
 												</li>
 												<li>Cytoscape panels (CytoPanels) to ease window management</li>
-												<li>Each network now in independent internal window for easy comparison</li>
 												<li>New GML visual style to manage visual attributes from GML files</li>
 												<li>Independent internal network windows for easy comparison</li>
 												<li>Simplified mechanism for saving Visual Styles in between sessions</li>
@@ -141,7 +140,7 @@
 								<p>
 								<B>San Diego - November 30 - December 1st, 2005</B>
 								<P>&nbsp;</P>
-								The 3rd Annual Cytoscape Retreat will be held November 30 and December 1st, 2005 (Wed-Thurs) 
+								The 3rd Annual Cytoscape Retreat will be held November 30 and December 1st, 2005 (Wed-Thurs)
 								at UCSD in San Diego. [<A HREF="http://www.cytoscape.org/cgi-bin/moin.cgi/Cytoscape_Retreat">
 								View Retreat Details</A>]
 								</P>
@@ -153,7 +152,7 @@
 								<P>
 								<div class="item">
 									<br>
-									<p>	
+									<p>
 									<big><b><i>New!</i>&nbsp;&nbsp;Announcing Cytoscape 2.1</b></big>
 									<table width="100%">
 										<tr valign="top">
@@ -209,7 +208,7 @@
 									</p>
 								</div>
 								<p>
-								
+
 								<div class="item">
 									<big><b><i>Updated!</i>&nbsp;&nbsp;Research using Cytoscape</b></big>
 									&nbsp;&nbsp;
@@ -229,7 +228,7 @@
 			<br>
 			<br>
 		<p>
-		
+
 		<p>
 			<b>J Comput Biol. Jul-Aug 2005</b>
 			<br>
@@ -256,7 +255,7 @@
 			<br>
 			<br>
 		<p>
-		
+
 		<p>
 			<b>Nature Biotechnology. May 2005</b>
 			<br>
@@ -283,7 +282,7 @@
 			[<A HREF="http://www.biomedcentral.com/content/pdf/1471-2105-6-154.pdf">PDF</A>]
 			<br>
 		<P>
-								<br>						
+								<br>
 										<b>
 											Note:
 										</b>
