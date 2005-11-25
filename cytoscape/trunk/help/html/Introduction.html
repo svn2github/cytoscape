@@ -13,20 +13,19 @@
 Cytoscape is an open-source
 community software project for integrating biomolecular interaction
 networks with high-throughput expression data and other molecular
-states into a unified conceptual framework. Although applicable to
+state information for visualization and analysis. Although applicable to
 any system of molecular components and interactions, Cytoscape is
 most powerful when used in conjunction with large databases of
 protein-protein, protein-DNA, and genetic interactions that are
 increasingly available for humans and model organisms. A software
 &#8220;Core&#8221; provides basic functionality to layout and query the
 network; to visually integrate the network with expression profiles,
-phenotypes, and other molecular states; and to link the network to
-databases of functional annotations. The Core is extensible through a
-straightforward plug-in architecture, allowing rapid development of
+phenotypes, and other molecular state information; and to link the network to
+databases of functional annotations. The Core is extensible through a plug-in architecture, allowing rapid development of
 additional computational analyses and features. <b><br>
 <br>
 The central
-organizing metaphor of Cytoscape is a network graph, with genes,
+organizing metaphor of Cytoscape is a network (graph), with genes,
 proteins, and molecules represented as nodes and interactions
 represented as links, i.e. edges, between nodes.</b>
 <br>
@@ -64,11 +63,15 @@ Cytoscape version 2.2. contains several new features, plus improvements in the p
 <p>
 <ul>
 <li>
-Enhanced support for node and edge attribute handling, including a powerful new attribute browser, for navigating, defining, and editing node and edge attributes. For plugin coders, this also includes a greatly improved API (cytoscape.data.CyAttributes).
+Enhanced support for node and edge attribute handling, including a powerful 
+new attribute browser, for navigating, defining, and editing node and edge attributes. 
+For plugin coders, this also includes a greatly improved API 
+(cytoscape.data.CyAttributes).
 <li>Support for dockable, tabbed panels (CytoPanels).
 <li>A set of Cytoscape editors for building and modifying  networks interactively by adding nodes and edges to a drawing canvas. 
 <li>Improved support for ontologies and other structured annotations.
 <li>Simplified mechanism for saving Visual Styles in between sessions.
+<li>A new GML visual style to manage visual properties from GML files.
 <li>Many performance improvements and bug fixes.
 </body>
 </html>
