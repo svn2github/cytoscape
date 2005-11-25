@@ -114,7 +114,7 @@ canonicalization&nbsp;
 <br>
 <br>
 &nbsp;&nbsp; <span style="font-weight: bold;">-h
-| -help | -help | --help</span> <br>
+| -help  | --help</span> <br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp; Help:
 display these
@@ -136,12 +136,21 @@ URLs to
 manifest files listing jar files&nbsp;
 <br>
 <br>
+
 <span style="font-weight: bold;">&nbsp;&nbsp; -props
 &lt;properties file&gt;</span>&nbsp; <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 Specify
 and load a
 properties file&nbsp;
+<br>
+<br>
+<span style="font-weight: bold;">&nbsp;&nbsp; -vprops | -vp | -vizprops
+&lt;properties file&gt;</span>&nbsp; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Specify
+and load a visual mappings
+properties file (usually named vizmap.props)&nbsp;
 <br>
 <br>
 <span style="font-weight: bold;">&nbsp;&nbsp; -headless
@@ -170,13 +179,7 @@ the threshold # of nodes at which views will not automatically<br>
 created
 <br>
 <br>
-&nbsp;&nbsp; <span style="font-weight: bold;">-project</span>
-&lt;project file&gt;&nbsp;&nbsp; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-Specify
-the location of the project file
-<br>
-<br>
+
 &nbsp;&nbsp; <span style="font-weight: bold;">-script
 | --script</span> &lt;script text&#8230;&gt; <span style="font-weight: bold;">-end
 </span><br>
@@ -202,8 +205,8 @@ Expression Data
 <br>
 Additional command line arguments
 that are not recognized by the Cytoscape core are passed to the
-PlugIn modules. Please refer to the documentation for each specific
-PlugIn for more details.<br>
+PlugI\in modules. Please refer to the documentation for each specific
+Plugin for more details.<br>
 <h2>Cytoscape Properties</h2>
 <p style="margin-bottom: 0in;">
 The
@@ -213,7 +216,8 @@ properties display and editing, and plugins specification via the
 properties mechanism.&nbsp; Preferences in Cytoscape
 are stored in the form of Java properties specified in the
 cytoscape.props file located in the user's working directory, home
-directory or Cytoscape distribution directory. This file is
+directory (called ".cytoscape" and located
+in the users's home directory) or Cytoscape distribution directory. This file is
 automatically loaded at startup time and written upon normal exit of
 the application.</p>
 <p style="margin-bottom: 0in;">Cytoscape properties are displayed in
@@ -224,7 +228,7 @@ loaded into Cytoscape at startup time is also supported in
 cytoscape.props and accessible in this dialog under the Plugins
 section. In this special case, the plugins property specifies a
 comma-separated list of jar files or URLs to jar files containing
-plugins. This property is parsed into its constituents and presented
+plugins. This property is parsed and presented
 and managed in the Plugins table.</p>
 <p style="margin-bottom: 0in;"><img
  src="images/new-PreferencesDialog.jpg" alt="Preferences Dialog"
@@ -283,7 +287,7 @@ locations<br>
       <div style="text-align: center;"> </div>
 500<br>
       </td>
-      <td> integers &gt; 0<br>
+      <td> integer &gt; 0<br>
       </td>
       <td> -vt<br>
 --VT<br>
@@ -294,7 +298,7 @@ locations<br>
       </td>
       <td> 2000<br>
       </td>
-      <td> integers &gt; 0<br>
+      <td> integer &gt; 0<br>
       </td>
       <td> <br>
       </td>
@@ -329,7 +333,9 @@ http://server/my-plugin.jar) </td>
       </td>
       <td> <br>
       </td>
-      <td> <br>
+      <td> A path to the web browser on your system.  This only needs
+      to be specified if Cytoscape cannot find the web browser on your
+      system.<br>
       </td>
       <td> <br>
       </td>
