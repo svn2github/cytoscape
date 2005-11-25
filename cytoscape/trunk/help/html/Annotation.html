@@ -8,17 +8,17 @@
 <body>
 <h1>Annotation</h1>
 <p>
-Annotations in Cytoscape are stored as a set of ontologies (e.g. the Gene Ontology). 
-An ontology consists of a set of controlled vocabulary terms that annotate the genes for a given organism and a synonym table for 
-gene names. For example, using the Gene Ontology, the Saccharomyces 
-Cerevisiae <b>GAL4</b> gene's biological process is 
-described as "regulation of transcription", to which GO has assigned the 
-number 45449 (a GO ID). You can see below that "regulation of transcription" is 
-a subcategory of "transcription", which is a subcategory of "nucleobase, nucleoside, 
+Annotations in Cytoscape are stored as a set of ontologies (e.g. the Gene Ontology - GO).
+An ontology consists of a set of controlled vocabulary terms that annotate the genes for a given organism and a synonym table for
+gene names. For example, using the Gene Ontology, the Saccharomyces
+Cerevisiae <b>GAL4</b> gene's biological process is
+described as "regulation of transcription", to which GO has assigned the
+number 45449 (a GO ID). You can see below that "regulation of transcription" is
+a subcategory of "transcription", which is a subcategory of "nucleobase, nucleoside,
 nucleotide and nucleic acid metabolism", etc.
 <p>
 <pre>
-GO 8150  biological_process 
+GO 8150  biological_process
   GO 7582  physiological processes
     GO 8152  metabolism
       GO 6139  nucleobase, nucleoside, nucleotide and nucleic acid metabolism
@@ -29,7 +29,7 @@ Cytoscape can use this "hierarchical" ontology to annotate recognized genes if t
 <p>
 The Gene Ontology Server (originally called the biodata server) is a Cytoscape feature which allows you to load, navigate, and assign annotation terms to nodes in a network.
 <p>
-In version 2.2, Cytoscape has a new feature called Gene Ontology Server Wizard, which enables users to select local ontology and annotation files from GUI.  Although 2.2 has backward compatibility with the old file formats (manifest file, which includes list of anno and onto files), we strongly suggest to use the new file formats. See Appendix B for a description of how the old file formats can be created and used.
+In version 2.2, Cytoscape has a new feature called the Gene Ontology Server Wizard, which enables users to select a local ontology and annotation files from the user interface. Although 2.2 is backwards compatible with the old file formats (the manifest file, which includes a list of anno (annotation) and onto (ontology) files), we strongly suggest using the new file formats. See Appendix B for a description of how the old file formats can be created and used.
 <p>
 <h2>New Ontology and Annotation Files</h2>
 <p>
@@ -40,7 +40,7 @@ The standard file formats used in this release are OBO and gene association.  Th
 <li>Current Annotations: <A href="http://www.geneontology.org/GO.current.annotations.shtml"> http://www.geneontology.org/GO.current.annotations.shtml</A>
 </ul>
 <p>
-Cytoscape provides an outdated copy of the Gene_ontology.obo text file in the annotation directory for use with the software. An up-to-date Gene_ontology.obo file is maintained by the GO project and is updated every 30 minutes. Please download the latest version of this file (from http://www.geneontology.org) if you intend to use it during analysis.  In addition to the gene ontology file, we also provide gene association files for Yeast and Human (gene_association.sgd and gene_association.goa_human, both in the annotations directory).  Other gene association files can be found at the gene ontology web site.
+Cytoscape provides a copy of the Gene_ontology.obo text file in the annotation directory for use with the software. An up-to-date Gene_ontology.obo file is maintained by the GO project (updated every 30 minutes). Please download the latest version of this file (from http://www.geneontology.org) if you intend to use it during analysis.  In addition to the gene ontology file, we also provide gene association files for Yeast and Human (gene_association.sgd and gene_association.goa_human, both in the annotations directory).  Other gene association files can be found at the gene ontology web site.
 <p>
 <h3>Sample Files</h3>
 <p>
@@ -81,56 +81,56 @@ SGD     S000005275      AAD14           GO:0008372      SGD_REF:S000069584      
 </pre>
 <h2>Gene Ontology Server Wizard</h2>
 <p>
-The Gene Ontology Server Wizard is a new graphical user interface used to select ontology and annotation files.  By following the wizard, you do not have to write manifest files, which were used in older versions of Cytoscape to specify ontologies.
+The Gene Ontology Server Wizard is a new graphical user interface used to select ontology and annotation files. By following the wizard, you do not have to write manifest files, which were used in older versions of Cytoscape to specify the file location of the ontology and gene annotation files.
 <p>
 Step 1. Select Data Format
 <p>
 <img src="images/OntologyWizard1.png" align="bottom" border="0"
  alt="Ontology Wizard">
 <p>
-In this panel you can select two types of data formats: Cytoscape Bio Data Server or new Gene Ontology.  
-Select <em>Gene Ontology</em> to use the new formats (obo and gene_association).  
-If you want to use the old file formats, select <em>Cytoscape Bio DataServer</em>.  A description of how the old formats can be created and used 
+In this panel you can select two types of data formats: Cytoscape BioDataServer or Gene Ontology.
+Select <em>Gene Ontology</em> to use the new formats (obo and gene_association files).
+If you want to use the old file formats, select <em>Cytoscape Bio DataServer</em>.  A description of how the old formats can be created and used
 can be found in Appendix A.
 <p>
 Step 2. Select OBO and Gene Association Files
 <p>
 <img src="images/OntologySelect1.png" align="bottom" border="0"
  alt="Ontology Select Gene Ontology">
- <p>
- If you choose <em>Gene Ontology</em> in the first step, this panel appears.  The basic function of this panel is selecting OBO file (ontology) and gene_association files.  This panel has the following functions:
+<p>
+If you choose Gene Ontology in the first step, this panel appears to help you select OBO (ontology) and gene_association files. This panel has the following functions:
 <p>
 <ul>
 <li><em>Select Obo File</em> Button:
 By pressing this button, you can choose an OBO file to be loaded.
 <li><em>Add Gene Association File</em> Button:
 You can add a gene_association file to the list by pressing this button.  Once you select a file, the file name will be shown in the list in the left.  If you click on the file name, the species name for the file will be shown.  You can select multiple gene_association files.
-<li><em>Flip Cannonical Name and Common Name</em> Check box:
+<li><em>Flip Canonical Name and Common Name</em> Check box:
 The following is an entry in the gene_association.sgd file (annotation file for yeast):
 <pre>
-SGD	S000004660	<b>AAC1</b>		GO:0006839	SGD_REF:S000050955|PMID:2167309	
-IGI	SGD:S000000126	P	ADP/ATP translocator	<b>YMR056C</b>	gene	
+SGD	S000004660	<b>AAC1</b>		GO:0006839	SGD_REF:S000050955|PMID:2167309
+IGI	SGD:S000000126	P	ADP/ATP translocator	<b>YMR056C</b>	gene
 taxon:4932	20040226	SGD
 </pre>
-The third element (AAC1, called <em>DB_Object_Symbol</em> in the gene_association format) will be used as a node identifier and 
-canonical name for the gene.  However, some network files (gal or sif) instead use the 11th element (YMR056C, the first entry 
-in <em>Synonym</em>) as a node identifier.  Since Cytoscape applies annotations based on these identifiers, the identifiers in the 
-network file and in <em>DB_Object_Symbols</em> must match.  This check box is used when you load network files that use the 
+The third element (AAC1, called <em>DB_Object_Symbol</em> in the gene_association format) will be used as a node identifier and
+canonical name for the gene.  However, some network files (gal or sif) instead use the 11th element (YMR056C, the first entry
+in <em>Synonym</em>) as a node identifier.  Since Cytoscape applies annotations based on these identifiers, the identifiers in the
+network file and in <em>DB_Object_Symbols</em> must match.  This check box is used when you load network files that use the
 <em>Synonym</em> as the node identifier.
 <li>
 <em>Overwrite default species name</em> menu:
-If not specified, species name for a network data will be overwritten by a property called defaultSpeciesName and Gene Ontology Server will use it to choose which annotations to be applied.  You can change defaultSpeciesName from this list.
+If not specified, species name for a network data will be overwritten by a property called defaultSpeciesName and the Gene Ontology Server will use it to choose which annotations to be applied.  You can change defaultSpeciesName from this list.
 <li>
 Links to related web sites.
-You can navigate to GO’s Current Annotation and NCBI’s Taxonomy pages from the links.  The links open the default web browser when clicked.   
+You can navigate to GO’s Current Annotation and NCBI’s Taxonomy pages from the links.  The links open the default web browser when clicked.
 <p>
-Once you have finished specifying the options, click on finish.  The OBO file and gene_association files specified in this panel will be automatically loaded
+Once you have finished specifying the options, click on finish.  The OBO file and gene_association files specified in this panel will be automatically loaded.
 <p>
 <b>Note 1</b>: The OBO file and gene_association files MUST be in the same directory, and you must have write permission for the directory.
 <p>
-<b>Note 2</b>: Please make sure that your network file uses exact same ID’s used in the gene association file.  Otherwise, nothing will appear in the Annotation Panel.
+<b>Note 2</b>: Please make sure that your network file uses exact same ID’s used in the gene association file. Otherwise, the annotations will not appear in the Annotation Panel.
 
- 
- 
+
+
 </body>
 </html>
