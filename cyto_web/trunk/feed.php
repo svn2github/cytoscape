@@ -21,7 +21,7 @@ foreach ($rss->items as $item ) {
 
 		// Parse and format the date directly;
 		// strtotime() does not work
-		$date = ("$item[issued]");
+		$date = ("$item[updated]");
 		list($usable_date, $extra) = split("T", $date);
 		list($year, $month, $day) = split ("-", $usable_date);
 		$time_stamp = strtotime("$month/$day/$year");
@@ -29,7 +29,7 @@ foreach ($rss->items as $item ) {
 
 		echo "<a href=$url>$title</a></li>.&nbsp;&nbsp;$date_formatted<BR>\n";
 		echo " <UL><LI>$summary2 [cont.]</UL>";
-	
+
 		#print_r(array_keys($item));
 		echo "<BR>";
 	}
