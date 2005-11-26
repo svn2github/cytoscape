@@ -85,7 +85,7 @@ public class InteractionsReader implements GraphReader {
 	 * Interactions Reader Constructor Creates a new Interactions Reader This
 	 * constructor assumes a Y-Files graph is wanted. If not then use the other
 	 * constructor to say so.
-	 * 
+	 *
 	 * @param dataServer
 	 *            a BioDataServer
 	 * @param species
@@ -104,7 +104,7 @@ public class InteractionsReader implements GraphReader {
 	 * Interactions Reader Constructor Creates a new Interactions Reader This
 	 * constructor assumes a Y-Files graph is wanted. If not then use the other
 	 * constructor to say so.
-	 * 
+	 *
 	 * @param dataServer
 	 *            a BioDataServer
 	 * @param species
@@ -175,10 +175,10 @@ public class InteractionsReader implements GraphReader {
 
 	// -----------------------------------------------------------------------------------------
 	/**
-	 * Calls read(true)
+	 * Calls read(false)
 	 */
 	public void read() throws IOException {
-		read(true);
+		read(false);
 	} // readFromFile
 
 	// -------------------------------------------------------------------------------------------
