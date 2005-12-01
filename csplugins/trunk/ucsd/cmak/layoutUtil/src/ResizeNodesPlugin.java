@@ -47,6 +47,9 @@ public class ResizeNodesPlugin extends CytoscapePlugin {
     boolean DEBUG=false;
 
     static String LAST_SELECTED = null;
+
+    private static final String WIDTH_ATTR = "NodeWidth";
+    private static final String HEIGHT_ATTR = "NodeHeight";
     
     /**
      * This constructor saves the cyWindow argument (the window to which this
@@ -211,31 +214,42 @@ public class ResizeNodesPlugin extends CytoscapePlugin {
             String[] nameArray = name.split("\n");
             String longest = findLongestName(nameArray);
 
-            if(DEBUG)
+            String w = WIDTH_ATTR + "-" + attr;
+            String h = HEIGHT_ATTR + "-" + attr;
+            
+            if(DEBUG) {
                 System.err.println("longest [" + attr + "] = " + longest);
+                System.err.println("Creating attr: " + w);
+                System.err.println("Creating attr: " + h);
+            }
             
             // If the longest name has fewer than 6 chars,
             // the node will be the default width.
-            if(longest.length() > 5)
+            if(longest.length() > 15)
             {
-                network.setNodeAttributeValue(node, "NodeWidth",
+                network.setNodeAttributeValue(node, w,
+                                              new Double(7 * longest.length()));
+            }
+            else if(longest.length() > 5)
+            {
+                network.setNodeAttributeValue(node, w,
                                               new Double(9 * longest.length()));
             }
             else if(longest.length() > 3)
             {
-                network.setNodeAttributeValue(node, "NodeWidth",
+                network.setNodeAttributeValue(node, w,
                                               new Double(10 * longest.length()));
             }
             
             if(nameArray.length > 5)
             {
-                network.setNodeAttributeValue(node, "NodeHeight",
+                network.setNodeAttributeValue(node, h,
                                               new Double(16 * nameArray.length));
             }
             // If there is only 1 name, the node will be the default height
             else if(nameArray.length > 1)
             {
-                network.setNodeAttributeValue(node, "NodeHeight",
+                network.setNodeAttributeValue(node, h,
                                               new Double(20 * nameArray.length));
             }
         }
