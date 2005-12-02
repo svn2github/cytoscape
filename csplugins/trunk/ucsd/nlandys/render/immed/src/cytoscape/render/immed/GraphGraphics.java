@@ -2132,7 +2132,7 @@ public final class GraphGraphics
           bruteforce method.  This algorithm is well-suited for an
           implementation using fixed-point arithmetic instead of
           floating-point arithmetic because all computations are
-          contrained to a certain dynamic range relative to the input
+          constrained to a certain dynamic range relative to the input
           parameters.
 
     We're going to reduce the problem in the following way:
