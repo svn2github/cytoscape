@@ -2474,10 +2474,8 @@ public final class GraphGraphics
   }
 
   public final void drawCustomGraphicFull(final Shape shape,
-                                          final double scaleFactor,
                                           final float xOffset,
                                           final float yOffset,
-                                          final float theta,
                                           final Paint paint)
   {
     if (m_debug) {
@@ -2485,9 +2483,11 @@ public final class GraphGraphics
         throw new IllegalStateException
           ("calling thread is not AWT event dispatcher");
       if (!m_cleared) throw new IllegalStateException
-                        ("clear() has not been called previously");
-      if (!(scaleFactor >= 0.0d))
-        throw new IllegalArgumentException("scaleFactor must be positive"); }
+                        ("clear() has not been called previously"); }
+    m_g2d.translate(xOffset, yOffset);
+    m_g2d.setPaint(paint);
+    m_g2d.fill(shape);
+    m_g2d.setTransform(m_currNativeXform);
   }
 
 }
