@@ -2473,4 +2473,13 @@ public final class GraphGraphics
     return m_fontRenderContextFull;
   }
 
+  public final void drawCustomGraphicFull(final Shape shape,
+                                          final double scaleFactor,
+                                          final float xOffset,
+                                          final float yOffset,
+                                          final float theta,
+                                          final Paint paint)
+  {
+  }
+
 }
