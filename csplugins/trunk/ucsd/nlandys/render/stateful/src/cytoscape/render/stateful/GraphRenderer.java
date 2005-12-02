@@ -10,6 +10,7 @@ import cytoscape.util.intr.IntHash;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Paint;
+import java.awt.Shape;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
 
@@ -28,6 +29,7 @@ public final class GraphRenderer
   private final static int LOD_EDGE_ANCHORS = 0x20;
   private final static int LOD_EDGE_LABELS = 0x40;
   private final static int LOD_TEXT_AS_SHAPE = 0x80;
+  private final static int LOD_CUSTOM_GRAPHICS = 0x100;
 
   // No constructor.
   private GraphRenderer() { }
@@ -142,7 +144,9 @@ public final class GraphRenderer
         if (((lodTemp & LOD_NODE_LABELS) != 0 ||
              (lodTemp & LOD_EDGE_LABELS) != 0) &&
             lod.textAsShape(renderNodeCount, renderEdgeCount)) {
-          lodTemp |= LOD_TEXT_AS_SHAPE; } }
+          lodTemp |= LOD_TEXT_AS_SHAPE; }
+        if (lod.customGraphics(renderNodeCount, renderEdgeCount)) {
+          lodTemp |= LOD_CUSTOM_GRAPHICS; } }
       lodBits = lodTemp;
     }
 
@@ -515,6 +519,24 @@ public final class GraphRenderer
                              floatBuff1[2], floatBuff1[3], fillPaint,
                              borderWidth, borderPaint);
 
+          // Take care of custom graphic rendering.
+          if ((lodBits & LOD_CUSTOM_GRAPHICS) != 0) {
+
+            final int graphicCount = nodeDetails.graphicCount(node);
+            for (int graphicInx = 0; graphicInx < graphicCount; graphicInx++) {
+              final Shape gShape = nodeDetails.graphicShape(node, graphicInx);
+              final Paint paint = nodeDetails.graphicPaint(node, graphicInx);
+              final byte anchor =
+                nodeDetails.graphicNodeAnchor(node, graphicInx);
+              final float offsetVectorX =
+                nodeDetails.labelOffsetVectorX(node, graphicInx);
+              final float offsetVectorY =
+                nodeDetails.labelOffsetVectorY(node, graphicInx);
+              lemma_computeAnchor(anchor, floatBuff1, floatBuff3);
+              grafx.drawCustomGraphicFull
+                (gShape, floatBuff3[0] + offsetVectorX,
+                 floatBuff3[1] + offsetVectorY, paint); } }
+
           // Take care of label rendering.
           if ((lodBits & LOD_NODE_LABELS) != 0) { // Potential label rendering.
 
@@ -569,45 +591,45 @@ public final class GraphRenderer
                                                 final float[] rtrn2x)
   {
     switch (anchor) {
-    case NodeDetails.LABEL_ANCHOR_CENTER:
+    case NodeDetails.ANCHOR_CENTER:
       rtrn2x[0] = (float) ((((double) input4x[0]) + input4x[2]) / 2.0d);
       rtrn2x[1] = (float) ((((double) input4x[1]) + input4x[3]) / 2.0d);
       break;
-    case NodeDetails.LABEL_ANCHOR_NORTH:
+    case NodeDetails.ANCHOR_NORTH:
       rtrn2x[0] = (float) ((((double) input4x[0]) + input4x[2]) / 2.0d);
       rtrn2x[1] = input4x[3];
       break;
-    case NodeDetails.LABEL_ANCHOR_NORTHEAST:
+    case NodeDetails.ANCHOR_NORTHEAST:
       rtrn2x[0] = input4x[2];
       rtrn2x[1] = input4x[3];
       break;
-    case NodeDetails.LABEL_ANCHOR_EAST:
+    case NodeDetails.ANCHOR_EAST:
       rtrn2x[0] = input4x[2];
       rtrn2x[1] = (float) ((((double) input4x[1]) + input4x[3]) / 2.0d);
       break;
-    case NodeDetails.LABEL_ANCHOR_SOUTHEAST:
+    case NodeDetails.ANCHOR_SOUTHEAST:
       rtrn2x[0] = input4x[2];
       rtrn2x[1] = input4x[1];
       break;
-    case NodeDetails.LABEL_ANCHOR_SOUTH:
+    case NodeDetails.ANCHOR_SOUTH:
       rtrn2x[0] = (float) ((((double) input4x[0]) + input4x[2]) / 2.0d);
       rtrn2x[1] = input4x[1];
       break;
-    case NodeDetails.LABEL_ANCHOR_SOUTHWEST:
+    case NodeDetails.ANCHOR_SOUTHWEST:
       rtrn2x[0] = input4x[0];
       rtrn2x[1] = input4x[1];
       break;
-    case NodeDetails.LABEL_ANCHOR_WEST:
+    case NodeDetails.ANCHOR_WEST:
       rtrn2x[0] = input4x[0];
       rtrn2x[1] = (float) ((((double) input4x[1]) + input4x[3]) / 2.0d);
       break;
-    case NodeDetails.LABEL_ANCHOR_NORTHWEST:
+    case NodeDetails.ANCHOR_NORTHWEST:
       rtrn2x[0] = input4x[0];
       rtrn2x[1] = input4x[3];
       break;
     default:
       throw new IllegalStateException
-        ("encoutered an invalid LABEL_ANCHOR_* constant: " + anchor); }
+        ("encoutered an invalid ANCHOR_* constant: " + anchor); }
   }
 
 //   public final static boolean queryEdgeIntersect(

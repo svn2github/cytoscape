@@ -4,6 +4,7 @@ import cytoscape.render.immed.GraphGraphics;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Paint;
+import java.awt.Shape;
 
 /**
  * Defines visual properties of a node modulo the node size and location.
@@ -19,55 +20,55 @@ public class NodeDetails
   /**
    * Specifies that an anchor point lies at the center of a bounding box.
    */
-  public static final byte LABEL_ANCHOR_CENTER = 0;
+  public static final byte ANCHOR_CENTER = 0;
 
   /**
    * Specifies that an anchor point lies on the north edge of a
    * bounding box, halfway between the east and west edges.
    */
-  public static final byte LABEL_ANCHOR_NORTH = 1;
+  public static final byte ANCHOR_NORTH = 1;
 
   /**
    * Specifies that an anchor point lies on the northeast corner of
    * a bounding box.
    */
-  public static final byte LABEL_ANCHOR_NORTHEAST = 2;
+  public static final byte ANCHOR_NORTHEAST = 2;
 
   /**
    * Specifies that an anchor point lies on the east edge of a
    * bounding box, halfway between the north and south edges.
    */
-  public static final byte LABEL_ANCHOR_EAST = 3;
+  public static final byte ANCHOR_EAST = 3;
 
   /**
    * Specifies that an anchor point lies on the southeast corner of
    * a bounding box.
    */
-  public static final byte LABEL_ANCHOR_SOUTHEAST = 4;
+  public static final byte ANCHOR_SOUTHEAST = 4;
 
   /**
    * Specifies that an anchor point lies on the south edge of a
    * bounding box, halfway between the east and west edges.
    */
-  public static final byte LABEL_ANCHOR_SOUTH = 5;
+  public static final byte ANCHOR_SOUTH = 5;
 
   /**
    * Specifies that an anchor point lies on the southwest corner of a
    * bounding box.
    */
-  public static final byte LABEL_ANCHOR_SOUTHWEST = 6;
+  public static final byte ANCHOR_SOUTHWEST = 6;
 
   /**
    * Specifies that an anchor point lies on the west edge of a
    * bounding box, halfway between the north and south edges.
    */
-  public static final byte LABEL_ANCHOR_WEST = 7;
+  public static final byte ANCHOR_WEST = 7;
 
   /**
    * Specifies that an anchor point lies on the northwest corner of a
    * bounding box.
    */
-  public static final byte LABEL_ANCHOR_NORTHWEST = 8;
+  public static final byte ANCHOR_NORTHWEST = 8;
 
   /**
    * Specifies that the lines in a multi-line node label should each have
@@ -193,7 +194,7 @@ public class NodeDetails
     return null; }
 
   /**
-   * By returning one of the LABEL_ANCHOR_* constants, specifies
+   * By returning one of the ANCHOR_* constants, specifies
    * where on a text label's logical bounds box an anchor point lies.  This
    * <i>text anchor point</i> together with the
    * node anchor point and label offset vector
@@ -201,39 +202,39 @@ public class NodeDetails
    * box is to be placed.  The text's logical bounds box is placed such that
    * the label offset vector plus the node anchor point equals the text anchor
    * point.<p>
-   * By default this method always returns LABEL_ANCHOR_CENTER.
+   * By default this method always returns ANCHOR_CENTER.
    * This method is only called by the rendering engine if labelCount(node)
    * returns a value greater than zero.
    * @param labelInx a value in the range [0, labelCount(node)-1] indicating
    *   which node label in question.
-   * @see #LABEL_ANCHOR_CENTER
+   * @see #ANCHOR_CENTER
    * @see #labelNodeAnchor(int, int)
    * @see #labelOffsetVectorX(int, int)
    * @see #labelOffsetVectorY(int, int)
    */
   public byte labelTextAnchor(final int node, final int labelInx) {
-    return LABEL_ANCHOR_CENTER; }
+    return ANCHOR_CENTER; }
 
   /**
-   * By returning one of the LABEL_ANCHOR_* constants, specifies
+   * By returning one of the ANCHOR_* constants, specifies
    * where on the node's extents rectangle an anchor point lies.  This
    * <i>node anchor point</i> together with the text anchor point and label
    * offset vector determines where, relative to the node, the text's logical
    * bounds box is to be placed.  The text's logical bounds box is placed
    * such that the label offset vector plus the node anchor point equals the
    * text anchor point.<p>
-   * By default this method always returns LABEL_ANCHOR_CENTER.
+   * By default this method always returns ANCHOR_CENTER.
    * This method is only called by the rendering engine if labelCount(node)
    * returns a value greater than zero.
    * @param labelInx a value in the range [0, labelCount(node)-1] indicating
    *   which node label in question.
-   * @see #LABEL_ANCHOR_CENTER
+   * @see #ANCHOR_CENTER
    * @see #labelTextAnchor(int, int)
    * @see #labelOffsetVectorX(int, int)
    * @see #labelOffsetVectorY(int, int)
    */
   public byte labelNodeAnchor(final int node, final int labelInx) {
-    return LABEL_ANCHOR_CENTER; }
+    return ANCHOR_CENTER; }
 
   /**
    * Specifies the X component of the vector that separates a text anchor
@@ -288,5 +289,23 @@ public class NodeDetails
    */
   public byte labelJustify(final int node, final int labelInx) {
     return LABEL_WRAP_JUSTIFY_CENTER; }
+
+  public int graphicCount(final int node) {
+    return 0; }
+
+  public Shape graphicShape(final int node, final int graphicInx) {
+    return null; }
+
+  public Paint graphicPaint(final int node, final int graphicInx) {
+    return null; }
+
+  public byte graphicNodeAnchor(final int node, final int graphicInx) {
+    return ANCHOR_CENTER; }
+
+  public float graphicOffsetVectorX(final int node, final int graphicInx) {
+    return 0.0f; }
+
+  public float graphicOffsetVectorY(final int node, final int graphicInx) {
+    return 0.0f; }
 
 }

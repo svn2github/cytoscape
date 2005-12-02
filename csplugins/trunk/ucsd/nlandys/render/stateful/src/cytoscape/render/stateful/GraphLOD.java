@@ -107,6 +107,12 @@ public class GraphLOD
     return renderNodeCount + renderEdgeCount < 120;
   }
 
+  public boolean customGraphics(final int renderNodeCount,
+                                final int renderEdgeCount)
+  {
+    return renderNodeCount + renderEdgeCount < 120;
+  }
+
   /**
    * Determines whether or not to render edge arrows.  By default this
    * method returns true if and only if the sum of rendered nodes and rendered
