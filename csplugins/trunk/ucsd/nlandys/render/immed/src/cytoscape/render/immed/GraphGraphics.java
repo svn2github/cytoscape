@@ -2480,6 +2480,14 @@ public final class GraphGraphics
                                           final float theta,
                                           final Paint paint)
   {
+    if (m_debug) {
+      if (!EventQueue.isDispatchThread())
+        throw new IllegalStateException
+          ("calling thread is not AWT event dispatcher");
+      if (!m_cleared) throw new IllegalStateException
+                        ("clear() has not been called previously");
+      if (!(scaleFactor >= 0.0d))
+        throw new IllegalArgumentException("scaleFactor must be positive"); }
   }
 
 }
