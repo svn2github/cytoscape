@@ -2473,6 +2473,18 @@ public final class GraphGraphics
     return m_fontRenderContextFull;
   }
 
+  /**
+   * Fills an arbitrary graphical shape with high detail.<p>
+   * This method will not work unless clear() has been called at least once
+   * previously.
+   * @param shape the shape to fill; the shape is specified in node
+   *   coordinates.
+   * @param xOffset in node coordinates, a value to add to the X
+   *   coordinates of the shape's definition.
+   * @param yOffset in node coordinates, a value to add to the Y
+   *   coordinates of the shape's definition.
+   * @param paint the paint to use when filling the shape.
+   */
   public final void drawCustomGraphicFull(final Shape shape,
                                           final float xOffset,
                                           final float yOffset,
