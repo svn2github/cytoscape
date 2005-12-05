@@ -8,6 +8,7 @@ import csplugins.layout.jgraphaddons.*;
 import cytoscape.view.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.event.*;
 import java.util.*;
 import phoebe.util.GraphPartition;
 

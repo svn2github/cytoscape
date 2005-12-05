@@ -72,6 +72,7 @@ public class AttributeModel
   // implements CyDataDefinitionListener
 
   public void attributeDefined ( String attributeName ) {
+    //System.out.println( "New Attribute Defined: "+attributeName );
     sortAtttributes();
   }
     

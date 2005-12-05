@@ -45,15 +45,36 @@ public class LoaderPlugin extends CytoscapePlugin {
 
 
 
-    Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("File.Load").add( new JMenuItem ( new AbstractAction( "Load Network" ) {
+   //  Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("File.Load").add( new JMenuItem ( new AbstractAction( "Load Network" ) {
+//         public void actionPerformed ( java.awt.event.ActionEvent e ) {
+//           // Do this in the GUI Event Dispatch thread...
+//           SwingUtilities.invokeLater( new Runnable() {
+//               public void run() {
+//                 FileLoaderUI ui = new FileLoaderUI();
+//                 Cytoscape.firePropertyChange( Cytoscape.ATTRIBUTES_CHANGED, null, null );
+//               }
+//             } ); } } ) );
+
+
+Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("File.Load").add( new JMenuItem ( new AbstractAction( "Load Network" ) {
         public void actionPerformed ( java.awt.event.ActionEvent e ) {
           // Do this in the GUI Event Dispatch thread...
           SwingUtilities.invokeLater( new Runnable() {
               public void run() {
-                FileLoaderUI ui = new FileLoaderUI();
-                Cytoscape.firePropertyChange( Cytoscape.ATTRIBUTES_CHANGED, null, null );
+                final String name;
+                 try {
+                   name = FileUtil.getFile( "Load Network",
+                                            FileUtil.LOAD,
+                                            new CyFileFilter[] {} ).toString();
+                 } catch ( Exception exp ) {
+                   // this is because the selection was canceled
+                   return;
+                 }
+                 Import.loadFileToNetwork( name, "\t" );
+                 Cytoscape.firePropertyChange( Cytoscape.ATTRIBUTES_CHANGED,null, null );
               }
             } ); } } ) );
+
 
     Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("File.Save").add( new JMenuItem ( new AbstractAction( "Save Network" ) {
         public void actionPerformed ( java.awt.event.ActionEvent e ) {

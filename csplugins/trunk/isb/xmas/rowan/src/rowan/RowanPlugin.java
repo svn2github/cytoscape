@@ -5,7 +5,9 @@ import cytoscape.data.*;
 import cytoscape.view.*;
 import cytoscape.util.*;
 import cytoscape.plugin.*;
-
+import cytoscape.task.*;
+import cytoscape.task.ui.JTaskConfig;
+import cytoscape.task.util.TaskManager;
 
 import java.util.*;
 import java.awt.event.*;
@@ -110,7 +112,34 @@ public class RowanPlugin extends CytoscapePlugin {
               } } ); } } );
     Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu( "Plugins" ).add( first );
 
-  
+    JMenuItem lt = new JMenuItem( new AbstractAction( "Layout Test" ) {
+        public void actionPerformed ( ActionEvent e ) {
+          // Do this in the GUI Event Dispatch thread...
+          SwingUtilities.invokeLater( new Runnable() {
+              public void run() {
+                
+                Task task = new LayoutTest( Cytoscape.getCurrentNetwork() );
+
+                //  Configure JTask
+                JTaskConfig config = new JTaskConfig();
+                
+                //  Show Cancel/Close Buttons
+                config.displayCancelButton(true);
+                
+                //  Execute Task via TaskManager
+                //  This automatically pops-open a JTask Dialog Box.
+                //  This method will block until the JTask Dialog Box is disposed.
+                boolean success = TaskManager.executeTask(task, config);
+               
+                
+
+               
+
+              } } ); } } );
+    Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu( "Plugins" ).add( lt );
+    
+
+    
   }
 
 

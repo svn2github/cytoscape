@@ -78,6 +78,7 @@ public class Import {
 
     try {
       File file = new File( file_name );
+      file_name = file.getName();
       BufferedReader in
         = new BufferedReader(new FileReader( file ) );
       String oneLine = in.readLine();
@@ -396,7 +397,7 @@ public class Import {
     return true;
   }
 
-  private static byte determineType ( String value ) {
+  public static byte determineType ( String value ) {
     // Test for Double
     try { 
       Object attribute = new Double( value.toString() );
@@ -465,7 +466,7 @@ public class Import {
   }
 
 
-  private static Object castObjectByType ( byte type,
+  public static Object castObjectByType ( byte type,
                                            String value ) {
 
     Object object = null;

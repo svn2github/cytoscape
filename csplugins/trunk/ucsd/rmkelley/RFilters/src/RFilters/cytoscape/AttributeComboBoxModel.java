@@ -7,8 +7,11 @@ import javax.swing.event.*;
 import java.beans.*;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
-
-public abstract class AttributeComboBoxModel implements ComboBoxModel, PropertyChangeListener{
+import cytoscape.data.attr.*;
+public abstract class AttributeComboBoxModel 
+  implements 
+    ComboBoxModel, 
+    MultiHashMapDefinitionListener {
 
   protected Object selectedObject;
   protected Vector attributeList;
@@ -18,7 +21,9 @@ public abstract class AttributeComboBoxModel implements ComboBoxModel, PropertyC
 		
   protected AttributeComboBoxModel () {
     attributeList = new Vector();
-    Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
+    //Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
+    Cytoscape.getNodeAttributes().getMultiHashMapDefinition().addDataDefinitionListener( this );
+    Cytoscape.getEdgeAttributes().getMultiHashMapDefinition().addDataDefinitionListener( this );
   }
 
 		/**
@@ -57,6 +62,11 @@ public abstract class AttributeComboBoxModel implements ComboBoxModel, PropertyC
   //implements PropertyChange
   public abstract void propertyChange(PropertyChangeEvent pce);
 
+  public abstract void attributeDefined ( String attributeName );
+  public abstract void attributeUndefined ( String attributeName );
+ 
+
+
 
   //implements ListModel
   Vector listeners = new Vector();
@@ -84,6 +94,7 @@ public abstract class AttributeComboBoxModel implements ComboBoxModel, PropertyC
     return selectedObject;
   }
       
+
 
 }
 
@@ -127,7 +138,6 @@ class NodeAttributeComboBoxModel extends AttributeComboBoxModel{
 class EdgeAttributeComboBoxModel extends AttributeComboBoxModel{
   Class attributeClass;
   
-
   CyAttributes edgeAttributes;
   public EdgeAttributeComboBoxModel(Class attributeClass){
     super();
@@ -163,4 +173,5 @@ class EdgeAttributeComboBoxModel extends AttributeComboBoxModel{
       notifyListeners();
     }
   }
+
 }

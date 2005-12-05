@@ -68,6 +68,7 @@
       <pathelement location="${cytoscape.lib.dir}/com-nerius-math-xform.jar"/> 
       <pathelement location="${cytoscape.lib.dir}/concurrent.jar"/>
       <pathelement location="${cytoscape.plugin.dir}/exesto.jar"/>
+      <pathelement location="${cytoscape.plugin.dir}/loader.jar"/>
       <pathelement location="${cytoscape.lib.dir}/cytoscape-graph-dynamic.jar"/>
       <pathelement location="${cytoscape.lib.dir}/cytoscape-graph-fixed.jar"/>
       <pathelement location="${cytoscape.lib.dir}/cytoscape-graph-layout.jar"/>

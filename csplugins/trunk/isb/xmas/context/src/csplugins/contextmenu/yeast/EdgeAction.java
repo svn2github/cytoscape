@@ -110,21 +110,14 @@ public class EdgeAction {
   }
 
   public static String getTitle ( Object[] args, PNode node ) {
-    //System.out.println( "Getting Title" );
+   
     final CyNetworkView nv = ( CyNetworkView )args[0];
-    //return nv.getNetwork().getNodeAttributes().getCanonicalName( node );
-
+   
     if ( node instanceof PEdgeView ) {
-      return  nv.getNetwork().
-        getEdgeAttributes().
-        getCanonicalName(  nv.getNetwork().getGraphPerspective().
-                           getEdge( ( (PEdgeView)node).getGraphPerspectiveIndex() ) );
+      return ((PEdgeView)node).getLabel().getText();
+    } else {
+      return "";
     }
-    //      return nv.getNetwork().getGraphPerspective().
-    //    getEdge( ( (PEdgeView)node).getGraphPerspectiveIndex() ).
-    //    getIdentifier();
-
-    return "";
   }
 
  

@@ -8,6 +8,8 @@ import javax.swing.event.SwingPropertyChangeSupport;
 import javax.swing.*;
 import javax.swing.undo.*; 
 
+import fileloader.Import;
+
 import cytoscape.*;
 import cytoscape.data.*;
 import cytoscape.data.attr.*;
@@ -53,6 +55,10 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
     this.attributeFrom = attributeFrom;
     this.keys = keys;
     this.graphObjectType = graphObjectType;
+
+    // System.out.println( "input: "+input+" action: "+action+" attributeTo: "+attributeTo+ " attributeFrom: "+attributeFrom+" graphObjectType: "+graphObjectType+" objects:" +objects.toString() );
+
+
     initEdit();
 
   }
@@ -150,31 +156,23 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
       deleteAtt();
     } else {
 
-      try {
-        attType = data.getType( attributeTo );
-      } catch ( Exception ex ) {
-        // define the new attribute
-        //attType = ( ( CytoscapeDataImpl )data ).wildGuessAndDefineObjectType( input, attributeTo );
-        attType = CyAttributes.TYPE_STRING;
+      // get the current type
+      attType = data.getType( attributeTo );
 
-        // TODO Type guessing!!!!
+      if ( attType == CyAttributes.TYPE_UNDEFINED ) 
+        attType = Import.determineType( input );
 
-      }
-      
-      if ( attType == -1 ) {
-        //attType = ( ( CytoscapeDataImpl )data ).wildGuessAndDefineObjectType( input, attributeTo );
-      }
+      Object cast_input = Import.castObjectByType( attType, input );
+
 
       if ( attType == CyAttributes.TYPE_FLOATING ) {
-        Double d = new Double( input );
-        doubleAction( d.doubleValue() );
+        doubleAction( ((Double)cast_input).doubleValue() );
       } else if ( attType == CyAttributes.TYPE_INTEGER ) {
-        Integer d = new Integer( input );
-        integerAction( d.intValue()  );
+        integerAction( ((Integer)cast_input).intValue() );
       } else if ( attType == CyAttributes.TYPE_STRING ) {
-        stringAction( input );
+        stringAction( (String)cast_input );
       } else if ( attType == CyAttributes.TYPE_BOOLEAN ) {
-        booleanAction( Boolean.valueOf( input ) );
+        booleanAction( (Boolean)cast_input );
       } else if ( attType == CyAttributes.TYPE_SIMPLE_LIST ) {
         // TODO: HANDLE LISTS
       } else if ( attType == CyAttributes.TYPE_SIMPLE_MAP ) {
@@ -251,8 +249,8 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
       
       new_values.add( new Double(new_v) );
       setAttributeValue( go.getIdentifier(),
-                              attributeTo,
-                              new Double( new_v ) );
+                         attributeTo,
+                         new Double( new_v ) );
     } // iterator
   } // doubleAction
 
@@ -307,6 +305,9 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
       String s = (String)getAttributeValue( go.getIdentifier(),
                                                  attributeTo );
       old_values.add( s );
+
+      System.out.println( "for: "+go.getIdentifier()+" old value: "+s+" new value: "+input );
+
       String new_v;
       if ( action == SET ) 
         new_v = input;
@@ -344,8 +345,5 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 
 
  
-
-
-
 
 }

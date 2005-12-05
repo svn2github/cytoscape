@@ -134,7 +134,7 @@ public class NetworkManagement
     fileApply = new JButton( "Apply" );
     fileApply.addActionListener( this );
     file.add( fileApply, BorderLayout.SOUTH );
-    tabs.addTab("File", file );
+    //tabs.addTab("File", file );
 
     main_panel.add( tab_panel, BorderLayout.SOUTH );
     
