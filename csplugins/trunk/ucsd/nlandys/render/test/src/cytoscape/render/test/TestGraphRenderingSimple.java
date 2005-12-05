@@ -77,11 +77,11 @@ public class TestGraphRenderingSimple
         public Paint labelPaint(int node, int inx) {
           return new Color(0, 0, 0, 255); }
         public byte labelTextAnchor(int node, int inx) {
-          if (inx == 0) { return NodeDetails.LABEL_ANCHOR_SOUTHWEST; }
-          else { return NodeDetails.LABEL_ANCHOR_CENTER; } }
+          if (inx == 0) { return NodeDetails.ANCHOR_SOUTHWEST; }
+          else { return NodeDetails.ANCHOR_CENTER; } }
         public byte labelNodeAnchor(int node, int inx) {
-          if (inx == 0) { return NodeDetails.LABEL_ANCHOR_NORTHWEST; }
-          else { return NodeDetails.LABEL_ANCHOR_CENTER; } }
+          if (inx == 0) { return NodeDetails.ANCHOR_NORTHWEST; }
+          else { return NodeDetails.ANCHOR_CENTER; } }
         public float labelOffsetVectorX(int node, int inx) { return 0.0f; }
         public float labelOffsetVectorY(int node, int inx) { return 0.0f; }
         public byte labelJustify(int node, int inx) {
