@@ -290,12 +290,34 @@ public class NodeDetails
   public byte labelJustify(final int node, final int labelInx) {
     return LABEL_WRAP_JUSTIFY_CENTER; }
 
+  /**
+   * Returns the number of custom graphics that this node has.  By default this
+   * method returns zero.  A custom graphic extends the concept of node label
+   * to include any arbitrary filled shape.
+   */
   public int graphicCount(final int node) {
     return 0; }
 
+  /**
+   * Returns a custom graphic's shape.  This shape will be filled by the
+   * rendering engine.  By default this method always returns null.  This
+   * method is only called by the rendering engine if graphicCount(node)
+   * returns a value greater than zero.  It is an error to return null if
+   * this method is called by the rendering engine.
+   * @param graphicInx a value in the range [0, graphicCount(node)-1]
+   *   indicating which node graphic in question.
+   */
   public Shape graphicShape(final int node, final int graphicInx) {
     return null; }
 
+  /**
+   * Returns the paint fill color of a custom graphic.  By default this
+   * method always returns null.  This method is only called by the rendering
+   * engine if graphicCount(node) returns a value greater than zero.  It is
+   * an error to return null if this method is called by the rendering engine.
+   * @param graphicInx a value in the range [0, graphicCount(node)-1]
+   *   indicating which node graphic in question.
+   */
   public Paint graphicPaint(final int node, final int graphicInx) {
     return null; }
 
