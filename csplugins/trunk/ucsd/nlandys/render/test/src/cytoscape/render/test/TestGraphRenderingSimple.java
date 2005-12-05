@@ -17,11 +17,13 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Paint;
+import java.awt.Shape;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.geom.GeneralPath;
 
 public class TestGraphRenderingSimple
   extends Frame implements MouseListener, MouseMotionListener
@@ -86,7 +88,24 @@ public class TestGraphRenderingSimple
         public float labelOffsetVectorY(int node, int inx) { return 0.0f; }
         public byte labelJustify(int node, int inx) {
           if (inx == 0) { return NodeDetails.LABEL_WRAP_JUSTIFY_RIGHT; }
-          else { return NodeDetails.LABEL_WRAP_JUSTIFY_LEFT; } } };
+          else { return NodeDetails.LABEL_WRAP_JUSTIFY_LEFT; } }
+        public int graphicCount(int node) { return 1; }
+        public Shape graphicShape(int node, int inx) {
+          final GeneralPath returnThis = new GeneralPath();
+          returnThis.reset();
+          returnThis.moveTo(0, 0);
+          returnThis.lineTo(8, 0);
+          returnThis.lineTo(0, 13);
+          returnThis.closePath();
+          return returnThis; }
+        public Paint graphicPaint(int node, int inx) {
+          return Color.blue; }
+        public byte graphicNodeAnchor(int node, int inx) {
+          return ANCHOR_SOUTHEAST; }
+        public float graphicOffsetVectorX(int node, int inx) {
+          return 0; }
+        public float graphicOffsetVectorY(int node, int inx) {
+          return 0; } };
     m_edgeDetails = new EdgeDetails() {
         private final Color m_color = new Color(0, 0, 255, 127);
         public float segmentThickness(int edge) { return 1.0f; }
