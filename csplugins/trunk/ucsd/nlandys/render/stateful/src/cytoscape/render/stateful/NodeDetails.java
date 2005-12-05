@@ -311,7 +311,7 @@ public class NodeDetails
     return null; }
 
   /**
-   * Returns the paint fill color of a custom graphic.  By default this
+   * Returns the fill paint of a custom graphic.  By default this
    * method always returns null.  This method is only called by the rendering
    * engine if graphicCount(node) returns a value greater than zero.  It is
    * an error to return null if this method is called by the rendering engine.
@@ -321,12 +321,48 @@ public class NodeDetails
   public Paint graphicPaint(final int node, final int graphicInx) {
     return null; }
 
+  /**
+   * By returning one of the ANCHOR_* constants, specifies
+   * where on the node's extents rectangle the graphic anchor point lies.
+   * The filled shape is rendered at a location which is equal to this
+   * anchor point plus the offset vector.<p>
+   * By default this method always returns ANCHOR_CENTER.
+   * This method is only called by the rendering engine if graphicCount(node)
+   * returns a value greater than zero.
+   * @param graphicInx a value in the range [0, graphicCount(node)-1]
+   *   indicating which node graphic in question.
+   * @see #ANCHOR_CENTER
+   * @see #graphicOffsetVectorX(int, int)
+   * @see #graphicOffsetVectorY(int, int)
+   */
   public byte graphicNodeAnchor(final int node, final int graphicInx) {
     return ANCHOR_CENTER; }
 
+  /**
+   * Specifies the X component of the vector that separates the location of
+   * a rendered graphic from the node's anchor point for that graphic.
+   * By default this method always returns zero.  This method is only called
+   * by the rendering engine if graphicCount(node) returns a value greater
+   * than zero.
+   * @param graphicInx a value in the range [0, graphicCount(node)-1]
+   *   indicating which node graphic in question.
+   * @see #graphicOffsetVectorY(int, int)
+   * @see #graphicNodeAnchor(int, int)
+   */
   public float graphicOffsetVectorX(final int node, final int graphicInx) {
     return 0.0f; }
 
+  /**
+   * Specifies the Y component of the vector that separates the location of
+   * a rendered graphic from the node's anchor point for that graphic.
+   * By default this method always returns zero.  This method is only called
+   * by the rendering engine if graphicCount(node) returns a value greater
+   * than zero.
+   * @param graphicInx a value in the range [0, graphicCount(node)-1]
+   *   indicating which node graphic in question.
+   * @see #graphicOffsetVectorX(int, int)
+   * @see #graphicNodeAnchor(int, int)
+   */
   public float graphicOffsetVectorY(final int node, final int graphicInx) {
     return 0.0f; }
 
