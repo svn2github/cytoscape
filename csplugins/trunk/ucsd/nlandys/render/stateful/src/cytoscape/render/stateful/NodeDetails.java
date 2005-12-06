@@ -89,6 +89,12 @@ public class NodeDetails
   public static final byte LABEL_WRAP_JUSTIFY_RIGHT = 66;
 
   /**
+   * Instantiates node details with defaults.  Documentation on each method
+   * describes defaults.  To override defaults, extend this class.
+   */
+  public NodeDetails() {}
+
+  /**
    * Returns the color of node in low detail rendering mode.
    * By default this method returns Color.red.  It is an error to return
    * null in this method.<p>

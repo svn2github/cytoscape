@@ -34,6 +34,12 @@ public class EdgeDetails
   public static final int ENDPOINT_LABEL_HORIZONTAL_CENTER_FAR = 0;
 
   /**
+   * Instantiates edge details with defaults.  Documentation on each method
+   * describes defaults.  To override defaults, extend this class.
+   */
+  public EdgeDetails() {}
+
+  /**
    * Returns the color of edge in low detail rendering mode.
    * By default this method returns Color.blue.  It is an error to return null
    * in this method.<p>
