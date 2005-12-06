@@ -107,6 +107,17 @@ public class GraphLOD
     return renderNodeCount + renderEdgeCount < 120;
   }
 
+  /**
+   * Determines whether or not to render custom graphics on nodes.
+   * By default this method returns true if and only if the sum of rendered
+   * nodes and rendered edges is less than 120.<p>
+   * Custom node graphics are only rendered at the full detail level.  If low
+   * detail is chosen, the output of this method is ignored.
+   * @param renderNodeCount the number of nodes that are about to be rendered.
+   * @param renderEdgeCount the number of edges that are about to be rendered.
+   * @return true if and only if custom node graphics are to be rendered.
+   * @see #detail(int, int)
+   */
   public boolean customGraphics(final int renderNodeCount,
                                 final int renderEdgeCount)
   {
