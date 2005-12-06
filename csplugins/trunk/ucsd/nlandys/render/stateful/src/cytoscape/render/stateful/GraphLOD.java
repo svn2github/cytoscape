@@ -61,7 +61,10 @@ public class GraphLOD
    *         <td>drawTextFull()</td>
    *         <td>not rendered</td>                                        </tr>
    *   <tr>  <th>edge labels</th>
-   *         <td> drawTextFull()</td>
+   *         <td>drawTextFull()</td>
+   *         <td>not rendered</td>                                        </tr>
+   *   <tr>  <th>custom node graphics</th>
+   *         <td>drawCustomGraphicFull()</td>
    *         <td>not rendered</td>                                        </tr>
    * </table></blockquote>
    * @param renderNodeCount the number of nodes that are about to be rendered.
