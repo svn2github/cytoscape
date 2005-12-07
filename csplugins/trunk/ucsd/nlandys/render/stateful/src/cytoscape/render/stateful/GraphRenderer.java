@@ -383,38 +383,130 @@ public final class GraphRenderer
                     else {
                       justify = NodeDetails.LABEL_WRAP_JUSTIFY_CENTER; }
                   }
-                  final boolean horizontal =
-                    edgeDetails.labelHorizontal(edge, labelInx);
+//                   final boolean horizontal =
+//                     edgeDetails.labelHorizontal(edge, labelInx);
                   final float edgeAnchorPointX;
                   final float edgeAnchorPointY;
-                  float sinTheta = 0.0f;
-                  float cosTheta = 1.0f;
-                  {
+//                   float sinTheta = 0.0f;
+//                   float cosTheta = 1.0f;
+                  { // Compute edgeAnchorPointX and edgeAnchorPointY.
                     if (edgeAnchor == EdgeDetails.EDGE_ANCHOR_SOURCE) {
                       edgeAnchorPointX = srcXAdj;
                       edgeAnchorPointY = srcYAdj;
-                      if (!horizontal) {
-                        final float otherX;
-                        final float otherY;
-                        if (anchors == null) {
-                          otherX = trgXAdj;
-                          otherY = trgYAdj; }
-                        else {
-                          anchors.getAnchor(0, floatBuff3, 0);
-                          otherX = floatBuff3[0];
-                          otherY = floatBuff3[1]; }
-                        final double distance =
-                          Math.sqrt((((double) edgeAnchorPointX) - otherX) *
-                                    (((double) edgeAnchorPointX) - otherX) +
-                                    (((double) edgeAnchorPointY) - otherY) *
-                                    (((double) edgeAnchorPointY) - otherY));
-                        if (distance != 0.0d) {
-                        }
-                      }
+//                       if (!horizontal) {
+//                         final float otherX;
+//                         final float otherY;
+//                         if (anchors == null) {
+//                           otherX = trgXAdj;
+//                           otherY = trgYAdj; }
+//                         else {
+//                           anchors.getAnchor(0, floatBuff3, 0);
+//                           otherX = floatBuff3[0];
+//                           otherY = floatBuff3[1]; }
+//                         final double distance =
+//                           Math.sqrt((((double) edgeAnchorPointX) - otherX) *
+//                                     (((double) edgeAnchorPointX) - otherX) +
+//                                     (((double) edgeAnchorPointY) - otherY) *
+//                                     (((double) edgeAnchorPointY) - otherY));
+//                         if (distance != 0.0d) {
+//                         }
+//                       }
                     }
                     else if (edgeAnchor == EdgeDetails.EDGE_ANCHOR_TARGET) {
+                      edgeAnchorPointX = trgXAdj;
+                      edgeAnchorPointY = trgYAdj;
                     }
                     else if (edgeAnchor == EdgeDetails.EDGE_ANCHOR_MIDPOINT) {
+                      grafx.getEdgePath(srcArrow, srcArrowSize,
+                                        trgArrow, trgArrowSize,
+                                        srcXAdj, srcYAdj, anchors,
+                                        trgXAdj, trgYAdj, path2d);
+
+                      // Count the number of path segments.  This count
+                      // includes the initial SEG_MOVETO.  So, for example, a
+                      // path composed of 2 cubic curves would have a numPaths
+                      // of 3.  Note that numPaths will be at least 2 in all
+                      // cases.
+                      final int numPaths;
+                      {
+                        final PathIterator pathIter =
+                          path2d.getPathIterator(null);
+                        int numPathsTemp = 0;
+                        while (!pathIter.isDone()) {
+                          numPathsTemp++; // pathIter.currentSegment().
+                          pathIter.next(); }
+                        numPaths = numPathsTemp;
+                      }
+
+                      // Compute "midpoint" of edge.
+                      if (numPaths % 2 != 0) {
+                        final PathIterator pathIter =
+                          path2d.getPathIterator(null);
+                        for (int i = numPaths / 2; i > 0; i--) {
+                          pathIter.next(); }
+                        final int subPathType =
+                          pathIter.currentSegment(floatBuff4);
+                        if (subPathType == PathIterator.SEG_LINETO) {
+                          edgeAnchorPointX = floatBuff4[0];
+                          edgeAnchorPointY = floatBuff4[1]; }
+                        else if (subPathType == PathIterator.SEG_QUADTO) {
+                          edgeAnchorPointX = floatBuff4[2];
+                          edgeAnchorPointY = floatBuff4[3]; }
+                        else if (subPathType == PathIterator.SEG_CUBICTO) {
+                          edgeAnchorPointX = floatBuff4[4];
+                          edgeAnchorPointY = floatBuff4[5]; }
+                        else {
+                          throw new IllegalStateException
+                            ("got unexpected PathIterator segment type: " +
+                             subPathType); } }
+                      else { // numPaths % 2 == 0.
+                        final PathIterator pathIter =
+                          path2d.getPathIterator(null);
+                        for (int i = numPaths / 2; i > 0; i--) {
+                          if (i == 1) {
+                            final int subPathType =
+                              pathIter.currentSegment(floatBuff4);
+                            if (subPathType == PathIterator.SEG_MOVETO ||
+                                subPathType == PathIterator.SEG_LINETO) {
+                              floatBuff4[6] = floatBuff4[0];
+                              floatBuff4[7] = floatBuff4[1]; }
+                            else if (subPathType == PathIterator.SEG_QUADTO) {
+                              floatBuff4[6] = floatBuff4[2];
+                              floatBuff4[7] = floatBuff4[3]; }
+                            else if (subPathType == PathIterator.SEG_CUBICTO) {
+                              floatBuff4[6] = floatBuff4[4];
+                              floatBuff4[7] = floatBuff4[5]; }
+                            else {
+                              throw new IllegalStateException
+                                ("got unexpected PathIterator segment type: " +
+                                 subPathType); } }
+                          pathIter.next(); }
+                        final int subPathType =
+                          pathIter.currentSegment(floatBuff4);
+                        if (subPathType == PathIterator.SEG_LINETO) {
+                          edgeAnchorPointX = (float)
+                            (0.5d * floatBuff4[6] + 0.5d * floatBuff4[0]);
+                          edgeAnchorPointY = (float)
+                            (0.5d * floatBuff4[7] + 0.5d * floatBuff4[1]); }
+                        else if (subPathType == PathIterator.SEG_QUADTO) {
+                          edgeAnchorPointX = (float)
+                            (0.25d * floatBuff4[6] + 0.5d * floatBuff4[0] +
+                             0.25d * floatBuff4[2]);
+                          edgeAnchorPointY = (float)
+                            (0.25d * floatBuff4[7] + 0.5d * floatBuff4[1] +
+                             0.25d * floatBuff4[3]); }
+                        else if (subPathType == PathIterator.SEG_CUBICTO) {
+                          edgeAnchorPointX = (float)
+                            (0.125d * floatBuff4[6] + 0.375d * floatBuff4[0] +
+                             0.375d * floatBuff4[2] + 0.125d * floatBuff4[4]);
+                          edgeAnchorPointY = (float)
+                            (0.125d * floatBuff4[7] + 0.375d * floatBuff4[1] +
+                             0.375d * floatBuff4[3] +
+                             0.125d * floatBuff4[5]); }
+                        else {
+                          throw new IllegalStateException
+                            ("got unexpected PathIterator segment type: " +
+                             subPathType); } }
                     }
                     else {
                       throw new IllegalStateException
