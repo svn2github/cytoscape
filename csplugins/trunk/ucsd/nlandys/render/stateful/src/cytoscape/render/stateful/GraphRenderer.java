@@ -250,7 +250,7 @@ public final class GraphRenderer
 
               // Compute visual attributes that do not depend on LOD.
               final float thickness = edgeDetails.segmentThickness(edge);
-              final Paint paint = edgeDetails.segmentPaint(edge);
+              final Paint segPaint = edgeDetails.segmentPaint(edge);
 
               // Compute arrows.
               final byte srcArrow, trgArrow;
@@ -356,10 +356,37 @@ public final class GraphRenderer
               grafx.drawEdgeFull(srcArrow, srcArrowSize, srcArrowPaint,
                                  trgArrow, trgArrowSize, trgArrowPaint,
                                  srcXAdj, srcYAdj, anchors, trgXAdj, trgYAdj,
-                                 thickness, paint, dashLength);
+                                 thickness, segPaint, dashLength);
 
-//               // Take care of label rendering.
-//               if ((lodBits & LOD_EDGE_LABELS) != 0) {
+              // Take care of label rendering.
+              if ((lodBits & LOD_EDGE_LABELS) != 0) {
+
+                final int labelCount = edgeDetails.labelCount(edge);
+                for (int labelInx = 0; labelInx < labelCount; labelInx++) {
+                  final String text = edgeDetails.labelText(edge, labelInx);
+                  final Font font = edgeDetails.labelFont(edge, labelInx);
+                  final double fontScaleFactor =
+                    edgeDetails.labelScaleFactor(edge, labelInx);
+                  final Paint paint = edgeDetails.labelPaint(edge, labelInx);
+                  final byte textAnchor =
+                    edgeDetails.labelTextAnchor(edge, labelInx);
+                  final byte edgeAnchor =
+                    edgeDetails.labelEdgeAnchor(edge, labelInx);
+                  final float offsetVectorX =
+                    edgeDetails.labelOffsetVectorX(edge, labelInx);
+                  final float offsetVectorY =
+                    edgeDetails.labelOffsetVectorY(edge, labelInx);
+                  final byte justify;
+                  {
+                    if (text.indexOf('\n') >= 0) {
+                      justify = edgeDetails.labelJustify(edge, labelInx); }
+                    else {
+                      justify = NodeDetails.LABEL_WRAP_JUSTIFY_CENTER; }
+                  }
+                  final boolean horizontal =
+                    edgeDetails.labelHorizontal(edge, labelInx);
+                }
+              }
 
 //                 // Compute edge label, font, scale factor, and paint.
 //                 final String label;
