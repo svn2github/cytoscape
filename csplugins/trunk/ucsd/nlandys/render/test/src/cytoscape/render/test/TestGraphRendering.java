@@ -227,10 +227,12 @@ public class TestGraphRendering
           return (EdgeAnchors) anchorsHash.get(edge); }
         public float segmentThickness(int edge) { return thickness; }
         public Paint segmentPaint(int edge) { return color; }
-        public String labelText(int edge) { return "" + edge; }
-        public Font labelFont(int edge) { return font; }
-        public double labelScaleFactor(int edge) { return fontScaleFactor; }
-        public Paint labelPaint(int edge) { return labelColor; } };
+        public int labelCount(int edge) { return 1; }
+        public String labelText(int edge, int inx) { return "" + edge; }
+        public Font labelFont(int edge, int inx) { return font; }
+        public double labelScaleFactor(int edge, int inx) {
+          return fontScaleFactor; }
+        public Paint labelPaint(int edge, int inx) { return labelColor; } };
     EventQueue.invokeAndWait(new Runnable() {
         public void run() {
           Frame f = new TestGraphRendering(graph, rtree, lod,
