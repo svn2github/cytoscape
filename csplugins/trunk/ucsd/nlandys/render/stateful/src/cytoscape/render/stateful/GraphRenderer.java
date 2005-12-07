@@ -358,122 +358,123 @@ public final class GraphRenderer
                                  srcXAdj, srcYAdj, anchors, trgXAdj, trgYAdj,
                                  thickness, paint, dashLength);
 
-              // Take care of label rendering.
-              if ((lodBits & LOD_EDGE_LABELS) != 0) {
+//               // Take care of label rendering.
+//               if ((lodBits & LOD_EDGE_LABELS) != 0) {
 
-                // Compute edge label, font, scale factor, and paint.
-                final String label;
-                final Font font;
-                final double fontScaleFactor;
-                final Paint labelPaint;
-                {
-                  String labelTemp = edgeDetails.labelText(edge);
-                  if ("".equals(labelTemp)) { labelTemp = null; }
-                  label = labelTemp;
-                  if (label == null) {
-                    font = null;
-                    fontScaleFactor = 1.0d;
-                    labelPaint = null; }
-                  else {
-                    font = edgeDetails.labelFont(edge);
-                    fontScaleFactor = edgeDetails.labelScaleFactor(edge);
-                    labelPaint = edgeDetails.labelPaint(edge); }
-                }
-                // Now label is not null if and only if we need to render.
+//                 // Compute edge label, font, scale factor, and paint.
+//                 final String label;
+//                 final Font font;
+//                 final double fontScaleFactor;
+//                 final Paint labelPaint;
+//                 {
+//                   String labelTemp = edgeDetails.labelText(edge);
+//                   if ("".equals(labelTemp)) { labelTemp = null; }
+//                   label = labelTemp;
+//                   if (label == null) {
+//                     font = null;
+//                     fontScaleFactor = 1.0d;
+//                     labelPaint = null; }
+//                   else {
+//                     font = edgeDetails.labelFont(edge);
+//                     fontScaleFactor = edgeDetails.labelScaleFactor(edge);
+//                     labelPaint = edgeDetails.labelPaint(edge); }
+//                 }
+//                 // Now label is not null if and only if we need to render.
 
-                if (label != null &&
-                    grafx.getEdgePath(srcArrow, srcArrowSize,
-                                      trgArrow, trgArrowSize,
-                                      srcXAdj, srcYAdj, anchors,
-                                      trgXAdj, trgYAdj, path2d)) {
+//                 if (label != null &&
+//                     grafx.getEdgePath(srcArrow, srcArrowSize,
+//                                       trgArrow, trgArrowSize,
+//                                       srcXAdj, srcYAdj, anchors,
+//                                       trgXAdj, trgYAdj, path2d)) {
 
-                  // Count the number of path segments.  This count includes
-                  // the initial SEG_MOVETO.  So, for example, a path composed
-                  // of 2 cubic curves would have a numPaths of 3.  Note that
-                  // numPaths will be at least 2 in all cases.
-                  final int numPaths;
-                  {
-                    final PathIterator pathIter = path2d.getPathIterator(null);
-                    int numPathsTemp = 0;
-                    while (!pathIter.isDone()) {
-                      numPathsTemp++; // pathIter.currentSegment().
-                      pathIter.next(); }
-                    numPaths = numPathsTemp;
-                  }
+//                   // Count the number of path segments.  This count includes
+//                   // the initial SEG_MOVETO.  So, for example, a path composed
+//                   // of 2 cubic curves would have a numPaths of 3.  Note that
+//                   // numPaths will be at least 2 in all cases.
+//                   final int numPaths;
+//                   {
+//                     final PathIterator pathIter = path2d.getPathIterator(null);
+//                     int numPathsTemp = 0;
+//                     while (!pathIter.isDone()) {
+//                       numPathsTemp++; // pathIter.currentSegment().
+//                       pathIter.next(); }
+//                     numPaths = numPathsTemp;
+//                   }
 
-                  // Compute "midpoint" of edge.
-                  final float labelXCenter, labelYCenter;
-                  if (numPaths % 2 != 0) {
-                    final PathIterator pathIter = path2d.getPathIterator(null);
-                    for (int i = numPaths / 2; i > 0; i--) {
-                      pathIter.next(); }
-                    final int subPathType =
-                      pathIter.currentSegment(floatBuff4);
-                    if (subPathType == PathIterator.SEG_LINETO) {
-                      labelXCenter = floatBuff4[0];
-                      labelYCenter = floatBuff4[1]; }
-                    else if (subPathType == PathIterator.SEG_QUADTO) {
-                      labelXCenter = floatBuff4[2];
-                      labelYCenter = floatBuff4[3]; }
-                    else if (subPathType == PathIterator.SEG_CUBICTO) {
-                      labelXCenter = floatBuff4[4];
-                      labelYCenter = floatBuff4[5]; }
-                    else {
-                      throw new IllegalStateException
-                        ("got unexpected PathIterator segment type: " +
-                         subPathType); } }
-                  else { // numPaths % 2 == 0.
-                    final PathIterator pathIter = path2d.getPathIterator(null);
-                    for (int i = numPaths / 2; i > 0; i--) {
-                      if (i == 1) {
-                        final int subPathType =
-                          pathIter.currentSegment(floatBuff4);
-                        if (subPathType == PathIterator.SEG_MOVETO ||
-                            subPathType == PathIterator.SEG_LINETO) {
-                          floatBuff4[6] = floatBuff4[0];
-                          floatBuff4[7] = floatBuff4[1]; }
-                        else if (subPathType == PathIterator.SEG_QUADTO) {
-                          floatBuff4[6] = floatBuff4[2];
-                          floatBuff4[7] = floatBuff4[3]; }
-                        else if (subPathType == PathIterator.SEG_CUBICTO) {
-                          floatBuff4[6] = floatBuff4[4];
-                          floatBuff4[7] = floatBuff4[5]; }
-                        else {
-                          throw new IllegalStateException
-                            ("got unexpected PathIterator segment type: " +
-                             subPathType); } }
-                      pathIter.next(); }
-                    final int subPathType =
-                      pathIter.currentSegment(floatBuff4);
-                    if (subPathType == PathIterator.SEG_LINETO) {
-                      labelXCenter = (float)
-                        (0.5d * floatBuff4[6] + 0.5d * floatBuff4[0]);
-                      labelYCenter = (float)
-                        (0.5d * floatBuff4[7] + 0.5d * floatBuff4[1]); }
-                    else if (subPathType == PathIterator.SEG_QUADTO) {
-                      labelXCenter = (float)
-                        (0.25d * floatBuff4[6] + 0.5d * floatBuff4[0] +
-                         0.25d * floatBuff4[2]);
-                      labelYCenter = (float)
-                        (0.25d * floatBuff4[7] + 0.5d * floatBuff4[1] +
-                         0.25d * floatBuff4[3]); }
-                    else if (subPathType == PathIterator.SEG_CUBICTO) {
-                      labelXCenter = (float)
-                        (0.125d * floatBuff4[6] + 0.375d * floatBuff4[0] +
-                         0.375d * floatBuff4[2] + 0.125d * floatBuff4[4]);
-                      labelYCenter = (float)
-                        (0.125d * floatBuff4[7] + 0.375d * floatBuff4[1] +
-                         0.375d * floatBuff4[3] + 0.125d * floatBuff4[5]); }
-                    else {
-                      throw new IllegalStateException
-                        ("got unexpected PathIterator segment type: " +
-                         subPathType); } }
+//                   // Compute "midpoint" of edge.
+//                   final float labelXCenter, labelYCenter;
+//                   if (numPaths % 2 != 0) {
+//                     final PathIterator pathIter = path2d.getPathIterator(null);
+//                     for (int i = numPaths / 2; i > 0; i--) {
+//                       pathIter.next(); }
+//                     final int subPathType =
+//                       pathIter.currentSegment(floatBuff4);
+//                     if (subPathType == PathIterator.SEG_LINETO) {
+//                       labelXCenter = floatBuff4[0];
+//                       labelYCenter = floatBuff4[1]; }
+//                     else if (subPathType == PathIterator.SEG_QUADTO) {
+//                       labelXCenter = floatBuff4[2];
+//                       labelYCenter = floatBuff4[3]; }
+//                     else if (subPathType == PathIterator.SEG_CUBICTO) {
+//                       labelXCenter = floatBuff4[4];
+//                       labelYCenter = floatBuff4[5]; }
+//                     else {
+//                       throw new IllegalStateException
+//                         ("got unexpected PathIterator segment type: " +
+//                          subPathType); } }
+//                   else { // numPaths % 2 == 0.
+//                     final PathIterator pathIter = path2d.getPathIterator(null);
+//                     for (int i = numPaths / 2; i > 0; i--) {
+//                       if (i == 1) {
+//                         final int subPathType =
+//                           pathIter.currentSegment(floatBuff4);
+//                         if (subPathType == PathIterator.SEG_MOVETO ||
+//                             subPathType == PathIterator.SEG_LINETO) {
+//                           floatBuff4[6] = floatBuff4[0];
+//                           floatBuff4[7] = floatBuff4[1]; }
+//                         else if (subPathType == PathIterator.SEG_QUADTO) {
+//                           floatBuff4[6] = floatBuff4[2];
+//                           floatBuff4[7] = floatBuff4[3]; }
+//                         else if (subPathType == PathIterator.SEG_CUBICTO) {
+//                           floatBuff4[6] = floatBuff4[4];
+//                           floatBuff4[7] = floatBuff4[5]; }
+//                         else {
+//                           throw new IllegalStateException
+//                             ("got unexpected PathIterator segment type: " +
+//                              subPathType); } }
+//                       pathIter.next(); }
+//                     final int subPathType =
+//                       pathIter.currentSegment(floatBuff4);
+//                     if (subPathType == PathIterator.SEG_LINETO) {
+//                       labelXCenter = (float)
+//                         (0.5d * floatBuff4[6] + 0.5d * floatBuff4[0]);
+//                       labelYCenter = (float)
+//                         (0.5d * floatBuff4[7] + 0.5d * floatBuff4[1]); }
+//                     else if (subPathType == PathIterator.SEG_QUADTO) {
+//                       labelXCenter = (float)
+//                         (0.25d * floatBuff4[6] + 0.5d * floatBuff4[0] +
+//                          0.25d * floatBuff4[2]);
+//                       labelYCenter = (float)
+//                         (0.25d * floatBuff4[7] + 0.5d * floatBuff4[1] +
+//                          0.25d * floatBuff4[3]); }
+//                     else if (subPathType == PathIterator.SEG_CUBICTO) {
+//                       labelXCenter = (float)
+//                         (0.125d * floatBuff4[6] + 0.375d * floatBuff4[0] +
+//                          0.375d * floatBuff4[2] + 0.125d * floatBuff4[4]);
+//                       labelYCenter = (float)
+//                         (0.125d * floatBuff4[7] + 0.375d * floatBuff4[1] +
+//                          0.375d * floatBuff4[3] + 0.125d * floatBuff4[5]); }
+//                     else {
+//                       throw new IllegalStateException
+//                         ("got unexpected PathIterator segment type: " +
+//                          subPathType); } }
 
-                  // Finally, draw the text.
-                  grafx.drawTextFull
-                    (font, fontScaleFactor, label,
-                     labelXCenter, labelYCenter, 0.0f, labelPaint,
-                     (lodBits & LOD_TEXT_AS_SHAPE) != 0); } } } }
+//                   // Finally, draw the text.
+//                   grafx.drawTextFull
+//                     (font, fontScaleFactor, label,
+//                      labelXCenter, labelYCenter, 0.0f, labelPaint,
+//                      (lodBits & LOD_TEXT_AS_SHAPE) != 0); } }
+            } }
 
           nodeBuff.put(node); } }
     }
