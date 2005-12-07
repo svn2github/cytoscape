@@ -20,7 +20,7 @@ public class EdgeDetails
   /**
    * Specifies that an anchor point lies at the midpoint of an edge.
    */
-  public static final byte EDGE_ANCHOR_CENTER = 16;
+  public static final byte EDGE_ANCHOR_MIDPOINT = 16;
 
   /**
    * Specifies that an anchor point lies at an edge's endpoint at source
@@ -236,18 +236,18 @@ public class EdgeDetails
    * relative to the edge, the text's logical bounds box is to be placed.
    * The text's logical bounds box is placed such that the label offset
    * vector plus the edge anchor point equals the text anchor point.<p>
-   * By default this method always returns EDGE_ANCHOR_CENTER.  This method
+   * By default this method always returns EDGE_ANCHOR_MIDPOINT.  This method
    * is only called by the rendering engine if labelCount(edge) returns a
    * value greater than zero.
    * @param labelInx a value in the range [0, labelCount(edge)-1] indicating
    *   which edge label in question.
-   * @see #EDGE_ANCHOR_CENTER
+   * @see #EDGE_ANCHOR_MIDPOINT
    * @see #labelTextAnchor(int, int)
    * @see #labelOffsetVectorX(int, int)
    * @see #labelOffsetVectorY(int, int)
    */
   public byte labelEdgeAnchor(final int edge, final int labelInx) {
-    return EDGE_ANCHOR_CENTER; }
+    return EDGE_ANCHOR_MIDPOINT; }
 
   /**
    * Specifies the X component of the vector that separates a text anchor
