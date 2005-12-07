@@ -167,7 +167,7 @@ public class NodeDetails
    * By default this method always returns null.  This method is only called
    * by the rendering engine if labelCount(node) returns a value greater than
    * zero.  It is an error to return null if this method is called by the
-   * rendering engine.<p>
+   * rendering engine.
    * @param labelInx a value in the range [0, labelCount(node)-1] indicating
    *  which node label in question.
    */
@@ -178,7 +178,7 @@ public class NodeDetails
    * Returns an additional scaling factor that is to be applied to the font
    * used to render this label; this scaling factor, applied to the point
    * size of the font returned by labelFont(node, labelInx), yields a new
-   * virtual font that is used to actually render text labels.
+   * virtual font that is used to render the text label.
    * By default this method always returns 1.0.  This method is only called
    * by the rendering engine if labelCount(node) returns a value greater than
    * zero.
