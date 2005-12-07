@@ -17,21 +17,22 @@ import java.awt.Paint;
 public class EdgeDetails
 {
 
-//   public static final int LABEL_HORIZONTAL = 0x0;
-//   public static final int LABEL_ANGLED = 0x1;
-//   public static final int LABEL_BELOW_EDGE = 0x2;
-//   public static final int LABEL_ABOVE_EDGE = 23;
+  /**
+   * Specifies that an anchor point lies at the midpoint of an edge.
+   */
+  public static final byte EDGE_ANCHOR_CENTER = 16;
 
-  public static final int ENDPOINT_LABEL_ANGLED_CENTERED = 0;
-  public static final int ENDPOINT_LABEL_ANGLED_ABOVE = 0;
-  public static final int ENDPOINT_LABEL_ANGLED_BELOW = 0;
+  /**
+   * Specifies that an anchor point lies at an edge's endpoint at source
+   * node.
+   */
+  public static final byte EDGE_ANCHOR_SOURCE = 17;
 
-  public static final int ENDPOINT_LABEL_HORIZONTAL_END_CLEAR = 0;
-  public static final int ENDPOINT_LABEL_HORIZONTAL_END_INTERSECTING = 0;
-  public static final int ENDPOINT_LABEL_HORIZONTAL_END_NEUTRAL = 0;
-
-  public static final int ENDPOINT_LABEL_HORIZONTAL_CENTER_NEAR = 0;
-  public static final int ENDPOINT_LABEL_HORIZONTAL_CENTER_FAR = 0;
+  /**
+   * Specifies that an anchor point lies at an edge's endpoint at target
+   * node.
+   */
+  public static final byte EDGE_ANCHOR_TARGET = 18;
 
   /**
    * Instantiates edge details with defaults.  Documentation on each method
@@ -153,44 +154,160 @@ public class EdgeDetails
     return 0.0f; }
 
   /**
-   * Returns the text label this edge has.  By default this method returns
-   * null; returning null is the optimal way to specify that this
-   * edge has no text label.  An edge's text label is rendered such that the
-   * text is centered at at point lying on the edge path; the point on
-   * edge path is chosen such that it is close to the "middle" of the edge
-   * path.
+   * Returns the number of labels that this edge has.  By default this method
+   * returns zero.
    */
-  public String labelText(final int edge) {
+  public int labelCount(final int edge) {
+    return 0; }
+
+  /**
+   * Returns a label's text.  By default this method always returns null.
+   * This method is only called by the rendering engine if labelCount(edge)
+   * returns a value greater than zero.  It is an error to return null if this
+   * method is called by the rendering engine.<p>
+   * To specify multiple lines of text in an edge label, simply insert the
+   * '\n' character between lines of text.
+   * @param labelInx a value in the range [0, labelCount(edge)-1] indicating
+   *   which edge label in question.
+   */
+  public String labelText(final int edge, final int labelInx) {
     return null; }
 
   /**
-   * Returns the font to use when rendering a text label on this edge.
-   * By default this method returns null.
-   * This return value is ignored if labelText(edge) returns either null or the
-   * empty string; it is an error the return null if labelText(edge) returns a
-   * non-empty string.
+   * Returns the font to use when rendering this label.  By default this
+   * method always returns null.  This method is only called by the rendering
+   * engine if labelCount(edge) returns a value greater than zero.  It is an
+   * error to return null if this method is called by the rendering engine.
+   * @param labelInx a value in the range [0, labelCount(edge)-1] indicating
+   *   which edge label in question.
    */
-  public Font labelFont(final int edge) {
+  public Font labelFont(final int edge, final int labelInx) {
     return null; }
 
   /**
    * Returns an additional scaling factor that is to be applied to the font
-   * used to render text labels; this scaling factor, applied to the point
-   * size of the font returned by labelFont(edge), yields a new virtual font
-   * that is used to actually render text labels.  By default this method
-   * returns 1.0.  This return value is ignored if labelText(edge) returns
-   * either null or the empty string.
+   * used to render this label; this scaling factor, applied to the point
+   * size of the font returned by labelFont(edge, labelInx), yields a new
+   * virtual font that is used to render the text label.  By default this
+   * method always returns 1.0.  This method is only called by the rendering
+   * engine if labelCount(edge) returns a value greater than zero.
+   * @param labelInx a value in the range [0, labelCount(edge)-1] indicating
+   *   which edge label in question.
    */
-  public double labelScaleFactor(final int edge) {
+  public double labelScaleFactor(final int edge, final int labelInx) {
     return 1.0d; }
 
   /**
-   * Returns the paint of the text label on this edge.  By default this method
-   * returns null.  This return value is ignored if labelText(edge) returns
-   * either null or the empty string; it is an error to return null if
-   * labelText(edge) returns a non-empty string.
+   * Returns the paint of a text label.  By default this method always
+   * returns null.  This method is only called by the rendering engine if
+   * labelCount(edge) returns a value greater than zero.  It is an error to
+   * return null if this method is called by the rendering engine.
+   * @param labelInx a value in the range [0, labelCount(edge)-1] indicating
+   *   which edge label in question.
    */
-  public Paint labelPaint(final int edge) {
+  public Paint labelPaint(final int edge, final int labelInx) {
     return null; }
+
+  /**
+   * By returning one of the NodeDetails.ANCHOR_* constants, specifies where
+   * on a text label's logical bounds box an anchor point lies.  This
+   * <i>text anchor point</i> together with the edge anchor point and label
+   * offset vector determines where, relative to the edge, the text's logical
+   * bounds box is to be placed.  The text's logical bounds box is placed
+   * such that the label offset vector plus the edge anchor point equals the
+   * text anchor point.<p>
+   * By default this method always returns NodeDetails.ANCHOR_CENTER.
+   * This method is only called by the rendering engine if labelCount(edge)
+   * returns a value greater than zero.
+   * @param labelInx a value in the range [0, labelCount(edge)-1] indicating
+   *   which edge label in question.
+   * @see NodeDetails#ANCHOR_CENTER
+   * @see #labelEdgeAnchor(int, int)
+   * @see #labelOffsetVectorX(int, int)
+   * @see #labelOffsetVectorY(int, int)
+   */
+  public byte labelTextAnchor(final int edge, final int labelInx) {
+    return NodeDetails.ANCHOR_CENTER; }
+
+  /**
+   * By returning one of the EDGE_ANCHOR_* constants, specifies where on
+   * an edge an anchor point lies.  This <i>edge anchor point</i> together
+   * with the text anchor point and label offset vector determines where,
+   * relative to the edge, the text's logical bounds box is to be placed.
+   * The text's logical bounds box is placed such that the label offset
+   * vector plus the edge anchor point equals the text anchor point.<p>
+   * By default this method always returns EDGE_ANCHOR_CENTER.  This method
+   * is only called by the rendering engine if labelCount(edge) returns a
+   * value greater than zero.
+   * @param labelInx a value in the range [0, labelCount(edge)-1] indicating
+   *   which edge label in question.
+   * @see #EDGE_ANCHOR_CENTER
+   * @see #labelTextAnchor(int, int)
+   * @see #labelOffsetVectorX(int, int)
+   * @see #labelOffsetVectorY(int, int)
+   */
+  public byte labelEdgeAnchor(final int edge, final int labelInx) {
+    return EDGE_ANCHOR_CENTER; }
+
+  /**
+   * Specifies the X component of the vector that separates a text anchor
+   * point from an edge anchor point.  This <i>label offset vector</i>
+   * together with the text anchor point and edge anchor point determines
+   * where, relative to the edge, the text's logical bounds box is to be
+   * placed.  The text's logical bounds box is placed such that the label
+   * offset vector plus the edge anchor point equals the text anchor point.<p>
+   * By default this method always returns zero.  This method is only called
+   * by the rendering engine if labelCount(edge) returns a value greater than
+   * zero.
+   * @param labelInx a value in the range [0, labelCount(edge)-1] indicating
+   *   which edge label in question.
+   * @see #labelOffsetVectorY(int, int)
+   * @see #labelTextAnchor(int, int)
+   * @see #labelEdgeAnchor(int, int)
+   */
+  public float labelOffsetVectorX(final int edge, final int labelInx) {
+    return 0.0f; }
+
+  /**
+   * Specifies the Y component of the vector that separates a text anchor
+   * point from an edge anchor point.  This <i>label offset vector</i>
+   * together with the text anchor point and edge anchor point determines
+   * where, relative to the edge, the text's logical bounds box is to be
+   * placed.  The text's logical bounds box is placed such that the label
+   * offset vector plus the edge anchor point equals the text anchor point.<p>
+   * By default this method always returns zero.  This method is only called
+   * by the rendering engine if labelCount(edge) returns a value greater than
+   * zero.
+   * @param labelInx a value in the range [0, labelCount(edge)-1] indicating
+   *   which edge label in question.
+   * @see #labelOffsetVectorX(int, int)
+   * @see #labelTextAnchor(int, int)
+   * @see #labelEdgeAnchor(int, int)
+   */
+  public float labelOffsetVectorY(final int edge, final int labelInx) {
+    return 0.0f; }
+
+  /**
+   * By returning one of the NodeDetails.LABEL_WRAP_JUSTIFY_* constants,
+   * determines how to justify an edge label spanning multiple lines.  The
+   * choice made here does not affect the size of the logical bounding box
+   * of an edge label's text.  The lines of text are justified within that
+   * logical bounding box.<p>
+   * By default this method always returns
+   * NodeDetails.LABEL_WRAP_JUSTIFY_CENTER.  This return value is ignored
+   * if labelText(edge, labelInx) returns a text string that does not span
+   * multiple lines.
+   * @see NodeDetails#LABEL_WRAP_JUSTIFY_CENTER
+   */
+  public byte labelJustify(final int edge, final int labelInx) {
+    return NodeDetails.LABEL_WRAP_JUSTIFY_CENTER; }
+
+  /**
+   * Determines whether or not a label is to be rendered horizontally or
+   * following the tangent at edge anchor point.  By default this method
+   * always returns true, which results in horizontal text labels.
+   */
+  public boolean labelHorizontal(final int edge, final int labelInx) {
+    return true; }
 
 }
