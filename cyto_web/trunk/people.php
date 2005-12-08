@@ -92,7 +92,7 @@
     <td>Aditya<br />Vailaya</td>
     <td>Melissa Cline</td>
   </tr>
-  <tr><td colspan=6>&nbsp;</td></tr>
+
     <tr>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- Hack, hack, cough, cough. --></td>
     <td><img src="people_photos/ryan.jpg"></img></td>
@@ -103,7 +103,8 @@
     <td><img src="people_photos/printing.jpg"></img></td>
   </tr>
 
-  </tr>
+  <tr><td colspan=6>&nbsp;</td></tr>
+  <tr>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- Hack, hack, cough, cough. --></td>
     <td>Ben Gross</td>
     <td>Richard<br />Bonneau</td>
