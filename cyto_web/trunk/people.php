@@ -39,6 +39,7 @@
     <td><a href="http://www.cbio.mskcc.org/">Chris Sander</a></td>
     <td><a href="http://www.systemsbiology.org/Default.aspx?pagename=leroyhood">Leroy Hood</a></td>
     <td><a href="http://www.gmd.de/People/Benno.Schwikowski/">Benno<br />Schwikowski<a/></td>
+    <td><a href="http://www.agilent.com/labs/research/mtl/projects/sysbio.html">Annette Adler</a></td>
   </tr>
   <tr>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- Hack, hack, cough, cough. --></td>
@@ -46,6 +47,7 @@
     <td><img src="people_photos/chris_s.jpg"></img></td>
     <td><img src="people_photos/hood.jpg"></img></td>
     <td><img src="people_photos/benno.jpg"></img></td>
+    <td><img src="people_photos/annette.jpg"></img></td>
   </tr>
 </table>
 <blockquote>
@@ -85,20 +87,31 @@
     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- Hack, hack, cough, cough. --></td>
     <td>Ryan Kelley</td>
     <td>Nerius Landys</td>
-    <td>Robert<br />Sheridan</td>
     <td>Chris Workman</td>
-    <td>Richard<br />Bonneau</td>
+    <td>Allan<br />Kuchinsky</td>
+    <td>Aditya<br />Vailaya</td>
     <td>Melissa Cline</td>
   </tr>
   <tr>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- Hack, hack, cough, cough. --></td>
     <td><img src="people_photos/ryan.jpg"></img></td>
     <td><img src="people_photos/nerius.jpg"></img></td>
-    <td><img src="people_photos/robert.jpg"></img></td>
     <td><img src="people_photos/chris.jpg"></img></td>
-    <td><img src="people_photos/rich.jpg"></img></td>
+    <td><img src="people_photos/allan.jpg"></img></td>
+    <td><img src="people_photos/aditya.jpg"></img></td>
     <td><img src="people_photos/printing.jpg"></img></td>
   </tr>
+
+  </tr>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- Hack, hack, cough, cough. --></td>
+    <td>Richard<br />Bonneau</td>
+  </tr>
+    
+  <tr>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- Hack, hack, cough, cough. --></td>
+    <td><img src="people_photos/rich.jpg"></img></td>
+  </tr>
+  
 </table>
 <blockquote>
 			<hr width="100%" size="2">
@@ -124,6 +137,8 @@
 						Paul Shannon
 						<br>
 						Jonathan Wang
+						<br>
+						Robert Sheridan
 						<br>
 						</td>
 					</tr>
