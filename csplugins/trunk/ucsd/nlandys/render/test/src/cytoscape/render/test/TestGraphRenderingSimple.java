@@ -65,6 +65,10 @@ public class TestGraphRenderingSimple
     m_rtree = new RTree();
     assembleGraph();
     m_lod = new GraphLOD() {
+        public byte renderEdges(int renderNodeCount,
+                                int totalNodeCount,
+                                int totalEdgeCount) {
+          return (byte) 1; }
         public boolean textAsShape(int renderNodeCount,
                                    int renderEdgeCount) { return true; } };
     m_nodeDetails = new NodeDetails() {
@@ -109,7 +113,32 @@ public class TestGraphRenderingSimple
     m_edgeDetails = new EdgeDetails() {
         private final Color m_color = new Color(0, 0, 255, 127);
         public float segmentThickness(int edge) { return 1.0f; }
-        public Paint segmentPaint(int edge) { return m_color; } };
+        public Paint segmentPaint(int edge) { return m_color; }
+        public int labelCount(int edge) { return 3; }
+        public String labelText(int edge, int inx) {
+          if (inx == 0) { return "midpoint"; }
+          else if (inx == 1) { return "source"; }
+          else { return "target"; } }
+        public Font labelFont(int edge, int inx) {
+          return new Font(null, Font.PLAIN, 1); }
+        public double labelScaleFactor(int edge, int inx) { return 4.0d; }
+        public Paint labelPaint(int edge, int inx) {
+          return new Color(0, 0, 0, 255); }
+        public byte labelTextAnchor(int edge, int inx) {
+          return super.labelTextAnchor(edge, inx); }
+        public byte labelEdgeAnchor(int edge, int inx) {
+          if (inx == 0) { return EdgeDetails.EDGE_ANCHOR_MIDPOINT; }
+          else if (inx == 1) { return EdgeDetails.EDGE_ANCHOR_SOURCE; }
+          else { return EdgeDetails.EDGE_ANCHOR_TARGET; } }
+        public float labelOffsetVectorX(int edge, int inx) {
+          return super.labelOffsetVectorX(edge, inx); }
+        public float labelOffsetVectorY(int edge, int inx) {
+          return super.labelOffsetVectorY(edge, inx); }
+        public byte labelJustify(int edge, int inx) {
+          return super.labelJustify(edge, inx); }
+        public boolean labelHorizontal(int edge, int inx) {
+          return super.labelHorizontal(edge, inx); }
+      };
     m_hash = new IntHash();
     addNotify();
     m_img = createImage(m_imgWidth, m_imgHeight);
