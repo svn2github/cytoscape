@@ -1,0 +1,10 @@
+# Do not change the positions of the first 3 lines!!!
+#Format (except for first 3 lines): 
+#dbname:propertyName=comma separated property values
+dbuser=cytouser
+dbpwd=bioNetBuilder
+dbnames=prolinks,kegg,go,synonyms
+prolinks:source=http://mysql5.mbi.ucla.edu/public/Genomes
+prolinks:threshold=PP:3e-24,GN:4e-14,RS:0.1,GC:0.1
+kegg:threshold=2300
+#kegg:source=
