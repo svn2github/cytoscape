@@ -6,6 +6,7 @@
 	$email = $_REQUEST["email"];
 	$accept = $_REQUEST["accept"];
 	$submit  = $_REQUEST["submit"];
+	$contact = $_REQUEST["contact"];
 	
 	#  Bare Bones Form Validation
 	$error_flag = false;
@@ -66,13 +67,16 @@
 </table>
 
 <? include "nav.php"; ?>
-
 <?php
 	#  Write to Data File
 	if (isset($submit) && $error_flag == false) {
 		$now = date("F j, Y, g:i a");  
 		$ip = getenv(REMOTE_ADDR);
-		$log = "$now\t$ip\t$file\t$name\t$org\t$email\n";
+		$contactStr = "NO_EMAIL";
+		if (isset($contact)) {
+			$contactStr = "YES_EMAIL";
+		}
+		$log = "$now\t$ip\t$file\t$name\t$org\t$email\t$contactStr\n";
 		$fr = fopen($cyto_data, 'a');
 		fputs($fr, $log);
 		fclose($fr);
@@ -162,6 +166,17 @@
 								<br>
 							</td>
 						</tr>
+						<tr>
+							<td>
+								<br>
+							</td>
+							<td>
+								<br>
+								We enjoy keeping in touch with our users.
+								<br>May we add you to our mailing list?
+								<input type="checkbox" name="contact">
+							</td>
+						</tr>						
 						<tr>
 							<td>
 								<br>
