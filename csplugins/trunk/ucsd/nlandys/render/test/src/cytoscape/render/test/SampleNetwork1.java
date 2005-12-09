@@ -3,6 +3,7 @@ package cytoscape.render.test;
 import cytoscape.geom.rtree.RTree;
 import cytoscape.graph.dynamic.DynamicGraph;
 import cytoscape.graph.dynamic.util.DynamicGraphFactory;
+import cytoscape.render.immed.GraphGraphics;
 import java.awt.EventQueue;
 import java.awt.Frame;
 import java.awt.Graphics;
@@ -35,14 +36,43 @@ public class SampleNetwork1
   private final DynamicGraph m_graph;
   private final RTree m_rtree;
   private final Image m_img;
+  private final GraphGraphics m_grafx;
 
   public SampleNetwork1()
   {
     super();
     m_graph = DynamicGraphFactory.instantiateDynamicGraph();
     m_rtree = new RTree();
+    assembleGraph();
     addNotify();
     m_img = createImage(m_imgWidth, m_imgHeight);
+    m_grafx = new GraphGraphics(m_img, true);
+  }
+
+  private void assembleGraph()
+  {
+    final int bnet = m_graph.nodeCreate();
+    final int slip = m_graph.nodeCreate();
+    final int bsdi = m_graph.nodeCreate();
+    final int sun = m_graph.nodeCreate();
+    final int svr4 = m_graph.nodeCreate();
+    final int bmodem = m_graph.nodeCreate();
+    final int tmodem = m_graph.nodeCreate();
+    final int netb = m_graph.nodeCreate();
+    final int tnet = m_graph.nodeCreate();
+    final int aix = m_graph.nodeCreate();
+    final int solaris = m_graph.nodeCreate();
+    final int gemini = m_graph.nodeCreate();
+    final int gateway = m_graph.nodeCreate();
+    final int internet = m_graph.nodeCreate();
+    m_rtree.insert(bnet, 33, 10, 100, 11);
+    m_rtree.insert(slip, 5, 15, 17, 25);
+    m_rtree.insert(bsdi, 37, 15, 49, 25);
+    m_rtree.insert(sun, 61, 15, 73, 25);
+    m_rtree.insert(svr4, 85, 15, 97, 25);
+    m_rtree.insert(bmodem, 63, 33, 71, 39);
+    m_rtree.insert(tmodem, 63, 50, 71, 56);
+    m_graph.edgeCreate(
   }
 
   public void paint(Graphics g)
