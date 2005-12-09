@@ -1,9 +1,20 @@
 #!/usr/bin/perl
 
+####################################################################################################
+# Authors: Junghwan Park, Iliana Avila-Campillo
+# Last modified: December 9, 2005 by Iliana
+# Requires XML::Parser::Expat Perl module from CPAN
+####################################################################################################
+
 use XML::Parser::Expat;
 
-
 print "----------------- iproclass_parser.pl -------------------\n";
+
+if(scalar(@ARGV) == 0){
+	print "USAGE: perl iproclass_parser.pl <iproclass.xml path>\n"
+	die;
+}
+
 my ($oid, $hasit, %data, $ipcid);
 
 $oid = 0;
@@ -15,41 +26,48 @@ $parserarser = new XML::Parser::Expat(
 
 $parserarser->setHandlers( 'Start' => \&xmlstart, 'End' => \&xmlend, 'Char' => \&xmlchar );
 
+open (FH, $ARGV[0]) or die "Could not open $ARGV[0]\n";
+
 system('mkdir xref/parsed');
 
-open (F1, '>./xref/parsed/tdf.keydb');
-open (F2, '>./xref/parsed/tdf.hasit');
-open (F3, '>./xref/parsed/tdf.prot_pir');
-open (F4, '>./xref/parsed/tdf.prot_sprot');
-open (F5, '>./xref/parsed/tdf.prot_trembl');
-open (F6, '>./xref/parsed/tdf.prot_refseq');
-open (F7, '>./xref/parsed/tdf.prot_genpeptac');
-open (F8, '>./xref/parsed/tdf.tx_taxonomy');
-open (F9, '>./xref/parsed/tdf.gn_genename');
-open (F10, '>./xref/parsed/tdf.gn_oln');
-open (F11, '>./xref/parsed/tdf.gn_orf');
-open (F12, '>./xref/parsed/tdf.xref_kegg');    # not populated here
-open (F13, '>./xref/parsed/tdf.xref_gi');      # not populated here
-open (F14, '>./xref/parsed/tdf.xref_ncbigeneid'); # not populated here
-#open (F15, '>./xref/parsed/tdf.xref_biblio');
-open (F16, '>./xref/parsed/tdf.xref_dnaseq');
-#open (F17, '>./xref/parsed/tdf.xref_genomegene_tigr');
-#open (F18, '>./xref/parsed/tdf.xref_genomegene_uwgp');
-#open (F19, '>./xref/parsed/tdf.xref_genomegene_sgd');
-#open (F20, '>./xref/parsed/tdf.xref_genomegene_fly');
-#open (F21, '>./xref/parsed/tdf.xref_genomegene_mgi');
-#open (F22, '>./xref/parsed/tdf.xref_genomegene_gdb');
-#open (F23, '>./xref/parsed/tdf.xref_genomegene_omim');
-#open (F24, '>./xref/parsed/tdf.xref_locus');
-open (F25, '>./xref/parsed/tdf.xref_ontology');
-#open (F26, '>./xref/parsed/tdf.xref_pdb');
-#open (F27, '>./xref/parsed/tdf.xref_scop');
-open (F28, '>./xref/parsed/tdf.xref_dip');
-open (F29, '>./xref/parsed/tdf.xref_bind');
-open (F30, '>./xref/parsed/tdf.xref_prolinks');
+open (F1, '>./xref/parsed/tdf.keydb') or die "Could not create ./xref/parsed/tdf.keydb\n";
+open (F2, '>./xref/parsed/tdf.hasit') or die "Could not create ./xref/parsed/tdf.hasit\n";
+open (F3, '>./xref/parsed/tdf.prot_pir') or die "Could not create ./xref/parsed/tdf.prot_pir\n";
+open (F4, '>./xref/parsed/tdf.prot_sprot') or die "Could not create ./xref/parsed/tdf.prot_sprot\n";
+open (F5, '>./xref/parsed/tdf.prot_trembl') or die "Could not create ./xref/parsed/tdf.prot_trembl\n";
+open (F6, '>./xref/parsed/tdf.prot_refseq') or die "Could not create ./xref/parsed/tdf.prot_refseq\n";
+open (F7, '>./xref/parsed/tdf.prot_genpeptac') or die "Could not create ./xref/parsed/tdf.prot_genepeptac\n";
+open (F8, '>./xref/parsed/tdf.tx_taxonomy') or die "Could not create ./xref/parsed/tdf.tx_taxonomy\n";
+open (F9, '>./xref/parsed/tdf.gn_genename') or die "Could not create ./xref/parsed/tdf.gn_genename\n";
+open (F10, '>./xref/parsed/tdf.gn_oln') or die "Could not create ./xref/parsed/tdf.gn_oln\n";
+open (F11, '>./xref/parsed/tdf.gn_orf') or die "Could not create ./xref/parsed/tdf.gn_orf\n";
+open (F12, '>./xref/parsed/tdf.xref_kegg') or die "Could not create ./xref/parsed/tdf.xref_kegg\n";    # not populated here
+open (F13, '>./xref/parsed/tdf.xref_gi') or die "Could not create ./xref/parsed/tdf.xref_gi\n";      # not populated here
+open (F14, '>./xref/parsed/tdf.xref_ncbigeneid') or die "Could not create ./xref/parsed/tdf.xref_ncbigeneid\n"; # not populated here
+
+#open (F15, '>./xref/parsed/tdf.xref_biblio') or die "Could not create ./xref/parsed/tdf.xref_biblio\n";
+
+open (F16, '>./xref/parsed/tdf.xref_dnaseq') or die "Could not create ./xref/parsed/tdf.xref_dnaseq\n";
+
+#open (F17, '>./xref/parsed/tdf.xref_genomegene_tigr') or die "Could not create ./xref/parsed/tdf.xref_genomegene_tigr\n";
+#open (F18, '>./xref/parsed/tdf.xref_genomegene_uwgp') or die "Could not create ./xref/parsed/tdf.xref_genomegene_uwgp\n";
+#open (F19, '>./xref/parsed/tdf.xref_genomegene_sgd') or die "Could not create ./xref/parsed/tdf.xref_genomegene_sgd\n";
+#open (F20, '>./xref/parsed/tdf.xref_genomegene_fly') or die "Could not create ./xref/parsed/tdf.xref_genomegene_fly\n";
+#open (F21, '>./xref/parsed/tdf.xref_genomegene_mgi') or die "Could not create ./xref/parsed/tdf.xref_genomegene_mgi\n";
+#open (F22, '>./xref/parsed/tdf.xref_genomegene_gdb') or die "Could not create ./xref/parsed/tdf.xref_genomegene_gdb\n";
+#open (F23, '>./xref/parsed/tdf.xref_genomegene_omim') or die "Could not create ./xref/parsed/tdf.xref_genomegene_omim\n";
+#open (F24, '>./xref/parsed/tdf.xref_locus') or die "Could not create ./xref/parsed/tdf.xref_locus\n";
+
+open (F25, '>./xref/parsed/tdf.xref_ontology') or die "Could not create ./xref/parsed/tdf.xref_ontology\n";
+
+#open (F26, '>./xref/parsed/tdf.xref_pdb') or die "Could not create ./xref/parsed/tdf.xref_pdb\n";
+#open (F27, '>./xref/parsed/tdf.xref_scop') or die "Could not create ./xref/parsed/tdf.xref_scop\n";
+
+open (F28, '>./xref/parsed/tdf.xref_dip') or die "Could not create ./xref/parsed/tdf.xref_dip\n";
+open (F29, '>./xref/parsed/tdf.xref_bind') or die "Could not create ./xref/parsed/tdf.xref_bind\n";
+open (F30, '>./xref/parsed/tdf.xref_prolinks') or die "Could not create ./xref/parsed/tdf.xref_prolinks\n";
 
 $start = time;
-open (FH, $ARGV[0]);
 $parserarser->parse(*FH);
 close(FH);
 $end = time;

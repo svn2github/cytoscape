@@ -6,6 +6,7 @@
 # Files are downloaded and uncompressed into new directory ./prolinks, ready to load into mysql db
 # Removes redundant interactions from Prolinks
 # Requires wget software http://www.gnu.org/software/wget/wget.html
+# TODO: interaction_types table
 ######################################################################################################
 
 use DBI;

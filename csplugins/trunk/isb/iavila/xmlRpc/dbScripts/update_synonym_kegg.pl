@@ -1,14 +1,17 @@
 #!/usr/bin/perl
 
-# Jung Park, Iliana Avila-Campillo
+##############################################################################
+# Authors: Jung Park, Iliana Avila-Campillo
+# Last modified: December 9, 2005 by Iliana
 # Downloads information from ftp site at KEGG
 # Populates xref_gi, xref_kegg, xref_ncbigene in synonyms db
+##############################################################################
 
 use DBI();
 
 print "--------------------- update_synonym_kegg.pl ------------------\n";
 
-if(scalar(@ARGV) < 3){
+if(scalar(@ARGV) < 4){
 	print "USAGE: perl update_synonym_kegg.pl <db user> <db password> <kegg db name> <synonyms db name>\n";
  	die;
 }
@@ -26,10 +29,12 @@ $keggh = DBI->connect("dbi:mysql:database=$keggname:host=localhost", $dbuser, $d
 $keggh->do("DROP TABLE IF EXISTS org_name") or die "Error: $dbh->errstr\n";
 $keggh->do("CREATE TABLE org_name (org VARCHAR(5), filename VARCHAR(100), fullname VARCHAR(100), NCBI_name VARCHAR(100), EMBL_name VARCHAR(100))") or die "Error: $dbh->errstr\n";
 
-system('wget ftp://ftp.genome.jp/pub/kegg/tarfiles/genes.weekly.last.tar.Z --directory-prefix=./xref/kegg/genes');
-system('tar xzf ./xref/kegg/genes/genes.weekly.last.tar.Z -C ./xref/kegg/genes/');
-
-open (FH, "./xref/kegg/genes/all_species.tab");
+print "Downloading genes.weekly.last.tar.Z...\n";
+system('wget ftp://ftp.genome.jp/pub/kegg/tarfiles/genes.weekly.last.tar.Z --directory-prefix=./xref/kegg/genes') == 0 or die "Error: $?\n";
+print "done downloading. Uncompressing...";
+system('tar xzf ./xref/kegg/genes/genes.weekly.last.tar.Z -C ./xref/kegg/genes/') == 0 or die "Error: $?\n";
+print "done.\n";
+open (FH, "./xref/kegg/genes/all_species.tab") or die "Could not open ./xref/kegg/genes/all_species.db\n";
 
 while (<FH>) {
 	chomp;
@@ -46,7 +51,7 @@ close(FH);
 $sth = $keggh->prepare("SELECT org FROM org_name") or die "Error: $dbh->errstr\n";
 $sth->execute();
 
-system('rm ./xref/kegg -R');
+system('rm -r ./xref/kegg');
 system('mkdir ./xref/kegg');
 $cmd1 = 'wget ftp://ftp.genome.jp/pub/kegg/genomes/';
 $cmd2 = '_xrefall.list -q --directory-prefix=./xref/kegg';
@@ -64,10 +69,12 @@ while ($ref = $sth->fetchrow_hashref()) {
 	$orgname = $ref->{'org'};
 	$cmd = $cmd1.$orgname.'/'.$orgname.$cmd2.' -q';
 	print "Download: ".$cmd."\n";
-	system($cmd);
+	system($cmd) == 0 or die "Error:$?\n";
+	print "done.\n";
 	
-	open (FH, './xref/kegg/'.$orgname.'_xrefall.list');
+	open (FH, './xref/kegg/'.$orgname.'_xrefall.list') or die "Could not open ./xref/kegg\n.";
 
+	print "Loading ./xref/kegg/${orgname}_xrefall.list... ";
 	while (<FH>) {
 		chomp;
 		@ids = split(/\t/, $_);
@@ -117,6 +124,7 @@ while ($ref = $sth->fetchrow_hashref()) {
 			}
 		}
 	}
+	print "done.\n";
 	close(FH);
 }
 

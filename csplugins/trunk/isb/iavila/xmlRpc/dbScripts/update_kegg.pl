@@ -63,7 +63,11 @@ $dbh->do("DROP DATABASE IF EXISTS $dbname");
 $dbh->do("CREATE DATABASE $dbname") or die "Error: $dbh->errstr";
 $dbh->do("USE $dbname") or die "Error: $dbh->errstr";
 
-$dbh->do("CREATE TABLE org_name 	(org VARCHAR(5), 	name VARCHAR(100), 	UNIQUE(org, 	name))") or die "Error: $dbh->errstr";
+
+# org_name table is created and populated in update_synonyms_kegg
+# TODO: Move it to here?
+#$dbh->do("CREATE TABLE org_name 	(org VARCHAR(5), 	name VARCHAR(100), 	UNIQUE(org, 	name))") or die "Error: $dbh->errstr";
+
 $dbh->do("CREATE TABLE path_name 	(path VARCHAR(20),	name VARCHAR(100), 	UNIQUE(path, 	name))") or die "Error: $dbh->errstr";
 $dbh->do("CREATE TABLE gene_name 	(gene VARCHAR(20), 	name VARCHAR(20),	UNIQUE(gene, 	name))") or die "Error: $dbh->errstr";
 

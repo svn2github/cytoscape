@@ -1,11 +1,15 @@
 #!/usr/bin/perl
 
-# Junghwan Park, Iliana Avila-Campillo
+####################################################################################################
+# Authors: Junghwan Park, Iliana Avila-Campillo
+# Last modified: December 9, 2005 by Iliana
 # Calls iproclass_parser to parse XML file from iProClass Database
 # Calls update_synonym_kegg and update_synonym_prolinks to get additional information on synonyms
 # TODO: tables gi_taxonomy and ncbiTaxNames
+####################################################################################################
 
 use DBI();
+use Cwd;
 print "--------------------- update_synonyms.pl --------------------\n";
 
 if(scalar(@ARGV) < 3){
@@ -20,10 +24,10 @@ $dbname = $ARGV[2];
 
 $dbh = DBI->connect("dbi:mysql:host=localhost", $dbuser, $dbpwd) or die "Can't make database connect: $DBI::errstr\n";
 
-&create_db_structure($dbh, $dbname);
+&create_db_structure($dbname);
 &downloadfiles;
-&ipcparse($dbh, $dbname);
-&loadparsed($dbh, $dbname);
+&ipcparse($dbname);
+&loadparsed($dbname);
 
 print "Calling update_synonym_kegg.pl...\n";
 $dbh->do("use metainfo") or die "Error: $dbh->errstr\n";
@@ -44,15 +48,18 @@ print "------------------- Leaving update_synonyms.pl ----------------------\n";
 
 ########################################
 sub create_db_structure {
-	($dbh, $dbname) = @_;
+	my $dbname = shift;
 
 	print "Creating DB Structure.\n";
 
-	print "   Dropping database $dbname if it exists...\n";
+	print "\tDropping database $dbname if it exists... ";
 	$dbh->do("DROP DATABASE IF EXISTS $dbname") or die "Error: $dbh->errstr";
-	print "   Creating database $dbname and tables...\n";
+	print "done.\n";
+	
+	print "   Creating database $dbname and tables... ";
 	$dbh->do("CREATE DATABASE $dbname") or die "Error: $dbh->errstr";
 	$dbh->do("USE $dbname") or die "Error: $dbh->errstr";
+	
 	$dbh->do("CREATE TABLE keydb (oid INT NOT NULL AUTO_INCREMENT, db VARCHAR(20), id VARCHAR(30), PRIMARY KEY(oid, db, id))") or die "Error: $dbh->errstr";
 	$dbh->do("CREATE TABLE hasit (oid INT, db VARCHAR(20), PRIMARY KEY(oid, db))") or die "Error: $dbh->errstr";
 
@@ -81,8 +88,8 @@ sub create_db_structure {
 	#----------- CROSS REFERENCE IDS -------------- #
 	# these three are taken care of in update_synonym_kegg:
 	$dbh->do("CREATE TABLE xref_kegg (oid INT, kegg_id VARCHAR(30), PRIMARY KEY(oid, kegg_id))") or die "Error: $dbh->errstr";
-	$dbh->do("CREATE TABLE xref_gi (oid INT, ngi INT, pgi INT (oid, ngi, pgi))") or die "Error: $dbh->errstr";
-	$dbh->do("CREATE TABLE xref_prolinks (oid INT, prolinks INT PRIMARY KEY(oid,prolinks))") or die "Error: $dbh->errstr";
+	$dbh->do("CREATE TABLE xref_gi (oid INT, ngi INT, pgi INT, KEY(oid, ngi, pgi))") or die "Error: $dbh->errstr";
+	$dbh->do("CREATE TABLE xref_prolinks (oid INT, prolinks INT, PRIMARY KEY(oid,prolinks))") or die "Error: $dbh->errstr";
 	$dbh->do("CREATE TABLE xref_ncbigeneid (oid INT, ncbigeneid VARCHAR(30), PRIMARY KEY (oid, ncbigeneid))") or die "Error: $dbh->errstr";
 	
 	#$dbh->do("CREATE TABLE xref_biblio (oid BIGINT, pmid VARCHAR(30), KEY (oid), UNIQUE(oid, pmid))") or die "Error: $dbh->errstr";
@@ -105,22 +112,21 @@ sub create_db_structure {
 	
 	$dbh->do("CREATE TABLE xref_dip	(oid INT, dipid VARCHAR(30), KEY (oid), KEY (dipid), UNIQUE(oid, dipid))") or die "Error: $dbh->errstr";
 	$dbh->do("CREATE TABLE xref_bind (oid INT, bindid VARCHAR(30), KEY (oid), KEY (bindid), UNIQUE(oid, bindid))") or die "Error: $dbh->errstr";
-	$dbh->do("CREATE TABLE xref_prolinks (oid INT, prolinksid VARCHAR(30), KEY (oid), KEY (prolinksid), UNIQUE(oid, prolinksid))") or die "Error: $dbh->errstr";
-
+	print "done.\n";
 	print "Database structure creation completed.\n";
 }
 ##########################################################################
 sub downloadfiles {
 	
-	print "Downloading iproclass.xml.gz...";
-	system("rm xref -Rf");
+	system("rm -r xref");
 	system("mkdir xref");
 	system("mkdir xref/ipc");
-	system("wget ftp://ftp.pir.georgetown.edu/pir_databases/iproclass/iproclass.xml.gz -q --directory-prefix=xref/ipc/");
-	print "done\n";
-	print "Decompressing it...";
-	system("gunzip xref/ipc/iproclass.xml.gz");
-	print "done\n";
+	print "Downloading iproclass.xml.gz...\n";
+	system("wget ftp://ftp.pir.georgetown.edu/pir_databases/iproclass/iproclass.xml.gz --directory-prefix=xref/ipc/") == 0 or die "Error: $?\n";
+	print "\ndone downloading iproclass.xml.gz\n";
+	print "Decompressing... ";
+	system("gunzip xref/ipc/iproclass.xml.gz") == 0 or die "$?\n";
+	print "done.\n";
 
 	# OLD CODE
 	# which of these files are actually used????
@@ -172,7 +178,7 @@ sub downloadfiles {
 }
 #######################################################################
 sub ipcparse {
-	($dbh, $dbname) = @_;
+	$dbname = shift;
 
 	$dbh->do("USE $dbname") or die "Error: $dbh->errstr";
 	print "Parsing iproclass.xml...\n";
@@ -183,10 +189,10 @@ sub ipcparse {
 
 #######################################################################
 sub loadparsed {
-	($dbh, $dbname) = @_;
+	$dbname = shift;
 	
 	# directory where all the parsed tab delimited files are located
-	$tdfDir = system('pwd')."xref/parsed";
+	$tdfDir = getcwd."xref/parsed";
 
 	print "Loading start...\n";
 	print  "   table keydb...\n";
