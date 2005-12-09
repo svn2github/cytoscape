@@ -138,30 +138,8 @@ of Cytoscape is rather involved.  Some of the tasks are automated and some are m
 
 	B.  Creating the Mac OS X Release
 	---------------------------------------
-	To create the Mac OS X Specific Release:
+	See Section VI below for full details.
 	
-		1.  run ant task:  ant mac
-		
-		Doing so will create a directory called Cytoscape.app.
-		It will be located in build/cytoscape-vX.Y.
-		
-		2.  Create a Mac OS X Disk Image File (.dmg)
-			--  this is done manually via the Mac Disk Utility program.
-			--  in Disk Utility, click "New Image", specify the name 
-				"cytoscape-vX.Y", and select 40 MB.
-			--  once the image is created on your desktop, copy 
-				the complete contents of build/cytoscape-vX.Y to the image.
-		3.  create the dmg.zip file
-			--  to do so, right click on cytoscape-vX.Y.dmg, and 
-			select "Create Archive".  (Note:  When you created the disk image via
-			Disk Utility, it creates two items:  1)  the actual .dmg file;  and
-			2) the opened dmg file, displayed as a disk icon.  To create the
-			archive, right click on the actual .dmg file, not the disk icon.)
-
-	Deploy the new release file
-		As in the section above, we are currently hosting the release files on
-		cbio.mskcc.org only.  Release files are located in /var/www/cytoscape/release.
-
 	C.  Creating the InstallAnywhere Release
 	-------------------------------------------------
 
@@ -170,9 +148,8 @@ of Cytoscape is rather involved.  Some of the tasks are automated and some are m
 
 	D.  Update Cytocape.org Web Site
 	-------------------------------------------------
-
-	Make sure Cytoscape 2.0 Manual (PDF) is Up-to-Date
-		We currently keep a copy of Cytoscape2_0Manual.pdf checked into
+	Make sure the Cytoscape Manual (PDF) is Up-to-Date
+		We currently keep a copy of CytoscapeX_YManual.pdf checked into
 		two places:  cytscape/user_docs and cyto_web/manual.  cytoscape/user_docs is
 		the definitive one, and cyto_web/manual is the copy.
 
@@ -206,5 +183,80 @@ of Cytoscape is rather involved.  Some of the tasks are automated and some are m
 		Then, tar/gzip everything in the API directory.
 
 		scp the gzip file to /var/www/cytoscape/javadoc and unpack.
-
 	
+VI:  Creating a Mac OS X Release
+================================
+
+This section describes the full procedure for creating a Mac OS X release.  
+Note that some of the steps are automated, and some require manual work.
+
+To create the Mac OS X Release:
+
+		1.  run ant task:  ant mac
+		
+		Doing so will create a directory called Cytoscape.app.
+		It will be located in build/cytoscape-vX.Y.
+		
+		Cytoscape.app has a Cytoscape icon, and the end-user will double click
+		on it to start Cytoscape.
+		
+		2.  Start PackageMaker
+		
+		PackageMaker is a handy, free utility for Mac OS X that enables you to
+		build professional looking installation scripts.
+		
+		By default, PackageMaker is located in Applications/Utilities.
+		
+		3.  Within PackageMaker, select File -> Open, and select that Cytoscape
+		Package template at:  tools/installers/mac_os_x/Cytoscape.psmp.
+		
+		This template is based on an installation done on Ethan's machine,
+		and you will need to tweak it to get it to work on your machine.
+		
+		In particular, you may need to update the following:
+		
+		a.  Under the "Description" tab, you may need to update the Version #.
+		b.  Under the "Files" tab, you may need to update the absolute path.
+			It should point to:  cytoscape/build/cytoscape-v2.2
+		c.  Under the "Resources" tab, you may need to update the absolute path.
+			It should point to: cytoscape/tools/installers/mac_os_x/resources.
+			
+			Note that the resources directory contains the Welcome and License 
+			files used during installation.
+			
+		d.  Under the "Version" tab, you may need to update the version #s and strings.
+		
+		4.  Within PackageMaker, select File -> Create Package
+			Name the package like this:  cytoscape-vX.Y.pkg
+			
+		5.  Verify that the Installer actually works.  Just double click on
+			cytoscape-vX.Y.pkg and go through the installation steps.
+			
+		6.  Create a Mac OS X Disk Image for Internet distribution.
+			a.  this is done manually via the Mac Disk Utility program.
+			b.  in Disk Utility, click "New Image", specify the name 
+				"cytoscape-vX.Y", and select 100 MB.
+			c.  once the image is created on your desktop, double click on
+				the disk image icon for cytoscape, and copy 
+				the complete cytoscape-vX.Y.pkg to the image.
+				
+		7.  Finally, create the dmg.zip file
+			a.  to do so, right click on cytoscape-vX.Y.dmg, and 
+				select "Create Archive".  
+			
+			(Note:  When you created the disk image via Disk Utility, it 
+			creates two items:  1)  the actual .dmg file;  and
+			2) the opened dmg file, displayed as a disk icon.  To create the
+			archive, right click on the actual .dmg file, not the disk icon.)
+
+	Deploy the new release file
+		As in the section above, we are currently hosting the release files on
+		cbio.mskcc.org only.  Release files are located in /var/www/cytoscape/release.
+
+	For future reference, the Mac OS X release in based on the followings documents:
+	1.  Java Deployment Options for Mac OS X
+http://developer.apple.com/documentation/Java/Conceptual/Java14Development/03-JavaDeployment/JavaDeployment.html#//apple_ref/doc/uid/TP40001885-SW1
+	(see section on:  Mac OS X Application Bundles)
+	2.  A Quick Look at PackageMaker and Installer
+http://developer.apple.com/documentation/DeveloperTools/Conceptual/SoftwareDistribution/Concepts/sd_install_quick_look.html#//apple_ref/doc/uid/20001760-TPXREF2
+
