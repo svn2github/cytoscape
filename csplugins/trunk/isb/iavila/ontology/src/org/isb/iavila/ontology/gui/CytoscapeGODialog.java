@@ -12,7 +12,8 @@ import cytoscape.CyNode;
 import cytoscape.view.*;
 import cytoscape.data.Semantics;
 import cern.colt.list.IntArrayList;
-import cytoscape.data.CytoscapeData;
+import giny.view.NodeView;
+//import cytoscape.data.CytoscapeData;
 
 public class CytoscapeGODialog extends JFrame {
 
@@ -109,7 +110,7 @@ public class CytoscapeGODialog extends JFrame {
      */
     protected JPanel createSpeciesPanel() {
 
-        JLabel label = new JLabel("Query for a species:");
+        JLabel label = new JLabel("Species that contain:");
         this.spField = new JTextField();
         spField.setColumns(20);
         JButton searchButton = new JButton("Search...");
@@ -432,13 +433,16 @@ public class CytoscapeGODialog extends JFrame {
 
         Iterator it = termToGenes.keySet().iterator();
         ArrayList nodes = new ArrayList();
+        //ArrayList nodeViews = new ArrayList();
         while (it.hasNext()) {
             String termID = (String) it.next();
             Vector genes = (Vector) termToGenes.get(termID);
             Iterator it2 = genes.iterator();
             while (it2.hasNext()) {
                 String gene = (String) it2.next();
-                nodes.add((CyNode) Cytoscape.getCyNode(gene, false));
+                CyNode newNode = (CyNode) Cytoscape.getCyNode(gene, false); 
+                nodes.add(newNode);
+                //nodeViews.add(Cytoscape.getCurrentNetworkView().getNodeView(newNode));
             }// while it2
         }// while it.hasNext
         if (nodes.size() == 0) {
@@ -453,7 +457,13 @@ public class CytoscapeGODialog extends JFrame {
                     "There are no networks present.", "Error",
                     JOptionPane.ERROR_MESSAGE);
         } else {
+            
+            // DOES NOT WORK:
+            //Cytoscape.getCurrentNetworkView().setSelected((CyNode[])nodes.toArray(new CyNode[nodes.size()]));
+            //Cytoscape.getCurrentNetworkView().setSelected((NodeView[])nodeViews.toArray(new NodeView[nodeViews.size()]));
+            // THIS WORKS:
             net.setFlaggedNodes(nodes, true);
+            //Cytoscape.getCurrentNetwork().setFlaggedNodes(nodes, true);
         }
 
     }

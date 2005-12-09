@@ -320,7 +320,7 @@ public class NetworkBuilderWizard {
         
         dialog.getContentPane().add(explanation,BorderLayout.NORTH);
         
-        this.nodeSourcesPanel = new NodeSourcesPanel(this.goClient);
+        this.nodeSourcesPanel = new NodeSourcesPanel(this.goClient, this.synonymsClient);
         
         JPanel bigPanel = new JPanel();
         bigPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -509,7 +509,7 @@ public class NetworkBuilderWizard {
                             System.err.println("Num first neighbors = " + adjacentNodes.size());
                             Iterator it2 = adjacentNodes.iterator();
                             while(it2.hasNext()){
-                                System.err.println(it.next());
+                                System.err.println(it2.next());
                             }//while it.hasNext
                             // remove
                     }

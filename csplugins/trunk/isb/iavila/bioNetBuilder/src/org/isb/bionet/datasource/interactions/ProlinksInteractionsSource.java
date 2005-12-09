@@ -84,7 +84,30 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	 */
 	public ProlinksInteractionsSource() {
 		// TODO: Remove, this should be read from somewhere!!!
-		this("jdbc:mysql://biounder.kaist.ac.kr/prolinks1?user=bioinfo&password=qkdldhWkd");
+		//this("jdbc:mysql://wavelength.systemsbiology.net/prolinks?user=cytouser&password=bioNetBuilder");
+        //this("jdbc:mysql://wavelength.systemsbiology.net/prolinks?user=cytouser&password=bioNetBuilder");
+	    super("jdbc:mysql://wavelength.systemsbiology.net/metainfo?user=cytouser&password=bioNetBuilder", SQLDBHandler.MYSQL_JDBC_DRIVER);
+        
+        // Look for the current go database
+        ResultSet rs = query("SELECT dbname FROM db_name WHERE db=\"prolinks\"");
+        String currentProlinksDb = null;
+        try{
+           if(rs.next()){
+               currentProlinksDb = rs.getString(1); 
+           }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        System.out.println("Current Prolinks database is: [" + currentProlinksDb + "]");
+        if(currentProlinksDb == null || currentProlinksDb.length() == 0){
+            throw new IllegalStateException("Oh no! We don't know the name of the current Prolinks database!!!!!");
+        }else{
+            if (!makeConnection("jdbc:mysql://wavelength.systemsbiology.net/"+currentProlinksDb + "?user=cytouser&password=bioNetBuilder")){ 
+                throw new IllegalStateException("Oh no! We don't know the name of the current Prolinks database!!!!!");
+            }
+        }
+        
+        initialize();
 	}
 
 	/**

@@ -37,7 +37,31 @@ public class GOHandler extends SQLDBHandler {
      */
     public GOHandler (){
         // TODO: Remove, this should be read from somewhere!!!
-        this("jdbc:mysql://biounder.kaist.ac.kr/go?user=bioinfo&password=qkdldhWkd");
+        //this("jdbc:mysql://biounder.kaist.ac.kr/go?user=bioinfo&password=qkdldhWkd");
+        //this("jdbc:mysql://wavelength.systemsbiology.net/go?user=cytouser&password=bioNetBuilder");
+        
+        super("jdbc:mysql://wavelength.systemsbiology.net/metainfo?user=cytouser&password=bioNetBuilder", SQLDBHandler.MYSQL_JDBC_DRIVER);
+        
+        // Look for the current go database
+        ResultSet rs = query("SELECT dbname FROM db_name WHERE db=\"go\"");
+        String currentGoDb = null;
+        try{
+           if(rs.next()){
+               currentGoDb = rs.getString(1); 
+           }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        System.out.println("Current GO database is: [" + currentGoDb + "]");
+        if(currentGoDb == null || currentGoDb.length() == 0){
+            throw new IllegalStateException("Oh no! We don't know the name of the current GO database!!!!!");
+        }else{
+            if (!makeConnection("jdbc:mysql://wavelength.systemsbiology.net/"+currentGoDb + "?user=cytouser&password=bioNetBuilder")){ 
+                throw new IllegalStateException("Oh no! We don't know the name of the current GO database!!!!!");
+            }
+        }
+        
+        initialize();
     }
 
     /**
@@ -424,27 +448,36 @@ public class GOHandler extends SQLDBHandler {
      * GENUS --> String<br>
      * SPECIES --> String<br> 
      * SP_COMMON_NAME --> String<br>
-     * TODO: Refine this!!!!!
      */
     public Vector getSpeciesLike (String likePattern){
-        // First try the pattern as it is with common_name and species
+        
+        String [] split = likePattern.split("\\s");
+        String sqlPattern = "";
+        for(int i = 0; i < split.length; i++){
+            sqlPattern += "%" + split[i];
+        }
+        sqlPattern += "%";
+        
+        // First try the pattern with common_name, species, or genus
         Vector species = null;
-        String sql = "SELECT id, genus, species, common_name FROM species WHERE common_name LIKE \'" + likePattern + "\' OR species LIKE \'" + likePattern + "\'";
+        String sql = "SELECT id, genus, species, common_name " +
+                " FROM species " +
+                " WHERE common_name LIKE \'" + sqlPattern + "\' OR species LIKE \'" + sqlPattern + "\'" +" OR genus LIKE \'" + sqlPattern + "\'";
         ResultSet rs = query(sql);
         species = makeSpeciesVector(rs);
         if(species.size() > 0) return species;
         
         // Now try the pattern with wild-cards for common_name and species
-        String pattern = "\'%" + likePattern + "%\'";
-        sql = "SELECT id, genus, species, common_name FROM species WHERE common_name LIKE " + pattern + " OR species LIKE " + pattern;
-        rs = query(sql);
-        species = makeSpeciesVector(rs);
-        if(species.size() > 0) return species;
+        //        String pattern = "\'%" + likePattern + "%\'";
+        //        sql = "SELECT id, genus, species, common_name FROM species WHERE common_name LIKE " + pattern + " OR species LIKE " + pattern;
+        //        rs = query(sql);
+        //        species = makeSpeciesVector(rs);
+        //        if(species.size() > 0) return species;
         
         // Now try to split the pattern by white space, and see if the first part is genus, and the second species 
-        String [] split = likePattern.split("\\s");
+        //String [] split = likePattern.split("\\s");
         if(split.length >= 2){
-            sql = "SELECT id, genus, species, common_name FROM species WHERE genus LIKE \'%" + split[0] + "%\' AND species LIKE \'%" + split[1] + "%\'";
+            sql = "SELECT id, genus, species, common_name FROM species WHERE genus LIKE \'%" + split[0] + "%\' OR species LIKE \'%" + split[1] + "%\'";
             rs = query(sql);
             species = makeSpeciesVector(rs);
         }

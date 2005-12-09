@@ -2,7 +2,10 @@
 package org.isb.bionet.datasource.synonyms;
 
 import java.util.*;
+import java.io.IOException;
 import java.sql.*;
+
+import org.apache.xmlrpc.XmlRpcException;
 import org.isb.bionet.datasource.*;
 import org.isb.xmlrpc.handler.db.*;
 // TODO:
@@ -15,7 +18,29 @@ public class SQLSynonymsHandler extends SQLDBHandler implements SynonymsSource {
      */
     public SQLSynonymsHandler() {
         // TODO: Remove, this should be read from somewhere!!!
-        this("jdbc:mysql://biounder.kaist.ac.kr/synonym3?user=bioinfo&password=qkdldhWkd");
+        //this("jdbc:mysql://wavelength.systemsbiology.net/synonyms?user=cytouser&password=bioNetBuilder");
+        //this("jdbc:mysql://wavelength.systemsbiology.net/synonyms?user=cytouser&password=bioNetBuilder");
+        super("jdbc:mysql://wavelength.systemsbiology.net/metainfo?user=cytouser&password=bioNetBuilder", SQLDBHandler.MYSQL_JDBC_DRIVER);
+        
+        // Look for the current go database
+        ResultSet rs = query("SELECT dbname FROM db_name WHERE db=\"synonyms\"");
+        String currentSynDb = null;
+        try{
+           if(rs.next()){
+               currentSynDb = rs.getString(1); 
+           }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        System.out.println("Current synonyms database is: [" + currentSynDb + "]");
+        if(currentSynDb == null || currentSynDb.length() == 0){
+            throw new IllegalStateException("Oh no! We don't know the name of the current synonyms database!!!!!");
+        }else{
+            if (!makeConnection("jdbc:mysql://wavelength.systemsbiology.net/"+currentSynDb + "?user=cytouser&password=bioNetBuilder")){ 
+                throw new IllegalStateException("Oh no! We don't know the name of the current synonyms database!!!!!");
+            }
+        }
+        
     }
 
     /**
@@ -99,6 +124,150 @@ public class SQLSynonymsHandler extends SQLDBHandler implements SynonymsSource {
         if(tokens[0].equals(COMMON_NAME)) return COMMON_NAME;
         return ID_NOT_FOUND;
     }
+    
+    /**
+     * @param pattern a pattern to match against
+     * @return a Vector of species that match the given pattern, each element in the Vector is a Hashmap with elements:<br>
+     * TAXID->String readable as integer
+     * SPECIES_NAME->String, human readable name of matching species
+     */
+    public Vector getSpeciesLike (String pattern){
+        
+        String sqlPattern = null;
+        
+        if(pattern == null || pattern.length() == 0){
+            sqlPattern = "%";
+        }else{
+        
+            String [] words = pattern.split("\\s");
+            sqlPattern= "";
+            for(int i = 0; i < words.length; i++){
+                sqlPattern += "%" + words[i];
+            }
+            sqlPattern += "%";
+        }
+        
+        String sql = "SELECT * FROM ncbiTaxNames WHERE scientific_name LIKE \"" + sqlPattern + "\""; 
+        ResultSet rs = query(sql);
+        
+        Vector species = new Vector();
+        
+        try{
+            while(rs.next()){
+                int taxid = rs.getInt(1);
+                String scientificName = rs.getString(2);
+                Hashtable entry = new Hashtable();
+                entry.put(TAXID, String.valueOf(taxid));
+                entry.put(SPECIES_NAME, scientificName);
+                species.add(entry);
+            }
+        }catch(SQLException e){
+            e.printStackTrace();
+            return new Vector();
+        }
+        
+        return species;
+    
+    }
+    
+    /**
+     * @param species_taxid the taxid of the species in which to look for genes
+     * @param pattern the pattern to match against
+     * @return a Hashtable that has as a key a String that represents a GI_ID, and as a value the COMMON_NAME that matched the pattern
+     */
+    public Hashtable getGenesLike (String species_taxid, String pattern){
+        // OPTION 1:
+        // 1. in gi_taxonomy, look for all GI ids for species_taxid (may be too large to hold in memory!)
+        // 2. then, get the common names of these GI's that match the pattern and return them
+        
+        // OPTION 2:
+        // 1. in gn_genename, get the oids of genes that match pattern
+        // 2. get their GI's and then return the ones with taxid in gi_taxonomy
+        if(species_taxid == null || species_taxid.length() == 0) return new Hashtable();
+        
+        String sqlPattern = null;
+        if(pattern == null || pattern.length() == 0){
+            sqlPattern = "%"; // any character
+        }else{
+        
+            String [] words = pattern.split("\\s");
+            sqlPattern= "";
+            for(int i = 0; i < words.length; i++){
+                sqlPattern += "%" + words[i];
+            }
+            sqlPattern += "%";
+        }
+        
+        String sql = "SELECT * FROM gn_genename WHERE genename LIKE \"" + sqlPattern + "\"";
+        ResultSet rs = query(sql);
+        Hashtable genenameTable = new Hashtable();
+        String oidOr = ""; // used in the next query
+        try{
+            while(rs.next()){
+               int oid = rs.getInt(1);
+               String name = rs.getString(2);
+               if(oidOr.length() == 0){
+                   oidOr += " oid = " + oid;
+               }else{
+                   oidOr += " OR oid = " + oid;
+               }
+               genenameTable.put(new Integer(oid), name);
+            }
+        }catch(SQLException e){
+            e.printStackTrace();
+            return new Hashtable();
+        }
+        
+        System.out.println("There were " + genenameTable.size() + " genenames in gn_genename that matched " + sqlPattern);
+        
+        sql = "SELECT oid, gi FROM xref_gi WHERE " + oidOr;
+        rs = query(sql);
+        String giOr = "";
+        int numGis = 0;
+        try{
+            while(rs.next()){
+                Integer Oid = new Integer(rs.getInt(1));
+                String gi = rs.getString(2);
+                // TODO: Fix back end db:
+                // the database contains some gis that are not parsable as numbers
+                try{Integer.parseInt(gi);}catch(NumberFormatException e){continue;}
+                String geneName = (String)genenameTable.get(Oid);
+                if(geneName != null){ genenameTable.put(gi, geneName); numGis++;}
+                genenameTable.remove(Oid);
+                if(giOr.length() == 0){
+                    giOr += " gi = " + gi;
+                }else{
+                    giOr += " OR gi = " + gi;
+                }
+            }
+        }catch(SQLException e){
+            e.printStackTrace();
+            return new Hashtable();
+        }
+        
+        System.out.println(numGis + " genenames have a gi");
+        
+        sql = "SELECT gi FROM gi_taxonomy WHERE taxonomy_id = " + species_taxid + " AND " + giOr;
+        rs = query(sql);
+        
+        Hashtable result = new Hashtable();
+        try{
+            while(rs.next()){
+                String gi = rs.getString(1);
+                if(genenameTable.contains(gi)){
+                    result.put(gi, genenameTable.get(gi));
+                }
+            }
+        }catch(SQLException e){
+            e.printStackTrace();
+            return new Hashtable();
+        }
+        
+        // return the genenames that matches, and the gi id
+        System.out.println("There were " + result.size() + " entries that match " + sqlPattern + " with taxid = " + species_taxid);
+        return result;
+    }
+    
     //--------- Helper protected methods -----------//
     protected Hashtable prolinksToGi (Vector prolinks_ids){
         
@@ -328,6 +497,8 @@ public class SQLSynonymsHandler extends SQLDBHandler implements SynonymsSource {
             int index = id.indexOf(GI_ID + ":");
             if(index >= 0){
                 id = id.substring(index + GI_ID.length() + 1);
+                //TODO: Remove once the back end db is fixed
+                try{Integer.parseInt(id);}catch(NumberFormatException e){continue;}
                 if(or.length() > 0)
                     or += " OR gi = " + id;
                 else

@@ -15,6 +15,8 @@ public interface SynonymsSource extends DataSource {
     public static final String GI_ID = "GI";
     public static final String ID_NOT_FOUND = "ID not found";
     public static final String COMMON_NAME = "CN";
+    public static final String TAXID = "TAXID";
+    public static final String SPECIES_NAME = "SPNAME";
     
     /**
      * 
@@ -26,11 +28,18 @@ public interface SynonymsSource extends DataSource {
     public Hashtable getSynonyms (String source_id_type, Vector source_ids, String target_id_type);
     
     /**
-     * 
-     * @param id an ID
-     * @return one of:<br>
-     * PROLINKS_ID, KEGG_ID, GI_ID, or ID_NOT_FOUND
+     * @param pattern a pattern to match against
+     * @return a Vector of species that match the given pattern, each element in the Vector is a Hashmap with elements:<br>
+     * TAXID->String readable as integer
+     * SPECIES_NAME->String, human readable name of matching species
      */
-    public String getIdType (String id);
+    public Vector getSpeciesLike (String pattern);
+    
+    /**
+     * @param species_taxid the taxid of the species in which to look for genes
+     * @param pattern the pattern to match against
+     * @return a Hashtable that has as a key a String that represents a GI_ID, and as a value the COMMON_NAME that matched the pattern
+     */
+    public Hashtable getGenesLike (String species_taxid, String pattern);
     
 }

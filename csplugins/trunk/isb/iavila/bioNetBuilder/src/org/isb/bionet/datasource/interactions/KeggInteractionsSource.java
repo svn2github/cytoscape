@@ -5,6 +5,7 @@ import java.util.*;
 import org.isb.xmlrpc.handler.db.SQLDBHandler;
 import org.isb.bionet.datasource.synonyms.*;
 import java.sql.*;
+
 import org.isb.xmlrpc.handler.db.*;
 
 public class KeggInteractionsSource extends SQLDBHandler implements InteractionsDataSource {
@@ -24,7 +25,29 @@ public class KeggInteractionsSource extends SQLDBHandler implements Interactions
      */
     public KeggInteractionsSource() {
         // TODO: Remove, this should be read from somewhere!!!
-        this("jdbc:mysql://biounder.kaist.ac.kr/kegg?user=bioinfo&password=qkdldhWkd");
+       // this("jdbc:mysql://wavelength.systemsbiology.net/kegg?user=cytouser&password=bioNetBuilder");
+        //this("jdbc:mysql://wavelength.systemsbiology.net/kegg?user=cytouser&password=bioNetBuilder");
+        super("jdbc:mysql://wavelength.systemsbiology.net/metainfo?user=cytouser&password=bioNetBuilder", SQLDBHandler.MYSQL_JDBC_DRIVER);
+        
+        // Look for the current go database
+        ResultSet rs = query("SELECT dbname FROM db_name WHERE db=\"kegg\"");
+        String currentKeggDb = null;
+        try{
+           if(rs.next()){
+               currentKeggDb = rs.getString(1); 
+           }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        System.out.println("Current KEGG database is: [" + currentKeggDb + "]");
+        if(currentKeggDb == null || currentKeggDb.length() == 0){
+            throw new IllegalStateException("Oh no! We don't know the name of the current KEGG database!!!!!");
+        }else{
+            if (!makeConnection("jdbc:mysql://wavelength.systemsbiology.net/"+currentKeggDb + "?user=cytouser&password=bioNetBuilder")){ 
+                throw new IllegalStateException("Oh no! We don't know the name of the current KEGG database!!!!!");
+            }
+        }
+        
     }
 
     /**

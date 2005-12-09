@@ -34,6 +34,27 @@ public class SynonymsClient extends AuthenticatedDataClient{
     }
     
     /**
+     * @param pattern a pattern to match against
+     * @return a Vector of species that match the given pattern, each element in the Vector is a Hashmap with elements:<br>
+     * TAXID->String readable as integer
+     * SPECIES_NAME->String, human readable name of matching species
+     */
+    public Vector getSpeciesLike (String pattern) throws XmlRpcException, IOException{
+        Object out = call(this.serviceName + ".getSpeciesLike", pattern);
+        return (Vector)out;
+    }
+    
+    /**
+     * @param species_taxid the taxid of the species in which to look for genes
+     * @param pattern the pattern to match against
+     * @returna Hashtable that has as a key a String that represents a GI_ID, and as a value the COMMON_NAME that matched the pattern
+     */
+    public Hashtable getGenesLike (String species_taxid, String pattern) throws XmlRpcException, IOException{
+        Object out = call(this.serviceName + ".getGenesLike", species_taxid, pattern);
+        return (Hashtable)out;
+    }
+    
+    /**
      * Not implemented in MyDataClient (to be implemented by implementing
      * classes)
      */

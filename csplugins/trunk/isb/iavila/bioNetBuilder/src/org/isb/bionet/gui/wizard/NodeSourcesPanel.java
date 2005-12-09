@@ -17,12 +17,13 @@ import java.util.ArrayList;
 import java.util.Set;
 
 import org.isb.bionet.gui.*;
+import org.isb.bionet.gui.taxonomy.TaxonomySearchDialog;
 import org.isb.iavila.ontology.gui.*;
 import org.isb.iavila.ontology.xmlrpc.*;
+import org.isb.bionet.datasource.synonyms.*;
 
 import utils.MyUtils;
 import cytoscape.*;
-import cytoscape.view.*;
 import cytoscape.data.Semantics;
 
 public class NodeSourcesPanel extends JPanel {
@@ -30,19 +31,21 @@ public class NodeSourcesPanel extends JPanel {
     protected File myListFile;
     protected Vector myListNodes;
     protected CyNetworksDialog netsDialog;
-    protected JTextField listNodes, annotsNodes, netsNodes;
+    protected TaxonomySearchDialog taxonomyDialog;
+    protected JTextField listNodes, annotsNodes, netsNodes, taxonomyNodes;
     protected CytoscapeGODialog annotationsDialog;
     protected String [] annotationNodeIDs = new String[0];
     protected JCheckBox useAnnotations;
     protected JCheckBox useList;
     protected JCheckBox useNets;
     protected JCheckBox useSelectedNodes;
+    protected JCheckBox useTaxonomy;
     
     /**
      *  Creates a panel with node sources
      */
-    public NodeSourcesPanel (GOClient go_client){
-        create(go_client);
+    public NodeSourcesPanel (GOClient go_client, SynonymsClient synonyms_client){
+        create(go_client, synonyms_client);
     }
     
     /**
@@ -95,6 +98,10 @@ public class NodeSourcesPanel extends JPanel {
                 startingNodes.add(this.annotationNodeIDs[i]);
             }
         }
+        if(this.useTaxonomy.isSelected()){
+            // TODO: Add nodes from taxonomy
+        }
+        
         return startingNodes;
     }
     
@@ -142,17 +149,19 @@ public class NodeSourcesPanel extends JPanel {
     /**
      * Creates the panel
      */
-    protected void create(GOClient go_client) {
+    protected void create(final GOClient go_client, final SynonymsClient synonyms_client) {
         
+        //CREATE BUTTONS
+        
+        // Annotations button
         final JButton annotsButton = new JButton("Nodes with selected annotations...");
         annotsButton.setEnabled(false);
-        final GOClient finalGoClient = go_client;
         annotsButton.addActionListener(new AbstractAction(){
             
             public void actionPerformed (ActionEvent event){
                 //JOptionPane.showMessageDialog(NodeSourcesPanel.this, "Not implemented yet!", "Oops!", JOptionPane.ERROR_MESSAGE);
                 if(annotationsDialog == null){
-                    createAnnotationsDialog(finalGoClient);
+                    createAnnotationsDialog(go_client);
                 }
                 annotationsDialog.pack();
                 annotationsDialog.setLocationRelativeTo(NodeSourcesPanel.this);
@@ -163,6 +172,8 @@ public class NodeSourcesPanel extends JPanel {
             }//actionPerformed
             
         });
+        
+        // Nodes from list
         final JButton listButton = new JButton("Nodes from my list...");
         final JFileChooser fileChooser = new JFileChooser();
         listButton.addActionListener(
@@ -187,11 +198,12 @@ public class NodeSourcesPanel extends JPanel {
                 }//AbstractAction
         );
         listButton.setEnabled(false);
+        
+        // Nodes from networks
         final JButton netsButton  =  new JButton("Nodes from loaded networks...");
         netsButton.addActionListener(
                 new AbstractAction (){
                     public void actionPerformed (ActionEvent event){
-                        // Make netsDialog modal
                         if(netsDialog == null){
                             netsDialog = new CyNetworksDialog();
                         }
@@ -206,6 +218,26 @@ public class NodeSourcesPanel extends JPanel {
         );
         netsButton.setEnabled(false);
         
+        // Nodes from taxonomy
+        final JButton taxButton = new JButton("Nodes from NCBI Taxonomy...");
+        taxButton.addActionListener(
+                new AbstractAction (){
+                    public void actionPerformed (ActionEvent event){
+                        if(taxonomyDialog == null){
+                            taxonomyDialog = new TaxonomySearchDialog(synonyms_client);
+                        }
+                        if(taxonomyDialog.isVisible()){
+                            taxonomyDialog.setLocationRelativeTo(NodeSourcesPanel.this);
+                        }else{
+                            taxonomyDialog.pack();
+                            taxonomyDialog.setLocationRelativeTo(NodeSourcesPanel.this);
+                            taxonomyDialog.setVisible(true);
+                        }
+                    }//actionPerformed
+                }//AbstractAction
+        );
+        
+        // Add check boxes and buttons, first, column names
         this.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         GridBagLayout gridbag = new GridBagLayout();
         this.setLayout(gridbag);
@@ -229,6 +261,7 @@ public class NodeSourcesPanel extends JPanel {
 
         c.gridwidth = 1; // reset to the default
 
+        // Annotations
         this.useAnnotations = new JCheckBox();
         this.useAnnotations.addActionListener(
                 new AbstractAction(){
@@ -255,7 +288,8 @@ public class NodeSourcesPanel extends JPanel {
         this.add(this.annotsNodes);
 
         c.gridwidth = 1;
-
+        
+        //List nodes
         c.fill = GridBagConstraints.NONE;
         this.useList = new JCheckBox();
         useList.addActionListener(
@@ -284,7 +318,40 @@ public class NodeSourcesPanel extends JPanel {
         this.add(this.listNodes);
 
         c.gridwidth = 1;
+        
+        // Taxonomy nodes
+        c.fill = GridBagConstraints.NONE;
+        
+        this.useTaxonomy = new JCheckBox();
+        useTaxonomy.addActionListener(
+                new AbstractAction(){
+                    public void actionPerformed(ActionEvent event){
+                        JCheckBox source = (JCheckBox)event.getSource();
+                        taxButton.setEnabled(source.isSelected());
+                    }
+                }
+        );
+        useTaxonomy.setSelected(false);
+        gridbag.setConstraints(useTaxonomy, c);
+        this.add(useTaxonomy);
+        
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridwidth = GridBagConstraints.RELATIVE;
+        gridbag.setConstraints(taxButton, c);
+        taxButton.setEnabled(false);
+        this.add(taxButton);
+        
+        
+        c.gridwidth = GridBagConstraints.REMAINDER;
+        this.taxonomyNodes = new JTextField(4);
+        this.taxonomyNodes.setEditable(false);
+        this.taxonomyNodes.setText("0");
+        gridbag.setConstraints(this.taxonomyNodes, c);
+        this.add(this.taxonomyNodes);
 
+        c.gridwidth = 1;
+        
+        //Network nodes
         c.fill = GridBagConstraints.NONE;
         this.useNets = new JCheckBox();
         useNets.addActionListener(
@@ -304,7 +371,7 @@ public class NodeSourcesPanel extends JPanel {
         c.gridwidth = GridBagConstraints.RELATIVE;
         gridbag.setConstraints(netsButton, c);
         this.add(netsButton);
-
+        
         c.gridwidth = GridBagConstraints.REMAINDER;
         this.netsNodes = new JTextField(4);
         this.netsNodes.setEditable(false);
@@ -312,6 +379,8 @@ public class NodeSourcesPanel extends JPanel {
         gridbag.setConstraints(this.netsNodes, c);
         this.add(this.netsNodes);
         
+        c.gridwidth = GridBagConstraints.REMAINDER;
+         
         this.useSelectedNodes = new JCheckBox("Use selected nodes in networks");
         if(this.useNets.isSelected())
             this.useSelectedNodes.setEnabled(true);
@@ -327,6 +396,7 @@ public class NodeSourcesPanel extends JPanel {
         
         gridbag.setConstraints(this.useSelectedNodes,c);
         this.add(this.useSelectedNodes);
+        
     }
     
    /**
