@@ -7,6 +7,7 @@ package cytoscape.editor;
 import giny.model.Node;
 
 import java.awt.Color;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.JOptionPane;
 import javax.swing.undo.UndoManager;
 import javax.swing.undo.UndoableEdit;
 
@@ -40,6 +42,22 @@ import cytoscape.giny.PhoebeNetworkView;
 import cytoscape.view.CyNetworkView;
 import cytoscape.visual.VisualStyle;
 
+
+/**
+ * NOTE: THE CYTOSCAPE EDITOR FUNCTIONALITY IS STILL BEING EVOLVED AND IN A STATE OF TRANSITION TO A 
+ * FULLY EXTENSIBLE EDITING FRAMEWORK FOR CYTOSCAPE VERSION 2.3.  
+ * 
+ * THE JAVADOC COMMENTS ARE OUT OF DATE IN MANY PLACES AND ARE BEING UPDATED.  
+ * THE APIs WILL CHANGE AND THIS MAY IMPACT YOUR CODE IF YOU 
+ * MAKE EXTENSIONS AT THIS POINT.  PLEASE CONTACT ME (mailto: allan_kuchinsky@agilent.com) 
+ * IF YOU ARE INTENDING TO EXTEND THIS CODE AND I WILL WORK WITH YOU TO HELP MINIMIZE THE IMPACT TO YOUR CODE OF 
+ * FUTURE CHANGES TO THE FRAMEWORK
+ *
+ * PLEASE SEE http://www.cytoscape.org/cgi-bin/moin.cgi/CytoscapeEditorFramework FOR 
+ * DETAILS ON THE EDITOR FRAMEWORK AND PLANNED EVOLUTION FOR CYTOSCAPE VERSION 2.3.
+ *
+ */
+ 
 /**
  * The <b>CytoscapeEditorManager </b> is the central class in the editor
  * framework API. It maintains the state of the editing environment, maintains
@@ -287,9 +305,12 @@ public abstract class CytoscapeEditorManager {
 		// initially disable New Network creation until an editor is set
 		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("File.New").setEnabled(false);
 		
-		
+
+		// AJK: 11/15/05 BEGIN
+		//     hide restoreAction while we are experimenting with Undo/Redo
 		RestoreAction restoreAction = new RestoreAction();
 		Cytoscape.getDesktop().getCyMenus().addAction(restoreAction);
+		// AJK: 11/15/05 END
 
 		// AJK: 09/06/05 BEGIN
 		//               accommodate one undo manager per network view. No global one, no accelerators
@@ -446,17 +467,18 @@ public abstract class CytoscapeEditorManager {
 	 */
 	public static void setupNewNetworkView(CyNetworkView newView) {
 
-		if (!hasContextMethods(newView)) {
-			newView.addContextMethod("class phoebe.PNodeView",
-					"cytoscape.editor.actions.NodeAction",
-					"getContextMenuItem", new Object[] { newView },
-					CytoscapeInit.getClassLoader());
-
-			newView.addContextMethod("class phoebe.PEdgeView",
-					"cytoscape.editor.actions.EdgeAction",
-					"getContextMenuItem", new Object[] { newView },
-					CytoscapeInit.getClassLoader());
-		}
+		// AJK: 11/25/05 comment this out.  Don't put delete items on 
+//		if (!hasContextMethods(newView)) {
+//			newView.addContextMethod("class phoebe.PNodeView",
+//					"cytoscape.editor.actions.NodeAction",
+//					"getContextMenuItem", new Object[] { newView },
+//					CytoscapeInit.getClassLoader());
+//
+//			newView.addContextMethod("class phoebe.PEdgeView",
+//					"cytoscape.editor.actions.EdgeAction",
+//					"getContextMenuItem", new Object[] { newView },
+//					CytoscapeInit.getClassLoader());
+//		}  
 
 		// AJK: 09/09/05: BEGIN
 		//    comment this out; just use newView's bounds to set bounds for canvas
@@ -581,6 +603,11 @@ public abstract class CytoscapeEditorManager {
 					.getNetworkEditEventAdapter(cyEditor);
 			CytoscapeEditorManager.setViewNetworkEditEventAdapter(thisView,
 					newEvent);
+			
+			// AJK: 11/20/05 set View for event handler, to help trap events that are outside 
+			//               current view
+			newEvent.setView((PGraphView) view);
+			
 
 			newEvent.start((PGraphView) thisView);
 			canvas.addPhoebeCanvasDropListener(newEvent);
@@ -685,12 +712,14 @@ public abstract class CytoscapeEditorManager {
 	 * between the CytoscapeEditor and the Cytoscape implementation, allowing
 	 * for portability and extensibility of the editor.
 	 * 
+	 * this method will ensure that the node added is unique.  If it finds that 
+	 * there is an existing node for <em>nodeName</em>, it will attempt to 
+	 * generate a new, unique, <em>nodeName</em> by extending the <em>nodeName</em> 
+	 * argument with a randomly generated extension.
+	 * 
 	 * @param nodeName
 	 *            the name of the node to be created. This will be used as a
 	 *            unique identifier for the node.
-	 * @param create
-	 *            if true, then create a node if one does not already exist.
-	 *            Otherwise, only return a node if it already exists.
 	 * @param attribute
 	 *            a defining property for the node, that can be used in
 	 *            conjunction with the Visual Mapper to assign visual
@@ -705,13 +734,42 @@ public abstract class CytoscapeEditorManager {
 	 *            assign a violet diamond shape to a 'smallMolecule' node type.
 	 * @return the CyNode that has been either reused or created.
 	 */
-	public static CyNode addNode(String nodeName, boolean create,
-			String attribute, String value) {
-		CyNode cn = Cytoscape.getCyNode(nodeName, create);
+	public static CyNode addNode(String nodeName, String attribute,
+			String value) {
+		CyNode cn = Cytoscape.getCyNode(nodeName, false); // first see if there is an existing node
+		int iteration_limit = 100;
+		while ((cn != null) && (iteration_limit > 0))
+		{
+			java.util.Date d1 = new java.util.Date();
+			long t1 = d1.getTime();
+			String s1 = Long.toString(t1);
+			nodeName += "_" + 
+					s1.substring(s1.length() - 3);  // append last 4 digits of time stamp to node name
+			cn = Cytoscape.getCyNode(nodeName, false);
+			iteration_limit--;
+		}
+		
+		// check for unlikely error condition where we couldn't generate a unique node after a number of tries
+		if (iteration_limit <= 0) {
+
+			String expDescript = "Cytoscape Editor cannot generate a unique node for this network.  A serious internal error has occurred.  Please file a bug report at http://www.cytoscape.org.";
+			String title = "Cannot generate a unique node";
+			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), expDescript,
+					title, JOptionPane.PLAIN_MESSAGE);
+			return null;
+
+		}
+		
+		// now create a unique node
+		cn = Cytoscape.getCyNode(nodeName, true);
+		
 		CyNetwork net = Cytoscape.getCurrentNetwork();
 		if (attribute != null) {
 			nodeAttribs.setAttribute(cn.getIdentifier(), attribute, value);
-			nodeAttribs.setAttribute(cn.getIdentifier(), NODE_TYPE, value);
+			if (attribute != NODE_TYPE)
+			{
+			     nodeAttribs.setAttribute(cn.getIdentifier(), NODE_TYPE, value);
+			}
 			// hack for BioPAX visual style
 			nodeAttribs.setAttribute(cn.getIdentifier(), BIOPAX_NODE_TYPE, value);
 //			String canonicalName = nodeAttribs.getStringAttribute(cn.getIdentifier(), 
@@ -748,9 +806,6 @@ public abstract class CytoscapeEditorManager {
 	 * @param nodeName
 	 *            the name of the node to be created. This will be used as a
 	 *            unique identifier for the node.
-	 * @param create
-	 *            if true, then create a node if one does not already exist.
-	 *            Otherwise, only return a node if it already exists.
 	 * @param nodeType
 	 *            the value of the 'NodeType' attribute for this node. This can
 	 *            be used in conjunction with the Visual Mapper to assign visual
@@ -759,27 +814,8 @@ public abstract class CytoscapeEditorManager {
 	 *            between nodes and edges.
 	 * @return the CyNode that has been either reused or created.
 	 */
-	public static CyNode addNode(String nodeName, boolean create,
-			String nodeType) {
-		CyNode cn = Cytoscape.getCyNode(nodeName, create);
-		CyNetwork net = Cytoscape.getCurrentNetwork();
-		net.restoreNode(cn);
-		if (nodeType != null) {
-			cytoscape.data.CyAttributes nodeAttribs = Cytoscape.getNodeAttributes();
-			nodeAttribs.setAttribute(cn.getIdentifier(), NODE_TYPE, nodeType);
-			// hack for BioPAX visual style
-			nodeAttribs.setAttribute(cn.getIdentifier(), BIOPAX_NODE_TYPE, nodeType);
-			nodeAttribs.setAttribute(cn.getIdentifier(),
-					MapBioPaxToCytoscape.BIOPAX_NAME_ATTRIBUTE, 
-//					nodeAttribs.getStringAttribute(cn.getIdentifier(), "canonicalName"));
-					cn.getIdentifier());
-			//			System.out.println ("NodeType for CyNode " + cn + " set to " +
-			//					net.getNodeAttributeValue(cn, NODE_TYPE));
-		}
-		manager.setupUndoableAdditionEdit(net, cn, null);
-		Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, net);
-		return cn;
-
+	public static CyNode addNode(String nodeName, String nodeType) {
+		return addNode (nodeName, NODE_TYPE, nodeType);
 	}
 
 	/**
@@ -798,7 +834,7 @@ public abstract class CytoscapeEditorManager {
 	 * @return the CyNode that has been either reused or created.
 	 */
 	public static CyNode addNode(String nodeName, boolean create) {
-		return addNode(nodeName, create, null);
+		return addNode(nodeName, null);
 	}
 
 	/**
@@ -815,30 +851,7 @@ public abstract class CytoscapeEditorManager {
 	 * @return the CyNode that has been either reused or created.
 	 */
 	public static CyNode addNode(String nodeName) {
-		return addNode(nodeName, true, null);
-	}
-
-	/**
-	 * wrapper for adding a node in Cytoscape. This is intended to be called by
-	 * the CytoscapeEditor in lieu of making direct modifications to the
-	 * Cytoscape model. Thus, it provides an insulating level of abstraction
-	 * between the CytoscapeEditor and the Cytoscape implementation, allowing
-	 * for portability and extensibility of the editor. This form of addNode()
-	 * will create a node in all cases, whether it previously exists or not.
-	 * 
-	 * @param nodeName
-	 *            the name of the node to be created. This will be used as a
-	 *            unique identifier for the node.
-	 * @param nodeType
-	 *            the value of the 'NodeType' attribute for this node. This can
-	 *            be used in conjunction with the Visual Mapper to assign visual
-	 *            characteristics to different types of nodes. Also can be used,
-	 *            by the canvas when handling, a dropped item, to distinguish
-	 *            between nodes and edges.
-	 * @return the CyNode that has been either reused or created.
-	 */
-	public static CyNode addNode(String nodeName, String nodeType) {
-		return addNode(nodeName, true, nodeType);
+		return addNode(nodeName, null);
 	}
 
 	/**
@@ -871,13 +884,16 @@ public abstract class CytoscapeEditorManager {
 			Object attribute_value, boolean create, String edgeType) {
 		CyEdge edge = Cytoscape.getCyEdge(node_1, node_2, attribute,
 				attribute_value, create);
-		CyNetwork net = Cytoscape.getCurrentNetwork();
-		net.restoreEdge(edge);
-		if (edgeType != null) {
-			edgeAttribs.setAttribute(edge.getIdentifier(), EDGE_TYPE, edgeType);
+		if (edge != null) {
+			CyNetwork net = Cytoscape.getCurrentNetwork();
+			net.restoreEdge(edge);
+			if (edgeType != null) {
+				edgeAttribs.setAttribute(edge.getIdentifier(), EDGE_TYPE,
+						edgeType);
+			}
+			manager.setupUndoableAdditionEdit(net, null, edge);
+			Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, net);
 		}
-		manager.setupUndoableAdditionEdit(net, null, edge);
-		Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, net);
 		return edge;
 	}
 
@@ -974,6 +990,8 @@ public abstract class CytoscapeEditorManager {
 	public static void deleteNode(Node node) {
 		CyNetwork net = Cytoscape.getCurrentNetwork();
 		net.hideNode(node);
+		CytoscapeModifiedNetworkManager.setModified(net,
+				CytoscapeModifiedNetworkManager.MODIFIED);
 		// TODO: if number of networks containing nodes falls to zero, then
 		// delete it
 		//    delete it from the root graph
@@ -1389,32 +1407,9 @@ public abstract class CytoscapeEditorManager {
 	 *            the edit method to be added to the UndoManager.
 	 */
 	public static void addEdit(UndoableEdit edit) {
-		// AJK: 09/05/05 BEGIN
-		// accommodate one UndoManager per each Network view
-//				undo.addEdit(edit);
-		
-		// AJK: 10/24/05 BEGIN
-		//      comment this out.  Move multiple UndoManager functionality into Cytoscape
-		
-		// AJK: 10/25/05 actually, don't even do this in 'plan C'.  Just use Restore deleted nodes/edges submenu item
-		Cytoscape.getDesktop().addEdit(edit);
-//		cytoscape.util.UndoManager undo = CytoscapeDesktop.undo;
-
-		
-		
-		/*
-		UndoManager undoMgr = getUndoManagerForView (Cytoscape.getCurrentNetworkView());
-		System.out.println ("Getting Undo Manager for View: "  + Cytoscape.getCurrentNetworkView());
-		System.out.println ("UndoManager = " + undoMgr);
-		undoMgr.addEdit(edit);
-		// AJK: 09/05/05 END
-//		undoMgr.end();
-
-		UndoAction undoAction = getUndoActionForView(Cytoscape.getCurrentNetworkView());
-		undoAction.update();
-		RedoAction redoAction = getRedoActionForView(Cytoscape.getCurrentNetworkView());
-		redoAction.update();
-		*/
+		// AJK: 11/17/05 comment this out for 2.2 release.  Deal with undo later
+//		cytoscape.util.UndoManager undo = Cytoscape.getDesktop().undo;
+//		undo.addEdit (edit, Cytoscape.getCurrentNetworkView());
 	}
 
 	/**

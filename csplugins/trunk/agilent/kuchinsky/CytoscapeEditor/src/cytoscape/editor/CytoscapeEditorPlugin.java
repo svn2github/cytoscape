@@ -7,14 +7,35 @@ package cytoscape.editor;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 
-import org.mskcc.biopax_plugin.mapping.MapBioPaxToVisualStyle;
-import org.mskcc.biopax_plugin.plugin.BioPaxPlugIn;
+import org.mskcc.biopax_plugin.style.BioPaxVisualStyleUtil;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
+import cytoscape.actions.DestroySelectedAction;
+import cytoscape.editor.actions.RestoreAction;
 import cytoscape.editor.editors.MapBioMoleculeEditorToVisualStyle;
 import cytoscape.plugin.CytoscapePlugin;
+import cytoscape.util.CytoscapeToolBar;
+import cytoscape.visual.VisualMappingManager;
+import cytoscape.visual.VisualStyle;
+
+/**
+ * NOTE: THE CYTOSCAPE EDITOR FUNCTIONALITY IS STILL BEING EVOLVED AND IN A STATE OF TRANSITION TO A 
+ * FULLY EXTENSIBLE EDITING FRAMEWORK FOR CYTOSCAPE VERSION 2.3.  
+ * 
+ * THE JAVADOC COMMENTS ARE OUT OF DATE IN MANY PLACES AND ARE BEING UPDATED.  
+ * THE APIs WILL CHANGE AND THIS MAY IMPACT YOUR CODE IF YOU 
+ * MAKE EXTENSIONS AT THIS POINT.  PLEASE CONTACT ME (mailto: allan_kuchinsky@agilent.com) 
+ * IF YOU ARE INTENDING TO EXTEND THIS CODE AND I WILL WORK WITH YOU TO HELP MINIMIZE THE IMPACT TO YOUR CODE OF 
+ * FUTURE CHANGES TO THE FRAMEWORK
+ *
+ * PLEASE SEE http://www.cytoscape.org/cgi-bin/moin.cgi/CytoscapeEditorFramework FOR 
+ * DETAILS ON THE EDITOR FRAMEWORK AND PLANNED EVOLUTION FOR CYTOSCAPE VERSION 2.3.
+ *
+ */
 
 /**
  * core plugin for CytoscapeEditor.
@@ -25,24 +46,32 @@ import cytoscape.plugin.CytoscapePlugin;
  */
 public class CytoscapeEditorPlugin extends CytoscapePlugin {
 
+	
 	// TODO: code cloned from BioPAX importer; need to ask Ethan to make
 	// BIOPAX_VISUAL_STYLE string public
-	private static final String VERSION_POST_FIX = " v "
-			+ BioPaxPlugIn.VERSION_MAJOR_NUM + "_"
-			+ BioPaxPlugIn.VERSION_MINOR_NUM;
+//	private static final String VERSION_POST_FIX = " v "
+//			+ BioPaxPlugIn.VERSION_MAJOR_NUM + "_"
+//			+ BioPaxPlugIn.VERSION_MINOR_NUM;
 
+
+	private static final String ICONS_REL_LOC = "images/";
+	
 	private static final String BIO_PAX_VISUAL_STYLE = "BioPAX"
-			+ VERSION_POST_FIX;
-
+//			+ VERSION_POST_FIX;
+            + "_editor";
 	/**
 	 *  
 	 */
 	public CytoscapeEditorPlugin() {
+
+
 		//		Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add(
 		MainPluginAction mpa = new MainPluginAction();
 		CytoscapeEditorManager.setRunningEditorFramework(true);
 		mpa.enableCytoscapeEditor();
 	}
+	
+
 
 	public class MainPluginAction extends AbstractAction {
 		public MainPluginAction() {
@@ -114,21 +143,34 @@ public class CytoscapeEditorPlugin extends CytoscapePlugin {
 					"SimpleBioMoleculeEditor",
 					MapBioMoleculeEditorToVisualStyle.BIOMOLECULE_VISUAL_STYLE);
 
+
+			
+/*	
 			// Bring in MSKCC BioPAX visual style so to drive definition of
 			// SimpleBioPAX_Editor
 			MapBioPaxToVisualStyle mpb = new MapBioPaxToVisualStyle();
 			mpb.createVizMapper();
-			
+*/
+            //  Set-up the BioPax Visual Style
+            VisualStyle bioPaxVisualStyle =
+                    BioPaxVisualStyleUtil.getBioPaxVisualStyle();
+            VisualMappingManager manager =
+                    Cytoscape.getDesktop().getVizMapManager();
+            manager.setVisualStyle(bioPaxVisualStyle);
+            String bioPaxVisualStyleName = bioPaxVisualStyle.getName();
 			
 			// hack: make Canonical name visible
 
 			CytoscapeEditorManager.register("SimpleBioPAX_Editor",
 					"cytoscape.editor.event.BioPAXNetworkEditEventHandler", "BIOPAX_NODE_TYPE",
-					"BIOPAX_EDGE_TYPE", BIO_PAX_VISUAL_STYLE);
-			// TODO: ask Ethan to make BIO_PAX_VISUAL_STYLE constant public, so
+//					"BIOPAX_EDGE_TYPE", BIO_PAX_VISUAL_STYLE);
+					"BIOPAX_EDGE_TYPE", bioPaxVisualStyleName);
+
+					// TODO: ask Ethan to make BIO_PAX_VISUAL_STYLE constant public, so
 			// that we don't need this hardcoded hack.
 			CytoscapeEditorManager.setVisualStyleNameForEditorType(
-					"SimpleBioPAX_Editor", BIO_PAX_VISUAL_STYLE);
+//					"SimpleBioPAX_Editor", BIO_PAX_VISUAL_STYLE);
+					"SimpleBioPAX_Editor", bioPaxVisualStyleName);
 
 			/**
 			 * set visual styles for the editors
