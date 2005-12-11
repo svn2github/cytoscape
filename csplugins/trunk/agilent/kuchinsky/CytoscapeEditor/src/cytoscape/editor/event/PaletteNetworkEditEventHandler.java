@@ -5,13 +5,11 @@
 package cytoscape.editor.event;
 
 import edu.umd.cs.piccolo.PNode;
-import edu.umd.cs.piccolo.event.PInputEvent;
 import edu.umd.cs.piccolo.nodes.PPath;
 import edu.umd.cs.piccolox.util.PFixedWidthStroke;
 import giny.view.NodeView;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -20,13 +18,32 @@ import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.util.Iterator;
 
+import phoebe.PGraphView;
 import phoebe.PhoebeCanvasDropEvent;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.editor.CytoscapeEditor;
 import cytoscape.editor.CytoscapeEditorManager;
+import cytoscape.editor.editors.SimpleBioMoleculeEditor;
 import cytoscape.editor.impl.BasicCytoShapeEntity;
 import cytoscape.editor.impl.ShapePalette;
+import cytoscape.view.CyNetworkView;
+
+
+/**
+ * NOTE: THE CYTOSCAPE EDITOR FUNCTIONALITY IS STILL BEING EVOLVED AND IN A STATE OF TRANSITION TO A 
+ * FULLY EXTENSIBLE EDITING FRAMEWORK FOR CYTOSCAPE VERSION 2.3.  
+ * 
+ * THE JAVADOC COMMENTS ARE OUT OF DATE IN MANY PLACES AND ARE BEING UPDATED.  
+ * THE APIs WILL CHANGE AND THIS MAY IMPACT YOUR CODE IF YOU 
+ * MAKE EXTENSIONS AT THIS POINT.  PLEASE CONTACT ME (mailto: allan_kuchinsky@agilent.com) 
+ * IF YOU ARE INTENDING TO EXTEND THIS CODE AND I WILL WORK WITH YOU TO HELP MINIMIZE THE IMPACT TO YOUR CODE OF 
+ * FUTURE CHANGES TO THE FRAMEWORK
+ *
+ * PLEASE SEE http://www.cytoscape.org/cgi-bin/moin.cgi/CytoscapeEditorFramework FOR 
+ * DETAILS ON THE EDITOR FRAMEWORK AND PLANNED EVOLUTION FOR CYTOSCAPE VERSION 2.3.
+ *
+ */
 
 /**
  * 
@@ -65,6 +82,16 @@ public class PaletteNetworkEditEventHandler extends
 		
 	}
 	
+
+	/**
+	 * 
+	 * @param caller
+	 * @param view
+	 */
+	public PaletteNetworkEditEventHandler(CytoscapeEditor caller, CyNetworkView view) {
+		super(caller, view);
+		
+	}
 	
 	/**
 	 * The <b>itemDropped()</b> method is at the heart of the palette-based editor.  The method can
@@ -74,15 +101,33 @@ public class PaletteNetworkEditEventHandler extends
 	 * 
 	 */
 	public void itemDropped (PhoebeCanvasDropEvent e) {
+		
+		// AJK: 11/20/05 return if we're not dropping into the currently active view
+		PGraphView thisView = this.getView();
+		if (thisView != ((PGraphView) Cytoscape.getCurrentNetworkView()))
+		{
+			return;
+		}
+		
+//		System.out.println ("Item dropped at: " + e.getLocation());
+//		System.out.println ("Bounds of current view are: " +
+//				Cytoscape.getCurrentNetworkView().getComponent().getBounds());
+//		
+		
+			
+		
 				
-		Object shape;
+		Object shape = null;
 		String shapeName = null;
-
+		
+	
 		Point location = e.getLocation();
 		Point2D locn = (Point2D) location.clone();
 		locn = canvas.getCamera().localToView(locn);
 		Transferable t = e.getTransferable();
-		    	
+		 
+		BasicCytoShapeEntity myShape = null;
+		
 		DataFlavor [] dfl = t.getTransferDataFlavors();		
 		
 		for (int i = 0; i < dfl.length; i++)
@@ -92,29 +137,47 @@ public class PaletteNetworkEditEventHandler extends
 		    		 {
 		    		 	handleDroppedURL(t, d, location);
 		    		 }
-		}
+		    		 else if (t.isDataFlavorSupported(dfl[i]))
+		    		 {
+		    			 try
+		    			 {
+		    				 shape =  t.getTransferData(dfl[i]);
+		    			 }
+		    			 
+		    				catch (UnsupportedFlavorException exc)
+		    				{
+		    					exc.printStackTrace();
+		    					return;
+		    				}
+		    		catch (IOException exc)
+		    				{
+		    					exc.printStackTrace();
+		    					return;					
+		    				}
+		    		 }
+		 }
 
-		try
-		{
-		    shape = t.getTransferData(DataFlavor.stringFlavor);
+//		try
+//		{
+//		    shape = t.getTransferData(DataFlavor.stringFlavor);
 
 		    if (shape != null)
 		    {
 		    	shapeName = shape.toString();
-		    }
-		}
-		catch (UnsupportedFlavorException exc)
-				{
-					exc.printStackTrace();
-					return;
-				}
-		catch (IOException exc)
-				{
-					exc.printStackTrace();
-					return;					
-				}
+		    	myShape = ShapePalette.getBasicCytoShapeEntity(shapeName);		    }
+//		}
+//		catch (UnsupportedFlavorException exc)
+//				{
+//					exc.printStackTrace();
+//					return;
+//				}
+//		catch (IOException exc)
+//				{
+//					exc.printStackTrace();
+//					return;					
+//				}
 				
-		BasicCytoShapeEntity myShape = ShapePalette.getBasicCytoShapeEntity(shapeName);
+
 
         Object [] args = null;
 		if (myShape != null)
@@ -124,23 +187,27 @@ public class PaletteNetworkEditEventHandler extends
 			String attributeValue = myShape.getAttributeValue();
 
 			args = new Object []{ "LOCATION", location};
-			if (attributeName.equals(NODE_TYPE)
+			if (attributeName.equals(this.NODE_TYPE)
 //					||
 //					(attributeName.equals("BIOPAX_NODE_TYPE")))  // TODO: incorporate the processing
 				// of BIOPAX_NODE_TYPE into the SimpleBioMoleculeEditor class
 					)
 			{
+				this.setNodeAttributeName(attributeName);
+				this.setNodeAttributeValue(attributeValue);
 				CyNode cn = CytoscapeEditorManager.addNode("node" + counter, 
-						true, attributeName, attributeValue);
+						attributeName, attributeValue);
 			    counter++;				
 				double zoom = Cytoscape.getCurrentNetworkView().getZoom();
 				Cytoscape.getCurrentNetwork().restoreNode(cn);		
 				NodeView nv = Cytoscape.getCurrentNetworkView().getNodeView(cn);
 				nv.setOffset(locn.getX(), locn.getY());
 			}
-			else if (attributeName.equals("EdgeType"))
+			else if (attributeName.equals(this.EDGE_TYPE))
 			{
-					handleDroppedEdge (attributeValue, e);
+				this.setEdgeAttributeName(attributeName);
+				this.setEdgeAttributeValue(attributeValue);
+				handleDroppedEdge (attributeValue, e);
 			}
 		}	
 	}
@@ -161,7 +228,9 @@ public class PaletteNetworkEditEventHandler extends
 		locn = canvas.getCamera().localToView(locn);
 		
 		editEvent = this;
-		if (getMode() != SELECT_MODE) {
+//		if (getMode() != SELECT_MODE) {
+		if (edgeStarted)
+		{
 			// if there is another edit in progress, then don't process a drag/drop
 			return;
 		}
@@ -181,7 +250,7 @@ public class PaletteNetworkEditEventHandler extends
 		if (onNode && !(edgeStarted)) {
 			// Begin Edge creation			
 			setHandlingEdgeDrop(true);
-			setMode(CONNECT_MODE);
+//			setMode(CONNECT_MODE);
 			edgeStarted = true;
 			setEdgeStarted(true);
 			setNode(targetNode);
@@ -250,7 +319,7 @@ public class PaletteNetworkEditEventHandler extends
 		    	String URLString = URL.toString();
 			    System.out.println ("Handling dropped URL = " + URLString);
 		    	CyNode cn = CytoscapeEditorManager.addNode("node" + counter, 
-						true, "URL");
+						"URL");
 			    counter++;				
 				double zoom = Cytoscape.getCurrentNetworkView().getZoom();
 				Cytoscape.getCurrentNetwork().restoreNode(cn);						

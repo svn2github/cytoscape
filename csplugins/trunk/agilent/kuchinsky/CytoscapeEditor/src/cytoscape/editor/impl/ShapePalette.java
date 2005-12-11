@@ -7,6 +7,12 @@ package cytoscape.editor.impl;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.dnd.DragGestureListener;
+import java.awt.dnd.DragGestureRecognizer;
+import java.awt.dnd.DragSource;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.HashMap;
 
 import javax.swing.BorderFactory;
@@ -29,11 +35,24 @@ import javax.swing.border.TitledBorder;
 import cytoscape.Cytoscape;
 import cytoscape.editor.CytoscapeEditorManager;
 import cytoscape.editor.actions.DeleteAction;
-import cytoscape.editor.actions.RedoAction;
-import cytoscape.editor.actions.UndoAction;
 import cytoscape.editor.event.BasicCytoShapeTransferHandler;
 import cytoscape.view.CyNetworkView;
 
+
+/**
+ * NOTE: THE CYTOSCAPE EDITOR FUNCTIONALITY IS STILL BEING EVOLVED AND IN A STATE OF TRANSITION TO A 
+ * FULLY EXTENSIBLE EDITING FRAMEWORK FOR CYTOSCAPE VERSION 2.3.  
+ * 
+ * THE JAVADOC COMMENTS ARE OUT OF DATE IN MANY PLACES AND ARE BEING UPDATED.  
+ * THE APIs WILL CHANGE AND THIS MAY IMPACT YOUR CODE IF YOU 
+ * MAKE EXTENSIONS AT THIS POINT.  PLEASE CONTACT ME (mailto: allan_kuchinsky@agilent.com) 
+ * IF YOU ARE INTENDING TO EXTEND THIS CODE AND I WILL WORK WITH YOU TO HELP MINIMIZE THE IMPACT TO YOUR CODE OF 
+ * FUTURE CHANGES TO THE FRAMEWORK
+ *
+ * PLEASE SEE http://www.cytoscape.org/cgi-bin/moin.cgi/CytoscapeEditorFramework FOR 
+ * DETAILS ON THE EDITOR FRAMEWORK AND PLANNED EVOLUTION FOR CYTOSCAPE VERSION 2.3.
+ *
+ */
 
 
 /**
@@ -49,9 +68,10 @@ import cytoscape.view.CyNetworkView;
  * This functionality is not available in Cytoscape 2.2
  * @author Allan Kuchinsky
  * @version 1.0
- * 
+ *    
  */
 public class ShapePalette extends JPanel 
+
 {
 	/**
 	 * mapping of shapes to their titles
@@ -64,21 +84,32 @@ public class ShapePalette extends JPanel
 	protected JList dataList;
 	protected DefaultListModel listModel;
 	
+	protected JScrollPane scrollPane;
+	
+	// AJK: 12/06/05 put the help text in a scroll pane, so that it doesn't truncate
+	protected JScrollPane helpScrollPane;
+	
 	private static final String ICONS_REL_LOC = "images/";
 
     private JButton deleteButton, undoButton, redoButton;
     private ImageIcon deleteIcon, undoIcon, redoIcon;
-	  
+    private JPanel _controlPane ;
+    protected JPanel _shapePane;
+
+
 	public ShapePalette() {
 		super();
 		
-	    JPanel _controlPane = new JPanel();
+
+		
+	    _controlPane = new JPanel();
 	    _controlPane.setLayout (new BoxLayout(_controlPane, BoxLayout.Y_AXIS));
 	    
 		listModel = new DefaultListModel();
 		dataList = new JList (listModel);
 		dataList.setCellRenderer(new MyCellRenderer());
 		dataList.setDragEnabled(true);
+				
     	dataList.setTransferHandler(new PaletteListTransferHandler());
     	// AJK: 09/16/05 BEGIN
     	//     set internal spacing via fixed cell height and width
@@ -92,9 +123,8 @@ public class ShapePalette extends JPanel
 
         instructionsArea.setLineWrap(true);
         instructionsArea.setWrapStyleWord(true);
-        instructionsArea.setText("To add a node to a network, click on a shape on the palette, " +
-        		"then drag and drop the shape onto the canvas." +
-				"\n\nTo connect two nodes with an edge, click on an arrow on the palette, " +
+        instructionsArea.setText("To add a node to a network, drag and drop a shape from the palette onto the canvas." +
+				"\n\nTo connect two nodes with an edge, " +  
 				"drag and drop the arrow onto a node on the canvas, " + 
 				"then move the cursor over a second node and click the mouse.");
 //        instructionsArea.setBorder(BorderFactory.createEtchedBorder());
@@ -104,12 +134,24 @@ public class ShapePalette extends JPanel
         instructionsArea.setBorder (title);
         instructionsArea.setBackground(Cytoscape.getDesktop().getBackground());
         instructionsArea.setPreferredSize(new Dimension(
-        		((JPanel) Cytoscape.getDesktop().getCytoPanel( SwingConstants.WEST )).getSize().width - 5,
-				160));
+        		((JPanel) Cytoscape.getDesktop().getCytoPanel( SwingConstants.WEST )).getSize().width - 5, 125));
+        
+        
     	
-        JScrollPane scrollPane = new JScrollPane(dataList);
- 
-        _controlPane.add (instructionsArea);
+        // AJK: 11/15/05 try to do this directly dragging and dropping Cytoshapes, so don't have to do a select on JList
+//        JScrollPane scrollPane = new JScrollPane(dataList);
+        _shapePane = new JPanel();
+        _shapePane.setLayout(new BoxLayout (_shapePane, BoxLayout.Y_AXIS));
+
+        scrollPane = new JScrollPane(_shapePane);
+        
+        
+        // AJK: 12/05/05 BEGIN
+        //     put the help text in a scrollPane so that it doesn't truncate        
+//        _controlPane.add (instructionsArea);
+        helpScrollPane = new JScrollPane (instructionsArea);
+        _controlPane.add(helpScrollPane);
+        
         
         // AJK: 10/24/05 comment this out, moving undo controls into Cytoscape
 //        _controlPane.add(buildEditControlsPanel());
@@ -126,7 +168,7 @@ public class ShapePalette extends JPanel
 				    - instructionsArea.getPreferredSize().height - 5));
         
        _controlPane.add (scrollPane);
-       
+	      
         CytoscapeEditorManager.setCurrentShapePalette(this);
         CyNetworkView view = Cytoscape.getCurrentNetworkView();
         CytoscapeEditorManager.setShapePaletteForView(view, this);
@@ -200,10 +242,34 @@ public class ShapePalette extends JPanel
 		{
 		BasicCytoShapeEntity cytoShape = new BasicCytoShapeEntity(attributeName, 
 				attributeValue, img, name);
+		
 		cytoShape.setTransferHandler(new BasicCytoShapeTransferHandler(cytoShape,
 				null));
+
+		
 		_shapeMap.put(cytoShape.getTitle(), cytoShape);
-		listModel.addElement(cytoShape);
+
+		
+		// AJK: 11/12/05 BEGIN
+		//    add mouseAdaptor so that we can initiate DnD without having to first select shape
+//		MouseListener ml = new MouseAdapter() {
+//		    public void mousePressed(MouseEvent e) {
+//		    	System.out.println("Mouse pressed on: " + e);
+//		        JComponent c = (JComponent)e.getSource();
+//                BasicCytoShapeTransferHandler handler = 
+//                	(BasicCytoShapeTransferHandler) ((BasicCytoShapeEntity) c).getTransferHandler();//            
+////                handler.exportAsDrag(c, e, TransferHandler.COPY);   
+//                handler.exportString(c);		        
+//		    }
+//		};
+//	      cytoShape.addMouseListener(ml);
+//	      
+	
+	      // don't add to list, add directly to _shapePane
+//		listModel.addElement(cytoShape);
+	      _shapePane.add(cytoShape);
+		
+		// AJK: 11/12/05 END
 //		Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 
 	}
@@ -285,6 +351,25 @@ public class ShapePalette extends JPanel
 		}
 	}
 
+    private class DragMouseAdapter extends MouseAdapter {
+        public void mousePressed(MouseEvent e) {
+        	
+            JComponent c = (JComponent)e.getSource();
+//            JComponent p = dataList;
+//            dataList.setSelectedValue(c, true);
+            System.out.println ("Mouse pressed on: " + c);
+////            TransferHandler handler = c.getTransferHandler();
+//            TransferHandler handler = p.getTransferHandler();
+            if (c instanceof BasicCytoShapeEntity)
+            {
+                BasicCytoShapeTransferHandler handler = 
+                	(BasicCytoShapeTransferHandler) ((BasicCytoShapeEntity) c).getTransferHandler();//            
+//                handler.exportAsDrag(c, e, TransferHandler.COPY);   
+                handler.exportString(c);
+            }
+        }
+    }	
+	
 	/**
 	 * renders each cell of the ShapePalette
 	 * @author Allan Kuchinsky
@@ -338,6 +423,9 @@ public class ShapePalette extends JPanel
 	    private int[] indices = null;
 	    private int addIndex = -1; //Location where items were added
 	    private int addCount = 0;  //Number of items added.
+	    
+	    // AJK: 12/11/05 BEGIN
+	    //     try to handle with 
 	     
 	    protected  void cleanup(JComponent c, boolean remove) {};
 	    protected  void importString(JComponent c, String str) {};
@@ -358,6 +446,8 @@ public class ShapePalette extends JPanel
 	    }
 	 }	
 
+	 
+	 
 	 /**
 	 * @return Returns the deleteButton.
 	 */

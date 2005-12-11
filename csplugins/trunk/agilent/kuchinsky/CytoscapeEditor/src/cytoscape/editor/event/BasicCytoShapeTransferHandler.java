@@ -8,11 +8,29 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.dnd.DragGestureListener;
 
 import javax.swing.JComponent;
+import javax.swing.JList;
 import javax.swing.TransferHandler;
 
 import cytoscape.editor.impl.BasicCytoShapeEntity;
+
+
+/**
+ * NOTE: THE CYTOSCAPE EDITOR FUNCTIONALITY IS STILL BEING EVOLVED AND IN A STATE OF TRANSITION TO A 
+ * FULLY EXTENSIBLE EDITING FRAMEWORK FOR CYTOSCAPE VERSION 2.3.  
+ * 
+ * THE JAVADOC COMMENTS ARE OUT OF DATE IN MANY PLACES AND ARE BEING UPDATED.  
+ * THE APIs WILL CHANGE AND THIS MAY IMPACT YOUR CODE IF YOU 
+ * MAKE EXTENSIONS AT THIS POINT.  PLEASE CONTACT ME (mailto: allan_kuchinsky@agilent.com) 
+ * IF YOU ARE INTENDING TO EXTEND THIS CODE AND I WILL WORK WITH YOU TO HELP MINIMIZE THE IMPACT TO YOUR CODE OF 
+ * FUTURE CHANGES TO THE FRAMEWORK
+ *
+ * PLEASE SEE http://www.cytoscape.org/cgi-bin/moin.cgi/CytoscapeEditorFramework FOR 
+ * DETAILS ON THE EDITOR FRAMEWORK AND PLANNED EVOLUTION FOR CYTOSCAPE VERSION 2.3.
+ *
+ */
 
 /**
  * transfer handler for shapes that are dragged from the palette onto the canvas.
@@ -29,7 +47,7 @@ public class BasicCytoShapeTransferHandler extends TransferHandler {
 
 	DataFlavor basicCytoShapeFlavor; 
     	
-    BasicCytoShapeEntity _cytoShape;
+    DragGestureListener _cytoShape;
     
 	/**
 	 * @return Returns the _attributeName.
@@ -105,6 +123,20 @@ public class BasicCytoShapeTransferHandler extends TransferHandler {
         return false;
     }
 
+    // AJK: 11/13/05 BEGIN
+    //     export string so that we can drag a palette shape without first selecting in JList
+    public String exportString(Object val) {
+        if (val instanceof BasicCytoShapeEntity)
+        {
+        	return ((BasicCytoShapeEntity) val).getTitle();
+        }
+        else
+        {
+        	return null;
+        }
+    }    
+    // AJK: 11/13/05 END
+    
     public Transferable createTransferable(JComponent c) {
         return new BasicCytoShapeTransferable(c);
     }
@@ -146,7 +178,7 @@ public class BasicCytoShapeTransferHandler extends TransferHandler {
             if (!isDataFlavorSupported(flavor)) {
                 throw new UnsupportedFlavorException(flavor);
             }
-            return _cytoShape;
+            return exportString(_cytoShape);
         }
 
         public DataFlavor[] getTransferDataFlavors() {
@@ -160,15 +192,16 @@ public class BasicCytoShapeTransferHandler extends TransferHandler {
 	/**
 	 * @return Returns the _cytoShape.
 	 */
-	public BasicCytoShapeEntity get_cytoShape() {
+	public DragGestureListener get_cytoShape() {
 		return _cytoShape;
 	}
 	/**
 	 * sets the instance variable for a BasicCytoShapeEntity
 	 * @param shape The _cytoShape to set.
 	 */
-	public void set_cytoShape(BasicCytoShapeEntity shape) {
+	public void set_cytoShape(DragGestureListener shape) {
 		_cytoShape = shape;
 	}
+
 }
 

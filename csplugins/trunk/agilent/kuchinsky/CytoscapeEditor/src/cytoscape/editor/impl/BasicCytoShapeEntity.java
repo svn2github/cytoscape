@@ -4,21 +4,43 @@
  */
 package cytoscape.editor.impl;
 
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DragGestureEvent;
+import java.awt.dnd.DragGestureListener;
+import java.awt.dnd.DragGestureRecognizer;
 import java.awt.dnd.DragSource;
-import java.awt.dnd.DragSourceListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 
+import cytoscape.Cytoscape;
 import cytoscape.editor.GraphicalEntity;
+import cytoscape.editor.event.BasicCytoShapeTransferHandler;
+
+
+/**
+ * NOTE: THE CYTOSCAPE EDITOR FUNCTIONALITY IS STILL BEING EVOLVED AND IN A STATE OF TRANSITION TO A 
+ * FULLY EXTENSIBLE EDITING FRAMEWORK FOR CYTOSCAPE VERSION 2.3.  
+ * 
+ * THE JAVADOC COMMENTS ARE OUT OF DATE IN MANY PLACES AND ARE BEING UPDATED.  
+ * THE APIs WILL CHANGE AND THIS MAY IMPACT YOUR CODE IF YOU 
+ * MAKE EXTENSIONS AT THIS POINT.  PLEASE CONTACT ME (mailto: allan_kuchinsky@agilent.com) 
+ * IF YOU ARE INTENDING TO EXTEND THIS CODE AND I WILL WORK WITH YOU TO HELP MINIMIZE THE IMPACT TO YOUR CODE OF 
+ * FUTURE CHANGES TO THE FRAMEWORK
+ *
+ * PLEASE SEE http://www.cytoscape.org/cgi-bin/moin.cgi/CytoscapeEditorFramework FOR 
+ * DETAILS ON THE EDITOR FRAMEWORK AND PLANNED EVOLUTION FOR CYTOSCAPE VERSION 2.3.
+ *
+ */
 
 /**
  * 
@@ -32,6 +54,8 @@ import cytoscape.editor.GraphicalEntity;
  * 
  */
 public class BasicCytoShapeEntity extends JComponent implements
+// AJK: 11/15/05 add drag/drop support
+        DragGestureListener,
 		GraphicalEntity  {
 
 	/**
@@ -65,6 +89,10 @@ public class BasicCytoShapeEntity extends JComponent implements
 	 * the source of a drag event
 	 */
 	DragSource myDragSource;
+	
+	DragGestureRecognizer myDragGestureRecognizer;
+	
+	BasicCytoShapeTransferHandler handler;
 	
 	/**
 	 * the image associated with the Icon for the shape
@@ -100,9 +128,37 @@ public class BasicCytoShapeEntity extends JComponent implements
 		TitledBorder t2 = BorderFactory.createTitledBorder(title);
 		this.add(_cytoShape);
 		this.setBorder(t2);
+		
 
+
+		// AJK: 11/15/05 BEGIN
+		//   add drag/drop support
 		myDragSource = new DragSource();
+		myDragGestureRecognizer =
+					myDragSource.createDefaultDragGestureRecognizer( 
+							_cytoShape, 
+							DnDConstants.ACTION_COPY, 
+							this);
+		handler = (new BasicCytoShapeTransferHandler (this, null));
+		this.setTransferHandler(handler);
+		
+		this.setMaximumSize(new Dimension(
+        		((JPanel) Cytoscape.getDesktop().getCytoPanel( SwingConstants.WEST )).getSize().width - 5, 
+        		2 * CytoShapeIcon.HEIGHT));		
+
+		this.setMinimumSize(new Dimension(
+        		((JPanel) Cytoscape.getDesktop().getCytoPanel( SwingConstants.WEST )).getSize().width - 5, 
+        		2 * CytoShapeIcon.HEIGHT));		
+	
+
+		this.setPreferredSize(new Dimension(
+        		((JPanel) Cytoscape.getDesktop().getCytoPanel( SwingConstants.WEST )).getSize().width - 5, 
+        		2 * CytoShapeIcon.HEIGHT));		
+	
+		// AJK: 11/15/05 END
 	}
+
+	
 
 	/**
 	 * @return Returns the title.
@@ -187,4 +243,15 @@ public class BasicCytoShapeEntity extends JComponent implements
 	public void setAttributeValue(String attributeValue) {
 		this.attributeValue = attributeValue;
 	}
+
+	// AJK: 11/15/05 BEGIN
+	//    implement the drag gesture recognized
+	public void dragGestureRecognized (DragGestureEvent e)
+	{
+		e.startDrag(DragSource.DefaultCopyDrop, 
+				handler.createTransferable(this));
+	}
+	// AJK: 11/15/05 END
+	
+
 }

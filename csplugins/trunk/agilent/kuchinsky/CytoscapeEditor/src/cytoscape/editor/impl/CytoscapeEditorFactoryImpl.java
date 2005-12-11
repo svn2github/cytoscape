@@ -16,6 +16,21 @@ import cytoscape.editor.InvalidEditorException;
 import cytoscape.editor.event.NetworkEditEventAdapter;
 
 /**
+ * NOTE: THE CYTOSCAPE EDITOR FUNCTIONALITY IS STILL BEING EVOLVED AND IN A STATE OF TRANSITION TO A 
+ * FULLY EXTENSIBLE EDITING FRAMEWORK FOR CYTOSCAPE VERSION 2.3.  
+ * 
+ * THE JAVADOC COMMENTS ARE OUT OF DATE IN MANY PLACES AND ARE BEING UPDATED.  
+ * THE APIs WILL CHANGE AND THIS MAY IMPACT YOUR CODE IF YOU 
+ * MAKE EXTENSIONS AT THIS POINT.  PLEASE CONTACT ME (mailto: allan_kuchinsky@agilent.com) 
+ * IF YOU ARE INTENDING TO EXTEND THIS CODE AND I WILL WORK WITH YOU TO HELP MINIMIZE THE IMPACT TO YOUR CODE OF 
+ * FUTURE CHANGES TO THE FRAMEWORK
+ *
+ * PLEASE SEE http://www.cytoscape.org/cgi-bin/moin.cgi/CytoscapeEditorFramework FOR 
+ * DETAILS ON THE EDITOR FRAMEWORK AND PLANNED EVOLUTION FOR CYTOSCAPE VERSION 2.3.
+ *
+ */
+
+/**
  * 
  * builds new instances of editors and network edit event adapters.
  * Before an editor and its network edit event adapter can be built, the editor first needs to be 

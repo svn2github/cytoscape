@@ -4,21 +4,17 @@
  */
 package cytoscape.editor.impl;
 
-import giny.model.GraphPerspective;
 import giny.model.GraphPerspectiveChangeEvent;
 import giny.model.GraphPerspectiveChangeListener;
-import giny.model.Node;
-import giny.model.RootGraph;
 
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.undo.AbstractUndoableEdit;
-import javax.swing.undo.UndoManager;
 
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
@@ -28,13 +24,27 @@ import cytoscape.editor.CytoscapeEditor;
 import cytoscape.editor.CytoscapeEditorFactory;
 import cytoscape.editor.CytoscapeEditorManager;
 import cytoscape.editor.InvalidEditorException;
-import cytoscape.editor.actions.RedoAction;
-import cytoscape.editor.actions.UndoAction;
-import cytoscape.giny.Edge;
+import cytoscape.editor.event.BasicNetworkEditEventHandler;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
+
+
+/**
+ * NOTE: THE CYTOSCAPE EDITOR FUNCTIONALITY IS STILL BEING EVOLVED AND IN A STATE OF TRANSITION TO A 
+ * FULLY EXTENSIBLE EDITING FRAMEWORK FOR CYTOSCAPE VERSION 2.3.  
+ * 
+ * THE JAVADOC COMMENTS ARE OUT OF DATE IN MANY PLACES AND ARE BEING UPDATED.  
+ * THE APIs WILL CHANGE AND THIS MAY IMPACT YOUR CODE IF YOU 
+ * MAKE EXTENSIONS AT THIS POINT.  PLEASE CONTACT ME (mailto: allan_kuchinsky@agilent.com) 
+ * IF YOU ARE INTENDING TO EXTEND THIS CODE AND I WILL WORK WITH YOU TO HELP MINIMIZE THE IMPACT TO YOUR CODE OF 
+ * FUTURE CHANGES TO THE FRAMEWORK
+ *
+ * PLEASE SEE http://www.cytoscape.org/cgi-bin/moin.cgi/CytoscapeEditorFramework FOR 
+ * DETAILS ON THE EDITOR FRAMEWORK AND PLANNED EVOLUTION FOR CYTOSCAPE VERSION 2.3.
+ *
+ */
 
 /**
  * provides non-static methods needed by the CytoscapeEditorManager, in
@@ -46,7 +56,10 @@ import cytoscape.visual.VisualStyle;
  *  
  */
 public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
-		ChangeListener, GraphPerspectiveChangeListener {
+		ChangeListener, GraphPerspectiveChangeListener
+//		,MouseMotionListener
+		
+		{
 
 	/**
 	 * register interest in NETWORK_VIEW_FOCUSED and NETWORK_VIEW_CREATED events
@@ -67,6 +80,11 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
 
 		// AJK: 10/15/05 register interestin visual style change event
 		Cytoscape.getDesktop().getVizMapManager().addChangeListener(this);
+		
+		// AJK: 11/25/05 register interest in mouse motion events
+		//     so that we can trap out dragging of nodes when an edge
+		//     is being drawn
+//		Cytoscape.getCurrentNetworkView().getComponent().addMouseMotionListener(this);
 
 	}
 
@@ -77,19 +95,20 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
 
 		boolean newEditor = false;
 
-		System.out.println("Got stateChange event: " + e);
+//		System.out.println("Got stateChange event: " + e);
 
 		if (!CytoscapeEditorManager.isEditingEnabled()) {
 			return;
 		}
-		CytoscapeEditor oldEditor = CytoscapeEditorManager.getCurrentEditor();
+//		CytoscapeEditor oldEditor = CytoscapeEditorManager.getCurrentEditor();
 
 		VisualMappingManager VMM = (VisualMappingManager) e.getSource();
 		if (VMM != null) {
 			VisualStyle style = VMM.getVisualStyle();
-			CytoscapeEditor editor = CytoscapeEditorManager
+
+			CytoscapeEditor editorForStyle = CytoscapeEditorManager
 					.getEditorForVisualStyle(style);
-			if (editor == null) {
+			if (editorForStyle == null) {
 				// setup an editor for the visual style
 				String editorType = CytoscapeEditorManager
 						.getEditorTypeForVisualStyleName(style.getName());
@@ -117,11 +136,11 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
 				}
 
 				try {
-					editor = CytoscapeEditorFactory.INSTANCE
+					editorForStyle = CytoscapeEditorFactory.INSTANCE
 							.getEditor(editorType);
 					CytoscapeEditorManager.setEditorForVisualStyle(style,
-							editor);
-					System.out.println("built new editor: " + editor
+							editorForStyle);
+					System.out.println("built new editor: " + editorForStyle
 							+ ", for visual Style = " + style);
 					newEditor = true;
 				} catch (InvalidEditorException ex) {
@@ -131,32 +150,60 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
 					ex.printStackTrace();
 				}
 			}
-			if (editor != null) {
+			if (editorForStyle != null) {
 				CyNetworkView view = Cytoscape.getCurrentNetworkView();
-				CytoscapeEditorManager.setEditorForView(view, editor);
-				CytoscapeEditorManager.setupNewNetworkView(view);
-				if (oldEditor == editor) {
-					// AJK: 10/21/05 always switch palette when visual style
-					// changes
-					//					return;
+				CytoscapeEditor editorForView = CytoscapeEditorManager.getEditorForView(
+						Cytoscape.getCurrentNetworkView());				
+				
+
+				if ((editorForView == editorForStyle) && 
+						(editorForView == CytoscapeEditorManager.getCurrentEditor())){
+					// AJK: 10/21/05 don't switch palette if visual style doesn't change
+					//               and editor is unchanged
+										return;
 				}
-				if ((oldEditor != null)
+				
+								
+				if ((editorForView != null)
 						&& (!CytoscapeEditorManager.isSettingUpEditor())) {
 
-					oldEditor.disableControls(null);
+					editorForView.disableControls(null);
 				}
 				// AJK: 10/21/05 always build a new shape palette when changing
 				// visual styles
 				//				if (newEditor) {
-				editor.initializeControls(null);
-				//				} else {
+				editorForStyle.initializeControls(null);
+				CytoscapeEditorManager.setEditorForView(view, editorForStyle);
+				CytoscapeEditorManager.setupNewNetworkView(view);				//				} else {
 				//					editor.enableControls(null);
 				//				}
-				CytoscapeEditorManager.setCurrentEditor(editor);
+				CytoscapeEditorManager.setCurrentEditor(editorForStyle);
 				CytoscapeEditorManager.setEventHandlerForView(view);
 			}
 		}
 	}
+	
+//	// AJK: 11/25/05 BEGIN
+//	//    set up mouse motion listeners to trap mouse drags when drawing edge
+//	//    so that node is not moved along with edge
+//	public void mouseMoved (MouseEvent e)
+//	{
+//		
+//	}
+//	
+//	public void mouseDragged (MouseEvent e)
+//	{
+//
+//		BasicNetworkEditEventHandler event = 
+//			(BasicNetworkEditEventHandler) CytoscapeEditorManager.getViewNetworkEditEventAdapter( 
+//				Cytoscape.getCurrentNetworkView());
+//		if (event.isEdgeStarted())
+//		{
+//			e.consume();
+//		}
+//	}
+//	
+	// AJK: 11/25/05 END
 
 	// AJK: 10/15/05 END
 
@@ -192,29 +239,36 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
 
 			// AJK: 09/06/05 BEGIN
 			//   setup an undo manager for this network view
-			Object undoObj = CytoscapeEditorManager.getUndoManagerForView(view);
-			if (undoObj instanceof UndoManager) {
-				CytoscapeEditorManager
-						.setCurrentUndoManager((UndoManager) undoObj);
-			} else {
-				UndoManager newUndo = new UndoManager();
-				CytoscapeEditorManager.setUndoManagerForView(view, newUndo);
-				//				System.out.println ("SetUndoManagerForView: " +
-				// Cytoscape.getCurrentNetworkView());
-				CytoscapeEditorManager.setCurrentUndoManager(newUndo);
-				UndoAction undoAction = new UndoAction(newUndo);
-				CytoscapeEditorManager.setUndoActionForView(view, undoAction);
-				RedoAction redoAction = new RedoAction(newUndo);
-				undoAction.setRedoAction(redoAction);
-				redoAction.setUndoAction(undoAction);
-				CytoscapeEditorManager.setRedoActionForView(view, redoAction);
-				System.out.println("Set redo manager for view: " + redoAction);
-			}
+
+//			Object undoObj = CytoscapeEditorManager.getUndoManagerForView(view);
+//			if (undoObj instanceof UndoManager) {
+//				CytoscapeEditorManager
+//						.setCurrentUndoManager((UndoManager) undoObj);
+//			} else {
+//				UndoManager newUndo = new UndoManager();
+//				CytoscapeEditorManager.setUndoManagerForView(view, newUndo);
+//				//				System.out.println ("SetUndoManagerForView: " +
+//				// Cytoscape.getCurrentNetworkView());
+//				CytoscapeEditorManager.setCurrentUndoManager(newUndo);
+//				UndoAction undoAction = new UndoAction(newUndo);
+//				CytoscapeEditorManager.setUndoActionForView(view, undoAction);
+//				RedoAction redoAction = new RedoAction(newUndo);
+//				undoAction.setRedoAction(redoAction);
+//				redoAction.setUndoAction(undoAction);
+//				CytoscapeEditorManager.setRedoActionForView(view, redoAction);
+//				System.out.println("Set redo manager for view: " + redoAction);
+//			}
 			// AJK: 09/06/05 END
+			
+			// AJK: 11/15/05 BEGIN
+			//    update IndexOfNextAdd in Cytoscape's UndoManager to point to the indexOfNextAdd
+			//    for this view
+			cytoscape.util.UndoManager undo = CytoscapeDesktop.undo;
 
 			// set the buttons on the shapePalette to undo, redo actions
 			ShapePalette palette = CytoscapeEditorManager
 					.getShapePaletteForView(view);
+			
 			if (palette != null) {
 				// AJK: 10/24/05: comment this out, undo functionality is moving
 				// to Cytoscape
@@ -224,20 +278,21 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
 
 			if (cyEditor == null) {
 				cyEditor = CytoscapeEditorManager.getCurrentEditor();
+				if (cyEditor == null) {
+					// this would be because no editor has been set yet. Just return
+					return;
+				}
+				else
+				{
+					// at this point there is an editor but it is not assigned to this
+					// view
+					// this is probably the case if we are loading a network, rather
+					// than creating a new one
+					// in this case, we need to setup the network view, which sets all
+					// the event handler, etc.
+					CytoscapeEditorManager.setupNewNetworkView(view);					
+				}
 			}
-
-			if (cyEditor == null) {
-				// this would be because no editor has been set yet. Just return
-				return;
-			}
-
-			// at this point there is an editor but it is not assigned to this
-			// view
-			// this is probably the case if we are loading a network, rather
-			// than creating a new one
-			// in this case, we need to setup the network view, which sets all
-			// the event handler, etc.
-			CytoscapeEditorManager.setupNewNetworkView(view);
 		}
 	}
 

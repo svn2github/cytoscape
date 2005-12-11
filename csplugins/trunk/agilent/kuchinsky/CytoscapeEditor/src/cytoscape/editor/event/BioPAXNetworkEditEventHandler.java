@@ -13,6 +13,7 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.geom.Point2D;
 import java.io.IOException;
 
+import phoebe.PGraphView;
 import phoebe.PhoebeCanvasDropEvent;
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
@@ -22,9 +23,27 @@ import cytoscape.editor.CytoscapeEditor;
 import cytoscape.editor.CytoscapeEditorManager;
 import cytoscape.editor.impl.BasicCytoShapeEntity;
 import cytoscape.editor.impl.ShapePalette;
+import cytoscape.view.CyNetworkView;
 import edu.umd.cs.piccolo.event.PInputEvent;
 import giny.model.Node;
 import giny.view.NodeView;
+
+
+
+/**
+ * NOTE: THE CYTOSCAPE EDITOR FUNCTIONALITY IS STILL BEING EVOLVED AND IN A STATE OF TRANSITION TO A 
+ * FULLY EXTENSIBLE EDITING FRAMEWORK FOR CYTOSCAPE VERSION 2.3.  
+ * 
+ * THE JAVADOC COMMENTS ARE OUT OF DATE IN MANY PLACES AND ARE BEING UPDATED.  
+ * THE APIs WILL CHANGE AND THIS MAY IMPACT YOUR CODE IF YOU 
+ * MAKE EXTENSIONS AT THIS POINT.  PLEASE CONTACT ME (mailto: allan_kuchinsky@agilent.com) 
+ * IF YOU ARE INTENDING TO EXTEND THIS CODE AND I WILL WORK WITH YOU TO HELP MINIMIZE THE IMPACT TO YOUR CODE OF 
+ * FUTURE CHANGES TO THE FRAMEWORK
+ *
+ * PLEASE SEE http://www.cytoscape.org/cgi-bin/moin.cgi/CytoscapeEditorFramework FOR 
+ * DETAILS ON THE EDITOR FRAMEWORK AND PLANNED EVOLUTION FOR CYTOSCAPE VERSION 2.3.
+ *
+ */
 
 /**
  * @author ajk
@@ -35,14 +54,12 @@ import giny.view.NodeView;
 public class BioPAXNetworkEditEventHandler extends
 		PaletteNetworkEditEventHandler {
 	
-	private String attributeName;
-	private String attributeValue;
 	
 	/**
 	 * main data structures for all node and edge attributes
 	 */
 	public static cytoscape.data.CyAttributes nodeAttribs = Cytoscape.getNodeAttributes();	
-	public static cytoscape.data.CyAttributes edgeAttribs = Cytoscape.getNodeAttributes();	
+	public static cytoscape.data.CyAttributes edgeAttribs = Cytoscape.getEdgeAttributes();	
 
 	
 	/**
@@ -60,7 +77,17 @@ public class BioPAXNetworkEditEventHandler extends
 		super(caller);
 		// TODO Auto-generated constructor stub
 	}
-	
+
+	/**
+	 * 
+	 * @param caller
+	 * @param view
+	 */
+	public BioPAXNetworkEditEventHandler(CytoscapeEditor caller, CyNetworkView view) {
+		super(caller, view);
+	}
+		
+		
 	public CyNode createNode (PInputEvent e)
 	{
 		CyNode cn = super.createNode(e);
@@ -77,6 +104,7 @@ public class BioPAXNetworkEditEventHandler extends
 	 */
 	public CyEdge finishEdge (PInputEvent e)
 	{
+		System.out.println ("Finishing edge in BioPAX network event handler");
 		edgeStarted = false;
 		updateEdge();
 
@@ -90,18 +118,30 @@ public class BioPAXNetworkEditEventHandler extends
 
 		CyEdge myEdge = CytoscapeEditorManager.addEdge(source_node,
 				target_node, cytoscape.data.Semantics.INTERACTION,
-				"default", true, attributeValue);   // set to BIOPAX_EDGE_TYPE
+				"default", true, this.getEdgeAttributeValue());   // set to BIOPAX_EDGE_TYPE
 
+		System.out.println("setting BIOPAX_EDGE_TYPE for " + myEdge.getIdentifier() + " to " + this.getEdgeAttributeValue());
 		edgeAttribs.setAttribute(myEdge.getIdentifier(), "BIOPAX_EDGE_TYPE",
-				attributeValue);		//				Cytoscape.getCurrentNetwork().restoreEdge(myEdge);
+				this.getEdgeAttributeValue());		//				Cytoscape.getCurrentNetwork().restoreEdge(myEdge);
 
 		getCanvas().getLayer().removeChild(edge);
 		edge = null;
 		node = null;
 		if (isHandlingEdgeDrop()) {
-			setMode(SELECT_MODE);
+//			setMode(SELECT_MODE);
 			this.setHandlingEdgeDrop(false);
 		}
+		
+		// AJK: 11/19/05 invert selection of target, which will have had its selection inverted upon mouse entry
+		target.setSelected(!target.isSelected());
+		
+		// redraw graph so that the correct arrow is shown (but only if network is small enough to see the edge...
+		if (Cytoscape.getCurrentNetwork().getNodeCount() <= 100)
+		{
+			Cytoscape.getDesktop().redrawGraph(true, true);
+			
+		}
+				
 		return myEdge;
 	}	
 	
@@ -115,15 +155,28 @@ public class BioPAXNetworkEditEventHandler extends
 	 */
 	public void itemDropped (PhoebeCanvasDropEvent e) {
 				
-		Object shape;
+		// AJK: 11/20/05 return if we're not dropping into the currently active view
+		PGraphView thisView = this.getView();
+		if (thisView != ((PGraphView) Cytoscape.getCurrentNetworkView()))
+		{
+			return;
+		}
+		
+		Object shape = null;
 		String shapeName = null;
 
-
 		Point location = e.getLocation();
+		
+		System.out.println ("Item dropped at: " + e.getLocation());
+		System.out.println ("Bounds of current view are: " +
+				Cytoscape.getCurrentNetworkView().getComponent().getBounds());
+		
 		Point2D locn = (Point2D) location.clone();
 		locn = canvas.getCamera().localToView(locn);
 		Transferable t = e.getTransferable();
-		    	
+		 
+		BasicCytoShapeEntity myShape = null;
+		
 		DataFlavor [] dfl = t.getTransferDataFlavors();		
 		
 		for (int i = 0; i < dfl.length; i++)
@@ -133,39 +186,56 @@ public class BioPAXNetworkEditEventHandler extends
 		    		 {
 		    		 	handleDroppedURL(t, d, location);
 		    		 }
-		}
+		    		 else if (t.isDataFlavorSupported(dfl[i]))
+		    		 {
+		    			 try
+		    			 {
+		    				 shape =  t.getTransferData(dfl[i]);
+		    			 }
+		    			 
+		    				catch (UnsupportedFlavorException exc)
+		    				{
+		    					exc.printStackTrace();
+		    					return;
+		    				}
+		    		catch (IOException exc)
+		    				{
+		    					exc.printStackTrace();
+		    					return;					
+		    				}
+		    		 }
+		 }
 
-		try
-		{
-		    shape = t.getTransferData(DataFlavor.stringFlavor);
+//		try
+//		{
+//		    shape = t.getTransferData(DataFlavor.stringFlavor);
+
 		    if (shape != null)
 		    {
 		    	shapeName = shape.toString();
-		    }
-		}
-		catch (UnsupportedFlavorException exc)
-				{
-					exc.printStackTrace();
-					return;
-				}
-		catch (IOException exc)
-				{
-					exc.printStackTrace();
-					return;					
-				}
+		    	myShape = ShapePalette.getBasicCytoShapeEntity(shapeName);		    }
+//		}
+//		catch (UnsupportedFlavorException exc)
+//				{
+//					exc.printStackTrace();
+//					return;
+//				}
+//		catch (IOException exc)
+//				{
+//					exc.printStackTrace();
+//					return;					
+//				}
 				
-		BasicCytoShapeEntity myShape = ShapePalette.getBasicCytoShapeEntity(shapeName);
-
 
         Object [] args = null;
 		if (myShape != null)
 		{
 			// need to handle nodes and edges differently 
 			// AJK: 09/17/05 make attribute name and value global, so that BioPAX attributes can be set
-			 attributeName = myShape.getAttributeName();
-			 System.out.println ("Item dropped: AttributeName = " + attributeName);
-			attributeValue = myShape.getAttributeValue();
-
+			String attributeName = myShape.getAttributeName();
+			String attributeValue = myShape.getAttributeValue();
+//			 System.out.println ("Item dropped: AttributeName = " + attributeName + ": " + attributeValue);
+				
 			args = new Object []{ "LOCATION", location};
 			if (attributeName.equals(NODE_TYPE)
 //					||
@@ -174,8 +244,11 @@ public class BioPAXNetworkEditEventHandler extends
 					)
 			{
 				// TODO: move node creation into super.createNode();
+			
+				this.setNodeAttributeName(attributeName);
+				this.setNodeAttributeValue(attributeValue);
 				CyNode cn = CytoscapeEditorManager.addNode("node" + counter, 
-						true, attributeName, attributeValue);
+						attributeName, attributeValue);
 			    counter++;				
 				double zoom = Cytoscape.getCurrentNetworkView().getZoom();
 				Cytoscape.getCurrentNetwork().restoreNode(cn);		
@@ -184,9 +257,11 @@ public class BioPAXNetworkEditEventHandler extends
 				// hack for biopax, fix later
 				nodeAttribs.setAttribute(cn.getIdentifier(), "BIOPAX_NAME", cn.getIdentifier());
 			}
-			else if ( (attributeName.equals("EdgeType")) ||
+			else if ( (attributeName.equals(this.EDGE_TYPE)) ||
 					(attributeName.equals("BIOPAX_EDGE_TYPE")))
 			{
+				this.setEdgeAttributeName(attributeName);
+				this.setEdgeAttributeValue(attributeValue);
 				handleDroppedEdge (attributeValue, e);
 			}
 		}	

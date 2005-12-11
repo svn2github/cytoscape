@@ -30,6 +30,22 @@ import cytoscape.editor.CytoscapeEditorManager;
 import cytoscape.editor.editors.BasicCytoscapeEditor;
 import cytoscape.view.CyNetworkView;
 
+
+/**
+ * NOTE: THE CYTOSCAPE EDITOR FUNCTIONALITY IS STILL BEING EVOLVED AND IN A STATE OF TRANSITION TO A 
+ * FULLY EXTENSIBLE EDITING FRAMEWORK FOR CYTOSCAPE VERSION 2.3.  
+ * 
+ * THE JAVADOC COMMENTS ARE OUT OF DATE IN MANY PLACES AND ARE BEING UPDATED.  
+ * THE APIs WILL CHANGE AND THIS MAY IMPACT YOUR CODE IF YOU 
+ * MAKE EXTENSIONS AT THIS POINT.  PLEASE CONTACT ME (mailto: allan_kuchinsky@agilent.com) 
+ * IF YOU ARE INTENDING TO EXTEND THIS CODE AND I WILL WORK WITH YOU TO HELP MINIMIZE THE IMPACT TO YOUR CODE OF 
+ * FUTURE CHANGES TO THE FRAMEWORK
+ *
+ * PLEASE SEE http://www.cytoscape.org/cgi-bin/moin.cgi/CytoscapeEditorFramework FOR 
+ * DETAILS ON THE EDITOR FRAMEWORK AND PLANNED EVOLUTION FOR CYTOSCAPE VERSION 2.3.
+ *
+ */
+
 /**
  * 
  * The <b>BasicNetworkEditEventHandler </b> class provides specialized methods
@@ -100,6 +116,41 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 
 	public int mode = SELECT_MODE;
 
+	/**
+	 * CytoscapeAttribute: NODE_TYPE
+	 */
+	public static final String NODE_TYPE = "NODE_TYPE";
+
+	/**
+	 * CytoscapeAttribute: EDGE_TYPE
+	 *  
+	 */
+	public static final String EDGE_TYPE = "EDGE_TYPE";
+
+	
+	public static final String DEFAULT_NODE = "DefaultNode";
+	
+	public static final String DEFAULT_EDGE = "DefaultEdge";
+	
+	/**
+	 * attribute used to set NODE_TYPE
+	 */
+	protected String nodeAttributeName = NODE_TYPE;
+
+	/**
+	 * value for attribute used in setting NODE_TYPE
+	 */
+	protected String nodeAttributeValue = DEFAULT_NODE;
+
+	/**
+	 * attribute used to set EDGE_TYPE
+	 */
+	protected String edgeAttributeName = EDGE_TYPE;
+
+	/**
+	 * value for attribute used in setting EDGE_TYPE
+	 */
+	protected String edgeAttributeValue = DEFAULT_EDGE;
 
 	/**
 	 * the node being labeled via the _nodeLabeler
@@ -118,16 +169,6 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 
 	CytoscapeEditor _caller;
 
-	/**
-	 * CytoscapeAttribute: NODE_TYPE
-	 */
-	public static final String NODE_TYPE = "NODE_TYPE";
-
-	/**
-	 * CytoscapeAttribute: EDGE_TYPE
-	 *  
-	 */
-	public static final String EDGE_TYPE = "EDGE_TYPE";
 
 	/**
 	 * flag that indicates whether we are currently in the process of handling a
@@ -137,7 +178,7 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 	public boolean handlingEdgeDrop = false;
 
 	public BasicNetworkEditEventHandler() {
-		setMode(SELECT_MODE);
+//		setMode(SELECT_MODE);
 		locator = new PNodeLocator(new PNode());
 		setEventFilter(new PInputEventFilter(InputEvent.BUTTON1_MASK));
 
@@ -146,11 +187,26 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 		_nodeLabelerPanel = new JPanel();
 	}
 
+	/**
+	 * 
+	 * @param caller
+	 */
 	public BasicNetworkEditEventHandler(CytoscapeEditor caller) {
 		this();
 		_caller = caller;
 	}
 
+	/**
+	 * 
+	 * @param caller
+	 * @param view
+	 */
+	public BasicNetworkEditEventHandler(CytoscapeEditor caller, CyNetworkView view) {
+		this();
+		_caller = caller;
+		this.setView((PGraphView) view);
+	}
+	
 	/**
 	 *  
 	 */
@@ -187,59 +243,48 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 	public void mousePressed(PInputEvent e) {
 		// TODO: break this into smaller routines
 		nextPoint = e.getPosition();
-//		System.out.println("Mouse pressed at: " + e.getPosition());
-		if ((e.isControlDown()) || (getMode() == ADD_MODE)
-				|| (getMode() == LABEL_MODE) || (getMode() == CONNECT_MODE))
-		{
-			// user wants to add a node or an edge
-			boolean onNode = false;
-			if (e.getPickedNode() instanceof NodeView) {
-				onNode = true;
-				locator.setNode(e.getPickedNode());
-				locator.locatePoint(nextPoint);
-				nextPoint = e.getPickedNode().localToGlobal(nextPoint);
-			}
-			if (onNode && !edgeStarted
-					&& (e.isControlDown() || (getMode() == CONNECT_MODE))) {
-				// begin edge creation
-				beginEdge(e);
-			} else if (onNode && edgeStarted && (e.getPickedNode() != node)) {
-				// Finish Edge Creation
-				finishEdge(e);
 
-			} else if (!onNode && edgeStarted)  // turn off rubberbanding if clicked on empty area of canvas
-			{
-				edgeStarted = false;
-				this.getCanvas().getLayer().removeChild(edge);				
-				setMode(SELECT_MODE);
-				this.setHandlingEdgeDrop(false);
-			}
-			
-			  else if (!onNode && !edgeStarted && (getMode() != CONNECT_MODE)) {
-				// Create a Node on Click
-				createNode (e);
-			}				
+		boolean onNode = false;
+		if (e.getPickedNode() instanceof NodeView) {
+			onNode = true;
+			locator.setNode(e.getPickedNode());
+			locator.locatePoint(nextPoint);
+			nextPoint = e.getPickedNode().localToGlobal(nextPoint);
 		}
-		// doubleclick sets up node labeling
-		// TODO: perhaps hook doubleclick into attribute editor/browser
-		else if (e.getClickCount() >= 2) // open node for labeling
+
+		if (onNode && !edgeStarted && (e.isControlDown())) {
+			// begin edge creation
+			beginEdge(e);
+		} else if (onNode && edgeStarted && (e.getPickedNode() != node)) {
+			// Finish Edge Creation
+			finishEdge(e);
+
+		} else if (!onNode && edgeStarted) // turn off rubberbanding if clicked
+											// on empty area of canvas
 		{
-			// AJK: 09/16/05 disable node labeler, rely on attribute editor/browser
-//			labelNode(e, nextPoint);
+			edgeStarted = false;
+			this.getCanvas().getLayer().removeChild(edge);
+			// setMode(SELECT_MODE);
+			this.setHandlingEdgeDrop(false);
+		}
+
+		else if (!onNode && !edgeStarted
+				&& (e.isControlDown())) {
+			createNode(e);
 		}
 		else // clicking anywhere on screen will turn off node Labeling
 		{
-//			 AJK: 09/16/05 disable node labeler, rely on attribute editor/browser
-//			clearNodeLabeler();
-//			System.out.println ("Calling mouse pressed on class " + super.toString());
 			super.mousePressed(e);
 		}
 	}
+
 	
 
 	/**
 	 * begin drawing an edge from the node containing input point
-	 * @param e input event for mouse press
+	 * 
+	 * @param e
+	 *            input event for mouse press
 	 */
 	public void beginEdge(PInputEvent e)
 	{
@@ -252,6 +297,12 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 		edge.setPaint(Color.black);
 		startPoint = nextPoint;
 		updateEdge();		
+
+//		setMode(CONNECT_MODE);
+		setEdgeStarted(true);
+		setEdge(edge);
+		setStartPoint(startPoint);
+
 	}
 	
 	
@@ -261,6 +312,7 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 	 */
 	public CyEdge finishEdge (PInputEvent e)
 	{
+		System.out.println("finishEdge in BasicNetworkEventHandler");
 		edgeStarted = false;
 		updateEdge();
 
@@ -274,17 +326,28 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 
 		CyEdge myEdge = CytoscapeEditorManager.addEdge(source_node,
 				target_node, cytoscape.data.Semantics.INTERACTION,
-				"default", true, "DefaultEdge");
+				"default", true, this.DEFAULT_EDGE);
 
 		//				Cytoscape.getCurrentNetwork().restoreEdge(myEdge);
 
 		getCanvas().getLayer().removeChild(edge);
 		edge = null;
 		node = null;
+//		setMode(SELECT_MODE);
 		if (isHandlingEdgeDrop()) {
-			setMode(SELECT_MODE);
+			
 			this.setHandlingEdgeDrop(false);
 		}
+		// AJK: 11/19/05 invert selection of target, which will have had its selection inverted upon mouse entry
+		target.setSelected(!target.isSelected());
+		this.getCanvas().repaint();
+		// redraw graph so that the correct arrow is shown (but only if network is small enough to see the edge...
+		if (Cytoscape.getCurrentNetwork().getNodeCount() <= 100)
+		{
+			Cytoscape.getDesktop().redrawGraph(true, true);
+			
+		}
+					
 		return myEdge;
 	}
 	
@@ -295,18 +358,17 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 	public CyNode createNode (PInputEvent e)
 	{
 		CyNode cn = null;
-		if ((getMode() == ADD_MODE) || (e.isControlDown())) {
+//		if ((getMode() == ADD_MODE) || (e.isControlDown())) {
 			// add a node
-			cn = CytoscapeEditorManager.addNode("node" + counter, true,
-					"DefaultNode");
+			cn = CytoscapeEditorManager.addNode("node" + counter, 
+					this.getNodeAttributeName(), this.getNodeAttributeValue());
 
-		} else if (getMode() == LABEL_MODE) {
+//		} else if (getMode() == LABEL_MODE) {
 
 			// add a freestanding label
 			// functionality not available in Cytoscape 2.2
-			cn = CytoscapeEditorManager.addNode("node" + counter, true,
-					"Label");
-		}
+//			cn = CytoscapeEditorManager.addNode("node" + counter, "Label");
+//		}
 
 		counter++;
 		double zoom = Cytoscape.getCurrentNetworkView().getZoom();
@@ -349,16 +411,20 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 	public void mouseEntered(PInputEvent e) {
 		if (e.getPickedNode() instanceof NodeView) {
 			NodeView nv = (NodeView) e.getPickedNode();
-
-			Float borderWidth = new Float(CytoscapeEditorManager
-					.getDefaultBorderWidth());
-			if (borderWidth.equals(new Float(Float.NaN))) {
-				// global variable not yet set; only set it once
-				CytoscapeEditorManager.setDefaultBorderWidth(nv
-						.getBorderWidth());
+			if (edgeStarted)
+			{
+				nv.setSelected(!nv.isSelected());
 			}
-			nv.setBorderWidth(3 * CytoscapeEditorManager
-					.getDefaultBorderWidth());
+
+//			Float borderWidth = new Float(CytoscapeEditorManager
+//					.getDefaultBorderWidth());
+//			if (borderWidth.equals(new Float(Float.NaN))) {
+//				// global variable not yet set; only set it once
+//				CytoscapeEditorManager.setDefaultBorderWidth(nv
+//						.getBorderWidth());
+//			}
+//			nv.setBorderWidth(3 * CytoscapeEditorManager
+//					.getDefaultBorderWidth());
 			this.getCanvas().repaint();
 		}
 	}
@@ -370,15 +436,34 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 	public void mouseExited(PInputEvent e) {
 		if (e.getPickedNode() instanceof NodeView) {
 			NodeView nv = (NodeView) e.getPickedNode();
-			nv.setBorderWidth(CytoscapeEditorManager.getDefaultBorderWidth());
+//			nv.setBorderWidth(CytoscapeEditorManager.getDefaultBorderWidth());
+			if (edgeStarted)
+			{
+				nv.setSelected(!nv.isSelected());
+			}
 			this.getCanvas().repaint();
 		}
 	}
 
 	public void mouseDragged(PInputEvent e) {
+		nextPoint = e.getPosition();
+
+		
+		boolean onNode = false;
+		if (e.getPickedNode() instanceof NodeView) {
+			onNode = true;
+			locator.setNode(e.getPickedNode());
+			locator.locatePoint(nextPoint);
+			nextPoint = e.getPickedNode().localToGlobal(nextPoint);
+		}
+
+		if (onNode && !edgeStarted && (e.isControlDown())) {
+			// begin edge creation
+			beginEdge(e);
+		}
 		if (!edgeStarted) {
 
-			super.mouseDragged(e);
+//			super.mouseDragged(e);
 		}
 		if (edgeStarted) {
 			//we need to update the latest section of the edge
@@ -386,6 +471,7 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 			updateEdge();
 		}
 		if (e.getPickedNode() instanceof NodeView) {
+//			System.out.println("mouse dragged on:  " + e.getPickedNode());
 		}
 	}
 	
@@ -617,5 +703,61 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 			this.view = null;
 			this.canvas = null;
 		}
+	}
+
+	/**
+	 * @return Returns the edgeAttributeValue.
+	 */
+	public String getEdgeAttributeValue() {
+		return edgeAttributeValue;
+	}
+
+	/**
+	 * @param edgeAttributeValue The edgeAttributeValue to set.
+	 */
+	public void setEdgeAttributeValue(String edgeAttributeValue) {
+		this.edgeAttributeValue = edgeAttributeValue;
+	}
+
+	/**
+	 * @return Returns the nodeAttributeName.
+	 */
+	public String getNodeAttributeName() {
+		return nodeAttributeName;
+	}
+
+	/**
+	 * @param nodeAttributeName The nodeAttributeName to set.
+	 */
+	public void setNodeAttributeName(String nodeAttributeName) {
+		this.nodeAttributeName = nodeAttributeName;
+	}
+
+	/**
+	 * @return Returns the edgeAttributeName.
+	 */
+	public String getEdgeAttributeName() {
+		return edgeAttributeName;
+	}
+
+	/**
+	 * @param edgeAttributeName The edgeAttributeName to set.
+	 */
+	public void setEdgeAttributeName(String edgeAttributeName) {
+		this.edgeAttributeName = edgeAttributeName;
+	}
+
+	/**
+	 * @return Returns the nodeAttributeValue.
+	 */
+	public String getNodeAttributeValue() {
+		return nodeAttributeValue;
+	}
+
+	/**
+	 * @param nodeAttributeValue The nodeAttributeValue to set.
+	 */
+	public void setNodeAttributeValue(String nodeAttributeValue) {
+		this.nodeAttributeValue = nodeAttributeValue;
 	}
 }
