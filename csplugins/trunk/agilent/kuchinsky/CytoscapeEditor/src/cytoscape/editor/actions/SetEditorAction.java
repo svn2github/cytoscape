@@ -22,6 +22,22 @@ import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
 
 /**
+ * NOTE: THE CYTOSCAPE EDITOR FUNCTIONALITY IS STILL BEING EVOLVED AND IN A STATE OF TRANSITION TO A 
+ * FULLY EXTENSIBLE EDITING FRAMEWORK FOR CYTOSCAPE VERSION 2.3.  
+ * 
+ * THE JAVADOC COMMENTS ARE OUT OF DATE IN MANY PLACES AND ARE BEING UPDATED.  
+ * THE APIs WILL CHANGE AND THIS MAY IMPACT YOUR CODE IF YOU 
+ * MAKE EXTENSIONS AT THIS POINT.  PLEASE CONTACT ME (mailto: allan_kuchinsky@agilent.com) 
+ * IF YOU ARE INTENDING TO EXTEND THIS CODE AND I WILL WORK WITH YOU TO HELP MINIMIZE THE IMPACT TO YOUR CODE OF 
+ * FUTURE CHANGES TO THE FRAMEWORK
+ *
+ * PLEASE SEE http://www.cytoscape.org/cgi-bin/moin.cgi/CytoscapeEditorFramework FOR 
+ * DETAILS ON THE EDITOR FRAMEWORK AND PLANNED EVOLUTION FOR CYTOSCAPE VERSION 2.3.
+ *
+ */
+
+
+/**
  * 
  * Assigns an editor for all NetworkViews in the Cytoscape environment.  Defines a "SetEditor" menu item.
  * 
@@ -77,10 +93,16 @@ public class SetEditorAction extends CytoscapeAction {
 			// setup a new editor
 			CytoscapeEditor cyEditor = factory.getEditor(editorName);
 
-			CyNetworkView view = Cytoscape.getCurrentNetworkView();			
+			CyNetworkView view = Cytoscape.getCurrentNetworkView();
+			String viewTitle = "null";
+			if (view != null)
+			{
+				viewTitle = view.getTitle();
+			}
+			
 			// AJK: 10/05/05 BEGIN
 			//    create a new network if there are no networks yet
-			if (view.getTitle().equals("null"))
+			if (viewTitle.equals("null"))
 			{
 
 				//			CyNetwork newNet = Cytoscape.getCurrentNetwork();
@@ -92,33 +114,8 @@ public class SetEditorAction extends CytoscapeAction {
 
 				CytoscapeEditorManager.setEditorForNetwork(newNet, cyEditor);
 				CytoscapeEditorManager.setEditorForView(view, cyEditor);
-				// AJK: 09/29/05 BEGIN
-				//   setup an undo manager for this network view
-				// AJK: 10/21/05 BEGIN
-				//   comment out.  Setting of UndoManager is done on by 
-				//   CytoscapeEditorManager.setupNewNetworkView();
-//
-//				Object undoObj = CytoscapeEditorManager.getUndoManagerForView(view);
-//				if (undoObj instanceof UndoManager)
-//				{
-//					CytoscapeEditorManager.setCurrentUndoManager ((UndoManager) undoObj);
-//				}
-//				else
-//				{
-//					UndoManager newUndo = new UndoManager();
-//					CytoscapeEditorManager.setUndoManagerForView (view, newUndo);
-//					CytoscapeEditorManager.setCurrentUndoManager (newUndo);
-//				}
-				// AJK: 10/21/05 END
-//				// AJK: 09/29/05 END
 			}
 
-
-//			// AJK: 10/04/05 END
-
-			
-
-			// AJK: 09/19/05 BEGIN
 			//     setup visual style for this editor
 			String visualStyleName = CytoscapeEditorManager
 					.getVisualStyleForEditorType(editorName);
@@ -168,5 +165,6 @@ public class SetEditorAction extends CytoscapeAction {
 			CytoscapeEditorManager.setSettingUpEditor(false);
 			ex.printStackTrace();
 		}
+		Cytoscape.getDesktop().redrawGraph();
 	}
 }	

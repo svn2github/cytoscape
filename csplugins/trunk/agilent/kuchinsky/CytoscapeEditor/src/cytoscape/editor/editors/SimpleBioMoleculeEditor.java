@@ -14,7 +14,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 import org.mskcc.biopax_plugin.mapping.MapBioPaxToCytoscape;
-import org.mskcc.biopax_plugin.plugin.BioPaxPlugIn;
 import org.mskcc.biopax_plugin.util.biopax.BioPaxConstants;
 import org.mskcc.biopax_plugin.util.biopax.ControlTypeConstants;
 
@@ -38,6 +37,22 @@ import cytoscape.visual.calculators.NodeShapeCalculator;
 import cytoscape.visual.mappings.DiscreteMapping;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.mappings.PassThroughMapping;
+
+
+/**
+ * NOTE: THE CYTOSCAPE EDITOR FUNCTIONALITY IS STILL BEING EVOLVED AND IN A STATE OF TRANSITION TO A 
+ * FULLY EXTENSIBLE EDITING FRAMEWORK FOR CYTOSCAPE VERSION 2.3.  
+ * 
+ * THE JAVADOC COMMENTS ARE OUT OF DATE IN MANY PLACES AND ARE BEING UPDATED.  
+ * THE APIs WILL CHANGE AND THIS MAY IMPACT YOUR CODE IF YOU 
+ * MAKE EXTENSIONS AT THIS POINT.  PLEASE CONTACT ME (mailto: allan_kuchinsky@agilent.com) 
+ * IF YOU ARE INTENDING TO EXTEND THIS CODE AND I WILL WORK WITH YOU TO HELP MINIMIZE THE IMPACT TO YOUR CODE OF 
+ * FUTURE CHANGES TO THE FRAMEWORK
+ *
+ * PLEASE SEE http://www.cytoscape.org/cgi-bin/moin.cgi/CytoscapeEditorFramework FOR 
+ * DETAILS ON THE EDITOR FRAMEWORK AND PLANNED EVOLUTION FOR CYTOSCAPE VERSION 2.3.
+ *
+ */
 
 
 /**
@@ -70,6 +85,8 @@ public class SimpleBioMoleculeEditor extends BasicCytoscapeEditor {
 	
 	public static final String NODE_TYPE = "NODE_TYPE";
 	
+	public static final String EDGE_TYPE = "EDGE_TYPE";
+	
 	public SimpleBioMoleculeEditor() {
 		super();		
 	}
@@ -91,6 +108,7 @@ public class SimpleBioMoleculeEditor extends BasicCytoscapeEditor {
         
         VisualStyle vizStyle = manager.getVisualStyle();
         NodeAppearanceCalculator nac = vizStyle.getNodeAppearanceCalculator();
+        
         if (nac == null)
         {
     		String expDescript = "Cannot build palette.  You need to set up a Visual Style that maps Node Color to NODE_TYPE attribute.";
@@ -170,8 +188,9 @@ public class SimpleBioMoleculeEditor extends BasicCytoscapeEditor {
 		ImageIcon img = new ImageIcon(getClass().getResource(
 		ICONS_REL_LOC + "edgeIcon1.gif"));
 //		shapePalette.addShape("EdgeType", "DirectedEdge", img, "Directed Edge");		
-		shapePalette.addShape("EdgeType", "DirectedEdge", 
-             new CytoShapeIcon(img.getImage()), "Directed Edge");			
+		shapePalette.addShape(EDGE_TYPE, "DirectedEdge", 
+//             new CytoShapeIcon(img.getImage()), "Directed Edge");	
+				new CytoShapeIcon(Arrow.BLACK_DELTA), "Directed Edge");
 		
 //		img = new ImageIcon(getClass().getResource(
 //				ICONS_REL_LOC + "BioPAX_protein.gif"));

@@ -26,6 +26,22 @@ import cytoscape.util.CytoscapeToolBar;
 import cytoscape.view.CyMenus;
 import cytoscape.view.CyNetworkView;
 
+
+/**
+ * NOTE: THE CYTOSCAPE EDITOR FUNCTIONALITY IS STILL BEING EVOLVED AND IN A STATE OF TRANSITION TO A 
+ * FULLY EXTENSIBLE EDITING FRAMEWORK FOR CYTOSCAPE VERSION 2.3.  
+ * 
+ * THE JAVADOC COMMENTS ARE OUT OF DATE IN MANY PLACES AND ARE BEING UPDATED.  
+ * THE APIs WILL CHANGE AND THIS MAY IMPACT YOUR CODE IF YOU 
+ * MAKE EXTENSIONS AT THIS POINT.  PLEASE CONTACT ME (mailto: allan_kuchinsky@agilent.com) 
+ * IF YOU ARE INTENDING TO EXTEND THIS CODE AND I WILL WORK WITH YOU TO HELP MINIMIZE THE IMPACT TO YOUR CODE OF 
+ * FUTURE CHANGES TO THE FRAMEWORK
+ *
+ * PLEASE SEE http://www.cytoscape.org/cgi-bin/moin.cgi/CytoscapeEditorFramework FOR 
+ * DETAILS ON THE EDITOR FRAMEWORK AND PLANNED EVOLUTION FOR CYTOSCAPE VERSION 2.3.
+ *
+ */
+
 /**
  * The <b>BasicCytoscapeEditor</b> provides base level graph editing functionality for Cytoscape version 2.2
  * provides a “node” button on the Cytoscape toolbar.  Click on the “node” button and cursor takes on a 
@@ -305,7 +321,7 @@ public class BasicCytoscapeEditor implements CytoscapeEditor {
 						.println("Error: cannot find event handler for view: "
 								+ view);
 			} else {
-				event.setMode(event.ADD_MODE);
+//				event.setMode(event.ADD_MODE);
 			}
 		}
 	}
@@ -338,7 +354,7 @@ public class BasicCytoscapeEditor implements CytoscapeEditor {
 						.println("Error: cannot find event handler for view: "
 								+ view);
 			} else {
-				event.setMode(event.LABEL_MODE);
+//				event.setMode(event.LABEL_MODE);
 
 			}
 		}
@@ -369,7 +385,7 @@ public class BasicCytoscapeEditor implements CytoscapeEditor {
 						.println("Error: cannot find event handler for view: "
 								+ view);
 			} else {
-				event.setMode(event.CONNECT_MODE);
+//				event.setMode(event.CONNECT_MODE);
 			}
 		}
 	}
@@ -403,7 +419,7 @@ public class BasicCytoscapeEditor implements CytoscapeEditor {
 						.println("Error: cannot find event handler for view: "
 								+ view);
 			} else {
-				event.setMode(event.SELECT_MODE);
+//				event.setMode(event.SELECT_MODE);
 			}
 			
 			// clear any partial edges
@@ -448,7 +464,7 @@ public class BasicCytoscapeEditor implements CytoscapeEditor {
 					NodeView nv2 = (NodeView) nodes.get(j);
 					CyNode secondCyNode = (CyNode) nv2.getNode();
 					CytoscapeEditorManager.addEdge(firstCyNode, secondCyNode,
-							Semantics.INTERACTION, "pp", true, "DefaultEdge");
+							Semantics.INTERACTION, "default", true, "DefaultEdge");
 				}
 			}
 		}
