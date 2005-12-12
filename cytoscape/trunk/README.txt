@@ -143,8 +143,112 @@ of Cytoscape is rather involved.  Some of the tasks are automated and some are m
 	C.  Creating the InstallAnywhere Release
 	-------------------------------------------------
 
-	ISB currently handles this step, and hosts the InstallAnywhere release.  Rowan
-	may want to add details to this section.
+	InstallAnywhere Overview
+	------------------------
+
+	Start InstallAnywhere.
+	Follow the fairly obvious steps in the Wizard.
+	Tweak the parameters (i.e. splash screen + VMs) in the Advanced gui.
+	Click "Build"
+
+
+	Running InstallAnywhere
+	-----------------------
+
+	Creating the InstallAnywhere release requires a local 
+	installation of the InstallAnywhere product.  It is available 
+	here: http://www.macrovision.com for the small cost of your 
+	first and second born children.  If you're a member of the Ideker
+	lab at UCSD, then you may use the version at 
+	/cellar/software/InstallAnywhere/InstallAnywhere. It is possible
+	that you will need a key to properly run InstallAnywhere, if
+	so, simply recursively copy the directory:
+	/cellar/users/mes/.InstallAnywhere
+
+	It is possible to download InstallAnywhere and run it as a 
+	trial version.  With some difficulty you'll be able to create
+	a project, but the actual install files you create will "expire"
+	three days after creating them.  Therefore, we do NOT recommend
+	this approach.
+
+
+	Creating a Release
+	------------------
+
+	The first step is to get a .zip or .tar.gz file of the final
+	release to be distributed.  Unpack this file into an 
+	accessible directory.
+
+	Start InstallAnywhere:
+
+		% /cellar/software/InstallAnywhere/InstallAnywhere
+
+	Select the "Create New Project" option.
+
+	Click "Save As" to choose a name for your project, e.g.
+
+		Cytoscape-v2.2
+
+	Click next.
+
+	You should probably just click next throught the "Project Info"
+	page unless you have a good reason for changing something.
+	This page should be populated with the name you chose earlier
+	via the "Save As" button.
+
+	Next add the files.  Click the "Add Files..." button, 
+	select the directory where you unpacked the final release
+	described above, and click "Add All".  This will add all files
+	from the release directory to the InstallAnywhere package.  
+	Click done and next.
+
+	Next choose the main class.  Type the full package name of
+	the main class into the text box on the left of the wizard. 
+	InstallAnywhere doesn't seem to be able to find the main class
+	on its own.  Cytoscape's main class is:
+		
+		cytoscape.CyMain
+
+	If we had our own icon, we could change to it here.  Since
+	we don't, just click next.
+
+	Next you need to specify all of the jar files that need to be 
+	in the CLASSPATH.  To do this, either click on the lib 
+	directory and then select each individual jar file and
+	click the checkbox on the right, or simply click the 
+	"Automatically set Classpath" button.  The icons next to each
+	jar file name should change.  Make sure that each jar file
+	in the lib directory is selected as well was as cytoscape.jar.
+
+	Finally select the platforms you'd like to build installers
+	for.  At the very least you should select the Windows without
+	virtual machine option.  If you'd like to do more and include
+	the virtual machines with the release files, click on the 
+	Advanced Project Designer button, then the "Build" tab on the
+	left of the new screen that pops up.  
+
+	One last (optional) step is to specify the splash screen for the 
+	download website.  To do this, you'll need to check cytoscape out 
+	from CVS. Then, from the Advanced Project Designer, click on the
+	"Installer UI" and "Look 'n Feel" tabs on the left.  In the
+	"Startup Splash Screen Image" box select the splash image from
+	the cytoscape directory you just checked out:
+
+		~/cytoscape/images/CytoscapeSplashScreen.png
+
+	To create the release files, from either the basic wizard or 
+	the advanced designer, click the build option (available on the 
+	"Build" tab in the advanced designer).  Once you click build, 
+	InstallAnywhere will go about creating the releases you requested.  
+	The files will be put in the project directory you specified above 
+	in the PROJECT_NAME_Build_Output/Web_Installers directory.  
+
+	Once the release files have been created, simply copy the 
+	contents of the Web_Installers to the website where the code 
+	will be made available to the public.
+
+	Finally, VERIFY THAT THE RELEASES WORK!!!!!
+
 
 	D.  Update Cytocape.org Web Site
 	-------------------------------------------------
