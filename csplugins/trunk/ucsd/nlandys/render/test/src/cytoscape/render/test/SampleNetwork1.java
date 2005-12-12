@@ -107,12 +107,31 @@ public class SampleNetwork1
     m_rtree.insert(svr4, 85, 15, 97, 25);
     m_rtree.insert(b_modem, 63, 33, 71, 39);
     m_rtree.insert(t_modem, 63, 50, 71, 56);
+    m_rtree.insert(netb, 61, 64, 73, 74);
+    m_rtree.insert(t_netb, 66.5f, 78, 67.5f, 79);
+    m_rtree.insert(t_net, 0, 78, 92, 79);
+    m_rtree.insert(b_aix, 9.5f, 78, 10.5f, 79);
+    m_rtree.insert(b_solaris, 33.5f, 78, 34.5f, 79);
+    m_rtree.insert(b_gemini, 57.5f, 78, 58.5f, 79);
+    m_rtree.insert(b_gateway, 81.5f, 78, 82.5f, 79);
+    m_rtree.insert(aix, 4, 83, 16, 93);
+    m_rtree.insert(solaris, 28, 83, 40, 93);
+    m_rtree.insert(gemini, 52, 83, 64, 93);
+    m_rtree.insert(gateway, 76, 83, 88, 93);
+    m_rtree.insert(internet, 81.5f, 100, 82.5f, 101);
     m_graph.edgeCreate(bsdi, b_bsdi, true);
     m_graph.edgeCreate(sun, b_sun, true);
     m_graph.edgeCreate(svr4, b_svr4, true);
     m_graph.edgeCreate(slip, bsdi, true);
     m_graph.edgeCreate(sun, b_modem, true);
     m_graph.edgeCreate(b_modem, t_modem, true);
+    m_graph.edgeCreate(netb, t_modem, true);
+    m_graph.edgeCreate(netb, t_netb, true);
+    m_graph.edgeCreate(aix, b_aix, true);
+    m_graph.edgeCreate(solaris, b_solaris, true);
+    m_graph.edgeCreate(gemini, b_gemini, true);
+    m_graph.edgeCreate(gateway, b_gateway, true);
+    m_graph.edgeCreate(gateway, internet, true);
   }
 
   public void paint(Graphics g)
