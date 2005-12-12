@@ -4,6 +4,12 @@ import cytoscape.geom.rtree.RTree;
 import cytoscape.graph.dynamic.DynamicGraph;
 import cytoscape.graph.dynamic.util.DynamicGraphFactory;
 import cytoscape.render.immed.GraphGraphics;
+import cytoscape.render.stateful.EdgeDetails;
+import cytoscape.render.stateful.GraphLOD;
+import cytoscape.render.stateful.GraphRenderer;
+import cytoscape.render.stateful.NodeDetails;
+import cytoscape.util.intr.IntHash;
+import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Frame;
 import java.awt.Graphics;
@@ -35,8 +41,19 @@ public class SampleNetwork1
   private final int m_imgHeight = 600;
   private final DynamicGraph m_graph;
   private final RTree m_rtree;
+  private final GraphLOD m_lod;
+  private final NodeDetails m_nodeDetails;
+  private final EdgeDetails m_edgeDetails;
+  private final IntHash m_hash;
   private final Image m_img;
   private final GraphGraphics m_grafx;
+
+  private double m_currXCenter = 0.0d;
+  private double m_currYCenter = 0.0d;
+  private double m_currScale = 1.0d;
+  private int m_currMouseButton = 0; // 0: none; 2: middle; 3: right.
+  private int m_lastXMousePos = 0;
+  private int m_lastYMousePos = 0;
 
   public SampleNetwork1()
   {
@@ -44,35 +61,58 @@ public class SampleNetwork1
     m_graph = DynamicGraphFactory.instantiateDynamicGraph();
     m_rtree = new RTree();
     assembleGraph();
+    m_lod = new GraphLOD();
+    m_nodeDetails = new NodeDetails();
+    m_edgeDetails = new EdgeDetails();
+    m_hash = new IntHash();
     addNotify();
     m_img = createImage(m_imgWidth, m_imgHeight);
     m_grafx = new GraphGraphics(m_img, true);
+    updateImage();
+    addMouseListener(this);
+    addMouseMotionListener(this);
   }
 
   private void assembleGraph()
   {
-    final int bnet = m_graph.nodeCreate();
+    final int b_net = m_graph.nodeCreate();
+    final int b_bsdi = m_graph.nodeCreate();
+    final int b_sun = m_graph.nodeCreate();
+    final int b_svr4 = m_graph.nodeCreate();
     final int slip = m_graph.nodeCreate();
     final int bsdi = m_graph.nodeCreate();
     final int sun = m_graph.nodeCreate();
     final int svr4 = m_graph.nodeCreate();
-    final int bmodem = m_graph.nodeCreate();
-    final int tmodem = m_graph.nodeCreate();
+    final int b_modem = m_graph.nodeCreate();
+    final int t_modem = m_graph.nodeCreate();
     final int netb = m_graph.nodeCreate();
-    final int tnet = m_graph.nodeCreate();
+    final int t_netb = m_graph.nodeCreate();
+    final int t_net = m_graph.nodeCreate();
+    final int b_aix = m_graph.nodeCreate();
+    final int b_solaris = m_graph.nodeCreate();
+    final int b_gemini = m_graph.nodeCreate();
+    final int b_gateway = m_graph.nodeCreate();
     final int aix = m_graph.nodeCreate();
     final int solaris = m_graph.nodeCreate();
     final int gemini = m_graph.nodeCreate();
     final int gateway = m_graph.nodeCreate();
     final int internet = m_graph.nodeCreate();
-    m_rtree.insert(bnet, 33, 10, 100, 11);
+    m_rtree.insert(b_net, 33, 10, 100, 11);
+    m_rtree.insert(b_bsdi, 42.5f, 10, 43.5f, 11);
+    m_rtree.insert(b_sun, 66.5f, 10, 67.5f, 11);
+    m_rtree.insert(b_svr4, 90.5f, 10, 91.5f, 11);
     m_rtree.insert(slip, 5, 15, 17, 25);
     m_rtree.insert(bsdi, 37, 15, 49, 25);
     m_rtree.insert(sun, 61, 15, 73, 25);
     m_rtree.insert(svr4, 85, 15, 97, 25);
-    m_rtree.insert(bmodem, 63, 33, 71, 39);
-    m_rtree.insert(tmodem, 63, 50, 71, 56);
-    m_graph.edgeCreate(
+    m_rtree.insert(b_modem, 63, 33, 71, 39);
+    m_rtree.insert(t_modem, 63, 50, 71, 56);
+    m_graph.edgeCreate(bsdi, b_bsdi, true);
+    m_graph.edgeCreate(sun, b_sun, true);
+    m_graph.edgeCreate(svr4, b_svr4, true);
+    m_graph.edgeCreate(slip, bsdi, true);
+    m_graph.edgeCreate(sun, b_modem, true);
+    m_graph.edgeCreate(b_modem, t_modem, true);
   }
 
   public void paint(Graphics g)
@@ -92,6 +132,9 @@ public class SampleNetwork1
 
   private void updateImage()
   {
+    GraphRenderer.renderGraph(m_graph, m_rtree, m_lod, m_nodeDetails,
+                              m_edgeDetails, m_hash, m_grafx, Color.white,
+                              m_currXCenter, m_currYCenter, m_currScale);
   }
 
   public void mouseClicked(MouseEvent e) {}
@@ -100,40 +143,40 @@ public class SampleNetwork1
 
   public void mousePressed(MouseEvent e)
   {
-//     if (e.getButton() == MouseEvent.BUTTON3) {
-//       m_currMouseButton = 3;
-//       m_lastXMousePos = e.getX();
-//       m_lastYMousePos = e.getY(); }
-//     else if (e.getButton() == MouseEvent.BUTTON2) {
-//       m_currMouseButton = 2;
-//       m_lastXMousePos = e.getX();
-//       m_lastYMousePos = e.getY(); }
+    if (e.getButton() == MouseEvent.BUTTON3) {
+      m_currMouseButton = 3;
+      m_lastXMousePos = e.getX();
+      m_lastYMousePos = e.getY(); }
+    else if (e.getButton() == MouseEvent.BUTTON2) {
+      m_currMouseButton = 2;
+      m_lastXMousePos = e.getX();
+      m_lastYMousePos = e.getY(); }
   }
 
   public void mouseReleased(MouseEvent e)
   {
-//     if (e.getButton() == MouseEvent.BUTTON3) {
-//       if (m_currMouseButton == 3) m_currMouseButton = 0; }
-//     else if (e.getButton() == MouseEvent.BUTTON2) {
-//       if (m_currMouseButton == 2) m_currMouseButton = 0; }
+    if (e.getButton() == MouseEvent.BUTTON3) {
+      if (m_currMouseButton == 3) m_currMouseButton = 0; }
+    else if (e.getButton() == MouseEvent.BUTTON2) {
+      if (m_currMouseButton == 2) m_currMouseButton = 0; }
   }
 
   public void mouseDragged(MouseEvent e)
   {
-//     if (m_currMouseButton == 3) {
-//       double deltaX = e.getX() - m_lastXMousePos;
-//       double deltaY = e.getY() - m_lastYMousePos;
-//       m_lastXMousePos = e.getX();
-//       m_lastYMousePos = e.getY();
-//       m_currXCenter -= deltaX / m_currScale;
-//       m_currYCenter += deltaY / m_currScale; // y orientations are opposite.
-//       repaint(); }
-//     else if (m_currMouseButton == 2) {
-//       double deltaY = e.getY() - m_lastYMousePos;
-//       m_lastXMousePos = e.getX();
-//       m_lastYMousePos = e.getY();
-//       m_currScale *= Math.pow(2, -deltaY / 300.0d);
-//       repaint(); }
+    if (m_currMouseButton == 3) {
+      double deltaX = e.getX() - m_lastXMousePos;
+      double deltaY = e.getY() - m_lastYMousePos;
+      m_lastXMousePos = e.getX();
+      m_lastYMousePos = e.getY();
+      m_currXCenter -= deltaX / m_currScale;
+      m_currYCenter += deltaY / m_currScale; // y orientations are opposite.
+      repaint(); }
+    else if (m_currMouseButton == 2) {
+      double deltaY = e.getY() - m_lastYMousePos;
+      m_lastXMousePos = e.getX();
+      m_lastYMousePos = e.getY();
+      m_currScale *= Math.pow(2, -deltaY / 300.0d);
+      repaint(); }
   }
 
   public void mouseMoved(MouseEvent e) {}
