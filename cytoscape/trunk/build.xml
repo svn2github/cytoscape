@@ -582,7 +582,7 @@
         <chmod file="${mac_app.dir}/Contents/PkgInfo" perm="+x"/>
 
 	<echo message="Mac OS X App is now ready. See ${mac_app.dir}."/>
-	<echo message="To complete the Mac release, refer to README.txte/>
+	<echo message="To complete the Mac release, refer to README.txt"/>
     </target>
 
     <!-- ======================================================= -->
