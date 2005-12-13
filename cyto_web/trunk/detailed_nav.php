@@ -2,13 +2,13 @@
 		<tr>
 			<td width="120" id="first">
 				<h1>
-					<a href="download.php?file=cyto2_1">
+					<a href="download.php?file=cyto2_2">
 						Download Cytoscape
 					</a>
 				</h1>
 				<p>
-					<a href="download.php?file=cyto2_1">
-						Download Version 2.1
+					<a href="download.php?file=cyto2_2">
+						Download Version 2.2
 					</a>
 				</p>
 				<p>
