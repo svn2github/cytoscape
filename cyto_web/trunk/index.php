@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
         "http://www.w3.org/TR/html4/loose.dtd">
 <? include "config.php"; ?>
-<! Updated by kono for 2.2 on 11_23_2005 >
+<! Updated by kono for 2.2 release on 12_13_2005 >
 <html>
 	<head>
 		<title>
@@ -51,19 +51,19 @@
 					<td width="440" valign="bottom" align="right">
 						<div id="article">
 							<h2>
-								<a href="download.php?file=cyto2_1">
-									Download Cytoscape 2.1!
+								<a href="download.php?file=cyto2_2">
+									Download Cytoscape 2.2!
 								</a>
 							</h2>
 							<p>
-								New!&nbsp; Cytoscape 2.1 is now available.
+								New!&nbsp; Cytoscape 2.2 is now available.
 								<br>
 								<br>
-									<a href="cyto_2_1_features.php">
-									2.1 Release Notes &raquo;
+									<a href="cyto_2_2_features.php">
+									2.2 Release Notes &raquo;
 									</a>
 								<br>
-									<a href="download.php?file=cyto2_1">
+									<a href="download.php?file=cyto2_2">
 									Download &raquo;
 								</a>
 								<br>
@@ -89,13 +89,13 @@
 								<br>
 								<p>
 								<big><b>
-									<i>Coming Soon...</i>&nbsp;&nbsp;Cytoscape 2.2
+									<i>New! </i>&nbsp;&nbsp;Announcing Cytoscape 2.2
 								</b></big>
 								<table width="100%">
 									<tr valign="top">
 										<td width="47%" valign="top">
 											<br>
-											(Updated 11/23/2005)
+											(Updated 12/13/2005)
 											<br>
 											New Features include:
 											<br>
