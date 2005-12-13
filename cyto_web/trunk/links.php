@@ -15,7 +15,7 @@
     "0" summary="">
       <tr>
         <td width="10">
-           
+          ï¿½
         </td>
         <td valign="center">
           <h1>
@@ -58,6 +58,7 @@ and provides a powerful framework for user interaction and data display.
 <br>
 <a href="http://pynetconv.sourceforge.net/">pyNetConv - Interconverts network file formats e.g. .net, .gml, .sif</a>
 <br>
+<a href="http://www.geneontology.org/">The Gene Ontology (for data anotation)</a>
 <br><br>
 
 <big><b>Projects Using Cytoscape</b></big>
@@ -71,8 +72,10 @@ and provides a powerful framework for user interaction and data display.
 <a href="http://grants1.nih.gov/grants/index.cfm">NIH NIGMS grant 1 R01 GM070743-01</a>
 <br>
 <a href="http://www.unilever.com/home/">Unilever</a>
+<br>
+<a href="http://www.nsf.gov/">National Science Foundation (NSF)</a>
+<br>
 <br><br>
-
     </div>
     <? include "footer.php"; ?>
   </body>
