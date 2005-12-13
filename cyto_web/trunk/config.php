@@ -68,7 +68,7 @@ $cyto2_2_mac_east = $chianti_base."Cyto-2_2/Cytoscape-v2.2.dmg.zip";
 $cyto1_install_anywhere = "http://db.systemsbiology.net:8080/cytoscape/download/installer/installer1.1.1/install.htm";
 $cyto2_install_anywhere = "ftp://baker.systemsbiology.net/pub/xmas/cytoscape2.0/cytoscape2.0_Build_Output/Web_Installers/install.htm";
 $cyto2_1_install_anywhere = "http://chianti.ucsd.edu/Cyto2.1/install.htm";
-$cyto2_2_install_anywhere = "http://chianti.ucsd.edu/Cyto2.2/install.htm";
+$cyto2_2_install_anywhere = "http://chianti.ucsd.edu/Cyto-2_2/install.htm";
 
 #  Production Settings
 #  Do not Modify

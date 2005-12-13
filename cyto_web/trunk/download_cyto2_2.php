@@ -6,19 +6,19 @@
 		<p>
 		You may now download Cytoscape for Unix, Windows and Mac OS X systems through any of the following
 		four options:
-		</p><!--
+		</p>
 		<h4>
 		Option 1:  Windows / Linux:  One Step Installation
 		</h4>
 		<p>
 		</p>
 		<UL>
-			<LI><a href='<?= $cyto2_1_install_anywhere ?>'>
+			<LI><a href='<?= $cyto2_2_install_anywhere ?>'>
 			Install Cytoscape 2.2 (One Click Install)</a>
 		</UL>
-		</h2>-->
+		</h2>
 		<p>
-		<h4>Option 1:  All Platforms:  Download a .tar.gz or .zip distribution file
+		<h4>Option 2:  All Platforms:  Download a .tar.gz or .zip distribution file
 		</H4>
 		</p>
 		<p>
@@ -40,7 +40,7 @@
 		<p>
 		</p>
 		<h4>
-		Option 2:  Mac OS X Release
+		Option 3:  Mac OS X Release
 		</h4>
 		<p>
 		<ul>
@@ -50,7 +50,7 @@
 
 		<p>
 		<p>
-		<h4>Option 3:  All Platforms:  Download the Complete Source Code for Cytoscape (coming soon)
+		<h4>Option 4:  All Platforms:  Download the Complete Source Code for Cytoscape (coming soon)
 		</h4>
     		<UL>
 		    <li><!--<a href='<?= $cyto2_2_source_east ?>'>-->Cytoscape source<!--</a>--> - USA, East Coast (New York, NY).</li>
