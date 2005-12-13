@@ -32,7 +32,6 @@
 				<a href='<?= $cyto2_2_zip_east ?>'>
 					Windows
 				</a>
-				- USA, East Coast (New York, NY).
 			</li>
 		</ul>
 		</p>
@@ -50,10 +49,10 @@
 
 		<p>
 		<p>
-		<h4>Option 4:  All Platforms:  Download the Complete Source Code for Cytoscape (coming soon)
+		<h4>Option 4:  All Platforms:  Download the Complete Source Code for Cytoscape
 		</h4>
     		<UL>
-		    <li><!--<a href='<?= $cyto2_2_source_east ?>'>-->Cytoscape source<!--</a>--> - USA, East Coast (New York, NY).</li>
+		    <li><a href='<?= $cyto2_2_source_east ?>'>Cytoscape source</a></li>
 		    <li>Note: Saving to disk via the right-click menu is recommended.</li>
 		</UL>
   </p>
