@@ -154,6 +154,8 @@ public class SampleNetwork1
     final Insets insets = insets();
     updateImage();
     g.drawImage(m_img, insets.left, insets.top, null);
+    resize(m_imgWidth + insets.left + insets.right,
+           m_imgHeight + insets.top + insets.bottom);
   }
 
   private void updateImage()
