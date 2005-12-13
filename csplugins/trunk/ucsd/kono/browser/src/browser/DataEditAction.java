@@ -68,7 +68,7 @@ public class DataEditAction extends AbstractUndoableEdit {
 				newIntVal = Integer.valueOf(strObject);
 				data.setAttribute(id, att, newIntVal);
 			} catch( Exception nfe ) {
-				errMessage = "Attribute " + att + " should be an integer.";
+				errMessage = "Attribute " + att + " should be an integer (or the number is too big/small).";
 				showErrorWindow( errMessage );
 			}
 			
@@ -78,7 +78,7 @@ public class DataEditAction extends AbstractUndoableEdit {
 				newDblVal = Double.valueOf(strObject);
 				data.setAttribute(id, att, newDblVal);
 			} catch( Exception e ) {
-				errMessage = "Attribute " + att + " should be a floating point number.";
+				errMessage = "Attribute " + att + " should be a floating point number (or the number is too big/small).";
 				showErrorWindow( errMessage );
 			}
 		} else if (targetType == CyAttributes.TYPE_BOOLEAN) {

@@ -228,5 +228,6 @@ public class AttributePanel extends JPanel implements PropertyChangeListener,
 
 	public void propertyChange(PropertyChangeEvent e) {
 		// updateLists();
+		
 	}
 }

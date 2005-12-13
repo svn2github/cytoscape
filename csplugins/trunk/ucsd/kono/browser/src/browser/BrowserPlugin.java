@@ -6,6 +6,8 @@ import javax.swing.JCheckBoxMenuItem;
 import javax.swing.KeyStroke;
 
 import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
+import cytoscape.data.Semantics;
 import cytoscape.plugin.CytoscapePlugin;
 
 /**
@@ -54,10 +56,12 @@ public class BrowserPlugin extends CytoscapePlugin {
 	// For this version of browser, it creates Cytopanel3 only.
 	// Filter functions are implemented as an Advanced Window.
 	protected void initialize() {
+		
 		DataTable table_nodes = new DataTable(Cytoscape.getNodeAttributes(),
 				DataTable.NODES);
 		DataTable table_edges = new DataTable(Cytoscape.getEdgeAttributes(),
 				DataTable.EDGES);
+	
 	}
 
 }

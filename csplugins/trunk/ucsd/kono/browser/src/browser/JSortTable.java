@@ -382,7 +382,8 @@ public class JSortTable extends JTable implements MouseListener, ActionListener 
 							cytoscape.util.OpenBrowser.openURL(url.toString());
 						}
 
-					} catch (Exception ignore) {
+					} catch (Exception urle) {
+						//System.out.println("##### " + urle.getMessage());
 					}
 				}
 
@@ -469,19 +470,20 @@ public class JSortTable extends JTable implements MouseListener, ActionListener 
 
 		if (tester != null && tester.equals(List.class)) {
 			int idCol = 0;
-			for( int i = 0; i < this.getColumnCount(); i++) {
-				if( this.getColumnName( i ).equals("ID") ) {
+			for (int i = 0; i < this.getColumnCount(); i++) {
+				if (this.getColumnName(i).equals("ID")) {
 					idCol = i;
 					break;
 				}
 			}
-			
+
 			String idField = (String) this.getValueAt(row, idCol);
-			//System.out.println("ID is col number: " + idCol + " name = " + idField );
-			
-			
+			// System.out.println("ID is col number: " + idCol + " name = " +
+			// idField );
+
 			List contents = (List) model.getAttributeValue(
-					CyAttributes.TYPE_SIMPLE_LIST, idField, this.getColumnName(column));
+					CyAttributes.TYPE_SIMPLE_LIST, idField, this
+							.getColumnName(column));
 			cellMenu = new JPopupMenu();
 			List arrayList = new ArrayList();
 			arrayList = contents;

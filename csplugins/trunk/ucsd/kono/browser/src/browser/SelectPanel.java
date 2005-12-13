@@ -20,9 +20,11 @@ import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
 import cytoscape.CyNetwork;
+import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.FlagEvent;
 import cytoscape.data.FlagEventListener;
+import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 import filter.model.Filter;
 import filter.model.FilterManager;
@@ -51,8 +53,9 @@ public class SelectPanel extends JPanel implements PropertyChangeListener,
 				.getPreferredSize().getHeight()));
 
 		// Filter is disabled for now...
-		filterBox = new JComboBox( FilterManager.defaultManager().getComboBoxModel() );
-		//filterBox = new JComboBox();
+		filterBox = new JComboBox(FilterManager.defaultManager()
+				.getComboBoxModel());
+		// filterBox = new JComboBox();
 
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(
 				this);
@@ -76,7 +79,6 @@ public class SelectPanel extends JPanel implements PropertyChangeListener,
 	}
 
 	public void onFlagEvent(FlagEvent event) {
-
 		if (mirrorSelection.isSelected()) {
 			if (graphObjectType == NODES
 					&& (event.getTargetType() == FlagEvent.SINGLE_NODE || event
@@ -143,16 +145,31 @@ public class SelectPanel extends JPanel implements PropertyChangeListener,
 		if (e.getPropertyName().equals(Cytoscape.NETWORK_CREATED)
 				|| e.getPropertyName().equals(Cytoscape.NETWORK_DESTROYED)) {
 			updateNetworkBox();
-
+			tableModel.setTableDataObjects(new ArrayList());
 		}
 
 		else if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUSED
-				|| e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED) {
+				|| e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED
+				|| e.getPropertyName() == Cytoscape.NETWORK_LOADED) {
+
 			if (current_network != null) {
 				current_network.removeFlagEventListener(this);
 			}
 			current_network = Cytoscape.getCurrentNetwork();
-			current_network.addFlagEventListener(this);
+			if(current_network != null ) {
+				current_network.addFlagEventListener(this);
+			}
+		
+			if (graphObjectType == NODES) {
+				// node selection
+				tableModel.setTableDataObjects(new ArrayList(Cytoscape
+						.getCurrentNetwork().getFlaggedNodes()));
+			} else if (graphObjectType == EDGES) {
+				// edge selection
+				tableModel.setTableDataObjects(new ArrayList(Cytoscape
+						.getCurrentNetwork().getFlaggedEdges()));
+			}
+		
 		}
 
 	}

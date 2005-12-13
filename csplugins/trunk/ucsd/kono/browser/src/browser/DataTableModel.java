@@ -86,6 +86,9 @@ public class DataTableModel extends DefaultTableModel implements
 	public void setTableDataObjects(List graph_objects) {
 		this.graph_objects = graph_objects;
 		setTable();
+
+		
+		
 	}
 
 	public void setGraphObjectType(int got) {
@@ -96,6 +99,8 @@ public class DataTableModel extends DefaultTableModel implements
 	// *** need to add an argument to copy edge attribute name correctly.
 	//
 	protected void setTable() {
+		
+		
 		int att_length = attributes.size() + 1;
 		int go_length = graph_objects.size();
 
@@ -274,8 +279,18 @@ public class DataTableModel extends DefaultTableModel implements
 	}
 
 	public boolean isCellEditable(int rowIndex, int colIndex) {
-		Class objectType = this.getValueAt(rowIndex, colIndex).getClass();
-		// System.out.println( "####Tyep is " + objectType.toString() );
+		//System.out.println("row = " + rowIndex + ", col = " + colIndex);
+		
+		Class objectType = null;
+		Object selectedObj = this.getValueAt(rowIndex, colIndex);
+		
+		if( selectedObj == null && colIndex != 0 ) {
+			return true;
+		} else if (selectedObj != null ) {
+			objectType = this.getValueAt(rowIndex, colIndex).getClass();
+		}
+		
+		
 		if (objectType != null) {
 
 			if (colIndex == 0) {

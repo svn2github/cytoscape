@@ -82,12 +82,12 @@ public class AttributePanel2 extends JPanel implements PropertyChangeListener,
 	private JList attributeList = null;
 	private JButton jButton1 = null;
 	private JLabel jLabel = null;
-	
+
 	private int graphObjectType;
-	
 
 	public AttributePanel2() {
 		super();
+
 		// TODO Auto-generated constructor stub
 		initialize(null);
 	}
@@ -96,7 +96,7 @@ public class AttributePanel2 extends JPanel implements PropertyChangeListener,
 			LabelModel l_model, int got) {
 		this.data = data;
 		this.graphObjectType = got;
-		
+
 		initialize(a_model);
 	}
 
@@ -115,6 +115,8 @@ public class AttributePanel2 extends JPanel implements PropertyChangeListener,
 		getJPopupMenu(a_model);
 		getJPopupMenu1();
 
+		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(
+				this);
 	}
 
 	public String getSelectedAttribute() {
@@ -157,18 +159,22 @@ public class AttributePanel2 extends JPanel implements PropertyChangeListener,
 	}
 
 	public void contentsChanged(ListDataEvent e) {
+		// System.out.println("###########Browser noticed lc!");
 	}
 
 	public void intervalAdded(ListDataEvent e) {
 		// handleEvent(e);
+
 	}
 
 	public void intervalRemoved(ListDataEvent e) {
 		// handleEvent(e);
+
 	}
 
 	public void propertyChange(PropertyChangeEvent e) {
 		// updateLists();
+
 	}
 
 	public void actionPerformed(ActionEvent arg0) {
@@ -230,7 +236,7 @@ public class AttributePanel2 extends JPanel implements PropertyChangeListener,
 			jMenuItem.setText("String Attribute");
 			jMenuItem.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					System.out.println("actionPerformed() s"); // TODO
+
 					// Auto-generated
 					// Event stub
 					// actionPerformed()
@@ -273,7 +279,7 @@ public class AttributePanel2 extends JPanel implements PropertyChangeListener,
 			jMenuItem2.setText("Floating Point Attribute");
 			jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					System.out.println("actionPerformed()"); // TODO
+
 					// Auto-generated
 					// Event stub
 					// actionPerformed()
@@ -295,7 +301,7 @@ public class AttributePanel2 extends JPanel implements PropertyChangeListener,
 			jMenuItem3.setText("Boolean Attribute");
 			jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					System.out.println("actionPerformed()"); // TODO
+
 					// Auto-generated
 					// Event stub
 					// actionPerformed()
@@ -364,35 +370,36 @@ public class AttributePanel2 extends JPanel implements PropertyChangeListener,
 
 			attributeList = new JList(a_model);
 			attributeList.addMouseListener(new java.awt.event.MouseAdapter() {
-				
-				ArrayList       indices = new ArrayList();
-				
+
+				ArrayList indices = new ArrayList();
+
 				public void mouseClicked(java.awt.event.MouseEvent e) {
 					// TODO Auto-generated Event stub mouseClicked()
 					if (javax.swing.SwingUtilities.isRightMouseButton(e)) {
-						
-							jPopupMenu.setVisible(false);
+
+						jPopupMenu.setVisible(false);
 					} else {
 						int index = attributeList.locationToIndex(e.getPoint());
-						 
-                        Integer indexObj = new Integer(index);
 
-                        //is this selected? if so remove it.
-                        if (indices.contains(indexObj)) {
-                                indices.remove(indexObj);
-                        }
+						Integer indexObj = new Integer(index);
 
-                        //otherwise add it to our list
-                        else indices.add(indexObj);
+						// is this selected? if so remove it.
+						if (indices.contains(indexObj)) {
+							indices.remove(indexObj);
+						}
 
-                        //copy to an int array
-                        int[] arr = new int[indices.size()];
-                        for (int i = 0; i < arr.length; i++) {
-                                int item = ((Integer) indices.get(i)).intValue();
-                                arr[i] = item;
-                        }
-                        //set selected indices
-                        attributeList.setSelectedIndices(arr);
+						// otherwise add it to our list
+						else
+							indices.add(indexObj);
+
+						// copy to an int array
+						int[] arr = new int[indices.size()];
+						for (int i = 0; i < arr.length; i++) {
+							int item = ((Integer) indices.get(i)).intValue();
+							arr[i] = item;
+						}
+						// set selected indices
+						attributeList.setSelectedIndices(arr);
 					}
 
 				}
@@ -433,20 +440,40 @@ public class AttributePanel2 extends JPanel implements PropertyChangeListener,
 	//
 	private void createNewAttribute(String type) {
 
-		String name = JOptionPane.showInputDialog(this,
-				"Please enter new attribute name: ", "Create New " + type
-						+ " Attribute", JOptionPane.QUESTION_MESSAGE);
-		
-		if (name != null) {
-			//Object objects = tableModel.getObjects();
-			Object objects = null;
+		String[] existingAttrs = data.getAttributeNames();
+		boolean dupFlag = true;
+		String name = null;
+
+		while (dupFlag == true) {
+			name = JOptionPane.showInputDialog(this,
+					"Please enter new attribute name: ", "Create New " + type
+							+ " Attribute", JOptionPane.QUESTION_MESSAGE);
+			for (int i = 0; i < existingAttrs.length; i++) {
+				
+				
+				if (existingAttrs[i].equals(name) == false ) {
+					dupFlag = false;
+				} else if ( existingAttrs[i].equals(name) ) {
+					JOptionPane.showMessageDialog(null,
+							"Attribute " + name + " already exists.", "Error!",
+							JOptionPane.ERROR_MESSAGE);
+					dupFlag = true;
+					break;
+				} 
+			}
 			
-			if(graphObjectType == DataTable.NODES) {
+		}
+
+		if (name != null) {
+			// Object objects = tableModel.getObjects();
+			Object objects = null;
+
+			if (graphObjectType == DataTable.NODES) {
 				objects = Cytoscape.getCyNodesList();
 			} else {
 				objects = Cytoscape.getCyEdgesList();
 			}
-			
+
 			for (Iterator i = ((List) objects).iterator(); i.hasNext();) {
 				GraphObject go = (GraphObject) i.next();
 				if (type.equals("String")) {
