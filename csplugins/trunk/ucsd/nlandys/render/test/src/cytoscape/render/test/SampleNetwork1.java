@@ -15,6 +15,7 @@ import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Insets;
+import java.awt.Paint;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -62,7 +63,13 @@ public class SampleNetwork1
     m_rtree = new RTree();
     assembleGraph();
     m_lod = new GraphLOD();
-    m_nodeDetails = new NodeDetails();
+    m_nodeDetails = new NodeDetails() {
+        public Paint fillPaint(int node) {
+          return new Color(0, 0, 0, 0); }
+        public float borderWidth(int node) {
+          return 0.1f; }
+        public Paint borderPaint(int node) {
+          return Color.black; } };
     m_edgeDetails = new EdgeDetails();
     m_hash = new IntHash();
     addNotify();
