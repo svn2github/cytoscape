@@ -35,7 +35,7 @@
 					</a>
 				</h1>
 				<p>
-					<a href="manual/Cytoscape2_1Manual.pdf">
+					<a href="http://chianti.ucsd.edu/Cyto-2_2/Cytoscape2_2Manual.pdf">
 						PDF format</a>, explains all basic features of Cytoscape.
 					<a href="http://www.adobe.com/products/acrobat/readstep2.html">
 						Get Acrobat reader
