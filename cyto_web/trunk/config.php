@@ -59,7 +59,7 @@ $cyto2_1_mac_east = $cbio_base."cytoscape-v2.1.dmg.zip";
 $cyto2_2_gz_east = $chianti_base."Cyto-2_2/cytoscape-v2.2.tar.gz";
 $cyto2_2_zip_east = $chianti_base."Cyto-2_2/cytoscape-v2.2.zip";
 $cyto2_2_source_east = $chianti_base."Cyto-2_2/cytoscapeSource-v2.2.tar.gz";
-$cyto2_2_mac_east = $chianti_base."Cyto-2_2/cytoscape-v2.2.dmg.zip";
+$cyto2_2_mac_east = $chianti_base."Cyto-2_2/Cytoscape-v2.2.dmg.zip";
 
 
 #################################################

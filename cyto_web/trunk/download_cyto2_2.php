@@ -40,11 +40,11 @@
 		<p>
 		</p>
 		<h4>
-		Option 2:  Mac OS X Release (coming soon)
+		Option 2:  Mac OS X Release
 		</h4>
 		<p>
 		<ul>
-			<li><!--<a href='<?= $cyto2_2_mac_east ?>' >-->Mac OS X Release<!--</A>--></li>
+			<li><a href='<?= $cyto2_2_mac_east ?>' >Mac OS X Release</A></li>
 		</ul>
 		</p>
 
