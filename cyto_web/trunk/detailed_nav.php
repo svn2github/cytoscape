@@ -52,7 +52,7 @@
 					<a href="roadmap.php">
 						Roadmap
 					</a> |
-    				<a href="http://cbio.mskcc.org/cytoscape/javadoc/">
+    				<a href="http://chianti.ucsd.edu/Cyto-2_2/javadoc/">
 						Javadoc API
 					</a> |
     			    <a href="cgi-bin/moin.cgi/">
