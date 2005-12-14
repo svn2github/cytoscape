@@ -283,8 +283,7 @@ public final class GraphGraphics
    * xMin, yMin, xMax, and yMax specify the extents of the node in the
    * node coordinate space, not the image coordinate space.  Thus, these
    * values will likely not change from frame to frame, as zoom and pan
-   * operations are performed.  If either the width or height of this node
-   * is zero, nothing is rendered.<p>
+   * operations are performed.<p>
    * This method will not work unless clear() has been called at least once
    * previously.
    * @param xMin an extent of the node to draw, in node coordinate space.
@@ -292,9 +291,8 @@ public final class GraphGraphics
    * @param xMax an extent of the node to draw, in node coordinate space.
    * @param yMax an extent of the node to draw, in node coordinate space.
    * @param fillColor the [fully opaque] color to use when drawing the node.
-   * @exception IllegalArgumentException if xMin is not less than or equal to
-   *   xMax, if yMin is not less than or equal to yMax, or if fillColor is not
-   *   opaque.
+   * @exception IllegalArgumentException if xMin is not less than xMax, if
+   *   yMin is not less than yMax, or if fillColor is not opaque.
    */
   public final void drawNodeLow(final float xMin, final float yMin,
                                 final float xMax, final float yMax,
@@ -306,13 +304,12 @@ public final class GraphGraphics
           ("calling thread is not AWT event dispatcher");
       if (!m_cleared) throw new IllegalStateException
                         ("clear() has not been called previously");
-      if (!(xMin <= xMax)) throw new IllegalArgumentException
-                            ("xMin not less than or equal to xMax");
-      if (!(yMin <= yMax)) throw new IllegalArgumentException
-                            ("yMin not less than or equal to yMax");
+      if (!(xMin < xMax)) throw new IllegalArgumentException
+                            ("xMin not less than xMax");
+      if (!(yMin < yMax)) throw new IllegalArgumentException
+                            ("yMin not less than yMax");
       if (fillColor.getAlpha() != 255)
         throw new IllegalArgumentException("fillColor is not opaque"); }
-    if (xMin == xMax || yMin == yMax) return;
     if (m_gMinimal == null) makeMinimalGraphics();
     // I'm transforming points manually because the resulting underlying
     // graphics pipeline used is much faster.
@@ -346,8 +343,7 @@ public final class GraphGraphics
    * The xMin, yMin, xMax, and yMax parameters specify the extents of the
    * node shape (in the node coordinate system), including the border
    * width.  That is, the drawn border won't extend beyond the extents
-   * specified.  If either the width or height of this node is zero, nothing
-   * is rendered.<p>
+   * specified.<p>
    * There is an imposed constraint on borderWidth which, using the
    * implemented algorithms, prevents strange-looking borders.  The
    * constraint is that borderWidth may not exceed
@@ -381,9 +377,8 @@ public final class GraphGraphics
    * @param borderPaint if borderWidth is not zero, this paint is used for
    *   rendering the node border; otherwise, this parameter is ignored (and
    *   may be null).
-   * @exception IllegalArgumentException if xMin is not less than or equal to
-   *   xMax or if yMin is not less than or equal to yMax,
-   *   if borderWidth is negative or is greater
+   * @exception IllegalArgumentException if xMin is not less than xMax or if
+   *   yMin is not less than yMax, if borderWidth is negative or is greater
    *   than Math.min(xMax - xMin, yMax - yMin) / 6 (for custom node shapes
    *   borderWidth may be even more limited, depending on the specific shape),
    *   if nodeShape is SHAPE_ROUNDED_RECTANGLE and the condition
@@ -404,10 +399,10 @@ public final class GraphGraphics
           ("calling thread is not AWT event dispatcher");
       if (!m_cleared) throw new IllegalStateException
                       ("clear() has not been called previously");
-      if (!(xMin <= xMax)) throw new IllegalArgumentException
-                            ("xMin not less than or equal to xMax");
-      if (!(yMin <= yMax)) throw new IllegalArgumentException
-                            ("yMin not less than or equal to yMax");
+      if (!(xMin < xMax)) throw new IllegalArgumentException
+                            ("xMin not less than xMax");
+      if (!(yMin < yMax)) throw new IllegalArgumentException
+                            ("yMin not less than yMax");
       if (!(borderWidth >= 0.0f))
         throw new IllegalArgumentException
           ("borderWidth not zero or positive");
@@ -423,8 +418,6 @@ public final class GraphGraphics
           throw new IllegalArgumentException
             ("rounded rectangle does not meet constraint " +
              "max(width, height) < 2 * min(width, height)"); } }
-
-    if (xMin == xMax || yMin == yMax) return;
 
     if (borderWidth == 0.0f) {
       m_g2d.setPaint(fillPaint);
@@ -523,10 +516,10 @@ public final class GraphGraphics
       if (!EventQueue.isDispatchThread())
         throw new IllegalStateException
           ("calling thread is not AWT event dispatcher");
-      if (!(xMin <= xMax)) throw new IllegalArgumentException
-                            ("xMin not less than or equal to xMax");
-      if (!(yMin <= yMax)) throw new IllegalArgumentException
-                            ("yMin not less than or equal to yMax");
+      if (!(xMin < xMax)) throw new IllegalArgumentException
+                            ("xMin not less than xMax");
+      if (!(yMin < yMax)) throw new IllegalArgumentException
+                            ("yMin not less than yMax");
       if (nodeShape == SHAPE_ROUNDED_RECTANGLE) {
         final double width = ((double) xMax) - xMin;
         final double height = ((double) yMax) - yMin;
