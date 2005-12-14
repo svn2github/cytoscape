@@ -11,6 +11,7 @@ import cytoscape.render.stateful.NodeDetails;
 import cytoscape.util.intr.IntHash;
 import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -122,6 +123,7 @@ public class SampleNetwork1
     }
     m_lod = new GraphLOD();
     m_nodeDetails = new NodeDetails() {
+        private final Font fixedFont = new Font("Monospaced", Font.BOLD, 1);
         public Paint fillPaint(int node) {
           if (node == b_net || node == t_net) {
             return Color.black; }
@@ -136,7 +138,60 @@ public class SampleNetwork1
           else {
             return 0.3f; } }
         public Paint borderPaint(int node) {
-          return Color.black; } };
+          return Color.black; }
+        public int labelCount(int node) {
+          if (node == b_net) return 1;
+          if (node == b_bsdi || node == b_sun || node == b_svr4) return 0;
+          if (node == slip || node == bsdi || node == sun || node == svr4)
+            return 2;
+          if (node == b_modem || node == t_modem) return 1;
+          if (node == netb) return 2;
+          if (node == t_netb) return 0;
+          if (node == t_net) return 1;
+          if (node == b_aix || node == b_solaris || node == b_gemini ||
+              node == b_gateway) return 0;
+          if (node == aix || node == solaris || node == gemini ||
+              node == gateway) return 2;
+          if (node == internet) return 1;
+          else return 0; }
+        public String labelText(int node, int labelInx) {
+          if (node == b_net) return "Ethernet";
+          if (node == slip) {
+            if (labelInx == 0) return "slip";
+            else return "BSD/386 1.0"; }
+          if (node == bsdi) {
+            if (labelInx == 0) return "bsdi";
+            else return "BSD/386 1.0"; }
+          if (node == sun) {
+            if (labelInx == 0) return "sun";
+            else return "SunOS 4.1.3"; }
+          if (node == svr4) {
+            if (labelInx == 0) return "svr4";
+            else return "SVR4"; }
+          if (node == b_modem || node == t_modem) return "modem";
+          if (node == netb) {
+            if (labelInx == 0) return "netb";
+            else return "Telebit\nNetBlazer"; }
+          if (node == t_net) return "Ethernet";
+          if (node == aix) {
+            if (labelInx == 0) return "aix";
+            else return "AIX 3.2.2"; }
+          if (node == solaris) {
+            if (labelInx == 0) return "solaris";
+            else return "Solaris 2.2"; }
+          if (node == gemini) {
+            if (labelInx == 0) return "gemini";
+            else return "SunOS 4.1.1"; }
+          if (node == gateway) {
+            if (labelInx == 0) return "gateway";
+            else return "Cisco\nrouter"; }
+          if (node == internet) return "Internet";
+          else return ""; }
+        public Font labelFont(int node, int labelInx) {
+          return fixedFont; }
+        public Paint labelPaint(int node, int labelInx) {
+          return Color.black; }
+      };
     m_edgeDetails = new EdgeDetails();
     m_hash = new IntHash();
     addNotify();
