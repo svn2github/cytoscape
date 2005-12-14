@@ -123,9 +123,18 @@ public class SampleNetwork1
     m_lod = new GraphLOD();
     m_nodeDetails = new NodeDetails() {
         public Paint fillPaint(int node) {
-          return new Color(0, 0, 0, 0); }
+          if (node == b_net || node == t_net) {
+            return Color.black; }
+          else {
+            return new Color(0, 0, 0, 0); } }
         public float borderWidth(int node) {
-          return 0.1f; }
+          if (node == b_net || node == b_bsdi || node == b_sun ||
+              node == b_svr4 || node == t_netb || node == t_net ||
+              node == b_aix || node == b_solaris || node == b_gemini ||
+              node == b_gateway || node == internet) {
+            return 0.0f; }
+          else {
+            return 0.3f; } }
         public Paint borderPaint(int node) {
           return Color.black; } };
     m_edgeDetails = new EdgeDetails();
