@@ -93,8 +93,8 @@ public class SampleNetwork1
       m_rtree.insert(bsdi, 37, 15, 49, 25);
       m_rtree.insert(sun, 61, 15, 73, 25);
       m_rtree.insert(svr4, 85, 15, 97, 25);
-      m_rtree.insert(b_modem, 63, 33, 71, 39);
-      m_rtree.insert(t_modem, 63, 50, 71, 56);
+      m_rtree.insert(b_modem, 62.5f, 33, 71.5f, 39);
+      m_rtree.insert(t_modem, 62.5f, 50, 71.5f, 56);
       m_rtree.insert(netb, 61, 64, 73, 74);
       m_rtree.insert(t_netb, 66.5f, 78, 67.5f, 79);
       m_rtree.insert(t_net, 0, 78, 92, 79);
@@ -121,8 +121,10 @@ public class SampleNetwork1
       e_gateway = m_graph.edgeCreate(gateway, b_gateway, true);
       e_internet = m_graph.edgeCreate(gateway, internet, true);
     }
-    m_lod = new GraphLOD();
+    m_lod = new GraphLOD() {
+        public boolean textAsShape(int a, int b) { return true; } };
     m_nodeDetails = new NodeDetails() {
+        private final Font normalFont = new Font("SansSerif", Font.PLAIN, 1);
         private final Font fixedFont = new Font("Monospaced", Font.BOLD, 1);
         public Paint fillPaint(int node) {
           if (node == b_net || node == t_net) {
@@ -157,40 +159,80 @@ public class SampleNetwork1
         public String labelText(int node, int labelInx) {
           if (node == b_net) return "Ethernet";
           if (node == slip) {
-            if (labelInx == 0) return "slip";
+            if (labelInx == 1) return "slip";
             else return "BSD/386 1.0"; }
           if (node == bsdi) {
-            if (labelInx == 0) return "bsdi";
+            if (labelInx == 1) return "bsdi";
             else return "BSD/386 1.0"; }
           if (node == sun) {
-            if (labelInx == 0) return "sun";
+            if (labelInx == 1) return "sun";
             else return "SunOS 4.1.3"; }
           if (node == svr4) {
-            if (labelInx == 0) return "svr4";
+            if (labelInx == 1) return "svr4";
             else return "SVR4"; }
           if (node == b_modem || node == t_modem) return "modem";
           if (node == netb) {
-            if (labelInx == 0) return "netb";
+            if (labelInx == 1) return "netb";
             else return "Telebit\nNetBlazer"; }
           if (node == t_net) return "Ethernet";
           if (node == aix) {
-            if (labelInx == 0) return "aix";
+            if (labelInx == 1) return "aix";
             else return "AIX 3.2.2"; }
           if (node == solaris) {
-            if (labelInx == 0) return "solaris";
+            if (labelInx == 1) return "solaris";
             else return "Solaris 2.2"; }
           if (node == gemini) {
-            if (labelInx == 0) return "gemini";
+            if (labelInx == 1) return "gemini";
             else return "SunOS 4.1.1"; }
           if (node == gateway) {
-            if (labelInx == 0) return "gateway";
+            if (labelInx == 1) return "gateway";
             else return "Cisco\nrouter"; }
           if (node == internet) return "Internet";
           else return ""; }
         public Font labelFont(int node, int labelInx) {
+          if (labelInx == 0) return normalFont;
           return fixedFont; }
+        public double labelScaleFactor(int node, int labelInx) {
+          return 2.0d; }
         public Paint labelPaint(int node, int labelInx) {
           return Color.black; }
+        public byte labelTextAnchor(int node, int labelInx) {
+          if (node == b_net) return NodeDetails.ANCHOR_NORTHEAST;
+          if (node == slip || node == bsdi) {
+            if (labelInx == 0) return NodeDetails.ANCHOR_SOUTH; }
+          if (node == sun) {
+            if (labelInx == 0) return NodeDetails.ANCHOR_SOUTHEAST; }
+          if (node == svr4) {
+            if (labelInx == 0) return NodeDetails.ANCHOR_SOUTH; }
+          if (node == netb) {
+            if (labelInx == 0) return NodeDetails.ANCHOR_WEST; }
+          if (node == t_net) return NodeDetails.ANCHOR_NORTH;
+          if (node == aix || node == solaris || node == gemini) {
+            if (labelInx == 0) return NodeDetails.ANCHOR_SOUTH; }
+          if (node == gateway) {
+            if (labelInx == 0) return NodeDetails.ANCHOR_WEST; }
+          return NodeDetails.ANCHOR_CENTER; }
+        public byte labelNodeAnchor(int node, int labelInx) {
+          if (node == b_net) return NodeDetails.ANCHOR_SOUTH;
+          if (node == slip || node == bsdi || node == sun || node == svr4) {
+            if (labelInx == 0) return NodeDetails.ANCHOR_NORTH; }
+          if (node == netb) {
+            if (labelInx == 0) return NodeDetails.ANCHOR_EAST; }
+          if (node == t_net) return NodeDetails.ANCHOR_SOUTH;
+          if (node == aix || node == solaris || node == gemini) {
+            if (labelInx == 0) return NodeDetails.ANCHOR_NORTH; }
+          if (node == gateway) {
+            if (labelInx == 0) return NodeDetails.ANCHOR_EAST; }
+          return NodeDetails.ANCHOR_CENTER; }
+        public float labelOffsetVectorX(int node, int labelInx) {
+          if (node == b_net) return -10.0f;
+          if (node == sun) {
+            if (labelInx == 0) return -2.0f; }
+          return 0.0f; }
+        public float labelOffsetVectorY(int node, int labelInx) {
+          return 0.0f; }
+        public byte labelJustify(int node, int labelInx) {
+          return NodeDetails.LABEL_WRAP_JUSTIFY_LEFT; }
       };
     m_edgeDetails = new EdgeDetails();
     m_hash = new IntHash();
