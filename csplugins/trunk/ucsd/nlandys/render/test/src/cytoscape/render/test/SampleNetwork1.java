@@ -122,6 +122,7 @@ public class SampleNetwork1
       e_internet = m_graph.edgeCreate(gateway, internet, true);
     }
     m_lod = new GraphLOD() {
+        public byte renderEdges(int a, int b, int c) { return (byte) 1; }
         public boolean textAsShape(int a, int b) { return true; } };
     m_nodeDetails = new NodeDetails() {
         private final Font normalFont = new Font("SansSerif", Font.PLAIN, 1);
@@ -226,7 +227,7 @@ public class SampleNetwork1
             if (labelInx == 0) return NodeDetails.ANCHOR_EAST; }
           return NodeDetails.ANCHOR_CENTER; }
         public float labelOffsetVectorX(int node, int labelInx) {
-          if (node == b_net) return -10.0f;
+          if (node == b_net) return -8.0f;
           if (node == sun) {
             if (labelInx == 0) return -2.0f; }
           return 0.0f; }
@@ -283,9 +284,9 @@ public class SampleNetwork1
           if (edge == e_sun) return ".13.33";
           if (edge == e_svr4) return ".13.34";
           if (edge == e_slip) {
-            if (labelInx == 0) return ".13.65";
+            if (labelInx == 0) return ".13.66";
             if (labelInx == 1) return "SLIP";
-            return ".13.66"; }
+            return ".13.65"; }
           if (edge == e_b_modem) return ".1.29";
           if (edge == e_dialup) {
             if (labelInx == 0) return "SLIP";
@@ -293,7 +294,7 @@ public class SampleNetwork1
           if (edge == e_netb) return ".1.183";
           if (edge == e_aix) return ".1.92";
           if (edge == e_solaris) return ".1.32";
-          if (edge == e_gemini) return ".1.31";
+          if (edge == e_gemini) return ".1.11";
           if (edge == e_gateway) return ".1.4";
           if (edge == e_internet) return ".104.1";
           return ""; }
