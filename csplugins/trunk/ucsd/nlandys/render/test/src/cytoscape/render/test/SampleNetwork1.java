@@ -232,9 +232,27 @@ public class SampleNetwork1
         public float labelOffsetVectorY(int node, int labelInx) {
           return 0.0f; }
         public byte labelJustify(int node, int labelInx) {
-          return NodeDetails.LABEL_WRAP_JUSTIFY_LEFT; }
-      };
-    m_edgeDetails = new EdgeDetails();
+          return NodeDetails.LABEL_WRAP_JUSTIFY_LEFT; } };
+    m_edgeDetails = new EdgeDetails() {
+        public byte sourceArrow(int edge) {
+          if (edge == e_bsdi || edge == e_sun || edge == e_svr4)
+            return GraphGraphics.ARROW_DISC;
+          if (edge == e_slip)
+            return GraphGraphics.ARROW_DISC;
+          if (edge == e_b_modem)
+            return GraphGraphics.ARROW_DISC;
+          if (edge == e_netb)
+            return GraphGraphics.ARROW_DISC;
+          if (edge == e_aix || edge == e_solaris || edge == e_gemini ||
+              edge == e_gateway)
+            return GraphGraphics.ARROW_DISC;
+          if (edge == e_internet)
+            return GraphGraphics.ARROW_DISC;
+          return GraphGraphics.ARROW_NONE; }
+        public float sourceArrowSize(int edge) {
+          return 0.7f; }
+        public Paint sourceArrowPaint(int edge) {
+          return Color.black; } };
     m_hash = new IntHash();
     addNotify();
     m_img = createImage(m_imgWidth, m_imgHeight);
