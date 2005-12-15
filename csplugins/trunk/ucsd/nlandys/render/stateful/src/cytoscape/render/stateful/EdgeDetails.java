@@ -302,12 +302,12 @@ public class EdgeDetails
   public byte labelJustify(final int edge, final int labelInx) {
     return NodeDetails.LABEL_WRAP_JUSTIFY_CENTER; }
 
-  /**
-   * Determines whether or not a label is to be rendered horizontally or
-   * following the tangent at edge anchor point.  By default this method
-   * always returns true, which results in horizontal text labels.
-   */
-  public boolean labelHorizontal(final int edge, final int labelInx) {
-    return true; }
+//   /**
+//    * Determines whether or not a label is to be rendered horizontally or
+//    * following the tangent at edge anchor point.  By default this method
+//    * always returns true, which results in horizontal text labels.
+//    */
+//   public boolean labelHorizontal(final int edge, final int labelInx) {
+//     return true; }
 
 }

@@ -136,8 +136,6 @@ public class TestGraphRenderingSimple
           return super.labelOffsetVectorY(edge, inx); }
         public byte labelJustify(int edge, int inx) {
           return super.labelJustify(edge, inx); }
-        public boolean labelHorizontal(int edge, int inx) {
-          return super.labelHorizontal(edge, inx); }
       };
     m_hash = new IntHash();
     addNotify();

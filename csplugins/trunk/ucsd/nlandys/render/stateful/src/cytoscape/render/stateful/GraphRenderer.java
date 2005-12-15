@@ -383,34 +383,12 @@ public final class GraphRenderer
                     else {
                       justify = NodeDetails.LABEL_WRAP_JUSTIFY_CENTER; }
                   }
-//                   final boolean horizontal =
-//                     edgeDetails.labelHorizontal(edge, labelInx);
                   final float edgeAnchorPointX;
                   final float edgeAnchorPointY;
-//                   float sinTheta = 0.0f;
-//                   float cosTheta = 1.0f;
                   { // Compute edgeAnchorPointX and edgeAnchorPointY.
                     if (edgeAnchor == EdgeDetails.EDGE_ANCHOR_SOURCE) {
                       edgeAnchorPointX = srcXAdj;
                       edgeAnchorPointY = srcYAdj;
-//                       if (!horizontal) {
-//                         final float otherX;
-//                         final float otherY;
-//                         if (anchors == null) {
-//                           otherX = trgXAdj;
-//                           otherY = trgYAdj; }
-//                         else {
-//                           anchors.getAnchor(0, floatBuff3, 0);
-//                           otherX = floatBuff3[0];
-//                           otherY = floatBuff3[1]; }
-//                         final double distance =
-//                           Math.sqrt((((double) edgeAnchorPointX) - otherX) *
-//                                     (((double) edgeAnchorPointX) - otherX) +
-//                                     (((double) edgeAnchorPointY) - otherY) *
-//                                     (((double) edgeAnchorPointY) - otherY));
-//                         if (distance != 0.0d) {
-//                         }
-//                       }
                     }
                     else if (edgeAnchor == EdgeDetails.EDGE_ANCHOR_TARGET) {
                       edgeAnchorPointX = trgXAdj;
