@@ -125,7 +125,7 @@ public class SampleNetwork1
         public byte renderEdges(int a, int b, int c) { return (byte) 1; }
         public boolean textAsShape(int a, int b) { return true; } };
     m_nodeDetails = new NodeDetails() {
-        private final Font normalFont = new Font("SansSerif", Font.PLAIN, 1);
+        private final Font normalFont = new Font("Serif", Font.PLAIN, 1);
         private final Font fixedFont = new Font("Monospaced", Font.BOLD, 1);
         public Paint fillPaint(int node) {
           if (node == b_net || node == t_net) {
@@ -236,7 +236,7 @@ public class SampleNetwork1
         public byte labelJustify(int node, int labelInx) {
           return NodeDetails.LABEL_WRAP_JUSTIFY_LEFT; } };
     m_edgeDetails = new EdgeDetails() {
-        private final Font normalFont = new Font("SansSerif", Font.PLAIN, 1);
+        private final Font normalFont = new Font("Serif", Font.PLAIN, 1);
         private final Font fixedFont = new Font("Monospaced", Font.BOLD, 1);
         public byte sourceArrow(int edge) {
           if (edge == e_bsdi || edge == e_sun || edge == e_svr4)
@@ -280,28 +280,48 @@ public class SampleNetwork1
           if (edge == e_internet) return 1;
           return 0; }
         public String labelText(int edge, int labelInx) {
-          if (edge == e_bsdi) return ".13.35";
-          if (edge == e_sun) return ".13.33";
-          if (edge == e_svr4) return ".13.34";
+          if (edge == e_bsdi) return " .13.35";
+          if (edge == e_sun) return " .13.33";
+          if (edge == e_svr4) return " .13.34";
           if (edge == e_slip) {
-            if (labelInx == 0) return ".13.66";
+            if (labelInx == 0) return ".13.65";
             if (labelInx == 1) return "SLIP";
-            return ".13.65"; }
-          if (edge == e_b_modem) return ".1.29";
+            return ".13.66 "; }
+          if (edge == e_b_modem) return " .1.29";
           if (edge == e_dialup) {
-            if (labelInx == 0) return "SLIP";
-            return "(dialup)"; }
-          if (edge == e_netb) return ".1.183";
-          if (edge == e_aix) return ".1.92";
-          if (edge == e_solaris) return ".1.32";
-          if (edge == e_gemini) return ".1.11";
-          if (edge == e_gateway) return ".1.4";
-          if (edge == e_internet) return ".104.1";
+            if (labelInx == 0) return "SLIP ";
+            return " (dialup )"; }
+          if (edge == e_netb) return " .1.183";
+          if (edge == e_aix) return " .1.92";
+          if (edge == e_solaris) return " .1.32";
+          if (edge == e_gemini) return " .1.11";
+          if (edge == e_gateway) return " .1.4";
+          if (edge == e_internet) return " .104.1";
           return ""; }
         public Font labelFont(int edge, int labelInx) {
+          if (edge == e_bsdi || edge == e_sun || edge == e_svr4)
+            return fixedFont;
+          if (edge == e_slip) {
+            if (labelInx == 0 || labelInx == 2) return fixedFont;
+            return normalFont; }
+          if (edge == e_b_modem) return fixedFont;
+          if (edge == e_dialup) return normalFont;
+          if (edge == e_netb || edge == e_aix || edge == e_solaris ||
+              edge == e_gemini || edge == e_gateway || edge == e_internet)
+            return fixedFont;
           return normalFont; }
         public double labelScaleFactor(int edge, int labelInx) {
-          return 1.0d; }
+          if (edge == e_bsdi || edge == e_sun || edge == e_svr4)
+            return 1.5d;
+          if (edge == e_slip) {
+            if (labelInx == 0 || labelInx == 2) return 1.5d;
+            return 2.0d; }
+          if (edge == e_b_modem) return 1.5d;
+          if (edge == e_dialup) return 2.0d;
+          if (edge == e_netb || edge == e_aix || edge == e_solaris ||
+              edge == e_gemini || edge == e_gateway || edge == e_internet)
+            return 1.5d;
+          return 2.0d; }
         public Paint labelPaint(int edge, int labelInx) {
           return Color.black; }
         public byte labelTextAnchor(int edge, int labelInx) {
@@ -324,6 +344,16 @@ public class SampleNetwork1
         public byte labelEdgeAnchor(int edge, int labelInx) {
           if (edge == e_bsdi || edge == e_sun || edge == e_svr4)
             return EdgeDetails.EDGE_ANCHOR_SOURCE;
+          if (edge == e_slip) {
+            if (labelInx == 0) return EdgeDetails.EDGE_ANCHOR_SOURCE;
+            if (labelInx == 1) return EdgeDetails.EDGE_ANCHOR_MIDPOINT;
+            return EdgeDetails.EDGE_ANCHOR_TARGET; }
+          if (edge == e_b_modem) return EdgeDetails.EDGE_ANCHOR_SOURCE;
+          if (edge == e_dialup) return EdgeDetails.EDGE_ANCHOR_MIDPOINT;
+          if (edge == e_netb || edge == e_aix || edge == e_solaris ||
+              edge == e_gemini || edge == e_gateway)
+            return EdgeDetails.EDGE_ANCHOR_SOURCE;
+          if (edge == e_internet) return EdgeDetails.EDGE_ANCHOR_SOURCE;
           return EdgeDetails.EDGE_ANCHOR_MIDPOINT; }
       };
     m_hash = new IntHash();
