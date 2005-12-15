@@ -250,9 +250,22 @@ public class SampleNetwork1
             return GraphGraphics.ARROW_DISC;
           return GraphGraphics.ARROW_NONE; }
         public float sourceArrowSize(int edge) {
-          return 0.7f; }
+          return 1.0f; }
         public Paint sourceArrowPaint(int edge) {
-          return Color.black; } };
+          return Color.black; }
+        public byte targetArrow(int edge) {
+          if (edge == e_slip) return GraphGraphics.ARROW_DISC;
+          if (edge == e_internet) return GraphGraphics.ARROW_DELTA;
+          return GraphGraphics.ARROW_NONE; }
+        public float targetArrowSize(int edge) {
+          return 1.0f; }
+        public Paint targetArrowPaint(int edge) {
+          return Color.black; }
+        public float segmentThickness(int edge) {
+          return 0.2f; }
+        public Paint segmentPaint(int edge) {
+          return Color.black; }
+      };
     m_hash = new IntHash();
     addNotify();
     m_img = createImage(m_imgWidth, m_imgHeight);
