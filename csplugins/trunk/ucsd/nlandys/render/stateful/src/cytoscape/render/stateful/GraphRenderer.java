@@ -192,8 +192,12 @@ public final class GraphRenderer
         final int nodeHitCount = nodeHitsTemp.numRemaining();
         for (int i = 0; i < nodeHitCount; i++) {
           final int node = nodeHitsTemp.nextExtents(floatBuff1, 0);
+
+          // Casting to double and then back we could achieve better accuracy
+          // at the expense of performance.
           final float nodeX = (floatBuff1[0] + floatBuff1[2]) / 2;
           final float nodeY = (floatBuff1[1] + floatBuff1[3]) / 2;
+
           final IntEnumerator touchingEdges =
             graph.edgesAdjacent(node, true, true, true);
           final int touchingEdgeCount = touchingEdges.numRemaining();
@@ -204,6 +208,8 @@ public final class GraphRenderer
             if (nodeBuff.get(otherNode) < 0) { // Has not yet been rendered.
               nodePositions.exists(otherNode, floatBuff2, 0);
               grafx.drawEdgeLow(nodeX, nodeY,
+                                // Again, casting issue - tradeoff of accuracy
+                                // and performance.
                                 (floatBuff2[0] + floatBuff2[2]) / 2,
                                 (floatBuff2[1] + floatBuff2[3]) / 2,
                                 edgeDetails.colorLowDetail(edge)); } }
