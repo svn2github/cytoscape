@@ -188,6 +188,10 @@ of Cytoscape is rather involved.  Some of the tasks are automated and some are m
 	Click "Save As" to choose a name for your project, e.g.
 
 		Cytoscape-v2.2
+	
+	Make the install file name something like:
+
+		Cytoscape-v2.2_install
 
 	Click next.
 
@@ -225,7 +229,9 @@ of Cytoscape is rather involved.  Some of the tasks are automated and some are m
 	virtual machine option.  If you'd like to do more and include
 	the virtual machines with the release files, click on the 
 	Advanced Project Designer button, then the "Build" tab on the
-	left of the new screen that pops up.  
+	left of the new screen that pops up.  NOTE:  because of Mac
+	incompatibilities, we do NOT include a Mac OSX InstallAnywhere
+	file.
 
 	One last (optional) step is to specify the splash screen for the 
 	download website.  To do this, you'll need to check cytoscape out 
