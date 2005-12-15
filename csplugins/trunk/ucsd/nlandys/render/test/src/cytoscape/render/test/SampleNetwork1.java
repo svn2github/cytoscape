@@ -211,6 +211,7 @@ public class SampleNetwork1
             if (labelInx == 0) return NodeDetails.ANCHOR_SOUTH; }
           if (node == gateway) {
             if (labelInx == 0) return NodeDetails.ANCHOR_WEST; }
+          if (node == internet) return NodeDetails.ANCHOR_SOUTH;
           return NodeDetails.ANCHOR_CENTER; }
         public byte labelNodeAnchor(int node, int labelInx) {
           if (node == b_net) return NodeDetails.ANCHOR_SOUTH;
@@ -234,6 +235,8 @@ public class SampleNetwork1
         public byte labelJustify(int node, int labelInx) {
           return NodeDetails.LABEL_WRAP_JUSTIFY_LEFT; } };
     m_edgeDetails = new EdgeDetails() {
+        private final Font normalFont = new Font("SansSerif", Font.PLAIN, 1);
+        private final Font fixedFont = new Font("Monospaced", Font.BOLD, 1);
         public byte sourceArrow(int edge) {
           if (edge == e_bsdi || edge == e_sun || edge == e_svr4)
             return GraphGraphics.ARROW_DISC;
@@ -265,6 +268,62 @@ public class SampleNetwork1
           return 0.2f; }
         public Paint segmentPaint(int edge) {
           return Color.black; }
+        public int labelCount(int edge) {
+          if (edge == e_bsdi || edge == e_sun || edge == e_svr4) return 1;
+          if (edge == e_slip) return 3;
+          if (edge == e_b_modem) return 1;
+          if (edge == e_dialup) return 2;
+          if (edge == e_t_modem) return 0;
+          if (edge == e_netb || edge == e_aix || edge == e_solaris ||
+              edge == e_gemini || edge == e_gateway) return 1;
+          if (edge == e_internet) return 1;
+          return 0; }
+        public String labelText(int edge, int labelInx) {
+          if (edge == e_bsdi) return ".13.35";
+          if (edge == e_sun) return ".13.33";
+          if (edge == e_svr4) return ".13.34";
+          if (edge == e_slip) {
+            if (labelInx == 0) return ".13.65";
+            if (labelInx == 1) return "SLIP";
+            return ".13.66"; }
+          if (edge == e_b_modem) return ".1.29";
+          if (edge == e_dialup) {
+            if (labelInx == 0) return "SLIP";
+            return "(dialup)"; }
+          if (edge == e_netb) return ".1.183";
+          if (edge == e_aix) return ".1.92";
+          if (edge == e_solaris) return ".1.32";
+          if (edge == e_gemini) return ".1.31";
+          if (edge == e_gateway) return ".1.4";
+          if (edge == e_internet) return ".104.1";
+          return ""; }
+        public Font labelFont(int edge, int labelInx) {
+          return normalFont; }
+        public double labelScaleFactor(int edge, int labelInx) {
+          return 1.0d; }
+        public Paint labelPaint(int edge, int labelInx) {
+          return Color.black; }
+        public byte labelTextAnchor(int edge, int labelInx) {
+          if (edge == e_bsdi) return NodeDetails.ANCHOR_NORTHWEST;
+          if (edge == e_sun) return NodeDetails.ANCHOR_NORTHWEST;
+          if (edge == e_svr4) return NodeDetails.ANCHOR_NORTHWEST;
+          if (edge == e_slip) {
+            if (labelInx == 0) return NodeDetails.ANCHOR_NORTHWEST;
+            if (labelInx == 1) return NodeDetails.ANCHOR_SOUTH;
+            return NodeDetails.ANCHOR_NORTHEAST; }
+          if (edge == e_b_modem) return NodeDetails.ANCHOR_SOUTHWEST;
+          if (edge == e_dialup) {
+            if (labelInx == 0) return NodeDetails.ANCHOR_EAST;
+            return NodeDetails.ANCHOR_WEST; }
+          if (edge == e_netb) return NodeDetails.ANCHOR_SOUTHWEST;
+          if (edge == e_aix || edge == e_solaris || edge == e_gemini ||
+              edge == e_gateway) return NodeDetails.ANCHOR_NORTHWEST;
+          if (edge == e_internet) return NodeDetails.ANCHOR_SOUTHWEST;
+          return NodeDetails.ANCHOR_CENTER; }
+        public byte labelEdgeAnchor(int edge, int labelInx) {
+          if (edge == e_bsdi || edge == e_sun || edge == e_svr4)
+            return EdgeDetails.EDGE_ANCHOR_SOURCE;
+          return EdgeDetails.EDGE_ANCHOR_MIDPOINT; }
       };
     m_hash = new IntHash();
     addNotify();
