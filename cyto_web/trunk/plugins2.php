@@ -225,7 +225,7 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 					</p>
 				</td>
 				<td width="20%" valign="top">
-				 Verified to work in 2.0. 
+				 Verified to work in 2.0.
 				</td>
 				<td width="20%" valign="top">
 					[<a href="http://db.systemsbiology.net/cytoscape/ftp/DataMatrixPlugin.jar">Download Plugin .jar</a>]
@@ -490,6 +490,34 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 					<hr>
 				</td>
 			</tr>
+
+	<tr>
+		<td width="20%" valign="top">
+			<b>Metabolica Plugin</b>
+			<br>
+			<font size="-1">Version: 1.0
+				<br>
+				Release Date: Dec. 8, 2005</font>
+		</td>
+		<td width="40%" valign="top">
+			Metabolica plugin find network motifs of arbitrary length in the current network.
+			<p>
+			Released by: Michele Petterlini, Giovanni Scardoni.
+		</td>
+		<td width="20%" valign="top">
+				 Verified to work in 2.2.
+				</td>
+		<td width="20%" valign="top">
+			[<a href="http://www.petterlini.it/metabolica/">Download Plugin</a>]
+			<br>
+		</td>
+	</tr>
+	<tr>
+    	<td colspan="4">
+			<hr>
+		</td>
+	</tr>
+
 	<tr>
 		<td width="20%" valign="top">
 			<b>Motif Finder Plugin</b>
