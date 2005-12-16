@@ -158,12 +158,15 @@ public final class GraphRenderer
     // Define buffers.  These are of the few objects we're instantiating
     // directly in this method.
     final float[] floatBuff1, floatBuff2, floatBuff3, floatBuff4;
+    final double[] doubleBuff1, doubleBuff2;
     final GeneralPath path2d;
     {
       floatBuff1 = new float[4];
       floatBuff2 = new float[4];
       floatBuff3 = new float[2];
       floatBuff4 = new float[8];
+      doubleBuff1 = new double[4];
+      doubleBuff2 = new double[2];
       path2d = new GeneralPath();
     }
 
@@ -389,18 +392,18 @@ public final class GraphRenderer
                     else {
                       justify = NodeDetails.LABEL_WRAP_JUSTIFY_CENTER; }
                   }
-                  final float edgeAnchorPointX;
-                  final float edgeAnchorPointY;
+
+                  final double edgeAnchorPointX;
+                  final double edgeAnchorPointY;
                   { // Compute edgeAnchorPointX and edgeAnchorPointY.
                     if (edgeAnchor == EdgeDetails.EDGE_ANCHOR_SOURCE) {
                       edgeAnchorPointX = srcXAdj;
-                      edgeAnchorPointY = srcYAdj;
-                    }
+                      edgeAnchorPointY = srcYAdj; }
                     else if (edgeAnchor == EdgeDetails.EDGE_ANCHOR_TARGET) {
                       edgeAnchorPointX = trgXAdj;
-                      edgeAnchorPointY = trgYAdj;
-                    }
-                    else if (edgeAnchor == EdgeDetails.EDGE_ANCHOR_MIDPOINT) {
+                      edgeAnchorPointY = trgYAdj; }
+                    else if (edgeAnchor == EdgeDetails.EDGE_ANCHOR_MIDPOINT)
+                    {
                       grafx.getEdgePath(srcArrow, srcArrowSize,
                                         trgArrow, trgArrowSize,
                                         srcXAdj, srcYAdj, anchors,
@@ -468,25 +471,24 @@ public final class GraphRenderer
                         final int subPathType =
                           pathIter.currentSegment(floatBuff4);
                         if (subPathType == PathIterator.SEG_LINETO) {
-                          edgeAnchorPointX = (float)
-                            (0.5d * floatBuff4[6] + 0.5d * floatBuff4[0]);
-                          edgeAnchorPointY = (float)
-                            (0.5d * floatBuff4[7] + 0.5d * floatBuff4[1]); }
+                          edgeAnchorPointX =
+                            0.5d * floatBuff4[6] + 0.5d * floatBuff4[0];
+                          edgeAnchorPointY =
+                            0.5d * floatBuff4[7] + 0.5d * floatBuff4[1]; }
                         else if (subPathType == PathIterator.SEG_QUADTO) {
-                          edgeAnchorPointX = (float)
-                            (0.25d * floatBuff4[6] + 0.5d * floatBuff4[0] +
-                             0.25d * floatBuff4[2]);
-                          edgeAnchorPointY = (float)
-                            (0.25d * floatBuff4[7] + 0.5d * floatBuff4[1] +
-                             0.25d * floatBuff4[3]); }
+                          edgeAnchorPointX =
+                            0.25d * floatBuff4[6] + 0.5d * floatBuff4[0] +
+                            0.25d * floatBuff4[2];
+                          edgeAnchorPointY =
+                            0.25d * floatBuff4[7] + 0.5d * floatBuff4[1] +
+                            0.25d * floatBuff4[3]; }
                         else if (subPathType == PathIterator.SEG_CUBICTO) {
-                          edgeAnchorPointX = (float)
-                            (0.125d * floatBuff4[6] + 0.375d * floatBuff4[0] +
-                             0.375d * floatBuff4[2] + 0.125d * floatBuff4[4]);
-                          edgeAnchorPointY = (float)
-                            (0.125d * floatBuff4[7] + 0.375d * floatBuff4[1] +
-                             0.375d * floatBuff4[3] +
-                             0.125d * floatBuff4[5]); }
+                          edgeAnchorPointX =
+                            0.125d * floatBuff4[6] + 0.375d * floatBuff4[0] +
+                            0.375d * floatBuff4[2] + 0.125d * floatBuff4[4];
+                          edgeAnchorPointY =
+                            0.125d * floatBuff4[7] + 0.375d * floatBuff4[1] +
+                            0.375d * floatBuff4[3] + 0.125d * floatBuff4[5]; }
                         else {
                           throw new IllegalStateException
                             ("got unexpected PathIterator segment type: " +
@@ -497,23 +499,22 @@ public final class GraphRenderer
                         ("encountered an invalid EDGE_ANCHOR_* constant: " +
                          edgeAnchor); }
                   } // End compute edgeAnchorPointX and edgeAnchorPointY.
+
                   TextRenderingUtils.computeTextDimensions
                     (grafx, text, font, fontScaleFactor,
                      (lodBits & LOD_TEXT_AS_SHAPE) != 0, floatBuff3);
-                  floatBuff2[0] = (float) (-0.5d * floatBuff3[0]);
-                  floatBuff2[1] = (float) (-0.5d * floatBuff3[1]);
-                  floatBuff2[2] = (float) (0.5d * floatBuff3[0]);
-                  floatBuff2[3] = (float) (0.5d * floatBuff3[1]);
-                  lemma_computeAnchor(textAnchor, floatBuff2, floatBuff3);
-                  final float textAnchorPointX = floatBuff3[0];
-                  final float textAnchorPointY = floatBuff3[1];
-                  final float textXCenter =
-                    edgeAnchorPointX - textAnchorPointX + offsetVectorX;
-                  final float textYCenter =
-                    edgeAnchorPointY - textAnchorPointY + offsetVectorY;
+                  doubleBuff1[0] = -0.5d * floatBuff3[0];
+                  doubleBuff1[1] = -0.5d * floatBuff3[1];
+                  doubleBuff1[2] = 0.5d * floatBuff3[0];
+                  doubleBuff1[3] = 0.5d * floatBuff3[1];
+                  lemma_computeAnchor(textAnchor, doubleBuff1, doubleBuff2);
+                  final double textXCenter =
+                    edgeAnchorPointX - doubleBuff2[0] + offsetVectorX;
+                  final double textYCenter =
+                    edgeAnchorPointY - doubleBuff2[1] + offsetVectorY;
                   TextRenderingUtils.renderHorizontalText
                     (grafx, text, font, fontScaleFactor,
-                     textXCenter, textYCenter, justify, paint,
+                     (float) textXCenter, (float) textYCenter, justify, paint,
                      (lodBits & LOD_TEXT_AS_SHAPE) != 0);
                 }
               }
@@ -576,10 +577,13 @@ public final class GraphRenderer
                 nodeDetails.labelOffsetVectorX(node, graphicInx);
               final float offsetVectorY =
                 nodeDetails.labelOffsetVectorY(node, graphicInx);
-              lemma_computeAnchor(anchor, floatBuff1, floatBuff3);
+              doubleBuff1[0] = floatBuff1[0]; doubleBuff1[1] = floatBuff1[1];
+              doubleBuff1[2] = floatBuff1[2]; doubleBuff1[3] = floatBuff1[3];
+              lemma_computeAnchor(anchor, doubleBuff1, doubleBuff2);
               grafx.drawCustomGraphicFull
-                (gShape, floatBuff3[0] + offsetVectorX,
-                 floatBuff3[1] + offsetVectorY, paint); } }
+                (gShape,
+                 (float) (doubleBuff2[0] + offsetVectorX),
+                 (float) (doubleBuff2[1] + offsetVectorY), paint); } }
 
           // Take care of label rendering.
           if ((lodBits & LOD_NODE_LABELS) != 0) { // Potential label rendering.
@@ -606,41 +610,41 @@ public final class GraphRenderer
                 else {
                   justify = NodeDetails.LABEL_WRAP_JUSTIFY_CENTER; }
               }
-              lemma_computeAnchor(nodeAnchor, floatBuff1, floatBuff3);
-              final float nodeAnchorPointX = floatBuff3[0];
-              final float nodeAnchorPointY = floatBuff3[1];
+              doubleBuff1[0] = floatBuff1[0]; doubleBuff1[1] = floatBuff1[1];
+              doubleBuff1[2] = floatBuff1[2]; doubleBuff1[3] = floatBuff1[3];
+              lemma_computeAnchor(nodeAnchor, doubleBuff1, doubleBuff2);
+              final double nodeAnchorPointX = doubleBuff2[0];
+              final double nodeAnchorPointY = doubleBuff2[1];
               TextRenderingUtils.computeTextDimensions
                 (grafx, text, font, fontScaleFactor,
                  (lodBits & LOD_TEXT_AS_SHAPE) != 0, floatBuff3);
-              floatBuff2[0] = (float) (-0.5d * floatBuff3[0]);
-              floatBuff2[1] = (float) (-0.5d * floatBuff3[1]);
-              floatBuff2[2] = (float) (0.5d * floatBuff3[0]);
-              floatBuff2[3] = (float) (0.5d * floatBuff3[1]);
-              lemma_computeAnchor(textAnchor, floatBuff2, floatBuff3);
-              final float textAnchorPointX = floatBuff3[0];
-              final float textAnchorPointY = floatBuff3[1];
-              final float textXCenter =
-                nodeAnchorPointX - textAnchorPointX + offsetVectorX;
-              final float textYCenter =
-                nodeAnchorPointY - textAnchorPointY + offsetVectorY;
+              doubleBuff1[0] = -0.5d * floatBuff3[0];
+              doubleBuff1[1] = -0.5d * floatBuff3[1];
+              doubleBuff1[2] = 0.5d * floatBuff3[0];
+              doubleBuff1[3] = 0.5d * floatBuff3[1];
+              lemma_computeAnchor(textAnchor, doubleBuff1, doubleBuff2);
+              final double textXCenter =
+                nodeAnchorPointX - doubleBuff2[0] + offsetVectorX;
+              final double textYCenter =
+                nodeAnchorPointY - doubleBuff2[1] + offsetVectorY;
               TextRenderingUtils.renderHorizontalText
                 (grafx, text, font, fontScaleFactor,
-                 textXCenter, textYCenter, justify, paint,
+                 (float) textXCenter, (float) textYCenter, justify, paint,
                  (lodBits & LOD_TEXT_AS_SHAPE) != 0); } } } }
     }
   }
 
   private final static void lemma_computeAnchor(final byte anchor,
-                                                final float[] input4x,
-                                                final float[] rtrn2x)
+                                                final double[] input4x,
+                                                final double[] rtrn2x)
   {
     switch (anchor) {
     case NodeDetails.ANCHOR_CENTER:
-      rtrn2x[0] = (float) ((((double) input4x[0]) + input4x[2]) / 2.0d);
-      rtrn2x[1] = (float) ((((double) input4x[1]) + input4x[3]) / 2.0d);
+      rtrn2x[0] = (input4x[0] + input4x[2]) / 2.0d;
+      rtrn2x[1] = (input4x[1] + input4x[3]) / 2.0d;
       break;
     case NodeDetails.ANCHOR_NORTH:
-      rtrn2x[0] = (float) ((((double) input4x[0]) + input4x[2]) / 2.0d);
+      rtrn2x[0] = (input4x[0] + input4x[2]) / 2.0d;
       rtrn2x[1] = input4x[3];
       break;
     case NodeDetails.ANCHOR_NORTHEAST:
@@ -649,14 +653,14 @@ public final class GraphRenderer
       break;
     case NodeDetails.ANCHOR_EAST:
       rtrn2x[0] = input4x[2];
-      rtrn2x[1] = (float) ((((double) input4x[1]) + input4x[3]) / 2.0d);
+      rtrn2x[1] = (input4x[1] + input4x[3]) / 2.0d;
       break;
     case NodeDetails.ANCHOR_SOUTHEAST:
       rtrn2x[0] = input4x[2];
       rtrn2x[1] = input4x[1];
       break;
     case NodeDetails.ANCHOR_SOUTH:
-      rtrn2x[0] = (float) ((((double) input4x[0]) + input4x[2]) / 2.0d);
+      rtrn2x[0] = (input4x[0] + input4x[2]) / 2.0d;
       rtrn2x[1] = input4x[1];
       break;
     case NodeDetails.ANCHOR_SOUTHWEST:
@@ -665,7 +669,7 @@ public final class GraphRenderer
       break;
     case NodeDetails.ANCHOR_WEST:
       rtrn2x[0] = input4x[0];
-      rtrn2x[1] = (float) ((((double) input4x[1]) + input4x[3]) / 2.0d);
+      rtrn2x[1] = (input4x[1] + input4x[3]) / 2.0d;
       break;
     case NodeDetails.ANCHOR_NORTHWEST:
       rtrn2x[0] = input4x[0];
