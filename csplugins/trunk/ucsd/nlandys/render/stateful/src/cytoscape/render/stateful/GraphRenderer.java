@@ -208,8 +208,8 @@ public final class GraphRenderer
             if (nodeBuff.get(otherNode) < 0) { // Has not yet been rendered.
               nodePositions.exists(otherNode, floatBuff2, 0);
               grafx.drawEdgeLow(nodeX, nodeY,
-                                // Again, casting issue - tradeoff of accuracy
-                                // and performance.
+                                // Again, casting issue - tradeoff between
+                                // accuracy and performance.
                                 (floatBuff2[0] + floatBuff2[2]) / 2,
                                 (floatBuff2[1] + floatBuff2[3]) / 2,
                                 edgeDetails.colorLowDetail(edge)); } }
@@ -323,7 +323,7 @@ public final class GraphRenderer
               if (srcArrow == GraphGraphics.ARROW_DISC) {
                 srcOffset = (float) (0.5d * srcArrowSize); }
               else if (srcArrow == GraphGraphics.ARROW_TEE) {
-                srcOffset = (float) (srcArrowSize); }
+                srcOffset = (float) srcArrowSize; }
               else {
                 srcOffset = 0.0f; }
 
@@ -339,7 +339,7 @@ public final class GraphRenderer
               if (trgArrow == GraphGraphics.ARROW_DISC) {
                 trgOffset = (float) (0.5d * trgArrowSize); }
               else if (trgArrow == GraphGraphics.ARROW_TEE) {
-                trgOffset = (float) (trgArrowSize); }
+                trgOffset = (float) trgArrowSize; }
               else {
                 trgOffset = 0.0f; }
 
