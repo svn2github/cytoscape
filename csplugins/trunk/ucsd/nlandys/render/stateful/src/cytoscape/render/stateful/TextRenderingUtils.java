@@ -58,19 +58,16 @@ final class TextRenderingUtils
                                                 final Paint paint,
                                                 final boolean textAsShape)
   {
-    // TODO: Don't calculate dimensions two million separate times.
-    // TODO: Solve float/double madness.
     final float[] dims = new float[2];
-    computeTextDimensions(grafx, text, font, fontScaleFactor, textAsShape,
-                          dims);
-    final float overallWidth = dims[0];
-    final float overallHeight = dims[1];
-    float currHeight = overallHeight / 2.0f;
+    computeTextDimensions(grafx, text, font, fontScaleFactor, textAsShape, dims);
+    final double overallWidth = dims[0];
+    final double overallHeight = dims[1];
+    double currHeight = overallHeight / 2.0d;
     final StringTokenizer tokenizer = new StringTokenizer(text, "\n");
     while (tokenizer.hasMoreTokens()) {
       final String token = tokenizer.nextToken();
-      final float textWidth;
-      final float textHeight;
+      final double textWidth;
+      final double textHeight;
       if (textAsShape) {
         final GlyphVector glyphV;
         {
@@ -81,27 +78,26 @@ final class TextRenderingUtils
              Font.LAYOUT_NO_LIMIT_CONTEXT);
         }
         final Rectangle2D bounds = glyphV.getLogicalBounds();
-        textWidth = (float) (bounds.getWidth() * fontScaleFactor);
-        textHeight = (float) (bounds.getHeight() * fontScaleFactor); }
+        textWidth = fontScaleFactor * bounds.getWidth();
+        textHeight = fontScaleFactor * bounds.getHeight(); }
       else {
         final Rectangle2D bounds = font.getStringBounds
           (token, grafx.getFontRenderContextFull());
-        textWidth = (float) (bounds.getWidth() * fontScaleFactor);
-        textHeight = (float) (bounds.getHeight() * fontScaleFactor); }
-      final float yCenter = (float)
-        (textYCenter + currHeight - (textHeight / 2.0f));
-      final float xCenter;
+        textWidth = fontScaleFactor * bounds.getWidth();
+        textHeight = fontScaleFactor * bounds.getHeight(); }
+      final double yCenter =
+        currHeight + textYCenter - (textHeight / 2.0d);
+      final double xCenter;
       if (textJustify == NodeDetails.LABEL_WRAP_JUSTIFY_CENTER) {
         xCenter = textXCenter; }
       else if (textJustify == NodeDetails.LABEL_WRAP_JUSTIFY_LEFT) {
-        xCenter = (float)
-          (textXCenter - (overallWidth - textWidth) / 2.0f); }
+        xCenter = -0.5d * (overallWidth - textWidth) + textXCenter; }
       else if (textJustify == NodeDetails.LABEL_WRAP_JUSTIFY_RIGHT) {
-        xCenter = (float)
-          (textXCenter + (overallWidth - textWidth) / 2.0f); }
+        xCenter = 0.5d * (overallWidth - textWidth) + textXCenter; }
       else {
         throw new IllegalStateException("textJustify value unrecognized"); }
-      grafx.drawTextFull(font, fontScaleFactor, token, xCenter, yCenter, 0,
+      grafx.drawTextFull(font, fontScaleFactor, token,
+                         (float) xCenter, (float) yCenter, 0,
                          paint, textAsShape);
       currHeight -= textHeight; }
   }
