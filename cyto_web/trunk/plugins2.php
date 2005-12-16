@@ -81,7 +81,7 @@ The networks can be viewed and manipulated in Cytoscape v2.1.
 					</p>
 				</td>
 				<td width="20%" valign="top">
-				Verified to work in 2.1.
+				Verified to work in 2.1, 2.2.
 				</td>
 				<td width="20%" valign="top">
 					[<a href="http://www.labs.agilent.com/research/mtl/projects/sysbio/sysinformatics/litsearch.html">Agilent Literature Search Web Site</a>]
@@ -117,7 +117,7 @@ The networks can be viewed and manipulated in Cytoscape v2.1.
 					</p>
 				</td>
 				<td width="20%" valign="top">
-				Verified to work in 2.1.
+				Verified to work in 2.1, 2.2.
 				</td>
 				<td width="20%" valign="top">
 					[<a href="http://www.psb.ugent.be/cbd/papers/BiNGO/">Download</a>]
@@ -148,7 +148,7 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 					</p>
 				</td>
 				<td width="20%" valign="top">
-				Verified to work in 2.0, 2.1.
+				Verified to work in 2.0, 2.1, 2.2.
 				</td>
 				<td width="20%" valign="top">
 					[<a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/README.txt">Release Notes</a>]
@@ -225,7 +225,7 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 					</p>
 				</td>
 				<td width="20%" valign="top">
-				 Verified to work in 2.0. <A HREF="#more_info"><BR>Not tested in Cytoscape 2.1*</A>
+				 Verified to work in 2.0. 
 				</td>
 				<td width="20%" valign="top">
 					[<a href="http://db.systemsbiology.net/cytoscape/ftp/DataMatrixPlugin.jar">Download Plugin .jar</a>]
@@ -273,7 +273,7 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 					</P>
 				</td>
 				<TD WIDTH=20%>
-					<P>Verified to work in 2.1.
+					<P>Verified to work in 2.1, 2.2.
 					<BR>Not tested in Cytoscape 2.0
 					</P>
 				</TD>
@@ -343,7 +343,7 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 					</p>
 				</td>
 				<td width="20%" valign="top">
-				Verified to work in 2.0, 2.1.
+				Verified to work in 2.0, 2.1, 2.2.
 				</td>
 				<td width="20%" valign="top">
 					[<a href="http://www.cbio.mskcc.org/cytoscape/plugins/ExpressionCorrelationReadme.txt">Release Notes</a>]
@@ -479,7 +479,7 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 					</p>
 				</td>
 				<td width="20%" valign="top">
-				Verified to work in 2.0, 2.1.
+				Verified to work in 2.0, 2.1, 2.2.
 				</td>
 				<td width="20%" valign="top">
 					[<a href="http://www.cbio.mskcc.org/~bader/software/mcode/index.html">MCODE Plugin Web Site</a>]
@@ -538,7 +538,7 @@ Networks by using Filters that you have created.
 			<P>Released by: Rowan Christmas, <a href="http://www.systemsbiology.org/">Institute for Systems Biology</a>.
 		</td>
 		<td width="20%" valign="top">
-				 Verified to work in 2.1.
+				 Verified to work in 2.1, 2.2.
 				</td>
 		<td width="20%" valign="top">
 			[<a href="plugins/NetworkFilter/rowan.jar">Download Plugin .jar</a>]
@@ -570,7 +570,7 @@ Networks by using Filters that you have created.
 					</p>
 				</td>
 				<td width="20%" valign="top">
-				 Verified to work in 2.0, 2.1.</A>
+				 Verified to work in 2.0, 2.1.<A HREF="#more_info"><BR>Not tested in Cytoscape 2.2*</A>
 				</td>
 				<td width="20%" valign="top">
 					[<a href="http://www.oracle.com/technology/industries/life_sciences/ls_sample_code.html">Download</a>]
@@ -600,7 +600,7 @@ Scardoni.
 					</p>
 				</td>
 				<td width="20%" valign="top">
-				Verified to work in 2.1.
+				Verified to work in 2.1, 2.2.
 				</td>
 				<td width="20%" valign="top">
 					[<a href="http://www.petterlini.it/pesca/">PeSca Web Site and Download</a>]
@@ -627,7 +627,7 @@ Scardoni.
 					</p>
 				</td>
 				<td width="20%" valign="top">
-				Verified to work in 2.1.
+				Verified to work in 2.1.<A HREF="#more_info"><BR>Not tested in Cytoscape 2.2*</A>
 				</td>
 				<td width="20%" valign="top">
                                                                                         [<a href="http://labs.systemsbiology.net/galitski/projs/system_genetics/protected/tutorial/index_pg.html">Phenotype Genetics Web-Site and Download (includes a tutorial)</a>]
@@ -663,7 +663,7 @@ Scardoni.
 					</p>
 				</td>
 				<td width="20%" valign="top">
-				Verified to work in 2.0, 2.1.
+				Verified to work in 2.0, 2.1, 2.2.
 				</td>
 				<td width="20%" valign="top">
 					[<a href="http://www.cbio.mskcc.org/cytoscape/ds/psi/version2/README.txt">Release Notes</a>]
@@ -702,7 +702,7 @@ The plugin API makes possible to use its functionality from another plugin.
 					</p>
 				</td>
 				<td width="20%" valign="top">
-				Verified to work in 2.1.
+				Verified to work in 2.1, 2.2.
 				</td>
 				<td width="20%" valign="top">
 					[<a href="http://csresources.sourceforge.net/ShortestPath/">Web Site and Download</a>]
@@ -763,7 +763,7 @@ The plugin API makes possible to use its functionality from another plugin.
 					</p>
 				</td>
 				<td width="20%" valign="top">
-				Verified to work in 2.0, 2.1.
+				Verified to work in 2.0, 2.1, 2.2.
 				</td>
 				<td width="20%" valign="top">
 					[<a href="http://www.cbio.mskcc.org/cytoscape/ds/soft/version2/README.txt">Release Notes</a>]
@@ -780,7 +780,7 @@ The plugin API makes possible to use its functionality from another plugin.
 	<div id="indent">
 	<P>
 			<A NAME="more_info">
-			* If you have verified that the specified plugin works in 2.1, please send an email to <A HREF="http://groups-beta.google.com/group/cytoscape-discuss">cytoscape-discuss</A>, and we will update the web page.
+			* If you have verified that the specified plugin works in 2.2, please send an email to <A HREF="http://groups-beta.google.com/group/cytoscape-discuss">cytoscape-discuss</A>, and we will update the web page.
 	</div>
 </tbody>
 </table>
