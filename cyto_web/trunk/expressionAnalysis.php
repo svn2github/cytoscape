@@ -53,9 +53,23 @@ annotation for you to use.) If Cytoscape does not start, please look at the
 to restart this tutorial, just click again on the <b>WEB START</b> link just above.
 <p>
 You should see a splash screen while your computer is loading Cytoscape and
-its data.  Once Cytoscape starts, you should see a network of 331 nodes.  To 
-better visualize the network, go to the <b>Layout</b> menu, select <b>Apply
-Spring Embedded Layout</b>, and then select <b>All Nodes</b>.  This should
+its data.  Once Cytoscape starts, you should see a figure that looks like
+this figure:
+<p>
+<IMG SRC="tut/expression/figures/initial.window.gif" WIDTH="50%">
+<p>
+This figure shows a network of 331 nodes.  To 
+better visualize the network, do two things.  
+<ol>
+  <li> Enlarge the panel containing the network by clicking on the 
+       maximize button (<IMG SRC="tut/expression/figures/maximize.button.jpg" WIDTH="2%" ALIGN="BOTTOM">) 
+       or by grabbing the lower right corner of the panel with your mouse and 
+       dragging.  
+  <li> Go to the <b>Layout</b> menu, select 
+       <b>Apply Spring Embedded Layout</b>, and then select 
+       <b>All Nodes</b>.  
+</ol>
+This should
 yield a network that resembles this image:
 <p>
 <IMG SRC="tut/expression/figures/expr.start.gif" WIDTH="50%">
@@ -145,7 +159,7 @@ This will bring up a menu that looks like this:
         <b>RedGreen</b>.</li>
   <li> Click on the pull-down menu next to the label <b>Map Attribute:</b>.  
 This will bring up a list of the experiments in your expression matrix file.
-Scroll down to <b>gal4RG.sigexp</b>.</li>
+Scroll down to <b>gal4RG.sigsig</b>.</li>
   <li> Click <b>Apply to Network</b>.  This will color nodes on the network
   as follows:</li>
   <ul>
@@ -172,7 +186,7 @@ levels, and greater degrees of up-regulation.</li>
 </ol>
   At this point, the screen should look resemble the figure shown below.  
 Click on <b>Apply to Network</b> and <b>Close</b>.
-  <IMG SRC="tut/expression/figures/expr.nodes.colored.gif" width="70%">
+  <IMG SRC="tut/expression/figures/expr.nodes.colored.jpg" width="70%">
   <p>
 
   At this point, Cytoscape shows a network of nodes colored according to 
@@ -183,7 +197,7 @@ perform the following steps:
 <ol>
   <li> Select the node YPL248C by name by typing the keyboard shortcut 
   <b>Control-F</b>, entering the name YPL248C in the dialog box, and clicking
-the <b>Search</b> button.</li>
+the <b>Search</b> button, and then closing the window</li>
   <li> Select the neighbors of this node by going to the <b>Select</b>
   menu, continuing to the <b>Nodes</b> sub-menu, and selecting <b>First
 neighbors of selected nodes</b>.</li>
@@ -205,46 +219,6 @@ unusual.
 <p>
   <IMG SRC="tut/expression/figures/expr.selected.subnetwork.gif" WIDTH="50%">
 <p>
-
-<br><br> <center> <h3> Filtering on Expression Data </h3> </center> <br>
-
-A common operation in expression analysis is to select nodes according to 
-some expression-based criteria, such as all nodes down-regulated by a certain 
-degree.  To see all the nodes in the parent network wth a log ratio of -1
-or less, perform the following steps: 
-<ol>
-  <li> Return to the larger network by clicking on the name of tab labeled
-<tt>galFiltered.sif</tt> just above the network. </li>
-  <li> Bring up the <b>Filters</b> dialog box by selecting <b>Use Filters</b>
-  under the <b>Filters</b> menu, by pressing the <b>F7</b> keyboard shortcut
-  key, or by clicking on this icon <IMG src="tut/expression/figures/filters.gif" width=5%> in
- the toolbar.</li>
-  <li> Under <b>Manage filters</b>, click on the <b>Create new filter</b> 
-button.</li>
-  <li> Under the <b>Filter Creation Dialog</b>, select a filter type of
-<b>Numeric Filter</b> and click on <b>OK</b>.</li>
-  <li> Now, under <b>Available Filters</b>, there should be a new entry labeled
-<b>Numeric:</b>.  Click on it.</li>
-  <li> The right-hand side of the dialog box should now contain a section
-  labeled <b>Numeric Attribute Filter</b>, as shown here:
-  <li> On the pull-down menu
-  labeled <b>with a value for numeric attribute</b>, scroll down to
- <b>gal4RG.sigexp</b></li>.
-  <li> In the following line, replace <b>=</b> with <b><</b> in the pull-down
-  menu, and replace <b>0.0</b> with <b>-1.0</b>, as shown: 
-  <IMG src="tut/expression/figures/filter.dialog.1.gif" WIDTH="70%"></li>
-  <li>Click on <b>Apply selected filter</b></li>
-  <li>Close the dialog box</b></li>  
-</ol>
-
-  In your network, you should now see several nodes colored bright yellow as 
-shown, indicating that these nodes were substantially down-regulated as a 
-result of perturbing GAL4.  At this point, you could perform further analyses, 
-such as selecting these
-nodes and their neighbors to a new network. 
-<p>
-<IMG src="tut/expression/figures/filter.result.gif", width="60%">
-
 <br><br> <center> <h3> Dynamic expression analysis  </h3> </center> <br>
 
 <p>
