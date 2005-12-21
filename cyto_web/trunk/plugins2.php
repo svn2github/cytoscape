@@ -359,23 +359,23 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 				<td width="20%" valign="top">
 					<b>Graph Merge Plugin</b><font size="-1">
 						<br>
-						Version: 1
+						Version: 2
 						<br>
-						Release Date: February 25, 2005</font>
+						Release Date: November 31, 2005</font>
 				</td>
 				<td width="40%" valign="top">
 					<p>
-					This plugin enables Cytoscape to merge two or more networks into one.
+					This plugin enables Cytoscape to apply various set-like operations (union,intersection,difference) on two or more networks into one.
 					<p>
 						Released by: <a href="http://www-bioeng.ucsd.edu/faculty/area/ideker_lab/">The Ideker Lab</a>, Department of Bioengineering, UCSD
 					</p>
 				</td>
 				<td width="20%" valign="top">
-				Verified to work in 2.1.
+				Verified to work in 2.1, 2.2.
 				</td>
 				<td width="20%" valign="top">
-					[<a href="/plugins/GraphMerge/README.txt">Release Notes</a>]
-					[<a href="/plugins/GraphMerge/GraphMerge.jar">Download</a>]
+					[<a href="http://www-bioeng.ucsd.edu/faculty/area/ideker_lab/plugins/GraphMerge/release/README.txt">Release Notes</a>]
+					[<a href="http://www-bioeng.ucsd.edu/faculty/area/ideker_lab/plugins/GraphMerge/release/GraphMerge.jar">Download</a>]
 				</td>
 			</tr>
 			<tr>
