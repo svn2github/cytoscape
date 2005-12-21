@@ -1,36 +1,42 @@
 <div id="footer">
 <b>Funding for Cytoscape is provided by a federal grant from the U.S.
-<a href="http://www.nigms.nih.gov">National Institute of General Medical Sciences (NIGMS)</a> of the 
-<a href="http://www.nih.gov">National Institutes of Health (NIH)</a> under award number GM070743-01 and 
+<a href="http://www.nigms.nih.gov">National Institute of General Medical Sciences (NIGMS)</a> of the
+<a href="http://www.nih.gov">National Institutes of Health (NIH)</a> under award number GM070743-01 and
 the U.S. <a href="http://www.nsf.gov">National Science Foundation (NSF) </a>.
 Corporate funding is provided through a contract from
-<a href="http://www.unilever.com">Unilever PLC</a>. 
+<a href="http://www.unilever.com">Unilever PLC</a>.
 </b>
 <p>
 <center>
 	<a href="index.php">
-		Cytoscape home 
+		Cytoscape home
 	</a>
-	| 
+	|
 	<a href="http://www.systemsbiology.org">
-		ISB 
+		ISB
 	</a>
-	| 
+	|
 	<a href="http://www.ucsd.edu">
-		UCSD 
+		UCSD
 	</a>
-	| 
+	|
 	<a href="http://www.mskcc.org">
-		MSKCC 
+		MSKCC
 	</a>
-	| 
+	|
 	<a href="http://www.pasteur.fr">
-		Pasteur 
+		Pasteur
 	</a>
-	| 
+	|
 	<a href="http://www.cbio.mskcc.org/cytoscape/bugs/set_project.php?project_id=5">
-		Report a bug 
+		Report a bug
 	</a>
-	| &copy; 2001-2004 Cytoscape. 
+	| &copy; 2001-2004 Cytoscape.
 </center>
 </div>
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-155159-2";
+urchinTracker();
+</script>
