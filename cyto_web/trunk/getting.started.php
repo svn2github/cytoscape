@@ -48,7 +48,6 @@ In this tutorial, you will learn about the following:
   <li> Loading networks and generating network layouts </li>
   <li> Selecting and querying specific nodes and edges </li>
   <li> Setting visual properties </li>
-  <li> Editing your network</li>
 </ul>
 <p>
 Begin by clicking here: 
@@ -269,38 +268,6 @@ changes.</P>
 	<LI><P>Observe how the list of edges changes in the <B>Edge Attribute Browser</B> as you
 	select additional edges.</P>
 </OL>
-<H3>Editing</H3>
-<P>At times, it can be very useful to modify a network slightly: to add or remove nodes or edges.  This 
-section will describe how to do so. </P>
-<OL>
-	<LI><P>Under the <B>File</B> menu in the Cytoscape Desktop, select <B>SetEditor</B>, and
-	<B>DefaultCytoscapeEditor</B>.  <B>CytoPanel 1</B> should now appear as shown below. </P>
-	<IMG SRC="tut/getting.started/Fig23.png" ALIGN=BOTTOM WIDTH=245 HEIGHT=317></P>
-	<LI><P>Add a node to the canvas by clicking the left mouse button on the node labeled <B>Add
-	a Node</B>, and holding down the left mouse button, dragging it onto the Cytoscape canvas.  You 
-	should see a new, blank	node on your canvas.</P>
-	<LI><P>Select the node with your mouse.  In the <B>Node Attribute Browser</B>, you should
-	see a node with ID of <B>node0</B>, as shown below:</P>
-	<IMG SRC="tut/getting.started/Fig24.png" WIDTH=472 HEIGHT=197><BR CLEAR=LEFT>
-	<LI><P>Give your new node a name by going to the <B>Node Attribute Browser</B>,
-	clicking on the entry for the name, and entering a name under the column labeled <B>Official</B>.
-  	Notice that you cannot enter a new internal ID for the node.</P>
-	<LI><P>Enter an edge between your new node and some other node, as follows:</P>
-	<OL>
-		<LI><P>In the Cytoscape	Editor, click on <B>Directed Edge</B>.</P>
-		<LI><P>Holding down the	left mouse button, drag the mouse from <B>Directed Edge</B> to
-		your new node on the Cytoscape canvas.  When you release the left mouse button, you 
-		should see two things: when the mouse is on top	of your node, it should have a thick 
-		black border; and as you move your mouse away from the node, a thick black line should 
-		follow the mouse.  Click on another node, and a new edge should appear between the 
-		two nodes.</P>
-		<LI><P>To undo your new	edge, under the Cytoscape desktop select <B>Edit</B> and 
-		<B>Undo</B>.</P>
-		<LI><P>Create several new edges between your node and existing nodes.</P>
-		<LI><P>Delete your new node (and any edges attached to it) by selecting the node with
-		your mouse, and selecting <B>Delete Selected Nodes/Edges</B>. Note that if you delete 
-		a node, any edges running to it are also deleted.</P>
-	</OL>
 </OL>
 <P><B>Congratulations! </B>You have bravely survived the least-exciting portion of Cytoscape
 instruction: learning to navigate the menu system.  Go reward yourself with a cup of coffee!</P>
