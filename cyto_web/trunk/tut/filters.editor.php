@@ -7,8 +7,7 @@
 	Cytoscape Online Tutorial
     </title>
     <link rel="stylesheet" type="text/css" media="screen" href=
-  "css/cytoscape.css">
-   <link rel="shortcut icon" href="images/cyto.ico">
+  "../css/cytoscape.css">
   <META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
   <META NAME="AUTHOR" CONTENT="Melissa Cline">
   <STYLE>
@@ -61,13 +60,13 @@ This tutorial features the following plugins:
 </UL>
 and the following datasets:
 <UL>
-  <LI><A HREF="tut/fetching.data/RUAL.subset.sif">RUAL.subset.sif</A>, a 
+  <LI><A HREF="fetching.data/RUAL.subset.sif">RUAL.subset.sif</A>, a 
     portion of a human interaction dataset published in 
     <A HREF="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=pubmed&dopt=Abstract&list_uids=16189514&query_hl=1">
     Rual et al, Nature.2005 Oct 20;437(7062):1173-8</A> and available at 
     <A HREF="http://www.cytoscape.org/cgi-bin/moin.cgi/Data_Sets/">
     http://www.cytoscape.org/ cgi-bin/moin.cgi/Data_Sets/</A>.</LI>
-  <LI><A HREF="tut/fetching.data/STELZL.subset.sif">STELZL.subset.sif</A>, a 
+  <LI><A HREF="fetching.data/STELZL.subset.sif">STELZL.subset.sif</A>, a 
     portion of a human interaction dataset published in 
     <A HREF="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=pubmed&dopt=Abstract&list_uids=16169070&query_hl=3">
     Stelzl et al, Cell. 2005 Sep 23;122(6):957-68</A> and available at 
@@ -77,7 +76,7 @@ and the following datasets:
 Before starting, please download these files to your computer.
 
 <P>Begin by clicking here:&nbsp; <font size=+1> <a
-href="tut/webstart/cyto2.2.211205.jnlp">WEB START</a> </font>&nbsp;
+href="webstart/cyto2.2.211205.jnlp">WEB START</a> </font>&nbsp;
 (approximate download size: 22 MB) This starts Cytoscape on your own
 computer, after downloading the program and annotations from our
 website.
@@ -89,7 +88,7 @@ website.
   menu.  This file contains interactions related to the transcription
   factor protein TP53.   This should generate
   a figure similar to the one shown below:</P>
-  <IMG SRC="tut/filters.editor/Fig1.jpg" WIDTH="30%"></P>
+  <IMG SRC="filters.editor/Fig1.jpg" WIDTH="30%"></P>
   
   <LI><P>Earlier, we applied
   the <B>Spring Embedded Layout</B> algorithm.  Experiment with some of
@@ -102,7 +101,7 @@ website.
   this window, under <B>Available Networks</B>, click on
   <B>RUAL.subset.sif</B>, and click on the right-pointing arrow to add
   this network to <B>Selected Networks</B>, as shown.</P>
-  <<P><IMG SRC="tut/filters.editor/Fig2.png"  WIDTH="20%"></P>
+  <<P><IMG SRC="filters.editor/Fig2.png"  WIDTH="20%"></P>
 
   <LI><P>Repeat to select <B>STELZL.subset.sif</B>. Then, to 
   proceed with the merge, click on the up arrow, and then click on the 
@@ -115,7 +114,7 @@ website.
    on the <B>Merged Network</B> entry. This should bring up the menu
    shown below.
     Select <B>Create View</B>.</P>
-    <IMG SRC="tut/filters.editor/Fig3.jpg" WIDTH="10%"><BR CLEAR=LEFT>
+    <IMG SRC="filters.editor/Fig3.jpg" WIDTH="10%"><BR CLEAR=LEFT>
     <LI><P> How were these networks merged?  Anytime there was a node with
     the same ID in both networks, it was considered the same node.
    In both input networks, the nodes were labeled by Entrez Gene IDs.
@@ -150,7 +149,7 @@ website.
     <LI><P>Click on the button labeled <B>Create New Filter</B>.</P>
     <LI><P>The <B>Filter Creation Dialog</B> will now appear.  
     Select <B>String Filter</B>  and click <B>OK</B>.</P>
-    <IMG SRC="tut/filters.editor/Fig4.png"  WIDTH=310 HEIGHT=209></P>
+    <IMG SRC="filters.editor/Fig4.png"  WIDTH=310 HEIGHT=209></P>
     <LI><P>Under the <B>Use Filters</B> popup, you should now see an entry 
     labeled <B>Pattern:</B> in the available filters. Click on it. </P>
     <LI><P>On the right side of the window, under the section labeled
@@ -162,7 +161,7 @@ website.
         <B>interaction</B>.</P>        
         <LI><P>For <B>that matches the pattern</B>, enter <B>non_core</B>,
          and then click on the <B>Apply selected filter</B> button. </P>
-        <IMG SRC="tut/filters.editor/Fig5.png"  WIDTH=459 HEIGHT=193></P>
+        <IMG SRC="filters.editor/Fig5.png"  WIDTH=459 HEIGHT=193></P>
         <LI><P>Verify that 660 edges have been selected</P>
         <LI><P>Under <B>Edit</B> in the Cytoscape Desktop, select
         <B>Delete Selected Nodes/Edges</B>.</P>
@@ -172,7 +171,7 @@ website.
     </OL>
     <LI><P>Apply the <B>Organic</B> layout under <B>Layout</B> and 
     <B>yFiles</B>  This should generate a network such as shown below:</P>
-    <IMG SRC="tut/filters.editor/Fig6.jpg" WIDTH="30%">
+    <IMG SRC="filters.editor/Fig6.jpg" WIDTH="30%">
     <LI>Notice that at the bottom of the canvas, there are several nodes
     with no edges.  Select these nodes with your mouse and delete them.
     <LI><P>Notice also some nodes connected by multiple
@@ -190,7 +189,7 @@ so. </P>
   <LI><P>Under the <B>File</B> menu in the Cytoscape Desktop, select
   <B>SetEditor</B>, and <B>DefaultCytoscapeEditor</B>.  <B>CytoPanel
   1</B> should now appear as shown below. </P>
-  <IMG SRC="tut/filters.editor/Fig23.png" ALIGN=BOTTOM WIDTH=245 HEIGHT=317>
+  <IMG SRC="filters.editor/Fig23.png" ALIGN=BOTTOM WIDTH=245 HEIGHT=317>
 
   <LI><P>Add a node to the canvas by clicking the left mouse button on
   the node labeled <B>Add a Node</B>, and holding down the left mouse
@@ -199,7 +198,7 @@ so. </P>
   <LI><P>Select the node with your mouse.  In the <B>Node Attribute
   Browser</B>, you should see a node with ID of <B>node0</B>, as shown
   below:</P>
-  <IMG SRC="tut/filters.editor/Fig24.png" WIDTH=472 HEIGHT=197><BR CLEAR=LEFT>
+  <IMG SRC="filters.editor/Fig24.png" WIDTH=472 HEIGHT=197><BR CLEAR=LEFT>
   <LI><P>Give your new node a name by going to the <B>Node Attribute
   Browser</B>, clicking on the entry for the name, and entering a name
   under the column labeled <B>Official</B>.  Notice that you cannot
