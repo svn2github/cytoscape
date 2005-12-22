@@ -1,6 +1,9 @@
 package ding.view;
 
 import giny.model.GraphPerspective;
+import giny.model.Edge;
+import giny.model.Node;
+import giny.model.RootGraph;
 import giny.view.EdgeView;
 import giny.view.GraphView;
 import giny.view.GraphViewChangeListener;
@@ -12,7 +15,7 @@ import java.util.Iterator;
 import java.util.List;
 
 // Package visible class.
-class DGraphView extends Canvas, implements GraphView
+class DGraphView extends Canvas implements GraphView
 {
 
   DGraphView()
