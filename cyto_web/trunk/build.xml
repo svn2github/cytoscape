@@ -11,6 +11,7 @@
 		<replacetoken>$in_production = false;</replacetoken>
 		<replacevalue>$in_production = true;</replacevalue>
 	</replace>
+	<chmod file="cgi-bin/moin.cgi" perm="+x"/>
 	</target>
 
 	<target name="config_local" description="Configures for local testing set-up">
