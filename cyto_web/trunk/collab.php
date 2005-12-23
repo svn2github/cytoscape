@@ -36,6 +36,13 @@ The <b> Cytoscape </b> project is an ongoing collaboration between:
 		<a href="http://www.pasteur.fr"> <img src="images/ip60.gif" width="60" height="60" border="0" alt="IP" align="middle"> </a> <a href="http://www.pasteur.fr"> Institut Pasteur </a> 
 	</td>
 </tr>
-</tbody>
+<tr>
+	<td width="10">
+		<br>
+	</td>
+	<td valign="middle">
+		<img border="0" align="middle" alt="Agilent" height="60" width="60" src="images/agilent60.gif"> <a href="http://www.agilent.com"> Agilent Technologies </a> 
+</td>
+</tr></tbody>
 </table>
 </div>

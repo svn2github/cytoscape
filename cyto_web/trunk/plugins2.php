@@ -51,9 +51,9 @@ Cytoscape LGPL.
 				<td width="20%" valign="top">
 					<b>Agilent Literature Search</b><font size="-1">
 						<br>
-						Version: 1
+						Version: 2.0
 						<br>
-						Release Date: March 9, 2005</font>
+						Release Date: December 22, 2005</font>
 				</td>
 				<td width="40%" valign="top">
 
@@ -61,14 +61,15 @@ Cytoscape LGPL.
 					<p>The meta-search engine peforms Information Retrieval (IR) and Knowledge Extraction (KE),
 					using PubMed, OMIM, and USPTO search engines
 					to identify symbols, extract interactions, and
-					generate putative networks from literature.
+					generates putative networks from literature.
 
 <p><em>Agilent Literature Search</em> provides an easy-to-use interface to its powerful querying capabilities. When a query is entered, it is submitted to multiple user-selected search engines, and the retrieved results (documents) are fetched from their respective sources. Each document is then parsed into sentences and analyzed for associations between biological constructs, such as protein-protein associations.
 <!-- <p><em>Agilent Literature Search</em> uses a set of lexicons for defining biomolecule names (and aliases) and association terms (verbs) of interest. -->
 Associations extracted from these documents are then converted into interactions, which are further grouped into a network.
 The sentences and source hyperlinks for each association are further stored as attributes of the corresponding nodes and links in the network.
-The networks can be viewed and manipulated in Cytoscape v2.1.
-
+The networks can be viewed and manipulated in Cytoscape.
+<p>Enhancements in version 2.0 include literature-based evidence gathering for Cytoscape Edges
+and the ability to save, reload, and analyze search results.
 
 
 
@@ -86,8 +87,9 @@ The networks can be viewed and manipulated in Cytoscape v2.1.
 				<td width="20%" valign="top">
 					[<a href="http://www.labs.agilent.com/research/mtl/projects/sysbio/sysinformatics/litsearch.html">Agilent Literature Search Web Site</a>]
 					<br>
-					[<a href="http://www.labs.agilent.com/research/mtl/projects/sysbio/sysinformatics/download.html">Download page</a>]
+					[<a href="http://www.labs.agilent.com/research/mtl/projects/sysbio/sysinformatics/download2.html">Download Agilent Literature Search version 2.0</a>]
 					<br>
+					[<a href="http://www.labs.agilent.com/research/mtl/projects/sysbio/sysinformatics/download1.html">Download Agilent Literature Search version 1.0</a>]
 					<br>
 					<br>
 					<br><br>
