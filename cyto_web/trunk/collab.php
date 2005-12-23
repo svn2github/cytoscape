@@ -25,7 +25,7 @@ The <b> Cytoscape </b> project is an ongoing collaboration between:
 		<br>
 	</td>
 	<td valign="middle">
-		<img border="0" align="middle" alt="MSKCC" height="60" width="60" src="images/mskcc60.gif"> <a href="http://www.mskcc.org"> Memorial Sloan-Kettering Cancer Center </a> 
+		<img border="0" align="middle" alt="MSKCC" height="60" width="60" src="images/mskcc60.gif"> <a href="http://cbio.mskcc.org"> Memorial Sloan-Kettering Cancer Center </a> 
 </td>
 </tr>
 <tr>
