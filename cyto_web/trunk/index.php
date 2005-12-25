@@ -132,58 +132,6 @@
 								</table>
 							</div>
 							<P>
-							<div class="item">
-								<P>&nbsp;</P>
-								<big><b>Cytoscape Retreat, 2005</b></big>
-								<br>
-								<br>
-								<p>
-								<B>San Diego - November 30 - December 1st, 2005</B>
-								<P>&nbsp;</P>
-								The 3rd Annual Cytoscape Retreat will be held November 30 and December 1st, 2005 (Wed-Thurs)
-								at UCSD in San Diego. [<A HREF="http://www.cytoscape.org/cgi-bin/moin.cgi/Cytoscape_Retreat">
-								View Retreat Details</A>]
-								</P>
-								</p>
-								<p>
-								<br>
-								</p>
-							</div>
-								<P>
-								<div class="item">
-									<br>
-									<p>
-									<big><b><i>New!</i>&nbsp;&nbsp;Announcing Cytoscape 2.1</b></big>
-									<table width="100%">
-										<tr valign="top">
-											<td width="47%" valign="top">
-												<br>New Features include:
-												<br>
-												<ul>
-  													<li>Major performance improvements.</li>
-  													<li>Complete on-line help system.</li>
-  													<li>cPath plugin for downloading protein-protein interactions. (
-  														<A HREF="http://www.cbio.mskcc.org/cpath/cytoscape.do">
-  															View details
-  														</A>)
-  													</li>
-  													<li>Better network filtering, including large network support.</li>
-  													<li>Layout and rotate selected nodes.</li>
-  													<li>Progress bars on long tasks.</li>
-  													<li>Support for very large networks (&gt;100K nodes, edges).</li>
-  													<li>Numerous Bug Fixes</li>
-												</ul>
-												<A HREF="cyto_2_1_features.php">Cytoscape 2.1 Release Notes</A>
-											</td>
-											<td valign="top">
-												<A HREF="images/cyto_2_1.png">
-													<img src="images/cyto_2_1_thumb.png" border="0" align="left" alt="Cytoscape 2.1 Screenshot" />
-												</A>
-											</td>
-										</tr>
-									</table>
-								</div>
-								<p>
 								<div class="item">
 									<big>
 										<b>
