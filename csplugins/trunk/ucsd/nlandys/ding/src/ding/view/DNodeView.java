@@ -163,11 +163,37 @@ class DNodeView implements NodeView
 
   public void setOffset(double x, double y)
   {
+    synchronized (m_view.m_lock) {
+      if (!m_view.m_spacial.exists(m_inx, m_view.m_extentsBuff, 0)) {
+        return; }
+      final double wDiv2 =
+        (((double) m_view.m_extentsBuff[2]) - m_view.m_extentsBuff[0]) / 2.0d;
+      final double hDiv2 =
+        (((double) m_view.m_extentsBuff[3]) - m_view.m_extentsBuff[1]) / 2.0d;
+      final float xMin = (float) (x - wDiv2);
+      final float xMax = (float) (x + wDiv2);
+      final float yMin = (float) (y - hDiv2);
+      final float yMax = (float) (y + hDiv2);
+      if (!(xMax > xMin)) throw new IllegalStateException
+                            ("width of node has degenerated to zero after " +
+                             "rounding");
+      if (!(yMax > yMin)) throw new IllegalStateException
+                            ("height of node has degenerated to zero after " +
+                             "rounding");
+      m_view.m_spacial.delete(m_inx);
+      m_view.m_spacial.insert(m_inx, xMin, yMin, xMax, yMax); }
   }
 
   public Point2D getOffset()
   {
-    return null;
+    synchronized (m_view.m_lock) {
+      if (!m_view.m_spacial.exists(m_inx, m_view.m_extentsBuff, 0)) {
+        return null; }
+      final double xCenter =
+        (((double) m_view.m_extentsBuff[0]) + m_view.m_extentsBuff[2]) / 2.0d;
+      final double yCenter =
+        (((double) m_view.m_extentsBuff[1]) + m_view.m_extentsBuff[3]) / 2.0d;
+      return new Point2D.Double(xCenter, yCenter); }
   }
 
   public void setXPosition(double xPos)
