@@ -12,9 +12,12 @@ import java.util.List;
 class DNodeView implements NodeView
 {
 
+  DGraphView m_view;
+  final int m_inx = -1;
+
   public GraphView getGraphView()
   {
-    return null;
+    return m_view;
   }
 
   public Node getNode()
@@ -103,7 +106,8 @@ class DNodeView implements NodeView
 
   public double getWidth()
   {
-    return 0.0d;
+    if (!m_view.m_spacial.exists(m_inx, m_view.m_extentsBuff, 0)) return -1.0d;
+    return m_view.m_extentsBuff[2] - m_view.m_extentsBuff[0];
   }
 
   public boolean setHeight(double height)
@@ -113,7 +117,8 @@ class DNodeView implements NodeView
 
   public double getHeight()
   {
-    return 0.0d;
+    if (!m_view.m_spacial.exists(m_inx, m_view.m_extentsBuff, 0)) return -1.0d;
+    return m_view.m_extentsBuff[3] - m_view.m_extentsBuff[1];
   }
 
   public Label getLabel()

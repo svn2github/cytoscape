@@ -1,5 +1,6 @@
 package ding.view;
 
+import cytoscape.geom.spacial.MutableSpacialIndex2D;
 import giny.model.GraphPerspective;
 import giny.model.Edge;
 import giny.model.Node;
@@ -17,6 +18,10 @@ import java.util.List;
 // Package visible class.
 class DGraphView implements GraphView
 {
+
+  final Object m_lock = new Object();
+  final float[] m_extentsBuff = new float[4];
+  MutableSpacialIndex2D m_spacial;
 
   private static class InnerCanvas extends Canvas
   {

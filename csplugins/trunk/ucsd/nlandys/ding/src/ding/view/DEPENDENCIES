@@ -1,1 +1,3 @@
+lib:cytoscape-geom-spacial.jar
+lib:cytoscape-util-intr.jar
 lib:giny.jar
