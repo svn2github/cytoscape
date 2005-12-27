@@ -198,6 +198,19 @@ class DNodeView implements NodeView
 
   public void setXPosition(double xPos)
   {
+    synchronized (m_view.m_lock) {
+      if (!m_view.m_spacial.exists(m_inx, m_view.m_extentsBuff, 0)) {
+        return; }
+      final double wDiv2 =
+        (((double) m_view.m_extentsBuff[2]) - m_view.m_extentsBuff[0]) / 2.0d;
+      final float xMin = (float) (xPos - wDiv2);
+      final float xMax = (float) (xPos + wDiv2);
+      if (!(xMax > xMin)) throw new IllegalStateException
+                            ("width of node has degenerated to zero after " +
+                             "rounding");
+      m_view.m_spacial.delete(m_inx);
+      m_view.m_spacial.insert(m_inx, xMin, m_view.m_extentsBuff[1],
+                              xMax, m_view.m_extentsBuff[3]); }
   }
 
   public void setXPosition(double xPos, boolean update)
@@ -206,11 +219,28 @@ class DNodeView implements NodeView
 
   public double getXPosition()
   {
-    return 0.0d;
+    synchronized (m_view.m_lock) {
+      if (!m_view.m_spacial.exists(m_inx, m_view.m_extentsBuff, 0)) {
+        return Double.NaN; }
+      return (((double) m_view.m_extentsBuff[0]) +
+              m_view.m_extentsBuff[2]) / 2.0d; }
   }
 
   public void setYPosition(double yPos)
   {
+    synchronized (m_view.m_lock) {
+      if (!m_view.m_spacial.exists(m_inx, m_view.m_extentsBuff, 0)) {
+        return; }
+      final double hDiv2 =
+        (((double) m_view.m_extentsBuff[3]) - m_view.m_extentsBuff[1]) / 2.0d;
+      final float yMin = (float) (yPos - hDiv2);
+      final float yMax = (float) (yPos + hDiv2);
+      if (!(yMax > yMin)) throw new IllegalStateException
+                            ("height of node has degenerated to zero after " +
+                             "rounding");
+      m_view.m_spacial.delete(m_inx);
+      m_view.m_spacial.insert(m_inx, m_view.m_extentsBuff[1], yMin,
+                              m_view.m_extentsBuff[3], yMax); }
   }
 
   public void setYPosition(double yPos, boolean update)
@@ -219,7 +249,11 @@ class DNodeView implements NodeView
 
   public double getYPosition()
   {
-    return 0.0d;
+    synchronized (m_view.m_lock) {
+      if (!m_view.m_spacial.exists(m_inx, m_view.m_extentsBuff, 0)) {
+        return Double.NaN; }
+      return (((double) m_view.m_extentsBuff[1]) +
+              m_view.m_extentsBuff[3]) / 2.0d; }
   }
 
   public void setNodePosition(boolean animate)
