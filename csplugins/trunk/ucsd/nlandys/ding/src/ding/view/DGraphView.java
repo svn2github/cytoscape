@@ -8,14 +8,13 @@ import giny.view.EdgeView;
 import giny.view.GraphView;
 import giny.view.GraphViewChangeListener;
 import giny.view.NodeView;
-import java.awt.Canvas;
 import java.awt.Component;
 import java.awt.Paint;
 import java.util.Iterator;
 import java.util.List;
 
 // Package visible class.
-class DGraphView extends Canvas implements GraphView
+class DGraphView implements GraphView
 {
 
   DGraphView()
@@ -93,7 +92,7 @@ class DGraphView extends Canvas implements GraphView
 
   public Component getComponent()
   {
-    return this;
+    return null;
   }
 
   public NodeView addNodeView(int nodeInx)
