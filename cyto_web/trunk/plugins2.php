@@ -68,8 +68,11 @@ Cytoscape LGPL.
 Associations extracted from these documents are then converted into interactions, which are further grouped into a network.
 The sentences and source hyperlinks for each association are further stored as attributes of the corresponding nodes and links in the network.
 The networks can be viewed and manipulated in Cytoscape.
-<p>Enhancements in version 2.0 include literature-based evidence gathering for Cytoscape Edges
-and the ability to save, reload, and analyze search results.
+<p>Enhancements in version 2.0 include 
+<ul>
+<li> literature-based evidence gathering for Cytoscape Edges and
+<li> the ability to save, reload, and analyze search results.
+</ul>
 
 
 
@@ -87,9 +90,9 @@ and the ability to save, reload, and analyze search results.
 				<td width="20%" valign="top">
 					[<a href="http://www.labs.agilent.com/research/mtl/projects/sysbio/sysinformatics/litsearch.html">Agilent Literature Search Web Site</a>]
 					<br>
-					[<a href="http://www.labs.agilent.com/research/mtl/projects/sysbio/sysinformatics/download2.html">Download Agilent Literature Search version 2.0</a>]
+					[<a href="http://www.agilent.com/labs/research/mtl/projects/sysbio/sysinformatics/downloadv2.html">Download Agilent Literature Search version 2.0</a>]
 					<br>
-					[<a href="http://www.labs.agilent.com/research/mtl/projects/sysbio/sysinformatics/download1.html">Download Agilent Literature Search version 1.0</a>]
+					[<a href="http://www.agilent.com/labs/research/mtl/projects/sysbio/sysinformatics/downloadv1.html">Download Agilent Literature Search version 1.0</a>]
 					<br>
 					<br>
 					<br><br>
