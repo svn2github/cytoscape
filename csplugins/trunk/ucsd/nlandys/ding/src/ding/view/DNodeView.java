@@ -101,24 +101,54 @@ class DNodeView implements NodeView
 
   public boolean setWidth(double width)
   {
-    return false;
+    synchronized (m_view.m_lock) {
+      if (!m_view.m_spacial.exists(m_inx, m_view.m_extentsBuff, 0)) {
+        return false; }
+      final double xCenter =
+        (((double) m_view.m_extentsBuff[0]) + m_view.m_extentsBuff[2]) / 2.0d;
+      final double wDiv2 = width / 2.0d;
+      final float xMin = (float) (xCenter - wDiv2);
+      final float xMax = (float) (xCenter + wDiv2);
+      if (!(xMax > xMin))
+        throw new IllegalArgumentException("width is too small");
+      m_view.m_spacial.delete(m_inx);
+      m_view.m_spacial.insert(m_inx, xMin, m_view.m_extentsBuff[1],
+                              xMax, m_view.m_extentsBuff[3]);
+      return true; }
   }
 
   public double getWidth()
   {
-    if (!m_view.m_spacial.exists(m_inx, m_view.m_extentsBuff, 0)) return -1.0d;
-    return m_view.m_extentsBuff[2] - m_view.m_extentsBuff[0];
+    synchronized (m_view.m_lock) {
+      if (!m_view.m_spacial.exists(m_inx, m_view.m_extentsBuff, 0)) {
+        return -1.0d; }
+      return m_view.m_extentsBuff[2] - m_view.m_extentsBuff[0]; }
   }
 
   public boolean setHeight(double height)
   {
-    return false;
+    synchronized (m_view.m_lock) {
+      if (!m_view.m_spacial.exists(m_inx, m_view.m_extentsBuff, 0)) {
+        return false; }
+      final double yCenter =
+        (((double) m_view.m_extentsBuff[1]) + m_view.m_extentsBuff[3]) / 2.0d;
+      final double hDiv2 = height / 2.0d;
+      final float yMin = (float) (yCenter - hDiv2);
+      final float yMax = (float) (yCenter + hDiv2);
+      if (!(yMax > yMin))
+        throw new IllegalArgumentException("height is too small");
+      m_view.m_spacial.delete(m_inx);
+      m_view.m_spacial.insert(m_inx, m_view.m_extentsBuff[0], yMin,
+                              m_view.m_extentsBuff[2], yMax);
+      return true; }
   }
 
   public double getHeight()
   {
-    if (!m_view.m_spacial.exists(m_inx, m_view.m_extentsBuff, 0)) return -1.0d;
-    return m_view.m_extentsBuff[3] - m_view.m_extentsBuff[1];
+    synchronized (m_view.m_lock) {
+      if (!m_view.m_spacial.exists(m_inx, m_view.m_extentsBuff, 0)) {
+        return -1.0d; }
+      return m_view.m_extentsBuff[3] - m_view.m_extentsBuff[1]; }
   }
 
   public Label getLabel()
