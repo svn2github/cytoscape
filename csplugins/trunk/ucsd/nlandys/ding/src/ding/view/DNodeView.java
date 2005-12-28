@@ -215,6 +215,8 @@ class DNodeView implements NodeView
 
   public void setXPosition(double xPos, boolean update)
   {
+    setXPosition(xPos);
+    if (update) { m_view.updateView(); }
   }
 
   public double getXPosition()
@@ -245,6 +247,8 @@ class DNodeView implements NodeView
 
   public void setYPosition(double yPos, boolean update)
   {
+    setYPosition(yPos);
+    if (update) { m_view.updateView(); }
   }
 
   public double getYPosition()
@@ -258,6 +262,7 @@ class DNodeView implements NodeView
 
   public void setNodePosition(boolean animate)
   {
+    m_view.updateView();
   }
 
   public void select()
