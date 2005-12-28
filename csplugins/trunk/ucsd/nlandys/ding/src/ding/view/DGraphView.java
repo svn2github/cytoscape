@@ -22,6 +22,7 @@ class DGraphView implements GraphView
   final Object m_lock = new Object();
   final float[] m_extentsBuff = new float[4];
   MutableSpacialIndex2D m_spacial;
+  DNodeDetails m_nodeDetails;
 
   private static class InnerCanvas extends Canvas
   {

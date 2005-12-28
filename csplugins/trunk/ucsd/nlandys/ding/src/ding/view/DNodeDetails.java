@@ -27,7 +27,7 @@ class DNodeDetails extends NodeDetails
   void overrideShape(int node, byte shape)
   {
     if (super.shape(node) == shape) { m_shapes.remove(new Integer(node)); }
-    m_shapes.put(new Integer(node), new Byte(shape));
+    else { m_shapes.put(new Integer(node), new Byte(shape)); }
   }
 
 }

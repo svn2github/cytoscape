@@ -1,5 +1,6 @@
 package ding.view;
 
+import cytoscape.render.immed.GraphGraphics;
 import giny.model.Node;
 import giny.view.GraphView;
 import giny.view.Label;
@@ -42,7 +43,25 @@ class DNodeView implements NodeView
 
   public int getShape()
   {
-    return 0;
+    synchronized (m_view.m_lock) {
+      final byte nativeShape = m_view.m_nodeDetails.shape(m_inx);
+      switch (nativeShape) {
+      case GraphGraphics.SHAPE_RECTANGLE:
+        return NodeView.RECTANGLE;
+      case GraphGraphics.SHAPE_DIAMOND:
+        return NodeView.DIAMOND;
+      case GraphGraphics.SHAPE_ELLIPSE:
+        return NodeView.ELLIPSE;
+      case GraphGraphics.SHAPE_HEXAGON:
+        return NodeView.HEXAGON;
+      case GraphGraphics.SHAPE_OCTAGON:
+        return NodeView.OCTAGON;
+      case GraphGraphics.SHAPE_PARALLELOGRAM:
+        return NodeView.PARALELLOGRAM;
+      case GraphGraphics.SHAPE_ROUNDED_RECTANGLE:
+        return NodeView.ROUNDED_RECTANGLE;
+      default: // GraphGraphics.SHAPE_TRIANGLE
+        return NodeView.TRIANGLE; } }
   }
 
   public void setSelectedPaint(Paint paint)
@@ -283,8 +302,30 @@ class DNodeView implements NodeView
     return false;
   }
 
-  public void setShape(int shape)
+  public void setShape(final int shape)
   {
+    synchronized (m_view.m_lock) {
+      final byte nativeShape;
+      switch (shape) {
+      case NodeView.TRIANGLE:
+        nativeShape = GraphGraphics.SHAPE_TRIANGLE; break;
+      case NodeView.DIAMOND:
+        nativeShape = GraphGraphics.SHAPE_DIAMOND; break;
+      case NodeView.ELLIPSE:
+        nativeShape = GraphGraphics.SHAPE_ELLIPSE; break;
+      case NodeView.HEXAGON:
+        nativeShape = GraphGraphics.SHAPE_HEXAGON; break;
+      case NodeView.OCTAGON:
+        nativeShape = GraphGraphics.SHAPE_OCTAGON; break;
+      case NodeView.PARALELLOGRAM:
+        nativeShape = GraphGraphics.SHAPE_PARALLELOGRAM; break;
+      case NodeView.RECTANGLE:
+        nativeShape = GraphGraphics.SHAPE_RECTANGLE; break;
+      case NodeView.ROUNDED_RECTANGLE:
+        nativeShape = GraphGraphics.SHAPE_ROUNDED_RECTANGLE; break;
+      default:
+        throw new IllegalArgumentException("shape is not recognized"); }
+      m_view.m_nodeDetails.overrideShape(m_inx, nativeShape); }
   }
 
   public void setToolTip(String tip)
