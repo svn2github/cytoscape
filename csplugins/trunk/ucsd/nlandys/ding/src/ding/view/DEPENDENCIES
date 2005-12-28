@@ -1,3 +1,6 @@
 lib:cytoscape-geom-spacial.jar
+lib:cytoscape-graph-fixed.jar
+lib:cytoscape-render-immed.jar
+lib:cytoscape-render-stateful.jar
 lib:cytoscape-util-intr.jar
 lib:giny.jar
