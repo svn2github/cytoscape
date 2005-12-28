@@ -100,7 +100,7 @@
     <td><img src="people_photos/chris.jpg"></img></td>
     <td><img src="people_photos/allan.jpg"></img></td>
     <td><img src="people_photos/aditya.jpg"></img></td>
-    <td><img src="people_photos/printing.jpg"></img></td>
+    <td><img src="people_photos/melissa.jpg"></img></td>
   </tr>
 
   <tr><td colspan=6>&nbsp;</td></tr>
