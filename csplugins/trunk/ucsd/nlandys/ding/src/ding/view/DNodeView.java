@@ -16,6 +16,7 @@ class DNodeView implements NodeView
 
   DGraphView m_view;
   final int m_inx;
+  boolean m_selected;
   Paint m_unselectedPaint;
   Paint m_selectedPaint;
 
@@ -23,6 +24,7 @@ class DNodeView implements NodeView
   {
     m_view = view;
     m_inx = inx;
+    m_selected = false;
     m_unselectedPaint = m_view.m_nodeDetails.fillPaint(m_inx);
     m_selectedPaint = Color.yellow;
   }
@@ -77,32 +79,38 @@ class DNodeView implements NodeView
 
   public void setSelectedPaint(Paint paint)
   {
-    synchronized (m_view.m_lock)
-    {
+    synchronized (m_view.m_lock) {
       if (paint == null) {
         throw new NullPointerException("paint is null"); }
       m_selectedPaint = paint;
       if (isSelected()) {
-        m_view.m_nodeDetails.overrideFillPaint(m_inx, m_selectedPaint); }
-      if (m_selectedPaint instanceof Color) {
-        m_view.m_nodeDetails.overrideColorLowDetail(m_inx,
-                                                    (Color) m_selectedPaint); }
-    }
+        m_view.m_nodeDetails.overrideFillPaint(m_inx, m_selectedPaint);
+        if (m_selectedPaint instanceof Color) {
+          m_view.m_nodeDetails.overrideColorLowDetail
+            (m_inx, (Color) m_selectedPaint); } } }
   }
 
   public Paint getSelectedPaint()
   {
-    synchronized (m_view.m_lock) {
-      return m_selectedPaint; }
+    return m_selectedPaint;
   }
 
   public void setUnselectedPaint(Paint paint)
   {
+    synchronized (m_view.m_lock) {
+      if (paint == null) {
+        throw new NullPointerException("paint is null"); }
+      m_unselectedPaint = paint;
+      if (!isSelected()) {
+        m_view.m_nodeDetails.overrideFillPaint(m_inx, m_unselectedPaint);
+        if (m_unselectedPaint instanceof Color) {
+          m_view.m_nodeDetails.overrideColorLowDetail
+            (m_inx, (Color) m_unselectedPaint); } } }
   }
 
   public Paint getUnselectedPaint()
   {
-    return null;
+    return m_unselectedPaint;
   }
 
   public void setBorderPaint(Paint paint)
@@ -309,20 +317,40 @@ class DNodeView implements NodeView
 
   public void select()
   {
-  }
+    synchronized (m_view.m_lock) {
+      if (m_selected) { return; }
+      m_selected = true;
+      m_view.m_nodeDetails.overrideFillPaint(m_inx, m_selectedPaint);
+      if (m_selectedPaint instanceof Color) {
+        m_view.m_nodeDetails.overrideColorLowDetail
+          (m_inx, (Color) m_selectedPaint); } }
+    }
 
   public void unselect()
   {
+    synchronized (m_view.m_lock) {
+      if (!m_selected) { return; }
+      m_selected = false;
+      m_view.m_nodeDetails.overrideFillPaint(m_inx, m_unselectedPaint);
+      if (m_unselectedPaint instanceof Color) {
+        m_view.m_nodeDetails.overrideColorLowDetail
+          (m_inx, (Color) m_unselectedPaint); } }
   }
 
   public boolean isSelected()
   {
-    return false;
+    return m_selected;
   }
 
   public boolean setSelected(boolean selected)
   {
-    return false;
+    synchronized (m_view.m_lock) {
+      if (selected) {
+        if (m_selected) { return false; }
+        select(); return true; }
+      else {
+        if (!m_selected) { return false; }
+        unselect(); return true; } }
   }
 
   public void setShape(final int shape)
