@@ -5,6 +5,7 @@ import giny.model.Node;
 import giny.view.GraphView;
 import giny.view.Label;
 import giny.view.NodeView;
+import java.awt.Color;
 import java.awt.Paint;
 import java.awt.Stroke;
 import java.awt.geom.Point2D;
@@ -14,7 +15,17 @@ class DNodeView implements NodeView
 {
 
   DGraphView m_view;
-  final int m_inx = -1;
+  final int m_inx;
+  Paint m_unselectedPaint;
+  Paint m_selectedPaint;
+
+  DNodeView(DGraphView view, int inx)
+  {
+    m_view = view;
+    m_inx = inx;
+    m_unselectedPaint = m_view.m_nodeDetails.fillPaint(m_inx);
+    m_selectedPaint = Color.yellow;
+  }
 
   public GraphView getGraphView()
   {
@@ -66,11 +77,23 @@ class DNodeView implements NodeView
 
   public void setSelectedPaint(Paint paint)
   {
+    synchronized (m_view.m_lock)
+    {
+      if (paint == null) {
+        throw new NullPointerException("paint is null"); }
+      m_selectedPaint = paint;
+      if (isSelected()) {
+        m_view.m_nodeDetails.overrideFillPaint(m_inx, m_selectedPaint); }
+      if (m_selectedPaint instanceof Color) {
+        m_view.m_nodeDetails.overrideColorLowDetail(m_inx,
+                                                    (Color) m_selectedPaint); }
+    }
   }
 
   public Paint getSelectedPaint()
   {
-    return null;
+    synchronized (m_view.m_lock) {
+      return m_selectedPaint; }
   }
 
   public void setUnselectedPaint(Paint paint)
