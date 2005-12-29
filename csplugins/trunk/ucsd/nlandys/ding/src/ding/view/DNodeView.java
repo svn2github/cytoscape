@@ -41,12 +41,12 @@ class DNodeView implements NodeView
 
   public int getGraphPerspectiveIndex()
   {
-    return 0;
+    return m_inx;
   }
 
   public int getRootGraphIndex()
   {
-    return 0;
+    return m_inx;
   }
 
   public List getEdgeViewsList(NodeView otherNode)
