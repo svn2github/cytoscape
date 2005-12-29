@@ -20,10 +20,13 @@ class DNodeView implements NodeView
   Paint m_unselectedPaint;
   Paint m_selectedPaint;
 
+  /*
+   * @param inx the RootGraph index of node (a negative number).
+   */
   DNodeView(DGraphView view, int inx)
   {
     m_view = view;
-    m_inx = inx;
+    m_inx = ~inx;
     m_selected = false;
     m_unselectedPaint = m_view.m_nodeDetails.fillPaint(m_inx);
     m_selectedPaint = Color.yellow;
@@ -41,12 +44,12 @@ class DNodeView implements NodeView
 
   public int getGraphPerspectiveIndex()
   {
-    return m_inx;
+    return ~m_inx;
   }
 
   public int getRootGraphIndex()
   {
-    return m_inx;
+    return ~m_inx;
   }
 
   public List getEdgeViewsList(NodeView otherNode)
@@ -115,11 +118,16 @@ class DNodeView implements NodeView
 
   public void setBorderPaint(Paint paint)
   {
+    synchronized (m_view.m_lock) {
+      if (paint == null) {
+        throw new NullPointerException("paint is null"); }
+      m_view.m_nodeDetails.overrideBorderPaint(m_inx, paint); }
   }
 
   public Paint getBorderPaint()
   {
-    return null;
+    synchronized (m_view.m_lock) {
+      return m_view.m_nodeDetails.borderPaint(m_inx); }
   }
 
   public void setBorderWidth(float width)
