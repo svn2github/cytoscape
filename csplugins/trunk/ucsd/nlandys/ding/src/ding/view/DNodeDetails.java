@@ -1,6 +1,7 @@
 package ding.view;
 
 import cytoscape.render.stateful.NodeDetails;
+import cytoscape.util.intr.IntObjHash;
 import java.awt.Color;
 import java.awt.Paint;
 import java.util.HashMap;
@@ -12,6 +13,9 @@ import java.util.HashMap;
 class DNodeDetails extends NodeDetails
 {
 
+  final IntObjHash m_colorsLowDetail = new IntObjHash();
+  final Object m_deletedEntry = new Object();
+
   // The values are Byte objects; the bytes are shapes defined in
   // cytoscape.render.immed.GraphGraphics.
   final HashMap m_shapes = new HashMap();
@@ -20,12 +24,23 @@ class DNodeDetails extends NodeDetails
 
   public Color colorLowDetail(int node)
   {
-    // TODO: Implement using non-object-oriented hashmap.
-    return super.colorLowDetail(node);
+    final Object o = m_colorsLowDetail.get(node);
+    if (o == null || o == m_deletedEntry) {
+      return super.colorLowDetail(node); }
+    return (Color) o;
   }
 
+  /*
+   * The color argument must be pre-checked for null.  Don't pass null in.
+   */
   void overrideColorLowDetail(int node, Color color)
   {
+    if (super.colorLowDetail(node).equals(color)) {
+      final Object val = m_colorsLowDetail.get(node);
+      if (val != null && val != m_deletedEntry) {
+        m_colorsLowDetail.put(node, m_deletedEntry); } }
+    else {
+      m_colorsLowDetail.put(node, color); }
   }
 
   public byte shape(int node)
