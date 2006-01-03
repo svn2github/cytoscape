@@ -5,13 +5,15 @@ import giny.model.Node;
 import giny.view.GraphView;
 import giny.view.Label;
 import giny.view.NodeView;
+import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Paint;
 import java.awt.Stroke;
 import java.awt.geom.Point2D;
 import java.util.List;
 
-class DNodeView implements NodeView
+class DNodeView implements NodeView, Label
 {
 
   DGraphView m_view;
@@ -146,11 +148,13 @@ class DNodeView implements NodeView
 
   public void setBorder(Stroke stroke)
   {
+    if (stroke instanceof BasicStroke) {
+      setBorderWidth(((BasicStroke) stroke).getLineWidth()); }
   }
 
   public Stroke getBorder()
   {
-    return null;
+    return new BasicStroke(getBorderWidth());
   }
 
   public void setTransparency(float trans)
@@ -159,7 +163,7 @@ class DNodeView implements NodeView
 
   public float getTransparency()
   {
-    return 0.0f;
+    return 1.0f;
   }
 
   public boolean setWidth(double width)
@@ -393,6 +397,49 @@ class DNodeView implements NodeView
   }
 
   public void setToolTip(String tip)
+  {
+  }
+
+
+  // Interface giny.view.Label:
+
+  public void setPositionHint(int position)
+  {
+  }
+
+  public Paint getTextPaint()
+  {
+    return null;
+  }
+
+  public void setTextPaint(Paint textPaint)
+  {
+  }
+
+  public double getGreekThreshold()
+  {
+    return 0.0d;
+  }
+
+  public void setGreekThreshold(double threshold)
+  {
+  }
+
+  public String getText()
+  {
+    return null;
+  }
+
+  public void setText(String text)
+  {
+  }
+
+  public Font getFont()
+  {
+    return null;
+  }
+
+  public void setFont(Font font)
   {
   }
 
