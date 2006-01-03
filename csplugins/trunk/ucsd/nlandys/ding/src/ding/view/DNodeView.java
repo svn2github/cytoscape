@@ -21,6 +21,7 @@ class DNodeView implements NodeView, Label
   boolean m_selected;
   Paint m_unselectedPaint;
   Paint m_selectedPaint;
+  Paint m_textPaint;
 
   /*
    * @param inx the RootGraph index of node (a negative number).
@@ -32,6 +33,7 @@ class DNodeView implements NodeView, Label
     m_selected = false;
     m_unselectedPaint = m_view.m_nodeDetails.fillPaint(m_inx);
     m_selectedPaint = Color.yellow;
+    m_textPaint = Color.black;
   }
 
   public GraphView getGraphView()
@@ -220,7 +222,7 @@ class DNodeView implements NodeView, Label
 
   public Label getLabel()
   {
-    return null;
+    return this;
   }
 
   public int getDegree()
@@ -409,11 +411,17 @@ class DNodeView implements NodeView, Label
 
   public Paint getTextPaint()
   {
-    return null;
+    return m_textPaint;
   }
 
   public void setTextPaint(Paint textPaint)
   {
+    synchronized (m_view.m_lock) {
+      if (textPaint == null) {
+        throw new NullPointerException("textPaint is null"); }
+      m_textPaint = textPaint;
+      if (m_view.m_nodeDetails.labelCount(m_inx) > 0) {
+        m_view.m_nodeDetails.overrideLabelPaint(m_inx, 0, m_textPaint); } }
   }
 
   public double getGreekThreshold()

@@ -22,6 +22,7 @@ class DNodeDetails extends NodeDetails
   final HashMap m_fillPaints = new HashMap();
   final HashMap m_borderWidths = new HashMap();
   final HashMap m_borderPaints = new HashMap();
+  final HashMap m_labelPaints = new HashMap();
 
   public Color colorLowDetail(int node)
   {
@@ -110,6 +111,25 @@ class DNodeDetails extends NodeDetails
     if (super.borderPaint(node).equals(paint)) {
       m_borderPaints.remove(new Integer(node)); }
     else { m_borderPaints.put(new Integer(node), paint); }
+  }
+
+  public Paint labelPaint(int node, int labelInx)
+  {
+    final long key = (((long) node) << 32) | ((long) labelInx);
+    final Object o = m_labelPaints.get(new Long(key));
+    if (o == null) { return super.labelPaint(node, labelInx); }
+    return (Paint) o;
+  }
+
+  /*
+   * The paint argument must be pre-checked for null.  Don't pass null in.
+   */
+  void overrideLabelPaint(int node, int labelInx, Paint paint)
+  {
+    final long key = (((long) node) << 32) | ((long) labelInx);
+    if (super.labelPaint(node, labelInx).equals(paint)) {
+      m_labelPaints.remove(new Long(key)); }
+    else { m_labelPaints.put(new Long(key), paint); }
   }
 
 }
