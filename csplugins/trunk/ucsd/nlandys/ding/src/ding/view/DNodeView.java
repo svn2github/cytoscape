@@ -132,11 +132,16 @@ class DNodeView implements NodeView
 
   public void setBorderWidth(float width)
   {
+    synchronized (m_view.m_lock) {
+      if (!(width >= 0)) { throw new IllegalArgumentException
+                             ("width is negative"); }
+      m_view.m_nodeDetails.overrideBorderWidth(m_inx, width); }
   }
 
   public float getBorderWidth()
   {
-    return 0.0f;
+    synchronized (m_view.m_lock) {
+      return m_view.m_nodeDetails.borderWidth(m_inx); }
   }
 
   public void setBorder(Stroke stroke)

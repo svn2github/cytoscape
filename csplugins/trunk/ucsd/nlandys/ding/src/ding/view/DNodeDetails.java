@@ -20,6 +20,7 @@ class DNodeDetails extends NodeDetails
   // cytoscape.render.immed.GraphGraphics.
   final HashMap m_shapes = new HashMap();
   final HashMap m_fillPaints = new HashMap();
+  final HashMap m_borderWidths = new HashMap();
   final HashMap m_borderPaints = new HashMap();
 
   public Color colorLowDetail(int node)
@@ -74,6 +75,24 @@ class DNodeDetails extends NodeDetails
     if (super.fillPaint(node).equals(paint)) {
       m_fillPaints.remove(new Integer(node)); }
     else { m_fillPaints.put(new Integer(node), paint); }
+  }
+
+  public float borderWidth(int node)
+  {
+    final Object o = m_borderWidths.get(new Integer(node));
+    if (o == null) { return super.borderWidth(node); }
+    return ((Float) o).floatValue();
+  }
+
+  /*
+   * The width argument must be pre-checked.  For example don't pass negative
+   * values.
+   */
+  void overrideBorderWidth(int node, float width)
+  {
+    if (super.borderWidth(node) == width) {
+      m_borderWidths.remove(new Integer(node)); }
+    else { m_borderWidths.put(new Integer(node), new Float(width)); }
   }
 
   public Paint borderPaint(int node)
