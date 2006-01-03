@@ -3,6 +3,7 @@ package ding.view;
 import cytoscape.render.stateful.NodeDetails;
 import cytoscape.util.intr.IntObjHash;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Paint;
 import java.util.HashMap;
 
@@ -22,6 +23,7 @@ class DNodeDetails extends NodeDetails
   final HashMap m_fillPaints = new HashMap();
   final HashMap m_borderWidths = new HashMap();
   final HashMap m_borderPaints = new HashMap();
+  final HashMap m_labelFonts = new HashMap();
   final HashMap m_labelPaints = new HashMap();
 
   public Color colorLowDetail(int node)
@@ -37,7 +39,7 @@ class DNodeDetails extends NodeDetails
    */
   void overrideColorLowDetail(int node, Color color)
   {
-    if (super.colorLowDetail(node).equals(color)) {
+    if (color.equals(super.colorLowDetail(node))) {
       final Object val = m_colorsLowDetail.get(node);
       if (val != null && val != m_deletedEntry) {
         m_colorsLowDetail.put(node, m_deletedEntry); } }
@@ -57,7 +59,7 @@ class DNodeDetails extends NodeDetails
    */
   void overrideShape(int node, byte shape)
   {
-    if (super.shape(node) == shape) { m_shapes.remove(new Integer(node)); }
+    if (shape == super.shape(node)) { m_shapes.remove(new Integer(node)); }
     else { m_shapes.put(new Integer(node), new Byte(shape)); }
   }
 
@@ -73,7 +75,7 @@ class DNodeDetails extends NodeDetails
    */
   void overrideFillPaint(int node, Paint paint)
   {
-    if (super.fillPaint(node).equals(paint)) {
+    if (paint.equals(super.fillPaint(node))) {
       m_fillPaints.remove(new Integer(node)); }
     else { m_fillPaints.put(new Integer(node), paint); }
   }
@@ -91,7 +93,7 @@ class DNodeDetails extends NodeDetails
    */
   void overrideBorderWidth(int node, float width)
   {
-    if (super.borderWidth(node) == width) {
+    if (width == super.borderWidth(node)) {
       m_borderWidths.remove(new Integer(node)); }
     else { m_borderWidths.put(new Integer(node), new Float(width)); }
   }
@@ -108,9 +110,28 @@ class DNodeDetails extends NodeDetails
    */
   void overrideBorderPaint(int node, Paint paint)
   {
-    if (super.borderPaint(node).equals(paint)) {
+    if (paint.equals(super.borderPaint(node))) {
       m_borderPaints.remove(new Integer(node)); }
     else { m_borderPaints.put(new Integer(node), paint); }
+  }
+
+  public Font labelFont(int node, int labelInx)
+  {
+    final long key = (((long) node) << 32) | ((long) labelInx);
+    final Object o = m_labelFonts.get(new Long(key));
+    if (o == null) { return super.labelFont(node, labelInx); }
+    return (Font) o;
+  }
+
+  /*
+   * The font argument must be pre-checked for null.  Don't pass null in.
+   */
+  void overrideLabelFont(int node, int labelInx, Font font)
+  {
+    final long key = (((long) node) << 32) | ((long) labelInx);
+    if (font.equals(super.labelFont(node, labelInx))) {
+      m_labelFonts.remove(new Long(key)); }
+    else { m_labelFonts.put(new Long(key), font); }
   }
 
   public Paint labelPaint(int node, int labelInx)
@@ -127,7 +148,7 @@ class DNodeDetails extends NodeDetails
   void overrideLabelPaint(int node, int labelInx, Paint paint)
   {
     final long key = (((long) node) << 32) | ((long) labelInx);
-    if (super.labelPaint(node, labelInx).equals(paint)) {
+    if (paint.equals(super.labelPaint(node, labelInx))) {
       m_labelPaints.remove(new Long(key)); }
     else { m_labelPaints.put(new Long(key), paint); }
   }

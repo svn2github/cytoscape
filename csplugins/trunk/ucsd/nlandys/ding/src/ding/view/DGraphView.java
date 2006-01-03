@@ -11,6 +11,7 @@ import giny.view.GraphViewChangeListener;
 import giny.view.NodeView;
 import java.awt.Canvas;
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.Paint;
 import java.util.Iterator;
 import java.util.List;
@@ -21,6 +22,7 @@ class DGraphView implements GraphView
 
   final Object m_lock = new Object();
   final float[] m_extentsBuff = new float[4];
+  final Font m_defaultFont = new Font(null, Font.PLAIN, 1);
   MutableSpacialIndex2D m_spacial;
   DNodeDetails m_nodeDetails;
 
@@ -30,7 +32,6 @@ class DGraphView implements GraphView
 
   DGraphView()
   {
-    super();
   }
 
   public GraphPerspective getGraphPerspective()
