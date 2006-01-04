@@ -28,7 +28,10 @@
  */
 
 package metaNodeViewer.data;
+import java.util.ArrayList;
+
 import cytoscape.CyNetwork;
+import cytoscape.CyNode;
 import cern.colt.map.AbstractIntIntMap;
 
 /**
@@ -51,15 +54,14 @@ public interface MetaNodeAttributesHandler {
    * will be set
    * @return the name, or null if something went wrong
    */
-  public String assignName (CyNetwork cy_net, int metanode_root_index);
+  public String assignName(CyNetwork cy_net, CyNode node);
 
   /**
    * Sets the node and edge attributes of the meta-node with the given RootGraph index
    * and assigns a unique name to it in the GraphObjAttributes for nodes
    *
-   * @param cy_network the CyNetwork that contains the GraphPerspective that contains
-   * the children nodes of the meta-node, and that contains the GraphObjAttributes that 
-   * contain the node and edge attributes
+   * @param cy_network the CyNetwork that contains the children nodes of the meta-node, 
+   * and that contains the GraphObjAttributes that contain the node and edge attributes
    * @param metanode_root_index the RootGraph index of the meta-node for which attributes
    * will be set
    * @param children_nodes_root_indeces the RootGraph indices of the children nodes from
@@ -70,10 +72,7 @@ public interface MetaNodeAttributesHandler {
    * corresponds to which meta-edge
    * @return true if all went well, false if there was an error
    */
-  public boolean setAttributes (CyNetwork cy_network, 
-                                int metanode_root_index,
-                                int [] children_nodes_root_indices,
-                                AbstractIntIntMap meta_edge_to_child_edge);
+  public boolean setAttributes(CyNetwork cy_network, CyNode node, ArrayList children, AbstractIntIntMap meta_edge_to_child_edge);
   
   /**
    * Sets the node attributes of the meta-node with the given RootGraph index 
@@ -82,15 +81,11 @@ public interface MetaNodeAttributesHandler {
    * @param cy_network the CyNetwork that contains the GraphPerspective that contains
    * the children nodes of the meta-node, and that contains the GraphObjAttributes that 
    * contain the node and edge attributes
-   * @param metanode_root_index the RootGraph index of the meta-node for which attributes
-   * will be set
-   * @param children_nodes_root_indeces the RootGraph indices of the children nodes from
-   * which node attributes will be transfered to the meta-node
+   * @param node the node for which node attributes will be set
+   * @param children an ArrayList of CyNodes that are chilren nodes of the given node
    * @return true if all went well, false if there was an error
    */
-  public boolean setNodeAttributes (CyNetwork cy_network, 
-                                    int metanode_root_index,
-                                    int [] children_nodes_root_indices);
+  public boolean setNodeAttributes(CyNetwork cy_network, CyNode node, ArrayList children);
 
   /**
    * Sets the edge attributes of the meta-node with the given RootGraph index and assigns
@@ -99,17 +94,15 @@ public interface MetaNodeAttributesHandler {
    * @param cy_network the CyNetwork that contains the GraphPerspective that contains
    * the children nodes of the meta-node, and the GraphObjAttributes that contain the edge
    * attributes
-   * @param metanode_root_index the RootGraph index of the meta-node for which node attributes
-   * will be set
+   * @param node the node for which edge attributes will be set
    * @param meta_edge_to_child_edge maps a meta-edge (edge connected to the meta-node)
    * RootGraph index to a child edge (edge that connects a child of the meta-node to another
    * node) RootGraph index, so that classes implementing this interface know which child edge
    * corresponds to which meta-edge
    * @return true if all went well, false if there was an error
    */
-  public boolean setEdgeAttributes (CyNetwork cy_network, 
-                                    int metanode_root_index,
-                                    AbstractIntIntMap meta_edge_to_child_edge);
+ 
+  public boolean setEdgeAttributes(CyNetwork cy_network, CyNode node, AbstractIntIntMap meta_edge_to_child_edge);
 
   /**
    * Removes the Node object identified by the given RootGraph index from the
@@ -125,8 +118,8 @@ public interface MetaNodeAttributesHandler {
    * @return true if all went well, false otherwise
    */
   public boolean removeFromAttributes (CyNetwork cy_network,
-                                       int metanode_root_index,
-                                       int [] meta_edge_root_indices);
+                                       CyNode node,
+                                      ArrayList meta_edge_list);
 
   /**
    * Remove from the GraphObjAttributes for edges in CyNetwork the edges in
@@ -141,6 +134,6 @@ public interface MetaNodeAttributesHandler {
    * @return true if all went well, false otherwise
    */
   public boolean removeMetaEdgesFromAttributes (CyNetwork cy_network,
-                                                int metanode_root_index,
-                                                int [] meta_edge_root_indices);
+                                              CyNode node,
+                                              ArrayList meta_edge_list);
 }//MetaNodeAttributesHandler

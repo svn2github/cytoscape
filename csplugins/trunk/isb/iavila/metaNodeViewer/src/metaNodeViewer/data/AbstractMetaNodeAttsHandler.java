@@ -65,29 +65,18 @@ public class AbstractMetaNodeAttsHandler extends SimpleMetaNodeAttributesHandler
    * will be set
    * @return the name, or null if something went wrong
    */
-  public String assignName (CyNetwork cy_net, int metanode_root_index){
+  public String assignName (CyNetwork cy_net, CyNode node){
     // Check arguments
-    if(cy_net == null){
+    if(cy_net == null || node == null){
       return null;
     }
-    int metaNodeRindex = metanode_root_index;
-    if(metaNodeRindex > 0){
-      // Not a RootGraph index
-      metaNodeRindex = cy_net.getRootGraphNodeIndex(metanode_root_index);
-    }
-    if(metaNodeRindex == 0){
-      // The node is hidden
-      throw new IllegalArgumentException ("metanode_root_index = " + metanode_root_index);
-    }
-    
+    int metaNodeRindex = node.getRootGraphIndex();
     String uniqueName = createMetaNodeUI(metaNodeRindex);
     String alias = createMetaNodeAlias(cy_net,metaNodeRindex);
-    Node node = Cytoscape.getRootGraph().getNode(metaNodeRindex);
-    if(DEBUG){
-      System.err.println("Node for root index " + metaNodeRindex + " is " + node);
-    }
-    Cytoscape.getNodeNetworkData().addNameMapping(uniqueName,node); 
-    cy_net.setNodeAttributeValue(node,Semantics.COMMON_NAME,alias);
+    node.setIdentifier(uniqueName);
+    Cytoscape.getNodeAttributes().setAttribute(node.getIdentifier(), Semantics.CANONICAL_NAME,uniqueName);
+    Cytoscape.getNodeAttributes().setAttribute(node.getIdentifier(), Semantics.COMMON_NAME,alias);
+    
     if(DEBUG){
       System.err.println("meta-node " + metaNodeRindex + " canonical name = " + uniqueName 
                         + " common name = " + alias);
@@ -112,9 +101,9 @@ public class AbstractMetaNodeAttsHandler extends SimpleMetaNodeAttributesHandler
   	}
     SortedSet sortedNodes = IntraDegreeComparator.sortNodes(cy_net, children);
     CyNode highestNode = (CyNode)sortedNodes.first();
-    String alias = (String)cy_net.getNodeAttributeValue(highestNode,Semantics.COMMON_NAME);
+    String alias = Cytoscape.getNodeAttributes().getStringAttribute(highestNode.getIdentifier(), Semantics.COMMON_NAME);
     if(alias == null){
-      alias = (String)cy_net.getNodeAttributeValue(highestNode,Semantics.CANONICAL_NAME);
+      alias = Cytoscape.getNodeAttributes().getStringAttribute(highestNode.getIdentifier(), Semantics.CANONICAL_NAME);
     }
     return alias;
   }//createMetaNodeAlias
@@ -136,16 +125,11 @@ public class AbstractMetaNodeAttsHandler extends SimpleMetaNodeAttributesHandler
    * corresponds to which meta-edge
    * @return true if all went well, false if there was an error
    */
-  public boolean setAttributes (CyNetwork cy_network, 
-                                int metanode_root_index,
-                                int [] children_nodes_root_indices,
+  public boolean setAttributes (CyNetwork cy_network, CyNode node,
+                                ArrayList children,
                                 AbstractIntIntMap meta_edge_to_child_edge){
-    boolean nodesOk = setNodeAttributes(cy_network,
-                                        metanode_root_index,
-                                        children_nodes_root_indices);
-    boolean edgesOk = setEdgeAttributes(cy_network,
-                                        metanode_root_index,
-                                        meta_edge_to_child_edge);
+    boolean nodesOk = setNodeAttributes(cy_network,node,children);
+    boolean edgesOk = setEdgeAttributes(cy_network,node,meta_edge_to_child_edge);
     return nodesOk && edgesOk;
   }//setAttributes
   
@@ -162,18 +146,14 @@ public class AbstractMetaNodeAttsHandler extends SimpleMetaNodeAttributesHandler
    * which node attributes will be transfered to the meta-node
    * @return true if all went well, false if there was an error
    */
-  public boolean setNodeAttributes (CyNetwork cy_network, 
-                                    int metanode_root_index,
-                                    int [] children_nodes_root_indices){
+  public boolean setNodeAttributes (CyNetwork cy_network, CyNode node,ArrayList children){
     
-    if(children_nodes_root_indices == null || cy_network == null){
+    if(children == null || cy_network == null){
       return false;
     }
-    // Set the 'nodeType' attribute to 'metaNode'
-    Node node = Cytoscape.getRootGraph().getNode(metanode_root_index);
-    cy_network.setNodeAttributeValue(node,
-                                     "nodeType",
-                                     "metaNode");
+    CyAttributes nodeAtts = Cytoscape.getNodeAttributes();
+    // Set the 'nodeType' attribute to 'metaNode
+    nodeAtts.setAttribute(node.getIdentifier(),"nodeType", "metaNode");
     
     // Set the node-height and node-width attributes so that the area
     // of the meta-node is proportional to the number of members within it
@@ -185,11 +165,11 @@ public class AbstractMetaNodeAttsHandler extends SimpleMetaNodeAttributesHandler
       }
       return false;
     }
-    for(int i = 0; i < children_nodes_root_indices.length; i++){
-      NodeView nodeView = netView.getNodeView(children_nodes_root_indices[i]);
+    for(int i = 0; i < children.size(); i++){
+      NodeView nodeView = netView.getNodeView((CyNode)children.get(i));
       if(nodeView == null){
         if(DEBUG){
-          System.err.println("Node with index " + children_nodes_root_indices[i] +
+          System.err.println("Node " + children.get(i)  +
                              " does not have a NodeView");
         }
         continue;
@@ -207,12 +187,13 @@ public class AbstractMetaNodeAttsHandler extends SimpleMetaNodeAttributesHandler
     }
     // NOTE: This assumes a circular shape for meta-nodes.
     double diameter = 2 * Math.sqrt(area/Math.PI);
-    cy_network.setNodeAttributeValue(node,
-                                     NodeAppearanceCalculator.nodeWidthBypass,
-                                     new Double(diameter));
-    cy_network.setNodeAttributeValue(node,
-                                     NodeAppearanceCalculator.nodeHeightBypass,
-                                     new Double(diameter));
+    String diameterAsString = new Double(diameter).toString();
+    nodeAtts.setAttribute(node.getIdentifier(),
+            NodeAppearanceCalculator.nodeWidthBypass,
+            diameterAsString);
+    nodeAtts.setAttribute(node.getIdentifier(),
+            NodeAppearanceCalculator.nodeHeightBypass,
+            diameterAsString);
     return true;
   }//setNodeAttributes
 
@@ -252,8 +233,8 @@ public class AbstractMetaNodeAttsHandler extends SimpleMetaNodeAttributesHandler
    * @return true if all went well, false otherwise
    */
   public boolean removeFromAttributes (CyNetwork cy_network,
-                                       int metanode_root_index,
-                                       int [] meta_edge_root_indices){
+                                    CyNode node,
+                                     ArrayList metaEdges){
     return false;
   }//removeFromAttributes
 
@@ -270,8 +251,8 @@ public class AbstractMetaNodeAttsHandler extends SimpleMetaNodeAttributesHandler
    * @return true if all went well, false otherwise
    */
   public boolean removeMetaEdgesFromAttributes (CyNetwork cy_network,
-                                                int metanode_root_index,
-                                                int [] meta_edge_root_indices){
+                                                CyNode node,
+                                               ArrayList metaEdges){
     return false;
   }//removeMetaEdgesFromAttributes
   

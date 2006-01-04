@@ -36,6 +36,7 @@ import javax.swing.AbstractAction;
 import java.awt.event.ActionEvent;
 import cern.colt.list.IntArrayList;
 import cytoscape.*;
+import cytoscape.view.CyNetworkView;
 import giny.view.*;
 
 /**
@@ -46,7 +47,7 @@ public class CollapseSelectedNodesAction extends AbstractAction {
 	protected AbstractMetaNodeModeler abstractingModeler;
 	protected boolean collapseExistentParents;
 	protected boolean collapseRecursively;
-  protected boolean multipleEdges;
+	protected boolean multipleEdges;
 
 	/**
 	 * Use metaNodeViewer.actions.ActionFactory instead
@@ -151,29 +152,23 @@ public class CollapseSelectedNodesAction extends AbstractAction {
                                             boolean collapse_recursively,
                                             boolean multiple_edges){
 		
-		GraphView graphView = Cytoscape.getCurrentNetworkView();
+		CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
+        Iterator it = cyNetwork.getFlaggedNodes().iterator();
 		// Pop-up a dialog if there are no selected nodes and return
-		if(graphView.getSelectedNodes().size() == 0) {
+		ArrayList selectedNodes = new ArrayList();
+        while(it.hasNext()){
+            selectedNodes.add(it.next());
+        }
+        
+        if(selectedNodes.size() == 0) {
 			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
 			"Please select one or more nodes.");
 			return;
 		}
 		
 		// Get the selected nodes' RootGraph indices
-		CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
-		java.util.List selectedNVlist = graphView.getSelectedNodes();
-		Iterator it = selectedNVlist.iterator();
-		IntArrayList selectedNodeIndices = new IntArrayList();
-		while(it.hasNext()){
-			NodeView nodeView = (NodeView)it.next();
-			int rgNodeIndex = cyNetwork.getRootGraphNodeIndex(nodeView.getGraphPerspectiveIndex());
-			selectedNodeIndices.add(rgNodeIndex);
-		}//while it
-		selectedNodeIndices.trimToSize();
-		int [] nodeIndices = selectedNodeIndices.elements();
-		
 		int numCollapsed = MetaNodeUtils.collapseNodes(cyNetwork,
-                                                   nodeIndices,
+                                                   selectedNodes,
                                                    collapse_existent_parents,
                                                    collapse_recursively,
                                                    multiple_edges);

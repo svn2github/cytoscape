@@ -28,6 +28,7 @@
  */
 package metaNodeViewer.actions;
 import java.util.*;
+
 import metaNodeViewer.model.AbstractMetaNodeModeler;
 import metaNodeViewer.MetaNodeUtils;
 import javax.swing.JOptionPane;
@@ -101,30 +102,24 @@ public class UncollapseSelectedNodesAction extends AbstractAction {
 	public static void uncollapseSelectedNodes (AbstractMetaNodeModeler abstractModeler,
 			boolean recursive,
 			boolean temporary){
-		GraphView graphView = Cytoscape.getCurrentNetworkView();
-		// Pop-up a dialog if there are no selected nodes and return
-		if(graphView.getSelectedNodes().size() == 0) {
-			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
-			"Please select one or more nodes.");
-			return;
-		}
-		
-		// Get the RootGraph indices of the selected nodes
-		CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
-		java.util.List selectedNVlist = graphView.getSelectedNodes();
-		Iterator it = selectedNVlist.iterator();
-		IntArrayList selectedNodeIndices = new IntArrayList();
-		while(it.hasNext()){
-			NodeView nodeView = (NodeView)it.next();
-			int rgNodeIndex = cyNetwork.getRootGraphNodeIndex(nodeView.getGraphPerspectiveIndex());
-			selectedNodeIndices.add(rgNodeIndex);
-		}//while it
-		selectedNodeIndices.trimToSize();
-		int [] nodeIndices = selectedNodeIndices.elements();
-		
+        
+        CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
+        Iterator it = cyNetwork.getFlaggedNodes().iterator();
+        // Pop-up a dialog if there are no selected nodes and return
+        ArrayList selectedNodes = new ArrayList();
+        while(it.hasNext()){
+            selectedNodes.add(it.next());
+        }
+        
+        if(selectedNodes.size() == 0) {
+            JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+            "Please select one or more nodes.");
+            return;
+        }
+        
 		// Finally, uncollapse each node (if it is not a metanode, nothing happens)
 		int numUncollapsed = 
-      MetaNodeUtils.uncollapseNodes(cyNetwork, nodeIndices,recursive,temporary);
+      MetaNodeUtils.uncollapseNodes(cyNetwork,selectedNodes,recursive,temporary);
 		if(numUncollapsed == 0){
 			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), 
                                     "None of the selected nodes are meta-nodes.");

@@ -31,7 +31,7 @@ package metaNodeViewer.model;
 import metaNodeViewer.data.*;
 import giny.model.*;
 import cytoscape.*;
-import cern.colt.list.IntArrayList;
+import java.util.*;
 
 /**
  * Creates meta-nodes for a given GraphPerspective (CyNetwork) and keeps track
@@ -119,14 +119,13 @@ public class GPMetaNodeFactory {
 	 * 
 	 * @param cy_net
 	 *            he CyNetwork for which a meta-node will be created
-	 * @param children_node_indices
-	 *            the indices of the meta-node's children nodes that should be
-	 *            in cy_net (RootGraph or GraphPerspective indices)
-	 * @return the RootGraph index of the newly created meta-node, or zero if
-	 *         something went wrong
+	 * @param children
+	 *            the meta-node's children CyNodes that should be
+	 *            in cy_net
+	 * @return the new CyNode
 	 */
-	public int createMetaNode(CyNetwork cy_net, int[] children_node_indices) {
-		return createMetaNode(cy_net, children_node_indices,
+	public CyNode createMetaNode(CyNetwork cy_net, ArrayList children) {
+		return createMetaNode(cy_net, children,
 				this.attributesHandler);
 	}// createMetaNode
 
@@ -145,65 +144,35 @@ public class GPMetaNodeFactory {
 	 * @param attributes_handler
 	 *            the MetaNodeAttributesHandler to be used to assign a name to
 	 *            the new meta-node (if getAssignDefaultNames() is true)
-	 * @return the RootGraph index of the newly created meta-node, or zero if
+	 * @return the newly created meta-node, or null if
 	 *         something went wrong
 	 */
-	public int createMetaNode(CyNetwork cy_net, int[] children_node_indices,
+	public CyNode createMetaNode(CyNetwork cy_net, ArrayList children,
 			MetaNodeAttributesHandler attributes_handler) {
 
-		if (children_node_indices == null || cy_net == null
-				|| children_node_indices.length == 0) {
+		if (children == null || cy_net == null
+				|| children.size() == 0) {
 			if (DEBUG) {
 				System.err
 						.println("GPMetaNodeFactory.createMetaNode(CyNetwork="
-								+ cy_net + ", children_node_indices="
-								+ children_node_indices
+								+ cy_net + ", children="
+								+ children
 								+ ") : wrong input, returning 0");
 			}
-			return 0;
+			return null;
 		}// check args
 
-		// Make sure that the node indices are RootGraph indices
-		for (int i = 0; i < children_node_indices.length; i++) {
-			if (children_node_indices[i] > 0) {
-				// This is a GP index
-				int rgIndex = cy_net
-						.getRootGraphNodeIndex(children_node_indices[i]);
-				if (rgIndex >= 0) {
-					// Something went wrong!
-					if (DEBUG) {
-						System.err
-								.println("GPMetaNodeFactory.createMetaNode(CyNetwork,int[]): input node "
-										+ children_node_indices[i]
-										+ " has no RootGraph index, returning 0");
-					}
-					return 0;
-				}// if rgIndex >= 0
-
-				children_node_indices[i] = rgIndex;
-			}// if children_node_indices[i] > 0
-		}// for i
-
-		// Get the RootGraph indices of the edges that connect to the selected
-		// nodes
+        int [] childrenNodeIndices = new int[children.size()];
+        for(int i = 0; i < children.size(); i++) childrenNodeIndices[i] = ( (CyNode)children.get(i) ).getRootGraphIndex();
+        
+		// Get the RootGraph indices of the edges that connect to the selected nodes
 		RootGraph rootGraph = cy_net.getRootGraph();
 		int[] edgeIndices = cy_net
-				.getConnectingEdgeIndicesArray(children_node_indices);
+				.getConnectingEdgeIndicesArray(childrenNodeIndices);
 		if (edgeIndices != null) {
 			for (int i = 0; i < edgeIndices.length; i++) {
 				if (edgeIndices[i] > 0) {
-					int rootEdgeIndex = cy_net
-							.getRootGraphEdgeIndex(edgeIndices[i]);
-					if (rootEdgeIndex >= 0) {
-						// Something went wrong!
-						if (DEBUG) {
-							System.err
-									.println("GPMetaNodeFactory.createMetaNode(CyNetwork,int[]): connecting edge "
-											+ edgeIndices[i]
-											+ " has no RootGraph index, returning 0");
-						}
-						return 0;
-					}// if rootEdgeIndex >= 0
+					int rootEdgeIndex = cy_net.getRootGraphEdgeIndex(edgeIndices[i]);
 					edgeIndices[i] = rootEdgeIndex;
 				}// if rootEdgeIndex > 0
 			}// for i
@@ -211,23 +180,22 @@ public class GPMetaNodeFactory {
 		
 		// Create a node in RootGraph that contains inside it the selected nodes
 		// and their connected edges
-		int rgParentNodeIndex = rootGraph.createNode(children_node_indices,
-				edgeIndices);
-
-		// Remember that this RootGraph node belongs to the GraphPerspective in
-		// cyNetwork
-		IntArrayList rootNodes = (IntArrayList) cy_net
-				.getClientData(MetaNodeFactory.METANODES_IN_NETWORK);
+		// TODO: Maybe move this to createNode(Node[],Edge[])???? (12.11.05)
+        int rgParentNodeIndex = rootGraph.createNode(childrenNodeIndices, edgeIndices);
+        CyNode metaNode = (CyNode)rootGraph.getNode(rgParentNodeIndex);
+        if(metaNode == null) throw new IllegalStateException("CyNode from RootGraph with index = " + rgParentNodeIndex + " is null!!!");
+        
+		// Remember that this RootGraph node belongs to cyNetwork
+		ArrayList rootNodes = (ArrayList) cy_net.getClientData(MetaNodeFactory.METANODES_IN_NETWORK);
 		if (rootNodes == null) {
-			rootNodes = new IntArrayList();
-			cy_net.putClientData(MetaNodeFactory.METANODES_IN_NETWORK,
-					rootNodes);
+			rootNodes = new ArrayList();
+			cy_net.putClientData(MetaNodeFactory.METANODES_IN_NETWORK,rootNodes);
 		}
-		rootNodes.add(rgParentNodeIndex);
+		rootNodes.add(metaNode);
 
 		// Assign a default name if necessary
 		if (getAssignDefaultNames()) {
-			if (attributes_handler.assignName(cy_net, rgParentNodeIndex) == null) {
+			if (attributes_handler.assignName(cy_net,metaNode) == null) {
 				// Failed to assign a default name, but the node has been
 				// created, so just
 				// print a debug statement
@@ -238,7 +206,7 @@ public class GPMetaNodeFactory {
 			}// if(!assignName)
 		}// if(getAssignDefaultNames())
 
-		return rgParentNodeIndex;
+		return metaNode;
 	}// createMetaNode
 
 	/**
@@ -248,8 +216,8 @@ public class GPMetaNodeFactory {
 	 * 
 	 * @return false if it failed to assign a name, or true if successful
 	 */
-	protected boolean assignDefaultName(CyNetwork cy_net, int root_node_index) {
-		return (this.attributesHandler.assignName(cy_net, root_node_index) != null);
+	protected boolean assignDefaultName(CyNetwork cy_net, CyNode node) {
+		return (this.attributesHandler.assignName(cy_net, node) != null);
 	}// assignDefaultName
 
 	/**

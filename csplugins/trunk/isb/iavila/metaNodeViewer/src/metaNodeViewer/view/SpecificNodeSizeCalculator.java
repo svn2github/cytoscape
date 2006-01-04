@@ -29,6 +29,8 @@ import cytoscape.CyNetwork;
 import cytoscape.visual.calculators.GenericNodeSizeCalculator;
 import cytoscape.visual.mappings.ObjectMapping;
 import giny.model.Node;
+import cytoscape.*;
+import cytoscape.data.*;
 /**
  * A node size calculator for meta-nodes.
  *
@@ -58,23 +60,13 @@ public class SpecificNodeSizeCalculator extends GenericNodeSizeCalculator {
   }//setSpecialAttrName
   
   public double calculateNodeSize (Node node, CyNetwork network) {
-    String canonicalName = network.getNodeAttributes().getCanonicalName(node);
-    Map attrBundle = network.getNodeAttributes().getAttributes(canonicalName);
-    if (attrBundle == null || specialAttrName == null) {
-      //System.out.println("Node " + node + " does not have an attribute bundle");
-      return super.calculateNodeSize(node, network);
-    }
-    Object attrValue = attrBundle.get(specialAttrName);
-    if (attrValue == null || !(attrValue instanceof Double)) {
-      //if(attrValue == null){
-      //System.out.println("Node " + node + " has a null attrValue");
-      //}else if(!(attrValue instanceof Double)){
-      //System.out.println("Node " + node + " attrValue is not an instance of Double");
-      //}
-      return super.calculateNodeSize(node, network);
-    }
-    double d = ((Number)attrValue).doubleValue();
-    return d;
+    //String canonicalName = Cytoscape.getNodeAttributes().getStringAttribute(node.getIdentifier(),Semantics.CANONICAL_NAME);
+    //Map attrBundle = network.getNodeAttributes().getAttributes(canonicalName);
+      CyAttributes nodeAtts = Cytoscape.getNodeAttributes();
+      if(specialAttrName == null || !nodeAtts.hasAttribute(node.getIdentifier(),specialAttrName))
+          return super.calculateNodeSize(node,network);
+      double d = ( (Double)nodeAtts.getDoubleAttribute(node.getIdentifier(),specialAttrName) ).doubleValue();
+      return d;
   }//calculateNodeSize
   
   public Properties getProperties(String baseKey) {

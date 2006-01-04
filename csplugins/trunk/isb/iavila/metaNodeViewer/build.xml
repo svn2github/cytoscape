@@ -31,7 +31,7 @@
 
    <target name="compile_dev" depends = "prepare" description="Compile with Cytoscape under development">
    <!-- Compile the java code from ${src} into ${build} -->
-   <javac source = "1.4" debug="true" srcdir = "${src}" destdir="${build}">
+   <javac source = "1.4" debug="true" deprecation="true" srcdir = "${src}" destdir="${build}">
       <classpath refid = "classpath_dev"/>
    </javac>
    </target>

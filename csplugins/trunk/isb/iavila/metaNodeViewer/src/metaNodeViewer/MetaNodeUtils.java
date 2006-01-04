@@ -23,6 +23,7 @@
  **/
 package metaNodeViewer;
 
+import java.util.*;
 import cern.colt.list.IntArrayList;
 import giny.model.RootGraph;
 import metaNodeViewer.data.MetaNodeAttributesHandler;
@@ -59,7 +60,7 @@ public class MetaNodeUtils {
 	   * children in the given CyNode[][]. For example, meta node with index 'i' in the 
 	   * returned array is the parent of nodes in row children[i].
 	   */
-	  public static int [] abstractToMetaNodes (CyNetwork network, 
+	  public static ArrayList abstractToMetaNodes (CyNetwork network, 
 	                                            CyNode [][] children,
 												MetaNodeAttributesHandler attributes_handler){
 	  	MetaNodeUtils.abstractModeler.setNetworkAttributesHandler(network, attributes_handler);
@@ -79,7 +80,7 @@ public class MetaNodeUtils {
 	   * children in the given CyNode[][]. For example, meta node with index 'i' in the 
 	   * returned array is the parent of nodes in row children[i].
 	   */
-	  public static int [] abstractToMetaNodes (CyNetwork network, 
+	  public static ArrayList abstractToMetaNodes (CyNetwork network, 
 	                                            CyNode [][] children){
 	    
 	    long startTime = System.currentTimeMillis();
@@ -97,25 +98,20 @@ public class MetaNodeUtils {
 	       MetaNodeUtils.abstractModeler.setRootGraph(rootGraph);
 	    }
 	    
-	    int [] metaNodeIndices = new int[children.length];
+	    ArrayList metaNodes = new ArrayList();
 	    
 	    //Cytoscape.getDesktop().getGraphViewController().stopListening();
 
 	    for(int i = 0; i < children.length; i++){
-	      int [] nodeIndices = new int[children[i].length]; // the children of the meta-node
+	      ArrayList childrenArray = new ArrayList(); // the children of the meta-node
 	      for(int j = 0; j < children[i].length; j++){
 	        CyNode node = children[i][j];
-	        int index = network.getIndex(node);
-	        if(index == 0){
-	          // TODO: The node is not in the RootGraph
-	          System.err.println("CyNode " + node + " is not in the RootGraph.");
-	          continue;
-	        }
-	        nodeIndices[j] = index;
+	        childrenArray.add(node);
 	      }//for j
 	      MetaNodeAttributesHandler attsHandler = MetaNodeUtils.abstractModeler.getNetworkAttributesHandler(network);
-	      metaNodeIndices[i] = MetaNodeFactory.createMetaNode(network,nodeIndices,attsHandler);
-	     MetaNodeUtils.abstractModeler.applyModel(network,metaNodeIndices[i],nodeIndices);
+	      CyNode metaNode = MetaNodeFactory.createMetaNode(network,childrenArray,attsHandler);
+          if(metaNode != null) metaNodes.add(metaNode);
+	     MetaNodeUtils.abstractModeler.applyModel(network,metaNode,childrenArray);
 	    }//for i
 	    
 	    long secs = (System.currentTimeMillis() - startTime)/1000;
@@ -126,7 +122,7 @@ public class MetaNodeUtils {
 	    //secs = (System.currentTimeMillis() - startTime)/1000;
 	    
 	 
-	    return metaNodeIndices;
+	    return metaNodes;
 	  }//abstractToMetaNodes
 
 	  /**
@@ -142,42 +138,31 @@ public class MetaNodeUtils {
 	   * @return the number of removed meta-nodes
 	   */
 	  public static int removeAbstractedMetaNodes (CyNetwork network, 
-	                                                int [] meta_node_rindices,
+	                                                ArrayList metaNodes,
 	                                                boolean recursive){
 	    
 	    long startTime = System.currentTimeMillis();
 	    System.err.println("Removing meta-nodes...");
 	    
-	    if(network == null || meta_node_rindices == null || meta_node_rindices.length == 0){
+	    if(network == null || metaNodes == null || metaNodes.size() == 0){
 	      System.err.println("...nothing to remove.");
 	      return 0;
 	    }
 	    int numRemoved = 0;
-	    for(int i = 0; i < meta_node_rindices.length; i++){
-	      // Check that the index is a RootGraph index
-	      int rindex = meta_node_rindices[i];
-	      if(rindex > 0){
-	        // Not a root-graph index
-	        rindex = network.getRootGraphNodeIndex(rindex); 
-	      }
-	      if(rindex == 0){
-	        // We are in trouble
-	        System.err.println("Skipping, index == 0.");
-	        continue;
-	      }
+	    for(int i = 0; i < metaNodes.size(); i++){
+	        CyNode metaNode = (CyNode)metaNodes.get(i);
 	      boolean temporary = false; // == don't remember these meta-nodes
-	      boolean ok = 
-          MetaNodeUtils.abstractModeler.undoModel(network,rindex,recursive,temporary); 
+	      boolean ok = MetaNodeUtils.abstractModeler.undoModel(network,metaNode,recursive,temporary); 
 	      
         if(!ok){
-	        System.err.println("Could not remove meta-node " + rindex);
+	        System.err.println("Could not remove meta-node " + metaNode);
 	      }else{
 	      	// Also, remove the meta-node from the RootGraph
 	      	RootGraph rootGraph = network.getRootGraph();
-	      	// TODO: This throws an exception!!!!!!
-	      	// Talked to Rowan, he says he knows what it is.
-	      	rootGraph.removeNode(rindex);
-	      	numRemoved++;
+	      	// TODO: This throws an exception when using an index !!!!!!
+	      	// Talked to Rowan, he says he knows what it is
+	      	CyNode removed = (CyNode)rootGraph.removeNode(metaNode);
+	      	if(removed != null) numRemoved++;
 	      }
 	    }//for i
 	    
@@ -196,23 +181,23 @@ public class MetaNodeUtils {
 	   * @return the number of uncollapsed meta-nodes
 	   */
 	  public static int uncollapseNodes (CyNetwork cy_network, 
-                                       int [] node_rindices, 
+                                       ArrayList metaNodes,
                                        boolean recursive, 
                                        boolean temporary){
 	  	
 	  	// Uncollapse each node (if it is not a metanode, nothing happens)
 	  	int numUncollapsed = 0;
 	  	if(temporary){
-	  		for(int i = 0; i < node_rindices.length; i++){
+	  		for(int i = 0; i < metaNodes.size(); i++){
 	  			// This only uncollapses the meta-nodes, but they are kept in the RootGraph
-	  			boolean b = MetaNodeUtils.abstractModeler.undoModel(cy_network,node_rindices[i],recursive,true);
+	  			boolean b = MetaNodeUtils.abstractModeler.undoModel(cy_network,(CyNode)metaNodes.get(i),recursive,true);
 	  			if(b){
 	  				numUncollapsed++;
 	  			}
 	  		}//for i
 	  	}else{
 	  		// Permanently removes the meta-nodes from CyNetwork and RootGraph:
-	  		numUncollapsed = MetaNodeUtils.removeAbstractedMetaNodes(cy_network,node_rindices,recursive);
+	  		numUncollapsed = MetaNodeUtils.removeAbstractedMetaNodes(cy_network,metaNodes,recursive);
 	  	}
 	  	return numUncollapsed;
 	  }//uncollapseSelectedNodes
@@ -230,7 +215,7 @@ public class MetaNodeUtils {
      * should be created
 	   * @return the number of collapsed meta-nodes, or -1 if something went wrong
 	   */
-	  public static int collapseNodes (CyNetwork cy_network, int [] node_rindices, 
+	  public static int collapseNodes (CyNetwork cy_network, ArrayList childrenNodes, 
                                      boolean collapse_existent_parents,
                                      boolean collapse_recursively,
                                      boolean multiple_edges){
@@ -243,14 +228,14 @@ public class MetaNodeUtils {
 	    // the meta-nodes that were created for it.
       MetaNodeUtils.abstractModeler.setMultipleEdges(multiple_edges);
 	    if(collapse_existent_parents){
-	    	int [] parents = findParentMetaNodes(cy_network, node_rindices, collapse_recursively);
+	    	ArrayList parents = findParentMetaNodes(cy_network, childrenNodes, collapse_recursively);
 	      // Collapse parents sequentially
-	      if(parents == null || parents.length == 0){
+	      if(parents == null || parents.size() == 0){
 	        return 0;
 	      }
 	      int numCollapsed = 0;
-	      for(int i = 0; i < parents.length; i++){
-	        boolean collapsed = MetaNodeUtils.abstractModeler.applyModel(cy_network,parents[i]);
+	      for(int i = 0; i < parents.size(); i++){
+	        boolean collapsed = MetaNodeUtils.abstractModeler.applyModel(cy_network,(CyNode)parents.get(i));
 	        if(collapsed){
 	        	numCollapsed++;
 	        }
@@ -259,13 +244,13 @@ public class MetaNodeUtils {
 	    }// if collapse_existent_parents
 
 	    // Create a meta-node for the selected nodes
-	    int rgParentNodeIndex = MetaNodeFactory.createMetaNode(cy_network, node_rindices);
-	    if(rgParentNodeIndex == 0){
+	    CyNode metaNode = MetaNodeFactory.createMetaNode(cy_network, childrenNodes);
+	    if(metaNode == null){
 	      // Something went wrong, return -1
 	      return -1;
 	    }
 	    // Finally, collapse it
-	    MetaNodeUtils.abstractModeler.applyModel(cy_network,rgParentNodeIndex);
+	    MetaNodeUtils.abstractModeler.applyModel(cy_network,metaNode);
 	    return 1;
 	  }//collapseNodes
 	  
@@ -277,39 +262,42 @@ public class MetaNodeUtils {
 	   * @param find_top_parents whether or not to find parent meta-nodes that don't have any parents themselves
 	   * @return an array of <code>RootGraph</code> indices of the parent meta-nodes
 	   */
-	  public static int [] findParentMetaNodes (CyNetwork cy_net, int [] children_rindices, boolean find_top_parents){
+	  public static ArrayList findParentMetaNodes (CyNetwork cy_net, ArrayList children, boolean find_top_parents){
 	  	RootGraph rootGraph = cy_net.getRootGraph();
-	    IntArrayList parentRootGraphIndices = new IntArrayList();
-	    IntArrayList metaNodesForNetwork = (IntArrayList)cy_net.getClientData(MetaNodeFactory.METANODES_IN_NETWORK);
-	    if(metaNodesForNetwork != null){
-	    	for(int i = 0; i < children_rindices.length; i++){
-	    		int [] parents = rootGraph.getNodeMetaParentIndicesArray(children_rindices[i]);
-	    		if(parents.length == 1 && metaNodesForNetwork.contains(parents[0])){
-	    			parentRootGraphIndices.add(parents[0]);
+	    ArrayList parentNodes = new ArrayList();
+	    ArrayList metaNodesForNetwork = (ArrayList)cy_net.getClientData(MetaNodeFactory.METANODES_IN_NETWORK);
+	    int [] childrenRindices = new int [children.size()];
+        for(int i = 0; i < children.size(); i++) childrenRindices[i] = ((CyNode)children.get(i)).getRootGraphIndex();
+        if(metaNodesForNetwork != null){
+	        
+            for(int i = 0; i < children.size(); i++){
+	    		int [] parents = rootGraph.getNodeMetaParentIndicesArray(childrenRindices[i]);
+	    		if(parents.length == 1 && metaNodesForNetwork.contains(rootGraph.getNode(parents[0]))){
+	    			parentNodes.add(rootGraph.getNode(parents[0]));
 	    		}else if(parents.length > 1){
 	    			// TODO: Think about this better. What to do when a node has more than one parent???
 	    			// Maybe pop-up window asking which parent should be collapsed, give the option of collapsing the last one created...???
 	    			for(int j = 0; j < parents.length; j++){
-	    				if( metaNodesForNetwork.contains(parents[j]) ){
-	    					parentRootGraphIndices.add(parents[j]);
+	    				if( metaNodesForNetwork.contains(rootGraph.getNode(parents[j])) ){
+	    					parentNodes.add(rootGraph.getNode(parents[j]));
 	    				}
 	    			}//for j
 	    		}
 	    	}//for i
 	    }// metaNodesForNetwork != null
-	    parentRootGraphIndices.trimToSize();
+	    
 	    
 	    if(find_top_parents){
-	    	if(parentRootGraphIndices.size() > 0){
-	    		int [] ancestors = findParentMetaNodes(cy_net, parentRootGraphIndices.elements(), find_top_parents);
-	    		if(ancestors.length == 0){
-	    			return parentRootGraphIndices.elements();
+	    	if(parentNodes.size() > 0){
+	    		ArrayList ancestors = findParentMetaNodes(cy_net, parentNodes, find_top_parents);
+	    		if(ancestors.size() == 0){
+	    			return parentNodes;
 	    		}else{
 	    			return ancestors;
 	    		}
 	    	}
 	    }// if find_top_parents
-	  	return parentRootGraphIndices.elements();
+	  	return parentNodes;
 	  }//findParentMetaNodes
 	  
 }//MetaNodeUtils

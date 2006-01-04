@@ -29,6 +29,7 @@ import giny.model.RootGraph;
 import java.util.Comparator;
 import cern.colt.map.OpenIntIntHashMap;
 import cytoscape.*;
+import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
 import java.util.*;
 /**
@@ -68,11 +69,12 @@ public class IntraDegreeComparator implements Comparator{
 		String canonical1, canonical2;
 		int rindex1, rindex2;
 		RootGraph rootGraph = this.network.getRootGraph();
-		if(object1 instanceof CyNode && object2 instanceof CyNode){
+		CyAttributes nodeAtts = Cytoscape.getNodeAttributes();
+        if(object1 instanceof CyNode && object2 instanceof CyNode){
 			node1 = (CyNode)object1;
 			node2 = (CyNode)object2;
-			canonical1 = (String)this.network.getNodeAttributeValue(node1,Semantics.CANONICAL_NAME);
-			canonical2 = (String)this.network.getNodeAttributeValue(node2,Semantics.CANONICAL_NAME);
+			canonical1 = nodeAtts.getStringAttribute(node1.getIdentifier(),Semantics.CANONICAL_NAME);
+			canonical2 = nodeAtts.getStringAttribute(node2.getIdentifier(),Semantics.CANONICAL_NAME);
 			rindex1 = rootGraph.getIndex(node1);
 			rindex2 = rootGraph.getIndex(node2);
 			if(rindex1 == rindex2){
@@ -99,8 +101,8 @@ public class IntraDegreeComparator implements Comparator{
 		// The intra-degrees are the same.
 		// First tie breaker: If one of these is a metabolite, 
 		// and the other is a protein with a common name, then the protein wins.
-		Object o1 = this.network.getNodeAttributeValue(node1,"nodeType");
-		Object o2 = this.network.getNodeAttributeValue(node2,"nodeType");
+		String o1 = nodeAtts.getStringAttribute(node1.getIdentifier(),"nodeType");
+		String o2 = nodeAtts.getStringAttribute(node2.getIdentifier(),"nodeType");
 		String node1MType = null;
 		String node2MType = null;
 		
@@ -109,7 +111,7 @@ public class IntraDegreeComparator implements Comparator{
 			node2MType = (String)o2;
 			if(node1MType.equals("metabolite") && node2MType.equals("protein")){
 				String commonName = null ;
-				Object cn =  this.network.getNodeAttributeValue(node2,Semantics.COMMON_NAME);
+				Object cn =  nodeAtts.getStringAttribute(node2.getIdentifier(),Semantics.COMMON_NAME);
 				if(cn != null){
 					commonName = (String)cn;
 				}
@@ -122,7 +124,7 @@ public class IntraDegreeComparator implements Comparator{
 				}
 			}else if(node1MType.equals("protein") && node2MType.equals("metabolite")){
 				String commonName = null;
-				Object cn =  this.network.getNodeAttributeValue(node1,Semantics.COMMON_NAME);
+				Object cn =  nodeAtts.getStringAttribute(node1.getIdentifier(),Semantics.COMMON_NAME);
 				if(cn != null){
 					commonName = (String)cn;
 				}
@@ -163,10 +165,8 @@ public class IntraDegreeComparator implements Comparator{
 		// The overall degrees are the same
 		// Fourth tie breaker: which one has a common name (it is not the case that 
 		// one is a protein and the other one a metabolite)
-		String commonName1 = 
-			(String)this.network.getNodeAttributeValue(node1, Semantics.COMMON_NAME);
-		String commonName2 = 
-			(String)this.network.getNodeAttributeValue(node2, Semantics.COMMON_NAME);
+		String commonName1 = nodeAtts.getStringAttribute(node1.getIdentifier(),Semantics.COMMON_NAME);
+		String commonName2 = nodeAtts.getStringAttribute(node2.getIdentifier(),Semantics.COMMON_NAME);
 		
 		boolean firstIsCommonName = (commonName1 != null && !commonName1.equals(canonical1));
 		boolean secondIsCommonName = (commonName2 != null && !commonName2.equals(canonical2));
@@ -231,7 +231,7 @@ public class IntraDegreeComparator implements Comparator{
 		
 		for(int i = 0; i < connectingEdges.length; i++){
 			int edgeIndex = connectingEdges[i];
-			boolean directed = network.isEdgeDirected(edgeIndex);
+			//boolean directed = network.isEdgeDirected(edgeIndex);
 			int sourceIndex = network.getEdgeSourceIndex(edgeIndex);
 			int targetIndex = network.getEdgeTargetIndex(edgeIndex);
 			sourceIndex = network.getRootGraphNodeIndex(sourceIndex);
@@ -260,17 +260,11 @@ public class IntraDegreeComparator implements Comparator{
 	 */
 	protected static boolean nodesAreInNetwork (CyNetwork network, int [] nodes){
 		for(int i = 0; i < nodes.length; i++){
-			if(nodes[i] < 0){
-				if(network.getNodeIndex(nodes[i]) == 0){
-					return false;
-				}
-			}else if(nodes[i] > network.getNodeCount()){
-				return false;
-			}else if (nodes[i] == 0){
-				return false;
-			}
+            CyNode node = (CyNode)Cytoscape.getRootGraph().getNode(nodes[i]);
+		    if(!network.containsNode(node)){
+		        return false;
+            }
 		}//for i
-		
 		return true;
 	}//nodesAreInNetwork
 	
@@ -294,13 +288,11 @@ public class IntraDegreeComparator implements Comparator{
 	public static SortedSet sortNodes (CyNetwork cy_net, int [] nodes_to_be_sorted){
 		IntraDegreeComparator icomparator = new IntraDegreeComparator(cy_net, true, nodes_to_be_sorted);
 		SortedSet sortedNodes = new TreeSet(icomparator);
-	    RootGraph rootGraph = cy_net.getRootGraph();
 	    for(int i = 0; i < nodes_to_be_sorted.length; i++){
-	    	CyNode node = (CyNode)cy_net.getNode(nodes_to_be_sorted[i]);
-	    	sortedNodes.add(node);
-	    	cy_net.setNodeAttributeValue(node,
-	                                    "intra degree", 
-	                                    new Integer(icomparator.getIntraDegree(nodes_to_be_sorted[i]))); 
+	    	    CyNode node = (CyNode)cy_net.getNode(nodes_to_be_sorted[i]);
+	    	    sortedNodes.add(node);
+            Cytoscape.getNodeAttributes().setAttribute(node.getIdentifier(),"intra degree", 
+                    new Integer(icomparator.getIntraDegree(nodes_to_be_sorted[i])));
 	    }//for i
 	    return sortedNodes;
 	}//sortNodes

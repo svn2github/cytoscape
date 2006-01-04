@@ -23,6 +23,8 @@
  **/
 package metaNodeViewer.model;
 import cytoscape.CyNetwork;
+import cytoscape.CyNode;
+import java.util.*;
 import metaNodeViewer.data.*;
 /**
  * A class with easy to use static methods for creating meta-nodes for CyNetworks. Its most
@@ -55,8 +57,8 @@ public class MetaNodeFactory {
    * @return the RootGraph index of the newly created meta-node, or zero if
    * none created.
    */
-  public static int createMetaNode (CyNetwork cy_network, int [] children_node_indices){
-  	return MetaNodeFactory.gpMetaNodeFactory.createMetaNode(cy_network, children_node_indices);
+  public static CyNode createMetaNode (CyNetwork cy_network, ArrayList children){
+  	return MetaNodeFactory.gpMetaNodeFactory.createMetaNode(cy_network, children);
   }//createMetaNode
 
   /**
@@ -71,8 +73,8 @@ public class MetaNodeFactory {
    * @param attributes_handler the MetaNodeAttributesHandler to be used to name the new node (if getAssignDefaultNames() is true)
    * @return the RootGraph index of the newly created meta-node, or zero if none created.
    */
-  public static int createMetaNode (CyNetwork cy_network, int [] children_node_indices, MetaNodeAttributesHandler attributes_handler){
-  	return MetaNodeFactory.gpMetaNodeFactory.createMetaNode(cy_network, children_node_indices, attributes_handler);
+  public static CyNode createMetaNode (CyNetwork cy_network, ArrayList children, MetaNodeAttributesHandler attributes_handler){
+  	return MetaNodeFactory.gpMetaNodeFactory.createMetaNode(cy_network, children, attributes_handler);
   }//createMetaNode
   
   /**
