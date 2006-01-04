@@ -23,6 +23,7 @@ class DNodeDetails extends NodeDetails
   final HashMap m_fillPaints = new HashMap();
   final HashMap m_borderWidths = new HashMap();
   final HashMap m_borderPaints = new HashMap();
+  final HashMap m_labelCounts = new HashMap();
   final HashMap m_labelTexts = new HashMap();
   final HashMap m_labelFonts = new HashMap();
   final HashMap m_labelPaints = new HashMap();
@@ -114,6 +115,20 @@ class DNodeDetails extends NodeDetails
     if (paint.equals(super.borderPaint(node))) {
       m_borderPaints.remove(new Integer(node)); }
     else { m_borderPaints.put(new Integer(node), paint); }
+  }
+
+  public int labelCount(int node)
+  {
+    final Object o = m_labelCounts.get(new Integer(node));
+    if (o == null) { return super.labelCount(node); }
+    return ((Integer) o).intValue();
+  }
+
+  void overrideLabelCount(int node, int labelCount)
+  {
+    if (labelCount == super.labelCount(node)) {
+      m_labelCounts.remove(new Integer(node)); }
+    else { m_labelCounts.put(new Integer(node), new Integer(labelCount)); }
   }
 
   public String labelText(int node, int labelInx)
