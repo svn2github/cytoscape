@@ -125,8 +125,6 @@ class DNodeView implements NodeView, Label
   public void setBorderPaint(Paint paint)
   {
     synchronized (m_view.m_lock) {
-      if (paint == null) {
-        throw new NullPointerException("paint is null"); }
       m_view.m_nodeDetails.overrideBorderPaint(m_inx, paint); }
   }
 
@@ -139,8 +137,6 @@ class DNodeView implements NodeView, Label
   public void setBorderWidth(float width)
   {
     synchronized (m_view.m_lock) {
-      if (!(width >= 0)) { throw new IllegalArgumentException
-                             ("width is negative"); }
       m_view.m_nodeDetails.overrideBorderWidth(m_inx, width); }
   }
 
@@ -396,7 +392,7 @@ class DNodeView implements NodeView, Label
       case NodeView.ROUNDED_RECTANGLE:
         nativeShape = GraphGraphics.SHAPE_ROUNDED_RECTANGLE; break;
       default:
-        throw new IllegalArgumentException("shape is not recognized"); }
+        nativeShape = -1; }
       m_view.m_nodeDetails.overrideShape(m_inx, nativeShape); }
   }
 
