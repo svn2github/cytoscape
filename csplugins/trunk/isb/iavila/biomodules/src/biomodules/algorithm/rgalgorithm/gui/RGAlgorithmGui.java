@@ -589,24 +589,28 @@ public class RGAlgorithmGui extends JFrame {
 		// netView exists so create meta-nodes");
         // Remove existent meta-nodes:
         IntArrayList metaNodes = (IntArrayList)net.getClientData(MetaNodeFactory.METANODES_IN_NETWORK);
+        // TODO: Instead of saving indices, save the nodes, for now do this:
+        ArrayList bioNodes = new ArrayList();
+        for(int i = 0; i < metaNodes.size(); i++) bioNodes.add(Cytoscape.getRootGraph().getNode(metaNodes.get(i)));
         if(metaNodes != null){
-          ViewUtils.removeMetaNodes(net,metaNodes.elements(),false);
+          ViewUtils.removeMetaNodes(net,bioNodes,false);
         }
         // Create new meta-nodes
-        int [] metaNodeRindices =  
+        ArrayList metaCyNodes =  
           ViewUtils.abstractBiomodules(this.algorithmData.getNetwork(),biomodules);
         // Get the common names of the meta nodes
         int numUnknowns = 0;
-        for(int i = 0; i < metaNodeRindices.length; i++){
-          Node node = net.getNode(metaNodeRindices[i]);
-          String canonical = (String)Cytoscape.getNodeAttributeValue(node,Semantics.CANONICAL_NAME);
-          if(node == null){
-            System.out.println("The node with index [" + metaNodeRindices[i] + "] is null");
-            canonical = "unknown" + Integer.toString(numUnknowns);
-            numUnknowns++;
-          }else if(canonical == null){
+        for(int i = 0; i < metaCyNodes.size(); i++){
+          CyNode node = (CyNode)metaCyNodes.get(i);
+          String canonical = Cytoscape.getNodeAttributes().getStringAttribute(node.getIdentifier(),Semantics.CANONICAL_NAME);
+          //if(node == null){
+          //System.out.println("The node with index [" + metaNodeRindices[i] + "] is null");
+          //canonical = "unknown" + Integer.toString(numUnknowns);
+          //numUnknowns++;
+          //}else
+          if(canonical == null){
         	  //        	 GETTING HERE 8.10.2005
-        	  System.out.println("Canonical name for node with index [" + metaNodeRindices[i] + "] is null");
+        	  System.out.println("Canonical name for node ["+node+"] is null");
         	  	canonical = "unknown" + Integer.toString(numUnknowns);
           }
           bioIdentifiersToMembers.put(canonical,biomodules[i]);

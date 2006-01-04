@@ -38,6 +38,7 @@ import metaNodeViewer.MetaNodeUtils;
 import metaNodeViewer.model.*;
 import metaNodeViewer.data.*;
 import metaNodeViewer.view.VisualStyleFactory;
+import java.util.*;
 
 public class ViewUtils {
 
@@ -54,12 +55,12 @@ public class ViewUtils {
 	 *         index 'i' in the returned array is the parent of nodes
 	 *         biomodules[i].
 	 */
-	public static int[] abstractBiomodules(CyNetwork network,
+	public static ArrayList abstractBiomodules(CyNetwork network,
 			CyNode[][] biomodules) {
 
-		int[] metaNodeIndices = MetaNodeUtils.abstractToMetaNodes(network,
-				biomodules, ViewUtils.attributesHandler);
-		// Apply vizmapper
+		ArrayList metaNodes = MetaNodeUtils.abstractToMetaNodes(network,biomodules, ViewUtils.attributesHandler);
+		
+        // Apply vizmapper
 		CytoscapeDesktop cyDesktop = Cytoscape.getDesktop();
 		VisualMappingManager vizmapper = cyDesktop.getVizMapManager();
 		VisualStyle abstractMetaNodeVS = vizmapper.getCalculatorCatalog()
@@ -73,7 +74,7 @@ public class ViewUtils {
 		if (netView != null) {
 			netView.applyVizmapper(abstractMetaNodeVS);
 		}
-		return metaNodeIndices;
+		return metaNodes;
 	}// abstractBiomodules
 
 	/**
@@ -93,8 +94,8 @@ public class ViewUtils {
 	 *            performance)
 	 */
 	public static void removeMetaNodes(CyNetwork network,
-			int[] meta_node_rindices, boolean recursive) {
-		MetaNodeUtils.removeAbstractedMetaNodes(network, meta_node_rindices,
+			ArrayList nodes, boolean recursive) {
+		MetaNodeUtils.removeAbstractedMetaNodes(network, nodes,
 				recursive);
 	}// removeMetaNodes
 
