@@ -17,6 +17,8 @@ class DNodeView implements NodeView, Label
 {
 
   public static final Paint DEFAULT_BORDER_PAINT = Color.black;
+  public static final Font DEFAULT_LABEL_FONT = new Font(null, Font.PLAIN, 1);
+  public static final Paint DEFAULT_LABEL_PAINT = Color.black;
 
   DGraphView m_view;
   final int m_inx;
@@ -37,7 +39,7 @@ class DNodeView implements NodeView, Label
     m_unselectedPaint = m_view.m_nodeDetails.fillPaint(m_inx);
     m_selectedPaint = Color.yellow;
     m_textPaint = Color.black;
-    m_textFont = m_view.m_defaultFont;
+    m_textFont = DEFAULT_LABEL_FONT;
   }
 
   public GraphView getGraphView()

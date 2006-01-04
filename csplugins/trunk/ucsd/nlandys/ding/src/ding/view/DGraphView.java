@@ -22,7 +22,6 @@ class DGraphView implements GraphView
 
   final Object m_lock = new Object();
   final float[] m_extentsBuff = new float[4];
-  final Font m_defaultFont = new Font(null, Font.PLAIN, 1);
   MutableSpacialIndex2D m_spacial;
   DNodeDetails m_nodeDetails;
 
