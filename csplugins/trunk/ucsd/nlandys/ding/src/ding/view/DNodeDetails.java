@@ -37,11 +37,12 @@ class DNodeDetails extends NodeDetails
   }
 
   /*
-   * The color argument must be pre-checked for null.  Don't pass null in.
+   * A null color has the special meaning to remove overridden color.
    */
   void overrideColorLowDetail(int node, Color color)
   {
-    if (color.equals(super.colorLowDetail(node))) {
+    if (color == null ||
+        color.equals(super.colorLowDetail(node))) {
       final Object val = m_colorsLowDetail.get(node);
       if (val != null && val != m_deletedEntry) {
         m_colorsLowDetail.put(node, m_deletedEntry); } }
@@ -58,10 +59,12 @@ class DNodeDetails extends NodeDetails
 
   /*
    * The shape argument must be pre-checked for correctness.
+   * A negative shape value has the special meaning to remove overridden shape.
    */
   void overrideShape(int node, byte shape)
   {
-    if (shape == super.shape(node)) { m_shapes.remove(new Integer(node)); }
+    if (shape < 0 ||
+        shape == super.shape(node)) { m_shapes.remove(new Integer(node)); }
     else { m_shapes.put(new Integer(node), new Byte(shape)); }
   }
 
@@ -73,11 +76,12 @@ class DNodeDetails extends NodeDetails
   }
 
   /*
-   * The paint argument must be pre-checked for null.  Don't pass null in.
+   * A null paint has the special meaning to remove overridden paint.
    */
   void overrideFillPaint(int node, Paint paint)
   {
-    if (paint.equals(super.fillPaint(node))) {
+    if (paint == null ||
+        paint.equals(super.fillPaint(node))) {
       m_fillPaints.remove(new Integer(node)); }
     else { m_fillPaints.put(new Integer(node), paint); }
   }
@@ -90,12 +94,12 @@ class DNodeDetails extends NodeDetails
   }
 
   /*
-   * The width argument must be pre-checked.  For example don't pass negative
-   * values.
+   * A negative width value has the special meaning to remove overridden width.
    */
   void overrideBorderWidth(int node, float width)
   {
-    if (width == super.borderWidth(node)) {
+    if (width < 0.0f ||
+        width == super.borderWidth(node)) {
       m_borderWidths.remove(new Integer(node)); }
     else { m_borderWidths.put(new Integer(node), new Float(width)); }
   }
@@ -108,11 +112,12 @@ class DNodeDetails extends NodeDetails
   }
 
   /*
-   * The paint argument must be pre-checked for null.  Don't pass null in.
+   * A null paint has the special meaning to remove overridden paint.
    */
   void overrideBorderPaint(int node, Paint paint)
   {
-    if (paint.equals(super.borderPaint(node))) {
+    if (paint == null ||
+        paint.equals(super.borderPaint(node))) {
       m_borderPaints.remove(new Integer(node)); }
     else { m_borderPaints.put(new Integer(node), paint); }
   }
@@ -124,9 +129,13 @@ class DNodeDetails extends NodeDetails
     return ((Integer) o).intValue();
   }
 
+  /*
+   * A negative labelCount has the special meaning to remove overridden count.
+   */
   void overrideLabelCount(int node, int labelCount)
   {
-    if (labelCount == super.labelCount(node)) {
+    if (labelCount < 0 ||
+        labelCount == super.labelCount(node)) {
       m_labelCounts.remove(new Integer(node)); }
     else { m_labelCounts.put(new Integer(node), new Integer(labelCount)); }
   }
@@ -140,12 +149,13 @@ class DNodeDetails extends NodeDetails
   }
 
   /*
-   * The text argument must be pre-checked for null.  Don't pass null in.
+   * A null text has the special meaning to remove overridden text.
    */
   void overrideLabelText(int node, int labelInx, String text)
   {
     final long key = (((long) node) << 32) | ((long) labelInx);
-    if (text.equals(super.labelText(node, labelInx))) {
+    if (text == null ||
+        text.equals(super.labelText(node, labelInx))) {
       m_labelTexts.remove(new Long(key)); }
     else { m_labelTexts.put(new Long(key), text); }
   }
@@ -159,12 +169,13 @@ class DNodeDetails extends NodeDetails
   }
 
   /*
-   * The font argument must be pre-checked for null.  Don't pass null in.
+   * A null font has the special meaning to remove overridden font.
    */
   void overrideLabelFont(int node, int labelInx, Font font)
   {
     final long key = (((long) node) << 32) | ((long) labelInx);
-    if (font.equals(super.labelFont(node, labelInx))) {
+    if (font == null ||
+        font.equals(super.labelFont(node, labelInx))) {
       m_labelFonts.remove(new Long(key)); }
     else { m_labelFonts.put(new Long(key), font); }
   }
@@ -178,12 +189,13 @@ class DNodeDetails extends NodeDetails
   }
 
   /*
-   * The paint argument must be pre-checked for null.  Don't pass null in.
+   * A null paint has the special meaning to remove overridden paint.
    */
   void overrideLabelPaint(int node, int labelInx, Paint paint)
   {
     final long key = (((long) node) << 32) | ((long) labelInx);
-    if (paint.equals(super.labelPaint(node, labelInx))) {
+    if (paint == null ||
+        paint.equals(super.labelPaint(node, labelInx))) {
       m_labelPaints.remove(new Long(key)); }
     else { m_labelPaints.put(new Long(key), paint); }
   }
