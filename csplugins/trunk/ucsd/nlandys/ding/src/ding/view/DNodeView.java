@@ -437,7 +437,10 @@ class DNodeView implements NodeView, Label
 
   public String getText()
   {
-    return null;
+    synchronized (m_view.m_lock) {
+      if (m_view.m_nodeDetails.labelCount(m_inx) > 0) {
+        return m_view.m_nodeDetails.labelText(m_inx, 0); }
+      else { return ""; } }
   }
 
   public void setText(String text)
