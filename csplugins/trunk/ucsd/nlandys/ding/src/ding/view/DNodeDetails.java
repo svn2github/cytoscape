@@ -11,7 +11,7 @@ import java.util.HashMap;
  * Access to the methods of this class should be synchronized externally if
  * there is a threat of multiple threads.
  */
-class DNodeDetails extends NodeDetails
+class DNodeDetails extends IntermediateNodeDetails
 {
 
   final IntObjHash m_colorsLowDetail = new IntObjHash();

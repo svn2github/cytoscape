@@ -16,6 +16,8 @@ import java.util.List;
 class DNodeView implements NodeView, Label
 {
 
+  public static final Paint DEFAULT_BORDER_PAINT = Color.black;
+
   DGraphView m_view;
   final int m_inx;
   boolean m_selected;
