@@ -23,6 +23,7 @@ class DNodeDetails extends NodeDetails
   final HashMap m_fillPaints = new HashMap();
   final HashMap m_borderWidths = new HashMap();
   final HashMap m_borderPaints = new HashMap();
+  final HashMap m_labelTexts = new HashMap();
   final HashMap m_labelFonts = new HashMap();
   final HashMap m_labelPaints = new HashMap();
 
@@ -113,6 +114,25 @@ class DNodeDetails extends NodeDetails
     if (paint.equals(super.borderPaint(node))) {
       m_borderPaints.remove(new Integer(node)); }
     else { m_borderPaints.put(new Integer(node), paint); }
+  }
+
+  public String labelText(int node, int labelInx)
+  {
+    final long key = (((long) node) << 32) | ((long) labelInx);
+    final Object o = m_labelTexts.get(new Long(key));
+    if (o == null) { return super.labelText(node, labelInx); }
+    return (String) o;
+  }
+
+  /*
+   * The text argument must be pre-checked for null.  Don't pass null in.
+   */
+  void overrideLabelText(int node, int labelInx, String text)
+  {
+    final long key = (((long) node) << 32) | ((long) labelInx);
+    if (text.equals(super.labelText(node, labelInx))) {
+      m_labelTexts.remove(new Long(key)); }
+    else { m_labelTexts.put(new Long(key), text); }
   }
 
   public Font labelFont(int node, int labelInx)
