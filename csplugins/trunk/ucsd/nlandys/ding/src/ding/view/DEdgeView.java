@@ -5,20 +5,35 @@ import giny.view.Bend;
 import giny.view.EdgeView;
 import giny.view.GraphView;
 import giny.view.Label;
+import java.awt.Color;
 import java.awt.Paint;
 import java.awt.Stroke;
 
 class DEdgeView implements EdgeView
 {
 
+  static final Paint DEFAULT_ARROW_PAINT = Color.black;
+
+  DGraphView m_view;
+  final int m_inx;
+
+  /*
+   * @param inx the RootGraph index of edge (a negative number).
+   */
+  DEdgeView(DGraphView view, int inx)
+  {
+    m_view = view;
+    m_inx = ~inx;
+  }
+
   public int getGraphPerspectiveIndex()
   {
-    return 0;
+    return ~m_inx;
   }
 
   public int getRootGraphIndex()
   {
-    return 0;
+    return ~m_inx;
   }
 
   public Edge getEdge()
@@ -28,7 +43,7 @@ class DEdgeView implements EdgeView
 
   public GraphView getGraphView()
   {
-    return null;
+    return m_view;
   }
 
   public void setStrokeWidth(float width)
