@@ -25,7 +25,6 @@ class DNodeView implements NodeView, Label
   boolean m_selected;
   Paint m_unselectedPaint;
   Paint m_selectedPaint;
-  Font m_textFont;
 
   /*
    * @param inx the RootGraph index of node (a negative number).
@@ -37,7 +36,6 @@ class DNodeView implements NodeView, Label
     m_selected = false;
     m_unselectedPaint = m_view.m_nodeDetails.fillPaint(m_inx);
     m_selectedPaint = Color.yellow;
-    m_textFont = DEFAULT_LABEL_FONT;
   }
 
   public GraphView getGraphView()
@@ -444,17 +442,14 @@ class DNodeView implements NodeView, Label
 
   public Font getFont()
   {
-    return m_textFont;
+    synchronized (m_view.m_lock) {
+      return m_view.m_nodeDetails.labelFont(m_inx, 0); }
   }
 
   public void setFont(Font font)
   {
     synchronized (m_view.m_lock) {
-      if (font == null) {
-        throw new NullPointerException("font is null"); }
-      m_textFont = font;
-      if (m_view.m_nodeDetails.labelCount(m_inx) > 0) {
-        m_view.m_nodeDetails.overrideLabelFont(m_inx, 0, m_textFont); } }
+      m_view.m_nodeDetails.overrideLabelFont(m_inx, 0, font); }
   }
 
 }
