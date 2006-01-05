@@ -106,7 +106,7 @@
   <tr><td colspan=6>&nbsp;</td></tr>
   <tr>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- Hack, hack, cough, cough. --></td>
-    <td>Ben Gross</td>
+    <td>Benjamin Gross</td>
     <td>Richard<br />Bonneau</td>
   </tr>
     
