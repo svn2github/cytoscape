@@ -16,10 +16,10 @@ import java.util.List;
 class DNodeView implements NodeView, Label
 {
 
-  public static final Paint DEFAULT_BORDER_PAINT = Color.black;
-  public static final String DEFAULT_LABEL_TEXT = "";
-  public static final Font DEFAULT_LABEL_FONT = new Font(null, Font.PLAIN, 1);
-  public static final Paint DEFAULT_LABEL_PAINT = Color.black;
+  static final Paint DEFAULT_BORDER_PAINT = Color.black;
+  static final String DEFAULT_LABEL_TEXT = "";
+  static final Font DEFAULT_LABEL_FONT = new Font(null, Font.PLAIN, 1);
+  static final Paint DEFAULT_LABEL_PAINT = Color.black;
 
   DGraphView m_view;
   final int m_inx;
