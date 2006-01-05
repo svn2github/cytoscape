@@ -7,25 +7,25 @@
 ###########################################################################################
 use DBI();
 
-my $testing = 1; # set to 0 when NOT testing!
+my $testing = 0; # set to 0 when NOT testing!
 
 print "---------------------- update.pl -------------------------\n";
 
 if(scalar(@ARGV) < 3){
-	print "USAGE update.pl <prolinks:kegg:go:synonyms:all> <db user> <db password>\n";
+	print "USAGE update.pl <db user> <db password>  <prolinks:kegg:go:synonyms:all>\n";
 	die;
 }
 
+$dbuser = $ARGV[0];
+$dbpwd = $ARGV[1];
 
 $fulllist = ":prolinks:kegg:go:synonyms:";
 if ($ARGV[0] =~ /all/) {
 	$updatee = $fulllist;
 }else{
-	$updatee = $ARGV[0];
+	$updatee = $ARGV[2];
 }
 
-$dbuser = $ARGV[1];
-$dbpwd = $ARGV[2];
 
 print "Database(s) to update: $updatee\n";
 
@@ -36,17 +36,10 @@ $dbh->do("CREATE DATABASE IF NOT EXISTS metainfo") or die "Could not create meta
 $dbh->disconnect();
 $dbh = DBI->connect("dbi:mysql:database=metainfo:host=localhost", $dbuser, $dbpwd)  or die "Can't make database connect: $DBI::errstr\n";
 $dbh->do("CREATE TABLE IF NOT EXISTS when_updated (db VARCHAR(30), timestamp TIMESTAMP)") or die "Could not create when_updated: $dbh->errstr\n";
-$dbh->do("CREATE TABLE IF NOT EXISTS restricted_access (db VARCHAR(30), restricted SET('Y', 'N'))") or die "Could not create restricted_access: $dbh->errstr\n";
 $dbh->do("CREATE TABLE IF NOT EXISTS db_name (db VARCHAR(30), dbname VARCHAR(30))") or die "Could not create db_name: $dbh->errstr\n";
 print "done\n";
 
 my @dbkinds = ('prolinks', 'kegg', 'go', 'synonyms');
-
-my %restricted;
-$restricted{'prolinks'} = 'N';
-$restricted{'kegg'}	= 'N';
-$restricted{'go'}	= 'N';
-$restricted{'synonyms'} = 'N';
 
 @updatees = split(/:/, $updatee);
 
@@ -62,9 +55,11 @@ foreach $curupdatee (@updatees) {
 
 			# if a db is being updated, we create a new name for it
 	        # so that if the other one is currently being used, we don't crash or mix up data
-			print "Calling command: ./update_${dbkind}.pl ${newdbname} ${dbuser} ${dbpwd}\n";
-			system("./update_${dbkind}.pl ${newdbname} ${dbuser} ${dbpwd}");
-			update_dbinfo($dbh, $dbkind, $dbname, $newdbname, $restricted{$dbkind});
+			print "Calling command: ./update_${dbkind}.pl ${dbuser} ${dbpwd} ${newdbname}\n";
+			system("./update_${dbkind}.pl ${dbuser} ${dbpwd} ${newdbname}");
+			
+			# done updating, update metainfo
+			update_dbinfo($dbh, $dbkind, $dbname, $newdbname);
 		}
 	}
 }
@@ -135,19 +130,14 @@ sub get_new_db_name {
 #################################################
 sub update_dbinfo {
 	print "Updating db information for $dbname in metainfo tables...";
-	my ($dbh, $dbkind, $dbname, $newdbname, $restricted);
+	my ($dbh, $dbkind, $dbname, $newdbname);
 	$dbh = shift;
 	$dbkind = shift;
 	$dbname = shift; #old name
 	$newdbname = shift;
-	$restricted = shift;
 	
 	$dbh->do("INSERT INTO when_updated VALUES (?, CURRENT_TIMESTAMP())", undef, $dbkind) or die "Error: $dbh->errstr";
-	$dbh->do("DELETE FROM restricted_access WHERE db=?", undef, $dbkind) or die "Error: $dbh->errstr"; #????
 	$dbh->do("DELETE FROM db_name WHERE db=?", undef, $dbkind) or die "Error: $dbh->errstr";
-	$dbh->do("INSERT INTO restricted_access VALUES (?, ?)", undef, $dbkind, $restricted) or die "Error: $dbh->errstr";
 	$dbh->do("INSERT INTO db_name VALUES (?, ?)", undef, $dbkind, $newdbname) or die "Error: $dbh->errstr";
-	# delete the old db:
-	$dbh->do("DROP DATABASE IF EXISTS ".$dbname) unless ($dbname eq '');
 	print "done\n";
 }

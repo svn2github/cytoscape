@@ -8,6 +8,7 @@
 ############################################################################
 use XML::Simple;
 use DBI();
+use Cwd;
 
 print "------------------- update_kegg.pl --------------------\n";
 if(scalar(@ARGV) < 3){
@@ -15,13 +16,13 @@ if(scalar(@ARGV) < 3){
 	die;
 }
 
-$dbname = $ARGV[0];
-$dbuser = $ARGV[1];
-$dbpwd = $ARGV[2];
+$dbuser = $ARGV[0];
+$dbpwd = $ARGV[1];
+$dbname = $ARGV[2];
+
 $dbid = "kegg";
 
 # download current KEGG KGML
-# I had problems manually uncompressing the tar.gz file!
 system('rm -r kgml');
 system('mkdir kgml');
 print "Getting kgml.tar.gz... ";
@@ -88,6 +89,7 @@ $dbh->do("CREATE TABLE gene_map (gene VARCHAR(20), map VARCHAR(20), UNIQUE(gene,
 $dbh->do("CREATE TABLE enz_map (enz VARCHAR(20), map VARCHAR(20), UNIQUE(enz, map))") or die "Error: $dbh->errstr";
 
 $dbh->do("CREATE TABLE rxn_cpd (rxn VARCHAR(20), cpd VARCHAR(20), UNIQUE(rxn, cpd))") or die "Error: $dbh->errstr";
+
 
 print "done\n";
 
@@ -305,10 +307,34 @@ print "time elapsed: ".($nowtime-$starttime)."\n";
 # using this table to create interactions minimizes multiple edges between nodes that share many compounds
 $starttime = time;
 print "create table gene_gene_score\n";
-$dbh->do("CREATE TABLE gene_gene_score SELECT gcgs.gene1 AS gene1, gcgs.gene2 AS gene2, MIN(gcgs.score) as score FROM gene_cpd_gene_score AS gcgs GROUP BY gcgs.gene1, gcgs.gene2") or die "Error: $dbh->errstr";
+$dbh->do("CREATE TABLE gene_gene_score SELECT gcgs.gene1 AS gene1, gcgs.gene2 AS gene2, MIN(gcgs.score) as score, gcgs.org as org FROM gene_cpd_gene_score AS gcgs GROUP BY gcgs.gene1, gcgs.gene2") or die "Error: $dbh->errstr";
 $nowtime = time;
 print "time elapsed: ".($nowtime-$starttime)."\n";
 
+$starttime = time;
+print "create table cpd_name\n";
+$dbh->do("CREATE TABLE cpd_name (cpd VARCHAR(20), name VARCHAR(50), UNIQUE(cpd,name))") or die "Error: $dbh->errstr";
+print "Getting COMPOUND...";
+system('wget ftp://ftp.genome.jp/pub/kegg/ligand/compound --directory-prefix=kgml') == 0 or die "$?\n";
+print "done.\n";
+open (COMPOUND, "kgml/compound") or die "Could not open kgml/compound\n";
+open (CP_OUT, ">kgml/compound_name.txt") or die "Could not create file kgml/compound_name.txt\n";
+while($line = <COMPOUND>){
+	if($line =~ /^ENTRY/){
+		@fields = split(/\s+/,$line);
+		print CP_OUT "cpd:"."$fields[1]\t";
+	}elsif ($line =~ /^NAME/){
+		@fields = split(/\s+/,$line);
+		chop($fields[1]); # take out the ";"
+		print CP_OUT "$fields[1]\n";
+	}
+}
+$fullFilePath = getcwd()."/kgml/compound_name.txt";
+$dbh->do("LOAD DATA LOCAL INFILE \'${fullFilePath}\' INTO TABLE cpd_name") or die "Error: $dbh->errstr";
+$nowtime = time;
+print "time elapsed: ".($nowtime-$starttime)."\n";
+close(CP_OUT);
+close(COMPOUND);
 $dbh->disconnect();
 
 print "\n--------------------- Leaving update_kegg.pl ----------------------\n";

@@ -68,10 +68,10 @@ public class BioNetPlugin extends CytoscapePlugin {
             }
  
             this.interactionsClient
-                    .addSource("org.isb.bionet.datasource.interactions.ProlinksInteractionsSource");
+                    .addSource(ProlinksInteractionsSource.class.getName());
         
             this.interactionsClient
-            .addSource("org.isb.bionet.datasource.interactions.KeggInteractionsSource");
+            .addSource(KeggInteractionsSource.class.getName());
             System.out.println(interactionsClient.getSources());
             
             

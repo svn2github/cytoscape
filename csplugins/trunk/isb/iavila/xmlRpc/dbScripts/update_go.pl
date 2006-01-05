@@ -4,7 +4,8 @@
 # Authors: Iliana Avila-Campillo
 # Last date modified: December 8, 2005 by Iliana
 # Files are downloaded from ftp site, into ./go_sql, ready to load into db, creates additional tables
-# TODO: Table gi2go
+# TODO: Table gi2go (maybe do it in synonyms???)
+# TODO: Maybe protecting the * with double quotes will work instead of doing loops.
 ##########################################################################################################
 
 print "------------------------- update_go.pl --------------------------\n";

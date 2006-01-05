@@ -8,12 +8,20 @@ import java.sql.*;
 
 import org.isb.xmlrpc.handler.db.*;
 
+/**
+ * 
+ * @author iavila
+ * TODO: Take into account the threshold for compound interactions 
+ */
 public class KeggInteractionsSource extends SQLDBHandler implements InteractionsDataSource {
    
     public static final String NAME = "KEGG";
     public static final String GENE_ID_TYPE = SynonymsSource.KEGG_ID;
     public static final String KEGG_INTERACTION_TYPE = "sharedCompound";
     public static final String COMPOUND = "compound";
+    public static final String THRESHOLD_KEY = "Th"; // values are Doubles
+    public static final String EDGE_PER_CPD_KEY = "oneEdgePerCpd"; // values are Booleans
+    public static final int DEFAULT_THRESHOLD = 2300;
     /**
      * A Map that contains "fullname" species Strings mapped to the ids that KEGG uses to identify species
      */
@@ -24,9 +32,7 @@ public class KeggInteractionsSource extends SQLDBHandler implements Interactions
      * Empty constructor
      */
     public KeggInteractionsSource() {
-        // TODO: Remove, this should be read from somewhere!!!
-       // this("jdbc:mysql://wavelength.systemsbiology.net/kegg?user=cytouser&password=bioNetBuilder");
-        //this("jdbc:mysql://wavelength.systemsbiology.net/kegg?user=cytouser&password=bioNetBuilder");
+   
         super("jdbc:mysql://wavelength.systemsbiology.net/metainfo?user=cytouser&password=bioNetBuilder", SQLDBHandler.MYSQL_JDBC_DRIVER);
         
         // Look for the current go database
@@ -42,11 +48,8 @@ public class KeggInteractionsSource extends SQLDBHandler implements Interactions
         System.out.println("Current KEGG database is: [" + currentKeggDb + "]");
         if(currentKeggDb == null || currentKeggDb.length() == 0){
             throw new IllegalStateException("Oh no! We don't know the name of the current KEGG database!!!!!");
-        }else{
-            if (!makeConnection("jdbc:mysql://wavelength.systemsbiology.net/"+currentKeggDb + "?user=cytouser&password=bioNetBuilder")){ 
-                throw new IllegalStateException("Oh no! We don't know the name of the current KEGG database!!!!!");
-            }
         }
+        execute("USE " + currentKeggDb);
         
     }
 
@@ -88,32 +91,64 @@ public class KeggInteractionsSource extends SQLDBHandler implements Interactions
      * 
      * @param rs contains 3 columns: <br>
      * gene1, gene2, cpd
+     * @param one_edge whether pairs of genes should onlty contain 1 edge between them
      */
-    protected Vector makeInteractionsVector (ResultSet rs){
-        
-        try{
-            Vector interactions = new Vector();
-            while (rs.next()) {
-                String gene1 = GENE_ID_TYPE + ":" + rs.getString(1);
-                String gene2 = GENE_ID_TYPE + ":" + rs.getString(2);
-                String cpd = rs.getString(3);
-                Hashtable inter = new Hashtable();
-                inter.put(INTERACTOR_1, gene1);
-                inter.put(INTERACTOR_2, gene2);
-                inter.put(INTERACTION_TYPE, (KEGG_INTERACTION_TYPE + ":"+ cpd));
-                inter.put(COMPOUND, cpd);
-                inter.put(SOURCE, NAME);
-                interactions.add(inter);
-                if(debug && interactions.size() % 100 == 0){
-                    System.out.println("interactions = "
-                            + interactions.size());
+    protected Vector makeInteractionsVector (ResultSet rs, boolean one_edge){
+        if(one_edge){
+             try{
+                Vector interactions = new Vector();
+                while (rs.next()) {
+                    String gene1 = GENE_ID_TYPE + ":" + rs.getString(1);
+                    String gene2 = GENE_ID_TYPE + ":" + rs.getString(2);
+                    String cpd = rs.getString(3);
+                    Hashtable inter = new Hashtable();
+                    inter.put(INTERACTOR_1, gene1);
+                    inter.put(INTERACTOR_2, gene2);
+                    inter.put(INTERACTION_TYPE,
+                            (KEGG_INTERACTION_TYPE + ":" + cpd));
+                    inter.put(COMPOUND, cpd);
+                    inter.put(SOURCE, NAME);
+                    interactions.add(inter);
+                    if (debug && interactions.size() % 100 == 0) {
+                        System.out.println("interactions = "
+                                + interactions.size());
+                    }
+
+                }// while rs.next
+                return interactions;
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }else{
+            try{
+                Hashtable genePairToInteraction = new Hashtable();
+                while (rs.next()) {
+                    String gene1 = rs.getString(1);
+                    String gene2 = rs.getString(2);
+                    String cpd = rs.getString(3);
+                    String genePair = gene1+"."+gene2;
+                    if(genePairToInteraction.containsKey(genePair)){
+                        Hashtable inter = (Hashtable)genePairToInteraction.get(genePair);
+                        String cpds = (String)inter.get(COMPOUND);
+                        cpds += ","+cpd;
+                        inter.put(COMPOUND,cpds);
+                    }else{
+                        Hashtable inter = new Hashtable();
+                        inter.put(INTERACTOR_1, GENE_ID_TYPE + ":" + gene1);
+                        inter.put(INTERACTOR_2, GENE_ID_TYPE + ":" + gene2);
+                        inter.put(INTERACTION_TYPE,KEGG_INTERACTION_TYPE);
+                        inter.put(COMPOUND, cpd);
+                        inter.put(SOURCE, NAME);
+                        genePairToInteraction.put(genePair,inter);
+                    }
+
                 }
+                return new Vector(genePairToInteraction.values());
                 
-            }// while rs.next
-            return interactions;
-        }catch (SQLException e){
-            e.printStackTrace();
+            }catch(SQLException e){e.printStackTrace();}
+            
         }
+                
     
         return EMPTY_VECTOR;
     }//makeInteractionsVector
@@ -237,7 +272,7 @@ public class KeggInteractionsSource extends SQLDBHandler implements Interactions
         if(spID == null) return EMPTY_VECTOR;
         String sql = "SELECT gene1, gene2, cpd FROM  gene_cpd_gene_score WHERE org = \"" + spID + "\"";
         ResultSet rs = query(sql);
-        return makeInteractionsVector(rs);
+        return makeInteractionsVector(rs,false);
     }
 
     /**
@@ -264,10 +299,28 @@ public class KeggInteractionsSource extends SQLDBHandler implements Interactions
      * INTERACTION_TYPE -->String <br>
      * Each implementing class can add additional entries to the Hashtables
      */
-    //TODO: Arguments?
     public Vector getAllInteractions (String species, Hashtable args){
-        return getAllInteractions(species);
+        
+        if(!args.containsKey(THRESHOLD_KEY) && !args.containsKey(EDGE_PER_CPD_KEY)) return getAllInteractions(species);
+        
+        int threshold = getMaxNumCompoundInteractions().intValue();
+        if(args.containsKey(THRESHOLD_KEY)) threshold = ( (Integer)args.get(THRESHOLD_KEY) ).intValue();
+        
+        boolean oneEdgePerCpd = false;
+        if(args.containsKey(EDGE_PER_CPD_KEY)) oneEdgePerCpd = ( (Boolean)args.get(EDGE_PER_CPD_KEY) ).booleanValue();
+        
+        if(threshold <= 0) return new Vector();
+        if(threshold >= getMaxNumCompoundInteractions().intValue() && oneEdgePerCpd == false) return getAllInteractions(species);
+        
+        String spID = getSpeciesID(species);
+        if(spID == null) return EMPTY_VECTOR;
+        
+        String sql = "SELECT gene1, gene2, cpd FROM  gene_cpd_gene_score WHERE org = \"" + spID + "\" AND score <= " + threshold;
+        ResultSet rs = query(sql);
+        
+        return makeInteractionsVector(rs,oneEdgePerCpd);
     }
+    
     
     /**
      * @param species
@@ -275,9 +328,29 @@ public class KeggInteractionsSource extends SQLDBHandler implements Interactions
      * class understands (for example, p-value thresholds, directed interactions, etc)
      * @return the number of interactions
      */
-    //TODO: Arguments?
     public Integer getNumAllInteractions (String species, Hashtable args){
-        return getNumAllInteractions(species);
+        if(!args.containsKey(THRESHOLD_KEY) && !args.containsKey(EDGE_PER_CPD_KEY)) return getNumAllInteractions(species);
+        
+        int threshold = getMaxNumCompoundInteractions().intValue();
+        if(args.containsKey(THRESHOLD_KEY)) threshold = ( (Integer)args.get(THRESHOLD_KEY) ).intValue();
+        
+        boolean oneEdgePerCpd = false;
+        if(args.containsKey(EDGE_PER_CPD_KEY)) oneEdgePerCpd = ( (Boolean)args.get(EDGE_PER_CPD_KEY) ).booleanValue();
+        
+        if(threshold <= 0) return new Integer(0);
+        if(threshold >= getMaxNumCompoundInteractions().intValue() && oneEdgePerCpd == false) return getNumAllInteractions(species);
+        
+        String spID = getSpeciesID(species);
+        if(spID == null) return new Integer(0);
+        
+        String sql;
+        if(oneEdgePerCpd)
+            sql = "SELECT count(*) FROM  gene_cpd_gene_score WHERE org = \"" + spID + "\" AND score <= " + threshold;
+        else
+            sql = "SELECT count(*) FROM gene_gene_score WHERE org = \"" + spID + "\" AND score <= " + threshold;
+        
+        ResultSet rs = query(sql);
+        return new Integer(SQLUtils.getInt(rs)/2);
     }
    
     /**
@@ -353,10 +426,26 @@ public class KeggInteractionsSource extends SQLDBHandler implements Interactions
      * @return a Vector of String ids of all the nodes that
      * have a direct interaction with the interactors in the given input vector, positions
      * in the input and output vectors are matched (parallel vectors)
-     */
-    //TODO: Arguments?
+     */ 
     public Vector getFirstNeighbors (Vector interactors, String species, Hashtable args){
-        return getFirstNeighbors(interactors, species);
+        String spID = getSpeciesID(species);
+        if(spID == null) return EMPTY_VECTOR;
+        
+        if(!args.containsKey(THRESHOLD_KEY)) return getFirstNeighbors(interactors,species);
+        
+        int threshold = getMaxNumCompoundInteractions().intValue();
+        if(args.containsKey(THRESHOLD_KEY)) threshold = ( (Integer)args.get(THRESHOLD_KEY) ).intValue();
+        
+        
+        if(threshold <= 0) return EMPTY_VECTOR;
+        if(threshold >= getMaxNumCompoundInteractions().intValue()) return getFirstNeighbors(interactors,species);
+        
+        String orStatement = getOrStatementGene1(interactors);
+        if(orStatement.length() == 0) return EMPTY_VECTOR;
+        
+        String sql = "SELECT gene2 FROM gene_cpd_gene_score WHERE org = \"" + spID + "\"" + " AND (" + orStatement + ")"; 
+        ResultSet rs = query(sql);
+        return makeInteractorsVector(rs);
     }
 
     
@@ -367,10 +456,22 @@ public class KeggInteractionsSource extends SQLDBHandler implements Interactions
      * class understands (for example, p-value thresholds, directed interactions, etc)
      * @return the number of interactors
      */
-    //TODO: Arguments?
     public Integer getNumFirstNeighbors (Vector interactors, String species, Hashtable args){
-        return getNumFirstNeighbors(interactors, species);
+        if(!args.containsKey(THRESHOLD_KEY)) return getNumFirstNeighbors(interactors,species);
+        
+        int threshold = getMaxNumCompoundInteractions().intValue();
+        if(args.containsKey(THRESHOLD_KEY)) threshold = ( (Integer)args.get(THRESHOLD_KEY) ).intValue();
+        
+        if(threshold <= 0) return new Integer(0);
+        if(threshold >= getMaxNumCompoundInteractions().intValue()) return getNumFirstNeighbors(interactors,species);
+        
+        String spID = getSpeciesID(species);
+        if(spID == null) return new Integer(0);
+        String sql = "SELECT COUNT(gene2) FROM gene_cpd_gene_score WHERE org = \"" + spID + "\" AND score <= " + threshold;
+        ResultSet rs = query(sql);
+        return new Integer(SQLUtils.getInt(rs));
     }
+    
 
     /**
      * @param interactors a Vector of Strings (ids that the data source understands)
@@ -407,7 +508,7 @@ public class KeggInteractionsSource extends SQLDBHandler implements Interactions
         String orStatement = getOrStatementGene1(interactors);
         if(orStatement.length() == 0) return new Integer(0);
         
-        String sql = "SELECT gene2 FROM gene_cpd_gene_score WHERE org = \"" + spID + "\"" + " AND (" + orStatement + ")"; 
+        String sql = "SELECT COUNT(gene2) FROM gene_cpd_gene_score WHERE org = \"" + spID + "\"" + " AND (" + orStatement + ")"; 
         ResultSet rs = query(sql);
         return new Integer(SQLUtils.getInt(rs));
     }
@@ -425,9 +526,28 @@ public class KeggInteractionsSource extends SQLDBHandler implements Interactions
      * Each implementing class can add additional entries to the Hashtables.<br>
      * The input and output vectors are parallel.
      */
-    //TODO: Arguments?
     public Vector getAdjacentInteractions (Vector interactors, String species, Hashtable args){
-        return getAdjacentInteractions(interactors, species);
+        
+        String spID = getSpeciesID(species);
+        if(spID == null) return EMPTY_VECTOR;
+        
+        if(!args.containsKey(THRESHOLD_KEY) && !args.containsKey(EDGE_PER_CPD_KEY)) return getAdjacentInteractions(interactors,species);
+        
+        int threshold = getMaxNumCompoundInteractions().intValue();
+        if(args.containsKey(THRESHOLD_KEY)) threshold = ( (Integer)args.get(THRESHOLD_KEY) ).intValue();
+        
+        boolean oneEdgePerCpd = false;
+        if(args.containsKey(EDGE_PER_CPD_KEY)) oneEdgePerCpd = ( (Boolean)args.get(EDGE_PER_CPD_KEY) ).booleanValue();
+        
+        if(threshold <= 0) return EMPTY_VECTOR;
+        if(threshold >= getMaxNumCompoundInteractions().intValue() && oneEdgePerCpd == false) return getAdjacentInteractions(interactors,species);
+        
+        String orStatement = getOrStatementGene1(interactors);
+        if(orStatement.length() == 0) return EMPTY_VECTOR;
+      
+        String sql = "SELECT gene1, gene2, cpd FROM gene_cpd_gene_score WHERE org = \"" + spID + "\"" + " AND (" + orStatement + ") AND score <= " + threshold; 
+        ResultSet rs = query(sql);
+        return makeInteractionsVector(rs, oneEdgePerCpd);
     }
 
     /**
@@ -437,9 +557,32 @@ public class KeggInteractionsSource extends SQLDBHandler implements Interactions
      * class understands (for example, p-value thresholds, directed interactions only, etc)
      * @return the number of adjacent interations
      */
-    //TODO: Arguments?
     public Integer getNumAdjacentInteractions (Vector interactors, String species, Hashtable args){
-        return getNumAdjacentInteractions(interactors, species);
+        String spID = getSpeciesID(species);
+        if(spID == null) return new Integer(0);
+        
+        if(!args.containsKey(THRESHOLD_KEY) && !args.containsKey(EDGE_PER_CPD_KEY)) return getNumAdjacentInteractions(interactors,species);
+        
+        int threshold = getMaxNumCompoundInteractions().intValue();
+        if(args.containsKey(THRESHOLD_KEY)) threshold = ( (Integer)args.get(THRESHOLD_KEY) ).intValue();
+        
+        boolean oneEdgePerCpd = false;
+        if(args.containsKey(EDGE_PER_CPD_KEY)) oneEdgePerCpd = ( (Boolean)args.get(EDGE_PER_CPD_KEY) ).booleanValue();
+        
+        if(threshold <= 0) return new Integer(0);
+        if(threshold >= getMaxNumCompoundInteractions().intValue() && oneEdgePerCpd == false) return getNumAdjacentInteractions(interactors,species);
+        
+        String orStatement = getOrStatementGene1(interactors);
+        if(orStatement.length() == 0) return new Integer(0);
+      
+        String sql;
+        if(oneEdgePerCpd)
+            sql = "SELECT COUNT(gene2) FROM gene_cpd_gene_score WHERE org = \"" + spID + "\"" + " AND (" + orStatement + ") AND score <= " + threshold; 
+        else
+            sql = "SELECT COUNT(gene2) FROM gene_gene_score WHERE org = \"" + spID + "\"" + " AND (" + orStatement + ") AND score <= " + threshold;
+        
+        ResultSet rs = query(sql);
+        return new Integer(SQLUtils.getInt(rs)/2);
     }
 
     //-------------------------- connecting interactions methods -----------------------
@@ -497,7 +640,7 @@ public class KeggInteractionsSource extends SQLDBHandler implements Interactions
         
         String sql = "SELECT gene1, gene2, cpd FROM gene_cpd_gene_score WHERE org = \"" + spID + "\"" + " AND (" + ors[0] + ") AND (" + ors[1] + ")"; 
         ResultSet rs = query(sql);
-        return makeInteractionsVector(rs);
+        return makeInteractionsVector(rs,false);
     }
     
     /**
@@ -528,9 +671,27 @@ public class KeggInteractionsSource extends SQLDBHandler implements Interactions
      * INTERACTION_TYPE -->String <br>
      * Each implementing class can add additional entries to the Hashtables 
      */
-    //TODO: Arguments?
     public Vector getConnectingInteractions (Vector interactors, String species, Hashtable args){
-        return getConnectingInteractions(interactors, species);
+        String spID = getSpeciesID(species);
+        if(spID == null) return EMPTY_VECTOR;
+        
+        if(!args.containsKey(THRESHOLD_KEY) && !args.containsKey(EDGE_PER_CPD_KEY)) return getConnectingInteractions(interactors,species);
+        
+        int threshold = getMaxNumCompoundInteractions().intValue();
+        if(args.containsKey(THRESHOLD_KEY)) threshold = ( (Integer)args.get(THRESHOLD_KEY) ).intValue();
+        
+        boolean oneEdgePerCpd = false;
+        if(args.containsKey(EDGE_PER_CPD_KEY)) oneEdgePerCpd = ( (Boolean)args.get(EDGE_PER_CPD_KEY) ).booleanValue();
+        
+        if(threshold <= 0) return EMPTY_VECTOR;
+        if(threshold >= getMaxNumCompoundInteractions().intValue() && oneEdgePerCpd == false) return getConnectingInteractions(interactors,species);
+        
+        String [] ors = getOrStatementsGenes12(interactors); 
+        if(ors[0].length() == 0) return EMPTY_VECTOR;
+        String sql = "SELECT gene1, gene2, cpd FROM gene_cpd_gene_score WHERE org = \"" + spID + "\"" + " AND (" + ors[0] + ") AND (" + ors[1] + ") AND score <= " + threshold; 
+        ResultSet rs = query(sql);
+        return makeInteractionsVector(rs, oneEdgePerCpd);
+        
     }
     
     /**
@@ -540,9 +701,92 @@ public class KeggInteractionsSource extends SQLDBHandler implements Interactions
      * class understands (for example, p-value thresholds, directed interactions only, etc)
      * @return the number of connecting interactions
      */
-    //TODO: Arguments?
     public Integer getNumConnectingInteractions (Vector interactors, String species, Hashtable args){
-        return getNumConnectingInteractions(interactors,species);
+        String spID = getSpeciesID(species);
+        if(spID == null) return new Integer(0);
+        
+        if(!args.containsKey(THRESHOLD_KEY) && !args.containsKey(EDGE_PER_CPD_KEY)) return getNumConnectingInteractions(interactors,species);
+        
+        int threshold = getMaxNumCompoundInteractions().intValue();
+        if(args.containsKey(THRESHOLD_KEY)) threshold = ( (Integer)args.get(THRESHOLD_KEY) ).intValue();
+        
+        boolean oneEdgePerCpd = false;
+        if(args.containsKey(EDGE_PER_CPD_KEY)) oneEdgePerCpd = ( (Boolean)args.get(EDGE_PER_CPD_KEY) ).booleanValue();
+        
+        if(threshold <= 0) return new Integer(0);
+        if(threshold >= getMaxNumCompoundInteractions().intValue() && oneEdgePerCpd == false) return getNumConnectingInteractions(interactors,species);
+        
+        String [] ors = getOrStatementsGenes12(interactors); 
+        if(ors[0].length() == 0) return new Integer(0);
+        String sql;
+        if(oneEdgePerCpd)
+            sql = "SELECT COUNT(*) FROM gene_cpd_gene_score WHERE org = \"" + spID + "\"" + " AND (" + ors[0] + ") AND (" + ors[1] + ") AND score <= " + threshold; 
+        else
+            sql = "SELECT COUNT(*) FROM gene_gene_score WHERE org = \"" + spID + "\"" + " AND (" + ors[0] + ") AND (" + ors[1] + ") AND score <= " + threshold; 
+        ResultSet rs = query(sql);
+        return new Integer(SQLUtils.getInt(rs)/2);
     }
-     
+    
+    // ---------------------------- Additional methods -------------------------- //
+    
+    /**
+     * @return a Hashtable from a String (comma separated list of compounds) to a String parsable as an Integer
+     * that represents the score of the compounds
+     */
+    public Integer getMaxNumCompoundInteractions (){
+        String sql = "SELECT MAX(score) FROM cpd_score";
+        ResultSet rs = query(sql);
+        Integer maxScore = new Integer(SQLUtils.getInt(rs));
+        return maxScore;
+    }
+    
+    /**
+     * 
+     * @param score the number of interactions that a compound has with genes
+     * @param num_cpds_to_return the number of compounds to return that are closest (but not equal) the score
+     * @return Hashtable with entries : (cpd:<id>,name)
+     */
+    public Hashtable getCompoundsWithScoreClosestTo (Integer score, Integer num_cpds_to_return){
+        
+        String sql = "SELECT cpd FROM cpd_score WHERE score < " + score + " ORDER by score DESC";
+        ResultSet rs = query(sql);
+        Vector cpds = new Vector();
+        try{
+            int limit = num_cpds_to_return.intValue();
+            while(rs.next() && cpds.size() < limit) cpds.add(rs.getString(1));
+        }catch(SQLException ex){
+            ex.printStackTrace();
+        }
+        return getCompoundNames(cpds);
+    }
+    
+    /**
+     * 
+     * @param compounds Vector of Strings with compound ids of the form cpd:<id>
+     * @return Hashtable with entries : (cpd:<id>,name)
+     */
+    public Hashtable getCompoundNames (Vector compounds){
+        String orStat = "";
+        Iterator it = compounds.iterator();
+        while(it.hasNext()){
+            String compound = (String)it.next();
+            if(orStat.length() == 0) 
+                orStat = "cpd = \"" + compound + "\"";
+            else
+                orStat += " OR cpd = \"" + compound + "\"";
+        }//it
+        
+        Hashtable table = new Hashtable();
+        if(orStat.length() == 0) return table;
+        String sql = "SELECT cpd, name FROM cpd_name WHERE " + orStat;
+        ResultSet rs = query(sql);
+        try{
+            while(rs.next()) table.put(rs.getString(1),rs.getString(2));
+        }catch(SQLException ex){
+            ex.printStackTrace();
+            return new Hashtable();
+        }
+        return table;
+    }
+    
 }

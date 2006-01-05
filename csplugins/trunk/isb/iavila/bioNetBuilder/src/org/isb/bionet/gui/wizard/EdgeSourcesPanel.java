@@ -7,14 +7,11 @@ import java.awt.event.*;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-
 import javax.swing.*;
 import org.isb.bionet.datasource.interactions.*;
 import org.isb.bionet.datasource.synonyms.*;
 import org.isb.bionet.gui.*;
-
 import java.util.*;
-
 import cytoscape.*;
 
 /**
@@ -210,7 +207,7 @@ public class EdgeSourcesPanel extends JPanel {
         List species = (List)this.sourceToSpecies.get(sourceClass);
         
         Hashtable args = new Hashtable();
-        if (sourceClass.equals(ProlinksInteractionsSource.class.toString())) {
+        if (sourceClass.equals(ProlinksInteractionsSource.class.getName())) {
             ProlinksGui pDialog = (ProlinksGui)dialog;
             Vector types = pDialog.getSelectedInteractionTypes();
             double pval = pDialog.getPval(false);
@@ -221,7 +218,20 @@ public class EdgeSourcesPanel extends JPanel {
             System.out.println("pval = " + pval);
             System.out.println("species = " + (String)species.get(0));
             System.out.println("------------------------------------------------------");
-        }//Prolinks
+        }else if(sourceClass.equals(KeggInteractionsSource.class.getName())){
+            KeggGui kDialog = (KeggGui)dialog;
+            int threshold = kDialog.getThreshold();
+            boolean oneEdge = kDialog.createOneEdgePerCompound();
+            args = new Hashtable();
+            args.put(KeggInteractionsSource.THRESHOLD_KEY,new Integer(threshold));
+            args.put(KeggInteractionsSource.EDGE_PER_CPD_KEY, new Boolean(oneEdge));
+            System.out.println("------- KEGG settings (estimateNumEdges)----------");
+            System.out.println("threshold = " + threshold);
+            System.out.println("oneEdgePerCpd = " + oneEdge);
+            System.out.println("species = " + (String)species.get(0));
+            System.out.println("---------------------------------------------------");
+            
+        }
         
         int numEdges = 0;
         
@@ -287,13 +297,16 @@ public class EdgeSourcesPanel extends JPanel {
         this.buttonToSourceClass = new HashMap();
         Iterator it = this.sourceToName.keySet().iterator();
         while (it.hasNext()) {
+          
             final String sourceClass = (String) it.next();
+            //System.out.print("-----------" + sourceClass + "-------------\n");
             String buttonName = (String) this.sourceToName.get(sourceClass);
             boolean enabled = this.sourceToSpecies.containsKey(sourceClass);
             final JButton button = new JButton(buttonName + "...");
-            final  ProlinksGui pDialog = new ProlinksGui();
-            this.sourceToDialog.put(sourceClass, pDialog);
+            
             if (buttonName.equals(ProlinksInteractionsSource.NAME)) {
+                final  ProlinksGui pDialog = new ProlinksGui();
+                this.sourceToDialog.put(sourceClass, pDialog);
                 button.addActionListener(
                  new AbstractAction() {
                     public void actionPerformed(ActionEvent event) {
@@ -307,7 +320,24 @@ public class EdgeSourcesPanel extends JPanel {
                         //estimateNumEdges(button);
                     }// actionPerformed
                 });// AbstractAction
-            }
+            } else if(buttonName.equals(KeggInteractionsSource.NAME)){
+               final KeggGui kDialog = new KeggGui(this.interactionsClient,KeggInteractionsSource.DEFAULT_THRESHOLD);
+               this.sourceToDialog.put(sourceClass, kDialog);
+                button.addActionListener(
+                 new AbstractAction() {
+                    public void actionPerformed(ActionEvent event) {
+                        KeggGui kDialog = (KeggGui) sourceToDialog
+                                .get(sourceClass);
+                        kDialog.pack();
+                        kDialog.setLocationRelativeTo(EdgeSourcesPanel.this);
+                        kDialog.setVisible(true);
+                        // Dialog is modal, so we get back when the user closes
+                        // it:
+                        //estimateNumEdges(button);
+                    }// actionPerformed
+                });// AbstractAction
+            }//KEGG
+            
             button.setEnabled(enabled);
             this.buttonToSourceClass.put(button, sourceClass);
           
@@ -368,6 +398,7 @@ public class EdgeSourcesPanel extends JPanel {
 
         c.fill = GridBagConstraints.HORIZONTAL;
         it = this.buttonToSourceClass.keySet().iterator();
+        
         while (it.hasNext()) {
             
             final JButton button = (JButton) it.next();

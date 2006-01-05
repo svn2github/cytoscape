@@ -83,9 +83,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	 * Empty constructor
 	 */
 	public ProlinksInteractionsSource() {
-		// TODO: Remove, this should be read from somewhere!!!
-		//this("jdbc:mysql://wavelength.systemsbiology.net/prolinks?user=cytouser&password=bioNetBuilder");
-        //this("jdbc:mysql://wavelength.systemsbiology.net/prolinks?user=cytouser&password=bioNetBuilder");
+		
 	    super("jdbc:mysql://wavelength.systemsbiology.net/metainfo?user=cytouser&password=bioNetBuilder", SQLDBHandler.MYSQL_JDBC_DRIVER);
         
         // Look for the current go database
@@ -101,12 +99,8 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
         System.out.println("Current Prolinks database is: [" + currentProlinksDb + "]");
         if(currentProlinksDb == null || currentProlinksDb.length() == 0){
             throw new IllegalStateException("Oh no! We don't know the name of the current Prolinks database!!!!!");
-        }else{
-            if (!makeConnection("jdbc:mysql://wavelength.systemsbiology.net/"+currentProlinksDb + "?user=cytouser&password=bioNetBuilder")){ 
-                throw new IllegalStateException("Oh no! We don't know the name of the current Prolinks database!!!!!");
-            }
         }
-        
+        execute("USE " + currentProlinksDb);
         initialize();
 	}
 
@@ -504,8 +498,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
         if(tableName == null) return new Integer(0);
         String sql = "SELECT COUNT(*) FROM " + tableName;
         ResultSet rs = query(sql);
-        // Prolinks contains a->b, b->a for the same edge
-        return new Integer(SQLUtils.getInt(rs)/2);
+        return new Integer(SQLUtils.getInt(rs));
     }
     
 	/**
@@ -612,8 +605,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
             num += SQLUtils.getInt(rs);
         }//while it.hasNext
         
-        // Prolinks contains a->b and b->a, but direction does not mean anything
-        return new Integer(num/2);
+        return new Integer(num);
     }
     
     
@@ -1059,7 +1051,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
            "SELECT COUNT(*) FROM " + tableName + " WHERE (" + ors[0] + " ) AND (" + ors[1] + ")";
         ResultSet rs = query(sql);
         
-        return new Integer(SQLUtils.getInt(rs)/2);
+        return new Integer(SQLUtils.getInt(rs));
     }
 
 	/**
@@ -1194,7 +1186,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
                 ResultSet rs = query(sql);
                 num+= SQLUtils.getInt(rs);
             }//while
-            return new Integer(num/2);
+            return new Integer(num);
         }//else
     }
 	

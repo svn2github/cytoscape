@@ -9,6 +9,7 @@ import java.awt.event.*;
 import org.isb.bionet.datasource.interactions.*;
 import org.isb.bionet.datasource.synonyms.*;
 import org.isb.iavila.ontology.xmlrpc.*;
+import org.isb.bionet.gui.KeggGui;
 import org.isb.bionet.gui.ProlinksGui;
 import org.isb.bionet.CyNetUtils;
 import cytoscape.*;
@@ -34,6 +35,8 @@ public class NetworkBuilderWizard {
     protected NodeSourcesPanel nodeSourcesPanel;
     protected EdgeSourcesPanel edgeSourcesPanel;
     protected NetworkSettingsPanel networkPanel;
+    protected LabelsPanel labelsPanel;
+    protected AttributesPanel attsPanel;
     
     // Bookkeeping
     protected int currentStep;
@@ -127,6 +130,16 @@ public class NetworkBuilderWizard {
         this.currentStep++;
         JDialog edgesDialog = createEdgeSourcesDialog();
         this.dialogs.add(this.currentStep, edgesDialog);
+        
+        // Create the dialog to prioritize node labels
+        this.currentStep++;
+        JDialog labelsDialog = createNodeLabelsDialog();
+        this.dialogs.add(this.currentStep, labelsDialog);
+        
+        // Create the dialog for attributes
+        this.currentStep++;
+        JDialog attsDialog = createAttsDialog();
+        this.dialogs.add(this.currentStep,attsDialog);
         
         // Create the dialog for network settings
         this.currentStep++;
@@ -385,6 +398,85 @@ public class NetworkBuilderWizard {
         
     }
     
+    protected JDialog createNodeLabelsDialog (){
+        
+        AbstractAction back, next;
+        
+        if(this.currentStep == 0){
+            back = null;
+        }else{
+            back = DEFAULT_BACK_ACTION;
+        }
+
+        next = new AbstractAction (){
+            public void actionPerformed (ActionEvent event){
+                    if(onLastStep){
+                        FINISH_ACTION.actionPerformed(event);
+                    }else{
+                        DEFAULT_NEXT_ACTION.actionPerformed(event);
+                    }
+            }//actionPerformed
+        };//AbstractAction
+        
+        JDialog dialog = createWizardDialog(back, next);
+        
+        JPanel explanation = createExplanationPanel(
+                "<html><br>Prioritize the ID types for node labels.<br>Nodes will be labeled with the highest priority ID type available<br>in the list below.</html>"
+        );
+        
+        dialog.getContentPane().add(explanation, BorderLayout.NORTH);
+        
+        this.labelsPanel = new LabelsPanel();
+        
+        JPanel bigPanel = new JPanel();
+        bigPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        bigPanel.add(this.labelsPanel);
+       
+        dialog.getContentPane().add(bigPanel, BorderLayout.CENTER);
+        
+        return dialog;
+    }
+    
+    protected JDialog createAttsDialog (){
+        
+        AbstractAction back, next;
+        
+        if(this.currentStep == 0){
+            back = null;
+        }else{
+            back = DEFAULT_BACK_ACTION;
+        }
+
+        next = new AbstractAction (){
+            public void actionPerformed (ActionEvent event){
+                    if(onLastStep){
+                        FINISH_ACTION.actionPerformed(event);
+                    }else{
+                        DEFAULT_NEXT_ACTION.actionPerformed(event);
+                    }
+            }//actionPerformed
+        };//AbstractAction
+        
+        JDialog dialog = createWizardDialog(back, next);
+        
+        JPanel explanation = createExplanationPanel(
+                "<html><br>Select the attribute options for your network.<br></html>"
+        );
+        
+        
+        dialog.getContentPane().add(explanation, BorderLayout.NORTH);
+        
+        this.attsPanel = new AttributesPanel();
+        
+        JPanel bigPanel = new JPanel();
+        bigPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        bigPanel.add(this.attsPanel);
+       
+        dialog.getContentPane().add(bigPanel, BorderLayout.CENTER);
+        
+        return dialog;
+    }
+    
     protected JDialog createNetworkSettingsDialog (){
         
         AbstractAction back, next;
@@ -448,7 +540,13 @@ public class NetworkBuilderWizard {
         // 4. Get the network name
         String netName = this.networkPanel.getNetworkName();
         
-        // 5. Iterate over all the edge data sources and accumulate interactions
+        // 5. See which attributes we should add
+        String [] labelOps = this.labelsPanel.getOrderedLabelOptions();
+        boolean genBankDef = this.attsPanel.getAddDefinition();
+        boolean xrefs = this.attsPanel.getAddXrefs();
+        boolean dburls = this.attsPanel.getAddDbUrls();
+        
+        // 6. Iterate over all the edge data sources and accumulate interactions
         Vector interactions = new Vector();
         while(it.hasNext()){
             
@@ -482,9 +580,21 @@ public class NetworkBuilderWizard {
                 }
                 
             
-            }//if prolinks
+            }else if(sourceName.endsWith(KeggInteractionsSource.NAME)){
+                KeggGui kDialog = (KeggGui)sourceToSettings.get(sourceClass);
+                int threshold = kDialog.getThreshold();
+                boolean oneEdge = kDialog.createOneEdgePerCompound();
+                args = new Hashtable();
+                args.put(KeggInteractionsSource.THRESHOLD_KEY,new Integer(threshold));
+                args.put(KeggInteractionsSource.EDGE_PER_CPD_KEY, new Boolean(oneEdge));
+                System.out.println("------- KEGG settings (estimateNumEdges)----------");
+                System.out.println("threshold = " + threshold);
+                System.out.println("oneEdgePerCpd = " + oneEdge);
+                System.out.println("species = " + sourceSpecies);
+                System.out.println("---------------------------------------------------");
                 
-          
+            }
+                
             Vector sourceInteractions = null;
             try{
                 if(startingNodes == null || startingNodes.size() == 0){
@@ -506,7 +616,7 @@ public class NetworkBuilderWizard {
                                 adjacentNodes = this.interactionsClient.getFirstNeighbors(startingNodes,species);
                             
                             //TODO: Remove
-                            System.err.println("Num first neighbors = " + adjacentNodes.size());
+                            //System.err.println("Num first neighbors = " + adjacentNodes.size());
                             Iterator it2 = adjacentNodes.iterator();
                             while(it2.hasNext()){
                                 System.err.println(it2.next());
@@ -553,14 +663,14 @@ public class NetworkBuilderWizard {
         }
         
         if(found){
-            CyNetUtils.addInteractionsToNetwork(net,interactions, this.synonymsClient);
+            CyNetUtils.addInteractionsToNetwork(net,interactions, this.synonymsClient,labelOps, genBankDef,xrefs,dburls);
         }else{
-            net = CyNetUtils.makeNewNetwork(interactions, netName, this.synonymsClient);
+            net = CyNetUtils.makeNewNetwork(interactions, netName, this.synonymsClient,labelOps, genBankDef,xrefs,dburls);
         }
         
         //7. If requested, create Rosetta attribute
-        if(this.networkPanel.createRosettaURLAttribute()){
-            CyNetUtils.createRosettaURLNodeAttribute(net);
+        if(this.attsPanel.getAddHPF()){
+            CyNetUtils.createHPFURLNodeAttribute(net);
         }
         
         

@@ -3,9 +3,6 @@
 ####################################################################################################
 # Authors: Junghwan Park, Iliana Avila-Campillo
 # Last modified: December 9, 2005 by Iliana
-# Calls iproclass_parser to parse XML file from iProClass Database
-# Calls update_synonym_kegg and update_synonym_prolinks to get additional information on synonyms
-# TODO: tables gi_taxonomy and ncbiTaxNames
 ####################################################################################################
 
 use DBI();
@@ -22,26 +19,99 @@ $dbuser = $ARGV[0];
 $dbpwd = $ARGV[1];
 $dbname = $ARGV[2];
 
+
+############ 1 #####################################################
+#print "Calling update_synonyms_genbank.pl...\n";
+#system("perl update_synonyms_genbank.pl $dbuser $dbpwd $dbname");
+#print "done.\n";
+
+############ 2 #####################################################
+#print "Calling update_synonyms_iproclass.pl...\n";
+#system("perl update_synonyms_iproclass.pl $dbuser $dbpwd $dbname");
+#print "done.\n";
+
+############ 3 #####################################################
+#print "Calling update_synonyms_prolinks.pl...\n";
+#system("perl update_synonyms_prolinks.pl $dbuser $dbpwd $dbname"); 
+#print "done.\n";
+
+############ 4 #####################################################
+print "Calling update_synonyms_kegg.pl...\n";
+system("perl update_synonyms_kegg.pl $dbuser $dbpwd $dbname"); 
+print "done.\n";
+############################# TRY TO MATCH SYNONYMS USING uid FIELD ################################################
+#matchUID();
+
+sub matchUID {
+	
+	# Find out which of GenBank or PIR have the largest number of proteins.
+	
+	$dbh = DBI->connect("dbi:mysql:host=localhost", $dbuser, $dbpwd) or die "Can't make database connect: $DBI::errstr\n";
+	$dbh->do("USE $dbname");
+	
+	$sth = $dbh->prepare_cached("SELECT count(*) FROM genbank_accession") or die "Error: $dbh->errstr";
+	$sth->execute() or die "Error: $dbh->errstr";
+	@row = $sth->fetchrow_array;
+	$genbankNumProts = $row[0];
+	
+	$sth = $dbh->prepare_cached("SELECT count(*) FROM ipc_pir") or die "Error: $dbh->errstr";
+	$sth->execute() or die "Error: $dbh->errstr";
+	@row = $sth->fetchrow_array;
+	$ipcNumProts = $row[0];
+	
+	# Assign uids starting from 1
+	open (UID, ">uids.txt") or die "Could not open file uids.txt\n";
+	if($ipcNumProts > $genbankNumProts){
+		$max = $ipcNumProts;
+	}else{
+		$max = $genbankNumProts;
+	}
+	for ($uid = 1; $uid <= $max; $uid++){
+		print UID "$uid\n";
+	}
+	close(UID);
+	$fullFilPath = getcwd()."/uids.txt";
+	if($ipcNumProts > $genbankNumProts){
+		print "Loading uids into ipc_pir...\n";
+		$dbh->do("LOAD DATA LOCAL INFILE \'${fullFilePath}\' REPLACE INTO TABLE ipc_pir (uid)");
+	}else{
+		print "Loading data into genbank_accession...\n";
+		$dbh->do("LOAD DATA LOCAL INFILE \'${fullFilePath}\' REPLACE INTO TABLE gene_accession (uid)");
+	}
+	
+	# Start looking for matches...
+	# 
+	
+}
+
+die;
+
+############### OLD CODE ###########################################################################################
+
+####################################################################################################
+
+
 $dbh = DBI->connect("dbi:mysql:host=localhost", $dbuser, $dbpwd) or die "Can't make database connect: $DBI::errstr\n";
 
 &create_db_structure($dbname);
 &downloadfiles;
 &ipcparse($dbname);
 &loadparsed($dbname);
+&createTaxonomyTables($dbname);
 
 print "Calling update_synonym_kegg.pl...\n";
-$dbh->do("use metainfo") or die "Error: $dbh->errstr\n";
-$sth = $dbh->prepare_cached("SELECT db_name WHERE db=?") or die "Error: $dbh->errstr";
-$sth->execute('kegg') or die "Error: $dbh->errstr";
+$dbh->do("USE metainfo") or die "Error: $dbh->errstr\n";
+$sth = $dbh->prepare_cached("SELECT dbname FROM db_name WHERE db=?") or die "Error: $dbh->errstr";
+$sth->execute("kegg") or die "Error: $dbh->errstr";
 @row = $sth->fetchrow_array;
 $keggname = $row[0];
-system("update_synonym_kegg.pl $dbuser $dbpwd $keggname $dbname");
+system("perl update_synonym_kegg.pl $dbuser $dbpwd $keggname $dbname");
 
-$sth = $dbh->prepare_cached("SELECT db_name WHERE db=?") or die "Error: $dbh->errstr";
+$sth = $dbh->prepare_cached("SELECT dbname FROM db_name WHERE db=?") or die "Error: $dbh->errstr";
 $sth->execute('prolinks') or die "Error: $dbh->errstr";
 @row = $sth->fetchrow_array;
 $plName = $row[0];
-system("update_synonym_prolinks.pl $dbuser $dbpwd $plname $dbname");
+system("perl update_synonym_prolinks.pl $dbuser $dbpwd $plname $dbname");
 
 $dbh->disconnect();
 print "------------------- Leaving update_synonyms.pl ----------------------\n";
@@ -191,103 +261,152 @@ sub ipcparse {
 sub loadparsed {
 	$dbname = shift;
 	
+	$dbh->do("USE $dbname");
+	
 	# directory where all the parsed tab delimited files are located
-	$tdfDir = getcwd."xref/parsed";
+	$tdfDir = getcwd."/xref/parsed";
 
 	print "Loading start...\n";
 	print  "   table keydb...\n";
-	$dbh->do("LOAD DATA INFILE '$tdfDir/tdf.keydb' IGNORE INTO TABLE keydb") or die "Error: $dbh->errstr\n"; 
+	$dbh->do("LOAD DATA LOCAL INFILE '$tdfDir/tdf.keydb' IGNORE INTO TABLE keydb") or die "Error: $dbh->errstr\n"; 
 	
 	print  "   table hasit...\n";
-	$dbh->do("LOAD DATA INFILE '$tdfDir/tdf.hasit' IGNORE INTO TABLE hasit") or die "Error: $dbh->errstr\n"; 
+	$dbh->do("LOAD DATA LOCAL INFILE '$tdfDir/tdf.hasit' IGNORE INTO TABLE hasit") or die "Error: $dbh->errstr\n"; 
 	
 	print  "   table prot_pir...\n";
-	$dbh->do("LOAD DATA INFILE '$tdfDir/tdf.prot_pir' IGNORE INTO TABLE prot_pir") or die "Error: $dbh->errstr\n"; 
+	$dbh->do("LOAD DATA LOCAL INFILE '$tdfDir/tdf.prot_pir' IGNORE INTO TABLE prot_pir") or die "Error: $dbh->errstr\n"; 
 	
 	print  "   table prot_sprot...\n";
-	$dbh->do("LOAD DATA INFILE '$tdfDir/tdf.prot_sprot' IGNORE INTO TABLE prot_sprot") or die "Error: $dbh->errstr\n"; 
+	$dbh->do("LOAD DATA LOCAL INFILE '$tdfDir/tdf.prot_sprot' IGNORE INTO TABLE prot_sprot") or die "Error: $dbh->errstr\n"; 
 	
 	print  "   table prot_trembl...\n";
-	$dbh->do("LOAD DATA INFILE '$tdfDir/tdf.prot_trembl' IGNORE INTO TABLE prot_trembl") or die "Error: $dbh->errstr\n"; 
+	$dbh->do("LOAD DATA LOCAL INFILE '$tdfDir/tdf.prot_trembl' IGNORE INTO TABLE prot_trembl") or die "Error: $dbh->errstr\n"; 
 	
 	print  "   table prot_refseq...\n";
-	$dbh->do("LOAD DATA INFILE '$tdfDir/tdf.prot_refseq' IGNORE INTO TABLE prot_refseq") or die "Error: $dbh->errstr\n"; 
+	$dbh->do("LOAD DATA LOCAL INFILE '$tdfDir/tdf.prot_refseq' IGNORE INTO TABLE prot_refseq") or die "Error: $dbh->errstr\n"; 
 	
 	print  "   table prot_genpeptac...\n";
-	$dbh->do("LOAD DATA INFILE '$tdfDir/tdf.prot_genpeptac' IGNORE INTO TABLE prot_genpeptac") or die "Error: $dbh->errstr\n"; 
+	$dbh->do("LOAD DATA LOCAL INFILE '$tdfDir/tdf.prot_genpeptac' IGNORE INTO TABLE prot_genpeptac") or die "Error: $dbh->errstr\n"; 
 	
 	print  "   table tx_taxonomy...\n";
-	$dbh->do("LOAD DATA INFILE '$tdfDir/tdf.tx_taxonomy' IGNORE INTO TABLE tx_taxonomy") or die "Error: $dbh->errstr\n"; 
+	$dbh->do("LOAD DATA LOCAL INFILE '$tdfDir/tdf.tx_taxonomy' IGNORE INTO TABLE tx_taxonomy") or die "Error: $dbh->errstr\n"; 
 	
 	print  "   table gn_genename...\n";
-	$dbh->do("LOAD DATA INFILE '$tdfDir/tdf.gn_genename' IGNORE INTO TABLE gn_genename") or die "Error: $dbh->errstr\n"; 
+	$dbh->do("LOAD DATA LOCAL INFILE '$tdfDir/tdf.gn_genename' IGNORE INTO TABLE gn_genename") or die "Error: $dbh->errstr\n"; 
 	
 	print  "   table gn_oln...\n";
-	$dbh->do("LOAD DATA INFILE '$tdfDir/tdf.gn_oln' IGNORE INTO TABLE gn_oln") or die "Error: $dbh->errstr\n"; 
+	$dbh->do("LOAD DATA LOCAL INFILE '$tdfDir/tdf.gn_oln' IGNORE INTO TABLE gn_oln") or die "Error: $dbh->errstr\n"; 
 	
 	print  "   table gn_orf...\n";
-	$dbh->do("LOAD DATA INFILE '$tdfDir/tdf.gn_orf' IGNORE INTO TABLE gn_orf") or die "Error: $dbh->errstr\n"; 
+	$dbh->do("LOAD DATA LOCAL INFILE '$tdfDir/tdf.gn_orf' IGNORE INTO TABLE gn_orf") or die "Error: $dbh->errstr\n"; 
 	
 	# this loads nothing
 	print  "   table xref_kegg...\n";
-	$dbh->do("LOAD DATA INFILE '$tdfDir/tdf.xref_kegg' IGNORE INTO TABLE xref_kegg") or die "Error: $dbh->errstr\n"; 
+	$dbh->do("LOAD DATA LOCAL INFILE '$tdfDir/tdf.xref_kegg' IGNORE INTO TABLE xref_kegg") or die "Error: $dbh->errstr\n"; 
 	
 	# this loads nothing
 	print  "   table xref_gi...\n";
-	$dbh->do("LOAD DATA INFILE '$tdfDir/tdf.xref_gi' IGNORE INTO TABLE xref_gi") or die "Error: $dbh->errstr\n"; 
+	$dbh->do("LOAD DATA LOCAL INFILE '$tdfDir/tdf.xref_gi' IGNORE INTO TABLE xref_gi") or die "Error: $dbh->errstr\n"; 
 	
 	#this loads nothing
 	print  "   table xref_ncbigeneid...\n";
-	$dbh->do("LOAD DATA INFILE '$tdfDir/tdf.xref_ncbigeneid' IGNORE INTO TABLE xref_ncbigeneid") or die "Error: $dbh->errstr\n"; 
+	$dbh->do("LOAD DATA LOCAL INFILE '$tdfDir/tdf.xref_ncbigeneid' IGNORE INTO TABLE xref_ncbigeneid") or die "Error: $dbh->errstr\n"; 
 	
 	#print  "   table xref_biblio...\n";
-	#$dbh->do("LOAD DATA INFILE '$tdfDir/tdf.xref_biblio' IGNORE INTO TABLE xref_biblio") or die "Error: $dbh->errstr\n"; 
+	#$dbh->do("LOAD DATA LOCAL INFILE '$tdfDir/tdf.xref_biblio' IGNORE INTO TABLE xref_biblio") or die "Error: $dbh->errstr\n"; 
 	
 	print  "   table xref_dnaseq...\n";
-	$dbh->do("LOAD DATA INFILE '$tdfDir/tdf.xref_dnaseq' IGNORE INTO TABLE xref_dnaseq") or die "Error: $dbh->errstr\n"; 
+	$dbh->do("LOAD DATA LOCAL INFILE '$tdfDir/tdf.xref_dnaseq' IGNORE INTO TABLE xref_dnaseq") or die "Error: $dbh->errstr\n"; 
 	
 	#print  "   table xref_genomegene_tigr...\n";
-	#$dbh->do("LOAD DATA INFILE '$tdfDir/tdf.xref_genomegene_tigr' IGNORE INTO TABLE xref_genomegene_tigr"); 
+	#$dbh->do("LOAD DATA LOCAL INFILE '$tdfDir/tdf.xref_genomegene_tigr' IGNORE INTO TABLE xref_genomegene_tigr"); 
 	
 	#print  "   table xref_genomegene_uwgp...\n";
-	#$dbh->do("LOAD DATA INFILE '$tdfDir/tdf.xref_genomegene_uwgp' IGNORE INTO TABLE xref_genomegene_uwgp"); 
+	#$dbh->do("LOAD DATA LOCAL INFILE '$tdfDir/tdf.xref_genomegene_uwgp' IGNORE INTO TABLE xref_genomegene_uwgp"); 
 	
 	#print  "   table xref_genomegene_sgd...\n";
-	#$dbh->do("LOAD DATA INFILE '$tdfDir/tdf.xref_genomegene_sgd' IGNORE INTO TABLE xref_genomegene_sgd"); 
+	#$dbh->do("LOAD DATA LOCAL INFILE '$tdfDir/tdf.xref_genomegene_sgd' IGNORE INTO TABLE xref_genomegene_sgd"); 
 	
 	#print  "   table xref_genomegene_fly...\n";
-	#$dbh->do("LOAD DATA INFILE '$tdfDir/tdf.xref_genomegene_fly' IGNORE INTO TABLE xref_genomegene_fly"); 
+	#$dbh->do("LOAD DATA LOCAL INFILE '$tdfDir/tdf.xref_genomegene_fly' IGNORE INTO TABLE xref_genomegene_fly"); 
 	
 	#print  "   table xref_genomegene_mgi...\n";
-	#$dbh->do("LOAD DATA INFILE '$tdfDir/tdf.xref_genomegene_mgi' IGNORE INTO TABLE xref_genomegene_mgi"); 
+	#$dbh->do("LOAD DATA LOCAL INFILE '$tdfDir/tdf.xref_genomegene_mgi' IGNORE INTO TABLE xref_genomegene_mgi"); 
 	
 	#print  "   table xref_genomegene_gdb...\n";
-	#$dbh->do("LOAD DATA INFILE '$tdfDir/tdf.xref_genomegene_gdb' IGNORE INTO TABLE xref_genomegene_gdb"); 
+	#$dbh->do("LOAD DATA LOCAL INFILE '$tdfDir/tdf.xref_genomegene_gdb' IGNORE INTO TABLE xref_genomegene_gdb"); 
 	
 	#print  "   table xref_genomegene_omim...\n";
-	#$dbh->do("LOAD DATA INFILE '$tdfDir/tdf.xref_genomegene_omim' IGNORE INTO TABLE xref_genomegene_omim"); 
+	#$dbh->do("LOAD DATA LOCAL INFILE '$tdfDir/tdf.xref_genomegene_omim' IGNORE INTO TABLE xref_genomegene_omim"); 
 	
 	#print  "   table xref_locus...\n";
-	#$dbh->do("LOAD DATA INFILE '$tdfDir/tdf.xref_locus' IGNORE INTO TABLE xref_locus"); 
+	#$dbh->do("LOAD DATA LOCAL INFILE '$tdfDir/tdf.xref_locus' IGNORE INTO TABLE xref_locus"); 
 	
 	print  "   table xref_ontology...\n";
-	$dbh->do("LOAD DATA INFILE '$tdfDir/tdf.xref_ontology' IGNORE INTO TABLE xref_ontology") or die "Error: $dbh->errstr\n"; 
+	$dbh->do("LOAD DATA LOCAL INFILE '$tdfDir/tdf.xref_ontology' IGNORE INTO TABLE xref_ontology") or die "Error: $dbh->errstr\n"; 
 	
 	#print  "   table xref_pdb...\n";
-	#$dbh->do("LOAD DATA INFILE '$tdfDir/tdf.xref_pdb' IGNORE INTO TABLE xref_pdb") or die "Error: $dbh->errstr\n"; 
+	#$dbh->do("LOAD DATA LOCAL INFILE '$tdfDir/tdf.xref_pdb' IGNORE INTO TABLE xref_pdb") or die "Error: $dbh->errstr\n"; 
 	
 	#print  "   table xref_scop...\n";
-	#$dbh->do("LOAD DATA INFILE '$tdfDir/tdf.xref_scop' IGNORE INTO TABLE xref_scop") or die "Error: $dbh->errstr\n"; 
+	#$dbh->do("LOAD DATA LOCAL INFILE '$tdfDir/tdf.xref_scop' IGNORE INTO TABLE xref_scop") or die "Error: $dbh->errstr\n"; 
 	
 	print  "   table xref_dip...\n";
-	$dbh->do("LOAD DATA INFILE '$tdfDir/tdf.xref_dip' IGNORE INTO TABLE xref_dip") or die "Error: $dbh->errstr\n"; 
+	$dbh->do("LOAD DATA LOCAL INFILE '$tdfDir/tdf.xref_dip' IGNORE INTO TABLE xref_dip") or die "Error: $dbh->errstr\n"; 
 	
 	print  "   table xref_bind...\n";
-	$dbh->do("LOAD DATA INFILE '$tdfDir/tdf.xref_bind' IGNORE INTO TABLE xref_bind") or die "Error: $dbh->errstr\n"; 
+	$dbh->do("LOAD DATA LOCAL INFILE '$tdfDir/tdf.xref_bind' IGNORE INTO TABLE xref_bind") or die "Error: $dbh->errstr\n"; 
 
 	print "Loading done.\n";
 
 	print "Deleting parsed files...\n";
-	system ('rm ./xref/parsed -R');
+	system ('rm -r ./xref/parsed');
 	print "Deleting completed.\n";
 }	
+
+sub createTaxonomyTables {
+	$dbname = shift;
+	$dbh->do("USE $dbname");
+	system("rm -r taxonomy");
+	system("mkdir taxonomy");
+	print "Downloading taxdump.tar.gz...\n";
+	system("wget ftp://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz --directory-prefix=./taxonomy/") == 0 or die "\nError: $?\n";
+	print "done. Decompressing...";
+	system("cd taxonomy; gunzip < taxdump.tar.gz | tar xvf -");
+	print "done.\n";
+
+	open IN,"taxonomy/names.dmp" or die "Could not open file taxonomy/names.dmp\n";
+	open OUT, ">taxonomy/taxid_speciesname.txt" or die "Could not create file taxonomy/taxid_speciesname.txt\n";
+	$num = 0;
+	$total = 0;
+	while($line = <IN>){
+		@fields = split /\t\|\t/, $line;
+        	if($fields[$#fields] =~ /^scientific/){
+         	print OUT $fields[0],"\t",$fields[1],"\n";
+ 	 	$num++;
+		}
+	}
+
+	$dbh->do("CREATE TABLE ncbi_taxid_species (taxid INT, name VARCHAR(100), INDEX(taxid))");
+	$fullFilePath = getcwd()."/taxonomy/taxid_speciesname.txt";
+	print "Loading data into ncbi_taxid_species...";
+	$dbh->do("LOAD DATA LOCAL INFILE \'${fullFilePath}\' INTO TABLE ncbi_taxid_species");
+	print "done.\n";
+	
+	system("wget ftp://ftp.ncbi.nih.gov/pub/taxonomy/gi_taxid_nucl.dmp.gz --directory-prefix=./taxonomy/") == 0 or die "\nError: $?\n";
+	system("cd taxonomy; gunzip gi_taxid_nucl.dmp.gz");
+	system("wget ftp://ftp.ncbi.nih.gov/pub/taxonomy/gi_taxid_prot.dmp.gz --directory-prefix=./taxonomy/") == 0 or die "\nError: $?\n";
+	system("cd taxonomy; gunzip gi_taxid_prot.dmp.gz");
+
+	$dbh->do("CREATE TABLE nucleotide_gi_taxid (ngi INT, taxid INT, INDEX(ngi), INDEX(taxid))");
+	$fullFilePath = getcwd()."/taxonomy/gi_taxid_nucl.dmp";
+	print "Loading data into nucleotide_gi_taxid...\n";
+	$dbh->do("LOAD DATA LOCAL INFILE \'${fullFilePath}\' INTO TABLE  nucleotide_gi_taxid");
+	print "done.\n";
+
+	$dbh->do("CREATE TABLE protein_gi_taxid (pgi INT, taxid INT, INDEX(pgi), INDEX(taxid))");
+	$fullFilePath = getcwd()."/taxonomy/gi_taxid_prot.dmp";
+	print "Loading data into protein_gi_taxid...\n";
+	$dbh->do("LOAD DATA LOCAL INFILE \'${fullFilePath}\' INTO TABLE  protein_gi_taxid");
+	print "done.\n";
+}

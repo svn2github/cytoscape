@@ -55,12 +55,8 @@ public class GOHandler extends SQLDBHandler {
         System.out.println("Current GO database is: [" + currentGoDb + "]");
         if(currentGoDb == null || currentGoDb.length() == 0){
             throw new IllegalStateException("Oh no! We don't know the name of the current GO database!!!!!");
-        }else{
-            if (!makeConnection("jdbc:mysql://wavelength.systemsbiology.net/"+currentGoDb + "?user=cytouser&password=bioNetBuilder")){ 
-                throw new IllegalStateException("Oh no! We don't know the name of the current GO database!!!!!");
-            }
         }
-        
+        execute("USE " + currentGoDb);
         initialize();
     }
 

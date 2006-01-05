@@ -289,7 +289,7 @@ public class InteractionsHandler implements InteractionsDataSource {
 		InteractionsDataSource dataSource = null;
 		while (it.hasNext()) {
 			InteractionsDataSource source = (InteractionsDataSource) it.next();
-			if (source.getClass().toString().equals(source_class)) {
+			if (source.getClass().getName().equals(source_class)) {
 				dataSource = source;
 				break;
 			}
@@ -376,7 +376,7 @@ public class InteractionsHandler implements InteractionsDataSource {
         while(it.hasNext()){
             InteractionsDataSource dataSource = (InteractionsDataSource)it.next();
             Vector sp = dataSource.getSupportedSpecies();
-            table.put(dataSource.getClass().toString(), sp);
+            table.put(dataSource.getClass().getName(), sp);
         }
         return table;
     }
@@ -390,7 +390,7 @@ public class InteractionsHandler implements InteractionsDataSource {
         while(it.hasNext()){
             InteractionsDataSource dataSource = (InteractionsDataSource)it.next();
             String name = (String)dataSource.getDataSourceName();
-            table.put(dataSource.getClass().toString(), name);
+            table.put(dataSource.getClass().getName(), name);
         }
         return table;
     }

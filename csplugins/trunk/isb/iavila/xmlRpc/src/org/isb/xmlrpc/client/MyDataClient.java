@@ -42,6 +42,7 @@ public abstract class MyDataClient {
 	public MyDataClient(String server_url) throws XmlRpcException,
 			java.net.MalformedURLException {
 		client = new XmlRpcClient(server_url);
+        System.out.println("Successfully created a client to server with URL = " + client.getURL());
 	}
 
 	/**

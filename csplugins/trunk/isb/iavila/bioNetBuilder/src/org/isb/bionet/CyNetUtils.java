@@ -22,7 +22,9 @@ public class CyNetUtils {
      * @return a new CyNetwork
      * @see org.isb.xmlrpc.client.InteractionDataClient for examples on  how the Hashtables look
      */
-    public static CyNetwork makeNewNetwork (Vector interactions, String networkName, SynonymsClient synClient){
+    public static CyNetwork makeNewNetwork (Vector interactions, String networkName, 
+            SynonymsClient synClient, String [] labelOps, boolean genBankDef,boolean xrefs, boolean dburls){
+        
         CyNetwork net = null;
         IntArrayList nodes = new IntArrayList();
         IntArrayList edges = new IntArrayList();
@@ -74,7 +76,7 @@ public class CyNetUtils {
             //if(commonName == null && prToCN != null) commonName = (String)prToCN.get(nodeid);
             //if(commonName == null && kToCN != null) commonName = (String)kToCN.get(nodeid);
             //if(commonName == null) commonName = nodeid;
-            Cytoscape.setNodeAttributeValue(node, Semantics.COMMON_NAME,commonName);
+            Cytoscape.getNodeAttributes().setAttribute(node.getIdentifier(),Semantics.COMMON_NAME,commonName);
         }
         
         return net;
@@ -87,7 +89,9 @@ public class CyNetUtils {
      * @param interactions a Vector of Hashtables, each representing an interaction
      * @see org.isb.xmlrpc.client.InteractionDataClient for examples on  how the Hashtables look
      */
-    public static void addInteractionsToNetwork (CyNetwork net, Vector interactions, SynonymsClient synClient){
+    public static void addInteractionsToNetwork (CyNetwork net, Vector interactions, SynonymsClient synClient, 
+            String [] labelOps, boolean genBankDef,boolean xrefs, boolean dburls){
+        
         IntArrayList edges = new IntArrayList();
         Iterator it = interactions.iterator();
         HashSet nodeIDs = new HashSet();
@@ -117,7 +121,8 @@ public class CyNetUtils {
             CyNode node = (CyNode)it.next();
             String commonName = (String)giToCN.get(node.getIdentifier());
             if(commonName == null) commonName = node.getIdentifier();
-            Cytoscape.setNodeAttributeValue(node, Semantics.COMMON_NAME,commonName);
+            Cytoscape.getNodeAttributes().setAttribute(node.getIdentifier(),Semantics.COMMON_NAME,commonName);
+            //Cytoscape.setNodeAttributeValue(node, Semantics.COMMON_NAME,commonName);
         }
         
     }//addInteractionsToNetwork
@@ -172,9 +177,9 @@ public class CyNetUtils {
                         !attribute.equals(InteractionsDataSource.INTERACTOR_2) &&
                         !attribute.equals(InteractionsDataSource.INTERACTION_TYPE)){
                     Object attValue = interaction.get(attribute);
-                    Cytoscape.setEdgeAttributeValue(edge, attribute, attValue);
+                    Cytoscape.getEdgeAttributes().setAttribute(edge.getIdentifier(),attribute,attValue.toString());
+                    //Cytoscape.setEdgeAttributeValue(edge, attribute, attValue);
                 }
-                
             }//if keys[i] is a String
         }//for i
         return edge;
@@ -184,7 +189,7 @@ public class CyNetUtils {
      * For all nodes in the given network, it creates as a node attribute Rosetta Benchmark URLs 
      */
    
-    public static void createRosettaURLNodeAttribute (CyNetwork net){
+    public static void createHPFURLNodeAttribute (CyNetwork net){
         
         Iterator it = net.nodesIterator();
         
@@ -194,7 +199,8 @@ public class CyNetUtils {
           int index = nodeID.indexOf(":");
           if(index > 0){
               String url = "http://bench.bakerlab.org/cgi-bin/2ddb/bddb.cgi?si=112682726728836&s=cytoscape&ac="+nodeID;
-              Cytoscape.setNodeAttributeValue(node,"RosettaBenchmark",url);
+              Cytoscape.getNodeAttributes().setAttribute(node.getIdentifier(),"HPFP", url);
+              //Cytoscape.setNodeAttributeValue(node,"RosettaBenchmark",url);
           }
         }//while it.hasNext
     }

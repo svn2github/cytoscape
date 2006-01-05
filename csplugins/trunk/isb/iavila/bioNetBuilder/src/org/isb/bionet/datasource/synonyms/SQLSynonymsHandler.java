@@ -2,10 +2,8 @@
 package org.isb.bionet.datasource.synonyms;
 
 import java.util.*;
-import java.io.IOException;
 import java.sql.*;
 
-import org.apache.xmlrpc.XmlRpcException;
 import org.isb.bionet.datasource.*;
 import org.isb.xmlrpc.handler.db.*;
 // TODO:
@@ -17,9 +15,7 @@ public class SQLSynonymsHandler extends SQLDBHandler implements SynonymsSource {
      * Empty constructor
      */
     public SQLSynonymsHandler() {
-        // TODO: Remove, this should be read from somewhere!!!
-        //this("jdbc:mysql://wavelength.systemsbiology.net/synonyms?user=cytouser&password=bioNetBuilder");
-        //this("jdbc:mysql://wavelength.systemsbiology.net/synonyms?user=cytouser&password=bioNetBuilder");
+        
         super("jdbc:mysql://wavelength.systemsbiology.net/metainfo?user=cytouser&password=bioNetBuilder", SQLDBHandler.MYSQL_JDBC_DRIVER);
         
         // Look for the current go database
@@ -35,12 +31,8 @@ public class SQLSynonymsHandler extends SQLDBHandler implements SynonymsSource {
         System.out.println("Current synonyms database is: [" + currentSynDb + "]");
         if(currentSynDb == null || currentSynDb.length() == 0){
             throw new IllegalStateException("Oh no! We don't know the name of the current synonyms database!!!!!");
-        }else{
-            if (!makeConnection("jdbc:mysql://wavelength.systemsbiology.net/"+currentSynDb + "?user=cytouser&password=bioNetBuilder")){ 
-                throw new IllegalStateException("Oh no! We don't know the name of the current synonyms database!!!!!");
-            }
         }
-        
+        execute("USE " + currentSynDb);  
     }
 
     /**
@@ -147,7 +139,7 @@ public class SQLSynonymsHandler extends SQLDBHandler implements SynonymsSource {
             sqlPattern += "%";
         }
         
-        String sql = "SELECT * FROM ncbiTaxNames WHERE scientific_name LIKE \"" + sqlPattern + "\""; 
+        String sql = "SELECT * FROM ncbi_taxid_species WHERE name LIKE \"" + sqlPattern + "\""; 
         ResultSet rs = query(sql);
         
         Vector species = new Vector();
@@ -220,7 +212,7 @@ public class SQLSynonymsHandler extends SQLDBHandler implements SynonymsSource {
         
         System.out.println("There were " + genenameTable.size() + " genenames in gn_genename that matched " + sqlPattern);
         
-        sql = "SELECT oid, gi FROM xref_gi WHERE " + oidOr;
+        sql = "SELECT oid, ngi FROM xref_gi WHERE " + oidOr;
         rs = query(sql);
         String giOr = "";
         int numGis = 0;
@@ -235,9 +227,9 @@ public class SQLSynonymsHandler extends SQLDBHandler implements SynonymsSource {
                 if(geneName != null){ genenameTable.put(gi, geneName); numGis++;}
                 genenameTable.remove(Oid);
                 if(giOr.length() == 0){
-                    giOr += " gi = " + gi;
+                    giOr += " ngi = " + gi;
                 }else{
-                    giOr += " OR gi = " + gi;
+                    giOr += " OR ngi = " + gi;
                 }
             }
         }catch(SQLException e){
@@ -247,7 +239,7 @@ public class SQLSynonymsHandler extends SQLDBHandler implements SynonymsSource {
         
         System.out.println(numGis + " genenames have a gi");
         
-        sql = "SELECT gi FROM gi_taxonomy WHERE taxonomy_id = " + species_taxid + " AND " + giOr;
+        sql = "SELECT ngi FROM nucleotide_gi_taxid WHERE taxid = " + species_taxid + " AND " + giOr;
         rs = query(sql);
         
         Hashtable result = new Hashtable();
@@ -507,7 +499,7 @@ public class SQLSynonymsHandler extends SQLDBHandler implements SynonymsSource {
         }//while
         
         if(or.length() == 0) return new Hashtable();
-        String sql = "SELECT gi, oid FROM xref_gi WHERE " + or;
+        String sql = "SELECT ngi, oid FROM xref_gi WHERE " + or;
         ResultSet rs = query(sql);
         
         Hashtable oidToGi = new Hashtable();

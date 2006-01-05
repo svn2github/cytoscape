@@ -6,7 +6,6 @@
 # Files are downloaded and uncompressed into new directory ./prolinks, ready to load into mysql db
 # Removes redundant interactions from Prolinks
 # Requires wget software http://www.gnu.org/software/wget/wget.html
-# TODO: interaction_types table
 ######################################################################################################
 
 use DBI;
@@ -19,10 +18,9 @@ if(scalar(@ARGV) < 3){
 	die;
 }
 
-$dbname = $ARGV[0];
-$dbuser = $ARGV[1];
-$dbpwd = $ARGV[2];
-
+$dbuser = $ARGV[0];
+$dbpwd = $ARGV[1];
+$dbname = $ARGV[2];
 ###### Parameter Setting #############################################
 my $dbid = "prolinks";
 my @big, @methods;
@@ -37,10 +35,10 @@ $thre{'PP'} = 3e-24;
 $thre{'GN'} = 4e-15;
 $thre{'RS'} = 0.1;
 $thre{'GC'} = 0.1;
-$methodNames{'PP'} = "phylogenetic profiles";
-$methodNames{'GN'} = "gene neighbor";
-$methodNames{'RS'} = "rosetta stone";
-$methodNames{'GC'} = "gene cluster";
+$methodNames{'PP'} = "Phylogenetic Profiles";
+$methodNames{'GN'} = "Gene Neighbor";
+$methodNames{'RS'} = "Rosetta Stone";
+$methodNames{'GC'} = "Gene Cluster";
 
 #######################################################################
 
@@ -140,7 +138,7 @@ sub create_tables {
 	my $dbh;
 	$dbh = shift;
 	$dbh->do("CREATE TABLE species (species VARCHAR(100), tablename VARCHAR(100), INDEX (species))") or die "Error: $dbh->errstr";
-	$dbh->do("CREATE TABLE method_threshold (method CHAR(2), threshold DOUBLE, description VARCHAR(25))") or die "Error: $dbh->errstr";
+	$dbh->do("CREATE TABLE interaction_types (method CHAR(2), pval FLOAT, description VARCHAR(25), INDEX(method) ) ") or die "Error: $dbh->errstr";
 	print "done\n";
 }
 
@@ -159,7 +157,7 @@ sub import_data {
 	($dbh, $rmethods, $rthre, $rnames, $pwd) = @_;
 	
 	foreach $method (keys(%$rthre)) {
-		$dbh->do("INSERT INTO method_threshold VALUES(?, ?, ?)", undef, $method, $rthre->{$method}, $rnames->{$method}) or die "Error: $dbh->errstr";
+		$dbh->do("INSERT INTO interaction_types VALUES(?, ?, ?)", undef, $method, $rthre->{$method}, $rnames->{$method}) or die "Error: $dbh->errstr";
 	}
 
 	open (LIST, './prolinks/newlist.lst') or die "Could not open file ./prolinks/newlist.lst\n";

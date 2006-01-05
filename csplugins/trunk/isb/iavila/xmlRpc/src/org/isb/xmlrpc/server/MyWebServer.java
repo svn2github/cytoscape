@@ -87,7 +87,7 @@ public class MyWebServer {
 	 */
 	public MyWebServer(int port, String xmlrpc_props) throws IOException {
 
-		// XmlRpc.setDebug( true );
+		//XmlRpc.setDebug( true );
 
 		System.out.print("Attempting to start XML-RPC server on port " + port
 				+ "...");

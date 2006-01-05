@@ -89,7 +89,6 @@ public class CyNetworksDialog extends JDialog {
                 }//AbstractAction
         );
         buttonsPanel.add(OK);
-        
         mainPanel.add(buttonsPanel, BorderLayout.SOUTH);
         
         setContentPane(mainPanel);
