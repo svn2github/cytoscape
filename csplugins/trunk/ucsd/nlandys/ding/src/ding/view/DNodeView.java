@@ -25,7 +25,6 @@ class DNodeView implements NodeView, Label
   boolean m_selected;
   Paint m_unselectedPaint;
   Paint m_selectedPaint;
-  Paint m_textPaint;
   Font m_textFont;
 
   /*
@@ -38,7 +37,6 @@ class DNodeView implements NodeView, Label
     m_selected = false;
     m_unselectedPaint = m_view.m_nodeDetails.fillPaint(m_inx);
     m_selectedPaint = Color.yellow;
-    m_textPaint = Color.black;
     m_textFont = DEFAULT_LABEL_FONT;
   }
 
@@ -413,17 +411,14 @@ class DNodeView implements NodeView, Label
 
   public Paint getTextPaint()
   {
-    return m_textPaint;
+    synchronized (m_view.m_lock) {
+      return m_view.m_nodeDetails.labelPaint(m_inx, 0); }
   }
 
   public void setTextPaint(Paint textPaint)
   {
     synchronized (m_view.m_lock) {
-      if (textPaint == null) {
-        throw new NullPointerException("textPaint is null"); }
-      m_textPaint = textPaint;
-      if (m_view.m_nodeDetails.labelCount(m_inx) > 0) {
-        m_view.m_nodeDetails.overrideLabelPaint(m_inx, 0, m_textPaint); } }
+      m_view.m_nodeDetails.overrideLabelPaint(m_inx, 0, textPaint); }
   }
 
   public double getGreekThreshold()
