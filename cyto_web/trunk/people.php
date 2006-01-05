@@ -112,7 +112,7 @@
     
   <tr>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- Hack, hack, cough, cough. --></td>
-    <td><img src="people_photos/printing.jpg"></img></td>
+    <td><img src="people_photos/ben.jpg"></img></td>
         <td><img src="people_photos/rich.jpg"></img></td>
   </tr>
   
