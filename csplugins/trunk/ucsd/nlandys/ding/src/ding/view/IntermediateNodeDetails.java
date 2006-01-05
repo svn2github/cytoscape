@@ -12,6 +12,11 @@ class IntermediateNodeDetails extends NodeDetails
     return DNodeView.DEFAULT_BORDER_PAINT;
   }
 
+  public String labelText(int node, int labelInx)
+  {
+    return DNodeView.DEFAULT_LABEL_TEXT;
+  }
+
   public Font labelFont(int node, int labelInx)
   {
     return DNodeView.DEFAULT_LABEL_FONT;

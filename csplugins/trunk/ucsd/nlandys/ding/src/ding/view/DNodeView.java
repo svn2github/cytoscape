@@ -17,6 +17,7 @@ class DNodeView implements NodeView, Label
 {
 
   public static final Paint DEFAULT_BORDER_PAINT = Color.black;
+  public static final String DEFAULT_LABEL_TEXT = "";
   public static final Font DEFAULT_LABEL_FONT = new Font(null, Font.PLAIN, 1);
   public static final Paint DEFAULT_LABEL_PAINT = Color.black;
 
@@ -431,13 +432,18 @@ class DNodeView implements NodeView, Label
   public String getText()
   {
     synchronized (m_view.m_lock) {
-      if (m_view.m_nodeDetails.labelCount(m_inx) > 0) {
-        return m_view.m_nodeDetails.labelText(m_inx, 0); }
-      else { return ""; } }
+      return m_view.m_nodeDetails.labelText(m_inx, 0); }
   }
 
   public void setText(String text)
   {
+    synchronized (m_view.m_lock) {
+      m_view.m_nodeDetails.overrideLabelText(m_inx, 0, text);
+      if (DEFAULT_LABEL_TEXT.equals
+          (m_view.m_nodeDetails.labelText(m_inx, 0))) {
+        m_view.m_nodeDetails.overrideLabelCount(m_inx, 1); }
+      else {
+        m_view.m_nodeDetails.overrideLabelCount(m_inx, 0); } }
   }
 
   public Font getFont()
