@@ -1,0 +1,27 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="pathblast.css"/>
+<title>
+BLAST E-value Threshold
+</title>
+</head>
+<body style="background-color: #FFFFFF">
+<h2>BLAST E-Value Threshold</h2>
+<p>The BLAST E-value measures the statistical significance threshold for 
+reporting protein sequence matches against the yeast genome database; 
+the default threshold value is 1E-5, in which 1E-5 matches would be 
+expected to occur by chance, according to the stochastic model of Karlin and 
+Altschul (Schäffer, A.A. et al. (1999) Bioinformatics 15:1000-1011). </p>
+
+<p>Protein sequences whose BLAST  E-values are less than the E-value Threshold will
+be allowed to align against one another in the pathway alignment. Conversely, protein
+sequences whose E-values are greater that the E-value threshold will be 
+excluded from the pathway alignment. Lower E-value Thresholds are more
+stringent, leading to fewer matches being reported. Increasing the threshold shows less stringent matches. </p> 
+<p>
+The e-value must be presented in either scientific notation (e.g. '1e-05', '1-E5') or in decimal (e.g. 0.0001). Fraction representations (e.g. '1/2') are NOT allowed.
+</p>
+
+
+</body>
+</html>

@@ -1,0 +1,89 @@
+<html >
+
+<head>
+<link rel="stylesheet" type="text/css" href="pathblast.css"/>
+<title>PathBlast Overview</title>
+</head>
+
+<body>
+
+
+<h2>PathBLAST FAQ</h2>
+<p> December 20, 2005</p>
+
+
+
+<p class=question><b>What is PathBlast?</b></p>
+
+<p class=answer>PathBlast is general strategy for aligning two protein
+interaction networks to elucidate their conserved pathways. This method
+identifies pairs of interaction paths, drawn from the networks of different
+species or from different processes within a species, where proteins at
+equivalent path positions share strong sequence homology.</p>
+
+<p class=question><b>What can I search against?</b></p>
+
+<p class=answer>The current version of PathBLAST searches against known
+protein interactions collected in the October 23, 2005 version of the DIP protein 
+interaction network database.</p>
+
+<p class=question><b>With what can I query?</b></p>
+
+<p class=answer>The web-version of PathBlast can be queried in two ways,
+either by ID or by sequence. Valid ID's consist of any synonym found in the 
+DIP interaction database. If an ID is not an exact match, we'll present you with
+potential matches in the database that you can choose between. If you choose to
+search by sequence, then any valid protein sequence is acceptable.  If both
+ID and sequence are entered the ID will be ignored and used only as an identifier.
+The actual search will take place using the sequence. The query path is inferred
+from the order that the sequences are entered.
+Each query can consist of two to five protein sequences. 
+</p>
+
+<p class=question><b>How is <i>PathBLAST </i>implemented<i>?</i></b></p>
+
+<p class=answer>With the exception of the BLAST code, PathBLAST is implemented
+entirely in Java.  Details of the various algorithms and techniques used can be
+found in the various <a href="http://www.pathblast.org/docs/publications.html">publications</a>
+that describe different aspects of PathBLAST.
+</p>
+
+
+<p class=question><b>Can I download PathBLAST?</b></p>
+
+<p class=answer>Hopefully soon....
+</p>
+
+<p class=question><b>Help, PathBLAST returned an error!</b></p>
+
+<p class=answer>Obviously, this shouldn’t happen. Please email a copy of
+the error message to <a href="mailto:msmoot@ucsd.edu">msmoot@ucsd.edu</a>
+and we’ll fix it as soon as possible.</p>
+
+<p class=question><b>I want to submit a larger query.</b></p>
+
+<p class=answer>For performance reasons, the web version is limited in the
+size of the query graphs. If you would like to run larger networks, please see
+the section above about downloading PathBLAST</p>
+
+<p class=question><b>Why do my queries look different from the PNAS paper? <o:p></o:p></b></p>
+
+<p class=answer>PathBLAST has been completely re-implemented and now uses
+<a href="http://cytoscape.org">Cytoscape</a> to render the graphs.  In addition
+various algorithmic improvements have been made.  See the 
+<a href="http://www.pathblast.org/docs/publications.html">publications</a>
+section for more details.
+
+<p class=question><b>Can I compare the results of a query against Yeast to a
+query against Fly?</b></p>
+
+<p class=answer>Of course. The one
+caveat is that you can only do this for a specific version of PathBLAST.
+E-value scores may change when the size of the Blast protein database changes.
+Updates to PathBLAST change the size of this protein database and hence
+change the E-values returned. If you want to compare queries against multiple species, 
+simply make sure that all queries all performed using the same version of PathBLAST.</p>
+
+</body>
+
+</html>
