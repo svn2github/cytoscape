@@ -350,20 +350,31 @@ class DEdgeView implements EdgeView, Label
 
   public String getText()
   {
-    return null;
+    synchronized (m_view.m_lock) {
+      return m_view.m_edgeDetails.labelText(m_inx, 0); }
   }
 
   public void setText(String text)
   {
+    synchronized (m_view.m_lock) {
+      m_view.m_edgeDetails.overrideLabelText(m_inx, 0, text);
+      if (DEFAULT_LABEL_TEXT.equals
+          (m_view.m_edgeDetails.labelText(m_inx, 0))) {
+        m_view.m_edgeDetails.overrideLabelCount(m_inx, 0); }
+      else {
+        m_view.m_edgeDetails.overrideLabelCount(m_inx, 1); } }
   }
 
   public Font getFont()
   {
-    return null;
+    synchronized (m_view.m_lock) {
+      return m_view.m_edgeDetails.labelFont(m_inx, 0); }
   }
 
   public void setFont(Font font)
   {
+    synchronized (m_view.m_lock) {
+      m_view.m_edgeDetails.overrideLabelFont(m_inx, 0, font); }
   }
 
 }
