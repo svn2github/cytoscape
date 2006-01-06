@@ -211,10 +211,32 @@ class DEdgeView implements EdgeView, Label
 
   public void select()
   {
+    synchronized (m_view.m_lock) {
+      if (m_selected) { return; }
+      m_selected = true;
+      m_view.m_edgeDetails.overrideSegmentPaint(m_inx, m_selectedPaint);
+      m_view.m_edgeDetails.overrideSourceArrowPaint
+        (m_inx, m_sourceSelectedPaint);
+      m_view.m_edgeDetails.overrideTargetArrowPaint
+        (m_inx, m_targetSelectedPaint);
+      if (m_selectedPaint instanceof Color) {
+        m_view.m_edgeDetails.overrideColorLowDetail
+          (m_inx, (Color) m_selectedPaint); } }
   }
 
   public void unselect()
   {
+    synchronized (m_view.m_lock) {
+      if (!m_selected) { return; }
+      m_selected = false;
+      m_view.m_edgeDetails.overrideSegmentPaint(m_inx, m_unselectedPaint);
+      m_view.m_edgeDetails.overrideSourceArrowPaint
+        (m_inx, m_sourceUnselectedPaint);
+      m_view.m_edgeDetails.overrideTargetArrowPaint
+        (m_inx, m_targetUnselectedPaint);
+      if (m_unselectedPaint instanceof Color) {
+        m_view.m_edgeDetails.overrideColorLowDetail
+          (m_inx, (Color) m_unselectedPaint); } }
   }
 
   public boolean setSelected(boolean state)
