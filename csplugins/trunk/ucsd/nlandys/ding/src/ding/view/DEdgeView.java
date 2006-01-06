@@ -22,6 +22,8 @@ class DEdgeView implements EdgeView, Label
   DGraphView m_view;
   final int m_inx;
   boolean m_selected;
+  Paint m_unselectedPaint;
+  Paint m_selectedPaint;
 
   /*
    * @param inx the RootGraph index of edge (a negative number).
@@ -31,6 +33,8 @@ class DEdgeView implements EdgeView, Label
     m_view = view;
     m_inx = ~inx;
     m_selected = false;
+    m_unselectedPaint = m_view.m_edgeDetails.segmentPaint(m_inx);
+    m_selectedPaint = Color.red;
   }
 
   public int getGraphPerspectiveIndex()
@@ -89,7 +93,7 @@ class DEdgeView implements EdgeView, Label
 
   public Paint getUnselectedPaint()
   {
-    return null;
+    return m_unselectedPaint;
   }
 
   public void setSelectedPaint(Paint paint)
@@ -98,7 +102,7 @@ class DEdgeView implements EdgeView, Label
 
   public Paint getSelectedPaint()
   {
-    return null;
+    return m_selectedPaint;
   }
 
   public Paint getSourceEdgeEndPaint()
