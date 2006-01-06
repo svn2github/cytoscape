@@ -1,0 +1,30 @@
+
+This is a collection of scripts and programs that parses a DIP XIN xml
+file along with a DIP fasta file and produces organism specific fasta files
+for each organism found in the XIN file. The organism specific fasta files
+are then converted into BLAST databases.
+
+Dependencies:
+-------------
+
+To run this program, you'll need:
+
+- An XIN formatted DIP database. (http://dip.doe-mbi.ucla.edu/)
+- A FASTA formatted DIP sequence database. (http://dip.doe-mbi.ucla.edu/)
+- The formatdb program (part of the BLAST distribution) in your PATH. 
+  (http://www.ncbi.nlm.nih.gov/BLAST/)
+- A biojava jar file.  This should be included in the libraries contained
+  in this distribution. (http://biojava.org/)
+
+
+Running:
+--------
+
+To run simply call the script dip2blastdb using the XIN xml file as the
+first argument, the FASTA file as the second, and an output directory
+as the third:
+
+	% dip2blastdb dip.xin dip.fasta output_dir
+
+NOTE: dip2blastdb must be executed from the current directory because of
+the location of the java files.  
