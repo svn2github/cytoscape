@@ -89,6 +89,15 @@ class DEdgeView implements EdgeView, Label
 
   public void setUnselectedPaint(Paint paint)
   {
+    synchronized (m_view.m_lock) {
+      if (paint == null) {
+        throw new NullPointerException("paint is null"); }
+      m_unselectedPaint = paint;
+      if (!isSelected()) {
+        m_view.m_edgeDetails.overrideSegmentPaint(m_inx, m_unselectedPaint);
+        if (m_unselectedPaint instanceof Color) {
+          m_view.m_edgeDetails.overrideColorLowDetail
+            (m_inx, (Color) m_unselectedPaint); } } }
   }
 
   public Paint getUnselectedPaint()
@@ -98,6 +107,15 @@ class DEdgeView implements EdgeView, Label
 
   public void setSelectedPaint(Paint paint)
   {
+    synchronized (m_view.m_lock) {
+      if (paint == null) {
+        throw new NullPointerException("paint is null"); }
+      m_selectedPaint = paint;
+      if (isSelected()) {
+        m_view.m_edgeDetails.overrideSegmentPaint(m_inx, m_selectedPaint);
+        if (m_selectedPaint instanceof Color) {
+          m_view.m_edgeDetails.overrideColorLowDetail
+            (m_inx, (Color) m_selectedPaint); } } }
   }
 
   public Paint getSelectedPaint()

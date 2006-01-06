@@ -2,6 +2,7 @@ package ding.view;
 
 import cytoscape.util.intr.IntObjHash;
 import java.awt.Color;
+import java.awt.Paint;
 import java.util.HashMap;
 
 class DEdgeDetails extends IntermediateEdgeDetails
@@ -11,6 +12,7 @@ class DEdgeDetails extends IntermediateEdgeDetails
   final Object m_deletedEntry = new Object();
 
   final HashMap m_segmentThicknesses = new HashMap();
+  final HashMap m_segmentPaints = new HashMap();
 
   public Color colorLowDetail(int edge)
   {
@@ -50,7 +52,25 @@ class DEdgeDetails extends IntermediateEdgeDetails
     if (thickness < 0.0f ||
         thickness == super.segmentThickness(edge)) {
       m_segmentThicknesses.remove(new Integer(edge)); }
-    else {m_segmentThicknesses.put(new Integer(edge), new Float(thickness)); }
+    else { m_segmentThicknesses.put(new Integer(edge), new Float(thickness)); }
+  }
+
+  public Paint segmentPaint(int edge)
+  {
+    final Object o = m_segmentPaints.get(new Integer(edge));
+    if (o == null) { return super.segmentPaint(edge); }
+    return (Paint) o;
+  }
+
+  /*
+   * A null paint has the special meaning to remove overridden paint.
+   */
+  void overrideSegmentPaint(int edge, Paint paint)
+  {
+    if (paint == null ||
+        paint.equals(super.segmentPaint(edge))) {
+      m_segmentPaints.remove(new Integer(edge)); }
+    else { m_segmentPaints.put(new Integer(edge), paint); }
   }
 
 }
