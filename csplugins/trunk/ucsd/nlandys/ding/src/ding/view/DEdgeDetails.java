@@ -12,6 +12,8 @@ class DEdgeDetails extends IntermediateEdgeDetails
   final Object m_deletedEntry = new Object();
 
   final HashMap m_segmentThicknesses = new HashMap();
+  final HashMap m_sourceArrowPaints = new HashMap();
+  final HashMap m_targetArrowPaints = new HashMap();
   final HashMap m_segmentPaints = new HashMap();
 
   public Color colorLowDetail(int edge)
@@ -34,6 +36,42 @@ class DEdgeDetails extends IntermediateEdgeDetails
         m_colorsLowDetail.put(edge, m_deletedEntry); } }
     else {
       m_colorsLowDetail.put(edge, color); }
+  }
+
+  public Paint sourceArrowPaint(int edge)
+  {
+    final Object o = m_sourceArrowPaints.get(new Integer(edge));
+    if (o == null) { return super.sourceArrowPaint(edge); }
+    return (Paint) o;
+  }
+
+  /*
+   * A null paint has the special meaning to remove overridden paint.
+   */
+  void overrideSourceArrowPaint(int edge, Paint paint)
+  {
+    if (paint == null ||
+        paint.equals(super.sourceArrowPaint(edge))) {
+      m_sourceArrowPaints.remove(new Integer(edge)); }
+    else { m_sourceArrowPaints.put(new Integer(edge), paint); }
+  }
+
+  public Paint targetArrowPaint(int edge)
+  {
+    final Object o = m_targetArrowPaints.get(new Integer(edge));
+    if (o == null) { return super.targetArrowPaint(edge); }
+    return (Paint) o;
+  }
+
+  /*
+   * A null paint has the special meaning to remove overridden paint.
+   */
+  void overrideTargetArrowPaint(int edge, Paint paint)
+  {
+    if (paint == null ||
+        paint.equals(super.targetArrowPaint(edge))) {
+      m_targetArrowPaints.remove(new Integer(edge)); }
+    else { m_targetArrowPaints.put(new Integer(edge), paint); }
   }
 
   public float segmentThickness(int edge)

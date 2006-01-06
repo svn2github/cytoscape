@@ -24,6 +24,10 @@ class DEdgeView implements EdgeView, Label
   boolean m_selected;
   Paint m_unselectedPaint;
   Paint m_selectedPaint;
+  Paint m_sourceUnselectedPaint;
+  Paint m_sourceSelectedPaint;
+  Paint m_targetUnselectedPaint;
+  Paint m_targetSelectedPaint;
 
   /*
    * @param inx the RootGraph index of edge (a negative number).
@@ -35,6 +39,10 @@ class DEdgeView implements EdgeView, Label
     m_selected = false;
     m_unselectedPaint = m_view.m_edgeDetails.segmentPaint(m_inx);
     m_selectedPaint = Color.red;
+    m_sourceUnselectedPaint = m_view.m_edgeDetails.sourceArrowPaint(m_inx);
+    m_sourceSelectedPaint = DEFAULT_ARROW_PAINT;
+    m_targetUnselectedPaint = m_view.m_edgeDetails.targetArrowPaint(m_inx);
+    m_targetSelectedPaint = DEFAULT_ARROW_PAINT;
   }
 
   public int getGraphPerspectiveIndex()
@@ -125,46 +133,80 @@ class DEdgeView implements EdgeView, Label
 
   public Paint getSourceEdgeEndPaint()
   {
-    return null;
+    return m_sourceUnselectedPaint;
   }
 
   public Paint getSourceEdgeEndSelectedPaint()
   {
-    return null;
+    return m_sourceSelectedPaint;
   }
 
   public Paint getTargetEdgeEndPaint()
   {
-    return null;
+    return m_targetUnselectedPaint;
   }
 
   public Paint getTargetEdgeEndSelectedPaint()
   {
-    return null;
+    return m_targetSelectedPaint;
   }
 
   public void setSourceEdgeEndSelectedPaint(Paint paint)
   {
+    synchronized (m_view.m_lock) {
+      if (paint == null) {
+        throw new NullPointerException("paint is null"); }
+      m_sourceSelectedPaint = paint;
+      if (isSelected()) {
+        m_view.m_edgeDetails.overrideSourceArrowPaint
+          (m_inx, m_sourceSelectedPaint); } }
   }
 
   public void setTargetEdgeEndSelectedPaint(Paint paint)
   {
+    synchronized (m_view.m_lock) {
+      if (paint == null) {
+        throw new NullPointerException("paint is null"); }
+      m_targetSelectedPaint = paint;
+      if (isSelected()) {
+        m_view.m_edgeDetails.overrideTargetArrowPaint
+          (m_inx, m_targetSelectedPaint); } }
   }
 
+  /*
+   * No-op.
+   */
   public void setSourceEdgeEndStrokePaint(Paint paint)
   {
   }
 
+  /*
+   * No-op.
+   */
   public void setTargetEdgeEndStrokePaint(Paint paint)
   {
   }
 
   public void setSourceEdgeEndPaint(Paint paint)
   {
+    synchronized (m_view.m_lock) {
+      if (paint == null) {
+        throw new NullPointerException("paint is null"); }
+      m_sourceUnselectedPaint = paint;
+      if (!isSelected()) {
+        m_view.m_edgeDetails.overrideSourceArrowPaint
+          (m_inx, m_sourceUnselectedPaint); } }
   }
 
   public void setTargetEdgeEndPaint(Paint paint)
   {
+    synchronized (m_view.m_lock) {
+      if (paint == null) {
+        throw new NullPointerException("paint is null"); }
+      m_targetUnselectedPaint = paint;
+      if (!isSelected()) {
+        m_view.m_edgeDetails.overrideTargetArrowPaint
+          (m_inx, m_targetUnselectedPaint); } }
   }
 
   public void select()
