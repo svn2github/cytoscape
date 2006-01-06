@@ -2,6 +2,7 @@ package ding.view;
 
 import cytoscape.util.intr.IntObjHash;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Paint;
 import java.util.HashMap;
 
@@ -15,6 +16,9 @@ class DEdgeDetails extends IntermediateEdgeDetails
   final HashMap m_sourceArrowPaints = new HashMap();
   final HashMap m_targetArrowPaints = new HashMap();
   final HashMap m_segmentPaints = new HashMap();
+  final HashMap m_labelCounts = new HashMap();
+  final HashMap m_labelTexts = new HashMap();
+  final HashMap m_labelFonts = new HashMap();
   final HashMap m_labelPaints = new HashMap();
 
   public Color colorLowDetail(int edge)
@@ -112,22 +116,80 @@ class DEdgeDetails extends IntermediateEdgeDetails
     else { m_segmentPaints.put(new Integer(edge), paint); }
   }
 
-  public Paint labelPaint(int node, int labelInx)
+  public int labelCount(int edge)
   {
-    final long key = (((long) node) << 32) | ((long) labelInx);
+    final Object o = m_labelCounts.get(new Integer(edge));
+    if (o == null) { return super.labelCount(edge); }
+    return ((Integer) o).intValue();
+  }
+
+  /*
+   * A negative labelCount has the special meaning to remove overridden count.
+   */
+  void overrideLabelCount(int edge, int labelCount)
+  {
+    if (labelCount < 0 ||
+        labelCount == super.labelCount(edge)) {
+      m_labelCounts.remove(new Integer(edge)); }
+    else { m_labelCounts.put(new Integer(edge), new Integer(labelCount)); }
+  }
+
+  public String labelText(int edge, int labelInx)
+  {
+    final long key = (((long) edge) << 32) | ((long) labelInx);
+    final Object o = m_labelTexts.get(new Long(key));
+    if (o == null) { return super.labelText(edge, labelInx); }
+    return (String) o;
+  }
+
+  /*
+   * A null text has the special meaning to remove overridden text.
+   */
+  void overrideLabelText(int edge, int labelInx, String text)
+  {
+    final long key = (((long) edge) << 32) | ((long) labelInx);
+    if (text == null ||
+        text.equals(super.labelText(edge, labelInx))) {
+      m_labelTexts.remove(new Long(key)); }
+    else { m_labelTexts.put(new Long(key), text); }
+  }
+
+  public Font labelFont(int edge, int labelInx)
+  {
+    final long key = (((long) edge) << 32) | ((long) labelInx);
+    final Object o = m_labelFonts.get(new Long(key));
+    if (o == null) { return super.labelFont(edge, labelInx); }
+    return (Font) o;
+  }
+
+  /*
+   * A null font has the special meaning to remove overridden font.
+   */
+  void overrideLabelFont(int edge, int labelInx, Font font)
+  {
+    final long key = (((long) edge) << 32) | ((long) labelInx);
+    if (font == null ||
+        font.equals(super.labelFont(edge, labelInx))) {
+      m_labelFonts.remove(new Long(key)); }
+    else { m_labelFonts.put(new Long(key), font); }
+  }
+
+  public Paint labelPaint(int edge, int labelInx)
+  {
+    final long key = (((long) edge) << 32) | ((long) labelInx);
     final Object o = m_labelPaints.get(new Long(key));
-    if (o == null) { return super.labelPaint(node, labelInx); }
+    if (o == null) { return super.labelPaint(edge, labelInx); }
     return (Paint) o;
   }
 
   /*
    * A null paint has the special meaning to remove overridden paint.
    */
-  void overrideLabelPaint(int node, int labelInx, Paint paint)
+  void overrideLabelPaint(int edge, int labelInx, Paint paint)
   {
-    final long key = (((long) node) << 32) | ((long) labelInx);
+    final long key = (((long) edge) << 32) | ((long) labelInx);
     if (paint == null ||
-        paint.equals(super.labelPaint(node, labelInx))) {
+        paint.equals(super.labelPaint(edge, labelInx))) {
       m_labelPaints.remove(new Long(key)); }
     else { m_labelPaints.put(new Long(key), paint); }
   }
