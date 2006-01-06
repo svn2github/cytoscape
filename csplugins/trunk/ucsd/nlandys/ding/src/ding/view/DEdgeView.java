@@ -241,7 +241,13 @@ class DEdgeView implements EdgeView, Label
 
   public boolean setSelected(boolean state)
   {
-    return false;
+    synchronized (m_view.m_lock) {
+      if (state) {
+        if (m_selected) { return false; }
+        select(); return true; }
+      else {
+        if (!m_selected) { return false; }
+        unselect(); return true; } }
   }
 
   public boolean isSelected()
@@ -323,11 +329,14 @@ class DEdgeView implements EdgeView, Label
 
   public Paint getTextPaint()
   {
-    return null;
+    synchronized (m_view.m_lock) {
+      return m_view.m_edgeDetails.labelPaint(m_inx, 0); }
   }
 
   public void setTextPaint(Paint textPaint)
   {
+    synchronized (m_view.m_lock) {
+      m_view.m_edgeDetails.overrideLabelPaint(m_inx, 0, textPaint); }
   }
 
   public double getGreekThreshold()

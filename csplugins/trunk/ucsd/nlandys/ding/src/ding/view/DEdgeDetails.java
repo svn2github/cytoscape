@@ -15,6 +15,7 @@ class DEdgeDetails extends IntermediateEdgeDetails
   final HashMap m_sourceArrowPaints = new HashMap();
   final HashMap m_targetArrowPaints = new HashMap();
   final HashMap m_segmentPaints = new HashMap();
+  final HashMap m_labelPaints = new HashMap();
 
   public Color colorLowDetail(int edge)
   {
@@ -109,6 +110,26 @@ class DEdgeDetails extends IntermediateEdgeDetails
         paint.equals(super.segmentPaint(edge))) {
       m_segmentPaints.remove(new Integer(edge)); }
     else { m_segmentPaints.put(new Integer(edge), paint); }
+  }
+
+  public Paint labelPaint(int node, int labelInx)
+  {
+    final long key = (((long) node) << 32) | ((long) labelInx);
+    final Object o = m_labelPaints.get(new Long(key));
+    if (o == null) { return super.labelPaint(node, labelInx); }
+    return (Paint) o;
+  }
+
+  /*
+   * A null paint has the special meaning to remove overridden paint.
+   */
+  void overrideLabelPaint(int node, int labelInx, Paint paint)
+  {
+    final long key = (((long) node) << 32) | ((long) labelInx);
+    if (paint == null ||
+        paint.equals(super.labelPaint(node, labelInx))) {
+      m_labelPaints.remove(new Long(key)); }
+    else { m_labelPaints.put(new Long(key), paint); }
   }
 
 }
