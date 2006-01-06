@@ -441,9 +441,9 @@ class DNodeView implements NodeView, Label
       m_view.m_nodeDetails.overrideLabelText(m_inx, 0, text);
       if (DEFAULT_LABEL_TEXT.equals
           (m_view.m_nodeDetails.labelText(m_inx, 0))) {
-        m_view.m_nodeDetails.overrideLabelCount(m_inx, 1); }
+        m_view.m_nodeDetails.overrideLabelCount(m_inx, 0); }
       else {
-        m_view.m_nodeDetails.overrideLabelCount(m_inx, 0); } }
+        m_view.m_nodeDetails.overrideLabelCount(m_inx, 1); } }
   }
 
   public Font getFont()
