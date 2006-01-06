@@ -21,6 +21,7 @@ class DEdgeView implements EdgeView, Label
 
   DGraphView m_view;
   final int m_inx;
+  boolean m_selected;
 
   /*
    * @param inx the RootGraph index of edge (a negative number).
@@ -29,6 +30,7 @@ class DEdgeView implements EdgeView, Label
   {
     m_view = view;
     m_inx = ~inx;
+    m_selected = false;
   }
 
   public int getGraphPerspectiveIndex()
@@ -158,12 +160,12 @@ class DEdgeView implements EdgeView, Label
 
   public boolean isSelected()
   {
-    return false;
+    return m_selected;
   }
 
   public boolean getSelected()
   {
-    return false;
+    return m_selected;
   }
 
   public void updateEdgeView()
