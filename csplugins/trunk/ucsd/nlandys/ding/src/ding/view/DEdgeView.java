@@ -53,11 +53,14 @@ class DEdgeView implements EdgeView
 
   public void setStrokeWidth(float width)
   {
+    synchronized (m_view.m_lock) {
+      m_view.m_edgeDetails.overrideSegmentThickness(m_inx, width); }
   }
 
   public float getStrokeWidth()
   {
-    return 0.0f;
+    synchronized (m_view.m_lock) {
+      return m_view.m_edgeDetails.segmentThickness(m_inx); }
   }
 
   public void setStroke(Stroke stroke)
