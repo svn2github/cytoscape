@@ -10,7 +10,7 @@ import java.awt.Font;
 import java.awt.Paint;
 import java.awt.Stroke;
 
-class DEdgeView implements EdgeView
+class DEdgeView implements EdgeView, Label
 {
 
   static final Paint DEFAULT_ARROW_PAINT = Color.black;
@@ -219,10 +219,53 @@ class DEdgeView implements EdgeView
 
   public Label getLabel()
   {
-    return null;
+    return this;
   }
 
   public void setToolTip(String tip)
+  {
+  }
+
+
+  // Interface giny.view.Label:
+
+  public void setPositionHint(int position)
+  {
+  }
+
+  public Paint getTextPaint()
+  {
+    return null;
+  }
+
+  public void setTextPaint(Paint textPaint)
+  {
+  }
+
+  public double getGreekThreshold()
+  {
+    return 0.0d;
+  }
+
+  public void setGreekThreshold(double threshold)
+  {
+  }
+
+  public String getText()
+  {
+    return null;
+  }
+
+  public void setText(String text)
+  {
+  }
+
+  public Font getFont()
+  {
+    return null;
+  }
+
+  public void setFont(Font font)
   {
   }
 
