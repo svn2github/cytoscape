@@ -1,0 +1,428 @@
+NetworkBlast Design Doc
+-----------------------
+
+Documentation Guidelines:
+-------------------------
+All code will be generated using Java (v. >= 1.5.0).  Each file will be documented well, with the following format:
+
+className:
+	small description for JavaDoc
+	JavaDoc description for ALL class variables
+	JavaDoc description for ALL methods
+
+No code will be accepted without this documentation format.  JavaDoc will be run on each file to ensure completeness.
+
+Programming Guidelines:
+-----------------------
+When choosing succitness over explicitness, try to choose explicitness.  At the very least, comment out an explicit expression above the succint version.  No method should be more than ~200 lines long.  If one is, it may need to be broken down into two separate methods.  Try not to take OOP to the extreme (ie having one object's method ask another object's method for something, which in turn asks another object's method...).  Really, no one should have to jump through 10 methods to figure out what one method accomplishes.  Finally, use variable names that make sense!  No "int a" and have 'a' stand for something like variability parameter.  Use Java style names (ie 'variabilityParameter' or at worst 'varParam').  Also use generics to simplify casting rules if possible.  Use JUnit testing to create test cases.  Do we want to use floats or doubles?  doubles in java are 64 bit vs 32 bit float...
+
+Classes:
+--------
+1)******************************************
+abstract class Graph:
+	Encapsulates Nerius' Graph implementation.  Nodes are accessible by their number and name.  This is the super class for both single species (InteractionGraph) graphs and between species (CompatibilityGraph).  This class should implement all minimal methods necessary for a scoring and searching algorithm to run.  The graph representation is an undirected graph with singular and unique edges between nodes.  This is an undirected graph, with no self edges allowed!
+	
+	Instance Variables:
+		numToNodeNameList - a protected List of node numbers to node string names
+		nameToNodeNumHash - a protected Hash(Table/Map) of node string names to node numbers
+		edgeWeightHash - a protected List of edge numbers to weights
+		internalGraph - the private internalGraph of type Nerius' Graph (undirected)
+		distanceInts - the private hash of distances
+		probabilityDistances - the private hash of distances
+		tableReady - a private boolean that acts like a cache flag determining whether the internal tranposition table for probabilities and distances needs to be recomputed
+		targetSourceEdge - a List of the target and source edges used to fill the adjacency matrix during the table buildup
+	Methods:
+		Graph():
+			Sets up the internal graph as well as setting the cache flag (tableReady) to false and initializing the targetSourceEdges variable.
+		public boolean addNode(String name):
+		       Checks to see if name is already in the graph, if not, add it to the graph, link the numToNodeNameHash and nameToNodeNumHash accordingly and return true.  If it already is in the graph, return false.  Marks tableReady false.
+		       Test: -check to see if adding a new node returns true
+			     -check to see if adding the same node again returns false
+			     -check to make sure adding null is invalid
+		public boolean addEdge(String srcNode, String destNode, double weight):
+		       Checks to see if edge between src and dest is already in the graph, if not, add it to the graph, link the edge into edgeWeightHash with the edge weight and return true.  If it already is in the graph, or fails for some reason, return false.  Requires that all nodes already be in the graph.  Note that a weight of 0 still creates a valid edge!  Marks tableReady false.
+		       Test: -check to see if adding a new edge returns true
+			     -check to see if adding the same edge again returns false
+			     -check to ensure adding null is invalid
+			     -check to see if adding a nonexistant node is false
+			     -check to see if adding edge between same node (self edges not allowed)
+//		public boolean isNode(int num):
+//			Checks numToNameNodeHash for membership of num and then returns result
+//			Test: -check to see if a negative num is a node (ie -1)
+//			      -check a number greater than the current last number
+//			      -check the 0 node
+//			      -check the last node
+		public boolean isNode(String name):
+			Checks nameToNumNodeHash for membership of name and then returns result
+			Test: -check a valid String name
+			      -check an invalid name
+			      -check null string
+//		public boolean isEdge(int firstNode, int secondNode):
+//			Checks internalGraph to see if the two nodes exist in the graph
+//			Test: -check a valid edge
+//			      -check an invalid edge
+		public boolean isEdge(String srcNode, String destNode):
+			Converts string names to numbers and passes the node numbers to isEdge(int, int)
+			Test: -check a valid edge
+			      -check an invalid edge
+			      -check firstNode = null
+			      -check secondNode = null
+			      -check both = null
+		public int degreeOfNode(String node):
+		       Given the node, returns the degree of the node in the graph.  Returns -1 if node is not in the graph.
+		       Test: -check null node
+			     -check valid node
+			     -check invalid node
+		public List<String> getNodes():
+		       returns a copy of the List of nodes in the graph.  This is a copy and may not reflect real time results from the list!
+		       Test: -check removal from iterator doesn't affect graph
+		public List<Double> getEdgeWeights():
+		       returns a copy of the List of edges in theg graph.  As above, this is a copy and may not reflect real time results from the list!
+		# These functions are for statistical purposes:
+		public List<String> getNeighborNodes(String node):
+		       Returns a List of the neighboring nodes to 'node'.
+		       Test: -check to see if set is correct
+			     -pass null
+		public int numberOfNodes():
+		       Returns the number of unique nodes in the graph
+		       Test: -check for a newly initialized graph (ie 0 size)
+			     -check after adding 1 node
+			     -check after adding 5 nodes
+		public int numberOfEdges():
+		       Returns the number of edges in the graph
+		       Test: -check for a newly initialized graph (ie 0 size)
+			     -check after adding 1 edge
+			     -check after adding 5 edges
+		public String getEdgeDescription(String nodeStart, String nodeEnd) {
+		       Meant to be overridden in subclasses if necessary, but returns the string formatted output of the distance.  In this case, just calls getDistance and returns the String form of it.
+		       Test: -check to see if new String(getDistance) and gSD are isEqual()
+			     -check nulls		       
+		public int getDistance(String nodeStart, String nodeEnd):
+		       Searches for the distance between nodeStart and nodeEnd.  Uses a FIFO queue to start from nodeStart and perform Floyd's algorithm.  Returns 0 for same node, 1 for 1 edge traversal to nodeEnd, 2 for 2 edge traversals to nodeEnd, and 3 for any greater distance to nodeEnd or for nodeStart and nodeEnd being in disconnected networks.
+
+		       Algorithm:
+		       Modified to use the internal table of distances and probabilities.  Looks to see if tableReady is true, then looks up the value.  If tableReady is not true, run setUpTable() and then search the internal table.  If the item is not in the table, assume distance 3.
+
+		private void setUpTable():
+		       Sets up the internal table when tableReady is marked false and a distance or weight between two nodes is requested.  It works using an abbreviated BFS based off the edge list and marks both the distances and multiplicative sum probabilities between all pairs in the graph (except those distance 3 or greater and identities).
+		       Test: -check for distance 0
+			     -check for distance 1
+			     -check for distance 2
+			     -check for unconnected nodes
+			     -check for nodes distance >= 3
+			     -check for bidirectionality
+			     -check for invalid nodes (ie non existant/null)
+		public double getEdgeWeight(nodeStart, nodeEnd):
+		       Checks whether tableReady is true or false.  If false, run the setUpTable method, else retrieve from the table the requested weight.  If not in the table, then its a distance 3 and return the background probability.  Calculates the weight between nodeStart and nodeEnd.  Probability is defined to be the multiplicative weights.  Returns -1 if unspecified error, or -2 if the distance is 3 or greater.
+		       Test: -check for distance 0
+			     -check for distance 1
+			     -check for distance 2
+			     -check for distance >=3
+			     -check for unconnected
+			     -check bidirectionality
+			     -check for invalid nodes (ie non existant/null)
+		public String[] getEdgeSrcAndDest(Integer edgeNum):
+		       Returns the src & dest nodes of the valid edge. Returns null if edgeNum is not valid.
+		       Test: -check for invalid edges (ie negative, non existant)
+			     -check check for validity
+
+1a)******************************************
+class InteractionGraph(Graph)
+        This class is meant to be used for protein interaction networks for single species.  The benefit of having this class be a subclass of graph is that a scoring and searching algorithm can be used on any graph type, thus enabling in-pathway searches for any algorithm normally used for between pathway searches.
+	Instance Variable:
+//		backgroundProbability - a private double containing the background probability of a connection.  
+	Methods:
+		InteractionGraph(String fileName):
+			Initializes the variables of the graph object.  Opens the previously given interaction fileName for reading. It then parses the columns (in the format 'proteinA proteinB probabilityThatObservedInteractionIsTrueGivenObservation').  It adds a node to the internal graph if the node doesn't exist and maps the name to the node number in the nameToNodeNumhash.  It then likewise stores name in the numToNodeHash.  It then connects the node pair with a new edge and adds it's edge weight into edgeWeightHash .  The interaction file should NOT contain the number of interactions as the header line.  Duplicate lines will cause the last line to be entered.
+			Test: -check for bad (maimed) file
+			      -check for invalid file
+			      -check for empty file
+		public double getEdgeWeight(String nodeStart, String nodeEnd):
+		        Calls super, but checks the argument and returns a background probability instead of -2.
+			Test: -check to make sure background probability works
+1b)******************************************
+class CompatibilityGraph(InteractionGraph):
+	Encapsulates Nerius' Graph implementation.  Nodes are stored by their name and number.  Node names are stored in the format "ProteinFromSpecies1|HomProteinFromSpecies2".  Edge weights are defined as the multiplicative product (or maybe we should store this as the sum of logs to save information) of the shortest path to a protein.
+
+	Instance Variables:  
+//		backgroundProbability - a private double containing the background probability of a connection.  
+		graphs - an array of the graphs used to make this compatibility graph
+		ORTHOLOGYTHRESHOLD - the threshold (as a static final double) of when two nodes are orthologous (and thus connected).  Anything greater than or equal to this value is connected.  Anything less than or equal to this value is not connected.  
+	Methods:
+		CompatibilityGraph(String fileName, double blastThreshold, Graph[] graphs):
+			Initialize the instance variables to Hashtables.  Read in the homology file 'fileName' consisting of the format 'protFromSpA protFromSpB evalue'.  Throws an IOException to be handled by the calling method. It disregards any line less significant than blastThresh.  It does not ensure the validity of the data being read. Duplicate entries will cause the last line to be entered.  Accesses mappings to draw relationships between graph1 and graph2.  Stores relationships as nodes in the name format described above.  Also creates new edges with calculated weights (also described above).  Depending on the distance, this weight can either be a background truth probability (for distance 3's), 1 (for distance 0's) or a multiplicative sum calculated by asking graph.getEdgeWeight().
+
+		       For every conserved node A:
+			   for every conserved node B that has not been A:
+			       find the multiplicative sum of the edge weights between A and B
+			       if sum < ORTHOLOGYTHRESHOLD, skip
+			       else add new edge A|B with weight sum
+
+		       Test: -give maimed file		
+		             -check for empty file       
+			     -try negative threshold
+			Test: //-try bad filename
+			      -try maimed file
+			      -try negative threshold
+			      -give null for graph1
+			      -give null for graph2
+			      -give this for graph1 & 2
+			      -give null for graph1 & 2
+			      -give own graph
+		public double getEdgeWeight(String nodeStart, String nodeEnd):
+		        Calls super, but checks the argument and returns a background probability instead of -2.
+			Test: -make sure background probability works
+		public String getEdgeDescription (String nodeStart, String nodeEnd):
+		       Overwrites the base function and returns a String of the concatenated distances (ie 13 for distance 1 in species 1, 3 in species2, etc)
+		       Test: -make sure its valid
+			     -test nulls
+
+1c)******************************************
+class SubGraph() extends Graph:
+      This class is a data container for a path or complex.
+       Instance Variables:
+	       totalScore: the total score for this object
+       Methods:
+	       SubGraph(graph):
+			Copies the variables of the given object
+	       public Set solutions():
+		        Returns an enumeration of the nodes it contains
+			Test: -ask for an enumeration and see if each is in the graph
+			      -check to see if size == number of enumerated elements
+	       public String getEdgeDescription(String nodeStart, String nodeEnd):
+		      Asks the parent class that created this subgraph to getEdgeDescription.
+		      Test: -nulls
+			    -invalids
+2)*******************************************
+interface SearchGraph():
+	  This interface will provide an interface for all searching algorithms to be used on a Graph object.  Consequently, all searching algorithms should implement this interface.
+	  Methods:
+		public List searchGraph(graph, scoreObj):
+			This method will be used to call a search algorithm on the given graph object.  
+
+2a)******************************************
+class SearchGraphGreedilyForComplexes() implements SearchGraph:
+      This class implements the SearchGraph interface.  It provides for a greedy search algorithm based off the original C code. Complexes are defined as branched or unbranched pathways invovling 4 or more nodes.  
+      
+      Instance Variables:
+	       listOfPaths: this List keeps track of the paths found.
+	       maxComplexSize: a private integer limiting the size of the returned complexes (15)
+	       minSeedSize: a private integer representing the minimum seed size before growing the complexes
+      Methods:
+	       SearchGraphGreedilyForComplexes(List paths, int minSize, int maxSize):
+		      Since this algorithm uses paths as seeds as well, pass in a list of paths to search against.  Set variables accordingly
+		      Test: -test for paths == null
+			    -test for empty paths
+			    -test normal paths
+	       public List searchGraph(graph, scoreObj):
+			This greedy search works in the following manner:  given a list of nodes N, iterate through each node and find its best (minSeedSize-1) neighbors.  "Best" is defined as the sum of the scores returned from the scoreObj (which will currently be a Loglikelihood score).  Given every combination based on a list of nodes N, one should have at most N groups of four nodes.  Define this list of four node seeds as M, a seed set.  Given each seedset M, see if adding or removing 1 *new* node will increase the score, and then do the corresponding action.  Let this occur until the network cannot add/delete any nodes or grows until maxComplexSize.  Then, try using each SubGraph path in listOfPaths as a seed.  Store all unique results in a LinkedList to be returned at the conclusion of this function.
+
+			Find 3 best nodes connected to a node in N:
+			     consider this set of 4 nodes seed M:
+				      add or delete node connected to M such that score will increase but taking care never to let original seed set M change
+				      return if size passes 15 nodes
+			Test: -pass graph as null
+			      -pass scoreObj as null
+			      -pass both as null
+			      -pass an empty graph
+			      -pass a normal graph, check for max size and min size
+			      -check for correctness
+
+2b)******************************************
+class SearchGraphGreedilyForPaths() implements SearchGraph
+      Class that uses a greedy algorithm to search the graph.  Assumes larger scores are better.
+      Instance Variables:
+      	       pathSize: a private integer of the size of the path length (4)
+      Methods:
+	       SearchGraphGreedilyForPaths(int size):
+	              sets the pathSize to size
+	       public List searchGraph(graph, scoreObj):
+		      This function searches for pathways in the given graph of size pathSize, using scoreObj.  It begins by iterating through all the nodes in the graph, and, using each as a starting point, builds the top pathway, creates a SubGraph object, and stores it into listOfPaths.  This function finds the best top pathway by looking for nodes with the best weights that are connected in such a manner that a linear, nonbranched path is formed.  It returns a LinkedList of SubGraph objects.
+			
+			For each node n in set N:
+			    initialize new Subgraph to start with node n
+			    while total path length < 4:
+				    find nearest neighbors with best edge weights for fringe nodes not already in current path solution
+				    add best node to subgraph solution
+			    add new solution to listOfPaths
+			return subGraphs				    
+
+			Test: -pass graph a null
+			      -pass scoreObj as null
+			      -pass both as null
+			      -pass an empty graph, check for size 0
+			      -pass a normal graph (precalculated),check for size 4 pathways and the correctness of pathways
+			      -pass a graph of size 3, see if it returns any paths
+
+3)*******************************************
+interface Scorer:
+	  This interface will provide the schoring interface for all scoring algorithms to be used on a Graph object.  Consequently, all scoring algorithms should implement this interface.
+	  Methods:
+		public double scoreNodes(String srcNode, String destNode, graph):
+		       Given a sourceNode and destNode from graph, this function will return the score of the edge.  Note that this method does not define what occurs if no such edge exists between the two nodes (presumably it would return some background probability or minimal score).
+
+3a)******************************************
+class LogLikelihoodScorer() implements Scorer:
+      This class implements Scorer using a loglikelihood method of scoring.  Do we score weighing density?  That is, do we normalize using score/#nodes?
+
+      Instance Variables:
+		truthFactor - private factor to multiply the predicted probabilities by to obtain the background truth distribution
+		graphMap - a Hashtable containing the Graph's as keys with pointers to an array containing the following variables in order:
+		modelTruth - (aka probabilityOfTruthGivenModel) - In the PNAS 2005 & RECOMB 2004 paper, this is labeled as beta, but basically this is the probability of truth given the model.  Setting this equal to probabilityOfTruth should essentially create a bootstrap process.
+		backgroundProbability - the background probability to assign if the distance is greater than 3
+
+		# Write Formulas down for these
+		probabilityOfTruth - a percentage (0-1) of the probability that any connection between two nodes is true (basically a ratio between the observed gross edges (sum of probabilities of interactions) and the total number of interactions (edges read in) multiplied by some truthFactor) [total_e * 2. * true_factor/ (n_genes*(n_genes-1))]
+		probabilityObserved - a ratio of the number of interactions to the number of possible interactions for the given graph size [n_interactions * 2./ (n_genes*(n_genes-1))]
+		probabilityOfTruthGivenNotObserved - a ratio between the probability of not observed true interactions over the not observed interactions (ie, probability that any given interaction is true given the fact that a given set of true interactions have already been observed).  [(p_true-p_observed * total_e / n_interactions) / (1.-p_observed)]
+		totalEdgeWeight = ((number of nodes - actual degree of node - 1) * p_te ) / 2 + probabilityOfTruthGivenInteraction (ie sum of values read in from file) )
+
+      Methods:
+		LogLikelihood(double truth):
+		       Sets the truthFactor accordingly (ensures > 0) and sets up the graphMap object.
+		public double scoreNodes(String srcNode, String destNode, graph):
+		       Take in the given graph and calculate the probabilityOfTruth, the probabilityObserved, and the probabilityOfTruthGivenNotObserved once.  Set a flag so it refuses to recalculate the values again.  Now, given two nodes from one object, return the loglikelihood score between our model and the null model.  This is defined as (change these variable names!):
+			     let:
+			     p_te = probabilityOfTruthGivenNotObserved
+			     pt = probabilityOfTruth
+			     beta = probabilityOfTruthGivenModel
+			     prob = 1./(1.+(2.*(double)((int)(e_total_weight+0.5)-d1-d2+1)/ (double)(d1*d2)))
+			     f = probabilityOfTruthGivenInteraction (read in from file) or p_te if edge between sourceNode and destNode does not exist (can use getEdgeWeight)
+			     p1 = beta*f*(1.-pt)+(1.-beta)*(1.-f)*pt
+			     p2 = prob*f*(1.-pt)+(1.-prob)*(1.-f)*pt
+			     return ln(p1/p2)
+			Test: -try null source
+			      -try null dest
+			      -try null graph
+			      -test math
+4)*******************************************
+interface Filter:
+	  This provides the interface for a Filter type.  The filters should simply take in a Graph object, a List of SubGraphs, and return another List of SubGraphs.  These are meant to be post-processing steps.
+	  Methods:
+		public List filter(solutions):
+		       This provides the basic foundation for filtering.  Basic filter to be written should include removing duplicate solutions, merging solutions, and finding significant complexes.  This function is defined NOT to modify the solutions List.
+
+4a)******************************************
+class MergingFilter implements Filter:
+      This should provide the tools necessary to merge and filter out similar complexes.
+      Instance Variables:
+	       private double minThresh: threshold to consider before merging
+	       private double maxThresh: threshold to consider before automatic merging (any two complexes greater than this value will automatically be merged, no question)
+      Methods:
+        MergingFilter(minCutOff, maxCutOff):
+	       Sets minThresh = minCutoff and maxThresh = maxCutOff.
+	       Test: -check minCutoff < 0 
+		     -check maxCutOff > 1
+		     -check minCutoff > maxCutOff
+	public LinkedList filter(graph, solutions):
+	       Given the original graph and the solutions, this filter will merge two objects in the list of solutions if they have greater than or equal to maxThresh similarity.  It will not deal with any two objects which have less than minThresh similarity.  If the minThresh <= objects' similarities < maxThresh, then a heuristic algorithm described below will be run:  (FILL IN HERE)
+
+	       This method will return a LinkedList of merged solutions that pass the filter.  It WILL NOT MODIFY the solutions list.
+
+4b)******************************************
+class ThrowOutFilter implements Filter: // NOTE: does this mean equivalent number of nodes or does this mean nodes & edges?  isn't it conceivable that the same nodes could show a different connection set (ie edges)?
+      This class will throw out any solutions with duplicates reaching a certain threshold in a FCFS(FIFO) manner (or perhaps highest score).  Returns null if given incorrect arguments.
+      Instance Variables:
+	       private double threshold: anything with similarity greater than or equal to this threshold will be thrown out.
+      Methods:
+	       ThrowOutFilter(double thresh):
+		      Sets the threshold to the passed in value
+		      Test: -thresh for negative 
+	       public LinkedList filter(solutions):
+		      Given the solutions, this filter check for identical subnodes and calculate the percentage identity.  Any percentage >= threshold will be dropped from the list.
+		      Test: -pass null for graph
+			    -pass null for solutions
+			    -pass both as null
+			    -pass empty graph
+			    -pass empty solutions
+			    -pass real graph & real solutions
+4c)******************************************
+(future classes:)
+class SIFWriter:  (Silpa)
+      Writes the given solutions to individual sif files
+
+4d)******************************************
+functional enrichment class....?	       
+
+5)*******************************************
+class StatisticsGenerator:  (FILL IN STUFF HERE)
+      StatisticsGenerator will contain various static methods to generate statistics for given objects.
+      Methods:
+		public static double calculateFDR(realSolution, simulations, threshold):
+		       Calculates the False Discovery Rate for the given real solutions and the simulations.  FDR = (# solutions passing the threshold from the simulations/# simulations run) / # solutions passing the threshold from the real run.
+		public static double wilcoxRankSum(realSolution, simulations, threshold):
+		       Calculates the Wilcoxon Rank and Sum test.  See http://en.wikipedia.org/wiki/Mann-Whitney_U for more information.
+		       
+6)*******************************************
+interface SolutionSerializer: (make an interface?)
+      Given the solutions, this class will read/write the results to an iostream loadable by Java.  This could be a text file or a byte stream of some sort.  Using a byte stream might readily enable a more distributive process as one could think of a "server" process or thread that creates children simulations and waits for their data to be returned.  May be useful for Blue Gene.
+      Methods:
+		public void serializeList(List solutions):
+		       Serializes (ie writes out to an IO stream) the solution list for future use. This functionality is necessary for NetworkBlast to be able to recapture parallel runs of simulation data and use them to generate statistics.
+		public List readData(InputStream data):
+		       Opens the inputstream data for reading and reads in the serialized data.
+
+6a)******************************************
+class FileSerializer implements SolutionSerializer:
+      Given the solutions, this class will read/write the results to a file.
+      Instance Variables:
+	        private String filename: the filename to write
+      Methods:
+		FileSerializer(String filename):
+			Sets the output filename for the serializer to write.
+			Test: -set filename to null
+			      -set filename to a real file
+		public void serializeList(List solutions):
+		        Given solutions, write the respective solutions to the filename
+			Test: -pass null solutions
+			      -pass empty solutions
+
+6b)******************************************
+class SIFSerializer implements SolutionSerializer:
+      Given the solutions, this class will write out respective SIF files
+      Instance Variables:
+	       private String baseFileName(the base filename to write out) (ie basefilename_0...)
+      Methods:
+		SIFSerializer(String filename):
+			Sets the output filename for the serializer to write.
+			Test: -set filename to null
+			      -set filename to a real file
+		public void serializeList(List solutions):
+		       Given the solutions, write the respective solutions to the filename in the format 'nodeA distance nodeB'.  Do this by:
+		       for each soln:
+			   get list of edges of soln
+			   parse edge and write out distance
+		       close file
+		        Test: -set solutions to null
+			      -give real solutions
+			      -pass empty solutions
+
+Main Program
+------------
+
+Variables:
+	numOfSims:	number of simulations to run
+	randSeed:	set to null if using current system time, or if the user inputted a value, set to that instead
+	complexSolutions:  will hold a LinkedList of complexes found
+	pathSolutions:	   will hold a LinkedList of paths found
+	
+
+The main program (NetworkBlast.java) will create all the objects needed to run the NetworkBlast algorithm.  This program will implement GNU getopts style options.  The program starts by reading in the arguments and verifying their correctness.  Current arguments include an output prefix, an input prefix, an optional random seed argument, an optional number of simulations to run, an optional number of species to compare, an optional blast cutoff value, an optional max overlap value, an optional beta value, a scoring flag, and a verbosity flag.  Read in all arguments and set the variables accordingly.  Create an abstract class Graph array that is initialized to new InteractionGraphs, one for each species.  Initialize the InteractionGraph object to read in the species files.  Create a Scorer object (LogLikelihoodScorer) and use it to create and initialize a CompatibilityGraph object.  Search the complex for paths and complexes using the Scorer object and store them into two distinct LinkedLists.  Create and choose a filter type object and use it on the graphs.  Remove any references to the old data to ensure garbage collection (ie save memory).  After filtering, serialize the data using the SolutionSerializer class and exit the program.
+
+If NetworkBlast is given the scoring flag option, take all inputs (file type objects), ensure that there is at least 1 real and 1 random run (print a warning for random runs less than 100 ?) and score the solutions using the StatisticsGenerator's static methods.  Print the results to a file or screen.  Run the solution get
+
+Read in arguments, set variables accordingly
+If not scoring:
+   for each species create new graph object
+   fill graph objects by initializing interactiongraph
+   create scorer
+   create compatibility graph
+   create search object
+   store pathways and complexes into respetictive lists using search object
+   apply filter to solutions
+   serialize results
+else:
+   unserialize previous results
+   apply statistical tests to results
+   apply final filters
+   serialize final results
