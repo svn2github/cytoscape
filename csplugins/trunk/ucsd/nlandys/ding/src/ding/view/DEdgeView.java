@@ -262,14 +262,17 @@ class DEdgeView implements EdgeView, Label
 
   public void updateEdgeView()
   {
+    m_view.updateView();
   }
 
   public void updateTargetArrow()
   {
+    m_view.updateView();
   }
 
   public void updateSourceArrow()
   {
+    m_view.updateView();
   }
 
   public void setSourceEdgeEnd(int type)
