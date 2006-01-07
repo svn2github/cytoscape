@@ -282,6 +282,13 @@ class DEdgeView implements EdgeView, Label
 
   public int getSourceEdgeEnd()
   {
+//     synchronized (m_view.m_lock) {
+//       final byte nativeArrow = m_view.m_edgeDetails.sourceArrow(m_inx);
+//       switch (nativeArrow) {
+//       case GraphGraphics.ARROW_NONE:
+//         return EdgeView.NO_END;
+//       case GraphGraphics.ARROW_DELTA:
+//         return EdgeView.
     return 0;
   }
 
