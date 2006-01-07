@@ -13,7 +13,9 @@ class DEdgeDetails extends IntermediateEdgeDetails
   final Object m_deletedEntry = new Object();
 
   final HashMap m_segmentThicknesses = new HashMap();
+  final HashMap m_sourceArrows = new HashMap();
   final HashMap m_sourceArrowPaints = new HashMap();
+  final HashMap m_targetArrows = new HashMap();
   final HashMap m_targetArrowPaints = new HashMap();
   final HashMap m_segmentPaints = new HashMap();
   final HashMap m_labelCounts = new HashMap();
@@ -43,6 +45,25 @@ class DEdgeDetails extends IntermediateEdgeDetails
       m_colorsLowDetail.put(edge, color); }
   }
 
+  public byte sourceArrow(int edge)
+  {
+    final Object o = m_sourceArrows.get(new Integer(edge));
+    if (o == null) { return super.sourceArrow(edge); }
+    return ((Byte) o).byteValue();
+  }
+
+  /*
+   * A non-negative arrowType has the special meaning to remove overridden
+   * arrow.
+   */
+  void overrideSourceArrow(int edge, byte arrowType)
+  {
+    if (arrowType >= 0 ||
+        arrowType == super.sourceArrow(edge)) {
+      m_sourceArrows.remove(new Integer(edge)); }
+    else { m_sourceArrows.put(new Integer(edge), new Byte(arrowType)); }
+  }
+
   public Paint sourceArrowPaint(int edge)
   {
     final Object o = m_sourceArrowPaints.get(new Integer(edge));
@@ -59,6 +80,25 @@ class DEdgeDetails extends IntermediateEdgeDetails
         paint.equals(super.sourceArrowPaint(edge))) {
       m_sourceArrowPaints.remove(new Integer(edge)); }
     else { m_sourceArrowPaints.put(new Integer(edge), paint); }
+  }
+
+  public byte targetArrow(int edge)
+  {
+    final Object o = m_targetArrows.get(new Integer(edge));
+    if (o == null) { return super.targetArrow(edge); }
+    return ((Byte) o).byteValue();
+  }
+
+  /*
+   * A non-negative arrowType has the special meaning to remove overridden
+   * arrow.
+   */
+  void overrideTargetArrow(int edge, byte arrowType)
+  {
+    if (arrowType >= 0 ||
+        arrowType == super.targetArrow(edge)) {
+      m_targetArrows.remove(new Integer(edge)); }
+    else { m_targetArrows.put(new Integer(edge), new Byte(arrowType)); }
   }
 
   public Paint targetArrowPaint(int edge)
