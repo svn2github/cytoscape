@@ -359,6 +359,79 @@ class DEdgeView implements EdgeView, Label
 
   public void setTargetEdgeEnd(int type)
   {
+    synchronized (m_view.m_lock) {
+      if (type == m_targetEdgeEnd) { return; }
+      switch (type) {
+      case NO_END:
+        m_view.m_edgeDetails.overrideTargetArrow
+          (m_inx, GraphGraphics.ARROW_NONE);
+        break;
+      case WHITE_DELTA:
+      case WHITE_ARROW:
+        m_view.m_edgeDetails.overrideTargetArrow
+          (m_inx, GraphGraphics.ARROW_DELTA);
+        setTargetEdgeEndPaint(Color.white);
+        break;
+      case BLACK_DELTA:
+      case BLACK_ARROW:
+        m_view.m_edgeDetails.overrideTargetArrow
+          (m_inx, GraphGraphics.ARROW_DELTA);
+        setTargetEdgeEndPaint(Color.black);
+        break;
+      case EDGE_COLOR_DELTA:
+      case EDGE_COLOR_ARROW:
+        m_view.m_edgeDetails.overrideTargetArrow
+          (m_inx, GraphGraphics.ARROW_DELTA);
+        setTargetEdgeEndPaint(getUnselectedPaint());
+        break;
+      case WHITE_DIAMOND:
+        m_view.m_edgeDetails.overrideTargetArrow
+          (m_inx, GraphGraphics.ARROW_DIAMOND);
+        setTargetEdgeEndPaint(Color.white);
+        break;
+      case BLACK_DIAMOND:
+        m_view.m_edgeDetails.overrideTargetArrow
+          (m_inx, GraphGraphics.ARROW_DIAMOND);
+        setTargetEdgeEndPaint(Color.black);
+        break;
+      case EDGE_COLOR_DIAMOND:
+        m_view.m_edgeDetails.overrideTargetArrow
+          (m_inx, GraphGraphics.ARROW_DIAMOND);
+        setTargetEdgeEndPaint(getUnselectedPaint());
+        break;
+      case WHITE_CIRCLE:
+        m_view.m_edgeDetails.overrideTargetArrow
+          (m_inx, GraphGraphics.ARROW_DISC);
+        setTargetEdgeEndPaint(Color.white);
+        break;
+      case BLACK_CIRCLE:
+        m_view.m_edgeDetails.overrideTargetArrow
+          (m_inx, GraphGraphics.ARROW_DISC);
+        setTargetEdgeEndPaint(Color.black);
+        break;
+      case EDGE_COLOR_CIRCLE:
+        m_view.m_edgeDetails.overrideTargetArrow
+          (m_inx, GraphGraphics.ARROW_DISC);
+        setTargetEdgeEndPaint(getUnselectedPaint());
+        break;
+      case WHITE_T:
+        m_view.m_edgeDetails.overrideTargetArrow
+          (m_inx, GraphGraphics.ARROW_TEE);
+        setTargetEdgeEndPaint(Color.white);
+        break;
+      case BLACK_T:
+        m_view.m_edgeDetails.overrideTargetArrow
+          (m_inx, GraphGraphics.ARROW_TEE);
+        setTargetEdgeEndPaint(Color.black);
+        break;
+      case EDGE_COLOR_T:
+        m_view.m_edgeDetails.overrideTargetArrow
+          (m_inx, GraphGraphics.ARROW_TEE);
+        setTargetEdgeEndPaint(getUnselectedPaint());
+        break;
+      default:
+        throw new IllegalArgumentException("unrecognized edge end type"); }
+      m_targetEdgeEnd = type; }
   }
 
   public int getSourceEdgeEnd()
@@ -368,7 +441,7 @@ class DEdgeView implements EdgeView, Label
 
   public int getTargetEdgeEnd()
   {
-    return 0;
+    return m_targetEdgeEnd;
   }
 
   public void updateLine()
