@@ -7,6 +7,12 @@ import java.awt.Paint;
 class IntermediateEdgeDetails extends EdgeDetails
 {
 
+  // Note: It is extremely important that the methds sourceArrow(int) and
+  // targetArrow(int) both return GraphGraphics.ARROW_NONE.  Methods in
+  // DEdgeView rely on this.  Right now EdgeDetails does return these values
+  // by default.  I could even override those methods here and redundantly
+  // return those same values, but I prefer not to.
+
   public Paint sourceArrowPaint(int edge)
   {
     return DEdgeView.DEFAULT_ARROW_PAINT;

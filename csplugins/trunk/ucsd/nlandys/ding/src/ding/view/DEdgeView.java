@@ -1,5 +1,6 @@
 package ding.view;
 
+import cytoscape.render.immed.GraphGraphics;
 import giny.model.Edge;
 import giny.view.Bend;
 import giny.view.EdgeView;
@@ -28,6 +29,8 @@ class DEdgeView implements EdgeView, Label
   Paint m_sourceSelectedPaint;
   Paint m_targetUnselectedPaint;
   Paint m_targetSelectedPaint;
+  int m_sourceEdgeEnd; // One of the EdgeView edge end constants.
+  int m_targetEdgeEnd; // Ditto.
 
   /*
    * @param inx the RootGraph index of edge (a negative number).
@@ -43,6 +46,8 @@ class DEdgeView implements EdgeView, Label
     m_sourceSelectedPaint = DEFAULT_ARROW_PAINT;
     m_targetUnselectedPaint = m_view.m_edgeDetails.targetArrowPaint(m_inx);
     m_targetSelectedPaint = DEFAULT_ARROW_PAINT;
+    m_sourceEdgeEnd = EdgeView.NO_END;
+    m_targetEdgeEnd = EdgeView.NO_END;
   }
 
   public int getGraphPerspectiveIndex()
@@ -275,8 +280,81 @@ class DEdgeView implements EdgeView, Label
     m_view.updateView();
   }
 
-  public void setSourceEdgeEnd(int type)
+  public void setSourceEdgeEnd(final int type)
   {
+    synchronized (m_view.m_lock) {
+      if (type == m_sourceEdgeEnd) { return; }
+      switch (type) {
+      case NO_END:
+        m_view.m_edgeDetails.overrideSourceArrow
+          (m_inx, GraphGraphics.ARROW_NONE);
+        break;
+      case WHITE_DELTA:
+      case WHITE_ARROW:
+        m_view.m_edgeDetails.overrideSourceArrow
+          (m_inx, GraphGraphics.ARROW_DELTA);
+        setSourceEdgeEndPaint(Color.white);
+        break;
+      case BLACK_DELTA:
+      case BLACK_ARROW:
+        m_view.m_edgeDetails.overrideSourceArrow
+          (m_inx, GraphGraphics.ARROW_DELTA);
+        setSourceEdgeEndPaint(Color.black);
+        break;
+      case EDGE_COLOR_DELTA:
+      case EDGE_COLOR_ARROW:
+        m_view.m_edgeDetails.overrideSourceArrow
+          (m_inx, GraphGraphics.ARROW_DELTA);
+        setSourceEdgeEndPaint(getUnselectedPaint());
+        break;
+      case WHITE_DIAMOND:
+        m_view.m_edgeDetails.overrideSourceArrow
+          (m_inx, GraphGraphics.ARROW_DIAMOND);
+        setSourceEdgeEndPaint(Color.white);
+        break;
+      case BLACK_DIAMOND:
+        m_view.m_edgeDetails.overrideSourceArrow
+          (m_inx, GraphGraphics.ARROW_DIAMOND);
+        setSourceEdgeEndPaint(Color.black);
+        break;
+      case EDGE_COLOR_DIAMOND:
+        m_view.m_edgeDetails.overrideSourceArrow
+          (m_inx, GraphGraphics.ARROW_DIAMOND);
+        setSourceEdgeEndPaint(getUnselectedPaint());
+        break;
+      case WHITE_CIRCLE:
+        m_view.m_edgeDetails.overrideSourceArrow
+          (m_inx, GraphGraphics.ARROW_DISC);
+        setSourceEdgeEndPaint(Color.white);
+        break;
+      case BLACK_CIRCLE:
+        m_view.m_edgeDetails.overrideSourceArrow
+          (m_inx, GraphGraphics.ARROW_DISC);
+        setSourceEdgeEndPaint(Color.black);
+        break;
+      case EDGE_COLOR_CIRCLE:
+        m_view.m_edgeDetails.overrideSourceArrow
+          (m_inx, GraphGraphics.ARROW_DISC);
+        setSourceEdgeEndPaint(getUnselectedPaint());
+        break;
+      case WHITE_T:
+        m_view.m_edgeDetails.overrideSourceArrow
+          (m_inx, GraphGraphics.ARROW_TEE);
+        setSourceEdgeEndPaint(Color.white);
+        break;
+      case BLACK_T:
+        m_view.m_edgeDetails.overrideSourceArrow
+          (m_inx, GraphGraphics.ARROW_TEE);
+        setSourceEdgeEndPaint(Color.black);
+        break;
+      case EDGE_COLOR_T:
+        m_view.m_edgeDetails.overrideSourceArrow
+          (m_inx, GraphGraphics.ARROW_TEE);
+        setSourceEdgeEndPaint(getUnselectedPaint());
+        break;
+      default:
+        throw new IllegalArgumentException("unrecognized edge end type"); }
+      m_sourceEdgeEnd = type; }
   }
 
   public void setTargetEdgeEnd(int type)
@@ -285,14 +363,7 @@ class DEdgeView implements EdgeView, Label
 
   public int getSourceEdgeEnd()
   {
-//     synchronized (m_view.m_lock) {
-//       final byte nativeArrow = m_view.m_edgeDetails.sourceArrow(m_inx);
-//       switch (nativeArrow) {
-//       case GraphGraphics.ARROW_NONE:
-//         return EdgeView.NO_END;
-//       case GraphGraphics.ARROW_DELTA:
-//         return EdgeView.
-    return 0;
+    return m_sourceEdgeEnd;
   }
 
   public int getTargetEdgeEnd()
