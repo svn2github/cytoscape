@@ -6,6 +6,7 @@ import giny.view.Bend;
 import giny.view.EdgeView;
 import giny.view.GraphView;
 import giny.view.Label;
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Paint;
@@ -84,11 +85,33 @@ class DEdgeView implements EdgeView, Label
 
   public void setStroke(Stroke stroke)
   {
+    if (stroke instanceof BasicStroke) {
+      synchronized (m_view.m_lock) {
+        final BasicStroke bStroke = (BasicStroke) stroke;
+        m_view.m_edgeDetails.overrideSegmentThickness
+          (m_inx, bStroke.getLineWidth());
+        final float[] dashArr = bStroke.getDashArray();
+        if (dashArr != null && dashArr.length > 0) {
+          m_view.m_edgeDetails.overrideSegmentDashLength
+            (m_inx, dashArr[0]); } } }
   }
 
   public Stroke getStroke()
   {
-    return null;
+    synchronized (m_view.m_lock) {
+      final float segmentThickness =
+        m_view.m_edgeDetails.segmentThickness(m_inx);
+      final float segmentDashLength =
+        m_view.m_edgeDetails.segmentDashLength(m_inx);
+      if (segmentDashLength > 0.0f) {
+        final float[] dashes = new float[] { segmentDashLength,
+                                             segmentDashLength };
+        return new BasicStroke(segmentThickness,
+                               BasicStroke.CAP_SQUARE,
+                               BasicStroke.JOIN_MITER, 10.0f,
+                               dashes, 0.0f); }
+      else {
+        return new BasicStroke(segmentThickness); } }
   }
 
   public void setLineType(int lineType)

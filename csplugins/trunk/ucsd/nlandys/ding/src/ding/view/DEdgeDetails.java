@@ -18,6 +18,7 @@ class DEdgeDetails extends IntermediateEdgeDetails
   final HashMap m_targetArrows = new HashMap();
   final HashMap m_targetArrowPaints = new HashMap();
   final HashMap m_segmentPaints = new HashMap();
+  final HashMap m_segmentDashLengths = new HashMap();
   final HashMap m_labelCounts = new HashMap();
   final HashMap m_labelTexts = new HashMap();
   final HashMap m_labelFonts = new HashMap();
@@ -154,6 +155,25 @@ class DEdgeDetails extends IntermediateEdgeDetails
         paint.equals(super.segmentPaint(edge))) {
       m_segmentPaints.remove(new Integer(edge)); }
     else { m_segmentPaints.put(new Integer(edge), paint); }
+  }
+
+  public float segmentDashLength(int edge)
+  {
+    final Object o = m_segmentDashLengths.get(new Integer(edge));
+    if (o == null) { return super.segmentDashLength(edge); }
+    return ((Float) o).floatValue();
+  }
+
+  /*
+   * A negative length value has the special meaning to remove overridden
+   * length.
+   */
+  void overrideSegmentDashLength(int edge, float length)
+  {
+    if (length < 0.0f ||
+        length == super.segmentDashLength(edge)) {
+      m_segmentDashLengths.remove(new Integer(edge)); }
+    else { m_segmentDashLengths.put(new Integer(edge), new Float(length)); }
   }
 
   public int labelCount(int edge)
