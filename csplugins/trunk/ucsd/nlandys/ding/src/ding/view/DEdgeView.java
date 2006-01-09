@@ -13,6 +13,7 @@ import java.awt.Font;
 import java.awt.Paint;
 import java.awt.Stroke;
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 import java.util.List;
 
 class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
@@ -35,6 +36,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
   Paint m_targetSelectedPaint;
   int m_sourceEdgeEnd; // One of the EdgeView edge end constants.
   int m_targetEdgeEnd; // Ditto.
+  final ArrayList m_anchors; // A list of Point2D objects.
 
   /*
    * @param inx the RootGraph index of edge (a negative number).
@@ -52,6 +54,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
     m_targetSelectedPaint = DEFAULT_ARROW_PAINT;
     m_sourceEdgeEnd = EdgeView.NO_END;
     m_targetEdgeEnd = EdgeView.NO_END;
+    m_anchors = new ArrayList();
   }
 
   public int getGraphPerspectiveIndex()
@@ -625,11 +628,14 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
 
   public int numAnchors()
   {
-    return 0;
+    return m_anchors.size();
   }
 
   public void getAnchor(int anchorIndex, float[] anchorArr, int offset)
   {
+    final Point2D.Float anchor = (Point2D.Float) m_anchors.get(anchorIndex);
+    anchorArr[offset] = anchor.x;
+    anchorArr[offset + 1] = anchor.y;
   }
 
 }
