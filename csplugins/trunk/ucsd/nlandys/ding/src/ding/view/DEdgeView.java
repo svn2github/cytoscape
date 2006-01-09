@@ -506,6 +506,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
 
   public void clearBends()
   {
+    removeAllHandles();
   }
 
   public Label getLabel()
@@ -592,12 +593,20 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
 
   public Point2D getSourceHandlePoint()
   {
-    return null;
+    synchronized (m_view.m_lock) {
+      if (m_anchors.size() == 0) { return null; }
+      final Point2D returnThis = new Point2D.Float();
+      returnThis.setLocation((Point2D) m_anchors.get(0));
+      return returnThis; }
   }
 
   public Point2D getTargetHandlePoint()
   {
-    return null;
+    synchronized (m_view.m_lock) {
+      if (m_anchors.size() == 0) { return null; }
+      final Point2D returnThis = new Point2D.Float();
+      returnThis.setLocation((Point2D) m_anchors.get(m_anchors.size() - 1));
+      return returnThis; }
   }
 
   public void addHandle(Point2D pt)
