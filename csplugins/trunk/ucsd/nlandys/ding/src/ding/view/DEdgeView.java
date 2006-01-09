@@ -37,6 +37,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
   int m_sourceEdgeEnd; // One of the EdgeView edge end constants.
   int m_targetEdgeEnd; // Ditto.
   final ArrayList m_anchors; // A list of Point2D objects.
+  int m_lineType;
 
   /*
    * @param inx the RootGraph index of edge (a negative number).
@@ -55,6 +56,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
     m_sourceEdgeEnd = EdgeView.NO_END;
     m_targetEdgeEnd = EdgeView.NO_END;
     m_anchors = new ArrayList();
+    m_lineType = EdgeView.CURVED_LINES;
   }
 
   public int getGraphPerspectiveIndex()
@@ -122,11 +124,16 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
 
   public void setLineType(int lineType)
   {
+    if (lineType == EdgeView.CURVED_LINES ||
+        lineType == EdgeView.STRAIGHT_LINES) {
+      m_lineType = lineType; }
+    else {
+      throw new IllegalArgumentException("unrecognized line type"); }
   }
 
   public int getLineType()
   {
-    return 0;
+    return m_lineType;
   }
 
   public void setUnselectedPaint(Paint paint)
