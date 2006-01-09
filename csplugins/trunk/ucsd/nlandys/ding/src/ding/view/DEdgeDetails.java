@@ -1,5 +1,6 @@
 package ding.view;
 
+import cytoscape.render.immed.EdgeAnchors;
 import cytoscape.util.intr.IntObjHash;
 import java.awt.Color;
 import java.awt.Font;
@@ -8,6 +9,8 @@ import java.util.HashMap;
 
 class DEdgeDetails extends IntermediateEdgeDetails
 {
+
+  final DGraphView m_view;
 
   final IntObjHash m_colorsLowDetail = new IntObjHash();
   final Object m_deletedEntry = new Object();
@@ -23,6 +26,11 @@ class DEdgeDetails extends IntermediateEdgeDetails
   final HashMap m_labelTexts = new HashMap();
   final HashMap m_labelFonts = new HashMap();
   final HashMap m_labelPaints = new HashMap();
+
+  DEdgeDetails(DGraphView view)
+  {
+    m_view = view;
+  }
 
   public Color colorLowDetail(int edge)
   {
@@ -118,6 +126,11 @@ class DEdgeDetails extends IntermediateEdgeDetails
         paint.equals(super.targetArrowPaint(edge))) {
       m_targetArrowPaints.remove(new Integer(edge)); }
     else { m_targetArrowPaints.put(new Integer(edge), paint); }
+  }
+
+  public EdgeAnchors anchors(int edge)
+  {
+    return (EdgeAnchors) (m_view.getEdgeView(~edge));
   }
 
   public float segmentThickness(int edge)

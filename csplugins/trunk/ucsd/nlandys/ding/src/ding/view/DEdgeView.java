@@ -1,5 +1,6 @@
 package ding.view;
 
+import cytoscape.render.immed.EdgeAnchors;
 import cytoscape.render.immed.GraphGraphics;
 import giny.model.Edge;
 import giny.view.Bend;
@@ -14,7 +15,7 @@ import java.awt.Stroke;
 import java.awt.geom.Point2D;
 import java.util.List;
 
-class DEdgeView implements EdgeView, Label, Bend
+class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
 {
 
   static final Paint DEFAULT_ARROW_PAINT = Color.black;
@@ -617,6 +618,18 @@ class DEdgeView implements EdgeView, Label, Bend
   public Point2D[] getDrawPoints()
   {
     return null;
+  }
+
+
+  // Interface cytoscape.render.immed.EdgeAnchors:
+
+  public int numAnchors()
+  {
+    return 0;
+  }
+
+  public void getAnchor(int anchorIndex, float[] anchorArr, int offset)
+  {
   }
 
 }
