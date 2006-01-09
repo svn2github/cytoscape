@@ -11,8 +11,10 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Paint;
 import java.awt.Stroke;
+import java.awt.geom.Point2D;
+import java.util.List;
 
-class DEdgeView implements EdgeView, Label
+class DEdgeView implements EdgeView, Label, Bend
 {
 
   static final Paint DEFAULT_ARROW_PAINT = Color.black;
@@ -469,19 +471,26 @@ class DEdgeView implements EdgeView, Label
 
   public void updateLine()
   {
+    m_view.updateView();
   }
 
+  // This is also a method on giny.view.Bend.
   public void drawSelected()
   {
+    select();
+    m_view.updateView();
   }
 
+  // This is also a method on giny.view.Bend.
   public void drawUnselected()
   {
+    unselect();
+    m_view.updateView();
   }
 
   public Bend getBend()
   {
-    return null;
+    return this;
   }
 
   public void clearBends()
@@ -552,6 +561,62 @@ class DEdgeView implements EdgeView, Label
   {
     synchronized (m_view.m_lock) {
       m_view.m_edgeDetails.overrideLabelFont(m_inx, 0, font); }
+  }
+
+
+  // Interface giny.view.Bend:
+
+  public void setHandles(List bendPoints)
+  {
+  }
+
+  public List getHandles()
+  {
+    return null;
+  }
+
+  public void moveHandle(int i, Point2D pt)
+  {
+  }
+
+  public Point2D getSourceHandlePoint()
+  {
+    return null;
+  }
+
+  public Point2D getTargetHandlePoint()
+  {
+    return null;
+  }
+
+  public void addHandle(Point2D pt)
+  {
+  }
+
+  public void addHandle(int insertInx, Point2D pt)
+  {
+  }
+
+  public void removeHandle(Point2D pt)
+  {
+  }
+
+  public void removeHandle(int inx)
+  {
+  }
+
+  public void removeAllHandles()
+  {
+  }
+
+  public boolean handleAlreadyExists(Point2D pt)
+  {
+    return false;
+  }
+
+  public Point2D[] getDrawPoints()
+  {
+    return null;
   }
 
 }
