@@ -632,7 +632,14 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
 
   public boolean handleAlreadyExists(Point2D pt)
   {
-    return false;
+    synchronized (m_view.m_lock) {
+      final float x = (float) pt.getX();
+      final float y = (float) pt.getY();
+      for (int i = 0; i < m_anchors.size(); i++) {
+        final Point2D.Float currPt = (Point2D.Float) m_anchors.get(i);
+        if (x == currPt.x && y == currPt.y) {
+          return true; } }
+      return false; }
   }
 
   public Point2D[] getDrawPoints()
