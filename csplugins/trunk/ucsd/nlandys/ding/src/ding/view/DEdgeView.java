@@ -635,12 +635,19 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
 
   public int numAnchors()
   {
-    return m_anchors.size();
+    if (m_lineType == EdgeView.CURVED_LINES) {
+      return m_anchors.size(); }
+    else { // EdgeView.STRAIGHT_LINES.
+      return 2 * m_anchors.size(); }
   }
 
   public void getAnchor(int anchorIndex, float[] anchorArr, int offset)
   {
-    final Point2D.Float anchor = (Point2D.Float) m_anchors.get(anchorIndex);
+    final Point2D.Float anchor;
+    if (m_lineType == EdgeView.CURVED_LINES) {
+      anchor = (Point2D.Float) m_anchors.get(anchorIndex); }
+    else { // EdgeView.STRAIGHT_LINES.
+      anchor = (Point2D.Float) m_anchors.get(anchorIndex / 2); }
     anchorArr[offset] = anchor.x;
     anchorArr[offset + 1] = anchor.y;
   }
