@@ -9,6 +9,7 @@ import nct.graph.*;
 import nct.graph.basic.*;
 import nct.networkblast.score.*;
 import nct.networkblast.graph.*;
+import nct.networkblast.graph.compatibility.*;
 import nct.networkblast.NetworkBlast;
 import nct.service.homology.sif.*;
 
@@ -30,11 +31,10 @@ public class ColorCodingPathSearchTest extends TestCase {
 	    inputSpecies.add(i);
 	    inputSpecies.add(h);
 	    SIFHomologyReader sr = new SIFHomologyReader("examples/test.compat.sif");
-	    HomologyGraph homologyGraph = new HomologyGraph(sr);
-	    for ( SequenceGraph<String,Double> spec : inputSpecies )
-	        homologyGraph.addGraph(spec);
-												                        g = new CompatibilityGraph(homologyGraph, inputSpecies, 1e-5, s );
-												                        j = new CompatibilityGraph(homologyGraph, inputSpecies, 1e-5, s );
+	    HomologyGraph homologyGraph = new HomologyGraph(sr,1e-5,inputSpecies);
+	    CompatibilityCalculator compatCalc = new AdditiveCompatibilityCalculator(0.01,s);
+		g = new CompatibilityGraph(homologyGraph, inputSpecies, s, compatCalc );
+		j = new CompatibilityGraph(homologyGraph, inputSpecies, s, compatCalc );
 
 	} catch (IOException e) {
 	    e.printStackTrace();

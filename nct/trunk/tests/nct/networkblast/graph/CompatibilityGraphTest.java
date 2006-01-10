@@ -6,6 +6,7 @@ import java.util.*;
 import java.util.logging.Level;
 
 import nct.networkblast.score.*;
+import nct.networkblast.graph.compatibility.*;
 import nct.graph.basic.*;
 import nct.graph.*;
 import nct.service.homology.sif.*;
@@ -24,11 +25,10 @@ public class CompatibilityGraphTest extends TestCase {
 	    inputSpecies.add(i);
 	    inputSpecies.add(h);
 	    SIFHomologyReader sr = new SIFHomologyReader("examples/junit.compat.sif");
-	    homologyGraph = new HomologyGraph(sr);
-	    for ( SequenceGraph<String,Double> spec : inputSpecies )
-	        homologyGraph.addGraph(spec);
+	    homologyGraph = new HomologyGraph(sr, 1e-5, inputSpecies);
 	    LogLikelihoodScoreModel lls = new LogLikelihoodScoreModel(2.5,0.8,1e-10);
-	    g = new CompatibilityGraph(homologyGraph, inputSpecies, 1e-5, lls );
+	    CompatibilityCalculator compatCalc = new AdditiveCompatibilityCalculator(0.01,lls);
+	    g = new CompatibilityGraph(homologyGraph, inputSpecies, lls, compatCalc );
 	} catch (IOException e1) {
 	    e1.printStackTrace();
 	}

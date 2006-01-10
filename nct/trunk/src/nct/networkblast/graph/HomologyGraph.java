@@ -24,23 +24,31 @@ public class HomologyGraph
 
 	private static Logger log = Logger.getLogger("networkblast");
 
-	HomologyModel homModel;
+	protected HomologyModel homModel;
+	protected double exThresh;
+	
 
 	/**
 	 * @param homModel The homology model used to generate the edges in the graph.
+	 * @param exThresh The expectation threshold.  Expectation values above this
+	 * threshold will not be added to the graph.
 	 */
-	public HomologyGraph(HomologyModel homModel) {
+	public HomologyGraph(HomologyModel homModel, double exThresh) {
 		super();
 		this.homModel = homModel;
+		this.exThresh = exThresh;
 	}
 
 	/**
 	 * @param homModel The homology model used to generate the edges in the graph.
+	 * @param exThresh The expectation threshold.  Expectation values above this
+	 * threshold will not be added to the graph.
 	 * @param graphs A collection of graphs to be added to this graph.
 	 */
-	public HomologyGraph(HomologyModel homModel, Collection<SequenceGraph<String,Double>> graphs) {
+	public HomologyGraph(HomologyModel homModel, double exThresh, Collection<SequenceGraph<String,Double>> graphs) {
 		super();
 		this.homModel = homModel;
+		this.exThresh = exThresh;
 		for (SequenceGraph<String,Double> sg : graphs)
 			addGraph(sg);
 	}
@@ -93,8 +101,10 @@ public class HomologyGraph
 			for ( String nodeB: homologyMap.get(nodeA).keySet() ) {
 				//System.out.print ("B node: " + nodeB );
 				//System.out.println ("  value: " + homologyMap.get(nodeA).get(nodeB));
-				if ( ! addEdge(nodeA,nodeB,homologyMap.get(nodeA).get(nodeB)) )
-					System.out.println("didn't add edge: " + nodeA + " " + nodeB);
+				Double score = homologyMap.get(nodeA).get(nodeB);
+				if ( score != null && score.doubleValue() <= exThresh )
+					if ( ! addEdge(nodeA,nodeB,score) )
+						System.out.println("didn't add edge: " + nodeA + " " + nodeB);
 			}
 		}
 		//System.out.println("number of homology edges: " + numberOfEdges());

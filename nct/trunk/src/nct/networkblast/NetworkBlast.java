@@ -13,6 +13,7 @@ import java.text.DecimalFormat;
 
 import nct.networkblast.search.*;
 import nct.networkblast.graph.*;
+import nct.networkblast.graph.compatibility.*;
 import nct.networkblast.score.*;
 import nct.graph.*;
 import nct.graph.basic.*;
@@ -92,14 +93,13 @@ public class NetworkBlast {
 
 			ScoreModel logScore = new LogLikelihoodScoreModel(truthFactor, modelTruth, backgroundProb);
 			SIFHomologyReader sr = new SIFHomologyReader(compatFile);
-			HomologyGraph homologyGraph = new HomologyGraph(sr);
-			for ( SequenceGraph<String,Double> spec : inputSpecies )
-				homologyGraph.addGraph(spec);
+			HomologyGraph homologyGraph = new HomologyGraph(sr, expectation, inputSpecies);
+			CompatibilityCalculator compatCalc = new AdditiveCompatibilityCalculator(0.01,logScore);
 
 			if (!QUIET)
 				System.out.println("# begin creating compatibility graph");
 			CompatibilityGraph compatGraph = new CompatibilityGraph(homologyGraph,
-					inputSpecies, expectation, logScore);
+					inputSpecies, logScore, compatCalc );
 
 			if (!QUIET)
 				System.out.println("# begin path search");

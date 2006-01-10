@@ -6,6 +6,7 @@ import java.io.*;
 import java.util.logging.Level;
 
 import nct.networkblast.graph.*;
+import nct.networkblast.graph.compatibility.*;
 import nct.networkblast.score.*;
 import nct.networkblast.NetworkBlast;
 import nct.graph.*;
@@ -31,10 +32,9 @@ public class GreedyComplexSearchTest extends TestCase {
             inputSpecies.add(i);
             inputSpecies.add(h);
             SIFHomologyReader sr = new SIFHomologyReader("examples/test.compat.sif");
-            HomologyGraph homologyGraph = new HomologyGraph(sr);
-            for ( SequenceGraph<String,Double> spec : inputSpecies )
-                homologyGraph.addGraph(spec);
-            g = new CompatibilityGraph(homologyGraph, inputSpecies, 1e-5, s );
+            HomologyGraph homologyGraph = new HomologyGraph(sr,1e-5,inputSpecies);
+	    CompatibilityCalculator compatCalc = new AdditiveCompatibilityCalculator(0.01,s);
+            g = new CompatibilityGraph(homologyGraph, inputSpecies, s, compatCalc );
 	    solns = sg.searchGraph(h, s);
 	} catch (IOException e) {
 	    e.printStackTrace();

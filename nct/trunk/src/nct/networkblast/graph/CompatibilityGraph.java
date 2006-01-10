@@ -5,6 +5,7 @@ import java.util.*;
 import java.util.logging.Logger;
 
 import nct.networkblast.score.ScoreModel;
+import nct.networkblast.graph.compatibility.CompatibilityCalculator;
 import nct.graph.Graph;
 import nct.graph.DistanceGraph;
 import nct.graph.KPartiteGraph;
@@ -18,14 +19,12 @@ import nct.graph.basic.BasicGraph;
  */
 public class CompatibilityGraph extends BasicGraph<String,Double> {
 
-	public static double ORTHOLOGY_THRESHOLD = 0.01;
-
-	protected double blastThreshold; 
 	protected Map<String,Map<String,Double>> homologyMap; 
 	protected Map<String,Map<String,String>> edgeDescMap; 
 	protected List<? extends DistanceGraph<String,Double>> interactionGraphs;
 	protected KPartiteGraph<String,Double,? extends DistanceGraph<String,Double>> homologyGraph;
 	protected ScoreModel scoreModel;
+	protected CompatibilityCalculator compatCalc;
 
 	private static Logger log = Logger.getLogger("networkblast");
 
@@ -34,14 +33,14 @@ public class CompatibilityGraph extends BasicGraph<String,Double> {
 	 * @param homologyGraph A k-partite graph where edges represent homology relations between
 	 * proteins and partitions represent species/organisms.
 	 * @param interactionGraphs 
-	 * @param blastThreshold The threshold used to decide which homology mappings 
-	 * are significant enough to include.
 	 * @param scoreModel The ScoreModel used to score an edge in the graph. 
+	 * @param compatCalc The CompatibilityCalculator used to determine whether two possible compatibility 
+	 * nodes should be added to the compatibility graph and if so, adds the nodes and edge.
 	 */
 	public CompatibilityGraph(KPartiteGraph<String,Double,? extends DistanceGraph<String,Double>> homologyGraph, 
 				  List<? extends DistanceGraph<String,Double>> interactionGraphs, 
-				  double blastThreshold,  
-				  ScoreModel scoreModel) {
+				  ScoreModel scoreModel,
+				  CompatibilityCalculator compatCalc) {
 		super();
 
 		try {
@@ -51,8 +50,9 @@ public class CompatibilityGraph extends BasicGraph<String,Double> {
 
 		this.homologyGraph = homologyGraph;
 		this.interactionGraphs = interactionGraphs;
-		this.blastThreshold = blastThreshold;
 		this.scoreModel = scoreModel;
+		this.compatCalc = compatCalc;
+
 		edgeDescMap = new HashMap<String,Map<String,String>>(); 
 
 		createCompatGraph();
@@ -81,8 +81,9 @@ public class CompatibilityGraph extends BasicGraph<String,Double> {
 			String[] nodeBase = listOfCompatibilityNodes.get(x);
 			for ( int y = x+1; y < listOfCompatibilityNodes.size(); y++ ) {
 				String[] nodeBranch = listOfCompatibilityNodes.get(y);
+				compatCalc.calculate(this,graphs,nodeBase,nodeBranch);
 
-				// first do the distances
+/*
 				byte[] distance = new byte[numGraphs]; 
 
 				boolean foundOne = false;
@@ -114,27 +115,14 @@ public class CompatibilityGraph extends BasicGraph<String,Double> {
 				for ( int z = 0; z < numGraphs; z++ ) 
 					distDesc.append( Byte.toString(distance[z] ));
 				//System.out.println( "final distance " + distDesc.toString() );
-
 				addNode(node1);
 				addNode(node2);
 				addEdge(node1,node2, new Double(edgeWeight), distDesc.toString());
+*/
 			}
 		}
 	}
 
-	// TODO move to Graph/BasicGraph
-	private void addEdge(String nodeA, String nodeB, Double weight, String desc) {
-
-		//System.out.println("attempting edge add: " + nodeA + " " + nodeB + " " + weight + " " + desc);
-		if ( !super.addEdge(nodeA,nodeB,weight) ) {
-			log.warning("add edge failed: " + nodeA + " " + nodeB + "  " + weight + " " + desc);
-			return;
-		}
-		setEdgeDescription(nodeA,nodeB,desc);
-
-		log.config("edge added: " + nodeA + " " + nodeB + " " + weight + " " + desc);
-		//System.out.println("edge added: " + nodeA + " " + nodeB + " " + weight + " " + desc);
-	}
 
 	/**
 	 * In general, nodes in the compatibility graph are k-cliques in the homology graph
