@@ -214,18 +214,14 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
           (m_inx, m_targetSelectedPaint); } }
   }
 
-  /*
-   * No-op.
-   */
   public void setSourceEdgeEndStrokePaint(Paint paint)
   {
+    // No-op.
   }
 
-  /*
-   * No-op.
-   */
   public void setTargetEdgeEndStrokePaint(Paint paint)
   {
+    // No-op.
   }
 
   public void setSourceEdgeEndPaint(Paint paint)
