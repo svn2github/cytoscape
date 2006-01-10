@@ -348,6 +348,7 @@ public abstract class Cytoscape {
      */
 	public static CyEdge getCyEdge(Node node_1, Node node_2, String attribute,
 			Object attribute_value, boolean create) {
+		
 		if (Cytoscape.getRootGraph().getEdgeCount() != 0) {
 			int[] n1Edges = Cytoscape.getRootGraph()
 					.getAdjacentEdgeIndicesArray(node_1.getRootGraphIndex(),
@@ -432,6 +433,52 @@ public abstract class Cytoscape {
 		// Cytoscape.getEdgeNetworkData().addNameMapping (edge_name, edge);
 		// return edge;
 	}
+	
+	/**
+	 * Creates a new edge with a unique identifier constructed as follows:
+	 * source identifier (interaction type) target identifier<br>
+	 * If the above name is already in use, then the following is added to the end of the name:
+	 * index: <new edge index> <br>
+	 * Where <new edge index> is an internally used integer index to identify the edge.<br> 
+	 * @param source the source of the edge
+	 * @param target the target of the edge
+	 * @param interaction_type the type of interaction (for example, "pp", "pd", etc).
+	 * @return a new edge
+	 */
+	public static CyEdge createCyEdge (Node source, Node target, String interaction_type){
+		CyEdge edge = (CyEdge) Cytoscape.getRootGraph().getEdge(
+					Cytoscape.getRootGraph().createEdge(source, target));
+
+		//  create the edge id
+		String edge_name = source.getIdentifier() + " (" + interaction_type
+		+ ") " + target.getIdentifier();
+		
+		// see if there are edges with this name already
+		Iterator it = Cytoscape.getRootGraph().edgesIterator();
+		int numWithName = 0;
+		while(it.hasNext()){
+			CyEdge e = (CyEdge)it.next();
+			String otherName = e.getIdentifier();
+			if(otherName.indexOf(edge_name) >= 0){
+				edge_name = edge_name + " index:" + edge.getRootGraphIndex();
+				break;
+			}
+		}
+		
+		edge.setIdentifier(edge_name);
+
+		//  Store Edge Name Mapping within GOB.
+		Cytoscape.getEdgeNetworkData().addNameMapping(edge_name, edge);
+
+		//  store edge id as INTERACTION / CANONICAL_NAME Attributes
+		edgeAttributes.setAttribute(edge_name, Semantics.INTERACTION,
+				(String) interaction_type);
+         edgeAttributes.setAttribute(edge_name, Semantics.CANONICAL_NAME,
+                    edge_name);
+		return edge;
+	}
+	
+		
 
 	/**
 	 * Returns the requested Attribute for the given Node
