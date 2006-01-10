@@ -71,7 +71,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
 
   public Edge getEdge()
   {
-    return null;
+    return m_view.getGraphPerspective().getEdge(~m_inx);
   }
 
   public GraphView getGraphView()
