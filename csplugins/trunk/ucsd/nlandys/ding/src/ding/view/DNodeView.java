@@ -236,7 +236,7 @@ class DNodeView implements NodeView, Label
 
   public int getDegree()
   {
-    return 0;
+    return m_view.getGraphPerspective().getDegree(~m_inx);
   }
 
   public void setOffset(double x, double y)
