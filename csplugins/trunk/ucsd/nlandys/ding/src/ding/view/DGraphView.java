@@ -13,6 +13,7 @@ import java.awt.Canvas;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Paint;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -23,10 +24,18 @@ class DGraphView implements GraphView
   final Object m_lock = new Object();
   final float[] m_extentsBuff = new float[4];
   GraphPerspective m_perspective;
+
+  // Throughout this code I am assuming that nodes or edges are never
+  // removed from the underlying RootGraph.  This assumption was made in the
+  // old GraphView implementation.  Removal from the RootGraph is the only
+  // thing that can affect m_drawPersp that is beyond our control.
   GraphPerspective m_drawPersp;
+
   MutableSpacialIndex2D m_spacial;
   DNodeDetails m_nodeDetails;
   DEdgeDetails m_edgeDetails;
+  HashMap m_nodeViewMap;
+  HashMap m_edgeViewMap;
 
   private static class InnerCanvas extends Canvas
   {
@@ -37,6 +46,8 @@ class DGraphView implements GraphView
     m_perspective = perspective;
     m_drawPersp = m_perspective.getRootGraph().createGraphPerspective
       ((int[]) null, (int[]) null);
+    m_nodeViewMap = new HashMap();
+    m_edgeViewMap = new HashMap();
   }
 
   public GraphPerspective getGraphPerspective()
@@ -114,7 +125,21 @@ class DGraphView implements GraphView
 
   public NodeView addNodeView(int nodeInx)
   {
-    return null;
+    synchronized (m_lock) {
+      final NodeView oldView =
+        (NodeView) m_nodeViewMap.get(new Integer(nodeInx));
+      if (oldView != null) { return oldView; }
+      if (m_drawPersp.restoreNode(nodeInx) == 0) {
+        if (m_drawPersp.getNode(nodeInx) != null) {
+          throw new IllegalStateException
+            ("something weird is going on - node already existed in graph " +
+             "but a view for it did not exist (debug)"); }
+        throw new IllegalArgumentException
+          ("node index specified does not exist in underlying RootGraph"); }
+      final NodeView returnThis = new DNodeView(this, nodeInx);
+      m_nodeViewMap.put(new Integer(nodeInx), returnThis);
+      m_spacial.insert(~nodeInx, -10.0f, -10.0f, 10.0f, 10.0f);
+      return returnThis; }
   }
 
   public EdgeView addEdgeView(int edgeInx)
