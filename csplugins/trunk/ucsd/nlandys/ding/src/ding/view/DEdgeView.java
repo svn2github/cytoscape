@@ -580,15 +580,29 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
 
   public void setHandles(List bendPoints)
   {
+    synchronized (m_view.m_lock) {
+      removeAllHandles();
+      for (int i = 0; i < bendPoints.size(); i++) {
+        final Point2D nextPt = (Point2D) bendPoints.get(i);
+        addHandle(nextPt); } }
   }
 
   public List getHandles()
   {
-    return null;
+    synchronized (m_view.m_lock) {
+      final ArrayList returnThis = new ArrayList();
+      for (int i = 0; i < m_anchors.size(); i++) {
+        final Point2D addThis = new Point2D.Float();
+        addThis.setLocation((Point2D) m_anchors.get(i));
+        returnThis.add(addThis); }
+      return returnThis; }
   }
 
-  public void moveHandle(int i, Point2D pt)
+  public void moveHandle(int inx, Point2D pt)
   {
+    synchronized (m_view.m_lock) {
+      final Point2D movePt = (Point2D) m_anchors.get(inx);
+      movePt.setLocation(pt); }
   }
 
   public Point2D getSourceHandlePoint()
