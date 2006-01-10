@@ -46,7 +46,7 @@ class DNodeView implements NodeView, Label
 
   public Node getNode()
   {
-    return null;
+    return m_view.getGraphPerspective().getNode(~m_inx);
   }
 
   public int getGraphPerspectiveIndex()
