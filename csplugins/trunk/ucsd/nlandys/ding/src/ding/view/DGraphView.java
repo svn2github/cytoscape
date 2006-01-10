@@ -168,27 +168,27 @@ class DGraphView implements GraphView
 
   public EdgeView addEdgeView(String className, int edgeInx)
   {
-    return null;
+    throw new UnsupportedOperationException("not implemented");
   }
 
   public NodeView addNodeView(String className, int nodeInx)
   {
-    return null;
+    throw new UnsupportedOperationException("not implemented");
   }
 
   public NodeView addNodeView(int nodeInx, NodeView replacement)
   {
-    return null;
+    throw new UnsupportedOperationException("not implemented");
   }
 
   public NodeView removeNodeView(NodeView nodeView)
   {
-    return null;
+    return removeNodeView(nodeView.getRootGraphIndex());
   }
 
   public NodeView removeNodeView(Node node)
   {
-    return null;
+    return removeNodeView(node.getRootGraphIndex());
   }
 
   public NodeView removeNodeView(int nodeInx)
@@ -198,12 +198,12 @@ class DGraphView implements GraphView
 
   public EdgeView removeEdgeView(EdgeView edgeView)
   {
-    return null;
+    return removeEdgeView(edgeView.getRootGraphIndex());
   }
 
   public EdgeView removeEdgeView(Edge edge)
   {
-    return null;
+    return removeEdgeView(edge.getRootGraphIndex());
   }
 
   public EdgeView removeEdgeView(int edgeInx)
