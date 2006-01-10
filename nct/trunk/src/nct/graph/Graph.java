@@ -22,9 +22,20 @@ public interface Graph<NodeType extends Comparable<NodeType>,
 	 * Adds an edge to the graph.
 	 * @param nodeA The beginning node of the edge to add.
 	 * @param nodeB The ending node of the edge to add.
+	 * @param weight The edge weight. 
 	 * @return true if edge successfully added, false otherwise. 
 	 */
 	public boolean addEdge(NodeType nodeA, NodeType nodeB, WeightType weight); 
+
+	/**
+	 * Adds an edge to the graph.
+	 * @param nodeA The beginning node of the edge to add.
+	 * @param nodeB The ending node of the edge to add.
+	 * @param weight The edge weight. 
+	 * @param desc The edge description. 
+	 * @return true if edge successfully added, false otherwise. 
+	 */
+	public boolean addEdge(NodeType nodeA, NodeType nodeB, WeightType weight, String desc); 
 
 	/**
 	 * Indicates whether the specified nodes refer to a valid edge in the graph.

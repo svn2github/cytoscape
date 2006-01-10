@@ -83,15 +83,28 @@ public class BasicGraph<NodeType extends Comparable<NodeType>,WeightType extends
 		}
 
 	}
+        /**
+         * Adds an edge to the graph. Returns false if the nodes are bad or if the
+	 * the nodes have not already been added to the graph.
+         * @param nodeA The beginning node of the edge to add.
+         * @param nodeB The ending node of the edge to add.
+         * @param weight The edge weight.
+         * @return true if edge successfully added, false otherwise.
+         */
+	public boolean addEdge(NodeType nodeA, NodeType nodeB, WeightType weight) {
+		return addEdge(nodeA,nodeB,weight,null);
+	}
 
         /**
          * Adds an edge to the graph. Returns false if the nodes are bad or if the
 	 * the nodes have not already been added to the graph.
          * @param nodeA The beginning node of the edge to add.
          * @param nodeB The ending node of the edge to add.
+         * @param weight The edge weight.
+         * @param desc The edge description.
          * @return true if edge successfully added, false otherwise.
          */
-	public boolean addEdge(NodeType nodeA, NodeType nodeB, WeightType weight) {
+	public boolean addEdge(NodeType nodeA, NodeType nodeB, WeightType weight, String desc) {
 
 		if ( nodeA == null || nodeB == null )
 			return false;
@@ -105,6 +118,9 @@ public class BasicGraph<NodeType extends Comparable<NodeType>,WeightType extends
 		weightMap.get(nodeB).put(nodeA,weight);
 		numEdges++;
 
+		if ( desc != null )
+			actuallySetEdgeDesc(nodeA,nodeB,desc);
+		
 		return true;
 	}
 
@@ -352,6 +368,18 @@ public class BasicGraph<NodeType extends Comparable<NodeType>,WeightType extends
 		if ( !weightMap.containsKey( nodeA ) || !weightMap.containsKey( nodeB ) )
 			return false;
 
+		actuallySetEdgeDesc(nodeA,nodeB,desc);
+
+		return true;
+	}
+
+	/**
+	 * A private method used to actually set the description because this is
+	 * done in multiple places. This method assumes that the specified nodes 
+	 * are valid.
+	 */
+	private void actuallySetEdgeDesc(NodeType nodeA, NodeType nodeB, String desc) {
+
 		if ( !descMap.containsKey( nodeA ) )
 			descMap.put(nodeA,new HashMap<NodeType,String>());
 
@@ -360,8 +388,6 @@ public class BasicGraph<NodeType extends Comparable<NodeType>,WeightType extends
 
 		descMap.get(nodeA).put(nodeB,desc);
 		descMap.get(nodeB).put(nodeA,desc);
-
-		return true;
 	}
 
 
