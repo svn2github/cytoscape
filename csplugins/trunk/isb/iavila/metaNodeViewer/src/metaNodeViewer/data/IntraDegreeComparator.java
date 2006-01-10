@@ -38,6 +38,7 @@ import java.util.*;
  * @author Iliana Avila-Campillo iavila@systemsbiology.org, iliana.avila@gmail.com
  * @version %I%, %G%
  * @since 2.0
+ * TODO: Use CyNodes instead of node indices!
  */
 public class IntraDegreeComparator implements Comparator{
 	
@@ -50,7 +51,7 @@ public class IntraDegreeComparator implements Comparator{
 	 * Constructor.
 	 * 
 	 * @param cy_net the network where the nodes to be sorted reside
-	 * @param nodes_in_network whether or not the nodes are in the network ?
+	 * @param nodes_in_network whether or not the nodes are in the network TODO: Is this argument needed?
 	 * @param node_rindices the RootGraph indices of the nodes to be sorted
 	 */
 	public IntraDegreeComparator (CyNetwork cy_net, boolean nodes_in_network, int [] node_rindices){ // TODO: 2nd argument, needed?

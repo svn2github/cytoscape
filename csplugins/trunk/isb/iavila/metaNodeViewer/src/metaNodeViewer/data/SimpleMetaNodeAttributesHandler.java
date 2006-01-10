@@ -1,6 +1,5 @@
 package metaNodeViewer.data;
 
-//import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.*;
 import giny.model.*;
 import cern.colt.map.AbstractIntIntMap;
@@ -38,12 +37,6 @@ import cytoscape.*;
  * @author Iliana Avila iavila@systemsbiology.org
  * @version 1.0
  */
-
-// TODO: method setNodeAttributes(CyNetwork cy_network,int metanode_root_index,
-// int[] children_nodes_root_indices) has commented
-// code that is crashing due to GraphObjAttributes. Since we think we are going
-// to refactor/rewrite GraphObjAttrbutes, leave it
-// as it is and fix later. iliana.
 // TODO: internal class CopyEdgeAttr needs to be looked at. See comments.
 // iliana.
 // TODO: Implement removeFromAttributes() -iliana

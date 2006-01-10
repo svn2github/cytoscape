@@ -34,10 +34,7 @@ import metaNodeViewer.MetaNodeUtils;
 import javax.swing.JOptionPane;
 import javax.swing.AbstractAction;
 import java.awt.event.ActionEvent;
-import cern.colt.list.IntArrayList;
 import cytoscape.*;
-import cytoscape.view.CyNetworkView;
-import giny.view.*;
 
 /**
  * Use metaNodeViewer.actions.ActionFactory to get an instance of this class.

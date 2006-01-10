@@ -34,12 +34,12 @@ import cytoscape.*;
 import java.util.*;
 
 /**
- * Creates meta-nodes for a given GraphPerspective (CyNetwork) and keeps track
- * of which meta-nodes belong to which GraphPerspectives (since all
- * GraphPerspectives share the same RootGraph). The newly created meta-nodes are
- * only contained within the RootGraph, and not in the CyNetwork. Use
- * metaNodeViewer.model.MetaNodeFactory instead, since it has easy to use static
+ * Creates meta-nodes for a given CyNetwork and keeps track
+ * of which meta-nodes belong to which network (since all CyNetworks share a RootGraoh).
+ * The newly created meta-nodes are only contained within the RootGraph, and not in the CyNetwork.
+ * Use metaNodeViewer.model.MetaNodeFactory instead, since it has easy to use static
  * methods to create meta-nodes.
+ * Named GPMetaNodeFactory because when it was written, Cytoscape only had GraphPerspectives, not CyNetworks.
  */
 
 public class GPMetaNodeFactory {
@@ -138,9 +138,7 @@ public class GPMetaNodeFactory {
 	 * 
 	 * @param cy_net
 	 *            the CyNetwork for which a meta-node will be created
-	 * @param children_node_indices
-	 *            the indices of the meta-node's children nodes that should be
-	 *            in cy_net (RootGraph or GraphPerspective indices)
+	 * @param children an array of CyNodes that are the children of the meta-node
 	 * @param attributes_handler
 	 *            the MetaNodeAttributesHandler to be used to assign a name to
 	 *            the new meta-node (if getAssignDefaultNames() is true)
@@ -210,7 +208,7 @@ public class GPMetaNodeFactory {
 	}// createMetaNode
 
 	/**
-	 * Creates a new name of the form MetaNode_<abs(root_node_index)> and adds
+	 * Creates a new name of the form MetaNode_<root_node_index> and adds
 	 * an object-name mapping in the node attributes contained in CyNetwork for
 	 * the given node.
 	 * 

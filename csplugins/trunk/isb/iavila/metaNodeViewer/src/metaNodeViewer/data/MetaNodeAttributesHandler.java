@@ -44,43 +44,32 @@ import cern.colt.map.AbstractIntIntMap;
 public interface MetaNodeAttributesHandler {
 
   /**
-   * Creates a unique name for the Node with the given index, and adds
-   * a Node-name mapping to GraphObjAttributes for nodes (contained in the given
-   * CyNetwork).
+   * Creates a unique name for the CyNode and registers this name and node into Cytoscape
    *
-   * @param cy_net the CyNetwork that contains the GraphObjAttributes for nodes and
-   * the RootGraph that contains the given node
-   * @param metanode_root_index the RootGraph index of the meta-node for which a name
-   * will be set
+   * @param cy_net the CyNetwork where the node is contained
+   * @param node the node
    * @return the name, or null if something went wrong
    */
   public String assignName(CyNetwork cy_net, CyNode node);
 
   /**
-   * Sets the node and edge attributes of the meta-node with the given RootGraph index
-   * and assigns a unique name to it in the GraphObjAttributes for nodes
+   * Sets the node and edge attributes of the meta-node
    *
-   * @param cy_network the CyNetwork that contains the children nodes of the meta-node, 
-   * and that contains the GraphObjAttributes that contain the node and edge attributes
-   * @param metanode_root_index the RootGraph index of the meta-node for which attributes
-   * will be set
-   * @param children_nodes_root_indeces the RootGraph indices of the children nodes from
-   * which node attributes will be transfered to the meta-node
+   * @param cy_network the CyNetwork that contains the children nodes of the meta-node
+   * @param node the meta-node
+   * @param children an array of CyNodes that are the children nodes of "node"
    * @param meta_edge_to_child_edge maps a meta-edge (edge connected to the meta-node)
-   * RootGraph index to a child edge (edge that connects a child of the meta-node to another
-   * node) RootGraph index, so that classes implementing this interface know which child edge
+   * to a child edge (edge that connects a child of the meta-node to another
+   * node) so that classes implementing this interface know which child edge
    * corresponds to which meta-edge
    * @return true if all went well, false if there was an error
    */
   public boolean setAttributes(CyNetwork cy_network, CyNode node, ArrayList children, AbstractIntIntMap meta_edge_to_child_edge);
   
   /**
-   * Sets the node attributes of the meta-node with the given RootGraph index 
-   * and assigns a unique name to it in the GraphObjAttributes for nodes
-   *
-   * @param cy_network the CyNetwork that contains the GraphPerspective that contains
-   * the children nodes of the meta-node, and that contains the GraphObjAttributes that 
-   * contain the node and edge attributes
+   * Sets the node attributes of the meta-node
+   * 
+   * @param cy_network the CyNetwork that contains the children nodes of "node"
    * @param node the node for which node attributes will be set
    * @param children an ArrayList of CyNodes that are chilren nodes of the given node
    * @return true if all went well, false if there was an error
@@ -88,16 +77,13 @@ public interface MetaNodeAttributesHandler {
   public boolean setNodeAttributes(CyNetwork cy_network, CyNode node, ArrayList children);
 
   /**
-   * Sets the edge attributes of the meta-node with the given RootGraph index and assigns
-   * to them unique names in the GraphObjAttributes for edges
+   * Sets the edge attributes of the meta-node
    *
-   * @param cy_network the CyNetwork that contains the GraphPerspective that contains
-   * the children nodes of the meta-node, and the GraphObjAttributes that contain the edge
-   * attributes
+   * @param cy_network the CyNetwork that contains the children nodes of "node"
    * @param node the node for which edge attributes will be set
    * @param meta_edge_to_child_edge maps a meta-edge (edge connected to the meta-node)
-   * RootGraph index to a child edge (edge that connects a child of the meta-node to another
-   * node) RootGraph index, so that classes implementing this interface know which child edge
+   * to a child edge (edge that connects a child of the meta-node to another
+   * node) so that classes implementing this interface know which child edge
    * corresponds to which meta-edge
    * @return true if all went well, false if there was an error
    */
@@ -105,16 +91,12 @@ public interface MetaNodeAttributesHandler {
   public boolean setEdgeAttributes(CyNetwork cy_network, CyNode node, AbstractIntIntMap meta_edge_to_child_edge);
 
   /**
-   * Removes the Node object identified by the given RootGraph index from the
-   * GraphObjAttributes for nodes contained in the given CyNetwork as well as
-   * its meta-edges from the GraphObjAttributes for edges contained in CyNetwork
-   *
-   * @param cy_network the CyNetwork that contains the GraphObjAttributes for nodes
-   * and edges from which the meta-node and meta-edges will be removed
-   * @param metanode_root_index the RootGraph index of the meta-node that will be
-   * removed from the GraphObjAttributes
-   * @param meta_edge_root_indices the RootGraph indices of the edges connected
-   * to the meta-node that should be removed from the GraphObjAttributes for edges
+   * Removes all attributes created for the given meta-node.
+   * 
+   * @param cy_network were the children for the node live
+   * @param node the meta-node
+   * @param meta_edge_root_indices the edges connected
+   * to the meta-node whose attributes should alse be removed
    * @return true if all went well, false otherwise
    */
   public boolean removeFromAttributes (CyNetwork cy_network,
@@ -122,15 +104,12 @@ public interface MetaNodeAttributesHandler {
                                       ArrayList meta_edge_list);
 
   /**
-   * Remove from the GraphObjAttributes for edges in CyNetwork the edges in
-   * the given array, but don't change the node attributes for metanode_root_index
+   * Remove attributes for the gicen meta-edges in CyNetwork, but leave the attributes for the meta-node
+   * as they are.
    *
-   * @param cy_network the CyNetwork that contains the GraphObjAttributes for
-   * edges from which the  meta-edges will be removed
-   * @param metanode_root_index the RootGraph index of the meta-node to which the
-   * meta-edges are connected
-   * @param meta_edge_root_indices the RootGraph indices of the edges connected
-   * to the meta-node that should be removed from the GraphObjAttributes for edges
+   * @param cy_network the CyNetwork where the meta-edges are
+   * @param node the meta-node
+   * @param meta_edge_list a list of CyEdges for which the attributes should be removed
    * @return true if all went well, false otherwise
    */
   public boolean removeMetaEdgesFromAttributes (CyNetwork cy_network,

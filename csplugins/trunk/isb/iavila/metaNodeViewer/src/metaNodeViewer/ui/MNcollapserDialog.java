@@ -27,7 +27,6 @@ import metaNodeViewer.actions.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import cytoscape.*;
 import edu.umd.cs.piccolo.PNode;
 import metaNodeViewer.data.*;
 

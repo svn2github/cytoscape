@@ -33,14 +33,13 @@ import cytoscape.data.*;
 import cytoscape.view.*;
 import cytoscape.visual.*;
 import cern.colt.map.*;
-import giny.model.*;
 import giny.view.*;
 
 /**
  * Specialized version of SimpleMetaNodeAttributesHandler.<br>
  * 
- * 1. Common name = member with highest intra-connections<br>
- * 2. Area = proportional to number of members<br>
+ * 1. Common name = member with highest intra-connections in the meta-node<br>
+ * 2. Meta-node Area = proportional to number of children<br>
  * 3. Edges = same as member edges<br>
  *
  * @author Iliana Avila-Campillo iavila@systemsbiology.org, iliana.avila@gmail.com
@@ -57,12 +56,10 @@ public class AbstractMetaNodeAttsHandler extends SimpleMetaNodeAttributesHandler
   /**
    * Assigns a canonical name and a common name to the given node. The common name
    * is the same as the child node with highest number of connections to other
-   * children. The canonical name is "MetaNode_<abs(node root index)>".
+   * children. The canonical name is "MetaNode_<node root index>".
    *
-   * @param cy_net the CyNetwork that contains the GraphObjAttributes for nodes and
-   * the RootGraph that contains the given node
-   * @param metanode_root_index the RootGraph index of the meta-node for which a name
-   * will be set
+   * @param cy_net the CyNetwork the CyNetwork that is being modified for meta-node representation
+   * @param node the meta-node to be named
    * @return the name, or null if something went wrong
    */
   public String assignName (CyNetwork cy_net, CyNode node){
@@ -85,10 +82,10 @@ public class AbstractMetaNodeAttsHandler extends SimpleMetaNodeAttributesHandler
   }//assignName
 
   /**
-   * @return a String with the form "MetaNode_<abs(metanode_root_index)>".
+   * @return a String with the form "MetaNode_(metanode_root_index)>".
    */
   protected String createMetaNodeUI (int metanode_root_index){
-    return "MetaNode_" + Integer.toString( (metanode_root_index*-1) );
+    return "MetaNode_" + Integer.toString(metanode_root_index);
   }//createMetaNodeUI
 
   /**
@@ -109,19 +106,14 @@ public class AbstractMetaNodeAttsHandler extends SimpleMetaNodeAttributesHandler
   }//createMetaNodeAlias
   
   /**
-   * Sets the node and edge attributes of the meta-node with the given RootGraph index
-   * and assigns a unique name to it in the GraphObjAttributes for nodes
+   * Sets the node and edge attributes of the given meta-node and assigns a unique name to it
    *
-   * @param cy_network the CyNetwork that contains the GraphPerspective that contains
-   * the children nodes of the meta-node, and that contains the GraphObjAttributes that 
-   * contain the node and edge attributes
-   * @param metanode_root_index the RootGraph index of the meta-node for which attributes
-   * will be set
-   * @param children_nodes_root_indeces the RootGraph indices of the children nodes from
-   * which node attributes will be transfered to the meta-node
+   * @param cy_network the CyNetwork that is being modified to represent the meta-node
+   * @param node the meta-node
+   * @param children an array of CyNodes that are the children nodes of the meta-node
    * @param meta_edge_to_child_edge maps a meta-edge (edge connected to the meta-node)
-   * RootGraph index to a child edge (edge that connects a child of the meta-node to another
-   * node) RootGraph index, so that classes implementing this interface know which child edge
+   * to a child edge (edge that connects a child of the meta-node to another
+   * node), so that classes implementing this interface know which child edge
    * corresponds to which meta-edge
    * @return true if all went well, false if there was an error
    */
@@ -134,16 +126,11 @@ public class AbstractMetaNodeAttsHandler extends SimpleMetaNodeAttributesHandler
   }//setAttributes
   
   /**
-   * Sets the node attributes of the meta-node with the given RootGraph index 
-   * and assigns a unique name to it in the GraphObjAttributes for nodes
+   * Sets the node attributes of the meta-node
    *
-   * @param cy_network the CyNetwork that contains the GraphPerspective that contains
-   * the children nodes of the meta-node, and that contains the GraphObjAttributes that 
-   * contain the node and edge attributes
-   * @param metanode_root_index the RootGraph index of the meta-node for which attributes
-   * will be set
-   * @param children_nodes_root_indeces the RootGraph indices of the children nodes from
-   * which node attributes will be transfered to the meta-node
+   * @param cy_network the CyNetwork that is being modified for meta-node representation
+   * @param node the meta-node
+   * @param children an array of CyNodes that are the children nodes of the meta-node
    * @return true if all went well, false if there was an error
    */
   public boolean setNodeAttributes (CyNetwork cy_network, CyNode node,ArrayList children){
@@ -152,7 +139,7 @@ public class AbstractMetaNodeAttsHandler extends SimpleMetaNodeAttributesHandler
       return false;
     }
     CyAttributes nodeAtts = Cytoscape.getNodeAttributes();
-    // Set the 'nodeType' attribute to 'metaNode
+    // Set the 'nodeType' attribute to 'metaNode'
     nodeAtts.setAttribute(node.getIdentifier(),"nodeType", "metaNode");
     
     // Set the node-height and node-width attributes so that the area
@@ -198,39 +185,8 @@ public class AbstractMetaNodeAttsHandler extends SimpleMetaNodeAttributesHandler
   }//setNodeAttributes
 
   /**
-   * Sets the edge attributes of the meta-node with the given RootGraph index and assigns
-   * to them unique names in the GraphObjAttributes for edges
-   *
-   * @param cy_network the CyNetwork that contains the GraphPerspective that contains
-   * the children nodes of the meta-node, and the GraphObjAttributes that contain the edge
-   * attributes
-   * @param metanode_root_index the RootGraph index of the meta-node for which node attributes
-   * will be set
-   * @param meta_edge_to_child_edge maps a meta-edge (edge connected to the meta-node)
-   * RootGraph index to a child edge (edge that connects a child of the meta-node to another
-   * node) RootGraph index, so that classes implementing this interface know which child edge
-   * corresponds to which meta-edge
-   * @return true if all went well, false if there was an error
-   */
-  //public boolean setEdgeAttributes (CyNetwork cy_network, 
-  //                                int metanode_root_index,
-  //                                AbstractIntIntMap meta_edge_to_child_edge){
-    
-  //return true;
-  //}//setEdgeAttributes
-
-  /**
-   * Removes the Node object identified by the given RootGraph index from the
-   * GraphObjAttributes for nodes contained in the given CyNetwork as well as
-   * its meta-edges from the GraphObjAttributes for edges contained in CyNetwork
-   *
-   * @param cy_network the CyNetwork that contains the GraphObjAttributes for nodes
-   * and edges from which the meta-node and meta-edges will be removed
-   * @param metanode_root_index the RootGraph index of the meta-node that will be
-   * removed from the GraphObjAttributes
-   * @param meta_edge_root_indices the RootGraph indices of the edges connected
-   * to the meta-node that should be removed from the GraphObjAttributes for edges
-   * @return true if all went well, false otherwise
+   * Removes attributes for the given meta-node. Does nothing right now.
+   * TODO: Implement
    */
   public boolean removeFromAttributes (CyNetwork cy_network,
                                     CyNode node,
@@ -239,16 +195,8 @@ public class AbstractMetaNodeAttsHandler extends SimpleMetaNodeAttributesHandler
   }//removeFromAttributes
 
   /**
-   * Remove from the GraphObjAttributes for edges in CyNetwork the edges in
-   * the given array, but don't change the node attributes for metanode_root_index
-   *
-   * @param cy_network the CyNetwork that contains the GraphObjAttributes for
-   * edges from which the  meta-edges will be removed
-   * @param metanode_root_index the RootGraph index of the meta-node to which the
-   * meta-edges are connected
-   * @param meta_edge_root_indices the RootGraph indices of the edges connected
-   * to the meta-node that should be removed from the GraphObjAttributes for edges
-   * @return true if all went well, false otherwise
+   * Removes attributes created for meta-edges. Does nothing right now.
+   * TODO: Implement.
    */
   public boolean removeMetaEdgesFromAttributes (CyNetwork cy_network,
                                                 CyNode node,

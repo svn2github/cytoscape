@@ -35,9 +35,9 @@ import giny.model.*;
 
 /**
  * This class creates and returns AbstractActions that can be added to GUI elements
- * for applying meta-node models to a graph. Most of these actions have special requirements,
- * so they can only be created using this factory to minimize users having to deal with these
- * requirements.
+ * for applying meta-node operations to a graph. Most of these actions have special requirements,
+ * so they can only be created using this factory to minimize users having to deal with 
+ * implementation details.
  */
 
 public class ActionFactory {
@@ -101,8 +101,8 @@ public class ActionFactory {
    * Creates and returns an AbstractAction that uncollapses selected meta-nodes in the current CyNetwork.
    * 
    * @param recursive whether or not the selected meta-nodes should be uncollapsed
-   * all the way down to their leaves
-   * @param temporary if false, the meta-nodes will be permanently removed after they are uncollapsed
+   * all the way down to their lowest level in the graph
+   * @param temporary if false, the meta-nodes (parent nodes) will be permanently removed after they are uncollapsed
    * @param title the title of the action (displayed on buttons, menus, etc).
    * @return an AbstractAction that uncollapses selected nodes
    */

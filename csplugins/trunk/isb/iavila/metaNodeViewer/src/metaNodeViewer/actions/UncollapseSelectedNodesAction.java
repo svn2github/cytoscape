@@ -34,9 +34,7 @@ import metaNodeViewer.MetaNodeUtils;
 import javax.swing.JOptionPane;
 import javax.swing.AbstractAction;
 import java.awt.event.ActionEvent;
-import cern.colt.list.IntArrayList;
 import cytoscape.*;
-import giny.view.*;
 
 /**
  * Use metaNodeViewer.actions.ActionFactory to get an instance of this class.
@@ -51,7 +49,7 @@ public class UncollapseSelectedNodesAction extends AbstractAction {
 	 * Use metaNodeViewer.actions.ActionFactory instead.
 	 * 
 	 * @param abstracting_modeler the AbstractMetaNodeModeler to use to uncollapse the nodes
-	 * @param recursive_uncollapse whether to uncollapse all the way to the leaves
+	 * @param recursive_uncollapse whether to uncollapse all the way to the lowest level in the graph
 	 * @param temporary_uncollapse if false, the meta-nodes are permanently removed after they
 	 * are uncollapsed
 	 * @param title the title for the action (appears as text on a button)
@@ -68,7 +66,7 @@ public class UncollapseSelectedNodesAction extends AbstractAction {
 	
 	/**
 	 * Sets whether or not this uncollapse should be recursive (uncollapse to the bottom level
-	 * of the hierarchy).
+	 * of the graph).
 	 */
 	public void setRecursiveUncollapse (boolean is_recursive){
 		this.recursive = is_recursive;

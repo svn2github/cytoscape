@@ -24,7 +24,6 @@
 package metaNodeViewer;
 
 import java.util.*;
-import cern.colt.list.IntArrayList;
 import giny.model.RootGraph;
 import metaNodeViewer.data.MetaNodeAttributesHandler;
 import metaNodeViewer.model.AbstractMetaNodeModeler;
@@ -56,7 +55,7 @@ public class MetaNodeUtils {
 	   * @return an array of RootGraph indices for the newly created meta-nodes, null
 	   * if something went wrong (null arguments for example)
 	   * 
-	   * The order of the indices in the returned array corresponds to the order of the meta-nodes' 
+	   * The order of the CyNodes in the returned array corresponds to the order of the meta-nodes' 
 	   * children in the given CyNode[][]. For example, meta node with index 'i' in the 
 	   * returned array is the parent of nodes in row children[i].
 	   */
@@ -76,7 +75,7 @@ public class MetaNodeUtils {
 	   * @return an array of RootGraph indices for the newly created meta-nodes, null
 	   * if something went wrong (null arguments for example)
 	   * 
-	   * The order of the indices in the returned array corresponds to the order of the meta-nodes' 
+	   * The order of the CyNodes in the returned array corresponds to the order of the meta-nodes' 
 	   * children in the given CyNode[][]. For example, meta node with index 'i' in the 
 	   * returned array is the parent of nodes in row children[i].
 	   */
@@ -130,8 +129,7 @@ public class MetaNodeUtils {
 	   * their children.
 	   *
 	   * @param network the <code>CyNetwork</code> from which meta-nodes will be removed
-	   * @param meta_node_rindices the <code>RootGraph</code> indices of the meta-nodes
-	   * to be removed
+	   * @param metaNodes an array of CyNodes to be removed
 	   * @param recursive if there are > 1 levels of meta-node hierarchy, whether or not
 	   * to remove all the levels (if it is known that there is only 1 level, setting this
 	   * to false significantly improves performance)
@@ -175,7 +173,7 @@ public class MetaNodeUtils {
 	   * Uncollapses a list of meta-nodes in a CyNetwork.
 	   * 
 	   * @param cy_network the CyNetwork whithin which the meta-nodes to be uncollapsed reside
-	   * @param node_rindices the RootGraph indices of the meta-nodes to be uncollapsed
+	   * @param metaNodes an array of CyNodes that are meta-nodes and are to be uncollapsed
 	   * @param recursive whether meta-nodes inside meta-nodes should be uncollapsed
 	   * @param temporary whether this operation is temporary, or not, if it is not, then the meta-nodes will be removed permanently
 	   * @return the number of uncollapsed meta-nodes
@@ -206,13 +204,13 @@ public class MetaNodeUtils {
 	   * Collapses into a meta-node(s) a set of given nodes in a CyNetwork.
 	   * 
 	   * @param cy_network the CyNetwork whithin which the nodes to be collapse reside
-	   * @param node_rindices the RootGraph indices of the nodes to be collapsed
+	   * @param childrenNodes an array of CyNodes that are the children of the meta-node to collapse
 	   * @param collapse_existent_parents whether or not the existent meta-node parents of the selected nodes should be collapsed instead
 	   * of creating new meta-nodes for them
 	   * @param collapse_recursively whether or not the top-level meta-node parents of the selected nodes should be found and collapsed, ignored if
 	   * collapse_existent_parents is false
-     * @param multiple_edges whether or not multiple edges between meta-nodes and other nodes
-     * should be created
+	   * @param multiple_edges whether or not multiple edges between meta-nodes and other nodes
+	   * should be created
 	   * @return the number of collapsed meta-nodes, or -1 if something went wrong
 	   */
 	  public static int collapseNodes (CyNetwork cy_network, ArrayList childrenNodes, 
@@ -220,12 +218,12 @@ public class MetaNodeUtils {
                                      boolean collapse_recursively,
                                      boolean multiple_edges){
 	    
-	    // If collapse_existent_parents is true, then find parents for the selected nodes
-	    // and collapse them
-	    // NOTE: This is tricky if we have multiple GraphPerspectives, since
-	    // they share the same RootGraph, 
-      // use the fact that MetaNodeFactory stores for each network
-	    // the meta-nodes that were created for it.
+	      // If collapse_existent_parents is true, then find parents for the selected nodes
+	      // and collapse them
+	      // NOTE: This is tricky if we have multiple GraphPerspectives, since
+	      // they share the same RootGraph, 
+	      // use the fact that MetaNodeFactory stores for each network
+	      // the meta-nodes that were created for it.
       MetaNodeUtils.abstractModeler.setMultipleEdges(multiple_edges);
 	    if(collapse_existent_parents){
 	    	ArrayList parents = findParentMetaNodes(cy_network, childrenNodes, collapse_recursively);
@@ -258,9 +256,9 @@ public class MetaNodeUtils {
 	   * Finds the parent meta-nodes of the given array of nodes in the CyNetwork and returns their <code>RootGraph</code> indices.
 	   * 
 	   * @param cy_net the CyNetwork within which to look for parent meta-nodes
-	   * @param children_rindices the <code>RootGraph</code> indices of the nodes for which to find parent nodes
+	   * @param children an array of CyNodes for which parent nodes are to be found
 	   * @param find_top_parents whether or not to find parent meta-nodes that don't have any parents themselves
-	   * @return an array of <code>RootGraph</code> indices of the parent meta-nodes
+	   * @return an array of CyNode parent nodes
 	   */
 	  public static ArrayList findParentMetaNodes (CyNetwork cy_net, ArrayList children, boolean find_top_parents){
 	  	RootGraph rootGraph = cy_net.getRootGraph();

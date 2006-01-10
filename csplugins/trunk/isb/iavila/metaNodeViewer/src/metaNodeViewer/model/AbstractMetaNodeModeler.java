@@ -28,9 +28,7 @@ import java.util.*;
 
 import giny.model.*;
 import cytoscape.*;
-import cytoscape.data.Semantics;
 import metaNodeViewer.data.MetaNodeAttributesHandler;
-import cern.colt.list.ObjectArrayList;
 import cern.colt.list.IntArrayList;
 import cern.colt.map.AbstractIntIntMap;
 import cern.colt.map.OpenIntIntHashMap;
@@ -48,7 +46,7 @@ import cern.colt.map.OpenIntIntHashMap;
  */
 public class AbstractMetaNodeModeler {
 
-	protected static final boolean DEBUG = true;
+	protected static final boolean DEBUG = false;
 
 	protected static final boolean REPORT_TIME = false;
     
@@ -137,7 +135,7 @@ public class AbstractMetaNodeModeler {
 
 	/**
 	 * Sets whether or not multiple edges between a meta-node and another node
-	 * (meta or not meta)should be created when abstracting the meta-node, true
+	 * (meta or not meta) should be created when abstracting the meta-node, true
 	 * by default
 	 */
 	public void setMultipleEdges(boolean multiple_edges) {
@@ -146,7 +144,7 @@ public class AbstractMetaNodeModeler {
 
 	/**
 	 * @return whether or not multiple edges between a meta-node and another
-	 *         node (meta or not meta)should be created when abstracting the
+	 *         node (meta or not meta) should be created when abstracting the
 	 *         meta-node, true by default
 	 */
 	public boolean getMultipleEdges() {
@@ -162,10 +160,9 @@ public class AbstractMetaNodeModeler {
 	 *            the network for which to return the MetaNodeAttributesHandler
 	 *            in use
 	 */
-	public MetaNodeAttributesHandler getNetworkAttributesHandler(
-			CyNetwork cy_network) {
-		MetaNodeAttributesHandler handler = (MetaNodeAttributesHandler) this.networkToAttsHandler
-				.get(cy_network);
+	public MetaNodeAttributesHandler getNetworkAttributesHandler(CyNetwork cy_network) {
+		MetaNodeAttributesHandler handler = 
+            (MetaNodeAttributesHandler) this.networkToAttsHandler.get(cy_network);
 		if (handler == null) {
 			return this.defaultAttributesHandler;
 		}
@@ -195,11 +192,11 @@ public class AbstractMetaNodeModeler {
 	}// getRootGraph
 
 	/**
-	 * Applies the model to the <code>GraphPerspective</code>.
+	 * Applies the model to the CyNetwork TODO: Why does this not take a CyNetwork????
 	 * 
 	 * @return false if the model could not be applied, maybe because the model
 	 *         had already been applied previously, true otherwise TODO:
-	 *         IMPLEMENT!, also, why does this method not take a GP for an
+	 *         IMPLEMENT!, also, why does this method not take a CN for an
 	 *         argument???
 	 */
 	public boolean applyModel() {
@@ -207,20 +204,20 @@ public class AbstractMetaNodeModeler {
 	}// applyModel
 
 	/**
-	 * Undos the changes made to <code>graphPerspective</code> in order to
+	 * Undos the changes made to <code>CyNetwork</code> in order to
 	 * apply the model.
 	 * 
 	 * @param temporary_undo
 	 *            whether or not the "undo" is temporary, if not temporary,
-	 *            then, the <code>graphPerspective</code>'s
+	 *            then, the <code>CyNetwork</code>'s
 	 *            <code>RootGraph</code> will also be modified so that it is
 	 *            in the same state as it was before any calls to
 	 *            <code>applyModel()</code>
 	 * 
 	 * @return false if the undo was not successful, maybe because the model was
-	 *         already undone for <code>graphPerspective</code>, true
+	 *         already undone, true
 	 *         otherwise TODO: IMPLEMENT! also, why does this method not take a
-	 *         GP for an argument?
+	 *         CyNetwork for an argument?
 	 */
 	public boolean undoModel(boolean temporary_undo) {
 		return false;
@@ -290,8 +287,7 @@ public class AbstractMetaNodeModeler {
 		List cnNodes = (ArrayList) this.networkToNodes.get(cy_network);
 		if (cnNodes == null) {
 			// I know that this is the first time that applyModel is called for
-			// the
-			// given network
+			// the given network
 			cnNodes = new ArrayList(getNodesInCyNet(cy_network));
 			this.networkToNodes.put(cy_network, cnNodes);
 		}
@@ -323,8 +319,7 @@ public class AbstractMetaNodeModeler {
             throw new IllegalStateException("Did not restore node [" + node + "] successfully.");
         }
             
-		// The restored meta-node is now contained in the network, so remember
-		// this:
+		// The restored meta-node is now contained in the network, so remember this:
 		cnNodes.add(restoredNode);
 
 		if (DEBUG) {
@@ -349,8 +344,7 @@ public class AbstractMetaNodeModeler {
 					+ " descendants");
 		}
 
-		// Restore the edges connecting the meta-node and nodes that are in
-		// cyNetwork
+		// Restore the edges connecting the meta-node and nodes that are in cyNetwork
 		// NOTE: These edges are created in prepareNodeForModel
 		long restoreEdgesStart = System.currentTimeMillis();
 		int numRestoredEdges = 0;
@@ -386,33 +380,9 @@ public class AbstractMetaNodeModeler {
                 if(rEdge != null) restoredEdges.add(rEdge);
             }
 
-			// HACK:
-			// ----------- For Kris Gonsalus:------------------------
-			// Kris has a graph with 78 nodes, and > 2000 edges, so she
-			// wants to see only one edge between metanodes...
-			// edges_to_restore.add(connectingEdgesRindices[0]);
-			// ------------------------------------------------------
-
-			// if(DEBUG){
-			// System.err.println("Restored " + restoredRindices.length + "/" +
-			// connectingEdgesRindices.length + " edges connecting " +
-			// rootNodeIndex + " and " + gpNodes[node_i]);
-			// }
-
 		}// for node_i
 
-		// if(REPORT_TIME){
-		// long timeToRestoreEdges = (System.currentTimeMillis() -
-		// restoreEdgesStart)/1000;
-		// System.out.println("time to restore edges = " + timeToRestoreEdges);
-		// }
-
-		// now restore all edges at once
-        //edges_to_restore.trimToSize();
-		//int[] restoredRindices = cy_network.restoreEdges(edges_to_restore
-		//		.elements());
-		//numRestoredEdges += restoredRindices.length;
-
+	
 		if (restoredNode != null || numHiddenNodes > 0
 				|| restoredEdges.size() > 0) {
 			if (DEBUG) {
@@ -505,17 +475,13 @@ public class AbstractMetaNodeModeler {
 
 			if (!temporary_undo) {
 				// Remove edges that *we* created in the RootGraph for this
-				// meta-node and
-				// its descendant meta-nodes, it also removes the meta-nodes
-				// from this networks
-				// client data available through
-				// MetaNodeFactory.METANODES_IN_NETWORK
+				// meta-node and its descendant meta-nodes, it also removes the meta-nodes
+				// from this networks client data available through MetaNodeFactory.METANODES_IN_NETWORK
 				removeMetaNode(cy_network, node, true);
 			}
 
 			// Get the descendants with no children of this meta-node, since
-			// they will
-			// be displayed after this call to undo
+			// they will be displayed after this call to undo
 			// TODO: Check performance of this method:
 			// COULD IMPROVE BY USING this.networkToNodes ??
 			childrenRindices = this.rootGraph.getChildlessMetaDescendants(node.getRootGraphIndex());
@@ -535,8 +501,7 @@ public class AbstractMetaNodeModeler {
 		} else {
 			// not recursive
 			if (!temporary_undo) {
-				// Remove edges that *we* created in the RootGraph for this
-				// meta-node (only)
+				// Remove edges that *we* created in the RootGraph for this meta-node (only)
 				removeMetaNode(cy_network, node, false);
 
 			}
@@ -555,16 +520,7 @@ public class AbstractMetaNodeModeler {
 		}
 
 		// Restore the children nodes and their adjacent edges that connect to
-		// other nodes
-		// currently contained in CyNetwork
-
-		// Deprecated. Use restoreNodes(int[]) and restoreEdges(int[]) instead;
-		// to get edges incident to specified nodes, use
-		// RootGraph.getConnectingEdgeIndicesArray(int[]):
-		// int [] restoredNodeRindices =
-		// cy_network.restoreNodes(childrenRindices, true);
-
-		// NEW CODE:
+		// other nodes currently contained in CyNetwork
 		int[] restoredNodeRindices = cy_network.restoreNodes(childrenRindices);
 		int[] edgesToRestore = this.rootGraph.getConnectingEdgeIndicesArray(childrenRindices);
 		cy_network.restoreEdges(edgesToRestore);
@@ -701,8 +657,8 @@ public class AbstractMetaNodeModeler {
 		if (childrenRindices != null) {
 			// Recursively prepare each child node
 			for (int i = 0; i < childrenRindices.length; i++) {
-				boolean temp = prepareNodeForModel(cy_network,
-						(CyNode)this.rootGraph.getNode(childrenRindices[i]));
+				boolean temp = 
+                    prepareNodeForModel(cy_network,(CyNode)this.rootGraph.getNode(childrenRindices[i]));
 				hasDescendantInGP = hasDescendantInGP || temp;
 			}// for i
 		}
@@ -740,9 +696,8 @@ public class AbstractMetaNodeModeler {
 				System.err.println("Child rindex is " + childNodeRindex);
 			}
 
-			int[] adjacentEdgeRindices = this.rootGraph
-					.getAdjacentEdgeIndicesArray(childNodeRindex, true, true,
-							true);
+			int[] adjacentEdgeRindices = 
+                this.rootGraph.getAdjacentEdgeIndicesArray(childNodeRindex, true, true,true);
 
 			if (DEBUG) {
 				System.err.println("Child node " + childNodeRindex + " has "
@@ -769,7 +724,7 @@ public class AbstractMetaNodeModeler {
 					}
 					continue;
 				}
-				if (processedEdges == null) {
+				if (processedEdges == null){
 					// This List will be used later, so create it
 					// Also, note that if the ArrayList for a meta-node is
 					// not null, we know that
@@ -780,8 +735,7 @@ public class AbstractMetaNodeModeler {
 				}
 
 				// If the edge connects two descendants of the meta-node, then
-				// ignore it,
-				// and remember this processed edge
+				// ignore it, and remember this processed edge
 				if (edgeConnectsDescendants(node.getRootGraphIndex(), childEdgeRindex)) {
 					if (DEBUG) {
 						System.out.println("Edge " + childEdge
@@ -796,7 +750,7 @@ public class AbstractMetaNodeModeler {
 				// Identify the node on the other end of the edge, and determine
 				// whether the meta-node is the source or not
 				CyNode otherNode = null;
-				CyNode sourceNode = (CyNode)childEdge.getSource();// crash 1.3.06
+				CyNode sourceNode = (CyNode)childEdge.getSource();
                  CyNode targetNode = (CyNode)childEdge.getTarget();
                  boolean metaNodeIsSource = false;
 				if (targetNode.getRootGraphIndex() == childNodeRindex) {
@@ -813,21 +767,23 @@ public class AbstractMetaNodeModeler {
 					// Create an edge in rootGraph respecting directionality
 
 					CyEdge newEdge = null;
-					//boolean directedEdge = this.rootGraph.isEdgeDirected(childEdgeRindex);
-                    // What if there are multiple edges between nodes? I think that Cytoscape returns an edge if it already exists:
+				
 					if (metaNodeIsSource) {
-					    newEdge = Cytoscape.getCyEdge(node,otherNode,Semantics.INTERACTION,META_EDGE_INTERACTION,true);
-						//newEdgeRindex = this.rootGraph.createEdge(node_rindex,otherNodeRindex, directedEdge);
+                        newEdge = Cytoscape.createCyEdge(node,otherNode,META_EDGE_INTERACTION);
+                        // The following code does not allow multiple edges between nodes:
+                        //newEdge = Cytoscape.getCyEdge(node,otherNode,Semantics.INTERACTION,META_EDGE_INTERACTION,true);
+                        //newEdgeRindex = this.rootGraph.createEdge(node_rindex,otherNodeRindex, directedEdge);
 					} else {
-                        newEdge = Cytoscape.getCyEdge(otherNode,node,Semantics.INTERACTION,META_EDGE_INTERACTION,true);
-						//newEdgeRindex = this.rootGraph.createEdge(otherNodeRindex, node_rindex, directedEdge);
-					}
+                           newEdge = Cytoscape.createCyEdge(otherNode,node,META_EDGE_INTERACTION);
+                           //newEdge = Cytoscape.getCyEdge(otherNode,node,Semantics.INTERACTION,META_EDGE_INTERACTION,true);
+                           //newEdgeRindex = this.rootGraph.createEdge(otherNodeRindex, node_rindex, directedEdge);
+					
+                    }
 					connectedNodeRindices.add(otherNode.getRootGraphIndex());
 					metaEdgeToChildEdge.put(newEdge.getRootGraphIndex(), childEdgeRindex);
 					numNewEdges++;
 					// Remember that *we* created this edge, so that later, we
-					// can reset RootGraph
-					// to its original state if needed by removing edges we
+					// can reset RootGraph to its original state if needed by removing edges we
 					// created
 					this.metaEdges.add(newEdge);
 
@@ -835,13 +791,11 @@ public class AbstractMetaNodeModeler {
 					// processed before,
 					// then mark newEdgeRindex as a processed edge for the
 					// parents
-					// This is so that if
-					// prepareNodeForModel(GraphPerspective,otherNodeRindex)
+					// This is so that if prepareNodeForModel
 					// is called after this call, a duplicate edge from
-					// otherNodeRindex to node_rindex
-					// won't be created
-					int[] otherNodeParentsRindices = this.rootGraph
-							.getNodeMetaParentIndicesArray(otherNode.getRootGraphIndex());
+					// otherNodeRindex to node_rindex won't be created
+					int[] otherNodeParentsRindices = 
+                        this.rootGraph.getNodeMetaParentIndicesArray(otherNode.getRootGraphIndex());
 					if (otherNodeParentsRindices != null) {
 						for (int otherParent_i = 0; otherParent_i < otherNodeParentsRindices.length; otherParent_i++) {
 							processedEdges = (ArrayList) this.metaNodeToProcessedEdges.get(this.rootGraph.getNode(otherNodeParentsRindices[otherParent_i]));
@@ -1088,7 +1042,7 @@ public class AbstractMetaNodeModeler {
 	}// removeMetaEdges
 
 	/**
-	 * @return true iff the Node has at least one child
+	 * @return true iff the node has at least one child
 	 */
 	protected boolean isMetaNode(CyNode node) {
 		int[] childrenIndices = this.rootGraph
@@ -1112,8 +1066,7 @@ public class AbstractMetaNodeModeler {
 		int sourceRindex = this.rootGraph.getEdgeSourceIndex(edge_rindex);
 		int targetRindex = this.rootGraph.getEdgeTargetIndex(edge_rindex);
 		// If the source is the descendant of one of the children and so is the
-		// target,
-		// then return true
+		// target, then return true
 		if (this.rootGraph.isNodeMetaChild(node_rindex, sourceRindex, true)
 				&& this.rootGraph.isNodeMetaChild(node_rindex, targetRindex,
 						true)) {

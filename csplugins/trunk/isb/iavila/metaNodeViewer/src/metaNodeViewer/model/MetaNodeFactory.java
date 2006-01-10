@@ -52,10 +52,8 @@ public class MetaNodeFactory {
    * it is recorded that the new meta-node belongs to cy_network.
    *
    * @param cy_network the CyNetwork for which the meta-node will be created
-   * @param children_node_indices the indices of the nodes that will be
-   * the children of the created meta-node and that should be in cy_network
-   * @return the RootGraph index of the newly created meta-node, or zero if
-   * none created.
+   * @param children an array of CyNodes that are the children of the meta-node to be created
+   * @return the newly created meta-node, or null if none created.
    */
   public static CyNode createMetaNode (CyNetwork cy_network, ArrayList children){
   	return MetaNodeFactory.gpMetaNodeFactory.createMetaNode(cy_network, children);
@@ -68,10 +66,9 @@ public class MetaNodeFactory {
    * it is recorded that the new meta-node belongs to cy_network.
    *
    * @param cy_network the CyNetwork for which a meta-node will be created
-   * @param children_node_indices the indices of the nodes that will be
-   * the children of the created meta-node and that should be in cy_network
+   * @param children an array of CyNodes that are the children of the meta-node to be created
    * @param attributes_handler the MetaNodeAttributesHandler to be used to name the new node (if getAssignDefaultNames() is true)
-   * @return the RootGraph index of the newly created meta-node, or zero if none created.
+   * @return the newly created meta-node, or null if none created.
    */
   public static CyNode createMetaNode (CyNetwork cy_network, ArrayList children, MetaNodeAttributesHandler attributes_handler){
   	return MetaNodeFactory.gpMetaNodeFactory.createMetaNode(cy_network, children, attributes_handler);
