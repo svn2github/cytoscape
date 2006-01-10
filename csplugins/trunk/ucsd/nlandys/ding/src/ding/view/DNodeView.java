@@ -1,6 +1,7 @@
 package ding.view;
 
 import cytoscape.render.immed.GraphGraphics;
+import giny.model.GraphPerspective;
 import giny.model.Node;
 import giny.view.GraphView;
 import giny.view.Label;
@@ -11,6 +12,7 @@ import java.awt.Font;
 import java.awt.Paint;
 import java.awt.Stroke;
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 import java.util.List;
 
 class DNodeView implements NodeView, Label
@@ -59,9 +61,17 @@ class DNodeView implements NodeView, Label
     return ~m_inx;
   }
 
-  public List getEdgeViewsList(NodeView otherNode)
+  public List getEdgeViewsList(NodeView otherNodeView)
   {
-    return null;
+    final int[] nodeInxs =
+      new int[] { ~m_inx, otherNodeView.getGraphPerspectiveIndex() };
+    final GraphPerspective gp = m_view.getGraphPerspective();
+    final int[] edgeInxs = gp.getConnectingEdgeIndicesArray(nodeInxs);
+    final ArrayList returnThis = new ArrayList();
+    if (edgeInxs != null) {
+      for (int i = 0; i < edgeInxs.length; i++) {
+        returnThis.add(m_view.getEdgeView(edgeInxs[i])); } }
+    return returnThis;
   }
 
   public int getShape()
