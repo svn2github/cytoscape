@@ -144,7 +144,26 @@ class DGraphView implements GraphView
 
   public EdgeView addEdgeView(int edgeInx)
   {
-    return null;
+    synchronized (m_lock) {
+      final EdgeView oldView =
+        (EdgeView) m_edgeViewMap.get(new Integer(edgeInx));
+      if (oldView != null) { return oldView; }
+      final Edge edge = m_drawPersp.getRootGraph().getEdge(edgeInx);
+      if (edge == null) {
+        throw new IllegalArgumentException
+          ("edge index specified does not exist in underlying RootGraph"); }
+      addNodeView(edge.getSource().getRootGraphIndex());
+      addNodeView(edge.getTarget().getRootGraphIndex());
+      if (m_drawPersp.restoreEdge(edgeInx) == 0) {
+        if (m_drawPersp.getEdge(edgeInx) != null) {
+          throw new IllegalStateException
+            ("something weird is going on - edge already existed in graph " +
+             "but a view for it did not exist (debug)"); }
+        throw new IllegalArgumentException
+          ("edge index specified does not exist in underlying RootGraph"); }
+      final EdgeView returnThis = new DEdgeView(this, edgeInx);
+      m_edgeViewMap.put(new Integer(edgeInx), returnThis);
+      return returnThis; }
   }
 
   public EdgeView addEdgeView(String className, int edgeInx)
