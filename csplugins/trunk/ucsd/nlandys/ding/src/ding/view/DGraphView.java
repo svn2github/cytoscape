@@ -23,6 +23,7 @@ class DGraphView implements GraphView
   final Object m_lock = new Object();
   final float[] m_extentsBuff = new float[4];
   GraphPerspective m_perspective;
+  GraphPerspective m_drawPersp;
   MutableSpacialIndex2D m_spacial;
   DNodeDetails m_nodeDetails;
   DEdgeDetails m_edgeDetails;
@@ -34,6 +35,8 @@ class DGraphView implements GraphView
   DGraphView(GraphPerspective perspective)
   {
     m_perspective = perspective;
+    m_drawPersp = m_perspective.getRootGraph().createGraphPerspective
+      ((int[]) null, (int[]) null);
   }
 
   public GraphPerspective getGraphPerspective()
