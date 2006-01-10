@@ -22,6 +22,7 @@ class DGraphView implements GraphView
 
   final Object m_lock = new Object();
   final float[] m_extentsBuff = new float[4];
+  GraphPerspective m_perspective;
   MutableSpacialIndex2D m_spacial;
   DNodeDetails m_nodeDetails;
   DEdgeDetails m_edgeDetails;
@@ -30,13 +31,14 @@ class DGraphView implements GraphView
   {
   }
 
-  DGraphView()
+  DGraphView(GraphPerspective perspective)
   {
+    m_perspective = perspective;
   }
 
   public GraphPerspective getGraphPerspective()
   {
-    return null;
+    return m_perspective;
   }
 
   public boolean nodeSelectionEnabled()
@@ -190,7 +192,7 @@ class DGraphView implements GraphView
 
   public RootGraph getRootGraph()
   {
-    return null;
+    return m_perspective.getRootGraph();
   }
 
   public Iterator getNodeViewsIterator()
