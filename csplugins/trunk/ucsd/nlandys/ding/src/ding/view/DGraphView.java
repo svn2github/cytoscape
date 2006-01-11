@@ -208,7 +208,14 @@ class DGraphView implements GraphView
 
   public EdgeView removeEdgeView(int edgeInx)
   {
-    return null;
+    synchronized (m_lock) {
+      final DEdgeView returnThis =
+        (DEdgeView) m_edgeViewMap.remove(new Integer(edgeInx));
+      if (returnThis == null) { return returnThis; }
+      m_drawPersp.hideEdge(edgeInx);
+      m_edgeDetails.unregisterEdge(~edgeInx);
+      returnThis.m_view = null;
+      return returnThis; }
   }
 
   public String getIdentifier()

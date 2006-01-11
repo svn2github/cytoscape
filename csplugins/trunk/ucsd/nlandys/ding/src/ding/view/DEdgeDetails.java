@@ -32,6 +32,25 @@ class DEdgeDetails extends IntermediateEdgeDetails
     m_view = view;
   }
 
+  void unregisterEdge(int edge)
+  {
+    final Object o = m_colorsLowDetail.get(edge);
+    if (o != null && o != m_deletedEntry) {
+      m_colorsLowDetail.put(edge, m_deletedEntry); }
+    final Integer key = new Integer(edge);
+    m_segmentThicknesses.remove(key);
+    m_sourceArrows.remove(key);
+    m_sourceArrowPaints.remove(key);
+    m_targetArrows.remove(key);
+    m_targetArrowPaints.remove(key);
+    m_segmentPaints.remove(key);
+    m_segmentDashLengths.remove(key);
+    m_labelCounts.remove(key);
+    m_labelTexts.remove(key);
+    m_labelFonts.remove(key);
+    m_labelPaints.remove(key);
+  }
+
   public Color colorLowDetail(int edge)
   {
     final Object o = m_colorsLowDetail.get(edge);
