@@ -301,10 +301,10 @@ class DGraphView implements GraphView
   public List getEdgeViewsList(Node oneNode, Node otherNode)
   {
     synchronized (m_lock) {
-      final ArrayList returnThis = new ArrayList();
       List edges = m_drawPersp.edgesList(oneNode.getRootGraphIndex(),
                                          otherNode.getRootGraphIndex(), true);
       if (edges == null) { return null; }
+      final ArrayList returnThis = new ArrayList();
       Iterator it = edges.iterator();
       while (it.hasNext()) {
         Edge e = (Edge) it.next();
@@ -315,7 +315,16 @@ class DGraphView implements GraphView
   public List getEdgeViewsList(int oneNodeInx, int otherNodeInx,
                                boolean includeUndirected)
   {
-    return null;
+    synchronized (m_lock) {
+      List edges = m_drawPersp.edgesList(oneNodeInx, otherNodeInx,
+                                         includeUndirected);
+      if (edges == null) { return null; }
+      final ArrayList returnThis = new ArrayList();
+      Iterator it = edges.iterator();
+      while (it.hasNext()) {
+        Edge e = (Edge) it.next();
+        returnThis.add(getEdgeView(e)); }
+      return returnThis; }
   }
 
   public EdgeView getEdgeView(int edgeInx)
