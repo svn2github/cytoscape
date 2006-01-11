@@ -48,6 +48,7 @@ class DNodeView implements NodeView, Label
 
   public Node getNode()
   {
+    // FIXME?  Use m_view.m_drawGraph.
     return m_view.getGraphPerspective().getNode(~m_inx);
   }
 
@@ -63,6 +64,7 @@ class DNodeView implements NodeView, Label
 
   public List getEdgeViewsList(NodeView otherNodeView)
   {
+    // FIXME?  Use m_view.m_drawGraph.
     final int[] nodeInxs =
       new int[] { ~m_inx, otherNodeView.getGraphPerspectiveIndex() };
     final GraphPerspective gp = m_view.getGraphPerspective();

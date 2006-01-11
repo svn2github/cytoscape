@@ -28,6 +28,22 @@ class DNodeDetails extends IntermediateNodeDetails
   final HashMap m_labelFonts = new HashMap();
   final HashMap m_labelPaints = new HashMap();
 
+  void unregisterNode(int node)
+  {
+    final Object o = m_colorsLowDetail.get(node);
+    if (o != null && o != m_deletedEntry) {
+      m_colorsLowDetail.put(node, m_deletedEntry); }
+    final Integer key = new Integer(node);
+    m_shapes.remove(key);
+    m_fillPaints.remove(key);
+    m_borderWidths.remove(key);
+    m_borderPaints.remove(key);
+    m_labelCounts.remove(key);
+    m_labelTexts.remove(key);
+    m_labelFonts.remove(key);
+    m_labelPaints.remove(key);
+  }
+
   public Color colorLowDetail(int node)
   {
     final Object o = m_colorsLowDetail.get(node);

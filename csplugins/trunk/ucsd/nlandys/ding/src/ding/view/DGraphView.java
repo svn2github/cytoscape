@@ -193,7 +193,19 @@ class DGraphView implements GraphView
 
   public NodeView removeNodeView(int nodeInx)
   {
-    return null;
+    synchronized (m_lock) {
+      final int[] edges =
+        m_drawPersp.getAdjacentEdgeIndicesArray(nodeInx, true, true, true);
+      if (edges == null) { return null; }
+      for (int i = 0; i < edges.length; i++) {
+        removeEdgeView(edges[i]); }
+      final DNodeView returnThis =
+        (DNodeView) m_nodeViewMap.remove(new Integer(nodeInx));
+      m_drawPersp.hideNode(nodeInx);
+      m_nodeDetails.unregisterNode(~nodeInx);
+      m_spacial.delete(~nodeInx);
+      returnThis.m_view = null;
+      return returnThis; }
   }
 
   public EdgeView removeEdgeView(EdgeView edgeView)
