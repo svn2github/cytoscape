@@ -155,7 +155,7 @@
   <!-- Compiles the project                                                -->
   <!-- =================================================================== -->
   <target name="compile" 
-            depends="init" 
+          depends="init" 
           if="build.ok" >
     <mkdir dir="${build.dir}"/>
     <mkdir dir="${log.dir}"/>
@@ -190,11 +190,11 @@
           depends="init" 
           if="build.ok">
     <mkdir dir="${manifest.dir}"/>
-      <manifest file="${test.manifest}">
+    <manifest file="${test.manifest}">
       <attribute name="Main-Class" value="${test.main.class}"/>
       <attribute name="Class-Path" value="${manifest.class.path.string}"/> 
     </manifest>
-     <echo message="Successfully ran manifest task!"/>
+    <echo message="Successfully ran manifest task!"/>
   </target>
 
   <!-- =================================================================== -->
@@ -209,7 +209,7 @@
       <fileset dir="${build.dir}"
                includes="**"/>
     </jar>
-     <echo message="Successfully ran jar task!"/>
+    <echo message="Successfully ran jar task!"/>
   </target>
 
   <!-- =================================================================== -->
@@ -226,7 +226,7 @@
            deprecation="${deprecation}" 
            optimize="${optimize}"
            fork="${fork}"/>
-   <echo message="Successfully ran compile-tests task!"/>
+    <echo message="Successfully ran compile-tests task!"/>
   </target>
 
   <!-- =================================================================== -->
@@ -243,7 +243,7 @@
          manifest="${test.manifest}"
          basedir="${build.dir}" >
     </jar>
-     <echo message="Successfully ran tests task!"/>
+    <echo message="Successfully ran tests task!"/>
   </target>
 
   <!-- =================================================================== -->
@@ -285,20 +285,20 @@
       </fileset>
       <report format="frames" todir="${junit.report.dir}"/>
     </junitreport>
-    <echo message="Successfully generated unit test report!"/>
+    <echo message="Successfully ran runtests-report task!"/>
   </target>
 
   <!-- =================================================================== -->
   <!-- Runs the tests in GUI                                               -->
   <!-- =================================================================== -->
   <target name="runtests-gui" 
-          depends="jar-tests"
-          description="Runs all unit tests.">
+          depends="jar-tests">
     <java classname="${test.main.class}"
           classpathref="junit.class.path" 
           fork="true">
       <arg line="-gui"/>
     </java>
+    <echo message="Successfully ran runtests-gui task!"/>
   </target>
 
 
@@ -312,7 +312,7 @@
              keystore="${keystore}" 
              alias="${sign.alias}" 
              storepass="${sign.password}"/>
-     <echo message="Successfully ran sign task!"/>
+    <echo message="Successfully ran sign task!"/>
   </target>
 
   <!-- =================================================================== -->
@@ -337,7 +337,7 @@
              noindex="false"
              windowtitle="${name} API"
              doctitle="${name}" />
-     <echo message="Successfully ran docs task!"/>
+    <echo message="Successfully ran docs task!"/>
   </target>
 
   <!-- =================================================================== -->
@@ -357,7 +357,7 @@
         <include name="**"/>
       </tarfileset>
     </tar>
-     <echo message="Successfully ran all-dist task!"/>
+    <echo message="Successfully ran all-dist task!"/>
   </target>
 
   <!-- =================================================================== -->
@@ -381,7 +381,7 @@
         <include name="**"/>
       </tarfileset>
     </tar>
-     <echo message="Successfully ran bin-dist task!"/>
+    <echo message="Successfully ran bin-dist task!"/>
   </target>
 
   <!-- =================================================================== -->
@@ -398,7 +398,7 @@
         <include name="**"/>
       </tarfileset>
     </tar>
-     <echo message="Successfully ran src-dist task!"/>
+    <echo message="Successfully ran src-dist task!"/>
   </target>
 
   <!-- =================================================================== -->
@@ -412,7 +412,7 @@
     <delete dir="${manifest.dir}"/>
     <delete file="${project.jar}"/>
     <delete file="${test.jar}"/>
-     <echo message="Successfully ran clean task!"/>
+    <echo message="Successfully ran clean task!"/>
   </target>
 
   <!-- =================================================================== -->
@@ -422,7 +422,7 @@
     <java jar="${project.jar}"
           classpathref="project.class.path"
           fork="true">
-          <!-- <arg value="change.this"/> -->
+      <!-- <arg value="change.this"/> -->
     </java>
   </target>
 
