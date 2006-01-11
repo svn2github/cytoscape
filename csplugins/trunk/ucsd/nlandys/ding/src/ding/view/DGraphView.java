@@ -13,6 +13,7 @@ import java.awt.Canvas;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Paint;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -263,32 +264,38 @@ class DGraphView implements GraphView
 
   public Iterator getNodeViewsIterator()
   {
-    return null;
+    synchronized (m_lock) { return m_nodeViewMap.values().iterator(); }
   }
 
   public int getNodeViewCount()
   {
-    return 0;
+    synchronized (m_lock) { return m_nodeViewMap.size(); }
   }
 
   public int getEdgeViewCount()
   {
-    return 0;
+    synchronized (m_lock) { return m_edgeViewMap.size(); }
   }
 
   public NodeView getNodeView(Node node)
   {
-    return null;
+    return getNodeView(node.getRootGraphIndex());
   }
 
   public NodeView getNodeView(int nodeInx)
   {
-    return null;
+    synchronized (m_lock) {
+      return (NodeView) m_nodeViewMap.get(new Integer(nodeInx)); }
   }
 
   public List getEdgeViewsList()
   {
-    return null;
+    synchronized (m_lock) {
+      final ArrayList returnThis = new ArrayList(m_edgeViewMap.size());
+      final Iterator values = m_edgeViewMap.values().iterator();
+      while (values.hasNext()) {
+        returnThis.add(values.next()); }
+      return returnThis; }
   }
 
   public List getEdgeViewsList(Node oneNode, Node otherNode)
