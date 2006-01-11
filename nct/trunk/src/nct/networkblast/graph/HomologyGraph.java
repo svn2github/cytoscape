@@ -97,11 +97,11 @@ public class HomologyGraph
 		//System.out.println("homologyMap size " + homologyMap.size());
 
 		for ( String nodeA: homologyMap.keySet() ) {
-			//System.out.println ("A node: " + nodeA );
+			//System.err.println ("A node: " + nodeA );
 			for ( String nodeB: homologyMap.get(nodeA).keySet() ) {
-				//System.out.print ("B node: " + nodeB );
-				//System.out.println ("  value: " + homologyMap.get(nodeA).get(nodeB));
+				//System.err.print ("B node: " + nodeB );
 				Double score = homologyMap.get(nodeA).get(nodeB);
+				//System.err.println ("  value: " + score);
 				if ( score != null && score.doubleValue() <= exThresh )
 					if ( ! addEdge(nodeA,nodeB,score) )
 						System.out.println("didn't add edge: " + nodeA + " " + nodeB);

@@ -16,8 +16,7 @@ import nct.service.homology.sif.*;
 
 public class GreedyComplexSearchTest extends TestCase {
     SearchGraph sg, cg;
-    InteractionGraph h, i,j, k ;
-    CompatibilityGraph g;
+    InteractionGraph h, k ;
     ScoreModel s;
     List<Graph<String,Double>> solns;
     protected void setUp() {
@@ -25,37 +24,31 @@ public class GreedyComplexSearchTest extends TestCase {
 	sg = new ColorCodingPathSearch(4);
 	try {	    
 	    h = new InteractionGraph("examples/test.input.sif");
-	    i = new InteractionGraph("examples/test.input.sif");
 	    k = new InteractionGraph("examples/testNet.input.sif");
 	    s = new LogLikelihoodScoreModel(2.5, .8, 1e-10);
-            List<SequenceGraph<String,Double>> inputSpecies = new ArrayList<SequenceGraph<String,Double>>();
-            inputSpecies.add(i);
-            inputSpecies.add(h);
-            SIFHomologyReader sr = new SIFHomologyReader("examples/test.compat.sif");
-            HomologyGraph homologyGraph = new HomologyGraph(sr,1e-5,inputSpecies);
-	    CompatibilityCalculator compatCalc = new AdditiveCompatibilityCalculator(0.01,s);
-            g = new CompatibilityGraph(homologyGraph, inputSpecies, s, compatCalc );
 	    solns = sg.searchGraph(h, s);
+	    cg = new GreedyComplexSearch(solns, 4, 15);
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}
     }
-    public void testsearchGraph() {
-	cg = new GreedyComplexSearch(solns, 4, 15);
-	Graph<String,Double> p = new BasicGraph<String,Double>();
-	List<Graph> cmplx = cg.searchGraph(h, s);
+    public void testnull() {
 	assertTrue(cg.searchGraph(null, s) == null); // null tests
 	assertTrue(cg.searchGraph(h, null) == null);
 	assertTrue(cg.searchGraph(null, null) == null);
+
+	Graph<String,Double> p = new BasicGraph<String,Double>();
 	assertTrue(cg.searchGraph(p, s).size() == 0); // check for 0 size on return
+    }
+
+    public void testsearchGraph() {
 
 	assertTrue("expected 14 int graph nodes, got: " + k.numberOfNodes(), k.numberOfNodes() == 14 );
 	assertTrue("expected 13 int graph edges, got: " + k.numberOfEdges(), k.numberOfEdges() == 13 );
 
 	// Only 1 complex at this point 
-	cmplx = cg.searchGraph(k,s);
+	List<Graph> cmplx = cg.searchGraph(k,s);
 	assertTrue("expected 1 complex, got: " + cmplx.size(), cmplx.size() == 1 );
-
 	
 	// The node is not connected, so we shouldn't get another complex 
 	k.addNode("o");

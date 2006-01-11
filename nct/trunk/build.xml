@@ -11,8 +11,6 @@
     <echo message="  Usage:"/>
     <echo message="     ant &lt;target&gt; (CLASSPATH must include junit.jar"/>
     <echo message="                         and ANT_HOME must be set)"/>
-    <echo message="       OR"/>
-    <echo message="     build.sh &lt;target&gt; "/>
     <echo message=" "/>
     <echo message=" Available targets are:"/>
     <echo message="   all             -> creates all project jars,"/>
@@ -20,6 +18,9 @@
     <echo message="   jar             -> creates all project jars"/>
     <echo message="   jar-tests       -> creates junit test jars"/>
     <echo message="   runtests        -> runs junit tests"/>
+    <echo message="   runtests-report -> runs junit tests and creates an"/>
+    <echo message="                      html summary report."/>
+    <echo message="   runtests-gui    -> runs junit tests in the junit gui"/>
     <echo message="   docs            -> generates the javadoc documentation"/>
     <echo message="   sign            -> signs all jars (requires keystore)"/>
     <echo message="   clean           -> removes all created jars and "/>
@@ -249,7 +250,7 @@
   <!-- Runs the tests in project-tests.jar                                 -->
   <!-- =================================================================== -->
   <target name="runtests" 
-            depends="jar-tests"
+          depends="jar-tests"
           if="tests.ok">
     <mkdir dir="${log.dir}"/>
     <mkdir dir="${log.dir}"/>
@@ -259,8 +260,10 @@
       <classpath refid="junit.class.path"/>
       <formatter type="plain" 
                  usefile="true" />
+      <formatter type="xml" 
+                 usefile="true" />
       <batchtest fork="yes" 
-                   todir="${log.dir}" 
+                 todir="${log.dir}" 
                  if="tests.ok">
         <fileset dir="${tests.dir}"
                  includes="**/*Test.java"
@@ -271,27 +274,11 @@
   </target>
 
   <!-- =================================================================== -->
-  <!-- Runs the tests and generates a nice html report                     -->
+  <!-- Runs generates a nice html report based on the test output          -->
   <!-- =================================================================== -->
-  <target name="test-report" 
-            depends="jar-tests"
+  <target name="runtests-report" 
+          depends="runtests"
           if="tests.ok">
-    <mkdir dir="${log.dir}"/>
-    <mkdir dir="${junit.report.dir}"/>
-    <junit printsummary="yes"
-           haltonfailure="yes"
-           maxmemory="256m">
-      <classpath refid="junit.class.path"/>
-      <formatter type="xml" 
-                 usefile="true" />
-      <batchtest fork="yes" 
-                   todir="${junit.report.dir}" 
-                 if="tests.ok">
-        <fileset dir="${tests.dir}"
-                 includes="**/*Test.java"
-                 excludes="**/AllTests.java" />
-      </batchtest> 
-    </junit>
     <junitreport todir="${junit.report.dir}">
       <fileset dir="${junit.report.dir}">
         <include name="TEST-*.xml"/>
@@ -301,15 +288,18 @@
     <echo message="Successfully generated unit test report!"/>
   </target>
 
-  <target name="gui-test" 
-          depends="compile"
+  <!-- =================================================================== -->
+  <!-- Runs the tests in GUI                                               -->
+  <!-- =================================================================== -->
+  <target name="runtests-gui" 
+          depends="jar-tests"
           description="Runs all unit tests.">
         <fileset dir="${tests.dir}"
                  includes="**/*Test.java"
                  excludes="**/AllTests.java" />
     <java classname="nct.AllTests"
           classpathref="junit.class.path" 
-	  fork="true">
+          fork="true">
       <arg line="-gui"/>
     </java>
   </target>
