@@ -24,13 +24,13 @@ public class ZIPSIFWriterTest extends TestCase {
         NetworkBlast.setUpLogging(Level.WARNING);
 	sg = new ColorCodingPathSearch(4);
 	try {	    
-	    h = new InteractionGraph("examples/test.input.sif");
-	    i = new InteractionGraph("examples/test.input.sif");
+	    h = new InteractionGraph("examples/junit.inputA.sif");
+	    i = new InteractionGraph("examples/junit.inputB.sif");
 	    s = new LogLikelihoodScoreModel(2.5, .8, 1e-10);
             List<SequenceGraph<String,Double>> inputSpecies = new ArrayList<SequenceGraph<String,Double>>();
             inputSpecies.add(i);
             inputSpecies.add(h);
-            SIFHomologyReader sr = new SIFHomologyReader("examples/test.compat.sif");
+            SIFHomologyReader sr = new SIFHomologyReader("examples/junit.compat.sif");
             HomologyGraph homologyGraph = new HomologyGraph(sr,1e-5,inputSpecies);
 	    CompatibilityCalculator compatCalc = new AdditiveCompatibilityCalculator(0.01,s);
             g = new CompatibilityGraph(homologyGraph, inputSpecies, s, compatCalc );
@@ -42,21 +42,20 @@ public class ZIPSIFWriterTest extends TestCase {
 
     public void testserializeList() {
 	try {
-	    // 	assertTrue(f.write(null) == null);
-	    // check for empty file if empty graph
+	    assertTrue("expect compat graph not null", g != null);
+	    assertTrue("expect interaction graph not null", h != null);
+	    assertTrue("expect interaction graph not null", i != null);
+	    assertTrue("expect scoremodel not null", s != null);
+	    
 	    Graph<String,Double> p = new BasicGraph<String,Double>();       
-	    String empty = "/tmp/empty-out";
+
+	    // test a non-empty zip file
 	    String nonEmpty = "/tmp/not-empty-out";
-	    f = new ZIPSIFWriter<String,Double>(empty);
-	    f.write(new ArrayList());
+	    String nonEmptyZ = nonEmpty + ".zip"; 
 	    f = new ZIPSIFWriter<String,Double>(nonEmpty);	
 	    List<Graph<String,Double>> solns = sg.searchGraph(g, s);
 	    f.write(solns);
-	    File ef = new File(empty);
-	    assertTrue(ef.exists());
-	    assertTrue(ef.length() == 0);
-	    ef.delete();
-	    File nef = new File(nonEmpty);
+	    File nef = new File(nonEmptyZ);
 	    assertTrue(nef.exists());
 	    assertTrue(nef.length() > 0);
 	    nef.delete();
@@ -64,6 +63,12 @@ public class ZIPSIFWriterTest extends TestCase {
 	} catch (IOException e1) {
 	    System.out.println(e1.getMessage());
 	    e1.printStackTrace();
+	    assertTrue("caught exception: " + e1.getMessage(), 1==0);
 	}
     }
+
+    public static Test suite() {
+	return new TestSuite( ZIPSIFWriterTest.class );
+    }
+
 }
