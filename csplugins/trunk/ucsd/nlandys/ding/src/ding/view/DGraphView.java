@@ -300,7 +300,16 @@ class DGraphView implements GraphView
 
   public List getEdgeViewsList(Node oneNode, Node otherNode)
   {
-    return null;
+    synchronized (m_lock) {
+      final ArrayList returnThis = new ArrayList();
+      List edges = m_drawPersp.edgesList(oneNode.getRootGraphIndex(),
+                                         otherNode.getRootGraphIndex(), true);
+      if (edges == null) { return null; }
+      Iterator it = edges.iterator();
+      while (it.hasNext()) {
+        Edge e = (Edge) it.next();
+        returnThis.add(getEdgeView(e)); }
+      return returnThis; }
   }
 
   public List getEdgeViewsList(int oneNodeInx, int otherNodeInx,
