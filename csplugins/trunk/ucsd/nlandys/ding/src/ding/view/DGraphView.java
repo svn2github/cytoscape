@@ -37,6 +37,7 @@ class DGraphView implements GraphView
   DEdgeDetails m_edgeDetails;
   HashMap m_nodeViewMap;
   HashMap m_edgeViewMap;
+  String m_identifier;
 
   private static class InnerCanvas extends Canvas
   {
@@ -233,11 +234,12 @@ class DGraphView implements GraphView
 
   public String getIdentifier()
   {
-    return null;
+    return m_identifier;
   }
 
   public void setIdentifier(String id)
   {
+    m_identifier = id;
   }
 
   public double getZoom()
@@ -335,7 +337,7 @@ class DGraphView implements GraphView
 
   public Iterator getEdgeViewsIterator()
   {
-    return null;
+    synchronized (m_lock) { return m_edgeViewMap.values().iterator(); }
   }
 
   public EdgeView getEdgeView(Edge edge)
@@ -345,12 +347,12 @@ class DGraphView implements GraphView
 
   public int edgeCount()
   {
-    return 0;
+    return getEdgeViewCount();
   }
 
   public int nodeCount()
   {
-    return 0;
+    return getNodeViewCount();
   }
 
   public boolean hideGraphObject(Object obj)
