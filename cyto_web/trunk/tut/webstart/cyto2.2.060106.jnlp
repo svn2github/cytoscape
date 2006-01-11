@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jnlp
-   codebase="http://cytoscape.org/tut/webstart"
+   codebase="http://cumin.sysbio.pasteur.fr/cline/tut/webstart"
    href="cyto2.2.060106.jnlp">
   <information>
     <title>Cytoscape WebStart</title>

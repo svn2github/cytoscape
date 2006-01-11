@@ -32,7 +32,7 @@
    </tr>
   </table>
   <? include "../nav.php"; ?>
-  <? include "../nav_tut.php"; ?>
+  <? include "nav_tut.php"; ?>
   <div id="indent">
   <center>
      <h2>Fetching Data</h2>
@@ -57,10 +57,18 @@ This tutorial features the following plugin:
 </UL>
 
 <P>Begin by (a) opening a second web browser window, and (b) clicking here:
-<a href="webstart/cyto2.2.211205.jnlp">WEB START</a> 
+<a href="webstart/cyto2.2.060106.jnlp">WEB START</a> 
 (approximate download size: 22 MB) This starts Cytoscape on your own
 computer, after downloading the program and annotations from our
 website.  
+
+This tutorial and accompanying lectures were delivered at 
+<A HREF="http://www.csc.fi/math_topics/">Computer Science Center</A> in 
+Helsinki, Finland.  The lecture slides of background material are
+available <A HREF="fetching.data.ppt">here</A> and an accompanying video
+presentation is available <A HREF="http://rm.tv.funet.fi:8080/ramgen/fi/csc/kurssit/2005/cytoscape/_cytos02.rm">here</A>.
+<P>
+
 
 <H3>External websites for SIF files</H3>
 <P>Here, we will explore
@@ -173,6 +181,17 @@ plugin to fetch data from Cytoscape.</P>
     terms using the AND and OR operations (e.g p53 AND apoptosis). 
     Experiment with this a bit.  <B><I>Remember to be kind to servers!</I></B></P>
 </OL>
+    After users obtain network data from multiple sources, they often
+    want to merge the separate networks into one network.
+    This can be done with the Cytoscape
+    <A HREF="http://www.cytoscape.org/plugins/GraphMerge/GraphMerge.jar">
+      Graph Merge</A> plugin from 
+     <A HREF="http://www-bioeng.ucsd.edu/faculty/area/ideker_lab/">
+     The Ideker Lab</A></LI> at UCSD.  For information on installing and
+    using the plugin, please see the 
+    <A HREF="http://www-bioeng.ucsd.edu/faculty/area/ideker_lab/plugins/GraphMerge/release/README.txt">release notes</A> for this plugin.
+
+
 <P><B>Congratulations! 
 </B>You have ventured past the world of Getting Started, and are now
 poised to start doing some serious systems biology!  You will need

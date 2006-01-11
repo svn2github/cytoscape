@@ -33,7 +33,7 @@
 	   </td>
 	 </tr>
        </table>
-       <? include "nav.php"; ?>
+       <? include "../nav.php"; ?>
        <? include "nav_tut.php"; ?>
        <div id="indent">
        <center>
@@ -64,13 +64,19 @@ In this tutorial, you will learn about the following:
 Begin by clicking here: 
 &nbsp;
 <font size=+1>
-<a href="webstart/cyto2.2.211205.jnlp">WEB START</a>
+<a href="webstart/cyto2.2.060106.jnlp">WEB START</a>
 </font>&nbsp; (approximate download size: 22 MB) This starts Cytoscape on your own computer, after downloading the
 program and annotations from our website. (On subsequent runs, the program or
 annotation will not be downloaded again unless we have new versions or new
 annotation for you to use.) If Cytoscape does not start, please look at the
 <a href="tutorial.php">instructions</a> for some places to get help.<p> If at any point you wish
 to restart this tutorial, just click again on the <b>WEB START</b> link just above.
+<P>
+This tutorial and accompanying lectures were delivered at 
+<A HREF="http://www.csc.fi/math_topics/">Computer Science Center</A> in 
+Helsinki, Finland.  The lecture slides of background material are
+available <A HREF="getting.started.ppt">here</A> and an accompanying video
+presentation is available <A HREF="http://rm.tv.funet.fi:8080/ramgen/fi/csc/kurssit/2005/cytoscape/_cytos01.rm">here</A>.
 <P>
 <H3> Initial steps</H3>
 Launch Cytoscape. You should see a window that looks like this:  
@@ -167,21 +173,16 @@ The node representing TP53 is numbered 7157.  Select this node as follows:</P>
 		none of which are currently selected.</P>
 		<IMG SRC="getting.started/Fig12.png" WIDTH=246 HEIGHT=79><BR CLEAR=LEFT>
 
-		<P><LI>Copy the selected nodes and their edges into a separate network, as
-		follows:</P>
-		<OL>
-		<LI><P>Under the <B>Select</B> menu, select <B>To New Network</B>, and 
-		<B>Selected nodes, All edges</B>. 
-		</P>
-		<LI><P>Clean up your canvas:</P>
-		<OL>
-			<LI><P>Maximize your subnetwork window.</P>
-			<LI><P>Select <B>Layout</B>, <B>Apply Spring Embedded Layout</B>, and 
-			<B>All Nodes. </B> </P>
-			<LI><P>Use the Zoom control to zoom into this network.</P>
-			<LI><P>Your display should now appear as shown.</P>
-			<IMG SRC="getting.started/Fig13.png" HSPACE=12 WIDTH=346 HEIGHT=278><BR CLEAR=LEFT></P>
-		</OL>
+	</OL>
+	<LI>Copy the selected nodes and their edges into a separate network by selecting <B>To New Network</B> under the <B>Select</B> menu.
+	<LI><P>Clean up your canvas:</P>
+	<OL>
+		<LI><P>Maximize your subnetwork window.</P>
+		<LI><P>Select <B>Layout</B>, <B>Apply Spring Embedded Layout</B>, and 
+		<B>All Nodes. </B> </P>
+		<LI><P>Use the Zoom control to zoom into this network.</P>
+		<LI><P>Your display should now appear as shown.</P>
+		<IMG SRC="getting.started/Fig13.png" HSPACE=12 WIDTH=346 HEIGHT=278><BR CLEAR=LEFT></P>
 	</OL>
 </OL>
 <H3>Loading Node Attributes</H3>
@@ -259,7 +260,7 @@ will now represent each interaction by its type, as follows:</P>
 	experimentally or through literature, and will further allow you to see the edge type.</P>
 	Your <B>Set Visual Properties</B> window should now look similar to the one
 	shown below.</P>
-	<IMG SRC="getting.started/Fig21.png" WIDTH=265 HEIGHT=328><BR CLEAR=LEFT>		
+	<P><IMG SRC="getting.started/Fig21.png" WIDTH=265 HEIGHT=328><BR CLEAR=LEFT>		
 	<LI><P>Click on <B>Apply to Network</B>, and click the <B>Close</B> button on the <B>Visual</B>
 	<B>Styles</B> popup.</P>
 	<LI><P>You should see a	network similar to the one below.  Which is the most common types
