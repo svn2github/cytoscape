@@ -329,7 +329,8 @@ class DGraphView implements GraphView
 
   public EdgeView getEdgeView(int edgeInx)
   {
-    return null;
+    synchronized (m_lock) {
+      return (EdgeView) m_edgeViewMap.get(new Integer(edgeInx)); }
   }
 
   public Iterator getEdgeViewsIterator()
@@ -339,7 +340,7 @@ class DGraphView implements GraphView
 
   public EdgeView getEdgeView(Edge edge)
   {
-    return null;
+    return getEdgeView(edge.getRootGraphIndex());
   }
 
   public int edgeCount()
