@@ -87,12 +87,9 @@ public class AllTests
 		String sep = System.getProperty("file.separator");
 		for ( String testname : testNames ) {
 			testname = testname.replace(sep.charAt(0),'.');
-			Class c = urlLoader.loadClass( testname );
-	            	Object o = c.newInstance(); 
-			Class[] parameterTypes = new Class[] {};
-	          	Method suiteMethod = c.getMethod("suite", parameterTypes);
-                	suite.addTest( (TestSuite)(suiteMethod.invoke(o)) ); 
-			System.out.println("loading class " + testname );
+			Class testclass = urlLoader.loadClass( testname );
+                	suite.addTest( new TestSuite(testclass) ); 
+			//System.out.println("loading class " + testname );
 		}
 		
 		} catch (Exception e) { e.printStackTrace(); }
