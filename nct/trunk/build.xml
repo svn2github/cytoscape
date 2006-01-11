@@ -97,7 +97,7 @@
 
     <!-- Define the main classes -->
     <property name="main.class" value="nct.networkblast.NetworkBlast"/>
-    <property name="test.main.class" value="nct.AllTests"/>
+    <property name="test.main.class" value="AllTests"/>
 
     <!-- Define the class path - Defaults to everything in the lib.dir -->
     <path id="project.class.path">
@@ -294,7 +294,7 @@
   <target name="runtests-gui" 
           depends="jar-tests"
           description="Runs all unit tests.">
-    <java classname="nct.AllTests"
+    <java classname="${test.main.class}"
           classpathref="junit.class.path" 
           fork="true">
       <arg line="-gui"/>
