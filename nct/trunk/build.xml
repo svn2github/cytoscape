@@ -294,9 +294,6 @@
   <target name="runtests-gui" 
           depends="jar-tests"
           description="Runs all unit tests.">
-        <fileset dir="${tests.dir}"
-                 includes="**/*Test.java"
-                 excludes="**/AllTests.java" />
     <java classname="nct.AllTests"
           classpathref="junit.class.path" 
           fork="true">
