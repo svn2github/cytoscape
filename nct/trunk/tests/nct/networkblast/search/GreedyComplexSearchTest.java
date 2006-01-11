@@ -97,4 +97,5 @@ public class GreedyComplexSearchTest extends TestCase {
 	// ADD MORE TESTS
 
     }
+    public static Test suite() { return new TestSuite( GreedyComplexSearchTest.class ); }
 }

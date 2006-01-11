@@ -67,4 +67,5 @@ public class DuplicateThresholdFilterTest extends TestCase {
 	s.add(d);
 	assertTrue(f.filter(s).size() == 2);
     }
+    public static Test suite() { return new TestSuite( DuplicateThresholdFilterTest.class ); }
 }

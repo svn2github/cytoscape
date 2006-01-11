@@ -63,4 +63,5 @@ public class InteractionGraphTest extends TestCase {
 	assertTrue("expected distance 3, got: " + g.getDistance("a", "e"),
 	           g.getDistance("a", "e") == 3); 
     }
+    public static Test suite() { return new TestSuite( InteractionGraphTest.class ); }
 }

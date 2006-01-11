@@ -67,8 +67,6 @@ public class ZIPSIFWriterTest extends TestCase {
 	}
     }
 
-    public static Test suite() {
-	return new TestSuite( ZIPSIFWriterTest.class );
-    }
+    public static Test suite() { return new TestSuite( ZIPSIFWriterTest.class ); }
 
 }

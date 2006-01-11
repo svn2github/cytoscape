@@ -58,5 +58,6 @@ public class LogLikelihoodScoreModelTest extends TestCase {
 	assertTrue(s.scoreEdge("e", "f", h) > 0.29142 && s.scoreEdge("e", "f", h) < 0.29143);
 	*/
     }
+    public static Test suite() { return new TestSuite( LogLikelihoodScoreModelTest.class ); }
 }
 	    

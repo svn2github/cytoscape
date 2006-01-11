@@ -96,4 +96,5 @@ public class CompatibilityGraphTest extends TestCase {
 	assertTrue("edge desc expected: 10 while we got: " + g.getEdgeDescription("A2|B1", "A1|B1"),
 	            g.getEdgeDescription("A2|B1", "A1|B1").equals("10"));
     }
+    public static Test suite() { return new TestSuite(CompatibilityGraphTest.class ); }
 }

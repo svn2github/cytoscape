@@ -60,4 +60,5 @@ public class ColorCodingPathSearchTest extends TestCase {
 	}
        	assertTrue(solns.size() == 1); // TODO
     }
+    public static Test suite() { return new TestSuite( ColorCodingPathSearchTest.class ); }
 }
