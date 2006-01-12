@@ -314,6 +314,7 @@
             ***********************************************
       </echo>
       <mkdir dir="${junit.report.dir}"/>
+      <property name="junit.test.failure" value="false"/>
       <junit printsummary="yes"
              haltonfailure="no"
              maxmemory="512m">
@@ -323,29 +324,24 @@
           <formatter type="xml"
                      usefile="true" />
         <batchtest fork="yes"
-                   todir="${junit.report.dir}" >
+                   todir="${junit.report.dir}" 
+		   errorProperty="junit.test.failure">
           <fileset dir="${src.dir}"
                    includes="**/*Test.java"
                    excludes="**/AllTests.java" />
         </batchtest>
       </junit>
-    </target>
 
-    <!-- ======================================================= -->
-    <!-- generates an html report of the junit results           -->
-    <!-- ======================================================= -->
-    <target name="test-report" depends="test">
-      <echo>
-            ***********************************************
-            Creating unit test summary report.
-            ***********************************************
-      </echo>
       <junitreport todir="${junit.report.dir}">
         <fileset dir="${junit.report.dir}">
           <include name="TEST-*.xml"/>
         </fileset>
         <report format="frames" todir="${junit.report.dir}"/>
       </junitreport>
+
+      <fail message="JUnit Tests failed! Check ${junit.report.dir}/index.html for details."
+            if="junit.test.failure" />
+
     </target>
 
     <!-- ======================================================= -->
