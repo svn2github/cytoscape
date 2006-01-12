@@ -262,7 +262,7 @@
                  usefile="true" />
       <batchtest fork="yes" 
                  todir="${log.dir}" 
-		 errorProperty="junit.test.failure"
+		 failureProperty="junit.test.failure"
                  if="tests.ok">
         <fileset dir="${tests.dir}"
                  includes="**/*Test.java"
