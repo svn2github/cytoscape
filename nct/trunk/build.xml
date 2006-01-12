@@ -18,8 +18,6 @@
     <echo message="   jar             -> creates all project jars"/>
     <echo message="   jar-tests       -> creates junit test jars"/>
     <echo message="   runtests        -> runs junit tests"/>
-    <echo message="   runtests-report -> runs junit tests and creates an"/>
-    <echo message="                      html summary report."/>
     <echo message="   runtests-gui    -> runs junit tests in the junit gui"/>
     <echo message="   docs            -> generates the javadoc documentation"/>
     <echo message="   sign            -> signs all jars (requires keystore)"/>
@@ -253,9 +251,9 @@
           depends="jar-tests"
           if="tests.ok">
     <mkdir dir="${log.dir}"/>
-    <mkdir dir="${log.dir}"/>
+    <property name="junit.test.failure" value="false"/>
     <junit printsummary="yes"
-           haltonfailure="yes"
+           haltonfailure="no"
            maxmemory="256m">
       <classpath refid="junit.class.path"/>
       <formatter type="plain" 
@@ -264,28 +262,23 @@
                  usefile="true" />
       <batchtest fork="yes" 
                  todir="${log.dir}" 
+		 errorProperty="junit.test.failure"
                  if="tests.ok">
         <fileset dir="${tests.dir}"
                  includes="**/*Test.java"
                  excludes="**/AllTests.java" />
       </batchtest> 
     </junit>
-    <echo message="Successfully ran runtests task!"/>
-  </target>
-
-  <!-- =================================================================== -->
-  <!-- Runs generates a nice html report based on the test output          -->
-  <!-- =================================================================== -->
-  <target name="runtests-report" 
-          depends="runtests"
-          if="tests.ok">
+    <mkdir dir="${junit.report.dir}"/>
     <junitreport todir="${junit.report.dir}">
-      <fileset dir="${junit.report.dir}">
+      <fileset dir="${log.dir}">
         <include name="TEST-*.xml"/>
       </fileset>
       <report format="frames" todir="${junit.report.dir}"/>
     </junitreport>
-    <echo message="Successfully ran runtests-report task!"/>
+    <fail message="JUnit Test Failure! Details: ${junit.report.dir}/index.html"
+          if="${junit.test.failure}"/>
+    <echo message="Successfully ran runtests task!"/>
   </target>
 
   <!-- =================================================================== -->
