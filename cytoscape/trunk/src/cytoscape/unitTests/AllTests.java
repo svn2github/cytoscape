@@ -1,120 +1,101 @@
 package cytoscape.unitTests;
 
-import junit.framework.TestCase;
-import junit.framework.Test;
-import junit.framework.TestSuite;
-import cytoscape.visual.unitTests.VisualSuite;
-import cytoscape.visual.mappings.continuous.unitTests.ContinuousMappingTestSuite;
-import cytoscape.visual.mappings.discrete.unitTests.DiscreteMappingTestSuite;
-import cytoscape.util.unitTests.UtilSuite;
-import cytoscape.data.unitTests.DataSuite;
-import cytoscape.data.readers.unitTests.DataReaderSuite;
-import cytoscape.data.annotation.unitTests.AnnotationSuite;
-import cytoscape.data.synonyms.unitTests.SynonymSuite;
-import cytoscape.view.unitTests.ViewSuite;
+import junit.framework.*;
+
+import java.lang.*;
+import java.lang.reflect.*;
+import java.net.*;
+import java.util.*;
+import java.util.jar.*;
+import java.util.regex.*;
+
 
 /**
- * Runs all Cytoscape Unit Tests.
- * In order to run all Cytoscape Unit Tests from one central location,
- * unit tests are organized into Test Suites.  In general, each package
- * gets it own test suite.  For example, all the VizMapper Unit tests are
- * organized into the VizMapperSuite.  This class then organizes all the
- * package suites into one master test suite, and tests them all at once.
- * This makes it much easier to do regression testing with all existing
- * unit tests.
- * <P>
- * The AllTest program can be run under two modes:
- * 1.  Text (no command line arguments):  This is the default mode
- * for JUnit.  Each passing test is represented with a single dot (.).
- * 2.  GUI (set -ui as a command line argument).  This runs the graphical
- * JUnit interface.
- * <P>
- * Some developers like running unit tests from a package directory,
- * rather than from this central class.  To accommodate both approaches,
- * we use a System property named "JUNIT_TEST_ALL".  If this property is
- * set, Unit tests should do two things:
- *
- * 1.  Hide all calls to System.out.  Otherwise, we will get so many output
- * messages, that they will no longer be meaningful.  To conditionally output
- * messages to System.out, use the AllTest.standardOut() method.
- *
- * 2.  Set the correct location of files.  If a Unit test loads data from a
- * file, files are usually located relative to the package directory.  However,
- * the AllTest class will always run from the root cytoscape directory.  Unit
- * tests therefore need to check the System property, and specify file
- * locations accordingly.  To test if the "JUNIT_TEST_ALL" property is set,
- * use the runAllTests() method query.
- *
- * @author Ethan Cerami
+ * A TestSuite that examines the jar that it is contained in, discovers
+ * all of the unit tests also contained in the jar, and executes them.
+ * This is useful for running unit tests independent of ant.
  */
-public class AllTests extends TestCase {
-    public static final String TEST_ALL = "JUNIT_TEST_ALL";
+public class AllTests 
+{
+	/**
+	 * Parses the command line and executes the test suite in either
+	 * gui mode or text based.  If the first argument on the command line
+	 * is "-ui" the gui will execute all tests found.  If the -ui 
+	 * argument is followed by a fully qualified test class name 
+	 * (e.g. com.example.MyTest), then only that test will be executed
+	 * in gui mode. Only one test case can be specified in this manner, 
+	 * any subsequent test cases (or arguments at all) will cause all
+	 * tests to be run.  If no arguments are found, or if the first 
+	 * argument is not "-ui", then all tests will be run in text mode.
+	 */
+        public static void main (String[] args) {
 
-    /**
-     * The suite method kicks off all of the tests.
-     *
-     * @return junit.framework.Test
-     */
-    public static Test suite() {
-        //  Set the JUNIT_TEST_ALL Property to TRUE.
-        System.setProperty(TEST_ALL, "TRUE");
-
-        //  Organize all suites into one master suite.
-        TestSuite suite = new TestSuite();
-        suite.addTest(CoreSuite.suite());
-        suite.addTest(DataSuite.suite());
-        suite.addTest(DataReaderSuite.suite());
-        suite.addTest(AnnotationSuite.suite());
-        suite.addTest(SynonymSuite.suite());
-        suite.addTest(UtilSuite.suite());
-        suite.addTest(VisualSuite.suite());
-        suite.addTest(ContinuousMappingTestSuite.suite());
-        suite.addTest(DiscreteMappingTestSuite.suite());
-        suite.addTest(ViewSuite.suite());
-
-        suite.setName("Cytoscape JUnit Tests");
-        return suite;
-    }
-
-    /**
-     * Runs all Cytoscape Unit Tests.
-     *
-     * @param args Command Line Arguments. use -ui to run the JUnit Graphical
-     * interface.
-     */
-    public static void main(String[] args) {
-        if (args.length > 0 && args[0] != null && args[0].equals("-ui")) {
-            String newargs[] = {"cytoscape.unitTests.AllTests",
-                                "-noloading"};
-            junit.swingui.TestRunner.main(newargs);
-        } else {
-            junit.textui.TestRunner.run(suite());
+		if ( args.length > 0 && 
+		     args[0] != null && 
+		     args[0].equals("-ui") ) {
+			if ( args.length == 2 ) {
+				String newargs[] = {"cytoscape.unitTests.AllTests", "-noloading", args[1]};
+               			junit.swingui.TestRunner.main( newargs );
+			} else {
+				String newargs[] = {"cytoscape.unitTests.AllTests", "-noloading"};
+               			junit.swingui.TestRunner.main( newargs );
+			}
+		} else
+                	junit.textui.TestRunner.run( suite() );
         }
-    }
 
-    /**
-     * Conditionally output a message to System.out.
-     * If we are running All Tests, messages will not be shown.
-     * Otherwise, messages will be shown.
-     * @param msg Message to output.
-     */
-    public static void standardOut (String msg) {
-        String runAllTests = System.getProperty(AllTests.TEST_ALL);
-        if (runAllTests == null) {
-            System.out.println(msg);
-        }
-    }
+	/**
+	 * Reflects to find the test classes in this jar and then
+	 * adds them to this test suite.
+	 */
+        public static Test suite() {
+                TestSuite suite= new TestSuite("All JUnit Tests");
 
-    /**
-     * Is the JUNIT_TEST_ALL Property Set?
-     * @return true or false.
-     */
-    public static boolean runAllTests () {
-        String runAllTestProperty = System.getProperty(AllTests.TEST_ALL);
-        if (runAllTestProperty == null) {
-            return false;
-        } else {
-            return true;
+		try {
+
+		// figure out the name of the jar file that is executing 
+		// this code
+		ClassLoader cl = ClassLoader.getSystemClassLoader();
+		URL urlJar = cl.getSystemResource("cytoscape/unitTests/AllTests.class");
+		String urlStr = urlJar.toString();
+		System.out.println("urlString " + urlStr);
+		urlStr = urlStr.substring(0,  urlStr.indexOf("!/") + 2 );
+
+		// once we have the jar file, open a connection to it and
+		// read the names of all of the entries
+		URL url = new URL(urlStr);
+		JarURLConnection jarConnection = (JarURLConnection)url.openConnection();
+		JarFile thisJar = jarConnection.getJarFile();
+
+		// create a list of URLs of the test classes
+		Enumeration entries = thisJar.entries();
+		List testNames = new ArrayList();
+		while (entries.hasMoreElements()) {
+			String name = ((JarEntry)entries.nextElement()).getName();
+			if ( name.matches(".*Test.class") ) 
+				testNames.add(name.substring(0,name.length()-6));
+		}
+
+		// create the a new ClassLoader
+		URL[] testUrlArray = new URL[testNames.size()];
+		for ( int i = 0; i < testUrlArray.length; i++ ) 
+			testUrlArray[i] = new URL( urlStr + (String)testNames.get(i) + ".class" ); 
+		URLClassLoader urlLoader = new URLClassLoader( testUrlArray, cl ); 
+	
+		// finally, iterate over each test class name, reflect an
+		// instantiation of the class using the new class loader, 
+		// and add it to this test suite.
+		String sep = System.getProperty("file.separator");
+		for ( int i = 0; i < testNames.size(); i++ ) {
+			String testname = (String)testNames.get(i);
+			testname = testname.replace(sep.charAt(0),'.');
+			Class c = urlLoader.loadClass( testname );
+                	suite.addTest( new TestSuite( c ) ); 
+			System.out.println("loading class " + testname );
+		}
+		
+		} catch (Exception e) { e.printStackTrace(); }
+		return suite;
         }
-    }
 }
+
