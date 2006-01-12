@@ -357,7 +357,16 @@ class DGraphView implements GraphView
 
   public boolean hideGraphObject(Object obj)
   {
-    return false;
+    synchronized (m_lock) {
+      if (obj instanceof EdgeView) {
+        final int edgeInx = ((EdgeView) obj).getRootGraphIndex();
+        if (m_drawPersp.hideEdge(edgeInx) == 0) { return false; }
+        return true; }
+      else if (obj instanceof Edge) {
+        final int edgeInx = ((Edge) obj).getRootGraphIndex();
+        if (m_drawPersp.hideEdge(edgeInx) == 0) { return false; }
+        return true; }
+      return false; }
   }
 
   public boolean showGraphObject(Object obj)
