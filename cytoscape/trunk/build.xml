@@ -307,7 +307,7 @@
     <!-- Run All of the Cytoscape Unit Tests without gui         -->
     <!-- generates an html report.                               -->
     <!-- ======================================================= -->
-    <target name="test" depends="compile">
+    <target name="test" depends="jar">
       <echo>
             ***********************************************
             Running all unit tests. 
@@ -325,7 +325,7 @@
                      usefile="true" />
         <batchtest fork="yes"
                    todir="${junit.report.dir}" 
-		   errorProperty="junit.test.failure">
+		   failureProperty="junit.test.failure">
           <fileset dir="${src.dir}"
                    includes="**/*Test.java"
                    excludes="**/AllTests.java" />
