@@ -29,12 +29,12 @@ public class UniqueCompatNodeFilter implements Filter<String,Double> {
 		for ( String compatNode : graph.getNodes() ) {
 			String[] subNodes = compatNode.split("\\|");
 			for ( int i = 0; i < subNodes.length; i++ ) {
-				System.out.println("subnode '" + subNodes[i] + "'");
+				//System.out.println("subnode '" + subNodes[i] + "'");
 				nodeSet.add(subNodes[i]);
 			}
 		}
-		System.out.println("graph num " + graph.numberOfNodes());
-		System.out.println("set num " + nodeSet.size()); 
+		//System.out.println("graph num " + graph.numberOfNodes());
+		//System.out.println("set num " + nodeSet.size()); 
 		if ( (graph.numberOfNodes() * 2) == nodeSet.size() )
 			newSolns.add( graph );
 	}
