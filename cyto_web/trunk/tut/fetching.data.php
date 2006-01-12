@@ -111,7 +111,7 @@ exports data to the SIF format as described below.</P>
     <LI><P>Click on the link
     labeled<B> field</B>.  This will bring up the <B>Query Fields</B>
     popup window, shown below: 
-    <IMG SRC="fetching.data/Fig12.gif"  WIDTH=306 HEIGHT=370></P>
+    <IMG SRC="fetching.data/Fig12.jpg"  WIDTH=306 HEIGHT=370></P>
     <LI><P>Click on <B>Entrez Gene ID</B>.</P>
     <LI><P> In the right-hand side of the <B>Field specific search</B> form,
     enter <B>7157,</B> the Entrez Gene ID for the human gene TP53. </P>
