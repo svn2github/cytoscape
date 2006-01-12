@@ -17,6 +17,8 @@ import java.util.regex.*;
  */
 public class AllTests 
 {
+	public static final String TEST_ALL = "JUNIT_TEST_ALL";
+
 	/**
 	 * Parses the command line and executes the test suite in either
 	 * gui mode or text based.  If the first argument on the command line
@@ -97,5 +99,31 @@ public class AllTests
 		} catch (Exception e) { e.printStackTrace(); }
 		return suite;
         }
+
+    /**
+     * Conditionally output a message to System.out.
+     * If we are running All Tests, messages will not be shown.
+     * Otherwise, messages will be shown.
+     * @param msg Message to output.
+     */
+    public static void standardOut (String msg) {
+        String runAllTests = System.getProperty(AllTests.TEST_ALL);
+        if (runAllTests == null) {
+            System.out.println(msg);
+        }
+    }
+
+    /**
+     * Is the JUNIT_TEST_ALL Property Set?
+     * @return true or false.
+     */
+    public static boolean runAllTests () {
+        String runAllTestProperty = System.getProperty(AllTests.TEST_ALL);
+        if (runAllTestProperty == null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 }
 
