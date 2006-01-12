@@ -358,15 +358,27 @@ class DGraphView implements GraphView
   public boolean hideGraphObject(Object obj)
   {
     synchronized (m_lock) {
-      if (obj instanceof EdgeView) {
-        final int edgeInx = ((EdgeView) obj).getRootGraphIndex();
+      if (obj instanceof DEdgeView) {
+        final int edgeInx = ((DEdgeView) obj).getRootGraphIndex();
         if (m_drawPersp.hideEdge(edgeInx) == 0) { return false; }
         return true; }
-      else if (obj instanceof Edge) {
-        final int edgeInx = ((Edge) obj).getRootGraphIndex();
-        if (m_drawPersp.hideEdge(edgeInx) == 0) { return false; }
+      else if (obj instanceof DNodeView) {
+        final DNodeView nView = (DNodeView) obj;
+        final int nodeInx = nView.getRootGraphIndex();
+        final int[] edges = m_drawPersp.getAdjacentEdgeIndicesArray
+          (nodeInx, true, true, true);
+        if (edges == null) { return false; }
+        for (int i = 0; i < edges.length; i++) {
+          hideGraphObject(m_edgeViewMap.get(new Integer(edges[i]))); }
+        m_spacial.exists(~nodeInx, m_extentsBuff, 0);
+        nView.m_hiddenXMin = m_extentsBuff[0];
+        nView.m_hiddenYMin = m_extentsBuff[1];
+        nView.m_hiddenXMax = m_extentsBuff[2];
+        nView.m_hiddenYMax = m_extentsBuff[3];
+        m_drawPersp.hideNode(nodeInx);
+        m_spacial.delete(~nodeInx);
         return true; }
-      return false; }
+      else { return false; } }
   }
 
   public boolean showGraphObject(Object obj)

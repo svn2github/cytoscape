@@ -28,6 +28,10 @@ class DNodeView implements NodeView, Label
   boolean m_selected;
   Paint m_unselectedPaint;
   Paint m_selectedPaint;
+  float m_hiddenXMin;
+  float m_hiddenYMin;
+  float m_hiddenXMax;
+  float m_hiddenYMax;
 
   /*
    * @param inx the RootGraph index of node (a negative number).
