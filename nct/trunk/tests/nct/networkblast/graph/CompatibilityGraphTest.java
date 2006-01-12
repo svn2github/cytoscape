@@ -27,7 +27,7 @@ public class CompatibilityGraphTest extends TestCase {
 	    SIFHomologyReader sr = new SIFHomologyReader("examples/junit.compat.sif");
 	    homologyGraph = new HomologyGraph(sr, 1e-5, inputSpecies);
 	    LogLikelihoodScoreModel lls = new LogLikelihoodScoreModel(2.5,0.8,1e-10);
-	    CompatibilityCalculator compatCalc = new AdditiveCompatibilityCalculator(0.01,lls);
+	    CompatibilityCalculator compatCalc = new AdditiveCompatibilityCalculator(0.01,lls,true);
 	    g = new CompatibilityGraph(homologyGraph, inputSpecies, lls, compatCalc );
 	} catch (IOException e1) {
 	    e1.printStackTrace();

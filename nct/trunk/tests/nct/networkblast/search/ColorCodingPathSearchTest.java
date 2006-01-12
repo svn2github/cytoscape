@@ -33,7 +33,7 @@ public class ColorCodingPathSearchTest extends TestCase {
 		inputSpecies.add(h);
 		SIFHomologyReader sr = new SIFHomologyReader("examples/junit.compat.sif");
 		homologyGraph = new HomologyGraph(sr,1e-5,inputSpecies);
-		CompatibilityCalculator compatCalc = new AdditiveCompatibilityCalculator(0.01,s);
+		CompatibilityCalculator compatCalc = new AdditiveCompatibilityCalculator(0.01,s,true);
 		g = new CompatibilityGraph(homologyGraph, inputSpecies, s, compatCalc );
 
 	} catch (IOException e) {

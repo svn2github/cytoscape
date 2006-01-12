@@ -251,7 +251,6 @@
           depends="jar-tests"
           if="tests.ok">
     <mkdir dir="${log.dir}"/>
-    <property name="junit.test.failure" value="false"/>
     <junit printsummary="yes"
            haltonfailure="no"
            maxmemory="256m">
@@ -263,6 +262,7 @@
       <batchtest fork="yes" 
                  todir="${log.dir}" 
 		 failureProperty="junit.test.failure"
+		 errorProperty="junit.test.failure"
                  if="tests.ok">
         <fileset dir="${tests.dir}"
                  includes="**/*Test.java"
@@ -277,7 +277,7 @@
       <report format="frames" todir="${junit.report.dir}"/>
     </junitreport>
     <fail message="JUnit Test Failure! Details: ${junit.report.dir}/index.html"
-          if="${junit.test.failure}"/>
+          if="junit.test.failure"/>
     <echo message="Successfully ran runtests task!"/>
   </target>
 

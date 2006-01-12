@@ -1,0 +1,63 @@
+package nct.networkblast.filter;
+
+import junit.framework.*;
+import java.util.*;
+import java.util.logging.Level;
+import nct.graph.basic.BasicGraph;
+import nct.graph.Graph;
+import nct.networkblast.NetworkBlast;
+import nct.filter.Filter;
+
+public class UniqueCompatNodeFilterTest extends TestCase {
+    BasicGraph<String,Double> a,b,c,d;
+    Filter f;
+    protected void setUp() {
+	NetworkBlast.setUpLogging(Level.WARNING);       
+	a = new BasicGraph<String,Double>();
+	b = new BasicGraph<String,Double>();
+	c = new BasicGraph<String,Double>();
+	d = new BasicGraph<String,Double>();
+
+    	// expect to get filtered out
+	a.addNode("a|A");
+	a.addNode("b|B");
+	a.addNode("c|A");
+
+	// ok
+	b.addNode("a|A");
+	b.addNode("b|B");
+
+	// ok
+	c.addNode("a|A");
+	c.addNode("b|B");
+
+    	// expect to get filtered out
+	d.addNode("a|A");
+	d.addNode("a|B");
+
+	f = new UniqueCompatNodeFilter();
+
+    }
+
+    public void testRemoveDupes() {
+	// tests whether we correctly filter out the two with 0 distance nodes 
+	List<Graph<String,Double>> s = new LinkedList<Graph<String,Double>>();
+	s.add(a);
+	s.add(b);
+	s.add(c);
+	s.add(d);
+	int size = f.filter(s).size();
+	assertTrue("expect 2, got " + size, size == 2);
+   }
+	
+    public void testKeepAll() {
+	// tests whether we correctly don't filter anything 
+	List<Graph<String,Double>> t = new LinkedList<Graph<String,Double>>();
+	t.add(b);
+	t.add(c);
+	int size = f.filter(t).size();
+	assertTrue("expect 2, got " + size, size == 2);
+    }
+
+    public static Test suite() { return new TestSuite( UniqueCompatNodeFilterTest.class ); }
+}

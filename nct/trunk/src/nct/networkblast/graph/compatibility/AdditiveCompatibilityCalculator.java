@@ -8,18 +8,50 @@ import nct.networkblast.score.ScoreModel;
 import nct.graph.Graph;
 import nct.graph.DistanceGraph;
 
+/**
+ * This class creates the compatibility edge score by summing the edge 
+ * weights of the interaction edges that comprise the compatibility node.
+ */
 public class AdditiveCompatibilityCalculator implements CompatibilityCalculator {
 	
 
 	protected double orthologyThreshold;
 	protected ScoreModel scoreModel;
+	protected boolean allowZero; 
 
-	public AdditiveCompatibilityCalculator( double orthologyThreshold, ScoreModel scoreModel ) {
+	/**
+	 * @param orthologyThreshold The orthology threshold for determining if 
+	 * a compatibility edge weight is sufficient for inclusion.
+	 * @param scoreModel The ScoreModel used to calculate edge weights.
+	 * @param allowZero Whether or not edges of 0 distance (i.e. potential compat nodes
+	 * where a constituent node is the same for both potential compat nodes).
+	 */
+	public AdditiveCompatibilityCalculator( double orthologyThreshold, ScoreModel scoreModel, boolean allowZero ) {
 		this.orthologyThreshold = orthologyThreshold;
 		this.scoreModel = scoreModel;
+		this.allowZero = allowZero;
 	}
 
-	
+	/**
+	 * @param orthologyThreshold The orthology threshold for determining if 
+	 * a compatibility edge weight is sufficient for inclusion.
+	 * @param scoreModel The ScoreModel used to calculate edge weights.
+	 */
+	public AdditiveCompatibilityCalculator( double orthologyThreshold, ScoreModel scoreModel ) {
+		this(orthologyThreshold, scoreModel, false);
+	}
+
+        /**
+         * The method that determines which nodes to add, adds them
+         * if appropriate, and calculates the edge score.
+         * @param compatGraph The compatibility graph that appropriate
+         * compatibility nodes and edges are added to.
+         * @param partitionGraphs Possibly used to
+         * @param nodeBase An array of nodes from the respective
+         * partition graphs that form a potential compatibility node.
+         * @param nodeBranch An array of nodes from the respective
+         * partition graphs that form a potential compatibility node.
+         */
 	public boolean calculate( Graph<String,Double> compatGraph, List<? extends DistanceGraph<String,Double>> partitionGraphs, String[] nodeBase, String[] nodeBranch ) {
 		
 		int numGraphs = partitionGraphs.size();
@@ -28,19 +60,25 @@ public class AdditiveCompatibilityCalculator implements CompatibilityCalculator 
 		byte[] distance = new byte[numGraphs];
 
 		boolean foundOne = false;
-//              boolean foundZero = false;
+                boolean foundZero = false;
+                boolean foundThree = false;
 		for ( int z = 0; z < numGraphs; z++ ) {
 			distance[z] = partitionGraphs.get(z).getDistance(nodeBase[z],nodeBranch[z]);
 			if ( distance[z] == (byte)1 )
 				foundOne = true;
-//                      if ( distance[z] == (byte)0 )
-//                      	foundZero = true;
+                        if ( distance[z] == (byte)3 )
+                      		foundThree = true;
+                        if ( distance[z] == (byte)0 )
+                      		foundZero = true;
 		}
 
 		if ( !foundOne )
 			return false;
-//              if ( foundZero )
-//                      return false;
+		if ( foundThree )
+			return false;
+
+                if ( foundZero && !allowZero )
+			return false;
 
 		// then the weights
 		double edgeWeight = 0;
