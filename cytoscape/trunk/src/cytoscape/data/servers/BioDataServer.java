@@ -88,7 +88,7 @@ public class BioDataServer {
 	String taxonName;
 	String taxonNumber;
 
-	String absPath;
+	String absPath; // apparently not used for anything
 	String taxonFileName; // Filename of taxonomy table
 	File taxonFile; // Table for the NCBI Taxonomy number <-> Taxonomy Name
 	File start; // Start dir of the Cytoscape
@@ -132,7 +132,7 @@ public class BioDataServer {
 			File fileTester = new File(serverName);
 			final String separator = fileTester.separator;
 			// absPath = start.getPath() + separator;
-			absPath = start.getPath() + FS;
+			// absPath = start.getPath() + FS; // apparently not used for anything
 
 			if ((serverName.startsWith("jar://"))
 					|| (serverName.startsWith("http://"))

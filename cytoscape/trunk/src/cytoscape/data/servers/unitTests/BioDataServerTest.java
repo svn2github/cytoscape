@@ -268,7 +268,8 @@ public class BioDataServerTest extends TestCase {
     public void testReadAnnotationsWithTwoOntologies() throws Exception {
         System.out.println("testReadAnnotationsWithTwoOntologies");
 
-        String manifest = "annotations/humanKeggAndGO/manifest.both";
+        //String manifest = "annotations/humanKeggAndGO/manifest.both";
+        String manifest = "testData/humanKeggAndGO/manifest.both";
         BioDataServer server = new BioDataServer(manifest);
 
         String species = "Homo sapiens";

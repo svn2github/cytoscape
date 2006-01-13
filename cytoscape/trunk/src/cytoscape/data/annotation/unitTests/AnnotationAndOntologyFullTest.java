@@ -89,12 +89,12 @@ public void tearDown () throws Exception
 public void testHaloKegg () throws Exception
 { 
   AllTests.standardOut("testHaloKegg");
-  String filename = null;
-  if (AllTests.runAllTests()) {
-    filename = "src/cytoscape/data/kegg/haloMetabolicPathway.xml";
-  } else {
-    filename = "../../kegg/haloMetabolicPathway.xml";
-  }
+  String filename = "testData/haloMetabolicPathway.xml";
+  //if (AllTests.runAllTests()) {
+//    filename = "src/cytoscape/data/kegg/haloMetabolicPathway.xml";
+//  } else {
+//    filename = "../../kegg/haloMetabolicPathway.xml";
+//  }
   AnnotationXmlReader reader = new AnnotationXmlReader (new File (filename));
   Annotation keggHalo = reader.getAnnotation ();
   AllTests.standardOut (keggHalo.toString());

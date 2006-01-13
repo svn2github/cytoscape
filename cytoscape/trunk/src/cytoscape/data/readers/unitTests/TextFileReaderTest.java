@@ -60,17 +60,17 @@ public void tearDown () throws Exception
 public void testSimple () throws Exception
 { 
   AllTests.standardOut("testCtor");
-  TextFileReader reader = null;
-  if (AllTests.runAllTests()) {
+  TextFileReader reader = new TextFileReader("testData/randomTextFile.txt");
+ /* if (AllTests.runAllTests()) {
       reader = new TextFileReader
               ("src/cytoscape/data/readers/unitTests/TextFileReaderTest.java");
 
   } else {
       reader = new TextFileReader ("TextFileReaderTest.java");
-  }
+  }*/
   int count = reader.read ();
   String text = reader.getText ();
-  String signature = "asdasdfasdfasdfadfadfasfasfsafl;lkj97927287";
+  String signature = "nonsense";
   assertTrue (text.indexOf (signature) > 0);
 
 } // testSimple

@@ -22,7 +22,7 @@ public class FlagFilterTest extends TestCase {
     Edge edge2;
     Edge otherEdge;
     GraphPerspective gp;
-    ListenerTest listener;
+    TestListener listener;
     FlagEvent savedEvent;
 
 
@@ -46,7 +46,7 @@ public void setUp () throws Exception
     otherNode = rootGraph.getNode(rootGraph.createNode());
     otherEdge = rootGraph.getEdge(rootGraph.createEdge(node1, otherNode));
     filter = new FlagFilter(gp);
-    listener = new ListenerTest();
+    listener = new TestListener();
     filter.addFlagEventListener(listener);
 }
 
@@ -368,7 +368,7 @@ public static void main (String[] args)
 }
 
 
-private class ListenerTest implements FlagEventListener {
+private class TestListener implements FlagEventListener {
     private FlagEvent event;
     
     public void onFlagEvent(FlagEvent newEvent) {event = newEvent;}

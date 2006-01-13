@@ -72,11 +72,11 @@ public void testReadSmallYeastThesaurus () throws Exception
 { 
   AllTests.standardOut("testReadSmallYeastThesaurus");
 
-  String filename = "sampleData/yeastSmall.txt";
-  if (AllTests.runAllTests()) {
-      filename =
-        "src/cytoscape/data/synonyms/readers/unitTests/sampleData/yeastSmall.txt";
-  }
+  String filename = "testData/yeastSmall.txt";
+//  if (AllTests.runAllTests()) {
+ //     filename =
+  //      "src/cytoscape/data/synonyms/readers/unitTests/sampleData/yeastSmall.txt";
+//  }
   ThesaurusFlatFileReader reader = new ThesaurusFlatFileReader (filename);
   Thesaurus thesaurus = reader.getThesaurus ();
 

@@ -46,6 +46,7 @@ import cytoscape.data.Interaction;
 import cytoscape.data.readers.InteractionsReader;
 import cytoscape.unitTests.AllTests;
 import cytoscape.data.servers.BioDataServer;
+import giny.model.RootGraph;
 //-----------------------------------------------------------------------------------------
 public class InteractionsReaderTest extends TestCase {
   private boolean runAllTests = false;
@@ -71,7 +72,7 @@ public void testReadFromTypicalFile () throws Exception
 // 'typical' means that all lines have the form "node1 pd node2 [node3 node4 ...]
 { 
   AllTests.standardOut("testFromTypicalFile");
-  InteractionsReader reader = this.getReader("sample.sif");
+  InteractionsReader reader = this.getReader("testData/sample.sif");
   reader.read ();
   assertTrue (reader.getCount () == 25);
   Interaction [] interactions = reader.getAllInteractions ();
@@ -90,7 +91,7 @@ public void testReadFileWithNoInteractions () throws Exception
 // that is, with no interaction type and no target
 { 
   AllTests.standardOut ("testReadFileWithNoInteractions");
-  InteractionsReader reader = this.getReader("degenerate.sif");
+  InteractionsReader reader = this.getReader("testData/degenerate.sif");
   reader.read ();
   assertTrue (reader.getCount () == 9);
   Interaction [] interactions = reader.getAllInteractions ();
@@ -106,16 +107,15 @@ public void testReadFileWithNoInteractions () throws Exception
 public void testGetGraph () throws Exception
 { 
   AllTests.standardOut ("testGetGraph");
-  // InteractionsReader reader = this.getReader("sample.sif");
-  //reader.read ();
-  //assertTrue (reader.getCount () == 25);
+  InteractionsReader reader = this.getReader("testData/sample.sif");
+  reader.read ();
+  assertTrue (reader.getCount () == 25);
 
-  //RootGraph graph = reader.getRootGraph ();
-  Cytoscape.clearCytoscape();
-  CyNetwork network = Cytoscape.createNetwork( "testData/sample.sif" );
+  int[] nodes = reader.getNodeIndicesArray();
+  int[] edges = reader.getEdgeIndicesArray();
 
-  assertTrue ("node count", network.getNodeCount () == 31);
-  assertTrue ("edge count", network.getEdgeCount () == 27);
+  assertTrue ("node count: expect 31, got " + nodes.length, nodes.length == 31);
+  assertTrue ("edge count: expect 27, got " + edges.length, edges.length == 27);
 
 } // testGetGraph
 //-------------------------------------------------------------------------
@@ -127,16 +127,15 @@ public void testGetGraphAndEdgeAttributes () throws Exception
 // look like "node1::node2", and that the values are simple strings
 { 
   AllTests.standardOut ("testGetGraphAndEdgeAttributes");
-  //InteractionsReader reader = this.getReader("sample.sif");
-  //reader.read ();
-  //assertTrue (reader.getCount () == 25);
+  InteractionsReader reader = this.getReader("testData/sample.sif");
+  reader.read ();
+  assertTrue (reader.getCount () == 25);
 
+  int[] nodes = reader.getNodeIndicesArray();
+  int[] edges = reader.getEdgeIndicesArray();
 
-  Cytoscape.clearCytoscape();
-  CyNetwork network = Cytoscape.createNetwork( "testData/sample.sif" );
-
-  assertTrue ("node count", network.getNodeCount () == 31);
-  assertTrue ("edge count", network.getEdgeCount () == 27);
+  assertTrue ("node count: expect 31, got "+ nodes.length, nodes.length == 31);
+  assertTrue ("edge count: expect 27, got "+ edges.length, edges.length == 27);
 
   //  assertTrue ("attribute count", Cytoscape.getEdgeNetworkData().size () == 2);
 
@@ -164,7 +163,7 @@ public void testGetGraphAndEdgeAttributes () throws Exception
 public void testReadMultiWordProteinsFile () throws Exception
 { 
   AllTests.standardOut ("testReadMultiWordProteinsFile");
-  String filename = "multiWordProteins.sif";
+  String filename = "testData/multiWordProteins.sif";
   InteractionsReader reader = this.getReader(filename);
   reader.read ();
   assertTrue (reader.getCount () == 29);
@@ -199,7 +198,7 @@ public void testReadMultiWordProteinsFile () throws Exception
 public void testReadMultiWordProteinsFileWithErrantSpaces () throws Exception
 { 
   AllTests.standardOut ("testReadMultiWordProteinsFileWithErrantSpaces");
-  String filename = "multiWordProteinsFileTrailingSpaces.sif";
+  String filename = "testData/multiWordProteinsFileTrailingSpaces.sif";
   InteractionsReader reader = this.getReader(filename);
   reader.read ();
   assertTrue (reader.getCount () == 29);

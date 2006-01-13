@@ -105,6 +105,12 @@
             <fileset dir="${src.dir}/cytoscape/visual/ui/images"/>
         </copy>
 
+
+        <copy todir="${build.classes}">
+		<fileset dir="${src.dir}" includes="**/*.xml" />
+        </copy>
+
+
         <available property="manifest_generated"
                    file="${build.dir}/cytoscape.manifest"/>
     </target>
@@ -314,7 +320,6 @@
             ***********************************************
       </echo>
       <mkdir dir="${junit.report.dir}"/>
-      <property name="junit.test.failure" value="false"/>
       <junit printsummary="yes"
              haltonfailure="no"
              maxmemory="512m">
