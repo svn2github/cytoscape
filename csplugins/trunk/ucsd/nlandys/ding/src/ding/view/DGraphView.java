@@ -31,6 +31,7 @@ class DGraphView implements GraphView
   // old GraphView implementation.  Removal from the RootGraph is the only
   // thing that can affect m_drawPersp that is beyond our control.
   GraphPerspective m_drawPersp;
+  GraphPerspective m_structPersp;
 
   MutableSpacialIndex2D m_spacial;
   DNodeDetails m_nodeDetails;
@@ -38,6 +39,10 @@ class DGraphView implements GraphView
   HashMap m_nodeViewMap;
   HashMap m_edgeViewMap;
   String m_identifier;
+  final float m_defaultNodeXMin;
+  final float m_defaultNodeYMin;
+  final float m_defaultNodeXMax;
+  final float m_defaultNodeYMax;
 
   private static class InnerCanvas extends Canvas
   {
@@ -48,8 +53,14 @@ class DGraphView implements GraphView
     m_perspective = perspective;
     m_drawPersp = m_perspective.getRootGraph().createGraphPerspective
       ((int[]) null, (int[]) null);
+    m_structPersp = m_perspective.getRootGraph().createGraphPerspective
+      ((int[]) null, (int[]) null);
     m_nodeViewMap = new HashMap();
     m_edgeViewMap = new HashMap();
+    m_defaultNodeXMin = -10.0f;
+    m_defaultNodeYMin = -10.0f;
+    m_defaultNodeXMax = 10.0f;
+    m_defaultNodeYMax = 10.0f;
   }
 
   public GraphPerspective getGraphPerspective()
@@ -138,9 +149,11 @@ class DGraphView implements GraphView
              "but a view for it did not exist (debug)"); }
         throw new IllegalArgumentException
           ("node index specified does not exist in underlying RootGraph"); }
+      m_structPersp.restoreNode(nodeInx);
       final NodeView returnThis = new DNodeView(this, nodeInx);
       m_nodeViewMap.put(new Integer(nodeInx), returnThis);
-      m_spacial.insert(~nodeInx, -10.0f, -10.0f, 10.0f, 10.0f);
+      m_spacial.insert(~nodeInx, m_defaultNodeXMin, m_defaultNodeYMin,
+                       m_defaultNodeXMax, m_defaultNodeYMax);
       return returnThis; }
   }
 
@@ -163,6 +176,7 @@ class DGraphView implements GraphView
              "but a view for it did not exist (debug)"); }
         throw new IllegalArgumentException
           ("edge index specified does not exist in underlying RootGraph"); }
+      m_structPersp.restoreEdge(edgeInx);
       final EdgeView returnThis = new DEdgeView(this, edgeInx);
       m_edgeViewMap.put(new Integer(edgeInx), returnThis);
       return returnThis; }
@@ -196,15 +210,20 @@ class DGraphView implements GraphView
   public NodeView removeNodeView(int nodeInx)
   {
     synchronized (m_lock) {
+      // We have to query edges in the m_structPersp, not m_drawPersp because
+      // what if the node is hidden?
       final int[] edges =
-        m_drawPersp.getAdjacentEdgeIndicesArray(nodeInx, true, true, true);
+        m_structPersp.getAdjacentEdgeIndicesArray(nodeInx, true, true, true);
       if (edges == null) { return null; }
       for (int i = 0; i < edges.length; i++) {
         removeEdgeView(edges[i]); }
       final DNodeView returnThis =
         (DNodeView) m_nodeViewMap.remove(new Integer(nodeInx));
+      // If this node was hidden, it won't be in m_drawPersp.
       m_drawPersp.hideNode(nodeInx);
+      m_structPersp.hideNode(nodeInx);
       m_nodeDetails.unregisterNode(~nodeInx);
+      // If this node was hidden, it won't be in m_spacial.
       m_spacial.delete(~nodeInx);
       returnThis.m_view = null;
       return returnThis; }
@@ -226,7 +245,9 @@ class DGraphView implements GraphView
       final DEdgeView returnThis =
         (DEdgeView) m_edgeViewMap.remove(new Integer(edgeInx));
       if (returnThis == null) { return returnThis; }
+      // If this edge view was hidden, it won't be in m_drawPersp.
       m_drawPersp.hideEdge(edgeInx);
+      m_structPersp.hideEdge(edgeInx);
       m_edgeDetails.unregisterEdge(~edgeInx);
       returnThis.m_view = null;
       return returnThis; }
@@ -303,8 +324,8 @@ class DGraphView implements GraphView
   public List getEdgeViewsList(Node oneNode, Node otherNode)
   {
     synchronized (m_lock) {
-      List edges = m_drawPersp.edgesList(oneNode.getRootGraphIndex(),
-                                         otherNode.getRootGraphIndex(), true);
+      List edges = m_structPersp.edgesList
+        (oneNode.getRootGraphIndex(), otherNode.getRootGraphIndex(), true);
       if (edges == null) { return null; }
       final ArrayList returnThis = new ArrayList();
       Iterator it = edges.iterator();
@@ -318,8 +339,8 @@ class DGraphView implements GraphView
                                boolean includeUndirected)
   {
     synchronized (m_lock) {
-      List edges = m_drawPersp.edgesList(oneNodeInx, otherNodeInx,
-                                         includeUndirected);
+      List edges = m_structPersp.edgesList
+        (oneNodeInx, otherNodeInx, includeUndirected);
       if (edges == null) { return null; }
       final ArrayList returnThis = new ArrayList();
       Iterator it = edges.iterator();
