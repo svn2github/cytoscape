@@ -10,7 +10,6 @@ import org.biojava.bio.seq.db.*;
 import org.biojava.bio.seq.io.*;
 import org.biojava.bio.symbol.*;
 
-import nct.graph.Graph;
 
 /**
  * A simple class that provides a method to parse a multiple FASTA file. 
@@ -23,15 +22,29 @@ public class FastaProteinParser {
 	 * @param FASTAFileName The name of the multiple Fasta file to parse.
 	 * @return A BioJava SequenceIterator. 
 	 */
- 	public static SequenceIterator parse(String FASTAFileName) 
+ 	public static SequenceIterator parseFile(String FASTAFileName) 
 		throws BioException, NoSuchElementException, FileNotFoundException { 
-		
-		BufferedReader is = new BufferedReader(new FileReader(FASTAFileName));
-		
-		//get a SequenceDB of all sequences in the file
+		return readerParse(new FileReader(FASTAFileName));
+	}
+
+	/**
+ 	 * A simple method that parses a multiple FASTA file and returns 
+	 * a BioJava SequenceIterator.
+	 * @param sequenceString A string containing fasta sequence data. 
+	 * @return A BioJava SequenceIterator. 
+	 */
+ 	public static SequenceIterator parseString(String sequenceString) 
+		throws BioException, NoSuchElementException, FileNotFoundException { 
+		return readerParse(new StringReader(sequenceString));
+	}
+
+	/**
+	 * A helper method to wrap common code.
+	 */
+	private static SequenceIterator readerParse(Reader r) 
+		throws BioException, NoSuchElementException, FileNotFoundException { 
+		BufferedReader is = new BufferedReader(r);
 		SequenceIterator it = SeqIOTools.readFastaProtein(is); 
-
 		return it;
-
 	}
 }

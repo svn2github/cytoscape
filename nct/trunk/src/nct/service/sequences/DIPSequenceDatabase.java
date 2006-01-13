@@ -30,7 +30,7 @@ public class DIPSequenceDatabase  implements SequenceDatabase {
 		this.synonyms = synonyms;
 		sequenceMap = new HashMap<String,String>();
 		try { 
-			SequenceIterator seqs = FastaProteinParser.parse(fastaFile);
+			SequenceIterator seqs = FastaProteinParser.parseFile(fastaFile);
 			while (seqs.hasNext()) {
 				Sequence s = seqs.nextSequence();
 				String[] names = s.getName().split("\\|");
