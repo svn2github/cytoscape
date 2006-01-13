@@ -122,7 +122,8 @@ public class PathBlast implements Runnable {
 
 		System.out.println("begin filtering");
 		Filter noZeros = new UniqueCompatNodeFilter();
-		resultPaths = noZeros.filter(resultPaths);
+		Filter noDupes = new DuplicateThresholdFilter(1.0);
+		resultPaths = noDupes.filter( noZeros.filter(resultPaths) );
 
 		Collections.reverse(resultPaths);
 
@@ -142,7 +143,7 @@ public class PathBlast implements Runnable {
 		fw.write("<li>Number of interactions: " + seqGraphs.get(1).numberOfEdges() + "</li>\n");
 		fw.write("</ul>\n");
 
-		fw.write("<li>Query Network<br/>\n");
+		fw.write("<li>Query Network</li><br/>\n");
 		List<String> nodeL = getAlignment(seqGraphs.get(0));
 		fw.write("<ul>\n");
 
