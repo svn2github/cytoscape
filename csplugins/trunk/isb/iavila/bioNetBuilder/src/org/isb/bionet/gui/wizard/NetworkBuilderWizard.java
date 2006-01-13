@@ -6,6 +6,8 @@ import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.*;
+
+import org.apache.xalan.lib.sql.SQLErrorDocument;
 import org.isb.bionet.datasource.interactions.*;
 import org.isb.bionet.datasource.synonyms.*;
 import org.isb.iavila.ontology.xmlrpc.*;
@@ -535,6 +537,12 @@ public class NetworkBuilderWizard {
         // 3. Get the edge data source parameter settings
         Map sourceToSettings = this.edgeSourcesPanel.getSourcesDialogs();
         Iterator it = sourceToSettings.keySet().iterator();
+        // count the number of selected sources
+        int selected = 0;
+        while(it.hasNext()){  
+            String sourceClass = (String)it.next();
+            if(this.edgeSourcesPanel.isSourceSelected(sourceClass)) selected++;
+        }
         boolean firstNeighbors = this.edgeSourcesPanel.isFirstNeighborsSelected();
         
         // 4. Get the network name
@@ -542,12 +550,22 @@ public class NetworkBuilderWizard {
         
         // 5. See which attributes we should add
         String [] labelOps = this.labelsPanel.getOrderedLabelOptions();
-        boolean genBankDef = this.attsPanel.getAddDefinition();
-        boolean xrefs = this.attsPanel.getAddXrefs();
-        boolean dburls = this.attsPanel.getAddDbUrls();
+        Hashtable atts = this.attsPanel.getSelectedAttributesTable();
         
         // 6. Iterate over all the edge data sources and accumulate interactions
-        Vector interactions = new Vector();
+        
+        //TODO: Fix this:
+        // Each data source (KEGG, Prolinks, etc) will contribute a set of nodes connected by interactions
+        // the following code does not find edges between nodes that come from different sources
+        
+        HashSet interactions = new HashSet();
+        HashSet nodeIDs = null;
+        if(selected > 1 && startingNodes.size() > 0)
+            nodeIDs = new HashSet();
+        
+        HashMap sourceNameToArgs = new HashMap();
+        HashMap sourceNameToSpecies = new HashMap();
+        it = sourceToSettings.keySet().iterator();
         while(it.hasNext()){
             
             String sourceClass = (String)it.next();
@@ -558,6 +576,7 @@ public class NetworkBuilderWizard {
             
             String species = (String)sourceSpecies.get(0);
             String sourceName = (String)sourceToNames.get(sourceClass);
+            sourceNameToSpecies.put(sourceName,species);
             
             Hashtable args = new Hashtable();
             if(sourceName.equals(ProlinksInteractionsSource.NAME)){
@@ -578,9 +597,10 @@ public class NetworkBuilderWizard {
                 if(interactionTypes.size() < 4){
                     args.put(ProlinksInteractionsSource.INTERACTION_TYPE, interactionTypes);
                 }
-                
+              
             
             }else if(sourceName.endsWith(KeggInteractionsSource.NAME)){
+            
                 KeggGui kDialog = (KeggGui)sourceToSettings.get(sourceClass);
                 int threshold = kDialog.getThreshold();
                 boolean oneEdge = kDialog.createOneEdgePerCompound();
@@ -594,7 +614,9 @@ public class NetworkBuilderWizard {
                 System.out.println("---------------------------------------------------");
                 
             }
-                
+              
+            sourceNameToArgs.put(sourceName,args);
+            
             Vector sourceInteractions = null;
             try{
                 if(startingNodes == null || startingNodes.size() == 0){
@@ -606,22 +628,14 @@ public class NetworkBuilderWizard {
                     }
                 
                 }else{
-                    
+
                     Vector adjacentNodes = null;
                     
                     if(firstNeighbors){ 
                             if(args.size() > 0)
-                                adjacentNodes = this.interactionsClient.getFirstNeighbors(startingNodes,species, args);
+                                adjacentNodes = this.interactionsClient.getFirstNeighbors(startingNodes,species,args);
                             else
                                 adjacentNodes = this.interactionsClient.getFirstNeighbors(startingNodes,species);
-                            
-                            //TODO: Remove
-                            //System.err.println("Num first neighbors = " + adjacentNodes.size());
-                            Iterator it2 = adjacentNodes.iterator();
-                            while(it2.hasNext()){
-                                System.err.println(it2.next());
-                            }//while it.hasNext
-                            // remove
                     }
                    
                     // If firstNeighbors is selected, and we have startingNodes, then we want to find the edges connecting
@@ -640,16 +654,54 @@ public class NetworkBuilderWizard {
                     }else{
                         sourceInteractions = (Vector)this.interactionsClient.getConnectingInteractions(nodesToConnect, species);
                     }
-                    
+                }//else
+                
+               
+                if(nodeIDs != null){
+                    // Accumulate the new nodeIDs:
+                    Iterator it2 = sourceInteractions.iterator();
+                    while(it2.hasNext()){
+                        Hashtable interaction = (Hashtable)it2.next();
+                        String id1 = (String)interaction.get(InteractionsDataSource.INTERACTOR_1);
+                        String id2 = (String)interaction.get(InteractionsDataSource.INTERACTOR_2);
+                        nodeIDs.add(id1);
+                        nodeIDs.add(id2);
+                    }//while it
+                }else{
+                    interactions.addAll(sourceInteractions);
                 }
-                interactions.addAll(sourceInteractions);
+                
             }catch (Exception ex){
                 ex.printStackTrace();
             }
             
         }//while it
         
+        if(nodeIDs != null){
+            // Finally, connect nodes from different data sources
+            nodeIDs.addAll(startingNodes);
+            it = sourceNameToArgs.keySet().iterator();
+            while(it.hasNext()){
+                String sourceName = (String)it.next();
+                Hashtable args= (Hashtable)sourceNameToArgs.get(sourceName);
+                String species = (String)sourceNameToSpecies.get(sourceName);
+                Vector sourceInteractions = null;
+                try{
+                    if(args.size() > 0){
+                        sourceInteractions = (Vector)this.interactionsClient.getConnectingInteractions(new Vector(nodeIDs), species, args);
+                    }else{
+                        sourceInteractions = (Vector)this.interactionsClient.getConnectingInteractions(new Vector(nodeIDs), species);
+                    }
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+                interactions.addAll(sourceInteractions);
+            }//while it
+        }
+        
+        
         // 6. Make a network, or add interactions if the network already exists
+   
         Set nets = Cytoscape.getNetworkSet();
         it = nets.iterator();
         CyNetwork net = null;
@@ -663,14 +715,9 @@ public class NetworkBuilderWizard {
         }
         
         if(found){
-            CyNetUtils.addInteractionsToNetwork(net,interactions, this.synonymsClient,labelOps, genBankDef,xrefs,dburls);
+            CyNetUtils.addInteractionsToNetwork(net,startingNodes,interactions, this.synonymsClient,labelOps,atts);
         }else{
-            net = CyNetUtils.makeNewNetwork(interactions, netName, this.synonymsClient,labelOps, genBankDef,xrefs,dburls);
-        }
-        
-        //7. If requested, create Rosetta attribute
-        if(this.attsPanel.getAddHPF()){
-            CyNetUtils.createHPFURLNodeAttribute(net);
+            net = CyNetUtils.makeNewNetwork(startingNodes,interactions, netName, this.synonymsClient,labelOps,atts);
         }
         
         

@@ -34,6 +34,18 @@ public class SynonymsClient extends AuthenticatedDataClient{
     }
     
     /**
+     * 
+     * @param source_id_type one of the supported id types
+     * @param target_id_type one of the supported id types
+     * @return true if a translation from source_id_type to target_id_type is supported, false otherwise
+     */
+    public boolean translationIsSupported (String source_id_type, String target_id_type)  throws XmlRpcException, IOException{
+        Boolean ret = (Boolean)call(this.serviceName + ".translationIsSupported", source_id_type, target_id_type);
+        return ret.booleanValue();
+    }
+    
+    
+    /**
      * @param pattern a pattern to match against
      * @return a Vector of species that match the given pattern, each element in the Vector is a Hashmap with elements:<br>
      * TAXID->String readable as integer
@@ -52,6 +64,47 @@ public class SynonymsClient extends AuthenticatedDataClient{
     public Hashtable getGenesLike (String species_taxid, String pattern) throws XmlRpcException, IOException{
         Object out = call(this.serviceName + ".getGenesLike", species_taxid, pattern);
         return (Hashtable)out;
+    }
+    
+    /**
+     * 
+     * @param gis
+     * @return
+     */
+    public Hashtable getDefinitions (Vector gis) throws XmlRpcException, IOException{
+        Object out = call(this.serviceName + ".getDefinitions", gis);
+        return (Hashtable)out;
+    }
+    
+    /**
+     * 
+     * @param gis
+     * @return
+     * @throws XmlRpcException
+     * @throws IOException
+     */
+    public Hashtable getXrefIds (Vector gis) throws XmlRpcException, IOException{
+        Object out = call(this.serviceName + ".getXrefIds", gis);
+        return (Hashtable)out;
+
+    }
+    
+    public Hashtable getGeneNames (Vector gis) throws XmlRpcException, IOException{
+        Object out = call(this.serviceName + ".getGeneNames", gis);
+        return (Hashtable)out;
+
+    }
+    
+    public Hashtable getProdNames (Vector gis) throws XmlRpcException, IOException{
+        Object out = call(this.serviceName + ".getProdNames", gis);
+        return (Hashtable)out;
+
+    }
+    
+    public Hashtable getEncodedBy (Vector gis) throws XmlRpcException, IOException{
+        Object out = call(this.serviceName + ".getEncodedBy", gis);
+        return (Hashtable)out;
+
     }
     
     /**

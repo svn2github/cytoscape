@@ -11,7 +11,9 @@ import javax.swing.*;
 import org.isb.bionet.datasource.interactions.*;
 import org.isb.bionet.datasource.synonyms.*;
 import org.isb.bionet.gui.*;
+
 import java.util.*;
+
 import cytoscape.*;
 
 /**
@@ -119,6 +121,10 @@ public class EdgeSourcesPanel extends JPanel {
         this.nodes = nodeIds;
         if(this.nodes.size() > 0)
             this.fnCB.setEnabled(true);
+        else{
+            this.fnCB.setSelected(false);
+            this.fnCB.setEnabled(false);
+        }
     }
     
     
@@ -188,99 +194,169 @@ public class EdgeSourcesPanel extends JPanel {
     }
 
     /**
-     * @param button
-     *            the button for the data source for which to estimate edges
+     * Recalculated number of edges for all selected data sources
      */
-    protected void estimateNumEdges (JButton button) {
+    protected void estimateNumEdges () {
         
-        String sourceClass = (String) this.buttonToSourceClass.get(button);
-        if(sourceClass == null){
-            return;
-        }
+        Hashtable sourceClassToField = new Hashtable();
+        Iterator it = this.buttonToCheckBox.keySet().iterator();
+        while(it.hasNext()){
+            JButton b = (JButton)it.next();
+            if(b.isEnabled()){
+                String sourceClass = (String)this.buttonToSourceClass.get(b);
+                sourceClassToField.put(sourceClass,this.buttonToTextField.get(b));
+            }
+        }//while it.hasNext
         
-        if(this.sourceToDialog == null || this.sourceToSpecies == null){
-            System.err.println("ERROR: this.sourceToDialog = " + this.sourceToDialog + " this.sourceToSpecies = " 
-                        + this.sourceToSpecies);
-        }
+        Hashtable sourceClassToArgs = new Hashtable();
+        Hashtable sourceClassToSpecies = new Hashtable();
+       
+        int numSources = sourceClassToField.size();
+        HashSet nodeIDs = null;
+        // Store the nodeIDs of the found edges if there is more than one source selected and there are starting nodes
+        // This is so that we can find connecting interactions between ALL nodes from different data sources
+        if(numSources > 1 && this.nodes != null && this.nodes.size() > 0)
+            nodeIDs = new HashSet();
         
-        JDialog dialog = (JDialog) this.sourceToDialog.get(sourceClass);
-        List species = (List)this.sourceToSpecies.get(sourceClass);
-        
-        Hashtable args = new Hashtable();
-        if (sourceClass.equals(ProlinksInteractionsSource.class.getName())) {
-            ProlinksGui pDialog = (ProlinksGui)dialog;
-            Vector types = pDialog.getSelectedInteractionTypes();
-            double pval = pDialog.getPval(false);
-            args.put(ProlinksInteractionsSource.INTERACTION_TYPE, types);
-            args.put(ProlinksInteractionsSource.PVAL, new Double(pval));
-            System.out.println("------- Prolinks settings (estimateNumEdges)----------");
-            System.out.println("interactionTypes = " + types);
-            System.out.println("pval = " + pval);
-            System.out.println("species = " + (String)species.get(0));
-            System.out.println("------------------------------------------------------");
-        }else if(sourceClass.equals(KeggInteractionsSource.class.getName())){
-            KeggGui kDialog = (KeggGui)dialog;
-            int threshold = kDialog.getThreshold();
-            boolean oneEdge = kDialog.createOneEdgePerCompound();
-            args = new Hashtable();
-            args.put(KeggInteractionsSource.THRESHOLD_KEY,new Integer(threshold));
-            args.put(KeggInteractionsSource.EDGE_PER_CPD_KEY, new Boolean(oneEdge));
-            System.out.println("------- KEGG settings (estimateNumEdges)----------");
-            System.out.println("threshold = " + threshold);
-            System.out.println("oneEdgePerCpd = " + oneEdge);
-            System.out.println("species = " + (String)species.get(0));
-            System.out.println("---------------------------------------------------");
+        it = sourceClassToField.keySet().iterator();
+        while(it.hasNext()){
             
-        }
-        
-        int numEdges = 0;
-        
-        try{
-            // First neighbors
-           
-            // If first neighbors is selected, we should first get the first neighbors, and then calculate connecting edges between
-            // nodes in this.nodes and their first neighbors.
-            // To calculate num of edges, we need to get the actual 1st neighbors, and then getNumConnectingInteractions
-            Vector firstNeighbors = null;
-            if(this.fnCB.isSelected()){
-                     if(args.size() == 0)
-                        firstNeighbors = this.interactionsClient.getFirstNeighbors(this.nodes,(String)species.get(0));
-                     else
-                        firstNeighbors = this.interactionsClient.getFirstNeighbors(this.nodes,(String)species.get(0), args);
+            String sourceClass = (String)it.next();
+            
+            List sourceSpecies = (List)this.sourceToSpecies.get(sourceClass);
+            if(sourceSpecies == null || sourceSpecies.size() == 0) continue;
+            
+            String species = (String)sourceSpecies.get(0);
+            sourceClassToSpecies.put(sourceClass,species);
+            
+            JDialog dialog = (JDialog) this.sourceToDialog.get(sourceClass);
+            
+            Hashtable args = new Hashtable();
+            if(sourceClass.equals(ProlinksInteractionsSource.class.getName())){
+                ProlinksGui prolinksGui = (ProlinksGui)dialog;
+                Vector interactionTypes = prolinksGui.getSelectedInteractionTypes();
+                double pvalTh = prolinksGui.getPval(false);
+                System.out.println("------- Prolinks settings (createNetwork)----------");
+                System.out.println("interactionTypes = " + interactionTypes);
+                System.out.println("pval = " + pvalTh);
+                System.out.println("species = " + sourceSpecies);
+                System.out.println("---------------------------------------------------");
+                
+                if(pvalTh != 1){
+                    args.put(ProlinksInteractionsSource.PVAL, new Double(pvalTh));
+                }
+                
+                if(interactionTypes.size() < 4){
+                    args.put(ProlinksInteractionsSource.INTERACTION_TYPE, interactionTypes);
+                }
+              
+            
+            }else if(sourceClass.equals(KeggInteractionsSource.class.getName())){
+            
+                KeggGui kDialog = (KeggGui)dialog;
+                int threshold = kDialog.getThreshold();
+                boolean oneEdge = kDialog.createOneEdgePerCompound();
+                args = new Hashtable();
+                args.put(KeggInteractionsSource.THRESHOLD_KEY,new Integer(threshold));
+                args.put(KeggInteractionsSource.EDGE_PER_CPD_KEY, new Boolean(oneEdge));
+                System.out.println("------- KEGG settings (estimateNumEdges)----------");
+                System.out.println("threshold = " + threshold);
+                System.out.println("oneEdgePerCpd = " + oneEdge);
+                System.out.println("species = " + sourceSpecies);
+                System.out.println("---------------------------------------------------");
+                
+            }
+              
+            sourceClassToArgs.put(sourceClass,args);
+            
+            Vector sourceInteractions = null;
+            try{
+                
+                if(this.nodes == null || this.nodes.size() == 0){
+                    
+                    if(args.size() > 0){
+                        sourceInteractions = (Vector)this.interactionsClient.getAllInteractions(species, args);
+                    }else{
+                        sourceInteractions = (Vector)this.interactionsClient.getAllInteractions(species);
+                    }
+                
+                }else{
+
+                    Vector adjacentNodes = null;
+                    
+                    if(this.fnCB.isSelected()){
+                        // fnCB can only be selected if this.nodes has elements
+                            if(args.size() > 0)
+                                adjacentNodes = this.interactionsClient.getFirstNeighbors(this.nodes,species,args);
+                            else
+                                adjacentNodes = this.interactionsClient.getFirstNeighbors(this.nodes,species);
+                    }
+                   
+                    // If firstNeighbors is selected, and we have startingNodes, then we want to find the edges connecting
+                    // the nodes in first neighbors and starting nodes: CAVEAT: The nodes in startingNodes could be a subset of
+                    // selected nodes in a network. Connecting edges would only be found for these selected nodes, not for the
+                    // whole network.
+                    
+                    Vector nodesToConnect = this.nodes;
+                    if(adjacentNodes != null){
+                        // make sure we don't have repeated nodes in nodesToConnect
+                        // this means that fnCB is selected
+                        adjacentNodes.removeAll(this.nodes);
+                        nodesToConnect.addAll(adjacentNodes);
+                    }
+                    if(args.size() > 0){
+                        sourceInteractions = (Vector)this.interactionsClient.getConnectingInteractions(nodesToConnect, species, args);
+                    }else{
+                        sourceInteractions = (Vector)this.interactionsClient.getConnectingInteractions(nodesToConnect, species);
+                    }
+                }//else
+                
+                // Accumulate the new nodeIDs if needed:
+                if(nodeIDs != null){
+                    Iterator it2 = sourceInteractions.iterator();
+                    while(it2.hasNext()){
+                        Hashtable interaction = (Hashtable)it2.next();
+                        String id1 = (String)interaction.get(InteractionsDataSource.INTERACTOR_1);
+                        String id2 = (String)interaction.get(InteractionsDataSource.INTERACTOR_2);
+                        nodeIDs.add(id1);
+                        nodeIDs.add(id2);
+                    }//while it
+                }else{
+                   // Write the number of interactions for the source
+                    JTextField tf = (JTextField)sourceClassToField.get(sourceClass);
+                    tf.setText(Integer.toString(sourceInteractions.size()));  
+                }
+            
+                
+            }catch (Exception ex){
+                ex.printStackTrace();
             }
             
-            // Connecting edges
-            
-            Vector nodesToConnect = this.nodes;
-            if(firstNeighbors != null && firstNeighbors.size() > 0){
-                // make sure we don't have repeated nodes in nodedToConnect
-                firstNeighbors.removeAll(this.nodes);
-                nodesToConnect.addAll(firstNeighbors);
-            }    
-            if(nodesToConnect.size() > 0){
-                
-                // NOTE: This number will include already existing edges in the network, so it is not the number of new edges, just total edges
-                if(args.size() > 0)
-                    numEdges += this.interactionsClient.getNumConnectingInteractions(nodesToConnect,(String)species.get(0), args);
-                else
-                    numEdges += this.interactionsClient.getNumConnectingInteractions(nodesToConnect,(String)species.get(0));
-                
-            }else{
-                    
-                // No starting nodes
-                if(args.size() > 0)
-                    numEdges += this.interactionsClient.getNumAllInteractions((String)species.get(0), args);
-                else
-                    numEdges += this.interactionsClient.getNumAllInteractions((String)species.get(0)); 
-            
-           }
-            
-       }catch(Exception e){
-            e.printStackTrace();
-        }finally{
-            JTextField tf = (JTextField)this.buttonToTextField.get(button);
-            tf.setText(Integer.toString(numEdges));
+        }//while it
+        
+        // Finally, connect nodes from different data sources if necessary
+        if(nodeIDs != null){
+            nodeIDs.addAll(this.nodes);
+            it = sourceClassToArgs.keySet().iterator();
+            while(it.hasNext()){
+                String sourceClass = (String)it.next();
+                Hashtable args= (Hashtable)sourceClassToArgs.get(sourceClass);
+                String species = (String)sourceClassToSpecies.get(sourceClass);
+                Vector sourceInteractions = null;
+                try{
+                    if(args.size() > 0){
+                        sourceInteractions = (Vector)this.interactionsClient.getConnectingInteractions(new Vector(nodeIDs), species, args);
+                    }else{
+                        sourceInteractions = (Vector)this.interactionsClient.getConnectingInteractions(new Vector(nodeIDs), species);
+                    }
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+                JTextField tf = (JTextField)sourceClassToField.get(sourceClass);
+                tf.setText(Integer.toString(sourceInteractions.size()));
+            }//while it
         }
+        
     } 
 
     protected void create() {
@@ -467,17 +543,4 @@ public class EdgeSourcesPanel extends JPanel {
         
     }// create
     
-    /**
-     * Estimates the number of edges per selected data source
-     */
-    public void estimateNumEdges (){
-        Iterator it = this.buttonToCheckBox.keySet().iterator();
-        while(it.hasNext()){
-            JButton button = (JButton)it.next();
-            if(button.isEnabled()){
-                estimateNumEdges(button);
-            }
-        }//while it.hasNext
-       
-    }
 }

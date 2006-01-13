@@ -1,10 +1,14 @@
 
 package org.isb.bionet.datasource.synonyms;
 
+import java.io.IOException;
 import java.util.Vector;
 import java.util.Hashtable;
-import org.isb.bionet.datasource.*;
 
+import org.apache.xmlrpc.XmlRpcException;
+import org.isb.bionet.datasource.*;
+//TODO:
+//Add method translationIsSupported(sourceIDtype,targetIDtype);
 public interface SynonymsSource extends DataSource {
     
     /**
@@ -12,11 +16,21 @@ public interface SynonymsSource extends DataSource {
      */   
     public static final String PROLINKS_ID = "PL";
     public static final String KEGG_ID = "KEGG";
+    /**
+     * This is the protein GI, not the nucleotide GI
+     */
     public static final String GI_ID = "GI";
     public static final String ID_NOT_FOUND = "ID not found";
-    public static final String COMMON_NAME = "CN";
+    public static final String GENE_NAME = "Gene Name";
+    public static final String GENE_ID = "GeneID"; // Entrez Gene Database, replaces NCBI Locus Link
+    public static final String PROD_NAME = "Product Name";
+    public static final String ORF_NAME = "ORF Name";
+    public static final String TREMBL_ID = "TrEMBL";
+    public static final String REFSEQ_ID = "RefSeq";
+    public static final String HPRD_ID = "HPRD";
+    public static final String HGNC_ID = "HGNC";
     public static final String TAXID = "TAXID";
-    public static final String SPECIES_NAME = "SPNAME";
+    public static final String SPECIES_NAME = "Species Name";
     
     /**
      * 
@@ -42,4 +56,26 @@ public interface SynonymsSource extends DataSource {
      */
     public Hashtable getGenesLike (String species_taxid, String pattern);
     
+    /**
+     * 
+     * @param source_id_type one of the supported id types
+     * @param target_id_type one of the supported id types
+     * @return true if a translation from source_id_type to target_id_type is supported, false otherwise
+     */
+    public Boolean translationIsSupported (String source_id_type, String target_id_type);
+    
+    /**
+     * 
+     * @param gis
+     * @return
+     */
+    public Hashtable getDefinitions (Vector gis);
+    
+    public Hashtable getXrefIds (Vector gis);
+    
+    public Hashtable getGeneNames (Vector gis);
+    
+    public Hashtable getProdNames (Vector gis);
+    
+    public Hashtable getEncodedBy (Vector gis);
 }

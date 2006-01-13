@@ -6,8 +6,10 @@ import java.util.*;
 import cern.colt.list.*;
 import cytoscape.*;
 import cytoscape.data.*;
+import cytoscape.data.CyAttributes;
 import org.isb.bionet.datasource.interactions.*;
 import org.isb.bionet.datasource.synonyms.*;
+import org.isb.bionet.gui.wizard.*;
 
 /**
  * A class with utility methods that manipulate CyNetworks for this plugin
@@ -16,69 +18,88 @@ import org.isb.bionet.datasource.synonyms.*;
  */
 public class CyNetUtils {
     
+    // Attribute names
+    public static final String DEFINITION_ATT = "Definition";
+    
+    
     /**
      * @param interactions a Vector of Hashtables, each representing an interaction
      * @param networkName the name of the newly created network
      * @return a new CyNetwork
      * @see org.isb.xmlrpc.client.InteractionDataClient for examples on  how the Hashtables look
      */
-    public static CyNetwork makeNewNetwork (Vector interactions, String networkName, 
-            SynonymsClient synClient, String [] labelOps, boolean genBankDef,boolean xrefs, boolean dburls){
+    public static CyNetwork makeNewNetwork (Collection node_ids, Collection interactions, String networkName, 
+            SynonymsClient synClient, String [] labelOps, Hashtable atts){
         
         CyNetwork net = null;
         IntArrayList nodes = new IntArrayList();
         IntArrayList edges = new IntArrayList();
-        HashSet nodeIDs = new HashSet(); 
-        Iterator it = interactions.iterator();
+        HashSet nodeIDs = new HashSet();
+        HashSet edgeIDs = new HashSet();
         
+        // create CyNodes in node_ids
+        Iterator it = node_ids.iterator();
+        while(it.hasNext()){
+            String nodeID = (String)it.next();
+            CyNode node = Cytoscape.getCyNode(nodeID, true);
+            if(node == null){
+                throw new IllegalStateException("Could not create/find node with ID = " + nodeID);
+            }
+            nodeIDs.add(node.getIdentifier());
+            nodes.add(node.getRootGraphIndex());
+        }
+        
+        System.out.println("CyNetUtilities.makeNewNetwork: Created " + nodeIDs.size() + " nodes from starting nodes.");
+        
+        it = interactions.iterator();
         // create CyEdges:
         while(it.hasNext()){
             Hashtable interaction = (Hashtable)it.next();
             CyEdge edge = createEdge(interaction);
             if(edge == null){continue;}
-            nodes.add(edge.getSource().getRootGraphIndex());
-            nodes.add(edge.getTarget().getRootGraphIndex());
+            int sourceIndex = edge.getSource().getRootGraphIndex(); 
+            int targetIndex = edge.getTarget().getRootGraphIndex();
+            if(!nodes.contains(sourceIndex)) nodes.add(sourceIndex);
+            if(!nodes.contains(targetIndex)) nodes.add(targetIndex);
             edges.add(edge.getRootGraphIndex());
+            edgeIDs.add(edge.getIdentifier());
             nodeIDs.add(edge.getSource().getIdentifier());
             nodeIDs.add(edge.getTarget().getIdentifier());
         }//whie it.hasNext
         
-        // Finally, create the network with the nodes and edges
+        // Create the network with the nodes and edges
         nodes.trimToSize();
         edges.trimToSize();
         net = Cytoscape.createNetwork(nodes.elements(), edges.elements(), networkName);
         
-        Hashtable giToCN = null;
-        //Hashtable prToCN = null;
-        //Hashtable kToCN = null;
+        Hashtable giToLabel = new Hashtable();
         try{
-            giToCN = synClient.getSynonyms(SynonymsSource.GI_ID, new Vector(nodeIDs), SynonymsSource.COMMON_NAME);
-            // the rest of node ids could be prolinks or kegg
-            // NO! As it turns out, of the prolinks/kegg ids did not have a gi id, then they don't have a common name in the db either.
-            //nodeIDs.removeAll(giToCN.keySet());
-            //if(nodeIDs.size() > 0)
-              //  prToCN = synClient.getSynonyms(SynonymsSource.PROLINKS_ID, new Vector(nodeIDs), SynonymsSource.COMMON_NAME);
-            
-           // nodeIDs.removeAll(prToCN.keySet());
-            
-            //if(nodeIDs.size() > 0)
-              //  kToCN = synClient.getSynonyms(SynonymsSource.KEGG_ID, new Vector(nodeIDs), SynonymsSource.COMMON_NAME);
+            for (int i = 0; i < labelOps.length; i++){
+                Hashtable temp = synClient.getSynonyms(SynonymsSource.GI_ID, new Vector(nodeIDs), labelOps[i]);
+                it = giToLabel.keySet().iterator();
+                // Make sure we don't replace mappings with higher ID priorities
+                while(it.hasNext()){
+                    temp.remove(it.next());
+                }
+                giToLabel.putAll(temp);
+                if(giToLabel.size() == nodeIDs.size()){
+                    // all nodes have a label
+                    break;
+                }
+            }
             
         }catch(Exception ex){ex.printStackTrace();}
-        
-        if(giToCN == null) return net;
         
         it = net.nodesIterator();
         while(it.hasNext()){
             CyNode node = (CyNode)it.next();
             String nodeid = node.getIdentifier();
-            String commonName = (String)giToCN.get(nodeid);
-            //if(commonName == null && prToCN != null) commonName = (String)prToCN.get(nodeid);
-            //if(commonName == null && kToCN != null) commonName = (String)kToCN.get(nodeid);
-            //if(commonName == null) commonName = nodeid;
+            String commonName = (String)giToLabel.get(nodeid);
+            if(commonName == null) commonName = nodeid;
             Cytoscape.getNodeAttributes().setAttribute(node.getIdentifier(),Semantics.COMMON_NAME,commonName);
         }
         
+        createAttributes(nodeIDs,edgeIDs,synClient,atts);
         return net;
     }//makeNewNetwork
     
@@ -89,12 +110,27 @@ public class CyNetUtils {
      * @param interactions a Vector of Hashtables, each representing an interaction
      * @see org.isb.xmlrpc.client.InteractionDataClient for examples on  how the Hashtables look
      */
-    public static void addInteractionsToNetwork (CyNetwork net, Vector interactions, SynonymsClient synClient, 
-            String [] labelOps, boolean genBankDef,boolean xrefs, boolean dburls){
+    public static void addInteractionsToNetwork (CyNetwork net, Collection node_ids,Collection interactions, SynonymsClient synClient, 
+            String [] labelOps,Hashtable atts){
         
         IntArrayList edges = new IntArrayList();
-        Iterator it = interactions.iterator();
+        IntArrayList nodes = new IntArrayList();
         HashSet nodeIDs = new HashSet();
+        HashSet edgeIDs = new HashSet();
+        
+        // create CyNodes in node_ids
+        Iterator it = node_ids.iterator();
+        while(it.hasNext()){
+            String nodeID = (String)it.next();
+            CyNode node = Cytoscape.getCyNode(nodeID, true);
+            if(node == null){
+                throw new IllegalStateException("Could not create/find node with ID = " + nodeID);
+            }
+            nodeIDs.add(node.getIdentifier());
+            nodes.add(node.getRootGraphIndex());
+        }
+        System.out.println("CyNetUtilities.addInteractionsToNetwork: Created " + nodeIDs.size() + " nodes from starting nodes.");
+        it = interactions.iterator();
         // create the edges
         while(it.hasNext()){
             Hashtable interaction = (Hashtable)it.next();
@@ -103,28 +139,42 @@ public class CyNetUtils {
                 edges.add(edge.getRootGraphIndex());
                 nodeIDs.add(edge.getTarget().getIdentifier());
                 nodeIDs.add(edge.getSource().getIdentifier());
+                edgeIDs.add(edge.getIdentifier());
             }
         }//while it
         
         edges.trimToSize();
+        net.restoreNodes(nodes.elements());
         net.restoreEdges(edges.elements());
-       
-        Hashtable giToCN = null;
+      
+        Hashtable giToLabel = new Hashtable();
         try{
-            giToCN = synClient.getSynonyms(SynonymsSource.GI_ID, new Vector(nodeIDs), SynonymsSource.COMMON_NAME);
+            for (int i = 0; i < labelOps.length; i++){
+                Hashtable temp = synClient.getSynonyms(SynonymsSource.GI_ID, new Vector(nodeIDs), labelOps[i]);
+                it = giToLabel.keySet().iterator();
+                // Make sure we don't replace mappings with higher ID priorities
+                while(it.hasNext()){
+                    temp.remove(it.next());
+                }
+                giToLabel.putAll(temp);
+                if(giToLabel.size() == nodeIDs.size()){
+                    // all nodes have a label
+                    break;
+                }
+            }
+            
         }catch(Exception ex){ex.printStackTrace();}
-        
-        if(giToCN == null) return;
         
         it = net.nodesIterator();
         while(it.hasNext()){
             CyNode node = (CyNode)it.next();
-            String commonName = (String)giToCN.get(node.getIdentifier());
-            if(commonName == null) commonName = node.getIdentifier();
+            String nodeid = node.getIdentifier();
+            String commonName = (String)giToLabel.get(nodeid);
+            if(commonName == null) commonName = nodeid;
             Cytoscape.getNodeAttributes().setAttribute(node.getIdentifier(),Semantics.COMMON_NAME,commonName);
-            //Cytoscape.setNodeAttributeValue(node, Semantics.COMMON_NAME,commonName);
         }
         
+        createAttributes(nodeIDs,edgeIDs,synClient,atts);
     }//addInteractionsToNetwork
     
     /**
@@ -134,11 +184,13 @@ public class CyNetUtils {
      * @see org.isb.xmlrpc.client.InteractionDataClient for examples on  how the Hashtables look
      */
     public static CyEdge createEdge (Hashtable interaction){
+        
         String interactor1 = (String)interaction.get(InteractionsDataSource.INTERACTOR_1);
         if(interactor1 == null){
             System.out.println("Hashtable does not contain key " + InteractionsDataSource.INTERACTOR_1);
             return null;
         }
+        
         String interactor2 = (String)interaction.get(InteractionsDataSource.INTERACTOR_2);
         if(interactor2 == null){
             System.out.println("Hashtable does not contain key " + InteractionsDataSource.INTERACTOR_2);
@@ -150,6 +202,7 @@ public class CyNetUtils {
             System.out.println("Hashtable does not contain key " + InteractionsDataSource.INTERACTION_TYPE);
             return null;
         }
+        
         // We have the minimum requirements to create an edge now
         CyNode node1 = Cytoscape.getCyNode(interactor1, true);
         if(node1 == null){
@@ -178,31 +231,143 @@ public class CyNetUtils {
                         !attribute.equals(InteractionsDataSource.INTERACTION_TYPE)){
                     Object attValue = interaction.get(attribute);
                     Cytoscape.getEdgeAttributes().setAttribute(edge.getIdentifier(),attribute,attValue.toString());
-                    //Cytoscape.setEdgeAttributeValue(edge, attribute, attValue);
                 }
             }//if keys[i] is a String
         }//for i
         return edge;
     }//createEdge
-    
+     
     /**
-     * For all nodes in the given network, it creates as a node attribute Rosetta Benchmark URLs 
+     * 
+     * @param nodesIDs
+     * @param edgesIDs
+     * @param synonyms_client
+     * @param def
+     * @param xrefs
+     * @param dburls
      */
-   
-    public static void createHPFURLNodeAttribute (CyNetwork net){
+    public static void createAttributes (Collection nodeIDs, Collection edgeIDs,SynonymsClient synonyms_client,Hashtable atts){
         
-        Iterator it = net.nodesIterator();
+        Vector idVector = new Vector(nodeIDs);
+        CyAttributes nodeAtts = Cytoscape.getNodeAttributes();
         
-        while(it.hasNext()){
-          CyNode node = (CyNode)it.next();
-          String nodeID = node.getIdentifier();
-          int index = nodeID.indexOf(":");
-          if(index > 0){
-              String url = "http://bench.bakerlab.org/cgi-bin/2ddb/bddb.cgi?si=112682726728836&s=cytoscape&ac="+nodeID;
-              Cytoscape.getNodeAttributes().setAttribute(node.getIdentifier(),"HPFP", url);
-              //Cytoscape.setNodeAttributeValue(node,"RosettaBenchmark",url);
-          }
-        }//while it.hasNext
+        if( ((Boolean)atts.get(AttributesPanel.DEFS)).booleanValue() ){
+            Hashtable defs = new Hashtable();
+            try{
+                defs =  synonyms_client.getDefinitions(idVector);
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            
+            Iterator it = defs.keySet().iterator();
+            while(it.hasNext()){
+                String nodeID = (String)it.next();
+                String definition = (String)defs.get(nodeID);
+                nodeAtts.setAttribute(nodeID, DEFINITION_ATT, definition);
+            }//while
+        
+        }//def
+        
+        if( ((Boolean)atts.get(AttributesPanel.XREFS)).booleanValue() ){
+            Hashtable xrefTable = new Hashtable();
+            try{
+               xrefTable = synonyms_client.getXrefIds(idVector);
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            
+            Iterator it = xrefTable.keySet().iterator();
+            while(it.hasNext()){
+                String nodeID = (String)it.next();
+                Vector xids = (Vector)xrefTable.get(nodeID);
+                Iterator it2 = xids.iterator();
+                while(it2.hasNext()){
+                    String anID = (String)it2.next();
+                    int index = anID.indexOf(":");
+                    if(index >= 0){
+                        String attName = anID.substring(0,index);
+                        nodeAtts.setAttribute(nodeID,attName,anID);
+                    }
+                }//inner while
+            }//while
+            
+        }//if xrefs
+        
+        if( ((Boolean)atts.get(AttributesPanel.GENE_NAME)).booleanValue() ){
+            Hashtable geneNames = new Hashtable();
+            try{
+                geneNames = synonyms_client.getGeneNames(idVector);
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            
+            Iterator it = geneNames.keySet().iterator();
+            while(it.hasNext()){
+                String nodeID = (String)it.next();
+                String name = (String)geneNames.get(nodeID);
+                nodeAtts.setAttribute(nodeID,SynonymsSource.GENE_NAME,name);
+            }
+            
+        }// if gene name
+        
+        if( ((Boolean)atts.get(AttributesPanel.PROD_NAME)).booleanValue() ){
+            Hashtable prodNames = new Hashtable();
+            try{
+                prodNames = synonyms_client.getProdNames(idVector);
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            
+            Iterator it = prodNames.keySet().iterator();
+            while(it.hasNext()){
+                String nodeID = (String)it.next();
+                String name = (String)prodNames.get(nodeID);
+                nodeAtts.setAttribute(nodeID,SynonymsSource.PROD_NAME,name);
+            }
+        }// if prod name
+        
+        if(((Boolean)atts.get(AttributesPanel.ENCODED_BY)).booleanValue() ){
+            Hashtable encodedTable = new Hashtable();
+            try{
+                encodedTable = synonyms_client.getEncodedBy(idVector);
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            
+            Iterator it = encodedTable.keySet().iterator();
+            while(it.hasNext()){
+                String nodeID = (String)it.next();
+                String name = (String) encodedTable.get(nodeID);
+                nodeAtts.setAttribute(nodeID,AttributesPanel.ENCODED_BY,name);
+            } 
+        }// if encoded by
+        
+        if( ((Boolean)atts.get(AttributesPanel.DB_URLS)).booleanValue() ){
+            // For now do nothing
+        }// if db urls
+        
+        if( ((Boolean)atts.get(AttributesPanel.HPFP)).booleanValue() ){
+            Iterator it = nodeIDs.iterator();
+            while(it.hasNext()){
+                String nodeID = (String)it.next();
+                int index = nodeID.indexOf(":");
+                if(index > 0){
+                    String url = "http://bench.bakerlab.org/cgi-bin/2ddb/bddb.cgi?si=112682726728836&s=cytoscape&ac="+nodeID;
+                    Cytoscape.getNodeAttributes().setAttribute(nodeID,"HPFP", url);
+                }
+              }//while it.hasNext
+        }// if db urls
+        
     }
     
 }//CyNetUtils
+
+
+
+
+
+
+
+
+
+

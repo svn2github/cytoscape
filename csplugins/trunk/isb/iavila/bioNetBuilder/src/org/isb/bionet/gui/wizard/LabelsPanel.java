@@ -2,16 +2,12 @@
 package org.isb.bionet.gui.wizard;
 
 import java.awt.*;
-
 import javax.swing.*;
-import javax.swing.border.Border;
-
-import org.isb.bionet.datasource.interactions.InteractionDataClient;
-import org.isb.bionet.datasource.synonyms.SynonymsClient;
+import org.isb.bionet.datasource.synonyms.*;
 
 public class LabelsPanel extends JPanel{
 
-    protected String [] labelOps = {"Gene Name", "Product Name","ORF", "GI Number", "Source Database ID"};
+    protected String [] labelOps = {SynonymsSource.GENE_NAME, SynonymsSource.PROD_NAME, SynonymsSource.ORF_NAME, SynonymsSource.GI_ID, "Source Database ID"};
     protected JComboBox labelOptions1, labelOptions2, labelOptions3, labelOptions4, labelOptions5;
    
     

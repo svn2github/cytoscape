@@ -9,7 +9,7 @@ import java.awt.event.*;
 import org.isb.bionet.datasource.synonyms.SynonymsClient;
 import org.isb.bionet.datasource.synonyms.SynonymsSource;
 
-public class TaxonomySearchDialog extends JFrame {
+public class TaxonomySearchDialog extends JDialog {
     
     protected SynonymsClient synonymsClient;
     protected JTextField speciesInput, geneInput;
@@ -22,9 +22,28 @@ public class TaxonomySearchDialog extends JFrame {
      * taxonomy information
      */
     public TaxonomySearchDialog (SynonymsClient synonyms_client){
-        super("NCBI Taxonomy");
+        super();
+        setTitle("NCBI Taxonomy");
+        setModal(true);
         this.synonymsClient = synonyms_client;
         create();
+    }
+    
+    /**
+     * 
+     * @return the IDs of the selected entries on the right side of the dialog
+     */
+    public List getGeneIDs (){
+        if(genesList.getModel().getSize() == 0) return new ArrayList();
+        
+        ArrayList idList = new ArrayList();
+        for(int i = 0; i < genesList.getModel().getSize(); i++){
+            if(genesList.isSelectedIndex(i)){
+                Map.Entry entry = (Map.Entry)genesList.getModel().getElementAt(i);
+                idList.add(entry.getKey());
+            }
+        }
+        return idList;
     }
     
     

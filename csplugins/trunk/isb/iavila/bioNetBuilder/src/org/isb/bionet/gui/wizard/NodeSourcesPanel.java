@@ -60,14 +60,17 @@ public class NodeSourcesPanel extends JPanel {
      * @return a Vector of gene ids from the user selected sources
      */
     public Vector getAllNodes (){
-        Vector myListNodes = getNodesFromMyList();
-        CyNetwork [] nodeNets = getSelectedNetworks();
+       
         // TODO: Do checks: selected networks species must match to the species the user selected in this sesion
         // TODO: Nodes from annotations!
+      
         Vector startingNodes = new Vector();
-        if(myListNodes != null && useList.isSelected()){
-            startingNodes.addAll(myListNodes);
+        if(useList.isSelected()){
+            Vector myListNodes = getNodesFromMyList();
+            if(myListNodes != null) startingNodes.addAll(myListNodes);
         }
+       
+        CyNetwork [] nodeNets = getSelectedNetworks();
         if(nodeNets != null && useNets.isSelected()){
             if(!this.useSelectedNodes.isSelected()){
                 for(int i = 0; i < nodeNets.length; i++){
@@ -93,13 +96,15 @@ public class NodeSourcesPanel extends JPanel {
             
             }
         }// if nodeNets != null
+        
         if(this.useAnnotations.isSelected()){
             for(int i = 0; i < this.annotationNodeIDs.length; i++){
                 startingNodes.add(this.annotationNodeIDs[i]);
             }
         }
+        
         if(this.useTaxonomy.isSelected()){
-            // TODO: Add nodes from taxonomy
+          startingNodes.addAll(this.taxonomyDialog.getGeneIDs());
         }
         
         return startingNodes;
@@ -144,6 +149,17 @@ public class NodeSourcesPanel extends JPanel {
             }//for i
         }
         netsNodes.setText(Integer.toString(numNodes));
+    }
+    
+    /**
+     * Updated the number of nodes from the taxonomy dialog
+     */
+    public void updateNumNodesFromTaxonomy (){
+        int numNodes = 0;
+        if(useTaxonomy.isSelected()){
+          numNodes = this.taxonomyDialog.getGeneIDs().size();
+        }
+        this.taxonomyNodes.setText(Integer.toString(numNodes));
     }
     
     /**
@@ -232,6 +248,7 @@ public class NodeSourcesPanel extends JPanel {
                             taxonomyDialog.pack();
                             taxonomyDialog.setLocationRelativeTo(NodeSourcesPanel.this);
                             taxonomyDialog.setVisible(true);
+                            updateNumNodesFromTaxonomy();
                         }
                     }//actionPerformed
                 }//AbstractAction
