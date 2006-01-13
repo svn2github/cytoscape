@@ -29,9 +29,10 @@ class DGraphView implements GraphView
   // Throughout this code I am assuming that nodes or edges are never
   // removed from the underlying RootGraph.  This assumption was made in the
   // old GraphView implementation.  Removal from the RootGraph is the only
-  // thing that can affect m_drawPersp that is beyond our control.
-  GraphPerspective m_drawPersp;
-  GraphPerspective m_structPersp;
+  // thing that can affect m_drawPersp and m_structPersp that is beyond our
+  // control.
+  GraphPerspective m_drawPersp; // Visible graph.
+  GraphPerspective m_structPersp; // Graph of all views (even hidden ones).
 
   MutableSpacialIndex2D m_spacial;
   DNodeDetails m_nodeDetails;
@@ -285,16 +286,28 @@ class DGraphView implements GraphView
     return m_perspective.getRootGraph();
   }
 
+  /*
+   * Returns an iterator of all node views, including those that are
+   * currently hidden.
+   */
   public Iterator getNodeViewsIterator()
   {
     synchronized (m_lock) { return m_nodeViewMap.values().iterator(); }
   }
 
+  /*
+   * Returns the count of all node views, including those that are currently
+   * hidden.
+   */
   public int getNodeViewCount()
   {
     synchronized (m_lock) { return m_nodeViewMap.size(); }
   }
 
+  /*
+   * Returns the count of all edge views, including those that are currently
+   * hidden.
+   */
   public int getEdgeViewCount()
   {
     synchronized (m_lock) { return m_edgeViewMap.size(); }
@@ -311,6 +324,10 @@ class DGraphView implements GraphView
       return (NodeView) m_nodeViewMap.get(new Integer(nodeInx)); }
   }
 
+  /*
+   * Returns a list of all edge views, including those that are currently
+   * hidden.
+   */
   public List getEdgeViewsList()
   {
     synchronized (m_lock) {
@@ -321,6 +338,13 @@ class DGraphView implements GraphView
       return returnThis; }
   }
 
+  /*
+   * Returns all edge views (including the hidden ones) that are either 1.
+   * directed, having oneNode as source and otherNode as target or 2.
+   * undirected, having oneNode and otherNode as endpoints.  Note that
+   * this behaviour is similar to that of
+   * GraphPerspective.edgesList(Node, Node).
+   */
   public List getEdgeViewsList(Node oneNode, Node otherNode)
   {
     synchronized (m_lock) {
@@ -335,6 +359,10 @@ class DGraphView implements GraphView
       return returnThis; }
   }
 
+  /*
+   * Similar to getEdgeViewsList(Node, Node), only that one has control
+   * of whether or not to include undirected edges.
+   */
   public List getEdgeViewsList(int oneNodeInx, int otherNodeInx,
                                boolean includeUndirected)
   {
@@ -350,12 +378,20 @@ class DGraphView implements GraphView
       return returnThis; }
   }
 
+  /*
+   * Returns an edge view with specified edge index whether or not the edge
+   * view is hidden; null is returned if view does not exist.
+   */
   public EdgeView getEdgeView(int edgeInx)
   {
     synchronized (m_lock) {
       return (EdgeView) m_edgeViewMap.get(new Integer(edgeInx)); }
   }
 
+  /*
+   * Returns an iterator of all edge views, including those that are
+   * currently hidden.
+   */
   public Iterator getEdgeViewsIterator()
   {
     synchronized (m_lock) { return m_edgeViewMap.values().iterator(); }
@@ -366,11 +402,17 @@ class DGraphView implements GraphView
     return getEdgeView(edge.getRootGraphIndex());
   }
 
+  /*
+   * Alias to getEdgeViewCount().
+   */
   public int edgeCount()
   {
     return getEdgeViewCount();
   }
 
+  /*
+   * Alias to getNodeViewCount().
+   */
   public int nodeCount()
   {
     return getNodeViewCount();
