@@ -8,15 +8,19 @@
 					</a>
 					|
 					<a href="getting.started.php">
-						Tutorial 1: Getting Started 
+						1: Getting Started 
 					</a>
 					| 
 					<a href="filters.editor.php">
-						Tutorial 2: Cytoscape Filters and Editor 
+						2: Filters & Editor 
 					</a>
 					| 
                                         <a href="fetching.data.php"> 
-                                                Tutorial 3: Fetching External Data
+                                                3: Fetching External Data
+                                        </a>
+                                        |
+                                        <a href="basic.expression.php"> 
+                                                4: Expression Analysis Basics
                                         </a>
 					<!--</a>-->					
 				</h1>
