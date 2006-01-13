@@ -418,6 +418,9 @@ class DGraphView implements GraphView
     return getNodeViewCount();
   }
 
+  /*
+   * obj should be either a DEdgeView or a DNodeView.
+   */
   public boolean hideGraphObject(Object obj)
   {
     synchronized (m_lock) {
@@ -444,9 +447,21 @@ class DGraphView implements GraphView
       else { return false; } }
   }
 
+  /*
+   * obj should be either a DEdgeView or a DNodeView.
+   */
   public boolean showGraphObject(Object obj)
   {
-    return false;
+    synchronized (m_lock) {
+      if (obj instanceof DNodeView) {
+        final DNodeView nView = (DNodeView) obj;
+        final int nodeInx = nView.getRootGraphIndex();
+        if (m_structPersp.getNode(nodeInx) == null) { return false; }
+        if (m_drawPersp.restoreNode(nodeInx) == 0) { return false; }
+        m_spacial.insert(~nodeInx, nView.m_hiddenXMin, nView.m_hiddenYMin,
+                         nView.m_hiddenXMax, nView.m_hiddenYMax);
+        return true; }
+      else { return false; } }
   }
 
   public boolean hideGraphObjects(List objects)
