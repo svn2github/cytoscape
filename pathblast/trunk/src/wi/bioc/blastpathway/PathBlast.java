@@ -16,11 +16,13 @@ import java.text.DecimalFormat;
 import nct.networkblast.search.*;
 import nct.networkblast.graph.*;
 import nct.networkblast.score.*;
+import nct.networkblast.filter.*;
 import nct.graph.*;
 import nct.graph.basic.*;
 import nct.filter.*;
 import nct.output.*;
 import nct.networkblast.graph.*;
+import nct.networkblast.graph.compatibility.*;
 import nct.service.interactions.*;
 import nct.service.homology.*;
 import nct.service.homology.blast.*;
@@ -105,17 +107,23 @@ public class PathBlast implements Runnable {
 		// create the homology graph based on the interaction graphs just created and a
 		// homology model
 		HomologyModel blastHomology = new LocalBlast(Config.getProperties(), Config.getSynonymMapper(),  m_outputdir + System.getProperty("file.separator") + "blastout.xml");
-		HomologyGraph homologyGraph = new HomologyGraph(blastHomology, seqGraphs);
+		HomologyGraph homologyGraph = new HomologyGraph(blastHomology, e_value, seqGraphs);
 		System.out.println("homologyGraph: " + homologyGraph.toString());
 
 		// create compat graph based on the interaction graphs and the homology graph 
 		ScoreModel logScore = new LogLikelihoodScoreModel(1.0, 0.8, 1e-10);
-		CompatibilityGraph compatGraph = new CompatibilityGraph(homologyGraph, seqGraphs, e_value, logScore);
+		CompatibilityCalculator compatCalc = new AdditiveCompatibilityCalculator(0.01,logScore);
+		CompatibilityGraph compatGraph = new CompatibilityGraph(homologyGraph, seqGraphs, logScore, compatCalc);
 		System.out.println("compatGraph: " + compatGraph.toString());
 		// run path analysis
 		SearchGraph colorCoding = new ColorCodingPathSearch(proteins.length);
 		//SearchGraph colorCoding = new ColorCodingPathSearch(proteins.length,5,5);
 		List<Graph<String,Double>> resultPaths = colorCoding.searchGraph(compatGraph, logScore);
+
+		System.out.println("begin filtering");
+		Filter noZeros = new UniqueCompatNodeFilter();
+		resultPaths = noZeros.filter(resultPaths);
+
 		Collections.reverse(resultPaths);
 
 		//System.out.println("writing results to html");
@@ -170,6 +178,7 @@ public class PathBlast implements Runnable {
 			} catch (Exception e) { 
 				e.printStackTrace(); 
 				System.out.println("Couldn't create DualLayout Image");
+				fw.write("<p class=error>ERROR creating network image.</p>");
 			}
 			fw.write("</td>\n");	
 
