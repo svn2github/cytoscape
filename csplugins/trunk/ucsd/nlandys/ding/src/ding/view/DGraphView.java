@@ -477,12 +477,18 @@ class DGraphView implements GraphView
 
   public boolean hideGraphObjects(List objects)
   {
-    return false;
+    final Iterator it = objects.iterator();
+    while (it.hasNext()) {
+      hideGraphObject(it.next()); }
+    return true;
   }
 
   public boolean showGraphObjects(List objects)
   {
-    return false;
+    final Iterator it = objects.iterator();
+    while (it.hasNext()) {
+      showGraphObject(it.next()); }
+    return true;
   }
 
   public Object[] getContextMethods(String className, boolean plusSuperclass)
