@@ -8,7 +8,8 @@
     <property name="layout.Name" value="layout"/>
     <property name="layout.name" value="layout"/>
     <property name="layout.version" value="0.1"/>
-    <property name="layout.year" value="2005"/>
+    <property name="layout.year" value="2006"/>
+
 
     <echo message="Building ${layout.name} version ${layout.version}."/>
 
@@ -20,8 +21,10 @@
     <property name="fork" value="false"/>
     <property name="layout.root.dir" value="."/>
     <property name="layout.lib.dir" value="${layout.root.dir}/lib"/>
-    <property name="cytoscape.lib.dir" value="/cellar/users/slotia/cytoscape/lib"/>
-    <property name="cytoscape.plugin.dir" value="/cellar/users/slotia/cytoscape/build/cytoscape-v2.2/plugins"/>
+    <property name="cytoscape.dir" value="../../../../cytoscape"/>
+    <property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib"/>
+    <property name="cytoscape.plugin.dir" value="${cytoscape.dir}/build/cytoscape-v2.2/plugins"/>
+    <property name="csplugins.dir" value="../../../../csplugins"/>
     <path id="project.class.path">
       <pathelement path="${java.class.path}/"/>
     </path>
@@ -36,11 +39,10 @@
     <property name="layout.packages" value="layout.*"/>
     <!-- Subdirectory for test reports -->
     <property name="layout.tests.reports.dir" value="${layout.root.dir}/reports/tests" />
-    <property name="cytoscape.lib" value="/cellar/users/slotia/cytoscape"/>
 
     <!-- Define the condition for compilation -->
-    <property name="cytoscape.jar" value="${cytoscape.lib}/cytoscape.jar"/>
-    <property name="colt.jar" value="${layout.lib.dir}/colt.jar"/>
+    <property name="cytoscape.jar" value="${cytoscape.dir}/cytoscape.jar"/>
+    <property name="colt.jar" value="${cytoscape.lib.dir}/colt.jar"/>
     
 
     <condition property="cytoscape.present">
@@ -57,16 +59,22 @@
 
     <path id="layout.project.class.path">
       <pathelement location="${layout.classes.dir}"/>
+      <pathelement location="${cytoscape.dir}/cytoscape.jar"/>
+<!--
       <pathelement location="${cytoscape.lib.dir}/colt.jar"/>
-      <pathelement location="${cytoscape.lib}/cytoscape.jar"/>
       <pathelement location="${cytoscape.lib.dir}/y.jar"/>
       <pathelement location="${cytoscape.lib.dir}/giny.jar"/>
       <pathelement location="${cytoscape.lib.dir}/phoebe.jar"/>
       <pathelement location="${cytoscape.lib.dir}/coltginy.jar"/>
       <pathelement location="${cytoscape.lib.dir}/piccolo.jar"/>
-      <pathelement location="/cellar/users/slotia/csplugins/common/task/build/littlejars/cytoscape_task.zip"/>
-      <pathelement location="/cellar/users/slotia/csplugins/common/task/build/littlejars/cytoscape_task_ui.zip"/>
-      <pathelement location="/cellar/users/slotia/csplugins/common/task/build/littlejars/cytoscape_task_util.zip"/>
+-->
+      <fileset dir="${cytoscape.lib.dir}">
+        <include name="**/*.jar"/>
+      </fileset>
+
+      <pathelement location="${csplugins.dir}/common/task/build/littlejars/cytoscape_task.zip"/>
+      <pathelement location="${csplugins.dir}/common/task/build/littlejars/cytoscape_task_ui.zip"/>
+      <pathelement location="${csplugins.dir}/common/task/build/littlejars/cytoscape_task_util.zip"/>
       <pathelement path="${project.class.path}/"/>
     </path>
 
