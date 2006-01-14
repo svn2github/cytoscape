@@ -461,6 +461,17 @@ class DGraphView implements GraphView
         m_spacial.insert(~nodeInx, nView.m_hiddenXMin, nView.m_hiddenYMin,
                          nView.m_hiddenXMax, nView.m_hiddenYMax);
         return true; }
+      else if (obj instanceof DEdgeView) {
+        final Edge edge =
+          m_structPersp.getEdge(((DEdgeView) obj).getRootGraphIndex());
+        if (edge == null) { return false; }
+        // The edge exists in m_structPersp, therefore its source and target
+        // node views must also exist.
+        showGraphObject(getNodeView(edge.getSource().getRootGraphIndex()));
+        showGraphObject(getNodeView(edge.getTarget().getRootGraphIndex()));
+        if (m_drawPersp.restoreEdge(edge.getRootGraphIndex()) == 0) {
+          return false; }
+        return true; }
       else { return false; } }
   }
 
