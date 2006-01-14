@@ -3,6 +3,13 @@
 <%@ page import="wi.bioc.blastpathway.EValue" %>
 <%@ page import="wi.bioc.blastpathway.Protein" %>
 <%@ page import="wi.bioc.blastpathway.Config" %>
+<%@ page import="org.biojava.bio.*" %>
+<%@ page import="org.biojava.bio.seq.*" %>
+<%@ page import="org.biojava.bio.seq.db.*" %>
+<%@ page import="org.biojava.bio.seq.io.*" %>
+<%@ page import="org.biojava.bio.symbol.*" %>
+<%@ page import="nct.parsers.FastaProteinParser" %>
+
 <%
 final String[] _NAMES_ = Config.PROTEIN_NAMES; //mapping
 
@@ -120,9 +127,17 @@ if (proteins == null ) {
     	// update proteins
 	for (int i = 0; i < proteins.length; i++) {
             String seq = request.getParameter(_NAMES_[i]+"_seq");
-            seq = (seq == null? "" : seq.trim());
+            seq = (seq == null? "" : seq);
+	    // A regular expression for a FASTA file.
+	    if ( seq.matches(">.+(\n??|\r??){1,}\\w+((\n??|\r??){1,}\\w*)*") ) {
+                        try {
+                        SequenceIterator si = FastaProteinParser.parseString(seq);
+                        if ( si.hasNext() ) 
+                                seq = si.nextSequence().seqString();
+                        } catch ( Exception e ) { e.printStackTrace(); }
+            }
             proteins[i].setSeq(seq);
-	    System.out.println("got seq " + seq);
+	    System.out.println("got seq '" + seq + "'");
 		
        	    String proteinId = request.getParameter(_NAMES_[i]+"_id");
             proteinId = (proteinId == null? "" : proteinId.trim());

@@ -143,7 +143,7 @@ public class PathBlast implements Runnable {
 		fw.write("<li>Number of interactions: " + seqGraphs.get(1).numberOfEdges() + "</li>\n");
 		fw.write("</ul>\n");
 
-		fw.write("<li>Query Network</li><br/>\n");
+		fw.write("<li>Query Network</li>\n");
 		List<String> nodeL = getAlignment(seqGraphs.get(0));
 		fw.write("<ul>\n");
 

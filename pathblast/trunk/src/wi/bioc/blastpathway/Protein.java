@@ -13,8 +13,11 @@ package wi.bioc.blastpathway;
 import java.io.*;
 import java.util.*;
 
+import org.biojava.bio.seq.SequenceIterator;
+
 import nct.service.sequences.SequenceDatabase;
 import nct.service.synonyms.SynonymMapper;
+import nct.parsers.FastaProteinParser;
 
 public class Protein implements java.io.Serializable {
 
@@ -60,8 +63,20 @@ public class Protein implements java.io.Serializable {
 	public String getSeq() { return seq; }
 	public void setSeq(String seq) {
 		this.seq = (seq == null? "" : seq);
-		//remove white spaces
-		this.seq = this.seq.trim();
+/*
+		if ( seq.matches(">.+(\n??|\r??){1,}\\w+((\n??|\r??){1,}\\w*)*") ) {
+			try {
+			System.out.print("got fasta seq ... ");
+			SequenceIterator si = FastaProteinParser.parseString(seq);
+			if ( si.hasNext() ) {
+				System.out.print("successfully parsed");
+				seq = si.nextSequence().seqString();
+				System.out.print("   '"+seq+"'");
+			}
+			System.out.println(" ");
+			} catch ( Exception e ) { e.printStackTrace(); }
+		}
+		*/
 	}
 
 	public void setOrg(String org) { this.org = org; }

@@ -10,8 +10,18 @@ Protein Sequence Format
 
 <h2>Protein Sequence Format</H2>
 <ol>
+    <li>FASTA sequence:
 
-    <li>FASTA format is currently not supported, but will be soon.</li>
+    <p>A sequence in FASTA format begins with a single-line description, followed by lines of sequence data. The description line is distinguished from the sequence data by a greater-than (">") symbol in the first column. It is recommended that all lines of text be shorter than 80 characters in length. An example sequencein FASTA format is:</p>
+    <pre>
+    >gi|129295|sp|P01013|OVAX_CHICK GENE X PROTEIN (OVALBUMIN-RELATED)
+    QIKDLLVSSSTDLDTTLVLVNAIYFKGMWKTAFNAEDTREMPFHVTKQESKPVQMMCMNNSFNVATLPAE
+    KMKILELPFASGDLSMLVLLPDEVSDLERIEKTINFEKLTEWTNPNTMEKRRVKVYLPQMKIEEKYNLTS
+    VLMALGMTDLFIPSANLTGISSAESLKISQAVHGAFMELSEDGIEMAGSTGVIEDIKHSPESEQFRADHP
+    FLFLIKHNPTNTIVYFGRYWSP
+    </pre>
+    </li>
+
     <li>Bare Sequence: 
 
 <p>This may be just lines of sequence data, without the FASTA definition line, e.g.:</p> 
