@@ -1,0 +1,125 @@
+<project name="layout" default="layout" basedir=".">
+
+  <!-- =================================================================== -->
+  <!-- Initialization target                                               -->
+  <!-- =================================================================== -->
+  <target name="init-layout">
+    <tstamp/>
+    <property name="layout.Name" value="layout"/>
+    <property name="layout.name" value="layout"/>
+    <property name="layout.version" value="0.1"/>
+    <property name="layout.year" value="2005"/>
+
+    <echo message="Building ${layout.name} version ${layout.version}."/>
+
+    <!-- Inheritable properties -->
+    <property name="debug" value="on"/>
+    <property name="optimize" value="off"/>
+    <property name="deprecation" value="on"/>
+    <property name="nowarn" value="true"/>
+    <property name="fork" value="false"/>
+    <property name="layout.root.dir" value="."/>
+    <property name="layout.lib.dir" value="${layout.root.dir}/lib"/>
+    <property name="cytoscape.lib.dir" value="/cellar/users/slotia/cytoscape/lib"/>
+    <property name="cytoscape.plugin.dir" value="/cellar/users/slotia/cytoscape/build/cytoscape-v2.2/plugins"/>
+    <path id="project.class.path">
+      <pathelement path="${java.class.path}/"/>
+    </path>
+
+    <!-- Define the directories -->
+    <property name="layout.root.dir" value="./"/>
+    <property name="layout.src.dir" value="${layout.root.dir}/src"/>
+    <property name="layout.classes.dir" value="${layout.root.dir}/classes"/>
+    <property name="layout.javadoc.dir" value="${javadoc.dir}/layout"/>
+    <property name="layout.resources.dir" value="${layout.root.dir}/resources"/>
+    <property name="layout.manifest.dir" value="${layout.root.dir}/manifest"/>
+    <property name="layout.packages" value="layout.*"/>
+    <!-- Subdirectory for test reports -->
+    <property name="layout.tests.reports.dir" value="${layout.root.dir}/reports/tests" />
+    <property name="cytoscape.lib" value="/cellar/users/slotia/cytoscape"/>
+
+    <!-- Define the condition for compilation -->
+    <property name="cytoscape.jar" value="${cytoscape.lib}/cytoscape.jar"/>
+    <property name="colt.jar" value="${layout.lib.dir}/colt.jar"/>
+    
+
+    <condition property="cytoscape.present">
+      <and> 
+	  		<available file="${cytoscape.jar}"/> 
+				<available file="${colt.jar}"/> 
+		  </and>
+    </condition>
+
+    <!-- Define excludes for layout compile and javadoc -->
+    <property name="layout.excludes" value="**/notyet/*"/>
+    <property name="layout.tests.excludes" value="**/notyet/*"/>
+    <property name="layout.packages.excludes" value="**.test.*,**.notyet.*"/>
+
+    <path id="layout.project.class.path">
+      <pathelement location="${layout.classes.dir}"/>
+      <pathelement location="${cytoscape.lib.dir}/colt.jar"/>
+      <pathelement location="${cytoscape.lib}/cytoscape.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/y.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/giny.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/phoebe.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/coltginy.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/piccolo.jar"/>
+      <pathelement location="/cellar/users/slotia/csplugins/common/task/build/littlejars/cytoscape_task.zip"/>
+      <pathelement location="/cellar/users/slotia/csplugins/common/task/build/littlejars/cytoscape_task_ui.zip"/>
+      <pathelement location="/cellar/users/slotia/csplugins/common/task/build/littlejars/cytoscape_task_util.zip"/>
+      <pathelement path="${project.class.path}/"/>
+    </path>
+
+   
+
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the layout project                                           -->
+  <!-- =================================================================== -->
+  <target name="compile-layout" depends="init-layout"  >
+
+   <echo message=" COMPILE layout "/>
+
+    <mkdir dir="${layout.classes.dir}"/>
+    <javac srcdir="${layout.src.dir}"
+           excludes="${layout.excludes}"
+           classpathref="layout.project.class.path"
+           destdir="${layout.classes.dir}"
+           debug="${debug}"
+           nowarn="${nowarn}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the layout.jar file                                           -->
+  <!-- =================================================================== -->
+  <target name="layout" depends="compile-layout"  >
+    <jar destfile="layout.jar" manifest="${layout.manifest.dir}/layout.manifest">
+      <fileset
+        dir="${layout.classes.dir}"
+        includes="**"/>
+      <fileset
+        dir="${layout.root.dir}/lib"
+        includes="resources/**"/>
+    </jar>
+    <copy todir="${cytoscape.plugin.dir}" file="layout.jar"/>
+  </target>
+
+  <!-- Build all jars                                                      -->
+  <!-- =================================================================== -->
+  <target name="all" depends="layout"/>
+
+  <!-- =================================================================== -->
+  <!-- Clean up, get back to original state                                -->
+  <!-- =================================================================== -->
+  <target name="clean" depends="init-layout">
+    <delete dir="${layout.classes.dir}"/>
+    <delete file="layout.jar"/>
+  </target>
+
+</project>
+
+<!-- End of file -->
