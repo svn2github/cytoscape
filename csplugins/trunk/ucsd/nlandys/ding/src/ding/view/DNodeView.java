@@ -52,8 +52,8 @@ class DNodeView implements NodeView, Label
 
   public Node getNode()
   {
-    // FIXME?  Use m_view.m_drawGraph.
-    return m_view.getGraphPerspective().getNode(~m_inx);
+    synchronized (m_view.m_lock) {
+      return m_view.m_structPersp.getNode(~m_inx); }
   }
 
   public int getGraphPerspectiveIndex()
@@ -68,16 +68,8 @@ class DNodeView implements NodeView, Label
 
   public List getEdgeViewsList(NodeView otherNodeView)
   {
-    // FIXME?  Use m_view.m_drawGraph.
-    final int[] nodeInxs =
-      new int[] { ~m_inx, otherNodeView.getGraphPerspectiveIndex() };
-    final GraphPerspective gp = m_view.getGraphPerspective();
-    final int[] edgeInxs = gp.getConnectingEdgeIndicesArray(nodeInxs);
-    final ArrayList returnThis = new ArrayList();
-    if (edgeInxs != null) {
-      for (int i = 0; i < edgeInxs.length; i++) {
-        returnThis.add(m_view.getEdgeView(edgeInxs[i])); } }
-    return returnThis;
+    synchronized (m_view.m_lock) {
+      return m_view.getEdgeViewsList(getNode(), otherNodeView.getNode()); }
   }
 
   public int getShape()
