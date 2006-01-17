@@ -49,18 +49,39 @@
 <jar href="lib/piccolox.jar"/>
 <jar href="lib/tclib.jar"/>
 <jar href="lib/violinstrings-1.0.2.jar"/>
-<jar href="lib/xerces.jar"/>
-<jar href="lib/xml-apis.jar"/>
+<jar href="lib/xercesImpl.jar"/>
+<jar href="lib/xmlParserAPIs.jar"/>
 
+<jar href="plugins/browser.jar"/>
+<jar href="plugins/control.jar"/>
+<jar href="plugins/cpath.jar"/>
+<jar href="plugins/CytoscapeEditor.jar"/>
+<jar href="plugins/data-aux.jar"/>
+<jar href="plugins/exesto.jar"/>
 <jar href="plugins/filter.jar"/>
+<jar href="plugins/HierarchicalLayout.jar"/>
+<jar href="plugins/yeast-context.jar"/>
 <jar href="plugins/yLayouts.jar"/>
+
 
   </resources>
   <application-desc main-class="cytoscape.CyMain">
-    <argument>-rp</argument>
-    <argument>filter.cytoscape.CsFilter</argument>
-   
-
+	<argument>-rp</argument>
+	<argument>browser.BrowserPlugin</argument>
+	<argument>-rp</argument>
+	<argument>control.ControlPlugin</argument>
+	<argument>-rp</argument>
+	<argument>csplugins.dataviewer.plugin.CPathPlugIn</argument>
+	<argument>-rp</argument>
+	<argument>cytoscape.editor.CytoscapeEditorPlugin</argument>
+	<argument>-rp</argument>
+	<argument>filter.cytoscape.CsFilter</argument>
+	<argument>-rp</argument>
+	<argument>csplugins.hierarchicallayout.HierarchicalLayoutPlugin</argument>
+	<argument>-rp</argument>
+	<argument>csplugins.contextmenu.yeast.YeastPlugin</argument>
+	<argument>-rp</argument>
+	<argument>yfiles.YFilesLayoutPlugin</argument>
   </application-desc>
 </jnlp>
 
