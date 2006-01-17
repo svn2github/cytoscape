@@ -27,8 +27,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-// Package visible class.
-class DGraphView implements GraphView
+public class DGraphView implements GraphView
 {
 
   final Object m_lock = new Object();
