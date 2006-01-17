@@ -63,6 +63,7 @@
 <jar href="plugins/yeast-context.jar"/>
 <jar href="plugins/yLayouts.jar"/>
 
+<jar href="data.jar"/>
 
   </resources>
   <application-desc main-class="cytoscape.CyMain">
