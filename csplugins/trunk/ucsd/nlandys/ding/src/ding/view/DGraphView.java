@@ -1,6 +1,9 @@
 package ding.view;
 
 import cytoscape.geom.spacial.MutableSpacialIndex2D;
+import cytoscape.render.immed.GraphGraphics;
+import cytoscape.render.stateful.GraphLOD;
+import cytoscape.util.intr.IntHash;
 import giny.model.GraphPerspective;
 import giny.model.Edge;
 import giny.model.Node;
@@ -12,7 +15,10 @@ import giny.view.NodeView;
 import java.awt.Canvas;
 import java.awt.Component;
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.Paint;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -51,12 +57,36 @@ class DGraphView implements GraphView
 
     final Object m_lock;
     DGraphView m_view;
+    GraphLOD m_lod;
+    final IntHash m_hash;
+    Image m_img;
+    GraphGraphics m_grafx;
 
     InnerCanvas(Object lock, DGraphView view)
     {
+      super();
       m_lock = lock;
       m_view = view;
+      m_lod = new GraphLOD(); // Default LOD.
+      m_hash = new IntHash();
     }
+
+    public void resize(int width, int height)
+    {
+      super.resize(width, height);
+      final Image img =
+        new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+      GraphGraphics grafx = new GraphGraphics(img, false);
+      synchronized (m_lock) {
+        m_img = img;
+        m_grafx = grafx; }
+    }
+
+    public void update(Graphics g)
+    {
+      paint(g);
+    }
+
   }
 
   DGraphView(GraphPerspective perspective)
@@ -635,6 +665,13 @@ class DGraphView implements GraphView
   public boolean setEdgeIntProperty(int edgeInx, int property, int value)
   {
     return false;
+  }
+
+  // Auxillary methods specific to this GraphView implementation:
+
+  public void setGraphLOD(GraphLOD lod)
+  {
+    synchronized (m_lock) { m_canvas.m_lod = lod; }
   }
 
 }
