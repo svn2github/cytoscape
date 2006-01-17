@@ -1,8 +1,10 @@
 package ding.view;
 
 import cytoscape.geom.spacial.MutableSpacialIndex2D;
+import cytoscape.graph.fixed.FixedGraph;
 import cytoscape.render.immed.GraphGraphics;
 import cytoscape.render.stateful.GraphLOD;
+import cytoscape.render.stateful.GraphRenderer;
 import cytoscape.util.intr.IntHash;
 import giny.model.GraphPerspective;
 import giny.model.Edge;
@@ -13,6 +15,7 @@ import giny.view.GraphView;
 import giny.view.GraphViewChangeListener;
 import giny.view.NodeView;
 import java.awt.Canvas;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -61,6 +64,10 @@ class DGraphView implements GraphView
     final IntHash m_hash;
     Image m_img;
     GraphGraphics m_grafx;
+    Paint m_bgPaint;
+    double m_xCenter;
+    double m_yCenter;
+    double m_scaleFactor;
 
     InnerCanvas(Object lock, DGraphView view)
     {
@@ -69,6 +76,10 @@ class DGraphView implements GraphView
       m_view = view;
       m_lod = new GraphLOD(); // Default LOD.
       m_hash = new IntHash();
+      m_bgPaint = Color.white;
+      m_xCenter = 0.0d;
+      m_yCenter = 0.0d;
+      m_scaleFactor = 1.0d;
     }
 
     public void resize(int width, int height)
@@ -84,7 +95,27 @@ class DGraphView implements GraphView
 
     public void update(Graphics g)
     {
+      // This is the magical portion of code that transfers what is in the
+      // visual data structures into what's on the image.
+      synchronized (m_lock) {
+        GraphRenderer.renderGraph((FixedGraph) m_view.m_drawPersp,
+                                  m_view.m_spacial,
+                                  m_lod,
+                                  m_view.m_nodeDetails,
+                                  m_view.m_edgeDetails,
+                                  m_hash,
+                                  m_grafx,
+                                  m_bgPaint,
+                                  m_xCenter,
+                                  m_yCenter,
+                                  m_scaleFactor); }
       paint(g);
+    }
+
+    public void paint(Graphics g)
+    {
+      // TODO: Figure out the SRC_OVER and whatnot.
+      g.drawImage(m_img, 0, 0, null);
     }
 
   }
