@@ -44,9 +44,19 @@ class DGraphView implements GraphView
   final float m_defaultNodeYMin;
   final float m_defaultNodeXMax;
   final float m_defaultNodeYMax;
+  InnerCanvas m_canvas;
 
   private static class InnerCanvas extends Canvas
   {
+
+    final Object m_lock;
+    DGraphView m_view;
+
+    InnerCanvas(Object lock, DGraphView view)
+    {
+      m_lock = lock;
+      m_view = view;
+    }
   }
 
   DGraphView(GraphPerspective perspective)
@@ -62,6 +72,7 @@ class DGraphView implements GraphView
     m_defaultNodeYMin = -10.0f;
     m_defaultNodeXMax = 10.0f;
     m_defaultNodeYMax = 10.0f;
+    m_canvas = new InnerCanvas(m_lock, this);
   }
 
   public GraphPerspective getGraphPerspective()
@@ -134,7 +145,7 @@ class DGraphView implements GraphView
 
   public Component getComponent()
   {
-    return null;
+    return m_canvas;
   }
 
   public NodeView addNodeView(int nodeInx)
