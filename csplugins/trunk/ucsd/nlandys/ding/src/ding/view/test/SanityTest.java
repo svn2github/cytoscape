@@ -30,12 +30,20 @@ public class SanityTest
     EventQueue.invokeAndWait(new Runnable() {
         public void run() {
           Frame f = new Frame();
-          f.show();
+//           f.add(new LWButton01("foo"));
           f.add(view.getComponent());
+          f.show();
           f.resize(400, 300);
           f.addWindowListener(new WindowAdapter() {
               public void windowClosing(WindowEvent e) {
                 System.exit(0); } }); } });
+    final NodeView nv1 = view.addNodeView(node1);
+    final NodeView nv2 = view.addNodeView(node2);
+    final NodeView nv3 = view.addNodeView(node3);
+    final EdgeView ev1 = view.addEdgeView(edge1);
+    final EdgeView ev2 = view.addEdgeView(edge2);
+    final EdgeView ev3 = view.addEdgeView(edge3);
+    view.updateView();
   }
 
 }

@@ -134,6 +134,8 @@ public class DGraphView implements GraphView
     m_structPersp = m_perspective.getRootGraph().createGraphPerspective
       ((int[]) null, (int[]) null);
     m_spacial = new RTree();
+    m_nodeDetails = new DNodeDetails();
+    m_edgeDetails = new DEdgeDetails(this);
     m_nodeViewMap = new HashMap();
     m_edgeViewMap = new HashMap();
     m_defaultNodeXMin = -10.0f;
