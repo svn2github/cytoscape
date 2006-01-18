@@ -14,7 +14,6 @@ import giny.view.EdgeView;
 import giny.view.GraphView;
 import giny.view.GraphViewChangeListener;
 import giny.view.NodeView;
-import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -54,7 +53,7 @@ public class DGraphView implements GraphView
   final float m_defaultNodeYMax;
   InnerCanvas m_canvas;
 
-  private static class InnerCanvas extends Canvas
+  private static class InnerCanvas extends Component
   {
 
     final Object m_lock;
@@ -81,9 +80,9 @@ public class DGraphView implements GraphView
       m_scaleFactor = 1.0d;
     }
 
-    public void resize(int width, int height)
+    public void reshape(int x, int y, int width, int height)
     {
-      super.resize(width, height);
+      super.reshape(x, y, width, height);
       final Image img =
         new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
       GraphGraphics grafx = new GraphGraphics(img, false);
