@@ -135,6 +135,12 @@ public class PathBlast implements Runnable {
 		fw.write("</head><body>\n");
 		fw.write("<h2>PathBlast results</h2>\n");
 
+		fw.write("<div id=\"legend\">\n");
+		fw.write("<a href=\"../../../images/legend.jpg\">\n");
+		fw.write("<img src=\"../../../images/small_legend.jpg\" width=\"400\" height=\"215\"/>\n");
+		fw.write("</a>\n");
+		fw.write("</div>\n");
+
 		fw.write("<ul>\n");
 		fw.write("<li>Target Network </li>\n");
 		fw.write("<ul>\n");
@@ -153,7 +159,7 @@ public class PathBlast implements Runnable {
 
 		fw.write("<li><a href=\"../../../docs/faq.html\">FAQ</a></li>\n");
 		fw.write("<li><a href=\"../../../docs/publications.html\">References</a></li>\n");
-		fw.write("<li><a href=\"../../../images/legend.jpg\">Graph Legend</a></li>\n");
+		//fw.write("<li><a href=\"../../../images/legend.jpg\">Graph Legend</a></li>\n");
 		fw.write("</ul>\n");
 		DecimalFormat decimal = new DecimalFormat("#0.00");
 		int count = 0;
