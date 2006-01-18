@@ -124,6 +124,10 @@ p.error {
 	color:#ff0000;
 }
 
+div#advanced {
+	background-color:#ffffff;
+}
+
 table.result {
         background-color:#ffffff;
 }
@@ -164,5 +168,10 @@ a.submenu {
 a.submenu:hover {
 	color: #ffffff;
         background-color: #29387D; 
+}
+
+div#legend {
+        float: right;
+	margin-right:50px;
 }
 
