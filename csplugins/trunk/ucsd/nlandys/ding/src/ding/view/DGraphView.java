@@ -14,6 +14,7 @@ import giny.view.EdgeView;
 import giny.view.GraphView;
 import giny.view.GraphViewChangeListener;
 import giny.view.NodeView;
+import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -53,7 +54,8 @@ public class DGraphView implements GraphView
   final float m_defaultNodeYMax;
   InnerCanvas m_canvas;
 
-  private static class InnerCanvas extends Component
+  private static class InnerCanvas extends Canvas
+
   {
 
     final Object m_lock;
@@ -94,6 +96,7 @@ public class DGraphView implements GraphView
 
     public void update(Graphics g)
     {
+      System.out.println("now in update()");
       if (m_grafx == null) { return; }
 
       // This is the magical portion of code that transfers what is in the
