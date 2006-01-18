@@ -83,16 +83,19 @@ public class DGraphView implements GraphView
     public void reshape(int x, int y, int width, int height)
     {
       super.reshape(x, y, width, height);
-      final Image img =
-        new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-      GraphGraphics grafx = new GraphGraphics(img, false);
-      synchronized (m_lock) {
-        m_img = img;
-        m_grafx = grafx; }
+      if (width > 0 && height > 0) {
+        final Image img =
+          new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        GraphGraphics grafx = new GraphGraphics(img, false);
+        synchronized (m_lock) {
+          m_img = img;
+          m_grafx = grafx; } }
     }
 
     public void update(Graphics g)
     {
+      if (m_grafx == null) { return; }
+
       // This is the magical portion of code that transfers what is in the
       // visual data structures into what's on the image.
       synchronized (m_lock) {
@@ -112,6 +115,8 @@ public class DGraphView implements GraphView
 
     public void paint(Graphics g)
     {
+      if (m_img == null) { return; }
+
       // TODO: Figure out the SRC_OVER and whatnot.
       g.drawImage(m_img, 0, 0, null);
     }
