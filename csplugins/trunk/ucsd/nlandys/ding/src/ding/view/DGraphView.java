@@ -91,7 +91,18 @@ public class DGraphView implements GraphView
         GraphGraphics grafx = new GraphGraphics(img, false);
         synchronized (m_lock) {
           m_img = img;
-          m_grafx = grafx; } }
+          m_grafx = grafx;
+          GraphRenderer.renderGraph((FixedGraph) m_view.m_drawPersp,
+                                    m_view.m_spacial,
+                                    m_lod,
+                                    m_view.m_nodeDetails,
+                                    m_view.m_edgeDetails,
+                                    m_hash,
+                                    m_grafx,
+                                    m_bgPaint,
+                                    m_xCenter,
+                                    m_yCenter,
+                                    m_scaleFactor); } }
     }
 
     public void update(Graphics g)
