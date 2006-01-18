@@ -1,5 +1,6 @@
 package ding.view;
 
+import cytoscape.geom.rtree.RTree;
 import cytoscape.geom.spacial.MutableSpacialIndex2D;
 import cytoscape.graph.fixed.FixedGraph;
 import cytoscape.render.immed.GraphGraphics;
@@ -55,7 +56,6 @@ public class DGraphView implements GraphView
   InnerCanvas m_canvas;
 
   private static class InnerCanvas extends Canvas
-
   {
 
     final Object m_lock;
@@ -133,6 +133,7 @@ public class DGraphView implements GraphView
       ((int[]) null, (int[]) null);
     m_structPersp = m_perspective.getRootGraph().createGraphPerspective
       ((int[]) null, (int[]) null);
+    m_spacial = new RTree();
     m_nodeViewMap = new HashMap();
     m_edgeViewMap = new HashMap();
     m_defaultNodeXMin = -10.0f;
