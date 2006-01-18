@@ -43,6 +43,9 @@ public class SanityTest
     final EdgeView ev1 = view.addEdgeView(edge1);
     final EdgeView ev2 = view.addEdgeView(edge2);
     final EdgeView ev3 = view.addEdgeView(edge3);
+    nv1.setOffset(0.0d, 50.0d);
+    nv2.setOffset(-30.0d, -10.0d);
+    nv3.setOffset(30.0d, 10.0d);
     view.updateView();
   }
 
