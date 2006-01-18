@@ -7,11 +7,15 @@ import giny.model.RootGraph;
 import giny.view.GraphView;
 import giny.view.NodeView;
 import giny.view.EdgeView;
+import java.awt.EventQueue;
+import java.awt.Frame;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class SanityTest
 {
 
-  public static void main(String[] args)
+  public static void main(String[] args) throws Exception
   {
     final RootGraph root = FingRootGraphFactory.instantiateRootGraph();
     final int node1 = root.createNode();
@@ -21,8 +25,17 @@ public class SanityTest
     final int edge2 = root.createEdge(node2, node3);
     final int edge3 = root.createEdge(node3, node1);
     final GraphPerspective persp = root.createGraphPerspective
-      (new int[] { node1, node2, node3 },
-       new int[] { edge1, edge2, edge3 });
+      ((int[]) null, (int[]) null);
+    final DGraphView view = new DGraphView(persp);
+    EventQueue.invokeAndWait(new Runnable() {
+        public void run() {
+          Frame f = new Frame();
+          f.show();
+          f.add(view.getComponent());
+          f.resize(400, 300);
+          f.addWindowListener(new WindowAdapter() {
+              public void windowClosing(WindowEvent e) {
+                System.exit(0); } }); } });
   }
 
 }

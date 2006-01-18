@@ -119,7 +119,7 @@ public class DGraphView implements GraphView
 
   }
 
-  DGraphView(GraphPerspective perspective)
+  public DGraphView(GraphPerspective perspective)
   {
     m_perspective = perspective;
     m_drawPersp = m_perspective.getRootGraph().createGraphPerspective
@@ -350,6 +350,7 @@ public class DGraphView implements GraphView
 
   public void updateView()
   {
+    m_canvas.repaint();
   }
 
   public RootGraph getRootGraph()
