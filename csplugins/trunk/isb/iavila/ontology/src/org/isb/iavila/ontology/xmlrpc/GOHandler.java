@@ -8,7 +8,6 @@ import org.isb.xmlrpc.handler.db.SQLUtils;
 /**
  * 
  * @author iavila
- * TODO: Create term_children table should be in the Perl scripts Jung created
  * TODO: jdbc URL should be read from a file (xmlrpc.props?)
  * TODO: Create an interface for ontologies
  */
@@ -36,10 +35,7 @@ public class GOHandler extends SQLDBHandler {
      * Calls this(String mysql_url)
      */
     public GOHandler (){
-        // TODO: Remove, this should be read from somewhere!!!
-        //this("jdbc:mysql://biounder.kaist.ac.kr/go?user=bioinfo&password=qkdldhWkd");
-        //this("jdbc:mysql://wavelength.systemsbiology.net/go?user=cytouser&password=bioNetBuilder");
-        
+      
         super("jdbc:mysql://wavelength.systemsbiology.net/metainfo?user=cytouser&password=bioNetBuilder", SQLDBHandler.MYSQL_JDBC_DRIVER);
         
         // Look for the current go database
@@ -67,44 +63,7 @@ public class GOHandler extends SQLDBHandler {
     public GOHandler (String mysql_url) {
         super(mysql_url, SQLDBHandler.MYSQL_JDBC_DRIVER);
         initialize();
-        //temp:
-        //createGi2Go();
     }// ProlinksInteractionsSource
-    
-    protected void createGi2Go (){
-        //String sql = "CREATE TABLE giToAcc ( gi bigint (20), acc varchar(10));";
-        //execute(sql);
-        //System.out.println("Created giToAcc table.");
-        
-        String sql = "SELECT g.gi, o.goid FROM synonym3.xref_ontology as o, synonym3.xref_gi as g WHERE g.oid = o.oid";
-        ResultSet rs = query(sql);
-        System.out.println("Finished getting gis and gos");
-        
-        sql = "INSERT INTO giToAcc VALUES ";
-        String vals = null;
-        try{
-            while(rs.next()){
-                int gi = rs.getInt(1);
-                String go = rs.getString(2);
-                if(go.startsWith("GO:")){
-                    int index = go.lastIndexOf(":");//look for the 2nd ":"
-                    if(index >= 0){
-                        go = go.substring(0,index);
-                        if(vals.length() == 0)
-                            vals = " (" + gi + "," + go + ")";
-                        else
-                            vals +=  ", (" + gi + "," + go + ")";
-                    }
-                }
-            }
-        }catch(Exception ex){ ex.printStackTrace();}
-        
-        if(vals.length() == 0) return;
-        System.out.println("Adding values to giToAcc table...");
-        execute(sql+vals);
-        System.out.println("..done adding values to giToAcc.");
-        
-    }
     
     /**
      * Initializes  internal variables
@@ -114,8 +73,6 @@ public class GOHandler extends SQLDBHandler {
         String sql = "SELECT id FROM term WHERE term_type = \"universal\"";
         ResultSet rs = query(sql);
         ROOT_TERM_ID = SQLUtils.getInt(rs);
-        // This only needs to be done when the database is updated. Need to move it to Jung's database perl scripts:
-        //createChildrenTable();
     }
     
    
@@ -152,7 +109,7 @@ public class GOHandler extends SQLDBHandler {
         ResultSet rs = query(sql);
         
         Vector children = makeTermsVector(rs);
-        System.out.println(termID + " has " + children.size() + "children");
+        //System.out.println(termID + " has " + children.size() + "children");
         return children;
     }
     
@@ -208,13 +165,13 @@ public class GOHandler extends SQLDBHandler {
         if(!it.hasNext()) return new Hashtable();
         
         String id = (String)it.next();
-        String or = " id = " + id;
+        String termsList = id;
         
         while(it.hasNext()){
             id = (String)it.next();
-            or += " OR id = " + id;
+            termsList += ", " + id;
         }
-        String sql = "SELECT id,name,term_type,acc,is_obsolete,is_root FROM term WHERE " + or;
+        String sql = "SELECT id,name,term_type,acc,is_obsolete,is_root FROM term WHERE id IN (" + termsList + ")";
         ResultSet rs = query(sql);
        return makeTermsHash(rs);
     }
@@ -227,15 +184,15 @@ public class GOHandler extends SQLDBHandler {
         Iterator it = termIDs.iterator();
         
         if(!it.hasNext()) return new Vector();
-        
         String id = (String)it.next();
-        String or = " id = " + id;
+        String termsList = id;
         
         while(it.hasNext()){
             id = (String)it.next();
-            or += " OR id = " + id;
+            termsList += ", " + id;
         }
-        String sql = "SELECT name FROM term WHERE " + or;
+       
+        String sql = "SELECT name FROM term WHERE id IN (" + termsList + ")";
         ResultSet rs = query(sql);
         Vector names = new Vector();
         try{
@@ -300,123 +257,114 @@ public class GOHandler extends SQLDBHandler {
     /**
      * @param termIDs a Vector of Strings parsable as integers representing term ids
      * @param speciesID the species for which to return genes
+     * @param recursive if true, then the returned table will contain entries for descendants terms of the given termIDs
      * @return a Hashtable from Strings (termIDs parsable as Integers) to Vectors of Strings representing genes
      * with the given key term
      */
-    public Hashtable getGenesWithTerms (Vector termIDs, String speciesID){
-         
-        
-       Hashtable termToGenes  = new Hashtable();
-        // Find the taxonomy id for the given species
-        String sql = "SELECT ncbi_taxa_id FROM species WHERE id = " + speciesID;
-        ResultSet rs = query(sql);
-        int speciesTaxaID = 0;
-        boolean foundSpecies = false;
-        try{
-            if(rs.next()){
-                speciesTaxaID = rs.getInt(1);
-                foundSpecies = true;
-            }
-        }catch(Exception ex){
-            ex.printStackTrace();
-            return termToGenes;
+    public Hashtable getGenesWithTerms (Vector termIDs, String speciesID, boolean recursive){
+        Hashtable returnTable = new Hashtable();
+        getGenesWithTerms(termIDs,speciesID,recursive,returnTable);
+        return returnTable;
+    }
+    
+    /**
+     * @param termIDs a Vector of Strings parsable as integers representing term ids
+     * @param speciesID the species for which to return genes
+     * @return a Hashtable from Strings (termIDs parsable as Integers) to Vectors of Strings representing genes
+     * with the given key term
+     */
+    protected void getGenesWithTerms (Vector termIDs, String speciesID, boolean recursive, Hashtable returnTable){
+        if(!recursive){
+            Hashtable table = getGenesWithTerms(termIDs,speciesID);
+            if(returnTable != null) returnTable.putAll(table);
+            else returnTable = table;
+            return;
         }
+        if(returnTable == null) returnTable = new Hashtable();
         
-        if(!foundSpecies) return termToGenes;
-        
-        Hashtable accToTermID = new Hashtable();
-        
-        // The term ids are Strings parsable as Integers. Get the GO: term identifiers.
-        String or = "";
         Iterator it = termIDs.iterator();
-        
-        if(!it.hasNext()) return termToGenes;
-        
-        or = " id = " + (String)it.next();
         while(it.hasNext()){
-            or += " OR id = " + (String)it.next();
+            String currentTerm = (String)it.next();
+            // get the children for this term
+            Vector childrenIDs = null;
+            try{
+                childrenIDs = getChildrenIDs(Integer.parseInt(currentTerm));
+            }catch(Exception e){e.printStackTrace(); return;}
+            
+            if(childrenIDs != null && childrenIDs.size() > 0){
+                getGenesWithTerms(childrenIDs,speciesID,recursive,returnTable);
+            }
+            
+            Vector oneTermVector = new Vector();
+            oneTermVector.add(currentTerm);
+            Hashtable termToChildren = getGenesWithTerms(oneTermVector,speciesID);
+            Vector genes = (Vector)termToChildren.get(currentTerm);
+            if(genes != null)
+                returnTable.put(currentTerm,genes);
+            
         }//it.hasNext
         
-        System.err.println(or);
+    }
+    
+    /**
+     * @param termIDs a Vector of Strings parsable as integers representing term ids
+     * @param speciesID the species for which to return genes
+     * @return a Hashtable from Strings (the given termIDs) to Vectors of Strings representing genes
+     * with the given key term, NOT RECURSIVE
+     */
+    public Hashtable getGenesWithTerms (Vector termIDs, String speciesID){
+      if(termIDs.size() == 0) return new Hashtable();
+      String sql = "SELECT ncbi_taxa_id FROM species WHERE id = " + speciesID;
+      int taxid = -1;
+      try{
+          ResultSet rs = query(sql);
+          if(rs.next()) taxid = rs.getInt(1);
+      }catch(SQLException e){e.printStackTrace(); return new Hashtable();}
+      
+      if(taxid == -1) return new Hashtable();
+      
+      // 1. get acc ids for termIDs
+      Iterator it = termIDs.iterator();
+      String termList = (String)it.next();
+      while(it.hasNext()){
+          termList += "," + (String)it.next();
+      }
+      
+      sql = "SELECT acc,id FROM term WHERE id IN (" + termList + ")";
+      ResultSet rs = query(sql);
+      String accList = "";
+      Hashtable accToId = new Hashtable();
+      try{
+          while(rs.next()){
+              String acc = rs.getString(1);
+              if(accList.length() == 0) accList += "\"" + acc + "\""; 
+              else accList += ",\"" + acc + "\"";  
+              accToId.put(acc,rs.getString(2));
+          }
+      }catch(SQLException e){e.printStackTrace(); return new Hashtable();}
+      
+      if(accList.length() == 0) return new Hashtable();
         
-        if(or.length() == 0) return termToGenes;
-        
-        sql = "SELECT acc, id FROM term WHERE " + or;
-        rs = query(sql);
-        
-        or = "";
-        try{
-            while(rs.next()){
-                String goID = rs.getString(1);
-                int intID = rs.getInt(2);
-                if (or.length() == 0){
-                         or = " acc = \"" + goID + "\"";
-                }else{
-                    or += " OR acc = \"" + goID + "\"";
-                }//else
-                accToTermID.put(goID, new Integer(intID));
-            }// while rs.next
-        }catch(Exception ex){
-            ex.printStackTrace();
-            return termToGenes;
-        }//catch
-        
-        System.err.println(or);
-        
-        if(or.length() == 0) return termToGenes;
-        
-        sql = "SELECT gg.acc, gg.gi"+
-             " FROM gi2go AS gg, nrTaxonomy AS nr"+
-             " WHERE " + or + 
-             " AND nr.gi =  gg.gi AND nr.taxonomy_id  = " +  speciesTaxaID;
-        rs = query(sql);
-        
-        try{
-            while(rs.next()){
-                String acc = rs.getString(1);
-                int giID = rs.getInt(2);
-                Integer intTermID = (Integer)accToTermID.get(acc);
-                Vector genes = (Vector)termToGenes.get(intTermID.toString());
-                if(genes == null){
-                    genes = new Vector();
-                    termToGenes.put(intTermID.toString(), genes);
-                }
-                genes.add("GI:"+Integer.toString(giID));
-            }
-        }catch(Exception ex){
-            ex.printStackTrace();
-            return new Hashtable();
-        }
-        
-        System.err.println(termToGenes);
-        
-        return termToGenes;
-  
-        
-        
-//        Iterator it = termIDs.iterator();
-//        Hashtable termToGenes = new Hashtable();
-//        while(it.hasNext()){
-//            String termID = (String)it.next();
-//            String sql = "SELECT a.gene_product_id " + 
-//                "FROM association AS a, gene_product AS gene " + 
-//                "WHERE a.term_id = " +  termID +
-//                " AND gene.id = a.gene_product_id " +
-//                " AND gene.species_id = " + speciesID;
-//            ResultSet rs = query(sql);
-//            try{
-//                Vector genes = new Vector();
-//                while(rs.next()){
-//                    int gene_id = rs.getInt(1);
-//                    genes.add(Integer.toString(gene_id));
-//                }//while rs.next
-//                termToGenes.put(termID,genes);
-//            }catch(SQLException ex){
-//                ex.printStackTrace();
-//            }//catch
-//        
-//        }//while it.hasNext
-//        return termToGenes;
+      // 2. get genes with given accs and of the given speciesID from gi2go  
+      
+      sql = "SELECT gi,goid FROM gi2go WHERE taxid = " + taxid + " AND goid IN (" + accList + ")";
+      rs = query(sql);
+      
+      Hashtable result = new Hashtable();
+      
+      try{
+          while(rs.next()){
+              String gi = "GI:" + rs.getString(1);
+              String acc = rs.getString(2);
+              String termID = (String)accToId.get(acc);
+              Vector gis = (Vector)result.get(termID);
+              if(gis == null) gis = new Vector();
+              gis.add(gi);
+              result.put(termID, gis);
+          }
+      }catch(SQLException e){e.printStackTrace();return new Hashtable();}
+      
+      return result;
     }
     
     /**
@@ -462,16 +410,7 @@ public class GOHandler extends SQLDBHandler {
         ResultSet rs = query(sql);
         species = makeSpeciesVector(rs);
         if(species.size() > 0) return species;
-        
-        // Now try the pattern with wild-cards for common_name and species
-        //        String pattern = "\'%" + likePattern + "%\'";
-        //        sql = "SELECT id, genus, species, common_name FROM species WHERE common_name LIKE " + pattern + " OR species LIKE " + pattern;
-        //        rs = query(sql);
-        //        species = makeSpeciesVector(rs);
-        //        if(species.size() > 0) return species;
-        
-        // Now try to split the pattern by white space, and see if the first part is genus, and the second species 
-        //String [] split = likePattern.split("\\s");
+     
         if(split.length >= 2){
             sql = "SELECT id, genus, species, common_name FROM species WHERE genus LIKE \'%" + split[0] + "%\' OR species LIKE \'%" + split[1] + "%\'";
             rs = query(sql);
@@ -623,110 +562,5 @@ public class GOHandler extends SQLDBHandler {
         }
         
     }
-    
-    
-    /**
-     * Creates a table in go db that contains term ids as keys, and a comma separated list of their children ids.
-     */
-    //TODO: This needs to be in the Perl scripts Jung wrote
-    protected void createChildrenTable (){
-        // The table already exists, comment out
-        //String sql = "CREATE TABLE term_children ( term_id INT(11), children LONGTEXT);";
-        //execute(sql);
-        
-        insertChildren(ROOT_TERM_ID, new Hashtable());
-    }
-    
-    
-    /**
-     * Recursively inserts rows into table term_children, starts with the given id and then inserts rows for the children<br>
-     * TODO: This should be moved to Jung's perl scripts
-     * @param termID
-     */
-    protected void insertChildren (int termID, Hashtable alreadyInserted){
-        
-        Integer ID = new Integer(termID);
-        
-        if(alreadyInserted.contains(ID)) return;
-        
-        Vector children = getChildrenIDs(termID);
-        Iterator it = children.iterator();
-        if(!it.hasNext()) return;
-        String childrenList = ((Integer)it.next()).toString();
-        while(it.hasNext()){
-            childrenList += "," + ( (Integer)it.next() ).toString();
-        }
-        String sql = "INSERT INTO term_children VALUES (" + ID.toString() + ", \"" + childrenList + "\")";
-        execute(sql);
-        alreadyInserted.put(ID,Boolean.TRUE);
-        
-        it = children.iterator();
-        while(it.hasNext()){
-            insertChildren(((Integer)it.next()).intValue(), alreadyInserted);
-        }
-        
-    }
-    
-    /**
-     * Creates and populates a table "term_species_genes" that contains three entries:
-     * term_id, species_id,list of genes in species with term
-     * TODO: Move to perl scripts
-     * TODO: OK. This was silly. It takes LONG. Do not use anymore.
-     */
-    protected void createTermGenesTable (){
-        //String sql = "CREATE TABLE term_species_genes ( term_id INT(11), species_id INT(11), genes LONGTEXT);";
-        //execute(sql);
-        
-        String sql = "SELECT id FROM species";
-        ResultSet rs = query(sql);
-        Vector speciesIDs = new Vector();
-        try{
-            while(rs.next()){
-                speciesIDs.add(new Integer(rs.getInt(1)));
-            }//while
-        }catch(SQLException ex){
-            ex.printStackTrace();
-        }
-        
-        Iterator it = speciesIDs.iterator();
-        Vector termIDs = getAllTermIDs();
-        while(it.hasNext()){
-            
-            Integer spID = (Integer)it.next();
-            Iterator it2 = termIDs.iterator();
-            
-            while(it2.hasNext()){
-                Integer tID = new Integer((String)it2.next());
-               sql = "SELECT a.gene_product_id " + 
-                             "FROM association AS a, gene_product AS gene " + 
-                             "WHERE a.term_id = " + tID +
-                                  " AND gene.id = a.gene_product_id " +
-                                  " AND gene.species_id = " + spID;
-                rs = query(sql);
-                try{
-                    String geneList = null;
-                    int geneId;
-                    if(rs.next()){
-                        geneId = rs.getInt(1);
-                        geneList = Integer.toString(geneId);
-                    }//if
-                    while(rs.next()){
-                        geneId = rs.getInt(1);
-                        geneList += "," + Integer.toString(geneId);
-                    }//while rs.next
-                    
-                    System.out.println(geneList);
-                    sql = "INSERT INTO term_species_genes VALUES (" + tID.toString() + "," + spID.toString() + 
-                        ", \"" + geneList + "\")";
-                    execute(sql);
-                }catch(Exception e){
-                    e.printStackTrace();
-                }//catch
-                     
-            }//while it2
-        }//while it
-        
-    }
-    
     
 }

@@ -33,6 +33,8 @@ public class CytoscapeGODialog extends JFrame {
     protected JTextField spField;
 
     protected GOSpecies selectedSpecies;
+    
+    protected JRadioButton recursiveRadioButton;
 
     /**
      * Creates the JFrame
@@ -182,9 +184,14 @@ public class CytoscapeGODialog extends JFrame {
                 attachNodeAttribute();
             }
         });
+        
+        this.recursiveRadioButton = new JRadioButton("Recursive");
+        this.recursiveRadioButton.setSelected(true);
+        
         bPanel.add(createNodesButton);
         bPanel.add(selectNodesButton);
         bPanel.add(attributeButton);
+        bPanel.add(this.recursiveRadioButton);
         return bPanel;
     }
 
@@ -317,7 +324,7 @@ public class CytoscapeGODialog extends JFrame {
         Hashtable termToGenes = null;
 
         try {
-            termToGenes = goClient.getGenesWithTerms(termIDs, spID);
+            termToGenes = goClient.getGenesWithTerms(termIDs, spID, this.recursiveRadioButton.isSelected());
           //  System.out.println(termToGenes);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -341,9 +348,9 @@ public class CytoscapeGODialog extends JFrame {
      * Creates nodes that are annotated with the selected ontology terms and
      * belog to the selected species
      * 
-     * @return the new node indices
+     * @return the new CyNodes
      */
-    public int[] createNodes() {
+    public Collection createNodes() {
 
         OntologyTerm[] terms = this.goViewer.getSelectedTerms();
 
@@ -356,14 +363,14 @@ public class CytoscapeGODialog extends JFrame {
         Hashtable termToGenes = null;
 
         try {
-            termToGenes = goClient.getGenesWithTerms(termIDs, spID);
+            termToGenes = goClient.getGenesWithTerms(termIDs, spID, this.recursiveRadioButton.isSelected());
             System.out.println(termToGenes);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
 
         Iterator it = termToGenes.keySet().iterator();
-        IntArrayList nodes = new IntArrayList();
+        HashSet nodes = new HashSet();
         while (it.hasNext()) {
             String termID = (String) it.next();
             Vector genes = (Vector) termToGenes.get(termID);
@@ -371,13 +378,12 @@ public class CytoscapeGODialog extends JFrame {
             while (it2.hasNext()) {
                 String gene = (String) it2.next();
                 CyNode node = (CyNode) Cytoscape.getCyNode(gene, true);
-                nodes.add(node.getRootGraphIndex());
-                Cytoscape.setNodeAttributeValue(node, Semantics.SPECIES,
-                        this.selectedSpecies.toString());
+                nodes.add(node);
+                Cytoscape.getNodeAttributes().setAttribute(node.getIdentifier(),Semantics.SPECIES,this.selectedSpecies.toString());
             }// while it2
         }// while it.hasNext
-        nodes.trimToSize();
-        return nodes.elements();
+        
+        return nodes;
     }
 
     /**
@@ -388,23 +394,35 @@ public class CytoscapeGODialog extends JFrame {
     // TODO: Ask the user for network options (create nodes in current net? name
     // of new net? etc).
     public void createNetwork(String net_name) {
-        int[] nodes = createNodes();
-        if (nodes.length == 0) {
+        Collection nodes = createNodes();
+        
+        if (nodes.size() == 0) {
             JOptionPane.showMessageDialog(this,
                     "There are no nodes annotated with the selected terms.",
                     "Cytoscape GO", JOptionPane.INFORMATION_MESSAGE);
             return;
-        } else {
-            JOptionPane.showMessageDialog(this, "There are " + nodes.length
-                    + " nodes annotated with the selected terms.",
-                    "Cytoscape GO", JOptionPane.INFORMATION_MESSAGE);
         }
+            
+        int answer = JOptionPane.showConfirmDialog(this, "There are " + nodes.size()
+                + " nodes annotated with the selected terms. Create nodes?",
+                "Cytoscape GO", JOptionPane.YES_NO_OPTION);
+            
+        if(answer != JOptionPane.YES_OPTION) return;
+        
         CyNetwork net = Cytoscape.getNetwork(net_name);
         if (net == null || net.getIdentifier().equals("0")) {
-            net = Cytoscape.createNetwork(nodes, new int[0], net_name);
+            net = Cytoscape.createNetwork(nodes, new ArrayList(), net_name);
             Cytoscape.getDesktop().setFocus(net.getIdentifier());
         } else {
-            net.restoreNodes(nodes);
+            int [] nodeIndices = new int [nodes.size()];
+            Iterator it = nodes.iterator();
+            int i = 0;
+            while(it.hasNext()){
+                nodeIndices[i] = ((CyNode)it.next()).getRootGraphIndex();
+                i++;
+            }
+            net.restoreNodes(nodeIndices);
+            
         }
 
     }
@@ -425,14 +443,14 @@ public class CytoscapeGODialog extends JFrame {
         Hashtable termToGenes = null;
 
         try {
-            termToGenes = goClient.getGenesWithTerms(termIDs, spID);
+            termToGenes = goClient.getGenesWithTerms(termIDs, spID, this.recursiveRadioButton.isSelected());
             System.out.println(termToGenes);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
 
         Iterator it = termToGenes.keySet().iterator();
-        ArrayList nodes = new ArrayList();
+        HashSet nodes = new HashSet();
         //ArrayList nodeViews = new ArrayList();
         while (it.hasNext()) {
             String termID = (String) it.next();
@@ -485,7 +503,7 @@ public class CytoscapeGODialog extends JFrame {
         Hashtable termToGenes = null;
         Hashtable termsInfo = null;
         try {
-            termToGenes = goClient.getGenesWithTerms(termIDs, spID);
+            termToGenes = goClient.getGenesWithTerms(termIDs, spID, this.recursiveRadioButton.isSelected());
             termsInfo = goClient.getTermsInfo(new Vector(termToGenes.keySet()));
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -506,11 +524,8 @@ public class CytoscapeGODialog extends JFrame {
             while (it2.hasNext()) {
                 String gene = (String) it2.next();
                 CyNode node = (CyNode) Cytoscape.getCyNode(gene, false);
-                nodes.add(node);
-                // Test the new methods in CytoscapeData: (DID NOT WORK!!!)
-               // cyData.addAttributeListValue(gene,ATTRIBUTE_NAME,termName);      
-                String termList = (String) Cytoscape.getNodeAttributeValue(
-                        node, ATTRIBUTE_NAME);
+                nodes.add(node);   
+                String termList = (String)Cytoscape.getNodeAttributes().getStringAttribute(node.getIdentifier(),ATTRIBUTE_NAME);
                 if (termList != null) {
                     // Make sure we are not adding repeated terms:
                     String[] setTerms = termList.split(",");
@@ -526,7 +541,7 @@ public class CytoscapeGODialog extends JFrame {
                 } else {
                     termList = termName;
                 }
-                Cytoscape.setNodeAttributeValue(node, ATTRIBUTE_NAME, termList);
+                Cytoscape.getNodeAttributes().setAttribute(node.getIdentifier(),ATTRIBUTE_NAME,termList);
             }// while it2
         }// while it.hasNext
         System.out.println("Done setting attribuets!!!!");

@@ -145,6 +145,18 @@ public class GOClient extends AuthenticatedDataClient{
     }
     
     /**
+     * @param termIDs a Vector of Strings parsable as integers representing term ids
+     * @param speciesID the species for which to return genes
+     * @param recursive if true, then the returned table will contain entries for descendants of the given termIDs
+     * @return a Hashtable from Strings (termIDs parsable as Integers) to Vectors of Strings representing genes
+     * with the given key term
+     */
+    public Hashtable getGenesWithTerms (Vector termIDs, String speciesID, boolean recursive) throws XmlRpcException, IOException{
+        Object table = call(this.serviceName + ".getGenesWithTerms", termIDs, speciesID, new Boolean(recursive));
+        return (Hashtable)table;
+    }
+    
+    /**
      * Does nothing right now
      */
     public void test (){
