@@ -1,5 +1,6 @@
 <%@ page import="wi.bioc.blastpathway.*" %>
 <%@ page import="java.util.*" %>
+<%@ page import="wi.bioc.blastpathway.*" %>
 <%@ include file="includes/browser_caching.jsp" %>
 <%
   /**
@@ -22,24 +23,11 @@ if ((blast2 != null) && (blast2.length()>0)) {
 	if ((proteinId!=null)&&(proteinId.trim().length()>0)) {
 		String id = (String)(proteins[i].getPotentialIds().get( Integer.parseInt(proteinId) ));
         	proteins[i].setProteinId( id );
+		proteins[i].validate();
 	}
     }
 
-    //validate if seq ids are unique
-    HashMap pids = new HashMap(proteins.length);
-    for (int k = 0; k < proteins.length; k++) {
-            String proteinId = proteins[k].getProteinId();
-
-            if (proteinId!=null) {
-                if ( pids.containsKey(proteinId) ) {
-                    Integer n = (Integer)pids.get(proteinId);
-                    globalErrorMessage += "ERROR: Protein ID for "+_NAMES_[k]
-                        +" is the same as "+_NAMES_[n.intValue()]+": '"+ proteinId+"'<br>";
-                } else {
-                    pids.put(proteinId, new Integer(k));
-                }
-            }
-    }
+    globalErrorMessage = Protein.checkUniqueness(proteins);
 
     if (globalErrorMessage.length() <= 0) {
 	request.getRequestDispatcher("search.jsp").forward(request, response);

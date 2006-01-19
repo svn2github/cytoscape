@@ -30,11 +30,9 @@ public class Protein implements java.io.Serializable {
 	public static Protein createProtein(String name) {
 		Protein p = null; 
 		try {
-		SynonymMapper syn = Config.getSynonymMapper();
-		String uid = syn.getSynonym(name,"name");
+		String uid = Config.getSynonymMapper().getSynonym(name,"name");
 		System.out.println("create protein name " + uid);
-		SequenceDatabase seqs = Config.getSeqDB();
-		String seq = seqs.getSequence(uid);
+		String seq = fetchSequence( uid ); 
 		p =  new Protein(uid,seq,null);
 		} catch (Exception e) { e.printStackTrace(); }
 
@@ -107,14 +105,18 @@ public class Protein implements java.io.Serializable {
 				// the id in our database to get a sequence
 				IdValidator validator = new IdValidator(this, Config.getSeqDB(),Config.getSynonymMapper()); 
 				potentialIds = validator.validate();
-				if ( potentialIds.size() == 0 )
+				int size = potentialIds.size();
+				if ( size <= 0 ) {
 					proteinError = "Id not found in the database";
-				if ( potentialIds.size() > 1 )
-					proteinError = "The id specified is not an exact match to anything in the database, however there are potential matches.";
-				if ( potentialIds.size() == 1 )
+					return size;
+				} else if ( size > 1 ) {
+					//proteinError = "The id specified is not an exact match to anything in the database, however there are potential matches.";
+					return size;
+				} else { // exactly 1 id found
 					proteinId = potentialIds.get(0);
-				return potentialIds.size();
-
+					seq = fetchSequence( proteinId ); 
+					return validateSeq();
+				}
 			} else {
 				// if we have id and sequence, just validate the sequence because
 				// we assume that the id could be anything
@@ -124,13 +126,41 @@ public class Protein implements java.io.Serializable {
 	}
 
 	private int validateSeq() {
-		SequenceValidator validator = new SequenceValidator(seq);
-		if ( validator.validate() ) {
-			seq = validator.getSequence();
+		if ( SequenceValidator.validate(seq) ) {
 			return 1;
 		} else {
 			proteinError = "Your sequence is not properly formatted. See link above for details.";
 			return 0;
 		}
+	}
+
+	private static String fetchSequence(String id) {
+		String name = Config.getSynonymMapper().getSynonym(id,"name");
+		return Config.getSeqDB().getSequence(name);
+	}
+
+	public static String checkUniqueness(Protein[] proteins) {
+		String errorMsg = "";
+		HashSet pids = new HashSet();
+		HashSet sids = new HashSet();
+		for (int k = 0; k < proteins.length; k++) {
+
+			String proteinId = proteins[k].getProteinId();
+			if (proteinId!=null) {
+				if ( pids.contains(proteinId) ) 
+					errorMsg += "  ERROR: Protein ID " + proteinId + " is a duplicate.";
+				else 
+					pids.add(proteinId);
+			}
+
+			String seq = proteins[k].getSeq();
+			if ( seq != null && seq.length() > 0 ) {
+				if ( sids.contains(seq) ) 
+					errorMsg += " ERROR: Protein seq for ID " + proteinId + " is a duplicate ";
+				else 
+					sids.add(seq);
+			}
+		}
+		return errorMsg;
 	}
 }

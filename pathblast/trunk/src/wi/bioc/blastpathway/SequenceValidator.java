@@ -7,26 +7,18 @@ package wi.bioc.blastpathway;
  * <p>Company: Whitehead Institute</p>
  * @author Bingbing Yuan
  * @author Michael Smoot
- * @version 1.1
+ * @version 1.2
  */
 
 import java.util.*;
 
 public class SequenceValidator {
-	private String m_raw_sequence;
-	private String m_defline;
-	private String m_seq;
 	
-	public SequenceValidator(String sequence) {
-		m_raw_sequence = sequence;
-		m_seq = sequence; // TODO
-	}
-	
-	public boolean validate() {
-		return true; // TODO  
-	}
-	
-	public String getSequence() {
-		return m_seq;
+	public static boolean validate(String seq) {
+
+		if ( seq.toUpperCase().matches("[ABCDEFGHIKLMNPQRSTUVWYZX\\*\\-]+") )
+			return true;
+		else 
+			return false;
 	}
 }

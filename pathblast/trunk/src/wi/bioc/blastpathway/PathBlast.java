@@ -4,8 +4,9 @@ package wi.bioc.blastpathway;
  * <p>Title: pathblast</p>
  * <p>Description: pathblast</p>
  * <p>Copyright: Copyright (c) 2002 -- 2005 </p>
- * <p>Company: Whitehead Institute</p>
+ * <p>Company: Whitehead Institute, University of California San Diego</p>
  * @author Bingbing Yuan
+ * @author Michael Smoot 
  * @version 1.1
  */
 
@@ -167,7 +168,7 @@ public class PathBlast implements Runnable {
 			fw.write("No paths found for the specified query path and species.");
 
 		for ( Graph<String,Double> g: resultPaths ) {
-			fw.write("<table  width=90% class=result cellspacing=0 cellpadding=5>\n");
+			fw.write("<table  class=result cellspacing=0 cellpadding=5>\n");
 			fw.write("<tr valign=\"top\"><th class=result>Network "+Integer.toString(count++) +"</th><th class=result>Score</th><th class=result>Query</th> <th class=result>Match</th><th class=result>Match Description</th></tr>\n");
 			List<String> nodeList = getAlignment(g);
 			int numRows = nodeList.size()  + nodeList.size() - 1;

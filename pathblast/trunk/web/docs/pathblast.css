@@ -125,11 +125,20 @@ p.error {
 }
 
 div#advanced {
+	border-color:#29387D;
+	border-width:thin;
+	border-style:dashed;
 	background-color:#ffffff;
+	padding-left:0px;
+	padding-right:20px;
+	padding-top:5px;
+	padding-bottom:5px;
 }
+
 
 table.result {
         background-color:#ffffff;
+	width:100%;
 }
 
 th.result {
@@ -172,6 +181,6 @@ a.submenu:hover {
 
 div#legend {
         float: right;
-	margin-right:50px;
+	margin-right:10%;
 }
 

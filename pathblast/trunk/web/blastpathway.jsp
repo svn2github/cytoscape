@@ -11,6 +11,8 @@
 <%@ page import="nct.parsers.FastaProteinParser" %>
 
 <%
+System.out.println("start blastpathway");
+
 final String[] _NAMES_ = Config.PROTEIN_NAMES; //mapping
 
 boolean error = false;
@@ -19,6 +21,7 @@ String globalErrorMessage = "";
 String e_value = request.getParameter("E_VALUE");
 //check e_value to see if it is less than 1.
 EValue nEvalue = (EValue) session.getAttribute(Config.EVALUE_SESSION_KEY);
+
 
 if (e_value != null) {
     try {
@@ -33,31 +36,29 @@ if (nEvalue == null)
         nEvalue = new EValue(EValue.DEFAULT_EVALUE);
 session.setAttribute(Config.EVALUE_SESSION_KEY, nEvalue);
 
+String showAdvanced = request.getParameter("ShowAdvanced"); 
+String hideAdvanced = request.getParameter("HideAdvanced"); 
+
 String t_org = request.getParameter("T_ORG");
 if (t_org != null) 
 	session.setAttribute(Config.TORG_SESSION_KEY, t_org);
 
 Protein[] proteins = (Protein[]) session.getAttribute(Config.PROTEINS_SESSION_KEY);
 
-/*
-String reset0 = request.getParameter("homer.x");
-String reset1 = request.getParameter("marge.x");
-String reset2 = request.getParameter("reset.x");
-if ( reset0 != null || reset1 != null || reset2 != null ) {
-	proteins = null;
-        globalErrorMessage += "<br/>reseting.";
-} else {
-        globalErrorMessage += "<br/>NOT.";
-}
-*/
-
-if (proteins == null ) {
-%> <%@ include file="includes/browser_caching.jsp" %> <%
+String reset = request.getParameter("reset");
+System.out.println("reset " + reset);
+if ( reset != null || proteins == null ) {
     proteins = new Protein[3];
     proteins[0] = new Protein();
     proteins[1] = new Protein();
     proteins[2] = new Protein();
 } else {
+	// debug
+//	Enumeration theParameterNames = request.getParameterNames();
+//	while(theParameterNames.hasMoreElements()) {
+//		String theParameterName = theParameterNames.nextElement().toString();
+//		System.out.println(theParameterName+"::"+request.getParameter(theParameterName));
+//	} 
     if (request.getParameter("SamplePathway1.x") != null) {
         //make sample proteins
         proteins = new Protein[3];
@@ -118,6 +119,12 @@ if (proteins == null ) {
             }
             proteins = newProteins;
         }
+    } else if (showAdvanced != null) {
+    	// do nothing
+	System.out.println("ShowAdvanced:"  + showAdvanced);
+    } else if (hideAdvanced != null) {
+    	// do nothing
+	System.out.println("HideAdvanced:"  + hideAdvanced);
     } else {
     	//
 	// Now actually process the proteins and move forward if things are ok.
@@ -159,22 +166,10 @@ if (proteins == null ) {
 	    	disambiguateRequired = true;
         }
 
-        //validate if seq ids are unique
-        HashMap pids = new HashMap();
-        for (int k = 0; k < proteins.length; k++) {
-                String proteinId = proteins[k].getProteinId();
-		System.out.println("checking " + proteinId);
+	globalErrorMessage = Protein.checkUniqueness(proteins);
 
-                if (proteinId!=null) {
-		    if ( pids.containsKey(proteinId) ) {
-                    	Integer n = (Integer)pids.get(proteinId);
-                        globalErrorMessage += "<br/>ERROR: Protein ID for "+_NAMES_[k] +" is the same as "+_NAMES_[n.intValue()]+": " + proteinId;
-                    } else {
-                        pids.put(proteinId, new Integer(k));
-                    }
-                }
-        }
-
+	System.out.println("error state " + error);
+	System.out.println("error message '" + globalErrorMessage + "'");
         if ( !error && globalErrorMessage.length() == 0 ) {
 		if ( disambiguateRequired )
             		request.getRequestDispatcher("disambiguate.jsp").forward(request, response);
@@ -201,6 +196,7 @@ session.setAttribute(Config.PROTEINS_SESSION_KEY, proteins);
    </head>
 
   <body> 
+
   <div id="title">
   <div id="titlebackground">
   <h1>PathBLAST</h1>
@@ -312,6 +308,9 @@ for (int i = 0; i < proteins.length; i++) {
       <ul class="inline">
 <% if ( proteins.length < 5 ) { %>
         <li class="inline"><input type="image" src="images/add_protein.gif" alt="more proteins" border="0" name="MoreProteins" value="More Proteins" /></li>
+<!--
+        <li class="inline"><input type="button" alt="more proteins" border="0" name="MoreProteins" value="More Proteins" /></li>
+-->
 <% } %>
 <% if ( proteins.length > 2 ) { %>
         <li class="inline"><input type="image" src="images/remove_protein.gif" alt="less proteins" border="0" name="LessProteins" value="Less Proteins" /></li>
@@ -322,7 +321,6 @@ for (int i = 0; i < proteins.length; i++) {
 
 
 
-    <p>Please enter the BLAST <a href="docs/e_value.html">E-value Threshold</a> for protein alignment <input type="text" name="E_VALUE" size="8" value="<%= nEvalue.getString() %>" maxlength=20></p>
     <p>Please select the <a href="docs/target_organism.html">Target Organism Network</a>: 
       <select name="T_ORG">
 <%
@@ -341,17 +339,30 @@ for (int i = 0; i < proteins.length; i++) {
 
       </select>
     </p>
-  
+
+
+<p>
+<% if ( showAdvanced != null) { %>
+
+<div id="advanced">
+        <p><input type="image" src="images/hide_advanced.gif" border=0 value="Hide Advanced Options" name="HideAdvanced"/></p>
+        <p>Please enter the BLAST <a href="docs/e_value.html">E-value Threshold</a> for protein alignment <input type="text" name="E_VALUE" size="8" value="<%= nEvalue.getString() %>" maxlength=20></p>
+    
+</div> 
+<% } else { %>
+        <input type="image" src="images/show_advanced.gif" border=0 value="Show Advanced Options" name="ShowAdvanced"/>
+<% } %>
+</p>
+
     <p>
       <ul class="inline">
-        <li class="inline"><input type=image src="images/NEXT.gif" alt="blast" value="blast" border="0" valign="bottom" name="blast" /></li>
 	<!--
-        <li class="inline">or </li>
         <li class="inline"><a href="javascript:document.forms[0].reset();"><img src="images/RESET.gif" alt="reset all" border="0" /></a></li>
         <li class="inline"><input type=submit alt="blast" value="blast" name="blast" /></li>
-        <li class="inline">or </li>
-        <li class="inline"><input type=reset name="homer" value="marge"/></li>
+        <li class="inline"><input type=submit alt="reset" name="reset" value="reset"/></li>
 	-->
+        <li class="inline"><input type="image" src="images/blast.gif" alt="blast" border=0 value="blast" name="blast"/></li>
+        <li class="inline"><input type="image" src="images/RESET.gif" alt="reset" border=0 value="reset" name="reset"/></li>
       </ul>
     </p>
     </form>
