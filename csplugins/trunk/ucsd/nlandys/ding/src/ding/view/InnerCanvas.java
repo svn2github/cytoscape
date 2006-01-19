@@ -10,9 +10,12 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Paint;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 
-class InnerCanvas extends Canvas
+class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
 {
 
   final Object m_lock;
@@ -37,6 +40,8 @@ class InnerCanvas extends Canvas
     m_xCenter = 0.0d;
     m_yCenter = 0.0d;
     m_scaleFactor = 1.0d;
+    addMouseListener(this);
+    addMouseMotionListener(this);
   }
 
   public void reshape(int x, int y, int width, int height)
@@ -89,6 +94,26 @@ class InnerCanvas extends Canvas
 
     // TODO: Figure out the SRC_OVER and whatnot.
     g.drawImage(m_img, 0, 0, null);
+  }
+
+  public void mouseClicked(MouseEvent e) {}
+  public void mouseEntered(MouseEvent e) {}
+  public void mouseExited(MouseEvent e) {}
+
+  public void mousePressed(MouseEvent e)
+  {
+  }
+
+  public void mouseReleased(MouseEvent e)
+  {
+  }
+
+  public void mouseDragged(MouseEvent e)
+  {
+  }
+
+  public void mouseMoved(MouseEvent e)
+  {
   }
 
 }
