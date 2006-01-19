@@ -32,8 +32,9 @@ public class SanityTest
           Frame f = new Frame();
 //           f.add(new LWButton01("foo"));
           f.add(view.getComponent());
-          f.show();
-          f.resize(400, 300);
+          for (int i = 0; i < 10; i++) {
+            f.show();
+            f.resize(400, 300); }
           f.addWindowListener(new WindowAdapter() {
               public void windowClosing(WindowEvent e) {
                 System.exit(0); } }); } });
@@ -46,6 +47,7 @@ public class SanityTest
     nv1.setOffset(0.0d, 50.0d);
     nv2.setOffset(-30.0d, -10.0d);
     nv3.setOffset(30.0d, 10.0d);
+    view.fitContent();
     view.updateView();
   }
 
