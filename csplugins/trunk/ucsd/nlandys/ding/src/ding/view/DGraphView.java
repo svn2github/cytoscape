@@ -278,6 +278,21 @@ public class DGraphView implements GraphView
 
   public void fitContent()
   {
+    synchronized (m_lock) {
+      if (m_spacial.queryOverlap(Float.NEGATIVE_INFINITY,
+                                 Float.NEGATIVE_INFINITY,
+                                 Float.POSITIVE_INFINITY,
+                                 Float.POSITIVE_INFINITY,
+                                 m_extentsBuff, 0, false).numRemaining() > 0) {
+        m_canvas.m_xCenter =
+          (((double) m_extentsBuff[0]) + ((double) m_extentsBuff[2])) / 2.0d;
+        m_canvas.m_yCenter =
+          (((double) m_extentsBuff[1]) + ((double) m_extentsBuff[3])) / 2.0d;
+        m_canvas.m_scaleFactor = Math.min
+          (((double) m_canvas.getWidth()) /
+           (((double) m_extentsBuff[2]) - ((double) m_extentsBuff[0])),
+           ((double) m_canvas.getHeight()) /
+           (((double) m_extentsBuff[3]) - ((double) m_extentsBuff[1]))); } }
   }
 
   public void updateView()
