@@ -1,6 +1,7 @@
 package ding.view;
 
 import cytoscape.graph.fixed.FixedGraph;
+import cytoscape.render.export.ImageImposter;
 import cytoscape.render.immed.GraphGraphics;
 import cytoscape.render.stateful.GraphLOD;
 import cytoscape.render.stateful.GraphRenderer;
@@ -94,6 +95,23 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
 
     // TODO: Figure out the SRC_OVER and whatnot.
     g.drawImage(m_img, 0, 0, null);
+  }
+
+  public void print(Graphics g)
+  {
+    final ImageImposter img = new ImageImposter(g, getWidth(), getHeight());
+    synchronized (m_lock) {
+      GraphRenderer.renderGraph((FixedGraph) m_view.m_drawPersp,
+                                m_view.m_spacial,
+                                m_lod,
+                                m_view.m_nodeDetails,
+                                m_view.m_edgeDetails,
+                                m_hash,
+                                new GraphGraphics(img, false),
+                                m_bgPaint,
+                                m_xCenter,
+                                m_yCenter,
+                                m_scaleFactor); }
   }
 
   private int m_currMouseButton = 0;
