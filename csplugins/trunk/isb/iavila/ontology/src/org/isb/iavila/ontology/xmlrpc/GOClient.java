@@ -1,8 +1,6 @@
 
 package org.isb.iavila.ontology.xmlrpc;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.*;
 import java.io.IOException;
 import org.apache.xmlrpc.XmlRpcException;
@@ -102,17 +100,6 @@ public class GOClient extends AuthenticatedDataClient{
     public Vector getAllTermIDs() throws XmlRpcException, IOException{
         Object out = call(this.serviceName + ".getAllTermIDs");
         return (Vector)out;
-    }
-    
-    /**
-     * @param termIDs a Vector of Integers representing term ids
-     * @param speciesID the species for which to return genes
-     * @return a Hashtable from Strings (termIDs parsable as Integers) to Vectors of Strings representing genes
-     * with the given key term
-     */
-    public Hashtable getGenesWithTerms (Vector termIDs, String speciesID) throws XmlRpcException, IOException{
-        Object out = call(this.serviceName + ".getGenesWithTerms", termIDs, speciesID);
-        return (Hashtable)out; 
     }
     
     /**

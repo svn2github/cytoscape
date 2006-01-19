@@ -262,20 +262,28 @@ public class GOHandler extends SQLDBHandler {
      * with the given key term
      */
     public Hashtable getGenesWithTerms (Vector termIDs, String speciesID, boolean recursive){
+        String sql = "SELECT ncbi_taxa_id FROM species WHERE id = " + speciesID;
+        int taxid = -1;
+        try{
+            ResultSet rs = query(sql);
+            if(rs.next()) taxid = rs.getInt(1);
+        }catch(SQLException e){e.printStackTrace(); return new Hashtable();}
+        
+        if(taxid == -1) return new Hashtable();
         Hashtable returnTable = new Hashtable();
-        getGenesWithTerms(termIDs,speciesID,recursive,returnTable);
+        getGenesWithTerms(termIDs,taxid,recursive,returnTable);
         return returnTable;
     }
     
     /**
      * @param termIDs a Vector of Strings parsable as integers representing term ids
-     * @param speciesID the species for which to return genes
+     * @param taxid the NCBI taxonomy id of the species
      * @return a Hashtable from Strings (termIDs parsable as Integers) to Vectors of Strings representing genes
      * with the given key term
      */
-    protected void getGenesWithTerms (Vector termIDs, String speciesID, boolean recursive, Hashtable returnTable){
+    protected void getGenesWithTerms (Vector termIDs,int taxid, boolean recursive, Hashtable returnTable){
         if(!recursive){
-            Hashtable table = getGenesWithTerms(termIDs,speciesID);
+            Hashtable table = getGenesWithTerms(termIDs,taxid);
             if(returnTable != null) returnTable.putAll(table);
             else returnTable = table;
             return;
@@ -292,12 +300,12 @@ public class GOHandler extends SQLDBHandler {
             }catch(Exception e){e.printStackTrace(); return;}
             
             if(childrenIDs != null && childrenIDs.size() > 0){
-                getGenesWithTerms(childrenIDs,speciesID,recursive,returnTable);
+                getGenesWithTerms(childrenIDs,taxid,recursive,returnTable);
             }
             
             Vector oneTermVector = new Vector();
             oneTermVector.add(currentTerm);
-            Hashtable termToChildren = getGenesWithTerms(oneTermVector,speciesID);
+            Hashtable termToChildren = getGenesWithTerms(oneTermVector,taxid);
             Vector genes = (Vector)termToChildren.get(currentTerm);
             if(genes != null)
                 returnTable.put(currentTerm,genes);
@@ -312,16 +320,7 @@ public class GOHandler extends SQLDBHandler {
      * @return a Hashtable from Strings (the given termIDs) to Vectors of Strings representing genes
      * with the given key term, NOT RECURSIVE
      */
-    public Hashtable getGenesWithTerms (Vector termIDs, String speciesID){
-      if(termIDs.size() == 0) return new Hashtable();
-      String sql = "SELECT ncbi_taxa_id FROM species WHERE id = " + speciesID;
-      int taxid = -1;
-      try{
-          ResultSet rs = query(sql);
-          if(rs.next()) taxid = rs.getInt(1);
-      }catch(SQLException e){e.printStackTrace(); return new Hashtable();}
-      
-      if(taxid == -1) return new Hashtable();
+    protected Hashtable getGenesWithTerms (Vector termIDs, int taxid){
       
       // 1. get acc ids for termIDs
       Iterator it = termIDs.iterator();
@@ -330,7 +329,7 @@ public class GOHandler extends SQLDBHandler {
           termList += "," + (String)it.next();
       }
       
-      sql = "SELECT acc,id FROM term WHERE id IN (" + termList + ")";
+      String sql = "SELECT acc,id FROM term WHERE id IN (" + termList + ")";
       ResultSet rs = query(sql);
       String accList = "";
       Hashtable accToId = new Hashtable();

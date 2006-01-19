@@ -57,6 +57,8 @@ public class CytoscapeGODialog extends JFrame {
     public CytoscapeGODialog(GOClient go_client, JPanel buttons_panel) {
         setTitle("Cytoscape GO");
         this.goClient = go_client;
+        this.recursiveRadioButton = new JRadioButton("Recursive");
+        this.recursiveRadioButton.setSelected(true);
         create(buttons_panel);
     }
 
@@ -74,6 +76,24 @@ public class CytoscapeGODialog extends JFrame {
     protected void setSelectedSpecies(GOSpecies sp) {
         this.selectedSpecies = sp;
         this.spField.setText(sp.toString());
+    }
+   
+    /**
+     * Sets whether or not operations should be recursive. For example, if true, createNodes will return nodes
+     * with the selected terms and their descendant terms as well.
+     * @param recursive
+     */
+    public void setRecursive(boolean recursive){
+        this.recursiveRadioButton.setSelected(recursive);
+    }
+    
+    /**
+     * Gets whether or not operations should be recursive. For example, if true, createNodes will return nodes
+     * with the selected terms and their descendant terms as well.
+     */
+    
+    public boolean getRecursive(){
+        return this.recursiveRadioButton.isSelected();
     }
 
     /**
@@ -184,9 +204,6 @@ public class CytoscapeGODialog extends JFrame {
                 attachNodeAttribute();
             }
         });
-        
-        this.recursiveRadioButton = new JRadioButton("Recursive");
-        this.recursiveRadioButton.setSelected(true);
         
         bPanel.add(createNodesButton);
         bPanel.add(selectNodesButton);
