@@ -453,7 +453,7 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 			Released by: <a href="http://www-bioeng.ucsd.edu/faculty/area/ideker_lab/">The Ideker Lab</a>, Department of Bioengineering, UCSD
 		</td>
  		<td width="20%" valign="top">
-				 Verified to work in 2.0, 2.1, 2.2.
+				 Verified to work in 2.2.
 				</td>
 		<td width="20%" valign="top">
 			[<a href="/plugins/jActiveModules/release/README.txt">Release Notes</a>]
