@@ -107,7 +107,6 @@ public class DGraphView implements GraphView
 
     public void update(Graphics g)
     {
-      System.out.println("now in update()");
       if (m_grafx == null) { return; }
 
       // This is the magical portion of code that transfers what is in the
@@ -358,11 +357,13 @@ public class DGraphView implements GraphView
 
   public double getZoom()
   {
-    return 0.0d;
+    return m_canvas.m_scaleFactor;
   }
 
   public void setZoom(double zoom)
   {
+    synchronized (m_lock) {
+      m_canvas.m_scaleFactor = zoom; }
   }
 
   public void fitContent()
