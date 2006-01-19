@@ -456,11 +456,11 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 				 Verified to work in 2.2.
 				</td>
 		<td width="20%" valign="top">
-			[<a href="/plugins/jActiveModules/release/README.txt">Release Notes</a>]
+			[<a href="/plugins/jActiveModules2/release/README.txt">Release Notes</a>]
 			<br>
-			[<a href="/plugins/jActiveModules/release/jActiveModules.jar">Download Jar</a>]
+			[<a href="/plugins/jActiveModules2/release/jActiveModules.jar">Download Jar</a>]
 			<br>
-			[<a href="/plugins/jActiveModules/release/jActiveModules.tgz">Download Source</a>]
+			[<a href="/plugins/jActiveModules2/release/jActiveModules.tgz">Download Source</a>]
 			<br>
 		</td>
 	</tr>
