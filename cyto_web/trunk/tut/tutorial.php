@@ -7,7 +7,7 @@
       Cytoscape Online Tutorial
     </title>
     <link rel="stylesheet" type="text/css" media="screen" href=
-    "css/cytoscape.css">
+    "../css/cytoscape.css">
     <link rel="shortcut icon" href="images/cyto.ico">
   </head>
   <body bgcolor="#FFFFFF">
@@ -24,7 +24,7 @@
         </td>
       </tr>
     </table>
-    <? include "nav.php"; ?>
+    <? include "../nav.php"; ?>
     <? include "nav_tut.php"; ?>
     <div id="indent">
 <center>
@@ -37,15 +37,23 @@ biological networks. Many useful capabilities are built into the platform's
 core, and plug-ins can be developed by those who know the Java programming 
 language to add new features.<p>
 
-This set of web pages contains a set of tutorials for Cytoscape. You may want to glance at the <a href="manual/Cytoscape2_1Manual.pdf">Cytoscape manual</a> while running these tutorials.
+This set of web pages contains a set of tutorials for Cytoscape. You
+may want to glance at the 
+<a href="../manual/Cytoscape2_2Manual.pdf">Cytoscape manual</a> while
+running these tutorials.
 
 <p>
 
+The first group of tutorials describes basic operation of Cytoscape.
 Using <a href="http://java.sun.com/docs/books/tutorial/information/javawebstart.html"> Java Web Start</a>, 
 you may run these demos/tutorials on your personal computer. If the tutorials don't work 
 when you click on the link to start it, you may need to install <a href="http://java.sun.com/docs/books/tutorial/information/javawebstart.html"> Java Web Start</a>.
 Using Java Web Start in general has some <a href="tut_security.php">security issues</a>.
 <p>
+A <a href="tutorial.advanced.php">second group</a> of tutorials describes
+advanced operation of Cytoscape, including descriptions of selected external
+plugins.
+<p>o
 
 The following web browsers 
 are supported for these tutorials:<BR>
