@@ -364,40 +364,23 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 				<td width="20%" valign="top">
 					<b>Graph Merge Plugin</b><font size="-1">
 						<br>
-<<<<<<< plugins2.php
-						Version: 2 
-=======
 						Version: 2
->>>>>>> 1.48
 						<br>
 						Release Date: November 31, 2005</font>
 				</td>
 				<td width="40%" valign="top">
 					<p>
-<<<<<<< plugins2.php
 					This plugin enables Cytoscape to perform set-like operations (union, intersection, difference) on two or more graphs.
-=======
-					This plugin enables Cytoscape to apply various set-like operations (union,intersection,difference) on two or more networks into one.
->>>>>>> 1.48
 					<p>
 						Released by: <a href="http://www-bioeng.ucsd.edu/faculty/area/ideker_lab/">The Ideker Lab</a>, Department of Bioengineering, UCSD
 					</p>
 				</td>
 				<td width="20%" valign="top">
-<<<<<<< plugins2.php
 				Verified to work in 2.2.
-=======
-				Verified to work in 2.1, 2.2.
->>>>>>> 1.48
 				</td>
 				<td width="20%" valign="top">
-<<<<<<< plugins2.php
 					[<a href="http://be-web.ucsd.edu/faculty/area/ideker_lab/plugins/GraphMerge/release/README.txt">Release Notes</a>]
 					[<a href="http://be-web.ucsd.edu/faculty/area/ideker_lab/plugins/GraphMerge/release/GraphMerge.jar">Download</a>]
-=======
-					[<a href="http://www-bioeng.ucsd.edu/faculty/area/ideker_lab/plugins/GraphMerge/release/README.txt">Release Notes</a>]
-					[<a href="http://www-bioeng.ucsd.edu/faculty/area/ideker_lab/plugins/GraphMerge/release/GraphMerge.jar">Download</a>]
->>>>>>> 1.48
 				</td>
 			</tr>
 			<tr>
