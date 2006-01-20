@@ -40,7 +40,7 @@ the Java programming language.
 This set of web pages contains a set of tutorials for advanced operation of
 Cytoscape, especially using selected plugins. Before starting these tutorials,
 we recommend that you first run through the 
-<a href="tutorials.php">introductory</a> tutorials, all of which can be
+<a href="tutorial.php">introductory</a> tutorials, all of which can be
 executed using 
 <a href="http://java.sun.com/docs/books/tutorial/information/javawebstart.html"> Java Web Start</a>.
 <p>
