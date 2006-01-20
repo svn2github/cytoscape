@@ -50,19 +50,22 @@ public class PathBlast implements Runnable {
 	private Protein[] proteins; 
 	private double e_value; 
 	private String t_org;
+	private boolean useZero;
 
 	protected PathBlast(BlastManager manager,
 				String outputdir,
 				String uid, 
 				Protein[] proteins, 
 				double e_value, 
-				String t_org) {
+				String t_org,
+				boolean useZero) {
 		m_manager = manager;
 		m_outputdir = outputdir;
 		m_uid = uid;
 		this.proteins = proteins;
 		this.e_value = e_value;
 		this.t_org = t_org;
+		this.useZero = useZero;
 	}
 
 	public void run() {
@@ -113,7 +116,7 @@ public class PathBlast implements Runnable {
 
 		// create compat graph based on the interaction graphs and the homology graph 
 		ScoreModel logScore = new LogLikelihoodScoreModel(1.0, 0.8, 1e-10);
-		CompatibilityCalculator compatCalc = new AdditiveCompatibilityCalculator(0.01,logScore);
+		CompatibilityCalculator compatCalc = new AdditiveCompatibilityCalculator(0.01,logScore, useZero);
 		CompatibilityGraph compatGraph = new CompatibilityGraph(homologyGraph, seqGraphs, logScore, compatCalc);
 		System.out.println("compatGraph: " + compatGraph.toString());
 		// run path analysis
@@ -122,9 +125,12 @@ public class PathBlast implements Runnable {
 		List<Graph<String,Double>> resultPaths = colorCoding.searchGraph(compatGraph, logScore);
 
 		System.out.println("begin filtering");
-		Filter noZeros = new UniqueCompatNodeFilter();
+		if ( !useZero ) {
+			Filter noZeros = new UniqueCompatNodeFilter();
+			resultPaths = noZeros.filter(resultPaths);
+		}
 		Filter noDupes = new DuplicateThresholdFilter(1.0);
-		resultPaths = noDupes.filter( noZeros.filter(resultPaths) );
+		resultPaths = noDupes.filter( resultPaths );
 
 		Collections.reverse(resultPaths);
 

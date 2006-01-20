@@ -42,6 +42,7 @@ public class Config {
 	public static final String PROTEINS_SESSION_KEY = "blastpathway.proteins";
 	public static final String EVALUE_SESSION_KEY = "blastpathway.evalue";
 	public static final String TORG_SESSION_KEY = "blastpathway.torg";
+	public static final String USE_ZERO_SESSION_KEY = "blastpathway.usezero";
 	public static final String[] PROTEIN_NAMES = { "A", "B", "C", "D", "E"};
 	public static final String TMP_DIR_NAME;
 	public static final String TMP_URL_BASE;

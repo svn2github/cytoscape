@@ -28,11 +28,12 @@ EValue e_value
     = (EValue) session.getAttribute(Config.EVALUE_SESSION_KEY);
 String t_org
     = (String) session.getAttribute(Config.TORG_SESSION_KEY);
+boolean useZero = Boolean.parseBoolean((String)session.getAttribute(Config.USE_ZERO_SESSION_KEY));
 
 //xml_file_name = XmlFileGenerator.save(uid, proteins, e_value.getDouble(), t_org);
 BlastManager bm = BlastManager.getInstance();
 //bm.runBlast(xml_file_name, uid);
-bm.runBlast(uid, proteins, e_value.getDouble(), t_org);
+bm.runBlast(uid, proteins, e_value.getDouble(), t_org, useZero);
 %>
 
 <form action="result.jsp"

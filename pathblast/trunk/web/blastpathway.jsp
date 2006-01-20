@@ -36,6 +36,10 @@ if (nEvalue == null)
         nEvalue = new EValue(EValue.DEFAULT_EVALUE);
 session.setAttribute(Config.EVALUE_SESSION_KEY, nEvalue);
 
+String useZero = request.getParameter("useZero");
+System.out.println("useZero: '" + useZero + "'");
+session.setAttribute(Config.USE_ZERO_SESSION_KEY, useZero);
+
 String showAdvanced = request.getParameter("ShowAdvanced"); 
 String hideAdvanced = request.getParameter("HideAdvanced"); 
 
@@ -46,7 +50,7 @@ if (t_org != null)
 Protein[] proteins = (Protein[]) session.getAttribute(Config.PROTEINS_SESSION_KEY);
 
 String reset = request.getParameter("reset");
-System.out.println("reset " + reset);
+
 if ( reset != null || proteins == null ) {
     proteins = new Protein[3];
     proteins[0] = new Protein();
@@ -119,12 +123,6 @@ if ( reset != null || proteins == null ) {
             }
             proteins = newProteins;
         }
-    } else if (showAdvanced != null) {
-    	// do nothing
-	System.out.println("ShowAdvanced:"  + showAdvanced);
-    } else if (hideAdvanced != null) {
-    	// do nothing
-	System.out.println("HideAdvanced:"  + hideAdvanced);
     } else {
     	//
 	// Now actually process the proteins and move forward if things are ok.
@@ -170,7 +168,17 @@ if ( reset != null || proteins == null ) {
 
 	System.out.println("error state " + error);
 	System.out.println("error message '" + globalErrorMessage + "'");
-        if ( !error && globalErrorMessage.length() == 0 ) {
+
+	// first make sure we're not just updating the screen
+    	if (showAdvanced != null) {
+    		// do nothing
+		System.out.println("ShowAdvanced:"  + showAdvanced);
+    	} else if (hideAdvanced != null) {
+    		// do nothing
+		System.out.println("HideAdvanced:"  + hideAdvanced);
+
+	// ok, now proceed
+        } else if ( !error && globalErrorMessage.length() == 0 ) {
 		if ( disambiguateRequired )
             		request.getRequestDispatcher("disambiguate.jsp").forward(request, response);
 		else
@@ -346,7 +354,14 @@ for (int i = 0; i < proteins.length; i++) {
 
 <div id="advanced">
         <p><input type="image" src="images/hide_advanced.gif" border=0 value="Hide Advanced Options" name="HideAdvanced"/></p>
-        <p>Please enter the BLAST <a href="docs/e_value.html">E-value Threshold</a> for protein alignment <input type="text" name="E_VALUE" size="8" value="<%= nEvalue.getString() %>" maxlength=20></p>
+	<p>
+	<ul>
+        <li>Please enter the BLAST <a href="docs/e_value.html">E-value Threshold</a> for protein alignment <input type="text" name="E_VALUE" size="8" value="<%= nEvalue.getString() %>" maxlength=20></li>
+	<li>Include <a href="docs/dupe_node_networks.html">duplicate node networks</a> in results? <input type="radio" name="useZero" value="true">Yes</input>
+	                               <input type="radio" name="useZero" value="false" checked="true">No</input>
+	</li>
+	</ul>
+	</p>
     
 </div> 
 <% } else { %>
@@ -356,11 +371,6 @@ for (int i = 0; i < proteins.length; i++) {
 
     <p>
       <ul class="inline">
-	<!--
-        <li class="inline"><a href="javascript:document.forms[0].reset();"><img src="images/RESET.gif" alt="reset all" border="0" /></a></li>
-        <li class="inline"><input type=submit alt="blast" value="blast" name="blast" /></li>
-        <li class="inline"><input type=submit alt="reset" name="reset" value="reset"/></li>
-	-->
         <li class="inline"><input type="image" src="images/blast.gif" alt="blast" border=0 value="blast" name="blast"/></li>
         <li class="inline"><input type="image" src="images/RESET.gif" alt="reset" border=0 value="reset" name="reset"/></li>
       </ul>
