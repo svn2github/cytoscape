@@ -251,7 +251,7 @@
          manifest="${test.manifest}"
          basedir="${build.dir}" >
     </jar>
-    <echo message="Successfully ran tests task!"/>
+    <echo message="Successfully ran jar-tests task!"/>
   </target>
 
   <!-- =================================================================== -->
