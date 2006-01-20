@@ -7,6 +7,7 @@ import cytoscape.render.immed.GraphGraphics;
 import cytoscape.render.stateful.GraphLOD;
 import cytoscape.render.stateful.GraphRenderer;
 import cytoscape.util.intr.IntHash;
+import giny.view.NodeView;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -121,6 +122,7 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
   private int m_currMouseButton = 0;
   private int m_lastXMousePos = 0;
   private int m_lastYMousePos = 0;
+  private boolean m_button1NodeDrag = false;
 
   public void mouseClicked(MouseEvent e) {}
   public void mouseEntered(MouseEvent e) {}
@@ -129,15 +131,18 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
   public void mousePressed(MouseEvent e)
   {
     if (e.getButton() == MouseEvent.BUTTON1) {
+      m_currMouseButton = 1;
+      m_lastXMousePos = e.getX();
+      m_lastYMousePos = e.getY();
       boolean mustRedraw = false;
       synchronized (m_lock) {
         if (m_view.m_nodeSelection) {
-          m_ptBuff[0] = e.getX();
-          m_ptBuff[1] = e.getY();
+          m_ptBuff[0] = m_lastXMousePos;
+          m_ptBuff[1] = m_lastYMousePos;
           m_grafx.xformImageToNodeCoords(m_ptBuff);
           final SpacialEntry2DEnumerator under = m_view.m_spacial.queryOverlap
             ((float) m_ptBuff[0], (float) m_ptBuff[1],
-             (float) m_ptBuff[0], (float) m_ptBuff[1], null, 0, false);
+             (float) m_ptBuff[0], (float) m_ptBuff[1], null, 0, true);
           int chosen = -1;
           while (under.numRemaining() > 0) {
             final int node = under.nextExtents(m_view.m_extentsBuff, 0);
@@ -150,6 +155,7 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
               break; } }
           if (!e.isShiftDown()) {
             // Unselect all nodes and edges.
+            // TODO: Optimize to not instantiate new array on every call.
             final int[] selectedNodes = m_view.getSelectedNodeIndices();
             if (selectedNodes.length > 0) { mustRedraw = true; }
             for (int i = 0; i < selectedNodes.length; i++) {
@@ -165,7 +171,10 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
               m_view.getNodeView(~chosen).unselect(); }
             else { // Was not selected.
               m_view.getNodeView(~chosen).select(); }
-            mustRedraw = true; } } }
+            mustRedraw = true;
+            m_button1NodeDrag = true; }
+          else { m_button1NodeDrag = false; } }
+        else { m_button1NodeDrag = false; } }
       if (mustRedraw) { repaint(); } }
     else if (e.getButton() == MouseEvent.BUTTON2) {
       m_currMouseButton = 2;
@@ -179,7 +188,9 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
 
   public void mouseReleased(MouseEvent e)
   {
-    if (e.getButton() == MouseEvent.BUTTON2) {
+    if (e.getButton() == MouseEvent.BUTTON1) {
+      if (m_currMouseButton == 1) { m_currMouseButton = 0; } }
+    else if (e.getButton() == MouseEvent.BUTTON2) {
       if (m_currMouseButton == 2) { m_currMouseButton = 0; } }
     else if (e.getButton() == MouseEvent.BUTTON3) {
       if (m_currMouseButton == 3) { m_currMouseButton = 0; } }
@@ -187,7 +198,32 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
 
   public void mouseDragged(MouseEvent e)
   {
-    if (m_currMouseButton == 2) {
+    if (m_currMouseButton == 1) {
+      if (m_button1NodeDrag) {
+        synchronized (m_lock) {
+          m_ptBuff[0] = m_lastXMousePos;
+          m_ptBuff[1] = m_lastYMousePos;
+          m_grafx.xformImageToNodeCoords(m_ptBuff);
+          final double oldX = m_ptBuff[0];
+          final double oldY = m_ptBuff[1];
+          m_lastXMousePos = e.getX();
+          m_lastYMousePos = e.getY();
+          m_ptBuff[0] = m_lastXMousePos;
+          m_ptBuff[1] = m_lastYMousePos;
+          m_grafx.xformImageToNodeCoords(m_ptBuff);
+          final double newX = m_ptBuff[0];
+          final double newY = m_ptBuff[1];
+          final double deltaX = newX - oldX;
+          final double deltaY = newY - oldY;
+          // TODO: Optimize to not instantiate new array on every call.
+          final int[] selectedNodes = m_view.getSelectedNodeIndices();
+          for (int i = 0; i < selectedNodes.length; i++) {
+            final NodeView nv = m_view.getNodeView(selectedNodes[i]);
+            final double oldXPos = nv.getXPosition();
+            final double oldYPos = nv.getYPosition();
+            nv.setOffset(oldXPos + deltaX, oldYPos + deltaY); } }
+        repaint(); } }
+    else if (m_currMouseButton == 2) {
       double deltaY = e.getY() - m_lastYMousePos;
       synchronized (m_lock) {
         m_lastXMousePos = e.getX();
