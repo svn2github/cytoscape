@@ -47,6 +47,12 @@ public class SanityTest
     nv1.setOffset(0.0d, 50.0d);
     nv2.setOffset(-30.0d, -10.0d);
     nv3.setOffset(30.0d, 10.0d);
+    nv1.setBorderWidth(1.0f);
+    nv2.setBorderWidth(1.0f);
+    nv3.setBorderWidth(1.0f);
+    ev1.setTargetEdgeEnd(EdgeView.BLACK_DELTA);
+    ev2.setTargetEdgeEnd(EdgeView.BLACK_DELTA);
+    ev3.setTargetEdgeEnd(EdgeView.BLACK_DELTA);
     view.fitContent();
     view.updateView();
   }
