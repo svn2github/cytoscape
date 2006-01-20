@@ -25,7 +25,7 @@
 					</a>
 				</h1>
 				<p>
-					Get Started with the Cytoscape <a href="tutorial.php">online tutorials</a>, just enhanced.
+					Get Started with the Cytoscape <a href="tut/tutorial.php">online tutorials</a>, just enhanced.
 				</p>
 			</td>
 			<td width="120">
