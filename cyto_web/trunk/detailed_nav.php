@@ -20,22 +20,22 @@
 			</td>
 			<td width="120">
 				<h1>
-					<a href="tutorial.php">
+					<a href="tut/tutorial.php">
 						Online Tutorial
 					</a>
 				</h1>
 				<p>
-					Get Started with the Cytoscape <a href="tutorial.php">online tutorial</a>.
+					Get Started with the Cytoscape <a href="tutorial.php">online tutorials</a>, just enhanced.
 				</p>
 			</td>
 			<td width="120">
 				<h1>
-					<a href="manual/Cytoscape2_1Manual.pdf">
+					<a href="manual/Cytoscape2_2Manual.pdf">
 						Manual
 					</a>
 				</h1>
 				<p>
-					<a href="http://chianti.ucsd.edu/Cyto-2_2/Cytoscape2_2Manual.pdf">
+					<a href="manual/Cytoscape2_2Manual.pdf">
 						PDF format</a>, explains all basic features of Cytoscape.
 					<a href="http://www.adobe.com/products/acrobat/readstep2.html">
 						Get Acrobat reader
