@@ -131,7 +131,7 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
     if (e.getButton() == MouseEvent.BUTTON1) {
       boolean mustRedraw = false;
       synchronized (m_lock) {
-        if (m_view.m_nodeSelection && !e.isShiftDown()) {
+        if (m_view.m_nodeSelection) {
           m_ptBuff[0] = e.getX();
           m_ptBuff[1] = e.getY();
           m_grafx.xformImageToNodeCoords(m_ptBuff);
@@ -148,17 +148,23 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
             if (m_path.contains(m_ptBuff[0], m_ptBuff[1])) {
               chosen = node;
               break; } }
-          // Unselect all nodes and edges.
-          final int[] selectedNodes = m_view.getSelectedNodeIndices();
-          if (selectedNodes.length > 0) { mustRedraw = true; }
-          for (int i = 0; i < selectedNodes.length; i++) {
-            m_view.getNodeView(selectedNodes[i]).unselect(); }
-          final int[] selectedEdges = m_view.getSelectedEdgeIndices();
-          if (selectedEdges.length > 0) { mustRedraw = true; }
-          for (int i = 0; i < selectedEdges.length; i++) {
-            m_view.getEdgeView(selectedEdges[i]).unselect(); }
+          if (!e.isShiftDown()) {
+            // Unselect all nodes and edges.
+            final int[] selectedNodes = m_view.getSelectedNodeIndices();
+            if (selectedNodes.length > 0) { mustRedraw = true; }
+            for (int i = 0; i < selectedNodes.length; i++) {
+              m_view.getNodeView(selectedNodes[i]).unselect(); }
+            final int[] selectedEdges = m_view.getSelectedEdgeIndices();
+            if (selectedEdges.length > 0) { mustRedraw = true; }
+            for (int i = 0; i < selectedEdges.length; i++) {
+              m_view.getEdgeView(selectedEdges[i]).unselect(); } }
           if (chosen >= 0) {
-            m_view.getNodeView(~chosen).select();
+            final boolean wasSelected =
+              m_view.getNodeView(~chosen).isSelected();
+            if (wasSelected) {
+              m_view.getNodeView(~chosen).unselect(); }
+            else { // Was not selected.
+              m_view.getNodeView(~chosen).select(); }
             mustRedraw = true; } } }
       if (mustRedraw) { repaint(); } }
     else if (e.getButton() == MouseEvent.BUTTON2) {
