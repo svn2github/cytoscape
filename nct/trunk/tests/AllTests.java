@@ -14,7 +14,7 @@ import java.util.regex.*;
  * all of the unit tests also contained in the jar, and executes them.
  * This is useful for running unit tests independent of ant.
  */
-public class AllTests 
+public class AllTests extends TestCase
 {
 	/**
 	 * Parses the command line and executes the test suite in either

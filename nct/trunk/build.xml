@@ -245,15 +245,37 @@
   </target>
 
   <!-- =================================================================== -->
-  <!-- Runs the tests in project-tests.jar                                 -->
+  <!-- Runs the tests in project-tests.jar quickly, and sets a property    -->
+  <!-- if a test fails.                                                    -->
   <!-- =================================================================== -->
-  <target name="runtests" 
+  <target name="runtests-fast" 
           depends="jar-tests"
           if="tests.ok">
     <mkdir dir="${log.dir}"/>
     <junit printsummary="yes"
            haltonfailure="no"
            maxmemory="256m">
+      <classpath refid="junit.class.path"/>
+      <test name="${test.main.class}"
+            fork="yes"
+            todir="${log.dir}" 
+            failureProperty="junit.test.failure"
+            errorProperty="junit.test.failure">
+      </test>
+    </junit>
+    <echo message="Successfully ran runtests-fast task!"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Runs the tests in project-tests.jar only if the failure property    -->
+  <!-- in runtests-fast is set.  A useful report is generated upon error.  -->
+  <!-- =================================================================== -->
+  <target name="runtests"
+          depends="runtests-fast"
+	  if="junit.test.failure">
+    <junit printsummary="yes"
+           haltonfailure="no"
+           maxmemory="256m" >
       <classpath refid="junit.class.path"/>
       <formatter type="plain" 
                  usefile="true" />
@@ -262,8 +284,7 @@
       <batchtest fork="yes" 
                  todir="${log.dir}" 
 		 failureProperty="junit.test.failure"
-		 errorProperty="junit.test.failure"
-                 if="tests.ok">
+		 errorProperty="junit.test.failure">
         <fileset dir="${tests.dir}"
                  includes="**/*Test.java"
                  excludes="**/AllTests.java" />
@@ -276,7 +297,7 @@
       </fileset>
       <report format="frames" todir="${junit.report.dir}"/>
     </junitreport>
-    <fail message="JUnit Test Failure! Details: ${junit.report.dir}/index.html"
+    <fail message="TEST FAILURE!!! Details: ${junit.report.dir}/index.html"
           if="junit.test.failure"/>
     <echo message="Successfully ran runtests task!"/>
   </target>
