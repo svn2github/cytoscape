@@ -1,3 +1,13 @@
+
+//============================================================================
+// 
+//  file: BlastXMLFileFilterInputStream.java 
+// 
+//  Copyright (c) 2006, University of California, San Diego
+//  All rights reverved.
+// 
+//============================================================================
+
 package nct.service.homology.blast;
 
 import java.io.BufferedReader;

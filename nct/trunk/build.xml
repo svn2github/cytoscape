@@ -1,4 +1,14 @@
 
+<!--
+  - 
+  -  file: build.xml 
+  - 
+  -  Copyright (c) 2006, University of California, San Diego
+  -  All rights reverved.
+  - 
+  -->
+
+
 <project name="nct" default="usage" basedir=".">
 
   <!-- =================================================================== -->

@@ -1,3 +1,13 @@
+
+//============================================================================
+// 
+//  file: SequenceGraph.java 
+// 
+//  Copyright (c) 2006, University of California, San Diego
+//  All rights reverved.
+// 
+//============================================================================
+
 package nct.graph;
 
 import java.lang.*;

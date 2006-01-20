@@ -1,3 +1,13 @@
+
+//============================================================================
+// 
+//  file: CompatibilityGraphTest.java 
+// 
+//  Copyright (c) 2006, University of California, San Diego
+//  All rights reverved.
+// 
+//============================================================================
+
 package nct.networkblast.graph;
 
 import junit.framework.*;

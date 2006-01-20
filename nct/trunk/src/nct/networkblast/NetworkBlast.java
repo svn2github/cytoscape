@@ -1,3 +1,13 @@
+
+//============================================================================
+// 
+//  file: NetworkBlast.java 
+// 
+//  Copyright (c) 2006, University of California, San Diego
+//  All rights reverved.
+// 
+//============================================================================
+
 package nct.networkblast;
 
 import org.apache.commons.cli.*; // for CLI

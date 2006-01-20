@@ -1,3 +1,13 @@
+
+//============================================================================
+// 
+//  file: DIPSynonyms.java 
+// 
+//  Copyright (c) 2006, University of California, San Diego
+//  All rights reverved.
+// 
+//============================================================================
+
 package nct.service.synonyms;
 
 import java.io.FileReader;

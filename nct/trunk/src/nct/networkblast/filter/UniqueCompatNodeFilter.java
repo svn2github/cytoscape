@@ -1,3 +1,13 @@
+
+//============================================================================
+// 
+//  file: UniqueCompatNodeFilter.java 
+// 
+//  Copyright (c) 2006, University of California, San Diego
+//  All rights reverved.
+// 
+//============================================================================
+
 package nct.networkblast.filter;
 
 import java.util.*;
