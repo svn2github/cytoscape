@@ -1,0 +1,72 @@
+#!/bin/bash
+
+#=============================================================================
+# 
+#  file: dip2blastdb 
+# 
+#  Copyright (c) 2006, University of California, San Diego
+#  All rights reverved.
+# 
+#============================================================================
+
+
+# check for the presence of the formatdb program
+fdb=`which formatdb 2> /dev/null`
+if [[ "$?" == "1" || "$fdb" == "" ]]
+then
+	echo "ERROR!"
+	echo "Could not find the 'formatdb' program!"
+	echo
+	echo "This program comes as part of the NCBI"
+	echo "BLAST distribution available here:"
+	echo "http://www.ncbi.nlm.nih.gov/BLAST/"
+	echo
+	echo "Install formatdb so that it can be"
+	echo "found in your PATH and try again."
+	echo
+	exit 1;
+fi
+
+# Check for DipFastaSeparator.class and if it doesn't exist,
+# compile it.
+if [[ ! -e DipFastaSeparator.class ]]
+then
+	echo "compiling DipFastaSeparator.java"
+	./compile.sh
+	if [[ "$?" == "1" ]]
+	then
+		echo
+		echo "ERROR!"
+		echo "DipFastaSeparator.class was not found and"
+		echo "could not be compiled.  Please compile"
+		echo "DipFastaSeparator.java to proceed."
+		echo
+		exit 1
+	fi
+fi
+
+# check args
+if [[ "$1" == "" || "$2" == "" || "$3" == "" ]]
+then
+	echo "USAGE: $0 <dip xin file> <dip fasta file> <output dir>"
+	exit 1;
+fi
+
+working=$PWD
+dir=$3
+if [ ! -d $dir ]
+then
+	mkdir $dir
+fi
+
+# separate the dip species into individual fasta files
+java -cp .:../../lib/biojava-1.4.jar DipFastaSeparator $1 $2 $dir
+
+
+# run formatdb on the newly separated fasta files
+cd $dir
+for each in `ls -1 *.fa`
+do
+	echo "blast formatting $each"
+	$fdb -i $each
+done

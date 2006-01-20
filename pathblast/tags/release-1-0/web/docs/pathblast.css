@@ -1,0 +1,186 @@
+/*
+        color:#059621; dark green
+        color:#A6C64B; light green
+        color:#29387D; blue
+	color: #ffffff; white
+*/
+
+
+body {
+	font-size:100%;
+        font-family:verdana, arial, sans-serif;
+        color:#444444;
+        background-color:#FFFFFF;
+}
+
+div#title {
+	height:100px;
+}
+
+div#titlebackground {
+	background-image:url(../images/pathblast_logo_100.jpg);
+	background-repeat:no-repeat;
+	background-position:left;
+	height:100px;
+}
+
+div#inst {
+	background-color: #29387D; 
+}
+
+h1 {
+        font-size:300%;
+        font-weight:normal;
+        color:#29387D;
+        font-family:verdana, arial, sans-serif;
+	margin: 0 250px 0 110px;
+}
+
+
+h2 {
+        background-color:#DDDDDD;
+        color:#29387D;
+        font-size:150%;
+        font-weight:normal;
+        font-style:italic;
+        font-family:verdana, arial, sans-serif;
+}
+
+ul.inline {
+	list-style-type:none;
+	padding:0;
+	margin:20px;
+}
+
+
+li.inline {
+	display:inline;
+	border-right-width:20px;
+	border-right-style:solid;
+	border-right-color:white;
+}
+
+
+ul.institutions {
+	list-style-type:none;
+	background-color:#29387D;
+}
+
+li.institutions {
+	float:left;
+	padding-left:20px;
+	padding-right:20px;
+	color: #ffffff;
+	position: relative;
+}
+
+
+a:link {
+        color:#059621;
+}
+
+a:visited {
+        color:#05962f;
+}
+
+a:hover {
+        color:#29387D;
+        text-decoration:none;
+}
+
+li.institutions:hover {
+	background-color: #059621;
+}
+
+a:active {
+        color:#059621;
+        text-decoration:underline;
+}
+
+a.institutions {
+	padding-left:20px;
+	padding-right:20px;
+        text-decoration:none;
+	color: #ffffff;
+}
+
+a:hover.institutions {
+	background-color: #059621;
+}
+
+div.footer {
+        background-color:#DDDDDD;
+}
+
+.node {
+        background-color:#eeeeee;
+}
+
+p {
+	padding-left:20px;	
+}
+
+p.error {
+	color:#ff0000;
+}
+
+div#advanced {
+	border-color:#29387D;
+	border-width:thin;
+	border-style:dashed;
+	background-color:#ffffff;
+	padding-left:0px;
+	padding-right:20px;
+	padding-top:5px;
+	padding-bottom:5px;
+}
+
+
+table.result {
+        background-color:#ffffff;
+	width:100%;
+}
+
+th.result {
+        background-color:#eeeeee;
+	text-align:left;
+}
+li ul {
+	list-style-type:square;
+	display: none;
+	background: #059621;
+	position: absolute;
+}
+
+li > ul {
+	top: auto;
+	left: auto;
+}
+
+
+li:hover ul { 
+	display: block; 
+	padding-left:20px;
+	padding-right:20px;
+}
+
+li.submenu {
+	background-color: #059621;
+}
+
+a.submenu {
+	color: #ffffff;
+        text-decoration:none;
+}
+
+
+a.submenu:hover {
+	color: #ffffff;
+        background-color: #29387D; 
+}
+
+div#legend {
+        float: right;
+	margin-right:10%;
+}
+

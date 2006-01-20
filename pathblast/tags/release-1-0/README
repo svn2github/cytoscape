@@ -1,0 +1,152 @@
+
+PathBLAST - Web Application
+===========================
+
+Installation
+============
+
+This document assumes that you, dear reader, are a competent developer or 
+system administrator who is not afraid of compiling code... 
+
+Unlike most Java applications, you will need to package this one yourself.
+This is because the application depends on installation specific data files
+that need to be specified in a properties file which, in turn, needs to be
+included in the WAR file.  Alas and alack.
+
+
+
+Pre-requisites
+--------------
+
+A Java 1.5 compiler (http://java.sun.com).
+
+Ant (http://ant.apache.org).
+
+A DIP XIN database and associated FASTA sequences 
+(http://dip.doe-mbi.ucla.edu/).
+
+NCBI BLAST (http://www.ncbi.nlm.nih.gov/BLAST/).
+
+Tomcat (http://tomcat.apache.org).
+
+
+
+Quick Overview
+--------------
+
+Edit the file ./etc/pathblast.properties to reference the DIP data, the
+various BLAST locations, vizmap.props location, and the Tomcat installation.
+
+Package the distribution (% ant all).
+
+Copy the pathblast.war file into the ready and waiting Tomcat installation.
+
+Begin PathBLASTing.
+
+
+Details
+-------
+
+Step
+----
+
+First you need to get a DIP XIN xml file and the associated fasta sequences
+from http://dip.doe-mbi.ucla.edu/.  Once you have these, put them someplace
+accessible by Tomcat (e.g. /usr/local/lib/pathblast).  
+
+Step
+----
+
+Next run dip2blastdb program found in ./data/dip2blastdb.  This will extract
+the individual species networks that exist within the XIN file, create 
+multiple FASTA files for each species, and create BLAST databases for each
+species.  See the instructions in ./data/dip2blastdb for specific details. 
+Once complete, put the directory of species databases in someplace accessible
+by Tomcat.  
+
+Step
+----
+
+Copy the vizmap.props into location.  
+
+Step
+----
+
+Make sure BLAST is installed somewhere on the server. If not, download
+and install from (http://www.ncbi.nlm.nih.gov/BLAST/).  This application
+specifically uses the 'blastall' and 'formatdb' commands.
+
+Step
+----
+
+Edit the file ./etc/pathblast.properties and specify the locations of the
+various database files and blast executables.
+
+Step
+----
+
+Package the WAR file.  This is accomplished by running:
+
+	% ant all
+
+or, if you've changed any libraries:
+
+	% ant clean all
+
+This should create a file called 'pathblast.war'.
+
+Step
+----
+
+Make sure Tomcat is installed and configured.  
+
+If you're interested in running Tomcat in conjunction with an Apache server, 
+and possibly as a virtual host, see ./docs/tomcat_apaphe_connector_setup.txt 
+for a detailed explanation of how to accomplish this.  This is NOT necessary 
+to run PathBLAST, but is provided as a courtesy.
+
+Step
+----
+
+Copy pathblast.war into your Tomcat web application directory.  If 
+necessary, restart/reconfigure Tomcat to deploy PathBLAST (an out-of-the-box
+installation of Tomcat will usually deploy the app automatically).
+
+
+Begin PathBLASTing!
+
+
+Problems
+--------
+
+If you're having problems, the first and foremost place to look is the 
+catalina.out Tomcat log.  This is where all stdout and stderror from 
+PathBLAST will be directed.  The log is generally found in
+$CATALINA_HOME/logs/catalina.out.  
+
+If you're using Apache, don't forget to look in the httpd error_log.
+
+
+Notes
+-----
+
+- As of release 1.0, PathBLAST uses a customized version of Cytoscape 
+(specifically cytoscape.jar) so do NOT change that jar or assume that
+another version will work. Use the one provided with this distribution.
+
+- Depending on how exactly Tomcat is configured, it may be possible to
+directly edit the pathblast.properties file within Tomcat.  Beware that
+if you follow this route, Tomcat may overwrite the file if it decides
+to re-deploy the WAR file. 
+
+- Unlike Cytoscape, PathBLAST will only use the vizmap.props specified in 
+the properties file.  This particular vizmap.props contains a visual style 
+designed specifically for displaying dual layout graphs.  If you'd like to 
+create your own visual style, better to start with this vizmap.props and
+build upon it.  The one currently in use is called "DualLayout2" and is
+specified in wi/bioc/blastpathway/PathBlast.java.
+
+- The heavy lifting done behind the scenes of the PathBLAST web application
+is accomplished using the Network Comparison Toolkit (nct.jar) which you can
+read about here: http://chianti.ucsd.edu/nct. 
+

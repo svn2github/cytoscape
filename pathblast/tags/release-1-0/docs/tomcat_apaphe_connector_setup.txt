@@ -1,0 +1,220 @@
+
+Overview:
+---------
+
+This document describes running Tomcat through apache, i.e.  you want to 
+get your servlet/jsp app running on an existing apache web server.  This
+document also describes how to configure Tomcat to appear as a virtual
+server.
+
+
+Step:
+-----
+
+(for RedHat)
+
+First, make sure that /usr/sbin/apxs is installed.  This usually comes in
+the httpd-devel package.  Installing this package usually requires installing 
+a few other rpms and rpm will tell you what those are.
+
+
+Step:
+-----
+
+Get the Tomcat Connector code from here:
+
+	http://tomcat.apache.org
+
+Unpack the code and follow the instructions for compile and install.
+
+
+Step:
+-----
+
+Create a file called 'workers.properties'. This is used by apache to delegate
+its duties to a different application. The file defines the communication 
+protocol, ports, and various other properties needed for this delgation. 
+A good place for this is the same directory as the httpd.conf file.  
+The file should contain something like this:
+
+#
+# begin workers.properties
+# Define 1 real worker using ajp13
+worker.list=worker1
+# Set properties for worker1 (ajp13)
+worker.worker1.type=ajp13
+worker.worker1.host=localhost
+worker.worker1.port=8009
+worker.worker1.lbfactor=50
+worker.worker1.cachesize=10
+worker.worker1.cache_timeout=600
+worker.worker1.socket_keepalive=1
+worker.worker1.reclycle_timeout=300
+# end workers.properties
+#
+
+The important thing to remember about this file is the name we've given our
+worker, 'worker1'.
+
+
+Step:
+-----
+
+Turn on the JK (apache-tomcat) connector so that apache can communicate 
+with tomcat.  This is accomplished by adding the following lines to the
+httpd.conf file or including it in the httpd.conf as a separate conf file
+(e.g. mod_jk.conf).
+
+Pay attention to the directories specified in the file as they may be different
+in your configuration.  Also make sure you choose the appropriate log level.
+
+
+
+#
+# Tomcat Jakarta connector configuration
+# see http://tomcat.apache.org/connectors-doc for more info
+#
+# Load mod_jk module
+LoadModule    jk_module  modules/mod_jk.so
+
+# Where to find workers.properties
+JkWorkersFile /etc/httpd/conf/workers.properties
+
+# Where to put jk logs
+JkLogFile     /var/log/httpd/mod_jk.log
+
+# Set the jk log level [debug/error/info]
+JkLogLevel    debug
+
+# Select the log format
+JkLogStampFormat "[%a %b %d %H:%M:%S %Y] "
+
+# JkOptions indicate to send SSL KEY SIZE,
+JkOptions     +ForwardKeySize +ForwardURICompat -ForwardDirectories
+
+# JkRequestLogFormat set the request format
+JkRequestLogFormat     "%w %V %T"
+
+
+
+Step:
+-----
+
+Once JK is configured in the httpd.conf file, you just need to tell apache
+how to handle requests for your web application.  To do this add the
+following lines, which tell apache to send request for 'pathblast' to
+'worker1' (as defined in the workers.properties file above).  These lines
+can placed in the httpd.conf file (after the mod_jk configuration has been
+included) or in a separate conf file.
+
+
+# pathblast
+JkMount  /pathblast worker1
+JkMount  /pathblast/* worker1
+
+
+Conclusion:
+-----------
+
+You should now see your application run when you navigate to:
+
+http://www.example.com/pathblast
+
+
+
+Re-Introduction:
+----------------
+
+Instead of navigating to http://www.example.com/pathblast, it might be nice
+to navigate to http://www.pathblast.org.  To do this on the same server you
+need to configure the pathblast webapp to appear as a VirtualHost.  
+
+The following steps assume that everything above has already been configured.
+
+
+Step:
+-----
+
+If DNS has not been configured to point to your host www.example.com to
+look for www.pathblast.org, you fake things out by editing your /etc/hosts
+file.  This is a good way of testing a setup.  Do this by adding the following 
+lines your /etc/hosts file.
+
+# 123.123.123.123  is the IP address of www.example.com 
+123.123.123.123  www.pathblast.org
+
+
+Step:
+-----
+
+Assuming apache is not already set up to handle virtual hosts, add the
+following lines to your httpd.conf file.  These lines first turn on name-based
+virtual hosting and define the default virtual host name.  This will allow
+the existing server to continue to function normally.
+
+# turns on name-based virtual hosting
+NameVirtualHost *:80
+
+# defines the default (existing) server 
+<VirtualHost *:80>
+        ServerAdmin you@example.com 
+	ServerName www.example.com 
+	DocumentRoot /var/www/html
+	DirectoryIndex  index.php index.html index.htm index.shtml
+</VirtualHost>
+
+
+Step:
+-----
+
+Next add the actual pathblast virtual host.  Aside from the naming differences,
+this specification tells the apache to delegate requests to www.pathblast.org
+to 'worker1' via JK.
+
+<VirtualHost *:80>
+        ServerAdmin msmoot@ucsd.edu
+	ServerName www.pathblast.org
+	DocumentRoot /usr/local/apps/apache-tomcat-5.5.12/webapps/pathblast
+	JkMount  /* worker1
+</VirtualHost>
+
+
+
+Step:
+-----
+
+Next, you need to tell Tomcat that it should expect requests for the
+www.pathblast.org host name.  To do this modify the 'server.xml' file which
+is found in the Tomcat conf directory.  Add the following lines after the
+existing 'Host' element.
+
+	<Host name="www.pathblast.org" 
+	      appBase="webapps/pathblast"
+	      unpackWARs="true" 
+	      autoDeploy="true"
+	      xmlValidation="false" 
+	      xmlNamespaceAware="false">
+	  <Context path=""
+	         docBase="${catalina.home}/webapps/pathblast"
+	         debug="0"
+		 reloadable="true"/>
+	</Host>
+
+
+Conclusion:
+-----------
+
+Finally, restart everything and try navigating to:
+
+	http://www.pathblast.org
+
+
+If there is a problem or things don't work, look in the httpd logs, 
+mod_jk logs, and the Tomcat logs.  Don't forget that you can change 
+the logging levels to generate more output.
+
+
+Don't forget to remove www.pathblast.org from your /etc/hosts file (assuming
+that you added it)!
+
+
