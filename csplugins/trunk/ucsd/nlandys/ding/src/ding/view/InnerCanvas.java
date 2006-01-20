@@ -132,6 +132,8 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
       boolean mustRedraw = false;
       synchronized (m_lock) {
         if (m_view.m_nodeSelection && !e.isShiftDown()) {
+          m_ptBuff[0] = e.getX();
+          m_ptBuff[1] = e.getY();
           m_grafx.xformImageToNodeCoords(m_ptBuff);
           final SpacialEntry2DEnumerator under = m_view.m_spacial.queryOverlap
             ((float) m_ptBuff[0], (float) m_ptBuff[1],
@@ -146,7 +148,7 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
             if (m_path.contains(m_ptBuff[0], m_ptBuff[1])) {
               chosen = node;
               break; } }
-          if (chosen > 0) {
+          if (chosen >= 0) {
             m_view.getNodeView(~chosen).select();
             mustRedraw = true;
           }
