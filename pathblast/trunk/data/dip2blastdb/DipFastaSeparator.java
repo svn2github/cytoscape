@@ -1,4 +1,14 @@
 
+//============================================================================
+// 
+//  file: DipFastaSeparator.java 
+// 
+//  Copyright (c) 2006, University of California, San Diego
+//  All rights reverved.
+// 
+//============================================================================
+
+
 import java.io.FileReader;
 import java.util.*;
 

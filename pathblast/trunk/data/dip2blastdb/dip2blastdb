@@ -1,5 +1,15 @@
 #!/bin/bash
 
+#=============================================================================
+# 
+#  file: dip2blastdb 
+# 
+#  Copyright (c) 2006, University of California, San Diego
+#  All rights reverved.
+# 
+#============================================================================
+
+
 # check for the presence of the formatdb program
 fdb=`which formatdb 2> /dev/null`
 if [[ "$?" == "1" || "$fdb" == "" ]]
