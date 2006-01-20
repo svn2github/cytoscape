@@ -148,15 +148,19 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
             if (m_path.contains(m_ptBuff[0], m_ptBuff[1])) {
               chosen = node;
               break; } }
+          // Unselect all nodes and edges.
+          final int[] selectedNodes = m_view.getSelectedNodeIndices();
+          if (selectedNodes.length > 0) { mustRedraw = true; }
+          for (int i = 0; i < selectedNodes.length; i++) {
+            m_view.getNodeView(selectedNodes[i]).unselect(); }
+          final int[] selectedEdges = m_view.getSelectedEdgeIndices();
+          if (selectedEdges.length > 0) { mustRedraw = true; }
+          for (int i = 0; i < selectedEdges.length; i++) {
+            m_view.getEdgeView(selectedEdges[i]).unselect(); }
           if (chosen >= 0) {
             m_view.getNodeView(~chosen).select();
-            mustRedraw = true;
-          }
-          else { // Unselect all nodes and edges because the background was
-            // clicked.
-          } } }
-      if (mustRedraw) { repaint(); }
-    }
+            mustRedraw = true; } } }
+      if (mustRedraw) { repaint(); } }
     else if (e.getButton() == MouseEvent.BUTTON2) {
       m_currMouseButton = 2;
       m_lastXMousePos = e.getX();

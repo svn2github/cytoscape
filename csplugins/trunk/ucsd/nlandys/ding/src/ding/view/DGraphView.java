@@ -128,7 +128,7 @@ public class DGraphView implements GraphView
 
   public int[] getSelectedEdgeIndices()
   {
-    return null;
+    return new int[0];
   }
 
   public List getSelectedEdges()
