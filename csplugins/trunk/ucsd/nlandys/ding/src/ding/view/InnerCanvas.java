@@ -1,5 +1,6 @@
 package ding.view;
 
+import cytoscape.geom.spacial.SpacialEntry2DEnumerator;
 import cytoscape.graph.fixed.FixedGraph;
 import cytoscape.render.export.ImageImposter;
 import cytoscape.render.immed.GraphGraphics;
@@ -14,11 +15,14 @@ import java.awt.Paint;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.geom.GeneralPath;
 import java.awt.image.BufferedImage;
 
 class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
 {
 
+  final double[] m_ptBuff = new double[2];
+  final GeneralPath m_path = new GeneralPath();
   final Object m_lock;
   DGraphView m_view;
   GraphLOD m_lod;
@@ -124,7 +128,34 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
 
   public void mousePressed(MouseEvent e)
   {
-    if (e.getButton() == MouseEvent.BUTTON2) {
+    if (e.getButton() == MouseEvent.BUTTON1) {
+      boolean mustRedraw = false;
+      synchronized (m_lock) {
+        if (m_view.m_nodeSelection && !e.isShiftDown()) {
+          m_grafx.xformImageToNodeCoords(m_ptBuff);
+          final SpacialEntry2DEnumerator under = m_view.m_spacial.queryOverlap
+            ((float) m_ptBuff[0], (float) m_ptBuff[1],
+             (float) m_ptBuff[0], (float) m_ptBuff[1], null, 0, false);
+          int chosen = -1;
+          while (under.numRemaining() > 0) {
+            final int node = under.nextExtents(m_view.m_extentsBuff, 0);
+            m_grafx.getNodeShape
+              (m_view.m_nodeDetails.shape(node),
+               m_view.m_extentsBuff[0], m_view.m_extentsBuff[1],
+               m_view.m_extentsBuff[2], m_view.m_extentsBuff[3], m_path);
+            if (m_path.contains(m_ptBuff[0], m_ptBuff[1])) {
+              chosen = node;
+              break; } }
+          if (chosen > 0) {
+            m_view.getNodeView(~chosen).select();
+            mustRedraw = true;
+          }
+          else { // Unselect all nodes and edges because the background was
+            // clicked.
+          } } }
+      if (mustRedraw) { repaint(); }
+    }
+    else if (e.getButton() == MouseEvent.BUTTON2) {
       m_currMouseButton = 2;
       m_lastXMousePos = e.getX();
       m_lastYMousePos = e.getY(); }
