@@ -7,6 +7,11 @@ import java.awt.Paint;
 class IntermediateNodeDetails extends NodeDetails
 {
 
+  public byte shape(int node)
+  {
+    return DNodeView.DEFAULT_SHAPE;
+  }
+
   public Paint borderPaint(int node)
   {
     return DNodeView.DEFAULT_BORDER_PAINT;
