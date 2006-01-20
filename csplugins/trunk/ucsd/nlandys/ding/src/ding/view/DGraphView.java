@@ -3,6 +3,8 @@ package ding.view;
 import cytoscape.geom.rtree.RTree;
 import cytoscape.geom.spacial.MutableSpacialIndex2D;
 import cytoscape.render.stateful.GraphLOD;
+import cytoscape.util.intr.IntBTree;
+import cytoscape.util.intr.IntEnumerator;
 import giny.model.GraphPerspective;
 import giny.model.Edge;
 import giny.model.Node;
@@ -45,6 +47,9 @@ public class DGraphView implements GraphView
   final float m_defaultNodeXMax;
   final float m_defaultNodeYMax;
   InnerCanvas m_canvas;
+  boolean m_nodeSelection = true;
+  boolean m_edgeSelection = false;
+  final IntBTree m_selectedNodes;
 
   public DGraphView(GraphPerspective perspective)
   {
@@ -63,6 +68,7 @@ public class DGraphView implements GraphView
     m_defaultNodeXMax = 10.0f;
     m_defaultNodeYMax = 10.0f;
     m_canvas = new InnerCanvas(m_lock, this);
+    m_selectedNodes = new IntBTree();
   }
 
   public GraphPerspective getGraphPerspective()
@@ -72,20 +78,23 @@ public class DGraphView implements GraphView
 
   public boolean nodeSelectionEnabled()
   {
-    return false;
+    return m_nodeSelection;
   }
 
   public boolean edgeSelectionEnabled()
   {
-    return false;
+    return m_edgeSelection;
   }
 
   public void enableNodeSelection()
   {
+    synchronized (m_lock) {
+      m_nodeSelection = true; }
   }
 
   public void disableNodeSelection()
   {
+    
   }
 
   public void enableEdgeSelection()
@@ -98,7 +107,13 @@ public class DGraphView implements GraphView
 
   public int[] getSelectedNodeIndices()
   {
-    return null;
+    synchronized (m_lock) {
+      final IntEnumerator elms = m_selectedNodes.searchRange
+        (Integer.MIN_VALUE, Integer.MAX_VALUE, false);
+      final int[] returnThis = new int[elms.numRemaining()];
+      for (int i = 0; i < returnThis.length; i++) {
+        returnThis[i] = ~elms.nextInt(); }
+      return returnThis; }
   }
 
   public List getSelectedNodes()
@@ -126,11 +141,13 @@ public class DGraphView implements GraphView
 
   public void setBackgroundPaint(Paint paint)
   {
+    synchronized (m_lock) {
+      m_canvas.m_bgPaint = paint; }
   }
 
   public Paint getBackgroundPaint()
   {
-    return null;
+    return m_canvas.m_bgPaint;
   }
 
   public Component getComponent()

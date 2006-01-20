@@ -349,7 +349,8 @@ class DNodeView implements NodeView, Label
       m_view.m_nodeDetails.overrideFillPaint(m_inx, m_selectedPaint);
       if (m_selectedPaint instanceof Color) {
         m_view.m_nodeDetails.overrideColorLowDetail
-          (m_inx, (Color) m_selectedPaint); } }
+          (m_inx, (Color) m_selectedPaint); }
+      m_view.m_selectedNodes.insert(m_inx); }
     }
 
   public void unselect()
@@ -360,7 +361,8 @@ class DNodeView implements NodeView, Label
       m_view.m_nodeDetails.overrideFillPaint(m_inx, m_unselectedPaint);
       if (m_unselectedPaint instanceof Color) {
         m_view.m_nodeDetails.overrideColorLowDetail
-          (m_inx, (Color) m_unselectedPaint); } }
+          (m_inx, (Color) m_unselectedPaint); }
+      m_view.m_selectedNodes.delete(m_inx); }
   }
 
   public boolean isSelected()
