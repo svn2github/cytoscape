@@ -98,8 +98,7 @@ public class DGraphView implements GraphView
       m_nodeSelection = false;
       final int[] selectedNodes = getSelectedNodeIndices();
       for (int i = 0; i < selectedNodes.length; i++) {
-        getNodeView(selectedNodes[i]).unselect();
-        m_selectedNodes.delete(~selectedNodes[i]); } }
+        getNodeView(selectedNodes[i]).unselect(); } }
     updateView();
   }
 
