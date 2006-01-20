@@ -124,27 +124,34 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
 
   public void mousePressed(MouseEvent e)
   {
-    if (e.getButton() == MouseEvent.BUTTON3) {
-      m_currMouseButton = 3;
+    if (e.getButton() == MouseEvent.BUTTON2) {
+      m_currMouseButton = 2;
       m_lastXMousePos = e.getX();
       m_lastYMousePos = e.getY(); }
-    else if (e.getButton() == MouseEvent.BUTTON2) {
-      m_currMouseButton = 2;
+    else if (e.getButton() == MouseEvent.BUTTON3) {
+      m_currMouseButton = 3;
       m_lastXMousePos = e.getX();
       m_lastYMousePos = e.getY(); }
   }
 
   public void mouseReleased(MouseEvent e)
   {
-    if (e.getButton() == MouseEvent.BUTTON3) {
-      if (m_currMouseButton == 3) { m_currMouseButton = 0; } }
-    else if (e.getButton() == MouseEvent.BUTTON2) {
+    if (e.getButton() == MouseEvent.BUTTON2) {
       if (m_currMouseButton == 2) { m_currMouseButton = 0; } }
+    else if (e.getButton() == MouseEvent.BUTTON3) {
+      if (m_currMouseButton == 3) { m_currMouseButton = 0; } }
   }
 
   public void mouseDragged(MouseEvent e)
   {
-    if (m_currMouseButton == 3) {
+    if (m_currMouseButton == 2) {
+      double deltaY = e.getY() - m_lastYMousePos;
+      synchronized (m_lock) {
+        m_lastXMousePos = e.getX();
+        m_lastYMousePos = e.getY();
+        m_scaleFactor *= Math.pow(2, -deltaY / 300.0d); }
+      repaint(); }
+    else if (m_currMouseButton == 3) {
       double deltaX = e.getX() - m_lastXMousePos;
       double deltaY = e.getY() - m_lastYMousePos;
       m_lastXMousePos = e.getX();
@@ -152,13 +159,6 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
       synchronized (m_lock) {
         m_xCenter -= deltaX / m_scaleFactor;
         m_yCenter += deltaY / m_scaleFactor;  } // y orientations are opposite.
-      repaint(); }
-    else if (m_currMouseButton == 2) {
-      double deltaY = e.getY() - m_lastYMousePos;
-      synchronized (m_lock) {
-        m_lastXMousePos = e.getX();
-        m_lastYMousePos = e.getY();
-        m_scaleFactor *= Math.pow(2, -deltaY / 300.0d); }
       repaint(); }
   }
 
