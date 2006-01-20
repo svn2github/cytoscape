@@ -13,9 +13,19 @@ class IntermediateEdgeDetails extends EdgeDetails
   // by default.  I could even override those methods here and redundantly
   // return those same values, but I prefer not to.
 
+  public float sourceArrowSize(int edge)
+  {
+    return DEdgeView.DEFAULT_ARROW_SIZE;
+  }
+
   public Paint sourceArrowPaint(int edge)
   {
     return DEdgeView.DEFAULT_ARROW_PAINT;
+  }
+
+  public float targetArrowSize(int edge)
+  {
+    return DEdgeView.DEFAULT_ARROW_SIZE;
   }
 
   public Paint targetArrowPaint(int edge)

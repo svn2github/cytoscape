@@ -18,6 +18,8 @@ import java.util.List;
 class DNodeView implements NodeView, Label
 {
 
+  static final float DEFAULT_WIDTH = 20.0f;
+  static final float DEFAULT_HEIGHT = 20.0f;
   static final byte DEFAULT_SHAPE = GraphGraphics.SHAPE_ELLIPSE;
   static final Paint DEFAULT_BORDER_PAINT = Color.black;
   static final String DEFAULT_LABEL_TEXT = "";

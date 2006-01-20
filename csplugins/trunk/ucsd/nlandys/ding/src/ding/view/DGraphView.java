@@ -63,10 +63,10 @@ public class DGraphView implements GraphView
     m_edgeDetails = new DEdgeDetails(this);
     m_nodeViewMap = new HashMap();
     m_edgeViewMap = new HashMap();
-    m_defaultNodeXMin = -10.0f;
-    m_defaultNodeYMin = -10.0f;
-    m_defaultNodeXMax = 10.0f;
-    m_defaultNodeYMax = 10.0f;
+    m_defaultNodeXMin = 0.0f;
+    m_defaultNodeYMin = 0.0f;
+    m_defaultNodeXMax = m_defaultNodeXMin + DNodeView.DEFAULT_WIDTH;
+    m_defaultNodeYMax = m_defaultNodeYMin + DNodeView.DEFAULT_HEIGHT;
     m_canvas = new InnerCanvas(m_lock, this);
     m_selectedNodes = new IntBTree();
   }

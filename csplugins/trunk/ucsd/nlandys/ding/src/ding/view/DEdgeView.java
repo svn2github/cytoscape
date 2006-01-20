@@ -19,8 +19,9 @@ import java.util.List;
 class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
 {
 
+  static final float DEFAULT_ARROW_SIZE = 3.0f;
   static final Paint DEFAULT_ARROW_PAINT = Color.black;
-  static final float DEFAULT_EDGE_THICKNESS = 0.2f;
+  static final float DEFAULT_EDGE_THICKNESS = 1.0f;
   static final String DEFAULT_LABEL_TEXT = "";
   static final Font DEFAULT_LABEL_FONT = new Font(null, Font.PLAIN, 1);
   static final Paint DEFAULT_LABEL_PAINT = Color.black;
