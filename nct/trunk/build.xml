@@ -96,9 +96,9 @@
     <property name="test.manifest" value="${manifest.dir}/test-${name}.MF"/>
 
     <!-- Define the distribution relevant files -->
-    <property name="dist.all.name" value="${name}_${version}" />
-    <property name="dist.bin.name" value="${name}_bin_${version}" />
-    <property name="dist.src.name" value="${name}_src_${version}" />
+    <property name="dist.all.name" value="${name}-${version}" />
+    <property name="dist.bin.name" value="${name}_bin-${version}" />
+    <property name="dist.src.name" value="${name}_src-${version}" />
     <property name="dist.all" value="${dist.all.name}.tar.gz" />
     <property name="dist.bin" value="${dist.bin.name}.tar.gz" />
     <property name="dist.src" value="${dist.src.name}.tar.gz" />
