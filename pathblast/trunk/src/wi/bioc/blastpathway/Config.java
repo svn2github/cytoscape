@@ -9,6 +9,7 @@ import nct.service.synonyms.DIPSynonyms;
 import nct.service.synonyms.SynonymMapper;
 import nct.graph.SequenceGraph;
 import nct.graph.basic.BlastGraph;
+import nct.xml.XMLSaxEventDistributor;
 import java.io.*;
 
 /**
@@ -54,6 +55,8 @@ public class Config {
 	protected static Properties props; 
 
 	static {
+		System.out.println("begin static initialization");
+
 		props = System.getProperties(); 
 		ResourceBundle bun = ResourceBundle.getBundle("wi.bioc.blastpathway.pathblast");
 		Enumeration<String> en = bun.getKeys();
@@ -72,19 +75,30 @@ public class Config {
 
 		speciesGraphs = new HashMap<String,SequenceGraph<String,Double>>();
 
-		System.out.println("creating synonym mapper");
-		synMap = new DIPSynonyms(System.getProperty("dip.xin.filename"));
+		XMLSaxEventDistributor xmlParser = new XMLSaxEventDistributor();
 
-		System.out.println("creating sequence db");
-		seqDB = new DIPSequenceDatabase(System.getProperty("dip.fasta.filename"), synMap);
 
 		// create all of the species graphs
 		for ( int i = 0; i < T_ORG_VALUES.length; i++ ) {
 			String speciesDb = T_ORG_VALUES[i];
 			String species = T_ORG_NAMES[i];
-			System.out.println("creating species: " + species);
-			createSpeciesGraph(species,speciesDb);
+			System.out.println("adding species: " + species);
+			createSpeciesGraph(species,speciesDb, xmlParser);
 		}
+
+
+		DIPSynonyms dipSyn = new DIPSynonyms(); 
+		xmlParser.addHandler(dipSyn);
+
+		System.out.println("creating species networks and synonyms");
+		xmlParser.parse( System.getProperty("dip.xin.filename") );
+
+		// we need this indirection because a SynonymMapper is not a ContentHandler.
+		synMap = dipSyn;  
+
+		System.out.println("creating sequence db");
+		seqDB = new DIPSequenceDatabase(System.getProperty("dip.fasta.filename"), synMap);
+
 		System.out.println("finished static initialization");
 	}
 
@@ -98,13 +112,9 @@ public class Config {
 				break;
 			}
 
-		if ( species.equals("") )
+		if ( species.equals("") || !speciesGraphs.containsKey(species) )
 			return null;
 		
-		// just in case
-		if ( !speciesGraphs.containsKey(species) ) 
-			createSpeciesGraph(species,speciesDb);
-
 		return speciesGraphs.get(species);
 	}
 
@@ -119,11 +129,13 @@ public class Config {
 		return props;
 	}
 
-	private static void createSpeciesGraph(String species, String speciesDb) {
-		DIPInteractionNetwork din = new DIPInteractionNetwork(props.getProperty("dip.xin.filename"), species);
-		BlastGraph<String,Double> bg = new BlastGraph<String,Double>(speciesDb,props.getProperty("blast.db.location"));	
+	private static void createSpeciesGraph(String species, String speciesDb, 
+	                                       XMLSaxEventDistributor xmlParser ) {
+		BlastGraph<String,Double> bg = new BlastGraph<String,Double>(speciesDb,
+		                                           props.getProperty("blast.db.location"));
+		DIPInteractionNetwork din = new DIPInteractionNetwork(species);
 		din.updateGraph(bg);
-
+		xmlParser.addHandler( din );
 		speciesGraphs.put(species,bg);
 	}
 }
