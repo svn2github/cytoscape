@@ -2,6 +2,7 @@ package ding.view;
 
 import cytoscape.geom.rtree.RTree;
 import cytoscape.geom.spacial.MutableSpacialIndex2D;
+import cytoscape.geom.spacial.SpacialEntry2DEnumerator;
 import cytoscape.render.stateful.GraphLOD;
 import cytoscape.util.intr.IntBTree;
 import cytoscape.util.intr.IntEnumerator;
@@ -17,6 +18,7 @@ import giny.view.NodeView;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Paint;
+import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -27,6 +29,7 @@ public class DGraphView implements GraphView
 
   final Object m_lock = new Object();
   final float[] m_extentsBuff = new float[4];
+  final GeneralPath m_path = new GeneralPath();
   GraphPerspective m_perspective;
 
   // Throughout this code I am assuming that nodes or edges are never
@@ -678,6 +681,10 @@ public class DGraphView implements GraphView
   /**
    * Efficiently computes the set of nodes intersecting an axis-aligned
    * query rectangle.<p>
+   * NOTE: The order of elements placed on the stack follows the rendering
+   * order of nodes; the element waiting to be popped off the stack is the
+   * node that is rendered last, and thus is "on top of" other nodes
+   * potentially beneath it.<p>
    * HINT: To perform a point query simply set xMin equal to xMax and yMin
    * equal to yMax.
    * @param xMin a boundary of the query rectangle: the minimum X coordinate.
@@ -697,6 +704,47 @@ public class DGraphView implements GraphView
                                             boolean treatNodeShapesAsRectangle,
                                             IntStack returnVal)
   {
+    synchronized (m_lock) {
+      final SpacialEntry2DEnumerator under = m_spacial.queryOverlap
+        (xMin, yMin, xMax, yMax, null, 0, true);
+      final int totalHits = under.numRemaining();
+      if (treatNodeShapesAsRectangle) {
+        for (int i = 0; i < totalHits; i++) {
+          returnVal.push(~under.nextInt()); } }
+      else {
+        final double x = xMin;
+        final double y = yMin;
+        final double w = ((double) xMax) - xMin;
+        final double h = ((double) yMax) - yMin;
+        for (int i = 0; i < totalHits; i++) {
+          final int node = under.nextExtents(m_extentsBuff, 0);
+          // The only way that the node can miss the intersection query is
+          // if it intersects one of the four query rectangle's corners.
+          if (m_extentsBuff[0] < xMin && m_extentsBuff[1] < yMin) {
+            m_canvas.m_grafx.getNodeShape
+              (m_nodeDetails.shape(node), m_extentsBuff[0], m_extentsBuff[1],
+               m_extentsBuff[2], m_extentsBuff[3], m_path);
+            if (m_path.intersects(x, y, w, h)) {
+              returnVal.push(~node); } }
+          else if (m_extentsBuff[0] < xMin && m_extentsBuff[3] > yMax) {
+            m_canvas.m_grafx.getNodeShape
+              (m_nodeDetails.shape(node), m_extentsBuff[0], m_extentsBuff[1],
+               m_extentsBuff[2], m_extentsBuff[3], m_path);
+            if (m_path.intersects(x, y, w, h)) {
+              returnVal.push(~node); } }
+          else if (m_extentsBuff[2] > xMax && m_extentsBuff[3] > yMax) {
+            m_canvas.m_grafx.getNodeShape
+              (m_nodeDetails.shape(node), m_extentsBuff[0], m_extentsBuff[1],
+               m_extentsBuff[2], m_extentsBuff[3], m_path);
+            if (m_path.intersects(x, y, w, h)) {
+              returnVal.push(~node); } }
+          else if (m_extentsBuff[2] > xMax && m_extentsBuff[1] < yMin) {
+            m_canvas.m_grafx.getNodeShape
+              (m_nodeDetails.shape(node), m_extentsBuff[0], m_extentsBuff[1],
+               m_extentsBuff[2], m_extentsBuff[3], m_path);
+            if (m_path.intersects(x, y, w, h)) {
+              returnVal.push(~node); } }
+          else { returnVal.push(~node); } } } }
   }
 
 }
