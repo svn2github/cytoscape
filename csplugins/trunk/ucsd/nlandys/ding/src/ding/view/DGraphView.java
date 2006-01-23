@@ -5,6 +5,7 @@ import cytoscape.geom.spacial.MutableSpacialIndex2D;
 import cytoscape.render.stateful.GraphLOD;
 import cytoscape.util.intr.IntBTree;
 import cytoscape.util.intr.IntEnumerator;
+import cytoscape.util.intr.IntStack;
 import giny.model.GraphPerspective;
 import giny.model.Edge;
 import giny.model.Node;
@@ -672,6 +673,30 @@ public class DGraphView implements GraphView
   public void setGraphLOD(GraphLOD lod)
   {
     synchronized (m_lock) { m_canvas.m_lod = lod; }
+  }
+
+  /**
+   * Efficiently computes the set of nodes intersecting an axis-aligned
+   * query rectangle.<p>
+   * HINT: To perform a point query simply set xMin equal to xMax and yMin
+   * equal to yMax.
+   * @param xMin a boundary of the query rectangle: the minimum X coordinate.
+   * @param yMin a boundary of the query rectangle: the minimum Y coordinate.
+   * @param xMax a boundary of the query rectangle: the maximum X coordinate.
+   * @param yMax a boundary of the query rectangle: the maximum Y coordinate.
+   * @param treatNodeShapeAsRectangle if true, nodes are treated as rectangles
+   *   for purposes of the query computation; if false, true node shapes are
+   *   respected, at the expense of slowing down the query by a constant
+   *   factor.
+   * @param returnVal RootGraph indices of nodes intersecting the query
+   *   rectangle will be placed onto this stack; the stack is not emptied by
+   *   this method initially.
+   */
+  public void getNodesIntersectingRectangle(float xMin, float yMin,
+                                            float xMax, float yMax,
+                                            boolean treatNodeShapesAsRectangle,
+                                            IntStack returnVal)
+  {
   }
 
 }
