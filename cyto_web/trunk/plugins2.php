@@ -555,6 +555,67 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 					<hr>
 				</td>
 			</tr>
+			
+			
+	<tr>
+		<td width="20%" valign="top">
+			<b>NetworkAnalyzer Plugin</b>
+			<br>
+			<font size="-1">Version: 1.0
+				<br>
+				Release Date: Jan. 23, 2006</font>
+		</td>
+		<td width="40%" valign="top">
+			NetworkAnalyzer is a Java plugin for Cytoscape, a software platform 
+			for the analysis and visualization of molecular interaction networks. 
+			The plugin computes specific parameters describing the network topology.
+			<br><br>Feature List:<br>
+		<ul>
+			<li>Analysis of undirected networks:
+				<ul>
+					<li>Average number of neighbors</li>
+					<li>Diameter</li>
+					<li>Number of connected pairs of nodes</li>
+
+					<li>Node degree distribution</li>
+					<li>Average clustering coefficient distribution</li>
+					<li>Topological coefficient distribution</li>
+					<li>Shortest path length distribution</li>
+				</ul>
+			</li>
+
+			<li>Analysis of directed networks:
+				<ul>
+					<li>Average number of neighbors</li>
+					<li>In-degree distribution</li>
+					<li>Out-degree distribution</li>
+				</ul>
+			</li>
+
+			<li>Saving and loading analysis results</li>
+
+			<li>Saving chart as an image file (PNG or JPEG)</li>
+
+			<li>Adjusting visual properties of the charts: title, axis labels, and more</li>
+		</ul>
+			<P>Released by: Mario Albrecht, <a href="http://www.mpi-inf.mpg.de/">Max Planck Institute for Informatics</a>.
+		</td>
+		<td width="20%" valign="top">
+				 Verified to work in 2.1, 2.2.
+				</td>
+		<td width="20%" valign="top">
+			[<a href="http://med.bioinf.mpi-inf.mpg.de/netanalyzer/index.php">NetworkAnalyzer Project Page</a>]
+			<br>
+		</td>
+	</tr>
+	
+	<tr>
+				<td colspan="4">
+					<hr>
+				</td>
+			</tr>
+	
+	
 	<tr>
 		<td width="20%" valign="top">
 			<b>Network Filter Plugin</b>
@@ -578,12 +639,13 @@ Networks by using Filters that you have created.
 			<br>
 		</td>
 	</tr>
-
 			<tr>
 				<td colspan="4">
 					<hr>
 				</td>
 			</tr>
+	
+			
 			<tr>
 				<td width="20%" valign="top">
 					<b>Oracle Spatial Network Data Model Plugin</b><font size="-1">
