@@ -13,6 +13,7 @@ import giny.model.Node;
 import giny.model.RootGraph;
 import giny.view.EdgeView;
 import giny.view.GraphView;
+import giny.view.GraphViewChangeEvent;
 import giny.view.GraphViewChangeListener;
 import giny.view.NodeView;
 import java.awt.Component;
@@ -54,6 +55,9 @@ public class DGraphView implements GraphView
   boolean m_nodeSelection = true;
   boolean m_edgeSelection = false;
   final IntBTree m_selectedNodes;
+
+  private GraphViewChangeListener m_lis = new GraphViewChangeListener() {
+      public void graphViewChanged(GraphViewChangeEvent evt) {} };
 
   public DGraphView(GraphPerspective perspective)
   {
@@ -142,10 +146,12 @@ public class DGraphView implements GraphView
 
   public void addGraphViewChangeListener(GraphViewChangeListener l)
   {
+    m_lis = GraphViewChangeListenerChain.add(m_lis, l);
   }
 
   public void removeGraphViewChangeListener(GraphViewChangeListener l)
   {
+    m_lis = GraphViewChangeListenerChain.remove(m_lis, l);
   }
 
   public void setBackgroundPaint(Paint paint)
