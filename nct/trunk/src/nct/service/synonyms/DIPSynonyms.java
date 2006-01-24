@@ -22,7 +22,9 @@ import org.xml.sax.helpers.XMLReaderFactory;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
- * Implements a SynonymMapper based on a DIP XIN file.
+ * Implements a SynonymMapper based on a DIP XIN file. This class
+ * is an XML ContentHandler which needs to be added to an XMLReader
+ * so that the events will be generated. 
  */
 public class DIPSynonyms extends DefaultHandler implements SynonymMapper
 {
@@ -48,20 +50,12 @@ public class DIPSynonyms extends DefaultHandler implements SynonymMapper
 	private boolean getValue;
 
 	/**
-	 * @param xinFileName The DIP XIN xml file used to create the synonym database.
+	 * Initializes the content handler.
 	 */
-	public DIPSynonyms( String xinFileName ) {
+	public DIPSynonyms() {
 		synMap = new HashMap<String,Map<String,String>>();
 		idMap = new HashMap<String,String>();
 		value = new StringBuffer();
-
-		try { 
-			XMLReader xr = XMLReaderFactory.createXMLReader();
-			xr.setContentHandler(this);
-			xr.setErrorHandler(this);
-			FileReader r = new FileReader(xinFileName);
-			xr.parse(new InputSource(r));
-		} catch (Exception e) { e.printStackTrace(); }
 	}
 
         /**

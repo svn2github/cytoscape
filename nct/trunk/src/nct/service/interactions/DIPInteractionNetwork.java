@@ -39,21 +39,18 @@ public class DIPInteractionNetwork extends DefaultHandler
     protected Map<String,String> idUidMap; 
     protected Map<String,String> idNameMap; 
     protected Graph<String,Double> graph;
-    protected String xinFileName;
     protected String targetOrganism;
 
     /**
      * A SAX event handler that extracts graph information (nodes and edges) for a specific 
      * organism from a specified DIP XIN database file http://dip.doe-mbi.ucla.edu.
      * 
-     * @param xinFileName The XIN xml DIP database used to construct a graph.
      * @param targetOrganism The target organism the graph is being constructed for. 
      * The name must match the organism names used in the DIP file.
      */
-    public DIPInteractionNetwork( String xinFileName, String targetOrganism )
+    public DIPInteractionNetwork( String targetOrganism )
     {
 	super();
-	this.xinFileName = xinFileName;
 	this.targetOrganism = targetOrganism;
 	value = new StringBuffer();
 	nodeOrganismMap = new HashMap<String,String>();
@@ -178,13 +175,6 @@ public class DIPInteractionNetwork extends DefaultHandler
      */
     public void updateGraph(Graph<String,Double> graph) {
     	this.graph = graph;
-    	try { 
-		XMLReader xr = XMLReaderFactory.createXMLReader();
-		xr.setContentHandler(this);
-		xr.setErrorHandler(this);
-		FileReader r = new FileReader(xinFileName);
-		xr.parse(new InputSource(r));
-	} catch (Exception e) { e.printStackTrace(); }
     }
 }
 
