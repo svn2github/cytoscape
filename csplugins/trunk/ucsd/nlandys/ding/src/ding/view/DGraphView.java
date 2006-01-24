@@ -707,7 +707,7 @@ public class DGraphView implements GraphView
   {
     synchronized (m_lock) {
       final SpacialEntry2DEnumerator under = m_spacial.queryOverlap
-        (xMin, yMin, xMax, yMax, null, 0, true);
+        (xMin, yMin, xMax, yMax, null, 0, false);
       final int totalHits = under.numRemaining();
       if (treatNodeShapesAsRectangle) {
         for (int i = 0; i < totalHits; i++) {
