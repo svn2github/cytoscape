@@ -1,6 +1,12 @@
 <%@ page import="wi.bioc.blastpathway.*" %>
 <%@ page import="java.util.*" %>
 <%@ page import="wi.bioc.blastpathway.*" %>
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="docs/pathblast.css"/>
+</head>
+<body>
+
 <%@ include file="includes/browser_caching.jsp" %>
 <%
   /**
@@ -35,11 +41,6 @@ if ((blast2 != null) && (blast2.length()>0)) {
 }
 %>
 
-<html>
-<head>
-<link rel="stylesheet" type="text/css" ref="docs/pathblast.css" />
-</head>
-<body>
 <h2>Confirm Protein Selection</h2>
 <p><font color="red"><%= globalErrorMessage %></font><p/>
 <form name="mainForm" action="disambiguate.jsp" method="POST">
@@ -58,9 +59,13 @@ if ((blast2 != null) && (blast2.length()>0)) {
            String there_are_choices;
            if (list.size() >= 2) {
                there_are_choices = "there are multiple choices";
-           } else {
+           } else if ( list.size() == 1 ) {
                there_are_choices = "there is only one choice";
-           }
+           } else {
+                there_are_choices = "there is only one choice";
+	   	list.add(proteinId);
+	   }
+
 %>
   <tr>
     <td>
@@ -72,7 +77,11 @@ if ((blast2 != null) && (blast2.length()>0)) {
 	    int i = 0;
 	    for ( String potId : list ) {
 	    	String species = Config.getSynonymMapper().getSynonym(potId,"species");
+		if ( species == null ) 
+			species = "user specified sequence";
 	    	String desc = Config.getSynonymMapper().getSynonym(potId,"description");
+		if ( desc == null ) 
+			desc = "";
 	       String checked = "";
 	       if (i == 0)
 		   checked = "checked";

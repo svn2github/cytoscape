@@ -141,10 +141,15 @@ table.result {
 	width:100%;
 }
 
+th {
+	text-align:left;
+}
+
 th.result {
         background-color:#eeeeee;
 	text-align:left;
 }
+
 li ul {
 	list-style-type:square;
 	display: none;

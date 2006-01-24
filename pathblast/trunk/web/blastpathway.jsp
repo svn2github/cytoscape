@@ -34,18 +34,18 @@ if (e_value != null) {
 
 if (nEvalue == null)
         nEvalue = new EValue(EValue.DEFAULT_EVALUE);
-session.setAttribute(Config.EVALUE_SESSION_KEY, nEvalue);
+//session.setAttribute(Config.EVALUE_SESSION_KEY, nEvalue);
 
 String useZero = request.getParameter("useZero");
 System.out.println("useZero: '" + useZero + "'");
-session.setAttribute(Config.USE_ZERO_SESSION_KEY, useZero);
+//session.setAttribute(Config.USE_ZERO_SESSION_KEY, useZero);
 
 String showAdvanced = request.getParameter("ShowAdvanced"); 
 String hideAdvanced = request.getParameter("HideAdvanced"); 
 
 String t_org = request.getParameter("T_ORG");
-if (t_org != null) 
-	session.setAttribute(Config.TORG_SESSION_KEY, t_org);
+//if (t_org != null) 
+//	session.setAttribute(Config.TORG_SESSION_KEY, t_org);
 
 Protein[] proteins = (Protein[]) session.getAttribute(Config.PROTEINS_SESSION_KEY);
 
@@ -56,6 +56,8 @@ if ( reset != null || proteins == null ) {
     proteins[0] = new Protein();
     proteins[1] = new Protein();
     proteins[2] = new Protein();
+    t_org = Config.T_ORG_VALUES[0];
+    nEvalue = new EValue(EValue.DEFAULT_EVALUE);
 } else {
 	// debug
 //	Enumeration theParameterNames = request.getParameterNames();
@@ -188,6 +190,10 @@ if ( reset != null || proteins == null ) {
 }
 
 session.setAttribute(Config.PROTEINS_SESSION_KEY, proteins);
+session.setAttribute(Config.EVALUE_SESSION_KEY, nEvalue);
+session.setAttribute(Config.USE_ZERO_SESSION_KEY, useZero);
+session.setAttribute(Config.TORG_SESSION_KEY, t_org);
+
 
 %>
 <html>

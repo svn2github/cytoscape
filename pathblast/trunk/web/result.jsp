@@ -1,10 +1,5 @@
 <%@ page import="wi.bioc.blastpathway.*" %>
 <%@ page import="java.util.*" %>
-<html>
-<head>
-<link rel="stylesheet" type="text/css" ref="docs/pathblast.css" />
-</head>
-<h2>Searching...</h2>
 <%
   /**
    * Copyright(c) 2001 Whitehead Institute for Biomedical Research.
@@ -45,6 +40,12 @@ Error: cannot find blast for uid: <%= uid %>.
 	    long refresh = 10000;
 %>
 
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="docs/pathblast.css"/>
+</head>
+<body>
+<h2>Searching...</h2>
 <form action="result.jsp" 
      enctype="application/x-www-form-urlencoded" method="POST">
 <SCRIPT LANGUAGE="JavaScript">
