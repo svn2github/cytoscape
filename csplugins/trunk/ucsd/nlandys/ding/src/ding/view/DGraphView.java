@@ -680,7 +680,8 @@ public class DGraphView implements GraphView
 
   /**
    * Efficiently computes the set of nodes intersecting an axis-aligned
-   * query rectangle.<p>
+   * query rectangle; the query rectangle is specified in the node coordinate
+   * system, not the component coordinate system.<p>
    * NOTE: The order of elements placed on the stack follows the rendering
    * order of nodes; the element waiting to be popped off the stack is the
    * node that is rendered last, and thus is "on top of" other nodes
@@ -720,31 +721,24 @@ public class DGraphView implements GraphView
           final int node = under.nextExtents(m_extentsBuff, 0);
           // The only way that the node can miss the intersection query is
           // if it intersects one of the four query rectangle's corners.
-          if (m_extentsBuff[0] < xMin && m_extentsBuff[1] < yMin) {
+          if ((m_extentsBuff[0] < xMin && m_extentsBuff[1] < yMin) ||
+              (m_extentsBuff[0] < xMin && m_extentsBuff[3] > yMax) ||
+              (m_extentsBuff[2] > xMax && m_extentsBuff[3] > yMax) ||
+              (m_extentsBuff[2] > xMax && m_extentsBuff[1] < yMin)) {
             m_canvas.m_grafx.getNodeShape
               (m_nodeDetails.shape(node), m_extentsBuff[0], m_extentsBuff[1],
                m_extentsBuff[2], m_extentsBuff[3], m_path);
-            if (m_path.intersects(x, y, w, h)) {
-              returnVal.push(~node); } }
-          else if (m_extentsBuff[0] < xMin && m_extentsBuff[3] > yMax) {
-            m_canvas.m_grafx.getNodeShape
-              (m_nodeDetails.shape(node), m_extentsBuff[0], m_extentsBuff[1],
-               m_extentsBuff[2], m_extentsBuff[3], m_path);
-            if (m_path.intersects(x, y, w, h)) {
-              returnVal.push(~node); } }
-          else if (m_extentsBuff[2] > xMax && m_extentsBuff[3] > yMax) {
-            m_canvas.m_grafx.getNodeShape
-              (m_nodeDetails.shape(node), m_extentsBuff[0], m_extentsBuff[1],
-               m_extentsBuff[2], m_extentsBuff[3], m_path);
-            if (m_path.intersects(x, y, w, h)) {
-              returnVal.push(~node); } }
-          else if (m_extentsBuff[2] > xMax && m_extentsBuff[1] < yMin) {
-            m_canvas.m_grafx.getNodeShape
-              (m_nodeDetails.shape(node), m_extentsBuff[0], m_extentsBuff[1],
-               m_extentsBuff[2], m_extentsBuff[3], m_path);
-            if (m_path.intersects(x, y, w, h)) {
-              returnVal.push(~node); } }
+            if (w > 0 && h > 0) {
+              if (m_path.intersects(x, y, w, h)) { returnVal.push(~node); } }
+            else {
+              if (m_path.contains(x, y)) { returnVal.push(~node); } } }
           else { returnVal.push(~node); } } } }
+  }
+
+  public void xformComponentToNodeCoords(double[] coords)
+  {
+    synchronized (m_lock) {
+      m_canvas.m_grafx.xformImageToNodeCoords(coords); }
   }
 
 }

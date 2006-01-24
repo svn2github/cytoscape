@@ -7,6 +7,7 @@ import cytoscape.render.immed.GraphGraphics;
 import cytoscape.render.stateful.GraphLOD;
 import cytoscape.render.stateful.GraphRenderer;
 import cytoscape.util.intr.IntHash;
+import cytoscape.util.intr.IntStack;
 import giny.view.NodeView;
 import java.awt.Canvas;
 import java.awt.Color;
@@ -24,6 +25,7 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
 
   final double[] m_ptBuff = new double[2];
   final GeneralPath m_path = new GeneralPath();
+  final IntStack m_stack = new IntStack();
   final Object m_lock;
   DGraphView m_view;
   GraphLOD m_lod;
@@ -139,20 +141,12 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
         if (m_view.m_nodeSelection) {
           m_ptBuff[0] = m_lastXMousePos;
           m_ptBuff[1] = m_lastYMousePos;
-          m_grafx.xformImageToNodeCoords(m_ptBuff);
-          final SpacialEntry2DEnumerator under = m_view.m_spacial.queryOverlap
+          m_view.xformComponentToNodeCoords(m_ptBuff);
+          m_stack.empty();
+          m_view.getNodesIntersectingRectangle
             ((float) m_ptBuff[0], (float) m_ptBuff[1],
-             (float) m_ptBuff[0], (float) m_ptBuff[1], null, 0, true);
-          int chosen = -1;
-          while (under.numRemaining() > 0) {
-            final int node = under.nextExtents(m_view.m_extentsBuff, 0);
-            m_grafx.getNodeShape
-              (m_view.m_nodeDetails.shape(node),
-               m_view.m_extentsBuff[0], m_view.m_extentsBuff[1],
-               m_view.m_extentsBuff[2], m_view.m_extentsBuff[3], m_path);
-            if (m_path.contains(m_ptBuff[0], m_ptBuff[1])) {
-              chosen = node;
-              break; } }
+             (float) m_ptBuff[0], (float) m_ptBuff[1], false, m_stack);
+          final int chosen = (m_stack.size() > 0) ? m_stack.peek() : 0;
           if (!e.isShiftDown()) {
             // Unselect all nodes and edges.
             // TODO: Optimize to not instantiate new array on every call.
@@ -164,13 +158,13 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
             if (selectedEdges.length > 0) { mustRedraw = true; }
             for (int i = 0; i < selectedEdges.length; i++) {
               m_view.getEdgeView(selectedEdges[i]).unselect(); } }
-          if (chosen >= 0) {
+          if (chosen != 0) {
             final boolean wasSelected =
-              m_view.getNodeView(~chosen).isSelected();
+              m_view.getNodeView(chosen).isSelected();
             if (wasSelected) {
-              m_view.getNodeView(~chosen).unselect(); }
+              m_view.getNodeView(chosen).unselect(); }
             else { // Was not selected.
-              m_view.getNodeView(~chosen).select(); }
+              m_view.getNodeView(chosen).select(); }
             mustRedraw = true;
             m_button1NodeDrag = true; }
           else { m_button1NodeDrag = false; } }
