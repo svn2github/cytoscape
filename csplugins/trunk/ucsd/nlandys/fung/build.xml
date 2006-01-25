@@ -39,12 +39,16 @@
              source="1.4">
       <fileset dir="${basedir}/../util.intr/src">
         <include name="cytoscape/util/intr/IntEnumerator.java"/>
+        <include name="cytoscape/util/intr/IntIterator.java"/>
       </fileset>
       <fileset dir="${basedir}/../graph.fixed/src">
         <include name="cytoscape/graph/fixed/*.java"/>
       </fileset>
       <fileset dir="${basedir}/../graph.dynamic/src">
         <include name="cytoscape/graph/dynamic/*.java"/>
+      </fileset>
+      <fileset dir="${src.dir}">
+        <include name="cytoscape/fung/*.java"/>
       </fileset>
       <classpath>
         <fileset dir="${lib.dir}">

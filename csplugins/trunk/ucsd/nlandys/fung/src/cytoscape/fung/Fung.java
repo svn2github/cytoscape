@@ -7,8 +7,8 @@ import java.awt.Component;
 public class Fung
 {
 
-  private final Canvas m_canvas;
-  private final DynamicGraph m_graphModel;
+  private final Canvas m_canvas = null;
+  private final DynamicGraph m_graphModel = null;
 
   public Component getComponent()
   {
