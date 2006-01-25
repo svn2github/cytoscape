@@ -56,8 +56,8 @@ public class DGraphView implements GraphView
   boolean m_edgeSelection = false;
   final IntBTree m_selectedNodes;
 
-  private GraphViewChangeListener m_lis = new GraphViewChangeListener() {
-      public void graphViewChanged(GraphViewChangeEvent evt) {} };
+  private final GraphViewChangeListener[] m_lis =
+    new GraphViewChangeListener[1];
 
   public DGraphView(GraphPerspective perspective)
   {
@@ -146,12 +146,12 @@ public class DGraphView implements GraphView
 
   public void addGraphViewChangeListener(GraphViewChangeListener l)
   {
-    m_lis = GraphViewChangeListenerChain.add(m_lis, l);
+    m_lis[0] = GraphViewChangeListenerChain.add(m_lis[0], l);
   }
 
   public void removeGraphViewChangeListener(GraphViewChangeListener l)
   {
-    m_lis = GraphViewChangeListenerChain.remove(m_lis, l);
+    m_lis[0] = GraphViewChangeListenerChain.remove(m_lis[0], l);
   }
 
   public void setBackgroundPaint(Paint paint)
