@@ -172,6 +172,7 @@ public class DGraphView implements GraphView
 
   public NodeView addNodeView(int nodeInx)
   {
+    NodeView newView = null;
     synchronized (m_lock) {
       final NodeView oldView =
         (NodeView) m_nodeViewMap.get(new Integer(nodeInx));
@@ -184,11 +185,16 @@ public class DGraphView implements GraphView
         throw new IllegalArgumentException
           ("node index specified does not exist in underlying RootGraph"); }
       m_structPersp.restoreNode(nodeInx);
-      final NodeView returnThis = new DNodeView(this, nodeInx);
-      m_nodeViewMap.put(new Integer(nodeInx), returnThis);
+      newView = new DNodeView(this, nodeInx);
+      m_nodeViewMap.put(new Integer(nodeInx), newView);
       m_spacial.insert(~nodeInx, m_defaultNodeXMin, m_defaultNodeYMin,
-                       m_defaultNodeXMax, m_defaultNodeYMax);
-      return returnThis; }
+                       m_defaultNodeXMax, m_defaultNodeYMax); }
+    final GraphViewChangeListener listener = m_lis[0];
+    if (listener != null) {
+      listener.graphViewChanged
+        (new GraphViewNodesRestoredEvent
+         (this, new int[] { newView.getRootGraphIndex() })); }
+    return newView;
   }
 
   public EdgeView addEdgeView(int edgeInx)
