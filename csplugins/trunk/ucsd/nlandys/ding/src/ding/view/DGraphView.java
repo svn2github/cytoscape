@@ -509,16 +509,22 @@ public class DGraphView implements GraphView
    */
   public boolean showGraphObject(Object obj)
   {
-    synchronized (m_lock) {
-      if (obj instanceof DNodeView) {
+    if (obj instanceof DNodeView) {
+      int nodeInx;
+      synchronized (m_lock) {
         final DNodeView nView = (DNodeView) obj;
-        final int nodeInx = nView.getRootGraphIndex();
+        nodeInx = nView.getRootGraphIndex();
         if (m_structPersp.getNode(nodeInx) == null) { return false; }
         if (m_drawPersp.restoreNode(nodeInx) == 0) { return false; }
         m_spacial.insert(~nodeInx, nView.m_hiddenXMin, nView.m_hiddenYMin,
-                         nView.m_hiddenXMax, nView.m_hiddenYMax);
-        return true; }
-      else if (obj instanceof DEdgeView) {
+                         nView.m_hiddenXMax, nView.m_hiddenYMax); }
+      final GraphViewChangeListener listener = m_lis[0];
+      if (listener != null) {
+        listener.graphViewChanged
+          (new GraphViewNodesRestoredEvent(this, new int[] { nodeInx })); }
+      return true; }
+    else if (obj instanceof DEdgeView) {
+      synchronized (m_lock) {
         final Edge edge =
           m_structPersp.getEdge(((DEdgeView) obj).getRootGraphIndex());
         if (edge == null) { return false; }
@@ -528,8 +534,8 @@ public class DGraphView implements GraphView
         showGraphObject(getNodeView(edge.getTarget().getRootGraphIndex()));
         if (m_drawPersp.restoreEdge(edge.getRootGraphIndex()) == 0) {
           return false; }
-        return true; }
-      else { return false; } }
+        return true; } }
+    else { return false; }
   }
 
   public boolean hideGraphObjects(List objects)
