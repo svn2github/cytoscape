@@ -4,25 +4,17 @@
 
 package rowan;
 
-import java.util.*;
-
-import cern.colt.matrix.DoubleMatrix1D;
+import cern.colt.list.IntArrayList;
 import cern.colt.matrix.impl.DenseDoubleMatrix1D;
+import cern.colt.matrix.DoubleMatrix1D;
 import cern.colt.map.OpenIntObjectHashMap;
 import cern.colt.map.PrimeFinder;
 
-import cytoscape.*;
-import cytoscape.view.*;
-import cytoscape.util.*;
-import cytoscape.layout.*;
-import giny.view.*;
+import cytoscape.CyNetwork;
 import giny.model.*;
-import giny.util.*;
-import javax.swing.JFrame;
-import java.awt.Dimension;
-import phoebe.util.*;
 
-public class ISOMLayout extends cytoscape.layout.AbstractLayout {
+
+public class ISOMLayout extends AbstractLayout {
 
   
 	private int maxEpoch;
@@ -42,204 +34,35 @@ public class ISOMLayout extends cytoscape.layout.AbstractLayout {
   private boolean trace;
 	private boolean done;
 
-  private Vector queue;
+  //Queue, First In First Out, use add() and get(0)/remove(0)
+  private IntArrayList q;
 	private String status = null;
 
-  private OpenIntObjectHashMap nodeIndexToDataMap;
-
-  private double globalX, globalY;
-
-  CyNetwork parent;
-  List partions;
-  Iterator i;
-  double percent;
-
-  public ISOMLayout ( CyNetworkView view ) {
-    super( view );
-    maxEpoch = 2000;
-    System.out.println( "Initialize_Local" );
-    parent = ( CyNetwork )network;
-    //partions = GraphPartition.partition( parent );
-    GraphPartition part = new GraphPartition( parent );
-    partions = part.partition();
-    i = partions.iterator();
-    lengthOfTask = partions.size() * maxEpoch;
-  }
-
-   public  Object construct () {
-
-    double last_x = 0;
-    double last_y = 0;
-    double sum_x = 0;
-    double sum_y = 0;
-
-    double _x = 0;
-    double _y = 0;
-    double incr = 100;
-    boolean ones = false;
-    
-    double small_x = Double.MAX_VALUE;
-
-    double node_count = ( double )parent.getNodeCount();
-    node_count = Math.sqrt( node_count );
-    // now we know how many nodes on a side
-    // give each node 100 room
-    node_count *= 100;
-    
-   
-    
-    this.currentProgress++;
-    percent = (this.currentProgress * 100 )/this.lengthOfTask;
-    this.statMessage = "Completed " + percent + "%";
-    
-
-    while ( i.hasNext() ) {
-      
-
-
-
-      int[] nodes = ( int[] )i.next();
-      if ( nodes.length == 0 ) {
-        continue;
-      }
-      network = parent.createGraphPerspective( nodes, parent.getConnectingEdgeIndicesArray( nodes ) );
-      
-      if ( nodes.length != 1 ) {
-        prepare();
-        initialize();
-        do_it();
-        move( sum_x, sum_y );
-        sum_x += currentSize.getWidth();
-
-      } else {
-        if ( !ones ) {
-          System.out.println( "Got to singletons" );
-          ones = true;
-          incr = 20;
-          _x = 0;
-          _y = sum_y + last_y;
-          if ( small_x == Double.MAX_VALUE )
-            small_x = 0;
-        }
-        if ( _x > node_count ) {
-          _y += incr;
-          _x = 0;;
-        } else {
-          _x += incr;
-        } 
-        
-        System.out.println( "Move to x: "+_x+" y: "+_y );
-        
-
-        setSingle( _x, _y );
-
-      }
-
-      
-    
-     
-
-      if ( currentSize.getHeight() > last_y ) {
-        //System.out.println( "new y is: "+currentSize.getHeight() );
-        last_y = currentSize.getHeight();
-
-      }
-     
-
-      if ( sum_x > node_count ) {
-        sum_x = 0;
-        sum_y+= last_y;
-        last_y = 0;
-      }
-
-      
-    }
-
-
-    Iterator nodes = networkView.getNodeViewsIterator();
-    while ( nodes.hasNext() ) {
-      ( ( NodeView )nodes.next() ).setNodePosition( true );
-    }
-    done = true;
-
-    return null;
-
-
-
-  }
- 
-
-
-
-  public void prepare () {
-    nodeIndexToDataMap = new OpenIntObjectHashMap( PrimeFinder.nextPrime( network.getNodeCount() ) );
-    queue = new Vector();
-		trace = false;
-  }
-
-  public void do_it () {
-    
-    
-    
-
-     //System.out.println( statMessage );
-
-    while ( epoch < maxEpoch ) {
-      
-      advancePositions();
-      //System.out.println( getStatus() );
-    
-      //System.out.println( statMessage );
-
-    }
-
-   
-  }
- 
- //   public  void go ( boolean wait ) {
-//      final SwingWorker worker = new SwingWorker(){
-//         public Object construct(){
-//           return ISOMLayout.this.construct();
-//         }
-//       };
-//     worker.start();
-//     // wait for the task to be done
-//     //System.out.println("SimilarityCalculator.go() : Thread " + Thread.currentThread() + " about to join");
-//     //System.out.flush();
-//     if(wait){
-//       worker.get();
-//     }
-//   }//go()
-
- 
-
- 
-
-  //implements MonitorableSwingWorker
-  public String getName () {
-    return "ISOM Layout";
-  } //getName()
-
-	
+  OpenIntObjectHashMap nodeIndexToDataMap;
+  double globalX, globalY;
+  GraphPerspective net;
+  int[] nodes;
+  double squared_size;
   
+  public ISOMLayout ( CyNetwork network ) {
+    super( network );
+  
+    q = new IntArrayList();
+		trace = false;
  
+  }
 
- 
-  	/**
-	 * Returns the current number of epochs and execution status, as a string.
-	 */
-	public String getStatus() {
-		return status;
-	}
-
-  protected void initialize_local() {
-		done = false;
-
-	
-		epoch = 1;
-
+  public void layoutPartion ( GraphPerspective net) {
     
+    this.net = net;
 
+    nodeIndexToDataMap = new OpenIntObjectHashMap( PrimeFinder.nextPrime( net.getNodeCount() ) );
+    nodes = net.getNodeIndicesArray();
+    squared_size = nodes.length*50;
+   
+		epoch = 1;
+    maxEpoch = 5000;
+   
 		radiusConstantTime = 100;
 		radius = 5;
 		minRadius = 1;
@@ -250,61 +73,56 @@ public class ISOMLayout extends cytoscape.layout.AbstractLayout {
 
     coolingFactor = 2;
 
+    System.out.println ( "Epoch: "+epoch+" maxEpoch: "+maxEpoch );
+    while ( epoch < maxEpoch ) {
+      adjust();
+			updateParameters();
+    }
+   
   }
 
-  protected void initialize_local_node_view( NodeView v) {
-		ISOMVertexData vd = getISOMVertexData(v);
-    if (vd == null) {
-      vd = new ISOMVertexData();
-      nodeIndexToDataMap.put( v.getRootGraphIndex(), vd );
-    }
-		vd.visited = false;
-	}
-
   /**
-	* Advances the current positions of the graph elements.
-	*/
-	public void advancePositions() {
-		status = "epoch: " + epoch + "; ";
-    this.currentProgress++;
-    percent = (this.currentProgress * 100 )/this.lengthOfTask;
-    this.statMessage = "Completed " + percent + "%";
-		if (epoch < maxEpoch) {
-			adjust();
-			updateParameters();
-			status += " status: running";
+   * @return the closest NodeView to these coords.
+   */
+  public int getClosestPosition ( double x, double y ) {
+    double minDistance = Double.MAX_VALUE;
+    int closest = 0;
+    for ( int i = 0; i < nodes.length; i++ ) {
 
-		} else {
-			status += "adaption: " + adaption + "; ";
-			status += "status: done";
-			done = true;
-		}
-	}
+      double dx = layout.getX(  nodes[i] );
+      double dy = layout.getY(  nodes[i] );
+      double dist = dx * dx + dy * dy;
+      if ( dist < minDistance ) {
+        minDistance = dist;
+        closest = nodes[i];
+      }
+    }
+    return closest;
+  }
 
-  private synchronized void adjust() {
+
+
+  public  void adjust() {
 		//Generate random position in graph space
 		ISOMVertexData tempISOM = new ISOMVertexData();
 		
 
 		// creates a new XY data location
-		globalX = 10 + Math.random() * getCurrentSize().getWidth();
-    globalY = 10 + Math.random() * getCurrentSize().getHeight();
+		globalX = 10 + Math.random() * squared_size;
+    globalY = 10 + Math.random() * squared_size;
 
     //Get closest vertex to random position
-    NodeView winner = getNodeView( globalX, globalY );
+    int winner = getClosestPosition( globalX, globalY );
     
-		for (Iterator iter = network.nodesIterator();
-			iter.hasNext();
-			) {
-			NodeView v = networkView.getNodeView( ( Node ) iter.next() );
-			ISOMVertexData ivd = getISOMVertexData(v);
+    for ( int i = 0; i < nodes.length; i++ ) {
+      ISOMVertexData ivd = getISOMVertexData(nodes[i]);
 			ivd.distance = 0;
 			ivd.visited = false;
 		}
 		adjustVertex(winner);
 	}
   
-  private synchronized void updateParameters() {
+  public  void updateParameters() {
 		epoch++;
 		double factor = Math.exp(-1 * coolingFactor * (1.0 * epoch / maxEpoch));
 		adaption = Math.max(minAdaption, factor * initialAdaption);
@@ -313,78 +131,59 @@ public class ISOMLayout extends cytoscape.layout.AbstractLayout {
 		}
 	}
 
-  private synchronized void adjustVertex( NodeView v ) {
-		queue.removeAllElements();
+  public void adjustVertex( int v ) {
+		q.clear();
 		ISOMVertexData ivd = getISOMVertexData(v);
 		ivd.distance = 0;
 		ivd.visited = true;
-		queue.add(v);
-		NodeView current;
+		q.add(v);
+		int current;
 
-		while ( !queue.isEmpty() ) {
-			current = ( NodeView ) queue.remove(0);
+    while ( !q.isEmpty() ) {
+			current =  q.get(0);
+      q.remove(0);
+
 			ISOMVertexData currData = getISOMVertexData(current);
 			
-      int current_index = current.getRootGraphIndex();
-      
-      double current_x = networkView.getNodeDoubleProperty( current_index, GraphView.NODE_X_POSITION );
-      double current_y = networkView.getNodeDoubleProperty( current_index, GraphView.NODE_Y_POSITION );
+      double current_x = layout.getX( current );
+      double current_y = layout.getY( current );
       
 			double dx = globalX - current_x;
 			double dy = globalY - current_y;
       
       // possible mod
-			double factor = adaption / Math.pow(2, currData.distance);
+			double factor = adaption / Math.pow(2, currData.distance) ;
+      
 
-      networkView.setNodeDoubleProperty( current_index, GraphView.NODE_X_POSITION, current_x + factor * dx );
-      networkView.setNodeDoubleProperty( current_index, GraphView.NODE_Y_POSITION, current_y + factor * dy );
+      layout.setX( current, current_x + factor * dx );
+      layout.setY( current, current_y + factor * dy );
 
+      
 			if (currData.distance < radius) {
-				int[] neighbors = network.neighborsArray( current_index );
-       //  for ( int neighbor_index = 0; neighbor_index < neighbors.length; ++neighbor_index )
-//                 System.out.print( " "+neighbors[ neighbor_index ] );
-              
+				int[] neighbors = net.neighborsArray( current );
 
         for ( int neighbor_index = 0; neighbor_index < neighbors.length; ++neighbor_index ) {
           
-          NodeView child = networkView.getNodeView( network.getRootGraphNodeIndex( neighbors[ neighbor_index ] ) );
-          
-          // System.out.println(   network.getRootGraphNodeIndex( neighbors[ neighbor_index ]) +"getting for: "+child.getRootGraphIndex() );
-          // System.out.println( "Network contains: "+network.getNode(  network.getRootGraphNodeIndex( neighbors[ neighbor_index ] ) ) );
-          ISOMVertexData childData = getISOMVertexData(child);
+          ISOMVertexData childData = getISOMVertexData(neighbors[neighbor_index]);
 					if (!childData.visited) {
 						childData.visited = true;
 						childData.distance = currData.distance + 1;
-            queue.addElement(child);
+            q.add(neighbors[neighbor_index]);
 					}
 				}
 			}
 		}
 	}
 
-	public ISOMVertexData getISOMVertexData (  NodeView v ) {
-    return ( ISOMVertexData )nodeIndexToDataMap.get( v.getRootGraphIndex() );
-  }
-  
   public ISOMVertexData getISOMVertexData (  int v ) {
-    return ( ISOMVertexData )nodeIndexToDataMap.get( v );
+    ISOMVertexData vd = ( ISOMVertexData )nodeIndexToDataMap.get( v );
+    if ( vd == null ) {
+      vd = new ISOMVertexData();
+      nodeIndexToDataMap.put( v, vd );
+    }
+    return vd;
   }                                                
 
-  /**
-	 * This one is an incremental visualization.
-	 * @return <code>true</code> is the layout algorithm is incremental, <code>false</code> otherwise
-	 */
-	public boolean isIncremental() {
-		return true;
-	}
-
-  /**
-	 * For now, we pretend it never finishes.
-	 * @return <code>true</code> is the increments are done, <code>false</code> otherwise
-	 */
-	public boolean incrementsAreDone() {
-		return false;
-	}
 
   public static class ISOMVertexData {
 		public DoubleMatrix1D disp;

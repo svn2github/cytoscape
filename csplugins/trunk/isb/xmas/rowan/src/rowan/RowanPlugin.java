@@ -132,14 +132,59 @@ public class RowanPlugin extends CytoscapePlugin {
                 boolean success = TaskManager.executeTask(task, config);
                
                 
-
-               
-
               } } ); } } );
     Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu( "Plugins" ).add( lt );
     
+    JMenuItem cl = new JMenuItem( new AbstractAction( "Layout Circle Test" ) {
+        public void actionPerformed ( ActionEvent e ) {
+          // Do this in the GUI Event Dispatch thread...
+          SwingUtilities.invokeLater( new Runnable() {
+              public void run() {
+                
+                Task task = new AttributeCircleLayout(  Cytoscape.getCurrentNetwork(), 
+                                                        Cytoscape.getNodeAttributes(), 
+                                                        cytoscape.data.Semantics.COMMON_NAME);
+
+                //  Configure JTask
+                JTaskConfig config = new JTaskConfig();
+                
+                //  Show Cancel/Close Buttons
+                config.displayCancelButton(true);
+                
+                //  Execute Task via TaskManager
+                //  This automatically pops-open a JTask Dialog Box.
+                //  This method will block until the JTask Dialog Box is disposed.
+                boolean success = TaskManager.executeTask(task, config);
+               
+                
+              } } ); } } );
+    Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu( "Plugins" ).add( cl );
 
     
+    JMenuItem isom = new JMenuItem( new AbstractAction( "Layout ISOM" ) {
+        public void actionPerformed ( ActionEvent e ) {
+          // Do this in the GUI Event Dispatch thread...
+          SwingUtilities.invokeLater( new Runnable() {
+              public void run() {
+                
+                Task task = new ISOMLayout(  Cytoscape.getCurrentNetwork() );
+
+                //  Configure JTask
+                JTaskConfig config = new JTaskConfig();
+                
+                //  Show Cancel/Close Buttons
+                config.displayCancelButton(true);
+                
+                //  Execute Task via TaskManager
+                //  This automatically pops-open a JTask Dialog Box.
+                //  This method will block until the JTask Dialog Box is disposed.
+                boolean success = TaskManager.executeTask(task, config);
+               
+                
+              } } ); } } );
+    Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu( "Plugins" ).add( isom );
+
+
   }
 
 
