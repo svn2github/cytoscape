@@ -64,11 +64,6 @@
 		</java>
 	</target>
 	
-	<!-- Target to create Cytoscape Jar File  -->
-	<target name="build_cytoscape">
-		<ant antfile="../../../../cytoscape/build.xml" inheritAll="false" target="jar"/>
-	</target>
-
         <!-- Target to create the javadoc information -->
         <target name="doc" depends="prepare">
           <echo>${src.dir}</echo>
@@ -79,7 +74,7 @@
 
         
 	<!--  Target to compile all Plug In Code -->
-  	<target name="compile" depends="prepare, build_cytoscape" 
+  	<target name="compile" depends="prepare" 
          description="Compiles all PlugIn source code.">
                 <javac listfiles="Yes" debug="Yes" srcdir="${src.dir}" destdir="${build.classes}">
 			<classpath refid="classpath"/>
