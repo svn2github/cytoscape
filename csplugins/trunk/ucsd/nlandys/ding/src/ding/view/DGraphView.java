@@ -174,26 +174,36 @@ public class DGraphView implements GraphView
   {
     NodeView newView = null;
     synchronized (m_lock) {
-      final NodeView oldView =
-        (NodeView) m_nodeViewMap.get(new Integer(nodeInx));
-      if (oldView != null) { return oldView; }
-      if (m_drawPersp.restoreNode(nodeInx) == 0) {
-        if (m_drawPersp.getNode(nodeInx) != null) {
-          throw new IllegalStateException
-            ("something weird is going on - node already existed in graph " +
-             "but a view for it did not exist (debug)"); }
-        throw new IllegalArgumentException
-          ("node index specified does not exist in underlying RootGraph"); }
-      m_structPersp.restoreNode(nodeInx);
-      newView = new DNodeView(this, nodeInx);
-      m_nodeViewMap.put(new Integer(nodeInx), newView);
-      m_spacial.insert(~nodeInx, m_defaultNodeXMin, m_defaultNodeYMin,
-                       m_defaultNodeXMax, m_defaultNodeYMax); }
+      newView = addNodeViewInternal(nodeInx);
+      if (newView == null) {
+        return (NodeView) m_nodeViewMap.get(new Integer(nodeInx)); } }
     final GraphViewChangeListener listener = m_lis[0];
     if (listener != null) {
       listener.graphViewChanged
         (new GraphViewNodesRestoredEvent
          (this, new int[] { newView.getRootGraphIndex() })); }
+    return newView;
+  }
+
+  // Should synchronize around m_lock.
+  private NodeView addNodeViewInternal(int nodeInx)
+  {
+    final NodeView oldView =
+      (NodeView) m_nodeViewMap.get(new Integer(nodeInx));
+    if (oldView != null) { return null; }
+    if (m_drawPersp.restoreNode(nodeInx) == 0) {
+      if (m_drawPersp.getNode(nodeInx) != null) {
+        throw new IllegalStateException
+          ("something weird is going on - node already existed in graph " +
+           "but a view for it did not exist (debug)"); }
+      throw new IllegalArgumentException
+        ("node index specified does not exist in underlying RootGraph"); }
+    m_structPersp.restoreNode(nodeInx);
+    final NodeView newView;
+    newView = new DNodeView(this, nodeInx);
+    m_nodeViewMap.put(new Integer(nodeInx), newView);
+    m_spacial.insert(~nodeInx, m_defaultNodeXMin, m_defaultNodeYMin,
+                     m_defaultNodeXMax, m_defaultNodeYMax);
     return newView;
   }
 
