@@ -21,7 +21,7 @@
     <javadoc destdir="${javadoc.dir}"
              source="1.4">
       <fileset dir="${src.dir}">
-        <include name="ding/model/*.java"/>
+        <include name="ding/view/*.java"/>
       </fileset>
       <classpath>
         <fileset dir="${lib.dir}">
