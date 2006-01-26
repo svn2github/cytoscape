@@ -20,7 +20,7 @@ public final class Fung
   {
     m_lock = new Object();
     m_topLis = new TopologyChangeListener[1];
-    m_graphModel = new FungDynamicGraph(m_lock);
+    m_graphModel = new FungDynamicGraph(m_lock, m_topLis);
   }
 
   public final void addTopologyChangeListener(
@@ -51,10 +51,13 @@ public final class Fung
   {
 
     final Object m_lock;
+    final TopologyChangeListener[] m_topLis;
     final DynamicGraph m_graph;
 
-    FungDynamicGraph(final Object lock) {
+    FungDynamicGraph(final Object lock,
+                     final TopologyChangeListener[] topLis) {
       m_lock = lock;
+      m_topLis = topLis;
       m_graph = DynamicGraphFactory.instantiateDynamicGraph(); }
 
     public final IntEnumerator nodes() {
@@ -67,7 +70,9 @@ public final class Fung
       final int rtnVal;
       synchronized (m_lock) {
         rtnVal = m_graph.nodeCreate(); }
-      // Add listener code here.
+      final TopologyChangeListener topLis = m_topLis[0];
+      if (topLis != null) {
+        topLis.nodeCreated(rtnVal); }
       return rtnVal; }
 
     public final boolean nodeRemove(final int node) {
@@ -79,7 +84,12 @@ public final class Fung
         while (edgesTouching.numRemaining() > 0) {
           removedEdges.push(edgesTouching.nextInt()); }
         m_graph.nodeRemove(node); }
-      // Add listener code here.       
+      final TopologyChangeListener topLis = m_topLis[0];
+      if (topLis != null) {
+        final IntEnumerator removedEdgeEnum = removedEdges.elements();
+        while (removedEdgeEnum.numRemaining() > 0) {
+          topLis.edgeRemoved(removedEdgeEnum.nextInt()); }
+        topLis.nodeRemoved(node); }
       return true; }
 
     public final int edgeCreate(final int sourceNode,
@@ -89,8 +99,9 @@ public final class Fung
       synchronized (m_lock) {
         rtnVal = m_graph.edgeCreate(sourceNode, targetNode, directed); }
       if (rtnVal >= 0) {
-        // Add listener code here.
-      }
+        final TopologyChangeListener topLis = m_topLis[0];
+        if (topLis != null) {
+          topLis.edgeCreated(rtnVal); } }
       return rtnVal; }
 
     public final boolean edgeRemove(final int edge) {
@@ -98,8 +109,9 @@ public final class Fung
       synchronized (m_lock) {
         rtnVal = m_graph.edgeRemove(edge); }
       if (rtnVal) {
-        // Add listener code here.
-      }
+        final TopologyChangeListener topLis = m_topLis[0];
+        if (topLis != null) {
+          topLis.edgeRemoved(edge); } }
       return rtnVal; }
 
     public final boolean nodeExists(final int node) {
