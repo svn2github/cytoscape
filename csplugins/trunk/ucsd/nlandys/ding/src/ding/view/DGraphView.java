@@ -280,24 +280,33 @@ public class DGraphView implements GraphView
 
   public NodeView removeNodeView(int nodeInx)
   {
+    final int[] hiddenEdgeInx;
+    final DNodeView returnThis;
     synchronized (m_lock) {
       // We have to query edges in the m_structPersp, not m_drawPersp because
       // what if the node is hidden?
-      final int[] edges =
+      hiddenEdgeInx =
         m_structPersp.getAdjacentEdgeIndicesArray(nodeInx, true, true, true);
-      if (edges == null) { return null; }
-      for (int i = 0; i < edges.length; i++) {
-        removeEdgeView(edges[i]); }
-      final DNodeView returnThis =
-        (DNodeView) m_nodeViewMap.remove(new Integer(nodeInx));
+      if (hiddenEdgeInx == null) { return null; }
+      for (int i = 0; i < hiddenEdgeInx.length; i++) {
+        removeEdgeViewInternal(hiddenEdgeInx[i]); }
+      returnThis = (DNodeView) m_nodeViewMap.remove(new Integer(nodeInx));
       // If this node was hidden, it won't be in m_drawPersp.
       m_drawPersp.hideNode(nodeInx);
       m_structPersp.hideNode(nodeInx);
       m_nodeDetails.unregisterNode(~nodeInx);
       // If this node was hidden, it won't be in m_spacial.
       m_spacial.delete(~nodeInx);
-      returnThis.m_view = null;
-      return returnThis; }
+      returnThis.m_view = null; }
+    final GraphViewChangeListener listener = m_lis[0];
+    if (listener != null) {
+      if (hiddenEdgeInx.length > 0) {
+        listener.graphViewChanged
+          (new GraphViewEdgesHiddenEvent(this, hiddenEdgeInx)); }
+      listener.graphViewChanged
+        (new GraphViewNodesHiddenEvent
+         (this, new int[] { returnThis.getRootGraphIndex() })); }
+    return returnThis;
   }
 
   public EdgeView removeEdgeView(EdgeView edgeView)
