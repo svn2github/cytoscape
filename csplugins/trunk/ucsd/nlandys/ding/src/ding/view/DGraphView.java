@@ -209,6 +209,9 @@ public class DGraphView implements GraphView
 
   public EdgeView addEdgeView(int edgeInx)
   {
+    NodeView sourceNode = null;
+    NodeView targetNode = null;
+    EdgeView edgeView = null;
     synchronized (m_lock) {
       final EdgeView oldView =
         (EdgeView) m_edgeViewMap.get(new Integer(edgeInx));
@@ -217,8 +220,8 @@ public class DGraphView implements GraphView
       if (edge == null) {
         throw new IllegalArgumentException
           ("edge index specified does not exist in underlying RootGraph"); }
-      addNodeView(edge.getSource().getRootGraphIndex());
-      addNodeView(edge.getTarget().getRootGraphIndex());
+      sourceNode = addNodeViewInternal(edge.getSource().getRootGraphIndex());
+      targetNode = addNodeViewInternal(edge.getTarget().getRootGraphIndex());
       if (m_drawPersp.restoreEdge(edgeInx) == 0) {
         if (m_drawPersp.getEdge(edgeInx) != null) {
           throw new IllegalStateException
@@ -227,9 +230,27 @@ public class DGraphView implements GraphView
         throw new IllegalArgumentException
           ("edge index specified does not exist in underlying RootGraph"); }
       m_structPersp.restoreEdge(edgeInx);
-      final EdgeView returnThis = new DEdgeView(this, edgeInx);
-      m_edgeViewMap.put(new Integer(edgeInx), returnThis);
-      return returnThis; }
+      edgeView = new DEdgeView(this, edgeInx);
+      m_edgeViewMap.put(new Integer(edgeInx), edgeView); }
+    // Under no circumstances should we be holding m_lock when the listener
+    // events are fired.
+    final GraphViewChangeListener listener = m_lis[0];
+    if (listener != null) {
+      if (sourceNode != null || targetNode != null) {
+        int[] nodeInx;
+        if (sourceNode == null) {
+          nodeInx = new int[] { targetNode.getRootGraphIndex() }; }
+        else if (targetNode == null) {
+          nodeInx = new int[] { sourceNode.getRootGraphIndex() }; }
+        else {
+          nodeInx = new int[] { sourceNode.getRootGraphIndex(),
+                                targetNode.getRootGraphIndex() }; }
+        listener.graphViewChanged
+          (new GraphViewNodesRestoredEvent(this, nodeInx)); }
+      listener.graphViewChanged
+        (new GraphViewEdgesRestoredEvent
+         (this, new int[] { edgeView.getRootGraphIndex() })); }
+    return edgeView;
   }
 
   public EdgeView addEdgeView(String className, int edgeInx)
