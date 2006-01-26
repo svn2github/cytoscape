@@ -312,16 +312,30 @@ public class DGraphView implements GraphView
 
   public EdgeView removeEdgeView(int edgeInx)
   {
+    final DEdgeView returnThis;
     synchronized (m_lock) {
-      final DEdgeView returnThis =
-        (DEdgeView) m_edgeViewMap.remove(new Integer(edgeInx));
-      if (returnThis == null) { return returnThis; }
-      // If this edge view was hidden, it won't be in m_drawPersp.
-      m_drawPersp.hideEdge(edgeInx);
-      m_structPersp.hideEdge(edgeInx);
-      m_edgeDetails.unregisterEdge(~edgeInx);
-      returnThis.m_view = null;
-      return returnThis; }
+      returnThis = removeEdgeViewInternal(edgeInx); }
+    if (returnThis != null) {
+      final GraphViewChangeListener listener = m_lis[0];
+      if (listener != null) {
+        listener.graphViewChanged
+          (new GraphViewEdgesHiddenEvent
+           (this, new int[] { returnThis.getRootGraphIndex() })); } }
+    return returnThis;
+  }
+
+  // Should synchronize around m_lock.
+  private DEdgeView removeEdgeViewInternal(int edgeInx)
+  {
+    final DEdgeView returnThis =
+      (DEdgeView) m_edgeViewMap.remove(new Integer(edgeInx));
+    if (returnThis == null) { return returnThis; }
+    // If this edge view was hidden, it won't be in m_drawPersp.
+    m_drawPersp.hideEdge(edgeInx);
+    m_structPersp.hideEdge(edgeInx);
+    m_edgeDetails.unregisterEdge(~edgeInx);
+    returnThis.m_view = null;
+    return returnThis;
   }
 
   public String getIdentifier()
