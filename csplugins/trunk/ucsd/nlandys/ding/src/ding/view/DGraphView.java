@@ -540,6 +540,12 @@ public class DGraphView implements GraphView
    */
   public boolean showGraphObject(Object obj)
   {
+    return showGraphObjectInternal(obj, true);
+  }
+
+  private boolean showGraphObjectInternal(Object obj,
+                                          boolean fireListenerEvents)
+  {
     if (obj instanceof DNodeView) {
       int nodeInx;
       synchronized (m_lock) {
@@ -549,23 +555,45 @@ public class DGraphView implements GraphView
         if (m_drawPersp.restoreNode(nodeInx) == 0) { return false; }
         m_spacial.insert(~nodeInx, nView.m_hiddenXMin, nView.m_hiddenYMin,
                          nView.m_hiddenXMax, nView.m_hiddenYMax); }
-      final GraphViewChangeListener listener = m_lis[0];
-      if (listener != null) {
-        listener.graphViewChanged
-          (new GraphViewNodesRestoredEvent(this, new int[] { nodeInx })); }
+      if (fireListenerEvents) {
+        final GraphViewChangeListener listener = m_lis[0];
+        if (listener != null) {
+          listener.graphViewChanged
+            (new GraphViewNodesRestoredEvent(this, new int[] { nodeInx })); } }
       return true; }
     else if (obj instanceof DEdgeView) {
+      int sourceNode = 0;
+      int targetNode = 0;
+      int newEdge = 0;
       synchronized (m_lock) {
         final Edge edge =
           m_structPersp.getEdge(((DEdgeView) obj).getRootGraphIndex());
         if (edge == null) { return false; }
         // The edge exists in m_structPersp, therefore its source and target
         // node views must also exist.
-        showGraphObject(getNodeView(edge.getSource().getRootGraphIndex()));
-        showGraphObject(getNodeView(edge.getTarget().getRootGraphIndex()));
-        if (m_drawPersp.restoreEdge(edge.getRootGraphIndex()) == 0) {
-          return false; }
-        return true; } }
+        sourceNode = edge.getSource().getRootGraphIndex();
+        if (!showGraphObjectInternal(getNodeView(sourceNode), false)) {
+          sourceNode = 0; }
+        targetNode = edge.getTarget().getRootGraphIndex();
+        if (!showGraphObjectInternal(getNodeView(targetNode), false)) {
+          targetNode = 0; }
+        newEdge = edge.getRootGraphIndex();
+        if (m_drawPersp.restoreEdge(newEdge) == 0) {
+          return false; } }
+      if (fireListenerEvents) {
+        final GraphViewChangeListener listener = m_lis[0];
+        if (listener != null) {
+          if (sourceNode != 0) {
+            listener.graphViewChanged
+              (new GraphViewNodesRestoredEvent
+               (this, new int[] { sourceNode })); }
+          if (targetNode != 0) {
+            listener.graphViewChanged
+              (new GraphViewNodesRestoredEvent
+               (this, new int[] { targetNode})); }
+          listener.graphViewChanged
+            (new GraphViewEdgesRestoredEvent(this, new int[] { newEdge })); } }
+      return true; }
     else { return false; }
   }
 
