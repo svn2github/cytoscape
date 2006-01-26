@@ -4,6 +4,7 @@ import cytoscape.graph.dynamic.DynamicGraph;
 import cytoscape.graph.dynamic.util.DynamicGraphFactory;
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntIterator;
+import cytoscape.util.intr.IntStack;
 import java.awt.Canvas;
 import java.awt.Component;
 
@@ -54,13 +55,16 @@ public final class Fung
       return rtnVal; }
 
     public final boolean nodeRemove(final int node) {
-      final boolean rtnVal;
+      final IntStack stack = new IntStack();
       synchronized (m_lock) {
-        rtnVal = m_graph.nodeRemove(node); }
-      if (rtnVal) {
-        // Add listener code here.       
-      }
-      return rtnVal; }
+        final IntEnumerator edgesTouching =
+          m_graph.edgesAdjacent(node, true, true, true);
+        if (edgesTouching == null) { return false; }
+        while (edgesTouching.numRemaining() > 0) {
+          stack.push(edgesTouching.nextInt()); }
+        m_graph.nodeRemove(node); }
+      // Add listener code here.       
+      return true; }
 
     public final int edgeCreate(final int sourceNode,
                                 final int targetNode,
