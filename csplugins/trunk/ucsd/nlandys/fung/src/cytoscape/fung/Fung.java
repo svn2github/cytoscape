@@ -12,13 +12,29 @@ public final class Fung
 {
 
   private final Object m_lock;
+  private final TopologyChangeListener[] m_topLis;
   private final Canvas m_canvas = null;
   private final DynamicGraph m_graphModel;
 
   public Fung()
   {
     m_lock = new Object();
+    m_topLis = new TopologyChangeListener[1];
     m_graphModel = new FungDynamicGraph(m_lock);
+  }
+
+  public final void addTopologyChangeListener(
+                                         final TopologyChangeListener listener)
+  {
+    synchronized (m_lock) {
+      m_topLis[0] = TopologyChangeListenerChain.add(m_topLis[0], listener); }
+  }
+
+  public final void removeTopologyChangeListener(
+                                         final TopologyChangeListener listener)
+  {
+    synchronized (m_lock) {
+      m_topLis[0] = TopologyChangeListenerChain.add(m_topLis[0], listener); }
   }
 
   public final Component getComponent()
@@ -55,13 +71,13 @@ public final class Fung
       return rtnVal; }
 
     public final boolean nodeRemove(final int node) {
-      final IntStack stack = new IntStack();
+      final IntStack removedEdges = new IntStack();
       synchronized (m_lock) {
         final IntEnumerator edgesTouching =
           m_graph.edgesAdjacent(node, true, true, true);
         if (edgesTouching == null) { return false; }
         while (edgesTouching.numRemaining() > 0) {
-          stack.push(edgesTouching.nextInt()); }
+          removedEdges.push(edgesTouching.nextInt()); }
         m_graph.nodeRemove(node); }
       // Add listener code here.       
       return true; }
