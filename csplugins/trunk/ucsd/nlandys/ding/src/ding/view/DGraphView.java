@@ -56,8 +56,7 @@ public class DGraphView implements GraphView
   boolean m_edgeSelection = false;
   final IntBTree m_selectedNodes;
 
-  private final GraphViewChangeListener[] m_lis =
-    new GraphViewChangeListener[1];
+  final GraphViewChangeListener[] m_lis = new GraphViewChangeListener[1];
 
   public DGraphView(GraphPerspective perspective)
   {
