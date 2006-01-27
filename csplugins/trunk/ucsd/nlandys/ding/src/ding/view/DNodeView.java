@@ -4,6 +4,7 @@ import cytoscape.render.immed.GraphGraphics;
 import giny.model.GraphPerspective;
 import giny.model.Node;
 import giny.view.GraphView;
+import giny.view.GraphViewChangeListener;
 import giny.view.Label;
 import giny.view.NodeView;
 import java.awt.BasicStroke;
@@ -27,7 +28,7 @@ class DNodeView implements NodeView, Label
   static final Paint DEFAULT_LABEL_PAINT = Color.black;
 
   DGraphView m_view;
-  final int m_inx;
+  final int m_inx; // The FixedGraph index (non-negative).
   boolean m_selected;
   Paint m_unselectedPaint;
   Paint m_selectedPaint;
@@ -201,7 +202,7 @@ class DNodeView implements NodeView, Label
     synchronized (m_view.m_lock) {
       if (!m_view.m_spacial.exists(m_inx, m_view.m_extentsBuff, 0)) {
         return -1.0d; }
-      return m_view.m_extentsBuff[2] - m_view.m_extentsBuff[0]; }
+      return ((double) m_view.m_extentsBuff[2]) - m_view.m_extentsBuff[0]; }
   }
 
   public boolean setHeight(double height)
@@ -227,7 +228,7 @@ class DNodeView implements NodeView, Label
     synchronized (m_view.m_lock) {
       if (!m_view.m_spacial.exists(m_inx, m_view.m_extentsBuff, 0)) {
         return -1.0d; }
-      return m_view.m_extentsBuff[3] - m_view.m_extentsBuff[1]; }
+      return ((double) m_view.m_extentsBuff[3]) - m_view.m_extentsBuff[1]; }
   }
 
   public Label getLabel()
@@ -237,6 +238,7 @@ class DNodeView implements NodeView, Label
 
   public int getDegree()
   {
+    // This method is totally ridiculous.
     return m_view.getGraphPerspective().getDegree(~m_inx);
   }
 
@@ -346,15 +348,27 @@ class DNodeView implements NodeView, Label
 
   public void select()
   {
-    synchronized (m_view.m_lock) {
-      if (m_selected) { return; }
-      m_selected = true;
-      m_view.m_nodeDetails.overrideFillPaint(m_inx, m_selectedPaint);
-      if (m_selectedPaint instanceof Color) {
-        m_view.m_nodeDetails.overrideColorLowDetail
-          (m_inx, (Color) m_selectedPaint); }
-      m_view.m_selectedNodes.insert(m_inx); }
-    }
+    final boolean somethingChanged;
+    synchronized (m_view.m_lock) { somethingChanged = selectInternal(); }
+    if (somethingChanged) {
+      final GraphViewChangeListener listener = m_view.m_lis[0];
+      if (listener != null) {
+        listener.graphViewChanged
+          (new GraphViewNodesSelectedEvent(m_view, new int[] { ~m_inx })); } }
+  }
+
+  // Should synchronize around m_view.m_lock.
+  boolean selectInternal()
+  {
+    if (m_selected) { return false; }
+    m_selected = true;
+    m_view.m_nodeDetails.overrideFillPaint(m_inx, m_selectedPaint);
+    if (m_selectedPaint instanceof Color) {
+      m_view.m_nodeDetails.overrideColorLowDetail
+        (m_inx, (Color) m_selectedPaint); }
+    m_view.m_selectedNodes.insert(m_inx);
+    return true;
+  }
 
   public void unselect()
   {
