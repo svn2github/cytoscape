@@ -534,28 +534,52 @@ public class DGraphView implements GraphView
    */
   public boolean hideGraphObject(Object obj)
   {
-    synchronized (m_lock) {
-      if (obj instanceof DEdgeView) {
-        final int edgeInx = ((DEdgeView) obj).getRootGraphIndex();
-        if (m_drawPersp.hideEdge(edgeInx) == 0) { return false; }
-        return true; }
-      else if (obj instanceof DNodeView) {
+    return hideGraphObjectInternal(obj, true);
+  }
+
+  private boolean hideGraphObjectInternal(Object obj,
+                                          boolean fireListenerEvents)
+  {
+    if (obj instanceof DEdgeView) {
+      int edgeInx;
+      synchronized (m_lock) {
+        edgeInx = ((DEdgeView) obj).getRootGraphIndex();
+        if (m_drawPersp.hideEdge(edgeInx) == 0) { return false; } }
+      if (fireListenerEvents) {
+        final GraphViewChangeListener listener = m_lis[0];
+        if (listener != null) {
+          listener.graphViewChanged
+            (new GraphViewEdgesHiddenEvent(this, new int[] { edgeInx })); } }
+      return true; }
+    else if (obj instanceof DNodeView) {
+      int[] edges;
+      int nodeInx;
+      synchronized (m_lock) {
         final DNodeView nView = (DNodeView) obj;
-        final int nodeInx = nView.getRootGraphIndex();
-        final int[] edges = m_drawPersp.getAdjacentEdgeIndicesArray
+        nodeInx = nView.getRootGraphIndex();
+        edges = m_drawPersp.getAdjacentEdgeIndicesArray
           (nodeInx, true, true, true);
         if (edges == null) { return false; }
         for (int i = 0; i < edges.length; i++) {
-          hideGraphObject(m_edgeViewMap.get(new Integer(edges[i]))); }
+          hideGraphObjectInternal(m_edgeViewMap.get(new Integer(edges[i])),
+                                  false); }
         m_spacial.exists(~nodeInx, m_extentsBuff, 0);
         nView.m_hiddenXMin = m_extentsBuff[0];
         nView.m_hiddenYMin = m_extentsBuff[1];
         nView.m_hiddenXMax = m_extentsBuff[2];
         nView.m_hiddenYMax = m_extentsBuff[3];
         m_drawPersp.hideNode(nodeInx);
-        m_spacial.delete(~nodeInx);
-        return true; }
-      else { return false; } }
+        m_spacial.delete(~nodeInx); }
+      if (fireListenerEvents) {
+        final GraphViewChangeListener listener = m_lis[0];
+        if (listener != null) {
+          if (edges.length > 0) {
+            listener.graphViewChanged
+              (new GraphViewEdgesHiddenEvent(this, edges)); }
+          listener.graphViewChanged
+            (new GraphViewNodesHiddenEvent(this, new int[] { nodeInx })); } }
+      return true; }
+    else { return false; }
   }
 
   /*
