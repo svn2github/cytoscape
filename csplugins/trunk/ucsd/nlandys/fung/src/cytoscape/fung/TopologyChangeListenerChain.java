@@ -5,47 +5,47 @@ final class TopologyChangeListenerChain implements TopologyChangeListener
 
   private final TopologyChangeListener a, b;
 
-  private TopologyChangeListenerChain(TopologyChangeListener a,
-                                      TopologyChangeListener b)
+  private TopologyChangeListenerChain(final TopologyChangeListener a,
+                                      final TopologyChangeListener b)
   {
     this.a = a;
     this.b = b;
   }
 
-  public void nodeCreated(int node)
+  public final void nodeCreated(final int node)
   {
     a.nodeCreated(node);
     b.nodeCreated(node);
   }
 
-  public void nodeRemoved(int node)
+  public final void nodeRemoved(final int node)
   {
     a.nodeRemoved(node);
     b.nodeRemoved(node);
   }
 
-  public void edgeCreated(int edge)
+  public final void edgeCreated(final int edge)
   {
     a.edgeCreated(edge);
     b.edgeCreated(edge);
   }
 
-  public void edgeRemoved(int edge)
+  public final void edgeRemoved(final int edge)
   {
     a.edgeRemoved(edge);
     b.edgeRemoved(edge);
   }
 
-  static TopologyChangeListener add(TopologyChangeListener a,
-                                    TopologyChangeListener b)
+  static final TopologyChangeListener add(final TopologyChangeListener a,
+                                          final TopologyChangeListener b)
   {
     if (a == null) { return b; }
     if (b == null) { return a; }
     return new TopologyChangeListenerChain(a, b);
   }
 
-  static TopologyChangeListener remove(TopologyChangeListener l,
-                                       TopologyChangeListener oldl)
+  static final TopologyChangeListener remove(final TopologyChangeListener l,
+                                             final TopologyChangeListener oldl)
   {
     if (l == oldl || l == null) { return null; }
     else if (l instanceof TopologyChangeListenerChain) {
@@ -53,12 +53,13 @@ final class TopologyChangeListenerChain implements TopologyChangeListener
     else return l;
   }
 
-  private TopologyChangeListener remove(TopologyChangeListener oldl)
+  private final TopologyChangeListener remove(
+                                             final TopologyChangeListener oldl)
   {
     if (oldl == a) { return b; }
     if (oldl == b) { return a; }
-    TopologyChangeListener a2 = remove(a, oldl);
-    TopologyChangeListener b2 = remove(b, oldl);
+    final TopologyChangeListener a2 = remove(a, oldl);
+    final TopologyChangeListener b2 = remove(b, oldl);
     if (a2 == a && b2 == b) { return this; }
     return add(a2, b2);
   }
