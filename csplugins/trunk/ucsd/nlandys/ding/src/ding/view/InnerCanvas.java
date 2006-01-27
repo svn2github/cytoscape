@@ -8,6 +8,7 @@ import cytoscape.render.stateful.GraphLOD;
 import cytoscape.render.stateful.GraphRenderer;
 import cytoscape.util.intr.IntHash;
 import cytoscape.util.intr.IntStack;
+import giny.view.GraphViewChangeListener;
 import giny.view.NodeView;
 import java.awt.Canvas;
 import java.awt.Color;
@@ -137,6 +138,10 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
       m_lastXMousePos = e.getX();
       m_lastYMousePos = e.getY();
       boolean mustRedraw = false;
+      int[] unselectedNodes = null;
+      int[] unselectedEdges = null;
+      int chosenNode = 0;
+      boolean chosenNodeSelected = false;
       synchronized (m_lock) {
         if (m_view.m_nodeSelection) {
           m_ptBuff[0] = m_lastXMousePos;
@@ -146,30 +151,50 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
           m_view.getNodesIntersectingRectangle
             ((float) m_ptBuff[0], (float) m_ptBuff[1],
              (float) m_ptBuff[0], (float) m_ptBuff[1], false, m_stack);
-          final int chosen = (m_stack.size() > 0) ? m_stack.peek() : 0;
+          chosenNode = (m_stack.size() > 0) ? m_stack.peek() : 0;
           if (!e.isShiftDown()) {
             // Unselect all nodes and edges.
-            // TODO: Optimize to not instantiate new array on every call.
-            final int[] selectedNodes = m_view.getSelectedNodeIndices();
-            if (selectedNodes.length > 0) { mustRedraw = true; }
-            for (int i = 0; i < selectedNodes.length; i++) {
-              m_view.getNodeView(selectedNodes[i]).unselect(); }
-            final int[] selectedEdges = m_view.getSelectedEdgeIndices();
-            if (selectedEdges.length > 0) { mustRedraw = true; }
-            for (int i = 0; i < selectedEdges.length; i++) {
-              m_view.getEdgeView(selectedEdges[i]).unselect(); } }
-          if (chosen != 0) {
+            unselectedNodes = m_view.getSelectedNodeIndices();
+            if (unselectedNodes.length > 0) { mustRedraw = true; }
+            for (int i = 0; i < unselectedNodes.length; i++) {
+              ((DNodeView) m_view.getNodeView(unselectedNodes[i])).
+                unselectInternal(); }
+            unselectedEdges = m_view.getSelectedEdgeIndices();
+            if (unselectedEdges.length > 0) { mustRedraw = true; }
+            for (int i = 0; i < unselectedEdges.length; i++) {
+              ((DEdgeView) m_view.getEdgeView(unselectedEdges[i])).
+                unselectInternal(); } }
+          if (chosenNode != 0) {
             final boolean wasSelected =
-              m_view.getNodeView(chosen).isSelected();
+              m_view.getNodeView(chosenNode).isSelected();
             if (wasSelected) {
-              m_view.getNodeView(chosen).unselect(); }
+              ((DNodeView) m_view.getNodeView(chosenNode)).unselectInternal();
+              chosenNodeSelected = false; }
             else { // Was not selected.
-              m_view.getNodeView(chosen).select(); }
+              ((DNodeView) m_view.getNodeView(chosenNode)).selectInternal();
+              chosenNodeSelected = true; }
             mustRedraw = true;
             m_button1NodeDrag = true; }
           else { m_button1NodeDrag = false; } }
         else { m_button1NodeDrag = false; } }
-      if (mustRedraw) { repaint(); } }
+      if (mustRedraw) { repaint(); }
+      final GraphViewChangeListener listener = m_view.m_lis[0];
+      if (listener != null) {
+        if (unselectedNodes != null && unselectedNodes.length > 0) {
+          listener.graphViewChanged
+            (new GraphViewNodesUnselectedEvent(m_view, unselectedNodes)); }
+        if (unselectedEdges != null && unselectedEdges.length > 0) {
+          listener.graphViewChanged
+            (new GraphViewEdgesUnselectedEvent(m_view, unselectedEdges)); }
+        if (chosenNode != 0) {
+          if (chosenNodeSelected) {
+            listener.graphViewChanged
+              (new GraphViewNodesSelectedEvent
+               (m_view, new int[] { chosenNode })); }
+          else {
+            listener.graphViewChanged
+              (new GraphViewNodesUnselectedEvent
+               (m_view, new int[] { chosenNode })); } } } }
     else if (e.getButton() == MouseEvent.BUTTON2) {
       m_currMouseButton = 2;
       m_lastXMousePos = e.getX();
