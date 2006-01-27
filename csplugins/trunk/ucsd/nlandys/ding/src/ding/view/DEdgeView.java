@@ -6,6 +6,7 @@ import giny.model.Edge;
 import giny.view.Bend;
 import giny.view.EdgeView;
 import giny.view.GraphView;
+import giny.view.GraphViewChangeListener;
 import giny.view.Label;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -264,17 +265,30 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
 
   public void unselect()
   {
-    synchronized (m_view.m_lock) {
-      if (!m_selected) { return; }
-      m_selected = false;
-      m_view.m_edgeDetails.overrideSegmentPaint(m_inx, m_unselectedPaint);
-      m_view.m_edgeDetails.overrideSourceArrowPaint
-        (m_inx, m_sourceUnselectedPaint);
-      m_view.m_edgeDetails.overrideTargetArrowPaint
-        (m_inx, m_targetUnselectedPaint);
-      if (m_unselectedPaint instanceof Color) {
-        m_view.m_edgeDetails.overrideColorLowDetail
-          (m_inx, (Color) m_unselectedPaint); } }
+    final boolean somethingChanged;
+    synchronized (m_view.m_lock) { somethingChanged = unselectInternal(); }
+    if (somethingChanged) {
+      final GraphViewChangeListener listener = m_view.m_lis[0];
+      if (listener != null) {
+        listener.graphViewChanged
+          (new GraphViewEdgesUnselectedEvent(m_view,
+                                             new int[] { ~m_inx })); } }
+  }
+
+  // Should synchronize around m_view.m_lock.
+  boolean unselectInternal()
+  {
+    if (!m_selected) { return false; }
+    m_selected = false;
+    m_view.m_edgeDetails.overrideSegmentPaint(m_inx, m_unselectedPaint);
+    m_view.m_edgeDetails.overrideSourceArrowPaint
+      (m_inx, m_sourceUnselectedPaint);
+    m_view.m_edgeDetails.overrideTargetArrowPaint
+      (m_inx, m_targetUnselectedPaint);
+    if (m_unselectedPaint instanceof Color) {
+      m_view.m_edgeDetails.overrideColorLowDetail
+        (m_inx, (Color) m_unselectedPaint); }
+    return true;
   }
 
   public boolean setSelected(boolean state)
