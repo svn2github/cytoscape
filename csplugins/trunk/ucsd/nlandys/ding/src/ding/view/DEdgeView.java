@@ -250,17 +250,30 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
 
   public void select()
   {
-    synchronized (m_view.m_lock) {
-      if (m_selected) { return; }
-      m_selected = true;
-      m_view.m_edgeDetails.overrideSegmentPaint(m_inx, m_selectedPaint);
-      m_view.m_edgeDetails.overrideSourceArrowPaint
-        (m_inx, m_sourceSelectedPaint);
-      m_view.m_edgeDetails.overrideTargetArrowPaint
-        (m_inx, m_targetSelectedPaint);
-      if (m_selectedPaint instanceof Color) {
-        m_view.m_edgeDetails.overrideColorLowDetail
-          (m_inx, (Color) m_selectedPaint); } }
+    final boolean somethingChanged;
+    synchronized (m_view.m_lock) { somethingChanged = selectInternal(); }
+    if (somethingChanged) {
+      final GraphViewChangeListener listener = m_view.m_lis[0];
+      if (listener != null) {
+        listener.graphViewChanged
+          (new GraphViewEdgesSelectedEvent(m_view,
+                                           new int[] { ~m_inx })); } }
+  }
+
+  // Should synchronize around m_view.m_lock.
+  boolean selectInternal()
+  {
+    if (m_selected) { return false; }
+    m_selected = true;
+    m_view.m_edgeDetails.overrideSegmentPaint(m_inx, m_selectedPaint);
+    m_view.m_edgeDetails.overrideSourceArrowPaint
+      (m_inx, m_sourceSelectedPaint);
+    m_view.m_edgeDetails.overrideTargetArrowPaint
+      (m_inx, m_targetSelectedPaint);
+    if (m_selectedPaint instanceof Color) {
+      m_view.m_edgeDetails.overrideColorLowDetail
+        (m_inx, (Color) m_selectedPaint); }
+    return true;
   }
 
   public void unselect()
@@ -293,13 +306,9 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
 
   public boolean setSelected(boolean state)
   {
-    synchronized (m_view.m_lock) {
-      if (state) {
-        if (m_selected) { return false; }
-        select(); return true; }
-      else {
-        if (!m_selected) { return false; }
-        unselect(); return true; } }
+    if (state) { select(); }
+    else { unselect(); }
+    return true;
   }
 
   public boolean isSelected()
