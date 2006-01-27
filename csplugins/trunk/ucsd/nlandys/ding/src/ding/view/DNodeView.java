@@ -372,14 +372,27 @@ class DNodeView implements NodeView, Label
 
   public void unselect()
   {
-    synchronized (m_view.m_lock) {
-      if (!m_selected) { return; }
-      m_selected = false;
-      m_view.m_nodeDetails.overrideFillPaint(m_inx, m_unselectedPaint);
-      if (m_unselectedPaint instanceof Color) {
-        m_view.m_nodeDetails.overrideColorLowDetail
-          (m_inx, (Color) m_unselectedPaint); }
-      m_view.m_selectedNodes.delete(m_inx); }
+    final boolean somethingChanged;
+    synchronized (m_view.m_lock) { somethingChanged = unselectInternal(); }
+    if (somethingChanged) {
+      final GraphViewChangeListener listener = m_view.m_lis[0];
+      if (listener != null) {
+        listener.graphViewChanged
+          (new GraphViewNodesUnselectedEvent(m_view,
+                                             new int[] { ~m_inx })); } }
+  }
+
+  // Should synchronize around m_view.m_lock.
+  boolean unselectInternal()
+  {
+    if (!m_selected) { return false; }
+    m_selected = false;
+    m_view.m_nodeDetails.overrideFillPaint(m_inx, m_unselectedPaint);
+    if (m_unselectedPaint instanceof Color) {
+      m_view.m_nodeDetails.overrideColorLowDetail
+        (m_inx, (Color) m_unselectedPaint); }
+    m_view.m_selectedNodes.delete(m_inx);
+    return true;
   }
 
   public boolean isSelected()
@@ -389,6 +402,7 @@ class DNodeView implements NodeView, Label
 
   public boolean setSelected(boolean selected)
   {
+    // TODO!  IMPORTANT!  Don't hold the lock when calling select()!
     synchronized (m_view.m_lock) {
       if (selected) {
         if (m_selected) { return false; }
