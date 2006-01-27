@@ -402,14 +402,9 @@ class DNodeView implements NodeView, Label
 
   public boolean setSelected(boolean selected)
   {
-    // TODO!  IMPORTANT!  Don't hold the lock when calling select()!
-    synchronized (m_view.m_lock) {
-      if (selected) {
-        if (m_selected) { return false; }
-        select(); return true; }
-      else {
-        if (!m_selected) { return false; }
-        unselect(); return true; } }
+    if (selected) { select(); }
+    else { unselect(); }
+    return true;
   }
 
   public void setShape(final int shape)
