@@ -148,6 +148,8 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
           m_ptBuff[1] = m_lastYMousePos;
           m_view.xformComponentToNodeCoords(m_ptBuff);
           m_stack.empty();
+          // TODO: Detect low detail rendering and then test against rectangle
+          // instead of true node shape.
           m_view.getNodesIntersectingRectangle
             ((float) m_ptBuff[0], (float) m_ptBuff[1],
              (float) m_ptBuff[0], (float) m_ptBuff[1], false, m_stack);
