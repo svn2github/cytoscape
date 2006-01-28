@@ -111,7 +111,7 @@ public class PathBlast implements Runnable {
 
 		// create the homology graph based on the interaction graphs just created and a
 		// homology model
-		HomologyModel blastHomology = new LocalBlast(Config.getProperties(), Config.getSynonymMapper(),  m_outputdir + System.getProperty("file.separator") + "blastout.xml");
+		HomologyModel blastHomology = new LocalBlast(Config.getProperties(), Config.getSynonymMapper(),  m_outputdir + System.getProperty("file.separator") + "blastout.xml", e_value);
 		HomologyGraph homologyGraph = new HomologyGraph(blastHomology, e_value, seqGraphs);
 		System.out.println("homologyGraph: " + homologyGraph.toString());
 
