@@ -18,7 +18,7 @@ public final class Fung
   final float[] m_extentsBuff = new float[4];
   private final Canvas m_canvas = null;
   private final DynamicGraph m_graphModel = new FungDynamicGraph();
-  private final RTree m_rtree = new RTree();
+  final RTree m_rtree = new RTree();
 
   private TopologyChangeListener m_topLis = null;
   private float m_defaultNodeSizeDiv2 =
