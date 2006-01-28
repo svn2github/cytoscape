@@ -32,6 +32,9 @@ public final class NodeView
 
   public final void setLocation(final double x, final double y)
   {
+    // As a node changes location, its width and height may change as a
+    // result of floating point imprecision.  However, we're not going to
+    // error check this shifting size against border width.
     synchronized (m_fung.m_lock) {
       m_fung.m_rtree.exists(m_node, m_fung.m_extentsBuff, 0);
       final double wDiv2 =
@@ -52,12 +55,23 @@ public final class NodeView
       m_fung.m_rtree.insert(m_node, xMin, yMin, xMax, yMax); }
   }
 
+  /**
+   * @param d the width and height of this dimension are set to the
+   *   width and height of this node, respectively.
+   */
   public final void getSize(final Dimension2D d)
   {
+    synchronized (m_fung.m_lock) {
+      m_fung.m_rtree.exists(m_node, m_fung.m_extentsBuff, 0);
+      d.setSize
+        (((double) m_fung.m_extentsBuff[2]) - m_fung.m_extentsBuff[0],
+         ((double) m_fung.m_extentsBuff[3]) - m_fung.m_extentsBuff[1]); }
   }
 
-  public final void setSize(final Dimension2D d)
+  public final void setSize(final double width, final double height)
   {
+    // TODO: Reconcile width and height with current node border width and
+    // if SHAPE_ROUNDED_RECTANGLE then check for necessary constraint.
   }
 
 }
