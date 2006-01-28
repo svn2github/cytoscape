@@ -14,22 +14,17 @@ public final class Fung
 
   private final static double INITIAL_DEFAULT_NODE_SIZE = 10.0d;
 
-  private final Object m_lock;
+  private final Object m_lock = new Object();
   private final Canvas m_canvas = null;
-  private final DynamicGraph m_graphModel;
-  private final RTree m_rtree;
+  private final DynamicGraph m_graphModel = new FungDynamicGraph();
+  private final RTree m_rtree = new RTree();
 
-  private TopologyChangeListener m_topLis;
-  private float m_defaultNodeSizeDiv2;
+  private TopologyChangeListener m_topLis = null;
+  private float m_defaultNodeSizeDiv2 =
+    (float) (INITIAL_DEFAULT_NODE_SIZE / 2);
 
   public Fung()
   {
-    m_lock = new Object();
-    m_graphModel = new FungDynamicGraph();
-    m_rtree = new RTree();
-
-    m_topLis = null;
-    m_defaultNodeSizeDiv2 = (float) (INITIAL_DEFAULT_NODE_SIZE / 2);
   }
 
   /**
