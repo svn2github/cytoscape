@@ -42,6 +42,7 @@ necessary for the command to run which are specified at runtime.
 	<li>QUERY_SEQS</li> - The name (and path) specifying the FASTA file containing
 	the query sequences to be Blasted against the target database.
 	<li>OUTPUT_FILE</li> - The output file location.  
+	<li>E_VALUE</li> - The expectation value to use for the -e argument in blastall. 
 	</ul>
 </li>
 <li>blast.blastall.location - The location of the blastall executable.</li>
@@ -50,7 +51,7 @@ necessary for the command to run which are specified at runtime.
 </ul>
 Here is an example of a blast.properties file:
 <pre>
-blast.blastall.command=blastall -p blastp -d TARGET_DB -i QUERY_SEQS -m 7 -o OUTPUT_FILE
+blast.blastall.command=blastall -p blastp -d TARGET_DB -i QUERY_SEQS -m 7 -e E_VALUE -o OUTPUT_FILE
 blast.blastall.location=/cellar/users/mes/software/blast-2.2.12/bin
 blast.formatdb.command=formatdb -i TARGET_DB
 blast.formatdb.location=/cellar/users/mes/software/blast-2.2.12/bin
@@ -72,6 +73,11 @@ public class LocalBlast implements HomologyModel {
 	 * Sentinel used to specify the output file name. 
 	 */
 	public static final String OUTPUT_FILE = "OUTPUT_FILE";
+
+	/**
+	 * Sentinel used to specify the expectation value threshold.
+	 */
+	public static final String E_VALUE = "E_VALUE";
 
 	/**
 	 * The file that contains the blast output to be parsed.
@@ -96,13 +102,22 @@ public class LocalBlast implements HomologyModel {
 	protected SynonymMapper synonyms;
 
 	/**
+	 * A string representation of a double value that is the expectation
+	 * value threshold for the blastall command (-e argument).
+	 */
+	protected String eValueThreshold;
+
+
+	/**
 	 * Constructor. Synonyms are set to null, meaning you get whatever id is present
 	 * in the blast results.
 	 * @param props The Properties that specify how and where to run Blast.
 	 * @param tmpOutFile A temporary output file that holds the blast output. 
+	 * @param eValue The expectation value threshold for the blastall command 
+	 * (the -e argument).
 	 */
-	public LocalBlast(Properties props, String tmpOutFile) {
-		this (props,null,tmpOutFile);
+	public LocalBlast(Properties props, String tmpOutFile, double eValue ) {
+		this (props,null,tmpOutFile,eValue);
 	}
 
 	/**
@@ -112,12 +127,15 @@ public class LocalBlast implements HomologyModel {
 	 * blast results to meaningful names.  If it is set to null, you'll simply
 	 * get the id found in the blast results.
 	 * @param tmpOutFile A temporary output file that holds the blast output. 
+	 * @param eValue The expectation value threshold for the blastall command 
+	 * (the -e argument).
 	 */
-	public LocalBlast(Properties props, SynonymMapper synonyms, String tmpOutFile) { 
+	public LocalBlast(Properties props, SynonymMapper synonyms, String tmpOutFile, double eValue ) { 
 		this.synonyms = synonyms;
 		try { 
 			this.props = props;
 			blastOutputFile = tmpOutFile; 
+			eValueThreshold = Double.toString(eValue); 
 		} catch (Exception e) { e.printStackTrace(); }
 	}
 
@@ -194,6 +212,7 @@ public class LocalBlast implements HomologyModel {
 		blastCmd = blastCmd.replaceAll( TARGET_DB_SENTINEL, dbName );
 		blastCmd = blastCmd.replaceAll( QUERY_SENTINEL, querySeqName );
 		blastCmd = blastCmd.replaceAll( OUTPUT_FILE, blastOutputFile );
+		blastCmd = blastCmd.replaceAll( E_VALUE, eValueThreshold );
 		String blastLocation = props.getProperty("blast.blastall.location");
 		String sep = System.getProperty("file.separator");
 		String cmd = blastLocation + sep + blastCmd; 
