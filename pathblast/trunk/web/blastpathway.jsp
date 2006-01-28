@@ -106,25 +106,6 @@ if ( reset != null || proteins == null ) {
         proteins[2] = Protein.createProtein("UBC9_YEAST");//UBC9
         t_org = Config.T_ORG_VALUES[0];
         nEvalue = new EValue(1.0E-2);
-    } else if (request.getParameter("MoreProteins.x") != null) {
-        if (proteins.length < 5) {
-            //make one more protein
-            Protein[] newProteins = new Protein[proteins.length+1];
-            for (int i = 0; i < proteins.length; i++) {
-                newProteins[i] = proteins[i];
-            }
-            newProteins[proteins.length] = new Protein();
-            proteins = newProteins;
-        }
-    } else if (request.getParameter("LessProteins.x") != null) {
-        if (proteins.length > 2) {
-            //destroy the last protein
-            Protein[] newProteins = new Protein[proteins.length-1];
-            for (int i = 0; i < newProteins.length; i++) {
-                newProteins[i] = proteins[i];
-            }
-            proteins = newProteins;
-        }
     } else {
     	//
 	// Now actually process the proteins and move forward if things are ok.
@@ -179,6 +160,26 @@ if ( reset != null || proteins == null ) {
     		// do nothing
 		System.out.println("HideAdvanced:"  + hideAdvanced);
 
+	// or adding/removing another protein
+        } else if (request.getParameter("MoreProteins.x") != null) {
+            if (proteins.length < 5) {
+                //make one more protein
+                Protein[] newProteins = new Protein[proteins.length+1];
+                for (int i = 0; i < proteins.length; i++) {
+                    newProteins[i] = proteins[i];
+                }
+                newProteins[proteins.length] = new Protein();
+                proteins = newProteins;
+            }
+        } else if (request.getParameter("LessProteins.x") != null) {
+            if (proteins.length > 2) {
+                //destroy the last protein
+                Protein[] newProteins = new Protein[proteins.length-1];
+                for (int i = 0; i < newProteins.length; i++) {
+                    newProteins[i] = proteins[i];
+                }
+                proteins = newProteins;
+            }
 	// ok, now proceed
         } else if ( !error && globalErrorMessage.length() == 0 ) {
 		if ( disambiguateRequired )
