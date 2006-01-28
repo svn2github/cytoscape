@@ -14,7 +14,8 @@ public final class Fung
 
   private final static double INITIAL_DEFAULT_NODE_SIZE = 10.0d;
 
-  private final Object m_lock = new Object();
+  final Object m_lock = new Object();
+  final float[] m_extentsBuff = new float[4];
   private final Canvas m_canvas = null;
   private final DynamicGraph m_graphModel = new FungDynamicGraph();
   private final RTree m_rtree = new RTree();
