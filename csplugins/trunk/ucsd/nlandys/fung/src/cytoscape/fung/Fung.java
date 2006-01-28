@@ -1,5 +1,6 @@
 package cytoscape.fung;
 
+import cytoscape.geom.rtree.RTree;
 import cytoscape.graph.dynamic.DynamicGraph;
 import cytoscape.graph.dynamic.util.DynamicGraphFactory;
 import cytoscape.util.intr.IntEnumerator;
@@ -11,30 +12,55 @@ import java.awt.Component;
 public final class Fung
 {
 
+  private final static double INITIAL_DEFAULT_NODE_SIZE = 10.0d;
+
   private final Object m_lock;
-  private final TopologyChangeListener[] m_topLis;
   private final Canvas m_canvas = null;
   private final DynamicGraph m_graphModel;
+  private final RTree m_rtree;
+
+  private TopologyChangeListener m_topLis;
+  private float m_defaultNodeSizeDiv2;
 
   public Fung()
   {
     m_lock = new Object();
-    m_topLis = new TopologyChangeListener[1];
-    m_graphModel = new FungDynamicGraph(m_lock, m_topLis);
+    m_graphModel = new FungDynamicGraph();
+    m_rtree = new RTree();
+
+    m_topLis = null;
+    m_defaultNodeSizeDiv2 = (float) (INITIAL_DEFAULT_NODE_SIZE / 2);
+  }
+
+  /**
+   * When new nodes are created, they are placed at the origin and have
+   * width and height equal to the return value.
+   */
+  public final double getDefaultNodeSize()
+  {
+    return 2.0d * m_defaultNodeSizeDiv2;
+  }
+
+  public final void setDefaultNodeSize(final double defaultNodeSize)
+  {
+    final float defaultNodeSizeDiv2 = (float) (defaultNodeSize / 2.0d);
+    if (!(defaultNodeSizeDiv2 > 0.0f)) {
+      throw new IllegalArgumentException("defaultNodeSize is too small"); }
+    synchronized (m_lock) { m_defaultNodeSizeDiv2 = defaultNodeSizeDiv2; }
   }
 
   public final void addTopologyChangeListener(
                                          final TopologyChangeListener listener)
   {
     synchronized (m_lock) {
-      m_topLis[0] = TopologyChangeListenerChain.add(m_topLis[0], listener); }
+      m_topLis = TopologyChangeListenerChain.add(m_topLis, listener); }
   }
 
   public final void removeTopologyChangeListener(
                                          final TopologyChangeListener listener)
   {
     synchronized (m_lock) {
-      m_topLis[0] = TopologyChangeListenerChain.add(m_topLis[0], listener); }
+      m_topLis = TopologyChangeListenerChain.add(m_topLis, listener); }
   }
 
   public final Component getComponent()
@@ -47,17 +73,12 @@ public final class Fung
     return m_graphModel;
   }
 
-  private final static class FungDynamicGraph implements DynamicGraph
+  private final class FungDynamicGraph implements DynamicGraph
   {
 
-    final Object m_lock;
-    final TopologyChangeListener[] m_topLis;
     final DynamicGraph m_graph;
 
-    FungDynamicGraph(final Object lock,
-                     final TopologyChangeListener[] topLis) {
-      m_lock = lock;
-      m_topLis = topLis;
+    FungDynamicGraph() {
       m_graph = DynamicGraphFactory.instantiateDynamicGraph(); }
 
     public final IntEnumerator nodes() {
@@ -69,8 +90,10 @@ public final class Fung
     public final int nodeCreate() {
       final int rtnVal;
       synchronized (m_lock) {
-        rtnVal = m_graph.nodeCreate(); }
-      final TopologyChangeListener topLis = m_topLis[0];
+        rtnVal = m_graph.nodeCreate();
+        m_rtree.insert(rtnVal, -m_defaultNodeSizeDiv2, -m_defaultNodeSizeDiv2,
+                       m_defaultNodeSizeDiv2, m_defaultNodeSizeDiv2); }
+      final TopologyChangeListener topLis = m_topLis;
       if (topLis != null) {
         topLis.nodeCreated(rtnVal); }
       return rtnVal; }
@@ -83,8 +106,9 @@ public final class Fung
         if (edgesTouching == null) { return false; }
         while (edgesTouching.numRemaining() > 0) {
           removedEdges.push(edgesTouching.nextInt()); }
+        m_rtree.delete(node);
         m_graph.nodeRemove(node); }
-      final TopologyChangeListener topLis = m_topLis[0];
+      final TopologyChangeListener topLis = m_topLis;
       if (topLis != null) {
         final IntEnumerator removedEdgeEnum = removedEdges.elements();
         while (removedEdgeEnum.numRemaining() > 0) {
@@ -99,7 +123,7 @@ public final class Fung
       synchronized (m_lock) {
         rtnVal = m_graph.edgeCreate(sourceNode, targetNode, directed); }
       if (rtnVal >= 0) {
-        final TopologyChangeListener topLis = m_topLis[0];
+        final TopologyChangeListener topLis = m_topLis;
         if (topLis != null) {
           topLis.edgeCreated(rtnVal); } }
       return rtnVal; }
@@ -109,7 +133,7 @@ public final class Fung
       synchronized (m_lock) {
         rtnVal = m_graph.edgeRemove(edge); }
       if (rtnVal) {
-        final TopologyChangeListener topLis = m_topLis[0];
+        final TopologyChangeListener topLis = m_topLis;
         if (topLis != null) {
           topLis.edgeRemoved(edge); } }
       return rtnVal; }
