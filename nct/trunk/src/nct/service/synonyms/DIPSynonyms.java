@@ -112,15 +112,15 @@ public class DIPSynonyms extends DefaultHandler implements SynonymMapper
 	 * @return The list of matches found.
 	 */
 	public List<String> getPotentialSynonyms(String regex) {
-		Matcher m = Pattern.compile(".*" + regex.toUpperCase() + ".*" ).matcher("");
-		List<String> matchList = new ArrayList<String>();
+		Matcher m = Pattern.compile(".*" + regex.toUpperCase() + ".*", Pattern.CASE_INSENSITIVE + Pattern.UNICODE_CASE ).matcher("");
+		Set<String> matchList = new HashSet<String>();
 		for ( String syn : idMap.keySet() ) {
 			//System.out.println("checking regex: " + regex + " against " + syn);
 			m.reset(syn.toUpperCase());
 			if ( m.matches() ) 
-				matchList.add(syn);
+				matchList.add( getSynonym(syn,"name") );
 		}
-		return matchList;
+		return new ArrayList<String>(matchList);
 	}
 
 	/**
@@ -256,7 +256,11 @@ public class DIPSynonyms extends DefaultHandler implements SynonymMapper
 		}
 
 		if ( getDesc ) {
+			// Because of duplicate descriptions, add current id to desc,
+			// however we don't want to show the id with the desc, so add
+			// a unique_description as well.
 			addValue(currentId,"description",value.toString());
+			addId(currentId,"unique_description",value.toString() + " " + currentId);
 			value.delete(0,value.length());
 			getDesc = false;
 			getValue = false;
