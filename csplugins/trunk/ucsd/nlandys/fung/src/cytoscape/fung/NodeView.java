@@ -72,6 +72,24 @@ public final class NodeView
   {
     // TODO: Reconcile width and height with current node border width and
     // if SHAPE_ROUNDED_RECTANGLE then check for necessary constraint.
+    synchronized (m_fung.m_lock) {
+      m_fung.m_rtree.exists(m_node, m_fung.m_extentsBuff, 0);
+      final double xCenter =
+        (((double) m_fung.m_extentsBuff[0]) + m_fung.m_extentsBuff[2]) / 2.0d;
+      final double yCenter =
+        (((double) m_fung.m_extentsBuff[1]) + m_fung.m_extentsBuff[3]) / 2.0d;
+      final double wDiv2 = width / 2.0d;
+      final double hDiv2 = height / 2.0d;
+      final float xMin = (float) (xCenter - wDiv2);
+      final float yMin = (float) (yCenter - hDiv2);
+      final float xMax = (float) (xCenter + wDiv2);
+      final float yMax = (float) (yCenter + hDiv2);
+      if (!(xMax > xMin)) {
+        throw new IllegalArgumentException("width is too small"); }
+      if (!(yMax > yMin)) {
+        throw new IllegalArgumentException("height is too small"); }
+      m_fung.m_rtree.delete(m_node);
+      m_fung.m_rtree.insert(m_node, xMin, yMin, xMax, yMax); }
   }
 
 }
