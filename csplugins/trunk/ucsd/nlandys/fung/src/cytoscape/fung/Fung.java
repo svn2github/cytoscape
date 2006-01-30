@@ -13,6 +13,7 @@ public final class Fung
 {
 
   private final static double INITIAL_DEFAULT_NODE_SIZE = 10.0d;
+  private final static double INITIAL_DEFAULT_NODE_BORDER_WIDTH = 1.0d;
 
   final Object m_lock = new Object();
   final float[] m_extentsBuff = new float[4];
@@ -25,6 +26,8 @@ public final class Fung
     (float) (INITIAL_DEFAULT_NODE_SIZE / 2);
   private float m_defaultNodeHeightDiv2 =
     (float) (INITIAL_DEFAULT_NODE_SIZE / 2);
+  private float m_defaultNodeBorderWidth =
+    (float) INITIAL_DEFAULT_NODE_BORDER_WIDTH;
 
   final SpecificNodeDetails m_nodeDetails = null;
 
@@ -64,6 +67,15 @@ public final class Fung
     if (!(defaultNodeHeightDiv2 > 0.0f)) {
       throw new IllegalArgumentException("defaultNodeHeight is too small"); }
     synchronized (m_lock) { m_defaultNodeHeightDiv2 = defaultNodeHeightDiv2; }
+  }
+
+  public final double getDefaultNodeBorderWidth()
+  {
+    return m_defaultNodeBorderWidth;
+  }
+
+  public final void setDefaultNodeBorderWidth(final double defaultBorderWidth)
+  {
   }
 
   public final void addTopologyChangeListener(
