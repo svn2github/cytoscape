@@ -13,6 +13,8 @@ public final class Fung
 {
 
   private final static double INITIAL_DEFAULT_NODE_SIZE = 10.0d;
+  private final static byte INITIAL_DEFAULT_NODE_SHAPE =
+    NodeView.SHAPE_ELLIPSE;
   private final static double INITIAL_DEFAULT_NODE_BORDER_WIDTH = 1.0d;
 
   final Object m_lock = new Object();
@@ -26,13 +28,15 @@ public final class Fung
     (float) (INITIAL_DEFAULT_NODE_SIZE / 2);
   private float m_defaultNodeHeightDiv2 =
     (float) (INITIAL_DEFAULT_NODE_SIZE / 2);
+  byte m_defaultNodeShape = INITIAL_DEFAULT_NODE_SHAPE;
   private float m_defaultNodeBorderWidth =
     (float) INITIAL_DEFAULT_NODE_BORDER_WIDTH;
 
-  final SpecificNodeDetails m_nodeDetails = null;
+  final SpecificNodeDetails m_nodeDetails;
 
   public Fung()
   {
+    m_nodeDetails = new SpecificNodeDetails(this);
   }
 
   /**
@@ -67,6 +71,28 @@ public final class Fung
     if (!(defaultNodeHeightDiv2 > 0.0f)) {
       throw new IllegalArgumentException("defaultNodeHeight is too small"); }
     synchronized (m_lock) { m_defaultNodeHeightDiv2 = defaultNodeHeightDiv2; }
+  }
+
+  public final byte getDefaultNodeShape()
+  {
+    return m_defaultNodeShape;
+  }
+
+  public final void setDefaultNodeShape(final byte defaultNodeShape)
+  {
+    switch (defaultNodeShape) {
+    case NodeView.SHAPE_RECTANGLE:
+    case NodeView.SHAPE_DIAMOND:
+    case NodeView.SHAPE_ELLIPSE:
+    case NodeView.SHAPE_HEXAGON:
+    case NodeView.SHAPE_OCTAGON:
+    case NodeView.SHAPE_PARALLELOGRAM:
+    case NodeView.SHAPE_ROUNDED_RECTANGLE:
+    case NodeView.SHAPE_TRIANGLE:
+      break;
+    default:
+      throw new IllegalArgumentException("defaultNodeShape is unrecognized"); }
+    synchronized (m_lock) { m_defaultNodeShape = defaultNodeShape; }
   }
 
   public final double getDefaultNodeBorderWidth()

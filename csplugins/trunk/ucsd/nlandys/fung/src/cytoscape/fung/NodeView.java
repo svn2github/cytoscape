@@ -1,13 +1,26 @@
 package cytoscape.fung;
 
+import cytoscape.render.immed.GraphGraphics;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 
 public final class NodeView
 {
 
+  public final static byte SHAPE_RECTANGLE = GraphGraphics.SHAPE_RECTANGLE;
+  public final static byte SHAPE_DIAMOND = GraphGraphics.SHAPE_DIAMOND;
+  public final static byte SHAPE_ELLIPSE = GraphGraphics.SHAPE_ELLIPSE;
+  public final static byte SHAPE_HEXAGON = GraphGraphics.SHAPE_HEXAGON;
+  public final static byte SHAPE_OCTAGON = GraphGraphics.SHAPE_OCTAGON;
+  public final static byte SHAPE_PARALLELOGRAM =
+    GraphGraphics.SHAPE_PARALLELOGRAM;
+  public final static byte SHAPE_ROUNDED_RECTANGLE =
+    GraphGraphics.SHAPE_ROUNDED_RECTANGLE;
+  public final static byte SHAPE_TRIANGLE =
+    GraphGraphics.SHAPE_TRIANGLE;
+
   Fung m_fung; // Not final so that we can destroy reference.
-  final int m_node;
+  private final int m_node;
 
   NodeView(final Fung fung, final int node)
   {
