@@ -364,7 +364,7 @@ for (int i = 0; i < proteins.length; i++) {
 	<p>
 	<ul>
         <li>Please enter the BLAST <a href="docs/e_value.html">E-value Threshold</a> for protein alignment <input type="text" name="E_VALUE" size="8" value="<%= nEvalue.getString() %>" maxlength=20></li>
-	<li>Include <a href="docs/dupe_node_networks.html">duplicate node networks</a> in results? <input type="radio" name="useZero" value="true">Yes</input>
+	<li>Include <a href="docs/dupe_node_networks.html">duplicate protein networks</a> in results? <input type="radio" name="useZero" value="true">Yes</input>
 	                               <input type="radio" name="useZero" value="false" checked="true">No</input>
 	</li>
 	</ul>

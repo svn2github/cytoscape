@@ -2,20 +2,20 @@
 <head>
 <link rel="stylesheet" type="text/css" href="pathblast.css"/>
 <title>
-Duplicate Node Networks
+Duplicate Protein Networks
 </title>
 </head>
 <body style="background-color: #FFFFFF">
-<h2>Duplicate Node Networks</h2>
+<h2>Duplicate Protein Networks</h2>
 <p/>
 <p>
-In many cases a single protein in either the query network will be homologous
-with multiple proteins in the target network (or vice versa), which means that multiple compatibility
-nodes may be created which share a common protein.  In some cases these compatibility
-nodes with a common protein can combine to form a result path. This results in situations 
-such as figure 1 where the result path only includes one protein from the query network, or
-figure 2 where only two proteins from the query network are included. We call these
-duplicate node networks.</p>
+In many cases a single protein in the query network will be homologous
+with multiple proteins in the target network (or vice versa).
+This leads to a situation where a single protein can appear more than
+once in the resulting network.
+
+Figure 1 shows a result path that only includes one protein from the query network.  Figure 2 shows and example where only two proteins from the query network are included. We call these
+duplicate protein networks.</p>
 
 <p>
 <img src="../images/zeroEdge_1.png"/><br/>
@@ -27,9 +27,9 @@ Figure 2: network MYS4_YEAST|MYS3_YEAST --&gt; ST20_YEAST|BCK1_YEAST --&gt; ST20
 </p>
 
 <p>
-In general these results are not what is desired and therefore inclusion of Duplicate Node Networks
-is not allowed by default.  However in some cases the resulting networks can be instructive so
-we therefore provide an option for including Duplicate Node Networks in the results.
+While these are valid networks according to the underlying network alignment
+algorithms, these results are generally not what is desired. Therefore inclusion of Duplicate Protein Networks
+is not allowed by default.  However in some cases the resulting networks can be instructive so we provide an option for including Duplicate Protein Networks in the results.
 </p>
 </body>
 </html>
