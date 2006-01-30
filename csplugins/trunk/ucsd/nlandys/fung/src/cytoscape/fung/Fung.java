@@ -24,6 +24,8 @@ public final class Fung
   private float m_defaultNodeSizeDiv2 =
     (float) (INITIAL_DEFAULT_NODE_SIZE / 2);
 
+  final SpecificNodeDetails m_nodeDetails = null;
+
   public Fung()
   {
   }

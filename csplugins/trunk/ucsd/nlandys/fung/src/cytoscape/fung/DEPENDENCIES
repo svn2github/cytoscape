@@ -3,3 +3,5 @@ lib:cytoscape-graph-fixed.jar
 lib:cytoscape-graph-dynamic.jar
 lib:cytoscape-geom-spacial.jar
 lib:cytoscape-geom-rtree.jar
+lib:cytoscape-render-immed.jar
+lib:cytoscape-render-stateful.jar

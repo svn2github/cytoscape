@@ -92,4 +92,14 @@ public final class NodeView
       m_fung.m_rtree.insert(m_node, xMin, yMin, xMax, yMax); }
   }
 
+  public final double getBorderWidth()
+  {
+    synchronized (m_fung.m_lock) {
+      return m_fung.m_nodeDetails.borderWidth(m_node); }
+  }
+
+  public final void setBorderWidth(final double borderWidth)
+  {
+  }
+
 }
