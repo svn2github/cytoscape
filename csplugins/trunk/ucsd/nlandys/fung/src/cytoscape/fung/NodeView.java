@@ -105,6 +105,16 @@ public final class NodeView
       m_fung.m_rtree.insert(m_node, xMin, yMin, xMax, yMax); }
   }
 
+  public final byte getShape()
+  {
+    synchronized (m_fung.m_lock) {
+      return m_fung.m_nodeDetails.shape(m_node); }
+  }
+
+  public final void setShape(final byte shape)
+  {
+  }
+
   public final double getBorderWidth()
   {
     synchronized (m_fung.m_lock) {
