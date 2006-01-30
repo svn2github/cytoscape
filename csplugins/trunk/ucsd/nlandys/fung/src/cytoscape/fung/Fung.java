@@ -21,7 +21,9 @@ public final class Fung
   final RTree m_rtree = new RTree();
 
   private TopologyChangeListener m_topLis = null;
-  private float m_defaultNodeSizeDiv2 =
+  private float m_defaultNodeWidthDiv2 =
+    (float) (INITIAL_DEFAULT_NODE_SIZE / 2);
+  private float m_defaultNodeHeightDiv2 =
     (float) (INITIAL_DEFAULT_NODE_SIZE / 2);
 
   final SpecificNodeDetails m_nodeDetails = null;
@@ -32,19 +34,36 @@ public final class Fung
 
   /**
    * When new nodes are created, they are placed at the origin and have
-   * width and height equal to the return value.
+   * width equal to the return value.
    */
-  public final double getDefaultNodeSize()
+  public final double getDefaultNodeWidth()
   {
-    return 2.0d * m_defaultNodeSizeDiv2;
+    return 2.0d * m_defaultNodeWidthDiv2;
   }
 
-  public final void setDefaultNodeSize(final double defaultNodeSize)
+  public final void setDefaultNodeWidth(final double defaultNodeWidth)
   {
-    final float defaultNodeSizeDiv2 = (float) (defaultNodeSize / 2.0d);
-    if (!(defaultNodeSizeDiv2 > 0.0f)) {
-      throw new IllegalArgumentException("defaultNodeSize is too small"); }
-    synchronized (m_lock) { m_defaultNodeSizeDiv2 = defaultNodeSizeDiv2; }
+    final float defaultNodeWidthDiv2 = (float) (defaultNodeWidth / 2.0d);
+    if (!(defaultNodeWidthDiv2 > 0.0f)) {
+      throw new IllegalArgumentException("defaultNodeWidth is too small"); }
+    synchronized (m_lock) { m_defaultNodeWidthDiv2 = defaultNodeWidthDiv2; }
+  }
+
+  /**
+   * When new nodes are created, they are placed at the origin and have
+   * height equal to the return value.
+   */
+  public final double getDefaultNodeHeight()
+  {
+    return 2.0d * m_defaultNodeHeightDiv2;
+  }
+
+  public final void setDefaultNodeHeight(final double defaultNodeHeight)
+  {
+    final float defaultNodeHeightDiv2 = (float) (defaultNodeHeight / 2.0d);
+    if (!(defaultNodeHeightDiv2 > 0.0f)) {
+      throw new IllegalArgumentException("defaultNodeHeight is too small"); }
+    synchronized (m_lock) { m_defaultNodeHeightDiv2 = defaultNodeHeightDiv2; }
   }
 
   public final void addTopologyChangeListener(
@@ -89,8 +108,9 @@ public final class Fung
       final int rtnVal;
       synchronized (m_lock) {
         rtnVal = m_graph.nodeCreate();
-        m_rtree.insert(rtnVal, -m_defaultNodeSizeDiv2, -m_defaultNodeSizeDiv2,
-                       m_defaultNodeSizeDiv2, m_defaultNodeSizeDiv2); }
+        m_rtree.insert(rtnVal,
+                       -m_defaultNodeWidthDiv2, -m_defaultNodeHeightDiv2,
+                       m_defaultNodeWidthDiv2, m_defaultNodeHeightDiv2); }
       final TopologyChangeListener topLis = m_topLis;
       if (topLis != null) {
         topLis.nodeCreated(rtnVal); }
