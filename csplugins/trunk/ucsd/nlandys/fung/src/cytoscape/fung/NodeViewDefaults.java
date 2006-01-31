@@ -59,11 +59,20 @@ public final class NodeViewDefaults
       break;
     default:
       throw new IllegalArgumentException("shape is unrecognized"); }
+    if (m_shape == NodeView.SHAPE_ROUNDED_RECTANGLE) {
+      if (!(Math.max(m_widthDiv2, m_heightDiv2) <
+            2.0d * Math.min(m_widthDiv2, m_heightDiv2))) {
+        throw new IllegalStateException
+          ("rounded rectangle is too long"); } }
     m_fillPaint = fillPaint;
     if (m_fillPaint == null) {
       throw new NullPointerException("fillPaint is null"); }
     m_borderWidth = borderWidth;
-    // TODO: Error check border width against size and shape combinations.
+    if (!(m_borderWidth >= 0.0d)) {
+      throw new IllegalArgumentException("borderWidth is negative"); }
+    if (!(m_borderWidth <= Math.min(m_widthDiv2, m_heightDiv2) / 3.0d)) {
+      throw new IllegalArgumentException
+        ("borderWidth is too small relative to node size"); }
     m_borderPaint = borderPaint;
     if (m_borderPaint == null) {
       throw new NullPointerException("borderPaint is null"); }
