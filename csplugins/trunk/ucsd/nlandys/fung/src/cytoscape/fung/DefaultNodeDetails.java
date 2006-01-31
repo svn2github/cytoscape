@@ -1,6 +1,7 @@
 package cytoscape.fung;
 
 import cytoscape.render.stateful.NodeDetails;
+import java.awt.Color;
 import java.awt.Paint;
 
 class DefaultNodeDetails extends NodeDetails
@@ -13,14 +14,29 @@ class DefaultNodeDetails extends NodeDetails
     m_fung = fung;
   }
 
+  public Color colorLowDetail(int node)
+  {
+    return m_fung.m_nodeDefaults.m_colorLowDetail;
+  }
+
   public byte shape(int node)
   {
     return m_fung.m_nodeDefaults.m_shape;
   }
 
-//   public Paint fillPaint(int node)
-//   {
-//     return m_fung.m_defaultNodeFillPaint;
-//   }
+  public Paint fillPaint(int node)
+  {
+    return m_fung.m_nodeDefaults.m_fillPaint;
+  }
+
+  public float borderWidth(int node)
+  {
+    return (float) m_fung.m_nodeDefaults.m_borderWidth;
+  }
+
+  public Paint borderPaint(int node)
+  {
+    return m_fung.m_nodeDefaults.m_borderPaint;
+  }
 
 }
