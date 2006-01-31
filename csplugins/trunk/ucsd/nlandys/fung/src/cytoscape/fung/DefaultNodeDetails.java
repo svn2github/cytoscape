@@ -18,9 +18,9 @@ class DefaultNodeDetails extends NodeDetails
     return m_fung.m_defaultNodeShape;
   }
 
-  public Paint fillPaint(int node)
-  {
-    return m_fung.m_defaultNodeFillPaint;
-  }
+//   public Paint fillPaint(int node)
+//   {
+//     return m_fung.m_defaultNodeFillPaint;
+//   }
 
 }
