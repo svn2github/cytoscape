@@ -12,11 +12,6 @@ import java.awt.Component;
 public final class Fung
 {
 
-  private final static double INITIAL_DEFAULT_NODE_SIZE = 10.0d;
-  private final static byte INITIAL_DEFAULT_NODE_SHAPE =
-    NodeView.SHAPE_ELLIPSE;
-  private final static double INITIAL_DEFAULT_NODE_BORDER_WIDTH = 1.0d;
-
   final Object m_lock = new Object();
   final float[] m_extentsBuff = new float[4];
   private final Canvas m_canvas = null;
@@ -24,84 +19,20 @@ public final class Fung
   final RTree m_rtree = new RTree();
 
   private TopologyChangeListener m_topLis = null;
-  private float m_defaultNodeWidthDiv2 =
-    (float) (INITIAL_DEFAULT_NODE_SIZE / 2);
-  private float m_defaultNodeHeightDiv2 =
-    (float) (INITIAL_DEFAULT_NODE_SIZE / 2);
-  byte m_defaultNodeShape = INITIAL_DEFAULT_NODE_SHAPE;
-  private float m_defaultNodeBorderWidth =
-    (float) INITIAL_DEFAULT_NODE_BORDER_WIDTH;
-
   final SpecificNodeDetails m_nodeDetails;
+  final NodeViewDefaults m_nodeDefaults;
 
   public Fung()
   {
+    this(null);
+  }
+
+  public Fung(NodeViewDefaults nodeDefaults)
+  {
+    if (nodeDefaults == null) {
+      nodeDefaults = new NodeViewDefaults(); }
+    m_nodeDefaults = nodeDefaults;
     m_nodeDetails = new SpecificNodeDetails(this);
-  }
-
-  /**
-   * When new nodes are created, they are placed at the origin and have
-   * width equal to the return value.
-   */
-  public final double getDefaultNodeWidth()
-  {
-    return 2.0d * m_defaultNodeWidthDiv2;
-  }
-
-  public final void setDefaultNodeWidth(final double defaultNodeWidth)
-  {
-    final float defaultNodeWidthDiv2 = (float) (defaultNodeWidth / 2.0d);
-    if (!(defaultNodeWidthDiv2 > 0.0f)) {
-      throw new IllegalArgumentException("defaultNodeWidth is too small"); }
-    synchronized (m_lock) { m_defaultNodeWidthDiv2 = defaultNodeWidthDiv2; }
-  }
-
-  /**
-   * When new nodes are created, they are placed at the origin and have
-   * height equal to the return value.
-   */
-  public final double getDefaultNodeHeight()
-  {
-    return 2.0d * m_defaultNodeHeightDiv2;
-  }
-
-  public final void setDefaultNodeHeight(final double defaultNodeHeight)
-  {
-    final float defaultNodeHeightDiv2 = (float) (defaultNodeHeight / 2.0d);
-    if (!(defaultNodeHeightDiv2 > 0.0f)) {
-      throw new IllegalArgumentException("defaultNodeHeight is too small"); }
-    synchronized (m_lock) { m_defaultNodeHeightDiv2 = defaultNodeHeightDiv2; }
-  }
-
-  public final byte getDefaultNodeShape()
-  {
-    return m_defaultNodeShape;
-  }
-
-  public final void setDefaultNodeShape(final byte defaultNodeShape)
-  {
-    switch (defaultNodeShape) {
-    case NodeView.SHAPE_RECTANGLE:
-    case NodeView.SHAPE_DIAMOND:
-    case NodeView.SHAPE_ELLIPSE:
-    case NodeView.SHAPE_HEXAGON:
-    case NodeView.SHAPE_OCTAGON:
-    case NodeView.SHAPE_PARALLELOGRAM:
-    case NodeView.SHAPE_ROUNDED_RECTANGLE:
-    case NodeView.SHAPE_TRIANGLE:
-      break;
-    default:
-      throw new IllegalArgumentException("defaultNodeShape is unrecognized"); }
-    synchronized (m_lock) { m_defaultNodeShape = defaultNodeShape; }
-  }
-
-  public final double getDefaultNodeBorderWidth()
-  {
-    return m_defaultNodeBorderWidth;
-  }
-
-  public final void setDefaultNodeBorderWidth(final double defaultBorderWidth)
-  {
   }
 
   public final void addTopologyChangeListener(
@@ -146,9 +77,10 @@ public final class Fung
       final int rtnVal;
       synchronized (m_lock) {
         rtnVal = m_graph.nodeCreate();
-        m_rtree.insert(rtnVal,
-                       -m_defaultNodeWidthDiv2, -m_defaultNodeHeightDiv2,
-                       m_defaultNodeWidthDiv2, m_defaultNodeHeightDiv2); }
+        m_rtree.insert
+          (rtnVal,
+           -m_nodeDefaults.m_widthDiv2, -m_nodeDefaults.m_heightDiv2,
+           m_nodeDefaults.m_widthDiv2, m_nodeDefaults.m_heightDiv2); }
       final TopologyChangeListener topLis = m_topLis;
       if (topLis != null) {
         topLis.nodeCreated(rtnVal); }

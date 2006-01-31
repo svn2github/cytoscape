@@ -15,7 +15,7 @@ class DefaultNodeDetails extends NodeDetails
 
   public byte shape(int node)
   {
-    return m_fung.m_defaultNodeShape;
+    return m_fung.m_nodeDefaults.m_shape;
   }
 
 //   public Paint fillPaint(int node)
