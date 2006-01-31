@@ -1,6 +1,7 @@
 package cytoscape.fung;
 
 import cytoscape.render.immed.GraphGraphics;
+import java.awt.Color;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 
@@ -103,6 +104,18 @@ public final class NodeView
         throw new IllegalArgumentException("height is too small"); }
       m_fung.m_rtree.delete(m_node);
       m_fung.m_rtree.insert(m_node, xMin, yMin, xMax, yMax); }
+  }
+
+  public final Color getColorLowDetail()
+  {
+    synchronized (m_fung.m_lock) {
+      return m_fung.m_nodeDetails.colorLowDetail(m_node); }
+  }
+
+  public final void setColorLowDetail(final Color color)
+  {
+    synchronized (m_fung.m_lock) {
+      m_fung.m_nodeDetails.overrideColorLowDetail(m_node, color); }
   }
 
   public final byte getShape()

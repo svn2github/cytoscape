@@ -7,7 +7,7 @@ import java.awt.Paint;
 class DefaultNodeDetails extends NodeDetails
 {
 
-  private final Fung m_fung;
+  protected final Fung m_fung;
 
   DefaultNodeDetails(final Fung fung)
   {
