@@ -297,6 +297,38 @@
   </att>
  </node>
 
+ <node id="G:1505" uid="DIP:646N" name="FMN1_MOUSE" class="protein">
+  <xref db="DIP"  id="646N" type="src"/>
+
+  <feature name="swp_ref" class="cref">
+   <src>SwissProt</src>
+   <val>SWP:Q05860</val>
+   <xref db="SWP"  id="Q05860" type="src"/>
+  </feature>
+  <feature name="pir_ref" class="cref">
+   <src>PIR</src>
+   <val>PIR:S11515</val>
+   <xref db="PIR"  id="S11515" type="src"/>
+  </feature>
+  <feature name="gi_ref" class="cref">
+   <src>NCBI</src>
+   <val>GI:478571</val>
+   <xref db="gi"  id="478571" type="src"/>
+  </feature>
+  <feature name="refseq_ref" class="cref">
+   <src>RefSeq</src>
+   <val>RefSeq:NP_034360</val>
+   <xref db="RefSeq"  id="NP_034360" type="src"/>
+  </feature>
+
+  <att name="descr">
+   <val>formin</val>
+  </att>
+  <att name="organism">
+   <val>Mus musculus</val>
+   <xref db="TXID"  id="10090" type="ont"/>
+  </att>
+ </node>
 
 
  <edge uid="DIP:523E" id="G:982" from="G:980" to="G:981" class="link">
