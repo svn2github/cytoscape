@@ -42,7 +42,7 @@ public class DIPInteractionNetworkTest extends TestCase {
 
 	public void testParse() {
 		assertTrue("expect 8 nodes, got: " + chicken.numberOfNodes(),chicken.numberOfNodes() == 8);
-		assertTrue("expect 1 edge, got: " + chicken.numberOfEdges(),chicken.numberOfEdges() == 1);
+		assertTrue("expect 3 edge, got: " + chicken.numberOfEdges(),chicken.numberOfEdges() == 3);
 	}
    
 	public static Test suite() {
