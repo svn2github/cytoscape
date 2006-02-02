@@ -31,7 +31,7 @@
      </td>
    </tr>
   </table>
-  <? include "../nav.php"; ?>
+  <? include "nav.php"; ?>
   <? include "nav_tut.php"; ?>
   <div id="indent">
   <center>
@@ -55,7 +55,7 @@ This tutorial features the following plugins:
 </UL>
 and the following datasets:
 <UL>
-  <LI><A HREF="fetching.data/RUAL.subset.sif">RUAL.subset.sif</A>, a 
+  <LI><A HREF="filters.editor/RUAL.subset.sif">RUAL.subset.sif</A>, a 
     portion of a human interaction dataset published in 
     <A HREF="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=pubmed&dopt=Abstract&list_uids=16189514&query_hl=1">
     Rual et al, Nature.2005 Oct 20;437(7062):1173-8</A> and available at 
@@ -75,13 +75,30 @@ website.
 Following the steps outlined in the <A HREF="getting.started.php">Getting 
 Started</A> tutorial,
 <OL>
-   <LI> Load the network <B>RUAL.subset.sif</B>.
-   <LI> Load the node attribte file <B>RUAL.na</B>
+   <LI> Load the network <B>RUAL.subset.sif</B> by going to the <B>File</B> menu
+        on the Cytoscape desktop, then <B>Load</B>, and then <B>Network</B>, and then
+        specifying the location you have downloaded the file to.
+   <LI> Load the node attribute file <B>RUAL.na</B> by going to the <B>File</B> menu,
+        then <B>Load</B>, and then <B>Node Attributes</B>.
    <LI> Generate a spring-embedded layout for your network.
 </OL>
    Your Cytoscape window should now appear as shown:
    <P><IMG SRC="filters.editor/Fig1.jpg" WIDTH=30%>
-
+   <P>You can see the node attributes as follows:
+    <OL>
+    	<LI> The node attribute file you have just loaded defines the official node
+    	name, called <B>Official</B>.  To see how this attribute is specified, open
+    	the file <B>RUAL.na</B> with your favorite text editor.
+    	<LI> In the Cytoscape desktop, under the <B>Node Attribute Browser</B>, 
+    	click on the <B>Select Attributes</B> button.
+    	<LI> Notice the attribute named <B>Official</B>.  Select it by clicking on
+    	it with the left mouse button.
+    	<LI> Exit the menu with the right mouse button.
+    	<LI> You should now see two columns in the <B>Node Attribute Browser</B>, one
+    	labeled <B>ID</B> and one labeled <B>Official</B>.  Select some nodes on the 
+    	Cytoscape canvas.  You should see their IDs (Entrez gene IDs, in this case),
+    	and their official gene names.
+    </OL>
 <H3>Using Filters</H3>
 <P>Your network contains
     several types of edges: 
@@ -128,13 +145,18 @@ Started</A> tutorial,
         <LI>Your Cytoscape window should now appear as shown:</P>
             <P><IMG SRC="filters.editor/Fig7.jpg"  WIDTH="40%"></P>
     </OL>
+    Compared to the network you started with, the network you have now has fewer
+    edges, but all the edges are determined either through experimentation or by
+    higher-confidence literature-based methods.  For some types of analysis, this is
+    a more appropriate set of edges.
+    <P>
     This will leave you with several nodes with no edges, which you may
     now want to filter out.  Here is one method for doing so.
     <OL>
        <LI> Create another <B>String Pattern</B> filter to select 
             objects of type <B>Edge</B> with a value for 
-            text attribute <B>interaction</B> that matches the pattern <B>*</B>,
-            as shown below
+            text attribute <B>interaction</B> that matches the wildcard pattern 
+            <B>*</B>, as shown below
             <P><IMG SRC="filters.editor/Fig8.jpg" WIDTH="60%"></P>
         <LI> This filter should select every edge on the canvas.  Click the
              <B>Apply Selected Filter</B> button, and verify that all
@@ -152,8 +174,10 @@ Started</A> tutorial,
     delete.
 <H3>Editing</H3>
 <P>At times, it can be very useful to modify a network slightly: to
-add or remove nodes or edges.  This section will describe how to do
-so. </P>
+add or remove nodes or edges.  For instance, if you have prior knowledge
+on some biological process, you might want to add some nodes for proteins
+that you know are involved in the process, but that don't appear in your dataset.
+This section will describe how to do so. </P>
 <OL>
 
   <LI><P>Under the <B>File</B> menu in the Cytoscape Desktop, select
@@ -193,5 +217,8 @@ so. </P>
 </OL>
 <P><B>Congratulations!</B>  You are now finished the advanced course
 in Cytoscape menu operation.  That is worth at least a nice snack!
+<P>
+<? include "tut.footer.php"; ?>
+<? include "../footer.php"; ?>
 </BODY>
 </HTML>

@@ -15,7 +15,7 @@
     "0" summary="">
       <tr>
         <td width="10">
-           
+          ?
         </td>
         <td valign="center">
           <h1>
@@ -24,7 +24,7 @@
         </td>
       </tr>
     </table>
-    <? include "../nav.php"; ?>
+    <? include "nav.php"; ?>
     <? include "nav_tut.php"; ?>
     <div id="indent">
 <center>
@@ -64,6 +64,7 @@ are supported for these tutorials:<BR>
   <li> Mozilla 6.0 or later
 </ul>
 </div>
-    <? include "footer.php"; ?>
+<? include "tut.footer.php"; ?>
+<? include "../footer.php"; ?>
   </body>
 </html>

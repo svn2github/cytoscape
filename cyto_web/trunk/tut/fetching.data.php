@@ -31,7 +31,7 @@
      </td>
    </tr>
   </table>
-  <? include "../nav.php"; ?>
+  <? include "nav.php"; ?>
   <? include "nav_tut.php"; ?>
   <div id="indent">
   <center>
@@ -66,7 +66,7 @@ This tutorial and accompanying lectures were delivered at
 <A HREF="http://www.csc.fi/math_topics/">Computer Science Center</A> in 
 Helsinki, Finland.  The lecture slides of background material are
 available <A HREF="fetching.data.ppt">here</A> and an accompanying video
-presentation is available <A HREF="http://rm.tv.funet.fi:8080/ramgen/fi/csc/kurssit/2005/cytoscape/_cytos02.rm">here</A>.
+presentation will be available soon
 <P>
 
 
@@ -196,5 +196,8 @@ plugin to fetch data from Cytoscape.</P>
 </B>You have ventured past the world of Getting Started, and are now
 poised to start doing some serious systems biology!  You will need
 your strength for this.  Go get some lunch.</P>
+<P>
+<? include "tut.footer.php"; ?>
+<? include "../footer.php"; ?>
 </BODY>
 </HTML>

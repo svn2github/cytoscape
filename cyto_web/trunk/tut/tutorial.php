@@ -15,7 +15,7 @@
     "0" summary="">
       <tr>
         <td width="10">
-           
+          ?
         </td>
         <td valign="center">
           <h1>
@@ -24,7 +24,7 @@
         </td>
       </tr>
     </table>
-    <? include "../nav.php"; ?>
+    <? include "nav.php"; ?>
     <? include "nav_tut.php"; ?>
     <div id="indent">
 <center>
@@ -68,7 +68,10 @@ are supported for these tutorials:<BR>
 Mac OSX.&nbsp; On Linux, some extra set-up steps
 <a href="http://java.sun.com/products/javawebstart/download-linux.html">may be 
 required</a>.</p>
+
+   	<? include "tut.footer.php"; ?>
+	<? include "../footer.php"; ?>
     </div>
-    <? include "footer.php"; ?>
   </body>
 </html>
+

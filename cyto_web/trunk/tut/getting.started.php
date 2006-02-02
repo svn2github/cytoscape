@@ -33,7 +33,7 @@
 	   </td>
 	 </tr>
        </table>
-       <? include "../nav.php"; ?>
+       <? include "nav.php"; ?>
        <? include "nav_tut.php"; ?>
        <div id="indent">
        <center>
@@ -50,7 +50,7 @@ In this tutorial, you will learn about the following:
 </ul>
       and this tutorial features this dataset:
 <UL>
-  <LI><A HREF="fetching.data/RUAL.subset.sif">RUAL.subset.sif</A>, a 
+  <LI><A HREF="getting.started/RUAL.subset.sif">RUAL.subset.sif</A>, a 
     portion of a human interaction dataset published in 
     <A HREF="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=pubmed&dopt=Abstract&list_uids=16189514&query_hl=1">
     Rual et al, Nature.2005 Oct 20;437(7062):1173-8</A> and available at 
@@ -76,7 +76,7 @@ This tutorial and accompanying lectures were delivered at
 <A HREF="http://www.csc.fi/math_topics/">Computer Science Center</A> in 
 Helsinki, Finland.  The lecture slides of background material are
 available <A HREF="getting.started.ppt">here</A> and an accompanying video
-presentation is available <A HREF="http://rm.tv.funet.fi:8080/ramgen/fi/csc/kurssit/2005/cytoscape/_cytos01.rm">here</A>.
+presentation will be available soon.
 <P>
 <H3> Initial steps</H3>
 Launch Cytoscape. You should see a window that looks like this:  
@@ -193,8 +193,8 @@ names. Load this attribute file as follows:</P>
 <OL>
 	<LI><P>Under the <B>File</B> menu, select <B>Load</B>, and then <B>Node Attributes</B>.	</P>
 	<LI><P>Select the file <A HREF="RUAL.na">RUAL.na</A>, and click <B>Open</B>.  </P>
-	<LI><P>A popup window labeled “Loading Node Attributes” will appear.  When this
-	window reports “Status: Done”, click <B>Close</B>.</P>
+	<LI><P>A popup window labeled ???Loading Node Attributes??? will appear.  When this
+	window reports ???Status: Done???, click <B>Close</B>.</P>
 	<LI><P>Look at the file	<A HREF="RUAL.na">RUAL.na</A> with your favorite text 
 	editor to examine its format.</P>
 </OL>
@@ -215,7 +215,7 @@ View these attributes in Cytoscape as follows:
 	<LI><P>In the Cytoscape	Desktop, under the <B>Visualization</B> menu, select <B>Set Visual
 	Properties</B>. The <B>Visualization Style</B>s popup window should appear, as shown.</P>
 	<IMG SRC="getting.started/Fig17.png" WIDTH=320 HEIGHT=87><BR CLEAR=LEFT>
-	<LI><P>Click on the <B>Duplicate</B> button to define a new style.  Name this style “Class1”.</P>
+	<LI><P>Click on the <B>Duplicate</B> button to define a new style.  Name this style ???Class1???.</P>
 	<LI><P>Click on the <B>Define</B> button.  This will bring up the <B>Set Visual	Properties</B> 
 	popup window.</P>
 	<LI><P>Click on the <B>Node Label</B> tab.</P>
@@ -290,5 +290,8 @@ changes.</P>
 <P><B>Congratulations! </B>You have bravely survived the least-exciting 
 portion of Cytoscape instruction: learning to navigate the menu system.  Go 
 reward yourself with a cup of coffee!</P>
+<P>
+<? include "tut.footer.php"; ?>
+<? include "../footer.php"; ?>
 </BODY>
 </HTML>
