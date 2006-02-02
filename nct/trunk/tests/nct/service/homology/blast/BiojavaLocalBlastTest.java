@@ -1,7 +1,7 @@
 
 //============================================================================
 // 
-//  file: LocalBlastTest.java 
+//  file: BiojavaLocalBlastTest.java 
 // 
 //  Copyright (c) 2006, University of California, San Diego
 //  All rights reverved.
@@ -28,13 +28,13 @@ import org.xml.sax.*;
 import org.xml.*;
 
 
-// A JUnit test class for LocalBlastTest.java
-public class LocalBlastTest extends TestCase {
+// A JUnit test class for BiojavaLocalBlastTest.java
+public class BiojavaLocalBlastTest extends TestCase {
 
 	boolean noExceptions;
 	DIPSynonyms synonyms;
-	LocalBlast small;
-	LocalBlast large;
+	BiojavaLocalBlast small;
+	BiojavaLocalBlast large;
 	String outLoc;
 
 	BlastGraph<String,Double> b1;
@@ -50,10 +50,10 @@ public class LocalBlastTest extends TestCase {
 		xr.parse(new InputSource(new FileReader("examples/Gallus_gallus.xin")));
 
 		Properties props = System.getProperties();
-		outLoc = props.getProperty("java.io.tmpdir") + props.getProperty("file.separator") + "LocalBlastTest." + System.currentTimeMillis() + ".xml";
+		outLoc = props.getProperty("java.io.tmpdir") + props.getProperty("file.separator") + "BiojavaLocalBlastTest." + System.currentTimeMillis() + ".xml";
 		props.load( new FileInputStream("examples/blast.properties"));
-		small = new LocalBlast(props,synonyms, outLoc, 1.0e-10,true ); 
-		large = new LocalBlast(props,synonyms, outLoc, 10.0,true ); 
+		small = new BiojavaLocalBlast(props,synonyms, outLoc, 1.0e-10 ); 
+		large = new BiojavaLocalBlast(props,synonyms, outLoc, 10.0 ); 
 
 		b1 = new BlastGraph<String,Double>("Gallus_gallus.fa","examples");
 		DIPInteractionNetwork dipin1 = new DIPInteractionNetwork("Gallus gallus");
@@ -119,10 +119,10 @@ public class LocalBlastTest extends TestCase {
 
 	protected void tearDown() {
 		File f = new File(outLoc);
-		f.delete();
+//		f.delete();
 	}
    
 	public static Test suite() {
-		return new TestSuite(LocalBlastTest.class);
+		return new TestSuite(BiojavaLocalBlastTest.class);
 	}
 }
