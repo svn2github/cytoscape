@@ -12,6 +12,7 @@ final class SpecificNodeDetails extends DefaultNodeDetails
   final IntArray m_shapes = new IntArray();
   final ObjArray m_fillPaints = new ObjArray();
   final ObjArray m_borderWidths = new ObjArray();
+  final ObjArray m_borderPaints = new ObjArray();
 
   SpecificNodeDetails(final Fung fung)
   {
@@ -24,6 +25,7 @@ final class SpecificNodeDetails extends DefaultNodeDetails
     m_shapes.setIntAtIndex(0, node);
     m_fillPaints.setObjAtIndex(null, node);
     m_borderWidths.setObjAtIndex(null, node);
+    m_borderPaints.setObjAtIndex(null, node);
   }
 
   public final Color colorLowDetail(final int node)
@@ -97,6 +99,25 @@ final class SpecificNodeDetails extends DefaultNodeDetails
       m_borderWidths.setObjAtIndex(null, node); }
     else {
       m_borderWidths.setObjAtIndex(new Float(width), node); }
+  }
+
+  public final Paint borderPaint(final int node)
+  {
+    final Object o = m_borderPaints.getObjAtIndex(node);
+    if (o == null) { return super.borderPaint(node); }
+    return (Paint) o;
+  }
+
+  /*
+   * A null paint has the special meaning to use default paint.
+   */
+  final void overrideBorderPaint(final int node, final Paint paint)
+  {
+    if (paint == null ||
+        paint.equals(super.borderPaint(node))) {
+      m_borderPaints.setObjAtIndex(null, node); }
+    else {
+      m_borderPaints.setObjAtIndex(paint, node); }
   }
 
 }
