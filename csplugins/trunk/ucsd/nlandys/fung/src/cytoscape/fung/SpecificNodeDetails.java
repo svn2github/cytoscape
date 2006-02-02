@@ -2,6 +2,7 @@ package cytoscape.fung;
 
 import cytoscape.util.intr.IntArray;
 import java.awt.Color;
+import java.awt.Paint;
 import java.util.HashMap;
 
 final class SpecificNodeDetails extends DefaultNodeDetails
@@ -9,6 +10,7 @@ final class SpecificNodeDetails extends DefaultNodeDetails
 
   final ObjArray m_colorsLowDetail = new ObjArray();
   final IntArray m_shapes = new IntArray();
+  final ObjArray m_fillPaints = new ObjArray();
 
   SpecificNodeDetails(final Fung fung)
   {
@@ -54,6 +56,25 @@ final class SpecificNodeDetails extends DefaultNodeDetails
   {
     if (shape == super.shape(node)) { m_shapes.setIntAtIndex(0, node); }
     else { m_shapes.setIntAtIndex(256 + (int) shape, node); }
+  }
+
+  public final Paint fillPaint(final int node)
+  {
+    final Object o = m_fillPaints.getObjAtIndex(node);
+    if (o == null) { return super.fillPaint(node); }
+    return (Paint) o;
+  }
+
+  /*
+   * A null paint has the special meaning to use default paint.
+   */
+  final void overrideFillPaint(final int node, final Paint paint)
+  {
+    if (paint == null ||
+        paint.equals(super.fillPaint(node))) {
+      m_fillPaints.setObjAtIndex(null, node); }
+    else {
+      m_fillPaints.setObjAtIndex(paint, node); }
   }
 
 }

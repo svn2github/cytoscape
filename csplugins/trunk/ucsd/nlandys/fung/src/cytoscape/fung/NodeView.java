@@ -2,6 +2,7 @@ package cytoscape.fung;
 
 import cytoscape.render.immed.GraphGraphics;
 import java.awt.Color;
+import java.awt.Paint;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 
@@ -112,10 +113,10 @@ public final class NodeView
       return m_fung.m_nodeDetails.colorLowDetail(m_node); }
   }
 
-  public final void setColorLowDetail(final Color color)
+  public final void setColorLowDetail(final Color colorLowDetail)
   {
     synchronized (m_fung.m_lock) {
-      m_fung.m_nodeDetails.overrideColorLowDetail(m_node, color); }
+      m_fung.m_nodeDetails.overrideColorLowDetail(m_node, colorLowDetail); }
   }
 
   public final byte getShape()
@@ -140,6 +141,18 @@ public final class NodeView
       default:
         throw new IllegalArgumentException("shape is not recognized"); }
       m_fung.m_nodeDetails.overrideShape(m_node, shape); }
+  }
+
+  public final Paint getFillPaint()
+  {
+    synchronized (m_fung.m_lock) {
+      return m_fung.m_nodeDetails.fillPaint(m_node); }
+  }
+
+  public final void setFillPaint(final Paint fillPaint)
+  {
+    synchronized (m_fung.m_lock) {
+      m_fung.m_nodeDetails.overrideFillPaint(m_node, fillPaint); }
   }
 
   public final double getBorderWidth()
