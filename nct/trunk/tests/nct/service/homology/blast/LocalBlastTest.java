@@ -33,8 +33,10 @@ public class LocalBlastTest extends TestCase {
 
 	boolean noExceptions;
 	DIPSynonyms synonyms;
-	LocalBlast small;
-	LocalBlast large;
+	LocalBlast smallNorm;
+	LocalBlast largeNorm;
+	LocalBlast smallNotNorm;
+	LocalBlast largeNotNorm;
 	String outLoc;
 
 	BlastGraph<String,Double> b1;
@@ -52,8 +54,14 @@ public class LocalBlastTest extends TestCase {
 		Properties props = System.getProperties();
 		outLoc = props.getProperty("java.io.tmpdir") + props.getProperty("file.separator") + "LocalBlastTest." + System.currentTimeMillis() + ".xml";
 		props.load( new FileInputStream("examples/blast.properties"));
-		small = new LocalBlast(props,synonyms, outLoc, 1.0e-10,true ); 
-		large = new LocalBlast(props,synonyms, outLoc, 10.0,true ); 
+
+		// normalize
+		smallNorm = new LocalBlast(props,synonyms, outLoc, 1.0e-10,true ); 
+		largeNorm = new LocalBlast(props,synonyms, outLoc, 10.0,true ); 
+
+		// don't normalize
+		smallNotNorm = new LocalBlast(props,synonyms, outLoc, 1.0e-10,false ); 
+		largeNotNorm = new LocalBlast(props,synonyms, outLoc, 10.0,false ); 
 
 		b1 = new BlastGraph<String,Double>("Gallus_gallus.fa","examples");
 		DIPInteractionNetwork dipin1 = new DIPInteractionNetwork("Gallus gallus");
@@ -84,37 +92,57 @@ public class LocalBlastTest extends TestCase {
 			System.out.println( "edge " + e.toString() ); 
 
 
-		Map<String,Map<String,Double>> map = small.expectationValues(b1,b2);
+		Map<String,Map<String,Double>> map = smallNorm.expectationValues(b1,b2);
 		checkMap(map,false);
-		map = large.expectationValues(b1,b2);
+		map = largeNorm.expectationValues(b1,b2);
 		checkMap(map,true);
+	}
+
+	public void testNormalize() {
+		Map<String,Map<String,Double>> norm = largeNorm.expectationValues(b1,b2);
+		Map<String,Map<String,Double>> notNorm = largeNotNorm.expectationValues(b1,b2);
+
+		assertTrue( norm.size() > 0 );
+		assertTrue( notNorm.size() > 0 );
+	
+		double normVal = norm.get("BMRB_CHICK").get("PIR:S33568").doubleValue();
+		double notNormVal = notNorm.get("BMRB_CHICK").get("PIR:S33568").doubleValue();
+
+		assertTrue(notNormVal > normVal);
 	}
 
 	private void checkMap(Map<String,Map<String,Double>> map,boolean nonHomologs) {
 		System.out.println("map size: " + map.size());
 		assertTrue( map.size() > 0 );
+		int numChecks = 0;
 		for ( String key : map.keySet() ) {
 			System.out.println("key " + key);
 			for ( String key2 : map.get(key).keySet() ) {
 				System.out.println(key + " " + key2 + " " + map.get(key).get(key2));
-				if ( key.equals(key2) )
+				if ( key.equals(key2) ) {
 					assertTrue( map.get(key).get(key2) == 0 );
+					numChecks++;
+				}
 				else if ( key.equals("BMRB_CHICK") && key2.equals("PIR:S33568") ||
-				          key2.equals("BMRB_CHICK") && key.equals("PIR:S33568") ) 
-					// value is 1.26964E-18 or 1.19001E-18
-					// depending on order
-					assertTrue( "expect ~1.2e-18: got " +  map.get(key).get(key2), 
+				          key2.equals("BMRB_CHICK") && key.equals("PIR:S33568") ) {
+					assertTrue( "expect ~1.3e-19: got " +  map.get(key).get(key2), 
 					            map.get(key).get(key2) > 1e-20 && 
-					            map.get(key).get(key2) < 1e-16 );
+					            map.get(key).get(key2) < 1e-18 );
+					numChecks++;
+				}
 				else if ( nonHomologs ) {
-					if (key.equals("HSF3_CHICK") && key2.equals("ATNB_CHICK"))
-						assertTrue("expect ~6.6: got " +  map.get(key).get(key2),map.get(key).get(key2) > 5 );
-					if (key.equals("PRGR_CHICK") && key2.equals("A1A1_CHICK"))
-						assertTrue("expect ~1.8: got " +  map.get(key).get(key2),map.get(key).get(key2) > 1 );
-					
+					if (key.equals("HSF3_CHICK") && key2.equals("ATNB_CHICK")) {
+						assertTrue("expect ~0.4: got " +  map.get(key).get(key2),map.get(key).get(key2) > 0.4 );
+						numChecks++;
+					}
+					if (key2.equals("PRGR_CHICK") && key.equals("A1A1_CHICK")) {
+						assertTrue("expect ~0.3: got " +  map.get(key).get(key2),map.get(key).get(key2) > 0.3 );
+						numChecks++;
+					}
 				}
 			}
 		}
+		assertTrue( numChecks > 0 );
 	}
 
 	protected void tearDown() {
