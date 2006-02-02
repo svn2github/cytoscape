@@ -164,6 +164,13 @@ public final class NodeView
 
   public final void setBorderWidth(final double borderWidth)
   {
+    synchronized (m_fung.m_lock) {
+      final float fBorderWidth = (float) borderWidth;
+      if (!(fBorderWidth >= 0.0f)) {
+        throw new IllegalArgumentException
+          ("borderWidth must be positive or zero"); }
+      // TODO: Reconcile with width and height.
+      m_fung.m_nodeDetails.overrideBorderWidth(m_node, fBorderWidth); }
   }
 
 }
