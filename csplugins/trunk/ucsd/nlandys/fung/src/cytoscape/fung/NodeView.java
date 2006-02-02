@@ -140,6 +140,7 @@ public final class NodeView
         break;
       default:
         throw new IllegalArgumentException("shape is not recognized"); }
+      // TODO: Reconcile with width and height if rounded rectangle.
       m_fung.m_nodeDetails.overrideShape(m_node, shape); }
   }
 
