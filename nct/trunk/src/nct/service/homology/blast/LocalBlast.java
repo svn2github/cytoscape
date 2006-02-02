@@ -289,12 +289,18 @@ public class LocalBlast implements HomologyModel {
 
 			if ( qName.equals("BlastOutput_query-def") ) {
 				getValue = false;	
-				queryId = value.toString();
+				if ( synonyms != null )
+					queryId = synonyms.getSynonym(value.toString(),"name");
+				else
+					queryId = value.toString();
 				if ( value.length() > 0 )
 					value.delete(0,value.length());
 			} else if ( qName.equals("Hit_def") ) {
 				getValue = false;	
-				subjectId = value.toString();
+				if ( synonyms != null )
+					subjectId = synonyms.getSynonym(value.toString(),"name");
+				else
+					subjectId = value.toString();
 				if ( value.length() > 0 )
 					value.delete(0,value.length());
 			} else if ( qName.equals("Hsp_evalue") ) {
