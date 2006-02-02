@@ -21,6 +21,7 @@ final class SpecificNodeDetails extends DefaultNodeDetails
   {
     m_colorsLowDetail.setObjAtIndex(null, node);
     m_shapes.setIntAtIndex(0, node);
+    m_fillPaints.setObjAtIndex(null, node);
   }
 
   public final Color colorLowDetail(final int node)
