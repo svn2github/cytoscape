@@ -30,7 +30,7 @@ import java.util.regex.Matcher;
  * {@link java.io.FileInputStream} as follows.
  *
  * <pre>
- * InputStream is = new BlastXMLFileFilterInputStream( blastFileName );
+ * InputStream is = new BlastXMLFileFilterInputStream(blastFileName, true);
  * 
  * // blast parser setup - see Biojava in Anger
  *
@@ -59,22 +59,34 @@ public class BlastXMLFileFilterInputStream extends FilterInputStream {
     public static String doctypeRegEx = "^\\<\\!DOCTYPE BlastOutput.+";
 
     /**
+     * Whether or not to keep the first instances of xmlRegEx and
+     * doctypeRegEx.  Different parsers are more or less tolerant.
+     */
+    protected boolean keepFirst;
+
+    /**
      * Constructor.  
      * @param fileName The XML file name that needs to be processed.
+     * @param keepFirst Whether or not to keep the first instance of
+     * the doctype and xml version declarations.
      */
-    public BlastXMLFileFilterInputStream( String fileName ) 
+    public BlastXMLFileFilterInputStream(String fileName, boolean keepFirst) 
         throws IOException {
-        this( new FileInputStream( fileName ) );
+        this( new FileInputStream( fileName ), keepFirst );
     }
 
     /**
      * Constructor.  
      * @param ins The input stream of the XML file that needs to be
      * processed.
+     * @param keepFirst Whether or not to keep the first instance of
+     * the doctype and xml version declarations.
      */
-    public BlastXMLFileFilterInputStream( InputStream ins ) 
+    public BlastXMLFileFilterInputStream(InputStream ins, boolean keepFirst) 
         throws IOException {
         super(ins);
+
+	this.keepFirst = keepFirst;
 
         BufferedReader read = new BufferedReader(new InputStreamReader(in));
         String line = "";
@@ -94,21 +106,30 @@ public class BlastXMLFileFilterInputStream extends FilterInputStream {
             if ( xmlMatcher.matches() ) {
                 if ( !foundFirstXml ) {
                     foundFirstXml = true;
-                    stringBuf.append( line );
-                    stringBuf.append( lineSep ); 
+
+		    if ( keepFirst ) {
+                    	stringBuf.append( line );
+                    	stringBuf.append( lineSep ); 
+		    }
                 }
 
             } else if ( docMatcher.matches() ) {
+
                 if ( !foundFirstDoc ) {
                     foundFirstDoc = true;
 
-                    // add wrapper tag for the first one
-                    stringBuf.append( line );
+		    if ( keepFirst ) {
+                    	stringBuf.append( line );
+                    	stringBuf.append( lineSep ); 
+		    }
+
+                    // always add wrapper tag for the first one
                     stringBuf.append('<');
                     stringBuf.append(wrappingTag);
                     stringBuf.append('>');
                     stringBuf.append( lineSep ); 
                 }
+	
 
             } else {
                 stringBuf.append( line );
