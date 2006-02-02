@@ -173,4 +173,16 @@ public final class NodeView
       m_fung.m_nodeDetails.overrideBorderWidth(m_node, fBorderWidth); }
   }
 
+  public final Paint getBorderPaint()
+  {
+    synchronized (m_fung.m_lock) {
+      return m_fung.m_nodeDetails.borderPaint(m_node); }
+  }
+
+  public final void setBorderPaint(final Paint borderPaint)
+  {
+    synchronized (m_fung.m_lock) {
+      m_fung.m_nodeDetails.overrideBorderPaint(m_node, borderPaint); }
+  }
+
 }
