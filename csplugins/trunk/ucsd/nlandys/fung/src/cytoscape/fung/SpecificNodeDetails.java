@@ -11,6 +11,7 @@ final class SpecificNodeDetails extends DefaultNodeDetails
   final ObjArray m_colorsLowDetail = new ObjArray();
   final IntArray m_shapes = new IntArray();
   final ObjArray m_fillPaints = new ObjArray();
+  final ObjArray m_borderWidths = new ObjArray();
 
   SpecificNodeDetails(final Fung fung)
   {
@@ -22,6 +23,7 @@ final class SpecificNodeDetails extends DefaultNodeDetails
     m_colorsLowDetail.setObjAtIndex(null, node);
     m_shapes.setIntAtIndex(0, node);
     m_fillPaints.setObjAtIndex(null, node);
+    m_borderWidths.setObjAtIndex(null, node);
   }
 
   public final Color colorLowDetail(final int node)
@@ -76,6 +78,25 @@ final class SpecificNodeDetails extends DefaultNodeDetails
       m_fillPaints.setObjAtIndex(null, node); }
     else {
       m_fillPaints.setObjAtIndex(paint, node); }
+  }
+
+  public final float borderWidth(final int node)
+  {
+    final Object o = m_borderWidths.getObjAtIndex(node);
+    if (o == null) { return super.borderWidth(node); }
+    return ((Float) o).floatValue();
+  }
+
+  /*
+   * The width argument must be pre-checked for correctness; it should not
+   * be negative, for example.
+   */
+  final void overrideBorderWidth(final int node, final float width)
+  {
+    if (width == super.borderWidth(node)) {
+      m_borderWidths.setObjAtIndex(null, node); }
+    else {
+      m_borderWidths.setObjAtIndex(new Float(width), node); }
   }
 
 }
