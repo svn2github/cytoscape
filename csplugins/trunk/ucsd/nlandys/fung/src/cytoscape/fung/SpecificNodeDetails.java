@@ -28,6 +28,9 @@ final class SpecificNodeDetails extends DefaultNodeDetails
     return (Color) o;
   }
 
+  /*
+   * A null color has the special meaning to use default color.
+   */
   final void overrideColorLowDetail(final int node, final Color color)
   {
     if (color == null ||
@@ -44,12 +47,13 @@ final class SpecificNodeDetails extends DefaultNodeDetails
     return (byte) (i - 256);
   }
 
+  /*
+   * The shape argument must be pre-checked for correctness.
+   */
   final void overrideShape(final int node, final byte shape)
   {
-    if (shape < 0 || shape == super.shape(node)) {
-      m_shapes.setIntAtIndex(0, node); }
-    else {
-      m_shapes.setIntAtIndex(256 + (int) shape, node); }
+    if (shape == super.shape(node)) { m_shapes.setIntAtIndex(0, node); }
+    else { m_shapes.setIntAtIndex(256 + (int) shape, node); }
   }
 
 }

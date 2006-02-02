@@ -126,6 +126,20 @@ public final class NodeView
 
   public final void setShape(final byte shape)
   {
+    synchronized (m_fung.m_lock) {
+      switch (shape) {
+      case SHAPE_RECTANGLE:
+      case SHAPE_DIAMOND:
+      case SHAPE_ELLIPSE:
+      case SHAPE_HEXAGON:
+      case SHAPE_OCTAGON:
+      case SHAPE_PARALLELOGRAM:
+      case SHAPE_ROUNDED_RECTANGLE:
+      case SHAPE_TRIANGLE:
+        break;
+      default:
+        throw new IllegalArgumentException("shape is not recognized"); }
+      m_fung.m_nodeDetails.overrideShape(m_node, shape); }
   }
 
   public final double getBorderWidth()
