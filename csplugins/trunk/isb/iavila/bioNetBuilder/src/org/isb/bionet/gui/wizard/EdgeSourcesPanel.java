@@ -8,6 +8,8 @@ import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import javax.swing.*;
+
+import org.isb.bionet.CyNetUtils;
 import org.isb.bionet.datasource.interactions.*;
 import org.isb.bionet.datasource.synonyms.*;
 import org.isb.bionet.gui.*;
@@ -15,6 +17,7 @@ import org.isb.bionet.gui.*;
 import java.util.*;
 
 import cytoscape.*;
+import cytoscape.data.*;
 
 /**
  * 
@@ -218,6 +221,20 @@ public class EdgeSourcesPanel extends JPanel {
         if(numSources > 1 && this.nodes != null && this.nodes.size() > 0)
             nodeIDs = new HashSet();
         
+        CyAttributes nodeAtts = Cytoscape.getNodeAttributes();
+        Vector startingNodes = new Vector();
+        if(this.nodes != null && this.nodes.size() > 0){
+            startingNodes.addAll(this.nodes);
+            while(it.hasNext()){
+                String gi = (String)it.next();
+                String alternateGis = (String)nodeAtts.getStringAttribute(gi,CyNetUtils.ALTERNATE_UID_ATT);
+                if(alternateGis == null) continue;
+                String [] allGis = alternateGis.split("|");
+                for(int i = 0; i < allGis.length; i++)
+                    if(!startingNodes.contains(allGis[i])) startingNodes.add(allGis[i]);        
+            }//while it
+        }
+        
         it = sourceClassToField.keySet().iterator();
         while(it.hasNext()){
             
@@ -229,107 +246,77 @@ public class EdgeSourcesPanel extends JPanel {
             String species = (String)sourceSpecies.get(0);
             sourceClassToSpecies.put(sourceClass,species);
             
-            JDialog dialog = (JDialog) this.sourceToDialog.get(sourceClass);
-            
-            Hashtable args = new Hashtable();
-            if(sourceClass.equals(ProlinksInteractionsSource.class.getName())){
-                ProlinksGui prolinksGui = (ProlinksGui)dialog;
-                Vector interactionTypes = prolinksGui.getSelectedInteractionTypes();
-                double pvalTh = prolinksGui.getPval(false);
-                System.out.println("------- Prolinks settings (createNetwork)----------");
-                System.out.println("interactionTypes = " + interactionTypes);
-                System.out.println("pval = " + pvalTh);
-                System.out.println("species = " + sourceSpecies);
-                System.out.println("---------------------------------------------------");
-                
-                if(pvalTh != 1){
-                    args.put(ProlinksInteractionsSource.PVAL, new Double(pvalTh));
-                }
-                
-                if(interactionTypes.size() < 4){
-                    args.put(ProlinksInteractionsSource.INTERACTION_TYPE, interactionTypes);
-                }
-              
-            
-            }else if(sourceClass.equals(KeggInteractionsSource.class.getName())){
-            
-                KeggGui kDialog = (KeggGui)dialog;
-                int threshold = kDialog.getThreshold();
-                boolean oneEdge = kDialog.createOneEdgePerCompound();
-                args = new Hashtable();
-                args.put(KeggInteractionsSource.THRESHOLD_KEY,new Integer(threshold));
-                args.put(KeggInteractionsSource.EDGE_PER_CPD_KEY, new Boolean(oneEdge));
-                System.out.println("------- KEGG settings (estimateNumEdges)----------");
-                System.out.println("threshold = " + threshold);
-                System.out.println("oneEdgePerCpd = " + oneEdge);
-                System.out.println("species = " + sourceSpecies);
-                System.out.println("---------------------------------------------------");
-                
-            }
-              
+            InteractionsSourceGui dialog = (InteractionsSourceGui) this.sourceToDialog.get(sourceClass);
+            Hashtable args = dialog.getArgsTable();
             sourceClassToArgs.put(sourceClass,args);
             
             Vector sourceInteractions = null;
-            try{
+           
                 
-                if(this.nodes == null || this.nodes.size() == 0){
-                    
-                    if(args.size() > 0){
+            if(startingNodes.size() == 0){
+                try{
+                    if(args.size() > 0)
                         sourceInteractions = (Vector)this.interactionsClient.getAllInteractions(species, args);
-                    }else{
+                    else
                         sourceInteractions = (Vector)this.interactionsClient.getAllInteractions(species);
-                    }
+                }catch(Exception e){e.printStackTrace();}
                 
-                }else{
+            }else{
 
-                    Vector adjacentNodes = null;
-                    
-                    if(this.fnCB.isSelected()){
+                Vector adjacentNodes = null;
+                if(this.fnCB.isSelected()){
+                    try{
                         // fnCB can only be selected if this.nodes has elements
                             if(args.size() > 0)
                                 adjacentNodes = this.interactionsClient.getFirstNeighbors(this.nodes,species,args);
                             else
                                 adjacentNodes = this.interactionsClient.getFirstNeighbors(this.nodes,species);
-                    }
-                   
-                    // If firstNeighbors is selected, and we have startingNodes, then we want to find the edges connecting
-                    // the nodes in first neighbors and starting nodes: CAVEAT: The nodes in startingNodes could be a subset of
-                    // selected nodes in a network. Connecting edges would only be found for these selected nodes, not for the
-                    // whole network.
+                    }catch(Exception e){e.printStackTrace();}
                     
-                    Vector nodesToConnect = this.nodes;
-                    if(adjacentNodes != null){
-                        // make sure we don't have repeated nodes in nodesToConnect
-                        // this means that fnCB is selected
-                        adjacentNodes.removeAll(this.nodes);
-                        nodesToConnect.addAll(adjacentNodes);
-                    }
-                    if(args.size() > 0){
-                        sourceInteractions = (Vector)this.interactionsClient.getConnectingInteractions(nodesToConnect, species, args);
-                    }else{
-                        sourceInteractions = (Vector)this.interactionsClient.getConnectingInteractions(nodesToConnect, species);
-                    }
-                }//else
-                
-                // Accumulate the new nodeIDs if needed:
-                if(nodeIDs != null){
-                    Iterator it2 = sourceInteractions.iterator();
-                    while(it2.hasNext()){
-                        Hashtable interaction = (Hashtable)it2.next();
-                        String id1 = (String)interaction.get(InteractionsDataSource.INTERACTOR_1);
-                        String id2 = (String)interaction.get(InteractionsDataSource.INTERACTOR_2);
-                        nodeIDs.add(id1);
-                        nodeIDs.add(id2);
-                    }//while it
-                }else{
-                   // Write the number of interactions for the source
-                    JTextField tf = (JTextField)sourceClassToField.get(sourceClass);
-                    tf.setText(Integer.toString(sourceInteractions.size()));  
                 }
+                   
+                // If firstNeighbors is selected, and we have startingNodes, then we want to find the edges connecting
+                // the nodes in first neighbors and starting nodes: CAVEAT: The nodes in startingNodes could be a subset of
+                // selected nodes in a network. Connecting edges would only be found for these selected nodes, not for the
+                // whole network.
+                    
+                Vector nodesToConnect = new Vector(); 
+                nodesToConnect.addAll(startingNodes);
+                if(adjacentNodes != null){
+                    // make sure we don't have repeated nodes in nodesToConnect
+                    // this means that fnCB is selected
+                    adjacentNodes.removeAll(startingNodes);
+                    nodesToConnect.addAll(adjacentNodes);
+                }
+                    
+                try{
+                    if(args.size() > 0)
+                        sourceInteractions = (Vector)this.interactionsClient.getConnectingInteractions(nodesToConnect, species, args);
+                    else
+                        sourceInteractions = (Vector)this.interactionsClient.getConnectingInteractions(nodesToConnect, species);
+                }catch(Exception e){e.printStackTrace();}
+                    
             
+            }//else
                 
-            }catch (Exception ex){
-                ex.printStackTrace();
+            // Accumulate the new nodeIDs if needed:
+            if(nodeIDs != null){
+                Iterator it2 = sourceInteractions.iterator();
+                while(it2.hasNext()){
+                    Hashtable interaction = (Hashtable)it2.next();
+                    String id1 = (String)interaction.get(InteractionsDataSource.INTERACTOR_1);
+                    String id2 = (String)interaction.get(InteractionsDataSource.INTERACTOR_2);
+                    Vector id1alternates = (Vector)interaction.get(InteractionsDataSource.INTERACTOR_1_IDS);
+                    Vector id2alternates = (Vector)interaction.get(InteractionsDataSource.INTERACTOR_2_IDS);
+                    nodeIDs.add(id1);
+                    nodeIDs.add(id2);
+                    if(id1alternates != null) nodeIDs.addAll(id1alternates);
+                    if(id2alternates != null) nodeIDs.addAll(id2alternates);
+                }//while it
+            }else{
+                // Write the number of interactions for the source
+                JTextField tf = (JTextField)sourceClassToField.get(sourceClass);
+                tf.setText(Integer.toString(sourceInteractions.size()));  
             }
             
         }//while it

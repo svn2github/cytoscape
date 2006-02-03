@@ -12,7 +12,6 @@ import org.isb.bionet.datasource.synonyms.*;
  * TODO: If the cache gets too big (what is too big? > 6000??? How many nodes do people view in Cytoscape???) clear them.
  */
 public class InteractionsHandler implements InteractionsDataSource {
-
     /**
      * The gene ID to use for all genes in the returned interactions
      */
@@ -30,6 +29,7 @@ public class InteractionsHandler implements InteractionsDataSource {
      // Maps used to save in memory gene id maps to improve performance (very primitive cache)  
     protected Hashtable universalToDbCache; // from String to HashSet
     protected Hashtable dbToUniversalCache; // from String to String
+    protected Hashtable universalToOtherUniversals; // from String to Vector
     
     protected boolean debug;
     
@@ -52,6 +52,7 @@ public class InteractionsHandler implements InteractionsDataSource {
 		this.synonymsSource = new SQLSynonymsHandler();
         this.universalToDbCache = new Hashtable();
         this.dbToUniversalCache = new Hashtable();
+        this.universalToOtherUniversals = new Hashtable();
 		Iterator it = interaction_sources.iterator();
 		while (it.hasNext()) {
 			String className = (String) it.next();
@@ -374,7 +375,9 @@ public class InteractionsHandler implements InteractionsDataSource {
         Hashtable table = new Hashtable();
         Iterator it = this.interactionSources.iterator();
         while(it.hasNext()){
+            
             InteractionsDataSource dataSource = (InteractionsDataSource)it.next();
+            System.out.println("Calling getSupportedSpecies for data source [" + dataSource.getClass().getName() + "]");
             Vector sp = dataSource.getSupportedSpecies();
             table.put(dataSource.getClass().getName(), sp);
         }
@@ -850,7 +853,7 @@ public class InteractionsHandler implements InteractionsDataSource {
 		return allResults;
 	}
     
-    //-------------- Synonyms methods ---------------//
+    //-------------- Translation of ids  methods ---------------//
     
     /**
      * Translates the gene names in the list interactions to UNIVERSAL_GENE_ID_TYPE when possible
@@ -859,87 +862,136 @@ public class InteractionsHandler implements InteractionsDataSource {
      * @param interactions the interactions (Vector of Hashtables)
      * @return translated interactions (Vector of Hashtables)
      */
+    // This method is called before interactions are returned to the outside. It must make sure that
+    // it assigns unique GIs to each database id, since they become the unique identifiers for Cytoscape nodes
+    // Additional GIs that match the database ids are contained in an entry with INTERACTOR_1_IDS and INTERACTOR_2_IDS keys
     protected Vector translateInteractionsToUniversalGeneID (String sourceIDtype, Vector interactions){
         
         Vector translated = new Vector();
         HashSet alreadyTranslated = new HashSet();
         HashSet interactorsToTranslate = new HashSet();
         Iterator it = interactions.iterator();
+        
+        // Find interactors that have not already been translated:
         while(it.hasNext()){
             Hashtable interaction = (Hashtable)it.next();
             String i1 = (String)interaction.get(INTERACTOR_1);
             String i2 = (String)interaction.get(INTERACTOR_2);
             
-            if(i1 != null){  
-                if(!this.dbToUniversalCache.containsKey(i1)){
-                    interactorsToTranslate.add(i1);
-                }else{
-                    alreadyTranslated.add(i1);
-                }
-                
-            }// if i1 != null
+            if(i1 != null)
+                if(!this.dbToUniversalCache.containsKey(i1)) interactorsToTranslate.add(i1);
+                else alreadyTranslated.add(i1);
             
-            if(i2 != null){
-                if(!this.dbToUniversalCache.containsKey(i2)){
-                    interactorsToTranslate.add(i2);
-                }else{
-                    alreadyTranslated.add(i2);
-                }
+            if(i2 != null)
+                if(!this.dbToUniversalCache.containsKey(i2)) interactorsToTranslate.add(i2);
+                else alreadyTranslated.add(i2);
                 
-            }
         }//while it.hasNext
-        
-        // To make sure this is working: 
+       
         System.out.println("Num already translated ids = " + alreadyTranslated.size() + " num ids to translate = " + interactorsToTranslate.size());
         
+        // Find UIDs of interactors that have not been already translated
         Hashtable translation = 
             this.synonymsSource.getSynonyms(sourceIDtype,new Vector(interactorsToTranslate),UNIVERSAL_GENE_ID_TYPE);
         
         System.out.println("Num translated = " + translation.size());
         
+        // Traslate the interactions
         it = interactions.iterator();
-        
         while(it.hasNext()){
             Hashtable interaction = (Hashtable)it.next();
             String d1 = (String)interaction.get(INTERACTOR_1);
             String d2 = (String)interaction.get(INTERACTOR_2);
-            String u1 = (String)translation.get(d1);
-            String u2 = (String)translation.get(d2);
-          
-            if(u1 != null){
-                HashSet set = (HashSet)this.universalToDbCache.get(u1);
-                if(set == null){
-                    set = new HashSet();
-                    this.universalToDbCache.put(u1, set);
+            Vector universalIds1 = (Vector)translation.get(d1);
+            Vector universalIds2 = (Vector)translation.get(d2);
+         
+            if(universalIds1 != null && universalIds1.size() > 0){
+                
+                // Choose a univesal id that:
+                // 1. Is not already used by an interactor in the same db as d1
+                // 2. Is preferably, already used by an interactor in another db different from d1's
+                String u1 = "";
+                Iterator it2 = universalIds1.iterator();
+                while(it2.hasNext()){
+                    String aUID = (String)it2.next();
+                    Set dbIDs = getDbIdsFromUniversalCache(sourceIDtype,aUID);
+                    if(dbIDs == null){
+                        // There is no id from sourceIDtype that has
+                        // been assigned to this unique ID
+                        // Now see if it has been used in a different db, if so
+                        // choose this id, if not, keep looking
+                        HashSet set = (HashSet)this.universalToDbCache.get(aUID);
+                        u1 = aUID;
+                        if(set != null && set.size() > 0) break; // this meets both conds!
+                    }
+                }//while it2
+                
+                if(u1 == "" || u1 == null){
+                    //For testing
+                    throw new IllegalStateException(d1 + " has no u1!!!!!!!");
                 }
+                
+                HashSet set = (HashSet)this.universalToDbCache.get(u1);
+                if(set == null) set = new HashSet();
                 set.add(d1);
                 
                 this.dbToUniversalCache.put(d1,u1);
                 interaction.put(INTERACTOR_1,  u1);
+                interaction.put(INTERACTOR_1_IDS, universalIds1);
+                this.universalToOtherUniversals.put(u1,universalIds1);
+                
             }else{
-                u1 = (String)this.dbToUniversalCache.get(d1);
+                String u1 = (String)this.dbToUniversalCache.get(d1);
                 if(u1 != null){ 
                     interaction.put(INTERACTOR_1,  u1);
+                    Vector otherUniversals = (Vector)this.universalToOtherUniversals.get(u1);
+                    if(otherUniversals != null) interaction.put(INTERACTOR_1_IDS, otherUniversals);
                 }else{
                     // remember that it does not have a synonym
                     this.dbToUniversalCache.put(d1,d1);
                 }
             }
             
-            if(u2 != null){
-                HashSet set = (HashSet)this.universalToDbCache.get(u2);
-                if(set == null){
-                    set = new HashSet();
-                    this.universalToDbCache.put(u2, set);
+            if(universalIds2 != null){  
+               
+                // Choose a univesal id that:
+                // 1. Is not already used by an interactor in the same db as d1
+                // 2. Is preferably, already used by an interactor in another db different from d1's
+                String u2 = "";
+                Iterator it2 = universalIds2.iterator();
+                while(it2.hasNext()){
+                    String aUID = (String)it2.next();
+                    Set dbIDs = getDbIdsFromUniversalCache(sourceIDtype,aUID);
+                    if(dbIDs == null){
+                        // There is no id from sourceIDtype that has
+                        // been assigned to this unique ID
+                        // Now see if it has been used in a different db, if so
+                        // choose this id, if not, keep looking
+                        HashSet set = (HashSet)this.universalToDbCache.get(aUID);
+                        u2 = aUID;
+                        if(set != null && set.size() > 0) break; // this meets both conds!
+                    }
+                }//while it2
+                
+                if(u2 == "" || u2 == null){
+                    //For testing
+                    throw new IllegalStateException(d2 + " has no u2!!!!!!!");
                 }
+                
+                HashSet set = (HashSet)this.universalToDbCache.get(u2);
+                if(set == null) set = new HashSet();
                 set.add(d2);
                 
                 this.dbToUniversalCache.put(d2,u2);
                 interaction.put(INTERACTOR_2,  u2);
+                interaction.put(INTERACTOR_2_IDS, universalIds2);
+                this.universalToOtherUniversals.put(u2, universalIds2);
             }else{
-                u2 = (String)this.dbToUniversalCache.get(d2);
+                String u2 = (String)this.dbToUniversalCache.get(d2);
                 if(u2 != null){
                     interaction.put(INTERACTOR_2,  u2);
+                    Vector otherUniversals = (Vector)this.universalToOtherUniversals.get(u2);
+                    if(otherUniversals != null) interaction.put(INTERACTOR_2_IDS, otherUniversals);
                 }else{
                     // remember that it does not have a synonym
                     this.dbToUniversalCache.put(d2,d2);
@@ -959,6 +1011,7 @@ public class InteractionsHandler implements InteractionsDataSource {
      */
     protected Vector translateInteractorsToUniversalGeneID (Vector interactors, String sourceIDtype){
        
+        // Find out which ones have not already been translated:
         HashSet translatedInteractors = new HashSet();
         HashSet toTranslate = new HashSet(); 
         Iterator it = interactors.iterator();
@@ -973,28 +1026,45 @@ public class InteractionsHandler implements InteractionsDataSource {
         
         System.out.println("Num already translated = " + translatedInteractors.size() + " num ids to translate = " + toTranslate.size());
         
-        
+        // Find translations for the ones that are not already translated
         Hashtable translation =  this.synonymsSource.getSynonyms(sourceIDtype,new Vector(toTranslate),UNIVERSAL_GENE_ID_TYPE);
         System.out.println("Num translated = " + translation.size());
         
+        // Translate intearctors
         it = toTranslate.iterator();
         while(it.hasNext()){
             String dbID = (String)it.next();
-            String uID = (String)translation.get(dbID);
-            if(uID != null){
-                this.dbToUniversalCache.put(dbID, uID);
-                HashSet set = (HashSet)this.universalToDbCache.get(uID);
-                if(set == null){
-                    set = new HashSet();
-                    this.universalToDbCache.put(uID, set);
+            Vector universalIDs = (Vector)translation.get(dbID);
+            if(universalIDs != null){
+                
+                String uID = "";
+                Iterator it2 = universalIDs.iterator();
+                while(it2.hasNext()){
+                  String aUID = (String)it2.next();
+                  Set dbIDs = getDbIdsFromUniversalCache(sourceIDtype,aUID);
+                  if(dbIDs == null){
+                      uID = aUID;
+                      HashSet set = (HashSet)this.universalToDbCache.get(aUID);
+                      if(set != null && set.size() > 0) break;
+                  }
+                }//while it2
+               
+                
+                if(uID == "" || uID == null){
+                    //For testing
+                    throw new IllegalStateException(dbID + " has no uID!!!!!!!");
                 }
+                
+                HashSet set = (HashSet)this.universalToDbCache.get(uID);
+                if(set == null) set = new HashSet();
                 set.add(dbID);
-                translatedInteractors.add(uID);
+                
+                this.dbToUniversalCache.put(dbID, uID);
+                this.universalToOtherUniversals.put(uID,universalIDs);
+                // WHAT TO DO WITH THE OTHER universal IDS???????
+                // Try this (???), we will see what happens...
+                translatedInteractors.addAll(universalIDs);
             }else{
-                // no synonym for this id
-                // what to do?
-                // THIS MAY BE CAUSING A BUG!!!
-                //translatedInteractors.add(dbID);
                 // remember that it does not have a synonym
                 this.dbToUniversalCache.put(dbID, dbID); 
             }
@@ -1009,7 +1079,7 @@ public class InteractionsHandler implements InteractionsDataSource {
      */
     protected Vector translateInteractorsFromUniversalGeneID (Vector interactors, String targetIDtype){
 
-        
+        // Find the interactors that have not already been translated
         HashSet translatedInteractors = new HashSet();
         HashSet toTranslate = new HashSet(); 
         Iterator it = interactors.iterator();
@@ -1020,9 +1090,9 @@ public class InteractionsHandler implements InteractionsDataSource {
                 toTranslate.add(uID);
                 continue;
             }
-            String dbID = getDbIDFromUniversalCache(targetIDtype, uID);
-            if(dbID != null){
-                translatedInteractors.add(dbID);
+            Set dbIDs = getDbIdsFromUniversalCache(targetIDtype, uID);
+            if(dbIDs != null){
+                translatedInteractors.addAll(dbIDs);
             }else{
                 toTranslate.add(uID);
             }
@@ -1030,27 +1100,32 @@ public class InteractionsHandler implements InteractionsDataSource {
         
         System.out.println("Num already translated = " + translatedInteractors.size() + " num ids to translate = " + toTranslate.size());
         
+        // Find translations
         Hashtable translation =  this.synonymsSource.getSynonyms(UNIVERSAL_GENE_ID_TYPE, new Vector(toTranslate),targetIDtype);
         System.out.println("Num translated = " + translation.size());
         
         it = toTranslate.iterator();
         while(it.hasNext()){
             String uID = (String)it.next();
-            String dbID = (String)translation.get(uID);
-            if(dbID != null){
-                this.dbToUniversalCache.put(dbID, uID);
-                //this.cachedGeneIDs.put(value, key);
-                HashSet set = (HashSet)this.universalToDbCache.get(uID);
-                if(set == null){
-                    set = new HashSet();
-                    this.universalToDbCache.put(uID, set);
-                }
-                set.add(dbID);
-                translatedInteractors.add(dbID);
-            }else{
-                // no synonym for id, what to do?
-                // THIS MAY BE CAUSING A BUG
-                //translatedInteractors.add(uID);
+            Vector dbIDs = (Vector)translation.get(uID);
+            if(dbIDs != null){
+                // Took the following code out because it allows different db ids from the SAME db to have the same UID
+//               Iterator it2 = dbIDs.iterator();
+//               while(it2.hasNext()){
+//                   String dbID = (String)it2.next();
+//                   this.dbToUniversalCache.put(dbID, uID);
+//                   HashSet set = (HashSet)this.universalToDbCache.get(uID);
+//                   if(set == null){
+//                       set = new HashSet();
+//                       this.universalToDbCache.put(uID, set);
+//                   }
+//                   set.add(dbID);
+//               }
+               //translatedInteractors.add(dbID);
+               // What to do with the rest of the db ids??????
+               // try this:
+               // This should be correct since we wish to get interactions/adjacent interactors of ALL matching db ids in the data base
+               translatedInteractors.addAll(dbIDs);
             }
         }
         return new Vector(translatedInteractors);
@@ -1060,20 +1135,22 @@ public class InteractionsHandler implements InteractionsDataSource {
      * 
      * @param dbIDtype the type of db type (see SynonymsSource for types of db ids)
      * @param uID the gene id of type UNIVERSAL_GENE_ID_TYPE
-     * @return the database id of type dbIDtype that corresponds to the given universal id that is stored in the universal cache, null if not stored
+     * @return the database ids of type dbIDtype that corresponds to the given universal id that is stored in the universal cache, null if not stored
      */
-    protected String getDbIDFromUniversalCache (String dbIDtype, String uID){
+    //TODO: Should return set of matching db ids, which should only be ONE,but we wil leave it like this.
+    protected Set getDbIdsFromUniversalCache (String dbIDtype, String uID){
         Set set = (HashSet)this.universalToDbCache.get(uID);
-        if(set == null){
-            return null;
-        }
-        Iterator it = set.iterator();
         
+        if(set == null) return null;
+        
+        Iterator it = set.iterator();
+        HashSet dbIds = new HashSet();
         while(it.hasNext()){
             String dbID = (String)it.next();
-            if(dbID.startsWith(dbIDtype + ":")) return dbID;
+            if(dbID.startsWith(dbIDtype + ":")) dbIds.add(dbID);
         }
-        return null;
+        if(dbIds.size() == 0) return null;
+        return dbIds;   
     }
 	
 }// InteractionsDataSource

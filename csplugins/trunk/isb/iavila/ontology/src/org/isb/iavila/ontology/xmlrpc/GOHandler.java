@@ -270,25 +270,23 @@ public class GOHandler extends SQLDBHandler {
         }catch(SQLException e){e.printStackTrace(); return new Hashtable();}
         
         if(taxid == -1) return new Hashtable();
-        Hashtable returnTable = new Hashtable();
-        getGenesWithTerms(termIDs,taxid,recursive,returnTable);
-        return returnTable;
-    }
-    
-    /**
-     * @param termIDs a Vector of Strings parsable as integers representing term ids
-     * @param taxid the NCBI taxonomy id of the species
-     * @return a Hashtable from Strings (termIDs parsable as Integers) to Vectors of Strings representing genes
-     * with the given key term
-     */
-    protected void getGenesWithTerms (Vector termIDs,int taxid, boolean recursive, Hashtable returnTable){
         if(!recursive){
             Hashtable table = getGenesWithTerms(termIDs,taxid);
-            if(returnTable != null) returnTable.putAll(table);
-            else returnTable = table;
-            return;
+            return table;
         }
-        if(returnTable == null) returnTable = new Hashtable();
+        Vector dTerms = new Vector(); // stores ids of descendants terms of termIDs
+        getTermsDescendantTerms(termIDs,taxid,dTerms);
+        return getGenesWithTerms(dTerms, taxid);
+        }
+    
+    /**
+     * Accumulates in descendantTerms the terms that are descendants of the given terms in termIDs
+     * @param termIDs a Vector of Strings parsable as integers representing term ids
+     * @param taxid the NCBI taxonomy id of the species
+     * @param descendantTerms vector where terms of descendants will be stored
+     */
+    protected void getTermsDescendantTerms (Vector termIDs,int taxid, Vector descendantTerms){
+        if(descendantTerms == null) descendantTerms = new Vector();
         
         Iterator it = termIDs.iterator();
         while(it.hasNext()){
@@ -299,16 +297,10 @@ public class GOHandler extends SQLDBHandler {
                 childrenIDs = getChildrenIDs(Integer.parseInt(currentTerm));
             }catch(Exception e){e.printStackTrace(); return;}
             
-            if(childrenIDs != null && childrenIDs.size() > 0){
-                getGenesWithTerms(childrenIDs,taxid,recursive,returnTable);
+            if(childrenIDs.size() > 0){
+                descendantTerms.addAll(childrenIDs);
+                getTermsDescendantTerms(childrenIDs,taxid,descendantTerms);
             }
-            
-            Vector oneTermVector = new Vector();
-            oneTermVector.add(currentTerm);
-            Hashtable termToChildren = getGenesWithTerms(oneTermVector,taxid);
-            Vector genes = (Vector)termToChildren.get(currentTerm);
-            if(genes != null)
-                returnTable.put(currentTerm,genes);
             
         }//it.hasNext
         
@@ -495,7 +487,6 @@ public class GOHandler extends SQLDBHandler {
     protected Hashtable makeTermsHash (ResultSet rs){
        Hashtable table = new Hashtable();
        try{
-           Vector species = new Vector();
            while(rs.next()){
                Hashtable info = new Hashtable();
                int ID = rs.getInt(1);

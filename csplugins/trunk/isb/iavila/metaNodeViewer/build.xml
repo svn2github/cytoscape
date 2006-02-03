@@ -6,8 +6,8 @@
    <property name = "build.compiler" value = "modern"/>
    <!-- path to Cytoscape under development (CVS) -->
    <property name = "lib.dev" location = "../../../../cytoscape"/>
-   <!-- path to Cytoscape 2.1 official release -->
-   <property name = "lib.release" location = "../../../../C2.1/source"/>
+   <!-- path to Cytoscape 2.2 official release -->
+   <property name = "lib.release" location = "../../../../cytoscape-v2.2"/>
    <property name = "jar"  location = "jar"/>
    <property name = "doc" location = "doc"/>
 

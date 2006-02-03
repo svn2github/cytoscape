@@ -24,7 +24,7 @@ public interface SynonymsSource extends DataSource {
     public static final String GENE_NAME = "Gene Name";
     public static final String GENE_ID = "GeneID"; // Entrez Gene Database, replaces NCBI Locus Link
     public static final String PROD_NAME = "Product Name";
-    public static final String ORF_NAME = "ORF Name";
+    public static final String ORF_NAME = "ORF";
     public static final String TREMBL_ID = "TrEMBL";
     public static final String REFSEQ_ID = "RefSeq";
     public static final String HPRD_ID = "HPRD";

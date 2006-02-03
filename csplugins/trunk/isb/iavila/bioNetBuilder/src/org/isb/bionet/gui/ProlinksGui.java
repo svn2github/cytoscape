@@ -6,7 +6,9 @@
 package org.isb.bionet.gui;
 
 import java.util.*;
+
 import org.isb.bionet.datasource.interactions.*;
+
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
@@ -16,7 +18,7 @@ import java.awt.*;
  * 
  * @author <a href="mailto:iavila@systemsbiology.org">Iliana Avila-Campillo</a>
  */
-public class ProlinksGui extends JDialog {
+public class ProlinksGui extends JDialog implements InteractionsSourceGui{
     
     /**
      * The title of this JFrame
@@ -40,6 +42,20 @@ public class ProlinksGui extends JDialog {
         setModal(true);
         createGUI();
     }//ProlinksGui
+    
+    /**
+     * Gets a Hashtable with (key, value) entries that a Prolinks interactions handler understands
+     * @return a Hashtable
+     * @see org.isb.bionet.datasource.interactions.ProlinksInteractionsSource
+     */
+    public Hashtable getArgsTable (){
+        Vector interactionTypes = getSelectedInteractionTypes();
+        double pvalTh = getPval(false);
+        Hashtable args = new Hashtable();
+        if(pvalTh != 1) args.put(ProlinksInteractionsSource.PVAL, new Double(pvalTh));
+        if(interactionTypes.size() < 4) args.put(ProlinksInteractionsSource.INTERACTION_TYPE, interactionTypes);
+        return args;
+    }
     
     
     /**

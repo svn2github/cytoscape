@@ -21,6 +21,16 @@ public interface InteractionsDataSource extends DataSource {
   public static final int CONNECTING_EDGES = 0;
   public static final int ADJACENT_EDGES = 1;
   public static final int ALL_EDGES = 2;
+  /**
+   * Key in an interaction Hashtable that has as a value alternate
+   * ids of type UNIVERSAL_GENE_ID_TYPE for interactor1
+   */
+  public static final String INTERACTOR_1_IDS = "INTERACTOR_1_IDS";
+  /**
+   * Key in an interaction Hashtable that has as a value alternate
+   * ids of type UNIVERSAL_GENE_ID_TYPE for interactor2
+   */
+  public static final String INTERACTOR_2_IDS = "INTERACTOR_2_IDS";
 
   /**
    * @return String to specify type of ID that this InteractionsDataSource accepts

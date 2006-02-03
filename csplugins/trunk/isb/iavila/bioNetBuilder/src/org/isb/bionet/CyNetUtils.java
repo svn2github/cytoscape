@@ -20,6 +20,8 @@ public class CyNetUtils {
     
     // Attribute names
     public static final String DEFINITION_ATT = "Definition";
+    public static final String ALIASES_ATT = "Aliases";
+    public static final String ALTERNATE_UID_ATT = "UIDs"; // confusing, but necessary!
     
     
     /**
@@ -30,6 +32,8 @@ public class CyNetUtils {
      */
     public static CyNetwork makeNewNetwork (Collection node_ids, Collection interactions, String networkName, 
             SynonymsClient synClient, String [] labelOps, Hashtable atts){
+        
+        System.out.println("CyNetUtils.makeNewNetwork: Num node_ids = " + node_ids.size() + " num interactions = " + interactions.size());
         
         CyNetwork net = null;
         IntArrayList nodes = new IntArrayList();
@@ -71,38 +75,59 @@ public class CyNetUtils {
         nodes.trimToSize();
         edges.trimToSize();
         net = Cytoscape.createNetwork(nodes.elements(), edges.elements(), networkName);
-        
-        Hashtable giToLabel = new Hashtable();
-        try{
-            for (int i = 0; i < labelOps.length; i++){
-                Hashtable temp = synClient.getSynonyms(SynonymsSource.GI_ID, new Vector(nodeIDs), labelOps[i]);
-                it = giToLabel.keySet().iterator();
-                // Make sure we don't replace mappings with higher ID priorities
-                while(it.hasNext()){
-                    temp.remove(it.next());
-                }
-                giToLabel.putAll(temp);
-                if(giToLabel.size() == nodeIDs.size()){
-                    // all nodes have a label
-                    break;
-                }
-            }
-            
-        }catch(Exception ex){ex.printStackTrace();}
-        
-        it = net.nodesIterator();
-        while(it.hasNext()){
-            CyNode node = (CyNode)it.next();
-            String nodeid = node.getIdentifier();
-            String commonName = (String)giToLabel.get(nodeid);
-            if(commonName == null) commonName = nodeid;
-            Cytoscape.getNodeAttributes().setAttribute(node.getIdentifier(),Semantics.COMMON_NAME,commonName);
-        }
-        
+        setNodeLabelAndAliases(net,nodeIDs,synClient,labelOps);
         createAttributes(nodeIDs,edgeIDs,synClient,atts);
+        
+        // Remove:
+        System.out.println("Edges that were already created: " + CyNetUtils.edges);
+        
         return net;
     }//makeNewNetwork
     
+    /**
+     * Sets the Semantics.COMMON_NAME attribute for nodes, and an "ALIASES" attribute as well
+     * 
+     * @param net contains nodes to be labeled
+     * @param nodeIDs list of GI ids for nodes in the network
+     * @param synClient the client that will be requested for synonyms
+     * @param labelOptions an array of Strings that represents the prioritized label options for nodes
+     * @see org.isb.bionet.datasource.synonyms.SynonymsSource for label options
+     */
+    public static void setNodeLabelAndAliases (CyNetwork net, Collection nodeIDs, SynonymsClient synClient, String [] labelOptions){
+        Hashtable giToLabel = new Hashtable();
+        Vector nodeidVector = new Vector(nodeIDs);
+        for (int i = 0; i < labelOptions.length; i++){
+            Hashtable temp = null;
+            try {
+                temp = synClient.getSynonyms(SynonymsSource.GI_ID, nodeidVector, labelOptions[i]);
+            }catch(Exception e){e.printStackTrace();}
+            if(temp == null) continue;    
+            Iterator it = giToLabel.keySet().iterator();
+            // Make sure we don't replace mappings with higher ID priorities
+            while(it.hasNext()) temp.remove(it.next());
+            giToLabel.putAll(temp);
+            if(giToLabel.size() == nodeIDs.size()) break;
+        }
+        
+        Iterator it = net.nodesIterator();
+        while(it.hasNext()){
+            CyNode node = (CyNode)it.next();
+            String nodeid = node.getIdentifier();
+            String nodeName = "";
+            Vector commonNames = (Vector)giToLabel.get(nodeid);
+            if(commonNames == null || commonNames.size() == 0) nodeName = nodeid;
+            else nodeName = (String)commonNames.get(0);
+            Cytoscape.getNodeAttributes().setAttribute(node.getIdentifier(),Semantics.COMMON_NAME,nodeName);
+            if(commonNames == null || commonNames.size() == 0) continue;
+            String allNames = "";
+            if(commonNames.size() == 1) continue;
+            else{
+                Iterator it2 = commonNames.iterator();
+                while (it2.hasNext()) allNames += (String)it2.next() + ", ";
+            }
+            Cytoscape.getNodeAttributes().setAttribute(node.getIdentifier(), ALIASES_ATT, allNames);
+        }  
+    }
     
     /**
      * 
@@ -142,39 +167,14 @@ public class CyNetUtils {
                 edgeIDs.add(edge.getIdentifier());
             }
         }//while it
-        
         edges.trimToSize();
         net.restoreNodes(nodes.elements());
         net.restoreEdges(edges.elements());
       
-        Hashtable giToLabel = new Hashtable();
-        try{
-            for (int i = 0; i < labelOps.length; i++){
-                Hashtable temp = synClient.getSynonyms(SynonymsSource.GI_ID, new Vector(nodeIDs), labelOps[i]);
-                it = giToLabel.keySet().iterator();
-                // Make sure we don't replace mappings with higher ID priorities
-                while(it.hasNext()){
-                    temp.remove(it.next());
-                }
-                giToLabel.putAll(temp);
-                if(giToLabel.size() == nodeIDs.size()){
-                    // all nodes have a label
-                    break;
-                }
-            }
-            
-        }catch(Exception ex){ex.printStackTrace();}
-        
-        it = net.nodesIterator();
-        while(it.hasNext()){
-            CyNode node = (CyNode)it.next();
-            String nodeid = node.getIdentifier();
-            String commonName = (String)giToLabel.get(nodeid);
-            if(commonName == null) commonName = nodeid;
-            Cytoscape.getNodeAttributes().setAttribute(node.getIdentifier(),Semantics.COMMON_NAME,commonName);
-        }
-        
+        setNodeLabelAndAliases(net,nodeIDs,synClient,labelOps);
         createAttributes(nodeIDs,edgeIDs,synClient,atts);
+        
+       
     }//addInteractionsToNetwork
     
     /**
@@ -183,6 +183,8 @@ public class CyNetUtils {
      * @return a CyEdge with edge attributes obtained from the Hashtable
      * @see org.isb.xmlrpc.client.InteractionDataClient for examples on  how the Hashtables look
      */
+    // for testing, remove:
+    public static int edges = 0;
     public static CyEdge createEdge (Hashtable interaction){
         
         String interactor1 = (String)interaction.get(InteractionsDataSource.INTERACTOR_1);
@@ -214,23 +216,53 @@ public class CyNetUtils {
             throw new IllegalStateException("CyNode for interactor2 = [" + interactor2 + "] is null!");
         }
 
-        CyEdge edge = Cytoscape.getCyEdge(node1, node2, Semantics.INTERACTION, type, true);
+        // For testing:
+        CyEdge edge = Cytoscape.getCyEdge(node1, node2, Semantics.INTERACTION, type, false);
+        if(edge != null){
+            System.out.println("Edge (" + node1.getIdentifier() + " " + type + " " + node2.getIdentifier() + ") exists.");
+            edges++;
+        }
+        edge = Cytoscape.getCyEdge(node1, node2, Semantics.INTERACTION, type, true);
      
         if(edge == null){
             throw new IllegalStateException("CyEdge with nodes " + node1 + " and " + node2 + " of type " + type + " is null!");
+            
         }
        
         
-        // Now lets see what other information the interaction has to set as an edge attribute
+        // Now lets see what other information the interaction has to set as an edge/node attribute
         Object [] keys = interaction.keySet().toArray();
         for(int i = 0; i < keys.length; i++){
             if(keys[i] instanceof String){
                 String attribute = (String)keys[i];
+                
                 if(!attribute.equals(InteractionsDataSource.INTERACTOR_1) &&
                         !attribute.equals(InteractionsDataSource.INTERACTOR_2) &&
                         !attribute.equals(InteractionsDataSource.INTERACTION_TYPE)){
+                    
                     Object attValue = interaction.get(attribute);
-                    Cytoscape.getEdgeAttributes().setAttribute(edge.getIdentifier(),attribute,attValue.toString());
+                    String stringAttValue = "";
+                    int numVals = 0;
+                    if(attValue instanceof Vector){
+                        Vector vAtt = (Vector)attValue;
+                        numVals = vAtt.size();
+                        Iterator it = vAtt.iterator();
+                        if(numVals > 1){
+                            // TODO: Remove (for testing purposes)
+                            //throw new NullPointerException (attribute +" "+ vAtt);
+                            while(it.hasNext()) stringAttValue += it.next().toString() + "|";
+                        }else if(numVals == 1)
+                            stringAttValue = vAtt.get(0).toString();
+                        else continue;
+                    }else stringAttValue = attValue.toString();
+                   
+                    if(attribute.equals(InteractionsDataSource.INTERACTOR_1_IDS) && numVals > 1){    
+                        Cytoscape.getNodeAttributes().setAttribute(edge.getSource().getIdentifier(),ALTERNATE_UID_ATT,stringAttValue);
+                    }else if(attribute.equals(InteractionsDataSource.INTERACTOR_2_IDS) && numVals > 1){        
+                        Cytoscape.getNodeAttributes().setAttribute(edge.getTarget().getIdentifier(),ALTERNATE_UID_ATT,stringAttValue);    
+                    }else{
+                        Cytoscape.getEdgeAttributes().setAttribute(edge.getIdentifier(),attribute,stringAttValue);
+                    }
                 }
             }//if keys[i] is a String
         }//for i
@@ -263,6 +295,7 @@ public class CyNetUtils {
             while(it.hasNext()){
                 String nodeID = (String)it.next();
                 String definition = (String)defs.get(nodeID);
+                if(definition == null) continue;
                 nodeAtts.setAttribute(nodeID, DEFINITION_ATT, definition);
             }//while
         
@@ -280,13 +313,17 @@ public class CyNetUtils {
             while(it.hasNext()){
                 String nodeID = (String)it.next();
                 Vector xids = (Vector)xrefTable.get(nodeID);
+                if(xids == null) continue;
                 Iterator it2 = xids.iterator();
                 while(it2.hasNext()){
                     String anID = (String)it2.next();
                     int index = anID.indexOf(":");
                     if(index >= 0){
                         String attName = anID.substring(0,index);
-                        nodeAtts.setAttribute(nodeID,attName,anID);
+                        String idList = nodeAtts.getStringAttribute(nodeID, attName);
+                        if(idList != null && idList.length() > 0) idList += "|" + anID;
+                        else idList = anID;
+                        nodeAtts.setAttribute(nodeID,attName,idList);
                     }
                 }//inner while
             }//while
@@ -304,8 +341,16 @@ public class CyNetUtils {
             Iterator it = geneNames.keySet().iterator();
             while(it.hasNext()){
                 String nodeID = (String)it.next();
-                String name = (String)geneNames.get(nodeID);
-                nodeAtts.setAttribute(nodeID,SynonymsSource.GENE_NAME,name);
+                Vector names = (Vector)geneNames.get(nodeID);
+                if(names == null || names.size() == 0) continue;
+                String allNames = "";
+                if(names.size() == 1) allNames = (String)names.get(0);
+                else{
+                    Iterator it2 = names.iterator();
+                    allNames = (String)it2.next();
+                    while(it2.hasNext()) allNames += "|" + (String)it2.next();
+                }
+                nodeAtts.setAttribute(nodeID,SynonymsSource.GENE_NAME,allNames);
             }
             
         }// if gene name
@@ -321,8 +366,16 @@ public class CyNetUtils {
             Iterator it = prodNames.keySet().iterator();
             while(it.hasNext()){
                 String nodeID = (String)it.next();
-                String name = (String)prodNames.get(nodeID);
-                nodeAtts.setAttribute(nodeID,SynonymsSource.PROD_NAME,name);
+                Vector names = (Vector)prodNames.get(nodeID);
+                if(names == null || names.size() == 0) continue;
+                String allNames = "";
+                if(names.size() == 1) allNames = (String)names.get(0);
+                else{
+                    Iterator it2 = names.iterator();
+                    allNames = (String)it2.next();
+                    while(it2.hasNext()) allNames += "|" + (String)it2.next();
+                }
+                nodeAtts.setAttribute(nodeID,SynonymsSource.PROD_NAME,allNames);
             }
         }// if prod name
         
@@ -338,12 +391,70 @@ public class CyNetUtils {
             while(it.hasNext()){
                 String nodeID = (String)it.next();
                 String name = (String) encodedTable.get(nodeID);
+                if(name == null) continue;
                 nodeAtts.setAttribute(nodeID,AttributesPanel.ENCODED_BY,name);
             } 
         }// if encoded by
         
         if( ((Boolean)atts.get(AttributesPanel.DB_URLS)).booleanValue() ){
-            // For now do nothing
+            
+            Iterator it = nodeIDs.iterator();
+            
+            // These use GI numbers:
+            String prolinksURL = "http://mysql5.mbi.ucla.edu/cgi-bin/functionator/pronav?seq_id=";
+            String refseqURL = "http://www.ncbi.nlm.nih.gov/entrez/viewer.fcgi?db=protein&val=";
+            
+            // We need to get the KEGG ids
+            Hashtable giToKegg = new Hashtable();
+            try{
+                giToKegg = synonyms_client.getSynonyms(SynonymsSource.GI_ID, new Vector(nodeIDs),SynonymsSource.KEGG_ID);
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            String keggURL = "http://www.genome.jp/dbget-bin/www_bget?";
+            
+            // We need to get TrEMBL ids
+            
+            String prolinksAttName = ProlinksInteractionsSource.NAME + "_URL";
+            String keggAttName = KeggInteractionsSource.NAME + "_URL";
+            String refseqAttName = "RefSeq_URL";
+            String uniprotAttName = "UniProt_URL";
+            
+            //TODO: Get all the possible GI ids for each.
+            
+            while (it.hasNext()){
+            
+                String nodeid = (String)it.next();
+                int index = nodeid.indexOf(SynonymsSource.GI_ID + ":");
+                if(index < 0) continue;
+                
+                String gi = nodeid.substring(index+ SynonymsSource.GI_ID.length() + 1);
+                
+                // Prolinks: seq_id is GI
+                // http://mysql5.mbi.ucla.edu/cgi-bin/functionator/pronav?seq_id=1502861&tab=general
+                nodeAtts.setAttribute(nodeid,prolinksAttName,prolinksURL + gi + "&tab=general");
+                
+                // KEGG: need to get the KEGG gene id
+                // http://www.genome.jp/dbget-bin/www_bget?aae:aq_021
+                Vector keggIDs = (Vector)giToKegg.get(nodeid);
+                if(keggIDs != null){
+                    // Need to take care of this!
+//                    index = keggIDs.indexOf(SynonymsSource.KEGG_ID + ":");
+//                    if(index >= 0){
+//                        keggID = keggID.substring(index + SynonymsSource.KEGG_ID.length() + 1);
+//                        nodeAtts.setAttribute(nodeid,keggAttName, keggURL + keggID);
+//                    }
+                }
+                
+                // RefSeq: val is GI
+                // http://www.ncbi.nlm.nih.gov/entrez/viewer.fcgi?db=protein&val=71836199
+                nodeAtts.setAttribute(nodeid,refseqAttName,refseqURL + gi);
+            
+                // UniProt: needs TrEMBL id (need to add GI to TrEMBL mapping method to synonyms)
+                // http://www.pir.uniprot.org/cgi-bin/upEntry?id=Q65882_9POT
+            
+            }
+            
         }// if db urls
         
         if( ((Boolean)atts.get(AttributesPanel.HPFP)).booleanValue() ){
@@ -357,7 +468,7 @@ public class CyNetUtils {
                 }
               }//while it.hasNext
         }// if db urls
-        
+   
     }
     
 }//CyNetUtils

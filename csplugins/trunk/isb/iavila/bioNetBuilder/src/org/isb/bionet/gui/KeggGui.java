@@ -8,6 +8,7 @@ import java.util.*;
 
 import org.exolab.castor.jdo.conf.DataSource;
 import org.isb.bionet.datasource.interactions.*;
+
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
@@ -19,7 +20,7 @@ import javax.swing.event.*;
  * @author <a href="mailto:iavila@systemsbiology.org">Iliana Avila-Campillo</a>
  * 
  */
-public class KeggGui extends JDialog {
+public class KeggGui extends JDialog implements InteractionsSourceGui {
     
     /**
      * The title of this JFrame
@@ -46,6 +47,20 @@ public class KeggGui extends JDialog {
         setModal(true);
         createGUI(default_th);
     }//ProlinksGui
+    
+    /**
+     * Gets a Hashtable of (key, value) entries that a Kegg interactions handler understands
+     * @return a Hashtable
+     * @see org.isb.bionet.datasource.interactions.KeggInteractionsSource
+     */
+    public Hashtable getArgsTable (){
+        int threshold = getThreshold();
+        boolean oneEdge = createOneEdgePerCompound();
+        Hashtable args = new Hashtable();
+        args.put(KeggInteractionsSource.THRESHOLD_KEY,new Integer(threshold));
+        args.put(KeggInteractionsSource.EDGE_PER_CPD_KEY, new Boolean(oneEdge));
+        return args;
+    }
     
    
     /**

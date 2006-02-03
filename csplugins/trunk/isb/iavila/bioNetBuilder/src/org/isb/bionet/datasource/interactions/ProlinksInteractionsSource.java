@@ -218,7 +218,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	 *         source contains information
 	 */
 	public Vector getSupportedSpecies() {
-		String sql = "SELECT DISTINCT species FROM species";
+		String sql = "SELECT species FROM species";
 		ResultSet rs = query(sql);
 		if (rs == null) {
 			return EMPTY_VECTOR;

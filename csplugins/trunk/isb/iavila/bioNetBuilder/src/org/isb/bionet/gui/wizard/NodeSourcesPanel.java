@@ -11,10 +11,7 @@ import java.awt.GridBagLayout;
 import javax.swing.*;
 
 import java.io.File;
-import java.util.Iterator;
-import java.util.Vector;
-import java.util.ArrayList;
-import java.util.Set;
+import java.util.*;
 
 import org.isb.bionet.gui.*;
 import org.isb.bionet.gui.taxonomy.TaxonomySearchDialog;
@@ -28,6 +25,14 @@ import cytoscape.data.Semantics;
 
 public class NodeSourcesPanel extends JPanel {
 
+    
+    // The sources of nodes:
+    public static final String USER_LIST = "user_list";
+    public static final String NETS = "network";
+    public static final String TAXONOMY = "taxonomy";
+    public static final String ANNOTS = "annotation";
+    
+    
     protected File myListFile;
     protected Vector myListNodes;
     protected CyNetworksDialog netsDialog;
@@ -54,6 +59,70 @@ public class NodeSourcesPanel extends JPanel {
     public File getMyListFile (){
         return this.myListFile;
     }
+    
+    /**
+     * 
+     * @return a table from one of USER_LIST:<listfile name>,NETS:<network name>,TAXONOMY,ANNOTS to Vectors of node IDs
+     */
+    public Hashtable getSelectedSourceToNodesTable (){
+       
+        Hashtable table = new Hashtable();
+       
+        if(useList.isSelected()){
+            Vector myListNodes = getNodesFromMyList();
+            if(myListNodes != null) table.put(USER_LIST + ":" + this.myListFile.getName(), myListNodes);
+        }
+       
+        CyNetwork [] nodeNets = getSelectedNetworks();
+        if(nodeNets != null && useNets.isSelected()){
+            if(!this.useSelectedNodes.isSelected()){
+                for(int i = 0; i < nodeNets.length; i++){
+                    Iterator it = nodeNets[i].nodesIterator();
+                    Vector netNodes = new Vector();
+                    while(it.hasNext()){
+                        CyNode node = (CyNode)it.next();
+                        String nodeName = Cytoscape.getNodeAttributes().getStringAttribute(node.getIdentifier(), Semantics.CANONICAL_NAME);
+                        if(!netNodes.contains(nodeName))
+                            netNodes.add(nodeName);
+                    }//while it
+                    if(netNodes.size() > 0)
+                        table.put(NETS + ":" + nodeNets[i].getTitle(), netNodes);
+                }//for i
+            }else{
+                //get the selected nodes
+                for(int i = 0; i < nodeNets.length; i++){
+                    Iterator it = nodeNets[i].getFlaggedNodes().iterator();
+                    Vector netNodes = new Vector();
+                    while(it.hasNext()){
+                        CyNode node = (CyNode)it.next();
+                        String nodeName = Cytoscape.getNodeAttributes().getStringAttribute(node.getIdentifier(), Semantics.CANONICAL_NAME);
+                        if(!netNodes.contains(nodeName))
+                            netNodes.add(nodeName);
+                    }//while it
+                    if(netNodes.size() > 0)
+                        table.put(NETS + ":" + nodeNets[i].getTitle(), netNodes);
+                }//for i
+            
+            }
+           
+        }// if nodeNets != null
+        
+        if(this.useAnnotations.isSelected()){
+            if(this.annotationNodeIDs != null && this.annotationNodeIDs.length > 0){
+                Vector annotsVector = new Vector();
+                for(int i = 0; i < this.annotationNodeIDs.length; i++) annotsVector.add(this.annotationNodeIDs[i]);
+                table.put(ANNOTS,annotsVector);
+            }
+        }
+        
+        if(this.useTaxonomy.isSelected()){
+          Vector taxonomyVector = new Vector(this.taxonomyDialog.getGeneIDs());
+          table.put(TAXONOMY, taxonomyVector);
+        }
+        
+        return table;
+    }
+    
     
     /**
      * 
@@ -427,10 +496,11 @@ public class NodeSourcesPanel extends JPanel {
                 new AbstractAction (){
                     
                     public void actionPerformed (ActionEvent event){
-                        int [] newNodes = annotationsDialog.createNodes();
+                        Collection newNodes = annotationsDialog.createNodes();
                         ArrayList canonicals = new ArrayList();
-                        for(int i = 0; i < newNodes.length; i++){
-                            CyNode node = (CyNode)Cytoscape.getRootGraph().getNode(newNodes[i]);
+                        Iterator it = newNodes.iterator();
+                        while(it.hasNext()){
+                            CyNode node = (CyNode)it.next();
                             String canonical = Cytoscape.getNodeAttributes().getStringAttribute(node.getIdentifier(), Semantics.CANONICAL_NAME);
                             canonicals.add(canonical);
                         }

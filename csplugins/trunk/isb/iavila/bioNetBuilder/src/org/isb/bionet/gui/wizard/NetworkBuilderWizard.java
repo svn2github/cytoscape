@@ -11,10 +11,10 @@ import org.apache.xalan.lib.sql.SQLErrorDocument;
 import org.isb.bionet.datasource.interactions.*;
 import org.isb.bionet.datasource.synonyms.*;
 import org.isb.iavila.ontology.xmlrpc.*;
-import org.isb.bionet.gui.KeggGui;
-import org.isb.bionet.gui.ProlinksGui;
+import org.isb.bionet.gui.*;
 import org.isb.bionet.CyNetUtils;
 import cytoscape.*;
+import cytoscape.data.CyAttributes;
 
 /**
  * 
@@ -526,17 +526,33 @@ public class NetworkBuilderWizard {
     
     
     // TODO: Organize this better, this is quick and dirty, maybe a new class???
+    // OK. this method is HUGE. Needs refactoring.
     protected void createNetwork (){
+        
+        CyAttributes nodeAtts = Cytoscape.getNodeAttributes();
+        
         // 1. Get the species for each edge data source
         Map sourceToSpecies = this.speciesPanel.getSourcesSelectedSpecies();
         Map sourceToNames = this.speciesPanel.getSourcesNames();
         
         // 2. Get the starting nodes for the network (if any)
         Vector startingNodes = this.nodeSourcesPanel.getAllNodes();
+        // Also add their alternate GI numbers, if they exist
+        Iterator it = startingNodes.iterator();
+        while(it.hasNext()){
+            String gi = (String)it.next();
+            String alternateGis = (String)nodeAtts.getStringAttribute(gi,CyNetUtils.ALTERNATE_UID_ATT);
+            if(alternateGis == null) continue;
+            String [] allGis = alternateGis.split("|");
+            for(int i = 0; i < allGis.length; i++)
+                if(!startingNodes.contains(allGis[i])) startingNodes.add(allGis[i]);
+            
+        }//while it
+        Hashtable sourceToStartNodes = this.nodeSourcesPanel.getSelectedSourceToNodesTable();
         
         // 3. Get the edge data source parameter settings
         Map sourceToSettings = this.edgeSourcesPanel.getSourcesDialogs();
-        Iterator it = sourceToSettings.keySet().iterator();
+        it = sourceToSettings.keySet().iterator();
         // count the number of selected sources
         int selected = 0;
         while(it.hasNext()){  
@@ -544,6 +560,7 @@ public class NetworkBuilderWizard {
             if(this.edgeSourcesPanel.isSourceSelected(sourceClass)) selected++;
         }
         boolean firstNeighbors = this.edgeSourcesPanel.isFirstNeighborsSelected();
+        Hashtable sourceToNodes = new Hashtable();
         
         // 4. Get the network name
         String netName = this.networkPanel.getNetworkName();
@@ -554,17 +571,17 @@ public class NetworkBuilderWizard {
         
         // 6. Iterate over all the edge data sources and accumulate interactions
         
-        //TODO: Fix this:
-        // Each data source (KEGG, Prolinks, etc) will contribute a set of nodes connected by interactions
-        // the following code does not find edges between nodes that come from different sources
-        
         HashSet interactions = new HashSet();
         HashSet nodeIDs = null;
-        if(selected > 1 && startingNodes.size() > 0)
+        // if more than one source is selected and we have a set of starting nodes,
+        // then we need to keep track of the node ids so that we can find connecting
+        // edges between nodes of different sources
+        if(selected > 1 && startingNodes.size() > 0) 
             nodeIDs = new HashSet();
         
         HashMap sourceNameToArgs = new HashMap();
         HashMap sourceNameToSpecies = new HashMap();
+        
         it = sourceToSettings.keySet().iterator();
         while(it.hasNext()){
             
@@ -578,107 +595,100 @@ public class NetworkBuilderWizard {
             String sourceName = (String)sourceToNames.get(sourceClass);
             sourceNameToSpecies.put(sourceName,species);
             
-            Hashtable args = new Hashtable();
-            if(sourceName.equals(ProlinksInteractionsSource.NAME)){
-                
-                ProlinksGui prolinksGui = (ProlinksGui)sourceToSettings.get(sourceClass);
-                Vector interactionTypes = prolinksGui.getSelectedInteractionTypes();
-                double pvalTh = prolinksGui.getPval(false);
-                System.out.println("------- Prolinks settings (createNetwork)----------");
-                System.out.println("interactionTypes = " + interactionTypes);
-                System.out.println("pval = " + pvalTh);
-                System.out.println("species = " + sourceSpecies);
-                System.out.println("---------------------------------------------------");
-                
-                if(pvalTh != 1){
-                    args.put(ProlinksInteractionsSource.PVAL, new Double(pvalTh));
-                }
-                
-                if(interactionTypes.size() < 4){
-                    args.put(ProlinksInteractionsSource.INTERACTION_TYPE, interactionTypes);
-                }
-              
-            
-            }else if(sourceName.endsWith(KeggInteractionsSource.NAME)){
-            
-                KeggGui kDialog = (KeggGui)sourceToSettings.get(sourceClass);
-                int threshold = kDialog.getThreshold();
-                boolean oneEdge = kDialog.createOneEdgePerCompound();
-                args = new Hashtable();
-                args.put(KeggInteractionsSource.THRESHOLD_KEY,new Integer(threshold));
-                args.put(KeggInteractionsSource.EDGE_PER_CPD_KEY, new Boolean(oneEdge));
-                System.out.println("------- KEGG settings (estimateNumEdges)----------");
-                System.out.println("threshold = " + threshold);
-                System.out.println("oneEdgePerCpd = " + oneEdge);
-                System.out.println("species = " + sourceSpecies);
-                System.out.println("---------------------------------------------------");
-                
-            }
-              
+            InteractionsSourceGui gui = (InteractionsSourceGui)sourceToSettings.get(sourceClass);
+            Hashtable args = gui.getArgsTable();
             sourceNameToArgs.put(sourceName,args);
             
             Vector sourceInteractions = null;
-            try{
-                if(startingNodes == null || startingNodes.size() == 0){
-                    
-                    if(args.size() > 0){
+            
+            if(startingNodes == null || startingNodes.size() == 0){
+                try{
+                    if(args.size() > 0)
                         sourceInteractions = (Vector)this.interactionsClient.getAllInteractions(species, args);
-                    }else{
+                    else
                         sourceInteractions = (Vector)this.interactionsClient.getAllInteractions(species);
-                    }
-                
-                }else{
+                }catch(Exception e){e.printStackTrace();}
+            }else{
 
-                    Vector adjacentNodes = null;
-                    
-                    if(firstNeighbors){ 
-                            if(args.size() > 0)
-                                adjacentNodes = this.interactionsClient.getFirstNeighbors(startingNodes,species,args);
-                            else
-                                adjacentNodes = this.interactionsClient.getFirstNeighbors(startingNodes,species);
-                    }
-                   
-                    // If firstNeighbors is selected, and we have startingNodes, then we want to find the edges connecting
-                    // the nodes in first neighbors and starting nodes: CAVEAT: The nodes in startingNodes could be a subset of
-                    // selected nodes in a network. Connecting edges would only be found for these selected nodes, not for the
-                    // whole network.
-                    
-                    Vector nodesToConnect = startingNodes;
-                    if(adjacentNodes != null){
-                        // make sure we don't have repeated nodes in nodesToConnect
-                        adjacentNodes.removeAll(startingNodes);
-                        nodesToConnect.addAll(adjacentNodes);
-                    }
-                    if(args.size() > 0){
-                        sourceInteractions = (Vector)this.interactionsClient.getConnectingInteractions(nodesToConnect, species, args);
-                    }else{
-                        sourceInteractions = (Vector)this.interactionsClient.getConnectingInteractions(nodesToConnect, species);
-                    }
-                }//else
+                Vector adjacentNodes = null;
                 
-               
-                if(nodeIDs != null){
-                    // Accumulate the new nodeIDs:
-                    Iterator it2 = sourceInteractions.iterator();
-                    while(it2.hasNext()){
-                        Hashtable interaction = (Hashtable)it2.next();
-                        String id1 = (String)interaction.get(InteractionsDataSource.INTERACTOR_1);
-                        String id2 = (String)interaction.get(InteractionsDataSource.INTERACTOR_2);
-                        nodeIDs.add(id1);
-                        nodeIDs.add(id2);
-                    }//while it
-                }else{
-                    interactions.addAll(sourceInteractions);
+                if(firstNeighbors){ 
+                    try{
+                        if(args.size() > 0)
+                            adjacentNodes = this.interactionsClient.getFirstNeighbors(startingNodes,species,args);
+                        else
+                            adjacentNodes = this.interactionsClient.getFirstNeighbors(startingNodes,species);
+                
+                    }catch(Exception e){e.printStackTrace();}
+                }// if first neighbors
+                   
+                // If firstNeighbors is selected, and we have startingNodes, then we want to find the edges connecting
+                // the nodes in first neighbors and starting nodes: CAVEAT: The nodes in startingNodes could be a subset of
+                // selected nodes in a network. Connecting edges would only be found for these selected nodes, not for the
+                // whole network.
+                    
+                Vector nodesToConnect = new Vector();
+                nodesToConnect.addAll(startingNodes);
+                if(adjacentNodes != null){
+                    // make sure we don't have repeated nodes in nodesToConnect
+                    adjacentNodes.removeAll(startingNodes);
+                    nodesToConnect.addAll(adjacentNodes);
+                    // remember the first neighbor nodes and where they came from so that
+                    // we later add a "dataSource" attribute to them
+                    Vector nv = (Vector)sourceToNodes.get(sourceName);
+                    if(nv == null) nv = new Vector();
+                    nv.addAll(adjacentNodes);
+                    sourceToNodes.put(sourceName,nv);
                 }
                 
-            }catch (Exception ex){
-                ex.printStackTrace();
+                try{
+                    if(args.size() > 0)
+                        sourceInteractions = (Vector)this.interactionsClient.getConnectingInteractions(nodesToConnect, species, args);
+                    else
+                        sourceInteractions = (Vector)this.interactionsClient.getConnectingInteractions(nodesToConnect, species);
+                }catch(Exception e){e.printStackTrace();}
+                   
+            }//else
+                 
+            // Accumulate the new nodeIDs:
+                
+            Iterator it2 = sourceInteractions.iterator();
+            Vector nv = null;
+            if(startingNodes.size() == 0){
+                nv = (Vector)sourceToNodes.get(sourceName);
+                if(nv == null) nv = new Vector();
+                sourceToNodes.put(sourceName,nv);
             }
+                
+            if(nodeIDs != null || nv != null){
+                while(it2.hasNext()){
+                    Hashtable interaction = (Hashtable)it2.next();
+                    String id1 = (String)interaction.get(InteractionsDataSource.INTERACTOR_1);
+                    String id2 = (String)interaction.get(InteractionsDataSource.INTERACTOR_2);
+                    Vector id1alternates = (Vector)interaction.get(InteractionsDataSource.INTERACTOR_1_IDS);
+                    Vector id2alternates = (Vector)interaction.get(InteractionsDataSource.INTERACTOR_2_IDS);
+                    if(nodeIDs != null){
+                        nodeIDs.add(id1);
+                        nodeIDs.add(id2);
+                        if(id1alternates != null) nodeIDs.addAll(id1alternates);
+                        if(id2alternates != null) nodeIDs.addAll(id2alternates);
+                    }
+                    if(nv != null){
+                        nv.add(id1);
+                        nv.add(id2);
+                        if(id1alternates != null) nv.addAll(id1alternates);
+                        if(id2alternates != null) nv.addAll(id2alternates);
+                    }
+                }//while it
+            }// if nodeIDs != null || nv != null
+                
+            if(nodeIDs == null)
+                interactions.addAll(sourceInteractions);
             
         }//while it
         
         if(nodeIDs != null){
-            // Finally, connect nodes from different data sources
+            // Finally, connect genes/proteins from different data sources
             nodeIDs.addAll(startingNodes);
             it = sourceNameToArgs.keySet().iterator();
             while(it.hasNext()){
@@ -687,11 +697,10 @@ public class NetworkBuilderWizard {
                 String species = (String)sourceNameToSpecies.get(sourceName);
                 Vector sourceInteractions = null;
                 try{
-                    if(args.size() > 0){
+                    if(args.size() > 0)
                         sourceInteractions = (Vector)this.interactionsClient.getConnectingInteractions(new Vector(nodeIDs), species, args);
-                    }else{
+                    else
                         sourceInteractions = (Vector)this.interactionsClient.getConnectingInteractions(new Vector(nodeIDs), species);
-                    }
                 }catch(Exception e){
                     e.printStackTrace();
                 }
@@ -714,28 +723,32 @@ public class NetworkBuilderWizard {
             }
         }
         
-        if(found){
+        if(found)
             CyNetUtils.addInteractionsToNetwork(net,startingNodes,interactions, this.synonymsClient,labelOps,atts);
-        }else{
+        else
             net = CyNetUtils.makeNewNetwork(startingNodes,interactions, netName, this.synonymsClient,labelOps,atts);
-        }
+        
+        
+        // Attach to each node a "dataSource" attribute that tells the user where that node came from
+        sourceToNodes.putAll(sourceToStartNodes);
+        it = sourceToNodes.keySet().iterator();
+        while(it.hasNext()){
+            String sourceName = (String)it.next();
+            Object obj = sourceToNodes.get(sourceName);
+            Vector ids = (Vector)obj;
+            Iterator it2 = ids.iterator();
+            while(it2.hasNext()){
+                obj = it2.next();
+                String id = (String)obj;
+                if(nodeAtts.getStringAttribute(id,"dataSource") != null) {
+                    //System.out.println("dataSource attribute is already assigned for " + id);
+                    continue;
+                }
+                nodeAtts.setAttribute(id,"dataSource",sourceName);
+            }//it2
+        }//it
         
         
     }//createNetwork
-    
-    /**
-     * 
-     * @param id an ID
-     * @return one of:<br>
-     * PROLINKS_ID, KEGG_ID, GI_ID, or ID_NOT_FOUND
-     */
-    public String getIdType (String id){
-        String [] tokens = id.split(":");
-        if(tokens.length == 0) return SynonymsSource.ID_NOT_FOUND;
-        if(tokens[0].equals(SynonymsSource.PROLINKS_ID)) return SynonymsSource.PROLINKS_ID;
-        if(tokens[0].equals(SynonymsSource.KEGG_ID)) return SynonymsSource.KEGG_ID;
-        if(tokens[0].equals(SynonymsSource.GI_ID)) return SynonymsSource.GI_ID;
-        return SynonymsSource.ID_NOT_FOUND;
-    }
     
 }//NetworkBuilderWizard
