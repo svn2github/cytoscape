@@ -93,42 +93,6 @@ public class CompatibilityGraph extends BasicGraph<String,Double> {
 				String[] nodeBranch = listOfCompatibilityNodes.get(y);
 				compatCalc.calculate(this,graphs,nodeBase,nodeBranch);
 
-/*
-				byte[] distance = new byte[numGraphs]; 
-
-				boolean foundOne = false;
-//				boolean foundZero = false;
-				for ( int z = 0; z < numGraphs; z++ ) {
-					distance[z] = graphs.get(z).getDistance(nodeBase[z],nodeBranch[z]);
-					if ( distance[z] == (byte)1 )
-						foundOne = true;
-//					if ( distance[z] == (byte)0 )
-//						foundZero = true;
-				}
-
-				if ( !foundOne ) 
-					continue;
-//				if ( foundZero ) 
-//					continue;
-
-				// then the weights
-				double edgeWeight = 0;
-				for ( int z = 0; z < numGraphs; z++ ) 
-					edgeWeight += scoreModel.scoreEdge(nodeBase[z],nodeBranch[z],graphs.get(z));
-				if ( edgeWeight < ORTHOLOGY_THRESHOLD ) 
-					continue;
-
-				String node1 = createNode( nodeBranch );
-				String node2 = createNode( nodeBase );
-
-				StringBuffer distDesc = new StringBuffer();
-				for ( int z = 0; z < numGraphs; z++ ) 
-					distDesc.append( Byte.toString(distance[z] ));
-				//System.out.println( "final distance " + distDesc.toString() );
-				addNode(node1);
-				addNode(node2);
-				addEdge(node1,node2, new Double(edgeWeight), distDesc.toString());
-*/
 			}
 		}
 	}
