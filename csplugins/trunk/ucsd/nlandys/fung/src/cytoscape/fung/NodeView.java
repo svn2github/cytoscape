@@ -35,14 +35,14 @@ public final class NodeView
     return m_node;
   }
 
-  public final void getLocation(final Point2D p)
+  public final void getLocation(final double[] p)
   {
     synchronized (m_fung.m_lock) {
       m_fung.m_rtree.exists(m_node, m_fung.m_extentsBuff, 0);
-      p.setLocation((((double) m_fung.m_extentsBuff[0]) +
-                     m_fung.m_extentsBuff[2]) / 2.0d,
-                    (((double) m_fung.m_extentsBuff[1]) +
-                     m_fung.m_extentsBuff[3]) / 2.0d); }
+      p[0] = (((double) m_fung.m_extentsBuff[0]) +
+              m_fung.m_extentsBuff[2]) / 2.0d;
+      p[1] = (((double) m_fung.m_extentsBuff[1]) +
+              m_fung.m_extentsBuff[3]) / 2.0d; }
   }
 
   public final void setLocation(final double x, final double y)
@@ -71,16 +71,13 @@ public final class NodeView
   }
 
   /**
-   * @param d the width and height of this dimension are set to the
-   *   width and height of this node, respectively.
    */
-  public final void getSize(final Dimension2D d)
+  public final void getSize(final double[] d)
   {
     synchronized (m_fung.m_lock) {
       m_fung.m_rtree.exists(m_node, m_fung.m_extentsBuff, 0);
-      d.setSize
-        (((double) m_fung.m_extentsBuff[2]) - m_fung.m_extentsBuff[0],
-         ((double) m_fung.m_extentsBuff[3]) - m_fung.m_extentsBuff[1]); }
+      d[0] = ((double) m_fung.m_extentsBuff[2]) - m_fung.m_extentsBuff[0];
+      d[1] = ((double) m_fung.m_extentsBuff[3]) - m_fung.m_extentsBuff[1]; }
   }
 
   public final void setSize(final double width, final double height)
