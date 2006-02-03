@@ -35,8 +35,6 @@ public class LocalBlastTest extends TestCase {
 	DIPSynonyms synonyms;
 	LocalBlast smallNorm;
 	LocalBlast largeNorm;
-	LocalBlast smallNotNorm;
-	LocalBlast largeNotNorm;
 	String outLoc;
 
 	BlastGraph<String,Double> b1;
@@ -55,13 +53,8 @@ public class LocalBlastTest extends TestCase {
 		outLoc = props.getProperty("java.io.tmpdir") + props.getProperty("file.separator") + "LocalBlastTest." + System.currentTimeMillis() + ".xml";
 		props.load( new FileInputStream("examples/blast.properties"));
 
-		// normalize
-		smallNorm = new LocalBlast(props,synonyms, outLoc, 1.0e-10,true ); 
-		largeNorm = new LocalBlast(props,synonyms, outLoc, 10.0,true ); 
-
-		// don't normalize
-		smallNotNorm = new LocalBlast(props,synonyms, outLoc, 1.0e-10,false ); 
-		largeNotNorm = new LocalBlast(props,synonyms, outLoc, 10.0,false ); 
+		smallNorm = new LocalBlast(props,synonyms, outLoc, 1.0e-10); 
+		largeNorm = new LocalBlast(props,synonyms, outLoc, 10.0); 
 
 		b1 = new BlastGraph<String,Double>("Gallus_gallus.fa","examples");
 		DIPInteractionNetwork dipin1 = new DIPInteractionNetwork("Gallus gallus");
@@ -98,19 +91,6 @@ public class LocalBlastTest extends TestCase {
 		checkMap(map,true);
 	}
 
-	public void testNormalize() {
-		Map<String,Map<String,Double>> norm = largeNorm.expectationValues(b1,b2);
-		Map<String,Map<String,Double>> notNorm = largeNotNorm.expectationValues(b1,b2);
-
-		assertTrue( norm.size() > 0 );
-		assertTrue( notNorm.size() > 0 );
-	
-		double normVal = norm.get("BMRB_CHICK").get("PIR:S33568").doubleValue();
-		double notNormVal = notNorm.get("BMRB_CHICK").get("PIR:S33568").doubleValue();
-
-		assertTrue(notNormVal > normVal);
-	}
-
 	private void checkMap(Map<String,Map<String,Double>> map,boolean nonHomologs) {
 		System.out.println("map size: " + map.size());
 		assertTrue( map.size() > 0 );
@@ -125,18 +105,18 @@ public class LocalBlastTest extends TestCase {
 				}
 				else if ( key.equals("BMRB_CHICK") && key2.equals("PIR:S33568") ||
 				          key2.equals("BMRB_CHICK") && key.equals("PIR:S33568") ) {
-					assertTrue( "expect ~1.3e-19: got " +  map.get(key).get(key2), 
-					            map.get(key).get(key2) > 1e-20 && 
-					            map.get(key).get(key2) < 1e-18 );
+					assertTrue( "expect ~1.2e-18: got " +  map.get(key).get(key2), 
+					            map.get(key).get(key2) > 1e-19 && 
+					            map.get(key).get(key2) < 1e-17 );
 					numChecks++;
 				}
 				else if ( nonHomologs ) {
 					if (key.equals("HSF3_CHICK") && key2.equals("ATNB_CHICK")) {
-						assertTrue("expect ~0.4: got " +  map.get(key).get(key2),map.get(key).get(key2) > 0.4 );
+						assertTrue("expect ~6.6: got " +  map.get(key).get(key2),map.get(key).get(key2) > 6 );
 						numChecks++;
 					}
 					if (key2.equals("PRGR_CHICK") && key.equals("A1A1_CHICK")) {
-						assertTrue("expect ~0.3: got " +  map.get(key).get(key2),map.get(key).get(key2) > 0.3 );
+						assertTrue("expect ~1.8: got " +  map.get(key).get(key2),map.get(key).get(key2) > 1.5 );
 						numChecks++;
 					}
 				}

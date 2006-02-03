@@ -117,11 +117,9 @@ public class LocalBlast implements HomologyModel {
 	 * in the blast results.
 	 * @param props The Properties that specify how and where to run Blast.
 	 * @param tmpOutFile A temporary output file that holds the blast output. 
-	 * @param eValue The expectation value threshold for the blastall command 
-	 * (the -e argument).
 	 */
-	public LocalBlast(Properties props, String tmpOutFile, double eValue, boolean normalize ) {
-		this (props,null,tmpOutFile,eValue,normalize);
+	public LocalBlast(Properties props, String tmpOutFile, double eValue ) {
+		this (props,null,tmpOutFile,eValue);
 	}
 
 	/**
@@ -131,12 +129,10 @@ public class LocalBlast implements HomologyModel {
 	 * blast results to meaningful names.  If it is set to null, you'll simply
 	 * get the id found in the blast results.
 	 * @param tmpOutFile A temporary output file that holds the blast output. 
-	 * @param eValue The expectation value threshold for the blastall command 
-	 * (the -e argument).
 	 */
-	public LocalBlast(Properties props, SynonymMapper synonyms, String tmpOutFile, double eValue, boolean normalize ) { 
+	public LocalBlast(Properties props, SynonymMapper synonyms, String tmpOutFile, double eValue ) { 
 		this.synonyms = synonyms;
-		this.normalize = normalize;
+		this.normalize = false; // we should never normalize.  It is invalid.
 		try { 
 			this.props = props;
 			blastOutputFile = tmpOutFile; 
@@ -243,8 +239,6 @@ public class LocalBlast implements HomologyModel {
 		String queryId;
 		String subjectId;
 		double evalue;
-		double matchLen;	
-		double dbLen;	
 
 		boolean getValue;
 		StringBuffer value;
@@ -276,10 +270,6 @@ public class LocalBlast implements HomologyModel {
 				getValue = true;	
 			else if ( qName.equals("Hsp_evalue") )
 				getValue = true;	
-			else if ( qName.equals("Hit_len") )
-				getValue = true;	
-			else if ( qName.equals("Statistics_db-len") )
-				getValue = true;	
 		}
 
 		/**
@@ -309,18 +299,6 @@ public class LocalBlast implements HomologyModel {
 				add();
 				if ( value.length() > 0 )
 					value.delete(0,value.length());
-			} else if ( qName.equals("Hit_len") ) {
-				getValue = false;	
-				matchLen = Double.parseDouble(value.toString());
-				if ( value.length() > 0 )
-					value.delete(0,value.length());
-			} else if ( qName.equals("Statistics_db-len") ) {
-				getValue = false;	
-				dbLen = Double.parseDouble(value.toString());
-				if ( normalize )
-					normalizeValues();
-				if ( value.length() > 0 )
-					value.delete(0,value.length());
 			}
 		}
 
@@ -344,21 +322,7 @@ public class LocalBlast implements HomologyModel {
 			// pick the best one.
 			Double currentEvalue = evals.get( subjectId );
 			if ( currentEvalue == null || currentEvalue.doubleValue() > evalue ) {
-				if ( normalize )
-					evals.put(subjectId,evalue*matchLen);
-				else
-					evals.put(subjectId,evalue);
-			}
-		}
-
-		private void normalizeValues() {
-			Map<String,Double> evals = evalues.get(queryId);
-			if ( evals != null ) {
-				for ( String sub : evals.keySet() ) {
-					double ev = evals.get(sub).doubleValue();
-					ev /= dbLen;
-					evals.put(sub,ev);
-				}
+				evals.put(subjectId,evalue);
 			}
 		}
 	}
