@@ -82,8 +82,6 @@ public final class NodeView
 
   public final void setSize(final double width, final double height)
   {
-    // TODO: Reconcile width and height with current node border width and
-    // if SHAPE_ROUNDED_RECTANGLE then check for necessary constraint.
     synchronized (m_fung.m_lock) {
       m_fung.m_rtree.exists(m_node, m_fung.m_extentsBuff, 0);
       final double xCenter =
@@ -101,7 +99,22 @@ public final class NodeView
       if (!(yMax > yMin)) {
         throw new IllegalArgumentException("height is too small"); }
       m_fung.m_rtree.delete(m_node);
-      m_fung.m_rtree.insert(m_node, xMin, yMin, xMax, yMax); }
+      m_fung.m_rtree.insert(m_node, xMin, yMin, xMax, yMax);
+      { // Reconcile node shape if rounded rectangle.
+        final byte shape = getShape();
+        if (shape == SHAPE_ROUNDED_RECTANGLE) {
+          if (!(Math.max(((double) xMax) - xMin, ((double) yMax) - yMin) <
+                2.0d * Math.min(((double) xMax) - xMin,
+                                ((double) yMax) - yMin))) {
+            setShape(SHAPE_RECTANGLE); } }
+      }
+      { // Reconcile border width.
+        final double borderWidth = getBorderWidth();
+        final double borderWidthConstraint =
+          Math.min(((double) xMax) - xMin, ((double) yMax) - yMin) / 6.0d;
+        if (borderWidth > borderWidthConstraint) {
+          setBorderWidth(borderWidthConstraint); }
+      } }
   }
 
   public final Color getColorLowDetail()
