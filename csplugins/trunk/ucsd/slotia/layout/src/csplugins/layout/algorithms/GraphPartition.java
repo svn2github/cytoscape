@@ -72,7 +72,7 @@ public abstract class GraphPartition {
          }
          forest.trimToSize();
          partitions.add( forest.elements() );
-         System.out.println( "un inititalized, added: "+forest.elements().length );
+         //System.out.println( "un inititalized, added: "+forest.elements().length );
          inititalized = false;
          //for ( int j = 0; j < connected.size(); ++j ) {
 //            if ( nodes.get( j ) == 0 ) {
@@ -106,7 +106,7 @@ public abstract class GraphPartition {
           nodes.put( target, 1 );
           nodes_left--;
           nodes_left--;
-          System.out.println( "inititalized" );
+          //System.out.println( "inititalized" );
           inititalized = true;
           found_new = true;
           edges.put( edge_indices[i], 1 );
