@@ -334,8 +334,9 @@ button labeled <b>Above</b>, and three <em>points</em>, three input
 fields each with a <b>Del</b> button at the left and a <b>Equal</b>
 button at the right.</li>
 
-<li>Click on one of the three <b>Del</b> buttons to delete one of
-the three points.</li>
+<li>Click on the bottommost two <b>Del</b> buttons to delete the two
+bottom points.
+<EM>Make sure to follow these instructions carefully!</EM></li>
 
 <li>Click on the <b>Below</b> button. This should bring up the
 <b>Select Appearance</b> menu, shown below: 
@@ -346,11 +347,10 @@ the three points.</li>
 <li>Select a square.</li>
 
 <li>In the line below <b>Below</b>, set the number in the input
-field to 0, click on the <b>Equals</b> button, and select a
-square.</li>
+field to 0.05, click on the <b>Equals</b> button, and select a
+circle.</li>
 
-<li>In the following line, set the number in the input field to
-0.05.</li>
+<li>In the following line, labeled <B>Above</B>, select a circle.</li>
 
 <li>The <b>Set Visual Style</b> window should appear as follows: 
 
@@ -470,8 +470,8 @@ black squares.</li>
 </li>
 
 <li>
-<p>Go to the NCBI website (&lt;&lt;A
-HREF="http://www.ncbi.nlm.nih.gov/"&gt;http://www.ncbi.nlm.nih.gov/),
+<p>Go to the NCBI website (<A HREF="http://www.ncbi.nlm.nih.gov/">
+http://www.ncbi.nlm.nih.gov/</A>),
 and search the <b>Gene</b> database for <b>YPL248C</b>. The items
 returned should include <b>Gal4</b>. Click on the link for
 <b>Gal4</b> to get more information.</p>

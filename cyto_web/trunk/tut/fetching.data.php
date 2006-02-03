@@ -72,9 +72,11 @@ presentation will be available soon
 
 <H3>External websites for SIF files</H3>
 <P>Here, we will explore
-some external data resources for Cytoscape.  The first is a resource
-useful to those working with yeast: the batch download tool at the
-Saccharomyces Genome Database.  
+some external data resources for Cytoscape.  
+<P>
+<B>Saccharomyces Genome Database:</B> This is a key resource for anyone who works with yeast!
+The SGD provides physical and genetic interactions, which may be downloaded into Cytoscape
+SIF format, as outlined below.
 </P>
 <OL>
     <LI><P>Go to
@@ -98,37 +100,38 @@ Saccharomyces Genome Database.
     Physical or genetic?  You can check by looking at the edge attributes
     under the <B>Attribute Browser</B>.
 </OL>
-<P>BIND is central repository for protein interaction data, and represents a
+<P>
+<B>BIND</B> is central repository for protein interaction data, and represents a
 very useful resource for those interested in interaction networks.  BIND 
 exports data to the SIF format as described below.</P>
 <OL>
     <LI><P>In your web browser, go to BIND website at 
     <A HREF="http://bind.ca/Action">http://bind.ca/Action</A>.
-    <LI><P>Underneath the <B>Search </B>form, click on 
-    <B>Field specific search</B>.  This should take you to the search menu 
-    shown below: </P>
-    <IMG SRC="fetching.data/Fig11.gif"  WIDTH=425 HEIGHT=142></P>
-    <LI><P>Click on the link
-    labeled<B> field</B>.  This will bring up the <B>Query Fields</B>
-    popup window, shown below: 
-    <IMG SRC="fetching.data/Fig12.jpg"  WIDTH=306 HEIGHT=370></P>
-    <LI><P>Click on <B>Entrez Gene ID</B>.</P>
-    <LI><P> In the right-hand side of the <B>Field specific search</B> form,
-    enter <B>7157,</B> the Entrez Gene ID for the human gene TP53. </P>
-    <IMG SRC="fetching.data/Fig13.gif" WIDTH=438 HEIGHT=143></P>
-    <LI><P>Click <B>Search</B>.  This should bring up a long list of results,
-    as shown: </P>
-    <IMG SRC="fetching.data/Fig14.gif"  WIDTH=441 HEIGHT=175>
-    <LI><P> In the <B>Options</B> menu at the right, under 
-    <B>Export Results</B>, scroll down to <B>Cytoscape SIF.</B></P>
-    <LI><P> Under <B>Visualize Results</B>, scroll down to <B>Save all to SIF
-    file</B>.</P>
-    <LI><P> On your desktop, you should see a new file called
-    <B>searchresults.sif</B>.  Load this network in Cytoscape.</P>
-    <LI><P> Under the Cytoscape <B>Layout</B> menu, select <B>yFiles</B> and
-    <B>Organic. </B>This should yield a network similar to the one shown
-    below:</P> 
-    <IMG SRC="fetching.data/Fig15.jpg" WIDTH="30%"></P>
+    <LI><P>Underneath the <B>Search </B>form, enter the name of your favorite
+    protein (such as "TP53") and click on <B>Go</B>
+    <LI> This will take you to a new page, with a box at the left labeled <B>BIND Text
+    Search</B>, and a box on the right labeled <B>Options</B> and shown below:
+    <P><IMG SRC="fetching.data/Fig16.jpg">
+    <LI>In the <B>Options</B> box, click on the pull-down menu labeled <B>Export Results</B>.
+    In the list of export formats, you will see <B>Cytoscape SIF</B>.  If you select this
+    format, a file called <B>searchresults.sif</B> will be downloaded to your computer.
+    <LI> In the <B>Options</B> box, the <B>Visualize Results</B> option allows you to 
+    visualize the selected interaction data in Cytoscape, as outlined below:
+    <OL>
+    	<LI> In the <B>Visualize Results</B> menu, scroll down to <B>First 100 interactions -
+    	Default Plugins</B>.  This will initiate a new web start instance of Cytoscape
+    	on your computer.
+    	<LI> Within a few minutes, you should see a new Cytoscape window similar to the
+    	one shown below, with no <B>Node Attribute Browser</B> (yet), and listing a network
+    	in red, with 0 nodes and 0 edges.  This indicates that the load is in progress.
+    	<P><IMG SRC="fetching.data/Fig17.jpg" WIDTH="50%">
+    	<LI> If you become impatient, right-click on the red network name, and select
+    	<B>Create View</B> in the pull-down menu.  This will show you a network, with nodes
+    	being added as you watch.
+    	<LI> Eventually, you should see a Cytoscape desktop such as the one shown below, 
+    	with a <B>Node Attribute Browser</B>.  This indicates that the download is complete.
+    	<P><IMG SRC="fetching.data/Fig18.jpg" WIDTH="50%">
+    </OL>
 </OL>
 <P>Another useful resource
 for Cytoscape data is the <B>cPath</B> database and Cytoscape plugin.
@@ -143,6 +146,9 @@ from a variety of sources can install and populate a local copy of
 one central repository. Here, we shall explore using the <B>cPath</B>
 plugin to fetch data from Cytoscape.</P>
 <OL>
+	<LI>If you have not already done so, start Cytoscape using the <B>Webstart</B> link
+	above.  This will start an instance of Cytoscape with the <B>cPath</B> plugin already
+	loaded.  This version connects to the cPath demo database at MSKCC.
     <LI><P>Under the <B>Plugins</B>  menu, select <B>Search cPath</B>
     A window should appear, as shown below.</P>
     <IMG SRC="fetching.data/Fig7.jpg"  WIDTH=450 HEIGHT=363>
