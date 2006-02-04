@@ -42,6 +42,9 @@ public class SQLSynonymsHandler extends SQLDBHandler implements SynonymsSource {
         this.SUPPORTED_TRANSLATIONS.put(GI_ID+":"+KEGG_ID, Boolean.TRUE);
         this.SUPPORTED_TRANSLATIONS.put(GI_ID+":"+PROD_NAME, Boolean.TRUE);
         this.SUPPORTED_TRANSLATIONS.put(GI_ID+":"+GENE_NAME, Boolean.TRUE);
+        this.SUPPORTED_TRANSLATIONS.put(GI_ID+":"+SPROT_ID, Boolean.TRUE);
+        this.SUPPORTED_TRANSLATIONS.put(GI_ID+":"+TREMBL_ID, Boolean.TRUE);
+        this.SUPPORTED_TRANSLATIONS.put(GI_ID+":"+UNIPROT_ID, Boolean.TRUE);
     }
 
     /**
@@ -98,22 +101,12 @@ public class SQLSynonymsHandler extends SQLDBHandler implements SynonymsSource {
             return giToKegg(source_ids);
         }
         
-        //if(source_id_type.equals(KEGG_ID) && target_id_type.equals(PROLINKS_ID)){
-        //  return keggToProlinks(source_ids);
-        //}
-        
-        //if(source_id_type.equals(PROLINKS_ID) && target_id_type.equals(KEGG_ID)){
-        //   return prolinksToKegg(source_ids);
-        //}
-        
         // Common name to id? Not reliable. User needs to keep track of this map.
         if(source_id_type.equals(GI_ID) && target_id_type.equals(GENE_NAME)){
-            //return giToGeneName(source_ids);
             return getGeneNames(source_ids);
         }
         
         if(source_id_type.equals(GI_ID) && target_id_type.equals(PROD_NAME)){
-            //return giToProdName(source_ids);
             return getProdNames(source_ids);
         }
         
@@ -121,14 +114,19 @@ public class SQLSynonymsHandler extends SQLDBHandler implements SynonymsSource {
             return giToOrf(source_ids);
         }
         
-        //if(source_id_type.equals(PROLINKS_ID) && target_id_type.equals(GENE_NAME)){
-        //  return prolinksToCommonName(source_ids);
-        // }
-         
-        //if(source_id_type.equals(KEGG_ID) && target_id_type.equals(GENE_NAME)){
-        //  return keggToCommonName(source_ids);
-        //}
-         
+        if(source_id_type.equals(GI_ID) && target_id_type.equals(TREMBL_ID)){
+            return giToTrembl(source_ids);
+        }
+        
+        if(source_id_type.equals(GI_ID) && target_id_type.equals(SPROT_ID)){
+            return giToSprot(source_ids);
+        }
+        
+        if(source_id_type.equals(GI_ID) && target_id_type.equals(UNIPROT_ID)){
+            return giToUniprot(source_ids);
+        }
+        
+    
         return new Hashtable();
     
    }
@@ -538,12 +536,116 @@ public class SQLSynonymsHandler extends SQLDBHandler implements SynonymsSource {
             return new Hashtable();
         }
         
-        // TODO: GenBank (?), iProClass (!). Need to match more. For this, we need to use accessions without the version.
+        // TrEMBL
+        Hashtable giToTrembl = giToTrembl(gis);
+        it = giToTrembl.keySet().iterator();
+        while(it.hasNext()){
+            String gi = (String)it.next();
+            Vector trembls = (Vector)giToTrembl.get(gi);
+            Vector ids = (Vector)xrefs.get(gi);
+            if(ids == null) { ids = new Vector(); xrefs.put(gi,ids);}
+            ids.addAll(trembls);
+        }
+        
+        // Sprot
+        Hashtable giToSprot = giToSprot(gis);
+        it = giToSprot.keySet().iterator();
+        while(it.hasNext()){
+            String gi = (String)it.next();
+            Vector sprots = (Vector)giToSprot.get(gi);
+            Vector ids = (Vector)xrefs.get(gi);
+            if(ids == null) { ids = new Vector(); xrefs.put(gi,ids);}
+            ids.addAll(sprots);
+        }
+        
         return xrefs;
         
     }
     
     //--------- Helper protected methods -----------//
+    
+    protected Hashtable giToUniprot (Vector gis){
+        Hashtable giToTrembl = giToTrembl(gis);
+        Hashtable giToSprot = giToSprot(gis);
+        
+        Hashtable giToUniprot = new Hashtable();
+        giToUniprot.putAll(giToTrembl);
+        giToUniprot.putAll(giToSprot);
+        return giToUniprot;
+    }
+    
+    
+    protected Hashtable giToTrembl (Vector gis){
+        Iterator it = gis.iterator();
+        if(!it.hasNext()) return new Hashtable();
+        
+        String inStatement = "";
+        while(it.hasNext()){
+            String giID = (String)it.next();
+            int index = giID.indexOf(GI_ID + ":");
+            if(index >= 0){
+                giID = giID.substring(index + GI_ID.length()+ 1);
+                if(inStatement.length() == 0) inStatement = giID;
+                else inStatement += "," + giID;
+            }
+        }//while
+        
+        String sql = "SELECT protgi, tremblac FROM gi2trembl WHERE protgi IN (" + inStatement + ")";
+        ResultSet rs = query(sql);
+        
+        Hashtable table = new Hashtable();
+        
+        try{
+            while(rs.next()){
+                String gi = GI_ID + ":" + rs.getString(1);
+                String tremblid = TREMBL_ID + ":" + rs.getString(2);
+                Vector ids = (Vector)table.get(gi);
+                if(ids == null) { ids = new Vector(); table.put(gi, ids);}
+                ids.add(tremblid);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+            return new Hashtable();
+        }
+        return table;
+        
+    }
+    
+    protected Hashtable giToSprot (Vector gis){
+        Iterator it = gis.iterator();
+        if(!it.hasNext()) return new Hashtable();
+        
+        String inStatement = "";
+        while(it.hasNext()){
+            String giID = (String)it.next();
+            int index = giID.indexOf(GI_ID + ":");
+            if(index >= 0){
+                giID = giID.substring(index + GI_ID.length()+ 1);
+                if(inStatement.length() == 0) inStatement = giID;
+                else inStatement += "," + giID;
+            }
+        }//while
+        
+        String sql = "SELECT protgi, sprotac FROM gi2sprot WHERE protgi IN (" + inStatement + ")";
+        ResultSet rs = query(sql);
+        
+        Hashtable table = new Hashtable();
+        
+        try{
+            while(rs.next()){
+                String gi = GI_ID + ":" + rs.getString(1);
+                String sprotid = SPROT_ID + ":" + rs.getString(2);
+                Vector ids = (Vector)table.get(gi);
+                if(ids == null) { ids = new Vector(); table.put(gi, ids);}
+                ids.add(sprotid);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+            return new Hashtable();
+        }
+        return table;
+        
+    }
     
     /**
      * Gets a Hashtable of (gi, Vector of Orfs) entries

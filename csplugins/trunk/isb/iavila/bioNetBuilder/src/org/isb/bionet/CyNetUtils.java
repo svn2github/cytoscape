@@ -320,6 +320,7 @@ public class CyNetUtils {
                     int index = anID.indexOf(":");
                     if(index >= 0){
                         String attName = anID.substring(0,index);
+                        anID = anID.substring(index + 1,anID.length());
                         String idList = nodeAtts.getStringAttribute(nodeID, attName);
                         if(idList != null && idList.length() > 0) idList += "|" + anID;
                         else idList = anID;
@@ -379,6 +380,31 @@ public class CyNetUtils {
             }
         }// if prod name
         
+        if( ((Boolean)atts.get(AttributesPanel.LOCUS_NAME)).booleanValue() ){
+            Hashtable locNames = new Hashtable();
+            try{
+                locNames = synonyms_client.getSynonyms(InteractionsHandler.UNIVERSAL_GENE_ID_TYPE,idVector, SynonymsSource.ORF_NAME);
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            
+            Iterator it = locNames.keySet().iterator();
+            while(it.hasNext()){
+                String nodeID = (String)it.next();
+                Vector names = (Vector)locNames.get(nodeID);
+                if(names == null || names.size() == 0) continue;
+                String allNames = "";
+                if(names.size() == 1) allNames = (String)names.get(0);
+                else{
+                    Iterator it2 = names.iterator();
+                    allNames = (String)it2.next();
+                    while(it2.hasNext()) allNames += "|" + (String)it2.next();
+                }
+                nodeAtts.setAttribute(nodeID,SynonymsSource.ORF_NAME,allNames);
+            }
+        }// if loc name
+        
+        
         if(((Boolean)atts.get(AttributesPanel.ENCODED_BY)).booleanValue() ){
             Hashtable encodedTable = new Hashtable();
             try{
@@ -397,31 +423,36 @@ public class CyNetUtils {
         }// if encoded by
         
         if( ((Boolean)atts.get(AttributesPanel.DB_URLS)).booleanValue() ){
-            
-            Iterator it = nodeIDs.iterator();
-            
-            // These use GI numbers:
+             // These use GI numbers:
             String prolinksURL = "http://mysql5.mbi.ucla.edu/cgi-bin/functionator/pronav?seq_id=";
             String refseqURL = "http://www.ncbi.nlm.nih.gov/entrez/viewer.fcgi?db=protein&val=";
+            String pirURL = "http://www.pir.uniprot.org/cgi-bin/upEntry?id="; // append a TrEMBL id like Q65882_9POT
             
             // We need to get the KEGG ids
-            Hashtable giToKegg = new Hashtable();
+            Hashtable giToKegg = null;
             try{
-                giToKegg = synonyms_client.getSynonyms(SynonymsSource.GI_ID, new Vector(nodeIDs),SynonymsSource.KEGG_ID);
+                giToKegg = synonyms_client.getSynonyms(SynonymsSource.GI_ID, idVector,SynonymsSource.KEGG_ID);
             }catch(Exception e){
                 e.printStackTrace();
             }
             String keggURL = "http://www.genome.jp/dbget-bin/www_bget?";
             
-            // We need to get TrEMBL ids
-            
+            // We need to get UniProt ids
+            Hashtable giToUniprot = null;
+            try{
+                giToUniprot = synonyms_client.getSynonyms(SynonymsSource.GI_ID, idVector,SynonymsSource.UNIPROT_ID);
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+          
+            // The attribute names
             String prolinksAttName = ProlinksInteractionsSource.NAME + "_URL";
             String keggAttName = KeggInteractionsSource.NAME + "_URL";
             String refseqAttName = "RefSeq_URL";
-            String uniprotAttName = "UniProt_URL";
+            String uniprotAttName = "PIR_URL";
             
             //TODO: Get all the possible GI ids for each.
-            
+            Iterator it = nodeIDs.iterator();
             while (it.hasNext()){
             
                 String nodeid = (String)it.next();
@@ -437,13 +468,23 @@ public class CyNetUtils {
                 // KEGG: need to get the KEGG gene id
                 // http://www.genome.jp/dbget-bin/www_bget?aae:aq_021
                 Vector keggIDs = (Vector)giToKegg.get(nodeid);
+                int keggIDNum = 0;
                 if(keggIDs != null){
-                    // Need to take care of this!
-//                    index = keggIDs.indexOf(SynonymsSource.KEGG_ID + ":");
-//                    if(index >= 0){
-//                        keggID = keggID.substring(index + SynonymsSource.KEGG_ID.length() + 1);
-//                        nodeAtts.setAttribute(nodeid,keggAttName, keggURL + keggID);
-//                    }
+                    Iterator it2 = keggIDs.iterator();
+                    while(it2.hasNext()){
+                        String keggid = (String)it2.next();
+                        index = keggIDs.indexOf(SynonymsSource.KEGG_ID + ":");
+                        if(index >= 0){
+                           keggid = keggid.substring(index + SynonymsSource.KEGG_ID.length() + 1);
+                           if(keggIDNum > 0){
+                               nodeAtts.setAttribute(nodeid, keggAttName + Integer.toString(keggIDNum), keggURL + keggid);
+                               keggIDNum++;
+                           }else{
+                               nodeAtts.setAttribute(nodeid,keggAttName, keggURL + keggid);
+                               keggIDNum++;
+                           }
+                        }
+                    }                   
                 }
                 
                 // RefSeq: val is GI
@@ -451,9 +492,28 @@ public class CyNetUtils {
                 nodeAtts.setAttribute(nodeid,refseqAttName,refseqURL + gi);
             
                 // UniProt: needs TrEMBL id (need to add GI to TrEMBL mapping method to synonyms)
-                // http://www.pir.uniprot.org/cgi-bin/upEntry?id=Q65882_9POT
+                
+                Vector tremblids = (Vector)giToUniprot.get(nodeid);
+                int trNum = 0;
+                if(tremblids != null){
+                    Iterator it2 = tremblids.iterator();
+                    while(it2.hasNext()){
+                        String id = (String)it2.next();
+                        index = id.indexOf(":");
+                        if(index >= 0){
+                            id = id.substring(index + 1, id.length());
+                           if(trNum > 0){ 
+                               nodeAtts.setAttribute(nodeid, uniprotAttName + Integer.toString(trNum), pirURL + id);
+                               trNum++;
+                           }else{
+                               nodeAtts.setAttribute(nodeid,uniprotAttName, pirURL + id);
+                               trNum++;
+                           }
+                        }// index >= 0
+                    } //while   
+                }// if tremblids != null
             
-            }
+            }// for a nodeid
             
         }// if db urls
         
@@ -464,7 +524,7 @@ public class CyNetUtils {
                 int index = nodeID.indexOf(":");
                 if(index > 0){
                     String url = "http://bench.bakerlab.org/cgi-bin/2ddb/bddb.cgi?si=112682726728836&s=cytoscape&ac="+nodeID;
-                    Cytoscape.getNodeAttributes().setAttribute(nodeID,"HPFP", url);
+                    Cytoscape.getNodeAttributes().setAttribute(nodeID,"HPFP_URL", url);
                 }
               }//while it.hasNext
         }// if db urls
