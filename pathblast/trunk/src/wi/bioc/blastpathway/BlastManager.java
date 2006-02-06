@@ -33,7 +33,7 @@ public class BlastManager {
 	}
 
 	//public void runBlast(String xmlfile, String uid) 
-	public void runBlast(String uid, Protein[] proteins, double e_value, String t_org, boolean useZero)
+	public void runBlast(String uid, Protein[] proteins, double e_value, String t_org, boolean useZero, boolean blastAllDip)
 		throws Exception 
 	{
 		String outputdir = getOutputDir(uid);
@@ -41,7 +41,7 @@ public class BlastManager {
 			throw new Exception("Cannot create directory : " + outputdir);
 		}
 		//PathBlast blast = new PathBlast(this, xmlfile, getOutputDir(uid), uid);
-		PathBlast blast = new PathBlast(this, getOutputDir(uid), uid, proteins, e_value, t_org, useZero);
+		PathBlast blast = new PathBlast(this, getOutputDir(uid), uid, proteins, e_value, t_org, useZero,blastAllDip);
 		m_pathblasts.put(uid, blast);
 		new Thread(blast).start(); // we may want to queue request if too many
 	}

@@ -52,6 +52,7 @@ public class PathBlast implements Runnable {
 	private double e_value; 
 	private String t_org;
 	private boolean useZero;
+	private boolean blastAllDip;
 
 	protected PathBlast(BlastManager manager,
 				String outputdir,
@@ -59,7 +60,8 @@ public class PathBlast implements Runnable {
 				Protein[] proteins, 
 				double e_value, 
 				String t_org,
-				boolean useZero) {
+				boolean useZero,
+				boolean blastAllDip) {
 		m_manager = manager;
 		m_outputdir = outputdir;
 		m_uid = uid;
@@ -67,6 +69,7 @@ public class PathBlast implements Runnable {
 		this.e_value = e_value;
 		this.t_org = t_org;
 		this.useZero = useZero;
+		this.blastAllDip = blastAllDip;
 	}
 
 	public void run() {
@@ -106,6 +109,12 @@ public class PathBlast implements Runnable {
 
 		List<SequenceGraph<String,Double>> seqGraphs = new ArrayList<SequenceGraph<String,Double>>();
 		seqGraphs.add(ig1);
+		SequenceGraph<String,Double> ig2 = Config.getSpeciesGraph(t_org);
+		if ( blastAllDip ) {
+			ig2.setDBName("All_DIP_Species.fa");
+			System.out.println("blasting against all");
+		}
+		
 		seqGraphs.add(Config.getSpeciesGraph(t_org));
 		System.out.println("species graph: " + Config.getSpeciesGraph(t_org).toString());
 

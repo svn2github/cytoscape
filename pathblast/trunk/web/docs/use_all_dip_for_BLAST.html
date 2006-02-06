@@ -1,0 +1,29 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="pathblast.css"/>
+<title>
+BLAST database selection
+</title>
+</head>
+<body style="background-color: #FFFFFF">
+<h2>BLAST Database Selection</h2>
+<p>
+<a href="http://www.ncbi.nlm.nih.gov/BLAST/tutorial/Altschul-1.html">E-values</a> 
+are currently used to determine whether proteins in the query and target
+networks are related for purposes of aligning the networks.  The e-values are generated using 
+the <a href="http://www.ncbi.nlm.nih.gov/blast/">BLAST program</a> with an all vs. all 
+search of the proteins in the query network against the proteins in the species network.
+E-values are dependent on the size of the database used to perform the search. The e-value of
+an alignment of the same proteins generated using different databases (i.e. NR vs. only Human) will  
+produce different e-values despite producing the same alignment and alignment score. 
+In the context of PathBLAST, when the same query network
+is aligned with two different species networks, the e-values generated will have slightly
+different scales because of the different sizes of the species databases.  While this
+should have minimal impact on the end result, in the interest of being precise as possible,
+we provide the option to generate e-values by searching against the entire DIP sequence
+database instead of the specie specific database.  This option allows users searching the
+same query network against multiple species to generate e-values for the different
+searches that are based on the same database search.
+</p>
+</body>
+</html>

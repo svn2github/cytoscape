@@ -34,11 +34,12 @@ if (e_value != null) {
 
 if (nEvalue == null)
         nEvalue = new EValue(EValue.DEFAULT_EVALUE);
-//session.setAttribute(Config.EVALUE_SESSION_KEY, nEvalue);
 
 String useZero = request.getParameter("useZero");
 System.out.println("useZero: '" + useZero + "'");
-//session.setAttribute(Config.USE_ZERO_SESSION_KEY, useZero);
+
+String blastAllDip = request.getParameter("blastAllDip");
+System.out.println("blastAllDip: '" + blastAllDip + "'");
 
 String showAdvanced = request.getParameter("ShowAdvanced"); 
 String hideAdvanced = request.getParameter("HideAdvanced"); 
@@ -182,6 +183,13 @@ if ( reset != null || proteins == null ) {
             }
 	// ok, now proceed
         } else if ( !error && globalErrorMessage.length() == 0 ) {
+
+		session.setAttribute(Config.PROTEINS_SESSION_KEY, proteins);
+		session.setAttribute(Config.EVALUE_SESSION_KEY, nEvalue);
+		session.setAttribute(Config.USE_ZERO_SESSION_KEY, useZero);
+		session.setAttribute(Config.BLAST_ALL_DIP_SESSION_KEY, blastAllDip);
+		session.setAttribute(Config.TORG_SESSION_KEY, t_org);
+
 		if ( disambiguateRequired )
             		request.getRequestDispatcher("disambiguate.jsp").forward(request, response);
 		else
@@ -193,8 +201,8 @@ if ( reset != null || proteins == null ) {
 session.setAttribute(Config.PROTEINS_SESSION_KEY, proteins);
 session.setAttribute(Config.EVALUE_SESSION_KEY, nEvalue);
 session.setAttribute(Config.USE_ZERO_SESSION_KEY, useZero);
+session.setAttribute(Config.BLAST_ALL_DIP_SESSION_KEY, blastAllDip);
 session.setAttribute(Config.TORG_SESSION_KEY, t_org);
-
 
 %>
 <html>
@@ -364,8 +372,12 @@ for (int i = 0; i < proteins.length; i++) {
 	<p>
 	<ul>
         <li>Please enter the BLAST <a href="docs/e_value.html">E-value Threshold</a> for protein alignment <input type="text" name="E_VALUE" size="8" value="<%= nEvalue.getString() %>" maxlength=20></li>
-	<li>Include <a href="docs/dupe_node_networks.html">duplicate protein networks</a> in results? <input type="radio" name="useZero" value="true">Yes</input>
+	<li>Include <a href="docs/dupe_node_networks.html">duplicate node networks</a> in results? <input type="radio" name="useZero" value="true">Yes</input>
 	                               <input type="radio" name="useZero" value="false" checked="true">No</input>
+	</li>
+	<li>Use entire DIP sequence database to <a href="docs/use_all_dip_for_BLAST.html">generate BLAST e-values</a>? 
+	                    <input type="radio" name="blastAllDip" value="true">Yes</input>
+	                    <input type="radio" name="blastAllDip" value="false" checked="true">No</input>
 	</li>
 	</ul>
 	</p>

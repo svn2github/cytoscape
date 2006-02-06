@@ -29,11 +29,15 @@ EValue e_value
 String t_org
     = (String) session.getAttribute(Config.TORG_SESSION_KEY);
 boolean useZero = Boolean.parseBoolean((String)session.getAttribute(Config.USE_ZERO_SESSION_KEY));
+boolean blastAllDip = Boolean.parseBoolean((String)session.getAttribute(Config.BLAST_ALL_DIP_SESSION_KEY));
+
+System.out.println("search param useZero: " + useZero);
+System.out.println("search param blastAllDip: " + blastAllDip);
 
 //xml_file_name = XmlFileGenerator.save(uid, proteins, e_value.getDouble(), t_org);
 BlastManager bm = BlastManager.getInstance();
 //bm.runBlast(xml_file_name, uid);
-bm.runBlast(uid, proteins, e_value.getDouble(), t_org, useZero);
+bm.runBlast(uid, proteins, e_value.getDouble(), t_org, useZero,blastAllDip);
 %>
 
 <form action="result.jsp"

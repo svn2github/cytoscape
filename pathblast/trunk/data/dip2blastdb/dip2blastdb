@@ -59,6 +59,8 @@ then
 	mkdir $dir
 fi
 
+cp $2 $dir/All_DIP_Species.fa
+
 # separate the dip species into individual fasta files
 java -cp .:../../lib/biojava-1.4.jar DipFastaSeparator $1 $2 $dir
 
