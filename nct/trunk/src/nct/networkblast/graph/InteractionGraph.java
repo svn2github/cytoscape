@@ -81,4 +81,22 @@ public class InteractionGraph extends BasicDistanceGraph<String,Double>
 	 */
 	public int getDBType() { return SequenceGraph.DUMMY; }
 
+	/**
+	 * Dummy method needed to implement the SequenceGraph interface.
+	 * TODO  Can we get rid of this somehow?
+	 */
+	public void setDBType(int type) { };
+
+	/**
+	 * Dummy method needed to implement the SequenceGraph interface.
+	 * TODO  Can we get rid of this somehow?
+	 */
+	public void setDBLocation(String loc) { };
+
+	/**
+	 * Dummy method needed to implement the SequenceGraph interface.
+	 * TODO  Can we get rid of this somehow?
+	 */
+	public void setDBName(String name) { };
+
 }
