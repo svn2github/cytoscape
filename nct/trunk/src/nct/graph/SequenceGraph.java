@@ -54,4 +54,21 @@ public interface SequenceGraph< NodeType extends Comparable<NodeType>,
 	 */
 	public int getDBType(); 
 
+	/**
+	 * Sets the name of the database.
+	 * @param name The new name of the sequence database.
+	 */
+	public void setDBName(String name); 
+
+	/**
+	 * Sets the location of the database.
+	 * @param location The new location of the sequence database.
+	 */
+	public void setDBLocation(String loc); 
+
+	/**
+	 * Sets the type of the database.
+	 * @param type The new type of the sequence database.
+	 */
+	public void setDBType(int type); 
 }

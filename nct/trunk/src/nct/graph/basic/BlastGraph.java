@@ -73,4 +73,29 @@ public class BlastGraph<NodeType extends Comparable<NodeType>,WeightType extends
 	public int getDBType() {
 		return SequenceGraph.BLAST;
 	}
+
+
+	/**
+	 * Sets the name of the database.
+	 * @param name The new name of the sequence database.
+	 */
+	public void setDBName(String name) {
+		dbName = name;
+	}
+
+	/**
+	 * Sets the location of the database.
+	 * @param location The new location of the sequence database.
+	 */
+	public void setDBLocation(String loc) {
+		dbLocation = loc;
+	}
+
+	/**
+	 * Sets the type of the database.
+	 * @param type The new type of the sequence database.
+	 */
+	public void setDBType(int type) {
+		System.err.println("you can't change the database type of a BLAST SequenceGraph");
+	}
 }

@@ -89,4 +89,31 @@ public class FastaGraph<NodeType extends Comparable<NodeType>,WeightType extends
 	public int getDBType() {
 		return SequenceGraph.FASTA;
 	}
+
+
+        /**
+         * Sets the name of the database.
+         * @param name The new name of the sequence database.
+         */
+        public void setDBName(String name) {
+                fileName = name;
+        }
+
+        /**
+         * Sets the location of the database.
+         * @param location The new location of the sequence database.
+         */
+        public void setDBLocation(String loc) {
+                fileLocation = loc;
+        }
+
+        /**
+         * Sets the type of the database.
+         * @param type The new type of the sequence database.
+         */
+        public void setDBType(int type) {
+                System.err.println("you can't change the database type of a FASTA SequenceGraph");
+        }
+
+
 }
