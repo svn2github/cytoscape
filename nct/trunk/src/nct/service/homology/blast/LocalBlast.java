@@ -287,9 +287,10 @@ public class LocalBlast implements HomologyModel {
 					value.delete(0,value.length());
 			} else if ( qName.equals("Hit_def") ) {
 				getValue = false;	
-				if ( synonyms != null )
-					subjectId = synonyms.getSynonym(value.toString(),"name");
-				else
+				if ( synonyms != null ) {
+					String[] syns = value.toString().split("\\|");	
+					subjectId = synonyms.getSynonym(syns[0],"name");
+				} else 
 					subjectId = value.toString();
 				if ( value.length() > 0 )
 					value.delete(0,value.length());
