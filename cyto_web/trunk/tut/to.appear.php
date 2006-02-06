@@ -24,7 +24,7 @@
         </td>
       </tr>
     </table>
-    <? include "../nav.php"; ?>
+    <? include "nav.php"; ?>
     <? include "nav_tut.php"; ?>
     <div id="indent">
 <center>
@@ -34,7 +34,6 @@
     Thank you for your interest in this tutorial.  It is not available yet, 
 but will be online within the next few weeks.  Please stop back later.
 <p>
-
-    <? include "footer.php"; ?>
+    <? include "../footer.php"; ?>
   </body>
 </html>
