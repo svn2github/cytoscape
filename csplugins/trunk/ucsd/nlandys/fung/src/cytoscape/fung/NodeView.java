@@ -135,7 +135,7 @@ public final class NodeView
       return m_fung.m_nodeDetails.shape(m_node); }
   }
 
-  public final void setShape(final byte shape)
+  public final void setShape(byte shape)
   {
     synchronized (m_fung.m_lock) {
       switch (shape) {
@@ -150,7 +150,14 @@ public final class NodeView
         break;
       default:
         throw new IllegalArgumentException("shape is not recognized"); }
-      // TODO: Reconcile with width and height if rounded rectangle.
+      { // Reconcile node shape if rounded rectangle.
+        if (shape == SHAPE_ROUNDED_RECTANGLE) {
+          getSize(m_fung.m_doubleBuff);
+          if (!(Math.max(m_fung.m_doubleBuff[0], m_fung.m_doubleBuff[1]) <
+                2.0d * Math.min(m_fung.m_doubleBuff[0],
+                                m_fung.m_doubleBuff[1]))) {
+            shape = SHAPE_RECTANGLE; } }
+      }
       m_fung.m_nodeDetails.overrideShape(m_node, shape); }
   }
 
