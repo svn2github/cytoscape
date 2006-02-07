@@ -42,7 +42,11 @@ String blastAllDip = request.getParameter("blastAllDip");
 System.out.println("blastAllDip: '" + blastAllDip + "'");
 
 String showAdvanced = request.getParameter("ShowAdvanced"); 
+if ( showAdvanced == null )
+	showAdvanced = request.getParameter("ShowAdvanced.x"); 
 String hideAdvanced = request.getParameter("HideAdvanced"); 
+if ( hideAdvanced == null )
+	hideAdvanced = request.getParameter("HideAdvanced.x"); 
 
 String t_org = request.getParameter("T_ORG");
 //if (t_org != null) 
@@ -97,6 +101,7 @@ if ( reset != null || proteins == null ) {
         proteins[1] = Protein.createProtein("UBC3_YEAST");//CDC34
         proteins[2] = Protein.createProtein("CDC4_YEAST");//CDC4
         proteins[3] = Protein.createProtein("CC53_YEAST");//CDC53
+	session.setAttribute(Config.USE_ZERO_SESSION_KEY, "true");
         t_org = Config.T_ORG_VALUES[0];
         nEvalue = new EValue(1.0E-2);
     } else if (request.getParameter("SamplePathway5.x") != null) {
@@ -156,10 +161,10 @@ if ( reset != null || proteins == null ) {
 	// first make sure we're not just updating the screen
     	if (showAdvanced != null) {
     		// do nothing
-		System.out.println("ShowAdvanced:"  + showAdvanced);
+		System.out.println("ShowAdvanced: "  + showAdvanced);
     	} else if (hideAdvanced != null) {
     		// do nothing
-		System.out.println("HideAdvanced:"  + hideAdvanced);
+		System.out.println("HideAdvanced: "  + hideAdvanced);
 
 	// or adding/removing another protein
         } else if (request.getParameter("MoreProteins.x") != null) {
@@ -189,12 +194,15 @@ if ( reset != null || proteins == null ) {
 		session.setAttribute(Config.USE_ZERO_SESSION_KEY, useZero);
 		session.setAttribute(Config.BLAST_ALL_DIP_SESSION_KEY, blastAllDip);
 		session.setAttribute(Config.TORG_SESSION_KEY, t_org);
-
+		
+		System.out.println("forwarding");
 		if ( disambiguateRequired )
             		request.getRequestDispatcher("disambiguate.jsp").forward(request, response);
 		else
             		request.getRequestDispatcher("search.jsp").forward(request, response);
-        }
+        } else {
+		System.out.println("NOT forwarding");
+	}
     }
 }
 
@@ -331,9 +339,6 @@ for (int i = 0; i < proteins.length; i++) {
       <ul class="inline">
 <% if ( proteins.length < 5 ) { %>
         <li class="inline"><input type="image" src="images/add_protein.gif" alt="more proteins" border="0" name="MoreProteins" value="More Proteins" /></li>
-<!--
-        <li class="inline"><input type="button" alt="more proteins" border="0" name="MoreProteins" value="More Proteins" /></li>
--->
 <% } %>
 <% if ( proteins.length > 2 ) { %>
         <li class="inline"><input type="image" src="images/remove_protein.gif" alt="less proteins" border="0" name="LessProteins" value="Less Proteins" /></li>
@@ -368,7 +373,7 @@ for (int i = 0; i < proteins.length; i++) {
 <% if ( showAdvanced != null) { %>
 
 <div id="advanced">
-        <p><input type="image" src="images/hide_advanced.gif" border=0 value="Hide Advanced Options" name="HideAdvanced"/></p>
+        <p><input type="image" src="images/hide_advanced.gif" alt="hide advanced options" border=0 name="HideAdvanced" value="Hide Advanced Options"</p>
 	<p>
 	<ul>
         <li>Please enter the BLAST <a href="docs/e_value.html">E-value Threshold</a> for protein alignment <input type="text" name="E_VALUE" size="8" value="<%= nEvalue.getString() %>" maxlength=20></li>
@@ -384,7 +389,7 @@ for (int i = 0; i < proteins.length; i++) {
     
 </div> 
 <% } else { %>
-        <input type="image" src="images/show_advanced.gif" border=0 value="Show Advanced Options" name="ShowAdvanced"/>
+        <input type="image" src="images/show_advanced.gif" alt="show advanced options" border=0 name="ShowAdvanced" value="Show Advanced Options" />
 <% } %>
 </p>
 
