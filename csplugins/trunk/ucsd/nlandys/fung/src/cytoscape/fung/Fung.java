@@ -36,6 +36,11 @@ public final class Fung
     m_nodeDetails = new SpecificNodeDetails(this);
   }
 
+  public final NodeViewDefaults getNodeViewDefaults()
+  {
+    return m_nodeDefaults;
+  }
+
   public final void addTopologyChangeListener(
                                          final TopologyChangeListener listener)
   {
