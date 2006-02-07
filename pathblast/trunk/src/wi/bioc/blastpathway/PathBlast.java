@@ -164,6 +164,9 @@ public class PathBlast implements Runnable {
 		fw.write("<li>Species: " + t_org + " </li>\n");
 		fw.write("<li>Number of proteins: " + seqGraphs.get(1).numberOfNodes() + "</li>\n");
 		fw.write("<li>Number of interactions: " + seqGraphs.get(1).numberOfEdges() + "</li>\n");
+		fw.write("<li>BLAST E-value: " + e_value + "</li>\n");
+		fw.write("<li>BLAST Query Database: " + ig2.getDBName() + "</li>\n");
+		fw.write("<li>Allow Duplicate Protein Networks: " + useZero + "</li>\n");
 		fw.write("</ul>\n");
 
 		fw.write("<li>Query Network</li>\n");
