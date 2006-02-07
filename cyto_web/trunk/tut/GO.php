@@ -73,9 +73,11 @@ presentation will be available soon.
 
 <ul>
 <li>
-The BiNGO plugin by the <A HREF="http://www.psb.ugent.be/cbd/">Computational Biology 
+The BiNGO plugin, developed by the <A HREF="http://www.psb.ugent.be/cbd/">Computational Biology 
 Division</A>, Dept. of Plant Systems Biology, Flanders Interuniversitary Institute for
-Biotechnology (VIB).
+Biotechnology (VIB), described in a publication in 
+<A HREF="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=pubmed&dopt=Abstract&list_uids=15972284&query_hl=1&itool=pubmed_docsum">
+Bioinformatics</A> in 2005.
 </li>
 </ul>
 
@@ -98,7 +100,8 @@ Cytoscape manual.</p>
 <OL>
 <li>
 Go to the BiNGO page at <a href=
-"http://www.psb.ugent.be/cbd/papers/BiNGO/">http://www.psb.ugent.be/cbd/papers/BiNGO/</a>.
+"http://www.psb.ugent.be/cbd/papers/BiNGO/">http://www.psb.ugent.be/cbd/papers/BiNGO/</a>. 
+This site also provides some excellent documentation on BiNGO.
 </li>
 
 <li>
@@ -606,15 +609,28 @@ for a side-by-side comparison of the p-values of some nodes in the
 </li>
 </ol>
 </li>
+</ol>
+<B>One final usage note:</B> Users performing GO analysis with Cytoscape
+should be aware that the Gene Ontology wizard in Cytoscape and the BiNGO 
+plugin get their GO data from two different places, which are not synchronized.
+Both the GO wizard and BiNGO use internal data files derived from 
+<A href="http://www.geneontology.org">http://www.geneontology.org</A>, but 
+these data files are derived at different times.  Consequently, there can be 
+slight differences between the two representations of GO.  In practice, the
+two representations will mostly be consistent with each other.  But this has
+one benefit to the user: BiNGO offers users flexibility in defining their own
+ontology and annotation files.  See 
+<A HREF="http://www.psb.ugent.be/cbd/papers/BiNGO/annotations.htm">
+http://www.psb.ugent.be/cbd/papers/BiNGO/annotations.htm</A> for more information.
+<P>
+With that disclaimer given, let's say that BiNGO shows enrichment in 
+some GO category that you find especially interesting, and you want to
+see the nodes in your network with that GO category.  The following steps
+outline how you can do that, bearing in mind that there may sometimes be
+inconsistency between any two representations of GO.  We will illustrate the
+process with  node 5975, "carbohydrate metabolism".
 
-<li>
-Let's say you find a GO category that's especially
-interesting to you (for instance, a category with genuine
-enrichment in your select set), and you want to see all the nodes
-in your network in that category. Here's how you can do that. For
-an example, we will use node 5975, "carbohydrate metabolism".
-</li>
-<OL type="i">
+<OL>
 <li>
 Go to the parent network on the Cytoscape canvas, and un-select
 any nodes currently selected.
