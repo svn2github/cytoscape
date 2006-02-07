@@ -159,14 +159,11 @@ public class PathBlast implements Runnable {
 		fw.write("</div>\n");
 
 		fw.write("<ul>\n");
-		fw.write("<li>Target Network </li>\n");
+		fw.write("<li>Target Network</li>\n");
 		fw.write("<ul>\n");
 		fw.write("<li>Species: " + t_org + " </li>\n");
 		fw.write("<li>Number of proteins: " + seqGraphs.get(1).numberOfNodes() + "</li>\n");
 		fw.write("<li>Number of interactions: " + seqGraphs.get(1).numberOfEdges() + "</li>\n");
-		fw.write("<li>BLAST E-value: " + e_value + "</li>\n");
-		fw.write("<li>BLAST Query Database: " + ig2.getDBName() + "</li>\n");
-		fw.write("<li>Allow Duplicate Protein Networks: " + useZero + "</li>\n");
 		fw.write("</ul>\n");
 
 		fw.write("<li>Query Network</li>\n");
@@ -176,10 +173,15 @@ public class PathBlast implements Runnable {
 		for (String node: nodeL)
 			fw.write("<li>" + node + "</li>\n");
 		fw.write("</ul>\n");
-
+		fw.write("<li>Alignment Parameters</li>\n");
+		fw.write("<ul>\n");
+		fw.write("<li>BLAST E-value: " + e_value + "</li>\n");
+		fw.write("<li>BLAST Query Database: " + ig2.getDBName() + "</li>\n");
+		fw.write("<li>Allow Duplicate Protein Networks: " + useZero + "</li>\n");
+		fw.write("</ul>\n");
 		fw.write("<li><a href=\"../../../docs/faq.html\">FAQ</a></li>\n");
 		fw.write("<li><a href=\"../../../docs/publications.html\">References</a></li>\n");
-		//fw.write("<li><a href=\"../../../images/legend.jpg\">Graph Legend</a></li>\n");
+		fw.write("<li><a href=\"http://www.pathblast.org\">PathBLAST Home</a></li>\n");
 		fw.write("</ul>\n");
 		DecimalFormat decimal = new DecimalFormat("#0.00");
 		int count = 0;
