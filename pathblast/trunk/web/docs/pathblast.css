@@ -189,3 +189,6 @@ div#legend {
 	margin-right:10%;
 }
 
+ol {
+	list-style-type: lower-alpha;
+}
