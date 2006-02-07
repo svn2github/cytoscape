@@ -78,4 +78,39 @@ public final class NodeViewDefaults
       throw new NullPointerException("borderPaint is null"); }
   }
 
+  public final double getWidth()
+  {
+    return 2.0d * m_widthDiv2;
+  }
+
+  public final double getHeight()
+  {
+    return 2.0d * m_heightDiv2;
+  }
+
+  public final Color getColorLowDetail()
+  {
+    return m_colorLowDetail;
+  }
+
+  public final byte getShape()
+  {
+    return m_shape;
+  }
+
+  public final Paint getFillPaint()
+  {
+    return m_fillPaint;
+  }
+
+  public final double getBorderWidth()
+  {
+    return m_borderWidth;
+  }
+
+  public final Paint getBorderPaint()
+  {
+    return m_borderPaint;
+  }
+
 }
