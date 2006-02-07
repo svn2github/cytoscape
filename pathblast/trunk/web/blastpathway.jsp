@@ -55,6 +55,8 @@ String t_org = request.getParameter("T_ORG");
 Protein[] proteins = (Protein[]) session.getAttribute(Config.PROTEINS_SESSION_KEY);
 
 String reset = request.getParameter("reset");
+if ( reset == null )
+	reset = request.getParameter("reset.x"); 
 
 if ( reset != null || proteins == null ) {
     proteins = new Protein[3];
