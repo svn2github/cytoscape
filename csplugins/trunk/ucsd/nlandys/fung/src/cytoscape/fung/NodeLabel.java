@@ -1,5 +1,6 @@
 package cytoscape.fung;
 
-public final class NodeLabel
+public final class NodeLabel extends Label
 {
+
 }
