@@ -31,6 +31,8 @@ public class SortFilter<NodeType extends Comparable<NodeType>, WeightType extend
 	    return new ArrayList();
 	}
 	Collections.sort(solutions);
+	System.out.println("unfiltered set size: " + solutions.size());
+	System.out.println("filtered set size: " + solutions.size());
 	return solutions;
     }
 }

@@ -43,6 +43,7 @@ public class DuplicateThresholdFilter<NodeType extends Comparable<NodeType>,Weig
     public List<Graph<NodeType,WeightType>> filter(List<Graph<NodeType,WeightType>> solutions) {
 	if (solutions == null) 
 	    return null;
+	System.out.println("unfiltered set size: " + solutions.size());
 	List<Graph<NodeType,WeightType>> newSolns = new Vector<Graph<NodeType,WeightType>>();
 	boolean skip = false;
 	for ( Graph<NodeType,WeightType> seed: solutions ) {
@@ -64,6 +65,7 @@ public class DuplicateThresholdFilter<NodeType extends Comparable<NodeType>,Weig
 	    }
 	    newSolns.add(seed);
 	}
+	System.out.println("filtered set size: " + newSolns.size());
 	return newSolns;
     }
 }
