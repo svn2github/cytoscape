@@ -53,7 +53,7 @@ import javax.swing.tree.TreeModel;
 public interface TreeTableModel extends TreeModel
 {
     /**
-     * Returns the number ofs availible column.
+     * Returns the number of availible columns.
      */
     public int getColumnCount();
 
