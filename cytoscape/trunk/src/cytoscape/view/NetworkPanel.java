@@ -19,6 +19,7 @@ import cytoscape.data.*;
 import cytoscape.giny.*;
 
 import cytoscape.util.swing.*;
+import cytoscape.util.CyNetworkNaming;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -48,7 +49,9 @@ public class NetworkPanel
   JMenuItem createViewItem;
   JMenuItem destroyViewItem;
   JMenuItem destroyNetworkItem;
+  JMenuItem editNetworkTitle;
   JSplitPane split;
+  NetworkTreeTableModel treeTableModel; 
 
   private CytoscapeDesktop cytoscapeDesktop;
 
@@ -62,7 +65,8 @@ public class NetworkPanel
     setLayout( new BorderLayout() );
     setPreferredSize( new Dimension( 181, 700 ) );
     root = new NetworkTreeNode( "Network Root", "root" );
-    treeTable = new JTreeTable( new NetworkTreeTableModel( root ) );
+    treeTableModel = new NetworkTreeTableModel( root );
+    treeTable = new JTreeTable( treeTableModel );
     treeTable.getTree().addTreeSelectionListener( this );
     treeTable.getTree().setRootVisible( false );
 
@@ -93,15 +97,18 @@ public class NetworkPanel
     
     //create and populate the popup window
     popup = new JPopupMenu();
+    editNetworkTitle = new JMenuItem(PopupActionListener.EDIT_TITLE);
     createViewItem = new JMenuItem(PopupActionListener.CREATE_VIEW);
     destroyViewItem = new JMenuItem(PopupActionListener.DESTROY_VIEW);
     destroyNetworkItem = new JMenuItem(PopupActionListener.DESTROY_NETWORK);
     
     //action listener which performs the tasks associated with the popup listener
     popupActionListener = new PopupActionListener();
+    editNetworkTitle.addActionListener(popupActionListener);
     createViewItem.addActionListener(popupActionListener);
     destroyViewItem.addActionListener(popupActionListener);
     destroyNetworkItem.addActionListener(popupActionListener);
+    popup.add(editNetworkTitle);
     popup.add(createViewItem);
     popup.add(destroyViewItem);
     popup.add(destroyNetworkItem);
@@ -145,7 +152,22 @@ public class NetworkPanel
     treeTable.doLayout();
     
   }
-
+//JBK added updateTitle
+//11-13-05  
+  /** 
+   * update a network title
+   */
+  public void updateTitle(CyNetwork network) {
+	  //updates the title in the network panel
+	  treeTableModel.setValueAt(network.getTitle(), 
+			  treeTable.getTree().getSelectionPath().getLastPathComponent(), 0);
+	  treeTable.getTree().updateUI(); 
+	  treeTable.doLayout();
+	  //updates the title in the networkViewMap
+	  NetworkViewManager netViewManager = Cytoscape.getDesktop().getNetworkViewManager();
+	  netViewManager.updateNetworkTitle(network);
+  }
+  
   public void onFlagEvent(FlagEvent event){
     treeTable.getTree().updateUI();
   }
@@ -286,6 +308,15 @@ public class NetworkPanel
       return "";
 
     }
+    //Brad
+    public void setValueAt(Object aValue, Object node, int column) {
+      if (column == 0) {
+    	( ( DefaultMutableTreeNode )node).setUserObject(aValue);
+    }
+    else
+    	JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "Error: assigning value at in NetworkPanel");
+    //This function is not used to set node and edge values.	
+    }  
 
   } // NetworkTreeTableModel
   
@@ -376,7 +407,7 @@ public class NetworkPanel
 
     /**
      * if the mouse press is of the correct type, this function will
-     * maybe display hte popup
+     * maybe display the popup
      */
     private void maybeShowPopup(MouseEvent e){
       //check for the popup type
@@ -427,6 +458,7 @@ class PopupActionListener implements ActionListener{
   public static String DESTROY_VIEW = "Destroy View";
   public static String CREATE_VIEW = "Create View";
   public static String DESTROY_NETWORK = "Destroy Network";
+  public static String EDIT_TITLE = "Edit Network Title";
   
   /**
    * This is the network which originated the mouse-click event (more appropriately, the network
@@ -449,6 +481,10 @@ class PopupActionListener implements ActionListener{
     } // end of if ()
     else if ( label == DESTROY_NETWORK) {
       Cytoscape.destroyNetwork(cyNetwork);
+    } // end of if ()
+    else if ( label == EDIT_TITLE) {
+      CyNetworkNaming.editNetworkTitle(cyNetwork);
+      Cytoscape.getDesktop().getNetworkPanel().updateTitle(cyNetwork);
     } // end of if ()
     else {
       //throw an exception here?

@@ -95,6 +95,24 @@ public class NetworkViewManager
     }
     return null;
   }
+  
+  public void updateNetworkTitle( CyNetwork network ) {
+	  
+	  Object frame = networkViewMap.get(network.getIdentifier());
+	  if (frame instanceof JInternalFrame ) {
+		  ((JInternalFrame) frame).setTitle(network.getTitle());
+	  	  ((JInternalFrame) frame).repaint();
+	  }
+	  else if (frame instanceof JFrame ) {
+		  ((JFrame) frame).setTitle(network.getTitle());
+	  	  ((JFrame) frame).repaint();
+	  }
+	  else if (frame instanceof Component) {
+		  ((Component) frame).setName(network.getTitle());
+  	  	  ((Component) frame).repaint();
+	  }
+  }
+  
 
   //------------------------------//
   // Fire Events when a Managed Network View gets the Focus
