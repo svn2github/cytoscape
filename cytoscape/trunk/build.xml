@@ -524,7 +524,20 @@
         </copy>
     </target>
 
-  
+
+    <!-- ======================================================= -->
+    <!-- Creates a distribution based on the nightly build.      -->
+    <!-- ======================================================= -->
+    <target name="nightly-release" depends="release">
+    	<tstamp>
+	      <format property="todays.date" pattern="yyyy-MM-dd_hh:mmaa"/>
+        </tstamp>
+        <mkdir dir="${zip_release.dir}"/>
+        <zip destfile="${zip_release.dir}/cytoscape-${todays.date}.zip"
+             basedir="${build.dir}"
+             includes="${dirname.release.dir}/**"/>
+    </target>
+
     <!-- ======================================================= -->
     <!-- Create Cytoscape Distribution                           -->
     <!-- Final releases are made available in zip_release/ dir   -->
