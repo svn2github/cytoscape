@@ -8,6 +8,8 @@ import cern.colt.list.*;
 import cern.colt.map.*;
 
 import java.util.*;
+import javax.swing.JOptionPane;
+import java.lang.Throwable;
 
 import csplugins.layout.algorithms.SGraphPartition;
 
@@ -75,7 +77,23 @@ public abstract class AbstractLayout implements Task {
       current_gp = gp.createGraphPerspective( nodes, gp.getConnectingEdgeIndicesArray( nodes ) );
       // Partitions Requiring Layout
       if ( nodes.length != 1 ) {
-        layoutPartion( current_gp );
+        try
+        {
+          layoutPartion( current_gp );
+        }
+        catch(Throwable _e)
+        {
+          Object buttons[] = { "Print Stack Trace", "OK" };
+          if(JOptionPane.showOptionDialog(null, "Failed to layout graph.\n\n", 
+                                          "Failed to Layout Graph",
+                                          JOptionPane.YES_NO_OPTION,
+                                          JOptionPane.ERROR_MESSAGE,
+                                          null, buttons, buttons[1]) == 0)
+          {
+            _e.printStackTrace();
+          }
+          return;
+        }
         // offset GP
         double max_width = 0;
 

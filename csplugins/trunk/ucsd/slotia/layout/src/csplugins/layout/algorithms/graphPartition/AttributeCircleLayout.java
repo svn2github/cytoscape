@@ -64,8 +64,6 @@ public class AttributeCircleLayout extends AbstractLayout {
       GraphObject o2 = (GraphObject)oo2;
       
       byte type = data.getType( attribute );
-     
-      // String
       if ( type == CyAttributes.TYPE_STRING ) {
         String v1 = data.getStringAttribute( o1.getIdentifier(), attribute );
         String v2 = data.getStringAttribute( o2.getIdentifier(), attribute );
@@ -75,7 +73,7 @@ public class AttributeCircleLayout extends AbstractLayout {
       } else if ( type == CyAttributes.TYPE_FLOATING ) {
         Double v1 = data.getDoubleAttribute( o1.getIdentifier(), attribute );
         Double v2 = data.getDoubleAttribute( o2.getIdentifier(), attribute );
-        
+
         return v1.compareTo( v2 );
         
       } else if ( type == CyAttributes.TYPE_INTEGER ) {
