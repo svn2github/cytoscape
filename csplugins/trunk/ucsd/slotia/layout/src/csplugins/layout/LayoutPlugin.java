@@ -16,7 +16,8 @@ import csplugins.layout.algorithms.hierarchicalLayout.HierarchicalLayoutListener
 import csplugins.layout.algorithms.radialHierarchicalLayout.RadialHierarchicalLayoutAlgorithm;
 import csplugins.layout.algorithms.graphPartition.AttributeCircleLayoutMenu;
 import csplugins.layout.algorithms.graphPartition.ISOMLayout;
-
+import csplugins.layout.algorithms.graphPartition.RadialHierarchicalLayout;
+import csplugins.layout.algorithms.graphPartition.DegreeSortedCircleLayout;
 public class LayoutPlugin extends CytoscapePlugin
 {
   public LayoutPlugin()
@@ -201,6 +202,42 @@ public class LayoutPlugin extends CytoscapePlugin
 
     }); // end new AbstractAction
 
+    JMenuItem radHierLay = new JMenuItem(new AbstractAction("Radial Hierarchical Layout")
+    {
+      public void actionPerformed (ActionEvent e )
+      {
+        SwingUtilities.invokeLater(new Runnable()
+        {
+          public void run()
+          {
+            RadialHierarchicalLayout layout = new RadialHierarchicalLayout(Cytoscape.getCurrentNetwork());
+            layout.layout();
+          } // end run()
+
+        }); // end new Runnable()
+
+      } // end actionPerformed()
+
+    }); // end new AbstractAction
+
+    JMenuItem degSortCircle = new JMenuItem(new AbstractAction("Degree Sorted Circle Layout")
+    {
+      public void actionPerformed (ActionEvent e )
+      {
+        SwingUtilities.invokeLater(new Runnable()
+        {
+          public void run()
+          {
+            DegreeSortedCircleLayout layout = new DegreeSortedCircleLayout(Cytoscape.getCurrentNetwork());
+            layout.layout();
+          } // end run()
+
+        }); // end new Runnable()
+
+      } // end actionPerformed()
+
+    }); // end new AbstractAction
+
     JMenu menu = new JMenu("Layout");
     menu.add(circle);
     menu.add(radial);
@@ -211,6 +248,8 @@ public class LayoutPlugin extends CytoscapePlugin
     menu.add(springEmbMenu);
     menu.add(new AttributeCircleLayoutMenu());
     menu.add(isomLay);
+    menu.add(radHierLay);
+    menu.add(degSortCircle);
 
     Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("Layout").add(menu);
   }
