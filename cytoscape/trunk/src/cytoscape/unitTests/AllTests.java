@@ -15,7 +15,7 @@ import java.util.regex.*;
  * all of the unit tests also contained in the jar, and executes them.
  * This is useful for running unit tests independent of ant.
  */
-public class AllTests 
+public class AllTests extends TestCase
 {
 	public static final String TEST_ALL = "JUNIT_TEST_ALL";
 
@@ -51,6 +51,7 @@ public class AllTests
 	 * adds them to this test suite.
 	 */
         public static Test suite() {
+		System.out.println("suite started");
                 TestSuite suite= new TestSuite("All JUnit Tests");
 
 		try {
