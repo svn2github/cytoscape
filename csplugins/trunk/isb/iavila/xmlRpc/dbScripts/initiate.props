@@ -3,4 +3,4 @@
 #dbname:propertyName=comma separated property values
 dbuser=cytouser
 dbpwd=bioNetBuilder
-dbnames=prolinks,kegg,go,synonyms
+dbnames=prolinks,kegg,bind,dip,go,synonyms

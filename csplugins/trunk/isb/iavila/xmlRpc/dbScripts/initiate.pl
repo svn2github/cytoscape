@@ -63,8 +63,8 @@ print "done\n";
 
 print "Populating metainfo database...";
 $dbh = DBI->connect("dbi:mysql:database=metainfo:host=localhost", $dbuser, $dbpwd) or die "Can't make database connect: $DBI::errstr\n";
-$dbh->do("CREATE TABLE IF NOT EXISTS when_updated (db VARCHAR(30), timestamp TIMESTAMP)") or die "Could not create when_updated: $dbh->errstr\n";
-$dbh->do("CREATE TABLE IF NOT EXISTS db_name (db VARCHAR(30), dbname VARCHAR(30))") or die "Could not create db_name: $dbh->errstr\n";
+$dbh->do("CREATE TABLE IF NOT EXISTS when_updated (db VARCHAR(30) KEY, timestamp TIMESTAMP)") or die "Could not create when_updated: $dbh->errstr\n";
+$dbh->do("CREATE TABLE IF NOT EXISTS db_name (db VARCHAR(30) KEY, dbname VARCHAR(30))") or die "Could not create db_name: $dbh->errstr\n";
 
 for $t (@targetdbs){
 	$dbh->do("INSERT INTO db_name VALUES (?, ?)", undef, $t, $t) or die "Could not insert into db_name: $dbh->errstr\n";

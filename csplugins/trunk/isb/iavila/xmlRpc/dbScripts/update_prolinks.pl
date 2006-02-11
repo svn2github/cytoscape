@@ -138,7 +138,7 @@ sub create_tables {
 	my $dbh;
 	$dbh = shift;
 	$dbh->do("CREATE TABLE species (species VARCHAR(100), tablename VARCHAR(100), INDEX (species))") or die "Error: $dbh->errstr";
-	$dbh->do("CREATE TABLE interaction_types (method CHAR(2), pval FLOAT, description VARCHAR(25), INDEX(method) ) ") or die "Error: $dbh->errstr";
+	$dbh->do("CREATE TABLE interaction_types (method CHAR(2) KEY, pval FLOAT, description VARCHAR(25), INDEX(method) ) ") or die "Error: $dbh->errstr";
 	print "done\n";
 }
 
@@ -161,7 +161,6 @@ sub import_data {
 	}
 
 	open (LIST, './prolinks/newlist.lst') or die "Could not open file ./prolinks/newlist.lst\n";
-
 	$id = 0;
 	my $row;
 	

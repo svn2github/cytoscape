@@ -46,11 +46,16 @@ public class NodeSourcesPanel extends JPanel {
     protected JCheckBox useSelectedNodes;
     protected JCheckBox useTaxonomy;
     
+    protected GOClient goClient;
+    protected SynonymsClient synClient;
+    
     /**
      *  Creates a panel with node sources
      */
     public NodeSourcesPanel (GOClient go_client, SynonymsClient synonyms_client){
-        create(go_client, synonyms_client);
+        this.goClient = go_client;
+        this.synClient = synonyms_client;
+        create();
     }
     
     /**
@@ -198,6 +203,17 @@ public class NodeSourcesPanel extends JPanel {
     }
     
     /**
+     * Gets the taxonomy search dialog that other GUIs can use
+     * 
+     * @return a TaxonomySearchDialog
+     */
+    public TaxonomySearchDialog getTaxonomySearchDialog (){
+        if(this.taxonomyDialog == null)
+            this.taxonomyDialog = new TaxonomySearchDialog(this.synClient);
+        return this.taxonomyDialog;
+    }
+    
+    /**
      * Updated the number of nodes from selected networks
      */
     public void updateNumNodesFromNetwork (){
@@ -234,7 +250,7 @@ public class NodeSourcesPanel extends JPanel {
     /**
      * Creates the panel
      */
-    protected void create(final GOClient go_client, final SynonymsClient synonyms_client) {
+    protected void create() {
         
         //CREATE BUTTONS
         
@@ -246,7 +262,7 @@ public class NodeSourcesPanel extends JPanel {
             public void actionPerformed (ActionEvent event){
                 //JOptionPane.showMessageDialog(NodeSourcesPanel.this, "Not implemented yet!", "Oops!", JOptionPane.ERROR_MESSAGE);
                 if(annotationsDialog == null){
-                    createAnnotationsDialog(go_client);
+                    createAnnotationsDialog(goClient);
                 }
                 annotationsDialog.pack();
                 annotationsDialog.setLocationRelativeTo(NodeSourcesPanel.this);
@@ -304,13 +320,16 @@ public class NodeSourcesPanel extends JPanel {
         netsButton.setEnabled(false);
         
         // Nodes from taxonomy
+        
+        if(this.taxonomyDialog == null){
+            this.taxonomyDialog = new TaxonomySearchDialog(synClient);
+        }
+        
         final JButton taxButton = new JButton("Nodes from NCBI Taxonomy...");
         taxButton.addActionListener(
                 new AbstractAction (){
                     public void actionPerformed (ActionEvent event){
-                        if(taxonomyDialog == null){
-                            taxonomyDialog = new TaxonomySearchDialog(synonyms_client);
-                        }
+                        
                         if(taxonomyDialog.isVisible()){
                             taxonomyDialog.setLocationRelativeTo(NodeSourcesPanel.this);
                         }else{

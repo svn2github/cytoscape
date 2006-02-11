@@ -64,11 +64,6 @@ $dbh->do("DROP DATABASE IF EXISTS $dbname");
 $dbh->do("CREATE DATABASE $dbname") or die "Error: $dbh->errstr";
 $dbh->do("USE $dbname") or die "Error: $dbh->errstr";
 
-
-# org_name table is created and populated in update_synonyms_kegg
-# TODO: Move it to here?
-#$dbh->do("CREATE TABLE org_name 	(org VARCHAR(5), 	name VARCHAR(100), 	UNIQUE(org, 	name))") or die "Error: $dbh->errstr";
-
 $dbh->do("CREATE TABLE path_name 	(path VARCHAR(20),	name VARCHAR(100), 	UNIQUE(path, 	name))") or die "Error: $dbh->errstr";
 $dbh->do("CREATE TABLE gene_name 	(gene VARCHAR(20), 	name VARCHAR(20),	UNIQUE(gene, 	name))") or die "Error: $dbh->errstr";
 
@@ -236,7 +231,7 @@ foreach $filename (@filename) {
 
 $starttime = time;
 print "CREATE TABLE gene_cpd\n";
-$dbh->do("CREATE TABLE gene_cpd (gene VARCHAR(20), cpd VARCHAR(20), UNIQUE (gene, cpd))") or die "Error: $dbh->errstr";
+$dbh->do("CREATE TABLE gene_cpd (gene VARCHAR(20), cpd VARCHAR(20), KEY(gene, cpd))") or die "Error: $dbh->errstr";
 $nowtime = time;
 print "time elapsed: ".($nowtime-$starttime)."\n";
 
@@ -293,6 +288,8 @@ print "time elapsed: ".($nowtime-$starttime)."\n";
 $starttime = time;
 print "create table gene_cpd_gene_score\n";
 $dbh->do("CREATE TABLE gene_cpd_gene_score SELECT g1.gene AS gene1, g1.cpd AS cpd, g2.gene AS gene2, cs.score AS score, g1.org AS org FROM gene_cpd as g1, gene_cpd AS g2, cpd_score AS cs WHERE g1.cpd = g2.cpd AND g1.org = g2.org AND g1.gene != g2.gene AND cs.cpd = g1.cpd") or die "Error: $dbh->errstr";
+print "deleting duplicates...\n";
+$dbh->do("DELETE FROM gene_cpd_gene_score WHERE gene2 < gene1;");
 $nowtime = time;
 print "time elapsed: ".($nowtime-$starttime)."\n";
 

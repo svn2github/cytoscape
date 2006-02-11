@@ -2,6 +2,7 @@ package org.isb.bionet.gui.wizard;
 
 import java.util.*;
 import java.util.List;
+
 import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
@@ -12,6 +13,7 @@ import org.isb.bionet.datasource.interactions.*;
 import org.isb.bionet.datasource.synonyms.*;
 import org.isb.iavila.ontology.xmlrpc.*;
 import org.isb.bionet.gui.*;
+import org.isb.bionet.gui.taxonomy.*;
 import org.isb.bionet.CyNetUtils;
 import cytoscape.*;
 import cytoscape.data.CyAttributes;
@@ -33,7 +35,7 @@ public class NetworkBuilderWizard {
     
     // Panels and dialogs
     protected List dialogs;
-    protected SpeciesPanel speciesPanel;
+    protected TaxonomyPanel taxonomyPanel;
     protected NodeSourcesPanel nodeSourcesPanel;
     protected EdgeSourcesPanel edgeSourcesPanel;
     protected NetworkSettingsPanel networkPanel;
@@ -114,41 +116,29 @@ public class NetworkBuilderWizard {
      * Creates all the dialogs in order of steps
      */
     public void createDialogs (){
-        this.dialogs = new ArrayList();
-        
-        this.currentStep = -1;
-        
-        // Create the dialog for selecting species
-        this.currentStep++;
-        JDialog speciesDialog = createSpeciesDialog();
-        this.dialogs.add(this.currentStep, speciesDialog);
-        
-        // Create the dialog to select nodes
-        this.currentStep++;
+        this.onLastStep = false;
+        this.currentStep = 1;
         JDialog nodesDialog = createNodeSourcesDialog();
-        this.dialogs.add(this.currentStep, nodesDialog);
-        
-        // Create the dialog to select edges
-        this.currentStep++;
+        this.currentStep = 0;
+        JDialog speciesDialog = createSpeciesDialog();
+        this.currentStep = 2;
         JDialog edgesDialog = createEdgeSourcesDialog();
-        this.dialogs.add(this.currentStep, edgesDialog);
-        
-        // Create the dialog to prioritize node labels
-        this.currentStep++;
+        this.currentStep = 3;
         JDialog labelsDialog = createNodeLabelsDialog();
-        this.dialogs.add(this.currentStep, labelsDialog);
-        
-        // Create the dialog for attributes
-        this.currentStep++;
+        this.currentStep = 4;
         JDialog attsDialog = createAttsDialog();
-        this.dialogs.add(this.currentStep,attsDialog);
-        
-        // Create the dialog for network settings
-        this.currentStep++;
+        this.currentStep = 5;
         this.onLastStep = true;
         JDialog netDialog = createNetworkSettingsDialog();
-        this.dialogs.add(this.currentStep,netDialog);
-    }//start
+        this.dialogs = new ArrayList();
+        this.dialogs.add(speciesDialog);
+        this.dialogs.add(nodesDialog);
+        this.dialogs.add(edgesDialog);
+        this.dialogs.add(labelsDialog);
+        this.dialogs.add(attsDialog);
+        this.dialogs.add(netDialog);
+        
+    }
     
     
     /**
@@ -240,25 +230,14 @@ public class NetworkBuilderWizard {
         
         next = new AbstractAction (){
             public void actionPerformed (ActionEvent event){
-                Map table = (Map)speciesPanel.getSourcesSelectedSpecies();
-                if(table.size() == 0){
-                    JOptionPane.showMessageDialog(speciesPanel,"Please select a species", "Error", JOptionPane.ERROR_MESSAGE);
+               Vector taxids = taxonomyPanel.getSelectedSpeciesTaxids();
+                if(taxids.size() == 0){
+                    JOptionPane.showMessageDialog(taxonomyPanel,"Please select a species", "Error", JOptionPane.ERROR_MESSAGE);
                 }else{
                     // enable edge sources in the edges dialog
                     if(edgeSourcesPanel == null)
                         return;
-                    Map sourceToName = (Map)speciesPanel.getSourcesNames();
-                    Map sourcesToSpecies = speciesPanel.getSourcesSelectedSpecies();
-                    edgeSourcesPanel.setSourcesToSpecies(sourcesToSpecies);
-                    Iterator it = table.keySet().iterator();
-                    while(it.hasNext()){
-                        String name = (String)sourceToName.get(it.next());
-                        edgeSourcesPanel.setSourceButtonEnabled(name, true);
-                    }//while it
-                    
-                    // TODO: Disable the ones that are not used!
-                    
-                    
+                      edgeSourcesPanel.setTaxids(taxonomyPanel.getSelectedSpeciesTaxids());
                     if(onLastStep){
                         FINISH_ACTION.actionPerformed(event);
                     }else{
@@ -271,23 +250,11 @@ public class NetworkBuilderWizard {
         JDialog dialog = createWizardDialog(back, next);
         
         JPanel explanation = 
-            createExplanationPanel("<html><br>Select a species for your biological network from your<br>desired data sources.<br></html>");
+            createExplanationPanel("<html>Type the name of your desired species (can be an incomplete<br>name) and then press the Search button.</html>");
         dialog.getContentPane().add(explanation, BorderLayout.NORTH);
         
-        try{
-            Hashtable sourceToSp = this.interactionsClient.getSupportedSpeciesForEachSource();
-            Hashtable  sourceToName = this.interactionsClient.getSourcesNames();
-            this.speciesPanel = new SpeciesPanel(sourceToSp, sourceToName);
-        }catch (Exception e){
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this.speciesPanel,
-                    "<html>There was an error while attempting to obtain supported species!<br>"+ e.getMessage() +"<br></html>", 
-                    "Error",JOptionPane.ERROR_MESSAGE);
-            Hashtable emptyTable = new Hashtable();
-            this.speciesPanel = new SpeciesPanel(emptyTable, emptyTable);
-        }
-       
-        dialog.getContentPane().add(this.speciesPanel, BorderLayout.CENTER);
+        this.taxonomyPanel = this.nodeSourcesPanel.getTaxonomySearchDialog().getTaxonomyPanel();
+        dialog.getContentPane().add(this.taxonomyPanel, BorderLayout.CENTER);
         
         return dialog;
         
@@ -375,12 +342,12 @@ public class NetworkBuilderWizard {
         
         dialog.getContentPane().add(explanation,BorderLayout.NORTH);
         
-        Map sourcesToSpecies;
+       Vector taxids;
         
-        if(this.speciesPanel != null){
-            sourcesToSpecies = this.speciesPanel.getSourcesSelectedSpecies();
+        if(this.taxonomyPanel != null){
+            taxids = this.taxonomyPanel.getSelectedSpeciesTaxids();
         }else{
-           sourcesToSpecies = new Hashtable();
+           taxids = new Vector();
         }
         
         Vector nodes = new Vector();
@@ -388,7 +355,7 @@ public class NetworkBuilderWizard {
             nodes = this.nodeSourcesPanel.getAllNodes();  
         }
         
-        this.edgeSourcesPanel = new EdgeSourcesPanel(this.interactionsClient, this.synonymsClient, sourcesToSpecies, nodes);
+        this.edgeSourcesPanel = new EdgeSourcesPanel(this.interactionsClient, this.synonymsClient, taxids, nodes);
         
         JPanel bigPanel = new JPanel();
         bigPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -531,23 +498,28 @@ public class NetworkBuilderWizard {
         
         CyAttributes nodeAtts = Cytoscape.getNodeAttributes();
         
-        // 1. Get the species for each edge data source
-        Map sourceToSpecies = this.speciesPanel.getSourcesSelectedSpecies();
-        Map sourceToNames = this.speciesPanel.getSourcesNames();
+        // 1. Get the desired taxid
+        Vector taxids = this.taxonomyPanel.getSelectedSpeciesTaxids();
+        if(taxids.size() == 0) return;
+        String taxid = (String)taxids.get(0);
         
         // 2. Get the starting nodes for the network (if any)
         Vector startingNodes = this.nodeSourcesPanel.getAllNodes();
         // Also add their alternate GI numbers, if they exist
         Iterator it = startingNodes.iterator();
+        HashSet alternateIds = new HashSet();
         while(it.hasNext()){
             String gi = (String)it.next();
             String alternateGis = (String)nodeAtts.getStringAttribute(gi,CyNetUtils.ALTERNATE_UID_ATT);
             if(alternateGis == null) continue;
             String [] allGis = alternateGis.split("|");
             for(int i = 0; i < allGis.length; i++)
-                if(!startingNodes.contains(allGis[i])) startingNodes.add(allGis[i]);
+                if(!startingNodes.contains(allGis[i])) alternateIds.add(allGis[i]);
             
         }//while it
+        startingNodes.removeAll(alternateIds);
+        startingNodes.addAll(alternateIds);
+        
         Hashtable sourceToStartNodes = this.nodeSourcesPanel.getSelectedSourceToNodesTable();
         
         // 3. Get the edge data source parameter settings
@@ -579,45 +551,39 @@ public class NetworkBuilderWizard {
         if(selected > 1 && startingNodes.size() > 0) 
             nodeIDs = new HashSet();
         
-        HashMap sourceNameToArgs = new HashMap();
-        HashMap sourceNameToSpecies = new HashMap();
-        
+        HashMap sourceClassToArgs = new HashMap();
         it = sourceToSettings.keySet().iterator();
         while(it.hasNext()){
             
             String sourceClass = (String)it.next();
             if(!this.edgeSourcesPanel.isSourceSelected(sourceClass)) continue;
-          
-            List sourceSpecies = (List)sourceToSpecies.get(sourceClass);
-            if(sourceSpecies == null || sourceSpecies.size() == 0) continue;
-            
-            String species = (String)sourceSpecies.get(0);
-            String sourceName = (String)sourceToNames.get(sourceClass);
-            sourceNameToSpecies.put(sourceName,species);
+            String sourceName = this.edgeSourcesPanel.getSourceName(sourceClass);
             
             InteractionsSourceGui gui = (InteractionsSourceGui)sourceToSettings.get(sourceClass);
-            Hashtable args = gui.getArgsTable();
-            sourceNameToArgs.put(sourceName,args);
-            
+            Hashtable args = new Hashtable();
+            if(gui != null){
+                args = gui.getArgsTable(); 
+            }
+            sourceClassToArgs.put(sourceClass,args);
             Vector sourceInteractions = null;
             
             if(startingNodes == null || startingNodes.size() == 0){
-                try{
+               try{
                     if(args.size() > 0)
-                        sourceInteractions = (Vector)this.interactionsClient.getAllInteractions(species, args);
+                        sourceInteractions = (Vector)this.interactionsClient.getAllInteractions(taxid, args, sourceClass);
                     else
-                        sourceInteractions = (Vector)this.interactionsClient.getAllInteractions(species);
+                        sourceInteractions = (Vector)this.interactionsClient.getAllInteractions(taxid, sourceClass);
                 }catch(Exception e){e.printStackTrace();}
             }else{
 
                 Vector adjacentNodes = null;
                 
                 if(firstNeighbors){ 
-                    try{
+                   try{
                         if(args.size() > 0)
-                            adjacentNodes = this.interactionsClient.getFirstNeighbors(startingNodes,species,args);
+                            adjacentNodes = this.interactionsClient.getFirstNeighbors(startingNodes,taxid,args, sourceClass);
                         else
-                            adjacentNodes = this.interactionsClient.getFirstNeighbors(startingNodes,species);
+                            adjacentNodes = this.interactionsClient.getFirstNeighbors(startingNodes,taxid, sourceClass);
                 
                     }catch(Exception e){e.printStackTrace();}
                 }// if first neighbors
@@ -640,12 +606,12 @@ public class NetworkBuilderWizard {
                     nv.addAll(adjacentNodes);
                     sourceToNodes.put(sourceName,nv);
                 }
-                
-                try{
+               
+               try{
                     if(args.size() > 0)
-                        sourceInteractions = (Vector)this.interactionsClient.getConnectingInteractions(nodesToConnect, species, args);
+                        sourceInteractions = (Vector)this.interactionsClient.getConnectingInteractions(nodesToConnect, taxid, args, sourceClass);
                     else
-                        sourceInteractions = (Vector)this.interactionsClient.getConnectingInteractions(nodesToConnect, species);
+                        sourceInteractions = (Vector)this.interactionsClient.getConnectingInteractions(nodesToConnect, taxid, sourceClass);
                 }catch(Exception e){e.printStackTrace();}
                    
             }//else
@@ -690,17 +656,16 @@ public class NetworkBuilderWizard {
         if(nodeIDs != null){
             // Finally, connect genes/proteins from different data sources
             nodeIDs.addAll(startingNodes);
-            it = sourceNameToArgs.keySet().iterator();
+            it = sourceClassToArgs.keySet().iterator();
             while(it.hasNext()){
-                String sourceName = (String)it.next();
-                Hashtable args= (Hashtable)sourceNameToArgs.get(sourceName);
-                String species = (String)sourceNameToSpecies.get(sourceName);
-                Vector sourceInteractions = null;
+                String sourceClass = (String)it.next();
+                Hashtable args= (Hashtable)sourceClassToArgs.get(sourceClass);
+                Vector sourceInteractions = null; 
                 try{
                     if(args.size() > 0)
-                        sourceInteractions = (Vector)this.interactionsClient.getConnectingInteractions(new Vector(nodeIDs), species, args);
+                        sourceInteractions = (Vector)this.interactionsClient.getConnectingInteractions(new Vector(nodeIDs), taxid, args, sourceClass);
                     else
-                        sourceInteractions = (Vector)this.interactionsClient.getConnectingInteractions(new Vector(nodeIDs), species);
+                        sourceInteractions = (Vector)this.interactionsClient.getConnectingInteractions(new Vector(nodeIDs), taxid, sourceClass);
                 }catch(Exception e){
                     e.printStackTrace();
                 }

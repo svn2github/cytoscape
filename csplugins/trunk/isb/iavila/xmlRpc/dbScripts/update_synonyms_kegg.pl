@@ -28,12 +28,19 @@ $sth->execute("kegg") or die "Error: $dbh->errstr";
 @row = $sth->fetchrow_array;
 $keggname = $row[0];
 $keggh = DBI->connect("dbi:mysql:database=$keggname:host=localhost", $dbuser, $dbpwd) or die "Can't make database connect: $DBI::errstr\n";
+$syndb = DBI->connect("dbi:mysql:database=$synname:host=localhost", $dbuser, $dbpwd) or die "Error: $dbh->errstr\n";
 
-$keggh->do("DROP TABLE IF EXISTS org_name") or die "Error: $dbh->errstr\n";
-$keggh->do("CREATE TABLE org_name (org VARCHAR(5), filename VARCHAR(100), fullname VARCHAR(100), NCBI_name VARCHAR(100), EMBL_name VARCHAR(100))") or die "Error: $dbh->errstr\n";
+createOrgNameTable();
+createTables();
 
-system(rm -r kegg);
-system(mkdir kegg);
+##################################################################################
+sub createOrgNameTable {
+
+$keggh->do("DROP TABLE IF EXISTS org_taxid") or die "Error: $dbh->errstr\n";
+$keggh->do("CREATE TABLE org_taxid (org VARCHAR(5), taxid INT, KEY(org), INDEX(org))") or die "Error: $dbh->errstr\n";
+
+system("rm -r kegg");
+system("mkdir kegg");
 
 print "Downloading genes.weekly.last.tar.Z...\n";
 system('wget ftp://ftp.genome.jp/pub/kegg/tarfiles/genes.weekly.last.tar.Z --directory-prefix=./kegg') == 0 or die "Error: $?\n";
@@ -42,25 +49,67 @@ system('tar xzf ./kegg/genes.weekly.last.tar.Z -C ./kegg/') == 0 or die "Error: 
 print "done.\n";
 
 open (FH, "./kegg/all_species.tab") or die "Could not open ./kegg/all_species.db\n";
-open (OUT, "> ./kegg/org_name.txt") or die "Could not create ./kegg/org_name.txt\n";
+open (OUT, "> ./kegg/org_taxid.txt") or die "Could not create ./kegg/org_taxid.txt\n";
 
+$sth = $syndb->prepare_cached("SELECT taxid FROM ncbi_taxid_species WHERE name like ?") or die "Error: $dbh->errstr\n";
+
+$numOrgs = 0;
+$numTaxids = 0;
 while (<FH>) {
 	chomp;
 	unless ($_ =~ /^\#/) {
+	
 		@infos = split(/\t/,$_);
-		print OUT "$infos[0]\t$infos[1]\t$infos[2]\t$infos[8]\t$infos[9]\n";
+		
+		# header of this file is: 
+		# 0:Abbr 1:FileName 2:FullName 3:inKEGG 4:Category 5:Annotation 6:Complete 7:Completed_year 8:NCBI 9:EMBL
+		# 0:hsa	1:H.sapiens	2:Homo sapiens	3:yes	4:Animals	5:yes	6:no	 7: 8: 9:H_sapiens
+		
+		$sth->execute($infos[2]) or die "Error: $sth->errstr\n";
+		@row = $sth->fetchrow_array;
+		$taxid = $row[0];
+		
+		if($taxid eq ""){
+			$sth->execute($infos[8]);
+			@row = $sth->fetchrow_array;
+			$taxid = $row[0];
+		}
+		
+		if($taxid eq ""){
+			$sth->execute($infos[9]);
+			
+			@row = $sth->fetchrow_array;
+			$taxid = $row[0];
+		}
+		
+		if($taxid eq ""){
+			print "Did not find taxid for $infos[2], KEGG contains this organism: $infos[3]\n";
+		}else{
+			$numTaxids++;
+		}
+		$numOrgs++;
+		print OUT "$infos[0]\t$taxid\n";
 	}
 }
 
-$fullFilePath = getcwd()."/kegg/org_name.txt"; 
-$keggh->do("LOAD DATA LOCAL INFILE \'${fullFilePath}\' INTO TABLE org_name") or die "Error: $keggh->errstr";
+
+print "Found $numTaxids taxids for $numOrgs organisms.\n";
 
 close(FH);
 close(OUT);
 
+$fullFilePath = getcwd()."/kegg/org_taxid.txt";
+print "Loading data into org_taxid...\n"; 
+$keggh->do("LOAD DATA LOCAL INFILE \'${fullFilePath}\' INTO TABLE org_taxid") or die "Error: $keggh->errstr";
+print "...done.\n";
 $metah->do("INSERT INTO when_updated VALUES(?, CURRENT_TIMESTAMP())", undef, 'kegg') or die "Error: $dbh->errstr\n";
 
-$sth = $keggh->prepare("SELECT org FROM org_name") or die "Error: $dbh->errstr\n";
+}
+
+##################################################################################
+sub createTables () {
+
+$sth = $keggh->prepare("SELECT org FROM org_taxid") or die "Error: $dbh->errstr\n";
 $sth->execute();
 
 system('rm -r ./kegg');
@@ -68,34 +117,20 @@ system('mkdir kegg');
 $cmd1 = 'wget ftp://ftp.genome.jp/pub/kegg/genomes/';
 $cmd2 = '_xrefall.list --directory-prefix=./kegg';
 
-$syndb = DBI->connect("dbi:mysql:database=$synname:host=localhost", $dbuser, $dbpwd) or die "Error: $dbh->errstr\n";
-
-###### OLD ##################################################################
-#$syndb->do("DELETE FROM xref_kegg") or die "Error: $dbh->errstr\n";
-#$syndb->do("DELETE FROM xref_gi") or die "Error: $dbh->errstr\n";
-#$syndb->do("DELETE FROM xref_ncbigeneid") or die "Error: $dbh->errstr\n";
-#############################################################################
-
-$syndb->do("CREATE TABLE IF NOT EXISTS kegg_gi (uid INT, keggid VARCHAR(20), gi INT, INDEX(uid), INDEX(gi))");
-$syndb->do("CREATE TABLE IF NOT EXISTS kegg_up (uid INT, keggid VARCHAR(20), up VARCHAR(11), INDEX(uid), INDEX(up))");
-$syndb->do("CREATE TABLE IF NOT EXISTS kegg_ncbigeneid (uid INT, keggid VARCHAR(20), ncbi_geneid VARCHAR(25), INDEX(uid), INDEX(keggid))");
-
-######## MATCH uids LATER!!!!! #################################
-#$sprotoidret = $syndb->prepare_cached("SELECT oid FROM prot_sprot WHERE sprotac = ?") or die "Error: $dbh->errstr\n";
-#$trembloidret = $syndb->prepare_cached("SELECT oid FROM prot_trembl WHERE tremblac = ?") or die "Error: $dbh->errstr\n";
-################################################################
+$syndb->do("DROP TABLE IF EXISTS kegg_gi");
+$syndb->do("DROP TABLE IF EXISTS kegg_up");
+$syndb->do("DROP TABLE IF EXISTS kegg_ncbigeneid");
+$syndb->do("CREATE TABLE IF NOT EXISTS kegg_gi (keggid VARCHAR(20), gi INT, KEY(keggid,gi), INDEX(gi),INDEX(keggid))");
+$syndb->do("CREATE TABLE IF NOT EXISTS kegg_up (keggid VARCHAR(20), up VARCHAR(11), KEY(keggid,up), INDEX(keggid),INDEX(up))");
+$syndb->do("CREATE TABLE IF NOT EXISTS kegg_ncbigeneid (keggid VARCHAR(20), ncbi_geneid VARCHAR(25), KEY(keggid,ncbi_geneid), INDEX(keggid))");
 
 open (KGI, ">./kegg/kegg_gi.txt") or die "Could not create file ./kegg/kegg_gi.txt\n";
 open (KUP, ">./kegg/kegg_up.txt") or die "Could not create file ./kegg/kegg_up.txt\n";
 open (NGN, ">./kegg/kegg_ncbigeneid.txt") or die "Could not create file ./kegg/kegg_ncbigeneid.txt\n";
 
-######### OLD #######################################################################################
-#open(KDB, "> ./xref/kegg/keydb.txt") or die "Could not create file ./xref/kegg/keydb.txt\n";
-#open(HDB, "> ./xref/kegg/hasit.txt") or die "Could not create file ./xref/kegg/hasit.txt\n";
-#open(XKDB, "> ./xref/kegg/xkegg.txt") or die "Could not create file ./xref/kegg/xkegg.txt\n";
-#open(XGDB, "> ./xref/kegg/xgi.txt") or die "Could not create file ./xref/kegg/xgi.txt\n";
-#open(XNDB, "> ./xref/kegg/xncbi.txt") or die "Could not create file ./xref/kegg/xncbi.txt\n";
-#####################################################################################################
+$sth1 = $keggh->prepare_cached("SELECT taxid FROM org_taxid  WHERE org = ?");
+$sth2 = $syndb->prepare_cached("SELECT taxid FROM refseq_taxid WHERE protgi = ?") or die "Error: $dbh->errstr\n";
+$numFoundTaxids = 0;
 
 while ($ref = $sth->fetchrow_hashref()) {
 	$orgname = $ref->{'org'};
@@ -106,6 +141,11 @@ while ($ref = $sth->fetchrow_hashref()) {
 	print "done downloading.\n";
 	
 	open (FH, './kegg/'.$orgname.'_xrefall.list') or die "Could not open ./kegg\n.";
+
+	# see if we already found a taxid for this organism
+	$sth1->execute($orgname);
+	@row = $sth1->fetchrow_array;
+	$taxid = $row[0];
 
 	print "Loading ./kegg/${orgname}_xrefall.list...\n";
 	$line = 0;
@@ -133,7 +173,21 @@ while ($ref = $sth->fetchrow_hashref()) {
 		$koid = $ids[5];
 		
 		if($ncbigi ne ""){
+			
 			print KGI "$keggid\t$ncbigi\n";
+			
+			if($taxid eq ""){
+				# see if we can find the taxid using the GI number and refseq_taxid
+				$sth2->execute($ncbigi);
+				@row = $sth2->fetchrow_array;
+				$taxid = $row[0];
+				
+				if($taxid ne ""){
+					# found the taxid
+					$keggh->do("REPLACE INTO org_taxid VALUES ($orgname,$taxid)") or die "Error: $keggh->errstr\n";
+					$numFoundTaxids++;
+				}
+			}
 		}
 		if($ncbigeneid ne ""){
 			print NGN "$keggid\t$ncbigeneid\n"; 
@@ -141,106 +195,35 @@ while ($ref = $sth->fetchrow_hashref()) {
 		if($upid ne ""){
 			print KUP "$keggid\t$upid\n";
 		}
-
-
-		########################## OLD SLOW CODE ##########################################
-		#if ($upid ne '') {
-		#	$sprotoidret->execute($upid) or die "Error: $dbh->errstr\n";
-		#	while ($gotoid = $sprotoidret->fetchrow_hashref()) {
-		#		
-		#		print KDB "$gotoid->{'oid'}\tkegg\t$keggid";
-		#		print HDB "$gotoid->{'oid'}\txref_kegg";
-		#		print XKDB "$gotoid->{'oid'}\t$keggid\n";
-		#		
-		#		if ($ncbigi ne '') {
-		#			print HDB "$gotoid->{'oid'}\txref_ncbi\n";
-		#			print XGDB "$gotoid->{'oid'}\t$ncbigi\t\t\n";
-		#		}
-		#		if ($ncbigeneid ne '') {
-		#			print HDB "$gotoid->{'oid'}\txref_ncbigeneid\n";
-		#			print XNDB "$gotoid->{'oid'}\t$ncbigeneid\n";
-		#		}
-		#	}
-		#	
-		#	
-		#	$trembloidret->execute($upid) or die "Error: $dbh->errstr\n";
-		#	while ($gotoid = $trembloidret->fetchrow_hashref()) {
-		#		print KDB "$gotoid->{'oid'}\tkegg\t$keggid";
-		#		print HDB "$gotoid->{'oid'}\txref_kegg";
-		#		print XKDB "$gotoid->{'oid'}\t$keggid\n";
-		#		
-		#		if ($ncbigi ne '') {
-		#			
-		#			print HDB "$gotoid->{'oid'}\txref_ncbi\n";
-		#			print XGDB "$gotoid->{'oid'}\t$ncbigi\t\t\n";
-		#		}
-		#		if ($ncbigeneid ne '') {
-		#			print HDB "$gotoid->{'oid'}\txref_ncbigeneid\n";
-		#			print XNDB "$gotoid->{'oid'}\t$ncbigeneid\n";
-		#		}
-		#	}
-		#	
-		#	}
-		#}
-		#################################################################################
 	}# inner loop
 	print "done reading file ./kegg/${orgname}_xrefall.list.\n";
 	close(FH);
 }# outer while loop
 
+print "Found $numFoundTaxids taxids using GI numbers and refseq_taxid table.\n";
+
 print "Loading data into kegg_gi...\n";
 $fullFilePath = getcwd()."/kegg/kegg_gi.txt";
-$syndb->do("LOAD DATA LOCAL INFILE \'${fullFilePath}\' REPLACE INTO TABLE kegg_gi (keggid, gi)") or die "Error: $synh->errstr";
+$syndb->do("LOAD DATA LOCAL INFILE \'${fullFilePath}\' IGNORE INTO TABLE kegg_gi") or die "Error: $synh->errstr";
 print "done.\n";
 
 print "Loading data into kegg_up...\n";
 $fullFilePath = getcwd()."/kegg/kegg_up.txt";
-$syndb->do("LOAD DATA LOCAL INFILE \'${fullFilePath}\' REPLACE INTO TABLE kegg_up (keggid, up)") or die "Error: $synh->errstr";
+$syndb->do("LOAD DATA LOCAL INFILE \'${fullFilePath}\' IGNORE INTO TABLE kegg_up") or die "Error: $synh->errstr";
 print "done.\n";
 
 print "Loading data into kegg_ncbigene...\n";
 $fullFilePath = getcwd()."/kegg/kegg_ncbigeneid.txt";
-$syndb->do("LOAD DATA LOCAL INFILE \'${fullFilePath}\' REPLACE INTO TABLE kegg_ncbigeneid (keggid, ncbi_geneid)") or die "Error: $synh->errstr";
+$syndb->do("LOAD DATA LOCAL INFILE \'${fullFilePath}\' IGNORE INTO TABLE kegg_ncbigeneid") or die "Error: $synh->errstr";
 print "done.\n";
-
-
-################################ OLD CODE ###################################
-#print "Loading data into keydb...\n";
-#$fullFilePath = getcwd()."/xref/kegg/keydb.txt";
-#$syndb->do("LOAD DATA LOCAL INFILE \'${fullFilePath}\' INTO TABLE keydb") or die "Error: $synh->errstr";
-#print "done.\n";
-#
-#print "Loading data into hasit...\n";
-#$fullFilePath = getcwd()."/xref/kegg/hasit.txt";
-#$syndb->do("LOAD DATA LOCAL INFILE \'${fullFilePath}\' INTO TABLE hasit") or die "Error: $synh->errstr";
-#print "done.\n";
-#
-#print "Loading data into xref_kegg...\n";
-#$fullFilePath = getcwd()."/xref/kegg/xkegg.txt";
-#$syndb->do("LOAD DATA LOCAL INFILE \'${fullFilePath}\' INTO TABLE xref_kegg") or die "Error: $synh->errstr";
-#print "done.\n";
-#
-#print "Loading data into xreg_gi..\n";
-#$fullFilePath = getcwd()."/xref/kegg/xgi.txt";
-#$syndb->do("LOAD DATA LOCAL INFILE \'${fullFilePath}\' INTO TABLE xref_gi") or die "Error: $synh->errstr";
-#print "done.\n";
-#
-#print "Loading data into xref_ncbi...\n";
-#$fullFilePath = getcwd()."/xref/kegg/xncbi.txt";
-#$syndb->do("LOAD DATA LOCAL INFILE \'${fullFilePath}\' INTO TABLE xref_ncbi") or die "Error: $synh->errstr";
-#print "done.\n";
-#
-#close(KDB);
-#close(HDB);
-#close(XKDB);
-#close(XGDB);
-#close(XNDB);
-###############################################################################
 
 $syndb->disconnect();
 $keggh->disconnect();
 $metah->disconnect();
 
 $endtime = time;
-
 print "\nKEGG-Synonym elapsed time: ".$endtime - $startime."\n";
+
+}
+
+

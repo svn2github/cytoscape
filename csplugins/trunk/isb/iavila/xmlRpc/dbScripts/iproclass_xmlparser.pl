@@ -100,10 +100,6 @@ sub startXML {
 		
 		$p->setHandlers('Char' => \&charRefSeqAc);
 	
-	}elsif($el eq 'refseq-name'){
-	
-		$p->setHandlers('Char'=>\&charRefSeqName);
-		
 	}elsif($el eq 'function'){
 	
 		$p->setHandlers('Char'=>\&charFunction);
@@ -195,11 +191,6 @@ sub charSprotAc {
 	$data{'sprot-ac'} = $str;
 }
 
-sub charRefSeqName {
-	my($p, $str) = @_;
-	$data{'refseq-name'} = $str;
-}
-
 sub charSprotId {
 	my($p, $str) = @_;
 	$data{'sprot-id'} = $str;
@@ -247,7 +238,7 @@ sub endXML {
 		
 	}elsif($el eq 'refseq'){
 	
-		print RS "$ipcid\t$data{'refseq-ac'}\t$data{'refseq-name'}\n";
+		print RS "$ipcid\t$data{'refseq-ac'}\n";
 	
 	}elsif($el eq 'function'){
 		

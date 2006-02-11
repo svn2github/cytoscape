@@ -186,7 +186,7 @@ public class CyNetUtils {
     // for testing, remove:
     public static int edges = 0;
     public static CyEdge createEdge (Hashtable interaction){
-        
+        edges = 0;
         String interactor1 = (String)interaction.get(InteractionsDataSource.INTERACTOR_1);
         if(interactor1 == null){
             System.out.println("Hashtable does not contain key " + InteractionsDataSource.INTERACTOR_1);
@@ -219,7 +219,7 @@ public class CyNetUtils {
         // For testing:
         CyEdge edge = Cytoscape.getCyEdge(node1, node2, Semantics.INTERACTION, type, false);
         if(edge != null){
-            System.out.println("Edge (" + node1.getIdentifier() + " " + type + " " + node2.getIdentifier() + ") exists.");
+            //System.out.println("Edge (" + node1.getIdentifier() + " " + type + " " + node2.getIdentifier() + ") exists.");
             edges++;
         }
         edge = Cytoscape.getCyEdge(node1, node2, Semantics.INTERACTION, type, true);
@@ -250,7 +250,8 @@ public class CyNetUtils {
                         if(numVals > 1){
                             // TODO: Remove (for testing purposes)
                             //throw new NullPointerException (attribute +" "+ vAtt);
-                            while(it.hasNext()) stringAttValue += it.next().toString() + "|";
+                            if(it.hasNext()) stringAttValue = it.next().toString();
+                            while(it.hasNext()) stringAttValue += "|" + it.next().toString();
                         }else if(numVals == 1)
                             stringAttValue = vAtt.get(0).toString();
                         else continue;
@@ -426,7 +427,7 @@ public class CyNetUtils {
              // These use GI numbers:
             String prolinksURL = "http://mysql5.mbi.ucla.edu/cgi-bin/functionator/pronav?seq_id=";
             String refseqURL = "http://www.ncbi.nlm.nih.gov/entrez/viewer.fcgi?db=protein&val=";
-            String pirURL = "http://www.pir.uniprot.org/cgi-bin/upEntry?id="; // append a TrEMBL id like Q65882_9POT
+            String pirURL = "http://pir.georgetown.edu/cgi-bin/ipcEntry?id=";// append PIR id like O75936
             
             // We need to get the KEGG ids
             Hashtable giToKegg = null;
@@ -438,18 +439,27 @@ public class CyNetUtils {
             String keggURL = "http://www.genome.jp/dbget-bin/www_bget?";
             
             // We need to get UniProt ids
-            Hashtable giToUniprot = null;
+//            Hashtable giToUniprot = null;
+//            try{
+//                giToUniprot = synonyms_client.getSynonyms(SynonymsSource.GI_ID, idVector,SynonymsSource.UNIPROT_ID);
+//            }catch(Exception e){
+//                e.printStackTrace();
+//            }
+            
+            // We need to get the PIR ids
+            Hashtable giToPir = null;
             try{
-                giToUniprot = synonyms_client.getSynonyms(SynonymsSource.GI_ID, idVector,SynonymsSource.UNIPROT_ID);
+                giToPir = synonyms_client.getSynonyms(SynonymsSource.GI_ID, idVector,SynonymsSource.PIR_ID);
             }catch(Exception e){
                 e.printStackTrace();
             }
+            
           
             // The attribute names
             String prolinksAttName = ProlinksInteractionsSource.NAME + "_URL";
             String keggAttName = KeggInteractionsSource.NAME + "_URL";
             String refseqAttName = "RefSeq_URL";
-            String uniprotAttName = "PIR_URL";
+            String pirAttName = "PIR_URL";
             
             //TODO: Get all the possible GI ids for each.
             Iterator it = nodeIDs.iterator();
@@ -493,21 +503,21 @@ public class CyNetUtils {
             
                 // UniProt: needs TrEMBL id (need to add GI to TrEMBL mapping method to synonyms)
                 
-                Vector tremblids = (Vector)giToUniprot.get(nodeid);
-                int trNum = 0;
-                if(tremblids != null){
-                    Iterator it2 = tremblids.iterator();
+                Vector pirs = (Vector)giToPir.get(nodeid);
+                int prNum = 0;
+                if(pirs != null){
+                    Iterator it2 = pirs.iterator();
                     while(it2.hasNext()){
                         String id = (String)it2.next();
                         index = id.indexOf(":");
                         if(index >= 0){
                             id = id.substring(index + 1, id.length());
-                           if(trNum > 0){ 
-                               nodeAtts.setAttribute(nodeid, uniprotAttName + Integer.toString(trNum), pirURL + id);
-                               trNum++;
+                           if(prNum > 0){ 
+                               nodeAtts.setAttribute(nodeid, pirAttName + Integer.toString(prNum), pirURL + id);
+                               prNum++;
                            }else{
-                               nodeAtts.setAttribute(nodeid,uniprotAttName, pirURL + id);
-                               trNum++;
+                               nodeAtts.setAttribute(nodeid,pirAttName, pirURL + id);
+                               prNum++;
                            }
                         }// index >= 0
                     } //while   

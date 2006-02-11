@@ -31,13 +31,7 @@ public class EdgeSourcesPanel extends JPanel {
      * buttons
      */
     protected Map sourceToName;
-
-    /**
-     * If a data source has been selected, it's fully specified calss will be in
-     * this Map with a Vector of species as a value
-     */
-    protected Map sourceToSpecies;
-
+    
     /**
      * A Map from an edge data source's fully described class to the dialog that
      * contains its parameters
@@ -90,11 +84,16 @@ public class EdgeSourcesPanel extends JPanel {
     protected JCheckBox fnCB;
     
     /**
+     * A vector with NCBI taxids as Strings of species for which to
+     * get interactions
+     */
+    protected Vector taxids;
+    
+    /**
      * 
      * @param interactions_client
-     * @param sourceToSelectedSpecies
-     *            Map from fully specified data source class to a Vector of its
-     *            selected species (Vector of Strings)
+     * @param tax_ids a vector with NCBI taxids as Strings of species for which to
+     * get interactions
      * @param nodes
      *            a Vector of Strings representing nodes, possibly null, used to
      *            estimate number of edges when starting nodes are set
@@ -102,12 +101,12 @@ public class EdgeSourcesPanel extends JPanel {
     public EdgeSourcesPanel(
             InteractionDataClient interactions_client,
             SynonymsClient synonyms_client,
-            Map sourceToSelectedSpecies,
+            Vector tax_ids,
             Vector nodeIds) {
         
         this.interactionsClient = interactions_client;
         this.synonymsClient = synonyms_client;
-        this.sourceToSpecies = sourceToSelectedSpecies;
+        this.taxids = tax_ids;
         this.sourceToDialog = new Hashtable();
         this.buttonToTextField = new Hashtable();
         this.buttonToCheckBox = new Hashtable();
@@ -130,6 +129,16 @@ public class EdgeSourcesPanel extends JPanel {
         }
     }
     
+    /**
+     * Sets the taxids for which to get interactions from the interactions sources
+     * 
+     * @param tax_ids a vector with NCBI taxids as Strings of species for which to
+     * get interactions
+     */
+    public void setTaxids (Vector tax_ids){
+        this.taxids = tax_ids;
+    }
+    
     
     /**
      * @return whether or not the user selected the first neighbors method
@@ -139,14 +148,6 @@ public class EdgeSourcesPanel extends JPanel {
         return this.fnCB.isSelected();
     }
     
-    
-    /**
-     * 
-     * @param sourceToSelectedSpecies a Map from fully specified data source's classes to Vectors of Strings representing species for the data sources
-     */
-    public void setSourcesToSpecies (Map sourceToSelectedSpecies){
-        this.sourceToSpecies = sourceToSelectedSpecies;
-    }
 
     /**
      * @return A Map from an edge data source's fully described class to the
@@ -195,32 +196,41 @@ public class EdgeSourcesPanel extends JPanel {
     public CyNetwork[] getSelectedNetworks() {
         return this.netsDialog.getSelectedNetworks();
     }
+    
+    /**
+     * Gets the human readable name of the interactions source
+     * @param source_class fully specified Class name of the interactions source
+     * @return the human readable name of the interactions source
+     */
+    public String getSourceName (String source_class){
+        return (String)this.sourceToName.get(source_class);
+    }
 
     /**
      * Recalculated number of edges for all selected data sources
      */
     protected void estimateNumEdges () {
         
+        // Get the text field for each SELECTED source
         Hashtable sourceClassToField = new Hashtable();
         Iterator it = this.buttonToCheckBox.keySet().iterator();
+        int numSelectedSources = 0;
         while(it.hasNext()){
             JButton b = (JButton)it.next();
-            if(b.isEnabled()){
-                String sourceClass = (String)this.buttonToSourceClass.get(b);
-                sourceClassToField.put(sourceClass,this.buttonToTextField.get(b));
+            String sourceClass = (String)this.buttonToSourceClass.get(b);
+            if(sourceClass != null){
+                JTextField tf = (JTextField)this.buttonToTextField.get(b);
+                if(isSourceSelected(sourceClass)){
+                    sourceClassToField.put(sourceClass,tf);
+                    numSelectedSources++;
+                }else{
+                    //  Not selected, so set its edge number to 0 and skip
+                    tf.setText(Integer.toString(0));
+                } 
             }
         }//while it.hasNext
-        
-        Hashtable sourceClassToArgs = new Hashtable();
-        Hashtable sourceClassToSpecies = new Hashtable();
        
-        int numSources = sourceClassToField.size();
-        HashSet nodeIDs = null;
-        // Store the nodeIDs of the found edges if there is more than one source selected and there are starting nodes
-        // This is so that we can find connecting interactions between ALL nodes from different data sources
-        if(numSources > 1 && this.nodes != null && this.nodes.size() > 0)
-            nodeIDs = new HashSet();
-        
+        // If we have starting nodes, get their alternate IDs
         CyAttributes nodeAtts = Cytoscape.getNodeAttributes();
         Vector startingNodes = new Vector();
         if(this.nodes != null && this.nodes.size() > 0){
@@ -235,42 +245,55 @@ public class EdgeSourcesPanel extends JPanel {
             }//while it
         }
         
+        // Get the taxid for the interactions
+        if(this.taxids == null || taxids.size() == 0) return;  
+        String species = (String)taxids.get(0); // for now get the first one
+        
+        // Store the nodeIDs if there is more than one source selected and there are starting nodes
+        // This is so that we can find connecting interactions between ALL nodes from different data sources
+        HashSet nodesToConnect = null;
+        if(numSelectedSources  > 1 && this.nodes != null && this.nodes.size() > 0)
+            nodesToConnect = new HashSet();
+        
+        // Get interactions for each source
+        Hashtable sourceClassToArgs = new Hashtable(); // to be used later
         it = sourceClassToField.keySet().iterator();
+        
         while(it.hasNext()){
             
             String sourceClass = (String)it.next();
-            
-            List sourceSpecies = (List)this.sourceToSpecies.get(sourceClass);
-            if(sourceSpecies == null || sourceSpecies.size() == 0) continue;
-            
-            String species = (String)sourceSpecies.get(0);
-            sourceClassToSpecies.put(sourceClass,species);
-            
+            // Get the arguments for this source
             InteractionsSourceGui dialog = (InteractionsSourceGui) this.sourceToDialog.get(sourceClass);
-            Hashtable args = dialog.getArgsTable();
-            sourceClassToArgs.put(sourceClass,args);
+            Hashtable args = new Hashtable();
+            if(dialog != null){
+                args = dialog.getArgsTable();
+            }
+            sourceClassToArgs.put(sourceClass,args); // to be used later
             
             Vector sourceInteractions = null;
            
-                
             if(startingNodes.size() == 0){
+               
                 try{
-                    if(args.size() > 0)
-                        sourceInteractions = (Vector)this.interactionsClient.getAllInteractions(species, args);
-                    else
-                        sourceInteractions = (Vector)this.interactionsClient.getAllInteractions(species);
+                    if(args.size() > 0){
+                        sourceInteractions = (Vector)this.interactionsClient.getAllInteractions(species, args, sourceClass);
+                    }else{        
+                        sourceInteractions = (Vector)this.interactionsClient.getAllInteractions(species, sourceClass);
+                    }
                 }catch(Exception e){e.printStackTrace();}
                 
             }else{
-
+                // We have starting nodes
                 Vector adjacentNodes = null;
                 if(this.fnCB.isSelected()){
+                    // Get their first neighbors
                     try{
                         // fnCB can only be selected if this.nodes has elements
-                            if(args.size() > 0)
-                                adjacentNodes = this.interactionsClient.getFirstNeighbors(this.nodes,species,args);
-                            else
-                                adjacentNodes = this.interactionsClient.getFirstNeighbors(this.nodes,species);
+                            if(args.size() > 0){
+                                adjacentNodes = this.interactionsClient.getFirstNeighbors(this.nodes,species,args, sourceClass);
+                            }else{
+                                adjacentNodes = this.interactionsClient.getFirstNeighbors(this.nodes,species, sourceClass);
+                            }
                     }catch(Exception e){e.printStackTrace();}
                     
                 }
@@ -280,27 +303,29 @@ public class EdgeSourcesPanel extends JPanel {
                 // selected nodes in a network. Connecting edges would only be found for these selected nodes, not for the
                 // whole network.
                     
-                Vector nodesToConnect = new Vector(); 
-                nodesToConnect.addAll(startingNodes);
+                Vector nodesToConnectForSource = new Vector(); 
+                nodesToConnectForSource.addAll(startingNodes);
                 if(adjacentNodes != null){
                     // make sure we don't have repeated nodes in nodesToConnect
                     // this means that fnCB is selected
                     adjacentNodes.removeAll(startingNodes);
-                    nodesToConnect.addAll(adjacentNodes);
+                    nodesToConnectForSource.addAll(adjacentNodes);
                 }
-                    
+               
                 try{
-                    if(args.size() > 0)
-                        sourceInteractions = (Vector)this.interactionsClient.getConnectingInteractions(nodesToConnect, species, args);
-                    else
-                        sourceInteractions = (Vector)this.interactionsClient.getConnectingInteractions(nodesToConnect, species);
+                  
+                    if(args.size() > 0){
+                        sourceInteractions = (Vector)this.interactionsClient.getConnectingInteractions(nodesToConnectForSource, species, args, sourceClass);
+                    }else{
+                        sourceInteractions = (Vector)this.interactionsClient.getConnectingInteractions(nodesToConnectForSource, species, sourceClass);
+                    }
                 }catch(Exception e){e.printStackTrace();}
                     
             
             }//else
                 
             // Accumulate the new nodeIDs if needed:
-            if(nodeIDs != null){
+            if(nodesToConnect != null){
                 Iterator it2 = sourceInteractions.iterator();
                 while(it2.hasNext()){
                     Hashtable interaction = (Hashtable)it2.next();
@@ -308,10 +333,10 @@ public class EdgeSourcesPanel extends JPanel {
                     String id2 = (String)interaction.get(InteractionsDataSource.INTERACTOR_2);
                     Vector id1alternates = (Vector)interaction.get(InteractionsDataSource.INTERACTOR_1_IDS);
                     Vector id2alternates = (Vector)interaction.get(InteractionsDataSource.INTERACTOR_2_IDS);
-                    nodeIDs.add(id1);
-                    nodeIDs.add(id2);
-                    if(id1alternates != null) nodeIDs.addAll(id1alternates);
-                    if(id2alternates != null) nodeIDs.addAll(id2alternates);
+                    nodesToConnect.add(id1);
+                    nodesToConnect.add(id2);
+                    if(id1alternates != null) nodesToConnect.addAll(id1alternates);
+                    if(id2alternates != null) nodesToConnect.addAll(id2alternates);
                 }//while it
             }else{
                 // Write the number of interactions for the source
@@ -322,19 +347,19 @@ public class EdgeSourcesPanel extends JPanel {
         }//while it
         
         // Finally, connect nodes from different data sources if necessary
-        if(nodeIDs != null){
-            nodeIDs.addAll(this.nodes);
-            it = sourceClassToArgs.keySet().iterator();
+        if(nodesToConnect != null){
+            nodesToConnect.addAll(this.nodes);
+            it = sourceClassToArgs.keySet().iterator();       
+            
             while(it.hasNext()){
                 String sourceClass = (String)it.next();
                 Hashtable args= (Hashtable)sourceClassToArgs.get(sourceClass);
-                String species = (String)sourceClassToSpecies.get(sourceClass);
                 Vector sourceInteractions = null;
                 try{
-                    if(args.size() > 0){
-                        sourceInteractions = (Vector)this.interactionsClient.getConnectingInteractions(new Vector(nodeIDs), species, args);
+                    if(args.size() > 0){  
+                        sourceInteractions = (Vector)this.interactionsClient.getConnectingInteractions(new Vector(nodesToConnect), species, args, sourceClass);
                     }else{
-                        sourceInteractions = (Vector)this.interactionsClient.getConnectingInteractions(new Vector(nodeIDs), species);
+                        sourceInteractions = (Vector)this.interactionsClient.getConnectingInteractions(new Vector(nodesToConnect), species, sourceClass);
                     }
                 }catch(Exception e){
                     e.printStackTrace();
@@ -362,12 +387,42 @@ public class EdgeSourcesPanel extends JPanel {
         while (it.hasNext()) {
           
             final String sourceClass = (String) it.next();
+           
             //System.out.print("-----------" + sourceClass + "-------------\n");
             String buttonName = (String) this.sourceToName.get(sourceClass);
-            boolean enabled = this.sourceToSpecies.containsKey(sourceClass);
+            
+            boolean enabled = this.taxids.size() > 0;
+            
             final JButton button = new JButton(buttonName + "...");
             
-            if (buttonName.equals(ProlinksInteractionsSource.NAME)) {
+            if(buttonName.equals(DipInteractionsSource.NAME)){
+                final DipGui dDialog = new DipGui();
+                this.sourceToDialog.put(sourceClass,dDialog);
+                button.addActionListener(
+                        new AbstractAction() {
+                           public void actionPerformed(ActionEvent event) {
+                               DipGui dDialog = (DipGui) sourceToDialog
+                                       .get(sourceClass);
+                               dDialog.pack();
+                               dDialog.setLocationRelativeTo(EdgeSourcesPanel.this);
+                               dDialog.setVisible(true);
+                           }// actionPerformed
+                       });// AbstractAction
+                
+            }else if(buttonName.equals(BindInteractionsSource.NAME)){
+                final BindGui bDialog = new BindGui();
+                this.sourceToDialog.put(sourceClass,bDialog);
+                button.addActionListener(
+                        new AbstractAction() {
+                           public void actionPerformed(ActionEvent event) {
+                               BindGui bDialog = (BindGui) sourceToDialog
+                                       .get(sourceClass);
+                               bDialog.pack();
+                               bDialog.setLocationRelativeTo(EdgeSourcesPanel.this);
+                               bDialog.setVisible(true);
+                           }// actionPerformed
+                       });// AbstractAction
+            }else if (buttonName.equals(ProlinksInteractionsSource.NAME)) {
                 final  ProlinksGui pDialog = new ProlinksGui();
                 this.sourceToDialog.put(sourceClass, pDialog);
                 button.addActionListener(
@@ -378,9 +433,6 @@ public class EdgeSourcesPanel extends JPanel {
                         pDialog.pack();
                         pDialog.setLocationRelativeTo(EdgeSourcesPanel.this);
                         pDialog.setVisible(true);
-                        // Dialog is modal, so we get back when the user closes
-                        // it:
-                        //estimateNumEdges(button);
                     }// actionPerformed
                 });// AbstractAction
             } else if(buttonName.equals(KeggInteractionsSource.NAME)){
@@ -394,9 +446,6 @@ public class EdgeSourcesPanel extends JPanel {
                         kDialog.pack();
                         kDialog.setLocationRelativeTo(EdgeSourcesPanel.this);
                         kDialog.setVisible(true);
-                        // Dialog is modal, so we get back when the user closes
-                        // it:
-                        //estimateNumEdges(button);
                     }// actionPerformed
                 });// AbstractAction
             }//KEGG

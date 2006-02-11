@@ -45,6 +45,9 @@ public class SQLSynonymsHandler extends SQLDBHandler implements SynonymsSource {
         this.SUPPORTED_TRANSLATIONS.put(GI_ID+":"+SPROT_ID, Boolean.TRUE);
         this.SUPPORTED_TRANSLATIONS.put(GI_ID+":"+TREMBL_ID, Boolean.TRUE);
         this.SUPPORTED_TRANSLATIONS.put(GI_ID+":"+UNIPROT_ID, Boolean.TRUE);
+        this.SUPPORTED_TRANSLATIONS.put(REFSEQ_ID+":"+ GI_ID, Boolean.TRUE);
+        this.SUPPORTED_TRANSLATIONS.put(GI_ID+":"+ REFSEQ_ID, Boolean.TRUE);
+        this.SUPPORTED_TRANSLATIONS.put(GI_ID + ":" + PIR_ID, Boolean.TRUE);
     }
 
     /**
@@ -126,6 +129,19 @@ public class SQLSynonymsHandler extends SQLDBHandler implements SynonymsSource {
             return giToUniprot(source_ids);
         }
         
+        if(source_id_type.equals(REFSEQ_ID) && target_id_type.equals(GI_ID)){
+            return refseqToGi(source_ids);
+        }
+        
+        if(source_id_type.equals(GI_ID) && target_id_type.equals(REFSEQ_ID)){
+            return giToRefseq(source_ids);
+        }
+        
+        if(source_id_type.equals(GI_ID) &&target_id_type.equals(PIR_ID)){
+            return giToPir(source_ids);
+        }
+        
+        System.out.println("Translation from " + source_id_type + " to " + target_id_type + "is not supported!");
     
         return new Hashtable();
     
@@ -266,6 +282,8 @@ public class SQLSynonymsHandler extends SQLDBHandler implements SynonymsSource {
             }
         }//while
         
+        if(inStatement.length() == 0) return new Hashtable();
+        
         String sql = "SELECT protgi,genename FROM refseq_genename WHERE protgi IN (" + inStatement + ")";
         ResultSet rs = query(sql);
         Hashtable names = new Hashtable();
@@ -306,7 +324,7 @@ public class SQLSynonymsHandler extends SQLDBHandler implements SynonymsSource {
                 else inStatement += "," + giID;
             }
         }//while
-        
+        if(inStatement.length() == 0) return new Hashtable();
         String sql = "SELECT protgi,prodname FROM refseq_prodname WHERE protgi IN (" + inStatement + ")";
         ResultSet rs = query(sql);
         Hashtable names = new Hashtable();
@@ -348,7 +366,7 @@ public class SQLSynonymsHandler extends SQLDBHandler implements SynonymsSource {
                 else inStatement += "," + giID;
             }
         }//while
-        
+        if(inStatement.length() == 0) return new Hashtable();
         String sql = "SELECT protgi,codedby FROM refseq_codedby WHERE protgi IN (" + inStatement + ")";
         ResultSet rs = query(sql);
         Hashtable names = new Hashtable();
@@ -387,7 +405,7 @@ public class SQLSynonymsHandler extends SQLDBHandler implements SynonymsSource {
                 else inStatement += "," + giID;
             }
         }//while
-        
+        if(inStatement.length() == 0) return new Hashtable();
         String sql = "SELECT protgi,definition FROM refseq_definition WHERE protgi IN (" + inStatement + ")";
         ResultSet rs = query(sql);
         Hashtable defs = new Hashtable();
@@ -426,7 +444,7 @@ public class SQLSynonymsHandler extends SQLDBHandler implements SynonymsSource {
                 else inStatement += "," + giID;
             }
         }//while
-        
+        if(inStatement.length() == 0) return new Hashtable();
         // RefSeq accession
         
         Hashtable xrefs = new Hashtable();
@@ -536,26 +554,28 @@ public class SQLSynonymsHandler extends SQLDBHandler implements SynonymsSource {
             return new Hashtable();
         }
         
-        // TrEMBL
-        Hashtable giToTrembl = giToTrembl(gis);
-        it = giToTrembl.keySet().iterator();
+        giToUniprot(gis);
+        
+        // Uniprot
+        Hashtable giToUniprot = giToUniprot(gis);
+        it = giToUniprot.keySet().iterator();
         while(it.hasNext()){
             String gi = (String)it.next();
-            Vector trembls = (Vector)giToTrembl.get(gi);
+            Vector uniprots = (Vector)giToUniprot.get(gi);
             Vector ids = (Vector)xrefs.get(gi);
             if(ids == null) { ids = new Vector(); xrefs.put(gi,ids);}
-            ids.addAll(trembls);
+            ids.addAll(uniprots);
         }
         
-        // Sprot
-        Hashtable giToSprot = giToSprot(gis);
-        it = giToSprot.keySet().iterator();
+        //  PIR
+        Hashtable giToPir = giToPir(gis);
+        it = giToPir.keySet().iterator();
         while(it.hasNext()){
             String gi = (String)it.next();
-            Vector sprots = (Vector)giToSprot.get(gi);
+            Vector pirs = (Vector)giToPir.get(gi);
             Vector ids = (Vector)xrefs.get(gi);
             if(ids == null) { ids = new Vector(); xrefs.put(gi,ids);}
-            ids.addAll(sprots);
+            ids.addAll(pirs);
         }
         
         return xrefs;
@@ -564,13 +584,151 @@ public class SQLSynonymsHandler extends SQLDBHandler implements SynonymsSource {
     
     //--------- Helper protected methods -----------//
     
+    protected Hashtable giToPir (Vector gis ){
+       
+        Iterator it = gis.iterator();
+        if(!it.hasNext()) return new Hashtable();
+        
+        String inStatement = "";
+        while(it.hasNext()){
+            String giID = (String)it.next();
+            int index = giID.indexOf(GI_ID + ":");
+            if(index >= 0){
+                giID = giID.substring(index + GI_ID.length()+ 1);
+                if(inStatement.length() == 0) inStatement = giID;
+                else inStatement += "," + giID;
+            }
+        }//while
+       
+        if(inStatement.length() == 0) return new Hashtable();
+        
+        String sql = "SELECT protgi, pirid FROM gi2pir WHERE protgi IN (" + inStatement + ")";
+        ResultSet rs = query(sql);
+        Hashtable giToPir = new Hashtable();
+        try{
+            while(rs.next()){
+                String gi = GI_ID + ":" + rs.getString(1);
+                String pir = PIR_ID + ":" + rs.getString(2);
+                Vector pirs = (Vector)giToPir.get(gi);
+                if(pirs == null){pirs = new Vector(); giToPir.put(gi,pirs);}
+                pirs.add(pir);
+            }
+        }catch(Exception e){e.printStackTrace();return new Hashtable();}
+        
+        return giToPir;
+        
+    }
+    
+    
+    
+    protected Hashtable giToRefseq (Vector ids){
+        
+        Iterator it = ids.iterator();
+        if(!it.hasNext()) return new Hashtable(); 
+        
+        String inStatement = "";
+        
+        while(it.hasNext()){
+            String id = (String)it.next();
+            int index = id.indexOf(GI_ID + ":");
+            if(index >= 0){
+                id = id.substring(index + GI_ID.length() + 1);
+                if(inStatement.length() == 0) {
+                    inStatement =  id;
+                }else{ 
+                    inStatement +=  "," + id;
+                }  
+            }
+        }//while
+        
+        System.out.println("inStatement.length = [" + inStatement.length() + "]");
+        
+        if(inStatement.length() == 0) return new Hashtable();
+        
+        String sql = "SELECT protgi, accession FROM refseq_accession WHERE protgi IN (" + inStatement + ")";
+        ResultSet rs = query(sql);
+        Hashtable giToAcc =  new Hashtable();
+        try{
+            while(rs.next()){
+                String gi = GI_ID + ":" + rs.getString(1);
+                String acc = REFSEQ_ID + ":" + rs.getString(2);
+                Vector accs = (Vector)giToAcc.get(gi);
+                if(accs == null) { accs = new Vector(); giToAcc.put(gi,accs);}
+                accs.add(acc);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+            return new Hashtable();
+        }
+        return giToAcc;
+    }
+    
+    protected Hashtable refseqToGi (Vector ids){
+        Iterator it = ids.iterator();
+        if(!it.hasNext()) return new Hashtable(); 
+        String inStatement = "";
+        while(it.hasNext()){
+            String id = (String)it.next();
+            int index = id.indexOf(REFSEQ_ID + ":");
+            if(index >= 0){
+                id = id.substring(index + REFSEQ_ID.length()+ 1);
+                if(inStatement.length() == 0) inStatement = "\"" + id + "\"";
+                else inStatement += ",\"" + id + "\"";
+            }
+        }//while
+        if(inStatement.length() == 0) return new Hashtable();
+        String sql = "SELECT accession, protgi FROM refseq_accession WHERE accession IN (" + inStatement + ")";
+        ResultSet rs = query(sql);
+        Hashtable accToGi =  new Hashtable();
+        try{
+            while(rs.next()){
+                String acc = REFSEQ_ID + ":" + rs.getString(1);
+                String gi = GI_ID + ":" + rs.getString(2);
+                Vector gis = (Vector)accToGi.get(acc);
+                if(gis == null) { gis = new Vector(); accToGi.put(acc,gis);}
+                gis.add(gi);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+            return new Hashtable();
+        }
+        return accToGi;
+    }
+    
     protected Hashtable giToUniprot (Vector gis){
-        Hashtable giToTrembl = giToTrembl(gis);
-        Hashtable giToSprot = giToSprot(gis);
         
         Hashtable giToUniprot = new Hashtable();
-        giToUniprot.putAll(giToTrembl);
-        giToUniprot.putAll(giToSprot);
+        
+        Hashtable giToTrembl = giToTrembl(gis);
+        Iterator it = giToTrembl.keySet().iterator();
+        while(it.hasNext()){
+            String gi = (String)it.next();
+            Vector ids = (Vector)giToTrembl.get(gi);
+            Iterator it2 = ids.iterator();
+            Vector newIds = new Vector();
+            while(it2.hasNext()){
+                String id = (String)it2.next();
+                id = id.replaceFirst(TREMBL_ID,UNIPROT_ID);
+                newIds.add(id);
+            }
+            giToUniprot.put(gi,newIds);
+        }
+        
+        Hashtable giToSprot = giToSprot(gis);
+        it = giToSprot.keySet().iterator();
+        while(it.hasNext()){
+            String gi = (String)it.next();
+            Vector ids = (Vector)giToSprot.get(gi);
+            Iterator it2 = ids.iterator();
+            Vector newIds = new Vector();
+            while(it2.hasNext()){
+                String id = (String)it2.next();
+                id = id.replaceFirst(SPROT_ID,UNIPROT_ID);
+                newIds.add(id);
+            }
+            giToUniprot.put(gi,newIds);
+        }
+       
         return giToUniprot;
     }
     
@@ -589,7 +747,7 @@ public class SQLSynonymsHandler extends SQLDBHandler implements SynonymsSource {
                 else inStatement += "," + giID;
             }
         }//while
-        
+        if(inStatement.length() == 0) return new Hashtable();
         String sql = "SELECT protgi, tremblac FROM gi2trembl WHERE protgi IN (" + inStatement + ")";
         ResultSet rs = query(sql);
         
@@ -620,12 +778,12 @@ public class SQLSynonymsHandler extends SQLDBHandler implements SynonymsSource {
             String giID = (String)it.next();
             int index = giID.indexOf(GI_ID + ":");
             if(index >= 0){
-                giID = giID.substring(index + GI_ID.length()+ 1);
+                giID = giID.substring(index + GI_ID.length() + 1);
                 if(inStatement.length() == 0) inStatement = giID;
                 else inStatement += "," + giID;
             }
         }//while
-        
+        if(inStatement.length() == 0) return new Hashtable();
         String sql = "SELECT protgi, sprotac FROM gi2sprot WHERE protgi IN (" + inStatement + ")";
         ResultSet rs = query(sql);
         

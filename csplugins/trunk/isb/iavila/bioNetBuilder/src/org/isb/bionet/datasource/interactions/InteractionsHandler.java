@@ -6,6 +6,8 @@ import java.lang.reflect.*;
 import org.isb.bionet.datasource.*;
 import org.isb.bionet.datasource.synonyms.*;
 
+import sun.security.action.GetIntegerAction;
+
 /**
  * @author <a href="mailto:iavila@systemsbiology.org">Iliana Avila-Campillo</a>
  *
@@ -21,6 +23,7 @@ public class InteractionsHandler implements InteractionsDataSource {
      * interactions are obtained
 	 */
 	protected Vector interactionSources;
+    
    /**
      * The source of gene synonyms across gene id types
      */
@@ -33,14 +36,17 @@ public class InteractionsHandler implements InteractionsDataSource {
     
     protected boolean debug;
     
-    
     /**
-	 * Constructor
-	 */
-	public InteractionsHandler() {
-		this(new Vector());
-	}
-
+     * Default constructr
+     */
+    public InteractionsHandler (){
+        this.interactionSources = new Vector();
+        this.synonymsSource = new SQLSynonymsHandler();
+        this.universalToDbCache = new Hashtable();
+        this.dbToUniversalCache = new Hashtable();
+        this.universalToOtherUniversals = new Hashtable();
+    }
+    
 	/**
 	 * 
 	 * @param interaction_sources
@@ -59,7 +65,7 @@ public class InteractionsHandler implements InteractionsDataSource {
 			addSource(className);
 		}// while
 	}
-
+    
 	/**
 	 * 
 	 * @param source_class
@@ -247,6 +253,26 @@ public class InteractionsHandler implements InteractionsDataSource {
 		}// while it.hasNext
 		return classNames;
 	}
+    
+    /**
+     * Gets an InteractionsDataSource of the given class, or null if not found
+     * 
+     * @param source_class the fully specified classes of the InteractionDataSources in this
+     *         handler
+     * @return an InteractionsDataSource of the given class, or null if not found
+     */
+    protected InteractionsDataSource getDataSourceForClass (String source_class){
+        Iterator it = this.interactionSources.iterator();
+        while (it.hasNext()) {
+            InteractionsDataSource dataSource = (InteractionsDataSource) it
+                    .next();
+            if (dataSource.getClass().getName().equals(source_class)) {
+                return dataSource;
+            }
+        }// while it.hasNext()
+        System.out.println("getDataSourceForClass returning null!!!!!!!!!!!");
+        return null;
+    }
 
 	/**
 	 * @param source_class
@@ -260,7 +286,7 @@ public class InteractionsHandler implements InteractionsDataSource {
 		while (it.hasNext()) {
 			InteractionsDataSource dataSource = (InteractionsDataSource) it
 					.next();
-			if (dataSource.equals(source_class)) {
+			if (dataSource.getClass().getName().equals(source_class)) {
 				return Boolean.TRUE;
 			}
 		}// while it.hasNext()
@@ -465,6 +491,29 @@ public class InteractionsHandler implements InteractionsDataSource {
     
     /**
      * @param species
+     * @param source_class the class of the InteractionsDataSource to use
+     * @return a Vector of Hashtables, each hash contains information about an
+     *         interaction and is required to contain the following entries:<br>
+     *         INTERACTOR_1 --> String <br>
+     *         INTERACTOR_2 --> String <br>
+     *         INTERACTION_TYPE -->String <br>
+     *         SOURCE --> String <br>
+     *         Each implementing class can add additional entries to the
+     *         Hashtables
+     */
+    public Vector getAllInteractions(String species, String source_class) {
+       
+        InteractionsDataSource dataSource = this.getDataSourceForClass(source_class);
+        if(dataSource == null) return EMPTY_VECTOR;
+        if(!dataSource.supportsSpecies(species).booleanValue()) return EMPTY_VECTOR;
+        Vector interactions = dataSource.getAllInteractions(species);
+        String sourceGeneID = dataSource.getIDtype();
+        Vector translatedInteractions = translateInteractionsToUniversalGeneID(sourceGeneID, interactions);
+        return translatedInteractions;
+    }
+    
+    /**
+     * @param species
      * @return new Integer(num)ber of interactions
      */
     public Integer getNumAllInteractions(String species) {
@@ -479,6 +528,22 @@ public class InteractionsHandler implements InteractionsDataSource {
         
         return new Integer(num);
     }
+    
+    /**
+     * 
+     * @param species the desired species
+     * @param source_class source_class the class of the InteractionsDataSource to use
+     * @return an Integer
+     */
+    public Integer getNumAllInteractions(String species, String source_class) {
+        int num = 0;
+        InteractionsDataSource dataSource = getDataSourceForClass(source_class);
+        if(dataSource == null) return new Integer(0);
+        if(!dataSource.supportsSpecies(species).booleanValue()) return new Integer(0);
+        num = dataSource.getNumAllInteractions(species).intValue();     
+        return new Integer(num);
+    }
+    
 
 	/**
 	 * @param species
@@ -515,6 +580,30 @@ public class InteractionsHandler implements InteractionsDataSource {
      *            a table of String->Object entries that the implementing class
      *            understands (for example, p-value thresholds, directed
      *            interactions, etc)
+     * @param source_class source_class source_class the class of the InteractionsDataSource to use
+     * @return a Vector of Hashtables, each hash contains information about an
+     *         interaction and is required to contain the following entries:<br>
+     *         INTERACTOR_1 --> String <br>
+     *         INTERACTOR_2 --> String <br>
+     *         INTERACTION_TYPE -->String <br>
+     *         Each implementing class can add additional entries to the
+     *         Hashtables
+     */
+    public Vector getAllInteractions(String species, Hashtable args, String source_class) {
+        InteractionsDataSource dataSource = getDataSourceForClass(source_class);
+        if(dataSource == null) return EMPTY_VECTOR;
+        if(!dataSource.supportsSpecies(species).booleanValue()) return EMPTY_VECTOR;
+        Vector interactions = dataSource.getAllInteractions(species, args);
+        Vector translatedInteractions = translateInteractionsToUniversalGeneID(dataSource.getIDtype(),interactions);
+        return translatedInteractions;
+    }
+    
+    /**
+     * @param species
+     * @param args
+     *            a table of String->Object entries that the implementing class
+     *            understands (for example, p-value thresholds, directed
+     *            interactions, etc)
      * @return the number of interactions
      */
     public Integer getNumAllInteractions(String species, Hashtable args) {
@@ -528,7 +617,24 @@ public class InteractionsHandler implements InteractionsDataSource {
         
         return new Integer(num);
     }
-
+    
+    /**
+     * @param species
+     * @param args
+     *            a table of String->Object entries that the implementing class
+     *            understands (for example, p-value thresholds, directed
+     *            interactions, etc)
+     * @param source_class source_class source_class the class of the InteractionsDataSource to use
+     * @return the number of interactions
+     */
+    public Integer getNumAllInteractions(String species, Hashtable args, String source_class) {
+        int num = 0;
+        InteractionsDataSource dataSource = getDataSourceForClass(source_class);
+        if(!dataSource.supportsSpecies(species).booleanValue()) new Integer(num);
+        num = (dataSource.getNumAllInteractions(species, args)).intValue();
+        return new Integer(num);
+    }
+ 
 	// ----------- 1st neighbor methods ------------//
 	
 
@@ -560,6 +666,26 @@ public class InteractionsHandler implements InteractionsDataSource {
      *            a Vector of Strings (ids that the data source understands)
      * @param species
      *            the species
+     * @param source_class source_class source_class the class of the InteractionsDataSource to use
+     * @return a Vector of Vectors of String ids of all the nodes that have a
+     *         direct interaction with the interactors in the given input
+     *         vector, positions in the input and output vectors are matched
+     *         (parallel vectors)
+     */
+    public Vector getFirstNeighbors(Vector interactors, String species, String source_class) {
+          InteractionsDataSource dataSource = getDataSourceForClass(source_class);
+          if(dataSource == null) return EMPTY_VECTOR;
+          if(!dataSource.supportsSpecies(species).booleanValue()) return EMPTY_VECTOR;
+          Vector translatedInteractors = translateInteractorsFromUniversalGeneID(interactors,dataSource.getIDtype());
+          Vector firstNeighbors = dataSource.getFirstNeighbors(translatedInteractors, species);
+          return translateInteractorsToUniversalGeneID(firstNeighbors,dataSource.getIDtype());
+    }
+    
+    /**
+     * @param interactors
+     *            a Vector of Strings (ids that the data source understands)
+     * @param species
+     *            the species
      * @return the number of 1st neighbors
      */
     public Integer getNumFirstNeighbors(Vector interactors, String species) {
@@ -572,6 +698,24 @@ public class InteractionsHandler implements InteractionsDataSource {
             num += dataSource.getNumFirstNeighbors(translatedInteractors, species).intValue();
         }//while it.hasNext
         return new Integer(num);
+    }
+    
+    /**
+     * @param interactors
+     *            a Vector of Strings (ids that the data source understands)
+     * @param species
+     *            the species
+     * @param source_class source_class source_class the class of the InteractionsDataSource to use
+     * @return the number of 1st neighbors
+     */
+    public Integer getNumFirstNeighbors(Vector interactors, String species, String source_class) {
+       int num = 0;
+       InteractionsDataSource dataSource = getDataSourceForClass(source_class);
+       if(dataSource == null) return new Integer(0);
+       if(!dataSource.supportsSpecies(species).booleanValue()) return new Integer(0);
+       Vector translatedInteractors = translateInteractorsFromUniversalGeneID(interactors,dataSource.getIDtype());
+       num = dataSource.getNumFirstNeighbors(translatedInteractors, species).intValue();
+       return new Integer(num);
     }
 
 	/**
@@ -611,6 +755,32 @@ public class InteractionsHandler implements InteractionsDataSource {
      *            a table of String->Object entries that the implementing class
      *            understands (for example, p-value thresholds, directed
      *            interactions, etc)
+     * @param source_class source_class source_class the class of the InteractionsDataSource to use
+     * @return a Vector of Vectors of String ids of all the nodes that have a
+     *         direct interaction with the interactors in the given input
+     *         vector, positions in the input and output vectors are matched
+     *         (parallel vectors)
+     */
+    public Vector getFirstNeighbors(Vector interactors, String species,
+            Hashtable args, String source_class) {
+        InteractionsDataSource dataSource = getDataSourceForClass(source_class);
+        if(dataSource == null) return EMPTY_VECTOR;
+        if(!dataSource.supportsSpecies(species).booleanValue()) return EMPTY_VECTOR;  
+        Vector translatedInteractors = translateInteractorsFromUniversalGeneID(interactors,dataSource.getIDtype());
+        Vector interactions = dataSource.getFirstNeighbors(translatedInteractors, species, args);
+        return translateInteractorsToUniversalGeneID(interactions, dataSource.getIDtype());
+    }
+    
+    
+    /**
+     * @param interactor
+     *            a Vector of Strings (ids that the data source understands)
+     * @param species
+     *            the species
+     * @param args
+     *            a table of String->Object entries that the implementing class
+     *            understands (for example, p-value thresholds, directed
+     *            interactions, etc)
      * @return the number of 1st neighbors
      */
     public Integer getNumFirstNeighbors(Vector interactors, String species,
@@ -623,6 +793,30 @@ public class InteractionsHandler implements InteractionsDataSource {
             Vector translatedInteractors = translateInteractorsFromUniversalGeneID(interactors,dataSource.getIDtype());
             num += dataSource.getNumFirstNeighbors(translatedInteractors, species, args).intValue();
         }//while it.hasNext
+        return new Integer(num);
+    }
+    
+    /**
+     * @param interactor
+     *            a Vector of Strings (ids that the data source understands)
+     * @param species
+     *            the species
+     * @param args
+     *            a table of String->Object entries that the implementing class
+     *            understands (for example, p-value thresholds, directed
+     *            interactions, etc)
+     * @param source_class source_class source_class the class of the InteractionsDataSource to use
+     * @return the number of 1st neighbors
+     */
+    public Integer getNumFirstNeighbors(Vector interactors, String species,
+            Hashtable args, String source_class) {
+        int num = 0;
+        InteractionsDataSource dataSource = getDataSourceForClass(source_class);
+        if(dataSource == null) return new Integer(0);
+        if(!dataSource.supportsSpecies(species).booleanValue()) new Integer(0);
+        Vector translatedInteractors = translateInteractorsFromUniversalGeneID(interactors,dataSource.getIDtype());
+        num = dataSource.getNumFirstNeighbors(translatedInteractors, species, args).intValue();
+        
         return new Integer(num);
     }
 
@@ -659,6 +853,30 @@ public class InteractionsHandler implements InteractionsDataSource {
      *            a Vector of Strings (ids that the data source understands)
      * @param species
      *            the species
+     * @param source_class source_class source_class the class of the InteractionsDataSource to use
+     * @return a Vector of Hashtables, each hash contains information
+     *         about an interaction (they are required to contain the following
+     *         entries:)<br>
+     *         INTERACTOR_1 --> String <br>
+     *         INTERACTOR_2 --> String <br>
+     *         INTERACTION_TYPE -->String <br>
+     *         Each implementing class can add additional entries to the
+     *         Hashtables.<br>
+     */
+    public Vector getAdjacentInteractions(Vector interactors, String species, String source_class) {
+        InteractionsDataSource dataSource = getDataSourceForClass(source_class);
+        if(dataSource == null) return EMPTY_VECTOR;
+        if(!dataSource.supportsSpecies(species).booleanValue()) return EMPTY_VECTOR;
+        Vector translatedInteractors = translateInteractorsFromUniversalGeneID(interactors,dataSource.getIDtype());
+        Vector interactions = dataSource.getAdjacentInteractions(translatedInteractors, species);
+        return translateInteractionsToUniversalGeneID(dataSource.getIDtype(), interactions);
+    }
+    
+    /**
+     * @param interactors
+     *            a Vector of Strings (ids that the data source understands)
+     * @param species
+     *            the species
      * @return the number of adjacent interactions
      */
     public Integer getNumAdjacentInteractions(Vector interactors, String species) {
@@ -673,6 +891,24 @@ public class InteractionsHandler implements InteractionsDataSource {
         return new Integer(num);
     }
 
+    /**
+     * @param interactors
+     *            a Vector of Strings (ids that the data source understands)
+     * @param species
+     *            the species
+     * @param source_class source_class source_class the class of the InteractionsDataSource to use
+     * @return the number of adjacent interactions
+     */
+    public Integer getNumAdjacentInteractions(Vector interactors, String species, String source_class) {
+        int num = 0;
+        InteractionsDataSource dataSource = getDataSourceForClass(source_class);
+        if(dataSource == null) return new Integer(0);
+        if(!dataSource.supportsSpecies(species).booleanValue()) return new Integer(0);
+        Vector translatedInteractors = translateInteractorsFromUniversalGeneID(interactors,dataSource.getIDtype());
+        num = dataSource.getNumAdjacentInteractions(translatedInteractors, species).intValue();
+        return new Integer(num);
+    }
+    
     /**
      * @param interactor
      *            a Vector of Strings (ids that the data source understands)
@@ -714,6 +950,36 @@ public class InteractionsHandler implements InteractionsDataSource {
      *            a table of String->Object entries that the implementing class
      *            understands (for example, p-value thresholds, directed
      *            interactions only, etc)
+     * @param source_class source_class source_class the class of the InteractionsDataSource to use
+     * @return a Vector of Hashtables, each hash contains information
+     *         about an interaction (they are required to contain the following
+     *         entries:)<br>
+     *         INTERACTOR_1 --> String <br>
+     *         INTERACTOR_2 --> String <br>
+     *         INTERACTION_TYPE -->String <br>
+     *         Each implementing class can add additional entries to the
+     *         Hashtables.<br>
+     */
+    public Vector getAdjacentInteractions(Vector interactors, String species,
+            Hashtable args, String source_class) {
+        InteractionsDataSource dataSource = getDataSourceForClass(source_class);
+        if(dataSource == null) return EMPTY_VECTOR;
+        if(!dataSource.supportsSpecies(species).booleanValue()) return EMPTY_VECTOR;
+        Vector translatedInteractors = translateInteractorsFromUniversalGeneID(interactors,dataSource.getIDtype());
+        Vector interactions = dataSource.getAdjacentInteractions(translatedInteractors, species, args);
+        return translateInteractionsToUniversalGeneID(dataSource.getIDtype(), interactions);
+    }
+    
+    
+    /**
+     * @param interactor
+     *            a Vector of Strings (ids that the data source understands)
+     * @param species
+     *            the species
+     * @param args
+     *            a table of String->Object entries that the implementing class
+     *            understands (for example, p-value thresholds, directed
+     *            interactions only, etc)
      * @return the number of adjacent interactions
      */
     public Integer getNumAdjacentInteractions(Vector interactors, String species,
@@ -728,6 +994,30 @@ public class InteractionsHandler implements InteractionsDataSource {
         }//while it.hasNext
         return new Integer(num);
     }
+    
+    /**
+     * @param interactor
+     *            a Vector of Strings (ids that the data source understands)
+     * @param species
+     *            the species
+     * @param args
+     *            a table of String->Object entries that the implementing class
+     *            understands (for example, p-value thresholds, directed
+     *            interactions only, etc)
+     * @param source_class source_class source_class the class of the InteractionsDataSource to use
+     * @return the number of adjacent interactions
+     */
+    public Integer getNumAdjacentInteractions(Vector interactors, String species,
+            Hashtable args, String source_class) {
+        int num = 0;
+        InteractionsDataSource dataSource = getDataSourceForClass(source_class);
+        if(dataSource == null) return new Integer(0);
+        if(!dataSource.supportsSpecies(species).booleanValue()) return new Integer(0);
+        Vector translatedInteractors = translateInteractorsFromUniversalGeneID(interactors,dataSource.getIDtype());
+        num = dataSource.getNumAdjacentInteractions(translatedInteractors, species, args).intValue();
+        return new Integer(num);
+    }
+
 
 	// ------------------ connecting interactions methods ------------------- //
 
@@ -744,7 +1034,7 @@ public class InteractionsHandler implements InteractionsDataSource {
 	 *         Each implementing class can add additional entries to the
 	 *         Hashtables
 	 */
-	public Vector getConnectingInteractions(Vector interactors, String species) {
+	public Vector getConnectingInteractions (Vector interactors, String species) {
         Iterator it = this.interactionSources.iterator();
         Vector allInteractions = new Vector();
         while(it.hasNext()){
@@ -756,6 +1046,28 @@ public class InteractionsHandler implements InteractionsDataSource {
         }//while it.hasNext
         return allInteractions;     
 	}
+    
+    /**
+     * @param interactors
+     * @param species
+     * @param source_class source_class source_class the class of the InteractionsDataSource to use
+     * @return a Vector of Hashtables, each hash contains information about an
+     *         interaction between the two interactors, each hash contains these
+     *         entries:<br>
+     *         INTERACTOR_1 --> String <br>
+     *         INTERACTOR_2 --> String <br>
+     *         INTERACTION_TYPE -->String <br>
+     *         Each implementing class can add additional entries to the
+     *         Hashtables
+     */
+    public Vector getConnectingInteractions (Vector interactors, String species, String source_class) {
+        InteractionsDataSource dataSource = getDataSourceForClass(source_class);
+        if(dataSource == null) return EMPTY_VECTOR;
+        if(!dataSource.supportsSpecies(species).booleanValue()) return EMPTY_VECTOR;
+        Vector translatedInteractors = translateInteractorsFromUniversalGeneID(interactors,dataSource.getIDtype());
+        Vector interactions = dataSource.getConnectingInteractions(translatedInteractors, species);
+        return translateInteractionsToUniversalGeneID(dataSource.getIDtype(),interactions);
+    }
     
     /**
      * @param interactor1
@@ -776,6 +1088,26 @@ public class InteractionsHandler implements InteractionsDataSource {
             Vector translatedInteractors = translateInteractorsFromUniversalGeneID(interactors,dataSource.getIDtype());
             num += dataSource.getNumConnectingInteractions(translatedInteractors, species).intValue();
         }//while it.hasNext
+        return new Integer(num);
+    }
+    
+    /**
+     * @param interactor1
+     * @param interactor2
+     * @param species
+     * @param args
+     *            a table of String->Object entries that the implementing class
+     *            understands (for example, p-value thresholds, directed
+     *            interactions only, etc)
+     * @param source_class source_class source_class the class of the InteractionsDataSource to use
+     * @return the number of connecting interactions
+     */
+    public Integer getNumConnectingInteractions(Vector interactors, String species, String source_class) {
+        InteractionsDataSource dataSource = getDataSourceForClass(source_class);
+        if(dataSource == null) return new Integer(0);
+        if(!dataSource.supportsSpecies(species).booleanValue()) return new Integer(0);
+        Vector translatedInteractors = translateInteractorsFromUniversalGeneID(interactors,dataSource.getIDtype());
+        int num = dataSource.getNumConnectingInteractions(translatedInteractors, species).intValue();
         return new Integer(num);
     }
 
@@ -811,6 +1143,34 @@ public class InteractionsHandler implements InteractionsDataSource {
         }//while it.hasNext
         return allInteractions;  
 	}
+    
+    /**
+     * @param interactors
+     * @param species
+     * @param args
+     *            a table of String->Object entries that the implementing class
+     *            understands (for example, p-value thresholds, directed
+     *            interactions only, etc)
+     * @param source_class source_class source_class the class of the InteractionsDataSource to use
+     * @return a Vector of Hashtables, each hash contains information about an
+     *         interaction between the two interactors, each hash contains these
+     *         entries:<br>
+     *         INTERACTOR_1 --> String <br>
+     *         INTERACTOR_2 --> String <br>
+     *         INTERACTION_TYPE -->String <br>
+     *         Each implementing class can add additional entries to the
+     *         Hashtables
+     */
+    public Vector getConnectingInteractions(Vector interactors, String species,
+            Hashtable args, String source_class) {
+        InteractionsDataSource dataSource = getDataSourceForClass(source_class);
+        if(dataSource == null) return EMPTY_VECTOR;
+        if(!dataSource.supportsSpecies(species).booleanValue()) return EMPTY_VECTOR;    
+        Vector translatedInteractors = translateInteractorsFromUniversalGeneID(interactors,dataSource.getIDtype());
+        Vector interactions = dataSource.getConnectingInteractions(translatedInteractors, species, args);
+        return translateInteractionsToUniversalGeneID(dataSource.getIDtype(),interactions);
+    }
+
 
     /**
      * @param interactors
@@ -836,6 +1196,28 @@ public class InteractionsHandler implements InteractionsDataSource {
         }//while it.hasNext
         return new Integer(num);
     }
+    
+    /**
+     * @param interactors
+     * @param species
+     * @param args
+     *            a table of String->Object entries that the implementing class
+     *            understands (for example, p-value thresholds, directed
+     *            interactions only, etc)
+     * @param source_class source_class source_class the class of the InteractionsDataSource to use
+     * @return new Integer(num)ber of connecting interactions
+     */
+    public Integer getNumConnectingInteractions(Vector interactors, String species,
+            Hashtable args, String source_class) {
+        InteractionsDataSource dataSource = getDataSourceForClass(source_class);
+        if(dataSource == null) return new Integer(0);
+        if(!dataSource.supportsSpecies(species).booleanValue()) return new Integer(0);
+        Vector translatedInteractors = translateInteractorsFromUniversalGeneID(interactors,dataSource.getIDtype());
+        int num = dataSource.getNumConnectingInteractions(translatedInteractors, species, args).intValue();
+        return new Integer(num);
+    }
+    
+    
 	/**
 	 * Calls test for each data source
 	 * @return

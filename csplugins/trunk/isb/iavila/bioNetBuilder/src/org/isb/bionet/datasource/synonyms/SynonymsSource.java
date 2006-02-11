@@ -28,10 +28,12 @@ public interface SynonymsSource extends DataSource {
     public static final String TREMBL_ID = "TrEMBL";
     public static final String SPROT_ID = "SPROT";
     public static final String UNIPROT_ID = "UniProt";
+    public static final String EMBL_ID = "EMBL";
     public static final String REFSEQ_ID = "RefSeq";
     public static final String HPRD_ID = "HPRD";
     public static final String HGNC_ID = "HGNC";
     public static final String TAXID = "TAXID";
+    public static final String PIR_ID = "PIR";
     public static final String SPECIES_NAME = "Species Name";
     
     /**

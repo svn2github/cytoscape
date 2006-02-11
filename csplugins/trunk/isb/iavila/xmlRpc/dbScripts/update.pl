@@ -12,14 +12,14 @@ my $testing = 0; # set to 0 when NOT testing!
 print "---------------------- update.pl -------------------------\n";
 
 if(scalar(@ARGV) < 3){
-	print "USAGE update.pl <db user> <db password>  <prolinks:kegg:go:synonyms:all>\n";
+	print "USAGE update.pl <db user> <db password>  <:prolinks:kegg:bind:dip:go:synonyms:all>\n";
 	die;
 }
 
 $dbuser = $ARGV[0];
 $dbpwd = $ARGV[1];
 
-$fulllist = ":prolinks:kegg:go:synonyms:";
+$fulllist = ":prolinks:kegg:bind:dip:go:synonyms:";
 if ($ARGV[0] =~ /all/) {
 	$updatee = $fulllist;
 }else{
@@ -35,11 +35,11 @@ print "Create metainfo db if not there...";
 $dbh->do("CREATE DATABASE IF NOT EXISTS metainfo") or die "Could not create metainfo db: $dbh->errstr\n";
 $dbh->disconnect();
 $dbh = DBI->connect("dbi:mysql:database=metainfo:host=localhost", $dbuser, $dbpwd)  or die "Can't make database connect: $DBI::errstr\n";
-$dbh->do("CREATE TABLE IF NOT EXISTS when_updated (db VARCHAR(30), timestamp TIMESTAMP)") or die "Could not create when_updated: $dbh->errstr\n";
-$dbh->do("CREATE TABLE IF NOT EXISTS db_name (db VARCHAR(30), dbname VARCHAR(30))") or die "Could not create db_name: $dbh->errstr\n";
+$dbh->do("CREATE TABLE IF NOT EXISTS when_updated (db VARCHAR(30) KEY, timestamp TIMESTAMP)") or die "Could not create when_updated: $dbh->errstr\n";
+$dbh->do("CREATE TABLE IF NOT EXISTS db_name (db VARCHAR(30) KEY, dbname VARCHAR(30))") or die "Could not create db_name: $dbh->errstr\n";
 print "done\n";
 
-my @dbkinds = ('prolinks', 'kegg', 'go', 'synonyms');
+my @dbkinds = ('prolinks', 'kegg', 'go','bind','synonyms');
 
 @updatees = split(/:/, $updatee);
 

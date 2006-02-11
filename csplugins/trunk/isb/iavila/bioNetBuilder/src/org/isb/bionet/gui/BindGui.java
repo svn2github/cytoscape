@@ -1,8 +1,3 @@
-
-/**
- * ProlinksGui.java
- */
-
 package org.isb.bionet.gui;
 
 import java.util.*;
@@ -14,46 +9,38 @@ import java.awt.event.*;
 import java.awt.*;
 
 /**
- * A modal dialog that displays Prolinks parameters.
+ * A modal dialog that displays BIND parameters.
  * 
  * @author <a href="mailto:iavila@systemsbiology.org">Iliana Avila-Campillo</a>
  */
-public class ProlinksGui extends JDialog implements InteractionsSourceGui{
+public class BindGui extends JDialog implements InteractionsSourceGui{
     
     /**
      * The title of this JFrame
      */
-    public static final String TITLE = "Prolinks Settings";
-
-    /**
-     * The default p-value threshold
-     */
-    public static final String DEFAULT_PVAL = "0.05";
+    public static final String TITLE = "BIND Settings";
     protected Map interactionToCheckBox;
-    protected JTextField pvalField;
     
     /**
      * Constructor, sets title to TITLE 
      * 
      * @param interactions_source
      */
-    public ProlinksGui (){
+    public BindGui (){
         setTitle(TITLE);
         setModal(true);
         createGUI();
-    }//ProlinksGui
+    }//BindGui
     
     /**
-     * Gets a Hashtable with (key, value) entries that a Prolinks interactions handler understands
+     * Gets a Hashtable with (key, value) entries that a BIND interactions handler understands
      * @return a Hashtable
-     * @see org.isb.bionet.datasource.interactions.ProlinksInteractionsSource
+     * @see org.isb.bionet.datasource.interactions.BindInteractionsSource
      */
     public Hashtable getArgsTable (){
         Vector interactionTypes = getSelectedInteractionTypes();
-        double pvalTh = getPval(false);
         Hashtable args = new Hashtable();
-        if(pvalTh != 1) args.put(ProlinksInteractionsSource.PVAL, new Double(pvalTh));
-        if(interactionTypes.size() < 4) args.put(ProlinksInteractionsSource.INTERACTION_TYPE, interactionTypes);
+        if(interactionTypes.size() < 3) args.put(BindInteractionsSource.INT_TYPES_ARG, interactionTypes);
         return args;
     }
     
@@ -70,44 +57,19 @@ public class ProlinksGui extends JDialog implements InteractionsSourceGui{
         while(it.hasNext()){
             String key = (String)it.next();
             JCheckBox cb = (JCheckBox)this.interactionToCheckBox.get(key);
-            if(cb.isSelected()){
-                // PP was changed to PhP s.t. it isn't confused with a prot-prot interaction
-                if(key.equals("PhP")) key = ProlinksInteractionsSource.PP;
+            if(cb.isSelected())
                 types.add(key);
-            }
         }//while it
         
         return types;
     }//getSelectedInteractionsTypes
     
-    /**
-     * @param show_error if the pvalue is incorrect, pop-up a JOptionDialog to inform the user
-     * @return the pvalue, or a number > 1 if there was an error
-     */
-    public double getPval (boolean show_error){
-        String text = this.pvalField.getText();
-        boolean badInput = false;
-        double pval = 2.0;
-        try{
-            pval = Double.parseDouble(text);
-            if(pval < 0 || pval > 1)
-                badInput = true;
-        }catch(Exception e){
-            badInput = true;
-        }
-
-        if(show_error && badInput)
-            JOptionPane.showMessageDialog(this,"Please enter a correct p-value (number between 0 and 1).", "Incorrect Pvalue", JOptionPane.ERROR_MESSAGE);
-        
-        return pval;
-    }//getPval
     
     /**
      * Creates the JFrame with Prolinks parameters
      */
     protected void createGUI (){
         JPanel interactions = createInteractionsPanel();
-        JPanel pval = createPvalPanel();
         JPanel buttons = createButtonsPanel();
         
         JPanel panel = new JPanel();
@@ -118,8 +80,7 @@ public class ProlinksGui extends JDialog implements InteractionsSourceGui{
         panel2.setBorder(BorderFactory.createEtchedBorder());
         
         panel2.add(interactions);
-        panel2.add(pval);
-        
+   
         panel.add(panel2);
         panel.add(buttons);
         
@@ -133,7 +94,7 @@ public class ProlinksGui extends JDialog implements InteractionsSourceGui{
      */
     protected JPanel createInteractionsPanel (){
         
-        Hashtable interactionTypes = ProlinksInteractionsSource.INT_TYPES;
+        Hashtable interactionTypes = BindInteractionsSource.INT_TYPES;
         this.interactionToCheckBox = new HashMap();
         JPanel panel = new JPanel();
         int rows = interactionTypes.size()/2;
@@ -146,13 +107,8 @@ public class ProlinksGui extends JDialog implements InteractionsSourceGui{
         Iterator it = interactionTypes.keySet().iterator();
         while(it.hasNext()){
             String type = (String)it.next();
-            String desc = (String)interactionTypes.get(type);
-            if(type.equals(ProlinksInteractionsSource.PP)){
-                //  if method == PP, then set the type to PhP to distinguish it from protein-protein
-                type = "PhP";
-            }
             JCheckBox cb = new JCheckBox();
-            cb.setText(type + " (" + desc + ")");
+            cb.setText(type + " (" + interactionTypes.get(type) + ")");
             cb.setSelected(true);
             panel.add(cb);
             this.interactionToCheckBox.put(type, cb);
@@ -169,35 +125,12 @@ public class ProlinksGui extends JDialog implements InteractionsSourceGui{
         return p;
     }//createInteractionsPanel
     
-    
-    /**
-     * 
-     * @return
-     */
-    protected JPanel createPvalPanel (){
-        
-        JPanel panel = new JPanel();
-        
-        JLabel label = new JLabel("Enter a p-value threshold:");
-        panel.add(label);
-        panel.add(Box.createHorizontalStrut(5));
-        
-        this.pvalField = new JTextField();
-        this.pvalField.setColumns(5);
-        this.pvalField.setText(DEFAULT_PVAL);
-        
-        panel.add(this.pvalField);
-        
-        return panel;
-    }//createPvalPanel
-    
     protected JPanel createButtonsPanel (){
         JButton OK = new JButton("OK");
         OK.addActionListener(new AbstractAction (){
            
             public void actionPerformed (ActionEvent e){
-                ProlinksGui.this.getPval(true); // make sure the entered pval is correct
-                ProlinksGui.this.dispose();
+                BindGui.this.dispose();
             }//actionPerformed
             
         });
@@ -205,4 +138,4 @@ public class ProlinksGui extends JDialog implements InteractionsSourceGui{
         panel.add(OK);
         return panel;
     }//createButtonsPanel
-}//ProlinksGui
+}//BindGui

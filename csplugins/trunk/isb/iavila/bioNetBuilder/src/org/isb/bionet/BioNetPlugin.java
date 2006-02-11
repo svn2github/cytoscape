@@ -14,7 +14,6 @@ import org.isb.bionet.datasource.synonyms.*;
 import org.isb.bionet.gui.wizard.*;
 import org.isb.iavila.ontology.xmlrpc.*;
 import java.lang.Exception;
-import org.apache.xmlrpc.*;
 
 /**
  * 
@@ -67,13 +66,10 @@ public class BioNetPlugin extends CytoscapePlugin {
                         .println("Could not get a SynonymsClient!!!");
             }
  
-            this.interactionsClient
-                    .addSource(ProlinksInteractionsSource.class.getName());
-        
-            this.interactionsClient
-            .addSource(KeggInteractionsSource.class.getName());
-            System.out.println(interactionsClient.getSources());
-            
+            this.interactionsClient.addSource(ProlinksInteractionsSource.class.getName());
+            this.interactionsClient.addSource(KeggInteractionsSource.class.getName());
+            this.interactionsClient.addSource(BindInteractionsSource.class.getName());
+            this.interactionsClient.addSource(DipInteractionsSource.class.getName());
             
         } catch (Exception ex) {
             ex.printStackTrace();
