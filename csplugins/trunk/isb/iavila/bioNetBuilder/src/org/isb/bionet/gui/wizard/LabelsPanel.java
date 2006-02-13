@@ -7,7 +7,7 @@ import org.isb.bionet.datasource.synonyms.*;
 
 public class LabelsPanel extends JPanel{
 
-    protected String [] labelOps = {SynonymsSource.GENE_NAME, SynonymsSource.PROD_NAME, SynonymsSource.ORF_NAME, SynonymsSource.GI_ID, "Source Database ID"};
+    protected String [] labelOps = {SynonymsSource.GENE_NAME, SynonymsSource.PROD_NAME, SynonymsSource.ORF_ID, SynonymsSource.GI_ID, "Source Database ID"};
     protected JComboBox labelOptions1, labelOptions2, labelOptions3, labelOptions4, labelOptions5;
    
     

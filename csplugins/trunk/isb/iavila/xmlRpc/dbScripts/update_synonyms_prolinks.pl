@@ -37,12 +37,15 @@ print "done\n";
 print "start: ".(time())."\n";
 print "Creating DB tables...\n";
 
-$dbh->do("CREATE TABLE IF NOT EXISTS prolinks_protgi (prolinksid INT, protgi INT, KEY(prolinksid,protgi),INDEX(prolinksid), INDEX(protgi))");
-$dbh->do("CREATE TABLE IF NOT EXISTS prolinks_gi_genename (protgi INT, genename VARCHAR(20), KEY(protgi,genename), INDEX(protgi))");
 
-print "Loading data into prolinks_gi...\n";
+#$dbh->do("CREATE TABLE IF NOT EXISTS gi_prolinks (gi INT, prolinks INT, KEY(prolinks,gi),INDEX(prolinks), INDEX(gi))");
+
+$dbh->do("CREATE TABLE IF NOT EXISTS prolinks_protgi (prolinksid INT, protgi INT,  KEY(prolinksid,protgi),INDEX(prolinksid), INDEX(protgi))");
+$dbh->do("CREATE TABLE IF NOT EXISTS prolinks_gi_genename (gi INT, genename VARCHAR(20), KEY(gi,genename), INDEX(gi))");
+
+print "Loading data into gi_prolinks...\n";
 $fullFilePath = getcwd()."/prolinks/syn/geneIDS_to_GInum.txt";
-$dbh->do("LOAD DATA LOCAL INFILE \'${fullFilePath}\' INTO TABLE prolinks_protgi") or die "Error: $synh->errstr";
+$dbh->do("LOAD DATA LOCAL INFILE \'${fullFilePath}\' INTO TABLE gi_prolinks") or die "Error: $synh->errstr";
 print "done.\n";
 
 print "Loading data into prolinks_gi_genename...\n";

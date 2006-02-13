@@ -384,7 +384,7 @@ public class CyNetUtils {
         if( ((Boolean)atts.get(AttributesPanel.LOCUS_NAME)).booleanValue() ){
             Hashtable locNames = new Hashtable();
             try{
-                locNames = synonyms_client.getSynonyms(InteractionsHandler.UNIVERSAL_GENE_ID_TYPE,idVector, SynonymsSource.ORF_NAME);
+                locNames = synonyms_client.getSynonyms(InteractionsHandler.UNIVERSAL_GENE_ID_TYPE,idVector, SynonymsSource.ORF_ID);
             }catch(Exception e){
                 e.printStackTrace();
             }
@@ -401,7 +401,7 @@ public class CyNetUtils {
                     allNames = (String)it2.next();
                     while(it2.hasNext()) allNames += "|" + (String)it2.next();
                 }
-                nodeAtts.setAttribute(nodeID,SynonymsSource.ORF_NAME,allNames);
+                nodeAtts.setAttribute(nodeID,SynonymsSource.ORF_ID,allNames);
             }
         }// if loc name
         

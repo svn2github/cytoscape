@@ -194,12 +194,57 @@ public class NodeSourcesPanel extends JPanel {
         return new CyNetwork[0];
     }
     
+    public Vector getNodesFromMyList (){
+        return this.myListNodes;
+    }
+    
     /**
      * 
      * @return a Vector with the node names in "myList" file
      */
-    public Vector getNodesFromMyList (){
-        return this.myListNodes;
+    protected Vector translateNodesToGis (Vector nodeIDs){
+        
+        // Accepted id types are orf, gi, and refseq
+        // Bin the input ids into these 3 types and conver them
+        HashSet gis = new HashSet();
+        Vector orfs = new Vector();
+        Vector refseqs = new Vector();
+        
+        Iterator it = nodeIDs.iterator();
+        while(it.hasNext()){
+            String id = (String) it.next();
+            if(id.startsWith(SynonymsSource.GI_ID)){
+                gis.add(id);
+            }else if(id.startsWith(SynonymsSource.REFSEQ_ID)){
+                refseqs.add(id);
+            }else if(id.startsWith(SynonymsSource.ORF_ID)){
+                orfs.add(id);
+            }
+        }
+        
+        Hashtable rsToGi = new Hashtable();
+        Hashtable orfToGi = new Hashtable();
+        
+        try{
+            if(refseqs.size() > 0)
+                rsToGi = this.synClient.getSynonyms(SynonymsSource.REFSEQ_ID, refseqs, SynonymsSource.GI_ID);
+            if(orfs.size() > 0)
+                orfToGi = this.synClient.getSynonyms(SynonymsSource.ORF_ID,orfs,SynonymsSource.GI_ID);
+        }catch(Exception e){ e.printStackTrace();}
+        
+        // Get all the gis
+        it = rsToGi.keySet().iterator();
+        while(it.hasNext()){
+            gis.addAll ( (Vector) rsToGi.get(it.next()) );
+        }
+        
+        it = orfToGi.keySet().iterator();
+        while(it.hasNext()){
+            gis.addAll( (Vector) orfToGi.get(it.next()) );
+        }
+        
+        return new Vector(gis);
+        
     }
     
     /**
@@ -286,6 +331,7 @@ public class NodeSourcesPanel extends JPanel {
                             myListFile = fileChooser.getSelectedFile();
                             try{
                                 myListNodes = MyUtils.ReadFileLines(myListFile.getAbsolutePath());
+                                myListNodes = translateNodesToGis(myListNodes);
                                 int numRead = myListNodes.size();
                                 listNodes.setText(Integer.toString(numRead));
                             }catch (Exception ex){

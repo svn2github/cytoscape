@@ -48,6 +48,7 @@ public class SQLSynonymsHandler extends SQLDBHandler implements SynonymsSource {
         this.SUPPORTED_TRANSLATIONS.put(REFSEQ_ID+":"+ GI_ID, Boolean.TRUE);
         this.SUPPORTED_TRANSLATIONS.put(GI_ID+":"+ REFSEQ_ID, Boolean.TRUE);
         this.SUPPORTED_TRANSLATIONS.put(GI_ID + ":" + PIR_ID, Boolean.TRUE);
+        this.SUPPORTED_TRANSLATIONS.put(ORF_ID + ":" + GI_ID, Boolean.TRUE);
     }
 
     /**
@@ -113,7 +114,7 @@ public class SQLSynonymsHandler extends SQLDBHandler implements SynonymsSource {
             return getProdNames(source_ids);
         }
         
-        if(source_id_type.equals(GI_ID) && target_id_type.equals(ORF_NAME)){
+        if(source_id_type.equals(GI_ID) && target_id_type.equals(ORF_ID)){
             return giToOrf(source_ids);
         }
         
@@ -139,6 +140,10 @@ public class SQLSynonymsHandler extends SQLDBHandler implements SynonymsSource {
         
         if(source_id_type.equals(GI_ID) &&target_id_type.equals(PIR_ID)){
             return giToPir(source_ids);
+        }
+        
+        if(source_id_type.equals(ORF_ID) && target_id_type.equals(GI_ID)){
+            return orfToGi(source_ids);
         }
         
         System.out.println("Translation from " + source_id_type + " to " + target_id_type + "is not supported!");
@@ -583,6 +588,40 @@ public class SQLSynonymsHandler extends SQLDBHandler implements SynonymsSource {
     }
     
     //--------- Helper protected methods -----------//
+    
+    protected Hashtable orfToGi (Vector orfs){
+        Iterator it = orfs.iterator();
+        if(!it.hasNext()) return new Hashtable();
+        
+        String inStatement = "";
+        while(it.hasNext()){
+            String id = (String)it.next();
+            int index = id.indexOf(ORF_ID + ":");
+            if(index >= 0){
+                id = id.substring(index + ORF_ID.length()+ 1);
+                if(inStatement.length() == 0) inStatement = "\"" + id + "\"";
+                else inStatement += ",\"" + id + "\"";
+            }
+        }//while
+       
+        if(inStatement.length() == 0) return new Hashtable();
+        
+        String sql = "SELECT locustag, protgi FROM refseq_locustag WHERE locustag IN (" + inStatement + ")";
+        ResultSet rs = query(sql);
+        Hashtable ltToGi = new Hashtable();
+        try{
+            while(rs.next()){
+                String orf = ORF_ID + ":" + rs.getString(1);
+                String gi = GI_ID + ":" + rs.getString(2);
+                Vector gis = (Vector)ltToGi.get(orf);
+                if(gis == null){gis = new Vector(); ltToGi.put(orf,gis);}
+                gis.add(gi);
+            }
+        }catch(Exception e){e.printStackTrace();return new Hashtable();}
+        
+        return ltToGi;
+         
+    }
     
     protected Hashtable giToPir (Vector gis ){
        
@@ -1049,374 +1088,7 @@ public class SQLSynonymsHandler extends SQLDBHandler implements SynonymsSource {
         
     }
     
-    // This is the same as getGeneNames, but it also tries to get genenames from Prolinks table as well
-    /**
-     * @deprecated use {@link getGeneNames(Vector)}
-     */
-    protected Hashtable giToGeneName (Vector gis){
-        Iterator it = gis.iterator();
-        if(!it.hasNext()) return new Hashtable();
-        
-        String giList = "(";
-        while(it.hasNext()){
-            String id = (String)it.next();
-            int index = id.indexOf(GI_ID + ":");
-            if(index >= 0){
-              id = id.substring(index + GI_ID.length() + 1);
-              if(giList.length() > 1){
-                  giList += ","+id;
-              }else{
-                  giList += id;
-              }
-            }
-        }//while it
-        giList += ")";
-        
-        // 1. Try refseq
-        
-        String sql = "SELECT protgi,genename FROM refseq_genename WHERE protgi IN " + giList;
-        ResultSet rs = query(sql);
-        Hashtable giToName = new Hashtable();
-        try{
-            while(rs.next()){
-                giToName.put(GI_ID + ":" + rs.getString(1), rs.getString(2));
-            }
-        }catch(SQLException e){
-            e.printStackTrace();
-            return new Hashtable();
-        }
-        
-        // 2. Try Prolinks
-        sql = "SELECT protgi, genename FROM prolinks_gi_genename WHERE protgi IN " + giList;
-        rs = query(sql);
-        try{
-            while(rs.next()){
-                String gi = GI_ID + ":" + rs.getString(1);
-                if(!giToName.contains(gi))
-                giToName.put(gi, rs.getString(2));
-            }
-        }catch(SQLException e){
-            e.printStackTrace();
-            return new Hashtable();
-        }
-        
-        // 3. Now try genbank
-        
-//        sql = "SELECT protgi,genename FROM genbank_genename WHERE protgi IN " + giList;
-//        rs = query(sql);
-//        try{
-//            while(rs.next()){
-//                String gi = GI_ID + ":" + rs.getString(1);
-//                if(!giToName.contains(gi))
-//                giToName.put(gi, rs.getString(2));
-//            }
-//        }catch(SQLException e){
-//            e.printStackTrace();
-//            return new Hashtable();
-//        }
-//        
-        return giToName;
-        
-    }
-    
-    /**
-     * @deprecated use {@link getProdNames(Vector)} instead
-     * @param gis
-     * @return
-     */
-    protected Hashtable giToProdName (Vector gis){
-        Iterator it = gis.iterator();
-        if(!it.hasNext()) return new Hashtable();
-        
-        String giList = "(";
-        while(it.hasNext()){
-            String id = (String)it.next();
-            int index = id.indexOf(GI_ID + ":");
-            if(index >= 0){
-              id = id.substring(index + GI_ID.length() + 1);
-              if(giList.length() > 1){
-                  giList += ","+id;
-              }else{
-                  giList += id;
-              }
-            }
-        }//while it
-        giList += ")";
-        
-        // 1. Try refseq
-        
-        String sql = "SELECT protgi,prodname FROM refseq_prodname WHERE protgi IN " + giList;
-        ResultSet rs = query(sql);
-        Hashtable giToName = new Hashtable();
-        try{
-            while(rs.next()){
-                giToName.put(GI_ID + ":" + rs.getString(1), rs.getString(2));
-            }
-        }catch(SQLException e){
-            e.printStackTrace();
-            return new Hashtable();
-        }
-        
-        // 2. Now try genbank
-        
-//        sql = "SELECT protgi,prodname FROM genbank_prodname WHERE protgi IN " + giList;
-//        rs = query(sql);
-//        try{
-//            while(rs.next()){
-//                String gi = GI_ID + ":" + rs.getString(1);
-//                if(!giToName.contains(gi))
-//                giToName.put(gi, rs.getString(2));
-//            }
-//        }catch(SQLException e){
-//            e.printStackTrace();
-//            return new Hashtable();
-//        }
-        
-        return giToName;
-        
-    }
-    
-    //TODO: Update this method
-    /**
-     * @deprecated do not use
-     */
-    protected Hashtable prolinksToKegg (Vector prolinks_ids){
-        Iterator it = prolinks_ids.iterator();
-        if(!it.hasNext()) return new Hashtable();
-       
-        String or = "";
-        while(it.hasNext()){
-            String id = (String)it.next();
-            int index = id.indexOf(PROLINKS_ID + ":");
-            if(index >= 0){
-                id = id.substring(index + PROLINKS_ID.length() + 1);
-                if(or.length() > 0)
-                    or += " OR p.prolinksid = " + id;
-                else
-                    or = " p.prolinksid = " + id;
-            }
-        }
-        if(or.length() == 0) return new Hashtable();
-        String sql = "SELECT p.prolinksid, k.kegg_id FROM xref_kegg AS k, key_prolinks AS p WHERE k.oid = p.oid AND " + or;
-        ResultSet rs = query(sql);
-        try{
-            Hashtable pToK = new Hashtable();
-            while(rs.next()){
-                pToK.put(SynonymsSource.PROLINKS_ID + ":" + rs.getString(1),
-                         SynonymsSource.KEGG_ID + ":" + rs.getString(2));
-            }
-            return pToK;
-        }catch(SQLException ex){
-            ex.printStackTrace();
-        }
-        
-        return new Hashtable();
-    }
-    
-    //TODO: Update this method
-    /**
-     * @deprecated do not use
-     */
-    protected Hashtable keggToProlinks (Vector kegg_ids){
-        Iterator it = kegg_ids.iterator();
-        if(!it.hasNext()) return new Hashtable();
-        
-        String or = "";
-        while(it.hasNext()){
-            String id = (String)it.next();
-            int index = id.indexOf(KEGG_ID + ":");
-            if(index >= 0){
-                id = id.substring(index + KEGG_ID.length() + 1);
-                if(or.length() > 0)
-                    or += " OR k.kegg_id = \"" + id + "\"";
-                else
-                    or = " k.kegg_id = \"" + id + "\"";
-            }
-        }
-        if(or.length() == 0) return new Hashtable();
-        String sql = "SELECT k.kegg_id, p.prolinksid FROM xref_kegg AS k, key_prolinks AS p WHERE k.oid = p.oid AND " + or;
-        ResultSet rs = query(sql);
-        try{
-            Hashtable kToP = new Hashtable();
-            while(rs.next()){
-                kToP.put(SynonymsSource.KEGG_ID + ":" + rs.getString(1),
-                         SynonymsSource.PROLINKS_ID + ":" + rs.getString(2));
-            }
-            return kToP;
-        }catch(SQLException ex){
-            ex.printStackTrace();
-        }
-        
-        return new Hashtable();
-    }
-    
-    //TODO: update this method
-    /**
-     * @deprecated do not use
-     */
-    protected Hashtable giToCommonName (Vector gi_ids){
-        Iterator it = gi_ids.iterator();
-        if(!it.hasNext()) return new Hashtable();
-        
-        // transfer gi_ids to oids, and then oids to genename
-        String or = "";
-        while(it.hasNext()){
-            String id = (String)it.next();
-            int index = id.indexOf(GI_ID + ":");
-            if(index >= 0){
-                id = id.substring(index + GI_ID.length() + 1);
-                //TODO: Remove once the back end db is fixed
-                try{Integer.parseInt(id);}catch(NumberFormatException e){continue;}
-                if(or.length() > 0)
-                    or += " OR gi = " + id;
-                else
-                    or = " gi = " + id;
-            }
-        }//while
-        
-        if(or.length() == 0) return new Hashtable();
-        String sql = "SELECT ngi, oid FROM xref_gi WHERE " + or;
-        ResultSet rs = query(sql);
-        
-        Hashtable oidToGi = new Hashtable();
-        or = "";
-        try{
-            while(rs.next()){
-                int gi = rs.getInt(1);
-                int oid = rs.getInt(2);
-                oidToGi.put(new Integer(oid), Integer.toString(gi));
-                if(or.length() == 0){
-                    or = " oid = " + oid;
-                }else{
-                    or += " OR oid = " + oid;
-                }
-            }
-        }catch(Exception ex){
-            ex.printStackTrace();
-            return new Hashtable();
-        }
-        
-        if(or.length() == 0) return new Hashtable();
-        
-        sql = "SELECT oid, genename FROM gn_genename WHERE " + or;
-        rs = query(sql);
-        
-        Hashtable giToCn = new Hashtable();
-        try{
-            while(rs.next()){
-                int oid = rs.getInt(1);
-                String cn = rs.getString(2);
-                String gi = (String)oidToGi.get(new Integer(oid));
-                giToCn.put(GI_ID+":"+gi,cn);
-            }
-        }catch(Exception ex){ex.printStackTrace(); return new Hashtable();}
-        System.out.print("Num translated to common names = " + giToCn.size());
-        return giToCn;
-    } 
-    
-    //TODO: Update this method
-    /**
-     * @deprecated do not use
-     */
-    protected Hashtable prolinksToCommonName (Vector prolinks_ids){
-        Hashtable prToCN = new Hashtable();
-        
-        Iterator it = prolinks_ids.iterator();
-        
-        if(!it.hasNext()) return prToCN;
-        
-        String or = "";
-        while(it.hasNext()){
-            String id = (String)it.next();
-            int index = id.indexOf(PROLINKS_ID + ":");
-            if(index >= 0){
-                id = id.substring(index + PROLINKS_ID.length() + 1);
-                if(or.length() == 0){
-                    or = " prolinksid = " + id;
-                }else{
-                    or += " OR prolinksid = " + id;
-                }//else
-            }//index >=0
-        }//while
-        
-        if(or.length() == 0) return prToCN;
-        
-        String sql = "SELECT prolinksid, genename FROM key_prolinks WHERE " + or;
-        ResultSet rs = query(sql);
-        
-        try{
-            while(rs.next()){
-                String prolinksid = rs.getString(1);
-                String cn = rs.getString(2);
-                prToCN.put(PROLINKS_ID + ":" + prolinksid, cn);
-            }
-        }catch(Exception ex){ex.printStackTrace(); return new Hashtable();}
-        
-        return prToCN;
-    }
-    
-    // TODO: Update this method
-    /**
-     * @deprecated do not use
-     */
-    protected Hashtable keggToCommonName (Vector kegg_ids){
-        
-        Hashtable kToCN = new Hashtable();
-        
-        Iterator it = kegg_ids.iterator();
-        
-        if(!it.hasNext()) return kToCN;
-        
-        String or = "";
-        while(it.hasNext()){
-            String id = (String)it.next();
-            int index = id.indexOf(KEGG_ID + ":");
-            if(index >= 0){
-                id = id.substring(index + KEGG_ID.length() + 1);
-                if(or.length() == 0){
-                    or = " kegg_id = \"" + id + "\"";
-                }else{
-                    or += " OR kegg_id = \"" + id + "\"";
-                }//else
-            }//if index
-        }//while
-       
-        if(or.length() == 0) return kToCN;
-        
-        String sql = "SELECT oid, kegg_id FROM xref_kegg WHERE " + or;
-        ResultSet rs = query(sql);
-        Hashtable oidToKegg = new Hashtable();
-        or = "";
-        try{
-            while(rs.next()){
-                int oid = rs.getInt(1);
-                String kegg = rs.getString(2);
-                oidToKegg.put(new Integer(oid), kegg);
-                if(or.length() == 0){
-                    or = " oid = " + oid;
-                }else{
-                    or += " OR oid = " + oid;
-                }//else
-            }//while
-        }catch(Exception ex){ ex.printStackTrace(); return kToCN;}
-        
-        if(or.length() == 0) return kToCN;
-        
-        sql = "SELECT oid, genename FROM gn_genename WHERE " + or;
-        rs = query(sql);
-        try{
-            while(rs.next()){
-                int oid = rs.getInt(1);
-                String cn = rs.getString(2);
-                String keggid = (String)oidToKegg.get(new Integer(oid));
-                kToCN.put(KEGG_ID + ":" + keggid,cn);
-            }//while
-        }catch(Exception ex){ ex.printStackTrace(); return new Hashtable();}
-        
-        return kToCN;
-    }
-    
-  
+   
     //------------- DataSource methods -------------//
 
     /**

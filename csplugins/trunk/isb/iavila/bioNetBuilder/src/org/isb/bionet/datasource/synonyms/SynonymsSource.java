@@ -14,19 +14,19 @@ public interface SynonymsSource extends DataSource {
     /**
      * The supported IDs
      */   
-    public static final String PROLINKS_ID = "PL";
+    public static final String PROLINKS_ID = "ProLinks";
     public static final String KEGG_ID = "KEGG";
     /**
      * This is the protein GI, not the nucleotide GI
      */
     public static final String GI_ID = "GI";
     public static final String ID_NOT_FOUND = "ID not found";
-    public static final String GENE_NAME = "Gene Name";
+    public static final String GENE_NAME = "GeneName";
     public static final String GENE_ID = "GeneID"; // Entrez Gene Database, replaces NCBI Locus Link
-    public static final String PROD_NAME = "Product Name";
-    public static final String ORF_NAME = "ORF";
+    public static final String PROD_NAME = "ProductName";
+    public static final String ORF_ID = "ORF";
     public static final String TREMBL_ID = "TrEMBL";
-    public static final String SPROT_ID = "SPROT";
+    public static final String SPROT_ID = "SwissProt";
     public static final String UNIPROT_ID = "UniProt";
     public static final String EMBL_ID = "EMBL";
     public static final String REFSEQ_ID = "RefSeq";
@@ -34,7 +34,8 @@ public interface SynonymsSource extends DataSource {
     public static final String HGNC_ID = "HGNC";
     public static final String TAXID = "TAXID";
     public static final String PIR_ID = "PIR";
-    public static final String SPECIES_NAME = "Species Name";
+    public static final String PDB_ID = "PDB";
+    public static final String SPECIES_NAME = "SpeciesName";
     
     /**
      * 

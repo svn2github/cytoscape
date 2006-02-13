@@ -25,8 +25,8 @@ $dbh->do("CREATE DATABASE IF NOT EXISTS $dbname");
 $dbh->do("USE $dbname") or die "Error: $dbh->errstr";
 
 downloadFiles();
-readTaxonFile();
-readRefsFile();
+#readTaxonFile();
+#readRefsFile();
 readInteractionsFile();
 
 #################### Download files ##################################################
@@ -154,6 +154,17 @@ while( <X> ) {
     		# EMBL AC
     		$i2 = "EMBL:".$i2;
     }
+    
+    if($i1 =~ /\w+\|\w+/){
+    		# PDB
+    		$i1 = "PDB:".$i1;
+    }
+    
+    if($i2 =~ /\w+\|\w+/){
+    		# PDB
+    		$i2 = "PDB:".$i2;
+    }
+    
 	
 	$itype = 'pp';
     

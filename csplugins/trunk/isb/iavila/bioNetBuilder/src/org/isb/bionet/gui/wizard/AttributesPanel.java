@@ -25,7 +25,7 @@ public class AttributesPanel extends JPanel{
     public static final String ENCODED_BY = "Encoded by";
     public static final String GENE_NAME = SynonymsSource.GENE_NAME;
     public static final String PROD_NAME = SynonymsSource.PROD_NAME;
-    public static final String LOCUS_NAME = SynonymsSource.ORF_NAME;
+    public static final String LOCUS_NAME = SynonymsSource.ORF_ID;
     public static final String DB_URLS = "DB URLs";
     
     protected JRadioButton xrefs, definition,hpfp,dburls, encodedBy, geneName, prodName, locusName;
