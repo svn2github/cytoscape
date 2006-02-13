@@ -38,7 +38,7 @@
     <property name="build.compiler" value="modern"/>
 
     <!-- Release number -->
-    <property name="version" value="2.2"/>
+    <property name="version" value="2.3"/>
 
     <property name="dirname.release.dir"
               value="cytoscape-v${version}"/>
@@ -59,6 +59,29 @@
     <property name="javadoc.private.dir" value="${build.dir}/API-private"/>
     <property name="javadoc.public.dir" value ="${build.dir}/API-public"/>
 
+    <!--
+         ==========================================================
+        The following section was created by Keiichiro Ono,
+        kono@ucsd.edu for JAXB Databinding
+        ===========================================================
+    --> 
+    <property name="jwsdp.home" value="${lib.dir}/jwsdp-1_6" />
+    <property name="jaxb.lib" value="${jwsdp.home}/jaxb/lib" />
+    <property name="jaxpe.lib" value="${jwsdp.home}/jaxp/lib/endorsed" />
+    <property name="jwsdp.shared.lib" value="${jwsdp.home}/jwsdp-shared/lib" />
+    
+    <!-- The XML Schema Directory used by JAXB -->
+    <property name="schema.dir" value="${basedir}/schema" />
+    
+    <!-- XML Schema files used by JAXB -->
+    <property name="xgmml.schema" value="xgmml.xsd" />
+    <property name="cysession.schema" value="cysession.xsd" />
+    
+    <!-- Auto generated package name -->
+    <property name="package" value="cytoscape.generated" />
+    
+
+
     <!-- ======================================================= -->
     <!-- Cytoscape ClassPath definition                          -->
     <!-- ======================================================= -->
@@ -70,7 +93,48 @@
         <fileset dir="${lib.dir}">
             <include name="**/*.jar"/>
         </fileset>
+        
+        <fileset dir="${jaxb.lib}" includes="*.jar" />
+        <fileset dir="${jwsdp.home}" includes="jwsdp-shared/lib/*.jar" />
+        <fileset dir="${jwsdp.shared.lib}" includes="*.jar" />
+        <fileset dir="${jaxpe.lib}" includes="*.jar" />
     </path>
+    
+    <!-- ======================================================= -->
+    <!-- For XJC compiler task -->
+    <!-- ======================================================= -->
+    <taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask">
+        <classpath refid="classpath" />
+    </taskdef>
+    
+    <!-- ======================================================= -->
+    <!-- Generate package using XJC compiler            -->
+    <!-- ======================================================= -->
+    <target name="bind" description="Run XJC to generate new packages.">
+        
+        <!-- Clean up generated packages -->
+        <delete dir="${src.dir}/cytoscape/generated"/>
+        <delete dir="${src.dir}/cytoscape/generated2"/>
+        
+        <xjc schema="${schema.dir}/${cysession.schema}" target="${src.dir}" package="${package}">
+        </xjc>
+        <xjc schema="${schema.dir}/${xgmml.schema}" target="${src.dir}" 
+            package="${package}2" extension="true"
+            binding="${schema.dir}/binding.xjb">
+            <arg value="-nv" />
+        </xjc>
+        <!-- copy prop file into build dir -->
+        <echo>Copying jaxb.properties from ${src.dir}/cytoscape/generated to build dir...</echo>
+        <copy todir="${build.classes}/cytoscape/generated">
+            <fileset dir="${src.dir}/cytoscape/generated" includes="*.properties"/>
+        </copy>
+        <copy todir="${build.classes}/cytoscape/generated2">
+            <fileset dir="${src.dir}/cytoscape/generated2" includes="*.properties"/>
+        </copy>
+        
+    </target>
+    
+    
 
     <!-- ======================================================= -->
     <!-- Environment Information                                 -->
