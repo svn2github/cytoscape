@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="3" relativePaths="false">
+  <component name="ProjectRootManager" version="2">
+    <jdk name="java version &quot;1.4.2&quot;" />
+    <projectPath>
+      <root type="composite">
+        <root type="simple" url="file://$PROJECT_DIR$" />
+        <root type="simple" url="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src" />
+        <root type="simple" url="file://D:/Gbader/Code/cyto/cvsdir5/giny/giny/src" />
+        <root type="simple" url="file://D:/Gbader/Code/cyto/cvsdir5/giny/coltginy/src" />
+        <root type="simple" url="file://D:/Gbader/Code/cyto/cvsdir5/giny/luna/src" />
+        <root type="simple" url="file://D:/Gbader/Code/cyto/cvsdir5/giny/phoebe/src" />
+      </root>
+    </projectPath>
+    <sourcePath>
+      <root type="composite">
+        <root type="simple" url="file://$PROJECT_DIR$/src" />
+        <root type="jdk" rootType="sourcePath" name="java version &quot;1.4.2&quot;" />
+        <root type="simple" url="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src" />
+        <root type="simple" url="file://D:/Gbader/Code/cyto/cvsdir5/giny/giny/src" />
+        <root type="simple" url="file://D:/Gbader/Code/cyto/cvsdir5/giny/coltginy/src" />
+        <root type="simple" url="file://D:/Gbader/Code/cyto/cvsdir5/giny/luna/src" />
+        <root type="simple" url="file://D:/Gbader/Code/cyto/cvsdir5/giny/phoebe/src" />
+      </root>
+    </sourcePath>
+    <classPath>
+      <root type="composite">
+        <root type="output" />
+        <root type="jdk" rootType="classPath" name="java version &quot;1.4.2&quot;" />
+        <root type="simple" url="jar://D:/Gbader/Code/cyto/cvsdir5/cytoscape/lib/colt.jar!/" />
+        <root type="simple" url="jar://D:/Gbader/Code/cyto/cvsdir5/cytoscape/lib/coltginy.jar!/" />
+        <root type="simple" url="jar://D:/Gbader/Code/cyto/cvsdir5/cytoscape/lib/cytoscape.jar!/" />
+        <root type="simple" url="jar://D:/Gbader/Code/cyto/cvsdir5/cytoscape/lib/getopt.jar!/" />
+        <root type="simple" url="jar://D:/Gbader/Code/cyto/cvsdir5/cytoscape/lib/giny.jar!/" />
+        <root type="simple" url="jar://D:/Gbader/Code/cyto/cvsdir5/cytoscape/lib/glf.jar!/" />
+        <root type="simple" url="jar://D:/Gbader/Code/cyto/cvsdir5/cytoscape/lib/jdom.jar!/" />
+        <root type="simple" url="jar://D:/Gbader/Code/cyto/cvsdir5/cytoscape/lib/jnlp.jar!/" />
+        <root type="simple" url="jar://D:/Gbader/Code/cyto/cvsdir5/cytoscape/lib/junit.jar!/" />
+        <root type="simple" url="jar://D:/Gbader/Code/cyto/cvsdir5/cytoscape/lib/looks-1.1.3.jar!/" />
+        <root type="simple" url="jar://D:/Gbader/Code/cyto/cvsdir5/cytoscape/lib/luna.jar!/" />
+        <root type="simple" url="jar://D:/Gbader/Code/cyto/cvsdir5/cytoscape/lib/phoebe.jar!/" />
+        <root type="simple" url="jar://D:/Gbader/Code/cyto/cvsdir5/cytoscape/lib/piccolo.jar!/" />
+        <root type="simple" url="jar://D:/Gbader/Code/cyto/cvsdir5/cytoscape/lib/piccolox.jar!/" />
+        <root type="simple" url="jar://D:/Gbader/Code/cyto/cvsdir5/cytoscape/lib/retroguard.jar!/" />
+        <root type="simple" url="jar://D:/Gbader/Code/cyto/cvsdir5/cytoscape/lib/xerces.jar!/" />
+        <root type="simple" url="jar://D:/Gbader/Code/cyto/cvsdir5/cytoscape/lib/xml-apis.jar!/" />
+      </root>
+    </classPath>
+    <excludePath>
+      <root type="composite">
+        <root type="excludedOutput" />
+      </root>
+    </excludePath>
+    <javadocPath>
+      <root type="composite">
+        <root type="jdk" rootType="javadocPath" name="java version &quot;1.4.2&quot;" />
+      </root>
+    </javadocPath>
+    <assert_keyword enabled="yes" />
+    <exclude_output enabled="yes" />
+  </component>
+  <component name="CompilerConfiguration">
+    <option name="DEFAULT_COMPILER" value="Javac" />
+    <option name="SYNCHRONIZE_OUTPUT_DIRECTORY" value="false" />
+    <option name="DEFAULT_OUTPUT_PATH" value="$PROJECT_DIR$/dist" />
+    <option name="OUTPUT_MODE" value="single" />
+    <excludeFromCompile>
+      <file url="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/data/annotation/readers/unitTests/AnnotationReaderTest.java" />
+      <file url="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/data/servers/archive/BioDataServerFactory.java" />
+      <file url="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/data/servers/archive/BioDataServerImpl.java" />
+      <file url="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/data/servers/archive/IPBioDataServer.java" />
+      <file url="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/data/servers/archive/RMIBioDataServer.java" />
+      <file url="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/data/servers/archive/biologicalProcess.java" />
+      <file url="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/data/servers/archive/geneInfo.java" />
+      <file url="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/data/servers/archive/getPathsForTerm.java" />
+      <file url="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/data/servers/archive/loadBind.java" />
+      <file url="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/data/servers/archive/loadBiologicalProcesses.java" />
+      <file url="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/data/servers/archive/loadCellularComponents.java" />
+      <file url="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/data/servers/archive/loadGo.java" />
+      <file url="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/data/servers/archive/loadGoPathTerminators.java" />
+      <file url="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/data/servers/archive/loadGoTerms.java" />
+      <file url="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/data/servers/archive/loadMolecularFunctions.java" />
+      <file url="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/data/servers/archive/loadSynonyms.java" />
+      <file url="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/data/servers/archive/synonyms.java" />
+      <file url="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/data/servers/unitTests/archive/BioDataServerFactoryTest.java" />
+      <file url="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/data/servers/unitTests/archive/BioDataServerMolFunctionsTest.java" />
+      <file url="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/data/servers/unitTests/archive/IPBioDataServerTest.java" />
+      <file url="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/unitTests/deferred/VizAttributesTest.java" />
+      <file url="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/data/servers/archive/canonicalName.java" />
+      <file url="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/data/servers/archive/clearGoPathTerminators.java" />
+      <file url="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/data/servers/unitTests/BioDataServerTest.java" />
+      <file url="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/data/servers/unitTests/archive/BioDataServerCellularComponentsTest.java" />
+      <file url="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/data/servers/unitTests/archive/BioDataServerProcessTest.java" />
+      <file url="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/data/servers/unitTests/archive/BioDataServerSynonymsTest.java" />
+      <file url="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/dialogs/GoDataServerPopupTable.java" />
+      <file url="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/data/util/canonicalize.java" />
+      <file url="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/dialogs/GoIDAttributesPopupTable.java" />
+      <file url="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/dialogs/NodeAttributesPopupTable.java" />
+    </excludeFromCompile>
+    <resourceExtensions>
+      <entry name=".+\.(properties|xml|html)" />
+      <entry name=".+\.(gif|png|jpeg|jpg)" />
+    </resourceExtensions>
+  </component>
+  <component name="JavacSettings">
+    <option name="DEBUGGING_INFO" value="true" />
+    <option name="GENERATE_NO_WARNINGS" value="false" />
+    <option name="DEPRECATION" value="true" />
+    <option name="ADDITIONAL_OPTIONS_STRING" value="" />
+    <option name="MAXIMUM_HEAP_SIZE" value="128" />
+  </component>
+  <component name="JikesSettings">
+    <option name="JIKES_PATH" value="" />
+    <option name="DEBUGGING_INFO" value="true" />
+    <option name="DEPRECATION" value="true" />
+    <option name="GENERATE_NO_WARNINGS" value="false" />
+    <option name="GENERATE_MAKE_FILE_DEPENDENCIES" value="false" />
+    <option name="DO_FULL_DEPENDENCE_CHECK" value="false" />
+    <option name="IS_EMACS_ERRORS_MODE" value="true" />
+    <option name="ADDITIONAL_OPTIONS_STRING" value="" />
+  </component>
+  <component name="AntConfiguration">
+    <buildFile url="file://$PROJECT_DIR$/build.xml">
+      <useEmacsModeOutput value="true" />
+      <useCustomJdk value="false" />
+      <treeView value="true" />
+      <useJavaw value="false" />
+      <verbose value="true" />
+      <includeProjectClasspath value="false" />
+      <includeParser value="true" />
+      <maximumHeapSize value="128" />
+      <viewClosedWhenNoErrors value="false" />
+    </buildFile>
+    <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
+    <option name="FILTER_TARGETS" value="false" />
+  </component>
+  <component name="JavadocGenerationManager">
+    <option name="OUTPUT_DIRECTORY" />
+    <option name="OPTION_SCOPE" value="protected" />
+    <option name="OPTION_HIERARCHY" value="true" />
+    <option name="OPTION_NAVIGATOR" value="true" />
+    <option name="OPTION_INDEX" value="true" />
+    <option name="OPTION_SEPARATE_INDEX" value="true" />
+    <option name="OPTION_DOCUMENT_TAG_USE" value="false" />
+    <option name="OPTION_DOCUMENT_TAG_AUTHOR" value="false" />
+    <option name="OPTION_DOCUMENT_TAG_VERSION" value="false" />
+    <option name="OPTION_DOCUMENT_TAG_DEPRECATED" value="true" />
+    <option name="OPTION_DEPRECATED_LIST" value="true" />
+    <option name="OTHER_OPTIONS" value="" />
+    <option name="HEAP_SIZE" />
+    <option name="OPEN_IN_BROWSER" value="true" />
+  </component>
+  <component name="WebManager">
+    <option enabled="false" />
+  </component>
+  <component name="WebRootContainer" />
+  <component name="EjbManager" enabled="false" />
+  <component name="JUnitProjectSettings">
+    <option name="TEST_RUNNER" value="UI" />
+  </component>
+  <component name="EntryPointsManager">
+    <entry_points />
+  </component>
+  <component name="EjbActionsConfiguration">
+    <option name="NEW_MESSAGE_BEAN_LAST_PACKAGE" value="" />
+    <option name="NEW_ENTITY_BEAN_LAST_PACKAGE" value="" />
+    <option name="NEW_SESSION_BEAN_LAST_PACKAGE" value="" />
+  </component>
+  <component name="CodeStyleManager">
+    <option name="USE_DEFAULT_CODE_STYLE_SCHEME" value="true" />
+    <option name="CODE_STYLE_SCHEME" value="" />
+  </component>
+  <component name="ExportToHTMLSettings">
+    <option name="PRINT_LINE_NUMBERS" value="false" />
+    <option name="OPEN_IN_BROWSER" value="false" />
+    <option name="OUTPUT_DIRECTORY" />
+  </component>
+</project>
+
