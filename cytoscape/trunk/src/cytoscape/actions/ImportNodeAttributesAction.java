@@ -43,14 +43,14 @@ public class ImportNodeAttributesAction extends CytoscapeAction {
         CyFileFilter nf = new CyFileFilter();
 
         // get the file name
-        File file = FileUtil.getFile("Load Node Attributes",
+        File file = FileUtil.getFile("Import Node Attributes",
                     FileUtil.LOAD, new CyFileFilter[]{nf});
 
         if (file != null) {
 
             //  Create Load Attributes Task
-            LoadAttributesTask task = 
-            	new LoadAttributesTask (file, LoadAttributesTask.NODE_ATTRIBUTES);
+            ImportAttributesTask task = 
+            	new ImportAttributesTask (file, LoadAttributesTask.NODE_ATTRIBUTES);
 
             //  Configure JTask Dialog Pop-Up Box
             JTaskConfig jTaskConfig = new JTaskConfig();
@@ -69,7 +69,7 @@ public class ImportNodeAttributesAction extends CytoscapeAction {
 /**
  * Task to Load New Node/Edge Attributes Data.
  */
-class LoadAttributesTask implements Task {
+class ImportAttributesTask implements Task {
     private TaskMonitor taskMonitor;
     private File file;
     private int type;
@@ -81,7 +81,7 @@ class LoadAttributesTask implements Task {
      * @param file File Object.
      * @param type NODE_ATTRIBUTES or EDGE_ATTRIBUTES
      */
-    LoadAttributesTask (File file, int type) {
+    ImportAttributesTask (File file, int type) {
         this.file = file;
         this.type = type;
     }
