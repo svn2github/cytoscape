@@ -30,35 +30,90 @@ package cytoscape.view;
 
 //------------------------------------------------------------------------------
 
-import java.awt.event.*;
-import javax.swing.*;
-import javax.swing.event.MenuListener;
-import javax.swing.event.MenuEvent;
+import giny.view.GraphViewChangeEvent;
+import giny.view.GraphViewChangeListener;
+
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
+
+import javax.help.CSH;
 import javax.help.HelpBroker;
-import javax.help.CSH.*;
-import javax.help.CSH; // Context Sensitive Help convenience object...
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JComponent;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
+import javax.swing.MenuElement;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 
-import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
-import cytoscape.view.CyNetworkView;
-
-import cytoscape.plugin.AbstractPlugin;
-
-import cytoscape.actions.*;
-
+import cytoscape.Cytoscape;
+import cytoscape.actions.AlphabeticalSelectionAction;
+import cytoscape.actions.BackgroundColorAction;
+import cytoscape.actions.BirdsEyeViewAction;
+import cytoscape.actions.CloneGraphInNewWindowAction;
+import cytoscape.actions.CreateNetworkViewAction;
+import cytoscape.actions.CytoPanelAction;
+import cytoscape.actions.DeSelectAllEdgesAction;
+import cytoscape.actions.DeSelectAllNodesAction;
+import cytoscape.actions.DeselectAllAction;
+import cytoscape.actions.DestroyNetworkAction;
+import cytoscape.actions.DestroyNetworkViewAction;
+import cytoscape.actions.DestroySelectedAction;
+import cytoscape.actions.ExitAction;
+import cytoscape.actions.ExportAsGraphicsAction;
+import cytoscape.actions.FitContentAction;
+import cytoscape.actions.HelpAboutAction;
+import cytoscape.actions.HideSelectedAction;
+import cytoscape.actions.HideSelectedEdgesAction;
+import cytoscape.actions.HideSelectedNodesAction;
+import cytoscape.actions.InvertSelectedEdgesAction;
+import cytoscape.actions.InvertSelectedNodesAction;
+import cytoscape.actions.ListFromFileSelectionAction;
+import cytoscape.actions.ImportBioDataServerAction;
+import cytoscape.actions.ImportEdgeAttributesAction;
+import cytoscape.actions.ImportExpressionMatrixAction;
+import cytoscape.actions.ImportGraphFileAction;
+import cytoscape.actions.ImportNodeAttributesAction;
+import cytoscape.actions.NewWindowSelectedNodesEdgesAction;
+import cytoscape.actions.NewWindowSelectedNodesOnlyAction;
+import cytoscape.actions.OpenSessionAction;
+import cytoscape.actions.PreferenceAction;
+import cytoscape.actions.PrintAction;
+import cytoscape.actions.RotationScaleLayoutAction;
+import cytoscape.actions.ExportAsGMLAction;
+import cytoscape.actions.ExportAsInteractionsAction;
+import cytoscape.actions.ExportEdgeAttributesAction;
+import cytoscape.actions.ExportNodeAttributesAction;
+import cytoscape.actions.SaveSessionAction;
+import cytoscape.actions.SelectAllAction;
+import cytoscape.actions.SelectAllEdgesAction;
+import cytoscape.actions.SelectAllNodesAction;
+import cytoscape.actions.SelectFirstNeighborsAction;
+import cytoscape.actions.SelectionModeAction;
+import cytoscape.actions.SetVisualPropertiesAction;
+import cytoscape.actions.ShowAllAction;
+import cytoscape.actions.SpringEmbeddedLayoutMenu;
+import cytoscape.actions.SquiggleAction;
+import cytoscape.actions.ToggleVisualMapperAction;
+import cytoscape.actions.UnHideSelectedEdgesAction;
+import cytoscape.actions.UnHideSelectedNodesAction;
+import cytoscape.actions.ZoomAction;
+import cytoscape.actions.ZoomSelectedAction;
 import cytoscape.data.annotation.AnnotationGui;
-
+import cytoscape.util.CytoscapeAction;
 import cytoscape.util.CytoscapeMenuBar;
 import cytoscape.util.CytoscapeToolBar;
-import cytoscape.util.CytoscapeAction;
-import cytoscape.util.CreditScreen;
-
-import cytoscape.visual.ui.VizMapUI;
-
-import giny.view.GraphViewChangeListener;
-import giny.view.GraphViewChangeEvent;
-
 import cytoscape.view.cytopanels.CytoPanel;
 
 //------------------------------------------------------------------------------
@@ -82,7 +137,8 @@ public class CyMenus implements GraphViewChangeListener {
 	JMenu helpMenu;
 	JMenu cytoPanelMenu;
 
-	CytoscapeAction menuPrintAction, menuExportAction;
+	CytoscapeAction menuPrintAction, menuExportAction, menuSaveSessionAction,
+						menuOpenSessionAction;
 	JMenuItem vizMenuItem, vizMapperItem;
 	JCheckBoxMenuItem cytoPanelWestItem, cytoPanelEastItem, cytoPanelSouthItem;
 	JMenuItem helpContentsMenuItem, helpContextSensitiveMenuItem,
@@ -264,14 +320,14 @@ public class CyMenus implements GraphViewChangeListener {
 	public void setNodesRequiredItemsEnabled() {
 		boolean newState = Cytoscape.getCurrentNetwork().getNodeCount() > 0;
 		newState = true; // TODO: remove this once the
-							// GraphViewChangeListener system is working
+		// GraphViewChangeListener system is working
 		if (newState == nodesRequiredItemsEnabled)
 			return;
 
 		saveButton.setEnabled(newState);
 		saveSubMenu.setEnabled(newState);
 		menuPrintAction.setEnabled(newState);
-		menuExportAction.setEnabled(newState);
+		//menuExportAction.setEnabled(newState);
 		displayNWSubMenu.setEnabled(newState);
 		nodesRequiredItemsEnabled = newState;
 	}
@@ -382,7 +438,7 @@ public class CyMenus implements GraphViewChangeListener {
 					for (int i = 0; i < submenus.length; i++) {
 						if (submenus[i] instanceof JMenuItem) {
 							JMenuItem item = (JMenuItem) submenus[i];
-							if (item.getText().equals(ExportAction.MENU_LABEL)
+							if (item.getText().equals(ExportAsGraphicsAction.MENU_LABEL)
 									|| item.getText().equals(
 											PrintAction.MENU_LABEL)) {
 								item.setEnabled(!inactive);
@@ -394,8 +450,8 @@ public class CyMenus implements GraphViewChangeListener {
 				}
 			}
 		});
-		loadSubMenu = menuBar.getMenu("File.Load");
-		saveSubMenu = menuBar.getMenu("File.Save");
+		loadSubMenu = menuBar.getMenu("File.Import");
+		saveSubMenu = menuBar.getMenu("File.Export");
 		editMenu = menuBar.getMenu("Edit");
 		final JMenu f_editMenu = editMenu;
 		editMenu.addMenuListener(new MenuListener() {
@@ -417,28 +473,27 @@ public class CyMenus implements GraphViewChangeListener {
 					for (int i = 0; i < submenus.length; i++) {
 						if (submenus[i] instanceof JMenuItem) {
 							JMenuItem item = (JMenuItem) submenus[i];
-							if (inactive &&
-                                                            item.getText().equals
-                                                            ("Delete Selected Nodes/Edges")) {
-                                                          item.setEnabled(false); }
-                                                        else {
-                                                          item.setEnabled(true);
+							if (inactive
+									&& item.getText().equals(
+											"Delete Selected Nodes/Edges")) {
+								item.setEnabled(false);
+							} else {
+								item.setEnabled(true);
 							}
 						}
 					}
 				}
 			}
 		});
-		
+
 		// 
-		// Data menu.  disabled by default.
+		// Data menu. disabled by default.
 		//
 		dataMenu = menuBar.getMenu("Data");
 		final JMenu f_dataMenu = dataMenu;
-		
+
 		dataMenu.setEnabled(false);
-		
-		
+
 		dataMenu.addMenuListener(new MenuListener() {
 			public void menuCanceled(MenuEvent e) {
 			}
@@ -451,23 +506,23 @@ public class CyMenus implements GraphViewChangeListener {
 				// boolean inactive = false;
 				// if (graphView == null || graphView.nodeCount() == 0) inactive
 				// = true;
-//				CyNetwork graph = Cytoscape.getCurrentNetwork();
-//				boolean inactive = false;
-//				if (graph == null || graph.getNodeCount() == 0)
-//					inactive = true;
-//				MenuElement[] popup = f_dataMenu.getSubElements();
-//				if (popup[0] instanceof JPopupMenu) {
-//					MenuElement[] submenus = ((JPopupMenu) popup[0])
-//							.getSubElements();
-//					for (int i = 0; i < submenus.length; i++) {
-//						if (submenus[i] instanceof JMenuItem) {
-//							if (inactive)
-//								((JMenuItem) submenus[i]).setEnabled(false);
-//							else
-//								((JMenuItem) submenus[i]).setEnabled(true);
-//						}
-//					}
-//				}
+				// CyNetwork graph = Cytoscape.getCurrentNetwork();
+				// boolean inactive = false;
+				// if (graph == null || graph.getNodeCount() == 0)
+				// inactive = true;
+				// MenuElement[] popup = f_dataMenu.getSubElements();
+				// if (popup[0] instanceof JPopupMenu) {
+				// MenuElement[] submenus = ((JPopupMenu) popup[0])
+				// .getSubElements();
+				// for (int i = 0; i < submenus.length; i++) {
+				// if (submenus[i] instanceof JMenuItem) {
+				// if (inactive)
+				// ((JMenuItem) submenus[i]).setEnabled(false);
+				// else
+				// ((JMenuItem) submenus[i]).setEnabled(true);
+				// }
+				// }
+				// }
 			}
 		});
 		selectMenu = menuBar.getMenu("Select");
@@ -552,9 +607,13 @@ public class CyMenus implements GraphViewChangeListener {
 			saveButton.setEnabled(false);
 			saveSubMenu.setEnabled(false);
 			menuPrintAction.setEnabled(false);
-			menuExportAction.setEnabled(false);
+			//menuExportAction.setEnabled(false);
 			displayNWSubMenu.setEnabled(false);
 			setNodesRequiredItemsEnabled();
+			
+			menuSaveSessionAction.setEnabled(false);
+			menuOpenSessionAction.setEnabled(false);	
+			
 
 		}
 	}
@@ -565,25 +624,37 @@ public class CyMenus implements GraphViewChangeListener {
 	 */
 	private void fillMenuBar() {
 
+		
 		// fill the Load submenu
-		addAction(new LoadGraphFileAction(this));
-		addAction(new LoadNodeAttributesAction());
-		addAction(new LoadEdgeAttributesAction());
-		addAction(new LoadExpressionMatrixAction());
-		addAction(new LoadBioDataServerAction());
+		addAction(new ImportGraphFileAction(this));
+		addAction(new ImportNodeAttributesAction());
+		addAction(new ImportEdgeAttributesAction());
+		addAction(new ImportExpressionMatrixAction());
+		addAction(new ImportBioDataServerAction());
 
 		// fill the Save submenu
-		addAction(new SaveAsGMLAction());
-		addAction(new SaveAsInteractionsAction());
-		addAction(new SaveNodeAttributesAction());
-		addAction(new SaveEdgeAttributesAction());
-
+		addAction(new ExportAsGMLAction());
+		addAction(new ExportAsInteractionsAction());
+		addAction(new ExportNodeAttributesAction());
+		addAction(new ExportEdgeAttributesAction());
+		addAction(new ExportAsGraphicsAction());
+		
+		
+		// Session Save/Open
+		fileMenu.add(new JSeparator());
+		menuSaveSessionAction = new SaveSessionAction();
+		menuOpenSessionAction = new OpenSessionAction();
+		
+		addAction(menuOpenSessionAction);
+		addAction(menuSaveSessionAction);
+		
+		fileMenu.add(new JSeparator());
 		// Print Actions
 
 		menuPrintAction = new PrintAction();
-		menuExportAction = new ExportAction();
+		//menuExportAction = new ExportAsGraphicsAction();
 		addAction(menuPrintAction);
-		addAction(menuExportAction);
+		//addAction(menuExportAction);
 
 		// Exit
 		addAction(new ExitAction());
@@ -600,11 +671,8 @@ public class CyMenus implements GraphViewChangeListener {
 		addAction(new PreferenceAction());
 
 		// fill the Data menu --> moved to the browser plugin.
-		//addAction(new DisplayBrowserAction());
-		
-		
-		
-		
+		// addAction(new DisplayBrowserAction());
+
 		// addAction( new GraphObjectSelectionAction() );
 
 		// fill the Select menu
@@ -676,14 +744,14 @@ public class CyMenus implements GraphViewChangeListener {
 	 */
 	private void fillToolBar() {
 
-		loadButton = toolBar.add(new LoadGraphFileAction(this, false));
+		loadButton = toolBar.add(new ImportGraphFileAction(this, false));
 		loadButton.setIcon(new ImageIcon(getClass().getResource(
 				"images/new/load36.gif")));
 		loadButton.setToolTipText("Load Network");
 		loadButton.setBorderPainted(false);
 		loadButton.setRolloverEnabled(true);
 
-		saveButton = toolBar.add(new SaveAsGMLAction(false));
+		saveButton = toolBar.add(new ExportAsGMLAction(false));
 		saveButton.setIcon(new ImageIcon(getClass().getResource(
 				"images/new/save36.gif")));
 		saveButton.setToolTipText("Save Network as GML");
