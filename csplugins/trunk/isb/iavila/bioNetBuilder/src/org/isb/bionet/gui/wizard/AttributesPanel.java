@@ -93,8 +93,10 @@ public class AttributesPanel extends JPanel{
         this.locusName = new JRadioButton("Attach locus tag to nodes.");
         this.encodedBy = new JRadioButton("Attach RefSeq accession of encoding molecules.");
         this.definition = new JRadioButton("Attach a RefSeq \"definition\" node attribute.");
-        this.hpfp = new JRadioButton("Attach a Proteome Folding Project URL to nodes.");
-        this.dburls = new JRadioButton("Attach database URLs to nodes.");
+        this.hpfp = new JRadioButton("Attach a Proteome Folding Project URL (\"HPFP_URL\") to nodes.");
+        this.hpfp.setSelected(true);
+        this.dburls = new JRadioButton("Attach available database URLs to nodes.");
+        this.dburls.setSelected(true);
         
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel,BoxLayout.Y_AXIS));

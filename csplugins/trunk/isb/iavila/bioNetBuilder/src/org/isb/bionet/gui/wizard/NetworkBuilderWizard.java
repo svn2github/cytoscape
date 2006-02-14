@@ -26,7 +26,7 @@ import cytoscape.data.CyAttributes;
 public class NetworkBuilderWizard {
     
     protected static final int X_SIZE = 400;
-    protected static final int Y_SIZE = 425;
+    protected static final int Y_SIZE = 460;
     
     // Clients
     protected SynonymsClient synonymsClient;
@@ -235,9 +235,12 @@ public class NetworkBuilderWizard {
                     JOptionPane.showMessageDialog(taxonomyPanel,"Please select a species", "Error", JOptionPane.ERROR_MESSAGE);
                 }else{
                     // enable edge sources in the edges dialog
-                    if(edgeSourcesPanel == null)
-                        return;
-                      edgeSourcesPanel.setTaxids(taxonomyPanel.getSelectedSpeciesTaxids());
+                    if(edgeSourcesPanel != null)
+                        edgeSourcesPanel.setTaxids(taxonomyPanel.getSelectedSpeciesTaxids());
+                      
+                      if(nodeSourcesPanel != null)
+                          nodeSourcesPanel.getCytoscapeGoDialog().setSelectedSpeciesTaxid((String)taxonomyPanel.getSelectedSpeciesTaxids().get(0));
+                      
                     if(onLastStep){
                         FINISH_ACTION.actionPerformed(event);
                     }else{
@@ -250,7 +253,9 @@ public class NetworkBuilderWizard {
         JDialog dialog = createWizardDialog(back, next);
         
         JPanel explanation = 
-            createExplanationPanel("<html>Type the name of your desired species (can be an incomplete<br>name) and then press the Search button.</html>");
+            createExplanationPanel("<html><br>Type the name of a species (can be incomplete) and press"+
+                                     "<br>the Search button. Then select the matching taxid and species"+
+                                     "<br>for your network.<br></html>");
         dialog.getContentPane().add(explanation, BorderLayout.NORTH);
         
         this.taxonomyPanel = this.nodeSourcesPanel.getTaxonomySearchDialog().getTaxonomyPanel();
@@ -295,15 +300,16 @@ public class NetworkBuilderWizard {
         JPanel explanation = 
             createExplanationPanel("<html><br>Select the sources for the nodes in your biological network.<br>"+
                     "Advanced settings for some sources are available if you"+
-                    "<br>press the source's corresponding button.<br><br>"+
+                    "<br>press the source's corresponding button.<br>"+
                     "If you don't select any node sources, then nodes will be"+
-                    "<br>created automatically when edges are created (next step).<br>" +
-                    "</html>"); 
+                    "<br>created automatically when edges are created in the next step.<br><br>"+
+                    "Accepted IDs for input nodes are:"+
+                    "<ul><li>GI numbers preceded by \"GI:\"<li>RefSeq accessions preceded by \"RefSeq:\"<li>ORFs preceded by \"ORF:\"</ul></html>"); 
         
         dialog.getContentPane().add(explanation,BorderLayout.NORTH);
         
         this.nodeSourcesPanel = new NodeSourcesPanel(this.goClient, this.synonymsClient);
-        
+      
         JPanel bigPanel = new JPanel();
         bigPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
         bigPanel.add(this.nodeSourcesPanel);
@@ -335,9 +341,11 @@ public class NetworkBuilderWizard {
         JDialog dialog = createWizardDialog(back, next);
         
         JPanel explanation = createExplanationPanel(
-                "<html><br>The edge sources that you selected when specifying species<br>"+
-                "are available here.<br>"+
-                "You can set their parameters by pressing on their<br>corresponding buttons.<br></htlm>"
+                "<html><br>Select the data sources for the edges in your network.<br>"+
+                          "You can set data source parameters by pressing on their<br>"+
+                          "corresponding buttons.<br>"+
+                          "If you selected a set of nodes for your network in the<br>"+
+                          "previous step, then you can add their first neighbors.<br></htlm>"
         ); 
         
         dialog.getContentPane().add(explanation,BorderLayout.NORTH);
@@ -390,7 +398,7 @@ public class NetworkBuilderWizard {
         JDialog dialog = createWizardDialog(back, next);
         
         JPanel explanation = createExplanationPanel(
-                "<html><br>Prioritize the ID types for node labels.<br>Nodes will be labeled with the highest priority ID type available<br>in the list below.</html>"
+                "<html><br>Prioritize the ID types for node labels.<br>Nodes will be labeled with the highest priority ID type<br>available in the list below.<br></html>"
         );
         
         dialog.getContentPane().add(explanation, BorderLayout.NORTH);
@@ -429,7 +437,7 @@ public class NetworkBuilderWizard {
         JDialog dialog = createWizardDialog(back, next);
         
         JPanel explanation = createExplanationPanel(
-                "<html><br>Select the attribute options for your network.<br></html>"
+                "<html><br>Select the attributes that you wish to add to your network.<br></html>"
         );
         
         
@@ -474,7 +482,7 @@ public class NetworkBuilderWizard {
         JDialog dialog = createWizardDialog(back, next);
         
         JPanel explanation = createExplanationPanel(
-                "<html><br>Set parameters for your biological network.<br>"+
+                "<html><br>Enter the name of your network.<br>"+
                           "If you enter the name of an existing network, the new <br>interactions will be added to it.<br></html>"
         );
         

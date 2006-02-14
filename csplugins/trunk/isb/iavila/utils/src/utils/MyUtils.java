@@ -3,14 +3,13 @@ package utils;
 import java.io.*;
 import java.net.*;
 import java.util.*;
-import corejava.*;
 
 
 /**
  * Class <code>MyUtils</code>
  * 
  * @author <a href="mailto:dreiss@systemsbiology.org">David Reiss</a>
- * @version 1.9978 (Fri Nov 07 05:56:26 PST 2003)
+ * @author <a href="mailto:iavila@systemsbiology.org">Iliana Avila-Campillo</a>
  */
 public class MyUtils {
 	protected static boolean noExit = false;
@@ -120,7 +119,7 @@ public class MyUtils {
 
 	public static Vector ReadLines(InputStream is, boolean skipBlank)
 			throws Exception {
-		DataInputStream dis = new DataInputStream(is);
+        BufferedReader dis = new BufferedReader(new InputStreamReader(is));
 		if (dis == null)
 			return null;
 		String str = null;
@@ -134,8 +133,9 @@ public class MyUtils {
 	}
 
 	public static String ReadFile(String fname) throws Exception {
-		DataInputStream dis = new DataInputStream(OpenFile(fname));
-		StringBuffer out = new StringBuffer();
+        InputStream is = OpenFile(fname);
+        BufferedReader dis = new BufferedReader(new InputStreamReader(is));
+        StringBuffer out = new StringBuffer();
 		if (dis == null)
 			return null;
 		String str = null;

@@ -210,17 +210,25 @@ public class KeggGui extends JDialog implements InteractionsSourceGui {
         JPanel panel = new JPanel();
         panel.add(OK);
         
-        JButton help = new JButton("Help");
-        help.addActionListener(
+        final String help = "<html>The horizontal bar represents the number of proteins with which<br>"+ 
+                                 "KEGG compounds interact. The sliding notch on the bar specifies<br>"+
+                                 "a threshold. An interaction between a pair of proteins is created<br>"+
+                                 "if they both interact with at least one KEGG compound which has a<br>"+
+                                 "total number of interactions that is smaller than or equal to the<br>"+
+                                 "set threshold. If desired, pairs of proteins can be connected by<br>" +
+                                 "one edge for each compound they share that meats the threshold.</html>";
+                                
+        JButton helpB = new JButton("Help");
+        helpB.addActionListener(
                 new AbstractAction (){
                     
                     public void actionPerformed (ActionEvent e){
-                        JOptionPane.showMessageDialog(KeggGui.this,"HELP GOES HERE","Help",JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(KeggGui.this,help,"Help",JOptionPane.INFORMATION_MESSAGE);
                     }//actionPerformed
                 }
         );
         
-        panel.add(help);
+        panel.add(helpB);
         return panel;
     }//createButtonsPanel
 }//ProlinksGui

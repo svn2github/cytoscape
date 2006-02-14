@@ -132,6 +132,21 @@ public class GOClient extends AuthenticatedDataClient{
     }
     
     /**
+     * Finds the species with the given taxid and returns a Hashtable with that species information
+     * 
+     * @param taxid the NCBI taxid of the species
+     * @return a Hashtable with the following information:
+     * SPECIES_ID --> String parsable as Integer<br>
+     * GENUS --> String<br>
+     * SPECIES --> String<br> 
+     * SP_COMMON_NAME --> String<br>
+     */
+    public Hashtable getSpeciesWithID (String taxid) throws XmlRpcException, IOException{
+        Object table = call(this.serviceName + ".getSpeciesWithID", taxid);
+        return (Hashtable)table;
+    }
+    
+    /**
      * @param termIDs a Vector of Strings parsable as integers representing term ids
      * @param speciesID the species for which to return genes
      * @param recursive if true, then the returned table will contain entries for descendants of the given termIDs

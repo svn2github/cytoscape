@@ -147,10 +147,13 @@ public class TaxonomySearchDialog extends JDialog {
                 }//AbstractAction
         );
         
+        final String help = "<html>Enter partial or complete names of genes that you wish<br>"+
+                                   "to find. You can enter a comma separated list.<br>"+
+                                   "Example: NUC,CDC,PEX,MPT5</html>";
         helpButton.addActionListener(
                 new AbstractAction (){
                     public void actionPerformed(ActionEvent e){
-                        JOptionPane.showMessageDialog(TaxonomySearchDialog.this,"HELP GOES HERE","Help", JOptionPane.INFORMATION_MESSAGE);                        
+                        JOptionPane.showMessageDialog(TaxonomySearchDialog.this,help,"Help", JOptionPane.INFORMATION_MESSAGE);                        
                     }//actionPerformed
                 }//AbstractAction
         );

@@ -425,7 +425,7 @@ public class CyNetUtils {
         
         if( ((Boolean)atts.get(AttributesPanel.DB_URLS)).booleanValue() ){
              // These use GI numbers:
-            String prolinksURL = "http://mysql5.mbi.ucla.edu/cgi-bin/functionator/pronav?seq_id=";
+            String prolinksURL = "http://mysql5.mbi.ucla.edu/cgi-bin/functionator/pronav?gi_num=";
             String refseqURL = "http://www.ncbi.nlm.nih.gov/entrez/viewer.fcgi?db=protein&val=";
             String pirURL = "http://pir.georgetown.edu/cgi-bin/ipcEntry?id=";// append PIR id like O75936
             
@@ -472,7 +472,7 @@ public class CyNetUtils {
                 String gi = nodeid.substring(index+ SynonymsSource.GI_ID.length() + 1);
                 
                 // Prolinks: seq_id is GI
-                // http://mysql5.mbi.ucla.edu/cgi-bin/functionator/pronav?seq_id=1502861&tab=general
+                // http://mysql5.mbi.ucla.edu/cgi-bin/functionator/pronav?gi_num=1502861&tab=general
                 nodeAtts.setAttribute(nodeid,prolinksAttName,prolinksURL + gi + "&tab=general");
                 
                 // KEGG: need to get the KEGG gene id

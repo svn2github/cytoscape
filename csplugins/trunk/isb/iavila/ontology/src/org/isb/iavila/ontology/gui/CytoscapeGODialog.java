@@ -15,7 +15,7 @@ import cern.colt.list.IntArrayList;
 import giny.view.NodeView;
 //import cytoscape.data.CytoscapeData;
 
-public class CytoscapeGODialog extends JFrame {
+public class CytoscapeGODialog extends JDialog {
 
     /**
      * The name of the attribute used to save GO node attributes
@@ -42,7 +42,7 @@ public class CytoscapeGODialog extends JFrame {
      * @param go_client
      *            the GOClient to use
      */
-    public CytoscapeGODialog(GOClient go_client) {
+    public CytoscapeGODialog (GOClient go_client) {
         this(go_client, null);
     }
 
@@ -54,7 +54,7 @@ public class CytoscapeGODialog extends JFrame {
      *            the panel that will be located in the BorderLayout.SOUTH
      *            section of the dialog
      */
-    public CytoscapeGODialog(GOClient go_client, JPanel buttons_panel) {
+    public CytoscapeGODialog (GOClient go_client, JPanel buttons_panel) {
         setTitle("Cytoscape GO");
         this.goClient = go_client;
         this.recursiveRadioButton = new JRadioButton("Recursive");
@@ -66,24 +66,44 @@ public class CytoscapeGODialog extends JFrame {
      * 
      * @return the user selected GOSpecies
      */
-    public GOSpecies getSelectedSpecies() {
+    public GOSpecies getSelectedSpecies () {
         return this.selectedSpecies;
+    }
+    
+    /**
+     * 
+     * @param taxid NCBI taxid as a String parsable as an int
+     */
+    public void setSelectedSpeciesTaxid (String taxid){
+        Hashtable info = null;
+        try{
+            info = this.goClient.getSpeciesWithID(taxid);
+        }catch (Exception e){ e.printStackTrace();}
+        
+        int id = Integer.parseInt((String)info.get(GOHandler.SPECIES_ID));
+        String genus = (String)info.get(GOHandler.GENUS);
+        String species = (String)info.get(GOHandler.SPECIES);
+        String commonName = (String)info.get(GOHandler.SP_COMMON_NAME);
+        GOSpecies gSpecies = new GOSpecies(id, genus, species, commonName);
+        setSelectedSpecies(gSpecies);
     }
 
     /**
      * @param sp
      */
-    protected void setSelectedSpecies(GOSpecies sp) {
+    protected void setSelectedSpecies (GOSpecies sp) {
         this.selectedSpecies = sp;
         this.spField.setText(sp.toString());
     }
+    
+    
    
     /**
      * Sets whether or not operations should be recursive. For example, if true, createNodes will return nodes
      * with the selected terms and their descendant terms as well.
      * @param recursive
      */
-    public void setRecursive(boolean recursive){
+    public void setRecursive (boolean recursive){
         this.recursiveRadioButton.setSelected(recursive);
     }
     
@@ -92,7 +112,7 @@ public class CytoscapeGODialog extends JFrame {
      * with the selected terms and their descendant terms as well.
      */
     
-    public boolean getRecursive(){
+    public boolean getRecursive (){
         return this.recursiveRadioButton.isSelected();
     }
 
@@ -102,7 +122,7 @@ public class CytoscapeGODialog extends JFrame {
      * @param buttons_panel
      *            the panel that goes at the bottom of the dialog
      */
-    protected void create(JPanel buttons_panel) {
+    protected void create (JPanel buttons_panel) {
         getContentPane().setLayout(new BorderLayout());
 
         // 1. Select species
@@ -130,7 +150,7 @@ public class CytoscapeGODialog extends JFrame {
      * 
      * @return
      */
-    protected JPanel createSpeciesPanel() {
+    protected JPanel createSpeciesPanel () {
 
         JLabel label = new JLabel("Species that contain:");
         this.spField = new JTextField();
@@ -348,7 +368,7 @@ public class CytoscapeGODialog extends JFrame {
         }
 
         Iterator it = termToGenes.keySet().iterator();
-        ArrayList geneIDs = new ArrayList();
+        HashSet geneIDs = new HashSet();
         while (it.hasNext()) {
             String termID = (String) it.next();
             Vector genes = (Vector) termToGenes.get(termID);
@@ -356,11 +376,12 @@ public class CytoscapeGODialog extends JFrame {
             while (it2.hasNext()) {
                 String gene = (String) it2.next();
                 geneIDs.add(gene);
-                }// while it2
+            }// while it2
         }// while it.hasNext
         return (String[])geneIDs.toArray(new String[geneIDs.size()]);
     }
-   
+    
+    
     /**
      * Creates nodes that are annotated with the selected ontology terms and
      * belog to the selected species
@@ -381,7 +402,7 @@ public class CytoscapeGODialog extends JFrame {
 
         try {
             termToGenes = goClient.getGenesWithTerms(termIDs, spID, this.recursiveRadioButton.isSelected());
-            System.out.println(termToGenes);
+            //System.out.println(termToGenes);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -461,7 +482,7 @@ public class CytoscapeGODialog extends JFrame {
 
         try {
             termToGenes = goClient.getGenesWithTerms(termIDs, spID, this.recursiveRadioButton.isSelected());
-            System.out.println(termToGenes);
+            //System.out.println(termToGenes);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -561,7 +582,7 @@ public class CytoscapeGODialog extends JFrame {
                 Cytoscape.getNodeAttributes().setAttribute(node.getIdentifier(),ATTRIBUTE_NAME,termList);
             }// while it2
         }// while it.hasNext
-        System.out.println("Done setting attribuets!!!!");
+        //System.out.println("Done setting attribuets!!!!");
         if (nodes.size() == 0) {
             JOptionPane
                     .showMessageDialog(

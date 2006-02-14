@@ -259,6 +259,16 @@ public class NodeSourcesPanel extends JPanel {
     }
     
     /**
+     * Gets the annotations dialog that other GUIs can use
+     * 
+     * @return a CytoscapeGODialog
+     */
+    public CytoscapeGODialog getCytoscapeGoDialog (){
+        if(this.annotationsDialog == null) createAnnotationsDialog(this.goClient);
+        return this.annotationsDialog;
+    }
+    
+    /**
      * Updated the number of nodes from selected networks
      */
     public void updateNumNodesFromNetwork (){
@@ -313,8 +323,8 @@ public class NodeSourcesPanel extends JPanel {
                 annotationsDialog.setLocationRelativeTo(NodeSourcesPanel.this);
                 annotationsDialog.setVisible(true);
                 // The dialog is modal
-               annotationNodeIDs = annotationsDialog.getGenesWithTerms();
-               System.out.println("There are " + annotationNodeIDs.length + " nodes from annotations.");
+               //annotationNodeIDs = annotationsDialog.getGenesWithTerms();
+               //System.out.println("There are " + annotationNodeIDs.length + " nodes from annotations.");
             }//actionPerformed
             
         });
@@ -561,15 +571,12 @@ public class NodeSourcesPanel extends JPanel {
                 new AbstractAction (){
                     
                     public void actionPerformed (ActionEvent event){
-                        Collection newNodes = annotationsDialog.createNodes();
-                        ArrayList canonicals = new ArrayList();
-                        Iterator it = newNodes.iterator();
-                        while(it.hasNext()){
-                            CyNode node = (CyNode)it.next();
-                            String canonical = Cytoscape.getNodeAttributes().getStringAttribute(node.getIdentifier(), Semantics.CANONICAL_NAME);
-                            canonicals.add(canonical);
-                        }
-                        annotationNodeIDs = (String[])canonicals.toArray(new String[canonicals.size()]);
+                        System.out.println("--------- OK action performed -------------");
+                        System.out.println(annotationsDialog.getSelectedSpecies());
+                        annotationNodeIDs = annotationsDialog.getGenesWithTerms();
+                        System.out.println("num genes = " + annotationNodeIDs.length);
+                       // JOptionPane.showMessageDialog(annotationsDialog,"There are "+annotationNodeIDs.length+" genes with the selected annotations.","" +
+                       //         "BioNet Builder", JOptionPane.INFORMATION_MESSAGE);
                         annotsNodes.setText(Integer.toString(annotationNodeIDs.length));
                         annotationsDialog.dispose();
                     }
@@ -589,6 +596,7 @@ public class NodeSourcesPanel extends JPanel {
         buttonsPanel.add(cancel);
         
         this.annotationsDialog = new CytoscapeGODialog(go_client,buttonsPanel);
-        
+        //this.annotationsDialog.setModal(true);
+        this.annotationsDialog.setRecursive(true);
     }
 }

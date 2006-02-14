@@ -328,7 +328,7 @@ public class GOHandler extends SQLDBHandler {
       try{
           while(rs.next()){
               String acc = rs.getString(1);
-              if(accList.length() == 0) accList += "\"" + acc + "\""; 
+              if(accList.length() == 0) accList = "\"" + acc + "\""; 
               else accList += ",\"" + acc + "\"";  
               accToId.put(acc,rs.getString(2));
           }
@@ -348,10 +348,12 @@ public class GOHandler extends SQLDBHandler {
               String gi = "GI:" + rs.getString(1);
               String acc = rs.getString(2);
               String termID = (String)accToId.get(acc);
-              Vector gis = (Vector)result.get(termID);
-              if(gis == null) gis = new Vector();
-              gis.add(gi);
-              result.put(termID, gis);
+              if(termID != null){
+                  Vector gis = (Vector)result.get(termID);
+                  if(gis == null) gis = new Vector();
+                  gis.add(gi);
+                  result.put(termID, gis);
+              }
           }
       }catch(SQLException e){e.printStackTrace();return new Hashtable();}
       
@@ -409,6 +411,35 @@ public class GOHandler extends SQLDBHandler {
         }
         
         return species;    
+    }
+    
+    /**
+     * Finds the species with the given taxid and returns a Hashtable with that species information
+     * 
+     * @param taxid the NCBI taxid of the species
+     * @return a Hashtable with the following information:
+     * SPECIES_ID --> String parsable as Integer<br>
+     * GENUS --> String<br>
+     * SPECIES --> String<br> 
+     * SP_COMMON_NAME --> String<br>
+     */
+    public Hashtable getSpeciesWithID (String taxid){
+        String sql = "SELECT id,genus,species,common_name FROM species WHERE ncbi_taxa_id = " + taxid;
+        ResultSet rs = query(sql);
+        Hashtable info = new Hashtable();
+        try{
+            if(rs.next()){
+                String id = rs.getString(1);
+                String genus = rs.getString(2);
+                String species = rs.getString(3);
+                String commonName = rs.getString(4);
+                info.put(SPECIES_ID, id);
+                info.put(GENUS, genus);
+                info.put(SPECIES, species);
+                info.put(SP_COMMON_NAME, commonName);
+            }
+        }catch(Exception e){ e.printStackTrace();}
+        return info;
     }
     
     // -------------- Protected helper methods ----------------//
