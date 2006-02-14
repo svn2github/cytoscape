@@ -48,15 +48,21 @@ In this tutorial, you will learn about the following:
   <li> Selecting and querying specific nodes and edges </li>
   <li> Setting visual properties </li>
 </ul>
-      and this tutorial features this dataset:
-<UL>
-  <LI><A HREF="getting.started/RUAL.subset.sif">RUAL.subset.sif</A>, a 
+This tutorial and accompanying lectures were delivered at 
+<A HREF="http://www.csc.fi/suomi/info/index.phtml.en">CSC</A>, the Finnish IT center for science</A> 
+The lecture slides of background material are
+available <A HREF="getting.started.ppt">here</A> and an accompanying video
+presentation is 
+<A HREF="http://rm.tv.funet.fi:8080/ramgen/fi/csc/kurssit/2005/cytoscape/_cytos01.rm">available</A>
+courtesy of the CSC.
+<P>
+This tutorial features this dataset
+<A HREF="getting.started/RUAL.subset.sif">RUAL.subset.sif</A>, a 
     portion of a human interaction dataset published in 
     <A HREF="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=pubmed&dopt=Abstract&list_uids=16189514&query_hl=1">
     Rual et al, Nature.2005 Oct 20;437(7062):1173-8</A> and available at 
     <A HREF="http://www.cytoscape.org/cgi-bin/moin.cgi/Data_Sets/">
-    http://www.cytoscape.org/ cgi-bin/moin.cgi/Data_Sets/</A>.</LI>
-</UL>
+    http://www.cytoscape.org/ cgi-bin/moin.cgi/Data_Sets/</A>
     Before starting, please download this dataset and its companion
     attribute file <A HREF="getting.started/RUAL.na">RUAL.na</A> to 
     your computer.
@@ -193,8 +199,8 @@ names. Load this attribute file as follows:</P>
 <OL>
 	<LI><P>Under the <B>File</B> menu, select <B>Load</B>, and then <B>Node Attributes</B>.	</P>
 	<LI><P>Select the file <A HREF="RUAL.na">RUAL.na</A>, and click <B>Open</B>.  </P>
-	<LI><P>A popup window labeled ???Loading Node Attributes??? will appear.  When this
-	window reports ???Status: Done???, click <B>Close</B>.</P>
+	<LI><P>A popup window labeled <B>Loading Node Attributes</B> will appear.  When this
+	window reports <B>Status: Done</B>, click <B>Close</B>.</P>
 	<LI><P>Look at the file	<A HREF="RUAL.na">RUAL.na</A> with your favorite text 
 	editor to examine its format.</P>
 </OL>

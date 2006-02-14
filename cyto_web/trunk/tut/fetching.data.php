@@ -49,6 +49,15 @@
   <LI>Download Cytoscape-formatted data from external servers including SGD and BIND.</P>
   <LI>Fetch external data using the <B>cPath</B> plugin.
 </UL>
+<P>
+This tutorial and accompanying lectures were delivered at 
+<A HREF="http://www.csc.fi/suomi/info/index.phtml.en">CSC</A>, the Finnish IT center for science. 
+The lecture slides of background material are
+available <A HREF="fetching.data.ppt">here</A> and an accompanying video
+presentation is 
+<A HREF="http://rm.tv.funet.fi:8080/ramgen/fi/csc/kurssit/2005/cytoscape/_cytos02.rm">available</A>
+courtesy of the CSC.
+<P>
 This tutorial features the following plugin:
 <UL>
   <LI>The <A HREF="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/cpath-beta2.zip">cPath</A>
@@ -62,11 +71,6 @@ This tutorial features the following plugin:
 computer, after downloading the program and annotations from our
 website.  
 
-This tutorial and accompanying lectures were delivered at 
-<A HREF="http://www.csc.fi/math_topics/">Computer Science Center</A> in 
-Helsinki, Finland.  The lecture slides of background material are
-available <A HREF="fetching.data.ppt">here</A> and an accompanying video
-presentation will be available soon
 <P>
 
 

@@ -51,7 +51,15 @@ to:</p>
 <li>Assessing expression data in the context of a biological
 network</li>
 </ul>
-
+<P>
+This tutorial and accompanying lectures were delivered at 
+<A HREF="http://www.csc.fi/suomi/info/index.phtml.en">CSC</A>, the Finnish IT center for science.
+The lecture slides of background material are
+available <A HREF="basic.expression.ppt">here</A> and an accompanying video
+presentation is 
+<A HREF="http://rm.tv.funet.fi:8080/ramgen/fi/csc/kurssit/2005/cytoscape/_cytos05.rm">available</A>
+courtesy of the CSC.
+<P>
 This tutorial features the following data files: 
 
 <ul>
@@ -81,13 +89,7 @@ your local disk before starting.
 <p>Begin by clicking here: <a href=
 "webstart/cyto2.2.060106.jnlp">WEB START</a> (approximate download
 size: 22 MB) This starts Cytoscape on your own computer, after
-downloading the program and annotations from our website. This
-tutorial and accompanying lectures were delivered at <a href=
-"http://www.csc.fi/math_topics/">Computer Science Center</a> in
-Helsinki, Finland. The lecture slides of background material are
-available <a href="basic.expression.ppt">here</a> and an
-accompanying video presentation will be available soon.</p>
-
+downloading the program and annotations from our website. 
 <p></p>
 
 <h3>Loading expression data</h3>

@@ -46,7 +46,7 @@ assign genes to GO categories, and the majority of genes in
 organisms including human and yeast now have GO annotations. This
 section of the tutorial outlines the resources available to you
 under Cytoscape for examining a network (or sub-network), and
-asking "but what do these genes DO?</p>
+asking "but what do these genes DO?"</p>
 
 <p>If you have completed the basic Cytoscape tutorials, in this
 tutorial you will</p>
@@ -64,10 +64,12 @@ plugin.
 </ul>
 <P>
 This tutorial and accompanying lectures were delivered at 
-<A HREF="http://www.csc.fi/math_topics/">Computer Science Center</A> in 
-Helsinki, Finland.  The lecture slides of background material are
+<A HREF="http://www.csc.fi/suomi/info/index.phtml.en">CSC</A>, the Finnish IT center for science. 
+The lecture slides of background material are
 available <A HREF="GO.ppt">here</A> and an accompanying video
-presentation will be available soon.
+presentation is 
+<A HREF="http://rm.tv.funet.fi:8080/ramgen/fi/csc/kurssit/2005/cytoscape/_cytos04.rm">available</A>
+courtesy of the CSC.
 
 <p>This tutorial features the following plugins:</p>
 
