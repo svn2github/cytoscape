@@ -72,6 +72,7 @@ import cytoscape.actions.DestroyNetworkViewAction;
 import cytoscape.actions.DestroySelectedAction;
 import cytoscape.actions.ExitAction;
 import cytoscape.actions.ExportAsGraphicsAction;
+import cytoscape.actions.ExportAsXGMMLAction;
 import cytoscape.actions.FitContentAction;
 import cytoscape.actions.HelpAboutAction;
 import cytoscape.actions.HideSelectedAction;
@@ -633,6 +634,7 @@ public class CyMenus implements GraphViewChangeListener {
 		addAction(new ImportBioDataServerAction());
 
 		// fill the Save submenu
+		addAction(new ExportAsXGMMLAction());
 		addAction(new ExportAsGMLAction());
 		addAction(new ExportAsInteractionsAction());
 		addAction(new ExportNodeAttributesAction());

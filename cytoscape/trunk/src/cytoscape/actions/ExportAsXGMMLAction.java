@@ -4,12 +4,14 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Set;
 
+import javax.swing.JOptionPane;
 import javax.xml.bind.JAXBException;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
-//import cytoscape.data.writers.XGMMLWriter;
+import cytoscape.data.writers.XGMMLWriter;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
@@ -19,6 +21,12 @@ import cytoscape.util.CytoscapeAction;
 import cytoscape.util.FileUtil;
 import cytoscape.view.CyNetworkView;
 
+/**
+ * This action is for exporting network and attributes in XGMML file.
+ * 
+ * @author kono
+ * 
+ */
 public class ExportAsXGMMLAction extends CytoscapeAction {
 
 	public ExportAsXGMMLAction() {
@@ -30,14 +38,45 @@ public class ExportAsXGMMLAction extends CytoscapeAction {
 		super();
 	}
 
+	protected boolean checkNetworkCount() {
+		Set networks = Cytoscape.getNetworkSet();
+		if (networks.size() == 0) {
+			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+					"No network in this session!", "No network Error",
+					JOptionPane.INFORMATION_MESSAGE);
+			return false;
+		} else {
+			return true;
+		}
+
+	}
+
 	public void actionPerformed(ActionEvent e) {
+
+		if (checkNetworkCount() == false)
+			return;
+
+		// Create FileFilters
+		CyFileFilter xgmmlFilter = new CyFileFilter();
+		CyFileFilter xmlFilter = new CyFileFilter();
+		CyFileFilter graphFilter = new CyFileFilter();
+		// Add accepted File Extensions
+		xgmmlFilter.addExtension("xgmml");
+		xgmmlFilter.setDescription("XGMML files");
+		xmlFilter.addExtension("xml");
+		xmlFilter.setDescription("XML files");
+		graphFilter.addExtension("xgmml");
+		graphFilter.addExtension("xml");
+		graphFilter.setDescription("All xml-based network files");
 
 		// XGMML file name
 		String name;
 
 		try {
 			name = FileUtil.getFile("Export Network and Attributes as XGMML",
-					FileUtil.SAVE, new CyFileFilter[] {}).toString();
+					FileUtil.SAVE,
+					new CyFileFilter[] { xgmmlFilter, xmlFilter, graphFilter })
+					.toString();
 		} catch (Exception exp) {
 			// this is because the selection was canceled
 			return;
@@ -118,6 +157,9 @@ class ExportAsXGMMLTask implements Task {
 				.setStatus("Network and attributes are successfully saved to:  "
 						+ fileName);
 
+		System.out
+				.println("Network and attributes are exported as an XGMML file: "
+						+ fileName);
 	}
 
 	/**
@@ -155,12 +197,11 @@ class ExportAsXGMMLTask implements Task {
 	 */
 	private void saveGraph() throws IOException, JAXBException {
 
-//		FileWriter fileWriter = new FileWriter(fileName);
-//		XGMMLWriter writer = new XGMMLWriter(network, view);
-//
-//		writer.write(fileWriter);
-//		fileWriter.close();
+		FileWriter fileWriter = new FileWriter(fileName);
+		XGMMLWriter writer = new XGMMLWriter(network, view);
 
+		writer.write(fileWriter);
+		fileWriter.close();
 		// MLC: 09/19/05 BEGIN:
 		// // AJK: 09/14/05 BEGIN
 		// Cytoscape.firePropertyChange(Cytoscape.NETWORK_SAVED, null, network);
