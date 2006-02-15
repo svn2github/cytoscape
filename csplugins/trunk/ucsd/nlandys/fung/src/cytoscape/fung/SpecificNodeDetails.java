@@ -17,6 +17,7 @@ final class SpecificNodeDetails extends DefaultNodeDetails
   final IntArray m_labelCounts = new IntArray();
   final HashMap m_labelTexts = new HashMap();
   final HashMap m_labelFonts = new HashMap();
+  final HashMap m_labelScaleFactors = new HashMap();
   final HashMap m_labelPaints = new HashMap();
 
   SpecificNodeDetails(final Fung fung)
@@ -37,6 +38,7 @@ final class SpecificNodeDetails extends DefaultNodeDetails
       final Long key = new Long((((long) node) << 32) | ((long) i));
       m_labelTexts.remove(key);
       m_labelFonts.remove(key);
+      m_labelScaleFactors.remove(key);
       m_labelPaints.remove(key); }
   }
 
@@ -168,6 +170,19 @@ final class SpecificNodeDetails extends DefaultNodeDetails
     final long key = (((long) node) << 32) | ((long) labelInx);
     if (font == null) { m_labelFonts.remove(new Long(key)); }
     else { m_labelFonts.put(new Long(key), font); }
+  }
+
+  public final double labelScaleFactor(final int node, final int labelInx)
+  {
+    final long key = (((long) node) << 32) | ((long) labelInx);
+    return ((Double) m_labelScaleFactors.get(new Long(key))).doubleValue();
+  }
+
+  final void overrideLabelScaleFactor(final int node, final int labelInx,
+                                      final double scaleFactor)
+  {
+    final long key = (((long) node) << 32) | ((long) labelInx);
+    m_labelScaleFactors.put(new Long(key), new Double(scaleFactor));
   }
 
   public final Paint labelPaint(final int node, final int labelInx)
