@@ -9,7 +9,7 @@ import javax.xml.bind.JAXBException;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
-import cytoscape.data.writers.XGMMLWriter;
+//import cytoscape.data.writers.XGMMLWriter;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
@@ -155,11 +155,11 @@ class ExportAsXGMMLTask implements Task {
 	 */
 	private void saveGraph() throws IOException, JAXBException {
 
-		FileWriter fileWriter = new FileWriter(fileName);
-		XGMMLWriter writer = new XGMMLWriter(network, view);
-
-		writer.write(fileWriter);
-		fileWriter.close();
+//		FileWriter fileWriter = new FileWriter(fileName);
+//		XGMMLWriter writer = new XGMMLWriter(network, view);
+//
+//		writer.write(fileWriter);
+//		fileWriter.close();
 
 		// MLC: 09/19/05 BEGIN:
 		// // AJK: 09/14/05 BEGIN
