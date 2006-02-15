@@ -210,7 +210,8 @@ public final class NodeView
 
   public final int getLabelCount()
   {
-    return 0;
+    synchronized (m_fung.m_lock) {
+      return m_fung.m_nodeDetails.labelCount(m_node); }
   }
 
   public final NodeLabel getLabel(final int inx)
