@@ -38,10 +38,13 @@ class DNodeDetails extends IntermediateNodeDetails
     m_fillPaints.remove(key);
     m_borderWidths.remove(key);
     m_borderPaints.remove(key);
-    m_labelCounts.remove(key);
-    m_labelTexts.remove(key);
-    m_labelFonts.remove(key);
-    m_labelPaints.remove(key);
+    final Object intr = m_labelCounts.remove(key);
+    final int labelCount = ((intr == null) ? 0 : ((Integer) intr).intValue());
+    for (int i = 0; i < labelCount; i++) {
+      final Long lKey = new Long((((long) node) << 32) | ((long) i));
+      m_labelTexts.remove(lKey);
+      m_labelFonts.remove(lKey);
+      m_labelPaints.remove(lKey); }
   }
 
   public Color colorLowDetail(int node)
