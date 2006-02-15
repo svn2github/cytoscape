@@ -208,4 +208,23 @@ public final class NodeView
       m_fung.m_nodeDetails.overrideBorderPaint(m_node, borderPaint); }
   }
 
+  public final int getLabelCount()
+  {
+    return 0;
+  }
+
+  public final NodeLabel getLabel(final int inx)
+  {
+    return null;
+  }
+
+  public final void addLabel(final NodeLabel label)
+  {
+  }
+
+  public final NodeLabel removeLabel(final int inx)
+  {
+    return null;
+  }
+
 }
