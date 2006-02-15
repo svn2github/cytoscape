@@ -36,13 +36,15 @@ public class MetadataParser {
 	// 
 	private RdfRDF metadata;
 
-	// Metadata used in cytoscape.  This is a subset of dublin core.
+	// Metadata used in cytoscape. This is a subset of dublin core.
 	private static String[] defaultLabels = { "Title", "Identifier", "Source",
 			"Type", "Format", "Date", "Description" };
 
+	// Default values for new meta data. Maybe changed later...
 	private static final String DEF_URI = "http://www.cytoscape.org";
+	private static final String DEF_TYPE = "Protein-Protein Interaction";
+	private static final String DEF_FORMAT = "Cytoscape-XGMML";
 
-	
 	public MetadataParser(CyNetwork network) {
 		this.metadataLabel = "RDF";
 		this.network = network;
@@ -78,10 +80,10 @@ public class MetadataParser {
 				URI sourceURI = new URI(DEF_URI);
 				dataMap.put(defaultLabels[i], sourceURI.toASCIIString());
 			} else if (defaultLabels[i] == "Type") {
-				dataMap.put(defaultLabels[i], "Foo");
-			}
-
-			else {
+				dataMap.put(defaultLabels[i], DEF_TYPE);
+			} else if (defaultLabels[i] == "Format") {
+				dataMap.put(defaultLabels[i], DEF_FORMAT);
+			} else {
 				dataMap.put(defaultLabels[i], "N/A");
 			}
 
@@ -94,8 +96,6 @@ public class MetadataParser {
 		if (metadata != null) {
 			return metadata;
 		} else {
-
-			// JAXBContext jc = JAXBContext.newInstance(XGMML_PACKAGE);
 			ObjectFactory objFactory = new ObjectFactory();
 			metadata = objFactory.createRdfRDF();
 			RdfDescription dc = objFactory.createRdfDescription();
@@ -112,7 +112,6 @@ public class MetadataParser {
 				key = (String) it.next();
 				value = dataMap.get(key);
 				dc.getDcmes().add(set(key, value));
-				System.out.println("Writing: " + key + ", " + value);
 			}
 
 			metadata.getDescription().add(dc);
@@ -140,7 +139,7 @@ public class MetadataParser {
 		} else if (label == "Description") {
 
 			Description dsc = objF.createDescription();
-			System.out.println("Description found: " + value);
+			// System.out.println("Description found: " + value);
 
 			dsc.getContent().add(value);
 			return dsc;
