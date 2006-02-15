@@ -216,11 +216,16 @@ public final class NodeView
 
   public final NodeLabel getLabel(final int inx)
   {
+//     synchronized (m_fung.m_lock) {
+//     }
     return null;
   }
 
   public final void addLabel(final NodeLabel label)
   {
+//     synchronized (m_fung.m_lock) {
+//       final int labelInx = m_fung.m_nodeDetails.labelCount(m_node);
+//       m_fung.m_nodeDetails.overrideLabelCount(m_node, labelInx + 1);
   }
 
   public final NodeLabel removeLabel(final int inx)
