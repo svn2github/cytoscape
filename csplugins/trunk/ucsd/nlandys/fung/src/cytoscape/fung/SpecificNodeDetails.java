@@ -2,6 +2,7 @@ package cytoscape.fung;
 
 import cytoscape.util.intr.IntArray;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Paint;
 import java.util.HashMap;
 
@@ -13,6 +14,10 @@ final class SpecificNodeDetails extends DefaultNodeDetails
   final ObjArray m_fillPaints = new ObjArray();
   final ObjArray m_borderWidths = new ObjArray();
   final ObjArray m_borderPaints = new ObjArray();
+  final IntArray m_labelCounts = new IntArray();
+  final HashMap m_labelTexts = new HashMap();
+  final HashMap m_labelFonts = new HashMap();
+  final HashMap m_labelPaints = new HashMap();
 
   SpecificNodeDetails(final Fung fung)
   {
@@ -118,6 +123,58 @@ final class SpecificNodeDetails extends DefaultNodeDetails
       m_borderPaints.setObjAtIndex(null, node); }
     else {
       m_borderPaints.setObjAtIndex(paint, node); }
+  }
+
+  public final int labelCount(final int node)
+  {
+    return m_labelCounts.getIntAtIndex(node);
+  }
+
+  final void overrideLabelCount(final int node, final int count)
+  {
+    m_labelCounts.setIntAtIndex(count, node);
+  }
+
+  public final String labelText(final int node, final int labelInx)
+  {
+    final long key = (((long) node) << 32) | ((long) labelInx);
+    return (String) m_labelTexts.get(new Long(key));
+  }
+
+  final void overrideLabelText(final int node, final int labelInx,
+                               final String text)
+  {
+    final long key = (((long) node) << 32) | ((long) labelInx);
+    if (text == null) { m_labelTexts.remove(new Long(key)); }
+    else { m_labelTexts.put(new Long(key), text); }
+  }
+
+  public final Font labelFont(final int node, final int labelInx)
+  {
+    final long key = (((long) node) << 32) | ((long) labelInx);
+    return (Font) m_labelFonts.get(new Long(key));
+  }
+
+  final void overrideLabelFont(final int node, final int labelInx,
+                               final Font font)
+  {
+    final long key = (((long) node) << 32) | ((long) labelInx);
+    if (font == null) { m_labelFonts.remove(new Long(key)); }
+    else { m_labelFonts.put(new Long(key), font); }
+  }
+
+  public final Paint labelPaint(final int node, final int labelInx)
+  {
+    final long key = (((long) node) << 32) | ((long) labelInx);
+    return (Paint) m_labelPaints.get(new Long(key));
+  }
+
+  final void overrideLabelPaint(final int node, final int labelInx,
+                                final Paint paint)
+  {
+    final long key = (((long) node) << 32) | ((long) labelInx);
+    if (paint == null) { m_labelPaints.remove(new Long(key)); }
+    else { m_labelPaints.put(new Long(key), paint); }
   }
 
 }
