@@ -31,6 +31,13 @@ final class SpecificNodeDetails extends DefaultNodeDetails
     m_fillPaints.setObjAtIndex(null, node);
     m_borderWidths.setObjAtIndex(null, node);
     m_borderPaints.setObjAtIndex(null, node);
+    final int labelCount = m_labelCounts.getIntAtIndex(node);
+    m_labelCounts.setIntAtIndex(0, node);
+    for (int i = 0; i < labelCount; i++) {
+      final Long key = new Long((((long) node) << 32) | ((long) i));
+      m_labelTexts.remove(key);
+      m_labelFonts.remove(key);
+      m_labelPaints.remove(key); }
   }
 
   public final Color colorLowDetail(final int node)
