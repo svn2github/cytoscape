@@ -340,7 +340,7 @@
     <!-- ======================================================= -->
 
     <!--  Target to Create Cytoscape Jar File  -->
-    <target name="jar" depends="compile, generate_manifest"
+    <target name="jar" depends="bind, compile, generate_manifest"
             description="Creates Cytoscape Jar File.">
 
         <echo>
