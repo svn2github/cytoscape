@@ -93,11 +93,6 @@
         <fileset dir="${lib.dir}">
             <include name="**/*.jar"/>
         </fileset>
-        
-        <fileset dir="${jaxb.lib}" includes="*.jar" />
-        <fileset dir="${jwsdp.home}" includes="jwsdp-shared/lib/*.jar" />
-        <fileset dir="${jwsdp.shared.lib}" includes="*.jar" />
-        <fileset dir="${jaxpe.lib}" includes="*.jar" />
     </path>
     
     <!-- ======================================================= -->
