@@ -127,17 +127,4 @@ public class CompatibilityGraph extends BasicGraph<String,Double> {
 		}
 		return compatNodes;
 	}
-	
-
-	private String createNode( String[] nodes ) {
-		StringBuffer node1 = new StringBuffer(); 
-		int numGraphs = nodes.length;
-		for ( int z = 0; z < numGraphs-1; z++ ) {
-			node1.append(nodes[z]);
-			node1.append("|");
-		}
-		node1.append(nodes[numGraphs-1]);
-		
-		return node1.toString();
-	}
 }
