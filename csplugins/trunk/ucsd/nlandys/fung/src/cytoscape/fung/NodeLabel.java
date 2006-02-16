@@ -21,6 +21,19 @@ public final class NodeLabel extends Label
     super(text, font, scaleFactor, paint, textAnchor,
           offsetVector.getX(), offsetVector.getY(), justify);
     m_nodeAnchor = nodeAnchor;
+    switch (m_nodeAnchor) {
+    case ANCHOR_CENTER:
+    case ANCHOR_NORTH:
+    case ANCHOR_NORTHEAST:
+    case ANCHOR_EAST:
+    case ANCHOR_SOUTHEAST:
+    case ANCHOR_SOUTH:
+    case ANCHOR_SOUTHWEST:
+    case ANCHOR_WEST:
+    case ANCHOR_NORTHWEST:
+      break;
+    default:
+      throw new IllegalArgumentException("nodeAnchor is not recognized"); }
   }
 
   public final byte getNodeAnchor()

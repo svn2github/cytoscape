@@ -39,13 +39,38 @@ public abstract class Label
         byte justify)
   {
     m_text = text;
+    if (m_text == null) { throw new NullPointerException("text is null"); }
     m_font = font;
+    if (m_font == null) { throw new NullPointerException("font is null"); }
     m_scaleFactor = scaleFactor;
+    if (!(m_scaleFactor > 0.0d)) {
+      throw new IllegalArgumentException("scaleFactor is not positive"); }
     m_paint = paint;
+    if (m_paint == null) { throw new NullPointerException("paint is null"); }
     m_textAnchor = textAnchor;
+    switch (m_textAnchor) {
+    case ANCHOR_CENTER:
+    case ANCHOR_NORTH:
+    case ANCHOR_NORTHEAST:
+    case ANCHOR_EAST:
+    case ANCHOR_SOUTHEAST:
+    case ANCHOR_SOUTH:
+    case ANCHOR_SOUTHWEST:
+    case ANCHOR_WEST:
+    case ANCHOR_NORTHWEST:
+      break;
+    default:
+      throw new IllegalArgumentException("textAnchor is not recognized"); }
     m_offsetVectorX = offsetVectorX;
     m_offsetVectorY = offsetVectorY;
     m_justify = justify;
+    switch (m_justify) {
+    case JUSTIFY_CENTER:
+    case JUSTIFY_LEFT:
+    case JUSTIFY_RIGHT:
+      break;
+    default:
+      throw new IllegalArgumentException("justify is not recognized"); }
   }
 
   public final String getText()
