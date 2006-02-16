@@ -65,10 +65,6 @@
         kono@ucsd.edu for JAXB Databinding
         ===========================================================
     --> 
-    <property name="jwsdp.home" value="${lib.dir}/jwsdp-1_6" />
-    <property name="jaxb.lib" value="${jwsdp.home}/jaxb/lib" />
-    <property name="jaxpe.lib" value="${jwsdp.home}/jaxp/lib/endorsed" />
-    <property name="jwsdp.shared.lib" value="${jwsdp.home}/jwsdp-shared/lib" />
     
     <!-- The XML Schema Directory used by JAXB -->
     <property name="schema.dir" value="${basedir}/schema" />
@@ -103,20 +99,28 @@
     </taskdef>
     
     <!-- ======================================================= -->
-    <!-- Generate package using XJC compiler            -->
+    <!-- Clean generated packages -->
     <!-- ======================================================= -->
-    <target name="bind" description="Run XJC to generate new packages.">
+    <target name="clean-generated" description="Delete XJC generated packages.">
         
         <!-- Clean up generated packages -->
         <delete dir="${src.dir}/cytoscape/generated"/>
         <delete dir="${src.dir}/cytoscape/generated2"/>
+    </target>
+    
+    <!-- ======================================================= -->
+    <!-- Generate package using XJC compiler            -->
+    <!-- ======================================================= -->
+    <target name="bind" description="Run XJC to generate new packages.">
         
         <xjc schema="${schema.dir}/${cysession.schema}" target="${src.dir}" package="${package}">
+            <produces dir="${src.dir}/cytoscape/generated" includes="* impl/*" />
         </xjc>
         <xjc schema="${schema.dir}/${xgmml.schema}" target="${src.dir}" 
             package="${package}2" extension="true"
             binding="${schema.dir}/binding.xjb">
             <arg value="-nv" />
+            <produces dir="${src.dir}/cytoscape/generated2" includes="* impl/*" />
         </xjc>
         <!-- copy prop file into build dir -->
         <echo>Copying jaxb.properties from ${src.dir}/cytoscape/generated to build dir...</echo>
@@ -191,7 +195,7 @@
     <!-- Compile Cytoscape                                       -->
     <!-- ======================================================= -->
     <!--  Target to compile all code -->
-    <target name="compile" depends="prepare"
+    <target name="compile" depends="prepare, bind"
             description="Compiles all source code.">
         <javac srcdir="${src.dir}"
                destdir="${build.classes}"
@@ -340,7 +344,7 @@
     <!-- ======================================================= -->
 
     <!--  Target to Create Cytoscape Jar File  -->
-    <target name="jar" depends="bind, compile, generate_manifest"
+    <target name="jar" depends="compile, generate_manifest"
             description="Creates Cytoscape Jar File.">
 
         <echo>
