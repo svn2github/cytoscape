@@ -127,10 +127,11 @@ public class XGMMLWriter {
 		objFactory = new ObjectFactory();
 		RdfRDF metadata = null;
 		Att graphAtt = null;
+		Graphics globalGraphics = null;
 
 		jc = JAXBContext.newInstance(PACKAGE_NAME);
 		graph = objFactory.createGraph();
-
+		
 		graphAtt = objFactory.createAtt();
 		graph.setId(network.getIdentifier());
 		graph.setLabel(network.getTitle());
@@ -143,6 +144,11 @@ public class XGMMLWriter {
 		graphAtt.setName(METADATA_NAME);
 		graphAtt.getContent().add(metadata);
 		graph.getAtt().add(graphAtt);
+		// Store background color
+		globalGraphics = objFactory.createGraphics();
+		globalGraphics.setBackground(paint2string(networkView.getBackgroundPaint()));
+		
+		graph.getAtt().add(globalGraphics);
 	}
 
 	/**
