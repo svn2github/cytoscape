@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Paint;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
+import java.util.Vector;
 
 public final class NodeView
 {
@@ -210,12 +211,18 @@ public final class NodeView
 
   public final int getLabelCount()
   {
-    return 0;
+    synchronized (m_fung.m_lock) {
+      return m_fung.m_nodeDetails.labelCount(m_node); }
   }
 
   public final NodeLabel getLabel(final int inx)
   {
-    return null;
+    synchronized (m_fung.m_lock) {
+      final Vector v =
+        (Vector) m_fung.m_nodeDetails.m_labels.get(new Integer(m_node));
+      if (v == null) {
+        throw new ArrayIndexOutOfBoundsException("no labels set"); }
+      return (NodeLabel) v.get(inx); }
   }
 
   public final void addLabel(final NodeLabel label)
