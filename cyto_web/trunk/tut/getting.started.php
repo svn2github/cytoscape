@@ -77,6 +77,7 @@ annotation will not be downloaded again unless we have new versions or new
 annotation for you to use.) If Cytoscape does not start, please look at the
 <a href="tutorial.php">instructions</a> for some places to get help.<p> If at any point you wish
 to restart this tutorial, just click again on the <b>WEB START</b> link just above.
+<? include "first.time.php"; ?>
 <P>
 This tutorial and accompanying lectures were delivered at 
 <A HREF="http://www.csc.fi/math_topics/">Computer Science Center</A> in 

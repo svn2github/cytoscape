@@ -70,6 +70,7 @@ This tutorial features the following plugin:
 (approximate download size: 22 MB) This starts Cytoscape on your own
 computer, after downloading the program and annotations from our
 website.  
+<? include "first.time.php"; ?>
 
 <P>
 

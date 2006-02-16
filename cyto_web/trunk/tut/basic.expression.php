@@ -90,6 +90,7 @@ your local disk before starting.
 "webstart/cyto2.2.060106.jnlp">WEB START</a> (approximate download
 size: 22 MB) This starts Cytoscape on your own computer, after
 downloading the program and annotations from our website. 
+<? include "first.time.php"; ?>
 <p></p>
 
 <h3>Loading expression data</h3>
