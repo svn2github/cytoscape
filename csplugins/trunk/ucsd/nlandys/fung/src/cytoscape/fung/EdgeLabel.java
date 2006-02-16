@@ -29,6 +29,13 @@ public final class EdgeLabel extends Label
     super(text, font, scaleFactor, paint, textAnchor,
           offsetVector.getX(), offsetVector.getY(), justify);
     m_edgeAnchor = edgeAnchor;
+    switch (m_edgeAnchor) {
+    case EDGE_ANCHOR_MIDPOINT:
+    case EDGE_ANCHOR_SOURCE:
+    case EDGE_ANCHOR_TARGET:
+      break;
+    default:
+      throw new IllegalArgumentException("edgeAnchor is not recognized"); }
   }
 
   public final byte getEdgeAnchor()
