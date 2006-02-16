@@ -7,7 +7,7 @@ require_once 'magpie/rss_fetch.inc';
 $url = 'http://groups.google.com/group/cytoscape-announce/feed/rss_v2_0_msgs.xml';
 $rss = fetch_rss($url);
 
-echo "<A HREF='http://groups-beta.google.com/group/cytoscape-announce'>";
+echo "<A HREF='http://groups.google.com/group/cytoscape-announce'>";
 echo "Cytoscape Announcements:</A></B><P>\n";
 #  Only show the three most recent items.
 $counter = 0;
