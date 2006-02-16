@@ -28,8 +28,12 @@
   xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
   jxb:version="1.0">
   <xs:import namespace="http://www.w3.org/1999/02/22-rdf-syntax-ns#" schemaLocation="rdf.xsd"/>
+  
+  
   <xs:import namespace="http://www.w3.org/XML/1998/namespace"
-    schemaLocation="http://www.w3.org/2001/xml.xsd"/>
+    schemaLocation="xml.xsd"/>
+  
+  
   <!-- The wrapper element -->
   <xs:element name="dcmes" abstract="true"/>
   <!-- The resource description container element -->

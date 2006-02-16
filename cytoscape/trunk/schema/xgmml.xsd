@@ -12,13 +12,9 @@
 	attributeFormDefault="unqualified"
 	version="xgmml 1.0">
 
-<!-- get access to the xml: attribute groups for xml:lang -->
-<xsd:import namespace="http://www.w3.org/XML/1998/namespace" 
-	schemaLocation="http://www.w3.org/2001/xml.xsd"/>
-
 <!-- get access to the xlink: attribute groups for xlink:type (simple) -->
 <xsd:import namespace="http://www.w3.org/1999/xlink" 
-	schemaLocation="http://www.cs.rpi.edu/~puninj/XGMML/xlinks-2001.xsd"/>
+	schemaLocation="xlinks-2001.xsd"/>
 	
 <!-- For metadata  -->
    <xsd:import namespace="http://purl.org/dc/elements/1.1/" 
