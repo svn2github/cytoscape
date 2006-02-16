@@ -6,6 +6,8 @@ package org.isb.bionet;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
+import javax.swing.JOptionPane;
+
 import cytoscape.*;
 import cytoscape.plugin.*;
 import org.isb.xmlrpc.client.*;
@@ -32,7 +34,7 @@ public class BioNetPlugin extends CytoscapePlugin {
      */
     public BioNetPlugin() {
 
-       // XmlRpc.setDebug(true);
+        //XmlRpc.setDebug(true);
         
         try {
 
@@ -73,6 +75,9 @@ public class BioNetPlugin extends CytoscapePlugin {
             
         } catch (Exception ex) {
             ex.printStackTrace();
+            JOptionPane.showMessageDialog(Cytoscape.getDesktop(),"<html>There were errors while starting the BioNetwork Builder plugin.<br>"+
+                    "This probably means that the server is not running.<br>"+
+                    "Send email to iavila@systemsbiology.org with the subject line \"Restart server\".</html>","Error",JOptionPane.ERROR_MESSAGE);
         }
 
         this.wizard = new NetworkBuilderWizard(this.synClient, this.interactionsClient, this.goClient);

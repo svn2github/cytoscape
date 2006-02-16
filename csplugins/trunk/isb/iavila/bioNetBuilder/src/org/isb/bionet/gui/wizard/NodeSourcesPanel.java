@@ -273,6 +273,9 @@ public class NodeSourcesPanel extends JPanel {
      */
     public void updateNumNodesFromNetwork (){
         int numNodes = 0;
+        
+        
+        
         if(useSelectedNodes.isSelected()){
             CyNetwork [] nets = netsDialog.getSelectedNetworks();
             if(nets == null) return;
@@ -521,6 +524,16 @@ public class NodeSourcesPanel extends JPanel {
                         JCheckBox source = (JCheckBox)event.getSource();
                         netsButton.setEnabled(source.isSelected());
                         useSelectedNodes.setEnabled(useNets.isSelected());
+                        if(netsDialog == null){
+                            netsDialog = new CyNetworksDialog();
+                        }
+                        if(source.isSelected()){
+                            netsDialog.update();
+                            netsDialog.setLocationRelativeTo(NodeSourcesPanel.this);
+                            netsDialog.pack();
+                            netsDialog.setVisible(true);
+                            updateNumNodesFromNetwork();
+                            }
                     }
                 }
         );

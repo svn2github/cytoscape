@@ -5,8 +5,6 @@
 package org.isb.bionet.gui;
 
 import java.util.*;
-
-import org.exolab.castor.jdo.conf.DataSource;
 import org.isb.bionet.datasource.interactions.*;
 
 import javax.swing.*;
