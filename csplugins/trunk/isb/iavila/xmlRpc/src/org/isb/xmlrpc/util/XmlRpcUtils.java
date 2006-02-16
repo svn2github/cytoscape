@@ -42,7 +42,7 @@ public class XmlRpcUtils {
 			found = false;
 		}
 
-		// 2. Try the current working directory
+		// 2. Try the current working directory (where the Java command was invoked)
 		if(!found){
 			try {
 				file = new File(System.getProperty("user.dir"), file_name);
