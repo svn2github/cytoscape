@@ -221,12 +221,18 @@ public final class NodeView
       final Vector v =
         (Vector) m_fung.m_nodeDetails.m_labels.get(new Integer(m_node));
       if (v == null) {
-        throw new ArrayIndexOutOfBoundsException("no labels set"); }
+        throw new IndexOutOfBoundsException("no labels set on this node"); }
       return (NodeLabel) v.get(inx); }
   }
 
   public final void addLabel(final NodeLabel label)
   {
+    if (label == null) { throw new NullPointerException("label is null"); }
+    synchronized (m_fung.m_lock) {
+      Vector v =
+        (Vector) m_fung.m_nodeDetails.m_labels.get(new Integer(m_node));
+      if (v == null) { v = new Vector(); }
+      v.add(label); }
   }
 
   public final NodeLabel removeLabel(final int inx)
