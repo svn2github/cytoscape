@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Paint;
 import java.util.HashMap;
+import java.util.Vector;
 
 final class SpecificNodeDetails extends DefaultNodeDetails
 {
@@ -14,11 +15,7 @@ final class SpecificNodeDetails extends DefaultNodeDetails
   final ObjArray m_fillPaints = new ObjArray();
   final ObjArray m_borderWidths = new ObjArray();
   final ObjArray m_borderPaints = new ObjArray();
-  final IntArray m_labelCounts = new IntArray();
-  final HashMap m_labelTexts = new HashMap();
-  final HashMap m_labelFonts = new HashMap();
-  final HashMap m_labelScaleFactors = new HashMap();
-  final HashMap m_labelPaints = new HashMap();
+  final HashMap m_labels = new HashMap();
 
   SpecificNodeDetails(final Fung fung)
   {
@@ -32,14 +29,7 @@ final class SpecificNodeDetails extends DefaultNodeDetails
     m_fillPaints.setObjAtIndex(null, node);
     m_borderWidths.setObjAtIndex(null, node);
     m_borderPaints.setObjAtIndex(null, node);
-    final int labelCount = m_labelCounts.getIntAtIndex(node);
-    m_labelCounts.setIntAtIndex(0, node);
-    for (int i = 0; i < labelCount; i++) {
-      final Long key = new Long((((long) node) << 32) | ((long) i));
-      m_labelTexts.remove(key);
-      m_labelFonts.remove(key);
-      m_labelScaleFactors.remove(key);
-      m_labelPaints.remove(key); }
+    m_labels.remove(new Integer(node));
   }
 
   public final Color colorLowDetail(final int node)
@@ -136,67 +126,63 @@ final class SpecificNodeDetails extends DefaultNodeDetails
 
   public final int labelCount(final int node)
   {
-    return m_labelCounts.getIntAtIndex(node);
-  }
-
-  final void overrideLabelCount(final int node, final int count)
-  {
-    m_labelCounts.setIntAtIndex(count, node);
+    final Object v = m_labels.get(new Integer(node));
+    if (v == null) { return 0; }
+    return ((Vector) v).size();
   }
 
   public final String labelText(final int node, final int labelInx)
   {
-    final long key = (((long) node) << 32) | ((long) labelInx);
-    return (String) m_labelTexts.get(new Long(key));
-  }
-
-  final void overrideLabelText(final int node, final int labelInx,
-                               final String text)
-  {
-    final long key = (((long) node) << 32) | ((long) labelInx);
-    if (text == null) { m_labelTexts.remove(new Long(key)); }
-    else { m_labelTexts.put(new Long(key), text); }
+    final Vector v = (Vector) m_labels.get(new Integer(node));
+    return ((NodeLabel) v.get(labelInx)).getText();
   }
 
   public final Font labelFont(final int node, final int labelInx)
   {
-    final long key = (((long) node) << 32) | ((long) labelInx);
-    return (Font) m_labelFonts.get(new Long(key));
-  }
-
-  final void overrideLabelFont(final int node, final int labelInx,
-                               final Font font)
-  {
-    final long key = (((long) node) << 32) | ((long) labelInx);
-    if (font == null) { m_labelFonts.remove(new Long(key)); }
-    else { m_labelFonts.put(new Long(key), font); }
+    final Vector v = (Vector) m_labels.get(new Integer(node));
+    return ((NodeLabel) v.get(labelInx)).getFont();
   }
 
   public final double labelScaleFactor(final int node, final int labelInx)
   {
-    final long key = (((long) node) << 32) | ((long) labelInx);
-    return ((Double) m_labelScaleFactors.get(new Long(key))).doubleValue();
-  }
-
-  final void overrideLabelScaleFactor(final int node, final int labelInx,
-                                      final double scaleFactor)
-  {
-    final long key = (((long) node) << 32) | ((long) labelInx);
-    m_labelScaleFactors.put(new Long(key), new Double(scaleFactor));
+    final Vector v = (Vector) m_labels.get(new Integer(node));
+    return ((NodeLabel) v.get(labelInx)).getScaleFactor();
   }
 
   public final Paint labelPaint(final int node, final int labelInx)
   {
-    final long key = (((long) node) << 32) | ((long) labelInx);
-    return (Paint) m_labelPaints.get(new Long(key));
+    final Vector v = (Vector) m_labels.get(new Integer(node));
+    return ((NodeLabel) v.get(labelInx)).getPaint();
   }
 
-  final void overrideLabelPaint(final int node, final int labelInx,
-                                final Paint paint)
+  public final byte labelTextAnchor(final int node, final int labelInx)
   {
-    final long key = (((long) node) << 32) | ((long) labelInx);
-    if (paint == null) { m_labelPaints.remove(new Long(key)); }
-    else { m_labelPaints.put(new Long(key), paint); }
+    final Vector v = (Vector) m_labels.get(new Integer(node));
+    return ((NodeLabel) v.get(labelInx)).getTextAnchor();
+  }
+
+  public final byte labelNodeAnchor(final int node, final int labelInx)
+  {
+    final Vector v = (Vector) m_labels.get(new Integer(node));
+    return ((NodeLabel) v.get(labelInx)).getNodeAnchor();
+  }
+
+  public final float labelOffsetVectorX(final int node, final int labelInx)
+  {
+    final Vector v = (Vector) m_labels.get(new Integer(node));
+    return (float) (((NodeLabel) v.get(labelInx)).getOffsetVector().getX());
+  }
+
+  public final float labelOffsetVectorY(final int node, final int labelInx)
+  {
+    final Vector v = (Vector) m_labels.get(new Integer(node));
+    return (float) (((NodeLabel) v.get(labelInx)).getOffsetVector().getY());
+  }
+
+  public final byte labelJustify(final int node, final int labelInx)
+  {
+    final Vector v = (Vector) m_labels.get(new Integer(node));
+    return ((NodeLabel) v.get(labelInx)).getJustify();
   }
 
 }
