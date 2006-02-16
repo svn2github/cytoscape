@@ -70,6 +70,8 @@ public class XGMMLWriter {
 	// Object types
 	protected static int NODE = 1;
 	protected static int EDGE = 2;
+	
+	protected static final String BACKGROUND = "backgroundColor";
 
 	private CyAttributes nodeAttributes;
 	private CyAttributes edgeAttributes;
@@ -127,7 +129,7 @@ public class XGMMLWriter {
 		objFactory = new ObjectFactory();
 		RdfRDF metadata = null;
 		Att graphAtt = null;
-		Graphics globalGraphics = null;
+		Att globalGraphics = null;
 
 		jc = JAXBContext.newInstance(PACKAGE_NAME);
 		graph = objFactory.createGraph();
@@ -135,7 +137,6 @@ public class XGMMLWriter {
 		graphAtt = objFactory.createAtt();
 		graph.setId(network.getIdentifier());
 		graph.setLabel(network.getTitle());
-		// Graph object
 
 		// Metadata
 		mdp = new MetadataParser(network);
@@ -145,8 +146,9 @@ public class XGMMLWriter {
 		graphAtt.getContent().add(metadata);
 		graph.getAtt().add(graphAtt);
 		// Store background color
-		globalGraphics = objFactory.createGraphics();
-		globalGraphics.setBackground(paint2string(networkView.getBackgroundPaint()));
+		globalGraphics = objFactory.createAtt();
+		globalGraphics.setName(BACKGROUND);
+		globalGraphics.setValue(paint2string(networkView.getBackgroundPaint()));
 		
 		graph.getAtt().add(globalGraphics);
 	}
