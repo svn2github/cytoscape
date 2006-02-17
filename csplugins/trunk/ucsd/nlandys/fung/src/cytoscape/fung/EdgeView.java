@@ -32,4 +32,10 @@ public final class EdgeView
       return m_fung.m_edgeDetails.colorLowDetail(m_edge); }
   }
 
+  public final void setColorLowDetail(final Color colorLowDetail)
+  {
+    synchronized (m_fung.m_lock) {
+      m_fung.m_edgeDetails.overrideColorLowDetail(m_edge, colorLowDetail); }
+  }
+
 }
