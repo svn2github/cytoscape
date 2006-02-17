@@ -38,4 +38,27 @@ public final class EdgeView
       m_fung.m_edgeDetails.overrideColorLowDetail(m_edge, colorLowDetail); }
   }
 
+  public final byte getSourceArrow()
+  {
+    synchronized (m_fung.m_lock) {
+      return m_fung.m_edgeDetails.sourceArrow(m_edge); }
+  }
+
+  public final void setSourceArrow(final byte arrow)
+  {
+    synchronized (m_fung.m_lock) {
+      switch (arrow) {
+      case ARROW_NONE:
+      case ARROW_DELTA:
+      case ARROW_DIAMOND:
+      case ARROW_DISC:
+      case ARROW_TEE:
+        break;
+      default:
+        throw new IllegalArgumentException("arrow is not recognized"); }
+      { // Reconcile arrow size if not ARROW_NONE.
+      }
+      m_fung.m_edgeDetails.overrideSourceArrow(m_edge, arrow); }
+  }
+
 }
