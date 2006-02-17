@@ -170,13 +170,13 @@ final class SpecificNodeDetails extends DefaultNodeDetails
   public final float labelOffsetVectorX(final int node, final int labelInx)
   {
     final Vector v = (Vector) m_labels.get(new Integer(node));
-    return (float) (((NodeLabel) v.get(labelInx)).getOffsetVector().getX());
+    return ((NodeLabel) v.get(labelInx)).m_offsetVectorX;
   }
 
   public final float labelOffsetVectorY(final int node, final int labelInx)
   {
     final Vector v = (Vector) m_labels.get(new Integer(node));
-    return (float) (((NodeLabel) v.get(labelInx)).getOffsetVector().getY());
+    return ((NodeLabel) v.get(labelInx)).m_offsetVectorY;
   }
 
   public final byte labelJustify(final int node, final int labelInx)
