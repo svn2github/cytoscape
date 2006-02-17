@@ -27,6 +27,7 @@ import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
+import cytoscape.data.ExpressionData;
 import cytoscape.data.Semantics;
 import cytoscape.data.readers.MetadataParser;
 import cytoscape.generated2.Att;
@@ -90,14 +91,23 @@ public class XGMMLWriter {
 
 	MetadataParser mdp;
 	Graph graph = null;
-
+	ExpressionData expression;
+	
 	// Default CSS file name. Will be distributed with Cytoscape 2.3.
 	private static final String CSS_FILE = "base.css";
+	
+	private static final String FLOAT_TYPE = "float";
+	private static final String INT_TYPE = "int";
+	private static final String STRING_TYPE = "string";
+	private static final String BOOLEAN_TYPE = "boolean";
+	private static final String LIST_TYPE = "list";
+	private static final String MAP_TYPE = "map";
 
 	public XGMMLWriter(CyNetwork network, CyNetworkView view) {
 		this.network = network;
 		this.networkView = view;
-
+		expression = Cytoscape.getExpressionData();
+		
 		nodeAttributes = Cytoscape.getNodeAttributes();
 		edgeAttributes = Cytoscape.getEdgeAttributes();
 
@@ -152,6 +162,11 @@ public class XGMMLWriter {
 		
 		graph.getAtt().add(globalGraphics);
 	}
+	
+	private void makeExpression() {
+		
+	}
+	
 
 	/**
 	 * Write the XGMML file.
@@ -270,12 +285,18 @@ public class XGMMLWriter {
 						Double dAttr = nodeAttributes.getDoubleAttribute(id,
 								nodeAttNames[i]);
 						attr.setName(nodeAttNames[i]);
-						attr.setValue(dAttr.toString());
+						attr.setLabel(FLOAT_TYPE);
+						if( dAttr != null ) {
+							attr.setValue(dAttr.toString());
+						}
 					} else if (attType == CyAttributes.TYPE_INTEGER) {
 						Integer iAttr = nodeAttributes.getIntegerAttribute(id,
 								nodeAttNames[i]);
 						attr.setName(nodeAttNames[i]);
-						attr.setValue(iAttr.toString());
+						attr.setLabel(INT_TYPE);
+						if( iAttr != null ) {
+							attr.setValue(iAttr.toString());
+						}
 					} else if (attType == CyAttributes.TYPE_STRING) {
 						String sAttr = nodeAttributes.getStringAttribute(id,
 								nodeAttNames[i]);
@@ -286,19 +307,23 @@ public class XGMMLWriter {
 								&& nodeAttNames[i] == "nodeType") {
 							attr.setValue(NORMAL);
 						}
+						attr.setLabel(STRING_TYPE);
 						attr.setName(nodeAttNames[i]);
 
 					} else if (attType == CyAttributes.TYPE_BOOLEAN) {
 						Boolean bAttr = nodeAttributes.getBooleanAttribute(id,
 								nodeAttNames[i]);
 						attr.setName(nodeAttNames[i]);
-						attr.setValue(bAttr.toString());
+						attr.setLabel(BOOLEAN_TYPE);
+						if( bAttr != null )
+							attr.setValue(bAttr.toString());
 					} else if (attType == CyAttributes.TYPE_SIMPLE_LIST) {
 						// TODO: HANDLE LISTS
 						List listAttr = nodeAttributes.getAttributeList(id,
 								nodeAttNames[i]);
 
 						attr.setName(nodeAttNames[i]);
+						attr.setLabel(LIST_TYPE);
 						Iterator listIt = listAttr.iterator();
 
 						while (listIt.hasNext()) {
@@ -307,9 +332,10 @@ public class XGMMLWriter {
 							//							
 							// memberAttr.setValue(oneAttr.toString());
 							// attr.getContent().add(memberAttr);
-							String obj = (listIt.next()).toString();
+							Object obj = listIt.next();
 							Att memberAttr = objFactory.createAtt();
-							memberAttr.setValue(obj);
+							memberAttr.setValue(obj.toString());
+							memberAttr.setLabel(checkType(obj));
 							//System.out.println("!!!!!!!!!!!List obj: " + obj);
 							attr.getContent().add(memberAttr);
 
@@ -330,22 +356,30 @@ public class XGMMLWriter {
 					Double dAttr = edgeAttributes.getDoubleAttribute(id,
 							edgeAttNames[i]);
 					attr.setName(edgeAttNames[i]);
-					attr.setValue(dAttr.toString());
+					attr.setLabel(FLOAT_TYPE);
+					if(dAttr != null)
+						attr.setValue(dAttr.toString());
 				} else if (attType == CyAttributes.TYPE_INTEGER) {
 					Integer iAttr = edgeAttributes.getIntegerAttribute(id,
 							edgeAttNames[i]);
 					attr.setName(edgeAttNames[i]);
-					attr.setValue(iAttr.toString());
+					attr.setLabel(INT_TYPE);
+					if(iAttr != null)
+						attr.setValue(iAttr.toString());
 				} else if (attType == CyAttributes.TYPE_STRING) {
 					String sAttr = edgeAttributes.getStringAttribute(id,
 							edgeAttNames[i]);
 					attr.setName(edgeAttNames[i]);
-					attr.setValue(sAttr.toString());
+					attr.setLabel(STRING_TYPE);
+					if(sAttr != null)
+						attr.setValue(sAttr.toString());
 				} else if (attType == CyAttributes.TYPE_BOOLEAN) {
 					Boolean bAttr = edgeAttributes.getBooleanAttribute(id,
 							edgeAttNames[i]);
 					attr.setName(edgeAttNames[i]);
-					attr.setValue(bAttr.toString());
+					attr.setLabel(BOOLEAN_TYPE);
+					if(bAttr != null)
+						attr.setValue(bAttr.toString());
 				} else if (attType == CyAttributes.TYPE_SIMPLE_LIST) {
 					// TODO: HANDLE LISTS
 				} else if (attType == CyAttributes.TYPE_SIMPLE_MAP) {
@@ -713,6 +747,22 @@ public class XGMMLWriter {
 		return font.getName() + "-" + font.getStyle() + "-" + font.getSize();
 	}
 
+	private String checkType(Object obj) {
+		if(obj.getClass() == String.class) {
+			return STRING_TYPE;
+		} else if(obj.getClass() == Integer.class) {
+			return INT_TYPE;
+		} else if(obj.getClass() == Double.class || obj.getClass() == Float.class ) {
+			return FLOAT_TYPE;
+		} else if(obj.getClass() == String.class) {
+			return STRING_TYPE;
+		} else if(obj.getClass() == Boolean.class) {
+			return BOOLEAN_TYPE;
+		} else
+			return null;
+	}
+	
+	
 }
 
 class NamespacePrefixMapperImpl extends NamespacePrefixMapper {
