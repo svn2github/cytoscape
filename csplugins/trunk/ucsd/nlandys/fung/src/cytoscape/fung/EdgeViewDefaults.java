@@ -7,18 +7,21 @@ public final class EdgeViewDefaults
 
   public final static Color DEFAULT_COLOR_LOW_DETAIL = Color.blue;
   public final static byte DEFAULT_SOURCE_ARROW = EdgeView.ARROW_NONE;
+  public final static double DEFAULT_SOURCE_ARROW_SIZE = 2.0d;
 
   final Color m_colorLowDetail;
   final byte m_sourceArrow;
-  final float m_sourceArrowSize = 0;
+  final float m_sourceArrowSize;
 
   public EdgeViewDefaults()
   {
-    this(DEFAULT_COLOR_LOW_DETAIL, DEFAULT_SOURCE_ARROW);
+    this(DEFAULT_COLOR_LOW_DETAIL, DEFAULT_SOURCE_ARROW,
+         DEFAULT_SOURCE_ARROW_SIZE);
   }
 
   public EdgeViewDefaults(final Color colorLowDetail,
-                          final byte sourceArrow)
+                          final byte sourceArrow,
+                          final double sourceArrowSize)
   {
     m_colorLowDetail = colorLowDetail;
     if (m_colorLowDetail == null) {
@@ -33,6 +36,7 @@ public final class EdgeViewDefaults
       break;
     default:
       throw new IllegalArgumentException("sourceArrow is unrecognized"); }
+    m_sourceArrowSize = (float) sourceArrowSize;
   }
 
   public final Color getColorLowDetail()
