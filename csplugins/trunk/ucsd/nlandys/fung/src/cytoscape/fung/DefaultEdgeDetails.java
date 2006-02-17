@@ -1,8 +1,8 @@
 package cytoscape.fung;
 
-import java.awt.Color;
-
 import cytoscape.render.stateful.EdgeDetails;
+import java.awt.Color;
+import java.awt.Paint;
 
 class DefaultEdgeDetails extends EdgeDetails
 {
@@ -36,6 +36,62 @@ class DefaultEdgeDetails extends EdgeDetails
       return m_fung.m_directedEdgeDefaults.m_sourceArrowSize; }
     else {
       return m_fung.m_undirectedEdgeDefaults.m_sourceArrowSize; }
+  }
+
+  public Paint sourceArrowPaint(int edge)
+  {
+    if (m_fung.getGraphModel().edgeType(edge) > 0) {
+      return m_fung.m_directedEdgeDefaults.m_sourceArrowPaint; }
+    else {
+      return m_fung.m_undirectedEdgeDefaults.m_sourceArrowPaint; }
+  }
+
+  public byte targetArrow(int edge)
+  {
+    if (m_fung.getGraphModel().edgeType(edge) > 0) {
+      return m_fung.m_directedEdgeDefaults.m_targetArrow; }
+    else {
+      return m_fung.m_undirectedEdgeDefaults.m_targetArrow; }
+  }
+
+  public float targetArrowSize(int edge)
+  {
+    if (m_fung.getGraphModel().edgeType(edge) > 0) {
+      return m_fung.m_directedEdgeDefaults.m_targetArrowSize; }
+    else {
+      return m_fung.m_undirectedEdgeDefaults.m_targetArrowSize; }
+  }
+
+  public Paint targetArrowPaint(int edge)
+  {
+    if (m_fung.getGraphModel().edgeType(edge) > 0) {
+      return m_fung.m_directedEdgeDefaults.m_targetArrowPaint; }
+    else {
+      return m_fung.m_undirectedEdgeDefaults.m_targetArrowPaint; }
+  }
+
+  public float segmentThickness(int edge)
+  {
+    if (m_fung.getGraphModel().edgeType(edge) > 0) {
+      return m_fung.m_directedEdgeDefaults.m_segmentThickness; }
+    else {
+      return m_fung.m_undirectedEdgeDefaults.m_segmentThickness; }
+  }
+
+  public Paint segmentPaint(int edge)
+  {
+    if (m_fung.getGraphModel().edgeType(edge) > 0) {
+      return m_fung.m_directedEdgeDefaults.m_segmentPaint; }
+    else {
+      return m_fung.m_undirectedEdgeDefaults.m_segmentPaint; }
+  }
+
+  public float segmentDashLength(int edge)
+  {
+    if (m_fung.getGraphModel().edgeType(edge) > 0) {
+      return m_fung.m_directedEdgeDefaults.m_segmentDashLength; }
+    else {
+      return m_fung.m_undirectedEdgeDefaults.m_segmentDashLength; }
   }
 
 }
