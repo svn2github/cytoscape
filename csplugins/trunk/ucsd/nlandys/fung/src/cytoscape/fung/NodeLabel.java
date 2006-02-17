@@ -19,7 +19,7 @@ public final class NodeLabel extends Label
                    final byte justify)
   {
     super(text, font, scaleFactor, paint, textAnchor,
-          offsetVector.getX(), offsetVector.getY(), justify);
+          (float) offsetVector.getX(), (float) offsetVector.getY(), justify);
     m_nodeAnchor = nodeAnchor;
     switch (m_nodeAnchor) {
     case ANCHOR_CENTER:
