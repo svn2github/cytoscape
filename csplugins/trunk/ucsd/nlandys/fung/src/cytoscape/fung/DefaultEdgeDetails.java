@@ -30,4 +30,12 @@ class DefaultEdgeDetails extends EdgeDetails
       return m_fung.m_undirectedEdgeDefaults.m_sourceArrow; }
   }
 
+  public float sourceArrowSize(int edge)
+  {
+    if (m_fung.getGraphModel().edgeType(edge) > 0) {
+      return m_fung.m_directedEdgeDefaults.m_sourceArrowSize; }
+    else {
+      return m_fung.m_undirectedEdgeDefaults.m_sourceArrowSize; }
+  }
+
 }
