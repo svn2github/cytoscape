@@ -57,8 +57,37 @@ public final class EdgeView
       default:
         throw new IllegalArgumentException("arrow is not recognized"); }
       { // Reconcile arrow size if not ARROW_NONE.
+        if (arrow != ARROW_NONE) {
+          final double segmentThickness = getSegmentThickness();
+          final double sourceArrowSize = getSourceArrowSize();
+          if (!(sourceArrowSize >= segmentThickness)) {
+            setSourceArrowSize(segmentThickness); } }
       }
       m_fung.m_edgeDetails.overrideSourceArrow(m_edge, arrow); }
+  }
+
+  public final double getSourceArrowSize()
+  {
+    synchronized (m_fung.m_lock) {
+      return m_fung.m_edgeDetails.sourceArrowSize(m_edge); }
+  }
+
+  public final void setSourceArrowSize(final double arrowSize)
+  {
+    synchronized (m_fung.m_lock) {
+      float fArrowSize = (float) arrowSize;
+      if (!(fArrowSize >= 0.0f)) {
+        throw new IllegalArgumentException
+          ("arrowSize must be positive or zero"); }
+      { // Reconcile arrow size.
+      }
+      m_fung.m_edgeDetails.overrideSourceArrowSize(m_edge, fArrowSize); }
+  }
+
+  public final double getSegmentThickness()
+  {
+    synchronized (m_fung.m_lock) {
+      return m_fung.m_edgeDetails.segmentThickness(m_edge); }
   }
 
 }

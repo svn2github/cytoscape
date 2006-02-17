@@ -8,6 +8,7 @@ final class SpecificEdgeDetails extends DefaultEdgeDetails
 
   final ObjArray m_colorsLowDetail = new ObjArray();
   final IntArray m_sourceArrows = new IntArray();
+  final ObjArray m_sourceArrowSizes = new ObjArray();
 
   SpecificEdgeDetails(final Fung fung)
   {
@@ -54,6 +55,21 @@ final class SpecificEdgeDetails extends DefaultEdgeDetails
       m_sourceArrows.setIntAtIndex(0, edge); }
     else {
       m_sourceArrows.setIntAtIndex(256 + (int) arrow, edge); }
+  }
+
+  public final float sourceArrowSize(final int edge)
+  {
+    final Object o = m_sourceArrowSizes.getObjAtIndex(edge);
+    if (o == null) { return super.sourceArrowSize(edge); }
+    return ((Float) o).floatValue();
+  }
+
+  final void overrideSourceArrowSize(final int edge, final float size)
+  {
+    if (size == super.sourceArrowSize(edge)) {
+      m_sourceArrowSizes.setObjAtIndex(null, edge); }
+    else {
+      m_sourceArrowSizes.setObjAtIndex(new Float(size), edge); }
   }
 
 }
