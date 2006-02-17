@@ -9,6 +9,9 @@ public final class NodeLabel extends Label
 
   final byte m_nodeAnchor;
 
+  /**
+   * @param offsetVector may be null.
+   */
   public NodeLabel(final String text,
                    final Font font,
                    final double scaleFactor,
@@ -19,7 +22,9 @@ public final class NodeLabel extends Label
                    final byte justify)
   {
     super(text, font, scaleFactor, paint, textAnchor,
-          (float) offsetVector.getX(), (float) offsetVector.getY(), justify);
+          ((offsetVector == null) ? 0.0f : (float) offsetVector.getX()),
+          ((offsetVector == null) ? 0.0f : (float) offsetVector.getY()),
+          justify);
     m_nodeAnchor = nodeAnchor;
     switch (m_nodeAnchor) {
     case ANCHOR_CENTER:

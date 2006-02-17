@@ -17,6 +17,9 @@ public final class EdgeLabel extends Label
 
   final byte m_edgeAnchor;
 
+  /**
+   * @param offsetVector may be null.
+   */
   public EdgeLabel(final String text,
                    final Font font,
                    final double scaleFactor,
@@ -27,7 +30,9 @@ public final class EdgeLabel extends Label
                    final byte justify)
   {
     super(text, font, scaleFactor, paint, textAnchor,
-          (float) offsetVector.getX(), (float) offsetVector.getY(), justify);
+          ((offsetVector == null) ? 0.0f : (float) offsetVector.getX()),
+          ((offsetVector == null) ? 0.0f : (float) offsetVector.getY()),
+          justify);
     m_edgeAnchor = edgeAnchor;
     switch (m_edgeAnchor) {
     case EDGE_ANCHOR_MIDPOINT:
