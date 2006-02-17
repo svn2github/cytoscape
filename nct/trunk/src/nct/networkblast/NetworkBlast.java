@@ -117,16 +117,6 @@ public class NetworkBlast {
 			SearchGraph colorCoding = new ColorCodingPathSearch(pathSize);
 			results_paths = colorCoding.searchGraph(compatGraph, logScore);
 
-			if (!QUIET) {
-				DecimalFormat myFormatter = new DecimalFormat("#0.00");
-				System.out.println("# path results");
-				for (int i = 0; i < results_paths.size(); i++) {
-					System.out.println("path " + i + ": "
-							+ results_paths.get(i).getNodes() + " : "
-							+ results_paths.get(i).getScore());
-				}
-			}
-
 			if (!QUIET)
 				System.out.println("# begin complexes search");
 			SearchGraph greedyComplexes = new GreedyComplexSearch(
@@ -135,13 +125,34 @@ public class NetworkBlast {
 			results_complexes = greedyComplexes.searchGraph(compatGraph, logScore);
 
 			if (!QUIET) {
-				System.out.println("# complexes results: " );
-				for (int i = 0; i < results_complexes.size(); i++) {
-					System.out.println("complex " + i + ": "
-							+ results_complexes.get(i).getNodes() + " : "
-							+ results_complexes.get(i).getScore());
+				System.out.println("# found " + results_paths.size()
+						+ " unfiltered paths");
+				System.out.println("# found " + results_complexes.size()
+						+ " unfiltered complexes");
+			}
 
-				}
+			Filter dupeFilter = new DuplicateThresholdFilter(1.0);
+			results_paths = dupeFilter.filter(results_paths);
+			results_complexes = dupeFilter.filter(results_complexes);
+
+			if (!QUIET) {
+				System.out.println("# found " + results_paths.size()
+						+ " filtered paths");
+				System.out.println("# found " + results_complexes.size()
+						+ " filtered complexes");
+			}
+			if (!QUIET) {
+				DecimalFormat myFormatter = new DecimalFormat("#0.00");
+				System.out.println("# path results");
+				for (int i = 0; i < results_paths.size(); i++) 
+					System.out.println("path " + i + ": " + results_paths.get(i).toString());
+			}
+
+			if (!QUIET) {
+				System.out.println("# complexes results: " );
+				for (int i = 0; i < results_complexes.size(); i++) 
+					System.out.println("complex " + i + ": " + results_complexes.get(i).toString());
+
 			}
 
 			if (SERIALIZE) {
@@ -165,23 +176,6 @@ public class NetworkBlast {
 				zipper.write(arraySol);
 			}
 
-			if (!QUIET) {
-				System.out.println("# found " + results_paths.size()
-						+ " unfiltered paths");
-				System.out.println("# found " + results_complexes.size()
-						+ " unfiltered complexes");
-			}
-
-			Filter dupeFilter = new DuplicateThresholdFilter(1.0);
-			results_paths = dupeFilter.filter(results_paths);
-			results_complexes = dupeFilter.filter(results_complexes);
-
-			if (!QUIET) {
-				System.out.println("# found " + results_paths.size()
-						+ " filtered paths");
-				System.out.println("# found " + results_complexes.size()
-						+ " filtered complexes");
-			}
 
 		} catch (IOException e1) {
 			log.severe("Error reading file: " + e1.getMessage());

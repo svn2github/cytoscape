@@ -87,8 +87,8 @@ public class BlastGraph<NodeType extends Comparable<NodeType>,WeightType extends
 	 * Sets the location of the database.
 	 * @param location The new location of the sequence database.
 	 */
-	public void setDBLocation(String loc) {
-		dbLocation = loc;
+	public void setDBLocation(String location) {
+		dbLocation = location;
 	}
 
 	/**

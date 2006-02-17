@@ -171,4 +171,9 @@ public interface Graph<NodeType extends Comparable<NodeType>,
 	 */
 	public Object clone();
 
+	/**
+	 * Returns a String representation of the graph format.
+	 */
+	public String toString();
+
 }

@@ -64,7 +64,7 @@ public interface SequenceGraph< NodeType extends Comparable<NodeType>,
 	 * Sets the location of the database.
 	 * @param location The new location of the sequence database.
 	 */
-	public void setDBLocation(String loc); 
+	public void setDBLocation(String location); 
 
 	/**
 	 * Sets the type of the database.

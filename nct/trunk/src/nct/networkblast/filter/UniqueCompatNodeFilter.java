@@ -31,7 +31,7 @@ public class UniqueCompatNodeFilter implements Filter<String,Double> {
 	if (solutions == null) 
 	    return null;
 
-	System.out.println("unfiltered set size: " + solutions.size());
+	//System.out.println("unfiltered set size: " + solutions.size());
 
 	List<Graph<String,Double>> newSolns = new Vector<Graph<String,Double>>();
 
@@ -51,7 +51,7 @@ public class UniqueCompatNodeFilter implements Filter<String,Double> {
 			newSolns.add( graph );
 	}
 
-	System.out.println("filtered set size: " + newSolns.size());
+	//System.out.println("filtered set size: " + newSolns.size());
 
 	return newSolns;
     }

@@ -416,6 +416,12 @@ public class BasicGraph<NodeType extends Comparable<NodeType>,WeightType extends
 		s.append(Integer.toString(numberOfNodes()));
 		s.append("   num edges: ");
 		s.append(Integer.toString(numberOfEdges()));
+		
+		String newline = System.getProperty("line.separator");
+		s.append(newline);
+
+		for (Edge<NodeType,WeightType> e: getEdges()) 
+			s.append( e.getSourceNode().toString() + " " + e.getWeight().toString() + " " + e.getTargetNode().toString() + newline );
 
 		return s.toString();
 	}

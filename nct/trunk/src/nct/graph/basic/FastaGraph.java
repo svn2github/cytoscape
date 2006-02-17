@@ -103,8 +103,8 @@ public class FastaGraph<NodeType extends Comparable<NodeType>,WeightType extends
          * Sets the location of the database.
          * @param location The new location of the sequence database.
          */
-        public void setDBLocation(String loc) {
-                fileLocation = loc;
+        public void setDBLocation(String location) {
+                fileLocation = location;
         }
 
         /**
