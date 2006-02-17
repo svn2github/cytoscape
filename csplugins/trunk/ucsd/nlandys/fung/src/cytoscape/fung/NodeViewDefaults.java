@@ -19,7 +19,7 @@ public final class NodeViewDefaults
   final Color m_colorLowDetail;
   final byte m_shape;
   final Paint m_fillPaint;
-  final double m_borderWidth;
+  final float m_borderWidth;
   final Paint m_borderPaint;
 
   public NodeViewDefaults()
@@ -67,8 +67,8 @@ public final class NodeViewDefaults
     m_fillPaint = fillPaint;
     if (m_fillPaint == null) {
       throw new NullPointerException("fillPaint is null"); }
-    m_borderWidth = borderWidth;
-    if (!(m_borderWidth >= 0.0d)) {
+    m_borderWidth = (float) borderWidth;
+    if (!(m_borderWidth >= 0.0f)) {
       throw new IllegalArgumentException("borderWidth is negative"); }
     if (!(m_borderWidth <= Math.min(m_widthDiv2, m_heightDiv2) / 3.0d)) {
       throw new IllegalArgumentException
