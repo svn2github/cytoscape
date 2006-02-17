@@ -27,7 +27,7 @@ public final class EdgeLabel extends Label
                    final byte justify)
   {
     super(text, font, scaleFactor, paint, textAnchor,
-          offsetVector.getX(), offsetVector.getY(), justify);
+          (float) offsetVector.getX(), (float) offsetVector.getY(), justify);
     m_edgeAnchor = edgeAnchor;
     switch (m_edgeAnchor) {
     case EDGE_ANCHOR_MIDPOINT:
