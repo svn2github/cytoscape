@@ -31,7 +31,7 @@ class DefaultNodeDetails extends NodeDetails
 
   public float borderWidth(int node)
   {
-    return (float) m_fung.m_nodeDefaults.m_borderWidth;
+    return m_fung.m_nodeDefaults.m_borderWidth;
   }
 
   public Paint borderPaint(int node)
