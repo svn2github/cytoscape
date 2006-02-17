@@ -10,6 +10,7 @@ public final class EdgeViewDefaults
 
   final Color m_colorLowDetail;
   final byte m_sourceArrow;
+  final float m_sourceArrowSize = 0;
 
   public EdgeViewDefaults()
   {
