@@ -20,25 +20,47 @@ public final class Fung
   final RTree m_rtree = new RTree();
 
   private TopologyChangeListener m_topLis = null;
-  final SpecificNodeDetails m_nodeDetails;
   final NodeViewDefaults m_nodeDefaults;
+  final EdgeViewDefaults m_directedEdgeDefaults;
+  final EdgeViewDefaults m_undirectedEdgeDefaults;
+  final SpecificNodeDetails m_nodeDetails;
+  final SpecificEdgeDetails m_edgeDetails;
 
   public Fung()
   {
-    this(null);
+    this(null, null, null);
   }
 
-  public Fung(NodeViewDefaults nodeDefaults)
+  public Fung(NodeViewDefaults nodeDefaults,
+              EdgeViewDefaults directedEdgeDefaults,
+              EdgeViewDefaults undirectedEdgeDefaults)
   {
     if (nodeDefaults == null) {
       nodeDefaults = new NodeViewDefaults(); }
     m_nodeDefaults = nodeDefaults;
+    if (directedEdgeDefaults == null) {
+      directedEdgeDefaults = new EdgeViewDefaults(); }
+    m_directedEdgeDefaults = directedEdgeDefaults;
+    if (undirectedEdgeDefaults == null) {
+      undirectedEdgeDefaults = new EdgeViewDefaults(); }
+    m_undirectedEdgeDefaults = undirectedEdgeDefaults;
     m_nodeDetails = new SpecificNodeDetails(this);
+    m_edgeDetails = new SpecificEdgeDetails(this);
   }
 
   public final NodeViewDefaults getNodeViewDefaults()
   {
     return m_nodeDefaults;
+  }
+
+  public final EdgeViewDefaults getDirectedEdgeViewDefaults()
+  {
+    return m_directedEdgeDefaults;
+  }
+
+  public final EdgeViewDefaults getUndirectedEdgeViewDefaults()
+  {
+    return m_undirectedEdgeDefaults;
   }
 
   public final void addTopologyChangeListener(
