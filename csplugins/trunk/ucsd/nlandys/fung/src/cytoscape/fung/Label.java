@@ -30,12 +30,12 @@ public abstract class Label
   final double m_scaleFactor;
   final Paint m_paint;
   final byte m_textAnchor;
-  final double m_offsetVectorX;
-  final double m_offsetVectorY;
+  final float m_offsetVectorX;
+  final float m_offsetVectorY;
   final byte m_justify;
 
   Label(String text, Font font, double scaleFactor, Paint paint,
-        byte textAnchor, double offsetVectorX, double offsetVectorY,
+        byte textAnchor, float offsetVectorX, float offsetVectorY,
         byte justify)
   {
     m_text = text;
