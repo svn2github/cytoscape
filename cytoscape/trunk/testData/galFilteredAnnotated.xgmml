@@ -13,7 +13,7 @@
             </rdf:Description>
         </rdf:RDF>
     </att>
-    <att value="#ffffcc" name="backgroundColor"/>
+    <att value="#eeffcc" name="backgroundColor"/>
     <node id="-331" label="YBR043C" name="base">
         <att label="list" name="GO Molecular Function (level 3)">
             <att value="molecular_function unknown" label="string"/>
