@@ -59,10 +59,13 @@ public final class EdgeView
         throw new IllegalArgumentException("arrow is not recognized"); }
       { // Reconcile arrow size if not ARROW_NONE.
         if (arrow != ARROW_NONE) {
-          final double segmentThickness = getSegmentThickness();
-          final double sourceArrowSize = getSourceArrowSize();
+          final float segmentThickness =
+            m_fung.m_edgeDetails.segmentThickness(m_edge);
+          final float sourceArrowSize =
+            m_fung.m_edgeDetails.sourceArrowSize(m_edge);
           if (!(sourceArrowSize >= segmentThickness)) {
-            setSourceArrowSize(segmentThickness); } }
+            m_fung.m_edgeDetails.overrideSourceArrowSize
+              (m_edge, segmentThickness); } }
       }
       m_fung.m_edgeDetails.overrideSourceArrow(m_edge, arrow); }
   }
@@ -81,8 +84,9 @@ public final class EdgeView
         throw new IllegalArgumentException
           ("arrowSize must be positive or zero"); }
       { // Reconcile arrow size.
-        if (getSourceArrow() != ARROW_NONE) {
-          final double segmentThickness = getSegmentThickness();
+        if (m_fung.m_edgeDetails.sourceArrow(m_edge) != ARROW_NONE) {
+          final double segmentThickness =
+            m_fung.m_edgeDetails.segmentThickness(m_edge);
           if (!(fArrowSize >= segmentThickness)) {
             fArrowSize = (float) segmentThickness; } }
       }
@@ -121,10 +125,13 @@ public final class EdgeView
         throw new IllegalArgumentException("arrow is not recognized"); }
       { // Reconcile arrow size if not ARROW_NONE.
         if (arrow != ARROW_NONE) {
-          final double segmentThickness = getSegmentThickness();
-          final double targetArrowSize = getTargetArrowSize();
+          final float segmentThickness =
+            m_fung.m_edgeDetails.segmentThickness(m_edge);
+          final float targetArrowSize =
+            m_fung.m_edgeDetails.targetArrowSize(m_edge);
           if (!(targetArrowSize >= segmentThickness)) {
-            setTargetArrowSize(segmentThickness); } }
+            m_fung.m_edgeDetails.overrideTargetArrowSize
+              (m_edge, segmentThickness); } }
       }
       m_fung.m_edgeDetails.overrideTargetArrow(m_edge, arrow); }
   }
@@ -143,8 +150,9 @@ public final class EdgeView
         throw new IllegalArgumentException
           ("arrowSize must be positive or zero"); }
       { // Reconcile arrow size.
-        if (getTargetArrow() != ARROW_NONE) {
-          final double segmentThickness = getSegmentThickness();
+        if (m_fung.m_edgeDetails.targetArrow(m_edge) != ARROW_NONE) {
+          final double segmentThickness =
+            m_fung.m_edgeDetails.segmentThickness(m_edge);
           if (!(fArrowSize >= segmentThickness)) {
             fArrowSize = (float) segmentThickness; } }
       }
