@@ -11,6 +11,9 @@ final class SpecificEdgeDetails extends DefaultEdgeDetails
   final IntArray m_sourceArrows = new IntArray();
   final ObjArray m_sourceArrowSizes = new ObjArray();
   final ObjArray m_sourceArrowPaints = new ObjArray();
+  final IntArray m_targetArrows = new IntArray();
+  final ObjArray m_targetArrowSizes = new ObjArray();
+  final ObjArray m_targetArrowPaints = new ObjArray();
 
   SpecificEdgeDetails(final Fung fung)
   {
@@ -88,6 +91,55 @@ final class SpecificEdgeDetails extends DefaultEdgeDetails
       m_sourceArrowPaints.setObjAtIndex(null, edge); }
     else {
       m_sourceArrowPaints.setObjAtIndex(paint, edge); }
+  }
+
+  public final byte targetArrow(final int edge)
+  {
+    final int i = m_targetArrows.getIntAtIndex(edge);
+    if (i == 0) { return super.targetArrow(edge); }
+    return (byte) (i - 256);
+  }
+
+  /*
+   * The arrow argument must be pre-checked for correctness.
+   */
+  final void overrideTargetArrow(final int edge, final byte arrow)
+  {
+    if (arrow == super.targetArrow(edge)) {
+      m_targetArrows.setIntAtIndex(0, edge); }
+    else {
+      m_targetArrows.setIntAtIndex(256 + (int) arrow, edge); }
+  }
+
+  public final float targetArrowSize(final int edge)
+  {
+    final Object o = m_targetArrowSizes.getObjAtIndex(edge);
+    if (o == null) { return super.targetArrowSize(edge); }
+    return ((Float) o).floatValue();
+  }
+
+  final void overrideTargetArrowSize(final int edge, final float size)
+  {
+    if (size == super.targetArrowSize(edge)) {
+      m_targetArrowSizes.setObjAtIndex(null, edge); }
+    else {
+      m_targetArrowSizes.setObjAtIndex(new Float(size), edge); }
+  }
+
+  public final Paint targetArrowPaint(final int edge)
+  {
+    final Object o = m_targetArrowPaints.getObjAtIndex(edge);
+    if (o == null) { return super.targetArrowPaint(edge); }
+    return (Paint) o;
+  }
+
+  final void overrideTargetArrowPaint(final int edge, final Paint paint)
+  {
+    if (paint == null ||
+        paint.equals(super.targetArrowPaint(edge))) {
+      m_targetArrowPaints.setObjAtIndex(null, edge); }
+    else {
+      m_targetArrowPaints.setObjAtIndex(paint, edge); }
   }
 
 }
