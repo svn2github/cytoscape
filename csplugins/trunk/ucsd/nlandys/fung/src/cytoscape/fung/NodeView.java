@@ -102,19 +102,20 @@ public final class NodeView
       m_fung.m_rtree.delete(m_node);
       m_fung.m_rtree.insert(m_node, xMin, yMin, xMax, yMax);
       { // Reconcile node shape if rounded rectangle.
-        final byte shape = getShape();
+        final byte shape = m_fung.m_nodeDetails.shape(m_node);
         if (shape == SHAPE_ROUNDED_RECTANGLE) {
           if (!(Math.max(((double) xMax) - xMin, ((double) yMax) - yMin) <
                 2.0d * Math.min(((double) xMax) - xMin,
                                 ((double) yMax) - yMin))) {
-            setShape(SHAPE_RECTANGLE); } }
+            m_fung.m_nodeDetails.overrideShape(m_node, SHAPE_RECTANGLE); } }
       }
       { // Reconcile border width.
-        final double borderWidth = getBorderWidth();
+        final float borderWidth = m_fung.m_nodeDetails.borderWidth(m_node);
         final double borderWidthConstraint =
           Math.min(((double) xMax) - xMin, ((double) yMax) - yMin) / 6.0d;
         if (borderWidth > borderWidthConstraint) {
-          setBorderWidth(borderWidthConstraint); }
+          m_fung.m_nodeDetails.overrideBorderWidth
+            (m_node, (float) borderWidthConstraint); }
       } }
   }
 
