@@ -1,8 +1,7 @@
 package org.isb.bionet.gui;
 import javax.swing.*;
-import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
-import java.awt.peer.ButtonPeer;
+
 
 import org.isb.xmlrpc.client.*;
 

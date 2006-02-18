@@ -72,7 +72,7 @@ public class TaxonomyPanel extends JPanel{
         
         // the text field to enter species
         JPanel spLabelPanel = new JPanel();
-        JLabel spLabel = new JLabel("Species that contain:");
+        JLabel spLabel = new JLabel("Species search string:");
         spLabelPanel.add(spLabel);
         this.speciesInput = new JTextField(10);
         spLabelPanel.add(Box.createHorizontalStrut(5));

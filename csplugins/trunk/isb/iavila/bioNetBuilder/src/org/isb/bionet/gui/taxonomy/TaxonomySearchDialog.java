@@ -84,7 +84,7 @@ public class TaxonomySearchDialog extends JDialog {
         rightPanel.setLayout(new BorderLayout());
         
         JPanel gLabelPanel = new JPanel();
-        JLabel geneLabel = new JLabel("Genes that contain:");
+        JLabel geneLabel = new JLabel("Genes search string:");
         gLabelPanel.add(geneLabel);
         geneInput = new JTextField(10);
         gLabelPanel.add(Box.createHorizontalStrut(5));
