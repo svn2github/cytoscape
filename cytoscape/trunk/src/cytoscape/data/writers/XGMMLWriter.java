@@ -96,12 +96,12 @@ public class XGMMLWriter {
 	// Default CSS file name. Will be distributed with Cytoscape 2.3.
 	private static final String CSS_FILE = "base.css";
 	
-	private static final String FLOAT_TYPE = "float";
-	private static final String INT_TYPE = "int";
-	private static final String STRING_TYPE = "string";
-	private static final String BOOLEAN_TYPE = "boolean";
-	private static final String LIST_TYPE = "list";
-	private static final String MAP_TYPE = "map";
+	protected static final String FLOAT_TYPE = "float";
+	protected static final String INT_TYPE = "int";
+	protected static final String STRING_TYPE = "string";
+	protected static final String BOOLEAN_TYPE = "boolean";
+	protected static final String LIST_TYPE = "list";
+	protected static final String MAP_TYPE = "map";
 
 	public XGMMLWriter(CyNetwork network, CyNetworkView view) {
 		this.network = network;
@@ -488,12 +488,16 @@ public class XGMMLWriter {
 			Att targetArrow = objFactory.createAtt();
 			Att edgeLabelFont = objFactory.createAtt();
 			Att edgeLineType = objFactory.createAtt();
-
+			Att sourceArrowColor = objFactory.createAtt();
+			Att targetArrowColor = objFactory.createAtt();
+			
 			sourceArrow.setName("sourceArrow");
 			targetArrow.setName("targetArrow");
 			edgeLabelFont.setName("edgeLabelFont");
 			edgeLineType.setName("edgeLineType");
-
+			sourceArrowColor.setName("sourceArrowColor");
+			targetArrowColor.setName("targetArrowColor");
+			
 			sourceArrow.setValue(Integer.toString(curEdgeView
 					.getSourceEdgeEnd()));
 			targetArrow.setValue(Integer.toString(curEdgeView
@@ -503,11 +507,17 @@ public class XGMMLWriter {
 					.setValue(encodeFont(curEdgeView.getLabel().getFont()));
 			edgeLineType.setValue(Integer.toString(curEdgeView.getLineType()));
 
+			sourceArrowColor.setValue(paint2string( curEdgeView.getSourceEdgeEndPaint() ));
+			targetArrowColor.setValue(paint2string( curEdgeView.getTargetEdgeEndPaint() ));
+			
+			
 			cytoscapeEdgeAttr.getContent().add(sourceArrow);
 			cytoscapeEdgeAttr.getContent().add(targetArrow);
 			cytoscapeEdgeAttr.getContent().add(edgeLabelFont);
 			cytoscapeEdgeAttr.getContent().add(edgeLineType);
-
+			cytoscapeEdgeAttr.getContent().add(sourceArrowColor);
+			cytoscapeEdgeAttr.getContent().add(targetArrowColor);
+			
 			graphics.getAtt().add(cytoscapeEdgeAttr);
 
 			return graphics;
