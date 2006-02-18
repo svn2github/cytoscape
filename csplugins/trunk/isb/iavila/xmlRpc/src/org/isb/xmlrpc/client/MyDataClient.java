@@ -59,12 +59,22 @@ public abstract class MyDataClient {
 		Object out = null;
 		
 		System.out.println("MyDataClient.execute(" + method + ", params = " + params + ")");
-		
+		try{
 		if (nCallsPerBatch > 0)
 			out = doMultiCall(method, params);
 		else
 			out = client.execute(method, params);
-		return out;
+        }catch (XmlRpcException xmlex ){
+            xmlex.printStackTrace();
+            System.out.println("Cause:" +xmlex.getCause());
+            System.out.println("Localized message:"+xmlex.getLocalizedMessage());
+        }catch (IOException ioex){
+            ioex.printStackTrace();
+            System.out.println("Cause:"+ioex.getCause());
+            System.out.println("Localized message:"+ioex.getLocalizedMessage());
+        }
+        
+        return out;
 	}
 
 	/**

@@ -17,7 +17,7 @@ public class DipInteractionsSource extends SQLDBHandler implements InteractionsD
      */
     public DipInteractionsSource() {
    
-        super("jdbc:mysql://wavelength.systemsbiology.net/metainfo?user=cytouser&password=bioNetBuilder", SQLDBHandler.MYSQL_JDBC_DRIVER);
+        super("jdbc:mysql:///metainfo?user=cytouser&password=bioNetBuilder", SQLDBHandler.MYSQL_JDBC_DRIVER);
         
         // Look for the current go database
         ResultSet rs = query("SELECT dbname FROM db_name WHERE db=\"dip\"");

@@ -4,8 +4,6 @@ import java.util.Properties;
 import java.util.Vector;
 
 import org.isb.xmlrpc.util.*;
-import org.isb.xmlrpc.server.*;
-import org.isb.xmlrpc.*;
 import utils.*;
 
 
@@ -51,7 +49,7 @@ public class DataClientFactory {
 
 		if(PROPERTIES != null){
 			DEFAULT_HOST = (String) PROPERTIES.get("host");
-		}
+         }
 		
 		if(DEFAULT_HOST == null){
 			DEFAULT_HOST = "local";
@@ -102,7 +100,6 @@ public class DataClientFactory {
         return null;
     }
     
-
     /**
      * For all AuthenticatedDataClients, it sets their username and password.
      * 

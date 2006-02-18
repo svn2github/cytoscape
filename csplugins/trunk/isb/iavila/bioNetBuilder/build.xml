@@ -111,7 +111,7 @@
 		    <echo message="${server.class} ${server.args}"/>
 		    <java classname="org.apache.xmlrpc.XmlRpcClientLite" fork="true" failonerror="no">
 		         <classpath refid="server_classpath"/>
-		         <arg line="http://localhost:${server.args}"/>
+		         <arg line="http://wavelength.systemsbiology.net:8081"/>
 		    	     <arg line="server.shutdown"/>
 		    </java>
 		</target>

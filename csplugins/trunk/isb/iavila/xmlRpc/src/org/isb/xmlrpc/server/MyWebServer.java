@@ -51,7 +51,10 @@ public class MyWebServer {
 	 * xmlrpc.props file given at args[1]
 	 */
 	public static void main(String args[]) {
-
+        
+        //System.out.println("Server debug is ON.");
+        //XmlRpc.setDebug( true );
+        
 		if (args.length < 1) {
 			System.err
 					.println("Usage: java MyWebServer <port> <optional: xmlrpc.props file>");
@@ -87,7 +90,7 @@ public class MyWebServer {
 	 */
 	public MyWebServer(int port, String xmlrpc_props) throws IOException {
 
-		//XmlRpc.setDebug( true );
+		
 
 		System.out.print("Attempting to start XML-RPC server on port " + port
 				+ "...");
