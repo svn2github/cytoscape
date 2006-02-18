@@ -2,6 +2,7 @@ package cytoscape.fung;
 
 import cytoscape.render.immed.GraphGraphics;
 import java.awt.Color;
+import java.awt.Paint;
 
 public final class EdgeView
 {
@@ -80,8 +81,24 @@ public final class EdgeView
         throw new IllegalArgumentException
           ("arrowSize must be positive or zero"); }
       { // Reconcile arrow size.
+        if (getSourceArrow() != ARROW_NONE) {
+          final double segmentThickness = getSegmentThickness();
+          if (!(fArrowSize >= segmentThickness)) {
+            fArrowSize = (float) segmentThickness; } }
       }
       m_fung.m_edgeDetails.overrideSourceArrowSize(m_edge, fArrowSize); }
+  }
+
+  public final Paint getSourceArrowPaint()
+  {
+    synchronized (m_fung.m_lock) {
+      return m_fung.m_edgeDetails.sourceArrowPaint(m_edge); }
+  }
+
+  public final void setSourceArrowPaint(final Paint paint)
+  {
+    synchronized (m_fung.m_lock) {
+      m_fung.m_edgeDetails.overrideSourceArrowPaint(m_edge, paint); }
   }
 
   public final double getSegmentThickness()

@@ -2,6 +2,7 @@ package cytoscape.fung;
 
 import cytoscape.util.intr.IntArray;
 import java.awt.Color;
+import java.awt.Paint;
 
 final class SpecificEdgeDetails extends DefaultEdgeDetails
 {
@@ -9,6 +10,7 @@ final class SpecificEdgeDetails extends DefaultEdgeDetails
   final ObjArray m_colorsLowDetail = new ObjArray();
   final IntArray m_sourceArrows = new IntArray();
   final ObjArray m_sourceArrowSizes = new ObjArray();
+  final ObjArray m_sourceArrowPaints = new ObjArray();
 
   SpecificEdgeDetails(final Fung fung)
   {
@@ -70,6 +72,22 @@ final class SpecificEdgeDetails extends DefaultEdgeDetails
       m_sourceArrowSizes.setObjAtIndex(null, edge); }
     else {
       m_sourceArrowSizes.setObjAtIndex(new Float(size), edge); }
+  }
+
+  public final Paint sourceArrowPaint(final int edge)
+  {
+    final Object o = m_sourceArrowPaints.getObjAtIndex(edge);
+    if (o == null) { return super.sourceArrowPaint(edge); }
+    return (Paint) o;
+  }
+
+  final void overrideSourceArrowPaint(final int edge, final Paint paint)
+  {
+    if (paint == null ||
+        paint.equals(super.sourceArrowPaint(edge))) {
+      m_sourceArrowPaints.setObjAtIndex(null, edge); }
+    else {
+      m_sourceArrowPaints.setObjAtIndex(paint, edge); }
   }
 
 }
