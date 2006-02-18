@@ -1,0 +1,6 @@
+To convert the manual to html or other formats you can use:
+
+	% xsltproc docbook-transform.xsl manual.xml > manual.html
+
+A docbook stylesheet can be found at:
+/usr/share/sgml/docbook/xsl-stylesheets-1.65.1-2/html/docbook.xsl 
