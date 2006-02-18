@@ -101,6 +101,68 @@ public final class EdgeView
       m_fung.m_edgeDetails.overrideSourceArrowPaint(m_edge, paint); }
   }
 
+  public final byte getTargetArrow()
+  {
+    synchronized (m_fung.m_lock) {
+      return m_fung.m_edgeDetails.targetArrow(m_edge); }
+  }
+
+  public final void setTargetArrow(final byte arrow)
+  {
+    synchronized (m_fung.m_lock) {
+      switch (arrow) {
+      case ARROW_NONE:
+      case ARROW_DELTA:
+      case ARROW_DIAMOND:
+      case ARROW_DISC:
+      case ARROW_TEE:
+        break;
+      default:
+        throw new IllegalArgumentException("arrow is not recognized"); }
+      { // Reconcile arrow size if not ARROW_NONE.
+        if (arrow != ARROW_NONE) {
+          final double segmentThickness = getSegmentThickness();
+          final double targetArrowSize = getTargetArrowSize();
+          if (!(targetArrowSize >= segmentThickness)) {
+            setTargetArrowSize(segmentThickness); } }
+      }
+      m_fung.m_edgeDetails.overrideTargetArrow(m_edge, arrow); }
+  }
+
+  public final double getTargetArrowSize()
+  {
+    synchronized (m_fung.m_lock) {
+      return m_fung.m_edgeDetails.targetArrowSize(m_edge); }
+  }
+
+  public final void setTargetArrowSize(final double arrowSize)
+  {
+    synchronized (m_fung.m_lock) {
+      float fArrowSize = (float) arrowSize;
+      if (!(fArrowSize >= 0.0f)) {
+        throw new IllegalArgumentException
+          ("arrowSize must be positive or zero"); }
+      { // Reconcile arrow size.
+        if (getTargetArrow() != ARROW_NONE) {
+          final double segmentThickness = getSegmentThickness();
+          if (!(fArrowSize >= segmentThickness)) {
+            fArrowSize = (float) segmentThickness; } }
+      }
+      m_fung.m_edgeDetails.overrideTargetArrowSize(m_edge, fArrowSize); }
+  }
+
+  public final Paint getTargetArrowPaint()
+  {
+    synchronized (m_fung.m_lock) {
+      return m_fung.m_edgeDetails.targetArrowPaint(m_edge); }
+  }
+
+  public final void setTargetArrowPaint(final Paint paint)
+  {
+    synchronized (m_fung.m_lock) {
+      m_fung.m_edgeDetails.overrideTargetArrowPaint(m_edge, paint); }
+  }
+
   public final double getSegmentThickness()
   {
     synchronized (m_fung.m_lock) {
