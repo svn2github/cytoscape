@@ -177,4 +177,10 @@ public final class EdgeView
       return m_fung.m_edgeDetails.segmentThickness(m_edge); }
   }
 
+  public final void setSegmentThickness(final double thickness)
+  {
+    synchronized (m_fung.m_lock) {
+    }
+  }
+
 }
