@@ -212,4 +212,21 @@ public final class EdgeView
       m_fung.m_edgeDetails.overrideSegmentPaint(m_edge, paint); }
   }
 
+  public final double getSegmentDashLength()
+  {
+    synchronized (m_fung.m_lock) {
+      return m_fung.m_edgeDetails.segmentDashLength(m_edge); }
+  }
+
+  public final void setSegmentDashLength(final double segmentDashLength)
+  {
+    synchronized (m_fung.m_lock) {
+      final float fSegmentDashLength = (float) segmentDashLength;
+      if (!(fSegmentDashLength >= 0.0f)) {
+        throw new IllegalArgumentException
+          ("segmentDashLength must be positive or zero"); }
+      m_fung.m_edgeDetails.overrideSegmentDashLength
+        (m_edge, fSegmentDashLength); }
+  }
+
 }
