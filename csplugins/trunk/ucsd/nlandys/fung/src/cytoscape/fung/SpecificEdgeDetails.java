@@ -15,6 +15,7 @@ final class SpecificEdgeDetails extends DefaultEdgeDetails
   final ObjArray m_targetArrowSizes = new ObjArray();
   final ObjArray m_targetArrowPaints = new ObjArray();
   final ObjArray m_segmentThicknesses = new ObjArray();
+  final ObjArray m_segmentPaints = new ObjArray();
 
   SpecificEdgeDetails(final Fung fung)
   {
@@ -156,6 +157,22 @@ final class SpecificEdgeDetails extends DefaultEdgeDetails
       m_segmentThicknesses.setObjAtIndex(null, edge); }
     else {
       m_segmentThicknesses.setObjAtIndex(new Float(thickness), edge); }
+  }
+
+  public final Paint segmentPaint(final int edge)
+  {
+    final Object o = m_segmentPaints.getObjAtIndex(edge);
+    if (o == null) { return super.segmentPaint(edge); }
+    return (Paint) o;
+  }
+
+  final void overrideSegmentPaints(final int edge, final Paint paint)
+  {
+    if (paint == null ||
+        paint.equals(super.segmentPaint(edge))) {
+      m_segmentPaints.setObjAtIndex(null, edge); }
+    else {
+      m_segmentPaints.setObjAtIndex(paint, edge); }
   }
 
 }

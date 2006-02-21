@@ -177,10 +177,33 @@ public final class EdgeView
       return m_fung.m_edgeDetails.segmentThickness(m_edge); }
   }
 
-  public final void setSegmentThickness(final double thickness)
+  public final void setSegmentThickness(final double segmentThickness)
   {
     synchronized (m_fung.m_lock) {
-    }
+      final float fSegmentThickness = (float) segmentThickness;
+      if (!(fSegmentThickness >= 0.0f)) {
+        throw new IllegalArgumentException
+          ("segmentThickness must be positive or zero"); }
+      { // Reconcile with arrow sizes.
+        if (m_fung.m_edgeDetails.sourceArrow(m_edge) != ARROW_NONE) {
+          if (m_fung.m_edgeDetails.sourceArrowSize(m_edge) >
+              fSegmentThickness) {
+            m_fung.m_edgeDetails.overrideSourceArrowSize
+              (m_edge, fSegmentThickness); } }
+        if (m_fung.m_edgeDetails.targetArrow(m_edge) != ARROW_NONE) {
+          if (m_fung.m_edgeDetails.targetArrowSize(m_edge) >
+              fSegmentThickness) {
+            m_fung.m_edgeDetails.overrideTargetArrowSize
+              (m_edge, fSegmentThickness); } }
+      }
+      m_fung.m_edgeDetails.overrideSegmentThickness(m_edge,
+                                                    fSegmentThickness); }
+  }
+
+  public final Paint getSegmentPaint()
+  {
+    synchronized (m_fung.m_lock) {
+      return m_fung.m_edgeDetails.segmentPaint(m_edge); }
   }
 
 }
