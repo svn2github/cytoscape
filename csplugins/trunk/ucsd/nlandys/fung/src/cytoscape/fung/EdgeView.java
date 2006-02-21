@@ -206,4 +206,10 @@ public final class EdgeView
       return m_fung.m_edgeDetails.segmentPaint(m_edge); }
   }
 
+  public final void setSegmentPaint(final Paint paint)
+  {
+    synchronized (m_fung.m_lock) {
+      m_fung.m_edgeDetails.overrideSegmentPaint(m_edge, paint); }
+  }
+
 }

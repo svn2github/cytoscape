@@ -166,7 +166,7 @@ final class SpecificEdgeDetails extends DefaultEdgeDetails
     return (Paint) o;
   }
 
-  final void overrideSegmentPaints(final int edge, final Paint paint)
+  final void overrideSegmentPaint(final int edge, final Paint paint)
   {
     if (paint == null ||
         paint.equals(super.segmentPaint(edge))) {
