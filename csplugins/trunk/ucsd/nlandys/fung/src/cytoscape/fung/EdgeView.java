@@ -3,6 +3,7 @@ package cytoscape.fung;
 import cytoscape.render.immed.GraphGraphics;
 import java.awt.Color;
 import java.awt.Paint;
+import java.util.Vector;
 
 public final class EdgeView
 {
@@ -227,6 +228,45 @@ public final class EdgeView
           ("segmentDashLength must be positive or zero"); }
       m_fung.m_edgeDetails.overrideSegmentDashLength
         (m_edge, fSegmentDashLength); }
+  }
+
+  public final int getLabelCount()
+  {
+    synchronized (m_fung.m_lock) {
+      return m_fung.m_edgeDetails.labelCount(m_edge); }
+  }
+
+  public final EdgeLabel getLabel(final int inx)
+  {
+    synchronized (m_fung.m_lock) {
+      final Vector v =
+        (Vector) m_fung.m_edgeDetails.m_labels.get(new Integer(m_edge));
+      if (v == null) {
+        throw new IndexOutOfBoundsException("no labels set on this edge"); }
+      return (EdgeLabel) v.get(inx); }
+  }
+
+  public final void addLabel(final EdgeLabel label)
+  {
+    if (label == null) { throw new NullPointerException("label is null"); }
+    synchronized (m_fung.m_lock) {
+      Vector v =
+        (Vector) m_fung.m_edgeDetails.m_labels.get(new Integer(m_edge));
+      if (v == null) { v = new Vector(); }
+      v.add(label); }
+  }
+
+  public final EdgeLabel removeLabel(final int inx)
+  {
+    synchronized (m_fung.m_lock) {
+      final Vector v =
+        (Vector) m_fung.m_edgeDetails.m_labels.get(new Integer(m_edge));
+      if (v == null) {
+        throw new IndexOutOfBoundsException("no labels set on this edge"); }
+      final EdgeLabel returnThis = (EdgeLabel) v.remove(inx);
+      if (v.size() == 0) {
+        m_fung.m_edgeDetails.m_labels.remove(new Integer(m_edge)); }
+      return returnThis; }
   }
 
 }

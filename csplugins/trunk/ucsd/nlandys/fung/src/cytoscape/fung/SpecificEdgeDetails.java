@@ -2,7 +2,10 @@ package cytoscape.fung;
 
 import cytoscape.util.intr.IntArray;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Paint;
+import java.util.HashMap;
+import java.util.Vector;
 
 final class SpecificEdgeDetails extends DefaultEdgeDetails
 {
@@ -17,6 +20,7 @@ final class SpecificEdgeDetails extends DefaultEdgeDetails
   final ObjArray m_segmentThicknesses = new ObjArray();
   final ObjArray m_segmentPaints = new ObjArray();
   final ObjArray m_segmentDashLengths = new ObjArray();
+  final HashMap m_labels = new HashMap();
 
   SpecificEdgeDetails(final Fung fung)
   {
@@ -190,6 +194,67 @@ final class SpecificEdgeDetails extends DefaultEdgeDetails
       m_segmentDashLengths.setObjAtIndex(null, edge); }
     else {
       m_segmentDashLengths.setObjAtIndex(new Float(dashLength), edge); }
+  }
+
+  public final int labelCount(final int edge)
+  {
+    final Object v = m_labels.get(new Integer(edge));
+    if (v == null) { return 0; }
+    return ((Vector) v).size();
+  }
+
+  public final String labelText(final int edge, final int labelInx)
+  {
+    final Vector v = (Vector) m_labels.get(new Integer(edge));
+    return ((EdgeLabel) v.get(labelInx)).m_text;
+  }
+
+  public final Font labelFont(final int edge, final int labelInx)
+  {
+    final Vector v = (Vector) m_labels.get(new Integer(edge));
+    return ((EdgeLabel) v.get(labelInx)).m_font;
+  }
+
+  public final double labelScaleFactor(final int edge, final int labelInx)
+  {
+    final Vector v = (Vector) m_labels.get(new Integer(edge));
+    return ((EdgeLabel) v.get(labelInx)).m_scaleFactor;
+  }
+
+  public final Paint labelPaint(final int edge, final int labelInx)
+  {
+    final Vector v = (Vector) m_labels.get(new Integer(edge));
+    return ((EdgeLabel) v.get(labelInx)).m_paint;
+  }
+
+  public final byte labelTextAnchor(final int edge, final int labelInx)
+  {
+    final Vector v = (Vector) m_labels.get(new Integer(edge));
+    return ((EdgeLabel) v.get(labelInx)).m_textAnchor;
+  }
+
+  public final byte labelEdgeAnchor(final int edge, final int labelInx)
+  {
+    final Vector v = (Vector) m_labels.get(new Integer(edge));
+    return ((EdgeLabel) v.get(labelInx)).m_edgeAnchor;
+  }
+
+  public final float labelOffsetVectorX(final int edge, final int labelInx)
+  {
+    final Vector v = (Vector) m_labels.get(new Integer(edge));
+    return ((EdgeLabel) v.get(labelInx)).m_offsetVectorX;
+  }
+
+  public final float labelOffsetVectorY(final int edge, final int labelInx)
+  {
+    final Vector v = (Vector) m_labels.get(new Integer(edge));
+    return ((EdgeLabel) v.get(labelInx)).m_offsetVectorY;
+  }
+
+  public final byte labelJustify(final int edge, final int labelInx)
+  {
+    final Vector v = (Vector) m_labels.get(new Integer(edge));
+    return ((EdgeLabel) v.get(labelInx)).m_justify;
   }
 
 }
