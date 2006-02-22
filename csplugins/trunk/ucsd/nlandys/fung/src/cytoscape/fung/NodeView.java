@@ -232,8 +232,11 @@ public final class NodeView
     synchronized (m_fung.m_lock) {
       Vector v =
         (Vector) m_fung.m_nodeDetails.m_labels.get(new Integer(m_node));
-      if (v == null) { v = new Vector(); }
-      v.add(label); }
+      boolean newVec = false;
+      if (v == null) { v = new Vector(); newVec = true; }
+      v.add(label);
+      if (newVec) {
+        m_fung.m_nodeDetails.m_labels.put(new Integer(m_node), v); } }
   }
 
   public final NodeLabel removeLabel(final int inx)
