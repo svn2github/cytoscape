@@ -19,7 +19,7 @@ import nct.graph.DistanceGraph;
  * An extension of BasicGraph that calculates the minimum distance
  * between nodes.
  */
-public class BasicDistanceGraph<NodeType extends Comparable<NodeType>,WeightType extends Comparable<WeightType>> extends BasicGraph<NodeType,WeightType>
+public class BasicDistanceGraph<NodeType extends Comparable<? super NodeType>,WeightType extends Comparable<? super WeightType>> extends BasicGraph<NodeType,WeightType>
 	implements DistanceGraph<NodeType,WeightType> {
 
 	/**

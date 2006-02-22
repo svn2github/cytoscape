@@ -16,8 +16,8 @@ import java.lang.*;
  * An interface that describes accessing a sequence database
  * associated with the graph. 
  */
-public interface SequenceGraph< NodeType extends Comparable<NodeType>,
-		                WeightType extends Comparable<WeightType>> 
+public interface SequenceGraph< NodeType extends Comparable<? super NodeType>,
+		                WeightType extends Comparable<? super WeightType>> 
 	extends DistanceGraph<NodeType,WeightType> {
 
 	/**

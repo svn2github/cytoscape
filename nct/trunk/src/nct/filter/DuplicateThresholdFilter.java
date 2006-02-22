@@ -17,7 +17,7 @@ import nct.graph.Graph;
  * This class will throw out any solutions with a certain percentage of duplicate nodes.
  * This filter is NOT synchronized! (HashSet)
  */
-public class DuplicateThresholdFilter<NodeType extends Comparable<NodeType>,WeightType extends Comparable<WeightType>> implements Filter<NodeType,WeightType> {
+public class DuplicateThresholdFilter<NodeType extends Comparable<? super NodeType>,WeightType extends Comparable<? super WeightType>> implements Filter<NodeType,WeightType> {
     /**
      * Holds the threshold value for this filter.  Any two solutions with 
      * similarity >= this threshold will be thrown out.

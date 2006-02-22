@@ -17,8 +17,8 @@ import nct.graph.Graph;
  * algorithms to be used on a Graph object.  Consequently, all scoring 
  * algorithms should implement this interface.
  */
-public interface ScoreModel<NodeType extends Comparable<NodeType>,
-                            WeightType extends Comparable<WeightType>> {
+public interface ScoreModel<NodeType extends Comparable<? super NodeType>,
+                            WeightType extends Comparable<? super WeightType>> {
     /**
      * Given a sourceNode and destNode from graph, this function will return 
      * the score of the edge.  Note that this method does not define what

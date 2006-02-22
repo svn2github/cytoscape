@@ -17,8 +17,8 @@ import java.lang.*;
 /**
  * A generic interface that defines an edge weighted, undirected graph.
  */
-public interface Graph<NodeType extends Comparable<NodeType>,
-                       WeightType extends Comparable<WeightType>> 
+public interface Graph<NodeType extends Comparable<? super NodeType>,
+                       WeightType extends Comparable<? super WeightType>> 
 	extends Comparable<Graph<NodeType,WeightType>>, Cloneable {
 
 	/**
@@ -175,5 +175,10 @@ public interface Graph<NodeType extends Comparable<NodeType>,
 	 * Returns a String representation of the graph format.
 	 */
 	public String toString();
+
+	public boolean removeEdge(NodeType nodeA, NodeType nodeB);
+	public boolean removeNode(NodeType node);
+
+	public boolean setEdgeWeight(NodeType nodeA, NodeType nodeB, WeightType weight);
 
 }

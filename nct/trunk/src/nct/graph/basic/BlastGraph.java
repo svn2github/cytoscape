@@ -20,7 +20,7 @@ import nct.graph.DistanceGraph;
  * An extension of BasicDistanceGraph that implements SequenceGraph and
  * contains a pointer to a Blast database. 
  */
-public class BlastGraph<NodeType extends Comparable<NodeType>,WeightType extends Comparable<WeightType>> extends BasicDistanceGraph<NodeType,WeightType>
+public class BlastGraph<NodeType extends Comparable<? super NodeType>,WeightType extends Comparable<? super WeightType>> extends BasicDistanceGraph<NodeType,WeightType>
 	implements SequenceGraph<NodeType,WeightType> {
 
 	/**

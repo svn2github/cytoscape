@@ -18,7 +18,7 @@ import nct.graph.Graph;
  * take in a Graph object, a List of SubGraphs, and return another List of 
  * SubGraphs.  These are meant to be post-processing steps.
  */
-public interface Filter<NodeType extends Comparable<NodeType>, WeightType extends Comparable<WeightType>> {
+public interface Filter<NodeType extends Comparable<? super NodeType>, WeightType extends Comparable<? super WeightType>> {
     /**
      * This provides the basic foundation for filtering.  Basic filter to be 
      * written should include removing duplicate solutions, merging solutions, 

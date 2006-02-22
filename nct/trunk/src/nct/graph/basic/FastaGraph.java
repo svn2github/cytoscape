@@ -24,7 +24,7 @@ import org.biojava.bio.seq.db.SequenceDB;
  * An extension of BasicDistanceGraph that implements the SequenceGraph 
  * interface and contains a (pointer to a) fasta database. 
  */
-public class FastaGraph<NodeType extends Comparable<NodeType>,WeightType extends Comparable<WeightType>> extends BasicDistanceGraph<NodeType,WeightType>
+public class FastaGraph<NodeType extends Comparable<? super NodeType>,WeightType extends Comparable<? super WeightType>> extends BasicDistanceGraph<NodeType,WeightType>
 	implements SequenceGraph<NodeType,WeightType> {
 
 	/**

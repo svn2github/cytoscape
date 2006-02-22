@@ -19,8 +19,8 @@ import nct.graph.Graph;
  * used on a Graph object.  Consequently, all searching algorithms should 
  * implement this interface.
  */
-public interface SearchGraph< NodeType extends Comparable<NodeType>,
-                              WeightType extends Comparable<WeightType>>  {
+public interface SearchGraph< NodeType extends Comparable<? super NodeType>,
+                              WeightType extends Comparable<? super WeightType>>  {
     /**
      * This method will be used to call a search algorithm on the given graph 
      * object.  

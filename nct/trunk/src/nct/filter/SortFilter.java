@@ -18,7 +18,7 @@ import nct.graph.Graph;
  * worst.
  */
 
-public class SortFilter<NodeType extends Comparable<NodeType>, WeightType extends Comparable<WeightType>> implements Filter<NodeType,WeightType> {
+public class SortFilter<NodeType extends Comparable<? super NodeType>, WeightType extends Comparable<? super WeightType>> implements Filter<NodeType,WeightType> {
     /**
      * Given a List of Graphs, it sorts the graphs based on the comparable implementation 
      * of the graph. 

@@ -20,8 +20,8 @@ import nct.graph.Graph;
 /**
  * A generic implementation of the KPartiteGraph interface.
  */
-public class BasicKPartiteGraph<NodeType extends Comparable<NodeType>,
-                                WeightType extends Comparable<WeightType>,
+public class BasicKPartiteGraph<NodeType extends Comparable<? super NodeType>,
+                                WeightType extends Comparable<? super WeightType>,
 				PartitionType extends Comparable<? super PartitionType>>
 	extends BasicGraph<NodeType,WeightType>
 	implements KPartiteGraph<NodeType,WeightType,PartitionType>, 

@@ -14,8 +14,8 @@ package nct.graph;
  * This interface describes a method that returns the distance between
  * two nodes.  What constitutes the distance is left to the implementer.
  */
-public interface DistanceGraph<NodeType extends Comparable<NodeType>,
-                               WeightType extends Comparable<WeightType>> 
+public interface DistanceGraph<NodeType extends Comparable<? super NodeType>,
+                               WeightType extends Comparable<? super WeightType>> 
 	extends Graph<NodeType,WeightType> {
 
 	/**

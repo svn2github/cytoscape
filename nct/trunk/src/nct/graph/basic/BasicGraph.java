@@ -20,7 +20,7 @@ import nct.graph.Edge;
 /**
  * A generic implementation of the Graph interface.
  */
-public class BasicGraph<NodeType extends Comparable<NodeType>,WeightType extends Comparable<WeightType>> 
+public class BasicGraph<NodeType extends Comparable<? super NodeType>,WeightType extends Comparable<? super WeightType>> 
 	implements Graph<NodeType,WeightType>, Comparable<Graph<NodeType,WeightType>>, Cloneable {
 
 	/**
@@ -424,5 +424,75 @@ public class BasicGraph<NodeType extends Comparable<NodeType>,WeightType extends
 			s.append( e.getSourceNode().toString() + " " + e.getWeight().toString() + " " + e.getTargetNode().toString() + newline );
 
 		return s.toString();
+	}
+
+	/**
+	 * Removes the specified edge from the graph. The nodes connected to the edge
+	 * will NOT be removed.
+	 * @param edge The edge to be removed.
+	 * @return Whether or not the edge was successfully removed. 
+	 */
+	public boolean removeEdge(NodeType nodeA, NodeType nodeB) {
+
+		if ( nodeA == null || nodeB == null )
+			return false;
+
+		if ( !weightMap.containsKey( nodeA ) || !weightMap.containsKey( nodeB ) )
+			return false;
+
+		weightMap.get( nodeA ).remove( nodeB );
+		weightMap.get( nodeB ).remove( nodeA );
+
+		if ( descMap.containsKey( nodeA ) && descMap.containsKey( nodeB ) ) {
+			descMap.get( nodeA ).remove( nodeB );
+			descMap.get( nodeB ).remove( nodeA );
+		}
+
+		numEdges--;
+
+		return true;
+	}
+
+	/**
+	 * Removes the specified node from the graph and all of its adjacent edges.
+	 * @param node The node to be removed.
+	 * @return Whether or not the node was successfully removed. 
+	 */
+	public boolean removeNode(NodeType node) {
+		if ( !isNode( node ) )
+			return false;
+
+		for ( NodeType neighbor : getNeighbors( node ) ) {
+			weightMap.get( neighbor ).remove( node );
+			numEdges--;
+			if ( descMap.containsKey( neighbor ) )
+				descMap.get( neighbor ).remove( node );
+		}
+
+		weightMap.remove( node );
+		if ( descMap.containsKey( node ) )
+			descMap.remove( node );
+
+		return true;
+	}
+
+	/**
+	 * Sets the edge weight of an existing edge.
+	 * @param nodeA The source node of the edge.
+	 * @param nodeB The target node of the edge.
+	 * @param weight The weight of the edge.
+	 * @return Whether or not the edge description has been set.
+	 */
+	public boolean setEdgeWeight(NodeType nodeA, NodeType nodeB, WeightType weight) {
+		if ( nodeA == null || nodeB == null || weight == null )
+			return false;
+
+		if ( !weightMap.containsKey( nodeA ) || !weightMap.containsKey( nodeB ) )
+			return false;
+
+		weightMap.get(nodeA).put(nodeB,weight);
+		weightMap.get(nodeB).put(nodeA,weight);
+
+		return true;
 	}
 }

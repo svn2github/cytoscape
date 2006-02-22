@@ -16,8 +16,8 @@ import nct.graph.Edge;
 /**
  * A generic implementation of the Edge interface.
  */
-public class BasicEdge<NodeType extends Comparable<NodeType>,
-                       WeightType extends Comparable<WeightType>> 
+public class BasicEdge<NodeType extends Comparable<? super NodeType>,
+                       WeightType extends Comparable<? super WeightType>> 
 	implements Edge<NodeType,WeightType> {
 
 	/**

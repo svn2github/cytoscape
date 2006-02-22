@@ -27,7 +27,7 @@ intNet.updateGraph( graph );
  * This roundabout way of getting information from a data source into a graph allows 
  * the InteractionNetwork to be constructed in any manner of ways.
  */
-public interface InteractionNetwork<NodeType extends Comparable<NodeType>,WeightType extends Comparable<WeightType>>   {
+public interface InteractionNetwork<NodeType extends Comparable<? super NodeType>,WeightType extends Comparable<? super WeightType>>   {
 
 	/**
 	 * Updates the given graph with whatever values are created from

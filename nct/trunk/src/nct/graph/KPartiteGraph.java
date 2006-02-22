@@ -15,8 +15,8 @@ import java.util.*;
 /**
  * A generic interface to a K-partite graph.
  */
-public interface KPartiteGraph<NodeType extends Comparable<NodeType>,
-                               WeightType extends Comparable<WeightType>,
+public interface KPartiteGraph<NodeType extends Comparable<? super NodeType>,
+                               WeightType extends Comparable<? super WeightType>,
 			       PartitionType extends Comparable<? super PartitionType>>
 	extends Graph<NodeType,WeightType> { 
 

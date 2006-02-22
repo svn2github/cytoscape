@@ -14,8 +14,8 @@ package nct.graph;
  * An generic interface describing the basic components of an edge: 
  * source and target nodes, edge weight, and description.
  */
-public interface Edge<NodeType extends Comparable<NodeType>,
-                      WeightType extends Comparable<WeightType>> 
+public interface Edge<NodeType extends Comparable<? super NodeType>,
+                      WeightType extends Comparable<? super WeightType>> 
 	extends Comparable<Edge<NodeType,WeightType>> {
 
 	/**

@@ -23,8 +23,8 @@ import nct.graph.Edge;
  * SIF format to individual files contained within a ZIP archive
  * file.
  */
-public class ZIPSIFWriter<NodeType extends Comparable<NodeType>,
-                          WeightType extends Comparable<WeightType>> { 
+public class ZIPSIFWriter<NodeType extends Comparable<? super NodeType>,
+                          WeightType extends Comparable<? super WeightType>> { 
     /**
      * The base filename to write out
      */
