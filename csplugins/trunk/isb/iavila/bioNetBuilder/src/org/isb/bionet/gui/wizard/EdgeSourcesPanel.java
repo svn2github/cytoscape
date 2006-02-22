@@ -18,6 +18,8 @@ import java.util.*;
 
 import cytoscape.*;
 import cytoscape.data.*;
+import cytoscape.util.SwingWorker;
+import cytoscape.util.IndeterminateProgressBar;
 
 /**
  * 
@@ -315,9 +317,11 @@ public class EdgeSourcesPanel extends JPanel {
                 try{
                   
                     if(args.size() > 0){
-                        sourceInteractions = (Vector)this.interactionsClient.getConnectingInteractions(nodesToConnectForSource, species, args, sourceClass);
+                        sourceInteractions = 
+                            (Vector)this.interactionsClient.getConnectingInteractions(nodesToConnectForSource, species, args, sourceClass);
                     }else{
-                        sourceInteractions = (Vector)this.interactionsClient.getConnectingInteractions(nodesToConnectForSource, species, sourceClass);
+                        sourceInteractions = 
+                            (Vector)this.interactionsClient.getConnectingInteractions(nodesToConnectForSource, species, sourceClass);
                     }
                 }catch(Exception e){e.printStackTrace();}
                     
@@ -550,12 +554,32 @@ public class EdgeSourcesPanel extends JPanel {
         numEdgesButton.addActionListener(
                 new AbstractAction (){
                     
-                    public void actionPerformed (ActionEvent event){
-                        estimateNumEdges();
-                    }
+                    IndeterminateProgressBar pBar =
+                        new IndeterminateProgressBar(Cytoscape.getDesktop(),"BioNetBuilder","Please wait while number of edges are calculated...");
                     
-                }
-        );
+                    public void actionPerformed (ActionEvent event){
+                        final SwingWorker worker = new SwingWorker (){
+                            
+                            public Object construct (){
+                                pBar.pack();
+                               // pBar.setLocationRelativeTo(EdgeSourcesPanel.this.)
+                                pBar.setLocation(EdgeSourcesPanel.this.getLocationOnScreen());
+                                pBar.setVisible(true);
+                                estimateNumEdges();
+                                return null;
+                            }//construct
+                            
+                            public void finished (){
+                                pBar.setVisible(false);
+                            }//finished
+                        };//SwingWorker
+                        
+                        worker.start();
+                        
+                    }//actionPerformed
+                    
+                }//AbstractAction
+        );//addActionListener
         c.gridwidth = GridBagConstraints.REMAINDER;
         
         fnCB = new JCheckBox("Add first neighbors of nodes");

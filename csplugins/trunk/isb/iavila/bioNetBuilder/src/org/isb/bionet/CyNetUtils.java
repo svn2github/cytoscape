@@ -81,6 +81,8 @@ public class CyNetUtils {
         // Remove:
         System.out.println("Edges that were already created: " + CyNetUtils.edges);
         
+        BioNetVisualStyleFactory.addBioNetVisualStyleToCytoscape();
+        
         return net;
     }//makeNewNetwork
     

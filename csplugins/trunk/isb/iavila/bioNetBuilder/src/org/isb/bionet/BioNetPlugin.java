@@ -11,7 +11,6 @@ import javax.swing.JOptionPane;
 import cytoscape.*;
 import cytoscape.plugin.*;
 
-import org.apache.xmlrpc.applet.XmlRpcException;
 import org.isb.xmlrpc.client.*;
 import org.isb.bionet.datasource.interactions.*;
 import org.isb.bionet.datasource.synonyms.*;
@@ -56,6 +55,7 @@ public class BioNetPlugin extends CytoscapePlugin {
                     public void actionPerformed (ActionEvent event){ prepareAndPopUpWizard(); }
                 }
         );
+        
     }
     
     /**

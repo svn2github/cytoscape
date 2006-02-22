@@ -7,8 +7,9 @@ import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.*;
+import cytoscape.util.SwingWorker;
+import cytoscape.util.IndeterminateProgressBar;
 
-import org.apache.xalan.lib.sql.SQLErrorDocument;
 import org.isb.bionet.datasource.interactions.*;
 import org.isb.bionet.datasource.synonyms.*;
 import org.isb.iavila.ontology.xmlrpc.*;
@@ -75,9 +76,29 @@ public class NetworkBuilderWizard {
         this.goClient = go_client;
         FINISH_ACTION = new AbstractAction (){
             public void actionPerformed (ActionEvent event){
-                createNetwork();
-                JDialog currentDialog = (JDialog)dialogs.get(currentStep);
-                currentDialog.setVisible(false);
+                final SwingWorker worker = new SwingWorker(){
+                    
+                    IndeterminateProgressBar pBar = 
+                        new IndeterminateProgressBar((JDialog)dialogs.get(currentStep),
+                                "BioNetBuilder","Please wait while your network is being created...");
+                    
+                    public Object construct () {
+                        pBar.pack();
+                        pBar.setLocationRelativeTo((JDialog)dialogs.get(currentStep));
+                        pBar.setVisible(true);
+                        createNetwork();
+                        JDialog currentDialog = (JDialog)dialogs.get(currentStep);
+                        currentDialog.setVisible(false);
+                        return null;
+                    }
+                    
+                    public void finished (){
+                        pBar.setVisible(false);
+                    }
+                };
+                
+                worker.start();
+            
             }
             
         };

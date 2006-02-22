@@ -22,6 +22,9 @@ import org.isb.bionet.datasource.synonyms.*;
 import utils.MyUtils;
 import cytoscape.*;
 import cytoscape.data.Semantics;
+import cytoscape.util.SwingWorker;
+import cytoscape.util.IndeterminateProgressBar;
+
 
 public class NodeSourcesPanel extends JPanel {
 
@@ -583,19 +586,41 @@ public class NodeSourcesPanel extends JPanel {
         ok.addActionListener(
                 new AbstractAction (){
                     
-                    public void actionPerformed (ActionEvent event){
-                        System.out.println("--------- OK action performed -------------");
-                        System.out.println(annotationsDialog.getSelectedSpecies());
-                        annotationNodeIDs = annotationsDialog.getGenesWithTerms();
-                        System.out.println("num genes = " + annotationNodeIDs.length);
-                       // JOptionPane.showMessageDialog(annotationsDialog,"There are "+annotationNodeIDs.length+" genes with the selected annotations.","" +
-                       //         "BioNet Builder", JOptionPane.INFORMATION_MESSAGE);
-                        annotsNodes.setText(Integer.toString(annotationNodeIDs.length));
-                        annotationsDialog.dispose();
-                    }
+                    IndeterminateProgressBar pBar =
+                        new IndeterminateProgressBar(Cytoscape.getDesktop(), "BioNetBuilder",
+                                "<html>Please wait while genes with selected<br>" +
+                                    "annotations are being found...</html>");
                     
-                }
-        );
+                    public void actionPerformed (ActionEvent event){
+                      
+                        // Todo: use SwingWorker
+                        final SwingWorker worker = new SwingWorker (){
+                        
+                            public Object construct (){
+                                annotationsDialog.dispose();
+                                pBar.pack();
+                                pBar.setLocation(NodeSourcesPanel.this.getLocationOnScreen());
+                                pBar.setVisible(true);
+                                annotationNodeIDs = annotationsDialog.getGenesWithTerms();
+                                // JOptionPane.showMessageDialog(annotationsDialog,"There are "+annotationNodeIDs.length+" genes with the selected annotations.","" +
+                                //         "BioNet Builder", JOptionPane.INFORMATION_MESSAGE);
+                                annotsNodes.setText(Integer.toString(annotationNodeIDs.length));
+                                 return null;
+                            }//construct
+                            
+                            public void finished (){
+                                pBar.setVisible(false);
+                            }//finished
+                        
+                        };//SwingWorker
+                
+                        worker.start();
+                    
+                    }//actionPerformed
+                    
+                }//AbstractAction
+                
+        );//addActionListener
         JButton cancel = new JButton("Cancel");
         cancel.addActionListener(
                 new AbstractAction (){
