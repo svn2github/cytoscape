@@ -269,4 +269,23 @@ public final class EdgeView
       return returnThis; }
   }
 
+  public final int getAnchorCount()
+  {
+    synchronized (m_fung.m_lock) {
+      return 0;
+    }
+  }
+
+  public final void getAnchor(final int inx, final double[] p)
+  {
+  }
+
+  public final void addAnchor(final int inx, final double x, final double y)
+  {
+  }
+
+  public final void removeAnchor(final int inx)
+  {
+  }
+
 }
