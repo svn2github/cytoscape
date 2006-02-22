@@ -134,37 +134,37 @@ final class SpecificNodeDetails extends DefaultNodeDetails
   public final String labelText(final int node, final int labelInx)
   {
     final Vector v = (Vector) m_labels.get(new Integer(node));
-    return ((NodeLabel) v.get(labelInx)).getText();
+    return ((NodeLabel) v.get(labelInx)).m_text;
   }
 
   public final Font labelFont(final int node, final int labelInx)
   {
     final Vector v = (Vector) m_labels.get(new Integer(node));
-    return ((NodeLabel) v.get(labelInx)).getFont();
+    return ((NodeLabel) v.get(labelInx)).m_font;
   }
 
   public final double labelScaleFactor(final int node, final int labelInx)
   {
     final Vector v = (Vector) m_labels.get(new Integer(node));
-    return ((NodeLabel) v.get(labelInx)).getScaleFactor();
+    return ((NodeLabel) v.get(labelInx)).m_scaleFactor;
   }
 
   public final Paint labelPaint(final int node, final int labelInx)
   {
     final Vector v = (Vector) m_labels.get(new Integer(node));
-    return ((NodeLabel) v.get(labelInx)).getPaint();
+    return ((NodeLabel) v.get(labelInx)).m_paint;
   }
 
   public final byte labelTextAnchor(final int node, final int labelInx)
   {
     final Vector v = (Vector) m_labels.get(new Integer(node));
-    return ((NodeLabel) v.get(labelInx)).getTextAnchor();
+    return ((NodeLabel) v.get(labelInx)).m_textAnchor;
   }
 
   public final byte labelNodeAnchor(final int node, final int labelInx)
   {
     final Vector v = (Vector) m_labels.get(new Integer(node));
-    return ((NodeLabel) v.get(labelInx)).getNodeAnchor();
+    return ((NodeLabel) v.get(labelInx)).m_nodeAnchor;
   }
 
   public final float labelOffsetVectorX(final int node, final int labelInx)
@@ -182,7 +182,7 @@ final class SpecificNodeDetails extends DefaultNodeDetails
   public final byte labelJustify(final int node, final int labelInx)
   {
     final Vector v = (Vector) m_labels.get(new Integer(node));
-    return ((NodeLabel) v.get(labelInx)).getJustify();
+    return ((NodeLabel) v.get(labelInx)).m_justify;
   }
 
 }
