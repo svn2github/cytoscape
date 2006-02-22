@@ -13,6 +13,7 @@ import java.util.*;
 public class SQLDBHandler implements DBHandler {
 
     public static final String MYSQL_JDBC_DRIVER = "com.mysql.jdbc.Driver";
+    public static final String JDBC_URL_PROPERTY_KEY = "jdbcURL";
 
     protected boolean driverIsLoaded = false;
 

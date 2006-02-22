@@ -30,7 +30,7 @@ public class MyWebServer {
      * MyWebServer is a service itself
      */
 	public static final String SERVICE_NAME = "server";
-
+    
 	/**
 	 * The name of the file that contais information about services and their
 	 * handlers the format of this file is as follows:<br>
@@ -42,6 +42,7 @@ public class MyWebServer {
 	 * handler.interactions.url=jdbc:mysql:mysql://biounder.kaist.ac.kr<br>
 	 */
 	public static final String DEFAULT_PROPS_FILE = "xmlrpc.props";
+    public static Properties PROPERTIES;
 	protected WebServer webserver;
  
 	protected Hashtable services, users, levels;
@@ -142,14 +143,15 @@ public class MyWebServer {
 
 		System.out.println("Adding service handlers from file " + xmlrpc_props + "...");
 
-		Properties props = MyUtils.readProperties(xmlrpc_props);
+		PROPERTIES = MyUtils.readProperties(xmlrpc_props);
 
-		if (props == null)
+		if (PROPERTIES == null)
 			return;
 
-		Enumeration propertyNames = props.propertyNames();
+		Enumeration propertyNames = PROPERTIES.propertyNames();
 		HashMap serviceToClass = new HashMap();
 		HashMap serviceToArgs = new HashMap();
+        
 		while (propertyNames.hasMoreElements()) {
 
 			String name = (String) propertyNames.nextElement();
@@ -167,16 +169,13 @@ public class MyWebServer {
 						table = new Hashtable();
 						serviceToArgs.put(serviceName, table);
 					}
-					table.put(split[2], props.getProperty(name));
+					table.put(split[2], PROPERTIES.getProperty(name));
 
 				} else if (split.length == 2) {
-					String handlerClass = props.getProperty(name);
+					String handlerClass = PROPERTIES.getProperty(name);
 					serviceToClass.put(split[1], handlerClass);
-				} else {
-					System.out.println("Unrecognized property in file:" + name);
 				}
-
-			}// name starts with "handler"
+			}
 
 		}// while propertyNames
 
@@ -188,9 +187,9 @@ public class MyWebServer {
 			Hashtable args = (Hashtable) serviceToArgs.get(serviceName);
 			try {
 				if (args == null) {
-					addService(serviceName, className);
+				   addService(serviceName, className);
 				} else {
-					addService(serviceName, className, args);
+                    addService(serviceName, className, args);
 				}
 			} catch (Exception ex) {
 				ex.printStackTrace();
