@@ -243,7 +243,10 @@ public final class NodeView
         (Vector) m_fung.m_nodeDetails.m_labels.get(new Integer(m_node));
       if (v == null) {
         throw new IndexOutOfBoundsException("no labels set on this node"); }
-      return (NodeLabel) v.remove(inx); }
+      final NodeLabel returnThis = (NodeLabel) v.remove(inx);
+      if (v.size() == 0) {
+        m_fung.m_nodeDetails.m_labels.remove(new Integer(m_node)); }
+      return returnThis; }
   }
 
 }
