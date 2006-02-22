@@ -21,6 +21,7 @@ final class SpecificEdgeDetails extends DefaultEdgeDetails
   final ObjArray m_segmentPaints = new ObjArray();
   final ObjArray m_segmentDashLengths = new ObjArray();
   final HashMap m_labels = new HashMap();
+  final HashMap m_anchors = new HashMap();
 
   SpecificEdgeDetails(final Fung fung)
   {
@@ -30,6 +31,18 @@ final class SpecificEdgeDetails extends DefaultEdgeDetails
   final void unregisterEdge(final int edge)
   {
     m_colorsLowDetail.setObjAtIndex(null, edge);
+    m_sourceArrows.setIntAtIndex(0, edge);
+    m_sourceArrowSizes.setObjAtIndex(null, edge);
+    m_sourceArrowPaints.setObjAtIndex(null, edge);
+    m_targetArrows.setIntAtIndex(0, edge);
+    m_targetArrowSizes.setObjAtIndex(null, edge);
+    m_targetArrowPaints.setObjAtIndex(null, edge);
+    m_segmentThicknesses.setObjAtIndex(null, edge);
+    m_segmentPaints.setObjAtIndex(null, edge);
+    m_segmentDashLengths.setObjAtIndex(null, edge);
+    final Integer edgeObj = new Integer(edge);
+    m_labels.remove(edgeObj);
+    m_anchors.remove(edgeObj);
   }
 
   public final Color colorLowDetail(final int edge)
@@ -256,5 +269,10 @@ final class SpecificEdgeDetails extends DefaultEdgeDetails
     final Vector v = (Vector) m_labels.get(new Integer(edge));
     return ((EdgeLabel) v.get(labelInx)).m_justify;
   }
+
+//   public final EdgeAnchors anchors(final int edge)
+//   {
+//     return null;
+//   }
 
 }
