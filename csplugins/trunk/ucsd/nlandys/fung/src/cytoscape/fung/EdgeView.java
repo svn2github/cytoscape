@@ -306,6 +306,14 @@ public final class EdgeView
 
   public final void removeAnchor(final int inx)
   {
+    synchronized (m_fung.m_lock) {
+      final Vector v =
+        (Vector) m_fung.m_edgeDetails.m_anchors.get(new Integer(m_edge));
+      if (v == null) {
+        throw new IndexOutOfBoundsException("no anchors set on this edge"); }
+      v.remove(inx);
+      if (v.size() == 0) {
+        m_fung.m_edgeDetails.m_anchors.remove(new Integer(m_edge)); } }
   }
 
   /**
