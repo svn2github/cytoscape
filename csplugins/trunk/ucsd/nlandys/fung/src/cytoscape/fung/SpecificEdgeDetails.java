@@ -1,5 +1,6 @@
 package cytoscape.fung;
 
+import cytoscape.render.immed.EdgeAnchors;
 import cytoscape.util.intr.IntArray;
 import java.awt.Color;
 import java.awt.Font;
@@ -22,6 +23,7 @@ final class SpecificEdgeDetails extends DefaultEdgeDetails
   final ObjArray m_segmentDashLengths = new ObjArray();
   final HashMap m_labels = new HashMap();
   final HashMap m_anchors = new HashMap();
+  final IntArray m_anchorTypes = new IntArray();
 
   SpecificEdgeDetails(final Fung fung)
   {
@@ -43,6 +45,7 @@ final class SpecificEdgeDetails extends DefaultEdgeDetails
     final Integer edgeObj = new Integer(edge);
     m_labels.remove(edgeObj);
     m_anchors.remove(edgeObj);
+    m_anchorTypes.setIntAtIndex(0, edge);
   }
 
   public final Color colorLowDetail(final int edge)
@@ -270,9 +273,9 @@ final class SpecificEdgeDetails extends DefaultEdgeDetails
     return ((EdgeLabel) v.get(labelInx)).m_justify;
   }
 
-//   public final EdgeAnchors anchors(final int edge)
-//   {
-//     return null;
-//   }
+  public final EdgeAnchors anchors(final int edge)
+  {
+    return null;
+  }
 
 }

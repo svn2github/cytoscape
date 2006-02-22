@@ -3,6 +3,7 @@ package cytoscape.fung;
 import cytoscape.render.immed.GraphGraphics;
 import java.awt.Color;
 import java.awt.Paint;
+import java.awt.geom.Point2D;
 import java.util.Vector;
 
 public final class EdgeView
@@ -252,8 +253,11 @@ public final class EdgeView
     synchronized (m_fung.m_lock) {
       Vector v =
         (Vector) m_fung.m_edgeDetails.m_labels.get(new Integer(m_edge));
-      if (v == null) { v = new Vector(); }
-      v.add(label); }
+      boolean newVec = false;
+      if (v == null) { v = new Vector(); newVec = true; }
+      v.add(label);
+      if (newVec) {
+        m_fung.m_edgeDetails.m_labels.put(new Integer(m_edge), v); } }
   }
 
   public final EdgeLabel removeLabel(final int inx)
@@ -272,20 +276,59 @@ public final class EdgeView
   public final int getAnchorCount()
   {
     synchronized (m_fung.m_lock) {
-      return 0;
-    }
+      final Object v = m_fung.m_edgeDetails.m_anchors.get(new Integer(m_edge));
+      if (v == null) { return 0; }
+      return ((Vector) v).size(); }
   }
 
   public final void getAnchor(final int inx, final double[] p)
   {
+    synchronized (m_fung.m_lock) {
+      final Vector v =
+        (Vector) m_fung.m_edgeDetails.m_anchors.get(new Integer(m_edge));
+      if (v == null) {
+        throw new IndexOutOfBoundsException("no anchors set on this edge"); }
+      final Point2D pt = (Point2D) v.get(inx);
+      p[0] = pt.getX(); p[1] = pt.getY(); }
   }
 
   public final void addAnchor(final int inx, final double x, final double y)
   {
+    synchronized (m_fung.m_lock) {
+      Vector v =
+        (Vector) m_fung.m_edgeDetails.m_anchors.get(new Integer(m_edge));
+      boolean newVec = false;
+      if (v == null) { v = new Vector(); newVec = true; }
+      v.add(inx, new Point2D.Float((float) x, (float) y));
+      if (newVec) {
+        m_fung.m_edgeDetails.m_anchors.put(new Integer(m_edge), v); } }
   }
 
   public final void removeAnchor(final int inx)
   {
+  }
+
+  /**
+   * @return false if anchors define curved edge segments, true if anchors
+   *   define straight line segments.
+   */
+  public final boolean getAnchorType()
+  {
+    synchronized (m_fung.m_lock) {
+      final int i = m_fung.m_edgeDetails.m_anchorTypes.getIntAtIndex(m_edge);
+      if (i == 0) { return false; }
+      return true; }
+  }
+
+  /**
+   * @param straightLineSegments if false then anchors define curved line
+   *   segments; if true then anchors define straight line segments.
+   */
+  public final void setAnchorType(final boolean straightLineSegments)
+  {
+    synchronized (m_fung.m_lock) {
+      final int i = (straightLineSegments ? 1 : 0);
+      m_fung.m_edgeDetails.m_anchorTypes.setIntAtIndex(i, m_edge); }
   }
 
 }
