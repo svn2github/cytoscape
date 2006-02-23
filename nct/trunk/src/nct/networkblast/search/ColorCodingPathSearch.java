@@ -262,7 +262,7 @@ public class ColorCodingPathSearch implements SearchGraph<String,Double> {
 						String next = path[nodeInd][color];
 						sg.addNode(node);
 						sg.addNode(next);
-						sg.addEdge(node,next,scoreObj.scoreEdge(node,next,graph));
+						sg.addEdge(node,next,graph.getEdgeWeight(node,next));
 						sg.setEdgeDescription(node,next,graph.getEdgeDescription(node,next));
 						color -= getNodeColor(node);
 						node = next;
