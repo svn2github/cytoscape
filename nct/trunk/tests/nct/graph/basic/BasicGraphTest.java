@@ -222,6 +222,111 @@ public class BasicGraphTest extends TestCase {
 	edges.remove(edges.first());
     }
 
+    public void testremoveNode() {
+    	g.addNode("one");
+    	g.addNode("two");
+    	g.addNode("three");
+	assertTrue("expect 3, got: " + g.numberOfNodes(), g.numberOfNodes() == 3);
+	g.addEdge("one","two",1.0);
+	g.addEdge("two","three",1.0);
+	g.addEdge("three","one",1.0);
+	assertTrue("expect 3, got: " + g.numberOfEdges(), g.numberOfEdges() == 3);
+
+	Set<String> nodes = g.getNodes();
+	assertTrue("expect 3, got: " + nodes.size(), nodes.size() == 3);
+
+	Set<Edge<String,Double>> edges = g.getEdges();
+	assertTrue("expect 3, got: " + edges.size(), edges.size() == 3);
+
+	g.removeNode("one");
+
+	assertTrue("expect 2, got: " + g.numberOfNodes(), g.numberOfNodes() == 2);
+	assertTrue("expect 1, got: " + g.numberOfEdges(), g.numberOfEdges() == 1);
+	assertTrue("expect one is not a node ", !g.isNode("one") );
+	assertTrue("expect two is still a node: ", g.isNode("two") );
+	assertTrue("expect three is still a node: ", g.isNode("three") );
+	assertTrue("expect edge one-two is not an edge ", !g.isEdge("one","two") );
+	assertTrue("expect edge two-one is not an edge ", !g.isEdge("two","one") );
+	assertTrue("expect edge one-three is not an edge ", !g.isEdge("one","three") );
+	assertTrue("expect edge three-one is not an edge ", !g.isEdge("three","one") );
+	assertTrue("expect edge two-three is an edge ", g.isEdge("two","three") );
+	assertTrue("expect edge three-two is an edge ", g.isEdge("three","two") );
+	assertTrue("expect edge weight null" , g.getEdgeWeight("one","two") == null );
+	assertTrue("expect edge weight null" , g.getEdgeWeight("one","three") == null );
+	assertTrue("expect edge weight not null" , g.getEdgeWeight("two","three") != null );
+
+	Set<String> nodes2 = g.getNodes();
+	assertTrue("expect 2, got: " + nodes2.size(), nodes2.size() == 2);
+
+	Set<Edge<String,Double>> edges2 = g.getEdges();
+	assertTrue("expect 1, got: " + edges2.size(), edges2.size() == 1);
+    }
+
+    public void testremoveEdge() {
+    	g.addNode("one");
+    	g.addNode("two");
+    	g.addNode("three");
+	assertTrue("expect 3, got: " + g.numberOfNodes(), g.numberOfNodes() == 3);
+	g.addEdge("one","two",1.0);
+	g.addEdge("two","three",1.0);
+	g.addEdge("three","one",1.0);
+	assertTrue("expect 3, got: " + g.numberOfEdges(), g.numberOfEdges() == 3);
+
+	Set<String> nodes = g.getNodes();
+	assertTrue("expect 3, got: " + nodes.size(), nodes.size() == 3);
+
+	Set<Edge<String,Double>> edges = g.getEdges();
+	assertTrue("expect 3, got: " + edges.size(), edges.size() == 3);
+
+	g.removeEdge("one","two");
+
+	assertTrue("expect 3, got: " + g.numberOfNodes(), g.numberOfNodes() == 3);
+	assertTrue("expect 2, got: " + g.numberOfEdges(), g.numberOfEdges() == 2);
+	assertTrue("expect one is still a node ", g.isNode("one") );
+	assertTrue("expect two is still a node: ", g.isNode("two") );
+	assertTrue("expect three is still a node: ", g.isNode("three") );
+	assertTrue("expect edge one-two is not an edge ", !g.isEdge("one","two") );
+	assertTrue("expect edge two-one is not an edge ", !g.isEdge("two","one") );
+	assertTrue("expect edge one-three is not an edge ", g.isEdge("one","three") );
+	assertTrue("expect edge three-one is not an edge ", g.isEdge("three","one") );
+	assertTrue("expect edge two-three is an edge ", g.isEdge("two","three") );
+	assertTrue("expect edge three-two is an edge ", g.isEdge("three","two") );
+	assertTrue("expect edge weight null" , g.getEdgeWeight("one","two") == null );
+	assertTrue("expect edge weight null" , g.getEdgeWeight("one","three") != null );
+	assertTrue("expect edge weight not null" , g.getEdgeWeight("two","three") != null );
+
+	Set<String> nodes2 = g.getNodes();
+	assertTrue("expect 3, got: " + nodes2.size(), nodes2.size() == 3);
+
+	Set<Edge<String,Double>> edges2 = g.getEdges();
+	assertTrue("expect 2, got: " + edges2.size(), edges2.size() == 2);
+    }
+
+    public void testDescription() {
+    	g.addNode("one");
+    	g.addNode("two");
+    	g.addNode("three");
+	assertTrue("expect 3, got: " + g.numberOfNodes(), g.numberOfNodes() == 3);
+	g.addEdge("one","two",1.0,"first");
+	g.addEdge("two","three",1.0,"second");
+	g.addEdge("three","one",1.0);
+	assertTrue("expect 3, got: " + g.numberOfEdges(), g.numberOfEdges() == 3);
+
+	assertTrue("expect 'first', got: " + g.getEdgeDescription("one","two"), g.getEdgeDescription("one","two").equals("first"));
+	assertTrue("expect 'first', got: " + g.getEdgeDescription("two","one"), g.getEdgeDescription("two","one").equals("first"));
+	assertTrue("expect 'second', got: " + g.getEdgeDescription("two","three"), g.getEdgeDescription("two","three").equals("second"));
+	assertTrue("expect 'second', got: " + g.getEdgeDescription("three","two"), g.getEdgeDescription("three","two").equals("second"));
+	assertTrue("expect '1.0', got: " + g.getEdgeDescription("one","three"), g.getEdgeDescription("one","three").equals("1.0") );
+	assertTrue("expect '1.0', got: " + g.getEdgeDescription("three","one"), g.getEdgeDescription("three","one").equals("1.0") );
+
+	g.setEdgeDescription("one","three","homer");
+
+	assertTrue("expect 'homer', got: " + g.getEdgeDescription("one","three"), g.getEdgeDescription("one","three").equals("homer"));
+	assertTrue("expect 'homer', got: " + g.getEdgeDescription("three","one"), g.getEdgeDescription("three","one").equals("homer"));
+
+	assertTrue("expect 'null', got: " + g.getEdgeDescription("four","one"), g.getEdgeDescription("four","one") == null );
+    }
+
     public static Test suite() {
 	return new TestSuite(BasicGraphTest.class);
     }
