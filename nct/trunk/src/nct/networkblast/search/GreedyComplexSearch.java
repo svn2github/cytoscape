@@ -161,7 +161,7 @@ public class GreedyComplexSearch implements SearchGraph<String,Double> {
 			// Now do the extension (ie adding/subtracting nodes).
 			// If maxSize hasn't been reached yet, removing a node shouldn't 
 			// be worse than adding one.
-			while (solnNodes.size() + seedNodes.size() <= this.maxComplexSize) {
+			while (solnNodes.size() + seedNodes.size() <= maxComplexSize) {
 
 				// If the best score is negative don't add the node to make the score worse!
 				if (maxScore < 0) 
@@ -170,7 +170,7 @@ public class GreedyComplexSearch implements SearchGraph<String,Double> {
 				// If we reach the max limit, check to see if adding a new node 
 				// and removing an old node increases the score.  If it does, 
 				// keep trying, else break out of the loop.
-				if (solnNodes.size() + seedNodes.size() == this.maxComplexSize) {
+				if (solnNodes.size() + seedNodes.size() == maxComplexSize) {
 
 					// Find the min scoring node.
 					String minNode = null;
