@@ -5,6 +5,7 @@ import cytoscape.util.intr.IntArray;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Paint;
+import java.awt.geom.Point2D;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -275,7 +276,26 @@ final class SpecificEdgeDetails extends DefaultEdgeDetails
 
   public final EdgeAnchors anchors(final int edge)
   {
-    return null;
+    final Vector vec = (Vector) m_anchors.get(new Integer(edge));
+    if (vec == null) { return null; }
+    if (m_anchorTypes.getIntAtIndex(edge) == 0) { // Curved edges.
+      return new EdgeAnchors() {
+          public final int numAnchors() { return vec.size(); }
+          public final void getAnchor(final int inx,
+                                      final float[] arr,
+                                      final int offset) {
+            final Point2D.Float pt = (Point2D.Float) vec.get(inx);
+            arr[offset] = pt.x;
+            arr[offset + 1] = pt.y; } }; }
+    else { // Straight edges.
+      return new EdgeAnchors() {
+          public final int numAnchors() { return vec.size() * 2; }
+          public final void getAnchor(final int inx,
+                                      final float[] arr,
+                                      final int offset) {
+            final Point2D.Float pt = (Point2D.Float) vec.get(inx / 2);
+            arr[offset] = pt.x;
+            arr[offset + 1] = pt.y; } }; }
   }
 
 }
