@@ -143,10 +143,10 @@ public final class Fung
         if (edgesTouching == null) { return false; }
         while (edgesTouching.numRemaining() > 0) {
           removedEdges.push(edgesTouching.nextInt()); }
-        ((NodeView) m_nodeViewStorage.getObjAtIndex(node)).m_fung = null;
-        m_nodeViewStorage.setObjAtIndex(null, node);
+        m_graph.nodeRemove(node);
         m_rtree.delete(node);
-        m_graph.nodeRemove(node); }
+        ((NodeView) m_nodeViewStorage.getObjAtIndex(node)).m_fung = null;
+        m_nodeViewStorage.setObjAtIndex(null, node); }
       final TopologyChangeListener topLis = m_topLis;
       if (topLis != null) {
         final IntEnumerator removedEdgeEnum = removedEdges.elements();
@@ -160,22 +160,22 @@ public final class Fung
                                 final boolean directed) {
       final int rtnVal;
       synchronized (m_lock) {
-        rtnVal = m_graph.edgeCreate(sourceNode, targetNode, directed); }
-      if (rtnVal >= 0) {
-        final TopologyChangeListener topLis = m_topLis;
-        if (topLis != null) {
-          topLis.edgeCreated(rtnVal); } }
+        rtnVal = m_graph.edgeCreate(sourceNode, targetNode, directed);
+        if (rtnVal < 0) { return -1; }
+        m_edgeViewStorage.setObjAtIndex
+          (new EdgeView(m_this, rtnVal), rtnVal); }
+      final TopologyChangeListener topLis = m_topLis;
+      if (topLis != null) { topLis.edgeCreated(rtnVal); }
       return rtnVal; }
 
     public final boolean edgeRemove(final int edge) {
-      final boolean rtnVal;
       synchronized (m_lock) {
-        rtnVal = m_graph.edgeRemove(edge); }
-      if (rtnVal) {
-        final TopologyChangeListener topLis = m_topLis;
-        if (topLis != null) {
-          topLis.edgeRemoved(edge); } }
-      return rtnVal; }
+        if (!m_graph.edgeRemove(edge)) { return false; }
+        ((EdgeView) m_edgeViewStorage.getObjAtIndex(edge)).m_fung = null;
+        m_edgeViewStorage.setObjAtIndex(null, edge); }
+      final TopologyChangeListener topLis = m_topLis;
+      if (topLis != null) { topLis.edgeRemoved(edge); }
+      return true; }
 
     public final boolean nodeExists(final int node) {
       synchronized (m_lock) { return m_graph.nodeExists(node); } }
