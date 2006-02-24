@@ -18,6 +18,8 @@ public final class Fung
   private final Canvas m_canvas = null;
   private final DynamicGraph m_graphModel = new FungDynamicGraph();
   final RTree m_rtree = new RTree();
+  final ObjArray m_nodeViewStorage = new ObjArray();
+  final ObjArray m_edgeViewStorage = new ObjArray();
 
   private TopologyChangeListener m_topLis = null;
   final NodeViewDefaults m_nodeDefaults;
@@ -85,6 +87,18 @@ public final class Fung
   public final DynamicGraph getGraphModel()
   {
     return m_graphModel;
+  }
+
+  public final NodeView getNodeView(final int node)
+  {
+    synchronized (m_lock) {
+      return (NodeView) m_nodeViewStorage.getObjAtIndex(node); }
+  }
+
+  public final EdgeView getEdgeView(final int edge)
+  {
+    synchronized (m_lock) {
+      return (EdgeView) m_edgeViewStorage.getObjAtIndex(edge); }
   }
 
   private final class FungDynamicGraph implements DynamicGraph
