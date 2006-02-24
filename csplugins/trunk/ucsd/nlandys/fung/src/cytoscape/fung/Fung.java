@@ -28,6 +28,11 @@ public final class Fung
   final SpecificNodeDetails m_nodeDetails;
   final SpecificEdgeDetails m_edgeDetails;
 
+  // Is there a way to do this without this hack?
+  // I want the instance of Fung to be accessible from within the
+  // FungDynamicGraph instance.
+  private final Fung m_this = this;
+
   public Fung()
   {
     this(null, null, null);
@@ -122,7 +127,9 @@ public final class Fung
         m_rtree.insert
           (rtnVal,
            -m_nodeDefaults.m_widthDiv2, -m_nodeDefaults.m_heightDiv2,
-           m_nodeDefaults.m_widthDiv2, m_nodeDefaults.m_heightDiv2); }
+           m_nodeDefaults.m_widthDiv2, m_nodeDefaults.m_heightDiv2);
+        m_nodeViewStorage.setObjAtIndex
+          (new NodeView(m_this, rtnVal), rtnVal); }
       final TopologyChangeListener topLis = m_topLis;
       if (topLis != null) {
         topLis.nodeCreated(rtnVal); }
@@ -136,6 +143,8 @@ public final class Fung
         if (edgesTouching == null) { return false; }
         while (edgesTouching.numRemaining() > 0) {
           removedEdges.push(edgesTouching.nextInt()); }
+        ((NodeView) m_nodeViewStorage.getObjAtIndex(node)).m_fung = null;
+        m_nodeViewStorage.setObjAtIndex(null, node);
         m_rtree.delete(node);
         m_graph.nodeRemove(node); }
       final TopologyChangeListener topLis = m_topLis;
