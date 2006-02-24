@@ -243,17 +243,17 @@ public class BasicGraph<NodeType extends Comparable<? super NodeType>,WeightType
 	}
 
         /**
-         * Returns a list of all edge weights in the graph.
-         * @return A list of all edge weights in the graph.
+         * Returns a list of all edges in the graph.
+         * @return A list of all edges in the graph.
          */
 	public Set<Edge<NodeType,WeightType>> getEdges() {
 		Set<Edge<NodeType,WeightType>> edgeSet = new HashSet<Edge<NodeType,WeightType>>();
 		for(NodeType node1: weightMap.keySet()) {
 			for(NodeType node2: weightMap.get(node1).keySet()) {
 				if ( node1.compareTo( node2 ) <= 0 ) 
-					edgeSet.add( new BasicEdge(node1,node2,weightMap.get(node1).get(node2)));
+					edgeSet.add( new BasicEdge(node1,node2,weightMap.get(node1).get(node2),getEdgeDescription(node1,node2)));
 				else
-					edgeSet.add( new BasicEdge(node2,node1,weightMap.get(node2).get(node1)));
+					edgeSet.add( new BasicEdge(node2,node1,weightMap.get(node2).get(node1),getEdgeDescription(node2,node1)));
 			}
 		}
 		return edgeSet;
@@ -355,13 +355,13 @@ public class BasicGraph<NodeType extends Comparable<? super NodeType>,WeightType
          * @return The description of the edge.
          */
 	public String getEdgeDescription(NodeType nodeA, NodeType nodeB) {
-		if ( !weightMap.containsKey(nodeA) || !weightMap.containsKey(nodeB) )
+		if ( !isEdge(nodeA,nodeB) ) 
 			return null;
 
-		if ( !descMap.containsKey(nodeA) || !descMap.containsKey(nodeB) )
+		if ( descMap.containsKey(nodeA) && descMap.get(nodeA).containsKey(nodeB) ) 
+			return descMap.get(nodeA).get(nodeB);
+		else 
 			return weightMap.get(nodeA).get(nodeB).toString();
-		else
-			return descMap.get(nodeA).get(nodeB).toString();
 	}
 
 	/**
@@ -420,8 +420,16 @@ public class BasicGraph<NodeType extends Comparable<? super NodeType>,WeightType
 		String newline = System.getProperty("line.separator");
 		s.append(newline);
 
+		// list the edges in alphabetical order
+		List<String> edges = new ArrayList<String>();
+
 		for (Edge<NodeType,WeightType> e: getEdges()) 
-			s.append( e.getSourceNode().toString() + " " + e.getWeight().toString() + " " + e.getTargetNode().toString() + newline );
+			edges.add( e.toString() );
+
+		Collections.sort(edges);
+
+		for (String e: edges)
+			s.append( e + newline );
 
 		return s.toString();
 	}
@@ -429,7 +437,8 @@ public class BasicGraph<NodeType extends Comparable<? super NodeType>,WeightType
 	/**
 	 * Removes the specified edge from the graph. The nodes connected to the edge
 	 * will NOT be removed.
-	 * @param edge The edge to be removed.
+         * @param nodeA The beginning node of the edge to remove.
+         * @param nodeB The ending node of the edge to remove.
 	 * @return Whether or not the edge was successfully removed. 
 	 */
 	public boolean removeEdge(NodeType nodeA, NodeType nodeB) {

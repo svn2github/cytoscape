@@ -471,6 +471,7 @@
     <delete dir="${log.dir}"/>
     <delete dir="${manifest.dir}"/>
     <delete file="${project.jar}"/>
+    <delete file="${retro.project.jar}"/>
     <delete file="${test.jar}"/>
     <echo message="Successfully ran clean task!"/>
   </target>

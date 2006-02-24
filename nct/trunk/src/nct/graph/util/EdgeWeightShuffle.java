@@ -1,4 +1,4 @@
-package graph.util;
+package nct.graph.util;
 
 import java.util.*;
 import nct.graph.Graph; 

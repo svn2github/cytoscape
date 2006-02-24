@@ -1,4 +1,4 @@
-package graph.util;
+package nct.graph.util;
 
 import java.util.*;
 import nct.graph.Graph;
@@ -41,8 +41,13 @@ public abstract class DegreePreservingRandomizer implements GraphRandomizer {
 				if ( va.compareTo(vb) == 0 || va.compareTo(j) == 0 || vb.compareTo(i) == 0 )
 					continue;
 
+				// don't want to stomp on existing edges
+				if ( g.isEdge(i,vb) || g.isEdge(j,va) )
+					continue;
+
 				if (weightsSimilar(g.getEdgeWeight(i,va),g.getEdgeWeight(j,vb)))
 					break;
+
 			}
 			
 			W iWeight = g.getEdgeWeight(i,va);
@@ -53,6 +58,10 @@ public abstract class DegreePreservingRandomizer implements GraphRandomizer {
 
 			g.addEdge(i,vb,jWeight);
 			g.addEdge(j,va,iWeight);
+
+			//System.out.println("interim randomized graph:");
+			//System.out.println(g.toString());
+
 		}
 	}
 

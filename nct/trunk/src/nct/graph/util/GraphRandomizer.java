@@ -1,4 +1,4 @@
-package graph.util;
+package nct.graph.util;
 
 import nct.graph.Graph;
 import java.util.Random;
