@@ -6,8 +6,8 @@ import cytoscape.graph.dynamic.util.DynamicGraphFactory;
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntIterator;
 import cytoscape.util.intr.IntStack;
-import java.awt.Canvas;
 import java.awt.Component;
+import java.awt.Paint;
 
 public final class Fung
 {
@@ -15,7 +15,6 @@ public final class Fung
   final Object m_lock = new Object();
   final float[] m_extentsBuff = new float[4];
   final double[] m_doubleBuff = new double[2];
-  private final Canvas m_canvas = null;
   final FungDynamicGraph m_graphModel = new FungDynamicGraph();
   final RTree m_rtree = new RTree();
   final ObjArray m_nodeViewStorage = new ObjArray();
@@ -27,6 +26,7 @@ public final class Fung
   final EdgeViewDefaults m_undirectedEdgeDefaults;
   final SpecificNodeDetails m_nodeDetails;
   final SpecificEdgeDetails m_edgeDetails;
+  private final InnerCanvas m_canvas;
 
   // Is there a way to do this without this hack?
   // I want the instance of Fung to be accessible from within the
@@ -53,6 +53,7 @@ public final class Fung
     m_undirectedEdgeDefaults = undirectedEdgeDefaults;
     m_nodeDetails = new SpecificNodeDetails(this);
     m_edgeDetails = new SpecificEdgeDetails(this);
+    m_canvas = new InnerCanvas(this);
   }
 
   public final NodeViewDefaults getNodeViewDefaults()
@@ -87,6 +88,18 @@ public final class Fung
   public final Component getComponent()
   {
     return m_canvas;
+  }
+
+  public final void setBackgroundPaint(final Paint paint)
+  {
+    if (paint == null) { throw new NullPointerException("paint is null"); }
+    synchronized (m_lock) {
+      m_canvas.m_bgPaint = paint; }
+  }
+
+  public final Paint getBackgroundPaint()
+  {
+    return m_canvas.m_bgPaint;
   }
 
   public final DynamicGraph getGraphModel()
