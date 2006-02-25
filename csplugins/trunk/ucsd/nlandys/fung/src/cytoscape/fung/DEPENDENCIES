@@ -5,3 +5,4 @@ lib:cytoscape-geom-spacial.jar
 lib:cytoscape-geom-rtree.jar
 lib:cytoscape-render-immed.jar
 lib:cytoscape-render-stateful.jar
+lib:cytoscape-render-export.jar
