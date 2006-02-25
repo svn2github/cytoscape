@@ -71,6 +71,9 @@
       <fileset dir="${cytoscape.lib.dir}">
         <include name="**/*.jar"/>
       </fileset>
+      <fileset dir="${cytoscape.plugin.dir}">
+        <include name="**/*.jar"/>
+      </fileset>
 
       <pathelement location="${csplugins.dir}/common/task/build/littlejars/cytoscape_task.zip"/>
       <pathelement location="${csplugins.dir}/common/task/build/littlejars/cytoscape_task_ui.zip"/>
