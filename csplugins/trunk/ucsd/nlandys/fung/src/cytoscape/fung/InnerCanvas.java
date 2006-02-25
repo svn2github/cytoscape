@@ -1,10 +1,14 @@
 package cytoscape.fung;
 
+import cytoscape.render.export.ImageImposter;
 import cytoscape.render.immed.GraphGraphics;
 import cytoscape.render.stateful.GraphRenderer;
 import cytoscape.util.intr.IntHash;
 import java.awt.Canvas;
+import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Paint;
 import java.awt.image.BufferedImage;
 
 final class InnerCanvas extends Canvas
@@ -14,11 +18,13 @@ final class InnerCanvas extends Canvas
   private final IntHash m_hash = new IntHash();
   private Image m_img;
   private GraphGraphics m_grafx;
+  Paint m_bgPaint;
 
   InnerCanvas(final Fung fung)
   {
     super();
     m_fung = fung;
+    m_bgPaint = Color.white;
   }
 
   public final void reshape(final int x, final int y,
@@ -39,11 +45,24 @@ final class InnerCanvas extends Canvas
                                   m_fung.m_edgeDetails,
                                   m_hash,
                                   m_grafx,
-                                  null, // bg paint
+                                  m_bgPaint,
                                   0.0d, // x center
                                   0.0d, // y center
                                   1.0d); // scale factor
       } }
+  }
+
+  public final void paint(Graphics g)
+  {
+    if (m_img == null) { return; }
+    g.drawImage(m_img, 0, 0, null);
+  }
+
+  public final void print(Graphics g)
+  {
+    final ImageImposter img = new ImageImposter(g, getWidth(), getHeight());
+//     synchronized (m_fung.m_lock) {
+//       GraphRenderer.renderGraph(); }
   }
 
 }
