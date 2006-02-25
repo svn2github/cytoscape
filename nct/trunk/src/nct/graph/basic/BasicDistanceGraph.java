@@ -129,6 +129,7 @@ public class BasicDistanceGraph<NodeType extends Comparable<? super NodeType>,We
 				}
 			}
 		}
+
 		//Long totalTime = System.currentTimeMillis() - beginTime;
 		//System.out.println("createMap duration: " + totalTime + " for size: " + probMap.size());
 	}

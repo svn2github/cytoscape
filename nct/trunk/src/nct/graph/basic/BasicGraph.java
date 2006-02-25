@@ -449,6 +449,8 @@ public class BasicGraph<NodeType extends Comparable<? super NodeType>,WeightType
 		if ( !weightMap.containsKey( nodeA ) || !weightMap.containsKey( nodeB ) )
 			return false;
 
+		assumeGraphFinished = false;
+
 		weightMap.get( nodeA ).remove( nodeB );
 		weightMap.get( nodeB ).remove( nodeA );
 
@@ -470,6 +472,8 @@ public class BasicGraph<NodeType extends Comparable<? super NodeType>,WeightType
 	public boolean removeNode(NodeType node) {
 		if ( !isNode( node ) )
 			return false;
+
+		assumeGraphFinished = false;
 
 		for ( NodeType neighbor : getNeighbors( node ) ) {
 			weightMap.get( neighbor ).remove( node );

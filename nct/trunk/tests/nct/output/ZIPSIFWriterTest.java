@@ -63,8 +63,11 @@ public class ZIPSIFWriterTest extends TestCase {
 	    String nonEmpty = "/tmp/not-empty-out";
 	    String nonEmptyZ = nonEmpty + ".zip"; 
 	    f = new ZIPSIFWriter<String,Double>(nonEmpty);	
-	    List<Graph<String,Double>> solns = sg.searchGraph(g, s);
-	    f.write(solns);
+	    int ct = 0;
+	    List<Graph<String,Double>> sols = sg.searchGraph(g, s);
+	    for (Graph<String,Double> sol : sols) 
+	    	f.add(sol,"sol_" + ct++);
+	    f.write();
 	    File nef = new File(nonEmptyZ);
 	    assertTrue(nef.exists());
 	    assertTrue(nef.length() > 0);

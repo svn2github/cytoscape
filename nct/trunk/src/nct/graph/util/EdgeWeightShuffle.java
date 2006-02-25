@@ -4,7 +4,7 @@ import java.util.*;
 import nct.graph.Graph; 
 import nct.graph.Edge; 
 
-public class EdgeWeightShuffle implements GraphRandomizer {
+public class EdgeWeightShuffle<N extends Comparable<? super N>,W extends Comparable<? super W>> implements GraphRandomizer<N,W> {
 
 	protected Random rand;
 	
@@ -15,7 +15,7 @@ public class EdgeWeightShuffle implements GraphRandomizer {
 	/**
 	 * Basic Fisher-Yates edge weight shuffle.
 	 */
-	public <N extends Comparable<? super N>,W extends Comparable<? super W>> void randomize(Graph<N,W> g) {
+	public void randomize(Graph<N,W> g) {
 
 		List<Edge<N,W>> edges = new ArrayList<Edge<N,W>>(g.getEdges());
 		int size = edges.size();

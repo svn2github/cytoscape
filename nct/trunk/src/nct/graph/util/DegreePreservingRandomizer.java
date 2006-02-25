@@ -3,16 +3,17 @@ package nct.graph.util;
 import java.util.*;
 import nct.graph.Graph;
 
-public abstract class DegreePreservingRandomizer implements GraphRandomizer {
+public class DegreePreservingRandomizer<N extends Comparable<? super N>,W extends Comparable<? super W>> implements GraphRandomizer<N,W> {
 
 	protected Random rand;
+	protected boolean ignoreWeights;
 	
-	public DegreePreservingRandomizer(Random r) {
+	public DegreePreservingRandomizer(Random r, boolean ignoreWeights) {
 		rand = r;
+		this.ignoreWeights = ignoreWeights;
 	}
 
-	public <N extends Comparable<? super N>,W extends Comparable<? super W>> 
-		void randomize(Graph<N,W> g) {
+	public void randomize(Graph<N,W> g) {
 		
 		List<N> nodes = new ArrayList<N>(g.getNodes());
 		
@@ -45,7 +46,7 @@ public abstract class DegreePreservingRandomizer implements GraphRandomizer {
 				if ( g.isEdge(i,vb) || g.isEdge(j,va) )
 					continue;
 
-				if (weightsSimilar(g.getEdgeWeight(i,va),g.getEdgeWeight(j,vb)))
+				if (ignoreWeights || weightsSimilar(g.getEdgeWeight(i,va),g.getEdgeWeight(j,vb)))
 					break;
 
 			}
@@ -65,5 +66,10 @@ public abstract class DegreePreservingRandomizer implements GraphRandomizer {
 		}
 	}
 
-	public abstract <W extends Comparable<? super W>> boolean weightsSimilar( W a, W b );
+	public boolean weightsSimilar( W a, W b ) {
+		if ( a.compareTo( b ) == 0 )
+			return true;
+		else
+			return false;
+	}
 }

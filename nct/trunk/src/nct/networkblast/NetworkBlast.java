@@ -27,6 +27,7 @@ import nct.networkblast.graph.compatibility.*;
 import nct.networkblast.score.*;
 import nct.graph.*;
 import nct.graph.basic.*;
+import nct.graph.util.*;
 import nct.filter.*;
 import nct.output.*;
 import nct.service.homology.HomologyModel;
@@ -43,14 +44,13 @@ public class NetworkBlast {
 	// default variables
 	public static String VERSION = "0.1";
 	public static boolean SERIALIZE = false;
-	public static boolean VERBOSE = false;
-	public static boolean QUIET = false;
 	public static double truthFactorDefault = 2.5;
 	public static double modelTruthDefault = 0.8;
 	public static String outputPrefixDefault = "out";
 	public static double expectationDefault = 1e-10;
 	public static double backgroundProbDefault = 1e-10;
 	public static Level logLevelDefault = Level.WARNING;
+	public static int simulationsDefault = 0;
 	
 	public static int complexMinSeedSize = 4;
 	public static int complexMaxSize = 15;
@@ -66,6 +66,7 @@ public class NetworkBlast {
 	protected String compatFile;
 	protected String intGraph1;
 	protected String intGraph2;
+	protected int numSimulations;
 
 	private static Logger log = Logger.getLogger("networkblast");
 	private static ConsoleHandler logConsole = null;
@@ -87,95 +88,104 @@ public class NetworkBlast {
 		parseCommandLine(args);
 		setUpLogging(logLevel);
 
-		try {
+		try { 
 			log.info("this is a log message");
 
-			if (!QUIET)
-				System.out.println("# read in homology and interaction data");
+			// create the interaction graphs
+			System.out.println("# read in homology and interaction data");
 			List<SequenceGraph<String,Double>> inputSpecies = new ArrayList<SequenceGraph<String,Double>>();
 
 			inputSpecies.add( new InteractionGraph(intGraph1) );
-			if (!QUIET)
-				System.out.println("# read in interaction data for species 1");
+			System.out.println("# read in interaction data for species 1");
 			inputSpecies.add( new InteractionGraph(intGraph2) );
-			if (!QUIET)
-				System.out.println("# read in interaction data for species 2");
+			System.out.println("# read in interaction data for species 2");
 
+			// define the scoring model
 			ScoreModel logScore = new LogLikelihoodScoreModel(truthFactor, modelTruth, backgroundProb);
+			// get the homology data
 			SIFHomologyReader sr = new SIFHomologyReader(compatFile);
 			HomologyGraph homologyGraph = new HomologyGraph(sr, expectation, inputSpecies);
+			// create classes for compat graph 
 			CompatibilityCalculator compatCalc = new AdditiveCompatibilityCalculator(0.01,logScore);
 
-			if (!QUIET)
-				System.out.println("# begin creating compatibility graph");
-			CompatibilityGraph compatGraph = new CompatibilityGraph(homologyGraph,
-					inputSpecies, logScore, compatCalc );
-
-			if (!QUIET)
-				System.out.println("# begin path search");
-			List<Graph<String,Double>> results_paths;
+			// initialize the search classes
+			List<Graph<String,Double>> resultPaths;
 			SearchGraph colorCoding = new ColorCodingPathSearch(pathSize);
-			results_paths = colorCoding.searchGraph(compatGraph, logScore);
 
-			if (!QUIET)
-				System.out.println("# begin complexes search");
-			SearchGraph greedyComplexes = new GreedyComplexSearch(
-					results_paths, complexMinSeedSize, complexMaxSize);
-			List<Graph<String,Double>> results_complexes;
-			results_complexes = greedyComplexes.searchGraph(compatGraph, logScore);
-
-			if (!QUIET) {
-				System.out.println("# found " + results_paths.size()
-						+ " unfiltered paths");
-				System.out.println("# found " + results_complexes.size()
-						+ " unfiltered complexes");
-			}
-
+			List<Graph<String,Double>> resultComplexes;
+			GreedyComplexSearch greedyComplexes = new GreedyComplexSearch( complexMinSeedSize, complexMaxSize);
+			
+			// initialize filter
 			Filter dupeFilter = new DuplicateThresholdFilter(1.0);
-			results_paths = dupeFilter.filter(results_paths);
-			results_complexes = dupeFilter.filter(results_complexes);
 
-			if (!QUIET) {
-				System.out.println("# found " + results_paths.size()
-						+ " filtered paths");
-				System.out.println("# found " + results_complexes.size()
-						+ " filtered complexes");
-			}
-			if (!QUIET) {
-				DecimalFormat myFormatter = new DecimalFormat("#0.00");
+			// initialize the randomization classes
+			GraphRandomizer homologyShuffle = new EdgeWeightShuffle<String,Double>(randomNG);
+			GraphRandomizer edgeShuffle = new ThresholdRandomizer(randomNG,0.2);
+
+			if ( numSimulations > 0 )
+				System.out.println("# beginning " + numSimulations + " simulations");
+			int count = 0;
+
+			do {
+				if ( numSimulations > 0 )
+					System.out.println("# begin simulation " + count);
+
+				System.out.println("# begin creating compatibility graph");
+				CompatibilityGraph compatGraph = new CompatibilityGraph(homologyGraph, inputSpecies, logScore, compatCalc );
+
+				System.out.println("# begin path search");
+				resultPaths = colorCoding.searchGraph(compatGraph, logScore);
+
+				System.out.println("# begin complexes search");
+				greedyComplexes.setSeeds( resultPaths );
+				resultComplexes = greedyComplexes.searchGraph(compatGraph, logScore);
+
+				System.out.println("# found " + resultPaths.size() + " unfiltered paths");
+				System.out.println("# found " + resultComplexes.size() + " unfiltered complexes");
+
+				resultPaths = dupeFilter.filter(resultPaths);
+				resultComplexes = dupeFilter.filter(resultComplexes);
+
+				System.out.println("# found " + resultPaths.size() + " filtered paths");
+				System.out.println("# found " + resultComplexes.size() + " filtered complexes");
+
 				System.out.println("# path results");
-				for (int i = 0; i < results_paths.size(); i++) 
-					System.out.println("path " + i + ": " + results_paths.get(i).toString());
-			}
+				for (int i = 0; i < resultPaths.size(); i++) 
+					System.out.println("path " + i + ": " + resultPaths.get(i).toString());
 
-			if (!QUIET) {
 				System.out.println("# complexes results: " );
-				for (int i = 0; i < results_complexes.size(); i++) 
-					System.out.println("complex " + i + ": " + results_complexes.get(i).toString());
+				for (int i = 0; i < resultComplexes.size(); i++) 
+					System.out.println("complex " + i + ": " + resultComplexes.get(i).toString());
+				if (SERIALIZE) {
+					
+					String zname = "network_blast_results";
+					if ( numSimulations > 0 )
+						zname = zname + "_" + count;
+	
+					System.out.println("# writing results to file: " + zname + ".zip" );
+					ZIPSIFWriter zipper = new ZIPSIFWriter<String,Double>(zname);
+					int ct = 1;		
+					for ( Graph<String,Double> p : resultPaths )
+						zipper.add(p, "path_" + ct++);
 
-			}
+					ct = 1;		
+					for ( Graph<String,Double> p : resultComplexes )
+						zipper.add(p, "complex_" + ct++);
 
-			if (SERIALIZE) {
+					zipper.add(compatGraph,"compat_graph");
 
-				if (!QUIET)
-					System.out.println("# serializing path results");
-				ZIPSIFWriter zipper = new ZIPSIFWriter<String,Double>(
-						"testpaths");
-				zipper.write(results_paths);
+					zipper.write();
+				}
 
-				if (!QUIET)
-					System.out.println("# serializing complexes results");
-				zipper = new ZIPSIFWriter("testcomplexes");
-				zipper.write(results_complexes);
+		
+				if ( numSimulations > 0 ) {
+					System.out.println("# randomizing input graphs");
+					for ( Graph<String,Double> spec : inputSpecies )
+						edgeShuffle.randomize( spec );
+					homologyShuffle.randomize( homologyGraph );
+				}
 
-				if (!QUIET)
-					System.out.println("# serializing compatibility graph");
-				zipper = new ZIPSIFWriter("compatibility");
-				List<Graph<String,Double>> arraySol = new ArrayList<Graph<String,Double>>();
-				arraySol.add(compatGraph);
-				zipper.write(arraySol);
-			}
-
+			} while ( count++ < numSimulations );
 
 		} catch (IOException e1) {
 			log.severe("Error reading file: " + e1.getMessage());
@@ -194,12 +204,8 @@ public class NetworkBlast {
 
 		options.addOption("V", "version", false,
 				"prints the version number and exits");
-		options.addOption("v", "verbose", false, "give extra info");
 		options.addOption("S", "serialize", SERIALIZE,
 				"serialize result data (" + SERIALIZE + ")");
-		options.addOption("q", "quiet", QUIET,
-				"don't print any OUTPUT (exclusive of -S) (" + QUIET + ")");
-
 		options.addOption(OptionBuilder.withLongOpt("output").withDescription(
 				"output prefix").withValueSeparator('=').withArgName(
 				"outputPrefix").hasArg().create("o"));
@@ -240,6 +246,11 @@ public class NetworkBlast {
 				.withValueSeparator('=').withArgName("log_level").hasArg()
 				.create("l"));
 
+		options.addOption(OptionBuilder.withLongOpt("simulations")
+				.withDescription( "number of additional simulations (" + simulationsDefault + ")")
+				.withValueSeparator('=').withArgName("simulation").hasArg()
+				.create("s"));
+
 		// try to parse the cmd line
 		CommandLineParser parser = new PosixParser();
 		CommandLine line = null;
@@ -264,16 +275,8 @@ public class NetworkBlast {
 			helpAndDie(null);
 		}
 
-		if (line.hasOption("v")) {
-			VERBOSE = true;
-		}
-
 		if (line.hasOption("S")) {
 			SERIALIZE = true;
-		}
-
-		if (line.hasOption("q")) {
-			QUIET = true;
 		}
 
 		// optional args
@@ -317,6 +320,12 @@ public class NetworkBlast {
 			logLevel = determineLogLevel( line.getOptionValue("l") );
 		} else {
 			logLevel = logLevelDefault;
+		}
+
+		if (line.hasOption("s")) {
+			numSimulations = Integer.parseInt(line.getOptionValue("s")); 
+		} else {
+			numSimulations = simulationsDefault;
 		}
 
 		// required unlabeled args
@@ -369,7 +378,7 @@ public class NetworkBlast {
 	 */
 	private static Level determineLogLevel( String levelString ) {
 
-		levelString.toLowerCase();
+		levelString = levelString.toLowerCase();
 
 		if ( Pattern.matches("severe", levelString) )
 			return Level.SEVERE;

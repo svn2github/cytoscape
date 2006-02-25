@@ -25,41 +25,50 @@ import nct.graph.Edge;
  */
 public class ZIPSIFWriter<NodeType extends Comparable<? super NodeType>,
                           WeightType extends Comparable<? super WeightType>> { 
+
     /**
-     * The base filename to write out
+     * The output stream.
      */
-    private String baseFileName;
+     protected ZipOutputStream out; 
+
+    /**
+     * The content to be written. 
+     */
+     protected StringBuffer content; 
+
+    /**
+     * The bytes of the content to be written. 
+     */
+     protected byte[] bytes; 
 
     /**
      * Sets the output filename
      * @param fname The filename to write zip file to.
      */
-    public ZIPSIFWriter(String fname) {
+    public ZIPSIFWriter(String fname) throws IOException {
 	assert(fname != null);
-	baseFileName = fname;
+	content = new StringBuffer();
+	out = new ZipOutputStream(new FileOutputStream(fname + ".zip"));
+	out.setLevel(9); // set compression level to maximum
     }
 
     /**
-     * Writes the specified list of graphs as individual SIF files compressed
-     * into a ZIP archive.
-     * @param graphs The list of graphs to be written as SIF files. 
+     * Adds graph to zip archive. 
+     * @param graph The graph to be written as a SIF file and included in the archive. 
+     * @param name The name of the SIF file to be written to the archive. 
      */
-    public void write(List<Graph<NodeType,WeightType>> graphs) throws IOException {
-	assert(graphs != null);
-	int totalGraphs = 0;
-	byte[] bytes;
-	StringBuffer content = new StringBuffer();
-
-	ZipOutputStream out = new ZipOutputStream(new FileOutputStream(baseFileName + ".zip"));
-	out.setLevel(9); // set compression level to maximum
-
-	for (Graph<NodeType,WeightType> graph: graphs) { 
-	    out.putNextEntry(new ZipEntry( baseFileName + "_" + (totalGraphs++) + ".sif" ));
+    public void add(Graph<NodeType,WeightType> graph, String name ) throws IOException {
+	    out.putNextEntry(new ZipEntry( name +  ".sif" ));
 	    content.append(getSIFString(graph));
 	    bytes = content.toString().getBytes();
 	    out.write(bytes,0,bytes.length);
-	}
+    }
 
+    /**
+     * Finishes writing the ZIP file.  Call this after you've added the graphs you want
+     * to the archive.
+     */
+    public void write() throws IOException {
         out.close();
     }
 

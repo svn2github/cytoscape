@@ -22,7 +22,7 @@ import nct.graph.basic.*;
 // A JUnit test class for EdgeWeightShuffle
 public class EdgeWeightShuffleTest extends TestCase {
     BasicGraph<String,Double> g;
-    GraphRandomizer deg; 
+    GraphRandomizer<String,Double> deg; 
     protected void setUp() {
 	NetworkBlast.setUpLogging(Level.WARNING);
 	g = new BasicGraph<String,Double>();
@@ -43,7 +43,7 @@ public class EdgeWeightShuffleTest extends TestCase {
 	g.addEdge("d","e",7.0);
 	g.addEdge("e","f",8.0);
 
-	deg = new EdgeWeightShuffle(new Random(10));
+	deg = new EdgeWeightShuffle<String,Double>(new Random(10));
     }
 
     public void testRandomize() {

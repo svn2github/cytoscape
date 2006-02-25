@@ -86,7 +86,6 @@ public class AdditiveCompatibilityCalculator implements CompatibilityCalculator 
 			return false;
 		if ( foundThree )
 			return false;
-
                 if ( foundZero && !allowZero )
 			return false;
 
@@ -104,7 +103,6 @@ public class AdditiveCompatibilityCalculator implements CompatibilityCalculator 
 		for ( int z = 0; z < numGraphs; z++ )
 			distDesc.append( Byte.toString(distance[z] ));
 
-		//System.out.println( "final distance " + distDesc.toString() );
 		compatGraph.addNode(node1);
 		compatGraph.addNode(node2);
                 boolean status = compatGraph.addEdge(node1,node2, new Double(edgeWeight), distDesc.toString());		

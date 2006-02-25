@@ -22,7 +22,7 @@ import nct.graph.basic.*;
 // A JUnit test class DegreePreservingRandomizer 
 public class DegreePreservingRandomizerTest extends TestCase {
     BasicGraph<String,Double> g;
-    GraphRandomizer deg; 
+    GraphRandomizer<String,Double> deg; 
     protected void setUp() {
 	NetworkBlast.setUpLogging(Level.WARNING);
 	g = new BasicGraph<String,Double>();
@@ -43,7 +43,7 @@ public class DegreePreservingRandomizerTest extends TestCase {
 	g.addEdge("d","e",1.0);
 	g.addEdge("e","f",1.0);
 
-	deg = new EqualsRand(new Random(10));
+	deg = new DegreePreservingRandomizer<String,Double>(new Random(10),false);
     }
 
     public void testRandomize() {
@@ -102,19 +102,6 @@ public class DegreePreservingRandomizerTest extends TestCase {
 
     public static Test suite() {
 	return new TestSuite(DegreePreservingRandomizerTest.class);
-    }
-
-    private class EqualsRand extends DegreePreservingRandomizer {
-    	public EqualsRand( Random r) {
-		super(r);
-	}
-
-    	public <W extends Comparable<? super W>> boolean weightsSimilar( W a, W b ) {
-		if ( a.toString().equals( b.toString() ) )
-			return true;
-		else
-			return false;
-	}
     }
 
 }

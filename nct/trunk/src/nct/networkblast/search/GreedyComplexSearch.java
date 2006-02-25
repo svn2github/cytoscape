@@ -27,9 +27,9 @@ import nct.graph.Graph;
 public class GreedyComplexSearch implements SearchGraph<String,Double> {
 
 	/**
-	 * This List keeps track of the paths used as seeds.
+	 * This List keeps track of the graphs (usually paths) used as seeds.
 	 */
-	private List<Graph<String,Double>> listOfPaths;
+	private List<Graph<String,Double>> listOfSeeds;
 	
 	/**
 	 * Maximum size of the complexes allowed.
@@ -47,17 +47,14 @@ public class GreedyComplexSearch implements SearchGraph<String,Double> {
 	private static Logger log = Logger.getLogger("networkblast");
 
 	/**
-	 * Takes in the list of paths to be used as primary seeds and sets
-	 * max and min sizes for complexes accordingly.
-	 * @param paths List of paths to use as primary seeds.
+	 * Sets the max and min sizes for complexes. 
 	 * @param minSize Minimum complex size, also the size of the secondary seeds.
 	 * @param maxSize Maximum allowed complex size.
 	 */
-	public GreedyComplexSearch(List<Graph<String,Double>> paths, int minSize, int maxSize) {
-		assert(paths != null) : "paths was null!";
-		listOfPaths = paths;
+	public GreedyComplexSearch(int minSize, int maxSize) {
 		maxComplexSize =  maxSize;
 		minSeedSize = minSize;
+		listOfSeeds = null;
 	}
 
 	/**
@@ -97,8 +94,9 @@ public class GreedyComplexSearch implements SearchGraph<String,Double> {
 
 		// Seed type 1
 		// Copy whatever existing paths to the queue of seeds. 
-		for (int i = 0; i < listOfPaths.size(); i++) 
-			queue.add((Graph<String,Double>)listOfPaths.get(i).clone());
+		if ( listOfSeeds != null )
+			for (int i = 0; i < listOfSeeds.size(); i++) 
+				queue.add((Graph<String,Double>)listOfSeeds.get(i).clone());
 	
 		// Seed type 2
 		// Add minSeedSize node seeds to the queue.
@@ -393,6 +391,10 @@ public class GreedyComplexSearch implements SearchGraph<String,Double> {
 			soln.setScore(tmpscore);
 			queue.add(soln);
 		}
+	}
+
+	public void setSeeds(List<Graph<String,Double>> seeds) {
+		listOfSeeds = seeds;
 	}
 }
 

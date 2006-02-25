@@ -25,7 +25,8 @@ import nct.service.homology.sif.*;
 
 
 public class GreedyComplexSearchTest extends TestCase {
-    SearchGraph sg, cg;
+    SearchGraph sg;
+    GreedyComplexSearch cg;
     InteractionGraph h, k ;
     ScoreModel s;
     List<Graph<String,Double>> solns;
@@ -37,7 +38,8 @@ public class GreedyComplexSearchTest extends TestCase {
 	    k = new InteractionGraph("examples/testNet.input.sif");
 	    s = new LogLikelihoodScoreModel(2.5, .8, 1e-10);
 	    solns = sg.searchGraph(h, s);
-	    cg = new GreedyComplexSearch(solns, 4, 15);
+	    cg = new GreedyComplexSearch(4, 15);
+	    cg.setSeeds(solns);
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}
@@ -57,7 +59,7 @@ public class GreedyComplexSearchTest extends TestCase {
 	assertTrue("expected 13 int graph edges, got: " + k.numberOfEdges(), k.numberOfEdges() == 13 );
 
 	// Only 1 complex at this point 
-	List<Graph> cmplx = cg.searchGraph(k,s);
+	List<Graph<String,Double>> cmplx = cg.searchGraph(k,s);
 	assertTrue("expected 1 complex, got: " + cmplx.size(), cmplx.size() == 1 );
 	
 	// The node is not connected, so we shouldn't get another complex 
