@@ -35,7 +35,7 @@ public class SIFParser {
 		try { 
                 	BufferedReader input = new BufferedReader(new FileReader(new File(fileName)));
                 	String line;
-                	Pattern p = Pattern.compile("^(.+)\\s+(.+)\\s+(.+)\\s*$");
+                	Pattern p = Pattern.compile("^(\\S+)\\s+(\\S+)\\s+(\\S+)\\s*$");
                 	Matcher m = p.matcher("");
                 	while ((line = input.readLine()) != null) {
                        		m.reset(line);
