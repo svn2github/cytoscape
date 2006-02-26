@@ -156,10 +156,27 @@ public class GreedyComplexSearch implements SearchGraph<String,Double> {
 				}
 			}
 
+			// This set is used because the following while loop can reach a
+			// state where it cycles between a small number of alternative
+			// solutions without ever breaking the loop.  We add hashcodes
+			// of the solutions to this set and if we come across a solution
+			// we've already hit, we break.
+			Set<String> nodeDesc = new HashSet<String>();
+
 			// Now do the extension (ie adding/subtracting nodes).
 			// If maxSize hasn't been reached yet, removing a node shouldn't 
 			// be worse than adding one.
 			while (solnNodes.size() + seedNodes.size() <= maxComplexSize) {
+
+				// See if this solution has already been tried. 
+				String code = Integer.toString( solnNodes.hashCode() ) + 
+				              Integer.toString( seedNodes.hashCode() );
+				if ( nodeDesc.contains( code ) ) {
+					log.fine("breaking on code " + code );
+					break;
+				}
+				else
+					nodeDesc.add( code );
 
 				// If the best score is negative don't add the node to make the score worse!
 				if (maxScore < 0) 
@@ -181,7 +198,7 @@ public class GreedyComplexSearch implements SearchGraph<String,Double> {
 
 						}
 					}
-
+					
 					// To ensure that the minimum node removed is not the one 
 					// linking the maximum node.
 					boolean isConnected = false;  
@@ -241,6 +258,7 @@ public class GreedyComplexSearch implements SearchGraph<String,Double> {
 					// Transfer score from solution scores to potential scores.
 					potentialNodeScores.put(minNode, solnNodeScores.get(minNode));
 					solnNodeScores.remove(minNode);
+
 				}
  
 				// Otherwise (we're not at the number of allowable nodes)
@@ -289,6 +307,7 @@ public class GreedyComplexSearch implements SearchGraph<String,Double> {
 						maxScore = testScore;
 					}
 				}
+
 			}
 			
 			log.fine("soln Nodes: " + solnNodes);
