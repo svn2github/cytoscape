@@ -53,8 +53,7 @@ final class InnerCanvas extends Canvas
                                   m_bgPaint,
                                   m_xCenter,
                                   m_yCenter,
-                                  m_scaleFactor);
-      } }
+                                  m_scaleFactor); } }
   }
 
   public final void paint(Graphics g)

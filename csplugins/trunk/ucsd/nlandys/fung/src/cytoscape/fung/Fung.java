@@ -128,6 +128,17 @@ public final class Fung
     return new Point2D.Double(m_canvas.m_xCenter, m_canvas.m_yCenter);
   }
 
+  public final void setScaleFactor(final double scaleFactor)
+  {
+    synchronized (m_lock) {
+      m_canvas.m_scaleFactor = scaleFactor; }
+  }
+
+  public final void getScaleFactor()
+  {
+    return m_canvas.m_scaleFactor;
+  }
+
   public final DynamicGraph getGraphModel()
   {
     return m_graphModel;
