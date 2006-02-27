@@ -21,15 +21,19 @@ final class InnerCanvas extends Canvas
   private GraphGraphics m_grafx;
   Paint m_bgPaint;
   GraphLOD m_lod;
-  double m_xCenter = 0.0d;
-  double m_yCenter = 0.0d;
-  double m_scaleFactor = 1.0d;
+  double m_xCenter;
+  double m_yCenter;
+  double m_scaleFactor;
 
   InnerCanvas(final Fung fung)
   {
     super();
     m_fung = fung;
     m_bgPaint = Color.white;
+    m_lod = new GraphLOD();
+    m_xCenter = 0.0d;
+    m_yCenter = 0.0d;
+    m_scaleFactor = 1.0d;
   }
 
   public final void reshape(final int x, final int y,

@@ -134,7 +134,7 @@ public final class Fung
       m_canvas.m_scaleFactor = scaleFactor; }
   }
 
-  public final void getScaleFactor()
+  public final double getScaleFactor()
   {
     return m_canvas.m_scaleFactor;
   }
