@@ -60,17 +60,45 @@ final class InnerCanvas extends Canvas
                                   m_scaleFactor); } }
   }
 
-  public final void paint(Graphics g)
+  public final void update(final Graphics g)
+  {
+    if (m_grafx == null) { return; }
+    synchronized (m_fung.m_lock) {
+      GraphRenderer.renderGraph(m_fung.m_graphModel.m_graph,
+                                m_fung.m_rtree,
+                                m_lod,
+                                m_fung.m_nodeDetails,
+                                m_fung.m_edgeDetails,
+                                m_hash,
+                                m_grafx,
+                                m_bgPaint,
+                                m_xCenter,
+                                m_yCenter,
+                                m_scaleFactor); }
+    g.drawImage(m_img, 0, 0, null);
+  }
+
+  public final void paint(final Graphics g)
   {
     if (m_img == null) { return; }
     g.drawImage(m_img, 0, 0, null);
   }
 
-  public final void print(Graphics g)
+  public final void print(final Graphics g)
   {
     final ImageImposter img = new ImageImposter(g, getWidth(), getHeight());
-//     synchronized (m_fung.m_lock) {
-//       GraphRenderer.renderGraph(); }
+    synchronized (m_fung.m_lock) {
+      GraphRenderer.renderGraph(m_fung.m_graphModel.m_graph,
+                                m_fung.m_rtree,
+                                m_lod,
+                                m_fung.m_nodeDetails,
+                                m_fung.m_edgeDetails,
+                                m_hash,
+                                new GraphGraphics(img, false),
+                                m_bgPaint,
+                                m_xCenter,
+                                m_yCenter,
+                                m_scaleFactor); }
   }
 
 }
