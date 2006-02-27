@@ -21,6 +21,9 @@ final class InnerCanvas extends Canvas
   private GraphGraphics m_grafx;
   Paint m_bgPaint;
   GraphLOD m_lod;
+  double m_xCenter = 0.0d;
+  double m_yCenter = 0.0d;
+  double m_scaleFactor = 1.0d;
 
   InnerCanvas(final Fung fung)
   {
@@ -42,15 +45,15 @@ final class InnerCanvas extends Canvas
         m_grafx = grafx;
         GraphRenderer.renderGraph(m_fung.m_graphModel.m_graph,
                                   m_fung.m_rtree,
-                                  null, // LOD
+                                  m_lod,
                                   m_fung.m_nodeDetails,
                                   m_fung.m_edgeDetails,
                                   m_hash,
                                   m_grafx,
                                   m_bgPaint,
-                                  0.0d, // x center
-                                  0.0d, // y center
-                                  1.0d); // scale factor
+                                  m_xCenter,
+                                  m_yCenter,
+                                  m_scaleFactor);
       } }
   }
 

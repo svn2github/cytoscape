@@ -9,6 +9,7 @@ import cytoscape.util.intr.IntIterator;
 import cytoscape.util.intr.IntStack;
 import java.awt.Component;
 import java.awt.Paint;
+import java.awt.geom.Point2D;
 
 public final class Fung
 {
@@ -113,6 +114,18 @@ public final class Fung
   public final GraphLOD getGraphLOD()
   {
     return m_canvas.m_lod;
+  }
+
+  public final void setCenter(final Point2D pt)
+  {
+    synchronized (m_lock) {
+      m_canvas.m_xCenter = pt.getX();
+      m_canvas.m_yCenter = pt.getY(); }
+  }
+
+  public final Point2D getCenter()
+  {
+    return new Point2D.Double(m_canvas.m_xCenter, m_canvas.m_yCenter);
   }
 
   public final DynamicGraph getGraphModel()
