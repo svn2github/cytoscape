@@ -3,6 +3,7 @@ package cytoscape.fung;
 import cytoscape.geom.rtree.RTree;
 import cytoscape.graph.dynamic.DynamicGraph;
 import cytoscape.graph.dynamic.util.DynamicGraphFactory;
+import cytoscape.render.stateful.GraphLOD;
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntIterator;
 import cytoscape.util.intr.IntStack;
@@ -100,6 +101,18 @@ public final class Fung
   public final Paint getBackgroundPaint()
   {
     return m_canvas.m_bgPaint;
+  }
+
+  public final void setGraphLOD(final GraphLOD lod)
+  {
+    if (lod == null) { throw new NullPointerException("lod is null"); }
+    synchronized (m_lock) {
+      m_canvas.m_lod = lod; }
+  }
+
+  public final GraphLOD getGraphLOD()
+  {
+    return m_canvas.m_lod;
   }
 
   public final DynamicGraph getGraphModel()

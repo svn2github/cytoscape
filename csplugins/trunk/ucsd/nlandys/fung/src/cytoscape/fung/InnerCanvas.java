@@ -2,6 +2,7 @@ package cytoscape.fung;
 
 import cytoscape.render.export.ImageImposter;
 import cytoscape.render.immed.GraphGraphics;
+import cytoscape.render.stateful.GraphLOD;
 import cytoscape.render.stateful.GraphRenderer;
 import cytoscape.util.intr.IntHash;
 import java.awt.Canvas;
@@ -19,6 +20,7 @@ final class InnerCanvas extends Canvas
   private Image m_img;
   private GraphGraphics m_grafx;
   Paint m_bgPaint;
+  GraphLOD m_lod;
 
   InnerCanvas(final Fung fung)
   {
