@@ -47,6 +47,9 @@
       <fileset dir="${basedir}/../graph.dynamic/src">
         <include name="cytoscape/graph/dynamic/*.java"/>
       </fileset>
+      <fileset dir="${basedir}/../render/stateful/src">
+        <include name="cytoscape/render/stateful/GraphLOD.java"/>
+      </fileset>
       <fileset dir="${src.dir}">
         <include name="cytoscape/fung/*.java"/>
       </fileset>
