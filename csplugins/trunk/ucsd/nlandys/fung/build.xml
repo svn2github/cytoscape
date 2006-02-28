@@ -13,6 +13,10 @@
     <delete dir="${build.dir}"/>
   </target>
 
+  <target name="classpath">
+    <echo message="${basedir}/lib/cytoscape-geom-rtree.jar:${basedir}/lib/cytoscape-geom-spacial.jar:${basedir}/lib/cytoscape-graph-dynamic.jar:${basedir}/lib/cytoscape-graph-fixed.jar:${basedir}/lib/cytoscape-render-export.jar:${basedir}/lib/cytoscape-render-immed.jar:${basedir}/lib/cytoscape-render-stateful.jar:${basedir}/lib/cytoscape-util-intr.jar:${build.dir}/cytoscape-fung.jar"/>
+  </target>
+
   <target name="doc"
           depends="doc-recursive, doc-nonrecursive">
   </target>
@@ -26,6 +30,8 @@
         <available file="${basedir}/../graph.fixed/src"
                    type="dir"/>
         <available file="${basedir}/../graph.dynamic/src"
+                   type="dir"/>
+        <available file="${basedir}/../render/stateful/src"
                    type="dir"/>
       </and>
     </condition>
