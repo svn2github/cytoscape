@@ -156,6 +156,11 @@ public final class Fung
       return (EdgeView) m_edgeViewStorage.getObjAtIndex(edge); }
   }
 
+  public final void updateView()
+  {
+    m_canvas.repaint();
+  }
+
   private final class FungDynamicGraph implements DynamicGraph
   {
 
