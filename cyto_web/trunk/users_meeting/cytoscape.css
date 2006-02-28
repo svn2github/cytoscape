@@ -1,4 +1,4 @@
-body,th,td,div,p,h1,h2,li,dt,dd {
+body,th,td,div,p,h1,h2,h3,li,dt,dd {
  font-family: Tahoma, "Gill Sans", Arial, sans-serif;
 }
 
@@ -14,6 +14,7 @@ a:link{
 p{padding-left: 15px}
 h1{padding-left: 15px}
 h2{padding-left: 15px}
+h3{padding-left:15px}
 img{padding-left: 15px}
 
 .roundbox {
