@@ -18,7 +18,7 @@ final class InnerCanvas extends Canvas
   private final Fung m_fung;
   private final IntHash m_hash = new IntHash();
   private Image m_img;
-  private GraphGraphics m_grafx;
+  GraphGraphics m_grafx;
   Paint m_bgPaint;
   GraphLOD m_lod;
   double m_xCenter;

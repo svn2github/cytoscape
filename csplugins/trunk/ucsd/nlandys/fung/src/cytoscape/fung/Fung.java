@@ -1,6 +1,7 @@
 package cytoscape.fung;
 
 import cytoscape.geom.rtree.RTree;
+import cytoscape.geom.spacial.SpacialEntry2DEnumerator;
 import cytoscape.graph.dynamic.DynamicGraph;
 import cytoscape.graph.dynamic.util.DynamicGraphFactory;
 import cytoscape.render.stateful.GraphLOD;
@@ -9,7 +10,9 @@ import cytoscape.util.intr.IntIterator;
 import cytoscape.util.intr.IntStack;
 import java.awt.Component;
 import java.awt.Paint;
+import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 
 public final class Fung
 {
@@ -17,6 +20,7 @@ public final class Fung
   final Object m_lock = new Object();
   final float[] m_extentsBuff = new float[4];
   final double[] m_doubleBuff = new double[2];
+  final GeneralPath m_path = new GeneralPath();
   final FungDynamicGraph m_graphModel = new FungDynamicGraph();
   final RTree m_rtree = new RTree();
   final ObjArray m_nodeViewStorage = new ObjArray();
@@ -159,6 +163,48 @@ public final class Fung
   public final void updateView()
   {
     m_canvas.repaint();
+  }
+
+  public final void getNodesIntersectingRectangle(
+                                      final Rectangle2D queryRect,
+                                      final boolean treatNodeShapesAsRectangle,
+                                      final IntStack returnVal)
+  {
+    synchronized (m_lock) {
+      final SpacialEntry2DEnumerator under = m_rtree.queryOverlap
+        ((float) queryRect.getMinX(), (float) queryRect.getMinY(),
+         (float) queryRect.getMaxX(), (float) queryRect.getMaxY(),
+         null, 0, false);
+      final int totalHits = under.numRemaining();
+      if (treatNodeShapesAsRectangle) {
+        for (int i = 0; i < totalHits; i++) {
+          returnVal.push(under.nextInt()); } }
+      else {
+        final double minX = queryRect.getMinX();
+        final double minY = queryRect.getMinY();
+        final double maxX = queryRect.getMaxX();
+        final double maxY = queryRect.getMaxY();
+        final double w = maxX - minX;
+        final double h = maxY - minY;
+        for (int i = 0; i < totalHits; i++) {
+          final int node = under.nextExtents(m_extentsBuff, 0);
+          // The only way that the node can miss the intersection query is
+          // if it intersects one of the four query rectangle's corners.
+          if ((m_extentsBuff[0] < minX && m_extentsBuff[1] < minY) ||
+              (m_extentsBuff[0] < minX && m_extentsBuff[3] > maxY) ||
+              (m_extentsBuff[2] > maxX && m_extentsBuff[3] > maxY) ||
+              (m_extentsBuff[2] > maxX && m_extentsBuff[1] < minY)) {
+            m_canvas.m_grafx.getNodeShape
+              (m_nodeDetails.shape(node), m_extentsBuff[0], m_extentsBuff[1],
+               m_extentsBuff[2], m_extentsBuff[3], m_path);
+            if (w > 0 && h > 0) {
+              if (m_path.intersects(minX, minY, w, h)) {
+                returnVal.push(node); } }
+            else {
+              if (m_path.contains(minX, minY)) {
+                returnVal.push(node); } } }
+          else {
+            returnVal.push(node); } } } }
   }
 
   private final class FungDynamicGraph implements DynamicGraph

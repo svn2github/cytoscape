@@ -46,6 +46,7 @@
       <fileset dir="${basedir}/../util.intr/src">
         <include name="cytoscape/util/intr/IntEnumerator.java"/>
         <include name="cytoscape/util/intr/IntIterator.java"/>
+        <include name="cytoscape/util/intr/IntStack.java"/>
       </fileset>
       <fileset dir="${basedir}/../graph.fixed/src">
         <include name="cytoscape/graph/fixed/*.java"/>
