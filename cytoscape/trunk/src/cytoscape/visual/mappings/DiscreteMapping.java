@@ -131,7 +131,7 @@ public class DiscreteMapping extends SubjectBase implements ObjectMapping {
      */
     public Class[] getAcceptedDataClasses() {
         // only strings supported
-        Class[] ret = {String.class, Number.class};
+        Class[] ret = {String.class, Number.class, List.class};
         return ret;
     }
 
