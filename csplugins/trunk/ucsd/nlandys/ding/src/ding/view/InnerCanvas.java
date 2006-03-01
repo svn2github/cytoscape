@@ -37,6 +37,7 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
   double m_xCenter;
   double m_yCenter;
   double m_scaleFactor;
+  boolean m_lastRenderLowDetail = true;
 
   InnerCanvas(Object lock, DGraphView view)
   {
@@ -63,17 +64,19 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
       synchronized (m_lock) {
         m_img = img;
         m_grafx = grafx;
-        GraphRenderer.renderGraph((FixedGraph) m_view.m_drawPersp,
-                                  m_view.m_spacial,
-                                  m_lod,
-                                  m_view.m_nodeDetails,
-                                  m_view.m_edgeDetails,
-                                  m_hash,
-                                  m_grafx,
-                                  m_bgPaint,
-                                  m_xCenter,
-                                  m_yCenter,
-                                  m_scaleFactor); } }
+        m_lastRenderLowDetail =
+          ((GraphRenderer.renderGraph((FixedGraph) m_view.m_drawPersp,
+                                      m_view.m_spacial,
+                                      m_lod,
+                                      m_view.m_nodeDetails,
+                                      m_view.m_edgeDetails,
+                                      m_hash,
+                                      m_grafx,
+                                      m_bgPaint,
+                                      m_xCenter,
+                                      m_yCenter,
+                                      m_scaleFactor) &
+            GraphRenderer.LOD_HIGH_DETAIL) == 0); } }
   }
 
   public void update(Graphics g)
@@ -83,17 +86,19 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
     // This is the magical portion of code that transfers what is in the
     // visual data structures into what's on the image.
     synchronized (m_lock) {
-      GraphRenderer.renderGraph((FixedGraph) m_view.m_drawPersp,
-                                m_view.m_spacial,
-                                m_lod,
-                                m_view.m_nodeDetails,
-                                m_view.m_edgeDetails,
-                                m_hash,
-                                m_grafx,
-                                m_bgPaint,
-                                m_xCenter,
-                                m_yCenter,
-                                m_scaleFactor); }
+      m_lastRenderLowDetail =
+        ((GraphRenderer.renderGraph((FixedGraph) m_view.m_drawPersp,
+                                    m_view.m_spacial,
+                                    m_lod,
+                                    m_view.m_nodeDetails,
+                                    m_view.m_edgeDetails,
+                                    m_hash,
+                                    m_grafx,
+                                    m_bgPaint,
+                                    m_xCenter,
+                                    m_yCenter,
+                                    m_scaleFactor) &
+          GraphRenderer.LOD_HIGH_DETAIL) == 0); }
     paint(g);
   }
 
@@ -148,11 +153,10 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
           m_ptBuff[1] = m_lastYMousePos;
           m_view.xformComponentToNodeCoords(m_ptBuff);
           m_stack.empty();
-          // TODO: Detect low detail rendering and then test against rectangle
-          // instead of true node shape.
           m_view.getNodesIntersectingRectangle
             ((float) m_ptBuff[0], (float) m_ptBuff[1],
-             (float) m_ptBuff[0], (float) m_ptBuff[1], false, m_stack);
+             (float) m_ptBuff[0], (float) m_ptBuff[1],
+             m_lastRenderLowDetail, m_stack);
           chosenNode = (m_stack.size() > 0) ? m_stack.peek() : 0;
           if (!e.isShiftDown()) {
             // Unselect all nodes and edges.
