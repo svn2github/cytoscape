@@ -102,7 +102,11 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
                                     m_yCenter,
                                     m_scaleFactor) &
           GraphRenderer.LOD_HIGH_DETAIL) == 0); }
-    paint(g);
+    if (m_selectionRect != null) {
+      final Graphics2D g2 = (Graphics2D) m_img.getGraphics();
+      g2.setColor(Color.red);
+      g2.draw(m_selectionRect); }
+    g.drawImage(m_img, 0, 0, null);
   }
 
   public void paint(Graphics g)
@@ -111,11 +115,6 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
 
     // TODO: Figure out the SRC_OVER and whatnot.
     g.drawImage(m_img, 0, 0, null);
-
-    final Rectangle selectionRect = m_selectionRect;
-    if (selectionRect != null) {
-      g.setColor(Color.red);
-      ((Graphics2D) g).draw(selectionRect); }
   }
 
   public void print(Graphics g)
@@ -189,7 +188,11 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
               chosenNodeSelected = true; }
             mustRedraw = true;
             m_button1NodeDrag = true; }
-          else { m_button1NodeDrag = false; } }
+          else {
+            m_selectionRect =
+              new Rectangle(m_lastXMousePos, m_lastYMousePos, 0, 0);
+            mustRedraw = true;
+            m_button1NodeDrag = false; } }
         else { m_button1NodeDrag = false; } }
       if (mustRedraw) { repaint(); }
       final GraphViewChangeListener listener = m_view.m_lis[0];
@@ -222,7 +225,11 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
   public void mouseReleased(MouseEvent e)
   {
     if (e.getButton() == MouseEvent.BUTTON1) {
-      if (m_currMouseButton == 1) { m_currMouseButton = 0; } }
+      if (m_currMouseButton == 1) {
+        m_currMouseButton = 0;
+        if (m_selectionRect != null) {
+          m_selectionRect = null;
+          repaint(); } } }
     else if (e.getButton() == MouseEvent.BUTTON2) {
       if (m_currMouseButton == 2) { m_currMouseButton = 0; } }
     else if (e.getButton() == MouseEvent.BUTTON3) {
@@ -255,6 +262,13 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
             final double oldXPos = nv.getXPosition();
             final double oldYPos = nv.getYPosition();
             nv.setOffset(oldXPos + deltaX, oldYPos + deltaY); } }
+        repaint(); }
+      if (m_selectionRect != null) {
+        final int x = Math.min(m_lastXMousePos, e.getX());
+        final int y = Math.min(m_lastYMousePos, e.getY());
+        final int w = Math.abs(m_lastXMousePos - e.getX());
+        final int h = Math.abs(m_lastYMousePos - e.getY());
+        m_selectionRect.setBounds(x, y, w, h);
         repaint(); } }
     else if (m_currMouseButton == 2) {
       double deltaY = e.getY() - m_lastYMousePos;
