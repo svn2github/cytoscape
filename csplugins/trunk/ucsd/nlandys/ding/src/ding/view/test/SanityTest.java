@@ -1,5 +1,6 @@
 package ding.view.test;
 
+import cytoscape.render.stateful.GraphLOD;
 import ding.view.DGraphView;
 import fing.model.FingRootGraphFactory;
 import giny.model.GraphPerspective;
@@ -21,9 +22,12 @@ public class SanityTest
     final int node1 = root.createNode();
     final int node2 = root.createNode();
     final int node3 = root.createNode();
+    final int node4 = root.createNode();
     final int edge1 = root.createEdge(node1, node2);
     final int edge2 = root.createEdge(node2, node3);
     final int edge3 = root.createEdge(node3, node1);
+    final int edge4 = root.createEdge(node4, node1);
+    final int edge5 = root.createEdge(node4, node2);
     final GraphPerspective persp = root.createGraphPerspective
       ((int[]) null, (int[]) null);
     final DGraphView view = new DGraphView(persp);
@@ -41,19 +45,29 @@ public class SanityTest
     final NodeView nv1 = view.addNodeView(node1);
     final NodeView nv2 = view.addNodeView(node2);
     final NodeView nv3 = view.addNodeView(node3);
+    final NodeView nv4 = view.addNodeView(node4);
     final EdgeView ev1 = view.addEdgeView(edge1);
     final EdgeView ev2 = view.addEdgeView(edge2);
     final EdgeView ev3 = view.addEdgeView(edge3);
+    final EdgeView ev4 = view.addEdgeView(edge4);
+    final EdgeView ev5 = view.addEdgeView(edge5);
     nv1.setOffset(0.0d, 50.0d);
     nv2.setOffset(-30.0d, -10.0d);
     nv3.setOffset(30.0d, 10.0d);
+    nv4.setOffset(-60.0d, 50.0d);
     nv1.setBorderWidth(1.0f);
     nv2.setBorderWidth(1.0f);
     nv3.setBorderWidth(1.0f);
+    nv4.setBorderWidth(1.0f);
     ev1.setTargetEdgeEnd(EdgeView.BLACK_DELTA);
     ev2.setTargetEdgeEnd(EdgeView.BLACK_DELTA);
     ev3.setTargetEdgeEnd(EdgeView.BLACK_DELTA);
+    ev4.setTargetEdgeEnd(EdgeView.BLACK_DELTA);
+    ev5.setTargetEdgeEnd(EdgeView.BLACK_DELTA);
     view.fitContent();
+    view.setGraphLOD(new GraphLOD() {
+        public boolean detail(int nodes, int edges) {
+          return nodes < 4; } });
     view.updateView();
   }
 
