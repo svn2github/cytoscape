@@ -21,6 +21,9 @@ import java.awt.geom.PathIterator;
 public final class GraphRenderer
 {
 
+  /**
+   * A bit representing....
+   */
   public final static int LOD_HIGH_DETAIL = 0x1;
   public final static int LOD_NODE_BORDERS = 0x2;
   public final static int LOD_NODE_LABELS = 0x4;
