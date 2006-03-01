@@ -111,10 +111,18 @@ public class DGraphView implements GraphView
 
   public void enableEdgeSelection()
   {
+    synchronized (m_lock) {
+      m_edgeSelection = true; }
   }
 
   public void disableEdgeSelection()
   {
+    synchronized (m_lock) {
+      m_edgeSelection = false;
+      final int[] selectedEdges = getSelectedEdgeIndices();
+      for (int i = 0; i < selectedEdges.length; i++) {
+        getEdgeView(selectedEdges[i]).unselect(); } }
+    updateView();
   }
 
   public int[] getSelectedNodeIndices()
