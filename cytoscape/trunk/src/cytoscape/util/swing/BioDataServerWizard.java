@@ -1,39 +1,24 @@
 package cytoscape.util.swing;
 
-import java.awt.Color;
+import java.awt.event.ActionEvent;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.Arrays;
-
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
-
-import phoebe.PGraphView;
 
 import com.nexes.wizard.Wizard;
 import com.nexes.wizard.WizardPanelDescriptor;
 
-import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-import cytoscape.data.readers.GMLReader2;
-import cytoscape.data.readers.GraphReader;
-import cytoscape.data.readers.InteractionsReader;
+import cytoscape.data.annotation.AnnotationGui;
 import cytoscape.data.servers.BioDataServer;
-import cytoscape.giny.PhoebeNetworkView;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
-import cytoscape.util.CyNetworkNaming;
-import edu.umd.cs.piccolo.PCanvas;
-import edu.umd.cs.piccolo.PLayer;
-import edu.umd.cs.piccolo.util.PBounds;
 
 /*
  * Bio Data Server Wizard utility.
@@ -79,7 +64,7 @@ public class BioDataServerWizard {
 		finalState = -1;
 
 		// Constructor for the wizard
-		wizard = new Wizard();
+		wizard = new Wizard(Cytoscape.getDesktop());
 		// wizard.getDialog().getParent().setSize(1000, 1000);
 
 		wizard.getDialog().setTitle("Gene Ontology Wizard");
@@ -152,6 +137,7 @@ public class BioDataServerWizard {
 			// Configure JTask Dialog Pop-Up Box
 			JTaskConfig jTaskConfig = new JTaskConfig();
 			jTaskConfig.setOwner(Cytoscape.getDesktop());
+			jTaskConfig.displayCancelButton(true);
 			jTaskConfig.displayCloseButton(true);
 			jTaskConfig.displayStatus(true);
 			jTaskConfig.setAutoDispose(false);
@@ -159,6 +145,10 @@ public class BioDataServerWizard {
 			// Execute Task in New Thread; pops open JTask Dialog Box.
 			TaskManager.executeTask(task, jTaskConfig);
 
+			// Show annotation window
+			AnnotationGui antGui = new AnnotationGui();
+			antGui.actionPerformed(null);
+			
 		}
 		return ret;
 	}
@@ -194,7 +184,7 @@ public class BioDataServerWizard {
  * Task to Load New Network Data.
  */
 class LoadGeneOntologyTask implements Task {
-	
+
 	private TaskMonitor taskMonitor;
 
 	private String manifest;
@@ -209,15 +199,16 @@ class LoadGeneOntologyTask implements Task {
 	public void run() {
 		taskMonitor.setStatus("Reading Gene Ontology Database files...");
 
-		taskMonitor.setPercentCompleted(20);
+		taskMonitor.setPercentCompleted(-1);
 		Cytoscape.loadBioDataServer(manifest);
-		taskMonitor.setPercentCompleted(80);
+		//taskMonitor.setPercentCompleted(80);
 
 		BioDataServer bds = Cytoscape.getBioDataServer();
 
 		if (bds.getAnnotationCount() != 0) {
 			informUserOfServerStats(bds);
-			//taskMonitor.setStatus("Gene Ontology Server loaded successfully.");
+			// taskMonitor.setStatus("Gene Ontology Server loaded
+			// successfully.");
 		} else {
 			StringBuffer sb = new StringBuffer();
 			sb.append("Could not load Gene Ontology Server.");
@@ -247,7 +238,7 @@ class LoadGeneOntologyTask implements Task {
 
 			if (element.length > 2) {
 				for (int j = 0; j < element.length; j++) {
-					
+
 					if (element[j].startsWith("annotation") == false) {
 						newMessage = newMessage + element[j] + "\n     ";
 					}
@@ -256,13 +247,13 @@ class LoadGeneOntologyTask implements Task {
 			}
 
 		}
-		
+
 		status = "Summary of the Gene Ontology Server:\n\n" + newMessage
-		+ "Default Species Name is set to "
-		+ CytoscapeInit.getDefaultSpeciesName() + "\n\n"
-		+ "Gene Ontology Server loaded successfully.";
-		
-		taskMonitor.setStatus( status );
+				+ "Default Species Name is set to "
+				+ CytoscapeInit.getDefaultSpeciesName() + "\n\n"
+				+ "Gene Ontology Server loaded successfully.";
+
+		taskMonitor.setStatus(status);
 	}
 
 	/**

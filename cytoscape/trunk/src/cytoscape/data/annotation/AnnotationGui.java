@@ -151,7 +151,7 @@ public class AnnotationGui extends CytoscapeAction {
 		
 		defaultSpecies = CytoscapeInit.getDefaultSpeciesName();
 		// if (this.mainDialog == null) {
-		mainDialog = new Gui("Annotation");
+		mainDialog = new Gui("Import Annotation from Ontology Data");
 		mainDialog.pack();
 		mainDialog.setLocationRelativeTo(Cytoscape.getDesktop());
 		// }
@@ -192,7 +192,7 @@ public class AnnotationGui extends CytoscapeAction {
 			annotateNodesButton.setEnabled(false);
 			chooserPanel.add(annotateNodesButton, BorderLayout.SOUTH);
 			chooserPanel.setBorder(BorderFactory.createCompoundBorder(
-					BorderFactory.createTitledBorder("Available"),
+					BorderFactory.createTitledBorder("Available Ontology Data"),
 					BorderFactory.createEmptyBorder(10, 10, 10, 10)));
 
 			annotateNodesButton.addActionListener(new ApplyAnnotationAction());
@@ -225,7 +225,7 @@ public class AnnotationGui extends CytoscapeAction {
 			panel3.setLayout(new BorderLayout());
 			panel3.add(currentChoicesScrollPane, BorderLayout.CENTER);
 			panel3.setBorder(BorderFactory.createCompoundBorder(BorderFactory
-					.createTitledBorder("Current Annotations"), BorderFactory
+					.createTitledBorder("Annotations to be Imported"), BorderFactory
 					.createEmptyBorder(10, 10, 10, 10)));
 
 			panel3.add(currentAnnotationsButtonPanel, BorderLayout.SOUTH);

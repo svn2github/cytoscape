@@ -522,74 +522,74 @@ public class BioDataServerPanel6 extends JPanel {
 		boolean taxonFound = false;
 		BufferedReader spListReader = null;
 
-		if (taxonFound == false) {
-			try {
-				File file = new File(System.getProperty("user.dir"), TAXON_FILE);
-				if (!taxonFound) {
-					taxonFile = file;
-					System.out.println("Taxonomy table found at: " + taxonFile);
-					taxonFound = true;
-					taxonFileLocation = taxonFile.getAbsolutePath();
-				}
-
-			} catch (Exception e) {
-				taxonFound = false;
-			}
-
-			try {
-				File file = new File(System.getProperty("CYTOSCAPE_HOME"),
-						TAXON_FILE);
-				if (!taxonFound) {
-					taxonFile = file;
-					System.out.println("Taxonomy table found at: " + taxonFile);
-					taxonFound = true;
-					taxonFileLocation = taxonFile.getAbsolutePath();
-				}
-
-			} catch (Exception e) {
-				taxonFound = false;
-			}
-
-			try {
-				File file = CytoscapeInit.getConfigFile(TAXON_FILE);
-				if (!taxonFound) {
-					taxonFile = file;
-					System.out.println("Taxonomy table found at: " + taxonFile);
-					taxonFound = true;
-					taxonFileLocation = taxonFile.getAbsolutePath();
-				}
-
-			} catch (Exception e) {
-				taxonFound = false;
-			}
-
-			try {
-				String fileLocation = CytoscapeInit.getPropertiesLocation()
-						+ FS + TAXON_FILE;
-				File file = new File(fileLocation);
-				if (!taxonFound) {
-					taxonFile = file;
-					System.out.println("Taxonomy table found at: " + taxonFile);
-					taxonFound = true;
-					taxonFileLocation = taxonFile.getAbsolutePath();
-				}
-
-			} catch (Exception e) {
-				taxonFound = false;
-			}
-
-			if (taxonFound) {
-				try {
-					spListReader = new BufferedReader(new FileReader(taxonFile));
-				} catch (FileNotFoundException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			} else {
-				return;
-			}
-
-		}
+//		if (taxonFound == false) {
+//			try {
+//				File file = new File(System.getProperty("user.dir"), TAXON_FILE);
+//				if (!taxonFound) {
+//					taxonFile = file;
+//					System.out.println("Taxonomy table found at: " + taxonFile);
+//					taxonFound = true;
+//					taxonFileLocation = taxonFile.getAbsolutePath();
+//				}
+//
+//			} catch (Exception e) {
+//				taxonFound = false;
+//			}
+//
+//			try {
+//				File file = new File(System.getProperty("CYTOSCAPE_HOME"),
+//						TAXON_FILE);
+//				if (!taxonFound) {
+//					taxonFile = file;
+//					System.out.println("Taxonomy table found at: " + taxonFile);
+//					taxonFound = true;
+//					taxonFileLocation = taxonFile.getAbsolutePath();
+//				}
+//
+//			} catch (Exception e) {
+//				taxonFound = false;
+//			}
+//
+//			try {
+//				File file = CytoscapeInit.getConfigFile(TAXON_FILE);
+//				if (!taxonFound) {
+//					taxonFile = file;
+//					System.out.println("Taxonomy table found at: " + taxonFile);
+//					taxonFound = true;
+//					taxonFileLocation = taxonFile.getAbsolutePath();
+//				}
+//
+//			} catch (Exception e) {
+//				taxonFound = false;
+//			}
+//
+//			try {
+//				String fileLocation = CytoscapeInit.getPropertiesLocation()
+//						+ FS + TAXON_FILE;
+//				File file = new File(fileLocation);
+//				if (!taxonFound) {
+//					taxonFile = file;
+//					System.out.println("Taxonomy table found at: " + taxonFile);
+//					taxonFound = true;
+//					taxonFileLocation = taxonFile.getAbsolutePath();
+//				}
+//
+//			} catch (Exception e) {
+//				taxonFound = false;
+//			}
+//
+//			if (taxonFound) {
+//				try {
+//					spListReader = new BufferedReader(new FileReader(taxonFile));
+//				} catch (FileNotFoundException e1) {
+//					// TODO Auto-generated catch block
+//					e1.printStackTrace();
+//				}
+//			} else {
+//				return;
+//			}
+//
+//		}
 
 		// If user taxon table is not found, try the file in the jar file
 
