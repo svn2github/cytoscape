@@ -13,8 +13,10 @@ import giny.view.NodeView;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Paint;
+import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -37,7 +39,8 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
   double m_xCenter;
   double m_yCenter;
   double m_scaleFactor;
-  boolean m_lastRenderLowDetail = true;
+  private boolean m_lastRenderLowDetail = false;
+  private Rectangle m_selectionRect = null;
 
   InnerCanvas(Object lock, DGraphView view)
   {
@@ -108,6 +111,11 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
 
     // TODO: Figure out the SRC_OVER and whatnot.
     g.drawImage(m_img, 0, 0, null);
+
+    final Rectangle selectionRect = m_selectionRect;
+    if (selectionRect != null) {
+      g.setColor(Color.red);
+      ((Graphics2D) g).draw(selectionRect); }
   }
 
   public void print(Graphics g)
