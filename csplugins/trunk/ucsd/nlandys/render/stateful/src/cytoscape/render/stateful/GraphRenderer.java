@@ -63,7 +63,7 @@ public final class GraphRenderer
    * @param scaleFactor the scaleFactor parameter to use when calling
    *   grafx.clear().
    * @return bits representing the level of detail that was rendered; the
-   *   return value is a bitwise-and'ed value of the LOD_* constants.
+   *   return value is a bitwise-or'ed value of the LOD_* constants.
    */
   public final static int renderGraph(final FixedGraph graph,
                                       final SpacialIndex2D nodePositions,
