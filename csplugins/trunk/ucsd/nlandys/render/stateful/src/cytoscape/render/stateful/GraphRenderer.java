@@ -21,15 +21,15 @@ import java.awt.geom.PathIterator;
 public final class GraphRenderer
 {
 
-  private final static int LOD_HIGH_DETAIL = 0x1;
-  private final static int LOD_NODE_BORDERS = 0x2;
-  private final static int LOD_NODE_LABELS = 0x4;
-  private final static int LOD_EDGE_ARROWS = 0x8;
-  private final static int LOD_DASHED_EDGES = 0x10;
-  private final static int LOD_EDGE_ANCHORS = 0x20;
-  private final static int LOD_EDGE_LABELS = 0x40;
-  private final static int LOD_TEXT_AS_SHAPE = 0x80;
-  private final static int LOD_CUSTOM_GRAPHICS = 0x100;
+  public final static int LOD_HIGH_DETAIL = 0x1;
+  public final static int LOD_NODE_BORDERS = 0x2;
+  public final static int LOD_NODE_LABELS = 0x4;
+  public final static int LOD_EDGE_ARROWS = 0x8;
+  public final static int LOD_DASHED_EDGES = 0x10;
+  public final static int LOD_EDGE_ANCHORS = 0x20;
+  public final static int LOD_EDGE_LABELS = 0x40;
+  public final static int LOD_TEXT_AS_SHAPE = 0x80;
+  public final static int LOD_CUSTOM_GRAPHICS = 0x100;
 
   // No constructor.
   private GraphRenderer() { }
@@ -62,18 +62,20 @@ public final class GraphRenderer
    * @param yCenter the yCenter parameter to use when calling grafx.clear().
    * @param scaleFactor the scaleFactor parameter to use when calling
    *   grafx.clear().
+   * @return bits representing the level of detail that was rendered; the
+   *   return value is a bitwise-and'ed value of the LOD_* constants.
    */
-  public final static void renderGraph(final FixedGraph graph,
-                                       final SpacialIndex2D nodePositions,
-                                       final GraphLOD lod,
-                                       final NodeDetails nodeDetails,
-                                       final EdgeDetails edgeDetails,
-                                       final IntHash nodeBuff,
-                                       final GraphGraphics grafx,
-                                       final Paint bgPaint,
-                                       final double xCenter,
-                                       final double yCenter,
-                                       final double scaleFactor)
+  public final static int renderGraph(final FixedGraph graph,
+                                      final SpacialIndex2D nodePositions,
+                                      final GraphLOD lod,
+                                      final NodeDetails nodeDetails,
+                                      final EdgeDetails edgeDetails,
+                                      final IntHash nodeBuff,
+                                      final GraphGraphics grafx,
+                                      final Paint bgPaint,
+                                      final double xCenter,
+                                      final double yCenter,
+                                      final double scaleFactor)
   {
     nodeBuff.empty(); // Make sure we keep our promise.
 
@@ -632,6 +634,7 @@ public final class GraphRenderer
                  (float) textXCenter, (float) textYCenter, justify, paint,
                  (lodBits & LOD_TEXT_AS_SHAPE) != 0); } } } }
     }
+    return lodBits;
   }
 
   private final static void lemma_computeAnchor(final byte anchor,
