@@ -4,6 +4,7 @@ import java.util.*;
 import java.sql.*;
 import org.isb.xmlrpc.handler.db.SQLDBHandler;
 import org.isb.xmlrpc.handler.db.SQLUtils;
+import org.isb.xmlrpc.server.MyWebServer;
 
 /**
  * 
@@ -35,9 +36,10 @@ public class GOHandler extends SQLDBHandler {
      * Calls this(String mysql_url)
      */
     public GOHandler (){
-      
-        super("jdbc:mysql:///metainfo?user=cytouser&password=bioNetBuilder", SQLDBHandler.MYSQL_JDBC_DRIVER);
         
+        super(MyWebServer.PROPERTIES.containsKey(SQLDBHandler.JDBC_URL_PROPERTY_KEY) ? MyWebServer.PROPERTIES.getProperty(SQLDBHandler.JDBC_URL_PROPERTY_KEY) : "jdbc:mysql:///bionetbuilder_info?user=cytouser&password=bioNetBuilder",
+                SQLDBHandler.MYSQL_JDBC_DRIVER);
+       
         // Look for the current go database
         ResultSet rs = query("SELECT dbname FROM db_name WHERE db=\"go\"");
         String currentGoDb = null;

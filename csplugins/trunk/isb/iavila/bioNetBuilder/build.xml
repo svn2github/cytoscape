@@ -13,7 +13,7 @@
 	<property name = "lib.jar" value = "BioNetBuilderLib"/>
 	<property name = "jar"  location = "jar"/>
     <property name = "server.class" value="org.isb.xmlrpc.server.MyWebServer"/>
-	<property name = "server.args" value = "8081 /Users/iavila/Documents/workspace/csplugins/isb/iavila/bioNetBuilder/xmlrpc.props"/>
+	<property name = "server.args" value = "8084 /Users/iavila/Documents/workspace/csplugins/isb/iavila/bioNetBuilder/xmlrpc.props"/>
 	<property name ="manifest" value = "bionetbuilder.manifest"/>
     
 	<!-- CHANGE THIS TO YOUR CYTOSCAPE PATHS: -->

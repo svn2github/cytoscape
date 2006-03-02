@@ -36,7 +36,7 @@ public interface DataSource {
   public static final String MEMORY = "memory";
   
   public static final String MIXED = "mixed";
-  
+
   public static final Vector EMPTY_VECTOR = new Vector();
   
   // ------------------------------- methods ----------------------------------//

@@ -119,11 +119,15 @@ public class SQLDBHandler implements DBHandler {
             }
             return false;
         } catch (SQLException e) {
-            e.printStackTrace();
-            int errorCode = e.getErrorCode();
-            System.out.println("failed to conntect to " + this.url
-                    + " error code = " + errorCode);
-            System.out.println("SQL State = " + e.getSQLState());
+            System.out.println("\n-------- SQLException caught -----------\n");
+            while(e != null){
+                System.out.println("Message:    " + e.getMessage());
+                System.out.println("SQLState:   " + e.getSQLState());
+                System.out.println("ErrorCode:   "  + e.getErrorCode());
+                e = e.getNextException();
+                System.out.println("");
+                
+            }
             return false;
         }
     }

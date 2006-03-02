@@ -195,13 +195,15 @@ public class CytoscapeGODialog extends JDialog {
      * 
      * @return
      */
+    // Todo: Need to use SwingWorker -iliana
     protected JPanel createButtonPanel() {
         JPanel bPanel = new JPanel();
         JButton createNodesButton = new JButton("Create Nodes...");
         createNodesButton.addActionListener(new AbstractAction() {
 
             public void actionPerformed(ActionEvent action) {
-               // String netName = askForNetworkName();
+               
+                // String netName = askForNetworkName();
                 String netName = "GO NET";
                 createNetwork(netName);
             }

@@ -6,6 +6,7 @@ import java.sql.*;
 
 import org.isb.bionet.datasource.*;
 import org.isb.xmlrpc.handler.db.*;
+import org.isb.xmlrpc.server.MyWebServer;
 
 
 public class SQLSynonymsHandler extends SQLDBHandler implements SynonymsSource {
@@ -18,9 +19,10 @@ public class SQLSynonymsHandler extends SQLDBHandler implements SynonymsSource {
      */
     public SQLSynonymsHandler() {
         
-        super("jdbc:mysql:///metainfo?user=cytouser&password=bioNetBuilder", SQLDBHandler.MYSQL_JDBC_DRIVER);
-        
-        // Look for the current go database
+        super(MyWebServer.PROPERTIES.containsKey(JDBC_URL_PROPERTY_KEY) ? MyWebServer.PROPERTIES.getProperty(JDBC_URL_PROPERTY_KEY) : "jdbc:mysql:///bionetbuilder_info?user=cytouser&password=bioNetBuilder",
+                SQLDBHandler.MYSQL_JDBC_DRIVER);
+
+         // Look for the current go database
         ResultSet rs = query("SELECT dbname FROM db_name WHERE db=\"synonyms\"");
         String currentSynDb = null;
         try{

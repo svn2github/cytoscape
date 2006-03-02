@@ -3,6 +3,7 @@ package org.isb.bionet.datasource.interactions;
 import java.sql.*;
 import java.util.*;
 import org.isb.xmlrpc.handler.db.*;
+import org.isb.xmlrpc.server.MyWebServer;
 import org.isb.bionet.datasource.synonyms.*;
 
 
@@ -77,9 +78,9 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	 * Empty constructor
 	 */
 	public ProlinksInteractionsSource() {
-		
-	    super("jdbc:mysql:///metainfo?user=cytouser&password=bioNetBuilder", SQLDBHandler.MYSQL_JDBC_DRIVER);
-        
+        super(MyWebServer.PROPERTIES.containsKey(JDBC_URL_PROPERTY_KEY) ? MyWebServer.PROPERTIES.getProperty(JDBC_URL_PROPERTY_KEY) : "jdbc:mysql:///bionetbuilder_info?user=cytouser&password=bioNetBuilder",
+                SQLDBHandler.MYSQL_JDBC_DRIVER);
+
         // Look for the current go database
         ResultSet rs = query("SELECT dbname FROM db_name WHERE db=\"prolinks\"");
         String currentProlinksDb = null;

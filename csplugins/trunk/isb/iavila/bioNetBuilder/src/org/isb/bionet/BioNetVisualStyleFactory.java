@@ -40,7 +40,10 @@ public class BioNetVisualStyleFactory {
       
         CalculatorCatalog calculatorCatalog = vmManager.getCalculatorCatalog();
         VisualStyle vs = calculatorCatalog.getVisualStyle(BIONETBUILDER_VS);
-        if(vs != null) return; // it already exists
+        if(vs != null) {
+            System.out.println("Visual style " + BIONETBUILDER_VS + " already exists.");
+            return; // it already exists
+        }
         
         NodeAppearanceCalculator nodeAppCalc = new NodeAppearanceCalculator();
         EdgeAppearanceCalculator edgeAppCalc = new EdgeAppearanceCalculator();
@@ -84,13 +87,13 @@ public class BioNetVisualStyleFactory {
             //  Create a discrete color calculator for dataSource
             DiscreteMapping dataSourceMappingEdges =
                 new DiscreteMapping(Color.BLACK,ObjectMapping.EDGE_MAPPING);
-            dataSourceMappingEdges.setControllingAttributeName("dataSource",Cytoscape.getCurrentNetwork(),false);
+            dataSourceMappingEdges.setControllingAttributeName("src",Cytoscape.getCurrentNetwork(),false);
             dataSourceMappingEdges.putMapValue(BindInteractionsSource.NAME, Color.BLUE );
             dataSourceMappingEdges.putMapValue(DipInteractionsSource.NAME, Color.GREEN);
             dataSourceMappingEdges.putMapValue(KeggInteractionsSource.NAME, Color.RED);
             dataSourceMappingEdges.putMapValue(ProlinksInteractionsSource.NAME,Color.ORANGE);
             edgeColorCalculator =
-                new GenericEdgeColorCalculator("Data Source", dataSourceMappingEdges);
+                new GenericEdgeColorCalculator("src", dataSourceMappingEdges);
             calculatorCatalog.addCalculator(edgeColorCalculator);
         }
         
@@ -99,6 +102,8 @@ public class BioNetVisualStyleFactory {
         if(edgeColorCalculator == null){
             DiscreteMapping interactionTypeMapping = 
                 new DiscreteMapping(Color.BLACK, ObjectMapping.EDGE_MAPPING);
+            interactionTypeMapping.setControllingAttributeName(Semantics.INTERACTION,
+                    Cytoscape.getCurrentNetwork(),false);
             interactionTypeMapping.putMapValue("pp", Color.BLUE);
             interactionTypeMapping.putMapValue("pd", Color.RED);
             interactionTypeMapping.putMapValue("pr", Color.ORANGE);
@@ -106,6 +111,8 @@ public class BioNetVisualStyleFactory {
             interactionTypeMapping.putMapValue(ProlinksInteractionsSource.RS, Color.PINK);
             interactionTypeMapping.putMapValue(ProlinksInteractionsSource.GC, Color.MAGENTA);
             interactionTypeMapping.putMapValue(ProlinksInteractionsSource.GN, Color.DARK_GRAY);
+            edgeColorCalculator =
+                new GenericEdgeColorCalculator(Semantics.INTERACTION,interactionTypeMapping);
             //Todo: KEGG interactions
             
         }
@@ -180,8 +187,8 @@ public class BioNetVisualStyleFactory {
         VisualStyle visualStyle = new VisualStyle(BIONETBUILDER_VS,
                                                   nodeAppCalc,
                                                   edgeAppCalc,gac);
-        // TODO: Not sure if I want to do this:
-        calculatorCatalog.addVisualStyle(visualStyle);
-    }
+        
+        vmManager.setVisualStyle(visualStyle);
+        }
     
 }

@@ -6,6 +6,7 @@ import java.util.*;
 import org.isb.xmlrpc.handler.db.SQLDBHandler;
 import org.isb.xmlrpc.handler.db.SQLUtils;
 import org.isb.bionet.datasource.synonyms.*;
+import org.isb.xmlrpc.server.*;
 
 public class BindInteractionsSource extends SQLDBHandler implements InteractionsDataSource {
     
@@ -42,7 +43,9 @@ public class BindInteractionsSource extends SQLDBHandler implements Interactions
      * Empty constructor
      */
     public BindInteractionsSource() {
-        super("jdbc:mysql:///metainfo?user=cytouser&password=bioNetBuilder",SQLDBHandler.MYSQL_JDBC_DRIVER);
+        // If the user specified a JDBC URL, use it, otherwise, assume the database is running locally
+        super(MyWebServer.PROPERTIES.containsKey(JDBC_URL_PROPERTY_KEY) ? MyWebServer.PROPERTIES.getProperty(JDBC_URL_PROPERTY_KEY) : "jdbc:mysql:///bionetbuilder_info?user=cytouser&password=bioNetBuilder",
+                SQLDBHandler.MYSQL_JDBC_DRIVER);
         
         // Look for the current go database
         ResultSet rs = query("SELECT dbname FROM db_name WHERE db=\"bind\"");
