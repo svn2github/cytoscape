@@ -20,6 +20,7 @@ public class ControlAction extends CytoscapeAction {
     super( "Align" );
     this.window = ( CyWindow )Cytoscape.getDesktop();
     setPreferredMenu( "Layout" );
+    setPreferredIndex(0);
   }
 
   
