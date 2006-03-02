@@ -24,8 +24,8 @@ public class BrowserPlugin extends CytoscapePlugin {
 		initialize();
 		
 		// Turn On Data menu
-		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("Data")
-				.setEnabled(true);
+		//Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("Data")
+		//		.setEnabled(true);
 
 		JCheckBoxMenuItem switchBrowserView = new JCheckBoxMenuItem(
 				new DisplayNetworkTreeAction());
