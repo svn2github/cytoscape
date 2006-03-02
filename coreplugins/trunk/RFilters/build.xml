@@ -97,6 +97,7 @@
   <!-- Creates the filter.jar file                                           -->
   <!-- =================================================================== -->
   <target name="filter" depends="compile-filter"  >
+    <mkdir dir="${filter.lib.dir}"/>
     <jar destfile="filter.jar" manifest="${filter.manifest.dir}/filter.manifest">
       <fileset
         dir="${filter.classes.dir}"
