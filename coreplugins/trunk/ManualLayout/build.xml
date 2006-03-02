@@ -94,6 +94,7 @@
   <!-- Creates the control.jar file                                           -->
   <!-- =================================================================== -->
   <target name="control" depends="compile-control"  >
+    <mkdir dir="${control.lib.dir}"/>
     <jar destfile="${control.jar}" manifest="${control.manifest.dir}/control.manifest">
       <fileset
         dir="${control.classes.dir}"
