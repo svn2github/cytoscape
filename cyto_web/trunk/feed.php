@@ -21,10 +21,17 @@ foreach ($rss->items as $item ) {
 
 		// Parse and format the date directly;
 		// strtotime() does not work
-		$date = ("$item[updated]");
-		list($usable_date, $extra) = split("T", $date);
-		list($year, $month, $day) = split ("-", $usable_date);
-		$time_stamp = strtotime("$month/$day/$year");
+		#$date = ("$item[pubDate]");
+
+
+		// KONO 3/2/2006: Fixed for new format.
+		$date = $item[pubdate];
+
+		#list($usable_date, $extra) = split("T", $date);
+		#list($year, $month, $day) = split ("-", $usable_date);
+		#$time_stamp = strtotime("$month/$day/$year");
+
+		$time_stamp = strtotime("$date");
 		$date_formatted = date("F j, Y", $time_stamp);
 
 		echo "<a href=$url>$title</a></li>.&nbsp;&nbsp;$date_formatted<BR>\n";
