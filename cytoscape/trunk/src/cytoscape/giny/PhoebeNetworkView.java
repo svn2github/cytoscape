@@ -80,7 +80,7 @@ public class PhoebeNetworkView
     clientData = new HashMap();
 
     enableNodeSelection();
-    disableEdgeSelection();
+    enableEdgeSelection();
     
     GraphView[] graphViews = {this};
     flagAndSelectionHandler =
