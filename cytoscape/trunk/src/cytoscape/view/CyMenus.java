@@ -685,7 +685,10 @@ public class CyMenus implements GraphViewChangeListener {
 		addAction(new ImportEdgeAttributesAction());
 		addAction(new ImportExpressionMatrixAction());
 		addAction(new ImportBioDataServerAction());
-		addAction(new AnnotationGui(true));
+		
+		ImageIcon goSmallIcon = new ImageIcon( getClass().getResource("images/new/GOsmall.gif") );
+		
+		addAction(new AnnotationGui(true, goSmallIcon));
 		
 		
 		// fill the Save submenu
@@ -757,10 +760,14 @@ public class CyMenus implements GraphViewChangeListener {
 		addAction(new SelectAllEdgesAction());
 		addAction(new DeSelectAllEdgesAction());
 
+		selectMenu.addSeparator();
+		
 		
 		addAction(new CloneGraphInNewWindowAction());
 		addAction(new SelectAllAction());
 		addAction(new DeselectAllAction());
+		
+		selectMenu.addSeparator();
 
 		layoutMenu.add(new SpringEmbeddedLayoutMenu());
 		addAction(new RotationScaleLayoutAction());

@@ -50,6 +50,7 @@ import java.util.Vector;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JList;
@@ -122,8 +123,8 @@ public class AnnotationGui extends CytoscapeAction {
 		// );
 	} // ctor
 	
-	public AnnotationGui( boolean isMenu ) {
-		super("Ontology Mapper...");
+	public AnnotationGui( boolean isMenu, ImageIcon icon ) {
+		super("Ontology Mapper...", icon);
 		setPreferredMenu("File.Import.Ontology");
 	}
 	
