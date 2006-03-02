@@ -769,9 +769,9 @@ public class CyMenus implements GraphViewChangeListener {
 		
 		selectMenu.addSeparator();
 
-		layoutMenu.add(new SpringEmbeddedLayoutMenu());
 		addAction(new RotationScaleLayoutAction());
 		layoutMenu.addSeparator();
+		layoutMenu.add(new SpringEmbeddedLayoutMenu());
 
 		// fill the Visualization menu
 
