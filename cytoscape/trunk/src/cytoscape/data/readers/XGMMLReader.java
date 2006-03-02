@@ -30,15 +30,11 @@ import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
-import cytoscape.data.writers.XGMMLWriter;
 import cytoscape.generated2.Att;
 import cytoscape.generated2.Graph;
 import cytoscape.generated2.Graphics;
 import cytoscape.generated2.RdfRDF;
-import cytoscape.generated2.Type;
 import cytoscape.generated2.impl.AttImpl;
-import cytoscape.task.TaskMonitor;
-import cytoscape.util.PercentUtil;
 
 /**
  * XGMMLReader. This version is Metanode-compatible.
@@ -387,7 +383,7 @@ public class XGMMLReader implements GraphReader {
 
 				// Set correct ID, canonical name and interaction name
 				edge.setIdentifier(edgeName);
-				System.out.println("Edge Data: " + edge.getIdentifier());
+				//System.out.println("Edge Data: " + edge.getIdentifier());
 
 				readAttributes(edgeName, curEdge.getAtt(), EDGE);
 
@@ -665,7 +661,7 @@ public class XGMMLReader implements GraphReader {
 			Graphics graphics = (Graphics) curEdge.getGraphics();
 			String edgeID = curEdge.getId();
 
-			System.out.println("Edge info@@@: " + edgeID);
+			//System.out.println("Edge info@@@: " + edgeID);
 			int rootindex = Cytoscape.getRootGraph().getEdge(edgeID)
 					.getRootGraphIndex();
 			view = myView.getEdgeView(rootindex);
