@@ -2,11 +2,17 @@
 <!-- Browser plugin (browser.jar) build file (Eclipse 3.1)     -->
 <!-- =================================================================== -->
 
-	<project name="browser" default="browser" basedir=".">
+	<project name="browser" default="warning" basedir=".">
 
   <!-- =================================================================== -->
   <!-- Initialization target                                               -->
   <!-- =================================================================== -->
+  <target name="warning">
+          <echo message="WARNING!!! This project has moved to the coreplugins project."/>
+          <echo message="See the WARNING file in this directory for more detail."/>
+          <fail/>
+    </target>
+
   <target name="init-browser">
     <tstamp/>
     <property name="browser.Name" value="browser"/>

@@ -1,8 +1,14 @@
-<project name="control" default="control" basedir=".">
+<project name="control" default="warning" basedir=".">
 
   <!-- =================================================================== -->
   <!-- Initialization target                                               -->
   <!-- =================================================================== -->
+   <target name="warning">
+           <echo message="WARNING!!! This project has moved to the coreplugins project."/>
+           <echo message="See the WARNING file in this directory for more detail."/>
+           <fail/>
+     </target>
+
   <target name="init-control">
     <tstamp/>
     <property name="control.Name" value="control"/>

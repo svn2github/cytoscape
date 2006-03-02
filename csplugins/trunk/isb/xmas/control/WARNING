@@ -1,0 +1,10 @@
+WARNING!!!!!!!!!!!
+
+The code contained is this directory has been moved to a different CVS project.
+Because this plugin is a core plugin, it has been moved to the coreplugins project
+(initially called pre-coreplugins, but will eventually be called coreplugins).
+
+Cytoscape will use the plugin created from the coreplugins project, NOT this one,
+so any changes made here will NOT be reflected in Cytoscape.
+
+Note: This project has been renamed to ManualLayout
