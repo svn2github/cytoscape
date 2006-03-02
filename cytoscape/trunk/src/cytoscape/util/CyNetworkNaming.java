@@ -15,7 +15,7 @@ public class CyNetworkNaming
   {
     for (int i = 0; true; i++) {
       String nameCandidate =
-        parentNetwork.getTitle() + "->child" + ((i == 0) ? "" : ("." + i));
+        parentNetwork.getTitle() + "--child" + ((i == 0) ? "" : ("." + i));
       if (!isNetworkTitleTaken(nameCandidate)) return nameCandidate; }
   }
 
