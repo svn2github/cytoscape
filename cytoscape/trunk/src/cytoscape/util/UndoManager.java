@@ -31,7 +31,7 @@ public class UndoManager   {
 
     menus.getMenuBar().getMenu( "Edit" ).add( undoItem );
     menus.getMenuBar().getMenu( "Edit" ).add( redoItem );
-
+    menus.getMenuBar().getMenu( "Edit" ).add(new JSeparator());
     System.out.println( "UndoManager initialized" );
 
   }
