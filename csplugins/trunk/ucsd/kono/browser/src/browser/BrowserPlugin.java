@@ -42,12 +42,12 @@ public class BrowserPlugin extends CytoscapePlugin {
 		switchNetworkTreeView.setAccelerator(KeyStroke.getKeyStroke(
 				KeyEvent.VK_F5, 0));
 
-		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("Data").add(
-				switchBrowserView);
-		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("Data").add(
-				switchNetworkTreeView);
-		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("Data").add(
-				switchAdvancedView);
+		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("View").add(
+				switchBrowserView, 0);
+		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("View").add(
+				switchNetworkTreeView, 0);
+		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("View").add(
+				switchAdvancedView, 0);
 
 	}
 

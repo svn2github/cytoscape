@@ -156,20 +156,22 @@ public class SelectPanel extends JPanel implements PropertyChangeListener,
 				current_network.removeFlagEventListener(this);
 			}
 			current_network = Cytoscape.getCurrentNetwork();
-			if(current_network != null ) {
+			if (current_network != null) {
 				current_network.addFlagEventListener(this);
 			}
-		
-			if (graphObjectType == NODES) {
-				// node selection
-				tableModel.setTableDataObjects(new ArrayList(Cytoscape
-						.getCurrentNetwork().getFlaggedNodes()));
-			} else if (graphObjectType == EDGES) {
-				// edge selection
-				tableModel.setTableDataObjects(new ArrayList(Cytoscape
-						.getCurrentNetwork().getFlaggedEdges()));
+
+			if (Cytoscape.getCurrentNetwork() != null) {
+				if (graphObjectType == NODES) {
+					// node selection
+					tableModel.setTableDataObjects(new ArrayList(Cytoscape
+							.getCurrentNetwork().getFlaggedNodes()));
+				} else if (graphObjectType == EDGES) {
+					// edge selection
+					tableModel.setTableDataObjects(new ArrayList(Cytoscape
+							.getCurrentNetwork().getFlaggedEdges()));
+				}
 			}
-		
+
 		}
 
 	}
