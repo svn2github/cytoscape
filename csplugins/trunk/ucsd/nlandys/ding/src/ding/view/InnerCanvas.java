@@ -149,7 +149,6 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
       m_currMouseButton = 1;
       m_lastXMousePos = e.getX();
       m_lastYMousePos = e.getY();
-      boolean mustRedraw = false;
       int[] unselectedNodes = null;
       int[] unselectedEdges = null;
       int chosenNode = 0;
@@ -164,37 +163,32 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
             ((float) m_ptBuff[0], (float) m_ptBuff[1],
              (float) m_ptBuff[0], (float) m_ptBuff[1],
              m_lastRenderLowDetail, m_stack);
-          chosenNode = (m_stack.size() > 0) ? m_stack.peek() : 0;
-          if (!e.isShiftDown()) {
-            // Unselect all nodes and edges.
-            unselectedNodes = m_view.getSelectedNodeIndices();
-            if (unselectedNodes.length > 0) { mustRedraw = true; }
-            for (int i = 0; i < unselectedNodes.length; i++) {
-              ((DNodeView) m_view.getNodeView(unselectedNodes[i])).
-                unselectInternal(); }
-            unselectedEdges = m_view.getSelectedEdgeIndices();
-            if (unselectedEdges.length > 0) { mustRedraw = true; }
-            for (int i = 0; i < unselectedEdges.length; i++) {
-              ((DEdgeView) m_view.getEdgeView(unselectedEdges[i])).
-                unselectInternal(); } }
-          if (chosenNode != 0) {
-            final boolean wasSelected =
-              m_view.getNodeView(chosenNode).isSelected();
-            if (wasSelected) {
-              ((DNodeView) m_view.getNodeView(chosenNode)).unselectInternal();
-              chosenNodeSelected = false; }
-            else { // Was not selected.
-              ((DNodeView) m_view.getNodeView(chosenNode)).selectInternal();
-              chosenNodeSelected = true; }
-            mustRedraw = true;
-            m_button1NodeDrag = true; }
-          else {
-            m_selectionRect =
-              new Rectangle(m_lastXMousePos, m_lastYMousePos, 0, 0);
-            mustRedraw = true;
-            m_button1NodeDrag = false; } }
-        else { m_button1NodeDrag = false; } }
-      if (mustRedraw) { repaint(); }
+          chosenNode = (m_stack.size() > 0) ? m_stack.peek() : 0; }
+        if (!e.isShiftDown()) {
+          // Unselect all nodes and edges.
+          unselectedNodes = m_view.getSelectedNodeIndices();
+          for (int i = 0; i < unselectedNodes.length; i++) {
+            ((DNodeView) m_view.getNodeView(unselectedNodes[i])).
+              unselectInternal(); }
+          unselectedEdges = m_view.getSelectedEdgeIndices();
+          for (int i = 0; i < unselectedEdges.length; i++) {
+            ((DEdgeView) m_view.getEdgeView(unselectedEdges[i])).
+              unselectInternal(); } }
+        if (chosenNode != 0) {
+          final boolean wasSelected =
+            m_view.getNodeView(chosenNode).isSelected();
+          if (wasSelected) {
+            ((DNodeView) m_view.getNodeView(chosenNode)).unselectInternal();
+            chosenNodeSelected = false; }
+          else { // Was not selected.
+            ((DNodeView) m_view.getNodeView(chosenNode)).selectInternal();
+            chosenNodeSelected = true; }
+          m_button1NodeDrag = true; }
+        else {
+          m_selectionRect =
+            new Rectangle(m_lastXMousePos, m_lastYMousePos, 0, 0);
+          m_button1NodeDrag = false; } }
+      repaint();
       final GraphViewChangeListener listener = m_view.m_lis[0];
       if (listener != null) {
         if (unselectedNodes != null && unselectedNodes.length > 0) {
