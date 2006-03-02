@@ -377,8 +377,22 @@ public class XGMMLReader implements GraphReader {
 					Node node_1 = Cytoscape.getRootGraph().getNode(sourceName);
 					Node node_2 = Cytoscape.getRootGraph().getNode(targetName);
 
+//					edge = Cytoscape.getCyEdge(node_1, node_2,
+//							Semantics.INTERACTION, edgeName, true);
+					
+					Iterator it = curEdge.getAtt().iterator();
+					Att interaction = null;
+					String itrValue = "pp";
+					while(it.hasNext()) {
+						interaction = (Att)it.next();
+						if(interaction.getName().equals("interaction")) {
+							itrValue = interaction.getValue();
+							break;
+						}
+					}
+					//System.out.println("!!!!!Edge Data: " + itrValue);
 					edge = Cytoscape.getCyEdge(node_1, node_2,
-							Semantics.INTERACTION, edgeName, true);
+							Semantics.INTERACTION, itrValue, true);
 				}
 
 				// Set correct ID, canonical name and interaction name

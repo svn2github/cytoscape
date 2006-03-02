@@ -71,7 +71,7 @@ public class XGMMLWriter {
 	// Object types
 	protected static int NODE = 1;
 	protected static int EDGE = 2;
-	
+
 	protected static final String BACKGROUND = "backgroundColor";
 
 	private CyAttributes nodeAttributes;
@@ -92,10 +92,10 @@ public class XGMMLWriter {
 	MetadataParser mdp;
 	Graph graph = null;
 	ExpressionData expression;
-	
+
 	// Default CSS file name. Will be distributed with Cytoscape 2.3.
 	private static final String CSS_FILE = "base.css";
-	
+
 	protected static final String FLOAT_TYPE = "float";
 	protected static final String INT_TYPE = "int";
 	protected static final String STRING_TYPE = "string";
@@ -107,7 +107,7 @@ public class XGMMLWriter {
 		this.network = network;
 		this.networkView = view;
 		expression = Cytoscape.getExpressionData();
-		
+
 		nodeAttributes = Cytoscape.getNodeAttributes();
 		edgeAttributes = Cytoscape.getEdgeAttributes();
 
@@ -143,7 +143,7 @@ public class XGMMLWriter {
 
 		jc = JAXBContext.newInstance(PACKAGE_NAME);
 		graph = objFactory.createGraph();
-		
+
 		graphAtt = objFactory.createAtt();
 		graph.setId(network.getIdentifier());
 		graph.setLabel(network.getTitle());
@@ -158,15 +158,19 @@ public class XGMMLWriter {
 		// Store background color
 		globalGraphics = objFactory.createAtt();
 		globalGraphics.setName(BACKGROUND);
-		globalGraphics.setValue(paint2string(networkView.getBackgroundPaint()));
-		
+		if (networkView != null) {
+			globalGraphics.setValue(paint2string(networkView
+					.getBackgroundPaint()));
+		} else {
+			globalGraphics.setValue(paint2string(Color.WHITE));
+		}
+
 		graph.getAtt().add(globalGraphics);
 	}
-	
+
 	private void makeExpression() {
-		
+
 	}
-	
 
 	/**
 	 * Write the XGMML file.
@@ -234,9 +238,11 @@ public class XGMMLWriter {
 			jxbEdge.setTarget(Integer.toString(curEdge.getTarget()
 					.getRootGraphIndex()));
 
-			EdgeView curEdgeView = networkView.getEdgeView(curEdge);
+			if(networkView != null) {
+				EdgeView curEdgeView = networkView.getEdgeView(curEdge);
 
-			jxbEdge.setGraphics(getGraphics(EDGE, curEdgeView));
+				jxbEdge.setGraphics(getGraphics(EDGE, curEdgeView));
+			}
 			attributeWriter(EDGE, curEdge.getIdentifier(), jxbEdge);
 
 			edgeList.add(curEdge);
@@ -286,7 +292,7 @@ public class XGMMLWriter {
 								nodeAttNames[i]);
 						attr.setName(nodeAttNames[i]);
 						attr.setLabel(FLOAT_TYPE);
-						if( dAttr != null ) {
+						if (dAttr != null) {
 							attr.setValue(dAttr.toString());
 						}
 					} else if (attType == CyAttributes.TYPE_INTEGER) {
@@ -294,7 +300,7 @@ public class XGMMLWriter {
 								nodeAttNames[i]);
 						attr.setName(nodeAttNames[i]);
 						attr.setLabel(INT_TYPE);
-						if( iAttr != null ) {
+						if (iAttr != null) {
 							attr.setValue(iAttr.toString());
 						}
 					} else if (attType == CyAttributes.TYPE_STRING) {
@@ -315,7 +321,7 @@ public class XGMMLWriter {
 								nodeAttNames[i]);
 						attr.setName(nodeAttNames[i]);
 						attr.setLabel(BOOLEAN_TYPE);
-						if( bAttr != null )
+						if (bAttr != null)
 							attr.setValue(bAttr.toString());
 					} else if (attType == CyAttributes.TYPE_SIMPLE_LIST) {
 						// TODO: HANDLE LISTS
@@ -336,7 +342,8 @@ public class XGMMLWriter {
 							Att memberAttr = objFactory.createAtt();
 							memberAttr.setValue(obj.toString());
 							memberAttr.setLabel(checkType(obj));
-							//System.out.println("!!!!!!!!!!!List obj: " + obj);
+							// System.out.println("!!!!!!!!!!!List obj: " +
+							// obj);
 							attr.getContent().add(memberAttr);
 
 						}
@@ -344,9 +351,7 @@ public class XGMMLWriter {
 					} else if (attType == CyAttributes.TYPE_SIMPLE_MAP) {
 						// TODO: HANDLE MAP
 					}
-					
-					
-					
+
 					targetNode.getAtt().add(attr);
 				}
 			}
@@ -360,28 +365,28 @@ public class XGMMLWriter {
 							edgeAttNames[i]);
 					attr.setName(edgeAttNames[i]);
 					attr.setLabel(FLOAT_TYPE);
-					if(dAttr != null)
+					if (dAttr != null)
 						attr.setValue(dAttr.toString());
 				} else if (attType == CyAttributes.TYPE_INTEGER) {
 					Integer iAttr = edgeAttributes.getIntegerAttribute(id,
 							edgeAttNames[i]);
 					attr.setName(edgeAttNames[i]);
 					attr.setLabel(INT_TYPE);
-					if(iAttr != null)
+					if (iAttr != null)
 						attr.setValue(iAttr.toString());
 				} else if (attType == CyAttributes.TYPE_STRING) {
 					String sAttr = edgeAttributes.getStringAttribute(id,
 							edgeAttNames[i]);
 					attr.setName(edgeAttNames[i]);
 					attr.setLabel(STRING_TYPE);
-					if(sAttr != null)
+					if (sAttr != null)
 						attr.setValue(sAttr.toString());
 				} else if (attType == CyAttributes.TYPE_BOOLEAN) {
 					Boolean bAttr = edgeAttributes.getBooleanAttribute(id,
 							edgeAttNames[i]);
 					attr.setName(edgeAttNames[i]);
 					attr.setLabel(BOOLEAN_TYPE);
-					if(bAttr != null)
+					if (bAttr != null)
 						attr.setValue(bAttr.toString());
 				} else if (attType == CyAttributes.TYPE_SIMPLE_LIST) {
 					// TODO: HANDLE LISTS
@@ -493,14 +498,14 @@ public class XGMMLWriter {
 			Att edgeLineType = objFactory.createAtt();
 			Att sourceArrowColor = objFactory.createAtt();
 			Att targetArrowColor = objFactory.createAtt();
-			
+
 			sourceArrow.setName("sourceArrow");
 			targetArrow.setName("targetArrow");
 			edgeLabelFont.setName("edgeLabelFont");
 			edgeLineType.setName("edgeLineType");
 			sourceArrowColor.setName("sourceArrowColor");
 			targetArrowColor.setName("targetArrowColor");
-			
+
 			sourceArrow.setValue(Integer.toString(curEdgeView
 					.getSourceEdgeEnd()));
 			targetArrow.setValue(Integer.toString(curEdgeView
@@ -510,17 +515,18 @@ public class XGMMLWriter {
 					.setValue(encodeFont(curEdgeView.getLabel().getFont()));
 			edgeLineType.setValue(Integer.toString(curEdgeView.getLineType()));
 
-			sourceArrowColor.setValue(paint2string( curEdgeView.getSourceEdgeEndPaint() ));
-			targetArrowColor.setValue(paint2string( curEdgeView.getTargetEdgeEndPaint() ));
-			
-			
+			sourceArrowColor.setValue(paint2string(curEdgeView
+					.getSourceEdgeEndPaint()));
+			targetArrowColor.setValue(paint2string(curEdgeView
+					.getTargetEdgeEndPaint()));
+
 			cytoscapeEdgeAttr.getContent().add(sourceArrow);
 			cytoscapeEdgeAttr.getContent().add(targetArrow);
 			cytoscapeEdgeAttr.getContent().add(edgeLabelFont);
 			cytoscapeEdgeAttr.getContent().add(edgeLineType);
 			cytoscapeEdgeAttr.getContent().add(sourceArrowColor);
 			cytoscapeEdgeAttr.getContent().add(targetArrowColor);
-			
+
 			graphics.getAtt().add(cytoscapeEdgeAttr);
 
 			return graphics;
@@ -558,9 +564,9 @@ public class XGMMLWriter {
 						.getNodeView(node)));
 			} else {
 
-//				System.out.print("This is a metanode!:  "
-//						+ jxbChildNode.getLabel() + ", number = "
-//						+ childrenIndices.length);
+				// System.out.print("This is a metanode!: "
+				// + jxbChildNode.getLabel() + ", number = "
+				// + childrenIndices.length);
 				expand(childNode, jxbChildNode, grandChildrenIndices);
 			}
 
@@ -621,7 +627,7 @@ public class XGMMLWriter {
 			jxbNode = objFactory.createNode();
 
 			String targetnodeID = Integer.toString(curNode.getRootGraphIndex());
-			//System.out.println("nodeID ======== " + targetnodeID);
+			// System.out.println("nodeID ======== " + targetnodeID);
 
 			// jxbNode.setId(curNode.getIdentifier());
 
@@ -630,28 +636,30 @@ public class XGMMLWriter {
 					.getIdentifier(), Semantics.CANONICAL_NAME));
 			jxbNode.setName("base");
 
-			NodeView curNodeView = networkView.getNodeView(curNode);
+			if (networkView != null) {
+				NodeView curNodeView = networkView.getNodeView(curNode);
 
-			jxbNode.setGraphics(getGraphics(NODE, curNodeView));
-			attributeWriter(NODE, curNode.getIdentifier(), jxbNode);
-			if (isMetanode(curNode)) {
-				nodeList.add(curNode);
-				metanodeList.add(curNode);
-				expandChildren(curNode);
-			} else {
-				nodeList.add(curNode);
-				graph.getNodeOrEdge().add(jxbNode);
+				jxbNode.setGraphics(getGraphics(NODE, curNodeView));
+				attributeWriter(NODE, curNode.getIdentifier(), jxbNode);
+				if (isMetanode(curNode)) {
+					nodeList.add(curNode);
+					metanodeList.add(curNode);
+					expandChildren(curNode);
+				} else {
+					nodeList.add(curNode);
+					graph.getNodeOrEdge().add(jxbNode);
+				}
 			}
 		}
 
-//		int count = 0;
-//		Iterator it2 = metanodeList.iterator();
-//		while (it2.hasNext()) {
-//			CyNode test = (CyNode) it2.next();
-//			count++;
-//			System.out.println("%%%%% it test count: " + count + ", "
-//					+ test.getIdentifier());
-//		}
+		// int count = 0;
+		// Iterator it2 = metanodeList.iterator();
+		// while (it2.hasNext()) {
+		// CyNode test = (CyNode) it2.next();
+		// count++;
+		// System.out.println("%%%%% it test count: " + count + ", "
+		// + test.getIdentifier());
+		// }
 
 	}
 
@@ -761,21 +769,21 @@ public class XGMMLWriter {
 	}
 
 	private String checkType(Object obj) {
-		if(obj.getClass() == String.class) {
+		if (obj.getClass() == String.class) {
 			return STRING_TYPE;
-		} else if(obj.getClass() == Integer.class) {
+		} else if (obj.getClass() == Integer.class) {
 			return INT_TYPE;
-		} else if(obj.getClass() == Double.class || obj.getClass() == Float.class ) {
+		} else if (obj.getClass() == Double.class
+				|| obj.getClass() == Float.class) {
 			return FLOAT_TYPE;
-		} else if(obj.getClass() == String.class) {
+		} else if (obj.getClass() == String.class) {
 			return STRING_TYPE;
-		} else if(obj.getClass() == Boolean.class) {
+		} else if (obj.getClass() == Boolean.class) {
 			return BOOLEAN_TYPE;
 		} else
 			return null;
 	}
-	
-	
+
 }
 
 class NamespacePrefixMapperImpl extends NamespacePrefixMapper {
