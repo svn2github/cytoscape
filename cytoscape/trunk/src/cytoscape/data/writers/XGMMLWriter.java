@@ -344,6 +344,9 @@ public class XGMMLWriter {
 					} else if (attType == CyAttributes.TYPE_SIMPLE_MAP) {
 						// TODO: HANDLE MAP
 					}
+					
+					
+					
 					targetNode.getAtt().add(attr);
 				}
 			}
