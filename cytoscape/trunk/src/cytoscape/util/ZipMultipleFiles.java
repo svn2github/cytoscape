@@ -65,7 +65,7 @@ public class ZipMultipleFiles {
 
 		for (int i = 0; i < fileCount; i++) {
 			File tempFile = new File(files[i]);
-			System.out.println("delete file is " + tempFile.delete());
+			//System.out.println("delete file is " + tempFile.delete());
 		}
 
 		// Delete the temp directory

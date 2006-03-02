@@ -376,11 +376,11 @@ public class CytoscapeSessionWriter {
 
 			DefaultMutableTreeNode parent = (DefaultMutableTreeNode) netPanel
 					.getNetworkNode(networkID).getParent();
-			System.out.print("############# cur node is: "
-					+ netPanel.getNetworkNode(networkID).getUserObject()
-							.toString() + ",  ");
-			System.out.println("############# parent is: "
-					+ parent.getUserObject().toString());
+//			System.out.print("############# cur node is: "
+//					+ netPanel.getNetworkNode(networkID).getUserObject()
+//							.toString() + ",  ");
+//			System.out.println("############# parent is: "
+//					+ parent.getUserObject().toString());
 		}
 
 		if (treeTable != null) {
@@ -611,7 +611,7 @@ public class CytoscapeSessionWriter {
 				}
 			}
 
-			System.out.println("Total hidden == " + hn.getNode().size());
+			//System.out.println("Total hidden == " + hn.getNode().size());
 			if (hn.getNode().size() != 0) {
 				return hn;
 			} else {
@@ -684,8 +684,8 @@ public class CytoscapeSessionWriter {
 					tempNode.setId(curNodeName);
 
 					sNodeList.add(tempNode);
-					System.out.println("++++++Selected node ID is "
-							+ curNodeName);
+//					System.out.println("++++++Selected node ID is "
+//							+ curNodeName);
 				}
 
 				return sn;
@@ -709,7 +709,7 @@ public class CytoscapeSessionWriter {
 					tempEdge.setId(curEdgeName);
 
 					sEdgeList.add(tempEdge);
-					System.out.println("======edge ID is " + curEdgeName);
+					//System.out.println("======edge ID is " + curEdgeName);
 				}
 
 				return se;
