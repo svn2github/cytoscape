@@ -17,7 +17,7 @@ public class EditorAction extends CytoscapeAction {
 
   public EditorAction () {
     super( "Edit Filters" );
-    setPreferredMenu( "Filters" );
+    setPreferredMenu( "Select" );
     setAcceleratorCombo( java.awt.event.KeyEvent.VK_E, ActionEvent.CTRL_MASK|ActionEvent.SHIFT_MASK );
   }
 

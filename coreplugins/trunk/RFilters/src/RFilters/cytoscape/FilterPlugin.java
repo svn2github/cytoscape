@@ -15,7 +15,7 @@ public class FilterPlugin extends CytoscapeAction {
   public FilterPlugin ( ImageIcon icon, CsFilter csfilter  ) {
     super( "", icon );
     this.csfilter = csfilter;
-    setPreferredMenu( "Filters" );
+    setPreferredMenu( "Select" );
     setAcceleratorCombo( java.awt.event.KeyEvent.VK_A, ActionEvent.CTRL_MASK|ActionEvent.SHIFT_MASK );
   }
 

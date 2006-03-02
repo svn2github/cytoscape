@@ -15,7 +15,7 @@ public class FilterMenuItem extends CytoscapeAction {
   public FilterMenuItem ( ImageIcon icon, CsFilter csfilter ) {
     super( "Use Filters", icon );
     this.csfilter = csfilter;
-    setPreferredMenu( "Filters" );
+    setPreferredMenu( "Select" );
     setAcceleratorCombo( java.awt.event.KeyEvent.VK_F7, 0 );
   }
 
