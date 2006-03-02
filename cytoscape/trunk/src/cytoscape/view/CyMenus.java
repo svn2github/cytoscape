@@ -497,6 +497,8 @@ public class CyMenus implements GraphViewChangeListener {
 		loadSubMenu = menuBar.getMenu("File.Import", 1);
 		saveSubMenu = menuBar.getMenu("File.Export", 2);
 
+		
+		
 		editMenu = menuBar.getMenu("Edit");
 		final JMenu f_editMenu = editMenu;
 		editMenu.addMenuListener(new MenuListener() {
@@ -677,13 +679,15 @@ public class CyMenus implements GraphViewChangeListener {
 		addAction(new NewWindowSelectedNodesEdgesAction());
 		
 		
-		// fill the Load submenu
+		// fill the Import submenu
 		addAction(new ImportGraphFileAction(this));
 		addAction(new ImportNodeAttributesAction());
 		addAction(new ImportEdgeAttributesAction());
 		addAction(new ImportExpressionMatrixAction());
 		addAction(new ImportBioDataServerAction());
-
+		addAction(new AnnotationGui(true));
+		
+		
 		// fill the Save submenu
 		addAction(new ExportAsXGMMLAction());
 		addAction(new ExportAsGMLAction());
@@ -936,8 +940,10 @@ public class CyMenus implements GraphViewChangeListener {
 		toolBar.addSeparator();
 
 		annotationButton = toolBar.add(new AnnotationGui());
+//		annotationButton.setIcon(new ImageIcon(getClass().getResource(
+//				"images/new/ontology36.gif")));
 		annotationButton.setIcon(new ImageIcon(getClass().getResource(
-				"images/new/ontology36.gif")));
+		"images/new/GO2.gif")));
 		annotationButton.setToolTipText("Add Annotation Ontology to Nodes");
 		annotationButton.setBorderPainted(false);
 

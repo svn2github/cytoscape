@@ -108,7 +108,8 @@ public class AnnotationGui extends CytoscapeAction {
 	
 	// ----------------------------------------------------------------------------------------
 	public AnnotationGui() {
-		super();
+//		super("Ontology Mapper...");
+//		setPreferredMenu("File.Import.Ontology");
 
 		/*
 		 * dataServer = cyWindow.getCytoscapeObj().getBioDataServer (); if
@@ -120,6 +121,13 @@ public class AnnotationGui extends CytoscapeAction {
 		// Semantics.getDefaultSpecies(cyWindow.getNetwork(),cyWindow.getCytoscapeObj()
 		// );
 	} // ctor
+	
+	public AnnotationGui( boolean isMenu ) {
+		super("Ontology Mapper...");
+		setPreferredMenu("File.Import.Ontology");
+	}
+	
+	
 
 	// ----------------------------------------------------------------------------------------
 	public void actionPerformed(ActionEvent e) {
