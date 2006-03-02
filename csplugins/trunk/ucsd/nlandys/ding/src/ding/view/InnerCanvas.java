@@ -6,6 +6,7 @@ import cytoscape.render.export.ImageImposter;
 import cytoscape.render.immed.GraphGraphics;
 import cytoscape.render.stateful.GraphLOD;
 import cytoscape.render.stateful.GraphRenderer;
+import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntHash;
 import cytoscape.util.intr.IntStack;
 import giny.view.GraphViewChangeListener;
@@ -222,8 +223,39 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
       if (m_currMouseButton == 1) {
         m_currMouseButton = 0;
         if (m_selectionRect != null) {
+          int[] selectedNodes = null;
+          synchronized (m_lock) {
+            if (m_view.m_nodeSelection || m_view.m_edgeSelection) {
+              m_ptBuff[0] = m_selectionRect.x;
+              m_ptBuff[1] = m_selectionRect.y + m_selectionRect.height;
+              m_grafx.xformImageToNodeCoords(m_ptBuff);
+              final double xMin = m_ptBuff[0];
+              final double yMin = m_ptBuff[1];
+              m_ptBuff[0] = m_selectionRect.x + m_selectionRect.width;
+              m_ptBuff[1] = m_selectionRect.y;
+              m_grafx.xformImageToNodeCoords(m_ptBuff);
+              final double xMax = m_ptBuff[0];
+              final double yMax = m_ptBuff[1];
+              if (m_view.m_nodeSelection) {
+                m_stack.empty();
+                m_view.getNodesIntersectingRectangle
+                  ((float) xMin, (float) yMin, (float) xMax, (float) yMax,
+                   m_lastRenderLowDetail, m_stack);
+                selectedNodes = new int[m_stack.size()];
+                final IntEnumerator nodes = m_stack.elements();
+                for (int i = 0; i < selectedNodes.length; i++) {
+                  selectedNodes[i] = nodes.nextInt(); }
+                for (int i = 0; i < selectedNodes.length; i++) {
+                  ((DNodeView) m_view.getNodeView(selectedNodes[i])).
+                    selectInternal(); } } } }
           m_selectionRect = null;
-          repaint(); } } }
+          repaint();
+          final GraphViewChangeListener listener = m_view.m_lis[0];
+          if (listener != null) {
+            if (selectedNodes != null && selectedNodes.length > 0) {
+              listener.graphViewChanged
+                (new GraphViewNodesSelectedEvent
+                 (m_view, selectedNodes)); } } } } }
     else if (e.getButton() == MouseEvent.BUTTON2) {
       if (m_currMouseButton == 2) { m_currMouseButton = 0; } }
     else if (e.getButton() == MouseEvent.BUTTON3) {
