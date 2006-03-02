@@ -189,7 +189,7 @@ public class CytoscapeSessionWriter {
 		// For now, session ID is time and date
 		Date date = new Date();
 		DateFormat df = new SimpleDateFormat("yyyy_MM_dd-HH_mm");
-		System.out.println(df.format(date));
+		System.out.println("Session Time Stamp: " + df.format(date));
 
 		// Create CySession file
 		sessionDirName = "CytoscapeSession-" + df.format(date);
@@ -224,7 +224,7 @@ public class CytoscapeSessionWriter {
 					.getIdentifier());
 
 			String curNetworkName = network.getTitle();
-			System.out.println("Saving Network: " + curNetworkName);
+			
 			String xgmmlFileName = curNetworkName + XGMML_EXT;
 
 			targetFiles[fileCounter] = xgmmlFileName;
@@ -426,9 +426,6 @@ public class CytoscapeSessionWriter {
 			DefaultMutableTreeNode root = (DefaultMutableTreeNode) netPanel
 					.getNetworkNode(TREE_ROOT);
 
-			System.out.println("Root node is: "
-					+ root.getUserObject().toString());
-
 			walkTree(root);
 
 		} else
@@ -454,7 +451,6 @@ public class CytoscapeSessionWriter {
 
 		if (Cytoscape.getNetworkView((String) networkMap.get(node
 				.getUserObject().toString())) == null) {
-			System.out.println("#############NO VIEW!");
 			curNode.setView(false);
 		} else {
 			curNode.setView(true);
@@ -463,7 +459,6 @@ public class CytoscapeSessionWriter {
 		Parent parent = null;
 		parent = factory.createParent();
 		if (node.getParent() == null) {
-			System.out.println("This is a root!");
 			parent.setId("NULL");
 			curNode.setParent(parent);
 		} else {
@@ -683,7 +678,6 @@ public class CytoscapeSessionWriter {
 				}
 			}
 
-			System.out.println("Total hidden == " + he.getEdge().size());
 			if (he.getEdge().size() != 0) {
 				return he;
 			} else {
@@ -702,15 +696,10 @@ public class CytoscapeSessionWriter {
 
 		if (type == NODE) {
 
-			System.out.println("Type is node: ");
-
 			SelectedNodes sn = factory.createSelectedNodes();
 			List sNodeList = sn.getNode();
 
 			Set flaggedNodes = curNet.getFlaggedNodes();
-			System.out.println("Name is  " + curNet.getIdentifier());
-
-			System.out.println("!!Size =  " + flaggedNodes.size());
 
 			if (flaggedNodes.size() != 0) {
 				Iterator iterator = flaggedNodes.iterator();

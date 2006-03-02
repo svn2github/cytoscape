@@ -255,7 +255,7 @@ public class CytoscapeSessionReader {
 		while (it.hasNext()) {
 			Network curNet = (Network) it.next();
 			netMap.put(curNet.getId(), curNet);
-			System.out.println("Network = " + curNet.getId());
+			
 		}
 
 		// Extract root network
@@ -315,10 +315,9 @@ public class CytoscapeSessionReader {
 
 			while (nodeIt.hasNext()) {
 				CyNode node = (CyNode) nodeIt.next();
-				// System.out.println("check selected...: " +
-				// node.getIdentifier() + ", " + nodeID );
+
 				if (node.getIdentifier().equals(nodeID)) {
-					System.out.println("Selected nodes found! " + nodeID);
+					//System.out.println("Selected nodes found! " + nodeID);
 					network.setFlagged(node, true);
 				}
 			}
@@ -332,7 +331,6 @@ public class CytoscapeSessionReader {
 			ZipFile sessionFile) throws JAXBException, IOException {
 
 		cnt++;
-		System.out.println("Entered walk: " + cnt);
 
 		CyNetwork network = parent;
 
@@ -468,8 +466,6 @@ public class CytoscapeSessionReader {
 		// Conditionally, Create the CyNetworkView
 		if (network.getNodeCount() < CytoscapeInit.getViewThreshold()) {
 			createCyNetworkView(network);
-			System.out.println("++++Entered layout! ");
-			// Layout Network
 
 			if (Cytoscape.getNetworkView(network.getIdentifier()) != null) {
 				reader
