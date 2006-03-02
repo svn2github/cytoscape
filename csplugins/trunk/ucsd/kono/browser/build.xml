@@ -11,7 +11,7 @@
     <tstamp/>
     <property name="browser.Name" value="browser"/>
     <property name="browser.name" value="browser"/>
-    <property name="browser.version" value="0.4"/>
+    <property name="browser.version" value="0.6"/>
     <property name="browser.year" value="200"/>
 
     <echo message="Building ${browser.name} version ${browser.version}."/>
@@ -27,7 +27,7 @@
   	
   	
   	<!-- You need to modify this line to point to Cytoscape directory.  -->
-    <property name="cytoscape.dir" value="/cellar/users/kono/workspace/FreshCytoscape"/>
+    <property name="cytoscape.dir" value="/cellar/users/kono/workspace/Fresh24"/>
   	
   	
     <property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib"/>
