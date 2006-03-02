@@ -1,8 +1,14 @@
-<project name="filter" default="filter" basedir=".">
+<project name="filter" default="warning" basedir=".">
 
   <!-- =================================================================== -->
   <!-- Initialization target                                               -->
   <!-- =================================================================== -->
+  <target name="warning">
+  	<echo message="WARNING!!! This project has moved to the coreplugins project."/>
+  	<echo message="See the WARNING file in this directory for more detail."/>
+	<fail/>
+  </target>
+
   <target name="init-filter">
     <tstamp/>
     <property name="filter.Name" value="RFilters"/>
