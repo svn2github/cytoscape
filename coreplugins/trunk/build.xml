@@ -1,0 +1,31 @@
+<!-- A simple project to recursively build all coreplugin projects. -->
+<project name="coreplugins" default="all" basedir=".">
+
+  <!-- Basic initialization.  -->
+  <target name="init">
+    <property name="build.dir" value="build"/>
+  </target>
+
+  <!-- Build all coreplugin projects  -->
+  <target name="all" depends="init">
+    <ant dir="browser"/>
+    <ant dir="ManualLayout"/>
+    <ant dir="RFilters"/>
+    <ant dir="yfiles"/>
+    <mkdir dir="${build.dir}"/>
+    <copy todir="${build.dir}" file="browser/browser.jar"/>
+    <copy todir="${build.dir}" file="ManualLayout/ManualLayout.jar"/>
+    <copy todir="${build.dir}" file="RFilters/filter.jar"/>
+    <copy todir="${build.dir}" file="yfiles/yLayouts.jar"/>
+  </target>
+
+  <!-- clean all coreplugin projects  -->
+  <target name="clean" depends="init">
+    <ant dir="browser" target="clean"/>
+    <ant dir="ManualLayout" target="clean"/>
+    <ant dir="RFilters" target="clean"/>
+    <ant dir="yfiles" target="clean"/>
+    <delete dir="${build.dir}"/>
+  </target>
+
+</project> 
