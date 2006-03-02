@@ -35,6 +35,7 @@ import cytoscape.generated2.Att;
 import cytoscape.generated2.Graph;
 import cytoscape.generated2.Graphics;
 import cytoscape.generated2.RdfRDF;
+import cytoscape.generated2.Type;
 import cytoscape.generated2.impl.AttImpl;
 import cytoscape.task.TaskMonitor;
 import cytoscape.util.PercentUtil;
@@ -48,7 +49,7 @@ import cytoscape.util.PercentUtil;
 public class XGMMLReader implements GraphReader {
 
 	Random rdn = new Random();
-	
+
 	// Graph Tags
 	protected static String GRAPH = "graph";
 	protected static String NODE = "node";
@@ -133,11 +134,13 @@ public class XGMMLReader implements GraphReader {
 	CyAttributes nodeAttributes;
 	CyAttributes edgeAttributes;
 
+	HashMap nodeGraphicsMap;
+
 	public XGMMLReader(String fileName) {
 
 		this.fileName = fileName;
 		try {
-			//System.out.println("Opening stream for " + fileName);
+			// System.out.println("Opening stream for " + fileName);
 			networkStream = new FileInputStream(fileName);
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -146,6 +149,7 @@ public class XGMMLReader implements GraphReader {
 		this.networkName = null;
 
 		this.metanodeMap = new HashMap();
+		this.nodeGraphicsMap = new HashMap();
 	}
 
 	public XGMMLReader(InputStream is) {
@@ -154,6 +158,7 @@ public class XGMMLReader implements GraphReader {
 		this.networkStream = is;
 
 		this.metanodeMap = new HashMap();
+		this.nodeGraphicsMap = new HashMap();
 	}
 
 	// This constructor will be used when metanode is included in the
@@ -164,6 +169,8 @@ public class XGMMLReader implements GraphReader {
 		this.networkStream = is;
 
 		this.metanodeMap = new HashMap();
+
+		this.nodeGraphicsMap = new HashMap();
 	}
 
 	public void readIndex() throws JAXBException, FileNotFoundException {
@@ -172,6 +179,7 @@ public class XGMMLReader implements GraphReader {
 		Unmarshaller u = jc.createUnmarshaller();
 
 		Graph network = (Graph) u.unmarshal(new FileInputStream(fileName));
+
 		List nodesAndEdges = network.getNodeOrEdge();
 		Iterator it = nodesAndEdges.iterator();
 		while (it.hasNext()) {
@@ -224,12 +232,14 @@ public class XGMMLReader implements GraphReader {
 		for (int i = 0; i < networkAttributes.size(); i++) {
 			Att curAtt = (Att) networkAttributes.get(i);
 
-			//System.out.println("Network Attribute found: " + curAtt.getName());
+			// System.out.println("Network Attribute found: " +
+			// curAtt.getName());
 			if (curAtt.getName().equals("networkMetadata")) {
 				metadata = (RdfRDF) (curAtt.getContent().get(0));
 
 			} else if (curAtt.getName().equals("backgroundColor")) {
-				//System.out.println("Background color is " + curAtt.getValue());
+				// System.out.println("Background color is " +
+				// curAtt.getValue());
 				backgroundColor = curAtt.getValue();
 			}
 		}
@@ -293,26 +303,29 @@ public class XGMMLReader implements GraphReader {
 			nodeMap.put(curNode.getId(), label);
 
 			// nodeMap.put(curNode.getId(), label);
-			if (nodeType.equals("metaNode")) {
+			if (nodeType != null) {
+				if (nodeType.equals("metaNode")) {
 
-				// List of child nodes under this parent node.
-				List children = null;
+					// List of child nodes under this parent node.
+					List children = null;
 
-				Iterator it = curNode.getAtt().iterator();
-				while (it.hasNext()) {
-					Att curAttr = (Att) it.next();
+					Iterator it = curNode.getAtt().iterator();
+					while (it.hasNext()) {
+						Att curAttr = (Att) it.next();
 
-					if (curAttr.getName().equals("metanodeChildren")) {
-						Graph subgraph = (Graph) curAttr.getContent().get(0);
-						children = subgraph.getNodeOrEdge();
-						metanodeMap.put(label, children);
+						if (curAttr.getName().equals("metanodeChildren")) {
+							Graph subgraph = (Graph) curAttr.getContent()
+									.get(0);
+							children = subgraph.getNodeOrEdge();
+							metanodeMap.put(label, children);
+						}
 					}
 				}
-			}
 
-			if (nodeNameSet.add(label)) {
+			}
+			if (nodeNameSet.add(curNode.getId())) {
 				Node node = (Node) Cytoscape.getCyNode(label, true);
-				
+
 				giny_nodes.add(node.getRootGraphIndex());
 				nodeIDMap.put(idx, node.getRootGraphIndex());
 				gml_id2order.put(Integer.parseInt(curNode.getId()), idx);
@@ -342,9 +355,13 @@ public class XGMMLReader implements GraphReader {
 			if (gml_id2order.containsKey(Integer.parseInt(curEdge.getSource()))
 					&& gml_id2order.containsKey(Integer.parseInt(curEdge
 							.getTarget()))) {
-				String label = curEdge.getLabel();
+				// String label = curEdge.getLabel();
 
 				String edgeName = curEdge.getLabel();
+
+				if (edgeName == null) {
+					edgeName = "N/A";
+				}
 
 				int duplicate_count = 1;
 				while (!edgeNameSet.add(edgeName)) {
@@ -361,22 +378,18 @@ public class XGMMLReader implements GraphReader {
 					String targetName = (String) nodeMap.get(curEdge
 							.getTarget());
 
-
 					Node node_1 = Cytoscape.getRootGraph().getNode(sourceName);
 					Node node_2 = Cytoscape.getRootGraph().getNode(targetName);
 
-//					System.out.println("Connecting: from - "
-//							+ node_1.getIdentifier() + " to - "
-//							+ node_2.getIdentifier());
-
 					edge = Cytoscape.getCyEdge(node_1, node_2,
-							Semantics.INTERACTION, label, true);
+							Semantics.INTERACTION, edgeName, true);
 				}
 
 				// Set correct ID, canonical name and interaction name
 				edge.setIdentifier(edgeName);
+				System.out.println("Edge Data: " + edge.getIdentifier());
 
-				readAttributes(edgeName, curEdge.getAtt(), EDGE );
+				readAttributes(edgeName, curEdge.getAtt(), EDGE);
 
 				giny_edges.add(edge.getRootGraphIndex());
 				// ((KeyValue) edge_root_index_pairs.get(idx)).value = (new
@@ -395,7 +408,7 @@ public class XGMMLReader implements GraphReader {
 		Iterator nit = Cytoscape.getRootGraph().nodesIterator();
 		while (nit.hasNext()) {
 			CyNode testnode = (CyNode) nit.next();
-			//System.out.println("ROOT LIST: " + testnode.getIdentifier());
+			// System.out.println("ROOT LIST: " + testnode.getIdentifier());
 		}
 
 		if (metanodeMap.size() != 0) {
@@ -412,7 +425,7 @@ public class XGMMLReader implements GraphReader {
 
 	private CyNode createMetaNode(String name, List children) {
 		Iterator it = children.iterator();
-		//System.out.println("Metanode = " + name);
+		// System.out.println("Metanode = " + name);
 
 		int[] childrenNodeIndices = new int[children.size()];
 		int counter = 0;
@@ -425,9 +438,9 @@ public class XGMMLReader implements GraphReader {
 			Node targetChildNode = Cytoscape.getRootGraph().getNode(
 					childNode.getId());
 
-//			System.out.println("+------- child = "
-//					+ targetChildNode.getRootGraphIndex() + ": "
-//					+ targetChildNode.getIdentifier());
+			// System.out.println("+------- child = "
+			// + targetChildNode.getRootGraphIndex() + ": "
+			// + targetChildNode.getIdentifier());
 
 			childrenNodeIndices[counter] = targetChildNode.getRootGraphIndex();
 			counter++;
@@ -440,9 +453,9 @@ public class XGMMLReader implements GraphReader {
 		if (edgeIndices != null) {
 			for (int i = 0; i < edgeIndices.length; i++) {
 
-//				System.out.println("!! Edge: "
-//						+ Cytoscape.getRootGraph().getEdge(edgeIndices[i])
-//								.getIdentifier());
+				// System.out.println("!! Edge: "
+				// + Cytoscape.getRootGraph().getEdge(edgeIndices[i])
+				// .getIdentifier());
 
 				// if (edgeIndices[i] > 0) {
 				// int rootEdgeIndex =
@@ -485,11 +498,18 @@ public class XGMMLReader implements GraphReader {
 		}
 
 		// Set background clolor
-		myView.setBackgroundPaint(getColor(backgroundColor));
-		//myView.setBackgroundPaint(new Color(230, 230, 240));
+		if (backgroundColor != null) {
+			myView.setBackgroundPaint(getColor(backgroundColor));
+		}
+		// myView.setBackgroundPaint(new Color(230, 230, 240));
 		// Layout nodes
 		layoutNode(myView);
 
+		// Generate Visual Style
+		VisualStyleBuilder vsb = new VisualStyleBuilder(networkName + ".style",
+				nodeGraphicsMap, null, null);
+
+		vsb.buildStyle();
 		// Layout edges
 		layoutEdge(myView);
 
@@ -513,6 +533,9 @@ public class XGMMLReader implements GraphReader {
 
 			label = curNode.getLabel();
 			Graphics graphics = (Graphics) curNode.getGraphics();
+
+			nodeGraphicsMap.put(label, graphics);
+
 			int nodeID = Cytoscape.getRootGraph().getNode(label)
 					.getRootGraphIndex();
 
@@ -552,12 +575,12 @@ public class XGMMLReader implements GraphReader {
 
 		nodeView.setXPosition(x);
 		nodeView.setYPosition(y);
-//		nodeView.setHeight(h * (rdn.nextInt(4)+1) * rdn.nextGaussian());
-//		nodeView.setWidth(w * (rdn.nextInt(4)+1) * rdn.nextGaussian());
+		// nodeView.setHeight(h * (rdn.nextInt(4)+1) * rdn.nextGaussian());
+		// nodeView.setWidth(w * (rdn.nextInt(4)+1) * rdn.nextGaussian());
 
 		nodeView.setHeight(h);
 		nodeView.setWidth(w);
-		
+
 		// Set color
 		String nodeColor = graphics.getFill();
 		nodeView.setUnselectedPaint(getColor(nodeColor));
@@ -566,7 +589,7 @@ public class XGMMLReader implements GraphReader {
 		nodeView.setBorderPaint(getColor(graphics.getOutline()));
 		if (graphics.getWidth() != null) {
 			nodeView.setBorderWidth(graphics.getWidth().floatValue());
-			//nodeView.setBorderWidth(rdn.nextInt(10));
+			// nodeView.setBorderWidth(rdn.nextInt(10));
 		}
 
 		String type = graphics.getType();
@@ -586,48 +609,48 @@ public class XGMMLReader implements GraphReader {
 		} else if (type.equals(TRIANGLE)) {
 			nodeView.setShape(NodeView.TRIANGLE);
 		}
-//		int rnd = rdn.nextInt(7);
-//		if (rnd == 0) {
-//			nodeView.setShape(NodeView.ELLIPSE);
-//		} else if (rnd == 1) {
-//			nodeView.setShape(NodeView.RECTANGLE);
-//		} else if (rnd == 2) {
-//			nodeView.setShape(NodeView.DIAMOND);
-//		} else if (rnd == 3) {
-//			nodeView.setShape(NodeView.HEXAGON);
-//		} else if (rnd == 4) {
-//			nodeView.setShape(NodeView.OCTAGON);
-//		} else if (rnd == 5) {
-//			nodeView.setShape(NodeView.PARALELLOGRAM);
-//		} else if (rnd == 6) {
-//			nodeView.setShape(NodeView.TRIANGLE);
-//		}
-		
+		// int rnd = rdn.nextInt(7);
+		// if (rnd == 0) {
+		// nodeView.setShape(NodeView.ELLIPSE);
+		// } else if (rnd == 1) {
+		// nodeView.setShape(NodeView.RECTANGLE);
+		// } else if (rnd == 2) {
+		// nodeView.setShape(NodeView.DIAMOND);
+		// } else if (rnd == 3) {
+		// nodeView.setShape(NodeView.HEXAGON);
+		// } else if (rnd == 4) {
+		// nodeView.setShape(NodeView.OCTAGON);
+		// } else if (rnd == 5) {
+		// nodeView.setShape(NodeView.PARALELLOGRAM);
+		// } else if (rnd == 6) {
+		// nodeView.setShape(NodeView.TRIANGLE);
+		// }
+
 		// This object includes non-GML graphics property.
-		Att localGraphics = (Att) graphics.getAtt().get(0);
-		Iterator it = localGraphics.getContent().iterator();
-		Random trans = new Random();
-		
-		// Extract edge graphics attributes one by one.
-		while(it.hasNext()) {
-			Object obj = it.next();
-			
-			if(obj.getClass() == AttImpl.class) {
-				AttImpl nodeGraphics = (AttImpl)obj;
-				String attName = nodeGraphics.getName();
-				String value = nodeGraphics.getValue();
-				
-				if(attName.equals("nodeTransparency")) {
-					nodeView.setTransparency(trans.nextFloat());
-				} else if(attName.equals("borderLineType")) {
-					
+
+		if (graphics.getAtt().size() != 0) {
+			Att localGraphics = (Att) graphics.getAtt().get(0);
+			Iterator it = localGraphics.getContent().iterator();
+			Random trans = new Random();
+
+			// Extract edge graphics attributes one by one.
+			while (it.hasNext()) {
+				Object obj = it.next();
+
+				if (obj.getClass() == AttImpl.class) {
+					AttImpl nodeGraphics = (AttImpl) obj;
+					String attName = nodeGraphics.getName();
+					String value = nodeGraphics.getValue();
+
+					if (attName.equals("nodeTransparency")) {
+						nodeView.setTransparency(trans.nextFloat());
+					} else if (attName.equals("borderLineType")) {
+
+					}
 				}
 			}
 		}
-		
-		
-		
-		
+
 	}
 
 	protected void layoutEdge(GraphView myView) {
@@ -642,6 +665,7 @@ public class XGMMLReader implements GraphReader {
 			Graphics graphics = (Graphics) curEdge.getGraphics();
 			String edgeID = curEdge.getId();
 
+			System.out.println("Edge info@@@: " + edgeID);
 			int rootindex = Cytoscape.getRootGraph().getEdge(edgeID)
 					.getRootGraphIndex();
 			view = myView.getEdgeView(rootindex);
@@ -649,7 +673,7 @@ public class XGMMLReader implements GraphReader {
 			if (graphics != null && view != null) {
 				layoutEdgeGraphics(myView, graphics, view);
 			} else if (graphics == null) {
-				System.out.println("Null Graphics!!");
+				// System.out.println("Null Graphics!!");
 			}
 		}
 
@@ -661,31 +685,34 @@ public class XGMMLReader implements GraphReader {
 		edgeView.setStrokeWidth(((Number) graphics.getWidth()).floatValue());
 		edgeView.setUnselectedPaint(getColor((String) graphics.getFill()));
 
-		// This object includes non-GML graphics property.
-		Att localGraphics = (Att) graphics.getAtt().get(0);
-		Iterator it = localGraphics.getContent().iterator();
-		
-		// Extract edge graphics attributes one by one.
-		while(it.hasNext()) {
-			Object obj = it.next();
-			
-			if(obj.getClass() == AttImpl.class) {
-				AttImpl edgeGraphics = (AttImpl)obj;
-				String attName = edgeGraphics.getName();
-				String value = edgeGraphics.getValue();
-				
-				if(attName.equals("sourceArrow")) {
-					edgeView.setSourceEdgeEnd(Integer.parseInt(value));
-				} else if(attName.equals("targetArrow")) {
-					edgeView.setTargetEdgeEnd(Integer.parseInt(value));
-				} else if(attName.equals("sourceArrowColor")) {
-					edgeView.setSourceEdgeEndPaint(getColor(value));
-				} else if(attName.equals("targetArrowColor")) {
-					edgeView.setTargetEdgeEndPaint(getColor(value));
-				} 
+		if (graphics.getAtt().size() != 0) {
+			// This object includes non-GML graphics property.
+			Att localGraphics = (Att) graphics.getAtt().get(0);
+
+			Iterator it = localGraphics.getContent().iterator();
+
+			// Extract edge graphics attributes one by one.
+			while (it.hasNext()) {
+				Object obj = it.next();
+
+				if (obj.getClass() == AttImpl.class) {
+					AttImpl edgeGraphics = (AttImpl) obj;
+					String attName = edgeGraphics.getName();
+					String value = edgeGraphics.getValue();
+
+					if (attName.equals("sourceArrow")) {
+						edgeView.setSourceEdgeEnd(Integer.parseInt(value));
+					} else if (attName.equals("targetArrow")) {
+						edgeView.setTargetEdgeEnd(Integer.parseInt(value));
+					} else if (attName.equals("sourceArrowColor")) {
+						edgeView.setSourceEdgeEndPaint(getColor(value));
+					} else if (attName.equals("targetArrowColor")) {
+						edgeView.setTargetEdgeEndPaint(getColor(value));
+					}
+				}
 			}
 		}
-		
+
 		// edgeView.setSourceEdgeEnd(((Number) graphics.get)
 		// .intValue());
 	}
@@ -720,7 +747,8 @@ public class XGMMLReader implements GraphReader {
 
 	public Color getColor(String colorString) {
 		return new Color(Integer.parseInt(colorString.substring(1), 16));
-		//return new Color(rdn.nextInt(255),rdn.nextInt(255),rdn.nextInt(255), rdn.nextInt(255));
+		// return new Color(rdn.nextInt(255),rdn.nextInt(255),rdn.nextInt(255),
+		// rdn.nextInt(255));
 	}
 
 	public Color getBackgroundColor() {
@@ -750,8 +778,8 @@ public class XGMMLReader implements GraphReader {
 	private void readAttributes(String targetName, List attrList, String type) {
 
 		CyAttributes attributes = null;
-		
-		if(type.equals(EDGE)) {
+
+		if (type.equals(EDGE)) {
 			attributes = Cytoscape.getEdgeAttributes();
 		} else {
 			attributes = Cytoscape.getNodeAttributes();
@@ -762,36 +790,38 @@ public class XGMMLReader implements GraphReader {
 			Object curAtt = it.next();
 
 			String dataType = ((Att) curAtt).getLabel();
+			if (dataType != null) {
 
-			if (dataType.equals(STRING_TYPE)
-					&& ((Att) curAtt).getValue() != null) {
-				attributes.setAttribute(targetName, ((Att) curAtt)
-						.getName(), ((Att) curAtt).getValue());
-			} else if (dataType.equals(INT_TYPE)
-					&& ((Att) curAtt).getValue() != null) {
-				attributes.setAttribute(targetName, ((Att) curAtt)
-						.getName(), new Integer(((Att) curAtt).getValue()));
-			} else if (dataType.equals(FLOAT_TYPE)
-					&& ((Att) curAtt).getValue() != null) {
-				attributes.setAttribute(targetName, ((Att) curAtt)
-						.getName(), new Double(((Att) curAtt).getValue()));
-			} else if (dataType.equals(BOOLEAN_TYPE)
-					&& ((Att) curAtt).getValue() != null) {
-				attributes.setAttribute(targetName, ((Att) curAtt)
-						.getName(), new Boolean(((Att) curAtt).getValue()));
-			} else if (dataType.equals(LIST_TYPE)) {
-				ArrayList listAttr = new ArrayList();
-				Iterator listIt = ((Att) curAtt).getContent().iterator();
-				
-				while (listIt.hasNext()) {
-					Object listItem = listIt.next();
-					if (listItem != null
-							&& listItem.getClass() == AttImpl.class) {
-						listAttr.add(((AttImpl) listItem).getValue());
+				if (dataType.equals(STRING_TYPE)
+						&& ((Att) curAtt).getValue() != null) {
+					attributes.setAttribute(targetName, ((Att) curAtt)
+							.getName(), ((Att) curAtt).getValue());
+				} else if (dataType.equals(INT_TYPE)
+						&& ((Att) curAtt).getValue() != null) {
+					attributes.setAttribute(targetName, ((Att) curAtt)
+							.getName(), new Integer(((Att) curAtt).getValue()));
+				} else if (dataType.equals(FLOAT_TYPE)
+						&& ((Att) curAtt).getValue() != null) {
+					attributes.setAttribute(targetName, ((Att) curAtt)
+							.getName(), new Double(((Att) curAtt).getValue()));
+				} else if (dataType.equals(BOOLEAN_TYPE)
+						&& ((Att) curAtt).getValue() != null) {
+					attributes.setAttribute(targetName, ((Att) curAtt)
+							.getName(), new Boolean(((Att) curAtt).getValue()));
+				} else if (dataType.equals(LIST_TYPE)) {
+					ArrayList listAttr = new ArrayList();
+					Iterator listIt = ((Att) curAtt).getContent().iterator();
+
+					while (listIt.hasNext()) {
+						Object listItem = listIt.next();
+						if (listItem != null
+								&& listItem.getClass() == AttImpl.class) {
+							listAttr.add(((AttImpl) listItem).getValue());
+						}
 					}
+					attributes.setAttributeList(targetName, ((Att) curAtt)
+							.getName(), listAttr);
 				}
-				attributes.setAttributeList(targetName, ((Att) curAtt)
-						.getName(), listAttr);
 			}
 
 		}
