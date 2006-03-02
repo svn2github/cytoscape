@@ -86,6 +86,30 @@
 					<div id="content">
 						<div id="indent">
 							<div class="item">
+								<big>
+									<b>
+										Cytoscape Users Meeting
+									</b>
+								</big>
+									Seattle, Washington April 25th 2006
+								<br>
+								<br>
+								<p>
+									The Cytoscape team would like to invite you to the 1st Cytoscape Users Meeting,<BR>
+		held at the Institute For Systems Biology (<A HREF="http://www.systemsbiology.org">ISB</A>) in Seattle on April 25th 2006<BR>
+	        (after the <A HREF=" http://systemsbiology.org/symposium/">Systems Biology and Medicine Symposium</A>
+
+		also held at the ISB on April <BR>23rd-24th).<BR><BR>
+									For more information, please click <A HREF="usersmeet.php"here.</A>
+									
+								</p>
+								<p>
+								<br>
+								</p>
+							</div>
+								<p>
+
+							<div class="item">
 								<br>
 								<p>
 								<big><b>
