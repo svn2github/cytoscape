@@ -639,7 +639,7 @@ public class XGMMLReader implements GraphReader {
 					String value = nodeGraphics.getValue();
 
 					if (attName.equals("nodeTransparency")) {
-						nodeView.setTransparency(trans.nextFloat());
+						//nodeView.setTransparency(trans.nextFloat());
 					} else if (attName.equals("borderLineType")) {
 
 					}
