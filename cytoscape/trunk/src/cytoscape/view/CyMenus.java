@@ -30,6 +30,7 @@ package cytoscape.view;
 
 //------------------------------------------------------------------------------
 
+import giny.view.GraphView;
 import giny.view.GraphViewChangeEvent;
 import giny.view.GraphViewChangeListener;
 
@@ -86,6 +87,7 @@ import cytoscape.actions.ImportEdgeAttributesAction;
 import cytoscape.actions.ImportExpressionMatrixAction;
 import cytoscape.actions.ImportGraphFileAction;
 import cytoscape.actions.ImportNodeAttributesAction;
+import cytoscape.actions.NewSessionAction;
 import cytoscape.actions.NewWindowSelectedNodesEdgesAction;
 import cytoscape.actions.NewWindowSelectedNodesOnlyAction;
 import cytoscape.actions.OpenSessionAction;
@@ -97,6 +99,7 @@ import cytoscape.actions.ExportAsInteractionsAction;
 import cytoscape.actions.ExportEdgeAttributesAction;
 import cytoscape.actions.ExportNodeAttributesAction;
 import cytoscape.actions.SaveSessionAction;
+import cytoscape.actions.SaveSessionAsAction;
 import cytoscape.actions.SelectAllAction;
 import cytoscape.actions.SelectAllEdgesAction;
 import cytoscape.actions.SelectAllNodesAction;
@@ -121,16 +124,24 @@ import cytoscape.view.cytopanels.CytoPanel;
 /**
  * This class creates the menu and tool bars for a Cytoscape window object. It
  * also provides access to individual menus and items.
+ * 
+ * Feb. 21, 2006
+ * Refactored by kono@ucsd.edu
+ * 
+ * Now addAction takes one more optional argument to specify
+ * index.  Plugin writers can use this function to specify the
+ * location of the menu item. 
+ * 
  */
 public class CyMenus implements GraphViewChangeListener {
 
 	boolean menusInitialized = false;
 	CytoscapeMenuBar menuBar;
-	JMenu fileMenu, loadSubMenu, saveSubMenu;
+	JMenu fileMenu, loadSubMenu, saveSubMenu, newSubMenu, newSubMenu2;
 	JMenu editMenu;
 	// JMenuItem undoMenuItem, redoMenuItem;
 	JMenuItem deleteSelectionMenuItem;
-	JMenu dataMenu;
+	JMenu viewMenu, viewSubMenu;
 	JMenu selectMenu;
 	JMenu displayNWSubMenu;
 	JMenu layoutMenu;
@@ -139,8 +150,8 @@ public class CyMenus implements GraphViewChangeListener {
 	JMenu cytoPanelMenu;
 
 	CytoscapeAction menuPrintAction, menuExportAction, menuSaveSessionAction,
-						menuOpenSessionAction;
-	JMenuItem vizMenuItem, vizMapperItem;
+			menuSaveSessionAsAction,menuOpenSessionAction;
+	JMenuItem vizMenuItem, vizMapperItem, networkOverviewItem;
 	JCheckBoxMenuItem cytoPanelWestItem, cytoPanelEastItem, cytoPanelSouthItem;
 	JMenuItem helpContentsMenuItem, helpContextSensitiveMenuItem,
 			helpAboutMenuItem;
@@ -199,7 +210,7 @@ public class CyMenus implements GraphViewChangeListener {
 	 * Returns the menu with items related to data operations.
 	 */
 	public JMenu getDataMenu() {
-		return dataMenu;
+		return viewMenu;
 	}
 
 	/**
@@ -260,6 +271,10 @@ public class CyMenus implements GraphViewChangeListener {
 		addCytoscapeAction(action);
 	}
 
+	public void addAction(CytoscapeAction action, int index) {
+		addCytoscapeAction(action, index);
+	}
+
 	/**
 	 * Takes a CytoscapeAction and will add it to the MenuBar or the Toolbar as
 	 * is appropriate.
@@ -267,6 +282,22 @@ public class CyMenus implements GraphViewChangeListener {
 	public void addCytoscapeAction(CytoscapeAction action) {
 		if (action.isInMenuBar()) {
 			getMenuBar().addAction(action);
+		}
+		if (action.isInToolBar()) {
+			getToolBar().addAction(action);
+		}
+
+	}
+
+	/**
+	 * Add the menu item in a specific position
+	 * 
+	 * @param action
+	 * @param index
+	 */
+	public void addCytoscapeAction(CytoscapeAction action, int index) {
+		if (action.isInMenuBar()) {
+			getMenuBar().addAction(action, index);
 		}
 		if (action.isInToolBar()) {
 			getToolBar().addAction(action);
@@ -308,10 +339,15 @@ public class CyMenus implements GraphViewChangeListener {
 	public void setVisualMapperItemsEnabled(boolean newState) {
 		vizMenuItem.setEnabled(newState);
 		vizButton.setEnabled(newState);
-		vizMapperItem.setText(newState ? "Disable Visual Mapper"
-				: "Enable Visual Mapper");
+		vizMapperItem.setText(newState ? "Lock VizMapper\u2122"
+				: "Unlock VizMapper\u2122");
 	}
 
+	public void setOverviewEnabled(boolean newState) {
+		networkOverviewItem.setText(newState ? "Hide Network Overview"
+				: "Show Network Overview");
+	}
+	
 	/**
 	 * Enables or disables save, print, and display nodes in new window GUI
 	 * functions, based on the number of nodes in this window's graph
@@ -328,8 +364,8 @@ public class CyMenus implements GraphViewChangeListener {
 		saveButton.setEnabled(newState);
 		saveSubMenu.setEnabled(newState);
 		menuPrintAction.setEnabled(newState);
-		//menuExportAction.setEnabled(newState);
-		displayNWSubMenu.setEnabled(newState);
+		// menuExportAction.setEnabled(newState);
+		//displayNWSubMenu.setEnabled(newState);
 		nodesRequiredItemsEnabled = newState;
 	}
 
@@ -384,9 +420,11 @@ public class CyMenus implements GraphViewChangeListener {
 				"cytoPanelSouth", KeyEvent.VK_2);
 
 		// add cytopanel menu items to CytoPanels Menu
-		menuBar.getMenu("CytoPanels").add(cytoPanelWestItem);
-		menuBar.getMenu("CytoPanels").add(cytoPanelSouthItem);
-		menuBar.getMenu("CytoPanels").add(cytoPanelEastItem);
+		menuBar.getMenu( "View" ).add(new JSeparator());
+		menuBar.getMenu("View.Desktop").add(cytoPanelWestItem);
+		menuBar.getMenu("View.Desktop").add(cytoPanelSouthItem);
+		menuBar.getMenu("View.Desktop").add(cytoPanelEastItem);
+		//menuBar.getMenu( "View" ).add(new JSeparator());
 	}
 
 	private void initCytoPanelMenuItem(CytoPanel cytoPanel,
@@ -439,7 +477,8 @@ public class CyMenus implements GraphViewChangeListener {
 					for (int i = 0; i < submenus.length; i++) {
 						if (submenus[i] instanceof JMenuItem) {
 							JMenuItem item = (JMenuItem) submenus[i];
-							if (item.getText().equals(ExportAsGraphicsAction.MENU_LABEL)
+							if (item.getText().equals(
+									ExportAsGraphicsAction.MENU_LABEL)
 									|| item.getText().equals(
 											PrintAction.MENU_LABEL)) {
 								item.setEnabled(!inactive);
@@ -451,8 +490,13 @@ public class CyMenus implements GraphViewChangeListener {
 				}
 			}
 		});
-		loadSubMenu = menuBar.getMenu("File.Import");
-		saveSubMenu = menuBar.getMenu("File.Export");
+
+		// Create submenues for "File" menu item
+		newSubMenu = menuBar.getMenu("File.New", 0);
+		newSubMenu2 = menuBar.getMenu("File.New.Network");
+		loadSubMenu = menuBar.getMenu("File.Import", 1);
+		saveSubMenu = menuBar.getMenu("File.Export", 2);
+
 		editMenu = menuBar.getMenu("Edit");
 		final JMenu f_editMenu = editMenu;
 		editMenu.addMenuListener(new MenuListener() {
@@ -490,12 +534,14 @@ public class CyMenus implements GraphViewChangeListener {
 		// 
 		// Data menu. disabled by default.
 		//
-		dataMenu = menuBar.getMenu("Data");
-		final JMenu f_dataMenu = dataMenu;
+		viewMenu = menuBar.getMenu("View");
+		
+		
+		final JMenu f_dataMenu = viewMenu;
 
-		dataMenu.setEnabled(false);
+		viewMenu.setEnabled(true);
 
-		dataMenu.addMenuListener(new MenuListener() {
+		viewMenu.addMenuListener(new MenuListener() {
 			public void menuCanceled(MenuEvent e) {
 			}
 
@@ -584,9 +630,9 @@ public class CyMenus implements GraphViewChangeListener {
 				}
 			}
 		});
-		vizMenu = menuBar.getMenu("Visualization");
+		//vizMenu = menuBar.getMenu("Visualization");
 		opsMenu = menuBar.getMenu("Plugins");
-		cytoPanelMenu = menuBar.getMenu("CytoPanels");
+		//cytoPanelMenu = menuBar.getMenu("CytoPanels");
 		helpMenu = menuBar.getMenu("Help");
 	}
 
@@ -608,13 +654,12 @@ public class CyMenus implements GraphViewChangeListener {
 			saveButton.setEnabled(false);
 			saveSubMenu.setEnabled(false);
 			menuPrintAction.setEnabled(false);
-			//menuExportAction.setEnabled(false);
-			displayNWSubMenu.setEnabled(false);
+			// menuExportAction.setEnabled(false);
+			//displayNWSubMenu.setEnabled(false);
 			setNodesRequiredItemsEnabled();
-			
-			menuSaveSessionAction.setEnabled(false);
-			menuOpenSessionAction.setEnabled(false);	
-			
+
+//			menuSaveSessionAction.setEnabled(false);
+//			menuOpenSessionAction.setEnabled(true);
 
 		}
 	}
@@ -625,6 +670,12 @@ public class CyMenus implements GraphViewChangeListener {
 	 */
 	private void fillMenuBar() {
 
+		// fill the New submenu
+		newSubMenu2.add("Empty Network");
+		addAction(new NewSessionAction());
+		addAction(new NewWindowSelectedNodesOnlyAction());
+		addAction(new NewWindowSelectedNodesEdgesAction());
+		
 		
 		// fill the Load submenu
 		addAction(new ImportGraphFileAction(this));
@@ -640,23 +691,26 @@ public class CyMenus implements GraphViewChangeListener {
 		addAction(new ExportNodeAttributesAction());
 		addAction(new ExportEdgeAttributesAction());
 		addAction(new ExportAsGraphicsAction());
-		
-		
+
 		// Session Save/Open
 		fileMenu.add(new JSeparator());
 		menuSaveSessionAction = new SaveSessionAction();
 		menuOpenSessionAction = new OpenSessionAction();
-		
+		menuSaveSessionAsAction = new SaveSessionAsAction();
+		menuOpenSessionAction.setPreferredIndex(1);
+		menuSaveSessionAction.setPreferredIndex(2);
+		menuSaveSessionAsAction.setPreferredIndex(3);
 		addAction(menuOpenSessionAction);
 		addAction(menuSaveSessionAction);
-		
-		fileMenu.add(new JSeparator());
+		addAction(menuSaveSessionAsAction);
+
+		fileMenu.add(new JSeparator(), 4);
 		// Print Actions
 
 		menuPrintAction = new PrintAction();
-		//menuExportAction = new ExportAsGraphicsAction();
+		// menuExportAction = new ExportAsGraphicsAction();
 		addAction(menuPrintAction);
-		//addAction(menuExportAction);
+		// addAction(menuExportAction);
 
 		// Exit
 		addAction(new ExitAction());
@@ -678,9 +732,10 @@ public class CyMenus implements GraphViewChangeListener {
 		// addAction( new GraphObjectSelectionAction() );
 
 		// fill the Select menu
+		
 		selectMenu.add(new SelectionModeAction());
-
-		displayNWSubMenu = menuBar.getMenu("Select.To New Network");
+		
+		//displayNWSubMenu = menuBar.getMenu("Select.To New Network");
 
 		addAction(new InvertSelectedNodesAction());
 		addAction(new HideSelectedNodesAction());
@@ -698,8 +753,7 @@ public class CyMenus implements GraphViewChangeListener {
 		addAction(new SelectAllEdgesAction());
 		addAction(new DeSelectAllEdgesAction());
 
-		addAction(new NewWindowSelectedNodesOnlyAction());
-		addAction(new NewWindowSelectedNodesEdgesAction());
+		
 		addAction(new CloneGraphInNewWindowAction());
 		addAction(new SelectAllAction());
 		addAction(new DeselectAllAction());
@@ -711,13 +765,23 @@ public class CyMenus implements GraphViewChangeListener {
 		// fill the Visualization menu
 
 		// TODO: move to a plugin, and/or fix
-		addAction(new BirdsEyeViewAction());
-		addAction(new BackgroundColorAction());
+		networkOverviewItem = new JMenuItem(new BirdsEyeViewAction());
+		menuBar.getMenu("View").add(networkOverviewItem);
 
-		vizMenuItem = new JMenuItem(new SetVisualPropertiesAction());
+		// fill View Menu
+		
+		//initCytoPanelMenus();
+		
+		//addAction(new SetVisualPropertiesAction());
+		//addAction(new ToggleVisualMapperAction());
+		
+		ImageIcon vizmapperIcon = new ImageIcon( getClass().getResource("images/vizmapper16.gif") );
+		vizMenuItem = new JMenuItem(new SetVisualPropertiesAction(vizmapperIcon));
 		vizMapperItem = new JMenuItem(new ToggleVisualMapperAction());
-		menuBar.getMenu("Visualization").add(vizMenuItem);
-		menuBar.getMenu("Visualization").add(vizMapperItem);
+		menuBar.getMenu( "View" ).add(new JSeparator());
+		menuBar.getMenu("View").add(vizMenuItem);
+		menuBar.getMenu("View").add(vizMapperItem);
+		//addAction(new BackgroundColorAction());
 
 		// Help menu
 		// use the usual *Action class for menu entries which have static
@@ -729,7 +793,9 @@ public class CyMenus implements GraphViewChangeListener {
 		helpContentsMenuItem = new JMenuItem("Contents...", KeyEvent.VK_C);
 		helpContentsMenuItem.setAccelerator(KeyStroke.getKeyStroke("F1"));
 		ImageIcon contextSensitiveHelpIcon = new ImageIcon(
-				"images/contextSensitiveHelp.gif");
+				getClass().getResource("images/contextSensitiveHelp.gif"));
+//		ImageIcon contextSensitiveHelpIcon = new ImageIcon(
+//		"images/c16.gif");
 		helpContextSensitiveMenuItem = new JMenuItem("Context Sensitive...",
 				contextSensitiveHelpIcon);
 		helpContextSensitiveMenuItem.setAccelerator(KeyStroke

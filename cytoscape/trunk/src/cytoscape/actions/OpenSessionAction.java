@@ -1,6 +1,7 @@
 package cytoscape.actions;
 
 import java.awt.event.ActionEvent;
+import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Set;
@@ -10,7 +11,7 @@ import javax.xml.bind.JAXBException;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
-//import cytoscape.data.readers.CytoscapeSessionReader;
+import cytoscape.data.readers.CytoscapeSessionReader;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
@@ -32,7 +33,7 @@ public class OpenSessionAction extends CytoscapeAction {
 	public static String SESSION_EXT = "cys";
 
 	public OpenSessionAction() {
-		super("Open Session");
+		super("Open");
 		setPreferredMenu("File");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_O, ActionEvent.CTRL_MASK);
 	}
@@ -69,8 +70,9 @@ public class OpenSessionAction extends CytoscapeAction {
 
 			// Close all networks in the workspace.
 			cleanWorkspace();
-			
+
 			System.out.println("Opening session file: " + name);
+			Cytoscape.setCurrentSessionFileName(name);
 
 			// Create Task
 			OpenSessionTask task = new OpenSessionTask(name);
@@ -79,6 +81,7 @@ public class OpenSessionAction extends CytoscapeAction {
 			JTaskConfig jTaskConfig = new JTaskConfig();
 			jTaskConfig.setOwner(Cytoscape.getDesktop());
 			jTaskConfig.displayCloseButton(true);
+			jTaskConfig.displayCancelButton(true);
 			jTaskConfig.displayStatus(true);
 			jTaskConfig.setAutoDispose(false);
 
@@ -139,11 +142,11 @@ class OpenSessionTask implements Task {
 	private String fileName;
 	private TaskMonitor taskMonitor;
 
-	//private CytoscapeSessionReader sr;
+	// private CytoscapeSessionReader sr;
 
 	/**
 	 * Constructor.
-	 *
+	 * 
 	 */
 	OpenSessionTask(String fileName) {
 		this.fileName = fileName;
@@ -158,25 +161,30 @@ class OpenSessionTask implements Task {
 	public void run() {
 		taskMonitor.setStatus("Opening Session File...");
 		taskMonitor.setPercentCompleted(-1);
-		
-		//sr = new CytoscapeSessionReader(fileName);
-		
-//		try {
-//			sr.read();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			
-//			taskMonitor.setException(e, "Cannot open the session file.");
-//			
-//		} catch (JAXBException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+
+		CytoscapeSessionReader sr = new CytoscapeSessionReader(fileName);
+
+		try {
+			sr.read();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+
+			taskMonitor.setException(e, "Cannot open the session file.");
+
+		} catch (JAXBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		taskMonitor.setPercentCompleted(100);
 		taskMonitor.setStatus("Session file " + fileName
 				+ " successfully loaded.");
-		
+		// Show the session Name as the window title.
+		File shortName = new File(fileName);
+		Cytoscape.getDesktop()
+				.setTitle(
+						"Cytoscape Desktop (Session Name: "
+								+ shortName.getName() + ")");
 	}
 
 	/**
@@ -203,7 +211,7 @@ class OpenSessionTask implements Task {
 	 * @return Task Title.
 	 */
 	public String getTitle() {
-		return new String("Opening Session");
+		return new String("Opening Session File");
 	}
 
 }

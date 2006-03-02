@@ -173,7 +173,7 @@ public class CytoscapeDesktop
    * @param view_type one of the ViewTypes
    */
   public CytoscapeDesktop ( int view_type ) {
-    super( "Cytoscape Desktop" );
+    super( "Cytoscape Desktop (New Session)" );
     this.VIEW_TYPE = view_type;
     initialize();
   }

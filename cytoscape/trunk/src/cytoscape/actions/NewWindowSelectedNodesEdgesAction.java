@@ -17,8 +17,8 @@ import java.awt.event.ActionEvent;
 public class NewWindowSelectedNodesEdgesAction extends CytoscapeAction {
 
     public NewWindowSelectedNodesEdgesAction () {
-        super("Selected nodes, Selected edges");
-        setPreferredMenu( "Select.To New Network" );
+        super("From selected nodes, selected edges");
+        setPreferredMenu( "File.New.Network" );
         setAcceleratorCombo(  java.awt.event.KeyEvent.VK_N, ActionEvent.CTRL_MASK|ActionEvent.SHIFT_MASK  );
     }
 

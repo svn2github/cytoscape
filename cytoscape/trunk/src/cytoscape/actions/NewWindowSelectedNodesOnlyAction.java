@@ -18,8 +18,8 @@ import java.util.Iterator;
 public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 
   public NewWindowSelectedNodesOnlyAction () {
-    super("Selected nodes, All edges");
-    setPreferredMenu( "Select.To New Network" );
+    super("From selected nodes, all edges");
+    setPreferredMenu( "File.New.Network" );
     setAcceleratorCombo(java.awt.event. KeyEvent.VK_N, ActionEvent.CTRL_MASK );
   }
 

@@ -148,6 +148,14 @@ public abstract class Cytoscape {
 	protected static String currentNetworkID;
 
 	protected static String currentNetworkViewID;
+	
+	/**
+	 * Used by session writer.  If this is null, session writer
+	 * opens the file chooser.  Otherwise, overwrite the file.
+	 * 
+	 * KONO: 02/23/2006
+	 */
+	private static String currentSessionFileName; 
 
 	/**
 	 * A null CyNetwork to give when there is no Current Network
@@ -1557,6 +1565,24 @@ public abstract class Cytoscape {
 
 		}
 
+	}
+	
+	/**
+	 * Get name of the current session file.
+	 * 
+	 * @return current session file name
+	 */
+	public static String getCurrentSessionFileName() {
+		return currentSessionFileName;
+	}
+	/**
+	 * Once session writer is called, the file name is 
+	 * stored here.
+	 * 
+	 * @param newName
+	 */
+	public static void setCurrentSessionFileName( String newName ) {
+		currentSessionFileName = newName;
 	}
 
 }

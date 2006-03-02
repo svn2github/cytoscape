@@ -38,7 +38,7 @@ public class ExportAsInteractionsAction extends CytoscapeAction {
      * Constructor.
      */
     public ExportAsInteractionsAction() {
-        super("Network as sif File...");
+        super("Network as SIF File...");
         setPreferredMenu("File.Export");
     }
     // MLC 09/19/05 BEGIN:

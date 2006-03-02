@@ -28,7 +28,7 @@ public class ImportBioDataServerAction extends CytoscapeAction {
 	BioDataServerWizard wiz;
 	
 	public ImportBioDataServerAction() {
-		super("Gene Ontology Server...");
+		super("Ontology / Annotation...");
 		setPreferredMenu("File.Import");
 	}
 

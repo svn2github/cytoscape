@@ -25,7 +25,7 @@ public class ImportExpressionMatrixAction extends CytoscapeAction {
 	 * Constructor.
 	 */
 	public ImportExpressionMatrixAction() {
-		super("Expression Matrix File...");
+		super("Attribute Matrix...");
 		setPreferredMenu("File.Import");
 		setAcceleratorCombo(KeyEvent.VK_E, ActionEvent.CTRL_MASK);
 	}

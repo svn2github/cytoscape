@@ -17,65 +17,79 @@ import java.beans.*;
 
 import edu.umd.cs.piccolo.PLayer;
 
-public class BirdsEyeViewAction 
-  extends 
-    CytoscapeAction 
-  implements 
-    PropertyChangeListener {
+public class BirdsEyeViewAction extends CytoscapeAction implements
+		PropertyChangeListener {
 
-  BirdsEyeView bev;
-  boolean on = false;
+	BirdsEyeView bev;
+	boolean on = false;
 
-  public BirdsEyeViewAction () {
-    super("Toggle Overview");
-    setPreferredMenu( "Visualization" );
-  }
+	public BirdsEyeViewAction() {
+		super("Show Network Overview");
+		setPreferredMenu("View");
+	}
 
-  public void propertyChange ( PropertyChangeEvent e ) {
-    if ( e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUSED || e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUS ) {
-      bev.disconnect();
-      try {
-        bev.connect(  ( ( PhoebeNetworkView )Cytoscape.getCurrentNetworkView() ).getCanvas(), new PLayer[] { ( ( PhoebeNetworkView )Cytoscape.getCurrentNetworkView() ).getCanvas().getLayer() } );
-        bev.updateFromViewed();
-      } catch ( Exception ex ) {
-         // no newly focused network
-      }
-    }
+	public void propertyChange(PropertyChangeEvent e) {
+		if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUSED
+				|| e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUS) {
+			bev.disconnect();
+			try {
+				bev.connect(((PhoebeNetworkView) Cytoscape
+						.getCurrentNetworkView()).getCanvas(),
+						new PLayer[] { ((PhoebeNetworkView) Cytoscape
+								.getCurrentNetworkView()).getCanvas()
+								.getLayer() });
+				bev.updateFromViewed();
+			} catch (Exception ex) {
+				// no newly focused network
+			}
+		}
 
-    if ( e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_DESTROYED ) {
-       bev.disconnect();
-       try {
-         bev.connect(  ( ( PhoebeNetworkView )Cytoscape.getCurrentNetworkView() ).getCanvas(), new PLayer[] { ( ( PhoebeNetworkView )Cytoscape.getCurrentNetworkView() ).getCanvas().getLayer() } );
-         bev.updateFromViewed();
-       } catch ( Exception ex ) {
-         // no newly focused network
-       }
-    }
+		if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_DESTROYED) {
+			bev.disconnect();
+			try {
+				bev.connect(((PhoebeNetworkView) Cytoscape
+						.getCurrentNetworkView()).getCanvas(),
+						new PLayer[] { ((PhoebeNetworkView) Cytoscape
+								.getCurrentNetworkView()).getCanvas()
+								.getLayer() });
+				bev.updateFromViewed();
+			} catch (Exception ex) {
+				// no newly focused network
+			}
+		}
 
+	}
 
-  }
+	public void actionPerformed(ActionEvent e) {
 
-  public void actionPerformed (ActionEvent e) {
+		if( !on ) {
+			bev = new BirdsEyeView();
 
-    if ( !on ) {
-      bev = new BirdsEyeView();
-      bev.connect(  ( ( PhoebeNetworkView )Cytoscape.getCurrentNetworkView() ).getCanvas(), new PLayer[] { ( ( PhoebeNetworkView )Cytoscape.getCurrentNetworkView() ).getCanvas().getLayer() } );
-      
-      bev.setMinimumSize( new Dimension( 180, 180 ) );
-      bev.setSize( new Dimension( 180, 180 ) );
-      Cytoscape.getDesktop().getNetworkPanel().setNavigator( bev );
-      Cytoscape.getDesktop().getSwingPropertyChangeSupport().addPropertyChangeListener( this );
-      bev.updateFromViewed();
-      on = true;
-    } else {
-      if ( bev != null ) {
-        bev.disconnect();
-        bev = null;
-      }
-      Cytoscape.getDesktop().getNetworkPanel().setNavigator(  Cytoscape.getDesktop().getNetworkPanel().getNavigatorPanel() );
-      Cytoscape.getDesktop().getSwingPropertyChangeSupport().removePropertyChangeListener( this );
-      on = false;
-    }
-  }
+			bev.connect(((PhoebeNetworkView) Cytoscape.getCurrentNetworkView())
+					.getCanvas(), new PLayer[] { ((PhoebeNetworkView) Cytoscape
+					.getCurrentNetworkView()).getCanvas().getLayer() });
 
+			bev.setMinimumSize(new Dimension(180, 180));
+			bev.setSize(new Dimension(180, 180));
+			
+			Cytoscape.getDesktop().getNetworkPanel().setNavigator(bev);
+			Cytoscape.getDesktop().getSwingPropertyChangeSupport()
+					.addPropertyChangeListener(this);
+			bev.updateFromViewed();
+			on = true;
+			Cytoscape.getDesktop().getCyMenus().setOverviewEnabled(on);
+		} else {
+			if (bev != null) {
+				bev.disconnect();
+				bev = null;
+			}
+			Cytoscape.getDesktop().getNetworkPanel().setNavigator(
+					Cytoscape.getDesktop().getNetworkPanel()
+							.getNavigatorPanel());
+			Cytoscape.getDesktop().getSwingPropertyChangeSupport()
+					.removePropertyChangeListener(this);
+			on = false;
+			Cytoscape.getDesktop().getCyMenus().setOverviewEnabled(on);
+		}
+	}
 }

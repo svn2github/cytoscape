@@ -810,5 +810,6 @@ public class CytoscapeInit implements PropertyChangeListener {
 		}
 		return null;
 	}
+	
 
 }

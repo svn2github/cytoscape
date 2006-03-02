@@ -22,7 +22,7 @@ import org.freehep.util.export.ExportDialog;
 //-------------------------------------------------------------------------
 public class ExportAsGraphicsAction extends CytoscapeAction  {
 
-    public final static String MENU_LABEL = "Export As Graphics";
+    public final static String MENU_LABEL = "Network As Graphics";
         
     public ExportAsGraphicsAction () {
         super (MENU_LABEL);

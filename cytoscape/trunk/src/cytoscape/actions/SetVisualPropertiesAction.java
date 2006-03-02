@@ -7,6 +7,7 @@ package cytoscape.actions;
 //------------------------------------------------------------------------------
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
+import javax.swing.ImageIcon;
 
 import cytoscape.Cytoscape;
 import cytoscape.view.CyNetworkView;
@@ -16,9 +17,9 @@ import cytoscape.util.CytoscapeAction;
 public class SetVisualPropertiesAction extends CytoscapeAction   {
 
    
-  public SetVisualPropertiesAction () {
-    super("Set Visual Style");
-    setPreferredMenu( "Visualization" );
+  public SetVisualPropertiesAction ( ImageIcon icon ) {
+    super("Set VizMapper\u2122", icon );
+    setPreferredMenu( "View" );
   }
   
   /** The constructor that takes a boolean shows no label,

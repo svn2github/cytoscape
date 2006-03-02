@@ -15,8 +15,8 @@ import java.awt.event.ActionEvent;
 public class CloneGraphInNewWindowAction extends CytoscapeAction {
 
   public CloneGraphInNewWindowAction () {
-    super("Whole network");
-    setPreferredMenu( "Select.To New Network" );
+    super("Clone current network");
+    setPreferredMenu( "File.New.Network" );
   }
 
   public void actionPerformed(ActionEvent e) {

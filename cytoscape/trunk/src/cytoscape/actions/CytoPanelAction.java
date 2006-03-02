@@ -39,7 +39,7 @@ public class CytoPanelAction extends CytoscapeAction implements CytoPanelListene
 	public CytoPanelAction (JCheckBoxMenuItem menuItem, CytoPanel cytoPanel) {
 		// call our parent constructor
 		super(cytoPanel.getTitle());
-		setPreferredMenu( "CytoPanels" );
+		setPreferredMenu( "View.Desktop" );
 
 		// save reference to CytoPanel
 		this.cytoPanel = cytoPanel;

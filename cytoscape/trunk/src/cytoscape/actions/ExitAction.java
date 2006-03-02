@@ -14,7 +14,7 @@ import cytoscape.util.CytoscapeAction;
 public class ExitAction extends CytoscapeAction {
        
   public ExitAction () {
-    super("Exit");
+    super("Quit");
     setPreferredMenu( "File" );
     setAcceleratorCombo( java.awt.event.KeyEvent.VK_Q, ActionEvent.CTRL_MASK );
   }
