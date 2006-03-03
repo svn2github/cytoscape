@@ -40,6 +40,7 @@ package cytoscape.actions;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.io.IOException;
 
 import javax.xml.bind.JAXBException;
 

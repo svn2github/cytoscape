@@ -206,9 +206,6 @@ public class XGMMLWriter {
 		graph.getAtt().add(globalGraphics);
 	}
 
-	private void makeExpression() {
-
-	}
 
 	/**
 	 * Write the XGMML file.

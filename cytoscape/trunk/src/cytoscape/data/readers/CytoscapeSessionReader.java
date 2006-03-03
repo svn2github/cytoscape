@@ -139,7 +139,6 @@ public class CytoscapeSessionReader {
 	private boolean unzipSession() throws IOException, JAXBException {
 
 		ZipInputStream zis = new ZipInputStream(new FileInputStream(fileName));
-		ZipEntry entry = null;
 
 		int networkCount = 0;
 

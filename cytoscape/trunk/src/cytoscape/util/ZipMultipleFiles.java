@@ -1,40 +1,39 @@
-
 /*
-  File: ZipMultipleFiles.java 
-  
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-  
-  The Cytoscape Consortium is: 
-  - Institute of Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Pasteur Institute
-  - Agilent Technologies
-  
-  This library is free software; you can redistribute it and/or modify it
-  under the terms of the GNU Lesser General Public License as published
-  by the Free Software Foundation; either version 2.1 of the License, or
-  any later version.
-  
-  This library is distributed in the hope that it will be useful, but
-  WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
-  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
-  documentation provided hereunder is on an "as is" basis, and the
-  Institute for Systems Biology and the Whitehead Institute 
-  have no obligations to provide maintenance, support,
-  updates, enhancements or modifications.  In no event shall the
-  Institute for Systems Biology and the Whitehead Institute 
-  be liable to any party for direct, indirect, special,
-  incidental or consequential damages, including lost profits, arising
-  out of the use of this software and its documentation, even if the
-  Institute for Systems Biology and the Whitehead Institute 
-  have been advised of the possibility of such damage.  See
-  the GNU Lesser General Public License for more details.
-  
-  You should have received a copy of the GNU Lesser General Public License
-  along with this library; if not, write to the Free Software Foundation,
-  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ File: ZipMultipleFiles.java 
+ 
+ Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+ 
+ The Cytoscape Consortium is: 
+ - Institute of Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Pasteur Institute
+ - Agilent Technologies
+ 
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+ 
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute 
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute 
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute 
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+ 
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+ */
 
 package cytoscape.util;
 
@@ -45,6 +44,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -52,21 +52,22 @@ import java.util.zip.ZipOutputStream;
 /**
  * Zip multiple files into one.
  * 
- * The created zip files can be decompressed by other utilities. 
+ * The created zip files can be decompressed by other utilities.
  * 
- *  The original code was written by Mr. Masanori Kouno
- *  (http://www4.ocn.ne.jp/~mark44/TIPS/Java/ZipOutputStream/zip.htm)
- *
+ * The original code was written by Mr. Masanori Kouno
+ * (http://www4.ocn.ne.jp/~mark44/TIPS/Java/ZipOutputStream/zip.htm)
+ * 
  * @author kono
  * 
- **/
+ */
 
 public class ZipMultipleFiles {
 	private String zipFileName;
 	private String[] files;
 	private int fileCount;
-	private File tempDir;
 	private String sessionDirName;
+
+	private Writer[] targets;
 
 	private final String FS = System.getProperty("file.separator");
 
@@ -85,7 +86,7 @@ public class ZipMultipleFiles {
 		this.zipFileName = zipFile;
 		this.fileCount = fileList.length;
 		this.files = new String[fileCount];
-		this.tempDir = tempDir;
+		
 
 		System.arraycopy(fileList, 0, files, 0, fileCount);
 	}
@@ -99,11 +100,25 @@ public class ZipMultipleFiles {
 		System.arraycopy(fileList, 0, files, 0, fileCount);
 	}
 
+	//
+	// Now acceptiong multiple streams instead of file names.
+	//
+	public ZipMultipleFiles(String zipFile, Writer[] entryList, String rootDir) {
+		this.zipFileName = zipFile;
+		this.fileCount = entryList.length;
+		this.targets = new Writer[fileCount];
+		this.files = new String[fileCount];
+		this.sessionDirName = rootDir;
+
+		System.arraycopy(entryList, 0, targets, 0, fileCount);
+	}
+
 	protected void clean() {
 
 		for (int i = 0; i < fileCount; i++) {
 			File tempFile = new File(files[i]);
-			//System.out.println("delete file is " + tempFile.delete());
+
+			tempFile.delete();
 		}
 
 		// Delete the temp directory
@@ -130,6 +145,7 @@ public class ZipMultipleFiles {
 
 				byte[] buf = getFileBytes(files[i]);
 				zent = new ZipEntry(sessionDirName + FS + files[i]);
+
 				al.add(zent);
 				zos.putNextEntry(zent);
 
@@ -207,6 +223,7 @@ public class ZipMultipleFiles {
 			bis = new BufferedInputStream(fis, len);
 			byte buf[] = new byte[len];
 			bis.read(buf, 0, len);
+
 			return buf;
 		} catch (IOException e) {
 
