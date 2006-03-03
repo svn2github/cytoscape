@@ -262,6 +262,7 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
                     m_stack.push(edgeNodesEnum.nextInt()); }
                   m_hash.empty();
                   edgeNodesEnum = m_stack.elements();
+                  m_stack2.empty();
                   for (int i = 0; i < edgeNodesCount; i++) {
                     final int node = edgeNodesEnum.nextInt();
                     m_view.m_spacial.exists(~node, m_view.m_extentsBuff, 0);
