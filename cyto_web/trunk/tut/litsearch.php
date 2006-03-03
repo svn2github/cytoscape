@@ -289,7 +289,7 @@ search results for later analysis, these options will allow you to
 do so.
 </OL>
 <P>
-<H3 Refining your search</H3>
+<H3> Refining your search</H3>
 Under the Agilent Literature Search window, there are a number
 of basic search controls, as described here.
 
@@ -465,6 +465,72 @@ more information, see <a href="http://www.ncbi.nlm.nih.gov/books/bv.fcgi?rid=hel
 the following</a> PubMed help document.
 </li>
 </ol>
+<H3>Gathering Supporting Evidence</H3>
+In addition to mining the literature for associations, you can
+use the Agilent Literature Search plugin to verify other interactions
+against the literature.  This section illustrates how.
+<ol>
+<li> Download the file <A HREF="litsearch/BINDHumanSubset.sif">
+BINDHumanSubset.sif</A> to your local computer.  This is a sample
+set of interactions from the <A HREF="http://bind.ca/"BIND</A> database.
+<li> <B>Important:</B> this functionality relies on parameters 
+defined in the last use of the Literature Search plugin, in this 
+session of Cytoscape.  <EM>If you have taken a break since the 
+previous steps, and have just started a new Cytoscape session, then
+before continuing, you must do a literature search with Human selected
+as the species</EM>
+<li> Load the network <B>BINDHumanSubset.sf</B>.  Lay out the network with
+the <b>yFiles Organic</B> layout.  Your Cytoscape canvas should 
+appear as shown:
+<P><IMG SRC="litsearch/Fig13.jpg" WIDTH="50%" BORDER=1>
+<li> Select by name the node Sp1, and zoom in to get a closer
+look of the other nodes that interact with it.  Your canvas should 
+appear as shown:
+<P><IMG SRC="litsearch/Fig14.jpg" WIDTH="50%" BORDER=1>
+<li> Select the edge between Sp1 and Myc.
+<li> Right-click on the edge.  You should see the menu shown below, 
+with the option <B>Evidence from Literature</B>.  This item should 
+take you to another menu, with the option <B>Gather Evidence from the
+Literature</B>.  Select this option.
+<P><IMG src="litsearch/Fig15.jpg" WIDTH="20%" BORDER=1>
+<li> A literature search will be executed.  When it is done, a 
+message will appear at the bottom of the Cytoscape Desktop indicating
+if any new evidence was found.
+<li> Go to the <B>Edge Attribute Browser</B> and click on the 
+<B>Select Attributes</B> button.  You should see several new 
+attributes, as follows:
+<UL>
+<li><B>HasTSI</B>: Indicates if the interaction is supported by
+literature searching 
+<li><B>NumberOfSources</B>: Indicates the number of distinct articles
+supporting the interaction
+<li><B>nbrSentences</B>: Indicates the number of distinct sentences
+supporting the interaction
+</UL> 
+<li>How much support is there for this interaction?
+<li> Go back to the Cytoscape Desktop, and right-click on the edge
+between Myc and Sd1.  If any evidence was found in the literature for
+this interaction, then under <B>Evidence from Literature</B>, there 
+should be a new option: <B>Show Sentences from the Literature</B>.
+Selecting this option will bring up a window listing the supporting
+sentences, as shown below.
+<P><IMG SRC="litsearch/Fig16.jpg" WIDTH="70%">
+<li>Exactly what was the search that generated these results?  The
+<B>Gather Evidence</B> function performs a search of ten articles per
+search term, using the two nodes as search terms and using the species
+and interaction lexicon used in the last full literature search.  For
+example, if your last full literature search was done on mouse with a 
+relaxed interaction lexicon, then the <B>Gather Evidence</B> function 
+would search for the two nodes in mouse, and using a relaxed interaction
+lexicon.
+<li>You can also gather evidence on all the edges for a give
+<li>Select the node YY1.
+<li>Right-click on this node.
+<li>In the right-click menu, select <B>Gather Evidence from the Literature</B>.
+This will perform a literature search on all the edges of the node.
+</ol>
+</ol>
+
 </ol>
 
 <p><b>Congratulations!</b> You have not only completed one more
