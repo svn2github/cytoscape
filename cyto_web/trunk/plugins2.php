@@ -68,7 +68,7 @@ Cytoscape LGPL.
 Associations extracted from these documents are then converted into interactions, which are further grouped into a network.
 The sentences and source hyperlinks for each association are further stored as attributes of the corresponding nodes and links in the network.
 The networks can be viewed and manipulated in Cytoscape.
-<p>Enhancements in version 2.0 include 
+<p>Enhancements in version 2.0 include
 <ul>
 <li> literature-based evidence gathering for Cytoscape Edges and
 <li> the ability to save, reload, and analyze search results.
@@ -442,7 +442,7 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 		<td width="20%" valign="top">
 			<b>jActiveModules</b>
 			<br>
-			<font size="-1">Version: 1.0 
+			<font size="-1">Version: 1.0
 				<br>
 				Release Date: Jan. 16, 2006</font>
 		</td>
@@ -555,8 +555,8 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 					<hr>
 				</td>
 			</tr>
-			
-			
+
+
 	<tr>
 		<td width="20%" valign="top">
 			<b>NetworkAnalyzer Plugin</b>
@@ -566,8 +566,8 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 				Release Date: Jan. 23, 2006</font>
 		</td>
 		<td width="40%" valign="top">
-			NetworkAnalyzer is a Java plugin for Cytoscape, a software platform 
-			for the analysis and visualization of molecular interaction networks. 
+			NetworkAnalyzer is a Java plugin for Cytoscape, a software platform
+			for the analysis and visualization of molecular interaction networks.
 			The plugin computes specific parameters describing the network topology.
 			<br><br>Feature List:<br>
 		<ul>
@@ -608,14 +608,14 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 			<br>
 		</td>
 	</tr>
-	
+
 	<tr>
 				<td colspan="4">
 					<hr>
 				</td>
 			</tr>
-	
-	
+
+
 	<tr>
 		<td width="20%" valign="top">
 			<b>Network Filter Plugin</b>
@@ -644,8 +644,8 @@ Networks by using Filters that you have created.
 					<hr>
 				</td>
 			</tr>
-	
-			
+
+
 			<tr>
 				<td width="20%" valign="top">
 					<b>Oracle Spatial Network Data Model Plugin</b><font size="-1">
@@ -774,6 +774,43 @@ Scardoni.
 					<hr>
 				</td>
 			</tr>
+
+			<tr>
+				<td width="20%" valign="top">
+					<b>SBMLReader plugin</b><font size="-1">
+						<br>
+						Version: 1
+						<br>
+						Release Date: February 28, 2006</font>
+				</td>
+				<td width="40%" valign="top">
+					<p>
+This Cytoscape 2.2 plug-in reads all Species and Reactions and puts
+them into one cytoscape network regardless of the compartments. It the
+links the Species to the Reactions using the Reactant and Product
+lists. It then also applies a specific VisualStyle for the SBMLReader
+plugin.
+<P>
+Please see:
+http://www.wligtenberg.nl
+for downloading and installation information.
+					<p>
+						Released by: W.P.A. Ligtenberg M.Sc. Eindhoven University of Technology and Maastricht University
+					</p>
+				</td>
+				<td width="20%" valign="top">
+				Verified to work in 2.2.
+				</td>
+				<td width="20%" valign="top">
+                    [<a href="http://www.wligtenberg.nl">Web Site and Download</a>]                           
+				</td>
+			</tr>
+			<tr>
+				<td colspan="4">
+					<hr>
+				</td>
+			</tr>
+
 			<tr>
 				<td width="20%" valign="top">
 					<b>ShortestPath Plugin</b><font size="-1">
