@@ -273,6 +273,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
     if (m_selectedPaint instanceof Color) {
       m_view.m_edgeDetails.overrideColorLowDetail
         (m_inx, (Color) m_selectedPaint); }
+    m_view.m_selectedEdges.insert(m_inx);
     return true;
   }
 
@@ -301,6 +302,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
     if (m_unselectedPaint instanceof Color) {
       m_view.m_edgeDetails.overrideColorLowDetail
         (m_inx, (Color) m_unselectedPaint); }
+    m_view.m_selectedEdges.delete(m_inx);
     return true;
   }
 
