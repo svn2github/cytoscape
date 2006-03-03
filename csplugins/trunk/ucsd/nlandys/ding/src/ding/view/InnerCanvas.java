@@ -253,7 +253,7 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
                   ((DNodeView) m_view.getNodeView(selectedNodes[i])).
                     selectInternal(); } }
               if (m_view.m_edgeSelection) {
-                IntEnumerator edgeNodesEnum = m_hash.elements();
+                IntEnumerator edgeNodesEnum = m_hash.elements(); // Positive.
                 if (m_lastRenderLowDetail) {
                   // We won't need to look up arrows and their sizes.
                   m_stack.empty();
@@ -264,8 +264,8 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
                   edgeNodesEnum = m_stack.elements();
                   m_stack2.empty();
                   for (int i = 0; i < edgeNodesCount; i++) {
-                    final int node = edgeNodesEnum.nextInt();
-                    m_view.m_spacial.exists(~node, m_view.m_extentsBuff, 0);
+                    final int node = edgeNodesEnum.nextInt(); // Positive.
+                    m_view.m_spacial.exists(node, m_view.m_extentsBuff, 0);
                     final float nodeX =
                       (m_view.m_extentsBuff[0] + m_view.m_extentsBuff[2]) / 2;
                     final float nodeY =
@@ -274,22 +274,19 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
                     final IntEnumerator touchingEdges =
                       graph.edgesAdjacent(node, true, true, true);
                     while (touchingEdges.numRemaining() > 0) {
-                      final int edge = touchingEdges.nextInt();
-                      final int otherNode =
+                      final int edge = touchingEdges.nextInt(); // Positive.
+                      final int otherNode = // Positive.
                         node ^ graph.edgeSource(edge) ^ graph.edgeTarget(edge);
                       if (m_hash.get(otherNode) < 0) {
                         m_view.m_spacial.exists
                           (otherNode, m_view.m_extentsBuff, 0);
-                        final float otherNodeX =
-                          (m_view.m_extentsBuff[0] + m_view.m_extentsBuff[2]) /
-                          2;
-                        final float otherNodeY =
-                          (m_view.m_extentsBuff[1] + m_view.m_extentsBuff[3]) /
-                          2;
+                        final float otherNodeX = (m_view.m_extentsBuff[0] +
+                                                  m_view.m_extentsBuff[2]) / 2;
+                        final float otherNodeY = (m_view.m_extentsBuff[1] +
+                                                  m_view.m_extentsBuff[3]) / 2;
                         m_line.setLine(nodeX, nodeY, otherNodeX, otherNodeY);
                         if (m_line.intersects(xMin, yMin, xMax - xMin,
                                               yMax - yMin)) {
-                          System.out.println(edge);
                           m_stack2.push(~edge); } } }
                     m_hash.put(node); }
                   selectedEdges = new int[m_stack2.size()];
