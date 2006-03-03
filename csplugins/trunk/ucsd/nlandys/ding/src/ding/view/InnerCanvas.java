@@ -22,14 +22,17 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.GeneralPath;
+import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 
 class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
 {
 
   final double[] m_ptBuff = new double[2];
+  final Line2D.Float m_line = new Line2D.Float();
   final GeneralPath m_path = new GeneralPath();
   final IntStack m_stack = new IntStack();
+  final IntStack m_stack2 = new IntStack();
   final Object m_lock;
   DGraphView m_view;
   GraphLOD m_lod;
@@ -224,6 +227,7 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
         m_currMouseButton = 0;
         if (m_selectionRect != null) {
           int[] selectedNodes = null;
+          int[] selectedEdges = null;
           synchronized (m_lock) {
             if (m_view.m_nodeSelection || m_view.m_edgeSelection) {
               m_ptBuff[0] = m_selectionRect.x;
@@ -247,7 +251,54 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
                   selectedNodes[i] = nodes.nextInt(); }
                 for (int i = 0; i < selectedNodes.length; i++) {
                   ((DNodeView) m_view.getNodeView(selectedNodes[i])).
-                    selectInternal(); } } } }
+                    selectInternal(); } }
+              if (m_view.m_edgeSelection) {
+                IntEnumerator edgeNodesEnum = m_hash.elements();
+                if (m_lastRenderLowDetail) {
+                  // We won't need to look up arrows and their sizes.
+                  m_stack.empty();
+                  final int edgeNodesCount = edgeNodesEnum.numRemaining();
+                  for (int i = 0; i < edgeNodesCount; i++) {
+                    m_stack.push(edgeNodesEnum.nextInt()); }
+                  m_hash.empty();
+                  edgeNodesEnum = m_stack.elements();
+                  for (int i = 0; i < edgeNodesCount; i++) {
+                    final int node = edgeNodesEnum.nextInt();
+                    m_view.m_spacial.exists(~node, m_view.m_extentsBuff, 0);
+                    final float nodeX =
+                      (m_view.m_extentsBuff[0] + m_view.m_extentsBuff[2]) / 2;
+                    final float nodeY =
+                      (m_view.m_extentsBuff[1] + m_view.m_extentsBuff[3]) / 2;
+                    final FixedGraph graph = (FixedGraph) m_view.m_drawPersp;
+                    final IntEnumerator touchingEdges =
+                      graph.edgesAdjacent(~node, true, true, true);
+                    while (touchingEdges.numRemaining() > 0) {
+                      final int edge = touchingEdges.nextInt();
+                      final int otherNode =
+                        node ^ graph.edgeSource(edge) ^ graph.edgeTarget(edge);
+                      if (m_hash.get(otherNode) < 0) {
+                        m_view.m_spacial.exists
+                          (otherNode, m_view.m_extentsBuff, 0);
+                        final float otherNodeX =
+                          (m_view.m_extentsBuff[0] + m_view.m_extentsBuff[2]) /
+                          2;
+                        final float otherNodeY =
+                          (m_view.m_extentsBuff[1] + m_view.m_extentsBuff[3]) /
+                          2;
+                        m_line.setLine(nodeX, nodeY, otherNodeX, otherNodeY);
+                        if (m_line.intersects(m_selectionRect.x,
+                                              m_selectionRect.y,
+                                              m_selectionRect.width,
+                                              m_selectionRect.height)) {
+                          m_stack2.push(~edge); } } }
+                    m_hash.put(node); }
+                  selectedEdges = new int[m_stack2.size()];
+                  final IntEnumerator edges = m_stack2.elements();
+                  for (int i = 0; i < selectedEdges.length; i++) {
+                    selectedEdges[i] = edges.nextInt(); }
+                  for (int i = 0; i < selectedEdges.length; i++) {
+                    ((DEdgeView) m_view.getEdgeView(selectedEdges[i])).
+                      selectInternal(); } } } } }
           m_selectionRect = null;
           repaint();
           final GraphViewChangeListener listener = m_view.m_lis[0];
@@ -255,7 +306,11 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
             if (selectedNodes != null && selectedNodes.length > 0) {
               listener.graphViewChanged
                 (new GraphViewNodesSelectedEvent
-                 (m_view, selectedNodes)); } } } } }
+                 (m_view, selectedNodes)); }
+            if (selectedEdges != null && selectedEdges.length > 0) {
+              listener.graphViewChanged
+                (new GraphViewEdgesSelectedEvent
+                 (m_view, selectedEdges)); } } } } }
     else if (e.getButton() == MouseEvent.BUTTON2) {
       if (m_currMouseButton == 2) { m_currMouseButton = 0; } }
     else if (e.getButton() == MouseEvent.BUTTON3) {
