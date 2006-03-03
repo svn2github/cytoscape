@@ -55,6 +55,7 @@ public class DGraphView implements GraphView
   boolean m_nodeSelection = true;
   boolean m_edgeSelection = true;
   final IntBTree m_selectedNodes;
+  final IntBTree m_selectedEdges;
 
   final GraphViewChangeListener[] m_lis = new GraphViewChangeListener[1];
 
@@ -76,6 +77,7 @@ public class DGraphView implements GraphView
     m_defaultNodeYMax = m_defaultNodeYMin + DNodeView.DEFAULT_HEIGHT;
     m_canvas = new InnerCanvas(m_lock, this);
     m_selectedNodes = new IntBTree();
+    m_selectedEdges = new IntBTree();
   }
 
   public GraphPerspective getGraphPerspective()
@@ -101,12 +103,17 @@ public class DGraphView implements GraphView
 
   public void disableNodeSelection()
   {
+    final int[] unselectedNodes;
     synchronized (m_lock) {
       m_nodeSelection = false;
-      final int[] selectedNodes = getSelectedNodeIndices();
-      for (int i = 0; i < selectedNodes.length; i++) {
-        getNodeView(selectedNodes[i]).unselect(); } }
+      unselectedNodes = getSelectedNodeIndices();
+      for (int i = 0; i < unselectedNodes.length; i++) {
+        ((DNodeView) getNodeView(unselectedNodes[i])).unselectInternal(); } }
     updateView();
+    final GraphViewChangeListener listener = m_lis[0];
+    if (listener != null && unselectedNodes.length > 0) {
+      listener.graphViewChanged
+        (new GraphViewNodesUnselectedEvent(this, unselectedNodes)); }
   }
 
   public void enableEdgeSelection()
@@ -117,12 +124,17 @@ public class DGraphView implements GraphView
 
   public void disableEdgeSelection()
   {
+    final int[] unselectedEdges;
     synchronized (m_lock) {
       m_edgeSelection = false;
-      final int[] selectedEdges = getSelectedEdgeIndices();
-      for (int i = 0; i < selectedEdges.length; i++) {
-        getEdgeView(selectedEdges[i]).unselect(); } }
+      unselectedEdges = getSelectedEdgeIndices();
+      for (int i = 0; i < unselectedEdges.length; i++) {
+        ((DEdgeView) getEdgeView(unselectedEdges[i])).unselectInternal(); } }
     updateView();
+    final GraphViewChangeListener listener = m_lis[0];
+    if (listener != null && unselectedEdges.length > 0) {
+      listener.graphViewChanged
+        (new GraphViewEdgesUnselectedEvent(this, unselectedEdges)); }
   }
 
   public int[] getSelectedNodeIndices()
@@ -143,7 +155,13 @@ public class DGraphView implements GraphView
 
   public int[] getSelectedEdgeIndices()
   {
-    return new int[0];
+    synchronized (m_lock) {
+      final IntEnumerator elms = m_selectedEdges.searchRange
+        (Integer.MIN_VALUE, Integer.MAX_VALUE, false);
+      final int[] returnThis = new int[elms.numRemaining()];
+      for (int i = 0; i < returnThis.length; i++) {
+        returnThis[i] = ~elms.nextInt(); }
+      return returnThis; }
   }
 
   public List getSelectedEdges()
