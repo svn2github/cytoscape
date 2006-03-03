@@ -271,7 +271,7 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
                       (m_view.m_extentsBuff[1] + m_view.m_extentsBuff[3]) / 2;
                     final FixedGraph graph = (FixedGraph) m_view.m_drawPersp;
                     final IntEnumerator touchingEdges =
-                      graph.edgesAdjacent(~node, true, true, true);
+                      graph.edgesAdjacent(node, true, true, true);
                     while (touchingEdges.numRemaining() > 0) {
                       final int edge = touchingEdges.nextInt();
                       final int otherNode =
@@ -286,10 +286,9 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
                           (m_view.m_extentsBuff[1] + m_view.m_extentsBuff[3]) /
                           2;
                         m_line.setLine(nodeX, nodeY, otherNodeX, otherNodeY);
-                        if (m_line.intersects(m_selectionRect.x,
-                                              m_selectionRect.y,
-                                              m_selectionRect.width,
-                                              m_selectionRect.height)) {
+                        if (m_line.intersects(xMin, yMin, xMax - xMin,
+                                              yMax - yMin)) {
+                          System.out.println(edge);
                           m_stack2.push(~edge); } } }
                     m_hash.put(node); }
                   selectedEdges = new int[m_stack2.size()];

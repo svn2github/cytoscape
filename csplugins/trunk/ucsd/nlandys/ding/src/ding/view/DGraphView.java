@@ -53,7 +53,7 @@ public class DGraphView implements GraphView
   final float m_defaultNodeYMax;
   InnerCanvas m_canvas;
   boolean m_nodeSelection = true;
-  boolean m_edgeSelection = false;
+  boolean m_edgeSelection = true;
   final IntBTree m_selectedNodes;
 
   final GraphViewChangeListener[] m_lis = new GraphViewChangeListener[1];
