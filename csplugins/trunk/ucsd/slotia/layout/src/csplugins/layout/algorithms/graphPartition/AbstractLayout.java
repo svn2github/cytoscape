@@ -11,6 +11,10 @@ import java.util.*;
 import javax.swing.JOptionPane;
 import java.lang.Throwable;
 
+/* NOTE: The AbstractLayout class uses SGraphPartition to generate
+   the partitions in the graph. Originally this class used GraphPartition,
+   but it is broken. */
+
 import csplugins.layout.algorithms.SGraphPartition;
 
 public abstract class AbstractLayout implements Task {

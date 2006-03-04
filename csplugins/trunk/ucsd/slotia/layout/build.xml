@@ -20,10 +20,9 @@
     <property name="nowarn" value="true"/>
     <property name="fork" value="false"/>
     <property name="layout.root.dir" value="."/>
-    <property name="layout.lib.dir" value="${layout.root.dir}/lib"/>
     <property name="cytoscape.dir" value="../../../../cytoscape"/>
     <property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib"/>
-    <property name="cytoscape.plugin.dir" value="${cytoscape.dir}/build/cytoscape-v2.2/plugins"/>
+    <property name="cytoscape.plugin.dir" value="${cytoscape.dir}/build/cytoscape-v2.3/plugins"/>
     <property name="csplugins.dir" value="../../../../csplugins"/>
     <path id="project.class.path">
       <pathelement path="${java.class.path}/"/>
@@ -112,9 +111,6 @@
       <fileset
         dir="${layout.classes.dir}"
         includes="**"/>
-      <fileset
-        dir="${layout.root.dir}/lib"
-        includes="resources/**"/>
     </jar>
     <copy todir="${cytoscape.plugin.dir}" file="layout.jar"/>
   </target>
