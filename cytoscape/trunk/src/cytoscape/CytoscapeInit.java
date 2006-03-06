@@ -655,7 +655,7 @@ public class CytoscapeInit implements PropertyChangeListener {
 				// create the jar file from the list of plugin jars
 				 System.out.println( "Create jarfile from: "+ urls[i] );
 
-				 System.out.println( urls[i].getFile()+"protocol: "+urls[i].getProtocol() );
+				 //System.out.println( urls[i].getFile()+"protocol: "+urls[i].getProtocol() );
 
 				JarFile jar = null;
 
@@ -697,9 +697,9 @@ public class CytoscapeInit implements PropertyChangeListener {
 						entry = entry.replaceAll("\\.class$", "");
 						entry = entry.replaceAll("/", ".");
 
-						System.out.println(" CLASS: " + entry);
+						//System.out.println(" CLASS: " + entry);
 						if (!(isClassPlugin(entry))) {
-							System.out.println(" not plugin.");
+							//System.out.println(" not plugin.");
 							continue;
 						}
 						// System.out.println(entry+" is a PLUGIN!");
@@ -772,7 +772,7 @@ public class CytoscapeInit implements PropertyChangeListener {
 		// Class c = Class.forName( name, false, classLoader );\
 		Class c = null;
 		try {
-			System.out.println("Calling classLoader.loadClass(" + name + ")");
+			//System.out.println("Calling classLoader.loadClass(" + name + ")");
 			c = classLoader.loadClass(name);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
