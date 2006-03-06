@@ -207,13 +207,6 @@ public class CytoscapeInit implements PropertyChangeListener {
 		// }
 		suppressView = cli.suppressView();
 
-		// store key property values into main Properties object for
-		// for visual (via Preferences Dialog) communication and later storage
-		//
-		// command line -overrides- cytoscape.props
-		// hence it is now safe to store those values
-		storeVariablesInProperties();
-		
 		// if the command line specified a location for the vizmap.props file, set it
 		vizmapPropertiesLocation = cli.getVizPropsFile();
 		if(vizmapPropertiesLocation != null && vizmapPropertiesLocation.length() > 0){
@@ -249,8 +242,15 @@ public class CytoscapeInit implements PropertyChangeListener {
 
 		 System.out.println("vizmap.props is located in " + vizmapPropertiesLocation);
 		
-		// see if we are in headless mode
-		// show splash screen, if appropriate
+		 // store key property values into main Properties object for
+		 // for visual (via Preferences Dialog) communication and later storage
+		 //
+		 // command line -overrides- cytoscape.props
+		 // hence it is now safe to store those values
+		 storeVariablesInProperties();
+     
+		 // see if we are in headless mode
+		 // show splash screen, if appropriate
 		if (!isHeadless()) {
 			ImageIcon image = new ImageIcon(getClass().getResource(
 					"/cytoscape/images/CytoscapeSplashScreen.png"));
@@ -290,8 +290,20 @@ public class CytoscapeInit implements PropertyChangeListener {
 				new String[] {}), (String[]) getEdgeAttributes().toArray(
 				new String[] {}), !noCanonicalization(), bds,
 				getDefaultSpeciesName());
-		
 
+		
+		// Add a listener that will apply vizmaps every time attributes change
+		PropertyChangeListener attsChangeListener = new PropertyChangeListener(){
+			
+			public void propertyChange (PropertyChangeEvent e){
+				if(e.getPropertyName().equals(Cytoscape.ATTRIBUTES_CHANGED)){
+					// apply vizmaps
+					Cytoscape.getCurrentNetworkView().redrawGraph(false, true); // re-apply vizmaps
+				}//if
+			}//propertyChange
+		};//attsChangedListener
+
+		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(attsChangeListener);
 		Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
 
 		// load expression data if specified
@@ -346,6 +358,7 @@ public class CytoscapeInit implements PropertyChangeListener {
 		properties.setProperty("viewThreshold", "" + viewThreshold);
 		properties.setProperty("secondaryViewThreshold", ""
 				+ secondaryViewThreshold);
+		//properties.setProperty("vizmapPropertiesLocation",vizmapPropertiesLocation);
 	}
 
 	public String getHelp() {
@@ -640,19 +653,16 @@ public class CytoscapeInit implements PropertyChangeListener {
 
 			try {
 				// create the jar file from the list of plugin jars
-				// System.out.println( "Create jarfile from:
-				// "+plugin_strings.get(i) );
+				 System.out.println( "Create jarfile from: "+ urls[i] );
 
-				// System.out.println( urls[i].getFile()+"protocol:
-				// "+urls[i].getProtocol() );
+				 System.out.println( urls[i].getFile()+"protocol: "+urls[i].getProtocol() );
 
 				JarFile jar = null;
 
 				if (urls[i].getProtocol() == "file") {
 					jar = new JarFile(urls[i].getFile());
 				} else if (urls[i].getProtocol().startsWith("jar")) {
-					JarURLConnection jc = (JarURLConnection) urls[i]
-							.openConnection();
+					JarURLConnection jc = (JarURLConnection) urls[i].openConnection();
 					jar = jc.getJarFile();
 				}
 
@@ -687,9 +697,9 @@ public class CytoscapeInit implements PropertyChangeListener {
 						entry = entry.replaceAll("\\.class$", "");
 						entry = entry.replaceAll("/", ".");
 
-						// System.out.println(" CLASS: " + entry);
+						System.out.println(" CLASS: " + entry);
 						if (!(isClassPlugin(entry))) {
-							// System.out.println(" not plugin.");
+							System.out.println(" not plugin.");
 							continue;
 						}
 						// System.out.println(entry+" is a PLUGIN!");
@@ -757,14 +767,18 @@ public class CytoscapeInit implements PropertyChangeListener {
 	 * @param name
 	 *            the name of the putative plugin class
 	 */
-	protected boolean isClassPlugin(String name) throws ClassNotFoundException {
+	protected boolean isClassPlugin(String name) {
 		// Class c = loadClass(name);
 		// Class c = Class.forName( name, false, classLoader );\
 		Class c = null;
 		try {
+			System.out.println("Calling classLoader.loadClass(" + name + ")");
 			c = classLoader.loadClass(name);
-		} catch (Exception e) {
-			// e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			return false;
+		} catch (NoClassDefFoundError e){
+			e.printStackTrace();
 			return false;
 		}
 		Class p = AbstractPlugin.class;
