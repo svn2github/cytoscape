@@ -424,15 +424,14 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
                         if (m_path2.intersects
                             (xMin, yMin, xMax - xMin, yMax - yMin)) {
                           m_stack2.push(~edge); } } }
-                    m_hash.put(node); }
-                  selectedEdges = new int[m_stack2.size()];
-                  final IntEnumerator edges = m_stack2.elements();
-                  for (int i = 0; i < selectedEdges.length; i++) {
-                    selectedEdges[i] = edges.nextInt(); }
-                  for (int i = 0; i < selectedEdges.length; i++) {
-                    ((DEdgeView) m_view.getEdgeView(selectedEdges[i])).
-                      selectInternal(); }
-                }
+                    m_hash.put(node); } }
+                selectedEdges = new int[m_stack2.size()];
+                final IntEnumerator edges = m_stack2.elements();
+                for (int i = 0; i < selectedEdges.length; i++) {
+                  selectedEdges[i] = edges.nextInt(); }
+                for (int i = 0; i < selectedEdges.length; i++) {
+                  ((DEdgeView) m_view.getEdgeView(selectedEdges[i])).
+                    selectInternal(); }
               } } }
           m_selectionRect = null;
           repaint();
