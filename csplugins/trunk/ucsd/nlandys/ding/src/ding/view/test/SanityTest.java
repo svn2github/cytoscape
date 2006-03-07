@@ -5,6 +5,7 @@ import ding.view.DGraphView;
 import fing.model.FingRootGraphFactory;
 import giny.model.GraphPerspective;
 import giny.model.RootGraph;
+import giny.view.Bend;
 import giny.view.GraphView;
 import giny.view.NodeView;
 import giny.view.EdgeView;
@@ -12,6 +13,7 @@ import java.awt.EventQueue;
 import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.geom.Point2D;
 
 public class SanityTest
 {
@@ -51,6 +53,8 @@ public class SanityTest
     final EdgeView ev3 = view.addEdgeView(edge3);
     final EdgeView ev4 = view.addEdgeView(edge4);
     final EdgeView ev5 = view.addEdgeView(edge5);
+    final Bend bend5 = ev5.getBend();
+    bend5.addHandle(new Point2D.Float(0.0f, 0.0f));
     nv1.setOffset(0.0d, 50.0d);
     nv2.setOffset(-30.0d, -10.0d);
     nv3.setOffset(30.0d, 10.0d);
