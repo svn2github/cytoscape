@@ -317,7 +317,11 @@ public class XGMMLReader implements GraphReader {
 		// Extract nodes
 		nodeIDMap = new OpenIntIntHashMap(nodes.size());
 		giny_nodes = new IntArrayList(nodes.size());
-		OpenIntIntHashMap gml_id2order = new OpenIntIntHashMap(nodes.size());
+		//OpenIntIntHashMap gml_id2order = new OpenIntIntHashMap(nodes.size());
+		
+		HashMap gml_id2order = new HashMap(nodes.size());
+		
+		
 		Set nodeNameSet = new HashSet(nodes.size());
 
 		HashMap nodeMap = new HashMap(nodes.size());
@@ -366,7 +370,16 @@ public class XGMMLReader implements GraphReader {
 
 				giny_nodes.add(node.getRootGraphIndex());
 				nodeIDMap.put(idx, node.getRootGraphIndex());
-				gml_id2order.put(Integer.parseInt(curNode.getId()), idx);
+				
+				
+				//gml_id2order.put(Integer.parseInt(curNode.getId()), idx);
+				
+				
+				gml_id2order.put(curNode.getId(), Integer.toString(idx));
+				
+				
+				
+				
 				// ((KeyValue) node_root_index_pairs.get(idx)).value = (new
 				// Integer(
 				// node.getRootGraphIndex()));
@@ -390,9 +403,14 @@ public class XGMMLReader implements GraphReader {
 			cytoscape.generated2.Edge curEdge = (cytoscape.generated2.Edge) edges
 					.get(idx);
 
-			if (gml_id2order.containsKey(Integer.parseInt(curEdge.getSource()))
-					&& gml_id2order.containsKey(Integer.parseInt(curEdge
-							.getTarget()))) {
+//			if (gml_id2order.containsKey(Integer.parseInt(curEdge.getSource()))
+//					&& gml_id2order.containsKey(Integer.parseInt(curEdge
+//							.getTarget()))) {
+			
+			if (gml_id2order.containsKey(curEdge.getSource())
+					&& gml_id2order.containsKey(curEdge.getTarget())) {
+			
+			
 				// String label = curEdge.getLabel();
 
 				String edgeName = curEdge.getLabel();
@@ -606,7 +624,7 @@ public class XGMMLReader implements GraphReader {
 			if (graphics != null && view != null) {
 				layoutNodeGraphics(myView, graphics, view);
 			} else if (graphics == null) {
-				System.out.println("Null Graphics!!");
+				System.out.println("Graphics info is not available for " + view.getLabel().getText());
 			}
 
 			// layoutNodeGraphics(myView, graphics, view);

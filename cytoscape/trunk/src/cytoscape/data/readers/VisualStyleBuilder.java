@@ -37,6 +37,8 @@
 
 package cytoscape.data.readers;
 
+import giny.view.EdgeView;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.math.BigInteger;
@@ -48,7 +50,6 @@ import java.util.Map;
 import cytoscape.Cytoscape;
 import cytoscape.data.Semantics;
 import cytoscape.generated2.Att;
-import cytoscape.generated2.AttType;
 import cytoscape.generated2.Graphics;
 import cytoscape.generated2.impl.AttImpl;
 import cytoscape.view.CytoscapeDesktop;
@@ -80,6 +81,10 @@ import cytoscape.visual.mappings.PassThroughMapping;
 
 /**
  * Based on the graph/node/edge view information, build new Visual Style.
+ * 
+ * This class accepts JAXB object called "Graphics" as input value.
+ * We can add information by adding elements to the object as 
+ * attributes (Object cytoscape.generated2.Att)
  * 
  * @author kono
  * 
@@ -246,7 +251,7 @@ public class VisualStyleBuilder {
 			Iterator localIt = null;
 			if (localNodeGraphics != null) {
 				Att lg = (Att) localNodeGraphics.get(0);
-				
+
 				localIt = lg.getContent().iterator();
 			}
 			// Get node shape
@@ -267,7 +272,7 @@ public class VisualStyleBuilder {
 				while (localIt.hasNext()) {
 					Att nodeAttr = null;
 					Object curObj = localIt.next();
-					
+
 					if (curObj.getClass().equals(AttImpl.class)) {
 						nodeAttr = (Att) curObj;
 
@@ -277,13 +282,11 @@ public class VisualStyleBuilder {
 							nodeFont = new Font(fontString[0], Integer
 									.parseInt(fontString[1]), Integer
 									.parseInt(fontString[2]));
-						
-							
-							
+
 						} else if (nodeAttr.getName().equals("borderLineType")) {
 
 						}
-					} 
+					}
 				}
 
 			} else {
@@ -331,10 +334,8 @@ public class VisualStyleBuilder {
 		nac.setNodeFontFaceCalculator(nodeFontCalculator);
 	}
 
-	
-	
 	protected void setEdgeMaps(VisualMappingManager vizmapper) {
-		
+
 		//
 		// Set label for the nodes. (Uses "label" tag in the GML file)
 		//
@@ -347,7 +348,6 @@ public class VisualStyleBuilder {
 		}
 		eac.setEdgeLabelCalculator(elc);
 
-
 		//
 		// Set the color of the node
 		//
@@ -355,105 +355,119 @@ public class VisualStyleBuilder {
 				ObjectMapping.EDGE_MAPPING);
 		edgeColorMapping.setControllingAttributeName(Semantics.CANONICAL_NAME,
 				vizmapper.getNetwork(), true);
-		
-		DiscreteMapping edgeLineTypeMapping = new DiscreteMapping(LineType.LINE_4,
-				ObjectMapping.EDGE_MAPPING);
-		edgeLineTypeMapping.setControllingAttributeName(Semantics.CANONICAL_NAME,
-				vizmapper.getNetwork(), true);
 
+		DiscreteMapping edgeLineTypeMapping = new DiscreteMapping(
+				LineType.LINE_4, ObjectMapping.EDGE_MAPPING);
+		edgeLineTypeMapping.setControllingAttributeName(
+				Semantics.CANONICAL_NAME, vizmapper.getNetwork(), true);
 
 		// Non-GML graphics attributes
 		Font defaultEdgeFont = eac.getDefaultEdgeFont();
 		DiscreteMapping edgeLabelFontMapping = new DiscreteMapping(
 				defaultEdgeFont, ObjectMapping.EDGE_MAPPING);
-		edgeLabelFontMapping.setControllingAttributeName(Semantics.CANONICAL_NAME,
-				vizmapper.getNetwork(), true);
-		
-		DiscreteMapping edgeSourceArrowMapping = new DiscreteMapping(
-				eac.getDefaultEdgeSourceArrow(), ObjectMapping.EDGE_MAPPING);
-		edgeSourceArrowMapping.setControllingAttributeName(Semantics.CANONICAL_NAME,
-				vizmapper.getNetwork(), true);
+		edgeLabelFontMapping.setControllingAttributeName(
+				Semantics.CANONICAL_NAME, vizmapper.getNetwork(), true);
 
-		Iterator it = edgeGraphics.keySet().iterator();
+		// For source & target arrows
+		DiscreteMapping edgeSourceArrowMapping = new DiscreteMapping(eac
+				.getDefaultEdgeSourceArrow(), ObjectMapping.EDGE_MAPPING);
+		edgeSourceArrowMapping.setControllingAttributeName(
+				Semantics.CANONICAL_NAME, vizmapper.getNetwork(), true);
 		
+		DiscreteMapping edgeTargetArrowMapping = new DiscreteMapping(eac
+				.getDefaultEdgeTargetArrow(), ObjectMapping.EDGE_MAPPING);
+		edgeTargetArrowMapping.setControllingAttributeName(
+				Semantics.CANONICAL_NAME, vizmapper.getNetwork(), true);
+
+		
+		Iterator it = edgeGraphics.keySet().iterator();
 		while (it.hasNext()) {
 			String key = (String) it.next();
-			
+
 			Color edgeColor;
 			Font edgeFont = null;
 			LineType edgeLineType = null;
-			
+
 			Arrow source = null;
 			Arrow target = null;
-			
-			
+
 			// Extract node graphics object from the given map
 			Graphics curGraphics = (Graphics) edgeGraphics.get(key);
 			List localEdgeGraphics = curGraphics.getAtt();
 			Iterator localIt = null;
 			if (localEdgeGraphics != null) {
 				Att lg = (Att) localEdgeGraphics.get(0);
-				
+
 				localIt = lg.getContent().iterator();
 			}
 			// Get node shape
 			if (curGraphics.getFill() != null) {
-				
-				edgeColor = getColor(curGraphics.getFill());
-				
 
-				
+				edgeColor = getColor(curGraphics.getFill());
+
+				// Edge informaiton
 				Color sourceColor = null;
+				Color targetColor = null;
 				String sourceType = null;
+				String targetType = null;
 				
 				while (localIt.hasNext()) {
 					Att edgeAttr = null;
 					Object curObj = localIt.next();
-					
+
 					if (curObj.getClass().equals(AttImpl.class)) {
 						edgeAttr = (Att) curObj;
 
-						
 						String edgeLabelFont = null;
-						
+
 						if (edgeAttr.getName().equals("edgeLabelFont")) {
 							edgeLabelFont = edgeAttr.getValue();
 							String[] fontString = edgeLabelFont.split("-");
 							edgeFont = new Font(fontString[0], Integer
 									.parseInt(fontString[1]), Integer
 									.parseInt(fontString[2]));
-							
+
 						} else if (edgeAttr.getName().equals("edgeLineType")) {
-							edgeLineType = LineType.parseLineTypeText(edgeAttr.getValue());
+							edgeLineType = LineType.parseLineTypeText(edgeAttr
+									.getValue());
 						} else if (edgeAttr.getName().equals("sourceArrow")) {
 							sourceType = edgeAttr.getValue();
 						} else if (edgeAttr.getName().equals("targetArrow")) {
-							
-						} else if (edgeAttr.getName().equals("sourceArrowColor")) {
+							targetType = edgeAttr.getValue();
+						} else if (edgeAttr.getName()
+								.equals("sourceArrowColor")) {
 							sourceColor = getColor(edgeAttr.getValue());
-						} 
-					} 
+						} else if (edgeAttr.getName()
+								.equals("targetArrowColor")) {
+							targetColor = getColor(edgeAttr.getValue());
+						}
+					}
 				}
-				
+
 				// Create arrow if available
-				if(sourceColor != null && sourceType != null) {
+				if( sourceColor != null && sourceType != null ) {
 					source = arrowBuilder(sourceType, sourceColor);
+				}
+				if( targetColor != null && targetType != null ) {
+					target = arrowBuilder(targetType, targetColor);
 				}
 
 			} else {
-				
+
 				edgeColor = DEFAULT_COLOR;
 				edgeLineType = LineType.LINE_1;
 				edgeFont = new Font("Default", 0, 10);
+				source = Arrow.NONE;
+				target = Arrow.NONE;
 			}
-			
+
 			edgeColorMapping.putMapValue(key, edgeColor);
 			edgeLineTypeMapping.putMapValue(key, edgeLineType);
 			edgeLabelFontMapping.putMapValue(key, edgeFont);
-			
+
 			edgeSourceArrowMapping.putMapValue(key, source);
+			edgeTargetArrowMapping.putMapValue(key, target);
 		}
-		
 
 		GenericEdgeColorCalculator edgeColorCalculator = new GenericEdgeColorCalculator(
 				"XGMML Edge Color", edgeColorMapping);
@@ -462,19 +476,20 @@ public class VisualStyleBuilder {
 		GenericEdgeLineTypeCalculator edgeLineTypeCalculator = new GenericEdgeLineTypeCalculator(
 				"XGMML Edge Line Type", edgeLineTypeMapping);
 		eac.setEdgeLineTypeCalculator(edgeLineTypeCalculator);
-		
+
 		GenericEdgeFontFaceCalculator edgeFontCalculator = new GenericEdgeFontFaceCalculator(
 				"XGMML Edge Label Font", edgeLabelFontMapping);
 		eac.setEdgeFontFaceCalculator(edgeFontCalculator);
-		
+
 		GenericEdgeArrowCalculator edgeSourceArrowCalculator = new GenericEdgeArrowCalculator(
-				"XGMML Edge Arrow", edgeSourceArrowMapping);
+				"XGMML Source Edge Arrow", edgeSourceArrowMapping);
 		eac.setEdgeSourceArrowCalculator(edgeSourceArrowCalculator);
+		
+		GenericEdgeArrowCalculator edgeTargetArrowCalculator = new GenericEdgeArrowCalculator(
+				"XGMML Target Edge Arrow", edgeTargetArrowMapping);
+		eac.setEdgeTargetArrowCalculator(edgeTargetArrowCalculator);
 	}
 
-	
-	
-	
 	/**
 	 * Create a color object from the string like it is stored in a gml file
 	 */
@@ -506,10 +521,58 @@ public class VisualStyleBuilder {
 			return LineType.LINE_1;
 		}
 	}
+
 	
+	// Convert GINY arrow information into Arrow object in Cytoscape.
+	//
 	private Arrow arrowBuilder(String type, Color color) {
-		Arrow ar = Arrow.NONE;
 		
+		// Set default to none
+		Arrow ar = Arrow.NONE;
+
+		int intType = Integer.parseInt(type);
+		
+		if (  intType == EdgeView.WHITE_DIAMOND) {
+		      ar = Arrow.WHITE_DIAMOND;
+		    } else if ( intType == EdgeView.BLACK_DIAMOND) {
+		      ar = Arrow.BLACK_DIAMOND;
+		    } else if ( intType == EdgeView.EDGE_COLOR_DIAMOND ) {
+		      ar = Arrow.COLOR_DIAMOND;
+		    } 
+
+		    else if (  intType == EdgeView.WHITE_DELTA ) {
+		      ar = Arrow.WHITE_DELTA;
+		    } else if ( intType == EdgeView.BLACK_DELTA ) {
+		      ar = Arrow.BLACK_DELTA;
+		    } else if ( intType == EdgeView.EDGE_COLOR_DELTA ) {
+		      ar = Arrow.COLOR_DELTA;
+		    } 
+
+		    else if ( intType == EdgeView.WHITE_ARROW ) {
+		      ar = Arrow.WHITE_ARROW;
+		    } else if ( intType == EdgeView.BLACK_ARROW ) {
+		      ar = Arrow.BLACK_ARROW;
+		    } else if ( intType == EdgeView.EDGE_COLOR_ARROW ) {
+		      ar = Arrow.COLOR_ARROW;
+		    } 
+
+		    else if ( intType == EdgeView.WHITE_T ) {
+		      ar = Arrow.WHITE_T;
+		    } else if ( intType == EdgeView.BLACK_T ) {
+		      ar = Arrow.BLACK_T;
+		    } else if ( intType == EdgeView.EDGE_COLOR_T ) {
+		      ar = Arrow.COLOR_T;
+		    } 
+
+
+		    else if ( intType == EdgeView.WHITE_CIRCLE ) {
+		      ar = Arrow.WHITE_CIRCLE;
+		    } else if ( intType == EdgeView.BLACK_CIRCLE ) {
+		      ar = Arrow.BLACK_CIRCLE;
+		    } else if ( intType == EdgeView.EDGE_COLOR_CIRCLE ) {
+		      ar = Arrow.COLOR_CIRCLE;
+		    } 
+		      
 		return ar;
 	}
 

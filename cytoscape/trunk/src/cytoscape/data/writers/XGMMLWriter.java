@@ -45,7 +45,6 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Paint;
-import java.awt.Stroke;
 import java.io.IOException;
 import java.io.Writer;
 import java.math.BigInteger;
@@ -77,13 +76,7 @@ import cytoscape.generated2.Node;
 import cytoscape.generated2.ObjectFactory;
 import cytoscape.generated2.RdfRDF;
 import cytoscape.view.CyNetworkView;
-import cytoscape.view.CytoscapeDesktop;
-import cytoscape.visual.EdgeAppearanceCalculator;
 import cytoscape.visual.LineType;
-import cytoscape.visual.VisualMappingManager;
-import cytoscape.visual.VisualStyle;
-import cytoscape.visual.calculators.GenericEdgeLineTypeCalculator;
-import cytoscape.visual.mappings.DiscreteMapping;
 
 /**
  * 
@@ -559,6 +552,12 @@ public class XGMMLWriter {
 			
 			edgeLineType.setValue(lineTypeBuilder(curEdgeView).toString());
 
+			System.out.println("Source Color is :" + curEdgeView.getSourceEdgeEndPaint().toString());
+			System.out.println("Target Color is :" + curEdgeView.getTargetEdgeEndPaint().toString());
+			System.out.println("Source Type is :" + curEdgeView.getSourceEdgeEnd());
+			System.out.println("Target Type is :" + curEdgeView.getTargetEdgeEnd());
+			
+			
 			sourceArrowColor.setValue(paint2string(curEdgeView
 					.getSourceEdgeEndPaint()));
 			targetArrowColor.setValue(paint2string(curEdgeView

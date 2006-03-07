@@ -73,7 +73,6 @@ public class Arrow implements Serializable {
   public static final Arrow WHITE_CIRCLE = new Arrow("WHITE_CIRCLE");
   public static final Arrow COLOR_CIRCLE = new Arrow("COLOR_CIRCLE");
 
-
   String name;
     
   public Arrow(String name) {this.name = name;}
