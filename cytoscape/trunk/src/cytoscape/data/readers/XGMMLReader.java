@@ -1,40 +1,39 @@
-
 /*
-  File: XGMMLReader.java 
-  
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-  
-  The Cytoscape Consortium is: 
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Pasteur Institute
-  - Agilent Technologies
-  
-  This library is free software; you can redistribute it and/or modify it
-  under the terms of the GNU Lesser General Public License as published
-  by the Free Software Foundation; either version 2.1 of the License, or
-  any later version.
-  
-  This library is distributed in the hope that it will be useful, but
-  WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
-  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
-  documentation provided hereunder is on an "as is" basis, and the
-  Institute for Systems Biology and the Whitehead Institute 
-  have no obligations to provide maintenance, support,
-  updates, enhancements or modifications.  In no event shall the
-  Institute for Systems Biology and the Whitehead Institute 
-  be liable to any party for direct, indirect, special,
-  incidental or consequential damages, including lost profits, arising
-  out of the use of this software and its documentation, even if the
-  Institute for Systems Biology and the Whitehead Institute 
-  have been advised of the possibility of such damage.  See
-  the GNU Lesser General Public License for more details.
-  
-  You should have received a copy of the GNU Lesser General Public License
-  along with this library; if not, write to the Free Software Foundation,
-  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ File: XGMMLReader.java 
+ 
+ Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+ 
+ The Cytoscape Consortium is: 
+ - Institute of Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Pasteur Institute
+ - Agilent Technologies
+ 
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+ 
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute 
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute 
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute 
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+ 
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+ */
 
 package cytoscape.data.readers;
 
@@ -73,6 +72,7 @@ import cytoscape.generated2.Graph;
 import cytoscape.generated2.Graphics;
 import cytoscape.generated2.RdfRDF;
 import cytoscape.generated2.impl.AttImpl;
+import cytoscape.visual.LineType;
 
 /**
  * XGMMLReader. This version is Metanode-compatible.
@@ -169,7 +169,8 @@ public class XGMMLReader implements GraphReader {
 	CyAttributes edgeAttributes;
 
 	HashMap nodeGraphicsMap;
-
+	HashMap edgeGraphicsMap;
+	
 	public XGMMLReader(String fileName) {
 
 		this.fileName = fileName;
@@ -184,6 +185,7 @@ public class XGMMLReader implements GraphReader {
 
 		this.metanodeMap = new HashMap();
 		this.nodeGraphicsMap = new HashMap();
+		this.edgeGraphicsMap = new HashMap();
 	}
 
 	public XGMMLReader(InputStream is) {
@@ -193,6 +195,7 @@ public class XGMMLReader implements GraphReader {
 
 		this.metanodeMap = new HashMap();
 		this.nodeGraphicsMap = new HashMap();
+		this.edgeGraphicsMap = new HashMap();
 	}
 
 	// This constructor will be used when metanode is included in the
@@ -205,6 +208,7 @@ public class XGMMLReader implements GraphReader {
 		this.metanodeMap = new HashMap();
 
 		this.nodeGraphicsMap = new HashMap();
+		this.edgeGraphicsMap = new HashMap();
 	}
 
 	public void readIndex() throws JAXBException, FileNotFoundException {
@@ -415,27 +419,27 @@ public class XGMMLReader implements GraphReader {
 					Node node_1 = Cytoscape.getRootGraph().getNode(sourceName);
 					Node node_2 = Cytoscape.getRootGraph().getNode(targetName);
 
-//					edge = Cytoscape.getCyEdge(node_1, node_2,
-//							Semantics.INTERACTION, edgeName, true);
-					
+					// edge = Cytoscape.getCyEdge(node_1, node_2,
+					// Semantics.INTERACTION, edgeName, true);
+
 					Iterator it = curEdge.getAtt().iterator();
 					Att interaction = null;
 					String itrValue = "pp";
-					while(it.hasNext()) {
-						interaction = (Att)it.next();
-						if(interaction.getName().equals("interaction")) {
+					while (it.hasNext()) {
+						interaction = (Att) it.next();
+						if (interaction.getName().equals("interaction")) {
 							itrValue = interaction.getValue();
 							break;
 						}
 					}
-					//System.out.println("!!!!!Edge Data: " + itrValue);
+					// System.out.println("!!!!!Edge Data: " + itrValue);
 					edge = Cytoscape.getCyEdge(node_1, node_2,
 							Semantics.INTERACTION, itrValue, true);
 				}
 
 				// Set correct ID, canonical name and interaction name
 				edge.setIdentifier(edgeName);
-				//System.out.println("Edge Data: " + edge.getIdentifier());
+				// System.out.println("Edge Data: " + edge.getIdentifier());
 
 				readAttributes(edgeName, curEdge.getAtt(), EDGE);
 
@@ -554,13 +558,16 @@ public class XGMMLReader implements GraphReader {
 		layoutNode(myView);
 
 		// Generate Visual Style
-		VisualStyleBuilder vsb = new VisualStyleBuilder(networkName + ".style",
-				nodeGraphicsMap, null, null);
+		
 
-		vsb.buildStyle();
+		
 		// Layout edges
 		layoutEdge(myView);
-
+		
+		
+		VisualStyleBuilder vsb = new VisualStyleBuilder(networkName + ".style",
+				nodeGraphicsMap, edgeGraphicsMap, null);
+		vsb.buildStyle();
 	}
 
 	/**
@@ -642,20 +649,24 @@ public class XGMMLReader implements GraphReader {
 
 		String type = graphics.getType();
 
-		if (type.equals(ELLIPSE)) {
-			nodeView.setShape(NodeView.ELLIPSE);
-		} else if (type.equals(RECTANGLE)) {
-			nodeView.setShape(NodeView.RECTANGLE);
-		} else if (type.equals(DIAMOND)) {
-			nodeView.setShape(NodeView.DIAMOND);
-		} else if (type.equals(HEXAGON)) {
-			nodeView.setShape(NodeView.HEXAGON);
-		} else if (type.equals(OCTAGON)) {
-			nodeView.setShape(NodeView.OCTAGON);
-		} else if (type.equals(PARALELLOGRAM)) {
-			nodeView.setShape(NodeView.PARALELLOGRAM);
-		} else if (type.equals(TRIANGLE)) {
-			nodeView.setShape(NodeView.TRIANGLE);
+		if (type != null) {
+
+			if (type.equals(ELLIPSE)) {
+				nodeView.setShape(NodeView.ELLIPSE);
+			} else if (type.equals(RECTANGLE)) {
+				nodeView.setShape(NodeView.RECTANGLE);
+			} else if (type.equals(DIAMOND)) {
+				nodeView.setShape(NodeView.DIAMOND);
+			} else if (type.equals(HEXAGON)) {
+				nodeView.setShape(NodeView.HEXAGON);
+			} else if (type.equals(OCTAGON)) {
+				nodeView.setShape(NodeView.OCTAGON);
+			} else if (type.equals(PARALELLOGRAM)) {
+				nodeView.setShape(NodeView.PARALELLOGRAM);
+			} else if (type.equals(TRIANGLE)) {
+				nodeView.setShape(NodeView.TRIANGLE);
+			}
+
 		}
 		// int rnd = rdn.nextInt(7);
 		// if (rnd == 0) {
@@ -691,7 +702,7 @@ public class XGMMLReader implements GraphReader {
 					String value = nodeGraphics.getValue();
 
 					if (attName.equals("nodeTransparency")) {
-						//nodeView.setTransparency(trans.nextFloat());
+						// nodeView.setTransparency(trans.nextFloat());
 					} else if (attName.equals("borderLineType")) {
 
 					}
@@ -712,8 +723,10 @@ public class XGMMLReader implements GraphReader {
 
 			Graphics graphics = (Graphics) curEdge.getGraphics();
 			String edgeID = curEdge.getId();
-
-			//System.out.println("Edge info@@@: " + edgeID);
+			
+			edgeGraphicsMap.put(edgeID, graphics);
+			
+			// System.out.println("Edge info@@@: " + edgeID);
 			int rootindex = Cytoscape.getRootGraph().getEdge(edgeID)
 					.getRootGraphIndex();
 			view = myView.getEdgeView(rootindex);
@@ -756,6 +769,8 @@ public class XGMMLReader implements GraphReader {
 						edgeView.setSourceEdgeEndPaint(getColor(value));
 					} else if (attName.equals("targetArrowColor")) {
 						edgeView.setTargetEdgeEndPaint(getColor(value));
+					} else if(attName.equals("edgeLineType")) {
+						edgeView.setStroke(LineType.parseLineTypeText(value).getStroke());
 					}
 				}
 			}

@@ -43,12 +43,11 @@
 //--------------------------------------------------------------------------
 package cytoscape.visual.calculators;
 //--------------------------------------------------------------------------
+import giny.model.Node;
+
+import java.awt.Font;
 import java.util.Map;
 import java.util.Properties;
-import java.awt.Font;
-import javax.swing.*;
-
-import giny.model.Node;
 
 import cytoscape.CyNetwork;
 import cytoscape.visual.mappings.ObjectMapping;

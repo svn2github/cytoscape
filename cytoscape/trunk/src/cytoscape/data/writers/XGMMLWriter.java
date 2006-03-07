@@ -45,6 +45,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Paint;
+import java.awt.Stroke;
 import java.io.IOException;
 import java.io.Writer;
 import java.math.BigInteger;
@@ -76,6 +77,13 @@ import cytoscape.generated2.Node;
 import cytoscape.generated2.ObjectFactory;
 import cytoscape.generated2.RdfRDF;
 import cytoscape.view.CyNetworkView;
+import cytoscape.view.CytoscapeDesktop;
+import cytoscape.visual.EdgeAppearanceCalculator;
+import cytoscape.visual.LineType;
+import cytoscape.visual.VisualMappingManager;
+import cytoscape.visual.VisualStyle;
+import cytoscape.visual.calculators.GenericEdgeLineTypeCalculator;
+import cytoscape.visual.mappings.DiscreteMapping;
 
 /**
  * 
@@ -548,7 +556,8 @@ public class XGMMLWriter {
 
 			edgeLabelFont
 					.setValue(encodeFont(curEdgeView.getLabel().getFont()));
-			edgeLineType.setValue(Integer.toString(curEdgeView.getLineType()));
+			
+			edgeLineType.setValue(lineTypeBuilder(curEdgeView).toString());
 
 			sourceArrowColor.setValue(paint2string(curEdgeView
 					.getSourceEdgeEndPaint()));
@@ -800,7 +809,9 @@ public class XGMMLWriter {
 
 	private String encodeFont(Font font) {
 		// Encode font into "fontname-style-pointsize" string
-		return font.getName() + "-" + font.getStyle() + "-" + font.getSize();
+		String fontString = font.getName() + "-" + font.getStyle() + "-" + font.getSize();
+		
+		return fontString;
 	}
 
 	private String checkType(Object obj) {
@@ -818,6 +829,52 @@ public class XGMMLWriter {
 		} else
 			return null;
 	}
+	
+	private LineType lineTypeBuilder(EdgeView view) {
+		
+		LineType lineType = LineType.LINE_1;
+		BasicStroke stroke = (BasicStroke) view.getStroke();
+		
+		float[] dash = stroke.getDashArray();
+		
+		float width = stroke.getLineWidth();
+		if(dash == null) {
+			// Normal line.  check width
+			if ( width == 1.0 ) {
+				lineType = LineType.LINE_1;
+			} else if( width == 2.0 ) {
+				lineType = LineType.LINE_2;
+			} else if( width == 3.0 ) {
+				lineType = LineType.LINE_3;
+			} else if( width == 4.0 ) {
+				lineType = LineType.LINE_4;
+			} else if( width == 5.0 ) {
+				lineType = LineType.LINE_5;
+			} else if( width == 6.0 ) {
+				lineType = LineType.LINE_6;
+			} else if( width == 7.0 ) {
+				lineType = LineType.LINE_7;
+			}
+			//System.out.println("SOLID: " + width);
+		} else {
+			if( width == 1.0 ) {
+				lineType = LineType.DASHED_1;
+			} else if ( width == 2.0 ) {
+				lineType = LineType.DASHED_2;
+			} else if( width == 3.0 ) {
+				lineType = LineType.DASHED_3;
+			} else if( width == 4.0 ) {
+				lineType = LineType.DASHED_4;
+			} else if( width == 5.0 ) {
+				lineType = LineType.DASHED_5;
+			} 
+			//System.out.println("DASH: " + width);
+		}
+		
+		return lineType;
+	}
+	
+	
 
 }
 
