@@ -686,6 +686,22 @@ public final class GraphRenderer
         ("encoutered an invalid ANCHOR_* constant: " + anchor); }
   }
 
+  public final static boolean computeEdgeEndpoints
+    (final float[] srcNodeExtents,
+     final byte srcNodeShape,
+     final byte srcArrow,
+     final float srcArrowSize,
+     final EdgeAnchors anchors,
+     final float[] trgNodeExtents,
+     final byte trgNodeShape,
+     final byte trgArrow,
+     final float trgArrowSize,
+     final float[] rtnValSrc,
+     final float[] rtnValTrg)
+  {
+    return true;
+  }
+
 //   public final static boolean queryEdgeIntersect(
 //                                             final GraphGraphics grafx,
 //                                             final FixedGraph graph,
