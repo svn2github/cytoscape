@@ -3,6 +3,7 @@ package ding.view;
 import cytoscape.geom.spacial.SpacialEntry2DEnumerator;
 import cytoscape.graph.fixed.FixedGraph;
 import cytoscape.render.export.ImageImposter;
+import cytoscape.render.immed.EdgeAnchors;
 import cytoscape.render.immed.GraphGraphics;
 import cytoscape.render.stateful.GraphLOD;
 import cytoscape.render.stateful.GraphRenderer;
@@ -23,14 +24,17 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
+import java.awt.geom.PathIterator;
 import java.awt.image.BufferedImage;
 
 class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
 {
 
   final double[] m_ptBuff = new double[2];
+  final float[] m_extentsBuff2 = new float[4];
   final Line2D.Float m_line = new Line2D.Float();
   final GeneralPath m_path = new GeneralPath();
+  final GeneralPath m_path2 = new GeneralPath();
   final IntStack m_stack = new IntStack();
   final IntStack m_stack2 = new IntStack();
   final Object m_lock;
@@ -43,7 +47,7 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
   double m_xCenter;
   double m_yCenter;
   double m_scaleFactor;
-  private boolean m_lastRenderLowDetail = false;
+  private int m_lastRenderDetail = 0;
   private Rectangle m_selectionRect = null;
 
   InnerCanvas(Object lock, DGraphView view)
@@ -71,30 +75,8 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
       synchronized (m_lock) {
         m_img = img;
         m_grafx = grafx;
-        m_lastRenderLowDetail =
-          ((GraphRenderer.renderGraph((FixedGraph) m_view.m_drawPersp,
-                                      m_view.m_spacial,
-                                      m_lod,
-                                      m_view.m_nodeDetails,
-                                      m_view.m_edgeDetails,
-                                      m_hash,
-                                      m_grafx,
-                                      m_bgPaint,
-                                      m_xCenter,
-                                      m_yCenter,
-                                      m_scaleFactor) &
-            GraphRenderer.LOD_HIGH_DETAIL) == 0); } }
-  }
-
-  public void update(Graphics g)
-  {
-    if (m_grafx == null) { return; }
-
-    // This is the magical portion of code that transfers what is in the
-    // visual data structures into what's on the image.
-    synchronized (m_lock) {
-      m_lastRenderLowDetail =
-        ((GraphRenderer.renderGraph((FixedGraph) m_view.m_drawPersp,
+        m_lastRenderDetail =
+          GraphRenderer.renderGraph((FixedGraph) m_view.m_drawPersp,
                                     m_view.m_spacial,
                                     m_lod,
                                     m_view.m_nodeDetails,
@@ -104,8 +86,28 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
                                     m_bgPaint,
                                     m_xCenter,
                                     m_yCenter,
-                                    m_scaleFactor) &
-          GraphRenderer.LOD_HIGH_DETAIL) == 0); }
+                                    m_scaleFactor); } }
+  }
+
+  public void update(Graphics g)
+  {
+    if (m_grafx == null) { return; }
+
+    // This is the magical portion of code that transfers what is in the
+    // visual data structures into what's on the image.
+    synchronized (m_lock) {
+      m_lastRenderDetail =
+        GraphRenderer.renderGraph((FixedGraph) m_view.m_drawPersp,
+                                  m_view.m_spacial,
+                                  m_lod,
+                                  m_view.m_nodeDetails,
+                                  m_view.m_edgeDetails,
+                                  m_hash,
+                                  m_grafx,
+                                  m_bgPaint,
+                                  m_xCenter,
+                                  m_yCenter,
+                                  m_scaleFactor); }
     if (m_selectionRect != null) {
       final Graphics2D g2 = (Graphics2D) m_img.getGraphics();
       g2.setColor(Color.red);
@@ -166,7 +168,8 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
           m_view.getNodesIntersectingRectangle
             ((float) m_ptBuff[0], (float) m_ptBuff[1],
              (float) m_ptBuff[0], (float) m_ptBuff[1],
-             m_lastRenderLowDetail, m_stack);
+             (m_lastRenderDetail & GraphRenderer.LOD_HIGH_DETAIL) == 0,
+             m_stack);
           chosenNode = (m_stack.size() > 0) ? m_stack.peek() : 0; }
         if (!e.isShiftDown()) {
           // Unselect all nodes and edges.
@@ -244,7 +247,8 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
                 m_stack.empty();
                 m_view.getNodesIntersectingRectangle
                   ((float) xMin, (float) yMin, (float) xMax, (float) yMax,
-                   m_lastRenderLowDetail, m_stack);
+                   (m_lastRenderDetail & GraphRenderer.LOD_HIGH_DETAIL) == 0,
+                   m_stack);
                 selectedNodes = new int[m_stack.size()];
                 final IntEnumerator nodes = m_stack.elements();
                 for (int i = 0; i < selectedNodes.length; i++) {
@@ -254,15 +258,17 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
                     selectInternal(); } }
               if (m_view.m_edgeSelection) {
                 IntEnumerator edgeNodesEnum = m_hash.elements(); // Positive.
-                if (m_lastRenderLowDetail) {
+                m_stack.empty();
+                final int edgeNodesCount = edgeNodesEnum.numRemaining();
+                for (int i = 0; i < edgeNodesCount; i++) {
+                  m_stack.push(edgeNodesEnum.nextInt()); }
+                m_hash.empty();
+                edgeNodesEnum = m_stack.elements();
+                m_stack2.empty();
+                final FixedGraph graph = (FixedGraph) m_view.m_drawPersp;
+                if ((m_lastRenderDetail &
+                     GraphRenderer.LOD_HIGH_DETAIL) == 0) {
                   // We won't need to look up arrows and their sizes.
-                  m_stack.empty();
-                  final int edgeNodesCount = edgeNodesEnum.numRemaining();
-                  for (int i = 0; i < edgeNodesCount; i++) {
-                    m_stack.push(edgeNodesEnum.nextInt()); }
-                  m_hash.empty();
-                  edgeNodesEnum = m_stack.elements();
-                  m_stack2.empty();
                   for (int i = 0; i < edgeNodesCount; i++) {
                     final int node = edgeNodesEnum.nextInt(); // Positive.
                     m_view.m_spacial.exists(node, m_view.m_extentsBuff, 0);
@@ -270,7 +276,6 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
                       (m_view.m_extentsBuff[0] + m_view.m_extentsBuff[2]) / 2;
                     final float nodeY =
                       (m_view.m_extentsBuff[1] + m_view.m_extentsBuff[3]) / 2;
-                    final FixedGraph graph = (FixedGraph) m_view.m_drawPersp;
                     final IntEnumerator touchingEdges =
                       graph.edgesAdjacent(node, true, true, true);
                     while (touchingEdges.numRemaining() > 0) {
@@ -288,6 +293,137 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
                         if (m_line.intersects(xMin, yMin, xMax - xMin,
                                               yMax - yMin)) {
                           m_stack2.push(~edge); } } }
+                    m_hash.put(node); } }
+                else { // Last render high detail.
+                  for (int i = 0; i < edgeNodesCount; i++) {
+                    final int node = edgeNodesEnum.nextInt(); // Positive.
+                    m_view.m_spacial.exists(node, m_view.m_extentsBuff, 0);
+                    final byte nodeShape = m_view.m_nodeDetails.shape(node);
+                    final float nodeX = (float)
+                      ((((double) m_view.m_extentsBuff[0]) +
+                        m_view.m_extentsBuff[2]) / 2.0d);
+                    final float nodeY = (float)
+                      ((((double) m_view.m_extentsBuff[1]) +
+                        m_view.m_extentsBuff[3]) / 2.0d);
+                    final IntEnumerator touchingEdges =
+                      graph.edgesAdjacent(node, true, true, true);
+                    while (touchingEdges.numRemaining() > 0) {
+                      final int edge = touchingEdges.nextInt(); // Positive.
+                      final int otherNode =
+                        node ^ graph.edgeSource(edge) ^ graph.edgeTarget(edge);
+                      if (m_hash.get(otherNode) < 0) {
+                        m_view.m_spacial.exists(otherNode, m_extentsBuff2, 0);
+                        final byte otherNodeShape =
+                          m_view.m_nodeDetails.shape(otherNode);
+                        final float otherNodeX = (float)
+                          ((((double) m_extentsBuff2[0]) +
+                            m_extentsBuff2[2]) / 2.0d);
+                        final float otherNodeY = (float)
+                          ((((double) m_extentsBuff2[1]) +
+                            m_extentsBuff2[3]) / 2.0d);
+                        final byte srcShape, trgShape;
+                        final float srcX, srcY, trgX, trgY;
+                        final float[] srcExtents, trgExtents;
+                        if (node == graph.edgeSource(edge)) {
+                          srcShape = nodeShape; trgShape = otherNodeShape;
+                          srcX = nodeX; srcY = nodeY;
+                          trgX = otherNodeX; trgY = otherNodeY;
+                          srcExtents = m_view.m_extentsBuff;
+                          trgExtents = m_extentsBuff2; }
+                        else { // node == graph.edgeTarget(edge).
+                          srcShape = otherNodeShape; trgShape = nodeShape;
+                          srcX = otherNodeX; srcY = otherNodeY;
+                          trgX = nodeX; trgY = nodeY;
+                          srcExtents = m_extentsBuff2;
+                          trgExtents = m_view.m_extentsBuff; }
+                        final byte srcArrow, trgArrow;
+                        final float srcArrowSize, trgArrowSize;
+                        if ((m_lastRenderDetail &
+                             GraphRenderer.LOD_EDGE_ARROWS) == 0) {
+                          srcArrow = trgArrow = GraphGraphics.ARROW_NONE;
+                          srcArrowSize = trgArrowSize = 0.0f; }
+                        else {
+                          srcArrow = m_view.m_edgeDetails.sourceArrow(edge);
+                          trgArrow = m_view.m_edgeDetails.targetArrow(edge);
+                          if (srcArrow == GraphGraphics.ARROW_NONE) {
+                            srcArrowSize = 0.0f; }
+                          else {
+                            srcArrowSize =
+                              m_view.m_edgeDetails.sourceArrowSize(edge); }
+                          if (trgArrow == GraphGraphics.ARROW_NONE ||
+                              trgArrow == GraphGraphics.ARROW_MONO) {
+                            trgArrowSize = 0.0f; }
+                          else {
+                            trgArrowSize =
+                              m_view.m_edgeDetails.targetArrowSize(edge); } }
+                        final EdgeAnchors anchors;
+                        if ((m_lastRenderDetail &
+                             GraphRenderer.LOD_EDGE_ANCHORS) == 0) {
+                          anchors = null; }
+                        else {
+                          EdgeAnchors anchorsTemp =
+                            m_view.m_edgeDetails.anchors(edge);
+                          if (anchorsTemp != null &&
+                              anchorsTemp.numAnchors() == 0) {
+                            anchorsTemp = null; }
+                          anchors = anchorsTemp; }
+                        // Now anchors is null if and only if no anchors.
+                        final float srcXOut, srcYOut, trgXOut, trgYOut;
+                        final float[] floatBuff = new float[2];
+                        if (anchors == null) {
+                          srcXOut = trgX; srcYOut = trgY;
+                          trgXOut = srcX; trgYOut = srcY; }
+                        else {
+                          anchors.getAnchor(0, floatBuff, 0);
+                          srcXOut = floatBuff[0];
+                          srcYOut = floatBuff[1];
+                          anchors.getAnchor(anchors.numAnchors() - 1,
+                                            floatBuff, 0);
+                          trgXOut = floatBuff[0];
+                          trgYOut = floatBuff[1]; }
+                        final float srcOffset;
+                        if (srcArrow == GraphGraphics.ARROW_DISC) {
+                          srcOffset = (float) (0.5d * srcArrowSize); }
+                        else if (srcArrow == GraphGraphics.ARROW_TEE) {
+                          srcOffset = (float) srcArrowSize; }
+                        else {
+                          srcOffset = 0.0f; }
+                        if (!m_grafx.computeEdgeIntersection
+                            (srcShape, srcExtents[0], srcExtents[1],
+                             srcExtents[2], srcExtents[3], srcOffset,
+                             srcXOut, srcYOut, floatBuff)) {
+                          continue; }
+                        final float srcXAdj = floatBuff[0];
+                        final float srcYAdj = floatBuff[1];
+                        final float trgOffset;
+                        if (trgArrow == GraphGraphics.ARROW_DISC) {
+                          trgOffset = (float) (0.5d * trgArrowSize); }
+                        else if (trgArrow == GraphGraphics.ARROW_TEE) {
+                          trgOffset = (float) trgArrowSize; }
+                        else {
+                          trgOffset = 0.0f; }
+                        if (!m_grafx.computeEdgeIntersection
+                            (trgShape, trgExtents[0], trgExtents[1],
+                             trgExtents[2], trgExtents[3], trgOffset,
+                             trgXOut, trgYOut, floatBuff)) {
+                          continue; }
+                        final float trgXAdj = floatBuff[0];
+                        final float trgYAdj = floatBuff[1];
+                        if (anchors == null &&
+                            !((((double) srcX) - trgX) *
+                              (((double) srcXAdj) - trgXAdj) +
+                              (((double) srcY) - trgY) *
+                              (((double) srcYAdj) - trgYAdj) > 0.0d)) {
+                          // The direction of the chopped segment has flipped.
+                          continue; }
+                        m_grafx.getEdgePath
+                          (srcArrow, srcArrowSize, trgArrow, trgArrowSize,
+                           srcXAdj, srcYAdj, anchors, trgXAdj, trgYAdj,
+                           m_path);
+                        foo(m_path.getPathIterator(null), m_path2);
+                        if (m_path2.intersects
+                            (xMin, yMin, xMax - xMin, yMax - yMin)) {
+                          m_stack2.push(~edge); } } }
                     m_hash.put(node); }
                   selectedEdges = new int[m_stack2.size()];
                   final IntEnumerator edges = m_stack2.elements();
@@ -295,7 +431,9 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
                     selectedEdges[i] = edges.nextInt(); }
                   for (int i = 0; i < selectedEdges.length; i++) {
                     ((DEdgeView) m_view.getEdgeView(selectedEdges[i])).
-                      selectInternal(); } } } } }
+                      selectInternal(); }
+                }
+              } } }
           m_selectionRect = null;
           repaint();
           final GraphViewChangeListener listener = m_view.m_lis[0];
@@ -312,6 +450,85 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
       if (m_currMouseButton == 2) { m_currMouseButton = 0; } }
     else if (e.getButton() == MouseEvent.BUTTON3) {
       if (m_currMouseButton == 3) { m_currMouseButton = 0; } }
+  }
+
+  private final float[] s_floatTemp = new float[6];
+  private final float[] s_floatBuff = new float[2000]; // I dunno.
+  private final int[] s_segTypeBuff = new int[200]; // I dunno.
+
+  /*
+   * This method sets returnPath to be the forwards and backwards traversal
+   * of origPath (returnPath is set to be a closed loop with zero theoretical
+   * area).  This method expects a single PathIterator.SEG_MOVETO from
+   * origPath at the very beginning, and no further SEG_MOVETO's.  No
+   * PathIterator.SEG_CLOSE is expected.  Only 32 bit floating point accuracy
+   * is honored from origPath.
+   */
+  private final void foo(final PathIterator origPath,
+                         final GeneralPath returnPath)
+  {
+    // First fill our buffers with the coordinates and segment types.
+    int segs = 0;
+    int offset = 0;
+    if ((s_segTypeBuff[segs++] = origPath.currentSegment(s_floatTemp)) !=
+        PathIterator.SEG_MOVETO) {
+      throw new IllegalStateException
+        ("expected a SEG_MOVETO at the beginning of origPath"); }
+    for (int i = 0; i < 2; i++) s_floatBuff[offset++] = s_floatTemp[i];
+    origPath.next();
+    while (!origPath.isDone()) {
+      final int segType = origPath.currentSegment(s_floatTemp);
+      s_segTypeBuff[segs++] = segType;
+      if (segType == PathIterator.SEG_MOVETO ||
+          segType == PathIterator.SEG_CLOSE) {
+        throw new IllegalStateException
+          ("did not expect SEG_MOVETO or SEG_CLOSE"); }
+      // This is a rare case where I rely on the actual constant values
+      // to do a computation efficiently.
+      final int coordCount = segType * 2;
+      for (int i = 0; i < coordCount; i++) {
+        s_floatBuff[offset++] = s_floatTemp[i]; }
+      origPath.next(); }
+
+    returnPath.reset();
+    offset = 0;
+    // Now add the forward path to returnPath.
+    for (int i = 0; i < segs; i++) {
+      switch (s_segTypeBuff[i]) {
+      case PathIterator.SEG_MOVETO:
+        returnPath.moveTo(s_floatBuff[offset++], s_floatBuff[offset++]);
+        break;
+      case PathIterator.SEG_LINETO:
+        returnPath.lineTo(s_floatBuff[offset++], s_floatBuff[offset++]);
+        break;
+      case PathIterator.SEG_QUADTO:
+        returnPath.quadTo(s_floatBuff[offset++], s_floatBuff[offset++],
+                          s_floatBuff[offset++], s_floatBuff[offset++]);
+        break;
+      default: // PathIterator.SEG_CUBICTO.
+        returnPath.curveTo(s_floatBuff[offset++], s_floatBuff[offset++],
+                           s_floatBuff[offset++], s_floatBuff[offset++],
+                           s_floatBuff[offset++], s_floatBuff[offset++]);
+        break; } }
+    // Now add the return path.
+    for (int i = segs - 1; i > 0; i--) {
+      switch (s_segTypeBuff[i]) {
+      case PathIterator.SEG_LINETO:
+        offset -= 2;
+        returnPath.lineTo(s_floatBuff[offset - 2], s_floatBuff[offset - 1]);
+        break;
+      case PathIterator.SEG_QUADTO:
+        offset -= 4;
+        returnPath.quadTo(s_floatBuff[offset], s_floatBuff[offset + 1],
+                          s_floatBuff[offset - 2], s_floatBuff[offset - 1]);
+        break;
+      default: // PathIterator.SEG_CUBICTO.
+        offset -= 6;
+        returnPath.curveTo(s_floatBuff[offset + 2], s_floatBuff[offset + 3],
+                           s_floatBuff[offset], s_floatBuff[offset + 1],
+                           s_floatBuff[offset - 2], s_floatBuff[offset - 1]);
+        break; } }
+    returnPath.closePath();
   }
 
   public void mouseDragged(MouseEvent e)
