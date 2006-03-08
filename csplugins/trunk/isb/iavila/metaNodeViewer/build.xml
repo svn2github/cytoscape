@@ -54,6 +54,8 @@
    <jar jarfile="${jar}/metanode.jar">
       <fileset dir="${build}"/>
    </jar>
+   <copy file="${jar}/metanode.jar" todir="${cytoscape.plugin.release}"/>
+   <echo message="metanode.jar is complete, it is located in ${jar} and in ${cytoscape.plugin.release}"/>
    </target>
 
    <target name="jar_dev" depends="compile_dev" description="makes a jar for Cytoscape under development">
