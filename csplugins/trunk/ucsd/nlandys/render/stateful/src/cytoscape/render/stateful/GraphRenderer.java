@@ -162,14 +162,15 @@ public final class GraphRenderer
 
     // Define buffers.  These are of the few objects we're instantiating
     // directly in this method.
-    final float[] floatBuff1, floatBuff2, floatBuff3, floatBuff4;
+    final float[] floatBuff1, floatBuff2, floatBuff3, floatBuff4, floatBuff5;
     final double[] doubleBuff1, doubleBuff2;
     final GeneralPath path2d;
     {
       floatBuff1 = new float[4];
       floatBuff2 = new float[4];
       floatBuff3 = new float[2];
-      floatBuff4 = new float[8];
+      floatBuff4 = new float[2];
+      floatBuff5 = new float[8];
       doubleBuff1 = new double[4];
       doubleBuff2 = new double[2];
       path2d = new GeneralPath();
@@ -227,10 +228,6 @@ public final class GraphRenderer
         while (nodeHitsTemp.numRemaining() > 0) {
           final int node = nodeHitsTemp.nextExtents(floatBuff1, 0);
           final byte nodeShape = nodeDetails.shape(node);
-          final float nodeX = (float)
-            ((((double) floatBuff1[0]) + floatBuff1[2]) / 2.0d);
-          final float nodeY = (float)
-            ((((double) floatBuff1[1]) + floatBuff1[3]) / 2.0d);
           final IntEnumerator touchingEdges =
             graph.edgesAdjacent(node, true, true, true);
           while (touchingEdges.numRemaining() > 0) {
@@ -242,24 +239,15 @@ public final class GraphRenderer
                 throw new IllegalStateException
                   ("nodePositions not recognizing node that exists in graph");
               final byte otherNodeShape = nodeDetails.shape(otherNode);
-              final float otherNodeX = (float)
-                ((((double) floatBuff2[0]) + floatBuff2[2]) / 2.0d);
-              final float otherNodeY = (float)
-                ((((double) floatBuff2[1]) + floatBuff2[3]) / 2.0d);
 
               // Compute node shapes, center positions, and extents.
               final byte srcShape, trgShape;
-              final float srcX, srcY, trgX, trgY;
               final float[] srcExtents, trgExtents;
               if (node == graph.edgeSource(edge)) {
                 srcShape = nodeShape; trgShape = otherNodeShape;
-                srcX = nodeX; srcY = nodeY;
-                trgX = otherNodeX; trgY = otherNodeY;
                 srcExtents = floatBuff1; trgExtents = floatBuff2; }
               else { // node == graph.edgeTarget(edge).
                 srcShape = otherNodeShape; trgShape = nodeShape;
-                srcX = otherNodeX; srcY = otherNodeY;
-                trgX = nodeX; trgY = nodeY;
                 srcExtents = floatBuff2; trgExtents = floatBuff1; }
 
               // Compute visual attributes that do not depend on LOD.
@@ -277,99 +265,43 @@ public final class GraphRenderer
               else { // Rendering edge arrows.
                 srcArrow = edgeDetails.sourceArrow(edge);
                 trgArrow = edgeDetails.targetArrow(edge);
-                if (srcArrow == GraphGraphics.ARROW_NONE) {
-                  srcArrowSize = 0.0f; }
-                else {
-                  srcArrowSize = edgeDetails.sourceArrowSize(edge); }
-                if (trgArrow == GraphGraphics.ARROW_NONE ||
-                    trgArrow == GraphGraphics.ARROW_MONO) {
-                  trgArrowSize = 0.0f; }
-                else {
-                  trgArrowSize = edgeDetails.targetArrowSize(edge); }
-                if (srcArrow == GraphGraphics.ARROW_NONE ||
-                    srcArrow == GraphGraphics.ARROW_BIDIRECTIONAL) {
-                  srcArrowPaint = null; }
-                else {
-                  srcArrowPaint = edgeDetails.sourceArrowPaint(edge); }
-                if (trgArrow == GraphGraphics.ARROW_NONE ||
+                srcArrowSize =
+                  ((srcArrow == GraphGraphics.ARROW_NONE) ? 0.0f :
+                   edgeDetails.sourceArrowSize(edge));
+                trgArrowSize =
+                  ((trgArrow == GraphGraphics.ARROW_NONE ||
+                    trgArrow == GraphGraphics.ARROW_MONO) ? 0.0f :
+                   edgeDetails.targetArrowSize(edge));
+                srcArrowPaint =
+                  ((srcArrow == GraphGraphics.ARROW_NONE ||
+                    srcArrow == GraphGraphics.ARROW_BIDIRECTIONAL) ? null :
+                   edgeDetails.sourceArrowPaint(edge));
+                trgArrowPaint =
+                  ((trgArrow == GraphGraphics.ARROW_NONE ||
                     trgArrow == GraphGraphics.ARROW_BIDIRECTIONAL ||
-                    trgArrow == GraphGraphics.ARROW_MONO) {
-                  trgArrowPaint = null; }
-                else {
-                  trgArrowPaint = edgeDetails.targetArrowPaint(edge); } }
+                    trgArrow == GraphGraphics.ARROW_MONO) ? null :
+                   edgeDetails.targetArrowPaint(edge)); }
 
               // Compute dash length.
-              final float dashLength;
-              if ((lodBits & LOD_DASHED_EDGES) == 0) { // Not rendering dashes.
-                dashLength = 0.0f; }
-              else {
-                dashLength = edgeDetails.segmentDashLength(edge); }
+              final float dashLength =
+                (((lodBits & LOD_DASHED_EDGES) == 0) ? 0.0f :
+                 edgeDetails.segmentDashLength(edge));
 
               // Compute the anchors to use when rendering edge.
-              final EdgeAnchors anchors;
-              if ((lodBits & LOD_EDGE_ANCHORS) == 0) { anchors = null; }
-              else {
-                EdgeAnchors anchorsTemp = edgeDetails.anchors(edge);
-                if (anchorsTemp != null && anchorsTemp.numAnchors() == 0) {
-                  anchorsTemp = null; }
-                anchors = anchorsTemp; }
-              // Now anchors is null if and only if no anchors to be rendered.
+              final EdgeAnchors anchors =
+                (((lodBits & LOD_EDGE_ANCHORS) == 0) ? null :
+                 edgeDetails.anchors(edge));
 
-              final float srcXOut, srcYOut, trgXOut, trgYOut;
-              if (anchors == null) {
-                srcXOut = trgX; srcYOut = trgY;
-                trgXOut = srcX; trgYOut = srcY; }
-              else {
-                anchors.getAnchor(0, floatBuff3, 0);
-                srcXOut = floatBuff3[0];
-                srcYOut = floatBuff3[1];
-                anchors.getAnchor(anchors.numAnchors() - 1, floatBuff3, 0);
-                trgXOut = floatBuff3[0];
-                trgYOut = floatBuff3[1]; }
-
-              final float srcOffset;
-              if (srcArrow == GraphGraphics.ARROW_DISC) {
-                srcOffset = (float) (0.5d * srcArrowSize); }
-              else if (srcArrow == GraphGraphics.ARROW_TEE) {
-                srcOffset = (float) srcArrowSize; }
-              else {
-                srcOffset = 0.0f; }
-
-              if (!grafx.computeEdgeIntersection
-                  (srcShape,
-                   srcExtents[0], srcExtents[1], srcExtents[2], srcExtents[3],
-                   srcOffset, srcXOut, srcYOut, floatBuff3)) {
-                continue; }
-              final float srcXAdj = floatBuff3[0];
-              final float srcYAdj = floatBuff3[1];
-
-              final float trgOffset;
-              if (trgArrow == GraphGraphics.ARROW_DISC) {
-                trgOffset = (float) (0.5d * trgArrowSize); }
-              else if (trgArrow == GraphGraphics.ARROW_TEE) {
-                trgOffset = (float) trgArrowSize; }
-              else {
-                trgOffset = 0.0f; }
-
-              if (!grafx.computeEdgeIntersection
-                  (trgShape,
-                   trgExtents[0], trgExtents[1], trgExtents[2], trgExtents[3],
-                   trgOffset, trgXOut, trgYOut, floatBuff3)) {
-                continue; }
-              final float trgXAdj = floatBuff3[0];
-              final float trgYAdj = floatBuff3[1];
-
-              if (anchors == null &&
-                  !((((double) srcX) - trgX) *
-                    (((double) srcXAdj) - trgXAdj) +
-                    (((double) srcY) - trgY) *
-                    (((double) srcYAdj) - trgYAdj) > 0.0d)) {
-                // The direction of the chopped segment has flipped.
+              if (!computeEdgeEndpoints
+                  (grafx, srcExtents, srcShape, srcArrow, srcArrowSize,
+                   anchors, trgExtents, trgShape, trgArrow, trgArrowSize,
+                   floatBuff3, floatBuff4)) {
                 continue; }
 
               grafx.drawEdgeFull(srcArrow, srcArrowSize, srcArrowPaint,
                                  trgArrow, trgArrowSize, trgArrowPaint,
-                                 srcXAdj, srcYAdj, anchors, trgXAdj, trgYAdj,
+                                 floatBuff3[0], floatBuff3[1],
+                                 anchors, floatBuff4[0], floatBuff4[1],
                                  thickness, segPaint, dashLength);
 
               // Take care of label rendering.
@@ -402,17 +334,17 @@ public final class GraphRenderer
                   final double edgeAnchorPointY;
                   { // Compute edgeAnchorPointX and edgeAnchorPointY.
                     if (edgeAnchor == EdgeDetails.EDGE_ANCHOR_SOURCE) {
-                      edgeAnchorPointX = srcXAdj;
-                      edgeAnchorPointY = srcYAdj; }
+                      edgeAnchorPointX = floatBuff3[0];
+                      edgeAnchorPointY = floatBuff3[1]; }
                     else if (edgeAnchor == EdgeDetails.EDGE_ANCHOR_TARGET) {
-                      edgeAnchorPointX = trgXAdj;
-                      edgeAnchorPointY = trgYAdj; }
+                      edgeAnchorPointX = floatBuff4[0];
+                      edgeAnchorPointY = floatBuff4[1]; }
                     else if (edgeAnchor == EdgeDetails.EDGE_ANCHOR_MIDPOINT)
                     {
                       grafx.getEdgePath(srcArrow, srcArrowSize,
                                         trgArrow, trgArrowSize,
-                                        srcXAdj, srcYAdj, anchors,
-                                        trgXAdj, trgYAdj, path2d);
+                                        floatBuff3[0], floatBuff3[1], anchors,
+                                        floatBuff4[0], floatBuff4[1], path2d);
 
                       // Count the number of path segments.  This count
                       // includes the initial SEG_MOVETO.  So, for example, a
@@ -437,16 +369,16 @@ public final class GraphRenderer
                         for (int i = numPaths / 2; i > 0; i--) {
                           pathIter.next(); }
                         final int subPathType =
-                          pathIter.currentSegment(floatBuff4);
+                          pathIter.currentSegment(floatBuff5);
                         if (subPathType == PathIterator.SEG_LINETO) {
-                          edgeAnchorPointX = floatBuff4[0];
-                          edgeAnchorPointY = floatBuff4[1]; }
+                          edgeAnchorPointX = floatBuff5[0];
+                          edgeAnchorPointY = floatBuff5[1]; }
                         else if (subPathType == PathIterator.SEG_QUADTO) {
-                          edgeAnchorPointX = floatBuff4[2];
-                          edgeAnchorPointY = floatBuff4[3]; }
+                          edgeAnchorPointX = floatBuff5[2];
+                          edgeAnchorPointY = floatBuff5[3]; }
                         else if (subPathType == PathIterator.SEG_CUBICTO) {
-                          edgeAnchorPointX = floatBuff4[4];
-                          edgeAnchorPointY = floatBuff4[5]; }
+                          edgeAnchorPointX = floatBuff5[4];
+                          edgeAnchorPointY = floatBuff5[5]; }
                         else {
                           throw new IllegalStateException
                             ("got unexpected PathIterator segment type: " +
@@ -457,43 +389,43 @@ public final class GraphRenderer
                         for (int i = numPaths / 2; i > 0; i--) {
                           if (i == 1) {
                             final int subPathType =
-                              pathIter.currentSegment(floatBuff4);
+                              pathIter.currentSegment(floatBuff5);
                             if (subPathType == PathIterator.SEG_MOVETO ||
                                 subPathType == PathIterator.SEG_LINETO) {
-                              floatBuff4[6] = floatBuff4[0];
-                              floatBuff4[7] = floatBuff4[1]; }
+                              floatBuff5[6] = floatBuff5[0];
+                              floatBuff5[7] = floatBuff5[1]; }
                             else if (subPathType == PathIterator.SEG_QUADTO) {
-                              floatBuff4[6] = floatBuff4[2];
-                              floatBuff4[7] = floatBuff4[3]; }
+                              floatBuff5[6] = floatBuff5[2];
+                              floatBuff5[7] = floatBuff5[3]; }
                             else if (subPathType == PathIterator.SEG_CUBICTO) {
-                              floatBuff4[6] = floatBuff4[4];
-                              floatBuff4[7] = floatBuff4[5]; }
+                              floatBuff5[6] = floatBuff5[4];
+                              floatBuff5[7] = floatBuff5[5]; }
                             else {
                               throw new IllegalStateException
                                 ("got unexpected PathIterator segment type: " +
                                  subPathType); } }
                           pathIter.next(); }
                         final int subPathType =
-                          pathIter.currentSegment(floatBuff4);
+                          pathIter.currentSegment(floatBuff5);
                         if (subPathType == PathIterator.SEG_LINETO) {
                           edgeAnchorPointX =
-                            0.5d * floatBuff4[6] + 0.5d * floatBuff4[0];
+                            0.5d * floatBuff5[6] + 0.5d * floatBuff5[0];
                           edgeAnchorPointY =
-                            0.5d * floatBuff4[7] + 0.5d * floatBuff4[1]; }
+                            0.5d * floatBuff5[7] + 0.5d * floatBuff5[1]; }
                         else if (subPathType == PathIterator.SEG_QUADTO) {
                           edgeAnchorPointX =
-                            0.25d * floatBuff4[6] + 0.5d * floatBuff4[0] +
-                            0.25d * floatBuff4[2];
+                            0.25d * floatBuff5[6] + 0.5d * floatBuff5[0] +
+                            0.25d * floatBuff5[2];
                           edgeAnchorPointY =
-                            0.25d * floatBuff4[7] + 0.5d * floatBuff4[1] +
-                            0.25d * floatBuff4[3]; }
+                            0.25d * floatBuff5[7] + 0.5d * floatBuff5[1] +
+                            0.25d * floatBuff5[3]; }
                         else if (subPathType == PathIterator.SEG_CUBICTO) {
                           edgeAnchorPointX =
-                            0.125d * floatBuff4[6] + 0.375d * floatBuff4[0] +
-                            0.375d * floatBuff4[2] + 0.125d * floatBuff4[4];
+                            0.125d * floatBuff5[6] + 0.375d * floatBuff5[0] +
+                            0.375d * floatBuff5[2] + 0.125d * floatBuff5[4];
                           edgeAnchorPointY =
-                            0.125d * floatBuff4[7] + 0.375d * floatBuff4[1] +
-                            0.375d * floatBuff4[3] + 0.125d * floatBuff4[5]; }
+                            0.125d * floatBuff5[7] + 0.375d * floatBuff5[1] +
+                            0.375d * floatBuff5[3] + 0.125d * floatBuff5[5]; }
                         else {
                           throw new IllegalStateException
                             ("got unexpected PathIterator segment type: " +
