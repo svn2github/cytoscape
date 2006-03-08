@@ -368,58 +368,17 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
                             anchorsTemp = null; }
                           anchors = anchorsTemp; }
                         // Now anchors is null if and only if no anchors.
-                        final float srcXOut, srcYOut, trgXOut, trgYOut;
-                        final float[] floatBuff = new float[2];
-                        if (anchors == null) {
-                          srcXOut = trgX; srcYOut = trgY;
-                          trgXOut = srcX; trgYOut = srcY; }
-                        else {
-                          anchors.getAnchor(0, floatBuff, 0);
-                          srcXOut = floatBuff[0];
-                          srcYOut = floatBuff[1];
-                          anchors.getAnchor(anchors.numAnchors() - 1,
-                                            floatBuff, 0);
-                          trgXOut = floatBuff[0];
-                          trgYOut = floatBuff[1]; }
-                        final float srcOffset;
-                        if (srcArrow == GraphGraphics.ARROW_DISC) {
-                          srcOffset = (float) (0.5d * srcArrowSize); }
-                        else if (srcArrow == GraphGraphics.ARROW_TEE) {
-                          srcOffset = (float) srcArrowSize; }
-                        else {
-                          srcOffset = 0.0f; }
-                        if (!m_grafx.computeEdgeIntersection
-                            (srcShape, srcExtents[0], srcExtents[1],
-                             srcExtents[2], srcExtents[3], srcOffset,
-                             srcXOut, srcYOut, floatBuff)) {
-                          continue; }
-                        final float srcXAdj = floatBuff[0];
-                        final float srcYAdj = floatBuff[1];
-                        final float trgOffset;
-                        if (trgArrow == GraphGraphics.ARROW_DISC) {
-                          trgOffset = (float) (0.5d * trgArrowSize); }
-                        else if (trgArrow == GraphGraphics.ARROW_TEE) {
-                          trgOffset = (float) trgArrowSize; }
-                        else {
-                          trgOffset = 0.0f; }
-                        if (!m_grafx.computeEdgeIntersection
-                            (trgShape, trgExtents[0], trgExtents[1],
-                             trgExtents[2], trgExtents[3], trgOffset,
-                             trgXOut, trgYOut, floatBuff)) {
-                          continue; }
-                        final float trgXAdj = floatBuff[0];
-                        final float trgYAdj = floatBuff[1];
-                        if (anchors == null &&
-                            !((((double) srcX) - trgX) *
-                              (((double) srcXAdj) - trgXAdj) +
-                              (((double) srcY) - trgY) *
-                              (((double) srcYAdj) - trgYAdj) > 0.0d)) {
-                          // The direction of the chopped segment has flipped.
+                        final float[] floatBuff1 = new float[2];
+                        final float[] floatBuff2 = new float[2];
+                        if (!GraphRenderer.computeEdgeEndpoints
+                            (m_grafx, srcExtents, srcShape, srcArrow,
+                             srcArrowSize, anchors, trgExtents, trgShape,
+                             trgArrow, trgArrowSize, floatBuff1, floatBuff2)) {
                           continue; }
                         m_grafx.getEdgePath
                           (srcArrow, srcArrowSize, trgArrow, trgArrowSize,
-                           srcXAdj, srcYAdj, anchors, trgXAdj, trgYAdj,
-                           m_path);
+                           floatBuff1[0], floatBuff1[1], anchors,
+                           floatBuff2[0], floatBuff2[1], m_path);
                         foo(m_path.getPathIterator(null), m_path2);
                         if (m_path2.intersects
                             (xMin, yMin, xMax - xMin, yMax - yMin)) {
