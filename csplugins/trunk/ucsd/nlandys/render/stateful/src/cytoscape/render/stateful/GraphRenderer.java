@@ -686,8 +686,11 @@ public final class GraphRenderer
         ("encoutered an invalid ANCHOR_* constant: " + anchor); }
   }
 
+  private final static float[] s_floatBuff = new float[2];
+
   public final static boolean computeEdgeEndpoints
-    (final float[] srcNodeExtents,
+    (final GraphGraphics grafx,
+     final float[] srcNodeExtents,
      final byte srcNodeShape,
      final byte srcArrow,
      final float srcArrowSize,
@@ -699,6 +702,69 @@ public final class GraphRenderer
      final float[] rtnValSrc,
      final float[] rtnValTrg)
   {
+    final float srcX = (float)
+      ((((double) srcNodeExtents[0]) + srcNodeExtents[2]) / 2.0d);
+    final float srcY = (float)
+      ((((double) srcNodeExtents[1]) + srcNodeExtents[3]) / 2.0d);
+    final float trgX = (float)
+      ((((double) trgNodeExtents[0]) + trgNodeExtents[2]) / 2.0d);
+    final float trgY = (float)
+      ((((double) trgNodeExtents[1]) + trgNodeExtents[3]) / 2.0d);
+    final float srcXOut, srcYOut, trgXOut, trgYOut;
+    synchronized (s_floatBuff) {
+      if (anchors == null) {
+        srcXOut = trgX; srcYOut = trgY;
+        trgXOut = srcX; trgYOut = srcY; }
+      else {
+        anchors.getAnchor(0, s_floatBuff, 0);
+        srcXOut = s_floatBuff[0];
+        srcYOut = s_floatBuff[1];
+        anchors.getAnchor(anchors.numAnchors() - 1, s_floatBuff, 0);
+        trgXOut = s_floatBuff[0];
+        trgYOut = s_floatBuff[1]; } }
+    final float srcOffset;
+    if (srcArrow == GraphGraphics.ARROW_DISC) {
+      srcOffset = (float) (0.5d * srcArrowSize); }
+    else if (srcArrow == GraphGraphics.ARROW_TEE) {
+      srcOffset = (float) srcArrowSize; }
+    else {
+      srcOffset = 0.0f; }
+    final float srcXAdj, srcYAdj;
+    synchronized (s_floatBuff) {
+      if (!grafx.computeEdgeIntersection
+          (srcNodeShape, srcNodeExtents[0], srcNodeExtents[1],
+           srcNodeExtents[2], srcNodeExtents[3], srcOffset,
+           srcXOut, srcYOut, s_floatBuff)) {
+        return false; }
+      srcXAdj = s_floatBuff[0];
+      srcYAdj = s_floatBuff[1]; }
+    final float trgOffset;
+    if (trgArrow == GraphGraphics.ARROW_DISC) {
+      trgOffset = (float) (0.5d * trgArrowSize); }
+    else if (trgArrow == GraphGraphics.ARROW_TEE) {
+      trgOffset = (float) trgArrowSize; }
+    else {
+      trgOffset = 0.0f; }
+    final float trgXAdj, trgYAdj;
+    synchronized (s_floatBuff) {
+      if (!grafx.computeEdgeIntersection
+          (trgNodeShape, trgNodeExtents[0], trgNodeExtents[1],
+           trgNodeExtents[2], trgNodeExtents[3], trgOffset,
+           trgXOut, trgYOut, s_floatBuff)) {
+        return false; }
+      trgXAdj = s_floatBuff[0];
+      trgYAdj = s_floatBuff[1]; }
+    if (anchors == null &&
+        !((((double) srcX) - trgX) *
+          (((double) srcXAdj) - trgXAdj) +
+          (((double) srcY) - trgY) *
+          (((double) srcYAdj) - trgYAdj) > 0.0d)) {
+      // The direction of the chopped segment has flipped.
+      return false; }
+    rtnValSrc[0] = srcXAdj;
+    rtnValSrc[1] = srcYAdj;
+    rtnValTrg[0] = trgXAdj;
+    rtnValTrg[1] = trgYAdj;
     return true;
   }
 
