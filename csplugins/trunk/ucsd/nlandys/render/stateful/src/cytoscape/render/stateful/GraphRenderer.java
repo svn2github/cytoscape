@@ -694,7 +694,7 @@ public final class GraphRenderer
      final byte srcNodeShape,
      final byte srcArrow,
      final float srcArrowSize,
-     final EdgeAnchors anchors,
+     EdgeAnchors anchors,
      final float[] trgNodeExtents,
      final byte trgNodeShape,
      final byte trgArrow,
@@ -702,6 +702,7 @@ public final class GraphRenderer
      final float[] rtnValSrc,
      final float[] rtnValTrg)
   {
+    if (anchors != null && anchors.numAnchors() == 0) { anchors = null; }
     final float srcX = (float)
       ((((double) srcNodeExtents[0]) + srcNodeExtents[2]) / 2.0d);
     final float srcY = (float)
