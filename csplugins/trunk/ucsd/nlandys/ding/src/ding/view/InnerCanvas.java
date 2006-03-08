@@ -299,12 +299,6 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
                     final int node = edgeNodesEnum.nextInt(); // Positive.
                     m_view.m_spacial.exists(node, m_view.m_extentsBuff, 0);
                     final byte nodeShape = m_view.m_nodeDetails.shape(node);
-                    final float nodeX = (float)
-                      ((((double) m_view.m_extentsBuff[0]) +
-                        m_view.m_extentsBuff[2]) / 2.0d);
-                    final float nodeY = (float)
-                      ((((double) m_view.m_extentsBuff[1]) +
-                        m_view.m_extentsBuff[3]) / 2.0d);
                     final IntEnumerator touchingEdges =
                       graph.edgesAdjacent(node, true, true, true);
                     while (touchingEdges.numRemaining() > 0) {
@@ -315,25 +309,14 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
                         m_view.m_spacial.exists(otherNode, m_extentsBuff2, 0);
                         final byte otherNodeShape =
                           m_view.m_nodeDetails.shape(otherNode);
-                        final float otherNodeX = (float)
-                          ((((double) m_extentsBuff2[0]) +
-                            m_extentsBuff2[2]) / 2.0d);
-                        final float otherNodeY = (float)
-                          ((((double) m_extentsBuff2[1]) +
-                            m_extentsBuff2[3]) / 2.0d);
                         final byte srcShape, trgShape;
-                        final float srcX, srcY, trgX, trgY;
                         final float[] srcExtents, trgExtents;
                         if (node == graph.edgeSource(edge)) {
                           srcShape = nodeShape; trgShape = otherNodeShape;
-                          srcX = nodeX; srcY = nodeY;
-                          trgX = otherNodeX; trgY = otherNodeY;
                           srcExtents = m_view.m_extentsBuff;
                           trgExtents = m_extentsBuff2; }
                         else { // node == graph.edgeTarget(edge).
                           srcShape = otherNodeShape; trgShape = nodeShape;
-                          srcX = otherNodeX; srcY = otherNodeY;
-                          trgX = nodeX; trgY = nodeY;
                           srcExtents = m_extentsBuff2;
                           trgExtents = m_view.m_extentsBuff; }
                         final byte srcArrow, trgArrow;
@@ -345,29 +328,17 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
                         else {
                           srcArrow = m_view.m_edgeDetails.sourceArrow(edge);
                           trgArrow = m_view.m_edgeDetails.targetArrow(edge);
-                          if (srcArrow == GraphGraphics.ARROW_NONE) {
-                            srcArrowSize = 0.0f; }
-                          else {
-                            srcArrowSize =
-                              m_view.m_edgeDetails.sourceArrowSize(edge); }
-                          if (trgArrow == GraphGraphics.ARROW_NONE ||
-                              trgArrow == GraphGraphics.ARROW_MONO) {
-                            trgArrowSize = 0.0f; }
-                          else {
-                            trgArrowSize =
-                              m_view.m_edgeDetails.targetArrowSize(edge); } }
-                        final EdgeAnchors anchors;
-                        if ((m_lastRenderDetail &
-                             GraphRenderer.LOD_EDGE_ANCHORS) == 0) {
-                          anchors = null; }
-                        else {
-                          EdgeAnchors anchorsTemp =
-                            m_view.m_edgeDetails.anchors(edge);
-                          if (anchorsTemp != null &&
-                              anchorsTemp.numAnchors() == 0) {
-                            anchorsTemp = null; }
-                          anchors = anchorsTemp; }
-                        // Now anchors is null if and only if no anchors.
+                          srcArrowSize =
+                            ((srcArrow == GraphGraphics.ARROW_NONE) ? 0.0f :
+                             m_view.m_edgeDetails.sourceArrowSize(edge));
+                          trgArrowSize =
+                            ((trgArrow == GraphGraphics.ARROW_NONE ||
+                              trgArrow == GraphGraphics.ARROW_MONO) ? 0.0f :
+                             m_view.m_edgeDetails.targetArrowSize(edge)); }
+                        final EdgeAnchors anchors =
+                          (((m_lastRenderDetail &
+                             GraphRenderer.LOD_EDGE_ANCHORS) == 0) ? null :
+                           m_view.m_edgeDetails.anchors(edge));
                         final float[] floatBuff1 = new float[2];
                         final float[] floatBuff2 = new float[2];
                         if (!GraphRenderer.computeEdgeEndpoints
