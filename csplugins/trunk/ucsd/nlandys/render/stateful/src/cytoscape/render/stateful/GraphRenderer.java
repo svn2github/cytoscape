@@ -701,20 +701,76 @@ public final class GraphRenderer
     return true;
   }
 
-//   public final static boolean queryEdgeIntersect(
-//                                             final GraphGraphics grafx,
-//                                             final FixedGraph graph,
-//                                             final SpacialIndex2D nodePositions,
-//                                             final GraphLOD lod,
-//                                             final NodeDetails nodeDetails,
-//                                             final EdgeDetails edgeDetails,
-//                                             final int edge,
-//                                             final float xMinQuery,
-//                                             final float yMinQuery,
-//                                             final float xMaxQuery,
-//                                             final float yMaxQuery)
-//   {
-//     return false;
-//   }
+  private final static float[] s_floatTemp = new float[6];
+  private final static int[] s_segTypeBuff = new int[200];
+  private final static float[] s_floatBuff2 = new float[1200];
+
+  public final static void computeClosedPath(final PathIterator origPath,
+                                             final GeneralPath rtnVal)
+  {
+    synchronized (s_floatTemp) {
+      // First fill our buffers with the coordinates and segment types.
+      int segs = 0;
+      int offset = 0;
+      if ((s_segTypeBuff[segs++] = origPath.currentSegment(s_floatTemp)) !=
+          PathIterator.SEG_MOVETO) {
+        throw new IllegalStateException
+          ("expected a SEG_MOVETO at the beginning of origPath"); }
+      for (int i = 0; i < 2; i++) { s_floatBuff2[offset++] = s_floatTemp[i]; }
+      origPath.next();
+      while (!origPath.isDone()) {
+        final int segType = origPath.currentSegment(s_floatTemp);
+        s_segTypeBuff[segs++] = segType;
+        if (segType == PathIterator.SEG_MOVETO ||
+            segType == PathIterator.SEG_CLOSE) {
+          throw new IllegalStateException
+            ("did not expect SEG_MOVETO or SEG_CLOSE"); }
+        // This is a rare case where I rely on the actual constant values
+        // to do a computation efficiently.
+        final int coordCount = segType * 2;
+        for (int i = 0; i < coordCount; i++) {
+          s_floatBuff2[offset++] = s_floatTemp[i]; }
+        origPath.next(); }
+
+      rtnVal.reset();
+      offset = 0;
+      // Now add the forward path to rtnVal.
+      for (int i = 0; i < segs; i++) {
+        switch (s_segTypeBuff[i]) {
+        case PathIterator.SEG_MOVETO:
+          rtnVal.moveTo(s_floatBuff2[offset++], s_floatBuff2[offset++]);
+          break;
+        case PathIterator.SEG_LINETO:
+          rtnVal.lineTo(s_floatBuff2[offset++], s_floatBuff2[offset++]);
+          break;
+        case PathIterator.SEG_QUADTO:
+          rtnVal.quadTo(s_floatBuff2[offset++], s_floatBuff2[offset++],
+                        s_floatBuff2[offset++], s_floatBuff2[offset++]);
+          break;
+        default: // PathIterator.SEG_CUBICTO.
+          rtnVal.curveTo(s_floatBuff2[offset++], s_floatBuff2[offset++],
+                         s_floatBuff2[offset++], s_floatBuff2[offset++],
+                         s_floatBuff2[offset++], s_floatBuff2[offset++]);
+          break; } }
+      // Now add the return path.
+      for (int i = segs - 1; i > 0; i--) {
+        switch (s_segTypeBuff[i]) {
+        case PathIterator.SEG_LINETO:
+          offset -= 2;
+          rtnVal.lineTo(s_floatBuff2[offset - 2], s_floatBuff2[offset - 1]);
+          break;
+        case PathIterator.SEG_QUADTO:
+          offset -= 4;
+          rtnVal.quadTo(s_floatBuff2[offset], s_floatBuff2[offset + 1],
+                        s_floatBuff2[offset - 2], s_floatBuff2[offset - 1]);
+          break;
+        default: // PathIterator.SEG_CUBICTO.
+          offset -= 6;
+          rtnVal.curveTo(s_floatBuff2[offset + 2], s_floatBuff2[offset + 3],
+                         s_floatBuff2[offset], s_floatBuff2[offset + 1],
+                         s_floatBuff2[offset - 2], s_floatBuff2[offset - 1]);
+          break; } }
+      rtnVal.closePath(); }
+  }
 
 }
