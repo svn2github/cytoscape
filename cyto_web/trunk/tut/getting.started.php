@@ -75,20 +75,14 @@ Begin by clicking here:
 program and annotations from our website. (On subsequent runs, the program or
 annotation will not be downloaded again unless we have new versions or new
 annotation for you to use.) If Cytoscape does not start, please look at the
-<a href="tutorial.php">instructions</a> for some places to get help.<p> If at any point you wish
-to restart this tutorial, just click again on the <b>WEB START</b> link just above.
-<? include "first.time.php"; ?>
+<a href="tutorial.php">instructions</a> for some places to get help.If at any point you wish
+to restart this tutorial, just click again on the <b>WEB START</b> link.
 <P>
-This tutorial and accompanying lectures were delivered at 
-<A HREF="http://www.csc.fi/math_topics/">Computer Science Center</A> in 
-Helsinki, Finland.  The lecture slides of background material are
-available <A HREF="getting.started.ppt">here</A> and an accompanying video
-presentation will be available soon.
-<P>
+
 <H3> Initial steps</H3>
 Launch Cytoscape. You should see a window that looks like this:  
 
-<P  STYLE="margin-left: 0.2in; margin-bottom: 0in"><IMG SRC="getting.started/Fig1.png" WIDTH=196 HEIGHT=185><BR CLEAR=LEFT>
+<P><IMG SRC="getting.started/Fig1.png" WIDTH="50%"><BR CLEAR=LEFT>
 
 <P>Load the network <B>RUAL.subset.sif</B> into Cytoscape by selecting <B>Load</B> 
 under the <B>File</B> menu, then selecting <B>Network</B>, and then specifying the location of the file you just downloaded.
@@ -101,13 +95,18 @@ itself is available at
 http://www.cytoscape.org/cgi-bin/moin.cgi/Data_Sets/</A>.
 This subset of interactions consist of proteins that interact with the transcription factor protein TP53.
 Now, your screen should look like this: 
-<P><IMG SRC="getting.started/Fig2.png" WIDTH="25%"><BR CLEAR="LEFT">
+<P><IMG SRC="getting.started/Fig2.png" WIDTH="50%"><BR CLEAR="LEFT">
+<EM>Webstart users only:</EM>If you see a network with square white 
+nodes on a white background, locate the the <B>Set Visual Style</B> 
+pull-down menu, shown below, and change the visual style from 
+<B>default</B> to <B>Tutorial</B>.
+<P><IMG SRC="getting.started/Fig17.jpg" WIDTH="20%" BORDER=1>
 
 <P>Click <B>Close</B> on the <B>Loading Network</B> popup window.  Under the
 <B>Layout</B> menu, select <B>Apply Spring Embedded Layout</B>, and
 <B>All Nodes</B>.  After a brief calculation, your screen should look
 like this:</P>
-<P><IMG SRC="getting.started/Fig3.png" WIDTH="25%"><BR CLEAR=LEFT>
+<P><IMG SRC="getting.started/Fig3.png" WIDTH="50%"><BR CLEAR=LEFT>
 <H3>Selection</H3>
 <P>In the Cytoscape canvas (the blue window showing the network
 graphic), you can select nodes by clicking on them with the mouse, or
@@ -124,30 +123,30 @@ Notice that the very bottom of this network is hidden by CytoPanel 2, which is l
 <B>Node Attribute Browser</B>.  Move this panel into a separate window, as follows:</P>
 <OL>
 	<LI><P>Locate the <B>Float Window</B> control in the upper left corner of
-	CytoPanel 2, shown: <IMG SRC="getting.started/Fig4.png" WIDTH="3%" BORDER=1><BR CLEAR=LEFT></P>
+	CytoPanel 2, shown: <IMG SRC="getting.started/Fig4.png" WIDTH="5%" BORDER=1><BR CLEAR=LEFT></P>
 
 	<LI><P>Click
 	on this control.  Now, you should have two Cytoscape windows: the
 	Cytoscape Desktop, and a new window labeled CytoPanel 2, similar to
 	the one shown below.  This browser will display attributes of
 	selected nodes. Select a few nodes.</P>
-        <IMG SRC="getting.started/Fig5.png" WIDTH="25%"><BR CLEAR=LEFT></P>
+        <IMG SRC="getting.started/Fig5.png" WIDTH="50%"><BR CLEAR=LEFT></P>
 
 	<LI><P>Notice
 	that CytoPanel 2 now has a <B>Dock Window</B> control, shown below. 
 	Click on this control to dock CytoPanel 2, and then click on the
 	<B>Float</B> control to un-dock it. </P>
-        <IMG SRC="getting.started/Fig6.png" HSPACE=12 WIDTH=31 HEIGHT=18 BORDER=1><BR CLEAR=LEFT BORDER=1></P>
+        <IMG SRC="getting.started/Fig6.png" BORDER=1><BR CLEAR=LEFT BORDER=1></P>
 	<LI><P>In your network
 	window, locate the <B>maximize</B> control (as shown), and click on
 	it to maximize your network window.</P>
-	<IMG SRC="getting.started/Fig7.png" WIDTH=21 HEIGHT=22 BORDER=1><BR CLEAR=LEFT>
+	<IMG SRC="getting.started/Fig7.png" BORDER=1><BR CLEAR=LEFT>
 	</P>
 	<LI><P>To center your network in this window, click on the icon in the top menu bar: </P>
-	<IMG SRC="getting.started/Fig8.png" WIDTH=47 HEIGHT=44 BORDER=1>
+	<IMG SRC="getting.started/Fig8.png" BORDER=1>
 </OL>
 Your Cytoscape Desktop window should now appear as follows: 
-<P><IMG SRC="getting.started/Fig9.png" WIDTH="25%"><BR CLEAR=LEFT>
+<P><IMG SRC="getting.started/Fig9.png" WIDTH="50%"><BR CLEAR=LEFT>
 <H3>More on Node Selection</H3>
 <P>The nodes in this network are identified by numeric Entrez IDs
 The node representing TP53 is numbered 7157.  Select this node as follows:</P>
@@ -157,7 +156,7 @@ The node representing TP53 is numbered 7157.  Select this node as follows:</P>
 	</P>
 	<LI><P>A popup windowshould appear labeled <B>Select Nodes by Name</B>.</P>
 	<LI><P>Enter 7157, and click <B>Search</B>.</P>
-	<IMG SRC="getting.started/Fig10.png" WIDTH=395 HEIGHT=93></P>
+	<IMG SRC="getting.started/Fig10.png" WIDTH="50%"></P>
 	<BR CLEAR=LEFT>
 	<LI><P>The node in the center of the screen should turn yellow. Close the popup window.</P>
 	<LI><P>Un-select this node by clicking on the background of the Cytoscape canvas.</P>
@@ -172,13 +171,13 @@ The node representing TP53 is numbered 7157.  Select this node as follows:</P>
 		<LI><P>Under the <B>Select</B> menu, select <B>Nodes</B>,and 
 		<B>First neighbors of selected nodes</B>. You should see a network with several 
 		yellow nodes in the center, as shown.  </P>
-		<IMG SRC="getting.started/Fig11.png" WIDTH=346 HEIGHT=302><BR CLEAR=LEFT>
+		<IMG SRC="getting.started/Fig11.png" WIDTH="50%"><BR CLEAR=LEFT>
 
 		<LI><P>In <B>CytoPanel 1</B> at the left side of the window, you should see
 		the following.  This indicates that of 419 nodes in your network,
 		64 are currently selected.  Your network also contains 1089 edges,
 		none of which are currently selected.</P>
-		<IMG SRC="getting.started/Fig12.png" WIDTH=246 HEIGHT=79><BR CLEAR=LEFT>
+		<IMG SRC="getting.started/Fig12.png" BORDER=1><BR CLEAR=LEFT>
 
 	</OL>
 	<LI>Copy the selected nodes and their edges into a separate network by selecting <B>To New Network</B> under the <B>Select</B> menu.
@@ -189,7 +188,7 @@ The node representing TP53 is numbered 7157.  Select this node as follows:</P>
 		<B>All Nodes. </B> </P>
 		<LI><P>Use the Zoom control to zoom into this network.</P>
 		<LI><P>Your display should now appear as shown.</P>
-		<IMG SRC="getting.started/Fig13.png" HSPACE=12 WIDTH=346 HEIGHT=278><BR CLEAR=LEFT></P>
+		<IMG SRC="getting.started/Fig13.png" WIDTH="50%"><BR CLEAR=LEFT></P>
 	</OL>
 </OL>
 <H3>Loading Node Attributes</H3>
@@ -214,14 +213,14 @@ View these attributes in Cytoscape as follows:
 	<LI><P>Now, the Node Attribute Browser will show the IDs and official names of the nodes 
 	selected in this network.  Click on Node 7157 at the center of the network window, and the 
 	<B>Node Attribute Browser</B> should appear as shown. </P>
-	<IMG SRC="getting.started/Fig16.png" HSPACE=12 WIDTH=507 HEIGHT=211><BR CLEAR=LEFT>
+	<IMG SRC="getting.started/Fig16.png" WIDTH="50%"><BR CLEAR=LEFT>
 </OL>
 <H3>Defining visual styles</H3>
 <P>Now, we will	modify the visual styles to display the official node names as node labels.</P>
 <OL>
 	<LI><P>In the Cytoscape	Desktop, under the <B>Visualization</B> menu, select <B>Set Visual
 	Properties</B>. The <B>Visualization Style</B>s popup window should appear, as shown.</P>
-	<IMG SRC="getting.started/Fig17.png" WIDTH=320 HEIGHT=87><BR CLEAR=LEFT>
+	<IMG SRC="getting.started/Fig17.png" WIDTH="50%"><BR CLEAR=LEFT>
 	<LI><P>Click on the <B>Duplicate</B> button to define a new style.  Name this style ???Class1???.</P>
 	<LI><P>Click on the <B>Define</B> button.  This will bring up the <B>Set Visual	Properties</B> 
 	popup window.</P>
@@ -229,7 +228,7 @@ View these attributes in Cytoscape as follows:
 	<LI><P>Under the <B>Mapping</B>	section, locate the <B>Map Attribute</B> pull-down menu, with
 	<B>canonicalName</B> chosen by default.</P>
 	<LI><P>Scroll down to <B>Official</B>, as shown, and click on it</P>
-	<IMG SRC="getting.started/Fig14.png" WIDTH=227 HEIGHT=296>
+	<IMG SRC="getting.started/Fig14.png" WIDTH="50%">
 	<LI><P>Click the button	labeled <B>Apply to Network</B>, followed by the <B>Close</B>
 	button. Move the <B>Visual Styles</B> menu to the side.</P>
 </OL>
@@ -237,11 +236,11 @@ The nodes should now be labeled with their official names.  Now, we will step th
 commands, to get a closer look. </P>
 <OL>
 	<LI><P>Zoom into the network using the <B>Zoom In</B> button (below)</P>
-	<IMG SRC="getting.started/Fig18.png" WIDTH=51 HEIGHT=45><BR CLEAR=LEFT>
+	<IMG SRC="getting.started/Fig18.png" WIDTH="10%" BORDER=1><BR CLEAR=LEFT>
 	<LI><P>You can also zoom out using the <B>Zoom Out</B> button, below:</P>
-	<IMG SRC="getting.started/Fig19.png" WIDTH=50 HEIGHT=42><BR CLEAR=LEFT>
+	<IMG SRC="getting.started/Fig19.png" WIDTH="10%" BORDER=1><BR CLEAR=LEFT>
 	<LI><P>Also, you can zoom to a selected region using the <B>Zoom Selected Region</B> button.</P>
-	<IMG SRC="getting.started/Fig20.png" WIDTH=49 HEIGHT=39><BR CLEAR=LEFT>
+	<IMG SRC="getting.started/Fig20.png" WIDTH="10%" BORDER=1><BR CLEAR=LEFT>
 </OL>
 This dataset contains many types of edges: some representing
 experimentally-determined interactions (Y2H and coAP, from yeast
@@ -267,12 +266,12 @@ will now represent each interaction by its type, as follows:</P>
 	experimentally or through literature, and will further allow you to see the edge type.</P>
 	Your <B>Set Visual Properties</B> window should now look similar to the one
 	shown below.</P>
-	<P><IMG SRC="getting.started/Fig21.png" WIDTH=265 HEIGHT=328><BR CLEAR=LEFT>		
+	<P><IMG SRC="getting.started/Fig21.png" WIDTH="50%"><BR CLEAR=LEFT>		
 	<LI><P>Click on <B>Apply to Network</B>, and click the <B>Close</B> button on the <B>Visual</B>
 	<B>Styles</B> popup.</P>
 	<LI><P>You should see a	network similar to the one below.  Which is the most common types
 	of edge?  Least common?  
-	<IMG SRC="getting.started/Fig22.png" WIDTH=276 HEIGHT=248><BR CLEAR=LEFT><BR>
+	<IMG SRC="getting.started/Fig22.png" WIDTH="50%"><BR CLEAR=LEFT><BR>
 	</P>
 </OL>
 <P> Notice that you can switch quickly between visual styles using the <B>Set Visual Properties</B> 

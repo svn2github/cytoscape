@@ -8,7 +8,7 @@
     </title>
     <link rel="stylesheet" type="text/css" media="screen" href=
     "../css/cytoscape.css">
-    <link rel="shortcut icon" href="images/cyto.ico">
+    <link rel="../shortcut icon" href="../images/cyto.ico">
   </head>
   <body bgcolor="#FFFFFF">
     <table id="feature" border="0" cellpadding="0" cellspacing=
