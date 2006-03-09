@@ -350,7 +350,8 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
                           (srcArrow, srcArrowSize, trgArrow, trgArrowSize,
                            floatBuff1[0], floatBuff1[1], anchors,
                            floatBuff2[0], floatBuff2[1], m_path);
-                        foo(m_path.getPathIterator(null), m_path2);
+                        GraphRenderer.computeClosedPath
+                          (m_path.getPathIterator(null), m_path2);
                         if (m_path2.intersects
                             (xMin, yMin, xMax - xMin, yMax - yMin)) {
                           m_stack2.push(~edge); } } }
@@ -379,85 +380,6 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
       if (m_currMouseButton == 2) { m_currMouseButton = 0; } }
     else if (e.getButton() == MouseEvent.BUTTON3) {
       if (m_currMouseButton == 3) { m_currMouseButton = 0; } }
-  }
-
-  private final float[] s_floatTemp = new float[6];
-  private final float[] s_floatBuff = new float[2000]; // I dunno.
-  private final int[] s_segTypeBuff = new int[200]; // I dunno.
-
-  /*
-   * This method sets returnPath to be the forwards and backwards traversal
-   * of origPath (returnPath is set to be a closed loop with zero theoretical
-   * area).  This method expects a single PathIterator.SEG_MOVETO from
-   * origPath at the very beginning, and no further SEG_MOVETO's.  No
-   * PathIterator.SEG_CLOSE is expected.  Only 32 bit floating point accuracy
-   * is honored from origPath.
-   */
-  private final void foo(final PathIterator origPath,
-                         final GeneralPath returnPath)
-  {
-    // First fill our buffers with the coordinates and segment types.
-    int segs = 0;
-    int offset = 0;
-    if ((s_segTypeBuff[segs++] = origPath.currentSegment(s_floatTemp)) !=
-        PathIterator.SEG_MOVETO) {
-      throw new IllegalStateException
-        ("expected a SEG_MOVETO at the beginning of origPath"); }
-    for (int i = 0; i < 2; i++) s_floatBuff[offset++] = s_floatTemp[i];
-    origPath.next();
-    while (!origPath.isDone()) {
-      final int segType = origPath.currentSegment(s_floatTemp);
-      s_segTypeBuff[segs++] = segType;
-      if (segType == PathIterator.SEG_MOVETO ||
-          segType == PathIterator.SEG_CLOSE) {
-        throw new IllegalStateException
-          ("did not expect SEG_MOVETO or SEG_CLOSE"); }
-      // This is a rare case where I rely on the actual constant values
-      // to do a computation efficiently.
-      final int coordCount = segType * 2;
-      for (int i = 0; i < coordCount; i++) {
-        s_floatBuff[offset++] = s_floatTemp[i]; }
-      origPath.next(); }
-
-    returnPath.reset();
-    offset = 0;
-    // Now add the forward path to returnPath.
-    for (int i = 0; i < segs; i++) {
-      switch (s_segTypeBuff[i]) {
-      case PathIterator.SEG_MOVETO:
-        returnPath.moveTo(s_floatBuff[offset++], s_floatBuff[offset++]);
-        break;
-      case PathIterator.SEG_LINETO:
-        returnPath.lineTo(s_floatBuff[offset++], s_floatBuff[offset++]);
-        break;
-      case PathIterator.SEG_QUADTO:
-        returnPath.quadTo(s_floatBuff[offset++], s_floatBuff[offset++],
-                          s_floatBuff[offset++], s_floatBuff[offset++]);
-        break;
-      default: // PathIterator.SEG_CUBICTO.
-        returnPath.curveTo(s_floatBuff[offset++], s_floatBuff[offset++],
-                           s_floatBuff[offset++], s_floatBuff[offset++],
-                           s_floatBuff[offset++], s_floatBuff[offset++]);
-        break; } }
-    // Now add the return path.
-    for (int i = segs - 1; i > 0; i--) {
-      switch (s_segTypeBuff[i]) {
-      case PathIterator.SEG_LINETO:
-        offset -= 2;
-        returnPath.lineTo(s_floatBuff[offset - 2], s_floatBuff[offset - 1]);
-        break;
-      case PathIterator.SEG_QUADTO:
-        offset -= 4;
-        returnPath.quadTo(s_floatBuff[offset], s_floatBuff[offset + 1],
-                          s_floatBuff[offset - 2], s_floatBuff[offset - 1]);
-        break;
-      default: // PathIterator.SEG_CUBICTO.
-        offset -= 6;
-        returnPath.curveTo(s_floatBuff[offset + 2], s_floatBuff[offset + 3],
-                           s_floatBuff[offset], s_floatBuff[offset + 1],
-                           s_floatBuff[offset - 2], s_floatBuff[offset - 1]);
-        break; } }
-    returnPath.closePath();
   }
 
   public void mouseDragged(MouseEvent e)
