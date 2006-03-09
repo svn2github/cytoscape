@@ -21,11 +21,12 @@
 			<td width="120">
 				<h1>
 					<a href="tut/tutorial.php">
-						Online Tutorial
+						Online Tutorials
 					</a>
+                                        <IMG src="wiki/modern/img/moin-new.png">
 				</h1>
 				<p>
-					Get Started with the Cytoscape <a href="tut/tutorial.php">online tutorials</a>, just enhanced.
+					Get Started with the expanded Cytoscape <a href="tut/tutorial.php">online tutorials</a>.  Eight tutorials describe Cytoscape from basic operation to detailed plugin operation.
 				</p>
 			</td>
 			<td width="120">
