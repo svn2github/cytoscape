@@ -171,6 +171,27 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
              (m_lastRenderDetail & GraphRenderer.LOD_HIGH_DETAIL) == 0,
              m_stack);
           chosenNode = (m_stack.size() > 0) ? m_stack.peek() : 0; }
+//         if (m_view.m_edgeSelection) {
+//           m_ptBuff[0] = m_lastXMousePos - 1;
+//           m_ptBuff[1] = m_lastYMousePos + 1;
+//           m_view.xformComponentToNodeCoords(m_ptBuff);
+//           final double xMin = m_ptBuff[0];
+//           final double yMin = m_ptBuff[1];
+//           m_ptBuff[0] = m_lastXMousePos + 1;
+//           m_ptBuff[1] = m_lastYMousePos - 1;
+//           m_view.xformComponentToNodeCoords(m_ptBuff);
+//           final double xMax = m_ptBuff[0];
+//           final double yMax = m_ptBuff[1];
+//           IntEnumerator edgeNodesEnum = m_hash.elements(); // Positive.
+//           m_stack.empty();
+//           final int edgesNodesCount = edgeNodesEnum.numRemaining();
+//           for (int i = 0; i < edgeNodesCount; i++) {
+//             m_stack.push(edgeNodesEnum.nextInt()); }
+//           m_hash.empty();
+//           edgeNodesEnum = m_stack.elements();
+//           final FixedGraph graph = (FixedGraph) m_view.m_drawPersp;
+//           if ((m_lastRenderDetail &
+//                Graph
         if (!e.isShiftDown()) {
           // Unselect all nodes and edges.
           unselectedNodes = m_view.getSelectedNodeIndices();
@@ -235,12 +256,12 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
             if (m_view.m_nodeSelection || m_view.m_edgeSelection) {
               m_ptBuff[0] = m_selectionRect.x;
               m_ptBuff[1] = m_selectionRect.y + m_selectionRect.height;
-              m_grafx.xformImageToNodeCoords(m_ptBuff);
+              m_view.xformComponentToNodeCoords(m_ptBuff);
               final double xMin = m_ptBuff[0];
               final double yMin = m_ptBuff[1];
               m_ptBuff[0] = m_selectionRect.x + m_selectionRect.width;
               m_ptBuff[1] = m_selectionRect.y;
-              m_grafx.xformImageToNodeCoords(m_ptBuff);
+              m_view.xformComponentToNodeCoords(m_ptBuff);
               final double xMax = m_ptBuff[0];
               final double yMax = m_ptBuff[1];
               if (m_view.m_nodeSelection) {
@@ -389,14 +410,14 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
         synchronized (m_lock) {
           m_ptBuff[0] = m_lastXMousePos;
           m_ptBuff[1] = m_lastYMousePos;
-          m_grafx.xformImageToNodeCoords(m_ptBuff);
+          m_view.xformComponentToNodeCoords(m_ptBuff);
           final double oldX = m_ptBuff[0];
           final double oldY = m_ptBuff[1];
           m_lastXMousePos = e.getX();
           m_lastYMousePos = e.getY();
           m_ptBuff[0] = m_lastXMousePos;
           m_ptBuff[1] = m_lastYMousePos;
-          m_grafx.xformImageToNodeCoords(m_ptBuff);
+          m_view.xformComponentToNodeCoords(m_ptBuff);
           final double newX = m_ptBuff[0];
           final double newY = m_ptBuff[1];
           final double deltaX = newX - oldX;
