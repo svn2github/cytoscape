@@ -62,6 +62,7 @@
 <jar href="plugins/HierarchicalLayout.jar"/>
 <jar href="plugins/yeast-context.jar"/>
 <jar href="plugins/yLayouts.jar"/>
+<jar href="plugins/vizmapinit.jar"/>
 
   </resources>
   <application-desc main-class="cytoscape.CyMain">
@@ -81,6 +82,8 @@
 	<argument>csplugins.contextmenu.yeast.YeastPlugin</argument>
 	<argument>-rp</argument>
 	<argument>yfiles.YFilesLayoutPlugin</argument>
+	<argument>-rp</argument>
+	<argument>VizmapInit.VizmapInitPlugin</argument>
   </application-desc>
 </jnlp>
 
