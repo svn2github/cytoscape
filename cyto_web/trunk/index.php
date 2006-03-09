@@ -180,10 +180,27 @@
 								<p>
 
 								<div class="item">
-									<big><b><i>Updated!</i>&nbsp;&nbsp;Research using Cytoscape</b></big>
+									<big><b><i>Updated!&nbsp;</i>(Mar. 9 2006)</i>&nbsp;&nbsp;Research using Cytoscape</b></big>
 									&nbsp;&nbsp;
 									[<a href="pubs.php">View All Publications</a>]
 									<P>
+									<br>
+									<p>
+										<b>Nature Aug. 2005</b>
+			<br>
+			Kristin C. Gunsalus, Hui Ge, Aaron J. Schetter, Debra S. Goldberg, 
+			Jing-Dong J. Han, Tong Hao, Gabriel F. Berriz, Nicolas Bertin, Jerry Huang, 
+			Ling-Shiang Chuang, Ning Li, Ramamurthy Mani, Anthony A. Hyman, Birte Sönnichsen, 
+			Christophe J. Echeverri, Frederick P. Roth, Marc Vidal and Fabio Piano
+			<br>
+			Predictive models of molecular machines involved in Caenorhabditis elegans early embryogenesis
+			<br>
+			[<A HREF="http://www.nature.com/nature/journal/v436/n7052/abs/nature03876.html"/>Abstract</A>]
+			[<A HREF="http://www.nature.com/nature/journal/v436/n7052/full/nature03876.html">Full Text</A>]
+			[<A HREF="http://www.nature.com/nature/journal/v436/n7052/pdf/nature03876.pdf">PDF</A>]
+			<br>
+		<p>
+									
 									<br>
 									<p>
 										<b>Nature Nov. 2005</b>
