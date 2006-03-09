@@ -27,10 +27,7 @@ import cytoscape.Cytoscape;
 import cytoscape.plugin.CytoscapePlugin;
 import javax.swing.JMenuItem;
 /**
- * A plugin that allows the user to see the changes in gene expression
- * by coloring nodes according to their expression values in different 
- * conditions. It colors the nodes sequentially through each condition
- * at a user set delay between conditions.
+ * A plugin that sets a visual style for online tutorials.
  *
  * @author Melissa Cline, cline@pasteur.fr
  * @version %I%, %G%
@@ -49,7 +46,11 @@ public class VizmapInitPlugin extends CytoscapePlugin{
    * @return a description of this plug-in
    */
   public String describe (){
-      return "A Plug-In that sets up the Red-green color calculator, in case there is none";
+      return "A Plug-In that sets the visual style for online tutorials";
   }//describe
   
+
+    public void activate () {
+	(new VizmapInit()).setVisualStyle();
+    }
 }//class VizmapInitPlugin
