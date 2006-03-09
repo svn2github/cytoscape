@@ -5,6 +5,7 @@ import cytoscape.geom.spacial.SpacialEntry2DEnumerator;
 import cytoscape.render.export.ImageImposter;
 import cytoscape.render.immed.EdgeAnchors;
 import cytoscape.render.immed.GraphGraphics;
+import cytoscape.render.stateful.GraphRenderer;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -180,7 +181,8 @@ public final class TestBasicPolyEdge
           (arrow0, arrow0Size, arrow1, arrow1Size,
            x0, y0, new MyAnchors(m_anchorsBuff, m_tree.size() - 2),
            x1, y1, m_path2d)) {
-        TryBezierCurveSelection.foo(m_path2d.getPathIterator(null), m_path2d);
+        GraphRenderer.computeClosedPath
+          (m_path2d.getPathIterator(null), m_path2d);
         m_ptBuff[0] = m_initXMousePos;
         m_ptBuff[1] = m_initYMousePos;
         grafx.xformImageToNodeCoords(m_ptBuff);
