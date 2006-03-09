@@ -81,7 +81,7 @@ public class BioNetVisualStyleFactory {
         nodeAppCalc.setNodeFillColorCalculator(nodeColorCalculator);
         // --------------------------- Set the edge color --------------------------//
         
-        
+        cName = "src";
         EdgeColorCalculator edgeColorCalculator = calculatorCatalog.getEdgeColorCalculator(cName);
         if(edgeColorCalculator == null){
             //  Create a discrete color calculator for dataSource
@@ -94,7 +94,7 @@ public class BioNetVisualStyleFactory {
             dataSourceMappingEdges.putMapValue(ProlinksInteractionsSource.NAME,Color.ORANGE);
             edgeColorCalculator =
                 new GenericEdgeColorCalculator("src", dataSourceMappingEdges);
-            calculatorCatalog.addCalculator(edgeColorCalculator);
+            //calculatorCatalog.addCalculator(edgeColorCalculator); // causes an exception
         }
         
         cName = "Interaction Type";
