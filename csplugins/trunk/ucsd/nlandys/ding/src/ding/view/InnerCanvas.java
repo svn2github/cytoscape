@@ -32,6 +32,8 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
 
   final double[] m_ptBuff = new double[2];
   final float[] m_extentsBuff2 = new float[4];
+  final float[] m_floatBuff1 = new float[2];
+  final float[] m_floatBuff2 = new float[2];
   final Line2D.Float m_line = new Line2D.Float();
   final GeneralPath m_path = new GeneralPath();
   final GeneralPath m_path2 = new GeneralPath();
@@ -158,7 +160,9 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
       int[] unselectedNodes = null;
       int[] unselectedEdges = null;
       int chosenNode = 0;
+      int chosenEdge = 0;
       boolean chosenNodeSelected = false;
+      boolean chosenEdgeSelected = false;
       synchronized (m_lock) {
         if (m_view.m_nodeSelection) {
           m_ptBuff[0] = m_lastXMousePos;
@@ -171,27 +175,10 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
              (m_lastRenderDetail & GraphRenderer.LOD_HIGH_DETAIL) == 0,
              m_stack);
           chosenNode = (m_stack.size() > 0) ? m_stack.peek() : 0; }
-//         if (m_view.m_edgeSelection) {
-//           m_ptBuff[0] = m_lastXMousePos - 1;
-//           m_ptBuff[1] = m_lastYMousePos + 1;
-//           m_view.xformComponentToNodeCoords(m_ptBuff);
-//           final double xMin = m_ptBuff[0];
-//           final double yMin = m_ptBuff[1];
-//           m_ptBuff[0] = m_lastXMousePos + 1;
-//           m_ptBuff[1] = m_lastYMousePos - 1;
-//           m_view.xformComponentToNodeCoords(m_ptBuff);
-//           final double xMax = m_ptBuff[0];
-//           final double yMax = m_ptBuff[1];
-//           IntEnumerator edgeNodesEnum = m_hash.elements(); // Positive.
-//           m_stack.empty();
-//           final int edgesNodesCount = edgeNodesEnum.numRemaining();
-//           for (int i = 0; i < edgeNodesCount; i++) {
-//             m_stack.push(edgeNodesEnum.nextInt()); }
-//           m_hash.empty();
-//           edgeNodesEnum = m_stack.elements();
-//           final FixedGraph graph = (FixedGraph) m_view.m_drawPersp;
-//           if ((m_lastRenderDetail &
-//                Graph
+        if (m_view.m_edgeSelection && chosenNode == 0) {
+          computeEdgesIntersecting(m_lastXMousePos - 1, m_lastYMousePos - 1,
+                                   m_lastXMousePos + 1, m_lastYMousePos + 1);
+          chosenEdge = (m_stack2.size() > 0) ? m_stack2.peek() : 0; }
         if (!e.isShiftDown()) {
           // Unselect all nodes and edges.
           unselectedNodes = m_view.getSelectedNodeIndices();
@@ -212,7 +199,17 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
             ((DNodeView) m_view.getNodeView(chosenNode)).selectInternal();
             chosenNodeSelected = true; }
           m_button1NodeDrag = true; }
-        else {
+        if (chosenEdge != 0) {
+          final boolean wasSelected =
+            m_view.getEdgeView(chosenEdge).isSelected();
+          if (wasSelected) {
+            ((DEdgeView) m_view.getEdgeView(chosenEdge)).unselectInternal();
+            chosenEdgeSelected = false; }
+          else { // Was not selected.
+            ((DEdgeView) m_view.getEdgeView(chosenEdge)).selectInternal();
+            chosenEdgeSelected = true; }
+          m_button1NodeDrag = true; }
+        if (chosenNode == 0 && chosenEdge == 0) {
           m_selectionRect =
             new Rectangle(m_lastXMousePos, m_lastYMousePos, 0, 0);
           m_button1NodeDrag = false; } }
@@ -233,7 +230,16 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
           else {
             listener.graphViewChanged
               (new GraphViewNodesUnselectedEvent
-               (m_view, new int[] { chosenNode })); } } } }
+               (m_view, new int[] { chosenNode })); } }
+        if (chosenEdge != 0) {
+          if (chosenEdgeSelected) {
+            listener.graphViewChanged
+              (new GraphViewEdgesSelectedEvent
+               (m_view, new int[] { chosenEdge })); }
+          else {
+            listener.graphViewChanged
+              (new GraphViewEdgesUnselectedEvent
+               (m_view, new int[] { chosenEdge })); } } } }
     else if (e.getButton() == MouseEvent.BUTTON2) {
       m_currMouseButton = 2;
       m_lastXMousePos = e.getX();
@@ -459,11 +465,11 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
   {
   }
 
-  // Puts edges intersecting onto m_stack2; as RootGraph indices.
-  // Depends on the state of several member variables, such as m_hash,
-  // m_lastRenderDetail, m_view, m_line,
+  // Puts [last drawn] edges intersecting onto m_stack2; as RootGraph indices.
+  // Depends on the state of several member variables, such as m_hash.
   // Clobbers m_stack and m_ptBuff.
   // The rectangle extents are in component coordinate space.
+  // IMPORTANT: Code that calls this method should be holding m_lock.
   private final void computeEdgesIntersecting(final int xMini,
                                               final int yMini,
                                               final int xMaxi,
@@ -561,17 +567,15 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
               (((m_lastRenderDetail &
                 GraphRenderer.LOD_EDGE_ANCHORS) == 0) ? null :
                m_view.m_edgeDetails.anchors(edge));
-            final float[] floatBuff1 = new float[2];
-            final float[] floatBuff2 = new float[2];
             if (!GraphRenderer.computeEdgeEndpoints
                 (m_grafx, srcExtents, srcShape, srcArrow,
                  srcArrowSize, anchors, trgExtents, trgShape,
-                 trgArrow, trgArrowSize, floatBuff1, floatBuff2)) {
+                 trgArrow, trgArrowSize, m_floatBuff1, m_floatBuff2)) {
               continue; }
             m_grafx.getEdgePath
               (srcArrow, srcArrowSize, trgArrow, trgArrowSize,
-               floatBuff1[0], floatBuff1[1], anchors,
-               floatBuff2[0], floatBuff2[1], m_path);
+               m_floatBuff1[0], m_floatBuff1[1], anchors,
+               m_floatBuff2[0], m_floatBuff2[1], m_path);
             GraphRenderer.computeClosedPath
               (m_path.getPathIterator(null), m_path2);
             if (m_path2.intersects
