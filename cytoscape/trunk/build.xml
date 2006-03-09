@@ -522,10 +522,12 @@
             Copying over all property files.
             ---------------------------------------
         </echo>
+	<!--
         <copy file="${basedir}/props/cytoscape.props"
               tofile="${release.dir}/cytoscape.props"/>
         <copy file="${basedir}/props/vizmap.props"
               tofile="${release.dir}/vizmap.props"/>
+	      -->
     		 <copy file="${basedir}/props/tax_report.txt"
     	         tofile="${release.dir}/tax_report.txt"/>
     	   <copy file="${basedir}/props/tax_report.txt"
