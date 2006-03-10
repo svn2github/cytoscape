@@ -90,6 +90,10 @@ public abstract class Cytoscape {
 	public static String NETWORK_DESTROYED = "NETWORK_DESTROYED";
 
 	public static String CYTOSCAPE_EXIT = "CYTOSCAPE_EXIT";
+	
+	//KONO: 03/10/2006 For vizmap saving and loading
+	public static String SESSION_SAVED = "SESSION_SAVED";
+	public static String SESSION_LOADED = "SESSION_LOADED";
 
 	// MLC 09/19/05 BEGIN:
 	// AJK: 09/12/05 BEGIN
