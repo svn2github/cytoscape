@@ -476,6 +476,9 @@
     <delete file="${project.jar}"/>
     <delete file="${retro.project.jar}"/>
     <delete file="${test.jar}"/>
+    <delete file="${dist.all}"/>
+    <delete file="${dist.bin}"/>
+    <delete file="${dist.src}"/>
     <echo message="Successfully ran clean task!"/>
   </target>
 
