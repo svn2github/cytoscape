@@ -94,7 +94,7 @@ public class ZIPSIFWriter<NodeType extends Comparable<? super NodeType>,
 	for ( Edge<NodeType,WeightType> e : g.getEdges() ) {
 		b.append( e.getSourceNode().toString() );
 		b.append(" ");
-		b.append( e.getWeight().toString() );
+		b.append( e.getDescription() );
 		b.append(" ");
 		b.append( e.getTargetNode().toString() );
 		b.append( newline );
