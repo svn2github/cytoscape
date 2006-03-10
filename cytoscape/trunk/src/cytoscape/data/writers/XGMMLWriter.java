@@ -552,11 +552,11 @@ public class XGMMLWriter {
 			
 			edgeLineType.setValue(lineTypeBuilder(curEdgeView).toString());
 
-			System.out.println("Source Color is :" + curEdgeView.getSourceEdgeEndPaint().toString());
-			System.out.println("Target Color is :" + curEdgeView.getTargetEdgeEndPaint().toString());
-			System.out.println("Source Type is :" + curEdgeView.getSourceEdgeEnd());
-			System.out.println("Target Type is :" + curEdgeView.getTargetEdgeEnd());
-			
+//			System.out.println("Source Color is :" + curEdgeView.getSourceEdgeEndPaint().toString());
+//			System.out.println("Target Color is :" + curEdgeView.getTargetEdgeEndPaint().toString());
+//			System.out.println("Source Type is :" + curEdgeView.getSourceEdgeEnd());
+//			System.out.println("Target Type is :" + curEdgeView.getTargetEdgeEnd());
+//			
 			
 			sourceArrowColor.setValue(paint2string(curEdgeView
 					.getSourceEdgeEndPaint()));

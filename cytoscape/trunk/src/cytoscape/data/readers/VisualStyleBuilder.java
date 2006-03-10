@@ -82,9 +82,9 @@ import cytoscape.visual.mappings.PassThroughMapping;
 /**
  * Based on the graph/node/edge view information, build new Visual Style.
  * 
- * This class accepts JAXB object called "Graphics" as input value.
- * We can add information by adding elements to the object as 
- * attributes (Object cytoscape.generated2.Att)
+ * This class accepts JAXB object called "Graphics" as input value. We can add
+ * information by adding elements to the object as attributes (Object
+ * cytoscape.generated2.Att)
  * 
  * @author kono
  * 
@@ -163,8 +163,8 @@ public class VisualStyleBuilder {
 		// System.out.println(nac.getDescription());
 		// System.out.println(eac.getDescription());
 
+		catalog.addVisualStyle(xgmmlStyle);
 		vizmapper.setVisualStyle(xgmmlStyle);
-
 	}
 
 	protected void setNodeMaps(VisualMappingManager vizmapper) {
@@ -247,15 +247,21 @@ public class VisualStyleBuilder {
 
 			// Extract node graphics object from the given map
 			Graphics curGraphics = (Graphics) nodeGraphics.get(key);
-			List localNodeGraphics = curGraphics.getAtt();
+			List localNodeGraphics = null;
 			Iterator localIt = null;
-			if (localNodeGraphics != null) {
-				Att lg = (Att) localNodeGraphics.get(0);
 
-				localIt = lg.getContent().iterator();
+			if (curGraphics != null) {
+
+				localNodeGraphics = curGraphics.getAtt();
+
+				if (localNodeGraphics != null) {
+					Att lg = (Att) localNodeGraphics.get(0);
+
+					localIt = lg.getContent().iterator();
+				}
 			}
 			// Get node shape
-			if (curGraphics.getType() != null) {
+			if (curGraphics != null && curGraphics.getType() != null) {
 				shapeValue = ShapeNodeRealizer
 						.parseNodeShapeTextIntoByte(curGraphics.getType());
 				nodeColor = getColor(curGraphics.getFill());
@@ -373,13 +379,12 @@ public class VisualStyleBuilder {
 				.getDefaultEdgeSourceArrow(), ObjectMapping.EDGE_MAPPING);
 		edgeSourceArrowMapping.setControllingAttributeName(
 				Semantics.CANONICAL_NAME, vizmapper.getNetwork(), true);
-		
+
 		DiscreteMapping edgeTargetArrowMapping = new DiscreteMapping(eac
 				.getDefaultEdgeTargetArrow(), ObjectMapping.EDGE_MAPPING);
 		edgeTargetArrowMapping.setControllingAttributeName(
 				Semantics.CANONICAL_NAME, vizmapper.getNetwork(), true);
 
-		
 		Iterator it = edgeGraphics.keySet().iterator();
 		while (it.hasNext()) {
 			String key = (String) it.next();
@@ -393,15 +398,19 @@ public class VisualStyleBuilder {
 
 			// Extract node graphics object from the given map
 			Graphics curGraphics = (Graphics) edgeGraphics.get(key);
-			List localEdgeGraphics = curGraphics.getAtt();
+			List localEdgeGraphics = null;
 			Iterator localIt = null;
-			if (localEdgeGraphics != null) {
-				Att lg = (Att) localEdgeGraphics.get(0);
+			if (curGraphics != null) {
+				localEdgeGraphics = curGraphics.getAtt();
+				localIt = null;
+				if (localEdgeGraphics != null && localEdgeGraphics.size() != 0) {
+					Att lg = (Att) localEdgeGraphics.get(0);
 
-				localIt = lg.getContent().iterator();
+					localIt = lg.getContent().iterator();
+				}
 			}
 			// Get node shape
-			if (curGraphics.getFill() != null) {
+			if (curGraphics != null) {
 
 				edgeColor = getColor(curGraphics.getFill());
 
@@ -410,46 +419,49 @@ public class VisualStyleBuilder {
 				Color targetColor = null;
 				String sourceType = null;
 				String targetType = null;
-				
-				while (localIt.hasNext()) {
-					Att edgeAttr = null;
-					Object curObj = localIt.next();
 
-					if (curObj.getClass().equals(AttImpl.class)) {
-						edgeAttr = (Att) curObj;
+				if (localIt != null) {
+					while (localIt.hasNext()) {
+						Att edgeAttr = null;
+						Object curObj = localIt.next();
 
-						String edgeLabelFont = null;
+						if (curObj.getClass().equals(AttImpl.class)) {
+							edgeAttr = (Att) curObj;
 
-						if (edgeAttr.getName().equals("edgeLabelFont")) {
-							edgeLabelFont = edgeAttr.getValue();
-							String[] fontString = edgeLabelFont.split("-");
-							edgeFont = new Font(fontString[0], Integer
-									.parseInt(fontString[1]), Integer
-									.parseInt(fontString[2]));
+							String edgeLabelFont = null;
 
-						} else if (edgeAttr.getName().equals("edgeLineType")) {
-							edgeLineType = LineType.parseLineTypeText(edgeAttr
-									.getValue());
-						} else if (edgeAttr.getName().equals("sourceArrow")) {
-							sourceType = edgeAttr.getValue();
-						} else if (edgeAttr.getName().equals("targetArrow")) {
-							targetType = edgeAttr.getValue();
-						} else if (edgeAttr.getName()
-								.equals("sourceArrowColor")) {
-							sourceColor = getColor(edgeAttr.getValue());
-						} else if (edgeAttr.getName()
-								.equals("targetArrowColor")) {
-							targetColor = getColor(edgeAttr.getValue());
+							if (edgeAttr.getName().equals("edgeLabelFont")) {
+								edgeLabelFont = edgeAttr.getValue();
+								String[] fontString = edgeLabelFont.split("-");
+								edgeFont = new Font(fontString[0], Integer
+										.parseInt(fontString[1]), Integer
+										.parseInt(fontString[2]));
+
+							} else if (edgeAttr.getName()
+									.equals("edgeLineType")) {
+								edgeLineType = LineType
+										.parseLineTypeText(edgeAttr.getValue());
+							} else if (edgeAttr.getName().equals("sourceArrow")) {
+								sourceType = edgeAttr.getValue();
+							} else if (edgeAttr.getName().equals("targetArrow")) {
+								targetType = edgeAttr.getValue();
+							} else if (edgeAttr.getName().equals(
+									"sourceArrowColor")) {
+								sourceColor = getColor(edgeAttr.getValue());
+							} else if (edgeAttr.getName().equals(
+									"targetArrowColor")) {
+								targetColor = getColor(edgeAttr.getValue());
+							}
 						}
 					}
-				}
 
-				// Create arrow if available
-				if( sourceColor != null && sourceType != null ) {
-					source = arrowBuilder(sourceType, sourceColor);
-				}
-				if( targetColor != null && targetType != null ) {
-					target = arrowBuilder(targetType, targetColor);
+					// Create arrow if available
+					if (sourceColor != null && sourceType != null) {
+						source = arrowBuilder(sourceType, sourceColor);
+					}
+					if (targetColor != null && targetType != null) {
+						target = arrowBuilder(targetType, targetColor);
+					}
 				}
 
 			} else {
@@ -484,7 +496,7 @@ public class VisualStyleBuilder {
 		GenericEdgeArrowCalculator edgeSourceArrowCalculator = new GenericEdgeArrowCalculator(
 				"XGMML Source Edge Arrow", edgeSourceArrowMapping);
 		eac.setEdgeSourceArrowCalculator(edgeSourceArrowCalculator);
-		
+
 		GenericEdgeArrowCalculator edgeTargetArrowCalculator = new GenericEdgeArrowCalculator(
 				"XGMML Target Edge Arrow", edgeTargetArrowMapping);
 		eac.setEdgeTargetArrowCalculator(edgeTargetArrowCalculator);
@@ -522,57 +534,55 @@ public class VisualStyleBuilder {
 		}
 	}
 
-	
 	// Convert GINY arrow information into Arrow object in Cytoscape.
 	//
 	private Arrow arrowBuilder(String type, Color color) {
-		
+
 		// Set default to none
 		Arrow ar = Arrow.NONE;
 
 		int intType = Integer.parseInt(type);
-		
-		if (  intType == EdgeView.WHITE_DIAMOND) {
-		      ar = Arrow.WHITE_DIAMOND;
-		    } else if ( intType == EdgeView.BLACK_DIAMOND) {
-		      ar = Arrow.BLACK_DIAMOND;
-		    } else if ( intType == EdgeView.EDGE_COLOR_DIAMOND ) {
-		      ar = Arrow.COLOR_DIAMOND;
-		    } 
 
-		    else if (  intType == EdgeView.WHITE_DELTA ) {
-		      ar = Arrow.WHITE_DELTA;
-		    } else if ( intType == EdgeView.BLACK_DELTA ) {
-		      ar = Arrow.BLACK_DELTA;
-		    } else if ( intType == EdgeView.EDGE_COLOR_DELTA ) {
-		      ar = Arrow.COLOR_DELTA;
-		    } 
+		if (intType == EdgeView.WHITE_DIAMOND) {
+			ar = Arrow.WHITE_DIAMOND;
+		} else if (intType == EdgeView.BLACK_DIAMOND) {
+			ar = Arrow.BLACK_DIAMOND;
+		} else if (intType == EdgeView.EDGE_COLOR_DIAMOND) {
+			ar = Arrow.COLOR_DIAMOND;
+		}
 
-		    else if ( intType == EdgeView.WHITE_ARROW ) {
-		      ar = Arrow.WHITE_ARROW;
-		    } else if ( intType == EdgeView.BLACK_ARROW ) {
-		      ar = Arrow.BLACK_ARROW;
-		    } else if ( intType == EdgeView.EDGE_COLOR_ARROW ) {
-		      ar = Arrow.COLOR_ARROW;
-		    } 
+		else if (intType == EdgeView.WHITE_DELTA) {
+			ar = Arrow.WHITE_DELTA;
+		} else if (intType == EdgeView.BLACK_DELTA) {
+			ar = Arrow.BLACK_DELTA;
+		} else if (intType == EdgeView.EDGE_COLOR_DELTA) {
+			ar = Arrow.COLOR_DELTA;
+		}
 
-		    else if ( intType == EdgeView.WHITE_T ) {
-		      ar = Arrow.WHITE_T;
-		    } else if ( intType == EdgeView.BLACK_T ) {
-		      ar = Arrow.BLACK_T;
-		    } else if ( intType == EdgeView.EDGE_COLOR_T ) {
-		      ar = Arrow.COLOR_T;
-		    } 
+		else if (intType == EdgeView.WHITE_ARROW) {
+			ar = Arrow.WHITE_ARROW;
+		} else if (intType == EdgeView.BLACK_ARROW) {
+			ar = Arrow.BLACK_ARROW;
+		} else if (intType == EdgeView.EDGE_COLOR_ARROW) {
+			ar = Arrow.COLOR_ARROW;
+		}
 
+		else if (intType == EdgeView.WHITE_T) {
+			ar = Arrow.WHITE_T;
+		} else if (intType == EdgeView.BLACK_T) {
+			ar = Arrow.BLACK_T;
+		} else if (intType == EdgeView.EDGE_COLOR_T) {
+			ar = Arrow.COLOR_T;
+		}
 
-		    else if ( intType == EdgeView.WHITE_CIRCLE ) {
-		      ar = Arrow.WHITE_CIRCLE;
-		    } else if ( intType == EdgeView.BLACK_CIRCLE ) {
-		      ar = Arrow.BLACK_CIRCLE;
-		    } else if ( intType == EdgeView.EDGE_COLOR_CIRCLE ) {
-		      ar = Arrow.COLOR_CIRCLE;
-		    } 
-		      
+		else if (intType == EdgeView.WHITE_CIRCLE) {
+			ar = Arrow.WHITE_CIRCLE;
+		} else if (intType == EdgeView.BLACK_CIRCLE) {
+			ar = Arrow.BLACK_CIRCLE;
+		} else if (intType == EdgeView.EDGE_COLOR_CIRCLE) {
+			ar = Arrow.COLOR_CIRCLE;
+		}
+
 		return ar;
 	}
 
