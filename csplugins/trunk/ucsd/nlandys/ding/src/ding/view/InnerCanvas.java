@@ -294,8 +294,7 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
                   selectedEdges[i] = edges.nextInt(); }
                 for (int i = 0; i < selectedEdges.length; i++) {
                   ((DEdgeView) m_view.getEdgeView(selectedEdges[i])).
-                    selectInternal(); }
-              } } }
+                    selectInternal(); } } } }
           m_selectionRect = null;
           repaint();
           final GraphViewChangeListener listener = m_view.m_lis[0];
