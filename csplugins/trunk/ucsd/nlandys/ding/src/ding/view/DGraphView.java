@@ -54,8 +54,8 @@ public class DGraphView implements GraphView
   InnerCanvas m_canvas;
   boolean m_nodeSelection = true;
   boolean m_edgeSelection = true;
-  final IntBTree m_selectedNodes;
-  final IntBTree m_selectedEdges;
+  final IntBTree m_selectedNodes; // Positive.
+  final IntBTree m_selectedEdges; // Positive.
 
   final GraphViewChangeListener[] m_lis = new GraphViewChangeListener[1];
 
@@ -107,6 +107,8 @@ public class DGraphView implements GraphView
     synchronized (m_lock) {
       m_nodeSelection = false;
       unselectedNodes = getSelectedNodeIndices();
+      // Adding this line to speed things up from O(n*log(n)) to O(n).
+      m_selectedNodes.empty();
       for (int i = 0; i < unselectedNodes.length; i++) {
         ((DNodeView) getNodeView(unselectedNodes[i])).unselectInternal(); } }
     updateView();
@@ -128,6 +130,8 @@ public class DGraphView implements GraphView
     synchronized (m_lock) {
       m_edgeSelection = false;
       unselectedEdges = getSelectedEdgeIndices();
+      // Adding this line to speed things up from O(n*log(n)) to O(n).
+      m_selectedEdges.empty();
       for (int i = 0; i < unselectedEdges.length; i++) {
         ((DEdgeView) getEdgeView(unselectedEdges[i])).unselectInternal(); } }
     updateView();

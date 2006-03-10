@@ -28,7 +28,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
   static final Paint DEFAULT_LABEL_PAINT = Color.black;
 
   DGraphView m_view;
-  final int m_inx;
+  final int m_inx; // Positive.
   boolean m_selected;
   Paint m_unselectedPaint;
   Paint m_selectedPaint;

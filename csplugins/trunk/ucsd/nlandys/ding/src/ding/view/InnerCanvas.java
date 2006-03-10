@@ -182,10 +182,14 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
         if (!e.isShiftDown()) {
           // Unselect all nodes and edges.
           unselectedNodes = m_view.getSelectedNodeIndices();
+          // Adding this line to speed things up from O(n*log(n)) to O(n).
+          m_view.m_selectedNodes.empty();
           for (int i = 0; i < unselectedNodes.length; i++) {
             ((DNodeView) m_view.getNodeView(unselectedNodes[i])).
               unselectInternal(); }
           unselectedEdges = m_view.getSelectedEdgeIndices();
+          // Adding this line to speed things up from O(n*log(n)) to O(n).
+          m_view.m_selectedEdges.empty();
           for (int i = 0; i < unselectedEdges.length; i++) {
             ((DEdgeView) m_view.getEdgeView(unselectedEdges[i])).
               unselectInternal(); } }
