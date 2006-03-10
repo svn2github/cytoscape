@@ -38,11 +38,16 @@
 
 package cytoscape.data.readers;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -50,6 +55,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
@@ -75,6 +81,11 @@ import cytoscape.generated.SelectedNodes;
 import cytoscape.giny.PhoebeNetworkView;
 import cytoscape.init.CyPropertiesReader;
 import cytoscape.task.TaskMonitor;
+import cytoscape.util.ZipMultipleFiles;
+import cytoscape.view.CytoscapeDesktop;
+import cytoscape.visual.CalculatorCatalog;
+import cytoscape.visual.CalculatorCatalogFactory;
+import cytoscape.visual.VisualMappingManager;
 import edu.umd.cs.piccolo.PCanvas;
 import edu.umd.cs.piccolo.PLayer;
 import edu.umd.cs.piccolo.util.PBounds;
@@ -138,10 +149,7 @@ public class CytoscapeSessionReader {
 	 */
 	private boolean unzipSession() throws IOException, JAXBException {
 
-		ZipInputStream zis = new ZipInputStream(new FileInputStream(fileName));
-
-		int networkCount = 0;
-
+		
 		// Create zipfile object to be extracted
 		ZipFile cysFile = new ZipFile(fileName);
 
@@ -152,8 +160,10 @@ public class CytoscapeSessionReader {
 			String curEntry = e.nextElement().toString();
 			if (curEntry.endsWith("xml")) {
 				cysessionFileName = curEntry;
-			} else if (curEntry.endsWith("props")) {
-				//
+				
+			} else if (curEntry.endsWith("vizmap.props")) {
+				
+				restoreVizmap(curEntry);
 			} else {
 				networks.add(curEntry);
 			}
@@ -165,6 +175,12 @@ public class CytoscapeSessionReader {
 
 		return true;
 	}
+	
+	private void restoreVizmap(String vizmapName) throws IOException {
+		// Tell the target file name to CalculatorCatalog
+		Cytoscape.firePropertyChange(Cytoscape.SESSION_LOADED, null, fileName);
+	}
+	
 	
 	private boolean readPropFiles( String propFileName ) throws FileNotFoundException, IOException {
 
@@ -225,8 +241,6 @@ public class CytoscapeSessionReader {
 
 	private boolean loadCySession2(String cysessionFileName, List networkList)
 			throws JAXBException, IOException {
-
-		ZipEntry curNetEntry = null;
 
 		ZipFile sessionFile = new ZipFile(fileName);
 		ZipEntry csxml = sessionFile.getEntry(cysessionFileName);
@@ -343,7 +357,7 @@ public class CytoscapeSessionReader {
 			Network childNet = (Network) netMap.get(child.getId());
 			String childFile = sessionID + FS + childNet.getFilename();
 
-			System.out.println("#############Current child is " + childFile);
+			
 			InputStream networkStream = sessionFile.getInputStream(sessionFile
 					.getEntry(childFile));
 
@@ -364,7 +378,7 @@ public class CytoscapeSessionReader {
 
 			// network = createChildNetwork(childNet, network);
 			if (childNet.getChild().size() == 0) {
-				System.out.println("!!!!!!!!!leaf");
+				//System.out.println("!!!!!!!!!leaf");
 			} else {
 				walkTree(childNet, new_network, sessionFile);
 			}

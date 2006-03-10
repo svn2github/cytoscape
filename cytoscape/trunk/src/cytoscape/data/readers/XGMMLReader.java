@@ -54,6 +54,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 import java.util.Random;
 import java.util.Set;
 
@@ -63,8 +64,10 @@ import javax.xml.bind.Unmarshaller;
 
 import cern.colt.list.IntArrayList;
 import cern.colt.map.OpenIntIntHashMap;
+import cytoscape.CyEdge;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
 import cytoscape.generated2.Att;
@@ -170,6 +173,11 @@ public class XGMMLReader implements GraphReader {
 
 	HashMap nodeGraphicsMap;
 	HashMap edgeGraphicsMap;
+	
+	private HashMap nodeMap;
+	
+	Properties prop = CytoscapeInit.getProperties();
+	String vsbSwitch = prop.getProperty("visualStyleBuilder");
 	
 	public XGMMLReader(String fileName) {
 
@@ -324,7 +332,7 @@ public class XGMMLReader implements GraphReader {
 		
 		Set nodeNameSet = new HashSet(nodes.size());
 
-		HashMap nodeMap = new HashMap(nodes.size());
+		nodeMap = new HashMap(nodes.size());
 
 		// Add All Nodes to Network
 		for (int idx = 0; idx < nodes.size(); idx++) {
@@ -450,9 +458,10 @@ public class XGMMLReader implements GraphReader {
 							break;
 						}
 					}
-					// System.out.println("!!!!!Edge Data: " + itrValue);
+					// 
 					edge = Cytoscape.getCyEdge(node_1, node_2,
 							Semantics.INTERACTION, itrValue, true);
+					//System.out.println("!!!!!Edge Data: " + edge.getIdentifier());
 				}
 
 				// Set correct ID, canonical name and interaction name
@@ -473,7 +482,7 @@ public class XGMMLReader implements GraphReader {
 			}
 		}
 		edgeNameSet = null;
-		nodeMap = null;
+		
 
 		Iterator nit = Cytoscape.getRootGraph().nodesIterator();
 		while (nit.hasNext()) {
@@ -582,10 +591,12 @@ public class XGMMLReader implements GraphReader {
 		// Layout edges
 		layoutEdge(myView);
 		
-		
-		VisualStyleBuilder vsb = new VisualStyleBuilder(networkName + ".style",
+		// Build Style if needed.
+		if(vsbSwitch.equals("on")) {
+			VisualStyleBuilder vsb = new VisualStyleBuilder(networkName + ".style",
 				nodeGraphicsMap, edgeGraphicsMap, null);
-		vsb.buildStyle();
+			vsb.buildStyle();
+		}
 	}
 
 	/**
@@ -744,9 +755,23 @@ public class XGMMLReader implements GraphReader {
 			
 			edgeGraphicsMap.put(edgeID, graphics);
 			
-			// System.out.println("Edge info@@@: " + edgeID);
-			int rootindex = Cytoscape.getRootGraph().getEdge(edgeID)
-					.getRootGraphIndex();
+			//System.out.println("Edge info@@@: " + edgeID +", " + curEdge.getSource() + "-" + curEdge.getTarget());
+			
+			int rootindex = 0;
+			CyEdge testEdge = Cytoscape.getRootGraph().getEdge(edgeID);
+			if(testEdge != null) {
+				rootindex = testEdge.getRootGraphIndex();
+			} else {
+				String sourceNodeName = (String) nodeMap.get(curEdge.getSource());
+				String targetNodeName = (String) nodeMap.get(curEdge.getTarget());
+//				String label = curEdge.getLabel();
+				String label = "pp";
+				
+				edgeID = sourceNodeName + " (" + label + ") " + targetNodeName;
+				System.out.println("Edge info2: " + edgeID );
+				testEdge = Cytoscape.getRootGraph().getEdge(edgeID);
+				rootindex = testEdge.getRootGraphIndex();
+			}
 			view = myView.getEdgeView(rootindex);
 
 			if (graphics != null && view != null) {

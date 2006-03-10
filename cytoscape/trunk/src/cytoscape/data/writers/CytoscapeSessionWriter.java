@@ -94,6 +94,7 @@ import cytoscape.view.NetworkPanel;
 import cytoscape.visual.CalculatorCatalog;
 import cytoscape.visual.CalculatorCatalogFactory;
 import cytoscape.visual.CalculatorIO;
+import cytoscape.visual.VisualMappingManager;
 
 
 
@@ -293,8 +294,18 @@ public class CytoscapeSessionWriter {
 
 	public void preparePropFiles() {
 		// Prepare vizmap
-		CalculatorCatalog catalog = CalculatorCatalogFactory
-				.loadCalculatorCatalog();
+		
+		// Extract current vizmap file from the memory.
+		String vizmapLocation = CytoscapeInit.getVizmapPropertiesLocation();
+		System.out.println("The file \"" + vizmapLocation + "\" will be included in the session file...");
+		// Fire dummy signal to update vizmap.prop
+		Cytoscape.firePropertyChange(Cytoscape.SESSION_SAVED, null, null);
+		
+		CytoscapeDesktop cyDesktop = Cytoscape.getDesktop();
+		VisualMappingManager vizmapper = cyDesktop.getVizMapManager();
+		CalculatorCatalog catalog = vizmapper.getCalculatorCatalog();
+		
+		
 		vizProp = new File(VIZMAP_FILE);
 		CalculatorIO.storeCatalog(catalog, vizProp);
 
