@@ -61,6 +61,7 @@ import java.util.Vector;
 import cern.colt.list.IntArrayList;
 import cern.colt.map.OpenIntIntHashMap;
 import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
 import cytoscape.task.TaskMonitor;
@@ -624,8 +625,12 @@ public class GMLReader2 implements GraphReader {
 		// 3 Apply the new VS to the current window of Cytoscape
 		//
 		extract(); // Extract node & edge attributes
-		applyMaps(); // generate new VS and epply it.
-
+		Properties prop = CytoscapeInit.getProperties();
+		String vsbSwitch = prop.getProperty("visualStyleBuilder");
+		
+		if(vsbSwitch.equals("on")) {
+			applyMaps(); // generate new VS and apply it.
+		}
 		releaseStructures();
 	}
 
