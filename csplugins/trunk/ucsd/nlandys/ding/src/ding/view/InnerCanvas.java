@@ -260,17 +260,17 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
           int[] selectedEdges = null;
           synchronized (m_lock) {
             if (m_view.m_nodeSelection || m_view.m_edgeSelection) {
-              m_ptBuff[0] = m_selectionRect.x;
-              m_ptBuff[1] = m_selectionRect.y + m_selectionRect.height;
-              m_view.xformComponentToNodeCoords(m_ptBuff);
-              final double xMin = m_ptBuff[0];
-              final double yMin = m_ptBuff[1];
-              m_ptBuff[0] = m_selectionRect.x + m_selectionRect.width;
-              m_ptBuff[1] = m_selectionRect.y;
-              m_view.xformComponentToNodeCoords(m_ptBuff);
-              final double xMax = m_ptBuff[0];
-              final double yMax = m_ptBuff[1];
               if (m_view.m_nodeSelection) {
+                m_ptBuff[0] = m_selectionRect.x;
+                m_ptBuff[1] = m_selectionRect.y + m_selectionRect.height;
+                m_view.xformComponentToNodeCoords(m_ptBuff);
+                final double xMin = m_ptBuff[0];
+                final double yMin = m_ptBuff[1];
+                m_ptBuff[0] = m_selectionRect.x + m_selectionRect.width;
+                m_ptBuff[1] = m_selectionRect.y;
+                m_view.xformComponentToNodeCoords(m_ptBuff);
+                final double xMax = m_ptBuff[0];
+                final double yMax = m_ptBuff[1];
                 m_stack.empty();
                 m_view.getNodesIntersectingRectangle
                   ((float) xMin, (float) yMin, (float) xMax, (float) yMax,
@@ -284,105 +284,10 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
                   ((DNodeView) m_view.getNodeView(selectedNodes[i])).
                     selectInternal(); } }
               if (m_view.m_edgeSelection) {
-                IntEnumerator edgeNodesEnum = m_hash.elements(); // Positive.
-                m_stack.empty();
-                final int edgeNodesCount = edgeNodesEnum.numRemaining();
-                for (int i = 0; i < edgeNodesCount; i++) {
-                  m_stack.push(edgeNodesEnum.nextInt()); }
-                m_hash.empty();
-                edgeNodesEnum = m_stack.elements();
-                m_stack2.empty();
-                final FixedGraph graph = (FixedGraph) m_view.m_drawPersp;
-                if ((m_lastRenderDetail &
-                     GraphRenderer.LOD_HIGH_DETAIL) == 0) {
-                  // We won't need to look up arrows and their sizes.
-                  for (int i = 0; i < edgeNodesCount; i++) {
-                    final int node = edgeNodesEnum.nextInt(); // Positive.
-                    m_view.m_spacial.exists(node, m_view.m_extentsBuff, 0);
-                    final float nodeX =
-                      (m_view.m_extentsBuff[0] + m_view.m_extentsBuff[2]) / 2;
-                    final float nodeY =
-                      (m_view.m_extentsBuff[1] + m_view.m_extentsBuff[3]) / 2;
-                    final IntEnumerator touchingEdges =
-                      graph.edgesAdjacent(node, true, true, true);
-                    while (touchingEdges.numRemaining() > 0) {
-                      final int edge = touchingEdges.nextInt(); // Positive.
-                      final int otherNode = // Positive.
-                        node ^ graph.edgeSource(edge) ^ graph.edgeTarget(edge);
-                      if (m_hash.get(otherNode) < 0) {
-                        m_view.m_spacial.exists
-                          (otherNode, m_view.m_extentsBuff, 0);
-                        final float otherNodeX = (m_view.m_extentsBuff[0] +
-                                                  m_view.m_extentsBuff[2]) / 2;
-                        final float otherNodeY = (m_view.m_extentsBuff[1] +
-                                                  m_view.m_extentsBuff[3]) / 2;
-                        m_line.setLine(nodeX, nodeY, otherNodeX, otherNodeY);
-                        if (m_line.intersects(xMin, yMin, xMax - xMin,
-                                              yMax - yMin)) {
-                          m_stack2.push(~edge); } } }
-                    m_hash.put(node); } }
-                else { // Last render high detail.
-                  for (int i = 0; i < edgeNodesCount; i++) {
-                    final int node = edgeNodesEnum.nextInt(); // Positive.
-                    m_view.m_spacial.exists(node, m_view.m_extentsBuff, 0);
-                    final byte nodeShape = m_view.m_nodeDetails.shape(node);
-                    final IntEnumerator touchingEdges =
-                      graph.edgesAdjacent(node, true, true, true);
-                    while (touchingEdges.numRemaining() > 0) {
-                      final int edge = touchingEdges.nextInt(); // Positive.
-                      final int otherNode =
-                        node ^ graph.edgeSource(edge) ^ graph.edgeTarget(edge);
-                      if (m_hash.get(otherNode) < 0) {
-                        m_view.m_spacial.exists(otherNode, m_extentsBuff2, 0);
-                        final byte otherNodeShape =
-                          m_view.m_nodeDetails.shape(otherNode);
-                        final byte srcShape, trgShape;
-                        final float[] srcExtents, trgExtents;
-                        if (node == graph.edgeSource(edge)) {
-                          srcShape = nodeShape; trgShape = otherNodeShape;
-                          srcExtents = m_view.m_extentsBuff;
-                          trgExtents = m_extentsBuff2; }
-                        else { // node == graph.edgeTarget(edge).
-                          srcShape = otherNodeShape; trgShape = nodeShape;
-                          srcExtents = m_extentsBuff2;
-                          trgExtents = m_view.m_extentsBuff; }
-                        final byte srcArrow, trgArrow;
-                        final float srcArrowSize, trgArrowSize;
-                        if ((m_lastRenderDetail &
-                             GraphRenderer.LOD_EDGE_ARROWS) == 0) {
-                          srcArrow = trgArrow = GraphGraphics.ARROW_NONE;
-                          srcArrowSize = trgArrowSize = 0.0f; }
-                        else {
-                          srcArrow = m_view.m_edgeDetails.sourceArrow(edge);
-                          trgArrow = m_view.m_edgeDetails.targetArrow(edge);
-                          srcArrowSize =
-                            ((srcArrow == GraphGraphics.ARROW_NONE) ? 0.0f :
-                             m_view.m_edgeDetails.sourceArrowSize(edge));
-                          trgArrowSize =
-                            ((trgArrow == GraphGraphics.ARROW_NONE ||
-                              trgArrow == GraphGraphics.ARROW_MONO) ? 0.0f :
-                             m_view.m_edgeDetails.targetArrowSize(edge)); }
-                        final EdgeAnchors anchors =
-                          (((m_lastRenderDetail &
-                             GraphRenderer.LOD_EDGE_ANCHORS) == 0) ? null :
-                           m_view.m_edgeDetails.anchors(edge));
-                        final float[] floatBuff1 = new float[2];
-                        final float[] floatBuff2 = new float[2];
-                        if (!GraphRenderer.computeEdgeEndpoints
-                            (m_grafx, srcExtents, srcShape, srcArrow,
-                             srcArrowSize, anchors, trgExtents, trgShape,
-                             trgArrow, trgArrowSize, floatBuff1, floatBuff2)) {
-                          continue; }
-                        m_grafx.getEdgePath
-                          (srcArrow, srcArrowSize, trgArrow, trgArrowSize,
-                           floatBuff1[0], floatBuff1[1], anchors,
-                           floatBuff2[0], floatBuff2[1], m_path);
-                        GraphRenderer.computeClosedPath
-                          (m_path.getPathIterator(null), m_path2);
-                        if (m_path2.intersects
-                            (xMin, yMin, xMax - xMin, yMax - yMin)) {
-                          m_stack2.push(~edge); } } }
-                    m_hash.put(node); } }
+                computeEdgesIntersecting
+                  (m_selectionRect.x, m_selectionRect.y,
+                   m_selectionRect.x + m_selectionRect.width,
+                   m_selectionRect.y + m_selectionRect.height);
                 selectedEdges = new int[m_stack2.size()];
                 final IntEnumerator edges = m_stack2.elements();
                 for (int i = 0; i < selectedEdges.length; i++) {
