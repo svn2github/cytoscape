@@ -36,11 +36,11 @@ import cytoscape.*;
 import cytoscape.view.*;
 import cytoscape.util.*;
 import giny.view.*;
-import cytoscape.layout.*;
 
 import cern.colt.map.*;
 import cern.colt.list.*;
 
+import csplugins.layout.AbstractLayout;
 /**
  * @author Gaudenz Alder
  *

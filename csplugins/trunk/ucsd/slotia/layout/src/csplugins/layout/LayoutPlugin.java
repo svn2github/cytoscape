@@ -213,23 +213,6 @@ public class LayoutPlugin extends CytoscapePlugin
 
     }); // end new AbstractAction
 
-    JMenuItem debug_NodeDump = new JMenuItem(new AbstractAction("Node Dump")
-    {
-      public void actionPerformed(ActionEvent e)
-      {
-        Iterator iterator = Cytoscape.getCurrentNetworkView().getNodeViewsIterator();
-	while (iterator.hasNext())
-	{
-	  NodeView nodeView = (NodeView) iterator.next();
-	  System.err.println(nodeView.getNode().getIdentifier() + " (" +
-	                     nodeView.getXPosition() + ", " +
-			     nodeView.getYPosition() + ") [" +
-			     nodeView.getWidth() + "x" +
-			     nodeView.getHeight() + "]");
-	}
-      }
-    });
-
     JMenu menu = new JMenu("Cytoscape Layouts");
     //menu.add(circle);
     //menu.add(radial);
@@ -246,7 +229,6 @@ public class LayoutPlugin extends CytoscapePlugin
                                 .getMenu("Layout");
     layoutMenu.add(menu);
     layoutMenu.add(new JGraphLayoutMenu());
-    layoutMenu.add(debug_NodeDump);
   }
 }
 

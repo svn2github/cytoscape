@@ -14,7 +14,6 @@ import cern.colt.map.PrimeFinder;
 import cytoscape.*;
 import cytoscape.view.*;
 import cytoscape.util.*;
-import cytoscape.layout.*;
 import giny.view.*;
 import giny.model.*;
 import giny.util.*;
@@ -22,9 +21,9 @@ import javax.swing.JFrame;
 import java.awt.Dimension;
 
 import csplugins.layout.algorithms.GraphPartition;
+import csplugins.layout.AbstractLayout;
 
-
-public class ISOMLayoutAlgorithm extends cytoscape.layout.AbstractLayout {
+public class ISOMLayoutAlgorithm extends csplugins.layout.AbstractLayout {
 
   
 	private int maxEpoch;

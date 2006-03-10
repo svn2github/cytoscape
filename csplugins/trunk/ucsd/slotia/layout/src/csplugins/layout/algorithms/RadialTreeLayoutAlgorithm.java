@@ -41,7 +41,7 @@ import cytoscape.view.*;
 import cytoscape.util.*;
 import giny.view.*;
 import csplugins.layout.algorithms.GraphPartition;
-import cytoscape.layout.*;
+import csplugins.layout.AbstractLayout;
 
 import cern.colt.map.*;
 import cern.colt.list.*;
