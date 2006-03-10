@@ -16,31 +16,34 @@
   <!-- =================================================================== -->
   <target name="usage">
     <echo message="----------------------------------------------------------"/>
-    <echo message="      Network Comparison Toolkit (nct) Build System "/>
+    <echo message="      Network Comparison Toolkit (NCT) Build System "/>
     <echo message="----------------------------------------------------------"/>
     <echo message="  Usage:"/>
     <echo message="     ant &lt;target&gt; (CLASSPATH must include junit.jar"/>
     <echo message="                         and ANT_HOME must be set)"/>
     <echo message=" "/>
     <echo message=" Available targets are:"/>
-    <echo message="   all             -> creates all project jars,"/>
-    <echo message="                      docs, runs tests, signs jars"/>
-    <echo message="   jar             -> creates all project jars"/>
-    <echo message="   jar-tests       -> creates junit test jars"/>
-    <echo message="   runtests        -> runs junit tests"/>
-    <echo message="   runtests-gui    -> runs junit tests in the junit gui"/>
-    <echo message="   docs            -> generates the javadoc documentation"/>
-    <echo message="   sign            -> signs all jars (requires keystore)"/>
-    <echo message="   clean           -> removes all created jars and "/>
-    <echo message="                      class files"/>
-    <echo message="   run             -> runs the project jar"/>
-    <echo message="   all-dist        -> creates distribution of all project"/>
-    <echo message="                      files"/>
-    <echo message="   bin-dist        -> creates distribution of binary "/>
-    <echo message="                      project files"/>
-    <echo message="   src-dist        -> creates distribution of src "/>
-    <echo message="                      project files"/>
-    <echo message="   usage           -> (default) displays this screen"/>
+    <echo message="   all          -> creates all project jars,"/>
+    <echo message="                   docs, runs tests, signs jars"/>
+    <echo message="   jar          -> creates all project jars"/>
+    <echo message="   jar-tests    -> creates junit test jars"/>
+    <echo message="   runtests     -> runs junit tests"/>
+    <echo message="   runtests-gui -> runs junit tests in the junit gui"/>
+    <echo message="   retro        -> retroweaves Java 1.5 code into "/>
+    <echo message="                   Java 1.4 compatible code."/>
+    <echo message="   jar-retro    -> builds a jar of the retrowoven code"/>
+    <echo message="   docs         -> generates the javadoc documentation"/>
+    <echo message="   sign         -> signs all jars (requires keystore)"/>
+    <echo message="   clean        -> removes all created jars and "/>
+    <echo message="                   class files"/>
+    <echo message="   run          -> runs the project jar"/>
+    <echo message="   all-dist     -> creates distribution of all project"/>
+    <echo message="                   files"/>
+    <echo message="   bin-dist     -> creates distribution of binary "/>
+    <echo message="                   project files"/>
+    <echo message="   src-dist     -> creates distribution of src "/>
+    <echo message="                   project files"/>
+    <echo message="   usage        -> (default) displays this screen"/>
     <echo message="----------------------------------------------------------"/>
     <echo message=" See also the build.xml file and README for more help."/>
     <echo message="----------------------------------------------------------"/>
@@ -112,19 +115,19 @@
 
     <!-- Define the class path - Defaults to everything in the lib.dir -->
     <path id="project.class.path">
-        <fileset dir="${lib.dir}">
-            <include name="*.jar"/>
-        </fileset>
+      <fileset dir="${lib.dir}">
+        <include name="*.jar"/>
+      </fileset>
     </path>
 
     <!-- Define the junit class path - It needs to find what we just built -->
     <path id="junit.class.path">
-        <fileset dir="${root.dir}">
-            <include name="*.jar"/>
-        </fileset>
-        <fileset dir="${lib.dir}">
-            <include name="*.jar"/>
-        </fileset>
+      <fileset dir="${root.dir}">
+        <include name="*.jar"/>
+      </fileset>
+      <fileset dir="${lib.dir}">
+        <include name="*.jar"/>
+      </fileset>
     </path>
 
 
@@ -244,7 +247,7 @@
   <!-- Creates the project jar file                                        -->
   <!-- =================================================================== -->
   <target name="jar" 
-            depends="compile,manifest"
+          depends="compile,manifest"
           if="build.ok">
     <mkdir dir="${lib.dir}"/>
     <jar destfile="${project.jar}" 
@@ -259,7 +262,7 @@
   <!-- Compiles the tests                                                  -->
   <!-- =================================================================== -->
   <target name="compile-tests"
-            depends="compile" 
+          depends="compile" 
           if="tests.ok" >
     <mkdir dir="${build.dir}"/>
     <javac srcdir="${tests.dir}"
@@ -276,7 +279,7 @@
   <!-- Creates the project-tests.jar file                                  -->
   <!-- =================================================================== -->
   <target name="jar-tests" 
-            depends="compile-tests,test-manifest"
+          depends="compile-tests,test-manifest"
           if="tests.ok">
     <mkdir dir="${build.dir}/examples"/>
     <copy todir="${build.dir}/examples">
@@ -317,7 +320,7 @@
   <!-- =================================================================== -->
   <target name="runtests"
           depends="runtests-fast"
-	  if="junit.test.failure">
+          if="junit.test.failure">
     <junit printsummary="yes"
            haltonfailure="no"
            maxmemory="256m" >
@@ -328,8 +331,8 @@
                  usefile="true" />
       <batchtest fork="yes" 
                  todir="${log.dir}" 
-		 failureProperty="junit.test.failure"
-		 errorProperty="junit.test.failure">
+                 failureProperty="junit.test.failure"
+                 errorProperty="junit.test.failure">
         <fileset dir="${tests.dir}"
                  includes="**/*Test.java"
                  excludes="**/AllTests.java" />
@@ -383,7 +386,7 @@
   <!-- Creates the API documentation                                       -->
   <!-- =================================================================== -->
   <target name="docs" 
-            depends="init" > 
+          depends="init" > 
     <mkdir dir="${javadoc.dir}"/>
     <javadoc sourcepath="${src.dir}"
              destdir="${javadoc.dir}"
@@ -464,7 +467,7 @@
   <!-- Clean up, get back to original state                                -->
   <!-- =================================================================== -->
   <target name="clean" 
-            depends="init">
+          depends="init">
     <delete dir="${build.dir}"/>
     <delete dir="${retro.dir}"/>
     <delete dir="${javadoc.dir}"/>
@@ -489,4 +492,3 @@
 
 </project>
 
-<!-- End of file -->
