@@ -95,10 +95,31 @@ public class CyAttributesReader
         // Chop away leading '(' and trailing ')'.
         val = val.substring(1).trim();
         val = val.substring(0, val.length() - 1).trim();
-        final StringTokenizer elms = new StringTokenizer(val, ":");
+        // Home-grown parsing (ughh) to handle escape sequences.
         final ArrayList elmsBuff = new ArrayList();
-        while (elms.hasMoreTokens()) {
-          elmsBuff.add(elms.nextToken().trim()); }
+        while (val.length() > 0) {
+          final StringBuffer elmBuff = new StringBuffer();
+          int inx2;
+          for (inx2 = 0; inx2 < val.length(); inx2++) {
+            char ch = val.charAt(inx2);
+            if (ch == ':') {
+              inx2++;
+              break; }
+            else if (ch == '\\') {
+              if (++inx2 < val.length()) {
+                char ch2 = val.charAt(inx2);
+                if (ch2 == 'n') { elmBuff.append('\n'); }
+                else if (ch2 == 't') { elmBuff.append('\t'); }
+                else if (ch2 == 'b') { elmBuff.append('\b'); }
+                else if (ch2 == 'r') { elmBuff.append('\r'); }
+                else if (ch2 == 'f') { elmBuff.append('\f'); }
+                else { elmBuff.append(ch2); } }
+              else {
+                /* val ends in '\' - just ignore it. */ } }
+            else {
+              elmBuff.append(ch); } }
+          elmsBuff.add(new String(elmBuff));
+          val = val.substring(inx2); }
         if (firstLine) {
           if (type < 0) {
             while (true) {
@@ -132,6 +153,25 @@ public class CyAttributesReader
           } }
         cyAttrs.setAttributeList(key, attributeName, elmsBuff); }
       else { // Not a list.
+        // Do the escaping thing.
+        final StringBuffer elmBuff = new StringBuffer();
+        int inx2;
+        for (inx2 = 0; inx2 < val.length(); inx2++) {
+          char ch = val.charAt(inx2);
+          if (ch == '\\') {
+            if (++inx2 < val.length()) {
+              char ch2 = val.charAt(inx2);
+              if (ch2 == 'n') { elmBuff.append('\n'); }
+              else if (ch2 == 't') { elmBuff.append('\t'); }
+              else if (ch2 == 'b') { elmBuff.append('\b'); }
+              else if (ch2 == 'r') { elmBuff.append('\r'); }
+              else if (ch2 == 'f') { elmBuff.append('\f'); }
+              else { elmBuff.append(ch2); } }
+            else {
+              /* val ends in '\' - just ignore it. */ } }
+          else {
+            elmBuff.append(ch); } }
+        val = new String(elmBuff);
         if (firstLine) {
           if (type < 0) {
             while (true) {
