@@ -24,7 +24,9 @@ import java.io.IOException;
  * @author <a href="mailto:iavila@systemsbiology.org">Iliana Avila-Campillo</a>
  */
 public class BioNetPlugin extends CytoscapePlugin {
-
+    
+    public static final String PROPS_FILE_ARG_SHORT = "-xr";
+    public static final String PROPS_FILE_ARG_LONG = "--xml-rpc-props";
     protected InteractionDataClient interactionsClient;
     protected GOClient goClient;
     protected SynonymsClient synClient;
@@ -38,6 +40,8 @@ public class BioNetPlugin extends CytoscapePlugin {
     public BioNetPlugin() {
         
         boolean statusOK = true;
+        
+        parsePluginArgs();
         
         this.currentHost = DataClientFactory.DEFAULT_HOST;
         this.connectionDialog = new ServerConnectionDialog(this.currentHost);
@@ -56,6 +60,20 @@ public class BioNetPlugin extends CytoscapePlugin {
                 }
         );
         
+    }
+    
+    /**
+     * Tries to find plugin arguments from the Cytoscape command line and handles them appropriately
+     */
+    protected void parsePluginArgs (){
+        String [] args = CytoscapeInit.getArgs();
+        for(int i = 0; i < args.length; i++){
+            if((args[i].equals(PROPS_FILE_ARG_LONG) || args[i].equals(PROPS_FILE_ARG_SHORT)) && i+1 < args.length){
+                String xmlRpcPropsFilePath = args[i+1];
+                System.out.println("Reading properties from " + xmlRpcPropsFilePath);
+                DataClientFactory.readProperties(xmlRpcPropsFilePath);
+            }
+        }//for i
     }
     
     /**

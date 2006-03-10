@@ -2,8 +2,8 @@ package org.isb.xmlrpc.client;
 
 import java.util.Properties;
 import java.util.Vector;
-
 import org.isb.xmlrpc.util.*;
+import java.io.*;
 import utils.*;
 
 
@@ -45,18 +45,29 @@ public class DataClientFactory {
 	static {
 		String propertiesFilePath = XmlRpcUtils
 				.FindPropsFile(DEFAULT_CLIENT_PROPS);
-		PROPERTIES = MyUtils.readProperties(propertiesFilePath);
-
-		if(PROPERTIES != null){
-			DEFAULT_HOST = (String) PROPERTIES.get("host");
-         }
-		
-		if(DEFAULT_HOST == null){
-			DEFAULT_HOST = "local";
-		}
-		
-		STATIC_HOST = DEFAULT_HOST;
+        if(propertiesFilePath != null)
+            readProperties(propertiesFilePath);
 	}
+    
+    /**
+     * 
+     * @param xmlRpcPropsPath
+     */
+    public static void readProperties (String propsFilePath){
+       
+        if(propsFilePath != null)
+            PROPERTIES = MyUtils.readProperties(propsFilePath);
+        
+        if(PROPERTIES != null){
+            DEFAULT_HOST = (String) PROPERTIES.get("host");
+         }
+        
+        if(DEFAULT_HOST == null){
+            DEFAULT_HOST = "local";
+        }
+        
+        STATIC_HOST = DEFAULT_HOST;
+    }
     
     /**
      * Sets the URL of the host

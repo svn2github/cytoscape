@@ -66,6 +66,7 @@ public class MyUtils {
 	}
 
 	public static InputStream OpenURL(String file) throws Exception {
+        System.out.println("Opening URL file: " + file);
 		InputStream dis = null;
 		String flc = file.trim().toLowerCase();
 		try {
@@ -73,7 +74,7 @@ public class MyUtils {
 				file = file.substring("jar://".length());
 				dis = OpenFileFromJar(file);
 			} else if (flc.startsWith("http://") || flc.startsWith("file://")) {
-				file = file.substring("http://".length());
+				//file = file.substring("http://".length());
 				URL getURL = new URL(file);
 				URLConnection urlCon = getURL.openConnection();
 				dis = urlCon.getInputStream();
@@ -506,8 +507,9 @@ public class MyUtils {
 		if (properties == null)
 			return null;
 		try {
-			InputStream dis = OpenFile(properties);
-			if (dis == null || dis.available() <= 0)
+            InputStream dis;
+            dis = OpenFile(properties);
+            if (dis == null || dis.available() <= 0)
 				throw new Exception("");
 			Properties props = new Properties();
 			props.load(dis);

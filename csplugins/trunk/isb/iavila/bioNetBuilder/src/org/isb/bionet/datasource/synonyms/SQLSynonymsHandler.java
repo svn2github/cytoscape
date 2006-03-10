@@ -18,25 +18,9 @@ public class SQLSynonymsHandler extends SQLDBHandler implements SynonymsSource {
      * Empty constructor
      */
     public SQLSynonymsHandler() {
-        
-        super(MyWebServer.PROPERTIES.containsKey(JDBC_URL_PROPERTY_KEY) ? MyWebServer.PROPERTIES.getProperty(JDBC_URL_PROPERTY_KEY) : "jdbc:mysql:///bionetbuilder_info?user=cytouser&password=bioNetBuilder",
-                SQLDBHandler.MYSQL_JDBC_DRIVER);
-
-         // Look for the current go database
-        ResultSet rs = query("SELECT dbname FROM db_name WHERE db=\"synonyms\"");
-        String currentSynDb = null;
-        try{
-           if(rs.next()){
-               currentSynDb = rs.getString(1); 
-           }
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-        System.out.println("Current synonyms database is: [" + currentSynDb + "]");
-        if(currentSynDb == null || currentSynDb.length() == 0){
-            throw new IllegalStateException("Oh no! We don't know the name of the current synonyms database!!!!!");
-        }
-        execute("USE " + currentSynDb);  
+        super(SQLDBHandler.MYSQL_JDBC_DRIVER);
+        makeConnection(MyWebServer.PROPERTIES.containsKey(JDBC_URL_PROPERTY_KEY) ? 
+                MyWebServer.PROPERTIES.getProperty(JDBC_URL_PROPERTY_KEY) : "jdbc:mysql:///bionetbuilder_info?user=cytouser&password=bioNetBuilder");
         
         this.SUPPORTED_TRANSLATIONS.put(PROLINKS_ID+":"+GI_ID, Boolean.TRUE);
         this.SUPPORTED_TRANSLATIONS.put(GI_ID+":"+PROLINKS_ID, Boolean.TRUE);
@@ -51,6 +35,34 @@ public class SQLSynonymsHandler extends SQLDBHandler implements SynonymsSource {
         this.SUPPORTED_TRANSLATIONS.put(GI_ID+":"+ REFSEQ_ID, Boolean.TRUE);
         this.SUPPORTED_TRANSLATIONS.put(GI_ID + ":" + PIR_ID, Boolean.TRUE);
         this.SUPPORTED_TRANSLATIONS.put(ORF_ID + ":" + GI_ID, Boolean.TRUE);
+    }
+    
+    /**
+     * Overrides super.makeConnection(String url)
+     */
+    public boolean makeConnection (String url){
+        boolean ok = super.makeConnection(url);
+        if(!ok){ 
+            System.out.println("Could not make connection to " + url);
+            return ok;
+        }
+        
+        // Look for the current go database
+        ResultSet rs = query("SELECT dbname FROM db_name WHERE db=\"synonyms\"");
+        String currentSynDb = null;
+        try{
+           if(rs.next()){
+               currentSynDb = rs.getString(1); 
+           }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        System.out.println("Current synonyms database is: [" + currentSynDb + "]");
+        if(currentSynDb == null || currentSynDb.length() == 0){
+            throw new IllegalStateException("Oh no! We don't know the name of the current synonyms database!!!!!");
+        }
+        ok = execute("USE " + currentSynDb);  
+        return ok;
     }
 
     /**

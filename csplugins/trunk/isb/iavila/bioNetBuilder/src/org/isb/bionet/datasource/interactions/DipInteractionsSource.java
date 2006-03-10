@@ -18,9 +18,19 @@ public class DipInteractionsSource extends SQLDBHandler implements InteractionsD
      */
     public DipInteractionsSource() {
    
-        super(MyWebServer.PROPERTIES.containsKey(JDBC_URL_PROPERTY_KEY) ? MyWebServer.PROPERTIES.getProperty(JDBC_URL_PROPERTY_KEY) : "jdbc:mysql:///bionetbuilder_info?user=cytouser&password=bioNetBuilder",
-                SQLDBHandler.MYSQL_JDBC_DRIVER);
-        
+        super(SQLDBHandler.MYSQL_JDBC_DRIVER);
+        makeConnection(MyWebServer.PROPERTIES.containsKey(JDBC_URL_PROPERTY_KEY) ? 
+                MyWebServer.PROPERTIES.getProperty(JDBC_URL_PROPERTY_KEY) : "jdbc:mysql:///bionetbuilder_info?user=cytouser&password=bioNetBuilder");
+    }
+    /**
+     * Overrides super.makeConnection(String url)
+     */
+    public boolean makeConnection (String url){
+        boolean ok = super.makeConnection(url);
+        if(!ok){ 
+            System.out.println("Could not make connection to " + url);
+            return ok;
+        }
         // Look for the current go database
         ResultSet rs = query("SELECT dbname FROM db_name WHERE db=\"dip\"");
         String currentDipDb = null;
@@ -29,14 +39,16 @@ public class DipInteractionsSource extends SQLDBHandler implements InteractionsD
                currentDipDb = rs.getString(1);
            }
         }catch(Exception e){
+            ok = false;
             e.printStackTrace();
         }
         System.out.println("Current DIP database is: [" + currentDipDb + "]");
         if(currentDipDb == null || currentDipDb.length() == 0){
+            ok = false;
             throw new IllegalStateException("Oh no! We don't know the name of the current DIP database!!!!!");
         }
-        execute("USE " + currentDipDb);
-        
+        ok = execute("USE " + currentDipDb);
+        return ok;
     }
 
     /**

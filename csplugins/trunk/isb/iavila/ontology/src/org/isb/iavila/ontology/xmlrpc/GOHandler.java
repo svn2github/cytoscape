@@ -36,10 +36,21 @@ public class GOHandler extends SQLDBHandler {
      * Calls this(String mysql_url)
      */
     public GOHandler (){
-        
-        super(MyWebServer.PROPERTIES.containsKey(SQLDBHandler.JDBC_URL_PROPERTY_KEY) ? MyWebServer.PROPERTIES.getProperty(SQLDBHandler.JDBC_URL_PROPERTY_KEY) : "jdbc:mysql:///bionetbuilder_info?user=cytouser&password=bioNetBuilder",
-                SQLDBHandler.MYSQL_JDBC_DRIVER);
-       
+        super(SQLDBHandler.MYSQL_JDBC_DRIVER);
+        makeConnection(MyWebServer.PROPERTIES.containsKey(SQLDBHandler.JDBC_URL_PROPERTY_KEY) ? 
+                MyWebServer.PROPERTIES.getProperty(SQLDBHandler.JDBC_URL_PROPERTY_KEY) : "jdbc:mysql:///bionetbuilder_info?user=cytouser&password=bioNetBuilder");
+        initialize();
+    }
+    
+    /**
+     * Overrides super.makeConnection(String url)
+     */
+    public boolean makeConnection (String url){
+        boolean ok = super.makeConnection(url);
+        if(!ok){ 
+            System.out.println("Could not make connection to " + url);
+            return ok;
+        }
         // Look for the current go database
         ResultSet rs = query("SELECT dbname FROM db_name WHERE db=\"go\"");
         String currentGoDb = null;
@@ -54,8 +65,8 @@ public class GOHandler extends SQLDBHandler {
         if(currentGoDb == null || currentGoDb.length() == 0){
             throw new IllegalStateException("Oh no! We don't know the name of the current GO database!!!!!");
         }
-        execute("USE " + currentGoDb);
-        initialize();
+        ok = execute("USE " + currentGoDb);
+        return ok;
     }
 
     /**

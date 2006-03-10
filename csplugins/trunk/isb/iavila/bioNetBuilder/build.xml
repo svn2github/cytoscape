@@ -2,7 +2,7 @@
     <description>
     This build.xml file compiles and creates jars for the BioNetBuilder plugin
     </description>
-
+	<taskdef resource="genjar.properties" classpath="/Developer/Java/Ant/lib/GenJar.jar"/>
     <!-- Set the global properties for this build -->
 	<property name = "basedir" value = "."/>
 	<property name = "plugin.name" value = "BioNetBuilderPlugin"/>
@@ -22,17 +22,20 @@
     <property name = "cytoscape22.plugins" value ="../../../../cytoscape-v2.2/plugins"/>
 	<property name = "cytoscapeCVS.plugins" value ="../../../../cytoscape/plugins/core"/>
 	
-	<property name = "cytoscape" value = "${cytoscape22}"/>
-	<property name = "cytoscape.plugins" value = "${cytoscape22.plugins}"/>
+	<property name = "cytoscape" value = "${cytoscapeCVS}"/>
+	<property name = "cytoscape.plugins" value = "${cytoscapeCVS.plugins}"/>
 	
     <!-- classpath for compiling -->
     <path id = "classpath">
     	    <fileset dir = "${cytoscape}">
     	    		<include name = "**/*.jar"/>
     	    	</fileset>
+    		<fileset dir = "${cytoscape}/lib">
+    	    		<include name = "**/*.jar"/>
+    	    	</fileset>
     		<fileset dir = "${local.lib}">
-    		    <include name = "**/*.jar"/>
-    		</fileset>
+    	    		<include name = "**/*.jar"/>
+    	    	</fileset>
     </path>
    <!-- classpath for starting the server -->
 	<path id = "server_classpath">
@@ -68,8 +71,41 @@
     <target name="clean">
        <delete dir="${build}"/>
     </target>
+	
+	<target name="testjar" depends="compile">
+		<unjar dest = "${build}">
+		  <fileset dir = "${local.lib}"/>
+		</unjar>       
+	   
+		<genjar jarfile="bionetbuilder.jar">
+		 <classpath refid="classpath"/>
+	     <class>
+	     	<fileset dir="${build}">
+	              <include name="**/*.class"/>
+	         </fileset>
+	     </class>
+	     <classfilter>
+	        <exclude name="com.mysql.jdbc."/>
+	        <exclude name="org.xml.sax."/>
+	     </classfilter>
+	    </genjar>                    
+	</target>
+	
+	<!-- this works with Cytoscape in CVS -->
+	<target name="onejar" depends="compile">
+		<unjar overwrite="Yes" dest = "${build}">
+			<fileset dir = "${local.lib}">
+				<include name="**/*.jar"/>
+			</fileset>
+		</unjar>
+		<jar destfile = "${jar}/bionetbuilder.jar">
+	    		<fileset dir = "${build}"/>
+	    	</jar>
+		<copy file="${jar}/bionetbuilder.jar" todir="${cytoscape.plugins}"/>
+		<echo message="bionetbuilder.jar is complete, it is located in ${jar} and in ${cytoscape.plugins}"/>
+	</target>
 
-    <!-- jar target -->
+    <!-- jar target, for Cytoscape 2.2 -->
     <target name="jar" depends="compile, makelibjar" description="Creates a jar that contains only BioNetBuilder classes and copies it to Cytoscape's plugins directory">
     	    
     	<jar destfile = "${jar}/${plugin.name}.jar">

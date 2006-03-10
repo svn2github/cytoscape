@@ -43,10 +43,23 @@ public class BindInteractionsSource extends SQLDBHandler implements Interactions
      * Empty constructor
      */
     public BindInteractionsSource() {
-        // If the user specified a JDBC URL, use it, otherwise, assume the database is running locally
-        super(MyWebServer.PROPERTIES.containsKey(JDBC_URL_PROPERTY_KEY) ? MyWebServer.PROPERTIES.getProperty(JDBC_URL_PROPERTY_KEY) : "jdbc:mysql:///bionetbuilder_info?user=cytouser&password=bioNetBuilder",
-                SQLDBHandler.MYSQL_JDBC_DRIVER);
+       
+        super(SQLDBHandler.MYSQL_JDBC_DRIVER);
         
+        makeConnection(MyWebServer.PROPERTIES.containsKey(JDBC_URL_PROPERTY_KEY) ? 
+                MyWebServer.PROPERTIES.getProperty(JDBC_URL_PROPERTY_KEY) : "jdbc:mysql:///bionetbuilder_info?user=cytouser&password=bioNetBuilder");
+    }
+    
+    /**
+     * Overrides super.makeConnection(url)
+     */
+   public boolean makeConnection (String url){
+       boolean ok = super.makeConnection(url);
+       if(!ok){ 
+           System.out.println("Could not make connection to " + url);
+           return ok;
+       }
+       
         // Look for the current go database
         ResultSet rs = query("SELECT dbname FROM db_name WHERE db=\"bind\"");
         String currentBindDb = null;
@@ -56,14 +69,17 @@ public class BindInteractionsSource extends SQLDBHandler implements Interactions
            }
         }catch(Exception e){
             e.printStackTrace();
+            ok = false;
         }
         System.out.println("Current BIND database is: [" + currentBindDb + "]");
         if(currentBindDb == null || currentBindDb.length() == 0){
+            ok = false;
             throw new IllegalStateException("Oh no! We don't know the name of the current BIND database!!!!!");
+            
         }
-        execute("USE " + currentBindDb);
-        
-    }
+        ok = execute("USE " + currentBindDb);
+        return ok;
+   }
 
     /**
      * @param mysql_url

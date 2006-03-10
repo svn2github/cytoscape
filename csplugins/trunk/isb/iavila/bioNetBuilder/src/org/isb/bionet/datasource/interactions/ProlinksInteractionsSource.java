@@ -78,9 +78,21 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	 * Empty constructor
 	 */
 	public ProlinksInteractionsSource() {
-        super(MyWebServer.PROPERTIES.containsKey(JDBC_URL_PROPERTY_KEY) ? MyWebServer.PROPERTIES.getProperty(JDBC_URL_PROPERTY_KEY) : "jdbc:mysql:///bionetbuilder_info?user=cytouser&password=bioNetBuilder",
-                SQLDBHandler.MYSQL_JDBC_DRIVER);
-
+        super(SQLDBHandler.MYSQL_JDBC_DRIVER);
+        makeConnection(MyWebServer.PROPERTIES.containsKey(JDBC_URL_PROPERTY_KEY) ? 
+                MyWebServer.PROPERTIES.getProperty(JDBC_URL_PROPERTY_KEY) : "jdbc:mysql:///bionetbuilder_info?user=cytouser&password=bioNetBuilder");
+        initialize();
+	}
+    
+    /**
+     * Overrides super.makeConnection(String url)
+     */
+    public boolean makeConnection (String url){
+        boolean ok = super.makeConnection(url);
+        if(!ok){ 
+            System.out.println("Could not make connection to " + url);
+            return ok;
+        }
         // Look for the current go database
         ResultSet rs = query("SELECT dbname FROM db_name WHERE db=\"prolinks\"");
         String currentProlinksDb = null;
@@ -95,9 +107,9 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
         if(currentProlinksDb == null || currentProlinksDb.length() == 0){
             throw new IllegalStateException("Oh no! We don't know the name of the current Prolinks database!!!!!");
         }
-        execute("USE " + currentProlinksDb);
-        initialize();
-	}
+        ok = execute("USE " + currentProlinksDb);
+        return ok;
+    }
 
 	/**
 	 * @param mysql_url

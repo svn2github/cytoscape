@@ -23,6 +23,8 @@ public class SQLDBHandler implements DBHandler {
 
     protected boolean debug = true;
 
+    
+    
     /**
      * The database url can be set at a later time
      * 
@@ -181,6 +183,10 @@ public class SQLDBHandler implements DBHandler {
      * @return the ResultSet returned, or null if there was a problem
      */
     protected ResultSet query(String sql_statement) {
+        if(getStatus().equals(DBHandler.CLOSED)){
+            // the connection closed, try to reconnect
+            makeConnection(this.url);
+        }
         if (debug) {
             System.out.println(sql_statement);
         }
@@ -202,6 +208,10 @@ public class SQLDBHandler implements DBHandler {
      * @return true if all alright, false otherwise
      */
     protected boolean execute(String sql_statement) {
+        if(getStatus().equals(DBHandler.CLOSED)){
+            // the connection closed, try to reconnect
+            makeConnection(this.url);
+        }
         if (debug) {
             System.out.println(sql_statement);
         }
@@ -220,6 +230,10 @@ public class SQLDBHandler implements DBHandler {
      * @throws SQLException
      */
     public void queryAndDump(String sql_statement) throws SQLException {
+        if(getStatus().equals(DBHandler.CLOSED)){
+            // the connection closed, try to reconnect
+            makeConnection(this.url);
+        }
         if (debug)
             System.err.println("QUERY: " + sql_statement);
         ResultSet rs = query(sql_statement);

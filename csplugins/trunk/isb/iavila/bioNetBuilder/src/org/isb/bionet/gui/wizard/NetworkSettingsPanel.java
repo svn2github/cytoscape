@@ -51,8 +51,8 @@ public class NetworkSettingsPanel extends JPanel{
         this.createView = new JRadioButton("Create a Network View");
         createView.setSelected(true);
         viewPanel.add(this.createView);
-       
-        add(viewPanel);
+        // Cytoscape does not have a way of controlling view creation, so exclude this option (for now)
+        //add(viewPanel);
     }
     
 }

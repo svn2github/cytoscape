@@ -46,6 +46,7 @@ public class XmlRpcUtils {
 		if(!found){
 			try {
 				file = new File(System.getProperty("user.dir"), file_name);
+                 System.out.println("Working directory: " + System.getProperty("user.dir"));
 				if(file.exists()){
 					System.out.println(file_name + " found at: " + file);
 					found = true;

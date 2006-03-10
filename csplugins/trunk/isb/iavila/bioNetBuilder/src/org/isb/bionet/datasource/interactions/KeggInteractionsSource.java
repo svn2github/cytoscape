@@ -31,8 +31,18 @@ public class KeggInteractionsSource extends SQLDBHandler implements Interactions
      * Empty constructor
      */
     public KeggInteractionsSource() {
-        super(MyWebServer.PROPERTIES.containsKey(JDBC_URL_PROPERTY_KEY) ? MyWebServer.PROPERTIES.getProperty(JDBC_URL_PROPERTY_KEY) : "jdbc:mysql:///bionetbuilder_info?user=cytouser&password=bioNetBuilder",
-                SQLDBHandler.MYSQL_JDBC_DRIVER);
+        super(SQLDBHandler.MYSQL_JDBC_DRIVER);
+        makeConnection(MyWebServer.PROPERTIES.containsKey(JDBC_URL_PROPERTY_KEY) ?
+                MyWebServer.PROPERTIES.getProperty(JDBC_URL_PROPERTY_KEY) : "jdbc:mysql:///bionetbuilder_info?user=cytouser&password=bioNetBuilder");
+    }
+    
+    public boolean makeConnection (String url){
+        
+        boolean ok = super.makeConnection(url);
+        if(!ok){ 
+            System.out.println("Could not make connection to " + url);
+            return ok;
+        }
         
         // Look for the current go database
         ResultSet rs = query("SELECT dbname FROM db_name WHERE db=\"kegg\"");
@@ -42,14 +52,15 @@ public class KeggInteractionsSource extends SQLDBHandler implements Interactions
                currentKeggDb = rs.getString(1); 
            }
         }catch(Exception e){
+            ok = false;
             e.printStackTrace();
         }
         System.out.println("Current KEGG database is: [" + currentKeggDb + "]");
         if(currentKeggDb == null || currentKeggDb.length() == 0){
             throw new IllegalStateException("Oh no! We don't know the name of the current KEGG database!!!!!");
         }
-        execute("USE " + currentKeggDb);
-        
+        ok = execute("USE " + currentKeggDb);
+        return ok;
     }
 
     /**
