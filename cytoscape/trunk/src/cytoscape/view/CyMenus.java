@@ -119,7 +119,6 @@ import cytoscape.actions.SelectFirstNeighborsAction;
 import cytoscape.actions.SelectionModeAction;
 import cytoscape.actions.SetVisualPropertiesAction;
 import cytoscape.actions.ShowAllAction;
-import cytoscape.actions.SpringEmbeddedLayoutMenu;
 import cytoscape.actions.SquiggleAction;
 import cytoscape.actions.ToggleVisualMapperAction;
 import cytoscape.actions.UnHideSelectedEdgesAction;
@@ -783,7 +782,6 @@ public class CyMenus implements GraphViewChangeListener {
 
 		addAction(new RotationScaleLayoutAction());
 		layoutMenu.addSeparator();
-		layoutMenu.add(new SpringEmbeddedLayoutMenu());
 
 		// fill the Visualization menu
 
