@@ -531,6 +531,8 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
           graph.edgesAdjacent(node, true, true, true);
         while (touchingEdges.numRemaining() > 0) {
           final int edge = touchingEdges.nextInt(); // Positive.
+          final double segThicknessDiv2 =
+            m_view.m_edgeDetails.segmentThickness(edge) / 2.0d;
           final int otherNode =
             node ^ graph.edgeSource(edge) ^ graph.edgeTarget(edge);
           if (m_hash.get(otherNode) < 0) {
@@ -579,7 +581,9 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
             GraphRenderer.computeClosedPath
               (m_path.getPathIterator(null), m_path2);
             if (m_path2.intersects
-                (xMin, yMin, xMax - xMin, yMax - yMin)) {
+                (xMin - segThicknessDiv2, yMin - segThicknessDiv2,
+                 (xMax - xMin) + segThicknessDiv2 * 2,
+                 (yMax - yMin) + segThicknessDiv2 * 2)) {
               m_stack2.push(~edge); } } }
         m_hash.put(node); } }
   }
