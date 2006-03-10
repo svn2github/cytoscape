@@ -47,14 +47,18 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+
+import cytoscape.CytoscapeInit;
 
 /**
  * Zip multiple files into one.
  * 
  * The created zip files can be decompressed by other utilities.
  * 
- * The original code was written by Mr. Masanori Kouno
+ * Special Thanks for Mr. Masanori Kouno
+ * The original code was written by him.
  * (http://www4.ocn.ne.jp/~mark44/TIPS/Java/ZipOutputStream/zip.htm)
  * 
  * @author kono
@@ -82,11 +86,13 @@ public class ZipMultipleFiles {
 		this.zipFileName = zipFile;
 	}
 
+	public ZipMultipleFiles() {
+	}
+
 	public ZipMultipleFiles(String zipFile, String[] fileList, File tempDir) {
 		this.zipFileName = zipFile;
 		this.fileCount = fileList.length;
 		this.files = new String[fileCount];
-		
 
 		System.arraycopy(fileList, 0, files, 0, fileCount);
 	}
@@ -247,4 +253,53 @@ public class ZipMultipleFiles {
 
 		return null;
 	}
+
+	public void readVizmap() throws IOException {
+
+		BufferedInputStream bis = null;
+		ZipInputStream zis = null;
+
+		FileOutputStream fos = null;
+
+		File currentVizmap = new File(CytoscapeInit
+				.getVizmapPropertiesLocation());
+
+		FileInputStream fis = null;
+		ZipEntry zent = null;
+
+		try {
+			fis = new FileInputStream(zipFileName);
+			bis = new BufferedInputStream(fis);
+			zis = new ZipInputStream(bis);
+
+			byte[] buf = new byte[1024];
+			int len;
+
+			while ((zent = zis.getNextEntry()) != null) {
+				if (zent.getName().endsWith("vizmap.props")) {
+					fos = new FileOutputStream(currentVizmap);
+					while (-1 != (len = zis.read(buf, 0, buf.length))) {
+						fos.write(buf, 0, len);
+					}
+					fos.close();
+				}
+			}
+
+		} catch (IOException e) {
+			System.err.println(e);
+		} finally {
+
+			try {
+				zis.close();
+			} catch (Exception e) {
+			}
+
+			try {
+				bis.close();
+			} catch (Exception e) {
+			}
+
+		}
+	}
+
 }
