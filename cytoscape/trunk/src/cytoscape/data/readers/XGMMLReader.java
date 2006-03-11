@@ -592,10 +592,12 @@ public class XGMMLReader implements GraphReader {
 		layoutEdge(myView);
 		
 		// Build Style if needed.
-		if(vsbSwitch.equals("on")) {
-			VisualStyleBuilder vsb = new VisualStyleBuilder(networkName + ".style",
-				nodeGraphicsMap, edgeGraphicsMap, null);
-			vsb.buildStyle();
+		if(vsbSwitch != null) {
+			if(vsbSwitch.equals("on")) {
+				VisualStyleBuilder vsb = new VisualStyleBuilder(networkName + ".style",
+						nodeGraphicsMap, edgeGraphicsMap, null);
+				vsb.buildStyle();
+			}
 		}
 	}
 

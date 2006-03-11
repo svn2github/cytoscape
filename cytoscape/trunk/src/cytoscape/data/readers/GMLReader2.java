@@ -627,9 +627,10 @@ public class GMLReader2 implements GraphReader {
 		extract(); // Extract node & edge attributes
 		Properties prop = CytoscapeInit.getProperties();
 		String vsbSwitch = prop.getProperty("visualStyleBuilder");
-		
-		if(vsbSwitch.equals("on")) {
-			applyMaps(); // generate new VS and apply it.
+		if(vsbSwitch != null) {
+			if(vsbSwitch.equals("on")) {
+				applyMaps(); // generate new VS and apply it.
+			}
 		}
 		releaseStructures();
 	}
