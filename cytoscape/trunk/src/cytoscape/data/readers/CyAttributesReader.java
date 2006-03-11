@@ -46,6 +46,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
+// I hate writing parsing code.  Grumble grumble grumble.
 public class CyAttributesReader
 {
 
@@ -55,7 +56,7 @@ public class CyAttributesReader
     final BufferedReader reader;
     if (fileIn instanceof BufferedReader) { reader = (BufferedReader) fileIn; }
     else { reader = new BufferedReader(fileIn); }
-    final String attributeName;
+    String attributeName;
     byte type = -1;
     {
       final String firstLine = reader.readLine();
@@ -65,7 +66,7 @@ public class CyAttributesReader
       if (inx < 0) {
         attributeName = firstLine.trim(); }
       else {
-        attributeName = firstLine.substring(0, inx).trim();
+        attributeName = firstLine.substring(0, inx - 1).trim();
         String foo = firstLine.substring(inx);
         final StringTokenizer tokens = new StringTokenizer(foo);
         foo = tokens.nextToken();
@@ -81,6 +82,9 @@ public class CyAttributesReader
         else if (className.equalsIgnoreCase("java.lang.Double")) {
           type = MultiHashMapDefinition.TYPE_FLOATING_POINT; } }
     }
+    if (attributeName.indexOf("(") >= 0) {
+      attributeName = attributeName.substring
+        (0, attributeName.indexOf("(")).trim(); }
     boolean firstLine = true;
     boolean list = false;
     while (true) {
@@ -103,10 +107,11 @@ public class CyAttributesReader
           for (inx2 = 0; inx2 < val.length(); inx2++) {
             char ch = val.charAt(inx2);
             if (ch == ':') {
-              inx2++;
+              inx2++; inx2++;
               break; }
             else if (ch == '\\') {
-              if (++inx2 < val.length()) {
+              if (inx2 + 1 < val.length()) {
+                inx2++;
                 char ch2 = val.charAt(inx2);
                 if (ch2 == 'n') { elmBuff.append('\n'); }
                 else if (ch2 == 't') { elmBuff.append('\t'); }
@@ -159,7 +164,8 @@ public class CyAttributesReader
         for (inx2 = 0; inx2 < val.length(); inx2++) {
           char ch = val.charAt(inx2);
           if (ch == '\\') {
-            if (++inx2 < val.length()) {
+            if (inx2 + 1 < val.length()) {
+              inx2++;
               char ch2 = val.charAt(inx2);
               if (ch2 == 'n') { elmBuff.append('\n'); }
               else if (ch2 == 't') { elmBuff.append('\t'); }
