@@ -13,12 +13,14 @@
     <ant dir="RFilters"/>
     <ant dir="yfiles"/>
     <ant dir="CytoscapeEditor2"/>
+    <ant dir="AutomaticLayout"/>
     <mkdir dir="${build.dir}"/>
     <copy todir="${build.dir}" file="browser/browser.jar"/>
     <copy todir="${build.dir}" file="ManualLayout/ManualLayout.jar"/>
     <copy todir="${build.dir}" file="RFilters/filter.jar"/>
     <copy todir="${build.dir}" file="yfiles/yLayouts.jar"/>
     <copy todir="${build.dir}" file="CytoscapeEditor2/CytoscapeEditor.jar"/>
+    <copy todir="${build.dir}" file="AutomaticLayout/AutomaticLayout.jar"/>
   </target>
 
   <!-- clean all coreplugin projects  -->
@@ -28,6 +30,7 @@
     <ant dir="RFilters" target="clean"/>
     <ant dir="yfiles" target="clean"/>
     <ant dir="CytoscapeEditor2" target="clean"/>
+    <ant dir="AutomaticLayout" target="clean"/>
     <delete dir="${build.dir}"/>
   </target>
 
