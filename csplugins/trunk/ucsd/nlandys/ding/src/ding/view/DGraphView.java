@@ -326,6 +326,7 @@ public class DGraphView implements GraphView
       m_nodeDetails.unregisterNode(~nodeInx);
       // If this node was hidden, it won't be in m_spacial.
       m_spacial.delete(~nodeInx);
+      m_selectedNodes.delete(~nodeInx);
       returnThis.m_view = null; }
     final GraphViewChangeListener listener = m_lis[0];
     if (listener != null) {
@@ -372,6 +373,7 @@ public class DGraphView implements GraphView
     m_drawPersp.hideEdge(edgeInx);
     m_structPersp.hideEdge(edgeInx);
     m_edgeDetails.unregisterEdge(~edgeInx);
+    m_selectedEdges.delete(~edgeInx);
     returnThis.m_view = null;
     return returnThis;
   }
