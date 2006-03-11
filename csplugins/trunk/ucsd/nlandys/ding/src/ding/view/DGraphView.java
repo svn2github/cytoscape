@@ -154,7 +154,13 @@ public class DGraphView implements GraphView
 
   public List getSelectedNodes()
   {
-    return null;
+    synchronized (m_lock) {
+      final IntEnumerator elms = m_selectedNodes.searchRange
+        (Integer.MIN_VALUE, Integer.MAX_VALUE, false);
+      final ArrayList returnThis = new ArrayList();
+      while (elms.numRemaining() > 0) {
+        returnThis.add(m_nodeViewMap.get(new Integer(~elms.nextInt()))); }
+      return returnThis; }
   }
 
   public int[] getSelectedEdgeIndices()
@@ -170,7 +176,13 @@ public class DGraphView implements GraphView
 
   public List getSelectedEdges()
   {
-    return null;
+    synchronized (m_lock) {
+      final IntEnumerator elms = m_selectedEdges.searchRange
+        (Integer.MIN_VALUE, Integer.MAX_VALUE, false);
+      final ArrayList returnThis = new ArrayList();
+      while (elms.numRemaining() > 0) {
+        returnThis.add(m_edgeViewMap.get(new Integer(~elms.nextInt()))); }
+      return returnThis; }
   }
 
   public void addGraphViewChangeListener(GraphViewChangeListener l)
