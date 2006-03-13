@@ -41,6 +41,8 @@ public class SQLSynonymsHandler extends SQLDBHandler implements SynonymsSource {
      * Overrides super.makeConnection(String url)
      */
     public boolean makeConnection (String url){
+        
+        System.out.println("SQLSynonymsHandler.makeConnection(" + url + ")...");
         boolean ok = super.makeConnection(url);
         if(!ok){ 
             System.out.println("Could not make connection to " + url);

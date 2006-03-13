@@ -101,6 +101,10 @@ public class InteractionsHandler implements InteractionsDataSource {
 	 * TODO: Check that the type of ID can be translated to UNIVERSAL_GENE_ID_TYPE???
      */
 	public Boolean addSource(String source_class) {
+        
+        if(containsSource(source_class).booleanValue()){
+            return Boolean.TRUE;
+        }
 
 		try {
 
@@ -111,9 +115,9 @@ public class InteractionsHandler implements InteractionsDataSource {
 				return Boolean.TRUE;
 			}
 
-			System.err
-					.println("Requested class for source is not an InteractionsDataSource:"
-							+ source_class);
+			//System.err
+			//		.println("Requested class for source is not an InteractionsDataSource:"
+				//			+ source_class);
 			return Boolean.FALSE;
 
 		} catch (Exception e) {
@@ -136,7 +140,12 @@ public class InteractionsHandler implements InteractionsDataSource {
      * TODO: Check that the type of ID can be translated to UNIVERSAL_GENE_ID_TYPE???
 	 */
 	public Boolean addSource(String source_class, Object arg) {
-
+	    
+        if(containsSource(source_class).booleanValue()){
+            return Boolean.TRUE;
+        }
+        
+        
 		try {
 
 			Class classForName = Class.forName(source_class);
@@ -148,9 +157,9 @@ public class InteractionsHandler implements InteractionsDataSource {
 				return Boolean.TRUE;
 			}
 
-			System.out
-					.println("Requested class for source is not an InteractionsDataSource:"
-							+ source_class);
+			//System.out
+			//		.println("Requested class for source is not an InteractionsDataSource:"
+				//			+ source_class);
 			return Boolean.FALSE;
 
 		} catch (Exception e) {
@@ -174,7 +183,9 @@ public class InteractionsHandler implements InteractionsDataSource {
 	 * TODO: Check that the type of ID can be translated to UNIVERSAL_GENE_ID_TYPE???
      */
 	public Boolean addSource(String source_class, Object arg1, Object arg2) {
-
+        if(containsSource(source_class).booleanValue()){
+            return Boolean.TRUE;
+        }
 		try {
 
 			Class classForName = Class.forName(source_class);
@@ -186,9 +197,9 @@ public class InteractionsHandler implements InteractionsDataSource {
 				return Boolean.TRUE;
 			}
 
-			System.out
-					.println("Requested class for source is not an InteractionsDataSource:"
-							+ source_class);
+			//System.out
+			//		.println("Requested class for source is not an InteractionsDataSource:"
+				//			+ source_class);
 			return Boolean.FALSE;
 
 		} catch (Exception e) {
@@ -215,7 +226,9 @@ public class InteractionsHandler implements InteractionsDataSource {
 	 */
 	public Boolean addSource(String source_class, Object arg1, Object arg2,
 			Object arg3) {
-
+        if(containsSource(source_class).booleanValue()){
+            return Boolean.TRUE;
+        }
 		try {
 
 			Class classForName = Class.forName(source_class);
@@ -227,9 +240,9 @@ public class InteractionsHandler implements InteractionsDataSource {
 				return Boolean.TRUE;
 			}
 
-			System.out
-					.println("Requested class for source is not an InteractionsDataSource:"
-							+ source_class);
+//			System.out
+	//				.println("Requested class for source is not an InteractionsDataSource:"
+		//					+ source_class);
 			return Boolean.FALSE;
 
 		} catch (Exception e) {
@@ -270,7 +283,7 @@ public class InteractionsHandler implements InteractionsDataSource {
                 return dataSource;
             }
         }// while it.hasNext()
-        System.out.println("getDataSourceForClass returning null!!!!!!!!!!!");
+       // System.out.println("getDataSourceForClass returning null!!!!!!!!!!!");
         return null;
     }
 

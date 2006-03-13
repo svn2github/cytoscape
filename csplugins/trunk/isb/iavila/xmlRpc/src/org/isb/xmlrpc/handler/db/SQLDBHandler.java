@@ -183,8 +183,11 @@ public class SQLDBHandler implements DBHandler {
      * @return the ResultSet returned, or null if there was a problem
      */
     protected ResultSet query(String sql_statement) {
+        
         if(getStatus().equals(DBHandler.CLOSED)){
             // the connection closed, try to reconnect
+           System.out.println("Connection to " + this.url + 
+                   " is closed. Attemping to reconnect...");
             makeConnection(this.url);
         }
         if (debug) {
@@ -210,6 +213,8 @@ public class SQLDBHandler implements DBHandler {
     protected boolean execute(String sql_statement) {
         if(getStatus().equals(DBHandler.CLOSED)){
             // the connection closed, try to reconnect
+            System.out.println("Connection to " + this.url + 
+            " is closed. Attemping to reconnect...");
             makeConnection(this.url);
         }
         if (debug) {
