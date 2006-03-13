@@ -18,6 +18,12 @@ import java.util.Collection;
 public class DingNetworkView extends DGraphView implements CyNetworkView
 {
 
+  public DingNetworkView(CyNetwork network,
+                         String title)
+  {
+    super(network);
+  }
+
   public CyNetwork getNetwork()
   {
     return null;
@@ -161,6 +167,12 @@ public class DingNetworkView extends DGraphView implements CyNetworkView
   public void applyLockedLayout(LayoutAlgorithm layout,
                                 CyNodeView[] nodes,
                                 CyEdgeView[] edges)
+  {
+  }
+
+  public void applyLayout(LayoutAlgorithm layout,
+                          CyNodeView[] nodes,
+                          CyEdgeView[] edges)
   {
   }
 
