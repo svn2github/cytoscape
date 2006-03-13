@@ -18,24 +18,28 @@ import java.util.Collection;
 public class DingNetworkView extends DGraphView implements CyNetworkView
 {
 
+  private String title;
+
   public DingNetworkView(CyNetwork network,
                          String title)
   {
     super(network);
+    this.title = title;
   }
 
   public CyNetwork getNetwork()
   {
-    return null;
+    return (CyNetwork) getGraphPerspective();
   }
 
   public void setTitle(String title)
   {
+    this.title = title;
   }
 
   public String getTitle()
   {
-    return null;
+    return title;
   }
 
   public void redrawGraph(boolean layout, boolean vizmap)
