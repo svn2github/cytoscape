@@ -259,24 +259,40 @@ public class DingNetworkView extends DGraphView implements CyNetworkView
                                 CyNodeView[] nodes,
                                 CyEdgeView[] edges)
   {
+    layout.lockNodes(nodes);
+    layout.doLayout();
   }
 
   public void applyLayout(LayoutAlgorithm layout,
                           CyNodeView[] nodes,
                           CyEdgeView[] edges)
   {
+    layout.lockNodes(getInverseViews(nodes));
+    layout.doLayout();
   }
 
   public void applyLockedLayout(LayoutAlgorithm layout,
                                 int[] nodes,
                                 int[] edges)
   {
+    layout.lockNodes(convertToNodeViews(nodes));
+    layout.doLayout();
+  }
+
+  private NodeView[] convertToNodeViews(int[] nodes)
+  {
+    NodeView[] views = new NodeView[nodes.length];
+    for (int i = 0; i < nodes.length; i++) {
+      views[i] = getNodeView(nodes[i]); }
+    return views;
   }
 
   public void applyLayout(LayoutAlgorithm layout,
                           int[] nodes,
                           int[] edges)
   {
+    layout.lockNodes(getInverseViews(convertToNodeViews(nodes)));
+    layout.doLayout();
   }
 
 }
