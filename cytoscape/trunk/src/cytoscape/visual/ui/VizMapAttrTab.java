@@ -472,6 +472,10 @@ public class VizMapAttrTab extends VizMapTab {
 	    // convert to array for JOptionPane
 	    Object[] mapperArray = mapperNames.toArray();
 
+//	    for(int i = 0; i<mapperArray.length; i++) {
+//	    	System.out.println("Map: " + i + " " +  mapperArray[i].toString());
+//	    }
+	    
 	    // show JOptionPane with the available mappers
 	    String selectedMapper = (String) JOptionPane.showInputDialog(mainUIDialog,
                                                                    "Choose a mapper",

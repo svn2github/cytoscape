@@ -247,6 +247,13 @@ public abstract class CalculatorCatalogFactory {
 								vizmapProps.clear();
 								calculatorCatalog.clear();
 
+								// Rebuild mappings
+								calculatorCatalog.addMapping("Discrete Mapper", DiscreteMapping.class);
+								calculatorCatalog.addMapping("Continuous Mapper",
+										ContinuousMapping.class);
+								calculatorCatalog.addMapping("Passthrough Mapper",
+										PassThroughMapping.class);
+								
 								String sessionName = (String) e.getNewValue();
 								System.out
 										.println("Restoring Saved Vizmapper from session file: "

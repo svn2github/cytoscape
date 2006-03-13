@@ -1,59 +1,66 @@
-
 /*
-  File: CytoscapeInit.java 
-  
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-  
-  The Cytoscape Consortium is: 
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Pasteur Institute
-  - Agilent Technologies
-  
-  This library is free software; you can redistribute it and/or modify it
-  under the terms of the GNU Lesser General Public License as published
-  by the Free Software Foundation; either version 2.1 of the License, or
-  any later version.
-  
-  This library is distributed in the hope that it will be useful, but
-  WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
-  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
-  documentation provided hereunder is on an "as is" basis, and the
-  Institute for Systems Biology and the Whitehead Institute 
-  have no obligations to provide maintenance, support,
-  updates, enhancements or modifications.  In no event shall the
-  Institute for Systems Biology and the Whitehead Institute 
-  be liable to any party for direct, indirect, special,
-  incidental or consequential damages, including lost profits, arising
-  out of the use of this software and its documentation, even if the
-  Institute for Systems Biology and the Whitehead Institute 
-  have been advised of the possibility of such damage.  See
-  the GNU Lesser General Public License for more details.
-  
-  You should have received a copy of the GNU Lesser General Public License
-  along with this library; if not, write to the Free Software Foundation,
-  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ File: CytoscapeInit.java 
+ 
+ Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+ 
+ The Cytoscape Consortium is: 
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Pasteur Institute
+ - Agilent Technologies
+ 
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+ 
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute 
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute 
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute 
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+ 
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+ */
 
 package cytoscape;
 
-import cytoscape.init.*;
-import cytoscape.plugin.*;
-import cytoscape.util.shadegrown.WindowUtilities;
-import cytoscape.data.servers.BioDataServer;
-import cytoscape.view.CytoscapeDesktop;
-import cytoscape.view.NetworkPanel;
-
-import java.io.*;
-import java.util.*;
-import java.util.jar.*;
-import java.net.*;
-import java.awt.event.ActionEvent;
-import java.beans.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.net.JarURLConnection;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
+import java.util.Set;
+import java.util.jar.JarFile;
 
 import javax.swing.ImageIcon;
-import javax.swing.event.SwingPropertyChangeSupport;
+
+import cytoscape.data.servers.BioDataServer;
+import cytoscape.init.CyCommandLineParser;
+import cytoscape.init.CyPropertiesReader;
+import cytoscape.plugin.AbstractPlugin;
+import cytoscape.plugin.CytoscapePlugin;
+import cytoscape.util.shadegrown.WindowUtilities;
+import cytoscape.view.CytoscapeDesktop;
 
 /**
  * Cytoscape Init is responsible for starting Cytoscape in a way that makes
@@ -186,18 +193,18 @@ public class CytoscapeInit implements PropertyChangeListener {
 		// read in properties in cytoscape.props, and assign variables from them
 		CyPropertiesReader propReader = new CyPropertiesReader();
 		// getSpecifiedPropsFile returns the location of cytoscape.props
-		propReader.readProperties(cli.getSpecifiedPropsFile()); 
+		propReader.readProperties(cli.getSpecifiedPropsFile());
 		properties = propReader.getProperties();
 		propertiesLocation = propReader.getPropertiesLocation();
 		setVariablesFromProperties();
 
-		//2. Command line. Overwrites properties set from cytoscape.props
+		// 2. Command line. Overwrites properties set from cytoscape.props
 		setVariablesFromCommandLine(cli);
-		
+
 		// THIS IS DEPRECATED. The Project files are no longer supported!!!
 		// this loads project files, whic are essentially an extension of the
 		// command line
-		//loadProjectFiles(cli.getProjectFiles());
+		// loadProjectFiles(cli.getProjectFiles());
 
 		useView = cli.useView();
 		// We currently don't support headless mode, so no sense allowing a
@@ -207,50 +214,59 @@ public class CytoscapeInit implements PropertyChangeListener {
 		// }
 		suppressView = cli.suppressView();
 
-		// if the command line specified a location for the vizmap.props file, set it
+		// if the command line specified a location for the vizmap.props file,
+		// set it
 		vizmapPropertiesLocation = cli.getVizPropsFile();
-		if(vizmapPropertiesLocation != null && vizmapPropertiesLocation.length() > 0){
+		if (vizmapPropertiesLocation != null
+				&& vizmapPropertiesLocation.length() > 0) {
 			File vizmaps = new File(vizmapPropertiesLocation);
-			if(vizmaps.exists()){
+			if (vizmaps.exists()) {
 				vizmapPropertiesLocation = vizmaps.getAbsolutePath();
-			}else{
+			} else {
 				// Does not exist!
-				System.out.println("The command line argument for vizmaps.props does not contain a valid file name:" + vizmapPropertiesLocation);
+				System.out
+						.println("The command line argument for vizmaps.props does not contain a valid file name:"
+								+ vizmapPropertiesLocation);
 				vizmapPropertiesLocation = null;
 			}
 		}
-		
-		if(vizmapPropertiesLocation == null || vizmapPropertiesLocation.length() == 0){
-			// the user did not specify a location for the vizmap.props (or the location is incorrect)
+
+		if (vizmapPropertiesLocation == null
+				|| vizmapPropertiesLocation.length() == 0) {
+			// the user did not specify a location for the vizmap.props (or the
+			// location is incorrect)
 			// try to see if there is one in ~/.cytoscape
-			
+
 			// get ~/.cytoscape directory (or create it if it does not exist)
 			File cytoscape = getConfigDirectoy();
-			
+
 			// look for vizmap.props in this directory
-			File vizmap = new File(cytoscape,"vizmap.props");
-			
-			if(vizmap.exists()){
+			File vizmap = new File(cytoscape, "vizmap.props");
+
+			if (vizmap.exists()) {
 				vizmapPropertiesLocation = vizmap.getAbsolutePath();
-			}else{
+			} else {
 				// create an empy vizmap.props in ~/.cytoscape
-				// the CalculatorCatalogFactory will create a default visual style
-				vizmapPropertiesLocation = getConfigFile("vizmap.props").getAbsolutePath();
-	        }
-	            
+				// the CalculatorCatalogFactory will create a default visual
+				// style
+				vizmapPropertiesLocation = getConfigFile("vizmap.props")
+						.getAbsolutePath();
+			}
+
 		}
 
-		 System.out.println("vizmap.props is located in " + vizmapPropertiesLocation);
-		
-		 // store key property values into main Properties object for
-		 // for visual (via Preferences Dialog) communication and later storage
-		 //
-		 // command line -overrides- cytoscape.props
-		 // hence it is now safe to store those values
-		 storeVariablesInProperties();
-     
-		 // see if we are in headless mode
-		 // show splash screen, if appropriate
+		System.out.println("vizmap.props is located in "
+				+ vizmapPropertiesLocation);
+
+		// store key property values into main Properties object for
+		// for visual (via Preferences Dialog) communication and later storage
+		//
+		// command line -overrides- cytoscape.props
+		// hence it is now safe to store those values
+		storeVariablesInProperties();
+
+		// see if we are in headless mode
+		// show splash screen, if appropriate
 		if (!isHeadless()) {
 			ImageIcon image = new ImageIcon(getClass().getResource(
 					"/cytoscape/images/CytoscapeSplashScreen.png"));
@@ -291,19 +307,20 @@ public class CytoscapeInit implements PropertyChangeListener {
 				new String[] {}), !noCanonicalization(), bds,
 				getDefaultSpeciesName());
 
-		
 		// Add a listener that will apply vizmaps every time attributes change
-		PropertyChangeListener attsChangeListener = new PropertyChangeListener(){
-			
-			public void propertyChange (PropertyChangeEvent e){
-				if(e.getPropertyName().equals(Cytoscape.ATTRIBUTES_CHANGED)){
-					// apply vizmaps
-					Cytoscape.getCurrentNetworkView().redrawGraph(false, true); // re-apply vizmaps
-				}//if
-			}//propertyChange
-		};//attsChangedListener
+		PropertyChangeListener attsChangeListener = new PropertyChangeListener() {
 
-		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(attsChangeListener);
+			public void propertyChange(PropertyChangeEvent e) {
+				if (e.getPropertyName().equals(Cytoscape.ATTRIBUTES_CHANGED)) {
+					// apply vizmaps
+					Cytoscape.getCurrentNetworkView().redrawGraph(false, true); // re-apply
+																				// vizmaps
+				}// if
+			}// propertyChange
+		};// attsChangedListener
+
+		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(
+				attsChangeListener);
 		Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
 
 		// load expression data if specified
@@ -321,7 +338,7 @@ public class CytoscapeInit implements PropertyChangeListener {
 		}
 
 		loadPlugins(pluginURLs);
-		
+
 		// attempt to load resource plugins
 		List rp = cli.getResourcePlugins();
 		for (Iterator rpi = rp.iterator(); rpi.hasNext();) {
@@ -340,10 +357,10 @@ public class CytoscapeInit implements PropertyChangeListener {
 		if (!isHeadless()) {
 			WindowUtilities.hideSplash();
 		}
-		
+
 		// This is for browser and other plugins.
-		Cytoscape.firePropertyChange( Cytoscape.NETWORK_LOADED, null, null );
-		
+		Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, null);
+
 		System.out.println("Cytoscape initialized successfully.");
 		return true;
 	}
@@ -358,7 +375,7 @@ public class CytoscapeInit implements PropertyChangeListener {
 		properties.setProperty("viewThreshold", "" + viewThreshold);
 		properties.setProperty("secondaryViewThreshold", ""
 				+ secondaryViewThreshold);
-		//properties.setProperty("vizmapPropertiesLocation",vizmapPropertiesLocation);
+		// properties.setProperty("vizmapPropertiesLocation",vizmapPropertiesLocation);
 	}
 
 	public String getHelp() {
@@ -507,48 +524,49 @@ public class CytoscapeInit implements PropertyChangeListener {
 
 	/**
 	 * This method does absolutely nothing.
+	 * 
 	 * @param project_files
 	 * @deprecated the project file has been deprecated, do not call this method
 	 */
 	private void loadProjectFiles(List project_files) {
 
-//		ArrayList tokens = new ArrayList();
-//		for (Iterator i = project_files.iterator(); i.hasNext();) {
-//			String file = (String) i.next();
-//			try {
-//				BufferedReader in = new BufferedReader(new FileReader(file));
-//				String oneLine = in.readLine();
-//				while (oneLine != null) {
-//
-//					if (oneLine.startsWith("#")) {
-//						// comment
-//					} else {
-//
-//						boolean returnTokens = true;
-//						String currentDelims = fWHITESPACE_AND_QUOTES;
-//						StringTokenizer parser = new StringTokenizer(oneLine,
-//								currentDelims, returnTokens);
-//
-//						while (parser.hasMoreTokens()) {
-//							String token = parser.nextToken(currentDelims);
-//							if (!isDoubleQuote(token)) {
-//								if (!token.trim().equals("")) {
-//									tokens.add(token);
-//								}
-//							} else {
-//								currentDelims = flipDelimiters(currentDelims);
-//							}
-//						}
-//					}
-//					oneLine = in.readLine();
-//				}
-//				in.close();
-//			} catch (Exception ex) {
-//				System.out.println("Filter Read error");
-//				ex.printStackTrace();
-//			}
-//
-//		}
+		// ArrayList tokens = new ArrayList();
+		// for (Iterator i = project_files.iterator(); i.hasNext();) {
+		// String file = (String) i.next();
+		// try {
+		// BufferedReader in = new BufferedReader(new FileReader(file));
+		// String oneLine = in.readLine();
+		// while (oneLine != null) {
+		//
+		// if (oneLine.startsWith("#")) {
+		// // comment
+		// } else {
+		//
+		// boolean returnTokens = true;
+		// String currentDelims = fWHITESPACE_AND_QUOTES;
+		// StringTokenizer parser = new StringTokenizer(oneLine,
+		// currentDelims, returnTokens);
+		//
+		// while (parser.hasMoreTokens()) {
+		// String token = parser.nextToken(currentDelims);
+		// if (!isDoubleQuote(token)) {
+		// if (!token.trim().equals("")) {
+		// tokens.add(token);
+		// }
+		// } else {
+		// currentDelims = flipDelimiters(currentDelims);
+		// }
+		// }
+		// }
+		// oneLine = in.readLine();
+		// }
+		// in.close();
+		// } catch (Exception ex) {
+		// System.out.println("Filter Read error");
+		// ex.printStackTrace();
+		// }
+		//
+		// }
 	}
 
 	private void setVariablesFromCommandLine(CyCommandLineParser parser) {
@@ -653,16 +671,18 @@ public class CytoscapeInit implements PropertyChangeListener {
 
 			try {
 				// create the jar file from the list of plugin jars
-				 System.out.println( "Create jarfile from: "+ urls[i] );
+				System.out.println("Create jarfile from: " + urls[i]);
 
-				 //System.out.println( urls[i].getFile()+"protocol: "+urls[i].getProtocol() );
+				// System.out.println( urls[i].getFile()+"protocol:
+				// "+urls[i].getProtocol() );
 
 				JarFile jar = null;
 
 				if (urls[i].getProtocol() == "file") {
 					jar = new JarFile(urls[i].getFile());
 				} else if (urls[i].getProtocol().startsWith("jar")) {
-					JarURLConnection jc = (JarURLConnection) urls[i].openConnection();
+					JarURLConnection jc = (JarURLConnection) urls[i]
+							.openConnection();
 					jar = jc.getJarFile();
 				}
 
@@ -697,9 +717,9 @@ public class CytoscapeInit implements PropertyChangeListener {
 						entry = entry.replaceAll("\\.class$", "");
 						entry = entry.replaceAll("/", ".");
 
-						//System.out.println(" CLASS: " + entry);
+						// System.out.println(" CLASS: " + entry);
 						if (!(isClassPlugin(entry))) {
-							//System.out.println(" not plugin.");
+							// System.out.println(" not plugin.");
 							continue;
 						}
 						// System.out.println(entry+" is a PLUGIN!");
@@ -772,12 +792,13 @@ public class CytoscapeInit implements PropertyChangeListener {
 		// Class c = Class.forName( name, false, classLoader );\
 		Class c = null;
 		try {
-			//System.out.println("Calling classLoader.loadClass(" + name + ")");
+			// System.out.println("Calling classLoader.loadClass(" + name +
+			// ")");
 			c = classLoader.loadClass(name);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 			return false;
-		} catch (NoClassDefFoundError e){
+		} catch (NoClassDefFoundError e) {
 			e.printStackTrace();
 			return false;
 		}
@@ -862,6 +883,5 @@ public class CytoscapeInit implements PropertyChangeListener {
 		}
 		return null;
 	}
-	
 
 }
