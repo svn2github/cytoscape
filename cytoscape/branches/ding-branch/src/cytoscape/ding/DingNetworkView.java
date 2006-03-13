@@ -5,6 +5,7 @@ import cytoscape.CyNetwork;
 import cytoscape.CyEdge;
 import cytoscape.CyNode;
 import cytoscape.layout.LayoutAlgorithm;
+import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.CyEdgeView;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CyNodeView;
@@ -14,8 +15,12 @@ import cytoscape.visual.ui.VizMapUI;
 import ding.view.DGraphView;
 import giny.view.EdgeView;
 import giny.view.NodeView;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 public class DingNetworkView extends DGraphView implements CyNetworkView
 {
@@ -109,82 +114,145 @@ public class DingNetworkView extends DGraphView implements CyNetworkView
 
   public boolean setSelected(CyNode[] nodes)
   {
-    return true;
+    return setSelected(convertToViews(nodes));
+  }
+
+  private NodeView[] convertToViews(CyNode[] nodes)
+  {
+    NodeView[] views = new NodeView[nodes.length];
+    for (int i = 0; i < nodes.length; i++) {
+      views[i] = getNodeView(nodes[i]); }
+    return views;
   }
 
   public boolean setSelected(NodeView[] node_views)
   {
+    for (int i = 0; i < node_views.length; i++) {
+      node_views[i].select(); }
     return true;
   }
 
   public boolean applyVizMap(CyEdge edge)
   {
-    return true;
+    return applyVizMap(getEdgeView(edge));
   }
 
   public boolean applyVizMap(EdgeView edge_view)
   {
-    return true;
+    return applyVizMap
+      (edge_view,
+       (VisualStyle) getClientData(CytoscapeDesktop.VISUAL_STYLE));
   }
 
   public boolean applyVizMap(CyNode node)
   {
-    return true;
+    return applyVizMap(getNodeView(node));
   }
 
   public boolean applyVizMap(NodeView node_view)
   {
-    return true;
+    return applyVizMap
+      (node_view,
+       (VisualStyle) getClientData(CytoscapeDesktop.VISUAL_STYLE));
   }
 
   public boolean applyVizMap(CyEdge edge, VisualStyle style)
   {
-    return true;
+    return applyVizMap(getEdgeView(edge), style);
   }
 
   public boolean applyVizMap(EdgeView edge_view, VisualStyle style)
   {
+    VisualStyle old_style = Cytoscape.getDesktop().setVisualStyle(style);
+    Cytoscape.getDesktop().getVizMapManager().vizmapEdge(edge_view, this);
+    Cytoscape.getDesktop().setVisualStyle(old_style);
     return true;
   }
 
   public boolean applyVizMap(CyNode node, VisualStyle style)
   {
-    return true;
+    return applyVizMap(getNodeView(node), style);
   }
 
   public boolean applyVizMap(NodeView node_view, VisualStyle style)
   {
+    VisualStyle old_style = Cytoscape.getDesktop().setVisualStyle(style);
+    Cytoscape.getDesktop().getVizMapManager().vizmapNode(node_view, this);
+    Cytoscape.getDesktop().setVisualStyle(old_style);
     return true;
   }
 
   public boolean setSelected(CyEdge[] edges)
   {
-    return true;
+    return setSelected(convertToViews(edges));
+  }
+
+  private EdgeView[] convertToViews(CyEdge[] edges)
+  {
+    EdgeView[] views = new EdgeView[edges.length];
+    for (int i = 0; i < edges.length; i++) {
+      views[i] = getEdgeView(edges[i]); }
+    return views;
   }
 
   public boolean setSelected(EdgeView[] edge_views)
   {
+    for (int i = 0; i < edge_views.length; i++) {
+      edge_views[i].select(); }
     return true;
   }
 
   public void applyVizmapper(VisualStyle style)
   {
+    VisualStyle old_style = Cytoscape.getDesktop().setVisualStyle(style);
+    redrawGraph(false, true);
   }
 
   public void applyLayout(LayoutAlgorithm layout)
   {
+    layout.doLayout();
   }
 
   public void applyLockedLayout(LayoutAlgorithm layout,
                                 CyNode[] nodes,
                                 CyEdge[] edges)
   {
+    layout.lockNodes(convertToViews(nodes));
+    layout.doLayout();
   }
 
   public void applyLayout(LayoutAlgorithm layout,
                           CyNode[] nodes,
                           CyEdge[] edges)
   {
+    layout.lockNodes(getInverseViews(convertToViews(nodes)));
+    layout.doLayout();
+  }
+
+  private NodeView[] getInverseViews(NodeView[] given)
+  {
+    // This code, like most all of the code in this class, is copied from
+    // PhoebeNetworkView.  Zum kotzen.
+    NodeView[] inverse = new NodeView[getNodeViewCount() - given.length];
+    List node_views = getNodeViewsList();
+    int count = 0;
+    Iterator i = node_views.iterator();
+    Arrays.sort(given);
+    while (i.hasNext()) {
+      NodeView view = (NodeView) i.next();
+      if (Arrays.binarySearch(given, view) < 0) {
+        inverse[count] = view;
+        count++; } }
+    return inverse;
+  }
+
+  private List getNodeViewsList()
+  {
+    ArrayList list = new ArrayList(getNodeViewCount());
+    int[] gp_indices = getGraphPerspective().getNodeIndicesArray();
+    for (int i = 0; i < gp_indices.length; i++) {
+      list.add(getNodeView(gp_indices[i])); }
+    return list;
   }
 
   public void applyLockedLayout(LayoutAlgorithm layout,
