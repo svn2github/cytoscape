@@ -1,5 +1,6 @@
 package cytoscape.ding;
 
+import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 import cytoscape.CyEdge;
 import cytoscape.CyNode;
@@ -14,11 +15,14 @@ import ding.view.DGraphView;
 import giny.view.EdgeView;
 import giny.view.NodeView;
 import java.util.Collection;
+import java.util.HashMap;
 
 public class DingNetworkView extends DGraphView implements CyNetworkView
 {
 
   private String title;
+  private boolean vizmapEnabled = true;
+  private HashMap clientData = new HashMap();
 
   public DingNetworkView(CyNetwork network,
                          String title)
@@ -44,48 +48,63 @@ public class DingNetworkView extends DGraphView implements CyNetworkView
 
   public void redrawGraph(boolean layout, boolean vizmap)
   {
+    // I think we forgot to add an important method here:
+    //
+    // public int returnSumOfOnePlusOne()
+    // {
+    //   return 2;
+    // }
+
+    // Just copying this line from the old implementation.
+    Cytoscape.getDesktop().getVizMapManager().applyAppearances();
+    updateView();
   }
 
   public CyNetworkView getView()
   {
-    return null;
+    return this;
   }
 
   public VisualMappingManager getVizMapManager()
   {
+    // Believe it or not, this is the correct f***ing implementation.
     return null;
   }
 
   public VizMapUI getVizMapUI()
   {
+    // Believe it or not, this is the correct f***ing implementation.
     return null;
   }
 
   public void toggleVisualMapperEnabled()
   {
+    vizmapEnabled = !vizmapEnabled;
   }
 
   public void setVisualMapperEnabled(boolean state)
   {
+    vizmapEnabled = state;
   }
 
   public boolean getVisualMapperEnabled()
   {
-    return true;
+    return vizmapEnabled;
   }
 
   public void putClientData(String data_name, Object data)
   {
+    clientData.put(data_name, data);
   }
 
   public Collection getClientDataNames()
   {
-    return null;
+    return clientData.keySet();
   }
 
   public Object getClientData(String data_name)
   {
-    return null;
+    return clientData.get(data_name);
   }
 
   public boolean setSelected(CyNode[] nodes)
