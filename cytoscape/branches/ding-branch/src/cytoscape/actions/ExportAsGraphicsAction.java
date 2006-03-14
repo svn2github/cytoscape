@@ -51,6 +51,7 @@ import java.awt.print.PrinterJob;
 
 import phoebe.util.*;
 
+import cytoscape.ding.DingNetworkView;
 import cytoscape.giny.*;
 import cytoscape.view.CyNetworkView;
 import cytoscape.util.CytoscapeAction;
@@ -73,9 +74,9 @@ public class ExportAsGraphicsAction extends CytoscapeAction  {
 //       ( (Phoeb*NetworkView)Cytoscape.getCurrentNetworkView() ).getCanvas().getCamera().addClientProperty( PrintingFixTextNode.PRINTING_CLIENT_PROPERTY_KEY, "true");
 
       ExportDialog export = new ExportDialog();
-      export.showExportDialog( ( (PhoebeNetworkView)Cytoscape.getCurrentNetworkView() ).getCanvas(), "Export view as ...", ( (PhoebeNetworkView)Cytoscape.getCurrentNetworkView() ).getCanvas(), "export" );
+      export.showExportDialog( ( (DingNetworkView)Cytoscape.getCurrentNetworkView() ).getComponent(), "Export view as ...", ( (DingNetworkView)Cytoscape.getCurrentNetworkView() ).getComponent(), "export" );
       
-      ( (PhoebeNetworkView)Cytoscape.getCurrentNetworkView() ).getCanvas().getCamera().addClientProperty( PrintingFixTextNode.PRINTING_CLIENT_PROPERTY_KEY, null);
+//       ( (Phoeb*NetworkView)Cytoscape.getCurrentNetworkView() ).getCanvas().getCamera().addClientProperty( PrintingFixTextNode.PRINTING_CLIENT_PROPERTY_KEY, null);
 	
     } // actionPerformed
 }
