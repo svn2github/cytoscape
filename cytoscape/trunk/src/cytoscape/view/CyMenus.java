@@ -42,7 +42,6 @@ package cytoscape.view;
 
 //------------------------------------------------------------------------------
 
-import giny.view.GraphView;
 import giny.view.GraphViewChangeEvent;
 import giny.view.GraphViewChangeListener;
 
@@ -72,7 +71,6 @@ import javax.swing.event.MenuListener;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.actions.AlphabeticalSelectionAction;
-import cytoscape.actions.BackgroundColorAction;
 import cytoscape.actions.BirdsEyeViewAction;
 import cytoscape.actions.CloneGraphInNewWindowAction;
 import cytoscape.actions.CreateNetworkViewAction;
@@ -84,21 +82,27 @@ import cytoscape.actions.DestroyNetworkAction;
 import cytoscape.actions.DestroyNetworkViewAction;
 import cytoscape.actions.DestroySelectedAction;
 import cytoscape.actions.ExitAction;
+import cytoscape.actions.ExportAsGMLAction;
 import cytoscape.actions.ExportAsGraphicsAction;
+import cytoscape.actions.ExportAsInteractionsAction;
 import cytoscape.actions.ExportAsXGMMLAction;
+import cytoscape.actions.ExportEdgeAttributesAction;
+import cytoscape.actions.ExportNodeAttributesAction;
+import cytoscape.actions.ExportVizmapAction;
 import cytoscape.actions.FitContentAction;
 import cytoscape.actions.HelpAboutAction;
 import cytoscape.actions.HideSelectedAction;
 import cytoscape.actions.HideSelectedEdgesAction;
 import cytoscape.actions.HideSelectedNodesAction;
-import cytoscape.actions.InvertSelectedEdgesAction;
-import cytoscape.actions.InvertSelectedNodesAction;
-import cytoscape.actions.ListFromFileSelectionAction;
 import cytoscape.actions.ImportBioDataServerAction;
 import cytoscape.actions.ImportEdgeAttributesAction;
 import cytoscape.actions.ImportExpressionMatrixAction;
 import cytoscape.actions.ImportGraphFileAction;
 import cytoscape.actions.ImportNodeAttributesAction;
+import cytoscape.actions.ImportVizmapAction;
+import cytoscape.actions.InvertSelectedEdgesAction;
+import cytoscape.actions.InvertSelectedNodesAction;
+import cytoscape.actions.ListFromFileSelectionAction;
 import cytoscape.actions.NewSessionAction;
 import cytoscape.actions.NewWindowSelectedNodesEdgesAction;
 import cytoscape.actions.NewWindowSelectedNodesOnlyAction;
@@ -106,10 +110,6 @@ import cytoscape.actions.OpenSessionAction;
 import cytoscape.actions.PreferenceAction;
 import cytoscape.actions.PrintAction;
 import cytoscape.actions.RotationScaleLayoutAction;
-import cytoscape.actions.ExportAsGMLAction;
-import cytoscape.actions.ExportAsInteractionsAction;
-import cytoscape.actions.ExportEdgeAttributesAction;
-import cytoscape.actions.ExportNodeAttributesAction;
 import cytoscape.actions.SaveSessionAction;
 import cytoscape.actions.SaveSessionAsAction;
 import cytoscape.actions.SelectAllAction;
@@ -694,6 +694,7 @@ public class CyMenus implements GraphViewChangeListener {
 		addAction(new ImportGraphFileAction(this));
 		addAction(new ImportNodeAttributesAction());
 		addAction(new ImportEdgeAttributesAction());
+		addAction(new ImportVizmapAction());
 		addAction(new ImportExpressionMatrixAction());
 		addAction(new ImportBioDataServerAction());
 		
@@ -708,6 +709,7 @@ public class CyMenus implements GraphViewChangeListener {
 		addAction(new ExportAsInteractionsAction());
 		addAction(new ExportNodeAttributesAction());
 		addAction(new ExportEdgeAttributesAction());
+		addAction(new ExportVizmapAction());
 		addAction(new ExportAsGraphicsAction());
 
 		// Session Save/Open

@@ -288,7 +288,10 @@ public class CytoscapeSessionReader {
 
 			// Create a root network here.
 			String targetNetwork = sessionID + FS + targetRoot.getFilename();
-
+			System.out.println("***Target is: " + targetNetwork);
+			System.out.println("***session is: " + sessionFile.getName());
+			ZipEntry zen = sessionFile.getEntry(targetNetwork);
+			System.out.println("***Zen is: " + zen.toString());
 			InputStream networkStream = sessionFile.getInputStream(sessionFile
 					.getEntry(targetNetwork));
 

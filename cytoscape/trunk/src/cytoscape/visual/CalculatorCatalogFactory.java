@@ -199,7 +199,7 @@ public abstract class CalculatorCatalogFactory {
 			defaultVS.getNodeAppearanceCalculator().setNodeLabelCalculator(nlc);
 			calculatorCatalog.addVisualStyle(defaultVS);
 		}
-
+		
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(
 				new PropertyChangeListener() {
 					public void propertyChange(PropertyChangeEvent e) {
@@ -278,7 +278,45 @@ public abstract class CalculatorCatalogFactory {
 										.getStyleSelector().resetStyles();
 								Cytoscape.getDesktop().getVizMapUI()
 										.getStyleSelector().repaint();
-							}
+								Cytoscape.getDesktop().getVizMapUI().refreshUI();
+							} 
+						} else if(e.getPropertyName() == Cytoscape.VIZMAP_LOADED) {
+							if (propertiesFile != null) {
+
+								vizmapProps.clear();
+								calculatorCatalog.clear();
+
+								// Rebuild mappings
+								calculatorCatalog.addMapping("Discrete Mapper", DiscreteMapping.class);
+								calculatorCatalog.addMapping("Continuous Mapper",
+										ContinuousMapping.class);
+								calculatorCatalog.addMapping("Passthrough Mapper",
+										PassThroughMapping.class);
+								
+								String userVizmapName = (String) e.getNewValue();
+								System.out
+										.println("Restoring Saved Vizmapper from file: "
+												+ userVizmapName);
+
+								try {
+									File userVizmapFile = new File(userVizmapName);
+									vizmapProps.load(new FileInputStream(
+											userVizmapFile));
+								} catch (FileNotFoundException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								} catch (IOException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								}
+								CalculatorIO.loadCalculators(vizmapProps,
+										calculatorCatalog);
+								Cytoscape.getDesktop().getVizMapUI()
+										.getStyleSelector().resetStyles();
+								Cytoscape.getDesktop().getVizMapUI()
+										.getStyleSelector().repaint();
+								Cytoscape.getDesktop().getVizMapUI().refreshUI();
+							} 
 						}
 					}
 				});
