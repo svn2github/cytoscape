@@ -70,30 +70,30 @@ public class BirdsEyeViewAction extends CytoscapeAction implements
 		if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUSED
 				|| e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUS) {
 			bev.disconnect();
-			try {
-				bev.connect(((DingNetworkView) Cytoscape
-						.getCurrentNetworkView()).getCanvas(),
-						new PLayer[] { ((DingNetworkView) Cytoscape
-								.getCurrentNetworkView()).getCanvas()
-								.getLayer() });
-				bev.updateFromViewed();
-			} catch (Exception ex) {
-				// no newly focused network
-			}
+// 			try {
+// 				bev.connect(((DingNetworkView) Cytoscape
+// 						.getCurrentNetworkView()).getCanvas(),
+// 						new PLayer[] { ((DingNetworkView) Cytoscape
+// 								.getCurrentNetworkView()).getCanvas()
+// 								.getLayer() });
+// 				bev.updateFromViewed();
+// 			} catch (Exception ex) {
+// 				// no newly focused network
+// 			}
 		}
 
 		if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_DESTROYED) {
 			bev.disconnect();
-			try {
-				bev.connect(((DingNetworkView) Cytoscape
-						.getCurrentNetworkView()).getCanvas(),
-						new PLayer[] { ((DingNetworkView) Cytoscape
-								.getCurrentNetworkView()).getCanvas()
-								.getLayer() });
-				bev.updateFromViewed();
-			} catch (Exception ex) {
-				// no newly focused network
-			}
+// 			try {
+// 				bev.connect(((DingNetworkView) Cytoscape
+// 						.getCurrentNetworkView()).getCanvas(),
+// 						new PLayer[] { ((DingNetworkView) Cytoscape
+// 								.getCurrentNetworkView()).getCanvas()
+// 								.getLayer() });
+// 				bev.updateFromViewed();
+// 			} catch (Exception ex) {
+// 				// no newly focused network
+// 			}
 		}
 
 	}
@@ -103,9 +103,9 @@ public class BirdsEyeViewAction extends CytoscapeAction implements
 		if( !on ) {
 			bev = new BirdsEyeView();
 
-			bev.connect(((DingNetworkView) Cytoscape.getCurrentNetworkView())
-					.getCanvas(), new PLayer[] { ((DingNetworkView) Cytoscape
-					.getCurrentNetworkView()).getCanvas().getLayer() });
+// 			bev.connect(((DingNetworkView) Cytoscape.getCurrentNetworkView())
+// 					.getCanvas(), new PLayer[] { ((DingNetworkView) Cytoscape
+// 					.getCurrentNetworkView()).getCanvas().getLayer() });
 
 			bev.setMinimumSize(new Dimension(180, 180));
 			bev.setSize(new Dimension(180, 180));

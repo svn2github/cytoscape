@@ -1470,12 +1470,12 @@ public abstract class Cytoscape {
 		// This enables us to disable animation. Modified by Ethan Cerami.
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				view.getCanvas().getCamera().animateViewToCenterBounds(
-						view.getCanvas().getLayer().getFullBounds(), true, 0);
-				// if Squiggle function enabled, enable it on the view
-				if (squiggleEnabled) {
-					view.getSquiggleHandler().beginSquiggling();
-				}
+// 				view.getCanvas().getCamera().animateViewToCenterBounds(
+// 						view.getCanvas().getLayer().getFullBounds(), true, 0);
+// 				// if Squiggle function enabled, enable it on the view
+// 				if (squiggleEnabled) {
+// 					view.getSquiggleHandler().beginSquiggling();
+// 				}
 				// set the selection mode on the view
 				setSelectionMode(currentSelectionMode, view);
 			}
