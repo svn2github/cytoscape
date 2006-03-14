@@ -115,6 +115,6 @@ public class ZoomSelectedAction extends CytoscapeAction {
         } else {
           zoomToBounds = new PBounds( smallX  , smallY  , ( bigX - smallX + 100 ), ( bigY - smallY + 100 ) );
         }
-        PTransformActivity activity =  ( ( PhoebeNetworkView )view).getCanvas().getCamera().animateViewToCenterBounds( zoomToBounds, true, 500 );
+//         PTransformActivity activity =  ( ( Phoeb*NetworkView )view).getCanvas().getCamera().animateViewToCenterBounds( zoomToBounds, true, 500 );
     }
 }

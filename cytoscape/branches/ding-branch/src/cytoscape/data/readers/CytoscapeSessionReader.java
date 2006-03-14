@@ -78,7 +78,7 @@ import cytoscape.generated.Network;
 import cytoscape.generated.NetworkTree;
 import cytoscape.generated.Node;
 import cytoscape.generated.SelectedNodes;
-import cytoscape.giny.PhoebeNetworkView;
+import cytoscape.ding.DingNetworkView;
 import cytoscape.init.CyPropertiesReader;
 import cytoscape.task.TaskMonitor;
 import cytoscape.util.ZipMultipleFiles;
@@ -503,12 +503,12 @@ public class CytoscapeSessionReader {
 	// same as other loaders
 	//
 	private void createCyNetworkView(CyNetwork cyNetwork) {
-		final PhoebeNetworkView view = new PhoebeNetworkView(cyNetwork,
+		final DingNetworkView view = new DingNetworkView(cyNetwork,
 				cyNetwork.getTitle());
 
 		// Start of Hack: Hide the View
-		PCanvas pCanvas = view.getCanvas();
-		pCanvas.setVisible(false);
+// 		PCanvas pCanvas = view.getCanvas();
+// 		pCanvas.setVisible(false);
 		// End of Hack
 
 		view.setIdentifier(cyNetwork.getIdentifier());
@@ -516,9 +516,9 @@ public class CytoscapeSessionReader {
 		view.setTitle(cyNetwork.getTitle());
 
 		// if Squiggle function enabled, enable squiggling on the created view
-		if (Cytoscape.isSquiggleEnabled()) {
-			view.getSquiggleHandler().beginSquiggling();
-		}
+// 		if (Cytoscape.isSquiggleEnabled()) {
+// 			view.getSquiggleHandler().beginSquiggling();
+// 		}
 
 		// set the selection mode on the view
 		Cytoscape.setSelectionMode(Cytoscape.getSelectionMode(), view);
@@ -527,12 +527,12 @@ public class CytoscapeSessionReader {
 				cytoscape.view.CytoscapeDesktop.NETWORK_VIEW_CREATED, null,
 				view);
 
-		PLayer layer = view.getCanvas().getLayer();
-		PBounds pb = layer.getFullBounds();
-		if (!pb.isEmpty()) {
-			view.getCanvas().getCamera().animateViewToCenterBounds(pb, true,
-					500);
-		}
+// 		PLayer layer = view.getCanvas().getLayer();
+// 		PBounds pb = layer.getFullBounds();
+// 		if (!pb.isEmpty()) {
+// 			view.getCanvas().getCamera().animateViewToCenterBounds(pb, true,
+// 					500);
+// 		}
 
 		// Fit the network
 		PGraphView currentGraphView = (PGraphView) Cytoscape
@@ -542,8 +542,8 @@ public class CytoscapeSessionReader {
 		if ((cyNetwork.getNodeCount() > 0) && (cyNetwork.getNodeCount() < 200)) {
 			fca.zoomToMinimumEnclosingRectangle(currentGraphView);
 		} else {
-			view.getCanvas().getCamera().animateViewToCenterBounds(
-					view.getCanvas().getLayer().getFullBounds(), true, 50l);
+// 			view.getCanvas().getCamera().animateViewToCenterBounds(
+// 					view.getCanvas().getLayer().getFullBounds(), true, 50l);
 		}
 
 	}
