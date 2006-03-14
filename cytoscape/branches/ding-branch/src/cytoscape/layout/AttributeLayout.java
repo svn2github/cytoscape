@@ -57,6 +57,7 @@ import cytoscape.data.CyAttributes;
 import cytoscape.data.CyAttributesUtils;
 import cytoscape.data.Semantics;
 import cytoscape.view.CyNetworkView;
+import cytoscape.ding.DingNetworkView;
 //----------------------------------------------------------------------------------------
 /**
  * This class provides methods for performing operations on a graph related to the
@@ -194,7 +195,7 @@ public class AttributeLayout {
         //for now, we do the highly non-optimal thing of creating a new view
         //and computing the layout on that view. We'll change this to only
         //computing on the layout perspective when that's supported.
-        GraphView layoutView = new phoebe.PGraphView(layoutGP);
+        GraphView layoutView = new ding.view.DGraphView(layoutGP);
         SpringEmbeddedLayouter layouter = new SpringEmbeddedLayouter(layoutView);
         layouter.doLayout();
         

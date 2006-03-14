@@ -74,7 +74,7 @@ public class PhoebeNodeControl  {
     JFrame frame = new JFrame( "Node Control" );
     JTabbedPane tabbed = new JTabbedPane();
 
-    this.view = ( PGraphView )view;
+    this.view = view;
 
     //Add Control tabs
     tabbed.addTab( "Align", createAlignTab() );
