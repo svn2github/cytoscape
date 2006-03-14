@@ -12,7 +12,6 @@ import cytoscape.util.intr.IntHash;
 import cytoscape.util.intr.IntStack;
 import giny.view.GraphViewChangeListener;
 import giny.view.NodeView;
-import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -27,7 +26,8 @@ import java.awt.geom.Line2D;
 import java.awt.geom.PathIterator;
 import java.awt.image.BufferedImage;
 
-class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
+class InnerCanvas extends java.awt.Component
+  implements MouseListener, MouseMotionListener
 {
 
   final double[] m_ptBuff = new double[2];
@@ -119,10 +119,7 @@ class InnerCanvas extends Canvas implements MouseListener, MouseMotionListener
 
   public void paint(Graphics g)
   {
-    if (m_img == null) { return; }
-
-    // TODO: Figure out the SRC_OVER and whatnot.
-    g.drawImage(m_img, 0, 0, null);
+    update(g);
   }
 
   public void print(Graphics g)

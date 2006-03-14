@@ -11,6 +11,7 @@ import giny.view.NodeView;
 import giny.view.EdgeView;
 import java.awt.EventQueue;
 import java.awt.Frame;
+import java.awt.Graphics;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.Point2D;
@@ -35,8 +36,9 @@ public class SanityTest
     final DGraphView view = new DGraphView(persp);
     EventQueue.invokeAndWait(new Runnable() {
         public void run() {
-          Frame f = new Frame();
-//           f.add(new LWButton01("foo"));
+          Frame f = new Frame() {
+              public void update(Graphics g) {
+                paint(g); } };
           f.add(view.getComponent());
           for (int i = 0; i < 10; i++) {
             f.show();
