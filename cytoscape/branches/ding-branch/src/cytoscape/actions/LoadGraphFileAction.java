@@ -49,7 +49,7 @@ import java.text.NumberFormat;
 
 import javax.swing.SwingUtilities;
 
-import phoebe.PGraphView;
+// import phoebe.PGrap*View;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
@@ -407,8 +407,8 @@ class ImportNetworkTask implements Task {
 			// Lastly, make the GraphView Canvas Visible.
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
-					PGraphView view = (PGraphView) Cytoscape
-							.getCurrentNetworkView();
+// 					PGrap*View view = (PGrap*View) Cytoscape
+// 							.getCurrentNetworkView();
 // 					PCanvas pCanvas = view.getCanvas();
 // 					pCanvas.setVisible(true);
 				}
@@ -448,7 +448,7 @@ class ImportNetworkTask implements Task {
 				cytoscape.view.CytoscapeDesktop.NETWORK_VIEW_CREATED, null,
 				view);
 
-		// Instead of calling fitContent(), access PGraphView directly.
+		// Instead of calling fitContent(), access PGrap*View directly.
 		// AJK: 09/10/05 BEGIN:
 		// try fix to check for empty PBounds before animatingToCenter
 // 		PLayer layer = view.getCanvas().getLayer();
