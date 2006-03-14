@@ -34,6 +34,12 @@ public class DingNetworkView extends DGraphView implements CyNetworkView
   {
     super(network);
     this.title = title;
+    final int[] nodes = network.getNodeIndicesArray();
+    final int[] edges = network.getEdgeIndicesArray();
+    for (int i = 0; i < nodes.length; i++) {
+      addNodeView(nodes[i]); }
+    for (int i = 0; i < edges.length; i++) {
+      addEdgeView(edges[i]); }
   }
 
   public CyNetwork getNetwork()
