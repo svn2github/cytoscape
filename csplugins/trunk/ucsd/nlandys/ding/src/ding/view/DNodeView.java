@@ -322,8 +322,8 @@ class DNodeView implements NodeView, Label
                             ("height of node has degenerated to zero after " +
                              "rounding");
       m_view.m_spacial.delete(m_inx);
-      m_view.m_spacial.insert(m_inx, m_view.m_extentsBuff[1], yMin,
-                              m_view.m_extentsBuff[3], yMax); }
+      m_view.m_spacial.insert(m_inx, m_view.m_extentsBuff[0], yMin,
+                              m_view.m_extentsBuff[2], yMax); }
   }
 
   public void setYPosition(double yPos, boolean update)
