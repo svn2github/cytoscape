@@ -61,7 +61,7 @@ import cytoscape.data.servers.BioDataServer;
 import cytoscape.giny.CytoscapeRootGraph;
 import cytoscape.giny.CytoscapeFingRootGraph;
 
-import cytoscape.giny.PhoebeNetworkView;
+import cytoscape.ding.DingNetworkView;
 import cytoscape.util.CyNetworkNaming;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
@@ -208,7 +208,7 @@ public abstract class Cytoscape {
 	/**
 	 * A null CyNetworkView to give when there is no Current NetworkView
 	 */
-	protected static CyNetworkView nullNetworkView = new PhoebeNetworkView(
+	protected static CyNetworkView nullNetworkView = new DingNetworkView(
 			nullNetwork, "null");
 
 	/**
@@ -1453,7 +1453,7 @@ public abstract class Cytoscape {
 		if (viewExists(network.getIdentifier())) {
 			return getNetworkView(network.getIdentifier());
 		}
-		final PhoebeNetworkView view = new PhoebeNetworkView(network, title);
+		final DingNetworkView view = new DingNetworkView(network, title);
 		view.setIdentifier(network.getIdentifier());
 		getNetworkViewMap().put(network.getIdentifier(), view);
 		view.setTitle(network.getTitle());

@@ -50,7 +50,7 @@ import cytoscape.dialogs.GraphObjectSelection;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.Cytoscape;
 import cytoscape.view.CytoscapeDesktop;
-import cytoscape.giny.PhoebeNetworkView;
+import cytoscape.ding.DingNetworkView;
 import java.beans.*;
 
 import edu.umd.cs.piccolo.PLayer;
@@ -71,9 +71,9 @@ public class BirdsEyeViewAction extends CytoscapeAction implements
 				|| e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUS) {
 			bev.disconnect();
 			try {
-				bev.connect(((PhoebeNetworkView) Cytoscape
+				bev.connect(((DingNetworkView) Cytoscape
 						.getCurrentNetworkView()).getCanvas(),
-						new PLayer[] { ((PhoebeNetworkView) Cytoscape
+						new PLayer[] { ((DingNetworkView) Cytoscape
 								.getCurrentNetworkView()).getCanvas()
 								.getLayer() });
 				bev.updateFromViewed();
@@ -85,9 +85,9 @@ public class BirdsEyeViewAction extends CytoscapeAction implements
 		if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_DESTROYED) {
 			bev.disconnect();
 			try {
-				bev.connect(((PhoebeNetworkView) Cytoscape
+				bev.connect(((DingNetworkView) Cytoscape
 						.getCurrentNetworkView()).getCanvas(),
-						new PLayer[] { ((PhoebeNetworkView) Cytoscape
+						new PLayer[] { ((DingNetworkView) Cytoscape
 								.getCurrentNetworkView()).getCanvas()
 								.getLayer() });
 				bev.updateFromViewed();
@@ -103,8 +103,8 @@ public class BirdsEyeViewAction extends CytoscapeAction implements
 		if( !on ) {
 			bev = new BirdsEyeView();
 
-			bev.connect(((PhoebeNetworkView) Cytoscape.getCurrentNetworkView())
-					.getCanvas(), new PLayer[] { ((PhoebeNetworkView) Cytoscape
+			bev.connect(((DingNetworkView) Cytoscape.getCurrentNetworkView())
+					.getCanvas(), new PLayer[] { ((DingNetworkView) Cytoscape
 					.getCurrentNetworkView()).getCanvas().getLayer() });
 
 			bev.setMinimumSize(new Dimension(180, 180));
