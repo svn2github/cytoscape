@@ -246,7 +246,7 @@ public class DingNetworkView extends DGraphView implements CyNetworkView
     return inverse;
   }
 
-  private List getNodeViewsList()
+  public List getNodeViewsList()
   {
     ArrayList list = new ArrayList(getNodeViewCount());
     int[] gp_indices = getGraphPerspective().getNodeIndicesArray();
