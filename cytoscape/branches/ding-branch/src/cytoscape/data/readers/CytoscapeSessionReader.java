@@ -65,7 +65,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-import phoebe.PGraphView;
+import cytoscape.ding.DingNetworkView;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
@@ -489,10 +489,10 @@ public class CytoscapeSessionReader {
 			// Lastly, make the GraphView Canvas Visible.
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
-					PGraphView view = (PGraphView) Cytoscape
+					DingNetworkView view = (DingNetworkView) Cytoscape
 							.getCurrentNetworkView();
-					PCanvas pCanvas = view.getCanvas();
-					pCanvas.setVisible(true);
+// 					PCanvas pCanvas = view.getCanvas();
+// 					pCanvas.setVisible(true);
 				}
 			});
 		}
@@ -535,7 +535,7 @@ public class CytoscapeSessionReader {
 // 		}
 
 		// Fit the network
-		PGraphView currentGraphView = (PGraphView) Cytoscape
+		DingNetworkView currentGraphView = (DingNetworkView) Cytoscape
 				.getNetworkView(cyNetwork.getIdentifier());
 		FitContentAction fca = new FitContentAction();
 

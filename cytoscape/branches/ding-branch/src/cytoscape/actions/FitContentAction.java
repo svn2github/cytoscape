@@ -51,7 +51,7 @@ import giny.view.*;
 import java.awt.event.ActionEvent;
 import java.util.Iterator;
 
-import phoebe.PGraphView;
+import cytoscape.ding.DingNetworkView;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
@@ -67,7 +67,7 @@ public class FitContentAction extends CytoscapeAction {
       //we have to do it this way because 
       //networkView.getView().fitContent();
         //currently appears to do nothing -AM 12-17-2003
-      PGraphView view =(PGraphView) Cytoscape.getCurrentNetworkView();
+      DingNetworkView view =(DingNetworkView) Cytoscape.getCurrentNetworkView();
       
       // AJK: 09/10/05 BEGIN
       //     correct for case in CytoscapeEditor where we start with a blank drawing space, causing a zoom
@@ -83,13 +83,13 @@ public class FitContentAction extends CytoscapeAction {
       }
       else
       {
-      	view.getCanvas().getCamera().animateViewToCenterBounds( view.getCanvas().getLayer().getFullBounds(), true, 50l );
+//       	view.getCanvas().getCamera().animateViewToCenterBounds( view.getCanvas().getLayer().getFullBounds(), true, 50l );
       }
       // AJK: 09/10/05 END
    }
     
    // AJK: 09/10/05 BEGIN
-    public void zoomToMinimumEnclosingRectangle (PGraphView view) {
+    public void zoomToMinimumEnclosingRectangle (DingNetworkView view) {
   
           Iterator nodes_iterator = view.getNodeViewsIterator();
           double bigX;
