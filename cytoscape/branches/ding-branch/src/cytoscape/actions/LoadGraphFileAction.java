@@ -57,7 +57,7 @@ import cytoscape.data.readers.GMLReader2;
 import cytoscape.data.readers.GraphReader;
 import cytoscape.data.readers.InteractionsReader;
 import cytoscape.data.servers.BioDataServer;
-import cytoscape.giny.PhoebeNetworkView;
+import cytoscape.ding.DingNetworkView;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
@@ -409,8 +409,8 @@ class ImportNetworkTask implements Task {
 				public void run() {
 					PGraphView view = (PGraphView) Cytoscape
 							.getCurrentNetworkView();
-					PCanvas pCanvas = view.getCanvas();
-					pCanvas.setVisible(true);
+// 					PCanvas pCanvas = view.getCanvas();
+// 					pCanvas.setVisible(true);
 				}
 			});
 		}
@@ -424,12 +424,12 @@ class ImportNetworkTask implements Task {
 	 * this hack in the core Cytoscape.java class.
 	 */
 	private void createCyNetworkView(CyNetwork cyNetwork) {
-		final PhoebeNetworkView view = new PhoebeNetworkView(cyNetwork,
+		final DingNetworkView view = new DingNetworkView(cyNetwork,
 				cyNetwork.getTitle());
 
 		// Start of Hack: Hide the View
-		PCanvas pCanvas = view.getCanvas();
-		pCanvas.setVisible(false);
+// 		PCanvas pCanvas = view.getCanvas();
+// 		pCanvas.setVisible(false);
 		// End of Hack
 
 		view.setIdentifier(cyNetwork.getIdentifier());
@@ -438,7 +438,7 @@ class ImportNetworkTask implements Task {
 
 		// if Squiggle function enabled, enable squiggling on the created view
 		if (Cytoscape.isSquiggleEnabled()) {
-			view.getSquiggleHandler().beginSquiggling();
+// 			view.getSquiggleHandler().beginSquiggling();
 		}
 
 		// set the selection mode on the view
@@ -451,12 +451,12 @@ class ImportNetworkTask implements Task {
 		// Instead of calling fitContent(), access PGraphView directly.
 		// AJK: 09/10/05 BEGIN:
 		// try fix to check for empty PBounds before animatingToCenter
-		PLayer layer = view.getCanvas().getLayer();
-		PBounds pb = layer.getFullBounds();
-		if (!pb.isEmpty()) {
-			view.getCanvas().getCamera().animateViewToCenterBounds(pb, true,
-					500);
-		}
+// 		PLayer layer = view.getCanvas().getLayer();
+// 		PBounds pb = layer.getFullBounds();
+// 		if (!pb.isEmpty()) {
+// 			view.getCanvas().getCamera().animateViewToCenterBounds(pb, true,
+// 					500);
+// 		}
 		// view.getCanvas().getCamera().animateViewToCenterBounds
 		// (view.getCanvas().getLayer().getFullBounds(), true, 0);
 	}
