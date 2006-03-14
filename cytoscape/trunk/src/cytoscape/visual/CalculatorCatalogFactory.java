@@ -44,14 +44,10 @@ package cytoscape.visual;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.StringBufferInputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
@@ -59,8 +55,6 @@ import java.util.Set;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.util.ZipMultipleFiles;
-import cytoscape.visual.calculators.GenericNodeLabelCalculator;
-import cytoscape.visual.calculators.NodeLabelCalculator;
 import cytoscape.visual.mappings.ContinuousMapping;
 import cytoscape.visual.mappings.DiscreteMapping;
 import cytoscape.visual.mappings.PassThroughMapping;
@@ -74,7 +68,7 @@ import cytoscape.visual.mappings.PassThroughMapping;
  */
 public abstract class CalculatorCatalogFactory {
 
-	//static File propertiesFile;
+	// static File propertiesFile;
 	static String vizmapName;
 	static Properties vizmapProps;
 
@@ -105,46 +99,47 @@ public abstract class CalculatorCatalogFactory {
 
 		String tryName = "";
 
-		try { 
-		// load the vizmap.props from the jar file - should always exist
-		tryName = "cytoscape.jar";
-		vizmapProps.load(ClassLoader.getSystemClassLoader().
-		                             getSystemResource("vizmap.props").
-					     openStream());
+		try {
+			// load the vizmap.props from the jar file - should always exist
+			tryName = "cytoscape.jar";
+			vizmapProps.load(ClassLoader.getSystemClassLoader()
+					.getSystemResource("vizmap.props").openStream());
 
-		// load the .cytoscape vizmap.props
-		tryName = "$HOME/.cytoscape";
-		File vmp = CytoscapeInit.getConfigFile("vizmap.props");
-		if ( vmp != null ) 
-			vizmapProps.load( new FileInputStream(vmp) );
-		
-		// load the command line vizmap.props
-		tryName = "command line";
-		File cliVmp = CytoscapeInit.cliVizMapPropsFile();
-		if ( cliVmp != null )
-			vizmapProps.load( new FileInputStream(cliVmp) );
+			// load the .cytoscape vizmap.props
+			tryName = "$HOME/.cytoscape";
+			File vmp = CytoscapeInit.getConfigFile("vizmap.props");
+			if (vmp != null)
+				vizmapProps.load(new FileInputStream(vmp));
 
-		} catch ( IOException ioe ) {
-			System.err.println("couldn't open " + tryName + " vizmap.props file");
+			// load the command line vizmap.props
+			tryName = "command line";
+			File cliVmp = CytoscapeInit.cliVizMapPropsFile();
+			if (cliVmp != null)
+				vizmapProps.load(new FileInputStream(cliVmp));
+
+		} catch (IOException ioe) {
+			System.err.println("couldn't open " + tryName
+					+ " vizmap.props file");
 			ioe.printStackTrace();
-		} 
-	
+		}
+
 		// now load using the constructed Properties object (ok if it is empty)
 		CalculatorIO.loadCalculators(vizmapProps, calculatorCatalog);
 
 		// make sure a default visual style exists, creating as needed
 		VisualStyle defaultVS = calculatorCatalog.getVisualStyle("default");
 
-
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(
 				new PropertyChangeListener() {
 					public void propertyChange(PropertyChangeEvent e) {
 						if (e.getPropertyName() == Cytoscape.SAVE_VIZMAP_PROPS) {
-							File propertiesFile = CytoscapeInit.getConfigFile("vizmap.props"); 
+							File propertiesFile = CytoscapeInit
+									.getConfigFile("vizmap.props");
 							if (propertiesFile != null) {
 
 								// Testing
-								Set test = calculatorCatalog.getVisualStyleNames();
+								Set test = calculatorCatalog
+										.getVisualStyleNames();
 								Iterator it = test.iterator();
 								while (it.hasNext()) {
 									System.out.println("Saving Visual Style: "
@@ -156,61 +151,58 @@ public abstract class CalculatorCatalogFactory {
 										propertiesFile);
 								System.out.println("Quit: Saved Vizmaps to: "
 										+ propertiesFile);
-							} 
+							}
 						} else if (e.getPropertyName() == Cytoscape.SESSION_LOADED) {
 
-							// Session Loaded. Clear current VS and load the new
-							// one.
-							File propertiesFile = new File(vizmapName);
-							if (propertiesFile != null) {
-
-								vizmapProps.clear();
-								calculatorCatalog.clear();
-
-								// Rebuild mappings
-								calculatorCatalog.addMapping("Discrete Mapper", DiscreteMapping.class);
-								calculatorCatalog.addMapping("Continuous Mapper",
-										ContinuousMapping.class);
-								calculatorCatalog.addMapping("Passthrough Mapper",
-										PassThroughMapping.class);
-								
-								String sessionName = (String) e.getNewValue();
-								System.out
-										.println("Restoring Saved Vizmapper from session file: "
-												+ sessionName);
-
-								ZipMultipleFiles zipUtil = new ZipMultipleFiles(sessionName);
-
-								try {
-									zipUtil.readVizmap();
-									vizmapProps.load(new FileInputStream(
-											propertiesFile));
-								} catch (FileNotFoundException e1) {
-									// TODO Auto-generated catch block
-									e1.printStackTrace();
-								} catch (IOException e1) {
-									// TODO Auto-generated catch block
-									e1.printStackTrace();
-								}
-								CalculatorIO.loadCalculators(vizmapProps,
-										calculatorCatalog);
-								Cytoscape.getDesktop().getVizMapUI()
-										.getStyleSelector().resetStyles();
-								Cytoscape.getDesktop().getVizMapUI()
-										.getStyleSelector().repaint();
-								Cytoscape.getDesktop().getVizMapUI().refreshUI();
-							} 
-						} else if(e.getPropertyName() == Cytoscape.VIZMAP_LOADED) {
+							// 
 							vizmapProps.clear();
 							calculatorCatalog.clear();
 
 							// Rebuild mappings
-							calculatorCatalog.addMapping("Discrete Mapper", DiscreteMapping.class);
+							calculatorCatalog.addMapping("Discrete Mapper",
+									DiscreteMapping.class);
 							calculatorCatalog.addMapping("Continuous Mapper",
-										ContinuousMapping.class);
+									ContinuousMapping.class);
 							calculatorCatalog.addMapping("Passthrough Mapper",
 									PassThroughMapping.class);
-								
+
+							String sessionName = (String) e.getNewValue();
+							System.out
+									.println("Restoring Saved Vizmapper from session file: "
+											+ sessionName);
+
+							ZipMultipleFiles zipUtil = new ZipMultipleFiles(
+									sessionName);
+
+							try {
+								vizmapProps.load(zipUtil.readVizmap());
+							} catch (FileNotFoundException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							} catch (IOException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+							CalculatorIO.loadCalculators(vizmapProps,
+									calculatorCatalog);
+							Cytoscape.getDesktop().getVizMapUI()
+									.getStyleSelector().resetStyles();
+							Cytoscape.getDesktop().getVizMapUI()
+									.getStyleSelector().repaint();
+							Cytoscape.getDesktop().getVizMapUI().refreshUI();
+
+						} else if (e.getPropertyName() == Cytoscape.VIZMAP_LOADED) {
+							vizmapProps.clear();
+							calculatorCatalog.clear();
+
+							// Rebuild mappings
+							calculatorCatalog.addMapping("Discrete Mapper",
+									DiscreteMapping.class);
+							calculatorCatalog.addMapping("Continuous Mapper",
+									ContinuousMapping.class);
+							calculatorCatalog.addMapping("Passthrough Mapper",
+									PassThroughMapping.class);
+
 							String userVizmapName = (String) e.getNewValue();
 							System.out
 									.println("Restoring Saved Vizmapper from file: "

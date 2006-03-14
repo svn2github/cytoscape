@@ -44,21 +44,20 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
+import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
-
-import cytoscape.CytoscapeInit;
 
 /**
  * Zip multiple files into one.
  * 
  * The created zip files can be decompressed by other utilities.
  * 
- * Special Thanks for Mr. Masanori Kouno
- * The original code was written by him.
+ * Special Thanks for Mr. Masanori Kouno The original code was written by him.
  * (http://www4.ocn.ne.jp/~mark44/TIPS/Java/ZipOutputStream/zip.htm)
  * 
  * @author kono
@@ -254,52 +253,26 @@ public class ZipMultipleFiles {
 		return null;
 	}
 
-	public void readVizmap() throws IOException {
+	public InputStream readVizmap() throws IOException {
 
-		BufferedInputStream bis = null;
-		ZipInputStream zis = null;
-
-		FileOutputStream fos = null;
-
-		File currentVizmap = new File(CytoscapeInit
-				.getVizmapPropertiesLocation());
-
-		FileInputStream fis = null;
 		ZipEntry zent = null;
+		ZipFile sessionZipFile = null;
 
 		try {
-			fis = new FileInputStream(zipFileName);
-			bis = new BufferedInputStream(fis);
-			zis = new ZipInputStream(bis);
-
-			byte[] buf = new byte[1024];
-			int len;
-
-			while ((zent = zis.getNextEntry()) != null) {
+			sessionZipFile = new ZipFile(zipFileName);
+			Enumeration zipEntries = sessionZipFile.entries();
+			while (zipEntries.hasMoreElements()) {
+				zent = (ZipEntry) zipEntries.nextElement();
 				if (zent.getName().endsWith("vizmap.props")) {
-					fos = new FileOutputStream(currentVizmap);
-					while (-1 != (len = zis.read(buf, 0, buf.length))) {
-						fos.write(buf, 0, len);
-					}
-					fos.close();
+					return sessionZipFile.getInputStream(zent);
 				}
 			}
 
 		} catch (IOException e) {
 			System.err.println(e);
-		} finally {
-
-			try {
-				zis.close();
-			} catch (Exception e) {
-			}
-
-			try {
-				bis.close();
-			} catch (Exception e) {
-			}
-
 		}
+
+		return null;
 	}
 
 }
