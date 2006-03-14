@@ -70,7 +70,7 @@ public class ExportAction extends CytoscapeAction  {
 
     public void actionPerformed(ActionEvent e) {
 	
-      ( (PhoebeNetworkView)Cytoscape.getCurrentNetworkView() ).getCanvas().getCamera().addClientProperty( PrintingFixTextNode.PRINTING_CLIENT_PROPERTY_KEY, "true");
+//       ( (Phoeb*NetworkView)Cytoscape.getCurrentNetworkView() ).getCanvas().getCamera().addClientProperty( PrintingFixTextNode.PRINTING_CLIENT_PROPERTY_KEY, "true");
 
       ExportDialog export = new ExportDialog();
       export.showExportDialog( ( (PhoebeNetworkView)Cytoscape.getCurrentNetworkView() ).getCanvas(), "Export view as ...", ( (PhoebeNetworkView)Cytoscape.getCurrentNetworkView() ).getCanvas(), "export" );

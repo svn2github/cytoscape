@@ -46,7 +46,7 @@ package cytoscape.actions;
 import edu.umd.cs.piccolo.activities.PTransformActivity;
 import edu.umd.cs.piccolo.util.PBounds;
 import giny.view.*;
-import cytoscape.giny.PhoebeNetworkView;
+// import cytoscape.giny.Phoeb*NetworkView;
 
 import java.awt.event.ActionEvent;
 import java.util.Iterator;
@@ -140,7 +140,7 @@ public class FitContentAction extends CytoscapeAction {
           	zoomToBounds = new PBounds( smallX  , smallY  , ( bigX - smallX + W), ( bigY - smallY + H) );
         	  
           }
-          PTransformActivity activity =  ( ( PhoebeNetworkView )view).getCanvas().getCamera().animateViewToCenterBounds( zoomToBounds, true, 500 );
+//           PTransformActivity activity =  ( ( Phoeb*NetworkView )view).getCanvas().getCamera().animateViewToCenterBounds( zoomToBounds, true, 500 );
       }
     
     // AJK: 09/10/05 END
