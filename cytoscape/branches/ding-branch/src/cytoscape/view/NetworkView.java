@@ -45,7 +45,7 @@ package cytoscape.view;
 import javax.swing.JFrame;
 
 import giny.view.GraphView;
-//import phoebe.PGraphView;
+//import phoebe.PGrap*View;
 
 
 import cytoscape.CyNetwork;
