@@ -97,6 +97,19 @@ public class PreferencesDialog extends JDialog implements
 
 	JPanel okButtonPane = new JPanel(new FlowLayout());
 
+	JPanel vizmapPane = new JPanel(new FlowLayout());
+
+	JButton saveVizmapBtn = new JButton("Make Current Visual Styles Default");
+
+	JTextArea vizmapText = new JTextArea(
+				"Save the current visual styles to: " + System.getProperty("user.home") +
+				System.getProperty("file.separator") + ".cytoscape" +
+				System.getProperty("file.separator") + "vizmap.props.  " +
+				"Only save the visual styles if you want them to be defaults in ALL " +
+				"future cytoscape sessions.  " +
+				"Your current visual styles are automatically saved in your Cytoscape " +
+				"session file and won't be lost." );
+
 	JComboBox pluginTypesComboBox = new JComboBox(pluginTypes);
 
 	JButton addPluginBtn = new JButton("Add");
@@ -227,6 +240,7 @@ public class PreferencesDialog extends JDialog implements
 		deletePluginBtn.addActionListener(new DeletePluginListener(this));
 		okButton.addActionListener(new OkButtonListener(this));
 		cancelButton.addActionListener(new CancelButtonListener(this));
+		saveVizmapBtn.addActionListener(new SaveVizmapButtonListener(this));
 	}
 
 	public PreferenceTableModel getPTM() {
@@ -313,13 +327,26 @@ public class PreferencesDialog extends JDialog implements
 		Box pluginsTableBox = Box.createVerticalBox();
 		pluginsTablePane.setBorder(BorderFactory.createEmptyBorder(2, 9, 4, 9));
 		pluginsTablePane.getViewport().add(pluginsTable, null);
-		pluginsTable
-				.setPreferredScrollableViewportSize(new Dimension(400, 100));
+		pluginsTable.setPreferredScrollableViewportSize(new Dimension(400, 100));
 		pluginsTableBox.add(pluginsTablePane);
 		pluginsTableBox.add(Box.createVerticalStrut(5));
 		pluginsTableBox.add(pluginBtnPane);
 		pluginsTableBox.setBorder(BorderFactory.createTitledBorder("Plugins"));
 		outerBox.add(pluginsTableBox);
+
+		outerBox.add(Box.createVerticalStrut(10));
+		Box vizmapBox = Box.createVerticalBox();
+		vizmapBox.setBorder(BorderFactory.createTitledBorder("Default Visual Styles"));
+		vizmapText.setBackground(outerBox.getBackground());
+		vizmapText.setEditable(false);
+		vizmapText.setDragEnabled(false);
+		vizmapText.setLineWrap(true);
+		vizmapText.setWrapStyleWord(true);
+		vizmapBox.add(vizmapText);
+		vizmapBox.add(Box.createVerticalStrut(5));
+		vizmapPane.add(saveVizmapBtn);
+		vizmapBox.add(vizmapPane);
+		outerBox.add(vizmapBox);
 
 		outerBox.add(Box.createVerticalStrut(10));
 		JTextArea textArea = new JTextArea(
@@ -460,6 +487,19 @@ public class PreferencesDialog extends JDialog implements
 			CytoscapeInit.getProperties().clear();
 			CytoscapeInit.getProperties().putAll(newProps);
 			callerRef.hide();
+		}
+	}
+
+	class SaveVizmapButtonListener implements ActionListener {
+		PreferencesDialog callerRef = null;
+
+		public SaveVizmapButtonListener(PreferencesDialog caller) {
+			super();
+			callerRef = caller;
+		}
+
+		public void actionPerformed(ActionEvent e) {
+			Cytoscape.firePropertyChange(Cytoscape.SAVE_VIZMAP_PROPS, null, null); 
 		}
 	}
 

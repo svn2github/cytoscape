@@ -136,6 +136,8 @@ public class CytoscapeInit implements PropertyChangeListener {
 
 	private static final String fDOUBLE_QUOTE = "\"";
 
+	private static String cliVizPropsFile = "";
+
 	/**
 	 * Calling the constructor sets up the CytoscapeInit Object to be a
 	 * CYTOSCAPE_EXIT event listener, and will take care of saving all
@@ -214,49 +216,7 @@ public class CytoscapeInit implements PropertyChangeListener {
 		// }
 		suppressView = cli.suppressView();
 
-		// if the command line specified a location for the vizmap.props file,
-		// set it
-		vizmapPropertiesLocation = cli.getVizPropsFile();
-		if (vizmapPropertiesLocation != null
-				&& vizmapPropertiesLocation.length() > 0) {
-			File vizmaps = new File(vizmapPropertiesLocation);
-			if (vizmaps.exists()) {
-				vizmapPropertiesLocation = vizmaps.getAbsolutePath();
-			} else {
-				// Does not exist!
-				System.out
-						.println("The command line argument for vizmaps.props does not contain a valid file name:"
-								+ vizmapPropertiesLocation);
-				vizmapPropertiesLocation = null;
-			}
-		}
-
-		if (vizmapPropertiesLocation == null
-				|| vizmapPropertiesLocation.length() == 0) {
-			// the user did not specify a location for the vizmap.props (or the
-			// location is incorrect)
-			// try to see if there is one in ~/.cytoscape
-
-			// get ~/.cytoscape directory (or create it if it does not exist)
-			File cytoscape = getConfigDirectoy();
-
-			// look for vizmap.props in this directory
-			File vizmap = new File(cytoscape, "vizmap.props");
-
-			if (vizmap.exists()) {
-				vizmapPropertiesLocation = vizmap.getAbsolutePath();
-			} else {
-				// create an empy vizmap.props in ~/.cytoscape
-				// the CalculatorCatalogFactory will create a default visual
-				// style
-				vizmapPropertiesLocation = getConfigFile("vizmap.props")
-						.getAbsolutePath();
-			}
-
-		}
-
-		System.out.println("vizmap.props is located in "
-				+ vizmapPropertiesLocation);
+		cliVizPropsFile = cli.getVizPropsFile();
 
 		// store key property values into main Properties object for
 		// for visual (via Preferences Dialog) communication and later storage
@@ -884,4 +844,11 @@ public class CytoscapeInit implements PropertyChangeListener {
 		return null;
 	}
 
+	public static File cliVizMapPropsFile() {
+		File f = null;
+		if ( cliVizPropsFile != null && cliVizPropsFile.length() > 0 )
+			f = new File(cliVizPropsFile);
+
+		return f;
+	}
 }
