@@ -65,7 +65,6 @@ import cytoscape.ding.DingNetworkView;
 import cytoscape.util.CyNetworkNaming;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
-import phoebe.PGraphView;
 
 /**
  * This class, Cytoscape is <i>the</i> primary class in the API.
@@ -1466,7 +1465,7 @@ public abstract class Cytoscape {
 				cytoscape.view.CytoscapeDesktop.NETWORK_VIEW_CREATED, null,
 				view);
 
-		// Instead of calling fitContent(), access PGraphView directly.
+		// Instead of calling fitContent(), access PGrap*View directly.
 		// This enables us to disable animation. Modified by Ethan Cerami.
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
@@ -1498,18 +1497,18 @@ public abstract class Cytoscape {
 	private static void setSquiggleState(boolean isEnabled) {
 
 		// enable Squiggle on all network views
-		PGraphView view;
-		String network_id;
-		Map networkViewMap = getNetworkViewMap();
-		for (Iterator iter = networkViewMap.keySet().iterator(); iter.hasNext();) {
-			network_id = (String) iter.next();
-			view = (PGraphView) networkViewMap.get(network_id);
-			if (isEnabled) {
-				view.getSquiggleHandler().beginSquiggling();
-			} else {
-				view.getSquiggleHandler().stopSquiggling();
-			}
-		}
+// 		PGrap*View view;
+// 		String network_id;
+// 		Map networkViewMap = getNetworkViewMap();
+// 		for (Iterator iter = networkViewMap.keySet().iterator(); iter.hasNext();) {
+// 			network_id = (String) iter.next();
+// 			view = (PGrap*View) networkViewMap.get(network_id);
+// 			if (isEnabled) {
+// 				view.getSquiggleHandler().beginSquiggling();
+// 			} else {
+// 				view.getSquiggleHandler().stopSquiggling();
+// 			}
+// 		}
 
 	}
 
