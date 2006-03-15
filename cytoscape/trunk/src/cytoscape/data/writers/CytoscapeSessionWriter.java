@@ -1,40 +1,39 @@
-
 /*
-  File: CytoscapeSessionWriter.java 
-  
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-  
-  The Cytoscape Consortium is: 
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Pasteur Institute
-  - Agilent Technologies
-  
-  This library is free software; you can redistribute it and/or modify it
-  under the terms of the GNU Lesser General Public License as published
-  by the Free Software Foundation; either version 2.1 of the License, or
-  any later version.
-  
-  This library is distributed in the hope that it will be useful, but
-  WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
-  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
-  documentation provided hereunder is on an "as is" basis, and the
-  Institute for Systems Biology and the Whitehead Institute 
-  have no obligations to provide maintenance, support,
-  updates, enhancements or modifications.  In no event shall the
-  Institute for Systems Biology and the Whitehead Institute 
-  be liable to any party for direct, indirect, special,
-  incidental or consequential damages, including lost profits, arising
-  out of the use of this software and its documentation, even if the
-  Institute for Systems Biology and the Whitehead Institute 
-  have been advised of the possibility of such damage.  See
-  the GNU Lesser General Public License for more details.
-  
-  You should have received a copy of the GNU Lesser General Public License
-  along with this library; if not, write to the Free Software Foundation,
-  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ File: CytoscapeSessionWriter.java 
+ 
+ Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+ 
+ The Cytoscape Consortium is: 
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Pasteur Institute
+ - Agilent Technologies
+ 
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+ 
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute 
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute 
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute 
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+ 
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+ */
 
 package cytoscape.data.writers;
 
@@ -92,21 +91,16 @@ import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.NetworkPanel;
 import cytoscape.visual.CalculatorCatalog;
-import cytoscape.visual.CalculatorCatalogFactory;
 import cytoscape.visual.CalculatorIO;
 import cytoscape.visual.VisualMappingManager;
-
-
 
 /*
  * Write session states into files.
  * 
- * Basic functions of this class are:
- * 	1. Create network files
- *	2. Create session state file
- *	3. Get properties file locations
- *	4. Zip them into one session file "*.cys"
- *
+ * Basic functions of this class are: 1. Create network files 2. Create session
+ * state file 3. Get properties file locations 4. Zip them into one session file
+ * "*.cys"
+ * 
  * @author kono
  * 
  */
@@ -117,6 +111,8 @@ public class CytoscapeSessionWriter {
 	public final int NODE = 1;
 	public final int EDGE = 2;
 
+	private static final String DEFAULT_VS_NAME = "default"; 
+	
 	// Number of Cytopanels. Currently, we have 3 panels.
 	private static final int CYTOPANEL_COUNT = 3;
 
@@ -170,7 +166,7 @@ public class CytoscapeSessionWriter {
 	List netList;
 	Cytopanels cps;
 	List cytopanel;
-	
+
 	Plugins plugins;
 	List plugin;
 
@@ -179,9 +175,10 @@ public class CytoscapeSessionWriter {
 
 	File sessionFolder;
 	String sessionDirName;
-	
+
 	HashMap viewMap = (HashMap) Cytoscape.getNetworkViewMap();
 	HashMap visualStyleMap;
+
 	//
 	// Constructor.
 	//
@@ -192,27 +189,28 @@ public class CytoscapeSessionWriter {
 		// For now, session ID is time and date
 		Date date = new Date();
 		DateFormat df = new SimpleDateFormat("yyyy_MM_dd-HH_mm");
-		//System.out.println("Session Time Stamp: " + df.format(date));
+		// System.out.println("Session Time Stamp: " + df.format(date));
 
 		// Create CySession file
 		sessionDirName = "CytoscapeSession-" + df.format(date);
-		
+
 		// For saving Visual Style
-//		visualStyleMap  = new HashMap();
-//		createVSMap();
-		
+		// visualStyleMap = new HashMap();
+		// createVSMap();
+
 	}
-	
-	private void createVSMap () {
+
+	private void createVSMap() {
 		Set viewNames = viewMap.keySet();
-		
+
 		Iterator it = viewNames.iterator();
-		while(it.hasNext()) {
+		while (it.hasNext()) {
 			String key = (String) it.next();
-		
-			CyNetworkView testview = (CyNetworkView)viewMap.get(key);
-			
-			System.out.println("=============== " + Cytoscape.getNetwork(key).getTitle() + " has VS " 
+
+			CyNetworkView testview = (CyNetworkView) viewMap.get(key);
+
+			System.out.println("=============== "
+					+ Cytoscape.getNetwork(key).getTitle() + " has VS "
 					+ testview.getVisualStyle().getName());
 		}
 	}
@@ -247,7 +245,7 @@ public class CytoscapeSessionWriter {
 
 			String curNetworkName = network.getTitle();
 			String xgmmlFileName = curNetworkName + XGMML_EXT;
-			
+
 			targetFiles[fileCounter] = xgmmlFileName;
 			fileCounter++;
 
@@ -314,18 +312,18 @@ public class CytoscapeSessionWriter {
 
 	public void preparePropFiles() {
 		// Prepare vizmap
-		
+
 		// Extract current vizmap file from the memory.
 		String vizmapLocation = CytoscapeInit.getVizmapPropertiesLocation();
-		//System.out.println("The file \"" + vizmapLocation + "\" will be included in the session file...");
+		// System.out.println("The file \"" + vizmapLocation + "\" will be
+		// included in the session file...");
 		// Fire dummy signal to update vizmap.prop
 		Cytoscape.firePropertyChange(Cytoscape.SESSION_SAVED, null, null);
-		
+
 		CytoscapeDesktop cyDesktop = Cytoscape.getDesktop();
 		VisualMappingManager vizmapper = cyDesktop.getVizMapManager();
 		CalculatorCatalog catalog = vizmapper.getCalculatorCatalog();
-		
-		
+
 		vizProp = new File(VIZMAP_FILE);
 		CalculatorIO.storeCatalog(catalog, vizProp);
 
@@ -356,23 +354,21 @@ public class CytoscapeSessionWriter {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
-		
-//		FileWriter fileWriter = new FileWriter(xgmmlFile);
-//		List list = null;
-//		GMLReader2 reader = (GMLReader2) network.getClientData("GML");
-//		if (reader != null) {
-//			list = reader.getList();
-//		} else {
-//			list = new Vector();
-//		}
-//		GMLWriter gmlWriter = new GMLWriter();
-//		gmlWriter.writeGML(network, view, list);
-//
-//		XGMMLParser.printList(list, fileWriter, network);
-//
-//		fileWriter.close();
+
+		// FileWriter fileWriter = new FileWriter(xgmmlFile);
+		// List list = null;
+		// GMLReader2 reader = (GMLReader2) network.getClientData("GML");
+		// if (reader != null) {
+		// list = reader.getList();
+		// } else {
+		// list = new Vector();
+		// }
+		// GMLWriter gmlWriter = new GMLWriter();
+		// gmlWriter.writeGML(network, view, list);
+		//
+		// XGMMLParser.printList(list, fileWriter, network);
+		//
+		// fileWriter.close();
 
 	}
 
@@ -440,7 +436,7 @@ public class CytoscapeSessionWriter {
 			CyNetwork network = (CyNetwork) itr.next();
 			String networkID = network.getIdentifier();
 			String networkName = network.getTitle();
-			
+
 			networkMap.put(networkName, networkID);
 
 			DefaultMutableTreeNode parent = (DefaultMutableTreeNode) netPanel
@@ -474,23 +470,29 @@ public class CytoscapeSessionWriter {
 		Network curNode = factory.createNetwork();
 		curNode.setFilename(node.getUserObject().toString() + XGMML_EXT);
 		curNode.setId(node.getUserObject().toString());
-//		CyNetworkView curView = Cytoscape.getNetworkView((String) networkMap.get(node
-//				.getUserObject().toString()));
+		// CyNetworkView curView = Cytoscape.getNetworkView((String)
+		// networkMap.get(node
+		// .getUserObject().toString()));
 		CyNetwork curNet = Cytoscape.getNetwork((String) networkMap.get(node
 				.getUserObject().toString()));
-		CyNetworkView curView = Cytoscape.getNetworkView(curNet.getIdentifier());
-		
+		CyNetworkView curView = Cytoscape
+				.getNetworkView(curNet.getIdentifier());
+
 		curView = (CyNetworkView) viewMap.get(curNet.getIdentifier());
-		
-		if(!node.getUserObject().toString().equals("Network Root")) {
+
+		if (!node.getUserObject().toString().equals("Network Root")) {
 			String visualStyleName = curView.getVisualStyle().getName();
-			System.out.println("Saving Association: " + curNode.getId() + " --> " + visualStyleName);
+			if (visualStyleName == null) {
+				visualStyleName = DEFAULT_VS_NAME;
+			}
+
+			System.out.println("Saving Association: " + curNode.getId()
+					+ " --> " + visualStyleName);
 			curNode.setVisualStyle(visualStyleName);
 		} else {
-			curNode.setVisualStyle("NA");
+			curNode.setVisualStyle(DEFAULT_VS_NAME);
 		}
-		
-		
+
 		if (Cytoscape.getNetworkView((String) networkMap.get(node
 				.getUserObject().toString())) == null) {
 			curNode.setView(false);
@@ -531,16 +533,22 @@ public class CytoscapeSessionWriter {
 				Network leaf = factory.createNetwork();
 				leaf.setFilename(child.getUserObject().toString() + XGMML_EXT);
 				leaf.setId(child.getUserObject().toString());
-				CyNetworkView leafView = Cytoscape.getNetworkView((String) networkMap.get(child
-						.getUserObject().toString()));
-				
-				leafView = (CyNetworkView) viewMap.get(leafView.getNetwork().getIdentifier());
-				
-				
-				String leafVisualStyleName = leafView.getVisualStyle().getName();
+				CyNetworkView leafView = Cytoscape
+						.getNetworkView((String) networkMap.get(child
+								.getUserObject().toString()));
+
+				leafView = (CyNetworkView) viewMap.get(leafView.getNetwork()
+						.getIdentifier());
+
+				String leafVisualStyleName = leafView.getVisualStyle()
+						.getName();
+				if (leafVisualStyleName == null) {
+					leafVisualStyleName = DEFAULT_VS_NAME;
+				}
 				leaf.setVisualStyle(leafVisualStyleName);
-				System.out.println("Saving Association: " + leaf.getId() + " --> " + leafVisualStyleName);
-				
+				System.out.println("Saving Association: " + leaf.getId()
+						+ " --> " + leafVisualStyleName);
+
 				String targetID = (String) networkMap.get(child.getUserObject()
 						.toString());
 
@@ -549,26 +557,27 @@ public class CytoscapeSessionWriter {
 				leaf.setParent(tempParent);
 
 				CyNetwork targetNetwork = Cytoscape.getNetwork(targetID);
-				CyNetworkView curNetworkView = Cytoscape.getNetworkView(targetID);
-				
+				CyNetworkView curNetworkView = Cytoscape
+						.getNetworkView(targetID);
+
 				if (curNetworkView == null) {
 					System.out.println("#############NO VIEW!");
 					leaf.setView(false);
 				} else {
 					leaf.setView(true);
-					
+
 					Iterator it = targetNetwork.nodesIterator();
 					ViewableNodes vn = factory.createViewableNodes();
-					while(it.hasNext()) {
-						String viewableID = ((CyNode)it.next()).getIdentifier();
+					while (it.hasNext()) {
+						String viewableID = ((CyNode) it.next())
+								.getIdentifier();
 						Node viewableNode = factory.createNode();
 						viewableNode.setId(viewableID);
 						vn.getNode().add(viewableNode);
 					}
 					leaf.setViewableNodes(vn);
-					
-					
-//					 Add selected & hidden nodes/edges here!!
+
+					// Add selected & hidden nodes/edges here!!
 					SelectedNodes sn = (SelectedNodes) getSelectedObjects(NODE,
 							targetNetwork);
 
@@ -582,8 +591,6 @@ public class CytoscapeSessionWriter {
 						leaf.setSelectedEdges(se);
 					}
 
-					
-
 					HiddenNodes hn = (HiddenNodes) getHiddenObjects(NODE,
 							curNetworkView);
 					HiddenEdges he = (HiddenEdges) getHiddenObjects(EDGE,
@@ -595,7 +602,7 @@ public class CytoscapeSessionWriter {
 						leaf.setHiddenEdges(he);
 					}
 				}
-				
+
 				netList.add(leaf);
 
 			} else {
@@ -612,24 +619,20 @@ public class CytoscapeSessionWriter {
 				.toString());
 		CyNetwork targetNetwork = Cytoscape.getNetwork(targetID);
 
-		
-		
-		if( curNode.getId() != "Network Root") {
+		if (curNode.getId() != "Network Root") {
 			Iterator it = targetNetwork.nodesIterator();
 			ViewableNodes vn = factory.createViewableNodes();
-			while(it.hasNext()) {
-				
-				String viewableID = ((CyNode)it.next()).getIdentifier();
+			while (it.hasNext()) {
+
+				String viewableID = ((CyNode) it.next()).getIdentifier();
 				Node viewableNode = factory.createNode();
 				viewableNode.setId(viewableID);
 				vn.getNode().add(viewableNode);
-				
-				
+
 			}
 			curNode.setViewableNodes(vn);
 		}
-		
-		
+
 		// Extract selected nodes and edges
 		SelectedNodes sn = (SelectedNodes) getSelectedObjects(NODE,
 				targetNetwork);
@@ -693,7 +696,7 @@ public class CytoscapeSessionWriter {
 				}
 			}
 
-			//System.out.println("Total hidden == " + hn.getNode().size());
+			// System.out.println("Total hidden == " + hn.getNode().size());
 			if (hn.getNode().size() != 0) {
 				return hn;
 			} else {
@@ -760,8 +763,8 @@ public class CytoscapeSessionWriter {
 					tempNode.setId(curNodeName);
 
 					sNodeList.add(tempNode);
-//					System.out.println("++++++Selected node ID is "
-//							+ curNodeName);
+					// System.out.println("++++++Selected node ID is "
+					// + curNodeName);
 				}
 
 				return sn;
@@ -785,7 +788,7 @@ public class CytoscapeSessionWriter {
 					tempEdge.setId(curEdgeName);
 
 					sEdgeList.add(tempEdge);
-					//System.out.println("======edge ID is " + curEdgeName);
+					// System.out.println("======edge ID is " + curEdgeName);
 				}
 
 				return se;

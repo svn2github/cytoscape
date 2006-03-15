@@ -319,7 +319,11 @@ public class CytoscapeSessionReader {
 							.getBioDataServer(), CytoscapeInit
 							.getDefaultSpeciesName());
 			
-			vsMap.put(rootNetwork.getIdentifier(), targetRoot.getVisualStyle());
+			String vsName = targetRoot.getVisualStyle();
+			if(vsName  == null) {
+				vsName = "default";
+			}
+			vsMap.put(rootNetwork.getIdentifier(), vsName);
 			
 			
 			// Set selected nodes & edges
@@ -380,13 +384,15 @@ public class CytoscapeSessionReader {
 
 			Child child = (Child) children.get(i);
 			Network childNet = (Network) netMap.get(child.getId());
+			String vsName = childNet.getVisualStyle();
+			if(vsName == null) {
+				vsName = "default";
+			}
 			
-			
-			vsMapByName.put(child.getId(), childNet.getVisualStyle());
+			vsMapByName.put(child.getId(), vsName);
 			
 			String childFile = sessionID + FS + childNet.getFilename();
 
-			
 			InputStream networkStream = sessionFile.getInputStream(sessionFile
 					.getEntry(childFile));
 
@@ -395,7 +401,7 @@ public class CytoscapeSessionReader {
 							.getBioDataServer(), CytoscapeInit
 							.getDefaultSpeciesName());
 			
-			vsMap.put(new_network.getIdentifier(), childNet.getVisualStyle());
+			vsMap.put(new_network.getIdentifier(), vsName);
 //			System.out.println("***Network is: " + childNet.getId());
 //			System.out.println("***VS is: " + vsMap.get(childNet.getId()).toString());
 			
