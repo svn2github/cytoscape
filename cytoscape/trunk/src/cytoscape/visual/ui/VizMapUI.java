@@ -1,40 +1,39 @@
-
 /*
-  File: VizMapUI.java 
-  
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-  
-  The Cytoscape Consortium is: 
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Pasteur Institute
-  - Agilent Technologies
-  
-  This library is free software; you can redistribute it and/or modify it
-  under the terms of the GNU Lesser General Public License as published
-  by the Free Software Foundation; either version 2.1 of the License, or
-  any later version.
-  
-  This library is distributed in the hope that it will be useful, but
-  WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
-  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
-  documentation provided hereunder is on an "as is" basis, and the
-  Institute for Systems Biology and the Whitehead Institute 
-  have no obligations to provide maintenance, support,
-  updates, enhancements or modifications.  In no event shall the
-  Institute for Systems Biology and the Whitehead Institute 
-  be liable to any party for direct, indirect, special,
-  incidental or consequential damages, including lost profits, arising
-  out of the use of this software and its documentation, even if the
-  Institute for Systems Biology and the Whitehead Institute 
-  have been advised of the possibility of such damage.  See
-  the GNU Lesser General Public License for more details.
-  
-  You should have received a copy of the GNU Lesser General Public License
-  along with this library; if not, write to the Free Software Foundation,
-  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ File: VizMapUI.java 
+ 
+ Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+ 
+ The Cytoscape Consortium is: 
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Pasteur Institute
+ - Agilent Technologies
+ 
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+ 
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute 
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute 
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute 
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+ 
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+ */
 
 //------------------------------------------------------------------------------
 // $Revision$
@@ -74,6 +73,7 @@ import javax.swing.event.ChangeListener;
 import cytoscape.CyNetwork;
 import cytoscape.CyNetworkEvent;
 import cytoscape.CyNetworkListener;
+import cytoscape.Cytoscape;
 import cytoscape.dialogs.GridBagGroup;
 import cytoscape.dialogs.MiscGB;
 import cytoscape.visual.CalculatorCatalog;
@@ -428,8 +428,14 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 				// set the new style in VMM, which will trigger an update
 				// to the current selection in the combo box
 				VMM.setVisualStyle(currentStyle);
+
+				Cytoscape.getNetworkView(
+						Cytoscape.getCurrentNetwork().getIdentifier())
+						.setVisualStyle(currentStyle.getName());
+
 				// this applies the new style to the graph
 				VMM.getNetworkView().redrawGraph(false, true);
+
 			}
 		}
 
@@ -541,8 +547,30 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 						// this class
 						// that updates the currentStyle held by this class
 						VMM.setVisualStyle(newStyle);
+
+//						System.out
+//								.println("@@@@@VS is "
+//										+ newStyle.getName()
+//										+ ", and netview is "
+//										+ Cytoscape.getCurrentNetworkView()
+//												.getIdentifier()
+//										+ ", networkName is "
+//										+ Cytoscape.getCurrentNetwork()
+//												.getIdentifier());
+
 						// this call will apply the new visual style
-						VMM.getNetworkView().redrawGraph(false, true);
+						// VMM.getNetworkView().redrawGraph(false, true);
+						Cytoscape.getNetworkView(
+								Cytoscape.getCurrentNetwork().getIdentifier())
+								.setVisualStyle(newStyle.getName());
+
+						Cytoscape.getCurrentNetworkView().redrawGraph(false,
+								true);
+
+						// Need to update CyNetworkView's VS
+						// Cytoscape.getCurrentNetworkView().setVisualStyle(
+						// newStyle.getName());
+
 					}
 				}
 			}
@@ -575,6 +603,22 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 			this.rebuilding = false;
 		}
 
+		protected void refreshStyleComboBox(VisualStyle selectedStyle) {
+			/*
+			 * When we remove and add the elements in the following code, it
+			 * triggers events caught by the StyleSelectionListener. To get
+			 * around this, we set a boolean flag to tell the listener to ignore
+			 * these events
+			 */
+			this.rebuilding = true;
+			this.styleComboModel.removeAllElements();
+			for (Iterator styleIter = styles.iterator(); styleIter.hasNext();) {
+				this.styleComboModel.addElement(styleIter.next());
+			}
+			this.styleComboModel.setSelectedItem(selectedStyle);
+			this.rebuilding = false;
+		}
+
 		/**
 		 * Reset the style selection controls.
 		 */
@@ -582,6 +626,12 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 			// reset local style collection
 			styles = catalog.getVisualStyles();
 			refreshStyleComboBox();
+		}
+
+		public void resetStyles(String selected) {
+			// reset local style collection
+			styles = catalog.getVisualStyles();
+			refreshStyleComboBox(catalog.getVisualStyle(selected));
 		}
 
 		/**
