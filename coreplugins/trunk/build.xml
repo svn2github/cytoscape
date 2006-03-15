@@ -14,6 +14,7 @@
     <ant dir="yfiles"/>
     <ant dir="CytoscapeEditor2"/>
     <ant dir="AutomaticLayout"/>
+    <ant dir="GraphMerge"/>
     <mkdir dir="${build.dir}"/>
     <copy todir="${build.dir}" file="browser/browser.jar"/>
     <copy todir="${build.dir}" file="ManualLayout/ManualLayout.jar"/>
@@ -21,6 +22,7 @@
     <copy todir="${build.dir}" file="yfiles/yLayouts.jar"/>
     <copy todir="${build.dir}" file="CytoscapeEditor2/CytoscapeEditor.jar"/>
     <copy todir="${build.dir}" file="AutomaticLayout/AutomaticLayout.jar"/>
+    <copy todir="${build.dir}" file="GraphMerge/GraphMerge.jar"/>
   </target>
 
   <!-- clean all coreplugin projects  -->
@@ -31,6 +33,7 @@
     <ant dir="yfiles" target="clean"/>
     <ant dir="CytoscapeEditor2" target="clean"/>
     <ant dir="AutomaticLayout" target="clean"/>
+    <ant dir="GraphMerge" target="clean"/>
     <delete dir="${build.dir}"/>
   </target>
 
