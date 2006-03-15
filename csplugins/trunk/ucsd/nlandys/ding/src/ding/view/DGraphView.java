@@ -409,6 +409,7 @@ public class DGraphView implements GraphView
   {
     synchronized (m_lock) {
       m_canvas.m_scaleFactor = zoom; }
+    updateView();
   }
 
   public void fitContent()
@@ -428,6 +429,7 @@ public class DGraphView implements GraphView
            (((double) m_extentsBuff[2]) - ((double) m_extentsBuff[0])),
            ((double) m_canvas.getHeight()) /
            (((double) m_extentsBuff[3]) - ((double) m_extentsBuff[1]))); } }
+    updateView();
   }
 
   public void updateView()
