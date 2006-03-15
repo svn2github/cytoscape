@@ -64,18 +64,19 @@ public class GinyUtils {
             // use GINY methods
             view.hideGraphObject( nview );
             
-            int[] na = view.getGraphPerspective().neighborsArray( nview.getGraphPerspectiveIndex() );
-            for ( int i2 = 0; i2 < na.length; ++i2 ) {
-                int[] edges = view.getGraphPerspective().
-                getEdgeIndicesArray( nview.getGraphPerspectiveIndex(), na[i2], true, true );
-                if( edges != null )
-                    //System.out.println( "There are: "+edges.length+" edge between "+nview.getGraphPerspectiveIndex()+" and "+na[i2] );
-                    for ( int j = 0; j < edges.length; ++j ) {
-                        // use GINY methods
-                        view.hideGraphObject( view.getEdgeView( edges[j] ) );
-                    }
-            }
+//             int[] na = view.getGraphPerspective().neighborsArray( nview.getGraphPerspectiveIndex() );
+//             for ( int i2 = 0; i2 < na.length; ++i2 ) {
+//                 int[] edges = view.getGraphPerspective().
+//                 getEdgeIndicesArray( nview.getGraphPerspectiveIndex(), na[i2], true, true );
+//                 if( edges != null )
+//                     //System.out.println( "There are: "+edges.length+" edge between "+nview.getGraphPerspectiveIndex()+" and "+na[i2] );
+//                     for ( int j = 0; j < edges.length; ++j ) {
+//                         // use GINY methods
+//                         view.hideGraphObject( view.getEdgeView( edges[j] ) );
+//                     }
+//             }
         }
+        view.updateView();
     }
     
     public static void unHideSelectedNodes(GraphView view) {
@@ -98,6 +99,7 @@ public class GinyUtils {
                 }
             }
         }
+        view.updateView();
     }
     
     public static void unHideAll(GraphView view) {
@@ -111,6 +113,7 @@ public class GinyUtils {
             EdgeView eview =(EdgeView) ei.next();
             view.showGraphObject( eview );
         }	
+        view.updateView();
     }
     
     public static void unHideNodesAndInterconnectingEdges(GraphView view) {
@@ -133,6 +136,7 @@ public class GinyUtils {
                 }
             }
         }
+        view.updateView();
     }
 
     public static void hideSelectedEdges(GraphView view) {
@@ -142,6 +146,7 @@ public class GinyUtils {
             EdgeView eview =(EdgeView) i.next();
             view.hideGraphObject( eview );
         }
+        view.updateView();
     }
     
     public static void unHideSelectedEdges(GraphView view) {
@@ -151,6 +156,7 @@ public class GinyUtils {
             EdgeView eview =(EdgeView) i.next();
             view.showGraphObject( eview );
         }
+        view.updateView();
     }
     
     
@@ -161,6 +167,7 @@ public class GinyUtils {
             NodeView nview =(NodeView) i.next();
             nview.setSelected( !nview.isSelected() );
         }
+        view.updateView();
     }
     
     public static void invertSelectedEdges(GraphView view) {
@@ -170,6 +177,7 @@ public class GinyUtils {
             EdgeView eview =(EdgeView) i.next();
             eview.setSelected( !eview.isSelected() );
         }
+        view.updateView();
     }
     
     public static void selectFirstNeighbors(GraphView view) {
@@ -190,6 +198,7 @@ public class GinyUtils {
             NodeView nview = (NodeView)si.next();
             nview.setSelected(true);
         }
+        view.updateView();
     }
     
     public static void selectAllNodes(GraphView view) {
@@ -199,6 +208,7 @@ public class GinyUtils {
             NodeView nview =(NodeView) i.next();
             nview.setSelected( true );
         }
+        view.updateView();
     }
     
     public static void deselectAllNodes(GraphView view) {
@@ -208,6 +218,7 @@ public class GinyUtils {
             NodeView nview =(NodeView) i.next();
             nview.setSelected( false );
         }
+        view.updateView();
     }
 
     
@@ -218,6 +229,7 @@ public class GinyUtils {
             EdgeView eview =(EdgeView) i.next();
             eview.setSelected( true );
         }
+        view.updateView();
     }
     
     public static void deselectAllEdges(GraphView view) {
@@ -227,6 +239,7 @@ public class GinyUtils {
             EdgeView eview =(EdgeView) i.next();
             eview.setSelected( false );
         }
+        view.updateView();
     }
     
     public static void hideAllEdges(GraphView view) {
@@ -236,6 +249,7 @@ public class GinyUtils {
             EdgeView eview =(EdgeView) i.next();
             view.hideGraphObject( eview );
         }
+        view.updateView();
     }
     
     public static void unHideAllEdges(GraphView view) {
@@ -245,6 +259,7 @@ public class GinyUtils {
             EdgeView eview =(EdgeView) i.next();
             view.showGraphObject( eview );
         }
+        view.updateView();
     }
 }
 
