@@ -9,6 +9,7 @@ import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.CyEdgeView;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CyNodeView;
+import cytoscape.view.FlagAndSelectionHandler;
 import cytoscape.visual.VisualStyle;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.ui.VizMapUI;
@@ -40,6 +41,7 @@ public class DingNetworkView extends DGraphView implements CyNetworkView
       addNodeView(nodes[i]); }
     for (int i = 0; i < edges.length; i++) {
       addEdgeView(edges[i]); }
+    new FlagAndSelectionHandler(((CyNetwork) getNetwork()).getFlagger(), this);
   }
 
   public CyNetwork getNetwork()
