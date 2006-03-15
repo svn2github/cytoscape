@@ -7,6 +7,8 @@ import giny.model.GraphPerspective;
 import giny.model.RootGraph;
 import giny.view.Bend;
 import giny.view.GraphView;
+import giny.view.GraphViewChangeEvent;
+import giny.view.GraphViewChangeListener;
 import giny.view.NodeView;
 import giny.view.EdgeView;
 import java.awt.EventQueue;
@@ -34,6 +36,21 @@ public class SanityTest
     final GraphPerspective persp = root.createGraphPerspective
       ((int[]) null, (int[]) null);
     final DGraphView view = new DGraphView(persp);
+    for (int i = 0; i < 5; i++) {
+      if (i != 2) {
+        view.addGraphViewChangeListener
+          (new GraphViewChangeListener() {
+              public void graphViewChanged(GraphViewChangeEvent evt) {} }); }
+      else {
+        view.addGraphViewChangeListener
+          (new GraphViewChangeListener() {
+              public void graphViewChanged(GraphViewChangeEvent evt) {
+                if (evt.isNodesSelectedType()) {
+                  final int[] selectedNodes = evt.getSelectedNodeIndices();
+                  System.out.print("selected nodes: ");
+                  for (int i = 0; i < selectedNodes.length; i++) {
+                    System.out.print(selectedNodes[i] + "  "); }
+                  System.out.println(); } } }); } }
     EventQueue.invokeAndWait(new Runnable() {
         public void run() {
           Frame f = new Frame() {
