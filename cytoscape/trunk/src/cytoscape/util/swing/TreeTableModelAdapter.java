@@ -114,11 +114,20 @@ public class TreeTableModelAdapter extends AbstractTableModel
 
     protected Object nodeForRow(int row) {
       TreePath treePath = tree.getPathForRow(row);
-      return treePath.getLastPathComponent();
+      
+      if(treePath != null) {
+    	  return treePath.getLastPathComponent();
+      } else 
+    	  return null;
     }
 
     public Object getValueAt(int row, int column) {
-    return treeTableModel.getValueAt(nodeForRow(row), column);
+    	Object tempObj = nodeForRow(row);
+    	if(tempObj != null) {
+    		return treeTableModel.getValueAt(tempObj, column);
+    	} else {
+    		return null;
+    	}
     }
 
     public boolean isCellEditable(int row, int column) {
