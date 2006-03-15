@@ -540,7 +540,7 @@ public class CytoscapeSessionReader {
 		FitContentAction fca = new FitContentAction();
 
 		if ((cyNetwork.getNodeCount() > 0) && (cyNetwork.getNodeCount() < 200)) {
-			fca.zoomToMinimumEnclosingRectangle(currentGraphView);
+                  currentGraphView.fitContent();
 		} else {
 // 			view.getCanvas().getCamera().animateViewToCenterBounds(
 // 					view.getCanvas().getLayer().getFullBounds(), true, 50l);
