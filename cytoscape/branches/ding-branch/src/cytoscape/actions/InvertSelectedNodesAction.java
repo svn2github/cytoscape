@@ -62,6 +62,7 @@ public class InvertSelectedNodesAction extends CytoscapeAction {
 	int [] flaggedNodeIndices = cyNetwork.getFlaggedNodeIndicesArray();
 	cyNetwork.flagAllNodes();
 	cyNetwork.setFlaggedNodes(flaggedNodeIndices,false);
+        Cytoscape.getCurrentNetworkView().updateView();
     }
 }
 
