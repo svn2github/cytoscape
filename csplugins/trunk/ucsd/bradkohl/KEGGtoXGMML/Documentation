@@ -1,0 +1,11 @@
+A plugin to convert KEGG to XGMML:
+
+The Cytoscape java file "importGraphFileAction" determines the file type of the Graph to be imported.
+
+As of now, if that type is of ".xml" the file_type is associated as a "XGMML" file.  Yet this doesn't always work, e.g. if the "xml" file is in "KEGG" format.
+
+The plugin changes importGraphFileAction so that it associates "XGMML" files only as "XGMML" file_type and associates "XML" files as a "KEGG" file_type.
+
+The "Kegg" File is then transformed using the "KEGGtoXGMML.transform" method which converts "KEGG" formatted "xml" to Cytoscape importable "xgmml" using the StyleSheet "xml_to_xgmml.xsl"
+
+Once "KEGGtoXGMML.transform" has converted the "KEGG" file, the new "XGMML" file is returned and treated as a regular "XGMML" file in the "ImportGraphFileAction" class.
