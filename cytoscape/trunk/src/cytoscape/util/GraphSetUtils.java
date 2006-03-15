@@ -59,7 +59,7 @@ import java.util.*;
  * @author Ryan Kelley
  * 
  */
-class GraphSetUtils {
+public class GraphSetUtils {
 	/**
 	 * The different types of network graph operations
 	 */
