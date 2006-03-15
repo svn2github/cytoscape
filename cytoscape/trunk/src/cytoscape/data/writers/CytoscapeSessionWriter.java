@@ -179,7 +179,9 @@ public class CytoscapeSessionWriter {
 
 	File sessionFolder;
 	String sessionDirName;
-
+	
+	HashMap viewMap = (HashMap) Cytoscape.getNetworkViewMap();
+	HashMap visualStyleMap;
 	//
 	// Constructor.
 	//
@@ -190,10 +192,29 @@ public class CytoscapeSessionWriter {
 		// For now, session ID is time and date
 		Date date = new Date();
 		DateFormat df = new SimpleDateFormat("yyyy_MM_dd-HH_mm");
-		System.out.println("Session Time Stamp: " + df.format(date));
+		//System.out.println("Session Time Stamp: " + df.format(date));
 
 		// Create CySession file
 		sessionDirName = "CytoscapeSession-" + df.format(date);
+		
+		// For saving Visual Style
+//		visualStyleMap  = new HashMap();
+//		createVSMap();
+		
+	}
+	
+	private void createVSMap () {
+		Set viewNames = viewMap.keySet();
+		
+		Iterator it = viewNames.iterator();
+		while(it.hasNext()) {
+			String key = (String) it.next();
+		
+			CyNetworkView testview = (CyNetworkView)viewMap.get(key);
+			
+			System.out.println("=============== " + Cytoscape.getNetwork(key).getTitle() + " has VS " 
+					+ testview.getVisualStyle().getName());
+		}
 	}
 
 	/**
@@ -225,9 +246,8 @@ public class CytoscapeSessionWriter {
 					.getIdentifier());
 
 			String curNetworkName = network.getTitle();
-			
 			String xgmmlFileName = curNetworkName + XGMML_EXT;
-
+			
 			targetFiles[fileCounter] = xgmmlFileName;
 			fileCounter++;
 
@@ -297,7 +317,7 @@ public class CytoscapeSessionWriter {
 		
 		// Extract current vizmap file from the memory.
 		String vizmapLocation = CytoscapeInit.getVizmapPropertiesLocation();
-		System.out.println("The file \"" + vizmapLocation + "\" will be included in the session file...");
+		//System.out.println("The file \"" + vizmapLocation + "\" will be included in the session file...");
 		// Fire dummy signal to update vizmap.prop
 		Cytoscape.firePropertyChange(Cytoscape.SESSION_SAVED, null, null);
 		
@@ -420,16 +440,11 @@ public class CytoscapeSessionWriter {
 			CyNetwork network = (CyNetwork) itr.next();
 			String networkID = network.getIdentifier();
 			String networkName = network.getTitle();
-
+			
 			networkMap.put(networkName, networkID);
 
 			DefaultMutableTreeNode parent = (DefaultMutableTreeNode) netPanel
 					.getNetworkNode(networkID).getParent();
-//			System.out.print("############# cur node is: "
-//					+ netPanel.getNetworkNode(networkID).getUserObject()
-//							.toString() + ",  ");
-//			System.out.println("############# parent is: "
-//					+ parent.getUserObject().toString());
 		}
 
 		if (treeTable != null) {
@@ -459,7 +474,23 @@ public class CytoscapeSessionWriter {
 		Network curNode = factory.createNetwork();
 		curNode.setFilename(node.getUserObject().toString() + XGMML_EXT);
 		curNode.setId(node.getUserObject().toString());
-
+//		CyNetworkView curView = Cytoscape.getNetworkView((String) networkMap.get(node
+//				.getUserObject().toString()));
+		CyNetwork curNet = Cytoscape.getNetwork((String) networkMap.get(node
+				.getUserObject().toString()));
+		CyNetworkView curView = Cytoscape.getNetworkView(curNet.getIdentifier());
+		
+		curView = (CyNetworkView) viewMap.get(curNet.getIdentifier());
+		
+		if(!node.getUserObject().toString().equals("Network Root")) {
+			String visualStyleName = curView.getVisualStyle().getName();
+			System.out.println("Saving Association: " + curNode.getId() + " --> " + visualStyleName);
+			curNode.setVisualStyle(visualStyleName);
+		} else {
+			curNode.setVisualStyle("NA");
+		}
+		
+		
 		if (Cytoscape.getNetworkView((String) networkMap.get(node
 				.getUserObject().toString())) == null) {
 			curNode.setView(false);
@@ -500,6 +531,16 @@ public class CytoscapeSessionWriter {
 				Network leaf = factory.createNetwork();
 				leaf.setFilename(child.getUserObject().toString() + XGMML_EXT);
 				leaf.setId(child.getUserObject().toString());
+				CyNetworkView leafView = Cytoscape.getNetworkView((String) networkMap.get(child
+						.getUserObject().toString()));
+				
+				leafView = (CyNetworkView) viewMap.get(leafView.getNetwork().getIdentifier());
+				
+				
+				String leafVisualStyleName = leafView.getVisualStyle().getName();
+				leaf.setVisualStyle(leafVisualStyleName);
+				System.out.println("Saving Association: " + leaf.getId() + " --> " + leafVisualStyleName);
+				
 				String targetID = (String) networkMap.get(child.getUserObject()
 						.toString());
 
@@ -557,10 +598,7 @@ public class CytoscapeSessionWriter {
 				
 				netList.add(leaf);
 
-				System.out.println((String) child.getUserObject()
-						+ ": This is the leaf node.");
 			} else {
-				System.out.print((String) child.getUserObject() + "--");
 				walkTree(child);
 			}
 		}

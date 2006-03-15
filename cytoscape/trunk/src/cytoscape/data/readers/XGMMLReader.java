@@ -96,15 +96,6 @@ public class XGMMLReader implements GraphReader {
 	protected static String SOURCE = "source";
 	protected static String TARGET = "target";
 
-	// The following elements are in "graphics" section of GML
-	protected static String X = "x";
-	protected static String Y = "y";
-	protected static String H = "h";
-	protected static String W = "w";
-	protected static String TYPE = "type";
-	protected static String ID = "id";
-	protected static String ROOT_INDEX = "root_index";
-
 	// Shapes used in Cytoscape (not GML standard)
 	// In GML, they are called "type"
 	protected static String RECTANGLE = "rectangle";
@@ -116,24 +107,6 @@ public class XGMMLReader implements GraphReader {
 	protected static String OCTAGON = "octagon";
 	protected static String PARALELLOGRAM = "parallelogram";
 	protected static String TRIANGLE = "triangle";
-
-	// Other GML "graphics" attributes
-	protected static String FILL = "fill";
-	protected static String WIDTH = "width";
-	protected static String STRAIGHT_LINES = "line";
-	protected static String CURVED_LINES = "curved";
-	protected static String SOURCE_ARROW = "source_arrow";
-	protected static String TARGET_ARROW = "target_arrow";
-
-	// States of the ends of arrows
-	protected static String ARROW = "arrow";
-	protected static String ARROW_NONE = "none";
-	protected static String ARROW_FIRST = "first";
-	protected static String ARROW_LAST = "last";
-	protected static String ARROW_BOTH = "both";
-	protected static String OUTLINE = "outline";
-	protected static String OUTLINE_WIDTH = "outline_width";
-	protected static String DEFAULT_EDGE_INTERACTION = "pp";
 
 	protected static final String FLOAT_TYPE = "float";
 	protected static final String INT_TYPE = "int";
@@ -600,6 +573,7 @@ public class XGMMLReader implements GraphReader {
 				vsb.buildStyle();
 			}
 		}
+		
 	}
 
 	/**

@@ -54,6 +54,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.zip.ZipEntry;
@@ -82,6 +83,7 @@ import cytoscape.giny.PhoebeNetworkView;
 import cytoscape.init.CyPropertiesReader;
 import cytoscape.task.TaskMonitor;
 import cytoscape.util.ZipMultipleFiles;
+import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.visual.CalculatorCatalog;
 import cytoscape.visual.CalculatorCatalogFactory;
@@ -124,6 +126,10 @@ public class CytoscapeSessionReader {
 	int cnt;
 
 	Cysession session;
+	
+	// Stores networkName as the key and value is visualStyleName associated with it.
+	HashMap vsMap;
+	HashMap vsMapByName;
 
 	/**
 	 * Constructor.
@@ -135,6 +141,8 @@ public class CytoscapeSessionReader {
 	 */
 	public CytoscapeSessionReader(String filename) {
 		this.fileName = filename;
+		vsMap = new HashMap();
+		vsMapByName = new HashMap();
 	}
 
 	public void read() throws IOException, JAXBException {
@@ -162,7 +170,8 @@ public class CytoscapeSessionReader {
 				cysessionFileName = curEntry;
 				
 			} else if (curEntry.endsWith("vizmap.props")) {
-				
+				// We should restore VIZMAP first since it will be used by 
+				// Graph Layout.
 				restoreVizmap(curEntry);
 			} else {
 				networks.add(curEntry);
@@ -170,9 +179,18 @@ public class CytoscapeSessionReader {
 		}
 
 		cysFile.close();
-
 		loadCySession2(cysessionFileName, networks);
-
+		
+		
+		// Set VS for each network view
+		Set networkIDSet = vsMap.keySet();
+		String currentNetworkID = null;
+		Iterator it = networkIDSet.iterator();
+		while(it.hasNext()) {
+			currentNetworkID = (String) it.next();
+			Cytoscape.getNetworkView(currentNetworkID).setVisualStyle((String) vsMap.get(currentNetworkID));
+		}
+		
 		return true;
 	}
 	
@@ -285,13 +303,14 @@ public class CytoscapeSessionReader {
 			String curNetName = curNet.getId();
 
 			Network targetRoot = (Network) netMap.get(curNetName);
-
+			vsMapByName.put(targetRoot.getId(), targetRoot.getVisualStyle());
+			
 			// Create a root network here.
 			String targetNetwork = sessionID + FS + targetRoot.getFilename();
-			System.out.println("***Target is: " + targetNetwork);
-			System.out.println("***session is: " + sessionFile.getName());
+			
+			
 			ZipEntry zen = sessionFile.getEntry(targetNetwork);
-			System.out.println("***Zen is: " + zen.toString());
+
 			InputStream networkStream = sessionFile.getInputStream(sessionFile
 					.getEntry(targetNetwork));
 
@@ -299,7 +318,10 @@ public class CytoscapeSessionReader {
 					networkStream, Cytoscape.FILE_XGMML, Cytoscape
 							.getBioDataServer(), CytoscapeInit
 							.getDefaultSpeciesName());
-
+			
+			vsMap.put(rootNetwork.getIdentifier(), targetRoot.getVisualStyle());
+			
+			
 			// Set selected nodes & edges
 			SelectedNodes sNodes = (SelectedNodes) targetRoot
 					.getSelectedNodes();
@@ -358,6 +380,10 @@ public class CytoscapeSessionReader {
 
 			Child child = (Child) children.get(i);
 			Network childNet = (Network) netMap.get(child.getId());
+			
+			
+			vsMapByName.put(child.getId(), childNet.getVisualStyle());
+			
 			String childFile = sessionID + FS + childNet.getFilename();
 
 			
@@ -368,6 +394,12 @@ public class CytoscapeSessionReader {
 					networkStream, Cytoscape.FILE_XGMML, Cytoscape
 							.getBioDataServer(), CytoscapeInit
 							.getDefaultSpeciesName());
+			
+			vsMap.put(new_network.getIdentifier(), childNet.getVisualStyle());
+//			System.out.println("***Network is: " + childNet.getId());
+//			System.out.println("***VS is: " + vsMap.get(childNet.getId()).toString());
+			
+			
 
 			//
 			// Set selected/hidden nodes & edges
@@ -388,35 +420,6 @@ public class CytoscapeSessionReader {
 
 		}
 	}
-
-	// private CyNetwork createChildNetwork(Network child, CyNetwork parent)
-	// throws IOException, JAXBException {
-	//
-	// // Load the child network from the XGMML file
-	//
-	// String childFileName = "./zipfiles/" + child.getFilename() + ".xgmml";
-	// XGMMLReader reader;
-	//
-	// reader = new XGMMLReader(childFileName);
-	//
-	// // Have the GraphReader read the given file
-	// reader.read();
-	//
-	// // Get the RootGraph indices of the nodes and
-	// // Edges that were just created
-	// int[] nodes = reader.getNodeIndicesArray();
-	// int[] edges = reader.getEdgeIndicesArray();
-	//
-	// CyNetwork new_network = Cytoscape.createNetwork(nodes, edges, child
-	// .getId(), parent);
-	// // new_network.setExpressionData(current_network.getExpressionData());
-	//
-	// String title = " child";
-	// Cytoscape.createNetworkView(new_network, title);
-	//
-	// return new_network;
-	//
-	// }
 
 	private void loadNetworks() {
 
@@ -460,6 +463,7 @@ public class CytoscapeSessionReader {
 			network = Cytoscape.createNetwork(nodes, edges, reader
 					.getNetworkID(), parent);
 		}
+		
 		// Store network Metadata
 		network.putClientData("RDF", reader.getNetworkMetadata());
 		network.putClientData(
@@ -470,7 +474,7 @@ public class CytoscapeSessionReader {
 		CytoscapeInit.setViewThreshold(realThreshold);
 
 		// Store "network property" in the clientdata data structure
-		network.putClientData("XGMML", reader);
+		//network.putClientData("XGMML", reader);
 
 		Object[] ret_val = new Object[3];
 		ret_val[0] = network;
@@ -498,6 +502,20 @@ public class CytoscapeSessionReader {
 					pCanvas.setVisible(true);
 				}
 			});
+			
+			
+			 
+			
+			String curVS = (String) vsMapByName.get(network.getTitle());
+			CyNetworkView curView = Cytoscape.getNetworkView(network
+					.getIdentifier());
+			if(curVS != null ) {
+				curView.setVisualStyle(curVS);
+				Cytoscape.getDesktop().getVizMapUI().getStyleSelector().resetStyles(curVS);
+				Cytoscape.getDesktop().getVizMapUI().visualStyleChanged();
+
+			} else
+				curView.setVisualStyle(Cytoscape.getDesktop().getVizMapManager().getVisualStyle().getName());
 		}
 
 		return network;
@@ -517,7 +535,7 @@ public class CytoscapeSessionReader {
 		view.setIdentifier(cyNetwork.getIdentifier());
 		Cytoscape.getNetworkViewMap().put(cyNetwork.getIdentifier(), view);
 		view.setTitle(cyNetwork.getTitle());
-
+		
 		// if Squiggle function enabled, enable squiggling on the created view
 		if (Cytoscape.isSquiggleEnabled()) {
 			view.getSquiggleHandler().beginSquiggling();
@@ -548,7 +566,6 @@ public class CytoscapeSessionReader {
 			view.getCanvas().getCamera().animateViewToCenterBounds(
 					view.getCanvas().getLayer().getFullBounds(), true, 50l);
 		}
-
 	}
 
 }
