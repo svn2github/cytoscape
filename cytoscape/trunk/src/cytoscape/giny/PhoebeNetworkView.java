@@ -97,6 +97,9 @@ public class PhoebeNetworkView
 //   protected PBasicInputEventHandler changeCursorHandler;
 //   protected Cursor zuiCursor;
 
+  
+  // Associated visual style
+  protected VisualStyle vs;
 
   public PhoebeNetworkView ( CyNetwork network,
                              String title ) {
@@ -136,7 +139,18 @@ public class PhoebeNetworkView
 //       // set the zui cursor to the default cursor.
 //       zuiCursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
 //     }
+    
+    // Set visual style
+    vs = null;
+  }
   
+  public void setVisualStyle( String VSName ) {
+	  System.out.println("New Vsial Style for " + title + ": " + VSName );
+	  vs = Cytoscape.getVisualMappingManager().getCalculatorCatalog().getVisualStyle(VSName);
+  }
+  
+  public VisualStyle getVisualStyle() {
+	  return vs;
   }
    
   protected void initializeEventHandlers() {
@@ -282,6 +296,7 @@ public class PhoebeNetworkView
   
   //TODO: set up the proper focus
   public void redrawGraph( boolean layout, boolean vizmap ) { 
+	  
     redrawGraph();
   }
    
@@ -310,11 +325,11 @@ public class PhoebeNetworkView
   }
 
   public cytoscape.visual.VisualMappingManager getVizMapManager() {
-    return null;
+    return Cytoscape.getVisualMappingManager();
   }
 
   public cytoscape.visual.ui.VizMapUI getVizMapUI() {
-    return null;
+    return Cytoscape.getDesktop().getVizMapUI();
   }
 
   //------------------------------//

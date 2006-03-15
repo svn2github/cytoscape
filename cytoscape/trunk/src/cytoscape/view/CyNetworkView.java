@@ -213,4 +213,12 @@ public interface CyNetworkView extends GraphView {
    * Applies the  given layout to only the given Nodes and Edges
    */
   public void applyLayout ( LayoutAlgorithm layout, int[] nodes, int[] edges );
+  
+  // This is necessary since we should save the association between VS
+  // AND network view.
+  // kono: 03/14/2006
+  public void setVisualStyle(String VSName);
+  
+  public VisualStyle getVisualStyle();
+  
 }
