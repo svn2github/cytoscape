@@ -176,7 +176,7 @@ public class PhoebeNetworkView
           CyNetworkUtilities.selectNodesStartingWith( Cytoscape.getCurrentNetwork(),
                                                       search_string,
                                                       Cytoscape.getCurrentNetworkView() );
-          cytoscape.actions.ZoomSelectedAction.zoomSelected();
+//           cytoscape.actions.ZoomSelectedAction.zoomSelected();
         }
         
         protected void resetFind () {
