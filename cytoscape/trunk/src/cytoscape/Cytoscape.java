@@ -45,27 +45,37 @@ import giny.view.GraphView;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeSupport;
-import java.util.*;
-import java.lang.reflect.InvocationTargetException;
 import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import javax.swing.*;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.event.SwingPropertyChangeSupport;
 
-import cytoscape.data.*;
+import phoebe.PGraphView;
+import cytoscape.data.CyAttributes;
+import cytoscape.data.CyAttributesImpl;
+import cytoscape.data.ExpressionData;
+import cytoscape.data.GraphObjAttributes;
+import cytoscape.data.Semantics;
+import cytoscape.data.readers.CyAttributesReader;
 import cytoscape.data.readers.GMLReader2;
 import cytoscape.data.readers.GraphReader;
 import cytoscape.data.readers.InteractionsReader;
-import cytoscape.data.readers.CyAttributesReader;
 import cytoscape.data.servers.BioDataServer;
-import cytoscape.giny.CytoscapeRootGraph;
 import cytoscape.giny.CytoscapeFingRootGraph;
-
+import cytoscape.giny.CytoscapeRootGraph;
 import cytoscape.giny.PhoebeNetworkView;
 import cytoscape.util.CyNetworkNaming;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
-import phoebe.PGraphView;
+import cytoscape.visual.VisualMappingManager;
 
 /**
  * This class, Cytoscape is <i>the</i> primary class in the API.
@@ -208,6 +218,8 @@ public abstract class Cytoscape {
 	 */
 	protected static CyNetwork nullNetwork = getRootGraph().createNetwork(
 			new int[] {}, new int[] {});
+	
+	
 
 	/**
 	 * A null CyNetworkView to give when there is no Current NetworkView
@@ -215,6 +227,14 @@ public abstract class Cytoscape {
 	protected static CyNetworkView nullNetworkView = new PhoebeNetworkView(
 			nullNetwork, "null");
 
+	
+	/*
+	 * VMM should be tied to Cytoscape, not to Desktop.
+	 * Developers should call this from here.
+	 */
+	protected static VisualMappingManager VMM = new VisualMappingManager(nullNetworkView);
+	
+	
 	/**
 	 * Shuts down Cytoscape, after giving plugins time to react.
 	 */
@@ -300,7 +320,12 @@ public abstract class Cytoscape {
 	public static PropertyChangeSupport getPropertyChangeSupport() {
 		return newPcs;
 	}
-
+	
+	
+	public static VisualMappingManager getVisualMappingManager() {
+		return VMM;
+	}
+	
 	/**
 	 * Return the CytoscapeRootGraph
 	 */
