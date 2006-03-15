@@ -62,7 +62,7 @@ public class InvertSelectedEdgesAction extends CytoscapeAction {
 	int [] flaggedEdgeIndices = cyNetwork.getFlaggedEdgeIndicesArray();
 	cyNetwork.flagAllEdges();
 	cyNetwork.setFlaggedEdges(flaggedEdgeIndices,false);
-        Cytoscape.getCurrentNetworkView.updateView();
+        Cytoscape.getCurrentNetworkView().updateView();
     }
 }
 
