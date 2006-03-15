@@ -9,40 +9,38 @@ use Data::Dumper;
 use DBI();
 use Cwd;
 
-print "--------------------- update_dip.pl ------------------\n";
+print "--------------------- update_hprd.pl ------------------\n";
 
 if(scalar(@ARGV) < 3){
-	print "USAGE: perl update_dip.pl <db user> <db password> <db name>\n";
+	print "USAGE: perl update_hprd.pl <db user> <db password> <db name>\n";
  	die;
 }
 
 $dbuser = $ARGV[0];
 $dbpwd = $ARGV[1];
-$dipname = $ARGV[2];
+$dbname = $ARGV[2];
 
 $starttime = time;
 
-# connect to the DIP database
-my $diph = DBI->connect("dbi:mysql:host=localhost", $dbuser, $dbpwd) or die "Can't make database connect: $DBI::errstr\n";
-$diph->do("CREATE DATABASE IF NOT EXISTS $dipname");
-$diph->do("USE $dipname") or die "Error: $dbh->errstr";
+# connect to the HPRD database
+my $dbh = DBI->connect("dbi:mysql:host=localhost", $dbuser, $dbpwd) or die "Can't make database connect: $DBI::errstr\n";
+$dbh->do("CREATE DATABASE IF NOT EXISTS $dbname");
+$dbh->do("USE $dbname") or die "Error: $dbh->errstr";
 
 # connect to the synonyms database
-$metah = DBI->connect("dbi:mysql:database=metainfo:host=localhost", $dbuser, $dbpwd) or die "Can't make database connect: $DBI::errstr\n";
+$metah = DBI->connect("dbi:mysql:database=bionetbuilder_info:host=localhost", $dbuser, $dbpwd) or die "Can't make database connect: $DBI::errstr\n";
 $sth = $metah->prepare_cached("SELECT dbname FROM db_name WHERE db=?") or die "Error: $dbh->errstr";
 $sth->execute("synonyms") or die "Error: $dbh->errstr";
 @row = $sth->fetchrow_array;
 $synname = $row[0];
 my $synh = DBI->connect("dbi:mysql:database=$synname:host=localhost", $dbuser, $dbpwd) or die "Can't make database connect: $DBI::errstr\n";
 
-
 # todo: how do I get this from an ftp site? I need to login...
 
+system("rm hprd/interactions/*");
+system("mkdir hprd/interactions");
 
-system("rm dip/interactions/*");
-system("mkdir dip/interactions");
-
-open DATA, "dip/dip20060116.mif";
+open DATA, "hprd/psimi_single_final.xml";
 my $line1;
 while( <DATA> ) {
     $line1 = $_;
@@ -67,7 +65,8 @@ while( <DATA> ) {
 	my @records = $xp->findnodes( '/proteinInteractor' );
 	
 	my $line = '';
-	
+	$numInteractors = 0;
+	$numInteractorsNoTaxid = 0;	
 	foreach my $record ( @records ) {
 	    
 	    ##my @fields = $xp->find( './child::*', $record )->get_nodelist();
@@ -78,55 +77,89 @@ while( <DATA> ) {
 		
 		my @children = &getChildren( $fld );
 		
-		my ( $id, $ref, $spec, $taxid, $swp, $pir, $gi, $full, $dipid );
+		my ( $id, $ref, $spec, $taxid, $swp, $pir, $gi, $locuslink, $unigene, $full, $dbid );
 		
 		for my $i ( 0..$#children ) {
-		
+			$numInteractors++;
 		    $_ = $children[ $i ];
+		    #print $_,"\n";
 		    $id = $1 if /^proteinInteractor\.id=(.*)/;
 		    $spec = $1 if /^proteinInteractor\.proteinInteractor\.organism\.organism\.names\.fullName\.=(.*)/;
 		    $taxid = $1 if /^proteinInteractor\.proteinInteractor\.organism\.ncbiTaxId=(.*)/;
 		    $full = $1 if /^proteinInteractor\.proteinInteractor\.names\.fullName\.=(.*)/;
-		    $dipid = $1 if /^proteinInteractor\.proteinInteractor\.xref\.primaryRef\.id=(.*)/;
+		    $dbid = $1 if /^proteinInteractor\.proteinInteractor\.xref\.primaryRef\.id=(.*)/;
 		    
-		    if ( $_ eq 'proteinInteractor.proteinInteractor.xref.secondaryRef.db=SWP' ) {
+		    if ( $_ eq 'proteinInteractor.proteinInteractor.xref.secondaryRef.db=Swiss-Prot' ) {
 			$_ = $children[ ++ $i ];
 			( $swp ) = /^proteinInteractor\.proteinInteractor\.xref\.secondaryRef\.id=(.*)/;
+			#print $swp,"\n";
 		    }
 		    elsif ( $_ eq 'proteinInteractor.proteinInteractor.xref.secondaryRef.db=PIR' ) {
 			$_ = $children[ ++ $i ];
 			( $pir ) = /^proteinInteractor\.proteinInteractor\.xref\.secondaryRef\.id=(.*)/;
+		    	#print $pir,"\n";
 		    }
 		    elsif ( $_ eq 'proteinInteractor.proteinInteractor.xref.secondaryRef.db=GI' ) {
 			$_ = $children[ ++ $i ];
 			( $gi ) = /^proteinInteractor\.proteinInteractor\.xref\.secondaryRef\.id=(.*)/;
+		    #print $gi,"\n";
 		    }
-		    elsif ( $_ eq 'proteinInteractor.proteinInteractor.xref.secondaryRef.db=RefSeq' ) {
+		    elsif ( $_ eq 'proteinInteractor.proteinInteractor.xref.secondaryRef.db=Ref-Seq' ) {
 			$_ = $children[ ++ $i ];
 			( $ref ) = /^proteinInteractor\.proteinInteractor\.xref\.secondaryRef\.id=(.*)/;
+		    #print $ref,"\n";
 		    }
+		    elsif ( $_ eq 'proteinInteractor.proteinInteractor.xref.secondaryRef.db=Unigene' ) {
+			$_ = $children[ ++ $i ];
+			( $unigene ) = /^proteinInteractor\.proteinInteractor\.xref\.secondaryRef\.id=(.*)/;
+		    #print $unigene,"\n";
+		    }
+		    elsif ( $_ eq 'proteinInteractor.proteinInteractor.xref.secondaryRef.db=Locus-Link' ) {
+			$_ = $children[ ++ $i ];
+			( $locuslink ) = /^proteinInteractor\.proteinInteractor\.xref\.secondaryRef\.id=(.*)/;
+		    #print $locuslink,"\n";
+			}
 		}
 		
-		# the id for a node priority: RefSeq id, GI, SwissProt (UniProt), PIR
+		# the id for a node priority: RefSeq id, GI, SwissProt, PIR, Locus-Link, Unigene, hprd
 		
-		my $canonical = $ref ne '' ? $ref : ( 
-				$gi ne '' ? "GI:$gi" : ( 
-				$swp ne '' ? "UniProt:$swp" : "PIR:$pir" ) );
+		my $canonical = "HPRD:${id}";
+		
+		if($ref ne ''){
+			$canonical = $ref;
+		}elsif($gi ne ''){
+			$canonical = "GI:${gi}";
+		}elsif($swp ne ''){
+			$canonical = "UniProt:${swp}";
+		}elsif($pir ne ''){
+			$canonical = "PIR:${pir}";
+		}elsif($locuslink ne ''){
+			$canonical = "LocLink:${locuslink}";
+		}elsif($unigene ne ''){
+			$canonical = "Unigene:${unigene}";
+		}elsif($dbid ne ''){
+			$canonical = "HPRD:${dbid}";
+		}
 		
 		( $full ) =~ s/\,//g;
 		
 		## Note dipid can be used to look up node:
-		## http://dip.doe-mbi.ucla.edu/dip/DIPview.cgi?PK=232   for $dipid='232N'
+		## http://dip.doe-mbi.ucla.edu/dip/DIPview.cgi?PK=232   for $dbid='232N'
+		
+		if($taxid eq ''){
+			$numInteractorsNoTaxid++;
+		}
 		
 		$ids{$id} = $canonical;
 		$specs{$id} = $taxid;
 		#$infos{$id} = '' . ( $ref ne '' ? "ref=$ref|" : "" ) .
-		#                  ( $gi ne '' ? "gi=$gi|" : "" ) .
-		#		   ( $swp ne '' ? "swp=$swp|" : "" ) .
-		#		   ( $pir ne '' ? "pir=$pir|" : "" ) .
+		#                   ( $gi ne '' ? "gi=$gi|" : "" ) .
+	    #			   ( $swp ne '' ? "swp=$swp|" : "" ) .
+	    #		   ( $pir ne '' ? "pir=$pir|" : "" ) .
 		#		   ( $full ne '' ? "long=$full|" : "" ) .
-		#		   ( $dipid ne '' ? "dipID=$dipid" : "" );
-		print STDERR "$id\n"; ##\t$ids{$id}\t$infos{$id}\t$specs{$id}\n";
+		#		   ( $dbid ne '' ? "hprdID=$dbid" : "" );
+		
+		print STDERR "$id\n";
 	    }
 	}
 	##( $line ) =~ s/\n//g;
@@ -149,6 +182,8 @@ while( <DATA> ) {
     }
 }
 
+print "Total num interactors = $numInteractors, without species = $numInteractorsNoTaxid\n";
+
 HERE:
 
 #print Data::Dumper->Dump( [\%ids], ["ids"]), $/;
@@ -162,10 +197,10 @@ while( <DATA> ) {
 
 # this while loop parses the interactions
 # todo: I am not sure of the format/size of a dipid
-$diph->do("DROP TABLE IF EXISTS interactions");
-$diph->do("CREATE TABLE interactions (id VARCHAR(25), i1 VARCHAR(25), interactionType VARCHAR(2), i2 VARCHAR(25), taxid1 INT, taxid2 INT, KEY(id), INDEX(taxid1), INDEX(taxid2) )");
+$dbh->do("DROP TABLE IF EXISTS interactions");
+$dbh->do("CREATE TABLE interactions (id VARCHAR(25), i1 VARCHAR(25), interactionType VARCHAR(2), i2 VARCHAR(25), taxid1 INT, taxid2 INT, KEY(id), INDEX(taxid1), INDEX(taxid2) )");
 
-open X, ">>dip/interactions/interactions\.txt";
+open X, ">>hprd/interactions/interactions\.txt";
 
 my @lines = ( $line1 );
 while( <DATA> ) {
@@ -221,22 +256,25 @@ while( <DATA> ) {
 	    my $i2 = $ids{$id2};
 	    print STDERR "WARNING: no id2\n" if $id2 eq '';
 	   
-	    $taxid1 = $specs{$id1};
-	    $taxid2 = $specs{$id2};
+	    my $taxid1 = $specs{$id1};
+	    my $taxid2 = $specs{$id2};
 	   
+	    
 	   # $info1 = $infos{$id1};
 	   # ( $info1 ) =~ s/=/1=/g;
 	   # $info2 = $infos{$id2};
 	   # ( $info2 ) =~ s/=/2=/g;
-	   # $infoA = "PubMedID=$pmid|dipID=$iid|$info1|$info2";
+	   # $infoA = "PubMedID=$pmid|hprdID=$iid|$info1|$info2";
 	   # $info1 = $infos{$id1};
 	   # ( $info1 ) =~ s/=/2=/g;
 	   # $info2 = $infos{$id2};
 	   # ( $info2 ) =~ s/=/1=/g;
-	   # $infoB = "PubMedID=$pmid|dipID=$iid|$info1|$info2";
-	    if($i1 ne '' and $i2 ne ''){
-	    		print X "$iid\t$i1\tpp\t$i2\t$taxid1\t$taxid2\n";
-	    	}
+	   # $infoB = "PubMedID=$pmid|hprdID=$iid|$info1|$info2";
+	    
+	    # not sure why in some cases the interactors do not have a name...
+	    if($i1 ne '' and $i2 ne ''){	
+	   		print X "$iid\t$i1\tpp\t$i2\t$taxid1\t$taxid2\n";
+	    }
 	}
 
 	while( <DATA> ) {
@@ -250,10 +288,9 @@ while( <DATA> ) {
 }
 
 close DATA;
-
-$fullFilePath = getcwd."/dip/interactions/interactions.txt";
+$fullFilePath = getcwd."/hprd/interactions/interactions.txt";
 print "Loading interactions...\n";
-$diph->do("LOAD DATA LOCAL INFILE \'${fullFilePath}\' IGNORE INTO TABLE interactions") or die "Error: $synh->errstr";
+$dbh->do("LOAD DATA LOCAL INFILE \'${fullFilePath}\' IGNORE INTO TABLE interactions") or die "Error: $dbh->errstr";
 print "done.\n";
 
 #########################################################################

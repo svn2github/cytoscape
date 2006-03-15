@@ -1,19 +1,22 @@
 package org.isb.bionet.datasource.interactions;
 
 import java.sql.ResultSet;
-import java.util.*;
-import org.isb.xmlrpc.handler.db.SQLUtils;
-import org.isb.bionet.datasource.synonyms.*;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Vector;
 
-public class DipInteractionsSource extends SimpleInteractionsSource implements InteractionsDataSource {
+import org.isb.bionet.datasource.synonyms.SynonymsSource;
+
+public class HPRDInteractionsSource extends SimpleInteractionsSource implements InteractionsDataSource {
     
-    public static final String NAME = "DIP";
+    public static final String NAME = "HPRD";
     public static final String ID_TYPE = SynonymsSource.REFSEQ_ID; // but alternate names are GI and SPROT and PIR in that order
     
     /**
      * Empty constructor
      */
-    public DipInteractionsSource() {
+    public HPRDInteractionsSource() {
         super();
     }
     
@@ -27,22 +30,22 @@ public class DipInteractionsSource extends SimpleInteractionsSource implements I
             return ok;
         }
         // Look for the current go database
-        ResultSet rs = query("SELECT dbname FROM db_name WHERE db=\"dip\"");
-        String currentDipDb = null;
+        ResultSet rs = query("SELECT dbname FROM db_name WHERE db=\"hprd\"");
+        String currentDb = null;
         try{
            if(rs.next()){
-               currentDipDb = rs.getString(1);
+               currentDb = rs.getString(1);
            }
         }catch(Exception e){
             ok = false;
             e.printStackTrace();
         }
-        System.out.println("Current DIP database is: [" + currentDipDb + "]");
-        if(currentDipDb == null || currentDipDb.length() == 0){
+        System.out.println("Current HPRD database is: [" + currentDb + "]");
+        if(currentDb == null || currentDb.length() == 0){
             ok = false;
-            throw new IllegalStateException("Oh no! We don't know the name of the current DIP database!!!!!");
+            throw new IllegalStateException("Oh no! We don't know the name of the current HPRD database!!!!!");
         }
-        ok = execute("USE " + currentDipDb);
+        ok = execute("USE " + currentDb);
         return ok;
     }
 
@@ -50,7 +53,7 @@ public class DipInteractionsSource extends SimpleInteractionsSource implements I
      * @param mysql_url
      *            the URL of the mySQL data base
      */
-    public DipInteractionsSource(String mysql_url) {
+    public HPRDInteractionsSource(String mysql_url) {
         super(mysql_url);
     }
     

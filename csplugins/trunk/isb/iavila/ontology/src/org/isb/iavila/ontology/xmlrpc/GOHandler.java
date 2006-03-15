@@ -289,6 +289,7 @@ public class GOHandler extends SQLDBHandler {
         }
         Vector dTerms = new Vector(); // stores ids of descendants terms of termIDs
         getTermsDescendantTerms(termIDs,taxid,dTerms);
+        dTerms.addAll(termIDs);// include the given termIDs, not only their descendants
         return getGenesWithTerms(dTerms, taxid);
         }
     

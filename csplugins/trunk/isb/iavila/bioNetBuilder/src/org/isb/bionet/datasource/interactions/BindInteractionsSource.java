@@ -3,16 +3,15 @@ package org.isb.bionet.datasource.interactions;
 import java.sql.ResultSet;
 import java.util.*;
 
-import org.isb.xmlrpc.handler.db.SQLDBHandler;
 import org.isb.xmlrpc.handler.db.SQLUtils;
 import org.isb.bionet.datasource.synonyms.*;
-import org.isb.xmlrpc.server.*;
 
-public class BindInteractionsSource extends SQLDBHandler implements InteractionsDataSource {
+public class BindInteractionsSource extends SimpleInteractionsSource implements InteractionsDataSource {
     
     public static final String NAME = "BIND";
     public static final String ID_TYPE = SynonymsSource.REFSEQ_ID; // optional ids are UniProt and EMBL
     public static final String INT_TYPES_ARG = "InteractionTypes";
+    
     // Types of interactinons
     /**
      * Protein-protein interaction
@@ -36,18 +35,12 @@ public class BindInteractionsSource extends SQLDBHandler implements Interactions
         INT_TYPES.put(PD_INTERACTION, "protein-DNA");
         INT_TYPES.put(PR_INTERACTION, "protein-RNA");
     }
-    
-    protected static Hashtable speciesToTaxid = new Hashtable();
-    
+  
     /**
      * Empty constructor
      */
     public BindInteractionsSource() {
-       
-        super(SQLDBHandler.MYSQL_JDBC_DRIVER);
-        
-        makeConnection(MyWebServer.PROPERTIES.containsKey(JDBC_URL_PROPERTY_KEY) ? 
-                MyWebServer.PROPERTIES.getProperty(JDBC_URL_PROPERTY_KEY) : "jdbc:mysql:///bionetbuilder_info?user=cytouser&password=bioNetBuilder");
+      super();
     }
     
     /**
@@ -86,7 +79,7 @@ public class BindInteractionsSource extends SQLDBHandler implements Interactions
      *            the URL of the mySQL data base
      */
     public BindInteractionsSource(String mysql_url) {
-        super(mysql_url, SQLDBHandler.MYSQL_JDBC_DRIVER);
+        super(mysql_url);
     }
     
     public String getDataSourceName (){
@@ -98,80 +91,11 @@ public class BindInteractionsSource extends SQLDBHandler implements Interactions
     }
     
     /**
-     * @return the type of backend implementation (how requests to the data source
-     * are implemented) one of WEB_SERVICE, LOCAL_DB, REMOTE_DB, MEMORY, MIXED
-     */
-    // TODO: Implement
-    public String getBackendType (){
-        // Need a way to find out local or remote
-        return "";
-    }
-
-    /**
-     * @return a Vector of Strings representing the taxid for which the data
-     * source contains information, in this case, this is a vector of Strings parsable as ints (NCBI taxid)
-     */
-    public Vector getSupportedSpecies (){
-       
-        
-        // Taxid can be 0 if the interactos are not one of DNA, protein, RNA or gene
-        String sql = "SELECT taxid FROM taxid_species WHERE taxid != 0";
-        ResultSet rs = query(sql);
-        Vector taxids = new Vector();
-        try{
-            while(rs.next()){
-               String taxid = rs.getString(1);
-               taxids.add(taxid);
-            }
-        }catch(Exception e){
-            e.printStackTrace();
-            return EMPTY_VECTOR;
-        }
-        return taxids;
-    }
-    
-    /**
-     * 
-     * @param taxid a String parsable as int (NCBI taxid)
-     * @return TRUE if the given taxid is supported by this data source, FALSE otherwise
-     */
-    public Boolean supportsSpecies (String taxid){
-        Boolean b = new Boolean(getSupportedSpecies().contains(taxid));
-        System.out.println("BIND supports taxid " + taxid + " = " + b);
-        return b;
-    }
-
-    /**
-     * @return a String denoting the version of the data source (could be a release date,
-     * a version number, etc).
-     */
-    //TODO: Implement
-    public String getVersion (){
-        return "NO VERSION INFO";
-    }
-
-    /**
-     * @return boolean whether or not this data source requires a password from the user
-     * in order to access it
-     */
-    public boolean requiresPassword (){
-        return false;
-    }
-
-    /**
-     * Runs tests on the data source
-     * @return a vector of results
-     */
-    public Vector test (){
-        return getSupportedSpecies();
-    }
-    
-    /**
      * 
      * @param rs has columns: i1, type, i2 (all strings)
      * @return
      */
-    protected Vector makeInteractions (ResultSet rs){
+    public Vector makeInteractions (ResultSet rs){
         Vector interactions = new Vector();
         try{
             while(rs.next()){
@@ -208,7 +132,7 @@ public class BindInteractionsSource extends SQLDBHandler implements Interactions
      * @param rs has 1 column (interactor)
      * @return a Vector of unique interactors
      */
-    protected Vector makeInteractors (ResultSet rs){
+    public Vector makeInteractors (ResultSet rs){
         HashSet interactors = new HashSet();
         try{
             while(rs.next()) {
@@ -229,7 +153,7 @@ public class BindInteractionsSource extends SQLDBHandler implements Interactions
      * @param ineractors a list of interactors of any ID type
      * @return a filtered set of interactors that are of ID type SynonymsSource.REFSEQ_ID
      */
-    protected Vector filterInteractors (Vector interactors){
+    public Vector filterInteractors (Vector interactors){
      Iterator it = interactors.iterator();
      HashSet filtered = new HashSet();
      while(it.hasNext()){
@@ -244,55 +168,8 @@ public class BindInteractionsSource extends SQLDBHandler implements Interactions
      }
      return new Vector(filtered);
     }
- 
-   /**
-     * Gets the taxid for the given taxid
-     * @param taxid a human readable taxid
-     * @return and int for the correxponding taxid, -1 if not found
-     */
-    protected int getTaxid (String species){
-        if(!speciesToTaxid.contains(species)){
-            String sql = "SELECT taxid FROM taxid_species WHERE species = \"" + species + "\"";
-            ResultSet rs = query(sql);
-            int taxid = -1;
-            try{
-                if(rs.next()) taxid = rs.getInt(1); 
-            }catch(Exception e){e.printStackTrace(); return -1;}
-            speciesToTaxid.put(species,new Integer(taxid));    
-            return taxid;
-        }
-        
-        Integer Int = (Integer)speciesToTaxid.get(species);
-        return Int.intValue();
-        
-    }
     
     //------------------------ get interactions en masse --------------------
-    /**
-     * @param taxid
-     * @return a Vector of Hashtables, each hash contains information about an
-     * interaction and is required to contain the following entries:<br>
-     * INTERACTOR_1 --> String <br>
-     * INTERACTOR_2 --> String <br>
-     * INTERACTION_TYPE -->String <br>
-     * Each implementing class can add additional entries to the Hashtables
-     */
-    public Vector getAllInteractions (String taxid){
-        String sql = "SELECT i1,interactionType,i2 FROM interactions WHERE taxid = " + taxid;
-        ResultSet rs = query(sql);
-        Vector interactions = makeInteractions(rs);
-        return interactions;
-    }
-
-    /**
-     * @param taxid
-     * @return the number of interactions
-     */
-    public Integer getNumAllInteractions (String taxid){
-        String sql = "SELECT COUNT(*) FROM interactions WHERE taxid = " + taxid;
-        ResultSet rs = query(sql);
-        return new Integer(SQLUtils.getInt(rs));
-    }
     
     /**
      * @param taxid
@@ -315,7 +192,7 @@ public class BindInteractionsSource extends SQLDBHandler implements Interactions
         if(it.hasNext()) interactionTypes = "\"" + (String)it.next() + "\"";
         while(it.hasNext()) interactionTypes += "," + "\"" + (String)it.next() + "\"";
         
-        String sql = "SELECT i1, interactionType, i2 FROM interactions WHERE interactionType IN (" + interactionTypes + ") AND taxid = " + taxid;
+        String sql = "SELECT i1, interactionType, i2 FROM interactions WHERE interactionType IN (" + interactionTypes + ") AND taxid1 = " + taxid + " AND taxid2 = " + taxid;
         ResultSet rs = query(sql);
         return makeInteractions(rs);
         
@@ -337,7 +214,7 @@ public class BindInteractionsSource extends SQLDBHandler implements Interactions
         if(it.hasNext()) interactionTypes = "\"" + (String)it.next() + "\"";
         while(it.hasNext()) interactionTypes += "," + "\"" + (String)it.next() + "\"";
         
-        String sql = "SELECT COUNT(*) FROM interactions WHERE interactionType IN (" + interactionTypes + ") AND taxid = " + taxid;
+        String sql = "SELECT COUNT(*) FROM interactions WHERE interactionType IN (" + interactionTypes + ") AND taxid1 = " + taxid + " AND taxid2 = " + taxid;
         ResultSet rs = query(sql);
         return new Integer(SQLUtils.getInt(rs));
         
@@ -345,55 +222,6 @@ public class BindInteractionsSource extends SQLDBHandler implements Interactions
    
     
     //-------------------------- 1st neighbor methods ---------------------------
-      
-    /**
-     * @param interactors a Vector of Strings (ids that the data source understands)
-     * @param taxid the taxid
-     * @return a Vectors of String ids of all the nodes that
-     * have a direct interaction with the interactors in the given input vector, positions
-     * in the input and output vectors are matched (parallel vectors)
-     */
-    public Vector getFirstNeighbors (Vector interactors, String taxid){
-        
-        if(interactors.size() == 0) return EMPTY_VECTOR;
-        
-        Iterator it = filterInteractors(interactors).iterator();
-        String inInteractors = "";
-        if(it.hasNext()) inInteractors = "\"" + (String)it.next() + "\"";
-        while(it.hasNext()) inInteractors +=  ",\"" + (String)it.next() + "\"";
-     
-        String sql = "SELECT i2 FROM interactions WHERE i1 IN (" +inInteractors + ") AND taxid = " + taxid;
-        ResultSet rs = query(sql);
-        Vector fNeighbors = makeInteractors(rs);
-        
-        sql = "SELECT i1 FROM interactions WHERE i2 IN (" +inInteractors + ") AND taxid = " + taxid;
-        rs = query(sql);
-        Vector fNeighbors2 = makeInteractors(rs);
-        
-        fNeighbors.removeAll(fNeighbors2);
-        fNeighbors.addAll(fNeighbors2);
-        return fNeighbors;
-    }
-    
-    /**
-     * @param interactors a Vector of Strings (ids that the data source understands)
-     * @param taxid the taxid
-     * @return the number of interactors
-     */
-    public Integer getNumFirstNeighbors (Vector interactors, String taxid){
-      
-        if(interactors.size() == 0) return new Integer(0);
-        
-        Iterator it = filterInteractors(interactors).iterator();
-        String inInteractors = "";
-        if(it.hasNext()) inInteractors = "\"" + (String)it.next() + "\"";
-        while(it.hasNext()) inInteractors +=  ",\"" + (String)it.next() + "\"";
-        
-        String sql = "SELECT COUNT(*) FROM interactions WHERE i1 IN (" +inInteractors + ") OR i2 IN (" + inInteractors + ") AND taxid = " + taxid;
-        ResultSet rs = query(sql);
-        return new Integer (SQLUtils.getInt(rs));
-    }
-    
     
     /**
      * @param interactor a Vector of Strings (ids that the data source understands)
@@ -421,11 +249,13 @@ public class BindInteractionsSource extends SQLDBHandler implements Interactions
         if(it.hasNext()) inInteractors = "\"" + (String)it.next() + "\"";
         while(it.hasNext()) inInteractors +=  ",\"" + (String)it.next() + "\"";
         
-        String sql = "SELECT i2 FROM interactions WHERE i1 IN (" +inInteractors + ") AND interactionType IN (" + interactionTypes + ") AND taxid = " + taxid;
+        String sql = "SELECT i2 FROM interactions WHERE i1 IN (" +inInteractors + ") AND interactionType IN (" + interactionTypes + 
+            ") AND taxid1 = " + taxid + " AND taxid2 = " + taxid;
         ResultSet rs = query(sql);
         Vector fNeighbors = makeInteractors(rs);
         
-        sql = "SELECT i1 FROM interactions WHERE i2 IN (" +inInteractors + ") AND interactionType IN (" + interactionTypes + ") AND taxid = " + taxid;
+        sql = "SELECT i1 FROM interactions WHERE i2 IN (" +inInteractors + ") AND interactionType IN (" + interactionTypes + 
+            ") AND taxid1 = " + taxid + " AND taxid2 = " + taxid;
         rs = query(sql);
         Vector fNeighbors2 = makeInteractors(rs);
         
@@ -460,54 +290,9 @@ public class BindInteractionsSource extends SQLDBHandler implements Interactions
         while(it.hasNext()) inInteractors +=  ",\"" + (String)it.next() + "\"";
         
         String sql = "SELECT COUNT(*) FROM interactions WHERE i1 IN (" +inInteractors + ") OR i2 IN (" + inInteractors + 
-        ") AND interactionType IN (" + interactionTypes + ") AND taxid = " + taxid;
+        ") AND interactionType IN (" + interactionTypes + ") AND taxid1 = " + taxid + " AND taxid2 = " + taxid;
         ResultSet rs = query(sql);
         return new Integer (SQLUtils.getInt(rs));
-    }
-
-    /**
-     * @param interactors a Vector of Strings (ids that the data source understands)
-     * @param taxid the taxid
-     * @return a Vector of Hashtables, each hash contains information about an
-     * interaction (they are required to contain the following entries:)<br>
-     * INTERACTOR_1 --> String <br>
-     * INTERACTOR_2 --> String <br>
-     * INTERACTION_TYPE -->String <br>
-     * Each implementing class can add additional entries to the Hashtables.<br>
-     * The input and output vectors are parallel.
-     */
-    public Vector getAdjacentInteractions (Vector interactors, String taxid){
-        
-        if(interactors.size() == 0) return EMPTY_VECTOR;
-        
-        Iterator it = filterInteractors(interactors).iterator();
-        String inInteractors = "";
-        if(it.hasNext()) inInteractors = "\"" + (String)it.next() + "\"";
-        while(it.hasNext()) inInteractors +=  ",\"" + (String)it.next() + "\"";
-     
-        String sql = "SELECT i1,interactionType,i2 FROM interactions WHERE i1 IN (" +inInteractors + ") OR i2 IN (" + inInteractors + ") AND taxid = " + taxid;
-        ResultSet rs = query(sql);
-        Vector interactions = makeInteractions(rs);
-        return interactions;    
-    }
-
-    /**
-     * @param interactors a Vector of Strings (ids that the data source understands)
-     * @param taxid the taxid
-     * @return the number of adjacent interactions
-     */
-    public Integer getNumAdjacentInteractions (Vector interactors, String taxid){
-        
-        if(interactors.size() == 0) return new Integer(0);
-        
-        Iterator it = filterInteractors(interactors).iterator();
-        String inInteractors = "";
-        if(it.hasNext()) inInteractors = "\"" + (String)it.next() + "\"";
-        while(it.hasNext()) inInteractors +=  ",\"" + (String)it.next() + "\"";
-     
-        String sql = "SELECT COUNT(*) FROM interactions WHERE i1 IN (" +inInteractors + ") OR i2 IN (" + inInteractors + ") AND taxid = " + taxid;
-        ResultSet rs = query(sql);
-        return new Integer(SQLUtils.getInt(rs));      
     }
 
     /**
@@ -541,7 +326,7 @@ public class BindInteractionsSource extends SQLDBHandler implements Interactions
         while(it.hasNext()) inInteractors +=  ",\"" + (String)it.next() + "\"";
         
         String sql = "SELECT i1,interactionType,i2 FROM interactions WHERE i1 IN (" + inInteractors + ") OR i2 IN (" + inInteractors + 
-            ") AND interactionType IN (" + interactionTypes + ") AND taxid = " + taxid;
+            ") AND interactionType IN (" + interactionTypes + ") AND taxid1 = " + taxid + " AND taxid2 = " + taxid;
         ResultSet rs = query(sql);
         return makeInteractions(rs);
     }
@@ -571,64 +356,13 @@ public class BindInteractionsSource extends SQLDBHandler implements Interactions
         while(it.hasNext()) inInteractors +=  ",\"" + (String)it.next() + "\"";
         
         String sql = "SELECT COUNT(*) FROM interactions WHERE i1 IN (" + inInteractors + ") OR i2 IN (" + inInteractors + 
-            ") AND interactionType IN (" + interactionTypes + ") AND taxid = " + taxid;
+            ") AND interactionType IN (" + interactionTypes + ") AND taxid1 = " + taxid + " AND taxid2 = " + taxid;
         ResultSet rs = query(sql);
         return new Integer(SQLUtils.getInt(rs));
         
     }
 
     //-------------------------- connecting interactions methods -----------------------
-
-    
-    /**
-     * @param interactors
-     * @param taxid
-     * @return a Vector of Hashtables, each hash contains information about an
-     * interaction between the two interactors, each hash contains these entries:<br>
-     * INTERACTOR_1 --> String <br>
-     * INTERACTOR_2 --> String <br>
-     * INTERACTION_TYPE -->String <br>
-     * Each implementing class can add additional entries to the Hashtables 
-     */
-    public Vector getConnectingInteractions (Vector interactors, String taxid){
-        
-        if(interactors.size() == 0) return EMPTY_VECTOR;
-        
-        Iterator it = filterInteractors(interactors).iterator();
-        String inInteractors = "";
-        if(it.hasNext()) inInteractors = "\"" + (String)it.next() + "\"";
-        while(it.hasNext()) inInteractors +=  ",\"" + (String)it.next() + "\"";
-        if(inInteractors.length() == 0)  return EMPTY_VECTOR;
-     
-        String sql = "SELECT i1,interactionType,i2 FROM interactions WHERE "+
-            "(i1 IN (" +inInteractors + ") AND i2 IN (" + inInteractors + ") ) OR " +
-            "( i2 IN (" +inInteractors + ") AND i1 IN (" + inInteractors + ") ) AND taxid = " + taxid;
-        ResultSet rs = query(sql);
-        Vector interactions = makeInteractions(rs);
-        return interactions;    
-    }
-    
-    /**
-     * @param interactors
-     * @param taxid
-     * @return the number of connecting interactions
-     */
-    public Integer getNumConnectingInteractions (Vector interactors, String taxid){
-      
-        if(interactors.size() == 0) return new Integer(0);
-        
-        Iterator it = filterInteractors(interactors).iterator();
-        String inInteractors = "";
-        if(it.hasNext()) inInteractors = "\"" + (String)it.next() + "\"";
-        while(it.hasNext()) inInteractors +=  ",\"" + (String)it.next() + "\"";
-        if(inInteractors.length() == 0)  return new Integer(0);
-        
-        String sql = "SELECT COUNT(*) FROM interactions WHERE ( i1 IN (" +inInteractors + ") AND i2 IN (" + inInteractors + ") ) OR " +
-            "( i2 IN (" +inInteractors + ") AND i1 IN (" + inInteractors + ") ) AND taxid = " + taxid;
-        ResultSet rs = query(sql);
-        return new Integer(SQLUtils.getInt(rs));
-    }
-    
     /**
      * @param interactors
      * @param taxid
@@ -661,11 +395,10 @@ public class BindInteractionsSource extends SQLDBHandler implements Interactions
         if(inInteractors.length() == 0)  return EMPTY_VECTOR;
         
         String sql = "SELECT i1,interactionType,i2 FROM interactions WHERE ( i1 IN (" +inInteractors + ") AND i2 IN (" + inInteractors + ") ) OR " +
-        "( i2 IN (" +inInteractors + ") AND i1 IN (" + inInteractors + ") ) AND taxid = " + taxid + " AND interactionType IN (" + interactionTypes + ")";
+        "( i2 IN (" +inInteractors + ") AND i1 IN (" + inInteractors + ") ) AND taxid1 = " + taxid + " AND taxid2 = " + taxid + " AND interactionType IN (" + interactionTypes + ")";
         ResultSet rs = query(sql);
         Vector interactions = makeInteractions(rs);
         return interactions;
-        
         
     }
     
@@ -695,7 +428,8 @@ public class BindInteractionsSource extends SQLDBHandler implements Interactions
         if(inInteractors.length() == 0)  return new Integer(0);
         
         String sql = "SELECT COUNT(*) FROM interactions WHERE ( i1 IN (" +inInteractors + ") AND i2 IN (" + inInteractors + ") ) OR " +
-        "( i2 IN (" +inInteractors + ") AND i1 IN (" + inInteractors + ") ) AND taxid = " + taxid + " AND interactionType IN (" + interactionTypes + ")";
+        "( i2 IN (" +inInteractors + ") AND i1 IN (" + inInteractors + ") ) AND taxid1 = " + taxid + " AND taxid2 = " + taxid +
+        " AND interactionType IN (" + interactionTypes + ")";
         ResultSet rs = query(sql);
         return new Integer(SQLUtils.getInt(rs));
         

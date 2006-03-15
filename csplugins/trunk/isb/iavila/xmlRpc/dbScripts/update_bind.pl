@@ -25,42 +25,48 @@ $dbh->do("CREATE DATABASE IF NOT EXISTS $dbname");
 $dbh->do("USE $dbname") or die "Error: $dbh->errstr";
 
 downloadFiles();
-#readTaxonFile();
-#readRefsFile();
+#readTaxonFile(); # not needed anymore
+#readRefsFile(); # not used
 readInteractionsFile();
 
 #################### Download files ##################################################
 sub downloadFiles {
-# Get a list of all 
-$ftp = Net::FTP->new("ftp.blueprint.org", Debug => 0) or die "Cannot connect to bio-mirror.net: $@";
-$ftp->login("anonymous",'-anonymous@') or die "Cannot login ", $ftp->message;
+# Get a list of all
+
+# TODO: Ftp site changed. Now it needs a user name and a password.
+# new url: ftp.bind.ca/pub/BIND/
+# user: iavila@systemsbiology.org pass: iliana123
+
+$ftp = Net::FTP->new("ftp.bind.ca", Debug => 0) or die "Cannot connect to ftp.bind.ca: $@";
+$ftp->login('iavila@systemsbiology.org','iliana123') or die $ftp->message;
 $ftp->cwd("/pub/BIND/current/bindflatfiles/bindindex") or die "Cannot change working directory ", $ftp->message;
 @ls = $ftp->ls();
-$ftp->quit;
 
 foreach $file (@ls){
 
 	chomp($file);
-	if($file =~ /\.taxon\.txt$/){
-		$taxonFile = $file; 
-		print $taxonFile;
-	}
+	#if($file =~ /\.taxon\.txt$/){
+	#	$taxonFile = $file; 
+	#	print $taxonFile;
+	#}
 	
-	if($file =~ /\.refs\.txt/){
-		$refsFile = $file;
-		print $refsFile;
-	}
+	#if($file =~ /\.refs\.txt/){
+	#	$refsFile = $file;
+	#	print $refsFile;
+	#}
 	
 	if($file =~ /\.ints\.txt$/){
 		$intsFile = $file;
+		$ftp->get($file,"./bind/$file");
 		print $intsFile;
 	}
 	
 }
 
-system("wget ftp://ftp.blueprint.org/pub/BIND/current/bindflatfiles/bindindex/${taxonFile} --directory-prefix=./bind/") == 0 or die "\nError: $?\n";
-system("wget ftp://ftp.blueprint.org/pub/BIND/current/bindflatfiles/bindindex/${refsFile} --directory-prefix=./bind/") == 0 or die "\nError: $?\n";
-system("wget ftp://ftp.blueprint.org/pub/BIND/current/bindflatfiles/bindindex/${intsFile} --directory-prefix=./bind/") == 0 or die "\nError: $?\n";
+$ftp->quit;
+#system("wget ftp://ftp.blueprint.org/pub/BIND/current/bindflatfiles/bindindex/${taxonFile} --directory-prefix=./bind/") == 0 or die "\nError: $?\n";
+#system("wget ftp://ftp.blueprint.org/pub/BIND/current/bindflatfiles/bindindex/${refsFile} --directory-prefix=./bind/") == 0 or die "\nError: $?\n";
+#system("wget ftp://ftp.blueprint.org/pub/BIND/current/bindflatfiles/bindindex/${intsFile} --directory-prefix=./bind/") == 0 or die "\nError: $?\n";
 
 }
 ########################################################################################
@@ -115,7 +121,7 @@ my %loaded = ();
 
 # TODO: Add a BINDid and a method columns
 $dbh->do("DROP TABLE interactions");
-$dbh->do("CREATE TABLE interactions (i1 VARCHAR(15), interactionType VARCHAR(2), i2 VARCHAR(15), taxid INT, KEY(i1,interactionType,i2), INDEX(taxid))") or die "Error: $dbh->errstr\n";
+$dbh->do("CREATE TABLE interactions (id VARCHAR(25),i1 VARCHAR(15), interactionType VARCHAR(2), i2 VARCHAR(15), taxid1 INT, taxid2 INT, KEY(i1,interactionType,i2), INDEX(taxid1), INDEX(taxid2))") or die "Error: $dbh->errstr\n";
 
 $fileName = "bindInteractions.txt";
 system("rm bind/bindInteractions.txt");
@@ -173,12 +179,9 @@ while( <X> ) {
     $itype = 'pr' if ( $typ1 eq 'RNA' && $typ2 eq 'protein' || 
 		     ( $typ2 eq 'RNA' && $typ1 eq 'protein' ) );
 
-    # BINDid interactor1 interactionType interactor2 taxonomy
-  
-    if ( $tax eq $tax2 ) {
-  	  print INT "$i1\t$itype\t$i2\t$tax\n" if ! $loaded{"$i1,$itype,$i2"};
-    	  $loaded{"$i1,$itype,$i2"} = 1;
-    	}
+    # BINDid interactor1 interactionType interactor2 taxonomy taxonomy2
+  	print INT "$bid\t$i1\t$itype\t$i2\t$tax\t$tax2\n" if ! $loaded{"$i1,$itype,$i2"};
+    $loaded{"$i1,$itype,$i2"} = 1;
     $i ++;
     print "$i\n" if $i % 1000 == 0;
 }# while
