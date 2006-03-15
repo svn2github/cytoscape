@@ -38,39 +38,44 @@
 
 package cytoscape.view;
 
-import cytoscape.*;
-
-import cytoscape.view.CyMenus;
-import cytoscape.view.CyNetworkView;
-import cytoscape.view.CyNodeView;
-import cytoscape.view.CyEdgeView;
-import cytoscape.view.cytopanels.CytoPanel;
-import cytoscape.view.cytopanels.CytoPanelImp;
-import cytoscape.view.cytopanels.CytoPanelState;
-import cytoscape.view.cytopanels.BiModalJSplitPane;
-import cytoscape.plugin.*;
-import cytoscape.visual.*;
-import cytoscape.visual.ui.*;
-
-import cytoscape.giny.*;
-
 import giny.view.GraphView;
-import giny.util.*;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
-import java.util.List;
-
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.event.*;
-import java.beans.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.HashMap;
 
 import javax.help.HelpBroker;
 import javax.help.HelpSet;
-import javax.help.CSH;
-import javax.help.CSH.*;
+import javax.swing.ImageIcon;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JToolBar;
+import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
+import javax.swing.border.EmptyBorder;
+import javax.swing.event.SwingPropertyChangeSupport;
+
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+import cytoscape.CytoscapeVersion;
+import cytoscape.view.cytopanels.BiModalJSplitPane;
+import cytoscape.view.cytopanels.CytoPanel;
+import cytoscape.view.cytopanels.CytoPanelImp;
+import cytoscape.view.cytopanels.CytoPanelState;
+import cytoscape.visual.VisualMappingManager;
+import cytoscape.visual.VisualStyle;
+import cytoscape.visual.ui.VizMapUI;
 
 /**
  * The CytoscapeDesktop is the central Window
@@ -194,6 +199,14 @@ public class CytoscapeDesktop
 
   //  Status Bar
   protected JLabel statusBar;
+  
+  // kono@ucsd.edu
+  // Association between network and VS.
+  protected HashMap vsAssociationMap;
+  
+  
+  
+  
 
   //----------------------------------------//
   // Constructors
@@ -634,7 +647,8 @@ public class CytoscapeDesktop
     //TODO:
     // why does the vizmapper care whicih network is focused
 
-    this.vizMapper = new VisualMappingManager( Cytoscape.getCurrentNetworkView() );
+    this.vizMapper = Cytoscape.getVisualMappingManager();
+    //this.vizMapper = new VisualMappingManager( Cytoscape.getCurrentNetworkView() );
 
     // create the VizMapUI
     this.vizMapUI = new VizMapUI( this.vizMapper, 
