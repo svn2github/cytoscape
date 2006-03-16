@@ -132,7 +132,8 @@ public abstract class CalculatorCatalogFactory {
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(
 				new PropertyChangeListener() {
 					public void propertyChange(PropertyChangeEvent e) {
-						if (e.getPropertyName() == Cytoscape.SAVE_VIZMAP_PROPS) {
+						if (e.getPropertyName() == Cytoscape.SAVE_VIZMAP_PROPS
+								|| e.getPropertyName() == Cytoscape.CYTOSCAPE_EXIT) {
 							File propertiesFile = CytoscapeInit
 									.getConfigFile("vizmap.props");
 							if (propertiesFile != null) {
@@ -149,7 +150,7 @@ public abstract class CalculatorCatalogFactory {
 
 								CalculatorIO.storeCatalog(calculatorCatalog,
 										propertiesFile);
-								System.out.println("Quit: Saved Vizmaps to: "
+								System.out.println("Vizmap saved to: "
 										+ propertiesFile);
 							}
 						} else if (e.getPropertyName() == Cytoscape.SESSION_LOADED) {
