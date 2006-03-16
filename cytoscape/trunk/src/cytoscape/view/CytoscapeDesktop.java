@@ -627,10 +627,10 @@ public class CytoscapeDesktop
   /**
    * Returns the visual mapping manager that controls the appearance
    * of nodes and edges in this display.
+   * @deprecated Use Cytoscape.getVisualMappingManager() instead.
+   * This will be removed at 03/2007 (possibly sooner).
    */
   public VisualMappingManager getVizMapManager() {return vizMapper;}
-
- 
 
   /**
    * returns the top-level UI object for the visual mapper.
