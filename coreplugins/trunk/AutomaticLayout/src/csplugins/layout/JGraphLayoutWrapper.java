@@ -170,6 +170,7 @@ public class JGraphLayoutWrapper {
     attributes = null;
     cells = null;
     System.gc();
-    
+
+    graphView.fitContent();
   }
 }
