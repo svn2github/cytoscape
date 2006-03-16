@@ -429,15 +429,7 @@ private CyNetwork createNetwork(String location, int file_type,
 								.getIdentifier()));
 			}
 
-			// Lastly, make the GraphView Canvas Visible.
-			SwingUtilities.invokeLater(new Runnable() {
-				public void run() {
-// 					PGrap*View view = (PGrap*View) Cytoscape
-// 							.getCurrentNetworkView();
-// 					PCanvas pCanvas = view.getCanvas();
-// 					pCanvas.setVisible(true);
-				}
-			});
+                        Cytoscape.getCurrentNetworkView().fitContent();
 		}
 		return network;
 	}
