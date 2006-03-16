@@ -1,6 +1,5 @@
-
 /*
-  File: FlagEvent.java 
+  File: SelectEvent.java 
   
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
   
@@ -49,12 +48,10 @@ import giny.model.Node;
 import giny.model.Edge;
 //---------------------------------------------------------------------------
 /**
- * Events that are fired when the flagged state of a Node or Edge, or a group
+ * Events that are fired when the selected state of a Node or Edge, or a group
  * of Nodes or Edges, is changed.
- * 
- * @deprecated As of 2.3, replaced with {@link cytoscape.data.SelectEvent}
  */
-public class FlagEvent {
+public class SelectEvent {
 
     /**
      * Static constant indicating a change to a single Node.
@@ -73,7 +70,7 @@ public class FlagEvent {
      */
     public static final int EDGE_SET = 3;
     
-    private FlagFilter source;
+    private SelectFilter source;
     private Object target;
     private int targetType;
     private boolean selectOn = true;
@@ -88,12 +85,12 @@ public class FlagEvent {
      * Set, it should contain at least one element.
      *
      * The third argument is a boolean indicating the type of event. It should be true
-     * if the change is setting the flag on for the target objects, or false
-     * if the change is removing the flag.<P>
+     * if the change is setting the selected state to true for the target objects, or false
+     * if the change is setting it to false.<P>
      *
      * @throws IllegalArgumentException if the target is null or an invalid type,
      */
-    public FlagEvent(FlagFilter source, Object target, boolean selectOn) {
+    public SelectEvent(SelectFilter source, Object target, boolean selectOn) {
         this.source = source;
         this.target = target;
         this.selectOn = selectOn;
@@ -124,10 +121,10 @@ public class FlagEvent {
     /**
      * Returns the source of this event.
      */
-    public FlagFilter getSource() {return source;}
+    public SelectFilter getSource() {return source;}
     
     /**
-     * Returns an object references the target that was changed. This should
+     * Returns an object reference to the target that was changed. This should
      * be a Node, an Edge, a Set of Nodes, or a Set of Edges. The return value
      * of getTargetType determines which of the four cases applies.
      */
@@ -141,8 +138,7 @@ public class FlagEvent {
     public int getTargetType() {return targetType;}
     
     /**
-     * Returns a boolean identifying the type of event, true if the change is
-     * setting the flag for these objects, or false if the change is removing the flag.
+     * Returns a boolean identifying the type of event, true the selectes state was set to true, false if it was set to false
      */
     public boolean getEventType() {return selectOn;}
     
@@ -152,7 +148,7 @@ public class FlagEvent {
     public String toString() {
         StringBuffer sb = new StringBuffer();
         String lineSep = System.getProperty("line.separator");
-        sb.append("FlagEvent:" + lineSep);
+        sb.append("SelectEvent:" + lineSep);
         sb.append("    target = " + getTarget() + lineSep);
         sb.append("    target type = ");
         switch (getTargetType()) {

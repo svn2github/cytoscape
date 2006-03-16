@@ -46,8 +46,10 @@ import java.util.Set;
 
 import cytoscape.data.CyAttributes;
 import cytoscape.data.ExpressionData;
-import cytoscape.data.FlagEventListener;
-import cytoscape.data.FlagFilter;
+import cytoscape.data.FlagEventListener; // deprecated
+import cytoscape.data.FlagFilter; // deprecated
+import cytoscape.data.SelectFilter;
+import cytoscape.data.SelectEventListener;
 import cytoscape.data.GraphObjAttributes;
 
 /**
@@ -191,63 +193,237 @@ public interface CyNetwork extends GraphPerspective {
 	// public FlagFilter getFlagger();
 
 	// --------------------//
-	// Flagging
+	// Flagging DEPRECATED METHODS
 
+	/**
+	 * Flags all nodes in this CyNetwork
+	 * 
+	 * @deprecated As of 2.3, replaced by {@link #selectAllNodes()}
+	 */
 	public void flagAllNodes();
-
+	
+	/**
+	 * Flags all edges in this network
+	 * 
+	 * @deprecated As of 2.3, replaced by {@link #selectAllEdges()}
+	 */
 	public void flagAllEdges();
-
+	
+	/**
+	 * Unflags all nodes in this CyNetwork
+	 * 
+	 * @deprecated As of 2.3, replaced by {@link #unselectAllNodes()}
+	 */
 	public void unFlagAllNodes();
 
+	/**
+	 * Unflags all edges in this CyNetwork
+	 * 
+	 * @deprecated As of 2.3, replaced by {@link #unselectAllEdges()}
+	 */
 	public void unFlagAllEdges();
 
 	/**
 	 * Flags a node
+	 * 
+	 * @deprecated As of 2.3, replaced by {@link #setSelectedNodeState(Collection,boolean)}
 	 */
 	public void setFlagged(Node node, boolean state);
 
 	/**
 	 * Flag a group of node
+	 * 
+	 * @deprecated As of 2.3, replaced by {@link #setSelectedNodeState(Collection,boolean)}
 	 */
 	public void setFlaggedNodes(Collection nodes, boolean state);
 
 	/**
 	 * Flag a group of nodes using their indices
+	 * 
+	 * @deprecated As of 2.3, replaced by {@link #setSelectedNodeState(Collection,boolean)}
 	 */
 	public void setFlaggedNodes(int[] nodes, boolean state);
 
 	/**
 	 * Flags a edge
+	 * 
+	 * @deprecated As of 2.3, replaced by {@link #setSelectedEdgeState(Collection,boolean)}
 	 */
 	public void setFlagged(Edge edge, boolean state);
 
 	/**
 	 * Flag a group of edge
+	 * 
+	 * @deprecated As of 2.3, replaced by {@link #setSelectedEdgeState(Collection,boolean)}
 	 */
 	public void setFlaggedEdges(Collection edges, boolean state);
 
 	/**
 	 * Flag a group of edges using their indices
+	 * 
+	 * @deprecated As of 2.3, replaced by {@link #setSelectedEdgeState(Collection,boolean)}
 	 */
 	public void setFlaggedEdges(int[] edges, boolean state);
 
+	/**
+	 * Whether or not the given node is flagged in this CyNetwork
+	 * 
+	 * @param node
+	 * @return whether or not the node has been flagged
+	 * @deprecated As of 2.3, replaced by {@link #isSelected(Node)}
+	 */
 	public boolean isFlagged(Node node);
 
+	/**
+	 * Whether or not the given edges is flagged in this CyNetwork
+	 * 
+	 * @param edge
+	 * @return whether or not the edge has been flagged
+	 * @deprecated As of 2.3, replaced by {@link #isSelected(Edge)}
+	 */
 	public boolean isFlagged(Edge edge);
 
+	/**
+	 * Returns the set of flagged nodes in this CyNetwork
+	 *  
+	 * @return a Set of flagged nodes
+	 * @deprecated As of 2.3, replaced by {@link #getSelectedNodes()}
+	 */
 	public Set getFlaggedNodes();
 
+	/**
+	 * Returns the set of flagged edges in this CyNetwork
+	 *  
+	 * @return a Set of flagged edges
+	 * @deprecated As of 2.3, replaced by {@link #getSelectedEdges()}
+	 */
 	public Set getFlaggedEdges();
 
+	/**
+	 * Returns an array of the indices of flagged nodes in this CyNetwork
+	 * 
+	 * @return an array of indices
+	 * @deprecated As of 2.3, replaced by {@link #getSelectedNodes()}
+	 */
 	public int[] getFlaggedNodeIndicesArray();
 
+	/**
+	 * Returns an array of the indices of flagged edges in this CyNetwork
+	 * 
+	 * @return an array of indices
+	 * @deprecated As of 2.3, replaced by {@link #getSelectedEdges()}
+	 */
 	public int[] getFlaggedEdgeIndicesArray();
 
+	/**
+	 * Adds a listener for FlagEvents to this CyNetwork
+	 * 
+	 * @param listener
+	 * @depreacated As of 2.3, replaced by {@link #addSelectEventListener(SelectEventListener)}
+	 */
 	public void addFlagEventListener(FlagEventListener listener);
-
+	
+	/**
+	 * Removes a listener fro FlagEvents from this CyNetwork 
+	 
+	 * @param listener
+	 * @deprecated As of 2.3, replaced by {@link removeSelectEventListener(SelectEventListener)}
+	 */
 	public void removeFlagEventListener(FlagEventListener listener);
 
+	/**
+	 * 
+	 * @return FlagFilter
+	 * @deprecated As of 2.3, replaced by {@link getSelectFilter()}
+	 */
 	public FlagFilter getFlagger();
+	
+	// ------------- Select methods -------------- //
+	/**
+	 * Sets the selected state of all nodes in this CyNetwork to true
+	 */
+	public void selectAllNodes();
+	
+	/**
+	 * Sets the selected state of all edges in this CyNetwork to true
+	 */
+	public void selectAllEdges();
+	
+	/**
+	 * Sets the selected state of all nodes in this CyNetwork to false
+	 */
+	public void unselectAllNodes();
+
+	/**
+	 * Sets the selected state of all edges in this CyNetwork to false
+	 */
+	public void unselectAllEdges();
+
+	/**
+	 * Sets the selected state of a collection of nodes.
+	 * 
+	 * @param nodes a Collection of Nodes
+	 * @param selected_state the desired selection state for the nodes
+	 */
+	public void setSelectedNodeState (Collection nodes, boolean selected_state);
+	
+	/**
+	 * Sets the selected state of a collection of edges.
+	 * 
+	 * @param edges a Collection of Edges
+	 * @param selected_state the desired selection state for the edges
+	 */
+	public void setSelectedEdgeState (Collection edges, boolean selected_state);
+	
+	/**
+	 * Returns the selected state of the given node.
+	 * 
+	 * @param node the node
+	 * @return true if selected, false otherwise
+	 */
+	public boolean isSelected (Node node);
+	
+	/**
+	 * Returns the selected state of the given edge.
+	 * 
+	 * @param edge the edge
+	 * @return true if selected, false otherwise
+	 */
+	public boolean isSelected (Edge edge);
+	
+	/**
+	 * Returns the set of selected nodes in this CyNetwork
+	 *  
+	 * @return a Set of selected nodes
+	 */
+	public Set getSelectedNodes();
+
+	/**
+	 * Returns the set of selected edges in this CyNetwork
+	 *  
+	 * @return a Set of selected edges
+	 */
+	public Set getSelectedEdges();
+
+	/**
+	 * Adds a listener for SelectEvents to this CyNetwork
+	 * 
+	 * @param listener
+	 */
+	public void addSelectEventListener(SelectEventListener listener);
+	
+	/**
+	 * Removes a listener for SelectEvents from this CyNetwork  
+	 * @param listener
+	 */
+	public void removeSelectEventListener(SelectEventListener listener);
+
+	/**
+	 * 
+	 * @return SelectFilter
+	 */
+	public SelectFilter getSelectFilter();
+	
 
 	// --------------------//
 	// Member Data

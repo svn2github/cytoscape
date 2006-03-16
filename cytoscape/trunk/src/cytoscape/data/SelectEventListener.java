@@ -1,6 +1,5 @@
-
 /*
-  File: FlagEventListener.java 
+  File: SelectEventListener.java 
   
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
   
@@ -44,11 +43,9 @@
 package cytoscape.data;
 //---------------------------------------------------------------------------
 /**
- * Listener for FlagEvents fired by a FlagFilter object.
- * 
- * * @deprecated As of 2.3, replaced with {@link cytoscape.data.SelectEventListener}
+ * Listener for SelectEvents fired by a SelectFilter object.
  */
-public interface FlagEventListener {
-    void onFlagEvent(FlagEvent event);
+public interface SelectEventListener {
+    void onSelectEvent(SelectEvent event);
 }
 

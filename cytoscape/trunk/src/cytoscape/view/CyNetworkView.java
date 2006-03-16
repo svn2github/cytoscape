@@ -68,7 +68,7 @@ public interface CyNetworkView extends GraphView {
    */
   public String getTitle ();
   
-  public void redrawGraph( boolean layout, boolean vizmap );
+  public void redrawGraph( boolean layout, boolean vizmap);
 
   public CyNetworkView getView ();
  
@@ -104,16 +104,17 @@ public interface CyNetworkView extends GraphView {
     
 
   /**
-   * Sets the Given nodes Selected
+   * Sets the Given nodes Selected<br>
+   * @deprecated this method is not working, use {@link Cytoscape.CyNetwork#setSelectedNodeState(Collection, boolean)}
+   * 
    */
   public boolean setSelected ( CyNode[] nodes );
 
   /**
-   * Sets the Given nodes Selected
+   * Sets the Given nodes Selected<br>
+   * @deprecated this method is not working, use {@link Cytoscape.CyNetwork#setSelectedNodeState(Collection, boolean)}
    */
   public boolean setSelected ( NodeView[] node_views );
-
- 
 
   /**
    * Applies the given edge to the given vizmapper
@@ -159,16 +160,16 @@ public interface CyNetworkView extends GraphView {
 
 
   /**
-   * Sets the Given edges Selected
+   * Sets the Given edges Selected<br>
+   * @deprecated this method is not working, use {@link cytoscape.CyNetwork#setSelectedEdgeState(Collection, boolean)}
    */
   public boolean setSelected ( CyEdge[] edges );
 
   /**
-   * Sets the Given edges Selected
+   * Sets the Given edges Selected<br>
+   * @deprecated this method is not working, use {@link cytoscape.CyNetwork#setSelectedEdgeState(Collection, boolean)}
    */
   public boolean setSelected ( EdgeView[] edge_views );
-
-  
 
   /**
    * @param applyAppearances  if true, the vizmapper will recalculate
