@@ -20,6 +20,7 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.Paint;
 import java.awt.geom.GeneralPath;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -432,34 +433,6 @@ public class DGraphView implements GraphView
     updateView();
   }
 
-  public void fitSelected()
-  {
-    synchronized (m_lock) {
-      final IntEnumerator selectedElms = m_selectedNodes.searchRange
-        (Integer.MIN_VALUE, Integer.MAX_VALUE, false);
-      if (selectedElms.numRemaining() == 0) { return; }
-      float xMin = Float.POSITIVE_INFINITY;
-      float yMin = Float.POSITIVE_INFINITY;
-      float xMax = Float.NEGATIVE_INFINITY;
-      float yMax = Float.NEGATIVE_INFINITY;
-      while (selectedElms.numRemaining() > 0) {
-        final int node = selectedElms.nextInt();
-        m_spacial.exists(node, m_extentsBuff, 0);
-        xMin = Math.min(xMin, m_extentsBuff[0]);
-        yMin = Math.min(yMin, m_extentsBuff[1]);
-        xMax = Math.max(xMax, m_extentsBuff[2]);
-        yMax = Math.max(yMax, m_extentsBuff[3]); }
-      m_canvas.m_xCenter =
-        (((double) xMin) + ((double) xMax)) / 2.0d;
-      m_canvas.m_yCenter =
-        (((double) yMin) + ((double) yMax)) / 2.0d;
-      m_canvas.m_scaleFactor = Math.min
-        (((double) m_canvas.getWidth()) /
-         (((double) xMax) - ((double) xMin)),
-         ((double) m_canvas.getHeight()) /
-         (((double) yMax) - ((double) yMin))); }
-  }
-
   public void updateView()
   {
     m_canvas.repaint();
@@ -869,6 +842,49 @@ public class DGraphView implements GraphView
   }
 
   // Auxillary methods specific to this GraphView implementation:
+
+  public void setCenter(double x, double y)
+  {
+    synchronized (m_lock) {
+      m_canvas.m_xCenter = x;
+      m_canvas.m_yCenter = y; }
+    updateView();
+  }
+
+  public Point2D getCenter()
+  {
+    synchronized (m_lock) {
+      return new Point2D.Double(m_canvas.m_xCenter,
+                                m_canvas.m_yCenter); }
+  }
+
+  public void fitSelected()
+  {
+    synchronized (m_lock) {
+      final IntEnumerator selectedElms = m_selectedNodes.searchRange
+        (Integer.MIN_VALUE, Integer.MAX_VALUE, false);
+      if (selectedElms.numRemaining() == 0) { return; }
+      float xMin = Float.POSITIVE_INFINITY;
+      float yMin = Float.POSITIVE_INFINITY;
+      float xMax = Float.NEGATIVE_INFINITY;
+      float yMax = Float.NEGATIVE_INFINITY;
+      while (selectedElms.numRemaining() > 0) {
+        final int node = selectedElms.nextInt();
+        m_spacial.exists(node, m_extentsBuff, 0);
+        xMin = Math.min(xMin, m_extentsBuff[0]);
+        yMin = Math.min(yMin, m_extentsBuff[1]);
+        xMax = Math.max(xMax, m_extentsBuff[2]);
+        yMax = Math.max(yMax, m_extentsBuff[3]); }
+      m_canvas.m_xCenter =
+        (((double) xMin) + ((double) xMax)) / 2.0d;
+      m_canvas.m_yCenter =
+        (((double) yMin) + ((double) yMax)) / 2.0d;
+      m_canvas.m_scaleFactor = Math.min
+        (((double) m_canvas.getWidth()) /
+         (((double) xMax) - ((double) xMin)),
+         ((double) m_canvas.getHeight()) /
+         (((double) yMax) - ((double) yMin))); }
+  }
 
   public void setGraphLOD(GraphLOD lod)
   {
