@@ -53,7 +53,7 @@ public class VAlignCenter extends CytoscapeAction {
 								h = node_view.getHeight();
 								node_view.setYPosition(average - 0.5*h);
     }                       
-  
+    view.updateView();
   }
 
   public boolean isInToolBar () {

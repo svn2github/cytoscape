@@ -61,7 +61,7 @@ public class HAlignRight extends CytoscapeAction {
     while ( sel_nodes.hasNext() ) {
       ( ( NodeView )sel_nodes.next() ).setXPosition( max );
     }                       
-  
+    view.updateView();
   
   }
 

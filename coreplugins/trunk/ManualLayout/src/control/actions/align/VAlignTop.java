@@ -49,7 +49,7 @@ public class VAlignTop extends CytoscapeAction {
     while ( sel_nodes.hasNext() ) {
       ( ( NodeView )sel_nodes.next() ).setYPosition( min );
     }                       
-  
+    view.updateView();
   
   }
 

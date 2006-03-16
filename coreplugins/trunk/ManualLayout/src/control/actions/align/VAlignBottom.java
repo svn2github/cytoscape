@@ -53,7 +53,7 @@ public class VAlignBottom extends CytoscapeAction {
 								h = node_view.getHeight();
 								node_view.setYPosition( max - h);
     }                       
-  
+    view.updateView();
   
   }
 
