@@ -194,25 +194,10 @@ public class CytoscapeSessionWriter {
 		// Create CySession file
 		sessionDirName = "CytoscapeSession-" + df.format(date);
 
-		// For saving Visual Style
-		// visualStyleMap = new HashMap();
-		// createVSMap();
-
 	}
 
-	private void createVSMap() {
-		Set viewNames = viewMap.keySet();
-
-		Iterator it = viewNames.iterator();
-		while (it.hasNext()) {
-			String key = (String) it.next();
-
-			CyNetworkView testview = (CyNetworkView) viewMap.get(key);
-
-			System.out.println("=============== "
-					+ Cytoscape.getNetwork(key).getTitle() + " has VS "
-					+ testview.getVisualStyle().getName());
-		}
+	private void getGUIStates() {
+		
 	}
 
 	/**
@@ -313,15 +298,10 @@ public class CytoscapeSessionWriter {
 	public void preparePropFiles() {
 		// Prepare vizmap
 
-		// Extract current vizmap file from the memory.
-		String vizmapLocation = CytoscapeInit.getVizmapPropertiesLocation();
-		// System.out.println("The file \"" + vizmapLocation + "\" will be
-		// included in the session file...");
-		// Fire dummy signal to update vizmap.prop
-		Cytoscape.firePropertyChange(Cytoscape.SESSION_SAVED, null, null);
+		Cytoscape.firePropertyChange(Cytoscape.SAVE_VIZMAP_PROPS, null, null);
 
-		CytoscapeDesktop cyDesktop = Cytoscape.getDesktop();
-		VisualMappingManager vizmapper = cyDesktop.getVizMapManager();
+		//CytoscapeDesktop cyDesktop = Cytoscape.getDesktop();
+		VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
 		CalculatorCatalog catalog = vizmapper.getCalculatorCatalog();
 
 		vizProp = new File(VIZMAP_FILE);
@@ -354,22 +334,6 @@ public class CytoscapeSessionWriter {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		// FileWriter fileWriter = new FileWriter(xgmmlFile);
-		// List list = null;
-		// GMLReader2 reader = (GMLReader2) network.getClientData("GML");
-		// if (reader != null) {
-		// list = reader.getList();
-		// } else {
-		// list = new Vector();
-		// }
-		// GMLWriter gmlWriter = new GMLWriter();
-		// gmlWriter.writeGML(network, view, list);
-		//
-		// XGMMLParser.printList(list, fileWriter, network);
-		//
-		// fileWriter.close();
-
 	}
 
 	//
@@ -387,6 +351,11 @@ public class CytoscapeSessionWriter {
 		session.setId(sessionName);
 		getNetworkTree();
 		session.setNetworkTree(tree);
+		
+//		int h = Cytoscape.getDesktop().getSize().height;
+//		int w = Cytoscape.getDesktop().getSize().width;
+//		session.getSessionState().getDesktop().setSize(h + "-" + w);
+		
 
 		Marshaller m = jc.createMarshaller();
 
