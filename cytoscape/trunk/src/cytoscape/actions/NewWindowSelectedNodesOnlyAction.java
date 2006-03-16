@@ -53,6 +53,7 @@ import cytoscape.Cytoscape;
 import cytoscape.util.CyNetworkNaming;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CyNetworkView;
+import cytoscape.visual.VisualStyle;
 
 public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 
@@ -104,7 +105,12 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 			}
 			
 			// Set visual style
-			new_view.setVisualStyle(current_network_view.getVisualStyle().getName());
+			VisualStyle newVS = current_network_view.getVisualStyle();
+			if(newVS != null) {
+				new_view.setVisualStyle(newVS.getName());
+			} else {
+				new_view.setVisualStyle("default");
+			}
 			
 		} else {
 			new_view.setVisualStyle("default");

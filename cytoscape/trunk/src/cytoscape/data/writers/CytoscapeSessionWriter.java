@@ -448,7 +448,13 @@ public class CytoscapeSessionWriter {
 		curView = (CyNetworkView) viewMap.get(curNet.getIdentifier());
 
 		if (!node.getUserObject().toString().equals("Network Root")) {
-			String visualStyleName = curView.getVisualStyle().getName();
+			String visualStyleName = null;
+			if(curView != null) {
+				VisualStyle curVS = curView.getVisualStyle();
+				if(curVS != null) {
+					visualStyleName = curVS.getName();
+				}
+			}
 			if (visualStyleName == null) {
 				visualStyleName = DEFAULT_VS_NAME;
 			}
