@@ -42,6 +42,7 @@ package cytoscape;
 import giny.model.Edge;
 import giny.model.Node;
 import giny.view.GraphView;
+import giny.view.NodeView;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeSupport;
@@ -1461,14 +1462,34 @@ public abstract class Cytoscape {
 			((GraphReader) network.getClientData("GML")).layout(view);
 		}
 
+                else {
+                  double distanceBetweenNodes = 80.0d;
+                  int columns = (int) Math.sqrt(view.nodeCount());
+                  Iterator nodeViews = view.getNodeViewsIterator();
+                  double currX = 0.0d;
+                  double currY = 0.0d;
+                  int count = 0;
+                  while (nodeViews.hasNext()) {
+                    NodeView nView = (NodeView) nodeViews.next();
+                    nView.setOffset(currX, currY);
+                    count++;
+                    if (count == columns) {
+                      count = 0;
+                      currX = 0.0d;
+                      currY += distanceBetweenNodes; }
+                    else {
+                      currX += distanceBetweenNodes; }
+                  }
+                }
+
 		firePropertyChange(
 				cytoscape.view.CytoscapeDesktop.NETWORK_VIEW_CREATED, null,
 				view);
 
 		// Instead of calling fitContent(), access PGrap*View directly.
 		// This enables us to disable animation. Modified by Ethan Cerami.
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
+// 		SwingUtilities.invokeLater(new Runnable() {
+// 			public void run() {
 // 				view.getCanvas().getCamera().animateViewToCenterBounds(
 // 						view.getCanvas().getLayer().getFullBounds(), true, 0);
 // 				// if Squiggle function enabled, enable it on the view
@@ -1477,9 +1498,9 @@ public abstract class Cytoscape {
 // 				}
 				// set the selection mode on the view
 				setSelectionMode(currentSelectionMode, view);
-			}
-		});
-		view.redrawGraph(false, false);
+// 			}
+// 		});
+		view.fitContent();
 		return view;
 	}
 
