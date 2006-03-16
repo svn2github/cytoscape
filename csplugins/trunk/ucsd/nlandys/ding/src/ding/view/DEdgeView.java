@@ -58,7 +58,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
     m_sourceEdgeEnd = EdgeView.NO_END;
     m_targetEdgeEnd = EdgeView.NO_END;
     m_anchors = new ArrayList();
-    m_lineType = EdgeView.CURVED_LINES;
+    m_lineType = EdgeView.STRAIGHT_LINES;
   }
 
   public int getGraphPerspectiveIndex()
