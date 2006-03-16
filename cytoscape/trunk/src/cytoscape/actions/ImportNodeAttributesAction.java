@@ -88,7 +88,7 @@ public class ImportNodeAttributesAction extends CytoscapeAction {
 
             //  Create Load Attributes Task
             ImportAttributesTask task = 
-            	new ImportAttributesTask (file, LoadAttributesTask.NODE_ATTRIBUTES);
+            	new ImportAttributesTask (file, ImportAttributesTask.NODE_ATTRIBUTES);
 
             //  Configure JTask Dialog Pop-Up Box
             JTaskConfig jTaskConfig = new JTaskConfig();

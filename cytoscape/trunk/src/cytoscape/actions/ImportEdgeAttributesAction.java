@@ -83,9 +83,9 @@ public class ImportEdgeAttributesAction extends CytoscapeAction {
         if (file != null) {
 
             //  Create Load Attributes Task
-            LoadAttributesTask task = new LoadAttributesTask
+            ImportAttributesTask task = new ImportAttributesTask
                     (file,
-                    LoadAttributesTask.EDGE_ATTRIBUTES);
+                    ImportAttributesTask.EDGE_ATTRIBUTES);
 
             //  Configure JTask Dialog Pop-Up Box
             JTaskConfig jTaskConfig = new JTaskConfig();
