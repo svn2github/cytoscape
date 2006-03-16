@@ -93,6 +93,7 @@ import cytoscape.view.NetworkPanel;
 import cytoscape.visual.CalculatorCatalog;
 import cytoscape.visual.CalculatorIO;
 import cytoscape.visual.VisualMappingManager;
+import cytoscape.visual.VisualStyle;
 
 /*
  * Write session states into files.
@@ -300,7 +301,6 @@ public class CytoscapeSessionWriter {
 
 		Cytoscape.firePropertyChange(Cytoscape.SAVE_VIZMAP_PROPS, null, null);
 
-		//CytoscapeDesktop cyDesktop = Cytoscape.getDesktop();
 		VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
 		CalculatorCatalog catalog = vizmapper.getCalculatorCatalog();
 
@@ -352,9 +352,7 @@ public class CytoscapeSessionWriter {
 		getNetworkTree();
 		session.setNetworkTree(tree);
 		
-//		int h = Cytoscape.getDesktop().getSize().height;
-//		int w = Cytoscape.getDesktop().getSize().width;
-//		session.getSessionState().getDesktop().setSize(h + "-" + w);
+		
 		
 
 		Marshaller m = jc.createMarshaller();
@@ -508,9 +506,15 @@ public class CytoscapeSessionWriter {
 
 				leafView = (CyNetworkView) viewMap.get(leafView.getNetwork()
 						.getIdentifier());
-
-				String leafVisualStyleName = leafView.getVisualStyle()
-						.getName();
+				
+				String leafVisualStyleName = null;
+				if( leafView != null) {
+					VisualStyle leafVS = leafView.getVisualStyle();
+					if(leafVS != null) {
+						leafVisualStyleName = leafVS.getName();
+					}
+				}
+				
 				if (leafVisualStyleName == null) {
 					leafVisualStyleName = DEFAULT_VS_NAME;
 				}
