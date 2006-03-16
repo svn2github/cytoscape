@@ -422,6 +422,7 @@ public class HierarchicalLayoutListener implements ActionListener, Task {
 		}
 		taskMonitor.setPercentCompleted(100);
 		taskMonitor.setStatus("hierarchical layout complete");
+                networkView.fitContent();
 	} catch (Throwable e) {
 		taskMonitor.setException(e, "Layout aborted due to unexpected condition");
 	}

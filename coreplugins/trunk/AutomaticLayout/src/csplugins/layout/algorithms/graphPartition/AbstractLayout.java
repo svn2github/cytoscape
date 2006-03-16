@@ -135,6 +135,7 @@ public abstract class AbstractLayout implements Task {
 
     layout.applyLayout( cytoscape.Cytoscape.getCurrentNetworkView() );
     interrupted = true;
+    cytoscape.Cytoscape.getCurrentNetworkView().fitContent();
   }
   
   protected double[] maxXmaxY ( int[] nodes ) {

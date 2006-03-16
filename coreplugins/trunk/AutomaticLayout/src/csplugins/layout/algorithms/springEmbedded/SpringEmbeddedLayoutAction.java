@@ -57,6 +57,7 @@ public class SpringEmbeddedLayoutAction extends AbstractAction
     if (success)
     {
         GraphConverter.updateCytoscapeLayout(nativeGraph);
+        Cytoscape.getCurrentNetworkView().fitContent();
     }
   }
 }
