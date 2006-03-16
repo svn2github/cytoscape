@@ -38,28 +38,21 @@
 
 package cytoscape.data.readers;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
 
 import javax.swing.SwingUtilities;
 import javax.xml.bind.JAXBContext;
@@ -80,14 +73,8 @@ import cytoscape.generated.NetworkTree;
 import cytoscape.generated.Node;
 import cytoscape.generated.SelectedNodes;
 import cytoscape.giny.PhoebeNetworkView;
-import cytoscape.init.CyPropertiesReader;
 import cytoscape.task.TaskMonitor;
-import cytoscape.util.ZipMultipleFiles;
 import cytoscape.view.CyNetworkView;
-import cytoscape.view.CytoscapeDesktop;
-import cytoscape.visual.CalculatorCatalog;
-import cytoscape.visual.CalculatorCatalogFactory;
-import cytoscape.visual.VisualMappingManager;
 import edu.umd.cs.piccolo.PCanvas;
 import edu.umd.cs.piccolo.PLayer;
 import edu.umd.cs.piccolo.util.PBounds;
@@ -425,14 +412,6 @@ public class CytoscapeSessionReader {
 			}
 
 		}
-	}
-
-	private void loadNetworks() {
-
-	}
-
-	private void restoreStates() {
-
 	}
 
 	private CyNetwork createNetwork(CyNetwork parent, String location,
