@@ -37,28 +37,24 @@
 
 package cytoscape.visual;
 
-import java.util.Iterator;
-import java.util.Properties;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.logging.Logger;
-import java.awt.*;
-
-import giny.model.Node;
 import giny.model.Edge;
-import giny.view.GraphView;
-import giny.view.NodeView;
+import giny.model.Node;
 import giny.view.EdgeView;
 import giny.view.Label;
+import giny.view.NodeView;
 
-import cytoscape.*;
+import java.awt.Font;
+import java.awt.Paint;
+import java.awt.Stroke;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.logging.Logger;
+
+import cytoscape.CyEdge;
+import cytoscape.CyNetwork;
+import cytoscape.CyNode;
+import cytoscape.CytoscapeInit;
 import cytoscape.view.CyNetworkView;
-import cytoscape.view.CyNodeView;
-import cytoscape.view.CyEdgeView;
-import cytoscape.visual.ui.VizMapUI;
-
-import javax.swing.event.ChangeListener;
-import javax.swing.event.ChangeEvent;
 
 /**
  * Top-level class for controlling the visual appearance of nodes and edges
@@ -126,11 +122,12 @@ public class VisualMappingManager extends SubjectBase {
 
 	public void loadCalculatorCatalog(String vizmapLocation) {
 		if (catalog == null) {
-			
-				catalog = CalculatorCatalogFactory.loadCalculatorCatalog();
-			
-		} else if(vizmapLocation != null){
-			catalog = CalculatorCatalogFactory.loadCalculatorCatalog(vizmapLocation);
+
+			catalog = CalculatorCatalogFactory.loadCalculatorCatalog();
+
+		} else if (vizmapLocation != null) {
+			catalog = CalculatorCatalogFactory
+					.loadCalculatorCatalog(vizmapLocation);
 		}
 	}
 
