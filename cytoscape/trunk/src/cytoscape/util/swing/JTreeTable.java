@@ -253,10 +253,9 @@ public class JTreeTable extends JTable {
 			g.translate(0, -visibleRow * getRowHeight());
 			try {
 				super.paint(g);
-				//System.out.println("###############Ex test" + g.toString());
 			} catch (Exception e) {
-				System.err.println("Exception: draw");
-				//e.printStackTrace();
+				System.err.print("");
+				
 			}
 		}
 

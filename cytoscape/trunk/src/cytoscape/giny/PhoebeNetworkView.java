@@ -145,7 +145,7 @@ public class PhoebeNetworkView
   }
   
   public void setVisualStyle( String VSName ) {
-	  System.out.println("New Vsial Style for " + title + ": " + VSName );
+	  //System.out.println("New Vsial Style for " + title + ": " + VSName );
 	  vs = Cytoscape.getVisualMappingManager().getCalculatorCatalog().getVisualStyle(VSName);
   }
   

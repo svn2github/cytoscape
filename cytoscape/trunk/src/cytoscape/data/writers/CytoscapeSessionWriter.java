@@ -455,8 +455,8 @@ public class CytoscapeSessionWriter {
 				visualStyleName = DEFAULT_VS_NAME;
 			}
 
-			System.out.println("Saving Association: " + curNode.getId()
-					+ " --> " + visualStyleName);
+//			System.out.println("Saving Association: " + curNode.getId()
+//					+ " --> " + visualStyleName);
 			curNode.setVisualStyle(visualStyleName);
 		} else {
 			curNode.setVisualStyle(DEFAULT_VS_NAME);
