@@ -325,17 +325,14 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
 
   public void updateEdgeView()
   {
-    m_view.updateView();
   }
 
   public void updateTargetArrow()
   {
-    m_view.updateView();
   }
 
   public void updateSourceArrow()
   {
-    m_view.updateView();
   }
 
   public void setSourceEdgeEnd(final int type)
@@ -504,21 +501,18 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
 
   public void updateLine()
   {
-    m_view.updateView();
   }
 
   // This is also a method on giny.view.Bend.
   public void drawSelected()
   {
     select();
-    m_view.updateView();
   }
 
   // This is also a method on giny.view.Bend.
   public void drawUnselected()
   {
     unselect();
-    m_view.updateView();
   }
 
   public Bend getBend()
