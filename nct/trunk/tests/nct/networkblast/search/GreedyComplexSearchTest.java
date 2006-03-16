@@ -51,7 +51,7 @@ public class GreedyComplexSearchTest extends TestCase {
 	try {	    
 	    h = new InteractionGraph("examples/test.input.sif");
 	    k = new InteractionGraph("examples/testNet.input.sif");
-	    s = new LogLikelihoodScoreModel(2.5, .8, 1e-10);
+	    s = new LogLikelihoodScoreModel<String>(2.5, .8, 1e-10);
 	    solns = sg.searchGraph(h, s);
 	    cg = new GreedyComplexSearch(4, 15);
 	    cg.setSeeds(solns);

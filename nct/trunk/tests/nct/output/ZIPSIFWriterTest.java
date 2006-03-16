@@ -51,7 +51,7 @@ public class ZIPSIFWriterTest extends TestCase {
 	try {	    
 	    h = new InteractionGraph("examples/junit.inputA.sif");
 	    i = new InteractionGraph("examples/junit.inputB.sif");
-	    s = new LogLikelihoodScoreModel(2.5, .8, 1e-10);
+	    s = new LogLikelihoodScoreModel<String>(2.5, .8, 1e-10);
             List<SequenceGraph<String,Double>> inputSpecies = new ArrayList<SequenceGraph<String,Double>>();
             inputSpecies.add(i);
             inputSpecies.add(h);

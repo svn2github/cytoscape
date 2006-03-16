@@ -116,7 +116,7 @@ public class NetworkBlast {
 			System.out.println("# read in interaction data for species 2");
 
 			// define the scoring model
-			ScoreModel logScore = new LogLikelihoodScoreModel(truthFactor, modelTruth, backgroundProb);
+			ScoreModel<String,Double> logScore = new LogLikelihoodScoreModel<String>(truthFactor, modelTruth, backgroundProb);
 			// get the homology data
 			SIFHomologyReader sr = new SIFHomologyReader(compatFile);
 			HomologyGraph homologyGraph = new HomologyGraph(sr, expectation, inputSpecies);

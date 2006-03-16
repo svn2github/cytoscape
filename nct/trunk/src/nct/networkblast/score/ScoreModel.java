@@ -43,5 +43,7 @@ public interface ScoreModel<NodeType extends Comparable<? super NodeType>,
      * @param destNode Node to end score search at.
      * @return The score for the given pair of nodes in the given graph.
      */
-    public double scoreEdge(String srcNode, String destNode, Graph<NodeType,WeightType> g);
+    public double scoreEdge(NodeType srcNode, NodeType destNode, Graph<NodeType,WeightType> g);
+
+    public double scoreNode(NodeType node, Graph<NodeType,WeightType> g);
 }

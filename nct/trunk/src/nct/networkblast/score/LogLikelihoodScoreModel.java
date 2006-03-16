@@ -36,7 +36,7 @@ import nct.graph.Edge;
  * the supplemental to Sharan, et al., 2005, Conserved patterns of protein
  * interaction in multiple species, PNAS, 102(6).
  */
-public class LogLikelihoodScoreModel implements ScoreModel<String,Double> {
+public class LogLikelihoodScoreModel<NodeType extends Comparable<? super NodeType>> implements ScoreModel<NodeType,Double> {
 
     /**
      * The background probability to be used in cases where the distance
@@ -58,12 +58,12 @@ public class LogLikelihoodScoreModel implements ScoreModel<String,Double> {
     /**
      * Map to hold each graph's respective probabilities.
      */
-    Map<Graph<String,Double>, GraphProbs> graphMap;
+    Map<Graph<NodeType,Double>, GraphProbs> graphMap;
 
     /**
      * Map to hold each graph's node's expected degreees. 
      */
-    private Map<Graph<String,Double>, Map<String,Double>> exNodeDegrees;
+    private Map<Graph<NodeType,Double>, Map<NodeType,Double>> exNodeDegrees;
 
     /**
      * The logger object we will log to.
@@ -82,8 +82,8 @@ public class LogLikelihoodScoreModel implements ScoreModel<String,Double> {
      * @param model Truth for the model (assumed between 0 and 1)
      */
     public LogLikelihoodScoreModel(double truthFactor, double model, double backgroundProbability) {
-	graphMap = new Hashtable<Graph<String,Double>, GraphProbs>();
-	exNodeDegrees = new HashMap<Graph<String,Double>,Map<String,Double>>();
+	graphMap = new Hashtable<Graph<NodeType,Double>, GraphProbs>();
+	exNodeDegrees = new HashMap<Graph<NodeType,Double>,Map<NodeType,Double>>();
 	this.truthFactor = truthFactor;
 	modelTruth = model;
 	this.backgroundProbability = backgroundProbability;
@@ -104,14 +104,14 @@ public class LogLikelihoodScoreModel implements ScoreModel<String,Double> {
      * A method that calculates the necessary probabilities for the given graph.
      * @param graph The graph to calculate the probabilities for.
      */
-    private void scoreGraph( Graph<String,Double> graph) {
+    private void scoreGraph( Graph<NodeType,Double> graph) {
 	assert(graph != null);
 
 	if (!graphMap.containsKey(graph)) {  // set up the probabilities
 	    GraphProbs probs = new GraphProbs();
 	    Integer val;
 	    double totalEdgeProbability = 0.0;
-	    for (Edge<String,Double> edge: graph.getEdges()) 
+	    for (Edge<NodeType,Double> edge: graph.getEdges()) 
 		totalEdgeProbability += edge.getWeight().doubleValue();
 	    int numOfNodes = graph.numberOfNodes();
 
@@ -139,7 +139,7 @@ public class LogLikelihoodScoreModel implements ScoreModel<String,Double> {
 	    probs.pTrueGivenNotObs = (probs.pTrue - (probs.pObs * totalEdgeProbability / graph.numberOfEdges())) / (1 - probs.pObs);
 
 	    double sum = 0.0;
-	    for (String node: graph.getNodes()) 
+	    for (NodeType node: graph.getNodes()) 
 		sum += (numOfNodes - graph.degreeOfNode(node) - 1) * probs.pTrueGivenNotObs;
 	    
 	    // divide by two because each edge is accounted for twice, once for each node 
@@ -151,7 +151,7 @@ public class LogLikelihoodScoreModel implements ScoreModel<String,Double> {
 	} 
 
 	if ( !exNodeDegrees.containsKey(graph) )
-		exNodeDegrees.put(graph,new HashMap<String,Double>());
+		exNodeDegrees.put(graph,new HashMap<NodeType,Double>());
 
     }
 
@@ -163,7 +163,7 @@ public class LogLikelihoodScoreModel implements ScoreModel<String,Double> {
      * @param graph graph containing both srcNode and destNode
      * @return the score of the pathway between the nodes or 0 if the same node
      */
-    public double scoreEdge(String srcNode, String destNode, Graph<String,Double> graph) {
+    public double scoreEdge(NodeType srcNode, NodeType destNode, Graph<NodeType,Double> graph) {
 
 	assert(srcNode != null && destNode != null && graph != null);
 
@@ -219,13 +219,17 @@ public class LogLikelihoodScoreModel implements ScoreModel<String,Double> {
 	return ret;
     }
 
+    public double scoreNode(NodeType node, Graph<NodeType,Double> g) {
+    	return 0;
+    }
+
     /**
      * Calculates the expected degree of a given node.  The valued calculated is
      * based on the actual degree of the node, the number of nodes in the graph, 
      * the weight of the neighbor edges, and the overall probabilit that given a
      * node, an edge exists (pTrueGivenNotObs).
      */
-    private double calcExpectedNodeDegree(String node, Graph<String,Double> graph) {
+    private double calcExpectedNodeDegree(NodeType node, Graph<NodeType,Double> graph) {
 
 	Double d = exNodeDegrees.get(graph).get(node);
 
@@ -234,7 +238,7 @@ public class LogLikelihoodScoreModel implements ScoreModel<String,Double> {
 		// we assume that scoreGraph() has been run
     		GraphProbs probs = graphMap.get(graph);
 		double exDegNode = ((double)(graph.numberOfNodes() - graph.degreeOfNode(node) - 1))*probs.pTrueGivenNotObs;
-		for ( String neighbor: graph.getNeighbors(node) ) 
+		for ( NodeType neighbor: graph.getNeighbors(node) ) 
 			exDegNode += graph.getEdgeWeight(node,neighbor);
 
 		d = new Double(exDegNode);

@@ -38,12 +38,12 @@ import nct.networkblast.graph.*;
 
 public class LogLikelihoodScoreModelTest extends TestCase {
     InteractionGraph h, i;
-    LogLikelihoodScoreModel s;
+    LogLikelihoodScoreModel<String> s;
     protected void setUp() {
         NetworkBlast.setUpLogging(Level.WARNING);
 	try {
 	    h = new InteractionGraph("examples/testScore.input.sif");
-	    s = new LogLikelihoodScoreModel(2.5, 0.8, 1e-10);
+	    s = new LogLikelihoodScoreModel<String>(2.5, 0.8, 1e-10);
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}
