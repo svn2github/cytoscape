@@ -64,6 +64,7 @@ public class VDistTop extends CytoscapeAction {
     for ( int i = 0; i < nodes.size(); ++i ) {
       ( ( NodeView )nodes.get(i) ).setYPosition( min + i*d );
     }
+    view.updateView();
   }
 
   public boolean isInToolBar () {
