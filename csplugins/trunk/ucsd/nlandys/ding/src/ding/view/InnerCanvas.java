@@ -214,7 +214,7 @@ class InnerCanvas extends java.awt.Component
           m_selectionRect =
             new Rectangle(m_lastXMousePos, m_lastYMousePos, 0, 0);
           m_button1NodeDrag = false; } }
-      repaint();
+      m_view.updateView();
       final GraphViewChangeListener listener = m_view.m_lis[0];
       if (listener != null) {
         if (unselectedNodes != null && unselectedNodes.length > 0) {
@@ -297,7 +297,7 @@ class InnerCanvas extends java.awt.Component
                   ((DEdgeView) m_view.getEdgeView(selectedEdges[i])).
                     selectInternal(); } } } }
           m_selectionRect = null;
-          repaint();
+          m_view.updateView();
           final GraphViewChangeListener listener = m_view.m_lis[0];
           if (listener != null) {
             if (selectedNodes != null && selectedNodes.length > 0) {
@@ -340,21 +340,21 @@ class InnerCanvas extends java.awt.Component
             final double oldXPos = nv.getXPosition();
             final double oldYPos = nv.getYPosition();
             nv.setOffset(oldXPos + deltaX, oldYPos + deltaY); } }
-        repaint(); }
+        m_view.updateView(); }
       if (m_selectionRect != null) {
         final int x = Math.min(m_lastXMousePos, e.getX());
         final int y = Math.min(m_lastYMousePos, e.getY());
         final int w = Math.abs(m_lastXMousePos - e.getX());
         final int h = Math.abs(m_lastYMousePos - e.getY());
         m_selectionRect.setBounds(x, y, w, h);
-        repaint(); } }
+        m_view.updateView(); } }
     else if (m_currMouseButton == 2) {
       double deltaY = e.getY() - m_lastYMousePos;
       synchronized (m_lock) {
         m_lastXMousePos = e.getX();
         m_lastYMousePos = e.getY();
         m_scaleFactor *= Math.pow(2, -deltaY / 300.0d); }
-      repaint(); }
+      m_view.updateView(); }
     else if (m_currMouseButton == 3) {
       double deltaX = e.getX() - m_lastXMousePos;
       double deltaY = e.getY() - m_lastYMousePos;
@@ -363,7 +363,7 @@ class InnerCanvas extends java.awt.Component
       synchronized (m_lock) {
         m_xCenter -= deltaX / m_scaleFactor;
         m_yCenter += deltaY / m_scaleFactor;  } // y orientations are opposite.
-      repaint(); }
+      m_view.updateView(); }
   }
 
   public void mouseMoved(MouseEvent e)
