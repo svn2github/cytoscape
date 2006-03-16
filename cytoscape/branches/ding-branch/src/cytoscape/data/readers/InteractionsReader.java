@@ -51,6 +51,7 @@ import giny.model.Edge;
 import giny.model.Node;
 import giny.model.RootGraph;
 import giny.view.GraphView;
+import giny.view.NodeView;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -141,6 +142,22 @@ public class InteractionsReader implements GraphReader {
 	}
 
 	public void layout(GraphView view) {
+          double distanceBetweenNodes = 50.0d;
+          int columns = (int) Math.sqrt(view.nodeCount());
+          Iterator nodeViews = view.getNodeViewsIterator();
+          double currX = 0.0d;
+          double currY = 0.0d;
+          int count = 0;
+          while (nodeViews.hasNext()) {
+            NodeView nView = (NodeView) nodeViews.next();
+            nView.setOffset(currX, currY);
+            count++;
+            if (count == columns) {
+              count = 0;
+              currX = 0.0d;
+              currY += distanceBetweenNodes; }
+            else {
+              currX += distanceBetweenNodes; } }
 	}
 
 	// ----------------------------------------------------------------------------------------
