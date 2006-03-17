@@ -39,12 +39,12 @@ import nct.graph.Graph;
  * Complexes are defined as  branched or unbranched pathways invovling 
  * minSeedSize or more nodes.
  */
-public class GreedyComplexSearch implements SearchGraph<String,Double> {
+public class GreedyComplexSearch<NodeType extends Comparable<? super NodeType>> implements SearchGraph<NodeType,Double> {
 
 	/**
 	 * This List keeps track of the graphs (usually paths) used as seeds.
 	 */
-	private List<Graph<String,Double>> listOfSeeds;
+	private List<Graph<NodeType,Double>> listOfSeeds;
 	
 	/**
 	 * Maximum size of the complexes allowed.
@@ -96,48 +96,48 @@ public class GreedyComplexSearch implements SearchGraph<String,Double> {
 	 * @param scoreObj The score algorithm to use.
 	 * @return The list of complexes found. 
 	 */
-	public List<Graph<String,Double>> searchGraph(Graph<String,Double>  graph, ScoreModel scoreObj) {
+	public List<Graph<NodeType,Double>> searchGraph(Graph<NodeType,Double>  graph, ScoreModel scoreObj) {
 
 		if (graph == null || scoreObj == null) {
 			return null;
 		} else if (graph.numberOfNodes() == 0) {
-			return new Vector<Graph<String,Double>>();
+			return new Vector<Graph<NodeType,Double>>();
 		}
 	
 		// Queue of seed graphs that are grown into complexes.
-		List<Graph<String,Double>> queue = new LinkedList<Graph<String,Double>>();
+		List<Graph<NodeType,Double>> queue = new LinkedList<Graph<NodeType,Double>>();
 
 		// Seed type 1
 		// Copy whatever existing paths to the queue of seeds. 
 		if ( listOfSeeds != null )
 			for (int i = 0; i < listOfSeeds.size(); i++) 
-				queue.add((Graph<String,Double>)listOfSeeds.get(i).clone());
+				queue.add((Graph<NodeType,Double>)listOfSeeds.get(i).clone());
 	
 		// Seed type 2
 		// Add minSeedSize node seeds to the queue.
 		addSeeds( graph, queue, scoreObj);
 
 		// contains the cumulative scores of the potential nodes
-		Map<String, Double> potentialNodeScores = new Hashtable<String, Double>();  
+		Map<NodeType, Double> potentialNodeScores = new Hashtable<NodeType, Double>();  
 
 		// contains the cumulative scores of the solution nodes
-		Map<String, Double> solnNodeScores  = new Hashtable<String, Double>(); 
+		Map<NodeType, Double> solnNodeScores  = new Hashtable<NodeType, Double>(); 
 
 		// will contain the seed nodes (never remove)
-		Set<String> seedNodes = new HashSet<String>(); 
+		Set<NodeType> seedNodes = new HashSet<NodeType>(); 
 
 		// will contain the solution nodes (can modify)
-		Set<String> solnNodes = new HashSet<String>(); 
+		Set<NodeType> solnNodes = new HashSet<NodeType>(); 
 
 		// will contain the solution graphs to remove 
-		Set<Graph<String,Double>> removalSet = new HashSet<Graph<String,Double>>();
+		Set<Graph<NodeType,Double>> removalSet = new HashSet<Graph<NodeType,Double>>();
 
 		// will contain the best node & score from the neighbors
-		String maxNode;  
+		NodeType maxNode;  
 		double maxScore;
 
 		// begin growing each seed into a complex
-		for(Graph<String,Double> soln: queue) {
+		for(Graph<NodeType,Double> soln: queue) {
 			log.fine("Beginning Soln: " + soln);
 
 			maxNode = null;
@@ -152,8 +152,8 @@ public class GreedyComplexSearch implements SearchGraph<String,Double> {
 			// that could extend the seed graph. 
 			// For every node in the solution so far (ie seeds):
 			// get neighbors and scores.
-			for (String seedNode : soln.getNodes()) {
-				for (String testNode : graph.getNeighbors(seedNode)) {
+			for (NodeType seedNode : soln.getNodes()) {
+				for (NodeType testNode : graph.getNeighbors(seedNode)) {
 					if (seedNodes.contains(testNode)) 
 						continue; // skip seed nodes
 					
@@ -187,7 +187,7 @@ public class GreedyComplexSearch implements SearchGraph<String,Double> {
 				String code = Integer.toString( solnNodes.hashCode() ) + 
 				              Integer.toString( seedNodes.hashCode() );
 				if ( nodeDesc.contains( code ) ) {
-					log.fine("breaking on code " + code );
+					log.fine("breaking on code " + code.toString() );
 					break;
 				}
 				else
@@ -203,9 +203,9 @@ public class GreedyComplexSearch implements SearchGraph<String,Double> {
 				if (solnNodes.size() + seedNodes.size() == maxComplexSize) {
 
 					// Find the min scoring node.
-					String minNode = null;
+					NodeType minNode = null;
 					double minScore = maxScore;
-					for (String testNode : solnNodes) {
+					for (NodeType testNode : solnNodes) {
 						double testScore = solnNodeScores.get(testNode).doubleValue();
 						if (testScore < minScore) {
 							minNode = testNode;
@@ -222,12 +222,12 @@ public class GreedyComplexSearch implements SearchGraph<String,Double> {
 					if (minNode == null) 
 						break;  
 					
-					for (String testNode : solnNodes) {
+					for (NodeType testNode : solnNodes) {
 						isConnected = false;
 						if (testNode.equals(minNode)) 
 							continue;
 						
-						 for (String conNode : solnNodes) {
+						 for (NodeType conNode : solnNodes) {
 							if (conNode.equals(minNode)) 
 								continue;
 							
@@ -249,7 +249,7 @@ public class GreedyComplexSearch implements SearchGraph<String,Double> {
 
 					// Subtract minimum node score from the total score here and add 
 					// it back to the potentialk scores.
-					for (String testNode : graph.getNeighbors(minNode)) {
+					for (NodeType testNode : graph.getNeighbors(minNode)) {
 
 						// ignore seed nodes 
 						if (seedNodes.contains(testNode)) 
@@ -286,7 +286,7 @@ public class GreedyComplexSearch implements SearchGraph<String,Double> {
 
 				// Check neighbor nodes of node just added, add score to solution scores 
 				// and remove from potential scores.
-				for (String testNode : graph.getNeighbors(maxNode)) {
+				for (NodeType testNode : graph.getNeighbors(maxNode)) {
 
 					// ignore seed nodes
 					if (seedNodes.contains(testNode)) 
@@ -315,7 +315,7 @@ public class GreedyComplexSearch implements SearchGraph<String,Double> {
 				maxNode = null;
 				maxScore = -Double.MAX_VALUE;
 
-				for (String testNode : potentialNodeScores.keySet()) {
+				for (NodeType testNode : potentialNodeScores.keySet()) {
 					double testScore = potentialNodeScores.get(testNode).doubleValue();
 					if (testScore > maxScore) {
 						maxNode = testNode;
@@ -329,7 +329,7 @@ public class GreedyComplexSearch implements SearchGraph<String,Double> {
 
 			// Create a new list of nodes that will eventually contain
 			// both the seed nodes and solution nodes.
-			List<String> nodesList = new LinkedList<String>(solnNodes);
+			List<NodeType> nodesList = new LinkedList<NodeType>(solnNodes);
 
 			// Now add all the solution nodes to the seed graph.
 			for (int i = 0; i < nodesList.size(); i++) 
@@ -340,14 +340,14 @@ public class GreedyComplexSearch implements SearchGraph<String,Double> {
 		
 			log.fine("full Nodes List: " + nodesList);
 			for (int i = 0; i < nodesList.size()-1; i++) {
-				String nodei = nodesList.get(i);
+				NodeType nodei = nodesList.get(i);
 				// Add solution nodes to the total score of the graph.
 				if (!seedNodes.contains(nodei)) 
 					soln.setScore( soln.getScore() + solnNodeScores.get(nodei) );
 
 				// Add edges to soln graph.
 				for (int j = i+1; j < nodesList.size(); j++) {
-					String nodej = nodesList.get(j);
+					NodeType nodej = nodesList.get(j);
 					if (graph.isEdge(nodei, nodej)) 
 						soln.addEdge(nodei, nodej, scoreObj.scoreEdge(nodei, nodej, graph));
 				}
@@ -366,68 +366,60 @@ public class GreedyComplexSearch implements SearchGraph<String,Double> {
 	/**
 	 * Creates secondary seeds and adds them to the seed queue.
 	 */
-	private void addSeeds(Graph<String,Double> graph, List<Graph<String,Double>> queue, ScoreModel scoreObj) {
+	private void addSeeds(Graph<NodeType,Double> graph, List<Graph<NodeType,Double>> queue, ScoreModel scoreObj) {
 
 		// minSeedSize-1 because seed is already in the set
-		String[] seedSet= new String[minSeedSize-1];  
-		double[] seedScore = new double[minSeedSize-1];		
+		int arraySize = minSeedSize-1;
+		Vector<NodeType> seedSet= new Vector<NodeType>();  
+		Vector<Double> seedScore = new Vector<Double>();		
 		double testScore;
 		int pathSize;
 
-		for (String seedNode : graph.getNodes()) {
-
-			// Initialize seedSet and seedScore
-			for (int i = 0; i < seedSet.length; i++) {
-				seedSet[i] = null;
-				seedScore[i] = -Double.MAX_VALUE;
-			}
+		for (NodeType seedNode : graph.getNodes()) {
 
 			pathSize = 0;
-			// find 3 neighbor nodes
-			// use a treeset? 
-			for (String testNode : graph.getNeighbors(seedNode)) {
+			// Check each neighbor's score and add the neighbor 
+			// to the appropriate place in the list of scores. 
+			for (NodeType testNode : graph.getNeighbors(seedNode)) {
 				testScore = scoreObj.scoreEdge(seedNode, testNode, graph);
-				for (int i = 0; i < seedSet.length; i++) {
-					// Assume more positive scores are better
-					if (testScore > seedScore[i]) {
-						// if not last element, shift all scores
-						if (i != seedScore.length-1) {
-							// shift all scores up
-							for (int j = seedSet.length-1; j >= i; j--) {
-								if (j == seedSet.length-1) {
-									continue;
-								} else {
-									seedSet[j+1] = seedSet[j];
-									seedScore[j+1] = seedScore[j];
-								}
-							}
-						}
-						seedSet[i] = testNode;
-						seedScore[i] = testScore;
-						pathSize++;
+				boolean added = false;
+				for ( int i = 0; i < seedScore.size(); i++ ) {
+					if ( testScore > seedScore.get(i).doubleValue() ) {
+						seedScore.insertElementAt(testScore,i);
+						seedSet.insertElementAt(testNode,i);
+						added = true;
 						break;
 					}
 				}
+
+				if ( !added ) {
+					seedScore.add(testScore);
+					seedSet.add(testNode);
+				}
+				pathSize++;
 			}
 
 			if (pathSize < minSeedSize - 1) 
 				continue;
 
-			// Now that we have our four node set, store them in a queue
-			Graph<String,Double> soln = new BasicGraph<String,Double>(); 
+			// Now that we have our (at least) minSeedSize node set, 
+			// create a graph and store it in a queue.
+			Graph<NodeType,Double> soln = new BasicGraph<NodeType,Double>(); 
 			double tmpscore = 0;
 			soln.addNode(seedNode);
-			for (int i = 0; i < seedSet.length; i++) {
-				soln.addNode(seedSet[i]);
-				soln.addEdge(seedNode, seedSet[i], graph.getEdgeWeight(seedNode, seedSet[i]));
-				tmpscore += seedScore[i];
+			for (int i = 0; i < arraySize; i++) {
+				soln.addNode(seedSet.get(i));
+				soln.addEdge(seedNode, seedSet.get(i), graph.getEdgeWeight(seedNode, seedSet.get(i)));
+				tmpscore += seedScore.get(i);
 			}
 			soln.setScore(tmpscore);
+		//	System.out.println(soln.toString());
 			queue.add(soln);
 		}
 	}
 
-	public void setSeeds(List<Graph<String,Double>> seeds) {
+
+	public void setSeeds(List<Graph<NodeType,Double>> seeds) {
 		listOfSeeds = seeds;
 	}
 }

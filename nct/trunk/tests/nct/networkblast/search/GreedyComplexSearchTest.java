@@ -41,7 +41,7 @@ import nct.service.homology.sif.*;
 
 public class GreedyComplexSearchTest extends TestCase {
     SearchGraph sg;
-    GreedyComplexSearch cg;
+    GreedyComplexSearch<String> cg;
     InteractionGraph h, k ;
     ScoreModel s;
     List<Graph<String,Double>> solns;
@@ -53,7 +53,7 @@ public class GreedyComplexSearchTest extends TestCase {
 	    k = new InteractionGraph("examples/testNet.input.sif");
 	    s = new LogLikelihoodScoreModel<String>(2.5, .8, 1e-10);
 	    solns = sg.searchGraph(h, s);
-	    cg = new GreedyComplexSearch(4, 15);
+	    cg = new GreedyComplexSearch<String>(4, 15);
 	    cg.setSeeds(solns);
 	} catch (IOException e) {
 	    e.printStackTrace();
@@ -94,8 +94,8 @@ public class GreedyComplexSearchTest extends TestCase {
 	// still just extending/improving
 	k.addNode("p");
 	k.addEdge("p", "k", 1.0);
-	assertTrue("expected >0 complexes, got: " + cmplx.size(), cmplx.size() >0 );
 	cmplx = cg.searchGraph(k, s);
+	assertTrue("expected >0 complexes, got: " + cmplx.size(), cmplx.size() >0 );
 	for (int i = 0; i < cmplx.size(); i++) {
 	    assertTrue("expected 15 complex nodes, got: " + cmplx.get(i).numberOfNodes(),
 	               cmplx.get(i).numberOfNodes() == 15);
@@ -108,12 +108,17 @@ public class GreedyComplexSearchTest extends TestCase {
 	
 	// now we get more complexes
 	cmplx = cg.searchGraph(k, s);
-	assertTrue("expected >1 complexes, got: " + cmplx.size(), cmplx.size() > 1 );
+	assertTrue("expected 2 complexes, got: " + cmplx.size(), cmplx.size() == 2 );
 	for (int i = 0; i < cmplx.size(); i++) {
 	    assertTrue("expected 15 complex nodes, got: " + cmplx.get(i).numberOfNodes(),
 	               cmplx.get(i).numberOfNodes() == 15);
+                Set<String> nds = cmplx.get(i).getNodes();
+                System.out.println();
+                for ( String nd : nds )
+                        System.out.print(nd + " ");
+                System.out.println();
 	}
-
+	
 	// ADD MORE TESTS
 
     }
