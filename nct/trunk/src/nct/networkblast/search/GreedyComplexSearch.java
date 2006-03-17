@@ -369,7 +369,6 @@ public class GreedyComplexSearch<NodeType extends Comparable<? super NodeType>> 
 	private void addSeeds(Graph<NodeType,Double> graph, List<Graph<NodeType,Double>> queue, ScoreModel scoreObj) {
 
 		// minSeedSize-1 because seed is already in the set
-		int arraySize = minSeedSize-1;
 		Vector<NodeType> seedSet= new Vector<NodeType>();  
 		Vector<Double> seedScore = new Vector<Double>();		
 		double testScore;
@@ -377,7 +376,10 @@ public class GreedyComplexSearch<NodeType extends Comparable<? super NodeType>> 
 
 		for (NodeType seedNode : graph.getNodes()) {
 
+			seedSet.clear();
+			seedScore.clear();
 			pathSize = 0;
+
 			// Check each neighbor's score and add the neighbor 
 			// to the appropriate place in the list of scores. 
 			for (NodeType testNode : graph.getNeighbors(seedNode)) {
@@ -407,13 +409,14 @@ public class GreedyComplexSearch<NodeType extends Comparable<? super NodeType>> 
 			Graph<NodeType,Double> soln = new BasicGraph<NodeType,Double>(); 
 			double tmpscore = 0;
 			soln.addNode(seedNode);
-			for (int i = 0; i < arraySize; i++) {
-				soln.addNode(seedSet.get(i));
-				soln.addEdge(seedNode, seedSet.get(i), graph.getEdgeWeight(seedNode, seedSet.get(i)));
+			for (int i = 0; i < minSeedSize - 1; i++) {
+				NodeType node = seedSet.get(i);
+				soln.addNode(node);
+				soln.addEdge(seedNode, node, graph.getEdgeWeight(seedNode, node));
 				tmpscore += seedScore.get(i);
 			}
 			soln.setScore(tmpscore);
-		//	System.out.println(soln.toString());
+			System.out.println(soln.toString());
 			queue.add(soln);
 		}
 	}
