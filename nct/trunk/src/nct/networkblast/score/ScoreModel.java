@@ -35,15 +35,21 @@ import nct.graph.Graph;
 public interface ScoreModel<NodeType extends Comparable<? super NodeType>,
                             WeightType extends Comparable<? super WeightType>> {
     /**
-     * Given a sourceNode and destNode from graph, this function will return 
-     * the score of the edge.  Note that this method does not define what
-     * occurs if no such edge exists between the two nodes (presumably it 
-     * would return some background probability or minimal score).
-     * @param srcNode Node to start score search from.
-     * @param destNode Node to end score search at.
+     * Given a sourceNode and destNode from a graph, this method will return 
+     * the score of the edge.  
+     * @param srcNode Source node of edge to score. 
+     * @param destNode Dest node of edge to score. 
+     * @param g The graph that contains the edge to score. 
      * @return The score for the given pair of nodes in the given graph.
      */
     public double scoreEdge(NodeType srcNode, NodeType destNode, Graph<NodeType,WeightType> g);
 
+    /**
+     * Given a node from graph, this function will return 
+     * the score of the node. 
+     * @param node Node to score.
+     * @param g The graph that contains the node to score. 
+     * @return The score for the node in the given graph.
+     */
     public double scoreNode(NodeType node, Graph<NodeType,WeightType> g);
 }
