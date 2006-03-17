@@ -182,7 +182,7 @@
            fork="${fork}">
 <!--
 -->
-       <compilerarg line="-Xlint:unchecked"/>
+       <compilerarg line="-Xlint:{all,-path}"/>
      </javac>
      <echo message="Successfully ran compile task!"/>
   </target>
