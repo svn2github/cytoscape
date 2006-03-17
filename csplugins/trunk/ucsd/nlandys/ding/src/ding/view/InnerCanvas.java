@@ -222,8 +222,6 @@ class InnerCanvas extends java.awt.Component
           m_selectionRect =
             new Rectangle(m_lastXMousePos, m_lastYMousePos, 0, 0);
           m_button1NodeDrag = false; } }
-      if (updateNeeded) { m_view.updateView(); }
-      else { repaint(); }
       final GraphViewChangeListener listener = m_view.m_lis[0];
       if (listener != null) {
         if (unselectedNodes != null && unselectedNodes.length > 0) {
@@ -249,7 +247,11 @@ class InnerCanvas extends java.awt.Component
           else {
             listener.graphViewChanged
               (new GraphViewEdgesUnselectedEvent
-               (m_view, new int[] { chosenEdge })); } } } }
+               (m_view, new int[] { chosenEdge })); } } }
+      // Repaint after listener events are fired because listeners may change
+      // something in the graph view.
+      if (updateNeeded) { m_view.updateView(); }
+      else { repaint(); } /* For the selection rectangle. */ }
     else if (e.getButton() == MouseEvent.BUTTON2) {
       m_currMouseButton = 2;
       m_lastXMousePos = e.getX();
@@ -309,8 +311,6 @@ class InnerCanvas extends java.awt.Component
                     selectInternal(); }
                 if (selectedEdges.length > 0) { updateNeeded = true; } } } }
           m_selectionRect = null;
-          if (updateNeeded) { m_view.updateView(); }
-          else { repaint(); }
           final GraphViewChangeListener listener = m_view.m_lis[0];
           if (listener != null) {
             if (selectedNodes != null && selectedNodes.length > 0) {
@@ -320,7 +320,11 @@ class InnerCanvas extends java.awt.Component
             if (selectedEdges != null && selectedEdges.length > 0) {
               listener.graphViewChanged
                 (new GraphViewEdgesSelectedEvent
-                 (m_view, selectedEdges)); } } } } }
+                 (m_view, selectedEdges)); } }
+          // Repaint after listener events are fired because listeners may
+          // change something in the graph view.
+          if (updateNeeded) { m_view.updateView(); }
+          else { repaint(); } } } }
     else if (e.getButton() == MouseEvent.BUTTON2) {
       if (m_currMouseButton == 2) { m_currMouseButton = 0; } }
     else if (e.getButton() == MouseEvent.BUTTON3) {
