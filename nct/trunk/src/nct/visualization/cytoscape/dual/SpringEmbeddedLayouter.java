@@ -79,7 +79,7 @@ public class SpringEmbeddedLayouter{
 	protected int layoutPass;
 	protected HashMap node2Species;
 	protected NodePairSet homologyPairSet;
-	protected HashMap node2Index;
+	protected HashMap<Node,Integer> node2Index;
 
 	/**
 	 * @param node2Species a hashmap which maps from a node to a species number
@@ -87,7 +87,6 @@ public class SpringEmbeddedLayouter{
 	public SpringEmbeddedLayouter ( GraphView graph_view, HashMap node2Species, NodePairSet homologyPairSet ) {
 		setGraphView( graph_view );
 		this.node2Species = node2Species;
-		//initializeSpringEmbeddedLayouter();
 		this.homologyPairSet = homologyPairSet;
 	}
 
@@ -101,13 +100,8 @@ public class SpringEmbeddedLayouter{
 
 	protected int getNodeViewIndex(NodeView n){
 		GraphPerspective perspective = graphView.getGraphPerspective();
-		return ((Integer)node2Index.get(perspective.getNode(n.getGraphPerspectiveIndex()))).intValue();
+		return (node2Index.get(perspective.getNode(n.getGraphPerspectiveIndex()))).intValue();
 	}
-	protected void initializeSpringEmbeddedLayouter () {
-		// Do nothing.
-		// TODO: Something?
-	} // initializeSpringEmbeddedLayouter()
-
 		
 	private void initializePositions(){
 		Iterator viewIt = graphView.getNodeViewsIterator();
@@ -140,7 +134,7 @@ public class SpringEmbeddedLayouter{
 		int num_iterations = ( int )
 			( ( nodeCount * averageIterationsPerNode ) / numLayoutPasses );
 
-		List partials_list = createPartialsList();
+		List<PartialDerivatives> partials_list = new ArrayList<PartialDerivatives>();
 		PotentialEnergy potential_energy = new PotentialEnergy();
 		Iterator node_views_iterator;
 		NodeView node_view;
@@ -208,7 +202,7 @@ public class SpringEmbeddedLayouter{
 		}
 		anticollisionSpringStrength = new double[ nodeCount ][ nodeCount ];
 		//List nodeList = graphView.getGraphPerspective().nodesList();
-		List nodeList = makeNodeList( graphView.getGraphPerspective().nodesIterator() );
+		List<Node> nodeList = makeNodeList( graphView.getGraphPerspective().nodesIterator() );
 		for(int idx1=0,size=nodeList.size();idx1<size;idx1++){
 			for(int idx2=idx1+1;idx2<size;idx2++){
 				if(node2Species.get(nodeList.get(idx1)).equals(node2Species.get(nodeList.get(idx2)))){
@@ -222,33 +216,10 @@ public class SpringEmbeddedLayouter{
 			}
 		}
 	}
-/*
-	protected int[][] calculateNodeDistances(List nodesList,GraphPerspective network){
-		node2Index = new HashMap();
-		int node_count = nodesList.size();
-		int [][] result = new int[node_count][node_count];
-		//
-		// Intialization for Floyd Warshall
-		//
-		for(int i=0;i<nodesList.size();i++){
-			node2Index.put(nodesList.get(i),new Integer(i));
-			Arrays.fill(result[i],20);
-		}
-		for(int i=0;i<node_count;i++){
-			Node node = (Node)nodesList.get(i);
-			for(Iterator neighborIt = network.neighborsList(node).iterator();neighborIt.hasNext();){
-				Object neighbor = neighborIt.next();
-				int j = ((Integer)node2Index.get(neighbor)).intValue();
-				result[i][j] = 1;
-				result[j][i] = 1;
-			}
-			result[i][i] = 0;
-		}
-*/
 
 	// re-implemented to get ride of deprecated code.
 	protected int[][] calculateNodeDistances(List nodesList,GraphPerspective network){
-		node2Index = new HashMap(); // not used in this method - but is used elsewhere
+		node2Index = new HashMap<Node,Integer>(); // not used in this method - but is used elsewhere
 		IntIntHash graphIndex2arrayIndex = new IntIntHash();
 		int node_count = nodesList.size();
 		int[] nodeIndexArray = new int[node_count];
@@ -306,7 +277,7 @@ public class SpringEmbeddedLayouter{
 		}
 
 		//int [][] node_distances = calculateNodeDistances(graphView.getGraphPerspective().nodesList(),graphView.getGraphPerspective());
-		List nList = makeNodeList(graphView.getGraphPerspective().nodesIterator());
+		List<Node> nList = makeNodeList(graphView.getGraphPerspective().nodesIterator());
 		int [][] node_distances = calculateNodeDistances(nList,graphView.getGraphPerspective());
 		//String [] nodeNames = new String[graphView.getGraphPerspective().nodesList().size()];
 		CyAttributes nodeAttrs = Cytoscape.getNodeAttributes(); 
@@ -334,7 +305,7 @@ public class SpringEmbeddedLayouter{
 		double node_distance_rest_length_constant = nodeDistanceRestLengthConstant;
 
 		//List nodeList = graphView.getGraphPerspective().nodesList();
-		List nodeList = makeNodeList( graphView.getGraphPerspective().nodesIterator() );
+		List<Node> nodeList = makeNodeList( graphView.getGraphPerspective().nodesIterator() );
 		
 		// Calculate the rest lengths and strengths based on the node distance data
 		for( int node_i = 0; node_i < nodeCount; node_i++ ) {
@@ -891,10 +862,6 @@ public class SpringEmbeddedLayouter{
 
 	} // simpleMoveNode( PartialDerivatives )
 
-	protected List createPartialsList () {
-		return new ArrayList();
-	} // createPartialsList()
-
 	class PartialDerivatives {
 		protected NodeView nodeView;
 		public double x;
@@ -951,10 +918,10 @@ public class SpringEmbeddedLayouter{
 
 	} // class PotentialEnergy
 
-	private List makeNodeList(Iterator nodeIt) {
-		List nodeList = new ArrayList();
+	private List<Node> makeNodeList(Iterator nodeIt) {
+		List<Node> nodeList = new ArrayList<Node>();
 		while ( nodeIt.hasNext() ) {
-			nodeList.add( nodeIt.next() );
+			nodeList.add( (Node)nodeIt.next() );
 		}
 		return nodeList;
 	}

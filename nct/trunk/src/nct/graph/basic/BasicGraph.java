@@ -194,7 +194,7 @@ public class BasicGraph<NodeType extends Comparable<? super NodeType>,WeightType
 	public Edge<NodeType,WeightType> getEdge(NodeType nodeA, NodeType nodeB) {
 		Map<NodeType,WeightType> mef = weightMap.get(nodeA);
 		if ( mef != null )
-			return new BasicEdge(nodeA,nodeB,mef.get(nodeB));
+			return new BasicEdge<NodeType,WeightType>(nodeA,nodeB,mef.get(nodeB));
 		else
 			return null;
 	}
@@ -266,9 +266,9 @@ public class BasicGraph<NodeType extends Comparable<? super NodeType>,WeightType
 		for(NodeType node1: weightMap.keySet()) {
 			for(NodeType node2: weightMap.get(node1).keySet()) {
 				if ( node1.compareTo( node2 ) <= 0 ) 
-					edgeSet.add( new BasicEdge(node1,node2,weightMap.get(node1).get(node2),getEdgeDescription(node1,node2)));
+					edgeSet.add( new BasicEdge<NodeType,WeightType>(node1,node2,weightMap.get(node1).get(node2),getEdgeDescription(node1,node2)));
 				else
-					edgeSet.add( new BasicEdge(node2,node1,weightMap.get(node2).get(node1),getEdgeDescription(node2,node1)));
+					edgeSet.add( new BasicEdge<NodeType,WeightType>(node2,node1,weightMap.get(node2).get(node1),getEdgeDescription(node2,node1)));
 			}
 		}
 		return edgeSet;

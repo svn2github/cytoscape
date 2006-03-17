@@ -44,6 +44,6 @@ public interface SearchGraph< NodeType extends Comparable<? super NodeType>,
      * @return a List of SubGraphs which are the solutions to this search
      */
     public List<Graph<NodeType,WeightType>> searchGraph(Graph<NodeType,WeightType> graph, 
-                                                        ScoreModel scoreObj);
+                                                        ScoreModel<NodeType,WeightType> scoreObj);
 }
 

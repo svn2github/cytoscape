@@ -26,7 +26,15 @@ package nct.graph.util;
 import java.util.*;
 import nct.graph.Graph;
 
-public class DegreePreservingRandomizer<N extends Comparable<? super N>,W extends Comparable<? super W>> implements GraphRandomizer<N,W> {
+/**
+ * This class shuffles the edges in a graph while preserving 
+ * the degree of each node in the class and only swapping edges
+ * with "similar" edge weights. In the default implementation of
+ * this class "similar" means equal weight.  To create an
+ * alternative definition of "similar" simply extend this class
+ * and re-implement the weightsSimilar() method. 
+ */
+public class DegreePreservingRandomizer<NodeType extends Comparable<? super NodeType>,WeightType extends Comparable<? super WeightType>> implements GraphRandomizer<NodeType,WeightType> {
 
 	protected Random rand;
 	protected boolean ignoreWeights;
@@ -36,22 +44,26 @@ public class DegreePreservingRandomizer<N extends Comparable<? super N>,W extend
 		this.ignoreWeights = ignoreWeights;
 	}
 
-	public void randomize(Graph<N,W> g) {
+	/**
+	 * The method that performs the randomization.
+	 * @param g The Graph whose edges are to be randomized.
+	 */
+	public void randomize(Graph<NodeType,WeightType> g) {
 		
-		List<N> nodes = new ArrayList<N>(g.getNodes());
+		List<NodeType> nodes = new ArrayList<NodeType>(g.getNodes());
 		
 		for ( int e = 0; e < g.numberOfEdges(); e++ ) {
-			N i;
-			N j;
-			N va;
-			N vb;
+			NodeType i;
+			NodeType j;
+			NodeType va;
+			NodeType vb;
 			
 			while (true) {
 				i = nodes.get( rand.nextInt(nodes.size()) );
 				j = nodes.get( rand.nextInt(nodes.size()) );
 		
-				List<N> iNeighbors = new ArrayList<N>(g.getNeighbors(i));
-				List<N> jNeighbors = new ArrayList<N>(g.getNeighbors(j));
+				List<NodeType> iNeighbors = new ArrayList<NodeType>(g.getNeighbors(i));
+				List<NodeType> jNeighbors = new ArrayList<NodeType>(g.getNeighbors(j));
 
 				
 				int iDegree = iNeighbors.size();
@@ -74,8 +86,8 @@ public class DegreePreservingRandomizer<N extends Comparable<? super N>,W extend
 
 			}
 			
-			W iWeight = g.getEdgeWeight(i,va);
-			W jWeight = g.getEdgeWeight(j,vb);
+			WeightType iWeight = g.getEdgeWeight(i,va);
+			WeightType jWeight = g.getEdgeWeight(j,vb);
 
 			g.removeEdge(i,va);
 			g.removeEdge(j,vb);
@@ -89,7 +101,16 @@ public class DegreePreservingRandomizer<N extends Comparable<? super N>,W extend
 		}
 	}
 
-	public boolean weightsSimilar( W a, W b ) {
+	/**
+	 * Checks to see if the given weights are "similar".  The default
+	 * (this) implementation treats weights as similar if they are
+	 * equal.  To get different behavior simply extend this class and
+	 * override this method.
+	 * @param a Weight a to be compared.
+	 * @param b Weight b to be compared.
+	 * @return true if if the weights are "similar", false otherwise.
+	 */
+	public boolean weightsSimilar( WeightType a, WeightType b ) {
 		if ( a.compareTo( b ) == 0 )
 			return true;
 		else

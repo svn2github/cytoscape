@@ -27,7 +27,12 @@ import java.util.*;
 import nct.graph.Graph; 
 import nct.graph.Edge; 
 
-public class EdgeWeightShuffle<N extends Comparable<? super N>,W extends Comparable<? super W>> implements GraphRandomizer<N,W> {
+/**
+ * This class performs a basic Fisher-Yates shuffle of the edge weights.  
+ * It creates a list of edges and then shuffles the weights within
+ * that list.
+ */
+public class EdgeWeightShuffle<NodeType extends Comparable<? super NodeType>,WeightType extends Comparable<? super WeightType>> implements GraphRandomizer<NodeType,WeightType> {
 
 	protected Random rand;
 	
@@ -37,10 +42,11 @@ public class EdgeWeightShuffle<N extends Comparable<? super N>,W extends Compara
 
 	/**
 	 * Basic Fisher-Yates edge weight shuffle.
+	 * @param g The graph whose edge weights should be shuffled.
 	 */
-	public void randomize(Graph<N,W> g) {
+	public void randomize(Graph<NodeType,WeightType> g) {
 
-		List<Edge<N,W>> edges = new ArrayList<Edge<N,W>>(g.getEdges());
+		List<Edge<NodeType,WeightType>> edges = new ArrayList<Edge<NodeType,WeightType>>(g.getEdges());
 		int size = edges.size();
 
 		for ( int i = 0; i < size; i++ ) {
@@ -48,10 +54,10 @@ public class EdgeWeightShuffle<N extends Comparable<? super N>,W extends Compara
 			if ( i == j )
 				continue;
 
-			Edge<N,W> iEdge = edges.get(i);
-			Edge<N,W> jEdge = edges.get(j);
+			Edge<NodeType,WeightType> iEdge = edges.get(i);
+			Edge<NodeType,WeightType> jEdge = edges.get(j);
 
-			W tmpWeight = g.getEdgeWeight(iEdge.getSourceNode(),iEdge.getTargetNode());
+			WeightType tmpWeight = g.getEdgeWeight(iEdge.getSourceNode(),iEdge.getTargetNode());
 			g.setEdgeWeight( iEdge.getSourceNode(), iEdge.getTargetNode(), g.getEdgeWeight(jEdge.getSourceNode(),jEdge.getTargetNode()));
 			g.setEdgeWeight( jEdge.getSourceNode(), jEdge.getTargetNode(), tmpWeight );
 

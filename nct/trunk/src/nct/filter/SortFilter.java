@@ -43,7 +43,7 @@ public class SortFilter<NodeType extends Comparable<? super NodeType>, WeightTyp
 	if (solutions == null) {
 	    return null;
 	} else if (solutions.size() == 0) {
-	    return new ArrayList();
+	    return new ArrayList<Graph<NodeType,WeightType>>();
 	}
 	Collections.sort(solutions);
 	//System.out.println("unfiltered set size: " + solutions.size());

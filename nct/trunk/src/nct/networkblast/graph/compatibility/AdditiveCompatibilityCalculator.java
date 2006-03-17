@@ -41,7 +41,7 @@ public class AdditiveCompatibilityCalculator implements CompatibilityCalculator 
 	
 
 	protected double orthologyThreshold;
-	protected ScoreModel scoreModel;
+	protected ScoreModel<String,Double> scoreModel;
 	protected boolean allowZero; 
 
 	/**
@@ -51,7 +51,7 @@ public class AdditiveCompatibilityCalculator implements CompatibilityCalculator 
 	 * @param allowZero Whether or not edges of 0 distance (i.e. potential compat nodes
 	 * where a constituent node is the same for both potential compat nodes).
 	 */
-	public AdditiveCompatibilityCalculator( double orthologyThreshold, ScoreModel scoreModel, boolean allowZero ) {
+	public AdditiveCompatibilityCalculator( double orthologyThreshold, ScoreModel<String,Double> scoreModel, boolean allowZero ) {
 		this.orthologyThreshold = orthologyThreshold;
 		this.scoreModel = scoreModel;
 		this.allowZero = allowZero;
@@ -62,7 +62,7 @@ public class AdditiveCompatibilityCalculator implements CompatibilityCalculator 
 	 * a compatibility edge weight is sufficient for inclusion.
 	 * @param scoreModel The ScoreModel used to calculate edge weights.
 	 */
-	public AdditiveCompatibilityCalculator( double orthologyThreshold, ScoreModel scoreModel ) {
+	public AdditiveCompatibilityCalculator( double orthologyThreshold, ScoreModel<String,Double> scoreModel ) {
 		this(orthologyThreshold, scoreModel, false);
 	}
 

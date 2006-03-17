@@ -125,17 +125,17 @@ public class NetworkBlast {
 
 			// initialize the search classes
 			List<Graph<String,Double>> resultPaths;
-			SearchGraph colorCoding = new ColorCodingPathSearch(pathSize);
+			SearchGraph<String,Double> colorCoding = new ColorCodingPathSearch<String>(pathSize);
 
 			List<Graph<String,Double>> resultComplexes;
-			GreedyComplexSearch greedyComplexes = new GreedyComplexSearch( complexMinSeedSize, complexMaxSize);
+			GreedyComplexSearch<String> greedyComplexes = new GreedyComplexSearch<String>( complexMinSeedSize, complexMaxSize);
 			
 			// initialize filter
-			Filter dupeFilter = new DuplicateThresholdFilter(1.0);
+			Filter<String,Double> dupeFilter = new DuplicateThresholdFilter<String,Double>(1.0);
 
 			// initialize the randomization classes
-			GraphRandomizer homologyShuffle = new EdgeWeightShuffle<String,Double>(randomNG);
-			GraphRandomizer edgeShuffle = new ThresholdRandomizer(randomNG,0.2);
+			GraphRandomizer<String,Double> homologyShuffle = new EdgeWeightShuffle<String,Double>(randomNG);
+			GraphRandomizer<String,Double> edgeShuffle = new ThresholdRandomizer(randomNG,0.2);
 
 			if ( numSimulations > 0 )
 				System.out.println("# beginning " + numSimulations + " simulations");
@@ -178,7 +178,7 @@ public class NetworkBlast {
 						zname = zname + "_" + count;
 	
 					System.out.println("# writing results to file: " + zname + ".zip" );
-					ZIPSIFWriter zipper = new ZIPSIFWriter<String,Double>(zname);
+					ZIPSIFWriter<String,Double> zipper = new ZIPSIFWriter<String,Double>(zname);
 					int ct = 1;		
 					for ( Graph<String,Double> p : resultPaths )
 						zipper.add(p, "path_" + ct++);

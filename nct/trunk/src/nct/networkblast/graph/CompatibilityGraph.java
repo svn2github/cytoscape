@@ -48,7 +48,7 @@ public class CompatibilityGraph extends BasicGraph<String,Double> {
 	protected Map<String,Map<String,String>> edgeDescMap; 
 	protected List<? extends DistanceGraph<String,Double>> interactionGraphs;
 	protected KPartiteGraph<String,Double,? extends DistanceGraph<String,Double>> homologyGraph;
-	protected ScoreModel scoreModel;
+	protected ScoreModel<String,Double> scoreModel;
 	protected CompatibilityCalculator compatCalc;
 
 	private static Logger log = Logger.getLogger("networkblast");
@@ -64,7 +64,7 @@ public class CompatibilityGraph extends BasicGraph<String,Double> {
 	 */
 	public CompatibilityGraph(KPartiteGraph<String,Double,? extends DistanceGraph<String,Double>> homologyGraph, 
 				  List<? extends DistanceGraph<String,Double>> interactionGraphs, 
-				  ScoreModel scoreModel,
+				  ScoreModel<String,Double> scoreModel,
 				  CompatibilityCalculator compatCalc) {
 		super();
 

@@ -118,7 +118,10 @@ public class BasicEdge<NodeType extends Comparable<? super NodeType>,
 	 * @return True if nodes, description, and weigt are all equal.
 	 */
 	public boolean equals(Object o) {
-		Edge<NodeType,WeightType> e = (Edge<NodeType,WeightType>)o; 
+		if (this == o) return true;
+		if (o == null) return false; 
+		if (this.getClass() != o.getClass()) return false; 
+		Edge<?,?> e = (Edge<?,?>)o; 
 		if ( sourceNode.equals( e.getSourceNode() ) && 
 		     targetNode.equals( e.getTargetNode() ) &&
 		     description.equals( e.getDescription() ) &&

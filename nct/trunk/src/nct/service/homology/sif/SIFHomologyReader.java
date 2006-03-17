@@ -59,7 +59,7 @@ public class SIFHomologyReader implements HomologyModel {
 	 * @param sg2 The second graph containing nodes expected to be found in the SIF file. 
 	 * @return A map of expectation values between nodes. 
 	 */
-	public Map<String,Map<String,Double>> expectationValues( SequenceGraph sg1, SequenceGraph sg2 ) {
+	public Map<String,Map<String,Double>> expectationValues( SequenceGraph<String,Double> sg1, SequenceGraph<String,Double> sg2 ) {
 		Map<String,Map<String,Double>> homologyMap = new HashMap<String,Map<String,Double>>(); 
 
 		List<String[]> lines = SIFParser.parse(sifFile);

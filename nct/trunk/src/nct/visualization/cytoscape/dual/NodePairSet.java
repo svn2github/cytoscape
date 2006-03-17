@@ -26,16 +26,15 @@
 package nct.visualization.cytoscape.dual;
 
 
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
 import giny.model.Node;
 /**
  * This class keeps track of a set of unordered pairs of nodes
  */
 public class NodePairSet{
-	private HashMap node2NodeSet;
+	private Map<Node,Set<Node>> node2NodeSet;
 	public NodePairSet(){
-		node2NodeSet = new HashMap();
+		node2NodeSet = new HashMap<Node,Set<Node>>();
 	}
 
 	public void add(Node one,Node two){
@@ -44,9 +43,9 @@ public class NodePairSet{
 			one = two;
 			two = temp;
 		}
-		HashSet nodeSet = (HashSet)node2NodeSet.get(one);
+		Set<Node> nodeSet = node2NodeSet.get(one);
 		if(nodeSet == null){
-			nodeSet = new HashSet();
+			nodeSet = new HashSet<Node>();
 			node2NodeSet.put(one,nodeSet);
 		}
 
@@ -59,7 +58,7 @@ public class NodePairSet{
 			one = two;
 			two = temp;
 		}
-		HashSet nodeSet = (HashSet)node2NodeSet.get(one);
+		Set<Node> nodeSet = node2NodeSet.get(one);
 		if(nodeSet == null){
 			return false;
 		}
@@ -67,7 +66,7 @@ public class NodePairSet{
 			return nodeSet.contains(two);
 		}
 	}
-	public HashMap getOuterMap(){
+	public Map getOuterMap(){
 		return node2NodeSet;
 	}
 

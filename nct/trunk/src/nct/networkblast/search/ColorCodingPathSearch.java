@@ -106,7 +106,7 @@ public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>
 	/**
 	 * The ScoreModel used for calculating distances.
 	 */
-	private ScoreModel scoreObj;
+	private ScoreModel<NodeType,Double> scoreObj;
 
 	/**
 	 * The maximum number of solutions we will return.
@@ -174,7 +174,7 @@ public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>
 	 * @return a List of Graph objects that represent the found paths, or null 
 	 * if the given arguments are invalid.
 	 */
-	public List<Graph<NodeType,Double>> searchGraph(Graph<NodeType,Double> graph, ScoreModel scoreObj) {
+	public List<Graph<NodeType,Double>> searchGraph(Graph<NodeType,Double> graph, ScoreModel<NodeType,Double> scoreObj) {
 		Long beginTime = System.currentTimeMillis();
 
 		this.graph = graph;

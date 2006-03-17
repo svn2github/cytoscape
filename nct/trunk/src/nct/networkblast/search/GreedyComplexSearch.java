@@ -96,7 +96,8 @@ public class GreedyComplexSearch<NodeType extends Comparable<? super NodeType>> 
 	 * @param scoreObj The score algorithm to use.
 	 * @return The list of complexes found. 
 	 */
-	public List<Graph<NodeType,Double>> searchGraph(Graph<NodeType,Double>  graph, ScoreModel scoreObj) {
+	@SuppressWarnings("unchecked") // for a call to Graph<N,W>.clone() below...
+	public List<Graph<NodeType,Double>> searchGraph(Graph<NodeType,Double>  graph, ScoreModel<NodeType,Double> scoreObj) {
 
 		if (graph == null || scoreObj == null) {
 			return null;
@@ -366,7 +367,7 @@ public class GreedyComplexSearch<NodeType extends Comparable<? super NodeType>> 
 	/**
 	 * Creates secondary seeds and adds them to the seed queue.
 	 */
-	private void addSeeds(Graph<NodeType,Double> graph, List<Graph<NodeType,Double>> queue, ScoreModel scoreObj) {
+	private void addSeeds(Graph<NodeType,Double> graph, List<Graph<NodeType,Double>> queue, ScoreModel<NodeType,Double> scoreObj) {
 
 		// minSeedSize-1 because seed is already in the set
 		Vector<NodeType> seedSet= new Vector<NodeType>();  

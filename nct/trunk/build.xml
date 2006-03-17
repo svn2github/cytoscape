@@ -179,7 +179,11 @@
            debug="${debug}"
            deprecation="${deprecation}" 
            optimize="${optimize}"
-           fork="${fork}"/>
+           fork="${fork}">
+<!--
+-->
+       <compilerarg line="-Xlint:unchecked"/>
+     </javac>
      <echo message="Successfully ran compile task!"/>
   </target>
 

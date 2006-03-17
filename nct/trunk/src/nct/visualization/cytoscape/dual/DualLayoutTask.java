@@ -61,7 +61,7 @@ public class DualLayoutTask extends Thread{
 	private double GAP = 200;
 	private double OFFSET = 500;
 	private CyNetwork sifNetwork;
-	HashMap node2Species;
+	HashMap<CyNode,Integer> node2Species;
 	NodePairSet homologyPairSet;
 	int k;
 	private String title;
@@ -91,7 +91,7 @@ public class DualLayoutTask extends Thread{
 			Iterator nodeViewIt = view.getNodeViewsIterator();
 			while ( nodeViewIt.hasNext()) {
 				NodeView nodeView = (NodeView)nodeViewIt.next();
-				int species = ((Integer)node2Species.get(nodeView.getNode())).intValue();
+				int species = node2Species.get(nodeView.getNode()).intValue();
 				min_x[species] = Math.min(min_x[species],nodeView.getXPosition());
 				max_x[species] = Math.max(max_x[species],nodeView.getXPosition());
 			} 
@@ -109,7 +109,7 @@ public class DualLayoutTask extends Thread{
 			Iterator nodeViewIt = view.getNodeViewsIterator();
 			while (nodeViewIt.hasNext()) {
 				NodeView nodeView = (NodeView)nodeViewIt.next();
-				int species = ((Integer)node2Species.get(nodeView.getNode())).intValue();
+				int species = node2Species.get(nodeView.getNode()).intValue();
 				nodeView.setXPosition(nodeView.getXPosition()+offset[species]);
 			} 
 		}
@@ -151,16 +151,16 @@ public class DualLayoutTask extends Thread{
 			} 
 		} 
 		
-		Vector name2Node_Vector = new Vector();
+		Vector<HashMap<String,CyNode>> name2Node_Vector = new Vector<HashMap<String,CyNode>>();
 		for (int	idx= 0;	idx<k ; idx++) {
-			name2Node_Vector.add(new HashMap());
+			name2Node_Vector.add(new HashMap<String,CyNode>());
 		} 
 	 
 		Iterator compatNodeIt = sifNetwork.nodesIterator();
 		homologyPairSet = new NodePairSet();
 		//this maps from a node to the species that node belongs
 		//to
-		node2Species = new HashMap();
+		node2Species = new HashMap<CyNode,Integer>();
 		while(compatNodeIt.hasNext()) {
 			CyNode current = (CyNode)compatNodeIt.next();
 			String name = nodeAttrs.getStringAttribute(current.getIdentifier(),"name");
@@ -171,10 +171,10 @@ public class DualLayoutTask extends Thread{
 			} 
 			//System.out.println("split string " + names[0] + " " + names[1]);
 			
-			Vector nodes = new Vector(k);
+			Vector<CyNode> nodes = new Vector<CyNode>(k);
 			for (int idx = 0; idx < k ; idx++) {
-				HashMap name2Node = (HashMap)name2Node_Vector.get(idx);
-				CyNode idxNode = (CyNode)name2Node.get(names[idx]);
+				HashMap<String,CyNode> name2Node = name2Node_Vector.get(idx);
+				CyNode idxNode = name2Node.get(names[idx]);
 				if (idxNode == null) {
 					idxNode = splitNetwork.addNode(Cytoscape.getCyNode(names[idx],true));
 					if (idxNode == null) {
@@ -191,7 +191,7 @@ public class DualLayoutTask extends Thread{
 			
 			for (int idx = 0;idx<k ;idx++) {
 				for (int idy = idx+1;idy<k;idy++) {
-					homologyPairSet.add((CyNode)nodes.get(idx),(CyNode)nodes.get(idy));
+					homologyPairSet.add(nodes.get(idx),nodes.get(idy));
 				} 
 			} 
 		}
@@ -216,7 +216,7 @@ public class DualLayoutTask extends Thread{
 			String compatInteraction = edgeAttrs.getStringAttribute(current.getIdentifier(),"name");
 			//System.out.println("got edge desc '" + compatInteraction + "'");
 			//this is a vector of interaction types which stores the equivalent interaction for each of the species
-			Vector interactionTypes = new Vector(k);
+			Vector<String> interactionTypes = new Vector<String>(k);
 			if(compatInteraction.length() == k) {
 				//System.out.println("parsing edge desc");
 				

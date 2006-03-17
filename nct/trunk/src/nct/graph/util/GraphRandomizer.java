@@ -26,8 +26,18 @@ package nct.graph.util;
 import nct.graph.Graph;
 import java.util.Random;
 
-public interface GraphRandomizer<N extends Comparable<? super N>,W extends Comparable<? super W>> {
+/**
+ * A randomization interface.  An implementing class should, in some way, 
+ * randomize the input graph. How the randomization occurs and inputs
+ * needed for the randomization should be provided in the constructor of
+ * the implementing class.
+ */
+public interface GraphRandomizer<NodeType extends Comparable<? super NodeType>,WeightType extends Comparable<? super WeightType>> {
 
-	public void randomize(Graph<N,W> g); 
+	/**
+	 * The method used to randomize the graph.
+	 * @param g The graph to be randomized.
+	 */
+	public void randomize(Graph<NodeType,WeightType> g); 
 
 }

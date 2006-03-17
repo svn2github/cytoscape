@@ -59,7 +59,7 @@ public class InteractionGraph extends BasicDistanceGraph<String,Double>
 		int nonEdge = 0;
 		int dupeEdge = 0;
 		double totalProb = 0;
-		InteractionNetwork in = new SIFInteractionNetwork( fileName );
+		InteractionNetwork<String,Double> in = new SIFInteractionNetwork( fileName );
 		in.updateGraph( this );
 
 		assert( weightMap.size() > 0 ) : "No edges added to graph!";

@@ -62,9 +62,9 @@ public class DuplicateThresholdFilter<NodeType extends Comparable<? super NodeTy
 	List<Graph<NodeType,WeightType>> newSolns = new Vector<Graph<NodeType,WeightType>>();
 	boolean skip = false;
 	for ( Graph<NodeType,WeightType> seed: solutions ) {
-	    HashSet nodesFromSeed = new HashSet(seed.getNodes());
+	    HashSet<NodeType> nodesFromSeed = new HashSet<NodeType>(seed.getNodes());
 	    for (Graph<NodeType,WeightType> branch: newSolns) {
-		HashSet nodesFromBranch = new HashSet(branch.getNodes());
+		HashSet<NodeType> nodesFromBranch = new HashSet<NodeType>(branch.getNodes());
 		int originalSize = nodesFromBranch.size();
 		nodesFromBranch.retainAll(nodesFromSeed);
 		// Omit solutions with percent identity greater than or equal to

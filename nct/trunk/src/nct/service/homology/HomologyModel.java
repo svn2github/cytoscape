@@ -43,7 +43,7 @@ public interface HomologyModel {
 	 * and the value of that relationship, in this case the expectation
 	 * value.
 	 */
-	public Map<String,Map<String,Double>> expectationValues(SequenceGraph sg1, SequenceGraph sg2);
+	public Map<String,Map<String,Double>> expectationValues(SequenceGraph<String,Double> sg1, SequenceGraph<String,Double> sg2);
 }
 
 
