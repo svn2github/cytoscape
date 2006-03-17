@@ -73,10 +73,18 @@ public interface DataSource {
   public String getVersion ();
 
   /**
-   * @return boolean whether or not this data source requires a password from the user
+   * @return Boolean whether or not this data source requires a password from the user
    * in order to access it
    */
-  public boolean requiresPassword ();
+  public Boolean requiresPassword ();
+  
+  /**
+   * Returns Boolean.TRUE if the user name and the password are correct, Boolean.FALSE otherwise
+   * @param user_name the user name
+   * @param password the password
+   * @return Boolean.TRUE if successfully authenticated, Boolean.FALSE otherwise
+   */
+  public Boolean authenticate (String user_name, String password);
 
   /**
    * Runs tests on the data source

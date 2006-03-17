@@ -9,11 +9,16 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import javax.swing.*;
 
+import org.apache.xmlrpc.XmlRpcException;
 import org.isb.bionet.CyNetUtils;
 import org.isb.bionet.datasource.interactions.*;
 import org.isb.bionet.datasource.synonyms.*;
 import org.isb.bionet.gui.*;
 
+import utils.MyUtils;
+import utils.UserPasswordDialog;
+
+import java.sql.SQLException;
 import java.util.*;
 
 import cytoscape.*;
@@ -92,6 +97,11 @@ public class EdgeSourcesPanel extends JPanel {
     protected Vector taxids;
     
     /**
+     * A table from source name to boolean, only sources that require a password are in this table
+     */
+    protected Hashtable authenticatedEdgeSources;
+    
+    /**
      * 
      * @param interactions_client
      * @param tax_ids a vector with NCBI taxids as Strings of species for which to
@@ -114,6 +124,7 @@ public class EdgeSourcesPanel extends JPanel {
         this.buttonToCheckBox = new Hashtable();
         this.sourceToCheckBox = new Hashtable();
         this.nodes = nodeIds;
+        this.authenticatedEdgeSources = new Hashtable();
         create();
     }
     
@@ -169,6 +180,20 @@ public class EdgeSourcesPanel extends JPanel {
         if(cb != null) return cb.isSelected();
         return false;
     }
+    
+    /**
+     * @return true if the given source requires a password and has been authenticated, 
+     * or if the source does not require a password
+     *
+     */
+    public boolean isSourceAuthenticated (String source_class){
+        //System.out.println("authenticatedEdgeSources.contains(" + source_class + ") = " + this.authenticatedEdgeSources.contains(source_class));
+        if(this.authenticatedEdgeSources.containsKey(source_class)){
+            //System.out.println("his.authenticatedEdgeSources.get(source_class) =" + this.authenticatedEdgeSources.get(source_class));
+            return( (Boolean)this.authenticatedEdgeSources.get(source_class) ).booleanValue();
+        }
+        return true;
+    }
 
     /**
      * @param buttonName
@@ -222,7 +247,8 @@ public class EdgeSourcesPanel extends JPanel {
             String sourceClass = (String)this.buttonToSourceClass.get(b);
             if(sourceClass != null){
                 JTextField tf = (JTextField)this.buttonToTextField.get(b);
-                if(isSourceSelected(sourceClass)){
+                //System.out.println("isSourceAuthenticated(" + sourceClass + ") = " + isSourceAuthenticated(sourceClass));
+                if(isSourceSelected(sourceClass) && isSourceAuthenticated(sourceClass)){
                     sourceClassToField.put(sourceClass,tf);
                     numSelectedSources++;
                 }else{
@@ -399,7 +425,36 @@ public class EdgeSourcesPanel extends JPanel {
             
             final JButton button = new JButton(buttonName + "...");
             
-            if(buttonName.equals(DipInteractionsSource.NAME)){
+            //TODO: An automated way of finding which class is the GUI for a source and creating it
+            
+            if(buttonName.equals(HPRDInteractionsSource.NAME)){
+                final HPRDGui hDialog = new HPRDGui();
+                this.sourceToDialog.put(sourceClass,hDialog);
+                button.addActionListener(
+                        new AbstractAction() {
+                           public void actionPerformed(ActionEvent event) {
+                               HPRDGui hDialog = (HPRDGui) sourceToDialog
+                                       .get(sourceClass);
+                               hDialog.pack();
+                               hDialog.setLocationRelativeTo(EdgeSourcesPanel.this);
+                               hDialog.setVisible(true);
+                           }// actionPerformed
+                       });// AbstractAction
+                boolean requiresPassword = false;
+                try{
+                    //System.out.println("Calling callSourceMethod ( "+sourceClass +", requiresPassword, new Vector()...");
+                    Boolean rp = (Boolean)this.interactionsClient.callSourceMethod(sourceClass,"requiresPassword",new Vector());
+                    //System.out.println("got " + rp);
+                    requiresPassword = rp.booleanValue();
+                }catch(Exception e){
+                    e.printStackTrace();
+                    requiresPassword = true;
+                }
+               if(requiresPassword){
+                   this.authenticatedEdgeSources.put(sourceClass,Boolean.FALSE);
+                   //System.out.println("---------------authenticatedEdgeSources.get("+sourceClass+") = " + this.authenticatedEdgeSources.get(sourceClass));
+               }
+            }else if(buttonName.equals(DipInteractionsSource.NAME)){
                 final DipGui dDialog = new DipGui();
                 this.sourceToDialog.put(sourceClass,dDialog);
                 button.addActionListener(
@@ -518,7 +573,7 @@ public class EdgeSourcesPanel extends JPanel {
         while (it.hasNext()) {
             
             final JButton button = (JButton) it.next();
-            String sourceClass = (String)this.buttonToSourceClass.get(button);
+            final String sourceClass = (String)this.buttonToSourceClass.get(button);
             
             c.gridwidth = 1; // reset to the default
             JCheckBox cb = new JCheckBox();
@@ -530,11 +585,40 @@ public class EdgeSourcesPanel extends JPanel {
             gridLayoutPanel.add(button);
 
             cb.setSelected(button.isEnabled());
-
+            
+            // check box action performed
             cb.addActionListener(new AbstractAction() {
                 public void actionPerformed(ActionEvent event) {
                     JCheckBox source = (JCheckBox) event.getSource();
-                    button.setEnabled(source.isSelected());
+                    if(source.isSelected()){
+                       // see if the selected source has been authenticated
+                        if(!isSourceAuthenticated(sourceClass)){
+                            // call a method that asks for a password and sends it to the server
+                            boolean ok = false;
+                            UserPasswordDialog passDialog = new UserPasswordDialog("Enter password for data source");
+                            passDialog.setLocationRelativeTo(EdgeSourcesPanel.this);
+                            passDialog.setVisible(true);
+                            try{
+                                Vector args = new Vector();
+                                args.add(passDialog.getUserName());
+                                String password = new String(passDialog.getPassword());
+                                args.add(password);
+                                Boolean OK = (Boolean)interactionsClient.callSourceMethod(sourceClass,"authenticate",args);
+                                ok = OK.booleanValue();
+                            }catch(Exception e){e.printStackTrace();}
+                            System.out.println("SourceClass " + sourceClass + " authenticated: " + ok);
+                            if(!ok){
+                                JOptionPane.showMessageDialog(EdgeSourcesPanel.this,"Unauthorised user and password.","Not authorised.",JOptionPane.ERROR_MESSAGE);
+                                button.setEnabled(false);
+                            }else{
+                                authenticatedEdgeSources.put(sourceClass,Boolean.TRUE);
+                                button.setEnabled(true);
+                            }
+                          }else{
+                            button.setEnabled(source.isSelected());  
+                        }
+                    }
+                    
                 }
             });
 

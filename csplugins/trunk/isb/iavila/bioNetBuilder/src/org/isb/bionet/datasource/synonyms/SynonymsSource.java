@@ -35,6 +35,7 @@ public interface SynonymsSource extends DataSource {
     public static final String TAXID = "TAXID";
     public static final String PIR_ID = "PIR";
     public static final String PDB_ID = "PDB";
+    public static final String UNIGENE_ID = "Unigene";
     public static final String SPECIES_NAME = "SpeciesName";
     
     /**

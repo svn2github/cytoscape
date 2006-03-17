@@ -109,17 +109,19 @@ public class SQLDBHandler implements DBHandler {
         shutdown();
 
         try {
+            
             // Make a connection to the db
             System.out.println("Connecting to mySQL db with url = " + this.url
                     + "...");
             this.connection = DriverManager.getConnection(this.url);
             // Make sure the connection is OK
-            if (!this.connection.isClosed()) {
+            if (getStatus().equals(DBHandler.OPEN)) {
                 System.out.println("Successfully connected to mySQL database "
                         + this.url);
                 return true;
             }
             return false;
+            
         } catch (SQLException e) {
             System.out.println("\n-------- SQLException caught -----------\n");
             while(e != null){

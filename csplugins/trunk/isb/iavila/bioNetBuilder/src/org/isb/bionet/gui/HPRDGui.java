@@ -6,22 +6,22 @@ import java.awt.event.*;
 
 
 /**
- * A modal dialog that displays DIP parameters
+ * A modal dialog that displays HPRD parameters
  * 
  * @author <a href="mailto:iavila@systemsbiology.org">Iliana Avila-Campillo</a>
  */
-public class DipGui extends JDialog implements InteractionsSourceGui{
+public class HPRDGui extends JDialog implements InteractionsSourceGui{
     
     /**
      * The title of this JFrame
      */
-    public static final String TITLE = "DIP Settings";
+    public static final String TITLE = "HPRD Settings";
     
     /**
      * 
      *
      */
-    public DipGui (){
+    public HPRDGui (){
         create();
     }
     
@@ -39,7 +39,7 @@ public class DipGui extends JDialog implements InteractionsSourceGui{
         ok.addActionListener(
                 new AbstractAction (){
                     public void actionPerformed (ActionEvent e){
-                        DipGui.this.dispose();
+                        HPRDGui.this.dispose();
                     }
                 }
         );

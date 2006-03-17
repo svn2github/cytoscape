@@ -1149,11 +1149,19 @@ public class SQLSynonymsHandler extends SQLDBHandler implements SynonymsSource {
     }
 
     /**
-     * @return false
+     * @return Boolean.FAlSE
      */
-    public boolean requiresPassword (){
-        return false;
+    public Boolean requiresPassword (){
+        return Boolean.FALSE;
     }
+    
+    /**
+     * @return Boolean.TRUE always, since this data source does not require a password
+     */
+    public Boolean authenticate (String userName, String password){
+        return Boolean.TRUE;
+    }
+
 
     /**
      * Runs tests on the data source

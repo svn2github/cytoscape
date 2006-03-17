@@ -79,8 +79,7 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	 */
 	public ProlinksInteractionsSource() {
         super(SQLDBHandler.MYSQL_JDBC_DRIVER);
-        makeConnection(MyWebServer.PROPERTIES.containsKey(JDBC_URL_PROPERTY_KEY) ? 
-                MyWebServer.PROPERTIES.getProperty(JDBC_URL_PROPERTY_KEY) : "jdbc:mysql:///bionetbuilder_info?user=cytouser&password=bioNetBuilder");
+        makeConnection(MyWebServer.PROPERTIES.getProperty(JDBC_URL_PROPERTY_KEY));
         initialize();
 	}
     
@@ -286,9 +285,17 @@ public class ProlinksInteractionsSource extends SQLDBHandler implements
 	 * @return boolean whether or not this data source requires a password from
 	 *         the user in order to access it
 	 */
-	public boolean requiresPassword() {
-		return false;
+	public Boolean requiresPassword() {
+		return Boolean.FALSE;
 	}
+    
+     /**
+     * @return Boolean.TRUE always, since this data source does not require a password
+     */
+    public Boolean authenticate (String userName, String password){
+        return Boolean.TRUE;
+    }
+
 
 	// Methods implementing InteractionsDataSource interface:
     

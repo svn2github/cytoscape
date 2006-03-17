@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jnlp
-   codebase="file:///Users/iavila/Documents/workspace/cytoscape/build/webstart"
+   codebase= "http://db.systemsbiology.net/cytoscape/bioNetBuilder/webstart"
    href="cy1.jnlp">
   <information>
-    <title>Cytoscape WebStart</title>
+    <title>BioNetBuilder WebStart</title>
     <vendor>Cytoscape Collaboration</vendor>
     <homepage href="index.html"/>
     <offline-allowed/>
@@ -12,7 +12,7 @@
       <all-permissions/>
   </security>
   <resources>
-    <j2se version="1.4+" max-heap-size="1024M"/>
+  <j2se version="1.4+" max-heap-size="1024M"/>
 <jar href="cytoscape.jar"/>
 <jar href="lib/fing.jar"/>
 <jar href="lib/coltginy.jar"/>
@@ -49,40 +49,50 @@
 <jar href="lib/piccolox.jar"/>
 <jar href="lib/tclib.jar"/>
 <jar href="lib/violinstrings-1.0.2.jar"/>
-<jar href="lib/xerces.jar"/>
-<jar href="lib/xml-apis.jar"/>
-
+<jar href="lib/xercesImpl.jar"/>
+<jar href="lib/xmlParserAPIs.jar"/>
+<jar href="lib/dom.jar"/>
+ <jar href="lib/jaxb-api.jar"/>
+ <jar href="lib/jaxb-impl.jar"/>
+ <jar href="lib/jaxb-libs.jar"/>
+ <jar href="lib/jaxb-xjc.jar"/>
+ <jar href="lib/jax-qname.jar"/>
+ <jar href="lib/namespace.jar"/>
+ <jar href="lib/relaxngDatatype.jar"/>
+ <jar href="lib/sax.jar"/>
+ <jar href="lib/swingunit.jar"/>
+ <jar href="lib/wizard.jar"/>
+ <jar href="lib/xalan.jar"/>
+ <jar href="lib/xercesImpl-jwsdp.jar"/>
+ <jar href="lib/xercesImpl-new.jar"/>
+ <jar href="lib/xml-apis.jar"/>
+ <jar href="lib/xsdlib.jar"/>
+ 
 <jar href="plugins/browser.jar"/>
-<jar href="plugins/control.jar"/>
 <jar href="plugins/cpath.jar"/>
 <jar href="plugins/CytoscapeEditor.jar"/>
 <jar href="plugins/data-aux.jar"/>
 <jar href="plugins/exesto.jar"/>
 <jar href="plugins/filter.jar"/>
-<jar href="plugins/HierarchicalLayout.jar"/>
 <jar href="plugins/yLayouts.jar"/>
 <jar href="plugins/bionetbuilder.jar"/>
 
   </resources>
   <application-desc main-class="cytoscape.CyMain">
-    <argument>-rp</argument>
+	<argument>-rp</argument>
 	<argument>browser.BrowserPlugin</argument>
-	<argument>-rp</argument>
-	<argument>control.ControlPlugin</argument>
-	<argument>-rp</argument>
+    <argument>-rp</argument>
 	<argument>csplugins.dataviewer.plugin.CPathPlugIn</argument>
 	<argument>-rp</argument>
 	<argument>cytoscape.editor.CytoscapeEditorPlugin</argument>
 	<argument>-rp</argument>
 	<argument>filter.cytoscape.CsFilter</argument>
 	<argument>-rp</argument>
-	<argument>csplugins.hierarchicallayout.HierarchicalLayoutPlugin</argument>
-	<argument>-rp</argument>
 	<argument>yfiles.YFilesLayoutPlugin</argument>
 	<argument>-rp</argument>
-    <argument>org.isb.bionet.BioNetPlugin</argument>
+	<argument>org.isb.bionet.BioNetPlugin</argument>
     <argument>--xml-rpc-props</argument>
-    <argument>file:///Users/iavila/Documents/workspace/cytoscape/build/webstart/xmlrpc.props</argument>
+    <argument>http://db.systemsbiology.net/cytoscape/bioNetBuilder/webstart/xmlrpc.props</argument>
   </application-desc>
 </jnlp>
 

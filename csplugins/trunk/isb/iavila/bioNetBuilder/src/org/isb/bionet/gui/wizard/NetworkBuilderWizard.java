@@ -558,7 +558,8 @@ public class NetworkBuilderWizard {
         int selected = 0;
         while(it.hasNext()){  
             String sourceClass = (String)it.next();
-            if(this.edgeSourcesPanel.isSourceSelected(sourceClass)) selected++;
+            if(this.edgeSourcesPanel.isSourceSelected(sourceClass) && 
+                    this.edgeSourcesPanel.isSourceAuthenticated(sourceClass)) selected++;
         }
         boolean firstNeighbors = this.edgeSourcesPanel.isFirstNeighborsSelected();
         Hashtable sourceToNodes = new Hashtable();
@@ -585,7 +586,7 @@ public class NetworkBuilderWizard {
         while(it.hasNext()){
             
             String sourceClass = (String)it.next();
-            if(!this.edgeSourcesPanel.isSourceSelected(sourceClass)) continue;
+            if(!this.edgeSourcesPanel.isSourceSelected(sourceClass) || !this.edgeSourcesPanel.isSourceAuthenticated(sourceClass)) continue;
             String sourceName = this.edgeSourcesPanel.getSourceName(sourceClass);
             
             InteractionsSourceGui gui = (InteractionsSourceGui)sourceToSettings.get(sourceClass);

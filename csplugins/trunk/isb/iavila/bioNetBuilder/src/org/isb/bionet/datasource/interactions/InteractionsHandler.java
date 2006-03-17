@@ -345,7 +345,7 @@ public class InteractionsHandler implements InteractionsDataSource {
 			for (int i = 0; i < args.size(); i++) {
 				argTypes[i] = args.get(i).getClass();
 			}// for i
-
+			
 			Method method = dataSource.getClass().getDeclaredMethod(
 					method_name, argTypes);
 			Object returnedObject = method.invoke(dataSource, args.toArray());
@@ -440,9 +440,16 @@ public class InteractionsHandler implements InteractionsDataSource {
 	/**
 	 * @return false always
 	 */
-	public boolean requiresPassword() {
-		return false;
+	public Boolean requiresPassword() {
+		return Boolean.FALSE;
 	}
+    
+    /**
+     * @return Boolean.TRUE always, since this data source does not require a password
+     */
+    public Boolean authenticate (String userName, String password){
+        return Boolean.TRUE;
+    }
 
 	/**
 	 * @return "" always

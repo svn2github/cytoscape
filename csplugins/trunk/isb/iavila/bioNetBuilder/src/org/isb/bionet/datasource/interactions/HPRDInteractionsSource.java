@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.Vector;
 
 import org.isb.bionet.datasource.synonyms.SynonymsSource;
+import org.isb.xmlrpc.handler.db.SQLDBHandler;
 
 public class HPRDInteractionsSource extends SimpleInteractionsSource implements InteractionsDataSource {
     
@@ -19,6 +20,31 @@ public class HPRDInteractionsSource extends SimpleInteractionsSource implements 
     public HPRDInteractionsSource() {
         super();
     }
+    
+    /**
+     * @return true
+     */
+    public Boolean requiresPassword (){return Boolean.TRUE;}
+    
+    /**
+     * @return Boolean.TRUE always, since this data source does not require a password
+     */
+    public Boolean authenticate (String userName, String password){
+        // Add code to authenticate!
+        int index = this.url.indexOf("?user");
+        String tempUrl = this.url.substring(0,index);
+        tempUrl += "?user="+userName+"&password="+password;
+        
+        SQLDBHandler tempHandler = new SQLDBHandler(SQLDBHandler.MYSQL_JDBC_DRIVER);
+        boolean connected = tempHandler.makeConnection(tempUrl);
+        if(connected){
+            tempHandler.shutdown();
+            return Boolean.TRUE;
+        }
+        
+        return Boolean.FALSE;
+    }
+
     
     /**
      * Overrides super.makeConnection(String url)
