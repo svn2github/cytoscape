@@ -435,6 +435,8 @@ public class DGraphView implements GraphView
 
   public void updateView()
   {
+    synchronized (m_lock) {
+      m_canvas.m_redrawGraph = true; }
     m_canvas.repaint();
   }
 
