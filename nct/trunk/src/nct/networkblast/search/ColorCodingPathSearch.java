@@ -27,6 +27,7 @@ package nct.networkblast.search;
 
 import java.util.*;
 import java.util.logging.Logger;
+import java.lang.reflect.Array;
 import nct.networkblast.score.*;
 import nct.networkblast.graph.*;
 import nct.graph.*;
@@ -38,7 +39,7 @@ import nct.graph.basic.*;
  * 2005, Efficient Algorithms for Detecting Signaling Pathways in Protein 
  * Interaction Networks, Lecture Notes in Computer Science, vol. 3500.
  */
-public class ColorCodingPathSearch implements SearchGraph<String,Double> {
+public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>> implements SearchGraph<NodeType,Double> {
 
 	/**
 	 * The default epsilon value.
@@ -67,12 +68,12 @@ public class ColorCodingPathSearch implements SearchGraph<String,Double> {
 	/**
 	 * A mapping of nodes to ints representing colors.
 	 */
-	private Map<String,Integer> nodeColorMap; 
+	private Map<NodeType,Integer> nodeColorMap; 
 
 	/**
 	 * A mapping of nodes to array indices (for W and path).
 	 */
-	private Map<String,Integer> nodeIndexMap; 
+	private Map<NodeType,Integer> nodeIndexMap; 
 
 	/**
 	 * A matrix that stores the best score for the given node
@@ -88,7 +89,8 @@ public class ColorCodingPathSearch implements SearchGraph<String,Double> {
 	 * dimension indices are the set of nodes and the second dimension 
 	 * indices are the possible color sets.
 	 */
-	private String[][] path;
+	//private NodeType[][] path;
+	private List<List<NodeType>> path;
 
 	/**
 	 * An int representation of the set of colors where each color is 
@@ -99,7 +101,7 @@ public class ColorCodingPathSearch implements SearchGraph<String,Double> {
 	/**
 	 * The current graph we're operating on.
 	 */
-	private Graph<String,Double> graph;
+	private Graph<NodeType,Double> graph;
 
 	/**
 	 * The ScoreModel used for calculating distances.
@@ -156,8 +158,8 @@ public class ColorCodingPathSearch implements SearchGraph<String,Double> {
 		eps = epsilon;
 		rand = new Random((long)pathSize); // arbitrarily seed the prng with the path size
 		colorSet = twoToTheN(pathSize) - 1; 
-		nodeColorMap = new HashMap<String,Integer>();
-		nodeIndexMap = new HashMap<String,Integer>(); 
+		nodeColorMap = new HashMap<NodeType,Integer>();
+		nodeIndexMap = new HashMap<NodeType,Integer>(); 
 		log.info("pathsize: " + size + " num solutions: " + numSols + " epsilon: " + epsilon);
 	}
 
@@ -172,13 +174,13 @@ public class ColorCodingPathSearch implements SearchGraph<String,Double> {
 	 * @return a List of Graph objects that represent the found paths, or null 
 	 * if the given arguments are invalid.
 	 */
-	public List<Graph<String,Double>> searchGraph(Graph<String,Double> graph, ScoreModel scoreObj) {
+	public List<Graph<NodeType,Double>> searchGraph(Graph<NodeType,Double> graph, ScoreModel scoreObj) {
 		Long beginTime = System.currentTimeMillis();
 
 		this.graph = graph;
 		this.scoreObj = scoreObj;
 
-		List<Graph<String,Double>> graphList = new ArrayList<Graph<String,Double>>();
+		List<Graph<NodeType,Double>> graphList = new ArrayList<Graph<NodeType,Double>>();
 
 		if (graph == null || scoreObj == null) 
 			return null;
@@ -204,27 +206,35 @@ public class ColorCodingPathSearch implements SearchGraph<String,Double> {
 		int[] orderedColorSetList = getOrderedColorSetList();
 
 		W = new double[numNodes][colorSet+1];
-		path = new String[numNodes][colorSet+1];
+		path = new ArrayList<List<NodeType>>();
+		for ( int i = 0; i < numNodes; i++ ) {
+			List<NodeType> templ = new ArrayList<NodeType>();
+			for ( int j = 0; j <= colorSet; j++ )
+				templ.add(null);
+			path.add( templ ); 
+		}
+
 		double currentMinScore = Double.MIN_VALUE;
 
 		if ( numSolutions == 0 )
 			numSolutions = numNodes;
 
-		SortedSet<Graph<String,Double>> resultSet = new TreeSet<Graph<String,Double>>();
+		SortedSet<Graph<NodeType,Double>> resultSet = new TreeSet<Graph<NodeType,Double>>();
 		initNodeIndices(graph);
 
-		Set<String> nodeSet = graph.getNodes();
+		Set<NodeType> nodeSet = graph.getNodes();
 
 		for ( int x = 0; x < numTrials; x++ ) {
 			log.config("trial " + x);
 			//System.out.println("trial " + x);
 
 			// re-initialize storage
-			for ( int i = 0; i < numNodes; i++ )	
+			for ( int i = 0; i < numNodes; i++ )	{
 				for ( int j = 0; j <= colorSet; j++ ) {
 					W[i][j] = Double.MIN_VALUE; 
-					path[i][j] = null; 
+					path.get(i).set(j,null); 
 				}
+			}
 
 			initNodeColors(graph);	
 
@@ -234,7 +244,7 @@ public class ColorCodingPathSearch implements SearchGraph<String,Double> {
 				if ( colorCombo == 0 )
 					continue;
 				
-				for (String node: nodeSet) { 
+				for (NodeType node: nodeSet) { 
 					int nodeColor = getNodeColor(node);
 					//System.out.println("node " + nodeColor);
 
@@ -247,7 +257,7 @@ public class ColorCodingPathSearch implements SearchGraph<String,Double> {
 
 					// now compare the node to all of its neighbors that are 
 					// within the color combination excluding the node color
-					for (String neighbor: graph.getNeighbors(node) ) {
+					for (NodeType neighbor: graph.getNeighbors(node) ) {
 						int neighborColor = getNodeColor(neighbor);
 						//System.out.println("neigh " + neighborColor);
 						
@@ -258,7 +268,7 @@ public class ColorCodingPathSearch implements SearchGraph<String,Double> {
 
 							if ( score > W[nodeInd][colorCombo] ) {
 								W[nodeInd][colorCombo] = score; 
-								path[nodeInd][colorCombo] = neighbor;
+								path.get(nodeInd).set(colorCombo,neighbor);
 							}	
 						}	
 					}						
@@ -266,15 +276,15 @@ public class ColorCodingPathSearch implements SearchGraph<String,Double> {
 			}	
 
 			// traceback through the W matrix to extract the actual path
-			for (String node: nodeSet) {
+			for (NodeType node: nodeSet) {
 				int color = colorSet;
 				int nodeInd = nodeIndex(node); 
 				if ( W[nodeInd][color] > currentMinScore ) { 
 					//System.out.println("trial " + x + " curr min: " + currentMinScore + "  w: " + W[nodeInd][color]);
-					Graph<String,Double> sg = new BasicGraph<String,Double>();
+					Graph<NodeType,Double> sg = new BasicGraph<NodeType,Double>();
 					sg.setScore( W[nodeInd][color] );
-					while ( path[nodeInd][color] != null ) {
-						String next = path[nodeInd][color];
+					while ( path.get(nodeInd).get(color) != null ) {
+						NodeType next = path.get(nodeInd).get(color);
 						sg.addNode(node);
 						sg.addNode(next);
 						sg.addEdge(node,next,graph.getEdgeWeight(node,next));
@@ -335,7 +345,7 @@ public class ColorCodingPathSearch implements SearchGraph<String,Double> {
 	/** 
 	 * Returns the color of a node. This assumes that initColors has been run.
 	 */
-	private int getNodeColor(String node) {
+	private int getNodeColor(NodeType node) {
 		return nodeColorMap.get(node).intValue();
 	}
 
@@ -343,7 +353,7 @@ public class ColorCodingPathSearch implements SearchGraph<String,Double> {
 	/**
 	 * Returns the index of the node used to access the dynamic programming storage matrices.
 	 */
-	private int nodeIndex(String node) {
+	private int nodeIndex(NodeType node) {
 		return nodeIndexMap.get(node).intValue();
 	}
 
@@ -382,9 +392,9 @@ public class ColorCodingPathSearch implements SearchGraph<String,Double> {
 	 * Initializes the colors for each node in the specified graph.
 	 * @param g The graph whose nodes need coloring.
 	 */
-	private void initNodeColors(Graph<String,Double> g) {
+	private void initNodeColors(Graph<NodeType,Double> g) {
 		nodeColorMap.clear();
-		for ( String node: g.getNodes() ) 
+		for ( NodeType node: g.getNodes() ) 
 			nodeColorMap.put(node,getRandomColor());
 	}
 
@@ -392,10 +402,10 @@ public class ColorCodingPathSearch implements SearchGraph<String,Double> {
 	 * Initializes the mapping of node names to index numbers. 
 	 * @param g The graph whose nodes need indices.
 	 */
-	private void initNodeIndices(Graph<String,Double> g) {
+	private void initNodeIndices(Graph<NodeType,Double> g) {
 		int nodeCount = 0;
 		nodeIndexMap.clear();
-		for ( String node: g.getNodes() ) 
+		for ( NodeType node: g.getNodes() ) 
 			nodeIndexMap.put(node,nodeCount++);
 	}
 }
