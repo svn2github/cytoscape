@@ -51,6 +51,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
+import java.net.URL;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
@@ -100,26 +101,27 @@ public abstract class CalculatorCatalogFactory {
 		String tryName = "";
 
 		try {
-			// load the vizmap.props from the jar file - should always exist
+			// load the vizmap.props from the jar file 
 			tryName = "cytoscape.jar";
-			vizmapProps.load(ClassLoader.getSystemClassLoader()
-					.getSystemResource("vizmap.props").openStream());
-
+			URL vmu = CalculatorCatalogFactory.class.getClassLoader().getSystemResource("vizmap.props");
+			if ( vmu != null )
+				vizmapProps.load(vmu.openStream());
+		
 			// load the .cytoscape vizmap.props
 			tryName = "$HOME/.cytoscape";
 			File vmp = CytoscapeInit.getConfigFile("vizmap.props");
 			if (vmp != null)
 				vizmapProps.load(new FileInputStream(vmp));
 
-			// load the command line vizmap.props
+			// load the specified (e.g. command line) vizmap.props
 			tryName = "command line";
-			File cliVmp = CytoscapeInit.cliVizMapPropsFile();
+			File cliVmp = CytoscapeInit.getSpecifiedVizProps();
 			if (cliVmp != null)
 				vizmapProps.load(new FileInputStream(cliVmp));
 
 		} catch (IOException ioe) {
 			System.err.println("couldn't open " + tryName
-					+ " vizmap.props file");
+					+ " vizmap.props file - creating a hardcoded default");
 			ioe.printStackTrace();
 		}
 
@@ -233,5 +235,4 @@ public abstract class CalculatorCatalogFactory {
 
 		return calculatorCatalog;
 	}
-
 }

@@ -548,6 +548,8 @@ public class CalculatorCatalog {
 	}
 
 	public VisualStyle getVisualStyle(String name) {
+		if ( name.equals("default") && !visualStyles.containsKey(name))
+			createDefaultVisualStyle();
 		return (VisualStyle) visualStyles.get(name);
 	}
 
@@ -999,5 +1001,20 @@ public class CalculatorCatalog {
 
 	public String checkEdgeFontSizeCalculatorName(String name) {
 		return checkName(name, edgeFontSizeCalculators);
+	}
+
+        public void createDefaultVisualStyle() {
+		System.out.println("Creating default visual style");
+		VisualStyle defaultVS = new VisualStyle("default");
+		// setup the default to at least put canonical names on the nodes
+		String cName = "Common Names";
+		NodeLabelCalculator nlc = getNodeLabelCalculator(cName);
+		if (nlc == null) {
+			PassThroughMapping m = new PassThroughMapping(new String(),
+									cytoscape.data.Semantics.COMMON_NAME);
+			nlc = new GenericNodeLabelCalculator(cName, m);
+		}
+		defaultVS.getNodeAppearanceCalculator().setNodeLabelCalculator(nlc);
+		addVisualStyle(defaultVS);
 	}
 }
