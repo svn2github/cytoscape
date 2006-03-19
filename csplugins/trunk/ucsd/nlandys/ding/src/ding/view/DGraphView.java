@@ -921,12 +921,16 @@ public class DGraphView implements GraphView
    *   rectangle will be placed onto this stack; the stack is not emptied by
    *   this method initially.
    */
-  public void getNodesIntersectingRectangle(float xMin, float yMin,
-                                            float xMax, float yMax,
+  public void getNodesIntersectingRectangle(double xMinimum, double yMinimum,
+                                            double xMaximum, double yMaximum,
                                             boolean treatNodeShapesAsRectangle,
                                             IntStack returnVal)
   {
     synchronized (m_lock) {
+      final float xMin = (float) xMinimum;
+      final float yMin = (float) yMinimum;
+      final float xMax = (float) xMaximum;
+      final float yMax = (float) yMaximum;
       final SpacialEntry2DEnumerator under = m_spacial.queryOverlap
         (xMin, yMin, xMax, yMax, null, 0, false);
       final int totalHits = under.numRemaining();
@@ -959,14 +963,18 @@ public class DGraphView implements GraphView
   /**
    * Extents of the nodes.
    */
-  public void getExtents(float[] extentsBuff)
+  public void getExtents(double[] extentsBuff)
   {
     synchronized (m_lock) {
       m_spacial.queryOverlap(Float.NEGATIVE_INFINITY,
                              Float.NEGATIVE_INFINITY,
                              Float.POSITIVE_INFINITY,
                              Float.POSITIVE_INFINITY,
-                             extentsBuff, 0, false); }
+                             m_extentsBuff, 0, false);
+      extentsBuff[0] = m_extentsBuff[0];
+      extentsBuff[1] = m_extentsBuff[1];
+      extentsBuff[2] = m_extentsBuff[2];
+      extentsBuff[3] = m_extentsBuff[3]; }
   }
 
   public void xformComponentToNodeCoords(double[] coords)
@@ -977,37 +985,19 @@ public class DGraphView implements GraphView
 
   private final IntHash m_hash = new IntHash();
 
-  /**
-   * Draws just the whole graph.
-   */
-  public void drawBirdsEyeView(Image img, GraphLOD lod,
-                               Paint bgPaint)
+  public void drawSnapshot(Image img, GraphLOD lod, Paint bgPaint,
+                           double xCenter, double yCenter, double scaleFactor)
   {
     synchronized (m_lock) {
-      if (getNodeViewCount() > 0) {
-        getExtents(m_extentsBuff);
-        final double xCenter =
-          (((double) m_extentsBuff[0]) + ((double) m_extentsBuff[2])) / 2.0d;
-        final double yCenter =
-          (((double) m_extentsBuff[1]) + ((double) m_extentsBuff[3])) / 2.0d;
-        final double scaleFactor = 0.9d * Math.min
-          (((double) img.getWidth(null)) /
-           (((double) m_extentsBuff[2]) - ((double) m_extentsBuff[0])),
-           ((double) img.getHeight(null)) /
-           (((double) m_extentsBuff[3]) - ((double) m_extentsBuff[1])));
-        GraphRenderer.renderGraph((FixedGraph) m_drawPersp,
-                                  m_spacial,
-                                  lod,
-                                  m_nodeDetails,
-                                  m_edgeDetails,
-                                  m_hash,
-                                  new GraphGraphics(img, false),
-                                  bgPaint,
-                                  xCenter, yCenter, scaleFactor); }
-      else {
-        Graphics2D g2 = (Graphics2D) img.getGraphics();
-        g2.setPaint(bgPaint);
-        g2.fillRect(0, 0, img.getWidth(null), img.getHeight(null)); } }
+      GraphRenderer.renderGraph((FixedGraph) m_drawPersp,
+                                m_spacial,
+                                lod,
+                                m_nodeDetails,
+                                m_edgeDetails,
+                                m_hash,
+                                new GraphGraphics(img, false),
+                                bgPaint,
+                                xCenter, yCenter, scaleFactor); }
   }
 
 }
