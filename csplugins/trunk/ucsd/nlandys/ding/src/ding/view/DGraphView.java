@@ -3,9 +3,13 @@ package ding.view;
 import cytoscape.geom.rtree.RTree;
 import cytoscape.geom.spacial.MutableSpacialIndex2D;
 import cytoscape.geom.spacial.SpacialEntry2DEnumerator;
+import cytoscape.graph.fixed.FixedGraph;
+import cytoscape.render.immed.GraphGraphics;
 import cytoscape.render.stateful.GraphLOD;
+import cytoscape.render.stateful.GraphRenderer;
 import cytoscape.util.intr.IntBTree;
 import cytoscape.util.intr.IntEnumerator;
+import cytoscape.util.intr.IntHash;
 import cytoscape.util.intr.IntStack;
 import giny.model.GraphPerspective;
 import giny.model.Edge;
@@ -18,6 +22,8 @@ import giny.view.GraphViewChangeListener;
 import giny.view.NodeView;
 import java.awt.Component;
 import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Paint;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
@@ -950,10 +956,58 @@ public class DGraphView implements GraphView
           else { returnVal.push(~node); } } } }
   }
 
+  /**
+   * Extents of the nodes.
+   */
+  public void getExtents(float[] extentsBuff)
+  {
+    synchronized (m_lock) {
+      m_spacial.queryOverlap(Float.NEGATIVE_INFINITY,
+                             Float.NEGATIVE_INFINITY,
+                             Float.POSITIVE_INFINITY,
+                             Float.POSITIVE_INFINITY,
+                             extentsBuff, 0, false); }
+  }
+
   public void xformComponentToNodeCoords(double[] coords)
   {
     synchronized (m_lock) {
       m_canvas.m_grafx.xformImageToNodeCoords(coords); }
+  }
+
+  private final IntHash m_hash = new IntHash();
+
+  /**
+   * Draws just the whole graph.
+   */
+  public void drawBirdsEyeView(Image img, GraphLOD lod,
+                               Paint bgPaint)
+  {
+    synchronized (m_lock) {
+      if (getNodeViewCount() > 0) {
+        getExtents(m_extentsBuff);
+        final double xCenter =
+          (((double) m_extentsBuff[0]) + ((double) m_extentsBuff[2])) / 2.0d;
+        final double yCenter =
+          (((double) m_extentsBuff[1]) + ((double) m_extentsBuff[3])) / 2.0d;
+        final double scaleFactor = 0.9d * Math.min
+          (((double) img.getWidth(null)) /
+           (((double) m_extentsBuff[2]) - ((double) m_extentsBuff[0])),
+           ((double) img.getHeight(null)) /
+           (((double) m_extentsBuff[3]) - ((double) m_extentsBuff[1])));
+        GraphRenderer.renderGraph((FixedGraph) m_drawPersp,
+                                  m_spacial,
+                                  lod,
+                                  m_nodeDetails,
+                                  m_edgeDetails,
+                                  m_hash,
+                                  new GraphGraphics(img, false),
+                                  bgPaint,
+                                  xCenter, yCenter, scaleFactor); }
+      else {
+        Graphics2D g2 = (Graphics2D) img.getGraphics();
+        g2.setPaint(bgPaint);
+        g2.fillRect(0, 0, img.getWidth(null), img.getHeight(null)); } }
   }
 
 }
