@@ -84,7 +84,8 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
   public void setStrokeWidth(float width)
   {
     synchronized (m_view.m_lock) {
-      m_view.m_edgeDetails.overrideSegmentThickness(m_inx, width); }
+      m_view.m_edgeDetails.overrideSegmentThickness(m_inx, width);
+      m_view.m_contentChanged = true; }
   }
 
   public float getStrokeWidth()
@@ -103,7 +104,8 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
         final float[] dashArr = bStroke.getDashArray();
         if (dashArr != null && dashArr.length > 0) {
           m_view.m_edgeDetails.overrideSegmentDashLength
-            (m_inx, dashArr[0]); } } }
+            (m_inx, dashArr[0]); }
+        m_view.m_contentChanged = true; } }
   }
 
   public Stroke getStroke()
@@ -128,7 +130,9 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
   {
     if (lineType == EdgeView.CURVED_LINES ||
         lineType == EdgeView.STRAIGHT_LINES) {
-      m_lineType = lineType; }
+      synchronized (m_view.m_lock) {
+        m_lineType = lineType;
+        m_view.m_contentChanged = true; } }
     else {
       throw new IllegalArgumentException("unrecognized line type"); }
   }
@@ -148,7 +152,8 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
         m_view.m_edgeDetails.overrideSegmentPaint(m_inx, m_unselectedPaint);
         if (m_unselectedPaint instanceof Color) {
           m_view.m_edgeDetails.overrideColorLowDetail
-            (m_inx, (Color) m_unselectedPaint); } } }
+            (m_inx, (Color) m_unselectedPaint); }
+        m_view.m_contentChanged = true; } }
   }
 
   public Paint getUnselectedPaint()
@@ -166,7 +171,8 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
         m_view.m_edgeDetails.overrideSegmentPaint(m_inx, m_selectedPaint);
         if (m_selectedPaint instanceof Color) {
           m_view.m_edgeDetails.overrideColorLowDetail
-            (m_inx, (Color) m_selectedPaint); } } }
+            (m_inx, (Color) m_selectedPaint); }
+        m_view.m_contentChanged = true; } }
   }
 
   public Paint getSelectedPaint()
@@ -202,7 +208,8 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
       m_sourceSelectedPaint = paint;
       if (isSelected()) {
         m_view.m_edgeDetails.overrideSourceArrowPaint
-          (m_inx, m_sourceSelectedPaint); } }
+          (m_inx, m_sourceSelectedPaint);
+        m_view.m_contentChanged = true; } }
   }
 
   public void setTargetEdgeEndSelectedPaint(Paint paint)
@@ -213,7 +220,8 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
       m_targetSelectedPaint = paint;
       if (isSelected()) {
         m_view.m_edgeDetails.overrideTargetArrowPaint
-          (m_inx, m_targetSelectedPaint); } }
+          (m_inx, m_targetSelectedPaint);
+        m_view.m_contentChanged = true; } }
   }
 
   public void setSourceEdgeEndStrokePaint(Paint paint)
@@ -234,7 +242,8 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
       m_sourceUnselectedPaint = paint;
       if (!isSelected()) {
         m_view.m_edgeDetails.overrideSourceArrowPaint
-          (m_inx, m_sourceUnselectedPaint); } }
+          (m_inx, m_sourceUnselectedPaint);
+        m_view.m_contentChanged = true; } }
   }
 
   public void setTargetEdgeEndPaint(Paint paint)
@@ -245,13 +254,16 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
       m_targetUnselectedPaint = paint;
       if (!isSelected()) {
         m_view.m_edgeDetails.overrideTargetArrowPaint
-          (m_inx, m_targetUnselectedPaint); } }
+          (m_inx, m_targetUnselectedPaint);
+        m_view.m_contentChanged = true; } }
   }
 
   public void select()
   {
     final boolean somethingChanged;
-    synchronized (m_view.m_lock) { somethingChanged = selectInternal(); }
+    synchronized (m_view.m_lock) {
+      somethingChanged = selectInternal();
+      if (somethingChanged) { m_view.m_contentChanged = true; } }
     if (somethingChanged) {
       final GraphViewChangeListener listener = m_view.m_lis[0];
       if (listener != null) {
@@ -280,7 +292,9 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
   public void unselect()
   {
     final boolean somethingChanged;
-    synchronized (m_view.m_lock) { somethingChanged = unselectInternal(); }
+    synchronized (m_view.m_lock) {
+      somethingChanged = unselectInternal();
+      if (somethingChanged) { m_view.m_contentChanged = true; } }
     if (somethingChanged) {
       final GraphViewChangeListener listener = m_view.m_lis[0];
       if (listener != null) {
@@ -409,7 +423,8 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
         break;
       default:
         throw new IllegalArgumentException("unrecognized edge end type"); }
-      m_sourceEdgeEnd = type; }
+      m_sourceEdgeEnd = type;
+      m_view.m_contentChanged = true; }
   }
 
   public void setTargetEdgeEnd(int type)
@@ -486,7 +501,8 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
         break;
       default:
         throw new IllegalArgumentException("unrecognized edge end type"); }
-      m_targetEdgeEnd = type; }
+      m_targetEdgeEnd = type;
+      m_view.m_contentChanged = true; }
   }
 
   public int getSourceEdgeEnd()
@@ -550,7 +566,8 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
   public void setTextPaint(Paint textPaint)
   {
     synchronized (m_view.m_lock) {
-      m_view.m_edgeDetails.overrideLabelPaint(m_inx, 0, textPaint); }
+      m_view.m_edgeDetails.overrideLabelPaint(m_inx, 0, textPaint);
+      m_view.m_contentChanged = true; }
   }
 
   public double getGreekThreshold()
@@ -576,7 +593,8 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
           (m_view.m_edgeDetails.labelText(m_inx, 0))) {
         m_view.m_edgeDetails.overrideLabelCount(m_inx, 0); }
       else {
-        m_view.m_edgeDetails.overrideLabelCount(m_inx, 1); } }
+        m_view.m_edgeDetails.overrideLabelCount(m_inx, 1); }
+      m_view.m_contentChanged = true; }
   }
 
   public Font getFont()
@@ -588,7 +606,8 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
   public void setFont(Font font)
   {
     synchronized (m_view.m_lock) {
-      m_view.m_edgeDetails.overrideLabelFont(m_inx, 0, font); }
+      m_view.m_edgeDetails.overrideLabelFont(m_inx, 0, font);
+      m_view.m_contentChanged = true; }
   }
 
 
@@ -600,7 +619,8 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
       removeAllHandles();
       for (int i = 0; i < bendPoints.size(); i++) {
         final Point2D nextPt = (Point2D) bendPoints.get(i);
-        addHandle(nextPt); } }
+        addHandle(nextPt); }
+      m_view.m_contentChanged = true; }
   }
 
   public List getHandles()
@@ -618,7 +638,8 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
   {
     synchronized (m_view.m_lock) {
       final Point2D movePt = (Point2D) m_anchors.get(inx);
-      movePt.setLocation(pt); }
+      movePt.setLocation(pt);
+      m_view.m_contentChanged = true; }
   }
 
   public Point2D getSourceHandlePoint()
@@ -644,7 +665,8 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
     synchronized (m_view.m_lock) {
       final Point2D addThis = new Point2D.Float();
       addThis.setLocation(pt);
-      m_anchors.add(addThis); }
+      m_anchors.add(addThis);
+      m_view.m_contentChanged = true; }
   }
 
   public void addHandle(int insertInx, Point2D pt)
@@ -652,7 +674,8 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
     synchronized (m_view.m_lock) {
       final Point2D addThis = new Point2D.Float();
       addThis.setLocation(pt);
-      m_anchors.add(insertInx, addThis); }
+      m_anchors.add(insertInx, addThis);
+      m_view.m_contentChanged = true; }
   }
 
   public void removeHandle(Point2D pt)
@@ -664,6 +687,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
         final Point2D.Float currPt = (Point2D.Float) m_anchors.get(i);
         if (x == currPt.x && y == currPt.y) {
           m_anchors.remove(i);
+          m_view.m_contentChanged = true;
           break; } } }
   }
 
@@ -674,7 +698,9 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
 
   public void removeAllHandles()
   {
-    synchronized (m_view.m_lock) { m_anchors.clear(); }
+    synchronized (m_view.m_lock) {
+      m_anchors.clear();
+      m_view.m_contentChanged = true; }
   }
 
   public boolean handleAlreadyExists(Point2D pt)

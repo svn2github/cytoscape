@@ -63,8 +63,12 @@ public class DGraphView implements GraphView
   boolean m_edgeSelection = true;
   final IntBTree m_selectedNodes; // Positive.
   final IntBTree m_selectedEdges; // Positive.
+  boolean m_contentChanged = false;
+  boolean m_viewportChanged = false;
 
   final GraphViewChangeListener[] m_lis = new GraphViewChangeListener[1];
+  final ContentChangeListener[] m_cLis = new ContentChangeListener[1];
+  final ViewportChangeListener[] m_vLis = new ViewportChangeListener[1];
 
   public DGraphView(GraphPerspective perspective)
   {
@@ -114,15 +118,20 @@ public class DGraphView implements GraphView
     synchronized (m_lock) {
       m_nodeSelection = false;
       unselectedNodes = getSelectedNodeIndices();
-      // Adding this line to speed things up from O(n*log(n)) to O(n).
-      m_selectedNodes.empty();
-      for (int i = 0; i < unselectedNodes.length; i++) {
-        ((DNodeView) getNodeView(unselectedNodes[i])).unselectInternal(); } }
-    updateView();
-    final GraphViewChangeListener listener = m_lis[0];
-    if (listener != null && unselectedNodes.length > 0) {
-      listener.graphViewChanged
-        (new GraphViewNodesUnselectedEvent(this, unselectedNodes)); }
+      if (unselectedNodes.length > 0) {
+        // Adding this line to speed things up from O(n*log(n)) to O(n).
+        m_selectedNodes.empty();
+        for (int i = 0; i < unselectedNodes.length; i++) {
+          ((DNodeView) getNodeView(unselectedNodes[i])).unselectInternal(); }
+        m_contentChanged = true; } }
+    if (unselectedNodes.length > 0) {
+      final GraphViewChangeListener listener = m_lis[0];
+      if (listener != null) {
+        listener.graphViewChanged
+          (new GraphViewNodesUnselectedEvent(this, unselectedNodes)); }
+      // Update the view after listener events are fired because listeners
+      // may change something in the graph.
+      updateView(); }
   }
 
   public void enableEdgeSelection()
@@ -137,15 +146,20 @@ public class DGraphView implements GraphView
     synchronized (m_lock) {
       m_edgeSelection = false;
       unselectedEdges = getSelectedEdgeIndices();
-      // Adding this line to speed things up from O(n*log(n)) to O(n).
-      m_selectedEdges.empty();
-      for (int i = 0; i < unselectedEdges.length; i++) {
-        ((DEdgeView) getEdgeView(unselectedEdges[i])).unselectInternal(); } }
-    updateView();
-    final GraphViewChangeListener listener = m_lis[0];
-    if (listener != null && unselectedEdges.length > 0) {
-      listener.graphViewChanged
-        (new GraphViewEdgesUnselectedEvent(this, unselectedEdges)); }
+      if (unselectedEdges.length > 0) {
+        // Adding this line to speed things up from O(n*log(n)) to O(n).
+        m_selectedEdges.empty();
+        for (int i = 0; i < unselectedEdges.length; i++) {
+          ((DEdgeView) getEdgeView(unselectedEdges[i])).unselectInternal(); }
+        m_contentChanged = true; } }
+    if (unselectedEdges.length > 0) {
+      final GraphViewChangeListener listener = m_lis[0];
+      if (listener != null) {
+        listener.graphViewChanged
+          (new GraphViewEdgesUnselectedEvent(this, unselectedEdges)); }
+      // Update the view after listener events are fired because listeners
+      // may change something in the graph.
+      updateView(); }
   }
 
   public int[] getSelectedNodeIndices()
@@ -205,7 +219,8 @@ public class DGraphView implements GraphView
   public void setBackgroundPaint(Paint paint)
   {
     synchronized (m_lock) {
-      m_canvas.m_bgPaint = paint; }
+      m_canvas.m_bgPaint = paint;
+      m_contentChanged = true; }
   }
 
   public Paint getBackgroundPaint()
@@ -224,7 +239,8 @@ public class DGraphView implements GraphView
     synchronized (m_lock) {
       newView = addNodeViewInternal(nodeInx);
       if (newView == null) {
-        return (NodeView) m_nodeViewMap.get(new Integer(nodeInx)); } }
+        return (NodeView) m_nodeViewMap.get(new Integer(nodeInx)); }
+      m_contentChanged = true; }
     final GraphViewChangeListener listener = m_lis[0];
     if (listener != null) {
       listener.graphViewChanged
@@ -279,7 +295,8 @@ public class DGraphView implements GraphView
           ("edge index specified does not exist in underlying RootGraph"); }
       m_structPersp.restoreEdge(edgeInx);
       edgeView = new DEdgeView(this, edgeInx);
-      m_edgeViewMap.put(new Integer(edgeInx), edgeView); }
+      m_edgeViewMap.put(new Integer(edgeInx), edgeView);
+      m_contentChanged = true; }
     // Under no circumstances should we be holding m_lock when the listener
     // events are fired.
     final GraphViewChangeListener listener = m_lis[0];
@@ -346,7 +363,8 @@ public class DGraphView implements GraphView
       // If this node was hidden, it won't be in m_spacial.
       m_spacial.delete(~nodeInx);
       m_selectedNodes.delete(~nodeInx);
-      returnThis.m_view = null; }
+      returnThis.m_view = null;
+      m_contentChanged = true; }
     final GraphViewChangeListener listener = m_lis[0];
     if (listener != null) {
       if (hiddenEdgeInx.length > 0) {
@@ -372,7 +390,8 @@ public class DGraphView implements GraphView
   {
     final DEdgeView returnThis;
     synchronized (m_lock) {
-      returnThis = removeEdgeViewInternal(edgeInx); }
+      returnThis = removeEdgeViewInternal(edgeInx);
+      if (returnThis != null) { m_contentChanged = true; } }
     if (returnThis != null) {
       final GraphViewChangeListener listener = m_lis[0];
       if (listener != null) {
@@ -415,7 +434,8 @@ public class DGraphView implements GraphView
   public void setZoom(double zoom)
   {
     synchronized (m_lock) {
-      m_canvas.m_scaleFactor = zoom; }
+      m_canvas.m_scaleFactor = zoom;
+      m_viewportChanged = true; }
     updateView();
   }
 
@@ -426,23 +446,24 @@ public class DGraphView implements GraphView
                                  Float.NEGATIVE_INFINITY,
                                  Float.POSITIVE_INFINITY,
                                  Float.POSITIVE_INFINITY,
-                                 m_extentsBuff, 0, false).numRemaining() > 0) {
-        m_canvas.m_xCenter =
-          (((double) m_extentsBuff[0]) + ((double) m_extentsBuff[2])) / 2.0d;
-        m_canvas.m_yCenter =
-          (((double) m_extentsBuff[1]) + ((double) m_extentsBuff[3])) / 2.0d;
-        m_canvas.m_scaleFactor = Math.min
-          (((double) m_canvas.getWidth()) /
-           (((double) m_extentsBuff[2]) - ((double) m_extentsBuff[0])),
-           ((double) m_canvas.getHeight()) /
-           (((double) m_extentsBuff[3]) - ((double) m_extentsBuff[1]))); } }
+                                 m_extentsBuff,
+                                 0, false).numRemaining() == 0) {
+        return; }
+      m_canvas.m_xCenter =
+        (((double) m_extentsBuff[0]) + ((double) m_extentsBuff[2])) / 2.0d;
+      m_canvas.m_yCenter =
+        (((double) m_extentsBuff[1]) + ((double) m_extentsBuff[3])) / 2.0d;
+      m_canvas.m_scaleFactor = Math.min
+        (((double) m_canvas.getWidth()) /
+         (((double) m_extentsBuff[2]) - ((double) m_extentsBuff[0])),
+         ((double) m_canvas.getHeight()) /
+         (((double) m_extentsBuff[3]) - ((double) m_extentsBuff[1])));
+      m_viewportChanged = true; }
     updateView();
   }
 
   public void updateView()
   {
-    synchronized (m_lock) {
-      m_canvas.m_redrawGraph = true; }
     m_canvas.repaint();
   }
 
@@ -598,7 +619,8 @@ public class DGraphView implements GraphView
       int edgeInx;
       synchronized (m_lock) {
         edgeInx = ((DEdgeView) obj).getRootGraphIndex();
-        if (m_drawPersp.hideEdge(edgeInx) == 0) { return false; } }
+        if (m_drawPersp.hideEdge(edgeInx) == 0) { return false; }
+        m_contentChanged = true; }
       if (fireListenerEvents) {
         final GraphViewChangeListener listener = m_lis[0];
         if (listener != null) {
@@ -623,7 +645,8 @@ public class DGraphView implements GraphView
         nView.m_hiddenXMax = m_extentsBuff[2];
         nView.m_hiddenYMax = m_extentsBuff[3];
         m_drawPersp.hideNode(nodeInx);
-        m_spacial.delete(~nodeInx); }
+        m_spacial.delete(~nodeInx);
+        m_contentChanged = true; }
       if (fireListenerEvents) {
         final GraphViewChangeListener listener = m_lis[0];
         if (listener != null) {
@@ -655,7 +678,8 @@ public class DGraphView implements GraphView
         if (m_structPersp.getNode(nodeInx) == null) { return false; }
         if (m_drawPersp.restoreNode(nodeInx) == 0) { return false; }
         m_spacial.insert(~nodeInx, nView.m_hiddenXMin, nView.m_hiddenYMin,
-                         nView.m_hiddenXMax, nView.m_hiddenYMax); }
+                         nView.m_hiddenXMax, nView.m_hiddenYMax);
+        m_contentChanged = true; }
       if (fireListenerEvents) {
         final GraphViewChangeListener listener = m_lis[0];
         if (listener != null) {
@@ -680,7 +704,8 @@ public class DGraphView implements GraphView
           targetNode = 0; }
         newEdge = edge.getRootGraphIndex();
         if (m_drawPersp.restoreEdge(newEdge) == 0) {
-          return false; } }
+          return false; }
+        m_contentChanged = true; }
       if (fireListenerEvents) {
         final GraphViewChangeListener listener = m_lis[0];
         if (listener != null) {
@@ -855,7 +880,8 @@ public class DGraphView implements GraphView
   {
     synchronized (m_lock) {
       m_canvas.m_xCenter = x;
-      m_canvas.m_yCenter = y; }
+      m_canvas.m_yCenter = y;
+      m_viewportChanged = true; }
     updateView();
   }
 
@@ -891,12 +917,15 @@ public class DGraphView implements GraphView
         (((double) m_canvas.getWidth()) /
          (((double) xMax) - ((double) xMin)),
          ((double) m_canvas.getHeight()) /
-         (((double) yMax) - ((double) yMin))); }
+         (((double) yMax) - ((double) yMin)));
+      m_viewportChanged = true; }
   }
 
   public void setGraphLOD(GraphLOD lod)
   {
-    synchronized (m_lock) { m_canvas.m_lod = lod; }
+    synchronized (m_lock) {
+      m_canvas.m_lod = lod;
+      m_contentChanged = true; }
   }
 
   /**
@@ -998,6 +1027,26 @@ public class DGraphView implements GraphView
                                 new GraphGraphics(img, false),
                                 bgPaint,
                                 xCenter, yCenter, scaleFactor); }
+  }
+
+  public void addContentChangeListener(ContentChangeListener l)
+  {
+    m_cLis[0] = ContentChangeListenerChain.add(m_cLis[0], l);
+  }
+
+  public void removeContentChangeListener(ContentChangeListener l)
+  {
+    m_cLis[0] = ContentChangeListenerChain.remove(m_cLis[0], l);
+  }
+
+  public void addViewportChangeListener(ViewportChangeListener l)
+  {
+    m_vLis[0] = ViewportChangeListenerChain.add(m_vLis[0], l);
+  }
+
+  public void removeViewportChangeListener(ViewportChangeListener l)
+  {
+    m_vLis[0] = ViewportChangeListenerChain.remove(m_vLis[0], l);
   }
 
 }

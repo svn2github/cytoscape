@@ -109,7 +109,8 @@ class DNodeView implements NodeView, Label
         m_view.m_nodeDetails.overrideFillPaint(m_inx, m_selectedPaint);
         if (m_selectedPaint instanceof Color) {
           m_view.m_nodeDetails.overrideColorLowDetail
-            (m_inx, (Color) m_selectedPaint); } } }
+            (m_inx, (Color) m_selectedPaint); }
+        m_view.m_contentChanged = true; } }
   }
 
   public Paint getSelectedPaint()
@@ -127,7 +128,8 @@ class DNodeView implements NodeView, Label
         m_view.m_nodeDetails.overrideFillPaint(m_inx, m_unselectedPaint);
         if (m_unselectedPaint instanceof Color) {
           m_view.m_nodeDetails.overrideColorLowDetail
-            (m_inx, (Color) m_unselectedPaint); } } }
+            (m_inx, (Color) m_unselectedPaint); }
+        m_view.m_contentChanged = true; } }
   }
 
   public Paint getUnselectedPaint()
@@ -138,7 +140,8 @@ class DNodeView implements NodeView, Label
   public void setBorderPaint(Paint paint)
   {
     synchronized (m_view.m_lock) {
-      m_view.m_nodeDetails.overrideBorderPaint(m_inx, paint); }
+      m_view.m_nodeDetails.overrideBorderPaint(m_inx, paint);
+      m_view.m_contentChanged = true; }
   }
 
   public Paint getBorderPaint()
@@ -150,7 +153,8 @@ class DNodeView implements NodeView, Label
   public void setBorderWidth(float width)
   {
     synchronized (m_view.m_lock) {
-      m_view.m_nodeDetails.overrideBorderWidth(m_inx, width); }
+      m_view.m_nodeDetails.overrideBorderWidth(m_inx, width);
+      m_view.m_contentChanged = true; }
   }
 
   public float getBorderWidth()
@@ -194,6 +198,7 @@ class DNodeView implements NodeView, Label
       m_view.m_spacial.delete(m_inx);
       m_view.m_spacial.insert(m_inx, xMin, m_view.m_extentsBuff[1],
                               xMax, m_view.m_extentsBuff[3]);
+      m_view.m_contentChanged = true;
       return true; }
   }
 
@@ -220,6 +225,7 @@ class DNodeView implements NodeView, Label
       m_view.m_spacial.delete(m_inx);
       m_view.m_spacial.insert(m_inx, m_view.m_extentsBuff[0], yMin,
                               m_view.m_extentsBuff[2], yMax);
+      m_view.m_contentChanged = true;
       return true; }
   }
 
@@ -262,7 +268,8 @@ class DNodeView implements NodeView, Label
                             ("height of node has degenerated to zero after " +
                              "rounding");
       m_view.m_spacial.delete(m_inx);
-      m_view.m_spacial.insert(m_inx, xMin, yMin, xMax, yMax); }
+      m_view.m_spacial.insert(m_inx, xMin, yMin, xMax, yMax);
+      m_view.m_contentChanged = true; }
   }
 
   public Point2D getOffset()
@@ -291,7 +298,8 @@ class DNodeView implements NodeView, Label
                              "rounding");
       m_view.m_spacial.delete(m_inx);
       m_view.m_spacial.insert(m_inx, xMin, m_view.m_extentsBuff[1],
-                              xMax, m_view.m_extentsBuff[3]); }
+                              xMax, m_view.m_extentsBuff[3]);
+      m_view.m_contentChanged = true; }
   }
 
   public void setXPosition(double xPos, boolean update)
@@ -322,7 +330,8 @@ class DNodeView implements NodeView, Label
                              "rounding");
       m_view.m_spacial.delete(m_inx);
       m_view.m_spacial.insert(m_inx, m_view.m_extentsBuff[0], yMin,
-                              m_view.m_extentsBuff[2], yMax); }
+                              m_view.m_extentsBuff[2], yMax);
+      m_view.m_contentChanged = true; }
   }
 
   public void setYPosition(double yPos, boolean update)
@@ -346,7 +355,9 @@ class DNodeView implements NodeView, Label
   public void select()
   {
     final boolean somethingChanged;
-    synchronized (m_view.m_lock) { somethingChanged = selectInternal(); }
+    synchronized (m_view.m_lock) {
+      somethingChanged = selectInternal();
+      if (somethingChanged) { m_view.m_contentChanged = true; } }
     if (somethingChanged) {
       final GraphViewChangeListener listener = m_view.m_lis[0];
       if (listener != null) {
@@ -370,7 +381,9 @@ class DNodeView implements NodeView, Label
   public void unselect()
   {
     final boolean somethingChanged;
-    synchronized (m_view.m_lock) { somethingChanged = unselectInternal(); }
+    synchronized (m_view.m_lock) {
+      somethingChanged = unselectInternal();
+      if (somethingChanged) { m_view.m_contentChanged = true; } }
     if (somethingChanged) {
       final GraphViewChangeListener listener = m_view.m_lis[0];
       if (listener != null) {
@@ -427,7 +440,8 @@ class DNodeView implements NodeView, Label
         nativeShape = GraphGraphics.SHAPE_ROUNDED_RECTANGLE; break;
       default:
         nativeShape = -1; }
-      m_view.m_nodeDetails.overrideShape(m_inx, nativeShape); }
+      m_view.m_nodeDetails.overrideShape(m_inx, nativeShape);
+      m_view.m_contentChanged = true; }
   }
 
   public void setToolTip(String tip)
@@ -450,7 +464,8 @@ class DNodeView implements NodeView, Label
   public void setTextPaint(Paint textPaint)
   {
     synchronized (m_view.m_lock) {
-      m_view.m_nodeDetails.overrideLabelPaint(m_inx, 0, textPaint); }
+      m_view.m_nodeDetails.overrideLabelPaint(m_inx, 0, textPaint);
+      m_view.m_contentChanged = true; }
   }
 
   public double getGreekThreshold()
@@ -476,7 +491,8 @@ class DNodeView implements NodeView, Label
           (m_view.m_nodeDetails.labelText(m_inx, 0))) {
         m_view.m_nodeDetails.overrideLabelCount(m_inx, 0); }
       else {
-        m_view.m_nodeDetails.overrideLabelCount(m_inx, 1); } }
+        m_view.m_nodeDetails.overrideLabelCount(m_inx, 1); }
+      m_view.m_contentChanged = true; }
   }
 
   public Font getFont()
@@ -488,7 +504,8 @@ class DNodeView implements NodeView, Label
   public void setFont(Font font)
   {
     synchronized (m_view.m_lock) {
-      m_view.m_nodeDetails.overrideLabelFont(m_inx, 0, font); }
+      m_view.m_nodeDetails.overrideLabelFont(m_inx, 0, font);
+      m_view.m_contentChanged = true; }
   }
 
 }

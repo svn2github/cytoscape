@@ -49,9 +49,9 @@ class InnerCanvas extends java.awt.Component
   double m_xCenter;
   double m_yCenter;
   double m_scaleFactor;
-  boolean m_redrawGraph = false;
   private int m_lastRenderDetail = 0;
   private Rectangle m_selectionRect = null;
+  private boolean m_resized = false;
 
   InnerCanvas(Object lock, DGraphView view)
   {
@@ -78,18 +78,7 @@ class InnerCanvas extends java.awt.Component
       synchronized (m_lock) {
         m_img = img;
         m_grafx = grafx;
-        m_lastRenderDetail =
-          GraphRenderer.renderGraph((FixedGraph) m_view.m_drawPersp,
-                                    m_view.m_spacial,
-                                    m_lod,
-                                    m_view.m_nodeDetails,
-                                    m_view.m_edgeDetails,
-                                    m_hash,
-                                    m_grafx,
-                                    m_bgPaint,
-                                    m_xCenter,
-                                    m_yCenter,
-                                    m_scaleFactor); } }
+        m_resized = true; } }
   }
 
   public void update(Graphics g)
@@ -98,8 +87,13 @@ class InnerCanvas extends java.awt.Component
 
     // This is the magical portion of code that transfers what is in the
     // visual data structures into what's on the image.
+    boolean contentChanged = false;
+    boolean viewportChanged = false;
+    double xCenter = 0.0d;
+    double yCenter = 0.0d;
+    double scaleFactor = 1.0d;
     synchronized (m_lock) {
-      if (m_redrawGraph) {
+      if (m_view.m_contentChanged || m_view.m_viewportChanged || m_resized) {
         m_lastRenderDetail =
           GraphRenderer.renderGraph((FixedGraph) m_view.m_drawPersp,
                                     m_view.m_spacial,
@@ -112,12 +106,26 @@ class InnerCanvas extends java.awt.Component
                                     m_xCenter,
                                     m_yCenter,
                                     m_scaleFactor);
-        m_redrawGraph = false; } }
+        contentChanged = m_view.m_contentChanged;
+        m_view.m_contentChanged = false;
+        viewportChanged = m_view.m_viewportChanged;
+        xCenter = m_xCenter;
+        yCenter = m_yCenter;
+        scaleFactor = m_scaleFactor;
+        m_view.m_viewportChanged = false;
+        m_resized = false; } }
     g.drawImage(m_img, 0, 0, null);
     if (m_selectionRect != null) {
       final Graphics2D g2 = (Graphics2D) g;
       g2.setColor(Color.red);
       g2.draw(m_selectionRect); }
+    if (contentChanged) {
+      final ContentChangeListener lis = m_view.m_cLis[0];
+      if (lis != null) { lis.contentChanged(); } }
+    if (viewportChanged) {
+      final ViewportChangeListener lis = m_view.m_vLis[0];
+      if (lis != null) {
+        lis.viewportChanged(xCenter, yCenter, scaleFactor); } }
   }
 
   public void paint(Graphics g)
@@ -163,7 +171,6 @@ class InnerCanvas extends java.awt.Component
       int chosenEdge = 0;
       boolean chosenNodeSelected = false;
       boolean chosenEdgeSelected = false;
-      boolean updateNeeded = false;
       synchronized (m_lock) {
         if (m_view.m_nodeSelection) {
           m_ptBuff[0] = m_lastXMousePos;
@@ -195,7 +202,7 @@ class InnerCanvas extends java.awt.Component
             ((DEdgeView) m_view.getEdgeView(unselectedEdges[i])).
               unselectInternal(); }
           if (unselectedNodes.length > 0 || unselectedEdges.length > 0) {
-            updateNeeded = true; } }
+            m_view.m_contentChanged = true; } }
         if (chosenNode != 0) {
           final boolean wasSelected =
             m_view.getNodeView(chosenNode).isSelected();
@@ -206,7 +213,7 @@ class InnerCanvas extends java.awt.Component
             ((DNodeView) m_view.getNodeView(chosenNode)).selectInternal();
             chosenNodeSelected = true; }
           m_button1NodeDrag = true;
-          updateNeeded = true; }
+          m_view.m_contentChanged = true; }
         if (chosenEdge != 0) {
           final boolean wasSelected =
             m_view.getEdgeView(chosenEdge).isSelected();
@@ -217,7 +224,7 @@ class InnerCanvas extends java.awt.Component
             ((DEdgeView) m_view.getEdgeView(chosenEdge)).selectInternal();
             chosenEdgeSelected = true; }
           m_button1NodeDrag = true;
-          updateNeeded = true; }
+          m_view.m_contentChanged = true; }
         if (chosenNode == 0 && chosenEdge == 0) {
           m_selectionRect =
             new Rectangle(m_lastXMousePos, m_lastYMousePos, 0, 0);
@@ -250,8 +257,7 @@ class InnerCanvas extends java.awt.Component
                (m_view, new int[] { chosenEdge })); } } }
       // Repaint after listener events are fired because listeners may change
       // something in the graph view.
-      if (updateNeeded) { m_view.updateView(); }
-      else { repaint(); } /* For the selection rectangle. */ }
+      repaint(); }
     else if (e.getButton() == MouseEvent.BUTTON2) {
       m_currMouseButton = 2;
       m_lastXMousePos = e.getX();
@@ -270,7 +276,6 @@ class InnerCanvas extends java.awt.Component
         if (m_selectionRect != null) {
           int[] selectedNodes = null;
           int[] selectedEdges = null;
-          boolean updateNeeded = false;
           synchronized (m_lock) {
             if (m_view.m_nodeSelection || m_view.m_edgeSelection) {
               if (m_view.m_nodeSelection) {
@@ -296,7 +301,8 @@ class InnerCanvas extends java.awt.Component
                 for (int i = 0; i < selectedNodes.length; i++) {
                   ((DNodeView) m_view.getNodeView(selectedNodes[i])).
                     selectInternal(); }
-                if (selectedNodes.length > 0) { updateNeeded = true; } }
+                if (selectedNodes.length > 0) {
+                  m_view.m_contentChanged = true; } }
               if (m_view.m_edgeSelection) {
                 computeEdgesIntersecting
                   (m_selectionRect.x, m_selectionRect.y,
@@ -309,7 +315,8 @@ class InnerCanvas extends java.awt.Component
                 for (int i = 0; i < selectedEdges.length; i++) {
                   ((DEdgeView) m_view.getEdgeView(selectedEdges[i])).
                     selectInternal(); }
-                if (selectedEdges.length > 0) { updateNeeded = true; } } } }
+                if (selectedEdges.length > 0) {
+                  m_view.m_contentChanged = true; } } } }
           m_selectionRect = null;
           final GraphViewChangeListener listener = m_view.m_lis[0];
           if (listener != null) {
@@ -323,8 +330,7 @@ class InnerCanvas extends java.awt.Component
                  (m_view, selectedEdges)); } }
           // Repaint after listener events are fired because listeners may
           // change something in the graph view.
-          if (updateNeeded) { m_view.updateView(); }
-          else { repaint(); } } } }
+          repaint(); } } }
     else if (e.getButton() == MouseEvent.BUTTON2) {
       if (m_currMouseButton == 2) { m_currMouseButton = 0; } }
     else if (e.getButton() == MouseEvent.BUTTON3) {
@@ -335,7 +341,6 @@ class InnerCanvas extends java.awt.Component
   {
     if (m_currMouseButton == 1) {
       if (m_button1NodeDrag) {
-        boolean updateNeeded = false;
         synchronized (m_lock) {
           m_ptBuff[0] = m_lastXMousePos;
           m_ptBuff[1] = m_lastYMousePos;
@@ -358,22 +363,23 @@ class InnerCanvas extends java.awt.Component
             final double oldXPos = nv.getXPosition();
             final double oldYPos = nv.getYPosition();
             nv.setOffset(oldXPos + deltaX, oldYPos + deltaY); }
-          if (selectedNodes.length > 0) { updateNeeded = true; } }
-        if (updateNeeded) { m_view.updateView(); } }
+          if (selectedNodes.length > 0) {
+            m_view.m_contentChanged = true; } } }
       if (m_selectionRect != null) {
         final int x = Math.min(m_lastXMousePos, e.getX());
         final int y = Math.min(m_lastYMousePos, e.getY());
         final int w = Math.abs(m_lastXMousePos - e.getX());
         final int h = Math.abs(m_lastYMousePos - e.getY());
-        m_selectionRect.setBounds(x, y, w, h);
-        repaint(); } }
+        m_selectionRect.setBounds(x, y, w, h); }
+      repaint(); }
     else if (m_currMouseButton == 2) {
       double deltaY = e.getY() - m_lastYMousePos;
       synchronized (m_lock) {
         m_lastXMousePos = e.getX();
         m_lastYMousePos = e.getY();
         m_scaleFactor *= Math.pow(2, -deltaY / 300.0d); }
-      m_view.updateView(); }
+      m_view.m_viewportChanged = true;
+      repaint(); }
     else if (m_currMouseButton == 3) {
       double deltaX = e.getX() - m_lastXMousePos;
       double deltaY = e.getY() - m_lastYMousePos;
@@ -382,7 +388,8 @@ class InnerCanvas extends java.awt.Component
       synchronized (m_lock) {
         m_xCenter -= deltaX / m_scaleFactor;
         m_yCenter += deltaY / m_scaleFactor;  } // y orientations are opposite.
-      m_view.updateView(); }
+      m_view.m_viewportChanged = true;
+      repaint(); }
   }
 
   public void mouseMoved(MouseEvent e)
