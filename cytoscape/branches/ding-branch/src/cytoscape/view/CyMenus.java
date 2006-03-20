@@ -735,7 +735,7 @@ public class CyMenus implements GraphViewChangeListener {
 
 		// fill the Edit menu
 		// TODO: make the Squiggle Stuff be better
-		editMenu.add(new SquiggleAction());
+// 		editMenu.add(new SquiggleAction());
 		addAction(new CreateNetworkViewAction());
 		addAction(new DestroyNetworkViewAction());
 		addAction(new DestroyNetworkAction());
