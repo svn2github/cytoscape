@@ -78,8 +78,8 @@ public class GraphLOD
 
   /**
    * Determines whether or not to render node borders.  By default this
-   * method returns true if and only if the sum of rendered nodes and rendered
-   * edges is less than 500.<p>
+   * method returns true if and only if the number of rendered nodes
+   * is less than 200.<p>
    * It is only possible to draw node borders at the full detail
    * level.  If low detail is chosen, the output of this method is ignored.
    * @param renderNodeCount the number of nodes that are about to be rendered.
@@ -90,13 +90,13 @@ public class GraphLOD
   public boolean nodeBorders(final int renderNodeCount,
                              final int renderEdgeCount)
   {
-    return renderNodeCount + renderEdgeCount < 500;
+    return renderNodeCount < 200;
   }
 
   /**
    * Determines whether or not to render node labels.  By default this method
-   * returns true if and only if the sum of rendered nodes and rendered edges
-   * is less than 120.<p>
+   * returns true if and only if the number of rendered nodes is less than
+   * 60.<p>
    * Node labels are only rendered at the full detail level.  If low detail is
    * chosen, the output of this method is ignored.
    * @param renderNodeCount the number of nodes that are about to be rendered.
@@ -107,13 +107,13 @@ public class GraphLOD
   public boolean nodeLabels(final int renderNodeCount,
                             final int renderEdgeCount)
   {
-    return renderNodeCount + renderEdgeCount < 120;
+    return renderNodeCount < 60;
   }
 
   /**
    * Determines whether or not to render custom graphics on nodes.
-   * By default this method returns true if and only if the sum of rendered
-   * nodes and rendered edges is less than 120.<p>
+   * By default this method returns true if and only if the number of rendered
+   * nodes is less than 60.<p>
    * Custom node graphics are only rendered at the full detail level.  If low
    * detail is chosen, the output of this method is ignored.
    * @param renderNodeCount the number of nodes that are about to be rendered.
@@ -124,13 +124,13 @@ public class GraphLOD
   public boolean customGraphics(final int renderNodeCount,
                                 final int renderEdgeCount)
   {
-    return renderNodeCount + renderEdgeCount < 120;
+    return renderNodeCount < 60;
   }
 
   /**
    * Determines whether or not to render edge arrows.  By default this
-   * method returns true if and only if the sum of rendered nodes and rendered
-   * edges is less than 500.<p>
+   * method returns true if and only if the number of rendered edges is less
+   * than 300.<p>
    * It is only possible to draw edge arrows at the full detail
    * level.  If low detail is chosen, the output of this method is ignored.
    * @param renderNodeCount the number of nodes that are about to be rendered.
@@ -141,7 +141,7 @@ public class GraphLOD
   public boolean edgeArrows(final int renderNodeCount,
                             final int renderEdgeCount)
   {
-    return renderNodeCount + renderEdgeCount < 500;
+    return renderEdgeCount < 300;
   }
 
   /**
@@ -184,8 +184,8 @@ public class GraphLOD
 
   /**
    * Determines whether or not to render edge labels.  By default this method
-   * returns true if and only if the sum of rendered nodes and rendered edges
-   * is less than 120.<p>
+   * returns true if and only if the number of rendered edges is less than
+   * 80.<p>
    * Edge labels are only rendered at the full detail level.  If low detail is
    * chosen, the output of this method is ignored.
    * @param renderNodeCount the number of nodes that are about to be rendered.
@@ -196,7 +196,7 @@ public class GraphLOD
   public boolean edgeLabels(final int renderNodeCount,
                             final int renderEdgeCount)
   {
-    return renderNodeCount + renderEdgeCount < 120;
+    return renderEdgeCount < 80;
   }
 
   /**
