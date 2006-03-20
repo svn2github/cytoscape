@@ -60,7 +60,8 @@ public class ZoomAction extends CytoscapeAction {
     }
     
   public void zoom () {
-    Cytoscape.getCurrentNetworkView().setZoom( factor );
+    Cytoscape.getCurrentNetworkView().setZoom
+      (Cytoscape.getCurrentNetworkView().getZoom() * factor);
   }
 
     public void actionPerformed (ActionEvent e) {

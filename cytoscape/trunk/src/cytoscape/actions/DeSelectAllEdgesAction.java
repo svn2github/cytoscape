@@ -60,6 +60,7 @@ public class DeSelectAllEdgesAction extends CytoscapeAction  {
     public void actionPerformed (ActionEvent e) {
       //GinyUtils.deselectAllEdges( Cytoscape.getCurrentNetworkView() );
       Cytoscape.getCurrentNetwork().unFlagAllEdges();
+      Cytoscape.getCurrentNetworkView().updateView();
     }//action performed
 }
 

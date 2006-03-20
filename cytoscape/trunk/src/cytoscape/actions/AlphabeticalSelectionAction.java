@@ -91,7 +91,8 @@ public class AlphabeticalSelectionAction
     if ( dialog == null )
       createDialog();
     dialog.setVisible( true );
-    
+
+    Cytoscape.getCurrentNetworkView().updateView();
   }
 
   private JDialog createDialog () {

@@ -72,6 +72,7 @@ public class SelectFirstNeighborsAction extends CytoscapeAction {
       for ( int idx = 0;idx < flaggedNodes.length; idx++){
 	currentNetwork.setFlaggedNodes(currentNetwork.neighborsArray(flaggedNodes[idx]),true);
       }
+      Cytoscape.getCurrentNetworkView().updateView();
     } // actionPerformed
 } // SelectFirstNeighborsAction
 

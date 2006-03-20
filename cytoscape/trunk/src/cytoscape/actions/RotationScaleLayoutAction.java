@@ -106,6 +106,7 @@ public class RotationScaleLayoutAction extends CytoscapeAction
           double radians = ((double) (rotSlider.getValue() - prevValue)) *
             2.0d * Math.PI / 360.0d;
           rotation[0].rotateGraph(radians);
+          Cytoscape.getCurrentNetworkView().updateView();
           prevValue = rotSlider.getValue(); } });
     rotPanel.add(rotSlider, BorderLayout.CENTER);
 
@@ -143,6 +144,7 @@ public class RotationScaleLayoutAction extends CytoscapeAction
           double neededIncrementalScaleFactor =
             currentAbsoluteScaleFactor / prevAbsoluteScaleFactor;
           scale[0].scaleGraph(neededIncrementalScaleFactor);
+          Cytoscape.getCurrentNetworkView().updateView();
           prevValue = sclSlider.getValue(); } });
     sclPanel.add(sclSlider, BorderLayout.CENTER);
 

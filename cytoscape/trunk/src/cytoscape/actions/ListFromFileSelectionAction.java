@@ -66,6 +66,7 @@ public class ListFromFileSelectionAction extends CytoscapeAction {
 
   public void actionPerformed (ActionEvent e) {
     boolean cancelSelectionAction = !selectFromFile();
+    Cytoscape.getCurrentNetworkView().updateView();
   }
     
   private boolean selectFromFile() {

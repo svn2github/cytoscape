@@ -64,7 +64,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 
-import phoebe.PGraphView;
+import cytoscape.ding.DingNetworkView;
 import ViolinStrings.Strings;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
@@ -81,7 +81,7 @@ public class GraphObjectSelection extends JPanel implements ActionListener {
 	CyNetwork cyNetwork;
 	CyAttributes nodeAttributes;
 	CyAttributes edgeAttributes;
-	PGraphView graphView;
+	DingNetworkView graphView;
 	CyNetworkView networkView;
 
 	public GraphObjectSelection() {
@@ -263,7 +263,7 @@ public class GraphObjectSelection extends JPanel implements ActionListener {
 
 	public void actionPerformed(ActionEvent event) {
 		// when ENTER is pressed do a search
-		this.graphView = (PGraphView) networkView.getView();
+		this.graphView = (DingNetworkView) networkView.getView();
 		performSearch();
 
 		// update the view
@@ -344,9 +344,9 @@ public class GraphObjectSelection extends JPanel implements ActionListener {
 			while (all_nodes.hasNext()) {
 				Node node = (Node) all_nodes.next();
 				if (passes.contains(node.getIdentifier())) {
-					graphView.showNodeView(graphView.getNodeView(node), false);
+					graphView.showGraphObject(graphView.getNodeView(node));
 				} else {
-					graphView.hideNodeView(graphView.getNodeView(node));
+					graphView.hideGraphObject(graphView.getNodeView(node));
 				}
 			}
 		}

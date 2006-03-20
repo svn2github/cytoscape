@@ -143,9 +143,9 @@ public class BasicGraphViewHandler implements GraphViewHandler {
     
     graph_view.updateView();
               
-    if ( graph_view instanceof cytoscape.giny.PhoebeNetworkView ) {
-      ( ( cytoscape.giny.PhoebeNetworkView )graph_view ).redrawGraph();
-    }
+//     if ( graph_view instanceof cytoscape.giny.Phoeb*NetworkView ) {
+//       ( ( cytoscape.giny.Phoeb*NetworkView )graph_view ).redrawGraph();
+//     }
 
     //TODO: Remove
     //System.out.println("Leaving BasicGraphViewHandler.handleGraphPerspectiveEvent()." +

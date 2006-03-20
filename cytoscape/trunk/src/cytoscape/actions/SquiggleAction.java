@@ -40,7 +40,7 @@ package cytoscape.actions;
 
 import java.awt.event.ActionEvent;
 import javax.swing.*;
-import phoebe.PGraphView;
+// import phoebe.PGrap*View;
 import cytoscape.view.CyNetworkView;
 import cytoscape.Cytoscape;
 
@@ -58,7 +58,7 @@ public class SquiggleAction extends JMenu {
 	    // Do this in the GUI Event Dispatch thread...
 	    SwingUtilities.invokeLater( new Runnable() {
 	      public void run() {
-		    PGraphView view = (PGraphView)Cytoscape.getCurrentNetworkView();
+// 		    PGrap*View view = (PGrap*View)Cytoscape.getCurrentNetworkView();
 		    if (enabled) {
               Cytoscape.enableSquiggle();
               squiggleMode.setText("Disable");
@@ -77,8 +77,8 @@ public class SquiggleAction extends JMenu {
         // Do this in the GUI Event Dispatch thread...
         SwingUtilities.invokeLater( new Runnable() {
           public void run() {
-            PGraphView view = (PGraphView)Cytoscape.getCurrentNetworkView();
-              view.getSquiggleHandler().clearSquiggles();
+//             PGrap*View view = (PGrap*View)Cytoscape.getCurrentNetworkView();
+//               view.getSquiggleHandler().clearSquiggles();
       } } ); } } );
     clearSquiggle.setEnabled(false);
     add(clearSquiggle);

@@ -95,15 +95,11 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 			Iterator i = new_network.nodesIterator();
 			while (i.hasNext()) {
 				Node node = (Node) i.next();
-				new_view.getNodeView(node).setOffset(
-						current_network_view.getNodeDoubleProperty(node
-								.getRootGraphIndex(),
-								CyNetworkView.NODE_X_POSITION),
-						current_network_view.getNodeDoubleProperty(node
-								.getRootGraphIndex(),
-								CyNetworkView.NODE_Y_POSITION));
+                                new_view.getNodeView( node ).setOffset( current_network_view.getNodeView(node).getXPosition(),
+                                                                        current_network_view.getNodeView(node).getYPosition());
 			}
-			
+                        new_view.fitContent();
+
 			// Set visual style
 			VisualStyle newVS = current_network_view.getVisualStyle();
 			if(newVS != null) {

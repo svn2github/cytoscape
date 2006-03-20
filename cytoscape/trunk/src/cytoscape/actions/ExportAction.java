@@ -55,6 +55,7 @@ import cytoscape.giny.*;
 import cytoscape.view.CyNetworkView;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.Cytoscape;
+import cytoscape.ding.DingNetworkView;
 import org.freehep.util.export.ExportDialog;
 
 //-------------------------------------------------------------------------
@@ -70,12 +71,12 @@ public class ExportAction extends CytoscapeAction  {
 
     public void actionPerformed(ActionEvent e) {
 	
-      ( (PhoebeNetworkView)Cytoscape.getCurrentNetworkView() ).getCanvas().getCamera().addClientProperty( PrintingFixTextNode.PRINTING_CLIENT_PROPERTY_KEY, "true");
+//       ( (Phoeb*NetworkView)Cytoscape.getCurrentNetworkView() ).getCanvas().getCamera().addClientProperty( PrintingFixTextNode.PRINTING_CLIENT_PROPERTY_KEY, "true");
 
       ExportDialog export = new ExportDialog();
-      export.showExportDialog( ( (PhoebeNetworkView)Cytoscape.getCurrentNetworkView() ).getCanvas(), "Export view as ...", ( (PhoebeNetworkView)Cytoscape.getCurrentNetworkView() ).getCanvas(), "export" );
+      export.showExportDialog( ( (DingNetworkView)Cytoscape.getCurrentNetworkView() ).getComponent(), "Export view as ...", ( (DingNetworkView)Cytoscape.getCurrentNetworkView() ).getComponent(), "export" );
       
-      ( (PhoebeNetworkView)Cytoscape.getCurrentNetworkView() ).getCanvas().getCamera().addClientProperty( PrintingFixTextNode.PRINTING_CLIENT_PROPERTY_KEY, null);
+//       ( (DingNetworkView)Cytoscape.getCurrentNetworkView() ).getCanvas().getCamera().addClientProperty( PrintingFixTextNode.PRINTING_CLIENT_PROPERTY_KEY, null);
 	
     } // actionPerformed
 }

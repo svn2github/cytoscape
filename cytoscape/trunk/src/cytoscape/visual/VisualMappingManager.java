@@ -216,7 +216,7 @@ public class VisualMappingManager extends SubjectBase {
 				.getNodeAppearanceCalculator();
 		for (Iterator i = network_view.getNodeViewsIterator(); i.hasNext();) {
 
-			((phoebe.PGraphView) network_view).updateEdges = false;
+// 			((phoebe.PGrap*View) network_view).updateEdges = false;
 
 			NodeView nodeView = (NodeView) i.next();
 			Node node = nodeView.getNode();
@@ -235,7 +235,7 @@ public class VisualMappingManager extends SubjectBase {
 				Label label = nodeView.getLabel();
 				label.setFont(myNodeApp.getFont());
 
-				((phoebe.PGraphView) network_view).updateEdges = true;
+// 				((phoebe.PGrap*View) network_view).updateEdges = true;
 
 				label.setTextPaint(myNodeApp.getLabelColor());
 			} else {
@@ -300,7 +300,7 @@ public class VisualMappingManager extends SubjectBase {
 					label.setTextPaint(newTextColor);
 				}
 
-				((phoebe.PGraphView) network_view).updateEdges = true;
+// 				((phoebe.PGrap*View) network_view).updateEdges = true;
 				if (change_made) {
 					nodeView.setNodePosition(false);
 				}

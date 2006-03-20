@@ -69,8 +69,8 @@ public class PrintAction extends CytoscapeAction  {
 
     public void actionPerformed(ActionEvent e) {
 
-	    PhoebeNetworkView phoebeView = ( PhoebeNetworkView )Cytoscape.getCurrentNetworkView();
-	    phoebeView.getCanvas().getLayer().print();
+// 	    Phoeb*NetworkView phoebeView = ( Phoeb*NetworkView )Cytoscape.getCurrentNetworkView();
+// 	    phoebeView.getCanvas().getLayer().print();
      	
     } // actionPerformed
 }

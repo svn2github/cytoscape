@@ -86,7 +86,7 @@ public void setUp () throws Exception
     Edge[] edgeArray = {edge1, edge2};
     gp = rootGraph.createGraphPerspective(nodeArray, edgeArray);
     filter = new FlagFilter(gp);
-    view = new phoebe.PGraphView(gp);
+    view = new ding.view.DGraphView(gp);
     nodeView1 = view.getNodeView(node1);
     nodeView2 = view.getNodeView(node2);
     edgeView1 = view.getEdgeView(edge1);

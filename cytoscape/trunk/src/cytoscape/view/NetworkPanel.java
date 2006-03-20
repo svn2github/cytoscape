@@ -161,7 +161,7 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener,
 
 	}
 
-	public void setNavigator(JComponent comp) {
+	public void setNavigator(java.awt.Component comp) {
 		split.setRightComponent(comp);
 		split.validate();
 	}

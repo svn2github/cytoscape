@@ -53,6 +53,8 @@ import giny.model.*;
 import giny.view.*;
 import giny.util.*;
 
+import cytoscape.ding.DingNetworkView;
+
 public class AnimatedLayoutAction extends AbstractAction {
 
   NetworkView networkView;
@@ -72,9 +74,9 @@ public class AnimatedLayoutAction extends AbstractAction {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
                 public void run() {
-                  PGraphView gv = ( PGraphView )networkView.getView();
-                  ISOM3DLayout isom = new ISOM3DLayout( gv );
-                  isom.doLayout();
+//                   PGrap*View gv = ( PGrap*View )networkView.getView();
+//                   ISOM3DLayout isom = new ISOM3DLayout( gv );
+//                   isom.doLayout();
 
                 }
               } ); } } ) );
@@ -88,7 +90,7 @@ public class AnimatedLayoutAction extends AbstractAction {
                   double maxZ = Double.MAX_VALUE;
                   double minZ = Double.MAX_VALUE;
 
-                  PGraphView gv = ( PGraphView )networkView.getView();
+                  DingNetworkView gv = ( DingNetworkView )networkView.getView();
                   Iterator nvi = gv.getNodeViewsIterator();
                   while ( nvi.hasNext() ) {
                     NodeView nv = ( NodeView )nvi.next();
@@ -151,7 +153,7 @@ public class AnimatedLayoutAction extends AbstractAction {
 //             // Do this in the GUI Event Dispatch thread...
 //             SwingUtilities.invokeLater( new Runnable() {
 //                 public void run() {
-//                   PGraphView gv = ( PGraphView )networkView.getView();
+//                   PGrap*View gv = ( PGrap*View )networkView.getView();
 //                   PGrandTour tour = new PGrandTour( gv );
 //                   tour.takeTour();
 //                 }
@@ -162,7 +164,7 @@ public class AnimatedLayoutAction extends AbstractAction {
 //             // Do this in the GUI Event Dispatch thread...
 //             SwingUtilities.invokeLater( new Runnable() {
 //                 public void run() {
-//                   PGraphView gv = ( PGraphView )networkView.getView();
+//                   PGrap*View gv = ( PGrap*View )networkView.getView();
 //                   ModelBasedSpringLayout mbsl = new ModelBasedSpringLayout( gv );
 //                   mbsl.doLayout();
 //                 }
@@ -173,7 +175,7 @@ public class AnimatedLayoutAction extends AbstractAction {
 //             // Do this in the GUI Event Dispatch thread...
 //             SwingUtilities.invokeLater( new Runnable() {
 //                 public void run() {
-//                   PGraphView gv = ( PGraphView )networkView.getView();
+//                   PGrap*View gv = ( PGrap*View )networkView.getView();
 //                   FRLayout fr = new FRLayout( gv );
 //                   fr.doLayout();
 //                 }
@@ -194,7 +196,7 @@ public class AnimatedLayoutAction extends AbstractAction {
 
 
 
-//                   PGraphView gv = ( PGraphView )networkView.getView();
+//                   PGrap*View gv = ( PGrap*View )networkView.getView();
 //                   ISOMLayout isom = new ISOMLayout( gv );
 //                   isom.doLayout();
 //                 }
@@ -205,7 +207,7 @@ public class AnimatedLayoutAction extends AbstractAction {
 //             // Do this in the GUI Event Dispatch thread...
 //             SwingUtilities.invokeLater( new Runnable() {
 //                 public void run() {
-//                   PGraphView gv = ( PGraphView )networkView.getView();
+//                   PGrap*View gv = ( PGrap*View )networkView.getView();
 //                   JUNGSpringLayout jung = new JUNGSpringLayout( gv );
 //                   jung.doLayout();
 //                 }
@@ -216,7 +218,7 @@ public class AnimatedLayoutAction extends AbstractAction {
 //             // Do this in the GUI Event Dispatch thread...
 //             SwingUtilities.invokeLater( new Runnable() {
 //                 public void run() {
-//                   PGraphView gv = ( PGraphView )networkView.getView();
+//                   PGrap*View gv = ( PGrap*View )networkView.getView();
 //                   ForceDirectedLayout fdl = new ForceDirectedLayout( gv );
 //                   fdl.doLayout();
 //                 }
@@ -228,7 +230,7 @@ public class AnimatedLayoutAction extends AbstractAction {
 //           // Do this in the GUI Event Dispatch thread...
 //           SwingUtilities.invokeLater( new Runnable() {
 //               public void run() {
-//                 PGraphView gv = ( PGraphView )networkView.getView();
+//                 PGrap*View gv = ( PGrap*View )networkView.getView();
 //                 String file = null;
 //                   JFileChooser chooser = new JFileChooser( "/users/xmas/CSBI/cytoscape/testData");
 //                 chooser.setDialogTitle( "Load Tier Data" );
@@ -249,7 +251,7 @@ public class AnimatedLayoutAction extends AbstractAction {
 //             // Do this in the GUI Event Dispatch thread...
 //             SwingUtilities.invokeLater( new Runnable() {
 //                 public void run() {
-//                   PGraphView gv = ( PGraphView )networkView.getView();
+//                   PGrap*View gv = ( PGrap*View )networkView.getView();
 //                   int[] sel = gv.getSelectedNodeIndices();
 //                   TreeLayout tl = new TreeLayout();
 //                   GraphPerspective p = tl.doLayout( gv ) ;
@@ -270,7 +272,7 @@ public class AnimatedLayoutAction extends AbstractAction {
 //           // Do this in the GUI Event Dispatch thread...
 //           SwingUtilities.invokeLater( new Runnable() {
 //               public void run() {
-//                 PGraphView gv = ( PGraphView )networkView.getView();
+//                 PGrap*View gv = ( PGrap*View )networkView.getView();
 //                 int[] sel = gv.getSelectedNodeIndices();
 //                  TreeLayout tl = new TreeLayout();
 //                  tl.doLayout( gv ) ;
@@ -286,7 +288,7 @@ public class AnimatedLayoutAction extends AbstractAction {
 //           // Do this in the GUI Event Dispatch thread...
 //           SwingUtilities.invokeLater( new Runnable() {
 //               public void run() {
-//                 PGraphView gv = ( PGraphView )networkView.getView();
+//                 PGrap*View gv = ( PGrap*View )networkView.getView();
 //                 Iterator nodes = gv.getNodeViewsIterator();
 //                 while ( nodes.hasNext() ) {
 //                   ( ( PNodeView )nodes.next() ).setNodePosition( false );
@@ -298,7 +300,7 @@ public class AnimatedLayoutAction extends AbstractAction {
 //           // Do this in the GUI Event Dispatch thread...
 //           SwingUtilities.invokeLater( new Runnable() {
 //               public void run() {
-//                 PGraphView gv = ( PGraphView )networkView.getView();
+//                 PGrap*View gv = ( PGrap*View )networkView.getView();
 //                 Iterator nodes = gv.getNodeViewsIterator();
 //                 while ( nodes.hasNext() ) {
 //                   ( ( PNodeView )nodes.next() ).setNodePosition( true );

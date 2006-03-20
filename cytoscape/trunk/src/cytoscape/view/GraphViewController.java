@@ -50,8 +50,6 @@ import giny.model.GraphPerspectiveChangeListener;
 import giny.view.GraphView;
 import cern.colt.list.IntArrayList;
 
-import cytoscape.giny.PhoebeNetworkView;
-
 public class GraphViewController 
   implements giny.model.GraphPerspectiveChangeListener{
   
@@ -408,8 +406,8 @@ public class GraphViewController
       return;
     }//if gvHandler == null
     gvHandler.handleGraphPerspectiveEvent(event, graphView);
-    if ( graphView instanceof PhoebeNetworkView )
-      ( ( PhoebeNetworkView )graphView).updateStatusLabel();
+//     if ( graphView instanceof PhoebeNetworkView )
+//       ( ( PhoebeNetworkView )graphView).updateStatusLabel();
   }//graphPerspectiveChanged
 
 }//class GraphViewController

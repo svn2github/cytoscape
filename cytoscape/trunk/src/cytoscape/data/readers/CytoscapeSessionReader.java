@@ -59,7 +59,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-import phoebe.PGraphView;
+import cytoscape.ding.DingNetworkView;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
@@ -73,6 +73,8 @@ import cytoscape.generated.NetworkTree;
 import cytoscape.generated.Node;
 import cytoscape.generated.SelectedNodes;
 import cytoscape.giny.PhoebeNetworkView;
+import cytoscape.ding.DingNetworkView;
+import cytoscape.init.CyPropertiesReader;
 import cytoscape.task.TaskMonitor;
 import cytoscape.view.CyNetworkView;
 import edu.umd.cs.piccolo.PCanvas;
@@ -481,10 +483,10 @@ public class CytoscapeSessionReader {
 			// Lastly, make the GraphView Canvas Visible.
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
-					PGraphView view = (PGraphView) Cytoscape
+					DingNetworkView view = (DingNetworkView) Cytoscape
 							.getCurrentNetworkView();
-					PCanvas pCanvas = view.getCanvas();
-					pCanvas.setVisible(true);
+// 					PCanvas pCanvas = view.getCanvas();
+// 					pCanvas.setVisible(true);
 				}
 			});
 			
@@ -509,12 +511,12 @@ public class CytoscapeSessionReader {
 	// same as other loaders
 	//
 	private void createCyNetworkView(CyNetwork cyNetwork) {
-		final PhoebeNetworkView view = new PhoebeNetworkView(cyNetwork,
+		final DingNetworkView view = new DingNetworkView(cyNetwork,
 				cyNetwork.getTitle());
 
 		// Start of Hack: Hide the View
-		PCanvas pCanvas = view.getCanvas();
-		pCanvas.setVisible(false);
+// 		PCanvas pCanvas = view.getCanvas();
+// 		pCanvas.setVisible(false);
 		// End of Hack
 
 		view.setIdentifier(cyNetwork.getIdentifier());
@@ -522,9 +524,9 @@ public class CytoscapeSessionReader {
 		view.setTitle(cyNetwork.getTitle());
 		
 		// if Squiggle function enabled, enable squiggling on the created view
-		if (Cytoscape.isSquiggleEnabled()) {
-			view.getSquiggleHandler().beginSquiggling();
-		}
+// 		if (Cytoscape.isSquiggleEnabled()) {
+// 			view.getSquiggleHandler().beginSquiggling();
+// 		}
 
 		// set the selection mode on the view
 		Cytoscape.setSelectionMode(Cytoscape.getSelectionMode(), view);
@@ -533,23 +535,23 @@ public class CytoscapeSessionReader {
 				cytoscape.view.CytoscapeDesktop.NETWORK_VIEW_CREATED, null,
 				view);
 
-		PLayer layer = view.getCanvas().getLayer();
-		PBounds pb = layer.getFullBounds();
-		if (!pb.isEmpty()) {
-			view.getCanvas().getCamera().animateViewToCenterBounds(pb, true,
-					500);
-		}
+// 		PLayer layer = view.getCanvas().getLayer();
+// 		PBounds pb = layer.getFullBounds();
+// 		if (!pb.isEmpty()) {
+// 			view.getCanvas().getCamera().animateViewToCenterBounds(pb, true,
+// 					500);
+// 		}
 
 		// Fit the network
-		PGraphView currentGraphView = (PGraphView) Cytoscape
+		DingNetworkView currentGraphView = (DingNetworkView) Cytoscape
 				.getNetworkView(cyNetwork.getIdentifier());
 		FitContentAction fca = new FitContentAction();
 
 		if ((cyNetwork.getNodeCount() > 0) && (cyNetwork.getNodeCount() < 200)) {
-			fca.zoomToMinimumEnclosingRectangle(currentGraphView);
+                  currentGraphView.fitContent();
 		} else {
-			view.getCanvas().getCamera().animateViewToCenterBounds(
-					view.getCanvas().getLayer().getFullBounds(), true, 50l);
+// 			view.getCanvas().getCamera().animateViewToCenterBounds(
+// 					view.getCanvas().getLayer().getFullBounds(), true, 50l);
 		}
 	}
 

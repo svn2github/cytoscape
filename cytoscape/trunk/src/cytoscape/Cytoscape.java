@@ -42,6 +42,7 @@ package cytoscape;
 import giny.model.Edge;
 import giny.model.Node;
 import giny.view.GraphView;
+import giny.view.NodeView;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeSupport;
@@ -72,6 +73,8 @@ import cytoscape.data.servers.BioDataServer;
 import cytoscape.giny.CytoscapeFingRootGraph;
 import cytoscape.giny.CytoscapeRootGraph;
 import cytoscape.giny.PhoebeNetworkView;
+import cytoscape.giny.CytoscapeFingRootGraph;
+import cytoscape.ding.DingNetworkView;
 import cytoscape.util.CyNetworkNaming;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
@@ -224,7 +227,7 @@ public abstract class Cytoscape {
 	/**
 	 * A null CyNetworkView to give when there is no Current NetworkView
 	 */
-	protected static CyNetworkView nullNetworkView = new PhoebeNetworkView(
+	protected static CyNetworkView nullNetworkView = new DingNetworkView(
 			nullNetwork, "null");
 
 	
@@ -1482,7 +1485,7 @@ public abstract class Cytoscape {
 		if (viewExists(network.getIdentifier())) {
 			return getNetworkView(network.getIdentifier());
 		}
-		final PhoebeNetworkView view = new PhoebeNetworkView(network, title);
+		final DingNetworkView view = new DingNetworkView(network, title);
 		view.setIdentifier(network.getIdentifier());
 		getNetworkViewMap().put(network.getIdentifier(), view);
 		view.setTitle(network.getTitle());
@@ -1491,25 +1494,45 @@ public abstract class Cytoscape {
 			((GraphReader) network.getClientData("GML")).layout(view);
 		}
 
+                else {
+                  double distanceBetweenNodes = 80.0d;
+                  int columns = (int) Math.sqrt(view.nodeCount());
+                  Iterator nodeViews = view.getNodeViewsIterator();
+                  double currX = 0.0d;
+                  double currY = 0.0d;
+                  int count = 0;
+                  while (nodeViews.hasNext()) {
+                    NodeView nView = (NodeView) nodeViews.next();
+                    nView.setOffset(currX, currY);
+                    count++;
+                    if (count == columns) {
+                      count = 0;
+                      currX = 0.0d;
+                      currY += distanceBetweenNodes; }
+                    else {
+                      currX += distanceBetweenNodes; }
+                  }
+                }
+
 		firePropertyChange(
 				cytoscape.view.CytoscapeDesktop.NETWORK_VIEW_CREATED, null,
 				view);
 
-		// Instead of calling fitContent(), access PGraphView directly.
+		// Instead of calling fitContent(), access PGrap*View directly.
 		// This enables us to disable animation. Modified by Ethan Cerami.
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				view.getCanvas().getCamera().animateViewToCenterBounds(
-						view.getCanvas().getLayer().getFullBounds(), true, 0);
-				// if Squiggle function enabled, enable it on the view
-				if (squiggleEnabled) {
-					view.getSquiggleHandler().beginSquiggling();
-				}
+// 		SwingUtilities.invokeLater(new Runnable() {
+// 			public void run() {
+// 				view.getCanvas().getCamera().animateViewToCenterBounds(
+// 						view.getCanvas().getLayer().getFullBounds(), true, 0);
+// 				// if Squiggle function enabled, enable it on the view
+// 				if (squiggleEnabled) {
+// 					view.getSquiggleHandler().beginSquiggling();
+// 				}
 				// set the selection mode on the view
 				setSelectionMode(currentSelectionMode, view);
-			}
-		});
-		view.redrawGraph(false, false);
+// 			}
+// 		});
+		view.fitContent();
 		return view;
 	}
 
@@ -1527,18 +1550,18 @@ public abstract class Cytoscape {
 	private static void setSquiggleState(boolean isEnabled) {
 
 		// enable Squiggle on all network views
-		PGraphView view;
-		String network_id;
-		Map networkViewMap = getNetworkViewMap();
-		for (Iterator iter = networkViewMap.keySet().iterator(); iter.hasNext();) {
-			network_id = (String) iter.next();
-			view = (PGraphView) networkViewMap.get(network_id);
-			if (isEnabled) {
-				view.getSquiggleHandler().beginSquiggling();
-			} else {
-				view.getSquiggleHandler().stopSquiggling();
-			}
-		}
+// 		PGrap*View view;
+// 		String network_id;
+// 		Map networkViewMap = getNetworkViewMap();
+// 		for (Iterator iter = networkViewMap.keySet().iterator(); iter.hasNext();) {
+// 			network_id = (String) iter.next();
+// 			view = (PGrap*View) networkViewMap.get(network_id);
+// 			if (isEnabled) {
+// 				view.getSquiggleHandler().beginSquiggling();
+// 			} else {
+// 				view.getSquiggleHandler().stopSquiggling();
+// 			}
+// 		}
 
 	}
 

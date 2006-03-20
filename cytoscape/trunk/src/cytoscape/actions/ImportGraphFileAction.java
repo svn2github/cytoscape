@@ -1,4 +1,5 @@
 
+
 /*
   File: ImportGraphFileAction.java 
   
@@ -49,7 +50,7 @@ import java.text.NumberFormat;
 
 import javax.swing.SwingUtilities;
 
-import phoebe.PGraphView;
+// import phoebe.PGrap*View;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
@@ -58,7 +59,7 @@ import cytoscape.data.readers.GraphReader;
 import cytoscape.data.readers.InteractionsReader;
 import cytoscape.data.readers.XGMMLReader;
 import cytoscape.data.servers.BioDataServer;
-import cytoscape.giny.PhoebeNetworkView;
+import cytoscape.ding.DingNetworkView;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
@@ -428,15 +429,7 @@ private CyNetwork createNetwork(String location, int file_type,
 								.getIdentifier()));
 			}
 
-			// Lastly, make the GraphView Canvas Visible.
-			SwingUtilities.invokeLater(new Runnable() {
-				public void run() {
-					PGraphView view = (PGraphView) Cytoscape
-							.getCurrentNetworkView();
-					PCanvas pCanvas = view.getCanvas();
-					pCanvas.setVisible(true);
-				}
-			});
+                        Cytoscape.getCurrentNetworkView().fitContent();
 		}
 		return network;
 	}
@@ -447,12 +440,12 @@ private CyNetwork createNetwork(String location, int file_type,
 	 * this hack in the core Cytoscape.java class.
 	 */
 	private void createCyNetworkView(CyNetwork cyNetwork) {
-		final PhoebeNetworkView view = new PhoebeNetworkView(cyNetwork,
+		final DingNetworkView view = new DingNetworkView(cyNetwork,
 				cyNetwork.getTitle());
 
 		// Start of Hack: Hide the View
-		PCanvas pCanvas = view.getCanvas();
-		pCanvas.setVisible(false);
+// 		PCanvas pCanvas = view.getCanvas();
+// 		pCanvas.setVisible(false);
 		// End of Hack
 
 		view.setIdentifier(cyNetwork.getIdentifier());
@@ -461,7 +454,7 @@ private CyNetwork createNetwork(String location, int file_type,
 
 		// if Squiggle function enabled, enable squiggling on the created view
 		if (Cytoscape.isSquiggleEnabled()) {
-			view.getSquiggleHandler().beginSquiggling();
+// 			view.getSquiggleHandler().beginSquiggling();
 		}
 
 		// set the selection mode on the view
@@ -471,15 +464,15 @@ private CyNetwork createNetwork(String location, int file_type,
 				cytoscape.view.CytoscapeDesktop.NETWORK_VIEW_CREATED, null,
 				view);
 
-		// Instead of calling fitContent(), access PGraphView directly.
+		// Instead of calling fitContent(), access PGrap*View directly.
 		// AJK: 09/10/05 BEGIN:
 		// try fix to check for empty PBounds before animatingToCenter
-		PLayer layer = view.getCanvas().getLayer();
-		PBounds pb = layer.getFullBounds();
-		if (!pb.isEmpty()) {
-			view.getCanvas().getCamera().animateViewToCenterBounds(pb, true,
-					500);
-		}
+// 		PLayer layer = view.getCanvas().getLayer();
+// 		PBounds pb = layer.getFullBounds();
+// 		if (!pb.isEmpty()) {
+// 			view.getCanvas().getCamera().animateViewToCenterBounds(pb, true,
+// 					500);
+// 		}
 		// view.getCanvas().getCamera().animateViewToCenterBounds
 		// (view.getCanvas().getLayer().getFullBounds(), true, 0);
 	}
