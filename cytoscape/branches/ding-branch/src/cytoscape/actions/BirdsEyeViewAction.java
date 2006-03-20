@@ -76,8 +76,9 @@ public class BirdsEyeViewAction extends CytoscapeAction implements
 	public void actionPerformed(ActionEvent e) {
 
 		if( !on ) {
-                  bev = new BirdsEyeView((DGraphView) Cytoscape.getCurrentNetworkView());
-			bev.setMinimumSize(new Dimension(180, 180));
+                  bev = new BirdsEyeView((DGraphView) Cytoscape.getCurrentNetworkView()) {
+                      public Dimension getMinimumSize() {
+                        return new Dimension(180, 180); } };
 			Cytoscape.getDesktop().getNetworkPanel().setNavigator(bev);
 			Cytoscape.getDesktop().getSwingPropertyChangeSupport()
 					.addPropertyChangeListener(this);
