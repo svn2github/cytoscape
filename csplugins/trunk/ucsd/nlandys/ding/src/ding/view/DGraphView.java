@@ -928,6 +928,11 @@ public class DGraphView implements GraphView
       m_contentChanged = true; }
   }
 
+  public GraphLOD getGraphLOD()
+  {
+    return m_canvas.m_lod;
+  }
+
   /**
    * Efficiently computes the set of nodes intersecting an axis-aligned
    * query rectangle; the query rectangle is specified in the node coordinate
@@ -992,18 +997,21 @@ public class DGraphView implements GraphView
   /**
    * Extents of the nodes.
    */
-  public void getExtents(double[] extentsBuff)
+  public boolean getExtents(double[] extentsBuff)
   {
     synchronized (m_lock) {
-      m_spacial.queryOverlap(Float.NEGATIVE_INFINITY,
-                             Float.NEGATIVE_INFINITY,
-                             Float.POSITIVE_INFINITY,
-                             Float.POSITIVE_INFINITY,
-                             m_extentsBuff, 0, false);
+      if (m_spacial.queryOverlap(Float.NEGATIVE_INFINITY,
+                                 Float.NEGATIVE_INFINITY,
+                                 Float.POSITIVE_INFINITY,
+                                 Float.POSITIVE_INFINITY,
+                                 m_extentsBuff,
+                                 0, false).numRemaining() == 0) {
+        return false; }
       extentsBuff[0] = m_extentsBuff[0];
       extentsBuff[1] = m_extentsBuff[1];
       extentsBuff[2] = m_extentsBuff[2];
-      extentsBuff[3] = m_extentsBuff[3]; }
+      extentsBuff[3] = m_extentsBuff[3];
+      return true; }
   }
 
   public void xformComponentToNodeCoords(double[] coords)
