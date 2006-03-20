@@ -4,6 +4,9 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 
@@ -41,6 +44,8 @@ public class BirdsEyeView extends Component
     m_viewXCenter = pt.getX();
     m_viewYCenter = pt.getY();
     m_viewScaleFactor = m_view.getZoom();
+    addMouseListener(new InnerMouseListener());
+    addMouseMotionListener(new InnerMouseMotionListener());
   }
 
   public void reshape(int x, int y, int width, int height)
@@ -116,6 +121,54 @@ public class BirdsEyeView extends Component
       m_viewScaleFactor = newScaleFactor;
       repaint();
     }
+
+  }
+
+  private int m_currMouseButton = 0;
+  private int m_lastXMousePos = 0;
+  private int m_lastYMousePos = 0;
+
+  private final class InnerMouseListener implements MouseListener
+  {
+
+    public void mouseClicked(MouseEvent e) {}
+    public void mouseEntered(MouseEvent e) {}
+    public void mouseExited(MouseEvent e) {}
+
+    public void mousePressed(MouseEvent e)
+    {
+      if (e.getButton() == MouseEvent.BUTTON1) {
+        m_currMouseButton = 1;
+        m_lastXMousePos = e.getX();
+        m_lastYMousePos = e.getY(); }
+    }
+
+    public void mouseReleased(MouseEvent e)
+    {
+      if (e.getButton() == MouseEvent.BUTTON1) {
+        if (m_currMouseButton == 1) {
+          m_currMouseButton = 0; } }
+    }
+
+  }
+
+  private final class InnerMouseMotionListener implements MouseMotionListener
+  {
+
+    public void mouseDragged(MouseEvent e)
+    {
+      if (m_currMouseButton == 1) {
+        final int currX = e.getX();
+        final int currY = e.getY();
+        final double deltaX = (currX - m_lastXMousePos) / m_myScaleFactor;
+        final double deltaY = (m_lastYMousePos - currY) / m_myScaleFactor;
+        m_lastXMousePos = currX;
+        m_lastYMousePos = currY;
+        final Point2D pt = m_view.getCenter();
+        m_view.setCenter(pt.getX() + deltaX, pt.getY() + deltaY); }
+    }
+
+    public void mouseMoved(MouseEvent e) {}
 
   }
 
