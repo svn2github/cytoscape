@@ -50,6 +50,12 @@ public class BirdsEyeView extends Component
     addMouseMotionListener(new InnerMouseMotionListener());
   }
 
+  public void destroy()
+  {
+    m_view.removeContentChangeListener(m_cLis);
+    m_view.removeViewportChangeListener(m_vLis);
+  }
+
   public void reshape(int x, int y, int width, int height)
   {
     super.reshape(x, y, width, height);
