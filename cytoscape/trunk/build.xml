@@ -183,7 +183,7 @@
     <!-- ======================================================= -->
 
     <!--  Target to clean out all directories -->
-    <target name="clean" description="Removes all generated files.">
+    <target name="clean" depends="clean-generated" description="Removes all generated files.">
         <delete dir="${build.dir}"/>
         <delete file="${basedir}/cytoscape.jar"/>
         <delete file="${basedir}/cytoscape.props"/>
@@ -506,7 +506,7 @@
     <!-- Use the 'zip_release' target to build zipped releases   -->
     <!-- Questions?  email:  cerami@cbio.mskcc.org	         -->
     <!-- ======================================================= -->
-    <target name="release" depends="jar, test"
+    <target name="release" depends="jar"
             description="Creates Cytoscape Release">
 
         <echo>
