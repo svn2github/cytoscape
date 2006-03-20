@@ -44,15 +44,16 @@ public class BirdsEyeView extends Component
   {
     destroy();
     m_view = view;
-    m_view.addContentChangeListener(m_cLis);
-    m_view.addViewportChangeListener(m_vLis);
-    m_viewWidth = m_view.getComponent().getWidth();
-    m_viewHeight = m_view.getComponent().getHeight();
-    final Point2D pt = m_view.getCenter();
-    m_viewXCenter = pt.getX();
-    m_viewYCenter = pt.getY();
-    m_viewScaleFactor = m_view.getZoom();
-    m_contentChanged = true;
+    if (m_view != null) {
+      m_view.addContentChangeListener(m_cLis);
+      m_view.addViewportChangeListener(m_vLis);
+      m_viewWidth = m_view.getComponent().getWidth();
+      m_viewHeight = m_view.getComponent().getHeight();
+      final Point2D pt = m_view.getCenter();
+      m_viewXCenter = pt.getX();
+      m_viewYCenter = pt.getY();
+      m_viewScaleFactor = m_view.getZoom();
+      m_contentChanged = true; }
     repaint();
   }
 
@@ -74,6 +75,10 @@ public class BirdsEyeView extends Component
   public void update(Graphics g)
   {
     if (m_img == null) { return; }
+    if (m_view == null) {
+      g.setColor(Color.white);
+      g.fillRect(0, 0, getWidth(), getHeight());
+      return; }
     if (m_contentChanged) {
       if (m_view.getExtents(m_extents)) {
         m_myXCenter = (m_extents[0] + m_extents[2]) / 2.0d;
@@ -183,8 +188,9 @@ public class BirdsEyeView extends Component
         final double deltaY = (m_lastYMousePos - currY) / m_myScaleFactor;
         m_lastXMousePos = currX;
         m_lastYMousePos = currY;
-        final Point2D pt = m_view.getCenter();
-        m_view.setCenter(pt.getX() + deltaX, pt.getY() + deltaY); }
+        if (m_view != null) {
+          final Point2D pt = m_view.getCenter();
+          m_view.setCenter(pt.getX() + deltaX, pt.getY() + deltaY); } }
     }
 
     public void mouseMoved(MouseEvent e) {}
