@@ -45,15 +45,14 @@ import javax.swing.event.*;
 
 import java.awt.Dimension;
 import cytoscape.view.CyNetworkView;
-import phoebe.event.BirdsEyeView;
+import ding.view.BirdsEyeView;
+import ding.view.DGraphView;
 import cytoscape.dialogs.GraphObjectSelection;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.Cytoscape;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.ding.DingNetworkView;
 import java.beans.*;
-
-import edu.umd.cs.piccolo.PLayer;
 
 public class BirdsEyeViewAction extends CytoscapeAction implements
 		PropertyChangeListener {
@@ -68,57 +67,25 @@ public class BirdsEyeViewAction extends CytoscapeAction implements
 
 	public void propertyChange(PropertyChangeEvent e) {
 		if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUSED
-				|| e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUS) {
-			bev.disconnect();
-// 			try {
-// 				bev.connect(((DingNetworkView) Cytoscape
-// 						.getCurrentNetworkView()).getCanvas(),
-// 						new PLayer[] { ((DingNetworkView) Cytoscape
-// 								.getCurrentNetworkView()).getCanvas()
-// 								.getLayer() });
-// 				bev.updateFromViewed();
-// 			} catch (Exception ex) {
-// 				// no newly focused network
-// 			}
+                    || e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUS ||
+                    e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_DESTROYED) {
+                  bev.changeView((DGraphView) Cytoscape.getCurrentNetworkView());
 		}
-
-		if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_DESTROYED) {
-			bev.disconnect();
-// 			try {
-// 				bev.connect(((DingNetworkView) Cytoscape
-// 						.getCurrentNetworkView()).getCanvas(),
-// 						new PLayer[] { ((DingNetworkView) Cytoscape
-// 								.getCurrentNetworkView()).getCanvas()
-// 								.getLayer() });
-// 				bev.updateFromViewed();
-// 			} catch (Exception ex) {
-// 				// no newly focused network
-// 			}
-		}
-
 	}
 
 	public void actionPerformed(ActionEvent e) {
 
 		if( !on ) {
-			bev = new BirdsEyeView();
-
-// 			bev.connect(((DingNetworkView) Cytoscape.getCurrentNetworkView())
-// 					.getCanvas(), new PLayer[] { ((DingNetworkView) Cytoscape
-// 					.getCurrentNetworkView()).getCanvas().getLayer() });
-
+                  bev = new BirdsEyeView((DGraphView) Cytoscape.getCurrentNetworkView());
 			bev.setMinimumSize(new Dimension(180, 180));
-			bev.setSize(new Dimension(180, 180));
-			
 			Cytoscape.getDesktop().getNetworkPanel().setNavigator(bev);
 			Cytoscape.getDesktop().getSwingPropertyChangeSupport()
 					.addPropertyChangeListener(this);
-			bev.updateFromViewed();
 			on = true;
 			Cytoscape.getDesktop().getCyMenus().setOverviewEnabled(on);
 		} else {
 			if (bev != null) {
-				bev.disconnect();
+				bev.destroy();
 				bev = null;
 			}
 			Cytoscape.getDesktop().getNetworkPanel().setNavigator(
