@@ -16,7 +16,7 @@ public class BirdsEyeView extends Component
 {
 
   private final double[] m_extents = new double[4];
-  private final DGraphView m_view;
+  private DGraphView m_view;
   private final ContentChangeListener m_cLis;
   private final ViewportChangeListener m_vLis;
   private Image m_img = null;
@@ -33,21 +33,27 @@ public class BirdsEyeView extends Component
   public BirdsEyeView(DGraphView view)
   {
     super();
-    m_view = view;
     m_cLis = new InnerContentChangeListener();
     m_vLis = new InnerViewportChangeListener();
+    addMouseListener(new InnerMouseListener());
+    addMouseMotionListener(new InnerMouseMotionListener());
+    changeView(view);
+  }
+
+  public void changeView(DGraphView view)
+  {
+    destroy();
+    m_view = view;
     m_view.addContentChangeListener(m_cLis);
     m_view.addViewportChangeListener(m_vLis);
-    // I'd love to figure out how to remove these listeners when the
-    // component is "destroyed".
     m_viewWidth = m_view.getComponent().getWidth();
     m_viewHeight = m_view.getComponent().getHeight();
     final Point2D pt = m_view.getCenter();
     m_viewXCenter = pt.getX();
     m_viewYCenter = pt.getY();
     m_viewScaleFactor = m_view.getZoom();
-    addMouseListener(new InnerMouseListener());
-    addMouseMotionListener(new InnerMouseMotionListener());
+    m_contentChanged = true;
+    repaint();
   }
 
   public void destroy()
