@@ -1,6 +1,7 @@
 package ding.view.test;
 
 import cytoscape.render.stateful.GraphLOD;
+import ding.view.BirdsEyeView;
 import ding.view.DGraphView;
 import fing.model.FingRootGraphFactory;
 import giny.model.GraphPerspective;
@@ -92,6 +93,18 @@ public class SanityTest
         public boolean detail(int nodes, int edges) {
           return nodes < 4; } });
     view.updateView();
+    EventQueue.invokeAndWait(new Runnable() {
+        public void run() {
+          Frame f = new Frame() {
+              public void update(Graphics g) {
+                paint(g); } };
+          f.add(new BirdsEyeView(view));
+          for (int i = 0; i < 10; i++) {
+            f.show();
+            f.resize(150, 100); }
+          f.addWindowListener(new WindowAdapter() {
+              public void windowClosing(WindowEvent e) {
+                System.exit(0); } }); } });
   }
 
 }
