@@ -3,11 +3,13 @@ package ding.view;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 public class BirdsEyeView extends Component
@@ -83,10 +85,14 @@ public class BirdsEyeView extends Component
     final double rectYCenter =
       (((double) getHeight()) / 2.0d) -
       (m_myScaleFactor * (m_viewYCenter - m_myYCenter));
-    g.setColor(Color.blue);
-    g.drawRect((int) (rectXCenter - (rectWidth / 2)),
-               (int) (rectYCenter - (rectHeight / 2)),
-               (int) rectWidth, (int) rectHeight);
+    final Rectangle2D rect = new Rectangle2D.Double
+      (rectXCenter - (rectWidth / 2), rectYCenter - (rectHeight / 2),
+       rectWidth, rectHeight);
+    final Graphics2D g2 = (Graphics2D) g;
+    g2.setColor(new Color(0, 0, 255, 63));
+    g2.fill(rect);
+    g2.setColor(Color.blue);
+    g2.draw(rect);
   }
 
   public void paint(Graphics g)
