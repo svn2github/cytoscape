@@ -52,7 +52,6 @@ class InnerCanvas extends Component
   double m_scaleFactor;
   private int m_lastRenderDetail = 0;
   private Rectangle m_selectionRect = null;
-  private boolean m_resized = false;
 
   InnerCanvas(Object lock, DGraphView view)
   {
@@ -79,7 +78,7 @@ class InnerCanvas extends Component
       synchronized (m_lock) {
         m_img = img;
         m_grafx = grafx;
-        m_resized = true; } }
+        m_view.m_viewportChanged = true; } }
   }
 
   public void update(Graphics g)
@@ -94,7 +93,7 @@ class InnerCanvas extends Component
     double yCenter = 0.0d;
     double scaleFactor = 1.0d;
     synchronized (m_lock) {
-      if (m_view.m_contentChanged || m_view.m_viewportChanged || m_resized) {
+      if (m_view.m_contentChanged || m_view.m_viewportChanged) {
         m_lastRenderDetail =
           GraphRenderer.renderGraph((FixedGraph) m_view.m_drawPersp,
                                     m_view.m_spacial,
@@ -113,8 +112,7 @@ class InnerCanvas extends Component
         xCenter = m_xCenter;
         yCenter = m_yCenter;
         scaleFactor = m_scaleFactor;
-        m_view.m_viewportChanged = false;
-        m_resized = false; } }
+        m_view.m_viewportChanged = false; } }
     g.drawImage(m_img, 0, 0, null);
     if (m_selectionRect != null) {
       final Graphics2D g2 = (Graphics2D) g;
@@ -126,7 +124,8 @@ class InnerCanvas extends Component
     if (viewportChanged) {
       final ViewportChangeListener lis = m_view.m_vLis[0];
       if (lis != null) {
-        lis.viewportChanged(xCenter, yCenter, scaleFactor); } }
+        lis.viewportChanged(getWidth(), getHeight(),
+                            xCenter, yCenter, scaleFactor); } }
   }
 
   public void paint(Graphics g)

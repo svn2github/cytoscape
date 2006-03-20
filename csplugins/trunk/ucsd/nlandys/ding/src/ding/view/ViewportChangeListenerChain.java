@@ -12,11 +12,12 @@ class ViewportChangeListenerChain implements ViewportChangeListener
     this.b = b;
   }
 
-  public void viewportChanged(double newXCenter, double newYCenter,
+  public void viewportChanged(int w, int h,
+                              double newXCenter, double newYCenter,
                               double newScaleFactor)
   {
-    a.viewportChanged(newXCenter, newYCenter, newScaleFactor);
-    b.viewportChanged(newXCenter, newYCenter, newScaleFactor);
+    a.viewportChanged(w, h, newXCenter, newYCenter, newScaleFactor);
+    b.viewportChanged(w, h, newXCenter, newYCenter, newScaleFactor);
   }
 
   static ViewportChangeListener add(ViewportChangeListener a,

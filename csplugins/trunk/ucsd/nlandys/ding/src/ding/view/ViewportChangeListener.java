@@ -5,9 +5,10 @@ public interface ViewportChangeListener
 
   /**
    * This gets fired upon graph redraw when zoom is changed or the graph
-   * center is changed.
+   * center is changed or the view component is resized.
    */
-  public void viewportChanged(double newXCenter, double newYCenter,
+  public void viewportChanged(int viewportWidth, int viewportHeigh,
+                              double newXCenter, double newYCenter,
                               double newScaleFactor);
 
 }
