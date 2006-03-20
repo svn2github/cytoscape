@@ -58,6 +58,7 @@ public class BirdsEyeView extends Component
 
   public void destroy()
   {
+    if (m_view == null) return;
     m_view.removeContentChangeListener(m_cLis);
     m_view.removeViewportChangeListener(m_vLis);
   }
