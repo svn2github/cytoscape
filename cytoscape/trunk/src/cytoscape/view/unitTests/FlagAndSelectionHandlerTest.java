@@ -87,6 +87,10 @@ public void setUp () throws Exception
     gp = rootGraph.createGraphPerspective(nodeArray, edgeArray);
     filter = new FlagFilter(gp);
     view = new ding.view.DGraphView(gp);
+    for (int i = 0; i < nodeArray.length; i++) {
+      view.addNodeView(nodeArray[i].getRootGraphIndex()); }
+    for (int i = 0; i < edgeArray.length; i++) {
+      view.addEdgeView(edgeArray[i].getRootGraphIndex()); }
     nodeView1 = view.getNodeView(node1);
     nodeView2 = view.getNodeView(node2);
     edgeView1 = view.getEdgeView(edge1);
