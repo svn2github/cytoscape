@@ -46,7 +46,7 @@ import ViolinStrings.Strings;
 
 
 
-public class CyCommandLineParser {
+public class CyCommandLineParser implements CyInitParams {
 
    // variables available to the command line
    String bioDataServer ;
@@ -71,16 +71,9 @@ public class CyCommandLineParser {
    ArrayList scripts;
    boolean inScript;
    ArrayList currentScript;
-   boolean suppressView;
    ArrayList resourcePlugins;
 
    boolean helpRequested = false;
-
-   //  public static String HELP = 
-   //"java -Xmx1G -server -jar cytoscape.jar [options]\n"+
-   //    "-h : display this help message\n"+
-   //    "-p [file+]: load a jar from the local file system or from a http address, or specify a manifest of jar files to load\n"+
-   //    "-g [file+]: specifies any number of network files to load ";
 
    public static String helpString = "";
 
@@ -120,7 +113,6 @@ public class CyCommandLineParser {
       viewThreshold = null;
       inScript = false;
       scripts = new ArrayList();
-      suppressView = false;
       resourcePlugins = new ArrayList();
    }
 
@@ -137,28 +129,19 @@ public class CyCommandLineParser {
    ////////////////////////////////////////
    // Accessor methods for all possible command line options
 
-   public ArrayList getResourcePlugins () {
+   public List getResourcePlugins () {
       return resourcePlugins;
    }
 
    /**
     * @return the location of a specifed props file, this will be converted to a URL
     */
-   public String getSpecifiedPropsFile () {
+   public String getPropsFile () {
       return specifiedPropsFileLocation;
    }
 
    public String getVizPropsFile () {
       return vizPropsFileLocation;
-   }
-
-   public boolean suppressView () {
-      return suppressView;
-   }
-
-
-   public boolean useView () {
-      return useView;
    }
 
    public Integer getViewThreshold () {
@@ -173,10 +156,21 @@ public class CyCommandLineParser {
    }
 
    /**
+    * Deprecated because name forces many (confusing) double negatives. 
+    * Use canonicalizeNames() instead.
     * @return if we should *not* canonicalize names
+    * @deprecated
     */
    public boolean noCanonicalization () {
       return noCanonicalization;
+   }
+
+   /**
+    * @return TRUE if we should canonicalize names, 
+    * FALSE if we should NOT canonicalize names.
+    */
+   public boolean canonicalizeNames () {
+      return !noCanonicalization;
    }
 
    /**
@@ -243,6 +237,16 @@ public class CyCommandLineParser {
       }
 
       return urls;
+   }
+
+   /**
+    * @return The execution mode, either GUI or TEXT based on the headless arg.
+    */
+   public int getMode() {
+   	if ( useView )
+		return CyInitParams.GUI;
+	else
+		return CyInitParams.TEXT;
    }
 
    /**
@@ -334,21 +338,12 @@ public class CyCommandLineParser {
 	i++;
       } 	     
 
-      /*  headless mode is currently not supported so there is no sense having the option
       // useView
       else if ( Strings.isLike( args[i], "-headless", 0, true ) ||
                 Strings.isLike( args[i], "-noView", 0, true ) ) {
         i++;
         //System.out.println( "there will be no view" );
         useView = false;
-      }
-      */
-
-      // noDialog
-      else if ( Strings.isLike( args[i], "-noDialog", 0, true ) ||
-                Strings.isLike( args[i], "-suppressView", 0, true ) ) {
-        i++;
-        suppressView = false;
       }
 
 
@@ -362,19 +357,6 @@ public class CyCommandLineParser {
         i++;
       }
 
-
-
-      // project file locations
-      else if ( Strings.isLike( args[i], "-project",0, true ) ) {
-        resetFalse();
-        inProjects = true;
-        i++;
-        if ( badArgs(args, i ) )
-          return;
-        System.out.println( "Project file specified, but will be ignored because its usage is deprecated!!!" );
-        projectFiles.add( args[i] );
-        i++;
-      }
 
       // graph files
       else if ( Strings.isLike( args[i], "-g", 0, true ) ||
@@ -565,7 +547,7 @@ public class CyCommandLineParser {
           System.out.println( "Adding single jar: "+plugin_file );
         }
 
-        if ( plugin_file.toString().startsWith( "http:" ) || plugin_file.toString().startsWith( "jar:") ) {
+        else if ( plugin_file.toString().startsWith( "http:" ) || plugin_file.toString().startsWith( "jar:") ) {
           pluginFiles.add( plugin_file.toString()  );
           System.out.println( "Adding URL Jar: "+plugin_file );
         }
@@ -587,6 +569,7 @@ public class CyCommandLineParser {
               }
             }
           } catch ( Exception exp ) {
+	    exp.printStackTrace();
             System.err.println( "error reading manifest file"+plugin_file );
           }
         }

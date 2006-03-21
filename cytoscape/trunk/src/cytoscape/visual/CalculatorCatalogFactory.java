@@ -115,7 +115,7 @@ public abstract class CalculatorCatalogFactory {
 
 			// load the specified (e.g. command line) vizmap.props
 			tryName = "command line";
-			File cliVmp = CytoscapeInit.cliVizMapPropsFile();
+			File cliVmp = CytoscapeInit.getSpecifiedVizProps();
 			if (cliVmp != null)
 				vizmapProps.load(new FileInputStream(cliVmp));
 

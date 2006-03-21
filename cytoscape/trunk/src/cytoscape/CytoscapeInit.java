@@ -55,8 +55,9 @@ import java.util.jar.JarFile;
 import javax.swing.ImageIcon;
 
 import cytoscape.data.servers.BioDataServer;
-import cytoscape.init.CyCommandLineParser;
 import cytoscape.init.CyPropertiesReader;
+import cytoscape.init.CyInitParams;
+import cytoscape.init.CyCommandLineParser;
 import cytoscape.plugin.AbstractPlugin;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.util.shadegrown.WindowUtilities;
@@ -136,7 +137,7 @@ public class CytoscapeInit implements PropertyChangeListener {
 
 	private static final String fDOUBLE_QUOTE = "\"";
 
-	private static String cliVizPropsFile = "";
+	private static String specifiedVizProps = "";
 
 	/**
 	 * Calling the constructor sets up the CytoscapeInit Object to be a
@@ -170,9 +171,8 @@ public class CytoscapeInit implements PropertyChangeListener {
 	 *            the arguments from the command line
 	 * @return false, if we should stop initing, since help has been requested
 	 */
-	public boolean init(String[] args) {
+	public boolean init(CyInitParams params) {
 
-		this.args = args;
 		bioDataServer = null;
 		noCanonicalization = false;
 		expressionFiles = new HashSet();
@@ -181,42 +181,20 @@ public class CytoscapeInit implements PropertyChangeListener {
 		nodeAttributes = new HashSet();
 		pluginURLs = new HashSet();
 
-		// parse the command line
-		CyCommandLineParser cli = new CyCommandLineParser();
-		cli.parseCommandLine(args);
-
-		// see if help is requested
-		if (cli.helpRequested()) {
-			// return, and force help to be displayed, and Cytoscape to exit
-			return false;
-		}
-
-		// 1. Properties from cytoscape.props
+		// Properties from cytoscape.props
 		// read in properties in cytoscape.props, and assign variables from them
 		CyPropertiesReader propReader = new CyPropertiesReader();
 		// getSpecifiedPropsFile returns the location of cytoscape.props
-		propReader.readProperties(cli.getSpecifiedPropsFile());
+		propReader.readProperties(params.getPropsFile());
 		properties = propReader.getProperties();
 		propertiesLocation = propReader.getPropertiesLocation();
 		setVariablesFromProperties();
 
-		// 2. Command line. Overwrites properties set from cytoscape.props
-		setVariablesFromCommandLine(cli);
+		// Overwrites properties set from cytoscape.props
+		setVariablesFromInitParams(params);
 
-		// THIS IS DEPRECATED. The Project files are no longer supported!!!
-		// this loads project files, whic are essentially an extension of the
-		// command line
-		// loadProjectFiles(cli.getProjectFiles());
-
-		useView = cli.useView();
-		// We currently don't support headless mode, so no sense allowing a
-		// property to do anything.
-		// if ( System.getProperty( "java.awt.headless" ) == "true" ) {
-		// useView = false;
-		// }
-		suppressView = cli.suppressView();
-
-		cliVizPropsFile = cli.getVizPropsFile();
+		// set the vizmap.props file 
+		specifiedVizProps = params.getVizPropsFile();
 
 		// store key property values into main Properties object for
 		// for visual (via Preferences Dialog) communication and later storage
@@ -227,22 +205,33 @@ public class CytoscapeInit implements PropertyChangeListener {
 
 		// see if we are in headless mode
 		// show splash screen, if appropriate
-		if (!isHeadless()) {
+                System.out.println("init mode: " + params.getMode() );
+                if ( params.getMode() == CyInitParams.GUI ) {
+
 			ImageIcon image = new ImageIcon(getClass().getResource(
 					"/cytoscape/images/CytoscapeSplashScreen.png"));
 			WindowUtilities.showSplash(image, 8000);
 			Cytoscape.getDesktop();
 			// setup CytoPanels menu -
-			// this cannot be done in CytoscapeDesktop construction (like the
-			// other menus)
-			// because we need CytoscapeDesktop created first. this is so
-			// because CytoPanel
-			// menu item listeners need to register for CytoPanel events via a
-			// CytoPanel reference,
-			// and the only way to get a CytoPanel reference is via
-			// CytoscapeDeskop:
+			// This cannot be done in CytoscapeDesktop construction (like the other menus)
+			// because we need CytoscapeDesktop created first. This is because CytoPanel
+			// menu item listeners need to register for CytoPanel events via a CytoPanel reference,
+			// and the only way to get a CytoPanel reference is via CytoscapeDeskop:
 			// Cytoscape.getDesktop().getCytoPanel(...)
 			Cytoscape.getDesktop().getCyMenus().initCytoPanelMenus();
+
+			// Add a listener that will apply vizmaps every time attributes change
+			PropertyChangeListener attsChangeListener = new PropertyChangeListener() {
+
+				public void propertyChange(PropertyChangeEvent e) {
+					if (e.getPropertyName().equals(Cytoscape.ATTRIBUTES_CHANGED)) {
+						// apply vizmaps
+						Cytoscape.getCurrentNetworkView().redrawGraph(false, true); 
+					}
+				}
+			};
+
+			Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(attsChangeListener);
 		}
 
 		// now that we are properly set up,
@@ -267,20 +256,7 @@ public class CytoscapeInit implements PropertyChangeListener {
 				new String[] {}), !noCanonicalization(), bds,
 				getDefaultSpeciesName());
 
-		// Add a listener that will apply vizmaps every time attributes change
-		PropertyChangeListener attsChangeListener = new PropertyChangeListener() {
 
-			public void propertyChange(PropertyChangeEvent e) {
-				if (e.getPropertyName().equals(Cytoscape.ATTRIBUTES_CHANGED)) {
-					// apply vizmaps
-					Cytoscape.getCurrentNetworkView().redrawGraph(false, true); // re-apply
-																				// vizmaps
-				}// if
-			}// propertyChange
-		};// attsChangedListener
-
-		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(
-				attsChangeListener);
 		Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
 
 		// load expression data if specified
@@ -297,24 +273,25 @@ public class CytoscapeInit implements PropertyChangeListener {
 			}
 		}
 
-		loadPlugins(pluginURLs);
+		if ( params.getMode() == CyInitParams.GUI ) {
 
-		// attempt to load resource plugins
-		List rp = cli.getResourcePlugins();
-		for (Iterator rpi = rp.iterator(); rpi.hasNext();) {
-			String resource = (String) rpi.next();
-			// try to get the class
-			Class rclass = null;
-			try {
-				rclass = Class.forName(resource);
-			} catch (Exception exc) {
-				System.out.println("Getting class: " + resource + " failed");
-				exc.printStackTrace();
+			loadPlugins(pluginURLs);
+
+			// attempt to load resource plugins
+			List rp = params.getResourcePlugins();
+			for (Iterator rpi = rp.iterator(); rpi.hasNext();) {
+				String resource = (String) rpi.next();
+				// try to get the class
+				Class rclass = null;
+				try {
+					rclass = Class.forName(resource);
+				} catch (Exception exc) {
+					System.out.println("Getting class: " + resource + " failed");
+					exc.printStackTrace();
+				}
+				loadPlugin(rclass);
 			}
-			loadPlugin(rclass);
-		}
 
-		if (!isHeadless()) {
 			WindowUtilities.hideSplash();
 		}
 
@@ -482,73 +459,26 @@ public class CytoscapeInit implements PropertyChangeListener {
 		return defaultVisualStyle;
 	}
 
-	/**
-	 * This method does absolutely nothing.
-	 * 
-	 * @param project_files
-	 * @deprecated the project file has been deprecated, do not call this method
-	 */
-	private void loadProjectFiles(List project_files) {
+	private void setVariablesFromInitParams(CyInitParams params) {
 
-		// ArrayList tokens = new ArrayList();
-		// for (Iterator i = project_files.iterator(); i.hasNext();) {
-		// String file = (String) i.next();
-		// try {
-		// BufferedReader in = new BufferedReader(new FileReader(file));
-		// String oneLine = in.readLine();
-		// while (oneLine != null) {
-		//
-		// if (oneLine.startsWith("#")) {
-		// // comment
-		// } else {
-		//
-		// boolean returnTokens = true;
-		// String currentDelims = fWHITESPACE_AND_QUOTES;
-		// StringTokenizer parser = new StringTokenizer(oneLine,
-		// currentDelims, returnTokens);
-		//
-		// while (parser.hasMoreTokens()) {
-		// String token = parser.nextToken(currentDelims);
-		// if (!isDoubleQuote(token)) {
-		// if (!token.trim().equals("")) {
-		// tokens.add(token);
-		// }
-		// } else {
-		// currentDelims = flipDelimiters(currentDelims);
-		// }
-		// }
-		// }
-		// oneLine = in.readLine();
-		// }
-		// in.close();
-		// } catch (Exception ex) {
-		// System.out.println("Filter Read error");
-		// ex.printStackTrace();
-		// }
-		//
-		// }
-	}
-
-	private void setVariablesFromCommandLine(CyCommandLineParser parser) {
-
-		if (parser.getBioDataServer() != null) {
-			bioDataServer = parser.getBioDataServer();
+		if (params.getBioDataServer() != null) {
+			bioDataServer = params.getBioDataServer();
 		}
 
-		noCanonicalization = parser.noCanonicalization();
+		noCanonicalization = params.canonicalizeNames();
 
-		if (parser.getSpecies() != null) {
-			defaultSpeciesName = parser.getSpecies();
+		if (params.getSpecies() != null) {
+			defaultSpeciesName = params.getSpecies();
 		}
 
-		expressionFiles.addAll(parser.getExpressionFiles());
-		graphFiles.addAll(parser.getGraphFiles());
-		nodeAttributes.addAll(parser.getNodeAttributeFiles());
-		edgeAttributes.addAll(parser.getEdgeAttributeFiles());
-		pluginURLs.addAll(parser.getPluginURLs());
+		expressionFiles.addAll(params.getExpressionFiles());
+		graphFiles.addAll(params.getGraphFiles());
+		nodeAttributes.addAll(params.getNodeAttributeFiles());
+		edgeAttributes.addAll(params.getEdgeAttributeFiles());
+		pluginURLs.addAll(params.getPluginURLs());
 
-		if (parser.getViewThreshold() != null)
-			viewThreshold = parser.getViewThreshold().intValue();
+		if (params.getViewThreshold() != null)
+			viewThreshold = params.getViewThreshold().intValue();
 	}
 
 	/**
@@ -844,10 +774,10 @@ public class CytoscapeInit implements PropertyChangeListener {
 		return null;
 	}
 
-	public static File cliVizMapPropsFile() {
+	public static File getSpecifiedVizProps() {
 		File f = null;
-		if ( cliVizPropsFile != null && cliVizPropsFile.length() > 0 )
-			f = new File(cliVizPropsFile);
+		if ( specifiedVizProps != null && specifiedVizProps.length() > 0 )
+			f = new File(specifiedVizProps);
 
 		return f;
 	}

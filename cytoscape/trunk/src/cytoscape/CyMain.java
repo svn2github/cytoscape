@@ -62,6 +62,8 @@ import cytoscape.data.servers.*;
 import cytoscape.view.CyWindow;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.util.shadegrown.WindowUtilities;
+import cytoscape.init.CyInitParams;
+import cytoscape.init.CyCommandLineParser;
 
 
 import com.jgoodies.plaf.FontSizeHints;
@@ -91,24 +93,30 @@ public class CyMain implements WindowListener {
   protected String[] args;
 
   /**
-   * Primary Method for Starting Cytoscape. Use the passed
-   * args to create a CytoscapeConfig object.
+   * Primary Method for Starting the GUI version of Cytoscape. 
    */
   public CyMain ( String [] args ) throws Exception {
     this.args = args;
- 
-    // create the CytoscapeInit class
-    // TODO: store this in Cytoscape.
-    CytoscapeInit init = new CytoscapeInit();
 
-    // pass the command line arguments.
-    // if false, then we need to stop, since help was requested
-    if ( !init.init( args ) ) {
-      System.out.println( init.getHelp() );
+    // Create a CyInitParams object.
+    CyCommandLineParser cli = new CyCommandLineParser();
+    cli.parseCommandLine(args);
+
+    // Check to see if help is requested before doing
+    // anything else.
+    if ( cli.helpRequested() ) {
+      System.out.println( cli.getHelp() );
       System.exit( 0 );
     }
-    // continue normally
 
+    // Create the Initialization object.
+    CytoscapeInit init = new CytoscapeInit();
+
+    // Initialize.
+    if ( !init.init(cli) ) {
+      System.out.println( cli.getHelp() );
+      System.exit( 0 );
+    }
   } 
 
 
