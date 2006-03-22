@@ -36,6 +36,7 @@ public interface CyInitParams {
    public Integer getViewThreshold();
    public boolean canonicalizeNames();
    public String getSpecies();
+   public String[] getArgs();
 }
 
 

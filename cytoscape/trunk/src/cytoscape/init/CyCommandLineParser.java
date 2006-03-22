@@ -72,6 +72,7 @@ public class CyCommandLineParser implements CyInitParams {
    boolean inScript;
    ArrayList currentScript;
    ArrayList resourcePlugins;
+   String[] args;
 
    boolean helpRequested = false;
 
@@ -114,6 +115,7 @@ public class CyCommandLineParser implements CyInitParams {
       inScript = false;
       scripts = new ArrayList();
       resourcePlugins = new ArrayList();
+      args = null; 
    }
 
 
@@ -128,6 +130,10 @@ public class CyCommandLineParser implements CyInitParams {
 
    ////////////////////////////////////////
    // Accessor methods for all possible command line options
+
+   public String[] getArgs () {
+      return args;
+   }
 
    public List getResourcePlugins () {
       return resourcePlugins;
@@ -263,6 +269,7 @@ public class CyCommandLineParser implements CyInitParams {
     * <li> s : species [species name] | the name of a species for wchi there is information
     */
    public void parseCommandLine ( String[] args ) {
+   	this.args = args;
       //System.out.println( "Parsing command line" );
 
       // for( int i = 0; i < args.length; ++i ) {

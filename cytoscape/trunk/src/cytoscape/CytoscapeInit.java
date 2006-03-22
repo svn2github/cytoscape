@@ -86,6 +86,8 @@ public class CytoscapeInit implements PropertyChangeListener {
 
 	private static String[] args;
 
+	private static CyInitParams initParams;
+
 	private static Properties properties;
 
 	private static String propertiesLocation;
@@ -173,6 +175,7 @@ public class CytoscapeInit implements PropertyChangeListener {
 	 */
 	public boolean init(CyInitParams params) {
 
+		initParams = params;
 		bioDataServer = null;
 		noCanonicalization = false;
 		expressionFiles = new HashSet();
@@ -346,7 +349,7 @@ public class CytoscapeInit implements PropertyChangeListener {
 	}
 
 	public static String[] getArgs() {
-		return args;
+		return initParams.getArgs();
 	}
 
 	public static Properties getProperties() {
