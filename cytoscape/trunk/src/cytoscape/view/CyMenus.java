@@ -958,13 +958,13 @@ public class CyMenus implements GraphViewChangeListener {
 
 		toolBar.addSeparator();
 
-		annotationButton = toolBar.add(new AnnotationGui());
+//		annotationButton = toolBar.add(new AnnotationGui());
+////		annotationButton.setIcon(new ImageIcon(getClass().getResource(
+////				"images/new/ontology36.gif")));
 //		annotationButton.setIcon(new ImageIcon(getClass().getResource(
-//				"images/new/ontology36.gif")));
-		annotationButton.setIcon(new ImageIcon(getClass().getResource(
-		"images/new/GO2.gif")));
-		annotationButton.setToolTipText("Add Annotation Ontology to Nodes");
-		annotationButton.setBorderPainted(false);
+//		"images/new/GO2.gif")));
+//		annotationButton.setToolTipText("Add Annotation Ontology to Nodes");
+//		annotationButton.setBorderPainted(false);
 
 		toolBar.addSeparator();
 
@@ -998,7 +998,7 @@ public class CyMenus implements GraphViewChangeListener {
 		hb.enableHelp(zoomDisplayAllButton, "toolbar-zoom", null);
 		hb.enableHelp(showAllButton, "toolbar-hide", null);
 		hb.enableHelp(hideSelectedButton, "toolbar-hide", null);
-		hb.enableHelp(annotationButton, "toolbar-annotate", null);
+		//hb.enableHelp(annotationButton, "toolbar-annotate", null);
 		hb.enableHelp(vizButton, "toolbar-setVisProps", null);
 
 		// add Help support for visual properties combo box created elsewhere
