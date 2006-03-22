@@ -582,6 +582,8 @@ public class NodeSourcesPanel extends JPanel {
     */ 
     protected void createAnnotationsDialog (GOClient go_client){
         JPanel buttonsPanel = new JPanel();
+        final JRadioButton andButton = new JRadioButton("Use AND boolean operator"); // maybe change the text to something that most biologists will understand
+        andButton.setSelected(false);
         JButton ok = new JButton("OK");
         ok.addActionListener(
                 new AbstractAction (){
@@ -601,7 +603,7 @@ public class NodeSourcesPanel extends JPanel {
                                 pBar.pack();
                                 pBar.setLocation(NodeSourcesPanel.this.getLocationOnScreen());
                                 pBar.setVisible(true);
-                                annotationNodeIDs = annotationsDialog.getGenesWithTerms();
+                                annotationNodeIDs = annotationsDialog.getGenesWithTerms(andButton.isSelected());
                                 // JOptionPane.showMessageDialog(annotationsDialog,"There are "+annotationNodeIDs.length+" genes with the selected annotations.","" +
                                 //         "BioNet Builder", JOptionPane.INFORMATION_MESSAGE);
                                 annotsNodes.setText(Integer.toString(annotationNodeIDs.length));
@@ -621,6 +623,7 @@ public class NodeSourcesPanel extends JPanel {
                 }//AbstractAction
                 
         );//addActionListener
+        
         JButton cancel = new JButton("Cancel");
         cancel.addActionListener(
                 new AbstractAction (){
@@ -630,6 +633,10 @@ public class NodeSourcesPanel extends JPanel {
                     }
                 }
         );
+        
+       
+        
+        buttonsPanel.add(andButton);
         buttonsPanel.add(ok);
         buttonsPanel.add(cancel);
         

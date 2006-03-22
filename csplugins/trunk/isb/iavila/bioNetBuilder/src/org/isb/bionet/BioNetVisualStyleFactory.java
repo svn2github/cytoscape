@@ -7,9 +7,9 @@ import cytoscape.view.CytoscapeDesktop;
 import cytoscape.visual.CalculatorCatalog;
 import cytoscape.visual.EdgeAppearanceCalculator;
 import cytoscape.visual.GlobalAppearanceCalculator;
-import cytoscape.visual.LineType;
+//import cytoscape.visual.LineType;
 import cytoscape.visual.NodeAppearanceCalculator;
-import cytoscape.visual.ShapeNodeRealizer;
+//import cytoscape.visual.ShapeNodeRealizer;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
 import cytoscape.visual.calculators.*;
@@ -73,7 +73,7 @@ public class BioNetVisualStyleFactory {
             dataSourceMappingNodes.putMapValue(ProlinksInteractionsSource.NAME,Color.ORANGE);
             dataSourceMappingNodes.putMapValue(NodeSourcesPanel.USER_LIST,Color.CYAN);
             dataSourceMappingNodes.putMapValue(NodeSourcesPanel.ANNOTS,Color.PINK);
-            dataSourceMappingNodes.putMapValue(NodeSourcesPanel.TAXONOMY,Color.GRAY);
+            dataSourceMappingNodes.putMapValue(NodeSourcesPanel.TAXONOMY,Color.LIGHT_GRAY);
             dataSourceMappingNodes.putMapValue(NodeSourcesPanel.NETS,Color.MAGENTA);
             nodeColorCalculator = 
                 new GenericNodeColorCalculator("Data Source", dataSourceMappingNodes);
@@ -91,7 +91,8 @@ public class BioNetVisualStyleFactory {
             dataSourceMappingEdges.putMapValue(BindInteractionsSource.NAME, Color.BLUE );
             dataSourceMappingEdges.putMapValue(DipInteractionsSource.NAME, Color.GREEN);
             dataSourceMappingEdges.putMapValue(KeggInteractionsSource.NAME, Color.RED);
-            dataSourceMappingEdges.putMapValue(ProlinksInteractionsSource.NAME,Color.ORANGE);
+            dataSourceMappingEdges.putMapValue(ProlinksInteractionsSource.NAME,Color.CYAN);
+            dataSourceMappingEdges.putMapValue(HPRDInteractionsSource.NAME,Color.MAGENTA);
             edgeColorCalculator =
                 new GenericEdgeColorCalculator("src", dataSourceMappingEdges);
             //calculatorCatalog.addCalculator(edgeColorCalculator); // causes an exception
@@ -106,11 +107,11 @@ public class BioNetVisualStyleFactory {
                     Cytoscape.getCurrentNetwork(),false);
             interactionTypeMapping.putMapValue("pp", Color.BLUE);
             interactionTypeMapping.putMapValue("pd", Color.RED);
-            interactionTypeMapping.putMapValue("pr", Color.ORANGE);
+            interactionTypeMapping.putMapValue("pr", Color.PINK);
             interactionTypeMapping.putMapValue(ProlinksInteractionsSource.PP, Color.CYAN);
-            interactionTypeMapping.putMapValue(ProlinksInteractionsSource.RS, Color.PINK);
+            interactionTypeMapping.putMapValue(ProlinksInteractionsSource.RS, Color.GREEN);
             interactionTypeMapping.putMapValue(ProlinksInteractionsSource.GC, Color.MAGENTA);
-            interactionTypeMapping.putMapValue(ProlinksInteractionsSource.GN, Color.DARK_GRAY);
+            interactionTypeMapping.putMapValue(ProlinksInteractionsSource.GN, Color.ORANGE);
             edgeColorCalculator =
                 new GenericEdgeColorCalculator(Semantics.INTERACTION,interactionTypeMapping);
             //Todo: KEGG interactions

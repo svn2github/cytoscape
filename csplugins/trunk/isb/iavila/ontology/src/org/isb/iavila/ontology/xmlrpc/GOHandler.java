@@ -287,11 +287,70 @@ public class GOHandler extends SQLDBHandler {
             Hashtable table = getGenesWithTerms(termIDs,taxid);
             return table;
         }
+        // Recursive
+        
         Vector dTerms = new Vector(); // stores ids of descendants terms of termIDs
         getTermsDescendantTerms(termIDs,taxid,dTerms);
         dTerms.addAll(termIDs);// include the given termIDs, not only their descendants
         return getGenesWithTerms(dTerms, taxid);
-        }
+    }
+    
+    /**
+     * Returns a vector of genes that are each annotated with all of the given terms<p>
+     * This simulates an intersection of all sets of genes annotated with each given term
+     * 
+     * @param termIDs a Vector of Strings parsable as integers representing GO term ids
+     * @param speciesID the species for which to return genes
+     * @param recursive recursive if true, then the returned vector will contain genes for descendants terms of the given termIDs
+     * @return a Vector of Strings representing genes
+     */
+    public Vector getGenesWithTermsIntersection (Vector termIDs, String speciesID, boolean recursive){
+        String sql = "SELECT ncbi_taxa_id FROM species WHERE id = " + speciesID;
+        int taxid = -1;
+        try{
+            ResultSet rs = query(sql);
+            if(rs.next()) taxid = rs.getInt(1);
+        }catch(SQLException e){e.printStackTrace(); return new Vector();}
+        if(taxid == -1) return new Vector();
+        
+        if(!recursive){
+            Iterator it = termIDs.iterator();
+            Vector intersectionSet = new Vector();
+            boolean firstLoop = true;
+            while(it.hasNext()){
+                String currentTerm = (String)it.next();
+                Vector oneTermVector = new Vector();
+                oneTermVector.add(currentTerm);
+                Vector aSet = getGenesWithTermsVector(oneTermVector,taxid);
+                if(firstLoop){ intersectionSet = aSet; firstLoop = false;}
+                else{ 
+                    intersectionSet.retainAll(aSet); // do intersect
+                    if(intersectionSet.size() == 0) return intersectionSet; // the intersection set is empty, so return now
+                }//else
+            }
+            return intersectionSet;
+        }// !recursive
+        
+        // Recursive
+        Iterator it = termIDs.iterator();
+        Vector intersectionSet = new Vector();
+        boolean firstLoop = true;
+        while(it.hasNext()){
+            String currentTerm = (String)it.next();
+            Vector dTerms = new Vector(); // stores ids of descendants terms of currentTerm
+            Vector oneTermVector = new Vector();
+            oneTermVector.add(currentTerm);
+            getTermsDescendantTerms(oneTermVector,taxid,dTerms);
+            dTerms.add(currentTerm);
+            Vector aSet = getGenesWithTermsVector(dTerms,taxid);
+            if(firstLoop){ intersectionSet = aSet; firstLoop = false;}
+            else{ 
+                intersectionSet.retainAll(aSet); // do intersect
+                if(intersectionSet.size() == 0) return intersectionSet; // the intersection set is empty, so return now
+            }//else
+        }//while
+        return intersectionSet;
+    }
     
     /**
      * Accumulates in descendantTerms the terms that are descendants of the given terms in termIDs
@@ -321,6 +380,51 @@ public class GOHandler extends SQLDBHandler {
     }
     
     /**
+     * Returns a Vector of Strings that represent genes annotated with the given term ids
+     * 
+     * @param termIDs a Vector of Strings parsable as integers representing term ids
+     * @param taxid the NCBI taxonomy id of the species
+     * @return a Vector of Strings
+     */
+    protected Vector getGenesWithTermsVector (Vector termIDs, int taxid){
+        Iterator it = termIDs.iterator();
+        String termList = (String)it.next();
+        while(it.hasNext()){
+            termList += "," + (String)it.next();
+        }
+        
+        String sql = "SELECT acc,id FROM term WHERE id IN (" + termList + ")";
+        ResultSet rs = query(sql);
+        String accList = "";
+        try{
+            while(rs.next()){
+                String acc = rs.getString(1);
+                if(accList.length() == 0) accList = "\"" + acc + "\""; 
+                else accList += ",\"" + acc + "\"";  
+            }
+        }catch(SQLException e){e.printStackTrace(); return new Vector();}
+        
+        if(accList.length() == 0) return new Vector();
+          
+        // 2. get genes with given accs and of the given speciesID from gi2go  
+        
+        sql = "SELECT gi FROM gi2go WHERE taxid = " + taxid + " AND goid IN (" + accList + ")";
+        rs = query(sql);
+        
+        HashSet result = new HashSet();
+        
+        try{
+            while(rs.next()){
+                String gi = "GI:" + rs.getString(1);
+                result.add(gi);
+            }
+        }catch(SQLException e){e.printStackTrace();return new Vector();}
+        return new Vector(result);
+    }
+    
+    /**
+     * Returns a Hashtable of term to vectors, where each vector contains the genes that are annotated with the given key term
+     * 
      * @param termIDs a Vector of Strings parsable as integers representing term ids
      * @param speciesID the species for which to return genes
      * @return a Hashtable from Strings (the given termIDs) to Vectors of Strings representing genes
@@ -339,9 +443,11 @@ public class GOHandler extends SQLDBHandler {
       ResultSet rs = query(sql);
       String accList = "";
       Hashtable accToId = new Hashtable();
+      HashSet accSet = new HashSet();
       try{
           while(rs.next()){
               String acc = rs.getString(1);
+              accSet.add(acc);
               if(accList.length() == 0) accList = "\"" + acc + "\""; 
               else accList += ",\"" + acc + "\"";  
               accToId.put(acc,rs.getString(2));
@@ -370,9 +476,10 @@ public class GOHandler extends SQLDBHandler {
               }
           }
       }catch(SQLException e){e.printStackTrace();return new Hashtable();}
-      
       return result;
     }
+    
+    
     
     /**
      * 

@@ -14,6 +14,7 @@ public class SQLDBHandler implements DBHandler {
 
     public static final String MYSQL_JDBC_DRIVER = "com.mysql.jdbc.Driver";
     public static final String JDBC_URL_PROPERTY_KEY = "jdbcURL";
+    public static final int RECONNECT_TIMES = 3; // the number of times to try to connect to a database
 
     protected boolean driverIsLoaded = false;
 
@@ -107,33 +108,31 @@ public class SQLDBHandler implements DBHandler {
 
         // In case that there is already a connection:
         shutdown();
-
-        try {
-            
-            // Make a connection to the db
-            System.out.println("Connecting to mySQL db with url = " + this.url
-                    + "...");
-            this.connection = DriverManager.getConnection(this.url);
-            // Make sure the connection is OK
-            if (getStatus().equals(DBHandler.OPEN)) {
-                System.out.println("Successfully connected to mySQL database "
-                        + this.url);
-                return true;
-            }
-            return false;
-            
-        } catch (SQLException e) {
-            System.out.println("\n-------- SQLException caught -----------\n");
-            while(e != null){
-                System.out.println("Message:    " + e.getMessage());
-                System.out.println("SQLState:   " + e.getSQLState());
-                System.out.println("ErrorCode:   "  + e.getErrorCode());
-                e = e.getNextException();
-                System.out.println("");
+        for(int i = 0; i < RECONNECT_TIMES; i++){
+            try {
+                 System.out.println("Try " + (i+1) + ": Connecting to mySQL db with url = " + this.url
+                        + "...");
+                this.connection = DriverManager.getConnection(this.url);
+                // Make sure the connection is OK
+                if (getStatus().equals(DBHandler.OPEN)) {
+                    System.out.println("Successfully connected to mySQL database "
+                            + this.url);
+                    return true;
+                }
+                System.out.println("Failed to connect to mySQL database.");
                 
-            }
-            return false;
-        }
+            } catch (SQLException e) {
+                System.out.println("\n-------- SQLException caught -----------\n");
+                while(e != null){
+                    System.out.println("Message:    " + e.getMessage());
+                    System.out.println("SQLState:   " + e.getSQLState());
+                    System.out.println("ErrorCode:   "  + e.getErrorCode());
+                    e = e.getNextException();
+                    System.out.println("");     
+                }//while
+            }//catch
+        }//for
+        return false;
     }
 
     /**
@@ -153,28 +152,34 @@ public class SQLDBHandler implements DBHandler {
 
         // In case that there is already a connection:
         shutdown();
-
-        try {
-            Properties properties = new Properties();
-            properties.putAll(props);
-            // Make a connection to the db
-            this.connection = DriverManager.getConnection(this.url, properties);
-            // Make sure the connection is OK
-            if (!this.connection.isClosed()) {
-                System.out.println("Successfully connected to mySQL database "
-                        + this.url);
-                return true;
+        for (int i = 0; i < RECONNECT_TIMES; i++){
+            try {
+                Properties properties = new Properties();
+                properties.putAll(props);
+                // Make a connection to the db
+                System.out.println("Try " + (i+1) + ": Connecting to mySQL db with url = " + this.url
+                        + "...");
+                this.connection = DriverManager.getConnection(this.url, properties);
+                // Make sure the connection is OK
+                if (!this.connection.isClosed()) {
+                    System.out.println("Successfully connected to mySQL database "
+                            + this.url);
+                    return true;
+                }
+                System.out.println("Failed to connect to mySQL database.");
+    
+            } catch (SQLException e) {
+                System.out.println("\n-------- SQLException caught -----------\n");
+                while(e != null){
+                    System.out.println("Message:    " + e.getMessage());
+                    System.out.println("SQLState:   " + e.getSQLState());
+                    System.out.println("ErrorCode:   "  + e.getErrorCode());
+                    e = e.getNextException();
+                    System.out.println("");     
+                }//while
             }
-            return false;
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            int errorCode = e.getErrorCode();
-            System.out.println("failed to conntect to " + this.url
-                    + " error code = " + errorCode);
-            System.out.println("SQL State = " + e.getSQLState());
-            return false;
-        }
+        }//for
+        return false;
     }
 
     /**

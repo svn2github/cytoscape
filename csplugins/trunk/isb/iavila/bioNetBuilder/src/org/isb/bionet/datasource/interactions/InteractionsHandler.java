@@ -14,6 +14,8 @@ import sun.security.action.GetIntegerAction;
  * TODO: If the cache gets too big (what is too big? > 6000??? How many nodes do people view in Cytoscape???) clear them.
  */
 public class InteractionsHandler implements InteractionsDataSource {
+    
+    public static final int CACHE_MAX_SIZE = 6000;
     /**
      * The gene ID to use for all genes in the returned interactions
      */
@@ -1257,6 +1259,20 @@ public class InteractionsHandler implements InteractionsDataSource {
     
     //-------------- Translation of ids  methods ---------------//
     
+    
+    /**
+     * Clears the synonyms maps
+     */
+    protected void clearCachesIfFull (){
+        if(this.dbToUniversalCache.size() >= CACHE_MAX_SIZE || this.universalToDbCache.size() >= CACHE_MAX_SIZE || 
+                this.universalToOtherUniversals.size() >= CACHE_MAX_SIZE){
+            this.dbToUniversalCache.clear();
+            this.universalToDbCache.clear();
+            this.universalToOtherUniversals.clear();
+        }
+    }
+    
+    
     /**
      * Translates the gene names in the list interactions to UNIVERSAL_GENE_ID_TYPE when possible
      * 
@@ -1268,6 +1284,8 @@ public class InteractionsHandler implements InteractionsDataSource {
     // it assigns unique GIs to each database id, since they become the unique identifiers for Cytoscape nodes
     // Additional GIs that match the database ids are contained in an entry with INTERACTOR_1_IDS and INTERACTOR_2_IDS keys
     protected Vector translateInteractionsToUniversalGeneID (String sourceIDtype, Vector interactions){
+        
+        clearCachesIfFull();
         
         Vector translated = new Vector();
         HashSet alreadyTranslated = new HashSet();
@@ -1412,7 +1430,7 @@ public class InteractionsHandler implements InteractionsDataSource {
      * @return a Vector of Strings, converted to UNIVERSAL_GENE_ID_TYPE
      */
     protected Vector translateInteractorsToUniversalGeneID (Vector interactors, String sourceIDtype){
-       
+        clearCachesIfFull();
         // Find out which ones have not already been translated:
         HashSet translatedInteractors = new HashSet();
         HashSet toTranslate = new HashSet(); 
@@ -1480,7 +1498,7 @@ public class InteractionsHandler implements InteractionsDataSource {
      * @return a Vector of Strings, converted ids (if available)
      */
     protected Vector translateInteractorsFromUniversalGeneID (Vector interactors, String targetIDtype){
-
+        clearCachesIfFull();
         // Find the interactors that have not already been translated
         HashSet translatedInteractors = new HashSet();
         HashSet toTranslate = new HashSet(); 

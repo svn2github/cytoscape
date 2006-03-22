@@ -494,13 +494,27 @@ print "done. Decompressing...";
 system("cd taxonomy; gunzip < taxdump.tar.gz | tar xvf -");
 print "done.\n";
 
+# only include species and subspecies that have sequence data
+open IN, "taxonomy/nodes.dmp" or die "Could not open file taxonomy/nodes.dmp\n";
+my %species;
+while($line = <IN>){
+	@fields = split /\t\|\t/, $line;
+    if($fields[2] =~ /^species$/ or $fields[2] =~ /^subspecies$/ ){
+    		if($fields[11] == 0){
+    			$species{$fields[0]} = 1;
+    		}
+ 	 	
+	}
+}
+close(IN);
+print "Read ".scalar(%species)." species with sequence data.\n";
 open IN,"taxonomy/names.dmp" or die "Could not open file taxonomy/names.dmp\n";
 open OUT, ">taxonomy/taxid_speciesname.txt" or die "Could not create file taxonomy/taxid_speciesname.txt\n";
 $num = 0;
 $total = 0;
 while($line = <IN>){
 	@fields = split /\t\|\t/, $line;
-    if($fields[$#fields] =~ /^scientific/){
+    if($fields[$#fields] =~ /^scientific/ and exists $species{$fields[0]}){
     		print OUT $fields[0],"\t",$fields[1],"\n";
  	 	$num++;
 	}

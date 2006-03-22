@@ -592,7 +592,7 @@ public class EdgeSourcesPanel extends JPanel {
                     JCheckBox source = (JCheckBox) event.getSource();
                     if(source.isSelected()){
                        // see if the selected source has been authenticated
-                        if(!isSourceAuthenticated(sourceClass)){
+                        if(sourceClass != null && !isSourceAuthenticated(sourceClass)){
                             // call a method that asks for a password and sends it to the server
                             boolean ok = false;
                             UserPasswordDialog passDialog = new UserPasswordDialog("Enter password for data source");

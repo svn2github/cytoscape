@@ -10,6 +10,7 @@ import cytoscape.data.CyAttributes;
 import org.isb.bionet.datasource.interactions.*;
 import org.isb.bionet.datasource.synonyms.*;
 import org.isb.bionet.gui.wizard.*;
+import cytoscape.view.*;
 
 /**
  * A class with utility methods that manipulate CyNetworks for this plugin
@@ -82,7 +83,8 @@ public class CyNetUtils {
         System.out.println("Edges that were already created: " + CyNetUtils.edges);
         
         BioNetVisualStyleFactory.addBioNetVisualStyleToCytoscape();
-        
+        CyNetworkView view = Cytoscape.createNetworkView(net);
+        view.setVisualStyle(BioNetVisualStyleFactory.BIONETBUILDER_VS);
         return net;
     }//makeNewNetwork
     

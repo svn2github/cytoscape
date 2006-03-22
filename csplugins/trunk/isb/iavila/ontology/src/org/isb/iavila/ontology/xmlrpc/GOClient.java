@@ -150,12 +150,28 @@ public class GOClient extends AuthenticatedDataClient{
      * @param termIDs a Vector of Strings parsable as integers representing term ids
      * @param speciesID the species for which to return genes
      * @param recursive if true, then the returned table will contain entries for descendants of the given termIDs
+     * @param isAnd if true, the returned genes are each annotated with ALL of the given termIDs (AND operation), if false,
+     * this is an OR operation (returned genes are annotated with at least ONE of the termIDs)
      * @return a Hashtable from Strings (termIDs parsable as Integers) to Vectors of Strings representing genes
      * with the given key term
      */
     public Hashtable getGenesWithTerms (Vector termIDs, String speciesID, boolean recursive) throws XmlRpcException, IOException{
         Object table = call(this.serviceName + ".getGenesWithTerms", termIDs, speciesID, new Boolean(recursive));
         return (Hashtable)table;
+    }
+    
+    /**
+     * Returns a vector of genes that are each annotated with all of the given terms<p>
+     * This simulates an intersection of all sets of genes annotated with each given term
+     * 
+     * @param termIDs a Vector of Strings parsable as integers representing GO term ids
+     * @param speciesID the species for which to return genes
+     * @param recursive recursive if true, then the returned vector will contain genes for descendants terms of the given termIDs
+     * @return a Vector of Strings representing genes
+     */
+    public Vector getGenesWithTermsIntersection (Vector termIDs, String speciesID, boolean recursive) throws XmlRpcException, IOException{
+        Object vector = call(this.serviceName + ".getGenesWithTermsIntersection", termIDs, speciesID, new Boolean(recursive));
+        return (Vector)vector;
     }
     
     /**

@@ -9,10 +9,7 @@ import org.isb.iavila.ontology.*;
 import org.isb.iavila.ontology.xmlrpc.*;
 import cytoscape.*;
 import cytoscape.CyNode;
-import cytoscape.view.*;
 import cytoscape.data.Semantics;
-import cern.colt.list.IntArrayList;
-import giny.view.NodeView;
 //import cytoscape.data.CytoscapeData;
 
 public class CytoscapeGODialog extends JDialog {
@@ -213,7 +210,7 @@ public class CytoscapeGODialog extends JDialog {
         selectNodesButton.addActionListener(new AbstractAction() {
 
             public void actionPerformed(ActionEvent action) {
-                selectNodes();
+                selectNodes(false);
             }
 
         });
@@ -351,7 +348,7 @@ public class CytoscapeGODialog extends JDialog {
     /**
      * @return an array of gene ids that are annotated with the selected terms for the selected species
      */
-    public String [] getGenesWithTerms (){
+    public String [] getGenesWithTerms (boolean useAndOperator){
         OntologyTerm[] terms = this.goViewer.getSelectedTerms();
 
         Vector termIDs = new Vector();
@@ -361,19 +358,24 @@ public class CytoscapeGODialog extends JDialog {
 
         String spID = Integer.toString(this.selectedSpecies.getID());
         Hashtable termToGenes = null;
-
+        Vector genes = null;
         try {
-            termToGenes = goClient.getGenesWithTerms(termIDs, spID, this.recursiveRadioButton.isSelected());
-          //  System.out.println(termToGenes);
+            if(!useAndOperator)
+                termToGenes = goClient.getGenesWithTerms(termIDs, spID, this.recursiveRadioButton.isSelected());
+            else
+                genes = goClient.getGenesWithTermsIntersection(termIDs,spID,this.recursiveRadioButton.isSelected());
+            //  System.out.println(termToGenes);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-
+        
+        if(useAndOperator) return (String []) genes.toArray(new String[genes.size()]);
+        
         Iterator it = termToGenes.keySet().iterator();
         HashSet geneIDs = new HashSet();
         while (it.hasNext()) {
             String termID = (String) it.next();
-            Vector genes = (Vector) termToGenes.get(termID);
+            genes = (Vector) termToGenes.get(termID);
             Iterator it2 = genes.iterator();
             while (it2.hasNext()) {
                 String gene = (String) it2.next();
@@ -390,39 +392,17 @@ public class CytoscapeGODialog extends JDialog {
      * 
      * @return the new CyNodes
      */
-    public Collection createNodes() {
+    public Collection createNodes(boolean useAndOperator) {
 
-        OntologyTerm[] terms = this.goViewer.getSelectedTerms();
-
-        Vector termIDs = new Vector();
-        for (int i = 0; i < terms.length; i++) {
-            termIDs.add(Integer.toString(terms[i].getID()));
-        }// for
-
-        String spID = Integer.toString(this.selectedSpecies.getID());
-        Hashtable termToGenes = null;
-
-        try {
-            termToGenes = goClient.getGenesWithTerms(termIDs, spID, this.recursiveRadioButton.isSelected());
-            //System.out.println(termToGenes);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
-        Iterator it = termToGenes.keySet().iterator();
-        HashSet nodes = new HashSet();
-        while (it.hasNext()) {
-            String termID = (String) it.next();
-            Vector genes = (Vector) termToGenes.get(termID);
-            Iterator it2 = genes.iterator();
-            while (it2.hasNext()) {
-                String gene = (String) it2.next();
-                CyNode node = (CyNode) Cytoscape.getCyNode(gene, true);
-                nodes.add(node);
-                Cytoscape.getNodeAttributes().setAttribute(node.getIdentifier(),Semantics.SPECIES,this.selectedSpecies.toString());
-            }// while it2
-        }// while it.hasNext
+        String [] genes = getGenesWithTerms(useAndOperator);
         
+        HashSet nodes = new HashSet();
+        for (int i = 0; i < genes.length; i++) {
+            String termID = genes[i];
+            CyNode node = (CyNode) Cytoscape.getCyNode(termID, true);
+            nodes.add(node);
+            Cytoscape.getNodeAttributes().setAttribute(node.getIdentifier(),Semantics.SPECIES,this.selectedSpecies.toString());
+        }//for
         return nodes;
     }
 
@@ -434,7 +414,7 @@ public class CytoscapeGODialog extends JDialog {
     // TODO: Ask the user for network options (create nodes in current net? name
     // of new net? etc).
     public void createNetwork(String net_name) {
-        Collection nodes = createNodes();
+        Collection nodes = createNodes(false);
         
         if (nodes.size() == 0) {
             JOptionPane.showMessageDialog(this,
@@ -461,8 +441,7 @@ public class CytoscapeGODialog extends JDialog {
                 nodeIndices[i] = ((CyNode)it.next()).getRootGraphIndex();
                 i++;
             }
-            net.restoreNodes(nodeIndices);
-            
+            net.restoreNodes(nodeIndices);          
         }
 
     }
@@ -471,44 +450,24 @@ public class CytoscapeGODialog extends JDialog {
      * Selects nodes in the currently selected network that are annotated with
      * the selected ontology terms and belog to the selected species
      */
-    public void selectNodes() {
-        OntologyTerm[] terms = this.goViewer.getSelectedTerms();
-
-        Vector termIDs = new Vector();
-        for (int i = 0; i < terms.length; i++) {
-            termIDs.add(Integer.toString(terms[i].getID()));
-        }// for
-
-        String spID = Integer.toString(this.selectedSpecies.getID());
-        Hashtable termToGenes = null;
-
-        try {
-            termToGenes = goClient.getGenesWithTerms(termIDs, spID, this.recursiveRadioButton.isSelected());
-            //System.out.println(termToGenes);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
-        Iterator it = termToGenes.keySet().iterator();
+    public void selectNodes(boolean useAndOperator) {
+        
+        String [] genes = getGenesWithTerms(useAndOperator);
+        
         HashSet nodes = new HashSet();
-        //ArrayList nodeViews = new ArrayList();
-        while (it.hasNext()) {
-            String termID = (String) it.next();
-            Vector genes = (Vector) termToGenes.get(termID);
-            Iterator it2 = genes.iterator();
-            while (it2.hasNext()) {
-                String gene = (String) it2.next();
-                CyNode newNode = (CyNode) Cytoscape.getCyNode(gene, false); 
-                nodes.add(newNode);
-                //nodeViews.add(Cytoscape.getCurrentNetworkView().getNodeView(newNode));
-            }// while it2
-        }// while it.hasNext
+        for (int i = 0; i < genes.length; i++) {
+            String termID = genes[i];
+            CyNode node = (CyNode) Cytoscape.getCyNode(termID, false);
+            nodes.add(node);
+        }//for
+        
         if (nodes.size() == 0) {
             JOptionPane.showMessageDialog(this,
                     "There are no nodes annotated with the selected terms.",
                     "Cytoscape GO", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
+        
         CyNetwork net = Cytoscape.getCurrentNetwork();
         if (net == null || net.getIdentifier().equals("0")) {
             JOptionPane.showMessageDialog(this,
@@ -520,7 +479,7 @@ public class CytoscapeGODialog extends JDialog {
             //Cytoscape.getCurrentNetworkView().setSelected((CyNode[])nodes.toArray(new CyNode[nodes.size()]));
             //Cytoscape.getCurrentNetworkView().setSelected((NodeView[])nodeViews.toArray(new NodeView[nodeViews.size()]));
             // THIS WORKS:
-            net.setFlaggedNodes(nodes, true);
+            net.setFlaggedNodes(nodes,true);
             //Cytoscape.getCurrentNetwork().setFlaggedNodes(nodes, true);
         }
 
