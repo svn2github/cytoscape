@@ -95,6 +95,22 @@ public final class GraphRenderer
         (yCenter + 0.5d * grafx.image.getHeight(null) / scaleFactor);
     }
 
+    // Define buffers.  These are of the few objects we're instantiating
+    // directly in this method.
+    final float[] floatBuff1, floatBuff2, floatBuff3, floatBuff4, floatBuff5;
+    final double[] doubleBuff1, doubleBuff2;
+    final GeneralPath path2d;
+    {
+      floatBuff1 = new float[4];
+      floatBuff2 = new float[4];
+      floatBuff3 = new float[2];
+      floatBuff4 = new float[2];
+      floatBuff5 = new float[8];
+      doubleBuff1 = new double[4];
+      doubleBuff2 = new double[2];
+      path2d = new GeneralPath();
+    }
+
     // Determine the number of nodes and edges that we are about to render.
     final int renderNodeCount;
     final int renderEdgeCount;
@@ -103,17 +119,38 @@ public final class GraphRenderer
     {
       nodeHits = nodePositions.queryOverlap
         (xMin, yMin, xMax, yMax, null, 0, false);
-      renderNodeCount = nodeHits.numRemaining();
+      final int visibleNodeCount = nodeHits.numRemaining();
       final int totalNodeCount = graph.nodes().numRemaining();
       final int totalEdgeCount = graph.edges().numRemaining();
       renderEdges = lod.renderEdges
-        (renderNodeCount, totalNodeCount, totalEdgeCount);
-      if (renderEdges > 0) { renderEdgeCount = totalEdgeCount; }
-      else if (renderEdges < 0) { renderEdgeCount = 0; }
+        (visibleNodeCount, totalNodeCount, totalEdgeCount);
+      if (renderEdges > 0) {
+        int runningNodeCount = 0;
+        for (int i = 0; i < visibleNodeCount; i++) {
+          nodeHits.nextExtents(floatBuff1, 0);
+          if (floatBuff1[0] != floatBuff1[2] &&
+              floatBuff1[1] != floatBuff1[3]) { runningNodeCount++; } }
+        renderNodeCount = runningNodeCount;
+        renderEdgeCount = totalEdgeCount;
+        nodeHits = nodePositions.queryOverlap
+          (xMin, yMin, xMax, yMax, null, 0, false); }
+      else if (renderEdges < 0) {
+        int runningNodeCount = 0;
+        for (int i = 0; i < visibleNodeCount; i++) {
+          nodeHits.nextExtents(floatBuff1, 0);
+          if (floatBuff1[0] != floatBuff1[2] &&
+              floatBuff1[1] != floatBuff1[3]) { runningNodeCount++; } }
+        renderNodeCount = runningNodeCount;
+        renderEdgeCount = 0;
+        nodeHits = nodePositions.queryOverlap
+          (xMin, yMin, xMax, yMax, null, 0, false); }
       else {
+        int runningNodeCount = 0;
         int runningEdgeCount = 0;
-        for (int i = 0; i < renderNodeCount; i++) {
-          final int node = nodeHits.nextInt();
+        for (int i = 0; i < visibleNodeCount; i++) {
+          final int node = nodeHits.nextExtents(floatBuff1, 0);
+          if (floatBuff1[0] != floatBuff1[2] &&
+              floatBuff1[1] != floatBuff1[3]) { runningNodeCount++; }
           final IntEnumerator touchingEdges =
             graph.edgesAdjacent(node, true, true, true);
           final int touchingEdgeCount = touchingEdges.numRemaining();
@@ -123,6 +160,7 @@ public final class GraphRenderer
               node ^ graph.edgeSource(edge) ^ graph.edgeTarget(edge);
             if (nodeBuff.get(otherNode) < 0) { runningEdgeCount++; } }
           nodeBuff.put(node); }
+        renderNodeCount = runningNodeCount;
         renderEdgeCount = runningEdgeCount;
         nodeHits = null;
         nodeBuff.empty(); }
@@ -158,22 +196,6 @@ public final class GraphRenderer
     // Clear the background.
     {
       grafx.clear(bgPaint, xCenter, yCenter, scaleFactor);
-    }
-
-    // Define buffers.  These are of the few objects we're instantiating
-    // directly in this method.
-    final float[] floatBuff1, floatBuff2, floatBuff3, floatBuff4, floatBuff5;
-    final double[] doubleBuff1, doubleBuff2;
-    final GeneralPath path2d;
-    {
-      floatBuff1 = new float[4];
-      floatBuff2 = new float[4];
-      floatBuff3 = new float[2];
-      floatBuff4 = new float[2];
-      floatBuff5 = new float[8];
-      doubleBuff1 = new double[4];
-      doubleBuff2 = new double[2];
-      path2d = new GeneralPath();
     }
 
     // Render the edges first.  No edge shall be rendered twice.  Render edge

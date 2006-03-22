@@ -24,7 +24,9 @@ public class GraphLOD
    * of this method call.<p>
    * Note that rendering all edges leads to a dramatic performance decrease
    * when rendering large graphs.
-   * @param renderNodeCount the number of nodes that are about to be rendered.
+   * @param visibleNodeCount the number of nodes visible in the current
+   *   viewport; note that a visible node is not necessarily a rendered node,
+   *   because visible nodes with zero width or height are not rendered.
    * @param totalNodeCount the total number of nodes in the graph that is
    *   being rendered.
    * @param totalEdgeCount the total number of edges in the graph that is
@@ -33,7 +35,7 @@ public class GraphLOD
    *   positive if all edges are to be rendered, or negative if no edges
    *   are to be rendered.
    */
-  public byte renderEdges(final int renderNodeCount,
+  public byte renderEdges(final int visibleNodeCount,
                           final int totalNodeCount,
                           final int totalEdgeCount)
   {
