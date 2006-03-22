@@ -115,9 +115,8 @@ public final class GraphRenderer
     final int renderNodeCount;
     final int renderEdgeCount;
     final byte renderEdges;
-    SpacialEntry2DEnumerator nodeHits;
     {
-      nodeHits = nodePositions.queryOverlap
+      final SpacialEntry2DEnumerator nodeHits = nodePositions.queryOverlap
         (xMin, yMin, xMax, yMax, null, 0, false);
       final int visibleNodeCount = nodeHits.numRemaining();
       final int totalNodeCount = graph.nodes().numRemaining();
