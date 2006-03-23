@@ -72,17 +72,31 @@ public class CytoscapeGODialog extends JDialog {
      * @param taxid NCBI taxid as a String parsable as an int
      */
     public void setSelectedSpeciesTaxid (String taxid){
-        Hashtable info = null;
-        try{
-            info = this.goClient.getSpeciesWithID(taxid);
-        }catch (Exception e){ e.printStackTrace();}
         
-        int id = Integer.parseInt((String)info.get(GOHandler.SPECIES_ID));
-        String genus = (String)info.get(GOHandler.GENUS);
-        String species = (String)info.get(GOHandler.SPECIES);
-        String commonName = (String)info.get(GOHandler.SP_COMMON_NAME);
-        GOSpecies gSpecies = new GOSpecies(id, genus, species, commonName);
-        setSelectedSpecies(gSpecies);
+        boolean supported = false;
+        try{
+            Boolean S = this.goClient.supportsSpecies(taxid);
+            supported = S.booleanValue();
+        }catch(Exception e){e.printStackTrace();}
+        
+        if(supported){
+        
+            Hashtable info = null;
+            try{
+                info = this.goClient.getSpeciesWithID(taxid);
+            }catch (Exception e){ e.printStackTrace();}
+        
+            int id = Integer.parseInt((String)info.get(GOHandler.SPECIES_ID));
+            String genus = (String)info.get(GOHandler.GENUS);
+            String species = (String)info.get(GOHandler.SPECIES);
+            String commonName = (String)info.get(GOHandler.SP_COMMON_NAME);
+            GOSpecies gSpecies = new GOSpecies(id, genus, species, commonName);
+            setSelectedSpecies(gSpecies);
+        }else{
+            // what to do????   
+            this.spField.setText("Taxid " + taxid + ": no annotated genes exist");
+            this.selectedSpecies = null;
+        }
     }
 
     /**
@@ -258,6 +272,7 @@ public class CytoscapeGODialog extends JDialog {
      * @param species
      */
     protected void updateSpeciesList(Vector species) {
+        
         TreeSet sortedSpecies = new TreeSet(new Comparator() {
             public int compare(Object o1, Object o2) {
                 GOSpecies s1 = (GOSpecies) o1;
@@ -319,6 +334,8 @@ public class CytoscapeGODialog extends JDialog {
                 if (gsp == null) {
                     // message????
                 } else {
+                    // do we have any genes with this taxid annotated?
+                    // need to get taxid from gsp
                     setSelectedSpecies(gsp);
                 }
                 dialog.dispose();
@@ -349,6 +366,10 @@ public class CytoscapeGODialog extends JDialog {
      * @return an array of gene ids that are annotated with the selected terms for the selected species
      */
     public String [] getGenesWithTerms (boolean useAndOperator){
+        
+        
+        if(this.selectedSpecies == null) return new String[0];
+        
         OntologyTerm[] terms = this.goViewer.getSelectedTerms();
 
         Vector termIDs = new Vector();
@@ -473,14 +494,8 @@ public class CytoscapeGODialog extends JDialog {
             JOptionPane.showMessageDialog(this,
                     "There are no networks present.", "Error",
                     JOptionPane.ERROR_MESSAGE);
-        } else {
-            
-            // DOES NOT WORK:
-            //Cytoscape.getCurrentNetworkView().setSelected((CyNode[])nodes.toArray(new CyNode[nodes.size()]));
-            //Cytoscape.getCurrentNetworkView().setSelected((NodeView[])nodeViews.toArray(new NodeView[nodeViews.size()]));
-            // THIS WORKS:
-            net.setFlaggedNodes(nodes,true);
-            //Cytoscape.getCurrentNetwork().setFlaggedNodes(nodes, true);
+        }else{    
+            net.setSelectedNodeState(nodes,true);
         }
 
     }

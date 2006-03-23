@@ -537,7 +537,8 @@ public class CyNetUtils {
                 String nodeID = (String)it.next();
                 int index = nodeID.indexOf(":");
                 if(index > 0){
-                    String url = "http://bench.bakerlab.org/cgi-bin/2ddb/bddb.cgi?si=112682726728836&s=cytoscape&ac="+nodeID;
+                    //String url = "http://bench.bakerlab.org/cgi-bin/2ddb/bddb.cgi?si=112682726728836&s=cytoscape&ac="+nodeID;
+                    String url = "http://www.yeastrc.org/pdr/quickSearch.do?query="+nodeID+"&type=description";
                     Cytoscape.getNodeAttributes().setAttribute(nodeID,"HPFP_URL", url);
                 }
               }//while it.hasNext

@@ -103,6 +103,17 @@ public class GOClient extends AuthenticatedDataClient{
     }
     
     /**
+     * Returns Boolean.TRUE if the given taxid is supported by GO
+     * 
+     * @param taxid a String parsable as an integer
+     * @return Boolean.TRUE if the given species is supported, Boolean.FALSE otherwise
+     */
+    public Boolean supportsSpecies (String taxid) throws XmlRpcException, IOException{
+        Object out = call(this.serviceName +".supportsSpecies",taxid);
+        return (Boolean)out;
+    }
+    
+    /**
      * 
      * @return a Vector of Hashtables which contain the following information:<br>
      * SPECIES_ID --> String parsable as Integer<br>

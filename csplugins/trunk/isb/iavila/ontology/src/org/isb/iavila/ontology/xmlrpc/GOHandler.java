@@ -563,6 +563,24 @@ public class GOHandler extends SQLDBHandler {
         return info;
     }
     
+    /**
+     * Returns Boolean.TRUE if GO has any annotated genes from the given taxid, Boolean.FALSE otherwise
+     * 
+     * @param taxid a String parsable as an integer
+     * @return Boolean.TRUE if the given species is supported, Boolean.FALSE otherwise
+     */
+    public Boolean supportsSpecies (String taxid){
+        String sql = "SELECT gi FROM gi2go WHERE taxid = " + taxid;
+        ResultSet rs = query(sql);
+        boolean supported = false;
+        try{
+            if(rs.next()){
+                supported = true;
+            }
+        }catch(Exception ex){ex.printStackTrace();supported = false;}
+        return new Boolean(supported);
+    }
+    
     // -------------- Protected helper methods ----------------//
     
     /**
