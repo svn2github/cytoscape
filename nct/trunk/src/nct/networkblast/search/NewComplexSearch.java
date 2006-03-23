@@ -87,15 +87,22 @@ public class NewComplexSearch<NodeType extends Comparable<? super NodeType>> imp
 	private ScoreModel scoreObj;
 	private Graph<NodeType,Double> graph;
 
+	private boolean createSeeds;
+
 	/**
 	 * Sets the max and min sizes for complexes. 
 	 * @param minSize Minimum complex size, also the size of the secondary seeds.
 	 * @param maxSize Maximum allowed complex size.
 	 */
 	public NewComplexSearch(int minSize, int maxSize) {
+		this(minSize,maxSize,true,null);
+	}
+
+	public NewComplexSearch(int minSize, int maxSize, boolean create, List<Graph<NodeType,Double>> seeds) {
 		maxComplexSize =  maxSize;
 		minSeedSize = minSize;
-		listOfSeeds = null;
+		createSeeds = create;
+		listOfSeeds = seeds;
 		potentialNodeScores = new Hashtable<NodeType, Double>();  
 		solnNodeScores  = new Hashtable<NodeType, Double>(); 
 		seedNodes = new HashSet<NodeType>(); 
@@ -154,8 +161,10 @@ public class NewComplexSearch<NodeType extends Comparable<? super NodeType>> imp
 	
 		// Seed type 2
 		// Add minSeedSize node seeds to the queue.
-		addSeeds( queue );
+		if ( createSeeds )
+			addSeeds( queue );
 
+//		System.out.println("queue size: " + queue.size());
 
 		// Begin growing each seed into a complex.
 		for(Graph<NodeType,Double> soln: queue) {
@@ -170,7 +179,7 @@ public class NewComplexSearch<NodeType extends Comparable<? super NodeType>> imp
 			solnNodeScores.clear();
 			solnNodes.clear();
 			solnNodes.addAll(soln.getNodes());
-			initSolnNodeScores();
+			updateSolnNodeScores();
 
 			// First generate all the potential nodes & scores 
 			// that could extend the seed graph. 
@@ -192,6 +201,8 @@ public class NewComplexSearch<NodeType extends Comparable<? super NodeType>> imp
 
 			// Now do the extension. 
 			while (solnNodes.size() <= maxComplexSize && !potentialNodeScores.isEmpty() ) {
+//				System.out.println("current solnNodes");
+//				System.out.println(solnNodes);
 
 				// If we've seen this combination of nodes before, break.
 				Integer code = new Integer(solnNodes.hashCode());
@@ -214,18 +225,12 @@ public class NewComplexSearch<NodeType extends Comparable<? super NodeType>> imp
 				if (solnNodes.size() == maxComplexSize) {
 				
 					// Find the min scoring node.
-					findMinSolutionNode();
-			
-					if ( !removeMinPossible() )
+					if ( !findMinSolutionNode() )
 						break;
-
+			
 					// Remove the minimum node from the solution.
+//					System.out.println("removing node: " + minNode + " " + minScore);
 					solnNodes.remove(minNode);
-					solnNodeScores.remove(minNode);
-
-					// subtract minNode scores from solution scores. 
-					for (NodeType solNode: solnNodes)
-						subtractSolutionScore(minNode,solNode);
 
 					// add minNode scores to potential scores. 
 					for (NodeType solNode: solnNodes)
@@ -235,10 +240,10 @@ public class NewComplexSearch<NodeType extends Comparable<? super NodeType>> imp
 
 				// Add the node to the set and modify the list of scores 
 				// to reflect the new network.
-//				System.out.println("Adding node: " + maxNode);
 				solnNodes.add(maxNode);
-				solnNodeScores.put(maxNode, new Double(maxScore));
+				updateSolnNodeScores();
 				potentialNodeScores.remove(maxNode);
+//				System.out.println("adding node: " + maxNode + " " + maxScore);
 
 				// Check neighbor nodes of maxNode. 
 				// Update any existing potential nodes.
@@ -279,6 +284,8 @@ public class NewComplexSearch<NodeType extends Comparable<? super NodeType>> imp
 
 			if (solnGraph.numberOfNodes() >= minSeedSize) 
 				returnList.add(solnGraph);
+//			else
+//				System.out.println("minSeedSize " + minSeedSize + "  sol size: " + solnGraph.numberOfNodes());
 		}
 
 		return returnList;
@@ -359,18 +366,30 @@ public class NewComplexSearch<NodeType extends Comparable<? super NodeType>> imp
 	}
 
 	// Find the solution node with the lowest score. 
-	private void findMinSolutionNode() {
+	private boolean findMinSolutionNode() {
 		minNode = null;
 		minScore = Double.MAX_VALUE;
 		for (NodeType testNode: solnNodeScores.keySet()) {
-			if ( seedNodes.contains( testNode ) )
+//			System.out.println("min checking " + testNode.toString());
+			if ( seedNodes.contains(testNode) ) {
+//				System.out.println("\tseed node");
 				continue;
+			}
+
 			double testScore = solnNodeScores.get(testNode).doubleValue();
-			if ( testScore < minScore ) {
+
+			if ( !removeMinPossible(testNode,testScore) ) 
+				continue;
+
+			if ( testScore < minScore ) { 
 				minNode = testNode;
 				minScore = testScore; 
 			}
 		}
+		if ( minNode == null )
+			return false;
+		else
+			return true;
 	}
 
 	private void updatePotentialScores( NodeType testNode, NodeType solNode ) {
@@ -378,7 +397,10 @@ public class NewComplexSearch<NodeType extends Comparable<? super NodeType>> imp
 		if (solnNodes.contains(testNode)) 
 			return;
 
-		double testScore = scoreObj.scoreEdge(solNode, testNode, graph);
+		if (!graph.isEdge(testNode,solNode)) 
+			return;
+
+		double testScore = scoreObj.scoreEdge(testNode, solNode, graph);
 
 		// add new score to existing score for test node 
 		if (potentialNodeScores.containsKey(testNode)) 
@@ -391,27 +413,23 @@ public class NewComplexSearch<NodeType extends Comparable<? super NodeType>> imp
 		potentialNodeScores.put(testNode, new Double(testScore));
 	}
 
-	private boolean removeMinPossible() {
+	private boolean removeMinPossible(NodeType minN, double minS) {
 
 		// Stop searching if removing the min node doesn't increase the score.
-		if (minScore >= maxScore) 
+		if (minS >= maxScore) {
+//			System.out.println("\tmax(" + maxScore + ") less than min(" + minS + ")" );
 			return false;  
-
-		// Can't remove a seed node.
-		if ( seedNodes.contains(minNode) )
-			return false;
-
-		boolean isConnected = false;  
+		}
 
 		// Check that the graph remains connected if we
 		// remove the min.
+		boolean isConnected = false;  
 		for (NodeType testNode : solnNodes) {
-			isConnected = false;
-			if (testNode.equals(minNode)) 
+			if (testNode.equals(minN)) 
 				continue;
-			
-			 for (NodeType conNode : solnNodes) {
-				if (conNode.equals(minNode)) 
+			isConnected = false;
+			for (NodeType conNode : solnNodes) {
+				if (conNode.equals(minN)) 
 					continue;
 				
 				if (graph.isEdge(testNode, conNode)) {
@@ -427,14 +445,16 @@ public class NewComplexSearch<NodeType extends Comparable<? super NodeType>> imp
 
 		// Removing the min node will disconnect the existing
 		// solution nodes.
-		if ( !isConnected )
+		if ( !isConnected ) {
+//			System.out.println("\tnot connected");
 			return false;
+		}
 
 		// Check that the max node is still a neighbor
 		// of a solution node besides the min.
 		boolean maxConnected = false;
 		for (NodeType testNode : solnNodes) {
-			if (testNode.equals(minNode)) 
+			if (testNode.equals(minN)) 
 				continue;
 			if (graph.isEdge(testNode, maxNode)) {
 				maxConnected = true;
@@ -446,8 +466,12 @@ public class NewComplexSearch<NodeType extends Comparable<? super NodeType>> imp
 		// The max node is only connected to the min node
 		// among the solution nodes, therefore we can't
 		// remove the min.
-		if (!maxConnected) 
+		if (!maxConnected) { 
+//			System.out.println("\tmax connected");
 			return false;
+		}
+
+//		System.out.println("\tlooks good!");
 
 		return true;
 	}
@@ -463,7 +487,7 @@ public class NewComplexSearch<NodeType extends Comparable<? super NodeType>> imp
 		}
 	}
 
-	private void initSolnNodeScores() {
+	private void updateSolnNodeScores() {
 		for ( NodeType testNode : solnNodes ) {
 			double testScore = scoreObj.scoreNode(testNode,graph);
 			for ( NodeType conNode : solnNodes ) {
@@ -471,7 +495,8 @@ public class NewComplexSearch<NodeType extends Comparable<? super NodeType>> imp
 				if ( testNode.equals(conNode) )
 					continue;
 
-				testScore += scoreObj.scoreEdge(testNode, conNode, graph);
+				if ( graph.isEdge(testNode,conNode) )
+					testScore += scoreObj.scoreEdge(testNode, conNode, graph);
 
 			}
 			solnNodeScores.put(testNode, new Double(testScore));
