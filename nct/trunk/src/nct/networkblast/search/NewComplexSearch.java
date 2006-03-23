@@ -30,6 +30,7 @@ import java.util.logging.Logger;
 import nct.networkblast.score.ScoreModel;
 import nct.graph.basic.BasicGraph;
 import nct.graph.Graph;
+import nct.graph.Edge;
 
 /**
  * This class implements the SearchGraph interface.  It implements the
@@ -74,7 +75,7 @@ public class NewComplexSearch<NodeType extends Comparable<? super NodeType>> imp
 	private Set<NodeType> solnNodes;
 
 	// will contain the solution graphs to remove 
-	private Set<Graph<NodeType,Double>> removalSet; 
+	private List<Graph<NodeType,Double>> returnList; 
 
 	// will contain the best node & score from the neighbors
 	private NodeType maxNode;  
@@ -99,7 +100,7 @@ public class NewComplexSearch<NodeType extends Comparable<? super NodeType>> imp
 		solnNodeScores  = new Hashtable<NodeType, Double>(); 
 		seedNodes = new HashSet<NodeType>(); 
 		solnNodes = new HashSet<NodeType>(); 
-		removalSet = new HashSet<Graph<NodeType,Double>>();
+		returnList = new ArrayList<Graph<NodeType,Double>>();
 		scoreObj = null;
 		graph = null;
 	}
@@ -139,6 +140,8 @@ public class NewComplexSearch<NodeType extends Comparable<? super NodeType>> imp
 
 		this.scoreObj = scoreObj;
 		this.graph = graph;
+
+		returnList.clear();
 	
 		// Queue of seed graphs that are grown into complexes.
 		List<Graph<NodeType,Double>> queue = new LinkedList<Graph<NodeType,Double>>();
@@ -156,7 +159,10 @@ public class NewComplexSearch<NodeType extends Comparable<? super NodeType>> imp
 
 		// Begin growing each seed into a complex.
 		for(Graph<NodeType,Double> soln: queue) {
-			log.fine("Beginning Soln: " + soln);
+			//log.fine("Beginning Soln: " + soln);
+//			System.out.println("Beginning Soln: " + soln);
+//			for ( NodeType nn : soln.getNodes() )
+//				System.out.println( nn );
 
 			seedNodes.clear();
 			seedNodes.addAll(soln.getNodes());
@@ -173,6 +179,9 @@ public class NewComplexSearch<NodeType extends Comparable<? super NodeType>> imp
 			for (NodeType seedNode : soln.getNodes()) 
 				for (NodeType testNode : graph.getNeighbors(seedNode)) 
 					updatePotentialScores( testNode, seedNode );
+
+//			System.out.println("initial solState");
+//			printSolState();
 
 			// This set is used because the following while loop can reach a
 			// state where it cycles between a small number of alternative
@@ -226,7 +235,7 @@ public class NewComplexSearch<NodeType extends Comparable<? super NodeType>> imp
 
 				// Add the node to the set and modify the list of scores 
 				// to reflect the new network.
-				log.fine("Adding node: " + maxNode);
+//				System.out.println("Adding node: " + maxNode);
 				solnNodes.add(maxNode);
 				solnNodeScores.put(maxNode, new Double(maxScore));
 				potentialNodeScores.remove(maxNode);
@@ -240,41 +249,39 @@ public class NewComplexSearch<NodeType extends Comparable<? super NodeType>> imp
 
 			}
 			
-			log.fine("soln Nodes: " + solnNodes);
+//			System.out.println( "seed soln" );
+//			System.out.println( soln.toString() );
+//			printSolState();
 
-			/*		
-			System.out.println( "seed soln" );
-			System.out.println( soln.toString() );
-			System.out.println( "solnNodes" );
-			for ( NodeType solNode : solnNodes ) 
-				System.out.println( "	" + solNode.toString() );
-			System.out.println( "solnNodeScores" );
-			for ( NodeType solNode : solnNodeScores.keySet() ) 
-				System.out.println( "	" + solNode.toString() + " " + solnNodeScores.get(solNode).toString());
-			*/	
+			Graph<NodeType,Double> solnGraph = new BasicGraph<NodeType,Double>();
 
-			// add solution nodes to soln graph
-			soln.setScore(0.0);
+			// add solution nodes and edges to soln graph
 			for ( NodeType solNode : solnNodes ) {
-				soln.setScore( soln.getScore() + solnNodeScores.get(solNode) );
-				if ( seedNodes.contains( solNode ) )
-					continue;
-				soln.addNode( solNode );
+				solnGraph.addNode( solNode );
+				for ( NodeType solNeighbor : graph.getNeighbors( solNode ) ) {
+					if ( !solnNodes.contains(solNeighbor) )
+						continue;
 
-				Set<NodeType> solNeighbors = graph.getNeighbors( solNode );
-				solNeighbors.retainAll( solnNodes );
-				for ( NodeType solNeighbor : solNeighbors )
-					soln.addEdge(solNode,solNeighbor,scoreObj.scoreEdge(solNode,solNeighbor,graph));
+					solnGraph.addEdge(solNode,solNeighbor,scoreObj.scoreEdge(solNode,solNeighbor,graph));
+				}
 			}
 
-			if (soln.numberOfNodes() < minSeedSize) 
-				removalSet.add(soln);
+			// calc score for graph
+			double solnGraphScore = 0.0;
+			for (Edge<NodeType,Double> e : solnGraph.getEdges())
+				solnGraphScore += e.getWeight().doubleValue();
+
+			solnGraph.setScore(solnGraphScore);
+
+//			System.out.println("final soln ");
+//			System.out.println(solnGraph.toString());
+//			System.out.println();
+
+			if (solnGraph.numberOfNodes() >= minSeedSize) 
+				returnList.add(solnGraph);
 		}
 
-		log.info("removing " + removalSet.size() + " complexes that are deemed too small");		
-		queue.removeAll( removalSet );
-				
-		return queue;
+		return returnList;
 	}
 
 	public void setSeeds(List<Graph<NodeType,Double>> seeds) {
@@ -332,7 +339,7 @@ public class NewComplexSearch<NodeType extends Comparable<? super NodeType>> imp
 				tmpscore += seedScore.get(i);
 			}
 			soln.setScore(tmpscore);
-			System.out.println(soln.toString());
+//			System.out.println(soln.toString());
 			queue.add(soln);
 		}
 	}
@@ -469,6 +476,19 @@ public class NewComplexSearch<NodeType extends Comparable<? super NodeType>> imp
 			}
 			solnNodeScores.put(testNode, new Double(testScore));
 		}
+	}
+
+	private void printSolState() {
+			System.out.println( "\nsolnNodes" );
+			for ( NodeType solNode : solnNodes ) 
+				System.out.println( "	" + solNode.toString() );
+			System.out.println( "solnNodeScores" );
+			for ( NodeType solNode : solnNodeScores.keySet() ) 
+				System.out.println( "	" + solNode.toString() + " " + solnNodeScores.get(solNode).toString());
+			System.out.println( "potentialNodeScores" );
+			for ( NodeType solNode : potentialNodeScores.keySet() ) 
+				System.out.println( "	" + solNode.toString() + " " + potentialNodeScores.get(solNode).toString());
+			System.out.println();
 	}
 }
 

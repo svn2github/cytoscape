@@ -33,17 +33,30 @@ public class TestSearch{
         graph.addEdge(a,b,0.5,"a to b");
         graph.addEdge(b,c,1.0,"b to c");
         graph.addEdge(c,a,1.5,"c to a");
+        System.out.println("Input Graph");
         System.out.println(graph);
+        System.out.println("------------------------------------------------------------------------");
 
         SimpleScoreModel<BasicWeightedNode<Integer,Double>> model = new SimpleScoreModel<BasicWeightedNode<Integer,Double>>();
         /*
          * Perform the greedy search and print
          * out the results
          */
-        NewComplexSearch<BasicWeightedNode<Integer,Double>> greedyComplexes = new NewComplexSearch<BasicWeightedNode<Integer,Double>>(1,3);
+	 doSearch(1,3,graph,model);
+	 doSearch(2,3,graph,model);
+	 doSearch(1,2,graph,model);
+    }
+
+    protected static void doSearch(int min, int max, Graph<BasicWeightedNode<Integer,Double>,Double> graph, SimpleScoreModel<BasicWeightedNode<Integer,Double>> model) {
+        System.out.println("\n\n======================================================================");
+        System.out.println("Printing out results for min: " + min + " max: " + max);
+        NewComplexSearch<BasicWeightedNode<Integer,Double>> greedyComplexes = new NewComplexSearch<BasicWeightedNode<Integer,Double>>(min,max);
         List<Graph<BasicWeightedNode<Integer,Double>,Double>> results = greedyComplexes.searchGraph(graph,model);
-        System.out.println("Printing out results");
-        System.out.println(results); 
+        System.out.println("\n\nfinal results: " + min + " max: " + max);
+	for ( Graph<BasicWeightedNode<Integer,Double>,Double> G : results ) {
+        	System.out.println(G); 
+        	System.out.println(); 
+	}
     }
 }
 
