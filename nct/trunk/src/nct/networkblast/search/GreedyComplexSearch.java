@@ -372,19 +372,17 @@ public class GreedyComplexSearch<NodeType extends Comparable<? super NodeType>> 
 		// minSeedSize-1 because seed is already in the set
 		Vector<NodeType> seedSet= new Vector<NodeType>();  
 		Vector<Double> seedScore = new Vector<Double>();		
-		double testScore;
-		int pathSize;
 
 		for (NodeType seedNode : graph.getNodes()) {
 
 			seedSet.clear();
 			seedScore.clear();
-			pathSize = 0;
+			int numAdded = 0;
 
 			// Check each neighbor's score and add the neighbor 
 			// to the appropriate place in the list of scores. 
 			for (NodeType testNode : graph.getNeighbors(seedNode)) {
-				testScore = scoreObj.scoreEdge(seedNode, testNode, graph);
+				double testScore = scoreObj.scoreEdge(seedNode, testNode, graph);
 				boolean added = false;
 				for ( int i = 0; i < seedScore.size(); i++ ) {
 					if ( testScore > seedScore.get(i).doubleValue() ) {
@@ -399,10 +397,10 @@ public class GreedyComplexSearch<NodeType extends Comparable<? super NodeType>> 
 					seedScore.add(testScore);
 					seedSet.add(testNode);
 				}
-				pathSize++;
+				numAdded++;
 			}
 
-			if (pathSize < minSeedSize - 1) 
+			if (numAdded < minSeedSize - 1) 
 				continue;
 
 			// Now that we have our (at least) minSeedSize node set, 
