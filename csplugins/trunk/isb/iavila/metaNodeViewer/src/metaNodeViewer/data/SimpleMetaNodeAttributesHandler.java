@@ -283,25 +283,31 @@ public class SimpleMetaNodeAttributesHandler implements
                 
                 byte valueType = edgeAtts.getType(attrName);
                 if (valueType == CyAttributes.TYPE_STRING) {
-                    uniqueValues.add(edgeAtts.getStringAttribute(childEdgeID,
-                            attrName));
+                    String value = edgeAtts.getStringAttribute(childEdgeID,
+                            attrName);
+                    if(value != null) uniqueValues.add(value);
                 } else if (valueType == CyAttributes.TYPE_FLOATING) {
-                    uniqueValues.add(edgeAtts.getDoubleAttribute(childEdgeID,
-                            attrName));
+                    Double value = edgeAtts.getDoubleAttribute(childEdgeID,
+                            attrName);
+                    uniqueValues.add(value);
                 } else if (valueType == CyAttributes.TYPE_INTEGER) {
-                    uniqueValues.add(edgeAtts.getIntegerAttribute(childEdgeID,
-                            attrName));
+                    Integer value = edgeAtts.getIntegerAttribute(childEdgeID,
+                            attrName);
+                    uniqueValues.add(value);
                 } else if (valueType == CyAttributes.TYPE_SIMPLE_LIST) {
-                    uniqueValues.addAll(edgeAtts.getAttributeList(childEdgeID,
-                            attrName));
+                    List value = edgeAtts.getAttributeList(childEdgeID,
+                            attrName);
+                    uniqueValues.addAll(value);
                 } else if (valueType == CyAttributes.TYPE_SIMPLE_MAP) {
+                    Map value = edgeAtts.getAttributeMap(childEdgeID, attrName);
                     if (simpleMap == null)
                         simpleMap = new HashMap();
-                    simpleMap
-                            .putAll(edgeAtts.getAttributeMap(childEdgeID, attrName));
+                    if(value != null)
+                    simpleMap.putAll(value);
                 } else if (valueType == CyAttributes.TYPE_BOOLEAN) {
-                    uniqueValues.add(edgeAtts.getBooleanAttribute(childEdgeID,
-                            attrName));
+                    Boolean value = edgeAtts.getBooleanAttribute(childEdgeID,
+                            attrName);
+                    uniqueValues.add(value);
                 } else {
                     typeSupported = false;
                 }
