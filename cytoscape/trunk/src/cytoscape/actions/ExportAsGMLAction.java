@@ -109,7 +109,8 @@ public class ExportAsGMLAction extends CytoscapeAction {
 
 		// Get Current Network and View
 		CyNetwork network = Cytoscape.getCurrentNetwork();
-		CyNetworkView view = Cytoscape.getNetworkView(network.getIdentifier());
+		CyNetworkView view = Cytoscape.getCurrentNetworkView();
+		//CyNetworkView view = Cytoscape.getNetworkView(network.getIdentifier());
 
 		// Create Task
 		ExportAsGMLTask task = new ExportAsGMLTask(name, network, view);
