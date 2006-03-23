@@ -73,7 +73,6 @@
   <xs:element name="network">
     <xs:complexType>
       <xs:sequence>
-        <xs:element ref="view"/>
         <xs:element minOccurs="1" ref="parent"/>
         <xs:element minOccurs="0" maxOccurs="unbounded" ref="child"/>
         <xs:element minOccurs="0" ref="selectedNodes"/>
@@ -84,10 +83,10 @@
       </xs:sequence>
       <xs:attribute name="filename" use="required" type="xs:NCName"/>
       <xs:attribute name="id" use="required" type="xs:NCName"/>
+      <xs:attribute name="viewAvailable" use="optional" type="xs:boolean"/>
       <xs:attribute name="visualStyle" use="optional" type="xs:NCName"/>
     </xs:complexType>
   </xs:element>
-  <xs:element name="view" type="xs:boolean"/>
   <xs:element name="parent">
     <xs:complexType>
       <xs:attribute name="id" use="required" type="xs:NCName"/>
