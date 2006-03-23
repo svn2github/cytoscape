@@ -1,40 +1,39 @@
-
 /*
-  File: XGMMLWriter.java 
-  
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-  
-  The Cytoscape Consortium is: 
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Pasteur Institute
-  - Agilent Technologies
-  
-  This library is free software; you can redistribute it and/or modify it
-  under the terms of the GNU Lesser General Public License as published
-  by the Free Software Foundation; either version 2.1 of the License, or
-  any later version.
-  
-  This library is distributed in the hope that it will be useful, but
-  WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
-  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
-  documentation provided hereunder is on an "as is" basis, and the
-  Institute for Systems Biology and the Whitehead Institute 
-  have no obligations to provide maintenance, support,
-  updates, enhancements or modifications.  In no event shall the
-  Institute for Systems Biology and the Whitehead Institute 
-  be liable to any party for direct, indirect, special,
-  incidental or consequential damages, including lost profits, arising
-  out of the use of this software and its documentation, even if the
-  Institute for Systems Biology and the Whitehead Institute 
-  have been advised of the possibility of such damage.  See
-  the GNU Lesser General Public License for more details.
-  
-  You should have received a copy of the GNU Lesser General Public License
-  along with this library; if not, write to the Free Software Foundation,
-  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ File: XGMMLWriter.java 
+ 
+ Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+ 
+ The Cytoscape Consortium is: 
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Pasteur Institute
+ - Agilent Technologies
+ 
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+ 
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute 
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute 
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute 
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+ 
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+ */
 
 package cytoscape.data.writers;
 
@@ -194,19 +193,18 @@ public class XGMMLWriter {
 		graphAtt.setName(METADATA_NAME);
 		graphAtt.getContent().add(metadata);
 		graph.getAtt().add(graphAtt);
+
 		// Store background color
-		globalGraphics = objFactory.createAtt();
-		globalGraphics.setName(BACKGROUND);
 		if (networkView != null) {
+			globalGraphics = objFactory.createAtt();
+			globalGraphics.setName(BACKGROUND);
+
 			globalGraphics.setValue(paint2string(networkView
 					.getBackgroundPaint()));
-		} else {
-			globalGraphics.setValue(paint2string(Color.WHITE));
+			graph.getAtt().add(globalGraphics);
 		}
 
-		graph.getAtt().add(globalGraphics);
 	}
-
 
 	/**
 	 * Write the XGMML file.
@@ -274,7 +272,7 @@ public class XGMMLWriter {
 			jxbEdge.setTarget(Integer.toString(curEdge.getTarget()
 					.getRootGraphIndex()));
 
-			if(networkView != null) {
+			if (networkView != null) {
 				EdgeView curEdgeView = networkView.getEdgeView(curEdge);
 
 				jxbEdge.setGraphics(getGraphics(EDGE, curEdgeView));
@@ -549,15 +547,19 @@ public class XGMMLWriter {
 
 			edgeLabelFont
 					.setValue(encodeFont(curEdgeView.getLabel().getFont()));
-			
+
 			edgeLineType.setValue(lineTypeBuilder(curEdgeView).toString());
 
-//			System.out.println("Source Color is :" + curEdgeView.getSourceEdgeEndPaint().toString());
-//			System.out.println("Target Color is :" + curEdgeView.getTargetEdgeEndPaint().toString());
-//			System.out.println("Source Type is :" + curEdgeView.getSourceEdgeEnd());
-//			System.out.println("Target Type is :" + curEdgeView.getTargetEdgeEnd());
-//			
-			
+			// System.out.println("Source Color is :" +
+			// curEdgeView.getSourceEdgeEndPaint().toString());
+			// System.out.println("Target Color is :" +
+			// curEdgeView.getTargetEdgeEndPaint().toString());
+			// System.out.println("Source Type is :" +
+			// curEdgeView.getSourceEdgeEnd());
+			// System.out.println("Target Type is :" +
+			// curEdgeView.getTargetEdgeEnd());
+			//			
+
 			sourceArrowColor.setValue(paint2string(curEdgeView
 					.getSourceEdgeEndPaint()));
 			targetArrowColor.setValue(paint2string(curEdgeView
@@ -679,20 +681,22 @@ public class XGMMLWriter {
 					.getIdentifier(), Semantics.CANONICAL_NAME));
 			jxbNode.setName("base");
 
+			// Add graphics if available
 			if (networkView != null) {
 				NodeView curNodeView = networkView.getNodeView(curNode);
-
 				jxbNode.setGraphics(getGraphics(NODE, curNodeView));
-				attributeWriter(NODE, curNode.getIdentifier(), jxbNode);
-				if (isMetanode(curNode)) {
-					nodeList.add(curNode);
-					metanodeList.add(curNode);
-					expandChildren(curNode);
-				} else {
-					nodeList.add(curNode);
-					graph.getNodeOrEdge().add(jxbNode);
-				}
 			}
+			
+			attributeWriter(NODE, curNode.getIdentifier(), jxbNode);
+			if (isMetanode(curNode)) {
+				nodeList.add(curNode);
+				metanodeList.add(curNode);
+				expandChildren(curNode);
+			} else {
+				nodeList.add(curNode);
+				graph.getNodeOrEdge().add(jxbNode);
+			}
+
 		}
 
 		// int count = 0;
@@ -714,9 +718,11 @@ public class XGMMLWriter {
 		jxbNode.setId(targetnodeID);
 		jxbNode.setLabel(nodeAttributes.getStringAttribute(
 				node.getIdentifier(), Semantics.CANONICAL_NAME));
-		NodeView curNodeView = networkView.getNodeView(node);
-
-		jxbNode.setGraphics(getGraphics(NODE, curNodeView));
+		
+		if(networkView != null) {
+			NodeView curNodeView = networkView.getNodeView(node);
+			jxbNode.setGraphics(getGraphics(NODE, curNodeView));
+		}
 		attributeWriter(NODE, node.getIdentifier(), jxbNode);
 		return jxbNode;
 	}
@@ -808,8 +814,9 @@ public class XGMMLWriter {
 
 	private String encodeFont(Font font) {
 		// Encode font into "fontname-style-pointsize" string
-		String fontString = font.getName() + "-" + font.getStyle() + "-" + font.getSize();
-		
+		String fontString = font.getName() + "-" + font.getStyle() + "-"
+				+ font.getSize();
+
 		return fontString;
 	}
 
@@ -828,52 +835,50 @@ public class XGMMLWriter {
 		} else
 			return null;
 	}
-	
+
 	private LineType lineTypeBuilder(EdgeView view) {
-		
+
 		LineType lineType = LineType.LINE_1;
 		BasicStroke stroke = (BasicStroke) view.getStroke();
-		
+
 		float[] dash = stroke.getDashArray();
-		
+
 		float width = stroke.getLineWidth();
-		if(dash == null) {
-			// Normal line.  check width
-			if ( width == 1.0 ) {
+		if (dash == null) {
+			// Normal line. check width
+			if (width == 1.0) {
 				lineType = LineType.LINE_1;
-			} else if( width == 2.0 ) {
+			} else if (width == 2.0) {
 				lineType = LineType.LINE_2;
-			} else if( width == 3.0 ) {
+			} else if (width == 3.0) {
 				lineType = LineType.LINE_3;
-			} else if( width == 4.0 ) {
+			} else if (width == 4.0) {
 				lineType = LineType.LINE_4;
-			} else if( width == 5.0 ) {
+			} else if (width == 5.0) {
 				lineType = LineType.LINE_5;
-			} else if( width == 6.0 ) {
+			} else if (width == 6.0) {
 				lineType = LineType.LINE_6;
-			} else if( width == 7.0 ) {
+			} else if (width == 7.0) {
 				lineType = LineType.LINE_7;
 			}
-			//System.out.println("SOLID: " + width);
+			// System.out.println("SOLID: " + width);
 		} else {
-			if( width == 1.0 ) {
+			if (width == 1.0) {
 				lineType = LineType.DASHED_1;
-			} else if ( width == 2.0 ) {
+			} else if (width == 2.0) {
 				lineType = LineType.DASHED_2;
-			} else if( width == 3.0 ) {
+			} else if (width == 3.0) {
 				lineType = LineType.DASHED_3;
-			} else if( width == 4.0 ) {
+			} else if (width == 4.0) {
 				lineType = LineType.DASHED_4;
-			} else if( width == 5.0 ) {
+			} else if (width == 5.0) {
 				lineType = LineType.DASHED_5;
-			} 
-			//System.out.println("DASH: " + width);
+			}
+			// System.out.println("DASH: " + width);
 		}
-		
+
 		return lineType;
 	}
-	
-	
 
 }
 

@@ -112,8 +112,8 @@ public class CytoscapeSessionWriter {
 	public final int NODE = 1;
 	public final int EDGE = 2;
 
-	private static final String DEFAULT_VS_NAME = "default"; 
-	
+	private static final String DEFAULT_VS_NAME = "default";
+
 	// Number of Cytopanels. Currently, we have 3 panels.
 	private static final int CYTOPANEL_COUNT = 3;
 
@@ -198,7 +198,7 @@ public class CytoscapeSessionWriter {
 	}
 
 	private void getGUIStates() {
-		
+
 	}
 
 	/**
@@ -324,7 +324,6 @@ public class CytoscapeSessionWriter {
 	public void makeXGMML(String xgmmlFile, CyNetwork network,
 			CyNetworkView view) throws IOException {
 
-		// TEST!
 		XGMMLWriter wt = new XGMMLWriter(network, view);
 		try {
 			FileWriter fileWriter2 = new FileWriter(xgmmlFile);
@@ -351,24 +350,13 @@ public class CytoscapeSessionWriter {
 		session.setId(sessionName);
 		getNetworkTree();
 		session.setNetworkTree(tree);
-		
-		
-		
 
 		Marshaller m = jc.createMarshaller();
 
 		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 
 		// Write session file
-		try {
-			m.marshal(session, new FileOutputStream(CYSESSION_FILE_NAME));
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JAXBException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		m.marshal(session, new FileOutputStream(CYSESSION_FILE_NAME));
 	}
 
 	// Get information about the current session status.
@@ -437,21 +425,17 @@ public class CytoscapeSessionWriter {
 		Network curNode = factory.createNetwork();
 		curNode.setFilename(node.getUserObject().toString() + XGMML_EXT);
 		curNode.setId(node.getUserObject().toString());
-		// CyNetworkView curView = Cytoscape.getNetworkView((String)
-		// networkMap.get(node
-		// .getUserObject().toString()));
+
 		CyNetwork curNet = Cytoscape.getNetwork((String) networkMap.get(node
 				.getUserObject().toString()));
-		CyNetworkView curView = Cytoscape
-				.getNetworkView(curNet.getIdentifier());
-
-		curView = (CyNetworkView) viewMap.get(curNet.getIdentifier());
-
+		CyNetworkView curView = (CyNetworkView) viewMap.get(curNet
+				.getIdentifier());
+		
 		if (!node.getUserObject().toString().equals("Network Root")) {
 			String visualStyleName = null;
-			if(curView != null) {
+			if (curView != null) {
 				VisualStyle curVS = curView.getVisualStyle();
-				if(curVS != null) {
+				if (curVS != null) {
 					visualStyleName = curVS.getName();
 				}
 			}
@@ -459,8 +443,6 @@ public class CytoscapeSessionWriter {
 				visualStyleName = DEFAULT_VS_NAME;
 			}
 
-//			System.out.println("Saving Association: " + curNode.getId()
-//					+ " --> " + visualStyleName);
 			curNode.setVisualStyle(visualStyleName);
 		} else {
 			curNode.setVisualStyle(DEFAULT_VS_NAME);
@@ -468,9 +450,9 @@ public class CytoscapeSessionWriter {
 
 		if (Cytoscape.getNetworkView((String) networkMap.get(node
 				.getUserObject().toString())) == null) {
-			curNode.setView(false);
+			curNode.setViewAvailable(false);
 		} else {
-			curNode.setView(true);
+			curNode.setViewAvailable(true);
 		}
 
 		Parent parent = null;
@@ -509,18 +491,19 @@ public class CytoscapeSessionWriter {
 				CyNetworkView leafView = Cytoscape
 						.getNetworkView((String) networkMap.get(child
 								.getUserObject().toString()));
+//				CyNetworkView leafView = (CyNetworkView) viewMap.get(curNet
+//						.getIdentifier());
+//				leafView = (CyNetworkView) viewMap.get(leafView.getNetwork()
+//						.getIdentifier());
 
-				leafView = (CyNetworkView) viewMap.get(leafView.getNetwork()
-						.getIdentifier());
-				
 				String leafVisualStyleName = null;
-				if( leafView != null) {
+				if (leafView != null) {
 					VisualStyle leafVS = leafView.getVisualStyle();
-					if(leafVS != null) {
+					if (leafVS != null) {
 						leafVisualStyleName = leafVS.getName();
 					}
 				}
-				
+
 				if (leafVisualStyleName == null) {
 					leafVisualStyleName = DEFAULT_VS_NAME;
 				}
@@ -540,10 +523,9 @@ public class CytoscapeSessionWriter {
 						.getNetworkView(targetID);
 
 				if (curNetworkView == null) {
-					System.out.println("#############NO VIEW!");
-					leaf.setView(false);
+					leaf.setViewAvailable(false);
 				} else {
-					leaf.setView(true);
+					leaf.setViewAvailable(true);
 
 					Iterator it = targetNetwork.nodesIterator();
 					ViewableNodes vn = factory.createViewableNodes();
