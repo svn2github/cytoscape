@@ -216,7 +216,7 @@ public class NewComplexSearch<NodeType extends Comparable<? super NodeType>> imp
 
 				// If the best score is negative don't add the node to 
 				// make the score worse!
-				if (maxScore < 0) 
+				if (maxScore <= 0 || maxNode == null ) 
 					break;
 			
 				// If we reach the max limit, check to see if adding a new node 
@@ -261,21 +261,18 @@ public class NewComplexSearch<NodeType extends Comparable<? super NodeType>> imp
 			Graph<NodeType,Double> solnGraph = new BasicGraph<NodeType,Double>();
 
 			// add solution nodes and edges to soln graph
+			double solnGraphScore = 0.0;
 			for ( NodeType solNode : solnNodes ) {
 				solnGraph.addNode( solNode );
+				solnGraphScore += scoreObj.scoreNode( solNode, graph );
 				for ( NodeType solNeighbor : graph.getNeighbors( solNode ) ) {
 					if ( !solnNodes.contains(solNeighbor) )
 						continue;
 
-					solnGraph.addEdge(solNode,solNeighbor,scoreObj.scoreEdge(solNode,solNeighbor,graph));
+					if ( solnGraph.addEdge(solNode,solNeighbor,scoreObj.scoreEdge(solNode,solNeighbor,graph)) )
+						solnGraphScore += scoreObj.scoreEdge( solNode, solNeighbor, graph );
 				}
 			}
-
-			// calc score for graph
-			double solnGraphScore = 0.0;
-			for (Edge<NodeType,Double> e : solnGraph.getEdges())
-				solnGraphScore += e.getWeight().doubleValue();
-
 			solnGraph.setScore(solnGraphScore);
 
 //			System.out.println("final soln ");
@@ -488,7 +485,9 @@ public class NewComplexSearch<NodeType extends Comparable<? super NodeType>> imp
 	}
 
 	private void updateSolnNodeScores() {
+		System.out.println("solNodes about to be updated " + solnNodes);
 		for ( NodeType testNode : solnNodes ) {
+			System.out.println("updating solNode: " + testNode);
 			double testScore = scoreObj.scoreNode(testNode,graph);
 			for ( NodeType conNode : solnNodes ) {
 
