@@ -506,7 +506,7 @@
     <!-- Use the 'zip_release' target to build zipped releases   -->
     <!-- Questions?  email:  cerami@cbio.mskcc.org	         -->
     <!-- ======================================================= -->
-    <target name="release" depends="jar, test"
+    <target name="release" depends="jar"
             description="Creates Cytoscape Release">
 
         <echo>
