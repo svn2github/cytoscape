@@ -20,17 +20,17 @@ import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
 import cytoscape.CyNetwork;
-import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.FlagEvent;
 import cytoscape.data.FlagEventListener;
-import cytoscape.view.CyNetworkView;
+import cytoscape.data.SelectEvent;
+import cytoscape.data.SelectEventListener;
 import cytoscape.view.CytoscapeDesktop;
 import filter.model.Filter;
 import filter.model.FilterManager;
 
 public class SelectPanel extends JPanel implements PropertyChangeListener,
-		ActionListener, FlagEventListener {
+		ActionListener, FlagEventListener, SelectEventListener {
 	public static int NODES = 0;
 	public static int EDGES = 1;
 	int graphObjectType;
@@ -120,8 +120,9 @@ public class SelectPanel extends JPanel implements PropertyChangeListener,
 	}
 
 	private List getGraphObjectList(CyNetwork network) {
-		if (graphObjectType == NODES)
+		if (graphObjectType == NODES) {
 			return network.nodesList();
+		}
 		else
 			return network.edgesList();
 	}
@@ -199,6 +200,11 @@ public class SelectPanel extends JPanel implements PropertyChangeListener,
 		}
 		DefaultComboBoxModel model = new DefaultComboBoxModel(vector);
 		return new JComboBox(model);
+	}
+
+	public void onSelectEvent(SelectEvent arg0) {
+		// TODO Auto-generated method stub
+		System.out.println("Action.Select!!");
 	}
 
 }

@@ -33,7 +33,7 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 	static String MUL = "Mul";
 	static String DIV = "Div";
 	static String COPY = "Copy";
-	static String DELETE = "Delete";
+	static String CLEAR = "Clear";
 
 	private String newAttrType;
 
@@ -146,7 +146,7 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 
 		if (action == COPY) {
 			copyAtt();
-		} else if (action == DELETE) {
+		} else if (action == CLEAR) {
 			deleteAtt();
 		} else {
 

@@ -1,7 +1,6 @@
 package browser;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.SwingConstants;
@@ -15,6 +14,8 @@ import cytoscape.view.cytopanels.CytoPanelState;
  * This class is enabled only when browser plugin is loaded. User can on/off
  * browser panel (CytoPanel3) by using f5 key.
  * 
+ * 3/6/2005 KONO: This action is now under "View" menu.
+ * 
  * @author kono
  * 
  */
@@ -22,7 +23,7 @@ public class DisplayAdvancedWindowAction extends CytoscapeAction {
 
 	public DisplayAdvancedWindowAction() {
 		super("Show/Hide advanced window");
-//		setPreferredMenu("Data");
+		// setPreferredMenu("Data");
 	}
 
 	public void actionPerformed(ActionEvent ev) {
@@ -30,9 +31,10 @@ public class DisplayAdvancedWindowAction extends CytoscapeAction {
 		// Check the state of the browser Panel
 		CytoPanelState curState = Cytoscape.getDesktop().getCytoPanel(
 				SwingConstants.EAST).getState();
-		
+
 		JCheckBoxMenuItem menuItem = null;
-		menuItem =  (JCheckBoxMenuItem) Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("CytoPanels").getItem(2);
+		menuItem = (JCheckBoxMenuItem) Cytoscape.getDesktop().getCyMenus()
+				.getMenuBar().getMenu("CytoPanels").getItem(2);
 
 		int targetIndex = 0;
 
@@ -43,8 +45,8 @@ public class DisplayAdvancedWindowAction extends CytoscapeAction {
 			Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST)
 					.setSelectedIndex(targetIndex);
 			menuItem.setSelected(true);
-			
-			//System.out.println("Counter = " + menuItem.toString());
+
+			// System.out.println("Counter = " + menuItem.toString());
 
 			// Case 2: Panel is in the Dock
 		} else if (curState == CytoPanelState.DOCK) {

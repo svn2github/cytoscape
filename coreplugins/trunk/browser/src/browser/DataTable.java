@@ -3,28 +3,18 @@ package browser;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.event.KeyEvent;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.swing.AbstractAction;
 import javax.swing.JFrame;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
-import cytoscape.util.CyFileFilter;
-import cytoscape.util.CytoscapeAction;
-import cytoscape.util.FileUtil;
 import cytoscape.view.cytopanels.CytoPanelListener;
 import cytoscape.view.cytopanels.CytoPanelState;
 
@@ -41,13 +31,12 @@ import cytoscape.view.cytopanels.CytoPanelState;
 public class DataTable {
 
 	// Panels to be added on the CytoPanels
-	AttributePanel attributePanel;
 	ModPanel modPanel;
 	SelectPanel selectionPanel;
 	DataTableModel tableModel;
 
 	// Small toolbar panel on the top of browser
-	AttributePanel2 attributePanel2;
+	AttributeBrowserPanel attributePanel2;
 
 	// Index number for the panels
 	int attributePanelIndex;
@@ -62,6 +51,8 @@ public class DataTable {
 
 	public static int NODES = 0;
 	public static int EDGES = 1;
+	private String type = null;
+	
 	public int graphObjectType;
 
 	public DataTable(CyAttributes data, int graphObjectType) {
@@ -71,7 +62,7 @@ public class DataTable {
 		this.graphObjectType = graphObjectType;
 
 		// Make display title
-		String type = "Node";
+		type = "Node";
 		if (graphObjectType != NODES)
 			type = "Edge";
 
@@ -80,12 +71,9 @@ public class DataTable {
 		tableModel.setGraphObjectType(graphObjectType);
 
 		// List of attributes and labels: CytoPanel 1
-		attributePanel = new AttributePanel(data, new AttributeModel(data),
-				new LabelModel(data));
-		attributePanel.setTableModel(tableModel);
 
 		// Toolbar for selecting attributes and create new attribute.
-		attributePanel2 = new AttributePanel2(data, new AttributeModel(data),
+		attributePanel2 = new AttributeBrowserPanel(data, new AttributeModel(data),
 				new LabelModel(data), graphObjectType);
 		attributePanel2.setTableModel(tableModel);
 
@@ -111,7 +99,7 @@ public class DataTable {
 		JTabbedPane advancedPanel = new JTabbedPane();
 		advancedPanel.setPreferredSize(new Dimension(200,100));
 		
-		modPanel = new ModPanel(data, tableModel, attributePanel,
+		modPanel = new ModPanel(data, tableModel,
 				graphObjectType);
 		selectionPanel = new SelectPanel(tableModel, graphObjectType);
 		advancedPanel.add("Selection", selectionPanel);
@@ -133,17 +121,7 @@ public class DataTable {
 		Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH).add(
 				type + " Attribute Browser", mainPanel);
 
-		// Add an export command in "Data" menu
-		
-		
-		
-		
-		
-		
-		// attributePanelIndex = Cytoscape.getDesktop().getCytoPanel(
-		// SwingConstants.WEST).indexOfComponent(attributePanel);
-
-		//
+	
 		// Get indexes for the panels.
 		modPanelIndex = Cytoscape.getDesktop()
 				.getCytoPanel(SwingConstants.EAST).indexOfComponent(
@@ -151,15 +129,6 @@ public class DataTable {
 
 		tableIndex = Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH)
 				.indexOfComponent(mainPanel);
-
-		// browserIndex = Cytoscape.getDesktop().getCytoPanel(
-		// SwingConstants.SOUTH).indexOfComponent(mainPanel);
-
-		// Setup listeners
-		// Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH)
-		// .addCytoPanelListener(
-		// new Listener(attributePanelIndex, modPanelIndex, -1,
-		// tableIndex));
 
 		Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH)
 				.addCytoPanelListener(
@@ -171,23 +140,6 @@ public class DataTable {
 						new Listener(attributePanelIndex, tableIndex, -1,
 								modPanelIndex));
 
-		// Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH)
-		// .addCytoPanelListener(
-		// new Listener(attributePanelIndex, -1, tableIndex,
-		// modPanelIndex));
-		//		
-
-		// Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH)
-		// .addCytoPanelListener(
-		// new Listener(attributePanelIndex, -1, tableIndex,
-		// browserIndex));
-		//		
-		//		
-
-		// Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).setState(
-		// CytoPanelState.DOCK);
-		// Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH).setState(
-		// CytoPanelState.DOCK);
 		Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH).setState(
 				CytoPanelState.DOCK);
 
@@ -266,12 +218,13 @@ public class DataTable {
 	}
 
 	private List getFlaggedGraphObjects() {
-		if (graphObjectType == NODES)
-			return new ArrayList(Cytoscape.getCurrentNetwork()
-					.getFlaggedNodes());
-		else
-			return new ArrayList(Cytoscape.getCurrentNetwork()
-					.getFlaggedEdges());
+		if (graphObjectType == NODES) {
+//			return new ArrayList(Cytoscape.getCurrentNetwork()
+//					.getFlaggedNodes());
+			return new ArrayList(Cytoscape.getCurrentNetwork().getSelectedNodes());
+		} else {
+			return new ArrayList(Cytoscape.getCurrentNetwork().getSelectedEdges());
+		}
 	}
 
 	public static void main(String[] args) {

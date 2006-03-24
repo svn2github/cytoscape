@@ -1,6 +1,9 @@
 package browser;
 
-import java.awt.LayoutManager;
+import giny.model.GraphObject;
+
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -9,17 +12,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.ListModel;
+import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
-import javax.swing.SwingConstants;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import javax.swing.event.ListSelectionEvent;
@@ -28,22 +33,8 @@ import javax.swing.event.SwingPropertyChangeSupport;
 
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
-import cytoscape.view.cytopanels.CytoPanelState;
-import exesto.AttributeTags;
-import giny.model.GraphObject;
 
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import java.awt.Dimension;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JToolBar;
-import java.awt.Font;
-import java.awt.BorderLayout;
-import javax.swing.JLabel;
-import javax.swing.JCheckBoxMenuItem;
-
-public class AttributePanel2 extends JPanel implements PropertyChangeListener,
+public class Sample1 extends JPanel implements PropertyChangeListener,
 		ListSelectionListener, ListDataListener, ActionListener {
 
 	// Global Variables
@@ -70,8 +61,11 @@ public class AttributePanel2 extends JPanel implements PropertyChangeListener,
 	protected SwingPropertyChangeSupport pcs = new SwingPropertyChangeSupport(
 			this);
 	private JPopupMenu jPopupMenu = null;
+	private JPopupMenu deleteMenu = null;
+
 	private JScrollPane jScrollPane = null;
-	private JList jList = null;
+	private JScrollPane deletePane = null;
+
 	private JPopupMenu jPopupMenu1 = null;
 	private JMenuItem jMenuItem = null;
 	private JMenuItem jMenuItem1 = null;
@@ -79,20 +73,24 @@ public class AttributePanel2 extends JPanel implements PropertyChangeListener,
 	private JMenuItem jMenuItem3 = null;
 	private JToolBar jToolBar = null;
 	private JButton jButton = null;
+
 	private JList attributeList = null;
+	private JList attrDeletionList = null;
+
 	private JButton jButton1 = null;
 	private JLabel jLabel = null;
+	private JButton deleteButton = null;
 
 	private int graphObjectType;
 
-	public AttributePanel2() {
+	public Sample1() {
 		super();
 
 		// TODO Auto-generated constructor stub
 		initialize(null);
 	}
 
-	public AttributePanel2(CyAttributes data, AttributeModel a_model,
+	public Sample1(CyAttributes data, AttributeModel a_model,
 			LabelModel l_model, int got) {
 		this.data = data;
 		this.graphObjectType = got;
@@ -113,6 +111,7 @@ public class AttributePanel2 extends JPanel implements PropertyChangeListener,
 		this.add(getJToolBar(), java.awt.BorderLayout.NORTH);
 
 		getJPopupMenu(a_model);
+		getDeletePopupMenu();
 		getJPopupMenu1();
 
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(
@@ -121,6 +120,10 @@ public class AttributePanel2 extends JPanel implements PropertyChangeListener,
 
 	public String getSelectedAttribute() {
 		return attributeList.getSelectedValue().toString();
+	}
+
+	public String getToBeDeletedAttribute() {
+		return attrDeletionList.getSelectedValue().toString();
 	}
 
 	public void setTableModel(DataTableModel tableModel) {
@@ -132,24 +135,16 @@ public class AttributePanel2 extends JPanel implements PropertyChangeListener,
 		try {
 
 			if (e.getSource() == attributeList) {
+
 				Object[] atts = attributeList.getSelectedValues();
 				tableModel.setTableDataAttributes(Arrays.asList(atts));
-			}
+			} else if (e.getSource() == attrDeletionList) {
 
-			if (e.getSource() == tagList) {
-				String tag = tagList.getSelectedValue().toString();
-				Set atts = AttributeTags.getAttributesByTag(data, tag);
-				int[] indices = new int[atts.size()];
+				Object[] atts = attrDeletionList.getSelectedValues();
 
-				int count = 0;
-				for (Iterator i = atts.iterator(); i.hasNext();) {
-					int ind = attributeList.getNextMatch((String) i.next(), 0,
-							javax.swing.text.Position.Bias.Forward);
-					indices[count] = ind;
-					count++;
+				for (int i = 0; i < atts.length; i++) {
+					data.deleteAttribute((String) atts[i]);
 				}
-
-				attributeList.setSelectedIndices(indices);
 
 			}
 
@@ -159,7 +154,7 @@ public class AttributePanel2 extends JPanel implements PropertyChangeListener,
 	}
 
 	public void contentsChanged(ListDataEvent e) {
-		// System.out.println("###########Browser noticed lc!");
+
 	}
 
 	public void intervalAdded(ListDataEvent e) {
@@ -195,6 +190,14 @@ public class AttributePanel2 extends JPanel implements PropertyChangeListener,
 		return jPopupMenu;
 	}
 
+	private JPopupMenu getDeletePopupMenu() {
+		if (deleteMenu == null) {
+			deleteMenu = new JPopupMenu();
+			deleteMenu.add(getDeleteScrollPane());
+		}
+		return deleteMenu;
+	}
+
 	/**
 	 * This method initializes jScrollPane
 	 * 
@@ -207,6 +210,15 @@ public class AttributePanel2 extends JPanel implements PropertyChangeListener,
 			jScrollPane.setViewportView(getJList1(a_model));
 		}
 		return jScrollPane;
+	}
+
+	private JScrollPane getDeleteScrollPane() {
+		if (deletePane == null) {
+			deletePane = new JScrollPane();
+			deletePane.setPreferredSize(new Dimension(220, 200));
+			deletePane.setViewportView(getDeletionList());
+		}
+		return deletePane;
 	}
 
 	/**
@@ -330,6 +342,7 @@ public class AttributePanel2 extends JPanel implements PropertyChangeListener,
 			jToolBar.add(getJButton());
 			jToolBar.add(jLabel);
 			jToolBar.add(getJButton1());
+			jToolBar.add(getDeleteButton());
 		}
 		return jToolBar;
 	}
@@ -360,13 +373,36 @@ public class AttributePanel2 extends JPanel implements PropertyChangeListener,
 	}
 
 	/**
+	 * This method initializes jButton
+	 * 
+	 * @return javax.swing.JButton
+	 */
+	private JButton getDeleteButton() {
+		if (deleteButton == null) {
+			deleteButton = new JButton();
+			deleteButton.setFont(new java.awt.Font("Dialog",
+					java.awt.Font.PLAIN, 12));
+			deleteButton
+					.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+			deleteButton.setText("Delete Attributes");
+			deleteButton.addMouseListener(new java.awt.event.MouseAdapter() {
+				public void mouseClicked(java.awt.event.MouseEvent e) {
+					// TODO Auto-generated Event stub mouseClicked()
+					updateDeletionList();
+					deleteMenu.show(e.getComponent(), e.getX(), e.getY());
+				}
+			});
+		}
+		return deleteButton;
+	}
+
+	/**
 	 * This method initializes jList1
 	 * 
 	 * @return javax.swing.JList
 	 */
 	private JList getJList1(AttributeModel a_model) {
 		if (attributeList == null) {
-			attributeList = new JList();
 
 			attributeList = new JList(a_model);
 			attributeList.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -412,6 +448,74 @@ public class AttributePanel2 extends JPanel implements PropertyChangeListener,
 		return attributeList;
 	}
 
+	private void updateDeletionList() {
+		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+		String[] currentAttributeNames = nodeAttributes.getAttributeNames();
+		attrDeletionList.setListData(currentAttributeNames);
+	}
+
+	private JList getDeletionList() {
+		if (attrDeletionList == null) {
+
+			// Cretates List from CyAttributes
+			CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+			// String[] currentAttributeNames =
+			// nodeAttributes.getAttributeNames();
+
+			String[] currentAttributeNames = { "AA", "BB", "CC" };
+			for (int i = 0; i < currentAttributeNames.length; i++) {
+
+			}
+			System.out.print("Deletion Created!");
+			attrDeletionList = new JList(currentAttributeNames);
+
+			attrDeletionList
+					.addMouseListener(new java.awt.event.MouseAdapter() {
+
+						ArrayList indices = new ArrayList();
+
+						public void mouseClicked(java.awt.event.MouseEvent e) {
+							if (javax.swing.SwingUtilities
+									.isRightMouseButton(e)) {
+								// Hide list of attributes
+								deleteMenu.setVisible(false);
+							} else {
+								// int index =
+								// attrDeletionList.locationToIndex(e
+								// .getPoint());
+								//
+								// Integer indexObj = new Integer(index);
+								//
+								// // is this selected? if so remove it.
+								// if (indices.contains(indexObj)) {
+								// indices.remove(indexObj);
+								// }
+								//
+								// // otherwise add it to our list
+								// else
+								// indices.add(indexObj);
+								//
+								// // copy to an int array
+								// int[] arr = new int[indices.size()];
+								// for (int i = 0; i < arr.length; i++) {
+								// int item = ((Integer) indices.get(i))
+								// .intValue();
+								// arr[i] = item;
+								// }
+								// // set selected indices
+								// attrDeletionList.setSelectedIndices(arr);
+							}
+
+						}
+					});
+			attrDeletionList.addListSelectionListener(this);
+			attrDeletionList
+					.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+
+		}
+		return attrDeletionList;
+	}
+
 	/**
 	 * This method initializes jButton1
 	 * 
@@ -449,19 +553,18 @@ public class AttributePanel2 extends JPanel implements PropertyChangeListener,
 					"Please enter new attribute name: ", "Create New " + type
 							+ " Attribute", JOptionPane.QUESTION_MESSAGE);
 			for (int i = 0; i < existingAttrs.length; i++) {
-				
-				
-				if (existingAttrs[i].equals(name) == false ) {
+
+				if (existingAttrs[i].equals(name) == false) {
 					dupFlag = false;
-				} else if ( existingAttrs[i].equals(name) ) {
-					JOptionPane.showMessageDialog(null,
-							"Attribute " + name + " already exists.", "Error!",
+				} else if (existingAttrs[i].equals(name)) {
+					JOptionPane.showMessageDialog(null, "Attribute " + name
+							+ " already exists.", "Error!",
 							JOptionPane.ERROR_MESSAGE);
 					dupFlag = true;
 					break;
-				} 
+				}
 			}
-			
+
 		}
 
 		if (name != null) {
@@ -497,3 +600,4 @@ public class AttributePanel2 extends JPanel implements PropertyChangeListener,
 	}
 
 } // @jve:decl-index=0:visual-constraint="10,10"
+

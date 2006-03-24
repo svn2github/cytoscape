@@ -19,7 +19,6 @@ public class ModPanel extends JPanel implements ActionListener {
 
 	CyAttributes data;
 	DataTableModel tableModel;
-	AttributePanel attPanel;
 	int graphObjectType;
 
 	// Set/Modify
@@ -34,22 +33,20 @@ public class ModPanel extends JPanel implements ActionListener {
 	JButton copyGo;
 
 	// Delete
-	JComboBox attributeDeleteBox;
-	JButton deleteGo;
+	JComboBox attributeClearBox;
+	JButton clearGo;
 
 	static String ADD = "Add";
 	static String SET = "Set";
 	static String MUL = "Mul";
 	static String DIV = "Div";
 	static String COPY = "Copy";
-	static String DELETE = "Delete";
+	static String CLEAR = "Clear";
 
-	public ModPanel(CyAttributes data, DataTableModel tableModel,
-			AttributePanel attPanel, int graphObjectType) {
+	public ModPanel(CyAttributes data, DataTableModel tableModel, int graphObjectType) {
 
 		this.data = data;
 		this.tableModel = tableModel;
-		this.attPanel = attPanel;
 		this.graphObjectType = graphObjectType;
 
 		JTabbedPane tabs = new JTabbedPane();
@@ -89,16 +86,16 @@ public class ModPanel extends JPanel implements ActionListener {
 		copy.add(copyGo);
 
 		// create Delete Panel
-		JPanel delete = new JPanel();
-		tabs.add("Delete", delete);
-		attributeDeleteBox = createAttributeBox();
-		deleteGo = new JButton("GO");
+		JPanel clear = new JPanel();
+		tabs.add("Clear", clear);
+		attributeClearBox = createAttributeBox();
+		clearGo = new JButton("GO");
 
-		deleteGo.addActionListener(this);
+		clearGo.addActionListener(this);
 
-		delete.add(new JLabel("Delete"));
-		delete.add(attributeDeleteBox);
-		delete.add(deleteGo);
+		clear.add(new JLabel("Clear"));
+		clear.add(attributeClearBox);
+		clear.add(clearGo);
 
 	}
 
@@ -147,8 +144,8 @@ public class ModPanel extends JPanel implements ActionListener {
 		}
 		// 3. Delete (Clear?) operation
 		else {
-			edit = new MultiDataEditAction(null, DELETE, tableModel
-					.getObjects(), (String) attributeDeleteBox
+			edit = new MultiDataEditAction(null, CLEAR, tableModel
+					.getObjects(), (String) attributeClearBox
 					.getSelectedItem(), null, null, graphObjectType,
 					tableModel, null);
 

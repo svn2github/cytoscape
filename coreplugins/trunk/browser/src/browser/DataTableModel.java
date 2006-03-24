@@ -2,11 +2,8 @@ package browser;
 
 import giny.model.GraphObject;
 
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.ClipboardOwner;
-import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.Transferable;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -16,14 +13,12 @@ import java.util.Vector;
 import javax.swing.table.DefaultTableModel;
 
 import cytoscape.data.CyAttributes;
-import cytoscape.data.Semantics;
 import cytoscape.data.attr.MultiHashMapListener;
-
 /**
  * @author kono Actual data manipulation is implemented here.
  */
 public class DataTableModel extends DefaultTableModel implements
-		SortTableModel, MultiHashMapListener {
+		SortTableModel, MultiHashMapListener{
 
 	private CyAttributes data;
 	private List graph_objects;
@@ -87,8 +82,6 @@ public class DataTableModel extends DefaultTableModel implements
 		this.graph_objects = graph_objects;
 		setTable();
 
-		
-		
 	}
 
 	public void setGraphObjectType(int got) {
@@ -99,8 +92,7 @@ public class DataTableModel extends DefaultTableModel implements
 	// *** need to add an argument to copy edge attribute name correctly.
 	//
 	protected void setTable() {
-		
-		
+
 		int att_length = attributes.size() + 1;
 		int go_length = graph_objects.size();
 
@@ -153,9 +145,9 @@ public class DataTableModel extends DefaultTableModel implements
 
 	}
 
-	public String exportTable() {
-		return exportTable("\t", LS);
-	}
+//	public String exportTable() {
+//		return exportTable("\t", LS);
+//	}
 
 	public Object getAttributeValue(byte type, String id, String att) {
 		if (type == CyAttributes.TYPE_INTEGER)
@@ -173,56 +165,53 @@ public class DataTableModel extends DefaultTableModel implements
 		return null;
 	}
 
-	public String exportTable(String element_delim, String eol_delim) {
-
-		// Clipboard clipboard =
-		// Toolkit.getDefaultToolkit().getSystemClipboard();
-
-		StringBuffer export = new StringBuffer();
-
-		int att_length = attributes.size() + 1;
-		int go_length = graph_objects.size();
-
-		Object[][] data_vector = new Object[go_length][att_length];
-		Object[] column_names = new Object[att_length];
-
-		column_names[0] = "ID";
-		for (int j = 0; j < go_length; ++j) {
-			GraphObject obj = (GraphObject) graph_objects.get(j);
-
-			data_vector[j][0] = obj.getIdentifier();
-		}
-
-		for (int i1 = 0; i1 < attributes.size(); ++i1) {
-			int i = i1 + 1;
-			column_names[i] = attributes.get(i1);
-			String attribute = (String) attributes.get(i1);
-			byte type = data.getType(attribute);
-			for (int j = 0; j < go_length; ++j) {
-				GraphObject obj = (GraphObject) graph_objects.get(j);
-
-				Object value = getAttributeValue(type, obj.getIdentifier(),
-						attribute);
-				data_vector[j][i] = value;
-			}
-		}
-
-		for (int i = 0; i < column_names.length; ++i) {
-			export.append(column_names[i] + element_delim);
-		}
-		export.append(eol_delim);
-
-		for (int i = 0; i < data_vector.length; i++) {
-			for (int j = 0; j < data_vector[i].length; ++j) {
-				export.append(data_vector[i][j] + element_delim);
-			}
-			export.append(eol_delim);
-		}
-		// StringSelection contents = new StringSelection(export.toString());
-		// clipboard.setContents(contents, this);
-		return export.toString();
-
-	}
+//	public String exportTable(String element_delim, String eol_delim) {
+//		
+//		StringBuffer export = new StringBuffer();
+//
+//		int att_length = attributes.size() + 1;
+//		int go_length = graph_objects.size();
+//
+//		Object[][] data_vector = new Object[go_length][att_length];
+//		Object[] column_names = new Object[att_length];
+//
+//		column_names[0] = "ID";
+//		for (int j = 0; j < go_length; ++j) {
+//			GraphObject obj = (GraphObject) graph_objects.get(j);
+//
+//			data_vector[j][0] = obj.getIdentifier();
+//		}
+//
+//		for (int i1 = 0; i1 < attributes.size(); ++i1) {
+//			int i = i1 + 1;
+//			column_names[i] = attributes.get(i1);
+//			String attribute = (String) attributes.get(i1);
+//			byte type = data.getType(attribute);
+//			for (int j = 0; j < go_length; ++j) {
+//				GraphObject obj = (GraphObject) graph_objects.get(j);
+//
+//				Object value = getAttributeValue(type, obj.getIdentifier(),
+//						attribute);
+//				data_vector[j][i] = value;
+//			}
+//		}
+//
+//		for (int i = 0; i < column_names.length; ++i) {
+//			export.append(column_names[i] + element_delim);
+//		}
+//		export.append(eol_delim);
+//
+//		for (int i = 0; i < data_vector.length; i++) {
+//			for (int j = 0; j < data_vector[i].length; ++j) {
+//				export.append(data_vector[i][j] + element_delim);
+//			}
+//			export.append(eol_delim);
+//		}
+//		// StringSelection contents = new StringSelection(export.toString());
+//		// clipboard.setContents(contents, this);
+//		return export.toString();
+//
+//	}
 
 	public List getGraphObjects() {
 		return graph_objects;
@@ -279,18 +268,17 @@ public class DataTableModel extends DefaultTableModel implements
 	}
 
 	public boolean isCellEditable(int rowIndex, int colIndex) {
-		//System.out.println("row = " + rowIndex + ", col = " + colIndex);
-		
+		// System.out.println("row = " + rowIndex + ", col = " + colIndex);
+
 		Class objectType = null;
 		Object selectedObj = this.getValueAt(rowIndex, colIndex);
-		
-		if( selectedObj == null && colIndex != 0 ) {
+
+		if (selectedObj == null && colIndex != 0) {
 			return true;
-		} else if (selectedObj != null ) {
+		} else if (selectedObj != null) {
 			objectType = this.getValueAt(rowIndex, colIndex).getClass();
 		}
-		
-		
+
 		if (objectType != null) {
 
 			if (colIndex == 0) {
@@ -324,5 +312,7 @@ public class DataTableModel extends DefaultTableModel implements
 		cytoscape.Cytoscape.getDesktop().addEdit(edit);
 
 	}
+
+	
 
 }

@@ -23,8 +23,9 @@
 
 package browser;
 
-import giny.model.GraphObject;
+import giny.model.Node;
 
+import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -39,13 +40,11 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
+import java.util.Set;
 import java.util.Vector;
 
 import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.JMenu;
@@ -350,7 +349,7 @@ public class JSortTable extends JTable implements MouseListener, ActionListener 
 		addMouseListener(new MouseListener() {
 
 			public void mouseClicked(MouseEvent e) {
-
+				System.out.println("CLK!!!!!!!!!!!!!!!!!!");
 				// If action is right click, then show edit pop-up menu
 				if (javax.swing.SwingUtilities.isRightMouseButton(e)) {
 
@@ -383,22 +382,62 @@ public class JSortTable extends JTable implements MouseListener, ActionListener 
 						}
 
 					} catch (Exception urle) {
-						//System.out.println("##### " + urle.getMessage());
+						// System.out.println("##### " + urle.getMessage());
 					}
 				}
 
 			} // mouseClicked
 
 			public void mouseExited(MouseEvent e) {
+				
 			}
 
 			public void mousePressed(MouseEvent e) {
+				
 			}
 
 			public void mouseEntered(MouseEvent e) {
+				
 			}
 
 			public void mouseReleased(MouseEvent e) {
+				// When the mouse is released, fire signal to pass the selected
+				// objects in the table.
+				System.out.println("REL!!!!!!!!!!!!!!!!!!");
+				
+				// Get selected object names
+				int[] rowsSelected = getSelectedRows();
+				int[] colsSelected = getSelectedColumns();
+				
+				int columnCount = getColumnCount();
+				int idLocation = 0;
+				
+				List ids = new ArrayList();
+				
+				// First, find the location of the ID column
+				for(int idx=0; idx<columnCount; idx++) {
+					System.out.println("ColName = " + getColumnName(idx) );
+					if(getColumnName(idx).equals("ID")) {
+						System.out.println("ID found!");
+						idLocation = idx;
+						break;
+					}
+				}
+				
+				// Check type of objects
+				
+				Set selected = Cytoscape.getCurrentNetwork().getSelectedNodes();
+				for(int idx=0; idx<rowsSelected.length; idx++) {
+					System.out.println("Selected = " + getValueAt(rowsSelected[idx], idLocation) );
+					
+					Node selectedNode = Cytoscape.getCyNode((String) getValueAt(rowsSelected[idx], idLocation));
+					ids.add(selectedNode);
+				}
+				
+				Cytoscape.getCurrentNetworkView().getNodeView((Node) ids.get(0)).setSelectedPaint(Color.GREEN);
+				Cytoscape.getCurrentNetworkView().updateView();
+				
+				firePropertyChange(Cytoscape.NETWORK_CREATED, null, null);
 			}
 		});
 
@@ -419,7 +458,7 @@ public class JSortTable extends JTable implements MouseListener, ActionListener 
 	}
 
 	public void mouseClicked(MouseEvent event) {
-
+		
 		int cursorType = getTableHeader().getCursor().getType();
 		if (event.getButton() == MouseEvent.BUTTON1
 				&& cursorType != Cursor.E_RESIZE_CURSOR
@@ -450,7 +489,7 @@ public class JSortTable extends JTable implements MouseListener, ActionListener 
 
 	public void actionPerformed(ActionEvent event) {
 		// TODO Auto-generated method stub
-
+		System.out.println("Action.");
 		if (event.getActionCommand().compareTo("Copy") == 0) {
 			System.out.println("Cells copied to clipboard.");
 			copyToClipBoard();

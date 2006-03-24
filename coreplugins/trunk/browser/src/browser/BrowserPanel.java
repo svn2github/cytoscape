@@ -181,7 +181,8 @@ public class BrowserPanel extends JPanel implements ActionListener,
 
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
-
+		
+			System.out.println("Action: " + arg0.toString());
 	}
 
 	public void mouseClicked(MouseEvent arg0) {
@@ -190,12 +191,9 @@ public class BrowserPanel extends JPanel implements ActionListener,
 		if (javax.swing.SwingUtilities.isRightMouseButton(arg0)) {
 			System.out.println("RIGHT");
 
-			// 右クリック時の処理
 		} else if (javax.swing.SwingUtilities.isMiddleMouseButton(arg0)) {
-			// 中ボタンクリック時の処理
 		} else if (javax.swing.SwingUtilities.isLeftMouseButton(arg0)) {
 			System.out.println("LEFT");
-			// 左クリック時の処理
 		}
 
 	}
