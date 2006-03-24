@@ -187,20 +187,29 @@ class InnerCanvas extends Component
           computeEdgesIntersecting(m_lastXMousePos - 1, m_lastYMousePos - 1,
                                    m_lastXMousePos + 1, m_lastYMousePos + 1);
           chosenEdge = (m_stack2.size() > 0) ? m_stack2.peek() : 0; }
-        if (!e.isShiftDown()) {
-          // Unselect all nodes and edges.
-          unselectedNodes = m_view.getSelectedNodeIndices();
-          // Adding this line to speed things up from O(n*log(n)) to O(n).
-          m_view.m_selectedNodes.empty();
-          for (int i = 0; i < unselectedNodes.length; i++) {
-            ((DNodeView) m_view.getNodeView(unselectedNodes[i])).
-              unselectInternal(); }
-          unselectedEdges = m_view.getSelectedEdgeIndices();
-          // Adding this line to speed things up from O(n*log(n)) to O(n).
-          m_view.m_selectedEdges.empty();
-          for (int i = 0; i < unselectedEdges.length; i++) {
-            ((DEdgeView) m_view.getEdgeView(unselectedEdges[i])).
-              unselectInternal(); }
+        if ((!e.isShiftDown()) && // If shift is down never unselect.
+            ((chosenNode == 0 && chosenEdge == 0) || // Mouse missed all.
+             // Not [we hit something but it was already selected].
+             !((chosenNode != 0 &&
+                m_view.getNodeView(chosenNode).isSelected()) ||
+               (chosenEdge != 0 &&
+                m_view.getEdgeView(chosenEdge).isSelected())))) {
+          if (m_view.m_nodeSelection) { // Unselect all selected nodes.
+            unselectedNodes = m_view.getSelectedNodeIndices();
+            // Adding this line to speed things up from O(n*log(n)) to O(n).
+            m_view.m_selectedNodes.empty();
+            for (int i = 0; i < unselectedNodes.length; i++) {
+              ((DNodeView) m_view.getNodeView(unselectedNodes[i])).
+                unselectInternal(); } }
+          else { unselectedNodes = new int[0]; }
+          if (m_view.m_edgeSelection) { // Unselect all selected edges.
+            unselectedEdges = m_view.getSelectedEdgeIndices();
+            // Adding this line to speed things up from O(n*log(n)) to O(n).
+            m_view.m_selectedEdges.empty();
+            for (int i = 0; i < unselectedEdges.length; i++) {
+              ((DEdgeView) m_view.getEdgeView(unselectedEdges[i])).
+                unselectInternal(); } }
+          else { unselectedEdges = new int[0]; }
           if (unselectedNodes.length > 0 || unselectedEdges.length > 0) {
             m_view.m_contentChanged = true; } }
         if (chosenNode != 0) {
