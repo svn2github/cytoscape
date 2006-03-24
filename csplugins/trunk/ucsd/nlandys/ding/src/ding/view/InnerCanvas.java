@@ -169,8 +169,8 @@ class InnerCanvas extends Component
       int[] unselectedEdges = null;
       int chosenNode = 0;
       int chosenEdge = 0;
-      boolean chosenNodeSelected = false;
-      boolean chosenEdgeSelected = false;
+      byte chosenNodeSelected = 0;
+      byte chosenEdgeSelected = 0;
       synchronized (m_lock) {
         if (m_view.m_nodeSelection) {
           m_ptBuff[0] = m_lastXMousePos;
@@ -215,23 +215,23 @@ class InnerCanvas extends Component
         if (chosenNode != 0) {
           final boolean wasSelected =
             m_view.getNodeView(chosenNode).isSelected();
-          if (wasSelected) {
+          if (wasSelected && e.isShiftDown()) {
             ((DNodeView) m_view.getNodeView(chosenNode)).unselectInternal();
-            chosenNodeSelected = false; }
-          else { // Was not selected.
+            chosenNodeSelected = (byte) -1; }
+          else if (!wasSelected) {
             ((DNodeView) m_view.getNodeView(chosenNode)).selectInternal();
-            chosenNodeSelected = true; }
+            chosenNodeSelected = (byte) 1; }
           m_button1NodeDrag = true;
           m_view.m_contentChanged = true; }
         if (chosenEdge != 0) {
           final boolean wasSelected =
             m_view.getEdgeView(chosenEdge).isSelected();
-          if (wasSelected) {
+          if (wasSelected && e.isShiftDown()) {
             ((DEdgeView) m_view.getEdgeView(chosenEdge)).unselectInternal();
-            chosenEdgeSelected = false; }
-          else { // Was not selected.
+            chosenEdgeSelected = (byte) -1; }
+          else if (!wasSelected) {
             ((DEdgeView) m_view.getEdgeView(chosenEdge)).selectInternal();
-            chosenEdgeSelected = true; }
+            chosenEdgeSelected = (byte) 1; }
           m_button1NodeDrag = true;
           m_view.m_contentChanged = true; }
         if (chosenNode == 0 && chosenEdge == 0) {
@@ -247,20 +247,20 @@ class InnerCanvas extends Component
           listener.graphViewChanged
             (new GraphViewEdgesUnselectedEvent(m_view, unselectedEdges)); }
         if (chosenNode != 0) {
-          if (chosenNodeSelected) {
+          if (chosenNodeSelected > 0) {
             listener.graphViewChanged
               (new GraphViewNodesSelectedEvent
                (m_view, new int[] { chosenNode })); }
-          else {
+          else if (chosenNodeSelected < 0) {
             listener.graphViewChanged
               (new GraphViewNodesUnselectedEvent
                (m_view, new int[] { chosenNode })); } }
         if (chosenEdge != 0) {
-          if (chosenEdgeSelected) {
+          if (chosenEdgeSelected > 0) {
             listener.graphViewChanged
               (new GraphViewEdgesSelectedEvent
                (m_view, new int[] { chosenEdge })); }
-          else {
+          else if (chosenEdgeSelected < 0) {
             listener.graphViewChanged
               (new GraphViewEdgesUnselectedEvent
                (m_view, new int[] { chosenEdge })); } } }
