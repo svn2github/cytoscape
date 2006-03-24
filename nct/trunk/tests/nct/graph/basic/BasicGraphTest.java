@@ -206,7 +206,7 @@ public class BasicGraphTest extends TestCase {
 	Edge<String,Double> forth = new BasicEdge<String,Double>("A","B",0.8); 
 	Edge<String,Double> fifth = new BasicEdge<String,Double>("A","C",0.9); 
 
-	SortedSet<Edge<String,Double>> edges = new TreeSet( g.getEdges() );
+	SortedSet<Edge<String,Double>> edges = new TreeSet<Edge<String,Double>>( g.getEdges() );
 
 	for (Edge e : edges) {
 		System.out.print("src node: " + e.getSourceNode());

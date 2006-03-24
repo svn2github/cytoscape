@@ -78,7 +78,8 @@ public class BiojavaLocalBlastTest extends TestCase {
 		DIPInteractionNetwork dipin2 = new DIPInteractionNetwork("Gallus gallus");
 		dipin2.updateGraph(b2);
 
-		XMLSaxEventDistributor xml = new XMLSaxEventDistributor();
+		XMLSaxEventDistributor<DIPInteractionNetwork> xml = 
+			new XMLSaxEventDistributor<DIPInteractionNetwork>();
 		xml.addHandler(dipin1);
 		xml.addHandler(dipin2);
 		xml.parse("examples/Gallus_gallus.xin");

@@ -47,7 +47,7 @@ public class SimpleScoreModel<NodeType extends WeightedNode<?,Double>>
      * @return the score of the pathway between the nodes or 0 if the same node
      */
     public double scoreEdge(NodeType srcNode, NodeType destNode, Graph<NodeType,Double> graph) {
-	return graph.getEdgeWeight(srcNode, destNode);
+	return graph.getEdgeWeight(srcNode, destNode).doubleValue();
     }
 
     public double scoreNode(NodeType node, Graph<NodeType,Double> graph){

@@ -40,14 +40,14 @@ import nct.service.homology.sif.*;
 
 
 public class GreedyComplexSearchTest extends TestCase {
-    SearchGraph sg;
+    SearchGraph<String,Double> sg;
     GreedyComplexSearch<String> cg;
     InteractionGraph h, k ;
-    ScoreModel s;
+    ScoreModel<String,Double> s;
     List<Graph<String,Double>> solns;
     protected void setUp() {
     	NetworkBlast.setUpLogging(Level.WARNING);
-	sg = new ColorCodingPathSearch(4);
+	sg = new ColorCodingPathSearch<String>(4);
 	try {	    
 	    h = new InteractionGraph("examples/test.input.sif");
 	    k = new InteractionGraph("examples/testNet.input.sif");

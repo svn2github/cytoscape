@@ -40,14 +40,14 @@ import nct.networkblast.NetworkBlast;
 import nct.service.homology.sif.*;
 
 public class ZIPSIFWriterTest extends TestCase {
-    SearchGraph sg;
+    SearchGraph<String,Double> sg;
     InteractionGraph h, i;
     CompatibilityGraph g;
-    ScoreModel s;
+    ScoreModel<String,Double> s;
     ZIPSIFWriter<String,Double> f;
     protected void setUp() {
         NetworkBlast.setUpLogging(Level.WARNING);
-	sg = new ColorCodingPathSearch(4);
+	sg = new ColorCodingPathSearch<String>(4);
 	try {	    
 	    h = new InteractionGraph("examples/junit.inputA.sif");
 	    i = new InteractionGraph("examples/junit.inputB.sif");

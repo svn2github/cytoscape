@@ -84,7 +84,7 @@ public class NewComplexSearch<NodeType extends Comparable<? super NodeType>> imp
 	private NodeType minNode;  
 	private double minScore;
 
-	private ScoreModel scoreObj;
+	private ScoreModel<NodeType,Double> scoreObj;
 	private Graph<NodeType,Double> graph;
 
 	private boolean createSeeds;

@@ -35,7 +35,7 @@ import nct.filter.Filter;
 
 public class UniqueCompatNodeFilterTest extends TestCase {
     BasicGraph<String,Double> a,b,c,d;
-    Filter f;
+    Filter<String,Double> f;
     protected void setUp() {
 	NetworkBlast.setUpLogging(Level.WARNING);       
 	a = new BasicGraph<String,Double>();

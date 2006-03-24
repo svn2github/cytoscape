@@ -34,7 +34,7 @@ import nct.networkblast.NetworkBlast;
 
 public class DuplicateThresholdFilterTest extends TestCase {
     BasicGraph<String,Double> a,b,c,d;
-    Filter f;
+    Filter<String,Double> f;
     protected void setUp() {
 	NetworkBlast.setUpLogging(Level.WARNING);       
 	a = new BasicGraph<String,Double>();
@@ -84,13 +84,13 @@ public class DuplicateThresholdFilterTest extends TestCase {
 	assertTrue(d.addNode("g"));
 	assertTrue(d.addNode("h"));
 
-	f = new DuplicateThresholdFilter(.9);
-	List s = new LinkedList();
+	f = new DuplicateThresholdFilter<String,Double>(.9);
+	List<Graph<String,Double>> s = new LinkedList<Graph<String,Double>>();
 	s.add(a);
 	s.add(b);
 	s.add(c);
 	s.add(d);
-	assertTrue(f.filter(s).size() == 2);
+	assertEquals(2, f.filter(s).size());
     }
     public static Test suite() { return new TestSuite( DuplicateThresholdFilterTest.class ); }
 }

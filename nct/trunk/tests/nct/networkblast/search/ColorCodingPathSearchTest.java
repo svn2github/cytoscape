@@ -41,14 +41,14 @@ import nct.service.homology.sif.*;
 
 
 public class ColorCodingPathSearchTest extends TestCase {
-    SearchGraph sg;
+    SearchGraph<String,Double> sg;
     InteractionGraph h, i ;
     CompatibilityGraph g;
     HomologyGraph homologyGraph;
-    ScoreModel s;
+    ScoreModel<String,Double> s;
     protected void setUp() {
         NetworkBlast.setUpLogging(Level.WARNING);
-	sg = new ColorCodingPathSearch(4);
+	sg = new ColorCodingPathSearch<String>(4);
 	try {	    
 		h = new InteractionGraph("examples/junit.inputA.sif");
 		i = new InteractionGraph("examples/junit.inputB.sif");
@@ -67,9 +67,9 @@ public class ColorCodingPathSearchTest extends TestCase {
     }
 
     public void testsearchInit() {
-	assertTrue(sg.searchGraph(null, s) == null); // test for null
-       	assertTrue(sg.searchGraph(g, null) == null);
-	assertTrue(sg.searchGraph(null, null) == null);
+	assertNull(sg.searchGraph(null, s)); // test for null
+       	assertNull(sg.searchGraph(g, null));
+	assertNull(sg.searchGraph(null, null));
    }
 
     public void testsearchGraph() {
@@ -78,8 +78,8 @@ public class ColorCodingPathSearchTest extends TestCase {
 	System.out.println("eractionh n:" + h.numberOfNodes() + " e:" + h.numberOfEdges() );
 	System.out.println("homologyGraph n:" + homologyGraph.numberOfNodes() + " e:" + homologyGraph.numberOfEdges() );
 
-	List<Graph> solns = sg.searchGraph(g, s);
-	assertTrue("expect 4 paths, got " + solns.size(), solns.size() == 4); // search 0 size
+	List<Graph<String,Double>> solns = sg.searchGraph(g, s);
+	assertEquals("expect 4 paths, got ", 4, solns.size()); // search 0 size
     }
     public static Test suite() { return new TestSuite( ColorCodingPathSearchTest.class ); }
 }
