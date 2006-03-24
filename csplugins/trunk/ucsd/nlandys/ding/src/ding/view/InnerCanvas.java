@@ -382,14 +382,6 @@ class InnerCanvas extends Component
         m_selectionRect.setBounds(x, y, w, h); }
       repaint(); }
     else if (m_currMouseButton == 2) {
-      double deltaY = e.getY() - m_lastYMousePos;
-      synchronized (m_lock) {
-        m_lastXMousePos = e.getX();
-        m_lastYMousePos = e.getY();
-        m_scaleFactor *= Math.pow(2, -deltaY / 300.0d); }
-      m_view.m_viewportChanged = true;
-      repaint(); }
-    else if (m_currMouseButton == 3) {
       double deltaX = e.getX() - m_lastXMousePos;
       double deltaY = e.getY() - m_lastYMousePos;
       m_lastXMousePos = e.getX();
@@ -397,6 +389,14 @@ class InnerCanvas extends Component
       synchronized (m_lock) {
         m_xCenter -= deltaX / m_scaleFactor;
         m_yCenter += deltaY / m_scaleFactor;  } // y orientations are opposite.
+      m_view.m_viewportChanged = true;
+      repaint(); }
+    else if (m_currMouseButton == 3) {
+      double deltaY = e.getY() - m_lastYMousePos;
+      synchronized (m_lock) {
+        m_lastXMousePos = e.getX();
+        m_lastYMousePos = e.getY();
+        m_scaleFactor *= Math.pow(2, -deltaY / 300.0d); }
       m_view.m_viewportChanged = true;
       repaint(); }
   }
