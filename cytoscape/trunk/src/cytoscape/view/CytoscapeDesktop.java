@@ -45,6 +45,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
@@ -62,6 +63,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.SwingPropertyChangeSupport;
@@ -403,6 +405,21 @@ public class CytoscapeDesktop
       setSize( 800, 700 );
     setVisible( true );
 
+
+    // Enable the bird's eye view.
+    final CyMenus fCyMenus = cyMenus;
+    Runnable birdViewEnabler = new Runnable() {
+        public void run() {
+          try { Thread.sleep(5000); }
+          catch (InterruptedException e) { return; }
+          SwingUtilities.invokeLater(new Runnable() {
+              public void run() {
+                cyMenus.networkOverviewAction.actionPerformed
+                  (new ActionEvent(cyMenus.networkOverviewItem,
+                                   1001,
+                                   "Show Network Overview"));
+              } }); } };
+    (new Thread(birdViewEnabler)).start();
   }
 
   private void initStatusBar(JPanel main_panel) {

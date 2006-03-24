@@ -161,7 +161,7 @@ public class CyMenus implements GraphViewChangeListener {
 	JMenu cytoPanelMenu;
 
 	CytoscapeAction menuPrintAction, menuExportAction, menuSaveSessionAction,
-			menuSaveSessionAsAction,menuOpenSessionAction;
+          menuSaveSessionAsAction,menuOpenSessionAction, networkOverviewAction;
 	JMenuItem vizMenuItem, vizMapperItem, networkOverviewItem;
 	JCheckBoxMenuItem cytoPanelWestItem, cytoPanelEastItem, cytoPanelSouthItem;
 	JMenuItem helpContentsMenuItem, helpContextSensitiveMenuItem,
@@ -788,7 +788,8 @@ public class CyMenus implements GraphViewChangeListener {
 		// fill the Visualization menu
 
 		// TODO: move to a plugin, and/or fix
-		networkOverviewItem = new JMenuItem(new BirdsEyeViewAction());
+                networkOverviewAction = new BirdsEyeViewAction();
+		networkOverviewItem = new JMenuItem(networkOverviewAction);
 		menuBar.getMenu("View").add(networkOverviewItem);
 
 		// fill View Menu
