@@ -109,8 +109,10 @@ public abstract class Cytoscape {
 	public static String SESSION_LOADED = "SESSION_LOADED";
 
 	public static String SAVE_VIZMAP_PROPS = "SAVE_VIZMAP_PROPS";
-
 	public static String VIZMAP_LOADED = "VIZMAP_LOADED";
+	
+	// For reverse-selection from browser.
+	public static String BROWSER_OBJECTS_SELECTED = "BROWSER_OBJECTS_SELECTED";
 	
 	// MLC 09/19/05 BEGIN:
 	// AJK: 09/12/05 BEGIN
