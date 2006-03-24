@@ -182,7 +182,7 @@
            fork="${fork}">
 <!--
 -->
-       <compilerarg line="-Xlint:{all,-path}"/>
+       <compilerarg line="-Xlint:all -Xlint:-path"/>
      </javac>
      <echo message="Successfully ran compile task!"/>
   </target>
@@ -275,7 +275,9 @@
            debug="${debug}"
            deprecation="${deprecation}" 
            optimize="${optimize}"
-           fork="${fork}"/>
+           fork="${fork}">
+      <compilerarg line="-Xlint:all -Xlint:-path"/>
+    </javac>
     <echo message="Successfully ran compile-tests task!"/>
   </target>
 
