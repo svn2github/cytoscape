@@ -485,9 +485,9 @@ public class NewComplexSearch<NodeType extends Comparable<? super NodeType>> imp
 	}
 
 	private void updateSolnNodeScores() {
-		System.out.println("solNodes about to be updated " + solnNodes);
+//		System.out.println("solNodes about to be updated " + solnNodes);
 		for ( NodeType testNode : solnNodes ) {
-			System.out.println("updating solNode: " + testNode);
+//			System.out.println("updating solNode: " + testNode);
 			double testScore = scoreObj.scoreNode(testNode,graph);
 			for ( NodeType conNode : solnNodes ) {
 

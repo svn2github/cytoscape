@@ -361,9 +361,11 @@ public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>
 	 * This method returns and array of ints that represent all two color combinations
 	 * followed by all 3 color combinations, through to all (pathSize - 1) color combinations.
 	 * This method returns an array of ints ordered such that when considered as a 
-	 * bit mask, the given int only contains 2 ones (or true bits) (e.g. 3,5,6,9,10,12), followed
-	 * by all ints that only contain 3 bits (e.g. 7,11,13,14).  This repeats until
-	 * pathSize number of bits is found (pathSize^2 - 1).
+	 * bit mask, the first values only contain 2 true bits (e.g. 3,5,6,9,10,12), followed
+	 * by all ints that contain only 3 true bits (e.g. 7,11,13,14).  This repeats until
+	 * pathSize number of bits is found (an array of size pathSize^2 - 1).  We ignore
+	 * the int values with only 1 true bit (e.g. 1,2,4,8) because these represent a
+	 * single color and not a combination.
 	 */
 	private int[] getOrderedColorSetList() {
 		int twoPath = twoToTheN(pathSize);

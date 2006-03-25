@@ -128,7 +128,7 @@ public class NetworkBlast {
 			SearchGraph<String,Double> colorCoding = new ColorCodingPathSearch<String>(pathSize);
 
 			List<Graph<String,Double>> resultComplexes;
-			GreedyComplexSearch<String> greedyComplexes = new GreedyComplexSearch<String>( complexMinSeedSize, complexMaxSize);
+			NewComplexSearch<String> greedyComplexes = new NewComplexSearch<String>( complexMinSeedSize, complexMaxSize);
 			
 			// initialize filter
 			Filter<String,Double> dupeFilter = new DuplicateThresholdFilter<String,Double>(1.0);
