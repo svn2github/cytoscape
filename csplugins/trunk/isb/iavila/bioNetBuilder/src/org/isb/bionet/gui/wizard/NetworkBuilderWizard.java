@@ -546,20 +546,22 @@ public class NetworkBuilderWizard {
                 if(!startingNodes.contains(allGis[i])) alternateIds.add(allGis[i]);
             
         }//while it
-        startingNodes.removeAll(alternateIds);
-        startingNodes.addAll(alternateIds);
+        if(alternateIds.size() > 0){
+            startingNodes.removeAll(alternateIds);
+            startingNodes.addAll(alternateIds);
+        }
         
         Hashtable sourceToStartNodes = this.nodeSourcesPanel.getSelectedSourceToNodesTable();
         
         // 3. Get the edge data source parameter settings
         Map sourceToSettings = this.edgeSourcesPanel.getSourcesDialogs();
         it = sourceToSettings.keySet().iterator();
-        // count the number of selected sources
-        int selected = 0;
+        // get selected sources
+        ArrayList edgeSources = new ArrayList();
         while(it.hasNext()){  
             String sourceClass = (String)it.next();
             if(this.edgeSourcesPanel.isSourceSelected(sourceClass) && 
-                    this.edgeSourcesPanel.isSourceAuthenticated(sourceClass)) selected++;
+                    this.edgeSourcesPanel.isSourceAuthenticated(sourceClass)) edgeSources.add(sourceClass);
         }
         boolean firstNeighbors = this.edgeSourcesPanel.isFirstNeighborsSelected();
         Hashtable sourceToNodes = new Hashtable();
@@ -575,18 +577,17 @@ public class NetworkBuilderWizard {
         
         HashSet interactions = new HashSet();
         HashSet nodeIDs = null;
-        // if more than one source is selected and we have a set of starting nodes,
+        // if more than one source is selected AND we have a set of starting nodes,
         // then we need to keep track of the node ids so that we can find connecting
-        // edges between nodes of different sources
-        if(selected > 1 && startingNodes.size() > 0) 
+        // edges between nodes of DIFFERENT sources
+        if(edgeSources.size() > 1 && startingNodes.size() > 0) 
             nodeIDs = new HashSet();
         
         HashMap sourceClassToArgs = new HashMap();
-        it = sourceToSettings.keySet().iterator();
+        it = edgeSources.iterator();
         while(it.hasNext()){
             
             String sourceClass = (String)it.next();
-            if(!this.edgeSourcesPanel.isSourceSelected(sourceClass) || !this.edgeSourcesPanel.isSourceAuthenticated(sourceClass)) continue;
             String sourceName = this.edgeSourcesPanel.getSourceName(sourceClass);
             
             InteractionsSourceGui gui = (InteractionsSourceGui)sourceToSettings.get(sourceClass);
@@ -604,6 +605,7 @@ public class NetworkBuilderWizard {
                     else
                         sourceInteractions = (Vector)this.interactionsClient.getAllInteractions(taxid, sourceClass);
                 }catch(Exception e){e.printStackTrace();}
+                
             }else{
 
                 Vector adjacentNodes = null;
@@ -644,7 +646,7 @@ public class NetworkBuilderWizard {
                         sourceInteractions = (Vector)this.interactionsClient.getConnectingInteractions(nodesToConnect, taxid, sourceClass);
                 }catch(Exception e){e.printStackTrace();}
                    
-            }//else
+            }//else (we *have* starting nodes)
                  
             // Accumulate the new nodeIDs:
                 
@@ -681,9 +683,9 @@ public class NetworkBuilderWizard {
             if(nodeIDs == null)
                 interactions.addAll(sourceInteractions);
             
-        }//while it
+        }//while we have more edge sources
         
-        if(nodeIDs != null){
+        if(nodeIDs != null){ // this is only done if num edge sources > 1 and we have starting nodes
             // Finally, connect genes/proteins from different data sources
             nodeIDs.addAll(startingNodes);
             it = sourceClassToArgs.keySet().iterator();

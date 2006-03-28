@@ -85,6 +85,7 @@ public class CyNetUtils {
         BioNetVisualStyleFactory.addBioNetVisualStyleToCytoscape();
         CyNetworkView view = Cytoscape.createNetworkView(net);
         view.setVisualStyle(BioNetVisualStyleFactory.BIONETBUILDER_VS);
+       
         return net;
     }//makeNewNetwork
     
@@ -192,22 +193,22 @@ public class CyNetUtils {
     public static CyEdge createEdge (Hashtable interaction){
         edges = 0;
         String interactor1 = (String)interaction.get(InteractionsDataSource.INTERACTOR_1);
-        if(interactor1 == null){
-            System.out.println("Hashtable does not contain key " + InteractionsDataSource.INTERACTOR_1);
-            return null;
-        }
+//        if(interactor1 == null){
+//            System.out.println("Hashtable does not contain key " + InteractionsDataSource.INTERACTOR_1);
+//            return null;
+//        }
         
         String interactor2 = (String)interaction.get(InteractionsDataSource.INTERACTOR_2);
-        if(interactor2 == null){
-            System.out.println("Hashtable does not contain key " + InteractionsDataSource.INTERACTOR_2);
-            return null;
-        }
+//        if(interactor2 == null){
+//            System.out.println("Hashtable does not contain key " + InteractionsDataSource.INTERACTOR_2);
+//            return null;
+//        }
 
         String type = (String)interaction.get(InteractionsDataSource.INTERACTION_TYPE);
-        if(type == null){
-            System.out.println("Hashtable does not contain key " + InteractionsDataSource.INTERACTION_TYPE);
-            return null;
-        }
+//        if(type == null){
+//            System.out.println("Hashtable does not contain key " + InteractionsDataSource.INTERACTION_TYPE);
+//            return null;
+//        }
         
         // We have the minimum requirements to create an edge now
         CyNode node1 = Cytoscape.getCyNode(interactor1, true);
@@ -537,7 +538,6 @@ public class CyNetUtils {
                 String nodeID = (String)it.next();
                 int index = nodeID.indexOf(":");
                 if(index > 0){
-                    //String url = "http://bench.bakerlab.org/cgi-bin/2ddb/bddb.cgi?si=112682726728836&s=cytoscape&ac="+nodeID;
                     String url = "http://www.yeastrc.org/pdr/quickSearch.do?query="+nodeID+"&type=description";
                     Cytoscape.getNodeAttributes().setAttribute(nodeID,"HPFP_URL", url);
                 }

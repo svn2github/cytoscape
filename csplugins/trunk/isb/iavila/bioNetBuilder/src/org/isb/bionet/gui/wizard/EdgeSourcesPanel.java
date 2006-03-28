@@ -301,14 +301,17 @@ public class EdgeSourcesPanel extends JPanel {
             Vector sourceInteractions = null;
            
             if(startingNodes.size() == 0){
-               
+               int numInteractions = 0;
                 try{
                     if(args.size() > 0){
-                        sourceInteractions = (Vector)this.interactionsClient.getAllInteractions(species, args, sourceClass);
+                        numInteractions = this.interactionsClient.getNumAllInteractions(species, args, sourceClass);
                     }else{        
-                        sourceInteractions = (Vector)this.interactionsClient.getAllInteractions(species, sourceClass);
+                        numInteractions = this.interactionsClient.getNumAllInteractions(species, sourceClass);
                     }
                 }catch(Exception e){e.printStackTrace();}
+                
+                JTextField tf = (JTextField)sourceClassToField.get(sourceClass);
+                tf.setText(Integer.toString(numInteractions)); 
                 
             }else{
                 // We have starting nodes
@@ -340,8 +343,11 @@ public class EdgeSourcesPanel extends JPanel {
                     nodesToConnectForSource.addAll(adjacentNodes);
                 }
                
+                // LEFT HERE.
+                // At this point we have the nodes, can we check if they have alternate ids, without having to get the connecting interactions???
+                
                 try{
-                  
+                    // This takes a long time...
                     if(args.size() > 0){
                         sourceInteractions = 
                             (Vector)this.interactionsClient.getConnectingInteractions(nodesToConnectForSource, species, args, sourceClass);
@@ -350,30 +356,38 @@ public class EdgeSourcesPanel extends JPanel {
                             (Vector)this.interactionsClient.getConnectingInteractions(nodesToConnectForSource, species, sourceClass);
                     }
                 }catch(Exception e){e.printStackTrace();}
+                
+                // Accumulate the new nodeIDs if needed:
+                if(nodesToConnect != null){
+                    boolean alternateIdsExist = false;
+                    Iterator it2 = sourceInteractions.iterator();
+                    int oldSize = nodesToConnect.size();
+                    while(it2.hasNext()){
+                        Hashtable interaction = (Hashtable)it2.next();
+                        String id1 = (String)interaction.get(InteractionsDataSource.INTERACTOR_1);
+                        String id2 = (String)interaction.get(InteractionsDataSource.INTERACTOR_2);
+                        Vector id1alternates = (Vector)interaction.get(InteractionsDataSource.INTERACTOR_1_IDS);
+                        Vector id2alternates = (Vector)interaction.get(InteractionsDataSource.INTERACTOR_2_IDS);
+                        nodesToConnect.add(id1);
+                        nodesToConnect.add(id2);
+                        if(id1alternates != null) nodesToConnect.addAll(id1alternates);
+                        if(id2alternates != null) nodesToConnect.addAll(id2alternates);
+                    }//while it
                     
-            
+                    if(nodesToConnect.size() > oldSize) alternateIdsExist = true;
+                    args.put("alternateIDs",new Boolean(alternateIdsExist));
+                    if(!alternateIdsExist){
+                        JTextField tf = (JTextField)sourceClassToField.get(sourceClass);
+                        tf.setText(Integer.toString(sourceInteractions.size()));
+                    }
+                }else{
+                    // we have starting nodes and only one edge source
+                    JTextField tf = (JTextField)sourceClassToField.get(sourceClass);
+                    tf.setText(Integer.toString(sourceInteractions.size()));
+                }
+                 
             }//else
                 
-            // Accumulate the new nodeIDs if needed:
-            if(nodesToConnect != null){
-                Iterator it2 = sourceInteractions.iterator();
-                while(it2.hasNext()){
-                    Hashtable interaction = (Hashtable)it2.next();
-                    String id1 = (String)interaction.get(InteractionsDataSource.INTERACTOR_1);
-                    String id2 = (String)interaction.get(InteractionsDataSource.INTERACTOR_2);
-                    Vector id1alternates = (Vector)interaction.get(InteractionsDataSource.INTERACTOR_1_IDS);
-                    Vector id2alternates = (Vector)interaction.get(InteractionsDataSource.INTERACTOR_2_IDS);
-                    nodesToConnect.add(id1);
-                    nodesToConnect.add(id2);
-                    if(id1alternates != null) nodesToConnect.addAll(id1alternates);
-                    if(id2alternates != null) nodesToConnect.addAll(id2alternates);
-                }//while it
-            }else{
-                // Write the number of interactions for the source
-                JTextField tf = (JTextField)sourceClassToField.get(sourceClass);
-                tf.setText(Integer.toString(sourceInteractions.size()));  
-            }
-            
         }//while it
         
         // Finally, connect nodes from different data sources if necessary
@@ -384,22 +398,24 @@ public class EdgeSourcesPanel extends JPanel {
             while(it.hasNext()){
                 String sourceClass = (String)it.next();
                 Hashtable args= (Hashtable)sourceClassToArgs.get(sourceClass);
-                Vector sourceInteractions = null;
+                Boolean alternateIDs = (Boolean)args.get("alternateIDs");
+                if(!alternateIDs.booleanValue()) continue;
+                int numInteractions = 0;
                 try{
                     if(args.size() > 0){  
-                        sourceInteractions = (Vector)this.interactionsClient.getConnectingInteractions(new Vector(nodesToConnect), species, args, sourceClass);
+                        numInteractions = this.interactionsClient.getNumConnectingInteractions(new Vector(nodesToConnect), species, args, sourceClass);
                     }else{
-                        sourceInteractions = (Vector)this.interactionsClient.getConnectingInteractions(new Vector(nodesToConnect), species, sourceClass);
+                        numInteractions = this.interactionsClient.getNumConnectingInteractions(new Vector(nodesToConnect), species, sourceClass);
                     }
                 }catch(Exception e){
                     e.printStackTrace();
                 }
                 JTextField tf = (JTextField)sourceClassToField.get(sourceClass);
-                tf.setText(Integer.toString(sourceInteractions.size()));
+                tf.setText(Integer.toString(numInteractions));
             }//while it
         }
         
-    } 
+    }//estimateNumEdges
 
     protected void create() {
 
