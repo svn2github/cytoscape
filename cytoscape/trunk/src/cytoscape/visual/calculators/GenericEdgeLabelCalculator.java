@@ -76,7 +76,7 @@ public class GenericEdgeLabelCalculator extends EdgeCalculator implements EdgeLa
     public String calculateEdgeLabel(Edge edge, CyNetwork network) {
         String canonicalName = edge.getIdentifier();
         Map attrBundle = getAttrBundle(canonicalName);
-        return (String)super.getMapping().calculateRangeValue(attrBundle);
+        return (String)super.getMapping(0).calculateRangeValue(attrBundle);
     }
 }
 

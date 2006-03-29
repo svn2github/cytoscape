@@ -74,6 +74,6 @@ public class GenericEdgeFontFaceCalculator extends EdgeCalculator
     public Font calculateEdgeFontFace(Edge edge, CyNetwork network) {
         String canonicalName = edge.getIdentifier();
         Map attrBundle = getAttrBundle(canonicalName);
-	return (Font) super.getMapping().calculateRangeValue(attrBundle);
+	return (Font) super.getMapping(0).calculateRangeValue(attrBundle);
     }
 }

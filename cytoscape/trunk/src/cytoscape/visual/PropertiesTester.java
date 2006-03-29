@@ -199,7 +199,7 @@ public class PropertiesTester {
             return;
         }
         AbstractCalculator gc = (AbstractCalculator)c;
-        ObjectMapping m = gc.getMapping();
+        ObjectMapping m = gc.getMapping(0);
         System.out.println("controller = " + m.getControllingAttributeName());
         System.out.println("Map = " + m);
     }

@@ -73,6 +73,6 @@ public class GenericNodeFontFaceCalculator extends NodeCalculator
     public Font calculateNodeFontFace(Node node, CyNetwork network) {
         String canonicalName = node.getIdentifier();
         Map attrBundle = getAttrBundle(canonicalName);
-	return (Font) super.getMapping().calculateRangeValue(attrBundle);
+	return (Font) super.getMapping(0).calculateRangeValue(attrBundle);
     }
 }

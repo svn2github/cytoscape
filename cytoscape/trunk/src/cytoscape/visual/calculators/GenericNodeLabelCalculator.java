@@ -76,7 +76,7 @@ public class GenericNodeLabelCalculator extends NodeCalculator implements NodeLa
     public String calculateNodeLabel(Node node, CyNetwork network) {
         String canonicalName = node.getIdentifier();
         Map attrBundle = getAttrBundle(canonicalName);
-        return (String)super.getMapping().calculateRangeValue(attrBundle);
+        return (String)super.getMapping(0).calculateRangeValue(attrBundle);
     }
 }
 

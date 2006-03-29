@@ -77,7 +77,7 @@ public class GenericNodeLabelColorCalculator
   {
         String canonicalName = node.getIdentifier();
         Map attrBundle = getAttrBundle(canonicalName);
-    return (Color) super.getMapping().calculateRangeValue(attrBundle);
+    return (Color) super.getMapping(0).calculateRangeValue(attrBundle);
   }
 
 }

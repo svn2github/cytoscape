@@ -76,7 +76,7 @@ public class GenericEdgeToolTipCalculator extends EdgeCalculator implements Edge
     public String calculateEdgeToolTip(Edge edge, CyNetwork network) {
         String canonicalName = edge.getIdentifier();
         Map attrBundle = getAttrBundle(canonicalName);
-        return (String) super.getMapping().calculateRangeValue(attrBundle);
+        return (String) super.getMapping(0).calculateRangeValue(attrBundle);
     }
 }
 

@@ -91,7 +91,7 @@ public abstract class NodeCalculator extends AbstractCalculator {
 	JPanel selectAttributePanel = super.getUI(Cytoscape.getNodeAttributes());
 	
 	// underlying mapper's UI
-	JPanel mapperUI = super.getMapping().getUI(parent, n);
+	JPanel mapperUI = super.getMapping(0).getUI(parent, n);
 
 	// stick them together
 	GridBagGroup g = new GridBagGroup();

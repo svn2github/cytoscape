@@ -82,9 +82,9 @@ public class GenericNodeShapeCalculator extends NodeCalculator implements NodeSh
     public byte calculateNodeShape(Node node, CyNetwork network) {
         String canonicalName = node.getIdentifier();
         Map attrBundle = getAttrBundle(canonicalName);
-	Object rangeValue = super.getMapping().calculateRangeValue(attrBundle);
+	Object rangeValue = super.getMapping(0).calculateRangeValue(attrBundle);
 	if(rangeValue!=null)
-	    return ((Byte)super.getMapping().calculateRangeValue(attrBundle)).byteValue();
+	    return ((Byte)super.getMapping(0).calculateRangeValue(attrBundle)).byteValue();
 	else
 	    return (byte)(-1);
     }
