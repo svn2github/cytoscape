@@ -58,7 +58,6 @@ import cytoscape.data.servers.BioDataServer;
 import cytoscape.init.CyPropertiesReader;
 import cytoscape.init.CyInitParams;
 import cytoscape.init.CyCommandLineParser;
-import cytoscape.plugin.AbstractPlugin;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.util.shadegrown.WindowUtilities;
 import cytoscape.view.CytoscapeDesktop;
@@ -653,17 +652,7 @@ public class CytoscapeInit implements PropertyChangeListener {
 
 		System.out.println("Plugin to be loaded: " + plugin);
 
-		if (AbstractPlugin.class.isAssignableFrom(plugin)) {
-			System.out.println("AbstractPlugin Loaded");
-			try {
-				AbstractPlugin.loadPlugin(plugin,
-						(cytoscape.view.CyWindow) Cytoscape.getDesktop());
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-
-		else if (CytoscapePlugin.class.isAssignableFrom(plugin)) {
+		if (CytoscapePlugin.class.isAssignableFrom(plugin)) {
 			System.out.println("CytoscapePlugin Loaded");
 			try {
 				CytoscapePlugin.loadPlugin(plugin);
@@ -675,7 +664,7 @@ public class CytoscapeInit implements PropertyChangeListener {
 
 	/**
 	 * Determines whether the class with a particular name extends
-	 * AbstractPlugin.
+	 * CytoscapePlugin.
 	 * 
 	 * @param name
 	 *            the name of the putative plugin class
@@ -695,9 +684,8 @@ public class CytoscapeInit implements PropertyChangeListener {
 			e.printStackTrace();
 			return false;
 		}
-		Class p = AbstractPlugin.class;
 		Class cp = CytoscapePlugin.class;
-		return (p.isAssignableFrom(c) || cp.isAssignableFrom(c));
+		return (cp.isAssignableFrom(c));
 	}
 
 	/**
