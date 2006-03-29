@@ -128,17 +128,6 @@ public abstract class AbstractCalculator implements Calculator {
     }
 
     /**
-     * Get the first mapping in the vector of mappings. Provided for compatibility
-     * with previous releases. 
-     *
-     * @deprecated Use {@link #getMappings()} or {@link #getMapping(int)} instead.
-     * @return First mapping in vector of mappings.
-     */
-    public ObjectMapping getMapping() {
-	return (ObjectMapping) mappings.get(0);
-    }
-    
-    /**
      * Get all mappings contained by this calculator.
      * @return Vector of all mappings contained in this calculator
      */
@@ -235,19 +224,6 @@ public abstract class AbstractCalculator implements Calculator {
         String mapBaseKey = baseKey + ".mapping";
         ObjectMapping m = getMapping(0);
         return MappingFactory.getProperties(m, mapBaseKey);
-    }
-
-    /**
-     * updateAttribute is called when the currently selected attribute changes.
-     *
-     * @param	attrName	the name of the newly selected attribute
-     * @param   network         the CyNetwork on which this attribute is defined
-     * @deprecated Only supports one mapping, use
-     *		{@link #updateAttribute(String, CyNetwork, ObjectMapping)} or
-     *		{@link #updateAttribute(String, Newtork, int)) instead.
-     */
-    void updateAttribute(String attrName, CyNetwork network) {
-	this.updateAttribute(attrName, network, 0);
     }
 
     /**
