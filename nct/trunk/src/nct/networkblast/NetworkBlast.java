@@ -40,6 +40,7 @@ import nct.networkblast.search.*;
 import nct.networkblast.graph.*;
 import nct.networkblast.graph.compatibility.*;
 import nct.networkblast.score.*;
+import nct.networkblast.filter.*;
 import nct.graph.*;
 import nct.graph.basic.*;
 import nct.graph.util.*;
@@ -59,9 +60,11 @@ public class NetworkBlast {
 	// default variables
 	public static String VERSION = "0.1";
 	public static boolean SERIALIZE = false;
+	public static boolean useZero = false;
+	public static boolean filterDuplicateComplexNodes = false;
+	public static boolean filterDuplicatePathNodes = false;
 	public static double truthFactorDefault = 2.5;
 	public static double modelTruthDefault = 0.8;
-	public static String outputPrefixDefault = "out";
 	public static double expectationDefault = 1e-10;
 	public static double backgroundProbDefault = 1e-10;
 	public static Level logLevelDefault = Level.WARNING;
@@ -72,7 +75,6 @@ public class NetworkBlast {
 	public static int pathSize = 4;
 	public static Level logLevel = null;
 
-	protected String outputPrefix;
 	protected double expectation;
 	protected double backgroundProb;
 	protected double truthFactor;
@@ -121,7 +123,7 @@ public class NetworkBlast {
 			SIFHomologyReader sr = new SIFHomologyReader(compatFile);
 			HomologyGraph homologyGraph = new HomologyGraph(sr, expectation, inputSpecies);
 			// create classes for compat graph 
-			CompatibilityCalculator compatCalc = new AdditiveCompatibilityCalculator(0.01,logScore);
+			CompatibilityCalculator compatCalc = new AdditiveCompatibilityCalculator(0.01,logScore,useZero);
 
 			// initialize the search classes
 			List<Graph<String,Double>> resultPaths;
@@ -132,6 +134,7 @@ public class NetworkBlast {
 			
 			// initialize filter
 			Filter<String,Double> dupeFilter = new DuplicateThresholdFilter<String,Double>(1.0);
+			Filter<String,Double> dupeNodeFilter = new UniqueCompatNodeFilter();
 
 			// initialize the randomization classes
 			GraphRandomizer<String,Double> homologyShuffle = new EdgeWeightShuffle<String,Double>(randomNG);
@@ -160,6 +163,13 @@ public class NetworkBlast {
 
 				resultPaths = dupeFilter.filter(resultPaths);
 				resultComplexes = dupeFilter.filter(resultComplexes);
+
+				if ( filterDuplicatePathNodes ) 
+					resultPaths = dupeNodeFilter.filter(resultPaths);
+
+				if ( filterDuplicateComplexNodes ) 
+					resultComplexes = dupeNodeFilter.filter(resultComplexes);
+
 
 				System.out.println("# found " + resultPaths.size() + " filtered paths");
 				System.out.println("# found " + resultComplexes.size() + " filtered complexes");
@@ -215,55 +225,72 @@ public class NetworkBlast {
 		// Define and add options
 		options = new Options();
 
-		options.addOption("h", "help", false, "print this message");
-
-		options.addOption("V", "version", false,
-				"prints the version number and exits");
-		options.addOption("S", "serialize", SERIALIZE,
-				"serialize result data (" + SERIALIZE + ")");
-		options.addOption(OptionBuilder.withLongOpt("output").withDescription(
-				"output prefix").withValueSeparator('=').withArgName(
-				"outputPrefix").hasArg().create("o"));
-
-		options.addOption(OptionBuilder.withLongOpt("randomSeed")
-				.withDescription(
-						"seed the random generator (Java default - varies)")
-				.withValueSeparator('=').withArgName("randomSeed").hasArg()
+		options.addOption("h", "help", false, "Print this message.");
+		options.addOption("z", "zero_edges", false, "Allow zero edges.");
+		options.addOption("V", "version", false, "Prints the version number and exits.");
+		options.addOption("S", "serialize", SERIALIZE, "Serialize result data (" + SERIALIZE + ").");
+		options.addOption(OptionBuilder
+				.withLongOpt("random_seed")
+				.withDescription( "Seed the random generator (Java default - varies).")
+				.withValueSeparator(' ')
+				.withArgName("integer seed")
+				.hasArg()
 				.create("r"));
+		options.addOption(OptionBuilder
+				.withLongOpt("filter")
+				.withDescription( "Filter the results. Possible filters inlude:\nDUPE_PATH_PROTEINS\nDUPE_COMPLEX_PROTEINS\n(no filter).")
+				.withValueSeparator(' ')
+				.withArgName("filter name")
+				.hasArg()
+				.create("f"));
 
-		options.addOption(OptionBuilder.withLongOpt("expectation")
-				.withDescription(
-						"expectation threshold level (" + expectationDefault
-								+ ")").withValueSeparator('=').withArgName(
-						"expectation").hasArg().create("e"));
 
-		options.addOption(OptionBuilder.withLongOpt("background")
-				.withDescription(
-						"background probability (" + backgroundProbDefault
-								+ ")").withValueSeparator('=').withArgName(
-						"background").hasArg().create("b"));
+		options.addOption(OptionBuilder
+				.withLongOpt("expectation")
+				.withDescription( "Expectation threshold level (" + expectationDefault + ").")
+				.withValueSeparator(' ')
+				.withArgName( "value")
+				.hasArg()
+				.create("e"));
 
-		options.addOption(OptionBuilder.withLongOpt("truth_factor")
-				.withDescription(
-						"log likelihood score truth factor ("
-								+ truthFactorDefault + ")").withValueSeparator(
-						'=').withArgName("truth_factor").hasArg().create("t"));
+		options.addOption(OptionBuilder
+				.withLongOpt("background")
+				.withDescription( "Background probability (" + backgroundProbDefault + ").")
+				.withValueSeparator(' ')
+				.withArgName( "value")
+				.hasArg()
+				.create("b"));
 
-		options.addOption(OptionBuilder.withLongOpt("model_truth")
-				.withDescription(
-						"model truth (beta value) (" + modelTruthDefault + ")")
-				.withValueSeparator('=').withArgName("model_truth").hasArg()
+		options.addOption(OptionBuilder
+				.withLongOpt("truth_factor")
+				.withDescription( "Log likelihood score truth factor (" + truthFactorDefault + ").")
+				.withValueSeparator(' ')
+				.withArgName("value")
+				.hasArg()
+				.create("t"));
+
+		options.addOption(OptionBuilder
+				.withLongOpt("model_truth")
+				.withDescription( "Model truth (beta value) (" + modelTruthDefault + ").") 
+				.withValueSeparator(' ')
+				.withArgName("value")
+				.hasArg()
 				.create("m"));
 
-		options.addOption(OptionBuilder.withLongOpt("log_level")
-				.withDescription(
-				"logging level (" + logLevelDefault.toString() + ") (standard Java log levels allowed)")
-				.withValueSeparator('=').withArgName("log_level").hasArg()
+		options.addOption(OptionBuilder
+				.withLongOpt("log_level")
+				.withDescription( "Logging level. Standard Java logging levels allowed:\nOFF, SEVERE, WARNING,\nINFO, CONFIG, FINE,\nFINER, FINEST, ALL\n(" + logLevelDefault.toString() + ").")
+				.withValueSeparator(' ')
+				.withArgName("level name")
+				.hasArg()
 				.create("l"));
 
-		options.addOption(OptionBuilder.withLongOpt("simulations")
-				.withDescription( "number of additional simulations (" + simulationsDefault + ")")
-				.withValueSeparator('=').withArgName("simulation").hasArg()
+		options.addOption(OptionBuilder
+				.withLongOpt("simulations")
+				.withDescription( "Number of additional simulations to run (" + simulationsDefault + ").")
+				.withValueSeparator(' ')
+				.withArgName("num simulations")
+				.hasArg()
 				.create("s"));
 
 		// try to parse the cmd line
@@ -294,12 +321,23 @@ public class NetworkBlast {
 			SERIALIZE = true;
 		}
 
-		// optional args
-		if (line.hasOption("o")) {
-			outputPrefix = line.getOptionValue("o");
-		} else {
-			outputPrefix = outputPrefixDefault;
+		if (line.hasOption("z")) {
+			useZero = true;
 		}
+
+		if (line.hasOption("f")) {
+			String[] filters = line.getOptionValues("f");
+			for ( int i = 0; i < filters.length; i++ ) {
+				if ( filters[i].equals("DUPE_PATH_PROTEINS") )
+					filterDuplicatePathNodes = true;
+				else if ( filters[i].equals("DUPE_COMPLEX_PROTEINS") )
+					filterDuplicateComplexNodes = true;
+				else
+					log.warning("Invalid filter specified: " + filters[i]);
+			}
+		}
+
+		// optional args
 
 		if (line.hasOption("r")) {
 			randomNG = new Random(Long.parseLong(line.getOptionValue("r")));
@@ -362,7 +400,7 @@ public class NetworkBlast {
 		HelpFormatter formatter = new HelpFormatter();
 		if (message != null) 
 			log.severe(message);
-		formatter.printHelp( "java -jar networkblast.jar [OPTIONS] <homology file> <interaction file1> [<interaction file2>... ]", options);
+		formatter.printHelp( "java -jar nct.jar [OPTIONS] <homology file> <interaction file1> [<interaction file2>... ]", options);
 		System.exit(1);
 	}
 
