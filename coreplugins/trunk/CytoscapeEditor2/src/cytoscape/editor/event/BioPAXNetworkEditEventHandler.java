@@ -121,7 +121,7 @@ public class BioPAXNetworkEditEventHandler extends
 		// redraw graph so that the correct arrow is shown (but only if network is small enough to see the edge...
 		if (Cytoscape.getCurrentNetwork().getNodeCount() <= 100)
 		{
-			Cytoscape.getDesktop().redrawGraph(true, true);
+			Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
 			
 		}
 				

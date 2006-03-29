@@ -15,9 +15,9 @@ import javax.swing.*;
 
 public class VDistTop extends CytoscapeAction {
 
- protected CyWindow window;
+ protected CyNetworkView window;
 
-  public VDistTop ( CyWindow window, ImageIcon icon ) {
+  public VDistTop ( CyNetworkView window, ImageIcon icon ) {
     super( "", icon );
     this.window = window;
   }

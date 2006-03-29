@@ -8,9 +8,9 @@ import cytoscape.view.*;
 
 public class AlignPanel extends JPanel {
 
-  CyWindow window;
+  CyNetworkView window;
 
-  public AlignPanel ( CyWindow window ) {
+  public AlignPanel ( CyNetworkView window ) {
 
     this.window = window;
 

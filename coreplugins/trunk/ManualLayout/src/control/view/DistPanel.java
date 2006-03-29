@@ -8,9 +8,9 @@ import cytoscape.view.*;
 
 public class DistPanel extends JPanel {
 
-  CyWindow window;
+  CyNetworkView window;
 
-  public DistPanel ( CyWindow window ) {
+  public DistPanel ( CyNetworkView window ) {
 
     this.window = window;
 

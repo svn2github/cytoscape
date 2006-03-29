@@ -12,7 +12,7 @@ import javax.swing.event.SwingPropertyChangeSupport;
 
 import cytoscape.*;
 import cytoscape.data.*;
-import cytoscape.view.CyWindow;
+
 import cytoscape.CyNetwork;
 import giny.model.GraphPerspective;
 

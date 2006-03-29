@@ -14,9 +14,9 @@ import javax.swing.*;
 
 public class VAlignBottom extends CytoscapeAction {
 
- protected CyWindow window;
+ protected CyNetworkView window;
 
-  public VAlignBottom ( CyWindow window, ImageIcon icon ) {
+  public VAlignBottom ( CyNetworkView window, ImageIcon icon ) {
     super( "", icon );
     this.window = window;
   }

@@ -149,6 +149,6 @@ public class SetEditorAction extends CytoscapeAction {
 			CytoscapeEditorManager.setSettingUpEditor(false);
 			ex.printStackTrace();
 		}
-		Cytoscape.getDesktop().redrawGraph();
+		Cytoscape.getCurrentNetworkView().redrawGraph(false,true);
 	}
 }	

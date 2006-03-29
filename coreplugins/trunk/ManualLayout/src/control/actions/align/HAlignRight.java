@@ -15,9 +15,9 @@ import javax.swing.*;
 
 public class HAlignRight extends CytoscapeAction {
 
- protected CyWindow window;
+ protected CyNetworkView window;
 
-  public HAlignRight ( CyWindow window, ImageIcon icon ) {
+  public HAlignRight ( CyNetworkView window, ImageIcon icon ) {
     super( "", icon );
     this.window = window;
   }

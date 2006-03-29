@@ -19,7 +19,7 @@ import javax.swing.*;
 public class HAlignLeft extends CytoscapeAction {
 
  
-  public HAlignLeft ( CyWindow window, ImageIcon icon ) {
+  public HAlignLeft ( CyNetworkView window, ImageIcon icon ) {
     super( "", icon );
   }
 

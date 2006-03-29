@@ -14,11 +14,11 @@ import java.awt.*;
 public class ControlAction extends CytoscapeAction {
 
   JFrame frame;
-  protected CyWindow window;
+  protected CyNetworkView window;
 
   public ControlAction (  ) {
     super( "Align" );
-    this.window = ( CyWindow )Cytoscape.getDesktop();
+    this.window = Cytoscape.getCurrentNetworkView();
     setPreferredMenu( "Layout" );
     setPreferredIndex(0);
   }

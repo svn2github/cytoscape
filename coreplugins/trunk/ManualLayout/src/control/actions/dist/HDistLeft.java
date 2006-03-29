@@ -15,9 +15,9 @@ import javax.swing.*;
 
 public class HDistLeft extends CytoscapeAction {
 
- protected CyWindow window;
+ protected CyNetworkView window;
 
-  public HDistLeft ( CyWindow window, ImageIcon icon ) {
+  public HDistLeft ( CyNetworkView window, ImageIcon icon ) {
     super( "", icon );
     this.window = window;
   }
