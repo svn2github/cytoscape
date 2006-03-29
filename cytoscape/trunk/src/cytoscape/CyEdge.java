@@ -39,10 +39,9 @@
 package cytoscape;
 
 import giny.model.*;
-import cytoscape.giny.Node;
 import cytoscape.giny.CytoscapeFingRootGraph;
 
-public class CyEdge implements cytoscape.giny.Edge {
+public class CyEdge implements giny.model.Edge {
 
 
   // Variables specific to public get/set methods.
@@ -57,20 +56,6 @@ public class CyEdge implements cytoscape.giny.Edge {
     this.m_identifier = new Integer(m_rootGraphIndex).toString();
   }
 
-
-  /**
-   * @deprecated
-   */
-  public CyNode getSourceNode () {
-    return (CyNode) getSource();
-  }
-
-  /**
-   * @deprecated
-   */
-  public CyNode getTargetNode () {
-    return (CyNode)getTarget();
-  }
 
   public giny.model.Node getSource () {
     return m_rootGraph.getNode

@@ -42,7 +42,7 @@ import giny.model.*;
 import cytoscape.giny.CytoscapeFingRootGraph;
 
   // Package visible class.
-public class CyNode implements cytoscape.giny.Node
+public class CyNode implements giny.model.Node
 {
 
   // Variables specific to public get/set methods.
