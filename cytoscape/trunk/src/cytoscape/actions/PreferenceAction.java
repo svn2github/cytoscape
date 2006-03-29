@@ -46,6 +46,7 @@ package cytoscape.actions;
 
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
+import javax.swing.JFrame;
 
 import cytoscape.giny.*;
 
@@ -69,7 +70,7 @@ public class PreferenceAction extends CytoscapeAction  {
     public void actionPerformed(ActionEvent e) {
 	if (preferencesDialog == null) {
             preferencesDialog = new PreferencesDialog(
-			Cytoscape.getDesktop().getMainFrame());
+			(JFrame)Cytoscape.getDesktop());
 	}
 	preferencesDialog.refresh();
         preferencesDialog.setVisible(true);

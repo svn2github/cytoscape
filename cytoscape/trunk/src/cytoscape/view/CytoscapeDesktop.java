@@ -88,8 +88,7 @@ public class CytoscapeDesktop
   extends 
     JFrame 
   implements
-    PropertyChangeListener,
-    CyWindow {
+    PropertyChangeListener {
    
 
   protected long lastPluginRegistryUpdate;
@@ -467,34 +466,6 @@ public class CytoscapeDesktop
   }
 
   /**
-   * This will return the network currently under focus. however use this:
-   * {@link cytoscape.Cytoscape#getCurrentNetwork}
-   * @deprecated
-   */
-  public CyNetwork getNetwork () {
-    return Cytoscape.getCurrentNetwork();
-  }
- 
-  /**
-   * Returns the UI component that renders the displayed graph.
-   * {@link cytoscape.Cytoscape#getCurrentNetworkView}
-   * @deprecated
-   */
-  public GraphView getView () {
-    return ( GraphView )Cytoscape.getCurrentNetworkView();
-  }
-
- 
-  /**
-   * This will actually return an instance of <I>this</I> class..
-  * {@link cytoscape.Cytoscape#getDesktop}
-   * @deprecated
-   */
-  public JFrame getMainFrame () {
-    return ( JFrame )this;
-  }
-
-  /**
    * Return the view type for this CytoscapeDesktop
    */
   protected int getViewType () {
@@ -506,139 +477,7 @@ public class CytoscapeDesktop
     return cyMenus;
   }
 
-  //------------------------------//
-  // Deprecated CyWindow Methods
-
   public void setNewNetwork( CyNetwork newNetwork ) {}
-
-
-  /**
-   * This doesn't apply anymore as the title will never change.
-   * @deprecated
-   */
-  public String getWindowTitle () {
-    return "CD";
-  }
-
-  /**
-   * {@link CyNetworkView#setTitle( String )}
-   * @deprecated
-   */
-  public void setWindowTitle ( String newTitle ) {
-  }
-
-  /**
-   * no longer used
-   * @deprecated
-   */
-  public void setInteractivity ( boolean newState ) {}
-
-
-  /**
-   * {@link CyNetworkView#redrawGraph( boolean, boolean ) }
-   * Redraws the graph - equivalent to redrawGraph(false, true).
-   * That is, no new layout will be performed, but the visual
-   * appearances will be reapplied.
-   * @deprecated
-  */
-  public void redrawGraph() {
-    Cytoscape.getCurrentNetworkView().redrawGraph( false, true );
-  }
-
-  /**
-   * {@link CyNetworkView#redrawGraph( boolean, boolean ) }
-   * Redraws the graph - equivalent to redrawGraph(doLayout, true).
-   * That is, the visual appearances will be reapplied, and layout
-   * will be done iff the argument is true.
-   * @deprecated
-   */
-  public void redrawGraph(boolean doLayout) {
-    // apply appearances by default
-    Cytoscape.getCurrentNetworkView().redrawGraph( doLayout, true );
-  }
-
-  /**
-   * {@link CyNetworkView#redrawGraph( boolean, boolean ) }  
-   * Redraws the graph. A new layout will be performed if the first
-   * argument is true, and the visual appearances will be recalculated
-   * and reapplied by the visual mapper if the second argument is true
-   * and the visual mapper is not disabled.
-   * @deprecated
-   */
-  public void redrawGraph(boolean doLayout, boolean applyAppearances) {
-    Cytoscape.getCurrentNetworkView().redrawGraph( doLayout, applyAppearances );
-  }
-
-  /**
-   * not used
-   * @deprecated
-   */
-  public void showWindow ( int width, int height) {
-  }
-
-  /**
-   * not used
-   * @deprecated
-   */
-  public void showWindow() {}
-
-  /**
-   * not used
-   * @deprecated
-   */
-  public void applyLayout ( GraphView lview ) {
-    //Cytoscape.getCurrentNetworkView().applyLayout( new SpringEmbeddedLayouter() );
-  }
-
-  /**
-   * not used
-   * @deprecated
-   */
-  public void applySelLayout() {
-    
-    //int[] selNodes = Cytoscape.getCurrentNetworkView().getSelectedNodeIndices();
-    //int[] selEdges = Cytoscape.getCurrentNetworkView().getSelectedEdgeIndices();
-    //Cytoscape.getCurrentNetworkView().applyLockedLayout( new SpringEmbeddedLayouter(), selNodes, selEdges );
-
-  }
-
-  /**
-   * not used
-   * @deprecated
-   */
-  public void applyVizmapSettings() {
-    Cytoscape.getCurrentNetworkView().redrawGraph( false, true );
-  }
-
-  /**
-   * not used
-   * @deprecated
-   */
-  public void setVisualMapperEnabled(boolean newState) {
-    Cytoscape.getCurrentNetworkView().setVisualMapperEnabled( newState );
-  }
-
-  /**
-   * not used
-   * @deprecated
-   */
-  public void toggleVisualMapperEnabled() {
-    Cytoscape.getCurrentNetworkView().toggleVisualMapperEnabled();
-  }
-
-  /**
-   * not used
-   * @deprecated
-   */
-  public void switchToReadOnlyMode () {
-  }
- 
-  /**
-   * not used
-   * @deprecated
-   */
-  public void switchToEditMode (){
-  }
 
 
   /**
