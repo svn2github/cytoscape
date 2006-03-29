@@ -59,7 +59,6 @@ import cytoscape.data.*;
 import cytoscape.data.readers.InteractionsReader;
 import cytoscape.data.readers.GraphReader;
 import cytoscape.data.servers.*;
-import cytoscape.view.CyWindow;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.util.shadegrown.WindowUtilities;
 import cytoscape.init.CyInitParams;
@@ -75,7 +74,7 @@ import com.jgoodies.plaf.plastic.Plastic3DLookAndFeel;
 /**
  * This is the main startup class for Cytoscape. It creates a CytoscapeConfig
  * object using the command-line arguments, uses the information in that config
- * to create other data objects, and then constructs the first CyWindow.
+ * to create other data objects, and then constructs the first view.
  * Construction of that class triggers plugin loading, and after that control
  * passes to the UI thread that responds to user input.<P>
  *
@@ -84,7 +83,6 @@ import com.jgoodies.plaf.plastic.Plastic3DLookAndFeel;
  */
 public class CyMain implements WindowListener {
   protected static Vector windows = new Vector ();
-  protected CyWindow cyWindow;
   protected CytoscapeVersion version = new CytoscapeVersion();
   protected Logger logger;
    

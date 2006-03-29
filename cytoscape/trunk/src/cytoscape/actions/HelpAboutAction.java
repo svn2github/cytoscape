@@ -41,7 +41,6 @@ package cytoscape.actions;
 import java.awt.event.ActionEvent;
 import javax.swing.*;
 
-import cytoscape.view.CyWindow;
 import cytoscape.CytoscapeVersion;
 import cytoscape.util.CreditScreen;
 

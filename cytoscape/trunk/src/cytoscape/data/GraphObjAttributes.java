@@ -773,7 +773,7 @@ public class GraphObjAttributes
    * establish mapping between a java object (a graph node or edge) and
    * its canonical (standard) name.
    * <ul>
-   * <li> clients of this class (CyWindow, or cytoscape plugins) usually
+   * <li> clients of this class (view, or cytoscape plugins) usually
    * deal with graph nodes and edges, and only secondarily with names;
    * <li> attributes are stored and retrieved by canonical name
    * <li> the client must be able to translate from the node or edge object

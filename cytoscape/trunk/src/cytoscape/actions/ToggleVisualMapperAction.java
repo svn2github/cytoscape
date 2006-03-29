@@ -51,7 +51,7 @@ import cytoscape.util.CytoscapeAction;
 
 /**
  * This class implements two menu items that allow enabling and disabling the
- * visual mapper attached the the CyWindow argument.
+ * visual mapper. 
  */
 public class ToggleVisualMapperAction extends CytoscapeAction {
 

@@ -72,15 +72,15 @@ public class AttributeLayout {
     public static final int CREATE_EDGES = 1;
     public static final int CLEAR_OBJECTS = 2;
     
-    CyNetworkView cyWindow; //the window to which we're attached
+    CyNetworkView cyNetView; //the window to which we're attached
     
     //list of category nodes created during layout
     protected int[] categoryNodes;
     //list of edges created during create edges operation
     protected int[] createdEdges;
     
-    public AttributeLayout(CyNetworkView cyWindow) {
-        this.cyWindow = cyWindow;
+    public AttributeLayout(CyNetworkView cyNetView) {
+        this.cyNetView = cyNetView;
     }
     
     public void doCallback(String attributeName, int functionToPerform) {
@@ -98,7 +98,7 @@ public class AttributeLayout {
      * of this class. It does not undo a previously applied layout.
      */
     public void clearPreviousGraphObjects() {
-        RootGraph rootGraph = cyWindow.getNetwork().getRootGraph();
+        RootGraph rootGraph = cyNetView.getNetwork().getRootGraph();
         if (categoryNodes != null) {
             for (int i=0; i<categoryNodes.length; i++) {
                 rootGraph.removeNode(categoryNodes[i]);
@@ -111,7 +111,7 @@ public class AttributeLayout {
             }
             createdEdges = null;//explicitly discard the array
         }
-        cyWindow.redrawGraph(false, false); //forces update of the UI
+        cyNetView.redrawGraph(false, false); //forces update of the UI
     }
     
     /**
@@ -137,7 +137,7 @@ public class AttributeLayout {
         if (valueMap.size() == 0) {return;}
         
         //we do the layout on a clone of the existing graph perspective
-        GraphPerspective realGP = cyWindow.getNetwork().getGraphPerspective();
+        GraphPerspective realGP = cyNetView.getNetwork().getGraphPerspective();
         GraphPerspective layoutGP = (GraphPerspective)realGP.clone();
         RootGraph rootGraph = realGP.getRootGraph();
         CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
@@ -206,7 +206,7 @@ public class AttributeLayout {
         //calculated position
         realGP.restoreNodes(this.categoryNodes);
         
-        GraphView realView = ( GraphView )cyWindow;
+        GraphView realView = ( GraphView )cyNetView;
         for (Iterator vi = realView.getNodeViewsIterator(); vi.hasNext(); ) {
             NodeView nv = (NodeView)vi.next();
             NodeView layoutV = layoutView.getNodeView( nv.getNode() );
@@ -218,7 +218,7 @@ public class AttributeLayout {
             nv.setNodePosition( true );
         }
         
-        cyWindow.redrawGraph(false, true);
+        cyNetView.redrawGraph(false, true);
         realView.fitContent();
     }
     
@@ -234,7 +234,7 @@ public class AttributeLayout {
         Map valueMap = buildValueMap(attributeName);
         if (valueMap.size() == 0) {return;}
         
-        GraphPerspective gp = cyWindow.getNetwork().getGraphPerspective();
+        GraphPerspective gp = cyNetView.getNetwork().getGraphPerspective();
         RootGraph rootGraph = gp.getRootGraph();
         CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
         CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
@@ -277,7 +277,7 @@ public class AttributeLayout {
                 }
             }
         }
-        cyWindow.redrawGraph(false, true);
+        cyNetView.redrawGraph(false, true);
     }
     
     /**
@@ -291,14 +291,14 @@ public class AttributeLayout {
      * value and thus may appear more than once in the map.
      *
      * The data is taken from the node attributes structure of the current
-     * network available from the CyWindow attached to this class. An empty
+     * network available from the CyNetworkView attached to this class. An empty
      * Map will be returned if no such attribute exists.
      */
     public Map buildValueMap(String attributeName) {
         Map returnMap = new HashMap();
         if (attributeName == null) {return returnMap;}
         CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
-        GraphPerspective gp = cyWindow.getNetwork().getGraphPerspective();
+        GraphPerspective gp = cyNetView.getNetwork().getGraphPerspective();
         
         //get the attribute, which is a map of object names to data values
         //return an empty map if there is no such attribute
