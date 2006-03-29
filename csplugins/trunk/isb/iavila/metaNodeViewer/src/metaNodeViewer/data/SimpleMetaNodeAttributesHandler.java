@@ -289,25 +289,24 @@ public class SimpleMetaNodeAttributesHandler implements
                 } else if (valueType == CyAttributes.TYPE_FLOATING) {
                     Double value = edgeAtts.getDoubleAttribute(childEdgeID,
                             attrName);
-                    uniqueValues.add(value);
+                    if(value != null)uniqueValues.add(value);
                 } else if (valueType == CyAttributes.TYPE_INTEGER) {
                     Integer value = edgeAtts.getIntegerAttribute(childEdgeID,
                             attrName);
-                    uniqueValues.add(value);
+                    if(value != null)uniqueValues.add(value);
                 } else if (valueType == CyAttributes.TYPE_SIMPLE_LIST) {
                     List value = edgeAtts.getAttributeList(childEdgeID,
                             attrName);
-                    uniqueValues.addAll(value);
+                    if(value != null)uniqueValues.addAll(value);
                 } else if (valueType == CyAttributes.TYPE_SIMPLE_MAP) {
                     Map value = edgeAtts.getAttributeMap(childEdgeID, attrName);
                     if (simpleMap == null)
                         simpleMap = new HashMap();
-                    if(value != null)
-                    simpleMap.putAll(value);
+                    if(value != null)simpleMap.putAll(value);
                 } else if (valueType == CyAttributes.TYPE_BOOLEAN) {
                     Boolean value = edgeAtts.getBooleanAttribute(childEdgeID,
                             attrName);
-                    uniqueValues.add(value);
+                    if(value != null)uniqueValues.add(value);
                 } else {
                     typeSupported = false;
                 }

@@ -30,11 +30,13 @@ package metaNodeViewer.actions;
 import java.util.*;
 import metaNodeViewer.model.AbstractMetaNodeModeler;
 import metaNodeViewer.model.MetaNodeFactory;
+//import metaNodeViewer.view.VisualStyleFactory;
 import metaNodeViewer.MetaNodeUtils;
 import javax.swing.JOptionPane;
 import javax.swing.AbstractAction;
 import java.awt.event.ActionEvent;
 import cytoscape.*;
+import cytoscape.visual.VisualMappingManager;
 
 /**
  * Use metaNodeViewer.actions.ActionFactory to get an instance of this class.
@@ -163,26 +165,26 @@ public class CollapseSelectedNodesAction extends AbstractAction {
 			return;
 		}
 		
-		// Get the selected nodes' RootGraph indices
-		int numCollapsed = MetaNodeUtils.collapseNodes(cyNetwork,
-                                                   selectedNodes,
-                                                   collapse_existent_parents,
-                                                   collapse_recursively,
-                                                   multiple_edges);
-		if(numCollapsed == 0){
-			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
-			"The selected nodes do not have parent meta-nodes.");
-			return;
-		}else if(numCollapsed < 0){
-			//Something went wrong, alert user, and exit
-			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
-                                    "An internal error was encountered while collapsing.",
-                                    "Internal Error",
-                                    JOptionPane.ERROR_MESSAGE
-			);
-			return;
-			
-		}      
+      
+        if(collapse_existent_parents){
+            ArrayList parentMetanodes = MetaNodeUtils.findContainingMetaNodes(cyNetwork,selectedNodes,collapse_recursively);
+            if(parentMetanodes.size() == 0){ 
+                JOptionPane.showMessageDialog(Cytoscape.getDesktop(),"The selected nodes do not have parent meta-nodes.");
+                return;
+            }
+            if(parentMetanodes.size() > 0)
+                MetaNodeUtils.collapseMetaNodes(cyNetwork,parentMetanodes,multiple_edges);
+        }else{
+            CyNetwork subnet = Cytoscape.getRootGraph().createNetwork(selectedNodes, new ArrayList());
+            CyNetwork [] cnArray = new CyNetwork[1];
+            cnArray[0] = subnet;
+            ArrayList metanodes = MetaNodeUtils.createMetaNodes(cyNetwork,cnArray);
+            MetaNodeUtils.collapseMetaNodes(cyNetwork,metanodes,multiple_edges);
+        }
+        // This may make the operation slower. It would be nice to have applyAppearances(Collection nodes, Collection edges);
+       VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
+       vizmapper.applyAppearances();
+        
 	}//collapseSelectedNodes
 	
 	

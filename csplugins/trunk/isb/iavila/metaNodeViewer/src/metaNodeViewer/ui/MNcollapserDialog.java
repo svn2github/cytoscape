@@ -65,7 +65,7 @@ public class MNcollapserDialog extends JFrame {
 	protected static final String EXPAND_MN_TITLE = "Expand Children";
 
 	/**
-	 * Constructor
+	 * Constructor, sets these defaults: recursive = false, create multiple edges = true
 	 */
 	public MNcollapserDialog() {
 		super(title);

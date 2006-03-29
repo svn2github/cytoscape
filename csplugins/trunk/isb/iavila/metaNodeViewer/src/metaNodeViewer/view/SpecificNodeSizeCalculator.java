@@ -32,7 +32,8 @@ import giny.model.Node;
 import cytoscape.*;
 import cytoscape.data.*;
 /**
- * A node size calculator for meta-nodes.
+ * A node size calculator for meta-nodes used for the visual mapper and so that the size of metanodes can
+ * be proportional to their number of children nodes.
  *
  * @author Iliana Avila-Campillo iavila@systemsbiology.org, iliana.avila@gmail.com
  * @version %I%, %G%

@@ -12,6 +12,7 @@
    <property name = "doc" location = "doc"/>
 
    <property name="cytoscape.plugin.release" value="${lib.release}/plugins"/>
+   <property name="cytoscape.plugin.dev" value="${lib.dev}/plugins/core"/>
 
    <path id = "classpath_dev">
        <fileset dir = "${lib.dev}">
@@ -63,6 +64,8 @@
    <jar jarfile="${jar}/metanode.jar">
       <fileset dir="${build}"/>
    </jar>
+   <copy file="${jar}/metanode.jar" todir="${cytoscape.plugin.dev}"/>
+   <echo message="metanode.jar is complete, it is located in ${jar} and in ${cytoscape.plugin.dev}"/>
    </target>
 
    <target name = "run_dev" depends="jar_dev" description = "Run under development">

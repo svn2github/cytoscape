@@ -116,12 +116,19 @@ public class UncollapseSelectedNodesAction extends AbstractAction {
         }
         
 		// Finally, uncollapse each node (if it is not a metanode, nothing happens)
-		int numUncollapsed = 
-      MetaNodeUtils.uncollapseNodes(cyNetwork,selectedNodes,recursive,temporary);
-		if(numUncollapsed == 0){
+		//int numUncollapsed = 
+		  //  MetaNodeUtils.uncollapseNodes(cyNetwork,selectedNodes,recursive,temporary);
+        boolean [] isExpandedArray = null;
+        if(temporary)
+            isExpandedArray = MetaNodeUtils.expandMetaNodes(cyNetwork,selectedNodes,recursive);
+        else
+            isExpandedArray = MetaNodeUtils.removeMetaNodes(cyNetwork,selectedNodes,recursive);
+        int numExpanded = 0;
+        for(int i = 0; i < isExpandedArray.length; i++)
+            if(isExpandedArray[i]) numExpanded++;
+        if(numExpanded == 0)
 			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), 
                                     "None of the selected nodes are meta-nodes.");
-		}
 	}//uncollapseSelectedNodes
 	
 }//class UncollapseSelectedNodesAction

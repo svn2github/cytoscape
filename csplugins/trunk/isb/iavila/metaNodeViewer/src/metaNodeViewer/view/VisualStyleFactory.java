@@ -62,7 +62,11 @@ public class VisualStyleFactory {
     NodeAppearanceCalculator nodeAppCalc = new NodeAppearanceCalculator();
     EdgeAppearanceCalculator edgeAppCalc = new EdgeAppearanceCalculator();
     CalculatorCatalog calculatorCatalog = vmManager.getCalculatorCatalog();
-    
+    VisualStyle vs = calculatorCatalog.getVisualStyle(ABSTRACT_METANODE_VS);
+    if(vs != null) {
+        System.out.println("Visual style " + ABSTRACT_METANODE_VS + " already exists.");
+        return vs; // it already exists
+    }
     // ------------------------------ Set the label ------------------------------//
     // Display the value for Semantics.COMMON_NAME as a label
     String cName = "Common name";
@@ -140,11 +144,13 @@ public class VisualStyleFactory {
     //------------------------- Create a visual style -------------------------------//
     GlobalAppearanceCalculator gac = 
       vmManager.getVisualStyle().getGlobalAppearanceCalculator();
+    
     VisualStyle visualStyle = new VisualStyle(ABSTRACT_METANODE_VS,
                                               nodeAppCalc,
                                               edgeAppCalc,gac);
     // TODO: Not sure if I want to do this:
     //catalog.addVisualStyle(visualStyle);
+    
     return visualStyle;
   }//createAbstractMetaNodeVisualStyle
 

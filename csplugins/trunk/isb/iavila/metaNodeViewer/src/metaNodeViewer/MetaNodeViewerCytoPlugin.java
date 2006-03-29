@@ -20,7 +20,7 @@ public class MetaNodeViewerCytoPlugin
 extends CytoscapePlugin 
 implements PropertyChangeListener {
 	
-	protected static final String pluginTitle = "Meta-Node Abstraction";
+	protected static final String pluginTitle = "MetaNodes Plugin";
 	
 	/**
 	 * Constructor.
@@ -34,7 +34,7 @@ implements PropertyChangeListener {
 		
 		// Add the plugin to the plugins menu
 		Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add(
-				new AbstractAction (pluginTitle + "..."){
+				new AbstractAction ("MetaNode Operations..."){
 					public void actionPerformed (ActionEvent e){
 						dialog.pack();
 						dialog.setLocationRelativeTo(Cytoscape.getDesktop());
