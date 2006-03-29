@@ -263,15 +263,6 @@ public class CyMenus implements GraphViewChangeListener {
 	}
 
 	/**
-	 * @deprecated This method is no longer needed now that we don't use the
-	 *             NO_OPERATIONS menu placeholder.
-	 * 
-	 * This method does nothing.
-	 */
-	public void refreshOperationsMenu() {
-	}
-
-	/**
 	 * Returns the toolbar object constructed by this class.
 	 */
 	public CytoscapeToolBar getToolBar() {
