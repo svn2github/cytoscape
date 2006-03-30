@@ -29,7 +29,7 @@ import metaNodeViewer.data.MetaNodeAttributesHandler;
 import metaNodeViewer.model.AbstractMetaNodeModeler;
 import metaNodeViewer.model.MetaNodeFactory;
 import metaNodeViewer.model.MetaNodeModelerFactory;
-import metaNodeViewer.view.VisualStyleFactory;
+//import metaNodeViewer.view.VisualStyleFactory;
 import cytoscape.*;
 import cytoscape.view.*;
 import giny.view.*;
