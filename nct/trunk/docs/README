@@ -4,3 +4,7 @@ To convert the manual to html or other formats you can use:
 
 A docbook stylesheet can be found at:
 /usr/share/sgml/docbook/xsl-stylesheets-1.65.1-2/html/docbook.xsl 
+
+including a style sheet:
+
+xsltproc --stringparam html.stylesheet style.css /usr/share/sgml/docbook/xsl-stylesheets-1.65.1-2/html/docbook.xsl manual.xml > manual.html
