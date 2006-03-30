@@ -31,6 +31,8 @@ import metaNodeViewer.model.MetaNodeFactory;
 import metaNodeViewer.model.MetaNodeModelerFactory;
 import metaNodeViewer.view.VisualStyleFactory;
 import cytoscape.*;
+import cytoscape.view.*;
+import giny.view.*;
 
 /**
  * Class with easy to use static methods for metanode operations.<p>
@@ -125,11 +127,24 @@ public class MetaNodeUtils {
 	    
           for(int i = 0; i < metaNodes.size(); i++){
 	        CyNode metaNode = (CyNode)metaNodes.get(i);
-	        boolean ok = MetaNodeUtils.abstractModeler.undoModel(network,metaNode,recursive,temporary);
+            CyNetworkView netView = Cytoscape.getNetworkView(network.getIdentifier());
+            ArrayList childrenNodes = new ArrayList();
+            double xPos = 0;
+            double yPos = 0;
+            if(netView != null){
+                childrenNodes = getNodesInSubnetwork(metaNode,recursive);
+                NodeView metaNodeView = netView.getNodeView(metaNode);
+                xPos = metaNodeView.getXPosition();
+                yPos = metaNodeView.getYPosition();
+            }
+            boolean ok = MetaNodeUtils.abstractModeler.undoModel(network,metaNode,recursive,temporary);
 	        // Also, remove the metanode from the RootGraph
 	        RootGraph rootGraph = network.getRootGraph();
 	        CyNode removedNode = (CyNode)rootGraph.removeNode(metaNode);
 	        removed[i] = ok && (removedNode != null);
+	        // Cytoscape no longer remembers the locations of nodes after they are removed. So, we need to lay them out in some way...
+            if(childrenNodes.size() > 0) layoutNodesInAStack(netView,childrenNodes,xPos,yPos);
+            
           }//for i
 	    
         return removed;
@@ -147,8 +162,22 @@ public class MetaNodeUtils {
 	  	// Uncollapse each node (if it is not a metanode, nothing happens)
 	      boolean [] expanded = new boolean[metaNodes.size()];
 	      for(int i = 0; i < metaNodes.size(); i++){
-	          // This only uncollapses the metanodes, but they are kept in the RootGraph
-              expanded[i] = MetaNodeUtils.abstractModeler.undoModel(cy_network,(CyNode)metaNodes.get(i),recursive,true);  
+              
+              CyNode mnode = (CyNode)metaNodes.get(i);
+              CyNetworkView netView = Cytoscape.getNetworkView(cy_network.getIdentifier());
+              ArrayList childrenNodes = new ArrayList();
+              double xPos = 0;
+              double yPos = 0;
+              if(netView != null){
+                  childrenNodes = getNodesInSubnetwork(mnode,recursive);
+                  NodeView metaNodeView = netView.getNodeView(mnode);
+                  xPos = metaNodeView.getXPosition();
+                  yPos = metaNodeView.getYPosition();
+              }
+              // This only uncollapses the metanodes, but they are kept in the RootGraph
+              expanded[i] = MetaNodeUtils.abstractModeler.undoModel(cy_network,mnode,recursive,true);
+              // Cytoscape no longer remembers the locations of nodes after they are removed. So, we need to lay them out in some way...
+              if(childrenNodes.size() > 0) layoutNodesInAStack(netView,childrenNodes,xPos,yPos);
         	}//for i
 	  
 	  	return expanded;
@@ -226,5 +255,44 @@ public class MetaNodeUtils {
         return parentNodes;
 	  
       }//findParentMetaNodes
+      
+      /**
+       * Finds the children nodes (nodes in the subnetwork that the given meta-node represents) of the meta-node.
+       * 
+       * @param metaNode the CyNode that represents a subnetwork
+       * @param get_lowest_level_nodes if true, then the returned array contains nodes that are descendants of the metanode and
+       * have no children themselves, if false, the immediate children nodes are returned
+       * @return an ArrayList of children CyNodes
+       */
+      public static ArrayList getNodesInSubnetwork (CyNode metaNode, boolean get_lowest_level_nodes){
+          ArrayList childrenNodes = new ArrayList();
+          Iterator it = metaNode.getGraphPerspective().nodesIterator();
+          while(it.hasNext()){
+              CyNode childNode = (CyNode)it.next();
+              if(get_lowest_level_nodes && childNode.getGraphPerspective().getNodeCount() > 0) {
+                  childrenNodes.addAll(getNodesInSubnetwork(childNode, get_lowest_level_nodes));
+              }else{
+                  childrenNodes.add(childNode);
+              }
+          }
+          
+          return childrenNodes;
+      }
+      
+      //------------ temporary methods ---------------- //
+      // These should go somewhere else. Like a GinyLayoutUtils class.
+      public static void layoutNodesInAStack (CyNetworkView network_view, Collection nodes, double x_position, double y_start_position){
+          
+          Iterator it = nodes.iterator();
+          double yPosition = y_start_position;
+          while(it.hasNext()){
+              CyNode node = (CyNode)it.next();
+              NodeView nodeView = network_view.getNodeView(node);
+              nodeView.setXPosition(x_position);
+              nodeView.setYPosition(yPosition);
+              yPosition += nodeView.getHeight() * 2;
+          }
+          
+      }
 	  
 }//MetaNodeUtils
