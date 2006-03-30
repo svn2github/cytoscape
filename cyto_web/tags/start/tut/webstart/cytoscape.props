@@ -1,0 +1,7 @@
+#Cytoscape Property File
+#Wed Dec 21 17:25:48 CET 2005
+viewType=tabbed
+secondaryViewThreshold=2000
+bioDataServer=PleaseSpecify
+defaultSpeciesName=Saccharomyces cerevisiae
+viewThreshold=500
