@@ -172,14 +172,14 @@ public class CollapseSelectedNodesAction extends AbstractAction {
                 JOptionPane.showMessageDialog(Cytoscape.getDesktop(),"The selected nodes do not have parent meta-nodes.");
                 return;
             }
-            if(parentMetanodes.size() > 0)
-                MetaNodeUtils.collapseMetaNodes(cyNetwork,parentMetanodes,multiple_edges);
+            if(parentMetanodes.size() > 0){
+                it = parentMetanodes.iterator();
+                while(it.hasNext()) MetaNodeUtils.collapseMetaNode(cyNetwork,(CyNode)it.next(),multiple_edges);
+            }
         }else{
             CyNetwork subnet = Cytoscape.getRootGraph().createNetwork(selectedNodes, new ArrayList());
-            CyNetwork [] cnArray = new CyNetwork[1];
-            cnArray[0] = subnet;
-            ArrayList metanodes = MetaNodeUtils.createMetaNodes(cyNetwork,cnArray);
-            MetaNodeUtils.collapseMetaNodes(cyNetwork,metanodes,multiple_edges);
+            CyNode metanode = MetaNodeUtils.createMetaNode(cyNetwork,subnet);
+            MetaNodeUtils.collapseMetaNode(cyNetwork,metanode,multiple_edges);
         }
         // This may make the operation slower. It would be nice to have applyAppearances(Collection nodes, Collection edges);
        VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();

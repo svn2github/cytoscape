@@ -1155,20 +1155,33 @@ public class AbstractMetaNodeModeler {
 	 * TODO: Replace implementation in giny?
 	 */
 	public void getDescendants(CyNode node, ArrayList descendants) {
-		if (descendants == null) {
-			descendants = new ArrayList();
-		}
-		// Get all the immediate children
-		//DEPRECATED:
-		//int[] allNodes = this.rootGraph.getNodeIndicesArray();
-		Iterator it = this.rootGraph.nodesIterator();
-		while (it.hasNext()) {
-			CyNode rgNode = (CyNode)it.next();
-			if (this.rootGraph.isNodeMetaParent(rgNode.getRootGraphIndex(), node.getRootGraphIndex())) {
-				descendants.add(rgNode);
-				getDescendants(rgNode, descendants);
-			}
-		}
+        if (descendants == null) {
+            descendants = new ArrayList();
+        }
+        Iterator it = node.getGraphPerspective().nodesIterator();
+        while(it.hasNext()){
+            CyNode childNode = (CyNode)it.next();
+            if(childNode.getGraphPerspective().getNodeCount() > 0) {
+                getDescendants(childNode, descendants);
+            }
+            descendants.add(childNode);
+        }//while
+        
+//		if (descendants == null) {
+//			descendants = new ArrayList();
+//		}
+//		// Get all the immediate children
+//		//DEPRECATED:
+//		//int[] allNodes = this.rootGraph.getNodeIndicesArray();
+//		Iterator it = this.rootGraph.nodesIterator();
+//		while (it.hasNext()) {
+//			CyNode rgNode = (CyNode)it.next();
+//			if (this.rootGraph.isNodeMetaParent(rgNode.getRootGraphIndex(), node.getRootGraphIndex())) {
+//				descendants.add(rgNode);
+//				getDescendants(rgNode, descendants);
+//			}
+//		}
+        
 	}// getDescendants
     
     /**

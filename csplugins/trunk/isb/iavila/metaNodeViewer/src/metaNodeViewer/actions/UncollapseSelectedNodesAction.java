@@ -119,18 +119,19 @@ public class UncollapseSelectedNodesAction extends AbstractAction {
 		// Finally, uncollapse each node (if it is not a metanode, nothing happens)
 		//int numUncollapsed = 
 		  //  MetaNodeUtils.uncollapseNodes(cyNetwork,selectedNodes,recursive,temporary);
-        boolean [] isExpandedArray = null;
-        if(temporary)
-            isExpandedArray = MetaNodeUtils.expandMetaNodes(cyNetwork,selectedNodes,recursive);
-        else
-            isExpandedArray = MetaNodeUtils.removeMetaNodes(cyNetwork,selectedNodes,recursive);
         int numExpanded = 0;
-        for(int i = 0; i < isExpandedArray.length; i++)
-            if(isExpandedArray[i]) numExpanded++;
-        if(numExpanded == 0)
-			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), 
-                                    "None of the selected nodes are meta-nodes.");
+        it = selectedNodes.iterator();
+        if(temporary){
+            while(it.hasNext())
+                if(MetaNodeUtils.expandMetaNode(cyNetwork,(CyNode)it.next(),recursive)) numExpanded++;
+        }else{
+            while(it.hasNext())
+                if(MetaNodeUtils.removeMetaNode(cyNetwork,(CyNode)it.next(),recursive)) numExpanded++;
+        }
         
+        if(numExpanded == 0)
+			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),"None of the selected nodes are meta-nodes.");
+                
         // This may make the operation slower. It would be nice to have applyAppearances(Collection nodes, Collection edges);
         VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
         vizmapper.applyAppearances();

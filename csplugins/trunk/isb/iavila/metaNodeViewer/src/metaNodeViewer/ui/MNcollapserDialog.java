@@ -23,6 +23,7 @@
  **/
 package metaNodeViewer.ui;
 
+import metaNodeViewer.MetaNodeViewerCytoPlugin;
 import metaNodeViewer.actions.*;
 import javax.swing.*;
 import java.awt.*;
@@ -42,7 +43,7 @@ import metaNodeViewer.data.*;
 
 public class MNcollapserDialog extends JFrame {
 
-	public static final String title = "Meta-Node Abstraction";
+	public static final String title = "Meta-Node Plugin " + MetaNodeViewerCytoPlugin.VERSION;
 
 	protected JCheckBox recursiveCheckBox;
 

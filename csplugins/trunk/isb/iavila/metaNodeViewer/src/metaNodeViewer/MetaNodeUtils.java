@@ -29,7 +29,6 @@ import metaNodeViewer.data.MetaNodeAttributesHandler;
 import metaNodeViewer.model.AbstractMetaNodeModeler;
 import metaNodeViewer.model.MetaNodeFactory;
 import metaNodeViewer.model.MetaNodeModelerFactory;
-//import metaNodeViewer.view.VisualStyleFactory;
 import cytoscape.*;
 import cytoscape.view.*;
 import giny.view.*;
@@ -37,7 +36,7 @@ import giny.view.*;
 /**
  * Class with easy to use static methods for metanode operations.<p>
  * Most classes using the MetaNodeViewer plugin <b>programatically</b> will call methods in this class.<br>
- * Advanced uses of the plugin will probably will require more familiarity with the rest of the classes in this package.
+ * Advanced uses of the plugin require more familiarity with the rest of the classes in this package.
  * 
  * @author Iliana Avila-Campillo iavila@systemsbiology.org, iliana.avila@gmail.com
  * @since 2.3
@@ -46,37 +45,37 @@ import giny.view.*;
 public class MetaNodeUtils {
     
     /**
-     * The object that collapses and expands metanodes
+     * The object that collapses and expands metanodes, not recommended to use unless you know what you are doing
      */
 	  public static final AbstractMetaNodeModeler abstractModeler = 
           MetaNodeModelerFactory.getCytoscapeAbstractMetaNodeModeler();
       
 	  
 	/**
-     * For each given subnetwork it creates a CyNode that can be collapsed and expanded
+     * Creates a CyNode that represents the given subnetwork in the given network
      *   
-     * @param network the CyNetwork in which the metanodes will be created
-     * @param subnetworks the CyNetwork objects for which metanodes are to be create
+     * @param network the CyNetwork for which the metanode will be created
+     * @param subnetwork the CyNetwork that the metanode will represent
      * @param attributes_handler the object that transfers subnetwork node and edge attributes to the metanode's attributes
-     * @return an ArrayList of the newly created CyNodes that represent the metanodes, node in position 'i' represents <code>subnetworks[i]</code>
+     * @return a CyNode that represents the given subnetwork, or null if there was an error
 	 */
-	  public static ArrayList createMetaNodes (CyNetwork network, 
-	                                           CyNetwork [] subnetworks,
+	  public static CyNode createMetaNode (CyNetwork network, 
+	                                           CyNetwork subnetwork,
 	                                           MetaNodeAttributesHandler attributes_handler){
 	  	MetaNodeUtils.abstractModeler.setNetworkAttributesHandler(network, attributes_handler);
-	  	return createMetaNodes(network,subnetworks);
+	  	return createMetaNode(network,subnetwork);
 	  }//abstractToMetaNodes
 	  
         /**
-         * For each given subnetwork it creates a CyNode that can be collapsed and expanded
+         * Creates a CyNode that represents the given subnetwork in the given network
          *   
-         * @param network the CyNetwork in which the metanodes will be created
-         * @param subnetworks the CyNetwork objects for which metanodes are to be created
-         * @return an ArrayList of the newly created CyNodes that represent the metanodes, node in position 'i' represents <code>subnetworks[i]</code>
+         * @param network the CyNetwork for which the metanode will be created
+         * @param subnetwork the CyNetwork that the metanode will represent
+         * @return a CyNode that represents the given subnetwork, or null if there was an error
          */
-	  public static ArrayList createMetaNodes (CyNetwork network, CyNetwork[] subnetworks){
+	  public static CyNode createMetaNode (CyNetwork network, CyNetwork subnetwork){
 	    
-	    if(subnetworks == null){
+	    if(subnetwork == null){
 	        //Nothing to visualize
 	        return null;
 	    }
@@ -88,124 +87,111 @@ public class MetaNodeUtils {
 	       MetaNodeUtils.abstractModeler.setRootGraph(rootGraph);
 	    }
 	    
-	    ArrayList metaNodes = new ArrayList();
-	    
-	    //Cytoscape.getDesktop().getGraphViewController().stopListening();
+        //Cytoscape.getDesktop().getGraphViewController().stopListening();
 
-	    for(int i = 0; i < subnetworks.length; i++){
-	      Iterator it = subnetworks[i].nodesIterator();
-          ArrayList childrenArray = new ArrayList(); // the children of the metanode
-	      while(it.hasNext()){
+	    Iterator it = subnetwork.nodesIterator();
+	    ArrayList childrenArray = new ArrayList(); // the children of the metanode
+	    while(it.hasNext()){
 	        CyNode node = (CyNode)it.next();
 	        childrenArray.add(node);
-	      }//for j
-	      MetaNodeAttributesHandler attsHandler = MetaNodeUtils.abstractModeler.getNetworkAttributesHandler(network);
-	      CyNode metaNode = MetaNodeFactory.createMetaNode(network,childrenArray,attsHandler);
-          if(metaNode != null) metaNodes.add(metaNode);
-	    }//for i
-	   
-	    return metaNodes;
+	    }//for j
+	    MetaNodeAttributesHandler attsHandler = MetaNodeUtils.abstractModeler.getNetworkAttributesHandler(network);
+	    CyNode metaNode = MetaNodeFactory.createMetaNode(network,childrenArray,attsHandler);
+        
+	    return metaNode;
 	  }//abstractToMetaNodes
 
 	  /**
-	   * Expands and then permanently removes the given list of metanodes from the network
+	   * Expands and then permanently removes the given metanode from the network
 	   *
 	   * @param network the <code>CyNetwork</code> from which metanodes will be removed
-	   * @param metaNodes an array of CyNodes that represent metanodes to be removed
+	   * @param metaNode the metanode to remove (must have been created through <code>createMetaNode</code> methods in this class)
 	   * @param recursive if there are > 1 levels of metanode hierarchy, whether or not
 	   * to remove all the levels (if it is known that there is only 1 level, setting this
 	   * to false significantly improves performance)
-	   * @return a boolean array of size metaNodes.size() that indicates for each metanode whether it was removed successfully or not
+	   * @return true if the metanode was successfully removed, false otherwise
 	   */
-	  public static boolean[] removeMetaNodes (CyNetwork network, ArrayList metaNodes, boolean recursive){
-	      boolean [] removed = new boolean[metaNodes.size()];
-	      if(network == null || metaNodes == null || metaNodes.size() == 0){
+	  public static boolean removeMetaNode (CyNetwork network, CyNode metaNode, boolean recursive){
+	      boolean removed = false;
+	      if(network == null || metaNode == null){
 	          return removed;
 	      }
 	      
-          boolean temporary = false; // == don't remember these metanodes
+          boolean temporary = false; // == don't remember the metanode
 	    
-          for(int i = 0; i < metaNodes.size(); i++){
-	        CyNode metaNode = (CyNode)metaNodes.get(i);
-            CyNetworkView netView = Cytoscape.getNetworkView(network.getIdentifier());
-            ArrayList childrenNodes = new ArrayList();
-            double xPos = 0;
-            double yPos = 0;
-            if(netView != null){
-                childrenNodes = getNodesInSubnetwork(metaNode,recursive);
-                NodeView metaNodeView = netView.getNodeView(metaNode);
-                xPos = metaNodeView.getXPosition();
-                yPos = metaNodeView.getYPosition();
-            }
-            boolean ok = MetaNodeUtils.abstractModeler.undoModel(network,metaNode,recursive,temporary);
-	        // Also, remove the metanode from the RootGraph
-	        RootGraph rootGraph = network.getRootGraph();
-	        CyNode removedNode = (CyNode)rootGraph.removeNode(metaNode);
-	        removed[i] = ok && (removedNode != null);
-	        // Cytoscape no longer remembers the locations of nodes after they are removed. So, we need to lay them out in some way...
-            if(childrenNodes.size() > 0) layoutNodesInAStack(netView,childrenNodes,xPos,yPos);
-            
-          }//for i
-	    
-        return removed;
+          CyNetworkView netView = Cytoscape.getNetworkView(network.getIdentifier());
+          ArrayList childrenNodes = new ArrayList();
+          double xPos = 0;
+          double yPos = 0;
+          if(netView != null){
+              childrenNodes = getNodesInSubnetwork(metaNode,recursive);
+              NodeView metaNodeView = netView.getNodeView(metaNode);
+              xPos = metaNodeView.getXPosition();
+              yPos = metaNodeView.getYPosition();
+          }
+           
+          boolean ok = MetaNodeUtils.abstractModeler.undoModel(network,metaNode,recursive,temporary);
+          // Also, remove the metanode from the RootGraph
+          RootGraph rootGraph = network.getRootGraph();
+          CyNode removedNode = (CyNode)rootGraph.removeNode(metaNode);
+          removed = ok && (removedNode != null);
+          // Cytoscape no longer remembers the locations of nodes after they are removed. So, we need to lay them out in some way...
+          if(childrenNodes.size() > 0) layoutNodesInAStack(netView,childrenNodes,xPos,yPos);
+          
+          return removed;
 	  }//removeMetaNodes
 	  
 	  /**
-	   * Expands (hides metanodes and restores their subnetworks) a list of metanodes in a CyNetwork.
+	   * Expands the metanode (hides the metanode and restores its subnetwork in the given network), the children nodes
+       * of the metanode are layed out as a stack
 	   * 
-	   * @param cy_network the CyNetwork whithin which the metanodes reside and in which they should be expanded
-	   * @param metaNodes an array of CyNodes that are metanodes and are to be expanded
-	   * @param recursive whether metanodes inside metanodes should be expanded
-	   * @return a boolean array of size metaNodes.size() that indicates for each metanode whether it was expanded successfully or not
+	   * @param cy_network the CyNetwork whithin which the metanode resides and in which it will be expanded
+	   * @param metaNode the CyNode to expand (must have been created through <code>createMetaNode</code> methods in this class)
+	   * @param recursive whether metanodes inside the given metanode should be expanded
+	   * @return true if the metanode was successfully expanded, false otherwise
 	   */
-	  public static boolean[] expandMetaNodes (CyNetwork cy_network, ArrayList metaNodes, boolean recursive){
+	  public static boolean expandMetaNode (CyNetwork network, CyNode metaNode, boolean recursive){
 	  	// Uncollapse each node (if it is not a metanode, nothing happens)
-	      boolean [] expanded = new boolean[metaNodes.size()];
-	      for(int i = 0; i < metaNodes.size(); i++){
-              
-              CyNode mnode = (CyNode)metaNodes.get(i);
-              CyNetworkView netView = Cytoscape.getNetworkView(cy_network.getIdentifier());
-              ArrayList childrenNodes = new ArrayList();
-              double xPos = 0;
-              double yPos = 0;
-              if(netView != null){
-                  childrenNodes = getNodesInSubnetwork(mnode,recursive);
-                  NodeView metaNodeView = netView.getNodeView(mnode);
-                  xPos = metaNodeView.getXPosition();
-                  yPos = metaNodeView.getYPosition();
-              }
-              // This only uncollapses the metanodes, but they are kept in the RootGraph
-              expanded[i] = MetaNodeUtils.abstractModeler.undoModel(cy_network,mnode,recursive,true);
-              // Cytoscape no longer remembers the locations of nodes after they are removed. So, we need to lay them out in some way...
-              if(childrenNodes.size() > 0) layoutNodesInAStack(netView,childrenNodes,xPos,yPos);
-        	}//for i
-	  
-	  	return expanded;
+	      boolean expanded = false;
+	      if(network == null || metaNode == null) return expanded;
+          
+	      CyNetworkView netView = Cytoscape.getNetworkView(network.getIdentifier());
+	      ArrayList childrenNodes = new ArrayList();
+	      double xPos = 0;
+	      double yPos = 0;
+	      if(netView != null){
+	          childrenNodes = getNodesInSubnetwork(metaNode,recursive);
+	          NodeView metaNodeView = netView.getNodeView(metaNode);
+	          xPos = metaNodeView.getXPosition();
+	          yPos = metaNodeView.getYPosition();
+	      }
+	      // This only uncollapses the metanodes, but they are kept in the RootGraph
+	      expanded = MetaNodeUtils.abstractModeler.undoModel(network,metaNode,recursive,true);
+	      // Cytoscape no longer remembers the locations of nodes after they are removed. So, we need to lay them out in some way...
+	      if(childrenNodes.size() > 0) layoutNodesInAStack(netView,childrenNodes,xPos,yPos);
+	      
+          return expanded;
 	  }//uncollapseSelectedNodes
 	  
 	  /**
-       * Hides the subnetworks that the given metanodes represent and replaces them by the metanodes in the given network
+       * Collapses the given metanode (hides its subnetwork and displays the metanode with edges connected to other
+       * nodes in the network)
        * 
-       * @param cy_network the CyNetwork in which the given metanodes should be collapsed in
-       * @param metaNodes an ArrayList of CyNodes that represent the metanodes
-       * @param show_multiple_edges if true, then multiple edges between a metanode and another node are created to
+       * @param cy_network the CyNetwork in which the given metanode should be collapsed in
+       * @param metaNode the metanode to collapse (must have been created through <code>createMetaNode</code> methods in this class)
+       * @param show_multiple_edges if true, then multiple edges between the metanode and anotother node are created to
        * represent the metanode's subnetwork connections to that node, if false, only one edge is created to represent these
        * connections
-       * @return a boolean array of size metaNodes.size() that indicates for each metanode whether it was collapsed successfully or not
+       * @return true if successfully collapsed, false otherwise
 	   */
-	  public static boolean[] collapseMetaNodes (CyNetwork cy_network, ArrayList metaNodes, boolean show_multiple_edges){
-	      MetaNodeUtils.abstractModeler.setMultipleEdges(show_multiple_edges);
+	  public static boolean collapseMetaNode (CyNetwork network, CyNode metaNode, boolean show_multiple_edges){
 	      
-	      Iterator it = metaNodes.iterator();
-	      boolean [] collapsed = new boolean[metaNodes.size()];
-          int i = 0;
-          while(it.hasNext()){
-	          collapsed[i] = MetaNodeUtils.abstractModeler.applyModel(cy_network,(CyNode)it.next());
-	          i++;
-	      }//while
-      
+	      boolean collapsed = false;
+          if(network == null || metaNode == null) return collapsed;
+          MetaNodeUtils.abstractModeler.setMultipleEdges(show_multiple_edges);
+          collapsed = MetaNodeUtils.abstractModeler.applyModel(network,metaNode);
+	    
 	      return collapsed;
-	  
 	  }//collapseNodes
 	  
 	  /**
