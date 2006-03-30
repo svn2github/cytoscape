@@ -35,6 +35,7 @@ import javax.swing.JOptionPane;
 import javax.swing.AbstractAction;
 import java.awt.event.ActionEvent;
 import cytoscape.*;
+import cytoscape.visual.VisualMappingManager;
 
 /**
  * Use metaNodeViewer.actions.ActionFactory to get an instance of this class.
@@ -129,6 +130,10 @@ public class UncollapseSelectedNodesAction extends AbstractAction {
         if(numExpanded == 0)
 			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), 
                                     "None of the selected nodes are meta-nodes.");
+        
+        // This may make the operation slower. It would be nice to have applyAppearances(Collection nodes, Collection edges);
+        VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
+        vizmapper.applyAppearances();
 	}//uncollapseSelectedNodes
 	
 }//class UncollapseSelectedNodesAction

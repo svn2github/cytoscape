@@ -314,7 +314,10 @@ public class AbstractMetaNodeModeler {
 		
 		CyNode restoredNode = (CyNode)cy_network.restoreNode(node);
 		if(restoredNode == null){
-            throw new IllegalStateException("Did not restore node [" + node + "] successfully.");
+            // For now, do this...
+            System.out.println("Did not restore node [" + node + "] successfully.");
+            restoredNode = node;
+            //throw new IllegalStateException("Did not restore node [" + node + "] successfully.");
         }
             
 		// The restored meta-node is now contained in the network, so remember this:

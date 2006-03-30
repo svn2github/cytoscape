@@ -50,7 +50,6 @@ public class MetaNodeUtils {
           MetaNodeModelerFactory.getCytoscapeAbstractMetaNodeModeler();
       
 	  
-	  
 	/**
      * For each given subnetwork it creates a CyNode that can be collapsed and expanded
      *   
