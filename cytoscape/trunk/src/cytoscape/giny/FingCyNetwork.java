@@ -459,7 +459,7 @@ public class FingCyNetwork
 	 * @return a Set of selected edges
 	 */
 	public Set getSelectedEdges (){
-		return this.selectFilter.getSelectedNodes();
+		return this.selectFilter.getSelectedEdges();
 	}
 
 	/**
