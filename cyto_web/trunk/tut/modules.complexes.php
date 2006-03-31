@@ -42,9 +42,10 @@ networks have a modular architecture.  A <I>network module</I> is a
 group of nodes in the network that work together to execute some
 common function.  Once you have identified the nodes in a module, you
 can intuitively reduce the complexity of your network by replacing
-the individual nodes (left) with one large parent
-node (right).  Then, you can focus on the interactions with the parent
-node and not worry about its internal operation. 
+the individual nodes with one large parent
+node, as illustrated in the conceptual diagram below.  
+This will allow you to focus on the interactions with the module,
+and not worry about its internal operation. 
 
 <TABLE BORDER=1 ALIGN=center>
   <TR>
