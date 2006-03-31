@@ -15,9 +15,11 @@ import org.isb.bionet.datasource.synonyms.*;
 import org.isb.iavila.ontology.xmlrpc.*;
 import org.isb.bionet.gui.*;
 import org.isb.bionet.gui.taxonomy.*;
+import org.isb.bionet.BioNetPlugin;
 import org.isb.bionet.CyNetUtils;
 import cytoscape.*;
 import cytoscape.data.CyAttributes;
+import utils.GuiUtils;
 
 /**
  * 
@@ -71,9 +73,11 @@ public class NetworkBuilderWizard {
      */
     public NetworkBuilderWizard (SynonymsClient synonyms_client,
                 InteractionDataClient interactions_client, GOClient go_client){
+        
         this.synonymsClient = synonyms_client;
         this.interactionsClient = interactions_client;
         this.goClient = go_client;
+        
         FINISH_ACTION = new AbstractAction (){
             public void actionPerformed (ActionEvent event){
                 final SwingWorker worker = new SwingWorker(){
@@ -169,7 +173,7 @@ public class NetworkBuilderWizard {
     protected JDialog createWizardDialog (AbstractAction backAction, AbstractAction nextAction){
         
         JDialog dialog = new JDialog(Cytoscape.getDesktop());
-        dialog.setTitle("BioNetwork Builder");
+        dialog.setTitle("BioNetBuilder " + BioNetPlugin.VERSION);
         dialog.setSize(X_SIZE, Y_SIZE);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         
@@ -196,6 +200,22 @@ public class NetworkBuilderWizard {
         panel.setLayout(new FlowLayout(FlowLayout.RIGHT));
         panel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
         
+        JButton aboutButton = new JButton("About");
+        final String aboutText = "<HTML><br><b>Authors: </b>Iliana Avila, David Reiss, Junghwan Park<br>"+
+        "<b>Organization: </b>Institute For Systems Biology<br><b>License: </b>LGPL<br><b>Version: </b>"+
+        BioNetPlugin.VERSION + "<br></HTML>";
+        
+        aboutButton.addActionListener(new AbstractAction(){
+                public void actionPerformed (ActionEvent event){
+                    JDialog currentDialog = (JDialog)dialogs.get(currentStep);
+                    JDialog aboutDialog = GuiUtils.createAboutDialog("BioNetBuilder Information",aboutText,currentDialog);
+                    aboutDialog.pack();
+                    aboutDialog.setLocationRelativeTo(currentDialog);
+                    aboutDialog.setVisible(true);
+                }
+        });
+        
+        
         JButton back = new JButton("< Back");
         if(backAction != null){
             back.addActionListener(backAction);
@@ -219,6 +239,7 @@ public class NetworkBuilderWizard {
             }
         });
         
+        panel.add(aboutButton);
         panel.add(back);
         panel.add(next);
         panel.add(cancel);

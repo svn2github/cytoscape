@@ -11,6 +11,7 @@ import org.isb.bionet.datasource.interactions.*;
 import org.isb.bionet.datasource.synonyms.*;
 import org.isb.bionet.gui.wizard.*;
 import cytoscape.view.*;
+import cytoscape.visual.VisualMappingManager;
 
 /**
  * A class with utility methods that manipulate CyNetworks for this plugin
@@ -85,6 +86,8 @@ public class CyNetUtils {
         BioNetVisualStyleFactory.addBioNetVisualStyleToCytoscape();
         CyNetworkView view = Cytoscape.createNetworkView(net);
         view.setVisualStyle(BioNetVisualStyleFactory.BIONETBUILDER_VS);
+        VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
+        vizmapper.applyAppearances();
        
         return net;
     }//makeNewNetwork
@@ -178,7 +181,9 @@ public class CyNetUtils {
       
         setNodeLabelAndAliases(net,nodeIDs,synClient,labelOps);
         createAttributes(nodeIDs,edgeIDs,synClient,atts);
-        
+        VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
+        vizmapper.applyAppearances();
+       
        
     }//addInteractionsToNetwork
     

@@ -25,6 +25,7 @@ import java.io.IOException;
  */
 public class BioNetPlugin extends CytoscapePlugin {
     
+    public static final String VERSION = "BETA";
     public static final String PROPS_FILE_ARG_SHORT = "-xr";
     public static final String PROPS_FILE_ARG_LONG = "--xml-rpc-props";
     protected InteractionDataClient interactionsClient;

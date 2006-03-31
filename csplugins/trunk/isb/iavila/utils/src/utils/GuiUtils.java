@@ -32,10 +32,85 @@
 package utils;
 
 import javax.swing.*;
+import javax.swing.border.EtchedBorder;
 import javax.swing.table.*;
+import java.awt.*;
+import java.awt.event.*;
 
 
 public class GuiUtils {
+    
+    /**
+     * Creates and returns a JDialog with a white background and an "OK" button that displays
+     * the given text
+     * 
+     * @param title the title of the returned dialog
+     * @param text the text contained in the white background panel
+     * @param owner the owner of this dialog
+     * @return a JDialog
+     */
+    public static JDialog createAboutDialog (String title, String text, Dialog owner){ 
+        final JDialog dialog = new JDialog(owner);
+        dialog.setTitle(title);
+        dialog.getContentPane().setLayout(new BorderLayout());
+        
+        JPanel panel = new JPanel();
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        panel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+        panel.setBackground(Color.WHITE);
+        JLabel label = new JLabel(text);
+        panel.add(label);
+        
+        dialog.getContentPane().add(panel,BorderLayout.CENTER);
+        
+        JPanel okPanel = new JPanel();
+        JButton okB = new JButton("OK");
+        okB.addActionListener(new AbstractAction(){
+           public void actionPerformed (ActionEvent event){
+              dialog.dispose(); 
+           } //event
+        });
+        okPanel.add(okB);
+        dialog.getContentPane().add(okPanel,BorderLayout.SOUTH);
+        return dialog;
+        
+    }
+    
+    /**
+     * Creates and returns a JDialog with a white background and an "OK" button that displays
+     * the given text
+     * 
+     * @param title the title of the returned dialog
+     * @param text the text contained in the white background panel
+     * @param owner the owner of this dialog
+     * @return a JDialog
+     */
+    public static JDialog createAboutDialog (String title, String text, Frame owner){
+        final JDialog dialog = new JDialog(owner);
+        dialog.setTitle(title);
+        dialog.getContentPane().setLayout(new BorderLayout());
+        
+        JPanel panel = new JPanel();
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        panel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+        panel.setBackground(Color.WHITE);
+        JLabel label = new JLabel(text);
+        panel.add(label);
+        
+        dialog.getContentPane().add(panel,BorderLayout.CENTER);
+        
+        JPanel okPanel = new JPanel();
+        JButton okB = new JButton("OK");
+        okB.addActionListener(new AbstractAction(){
+           public void actionPerformed (ActionEvent event){
+              dialog.dispose(); 
+           } //event
+        });
+        okPanel.add(okB);
+        dialog.getContentPane().add(okPanel,BorderLayout.SOUTH);
+        return dialog;
+        
+    }
 	
 	/**
 	 * Creates a JTable with the given column names. The row names are copied to the 1st column of the table,
