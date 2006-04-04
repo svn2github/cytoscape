@@ -48,9 +48,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
+import java.net.JarURLConnection;
 import java.net.URL;
 
 import cytoscape.Cytoscape;
@@ -169,23 +171,37 @@ public abstract class CalculatorCatalogFactory {
 							calculatorCatalog.addMapping("Passthrough Mapper",
 									PassThroughMapping.class);
 
-							String sessionName = (String) e.getNewValue();
-							System.out
-									.println("Restoring Saved Vizmapper from session file: "
-											+ sessionName);
-
-							ZipMultipleFiles zipUtil = new ZipMultipleFiles(
-									sessionName);
-
-							try {
-								vizmapProps.load(zipUtil.readVizmap());
-							} catch (FileNotFoundException e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
-							} catch (IOException e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
+							Object vizmapSource = e.getNewValue();
+							if(vizmapSource.getClass() == URL.class) {
+								JarURLConnection jarConnection;
+								try {
+									jarConnection = (JarURLConnection)((URL) vizmapSource).openConnection();
+									vizmapProps.load((InputStream) jarConnection.getContent());
+								} catch (IOException e2) {
+									// TODO Auto-generated catch block
+									e2.printStackTrace();
+								}
+								
+							} else if(vizmapSource.getClass() == String.class) {
+								try {
+									
+									ZipMultipleFiles zipUtil = new ZipMultipleFiles(
+											(String)vizmapSource);
+									vizmapProps.load(zipUtil.readVizmap());
+									
+								} catch (FileNotFoundException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								} catch (IOException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								}
 							}
+							
+							System.out
+									.println("Restoring Saved Vizmapper from: " + vizmapSource.toString());
+
+							
 							CalculatorIO.loadCalculators(vizmapProps,
 									calculatorCatalog);
 							Cytoscape.getDesktop().getVizMapUI()
@@ -206,22 +222,35 @@ public abstract class CalculatorCatalogFactory {
 							calculatorCatalog.addMapping("Passthrough Mapper",
 									PassThroughMapping.class);
 
-							String userVizmapName = (String) e.getNewValue();
-							System.out
-									.println("Restoring Saved Vizmapper from file: "
-											+ userVizmapName);
-
-							try {
-								File userVizmapFile = new File(userVizmapName);
-								vizmapProps.load(new FileInputStream(
-										userVizmapFile));
-							} catch (FileNotFoundException e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
-							} catch (IOException e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
+							Object vizmapSource = e.getNewValue();
+							if(vizmapSource.getClass() == URL.class) {
+								JarURLConnection jarConnection;
+								try {
+									jarConnection = (JarURLConnection)((URL) vizmapSource).openConnection();
+									vizmapProps.load((InputStream) jarConnection.getContent());
+								} catch (IOException e2) {
+									// TODO Auto-generated catch block
+									e2.printStackTrace();
+								}
+								
+							} else if(vizmapSource.getClass() == String.class) {
+								try {
+									File userVizmapFile = new File((String)vizmapSource);
+									vizmapProps.load(new FileInputStream(
+											userVizmapFile));
+								} catch (FileNotFoundException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								} catch (IOException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								}
 							}
+							
+							System.out
+									.println("Restoring Saved Vizmapper from: " + vizmapSource.toString());
+
+							
 							CalculatorIO.loadCalculators(vizmapProps,
 									calculatorCatalog);
 							Cytoscape.getDesktop().getVizMapUI()
