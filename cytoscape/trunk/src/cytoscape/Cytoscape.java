@@ -187,6 +187,11 @@ public abstract class Cytoscape {
     private static GraphObjAttributes edgeData = new GraphObjAttributes
             (edgeAttributes);
 
+	/**
+	 * Network CyAttributes.
+	 */
+	private static CyAttributes networkAttributes = new CyAttributesImpl();
+
 	protected static ExpressionData expressionData;
 
 	protected static Object pcsO = new Object();
@@ -1262,6 +1267,14 @@ public abstract class Cytoscape {
      */
     public static CyAttributes getEdgeAttributes() {
         return edgeAttributes;
+    }
+
+    /**
+     * Gets Global Network Attributes.
+     * @return CyAttributes Object.
+     */
+    public static CyAttributes getNetworkAttributes() {
+        return networkAttributes;
     }
 
 	public static ExpressionData getExpressionData() {
