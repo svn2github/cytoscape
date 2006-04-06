@@ -67,6 +67,8 @@ public class NetworkBlast {
 	public static double modelTruthDefault = 0.8;
 	public static double expectationDefault = 1e-10;
 	public static double backgroundProbDefault = 1e-10;
+	public static double dupeThresholdDefault = 1.0;
+	public static String outFileDefault = "network_blast_results";
 	public static Level logLevelDefault = Level.WARNING;
 	public static int simulationsDefault = 0;
 	
@@ -79,11 +81,14 @@ public class NetworkBlast {
 	protected double backgroundProb;
 	protected double truthFactor;
 	protected double modelTruth;
+	protected double dupeThreshold;
+	protected int numSimulations;
+
 	protected Random randomNG;
 	protected String compatFile;
 	protected String intGraph1;
 	protected String intGraph2;
-	protected int numSimulations;
+	protected String outFile;
 
 	private static Logger log = Logger.getLogger("networkblast");
 	private static ConsoleHandler logConsole = null;
@@ -105,23 +110,45 @@ public class NetworkBlast {
 		parseCommandLine(args);
 		setUpLogging(logLevel);
 
+
 		try { 
 			log.info("this is a log message");
 
+			System.out.println("# use zero edges: " + useZero);
+			System.out.println("# filter duplicate complex nodes: " + filterDuplicateComplexNodes); 
+			System.out.println("# filter duplicate path nodes: " + filterDuplicatePathNodes); 
+			System.out.println("# expectation: " + expectation); 
+			System.out.println("# background prob: " + backgroundProb);
+			System.out.println("# truth factor: " + truthFactor);
+			System.out.println("# model truth: " + modelTruth);
+			System.out.println("# duplicate threshold: " + dupeThreshold);
+			System.out.println("# num simulations: " + numSimulations);
+			System.out.println("# complex seed size: " + complexMinSeedSize); 
+			System.out.println("# max complex size: " + complexMaxSize);
+			System.out.println("# path size: " + pathSize); 
+
+
 			// create the interaction graphs
-			System.out.println("# read in homology and interaction data");
+			System.out.println("# begin reading homology and interaction data");
 			List<SequenceGraph<String,Double>> inputSpecies = new ArrayList<SequenceGraph<String,Double>>();
 
 			inputSpecies.add( new InteractionGraph(intGraph1) );
-			System.out.println("# read in interaction data for species 1");
+			System.out.println("# read in interaction graph " + inputSpecies.get(0).getId());
 			inputSpecies.add( new InteractionGraph(intGraph2) );
-			System.out.println("# read in interaction data for species 2");
+			System.out.println("# read in interaction graph " + inputSpecies.get(1).getId());
+
+			for ( Graph<String,Double> spec : inputSpecies ) {
+				System.out.println("# num nodes in interaction graph " + spec.getId() + ": " + spec.numberOfNodes() );
+				System.out.println("# num edges in interaction graph " + spec.getId() + ": " + spec.numberOfEdges() );
+			}
 
 			// define the scoring model
 			ScoreModel<String,Double> logScore = new LogLikelihoodScoreModel<String>(truthFactor, modelTruth, backgroundProb);
 			// get the homology data
 			SIFHomologyReader sr = new SIFHomologyReader(compatFile);
 			HomologyGraph homologyGraph = new HomologyGraph(sr, expectation, inputSpecies);
+			System.out.println("# num nodes in homology graph: " + homologyGraph.numberOfNodes() );
+			System.out.println("# num edges in homology graph: " + homologyGraph.numberOfEdges() );
 			// create classes for compat graph 
 			CompatibilityCalculator compatCalc = new AdditiveCompatibilityCalculator(0.01,logScore,useZero);
 
@@ -133,23 +160,23 @@ public class NetworkBlast {
 			NewComplexSearch<String> greedyComplexes = new NewComplexSearch<String>( complexMinSeedSize, complexMaxSize);
 			
 			// initialize filter
-			Filter<String,Double> dupeFilter = new DuplicateThresholdFilter<String,Double>(1.0);
+			Filter<String,Double> dupeFilter = new DuplicateThresholdFilter<String,Double>(dupeThreshold);
 			Filter<String,Double> dupeNodeFilter = new UniqueCompatNodeFilter();
 
 			// initialize the randomization classes
 			GraphRandomizer<String,Double> homologyShuffle = new EdgeWeightShuffle<String,Double>(randomNG);
 			GraphRandomizer<String,Double> edgeShuffle = new ThresholdRandomizer(randomNG,0.2);
 
-			if ( numSimulations > 0 )
-				System.out.println("# beginning " + numSimulations + " simulations");
+			if ( numSimulations > 0 ) 
+				System.out.println("# run 0 is NOT randomized - it is run on the unaltered input data"); 
 			int count = 0;
 
 			do {
-				if ( numSimulations > 0 )
-					System.out.println("# begin simulation " + count);
 
 				System.out.println("# begin creating compatibility graph");
 				CompatibilityGraph compatGraph = new CompatibilityGraph(homologyGraph, inputSpecies, logScore, compatCalc );
+				System.out.println("# num nodes compatibility graph: " + compatGraph.numberOfNodes() );
+				System.out.println("# num edges compatibility graph: " + compatGraph.numberOfEdges() );
 
 				System.out.println("# begin path search");
 				resultPaths = colorCoding.searchGraph(compatGraph, logScore);
@@ -183,7 +210,7 @@ public class NetworkBlast {
 					System.out.println("complex " + i + ": " + resultComplexes.get(i).toString());
 				if (SERIALIZE) {
 					
-					String zname = "network_blast_results";
+					String zname = outFile; 
 					if ( numSimulations > 0 )
 						zname = zname + "_" + count;
 	
@@ -198,19 +225,31 @@ public class NetworkBlast {
 						zipper.add(p, "complex_" + ct++);
 
 					zipper.add(compatGraph,"compat_graph");
+					zipper.add(homologyGraph,"homology_graph");
+
+					ct = 1;
+					for ( Graph<String,Double> spec : inputSpecies )
+						zipper.add( spec, "interaction_graph_" + ct++ );
 
 					zipper.write();
 				}
 
 		
-				if ( numSimulations > 0 ) {
+				if ( numSimulations > 0 && count++ < numSimulations ) {
+					System.out.println("# begin simulation " + count);
 					System.out.println("# randomizing input graphs");
-					for ( Graph<String,Double> spec : inputSpecies )
+					for ( Graph<String,Double> spec : inputSpecies ) {
 						edgeShuffle.randomize( spec );
+						System.out.println("# num nodes in randomized interaction graph " + spec.getId() + ": " + spec.numberOfNodes() );
+						System.out.println("# num edges in randomized interaction graph " + spec.getId() + ": " + spec.numberOfEdges() );
+					}
+
 					homologyShuffle.randomize( homologyGraph );
+					System.out.println("# num nodes in randomized homology graph: " + homologyGraph.numberOfNodes() );
+					System.out.println("# num edges in randomized homology graph: " + homologyGraph.numberOfEdges() );
 				}
 
-			} while ( count++ < numSimulations );
+			} while ( count <= numSimulations );
 
 		} catch (IOException e1) {
 			log.severe("Error reading file: " + e1.getMessage());
@@ -228,7 +267,6 @@ public class NetworkBlast {
 		options.addOption("h", "help", false, "Print this message.");
 		options.addOption("z", "zero_edges", false, "Allow zero edges.");
 		options.addOption("V", "version", false, "Prints the version number and exits.");
-		options.addOption("S", "serialize", SERIALIZE, "Serialize result data (" + SERIALIZE + ").");
 		options.addOption(OptionBuilder
 				.withLongOpt("random_seed")
 				.withDescription( "Seed the random generator (Java default - varies).")
@@ -293,6 +331,23 @@ public class NetworkBlast {
 				.hasArg()
 				.create("s"));
 
+		options.addOption(OptionBuilder
+				.withLongOpt("duplicate_threshold")
+				.withDescription( "Percent duplicate nodes allowed in a result graph.(" + dupeThresholdDefault + ").")
+				.withValueSeparator(' ')
+				.withArgName("dupe threshold")
+				.hasArg()
+				.create("d"));
+
+		options.addOption(OptionBuilder
+				.withLongOpt("serialize")
+				.withDescription( "Serialize result data(" + SERIALIZE + ").")
+				.withValueSeparator(' ')
+				.withArgName("output file")
+				.hasArg()
+				.create("S"));
+
+		// try to parse the cmd line
 		// try to parse the cmd line
 		CommandLineParser parser = new PosixParser();
 		CommandLine line = null;
@@ -317,10 +372,6 @@ public class NetworkBlast {
 			helpAndDie(null);
 		}
 
-		if (line.hasOption("S")) {
-			SERIALIZE = true;
-		}
-
 		if (line.hasOption("z")) {
 			useZero = true;
 		}
@@ -343,6 +394,14 @@ public class NetworkBlast {
 			randomNG = new Random(Long.parseLong(line.getOptionValue("r")));
 		} else {
 			randomNG = new Random();
+		}
+		
+		if (line.hasOption("S")) {
+			outFile = line.getOptionValue("S");
+			SERIALIZE = true;
+		} else {
+			outFile = outFileDefault;
+			SERIALIZE = false;
 		}
 
 		if (line.hasOption("e")) {
@@ -379,6 +438,12 @@ public class NetworkBlast {
 			numSimulations = Integer.parseInt(line.getOptionValue("s")); 
 		} else {
 			numSimulations = simulationsDefault;
+		}
+
+		if (line.hasOption("d")) {
+			dupeThreshold = Double.parseDouble(line.getOptionValue("d")); 
+		} else {
+			dupeThreshold = dupeThresholdDefault;
 		}
 
 		// required unlabeled args
