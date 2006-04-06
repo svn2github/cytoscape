@@ -37,12 +37,7 @@
     <echo message="   clean        -> removes all created jars and "/>
     <echo message="                   class files"/>
     <echo message="   run          -> runs the project jar"/>
-    <echo message="   all-dist     -> creates distribution of all project"/>
-    <echo message="                   files"/>
-    <echo message="   bin-dist     -> creates distribution of binary "/>
-    <echo message="                   project files"/>
-    <echo message="   src-dist     -> creates distribution of src "/>
-    <echo message="                   project files"/>
+    <echo message="   dist         -> creates a distribution of project"/>
     <echo message="   usage        -> (default) displays this screen"/>
     <echo message="----------------------------------------------------------"/>
     <echo message=" See also the build.xml file and README for more help."/>
@@ -412,6 +407,12 @@
              doctitle="${name}" />
     <echo message="Successfully ran docs task!"/>
   </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates src, bin, and all distributions (.tar.gz) file              -->
+  <!-- for this software package.                                          -->
+  <!-- =================================================================== -->
+  <target name="dist" depends="src-dist,all-dist,bin-dist"/>
 
   <!-- =================================================================== -->
   <!-- Creates a distribution (.tar.gz) file for this software package.    -->
