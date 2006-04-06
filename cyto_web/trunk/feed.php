@@ -12,6 +12,7 @@ echo "Cytoscape Announcements:</A></B><P>\n";
 #  Only show the three most recent items.
 $counter = 0;
 foreach ($rss->items as $item ) {
+	$showNewsItem = true;
 	if ($counter < 3) {
 		$name = $item["author_name"];
 		$summary = $item[summary];
@@ -34,13 +35,22 @@ foreach ($rss->items as $item ) {
 		$time_stamp = strtotime("$date");
 		$date_formatted = date("F j, Y", $time_stamp);
 
-		echo "<a href=$url>$title</a></li>.&nbsp;&nbsp;$date_formatted<BR>\n";
-		echo " <UL><LI>$summary2 [cont.]</UL>";
+		# Temporary Hack to Remove Non-Approved Items from the Home Page
+		# Hack created by Ethan Cerami, April 6, 2006
+		if ($title=="Re: Announcing BioNetBuilder BETA" 
+			|| $title =="Douglas Selinger is out of the office.") {
+			$showNewsItem = false;
+		}
 
-		#print_r(array_keys($item));
-		echo "<BR>";
+		if ($showNewsItem == true) {
+			echo "<a href=$url>$title</a></li>.&nbsp;&nbsp;$date_formatted<BR>\n";
+			echo " <UL><LI>$summary2 [cont.]</UL>";
+			echo "<BR>";
+		}
 	}
-	$counter++;
+	if ($showNewsItem == true) {
+		$counter++;
+	}
 }
 echo "<A HREF='http://groups-beta.google.com/group/cytoscape-announce'>";
 echo "View All Announcements</A></B><P>\n";
