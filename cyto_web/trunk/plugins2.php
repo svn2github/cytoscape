@@ -88,13 +88,15 @@ The networks can be viewed and manipulated in Cytoscape.
 				Verified to work in 2.1, 2.2.
 				</td>
 				<td width="20%" valign="top">
-					[<a href="http://www.labs.agilent.com/research/mtl/projects/sysbio/sysinformatics/litsearch.html">Agilent Literature Search Web Site</a>]
+<!-- 				[<a href="http://www.labs.agilent.com/research/mtl/projects/sysbio/sysinformatics/litsearch.html">Agilent Literature Search Web Site</a>]
 					<br>
-					[<a href="http://www.agilent.com/labs/research/mtl/projects/sysbio/sysinformatics/downloadv2.html">Download Agilent Literature Search version 2.0</a>]
+				[<a href="http://www.agilent.com/labs/research/mtl/projects/sysbio/sysinformatics/downloadv2.html">Download Agilent Literature Search version 2.0</a>]
 					<br>
 					[<a href="http://www.agilent.com/labs/research/mtl/projects/sysbio/sysinformatics/downloadv1.html">Download Agilent Literature Search version 1.0</a>]
+-->					<br>
 					<br>
-					<br>
+<!--				[<a href="http://www.cytoscape.org/download_agilent_literature_search_v2_0.htm">Download Agilent Literature Search version 2.0</a>]
+	-->				<br>					<br>
 					<br><br>
 					<br>
 					<br>
