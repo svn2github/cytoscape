@@ -70,7 +70,10 @@ public class MetaNodeUtils {
 	  
 	/**
      * Creates a metanode that represents the given child-network in the given network<p>
-     * This method does not collapse the created metanode. It only internally stores the given information in data-structures.
+     * This method does not collapse the created metanode. It only internally stores the given information in data-structures.<br>
+     * Note that all connecting edges between nodes in the child-network that are not in the child-network, but are in the <code>network</code>
+     * paremeter, are also considered child edges of the metanode and addded to its child-network automatically. This means you don't have to find connecting
+     * edges between the children nodes in <code>network</code> to create the metanode.
      * 
      * @param network the CyNetwork in which the metanode will represent the child-network
      * @param child_network the CyNetwork that the metanode will represent
@@ -86,7 +89,10 @@ public class MetaNodeUtils {
 	  
       /**
        * Creates a metanode that represents the given child-network in the given network<p>
-       * This method does not collapse the created metanode. It only internally stores the given information in data-structures.
+       * This method does not collapse the created metanode. It only internally stores the given information in data-structures.<br>
+       * Note that all connecting edges between nodes in the child-network that are not in the child-network, but are in the <code>network</code>
+       * paremeter, are also considered child edges of the metanode and addded to its child-network automatically. This means you don't have to find connecting
+       * edges between the children nodes in <code>network</code> to create the metanode.
        * 
        * @param network the CyNetwork in which the metanode will represent the child-network
        * @param child_network the CyNetwork that the metanode will represent
@@ -123,6 +129,11 @@ public class MetaNodeUtils {
       
       /**
        * Sets a network as a child-network for an existing CyNode that after this call becomes a metanode
+       * <p>
+       * If the CyNode is already a metanode, it will be first removed from the network<br>
+       * Note that all connecting edges between nodes in the child-network that are not in the child-network, but are in the <code>network</code>
+       * paremeter, are also considered child edges of the metanode and addded to its child-network automatically. This means you don't have to find connecting
+       * edges between the children nodes in <code>network</code> to create the metanode.
        * 
        * @param node the CyNode for which to set the child-network
        * @param network the CyNetwork in which the metanode will represent the child-network
@@ -144,13 +155,28 @@ public class MetaNodeUtils {
             CyNode child = (CyNode)it.next();
             childrenArray.add(child);
           }//for j
+          
+          if(isMetaNode(node)) removeMetaNode(network,node,false);
           MetaNodeFactory.convertToMetaNode(node,network,childrenArray);
+      }
+      
+      /**
+       * Returns the child-network of the given metanode, or null if the node is not a metanode
+       * 
+       * @param meta_node the metaNode for which to return the child-network
+       * @return a CyNetwork that is the child-network of the CyNode, null if the CyNode is not a meta-noded
+       */
+      public static CyNetwork getChildNetwork (CyNode meta_node){
+          CyNetwork childNet = (CyNetwork)meta_node.getGraphPerspective();
+          if(childNet.getNodeCount() == 0) return null;
+          return childNet;
       }
 
 	  /**
 	   * Expands and then permanently removes the given metanode from the network
        * <p>
-       * Call this method if you are sure that the given metanode will not be collapsed in the future
+       * Call this method if you are sure that the given metanode will not be collapsed in the future<br>
+       * Note that this method DOES NOT remove the metanode's child-network from the given <code>network</code>.
 	   *
 	   * @param network the <code>CyNetwork</code> from which the metanode will be removed
 	   * @param meta_node the metanode to remove (must have been created through methods in this class)
