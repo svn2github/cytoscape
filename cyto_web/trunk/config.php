@@ -74,17 +74,17 @@ $cyto2_2_install_anywhere = "http://chianti.ucsd.edu/Cyto-2_2/install.htm";
 ##################################################
 # Log file for Agilent Literature Search
 ##################################################
-$litsearch_log = "/usr/local/www/virtual3/66/175/24/126/data/litsearch_log.txt";
-
 
 #  Production Settings
 #  Do not Modify
 if ($in_production == true) {
 	#  The Real Cytoscape Data File
 	$cyto_data = "/usr/local/www/virtual3/66/175/24/126/data/cyto_data.txt";
+	$litsearch_log = "/usr/local/www/virtual3/66/175/24/126/data/litsearch_log.txt";
 } else {
 	#  A Test Data File (Used for local testing purposes only)
 	$cyto_data = "data/cyto_data.txt";
+	$litsearch_log = "data/litsearch_log.txt";
 }
 ?>
 
