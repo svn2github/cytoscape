@@ -89,8 +89,7 @@
                 with <a href="http://www.cytoscape.org/index.php">Cytoscape</a> v2.2, which provides a 
                 means of generating an overview network view of gene/protein associations.</p>
                 <p class="bodycopy">Agilent Literature Search Software plugin is available under the 
-                terms of the <b>Agilent License Agreement below</b> . T
-                o obtain Agilent Literature Search Software plugin, you must: </p>
+                terms of the <b>Agilent License Agreement below</b> . To obtain Agilent Literature Search Software plugin, you must: </p>
 
 		</p>
 		<ol>
@@ -188,7 +187,18 @@ representative of each party.
 								<br>
 							</td>
 						</tr>
-						<tr>
+<tr>
+							<td>
+								<br>
+							</td>
+							<td>
+								<br>
+								We enjoy keeping in touch with our users.
+								<br>May we add you to our mailing list?
+								<input type="checkbox" name="contact">
+							</td>
+						</tr>		
+												<tr>
 							<td>
 								<br>
 							</td>
@@ -212,8 +222,6 @@ representative of each party.
 <p>
 </p>
 <? } ?>
-</div>
-<? include "footer.php"; ?>
 
 </body>
 </html>
