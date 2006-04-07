@@ -75,6 +75,17 @@ public class MetaNodeFactory {
   }//createMetaNode
   
   /**
+   * Sets the children nodes of a given node to convert it into a metanode
+   * 
+   * @param node the node which will become a metanode
+   * @param network the network in which the metanode will reside
+   * @param children the childrent CyNodes
+   */
+  public static void convertToMetaNode (CyNode node, CyNetwork network, List children){
+      MetaNodeFactory.gpMetaNodeFactory.makeMetaNode(network,node,children);
+  }
+  
+  /**
    * Sets whether or not a default name for newly created meta-nodes should be given
    * and added to the node attributes.
    */

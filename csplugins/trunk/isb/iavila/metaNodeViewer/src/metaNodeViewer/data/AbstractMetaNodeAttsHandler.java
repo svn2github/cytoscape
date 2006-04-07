@@ -133,7 +133,7 @@ public class AbstractMetaNodeAttsHandler extends SimpleMetaNodeAttributesHandler
    * @param children an array of CyNodes that are the children nodes of the meta-node
    * @return true if all went well, false if there was an error
    */
-  public boolean setNodeAttributes (CyNetwork cy_network, CyNode node,ArrayList children){
+  public boolean setNodeAttributes (CyNetwork cy_network, CyNode node, ArrayList children){
     
     if(children == null || cy_network == null){
       return false;

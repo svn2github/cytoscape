@@ -23,7 +23,6 @@
  **/
 package metaNodeViewer.view;
 
-import java.util.Map;
 import java.util.Properties;
 import cytoscape.CyNetwork;
 import cytoscape.visual.calculators.GenericNodeSizeCalculator;
@@ -31,6 +30,7 @@ import cytoscape.visual.mappings.ObjectMapping;
 import giny.model.Node;
 import cytoscape.*;
 import cytoscape.data.*;
+
 /**
  * A node size calculator for meta-nodes used for the visual mapper and so that the size of metanodes can
  * be proportional to their number of children nodes.
@@ -64,8 +64,11 @@ public class SpecificNodeSizeCalculator extends GenericNodeSizeCalculator {
     //String canonicalName = Cytoscape.getNodeAttributes().getStringAttribute(node.getIdentifier(),Semantics.CANONICAL_NAME);
     //Map attrBundle = network.getNodeAttributes().getAttributes(canonicalName);
       CyAttributes nodeAtts = Cytoscape.getNodeAttributes();
-      if(specialAttrName == null || !nodeAtts.hasAttribute(node.getIdentifier(),specialAttrName))
+      boolean hasAtt = nodeAtts.hasAttribute(node.getIdentifier(),specialAttrName);
+      System.out.println("nodeAtts.hasAttribute("+node.getIdentifier()+","+specialAttrName+") = " + hasAtt);
+      if(specialAttrName == null || !hasAtt){
           return super.calculateNodeSize(node,network);
+      }
       double d = ( (Double)nodeAtts.getDoubleAttribute(node.getIdentifier(),specialAttrName) ).doubleValue();
       return d;
   }//calculateNodeSize

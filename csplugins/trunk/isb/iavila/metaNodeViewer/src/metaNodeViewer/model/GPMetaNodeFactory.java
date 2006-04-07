@@ -31,6 +31,7 @@ package metaNodeViewer.model;
 import metaNodeViewer.data.*;
 import giny.model.*;
 import cytoscape.*;
+
 import java.util.*;
 
 /**
@@ -206,6 +207,51 @@ public class GPMetaNodeFactory {
 
 		return metaNode;
 	}// createMetaNode
+    
+    /**
+     * 
+     */
+    public void makeMetaNode (CyNetwork cy_net, CyNode node, List children ){
+        if (children == null || cy_net == null
+                || children.size() == 0) {
+            if (DEBUG)
+                System.err
+                        .println("GPMetaNodeFactory.createMetaNode(CyNetwork="
+                                + cy_net + ", children="
+                                + children
+                                + ") : wrong input, returning 0");
+            
+        }// check args
+
+        //int [] childrenNodeIndices = new int[children.size()];
+        //for(int i = 0; i < children.size(); i++) childrenNodeIndices[i] = ( (CyNode)children.get(i) ).getRootGraphIndex();
+        
+        // Get the RootGraph indices of the edges that connect to the children nodes
+        //RootGraph rootGraph = cy_net.getRootGraph();
+        //int[] edgeIndices = cy_net
+         //       .getConnectingEdgeIndicesArray(childrenNodeIndices);
+        List edges = cy_net.getConnectingEdges(children);
+        //ArrayList edges = new ArrayList();
+        //if (edgeIndices != null) {
+         //   for (int i = 0; i < edgeIndices.length; i++) {
+         //       Edge edge = rootGraph.getEdge(edgeIndices[i]);
+         //       edges.add(edge);
+         //   }// for i
+        //}// if edgeIndices != null
+        
+        // Create a network and set it for the node
+        CyNetwork childnet = Cytoscape.getRootGraph().createNetwork(children,edges);
+        node.setGraphPerspective(childnet);
+        
+        // Remember that this RootGraph node belongs to cyNetwork
+        ArrayList rootNodes = (ArrayList) cy_net.getClientData(MetaNodeFactory.METANODES_IN_NETWORK);
+        if (rootNodes == null) {
+            rootNodes = new ArrayList();
+            cy_net.putClientData(MetaNodeFactory.METANODES_IN_NETWORK,rootNodes);
+        }
+        rootNodes.add(node);
+        
+    }
 
 	/**
 	 * Creates a new name of the form MetaNode_<root_node_index> and adds

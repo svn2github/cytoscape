@@ -94,7 +94,7 @@ public class MNcollapserDialog extends JFrame {
 	 */
 	public void setMultipleEdges(boolean multiple_edges) {
 		if (this.multipleEdgesCheckBox == null) {
-			this.multipleEdgesCheckBox = new JCheckBox("Draw Multiple Edges");
+			this.multipleEdgesCheckBox = new JCheckBox("Create Multiple Edges");
 		}
 		this.multipleEdgesCheckBox.setSelected(multiple_edges);
 	}// setMultipleEdges
@@ -141,7 +141,7 @@ public class MNcollapserDialog extends JFrame {
 				.setToolTipText("Meta-nodes can have meta-nodes as children.");
 
 		if (this.multipleEdgesCheckBox == null) {
-			this.multipleEdgesCheckBox = new JCheckBox("Draw Multiple Edges");
+			this.multipleEdgesCheckBox = new JCheckBox("Create Multiple Edges");
 		}
 		this.multipleEdgesCheckBox.setSelected(true);
 		this.multipleEdgesCheckBox

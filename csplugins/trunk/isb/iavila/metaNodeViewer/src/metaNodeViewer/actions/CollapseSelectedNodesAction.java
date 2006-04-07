@@ -167,7 +167,13 @@ public class CollapseSelectedNodesAction extends AbstractAction {
 		
       
         if(collapse_existent_parents){
-            ArrayList parentMetanodes = MetaNodeUtils.findContainingMetaNodes(cyNetwork,selectedNodes,collapse_recursively);
+            List parentMetanodes = new ArrayList();
+            it = selectedNodes.iterator();
+            if(collapse_recursively){
+                while(it.hasNext()) parentMetanodes.addAll(MetaNodeUtils.getTopLevelParents(cyNetwork,(CyNode)it.next()));
+            }else{
+                while(it.hasNext()) parentMetanodes.addAll(MetaNodeUtils.getParents(cyNetwork,(CyNode)it.next()));
+            }
             if(parentMetanodes.size() == 0){ 
                 JOptionPane.showMessageDialog(Cytoscape.getDesktop(),"The selected nodes do not have parent meta-nodes.");
                 return;
