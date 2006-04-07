@@ -32,12 +32,6 @@
 	$file = $_REQUEST["file"];
 	if ($file == "litsearch_v2") {
 		$title = "Download Agilent Literature Search Version 2.0";
-	} else if ($file == "cyto2_1") {
-		$title = "Download Cytoscape 2.1";
-	} else if ($file == "cyto2") {
-		$title = "Download Cytoscape 2.0";
-	} else if ($file == "cyto1") {
-		$title = "Download Cytoscape 1.1";
 	}
 	if (isset($submit) && $error_flag == false) {
 		$title = "Thank you!";
@@ -131,7 +125,7 @@ Entire Agreement. This Agreement constitutes the entire agreement between you an
 representative of each party. 
 				</textarea>
 			</form>
-			<form action="download.php" method="POST">
+			<form action="download_agilent_literature_search_v2.php" method="POST">
 				<input type="hidden" name="file" value="<?= $file ?>">
 				<br>
 				<table border="0">
