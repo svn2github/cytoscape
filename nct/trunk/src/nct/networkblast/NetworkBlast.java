@@ -237,8 +237,8 @@ public class NetworkBlast {
 					zipper.write();
 				}
 
-		
-				if ( numSimulations > 0 && count++ < numSimulations ) {
+				count++;	
+				if ( numSimulations > 0 && count < numSimulations ) {
 					System.out.println("# begin simulation " + count);
 					System.out.println("# randomizing input graphs");
 					for ( Graph<String,Double> spec : inputSpecies ) {
