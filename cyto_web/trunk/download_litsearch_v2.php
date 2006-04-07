@@ -1,15 +1,8 @@
 <div id="indent">
 	<blockquote>
-                <p>Agilent Literature Search Software is a meta-search tool for automatically querying multiple text-based search engines (both public and proprietary) in order to aid biologists faced with the daunting task of manually searching and extracting associations among genes/proteins of interest. </p>
+<p> You have successfully registered to download Agilent Literature Search version 2.0 <p>
                 <p class="bodycopy"></p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
+ 
                 <center>
                   <font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular" size="4"><b>
                   <hr>
@@ -130,10 +123,9 @@
                         <span class="bodycopy">
                         <!-- Cases (possible installs) (1): Linux sans VM alone; (2) Linux with VM\; (3) Linux both with and without VM (is never the case) -->
                         </span>
-                        <li><span class="bodycopy">You need to install a Java 1.1.8 (or later) virtual machine. You can download one from <a href="http://www.agilent.com/home/leaving.shtml?http://www.ZeroG.com/redirect/redirectJava.htm" target="_blank">Sun's Java web site</a> or contact your OS manufacturer. </span>
+                        <li><span class="bodycopy">You need to install a Java 1.4.2 (or later) virtual machine. You can download one from <a href="http://www.agilent.com/home/leaving.shtml?http://www.ZeroG.com/redirect/redirectJava.htm" target="_blank">Sun's Java web site</a> or contact your OS manufacturer. </span>
                                         </ul>
                       <p><a href="#">top</a> </p>
                     </ul>
                 </div>
                 <hr>
-?>  
