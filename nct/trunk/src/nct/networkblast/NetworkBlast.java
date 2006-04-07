@@ -142,14 +142,14 @@ public class NetworkBlast {
 				System.out.println("# num edges in interaction graph " + spec.getId() + ": " + spec.numberOfEdges() );
 			}
 
-			// define the scoring model
-			ScoreModel<String,Double> logScore = new LogLikelihoodScoreModel<String>(truthFactor, modelTruth, backgroundProb);
+
 			// get the homology data
 			SIFHomologyReader sr = new SIFHomologyReader(compatFile);
 			HomologyGraph homologyGraph = new HomologyGraph(sr, expectation, inputSpecies);
 			System.out.println("# num nodes in homology graph: " + homologyGraph.numberOfNodes() );
 			System.out.println("# num edges in homology graph: " + homologyGraph.numberOfEdges() );
 			// create classes for compat graph 
+			ScoreModel<String,Double> logScore = new LogLikelihoodScoreModel<String>(truthFactor, modelTruth, backgroundProb);
 			CompatibilityCalculator compatCalc = new AdditiveCompatibilityCalculator(0.01,logScore,useZero);
 
 			// initialize the search classes
@@ -167,6 +167,9 @@ public class NetworkBlast {
 			GraphRandomizer<String,Double> homologyShuffle = new EdgeWeightShuffle<String,Double>(randomNG);
 			GraphRandomizer<String,Double> edgeShuffle = new ThresholdRandomizer(randomNG,0.2);
 
+			// define the scoring model for the search algorithms
+			ScoreModel<String,Double> edgeScore = new SimpleEdgeScoreModel<String>();
+
 			if ( numSimulations > 0 ) 
 				System.out.println("# run 0 is NOT randomized - it is run on the unaltered input data"); 
 			int count = 0;
@@ -174,16 +177,16 @@ public class NetworkBlast {
 			do {
 
 				System.out.println("# begin creating compatibility graph");
-				CompatibilityGraph compatGraph = new CompatibilityGraph(homologyGraph, inputSpecies, logScore, compatCalc );
+				CompatibilityGraph compatGraph = new CompatibilityGraph(homologyGraph, inputSpecies, compatCalc );
 				System.out.println("# num nodes compatibility graph: " + compatGraph.numberOfNodes() );
 				System.out.println("# num edges compatibility graph: " + compatGraph.numberOfEdges() );
 
 				System.out.println("# begin path search");
-				resultPaths = colorCoding.searchGraph(compatGraph, logScore);
+				resultPaths = colorCoding.searchGraph(compatGraph, edgeScore);
 
 				System.out.println("# begin complexes search");
 				greedyComplexes.setSeeds( resultPaths );
-				resultComplexes = greedyComplexes.searchGraph(compatGraph, logScore);
+				resultComplexes = greedyComplexes.searchGraph(compatGraph, edgeScore);
 
 				System.out.println("# found " + resultPaths.size() + " unfiltered paths");
 				System.out.println("# found " + resultComplexes.size() + " unfiltered complexes");

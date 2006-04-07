@@ -40,61 +40,52 @@ import nct.networkblast.NetworkBlast;
 import nct.service.homology.sif.*;
 
 public class ZIPSIFWriterTest extends TestCase {
-    SearchGraph<String,Double> sg;
-    InteractionGraph h, i;
-    CompatibilityGraph g;
-    ScoreModel<String,Double> s;
-    ZIPSIFWriter<String,Double> f;
-    protected void setUp() {
-        NetworkBlast.setUpLogging(Level.WARNING);
-	sg = new ColorCodingPathSearch<String>(4);
-	try {	    
-	    h = new InteractionGraph("examples/junit.inputA.sif");
-	    i = new InteractionGraph("examples/junit.inputB.sif");
-	    s = new LogLikelihoodScoreModel<String>(2.5, .8, 1e-10);
-            List<SequenceGraph<String,Double>> inputSpecies = new ArrayList<SequenceGraph<String,Double>>();
-            inputSpecies.add(i);
-            inputSpecies.add(h);
-            SIFHomologyReader sr = new SIFHomologyReader("examples/junit.compat.sif");
-            HomologyGraph homologyGraph = new HomologyGraph(sr,1e-5,inputSpecies);
-	    CompatibilityCalculator compatCalc = new AdditiveCompatibilityCalculator(0.01,s,true);
-            g = new CompatibilityGraph(homologyGraph, inputSpecies, s, compatCalc );
-
-	} catch (IOException e) {
-	    e.printStackTrace();
+	protected void setUp() {
+		NetworkBlast.setUpLogging(Level.WARNING);
 	}
-    }
 
-    public void testserializeList() {
-	try {
-	    assertTrue("expect compat graph not null", g != null);
-	    assertTrue("expect interaction graph not null", h != null);
-	    assertTrue("expect interaction graph not null", i != null);
-	    assertTrue("expect scoremodel not null", s != null);
-	    
-	    Graph<String,Double> p = new BasicGraph<String,Double>();       
 
-	    // test a non-empty zip file
-	    String nonEmpty = "/tmp/not-empty-out";
-	    String nonEmptyZ = nonEmpty + ".zip"; 
-	    f = new ZIPSIFWriter<String,Double>(nonEmpty);	
-	    int ct = 0;
-	    List<Graph<String,Double>> sols = sg.searchGraph(g, s);
-	    for (Graph<String,Double> sol : sols) 
-	    	f.add(sol,"sol_" + ct++);
-	    f.write();
-	    File nef = new File(nonEmptyZ);
-	    assertTrue(nef.exists());
-	    assertTrue(nef.length() > 0);
-	    nef.delete();
 
-	} catch (IOException e1) {
-	    System.out.println(e1.getMessage());
-	    e1.printStackTrace();
-	    assertTrue("caught exception: " + e1.getMessage(), 1==0);
+	public void testWrite() {
+		try {
+			Graph<String,Double> g1 = new BasicGraph<String,Double>();
+			g1.addNode("a");
+			g1.addNode("b");
+			g1.addNode("c");
+			g1.addEdge("a","b",0.1);
+			g1.addEdge("c","b",0.2);
+			g1.addEdge("c","a",0.3);
+
+			Graph<String,Double> g2 = new BasicGraph<String,Double>();
+			g2.addNode("a");
+			g2.addNode("b");
+			g2.addNode("c");
+			g2.addEdge("a","b",0.1);
+			g2.addEdge("c","b",0.2);
+			g2.addEdge("c","a",0.3);
+
+			assertNotNull("expect compat graph not null", g1 );
+			assertNotNull("expect compat graph not null", g2 );
+			
+			// test a non-empty zip file
+			String nonEmpty = "/tmp/not-empty-out";
+			String nonEmptyZ = nonEmpty + ".zip"; 
+			ZIPSIFWriter<String,Double> zipWriter = new ZIPSIFWriter<String,Double>(nonEmpty);		
+			zipWriter.add(g1,"g1");
+			zipWriter.add(g2,"g2");
+			zipWriter.write();
+			File nef = new File(nonEmptyZ);
+			assertTrue(nef.exists());
+			assertTrue(nef.length() > 0);
+			nef.delete();
+
+		} catch (IOException e1) {
+			System.out.println(e1.getMessage());
+			e1.printStackTrace();
+			fail("caught exception: " + e1.getMessage());
+		}
 	}
-    }
 
-    public static Test suite() { return new TestSuite( ZIPSIFWriterTest.class ); }
+	public static Test suite() { return new TestSuite( ZIPSIFWriterTest.class ); }
 
 }

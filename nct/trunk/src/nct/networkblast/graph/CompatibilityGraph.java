@@ -29,7 +29,6 @@ import java.lang.*;
 import java.util.*;
 import java.util.logging.Logger;
 
-import nct.networkblast.score.ScoreModel;
 import nct.networkblast.graph.compatibility.CompatibilityCalculator;
 import nct.graph.Graph;
 import nct.graph.DistanceGraph;
@@ -48,7 +47,6 @@ public class CompatibilityGraph extends BasicGraph<String,Double> {
 	protected Map<String,Map<String,String>> edgeDescMap; 
 	protected List<? extends DistanceGraph<String,Double>> interactionGraphs;
 	protected KPartiteGraph<String,Double,? extends DistanceGraph<String,Double>> homologyGraph;
-	protected ScoreModel<String,Double> scoreModel;
 	protected CompatibilityCalculator compatCalc;
 
 	private static Logger log = Logger.getLogger("networkblast");
@@ -58,13 +56,11 @@ public class CompatibilityGraph extends BasicGraph<String,Double> {
 	 * @param homologyGraph A k-partite graph where edges represent homology relations between
 	 * proteins and partitions represent species/organisms.
 	 * @param interactionGraphs 
-	 * @param scoreModel The ScoreModel used to score an edge in the graph. 
 	 * @param compatCalc The CompatibilityCalculator used to determine whether two possible compatibility 
 	 * nodes should be added to the compatibility graph and if so, adds the nodes and edge.
 	 */
 	public CompatibilityGraph(KPartiteGraph<String,Double,? extends DistanceGraph<String,Double>> homologyGraph, 
 				  List<? extends DistanceGraph<String,Double>> interactionGraphs, 
-				  ScoreModel<String,Double> scoreModel,
 				  CompatibilityCalculator compatCalc) {
 		super();
 
@@ -75,7 +71,6 @@ public class CompatibilityGraph extends BasicGraph<String,Double> {
 
 		this.homologyGraph = homologyGraph;
 		this.interactionGraphs = interactionGraphs;
-		this.scoreModel = scoreModel;
 		this.compatCalc = compatCalc;
 
 		edgeDescMap = new HashMap<String,Map<String,String>>(); 

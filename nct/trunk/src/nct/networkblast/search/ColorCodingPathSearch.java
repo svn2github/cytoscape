@@ -262,7 +262,7 @@ public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>
 						//System.out.println("neigh " + neighborColor);
 						
 						if ( (neighborColor & prevCombo) == neighborColor ) {
-							double score = graph.getEdgeWeight(node,neighbor) + W[nodeIndex(neighbor)][prevCombo];	
+							double score = scoreObj.scoreEdge(node,neighbor,graph) + W[nodeIndex(neighbor)][prevCombo];	
 							int nodeInd = nodeIndex(node);
 							//System.out.println("score " + score);
 
@@ -287,7 +287,7 @@ public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>
 						NodeType next = path.get(nodeInd).get(color);
 						sg.addNode(node);
 						sg.addNode(next);
-						sg.addEdge(node,next,graph.getEdgeWeight(node,next));
+						sg.addEdge(node,next,scoreObj.scoreEdge(node,next,graph));
 						sg.setEdgeDescription(node,next,graph.getEdgeDescription(node,next));
 						color -= getNodeColor(node);
 						node = next;

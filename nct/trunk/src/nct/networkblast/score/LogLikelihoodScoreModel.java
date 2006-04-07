@@ -34,7 +34,10 @@ import nct.graph.Edge;
 /**
  * This class implements the log likelihood edge scoring scheme described in
  * the supplemental to Sharan, et al., 2005, Conserved patterns of protein
- * interaction in multiple species, PNAS, 102(6).
+ * interaction in multiple species, PNAS, 102(6). As well as:
+ * Sharan, et al., "Identification of Protein Complexes by Comparative Analysis 
+ * of Yeast and Bacterial Protein Interaction Data", JOURNAL OF COMPUTATIONAL 
+ * BIOLOGY, Volume 12, Number 6, 2005.
  */
 public class LogLikelihoodScoreModel<NodeType extends Comparable<? super NodeType>> implements ScoreModel<NodeType,Double> {
 
@@ -185,18 +188,23 @@ public class LogLikelihoodScoreModel<NodeType extends Comparable<? super NodeTyp
     	GraphProbs probs = graphMap.get(graph);
 	int numOfNodes = graph.numberOfNodes();
 
-	// formula from paper
+	// formula from paper 
+
+	//
+	// proteinComplexModel = Mc
+	// nullModel = Mn
+	// 
 	double weight = graph.getEdgeWeight(srcNode, destNode);
 	double exDegSrcNode = calcExpectedNodeDegree(srcNode,graph); 
 	double exDegDestNode = calcExpectedNodeDegree(destNode,graph); 
 	double nullTruth = 1.0 / (1 + (2 * (Math.round(probs.exNumInt - exDegSrcNode - exDegDestNode + 1)) / (exDegSrcNode * exDegDestNode))); 
 
-	double complexModel = modelTruth * weight * (1 - probs.pTrue) + (1 - modelTruth) * (1 - weight) * probs.pTrue;
+	double proteinComplexModel = modelTruth * weight * (1 - probs.pTrue) + (1 - modelTruth) * (1 - weight) * probs.pTrue;
 	double nullModel = nullTruth * weight * (1 - probs.pTrue) + (1 - nullTruth) * (1 - weight) * probs.pTrue;
 
-	// On the off chance that complexModel and nullModel are both negative, 
-	// this method still works, while Math.log(complexModel) - Math.log(nullModel) doesn't.
-	double ret =  Math.log(complexModel/nullModel); 
+	// On the off chance that proteinComplexModel and nullModel are both negative, 
+	// this method still works, while Math.log(proteinComplexModel) - Math.log(nullModel) doesn't.
+	double ret =  Math.log(proteinComplexModel/nullModel); 
 
 	// If we don't do this check, then log.fine will actually run every time
 	// even if the level is > fine.  The problem is that all of the strings
@@ -210,7 +218,7 @@ public class LogLikelihoodScoreModel<NodeType extends Comparable<? super NodeTyp
         	log.info("degDst " + exDegDestNode);
 		log.info("weight " + weight); 
 		log.info("modelTruth " + modelTruth); 
-		log.info("complexModel " + complexModel); 
+		log.info("proteinComplexModel " + proteinComplexModel); 
 		log.info("nullTruth " + nullTruth); 
 		log.info("nullModel " + nullModel); 
 		log.info("return " + ret);
