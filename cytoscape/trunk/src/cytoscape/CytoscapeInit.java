@@ -490,11 +490,7 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 				for(int j = 0; j < fileList.length; j++) {
 					if( !fileList[j].endsWith(".jar") ) 
 						continue;
-					File jarFile = new File(f.getName() + System.getProperty("file.separator") + fileList[j]);
-					if ( jarFile != null ) 
-						pluginURLs.add( jarURL(jarFile.getAbsolutePath()) );
-					else
-						System.out.println("plugin: " + plugin + " NOT added");
+					pluginURLs.add( jarURL(f.getAbsolutePath() + System.getProperty("file.separator") + fileList[j]));
 				}
 			
 			// Assume the file is a manifest (i.e. list of jar names)
@@ -553,7 +549,7 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 		// assignable
 		// from CytoscapePlugin
 		for (int i = 0; i < urls.length; ++i) {
-
+			//System.out.println("url: '" + urls[i] + "'");
 			try {
 				JarURLConnection jc = (JarURLConnection) urls[i].openConnection();
 				JarFile jar = jc.getJarFile();
