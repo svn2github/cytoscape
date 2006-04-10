@@ -181,7 +181,7 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 		BioDataServer bds = Cytoscape.loadBioDataServer(properties.getProperty("bioDataServer"));
 
 		// Load all requested networks
-		boolean canonicalize = Boolean.parseBoolean(properties.getProperty("canonicalizeNames"));
+		boolean canonicalize = Boolean.getBoolean(properties.getProperty("canonicalizeNames"));
 		for (Iterator i = initParams.getGraphFiles().iterator(); i.hasNext();) {
 			String net = (String) i.next();
 			System.out.println("Load: " + net);
@@ -302,7 +302,7 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 	 * @deprecated Will be removed April 2007. Use getProperty( "canonicalizeNames" ) instead.
 	 */
 	public static boolean noCanonicalization() {
-		return !Boolean.parseBoolean(getProperty( "canonicalizeNames" ));
+		return !Boolean.getBoolean(getProperty( "canonicalizeNames" ));
 	}
 
 	/**
