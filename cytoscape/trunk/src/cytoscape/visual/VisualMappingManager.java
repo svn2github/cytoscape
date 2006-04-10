@@ -97,12 +97,11 @@ public class VisualMappingManager extends SubjectBase {
 
 		loadCalculatorCatalog();
 
-		VisualStyle vs = catalog.getVisualStyle(CytoscapeInit
-				.getDefaultVisualStyle());
-		if (vs == null) {
-			// none specified, or not found; use the default
-			vs = catalog.getVisualStyle("default");
-		}
+		String defStyle = CytoscapeInit.getProperty("defaultVisualStyle");
+		if ( defStyle == null )
+			defStyle = "default";
+
+		VisualStyle vs = catalog.getVisualStyle(defStyle);
 		setVisualStyle(vs);
 
 	}

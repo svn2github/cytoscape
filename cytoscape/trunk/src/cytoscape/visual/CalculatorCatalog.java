@@ -548,7 +548,7 @@ public class CalculatorCatalog {
 	}
 
 	public VisualStyle getVisualStyle(String name) {
-		if ( name.equals("default") && !visualStyles.containsKey(name))
+		if (name != null && name.equals("default") && !visualStyles.containsKey(name))
 			createDefaultVisualStyle();
 		return (VisualStyle) visualStyles.get(name);
 	}
@@ -1011,7 +1011,7 @@ public class CalculatorCatalog {
 		NodeLabelCalculator nlc = getNodeLabelCalculator(cName);
 		if (nlc == null) {
 			PassThroughMapping m = new PassThroughMapping(new String(),
-									cytoscape.data.Semantics.COMMON_NAME);
+							cytoscape.data.Semantics.COMMON_NAME);
 			nlc = new GenericNodeLabelCalculator(cName, m);
 		}
 		defaultVS.getNodeAppearanceCalculator().setNodeLabelCalculator(nlc);

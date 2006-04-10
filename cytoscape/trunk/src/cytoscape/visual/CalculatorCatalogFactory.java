@@ -98,34 +98,7 @@ public abstract class CalculatorCatalogFactory {
 				PassThroughMapping.class);
 
 		boolean propsFound = false;
-		vizmapProps = new Properties();
-
-		String tryName = "";
-
-		try {
-			// load the vizmap.props from the jar file 
-			tryName = "cytoscape.jar";
-			URL vmu = CalculatorCatalogFactory.class.getClassLoader().getSystemResource("vizmap.props");
-			if ( vmu != null )
-				vizmapProps.load(vmu.openStream());
-		
-			// load the .cytoscape vizmap.props
-			tryName = "$HOME/.cytoscape";
-			File vmp = CytoscapeInit.getConfigFile("vizmap.props");
-			if (vmp != null)
-				vizmapProps.load(new FileInputStream(vmp));
-
-			// load the specified (e.g. command line) vizmap.props
-			tryName = "command line";
-			File cliVmp = CytoscapeInit.getSpecifiedVizProps();
-			if (cliVmp != null)
-				vizmapProps.load(new FileInputStream(cliVmp));
-
-		} catch (IOException ioe) {
-			System.err.println("couldn't open " + tryName
-					+ " vizmap.props file - creating a hardcoded default");
-			ioe.printStackTrace();
-		}
+		vizmapProps = CytoscapeInit.getVisualProperties();
 
 		// now load using the constructed Properties object (ok if it is empty)
 		CalculatorIO.loadCalculators(vizmapProps, calculatorCatalog);

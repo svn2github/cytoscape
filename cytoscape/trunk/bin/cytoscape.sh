@@ -6,7 +6,7 @@
 
 #export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:./plugins
 
-java -Xmx512M -jar cytoscape.jar cytoscape.CyMain --JLD plugins $*
+java -Xmx512M -jar cytoscape.jar cytoscape.CyMain -p plugins $*
 
 #Use this command line to use organism specific gene annotations by default
 #java -Xmx512M -jar cytoscape.jar cytoscape.CyMain -b annotation/manifest --JLD plugins $*

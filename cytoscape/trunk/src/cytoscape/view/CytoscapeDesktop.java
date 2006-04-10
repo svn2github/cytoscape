@@ -217,7 +217,7 @@ public class CytoscapeDesktop
    * The Default constructor uses a TabbedView
    */
   public CytoscapeDesktop () {
-    this( TABBED_VIEW );
+    this( TABBED_VIEW ); 
   }
   
   /**
@@ -468,7 +468,7 @@ public class CytoscapeDesktop
   /**
    * Return the view type for this CytoscapeDesktop
    */
-  protected int getViewType () {
+  public int getViewType () {
     return VIEW_TYPE;
   }
 
@@ -828,5 +828,20 @@ public class CytoscapeDesktop
   */
   public NetworkViewManager getNetworkViewManager() {
       return this.networkViewManager;
+  }
+
+  public static int parseViewType(String vt) {
+    int type = -1;
+    if ( vt.equals("tabbed") )
+    	type = TABBED_VIEW;
+    else if ( vt.equals("internal") )
+    	type = INTERNAL_VIEW;
+    else if ( vt.equals("external") )
+    	type = EXTERNAL_VIEW;
+    else {
+    	System.out.println("Couldn't parse view type: " + vt + " -- using TABBED");
+    	type = TABBED_VIEW;
+    }
+    return type;
   }
 }

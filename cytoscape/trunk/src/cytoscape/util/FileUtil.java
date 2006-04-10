@@ -40,7 +40,12 @@ package cytoscape.util;
 
 import java.awt.FileDialog;
 import javax.swing.JFileChooser;
+import java.io.InputStream;
+import java.io.FileInputStream;
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Iterator;
 import java.util.Iterator;
 
 
@@ -190,6 +195,29 @@ public abstract class FileUtil {
       return result;
     }
 
+  }
+
+  public static InputStream getInputStream(String name) {
+  	InputStream in = null;
+	try {
+		if ( name.matches( urlPattern() ) ) {
+			URL u = new URL(name);
+			in = u.openStream();
+		// otherwise, assume it's a file
+		} else
+			in = new FileInputStream(name);
+	} catch (IOException ioe) {
+		ioe.printStackTrace();
+	}
+	return in;
+  }
+
+  /**
+   * Returns a string that defines a simplified java regular expression for a URL.
+   * This may need to be updated to be more precise.
+   */
+  public static String urlPattern() {
+	return "^\\w+\\:\\/\\/\\S+$";
   }
 
 }

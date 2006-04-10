@@ -46,7 +46,7 @@ import giny.view.NodeView;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeSupport;
-import java.io.FileReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -76,6 +76,7 @@ import cytoscape.giny.PhoebeNetworkView;
 import cytoscape.giny.CytoscapeFingRootGraph;
 import cytoscape.ding.DingNetworkView;
 import cytoscape.util.CyNetworkNaming;
+import cytoscape.util.FileUtil;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.visual.VisualMappingManager;
@@ -1349,7 +1350,7 @@ public abstract class Cytoscape {
 		if (nodeAttrLocations != null) {
 			for (int i = 0; i < nodeAttrLocations.length; ++i) {
 				try {
-                    FileReader reader = new FileReader (nodeAttrLocations[i]);
+                    InputStreamReader reader = new InputStreamReader(FileUtil.getInputStream(nodeAttrLocations[i]));
                     CyAttributesReader.loadAttributes(nodeAttributes, reader);
 				} catch (Exception e) {
 					throw new IllegalArgumentException(
@@ -1363,7 +1364,7 @@ public abstract class Cytoscape {
 		if (edgeAttrLocations != null) {
 			for (int j = 0; j < edgeAttrLocations.length; ++j) {
 				try {
-                    FileReader reader = new FileReader (edgeAttrLocations[j]);
+                    InputStreamReader reader = new InputStreamReader(FileUtil.getInputStream(edgeAttrLocations[j]));
                     CyAttributesReader.loadAttributes(edgeAttributes, reader);
 				} catch (Exception e) {
 					throw new IllegalArgumentException(
@@ -1452,8 +1453,7 @@ public abstract class Cytoscape {
 		try {
 			bioDataServer = new BioDataServer(location);
 		} catch (Exception e) {
-			System.err
-					.println("Could not Load BioDataServer from: " + location);
+			System.err.println("Could not Load BioDataServer from: " + location);
 			return null;
 		}
 		return bioDataServer;

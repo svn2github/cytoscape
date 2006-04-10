@@ -1,6 +1,7 @@
 package cytoscape.init;
 
 import java.util.List;
+import java.util.Properties;
 
 /**
  * An interface that describes the initialization parameters needed 
@@ -8,15 +9,9 @@ import java.util.List;
  */
 public interface CyInitParams {
 
-   public String getPropsFile();
+   public Properties getProps();
 
-   public String getVizPropsFile();
-
-   public String getBioDataServer();
-
-   public List getResourcePlugins();
-
-   public List getExpressionFiles();
+   public Properties getVizProps();
 
    public List getGraphFiles();
 
@@ -24,19 +19,20 @@ public interface CyInitParams {
 
    public List getNodeAttributeFiles();
 
-   public List getPluginURLs();
+   public List getExpressionFiles();
+
+   public List getPlugins();
 
    public int getMode();
 
+   public String[] getArgs();
+
+   public static final int ERROR = 0;
    public static final int GUI = 1;
    public static final int TEXT = 2;
    public static final int LIBRARY = 3;
    public static final int EMBEDDED_WINDOW = 4;
 
-   public Integer getViewThreshold();
-   public boolean canonicalizeNames();
-   public String getSpecies();
-   public String[] getArgs();
 }
 
 

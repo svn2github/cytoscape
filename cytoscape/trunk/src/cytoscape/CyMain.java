@@ -36,153 +36,318 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-// CyMain.java
-
-
-// $Revision$
-// $Date$
-// $Author$
-//-------------------------------------------------------------------------------------
 package cytoscape;
-//-------------------------------------------------------------------------------------
-import java.awt.*;
-import java.awt.geom.*;
-import java.awt.event.*;
+
+import java.util.*;
+import java.io.*;
+import java.util.*;
+import java.util.regex.*;
+import java.awt.Dimension;
 import javax.swing.*;
 import javax.swing.event.*;
 
-import java.util.*;
-import java.util.logging.*;
-import javax.swing.Timer;
-
-import cytoscape.data.*;
-import cytoscape.data.readers.InteractionsReader;
-import cytoscape.data.readers.GraphReader;
-import cytoscape.data.servers.*;
-import cytoscape.view.CytoscapeDesktop;
-import cytoscape.util.shadegrown.WindowUtilities;
 import cytoscape.init.CyInitParams;
-import cytoscape.init.CyCommandLineParser;
-
+import cytoscape.util.FileUtil;
 
 import com.jgoodies.plaf.FontSizeHints;
 import com.jgoodies.plaf.LookUtils;
 import com.jgoodies.plaf.Options;
 import com.jgoodies.plaf.plastic.Plastic3DLookAndFeel;
 
-//------------------------------------------------------------------------------
+import org.apache.commons.cli.*; 
+
 /**
- * This is the main startup class for Cytoscape. It creates a CytoscapeConfig
- * object using the command-line arguments, uses the information in that config
- * to create other data objects, and then constructs the first view.
- * Construction of that class triggers plugin loading, and after that control
- * passes to the UI thread that responds to user input.<P>
- *
- * This class monitors the set of windows that exist and exits the application
- * when the last window is closed.
+ * This is the main startup class for Cytoscape. This parses the command line
+ * and implements CyInitParams so that it can be used to initialize cytoscape.
  */
-public class CyMain implements WindowListener {
-  protected static Vector windows = new Vector ();
-  protected CytoscapeVersion version = new CytoscapeVersion();
-  protected Logger logger;
-   
-  protected boolean headless = false; 
+public class CyMain implements CyInitParams {
 
-  protected String[] args;
-
-  /**
-   * Primary Method for Starting the GUI version of Cytoscape. 
-   */
-  public CyMain ( String [] args ) throws Exception {
-    this.args = args;
-
-    // Create a CyInitParams object.
-    CyCommandLineParser cli = new CyCommandLineParser();
-    cli.parseCommandLine(args);
-
-    // Check to see if help is requested before doing
-    // anything else.
-    if ( cli.helpRequested() ) {
-      System.out.println( cli.getHelp() );
-      System.exit( 0 );
-    }
-
-    // Create the Initialization object.
-    CytoscapeInit init = new CytoscapeInit();
-
-    // Initialize.
-    if ( !init.init(cli) ) {
-      System.out.println( cli.getHelp() );
-      System.exit( 0 );
-    }
-  } 
+	protected String[] args;
+	protected Properties props; 
+	protected String[] graphFiles; 
+	protected String[] plugins;
+	protected Properties vizmapProps;
+	protected String projectFile;
+	protected String[] nodeAttrFiles;
+	protected String[] edgeAttrFiles;
+	protected String[] expressionFiles;
+	protected int mode; 
+	protected org.apache.commons.cli.Options options; 
 
 
-  /**
-   * on linux (at least) a killed window generates a 'windowClosed' event; trap that here
-   */
-  public void windowClosing     (WindowEvent e) {windowClosed (e);}
+	public static void main(String args []) throws Exception {
+		CyMain app = new CyMain(args);
+	}
 
-  public void windowDeactivated (WindowEvent e) {}
-  public void windowDeiconified (WindowEvent e) {}
-  public void windowIconified   (WindowEvent e) {}
-  public void windowActivated   (WindowEvent e) {}
+	public CyMain ( String [] args ) throws Exception {
 
-  public void windowOpened      (WindowEvent e) {
-    windows.add (e.getWindow ());
-  }
+		props = null;
+		graphFiles = null;
+		plugins = null;
+		vizmapProps = null;
+		projectFile = null;
+		nodeAttrFiles = null;
+		edgeAttrFiles = null;
+		expressionFiles = null;
+		this.args = args;
+		mode = CyInitParams.ERROR;
+		options = new org.apache.commons.cli.Options();
 
-  public void windowClosed     (WindowEvent e) {
-    Window window = e.getWindow();
-    if (windows.contains(window)) {windows.remove (window);}
+		parseCommandLine(args);
+		CytoscapeInit initializer = new CytoscapeInit();
 
-    if (windows.size () == 0) {
-      exit(0);
-    }
-  }
+		if ( !initializer.init(this) ) {
+			printHelp();
+			System.exit(1);
+		}
+	} 
 
-  public static void exit(int exitCode) {
-    for (int i=0; i < windows.size (); i++) {
-      Window w = (Window) windows.elementAt(i);
-      w.dispose();
-    }
-    System.exit(exitCode);
-  }
+	protected void parseCommandLine(String args[]) {
 
-  public static void main(String args []) throws Exception {
+		// create the options
+		options.addOption("h", "help", false, "Print this message.");
+		options.addOption("v", "version", false, "Print the version number.");
+		options.addOption("H", "headless", false, "Run in headless (no gui) mode.");
 
-    // first thing is to set up the GUI environment, even though it may not be used...
-    UIManager.put(Options.USE_SYSTEM_FONTS_APP_KEY, Boolean.TRUE);
-    Options.setGlobalFontSizeHints(FontSizeHints.MIXED);
-    Options.setDefaultIconSize(new Dimension(18, 18));
+		options.addOption(OptionBuilder
+	                                .withLongOpt("session")
+	                                .withDescription( "Load a cytoscape session (.cys) file.")
+	                                .withValueSeparator(' ')
+	                                .withArgName("file")
+	                                .hasArg()
+					.create("s"));
 
-    try {
-      if ( LookUtils.isWindowsXP() ) {
-        // use XP L&F
-        UIManager.setLookAndFeel( Options.getSystemLookAndFeelClassName() );
-      } else if ( System.getProperty("os.name").startsWith( "Mac" ) ) {
-        // do nothing, I like the OS X L&F
-      } else {
-        // this is for for *nix
-        // I happen to like this color combo, there are others
-      
-        // GTK
-        //UIManager.setLookAndFeel( "com.sun.java.swing.plaf.gtk.GTKLookAndFeel" );
+		options.addOption(OptionBuilder
+	                                .withLongOpt("network")
+	                                .withDescription( "Load a network file (any format).")
+	                                .withValueSeparator(' ')
+	                                .withArgName("file")
+	                                .hasArg()
+					.create("N"));
+
+		options.addOption(OptionBuilder
+	                                .withLongOpt("edge-attrs")
+	                                .withDescription( "Load an edge attributes file (edge attribute format).")
+	                                .withValueSeparator(' ')
+	                                .withArgName("file")
+	                                .hasArg()
+					.create("e"));
+		options.addOption(OptionBuilder
+	                                .withLongOpt("node-attrs")
+	                                .withDescription( "Load a node attributes file (node attribute format).")
+	                                .withValueSeparator(' ')
+	                                .withArgName("file")
+	                                .hasArg()
+					.create("n"));
+		options.addOption(OptionBuilder
+	                                .withLongOpt("matrix")
+	                                .withDescription( "Load a node attribute matrix file (table).")
+	                                .withValueSeparator(' ')
+	                                .withArgName("file")
+	                                .hasArg()
+					.create("m"));
 
 
-        // jgoodies
-        Plastic3DLookAndFeel laf = new Plastic3DLookAndFeel();
-        laf.setTabStyle( Plastic3DLookAndFeel.TAB_STYLE_METAL_VALUE );
-        laf.setHighContrastFocusColorsEnabled(true);
-        laf.setMyCurrentTheme( new com.jgoodies.plaf.plastic.theme.ExperienceBlue() );
-        UIManager.setLookAndFeel( laf );
-      }
-    } catch (Exception e) {
-      System.err.println("Can't set look & feel:" + e);
-    }
+		options.addOption(OptionBuilder
+	                                .withLongOpt("plugin")
+	                                .withDescription( "Load a plugin jar file, directory of jar files, plugin class name, or plugin jar URL.")
+	                                .withValueSeparator(' ')
+	                                .withArgName("file")
+	                                .hasArg()
+					.create("p"));
 
-    CyMain app = new CyMain(args);
-  } // main
+		options.addOption(OptionBuilder
+	                                .withLongOpt("props")
+	                                .withDescription( "Load cytoscape properties file (Java properties format) or individual property: -P name=value.")
+	                                .withValueSeparator(' ')
+	                                .withArgName("file")
+	                                .hasArg()
+					.create("P"));
+		options.addOption(OptionBuilder
+	                                .withLongOpt("vizmap")
+	                                .withDescription( "Load vizmap properties file (Java properties format).")
+	                                .withValueSeparator(' ')
+	                                .withArgName("file")
+	                                .hasArg()
+					.create("V"));
 
+		// try to parse the cmd line
+		CommandLineParser parser = new PosixParser();
+		CommandLine line = null;
+
+		try {
+			line = parser.parse(options, args);
+		} catch (ParseException e) {
+			System.err.println("Parsing command line failed: " + e.getMessage());
+			printHelp();
+			System.exit(0);
+		}
+
+		// use what is found on the command line to set values
+		if ( line.hasOption("h") ) {
+			printHelp();
+			System.exit(0); 
+		}
+
+		if ( line.hasOption("v") ) {
+			System.out.println("Cytoscape version: 2.3");
+			System.exit(0); 
+		}
+
+		if ( line.hasOption("H") ) {
+			mode = CyInitParams.TEXT;
+		} else {
+			mode = CyInitParams.GUI;
+			setupLookAndFeel();
+		}
+
+		if ( line.hasOption("P") ) 
+			props = createProperties( line.getOptionValues("P") );	
+
+		if ( line.hasOption("N") ) 
+			graphFiles = line.getOptionValues("N");	
+
+		if ( line.hasOption("p") ) 
+			plugins = line.getOptionValues("p");	
+
+		if ( line.hasOption("V") ) 
+			vizmapProps = createProperties( line.getOptionValues("V") );	
+
+		if ( line.hasOption("c") ) 
+			projectFile = line.getOptionValue("c");	
+	
+		if ( line.hasOption("n") ) 
+			nodeAttrFiles = line.getOptionValues("n");	
+
+		if ( line.hasOption("e") ) 
+			edgeAttrFiles = line.getOptionValues("e");	
+
+		if ( line.hasOption("E") ) 
+			expressionFiles = line.getOptionValues("E");	
+	}
+
+	protected void setupLookAndFeel() {
+
+		UIManager.put(Options.USE_SYSTEM_FONTS_APP_KEY, Boolean.TRUE);
+		Options.setGlobalFontSizeHints(FontSizeHints.MIXED);
+		Options.setDefaultIconSize(new Dimension(18, 18));
+
+		try {
+			if ( LookUtils.isWindowsXP() ) {
+				// use XP L&F
+				UIManager.setLookAndFeel( Options.getSystemLookAndFeelClassName() );
+			} else if ( System.getProperty("os.name").startsWith( "Mac" ) ) {
+				// do nothing, I like the OS X L&F
+			} else {
+				// this is for for *nix
+				// I happen to like this color combo, there are others
+				// jgoodies
+				Plastic3DLookAndFeel laf = new Plastic3DLookAndFeel();
+				laf.setTabStyle( Plastic3DLookAndFeel.TAB_STYLE_METAL_VALUE );
+				laf.setHighContrastFocusColorsEnabled(true);
+				laf.setMyCurrentTheme( new com.jgoodies.plaf.plastic.theme.ExperienceBlue() );
+				UIManager.setLookAndFeel( laf );
+			}
+		} catch (Exception e) {
+			System.err.println("Can't set look & feel:" + e);
+		}
+	} 
+
+	protected void printHelp() {
+		HelpFormatter formatter = new HelpFormatter();
+		formatter.printHelp("java -Xmx256M -jar cytoscape.jar [OPTIONS]", options);
+	}
+
+
+	public Properties getProps() {
+		return props;
+	}
+
+	public Properties getVizProps() {
+		return vizmapProps;
+	}
+
+	private Properties createProperties(String[] potentialProps) {
+
+		Properties props = new Properties();
+		Properties argProps = new Properties();
+
+		Matcher propPattern = Pattern.compile("^(\\S+)\\=(.+)$").matcher(""); 
+
+		for ( int i = 0; i < potentialProps.length; i++ ) {
+
+			propPattern.reset(potentialProps[i]);	
+
+			// check to see if the string is a key value pair
+			if ( propPattern.matches() ) {
+				argProps.setProperty(propPattern.group(1),propPattern.group(2));
+
+			// otherwise assume it's a file/url
+			} else {
+				try {
+				InputStream in = FileUtil.getInputStream( potentialProps[i] );
+
+				if ( in != null )
+					props.load(in);
+				else
+					System.out.println("Couldn't load property: " + potentialProps[i]);
+				} catch (IOException e) { 
+					System.out.println("Couldn't load property: " + potentialProps[i
+]);
+					e.printStackTrace(); 
+				}
+			}
+		}
+
+		// Transfer argument properties into the full properties.
+		// We do this so that anything specified on the command line
+		// overrides anything specified in a file.
+		Enumeration names = argProps.propertyNames();
+		while (names.hasMoreElements()) {
+			String name = (String)names.nextElement();
+			props.setProperty( name, argProps.getProperty(name) );
+		}
+
+
+		return props;
+	}
+
+	public List getGraphFiles() {
+		return createList( graphFiles );
+	}
+
+	public List getEdgeAttributeFiles() {
+		return createList( edgeAttrFiles );
+	}
+
+	public List getNodeAttributeFiles() {
+		return createList( nodeAttrFiles );
+	}
+
+	public List getExpressionFiles() {
+		return createList( expressionFiles );
+	}
+
+	public List getPlugins() {
+		return createList( plugins );
+	}
+
+	public int getMode() {
+		return mode;
+	}
+
+	public String[] getArgs() {
+		return args;
+	}
+
+	private List createList(String[] vals) {
+		if ( vals == null )
+			return new ArrayList();
+		ArrayList a = new ArrayList(vals.length);
+		for ( int i = 0; i < vals.length; i++ )
+			a.add(i,vals[i]);
+
+		return a;
+	}
 }
 

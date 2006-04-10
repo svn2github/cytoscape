@@ -41,7 +41,10 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.JarURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Enumeration;
@@ -57,10 +60,11 @@ import javax.swing.ImageIcon;
 import cytoscape.data.servers.BioDataServer;
 import cytoscape.init.CyPropertiesReader;
 import cytoscape.init.CyInitParams;
-import cytoscape.init.CyCommandLineParser;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.util.shadegrown.WindowUtilities;
 import cytoscape.view.CytoscapeDesktop;
+import cytoscape.data.readers.TextHttpReader;
+import cytoscape.util.FileUtil;
 
 /**
  * Cytoscape Init is responsible for starting Cytoscape in a way that makes
@@ -81,15 +85,26 @@ import cytoscape.view.CytoscapeDesktop;
  * Data 6. Load all Plugins 7. Initialize all plugins, in order if specified. 8.
  * Start Desktop/ Print Output exit.
  */
-public class CytoscapeInit implements PropertyChangeListener {
+public class CytoscapeInit { //implements PropertyChangeListener {
+	
+	private static Properties properties; 
+	private static Properties visualProperties; 
+	private static Set pluginURLs;
+	private static Set resourcePlugins;
+
+	static { 
+		System.out.println("CytoscapeInit static initialization");
+		pluginURLs = new HashSet();
+		resourcePlugins = new HashSet();
+		properties = new Properties();	
+		loadStaticProperties("cytoscape.props",properties); 
+		visualProperties = new Properties();	
+		loadStaticProperties("vizmap.props",visualProperties); 
+	}
 
 	private static String[] args;
 
 	private static CyInitParams initParams;
-
-	private static Properties properties;
-
-	private static String propertiesLocation;
 
 	private static URLClassLoader classLoader;
 
@@ -98,128 +113,51 @@ public class CytoscapeInit implements PropertyChangeListener {
 
 	private static File mruf;
 
-	private static Set pluginURLs;
-
-	// Data variables
-	private static String bioDataServer;
-
-	private static boolean noCanonicalization;
-
-	private static Set expressionFiles;
-
-	private static Set graphFiles;
-
-	private static Set edgeAttributes;
-
-	private static Set nodeAttributes;
-
-	private static String defaultSpeciesName;
-
 	// Configuration variables
 	private static boolean useView = true;
 
 	private static boolean suppressView = false;
 
-	private static String viewType = "tabbed";
-
-	private static int viewThreshold;
-
 	private static int secondaryViewThreshold;
+
 
 	// View Only Variables
 	private static String vizmapPropertiesLocation;
 
-	private static String defaultVisualStyle = "default";
-
-	// project parsing
-	private static final String fWHITESPACE_AND_QUOTES = " \t\r\n\"";
-
-	private static final String fQUOTES_ONLY = "\"";
-
-	private static final String fDOUBLE_QUOTE = "\"";
-
-	private static String specifiedVizProps = "";
-
-	/**
-	 * Calling the constructor sets up the CytoscapeInit Object to be a
-	 * CYTOSCAPE_EXIT event listener, and will take care of saving all
-	 * properties.
-	 */
 	public CytoscapeInit() {
-		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(
-				this);
-
 	}
 
-	public void propertyChange(PropertyChangeEvent e) {
-		if (e.getPropertyName() == Cytoscape.CYTOSCAPE_EXIT) {
-			try {
-				File file = new File(propertiesLocation);
-				FileOutputStream output = new FileOutputStream(file);
-				properties.store(output, "Cytoscape Property File");
-
-			} catch (Exception ex) {
-				System.out.println("Cytoscape.Props Write error");
-				ex.printStackTrace();
-			}
-		}
-	}
+	//public void propertyChange(PropertyChangeEvent e) {
+	//}
 
 	/**
 	 * Cytoscape Init must be initialized using the command line arguments.
 	 * 
-	 * @param args
-	 *            the arguments from the command line
-	 * @return false, if we should stop initing, since help has been requested
+	 * @param args the arguments from the command line
+	 * @return false, if we fail to initialize for some reason 
 	 */
 	public boolean init(CyInitParams params) {
 
 		initParams = params;
-		bioDataServer = null;
-		noCanonicalization = false;
-		expressionFiles = new HashSet();
-		graphFiles = new HashSet();
-		edgeAttributes = new HashSet();
-		nodeAttributes = new HashSet();
-		pluginURLs = new HashSet();
 
-		// Properties from cytoscape.props
-		// read in properties in cytoscape.props, and assign variables from them
-		CyPropertiesReader propReader = new CyPropertiesReader();
-		// getSpecifiedPropsFile returns the location of cytoscape.props
-		propReader.readProperties(params.getPropsFile());
-		properties = propReader.getProperties();
-		propertiesLocation = propReader.getPropertiesLocation();
+		loadInputProperties("cytoscape.props", initParams.getProps(), properties);
+		loadInputProperties("vizmap.props", initParams.getVizProps(), visualProperties);
 		setVariablesFromProperties();
-
-		// Overwrites properties set from cytoscape.props
-		setVariablesFromInitParams(params);
-
-		// set the vizmap.props file 
-		specifiedVizProps = params.getVizPropsFile();
-
-		// store key property values into main Properties object for
-		// for visual (via Preferences Dialog) communication and later storage
-		//
-		// command line -overrides- cytoscape.props
-		// hence it is now safe to store those values
-		storeVariablesInProperties();
 
 		// see if we are in headless mode
 		// show splash screen, if appropriate
-                System.out.println("init mode: " + params.getMode() );
-                if ( params.getMode() == CyInitParams.GUI ) {
+                System.out.println("init mode: " + initParams.getMode() );
+                if ( initParams.getMode() == CyInitParams.GUI ) {
 
-			ImageIcon image = new ImageIcon(getClass().getResource(
+			ImageIcon image = new ImageIcon(this.getClass().getResource(
 					"/cytoscape/images/CytoscapeSplashScreen.png"));
 			WindowUtilities.showSplash(image, 8000);
 			Cytoscape.getDesktop();
-			// setup CytoPanels menu -
 			// This cannot be done in CytoscapeDesktop construction (like the other menus)
 			// because we need CytoscapeDesktop created first. This is because CytoPanel
-			// menu item listeners need to register for CytoPanel events via a CytoPanel reference,
-			// and the only way to get a CytoPanel reference is via CytoscapeDeskop:
-			// Cytoscape.getDesktop().getCytoPanel(...)
+			// menu item listeners need to register for CytoPanel events via a CytoPanel 
+			// reference, and the only way to get a CytoPanel reference is via 
+			// CytoscapeDeskop: Cytoscape.getDesktop().getCytoPanel(...)
 			Cytoscape.getDesktop().getCyMenus().initCytoPanelMenus();
 
 			// Add a listener that will apply vizmaps every time attributes change
@@ -240,60 +178,35 @@ public class CytoscapeInit implements PropertyChangeListener {
 		// load all data, then load all plugins
 
 		// Load the BioDataServer(s)
-		BioDataServer bds = Cytoscape.loadBioDataServer(getBioDataServer());
+		BioDataServer bds = Cytoscape.loadBioDataServer(properties.getProperty("bioDataServer"));
 
 		// Load all requested networks
-		for (Iterator i = graphFiles.iterator(); i.hasNext();) {
+		boolean canonicalize = Boolean.parseBoolean(properties.getProperty("canonicalizeNames"));
+		for (Iterator i = initParams.getGraphFiles().iterator(); i.hasNext();) {
 			String net = (String) i.next();
 			System.out.println("Load: " + net);
 
 			CyNetwork network = Cytoscape.createNetwork(net,
-					Cytoscape.FILE_BY_SUFFIX, !noCanonicalization(), bds,
-					getDefaultSpeciesName());
+					Cytoscape.FILE_BY_SUFFIX, canonicalize, bds,
+					properties.getProperty("defaultSpeciesName"));
 		}
 
 		// load any specified data attribute files
-		Cytoscape.loadAttributes((String[]) getNodeAttributes().toArray(
-				new String[] {}), (String[]) getEdgeAttributes().toArray(
-				new String[] {}), !noCanonicalization(), bds,
-				getDefaultSpeciesName());
+		Cytoscape.loadAttributes(
+				(String[])initParams.getNodeAttributeFiles().toArray(new String[] {}),
+				(String[])initParams.getEdgeAttributeFiles().toArray(new String[] {}),
+				canonicalize, 
+				bds,
+				properties.getProperty("defaultSpeciesName"));
 
 
 		Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
 
-		// load expression data if specified
-		if (getExpressionFiles().size() > 0) {
-			for (Iterator iter = expressionFiles.iterator(); iter.hasNext();) {
-				String expDataFilename = (String) iter.next();
-				if (expDataFilename != null) {
-					try {
-						Cytoscape.loadExpressionData(expDataFilename, true);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		}
+		loadExpressionFiles();
 
-		if ( params.getMode() == CyInitParams.GUI ) {
+		loadPlugins();
 
-			loadPlugins(pluginURLs);
-
-			// attempt to load resource plugins
-			List rp = params.getResourcePlugins();
-			for (Iterator rpi = rp.iterator(); rpi.hasNext();) {
-				String resource = (String) rpi.next();
-				// try to get the class
-				Class rclass = null;
-				try {
-					rclass = Class.forName(resource);
-				} catch (Exception exc) {
-					System.out.println("Getting class: " + resource + " failed");
-					exc.printStackTrace();
-				}
-				loadPlugin(rclass);
-			}
-
+		if ( initParams.getMode() == CyInitParams.GUI ) {
 			WindowUtilities.hideSplash();
 		}
 
@@ -304,59 +217,16 @@ public class CytoscapeInit implements PropertyChangeListener {
 		return true;
 	}
 
-	// store value of key variables in Properties object
-	// for access in PreferencesDialog and eventual saving on exit
-	private void storeVariablesInProperties() {
-		if (bioDataServer != null)
-			properties.setProperty("bioDataServer", bioDataServer);
-		if (defaultSpeciesName != null)
-			properties.setProperty("defaultSpeciesName", defaultSpeciesName);
-		properties.setProperty("viewThreshold", "" + viewThreshold);
-		properties.setProperty("secondaryViewThreshold", ""
-				+ secondaryViewThreshold);
-		// properties.setProperty("vizmapPropertiesLocation",vizmapPropertiesLocation);
-	}
-
-	public String getHelp() {
-		return CyCommandLineParser.getHelp();
-	}
-
-	public static boolean isHeadless() {
-		return !useView;
-	}
-
-	public static boolean useView() {
-		return useView;
-	}
-
-	public static boolean suppressView() {
-		return suppressView;
-	}
-
-	private boolean isDoubleQuote(String aToken) {
-		return aToken.equals(fDOUBLE_QUOTE);
-	}
-
-	private String flipDelimiters(String aCurrentDelims) {
-		String result = null;
-		if (aCurrentDelims.equals(fWHITESPACE_AND_QUOTES)) {
-			result = fQUOTES_ONLY;
-		} else {
-			result = fWHITESPACE_AND_QUOTES;
-		}
-		return result;
-	}
-
-	public static String[] getArgs() {
-		return initParams.getArgs();
-	}
-
 	public static Properties getProperties() {
 		return properties;
 	}
 
-	public static String getPropertiesLocation() {
-		return propertiesLocation;
+	public static void setProperty(String key, String value) {
+		properties.setProperty(key,value);
+	}
+
+	public static String getProperty(String key) {
+		return properties.getProperty(key);
 	}
 
 	public static URLClassLoader getClassLoader() {
@@ -367,45 +237,120 @@ public class CytoscapeInit implements PropertyChangeListener {
 		return pluginURLs;
 	}
 
-	// Data variables
+	public static Set getResourcePlugins() {
+		return resourcePlugins;
+	}
+
+
+	/**
+	 * @deprecated This method will be removed April 2007. 
+	 * No one appears to use this method, so don't start.
+	 */
+	public String getHelp() {
+		return "Help! - you shouldn't be using this method";
+	}
+
+	/**
+	 * @deprecated This method will be removed April 2007. 
+	 * Use getMode() instead. 
+	 */
+	public static boolean isHeadless() {
+		return !useView;
+	}
+
+	/**
+	 * @deprecated This method will be removed April 2007. 
+	 * Use getMode() instead. 
+	 */
+	public static boolean useView() {
+		return useView;
+	}
+
+	/**
+	 * @deprecated This method will be removed April 2007. 
+	 * No one appears to use this method, so don't start.
+	 */
+	public static boolean suppressView() {
+		return suppressView;
+	}
+
+	/**
+	 * @deprecated Use Properties (getProperties()) instead of args for 
+	 * accessing initialization information.  
+	 * This method will be removed April 2007.
+	 */
+	public static String[] getArgs() {
+		return initParams.getArgs();
+	}
+
+	/**
+	 * @deprecated  This method will be removed April 2007. 
+	 */
+	public static String getPropertiesLocation() {
+		return "";
+	}
+
+	/**
+	 * @deprecated This method will be removed April 2007.
+	 * Use getProperty("bioDataServer") instead.
+	 */
 	public static String getBioDataServer() {
-		return bioDataServer;
+		return properties.getProperty("bioDataServer");
 	}
 
+	/**
+	 * @deprecated Will be removed April 2007. Use getProperty( "canonicalizeNames" ) instead.
+	 */
 	public static boolean noCanonicalization() {
-		return noCanonicalization;
+		return !Boolean.parseBoolean(getProperty( "canonicalizeNames" ));
 	}
 
+	/**
+	 * @deprecated Will be removed April 2007.
+	 * No one appears to be using this method, so don't start.
+	 */
 	public static Set getExpressionFiles() {
-		return expressionFiles;
+		return new HashSet(initParams.getExpressionFiles());
 	}
 
+	/**
+	 * @deprecated Will be removed April 2007.
+	 * No one appears to be using this method, so don't start.
+	 */
 	public static Set getGraphFiles() {
-		return graphFiles;
+		return new HashSet(initParams.getGraphFiles());
 	}
 
+	/**
+	 * @deprecated Will be removed April 2007.
+	 * No one appears to be using this method, so don't start.
+	 */
 	public static Set getEdgeAttributes() {
-		return edgeAttributes;
+		return new HashSet(initParams.getEdgeAttributeFiles());
 	}
 
+	/**
+	 * @deprecated Will be removed April 2007.
+	 * No one appears to be using this method, so don't start.
+	 */
 	public static Set getNodeAttributes() {
-		return nodeAttributes;
+		return new HashSet(initParams.getNodeAttributeFiles());
 	}
 
+	/**
+	 * @deprecated Will be removed April 2007. Use getProperty( "defaultSpeciesName" ) instead.
+	 */
 	public static String getDefaultSpeciesName() {
-		return defaultSpeciesName;
+		return properties.getProperty("defaultSpeciesName", "unknown");
 	}
 
-	// Configuration variables
 
+	/**
+	 * @deprecated Will be removed April 2007.  
+	 * Use CytoscapeDesktop.parseViewType(CytoscapeInit.getProperty("viewType"));
+	 */
 	public static int getViewType() {
-		if (viewType == "internal") {
-			return CytoscapeDesktop.INTERNAL_VIEW;
-		} else if ((viewType == "external")) {
-			return CytoscapeDesktop.EXTERNAL_VIEW;
-		} else {
-			return CytoscapeDesktop.TABBED_VIEW;
-		}
+		return CytoscapeDesktop.parseViewType(CytoscapeInit.getProperty("viewType"));
 	}
 
 	/**
@@ -413,9 +358,10 @@ public class CytoscapeInit implements PropertyChangeListener {
 	 * threshold will automatically have network views created.
 	 * 
 	 * @return view threshold.
+	 * @deprecated Will be removed April 2007. Use getProperty( "viewThreshold" ) instead.
 	 */
 	public static int getViewThreshold() {
-		return viewThreshold;
+		return Integer.parseInt(properties.getProperty("viewThreshold") );
 	}
 
 	/**
@@ -424,9 +370,10 @@ public class CytoscapeInit implements PropertyChangeListener {
 	 * 
 	 * @param threshold
 	 *            view threshold.
+	 * @deprecated Will be removed April 2007.   Use setProperty( "viewThreshold", thresh ) instead.
 	 */
 	public static void setViewThreshold(int threshold) {
-		viewThreshold = threshold;
+		properties.setProperty("viewThreshold", Integer.toString(threshold) );
 	}
 
 	/**
@@ -435,6 +382,7 @@ public class CytoscapeInit implements PropertyChangeListener {
 	 * to create a view for a large network.
 	 * 
 	 * @return threshold value, indicating number of nodes.
+	 * @deprecated Will be removed April 2007. Use getProperty( "secondaryViewThreshold" ) instead.
 	 */
 	public static int getSecondaryViewThreshold() {
 		return secondaryViewThreshold;
@@ -447,47 +395,33 @@ public class CytoscapeInit implements PropertyChangeListener {
 	 * 
 	 * @param threshold
 	 *            value, indicating number of nodes.
+	 * @deprecated Will be removed April 2007. 
+	 * Use setProperty( "secondaryViewThreshold", thresh ) instead.
 	 */
 	public static void setSecondaryViewThreshold(int threshold) {
 		secondaryViewThreshold = threshold;
 	}
 
 	// View Only Variables
+	/**
+	 * @deprecated Will be removed April 2007. Use getProperty( "TODO" ) instead.
+	 */
 	public static String getVizmapPropertiesLocation() {
 		return vizmapPropertiesLocation;
 	}
 
+	/**
+	 * @deprecated Will be removed April 2007. Use getProperty( "defaultVisualStyle" ) instead.
+	 */
 	public static String getDefaultVisualStyle() {
-		return defaultVisualStyle;
-	}
-
-	private void setVariablesFromInitParams(CyInitParams params) {
-
-		if (params.getBioDataServer() != null) {
-			bioDataServer = params.getBioDataServer();
-		}
-
-		noCanonicalization = params.canonicalizeNames();
-
-		if (params.getSpecies() != null) {
-			defaultSpeciesName = params.getSpecies();
-		}
-
-		expressionFiles.addAll(params.getExpressionFiles());
-		graphFiles.addAll(params.getGraphFiles());
-		nodeAttributes.addAll(params.getNodeAttributeFiles());
-		edgeAttributes.addAll(params.getEdgeAttributeFiles());
-		pluginURLs.addAll(params.getPluginURLs());
-
-		if (params.getViewThreshold() != null)
-			viewThreshold = params.getViewThreshold().intValue();
+		return properties.getProperty("defaultVisualStyle");
 	}
 
 	/**
 	 * Use the Properties Object that was retrieved from the CyPropertiesReader
 	 * to set all known global variables
 	 */
-	private void setVariablesFromProperties() {
+	private static void setVariablesFromProperties() {
 
 		// plugins
 		if (properties.getProperty("plugins") != null) {
@@ -496,49 +430,112 @@ public class CytoscapeInit implements PropertyChangeListener {
 				String plugin = pargs[i];
 				URL url;
 				try {
-					if (plugin.startsWith("http")) {
-						plugin = "jar:" + plugin + "!/";
-						url = new URL(plugin);
+					if (plugin.matches(FileUtil.urlPattern())) {
+						url = jarURL(plugin);
 					} else {
-						url = new URL("file", "", plugin);
+						File pf = new File(plugin);
+						url = jarURL(pf.getAbsolutePath());
 					}
 					pluginURLs.add(url);
-				} catch (Exception ue) {
-					System.err.println("Jar: " + pargs[i]
-							+ "was not a valid URL");
+				} catch (Exception mue) {
+					mue.printStackTrace();
+					System.err.println("property plugin: " + plugin + " NOT added");
 				}
 			}
 		}
 
-		// Data variables
-		defaultSpeciesName = properties.getProperty("defaultSpeciesName",
-				"unknown");
-		bioDataServer = properties.getProperty("bioDataServer", "unknown");
+		mrud = new File(properties.getProperty("mrud", System.getProperty("user.dir")));
+	}
 
-		// Configuration variables
-		viewThreshold = (new Integer(properties.getProperty("viewThreshold",
-				"500"))).intValue();
-		secondaryViewThreshold = (new Integer(properties.getProperty(
-				"secondaryViewThreshold", "2000"))).intValue();
-		viewType = properties.getProperty("viewType", "internal");
+	/**
+	 * Parses the plugin input strings and transforms them into the appropriate
+	 * URLs or resource names.  The method first checks to see if the 
+	 */
+	private void loadPlugins() {
 
-		// View Only Variables
-		defaultVisualStyle = properties.getProperty("defaultVisualStyle",
-				"default");
+		Set plugins = new HashSet();
+		List p = initParams.getPlugins();
+		if ( p != null )
+			plugins.addAll(p);	
 
-		mrud = new File(properties.getProperty("mrud", System
-				.getProperty("user.dir")));
+		// Parse the plugin strings and determine whether they're urls, files,
+		// directories, class names, or manifest file names.
+		for (Iterator iter = plugins.iterator(); iter.hasNext();) {
+			String plugin = (String)iter.next();
+			System.out.println("preparing to load plugin: " + plugin);
+			
+			File f = new File(plugin);
+
+			// If the file name ends with .jar add it to the list as a url.
+			if ( plugin.endsWith(".jar") ) {
+
+				// If the name doesn't match a url, turn it into one. 
+				if ( !plugin.matches( FileUtil.urlPattern() ) ) {
+					pluginURLs.add( jarURL(f.getAbsolutePath()) );
+				} else { 
+					pluginURLs.add( jarURL(plugin) );
+				}
+
+			// If the file doesn't exists, assume that it's a 
+			// resource plugin.
+			} else if ( !f.exists() ) {
+				resourcePlugins.add( plugin );
+
+			// If the file is a directory, load all of the jars
+			// in the directory.
+			} else if ( f.isDirectory() ) {
+
+				String[] fileList = f.list();
+				
+				for(int j = 0; j < fileList.length; j++) {
+					if( !fileList[j].endsWith(".jar") ) 
+						continue;
+					File jarFile = new File(f.getName() + System.getProperty("file.separator") + fileList[j]);
+					if ( jarFile != null ) 
+						pluginURLs.add( jarURL(jarFile.getAbsolutePath()) );
+					else
+						System.out.println("plugin: " + plugin + " NOT added");
+				}
+			
+			// Assume the file is a manifest (i.e. list of jar names)
+			// and make urls out of them.
+			} else {
+
+				try {
+				TextHttpReader reader = new TextHttpReader(plugin);
+				reader.read();
+				String text = reader.getText();
+				String lineSep = System.getProperty("line.separator");
+				String[] allLines = text.split(lineSep);
+				for (int j=0; j < allLines.length; j++) {
+					String pluginLoc = allLines[j];
+					if ( pluginLoc.endsWith( ".jar" ) ) {
+						if ( pluginLoc.matches( FileUtil.urlPattern() ) ) 
+							pluginURLs.add( pluginLoc );
+						else
+							System.err.println( "Plugin location specified in " + plugin + " is not a valid url: " + pluginLoc  + " -- NOT adding it.");
+							
+					}
+				}
+				} catch ( Exception exp ) {
+					exp.printStackTrace();
+					System.err.println( "error reading plugin manifest file "+plugin );
+				}
+			}
+		}
+		
+		// now load the plugins in the appropriate manner
+		loadURLPlugins(pluginURLs);
+		loadResourcePlugins(resourcePlugins);
+
 	}
 
 	/**
 	 * Load all plugins by using the given URLs loading them all on one
 	 * URLClassLoader, then interating through each Jar file looking for classes
 	 * that are CytoscapePlugins
-	 * 
-	 * Optionally, iterate through all classes on the classpath, and try to find
-	 * plugins that way as well.
 	 */
-	private void loadPlugins(Set plugin_urls) {
+	private void loadURLPlugins(Set plugin_urls) {
 
 		URL[] urls = new URL[plugin_urls.size()];
 		int count = 0;
@@ -550,11 +547,7 @@ public class CytoscapeInit implements PropertyChangeListener {
 		// the creation of the class loader automatically loads the plugins
 		classLoader = new URLClassLoader(urls, Cytoscape.class.getClassLoader());
 
-		// System.out.println( "class loader: "+classLoader );
-
-		// URL Controlaction = classLoader.findResource(
-		// "plugins/control/ControlAction.class" );
-		// System.out.println( "controlaction: "+Controlaction );
+		String fileSep = System.getProperty("file.separator");
 
 		// iterate through the given jar files and find classes that are
 		// assignable
@@ -562,21 +555,8 @@ public class CytoscapeInit implements PropertyChangeListener {
 		for (int i = 0; i < urls.length; ++i) {
 
 			try {
-				// create the jar file from the list of plugin jars
-				System.out.println("Create jarfile from: " + urls[i]);
-
-				// System.out.println( urls[i].getFile()+"protocol:
-				// "+urls[i].getProtocol() );
-
-				JarFile jar = null;
-
-				if (urls[i].getProtocol() == "file") {
-					jar = new JarFile(urls[i].getFile());
-				} else if (urls[i].getProtocol().startsWith("jar")) {
-					JarURLConnection jc = (JarURLConnection) urls[i]
-							.openConnection();
-					jar = jc.getJarFile();
-				}
+				JarURLConnection jc = (JarURLConnection) urls[i].openConnection();
+				JarFile jar = jc.getJarFile();
 
 				// if the jar file is null, do nothing
 				if (jar == null) {
@@ -601,13 +581,12 @@ public class CytoscapeInit implements PropertyChangeListener {
 					// get the entry
 					String entry = entries.nextElement().toString();
 
-					// URL resource = classLoader.getResource( entry );
 					// System.out.println( "Entry: "+entry+ " is "+resource );
 
 					if (entry.endsWith("class")) {
 						// convert the entry to an assignable class name
 						entry = entry.replaceAll("\\.class$", "");
-						entry = entry.replaceAll("/", ".");
+						entry = entry.replaceAll(fileSep, ".");
 
 						// System.out.println(" CLASS: " + entry);
 						if (!(isClassPlugin(entry))) {
@@ -616,7 +595,7 @@ public class CytoscapeInit implements PropertyChangeListener {
 						}
 						// System.out.println(entry+" is a PLUGIN!");
 						totalPlugins++;
-						invokePlugin(entry);
+						loadPlugin(classLoader.loadClass(entry));
 					}
 				}
 				// System.out.println("- - - - entries finis");
@@ -628,29 +607,28 @@ public class CytoscapeInit implements PropertyChangeListener {
 				System.err.println("Error thrown: " + e.getMessage());
 				e.printStackTrace();
 			}
-
 		}
 	}
 
-	/**
-	 * Invokes the application in this jar file given the name of the main class
-	 * and assuming it is a plugin.
-	 * 
-	 * @param name
-	 *            the name of the plugin class
-	 */
-	protected void invokePlugin(String name) {
-		try {
-			loadPlugin(classLoader.loadClass(name));
-		} catch (Exception e) {
-			System.out.println("Error Invoking " + name);
-			e.printStackTrace();
+	private void loadResourcePlugins(Set rp) {
+		// attempt to load resource plugins
+		for (Iterator rpi = rp.iterator(); rpi.hasNext();) {
+			String resource = (String) rpi.next();
+			// try to get the class
+			Class rclass = null;
+			try {
+				rclass = Class.forName(resource);
+			} catch (Exception exc) {
+				System.out.println("Getting class: " + resource + " failed");
+				exc.printStackTrace();
+				return;
+			}
+			loadPlugin(rclass);
 		}
 	}
+
 
 	public void loadPlugin(Class plugin) {
-
-		System.out.println("Plugin to be loaded: " + plugin);
 
 		if (CytoscapePlugin.class.isAssignableFrom(plugin)) {
 			System.out.println("CytoscapePlugin Loaded");
@@ -670,12 +648,8 @@ public class CytoscapeInit implements PropertyChangeListener {
 	 *            the name of the putative plugin class
 	 */
 	protected boolean isClassPlugin(String name) {
-		// Class c = loadClass(name);
-		// Class c = Class.forName( name, false, classLoader );\
 		Class c = null;
 		try {
-			// System.out.println("Calling classLoader.loadClass(" + name +
-			// ")");
 			c = classLoader.loadClass(name);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
@@ -703,33 +677,29 @@ public class CytoscapeInit implements PropertyChangeListener {
 	}
 
 	/**
-	 * @param mrud
-	 *            the most recently used directory
+	 * @param mrud the most recently used directory
 	 */
 	public static void setMRUD(File mrud_new) {
 		mrud = mrud_new;
 	}
 
 	/**
-	 * @param mruf
-	 *            the most recently used file
+	 * @param mruf the most recently used file
 	 */
 	public static void setMRUF(File mruf_new) {
 		mruf = mruf_new;
 	}
 
-	// KONO 10/10/2005 BEGIN
+	/**
+	 * @deprecated Will be removed April 2007. This doesn't do anything. 
+	 * To set the default species name use setProperty("defaultSpeciesName", newName),
+	 * which you were presumably doing already.
+	 */
 	public static void setDefaultSpeciesName() {
 		// Update defaultSpeciesName using current properties.
 		// This is necessary to reflect changes in the Preference Editor
 		// immediately
-		defaultSpeciesName = getProperties().getProperty("defaultSpeciesName");
 	}
-
-	// KONO 10/10/2005 END
-
-	// //////////////////////////////////////
-	// Config Directory Acces
 
 	/**
 	 * If .cytoscape directory does not exist, it creates it and returns it
@@ -765,11 +735,78 @@ public class CytoscapeInit implements PropertyChangeListener {
 		return null;
 	}
 
-	public static File getSpecifiedVizProps() {
-		File f = null;
-		if ( specifiedVizProps != null && specifiedVizProps.length() > 0 )
-			f = new File(specifiedVizProps);
+	public static Properties getVisualProperties() {
+		return visualProperties;
+	}
 
-		return f;
+	private static void loadStaticProperties(String defaultName, Properties props ) {
+		String tryName = "";
+                try {
+                        // load the props from the jar file
+                        tryName = "cytoscape.jar";
+                        URL vmu = ClassLoader.getSystemClassLoader().getSystemResource(defaultName);
+                        if ( vmu != null )
+                                props.load(vmu.openStream());
+
+                        // load the props file from $HOME/.cytoscape 
+                        tryName = "$HOME/.cytoscape";
+                        File vmp = CytoscapeInit.getConfigFile(defaultName);
+                        if (vmp != null)
+                                props.load(new FileInputStream(vmp));
+
+                } catch (IOException ioe) {
+                        System.err.println("couldn't open " + tryName
+                                        + " " + defaultName + 
+                                        " file - creating a hardcoded default");
+                        ioe.printStackTrace();
+                }
+
+	}
+
+	private void loadInputProperties(String defaultName, Properties initProps, Properties props ) {
+		if ( props == null )
+			loadStaticProperties(defaultName,props);
+
+		// transfer the properties found on the command line 
+		if ( initProps != null ) {
+			Enumeration names = initProps.propertyNames();
+			while (names.hasMoreElements()) {	
+				String name = (String)names.nextElement();
+				props.setProperty( name, initProps.getProperty(name) );
+			}
+		}
+	}
+
+	private static void loadExpressionFiles() {
+		// load expression data if specified
+		List ef = initParams.getExpressionFiles();
+		if (ef != null && ef.size() > 0) {
+			for (Iterator iter = ef.iterator(); iter.hasNext();) {
+				String expDataFilename = (String) iter.next();
+				if (expDataFilename != null) {
+					try {
+						Cytoscape.loadExpressionData(expDataFilename, true);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+	}
+
+	private static URL jarURL(String urlString) {
+		URL url = null;
+		try {
+			String uString;
+			if ( urlString.matches( FileUtil.urlPattern() ) )
+				uString = "jar:" + urlString + "!/";	
+			else 
+				uString = "jar:file:" + urlString + "!/";	
+			url = new URL(uString);
+		} catch (MalformedURLException mue) {
+			mue.printStackTrace();	
+			System.out.println("couldn't create jar url from '" + urlString + "'");
+		}
+		return url;
 	}
 }
