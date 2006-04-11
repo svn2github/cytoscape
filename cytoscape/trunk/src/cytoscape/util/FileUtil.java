@@ -42,6 +42,8 @@ import java.awt.FileDialog;
 import javax.swing.JFileChooser;
 import java.io.InputStream;
 import java.io.FileInputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -211,6 +213,25 @@ public abstract class FileUtil {
 	}
 	return in;
   }
+
+  public static String getInputString(String filename) {
+	try {
+		String lineSep = System.getProperty("line.separator");
+		StringBuffer sb = new StringBuffer();
+		String line = null;
+		BufferedReader br = new BufferedReader( new InputStreamReader( getInputStream( filename ) ) );
+		while ((line = br.readLine()) != null)
+			sb.append (line + lineSep);
+		return sb.toString();
+		
+	} catch (IOException ioe) {
+		ioe.printStackTrace();
+	}
+	System.out.println("couldn't create string from '" + filename + "'");
+	return null;
+  }
+
+  /**
 
   /**
    * Returns a string that defines a simplified java regular expression for a URL.

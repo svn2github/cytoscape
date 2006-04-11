@@ -51,6 +51,7 @@ package cytoscape.data;
 import cytoscape.data.readers.TextFileReader;
 import cytoscape.data.readers.TextJarReader;
 import cytoscape.task.TaskMonitor;
+import cytoscape.util.FileUtil;
 
 import java.io.*;
 import java.util.*;
@@ -394,17 +395,8 @@ public class ExpressionData implements Serializable {
         if (filename == null)
             return false;
 
-        String rawText;
-        if (filename.trim().startsWith("jar://")) {
-            TextJarReader reader = new TextJarReader(filename);
-            reader.read();
-            rawText = reader.getText();
-        } else {
-            TextFileReader reader = new TextFileReader(filename);
-            reader.read();
-            rawText = reader.getText();
-        }
-        String[] lines = rawText.split("\n");
+        String rawText = FileUtil.getInputString(filename);
+        String[] lines = rawText.split(System.getProperty("line.separator"));
 
         int lineCount = 0;
         String headerLine = lines[lineCount++];

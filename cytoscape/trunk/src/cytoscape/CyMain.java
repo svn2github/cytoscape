@@ -67,7 +67,7 @@ public class CyMain implements CyInitParams {
 	protected String[] graphFiles; 
 	protected String[] plugins;
 	protected Properties vizmapProps;
-	protected String projectFile;
+	protected String sessionFile;
 	protected String[] nodeAttrFiles;
 	protected String[] edgeAttrFiles;
 	protected String[] expressionFiles;
@@ -85,7 +85,7 @@ public class CyMain implements CyInitParams {
 		graphFiles = null;
 		plugins = null;
 		vizmapProps = null;
-		projectFile = null;
+		sessionFile = null;
 		nodeAttrFiles = null;
 		edgeAttrFiles = null;
 		expressionFiles = null;
@@ -213,8 +213,8 @@ public class CyMain implements CyInitParams {
 		if ( line.hasOption("V") ) 
 			vizmapProps = createProperties( line.getOptionValues("V") );	
 
-		if ( line.hasOption("c") ) 
-			projectFile = line.getOptionValue("c");	
+		if ( line.hasOption("s") ) 
+			sessionFile = line.getOptionValue("s");	
 	
 		if ( line.hasOption("n") ) 
 			nodeAttrFiles = line.getOptionValues("n");	
@@ -222,8 +222,8 @@ public class CyMain implements CyInitParams {
 		if ( line.hasOption("e") ) 
 			edgeAttrFiles = line.getOptionValues("e");	
 
-		if ( line.hasOption("E") ) 
-			expressionFiles = line.getOptionValues("E");	
+		if ( line.hasOption("m") ) 
+			expressionFiles = line.getOptionValues("m");	
 	}
 
 	protected void setupLookAndFeel() {
@@ -330,6 +330,10 @@ public class CyMain implements CyInitParams {
 
 	public List getPlugins() {
 		return createList( plugins );
+	}
+
+	public String getSessionFile() {
+		return sessionFile; 
 	}
 
 	public int getMode() {

@@ -23,6 +23,8 @@ public interface CyInitParams {
 
    public List getPlugins();
 
+   public String getSessionFile();
+
    public int getMode();
 
    public String[] getArgs();

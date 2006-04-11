@@ -166,15 +166,8 @@ public class InteractionsReader implements GraphReader {
 	// ----------------------------------------------------------------------------------------
 	public void read(boolean canonicalize) throws IOException {
 		String rawText;
-		String lineSep = System.getProperty("line.separator");
 		if (!is_zip) {
-			StringBuffer sb = new StringBuffer();	
-			String line = null;
-			BufferedReader br = new BufferedReader( new InputStreamReader( FileUtil.getInputStream( filename ) ) );
-			while ((line = br.readLine()) != null) {
-			      sb.append (line + lineSep);
-			}
-			rawText = sb.toString();
+			rawText = FileUtil.getInputString(filename); 
 		} else {
 			rawText = zip_entry;
 		}
@@ -183,7 +176,7 @@ public class InteractionsReader implements GraphReader {
 		if (rawText.indexOf("\t") >= 0)
 			delimiter = "\t";
 
-		String[] lines = rawText.split(lineSep);
+		String[] lines = rawText.split(System.getProperty("line.separator"));
 
 		// There are a total of 6 steps to read in a complete SIF File
 		if (taskMonitor != null) {
