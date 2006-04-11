@@ -130,7 +130,7 @@ public class MetaNodeUtils {
       /**
        * Sets a network as a child-network for an existing CyNode that after this call becomes a metanode
        * <p>
-       * If the CyNode is already a metanode, it will be first removed from the network<br>
+       * If the CyNode is already a metanode, it will be first removed from the given network<br>
        * Note that all connecting edges between nodes in the child-network that are not in the child-network, but are in the <code>network</code>
        * paremeter, are also considered child edges of the metanode and addded to its child-network automatically. This means you don't have to find connecting
        * edges between the children nodes in <code>network</code> to create the metanode.
@@ -381,6 +381,20 @@ public class MetaNodeUtils {
       }
       
       /**
+       * Returns true if the given metanode is collapsed in the given network, false if it is expanded,
+       * or if it is not a metanode at all
+       * 
+       * @param network the CyNetwork in which the metanode is collapsed
+       * @param meta_node the CyNode to test
+       * @return true if the node is a metanodes and is collapsed, false otherwise
+       */
+      public static boolean isCollapsed (CyNetwork network, CyNode meta_node){
+          // The node needs to be in the network
+          return isMetaNode(meta_node) && network.containsNode(meta_node);
+          
+      }
+      
+      /**
        * Returns all CyNodes that are metanodes in the given network, whether they are collapsed or expanded
        * 
        * @param network the CyNetwork in which to look for metanodes
@@ -391,6 +405,4 @@ public class MetaNodeUtils {
           return metaNodesForNetwork;
       }
       
-      
-	  
 }//MetaNodeUtils
