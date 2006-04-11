@@ -63,7 +63,8 @@ public abstract class MyDataClient {
 		if (nCallsPerBatch > 0)
 			out = doMultiCall(method, params);
 		else
-			out = client.execute(method, params);
+			out = client.execute(method, params); // synchronous execute (waits until it gets a reponse from the server)
+            //out = client.executeAsync(method,params,AsyncObject); //asynchronous execute (returns immediately)
         }catch (XmlRpcException xmlex ){
             xmlex.printStackTrace();
             System.out.println("Cause:" +xmlex.getCause());

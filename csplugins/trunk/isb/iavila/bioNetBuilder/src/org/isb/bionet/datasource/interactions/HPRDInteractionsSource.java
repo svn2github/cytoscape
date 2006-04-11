@@ -30,7 +30,6 @@ public class HPRDInteractionsSource extends SimpleInteractionsSource implements 
      * @return Boolean.TRUE always, since this data source does not require a password
      */
     public Boolean authenticate (String userName, String password){
-        // Add code to authenticate!
         int index = this.url.indexOf("?user");
         String tempUrl = this.url.substring(0,index);
         tempUrl += "?user="+userName+"&password="+password;

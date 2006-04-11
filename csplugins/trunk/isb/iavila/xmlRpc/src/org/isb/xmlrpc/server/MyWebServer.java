@@ -112,8 +112,9 @@ public class MyWebServer {
 		if (xmlrpc_props != null && xmlrpc_props.length() > 0) {
 			addHandlersFromProps(xmlrpc_props);
 		}
-
+        
 		webserver.start();
+        
 	}
 
 	/**

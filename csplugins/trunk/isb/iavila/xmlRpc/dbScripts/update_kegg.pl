@@ -304,7 +304,7 @@ print "time elapsed: ".($nowtime-$starttime)."\n";
 # using this table to create interactions minimizes multiple edges between nodes that share many compounds
 $starttime = time;
 print "create table gene_gene_score\n";
-$dbh->do("CREATE TABLE gene_gene_score SELECT gcgs.gene1 AS gene1, gcgs.gene2 AS gene2, MIN(gcgs.score) as score, gcgs.org as org FROM gene_cpd_gene_score AS gcgs GROUP BY gcgs.gene1, gcgs.gene2") or die "Error: $dbh->errstr";
+$dbh->do("CREATE TABLE gene_gene_score SELECT gcgs.gene1 AS gene1, gcgs.gene2 AS gene2, gcgs.cpd AS cpd, MIN(gcgs.score) as score, gcgs.org as org FROM gene_cpd_gene_score AS gcgs GROUP BY gcgs.gene1, gcgs.gene2") or die "Error: $dbh->errstr";
 $nowtime = time;
 print "time elapsed: ".($nowtime-$starttime)."\n";
 

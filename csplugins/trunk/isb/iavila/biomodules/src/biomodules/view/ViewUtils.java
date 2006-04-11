@@ -57,9 +57,17 @@ public class ViewUtils {
 	 */
 	public static ArrayList abstractBiomodules(CyNetwork network,
 			CyNode[][] biomodules) {
-
-		ArrayList metaNodes = MetaNodeUtils.abstractToMetaNodes(network,biomodules, ViewUtils.attributesHandler);
-		
+	    
+        ArrayList metaNodes = new ArrayList();
+        for(int i = 0; i < biomodules.length; i++){
+            ArrayList nodes = new ArrayList();
+            for(int j = 0; j < biomodules[i].length; j++){nodes.add(biomodules[i][j]);}
+            CyNetwork subnet = Cytoscape.getRootGraph().createNetwork(nodes,new ArrayList());
+            CyNode mnode = MetaNodeUtils.createMetaNode(network,subnet,ViewUtils.attributesHandler);
+            MetaNodeUtils.collapseMetaNode(network,mnode,true);
+            metaNodes.add(mnode);
+        }
+        
         // Apply vizmapper
 		CytoscapeDesktop cyDesktop = Cytoscape.getDesktop();
 		VisualMappingManager vizmapper = cyDesktop.getVizMapManager();
@@ -84,9 +92,8 @@ public class ViewUtils {
 	 * @param network
 	 *            the <code>CyNetwork</code> from which meta-nodes will be
 	 *            removed
-	 * @param meta_node_rindices
-	 *            the <code>RootGraph</code> indices of the meta-nodes to be
-	 *            removed
+	 * @param nodes
+	 *            the meta-nodes to be removed
 	 * @param recursive
 	 *            if there are > 1 levels of meta-node hierarchy, whether or not
 	 *            to remove all the levels (if it is known that there is only 1
@@ -95,8 +102,13 @@ public class ViewUtils {
 	 */
 	public static void removeMetaNodes(CyNetwork network,
 			ArrayList nodes, boolean recursive) {
-		MetaNodeUtils.removeAbstractedMetaNodes(network, nodes,
-				recursive);
+		
+        Iterator it = nodes.iterator();
+        while(it.hasNext()){
+            CyNode mnode = (CyNode)it.next();
+            MetaNodeUtils.removeMetaNode(network,mnode,recursive);
+        }
+        
 	}// removeMetaNodes
 
 }// ViewUtils

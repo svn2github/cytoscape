@@ -11,7 +11,7 @@ import sun.security.action.GetIntegerAction;
 /**
  * @author <a href="mailto:iavila@systemsbiology.org">Iliana Avila-Campillo</a>
  *
- * TODO: If the cache gets too big (what is too big? > 6000??? How many nodes do people view in Cytoscape???) clear them.
+ * TODO: If the cache gets too big (what is too big? > 6000???) clear them.
  */
 public class InteractionsHandler implements InteractionsDataSource {
     
@@ -41,7 +41,7 @@ public class InteractionsHandler implements InteractionsDataSource {
     /**
      * Default constructr
      */
-    public InteractionsHandler (){
+    public InteractionsHandler(){
         this.interactionSources = new Vector();
         this.synonymsSource = new SQLSynonymsHandler();
         this.universalToDbCache = new Hashtable();
@@ -55,7 +55,7 @@ public class InteractionsHandler implements InteractionsDataSource {
 	 *            a Vector of Strings of fully specified classes of
 	 *            InteractionDataSources
 	 */
-	public InteractionsHandler(Vector interaction_sources) {
+	public InteractionsHandler(Vector interaction_sources){
 		this.interactionSources = new Vector();
 		this.synonymsSource = new SQLSynonymsHandler();
         this.universalToDbCache = new Hashtable();

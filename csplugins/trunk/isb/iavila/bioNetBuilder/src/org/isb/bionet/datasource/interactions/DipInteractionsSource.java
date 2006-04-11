@@ -2,7 +2,6 @@ package org.isb.bionet.datasource.interactions;
 
 import java.sql.ResultSet;
 import java.util.*;
-import org.isb.xmlrpc.handler.db.SQLUtils;
 import org.isb.bionet.datasource.synonyms.*;
 
 public class DipInteractionsSource extends SimpleInteractionsSource implements InteractionsDataSource {
