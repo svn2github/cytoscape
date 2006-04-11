@@ -135,7 +135,7 @@ public class BioDataServer {
 		// Flip the names or not. Will be given from the Wizard.
 		flip = false;
 
-		thesaurus = new Thesaurus(CytoscapeInit.getDefaultSpeciesName());
+		thesaurus = new Thesaurus(CytoscapeInit.getProperty("defaultSpeciesName"));
 
 		taxonName = null;
 		taxonNumber = null;

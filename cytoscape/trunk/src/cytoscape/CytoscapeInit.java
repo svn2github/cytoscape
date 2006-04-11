@@ -64,6 +64,7 @@ import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.util.shadegrown.WindowUtilities;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.data.readers.TextHttpReader;
+import cytoscape.data.readers.CytoscapeSessionReader;
 import cytoscape.util.FileUtil;
 
 /**
@@ -172,7 +173,11 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 			};
 
 			Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(attsChangeListener);
+			
+			// load the session, if it exists
+			loadSessionFile();
 		}
+	
 
 		// now that we are properly set up,
 		// load all data, then load all plugins
@@ -804,5 +809,28 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 			System.out.println("couldn't create jar url from '" + urlString + "'");
 		}
 		return url;
+	}
+
+	private void loadSessionFile() {
+		String sessionFile = initParams.getSessionFile();
+		CytoscapeSessionReader reader = null;
+
+		try { 
+			if ( sessionFile != null ) {
+				if ( sessionFile.matches( FileUtil.urlPattern() ) ) 
+					reader = new CytoscapeSessionReader(new URL(sessionFile) );
+				else
+					reader = new CytoscapeSessionReader(sessionFile);
+			}
+
+			if ( reader != null )
+				reader.read();
+			else
+				System.out.println("couldn't create session from file: '" + sessionFile + "'");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("couldn't create session from file: '" + sessionFile + "'");
+		}
 	}
 }
