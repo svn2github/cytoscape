@@ -811,7 +811,7 @@ public abstract class Cytoscape {
 	public static CytoscapeDesktop getDesktop() {
 		if (defaultDesktop == null) {
 			// System.out.println( " Defaultdesktop created: "+defaultDesktop );
-			defaultDesktop = new CytoscapeDesktop(CytoscapeInit.getViewType());
+			defaultDesktop = new CytoscapeDesktop(CytoscapeDesktop.parseViewType(CytoscapeInit.getProperty("viewType")));
 		}
 		return defaultDesktop;
 	}
@@ -979,24 +979,6 @@ public abstract class Cytoscape {
 				network.getIdentifier()));
 	}
 
-	protected static void addNetwork(CyNetwork network) {
-		addNetwork(network, null, true);
-	}
-
-	protected static void addNetwork(CyNetwork network, String title,
-			boolean create_view) {
-		addNetwork(network, title, null, create_view);
-	}
-
-	protected static void addNetwork(CyNetwork network, String title) {
-		addNetwork(network, title, true);
-	}
-
-	protected static void addNetwork(CyNetwork network, String title,
-			CyNetwork parent) {
-		addNetwork(network, title, parent, true);
-	}
-
 	protected static void addNetwork(CyNetwork network, String title,
 			CyNetwork parent, boolean create_view) {
 
@@ -1010,12 +992,10 @@ public abstract class Cytoscape {
 		}
 
 		firePropertyChange(NETWORK_CREATED, p_id, network.getIdentifier());
-		if (network.getNodeCount() < CytoscapeInit.getViewThreshold()
+		if (network.getNodeCount() < Integer.parseInt(CytoscapeInit.getProperty("viewThreshold"))
 				&& create_view) {
 			createNetworkView(network);
 		}
-
-		// createNetworkView( network );
 	}
 
 	/**
@@ -1040,7 +1020,7 @@ public abstract class Cytoscape {
 	public static CyNetwork createNetwork(String title, boolean create_view) {
 		CyNetwork network = getRootGraph().createNetwork(new int[] {},
 				new int[] {});
-		addNetwork(network, title, false);
+		addNetwork(network, title, null, false);
 		return network;
 	}
 
@@ -1056,7 +1036,7 @@ public abstract class Cytoscape {
 	 */
 	public static CyNetwork createNetwork(int[] nodes, int[] edges, String title) {
 		CyNetwork network = getRootGraph().createNetwork(nodes, edges);
-		addNetwork(network, title);
+		addNetwork(network, title,null, true);
 		return network;
 	}
 
@@ -1073,7 +1053,7 @@ public abstract class Cytoscape {
 	public static CyNetwork createNetwork(Collection nodes, Collection edges,
 			String title) {
 		CyNetwork network = getRootGraph().createNetwork(nodes, edges);
-		addNetwork(network, title);
+		addNetwork(network, title,null, true);
 		return network;
 	}
 
@@ -1092,7 +1072,7 @@ public abstract class Cytoscape {
 	public static CyNetwork createNetwork(int[] nodes, int[] edges,
 			String child_title, CyNetwork parent) {
 		CyNetwork network = getRootGraph().createNetwork(nodes, edges);
-		addNetwork(network, child_title, parent);
+		addNetwork(network, child_title, parent, true);
 		return network;
 	}
 
@@ -1109,7 +1089,7 @@ public abstract class Cytoscape {
 	public static CyNetwork createNetwork(Collection nodes, Collection edges,
 			String child_title, CyNetwork parent) {
 		CyNetwork network = getRootGraph().createNetwork(nodes, edges);
-		addNetwork(network, child_title, parent);
+		addNetwork(network, child_title, parent, true);
 		return network;
 	}
 
@@ -1299,12 +1279,6 @@ public abstract class Cytoscape {
 					+ filename;
 			String title = "Load Expression Data";
 
-			if (CytoscapeInit.suppressView()) {
-				JOptionPane.showMessageDialog(getDesktop(), errString, title,
-						JOptionPane.ERROR_MESSAGE);
-				return false;
-			}
-
 		}
 
 		if (copy_atts) {
@@ -1316,13 +1290,6 @@ public abstract class Cytoscape {
 		Cytoscape.firePropertyChange(Cytoscape.EXPRESSION_DATA_LOADED, null,
 				expressionData);
 
-		if (CytoscapeInit.suppressView()) {
-			// display a description of the data in a dialog
-			String expDescript = expressionData.getDescription();
-			String title = "Load Expression Data";
-			JOptionPane.showMessageDialog(getDesktop(), expDescript, title,
-					JOptionPane.PLAIN_MESSAGE);
-		}
 		return true;
 	}
 
