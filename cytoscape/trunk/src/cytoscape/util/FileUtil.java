@@ -45,6 +45,7 @@ import java.io.FileInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.Iterator;
 import java.util.Iterator;
 
@@ -200,10 +201,9 @@ public abstract class FileUtil {
   public static InputStream getInputStream(String name) {
   	InputStream in = null;
 	try {
-		if ( name.matches( urlPattern() ) ) {
+		if ( name.matches( urlPattern() ) ) { 
 			URL u = new URL(name);
 			in = u.openStream();
-		// otherwise, assume it's a file
 		} else
 			in = new FileInputStream(name);
 	} catch (IOException ioe) {
@@ -217,7 +217,7 @@ public abstract class FileUtil {
    * This may need to be updated to be more precise.
    */
   public static String urlPattern() {
-	return "^\\w+\\:\\/\\/\\S+$";
+	return "^(jar\\:)?(\\w+\\:\\/\\/\\S+)(\\!\\/\\S*)?$";
   }
 
 }

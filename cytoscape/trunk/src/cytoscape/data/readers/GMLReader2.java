@@ -610,8 +610,10 @@ public class GMLReader2 implements GraphReader {
 		try {
 			keyVals = (new GMLParser(filename)).parseList();
 		} catch (Exception io) {
-                  taskMonitor.setException(io, io.getMessage());
-			throw new RuntimeException(io.getMessage());
+		  io.printStackTrace();
+		  if ( taskMonitor != null )
+                  	taskMonitor.setException(io, io.getMessage());
+		  throw new RuntimeException(io.getMessage());
 		}
 		initializeStructures();
 

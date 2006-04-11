@@ -54,6 +54,8 @@ import giny.view.GraphView;
 import giny.view.NodeView;
 
 import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -67,6 +69,7 @@ import cytoscape.data.Interaction;
 import cytoscape.data.servers.BioDataServer;
 import cytoscape.task.TaskMonitor;
 import cytoscape.util.PercentUtil;
+import cytoscape.util.FileUtil;
 
 /**
  * Reader for graphs in the interactions file format. Given the filename,
@@ -163,16 +166,15 @@ public class InteractionsReader implements GraphReader {
 	// ----------------------------------------------------------------------------------------
 	public void read(boolean canonicalize) throws IOException {
 		String rawText;
+		String lineSep = System.getProperty("line.separator");
 		if (!is_zip) {
-			if (filename.trim().startsWith("jar://")) {
-				TextJarReader reader = new TextJarReader(filename);
-				reader.read();
-				rawText = reader.getText();
-			} else {
-				TextFileReader reader = new TextFileReader(filename);
-				reader.read();
-				rawText = reader.getText();
+			StringBuffer sb = new StringBuffer();	
+			String line = null;
+			BufferedReader br = new BufferedReader( new InputStreamReader( FileUtil.getInputStream( filename ) ) );
+			while ((line = br.readLine()) != null) {
+			      sb.append (line + lineSep);
 			}
+			rawText = sb.toString();
 		} else {
 			rawText = zip_entry;
 		}
@@ -181,7 +183,7 @@ public class InteractionsReader implements GraphReader {
 		if (rawText.indexOf("\t") >= 0)
 			delimiter = "\t";
 
-		String[] lines = rawText.split("\n");
+		String[] lines = rawText.split(lineSep);
 
 		// There are a total of 6 steps to read in a complete SIF File
 		if (taskMonitor != null) {

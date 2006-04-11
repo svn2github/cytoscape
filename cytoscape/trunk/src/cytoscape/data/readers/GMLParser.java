@@ -37,9 +37,13 @@
 */
 
 package cytoscape.data.readers;
+
+import cytoscape.util.FileUtil;
+
 import java.io.StreamTokenizer;
 import java.io.IOException;
 import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.io.FileReader;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
@@ -96,11 +100,8 @@ public class GMLParser{
     * Make a stream tokenizer out of the given this file and read in the file
     */
    public GMLParser(String file) throws IOException, Exception{
-      if ( file.indexOf( "://" ) < 0 ) {
-	 tokenizer = new StreamTokenizer(new BufferedReader(new FileReader(file)));
-      } else {
-	 tokenizer = new StreamTokenizer( new BufferedReader( new java.io.StringReader( new TextHttpReader( file ).getText() ) ) );
-      } // end of else
+
+      tokenizer = new StreamTokenizer( new BufferedReader( new InputStreamReader( FileUtil.getInputStream( file ) ) ) );
       
       tokenizer.resetSyntax();
       tokenizer.commentChar('#');
