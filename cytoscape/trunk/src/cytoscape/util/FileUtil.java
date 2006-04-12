@@ -238,7 +238,7 @@ public abstract class FileUtil {
    * This may need to be updated to be more precise.
    */
   public static String urlPattern() {
-	return "^(jar\\:)?(\\w+\\:\\/\\/\\S+)(\\!\\/\\S*)?$";
+	return "^(jar\\:)?(\\w+\\:\\/+\\S+)(\\!\\/\\S*)?$";
   }
 
 }
