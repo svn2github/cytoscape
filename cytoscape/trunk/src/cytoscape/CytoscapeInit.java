@@ -585,15 +585,11 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 					if (entry.endsWith("class")) {
 						// convert the entry to an assignable class name
 						entry = entry.replaceAll("\\.class$", "");
-						// Ideally we would use 
-						// System.getProperty("file.separator") or 
-						// File.separatorChar,  however that doesn't work 
-						// on windoze.  The problem appears to be that
-						// because the jar file was created on a unix platform,
-						// the separator remains in unix style.  If the jar 
-						// ever gets created on a windows machine,
-						// we may have to revisit this.
-						entry = entry.replaceAll("/", ".");
+						// A regex to match the two known types of file
+						// separators.  We can't use File.separator because
+						// the system the jar was created on is not 
+						// necessarily the same is the one it is running on.
+						entry = entry.replaceAll("/|\\\\", ".");
 
 						// System.out.println(" CLASS: " + entry);
 						if (!(isClassPlugin(entry))) {
