@@ -1,44 +1,41 @@
-
 /*
-  File: BioDataServer.java 
-  
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-  
-  The Cytoscape Consortium is: 
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Pasteur Institute
-  - Agilent Technologies
-  
-  This library is free software; you can redistribute it and/or modify it
-  under the terms of the GNU Lesser General Public License as published
-  by the Free Software Foundation; either version 2.1 of the License, or
-  any later version.
-  
-  This library is distributed in the hope that it will be useful, but
-  WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
-  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
-  documentation provided hereunder is on an "as is" basis, and the
-  Institute for Systems Biology and the Whitehead Institute 
-  have no obligations to provide maintenance, support,
-  updates, enhancements or modifications.  In no event shall the
-  Institute for Systems Biology and the Whitehead Institute 
-  be liable to any party for direct, indirect, special,
-  incidental or consequential damages, including lost profits, arising
-  out of the use of this software and its documentation, even if the
-  Institute for Systems Biology and the Whitehead Institute 
-  have been advised of the possibility of such damage.  See
-  the GNU Lesser General Public License for more details.
-  
-  You should have received a copy of the GNU Lesser General Public License
-  along with this library; if not, write to the Free Software Foundation,
-  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ File: BioDataServer.java 
+ 
+ Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+ 
+ The Cytoscape Consortium is: 
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Pasteur Institute
+ - Agilent Technologies
+ 
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+ 
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute 
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute 
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute 
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+ 
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+ */
 
 // BioDataServer
-
-
 // -----------------------------------------------------------------------------------------
 // $Revision$
 // $Date$
@@ -47,24 +44,16 @@
 package cytoscape.data.servers;
 
 // -----------------------------------------------------------------------------------------
-import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.Reader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.Naming;
-import java.util.Arrays;
-import java.util.StringTokenizer;
+import java.util.HashMap;
 import java.util.Vector;
-import java.util.regex.Pattern;
 
-import javax.swing.JOptionPane;
-
-import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.cruft.obo.BiologicalProcessAnnotationReader;
 import cytoscape.cruft.obo.CellularComponentAnnotationReader;
@@ -84,7 +73,6 @@ import cytoscape.data.synonyms.Thesaurus;
 import cytoscape.data.synonyms.readers.ThesaurusFlatFileReader;
 import cytoscape.util.BioDataServerUtil;
 
-
 // ----------------------------------------------------------------------------------------
 public class BioDataServer {
 
@@ -97,10 +85,7 @@ public class BioDataServer {
 	private boolean flip;
 
 	// This is for taxon name-number conversion over the net
-	private static final String NCBI_TAXON_SERVER = "http://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=";
 	private static final String TAXON_RESOURCE_FILE = "/cytoscape/resources/tax_report.txt";
-
-	private final String FS = System.getProperty("file.separator");
 
 	String taxonName;
 	String taxonNumber;
@@ -111,6 +96,8 @@ public class BioDataServer {
 	File start; // Start dir of the Cytoscape
 
 	Thesaurus thesaurus; // for flipping the names
+	
+	HashMap attributeMap; // Manage which ontoligies are mapped as CyAttributes.
 
 	BioDataServerUtil bdsu; // Utilities for the Biodataserver
 	BufferedReader taxonFileReader;
@@ -125,9 +112,16 @@ public class BioDataServer {
 	 * Mod. by Kei (9/10/2005): 1. Read new obo file and gene_association file
 	 * format. 2. Wrote a taxon number <-> taxon name converter. This function
 	 * is based on the list in the file, users need to put the file in the dir.
+	 * 
+	 * <New for Cytoscape 2.3> 
+	 * Bio Data Server manages ontologies mapped onto
+	 * CyAttributes This can be managed through GO Mapper GUI. 
+	 * kono(4/12/2006)
 	 */
 	public BioDataServer(String serverName) throws Exception {
 
+		attributeMap = new HashMap();
+		
 		bdsu = new BioDataServerUtil();
 
 		taxonFileReader = null;
@@ -135,7 +129,8 @@ public class BioDataServer {
 		// Flip the names or not. Will be given from the Wizard.
 		flip = false;
 
-		thesaurus = new Thesaurus(CytoscapeInit.getProperty("defaultSpeciesName"));
+		thesaurus = new Thesaurus(CytoscapeInit
+				.getProperty("defaultSpeciesName"));
 
 		taxonName = null;
 		taxonNumber = null;
@@ -147,9 +142,6 @@ public class BioDataServer {
 			// look for a readable file
 			server = new BioDataServerRmi(); // actually runs in process
 			File fileTester = new File(serverName);
-			final String separator = fileTester.separator;
-			// absPath = start.getPath() + separator;
-			// absPath = start.getPath() + FS; // apparently not used for anything
 
 			if ((serverName.startsWith("jar://"))
 					|| (serverName.startsWith("http://"))
@@ -166,37 +158,21 @@ public class BioDataServer {
 				// If the manifest contains obo or gene_association entry,
 				// handle it as a new manifest file format.
 				fileFlag = checkFileType(manFileIn);
-				
-				
+
 				// New File Type found.
 				if (fileFlag == true) {
-					
-					// taxonFileName = absPath + TAXON_FILE;
-					// taxonFile = new File(taxonFileName);
-					// System.out.println("Taxon File Name is " +
-					// taxonFileName);
 
 					// Extract file names and flip state from the manifest file
 					String[] flags = parseLoadFile(serverName, "flip");
-					
-					// String[] tempStrs = flags[0].split(separator);
-					//String[] tempStrs = flags[0].split(FS);
-					//System.out.println("###########flags incl = " + tempStrs[0] );
-					//if (tempStrs[tempStrs.length - 1].equals("true")) {
+
 					if (flags[0].endsWith("true")) {
-						
-						
+
 						flip = true;
 						System.out
 								.println("Cannonical and common names will be fliped...");
 					} else {
 						flip = false;
 					}
-
-					// Extract species names from the manifest
-					// String[] spNames = parseLoadFile(serverName, "species");
-					// tempStrs = spNames[0].split( separator );
-					// taxonName = tempStrs[ tempStrs.length - 1];
 
 					// Extract obo file name
 					String[] oboFile = parseLoadFile(serverName, OBO_FILE);
@@ -213,7 +189,7 @@ public class BioDataServer {
 					}
 
 				} else {
-					// Lode old-style manifest file (for backword
+					// Load old-style manifest file (for backword
 					// compatibility).
 					String[] ontologyFiles = parseLoadFile(serverName,
 							"ontology");
@@ -231,7 +207,6 @@ public class BioDataServer {
 						+ serverName + "'");
 			}
 
-
 		} // else: look for a readable file
 	} // ctor
 
@@ -240,9 +215,9 @@ public class BioDataServer {
 	//
 	protected boolean checkFileType(final BufferedReader br) throws IOException {
 		String curLine = null;
-		
+
 		while (null != (curLine = br.readLine())) {
-			
+
 			if (curLine.startsWith(OBO_FILE)
 					|| curLine.startsWith(GENE_ASSOCIATION_FILE)) {
 				br.close();
@@ -527,13 +502,11 @@ public class BioDataServer {
 			throws Exception {
 		for (int i = 0; i < thesaurusFilenames.length; i++) {
 			String filename = thesaurusFilenames[i];
-			// /Thread.currentThread().dumpStack();
-			// System.out.println( "Load Thesaurus: "+filename );
+			
 			ThesaurusFlatFileReader reader = new ThesaurusFlatFileReader(
 					filename);
 			Thesaurus thesaurus = reader.getThesaurus();
-			// System.out.print( "=========Thesaurus is : " +
-			// thesaurus.getSpecies() );
+			
 			server.addThesaurus(thesaurus.getSpecies(), thesaurus);
 		}
 
@@ -704,105 +677,6 @@ public class BioDataServer {
 		}
 
 	}
-
-	// ----------------------------------------------------------------------------------------
-
-	// public String getSpecies(final BufferedReader taxRd,
-	// final BufferedReader gaRd) throws IOException {
-	// String sp = null;
-	// String curLine = null;
-	//
-	// while (null != (curLine = gaRd.readLine().trim())) {
-	// // Skip comment
-	// if (curLine.startsWith("!")) {
-	// // do nothing
-	// // System.out.println("Comment: " + curLine);
-	// } else {
-	// StringTokenizer st = new StringTokenizer(curLine, "\t");
-	// while (st.hasMoreTokens()) {
-	// String curToken = st.nextToken();
-	// if (curToken.startsWith("taxon")) {
-	// st = new StringTokenizer(curToken, ":");
-	// st.nextToken();
-	// curToken = st.nextToken();
-	// st = new StringTokenizer(curToken, "|");
-	// curToken = st.nextToken();
-	// // System.out.println("Taxon ID found: " + curToken);
-	// sp = curToken;
-	// sp = taxIdToName(sp, taxRd);
-	// taxRd.close();
-	// gaRd.close();
-	// return sp;
-	// }
-	// }
-	// }
-	//
-	// }
-	//
-	// taxRd.close();
-	// gaRd.close();
-	// return sp;
-	// }
-	//
-	// // Taxonomy to name.
-	// // taxId is an NCBI taxon ID
-	// // All info is availabe at:
-	// // http://www.ncbi.nlm.nih.gov/Taxonomy/TaxIdentifier/tax_identifier.cgi
-	// //
-	// public String taxIdToName(String taxId, final BufferedReader taxRd)
-	// throws IOException {
-	// String name = null;
-	// String curLine = null;
-	//
-	// taxRd.readLine();
-	//
-	// while (null != (curLine = taxRd.readLine().trim())) {
-	// StringTokenizer st = new StringTokenizer(curLine, "|");
-	// String[] oneEntry = new String[st.countTokens()];
-	// int counter = 0;
-	//
-	// while (st.hasMoreTokens()) {
-	// String curToken = st.nextToken().trim();
-	// oneEntry[counter] = curToken;
-	// counter++;
-	// if (curToken.equals(taxId)) {
-	//
-	// name = oneEntry[1];
-	// return name;
-	// }
-	// }
-	// }
-	// return name;
-	// }
-	//
-	// public String checkSpecies(final BufferedReader gaReader)
-	// throws IOException {
-	//
-	// String txName = null;
-	// // Get taxon name
-	// if (taxonFile.canRead() == true) {
-	// final BufferedReader taxonFileReader = new BufferedReader(
-	// new FileReader(taxonFile));
-	//
-	// txName = getSpecies(taxonFileReader, gaReader);
-	// if (txName == null) {
-	// System.out
-	// .println("Warning: Cannot recognized speices. Speices field is set to
-	// \"unknown.\"");
-	// System.out
-	// .println("Warning: Please check your tax_report.txt file.");
-	// txName = "unknown";
-	// }
-	// } else {
-	// System.out.println("Warning: Cannot read taxon file.");
-	// System.out.println("Warning: Speices field is set to \"unknown.\"");
-	// System.out
-	// .println("Warning: Please check your tax_report.txt file.");
-	// txName = "unknown";
-	// }
-	//
-	// return txName;
-	// }
 
 } // BioDataServer
 
