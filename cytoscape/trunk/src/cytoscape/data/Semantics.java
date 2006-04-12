@@ -1,41 +1,39 @@
-
 /*
-  File: Semantics.java 
-  
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-  
-  The Cytoscape Consortium is: 
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Pasteur Institute
-  - Agilent Technologies
-  
-  This library is free software; you can redistribute it and/or modify it
-  under the terms of the GNU Lesser General Public License as published
-  by the Free Software Foundation; either version 2.1 of the License, or
-  any later version.
-  
-  This library is distributed in the hope that it will be useful, but
-  WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
-  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
-  documentation provided hereunder is on an "as is" basis, and the
-  Institute for Systems Biology and the Whitehead Institute 
-  have no obligations to provide maintenance, support,
-  updates, enhancements or modifications.  In no event shall the
-  Institute for Systems Biology and the Whitehead Institute 
-  be liable to any party for direct, indirect, special,
-  incidental or consequential damages, including lost profits, arising
-  out of the use of this software and its documentation, even if the
-  Institute for Systems Biology and the Whitehead Institute 
-  have been advised of the possibility of such damage.  See
-  the GNU Lesser General Public License for more details.
-  
-  You should have received a copy of the GNU Lesser General Public License
-  along with this library; if not, write to the Free Software Foundation,
-  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
-
+ File: Semantics.java 
+ 
+ Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+ 
+ The Cytoscape Consortium is: 
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Pasteur Institute
+ - Agilent Technologies
+ 
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+ 
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute 
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute 
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute 
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+ 
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+ */
 
 package cytoscape.data;
 
@@ -69,6 +67,7 @@ public class Semantics {
 	public static final String IDENTIFIER = "identifier";
 	public static final String CANONICAL_NAME = "canonicalName";
 	public static final String COMMON_NAME = "commonName";
+	public static final String ALIASES = "aliases";
 	public static final String SPECIES = "species";
 	public static final String INTERACTION = "interaction";
 	public static final String MOLECULE_TYPE = "molecule_type";
@@ -78,6 +77,8 @@ public class Semantics {
 	public static final String MOLECULAR_FUNCTION = "molecular_function";
 	public static final String BIOLOGICAL_PROCESS = "biological_process";
 	public static final String CELLULAR_COMPONENT = "cellular_component";
+
+	public static final String LABEL = "label";
 
 	/**
 	 * This method should be called in the process of creating a new network, or
@@ -91,7 +92,7 @@ public class Semantics {
 	 * or put up a UI to prompt the user for what services they would like.
 	 */
 	public static void applyNamingServices(cytoscape.CyNetwork network) {
-		// assignSpecies(network, cytoscapeObj);
+		assignSpecies(network);
 		assignCommonNames(network, Cytoscape.getBioDataServer());
 	}
 
@@ -112,13 +113,11 @@ public class Semantics {
 			return;
 		}
 
-		String defaultSpecies = CytoscapeInit.getDefaultSpeciesName();
+		String defaultSpecies = CytoscapeInit.getProperty("defaultSpeciesName");
 		if (defaultSpecies == null) {
 			return;
 		} // we have no value to set
 
-		String callerID = "Semantics.assignSpecies";
-		// network.beginActivity(callerID);
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 		CountedIterator keys = nodeAttributes.getMultiHashMap().getObjectKeys(
 				CANONICAL_NAME);
@@ -136,7 +135,6 @@ public class Semantics {
 						defaultSpecies);
 			}
 		}
-		// network.endActivity(callerID);
 	}
 
 	/**
@@ -185,11 +183,6 @@ public class Semantics {
 		String id = node.getIdentifier();
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 
-//		System.out.print("ID in graph node = " + node.getIdentifier());
-//		System.out.println(", CN in CyAttr = "
-//				+ nodeAttributes.getStringAttribute(node.getIdentifier(),
-//						Semantics.CANONICAL_NAME));
-
 		// can't have a null node
 		if (node == null)
 			return;
@@ -199,13 +192,12 @@ public class Semantics {
 
 			species = nodeAttributes.getStringAttribute(id, SPECIES);
 			if (species == null) {
-				species = CytoscapeInit.getDefaultSpeciesName();
+				species = CytoscapeInit.getProperty("defaultSpeciesName");
 			}
 		}
 		// Check for the case when we don't have a default species
 		if (species != null) {
 			nodeAttributes.setAttribute(id, SPECIES, species);
-			// Cytoscape.setNodeAttributeValue(node, SPECIES, species);
 		}
 
 		// Get Gene Ontology Server
@@ -217,33 +209,32 @@ public class Semantics {
 			return;
 
 		// now do the name assignment
-
-		// String name = node.getIdentifier().toUpperCase();
-
 		String cname = bds.getCanonicalName(species, id);
-		// name was not canonical name
-		// if (id != cname)
-		// node.setIdentifier(cname);
 
 		if (id != nodeAttributes.getStringAttribute(id, CANONICAL_NAME)) {
 			nodeAttributes.setAttribute(id, CANONICAL_NAME, id);
 		}
 
-		// nodeAttributes.setAttribute(id, CANONICAL_NAME, cname);
-
 		if (cname != null) {
 			String[] synonyms = bds.getAllCommonNames(species, cname);
 			StringBuffer concat = new StringBuffer();
 			String common_name = null;
+			
 			for (int j = 0; j < synonyms.length; ++j) {
-				concat.append(synonyms[j] + " ");
-				if (common_name == null)
-					common_name = synonyms[j];
+				if (synonyms[j].equals(id)) {
+					
+				} else {
+					concat.append(synonyms[j] + " ");
+					if (common_name == null)
+						common_name = synonyms[j];
+				}
 			}
-			if (common_name == null)
+			if (common_name == null) {
 				common_name = cname;
-
-			nodeAttributes.setAttribute(id, "ALIASES", concat.toString());
+				concat.append(cname);
+			}
+			// Fill both aliases and common names
+			nodeAttributes.setAttribute(id, ALIASES, concat.toString());
 			nodeAttributes.setAttribute(id, COMMON_NAME, common_name);
 		}
 	}
@@ -267,14 +258,10 @@ public class Semantics {
 		if (network == null || bioDataServer == null) {
 			return;
 		}
-		List nodes = network.nodesList();
 
-		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
-		for (Iterator i = nodes.iterator(); i.hasNext();) {
-
-			CyNode node = (CyNode) i.next();
+		for (Iterator it = network.nodesIterator(); it.hasNext();) {
+			CyNode node = (CyNode) it.next();
 			assignNodeAliases(node, null, bioDataServer);
-
 		}
 	}
 
@@ -292,8 +279,8 @@ public class Semantics {
 		final HashMap dupsFilter = new HashMap();
 		final CyAttributes attrs = Cytoscape.getEdgeAttributes();
 		final MultiHashMap mmap = attrs.getMultiHashMap();
-		final byte type = attrs.getType(Semantics.INTERACTION);
 		final CountedIterator objs = mmap.getObjectKeys(Semantics.INTERACTION);
+
 		while (objs.hasNext()) {
 			final String obj = (String) objs.next();
 			;
@@ -391,7 +378,6 @@ public class Semantics {
 		returnList.add(name);
 		String species = null;
 		if (network != null) {
-			String callerID = "Semantics.getAllSynonyms";
 			String commonName = Cytoscape.getNodeAttributes()
 					.getStringAttribute(name, COMMON_NAME);
 			if (commonName != null) {
@@ -401,7 +387,7 @@ public class Semantics {
 					SPECIES);
 		}
 		BioDataServer bioDataServer = Cytoscape.getBioDataServer();
-		species = CytoscapeInit.getDefaultSpeciesName();
+		species = CytoscapeInit.getProperty("defaultSpeciesName");
 		if (species != null) {
 			String[] synonyms = bioDataServer.getAllCommonNames(species, name);
 			returnList.addAll(Arrays.asList(synonyms));
