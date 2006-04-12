@@ -143,6 +143,7 @@ public class XGMMLReader implements GraphReader {
 
 	CyAttributes nodeAttributes;
 	CyAttributes edgeAttributes;
+	CyAttributes networkAttributes;
 
 	HashMap nodeGraphicsMap;
 	HashMap edgeGraphicsMap;
@@ -231,6 +232,7 @@ public class XGMMLReader implements GraphReader {
 
 		nodeAttributes = Cytoscape.getNodeAttributes();
 		edgeAttributes = Cytoscape.getEdgeAttributes();
+		networkAttributes = Cytoscape.getNetworkAttributes();
 
 		// Use JAXB-generated methods to create data structure
 		JAXBContext jc = JAXBContext.newInstance(XGMML_PACKAGE);
@@ -260,6 +262,9 @@ public class XGMMLReader implements GraphReader {
 				// System.out.println("Background color is " +
 				// curAtt.getValue());
 				backgroundColor = curAtt.getValue();
+			}
+			else {
+				readNetworkAttribute(network.getId(), curAtt);
 			}
 		}
 
@@ -932,4 +937,62 @@ public class XGMMLReader implements GraphReader {
 		}
 	}
 
+	/**
+	 * Reads a network attribute from the xggml file 
+	 * and sets it within CyAttributes for a network.
+	 * 
+	 * @param networkID - key into CyAttributes
+	 * @param curAtt    - the attribute read out of xgmml file
+	 */
+	private void readNetworkAttribute(String networkID, Att curAtt) {
+
+		// check args
+		if (networkID == null || networkID.length() == 0) return;
+		String dataType = ((Att) curAtt).getLabel();
+		if (dataType == null) return;
+
+		// string
+		if (dataType.equals(STRING_TYPE)
+			&& ((Att) curAtt).getValue() != null) {
+			networkAttributes.setAttribute(networkID,
+										   ((Att) curAtt).getName(),
+										   ((Att) curAtt).getValue());
+		}
+		// integer
+		else if (dataType.equals(INT_TYPE)
+				 && ((Att) curAtt).getValue() != null) {
+			networkAttributes.setAttribute(networkID,
+										   ((Att) curAtt).getName(),
+										   new Integer(((Att) curAtt).getValue()));
+		}
+		// float
+		else if (dataType.equals(FLOAT_TYPE)
+				 && ((Att) curAtt).getValue() != null) {
+			networkAttributes.setAttribute(networkID,
+										   ((Att) curAtt).getName(),
+										   new Double(((Att) curAtt).getValue()));
+		}
+		// boolean
+		else if (dataType.equals(BOOLEAN_TYPE)
+				 && ((Att) curAtt).getValue() != null) {
+			networkAttributes.setAttribute(networkID,
+										   ((Att) curAtt).getName(),
+										   new Boolean(((Att) curAtt).getValue()));
+		}
+		// list
+		else if (dataType.equals(LIST_TYPE)) {
+			ArrayList listAttr = new ArrayList();
+			Iterator listIt = ((Att) curAtt).getContent().iterator();
+			while (listIt.hasNext()) {
+				Object listItem = listIt.next();
+				if (listItem != null
+					&& listItem.getClass() == AttImpl.class) {
+					listAttr.add(((AttImpl) listItem).getValue());
+				}
+			}
+			networkAttributes.setAttributeList(networkID,
+											   ((Att) curAtt).getName(),
+											   listAttr);
+		}
+	}
 }
