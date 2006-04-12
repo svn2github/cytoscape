@@ -107,7 +107,7 @@ public class GraphMerge extends CytoscapePlugin {
 			dialog.setVisible(true);
 			if (!dialog.isCancelled()) {
 				if(dialog.getOperation() == MergeDialog.UNION){
-					GraphSetUtils.createDifferenceGraph(dialog.getNetworkList(),true,"Union");
+					GraphSetUtils.createUnionGraph(dialog.getNetworkList(),true,"Union");
 				}
 				else if(dialog.getOperation() == MergeDialog.INTERSECTION){
 					GraphSetUtils.createIntersectionGraph(dialog.getNetworkList(),true,"Intersection");
