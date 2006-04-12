@@ -204,7 +204,8 @@ public class CytoscapeSessionReader {
 					.getNetworkView(currentNetworkID);
 			if (targetView != null) {
 				targetView.setVisualStyle((String) vsMap.get(currentNetworkID));
-			}
+				targetView.applyVizmapper(targetView.getVisualStyle());
+			} 
 		}
 
 		return true;

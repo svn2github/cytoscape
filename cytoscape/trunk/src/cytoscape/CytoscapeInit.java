@@ -822,16 +822,24 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 		CytoscapeSessionReader reader = null;
 
 		try { 
+			String sessionName = "";
 			if ( sessionFile != null ) {
-				if ( sessionFile.matches( FileUtil.urlPattern() ) ) 
-					reader = new CytoscapeSessionReader(new URL(sessionFile) );
-				else
+				if ( sessionFile.matches( FileUtil.urlPattern() ) ) {
+					URL u = new URL(sessionFile);
+					reader = new CytoscapeSessionReader(u);
+					sessionName = u.getFile();
+				} else {
 					reader = new CytoscapeSessionReader(sessionFile);
+		                	File shortName = new File(sessionFile);
+					sessionName = shortName.getName();
+				}
 			}
 
-			if ( reader != null )
+			if ( reader != null ) {
 				reader.read();
-			else
+		                Cytoscape.getDesktop().setTitle("Cytoscape Desktop (Session Name: " + sessionName + ")");
+				
+			} else
 				System.out.println("couldn't create session from file: '" + sessionFile + "'");
 
 		} catch (Exception e) {
