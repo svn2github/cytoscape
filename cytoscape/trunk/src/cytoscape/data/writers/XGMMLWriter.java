@@ -109,13 +109,16 @@ public class XGMMLWriter {
 	// Object types
 	protected static int NODE = 1;
 	protected static int EDGE = 2;
+	protected static int NETWORK = 3;
 
 	protected static final String BACKGROUND = "backgroundColor";
 
 	private CyAttributes nodeAttributes;
 	private CyAttributes edgeAttributes;
+	private CyAttributes networkAttributes;
 	private String[] nodeAttNames = null;
 	private String[] edgeAttNames = null;
+	private String[] networkAttNames = null;
 
 	private CyNetwork network;
 	private CyNetworkView networkView;
@@ -148,6 +151,7 @@ public class XGMMLWriter {
 
 		nodeAttributes = Cytoscape.getNodeAttributes();
 		edgeAttributes = Cytoscape.getEdgeAttributes();
+		networkAttributes = Cytoscape.getNetworkAttributes();
 
 		nodeList = new ArrayList();
 		metanodeList = new ArrayList();
@@ -155,6 +159,7 @@ public class XGMMLWriter {
 
 		nodeAttNames = nodeAttributes.getAttributeNames();
 		edgeAttNames = edgeAttributes.getAttributeNames();
+		networkAttNames = networkAttributes.getAttributeNames();
 
 		try {
 			initialize();
@@ -223,6 +228,9 @@ public class XGMMLWriter {
 		// Create edge objects
 		writeEdges();
 
+		// write out network attributes
+		writeNetworkAttributes();
+
 		// This creates the header of the XML document.
 		writer.write("<?xml version='1.0'?>\n");
 
@@ -284,6 +292,12 @@ public class XGMMLWriter {
 
 		}
 
+	}
+
+	// write out network attributes
+	protected void writeNetworkAttributes() throws JAXBException {
+
+		attributeWriter(NETWORK, network.getIdentifier(), null);
 	}
 
 	// Expand metanode information
@@ -430,7 +444,51 @@ public class XGMMLWriter {
 				targetEdge.getAtt().add(attr);
 			}
 		}
-
+		// process network attributes
+		else if (type == NETWORK) {
+			for (int i = 0; i < networkAttNames.length; i++){
+				// create the attribute and set its type
+				attr = objFactory.createAtt();
+				attType = networkAttributes.getType(networkAttNames[i]);
+				// floating attribute
+				if (attType == CyAttributes.TYPE_FLOATING) {
+					Double dAttr = networkAttributes.getDoubleAttribute(id, networkAttNames[i]);
+					attr.setName(networkAttNames[i]);
+					attr.setLabel(FLOAT_TYPE);
+					if (dAttr != null) attr.setValue(dAttr.toString());
+				}
+				// integer type
+				else if (attType == CyAttributes.TYPE_INTEGER) {
+					Integer iAttr = networkAttributes.getIntegerAttribute(id, networkAttNames[i]);
+					attr.setName(networkAttNames[i]);
+					attr.setLabel(INT_TYPE);
+					if (iAttr != null) attr.setValue(iAttr.toString());
+				}
+				// string type
+				else if (attType == CyAttributes.TYPE_STRING) {
+					String sAttr = networkAttributes.getStringAttribute(id, networkAttNames[i]);
+					attr.setName(networkAttNames[i]);
+					attr.setLabel(STRING_TYPE);
+					if (sAttr != null) attr.setValue(sAttr.toString());
+				}
+				// boolean type
+				else if (attType == CyAttributes.TYPE_BOOLEAN) {
+					Boolean bAttr = networkAttributes.getBooleanAttribute(id, networkAttNames[i]);
+					attr.setName(networkAttNames[i]);
+					attr.setLabel(BOOLEAN_TYPE);
+					if (bAttr != null) attr.setValue(bAttr.toString());
+				}
+				// simple list
+				else if (attType == CyAttributes.TYPE_SIMPLE_LIST) {
+					// tbd
+				}
+				// simple map
+				else if (attType == CyAttributes.TYPE_SIMPLE_MAP) {
+					// tdb
+				}
+				graph.getAtt().add(attr);
+			}
+		}
 	}
 
 	protected Graphics getGraphics(int type, Object target)
