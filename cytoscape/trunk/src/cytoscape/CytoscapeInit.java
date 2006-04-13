@@ -58,7 +58,6 @@ import java.util.jar.JarFile;
 import javax.swing.ImageIcon;
 
 import cytoscape.data.servers.BioDataServer;
-import cytoscape.init.CyPropertiesReader;
 import cytoscape.init.CyInitParams;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.util.shadegrown.WindowUtilities;
@@ -552,7 +551,7 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 		// assignable
 		// from CytoscapePlugin
 		for (int i = 0; i < urls.length; ++i) {
-			//System.out.println("url: '" + urls[i] + "'");
+			System.out.println("plugin url: '" + urls[i] + "'");
 			try {
 				JarURLConnection jc = (JarURLConnection) urls[i].openConnection();
 				JarFile jar = jc.getJarFile();
