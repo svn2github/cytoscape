@@ -65,28 +65,28 @@ public class EdgeWeightShuffleTest extends TestCase {
 	System.out.println("before shuffle");
 	System.out.println(g.toString());
 
-	assertTrue("edge a f expect 1.0: got: " + g.getEdgeWeight("a","f"), g.getEdgeWeight("a","f") == 1.0 );
-	assertTrue("edge a b expect 2.0: got: " + g.getEdgeWeight("a","b"), g.getEdgeWeight("a","b") == 2.0 );
-	assertTrue("edge b c expect 3.0: got: " + g.getEdgeWeight("b","c"), g.getEdgeWeight("b","c") == 3.0 );
-	assertTrue("edge b d expect 4.0: got: " + g.getEdgeWeight("b","d"), g.getEdgeWeight("b","d") == 4.0 );
-	assertTrue("edge c f expect 5.0: got: " + g.getEdgeWeight("c","f"), g.getEdgeWeight("c","f") == 5.0 );
-	assertTrue("edge c d expect 6.0: got: " + g.getEdgeWeight("c","d"), g.getEdgeWeight("c","d") == 6.0 );
-	assertTrue("edge d e expect 7.0: got: " + g.getEdgeWeight("d","e"), g.getEdgeWeight("d","e") == 7.0 );
-	assertTrue("edge e f expect 8.0: got: " + g.getEdgeWeight("e","f"), g.getEdgeWeight("e","f") == 8.0 );
+	assertEquals("edge a f expect 1.0: got: " + g.getEdgeWeight("a","f"), 1.0, g.getEdgeWeight("a","f"));
+	assertEquals("edge a b expect 2.0: got: " + g.getEdgeWeight("a","b"), 2.0, g.getEdgeWeight("a","b"));
+	assertEquals("edge b c expect 3.0: got: " + g.getEdgeWeight("b","c"), 3.0, g.getEdgeWeight("b","c"));
+	assertEquals("edge b d expect 4.0: got: " + g.getEdgeWeight("b","d"), 4.0, g.getEdgeWeight("b","d"));
+	assertEquals("edge c f expect 5.0: got: " + g.getEdgeWeight("c","f"), 5.0, g.getEdgeWeight("c","f"));
+	assertEquals("edge c d expect 6.0: got: " + g.getEdgeWeight("c","d"), 6.0, g.getEdgeWeight("c","d"));
+	assertEquals("edge d e expect 7.0: got: " + g.getEdgeWeight("d","e"), 7.0, g.getEdgeWeight("d","e"));
+	assertEquals("edge e f expect 8.0: got: " + g.getEdgeWeight("e","f"), 8.0, g.getEdgeWeight("e","f"));
 
     	deg.randomize(g);
 
 	System.out.println("after shuffle");
 	System.out.println(g.toString());
 
-	assertTrue("edge a f expect 7.0: got: " + g.getEdgeWeight("a","f"), g.getEdgeWeight("a","f") == 7.0 );
-	assertTrue("edge a b expect 6.0: got: " + g.getEdgeWeight("a","b"), g.getEdgeWeight("a","b") == 6.0 );
-	assertTrue("edge b c expect 5.0: got: " + g.getEdgeWeight("b","c"), g.getEdgeWeight("b","c") == 5.0 );
-	assertTrue("edge b d expect 3.0: got: " + g.getEdgeWeight("b","d"), g.getEdgeWeight("b","d") == 3.0 );
-	assertTrue("edge c f expect 4.0: got: " + g.getEdgeWeight("c","f"), g.getEdgeWeight("c","f") == 4.0 );
-	assertTrue("edge c d expect 2.0: got: " + g.getEdgeWeight("c","d"), g.getEdgeWeight("c","d") == 2.0 );
-	assertTrue("edge d e expect 8.0: got: " + g.getEdgeWeight("d","e"), g.getEdgeWeight("d","e") == 8.0 );
-	assertTrue("edge e f expect 1.0: got: " + g.getEdgeWeight("e","f"), g.getEdgeWeight("e","f") == 1.0 );
+	assertEquals("edge a f expect 7.0: got: " + g.getEdgeWeight("a","f"), 7.0, g.getEdgeWeight("a","f"));
+	assertEquals("edge a b expect 6.0: got: " + g.getEdgeWeight("a","b"), 6.0, g.getEdgeWeight("a","b"));
+	assertEquals("edge b c expect 5.0: got: " + g.getEdgeWeight("b","c"), 5.0, g.getEdgeWeight("b","c"));
+	assertEquals("edge b d expect 3.0: got: " + g.getEdgeWeight("b","d"), 3.0, g.getEdgeWeight("b","d"));
+	assertEquals("edge c f expect 4.0: got: " + g.getEdgeWeight("c","f"), 4.0, g.getEdgeWeight("c","f"));
+	assertEquals("edge c d expect 2.0: got: " + g.getEdgeWeight("c","d"), 2.0, g.getEdgeWeight("c","d"));
+	assertEquals("edge d e expect 8.0: got: " + g.getEdgeWeight("d","e"), 8.0, g.getEdgeWeight("d","e"));
+	assertEquals("edge e f expect 1.0: got: " + g.getEdgeWeight("e","f"), 1.0, g.getEdgeWeight("e","f"));
     }
 
     public static Test suite() {

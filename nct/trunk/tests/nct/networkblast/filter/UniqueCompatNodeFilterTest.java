@@ -72,7 +72,7 @@ public class UniqueCompatNodeFilterTest extends TestCase {
 	s.add(c);
 	s.add(d);
 	int size = f.filter(s).size();
-	assertTrue("expect 2, got " + size, size == 2);
+	assertEquals(2, size);
    }
 	
     public void testKeepAll() {
@@ -81,7 +81,7 @@ public class UniqueCompatNodeFilterTest extends TestCase {
 	t.add(b);
 	t.add(c);
 	int size = f.filter(t).size();
-	assertTrue("expect 2, got " + size, size == 2);
+	assertEquals(2, size);
     }
 
     public static Test suite() { return new TestSuite( UniqueCompatNodeFilterTest.class ); }

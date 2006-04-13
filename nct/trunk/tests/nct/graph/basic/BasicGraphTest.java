@@ -43,15 +43,15 @@ public class BasicGraphTest extends TestCase {
 
     public void testaddNode() {
 	assertTrue(g.addNode("testNode")); // add new node should return true
-	assertTrue(!g.addNode(null)); // add null node should return false
+	assertFalse(g.addNode(null)); // add null node should return false
     }
 
     public void testaddEdge() {
 	g.addNode("testNode");
 	g.addNode("testNode2");  // dummy nodes, we just want them to be in there
-	assertTrue(!g.addEdge(null, "testNode", .94)); // null tests
-	assertTrue(!g.addEdge(null, null, .94));
-	assertTrue(!g.addEdge("testNode2", null, .94));
+	assertFalse(g.addEdge(null, "testNode", .94)); // null tests
+	assertFalse(g.addEdge(null, null, .94));
+	assertFalse(g.addEdge("testNode2", null, .94));
 	assertTrue(g.addEdge("testNode", "testNode2", .94)); // true test
 	//assertTrue(!g.addEdge("testNode2", "testNode", .12)); // should return false
 	//assertTrue(!g.addEdge("blah", "testNode", .35)); // test nonexistant node
@@ -60,8 +60,8 @@ public class BasicGraphTest extends TestCase {
 
     public void testisNode() {
 	g.addNode("testNode");
-	assertTrue(!g.isNode("b"));
-	assertTrue(!g.isNode(null));
+	assertFalse(g.isNode("b"));
+	assertFalse(g.isNode(null));
 	assertTrue(g.isNode("testNode"));
     }
 
@@ -69,8 +69,8 @@ public class BasicGraphTest extends TestCase {
 	g.addNode("b");
 	g.addNode("a");
 	Set<String> a = g.getNodes();
-	assertTrue(g.numberOfNodes() == 2);
-	assertTrue(a.size() == 2);
+	assertEquals(2, g.numberOfNodes());
+	assertEquals(2, a.size());
     }
 
     public void testgetNeighbors() {
@@ -84,13 +84,13 @@ public class BasicGraphTest extends TestCase {
 	g.addEdge("b", "c", .2);
 	g.addEdge("c", "d", .1);	
 
-	assertTrue(g.getNeighbors("e") == null);  // test nonexistant
-	assertTrue(g.getNeighbors(null) == null); // test null
+	assertNull(g.getNeighbors("e"));  // test nonexistant
+	assertNull(g.getNeighbors(null)); // test null
 	Set<String> s = g.getNeighbors("a");
-	assertTrue(s.size() == 1);
+	assertEquals(1, s.size());
 	assertTrue(s.contains("b"));
 	s = g.getNeighbors("b");
-	assertTrue(s.size() == 2);
+	assertEquals(2, s.size());
 	assertTrue(s.contains("c"));
 	assertTrue(s.contains("a"));
     }
@@ -108,10 +108,10 @@ public class BasicGraphTest extends TestCase {
 	assertTrue(g.addEdge("c", "d", .5));
 	assertTrue(g.addEdge("d", "e", .5));
 
-	assertTrue("expected degree 1, got: " + g.degreeOfNode("a"), g.degreeOfNode("a") == 1);
-	assertTrue("expected degree 2, got: " + g.degreeOfNode("b"), g.degreeOfNode("b") == 2);
-	assertTrue("expected degree 1, got: " + g.degreeOfNode("e"), g.degreeOfNode("e") == 1);
-	assertTrue("expected degree 2, got: " + g.degreeOfNode("c"), g.degreeOfNode("c") == 2);
+	assertEquals("expected degree 1, got: " + g.degreeOfNode("a"), 1, g.degreeOfNode("a"));
+	assertEquals("expected degree 2, got: " + g.degreeOfNode("b"), 2, g.degreeOfNode("b"));
+	assertEquals("expected degree 1, got: " + g.degreeOfNode("e"), 1, g.degreeOfNode("e"));
+	assertEquals("expected degree 2, got: " + g.degreeOfNode("c"), 2, g.degreeOfNode("c"));
     }
 
 
@@ -122,32 +122,32 @@ public class BasicGraphTest extends TestCase {
 
 	assertTrue(g.addEdge("1", "2", .35));
 
-	assertTrue("expect true, got: " + g.isEdge("1", "2"), g.isEdge("1", "2"));
-	assertTrue("expect false, got: " + g.isEdge("1", "3"), !g.isEdge("1", "3"));
-	assertTrue("expect false, got: " + g.isEdge("1", null), !g.isEdge("1", null));
-	assertTrue("expect false, got: " + g.isEdge(null, "2"), !g.isEdge(null, "2"));
+	assertTrue("expected true, got: " + g.isEdge("1", "2"), g.isEdge("1", "2"));
+	assertTrue("expected false, got: " + g.isEdge("1", "3"), !g.isEdge("1", "3"));
+	assertTrue("expected false, got: " + g.isEdge("1", null), !g.isEdge("1", null));
+	assertTrue("expected false, got: " + g.isEdge(null, "2"), !g.isEdge(null, "2"));
     }
 
     public void testnumberOfNodes() {
-	assertTrue(g.numberOfNodes() == 0);
+	assertEquals(0, g.numberOfNodes());
 	assertTrue(g.addNode("4"));
-	assertTrue(g.numberOfNodes() == 1);
+	assertEquals(1, g.numberOfNodes());
 	assertTrue(g.addNode("5"));
-	assertTrue(g.numberOfNodes() == 2);
-	assertTrue(!g.addEdge("4", "6", .21));
-	assertTrue(g.numberOfNodes() == 2);
+	assertEquals(2, g.numberOfNodes());
+	assertFalse(g.addEdge("4", "6", .21));
+	assertEquals(2, g.numberOfNodes());
 	assertTrue(g.addNode("6"));
 	assertTrue(g.addEdge("4", "6", .21));
-	assertTrue(g.numberOfNodes() == 3);
+	assertEquals(3, g.numberOfNodes());
     }
     public void testnumberOfEdges() {
-	assertTrue(g.numberOfEdges() == 0);
+	assertEquals(0, g.numberOfEdges());
 	assertTrue(g.addNode("4"));
-	assertTrue(g.numberOfEdges() == 0);
+	assertEquals(0, g.numberOfEdges());
 	assertTrue(g.addNode("5"));
 	assertTrue(g.addEdge("4", "5", .21));
 	System.out.println("num edge " + g.numberOfEdges());
-	assertTrue(g.numberOfEdges() == 1);
+	assertEquals(1, g.numberOfEdges());
     }
 
     public void testgetEdgeWeight() {
@@ -166,24 +166,24 @@ public class BasicGraphTest extends TestCase {
 	assertTrue(g.addEdge("D", "F", 0.5));
 	assertTrue(g.addEdge("A", "A", 0.5));
 
-	assertTrue(g.getEdgeWeight(null, "A") == null);  // check nulls
-	assertTrue(g.getEdgeWeight("G", null) == null);
-	assertTrue(g.getEdgeWeight(null, null) == null);		   
-	assertTrue(g.getEdgeWeight("C", "C") == null);  // non-existant self edge
-	assertTrue(g.getEdgeWeight("A", "A") == 0.5);  // self edge
-	assertTrue(g.getEdgeWeight("C", "A") == .5);  // check 1
-	assertTrue(g.getEdgeWeight("A", "C") == .5);  // check bidirectionality
-	assertTrue(g.getEdgeWeight("A", "B") == .5);  // check bidirectionality
+	assertNull(g.getEdgeWeight(null, "A"));  // check nulls
+	assertNull(g.getEdgeWeight("G", null));
+	assertNull(g.getEdgeWeight(null, null));		   
+	assertNull(g.getEdgeWeight("C", "C"));  // non-existant self edge
+	assertEquals(0.5, g.getEdgeWeight("A", "A"));  // self edge
+	assertEquals(0.5, g.getEdgeWeight("C", "A"));  // check 1
+	assertEquals(0.5, g.getEdgeWeight("A", "C"));  // check bidirectionality
+	assertEquals(0.5, g.getEdgeWeight("A", "B"));  // check bidirectionality
 
 	// if an edge does not exist between two nodes, we return null.
-	assertTrue(g.getEdgeWeight("C", "B") == null);  // check 2
-	assertTrue(g.getEdgeWeight("B", "C") == null);  // check bidirectionality
-	assertTrue(g.getEdgeWeight("C", "E") == null);  // check 3
-	assertTrue(g.getEdgeWeight("E", "C") == null);  // check bidirectionality
-	assertTrue(g.getEdgeWeight("C", "G") == null);  // check unconnected (3)
-	assertTrue(g.getEdgeWeight("G", "C") == null);  // check bidirectionality
-	assertTrue(g.getEdgeWeight("C", "D") == null);  // check far (3)
-	assertTrue(g.getEdgeWeight("D", "C") == null);  // check bidirectionality
+	assertNull(g.getEdgeWeight("C", "B"));  // check 2
+	assertNull(g.getEdgeWeight("B", "C"));  // check bidirectionality
+	assertNull(g.getEdgeWeight("C", "E"));  // check 3
+	assertNull(g.getEdgeWeight("E", "C"));  // check bidirectionality
+	assertNull(g.getEdgeWeight("C", "G"));  // check unconnected (3)
+	assertNull(g.getEdgeWeight("G", "C"));  // check bidirectionality
+	assertNull(g.getEdgeWeight("C", "D"));  // check far (3)
+	assertNull(g.getEdgeWeight("D", "C"));  // check bidirectionality
     }
 
     public void testgetEdges() {
@@ -214,7 +214,7 @@ public class BasicGraphTest extends TestCase {
 		System.out.println("  weight: " + e.getWeight());
 	}
 
-	assertTrue("expected num edges: 5, got: " + g.numberOfEdges(), g.numberOfEdges() == 5);
+	assertEquals("expected num edges: 5, got: " + g.numberOfEdges(), 5, g.numberOfEdges());
 
 	Edge<String,Double> e = edges.first();
 	assertTrue("expect edge D-F 0.5, got: " + e.toString(), e.equals(first) ); 
@@ -241,91 +241,91 @@ public class BasicGraphTest extends TestCase {
     	g.addNode("one");
     	g.addNode("two");
     	g.addNode("three");
-	assertTrue("expect 3, got: " + g.numberOfNodes(), g.numberOfNodes() == 3);
+	assertEquals("expect 3, got: " + g.numberOfNodes(), 3, g.numberOfNodes());
 	g.addEdge("one","two",1.0);
 	g.addEdge("two","three",1.0);
 	g.addEdge("three","one",1.0);
-	assertTrue("expect 3, got: " + g.numberOfEdges(), g.numberOfEdges() == 3);
+	assertEquals("expect 3, got: " + g.numberOfEdges(), 3, g.numberOfEdges());
 
 	Set<String> nodes = g.getNodes();
-	assertTrue("expect 3, got: " + nodes.size(), nodes.size() == 3);
+	assertEquals("expect 3, got: " + nodes.size(), 3, nodes.size());
 
 	Set<Edge<String,Double>> edges = g.getEdges();
-	assertTrue("expect 3, got: " + edges.size(), edges.size() == 3);
+	assertEquals("expect 3, got: " + edges.size(), 3, edges.size());
 
 	g.removeNode("one");
 
-	assertTrue("expect 2, got: " + g.numberOfNodes(), g.numberOfNodes() == 2);
-	assertTrue("expect 1, got: " + g.numberOfEdges(), g.numberOfEdges() == 1);
-	assertTrue("expect one is not a node ", !g.isNode("one") );
+	assertEquals(2, g.numberOfNodes());
+	assertEquals(1, g.numberOfEdges());
+	assertFalse("expect one is not a node ", g.isNode("one") );
 	assertTrue("expect two is still a node: ", g.isNode("two") );
 	assertTrue("expect three is still a node: ", g.isNode("three") );
-	assertTrue("expect edge one-two is not an edge ", !g.isEdge("one","two") );
-	assertTrue("expect edge two-one is not an edge ", !g.isEdge("two","one") );
-	assertTrue("expect edge one-three is not an edge ", !g.isEdge("one","three") );
-	assertTrue("expect edge three-one is not an edge ", !g.isEdge("three","one") );
+	assertFalse("expect edge one-two is not an edge ", g.isEdge("one","two") );
+	assertFalse("expect edge two-one is not an edge ", g.isEdge("two","one") );
+	assertFalse("expect edge one-three is not an edge ", g.isEdge("one","three") );
+	assertFalse("expect edge three-one is not an edge ", g.isEdge("three","one") );
 	assertTrue("expect edge two-three is an edge ", g.isEdge("two","three") );
 	assertTrue("expect edge three-two is an edge ", g.isEdge("three","two") );
-	assertTrue("expect edge weight null" , g.getEdgeWeight("one","two") == null );
-	assertTrue("expect edge weight null" , g.getEdgeWeight("one","three") == null );
-	assertTrue("expect edge weight not null" , g.getEdgeWeight("two","three") != null );
+	assertNull("expect edge weight null" , g.getEdgeWeight("one","two"));
+	assertNull("expect edge weight null" , g.getEdgeWeight("one","three"));
+	assertNotNull("expect edge weight not null" , g.getEdgeWeight("two","three") );
 
 	Set<String> nodes2 = g.getNodes();
-	assertTrue("expect 2, got: " + nodes2.size(), nodes2.size() == 2);
+	assertEquals(2, nodes2.size());
 
 	Set<Edge<String,Double>> edges2 = g.getEdges();
-	assertTrue("expect 1, got: " + edges2.size(), edges2.size() == 1);
+	assertEquals(1, edges2.size());
     }
 
     public void testremoveEdge() {
     	g.addNode("one");
     	g.addNode("two");
     	g.addNode("three");
-	assertTrue("expect 3, got: " + g.numberOfNodes(), g.numberOfNodes() == 3);
+	assertEquals(3, g.numberOfNodes());
 	g.addEdge("one","two",1.0);
 	g.addEdge("two","three",1.0);
 	g.addEdge("three","one",1.0);
-	assertTrue("expect 3, got: " + g.numberOfEdges(), g.numberOfEdges() == 3);
+	assertEquals(3, g.numberOfEdges());
 
 	Set<String> nodes = g.getNodes();
-	assertTrue("expect 3, got: " + nodes.size(), nodes.size() == 3);
+	assertEquals(3, nodes.size());
 
 	Set<Edge<String,Double>> edges = g.getEdges();
-	assertTrue("expect 3, got: " + edges.size(), edges.size() == 3);
+	assertEquals(3, edges.size());
 
 	g.removeEdge("one","two");
 
-	assertTrue("expect 3, got: " + g.numberOfNodes(), g.numberOfNodes() == 3);
-	assertTrue("expect 2, got: " + g.numberOfEdges(), g.numberOfEdges() == 2);
+	assertEquals(3, g.numberOfNodes());
+	assertEquals(2, g.numberOfEdges());
 	assertTrue("expect one is still a node ", g.isNode("one") );
 	assertTrue("expect two is still a node: ", g.isNode("two") );
 	assertTrue("expect three is still a node: ", g.isNode("three") );
-	assertTrue("expect edge one-two is not an edge ", !g.isEdge("one","two") );
-	assertTrue("expect edge two-one is not an edge ", !g.isEdge("two","one") );
-	assertTrue("expect edge one-three is not an edge ", g.isEdge("one","three") );
-	assertTrue("expect edge three-one is not an edge ", g.isEdge("three","one") );
+	assertFalse("expect edge one-two is not an edge ", g.isEdge("one","two") );
+	assertFalse("expect edge two-one is not an edge ", g.isEdge("two","one") );
+	assertTrue("expect edge one-three is still an edge ", g.isEdge("one","three") );
+	assertTrue("expect edge three-one is still an edge ", g.isEdge("three","one") );
 	assertTrue("expect edge two-three is an edge ", g.isEdge("two","three") );
 	assertTrue("expect edge three-two is an edge ", g.isEdge("three","two") );
-	assertTrue("expect edge weight null" , g.getEdgeWeight("one","two") == null );
-	assertTrue("expect edge weight null" , g.getEdgeWeight("one","three") != null );
-	assertTrue("expect edge weight not null" , g.getEdgeWeight("two","three") != null );
+	assertNull("expect edge weight null" , g.getEdgeWeight("one","two") );
+	assertNotNull("expect edge weight null" , g.getEdgeWeight("one","three") );
+	assertNotNull("expect edge weight not null" , g.getEdgeWeight("two","three") );
 
 	Set<String> nodes2 = g.getNodes();
-	assertTrue("expect 3, got: " + nodes2.size(), nodes2.size() == 3);
+	assertEquals(3, nodes2.size());
 
 	Set<Edge<String,Double>> edges2 = g.getEdges();
-	assertTrue("expect 2, got: " + edges2.size(), edges2.size() == 2);
+	assertEquals(2, edges2.size());
     }
 
     public void testDescription() {
     	g.addNode("one");
     	g.addNode("two");
     	g.addNode("three");
-	assertTrue("expect 3, got: " + g.numberOfNodes(), g.numberOfNodes() == 3);
+	assertEquals(3, g.numberOfNodes());
 	g.addEdge("one","two",1.0,"first");
 	g.addEdge("two","three",1.0,"second");
 	g.addEdge("three","one",1.0);
-	assertTrue("expect 3, got: " + g.numberOfEdges(), g.numberOfEdges() == 3);
+	assertEquals(3, g.numberOfEdges());
 
 	assertTrue("expect 'first', got: " + g.getEdgeDescription("one","two"), g.getEdgeDescription("one","two").equals("first"));
 	assertTrue("expect 'first', got: " + g.getEdgeDescription("two","one"), g.getEdgeDescription("two","one").equals("first"));
@@ -339,7 +339,7 @@ public class BasicGraphTest extends TestCase {
 	assertTrue("expect 'homer', got: " + g.getEdgeDescription("one","three"), g.getEdgeDescription("one","three").equals("homer"));
 	assertTrue("expect 'homer', got: " + g.getEdgeDescription("three","one"), g.getEdgeDescription("three","one").equals("homer"));
 
-	assertTrue("expect 'null', got: " + g.getEdgeDescription("four","one"), g.getEdgeDescription("four","one") == null );
+	assertNull("expect 'null', got: " + g.getEdgeDescription("four","one"), g.getEdgeDescription("four","one") );
     }
 
     public static Test suite() {

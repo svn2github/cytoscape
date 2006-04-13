@@ -65,8 +65,8 @@ public class DegreePreservingRandomizerTest extends TestCase {
 	System.out.println(g.toString());
 
 	// initial state of graph
-    	assertTrue("expect 6, got: " + g.numberOfNodes(), g.numberOfNodes() == 6);
-    	assertTrue("expect 8, got: " + g.numberOfEdges(), g.numberOfEdges() == 8);
+    	assertEquals(6, g.numberOfNodes());
+    	assertEquals(8, g.numberOfEdges());
 
 	assertTrue("edge a f", g.isEdge("a","f"));
 	assertTrue("edge a b", g.isEdge("a","b"));
@@ -77,12 +77,12 @@ public class DegreePreservingRandomizerTest extends TestCase {
 	assertTrue("edge d e", g.isEdge("d","e"));
 	assertTrue("edge e f", g.isEdge("e","f"));
 
-	assertTrue("expect 2, got: " + g.degreeOfNode("a"), g.degreeOfNode("a") == 2);
-	assertTrue("expect 3, got: " + g.degreeOfNode("b"), g.degreeOfNode("b") == 3);
-	assertTrue("expect 3, got: " + g.degreeOfNode("c"), g.degreeOfNode("c") == 3);
-	assertTrue("expect 3, got: " + g.degreeOfNode("d"), g.degreeOfNode("d") == 3);
-	assertTrue("expect 2, got: " + g.degreeOfNode("e"), g.degreeOfNode("e") == 2);
-	assertTrue("expect 3, got: " + g.degreeOfNode("f"), g.degreeOfNode("f") == 3);
+	assertEquals(2, g.degreeOfNode("a"));
+	assertEquals(3, g.degreeOfNode("b"));
+	assertEquals(3, g.degreeOfNode("c"));
+	assertEquals(3, g.degreeOfNode("d"));
+	assertEquals(2, g.degreeOfNode("e"));
+	assertEquals(3, g.degreeOfNode("f"));
 
     	deg.randomize(g);
 
@@ -90,12 +90,12 @@ public class DegreePreservingRandomizerTest extends TestCase {
 	System.out.println(g.toString());
 
 	// verify degrees are the same
-	assertTrue("expect 2, got: " + g.degreeOfNode("a"), g.degreeOfNode("a") == 2);
-	assertTrue("expect 3, got: " + g.degreeOfNode("b"), g.degreeOfNode("b") == 3);
-	assertTrue("expect 3, got: " + g.degreeOfNode("c"), g.degreeOfNode("c") == 3);
-	assertTrue("expect 3, got: " + g.degreeOfNode("d"), g.degreeOfNode("d") == 3);
-	assertTrue("expect 2, got: " + g.degreeOfNode("e"), g.degreeOfNode("e") == 2);
-	assertTrue("expect 3, got: " + g.degreeOfNode("f"), g.degreeOfNode("f") == 3);
+	assertEquals(2, g.degreeOfNode("a"));
+	assertEquals(3, g.degreeOfNode("b"));
+	assertEquals(3, g.degreeOfNode("c"));
+	assertEquals(3, g.degreeOfNode("d"));
+	assertEquals(2, g.degreeOfNode("e"));
+	assertEquals(3, g.degreeOfNode("f"));
 
 	// check new edges
 	assertTrue("edge a c", g.isEdge("a","c"));
@@ -108,11 +108,11 @@ public class DegreePreservingRandomizerTest extends TestCase {
 	assertTrue("edge d f", g.isEdge("d","f"));
 
 	// check old edges
-	assertTrue("edge a f", !g.isEdge("a","f"));
-	assertTrue("edge a b", !g.isEdge("a","b"));
-	assertTrue("edge b c", !g.isEdge("b","c"));
-	assertTrue("edge d e", !g.isEdge("d","e"));
-	assertTrue("edge e f", !g.isEdge("e","f"));
+	assertFalse("edge a f", g.isEdge("a","f"));
+	assertFalse("edge a b", g.isEdge("a","b"));
+	assertFalse("edge b c", g.isEdge("b","c"));
+	assertFalse("edge d e", g.isEdge("d","e"));
+	assertFalse("edge e f", g.isEdge("e","f"));
     }
 
     public static Test suite() {

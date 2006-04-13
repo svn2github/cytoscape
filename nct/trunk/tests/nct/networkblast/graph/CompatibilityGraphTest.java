@@ -53,7 +53,7 @@ public class CompatibilityGraphTest extends TestCase {
 	    homologyGraph = new HomologyGraph(sr, 1e-5, inputSpecies);
 	    LogLikelihoodScoreModel<String> lls = new LogLikelihoodScoreModel<String>(2.5,0.8,1e-10);
 	    CompatibilityCalculator compatCalc = new AdditiveCompatibilityCalculator(0.01,lls,true);
-	    g = new CompatibilityGraph(homologyGraph, inputSpecies, compatCalc );
+	    g = new CompatibilityGraph(homologyGraph, inputSpecies, lls, compatCalc );
 	} catch (IOException e1) {
 	    e1.printStackTrace();
 	}
@@ -65,15 +65,11 @@ public class CompatibilityGraphTest extends TestCase {
 	System.out.println("h num nodes:  " + h.numberOfNodes());
 	System.out.println("i num nodes:  " + i.numberOfNodes());
 
-	assertTrue("g is null when it shouldn't be",g != null);
-	assertTrue("expected 9 nodes, got: " + homologyGraph.numberOfNodes(), 
-	           homologyGraph.numberOfNodes() == 9);
-	assertTrue("expected 4 nodes, got: " + g.numberOfNodes(), 
-	           g.numberOfNodes() == 4);
-	assertTrue("expected 5 nodes, got: " + h.numberOfNodes(),
-	           h.numberOfNodes() == 5);
-	assertTrue("expected 4 nodes, got: " + i.numberOfNodes(),
-	           i.numberOfNodes() == 4);
+	assertNotNull("g is null when it shouldn't be",g);
+	assertEquals(9, homologyGraph.numberOfNodes());
+	assertEquals(4, g.numberOfNodes());
+	assertEquals(5, h.numberOfNodes());
+	assertEquals(4, i.numberOfNodes());
     }
 
     public void testnumberOfEdges() {
@@ -89,12 +85,9 @@ public class CompatibilityGraphTest extends TestCase {
 		System.out.println("  weight: " + e.getWeight()); 
 	}
 
-	assertTrue("expected 5 edges, got: " + g.numberOfEdges(),
-	           g.numberOfEdges() == 5);
-	assertTrue("expected 5 edges, got: " + g.numberOfEdges(),
-	           h.numberOfEdges() == 5);
-	assertTrue("expected 3 edges, got: " + g.numberOfEdges(),
-	           i.numberOfEdges() == 3);
+	assertEquals(5, g.numberOfEdges());
+	assertEquals(5, h.numberOfEdges());
+	assertEquals(3, i.numberOfEdges());
 
     }
 
@@ -111,8 +104,8 @@ public class CompatibilityGraphTest extends TestCase {
     }
 
     public void testgetEdgeDescription() {
-	assertTrue("g is null when it shouldn't be", g != null);
-	assertTrue("edge desc for two null edges is not null", g.getEdgeDescription(null, null) == null);
+	assertNotNull("g is null when it shouldn't be", g);
+	assertNull("edge desc for two null edges is not null", g.getEdgeDescription(null, null));
 	System.out.println("node set " + g.getNodes());
 	System.out.println("edge desc A3|B1 A1|B2: " +g.getEdgeDescription("A3|B1", "A1|B2"));
 	System.out.println("edge desc A2|B1 A1|B1: " +g.getEdgeDescription("A2|B1", "A1|B1"));

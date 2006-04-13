@@ -64,25 +64,24 @@ public class BasicDistanceGraphTest extends TestCase {
 	assertTrue(g.addEdge("D", "E", 0.4));
 	assertTrue(g.addEdge("D", "F", 0.5));
 
-	assertTrue(g.getDistance(null, "A") == -1.0);  // check nulls
-	assertTrue(g.getDistance("G", null) == -1.0);
-	assertTrue(g.getDistance(null, null) == -1.0);		   
-	assertTrue(g.getDistance("X", "A") == -1.0); // check non existant
-	assertTrue(g.getDistance("B", "Y") == -1.0); 
-	assertTrue(g.getDistance("X", "Y") == -1.0); 
-	assertTrue(g.getDistance("C", "C") == 0);  // check 0
-	assertTrue(g.getDistance("C", "A") == 1);  // check 1
-	assertTrue(g.getDistance("A", "C") == 1);  // check bidirectionality
-	assertTrue(g.getDistance("C", "B") == 2);  // check 2
-	assertTrue(g.getDistance("B", "C") == 2);  // check bidirectionality
-	assertTrue(g.getDistance("C", "E") == 3);  // check 3
-	assertTrue(g.getDistance("E", "C") == 3);  // check bidirectionality
-	assertTrue(g.getDistance("C", "G") == 3);  // check unconnected (3)
-	assertTrue(g.getDistance("G", "C") == 3);  // check bidirectionality
-	assertTrue(g.getDistance("C", "D") == 3);  // check far (3)
-	assertTrue(g.getDistance("D", "C") == 3);  // check bidirectionality
-	assertTrue(g.getDistance("C", "F") == 3);  // check distant
-	assertTrue(g.getDistance("F", "C") == 3);  // check distant bidir
+	assertEquals((byte)-1, g.getDistance(null, "A"));  // check nulls
+	assertEquals((byte)-1, g.getDistance("G", null));
+	assertEquals((byte)-1, g.getDistance(null, null));		   
+	assertEquals((byte)-1, g.getDistance("X", "A")); // check non existant
+	assertEquals((byte)-1, g.getDistance("B", "Y")); 
+	assertEquals((byte)-1, g.getDistance("X", "Y")); 
+	assertEquals((byte)0, g.getDistance("C", "C"));  // check 0
+	assertEquals((byte)1, g.getDistance("C", "A"));  // check 1
+	assertEquals((byte)1, g.getDistance("A", "C"));  // check bidirectionality	assertEquals(g.getDistance("C", "B"), 2);  // check 2
+	assertEquals((byte)2, g.getDistance("B", "C"));  // check bidirectionality
+	assertEquals((byte)3, g.getDistance("C", "E"));  // check 3
+	assertEquals((byte)3, g.getDistance("E", "C"));  // check bidirectionality
+	assertEquals((byte)3, g.getDistance("C", "G"));  // check unconnected (3)
+	assertEquals((byte)3, g.getDistance("G", "C"));  // check bidirectionality
+	assertEquals((byte)3, g.getDistance("C", "D"));  // check far (3)
+	assertEquals((byte)3, g.getDistance("D", "C"));  // check bidirectionality
+	assertEquals((byte)3, g.getDistance("C", "F"));  // check distant
+	assertEquals((byte)3, g.getDistance("F", "C"));  // check distant bidir
     }
    
     public static Test suite() {
