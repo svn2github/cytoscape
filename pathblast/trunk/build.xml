@@ -168,8 +168,10 @@
            debug="${debug}"
            deprecation="${deprecation}" 
            optimize="${optimize}"
-           fork="${fork}"/>
- 	<echo message="Successfully ran compile task!"/>
+           fork="${fork}">
+       <compilerarg line="-Xlint:all -Xlint:-path"/>
+     </javac>
+     <echo message="Successfully ran compile task!"/>
   </target>
 
   <!-- =================================================================== -->

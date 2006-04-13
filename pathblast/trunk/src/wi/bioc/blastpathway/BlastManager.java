@@ -20,10 +20,10 @@ import java.util.*;
 
 public class BlastManager {
 	private static BlastManager m_manager;
-	private Hashtable m_pathblasts;
+	private Hashtable<String,PathBlast> m_pathblasts;
 
 	private BlastManager() {
-		m_pathblasts = new Hashtable(11);
+		m_pathblasts = new Hashtable<String,PathBlast>(11);
 	}
 	public static BlastManager getInstance() {
 		if (m_manager == null) {

@@ -125,21 +125,21 @@ public class PathBlast implements Runnable {
 		System.out.println("homologyGraph: " + homologyGraph.toString());
 
 		// create compat graph based on the interaction graphs and the homology graph 
-		ScoreModel logScore = new LogLikelihoodScoreModel(1.0, 0.8, 1e-10);
+		ScoreModel<String,Double> logScore = new LogLikelihoodScoreModel<String>(1.0, 0.8, 1e-10);
 		CompatibilityCalculator compatCalc = new AdditiveCompatibilityCalculator(0.01,logScore, useZero);
-		CompatibilityGraph compatGraph = new CompatibilityGraph(homologyGraph, seqGraphs, logScore, compatCalc);
+		CompatibilityGraph compatGraph = new CompatibilityGraph(homologyGraph, seqGraphs, compatCalc);
 		System.out.println("compatGraph: " + compatGraph.toString());
 		// run path analysis
-		SearchGraph colorCoding = new ColorCodingPathSearch(proteins.length);
-		//SearchGraph colorCoding = new ColorCodingPathSearch(proteins.length,5,5);
-		List<Graph<String,Double>> resultPaths = colorCoding.searchGraph(compatGraph, logScore);
+		SearchGraph<String,Double> colorCoding = new ColorCodingPathSearch<String>(proteins.length);
+		ScoreModel<String,Double> edgeScore = new SimpleEdgeScoreModel<String>();
+		List<Graph<String,Double>> resultPaths = colorCoding.searchGraph(compatGraph, edgeScore);
 
 		System.out.println("begin filtering");
 		if ( !useZero ) {
-			Filter noZeros = new UniqueCompatNodeFilter();
+			Filter<String,Double> noZeros = new UniqueCompatNodeFilter();
 			resultPaths = noZeros.filter(resultPaths);
 		}
-		Filter noDupes = new DuplicateThresholdFilter(1.0);
+		Filter<String,Double> noDupes = new DuplicateThresholdFilter<String,Double>(1.0);
 		resultPaths = noDupes.filter( resultPaths );
 
 		Collections.reverse(resultPaths);

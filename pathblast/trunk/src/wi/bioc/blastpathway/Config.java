@@ -11,6 +11,7 @@ import nct.graph.SequenceGraph;
 import nct.graph.basic.BlastGraph;
 import nct.xml.XMLSaxEventDistributor;
 import java.io.*;
+import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * <p>Title: pathblast</p>
@@ -76,7 +77,7 @@ public class Config {
 
 		speciesGraphs = new HashMap<String,SequenceGraph<String,Double>>();
 
-		XMLSaxEventDistributor xmlParser = new XMLSaxEventDistributor();
+		XMLSaxEventDistributor<DefaultHandler> xmlParser = new XMLSaxEventDistributor<DefaultHandler>();
 
 
 		// create all of the species graphs
@@ -131,7 +132,7 @@ public class Config {
 	}
 
 	private static void createSpeciesGraph(String species, String speciesDb, 
-	                                       XMLSaxEventDistributor xmlParser ) {
+	                                       XMLSaxEventDistributor<DefaultHandler> xmlParser ) {
 		BlastGraph<String,Double> bg = new BlastGraph<String,Double>(speciesDb,
 		                                           props.getProperty("blast.db.location"));
 		DIPInteractionNetwork din = new DIPInteractionNetwork(species);

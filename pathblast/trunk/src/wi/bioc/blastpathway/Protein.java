@@ -20,7 +20,7 @@ import nct.service.sequences.SequenceDatabase;
 import nct.service.synonyms.SynonymMapper;
 import nct.parsers.FastaProteinParser;
 
-public class Protein implements java.io.Serializable {
+public class Protein { 
 
 	private String proteinId;
 	private String org;
@@ -142,8 +142,8 @@ public class Protein implements java.io.Serializable {
 
 	public static String checkUniqueness(Protein[] proteins) {
 		String errorMsg = "";
-		HashSet pids = new HashSet();
-		HashSet sids = new HashSet();
+		HashSet<String> pids = new HashSet<String>();
+		HashSet<String> sids = new HashSet<String>();
 		for (int k = 0; k < proteins.length; k++) {
 
 			String proteinId = proteins[k].getProteinId();
