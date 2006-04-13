@@ -403,36 +403,39 @@ public class XGMMLWriter {
 					targetNode.getAtt().add(attr);
 				}
 			}
-		} else if (type == EDGE) {
-			Edge targetEdge = (Edge) target;
-			for (int i = 0; i < edgeAttNames.length; i++) {
+		} else if (type == EDGE || type == NETWORK) {
+			// setup references to attribute names and cy attributes
+			String[] attNames = (type == EDGE) ? edgeAttNames : networkAttNames;
+			CyAttributes attributes = (type == EDGE) ? edgeAttributes : networkAttributes;
+			// process each attribute type
+			for (int i = 0; i < attNames.length; i++) {
 				attr = objFactory.createAtt();
-				attType = edgeAttributes.getType(edgeAttNames[i]);
+				attType = attributes.getType(attNames[i]);
 				if (attType == CyAttributes.TYPE_FLOATING) {
-					Double dAttr = edgeAttributes.getDoubleAttribute(id,
-							edgeAttNames[i]);
-					attr.setName(edgeAttNames[i]);
+					Double dAttr = attributes.getDoubleAttribute(id,
+							attNames[i]);
+					attr.setName(attNames[i]);
 					attr.setLabel(FLOAT_TYPE);
 					if (dAttr != null)
 						attr.setValue(dAttr.toString());
 				} else if (attType == CyAttributes.TYPE_INTEGER) {
-					Integer iAttr = edgeAttributes.getIntegerAttribute(id,
-							edgeAttNames[i]);
-					attr.setName(edgeAttNames[i]);
+					Integer iAttr = attributes.getIntegerAttribute(id,
+							attNames[i]);
+					attr.setName(attNames[i]);
 					attr.setLabel(INT_TYPE);
 					if (iAttr != null)
 						attr.setValue(iAttr.toString());
 				} else if (attType == CyAttributes.TYPE_STRING) {
-					String sAttr = edgeAttributes.getStringAttribute(id,
-							edgeAttNames[i]);
-					attr.setName(edgeAttNames[i]);
+					String sAttr = attributes.getStringAttribute(id,
+							attNames[i]);
+					attr.setName(attNames[i]);
 					attr.setLabel(STRING_TYPE);
 					if (sAttr != null)
 						attr.setValue(sAttr.toString());
 				} else if (attType == CyAttributes.TYPE_BOOLEAN) {
-					Boolean bAttr = edgeAttributes.getBooleanAttribute(id,
-							edgeAttNames[i]);
-					attr.setName(edgeAttNames[i]);
+					Boolean bAttr = attributes.getBooleanAttribute(id,
+							attNames[i]);
+					attr.setName(attNames[i]);
 					attr.setLabel(BOOLEAN_TYPE);
 					if (bAttr != null)
 						attr.setValue(bAttr.toString());
@@ -441,52 +444,13 @@ public class XGMMLWriter {
 				} else if (attType == CyAttributes.TYPE_SIMPLE_MAP) {
 					// TODO: HANDLE MAP
 				}
-				targetEdge.getAtt().add(attr);
-			}
-		}
-		// process network attributes
-		else if (type == NETWORK) {
-			for (int i = 0; i < networkAttNames.length; i++){
-				// create the attribute and set its type
-				attr = objFactory.createAtt();
-				attType = networkAttributes.getType(networkAttNames[i]);
-				// floating attribute
-				if (attType == CyAttributes.TYPE_FLOATING) {
-					Double dAttr = networkAttributes.getDoubleAttribute(id, networkAttNames[i]);
-					attr.setName(networkAttNames[i]);
-					attr.setLabel(FLOAT_TYPE);
-					if (dAttr != null) attr.setValue(dAttr.toString());
+				if (type == EDGE){
+					Edge targetEdge = (Edge) target;
+					targetEdge.getAtt().add(attr);
 				}
-				// integer type
-				else if (attType == CyAttributes.TYPE_INTEGER) {
-					Integer iAttr = networkAttributes.getIntegerAttribute(id, networkAttNames[i]);
-					attr.setName(networkAttNames[i]);
-					attr.setLabel(INT_TYPE);
-					if (iAttr != null) attr.setValue(iAttr.toString());
+				else {
+					graph.getAtt().add(attr);
 				}
-				// string type
-				else if (attType == CyAttributes.TYPE_STRING) {
-					String sAttr = networkAttributes.getStringAttribute(id, networkAttNames[i]);
-					attr.setName(networkAttNames[i]);
-					attr.setLabel(STRING_TYPE);
-					if (sAttr != null) attr.setValue(sAttr.toString());
-				}
-				// boolean type
-				else if (attType == CyAttributes.TYPE_BOOLEAN) {
-					Boolean bAttr = networkAttributes.getBooleanAttribute(id, networkAttNames[i]);
-					attr.setName(networkAttNames[i]);
-					attr.setLabel(BOOLEAN_TYPE);
-					if (bAttr != null) attr.setValue(bAttr.toString());
-				}
-				// simple list
-				else if (attType == CyAttributes.TYPE_SIMPLE_LIST) {
-					// tbd
-				}
-				// simple map
-				else if (attType == CyAttributes.TYPE_SIMPLE_MAP) {
-					// tdb
-				}
-				graph.getAtt().add(attr);
 			}
 		}
 	}
