@@ -25,7 +25,6 @@
 
 package nct.visualization.cytoscape.dual;
 
-import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.CyNetwork;
 import cytoscape.data.CyAttributes;
@@ -52,6 +51,7 @@ import javax.imageio.ImageIO;
 
 import nct.graph.Graph;
 import nct.graph.Edge;
+import nct.visualization.cytoscape.CytoscapeConverter;
 
 /**
  * Constructs several Cytoscape objects based on an input {@link Graph} and
@@ -68,47 +68,8 @@ public class DualLayout {
 	 */
 	public static void create(Graph<String,Double> graph, String style, String outFile, String outThumbFile, String vizmapFileLoc ) {
 
-		Set<String> nodes = graph.getNodes();
-		Set<Edge<String,Double>> edges = graph.getEdges();
-		
-		// Create a CyNetwork without actually creating an instance of cytoscape
-
-		CytoscapeRootGraph rootGraph = Cytoscape.getRootGraph();
-		CyAttributes nodeAttrs = Cytoscape.getNodeAttributes();
-
-		Map<String,Integer> nodeIdMap = new HashMap<String,Integer>(); 
-		int[] nodeIds = new int[nodes.size()];
-		int i = 0;
-		for (String node : nodes) {
-			int nodeId = rootGraph.createNode();
-			nodeAttrs.setAttribute(Integer.toString(nodeId),"name",node);
-			nodeIdMap.put(node,nodeId);
-			nodeIds[i++] = nodeId;
-		}
-
-		Map<String,Map<String,Integer>> edgeIdMap = new HashMap<String,Map<String,Integer>>(); 
-		CyAttributes edgeAttrs = Cytoscape.getEdgeAttributes();
-
-		int[] edgeIds = new int[edges.size()];
-		i = 0;
-		for (Edge<String,Double> edge: edges) {
-			String source = edge.getSourceNode();
-			String target = edge.getTargetNode();
-			int sourceId = nodeIdMap.get(source).intValue();
-			int targetId = nodeIdMap.get(target).intValue();
-			int edgeId = rootGraph.createEdge(sourceId,targetId,false);
-			// TODO make sure edge contains the actual description.
-			edgeAttrs.setAttribute(Integer.toString(edgeId),"name",graph.getEdgeDescription(source,target));
-			if ( !edgeIdMap.containsKey(source))
-				edgeIdMap.put(source,new HashMap<String,Integer>());
-			edgeIdMap.get(source).put(target,edgeId);
-			edgeIds[i++] = edgeId;
-		}
-
-		CyNetwork cyNetwork  = rootGraph.createNetwork(nodeIds,edgeIds);
-		//System.out.println("node count " + cyNetwork.getNodeCount() );
-		//System.out.println("edge count " + cyNetwork.getEdgeCount() );
-		CyNetwork splitGraph = rootGraph.createNetwork(new int[]{},new int[]{});
+		CyNetwork cyNetwork  = CytoscapeConverter.convert(graph);
+		CyNetwork splitGraph = CytoscapeConverter.convert(null); 
 		DualLayoutTask task = new DualLayoutTask(cyNetwork);
 		task.splitNetwork(splitGraph);
 		PhoebeNetworkView view = new PhoebeNetworkView(splitGraph,"Title");
