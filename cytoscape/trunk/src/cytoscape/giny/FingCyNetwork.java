@@ -159,11 +159,13 @@ public class FingCyNetwork
     return identifier;
   }
 
-  //------------------------------//
-  // Client Data
-  //------------------------------//
+  //-------------------------------------//
+  // Client Data - Deprecated April 2006
+  //-------------------------------------//
 
   /**
+   * @deprecated
+   *
    * Networks can support client data.
    * @param data_name the name of this client data
    */
@@ -172,6 +174,8 @@ public class FingCyNetwork
   }
 
   /**
+   * @deprecated
+   *
    * Get a list of all currently available ClientData objects
    */
   public Collection getClientDataNames () {
@@ -179,6 +183,8 @@ public class FingCyNetwork
   }
   
   /**
+   * @deprecated
+   *
    * Get Some client data
    * @param data_name the data to get
    */

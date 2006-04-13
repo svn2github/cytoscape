@@ -566,21 +566,24 @@ public interface CyNetwork extends GraphPerspective {
 	/**
 	 * Networks can support client data.
 	 * 
-	 * @param data_name
-	 *            the name of this client data
+	 * @deprecated Use {@link CyAttributes} directly. This method will be
+	 *             removed in May, 2007.
 	 */
 	public void putClientData(String data_name, Object data);
 
 	/**
 	 * Get a list of all currently available ClientData objects
+	 *
+	 * @deprecated Use {@link CyAttributes} directly. This method will be
+	 *             removed in May, 2007.
 	 */
 	public Collection getClientDataNames();
 
 	/**
 	 * Get Some client data
 	 * 
-	 * @param data_name
-	 *            the data to get
+	 * @deprecated Use {@link CyAttributes} directly. This method will be
+	 *             removed in May, 2007.
 	 */
 	public Object getClientData(String data_name);
 
