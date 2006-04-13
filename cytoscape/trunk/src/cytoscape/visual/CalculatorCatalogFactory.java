@@ -109,8 +109,7 @@ public abstract class CalculatorCatalogFactory {
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(
 				new PropertyChangeListener() {
 					public void propertyChange(PropertyChangeEvent e) {
-						if (e.getPropertyName() == Cytoscape.SAVE_VIZMAP_PROPS
-								|| e.getPropertyName() == Cytoscape.CYTOSCAPE_EXIT) {
+						if (e.getPropertyName() == Cytoscape.SAVE_VIZMAP_PROPS) {
 							File propertiesFile = CytoscapeInit
 									.getConfigFile("vizmap.props");
 							if (propertiesFile != null) {

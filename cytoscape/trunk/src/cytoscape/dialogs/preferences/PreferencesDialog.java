@@ -44,17 +44,21 @@ import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileNotFoundException;
 import java.util.Properties;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -99,16 +103,16 @@ public class PreferencesDialog extends JDialog implements
 
 	JPanel vizmapPane = new JPanel(new FlowLayout());
 
-	JButton saveVizmapBtn = new JButton("Make Current Visual Styles Default");
+	JPanel cyPropsPane = new JPanel(new FlowLayout());
 
-	JTextArea vizmapText = new JTextArea(
-				"Save the current visual styles to: " + System.getProperty("user.home") +
-				System.getProperty("file.separator") + ".cytoscape" +
-				System.getProperty("file.separator") + "vizmap.props.  " +
-				"Only save the visual styles if you want them to be defaults in ALL " +
-				"future cytoscape sessions.  " +
-				"Your current visual styles are automatically saved in your Cytoscape " +
-				"session file and won't be lost." );
+	JCheckBox saveVizmapBtn = new JCheckBox("Make Current Visual Styles Default",false);
+
+	JCheckBox saveCyPropsBtn = new JCheckBox("Make Current Cytoscape Properties Default",false);
+
+	JTextArea vizmapText = new JTextArea( "Only check this option if you want the current visual styles to be defaults in ALL future cytoscape sessions.  Your current visual styles are automatically saved in your Cytoscape session file and won't be lost." );
+
+        JTextArea cyPropsText = new JTextArea( "Only check this option if you want the current Cytoscape properties to be defaults in ALL future cytoscape sessions.  Your current Cytoscape properties are automatically saved in your Cytoscape session file and won't be lost." );
+
 
 	JComboBox pluginTypesComboBox = new JComboBox(pluginTypes);
 
@@ -133,6 +137,9 @@ public class PreferencesDialog extends JDialog implements
 	private ListSelectionModel lsm = null;
 
 	private ListSelectionModel lsmA = null;
+
+	private boolean saveCyPropsAsDefault = false;
+	private boolean saveVizmapAsDefault = false;
 
 	// When properties are changed, it will be processed here.
 	public void propertyChange(PropertyChangeEvent e) {
@@ -196,7 +203,7 @@ public class PreferencesDialog extends JDialog implements
 			prefsTM.setProperty(preferenceName, preferenceValue);
 		}
 
-		// refresh();
+		 refresh();
 
 		// reset state of Modify and Delete buttons to inactive
 		// since update of parameter will clear any selections
@@ -240,7 +247,8 @@ public class PreferencesDialog extends JDialog implements
 		deletePluginBtn.addActionListener(new DeletePluginListener(this));
 		okButton.addActionListener(new OkButtonListener(this));
 		cancelButton.addActionListener(new CancelButtonListener(this));
-		saveVizmapBtn.addActionListener(new SaveVizmapButtonListener(this));
+		saveVizmapBtn.addItemListener(new CheckBoxListener());
+		saveCyPropsBtn.addItemListener(new CheckBoxListener());
 	}
 
 	public PreferenceTableModel getPTM() {
@@ -335,6 +343,16 @@ public class PreferencesDialog extends JDialog implements
 		outerBox.add(pluginsTableBox);
 
 		outerBox.add(Box.createVerticalStrut(10));
+		JTextArea textArea = new JTextArea( "NOTE: Changes to these properties and plugins are used in the current session ONLY unless otherwise specified below." );
+
+		textArea.setBackground(outerBox.getBackground());
+		textArea.setEditable(false);
+		textArea.setDragEnabled(false);
+		textArea.setLineWrap(true);
+		textArea.setWrapStyleWord(true);
+		outerBox.add(textArea);
+
+		outerBox.add(Box.createVerticalStrut(10));
 		Box vizmapBox = Box.createVerticalBox();
 		vizmapBox.setBorder(BorderFactory.createTitledBorder("Default Visual Styles"));
 		vizmapText.setBackground(outerBox.getBackground());
@@ -349,16 +367,19 @@ public class PreferencesDialog extends JDialog implements
 		outerBox.add(vizmapBox);
 
 		outerBox.add(Box.createVerticalStrut(10));
-		JTextArea textArea = new JTextArea(
-				"Note: Changes to these properties and plugins will be saved on "
-						+ "application exit and available on next start. To use these new "
-						+ "settings now, please exit and restart Cytoscape.");
-		textArea.setBackground(outerBox.getBackground());
-		textArea.setEditable(false);
-		textArea.setDragEnabled(false);
-		textArea.setLineWrap(true);
-		textArea.setWrapStyleWord(true);
-		outerBox.add(textArea);
+		Box cyPropsBox = Box.createVerticalBox();
+		cyPropsBox.setBorder(BorderFactory.createTitledBorder("Default Cytoscape Properties"));
+		cyPropsText.setBackground(outerBox.getBackground());
+		cyPropsText.setEditable(false);
+		cyPropsText.setDragEnabled(false);
+		cyPropsText.setLineWrap(true);
+		cyPropsText.setWrapStyleWord(true);
+		cyPropsBox.add(cyPropsText);
+		cyPropsBox.add(Box.createVerticalStrut(5));
+		cyPropsPane.add(saveCyPropsBtn);
+		cyPropsBox.add(cyPropsPane);
+		outerBox.add(cyPropsBox);
+
 		outerBox.add(Box.createVerticalStrut(8));
 		outerBox.add(okButtonPane);
 
@@ -486,20 +507,43 @@ public class PreferencesDialog extends JDialog implements
 			callerRef.prefsTM.save(newProps);
 			CytoscapeInit.getProperties().clear();
 			CytoscapeInit.getProperties().putAll(newProps);
-			callerRef.hide();
+			callerRef.setVisible(false);
+
+			if ( saveVizmapAsDefault ) {
+				Cytoscape.firePropertyChange(Cytoscape.SAVE_VIZMAP_PROPS, null, null); 
+				saveVizmapAsDefault = false;
+				saveVizmapBtn.setSelected(false);
+			}
+			if ( saveCyPropsAsDefault ) {
+				try {
+				File file = CytoscapeInit.getConfigFile( "cytoscape.props" );
+				FileOutputStream output = new FileOutputStream( file );
+				CytoscapeInit.getProperties().store( output, "Cytoscape Property File" );
+				System.out.println("wrote Cytoscape properties file to: " + file.getAbsolutePath());
+				} catch (Exception ex) {
+					ex.printStackTrace();
+					System.out.println("Could not write cytoscape.props file!");
+				}
+				saveCyPropsAsDefault = false;
+				saveCyPropsBtn.setSelected(false);
+			}
 		}
 	}
 
-	class SaveVizmapButtonListener implements ActionListener {
-		PreferencesDialog callerRef = null;
+	class CheckBoxListener implements ItemListener { 
 
-		public SaveVizmapButtonListener(PreferencesDialog caller) {
+		public CheckBoxListener() {
 			super();
-			callerRef = caller;
 		}
 
-		public void actionPerformed(ActionEvent e) {
-			Cytoscape.firePropertyChange(Cytoscape.SAVE_VIZMAP_PROPS, null, null); 
+		public void itemStateChanged(ItemEvent e) {
+	        	Object source = e.getItemSelectable();
+		        if (e.getStateChange() == ItemEvent.SELECTED) {
+		    		if (source == saveVizmapBtn) 
+					saveVizmapAsDefault = true;
+		    		if (source == saveCyPropsBtn) 
+					saveCyPropsAsDefault = true;
+			}
 		}
 	}
 
@@ -515,7 +559,7 @@ public class PreferencesDialog extends JDialog implements
 			Properties oldProps = CytoscapeInit.getProperties();
 			callerRef.pluginsTM.restore(oldProps);
 			callerRef.prefsTM.restore(oldProps);
-			callerRef.hide();
+			callerRef.setVisible(false);
 		}
 	}
 
