@@ -308,18 +308,19 @@ public class XGMMLWriter {
 	/**
 	 * Extract attributes and map it to JAXB object
 	 * 
-	 * @param type
-	 * @param ID
-	 * @return
+	 * @param type    - type of attribute (node, edge, network)
+	 * @param id      - id of node, edge, network (key into CyAttributes)
+     * @param target  - jaxb object
+	 *
 	 * @throws JAXBException
 	 */
 	protected void attributeWriter(int type, String id, Object target)
 			throws JAXBException {
-		byte attType;
-		Att attr;
 
+		// process type node
 		if (type == NODE) {
 			Node targetNode = (Node) target;
+			// process each attribute type
 			for (int i = 0; i < nodeAttNames.length; i++) {
 				if (nodeAttNames[i] == "node.width"
 						|| nodeAttNames[i] == "node.height") {
@@ -333,126 +334,113 @@ public class XGMMLWriter {
 						targetNode.setName("base");
 					}
 				} else {
-					attr = objFactory.createAtt();
-					attType = nodeAttributes.getType(nodeAttNames[i]);
-					if (attType == CyAttributes.TYPE_FLOATING) {
-						Double dAttr = nodeAttributes.getDoubleAttribute(id,
-								nodeAttNames[i]);
-						attr.setName(nodeAttNames[i]);
-						attr.setLabel(FLOAT_TYPE);
-						if (dAttr != null) {
-							attr.setValue(dAttr.toString());
-						}
-					} else if (attType == CyAttributes.TYPE_INTEGER) {
-						Integer iAttr = nodeAttributes.getIntegerAttribute(id,
-								nodeAttNames[i]);
-						attr.setName(nodeAttNames[i]);
-						attr.setLabel(INT_TYPE);
-						if (iAttr != null) {
-							attr.setValue(iAttr.toString());
-						}
-					} else if (attType == CyAttributes.TYPE_STRING) {
-						String sAttr = nodeAttributes.getStringAttribute(id,
-								nodeAttNames[i]);
-
-						if (sAttr != null) {
-							attr.setValue(sAttr.toString());
-						} else if (sAttr == null
-								&& nodeAttNames[i] == "nodeType") {
-							attr.setValue(NORMAL);
-						}
-						attr.setLabel(STRING_TYPE);
-						attr.setName(nodeAttNames[i]);
-
-					} else if (attType == CyAttributes.TYPE_BOOLEAN) {
-						Boolean bAttr = nodeAttributes.getBooleanAttribute(id,
-								nodeAttNames[i]);
-						attr.setName(nodeAttNames[i]);
-						attr.setLabel(BOOLEAN_TYPE);
-						if (bAttr != null)
-							attr.setValue(bAttr.toString());
-					} else if (attType == CyAttributes.TYPE_SIMPLE_LIST) {
-						// TODO: HANDLE LISTS
-						List listAttr = nodeAttributes.getAttributeList(id,
-								nodeAttNames[i]);
-
-						attr.setName(nodeAttNames[i]);
-						attr.setLabel(LIST_TYPE);
-						Iterator listIt = listAttr.iterator();
-
-						while (listIt.hasNext()) {
-							// Object oneAttr = listIt.next();
-							// memberAttr = objFactory.createAtt();
-							//							
-							// memberAttr.setValue(oneAttr.toString());
-							// attr.getContent().add(memberAttr);
-							Object obj = listIt.next();
-							Att memberAttr = objFactory.createAtt();
-							memberAttr.setValue(obj.toString());
-							memberAttr.setLabel(checkType(obj));
-							// System.out.println("!!!!!!!!!!!List obj: " +
-							// obj);
-							attr.getContent().add(memberAttr);
-
-						}
-						// attr.getContent().add(listAttr);
-					} else if (attType == CyAttributes.TYPE_SIMPLE_MAP) {
-						// TODO: HANDLE MAP
-					}
-
+					Att attr = createAttribute(id, nodeAttributes, nodeAttNames, i);
 					targetNode.getAtt().add(attr);
 				}
 			}
-		} else if (type == EDGE || type == NETWORK) {
-			// setup references to attribute names and cy attributes
-			String[] attNames = (type == EDGE) ? edgeAttNames : networkAttNames;
-			CyAttributes attributes = (type == EDGE) ? edgeAttributes : networkAttributes;
+		}
+		// process type edge
+		else if (type == EDGE){
 			// process each attribute type
-			for (int i = 0; i < attNames.length; i++) {
-				attr = objFactory.createAtt();
-				attType = attributes.getType(attNames[i]);
-				if (attType == CyAttributes.TYPE_FLOATING) {
-					Double dAttr = attributes.getDoubleAttribute(id,
-							attNames[i]);
-					attr.setName(attNames[i]);
-					attr.setLabel(FLOAT_TYPE);
-					if (dAttr != null)
-						attr.setValue(dAttr.toString());
-				} else if (attType == CyAttributes.TYPE_INTEGER) {
-					Integer iAttr = attributes.getIntegerAttribute(id,
-							attNames[i]);
-					attr.setName(attNames[i]);
-					attr.setLabel(INT_TYPE);
-					if (iAttr != null)
-						attr.setValue(iAttr.toString());
-				} else if (attType == CyAttributes.TYPE_STRING) {
-					String sAttr = attributes.getStringAttribute(id,
-							attNames[i]);
-					attr.setName(attNames[i]);
-					attr.setLabel(STRING_TYPE);
-					if (sAttr != null)
-						attr.setValue(sAttr.toString());
-				} else if (attType == CyAttributes.TYPE_BOOLEAN) {
-					Boolean bAttr = attributes.getBooleanAttribute(id,
-							attNames[i]);
-					attr.setName(attNames[i]);
-					attr.setLabel(BOOLEAN_TYPE);
-					if (bAttr != null)
-						attr.setValue(bAttr.toString());
-				} else if (attType == CyAttributes.TYPE_SIMPLE_LIST) {
-					// TODO: HANDLE LISTS
-				} else if (attType == CyAttributes.TYPE_SIMPLE_MAP) {
-					// TODO: HANDLE MAP
-				}
-				if (type == EDGE){
-					Edge targetEdge = (Edge) target;
-					targetEdge.getAtt().add(attr);
-				}
-				else {
-					graph.getAtt().add(attr);
-				}
+			for (int i = 0; i < edgeAttNames.length; i++) {
+				Att attr = createAttribute(id, edgeAttributes, edgeAttNames, i);
+				Edge targetEdge = (Edge) target;
+				targetEdge.getAtt().add(attr);
 			}
 		}
+		// process type network
+		else if (type == NETWORK) {
+			// process each attribute type
+			for (int i = 0; i < networkAttNames.length; i++) {
+				Att attr = createAttribute(id, networkAttributes, networkAttNames, i);
+				graph.getAtt().add(attr);
+			}
+		}
+	}
+
+	/**
+	 * Creates an attribute to write into XGMML file.
+	 * 
+	 * @param id            - id of node, edge or network
+	 * @param attributes    - CyAttributes to load
+	 * @param attNames      - ref to attribute names array
+	 * @param attNamesIndex - index into attribute names array
+	 * @return att          - Att to return (gets written into xgmml file)
+	 *
+	 * @throws JAXBException
+	 */
+	private Att createAttribute(String id, CyAttributes attributes, String[] attNames, int attNamesIndex)
+		throws JAXBException {
+
+		// create an attribute and its type
+		Att attr = objFactory.createAtt();
+		byte attType = attributes.getType(attNames[attNamesIndex]);
+
+		// process float
+		if (attType == CyAttributes.TYPE_FLOATING) {
+			Double dAttr = attributes.getDoubleAttribute(id, attNames[attNamesIndex]);
+			attr.setName(attNames[attNamesIndex]);
+			attr.setLabel(FLOAT_TYPE);
+			if (dAttr != null) attr.setValue(dAttr.toString());
+		}
+		// process integer
+		else if (attType == CyAttributes.TYPE_INTEGER) {
+			Integer iAttr = attributes.getIntegerAttribute(id, attNames[attNamesIndex]);
+			attr.setName(attNames[attNamesIndex]);
+			attr.setLabel(INT_TYPE);
+			if (iAttr != null) attr.setValue(iAttr.toString());
+		}
+		// process string
+		else if (attType == CyAttributes.TYPE_STRING) {
+			String sAttr = attributes.getStringAttribute(id, attNames[attNamesIndex]);
+			attr.setName(attNames[attNamesIndex]);
+			attr.setLabel(STRING_TYPE);
+			if (sAttr != null) {
+				attr.setValue(sAttr.toString());
+			}
+			else if (attNames[attNamesIndex] == "nodeType"){
+				attr.setValue(NORMAL);
+			}
+		}
+		// process boolean
+		else if (attType == CyAttributes.TYPE_BOOLEAN) {
+			Boolean bAttr = attributes.getBooleanAttribute(id, attNames[attNamesIndex]);
+			attr.setName(attNames[attNamesIndex]);
+			attr.setLabel(BOOLEAN_TYPE);
+			if (bAttr != null) attr.setValue(bAttr.toString());
+		}
+		// process simple list
+		else if (attType == CyAttributes.TYPE_SIMPLE_LIST) {
+			List listAttr = attributes.getAttributeList(id, attNames[attNamesIndex]);
+
+			attr.setName(attNames[attNamesIndex]);
+			attr.setLabel(LIST_TYPE);
+			Iterator listIt = listAttr.iterator();
+
+			while (listIt.hasNext()) {
+				// Object oneAttr = listIt.next();
+				// memberAttr = objFactory.createAtt();
+				//							
+				// memberAttr.setValue(oneAttr.toString());
+				// attr.getContent().add(memberAttr);
+				Object obj = listIt.next();
+				Att memberAttr = objFactory.createAtt();
+				memberAttr.setValue(obj.toString());
+				memberAttr.setLabel(checkType(obj));
+				// System.out.println("!!!!!!!!!!!List obj: " +
+				// obj);
+				attr.getContent().add(memberAttr);
+
+			}
+			// attr.getContent().add(listAttr);
+		}
+		// process simple map
+		else if (attType == CyAttributes.TYPE_SIMPLE_MAP) {
+			// TODO: HANDLE MAP
+		}
+
+		// outta here
+		return attr;
 	}
 
 	protected Graphics getGraphics(int type, Object target)
