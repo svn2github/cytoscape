@@ -134,6 +134,8 @@ public abstract class CytoscapePlugin {
       if ( object == null ) {
         System.out.println( "Instantiation seems to have failed" );
       }
+    
+      System.out.println( "Successfully loaded: "+pluginClass );
 
       return true;
   }
