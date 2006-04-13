@@ -37,27 +37,19 @@
 
 package cytoscape.data.readers;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.JarURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
 
 import javax.swing.SwingUtilities;
 import javax.xml.bind.JAXBContext;
@@ -69,7 +61,6 @@ import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.actions.FitContentAction;
-import cytoscape.data.servers.BioDataServer;
 import cytoscape.ding.DingNetworkView;
 import cytoscape.generated.Child;
 import cytoscape.generated.Cysession;
@@ -77,7 +68,6 @@ import cytoscape.generated.Network;
 import cytoscape.generated.NetworkTree;
 import cytoscape.generated.Node;
 import cytoscape.generated.SelectedNodes;
-import cytoscape.task.TaskMonitor;
 import cytoscape.view.CyNetworkView;
 
 /**
@@ -97,9 +87,9 @@ public class CytoscapeSessionReader {
 
 	private String fileName;
 	private Object sourceObject;
-	
+
 	private HashMap networkURLs = null;
-	
+
 	private URL cysessionFileURL = null;
 	private URL vizmapFileURL = null;
 
@@ -132,7 +122,7 @@ public class CytoscapeSessionReader {
 	public CytoscapeSessionReader(String filename) {
 		this.fileName = filename;
 		this.sourceObject = fileName;
-		
+
 		vsMap = new HashMap();
 		vsMapByName = new HashMap();
 	}
@@ -143,46 +133,50 @@ public class CytoscapeSessionReader {
 		vsMapByName = new HashMap();
 
 		try {
-			extractEntry((URL)sourceObject);
+			extractEntry((URL) sourceObject);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
-	
-	private void extractEntry( URL sourceName ) throws IOException {
+
+	private void extractEntry(URL sourceName) throws IOException {
 		ZipInputStream zis = null;
 		zis = new ZipInputStream(sourceName.openStream());
 		networkURLs = new HashMap();
-		
+
 		// Extract list of entries
 		ZipEntry zen = null;
 		String entryName = null;
-		while((zen = zis.getNextEntry()) != null) {
-			
+		while ((zen = zis.getNextEntry()) != null) {
+
 			entryName = zen.getName();
-			if(entryName.endsWith(XML_EXT)) {
-				cysessionFileURL = new URL("jar:" + sourceName.toString() + "!/" + entryName);
-			} else if(entryName.endsWith("vizmap.props")) {
-				vizmapFileURL = new URL("jar:" + sourceName.toString() + "!/" + entryName);
-			} else if( entryName.endsWith(XGMML_EXT)) {
-				URL networkURL = new URL("jar:" + sourceName.toString() + "!/" + entryName);
+			if (entryName.endsWith(XML_EXT)) {
+				cysessionFileURL = new URL("jar:" + sourceName.toString()
+						+ "!/" + entryName);
+			} else if (entryName.endsWith("vizmap.props")) {
+				vizmapFileURL = new URL("jar:" + sourceName.toString() + "!/"
+						+ entryName);
+			} else if (entryName.endsWith(XGMML_EXT)) {
+				URL networkURL = new URL("jar:" + sourceName.toString() + "!/"
+						+ entryName);
 				networkURLs.put(entryName, networkURL);
-				//System.out.println("*************EntryName: " + networkURL.toString());
+				// System.out.println("*************EntryName: " +
+				// networkURL.toString());
 			}
 		}
 		zis.close();
 	}
-	
 
 	public void read() throws IOException, JAXBException {
-		if(sourceObject.getClass() == String.class) {
+		if (sourceObject.getClass() == String.class) {
 			unzipSessionFromFile();
-		} else if(sourceObject.getClass() == URL.class) {
+		} else if (sourceObject.getClass() == URL.class) {
 			unzipSessionFromURL();
 		}
 	}
+
 	/**
 	 * Decompress session file
 	 * 
@@ -190,7 +184,7 @@ public class CytoscapeSessionReader {
 	 * @throws JAXBException
 	 */
 	private boolean unzipSessionFromURL() throws IOException, JAXBException {
-		
+
 		restoreVizmap(vizmapFileURL);
 		loadCySession(cysessionFileURL);
 
@@ -205,11 +199,12 @@ public class CytoscapeSessionReader {
 			if (targetView != null) {
 				targetView.setVisualStyle((String) vsMap.get(currentNetworkID));
 				targetView.applyVizmapper(targetView.getVisualStyle());
-			} 
+			}
 		}
 
 		return true;
 	}
+
 	/**
 	 * Decompress session file
 	 * 
@@ -258,32 +253,31 @@ public class CytoscapeSessionReader {
 		// Tell the target file name to CalculatorCatalog
 		Cytoscape.firePropertyChange(Cytoscape.SESSION_LOADED, null, fileName);
 	}
-	
+
 	private void restoreVizmap(URL vizmapURL) throws IOException {
 		// Tell the target file name to CalculatorCatalog
 		Cytoscape.firePropertyChange(Cytoscape.SESSION_LOADED, null, vizmapURL);
 	}
-	
-	
-	private boolean loadCySession(Object cysessionSource)
-			throws JAXBException, IOException {
 
-		
+	private boolean loadCySession(Object cysessionSource) throws JAXBException,
+			IOException {
+
 		InputStream is = null;
 		ZipFile sessionFile = null;
-		
-		// Prepare input stream based on the 
-		if(cysessionSource.getClass() == URL.class) {
+
+		// Prepare input stream based on the
+		if (cysessionSource.getClass() == URL.class) {
 			JarURLConnection jarConnection = null;
-			jarConnection = (JarURLConnection)((URL) cysessionSource).openConnection();
+			jarConnection = (JarURLConnection) ((URL) cysessionSource)
+					.openConnection();
 			is = (InputStream) jarConnection.getContent();
-			
-		} else if(cysessionSource.getClass() == String.class) {
+
+		} else if (cysessionSource.getClass() == String.class) {
 			sessionFile = new ZipFile(fileName);
 			ZipEntry csxml = sessionFile.getEntry((String) cysessionSource);
 			is = sessionFile.getInputStream(csxml);
 		}
-		
+
 		JAXBContext jc = JAXBContext.newInstance(PACKAGE_NAME);
 		Unmarshaller u = jc.createUnmarshaller();
 
@@ -325,26 +319,26 @@ public class CytoscapeSessionReader {
 
 			// Create a root network here.
 			String targetNetwork = sessionID + FS + targetRoot.getFilename();
-			
+
 			InputStream networkStream = null;
-			
-			if(cysessionSource.getClass() == URL.class) {
+
+			if (cysessionSource.getClass() == URL.class) {
 				URL targetNetworkURL = (URL) networkURLs.get(targetNetwork);
-				JarURLConnection jarConnection = (JarURLConnection)(targetNetworkURL).openConnection();
+				JarURLConnection jarConnection = (JarURLConnection) (targetNetworkURL)
+						.openConnection();
 				networkStream = (InputStream) jarConnection.getContent();
-			} else if(cysessionSource.getClass() == String.class) {
+			} else if (cysessionSource.getClass() == String.class) {
 				networkStream = sessionFile.getInputStream(sessionFile
 						.getEntry(targetNetwork));
 			}
-			
 
 			CyNetwork rootNetwork = this.createNetwork(null, targetNetwork,
 					networkStream, Cytoscape.FILE_XGMML, CytoscapeInit
-							.getDefaultSpeciesName(), targetRoot
+							.getProperty("defaultSpeciesName"), targetRoot
 							.isViewAvailable());
 
 			networkStream.close();
-			
+
 			String vsName = targetRoot.getVisualStyle();
 			if (vsName == null) {
 				vsName = "default";
@@ -355,19 +349,17 @@ public class CytoscapeSessionReader {
 			SelectedNodes sNodes = (SelectedNodes) targetRoot
 					.getSelectedNodes();
 
-			// Create metanode structures
-
 			if (sNodes != null) {
 				setSelectedNodes(rootNetwork, sNodes);
 			}
-			if(cysessionSource.getClass() == URL.class) {
+			if (cysessionSource.getClass() == URL.class) {
+				walkTree(targetRoot, rootNetwork, cysessionSource);
+			} else if (cysessionSource.getClass() == String.class) {
 				walkTree(targetRoot, rootNetwork, sessionFile);
-			} else if(cysessionSource.getClass() == String.class) {
-				walkTree(targetRoot, rootNetwork, session);
 			}
 		}
 
-		if(sessionFile != null) {
+		if (sessionFile != null) {
 			sessionFile.close();
 		}
 
@@ -421,22 +413,30 @@ public class CytoscapeSessionReader {
 			String childFile = sessionID + FS + childNet.getFilename();
 
 			InputStream networkStream = null;
-			if(sessionSource.getClass() == ZipFile.class) {
-				ZipFile zipSourceFile = (ZipFile)sessionSource;
+			if (sessionSource.getClass() == ZipFile.class) {
+				ZipFile zipSourceFile = (ZipFile) sessionSource;
 				networkStream = zipSourceFile.getInputStream(zipSourceFile
-					.getEntry(childFile));
-			} else if(sessionSource.getClass() == URL.class) {
+						.getEntry(childFile));
+			} else if (sessionSource.getClass() == URL.class) {
 				URL targetNetworkURL = (URL) networkURLs.get(childFile);
-				JarURLConnection jarConnection = (JarURLConnection)(targetNetworkURL).openConnection();
+				JarURLConnection jarConnection = (JarURLConnection) (targetNetworkURL)
+						.openConnection();
 				networkStream = (InputStream) jarConnection.getContent();
 			}
+
+//			if (networkStream == null) {
+//				System.out.println("!!!!!!!!!NS NULL!!!!!");
+//				System.out.println("SessionSource = "
+//						+ sessionSource.getClass().toString());
+//			}
+
 			CyNetwork new_network = this.createNetwork(parent, childFile,
 					networkStream, Cytoscape.FILE_XGMML, CytoscapeInit
-							.getDefaultSpeciesName(), childNet
+							.getProperty("defaultSpeciesName"), childNet
 							.isViewAvailable());
-			
+
 			networkStream.close();
-			
+
 			vsMap.put(new_network.getIdentifier(), vsName);
 
 			//
