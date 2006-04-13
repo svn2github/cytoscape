@@ -466,7 +466,7 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 		// directories, class names, or manifest file names.
 		for (Iterator iter = plugins.iterator(); iter.hasNext();) {
 			String plugin = (String)iter.next();
-			System.out.println("preparing to load plugin: " + plugin);
+			System.out.println("preparing plugin(s) for loading: " + plugin);
 			
 			File f = new File(plugin);
 
@@ -551,7 +551,9 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 		// assignable
 		// from CytoscapePlugin
 		for (int i = 0; i < urls.length; ++i) {
-			System.out.println("plugin url: '" + urls[i] + "'");
+			System.out.println("");
+			System.out.println("attempting to load plugin url: ");
+			System.out.println(urls[i]);
 			try {
 				JarURLConnection jc = (JarURLConnection) urls[i].openConnection();
 				JarFile jar = jc.getJarFile();
@@ -590,32 +592,35 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 						// necessarily the same is the one it is running on.
 						entry = entry.replaceAll("/|\\\\", ".");
 
-						// System.out.println(" CLASS: " + entry);
-						if (!(isClassPlugin(entry))) {
-							// System.out.println(" not plugin.");
+						if (!(isClassPlugin(entry))) 
 							continue;
-						}
-						// System.out.println(entry+" is a PLUGIN!");
+						
 						totalPlugins++;
 						loadPlugin(classLoader.loadClass(entry));
 					}
 				}
+				if ( totalPlugins == 0 ) 
+					System.out.println("No plugin(s) found in specified jar.");
+
 				// System.out.println("- - - - entries finis");
 				// System.out.println(".jar summary: " +
 				// " entries=" + totalEntries +
 				// " classes=" + totalClasses +
 				// " plugins=" + totalPlugins);
 			} catch (Exception e) {
-				System.err.println("Error thrown: " + e.getMessage());
-				e.printStackTrace();
+				System.out.println("Couldn't load plugin url!");
+				System.err.println("Error: " + e.getMessage());
 			}
 		}
+		System.out.println("");
 	}
 
 	private void loadResourcePlugins(Set rp) {
 		// attempt to load resource plugins
 		for (Iterator rpi = rp.iterator(); rpi.hasNext();) {
 			String resource = (String) rpi.next();
+			System.out.println("");
+			System.out.println("attempting to load plugin resourse: " + resource);
 			// try to get the class
 			Class rclass = null;
 			try {
@@ -627,19 +632,19 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 			}
 			loadPlugin(rclass);
 		}
+		System.out.println("");
 	}
 
 
 	public void loadPlugin(Class plugin) {
 
 		if (CytoscapePlugin.class.isAssignableFrom(plugin)) {
-			System.out.println("CytoscapePlugin Loaded");
 			try {
 				CytoscapePlugin.loadPlugin(plugin);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		}
+		} 
 	}
 
 	/**
