@@ -80,6 +80,21 @@ public class ZIPSIFWriter<NodeType extends Comparable<? super NodeType>,
 	    out.write(bytes,0,bytes.length);
     }
 
+
+    /**
+     * Adds an aribitry string to zip archive as a separate file. 
+     * @param data An arbitrary string of data that will be written as a file. 
+     * @param name The name of the file to be written to the archive. 
+     */
+    public void add(String data, String name ) throws IOException {
+	    out.putNextEntry(new ZipEntry( name ));
+	    content.delete(0,content.length());
+	    content.append(data);
+	    bytes = content.toString().getBytes();
+	    out.write(bytes,0,bytes.length);
+    }
+
+
     /**
      * Finishes writing the ZIP file.  Call this after you've added the graphs you want
      * to the archive.

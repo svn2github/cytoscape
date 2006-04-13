@@ -122,7 +122,6 @@ public class AdditiveCompatibilityCalculator implements CompatibilityCalculator 
 		compatGraph.addNode(node2);
                 boolean status = compatGraph.addEdge(node1,node2, new Double(edgeWeight), distDesc.toString());		
 		return status;
-
 	}
 
         private String createNode( String[] nodes ) {
