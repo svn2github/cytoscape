@@ -6,7 +6,6 @@ import java.lang.reflect.*;
 import org.isb.bionet.datasource.*;
 import org.isb.bionet.datasource.synonyms.*;
 
-import sun.security.action.GetIntegerAction;
 
 /**
  * @author <a href="mailto:iavila@systemsbiology.org">Iliana Avila-Campillo</a>

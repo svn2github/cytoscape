@@ -1,7 +1,7 @@
 handler.interactions=org.isb.bionet.datasource.interactions.InteractionsHandler
 handler.geneOntology=org.isb.iavila.ontology.xmlrpc.GOHandler
 handler.synonyms=org.isb.bionet.datasource.synonyms.SQLSynonymsHandler
-host=http://localhost:8081
+host=http://localhost:8084
 jdbcURL=jdbc:mysql://pandora.systemsbiology.net/bionetbuilder_info?user=cytouser&password=bioNetBuilder
 client.interactions=org.isb.bionet.datasource.interactions.InteractionDataClient
 client.geneOntology=org.isb.iavila.ontology.xmlrpc.GOClient

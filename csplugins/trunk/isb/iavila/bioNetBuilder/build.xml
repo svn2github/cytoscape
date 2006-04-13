@@ -72,27 +72,8 @@
        <delete dir="${build}"/>
     </target>
 	
-	<target name="testjar" depends="compile">
-		<unjar dest = "${build}">
-		  <fileset dir = "${local.lib}"/>
-		</unjar>       
-	   
-		<genjar jarfile="bionetbuilder.jar">
-		 <classpath refid="classpath"/>
-	     <class>
-	     	<fileset dir="${build}">
-	              <include name="**/*.class"/>
-	         </fileset>
-	     </class>
-	     <classfilter>
-	        <exclude name="com.mysql.jdbc."/>
-	        <exclude name="org.xml.sax."/>
-	     </classfilter>
-	    </genjar>                    
-	</target>
-	
 	<!-- this works with Cytoscape in CVS -->
-	<target name="onejar" depends="compile">
+	<target name="jar" depends="compile">
 		<unjar overwrite="Yes" dest = "${build}">
 			<fileset dir = "${local.lib}">
 				<include name="**/*.jar"/>
@@ -103,32 +84,6 @@
 	    	</jar>
 		<copy file="${jar}/bionetbuilder.jar" todir="${cytoscape.plugins}"/>
 		<echo message="bionetbuilder.jar is complete, it is located in ${jar} and in ${cytoscape.plugins}"/>
-	</target>
-
-    <!-- jar target, for Cytoscape 2.2 -->
-    <target name="jar" depends="compile, makelibjar" description="Creates a jar that contains only BioNetBuilder classes and copies it to Cytoscape's plugins directory">
-    	    
-    	<jar destfile = "${jar}/${plugin.name}.jar">
-    		<fileset dir = "${build}"/>
-    	</jar>
-    	
-    	<copy file="${jar}/${plugin.name}.jar" todir="${cytoscape.plugins}"/> 
-    	<echo message = "${plugin.name}.jar is complete. It is located in ${jar}/ directory and in ${cytoscape.plugins}/"/>
-    </target>
-	
-	<!-- makelibjar target-->
-	<target name = "makelibjar" description="Makes a jar with all the needed library jars for BioNetBuilder and copies it to Cytoscape's plugins directory">
-		<unjar dest = "${lib.jar}">
-			<fileset dir = "${local.lib}"/>
-		</unjar>
-				
-		<mkdir dir = "${jar}"/>
-		<jar destfile = "${jar}/${lib.jar}.jar">
-			<fileset dir = "${lib.jar}"/>
-		</jar>
-		
-		<copy file="${jar}/${lib.jar}.jar" todir="${cytoscape.plugins}"/> 
-		<echo message = "${lib.jar}.jar is complete. It is located in ${jar}/ directory and in ${cytoscape.plugins}/"/>      
 	</target>
 
 	<!-- Run a class MYCLASS (from the ${build} directory) with the command line 'MY ARGS' via:
@@ -147,7 +102,7 @@
 		    <echo message="${server.class} ${server.args}"/>
 		    <java classname="org.apache.xmlrpc.XmlRpcClientLite" fork="true" failonerror="no">
 		         <classpath refid="server_classpath"/>
-		         <arg line="http://wavelength.systemsbiology.net:8081"/>
+		         <arg line="http://wavelength.systemsbiology.net:8084"/>
 		    	     <arg line="server.shutdown"/>
 		    </java>
 		</target>
