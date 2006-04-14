@@ -52,22 +52,22 @@ public class LogLikelihoodScoreModelTest extends TestCase {
     public void testscoreGraph() {
     	s.scoreEdge("a","b",h); // ensures scoreGraph is run
 	GraphProbs probs = s.graphMap.get(h);
-	assertTrue(probs!=null);
+	assertNotNull(probs);
 	System.out.println(probs.toString());
 	assertTrue(probs.pTrue > 0.583 && probs.pTrue < 0.584); // == 0.58333333...
 	assertTrue(probs.pObs > 0.333 && probs.pObs < 0.334); // == 1/3
-	assertTrue(probs.pTrueGivenNotObs == 0.525); 
-	assertTrue(probs.exNumInt == 9.0);
+	assertEquals(0.525, probs.pTrueGivenNotObs); 
+	assertEquals((long)9.0, probs.exNumInt);
     }
 
     public void testscoreEdge() {
 
-	assertTrue(s.scoreEdge(null, null, h) == 0.0);
-	assertTrue(s.scoreEdge(null, null, null) == Double.MIN_VALUE);
-	assertTrue(s.scoreEdge("a", "c", null) == Double.MIN_VALUE);
-	assertTrue(s.scoreEdge("a", null, h) == 0.0);
-	assertTrue(s.scoreEdge("a", "c", h) == 0.0);
-	assertTrue(s.scoreEdge("a", "x", h) == 0.0); // edge doesn't exist
+	assertEquals(0.0, s.scoreEdge(null, null, h));
+	assertEquals(Double.MIN_VALUE, s.scoreEdge(null, null, null));
+	assertEquals(Double.MIN_VALUE, s.scoreEdge("a", "c", null));
+	assertEquals(0.0, s.scoreEdge("a", null, h));
+	assertEquals(0.0, s.scoreEdge("a", "c", h));
+	assertEquals(0.0, s.scoreEdge("a", "x", h)); // edge doesn't exist
 
 	System.out.println("Score: a b " + s.scoreEdge("a", "b", h));
 	System.out.println("Score: b c " + s.scoreEdge("b", "c", h));

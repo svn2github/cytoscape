@@ -48,8 +48,8 @@ public class SIFInteractionNetworkTest extends TestCase {
 	}
 
 	public void testGraph() {
-		assertTrue("Expected 5 nodes: got " + g.numberOfNodes(), g.numberOfNodes() == 5 );
-		assertTrue("Expected 5 edges: got " + g.numberOfEdges(), g.numberOfEdges() == 5 );
+		assertEquals("Expected 5 nodes: got " + g.numberOfNodes(), 5, g.numberOfNodes());
+		assertEquals("Expected 5 edges: got " + g.numberOfEdges(), 5, g.numberOfEdges());
 	}
    
 	public static Test suite() {

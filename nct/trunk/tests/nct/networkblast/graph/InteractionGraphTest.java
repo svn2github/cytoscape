@@ -49,7 +49,7 @@ public class InteractionGraphTest extends TestCase {
     }
     public void testConstruction() {
 
-    	assertTrue("g is null when it shouldn't be", g!=null);
+    	assertNotNull("g is null when it shouldn't be", g);
 
 	assertTrue("a is not a node when it should be", g.isNode("a"));
 	assertTrue("b is not a node when it should be", g.isNode("b"));
@@ -62,31 +62,31 @@ public class InteractionGraphTest extends TestCase {
 	assertTrue("a-b is not an edge when it should be", g.isEdge("a","b"));
 	assertTrue("c-d is not an edge when it should be", g.isEdge("c","d"));
 
-	assertTrue("expected 14 nodes, got: " + h.numberOfNodes(), h.numberOfNodes() == 14);
+	assertEquals(14, h.numberOfNodes());
     }
 
     public void testgetEdgeWeight() {
-	assertTrue("expected edge weight of -1.0, got: " + g.getEdgeWeight("a", "e"),
-	           g.getEdgeWeight("a", "e") == -1.0); // edge doesn't exist
-	assertTrue("expected edge weight of 0.5, got: " + g.getEdgeWeight("a", "b"),
-	           g.getEdgeWeight("a", "b") == .5);
-	assertTrue("expected edge weight of 0.5, got: " + g.getEdgeWeight("c", "b"),
-	           g.getEdgeWeight("c", "b") == .5);
-	assertTrue("expected edge weight of -1.0, got: " + g.getEdgeWeight("a", "c"),
-	           g.getEdgeWeight("a", "c") == -1.0); // though connected, edge doesn't exist 
+	assertEquals("expected edge weight of -1.0, got: " + g.getEdgeWeight("a", "e"), -1.0,
+	           g.getEdgeWeight("a", "e")); // edge doesn't exist
+	assertEquals("expected edge weight of 0.5, got: " + g.getEdgeWeight("a", "b"),
+	           0.5, g.getEdgeWeight("a", "b"));
+	assertEquals("expected edge weight of 0.5, got: " + g.getEdgeWeight("c", "b"), 0.5, 
+			   g.getEdgeWeight("c", "b"));
+	assertEquals("expected edge weight of -1.0, got: " + g.getEdgeWeight("a", "c"), -1.0, 
+	           g.getEdgeWeight("a", "c")); // though connected, edge doesn't exist 
     }
 
     public void testgetDistance() {
-	assertTrue("expected distance 0, got: " + g.getDistance("a", "a"),
-	           g.getDistance("a", "a") == 0); 
-	assertTrue("expected distance 1, got: " + g.getDistance("a", "b"),
-	           g.getDistance("a", "b") == 1); 
-	assertTrue("expected distance 2, got: " + g.getDistance("a", "c"),
-	           g.getDistance("a", "c") == 2); 
-	assertTrue("expected distance 3, got: " + g.getDistance("a", "d"),
-	           g.getDistance("a", "d") == 3); 
-	assertTrue("expected distance 3, got: " + g.getDistance("a", "e"),
-	           g.getDistance("a", "e") == 3); 
+	assertEquals("expected distance 0, got: " + g.getDistance("a", "a"), 0, 
+	           g.getDistance("a", "a")); 
+	assertEquals("expected distance 1, got: " + g.getDistance("a", "b"), 1,
+	           g.getDistance("a", "b")); 
+	assertEquals("expected distance 2, got: " + g.getDistance("a", "c"), 2, 
+	           g.getDistance("a", "c")); 
+	assertEquals("expected distance 3, got: " + g.getDistance("a", "d"), 3,
+	           g.getDistance("a", "d")); 
+	assertEquals("expected distance 3, got: " + g.getDistance("a", "e"), 3, 
+	           g.getDistance("a", "e")); 
     }
     public static Test suite() { return new TestSuite( InteractionGraphTest.class ); }
 }

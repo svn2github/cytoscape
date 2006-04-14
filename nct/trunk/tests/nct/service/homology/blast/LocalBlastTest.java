@@ -91,10 +91,10 @@ public class LocalBlastTest extends TestCase {
 	public void testBlast() {
 		// sanity check
 		assertTrue( noExceptions );
-		assertTrue("expect 8 nodes, got: " + b1.numberOfNodes(), b1.numberOfNodes() == 8);
-		assertTrue("expect 8 nodes, got: " + b2.numberOfNodes(), b2.numberOfNodes() == 8);
-		assertTrue("expect 3 edge, got: " + b1.numberOfEdges(), b1.numberOfEdges() == 3);
-		assertTrue("expect 3 edge, got: " + b2.numberOfEdges(), b2.numberOfEdges() == 3);
+		assertEquals("expect 8 nodes, got: " + b1.numberOfNodes(), 8, b1.numberOfNodes());
+		assertEquals("expect 8 nodes, got: " + b2.numberOfNodes(), 8, b2.numberOfNodes());
+		assertEquals("expect 3 edge, got: " + b1.numberOfEdges(), 3, b1.numberOfEdges());
+		assertEquals("expect 3 edge, got: " + b2.numberOfEdges(), 3, b2.numberOfEdges());
 
 		for ( Edge<String,Double> e : b1.getEdges() )
 			System.out.println( "edge " + e.toString() ); 
@@ -115,7 +115,7 @@ public class LocalBlastTest extends TestCase {
 			for ( String key2 : map.get(key).keySet() ) {
 				System.out.println(key + " " + key2 + " " + map.get(key).get(key2));
 				if ( key.equals(key2) ) {
-					assertTrue( map.get(key).get(key2) == 0 );
+					assertEquals(0.0, map.get(key).get(key2));
 					numChecks++;
 				}
 				else if ( key.equals("BMRB_CHICK") && key2.equals("PIR:S33568") ||
