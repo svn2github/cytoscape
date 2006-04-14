@@ -914,8 +914,11 @@ public class XGMMLReader implements GraphReader {
 
 		// check args
 		String dataType = curAtt.getLabel();
-		if (dataType == null ||
-			(!dataType.equals(LIST_TYPE) && curAtt.getValue() == null)) return;
+		if (dataType == null) return;
+		// null value only ok when type is list or map
+		if (!dataType.equals(LIST_TYPE) &&
+			!dataType.equals(MAP_TYPE) &&
+			curAtt.getValue() == null) return;
 
 		// string
 		if (dataType.equals(STRING_TYPE)) {
@@ -948,10 +951,52 @@ public class XGMMLReader implements GraphReader {
 			while (listIt.hasNext()) {
 				Object listItem = listIt.next();
 				if (listItem != null && listItem.getClass() == AttImpl.class) {
-					listAttr.add(((AttImpl) listItem).getValue());
+					Object itemClassObject = getItemClassObject((AttImpl)listItem);
+					if (itemClassObject != null) listAttr.add(itemClassObject);
 				}
 			}
 			attributes.setAttributeList(targetName, curAtt.getName(), listAttr);
 		}
+		// map
+		else if (dataType.equals(MAP_TYPE)) {
+			HashMap mapAttr = new HashMap();
+			Iterator mapIt = curAtt.getContent().iterator();
+			while (mapIt.hasNext()){
+				Object mapItem = mapIt.next();
+				if (mapItem != null && mapItem.getClass() == AttImpl.class) {
+					Object mapClassObject = getItemClassObject((AttImpl)mapItem);
+					if (mapClassObject != null) {
+						mapAttr.put(((AttImpl)mapItem).getName(), mapClassObject);
+					}
+				}
+			}
+			attributes.setAttributeMap(targetName, curAtt.getName(), mapAttr);
+		}
+	}
+
+	/**
+	 * Given an attribute implemenation ref,
+	 * method returns an instance of an appropriate class.
+	 *
+	 * @param item - AttImpl
+	 * @return     - Object
+	 */
+	private Object getItemClassObject(AttImpl item){
+		
+		if (item.getLabel().equals(STRING_TYPE)) {
+			return new String(item.getValue());
+		}
+		else if (item.getLabel().equals(INT_TYPE)) {
+			return new Integer(item.getValue());
+		}
+		else if (item.getLabel().equals(FLOAT_TYPE)) {
+			return new Double(item.getValue());
+		}
+		else if (item.getLabel().equals(BOOLEAN_TYPE)) {
+			return new Boolean(item.getValue());
+		}
+
+		// outta here
+		return null;
 	}
 }
