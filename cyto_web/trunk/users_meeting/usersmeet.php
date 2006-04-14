@@ -21,9 +21,7 @@
 		oriented meeting. Its purpose is to reach out to biologists, wet-lab scientists,<BR>
 		and other Cytoscape end-users.
 		<BR><BR>				
-		There is no registration cost for this meeting, but we would like to know in<BR>
-		advance how many people are attending and their level of expertise with<BR>
-		Cytoscape. Please register <A HREF="http://www.surveymonkey.com/s.asp?u=172771825292">here</A> if you are attending.
+		Registration for this event is now closed.
 		<BR><BR>
 		Participants are responsible for making their own travel arrangements.<BR></B>
 	 
@@ -35,7 +33,28 @@
 		12:00pm - 1:00pm   Lunch at the ISB's cafeteria, developer-user social time<BR>
 		1:00pm - 2:30pm    Round table discussions between users and developers<BR>
 		2:30pm - 3:00pm    Next steps, conclusions, and adjourn<BR>
-	        <BR>
+		<H3>Announcements and updates</H3>
+		<P>
+		4-13-06<br>
+		We would like to ask attendants with little Cytoscape experience to complete the homework described below before the meeting<BR>
+		takes place. The Cytoscape hands-on workshop will only last 2 hours at most, and we will make better progress if everyone in<BR>
+		the classroom has a preliminary exposure to Cytoscape.<BR>
+		<P>
+		Homework
+		<OL>
+		<LI>Complete this <A HREF="http://cytoscape.org/tut/getting.started.php">Getting Started</A> tutorial.
+		<LI><A HREF="http://cytoscape.org/download_list.php">Download Cytoscape</A>
+		<LI>Download the <A HREF="http://cytoscape.org/manual/Cytoscape2_2Manual.pdf">Cytoscape Manual</A> and read these sections:
+			<OL>
+			<LI>Introduction
+			<LI>Launching Cytoscape (try to launch your own downloaded copy!)
+			<LI>Quick Tour of Cytoscape
+			<LI>Building and storing interaction networks
+			<LI>Node and edge attributes
+			</OL> 
+		</OL>
+		 
+		
 		Send email to <a href="mailto:iavila@systemsbiology.org">iavila_at_systemsbiology.org </a> if you have any related questions.
 		</B>
 		<BR>
