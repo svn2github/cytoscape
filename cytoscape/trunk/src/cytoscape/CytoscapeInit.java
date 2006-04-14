@@ -96,10 +96,7 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 		System.out.println("CytoscapeInit static initialization");
 		pluginURLs = new HashSet();
 		resourcePlugins = new HashSet();
-		properties = new Properties();	
-		loadStaticProperties("cytoscape.props",properties); 
-		visualProperties = new Properties();	
-		loadStaticProperties("vizmap.props",visualProperties); 
+		initProperties();
 	}
 
 	private static String[] args;
@@ -140,8 +137,9 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 
 		initParams = params;
 
-		loadInputProperties("cytoscape.props", initParams.getProps(), properties);
-		loadInputProperties("vizmap.props", initParams.getVizProps(), visualProperties);
+		initProperties();
+		properties.putAll(initParams.getProps());
+		visualProperties.putAll(initParams.getVizProps());
 		setVariablesFromProperties();
 
 		// see if we are in headless mode
@@ -747,6 +745,9 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 	}
 
 	private static void loadStaticProperties(String defaultName, Properties props ) {
+		if ( props == null )
+			props = new Properties();
+
 		String tryName = "";
                 try {
                         // load the props from the jar file
@@ -768,20 +769,6 @@ public class CytoscapeInit { //implements PropertyChangeListener {
                         ioe.printStackTrace();
                 }
 
-	}
-
-	private void loadInputProperties(String defaultName, Properties initProps, Properties props ) {
-		if ( props == null )
-			loadStaticProperties(defaultName,props);
-
-		// transfer the properties found on the command line 
-		if ( initProps != null ) {
-			Enumeration names = initProps.propertyNames();
-			while (names.hasMoreElements()) {	
-				String name = (String)names.nextElement();
-				props.setProperty( name, initProps.getProperty(name) );
-			}
-		}
 	}
 
 	private static void loadExpressionFiles() {
@@ -845,6 +832,18 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("couldn't create session from file: '" + sessionFile + "'");
+		}
+	}
+
+	private static void initProperties() {
+		if ( properties == null ) {
+			properties = new Properties();
+			loadStaticProperties("cytoscape.props",properties); 
+		}
+
+		if ( visualProperties == null ) {
+			visualProperties = new Properties();
+			loadStaticProperties("vizmap.props",visualProperties); 
 		}
 	}
 }

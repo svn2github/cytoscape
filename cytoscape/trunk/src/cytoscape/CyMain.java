@@ -203,6 +203,8 @@ public class CyMain implements CyInitParams {
 
 		if ( line.hasOption("P") ) 
 			props = createProperties( line.getOptionValues("P") );	
+		else
+			props = createProperties( new String[0] );
 
 		if ( line.hasOption("N") ) 
 			graphFiles = line.getOptionValues("N");	
@@ -212,6 +214,8 @@ public class CyMain implements CyInitParams {
 
 		if ( line.hasOption("V") ) 
 			vizmapProps = createProperties( line.getOptionValues("V") );	
+		else
+			vizmapProps = createProperties( new String[0] );
 
 		if ( line.hasOption("s") ) 
 			sessionFile = line.getOptionValue("s");	
@@ -302,12 +306,7 @@ public class CyMain implements CyInitParams {
 		// Transfer argument properties into the full properties.
 		// We do this so that anything specified on the command line
 		// overrides anything specified in a file.
-		Enumeration names = argProps.propertyNames();
-		while (names.hasMoreElements()) {
-			String name = (String)names.nextElement();
-			props.setProperty( name, argProps.getProperty(name) );
-		}
-
+		props.putAll(argProps);
 
 		return props;
 	}
