@@ -6,6 +6,8 @@
 package csplugins.layout.algorithms.springEmbedded;
 
 import cytoscape.Cytoscape;
+import cytoscape.graph.legacy.layout.algorithm.MutablePolyEdgeGraphLayout;
+import cytoscape.graph.legacy.layout.algorithm.util.MutablePolyEdgeGraphLayoutRepresentation;
 import cytoscape.view.CyNetworkView;
 import giny.model.Edge;
 import giny.view.Bend;
