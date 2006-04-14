@@ -1,69 +1,60 @@
-<project name="control" default="control" basedir=".">
+<project name="ManualLayout" default="ManualLayout" basedir=".">
 
   <!-- =================================================================== -->
   <!-- Initialization target                                               -->
   <!-- =================================================================== -->
-  <target name="init-control">
+  <target name="init-ManualLayout">
     <tstamp/>
-    <property name="control.Name" value="control"/>
-    <property name="control.name" value="control"/>
-    <property name="control.version" value="0.1"/>
-    <property name="control.year" value="200"/>
-    <property name="control.jar" value="ManualLayout.jar"/>
+    <property name="ManualLayout.Name" value="ManualLayout"/>
+    <property name="ManualLayout.name" value="ManualLayout"/>
+    <property name="ManualLayout.version" value="0.1"/>
+    <property name="ManualLayout.year" value="2006"/>
+    <property name="ManualLayout.jar" value="ManualLayout.jar"/>
 
-    <echo message="Building ${control.name} version ${control.version}."/>
+    <echo message="Building ${ManualLayout.name} version ${ManualLayout.version}."/>
 
     <!-- Inheritable properties -->
     <property name="debug" value="on"/>
     <property name="optimize" value="off"/>
     <property name="deprecation" value="on"/>
-    <property name="nowarn" value="true"/>
+    <property name="nowarn" value="false"/>
     <property name="fork" value="false"/>
-    <property name="control.root.dir" value="."/>
-    <property name="control.lib.dir" value="${control.root.dir}/lib"/>
-    <property name="cytoscape.lib.dir" value="${control.root.dir}/../../cytoscape/lib"/>
-    <property name="cytoscape.plugin.dir" value="${control.root.dir}/../../cytoscape/plugins"/>
+    <property name="ManualLayout.root.dir" value="."/>
+
+    <!-- Cytoscape directory -->
+    <property name="cytoscape.root.dir" value="../../cytoscape"/>
+    <property name="cytoscape.build.dir" value="${cytoscape.root.dir}/build/cytoscape-v2.3"/>
+    <property name="cytoscape.lib.dir" value="${cytoscape.root.dir}/lib"/>
+    <property name="cytoscape.plugin.dir" value="${cytoscape.root.dir}/plugins"/>
+    <property name="cytoscape.build.plugin.dir" value="${cytoscape.build.dir}/plugins"/>
     <path id="project.class.path">
       <pathelement path="${java.class.path}/"/>
     </path>
 
     <!-- Define the directories -->
-    <property name="control.root.dir" value="./"/>
-    <property name="control.src.dir" value="${control.root.dir}/src"/>
-    <property name="control.classes.dir" value="${control.root.dir}/classes"/>
-    <property name="control.javadoc.dir" value="${javadoc.dir}/control"/>
-    <property name="control.resources.dir" value="${control.root.dir}/resources"/>
-    <property name="control.manifest.dir" value="${control.root.dir}/manifest"/>
-    <property name="control.packages" value="control.*"/>
-    <!-- Subdirectory for test reports -->
-    <property name="control.tests.reports.dir" value="${control.root.dir}/reports/tests" />
-    <property name="cytoscape.lib" value="../../cytoscape/lib" />
+    <property name="ManualLayout.src.dir" value="${ManualLayout.root.dir}/src"/>
+    <property name="ManualLayout.classes.dir" value="${ManualLayout.root.dir}/classes"/>
+    <property name="ManualLayout.resources.dir" value="${ManualLayout.root.dir}/resources"/>
+    <property name="ManualLayout.manifest.dir" value="${ManualLayout.root.dir}/manifest"/>
+    <property name="ManualLayout.packages" value="ManualLayout.*"/>
 
-    <!-- Define the condition for compilation -->
-    <property name="cytoscape.jar" value="${control.lib.dir}/cytoscape.jar"/>
-    <property name="colt.jar" value="${control.lib.dir}/colt.jar"/>
-    
+    <!-- Define excludes for ManualLayout compile and javadoc -->
+    <property name="ManualLayout.excludes" value="**/notyet/*"/>
+    <property name="ManualLayout.tests.excludes" value="**/notyet/*"/>
+    <property name="ManualLayout.packages.excludes" value="**.test.*,**.notyet.*"/>
 
-    <condition property="cytoscape.present">
-      <and> 
-	  		<available file="${cytoscape.jar}"/> 
-				<available file="${colt.jar}"/> 
-		  </and>
-    </condition>
-
-    <!-- Define excludes for control compile and javadoc -->
-    <property name="control.excludes" value="**/notyet/*"/>
-    <property name="control.tests.excludes" value="**/notyet/*"/>
-    <property name="control.packages.excludes" value="**.test.*,**.notyet.*"/>
-
-    <path id="control.project.class.path">
-      <pathelement location="${control.classes.dir}"/>
+    <path id="ManualLayout.project.class.path">
+      <pathelement location="${ManualLayout.classes.dir}"/>
       <pathelement location="${cytoscape.lib.dir}/colt.jar"/>
-      <pathelement location="${cytoscape.lib.dir}/../cytoscape.jar"/>
+      <pathelement location="${cytoscape.root.dir}/cytoscape.jar"/>
       <pathelement location="${cytoscape.lib.dir}/giny.jar"/>
       <pathelement location="${cytoscape.lib.dir}/phoebe.jar"/>
       <pathelement location="${cytoscape.lib.dir}/coltginy.jar"/>
       <pathelement location="${cytoscape.lib.dir}/piccolo.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/com-nerius-math-xform.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape-graph-fixed.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape-util-intr.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape-graph-layout.jar"/>
       <pathelement path="${project.class.path}/"/>
     </path>
 
@@ -72,17 +63,17 @@
   </target>
 
   <!-- =================================================================== -->
-  <!-- Compiles the control project                                           -->
+  <!-- Compiles the ManualLayout project                                           -->
   <!-- =================================================================== -->
-  <target name="compile-control" depends="init-control"  >
+  <target name="compile-ManualLayout" depends="init-ManualLayout"  >
 
-   <echo message=" COMPILE control "/>
+   <echo message=" COMPILE ManualLayout "/>
 
-    <mkdir dir="${control.classes.dir}"/>
-    <javac srcdir="${control.src.dir}"
-           excludes="${control.excludes}"
-           classpathref="control.project.class.path"
-           destdir="${control.classes.dir}"
+    <mkdir dir="${ManualLayout.classes.dir}"/>
+    <javac srcdir="${ManualLayout.src.dir}"
+           excludes="${ManualLayout.excludes}"
+           classpathref="ManualLayout.project.class.path"
+           destdir="${ManualLayout.classes.dir}"
            debug="${debug}"
            nowarn="${nowarn}"
            deprecation="${deprecation}" 
@@ -91,122 +82,34 @@
   </target>
 
   <!-- =================================================================== -->
-  <!-- Creates the control.jar file                                           -->
+  <!-- Creates the ManualLayout.jar file                                           -->
   <!-- =================================================================== -->
-  <target name="control" depends="compile-control"  >
-    <mkdir dir="${control.lib.dir}"/>
-    <jar destfile="${control.jar}" manifest="${control.manifest.dir}/control.manifest">
+  <target name="ManualLayout" depends="compile-ManualLayout"  >
+    <jar destfile="${ManualLayout.jar}" manifest="${ManualLayout.manifest.dir}/ManualLayout.manifest">
       <fileset
-        dir="${control.classes.dir}"
+        dir="${ManualLayout.classes.dir}"
         includes="**"/>
-      <fileset
-        dir="${control.root.dir}/lib"
-        includes="resources/**"/>
       <fileset 
-        dir="${control.root.dir}/images"/>
+        dir="${ManualLayout.root.dir}/images"/>
     </jar>
-    <copy todir="${control.lib.dir}" file="${control.jar}"/>
-    <copy todir="${cytoscape.plugin.dir}" file="${control.jar}"/>
   </target>
 
-  <!-- =================================================================== -->
-  <!-- Compiles the control tests                                             -->
-  <!-- =================================================================== -->
-  <target name="compile-tests" depends="control"  >
-    <mkdir dir="${control.classes.dir}"/>
-    <javac srcdir="${control.src.dir}"
-           includes="**/test/*"
-           excludes="${control.tests.excludes}"
-           classpathref="control.project.class.path"
-           destdir="${control.classes.dir}"
-           debug="${debug}"
-           deprecation="${deprecation}" 
-           optimize="${optimize}"
-           fork="${fork}"/>
-  </target>
-
-  <!-- =================================================================== -->
-  <!-- Creates the control-tests.jar file                                     -->
-  <!-- =================================================================== -->
-  <target name="tests" depends="compile-tests"  >
-    <jar jarfile="control-tests.jar"
-         basedir="${control.classes.dir}"
-         includes="**/test/*"/>
+  <target name="setup" depends="ManualLayout">
+    <copy todir="${cytoscape.build.plugin.dir}" file="${ManualLayout.jar}"/>
   </target>
 
   <!-- =================================================================== -->
   <!-- Build all jars                                                      -->
   <!-- =================================================================== -->
-  <target name="all" depends="control"/>
+  <target name="all" depends="ManualLayout"/>
 
-   <!-- =================================================================== -->
-  <!-- Run the Plugin                                                      -->
-  <!-- =================================================================== -->
-  <target name="run" depends="control" >
-     
-     <java classname="cytoscape.cytoscape" 
-           classpathref="control.project.class.path"
-           fork="true"/>
-           <arg line = "-y giny"/>
-           <arg line = "--JLD"/>
-           <arg line = "${control.lib.dir}/control.jar"/>
-           
-
-  </target>
-
-
-
-  <!-- =================================================================== -->
-  <!-- Runs the tests in control-tests.jar                                    -->
-  <!-- =================================================================== -->
-  <target name="runtests" depends="tests"  >
-    <mkdir dir="${control.tests.reports.dir}"/>
-    <junit
-       printsummary="yes"
-       haltonfailure="no"
-       dir="${control.classes.dir}"
-       maxmemory="1G"
-    >
-      <formatter type="plain" usefile="true" />
-      <classpath refid="control.project.class.path"/>
-      <!-- The junit task doesn't support 'if' so we test for JUnit here -->
-      <batchtest fork="yes" todir="${control.tests.reports.dir}" if="junit.present">
-        <fileset
-           dir="${control.classes.dir}"
-           includes="**/test/*"
-           excludes="${control.tests.excludes}"
-        />
-      </batchtest>
-    </junit>
-  </target>
-
-  <!-- =================================================================== -->
-  <!-- Creates the API documentation                                       -->
-  <!-- =================================================================== -->
-  <target name="docs" depends="init-control" >
-    <mkdir dir="${control.javadoc.dir}"/>
-    <javadoc packagenames="${control.packages}"
-             excludepackagenames="${control.packages.excludes}"
-             sourcepath="${control.src.dir}"
-             destdir="${control.javadoc.dir}"
-             classpathref="control.project.class.path"
-             author="true"
-             version="true"
-             use="true"
-             splitindex="true"
-             noindex="false"
-             windowtitle="${control.Name} API"
-             doctitle="${control.Name}"
-    />
-  </target>
- 
   <!-- =================================================================== -->
   <!-- Clean up, get back to original state                                -->
   <!-- =================================================================== -->
-  <target name="clean" depends="init-control">
-    <delete dir="${control.classes.dir}"/>
-    <delete file="control.jar"/>
-    <delete file="control-tests.jar"/>
+  <target name="clean" depends="init-ManualLayout">
+    <delete dir="${ManualLayout.classes.dir}"/>
+    <delete file="ManualLayout.jar"/>
+    <delete file="ManualLayout-tests.jar"/>
   </target>
 
 </project>
