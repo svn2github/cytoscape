@@ -414,7 +414,7 @@ public class XGMMLWriter {
 		else if (attType == CyAttributes.TYPE_SIMPLE_LIST) {
 			// get the attribute list
 			List listAttr = attributes.getAttributeList(id, attNames[attNamesIndex]);
-			// set attribuet name and label
+			// set attribute name and label
 			attr.setName(attNames[attNamesIndex]);
 			attr.setLabel(LIST_TYPE);
 			// interate through the list
@@ -854,8 +854,6 @@ public class XGMMLWriter {
 		} else if (obj.getClass() == Double.class
 				|| obj.getClass() == Float.class) {
 			return FLOAT_TYPE;
-		} else if (obj.getClass() == String.class) {
-			return STRING_TYPE;
 		} else if (obj.getClass() == Boolean.class) {
 			return BOOLEAN_TYPE;
 		} else
