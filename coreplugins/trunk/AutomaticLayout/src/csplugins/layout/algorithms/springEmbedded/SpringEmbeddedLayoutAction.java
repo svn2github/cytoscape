@@ -13,6 +13,11 @@ import javax.swing.JMenuItem;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
+//import LayoutCommon.MutablePolyEdgeGraphLayout;
+import cytoscape.graph.legacy.layout.algorithm.MutablePolyEdgeGraphLayout;
+import cytoscape.graph.legacy.layout.impl.SpringEmbeddedLayouter2;
+//import LayoutCommon.GraphConverter;
+
 public class SpringEmbeddedLayoutAction extends AbstractAction
 {
   private final boolean m_selectedNodesOnly;
