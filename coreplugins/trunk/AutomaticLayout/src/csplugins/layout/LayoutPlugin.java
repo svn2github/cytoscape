@@ -58,6 +58,7 @@ public class LayoutPlugin extends CytoscapePlugin
     }); // end new AbstractAction
 
     JMenu menu = new JMenu("Cytoscape Layouts");
+    menu.add(new AttributeLayoutMenu());
     menu.add(hierarchical);
     menu.add(springEmbMenu);
     menu.add(new AttributeCircleLayoutMenu());
