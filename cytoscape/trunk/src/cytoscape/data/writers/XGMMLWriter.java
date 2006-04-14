@@ -51,6 +51,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -411,32 +412,47 @@ public class XGMMLWriter {
 		}
 		// process simple list
 		else if (attType == CyAttributes.TYPE_SIMPLE_LIST) {
+			// get the attribute list
 			List listAttr = attributes.getAttributeList(id, attNames[attNamesIndex]);
-
+			// set attribuet name and label
 			attr.setName(attNames[attNamesIndex]);
 			attr.setLabel(LIST_TYPE);
+			// interate through the list
 			Iterator listIt = listAttr.iterator();
-
 			while (listIt.hasNext()) {
-				// Object oneAttr = listIt.next();
-				// memberAttr = objFactory.createAtt();
-				//							
-				// memberAttr.setValue(oneAttr.toString());
-				// attr.getContent().add(memberAttr);
+				// get the attribute from the list
 				Object obj = listIt.next();
+				// create a "child" attribute to store in xgmml file
 				Att memberAttr = objFactory.createAtt();
+				// set child attribute value & label
 				memberAttr.setValue(obj.toString());
 				memberAttr.setLabel(checkType(obj));
-				// System.out.println("!!!!!!!!!!!List obj: " +
-				// obj);
+				// add child attribute to parent
 				attr.getContent().add(memberAttr);
-
 			}
-			// attr.getContent().add(listAttr);
 		}
 		// process simple map
 		else if (attType == CyAttributes.TYPE_SIMPLE_MAP) {
-			// TODO: HANDLE MAP
+			// get the attribute map
+			Map mapAttr = attributes.getAttributeMap(id, attNames[attNamesIndex]);
+			// set our attribute name and label
+			attr.setName(attNames[attNamesIndex]);
+			attr.setLabel(MAP_TYPE);
+			// interate through the map
+			Iterator mapIt = mapAttr.keySet().iterator();
+			while (mapIt.hasNext()) {
+				// get the attribute from the map
+				Object obj = mapIt.next();
+				String key = (String)obj;
+				// create a "child" attribute to store in xgmml file
+				Att memberAttr = objFactory.createAtt();
+				// set child attribute name, label, and value
+				memberAttr.setName(key);
+				memberAttr.setLabel(checkType(mapAttr.get(key)));
+				memberAttr.setValue(mapAttr.get(key).toString());
+				// add child attribute to parent
+				attr.getContent().add(memberAttr);
+			}
 		}
 
 		// outta here
