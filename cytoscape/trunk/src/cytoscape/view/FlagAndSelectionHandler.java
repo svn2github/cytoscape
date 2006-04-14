@@ -58,6 +58,7 @@ import cytoscape.data.FlagEvent;
  * FlagFilter object of a network with the selection status of the corresponding
  * node and edge views in a GraphView. An object will be selected in the view
  * iff the matching object is flagged in the FlagFilter.
+ * This class is only used by PhoebeNetworkView, which no longer used anywhere.
  */
 public class FlagAndSelectionHandler implements FlagEventListener, GraphViewChangeListener {
     

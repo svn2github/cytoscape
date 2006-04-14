@@ -89,6 +89,7 @@ public class FingCyNetwork
   
   /**
    * The default object for flagging graph objects
+   * This will be removed for 2.4
    */
   protected FlagFilter flagger;
   

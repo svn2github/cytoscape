@@ -72,7 +72,6 @@ import cytoscape.data.readers.InteractionsReader;
 import cytoscape.data.servers.BioDataServer;
 import cytoscape.giny.CytoscapeFingRootGraph;
 import cytoscape.giny.CytoscapeRootGraph;
-import cytoscape.giny.PhoebeNetworkView;
 import cytoscape.giny.CytoscapeFingRootGraph;
 import cytoscape.ding.DingNetworkView;
 import cytoscape.util.CyNetworkNaming;

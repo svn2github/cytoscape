@@ -72,15 +72,15 @@ import javax.swing.tree.TreePath;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.actions.CreateNetworkViewAction;
-import cytoscape.data.FlagEvent;
-import cytoscape.data.FlagEventListener;
+import cytoscape.data.SelectEvent;
+import cytoscape.data.SelectEventListener;
 import cytoscape.util.CyNetworkNaming;
 import cytoscape.util.swing.AbstractTreeTableModel;
 import cytoscape.util.swing.JTreeTable;
 import cytoscape.util.swing.TreeTableModel;
 
 public class NetworkPanel extends JPanel implements PropertyChangeListener,
-		TreeSelectionListener, FlagEventListener {
+		TreeSelectionListener, SelectEventListener {
 
 	protected SwingPropertyChangeSupport pcs = new SwingPropertyChangeSupport(
 			this);
@@ -198,7 +198,7 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener,
 			child.removeFromParent();
 			root.add(child);
 		}
-		Cytoscape.getNetwork(network_id).removeFlagEventListener(this);
+		Cytoscape.getNetwork(network_id).removeSelectEventListener(this);
 		node.removeFromParent();
 		treeTable.getTree().collapsePath(new TreePath(new TreeNode[] { root }));
 		treeTable.getTree().updateUI();
@@ -223,7 +223,7 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener,
 		netViewManager.updateNetworkTitle(network);
 	}
 
-	public void onFlagEvent(FlagEvent event) {
+	public void onSelectEvent(SelectEvent event) {
 		treeTable.getTree().updateUI();
 	}
 
@@ -232,7 +232,7 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener,
 		if (getNetworkNode(network_id) == null) {
 			NetworkTreeNode dmtn = new NetworkTreeNode(Cytoscape.getNetwork(
 					network_id).getTitle(), network_id);
-			Cytoscape.getNetwork(network_id).addFlagEventListener(this);
+			Cytoscape.getNetwork(network_id).addSelectEventListener(this);
 			if (parent_id != null) {
 				NetworkTreeNode parent = getNetworkNode(parent_id);
 				parent.add(dmtn);
@@ -367,12 +367,12 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener,
 				CyNetwork cyNetwork = Cytoscape
 						.getNetwork(((NetworkTreeNode) node).getNetworkID());
 				return "" + cyNetwork.getNodeCount() + "("
-						+ cyNetwork.getFlaggedNodes().size() + ")";
+						+ cyNetwork.getSelectedNodes().size() + ")";
 			} else if (column == 2) {
 				CyNetwork cyNetwork = Cytoscape
 						.getNetwork(((NetworkTreeNode) node).getNetworkID());
 				return "" + cyNetwork.getEdgeCount() + "("
-						+ cyNetwork.getFlaggedEdges().size() + ")";
+						+ cyNetwork.getSelectedEdges().size() + ")";
 			}
 			return "";
 

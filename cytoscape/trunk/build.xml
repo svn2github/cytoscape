@@ -203,7 +203,7 @@
                debug="true"
                source="1.4"
                optimize="on"
-               includeAntRuntime="false">
+               includeAntRuntime="false" deprecation="yes">
             <classpath refid="classpath"/>
             <include name="cytoscape/**"/>
         </javac>
@@ -267,6 +267,8 @@
     <target name="run" depends="jar" description="Runs Cytoscape.">
         <java jar="${basedir}/cytoscape.jar"
               fork="true">
+        		<arg value="-p"/>
+        		<arg value="plugins/core"/>
         </java>
     </target>
 
