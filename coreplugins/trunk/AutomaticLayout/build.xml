@@ -18,7 +18,7 @@
     <property name="debug" value="on"/>
     <property name="optimize" value="off"/>
     <property name="deprecation" value="on"/>
-    <property name="nowarn" value="false"/>
+    <property name="nowarn" value="true"/>
     <property name="fork" value="false"/>
     <property name="layout.root.dir" value="."/>
     <property name="cytoscape.dir" value="../../cytoscape"/>
@@ -44,6 +44,7 @@
 
     <path id="layout.project.class.path">
       <pathelement location="${cytoscape.dir}/cytoscape.jar"/>
+      <pathelement location="/cellar/users/slotia/pre-coreplugins/LayoutCommon/LayoutCommon.jar"/>
       <fileset dir="${cytoscape.lib.dir}">
         <include name="**/*.jar"/>
       </fileset>
