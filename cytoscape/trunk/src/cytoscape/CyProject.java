@@ -56,6 +56,9 @@ import cytoscape.data.readers.TextJarReader;
  *
  * See the documentation for the readProjectFile method for the
  * recognized file formats.
+ * @deprecated Will be removed October 2006. CyProject is not used in
+ * any way in the core.  Cytoscape Sessions now encapsulate all of this
+ * functionality.
  */
 public class CyProject {
     protected String projectFilename = null;
@@ -83,42 +86,117 @@ public CyProject(String fileLocation) {
     readProjectFile(fileLocation);
 }
 //-------------------------------------------------------------------------
+/**
+ * @deprecated Will be removed October 2006. CyProject is not used in
+ * any way in the core.  Cytoscape Sessions now encapsulate all of this
+ * functionality.
+ */
 public String getProjectFilename() {return projectFilename;}
 //-------------------------------------------------------------------------
+/**
+ * @deprecated Will be removed October 2006. CyProject is not used in
+ * any way in the core.  Cytoscape Sessions now encapsulate all of this
+ * functionality.
+ */
 public String getInteractionsFilename() {return interactionsFilename;}
 //-------------------------------------------------------------------------
+/**
+ * @deprecated Will be removed October 2006. CyProject is not used in
+ * any way in the core.  Cytoscape Sessions now encapsulate all of this
+ * functionality.
+ */
 public String getGeometryFilename() {return geometryFilename;}
 //-------------------------------------------------------------------------
+/**
+ * @deprecated Will be removed October 2006. CyProject is not used in
+ * any way in the core.  Cytoscape Sessions now encapsulate all of this
+ * functionality.
+ */
 public String getExpressionFilename() {return expressionFilename;}
 //-------------------------------------------------------------------------
+/**
+ * @deprecated Will be removed October 2006. CyProject is not used in
+ * any way in the core.  Cytoscape Sessions now encapsulate all of this
+ * functionality.
+ */
 public int getNumberOfNodeAttributeFiles() {
     return nodeAttributeFilenames.size();
 }
 //-------------------------------------------------------------------------
+/**
+ * @deprecated Will be removed October 2006. CyProject is not used in
+ * any way in the core.  Cytoscape Sessions now encapsulate all of this
+ * functionality.
+ */
 public int getNumberOfEdgeAttributeFiles() {
   return edgeAttributeFilenames.size();
 }
 //-------------------------------------------------------------------------
+/**
+ * @deprecated Will be removed October 2006. CyProject is not used in
+ * any way in the core.  Cytoscape Sessions now encapsulate all of this
+ * functionality.
+ */
 public String[] getNodeAttributeFilenames() {
   return (String[]) nodeAttributeFilenames.toArray(new String[0]);
 }
 //-------------------------------------------------------------------------
+/**
+ * @deprecated Will be removed October 2006. CyProject is not used in
+ * any way in the core.  Cytoscape Sessions now encapsulate all of this
+ * functionality.
+ */
 public String[] getEdgeAttributeFilenames() {
   return (String[]) edgeAttributeFilenames.toArray(new String[0]);
 }
 //-------------------------------------------------------------------------
+/**
+ * @deprecated Will be removed October 2006. CyProject is not used in
+ * any way in the core.  Cytoscape Sessions now encapsulate all of this
+ * functionality.
+ */
 public String getBioDataDirectory() {return bioDataDirectory;}
 //-------------------------------------------------------------------------
+/**
+ * @deprecated Will be removed October 2006. CyProject is not used in
+ * any way in the core.  Cytoscape Sessions now encapsulate all of this
+ * functionality.
+ */
 public String getDefaultSpeciesName() {return defaultSpeciesName;}
 //-------------------------------------------------------------------------
+/**
+ * @deprecated Will be removed October 2006. CyProject is not used in
+ * any way in the core.  Cytoscape Sessions now encapsulate all of this
+ * functionality.
+ */
 public String getDefaultLayoutStrategy() {return defaultLayoutStrategy;}
 //-------------------------------------------------------------------------
+/**
+ * @deprecated Will be removed October 2006. CyProject is not used in
+ * any way in the core.  Cytoscape Sessions now encapsulate all of this
+ * functionality.
+ */
 public String getProjectPropsFileName() {return projectPropsFileName;}
 //-------------------------------------------------------------------------
+/**
+ * @deprecated Will be removed October 2006. CyProject is not used in
+ * any way in the core.  Cytoscape Sessions now encapsulate all of this
+ * functionality.
+ */
 public String getProjectVizmapPropsFileName() {return projectVizmapPropsFileName;}
 //-------------------------------------------------------------------------
+/**
+ * @deprecated Will be removed October 2006. CyProject is not used in
+ * any way in the core.  Cytoscape Sessions now encapsulate all of this
+ * functionality.
+ */
 public boolean getCanonicalize() {return canonicalize;}
 //-------------------------------------------------------------------------
+/**
+ * @deprecated Will be removed October 2006. CyProject is not used in
+ * any way in the core.  Cytoscape Sessions now encapsulate all of this
+ * functionality.
+ */
 public String[] getOtherArgs() {return otherArgs;}
 //-------------------------------------------------------------------------
 /**
@@ -175,6 +253,9 @@ public String[] getOtherArgs() {return otherArgs;}
  * graph GML file format: cytoscape.data.readers.GMLReader
  * customization properties file: cytoscape.CytoscapeConfig
  * visual mappings properties file: cytoscape.visual.CalculatorIO
+ * @deprecated Will be removed October 2006. CyProject is not used in
+ * any way in the core.  Cytoscape Sessions now encapsulate all of this
+ * functionality.
  */
 protected void readProjectFile(String fileLocation) {
     boolean readingFromJar = false;

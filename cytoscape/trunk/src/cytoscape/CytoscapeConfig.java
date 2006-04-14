@@ -38,15 +38,25 @@
 
 package cytoscape;
 
+/**
+ * @deprecated Will be removed October 2006.  Use methods in CytoscapeInit instead.
+ */
+
 public class CytoscapeConfig {
 
   public CytoscapeConfig() {
   }
 
+/**
+ * @deprecated Will be removed October 2006.  Use methods in CytoscapeInit instead.
+ */
   public String[] getArgs() {
     return CytoscapeInit.getArgs();
   }
 
+/**
+ * @deprecated Will be removed October 2006.  Use methods in CytoscapeInit instead.
+ */
   public java.util.Properties getProperties() {
     return CytoscapeInit.getProperties();
   }

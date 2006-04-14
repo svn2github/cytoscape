@@ -41,7 +41,9 @@ package cytoscape;
 import cytoscape.data.servers.BioDataServer;
 
 import java.io.File;
-
+/**
+ * @deprecated Will be removed October 2006.  Use static methods in Cytoscape.java instead.
+ */
 public class CytoscapeObj {
 
     public CytoscapeObj() {
@@ -51,11 +53,15 @@ public class CytoscapeObj {
      * Returns the (possibly null) bioDataServer.
      *
      * @see BioDataServer
+     * @deprecated Will be removed October 2006.  Use static methods in Cytoscape.java instead.
      */
     public BioDataServer getBioDataServer() {
         return Cytoscape.getBioDataServer();
     }
 
+/**
+ * @deprecated Will be removed October 2006.  Use methods in CytoscapeInit.java instead.
+ */
     public CytoscapeConfig getConfiguration() {
         return new CytoscapeConfig();
     }
