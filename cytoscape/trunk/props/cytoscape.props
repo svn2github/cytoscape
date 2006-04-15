@@ -6,3 +6,14 @@ defaultSpeciesName=Saccharomyces cerevisiae
 bioDataServer=PleaseSpecify
 viewThreshold=10000
 defaultVisualStyle=default
+render.renderAllEdges=0
+render.fullDetailThreshold=1200
+render.nodeBorderThreshold=200
+render.nodeLabelThreshold=60
+render.customGraphicsThreshold=60
+render.edgeArrowThreshold=300
+render.edgeLabelThreshold=80
+render.renderDashedEdges=true
+render.renderEdgeAnchors=true
+render.renderTextAsShape=false
+

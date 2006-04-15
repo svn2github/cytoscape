@@ -60,6 +60,7 @@ import cytoscape.data.readers.InteractionsReader;
 import cytoscape.data.readers.XGMMLReader;
 import cytoscape.data.servers.BioDataServer;
 import cytoscape.ding.DingNetworkView;
+import cytoscape.ding.CyGraphLOD;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
@@ -442,6 +443,7 @@ private CyNetwork createNetwork(String location, int file_type,
 	private void createCyNetworkView(CyNetwork cyNetwork) {
 		final DingNetworkView view = new DingNetworkView(cyNetwork,
 				cyNetwork.getTitle());
+		view.setGraphLOD( new CyGraphLOD() );
 
 		// Start of Hack: Hide the View
 // 		PCanvas pCanvas = view.getCanvas();

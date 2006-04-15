@@ -74,6 +74,7 @@ import cytoscape.giny.CytoscapeFingRootGraph;
 import cytoscape.giny.CytoscapeRootGraph;
 import cytoscape.giny.CytoscapeFingRootGraph;
 import cytoscape.ding.DingNetworkView;
+import cytoscape.ding.CyGraphLOD;
 import cytoscape.util.CyNetworkNaming;
 import cytoscape.util.FileUtil;
 import cytoscape.view.CyNetworkView;
@@ -114,22 +115,20 @@ public abstract class Cytoscape {
 	// For reverse-selection from browser.
 	public static String BROWSER_OBJECTS_SELECTED = "BROWSER_OBJECTS_SELECTED";
 	
-	// MLC 09/19/05 BEGIN:
-	// AJK: 09/12/05 BEGIN
 	// events for network modification
 	public static final String NETWORK_MODIFIED = "NETWORK_MODIFIED";
 
 	public static final String NETWORK_SAVED = "NETWORK_SAVED";
 
-	// AJK: 09/12/05 END
 	public static final String NETWORK_LOADED = "NETWORK_LOADED";
 
-	// MLC 09/19/05 END.
-
-	// KONO 10/10/05 BEGIN
-	// Events for Priference Dialog (properties).
+	// Events for Preference Dialog (properties).
+	// Signals that the preference has change interally to the
+	// prefs dialog.
 	public static final String PREFERENCE_MODIFIED = "PREFERENCE_MODIFIED";
-	// KONO 10/10/05 END
+
+	// Signals that CytoscapeInit properties have been updated.
+	public static final String PREFERENCES_UPDATED = "PREFERENCES_UPDATED";
 
 	/**
 	 * When creating a network, use one of the standard suffixes to have it
@@ -1367,6 +1366,8 @@ public abstract class Cytoscape {
 	 * graph/attributes files.
 	 * 
 	 * @see CyProject
+	 * @deprecated Will be removed Oct 2006.  This is not apparently used, so
+	 * don't start.  This functionality has been subsumed by Cytoscape Sessions.
 	 */
 	public static CyNetwork createNetworkFromProject(CyProject project,
 			BioDataServer bioDataServer) {
@@ -1468,6 +1469,7 @@ public abstract class Cytoscape {
 		}
 		final DingNetworkView view = new DingNetworkView(network, title);
 		view.setIdentifier(network.getIdentifier());
+		view.setGraphLOD( new CyGraphLOD() );
 		getNetworkViewMap().put(network.getIdentifier(), view);
 		view.setTitle(network.getTitle());
 

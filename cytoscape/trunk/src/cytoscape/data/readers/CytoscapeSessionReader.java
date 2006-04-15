@@ -62,6 +62,7 @@ import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.actions.FitContentAction;
 import cytoscape.ding.DingNetworkView;
+import cytoscape.ding.CyGraphLOD;
 import cytoscape.generated.Child;
 import cytoscape.generated.Cysession;
 import cytoscape.generated.Network;
@@ -529,6 +530,7 @@ public class CytoscapeSessionReader {
 				public void run() {
 					DingNetworkView view = (DingNetworkView) Cytoscape
 							.getCurrentNetworkView();
+					view.setGraphLOD( new CyGraphLOD() );
 					// PCanvas pCanvas = view.getCanvas();
 					// pCanvas.setVisible(true);
 				}

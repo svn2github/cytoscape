@@ -527,6 +527,7 @@ public class PreferencesDialog extends JDialog implements
 				saveCyPropsAsDefault = false;
 				saveCyPropsBtn.setSelected(false);
 			}
+			Cytoscape.firePropertyChange(Cytoscape.PREFERENCES_UPDATED, null, null); 
 		}
 	}
 
