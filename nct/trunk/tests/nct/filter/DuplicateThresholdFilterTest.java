@@ -53,6 +53,7 @@ public class DuplicateThresholdFilterTest extends TestCase {
 	assertTrue(a.addNode("h"));
 	assertTrue(a.addNode("i"));
 	assertTrue(a.addNode("j"));
+	a.setScore(1.0);
 
 	assertTrue(b.addNode("a"));
 	assertTrue(b.addNode("b"));
@@ -64,6 +65,7 @@ public class DuplicateThresholdFilterTest extends TestCase {
 	assertTrue(b.addNode("h"));
 	assertTrue(b.addNode("i"));
 	assertTrue(b.addNode("j"));
+	b.setScore(5.0);
 
 	assertTrue(c.addNode("b"));
 	assertTrue(c.addNode("c"));
@@ -74,6 +76,7 @@ public class DuplicateThresholdFilterTest extends TestCase {
 	assertTrue(c.addNode("h"));
 	assertTrue(c.addNode("i"));
 	assertTrue(c.addNode("j"));
+	c.setScore(4.0);
 
 	assertTrue(d.addNode("a"));
 	assertTrue(d.addNode("b"));
@@ -83,6 +86,7 @@ public class DuplicateThresholdFilterTest extends TestCase {
 	assertTrue(d.addNode("f"));
 	assertTrue(d.addNode("g"));
 	assertTrue(d.addNode("h"));
+	d.setScore(3.0);
 
 	f = new DuplicateThresholdFilter<String,Double>(.9);
 	List<Graph<String,Double>> s = new LinkedList<Graph<String,Double>>();
@@ -90,7 +94,13 @@ public class DuplicateThresholdFilterTest extends TestCase {
 	s.add(b);
 	s.add(c);
 	s.add(d);
-	assertEquals(2, f.filter(s).size());
+	
+	List<Graph<String,Double>> filteredList  = f.filter(s);
+	assertEquals(2, filteredList.size());
+	for ( Graph<String,Double> g: filteredList)
+			System.out.println(g.toString());
+	assertTrue(filteredList.contains(b));
+	assertTrue(filteredList.contains(d));
     }
     public static Test suite() { return new TestSuite( DuplicateThresholdFilterTest.class ); }
 }

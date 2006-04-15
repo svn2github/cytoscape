@@ -63,6 +63,7 @@ public class DuplicateThresholdFilter<NodeType extends Comparable<? super NodeTy
 	boolean skip = false;
 	for ( Graph<NodeType,WeightType> seed: solutions ) {
 	    HashSet<NodeType> nodesFromSeed = new HashSet<NodeType>(seed.getNodes());
+	    Graph<NodeType,WeightType> check = null;
 	    for (Graph<NodeType,WeightType> branch: newSolns) {
 		HashSet<NodeType> nodesFromBranch = new HashSet<NodeType>(branch.getNodes());
 		int originalSize = nodesFromBranch.size();
@@ -71,13 +72,23 @@ public class DuplicateThresholdFilter<NodeType extends Comparable<? super NodeTy
 		// the threshold.
 		if (((double)nodesFromBranch.size())/originalSize >= threshold) {
 		    skip = true;
+		    check = branch;
 		    break;  
 		}		
 	    }
+	    // We have two solutions with threshold percent identical nodes.
 	    if (skip) {
 		skip = false;
+		// Of the two similar solutions, choose the one with
+		// the higher score.
+		if ( seed.getScore().compareTo( check.getScore() ) > 0 ) {
+			newSolns.remove(check);
+			newSolns.add(seed);
+		}
 		continue;
 	    }
+
+	    // No solutions were the same, so add the seed to the new solutions list.
 	    newSolns.add(seed);
 	}
 	//System.out.println("filtered set size: " + newSolns.size());
