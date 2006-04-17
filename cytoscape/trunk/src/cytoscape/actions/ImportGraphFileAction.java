@@ -1,41 +1,39 @@
-
-
 /*
-  File: ImportGraphFileAction.java 
-  
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-  
-  The Cytoscape Consortium is: 
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Pasteur Institute
-  - Agilent Technologies
-  
-  This library is free software; you can redistribute it and/or modify it
-  under the terms of the GNU Lesser General Public License as published
-  by the Free Software Foundation; either version 2.1 of the License, or
-  any later version.
-  
-  This library is distributed in the hope that it will be useful, but
-  WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
-  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
-  documentation provided hereunder is on an "as is" basis, and the
-  Institute for Systems Biology and the Whitehead Institute 
-  have no obligations to provide maintenance, support,
-  updates, enhancements or modifications.  In no event shall the
-  Institute for Systems Biology and the Whitehead Institute 
-  be liable to any party for direct, indirect, special,
-  incidental or consequential damages, including lost profits, arising
-  out of the use of this software and its documentation, even if the
-  Institute for Systems Biology and the Whitehead Institute 
-  have been advised of the possibility of such damage.  See
-  the GNU Lesser General Public License for more details.
-  
-  You should have received a copy of the GNU Lesser General Public License
-  along with this library; if not, write to the Free Software Foundation,
-  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ File: ImportGraphFileAction.java 
+ 
+ Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+ 
+ The Cytoscape Consortium is: 
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Pasteur Institute
+ - Agilent Technologies
+ 
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+ 
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute 
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute 
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute 
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+ 
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+ */
 
 // $Revision$
 // $Date$
@@ -48,9 +46,8 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
-import javax.swing.SwingUtilities;
+import javax.swing.JOptionPane;
 
-// import phoebe.PGrap*View;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
@@ -59,6 +56,7 @@ import cytoscape.data.readers.GraphReader;
 import cytoscape.data.readers.InteractionsReader;
 import cytoscape.data.readers.XGMMLReader;
 import cytoscape.data.servers.BioDataServer;
+import cytoscape.dialogs.VisualStyleBuilderDialog;
 import cytoscape.ding.DingNetworkView;
 import cytoscape.ding.CyGraphLOD;
 import cytoscape.task.Task;
@@ -70,9 +68,6 @@ import cytoscape.util.CyNetworkNaming;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.FileUtil;
 import cytoscape.view.CyMenus;
-import edu.umd.cs.piccolo.PCanvas;
-import edu.umd.cs.piccolo.PLayer;
-import edu.umd.cs.piccolo.util.PBounds;
 
 /**
  * User has requested loading of an Expression Matrix File. Could be SIF File or
@@ -219,8 +214,12 @@ public class ImportGraphFileAction extends CytoscapeAction {
 			jTaskConfig.setOwner(Cytoscape.getDesktop());
 			jTaskConfig.displayCloseButton(true);
 			jTaskConfig.displayStatus(true);
-			jTaskConfig.setAutoDispose(false);
-
+			if (file.getName().endsWith(".gml") ) {
+				jTaskConfig.setAutoDispose(true);
+			} else {
+				jTaskConfig.setAutoDispose(false);
+			}
+			
 			// Execute Task in New Thread; pops open JTask Dialog Box.
 			TaskManager.executeTask(task, jTaskConfig);
 		}
@@ -235,6 +234,8 @@ class LoadNetworkTask implements Task {
 	private int fileType;
 	private CyNetwork cyNetwork;
 	private TaskMonitor taskMonitor;
+
+	private GraphReader reader;
 
 	/**
 	 * Constructor.
@@ -254,11 +255,11 @@ class LoadNetworkTask implements Task {
 	 */
 	public void run() {
 		taskMonitor.setStatus("Reading in Network Data...");
-		
+
 		try {
 			cyNetwork = this.createNetwork(file.getAbsolutePath(), fileType,
 					Cytoscape.getBioDataServer(), CytoscapeInit
-							.getDefaultSpeciesName());
+							.getProperty("defaultSpeciesName"));
 
 			if (cyNetwork != null) {
 				informUserOfGraphStats(cyNetwork);
@@ -272,6 +273,23 @@ class LoadNetworkTask implements Task {
 						.toString());
 			}
 			taskMonitor.setPercentCompleted(100);
+
+			if (file.getName().endsWith(".gml")) {
+				String message[] = {
+						"Do you want to generate new Visual Style",
+						"from this GML graphics data?" };
+				int value = JOptionPane.showConfirmDialog(Cytoscape
+						.getDesktop(), message, "Visual Style Builder",
+						JOptionPane.YES_NO_OPTION);
+
+				if (value == JOptionPane.YES_OPTION) {
+					VisualStyleBuilderDialog vsd = new VisualStyleBuilderDialog(
+							cyNetwork.getTitle(), reader, Cytoscape
+									.getDesktop(), true);
+					vsd.show();
+				}
+			}
+
 		} catch (IOException e) {
 			taskMonitor.setException(e, "Unable to load network file.");
 		}
@@ -295,13 +313,6 @@ class LoadNetworkTask implements Task {
 				+ formatter.format(newNetwork.getNodeCount()));
 		sb.append(" nodes and " + formatter.format(newNetwork.getEdgeCount()));
 		sb.append(" edges.\n\n");
-
-		// If GML file imported, give some info. about the import result
-		if (fileType == Cytoscape.FILE_GML) {
-			sb.append("Succesfully created new Visual Style \""
-					+ file.getName() + ".style\"");
-			sb.append(" from your GML file.\n\n");
-		}
 
 		if (newNetwork.getNodeCount() < CytoscapeInit.getViewThreshold()) {
 			sb.append("Network is under " + CytoscapeInit.getViewThreshold()
@@ -357,10 +368,11 @@ class LoadNetworkTask implements Task {
 	 * @param species
 	 *            the species used by the BioDataServer
 	 */
-private CyNetwork createNetwork(String location, int file_type,
+	private CyNetwork createNetwork(String location, int file_type,
 			BioDataServer biodataserver, String species) throws IOException {
 
-		GraphReader reader = null;
+		reader = null;
+
 		taskMonitor.setPercentCompleted(-1);
 		// Set the reader according to what file type was passed.
 		if (file_type == Cytoscape.FILE_SIF) {
@@ -393,14 +405,14 @@ private CyNetwork createNetwork(String location, int file_type,
 		// the auto-creating of the CyNetworkView.
 		int realThreshold = CytoscapeInit.getViewThreshold();
 		CytoscapeInit.setViewThreshold(0);
-		
+
 		CyNetwork network = null;
-		if(file_type == Cytoscape.FILE_XGMML) {
+		if (file_type == Cytoscape.FILE_XGMML) {
 			network = Cytoscape.createNetwork(nodes, edges,
 					((XGMMLReader) reader).getNetworkName());
 		} else {
-			network = Cytoscape.createNetwork(nodes, edges,
-				CyNetworkNaming.getSuggestedNetworkTitle(title));
+			network = Cytoscape.createNetwork(nodes, edges, CyNetworkNaming
+					.getSuggestedNetworkTitle(title));
 		}
 
 		// Reset back to the real View Threshold
@@ -409,6 +421,9 @@ private CyNetwork createNetwork(String location, int file_type,
 		// Store GML Data as a Network Attribute
 		if (file_type == Cytoscape.FILE_GML) {
 			network.putClientData("GML", reader);
+
+			// Ask user to create VS or not
+
 		}
 
 		// MLC 09/19/05 BEGIN:
@@ -430,10 +445,11 @@ private CyNetwork createNetwork(String location, int file_type,
 								.getIdentifier()));
 			}
 
-                        Cytoscape.getCurrentNetworkView().fitContent();
+			Cytoscape.getCurrentNetworkView().fitContent();
 		}
 		return network;
 	}
+
 	/**
 	 * Creates the CyNetworkView. Most of this code is copied directly from
 	 * Cytoscape.createCyNetworkView. However, it requires a bit of a hack to
@@ -441,13 +457,13 @@ private CyNetwork createNetwork(String location, int file_type,
 	 * this hack in the core Cytoscape.java class.
 	 */
 	private void createCyNetworkView(CyNetwork cyNetwork) {
-		final DingNetworkView view = new DingNetworkView(cyNetwork,
-				cyNetwork.getTitle());
-		view.setGraphLOD( new CyGraphLOD() );
+		final DingNetworkView view = new DingNetworkView(cyNetwork, cyNetwork
+				.getTitle());
+		view.setGraphLOD(new CyGraphLOD());
 
 		// Start of Hack: Hide the View
-// 		PCanvas pCanvas = view.getCanvas();
-// 		pCanvas.setVisible(false);
+		// PCanvas pCanvas = view.getCanvas();
+		// pCanvas.setVisible(false);
 		// End of Hack
 
 		view.setIdentifier(cyNetwork.getIdentifier());
@@ -456,7 +472,7 @@ private CyNetwork createNetwork(String location, int file_type,
 
 		// if Squiggle function enabled, enable squiggling on the created view
 		if (Cytoscape.isSquiggleEnabled()) {
-// 			view.getSquiggleHandler().beginSquiggling();
+			// view.getSquiggleHandler().beginSquiggling();
 		}
 
 		// set the selection mode on the view
@@ -469,12 +485,12 @@ private CyNetwork createNetwork(String location, int file_type,
 		// Instead of calling fitContent(), access PGrap*View directly.
 		// AJK: 09/10/05 BEGIN:
 		// try fix to check for empty PBounds before animatingToCenter
-// 		PLayer layer = view.getCanvas().getLayer();
-// 		PBounds pb = layer.getFullBounds();
-// 		if (!pb.isEmpty()) {
-// 			view.getCanvas().getCamera().animateViewToCenterBounds(pb, true,
-// 					500);
-// 		}
+		// PLayer layer = view.getCanvas().getLayer();
+		// PBounds pb = layer.getFullBounds();
+		// if (!pb.isEmpty()) {
+		// view.getCanvas().getCamera().animateViewToCenterBounds(pb, true,
+		// 500);
+		// }
 		// view.getCanvas().getCamera().animateViewToCenterBounds
 		// (view.getCanvas().getLayer().getFullBounds(), true, 0);
 	}

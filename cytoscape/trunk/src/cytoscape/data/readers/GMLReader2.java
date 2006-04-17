@@ -109,89 +109,64 @@ public class GMLReader2 implements GraphReader {
 
 	// Graph Tags
 	protected static String GRAPH = "graph";
-
 	protected static String NODE = "node";
-
 	protected static String EDGE = "edge";
-
 	protected static String GRAPHICS = "graphics";
-
 	protected static String LABEL = "label";
-
 	protected static String SOURCE = "source";
-
 	protected static String TARGET = "target";
 
 	// The following elements are in "graphics" section of GML
 	protected static String X = "x";
-
 	protected static String Y = "y";
-
 	protected static String H = "h";
-
 	protected static String W = "w";
-
 	protected static String TYPE = "type";
-
 	protected static String ID = "id";
-
 	protected static String ROOT_INDEX = "root_index";
 
 	// Shapes used in Cytoscape (not GML standard)
 	// In GML, they are called "type"
 	protected static String RECTANGLE = "rectangle";
-
 	protected static String ELLIPSE = "ellipse";
-
 	protected static String LINE = "Line"; // This is the Polyline object.
-
 	// no support for now...
 	protected static String POINT = "point";
-
 	protected static String DIAMOND = "diamond";
-
 	protected static String HEXAGON = "hexagon";
-
 	protected static String OCTAGON = "octagon";
-
 	protected static String PARALELLOGRAM = "parallelogram";
-
 	protected static String TRIANGLE = "triangle";
 
 	// Other GML "graphics" attributes
 	protected static String FILL = "fill";
-
 	protected static String WIDTH = "width";
 
 	protected static String STRAIGHT_LINES = "line";
-
 	protected static String CURVED_LINES = "curved";
 
 	protected static String SOURCE_ARROW = "source_arrow";
-
 	protected static String TARGET_ARROW = "target_arrow";
 
 	// States of the ends of arrows
 	protected static String ARROW = "arrow";
-
 	protected static String ARROW_NONE = "none";
-
 	protected static String ARROW_FIRST = "first";
-
 	protected static String ARROW_LAST = "last";
-
 	protected static String ARROW_BOTH = "both";
 
 	protected static String OUTLINE = "outline";
-
 	protected static String OUTLINE_WIDTH = "outline_width";
 
 	protected static String DEFAULT_EDGE_INTERACTION = "pp";
 
 	protected static String VERSION = "Version";
-
 	protected static String CREATOR = "Creator";
 
+	private String mapSuffix;
+	
+	private Color DEF_COLOR = new Color(153, 153, 255);
+	
 	// GML file name
 	String filename;
 
@@ -215,7 +190,7 @@ public class GMLReader2 implements GraphReader {
 	private PercentUtil percentUtil;
 
 	// Name for the new visual style
-	String stylename;
+	String styleName;
 
 	// New Visual Style comverted from GML file.
 	VisualStyle gmlstyle;
@@ -246,7 +221,7 @@ public class GMLReader2 implements GraphReader {
 		this.filename = filename;
 
 		// Set new style name
-		stylename = createVSName();
+		styleName = createVSName();
 		initializeHash();
 		initStyle();
 	}
@@ -263,7 +238,7 @@ public class GMLReader2 implements GraphReader {
 		this.filename = filename;
 
 		// Set new style name
-		stylename = createVSName();
+		styleName = createVSName();
 		initializeHash();
 		initStyle();
 
@@ -280,7 +255,9 @@ public class GMLReader2 implements GraphReader {
 		target = fileTest.getName();
 		System.out.println("Target GML file is " + target);
 
-		return target.concat(".style");
+		mapSuffix = " for " + filename;
+		
+		return target.concat(".GML_style");
 	}
 
 	private void initializeHash() {
@@ -318,7 +295,7 @@ public class GMLReader2 implements GraphReader {
 		//
 		// Set label for the nodes. (Uses "label" tag in the GML file)
 		//
-		String cName = "GML Labels";
+		String cName = "GML Labels" + mapSuffix;
 		NodeLabelCalculator nlc = catalog.getNodeLabelCalculator(cName);
 		if (nlc == null) {
 			PassThroughMapping m = new PassThroughMapping(new String(),
@@ -347,7 +324,7 @@ public class GMLReader2 implements GraphReader {
 			nodeShapeMapping.putMapValue(key, value);
 		}
 		GenericNodeShapeCalculator shapeCalculator = new GenericNodeShapeCalculator(
-				"GML Node Shape", nodeShapeMapping);
+				"GML Node Shape" + mapSuffix, nodeShapeMapping);
 		nac.setNodeShapeCalculator(shapeCalculator);
 
 		//
@@ -359,7 +336,7 @@ public class GMLReader2 implements GraphReader {
 				ObjectMapping.NODE_MAPPING);
 		nodeColorMapping.setControllingAttributeName(Semantics.COMMON_NAME,
 				vizmapper.getNetwork(), true);
-
+		
 		for (int i = 0; i < node_names.size(); i++) {
 			String key = (String) node_names.get(i);
 			String col;
@@ -373,7 +350,7 @@ public class GMLReader2 implements GraphReader {
 			nodeColorMapping.putMapValue(key, c);
 		}
 		GenericNodeColorCalculator nodeColorCalculator = new GenericNodeColorCalculator(
-				"GML Node Color", nodeColorMapping);
+				"GML Node Color" + mapSuffix, nodeColorMapping);
 		nac.setNodeFillColorCalculator(nodeColorCalculator);
 
 		//
@@ -397,7 +374,7 @@ public class GMLReader2 implements GraphReader {
 			nodeBorderColorMapping.putMapValue(key, c);
 		}
 		GenericNodeColorCalculator nodeBorderColorCalculator = new GenericNodeColorCalculator(
-				"GML Node Border Color", nodeBorderColorMapping);
+				"GML Node Border Color" + mapSuffix, nodeBorderColorMapping);
 		nac.setNodeBorderColorCalculator(nodeBorderColorCalculator);
 
 		//
@@ -423,7 +400,7 @@ public class GMLReader2 implements GraphReader {
 			nodeWMapping.putMapValue(key, w);
 		}
 		GenericNodeSizeCalculator nodeSizeCalculatorW = new GenericNodeSizeCalculator(
-				"GML Node Width", nodeWMapping);
+				"GML Node Width" + mapSuffix, nodeWMapping);
 		nac.setNodeWidthCalculator(nodeSizeCalculatorW);
 
 		// Then set the height
@@ -446,7 +423,7 @@ public class GMLReader2 implements GraphReader {
 		}
 
 		GenericNodeSizeCalculator nodeSizeCalculatorH = new GenericNodeSizeCalculator(
-				"GML Node Height", nodeHMapping);
+				"GML Node Height" + mapSuffix, nodeHMapping);
 		nac.setNodeHeightCalculator(nodeSizeCalculatorH);
 
 		//
@@ -470,7 +447,7 @@ public class GMLReader2 implements GraphReader {
 			nodeBorderTypeMapping.putMapValue(key, lt);
 		}
 		GenericNodeLineTypeCalculator nodeBoderTypeCalculator = new GenericNodeLineTypeCalculator(
-				"GML Node Border", nodeBorderTypeMapping);
+				"GML Node Border" + mapSuffix, nodeBorderTypeMapping);
 		nac.setNodeLineTypeCalculator(nodeBoderTypeCalculator);
 	}
 
@@ -500,7 +477,7 @@ public class GMLReader2 implements GraphReader {
 			edgeColorMapping.putMapValue(key, c);
 		}
 		GenericEdgeColorCalculator edgeColorCalculator = new GenericEdgeColorCalculator(
-				"GML Edge Color", edgeColorMapping);
+				"GML Edge Color" + mapSuffix, edgeColorMapping);
 		eac.setEdgeColorCalculator(edgeColorCalculator);
 
 		// 
@@ -522,7 +499,7 @@ public class GMLReader2 implements GraphReader {
 			edgeLineTypeMapping.putMapValue(key, lt);
 		}
 		GenericEdgeLineTypeCalculator edgeLineTypeCalculator = new GenericEdgeLineTypeCalculator(
-				"GML Line Type", edgeLineTypeMapping);
+				"GML Line Type" + mapSuffix, edgeLineTypeMapping);
 		eac.setEdgeLineTypeCalculator(edgeLineTypeCalculator);
 
 		// 
@@ -568,9 +545,9 @@ public class GMLReader2 implements GraphReader {
 			// Alternative syntax: source and target with 0 || 1
 
 			GenericEdgeArrowCalculator edgeSourceArrowCalculator = new GenericEdgeArrowCalculator(
-					"GML Source Arrow Type", edgeSourceArrowMapping);
+					"GML Source Arrow Type" + mapSuffix, edgeSourceArrowMapping);
 			GenericEdgeArrowCalculator edgeTargetArrowCalculator = new GenericEdgeArrowCalculator(
-					"GML Target Arrow Type", edgeTargetArrowMapping);
+					"GML Target Arrow Type" + mapSuffix, edgeTargetArrowMapping);
 			eac.setEdgeTargetArrowCalculator(edgeTargetArrowCalculator);
 			eac.setEdgeSourceArrowCalculator(edgeSourceArrowCalculator);
 		}
@@ -578,9 +555,19 @@ public class GMLReader2 implements GraphReader {
 
 	//
 	// Apply node and edge maps by creating new visual style.
-	public void applyMaps() {
-		CytoscapeDesktop cyDesktop = Cytoscape.getDesktop();
-		VisualMappingManager vizmapper = cyDesktop.getVizMapManager();
+	public void applyMaps(String mapSuffix, String VSName) {
+		//CytoscapeDesktop cyDesktop = Cytoscape.getDesktop();
+//		VisualMappingManager vizmapper = cyDesktop.getVizMapManager();
+		
+		if(VSName != null) {
+			styleName = VSName;
+		}
+		
+		if(mapSuffix != null) {
+			this.mapSuffix = mapSuffix;
+		}
+		
+		VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
 		catalog = vizmapper.getCalculatorCatalog();
 
 		setNodeMaps(vizmapper);
@@ -589,13 +576,11 @@ public class GMLReader2 implements GraphReader {
 		//
 		// Create new VS and apply it
 		//
-		gac.setDefaultBackgroundColor(new Color(255, 255, 204));
-		gmlstyle = new VisualStyle(stylename, nac, eac, gac);
-
-		// System.out.println(nac.getDescription());
-		// System.out.println(eac.getDescription());
+		gac.setDefaultBackgroundColor(DEF_COLOR);
+		gmlstyle = new VisualStyle(styleName, nac, eac, gac);
 
 		vizmapper.setVisualStyle(gmlstyle);
+		Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 	}
 
 	public void read(boolean canonicalize) {
@@ -627,13 +612,13 @@ public class GMLReader2 implements GraphReader {
 		// 3 Apply the new VS to the current window of Cytoscape
 		//
 		extract(); // Extract node & edge attributes
-		Properties prop = CytoscapeInit.getProperties();
-		String vsbSwitch = prop.getProperty("visualStyleBuilder");
-		if(vsbSwitch != null) {
-			if(vsbSwitch.equals("on")) {
-				applyMaps(); // generate new VS and apply it.
-			}
-		}
+//		Properties prop = CytoscapeInit.getProperties();
+//		String vsbSwitch = prop.getProperty("visualStyleBuilder");
+//		if(vsbSwitch != null) {
+//			if(vsbSwitch.equals("on")) {
+//				applyMaps(null, null); // generate new VS and apply it.
+//			}
+//		}
 		releaseStructures();
 	}
 
@@ -707,8 +692,6 @@ public class GMLReader2 implements GraphReader {
 		Set edgeNameSet = new HashSet(sources.size());
 
 		CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
-
-		RootGraph rootGraph = Cytoscape.getRootGraph();
 
 		// Add All Edges to Network
 		for (int idx = 0; idx < sources.size(); idx++) {
@@ -1092,8 +1075,6 @@ public class GMLReader2 implements GraphReader {
 	 */
 	protected void layoutNodeGraphics(GraphView myView, List list,
 			NodeView nodeView) {
-		// Store
-		List nodeprop;
 
 		for (Iterator it = list.iterator(); it.hasNext();) {
 
@@ -1139,12 +1120,6 @@ public class GMLReader2 implements GraphReader {
 	//
 	// Extract node attributes from GML file
 	protected void extractNodeAttributes(List list, String nodeName) {
-		String key = stylename;
-		String value = null;
-		Properties nProps;
-		nProps = new Properties();
-
-		String temp = null;
 
 		// Put all attributes into hashes.
 		// Key is the node name
@@ -1449,9 +1424,6 @@ public class GMLReader2 implements GraphReader {
 	 * Create a color object from the string like it is stored in a gml file
 	 */
 	public Color getColor(String colorString) {
-		// int red = Integer.parseInt(colorString.substring(1,3),16);
-		// int green = Integer.parseInt(colorString.substring(3,5),16);
-		// int blue = Integer.parseInt(colorString.substring(5,7),16);
 		return new Color(Integer.parseInt(colorString.substring(1), 16));
 	}
 }
