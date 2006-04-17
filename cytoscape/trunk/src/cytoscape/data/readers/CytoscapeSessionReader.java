@@ -61,8 +61,8 @@ import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.actions.FitContentAction;
-import cytoscape.ding.DingNetworkView;
 import cytoscape.ding.CyGraphLOD;
+import cytoscape.ding.DingNetworkView;
 import cytoscape.generated.Child;
 import cytoscape.generated.Cysession;
 import cytoscape.generated.Network;
@@ -425,11 +425,11 @@ public class CytoscapeSessionReader {
 				networkStream = (InputStream) jarConnection.getContent();
 			}
 
-//			if (networkStream == null) {
-//				System.out.println("!!!!!!!!!NS NULL!!!!!");
-//				System.out.println("SessionSource = "
-//						+ sessionSource.getClass().toString());
-//			}
+			// if (networkStream == null) {
+			// System.out.println("!!!!!!!!!NS NULL!!!!!");
+			// System.out.println("SessionSource = "
+			// + sessionSource.getClass().toString());
+			// }
 
 			CyNetwork new_network = this.createNetwork(parent, childFile,
 					networkStream, Cytoscape.FILE_XGMML, CytoscapeInit
@@ -530,7 +530,7 @@ public class CytoscapeSessionReader {
 				public void run() {
 					DingNetworkView view = (DingNetworkView) Cytoscape
 							.getCurrentNetworkView();
-					view.setGraphLOD( new CyGraphLOD() );
+					view.setGraphLOD(new CyGraphLOD());
 					// PCanvas pCanvas = view.getCanvas();
 					// pCanvas.setVisible(true);
 				}
@@ -548,6 +548,8 @@ public class CytoscapeSessionReader {
 			} else
 				curView.setVisualStyle(Cytoscape.getVisualMappingManager()
 						.getVisualStyle().getName());
+
+			curView.fitContent();
 		}
 
 		return network;

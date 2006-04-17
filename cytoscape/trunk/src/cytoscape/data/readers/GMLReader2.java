@@ -312,7 +312,8 @@ public class GMLReader2 implements GraphReader {
 				ObjectMapping.NODE_MAPPING);
 		nodeShapeMapping.setControllingAttributeName(Semantics.COMMON_NAME,
 				vizmapper.getNetwork(), false);
-
+		
+		
 		for (int i = 0; i < node_names.size(); i++) {
 			String key = (String) node_names.get(i);
 			Byte value;
@@ -324,7 +325,7 @@ public class GMLReader2 implements GraphReader {
 			nodeShapeMapping.putMapValue(key, value);
 		}
 		GenericNodeShapeCalculator shapeCalculator = new GenericNodeShapeCalculator(
-				"GML Node Shape" + mapSuffix, nodeShapeMapping);
+				"GML_Node_Shape" + mapSuffix, nodeShapeMapping);
 		nac.setNodeShapeCalculator(shapeCalculator);
 
 		//
@@ -579,7 +580,9 @@ public class GMLReader2 implements GraphReader {
 		gac.setDefaultBackgroundColor(DEF_COLOR);
 		gmlstyle = new VisualStyle(styleName, nac, eac, gac);
 
+		catalog.addVisualStyle(gmlstyle);
 		vizmapper.setVisualStyle(gmlstyle);
+		
 		Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 	}
 
