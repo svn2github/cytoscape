@@ -38,14 +38,10 @@
 package cytoscape.actions;
 
 import java.awt.event.ActionEvent;
-import java.util.Iterator;
-import java.util.Set;
 
 import javax.swing.JOptionPane;
 
-import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
-import cytoscape.data.CyAttributes;
 import cytoscape.util.CytoscapeAction;
 
 public class NewSessionAction extends CytoscapeAction {
@@ -69,36 +65,10 @@ public class NewSessionAction extends CytoscapeAction {
 					JOptionPane.WARNING_MESSAGE, null);
 
 			if (result == JOptionPane.YES_OPTION) {
-				cleanWorkspace();
-				Cytoscape.getDesktop().setTitle("Cytoscape Desktop (New Session)");
-				Cytoscape.setCurrentSessionFileName(null);
+				Cytoscape.createNewSession();
 			} else {
 				return;
 			}
-		}
-
-	}
-
-	private void cleanWorkspace() {
-
-		Set netSet = Cytoscape.getNetworkSet();
-		Iterator it = netSet.iterator();
-
-		while (it.hasNext()) {
-			CyNetwork net = (CyNetwork) it.next();
-			Cytoscape.destroyNetwork(net);
-		}
-
-		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
-		String[] nodeAttrNames = nodeAttributes.getAttributeNames();
-		for (int i = 0; i < nodeAttrNames.length; i++) {
-			nodeAttributes.deleteAttribute(nodeAttrNames[i]);
-		}
-
-		CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
-		String[] edgeAttrNames = edgeAttributes.getAttributeNames();
-		for (int i = 0; i < edgeAttrNames.length; i++) {
-			edgeAttributes.deleteAttribute(edgeAttrNames[i]);
 		}
 	}
 

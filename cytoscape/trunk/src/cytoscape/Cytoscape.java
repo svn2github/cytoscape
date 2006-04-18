@@ -1645,5 +1645,32 @@ public abstract class Cytoscape {
 	public static void setCurrentSessionFileName( String newName ) {
 		currentSessionFileName = newName;
 	}
+	
+	public static void createNewSession() {
+		Set netSet = getNetworkSet();
+		Iterator it = netSet.iterator();
+
+		while (it.hasNext()) {
+			CyNetwork net = (CyNetwork) it.next();
+			destroyNetwork(net);
+		}
+
+		CyAttributes nodeAttributes = getNodeAttributes();
+		String[] nodeAttrNames = nodeAttributes.getAttributeNames();
+		for (int i = 0; i < nodeAttrNames.length; i++) {
+			nodeAttributes.deleteAttribute(nodeAttrNames[i]);
+		}
+
+		CyAttributes edgeAttributes = getEdgeAttributes();
+		String[] edgeAttrNames = edgeAttributes.getAttributeNames();
+		for (int i = 0; i < edgeAttrNames.length; i++) {
+			edgeAttributes.deleteAttribute(edgeAttrNames[i]);
+		}
+		
+		getDesktop().setTitle("Cytoscape Desktop (New Session)");
+		setCurrentSessionFileName(null);
+		
+	}
+	
 
 }
