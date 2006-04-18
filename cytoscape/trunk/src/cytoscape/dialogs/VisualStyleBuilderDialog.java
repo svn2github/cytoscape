@@ -25,8 +25,17 @@ public class VisualStyleBuilderDialog extends javax.swing.JDialog {
 			java.awt.Frame parent, boolean modal) {
 		super(parent, modal);
 		gmlReader = (GMLReader2) reader;
-		mapperSuffix = " for " + networkName;
-		VSName = networkName + ".GML_style";
+		
+		String modName = "";
+		String[] removeDot = networkName.split("\\.");
+		for(int idx=0; idx<removeDot.length; idx++) {
+			modName = modName + removeDot[idx];
+			if(idx != removeDot.length - 1) {
+				modName = modName + "_";
+			}
+		}
+		mapperSuffix = " for " + modName;
+		VSName = "GML style for " + modName;
 		initComponents();
 	}
 
@@ -75,7 +84,8 @@ public class VisualStyleBuilderDialog extends javax.swing.JDialog {
 				.setText("This function creates new Visual Style based on GML information.  " +
 						"For each node/edge, it will assign individual visual properties, such " +
 						"as node color, shape, border, etc.\n\nNote: for large networks, visual " +
-						"mapper can be slow since this will create visual properties for all objects.");
+						"mapper can be slow since this will create visual properties for all objects." +
+						"\n\n DO NOT USE DOT (.) FOR THESE NAMES.");
 		messageScrollPane.setViewportView(messageEditorPane);
 
 		org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(
