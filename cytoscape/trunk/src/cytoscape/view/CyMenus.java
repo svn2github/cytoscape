@@ -1,41 +1,39 @@
-
 /*
-  File: CyMenus.java 
-  
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-  
-  The Cytoscape Consortium is: 
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Pasteur Institute
-  - Agilent Technologies
-  
-  This library is free software; you can redistribute it and/or modify it
-  under the terms of the GNU Lesser General Public License as published
-  by the Free Software Foundation; either version 2.1 of the License, or
-  any later version.
-  
-  This library is distributed in the hope that it will be useful, but
-  WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
-  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
-  documentation provided hereunder is on an "as is" basis, and the
-  Institute for Systems Biology and the Whitehead Institute 
-  have no obligations to provide maintenance, support,
-  updates, enhancements or modifications.  In no event shall the
-  Institute for Systems Biology and the Whitehead Institute 
-  be liable to any party for direct, indirect, special,
-  incidental or consequential damages, including lost profits, arising
-  out of the use of this software and its documentation, even if the
-  Institute for Systems Biology and the Whitehead Institute 
-  have been advised of the possibility of such damage.  See
-  the GNU Lesser General Public License for more details.
-  
-  You should have received a copy of the GNU Lesser General Public License
-  along with this library; if not, write to the Free Software Foundation,
-  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
-
+ File: CyMenus.java 
+ 
+ Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+ 
+ The Cytoscape Consortium is: 
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Pasteur Institute
+ - Agilent Technologies
+ 
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+ 
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute 
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute 
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute 
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+ 
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+ */
 
 //------------------------------------------------------------------------------
 package cytoscape.view;
@@ -103,6 +101,7 @@ import cytoscape.actions.ImportVizmapAction;
 import cytoscape.actions.InvertSelectedEdgesAction;
 import cytoscape.actions.InvertSelectedNodesAction;
 import cytoscape.actions.ListFromFileSelectionAction;
+import cytoscape.actions.MapOntologyAction;
 import cytoscape.actions.NewSessionAction;
 import cytoscape.actions.NewWindowSelectedNodesEdgesAction;
 import cytoscape.actions.NewWindowSelectedNodesOnlyAction;
@@ -119,7 +118,6 @@ import cytoscape.actions.SelectFirstNeighborsAction;
 import cytoscape.actions.SelectionModeAction;
 import cytoscape.actions.SetVisualPropertiesAction;
 import cytoscape.actions.ShowAllAction;
-import cytoscape.actions.SquiggleAction;
 import cytoscape.actions.ToggleVisualMapperAction;
 import cytoscape.actions.UnHideSelectedEdgesAction;
 import cytoscape.actions.UnHideSelectedNodesAction;
@@ -136,12 +134,10 @@ import cytoscape.view.cytopanels.CytoPanel;
  * This class creates the menu and tool bars for a Cytoscape window object. It
  * also provides access to individual menus and items.
  * 
- * Feb. 21, 2006
- * Refactored by kono@ucsd.edu
+ * Feb. 21, 2006 Refactored by kono@ucsd.edu
  * 
- * Now addAction takes one more optional argument to specify
- * index.  Plugin writers can use this function to specify the
- * location of the menu item. 
+ * Now addAction takes one more optional argument to specify index. Plugin
+ * writers can use this function to specify the location of the menu item.
  * 
  */
 public class CyMenus implements GraphViewChangeListener {
@@ -161,9 +157,10 @@ public class CyMenus implements GraphViewChangeListener {
 	JMenu cytoPanelMenu;
 
 	CytoscapeAction menuPrintAction, menuExportAction, menuSaveSessionAction,
-          menuSaveSessionAsAction,menuOpenSessionAction, networkOverviewAction;
-	JMenuItem vizMenuItem, vizMapperItem, networkOverviewItem;
-	JCheckBoxMenuItem cytoPanelWestItem, cytoPanelEastItem, cytoPanelSouthItem;
+			menuSaveSessionAsAction, menuOpenSessionAction,
+			networkOverviewAction;
+	JMenuItem vizMenuItem, vizMapperItem;
+	JCheckBoxMenuItem cytoPanelWestItem, cytoPanelEastItem, cytoPanelSouthItem, networkOverviewItem;
 	JMenuItem helpContentsMenuItem, helpContextSensitiveMenuItem,
 			helpAboutMenuItem;
 
@@ -346,10 +343,9 @@ public class CyMenus implements GraphViewChangeListener {
 	}
 
 	public void setOverviewEnabled(boolean newState) {
-		networkOverviewItem.setText(newState ? "Hide Network Overview"
-				: "Show Network Overview");
+		networkOverviewItem.setSelected(newState);
 	}
-	
+
 	/**
 	 * Enables or disables save, print, and display nodes in new window GUI
 	 * functions, based on the number of nodes in this window's graph
@@ -367,7 +363,7 @@ public class CyMenus implements GraphViewChangeListener {
 		saveSubMenu.setEnabled(newState);
 		menuPrintAction.setEnabled(newState);
 		// menuExportAction.setEnabled(newState);
-		//displayNWSubMenu.setEnabled(newState);
+		// displayNWSubMenu.setEnabled(newState);
 		nodesRequiredItemsEnabled = newState;
 	}
 
@@ -422,11 +418,11 @@ public class CyMenus implements GraphViewChangeListener {
 				"cytoPanelSouth", KeyEvent.VK_2);
 
 		// add cytopanel menu items to CytoPanels Menu
-		menuBar.getMenu( "View" ).add(new JSeparator());
+		menuBar.getMenu("View").add(new JSeparator());
 		menuBar.getMenu("View.Desktop").add(cytoPanelWestItem);
 		menuBar.getMenu("View.Desktop").add(cytoPanelSouthItem);
 		menuBar.getMenu("View.Desktop").add(cytoPanelEastItem);
-		//menuBar.getMenu( "View" ).add(new JSeparator());
+		// menuBar.getMenu( "View" ).add(new JSeparator());
 	}
 
 	private void initCytoPanelMenuItem(CytoPanel cytoPanel,
@@ -499,8 +495,6 @@ public class CyMenus implements GraphViewChangeListener {
 		loadSubMenu = menuBar.getMenu("File.Import", 1);
 		saveSubMenu = menuBar.getMenu("File.Export", 2);
 
-		
-		
 		editMenu = menuBar.getMenu("Edit");
 		final JMenu f_editMenu = editMenu;
 		editMenu.addMenuListener(new MenuListener() {
@@ -539,9 +533,8 @@ public class CyMenus implements GraphViewChangeListener {
 		// Data menu. disabled by default.
 		//
 		viewMenu = menuBar.getMenu("View");
-		
-		
-		final JMenu f_dataMenu = viewMenu;
+
+		//final JMenu f_dataMenu = viewMenu;
 
 		viewMenu.setEnabled(true);
 
@@ -634,9 +627,9 @@ public class CyMenus implements GraphViewChangeListener {
 				}
 			}
 		});
-		//vizMenu = menuBar.getMenu("Visualization");
+		// vizMenu = menuBar.getMenu("Visualization");
 		opsMenu = menuBar.getMenu("Plugins");
-		//cytoPanelMenu = menuBar.getMenu("CytoPanels");
+		// cytoPanelMenu = menuBar.getMenu("CytoPanels");
 		helpMenu = menuBar.getMenu("Help");
 	}
 
@@ -659,11 +652,11 @@ public class CyMenus implements GraphViewChangeListener {
 			saveSubMenu.setEnabled(false);
 			menuPrintAction.setEnabled(false);
 			// menuExportAction.setEnabled(false);
-			//displayNWSubMenu.setEnabled(false);
+			// displayNWSubMenu.setEnabled(false);
 			setNodesRequiredItemsEnabled();
 
-//			menuSaveSessionAction.setEnabled(false);
-//			menuOpenSessionAction.setEnabled(true);
+			// menuSaveSessionAction.setEnabled(false);
+			// menuOpenSessionAction.setEnabled(true);
 
 		}
 	}
@@ -679,8 +672,7 @@ public class CyMenus implements GraphViewChangeListener {
 		addAction(new NewSessionAction());
 		addAction(new NewWindowSelectedNodesOnlyAction());
 		addAction(new NewWindowSelectedNodesEdgesAction());
-		
-		
+
 		// fill the Import submenu
 		addAction(new ImportGraphFileAction(this));
 		addAction(new ImportNodeAttributesAction());
@@ -688,12 +680,13 @@ public class CyMenus implements GraphViewChangeListener {
 		addAction(new ImportVizmapAction());
 		addAction(new ImportExpressionMatrixAction());
 		addAction(new ImportBioDataServerAction());
-		
-		ImageIcon goSmallIcon = new ImageIcon( getClass().getResource("images/new/GOsmall.gif") );
-		
+
+		ImageIcon goSmallIcon = new ImageIcon(getClass().getResource(
+				"images/new/GOsmall.gif"));
+
 		addAction(new AnnotationGui(true, goSmallIcon));
-		
-		
+		addAction(new MapOntologyAction());
+
 		// fill the Save submenu
 		addAction(new ExportAsXGMMLAction());
 		addAction(new ExportAsGMLAction());
@@ -728,7 +721,7 @@ public class CyMenus implements GraphViewChangeListener {
 
 		// fill the Edit menu
 		// TODO: make the Squiggle Stuff be better
-// 		editMenu.add(new SquiggleAction());
+		// editMenu.add(new SquiggleAction());
 		addAction(new CreateNetworkViewAction());
 		addAction(new DestroyNetworkViewAction());
 		addAction(new DestroyNetworkAction());
@@ -743,10 +736,10 @@ public class CyMenus implements GraphViewChangeListener {
 		// addAction( new GraphObjectSelectionAction() );
 
 		// fill the Select menu
-		
+
 		selectMenu.add(new SelectionModeAction());
-		
-		//displayNWSubMenu = menuBar.getMenu("Select.To New Network");
+
+		// displayNWSubMenu = menuBar.getMenu("Select.To New Network");
 
 		addAction(new InvertSelectedNodesAction());
 		addAction(new HideSelectedNodesAction());
@@ -765,38 +758,32 @@ public class CyMenus implements GraphViewChangeListener {
 		addAction(new DeSelectAllEdgesAction());
 
 		selectMenu.addSeparator();
-		
-		
+
 		addAction(new CloneGraphInNewWindowAction());
 		addAction(new SelectAllAction());
 		addAction(new DeselectAllAction());
-		
+
 		selectMenu.addSeparator();
 
 		addAction(new RotationScaleLayoutAction());
 		layoutMenu.addSeparator();
 
 		// fill the Visualization menu
-
-		// TODO: move to a plugin, and/or fix
-                networkOverviewAction = new BirdsEyeViewAction();
-		networkOverviewItem = new JMenuItem(networkOverviewAction);
+		networkOverviewAction = new BirdsEyeViewAction();
+		networkOverviewItem = new JCheckBoxMenuItem(networkOverviewAction);
 		menuBar.getMenu("View").add(networkOverviewItem);
 
 		// fill View Menu
-		
-		//initCytoPanelMenus();
-		
-		//addAction(new SetVisualPropertiesAction());
-		//addAction(new ToggleVisualMapperAction());
-		
-		ImageIcon vizmapperIcon = new ImageIcon( getClass().getResource("images/vizmapper16.gif") );
-		vizMenuItem = new JMenuItem(new SetVisualPropertiesAction(vizmapperIcon));
+
+		ImageIcon vizmapperIcon = new ImageIcon(getClass().getResource(
+				"images/vizmapper16.gif"));
+		vizMenuItem = new JMenuItem(
+				new SetVisualPropertiesAction(vizmapperIcon));
 		vizMapperItem = new JMenuItem(new ToggleVisualMapperAction());
-		menuBar.getMenu( "View" ).add(new JSeparator());
+		menuBar.getMenu("View").add(new JSeparator());
 		menuBar.getMenu("View").add(vizMenuItem);
 		menuBar.getMenu("View").add(vizMapperItem);
-		//addAction(new BackgroundColorAction());
+		// addAction(new BackgroundColorAction());
 
 		// Help menu
 		// use the usual *Action class for menu entries which have static
@@ -807,10 +794,10 @@ public class CyMenus implements GraphViewChangeListener {
 		// since actions encapsulated by HelpBroker and need run-time data
 		helpContentsMenuItem = new JMenuItem("Contents...", KeyEvent.VK_C);
 		helpContentsMenuItem.setAccelerator(KeyStroke.getKeyStroke("F1"));
-		ImageIcon contextSensitiveHelpIcon = new ImageIcon(
-				getClass().getResource("images/contextSensitiveHelp.gif"));
-//		ImageIcon contextSensitiveHelpIcon = new ImageIcon(
-//		"images/c16.gif");
+		ImageIcon contextSensitiveHelpIcon = new ImageIcon(getClass()
+				.getResource("images/contextSensitiveHelp.gif"));
+		// ImageIcon contextSensitiveHelpIcon = new ImageIcon(
+		// "images/c16.gif");
 		helpContextSensitiveMenuItem = new JMenuItem("Context Sensitive...",
 				contextSensitiveHelpIcon);
 		helpContextSensitiveMenuItem.setAccelerator(KeyStroke
@@ -950,14 +937,6 @@ public class CyMenus implements GraphViewChangeListener {
 
 		toolBar.addSeparator();
 
-//		annotationButton = toolBar.add(new AnnotationGui());
-////		annotationButton.setIcon(new ImageIcon(getClass().getResource(
-////				"images/new/ontology36.gif")));
-//		annotationButton.setIcon(new ImageIcon(getClass().getResource(
-//		"images/new/GO2.gif")));
-//		annotationButton.setToolTipText("Add Annotation Ontology to Nodes");
-//		annotationButton.setBorderPainted(false);
-
 		toolBar.addSeparator();
 
 		vizButton = toolBar.add(new SetVisualPropertiesAction(false));
@@ -990,17 +969,9 @@ public class CyMenus implements GraphViewChangeListener {
 		hb.enableHelp(zoomDisplayAllButton, "toolbar-zoom", null);
 		hb.enableHelp(showAllButton, "toolbar-hide", null);
 		hb.enableHelp(hideSelectedButton, "toolbar-hide", null);
-		//hb.enableHelp(annotationButton, "toolbar-annotate", null);
+		// hb.enableHelp(annotationButton, "toolbar-annotate", null);
 		hb.enableHelp(vizButton, "toolbar-setVisProps", null);
 
-		// add Help support for visual properties combo box created elsewhere
-		// but in this toolbar
-		/*
-		 * MDA - can't get this to work... can't get access to public method?
-		 * VizMapUI vizMapUI = Cytoscape.getDesktop().getVizMapUI();
-		 * hb.enableHelp(vizMapUI.getToolbarComboBox(),
-		 * "toolbar-setVisProps",null);
-		 */
 	}
 
 }
