@@ -596,6 +596,16 @@
               todir="${release.dir}/sampleData"/>
         <copy file="testData/yeastHighQuality.sif"
               todir="${release.dir}/sampleData"/>
+        <copy file="testData/galFiltered.edgeAttrs1" 
+	      todir="${release.dir}/sampleData"/>
+        <copy file="testData/galFiltered.edgeAttrs2" 
+              todir="${release.dir}/sampleData"/>
+        <copy file="testData/galFiltered.nodeAttrs1" 
+	      todir="${release.dir}/sampleData"/>
+        <copy file="testData/galFiltered.nodeAttrs2" 
+	      todir="${release.dir}/sampleData"/>
+        <copy file="testData/galExpData.pvals" 
+	      todir="${release.dir}/sampleData"/>
 
         <!-- Copy over annotation Data Files -->
         <copy todir="${release.dir}/annotation">
