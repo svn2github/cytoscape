@@ -56,10 +56,8 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 import javax.swing.event.SwingPropertyChangeSupport;
 
-import phoebe.PGraphView;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.CyAttributesImpl;
 import cytoscape.data.ExpressionData;
@@ -70,11 +68,10 @@ import cytoscape.data.readers.GMLReader2;
 import cytoscape.data.readers.GraphReader;
 import cytoscape.data.readers.InteractionsReader;
 import cytoscape.data.servers.BioDataServer;
+import cytoscape.ding.CyGraphLOD;
+import cytoscape.ding.DingNetworkView;
 import cytoscape.giny.CytoscapeFingRootGraph;
 import cytoscape.giny.CytoscapeRootGraph;
-import cytoscape.giny.CytoscapeFingRootGraph;
-import cytoscape.ding.DingNetworkView;
-import cytoscape.ding.CyGraphLOD;
 import cytoscape.util.CyNetworkNaming;
 import cytoscape.util.FileUtil;
 import cytoscape.view.CyNetworkView;
@@ -94,15 +91,13 @@ import cytoscape.visual.VisualMappingManager;
  * Node/Edge is present.
  */
 public abstract class Cytoscape {
-
+	//
+	// Signals
+	//
 	public static String NETWORK_CREATED = "NETWORK_CREATED";
-
 	public static String ATTRIBUTES_CHANGED = "ATTRIBUTES_CHANGED";
-
 	public static String EXPRESSION_DATA_LOADED = "EXPRESSION_DATA_LOADED";
-
 	public static String NETWORK_DESTROYED = "NETWORK_DESTROYED";
-
 	public static String CYTOSCAPE_EXIT = "CYTOSCAPE_EXIT";
 	
 	//KONO: 03/10/2006 For vizmap saving and loading
@@ -112,14 +107,9 @@ public abstract class Cytoscape {
 	public static String SAVE_VIZMAP_PROPS = "SAVE_VIZMAP_PROPS";
 	public static String VIZMAP_LOADED = "VIZMAP_LOADED";
 	
-	// For reverse-selection from browser.
-	public static String BROWSER_OBJECTS_SELECTED = "BROWSER_OBJECTS_SELECTED";
-	
 	// events for network modification
 	public static final String NETWORK_MODIFIED = "NETWORK_MODIFIED";
-
 	public static final String NETWORK_SAVED = "NETWORK_SAVED";
-
 	public static final String NETWORK_LOADED = "NETWORK_LOADED";
 
 	// Events for Preference Dialog (properties).
@@ -141,20 +131,14 @@ public abstract class Cytoscape {
 	 * </ul>
 	 */
 	public static int FILE_BY_SUFFIX = 0;
-
 	public static int FILE_GML = 1;
-
 	public static int FILE_SIF = 2;
-
 	public static int FILE_SBML = 3;
-	
 	public static int FILE_XGMML = 4;
 
 	// constants for tracking selection mode globally
 	public static final int SELECT_NODES_ONLY = 1;
-
 	public static final int SELECT_EDGES_ONLY = 2;
-
 	public static final int SELECT_NODES_AND_EDGES = 3;
 
 	// global to represent which selection mode is active
