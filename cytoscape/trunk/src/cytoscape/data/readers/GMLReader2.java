@@ -257,7 +257,7 @@ public class GMLReader2 implements GraphReader {
 
 		mapSuffix = " for " + filename;
 		
-		return target.concat(".GML_style");
+		return target.concat("_GML_style");
 	}
 
 	private void initializeHash() {
