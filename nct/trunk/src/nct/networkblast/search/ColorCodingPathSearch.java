@@ -119,6 +119,42 @@ public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>
 	private static Logger log = Logger.getLogger("networkblast");	
 
 	/**
+	 * A set of nodes that can be used to constrain the contents of paths.
+	 * If the set is not null, then at least minConstraintNodes and at
+	 * most maxConstraintNodes from this set must be present in a path. If
+	 * the set is null, the constraint is ignored. The constraint is null
+	 * by default.
+	 */
+	private Set<NodeType> constraintSet; 
+
+	/**
+	 * The maximum number of nodes from the constraintSet allowed in a given path.
+	 */
+	private int maxConstraintNodes; 
+
+	/**
+	 * The minimum number of nodes from the constraintSet required in a given path.
+	 */
+	private int minConstraintNodes; 
+
+	/**
+	 * An array of counts for the number of constrained nodes contained in a given path. 
+	 */
+	private int[] constraintCount; 
+
+	/**
+	 * A map of nodes to the maximum allowed segment of the path that the node is
+	 * allowed to be present in. 
+	 */
+	Map<NodeType,Integer> maxSegmentMap;
+
+	/**
+	 * A map of nodes to the minimum allowed segment of the path that the node is
+	 * allowed to be present in. 
+	 */
+	Map<NodeType,Integer> minSegmentMap;
+
+	/**
 	 * @param size the integer size of paths to search for
 	 */
 	public ColorCodingPathSearch(int size) {
@@ -161,6 +197,40 @@ public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>
 		nodeColorMap = new HashMap<NodeType,Integer>();
 		nodeIndexMap = new HashMap<NodeType,Integer>(); 
 		log.info("pathsize: " + size + " num solutions: " + numSols + " epsilon: " + epsilon);
+		constraintSet = null;
+		minConstraintNodes = 0;
+		maxConstraintNodes = 0;
+
+		maxSegmentMap = null;
+		minSegmentMap = null;
+	}
+
+	/**
+	 * Sets a constraint on a path such that the path must contain a node (or nodes) in 
+	 * the specified constraint set. The first (smallest) segment begins at 0 and
+	 * increments by 1 from there. The last segment is the path size - 1. 
+	 * @param constraintSet The set of nodes that constrain the paths.
+	 * @param minNodes The minimum number of nodes from the constraint set that must
+	 * exist in the path.
+	 * @param maxNodes The maximum number of nodes from the constraint set that may
+	 * exist in the path.
+	 */
+	public void setConstraint(Set<NodeType> constraintSet, int minNodes, int maxNodes) { 
+		this.constraintSet = constraintSet;
+		minConstraintNodes = minNodes;
+		maxConstraintNodes = maxNodes;
+	}
+
+	/**
+	 * Sets the segments used for producing ordered paths.
+	 * @param maxSegmentMap A map of nodes to the maximum segment number the node 
+	 * is allowed in.
+	 * @param minSegmentMap A map of nodes to the minimum segment number the node 
+	 * is allowed in.
+	 */
+	public void setSegments(Map<NodeType,Integer> maxSegmentMap, Map<NodeType,Integer> minSegmentMap) {	
+		this.maxSegmentMap = maxSegmentMap;
+		this.minSegmentMap = minSegmentMap;
 	}
 
 	/**
@@ -237,12 +307,15 @@ public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>
 			}
 
 			initNodeColors(graph);	
+			initConstraintCount(graph);
 
 			// dynamic programming over all color combinations
 			for ( int i = 0; i < orderedColorSetList.length; i++ ) {
 				int colorCombo = orderedColorSetList[i];
 				if ( colorCombo == 0 )
 					continue;
+
+				int segment = countBits(colorCombo);
 				
 				for (NodeType node: nodeSet) { 
 					int nodeColor = getNodeColor(node);
@@ -258,32 +331,36 @@ public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>
 					// now compare the node to all of its neighbors that are 
 					// within the color combination excluding the node color
 					for (NodeType neighbor: graph.getNeighbors(node) ) {
-						int neighborColor = getNodeColor(neighbor);
 						//System.out.println("neigh " + neighborColor);
-						
+						int neighborColor = getNodeColor(neighbor);
+
 						if ( (neighborColor & prevCombo) == neighborColor ) {
 							double score = scoreObj.scoreEdge(node,neighbor,graph) + W[nodeIndex(neighbor)][prevCombo];	
 							int nodeInd = nodeIndex(node);
-							//System.out.println("score " + score);
 
+
+							//System.out.println("score " + score);
 							if ( score > W[nodeInd][colorCombo] ) {
 								W[nodeInd][colorCombo] = score; 
 								path.get(nodeInd).set(colorCombo,neighbor);
-							}	
-						}	
-					}						
-				}	
-			}	
+								if ( constraintSet != null && constraintSet.contains(neighbor) )
+									constraintCount[nodeInd]++;
+							}
+						}
+					}
+				}
+			}
 
 			// traceback through the W matrix to extract the actual path
 			for (NodeType node: nodeSet) {
 				int color = colorSet;
 				int nodeInd = nodeIndex(node); 
-				if ( W[nodeInd][color] > currentMinScore ) { 
+				if ( W[nodeInd][color] > currentMinScore && checkConstraint( nodeInd ) ) { 
 					//System.out.println("trial " + x + " curr min: " + currentMinScore + "  w: " + W[nodeInd][color]);
 					Graph<NodeType,Double> sg = new BasicGraph<NodeType,Double>();
 					sg.setScore( W[nodeInd][color] );
-					while ( path.get(nodeInd).get(color) != null ) {
+					while ( path.get(nodeInd).get(color) != null && 
+					        consistentSegmentation(node,color)) {
 						NodeType next = path.get(nodeInd).get(color);
 						sg.addNode(node);
 						sg.addNode(next);
@@ -377,17 +454,25 @@ public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>
 			// Check each int between 1 and 2^pathSize - 1.  
 			for ( int j = 1; j < twoPath; j++ ) {
 				int x = j;
-				int count = 0;
-				// count the actual bits
-				while ( x != 0 ) {
-					count += x & 1;
-					x >>>= 1;
-				}
-				if ( count == i )
+				if ( countBits(x) == i )
 					colors[index++] = j;
 			}
 
 		return colors;
+	}
+
+	/**
+	 * Counts the bits set to true (1) in an int.
+	 * @param x The integer whose bits are to be counted.
+	 * @return The number of bits found in the input integer.
+	 */
+	private int countBits(int x) {
+		int count = 0;
+		while ( x != 0 ) {
+			count += x & 1;
+			x >>>= 1;
+		}
+		return count;
 	}
 
 	/**
@@ -410,5 +495,64 @@ public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>
 		for ( NodeType node: g.getNodes() ) 
 			nodeIndexMap.put(node,nodeCount++);
 	}
-}
+
+	/**
+	 * Initializes the constraint counts. If a node is included in
+	 * the constraint set, it the count is set to one, otherwise it
+	 * is set to zero.
+	 * @param g The graph whose nodes are to be compared against the 
+	 * the constraint set.
+	 */
+	protected void initConstraintCount(Graph<NodeType,Double> g) {
+		if ( constraintSet == null )
+			return;
+
+		constraintCount = new int[g.numberOfNodes()];
+		for ( NodeType n : g.getNodes() ) {
+			int nodeInd = nodeIndex(n);
+			if ( constraintSet.contains( n ) )
+				constraintCount[nodeInd] = 1;
+			else
+				constraintCount[nodeInd] = 0;
+		}
+	}
+
+	/**
+	 * Checks if a given path contains at least one of the nodes
+	 * in the constraint set.
+	 * @param nodeInd The node index of the node whose path is to be
+	 * be checked.
+	 * @return Whether or not the path specified by the node contains
+	 * the appropriate number of constraint nodes.
+	 */
+	protected boolean checkConstraint(int nodeInd) {
+		if ( constraintSet == null )
+			return true;
 	
+		int count = constraintCount[ nodeInd ];
+		if ( count >= minConstraintNodes && count <= maxConstraintNodes )
+			return true;
+		else
+			return false;
+	}
+
+	/**
+	 * Checks that the node is consistent with the segement indicated by 
+	 * the color combination (ie the number of bits).
+	 * @param node The node used whose segement is to be checked.
+	 * @param colorCombination The bitmap that defines a color combination and
+	 * segment.
+	 * @return Whether or not the node is in the appropriate segment.
+	 */
+	protected boolean consistentSegmentation(NodeType node, int colorCombination) {
+		if ( maxSegmentMap == null || minSegmentMap == null) 
+			return true;
+		
+		int segment = countBits(colorCombination);
+		if ( segment >= minSegmentMap.get(node).intValue() &&
+		     segment <= maxSegmentMap.get(node).intValue() )
+			return true;
+		else
+			return false;
+	}
+}
