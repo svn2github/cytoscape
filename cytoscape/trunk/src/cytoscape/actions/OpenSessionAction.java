@@ -107,8 +107,10 @@ public class OpenSessionAction extends CytoscapeAction {
 			}
 
 			// Close all networks in the workspace.
-			cleanWorkspace();
-
+			Cytoscape.setSessionState(Cytoscape.SESSION_OPENED);
+			Cytoscape.createNewSession();
+			Cytoscape.setSessionState(Cytoscape.SESSION_NEW);
+			
 			System.out.println("Opening session file: " + name);
 			Cytoscape.setCurrentSessionFileName(name);
 
@@ -155,20 +157,6 @@ public class OpenSessionAction extends CytoscapeAction {
 
 		} else {
 			return true;
-		}
-
-	}
-
-	// Clean-up current session
-	// Destroy all networks
-	private void cleanWorkspace() {
-
-		Set netSet = Cytoscape.getNetworkSet();
-		Iterator it = netSet.iterator();
-
-		while (it.hasNext()) {
-			CyNetwork net = (CyNetwork) it.next();
-			Cytoscape.destroyNetwork(net);
 		}
 
 	}

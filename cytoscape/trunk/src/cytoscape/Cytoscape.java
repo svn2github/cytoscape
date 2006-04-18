@@ -143,6 +143,15 @@ public abstract class Cytoscape {
 
 	// global to represent which selection mode is active
 	private static int currentSelectionMode = SELECT_NODES_ONLY;
+	
+	
+	// Value to manage session state
+	public static final int SESSION_NEW = 0;
+	public static final int SESSION_OPENED = 1;
+	public static final int SESSION_CHANGED = 2;
+	public static final int SESSION_CLOSED = 3;
+	private static int sessionState = SESSION_NEW;
+	
 
 	private static BioDataServer bioDataServer;
 
@@ -241,17 +250,17 @@ public abstract class Cytoscape {
 			} catch (Exception e) {
 				System.out.println("Errors on close, closed anyways.");
 			}
-
 			System.exit(0);
 		}
 		// System.exit(0);
 		// AJK: 09/12/05 END
 	}
 
-	// AJK: 09/12/05 BEGIN
-	// prompt the user about saving modified files before quitting
-	/**
+	/* AJK: 09/12/05 BEGIN
 	 * prompt the user about saving modified files before quitting
+	 * 
+	 * KONO: 04/18/2006
+	 * Now Cytoscape always ask user if session is not saved.
 	 * 
 	 * @return
 	 */
@@ -259,23 +268,27 @@ public abstract class Cytoscape {
 		String msg = "You have made modifications to the following networks:\n";
 		Set netSet = Cytoscape.getNetworkSet();
 		Iterator it = netSet.iterator();
-		int networkCount = 0;
-		// TODO: filter networks for only those modified
-		while (it.hasNext()) {
-			CyNetwork net = (CyNetwork) it.next();
-			boolean modified = CytoscapeModifiedNetworkManager.isModified(net);
-			if (modified) {
-				String name = net.getTitle();
-				msg += "     " + name + "\n";
-				networkCount++;
-			}
-		}
+		int networkCount = netSet.size();
+		
+//		// TODO: filter networks for only those modified
+//		while (it.hasNext()) {
+//			CyNetwork net = (CyNetwork) it.next();
+//			boolean modified = CytoscapeModifiedNetworkManager.isModified(net);
+//			if (modified) {
+//				String name = net.getTitle();
+//				msg += "     " + name + "\n";
+//				networkCount++;
+//			}
+//		}
+		
 		if (networkCount == 0) {
 			System.out.println("ConfirmQuit = " + true);
 			return true; // no networks have been modified
 		}
-		msg += "Are you sure you want to exit without saving?";
-		Object[] options = { "Yes, quit anyway.", "No, do not quit." };
+		//msg += "Are you sure you want to exit without saving?";
+		
+		msg = "Do you want to exit without saving session?";
+		Object[] options = { "Yes, quit anyway.", "No, save current session." };
 		int n = JOptionPane.showOptionDialog(Cytoscape.getDesktop(), msg,
 				"Save Networks Before Quitting?", JOptionPane.YES_NO_OPTION,
 				JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
@@ -1644,6 +1657,14 @@ public abstract class Cytoscape {
 	 */
 	public static void setCurrentSessionFileName( String newName ) {
 		currentSessionFileName = newName;
+	}
+	
+	public static void setSessionState(int state) {
+		sessionState = state;
+	}
+	
+	public static int getSessionstate() {
+		return sessionState;
 	}
 	
 	public static void createNewSession() {

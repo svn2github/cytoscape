@@ -657,7 +657,8 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 			pcs.firePropertyChange(e);
 			// Check new session or not
 			
-			if(Cytoscape.getNetworkSet().size() == 0) {
+			if(Cytoscape.getNetworkSet().size() == 0 &&
+					Cytoscape.getSessionstate() != Cytoscape.SESSION_OPENED) {
 				String message = "Do you want to create a new session?.\n(All attributes will be lost!)";
 
 				int result = JOptionPane.showConfirmDialog(this,
