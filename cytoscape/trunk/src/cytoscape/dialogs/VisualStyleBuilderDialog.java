@@ -6,6 +6,12 @@
 
 package cytoscape.dialogs;
 
+import java.util.Iterator;
+import java.util.Set;
+
+import javax.swing.JOptionPane;
+
+import cytoscape.Cytoscape;
 import cytoscape.data.readers.GMLReader2;
 import cytoscape.data.readers.GraphReader;
 
@@ -25,12 +31,12 @@ public class VisualStyleBuilderDialog extends javax.swing.JDialog {
 			java.awt.Frame parent, boolean modal) {
 		super(parent, modal);
 		gmlReader = (GMLReader2) reader;
-		
+
 		String modName = "";
 		String[] removeDot = networkName.split("\\.");
-		for(int idx=0; idx<removeDot.length; idx++) {
+		for (int idx = 0; idx < removeDot.length; idx++) {
 			modName = modName + removeDot[idx];
-			if(idx != removeDot.length - 1) {
+			if (idx != removeDot.length - 1) {
 				modName = modName + "_";
 			}
 		}
@@ -81,11 +87,11 @@ public class VisualStyleBuilderDialog extends javax.swing.JDialog {
 		messageEditorPane.setEditable(false);
 		messageEditorPane.setFont(new java.awt.Font("SansSerif", 1, 12));
 		messageEditorPane
-				.setText("This function creates new Visual Style based on GML information.  " +
-						"For each node/edge, it will assign individual visual properties, such " +
-						"as node color, shape, border, etc.\n\nNote: for large networks, visual " +
-						"mapper can be slow since this will create visual properties for all objects." +
-						"\n\n DO NOT USE DOT (.) FOR THESE NAMES.");
+				.setText("This function creates new Visual Style based on GML information.  "
+						+ "For each node/edge, it will assign individual visual properties, such "
+						+ "as node color, shape, border, etc.\n\nNote: for large networks, visual "
+						+ "mapper can be slow since this will create visual properties for all objects."
+						+ "\n\n DO NOT USE DOT (.) FOR THESE NAMES.");
 		messageScrollPane.setViewportView(messageEditorPane);
 
 		org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(
@@ -209,11 +215,52 @@ public class VisualStyleBuilderDialog extends javax.swing.JDialog {
 	}// </editor-fold>
 
 	private void generateButtonMouseClicked(java.awt.event.MouseEvent evt) {
+		boolean validNames = true;
+		
 		VSName = styleNameTextField.getText();
 		mapperSuffix = mapperTextField.getText();
 
-		gmlReader.applyMaps(mapperSuffix, VSName);
-		dispose();
+		if (checkDuplicateNames() == false) {
+			try {
+				gmlReader.applyMaps(mapperSuffix, VSName);
+			} catch(cytoscape.visual.DuplicateCalculatorNameException e) {
+				
+				JOptionPane.showMessageDialog(this,
+						"The Calculator Name already exists.\n" +
+						"Please change the suffix.",
+						"Duplicate Name!", JOptionPane.INFORMATION_MESSAGE);
+				
+				Cytoscape.getVisualMappingManager().getCalculatorCatalog().removeVisualStyle(VSName);
+				validNames = false;
+			}
+			if(validNames == true) {
+				dispose();
+			}
+			
+		} else {
+			// Display Error Message
+			JOptionPane.showMessageDialog(this,
+					"Error: The Visual Style Name already exists.",
+					"Duplicate Name!", JOptionPane.INFORMATION_MESSAGE);
+		}
+	}
+
+	private boolean checkDuplicateNames() {
+
+		// Check duplicate VS name first
+		Set vsNames = Cytoscape.getVisualMappingManager()
+				.getCalculatorCatalog().getVisualStyleNames();
+		Iterator it = vsNames.iterator();
+		while (it.hasNext()) {
+			String curName = (String) it.next();
+			if (curName.equals(VSName)) {
+				return true;
+			}
+		}
+		
+		// Check calculator names
+		Cytoscape.getVisualMappingManager().getCalculatorCatalog();
+		return false;
 	}
 
 	// Variables declaration - do not modify
