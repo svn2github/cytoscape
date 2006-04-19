@@ -138,11 +138,6 @@ public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>
 	private int minConstraintNodes; 
 
 	/**
-	 * An array of counts for the number of constrained nodes contained in a given path. 
-	 */
-	private int[] constraintCount; 
-
-	/**
 	 * A map of nodes to the maximum allowed segment of the path that the node is
 	 * allowed to be present in. 
 	 */
@@ -288,6 +283,7 @@ public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>
 
 		if ( numSolutions == 0 )
 			numSolutions = numNodes;
+		System.out.println("expected number of solutions: " + numSolutions);
 
 		SortedSet<Graph<NodeType,Double>> resultSet = new TreeSet<Graph<NodeType,Double>>();
 		initNodeIndices(graph);
@@ -296,7 +292,7 @@ public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>
 
 		for ( int x = 0; x < numTrials; x++ ) {
 			log.config("trial " + x);
-			//System.out.println("trial " + x);
+			System.out.println("trial " + x);
 
 			// re-initialize storage
 			for ( int i = 0; i < numNodes; i++ )	{
@@ -307,7 +303,6 @@ public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>
 			}
 
 			initNodeColors(graph);	
-			initConstraintCount(graph);
 
 			// dynamic programming over all color combinations
 			for ( int i = 0; i < orderedColorSetList.length; i++ ) {
@@ -315,8 +310,6 @@ public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>
 				if ( colorCombo == 0 )
 					continue;
 
-				int segment = countBits(colorCombo);
-				
 				for (NodeType node: nodeSet) { 
 					int nodeColor = getNodeColor(node);
 					//System.out.println("node " + nodeColor);
@@ -331,20 +324,17 @@ public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>
 					// now compare the node to all of its neighbors that are 
 					// within the color combination excluding the node color
 					for (NodeType neighbor: graph.getNeighbors(node) ) {
-						//System.out.println("neigh " + neighborColor);
 						int neighborColor = getNodeColor(neighbor);
+						//System.out.println("neigh " + neighborColor);
 
 						if ( (neighborColor & prevCombo) == neighborColor ) {
 							double score = scoreObj.scoreEdge(node,neighbor,graph) + W[nodeIndex(neighbor)][prevCombo];	
 							int nodeInd = nodeIndex(node);
 
-
 							//System.out.println("score " + score);
 							if ( score > W[nodeInd][colorCombo] ) {
 								W[nodeInd][colorCombo] = score; 
 								path.get(nodeInd).set(colorCombo,neighbor);
-								if ( constraintSet != null && constraintSet.contains(neighbor) )
-									constraintCount[nodeInd]++;
 							}
 						}
 					}
@@ -355,13 +345,18 @@ public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>
 			for (NodeType node: nodeSet) {
 				int color = colorSet;
 				int nodeInd = nodeIndex(node); 
-				if ( W[nodeInd][color] > currentMinScore && checkConstraint( nodeInd ) ) { 
-					//System.out.println("trial " + x + " curr min: " + currentMinScore + "  w: " + W[nodeInd][color]);
+				if ( W[nodeInd][color] > currentMinScore || resultSet.size() < numSolutions ) {
+					System.out.println("trial " + x + " curr min: " + currentMinScore + "  w: " + W[nodeInd][color]);
 					Graph<NodeType,Double> sg = new BasicGraph<NodeType,Double>();
 					sg.setScore( W[nodeInd][color] );
+					int constraintCount = 0;
+					if ( constraintSet != null && constraintSet.contains(node) )
+							constraintCount++;
 					while ( path.get(nodeInd).get(color) != null && 
 					        consistentSegmentation(node,color)) {
 						NodeType next = path.get(nodeInd).get(color);
+						if ( constraintSet != null && constraintSet.contains(next) )
+							constraintCount++;
 						sg.addNode(node);
 						sg.addNode(next);
 						sg.addEdge(node,next,scoreObj.scoreEdge(node,next,graph));
@@ -369,6 +364,7 @@ public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>
 						color -= getNodeColor(node);
 						node = next;
 						nodeInd = nodeIndex(node);
+
 					}
 
 					// Add the path to the result set if the score is high enough
@@ -377,15 +373,15 @@ public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>
 					//
 					// However, this bit of code only takes a fraction (~5%) of the
 					// overall time of this method.
-					//System.out.println("evaluating: " + sg.toString());
-					if ( sg.numberOfNodes() == pathSize &&  
-					     ( resultSet.size() == 0 || 
-					       resultSet.size() < numSolutions || 
-					       sg.compareTo(resultSet.first()) > 0 ) ) {
+					System.out.println("evaluating: " + sg.toString());
+					if ( sg.numberOfNodes() == pathSize && checkConstraint(constraintCount) ) {
 						resultSet.add(sg);
-						//System.out.println("Adding!");
-						if ( resultSet.size() > numSolutions )
+						System.out.println("Adding!");
+						System.out.println("result set size: " + resultSet.size());
+						if ( resultSet.size() > numSolutions ) {
 							resultSet.remove(resultSet.first());
+							System.out.println("Removing!");
+						}
 					} else 
 						sg = null; // space concerns
 				} 
@@ -497,39 +493,15 @@ public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>
 	}
 
 	/**
-	 * Initializes the constraint counts. If a node is included in
-	 * the constraint set, it the count is set to one, otherwise it
-	 * is set to zero.
-	 * @param g The graph whose nodes are to be compared against the 
-	 * the constraint set.
-	 */
-	protected void initConstraintCount(Graph<NodeType,Double> g) {
-		if ( constraintSet == null )
-			return;
-
-		constraintCount = new int[g.numberOfNodes()];
-		for ( NodeType n : g.getNodes() ) {
-			int nodeInd = nodeIndex(n);
-			if ( constraintSet.contains( n ) )
-				constraintCount[nodeInd] = 1;
-			else
-				constraintCount[nodeInd] = 0;
-		}
-	}
-
-	/**
 	 * Checks if a given path contains at least one of the nodes
 	 * in the constraint set.
-	 * @param nodeInd The node index of the node whose path is to be
-	 * be checked.
-	 * @return Whether or not the path specified by the node contains
-	 * the appropriate number of constraint nodes.
+	 * @param count The number of constrained nodes in the path. 
+	 * @return Whether or not the path contains enough constrained nodes. 
 	 */
-	protected boolean checkConstraint(int nodeInd) {
+	protected boolean checkConstraint(int count) {
 		if ( constraintSet == null )
 			return true;
-	
-		int count = constraintCount[ nodeInd ];
+
 		if ( count >= minConstraintNodes && count <= maxConstraintNodes )
 			return true;
 		else
@@ -547,8 +519,9 @@ public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>
 	protected boolean consistentSegmentation(NodeType node, int colorCombination) {
 		if ( maxSegmentMap == null || minSegmentMap == null) 
 			return true;
-		
-		int segment = countBits(colorCombination);
+	
+		int segment = pathSize - countBits(colorCombination);
+		System.out.println ("node: " + node + "  color: " + colorCombination + "  segment: " + segment);
 		if ( segment >= minSegmentMap.get(node).intValue() &&
 		     segment <= maxSegmentMap.get(node).intValue() )
 			return true;
