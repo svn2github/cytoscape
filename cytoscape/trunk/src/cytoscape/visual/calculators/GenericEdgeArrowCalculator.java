@@ -81,6 +81,8 @@ public class GenericEdgeArrowCalculator extends EdgeCalculator implements
 	public Arrow calculateEdgeArrow(Edge edge, CyNetwork network) {
 		String canonicalName = edge.getIdentifier();
 		Map attrBundle = getAttrBundle(canonicalName);
+		// add generic "ID" attribute
+		attrBundle.put(AbstractCalculator.ID, edge.getIdentifier());
 		return (Arrow) super.getMapping(0).calculateRangeValue(attrBundle);
 	}
 }

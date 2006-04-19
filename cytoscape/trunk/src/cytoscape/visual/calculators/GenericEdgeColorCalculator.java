@@ -75,8 +75,10 @@ public class GenericEdgeColorCalculator extends EdgeCalculator implements EdgeCo
     }
     
     public Color calculateEdgeColor(Edge edge, CyNetwork network) {
-	String canonicalName = edge.getIdentifier();
-	Map attrBundle = getAttrBundle(canonicalName);
+		String canonicalName = edge.getIdentifier();
+		Map attrBundle = getAttrBundle(canonicalName);
+		// add generic "ID" attribute
+		attrBundle.put(AbstractCalculator.ID, edge.getIdentifier());
         return (Color) super.getMapping(0).calculateRangeValue(attrBundle);
     }
 }

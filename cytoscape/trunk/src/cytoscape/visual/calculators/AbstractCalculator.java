@@ -65,6 +65,12 @@ import cytoscape.CyNetwork;
  * interfaces.
  */
 public abstract class AbstractCalculator implements Calculator {
+
+	/**
+	 * String literal used to refer to the generic "ID" attribute.
+	 */
+	public static final String ID = "ID";
+
     /**
      * Vector of all mappings contained by this calculator. Usually small. Contains
      * ObjectMapping objects.
@@ -329,6 +335,14 @@ public abstract class AbstractCalculator implements Calculator {
 		else {
 		    validAttr = attrNames;
 		}
+
+		// add generic "ID" attribute
+		Vector v = new Vector();
+		v.add(ID);
+		for (int lc = 0; lc < validAttr.length; lc++) {
+			v.add(validAttr[lc]);
+		}
+		validAttr = (String[]) v.toArray(new String[0]);
 
 		// create the JComboBox
 		JComboBox attrBox = new JComboBox(validAttr);
