@@ -62,6 +62,7 @@ import cytoscape.visual.NodeAppearanceCalculator;
 import cytoscape.visual.ShapeNodeRealizer;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
+import cytoscape.visual.calculators.AbstractCalculator;
 import cytoscape.visual.calculators.EdgeLabelCalculator;
 import cytoscape.visual.calculators.GenericEdgeArrowCalculator;
 import cytoscape.visual.calculators.GenericEdgeColorCalculator;
@@ -174,8 +175,7 @@ public class VisualStyleBuilder {
 		String cName = "XGMML Labels";
 		NodeLabelCalculator nlc = catalog.getNodeLabelCalculator(cName);
 		if (nlc == null) {
-			PassThroughMapping m = new PassThroughMapping(new String(),
-					Semantics.COMMON_NAME);
+			PassThroughMapping m = new PassThroughMapping("", AbstractCalculator.ID);
 			nlc = new GenericNodeLabelCalculator(cName, m);
 		}
 		nac.setNodeLabelCalculator(nlc);
@@ -184,9 +184,9 @@ public class VisualStyleBuilder {
 		// Set node shapes (Uses "type" tag in the GML file)
 		//
 		DiscreteMapping nodeShapeMapping = new DiscreteMapping(new Byte(
-				ShapeNodeRealizer.ELLIPSE), "commonName",
+				ShapeNodeRealizer.ELLIPSE), AbstractCalculator.ID,
 				ObjectMapping.NODE_MAPPING);
-		nodeShapeMapping.setControllingAttributeName(Semantics.COMMON_NAME,
+		nodeShapeMapping.setControllingAttributeName(AbstractCalculator.ID,
 				vizmapper.getNetwork(), false);
 
 		//
@@ -194,36 +194,36 @@ public class VisualStyleBuilder {
 		//
 		DiscreteMapping nodeColorMapping = new DiscreteMapping(DEFAULT_COLOR,
 				ObjectMapping.NODE_MAPPING);
-		nodeColorMapping.setControllingAttributeName(Semantics.COMMON_NAME,
+		nodeColorMapping.setControllingAttributeName(AbstractCalculator.ID,
 				vizmapper.getNetwork(), true);
 
 		DiscreteMapping nodeBorderColorMapping = new DiscreteMapping(
 				DEFAULT_BORDER_COLOR, ObjectMapping.NODE_MAPPING);
 		nodeBorderColorMapping.setControllingAttributeName(
-				Semantics.COMMON_NAME, vizmapper.getNetwork(), true);
+				AbstractCalculator.ID, vizmapper.getNetwork(), true);
 
 		Double defaultWidth = new Double(nac.getDefaultNodeWidth());
 		DiscreteMapping nodeWMapping = new DiscreteMapping(defaultWidth,
 				ObjectMapping.NODE_MAPPING);
-		nodeWMapping.setControllingAttributeName(Semantics.COMMON_NAME,
+		nodeWMapping.setControllingAttributeName(AbstractCalculator.ID,
 				vizmapper.getNetwork(), true);
 
 		Double defaultHeight = new Double(nac.getDefaultNodeHeight());
 		DiscreteMapping nodeHMapping = new DiscreteMapping(defaultHeight,
 				ObjectMapping.NODE_MAPPING);
-		nodeHMapping.setControllingAttributeName(Semantics.COMMON_NAME,
+		nodeHMapping.setControllingAttributeName(AbstractCalculator.ID,
 				vizmapper.getNetwork(), true);
 
 		DiscreteMapping nodeBorderTypeMapping = new DiscreteMapping(
 				LineType.LINE_1, ObjectMapping.NODE_MAPPING);
 		nodeBorderTypeMapping.setControllingAttributeName(
-				Semantics.COMMON_NAME, vizmapper.getNetwork(), false);
+				AbstractCalculator.ID, vizmapper.getNetwork(), false);
 
 		// Non-GML graphics attributes
 		Font defaultNodeFont = nac.getDefaultNodeFont();
 		DiscreteMapping nodeLabelFontMapping = new DiscreteMapping(
 				defaultNodeFont, ObjectMapping.NODE_MAPPING);
-		nodeLabelFontMapping.setControllingAttributeName(Semantics.COMMON_NAME,
+		nodeLabelFontMapping.setControllingAttributeName(AbstractCalculator.ID,
 				vizmapper.getNetwork(), true);
 
 		Iterator it = nodeGraphics.keySet().iterator();
@@ -348,8 +348,7 @@ public class VisualStyleBuilder {
 		String cName = "XGMML Labels";
 		EdgeLabelCalculator elc = catalog.getEdgeLabelCalculator(cName);
 		if (elc == null) {
-			PassThroughMapping m = new PassThroughMapping(new String(),
-					Semantics.CANONICAL_NAME);
+			PassThroughMapping m = new PassThroughMapping("", AbstractCalculator.ID);
 			elc = new GenericEdgeLabelCalculator(cName, m);
 		}
 		eac.setEdgeLabelCalculator(elc);
@@ -359,31 +358,31 @@ public class VisualStyleBuilder {
 		//
 		DiscreteMapping edgeColorMapping = new DiscreteMapping(DEFAULT_COLOR,
 				ObjectMapping.EDGE_MAPPING);
-		edgeColorMapping.setControllingAttributeName(Semantics.CANONICAL_NAME,
+		edgeColorMapping.setControllingAttributeName(AbstractCalculator.ID,
 				vizmapper.getNetwork(), true);
 
 		DiscreteMapping edgeLineTypeMapping = new DiscreteMapping(
 				LineType.LINE_4, ObjectMapping.EDGE_MAPPING);
 		edgeLineTypeMapping.setControllingAttributeName(
-				Semantics.CANONICAL_NAME, vizmapper.getNetwork(), true);
+				AbstractCalculator.ID, vizmapper.getNetwork(), true);
 
 		// Non-GML graphics attributes
 		Font defaultEdgeFont = eac.getDefaultEdgeFont();
 		DiscreteMapping edgeLabelFontMapping = new DiscreteMapping(
 				defaultEdgeFont, ObjectMapping.EDGE_MAPPING);
 		edgeLabelFontMapping.setControllingAttributeName(
-				Semantics.CANONICAL_NAME, vizmapper.getNetwork(), true);
+				AbstractCalculator.ID, vizmapper.getNetwork(), true);
 
 		// For source & target arrows
 		DiscreteMapping edgeSourceArrowMapping = new DiscreteMapping(eac
 				.getDefaultEdgeSourceArrow(), ObjectMapping.EDGE_MAPPING);
 		edgeSourceArrowMapping.setControllingAttributeName(
-				Semantics.CANONICAL_NAME, vizmapper.getNetwork(), true);
+				AbstractCalculator.ID, vizmapper.getNetwork(), true);
 
 		DiscreteMapping edgeTargetArrowMapping = new DiscreteMapping(eac
 				.getDefaultEdgeTargetArrow(), ObjectMapping.EDGE_MAPPING);
 		edgeTargetArrowMapping.setControllingAttributeName(
-				Semantics.CANONICAL_NAME, vizmapper.getNetwork(), true);
+				AbstractCalculator.ID, vizmapper.getNetwork(), true);
 
 		Iterator it = edgeGraphics.keySet().iterator();
 		while (it.hasNext()) {

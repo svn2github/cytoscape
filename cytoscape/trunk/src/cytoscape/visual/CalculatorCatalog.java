@@ -1010,8 +1010,7 @@ public class CalculatorCatalog {
 		String cName = "Common Names";
 		NodeLabelCalculator nlc = getNodeLabelCalculator(cName);
 		if (nlc == null) {
-			PassThroughMapping m = new PassThroughMapping(new String(),
-							cytoscape.data.Semantics.COMMON_NAME);
+			PassThroughMapping m = new PassThroughMapping("", AbstractCalculator.ID);
 			nlc = new GenericNodeLabelCalculator(cName, m);
 		}
 		defaultVS.getNodeAppearanceCalculator().setNodeLabelCalculator(nlc);

@@ -64,10 +64,34 @@ import cytoscape.data.servers.BioDataServer;
  */
 public class Semantics {
 
+	/**
+	 * @deprecated Use {@link CyNode.getIdentifier()} instead.
+	 *
+	 * This attribute will be removed in April, 2007.
+	 */
 	public static final String IDENTIFIER = "identifier";
+
+	/**
+	 * @deprecated Use {@link CyNode.getIdentifier()} instead.
+	 *
+	 * This attribute will be removed in April, 2007.
+	 */
 	public static final String CANONICAL_NAME = "canonicalName";
+
+	/**
+	 * @deprecated Use {@link CyNode.getIdentifier()} instead.
+	 *
+	 * This attribute will be removed in April, 2007.
+	 */
 	public static final String COMMON_NAME = "commonName";
+
+	/**
+	 * @deprecated Use {@link CyNode.getIdentifier()} instead.
+	 *
+	 * This attribute will be removed in April, 2007.
+	 */
 	public static final String ALIASES = "aliases";
+
 	public static final String SPECIES = "species";
 	public static final String INTERACTION = "interaction";
 	public static final String MOLECULE_TYPE = "molecule_type";

@@ -77,7 +77,9 @@ public class GenericNodeLabelColorCalculator
   {
         String canonicalName = node.getIdentifier();
         Map attrBundle = getAttrBundle(canonicalName);
-    return (Color) super.getMapping(0).calculateRangeValue(attrBundle);
+		// add generic "ID" attribute
+		attrBundle.put(AbstractCalculator.ID, node.getIdentifier());
+		return (Color) super.getMapping(0).calculateRangeValue(attrBundle);
   }
 
 }

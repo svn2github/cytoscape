@@ -76,6 +76,7 @@ import cytoscape.visual.NodeAppearanceCalculator;
 import cytoscape.visual.ShapeNodeRealizer;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
+import cytoscape.visual.calculators.AbstractCalculator;
 import cytoscape.visual.calculators.GenericEdgeArrowCalculator;
 import cytoscape.visual.calculators.GenericEdgeColorCalculator;
 import cytoscape.visual.calculators.GenericEdgeLineTypeCalculator;
@@ -298,8 +299,7 @@ public class GMLReader2 implements GraphReader {
 		String cName = "GML Labels" + mapSuffix;
 		NodeLabelCalculator nlc = catalog.getNodeLabelCalculator(cName);
 		if (nlc == null) {
-			PassThroughMapping m = new PassThroughMapping(new String(),
-					Semantics.COMMON_NAME);
+			PassThroughMapping m = new PassThroughMapping("", AbstractCalculator.ID);
 			nlc = new GenericNodeLabelCalculator(cName, m);
 		}
 		nac.setNodeLabelCalculator(nlc);
@@ -308,9 +308,9 @@ public class GMLReader2 implements GraphReader {
 		// Set node shapes (Uses "type" tag in the GML file)
 		//
 		DiscreteMapping nodeShapeMapping = new DiscreteMapping(new Byte(
-				ShapeNodeRealizer.ELLIPSE), "commonName",
+				ShapeNodeRealizer.ELLIPSE), AbstractCalculator.ID,
 				ObjectMapping.NODE_MAPPING);
-		nodeShapeMapping.setControllingAttributeName(Semantics.COMMON_NAME,
+		nodeShapeMapping.setControllingAttributeName(AbstractCalculator.ID,
 				vizmapper.getNetwork(), false);
 		
 		
@@ -335,7 +335,7 @@ public class GMLReader2 implements GraphReader {
 
 		DiscreteMapping nodeColorMapping = new DiscreteMapping(defcol,
 				ObjectMapping.NODE_MAPPING);
-		nodeColorMapping.setControllingAttributeName(Semantics.COMMON_NAME,
+		nodeColorMapping.setControllingAttributeName(AbstractCalculator.ID,
 				vizmapper.getNetwork(), true);
 		
 		for (int i = 0; i < node_names.size(); i++) {
@@ -361,7 +361,7 @@ public class GMLReader2 implements GraphReader {
 		DiscreteMapping nodeBorderColorMapping = new DiscreteMapping(defcol,
 				ObjectMapping.NODE_MAPPING);
 		nodeBorderColorMapping.setControllingAttributeName(
-				Semantics.COMMON_NAME, vizmapper.getNetwork(), true);
+				AbstractCalculator.ID, vizmapper.getNetwork(), true);
 
 		for (int i = 0; i < node_names.size(); i++) {
 			String key = (String) node_names.get(i);
@@ -387,7 +387,7 @@ public class GMLReader2 implements GraphReader {
 		DiscreteMapping nodeWMapping = new DiscreteMapping(defaultWidth,
 				ObjectMapping.NODE_MAPPING);
 
-		nodeWMapping.setControllingAttributeName(Semantics.COMMON_NAME,
+		nodeWMapping.setControllingAttributeName(AbstractCalculator.ID,
 				vizmapper.getNetwork(), true);
 		// Set atrributes to each node
 		for (int i = 0; i < node_names.size(); i++) {
@@ -409,7 +409,7 @@ public class GMLReader2 implements GraphReader {
 
 		DiscreteMapping nodeHMapping = new DiscreteMapping(defaultHeight,
 				ObjectMapping.NODE_MAPPING);
-		nodeHMapping.setControllingAttributeName(Semantics.COMMON_NAME,
+		nodeHMapping.setControllingAttributeName(AbstractCalculator.ID,
 				vizmapper.getNetwork(), true);
 		// Set node height to each node
 		for (int i = 0; i < node_names.size(); i++) {
@@ -433,7 +433,7 @@ public class GMLReader2 implements GraphReader {
 		DiscreteMapping nodeBorderTypeMapping = new DiscreteMapping(
 				LineType.LINE_1, ObjectMapping.NODE_MAPPING);
 		nodeBorderTypeMapping.setControllingAttributeName(
-				Semantics.COMMON_NAME, vizmapper.getNetwork(), false);
+				AbstractCalculator.ID, vizmapper.getNetwork(), false);
 
 		for (int i = 0; i < node_names.size(); i++) {
 			String key = (String) node_names.get(i);
@@ -463,7 +463,7 @@ public class GMLReader2 implements GraphReader {
 
 		DiscreteMapping edgeColorMapping = new DiscreteMapping(defcol,
 				ObjectMapping.EDGE_MAPPING);
-		edgeColorMapping.setControllingAttributeName(Semantics.CANONICAL_NAME,
+		edgeColorMapping.setControllingAttributeName(AbstractCalculator.ID,
 				vizmapper.getNetwork(), false);
 
 		for (int i = 0; i < edge_names.size(); i++) {
@@ -487,7 +487,7 @@ public class GMLReader2 implements GraphReader {
 		DiscreteMapping edgeLineTypeMapping = new DiscreteMapping(
 				LineType.LINE_1, ObjectMapping.EDGE_MAPPING);
 		edgeLineTypeMapping.setControllingAttributeName(
-				Semantics.CANONICAL_NAME, vizmapper.getNetwork(), false);
+				AbstractCalculator.ID, vizmapper.getNetwork(), false);
 
 		for (int i = 0; i < edge_names.size(); i++) {
 			String key = (String) edge_names.get(i);
@@ -513,13 +513,13 @@ public class GMLReader2 implements GraphReader {
 		DiscreteMapping edgeSourceArrowMapping = new DiscreteMapping(
 				Arrow.NONE, ObjectMapping.EDGE_MAPPING);
 		edgeSourceArrowMapping.setControllingAttributeName(
-				Semantics.CANONICAL_NAME, vizmapper.getNetwork(), false);
+				AbstractCalculator.ID, vizmapper.getNetwork(), false);
 
 		// For target
 		DiscreteMapping edgeTargetArrowMapping = new DiscreteMapping(
 				Arrow.NONE, ObjectMapping.EDGE_MAPPING);
 		edgeTargetArrowMapping.setControllingAttributeName(
-				Semantics.CANONICAL_NAME, vizmapper.getNetwork(), false);
+				AbstractCalculator.ID, vizmapper.getNetwork(), false);
 
 		for (int i = 0; i < edge_names.size(); i++) {
 			// Determine direction and arrow type
@@ -750,7 +750,6 @@ public class GMLReader2 implements GraphReader {
 				// Set correct ID, canonical name and interaction name
 				edge.setIdentifier(edgeName);
 				edgeAttributes.setAttribute(edgeName, Semantics.INTERACTION, label);
-				edgeAttributes.setAttribute(edgeName, Semantics.CANONICAL_NAME, edgeName);
 				
 				giny_edges.add(edge.getRootGraphIndex());
 				((KeyValue) edge_root_index_pairs.get(idx)).value = (new Integer(

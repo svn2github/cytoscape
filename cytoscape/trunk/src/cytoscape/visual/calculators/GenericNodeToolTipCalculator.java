@@ -76,6 +76,8 @@ public class GenericNodeToolTipCalculator extends NodeCalculator implements Node
     public String calculateNodeToolTip(Node node, CyNetwork network) {
         String canonicalName = node.getIdentifier();
         Map attrBundle = getAttrBundle(canonicalName);
+		// add generic "ID" attribute
+		attrBundle.put(AbstractCalculator.ID, node.getIdentifier());
         return (String)super.getMapping(0).calculateRangeValue(attrBundle);
     }
 }

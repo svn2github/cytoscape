@@ -441,8 +441,6 @@ public class XGMMLReader implements GraphReader {
 
 					// Add interaction to CyAttributes
 					edgeAttributes.setAttribute(edge.getIdentifier(),
-							Semantics.CANONICAL_NAME, edge.getIdentifier());
-					edgeAttributes.setAttribute(edge.getIdentifier(),
 							Semantics.INTERACTION, itrValue);
 				}
 

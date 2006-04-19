@@ -153,8 +153,7 @@ public class GMLTree {
 					+ (-currentNode.getRootGraphIndex())));
 			// String name =
 			// nodeAttributes.getCanonicalName(currentView.getNode());
-			String name = nodeAttributes.getStringAttribute( currentView.getNode().getIdentifier(),
-					Semantics.CANONICAL_NAME);
+			String name = currentView.getNode().getIdentifier();
 
 			if (name == null) {
 				name = "unknown";

@@ -61,6 +61,8 @@ import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
 import cytoscape.util.MutableString;
 
+import cytoscape.visual.calculators.AbstractCalculator;
+
 // --------------------------------------------------------------------------------------
 public class LabelTextPanel extends JPanel {
 
@@ -83,7 +85,7 @@ public class LabelTextPanel extends JPanel {
 		for (int i = 0; i < attributeNames.length; i++)
 			boxModel.addElement(new String(attributeNames[i]));
 		//boxModel.addElement(new String("canonicalName"));
-		boxModel.addElement( Semantics.CANONICAL_NAME);
+		boxModel.addElement(AbstractCalculator.ID);
 		theBox = new JComboBox(boxModel);
 		theBox.setSelectedItem(nodeLabelKey.getString());
 		theBox.addActionListener(new BoxAction());

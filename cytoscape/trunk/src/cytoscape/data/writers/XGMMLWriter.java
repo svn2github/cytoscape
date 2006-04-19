@@ -270,8 +270,7 @@ public class XGMMLWriter {
 			jxbEdge = objFactory.createEdge();
 
 			jxbEdge.setId(curEdge.getIdentifier());
-			jxbEdge.setLabel(edgeAttributes.getStringAttribute(curEdge
-					.getIdentifier(), Semantics.CANONICAL_NAME));
+			jxbEdge.setLabel(curEdge.getIdentifier());
 
 			// jxbEdge.setSource(curEdge.getSource().getIdentifier());
 			// jxbEdge.setTarget(curEdge.getTarget().getIdentifier());
@@ -622,8 +621,7 @@ public class XGMMLWriter {
 
 			jxbChildNode = objFactory.createNode();
 			jxbChildNode.setId(childNode.getIdentifier());
-			jxbChildNode.setLabel(nodeAttributes.getStringAttribute(childNode
-					.getIdentifier(), Semantics.CANONICAL_NAME));
+			jxbChildNode.setLabel(childNode.getIdentifier());
 			subGraph.getNodeOrEdge().add(jxbChildNode);
 			int[] grandChildrenIndices = network
 					.getRootGraph()
@@ -703,8 +701,7 @@ public class XGMMLWriter {
 			// jxbNode.setId(curNode.getIdentifier());
 
 			jxbNode.setId(targetnodeID);
-			jxbNode.setLabel(nodeAttributes.getStringAttribute(curNode
-					.getIdentifier(), Semantics.CANONICAL_NAME));
+			jxbNode.setLabel(curNode.getIdentifier());
 			jxbNode.setName("base");
 
 			// Add graphics if available
@@ -742,8 +739,7 @@ public class XGMMLWriter {
 		jxbNode = objFactory.createNode();
 		String targetnodeID = Integer.toString(node.getRootGraphIndex());
 		jxbNode.setId(targetnodeID);
-		jxbNode.setLabel(nodeAttributes.getStringAttribute(
-				node.getIdentifier(), Semantics.CANONICAL_NAME));
+		jxbNode.setLabel(node.getIdentifier());
 		
 		if(networkView != null) {
 			NodeView curNodeView = networkView.getNodeView(node);

@@ -77,6 +77,8 @@ public class GenericNodeColorCalculator extends NodeCalculator implements NodeCo
     public Color calculateNodeColor(Node node, CyNetwork network) {
         String canonicalName = node.getIdentifier();
         Map attrBundle = getAttrBundle(canonicalName);
+		// add generic "ID" attribute
+		attrBundle.put(AbstractCalculator.ID, node.getIdentifier());
         return (Color)super.getMapping(0).calculateRangeValue(attrBundle);
     }
 }
