@@ -411,14 +411,11 @@ public abstract class Cytoscape {
 		node = (CyNode) Cytoscape.getRootGraph().getNode(
 				Cytoscape.getRootGraph().createNode());
 		node.setIdentifier(alias);
-		getNodeAttributes()
-				.setAttribute(alias, Semantics.CANONICAL_NAME, alias);
 		// System.out.println( node.getRootGraphIndex()+" = Node: "+node+" alias
 		// :"+alias+" old_name: "+old_name );
 		// if ( old_name != alias )
 		// setNodeAttributeValue( node, "alias", old_name );
 		// Cytoscape.getNodeNetworkData().addNameMapping(alias, node);
-		Semantics.assignNodeAliases(node, null, null);
 		return node;
 	}
 
@@ -487,8 +484,6 @@ public abstract class Cytoscape {
 			// store edge id as INTERACTION / CANONICAL_NAME Attributes
 			edgeAttributes.setAttribute(edge_name, Semantics.INTERACTION,
 					(String) attribute_value);
-			edgeAttributes.setAttribute(edge_name, Semantics.CANONICAL_NAME,
-					edge_name);
 			return edge;
 		}
 		return null;
