@@ -209,7 +209,7 @@ public String getCanonicalName (String species, String commonName)
   if (thesauri.containsKey (species)) {
     Thesaurus t = (Thesaurus) thesauri.get (species);
     if (t != null) {
-      String result = t.getCanonicalName (commonName);
+      String result = t.getNodeLabel (commonName);
       if (result != null)
         return result;
       } // if thesaurus exists

@@ -93,7 +93,7 @@ public void testReadSmallYeastThesaurus () throws Exception
   Thesaurus thesaurus = reader.getThesaurus ();
 
   assertTrue (thesaurus.getSpecies().equals ("Saccharomyces cerevisiae"));
-  assertTrue (thesaurus.canonicalNameCount () == 8);
+  assertTrue (thesaurus.nodeLabelCount () == 8);
 
     // the values of these next 3 arrays are extracted, by hand, from the flat file
   String [] canonical = {"YHR047C", "YBL074C", "YKL106W", "YLR027C", 
@@ -104,7 +104,7 @@ public void testReadSmallYeastThesaurus () throws Exception
 
   for (int i=0; i < canonical.length; i++) {
     assertTrue (thesaurus.getCommonName (canonical [i]).equals (common [i]));
-    assertTrue (thesaurus.getCanonicalName (common [i]).equals (canonical [i]));
+    assertTrue (thesaurus.getNodeLabel (common [i]).equals (canonical [i]));
     String [] alternateNames = thesaurus.getAlternateCommonNames (canonical [i]);
     if (i == 6) { // do a name-by-name comparison for this orf with 3 alternate names
       String orf = canonical [i];

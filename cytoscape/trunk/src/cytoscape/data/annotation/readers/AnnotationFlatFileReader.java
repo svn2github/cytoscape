@@ -194,8 +194,6 @@ private void parse () throws Exception
   for (int i=1; i < lines.length; i++) {
     String line = lines [i];
     
-    //System.out.println ("Anno --> " +lines[i]);
-    
     if (line.length () < 2) continue;
     
     String [] tokens = line.split ("=");
@@ -212,7 +210,7 @@ private void parse () throws Exception
     		
     } else if( flip == true ){
     		//System.out.println ( "EntityName is " + entityName );
-    		key = thr.getCanonicalName( entityName );
+    		key = thr.getNodeLabel( entityName );
     		if( key != null ) {
     			//System.out.println ("Found: Key is " + key );
     			annotation.add ( key, id );

@@ -36,7 +36,6 @@
  */
 
 // Thesaurus.java
-
 //-----------------------------------------------------------------------------
 // $Revision$  
 // $Date$
@@ -62,18 +61,18 @@ import java.util.Vector;
 public class Thesaurus implements Serializable {
 
 	String species;
-	HashMap canonicalToCommon; // String -> String
-	HashMap commonToCanonical; // String -> String
-	HashMap alternatesToCanonical; // String -> String
-	HashMap canonicalToAll; // String -> Vector of Strings
+	HashMap labelToCommon; // String -> String
+	HashMap commonToLabel; // String -> String
+	HashMap aliasesToLabel; // String -> String
+	HashMap labelToAll; // String -> Vector of Strings
 
 	// -----------------------------------------------------------------------------
 	public Thesaurus(String species) {
 		this.species = species;
-		canonicalToCommon = new HashMap();
-		commonToCanonical = new HashMap();
-		alternatesToCanonical = new HashMap();
-		canonicalToAll = new HashMap();
+		labelToCommon = new HashMap();
+		commonToLabel = new HashMap();
+		aliasesToLabel = new HashMap();
+		labelToAll = new HashMap();
 	}
 
 	// -----------------------------------------------------------------------------
@@ -82,40 +81,41 @@ public class Thesaurus implements Serializable {
 	}
 
 	// -----------------------------------------------------------------------------
-	public int canonicalNameCount() {
-		return canonicalToAll.size();
+	public int nodeLabelCount() {
+		return labelToAll.size();
 	}
 
 	// -----------------------------------------------------------------------------
 	public void add(String canonicalName, String commonName) {
-		if (canonicalToCommon.containsKey(canonicalName)) {
+		if (labelToCommon.containsKey(canonicalName)) {
 			addAlternateCommonName(canonicalName, commonName);
 		}
 
-		if (commonToCanonical.containsKey(commonName)) {
+		if (commonToLabel.containsKey(commonName)) {
 			// System.out.println ("commonName " + commonName + " already has
 			// canonicalName " +
 			// commonToCanonical.get (commonName) + " skipping new map: " +
 			// commonName + " -> " + canonicalName);
 		} else
-			canonicalToCommon.put(canonicalName, commonName);
+			labelToCommon.put(canonicalName, commonName);
 
-		commonToCanonical.put(commonName, canonicalName);
+		commonToLabel.put(commonName, canonicalName);
 		storeAmongAllCommonNames(commonName, canonicalName);
 
 	} // add
+
 	// -----------------------------------------------------------------------------
 
 	public void remove(String canonicalName, String commonName) {
-		canonicalToCommon.remove(canonicalName);
-		commonToCanonical.remove(commonName);
-		canonicalToAll.remove(canonicalName);
+		labelToCommon.remove(canonicalName);
+		commonToLabel.remove(commonName);
+		labelToAll.remove(canonicalName);
 	}
 
 	// -----------------------------------------------------------------------------
 	public void addAlternateCommonName(String canonicalName,
 			String alternateCommonName) {
-		alternatesToCanonical.put(alternateCommonName, canonicalName);
+		aliasesToLabel.put(alternateCommonName, canonicalName);
 		storeAmongAllCommonNames(alternateCommonName, canonicalName);
 	}
 
@@ -123,59 +123,63 @@ public class Thesaurus implements Serializable {
 	protected void storeAmongAllCommonNames(String commonName,
 			String canonicalName) {
 		Vector allCommonNames;
-		if (canonicalToAll.containsKey(canonicalName))
-			allCommonNames = (Vector) canonicalToAll.get(canonicalName);
+		if (labelToAll.containsKey(canonicalName))
+			allCommonNames = (Vector) labelToAll.get(canonicalName);
 		else
 			allCommonNames = new Vector();
 
 		allCommonNames.add(commonName);
-		canonicalToAll.put(canonicalName, allCommonNames);
+		labelToAll.put(canonicalName, allCommonNames);
 
 	} // storeAmongAllCommonNames
+
 	// -----------------------------------------------------------------------------
 
 	public String getCommonName(String canonicalName) {
-		return (String) canonicalToCommon.get(canonicalName);
+		return (String) labelToCommon.get(canonicalName);
 	}
 
 	// -----------------------------------------------------------------------------
-	public String getCanonicalName(String commonName) {
-		if (commonToCanonical.containsKey(commonName))
-			return (String) commonToCanonical.get(commonName);
-		else if (alternatesToCanonical.containsKey(commonName))
-			return (String) alternatesToCanonical.get(commonName);
+	public String getNodeLabel(String commonName) {
+		if (commonToLabel.containsKey(commonName))
+			return (String) commonToLabel.get(commonName);
+		else if (aliasesToLabel.containsKey(commonName))
+			return (String) aliasesToLabel.get(commonName);
 		else
 			return null;
 
 	} // getCanonicalName
+
 	// -----------------------------------------------------------------------------
 
 	public String[] getAllCommonNames(String canonicalName) {
 
-		if (canonicalToAll.containsKey(canonicalName)) {
-			Vector vector = (Vector) canonicalToAll.get(canonicalName);
+		if (labelToAll.containsKey(canonicalName)) {
+			Vector vector = (Vector) labelToAll.get(canonicalName);
 			return (String[]) vector.toArray(new String[0]);
 		} else
 			return new String[0];
 
 	} // getAllCommonNames
+
 	// -----------------------------------------------------------------------------
 
 	public String[] getAlternateCommonNames(String canonicalName) {
-		if (canonicalToAll.containsKey(canonicalName)) {
-			Vector vector = (Vector) canonicalToAll.get(canonicalName);
+		if (labelToAll.containsKey(canonicalName)) {
+			Vector vector = (Vector) labelToAll.get(canonicalName);
 			vector.remove(getCommonName(canonicalName));
 			return (String[]) vector.toArray(new String[0]);
 		} else
 			return new String[0];
 
 	} // getAlternateCommonNames
+
 	// -----------------------------------------------------------------------------
 
 	public String toString() {
 		int length = 0;
-		if (canonicalToCommon != null)
-			length = canonicalToCommon.size();
+		if (labelToCommon != null)
+			length = labelToCommon.size();
 
 		return species + ": " + length;
 	}

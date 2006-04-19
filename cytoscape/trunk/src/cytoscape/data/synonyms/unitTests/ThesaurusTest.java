@@ -81,7 +81,7 @@ public void testCtor () throws Exception
   AllTests.standardOut("testCtor");
   String species = "fugu";
   Thesaurus thesaurus = new Thesaurus (species);
-  assertTrue (thesaurus.canonicalNameCount () == 0);
+  assertTrue (thesaurus.nodeLabelCount () == 0);
   assertTrue (thesaurus.getSpecies().equals (species));
 
 } // testCtor
@@ -104,11 +104,11 @@ public void testAddSimplePairs () throws Exception
   for (int i=0; i < canonical.length; i++)
      thesaurus.add (canonical [i], common [i]);
 
-  assertTrue (thesaurus.canonicalNameCount () == 4);
+  assertTrue (thesaurus.nodeLabelCount () == 4);
 
   for (int i=0; i < canonical.length; i++) {
     assertTrue (thesaurus.getCommonName (canonical [i]).equals (common [i]));
-    assertTrue (thesaurus.getCanonicalName (common [i]).equals (canonical [i]));
+    assertTrue (thesaurus.getNodeLabel (common [i]).equals (canonical [i]));
     String [] allCommonNames = thesaurus.getAllCommonNames (canonical [i]);
     assertTrue (allCommonNames.length == 1);
     assertTrue (allCommonNames [0].equals (common [i]));
@@ -134,7 +134,7 @@ public void testAddDuplicatePairs () throws Exception
   for (int i=0; i < canonical.length; i++)
     thesaurus.add (canonical [i], common [i]);
 
-  assertTrue (thesaurus.canonicalNameCount () == 4);
+  assertTrue (thesaurus.nodeLabelCount () == 4);
 
   try { // adding duplicates should throw an exception
     thesaurus.add (canonical [canonical.length-1], common [canonical.length-1]);
@@ -174,21 +174,21 @@ public void testAddRemoveAddAgain () throws Exception
   for (int i=0; i < canonical.length; i++)
     thesaurus.add (canonical [i], common [i]);
 
-  assertTrue (thesaurus.canonicalNameCount () == 4);
+  assertTrue (thesaurus.nodeLabelCount () == 4);
 
   for (int i=0; i < canonical.length; i++)
     thesaurus.remove (canonical [i], common [i]);
 
-  assertTrue (thesaurus.canonicalNameCount () == 0);
+  assertTrue (thesaurus.nodeLabelCount () == 0);
 
   for (int i=0; i < canonical.length; i++)
     thesaurus.add (canonical [i], common [i]);
 
-  assertTrue (thesaurus.canonicalNameCount () == 4);
+  assertTrue (thesaurus.nodeLabelCount () == 4);
 
   for (int i=0; i < canonical.length; i++) {
     assertTrue (thesaurus.getCommonName (canonical [i]).equals (common [i]));
-    assertTrue (thesaurus.getCanonicalName (common [i]).equals (canonical [i]));
+    assertTrue (thesaurus.getNodeLabel (common [i]).equals (canonical [i]));
     String [] allCommonNames = thesaurus.getAllCommonNames (canonical [i]);
     assertTrue (allCommonNames.length == 1);
     assertTrue (allCommonNames [0].equals (common [i]));
@@ -220,7 +220,7 @@ public void testAddAlternateCommonNames () throws Exception
   for (int i=0; i < canonical.length; i++)
      thesaurus.add (canonical [i], common [i]);
 
-  assertTrue (thesaurus.canonicalNameCount () == 4);
+  assertTrue (thesaurus.nodeLabelCount () == 4);
 
   for (int i=0; i < canonical.length; i++) 
     for (int j=0; j < alternates [i].length; j++)
