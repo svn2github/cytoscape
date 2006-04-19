@@ -1,40 +1,39 @@
-
 /*
-  File: Cytoscape.java 
-  
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-  
-  The Cytoscape Consortium is: 
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Pasteur Institute
-  - Agilent Technologies
-  
-  This library is free software; you can redistribute it and/or modify it
-  under the terms of the GNU Lesser General Public License as published
-  by the Free Software Foundation; either version 2.1 of the License, or
-  any later version.
-  
-  This library is distributed in the hope that it will be useful, but
-  WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
-  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
-  documentation provided hereunder is on an "as is" basis, and the
-  Institute for Systems Biology and the Whitehead Institute 
-  have no obligations to provide maintenance, support,
-  updates, enhancements or modifications.  In no event shall the
-  Institute for Systems Biology and the Whitehead Institute 
-  be liable to any party for direct, indirect, special,
-  incidental or consequential damages, including lost profits, arising
-  out of the use of this software and its documentation, even if the
-  Institute for Systems Biology and the Whitehead Institute 
-  have been advised of the possibility of such damage.  See
-  the GNU Lesser General Public License for more details.
-  
-  You should have received a copy of the GNU Lesser General Public License
-  along with this library; if not, write to the Free Software Foundation,
-  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ File: Cytoscape.java 
+ 
+ Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+ 
+ The Cytoscape Consortium is: 
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Pasteur Institute
+ - Agilent Technologies
+ 
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+ 
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute 
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute 
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute 
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+ 
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+ */
 
 //---------------------------------------------------------------------------
 package cytoscape;
@@ -58,6 +57,7 @@ import java.util.Set;
 import javax.swing.JOptionPane;
 import javax.swing.event.SwingPropertyChangeSupport;
 
+import cytoscape.actions.SaveSessionAction;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.CyAttributesImpl;
 import cytoscape.data.ExpressionData;
@@ -99,14 +99,14 @@ public abstract class Cytoscape {
 	public static String EXPRESSION_DATA_LOADED = "EXPRESSION_DATA_LOADED";
 	public static String NETWORK_DESTROYED = "NETWORK_DESTROYED";
 	public static String CYTOSCAPE_EXIT = "CYTOSCAPE_EXIT";
-	
-	//KONO: 03/10/2006 For vizmap saving and loading
+
+	// KONO: 03/10/2006 For vizmap saving and loading
 	public static String SESSION_SAVED = "SESSION_SAVED";
 	public static String SESSION_LOADED = "SESSION_LOADED";
 
 	public static String SAVE_VIZMAP_PROPS = "SAVE_VIZMAP_PROPS";
 	public static String VIZMAP_LOADED = "VIZMAP_LOADED";
-	
+
 	// events for network modification
 	public static final String NETWORK_MODIFIED = "NETWORK_MODIFIED";
 	public static final String NETWORK_SAVED = "NETWORK_SAVED";
@@ -143,15 +143,13 @@ public abstract class Cytoscape {
 
 	// global to represent which selection mode is active
 	private static int currentSelectionMode = SELECT_NODES_ONLY;
-	
-	
+
 	// Value to manage session state
 	public static final int SESSION_NEW = 0;
 	public static final int SESSION_OPENED = 1;
 	public static final int SESSION_CHANGED = 2;
 	public static final int SESSION_CLOSED = 3;
 	private static int sessionState = SESSION_NEW;
-	
 
 	private static BioDataServer bioDataServer;
 
@@ -165,19 +163,19 @@ public abstract class Cytoscape {
 	 */
 	protected static CytoscapeRootGraph cytoscapeRootGraph;
 
-    /**
-     * Node CyAttributes.
-     */
-    private static CyAttributes nodeAttributes = new CyAttributesImpl();
-    private static GraphObjAttributes nodeData = new GraphObjAttributes
-            (nodeAttributes);
+	/**
+	 * Node CyAttributes.
+	 */
+	private static CyAttributes nodeAttributes = new CyAttributesImpl();
+	private static GraphObjAttributes nodeData = new GraphObjAttributes(
+			nodeAttributes);
 
-    /**
-     * Edge CyAttributes.
-     */
-    private static CyAttributes edgeAttributes = new CyAttributesImpl();
-    private static GraphObjAttributes edgeData = new GraphObjAttributes
-            (edgeAttributes);
+	/**
+	 * Edge CyAttributes.
+	 */
+	private static CyAttributes edgeAttributes = new CyAttributesImpl();
+	private static GraphObjAttributes edgeData = new GraphObjAttributes(
+			edgeAttributes);
 
 	/**
 	 * Network CyAttributes.
@@ -206,22 +204,20 @@ public abstract class Cytoscape {
 	protected static String currentNetworkID;
 
 	protected static String currentNetworkViewID;
-	
+
 	/**
-	 * Used by session writer.  If this is null, session writer
-	 * opens the file chooser.  Otherwise, overwrite the file.
+	 * Used by session writer. If this is null, session writer opens the file
+	 * chooser. Otherwise, overwrite the file.
 	 * 
 	 * KONO: 02/23/2006
 	 */
-	private static String currentSessionFileName; 
+	private static String currentSessionFileName;
 
 	/**
 	 * A null CyNetwork to give when there is no Current Network
 	 */
 	protected static CyNetwork nullNetwork = getRootGraph().createNetwork(
 			new int[] {}, new int[] {});
-	
-	
 
 	/**
 	 * A null CyNetworkView to give when there is no Current NetworkView
@@ -229,14 +225,13 @@ public abstract class Cytoscape {
 	protected static CyNetworkView nullNetworkView = new DingNetworkView(
 			nullNetwork, "null");
 
-	
 	/*
-	 * VMM should be tied to Cytoscape, not to Desktop.
-	 * Developers should call this from here.
+	 * VMM should be tied to Cytoscape, not to Desktop. Developers should call
+	 * this from here.
 	 */
-	protected static VisualMappingManager VMM = new VisualMappingManager(nullNetworkView);
-	
-	
+	protected static VisualMappingManager VMM = new VisualMappingManager(
+			nullNetworkView);
+
 	/**
 	 * Shuts down Cytoscape, after giving plugins time to react.
 	 */
@@ -256,11 +251,11 @@ public abstract class Cytoscape {
 		// AJK: 09/12/05 END
 	}
 
-	/* AJK: 09/12/05 BEGIN
-	 * prompt the user about saving modified files before quitting
+	/*
+	 * AJK: 09/12/05 BEGIN prompt the user about saving modified files before
+	 * quitting
 	 * 
-	 * KONO: 04/18/2006
-	 * Now Cytoscape always ask user if session is not saved.
+	 * KONO: 04/18/2006 Now Cytoscape always ask user if session is not saved.
 	 * 
 	 * @return
 	 */
@@ -269,35 +264,43 @@ public abstract class Cytoscape {
 		Set netSet = Cytoscape.getNetworkSet();
 		Iterator it = netSet.iterator();
 		int networkCount = netSet.size();
-		
-//		// TODO: filter networks for only those modified
-//		while (it.hasNext()) {
-//			CyNetwork net = (CyNetwork) it.next();
-//			boolean modified = CytoscapeModifiedNetworkManager.isModified(net);
-//			if (modified) {
-//				String name = net.getTitle();
-//				msg += "     " + name + "\n";
-//				networkCount++;
-//			}
-//		}
-		
+
+		// // TODO: filter networks for only those modified
+		// while (it.hasNext()) {
+		// CyNetwork net = (CyNetwork) it.next();
+		// boolean modified = CytoscapeModifiedNetworkManager.isModified(net);
+		// if (modified) {
+		// String name = net.getTitle();
+		// msg += " " + name + "\n";
+		// networkCount++;
+		// }
+		// }
+
 		if (networkCount == 0) {
 			System.out.println("ConfirmQuit = " + true);
 			return true; // no networks have been modified
 		}
-		//msg += "Are you sure you want to exit without saving?";
-		
+		// msg += "Are you sure you want to exit without saving?";
+
+		//
+		// Confirm user to save current session or not.
+		//
 		msg = "Do you want to exit without saving session?";
 		Object[] options = { "Yes, quit anyway.", "No, save current session." };
 		int n = JOptionPane.showOptionDialog(Cytoscape.getDesktop(), msg,
 				"Save Networks Before Quitting?", JOptionPane.YES_NO_OPTION,
-				JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+				JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
 		if (n == JOptionPane.YES_OPTION) {
 			System.out.println("ConfirmQuit = " + true);
 			return true;
 		} else if (n == JOptionPane.NO_OPTION) {
 			System.out.println("ConfirmQuit = " + false);
-			return false;
+			System.out.println("Save current session...");
+
+			SaveSessionAction saveAction = new SaveSessionAction();
+			saveAction.actionPerformed(null);
+			
+			return true;
 		} else {
 			System.out.println("ConfirmQuit = " + false);
 			return false; // default if dialog box is closed
@@ -326,12 +329,11 @@ public abstract class Cytoscape {
 	public static PropertyChangeSupport getPropertyChangeSupport() {
 		return newPcs;
 	}
-	
-	
+
 	public static VisualMappingManager getVisualMappingManager() {
 		return VMM;
 	}
-	
+
 	/**
 	 * Return the CytoscapeRootGraph
 	 */
@@ -394,7 +396,7 @@ public abstract class Cytoscape {
 		String old_name = alias;
 		alias = canonicalizeName(alias);
 
-                CyNode node = Cytoscape.getRootGraph().getNode(alias);
+		CyNode node = Cytoscape.getRootGraph().getNode(alias);
 		if (node != null) {
 			// System.out.print(".");
 			return node;
@@ -409,34 +411,40 @@ public abstract class Cytoscape {
 		node = (CyNode) Cytoscape.getRootGraph().getNode(
 				Cytoscape.getRootGraph().createNode());
 		node.setIdentifier(alias);
-                getNodeAttributes().setAttribute(alias, Semantics.CANONICAL_NAME, alias);
+		getNodeAttributes()
+				.setAttribute(alias, Semantics.CANONICAL_NAME, alias);
 		// System.out.println( node.getRootGraphIndex()+" = Node: "+node+" alias
 		// :"+alias+" old_name: "+old_name );
 		// if ( old_name != alias )
 		// setNodeAttributeValue( node, "alias", old_name );
-// 		Cytoscape.getNodeNetworkData().addNameMapping(alias, node);
+		// Cytoscape.getNodeNetworkData().addNameMapping(alias, node);
 		Semantics.assignNodeAliases(node, null, null);
 		return node;
 	}
 
 	/**
-     * Gets the first CyEdge found between the two nodes (direction does not
-     * matter) that has the given value for the given attribute.
-     *
-     * @param node_1          one end of the edge
-     * @param node_2          the other end of the edge
-     * @param attribute       the attribute of the edge to be searched, a
-     *                        common one is {@link Semantics#INTERACTION }
-     * @param attribute_value a value for the attribute, like "pp"
-     * @param create          will create an edge if one does not exist and
-     *                        if attribute is {@link Semantics#INTERACTION}
-     * @return returns an existing CyEdge if present, or creates one if
-     *         <code>create</code> is true and attribute is
-     *         Semantics.INTERACTION, otherwise returns null.
-     */
+	 * Gets the first CyEdge found between the two nodes (direction does not
+	 * matter) that has the given value for the given attribute.
+	 * 
+	 * @param node_1
+	 *            one end of the edge
+	 * @param node_2
+	 *            the other end of the edge
+	 * @param attribute
+	 *            the attribute of the edge to be searched, a common one is
+	 *            {@link Semantics#INTERACTION }
+	 * @param attribute_value
+	 *            a value for the attribute, like "pp"
+	 * @param create
+	 *            will create an edge if one does not exist and if attribute is
+	 *            {@link Semantics#INTERACTION}
+	 * @return returns an existing CyEdge if present, or creates one if
+	 *         <code>create</code> is true and attribute is
+	 *         Semantics.INTERACTION, otherwise returns null.
+	 */
 	public static CyEdge getCyEdge(Node node_1, Node node_2, String attribute,
 			Object attribute_value, boolean create) {
-		
+
 		if (Cytoscape.getRootGraph().getEdgeCount() != 0) {
 			int[] n1Edges = Cytoscape.getRootGraph()
 					.getAdjacentEdgeIndicesArray(node_1.getRootGraphIndex(),
@@ -462,25 +470,25 @@ public abstract class Cytoscape {
 			}// for i
 		}
 
-		if (create && attribute instanceof String && attribute.equals
-                (Semantics.INTERACTION)) {
-		    // create the edge
-            CyEdge edge = (CyEdge) Cytoscape.getRootGraph().getEdge(
+		if (create && attribute instanceof String
+				&& attribute.equals(Semantics.INTERACTION)) {
+			// create the edge
+			CyEdge edge = (CyEdge) Cytoscape.getRootGraph().getEdge(
 					Cytoscape.getRootGraph().createEdge(node_1, node_2));
 
-            //  create the edge id
+			// create the edge id
 			String edge_name = node_1.getIdentifier() + " (" + attribute_value
 					+ ") " + node_2.getIdentifier();
-            edge.setIdentifier(edge_name);
+			edge.setIdentifier(edge_name);
 
-            //  Store Edge Name Mapping within GOB.
-            Cytoscape.getEdgeNetworkData().addNameMapping(edge_name, edge);
+			// Store Edge Name Mapping within GOB.
+			Cytoscape.getEdgeNetworkData().addNameMapping(edge_name, edge);
 
-            //  store edge id as INTERACTION / CANONICAL_NAME Attributes
-            edgeAttributes.setAttribute(edge_name, Semantics.INTERACTION,
-                    (String) attribute_value);
-            edgeAttributes.setAttribute(edge_name, Semantics.CANONICAL_NAME,
-                    edge_name);
+			// store edge id as INTERACTION / CANONICAL_NAME Attributes
+			edgeAttributes.setAttribute(edge_name, Semantics.INTERACTION,
+					(String) attribute_value);
+			edgeAttributes.setAttribute(edge_name, Semantics.CANONICAL_NAME,
+					edge_name);
 			return edge;
 		}
 		return null;
@@ -499,7 +507,7 @@ public abstract class Cytoscape {
 			String target_alias, String interaction_type) {
 
 		edge_name = canonicalizeName(edge_name);
-                CyEdge edge = Cytoscape.getRootGraph().getEdge(edge_name);
+		CyEdge edge = Cytoscape.getRootGraph().getEdge(edge_name);
 		if (edge != null) {
 			// System.out.print( "`" );
 			return edge;
@@ -521,121 +529,128 @@ public abstract class Cytoscape {
 		// Cytoscape.getEdgeNetworkData().addNameMapping (edge_name, edge);
 		// return edge;
 	}
-	
-	
+
 	/**
 	 * Returns the requested Attribute for the given Node
 	 * 
-	 * @param node          the given CyNode
-	 * @param attribute     the name of the requested attribute
+	 * @param node
+	 *            the given CyNode
+	 * @param attribute
+	 *            the name of the requested attribute
 	 * @return the value for the give node, for the given attribute.
-     * @deprecated Use {@link CyAttributes} directly.  This method will
-     * be removed in September, 2006.
+	 * @deprecated Use {@link CyAttributes} directly. This method will be
+	 *             removed in September, 2006.
 	 */
 	public static Object getNodeAttributeValue(Node node, String attribute) {
-          final CyAttributes nodeAttrs = Cytoscape.getNodeAttributes();
-          final String canonName = node.getIdentifier();
-          final byte cyType = nodeAttrs.getType(attribute);
-          if (cyType == CyAttributes.TYPE_BOOLEAN) {
-            return nodeAttrs.getBooleanAttribute(canonName, attribute); }
-          else if (cyType == CyAttributes.TYPE_FLOATING) {
-            return nodeAttrs.getDoubleAttribute(canonName, attribute); }
-          else if (cyType == CyAttributes.TYPE_INTEGER) {
-            return nodeAttrs.getIntegerAttribute(canonName, attribute); }
-          else if (cyType == CyAttributes.TYPE_STRING) {
-            return nodeAttrs.getStringAttribute(canonName, attribute); }
-          else if (cyType == CyAttributes.TYPE_SIMPLE_LIST) {
-            return nodeAttrs.getAttributeList(canonName, attribute); }
-          else if (cyType == CyAttributes.TYPE_SIMPLE_MAP) {
-            return nodeAttrs.getAttributeMap(canonName, attribute); }
-          else {
-            //  As a last resort, check the GOB for arbitary objects.
-            return nodeData.get(attribute, canonName);
-          }
+		final CyAttributes nodeAttrs = Cytoscape.getNodeAttributes();
+		final String canonName = node.getIdentifier();
+		final byte cyType = nodeAttrs.getType(attribute);
+		if (cyType == CyAttributes.TYPE_BOOLEAN) {
+			return nodeAttrs.getBooleanAttribute(canonName, attribute);
+		} else if (cyType == CyAttributes.TYPE_FLOATING) {
+			return nodeAttrs.getDoubleAttribute(canonName, attribute);
+		} else if (cyType == CyAttributes.TYPE_INTEGER) {
+			return nodeAttrs.getIntegerAttribute(canonName, attribute);
+		} else if (cyType == CyAttributes.TYPE_STRING) {
+			return nodeAttrs.getStringAttribute(canonName, attribute);
+		} else if (cyType == CyAttributes.TYPE_SIMPLE_LIST) {
+			return nodeAttrs.getAttributeList(canonName, attribute);
+		} else if (cyType == CyAttributes.TYPE_SIMPLE_MAP) {
+			return nodeAttrs.getAttributeMap(canonName, attribute);
+		} else {
+			// As a last resort, check the GOB for arbitary objects.
+			return nodeData.get(attribute, canonName);
+		}
 	}
 
 	/**
 	 * Returns the requested Attribute for the given Edge
-     * @deprecated Use {@link CyAttributes} directly.  This method will
-     * be removed in September, 2006.
+	 * 
+	 * @deprecated Use {@link CyAttributes} directly. This method will be
+	 *             removed in September, 2006.
 	 */
 	public static Object getEdgeAttributeValue(Edge edge, String attribute) {
-          final CyAttributes edgeAttrs = Cytoscape.getEdgeAttributes();
-          final String canonName = edge.getIdentifier();
-          final byte cyType = edgeAttrs.getType(attribute);
-          if (cyType == CyAttributes.TYPE_BOOLEAN) {
-            return edgeAttrs.getBooleanAttribute(canonName, attribute); }
-          else if (cyType == CyAttributes.TYPE_FLOATING) {
-            return edgeAttrs.getDoubleAttribute(canonName, attribute); }
-          else if (cyType == CyAttributes.TYPE_INTEGER) {
-            return edgeAttrs.getIntegerAttribute(canonName, attribute); }
-          else if (cyType == CyAttributes.TYPE_STRING) {
-            return edgeAttrs.getStringAttribute(canonName, attribute); }
-          else if (cyType == CyAttributes.TYPE_SIMPLE_LIST) {
-            return edgeAttrs.getAttributeList(canonName, attribute); }
-          else if (cyType == CyAttributes.TYPE_SIMPLE_MAP) {
-            return edgeAttrs.getAttributeMap(canonName, attribute); }
-          else {
-              //  As a last resort, check the GOB for arbitary objects.
-              return edgeData.get(attribute, canonName);
-          }
+		final CyAttributes edgeAttrs = Cytoscape.getEdgeAttributes();
+		final String canonName = edge.getIdentifier();
+		final byte cyType = edgeAttrs.getType(attribute);
+		if (cyType == CyAttributes.TYPE_BOOLEAN) {
+			return edgeAttrs.getBooleanAttribute(canonName, attribute);
+		} else if (cyType == CyAttributes.TYPE_FLOATING) {
+			return edgeAttrs.getDoubleAttribute(canonName, attribute);
+		} else if (cyType == CyAttributes.TYPE_INTEGER) {
+			return edgeAttrs.getIntegerAttribute(canonName, attribute);
+		} else if (cyType == CyAttributes.TYPE_STRING) {
+			return edgeAttrs.getStringAttribute(canonName, attribute);
+		} else if (cyType == CyAttributes.TYPE_SIMPLE_LIST) {
+			return edgeAttrs.getAttributeList(canonName, attribute);
+		} else if (cyType == CyAttributes.TYPE_SIMPLE_MAP) {
+			return edgeAttrs.getAttributeMap(canonName, attribute);
+		} else {
+			// As a last resort, check the GOB for arbitary objects.
+			return edgeData.get(attribute, canonName);
+		}
 	}
 
-	private static Object private_getEdgeAttributeValue(Edge edge, String attribute) {
-          final CyAttributes edgeAttrs = Cytoscape.getEdgeAttributes();
-          final String canonName = edge.getIdentifier();
-          final byte cyType = edgeAttrs.getType(attribute);
-          if (cyType == CyAttributes.TYPE_BOOLEAN) {
-            return edgeAttrs.getBooleanAttribute(canonName, attribute); }
-          else if (cyType == CyAttributes.TYPE_FLOATING) {
-            return edgeAttrs.getDoubleAttribute(canonName, attribute); }
-          else if (cyType == CyAttributes.TYPE_INTEGER) {
-            return edgeAttrs.getIntegerAttribute(canonName, attribute); }
-          else if (cyType == CyAttributes.TYPE_STRING) {
-            return edgeAttrs.getStringAttribute(canonName, attribute); }
-          else if (cyType == CyAttributes.TYPE_SIMPLE_LIST) {
-            return edgeAttrs.getAttributeList(canonName, attribute); }
-          else if (cyType == CyAttributes.TYPE_SIMPLE_MAP) {
-            return edgeAttrs.getAttributeMap(canonName, attribute); }
-          else {
-            return null;
-          }
+	private static Object private_getEdgeAttributeValue(Edge edge,
+			String attribute) {
+		final CyAttributes edgeAttrs = Cytoscape.getEdgeAttributes();
+		final String canonName = edge.getIdentifier();
+		final byte cyType = edgeAttrs.getType(attribute);
+		if (cyType == CyAttributes.TYPE_BOOLEAN) {
+			return edgeAttrs.getBooleanAttribute(canonName, attribute);
+		} else if (cyType == CyAttributes.TYPE_FLOATING) {
+			return edgeAttrs.getDoubleAttribute(canonName, attribute);
+		} else if (cyType == CyAttributes.TYPE_INTEGER) {
+			return edgeAttrs.getIntegerAttribute(canonName, attribute);
+		} else if (cyType == CyAttributes.TYPE_STRING) {
+			return edgeAttrs.getStringAttribute(canonName, attribute);
+		} else if (cyType == CyAttributes.TYPE_SIMPLE_LIST) {
+			return edgeAttrs.getAttributeList(canonName, attribute);
+		} else if (cyType == CyAttributes.TYPE_SIMPLE_MAP) {
+			return edgeAttrs.getAttributeMap(canonName, attribute);
+		} else {
+			return null;
+		}
 	}
 
 	/**
 	 * Return all availble Attributes for the Nodes in this CyNetwork.
-     * @deprecated Use {@link CyAttributes} directly.  This method will
-     * be removed in September, 2006.
+	 * 
+	 * @deprecated Use {@link CyAttributes} directly. This method will be
+	 *             removed in September, 2006.
 	 */
 	public static String[] getNodeAttributesList() {
-          return Cytoscape.getNodeAttributes().getAttributeNames();
+		return Cytoscape.getNodeAttributes().getAttributeNames();
 	}
 
 	/**
 	 * Return all available Attributes for the given Nodes.
-     * @deprecated Use {@link CyAttributes} directly.  This method will
-     * be removed in September, 2006.
+	 * 
+	 * @deprecated Use {@link CyAttributes} directly. This method will be
+	 *             removed in September, 2006.
 	 */
 	public static String[] getNodeAttributesList(Node[] nodes) {
-          return Cytoscape.getNodeAttributes().getAttributeNames();
+		return Cytoscape.getNodeAttributes().getAttributeNames();
 	}
 
 	/**
 	 * Return all availble Attributes for the Edges in this CyNetwork.
-     * @deprecated Use {@link CyAttributes} directly.  This method will
-     * be removed in September, 2006.
+	 * 
+	 * @deprecated Use {@link CyAttributes} directly. This method will be
+	 *             removed in September, 2006.
 	 */
 	public static String[] getEdgeAttributesList() {
-          return Cytoscape.getEdgeAttributes().getAttributeNames();
+		return Cytoscape.getEdgeAttributes().getAttributeNames();
 	}
 
 	/**
 	 * Return all available Attributes for the given Edges
-     * @deprecated Use {@link CyAttributes} directly.  This method will
-     * be removed in September, 2006.
+	 * 
+	 * @deprecated Use {@link CyAttributes} directly. This method will be
+	 *             removed in September, 2006.
 	 */
 	public static String[] getNodeAttributesList(Edge[] edges) {
-          return Cytoscape.getEdgeAttributes().getAttributeNames();
+		return Cytoscape.getEdgeAttributes().getAttributeNames();
 	}
 
 	/**
@@ -648,60 +663,61 @@ public abstract class Cytoscape {
 	 * @param value
 	 *            the value to be set
 	 * @return if it overwrites a previous value
-     * @deprecated Use {@link CyAttributes} directly.  This method will
-     * be removed in September, 2006.
+	 * @deprecated Use {@link CyAttributes} directly. This method will be
+	 *             removed in September, 2006.
 	 */
 	public static boolean setNodeAttributeValue(Node node, String attribute,
 			Object value) {
-          final CyAttributes nodeAttrs = Cytoscape.getNodeAttributes();
-          final String canonName = node.getIdentifier();
-          if (value instanceof Boolean) {
-            nodeAttrs.setAttribute(canonName, attribute, (Boolean) value);
-            return true; }
-          else if (value instanceof Integer) {
-            nodeAttrs.setAttribute(canonName, attribute, (Integer) value);
-            return true; }
-          else if (value instanceof Double) {
-            nodeAttrs.setAttribute(canonName, attribute, (Double) value);
-            return true; }
-          else if (value instanceof String) {
-            nodeAttrs.setAttribute(canonName, attribute, (String) value);
-            return true; }
-          else {
-            //  If this is an arbitary object, use GOB for backward
-            //  compatibility.
-            nodeData.set(attribute, canonName, value);
-          }
-          return false;
+		final CyAttributes nodeAttrs = Cytoscape.getNodeAttributes();
+		final String canonName = node.getIdentifier();
+		if (value instanceof Boolean) {
+			nodeAttrs.setAttribute(canonName, attribute, (Boolean) value);
+			return true;
+		} else if (value instanceof Integer) {
+			nodeAttrs.setAttribute(canonName, attribute, (Integer) value);
+			return true;
+		} else if (value instanceof Double) {
+			nodeAttrs.setAttribute(canonName, attribute, (Double) value);
+			return true;
+		} else if (value instanceof String) {
+			nodeAttrs.setAttribute(canonName, attribute, (String) value);
+			return true;
+		} else {
+			// If this is an arbitary object, use GOB for backward
+			// compatibility.
+			nodeData.set(attribute, canonName, value);
+		}
+		return false;
 	}
 
 	/**
 	 * Return the requested Attribute for the given Edge
-     * @deprecated Use {@link CyAttributes} directly.  This method will
-     * be removed in September, 2006.
+	 * 
+	 * @deprecated Use {@link CyAttributes} directly. This method will be
+	 *             removed in September, 2006.
 	 */
 	public static boolean setEdgeAttributeValue(Edge edge, String attribute,
 			Object value) {
-          final CyAttributes edgeAttrs = Cytoscape.getEdgeAttributes();
-          final String canonName = edge.getIdentifier();
-          if (value instanceof Boolean) {
-            edgeAttrs.setAttribute(canonName, attribute, (Boolean) value);
-            return true; }
-          else if (value instanceof Integer) {
-            edgeAttrs.setAttribute(canonName, attribute, (Integer) value);
-            return true; }
-          else if (value instanceof Double) {
-            edgeAttrs.setAttribute(canonName, attribute, (Double) value);
-            return true; }
-          else if (value instanceof String) {
-            edgeAttrs.setAttribute(canonName, attribute, (String) value);
-            return true; }
-          else {
-            //  If this is an arbitary object, use GOB for backward
-            //  compatibility.
-            edgeData.set(attribute, canonName, value);
-          }
-          return false;
+		final CyAttributes edgeAttrs = Cytoscape.getEdgeAttributes();
+		final String canonName = edge.getIdentifier();
+		if (value instanceof Boolean) {
+			edgeAttrs.setAttribute(canonName, attribute, (Boolean) value);
+			return true;
+		} else if (value instanceof Integer) {
+			edgeAttrs.setAttribute(canonName, attribute, (Integer) value);
+			return true;
+		} else if (value instanceof Double) {
+			edgeAttrs.setAttribute(canonName, attribute, (Double) value);
+			return true;
+		} else if (value instanceof String) {
+			edgeAttrs.setAttribute(canonName, attribute, (String) value);
+			return true;
+		} else {
+			// If this is an arbitary object, use GOB for backward
+			// compatibility.
+			edgeData.set(attribute, canonName, value);
+		}
+		return false;
 	}
 
 	/**
@@ -806,7 +822,8 @@ public abstract class Cytoscape {
 	public static CytoscapeDesktop getDesktop() {
 		if (defaultDesktop == null) {
 			// System.out.println( " Defaultdesktop created: "+defaultDesktop );
-			defaultDesktop = new CytoscapeDesktop(CytoscapeDesktop.parseViewType(CytoscapeInit.getProperty("viewType")));
+			defaultDesktop = new CytoscapeDesktop(CytoscapeDesktop
+					.parseViewType(CytoscapeInit.getProperty("viewType")));
 		}
 		return defaultDesktop;
 	}
@@ -987,7 +1004,8 @@ public abstract class Cytoscape {
 		}
 
 		firePropertyChange(NETWORK_CREATED, p_id, network.getIdentifier());
-		if (network.getNodeCount() < Integer.parseInt(CytoscapeInit.getProperty("viewThreshold"))
+		if (network.getNodeCount() < Integer.parseInt(CytoscapeInit
+				.getProperty("viewThreshold"))
 				&& create_view) {
 			createNetworkView(network);
 		}
@@ -1031,7 +1049,7 @@ public abstract class Cytoscape {
 	 */
 	public static CyNetwork createNetwork(int[] nodes, int[] edges, String title) {
 		CyNetwork network = getRootGraph().createNetwork(nodes, edges);
-		addNetwork(network, title,null, true);
+		addNetwork(network, title, null, true);
 		return network;
 	}
 
@@ -1048,7 +1066,7 @@ public abstract class Cytoscape {
 	public static CyNetwork createNetwork(Collection nodes, Collection edges,
 			String title) {
 		CyNetwork network = getRootGraph().createNetwork(nodes, edges);
-		addNetwork(network, title,null, true);
+		addNetwork(network, title, null, true);
 		return network;
 	}
 
@@ -1210,48 +1228,53 @@ public abstract class Cytoscape {
 	}
 
 	/**
-     * Gets Node Network Data:  GraphObjAttributes.
-     * @return GraphObjAttributes Object.
-	 * @deprecated Use {@link Cytoscape#getNodeAttributes()} instead.  This
-     * method will be removed in September, 2006.
+	 * Gets Node Network Data: GraphObjAttributes.
+	 * 
+	 * @return GraphObjAttributes Object.
+	 * @deprecated Use {@link Cytoscape#getNodeAttributes()} instead. This
+	 *             method will be removed in September, 2006.
 	 */
 	public static GraphObjAttributes getNodeNetworkData() {
 		return nodeData;
 	}
 
 	/**
-     * Gets Edge Network Data:  GraphObjAttributes.
-     * @return GraphObjAttributes Object.
-     * @deprecated Use {@link Cytoscape#getEdgeAttributes()} instead.  This
-     * method will be removed in September, 2006.
+	 * Gets Edge Network Data: GraphObjAttributes.
+	 * 
+	 * @return GraphObjAttributes Object.
+	 * @deprecated Use {@link Cytoscape#getEdgeAttributes()} instead. This
+	 *             method will be removed in September, 2006.
 	 */
 	public static GraphObjAttributes getEdgeNetworkData() {
 		return edgeData;
 	}
 
-    /**
-     * Gets Global Node Attributes.
-     * @return CyAttributes Object.
-     */
-    public static CyAttributes getNodeAttributes() {
-        return nodeAttributes;
-    }
+	/**
+	 * Gets Global Node Attributes.
+	 * 
+	 * @return CyAttributes Object.
+	 */
+	public static CyAttributes getNodeAttributes() {
+		return nodeAttributes;
+	}
 
-    /**
-     * Gets Global Edge Attributes
-     * @return CyAttributes Object.
-     */
-    public static CyAttributes getEdgeAttributes() {
-        return edgeAttributes;
-    }
+	/**
+	 * Gets Global Edge Attributes
+	 * 
+	 * @return CyAttributes Object.
+	 */
+	public static CyAttributes getEdgeAttributes() {
+		return edgeAttributes;
+	}
 
-    /**
-     * Gets Global Network Attributes.
-     * @return CyAttributes Object.
-     */
-    public static CyAttributes getNetworkAttributes() {
-        return networkAttributes;
-    }
+	/**
+	 * Gets Global Network Attributes.
+	 * 
+	 * @return CyAttributes Object.
+	 */
+	public static CyAttributes getNetworkAttributes() {
+		return networkAttributes;
+	}
 
 	public static ExpressionData getExpressionData() {
 		return expressionData;
@@ -1312,8 +1335,9 @@ public abstract class Cytoscape {
 		if (nodeAttrLocations != null) {
 			for (int i = 0; i < nodeAttrLocations.length; ++i) {
 				try {
-                    InputStreamReader reader = new InputStreamReader(FileUtil.getInputStream(nodeAttrLocations[i]));
-                    CyAttributesReader.loadAttributes(nodeAttributes, reader);
+					InputStreamReader reader = new InputStreamReader(FileUtil
+							.getInputStream(nodeAttrLocations[i]));
+					CyAttributesReader.loadAttributes(nodeAttributes, reader);
 				} catch (Exception e) {
 					throw new IllegalArgumentException(
 							"Failure loading node attribute data: "
@@ -1326,8 +1350,9 @@ public abstract class Cytoscape {
 		if (edgeAttrLocations != null) {
 			for (int j = 0; j < edgeAttrLocations.length; ++j) {
 				try {
-                    InputStreamReader reader = new InputStreamReader(FileUtil.getInputStream(edgeAttrLocations[j]));
-                    CyAttributesReader.loadAttributes(edgeAttributes, reader);
+					InputStreamReader reader = new InputStreamReader(FileUtil
+							.getInputStream(edgeAttrLocations[j]));
+					CyAttributesReader.loadAttributes(edgeAttributes, reader);
 				} catch (Exception e) {
 					throw new IllegalArgumentException(
 							"Failure loading edge attribute data: "
@@ -1363,8 +1388,9 @@ public abstract class Cytoscape {
 	 * graph/attributes files.
 	 * 
 	 * @see CyProject
-	 * @deprecated Will be removed Oct 2006.  This is not apparently used, so
-	 * don't start.  This functionality has been subsumed by Cytoscape Sessions.
+	 * @deprecated Will be removed Oct 2006. This is not apparently used, so
+	 *             don't start. This functionality has been subsumed by
+	 *             Cytoscape Sessions.
 	 */
 	public static CyNetwork createNetworkFromProject(CyProject project,
 			BioDataServer bioDataServer) {
@@ -1417,7 +1443,8 @@ public abstract class Cytoscape {
 		try {
 			bioDataServer = new BioDataServer(location);
 		} catch (Exception e) {
-			System.err.println("Could not Load BioDataServer from: " + location);
+			System.err
+					.println("Could not Load BioDataServer from: " + location);
 			return null;
 		}
 		return bioDataServer;
@@ -1466,7 +1493,7 @@ public abstract class Cytoscape {
 		}
 		final DingNetworkView view = new DingNetworkView(network, title);
 		view.setIdentifier(network.getIdentifier());
-		view.setGraphLOD( new CyGraphLOD() );
+		view.setGraphLOD(new CyGraphLOD());
 		getNetworkViewMap().put(network.getIdentifier(), view);
 		view.setTitle(network.getTitle());
 
@@ -1474,25 +1501,26 @@ public abstract class Cytoscape {
 			((GraphReader) network.getClientData("GML")).layout(view);
 		}
 
-                else {
-                  double distanceBetweenNodes = 80.0d;
-                  int columns = (int) Math.sqrt(view.nodeCount());
-                  Iterator nodeViews = view.getNodeViewsIterator();
-                  double currX = 0.0d;
-                  double currY = 0.0d;
-                  int count = 0;
-                  while (nodeViews.hasNext()) {
-                    NodeView nView = (NodeView) nodeViews.next();
-                    nView.setOffset(currX, currY);
-                    count++;
-                    if (count == columns) {
-                      count = 0;
-                      currX = 0.0d;
-                      currY += distanceBetweenNodes; }
-                    else {
-                      currX += distanceBetweenNodes; }
-                  }
-                }
+		else {
+			double distanceBetweenNodes = 80.0d;
+			int columns = (int) Math.sqrt(view.nodeCount());
+			Iterator nodeViews = view.getNodeViewsIterator();
+			double currX = 0.0d;
+			double currY = 0.0d;
+			int count = 0;
+			while (nodeViews.hasNext()) {
+				NodeView nView = (NodeView) nodeViews.next();
+				nView.setOffset(currX, currY);
+				count++;
+				if (count == columns) {
+					count = 0;
+					currX = 0.0d;
+					currY += distanceBetweenNodes;
+				} else {
+					currX += distanceBetweenNodes;
+				}
+			}
+		}
 
 		firePropertyChange(
 				cytoscape.view.CytoscapeDesktop.NETWORK_VIEW_CREATED, null,
@@ -1500,18 +1528,18 @@ public abstract class Cytoscape {
 
 		// Instead of calling fitContent(), access PGrap*View directly.
 		// This enables us to disable animation. Modified by Ethan Cerami.
-// 		SwingUtilities.invokeLater(new Runnable() {
-// 			public void run() {
-// 				view.getCanvas().getCamera().animateViewToCenterBounds(
-// 						view.getCanvas().getLayer().getFullBounds(), true, 0);
-// 				// if Squiggle function enabled, enable it on the view
-// 				if (squiggleEnabled) {
-// 					view.getSquiggleHandler().beginSquiggling();
-// 				}
-				// set the selection mode on the view
-				setSelectionMode(currentSelectionMode, view);
-// 			}
-// 		});
+		// SwingUtilities.invokeLater(new Runnable() {
+		// public void run() {
+		// view.getCanvas().getCamera().animateViewToCenterBounds(
+		// view.getCanvas().getLayer().getFullBounds(), true, 0);
+		// // if Squiggle function enabled, enable it on the view
+		// if (squiggleEnabled) {
+		// view.getSquiggleHandler().beginSquiggling();
+		// }
+		// set the selection mode on the view
+		setSelectionMode(currentSelectionMode, view);
+		// }
+		// });
 		view.fitContent();
 		return view;
 	}
@@ -1521,7 +1549,7 @@ public abstract class Cytoscape {
 
 		PropertyChangeEvent e = new PropertyChangeEvent(pcsO, property_type,
 				old_value, new_value);
-		//System.out.println("Cytoscape FIRING : " + property_type);
+		// System.out.println("Cytoscape FIRING : " + property_type);
 
 		getSwingPropertyChangeSupport().firePropertyChange(e);
 		getPropertyChangeSupport().firePropertyChange(e);
@@ -1530,18 +1558,19 @@ public abstract class Cytoscape {
 	private static void setSquiggleState(boolean isEnabled) {
 
 		// enable Squiggle on all network views
-// 		PGrap*View view;
-// 		String network_id;
-// 		Map networkViewMap = getNetworkViewMap();
-// 		for (Iterator iter = networkViewMap.keySet().iterator(); iter.hasNext();) {
-// 			network_id = (String) iter.next();
-// 			view = (PGrap*View) networkViewMap.get(network_id);
-// 			if (isEnabled) {
-// 				view.getSquiggleHandler().beginSquiggling();
-// 			} else {
-// 				view.getSquiggleHandler().stopSquiggling();
-// 			}
-// 		}
+		// PGrap*View view;
+		// String network_id;
+		// Map networkViewMap = getNetworkViewMap();
+		// for (Iterator iter = networkViewMap.keySet().iterator();
+		// iter.hasNext();) {
+		// network_id = (String) iter.next();
+		// view = (PGrap*View) networkViewMap.get(network_id);
+		// if (isEnabled) {
+		// view.getSquiggleHandler().beginSquiggling();
+		// } else {
+		// view.getSquiggleHandler().stopSquiggling();
+		// }
+		// }
 
 	}
 
@@ -1640,7 +1669,7 @@ public abstract class Cytoscape {
 		}
 
 	}
-	
+
 	/**
 	 * Get name of the current session file.
 	 * 
@@ -1649,24 +1678,24 @@ public abstract class Cytoscape {
 	public static String getCurrentSessionFileName() {
 		return currentSessionFileName;
 	}
+
 	/**
-	 * Once session writer is called, the file name is 
-	 * stored here.
+	 * Once session writer is called, the file name is stored here.
 	 * 
 	 * @param newName
 	 */
-	public static void setCurrentSessionFileName( String newName ) {
+	public static void setCurrentSessionFileName(String newName) {
 		currentSessionFileName = newName;
 	}
-	
+
 	public static void setSessionState(int state) {
 		sessionState = state;
 	}
-	
+
 	public static int getSessionstate() {
 		return sessionState;
 	}
-	
+
 	public static void createNewSession() {
 		Set netSet = getNetworkSet();
 		Iterator it = netSet.iterator();
@@ -1687,11 +1716,10 @@ public abstract class Cytoscape {
 		for (int i = 0; i < edgeAttrNames.length; i++) {
 			edgeAttributes.deleteAttribute(edgeAttrNames[i]);
 		}
-		
+
 		getDesktop().setTitle("Cytoscape Desktop (New Session)");
 		setCurrentSessionFileName(null);
-		
+
 	}
-	
 
 }
