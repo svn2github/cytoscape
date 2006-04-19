@@ -1,43 +1,41 @@
-
 /*
-  File: OntologyFlatFileReader.java 
-  
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-  
-  The Cytoscape Consortium is: 
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Pasteur Institute
-  - Agilent Technologies
-  
-  This library is free software; you can redistribute it and/or modify it
-  under the terms of the GNU Lesser General Public License as published
-  by the Free Software Foundation; either version 2.1 of the License, or
-  any later version.
-  
-  This library is distributed in the hope that it will be useful, but
-  WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
-  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
-  documentation provided hereunder is on an "as is" basis, and the
-  Institute for Systems Biology and the Whitehead Institute 
-  have no obligations to provide maintenance, support,
-  updates, enhancements or modifications.  In no event shall the
-  Institute for Systems Biology and the Whitehead Institute 
-  be liable to any party for direct, indirect, special,
-  incidental or consequential damages, including lost profits, arising
-  out of the use of this software and its documentation, even if the
-  Institute for Systems Biology and the Whitehead Institute 
-  have been advised of the possibility of such damage.  See
-  the GNU Lesser General Public License for more details.
-  
-  You should have received a copy of the GNU Lesser General Public License
-  along with this library; if not, write to the Free Software Foundation,
-  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ File: OntologyFlatFileReader.java 
+ 
+ Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+ 
+ The Cytoscape Consortium is: 
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Pasteur Institute
+ - Agilent Technologies
+ 
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+ 
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute 
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute 
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute 
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+ 
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+ */
 
 // OntologyFlatFileReader.java
-
 
 // ------------------------------------------------------------------------------
 // $Revision$ $Date$
@@ -45,15 +43,10 @@
 package cytoscape.data.annotation.readers;
 
 // ------------------------------------------------------------------------------
-import java.awt.List;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
 import java.util.Vector;
 
-import cytoscape.cruft.obo.OboOntologyReader;
 import cytoscape.data.annotation.Ontology;
 import cytoscape.data.annotation.OntologyTerm;
 import cytoscape.data.readers.TextFileReader;
@@ -85,22 +78,22 @@ public class OntologyFlatFileReader {
 	// This is designed for utilize Nerius's obo file reader.
 	//
 	// *** This is VERY inefficient...We need to rewite entire biodataserver
-	//		code in future!
+	// code in future!
 	//
-	//	Kei (9/13/2005)
+	// Kei (9/13/2005)
 	//
 	public OntologyFlatFileReader(final BufferedReader rd) throws Exception {
 		fullText = null;
 		extractedLines = new Vector();
 		String curLine = null;
 
-		while ( (curLine = rd.readLine()) != null ) {
+		while ((curLine = rd.readLine()) != null) {
 
 			extractedLines.add(curLine);
-			//System.out.println( curLine );
+			// System.out.println( curLine );
 		}
 		rd.close();
-		
+
 		Object[] entireFile = extractedLines.toArray();
 		lines = new String[entireFile.length];
 		try {
@@ -220,9 +213,6 @@ public class OntologyFlatFileReader {
 			} // if
 			ontology.add(term);
 		} // for i
-
-		// System.out.println ("OntologyFlatFileReader.read, ontology:\n" +
-		// ontology);
 
 	} // read
 
