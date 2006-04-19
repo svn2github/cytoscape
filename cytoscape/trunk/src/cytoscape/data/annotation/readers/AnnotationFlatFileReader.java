@@ -193,7 +193,9 @@ private void parse () throws Exception
   
   for (int i=1; i < lines.length; i++) {
     String line = lines [i];
-    //System.out.println (lines[i]);
+    
+    //System.out.println ("Anno --> " +lines[i]);
+    
     if (line.length () < 2) continue;
     
     String [] tokens = line.split ("=");
@@ -202,6 +204,12 @@ private void parse () throws Exception
     
     if( flip == false ) {
     		annotation.add (entityName, id);
+    		
+    		String[] syno = thr.getAllCommonNames(entityName);
+    		for(int idx = 0; idx<syno.length;idx++) {
+    			annotation.add(syno[idx], id);
+    		}
+    		
     } else if( flip == true ){
     		//System.out.println ( "EntityName is " + entityName );
     		key = thr.getCanonicalName( entityName );
@@ -213,6 +221,9 @@ private void parse () throws Exception
     			//annotation.add ( "Undef", id);
     		}
     }
+    
+    //System.out.println ("Anno# Key = " + entityName + ", ID = " + id);
+    
   }
 
   // System.out.println ("AnnotationFlatFileReader.parse, annotation:\n" + annotation);
