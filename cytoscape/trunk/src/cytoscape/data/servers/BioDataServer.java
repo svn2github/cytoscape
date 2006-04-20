@@ -96,8 +96,9 @@ public class BioDataServer {
 	File start; // Start dir of the Cytoscape
 
 	Thesaurus thesaurus; // for flipping the names
-	
-	HashMap attributeMap; // Manage which ontoligies are mapped as CyAttributes.
+
+	HashMap attributeMap; // Manage which ontoligies are mapped as
+							// CyAttributes.
 
 	BioDataServerUtil bdsu; // Utilities for the Biodataserver
 	BufferedReader taxonFileReader;
@@ -113,15 +114,13 @@ public class BioDataServer {
 	 * format. 2. Wrote a taxon number <-> taxon name converter. This function
 	 * is based on the list in the file, users need to put the file in the dir.
 	 * 
-	 * <New for Cytoscape 2.3> 
-	 * Bio Data Server manages ontologies mapped onto
-	 * CyAttributes This can be managed through GO Mapper GUI. 
-	 * kono(4/12/2006)
+	 * <New for Cytoscape 2.3> Bio Data Server manages ontologies mapped onto
+	 * CyAttributes This can be managed through GO Mapper GUI. kono(4/12/2006)
 	 */
 	public BioDataServer(String serverName) throws Exception {
 
 		attributeMap = new HashMap();
-		
+
 		bdsu = new BioDataServerUtil();
 
 		taxonFileReader = null;
@@ -189,17 +188,24 @@ public class BioDataServer {
 					}
 
 				} else {
-					// Load old-style manifest file (for backword
-					// compatibility).
+					/*
+					 * Load old-style manifest file (for backword
+					 * compatibility).
+					 */
+					
+					String[] thesaurusFilenames = parseLoadFile(serverName,
+					"synonyms");
+					loadThesaurusFiles(thesaurusFilenames);
+					
 					String[] ontologyFiles = parseLoadFile(serverName,
 							"ontology");
 					String[] annotationFilenames = parseLoadFile(serverName,
 							"annotation");
 					loadAnnotationFiles(annotationFilenames, ontologyFiles);
 
-					String[] thesaurusFilenames = parseLoadFile(serverName,
-							"synonyms");
-					loadThesaurusFiles(thesaurusFilenames);
+//					String[] thesaurusFilenames = parseLoadFile(serverName,
+//							"synonyms");
+//					loadThesaurusFiles(thesaurusFilenames);
 				}
 			} // if a plausible candidate load file
 			else {
@@ -483,7 +489,7 @@ public class BioDataServer {
 			String filename = annotationFilenames[i];
 			if (!filename.endsWith(".xml")) {
 				AnnotationFlatFileReader reader = new AnnotationFlatFileReader(
-						filename);
+						filename, thesaurus);
 				annotation = reader.getAnnotation();
 				annotation.setOntology(pickOntology(ontologies, annotation));
 			} else {
@@ -502,10 +508,10 @@ public class BioDataServer {
 			throws Exception {
 		for (int i = 0; i < thesaurusFilenames.length; i++) {
 			String filename = thesaurusFilenames[i];
-			
+
 			ThesaurusFlatFileReader reader = new ThesaurusFlatFileReader(
 					filename);
-			Thesaurus thesaurus = reader.getThesaurus();
+			thesaurus = reader.getThesaurus();
 			
 			server.addThesaurus(thesaurus.getSpecies(), thesaurus);
 		}

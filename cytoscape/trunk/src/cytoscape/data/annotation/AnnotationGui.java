@@ -351,10 +351,12 @@ public class AnnotationGui extends CytoscapeAction {
 						.hasNext();) {
 					// get the particular node view
 					NodeView nv = (NodeView) nvi.next();
-					String canonicalName = nodeAttributes.getStringAttribute(nv
-							.getNode().getIdentifier(),
-							Semantics.CANONICAL_NAME);
-					if (canonicalName == null) {
+//					String nodeLabel = nodeAttributes.getStringAttribute(nv
+//							.getNode().getIdentifier(),
+//							Semantics.CANONICAL_NAME);
+					String nodeLabel = nv.getNode().getIdentifier();
+					
+					if (nodeLabel == null) {
 						continue;
 					}
 					// iterate over all attributes in the selectionHash
@@ -366,7 +368,7 @@ public class AnnotationGui extends CytoscapeAction {
 						byte type = nodeAttributes.getType(name);
 						if (type == CyAttributes.TYPE_STRING) {
 							String attributeValue = nodeAttributes
-									.getStringAttribute(canonicalName, name);
+									.getStringAttribute(nodeLabel, name);
 							if (attributeValue != null
 									&& categoryList.contains(attributeValue))
 								nv.setSelected(true);
@@ -374,7 +376,7 @@ public class AnnotationGui extends CytoscapeAction {
 						} else if (type == CyAttributes.TYPE_SIMPLE_LIST) {
 							boolean hit = false;
 							List attributeList = nodeAttributes
-									.getAttributeList(canonicalName, name);
+									.getAttributeList(nodeLabel, name);
 							for (Iterator ali = attributeList.iterator(); ali
 									.hasNext();) {
 								if (categoryList.contains(ali.next())) {
@@ -545,7 +547,7 @@ public class AnnotationGui extends CytoscapeAction {
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 		// something like "GO biological process" or "KEGG metabolic pathway"
 		String baseAnnotationName = aDesc.getCurator() + " " + aDesc.getType();
-		String annotationNameAtLevel = baseAnnotationName + " (level " + level
+		String annotationNameAtLevel = baseAnnotationName + " (Level " + level
 				+ ")";
 		String annotationNameForLeafIDs = baseAnnotationName + " leaf IDs";
 
@@ -554,22 +556,27 @@ public class AnnotationGui extends CytoscapeAction {
 		nodeAttributes.deleteAttribute(annotationNameForLeafIDs);
 
 		Iterator it = Cytoscape.getRootGraph().nodesIterator();
-		ArrayList canonicals = new ArrayList();
+		ArrayList nodeLabels = new ArrayList();
 		while (it.hasNext()) {
 			CyNode node = (CyNode) it.next();
-			String canonical = nodeAttributes.getStringAttribute(node
-					.getIdentifier(), Semantics.CANONICAL_NAME);
-			if (canonical != null)
-				canonicals.add(canonical);
+//			String nodeLabel = nodeAttributes.getStringAttribute(node
+//					.getIdentifier(), Semantics.CANONICAL_NAME);
+			String nodeLabel = node.getIdentifier();
+			if (nodeLabel != null)
+				nodeLabels.add(nodeLabel);
 		}
 
-		String[] canonicalNodeNames = (String[]) canonicals
-				.toArray(new String[canonicals.size()]);
-
+		String[] nodeLabelArray = (String[]) nodeLabels
+				.toArray(new String[nodeLabels.size()]);
+		
+		
 		int unAnnotatedNodeCount = 0;
-		for (int i = 0; i < canonicalNodeNames.length; i++) {
+		for (int i = 0; i < nodeLabelArray.length; i++) {
+			
+			//System.out.println("Applying: " + nodeLabelArray[i] + ", aDesc = " + aDesc.toString() );
+			
 			String[][] fullAnnotations = dataServer.getAllAnnotations(aDesc,
-					canonicalNodeNames[i]);
+					nodeLabelArray[i]);
 			if (fullAnnotations.length == 0)
 				unAnnotatedNodeCount++;
 			else {
@@ -580,7 +587,7 @@ public class AnnotationGui extends CytoscapeAction {
 				List annotsList = new ArrayList();
 				if (uniqueAnnotationsAtLevel.length == 0) {
 					// No attribute available for this node
-					nodeAttributes.setAttribute(canonicalNodeNames[i],
+					nodeAttributes.setAttribute(nodeLabelArray[i],
 							annotationNameAtLevel, "");
 				} else {
 					// Extract all values in the current level
@@ -607,19 +614,18 @@ public class AnnotationGui extends CytoscapeAction {
 						// annotationNameAtLevel,annotsList);
 						// annotsList.add(uniqueAnnotationsAtLevel[j]);
 						// }
+						//System.out.println("    " + uniqueAnnotationsAtLevel[j]);
 						annotsList.add(uniqueAnnotationsAtLevel[j]);
 
 					}// for j
 
 					if (annotsList.size() != 0) {
-						nodeAttributes.setAttributeList(canonicalNodeNames[i],
+						nodeAttributes.setAttributeList(nodeLabelArray[i],
 								annotationNameAtLevel, annotsList);
 					}
-
 				}
-
 				int[] annotationIDs = dataServer.getClassifications(aDesc,
-						canonicalNodeNames[i]);
+						nodeLabelArray[i]);
 				Integer[] integerArray = new Integer[annotationIDs.length];
 				for (int j = 0; j < annotationIDs.length; j++)
 					integerArray[j] = new Integer(annotationIDs[j]);
@@ -631,7 +637,7 @@ public class AnnotationGui extends CytoscapeAction {
 // 						+ "has been partially removed "
 // 						+ "(AnnotationGui.addAnnotationToNodes()).");
 
-		network.endActivity(callerID);
+		//network.endActivity(callerID);
 
 		return annotationNameAtLevel;
 
