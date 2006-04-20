@@ -37,27 +37,42 @@
       and Java. The motivation for the reimplementation of the algorithms is
       the development of software that is modular, easily maintained and
       easily extended for future research.</para>
+      <para>
+      NCT is heavily modularized meaning it is decomposed into separate Java classes
+      that perform specific duties.  The classes interact with one another through clearly defined interfaces that allow new algorithms and scoring methods to be implemented without rewriting unrelated code.  The intended use of the NCT classes is exemplified in the NetworkBlast program.  The fundamental approach is:
+      <orderedlist>
+     <listitem>Construct the input graph objects.</listitem> 
+     <listitem>Create the scoring model objects.</listitem> 
+     <listitem>Apply search algorithms to the graphs using the scoring models.</listitem> 
+     <listitem>Capture the output.</listitem> 
+      </orderedlist>
+      There are several classes defined for each step described which allows programmers to mix and match classes to easily meet their specific needs.
+      </para>
+      <para>
+      NCT is broken down into several packages, but there are four primary types
+      of object that we care about: Graphs, Search Algorithms, Scoring Models, and Utilities. In addition, specific applications have also been implemented using the NCT modules.
+      </para>
 
-      <para />
     </sect1>
   </chapter>
 
   <chapter>
-    <title>The Packages</title>
+    <title>Module Overview</title>
 
     <sect1>
-      <title>graph</title>
+      <title>Graphs</title>
 
-      <para>The common currency of the NCT is the Graph interface. The
+      <para>The common currency of NCT is the Graph interface found in the nct.graph package. The
       interface defines how programmers should interact with graph objects.
       The Graph interface has several extensions that expand on the
       capabilities of a basic graph such as the KPartiteGraph which defines
       the methods used for interacting with k-partite graphs.</para>
 
       <para>Basic implementations of all the Graph interfaces have been
-      provided. You obviously need to use concrete implementations of the
-      graph objects, but whenever possible we strongly recommend that you code
-      to the interface and not the class. For example: <programlisting>
+      provided in the basic.graph package. 
+      Whenever possible we strongly recommend that you code
+      to the graph interfaces and not the specific implementations. 
+      For example: <programlisting>
 // recommended usage
 Graph&lt;String,Double&gt; g = new BasicGraph&lt;String,Double&gt;
 
@@ -75,19 +90,58 @@ public BasicGraph&lt;String,Double&gt; getGraph();
       of your code to change underlying implementations without having to
       alter your code.</para>
 
+      <para>
+	The graph interfaces and definitions are general and do not contain biological semantics. This means that the graph package could be used as a general graph library. 
+      </para>
+    </sect1>
+    <sect1>
+      <title>Scoring Models</title>
+      <para>
+      The scoring algorithm classes are contained in nct.networkblast.score.
+      </para>
+      <para>
+      Basic interface description here.
+      </para>
       <sect2>
-        <title>graph.basic</title>
+        <title>Log Likelihood Scoring Model</title>
+        <para>....</para>
+      </sect2>
+      <sect2>
+        <title>SimpleScoringModel</title>
+        <para>....</para>
+      </sect2>
+      <sect2>
+        <title>SimpleEdgeScoringModel</title>
+        <para>....</para>
+      </sect2>
+      <sect2>
+        <title>SimpleNodeScoringModel</title>
+        <para>....</para>
+      </sect2>
 
-        <para>This package contains all of the implementations of the graph
-        package interfaces. The implementations are not specific to
-        networkblast, so could be used in other applications that require
-        graph data structures.</para>
+    </sect1>
+    <sect1>
+      <title>Search Algorithms</title>
+      <para>
+      	The search algorithm module is  nct.networkblast.search.
+      </para>
+      <para>
+      Basic interface description here.
+      </para>
+      <sect2>
+        <title>Color Coding Path Search</title>
+        <para>....</para>
+      </sect2>
+      <sect2>
+        <title>Greedy Complex Search</title>
+        <para>....</para>
       </sect2>
     </sect1>
 
     <sect1>
+      <title>Utilities</title>
+      <sect2>
       <title>services</title>
-
       <para>The services package is comprised of several sub-packages. The
       intent of the package is isolate activities that are not core graph
       comparison duties in a separate package. Examples include the
@@ -96,9 +150,9 @@ public BasicGraph&lt;String,Double&gt; getGraph();
       sequence databases, and the like. In each case an interface is provided
       that defines how new software should interact with external
       services.</para>
-    </sect1>
+    </sect2>
 
-    <sect1>
+    <sect2>
       <title>filters</title>
 
       <para>The filter package provides a simple interface for filtering a
@@ -108,9 +162,18 @@ public BasicGraph&lt;String,Double&gt; getGraph();
       Comparable interface. The DuplicateThresholdFilter filters out Graphs
       that have a certain percentage (the threshold) of nodes and edges in
       common.</para>
+    </sect2>
+    <sect2>
+      <title>output</title>
+      <para>
+      Classes for writing output in useful ways (e.g. graphs into the SIF format).
+      </para>
+    </sect2>
     </sect1>
 
     <sect1>
+      <title>Applications</title>
+    <sect2>
       <title>networkblast</title>
 
       <para>NetworkBlast, as the name suggests, is where the classes specific
@@ -126,6 +189,7 @@ public BasicGraph&lt;String,Double&gt; getGraph();
       output is generated. If there is any confusion about how certain classes
       relate to one another, a look at the main method might help clarify
       things.</para>
+    </sect2>
 
       <sect2>
         <title>nct.networkblast.graph</title>
@@ -138,18 +202,6 @@ public BasicGraph&lt;String,Double&gt; getGraph();
       </sect2>
 
       <sect2>
-        <title>nct.networkblast.search</title>
-
-        <para>Contains the search algorithms.</para>
-      </sect2>
-
-      <sect2>
-        <title>nct.networkblast.score</title>
-
-        <para>Contains the graph scoring algorithms.</para>
-      </sect2>
-
-      <sect2>
         <title>nct.networkblast.filter</title>
 
         <para>Contains a filter that is really only meaningful in the context
@@ -159,5 +211,8 @@ public BasicGraph&lt;String,Double&gt; getGraph();
         meaning.</para>
       </sect2>
     </sect1>
+  </chapter>
+  <chapter>
+  <title>Usage</title>
   </chapter>
 </book>
