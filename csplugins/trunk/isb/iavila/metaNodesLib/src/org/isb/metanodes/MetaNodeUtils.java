@@ -133,13 +133,15 @@ public class MetaNodeUtils {
        * If the CyNode is already a metanode, it will be first removed from the given network<br>
        * Note that all connecting edges between nodes in the child-network that are not in the child-network, but are in the <code>network</code>
        * paremeter, are also considered child edges of the metanode and addded to its child-network automatically. This means you don't have to find connecting
-       * edges between the children nodes in <code>network</code> to create the metanode.
+       * edges between the children nodes in <code>network</code> to create the metanode.<br>
+       * <b>Important note:</b> <code>child_network</code> should not contain the <code>node</code> given as a parameter.
        * 
        * @param node the CyNode for which to set the child-network
        * @param network the CyNetwork in which the metanode will represent the child-network
        * @param child_network the CyNetwork that the metanode will represent
+       * @throws IllegalArgumentException if <code>child_network</code> contains the input node that will become a metanode (a metanode cannot be its own parent)
        */
-      public static void setChildNetwork (CyNode node, CyNetwork network, CyNetwork child_network){
+      public static void setChildNetwork (CyNode node, CyNetwork network, CyNetwork child_network) throws IllegalArgumentException{
           if(network == null || child_network == null || node == null) return;
           RootGraph rootGraph = network.getRootGraph();
           
@@ -199,7 +201,7 @@ public class MetaNodeUtils {
           double yPos = 0;
           if(netView != null){
               if(recursive)
-                  childrenNodes = getBottomLevelChildren(meta_node);
+                  childrenNodes = getLeafChildren(meta_node);
               else
                   childrenNodes = getChildren(meta_node);
               NodeView metaNodeView = netView.getNodeView(meta_node);
@@ -239,7 +241,7 @@ public class MetaNodeUtils {
 	      double yPos = 0;
 	      if(netView != null){
               if(recursive)
-                  childrenNodes = getBottomLevelChildren(meta_node);
+                  childrenNodes = getLeafChildren(meta_node);
               else
                   childrenNodes = getChildren(meta_node);
 	          NodeView metaNodeView = netView.getNodeView(meta_node);
@@ -256,10 +258,13 @@ public class MetaNodeUtils {
 	  
 	  /**
        * Collapses the given metanode in the given network
+       * <p>
+       * The <code>create_multiple_edges</code> parameter only takes effect the FIRST TIME this method is called for a metanode.<br>
+       * Subsequent collapse operations on the metanode will ignore the value of this parameter, and use the value that was given the first time.
        * 
        * @param network the CyNetwork in which the given metanode should be collapsed in
        * @param meta_node the metanode to collapse
-       * @param create_multiple_edges if true, then multiple edges between the metanode and anotother node are created to
+       * @param create_multiple_edges if true, then multiple edges between the metanode and another node are created to
        * represent the metanode's child-network connections to that node, if false, only one edge is created to represent these
        * connections
        * @return true if successfully collapsed, false otherwise
@@ -326,12 +331,12 @@ public class MetaNodeUtils {
        * @param child the CyNode for which to look for parents
        * @return a List of parent CyNodes
        */
-      public static List getTopLevelParents (CyNetwork network, CyNode child){   
+      public static List getRootParents (CyNetwork network, CyNode child){   
           ArrayList topParents = new ArrayList();
           Iterator it = getParents(network, child).iterator();
           while(it.hasNext()){
               CyNode parentNode = (CyNode)it.next();
-              if(hasParents(network,parentNode)) topParents.addAll(getTopLevelParents(network,parentNode));
+              if(hasParents(network,parentNode)) topParents.addAll(getRootParents(network,parentNode));
               else topParents.add(parentNode);
           }
           return topParents;
@@ -359,12 +364,12 @@ public class MetaNodeUtils {
        * @param meta_node  the CyNode for which to return bottom level descendant nodes
        * @return a List of CyNodes
        */
-      public static List getBottomLevelChildren (CyNode meta_node){
+      public static List getLeafChildren (CyNode meta_node){
           ArrayList descendants = new ArrayList();
           Iterator it = meta_node.getGraphPerspective().nodesIterator();
           while(it.hasNext()){
               CyNode childNode = (CyNode)it.next();
-              if(isMetaNode(childNode)) descendants.addAll(getBottomLevelChildren(childNode));
+              if(isMetaNode(childNode)) descendants.addAll(getLeafChildren(childNode));
               else descendants.add(childNode);   
           }
           return descendants;

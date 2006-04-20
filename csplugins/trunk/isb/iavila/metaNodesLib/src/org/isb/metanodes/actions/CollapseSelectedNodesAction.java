@@ -169,7 +169,7 @@ public class CollapseSelectedNodesAction extends AbstractAction {
             List parentMetanodes = new ArrayList();
             it = selectedNodes.iterator();
             if(collapse_recursively){
-                while(it.hasNext()) parentMetanodes.addAll(MetaNodeUtils.getTopLevelParents(cyNetwork,(CyNode)it.next()));
+                while(it.hasNext()) parentMetanodes.addAll(MetaNodeUtils.getRootParents(cyNetwork,(CyNode)it.next()));
             }else{
                 while(it.hasNext()) parentMetanodes.addAll(MetaNodeUtils.getParents(cyNetwork,(CyNode)it.next()));
             }

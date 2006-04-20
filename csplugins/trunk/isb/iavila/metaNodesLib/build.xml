@@ -1,4 +1,4 @@
-<><?xml version = "1.0"?>
+<?xml version = "1.0"?>
 <project name = "metaNodesLib" default = "compile_release" basedir = ".">
    
    <property name = "src" location = "src"/>

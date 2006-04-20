@@ -209,9 +209,14 @@ public class GPMetaNodeFactory {
 	}// createMetaNode
     
     /**
+     * Converts the given node into a metanode
      * 
+     * @param cy_net the CyNetwork in which the node will be a metanode
+     * @param node the node that will become a metanode
+     * @param children the nodes that will be children nodes of the metanode
+     * @throws IllegalArgumentException if the List of children contains the node that will become a metanode
      */
-    public void makeMetaNode (CyNetwork cy_net, CyNode node, List children ){
+    public void makeMetaNode (CyNetwork cy_net, CyNode node, List children ) throws IllegalArgumentException{
         if (children == null || cy_net == null
                 || children.size() == 0) {
             if (DEBUG)
@@ -223,21 +228,14 @@ public class GPMetaNodeFactory {
             
         }// check args
 
-        //int [] childrenNodeIndices = new int[children.size()];
-        //for(int i = 0; i < children.size(); i++) childrenNodeIndices[i] = ( (CyNode)children.get(i) ).getRootGraphIndex();
+        Iterator it = children.iterator();
+        while(it.hasNext()){
+            CyNode child = (CyNode)it.next();
+            if(child == node)
+                    throw new IllegalArgumentException("A node cannot be its own parent metanode. Node:" + node);
+        }
         
-        // Get the RootGraph indices of the edges that connect to the children nodes
-        //RootGraph rootGraph = cy_net.getRootGraph();
-        //int[] edgeIndices = cy_net
-         //       .getConnectingEdgeIndicesArray(childrenNodeIndices);
         List edges = cy_net.getConnectingEdges(children);
-        //ArrayList edges = new ArrayList();
-        //if (edgeIndices != null) {
-         //   for (int i = 0; i < edgeIndices.length; i++) {
-         //       Edge edge = rootGraph.getEdge(edgeIndices[i]);
-         //       edges.add(edge);
-         //   }// for i
-        //}// if edgeIndices != null
         
         // Create a network and set it for the node
         CyNetwork childnet = Cytoscape.getRootGraph().createNetwork(children,edges);

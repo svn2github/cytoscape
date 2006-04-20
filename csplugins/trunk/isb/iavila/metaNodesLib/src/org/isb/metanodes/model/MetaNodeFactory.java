@@ -80,8 +80,9 @@ public class MetaNodeFactory {
    * @param node the node which will become a metanode
    * @param network the network in which the metanode will reside
    * @param children the childrent CyNodes
+   * * @throws IllegalArgumentException if the List of children contains the node that will become a metanode
    */
-  public static void convertToMetaNode (CyNode node, CyNetwork network, List children){
+  public static void convertToMetaNode (CyNode node, CyNetwork network, List children) throws IllegalArgumentException{
       MetaNodeFactory.gpMetaNodeFactory.makeMetaNode(network,node,children);
   }
   
