@@ -108,7 +108,7 @@ import cytoscape.actions.NewWindowSelectedNodesOnlyAction;
 import cytoscape.actions.OpenSessionAction;
 import cytoscape.actions.PreferenceAction;
 import cytoscape.actions.PrintAction;
-import cytoscape.actions.RotationScaleLayoutAction;
+//import cytoscape.actions.RotationScaleLayoutAction;
 import cytoscape.actions.SaveSessionAction;
 import cytoscape.actions.SaveSessionAsAction;
 import cytoscape.actions.SelectAllAction;
@@ -765,7 +765,7 @@ public class CyMenus implements GraphViewChangeListener {
 
 		selectMenu.addSeparator();
 
-		addAction(new RotationScaleLayoutAction());
+//		addAction(new RotationScaleLayoutAction());
 		layoutMenu.addSeparator();
 
 		// fill the Visualization menu
