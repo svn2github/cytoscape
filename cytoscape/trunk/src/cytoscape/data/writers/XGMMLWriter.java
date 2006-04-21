@@ -568,7 +568,40 @@ public class XGMMLWriter {
 	 * @param attributeType             - the type (string, boolean, float, int) of the attribute value this tree describes
 	 * @param dimTypes                  - a byte array returned from a prior call to getAttributeKeyspaceDimensionTypes(attributeName);
 	 * @param dimTypesIndex             - the index into the dimTypes array we are should work on
-	 * @return att                      - ref to Att which describes the complex type attribute.  The description is as follows:
+	 * @return att                      - ref to Att which describes the complex type attribute.  An example/description is as follows:
+	 *
+	 * For an arbitrarily complex data structure, like a pseudo hash with the following structure:
+	 *
+	 * {"externalref1"}->{"authors"}->{1}->"author1 name";
+	 * {"externalref1"}->{"authors"}->{2}->"author2 name";
+	 * {"externalref1"}->{"authors"}->{3}->"author3 name";
+	 *
+	 * where the keys externalref1 and authors are strings, and keys 1, 2, 3 are integers,
+	 * and the values (author1 name, author2 name, author3 name) are strings, we would have the 
+	 * following attributes written to the xgmml file:
+	 * 
+	 *    <att label="complex" name="publication references" value="3">
+     *        <att label="string" name="externalref1" value="1">
+     *            <att label="string" name="authors" value="3">
+     *                <att label="int" name="2" value="1">
+     *                    <att label="string" value="author2 name"/>
+     *                </att>
+     *                <att label="int" name="1" value="1">
+     *                    <att label="string" value="author1 name"/>
+	 *                </att>
+     *                <att label="int" name="3" value="1">
+     *                    <att label="string" value="author3 name"/>
+     *                </att>
+     *            </att>
+     *        </att>
+     *    </att>
+	 *
+	 * Notes:
+	 * - value attribute property for keys is assigned the number of sub-elements the key references
+	 * - value attribute property for values is equal to the value
+	 * - name attribute property for attributes is only set for keys, and the value of this property is the key name.
+	 * - label attribute property is equal to the data type of the key or value.
+	 * - name attribute properties are only set for keys
 	 *
 	 * @throws JAXBException
 	 * @throws IllegalArgumentException
