@@ -51,7 +51,7 @@ public class CyGraphLOD extends GraphLOD implements PropertyChangeListener
 		renderDashedEdges = getBoolean("render.renderDashedEdges",true);
 		renderEdgeAnchors = getBoolean("render.renderEdgeAnchors",true);
 		renderTextAsShape = getBoolean("render.renderTextAsShape",false);
-
+/*
 		System.out.println("(re)initializing level of detail (LOD)");
 		System.out.println("  renderAllEdges: " + renderAllEdges);
 		System.out.println("  fullDetailThreshold: " + fullDetailThreshold);
@@ -63,6 +63,7 @@ public class CyGraphLOD extends GraphLOD implements PropertyChangeListener
 		System.out.println("  renderEdgeAnchors: " + renderEdgeAnchors);
 		System.out.println("  edgeLabelThreshold: " + edgeLabelThreshold);
 		System.out.println("  renderTextAsShape: " + renderTextAsShape);
+*/
 
 		//Cytoscape.getCurrentNetworkView().updateView();
 	}
