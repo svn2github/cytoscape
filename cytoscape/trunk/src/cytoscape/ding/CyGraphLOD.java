@@ -64,7 +64,7 @@ public class CyGraphLOD extends GraphLOD implements PropertyChangeListener
 		System.out.println("  edgeLabelThreshold: " + edgeLabelThreshold);
 		System.out.println("  renderTextAsShape: " + renderTextAsShape);
 
-		Cytoscape.getCurrentNetworkView().updateView();
+		//Cytoscape.getCurrentNetworkView().updateView();
 	}
 
 	protected int getInt(String key, int defaultValue) {
