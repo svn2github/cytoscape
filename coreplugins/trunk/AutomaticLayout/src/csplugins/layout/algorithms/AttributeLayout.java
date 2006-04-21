@@ -176,8 +176,6 @@ public class AttributeLayout {
             }
             //and add node and name to the node attributes
             Node node = rootGraph.getNode(categoryInt);
-            //set the common name to the same value in case that's being used
-            nodeAttributes.setAttribute(categoryName, Semantics.COMMON_NAME, categoryName);
             //now process the set of nodes that have this attribute value
             Set nodeSet = (Set)valueMap.get(category);
             for (Iterator si = nodeSet.iterator(); si.hasNext(); ) {
@@ -210,9 +208,6 @@ public class AttributeLayout {
         for (Iterator vi = realView.getNodeViewsIterator(); vi.hasNext(); ) {
             NodeView nv = (NodeView)vi.next();
             NodeView layoutV = layoutView.getNodeView( nv.getNode() );
-	    if (layoutV == null)
-	    {  System.err.println("Encountered null"); continue; }
-	    
             nv.setXPosition(layoutV.getXPosition(), false);
             nv.setYPosition(layoutV.getYPosition(), false);
         }
