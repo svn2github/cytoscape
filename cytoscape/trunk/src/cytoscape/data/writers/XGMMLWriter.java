@@ -52,6 +52,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -65,6 +66,8 @@ import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
+import cytoscape.data.attr.MultiHashMap;
+import cytoscape.data.attr.MultiHashMapDefinition;
 import cytoscape.data.ExpressionData;
 import cytoscape.data.Semantics;
 import cytoscape.data.readers.MetadataParser;
@@ -144,6 +147,7 @@ public class XGMMLWriter {
 	protected static final String BOOLEAN_TYPE = "boolean";
 	protected static final String LIST_TYPE = "list";
 	protected static final String MAP_TYPE = "map";
+	protected static final String COMPLEX_TYPE = "complex";
 
 	public XGMMLWriter(CyNetwork network, CyNetworkView view) {
 		this.network = network;
@@ -372,49 +376,52 @@ public class XGMMLWriter {
 	private Att createAttribute(String id, CyAttributes attributes, String[] attNames, int attNamesIndex)
 		throws JAXBException {
 
+		// set attribute name
+		String attributeName = attNames[attNamesIndex];
+
 		// create an attribute and its type
 		Att attr = objFactory.createAtt();
-		byte attType = attributes.getType(attNames[attNamesIndex]);
+		byte attType = attributes.getType(attributeName);
 
 		// process float
 		if (attType == CyAttributes.TYPE_FLOATING) {
-			Double dAttr = attributes.getDoubleAttribute(id, attNames[attNamesIndex]);
-			attr.setName(attNames[attNamesIndex]);
+			Double dAttr = attributes.getDoubleAttribute(id, attributeName);
+			attr.setName(attributeName);
 			attr.setLabel(FLOAT_TYPE);
 			if (dAttr != null) attr.setValue(dAttr.toString());
 		}
 		// process integer
 		else if (attType == CyAttributes.TYPE_INTEGER) {
-			Integer iAttr = attributes.getIntegerAttribute(id, attNames[attNamesIndex]);
-			attr.setName(attNames[attNamesIndex]);
+			Integer iAttr = attributes.getIntegerAttribute(id, attributeName);
+			attr.setName(attributeName);
 			attr.setLabel(INT_TYPE);
 			if (iAttr != null) attr.setValue(iAttr.toString());
 		}
 		// process string
 		else if (attType == CyAttributes.TYPE_STRING) {
-			String sAttr = attributes.getStringAttribute(id, attNames[attNamesIndex]);
-			attr.setName(attNames[attNamesIndex]);
+			String sAttr = attributes.getStringAttribute(id, attributeName);
+			attr.setName(attributeName);
 			attr.setLabel(STRING_TYPE);
 			if (sAttr != null) {
 				attr.setValue(sAttr.toString());
 			}
-			else if (attNames[attNamesIndex] == "nodeType"){
+			else if (attributeName == "nodeType"){
 				attr.setValue(NORMAL);
 			}
 		}
 		// process boolean
 		else if (attType == CyAttributes.TYPE_BOOLEAN) {
-			Boolean bAttr = attributes.getBooleanAttribute(id, attNames[attNamesIndex]);
-			attr.setName(attNames[attNamesIndex]);
+			Boolean bAttr = attributes.getBooleanAttribute(id, attributeName);
+			attr.setName(attributeName);
 			attr.setLabel(BOOLEAN_TYPE);
 			if (bAttr != null) attr.setValue(bAttr.toString());
 		}
 		// process simple list
 		else if (attType == CyAttributes.TYPE_SIMPLE_LIST) {
 			// get the attribute list
-			List listAttr = attributes.getAttributeList(id, attNames[attNamesIndex]);
+			List listAttr = attributes.getAttributeList(id, attributeName);
 			// set attribute name and label
-			attr.setName(attNames[attNamesIndex]);
+			attr.setName(attributeName);
 			attr.setLabel(LIST_TYPE);
 			// interate through the list
 			Iterator listIt = listAttr.iterator();
@@ -433,9 +440,9 @@ public class XGMMLWriter {
 		// process simple map
 		else if (attType == CyAttributes.TYPE_SIMPLE_MAP) {
 			// get the attribute map
-			Map mapAttr = attributes.getAttributeMap(id, attNames[attNamesIndex]);
+			Map mapAttr = attributes.getAttributeMap(id, attributeName);
 			// set our attribute name and label
-			attr.setName(attNames[attNamesIndex]);
+			attr.setName(attributeName);
 			attr.setLabel(MAP_TYPE);
 			// interate through the map
 			Iterator mapIt = mapAttr.keySet().iterator();
@@ -453,9 +460,167 @@ public class XGMMLWriter {
 				attr.getContent().add(memberAttr);
 			}
 		}
+		// process complex type
+		else if (attType == CyAttributes.TYPE_COMPLEX) {
+			attr = createComplexAttribute(id, attributes, attributeName);
+		}
 
 		// outta here
 		return attr;
+	}
+
+	/**
+	 * Creates an attribute to write into XGMML file from an attribute whose type is COMPLEX.
+	 * 
+	 * @param id            - id of node, edge or network
+	 * @param attributes    - CyAttributes to load
+	 * @param attributeName - name of attribute
+	 * @return att          - Att to return (gets written into xgmml file)
+	 *
+	 * @throws JAXBException
+	 */
+	private Att createComplexAttribute(String id, CyAttributes attributes, String attributeName)
+		throws JAXBException {
+
+		// the attribute to return
+		Att attr = objFactory.createAtt();
+
+		// get the multihashmap definition
+		MultiHashMap mmap = attributes.getMultiHashMap();
+		MultiHashMapDefinition mmapDef = attributes.getMultiHashMapDefinition();
+
+		// get number & types of dimensions
+		byte[] dimTypes = mmapDef.getAttributeKeyspaceDimensionTypes(attributeName);
+
+		// set top level attribute name, label
+		attr.setLabel(COMPLEX_TYPE);
+		attr.setName(attributeName);
+		attr.setValue(String.valueOf(dimTypes.length));
+
+		// grab the complex attribute structure
+		Map complexAttributeStructure = getComplexAttributeStructure(mmap, id, attributeName, null, 0, dimTypes.length);
+
+		// walk the struture
+		byte valType = mmapDef.getAttributeValueType(attributeName);
+		attr.getContent().add(walkComplexAttributeStructure(null, complexAttributeStructure, checkType(valType), dimTypes, 0));
+
+		// outta here
+		return attr;
+	}
+
+	/**
+	 * Returns a map where the key(s) are each key in the attribute key space,
+	 * and the value is another map or the attribute value.
+	 *
+	 * For example,  if the following key:
+	 * 
+	 * {externalref1}{authors}{1} pointed to the following value:
+	 *
+	 * "author 1 name",
+	 *
+	 * Then we would have a Map where the key is externalref1,
+	 * the value is a Map where the key is {authors},
+	 * the value is a Map where the key is {1},
+	 * the value is "author 1 name".
+	 * 
+	 * @param mmap          - reference to MultiHashMap used by CyAttributes
+	 * @param id            - id of node, edge or network
+	 * @param attributeName - name of attribute
+	 * @param keys          - array of objects which store attribute keys
+	 * @param keysIndex     - index into keys array we should add the next key
+	 * @param numKeyDimensions - the number of keys used for given attribute name
+	 * @return Map             - ref to Map interface 
+	 */
+	private Map getComplexAttributeStructure(MultiHashMap mmap, String id, String attributeName, Object[] keys, int keysIndex, int numKeyDimensions) {
+
+		// out of here if we've interated through all dimTypes
+		if (keysIndex == numKeyDimensions) return null;
+
+		// the hashmap to return
+		Map keyHashMap = new HashMap();
+
+		// create a new object array to store keys for this interation
+		// copy all exisiting keys into it
+		Object[] newKeys = new Object[keysIndex+1];
+		for (int lc = 0; lc < keysIndex; lc++) {
+			newKeys[lc] = keys[lc];
+		}
+
+		// get the key span
+		Iterator keyspan = mmap.getAttributeKeyspan(id, attributeName, keys);
+		while (keyspan.hasNext()) {
+			Object newKey = keyspan.next();
+			newKeys[keysIndex] = newKey;
+			Map nextLevelMap = getComplexAttributeStructure(mmap, id, attributeName, newKeys, keysIndex+1, numKeyDimensions);
+			Object objectToStore = (nextLevelMap == null) ? mmap.getAttributeValue(id, attributeName, newKeys) : nextLevelMap;
+			keyHashMap.put(newKey, objectToStore);
+		}
+
+		// outta here
+		return keyHashMap;
+	}
+
+	/**
+	 * Walks a complex attribute map and creates a complex attribute on behalf of createComplexAttribute().
+	 * 
+	 * @param parentAttr                - ref to a parentAttr we will be adding to (in certain cases this can be null)
+	 * @param complexAttributeStructure - ref to Map returned from a prior call to getComplexAttributeStructure.
+	 * @param attributeType             - the type (string, boolean, float, int) of the attribute value this tree describes
+	 * @param dimTypes                  - a byte array returned from a prior call to getAttributeKeyspaceDimensionTypes(attributeName);
+	 * @param dimTypesIndex             - the index into the dimTypes array we are should work on
+	 * @return att                      - ref to Att which describes the complex type attribute.  The description is as follows:
+	 *
+	 * @throws JAXBException
+	 * @throws IllegalArgumentException
+	 */
+	private Att walkComplexAttributeStructure(Att parentAttr, Map complexAttributeStructure, String attributeType, byte[] dimTypes, int dimTypesIndex) 
+		throws JAXBException, IllegalArgumentException {
+
+		// att to return
+		Att attrToReturn = null;
+
+		Iterator mapIt = complexAttributeStructure.keySet().iterator();
+		while (mapIt.hasNext()) {
+			Object key = mapIt.next();
+			Object possibleAttributeValue = complexAttributeStructure.get(key);
+			if (possibleAttributeValue instanceof Map){
+				// we need to create an instance of Att to return
+				attrToReturn = objFactory.createAtt();
+				// we have a another map
+				attrToReturn.setLabel(checkType(dimTypes[dimTypesIndex]));
+				attrToReturn.setName((String)key);
+				attrToReturn.setValue(String.valueOf(((Map)possibleAttributeValue).size()));
+				// walk the next map
+				// note: we check returned attribute address to make sure we are not adding to ourselves
+				Att returnedAttribute = walkComplexAttributeStructure(attrToReturn,
+																	  (Map)possibleAttributeValue,
+																	  attributeType, dimTypes, dimTypesIndex+1);
+				// if this is a new att, add it to the Att we will be returning
+				if (returnedAttribute != attrToReturn) attrToReturn.getContent().add(returnedAttribute);
+			}
+			else {
+				// if we are here, we must be adding attributes to the parentAttr
+				if (parentAttr == null) {
+					throw new IllegalArgumentException("Att argument should not be null.");
+				}
+				// the attribute to return this round is our parent, we just attach stuff to it
+				attrToReturn = parentAttr;
+				// create our key attribute
+				Att keyAttr = objFactory.createAtt();
+				keyAttr.setLabel(checkType(dimTypes[dimTypesIndex]));
+				keyAttr.setName(key.toString());
+				keyAttr.setValue(String.valueOf(1));
+				// create our value attribute
+				Att valueAttr = objFactory.createAtt();
+				valueAttr.setLabel(attributeType);
+				valueAttr.setValue((String)possibleAttributeValue);
+				keyAttr.getContent().add(valueAttr);
+				attrToReturn.getContent().add(keyAttr);
+			}
+		}
+
+		// outta here
+		return attrToReturn;
 	}
 
 	protected Graphics getGraphics(int type, Object target)
@@ -854,6 +1019,17 @@ public class XGMMLWriter {
 			return BOOLEAN_TYPE;
 		} else
 			return null;
+	}
+
+	private String checkType(byte dimType) {
+
+		if (dimType == MultiHashMapDefinition.TYPE_BOOLEAN) return BOOLEAN_TYPE;
+		if (dimType == MultiHashMapDefinition.TYPE_FLOATING_POINT) return FLOAT_TYPE;
+		if (dimType == MultiHashMapDefinition.TYPE_INTEGER) return INT_TYPE;
+		if (dimType == MultiHashMapDefinition.TYPE_STRING) return STRING_TYPE;
+
+		// houston we have a problem
+		return null;
 	}
 
 	private LineType lineTypeBuilder(EdgeView view) {
