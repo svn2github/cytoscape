@@ -22,8 +22,8 @@ public class ManualLayoutPlugin extends CytoscapePlugin
     JMenuItem scaleMenuItem = new JMenuItem(new ScaleAction());
     JMenuItem controlMenuItem = new JMenuItem(new ControlAction());
 
-    layoutMenu.add(rotateMenuItem);
-    layoutMenu.add(scaleMenuItem);
-    layoutMenu.add(controlMenuItem);
+    layoutMenu.add(rotateMenuItem, 0);
+    layoutMenu.add(scaleMenuItem, 1);
+    layoutMenu.add(controlMenuItem, 2);
   }
 }
