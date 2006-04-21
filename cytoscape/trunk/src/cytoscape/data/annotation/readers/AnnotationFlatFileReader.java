@@ -87,13 +87,10 @@ public class AnnotationFlatFileReader {
 		String curLine = null;
 
 		while (null != (curLine = rd.readLine())) {
-
 			extractedLines.add(curLine);
-			// System.out.println( curLine );
 		}
 		rd.close();
 
-		// System.out.println("Making array.");
 		Object[] entireFile = extractedLines.toArray();
 		lines = new String[entireFile.length];
 		try {
@@ -201,9 +198,9 @@ public class AnnotationFlatFileReader {
 			String entityName = tokens[0].trim();
 			int id = stringToInt(tokens[1].trim());
 
+			// Swap first alias and label
 			if (flip == false) {
 				annotation.add(entityName, id);
-
 				String[] syno = thr.getAllCommonNames(entityName);
 				for (int idx = 0; idx < syno.length; idx++) {
 					annotation.add(syno[idx], id);
@@ -225,10 +222,6 @@ public class AnnotationFlatFileReader {
 			// id);
 
 		}
-
-		// System.out.println ("AnnotationFlatFileReader.parse, annotation:\n" +
-		// annotation);
-
 	} // parse
 
 	// -------------------------------------------------------------------------
