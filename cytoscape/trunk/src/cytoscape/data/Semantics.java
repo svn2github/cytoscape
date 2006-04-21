@@ -130,7 +130,7 @@ public class Semantics {
 	 * names should be created node identifiers.
 	 * 
 	 */
-	public static void applyNamingServices(cytoscape.CyNetwork network) {
+	public static void applyNamingServices(CyNetwork network) {
 		assignSpecies(network);
 		assignCommonNames(network, Cytoscape.getBioDataServer());
 	}
@@ -158,20 +158,9 @@ public class Semantics {
 		} // we have no value to set
 
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
-		// CountedIterator keys =
-		// nodeAttributes.getMultiHashMap().getObjectKeys(
-		// CANONICAL_NAME);
-		// String[] nodeLabels = new String[keys.numRemaining()];
-		// int inx = 0;
-		// while (keys.hasNext()) {
-		// nodeLabels[inx++] = (String) keys.next();
-		// }
-		//		
-		Iterator nodeIt = network.nodesIterator();
-		// for (int i = 0; i < nodeLabels.length; i++) {
-		while (nodeIt.hasNext()) {
 
-			// String nodeLabel = nodeLabels[i];
+		Iterator nodeIt = network.nodesIterator();
+		while (nodeIt.hasNext()) {
 			CyNode node = (CyNode) nodeIt.next();
 			String nodeLabel = node.getIdentifier();
 			String species = nodeAttributes.getStringAttribute(nodeLabel,
@@ -234,7 +223,6 @@ public class Semantics {
 
 		// If species are null, use default species name
 		if (species == null) {
-
 			species = nodeAttributes.getStringAttribute(id, SPECIES);
 			if (species == null) {
 				species = CytoscapeInit.getProperty("defaultSpeciesName");
@@ -254,14 +242,17 @@ public class Semantics {
 			return;
 
 		// now do the name assignment
-		// String cname = bds.getCanonicalName(species, id);
 		String nodeLabel = id;
-		// if (id != nodeAttributes.getStringAttribute(id, CANONICAL_NAME)) {
-		// nodeAttributes.setAttribute(id, CANONICAL_NAME, id);
-		// }
 
 		if (nodeLabel != null) {
+			// First, try to get aliases using the label.
 			String[] synonyms = bds.getAllCommonNames(species, nodeLabel);
+			
+			// Next,check the aliases, since nodeLabel can be a part of aliases.
+			String targetLabel = bds.getCanonicalName(species, nodeLabel);
+			String[] reverseSynonyms = bds.getAllCommonNames(species, targetLabel);
+			
+			
 			StringBuffer concat = new StringBuffer();
 			String common_name = null;
 
@@ -274,10 +265,22 @@ public class Semantics {
 						common_name = synonyms[j];
 				}
 			}
+			
+			for (int i = 0; i < reverseSynonyms.length; ++i) {
+				if (reverseSynonyms[i].equals(id)) {
+
+				} else {
+					concat.append(reverseSynonyms[i] + " ");
+					if (common_name == null)
+						common_name = reverseSynonyms[i];
+				}
+			}
+			
 			if (common_name == null) {
 				common_name = nodeLabel;
 				concat.append(nodeLabel);
 			}
+
 			// Fill both aliases and common names
 			nodeAttributes.setAttribute(id, GO_ALIASES, concat.toString());
 			nodeAttributes.setAttribute(id, GO_COMMON_NAME, common_name);
