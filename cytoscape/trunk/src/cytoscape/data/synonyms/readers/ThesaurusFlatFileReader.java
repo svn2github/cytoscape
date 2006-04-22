@@ -130,7 +130,6 @@ public class ThesaurusFlatFileReader {
 		}
 
 		String species = lines[0].trim();
-		// System.out.println("Thesaurus reader found taxon: " + species);
 		thesaurus = new Thesaurus(species);
 
 		for (int i = 1; i < lines.length; i++) {
@@ -146,16 +145,18 @@ public class ThesaurusFlatFileReader {
 			if (tokens.length < 2)
 				continue;
 
+			// Node label.
 			String canonicalName = tokens[0].trim();
+			
+			// This is the first element in the Aliases
 			String commonName = tokens[1].trim();
+			
 			if (canonicalName.length() == 0)
 				continue;
 			if (commonName.length() == 0)
 				continue;
 
-			// The following is for "Flipping, but this does not work correctly
-			// now, we need to re-write
-			// the entire Reader system...
+			// Flipping canonical and aliases.
 			if (flip == false) {
 				thesaurus.add(canonicalName, commonName);
 				// System.out.println("Cannonical = " + canonicalName
@@ -169,6 +170,12 @@ public class ThesaurusFlatFileReader {
 			} else if (flip == true) {
 				// If flip is true, swap the fields.
 				thesaurus.add(commonName, canonicalName);
+				
+				// Then, add Aliases
+				for (int t = 2; t < tokens.length; t++) {
+					thesaurus.addAlternateCommonName(commonName, tokens[t]
+							.trim());
+				} 
 			}
 
 		}
