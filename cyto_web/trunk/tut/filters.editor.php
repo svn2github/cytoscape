@@ -81,7 +81,7 @@ Started</A> tutorial,
         specifying the location you have downloaded the file to.
    <LI> Load the node attribute file <B>RUAL.na</B> by going to the <B>File</B> menu,
         then <B>Load</B>, and then <B>Node Attributes</B>.
-   <LI> Generate a spring-embedded layout for your network.
+   <LI> Generate a yFiles organic layout for your network.
 </OL>
    Your Cytoscape window should now appear as shown:
    <P><IMG SRC="filters.editor/Fig1.jpg" WIDTH=30%>
