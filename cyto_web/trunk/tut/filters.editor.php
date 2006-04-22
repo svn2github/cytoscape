@@ -61,7 +61,7 @@ and the following datasets:
     Rual et al, Nature.2005 Oct 20;437(7062):1173-8</A> and available at 
     <A HREF="http://www.cytoscape.org/cgi-bin/moin.cgi/Data_Sets/">
     http://www.cytoscape.org/ cgi-bin/moin.cgi/Data_Sets/</A>.</LI>
-    <LI>Its attribute set <A HREF="fetching.data/RUAL.na">RUAL.na</A>, 
+    <LI>Its attribute set <A HREF="filters.editor/RUAL.na">RUAL.na</A>, 
         available at the same site.
 </UL>
 Before starting, please download these datasets to your computer.
