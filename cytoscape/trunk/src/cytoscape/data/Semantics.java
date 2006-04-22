@@ -46,6 +46,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
@@ -94,11 +95,12 @@ public class Semantics {
 	public static final String ALIASES = "aliases";
 
 	/*
-	 * KONO:04/19/2006 From v2.3, the following terms will be used only by Gene
+	 * KONO:04/19/2006 From v2.3, the following two terms will be used only by Gene
 	 * Ontology Server.
 	 * 
-	 * The basic meaning is same as above, but canonical name will be replaced
-	 * by the node id.
+	 *  - The basic meaning is same as above, but canonical name will be replaced
+	 *    by the node id.
+	 *  - Aliases are no longer String object.  It's a list now.
 	 */
 	public static final String GO_COMMON_NAME = "GO Common Name";
 	public static final String GO_ALIASES = "GO Aliases";
@@ -252,17 +254,18 @@ public class Semantics {
 			String targetLabel = bds.getCanonicalName(species, nodeLabel);
 			String[] reverseSynonyms = bds.getAllCommonNames(species, targetLabel);
 			
+			Set synoSet = new TreeSet();
 			
-			StringBuffer concat = new StringBuffer();
-			String common_name = null;
+			//StringBuffer concat = new StringBuffer();
+			String commonName = null;
 
 			for (int j = 0; j < synonyms.length; ++j) {
 				if (synonyms[j].equals(id)) {
 
 				} else {
-					concat.append(synonyms[j] + " ");
-					if (common_name == null)
-						common_name = synonyms[j];
+					synoSet.add(synonyms[j]);
+					if (commonName == null)
+						commonName = synonyms[j];
 				}
 			}
 			
@@ -270,20 +273,24 @@ public class Semantics {
 				if (reverseSynonyms[i].equals(id)) {
 
 				} else {
-					concat.append(reverseSynonyms[i] + " ");
-					if (common_name == null)
-						common_name = reverseSynonyms[i];
+					synoSet.add(reverseSynonyms[i]);
+					if (commonName == null)
+						commonName = reverseSynonyms[i];
 				}
 			}
 			
-			if (common_name == null) {
-				common_name = nodeLabel;
-				concat.append(nodeLabel);
+			if (commonName == null) {
+				commonName = nodeLabel;
+				synoSet.add(commonName);
 			}
 
+			// Convert Set to List
+			List synoList = new ArrayList();
+			synoList.addAll(synoSet);
 			// Fill both aliases and common names
-			nodeAttributes.setAttribute(id, GO_ALIASES, concat.toString());
-			nodeAttributes.setAttribute(id, GO_COMMON_NAME, common_name);
+
+			nodeAttributes.setAttributeList(id, GO_ALIASES, synoList);
+			nodeAttributes.setAttribute(id, GO_COMMON_NAME, commonName);
 		}
 	}
 
