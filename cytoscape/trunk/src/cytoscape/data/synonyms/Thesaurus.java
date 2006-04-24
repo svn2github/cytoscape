@@ -46,6 +46,7 @@ package cytoscape.data.synonyms;
 //-----------------------------------------------------------------------------
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Vector;
 
 //-----------------------------------------------------------------------------
@@ -174,6 +175,25 @@ public class Thesaurus implements Serializable {
 
 	} // getAlternateCommonNames
 
+	
+	/*
+	 * This method returns all names including aliases and key.
+	 */
+	public String[] getAllNamesInGroup(String key) {
+
+		if (labelToAll.containsKey(key)) {
+			Vector vector = (Vector) labelToAll.get(key);
+			vector.add(key);
+			return (String[]) vector.toArray(new String[0]);
+		} else if(aliasesToLabel.containsKey(key)) {
+			String label = (String) aliasesToLabel.get(key);
+			Vector vector = (Vector) labelToAll.get(label);
+			return (String[]) vector.toArray(new String[0]);
+		}else
+			return new String[0];
+
+	}
+	
 	// -----------------------------------------------------------------------------
 
 	public String toString() {
@@ -183,6 +203,27 @@ public class Thesaurus implements Serializable {
 
 		return species + ": " + length;
 	}
+	
+	
+	/*
+	 * This is for debugging.
+	 * 
+	 */
+	public void dump() {	
+		Iterator it = labelToCommon.keySet().iterator();
+		while(it.hasNext()) {
+			String label = (String) it.next();
+			
+			System.out.print("Key is " + label + ", and commons are ");
+			
+			String[] alias = this.getAllCommonNames(label);
+			for(int i = 0; i<alias.length;i++) {
+				System.out.print(alias[i] + ", " );
+			}
+			System.out.println("");
+		}
+	}
+	
 	// -----------------------------------------------------------------------------
 } // Thesaurus
 
