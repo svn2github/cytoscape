@@ -1,40 +1,39 @@
-
 /*
-  File: BioDataServerPanel4.java 
-  
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-  
-  The Cytoscape Consortium is: 
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Pasteur Institute
-  - Agilent Technologies
-  
-  This library is free software; you can redistribute it and/or modify it
-  under the terms of the GNU Lesser General Public License as published
-  by the Free Software Foundation; either version 2.1 of the License, or
-  any later version.
-  
-  This library is distributed in the hope that it will be useful, but
-  WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
-  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
-  documentation provided hereunder is on an "as is" basis, and the
-  Institute for Systems Biology and the Whitehead Institute 
-  have no obligations to provide maintenance, support,
-  updates, enhancements or modifications.  In no event shall the
-  Institute for Systems Biology and the Whitehead Institute 
-  be liable to any party for direct, indirect, special,
-  incidental or consequential damages, including lost profits, arising
-  out of the use of this software and its documentation, even if the
-  Institute for Systems Biology and the Whitehead Institute 
-  have been advised of the possibility of such damage.  See
-  the GNU Lesser General Public License for more details.
-  
-  You should have received a copy of the GNU Lesser General Public License
-  along with this library; if not, write to the Free Software Foundation,
-  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ File: BioDataServerPanel4.java 
+ 
+ Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+ 
+ The Cytoscape Consortium is: 
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Pasteur Institute
+ - Agilent Technologies
+ 
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+ 
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute 
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute 
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute 
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+ 
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+ */
 
 package cytoscape.util.swing;
 
@@ -47,15 +46,12 @@ import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.io.File;
 
-import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JProgressBar;
-import javax.swing.JRadioButton;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
@@ -63,79 +59,33 @@ import javax.swing.border.EmptyBorder;
 import cytoscape.CytoscapeInit;
 
 /*
- * Final Step for the new file format.
- * This panel creates the manifest file and load the biodataserver.
+ * Final Step for the new file format. This panel creates the manifest file and
+ * load the biodataserver.
  */
-public class BioDataServerPanel4 extends JPanel {
+public class ManifestfileSelectionPanel extends JPanel {
 
 	private JLabel anotherBlankSpace;
-
 	private JLabel blankSpace;
-
-	private ButtonGroup connectorGroup;
-
 	private JLabel jLabel1;
-
 	private JPanel jPanel1;
-
-	private JLabel progressDescription;
-
-	private JProgressBar progressSent;
-
-	private JLabel welcomeTitle;
-
-	private JLabel yetAnotherBlankSpace1;
-
 	private JPanel contentPanel;
-
 	private JLabel iconLabel;
-
 	private JSeparator separator;
-
 	private JLabel textLabel;
-
 	private JPanel titlePanel;
-
-	private JLabel jLabel2;
-
 	private JLabel jLabel3;
-
 	private JComboBox spList;
 
 	File start;
-
 	String species;
 
 	private JTextField taxonNameBox;
-
-	private JButton setButton;
-
-	private ButtonGroup selectionType;
-
-	private JRadioButton comboBoxButton;
-
-	private JRadioButton textBoxButton;
-
-	private JPanel jPanel2;
-
-	private JPanel jPanel3;
-
-	private JTextField currentSpBox;
-
 	private JTextField manifestFileName;
-
 	private JButton selectManifestFile;
-
 	private String manifestName;
-
 	private JFileChooser jc1;
 
-	static final String TAXON_FILE = "tax_report.txt";
-
-	private final String FS = System.getProperty("file.separator");
-
-	public BioDataServerPanel4() {
-
+	public ManifestfileSelectionPanel() {
 		super();
 
 		species = null;
@@ -193,7 +143,7 @@ public class BioDataServerPanel4 extends JPanel {
 	public File getManifestFile(boolean show) {
 		File targetFile = null;
 		if (show == true) {
-			int result = jc1.showOpenDialog(null);
+			int result = jc1.showOpenDialog(this);
 		}
 		targetFile = jc1.getSelectedFile();
 		return targetFile;
@@ -213,11 +163,6 @@ public class BioDataServerPanel4 extends JPanel {
 		JPanel contentPanel1 = new JPanel();
 		contentPanel1.setLayout(new GridLayout(3, 1));
 
-		// String filePath = start + "/testData/annotation/tax_report.txt";
-		String filePath = start + FS + TAXON_FILE;
-		// System.out.println( "Taxon file is: " + filePath );
-		File taxonFile = new File(filePath);
-
 		manifestFileName = new JTextField(44);
 		selectManifestFile = new JButton("Select Manifest File");
 
@@ -226,10 +171,8 @@ public class BioDataServerPanel4 extends JPanel {
 
 		blankSpace = new JLabel();
 		anotherBlankSpace = new JLabel();
-		yetAnotherBlankSpace1 = new JLabel();
 
 		jLabel1 = new JLabel();
-		jLabel2 = new JLabel();
 		jLabel3 = new JLabel();
 
 		jLabel1
@@ -237,12 +180,9 @@ public class BioDataServerPanel4 extends JPanel {
 
 		contentPanel1.add(jLabel1);
 		jPanel1.add(blankSpace);
-
-		// jPanel1.add(jLabel2);
 		jPanel1.add(anotherBlankSpace);
 		jPanel1.add(manifestFileName);
 		jPanel1.add(selectManifestFile);
-		// jPanel1.add(anotherBlankSpace);
 		contentPanel1.add(jPanel1);
 
 		jLabel3
