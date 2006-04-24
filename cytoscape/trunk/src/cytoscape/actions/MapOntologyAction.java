@@ -42,8 +42,10 @@ package cytoscape.actions;
 
 import java.awt.event.ActionEvent;
 
+import javax.swing.ImageIcon;
+
 import cytoscape.Cytoscape;
-//import cytoscape.data.annotation.OntologyMapperDialog;
+import cytoscape.data.annotation.OntologyMapperDialog;
 import cytoscape.util.CytoscapeAction;
 
 /*
@@ -51,10 +53,15 @@ import cytoscape.util.CytoscapeAction;
  */
 public class MapOntologyAction extends CytoscapeAction {
 
-	//OntologyMapperDialog god;
+	OntologyMapperDialog god;
 
 	public MapOntologyAction() {
-		super("Map Ontology 2");
+		super("Map Ontology...");
+		setPreferredMenu("File.Import.Ontology");
+	}
+	
+	public MapOntologyAction(boolean isMenu, ImageIcon icon) {
+		super("Map Ontology...", icon);
 		setPreferredMenu("File.Import.Ontology");
 	}
 
@@ -64,7 +71,7 @@ public class MapOntologyAction extends CytoscapeAction {
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
 	public void actionPerformed(ActionEvent e) {
-//		god = new OntologyMapperDialog(Cytoscape.getDesktop(),false);
-//		god.show();
+		god = new OntologyMapperDialog(Cytoscape.getDesktop(),false);
+		god.show();
 	}
 }

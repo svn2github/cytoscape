@@ -684,7 +684,7 @@ public class CyMenus implements GraphViewChangeListener {
 		ImageIcon goSmallIcon = new ImageIcon(getClass().getResource(
 				"images/new/GOsmall.gif"));
 
-		addAction(new AnnotationGui(true, goSmallIcon));
+		addAction(new MapOntologyAction(true, goSmallIcon));
 		//addAction(new MapOntologyAction());
 
 		// fill the Save submenu

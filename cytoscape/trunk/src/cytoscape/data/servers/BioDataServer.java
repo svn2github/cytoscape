@@ -512,8 +512,10 @@ public class BioDataServer {
 			ThesaurusFlatFileReader reader = new ThesaurusFlatFileReader(
 					filename);
 			thesaurus = reader.getThesaurus();
+			
+			//thesaurus.dump();
+			
 			server.addThesaurus(thesaurus.getSpecies(), thesaurus);
-	
 		}
 
 	} // loadThesaurusFiles
@@ -533,7 +535,8 @@ public class BioDataServer {
 					flip);
 			thesaurus = reader.getThesaurus();
 			
-//			server.addThesaurus(taxonName, thesaurus);
+			//thesaurus.dump();
+			
 			server.addThesaurus(thesaurus.getSpecies(), thesaurus);
 			thRd.close();
 		}

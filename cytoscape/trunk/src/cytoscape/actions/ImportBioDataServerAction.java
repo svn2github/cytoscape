@@ -43,7 +43,7 @@ package cytoscape.actions;
 import java.awt.event.ActionEvent;
 
 import cytoscape.util.CytoscapeAction;
-import cytoscape.util.swing.BioDataServerWizard;
+import cytoscape.util.swing.GeneOntologyWizard;
 
 /**
  * Action allows the loading of a BioDataServer from the gui.
@@ -56,7 +56,7 @@ public class ImportBioDataServerAction extends CytoscapeAction {
 
 	static final int SUCCESS = 0;
 
-	BioDataServerWizard wiz;
+	GeneOntologyWizard wiz;
 
 	public ImportBioDataServerAction() {
 		super("Ontology Wizard...");
@@ -73,7 +73,7 @@ public class ImportBioDataServerAction extends CytoscapeAction {
 		int wizardResult;
 
 		// Create the wizard to choose biodataserver
-		wiz = new BioDataServerWizard();
+		wiz = new GeneOntologyWizard();
 		wizardResult = wiz.show();
 		if (wizardResult == SUCCESS) {
 			System.out.println("Succesfully loaded Data Server.");
