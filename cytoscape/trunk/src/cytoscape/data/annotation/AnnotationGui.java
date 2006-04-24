@@ -170,7 +170,7 @@ public class AnnotationGui extends CytoscapeAction {
 		
 		Semantics.applyNamingServices(network);
 		
-		defaultSpecies = CytoscapeInit.getDefaultSpeciesName();
+		defaultSpecies = CytoscapeInit.getProperty("defaultSpeciesName");
 		// if (this.mainDialog == null) {
 		mainDialog = new Gui("Import Annotation from Ontology Data");
 		mainDialog.pack();
