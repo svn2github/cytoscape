@@ -133,7 +133,7 @@ class ImportAttributesTask implements Task {
             taskMonitor.setStatus("Reading in Attributes");
             //  Get Defaults.
             BioDataServer bioDataServer = Cytoscape.getBioDataServer();
-            String speciesName = CytoscapeInit.getDefaultSpeciesName();
+            String speciesName = CytoscapeInit.getProperty("defaultSpeciesName");
             boolean canonicalize = !CytoscapeInit.noCanonicalization();
 
             //  Read in Data
