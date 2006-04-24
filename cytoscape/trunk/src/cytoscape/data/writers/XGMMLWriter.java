@@ -502,7 +502,7 @@ public class XGMMLWriter {
 
 		// walk the struture
 		byte valType = mmapDef.getAttributeValueType(attributeName);
-		attr.getContent().add(walkComplexAttributeStructure(null, complexAttributeStructure, checkType(valType), dimTypes, 0));
+		attr.getContent().add(walkComplexAttributeStructure(null, complexAttributeStructure, getType(valType), dimTypes, 0));
 
 		// outta here
 		return attr;
@@ -620,7 +620,7 @@ public class XGMMLWriter {
 				// we need to create an instance of Att to return
 				attrToReturn = objFactory.createAtt();
 				// we have a another map
-				attrToReturn.setLabel(checkType(dimTypes[dimTypesIndex]));
+				attrToReturn.setLabel(getType(dimTypes[dimTypesIndex]));
 				attrToReturn.setName((String)key);
 				attrToReturn.setValue(String.valueOf(((Map)possibleAttributeValue).size()));
 				// walk the next map
@@ -640,7 +640,7 @@ public class XGMMLWriter {
 				attrToReturn = parentAttr;
 				// create our key attribute
 				Att keyAttr = objFactory.createAtt();
-				keyAttr.setLabel(checkType(dimTypes[dimTypesIndex]));
+				keyAttr.setLabel(getType(dimTypes[dimTypesIndex]));
 				keyAttr.setName(key.toString());
 				keyAttr.setValue(String.valueOf(1));
 				// create our value attribute
@@ -1054,7 +1054,14 @@ public class XGMMLWriter {
 			return null;
 	}
 
-	private String checkType(byte dimType) {
+	/**
+	 * Given a byte describing a MultiHashMapDefinition TYPE_*,
+	 * return the proper XGMMLWriter type.
+	 *
+	 * @param dimType - byte as described in MultiHashMapDefinition
+	 * @return String
+	 */
+	private String getType(byte dimType) {
 
 		if (dimType == MultiHashMapDefinition.TYPE_BOOLEAN) return BOOLEAN_TYPE;
 		if (dimType == MultiHashMapDefinition.TYPE_FLOATING_POINT) return FLOAT_TYPE;
