@@ -726,16 +726,12 @@ public class OntologyMapperDialog extends JDialog {
 
 		public void valueChanged(TreeSelectionEvent e) {
 
-			System.out.println("TREE!! ");
-
 			DefaultMutableTreeNode node = (DefaultMutableTreeNode) goServerTree
 					.getLastSelectedPathComponent();
 			if (node == null)
 				return;
 			if (!node.isLeaf())
 				return;
-
-			System.out.println("Path = ! ");
 			annotationPath = goServerTree.getSelectionPaths()[0];
 			// annotateNodesButton.setEnabled(true);
 		}
