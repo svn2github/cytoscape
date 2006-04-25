@@ -31,30 +31,39 @@
 <h2>Cytoscape Tutorial Introduction</h2>
 </center>
 
-Cytoscape is a computer program which is useful for biological data integration 
-in the context of a network, and for visualizing and performing calculations on 
-biological networks. Many useful capabilities are built into the platform's 
-core, and plug-ins can be developed by those who know the Java programming 
-language to add new features.<p>
 
-This set of web pages contains a set of tutorials for Cytoscape. You
-may want to glance at the 
+Cytoscape is an open-source package for visualization and analysis of 
+biological network data.  Cytoscape's core functionality includes methods for 
+automated graph layout, integrating network data with other data such as 
+expression data and Gene Ontology annotations, and setting visual attributes 
+according tonode or edge attributes.  In addition, Cytoscape offers an open
+plugin architecture, allowing anyone to add functionality by writing a plugin, 
+and maintains a library of available third-party plugins.  There are 
+currently plugins available for topics such as literature searching and 
+module detection.
+<p>   
+
+These pages contain a set of tutorials to serve as an introduction to Cytoscape and its plugins.  
+The first group describes Cytoscape's core functionality.  
+Using <a href="http://java.sun.com/docs/books/tutorial/information/javawebstart.html"> Java Web Start</a>, 
+you may run these tutorials on your personal computer without any need to install Cytoscape.  Be aware that there are security issues with Java Web Start, as we have described on a <a href="../tut_security.php">related page</a>.  
+Java Web Start should work by default after it is installed on Windows and 
+Mac OSX.&nbsp; On Linux, some extra set-up steps
+<a href="http://java.sun.com/products/javawebstart/download-linux.html">
+steps</a> may be required.</p>
+<p>
+
+A <a href="tutorial.advanced.php">second group</a> of tutorials describes
+advanced operation of Cytoscape, with emphasis on selected plugins.  While all
+the plugins described are freely available, many require a user agreement, some
+of which preclude redistribution.  Thus, Java Web Start is not available for
+this group, although instructions are provided for installing Cytoscape and
+its plugins on your local computer.
+<p>
+You may want to glance at the 
 <a href="../manual/Cytoscape2_2Manual.pdf">Cytoscape manual</a> while
 running these tutorials.
-
 <p>
-
-The first group of tutorials describes basic operation of Cytoscape.
-Using <a href="http://java.sun.com/docs/books/tutorial/information/javawebstart.html"> Java Web Start</a>, 
-you may run these demos/tutorials on your personal computer. If the tutorials don't work 
-when you click on the link to start it, you may need to install <a href="http://java.sun.com/docs/books/tutorial/information/javawebstart.html"> Java Web Start</a>.
-Using Java Web Start in general has some <a href="tut_security.php">security issues</a>.
-<p>
-A <a href="tutorial.advanced.php">second group</a> of tutorials describes
-advanced operation of Cytoscape, including descriptions of selected external
-plugins.
-<p>o
-
 The following web browsers 
 are supported for these tutorials:<BR>
 <ul>
@@ -63,11 +72,6 @@ are supported for these tutorials:<BR>
   <li> Mozilla 6.0 or later
 </ul>
 
-
-<p>Java Web Start should work by default after it is installed on Windows and 
-Mac OSX.&nbsp; On Linux, some extra set-up steps
-<a href="http://java.sun.com/products/javawebstart/download-linux.html">may be 
-required</a>.</p>
 
    	<? include "tut.footer.php"; ?>
 	<? include "../footer.php"; ?>

@@ -32,30 +32,34 @@
 </center>
 
 Some of the most interesting functionality available with Cytoscape
-comes from external plugins, which can be developed by those who know 
-the Java programming language.
+comes from external plugins, which can be developed by anyone with a 
+certain degree of Java programming skill.
 
 <p>
 
 This set of web pages contains a set of tutorials for advanced operation of
 Cytoscape, especially using selected plugins. Before starting these tutorials,
 we recommend that you first run through the 
-<a href="tutorial.php">introductory</a> tutorials, all of which can be
-executed using 
-<a href="http://java.sun.com/docs/books/tutorial/information/javawebstart.html"> Java Web Start</a>.
+<a href="tutorial.php">introductory</a> tutorials.  While all of the 
+introductory tutorials can be executed using 
+<a href="http://java.sun.com/docs/books/tutorial/information/javawebstart.html"> Java Web Start</a>, the advanced tutorials cannot, for compliance with the 
+redistribution terms of many plugins' user agreements.  Note that all plugins
+covered in these tutorials are freely-available, as is Cytoscape.  
 <p>
 To execute the advanced tutorials, you will first need to install Cytoscape
 (and any required plugins) on your local system.  The 
 <a href="../manual/Cytoscape2_2Manual.pdf">Cytoscape manual</a> includes
 instructions for installing Cytoscape.  All plugins described are available
-through the Cytoscape<a href="../plugins2.php">plugins</a> page.  Most plugins
+through the Cytoscape <a href="../plugins2.php">plugins</a> page.  Most plugins
 can be installed by downloading the plugin JAR files and copying them to
 the <b>plugins</b> subdirectory of your Cytoscape directory.  For some 
 plugins, special download links are provided, to detailing specific 
 installation steps.  Each tutorial lists the required plugins, and outlines
 the installation procedure in detail.  
 <p>
-
+Note that for those interested in writing plugins, there is a 
+<a href="../pluginTutorial.php">tutorial</a> on writing Cytoscape plugins.
+<p>
 The following web browsers 
 are supported for these tutorials:<BR>
 <ul>
