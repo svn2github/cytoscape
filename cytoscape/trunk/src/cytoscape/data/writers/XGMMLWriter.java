@@ -513,7 +513,7 @@ public class XGMMLWriter {
 			// and set its name, label, & value
 			Att thisKeyAttr = objFactory.createAtt();
 			thisKeyAttr.setLabel(getType(dimTypes[0]));
-			thisKeyAttr.setName((String)key);
+			thisKeyAttr.setName(key.toString());
 			thisKeyAttr.setValue(String.valueOf(thisKeyMap.size()));
 			// now lets walk the keys structure and add to its attributes content
 			thisKeyAttr.getContent().add(walkComplexAttributeStructure(null, thisKeyMap, valTypeStr, dimTypes, 1));
