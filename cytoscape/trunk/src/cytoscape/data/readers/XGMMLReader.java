@@ -70,6 +70,8 @@ import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
+import cytoscape.data.attr.MultiHashMap;
+import cytoscape.data.attr.MultiHashMapDefinition;
 import cytoscape.generated2.Att;
 import cytoscape.generated2.Graph;
 import cytoscape.generated2.Graphics;
@@ -114,6 +116,7 @@ public class XGMMLReader implements GraphReader {
 	protected static final String BOOLEAN_TYPE = "boolean";
 	protected static final String LIST_TYPE = "list";
 	protected static final String MAP_TYPE = "map";
+	protected static final String COMPLEX_TYPE = "complex";
 
 	// XGMML file name to be loaded.
 	private String fileName;
@@ -901,8 +904,8 @@ public class XGMMLReader implements GraphReader {
 	}
 
 	/**
-	 * Reads a network attribute from the xggml file 
-	 * and sets it within CyAttributes for a network.
+	 * Reads an attribute from the xggml file 
+	 * and sets it within CyAttributes.
 	 * 
 	 * @param attributes - CyAttributes to load
 	 * @param targetName - key into CyAttributes
@@ -949,7 +952,7 @@ public class XGMMLReader implements GraphReader {
 			while (listIt.hasNext()) {
 				Object listItem = listIt.next();
 				if (listItem != null && listItem.getClass() == AttImpl.class) {
-					Object itemClassObject = getItemClassObject((AttImpl)listItem);
+					Object itemClassObject = createObjectFromAttValue((AttImpl)listItem);
 					if (itemClassObject != null) listAttr.add(itemClassObject);
 				}
 			}
@@ -962,7 +965,7 @@ public class XGMMLReader implements GraphReader {
 			while (mapIt.hasNext()){
 				Object mapItem = mapIt.next();
 				if (mapItem != null && mapItem.getClass() == AttImpl.class) {
-					Object mapClassObject = getItemClassObject((AttImpl)mapItem);
+					Object mapClassObject = createObjectFromAttValue((AttImpl)mapItem);
 					if (mapClassObject != null) {
 						mapAttr.put(((AttImpl)mapItem).getName(), mapClassObject);
 					}
@@ -970,16 +973,147 @@ public class XGMMLReader implements GraphReader {
 			}
 			attributes.setAttributeMap(targetName, curAtt.getName(), mapAttr);
 		}
+		// complex type
+		else if (dataType.equals(COMPLEX_TYPE)) {
+			String attributeName = curAtt.getName();
+			int numKeys = new Integer((String)curAtt.getValue()).intValue();
+			defineComplexAttribute(attributeName, attributes, curAtt, null, 0, numKeys);
+			createComplexAttribute(attributeName, attributes, targetName, curAtt, null, 0, numKeys);
+		}
 	}
 
 	/**
-	 * Given an attribute implemenation ref,
-	 * method returns an instance of an appropriate class.
+	 * Determines the complex attribute keyspace and 
+	 * defines a cyattribute for the complex attribute
+	 * based on its keyspace.
+	 * 
+	 * @param attributeName            - attribute name
+	 * @param attributes               - CyAttributes to load
+	 * @param curAtt                   - the attribute read out of xgmml file
+	 * @param attributeDefintion       - byte[] which stores attribute key space definition
+	 * @param attributeDefinitionCount - the number of keys we've discovered so far
+	 * @param numKeys                  - the number of keys to discover
+	 */
+	private void defineComplexAttribute(String attributeName, CyAttributes attributes, Att curAtt,
+										byte[] attributeDefinition, int attributeDefinitionCount, int numKeys) {
+
+		// if necessary, init attribute definition
+		if (attributeDefinition == null){
+			attributeDefinition = new byte[numKeys];
+		}
+
+		// get current interaction interator and attribute
+		Iterator complexIt = curAtt.getContent().iterator();
+		Att complexItem = (Att)complexIt.next();
+		if (attributeDefinitionCount < numKeys){
+			attributeDefinition[attributeDefinitionCount++] = getMultHashMapTypeFromAtt(complexItem);
+			if (attributeDefinitionCount < numKeys) {
+				defineComplexAttribute(attributeName, attributes, complexItem, attributeDefinition, attributeDefinitionCount, numKeys);
+			}
+		}
+
+		// ok, if we are here, we've gotten all the keys
+		if (attributeDefinitionCount == numKeys) {
+			// go one more level deep to get value(s) type
+			Iterator nextComplexIt = complexItem.getContent().iterator();
+			Att nextComplexItem = (Att)nextComplexIt.next();
+			byte valueType = getMultHashMapTypeFromAtt(nextComplexItem);
+			MultiHashMapDefinition mhmd = attributes.getMultiHashMapDefinition();
+			mhmd.defineAttribute(attributeName, valueType, attributeDefinition);
+		}
+	}
+
+	/**
+	 * Reads a complex attribute from the xggml file 
+	 * and sets it within CyAttributes.
+	 * 
+	 * @param attributeName   - attribute name
+	 * @param attributes      - CyAttributes to load
+	 * @param targetName      - the key for the complex attribute we set (node id, edge id, network id, etc)
+	 * @param curAtt          - the attribute read out of xgmml file
+	 * @param keySpace        - byte[] which stores keyspace
+	 * @param keySpaceCount   - the number of keys in the keyspace we've discovered so far
+	 * @param numKeySpaceKeys - the number of key space keys to discover
+	 */
+	private void createComplexAttribute(String attributeName, CyAttributes attributes, String targetName,
+										Att curAtt, Object[] keySpace, int keySpaceCount, int numKeySpaceKeys) {
+
+		// if necessary, init keySpace array
+		if (keySpace == null){
+			keySpace = new Object[numKeySpaceKeys];
+		}
+
+		// get this attributes iterator
+		Iterator complexIt = curAtt.getContent().iterator();
+		// interate over this attributes tree
+		while (complexIt.hasNext()) {
+			Object complexItemObj = complexIt.next();
+			if (complexItemObj != null && complexItemObj.getClass() == AttImpl.class) {
+				AttImpl complexItem = (AttImpl)complexItemObj;
+				// add this key to the keyspace
+				keySpace[keySpaceCount] = createObjectFromAttName(complexItem);
+				// recurse if we still have keys to go
+				if (keySpaceCount+1 < numKeySpaceKeys-1) {
+					createComplexAttribute(attributeName, attributes, targetName,
+										   complexItem,keySpace, keySpaceCount+1, numKeySpaceKeys);
+				}
+				else {
+					// ok, if we are here, we've gotten all the keys but the last level
+					MultiHashMap mhm = attributes.getMultiHashMap();
+					// interate through last level keys
+					Iterator nextComplexIt = complexItem.getContent().iterator();
+					while (nextComplexIt.hasNext()) {
+						Object nextComplexItemObj = nextComplexIt.next();
+						if (nextComplexItemObj != null && nextComplexItemObj.getClass() == AttImpl.class) {
+							// get last level key and set in keyspace 
+							AttImpl nextComplexItem = (AttImpl)nextComplexItemObj;
+							keySpace[keySpaceCount+1] = createObjectFromAttName(nextComplexItem);
+							// now grab the value - there can only be one
+							Iterator complexValueIterator = nextComplexItem.getContent().iterator();
+							Object complexValue = complexValueIterator.next();
+							Object valueToStore = createObjectFromAttValue((AttImpl)complexValue);
+							mhm.setAttributeValue(targetName, attributeName, valueToStore, keySpace);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Creates an object of an appropriate class,
+	 * with value derived from attribute name.
 	 *
 	 * @param item - AttImpl
 	 * @return     - Object
 	 */
-	private Object getItemClassObject(AttImpl item){
+	private Object createObjectFromAttName(AttImpl item){
+		
+		if (item.getLabel().equals(STRING_TYPE)) {
+			return new String(item.getName());
+		}
+		else if (item.getLabel().equals(INT_TYPE)) {
+			return new Integer(item.getName());
+		}
+		else if (item.getLabel().equals(FLOAT_TYPE)) {
+			return new Double(item.getName());
+		}
+		else if (item.getLabel().equals(BOOLEAN_TYPE)) {
+			return new Boolean(item.getName());
+		}
+
+		// outta here
+		return null;
+	}
+
+	/**
+	 * Creates an object of an appropriate class,
+	 * with value derived from attribute value.
+	 *
+	 * @param item - AttImpl
+	 * @return     - Object
+	 */
+	private Object createObjectFromAttValue(AttImpl item){
 		
 		if (item.getLabel().equals(STRING_TYPE)) {
 			return new String(item.getValue());
@@ -996,5 +1130,31 @@ public class XGMMLReader implements GraphReader {
 
 		// outta here
 		return null;
+	}
+
+	/**
+	 * Given an attribute, method returns a
+	 * MultiHashMapDefinition byte corresponding to its type.
+	 *
+	 * @param item - Att
+	 * @return     - byte
+	 */
+	private byte getMultHashMapTypeFromAtt(Att item){
+		
+		if (item.getLabel().equals(STRING_TYPE)) {
+			return MultiHashMapDefinition.TYPE_STRING;
+		}
+		else if (item.getLabel().equals(INT_TYPE)) {
+			return MultiHashMapDefinition.TYPE_INTEGER;
+		}
+		else if (item.getLabel().equals(FLOAT_TYPE)) {
+			return MultiHashMapDefinition.TYPE_FLOATING_POINT;
+		}
+		else if (item.getLabel().equals(BOOLEAN_TYPE)) {
+			return MultiHashMapDefinition.TYPE_BOOLEAN;
+		}
+
+		// outta here
+		return -1;
 	}
 }
