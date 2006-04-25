@@ -663,7 +663,7 @@ public class XGMMLWriter {
 				// create our value attribute
 				Att valueAttr = objFactory.createAtt();
 				valueAttr.setLabel(attributeType);
-				valueAttr.setValue((String)possibleAttributeValue);
+				valueAttr.setValue(possibleAttributeValue.toString());
 				keyAttr.getContent().add(valueAttr);
 				attrToReturn.getContent().add(keyAttr);
 			}
