@@ -164,7 +164,7 @@ public class CyMenus implements GraphViewChangeListener {
 	JMenuItem helpContentsMenuItem, helpContextSensitiveMenuItem,
 			helpAboutMenuItem;
 
-	JButton loadButton, saveButton, zoomInButton, zoomOutButton,
+	JButton openSessionButton, saveButton, zoomInButton, zoomOutButton,
 			zoomSelectedButton, zoomDisplayAllButton, showAllButton,
 			hideSelectedButton, annotationButton, vizButton;
 	JMenu opsMenu;
@@ -814,17 +814,20 @@ public class CyMenus implements GraphViewChangeListener {
 	 */
 	private void fillToolBar() {
 
-		loadButton = toolBar.add(new ImportGraphFileAction(this, false));
-		loadButton.setIcon(new ImageIcon(getClass().getResource(
+//		loadButton = toolBar.add(new ImportGraphFileAction(this, false));
+		openSessionButton = toolBar.add(new OpenSessionAction(this, false));
+		openSessionButton.setToolTipText("Open Session File...");
+		openSessionButton.setIcon(new ImageIcon(getClass().getResource(
 				"images/new/load36.gif")));
-		loadButton.setToolTipText("Load Network");
-		loadButton.setBorderPainted(false);
-		loadButton.setRolloverEnabled(true);
+		openSessionButton.setBorderPainted(false);
+		openSessionButton.setRolloverEnabled(true);
 
-		saveButton = toolBar.add(new ExportAsGMLAction(false));
+		//saveButton = toolBar.add(new ExportAsGMLAction(false));
+		saveButton = toolBar.add(new SaveSessionAsAction(this, false));
+		saveButton.setToolTipText("Save Current Session As...");
 		saveButton.setIcon(new ImageIcon(getClass().getResource(
 				"images/new/save36.gif")));
-		saveButton.setToolTipText("Save Network as GML");
+		
 		saveButton.setBorderPainted(false);
 		saveButton.setRolloverEnabled(true);
 		saveButton.setEnabled(false);
@@ -961,7 +964,7 @@ public class CyMenus implements GraphViewChangeListener {
 		hb.enableHelp(toolBar, "toolbar", null);
 
 		// add Help support for toolbar buttons
-		hb.enableHelp(loadButton, "toolbar-load", null);
+		hb.enableHelp(openSessionButton, "toolbar-load", null);
 		hb.enableHelp(saveButton, "toolbar-load", null);
 		hb.enableHelp(zoomInButton, "toolbar-zoom", null);
 		hb.enableHelp(zoomOutButton, "toolbar-zoom", null);

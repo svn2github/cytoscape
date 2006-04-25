@@ -46,6 +46,7 @@ import cytoscape.task.util.TaskManager;
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.FileUtil;
+import cytoscape.view.CyMenus;
 
 
 /**
@@ -55,6 +56,8 @@ import cytoscape.util.FileUtil;
  */
 public class SaveSessionAsAction extends CytoscapeAction {
 
+	protected CyMenus windowMenu;
+	
 	// Extension for the new cytoscape session file
 	public static String SESSION_EXT = ".cys";
 	
@@ -66,6 +69,11 @@ public class SaveSessionAsAction extends CytoscapeAction {
 		super("Save As...");
 		setPreferredMenu("File");
 		setAcceleratorCombo( java.awt.event.KeyEvent.VK_S, ActionEvent.CTRL_MASK|ActionEvent.SHIFT_MASK) ;
+	}
+	
+	public SaveSessionAsAction( CyMenus windowMenu, boolean label ) {
+		super();
+		this.windowMenu = windowMenu;
 	}
 
 	// If no current session file exists, open dialog box to save new session,

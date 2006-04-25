@@ -57,6 +57,7 @@ import cytoscape.task.util.TaskManager;
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.FileUtil;
+import cytoscape.view.CyMenus;
 
 /**
  * Open session file. This class will load all networks and session state in the
@@ -67,6 +68,8 @@ import cytoscape.util.FileUtil;
  */
 public class OpenSessionAction extends CytoscapeAction {
 
+	protected CyMenus windowMenu;
+	
 	// Extension for the new cytoscape session file
 	public static String SESSION_EXT = "cys";
 
@@ -74,10 +77,12 @@ public class OpenSessionAction extends CytoscapeAction {
 		super("Open");
 		setPreferredMenu("File");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_O, ActionEvent.CTRL_MASK);
+		this.windowMenu = windowMenu;
 	}
 
-	public OpenSessionAction(boolean label) {
+	public OpenSessionAction(CyMenus windowMenu, boolean label) {
 		super();
+		this.windowMenu = windowMenu;
 	}
 
 	// If no current session file exists, open dialog box to save new session,
