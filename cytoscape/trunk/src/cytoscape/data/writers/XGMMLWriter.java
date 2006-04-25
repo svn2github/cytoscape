@@ -483,7 +483,7 @@ public class XGMMLWriter {
 		throws JAXBException {
 
 		// the attribute to return
-		Att attr = objFactory.createAtt();
+		Att attrToReturn = objFactory.createAtt();
 
 		// get the multihashmap definition
 		MultiHashMap mmap = attributes.getMultiHashMap();
@@ -493,19 +493,36 @@ public class XGMMLWriter {
 		byte[] dimTypes = mmapDef.getAttributeKeyspaceDimensionTypes(attributeName);
 
 		// set top level attribute name, label
-		attr.setLabel(COMPLEX_TYPE);
-		attr.setName(attributeName);
-		attr.setValue(String.valueOf(dimTypes.length));
+		attrToReturn.setLabel(COMPLEX_TYPE);
+		attrToReturn.setName(attributeName);
+		attrToReturn.setValue(String.valueOf(dimTypes.length));
 
 		// grab the complex attribute structure
 		Map complexAttributeStructure = getComplexAttributeStructure(mmap, id, attributeName, null, 0, dimTypes.length);
 
-		// walk the struture
-		byte valType = mmapDef.getAttributeValueType(attributeName);
-		attr.getContent().add(walkComplexAttributeStructure(null, complexAttributeStructure, getType(valType), dimTypes, 0));
+		// determine val type, get its string equilvalent to store in xgmml
+		String valTypeStr = getType(mmapDef.getAttributeValueType(attributeName));
+
+		// walk the structure
+		Iterator complexAttributeIt = complexAttributeStructure.keySet().iterator();
+		while (complexAttributeIt.hasNext()) {
+			// grab the next key and map to add to xgmml
+			Object key = complexAttributeIt.next();
+			Map thisKeyMap = (Map)complexAttributeStructure.get(key);
+			// create an Att instance for this key
+			// and set its name, label, & value
+			Att thisKeyAttr = objFactory.createAtt();
+			thisKeyAttr.setLabel(getType(dimTypes[0]));
+			thisKeyAttr.setName((String)key);
+			thisKeyAttr.setValue(String.valueOf(thisKeyMap.size()));
+			// now lets walk the keys structure and add to its attributes content
+			thisKeyAttr.getContent().add(walkComplexAttributeStructure(null, thisKeyMap, valTypeStr, dimTypes, 1));
+			// this keys attribute should get added to the attribute we wil return
+			attrToReturn.getContent().add(thisKeyAttr);
+		}
 
 		// outta here
-		return attr;
+		return attrToReturn;
 	}
 
 	/**
