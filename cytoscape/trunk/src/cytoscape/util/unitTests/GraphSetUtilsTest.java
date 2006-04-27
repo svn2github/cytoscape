@@ -43,13 +43,67 @@ public void setUp() throws Exception {
 	
 	CyNetwork net1 = Cytoscape.createNetwork(nodes1,edges1,"graph1");
 	CyNetwork net2 = Cytoscape.createNetwork(nodes2,edges2,"graph2");
+	networklist.add(0, net1); 
+	networklist.add(1, net2);
+	
+	//verify created nodes exist
+	assertTrue (a.isNode());
+	assertTrue (b.isNode());
+	assertTrue (c.isNode());
+	assertTrue (d.isNode());
+	assertTrue (e.isNode());
+	
+	assertTrue (ab.isEdge());
+	assertTrue (bc.isEdge());
+	assertTrue (ac.isEdge());
+	assertTrue (bd.isEdge());
+	assertTrue (be.isEdge());
+	assertTrue (cd.isEdge());
+	
+	
 }
 	
 public void tearDown() throws Exception {
 		
 }
 
+//-------------------------------------------------------------------------
 public void testIntersection(){
+
+	createIntersectionGraph(networklist, true, "intersect");
 	
-}
-}*/
+	assertTrue (bc.isEdge());
+	assertTrue (bd.isEdge());
+	assertTrue (b.isNode());
+	assertTrue (c.isNode());
+	assertTrue (d.isNode());
+	
+}// testIntersection
+//-------------------------------------------------------------------------
+
+public void testDifference(){
+
+	createDifferenceGraph(networklist, true, "difference");
+
+}// testDifference
+//-------------------------------------------------------------------------
+public void testUnion(){
+
+	createUnionGraph(networklist, true, "union");
+	
+	assertTrue (ab.isEdge());
+	assertTrue (bc.isEdge());
+	assertTrue (ac.isEdge());
+	assertTrue (bd.isEdge());
+	assertTrue (ce.isEdge());
+	assertTrue (a.isNode());
+	assertTrue (b.isNode());
+	assertTrue (c.isNode());
+	assertTrue (d.isNode());
+	assertTrue (e.isNode());
+	
+}// testUnion
+//-------------------------------------------------------------------------
+
+*
+*/
