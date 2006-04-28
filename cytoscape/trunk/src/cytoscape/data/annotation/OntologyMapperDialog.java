@@ -1,5 +1,7 @@
 package cytoscape.data.annotation;
 
+import giny.view.NodeView;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Enumeration;
@@ -27,6 +29,7 @@ import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
+import cytoscape.data.annotation.AnnotationGui.Gui.SelectNodesTreeSelectionListener;
 import cytoscape.data.servers.BioDataServer;
 import cytoscape.view.CyNetworkView;
 
@@ -35,7 +38,7 @@ import cytoscape.view.CyNetworkView;
  * 
  * Created on 2006/04/11, 9:57
  * 
- * This code is created by Netbeans 5 w/Swing-Layout + Eclipse 3.1.
+ * This code was created by Netbeans 5 w/Swing-Layout + Eclipse 3.1.
  * Swing-Layout class will be standard in Java Standard Edition 6.
  *
  * @author kono
@@ -119,6 +122,8 @@ public class OntologyMapperDialog extends JDialog {
 		goServerScrollPane.setViewportView(goServerTree);
 
 		goAttributeTree = this.createNodeSelectionTree();
+		goAttributeTree.addTreeSelectionListener(new SelectNodesTreeSelectionListener());
+		
 		goAttributeScrollPane.setBorder(javax.swing.BorderFactory
 				.createTitledBorder(null, "GO Data as Attributes",
 						javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
@@ -737,5 +742,131 @@ public class OntologyMapperDialog extends JDialog {
 		}
 
 	} // 
+	
+	
+	
+	/*
+	 * Used for selecting nodes from GO Annotation tree.
+	 */
+	class SelectNodesTreeSelectionListener implements TreeSelectionListener {
+
+		public void valueChanged(TreeSelectionEvent e) {
+			DefaultMutableTreeNode node = (DefaultMutableTreeNode) goAttributeTree
+					.getLastSelectedPathComponent();
+			if (node == null)
+				return;
+			
+			
+			/*
+			 * These functions are removed from 2.3
+			 * Maybe fixed in later version...
+			 */
+			//layoutByAnnotationButton.setEnabled(!node.isLeaf());
+			//addSharedAnnotationEdgesButton.setEnabled(!node.isLeaf());
+			
+			if (!node.isLeaf())
+				return;
+
+			CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+
+			// unselect every node in the graph
+			for (Iterator nvi = networkView.getNodeViewsIterator(); nvi
+					.hasNext();) {
+				((NodeView) nvi.next()).setSelected(false);
+			}
+			TreePath[] selectedPaths = goAttributeTree
+					.getSelectionPaths();
+			HashMap selectionHash = extractAnnotationsFromSelection(selectedPaths);
+			for (Iterator nvi = networkView.getNodeViewsIterator(); nvi
+					.hasNext();) {
+				// get the particular node view
+				NodeView nv = (NodeView) nvi.next();
+//				String nodeLabel = nodeAttributes.getStringAttribute(nv
+//						.getNode().getIdentifier(),
+//						Semantics.CANONICAL_NAME);
+				String nodeLabel = nv.getNode().getIdentifier();
+				
+				if (nodeLabel == null) {
+					continue;
+				}
+				// iterate over all attributes in the selectionHash
+				for (Iterator mi = selectionHash.keySet().iterator(); mi
+						.hasNext();) {
+					String name = (String) mi.next();
+
+					Vector categoryList = (Vector) selectionHash.get(name);
+					byte type = nodeAttributes.getType(name);
+					if (type == CyAttributes.TYPE_STRING) {
+						String attributeValue = nodeAttributes
+								.getStringAttribute(nodeLabel, name);
+						if (attributeValue != null
+								&& categoryList.contains(attributeValue))
+							nv.setSelected(true);
+						break; // no point in checking other attributes
+					} else if (type == CyAttributes.TYPE_SIMPLE_LIST) {
+						boolean hit = false;
+						List attributeList = nodeAttributes
+								.getAttributeList(nodeLabel, name);
+						for (Iterator ali = attributeList.iterator(); ali
+								.hasNext();) {
+							if (categoryList.contains(ali.next())) {
+								nv.setSelected(true);
+								hit = true;
+								break; // no point in checking the rest of
+								// the list
+							}
+						}// ali iterator
+
+						if (hit) {
+							break;
+						} // no point in checking other attributes
+
+					}// if list
+				}// mi iterator
+			}// nvi iterator
+
+			networkView.redrawGraph(false, false);
+
+		} // valueChanged
+
+		// -----------------------------------------------------------------------------
+		/**
+		 * create a hashmap, <String, String []>:
+		 * 
+		 * "KEGG Metabolic Pathway (level 1)" -> (Genetic Information
+		 * Processing) "KEGG Metabolic Pathway (level 2)" -> (Amino Acid
+		 * Metabolism, Nucleotide Metabolism)
+		 * 
+		 * this method is brittle, and will fail if the structure of the
+		 * tree changes: it expects level 0: root level 1: a standard
+		 * annotation name (see above) level 2: standard annotation category
+		 * name (also see above)
+		 */
+		protected HashMap extractAnnotationsFromSelection(TreePath[] paths) {
+			HashMap hash = new HashMap();
+
+			for (int i = 0; i < paths.length; i++) {
+				String annotationName = paths[i].getPathComponent(1)
+						.toString();
+				String annotationValue = paths[i].getPathComponent(2)
+						.toString();
+				Vector list;
+				if (!hash.containsKey(annotationName)) {
+					list = new Vector();
+					hash.put(annotationName, list);
+				}
+				list = (Vector) hash.get(annotationName);
+				list.add(annotationValue);
+			} // for i
+
+			return hash;
+
+		} // extractAnnotationsFromSelection
+		// ----------------------------------------------------------------------------------------
+	} // inner class SelectNodesTreeSelectionListener
+
+
+
 
 }
+
