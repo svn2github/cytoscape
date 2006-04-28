@@ -411,11 +411,16 @@ public abstract class Cytoscape {
 		node = (CyNode) Cytoscape.getRootGraph().getNode(
 				Cytoscape.getRootGraph().createNode());
 		node.setIdentifier(alias);
+		// the following statement should be removed when Semantics.CANONICAL_NAME
+		// is removed on or about April 2007:
+		getNodeAttributes()
+				.setAttribute(alias, Semantics.CANONICAL_NAME, alias);
 		// System.out.println( node.getRootGraphIndex()+" = Node: "+node+" alias
 		// :"+alias+" old_name: "+old_name );
 		// if ( old_name != alias )
 		// setNodeAttributeValue( node, "alias", old_name );
 		// Cytoscape.getNodeNetworkData().addNameMapping(alias, node);
+		Semantics.assignNodeAliases(node, null, null);
 		return node;
 	}
 
