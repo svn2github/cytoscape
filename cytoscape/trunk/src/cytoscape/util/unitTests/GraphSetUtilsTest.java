@@ -1,9 +1,8 @@
 /*package cytoscape.util.unitTests;
 
 import junit.framework.*;
-import java.util.Set;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.lang.Object;
 
 import cytoscape.util.GraphSetUtils;
 import cytoscape.unitTests.AllTests;
@@ -13,30 +12,31 @@ import cytoscape.CyNetwork;
 import cytoscape.data.CyAttributes;
 import cytoscape.giny.CytoscapeRootGraph;
 
-import nct.graph.Graph;
-import nct.graph.Edge;
+import giny.model.RootGraph;
+
 
 public class GraphSetUtilsTest extends TestCase {
 protected List networklist;
+protected int a,b,c,d,e,ab,bc,ac,bd,be,cd,ce;
 	
 public void setUp() throws Exception {
 	networklist = new ArrayList();
 	RootGraph root = Cytoscape.getRootGraph();
-	int a = root.createNode();
-	int b = root.createNode();
-	int c = root.createNode();
-	int d = root.createNode();
-	int e = root.createNode();
+	a = root.createNode();
+	b = root.createNode();
+	c = root.createNode();
+	d = root.createNode();
+	e = root.createNode();
 	
 	int[] nodes1 = new int[] {a,b,c,d};
 	int[] nodes2 = new int[] {b,c,d,e};
 	
-	int ab = root.createEdge(a,b,true);
-	int bc = root.createEdge(b,c,true);
-	int ac = root.createEdge(a,c,true);
-	int bd = root.createEdge(b,d,true);
-	int be = root.createEdge(b,e,true);
-	int cd = root.createEdge(c,d,true);
+	ab = root.createEdge(a,b,true);
+	bc = root.createEdge(b,c,true);
+	ac = root.createEdge(a,c,true);
+	bd = root.createEdge(b,d,true);
+	be = root.createEdge(b,e,true);
+	cd = root.createEdge(c,d,true);
 	
 	int[] edges1 = new int[] {ab,bc,ac,bd};
 	int[] edges2 = new int[] {bd,bc,be};
@@ -47,19 +47,24 @@ public void setUp() throws Exception {
 	networklist.add(1, net2);
 	
 	//verify created nodes exist
-	assertTrue (a.isNode());
-	assertTrue (b.isNode());
-	assertTrue (c.isNode());
-	assertTrue (d.isNode());
-	assertTrue (e.isNode());
+	assertTrue (net1.containsNode(getNode(a)));
+	assertTrue (net1.containsNode(getNode(b)));
+	assertTrue (net1.containsNode(getNode(c)));
+	assertTrue (net1.containsNode(getNode(d)));
 	
-	assertTrue (ab.isEdge());
-	assertTrue (bc.isEdge());
-	assertTrue (ac.isEdge());
-	assertTrue (bd.isEdge());
-	assertTrue (be.isEdge());
-	assertTrue (cd.isEdge());
+	assertTrue (net2.containsNode(getNode(b)));
+	assertTrue (net2.containsNode(getNode(c)));
+	assertTrue (net2.containsNode(getNode(d)));
+	assertTrue (net2.containsNode(getNode(e)));
 	
+	assertTrue (net1.containsEdge(getEdge(ab)));
+	assertTrue (net1.containsEdge(getEdge(bc)));
+	assertTrue (net1.containsEdge(getEdge(ac)));
+	assertTrue (net1.containsEdge(getEdge(bd)));
+	
+	assertTrue (net2.containsEdge(getEdge(bd)));
+	assertTrue (net2.containsEdge(getEdge(bc)));
+	assertTrue (net2.containsEdge(getEdge(be)));
 	
 }
 	
@@ -70,40 +75,59 @@ public void tearDown() throws Exception {
 //-------------------------------------------------------------------------
 public void testIntersection(){
 
-	createIntersectionGraph(networklist, true, "intersect");
+	CyNetwork n = createIntersectionGraph(networklist, true, "intersect");
 	
-	assertTrue (bc.isEdge());
-	assertTrue (bd.isEdge());
-	assertTrue (b.isNode());
-	assertTrue (c.isNode());
-	assertTrue (d.isNode());
+	assertTrue (n.containsEdge(getEdge(bc)));
+	assertTrue (n.containsEdge(getEdge(bd)));
+	assertFalse (n.containsEdge(getEdge(ab)));
+	assertFalse (n.containsEdge(getEdge(be)));
+	
+	assertTrue (n.containsNode(getNode(b)));
+	assertTrue (n.containsNode(getNode(c)));
+	assertTrue (n.containsNode(getNode(d)));
+	assertFalse (n.containsNode(getNode(a)));
+	assertFalse (n.containsNode(getNode(e)));
 	
 }// testIntersection
 //-------------------------------------------------------------------------
 
 public void testDifference(){
 
-	createDifferenceGraph(networklist, true, "difference");
+	CyNetwork x = createDifferenceGraph(networklist, true, "difference");
+	
+	
+	assertTrue (x.containsNode(getNode(a)));
+	assertFalse (x.containsNode(getNode(b)));
+	assertFalse (x.containsNode(getNode(c)));
+	assertFalse (x.containsNode(getNode(d)));
+	assertFalse (x.containsNode(getNode(e)));
+	
+	assertFalse (x.containsEdge(getEdge(ab)));
+	assertFalse (x.containsEdge(getEdge(bc)));
+	assertFalse (x.containsEdge(getEdge(ac)));
+	assertFalse (x.containsEdge(getEdge(be)));
+	assertFalse (x.containsEdge(getEdge(bd)));
+
 
 }// testDifference
 //-------------------------------------------------------------------------
 public void testUnion(){
 
-	createUnionGraph(networklist, true, "union");
+	CyNetwork y = createUnionGraph(networklist, true, "union");
 	
-	assertTrue (ab.isEdge());
-	assertTrue (bc.isEdge());
-	assertTrue (ac.isEdge());
-	assertTrue (bd.isEdge());
-	assertTrue (ce.isEdge());
-	assertTrue (a.isNode());
-	assertTrue (b.isNode());
-	assertTrue (c.isNode());
-	assertTrue (d.isNode());
-	assertTrue (e.isNode());
+	
+	assertTrue (y.containsEdge(getEdge(ab)));
+	assertTrue (y.containsEdge(getEdge(bc)));
+	assertTrue (y.containsEdge(getEdge(ac)));
+	assertTrue (y.containsEdge(getEdge(bd)));
+	assertTrue (y.containsEdge(getEdge(ce)));
+	
+	assertTrue (y.containsNode(getNode(a)));
+	assertTrue (y.containsNode(getNode(b)));
+	assertTrue (y.containsNode(getNode(c)));
+	assertTrue (y.containsNode(getNode(d)));
+	assertTrue (y.containsNode(getNode(e)));
 	
 }// testUnion
 //-------------------------------------------------------------------------
-
-*
-*/
+}*/
