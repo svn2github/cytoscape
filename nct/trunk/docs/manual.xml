@@ -46,11 +46,12 @@
      <listitem>Apply search algorithms to the graphs using the scoring models.</listitem> 
      <listitem>Capture the output.</listitem> 
       </orderedlist>
-      There are several classes defined for each step described which allows programmers to mix and match classes to easily meet their specific needs.
+      There are several classes defined for each step described which allows programmers to mix and match classes to easily meet their specific needs. 
       </para>
       <para>
       NCT is broken down into several packages, but there are four primary types
-      of object that we care about: Graphs, Search Algorithms, Scoring Models, and Utilities. In addition, specific applications have also been implemented using the NCT modules.
+      of object that we care about: Graphs, Search Algorithms, Scoring Models, and Utilities. In addition, specific applications have also been implemented using the NCT modules. These
+      modules are described in the following chapter.
       </para>
 
     </sect1>
@@ -62,62 +63,116 @@
     <sect1>
       <title>Graphs</title>
 
-      <para>The common currency of NCT is the Graph interface found in the nct.graph package. The
+      <para>The common currency of NCT is the Graph interface found in the nct.graph package. 
+      The
       interface defines how programmers should interact with graph objects.
       The Graph interface has several extensions that expand on the
       capabilities of a basic graph such as the KPartiteGraph which defines
-      the methods used for interacting with k-partite graphs.</para>
+      the methods used for interacting with k-partite graphs.
 
-      <para>Basic implementations of all the Graph interfaces have been
-      provided in the basic.graph package. 
-      Whenever possible we strongly recommend that you code
-      to the graph interfaces and not the specific implementations. 
-      For example: <programlisting>
-// recommended usage
-Graph&lt;String,Double&gt; g = new BasicGraph&lt;String,Double&gt;
-
-// NOT recommended
-BasicGraph&lt;String,Double&gt; g = new BasicGraph&lt;String,Double&gt;
-
-
-
-// recommended method definition
-public Graph&lt;String,Double&gt; getGraph();
-
-// NOT recommended
-public BasicGraph&lt;String,Double&gt; getGraph();
-</programlisting> Coding to the interface provides flexibility to other users
-      of your code to change underlying implementations without having to
-      alter your code.</para>
-
-      <para>
-	The graph interfaces and definitions are general and do not contain biological semantics. This means that the graph package could be used as a general graph library. 
+      Basic implementations of all the Graph interfaces have been
+      provided in the nct.graph package. 
       </para>
+
+
+      <sect2>
+        <title>Standard Graphs</title>
+      <para>
+	The standard graph interfaces and definitions are general and do not contain biological semantics. This means that the standard graph classes and interfaces could be used as a general graph library. 
+      </para>
+      <itemizedlist>
+        <listitem>
+	<synopsis>Graph/BasicGraph</synopsis>
+
+        <para>The graph class defines all of the basic graph operations such as addNode, addEdge, getNeighbors, numberOfNodes, numberOfEdges, and the like. A basic implementation of the Graph interface exists and is called BasicGraph.
+	</para>
+	</listitem>
+        <listitem>
+	<synopsis>DistanceGraph/BasicDistanceGraph</synopsis>
+        <para>
+	The DistanceGraph interface extends the Graph interface by adding a getDistance method that is intended to calculate the shortest path between two nodes.  The BasicDistanceGraph extends BasicGraph and adds a getDistance method which assigns a distance of 1 to neighbors, a distance of 2 to neighbors of neighbors and 3 to all other nodes. 
+	</para>
+	</listitem>
+        <listitem>
+	<synopsis>KPartiteGraph/BasicKPartiteGraph</synopsis>
+
+        <para>
+	The KPartiteGraph interface defines several methods for creating and defining k-partite graphs.  The BasicKPartiteGraph implementation extends the BasicGraph class and overrides methods that don't respect partitisions such as addNode(node), which is replaced with addNode(node,partition). 
+	</para>
+	</listitem>
+        <listitem>
+	<synopsis>SequenceGraph/FastaGraph/BlastGraph</synopsis>
+
+        <para>
+	SequenceGraph is an interface that associates biological sequences with the nodes of the graph. The Fasta and Blast implementations simply represent two types of sequence database that can be used.
+	</para>
+	</listitem>
+      </itemizedlist>
+      </sect2>
+      <sect2>
+        <title>Network Comparision Graphs</title>
+        <para>
+	The network comparision graphs are extensions of the standard graphs that are designed for specific network comparison tasks. 
+	</para>
+      <itemizedlist>
+        <listitem>
+	<synopsis>CompatibilityGraph</synopsis>
+	</listitem>
+        <listitem>
+	<synopsis>HomologyGraph</synopsis>
+	</listitem>
+        <listitem>
+	<synopsis>InteractionGraph</synopsis>
+	</listitem>
+      </itemizedlist>
+      </sect2>
+   <inlinemediaobject>
+       <imageobject>
+      <imagedata fileref="http://chianti.ucsd.edu/nct/docs/graph_class_diagram.jpg"/>
+       </imageobject>
+   </inlinemediaobject>
+
+
     </sect1>
+
     <sect1>
       <title>Scoring Models</title>
       <para>
-      The scoring algorithm classes are contained in nct.networkblast.score.
-      </para>
-      <para>
-      Basic interface description here.
+      This module contains various interfaces that define mechanisms for calculating various graph scores.  The scoring algorithm classes are contained in the nct.score package.
       </para>
       <sect2>
-        <title>Log Likelihood Scoring Model</title>
-        <para>....</para>
+        <title>Graph Scoring</title>
+        <para>The ScoreModel interface defines two methods for returning the score of a node or edge on a graph.  How those scores are calculated is left to the implementation of the interface (class).  </para>
+      <itemizedlist>
+        <listitem>
+        <synopsis>LogLikelihoodScoringModel</synopsis>
+	</listitem>
+        <listitem>
+        <synopsis>SimpleScoringModel</synopsis>
+	</listitem>
+        <listitem>
+        <synopsis>SimpleEdgeScoringModel</synopsis>
+	</listitem>
+        <listitem>
+        <synopsis>SimpleNodeScoringModel</synopsis>
+	</listitem>
+      </itemizedlist>
       </sect2>
       <sect2>
-        <title>SimpleScoringModel</title>
+        <title>Compatibility Scoring</title>
+        <para>There are several alternative techniques for determining whether nodes in interaction graphs should be aligned. The CompatibilityCalculator provides an interface that lets different compatibility determination schemes to be explored.</para>
+      <itemizedlist>
+      	<listitem>
+        <synopsis>AddititiveCompatibilityCalculator</synopsis>
         <para>....</para>
+      	</listitem>
+      </itemizedlist>
       </sect2>
-      <sect2>
-        <title>SimpleEdgeScoringModel</title>
-        <para>....</para>
-      </sect2>
-      <sect2>
-        <title>SimpleNodeScoringModel</title>
-        <para>....</para>
-      </sect2>
+   <inlinemediaobject>
+       <imageobject>
+      <imagedata fileref="http://chianti.ucsd.edu/nct/docs/score_class_diagram.jpg"/>
+       </imageobject>
+   </inlinemediaobject>
 
     </sect1>
     <sect1>
@@ -125,17 +180,19 @@ public BasicGraph&lt;String,Double&gt; getGraph();
       <para>
       	The search algorithm module is  nct.networkblast.search.
       </para>
-      <para>
-      Basic interface description here.
-      </para>
-      <sect2>
-        <title>Color Coding Path Search</title>
-        <para>....</para>
-      </sect2>
-      <sect2>
-        <title>Greedy Complex Search</title>
-        <para>....</para>
-      </sect2>
+      <itemizedlist>
+        <listitem>
+        <synopsis>ColorCodingPathSearch</synopsis>
+        </listitem>
+        <listitem>
+        <synopsis>GreedyComplexSearch</synopsis>
+        </listitem>
+      </itemizedlist>
+   <inlinemediaobject>
+       <imageobject>
+      <imagedata fileref="http://chianti.ucsd.edu/nct/docs/search_class_diagram.jpg"/>
+       </imageobject>
+   </inlinemediaobject>
     </sect1>
 
     <sect1>
@@ -150,11 +207,27 @@ public BasicGraph&lt;String,Double&gt; getGraph();
       sequence databases, and the like. In each case an interface is provided
       that defines how new software should interact with external
       services.</para>
+      <itemizedlist>
+      <listitem>
+      <synopsis>synonyms</synopsis>
+      </listitem>
+      <listitem>
+      <synopsis>homology</synopsis>
+      </listitem>
+      <listitem>
+      <synopsis>interactions</synopsis>
+      </listitem>
+      <listitem>
+      <synopsis>sequences</synopsis>
+      </listitem>
+      </itemizedlist>
     </sect2>
 
     <sect2>
-      <title>filters</title>
-
+      <title>util</title>
+      <itemizedlist>
+      <listitem>
+      <synopsis>filters</synopsis>
       <para>The filter package provides a simple interface for filtering a
       collection of Graphs. Examples of the filters provided are the
       SortFilter and the DuplicateThresholdFilter. The SortFilter merely sorts
@@ -162,12 +235,23 @@ public BasicGraph&lt;String,Double&gt; getGraph();
       Comparable interface. The DuplicateThresholdFilter filters out Graphs
       that have a certain percentage (the threshold) of nodes and edges in
       common.</para>
-    </sect2>
-    <sect2>
-      <title>output</title>
+      </listitem>
+      <listitem>
+      <synopsis>output</synopsis>
       <para>
       Classes for writing output in useful ways (e.g. graphs into the SIF format).
       </para>
+      </listitem>
+      <listitem>
+      <synopsis>cytoscape</synopsis>
+      </listitem>
+      <listitem>
+      <synopsis>xml</synopsis>
+      </listitem>
+      <listitem>
+      <synopsis>parsers</synopsis>
+      </listitem>
+      </itemizedlist>
     </sect2>
     </sect1>
 
@@ -191,28 +275,35 @@ public BasicGraph&lt;String,Double&gt; getGraph();
       things.</para>
     </sect2>
 
-      <sect2>
-        <title>nct.networkblast.graph</title>
-
-        <para>Contains the graphs specific to network blast such as the
-        HomologyGraph and CompatibilityGraph. The HomologyGraph is a
-        KPartiteGraph whose partitions are individual graphs and whose edges
-        are homology relationships between nodes (proteins) between the
-        partitions. The CompatibilityGraph</para>
-      </sect2>
-
-      <sect2>
-        <title>nct.networkblast.filter</title>
-
-        <para>Contains a filter that is really only meaningful in the context
-        of the NetworkBlast algorithm. However, the filter implements the
-        Filter interface and would therefore be usable by any code needing a
-        Filter. The results however, probably wouldn't have any
-        meaning.</para>
-      </sect2>
     </sect1>
   </chapter>
   <chapter>
   <title>Usage</title>
+      <para>
+      Whenever possible we strongly recommend that you code
+      to the graph interfaces and not the specific implementations. 
+      For example: <programlisting>
+// recommended usage
+Graph&lt;String,Double&gt; g = new BasicGraph&lt;String,Double&gt;
+
+// NOT recommended
+BasicGraph&lt;String,Double&gt; g = new BasicGraph&lt;String,Double&gt;
+
+
+
+// recommended method definition
+public Graph&lt;String,Double&gt; getGraph();
+
+// NOT recommended
+public BasicGraph&lt;String,Double&gt; getGraph();
+</programlisting> Coding to the interface provides flexibility to other users
+      of your code to change underlying implementations without having to
+      alter your code.</para>
+      <para>
+      <ulink url="http://chianti.ucsd.edu/nct/docs/TestSearch.java.html">TestSearch</ulink> 
+      </para>
+      <para>
+      <ulink url="http://chianti.ucsd.edu/nct/docs/NetworkBlast.java.html">NetworkBlast</ulink> 
+      </para>
   </chapter>
 </book>
