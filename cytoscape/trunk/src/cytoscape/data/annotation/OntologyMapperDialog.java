@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.Vector;
 
 import javax.swing.JDialog;
@@ -45,6 +46,12 @@ import cytoscape.view.CyNetworkView;
  */
 public class OntologyMapperDialog extends JDialog {
 
+	public static final String GO_MOLECULAR_FUNCTION = "GO Molecular Function";
+	public static final String GO_BIOLOGICAL_PROCESS = "GO Biological Process";
+	public static final String GO_CELLULAR_COMPONENT = "GO Cellular Component";
+	
+	public static final int MAX_LEVEL = 15;
+
 	protected BioDataServer dataServer;
 	protected String defaultSpecies;
 
@@ -53,9 +60,13 @@ public class OntologyMapperDialog extends JDialog {
 	private String currentAnnotationCategory;
 
 	private HashMap appliedOntologies;
+	
+	private List goAttributes;
 
 	private CyNetworkView networkView;
 	private CyNetwork network;
+	
+	private CyAttributes nodeAttributes;
 
 	public OntologyMapperDialog() {
 		initDataStructures();
@@ -68,12 +79,15 @@ public class OntologyMapperDialog extends JDialog {
 		initDataStructures();
 
 		initComponents();
+		appendCurrentAnnotaions();
 	}
 
 	private void initDataStructures() {
 
 		appliedOntologies = new HashMap();
-
+		goAttributes = new ArrayList();
+		nodeAttributes = Cytoscape.getNodeAttributes();
+		
 		networkView = Cytoscape.getCurrentNetworkView();
 		network = networkView.getNetwork();
 		dataServer = Cytoscape.getBioDataServer();
@@ -82,6 +96,38 @@ public class OntologyMapperDialog extends JDialog {
 		Semantics.applyNamingServices(network);
 
 		defaultSpecies = CytoscapeInit.getProperty("defaultSpeciesName");
+	}
+	
+	private void appendCurrentAnnotaions() {
+		
+		String[] attributeNames = nodeAttributes.getAttributeNames();
+		
+		
+		
+		for(int idx=0; idx<attributeNames.length; idx++) {
+			Set allTerms = new TreeSet();
+			if(attributeNames[idx].startsWith(GO_MOLECULAR_FUNCTION) ||
+					attributeNames[idx].startsWith(GO_BIOLOGICAL_PROCESS) ||
+					attributeNames[idx].startsWith(GO_CELLULAR_COMPONENT)) {
+				goAttributes.add(attributeNames[idx]);
+				
+				// Need to pick all attributes to get unique values...
+				Iterator it = Cytoscape.getRootGraph().nodesIterator();
+				while(it.hasNext()) {
+					CyNode node = (CyNode) it.next();
+					String nodeID = node.getIdentifier();
+					List listAttr = nodeAttributes.getAttributeList(nodeID, attributeNames[idx]);
+					if(listAttr != null && listAttr.size() != 0) {
+						allTerms.addAll(listAttr);
+					}
+				}
+			}
+			
+			// Now append the list
+			if(allTerms.size()!=0) {
+				appendToSelectionTree(attributeNames[idx], allTerms);
+			}
+		}
 	}
 
 	/**
@@ -122,8 +168,9 @@ public class OntologyMapperDialog extends JDialog {
 		goServerScrollPane.setViewportView(goServerTree);
 
 		goAttributeTree = this.createNodeSelectionTree();
-		goAttributeTree.addTreeSelectionListener(new SelectNodesTreeSelectionListener());
-		
+		goAttributeTree
+				.addTreeSelectionListener(new SelectNodesTreeSelectionListener());
+
 		goAttributeScrollPane.setBorder(javax.swing.BorderFactory
 				.createTitledBorder(null, "GO Data as Attributes",
 						javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
@@ -199,6 +246,12 @@ public class OntologyMapperDialog extends JDialog {
 																								Short.MAX_VALUE)
 																						.add(
 																								org.jdesktop.layout.GroupLayout.TRAILING,
+																								removeButton,
+																								org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																								120,
+																								Short.MAX_VALUE)
+																						.add(
+																								org.jdesktop.layout.GroupLayout.TRAILING,
 																								applyAllButton,
 																								org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 																								120,
@@ -221,6 +274,7 @@ public class OntologyMapperDialog extends JDialog {
 						buttonPanelLayout.createSequentialGroup()
 								.addContainerGap(103, Short.MAX_VALUE).add(
 										applyButton).add(23, 23, 23).add(
+												removeButton).add(23, 23, 23).add(
 										applyAllButton).add(123, 123, 123).add(
 										okButton)));
 
@@ -267,17 +321,41 @@ public class OntologyMapperDialog extends JDialog {
 
 	private void removeButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		// TODO add your handling code here:
+
+		DefaultTreeModel model = (DefaultTreeModel) goAttributeTree.getModel();
+		
+		TreePath[] selectedPaths = goAttributeTree.getSelectionPaths();
+		
+		
+		if(selectedPaths == null || selectedPaths.length == 0) {
+			return;
+		}
+		for(int idx=0; idx<selectedPaths.length; idx++) {
+			String annotationLevelName = selectedPaths[idx].getPathComponent(1).toString();
+			System.out.println("Removing Attribute: " + annotationLevelName);
+			DefaultMutableTreeNode lastPath = 
+				(DefaultMutableTreeNode)selectedPaths[idx].getPathComponent(1);
+			lastPath.removeFromParent();
+			model.reload();
+			
+			
+			// Remove from CyAttribute
+			if(annotationLevelName != null) {
+				nodeAttributes.deleteAttribute(annotationLevelName);
+			}
+			
+		}
 	}
 
 	private void applyAllButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		// TODO add your handling code here:
-		
+
 	}
 
 	/*
 	 * This method will be called by Apply Button ( >> ).
 	 */
-	private void applyButtonActionPerformed(java.awt.event.ActionEvent evt) {
+	private void applyButtonActionPerformed(java.awt.event.ActionEvent evt) {	
 
 		DefaultMutableTreeNode node1 = (DefaultMutableTreeNode) annotationPath
 				.getPathComponent(1);
@@ -293,6 +371,29 @@ public class OntologyMapperDialog extends JDialog {
 		currentAnnotationCategory = addAnnotationToNodes(aDesc, level);
 
 		Object[] uniqueAnnotationValues = null;
+		
+		
+		/*
+		 * Error checking:
+		 *  - If the GO term in the level is already in the 
+		 *     right tree, do not append.
+		 */
+		DefaultMutableTreeNode root = (DefaultMutableTreeNode) goAttributeTree.getModel().getRoot();
+		DefaultTreeModel model = (DefaultTreeModel) goAttributeTree.getModel();
+		
+		// Extract levels
+		
+		for(int idx=0; idx<model.getChildCount(root); idx++) {
+			String childrenName = model.getChild(root, idx).toString();
+			
+			if(childrenName.equals(currentAnnotationCategory)) {
+				JOptionPane.showMessageDialog(
+						this , "The annotation is already imported." , "Error!" ,
+						JOptionPane.INFORMATION_MESSAGE
+					);
+				return;
+			}
+		}
 
 		CyAttributes nodeAtts = Cytoscape.getNodeAttributes();
 		Iterator it = Cytoscape.getRootGraph().nodesIterator();
@@ -342,6 +443,12 @@ public class OntologyMapperDialog extends JDialog {
 			appendToSelectionTree(currentAnnotationCategory,
 					uniqueAnnotationValues);
 		}
+	}
+	
+	protected void appendToSelectionTree(String currentAnnotationCategory, 
+			Set uniqueAnnotationValues) {
+		this.appendToSelectionTree(currentAnnotationCategory, 
+				uniqueAnnotationValues.toArray());
 	}
 
 	protected void appendToSelectionTree(String currentAnnotationCategory,
@@ -742,9 +849,7 @@ public class OntologyMapperDialog extends JDialog {
 		}
 
 	} // 
-	
-	
-	
+
 	/*
 	 * Used for selecting nodes from GO Annotation tree.
 	 */
@@ -755,15 +860,13 @@ public class OntologyMapperDialog extends JDialog {
 					.getLastSelectedPathComponent();
 			if (node == null)
 				return;
-			
-			
+
 			/*
-			 * These functions are removed from 2.3
-			 * Maybe fixed in later version...
+			 * These functions are removed from 2.3 Maybe fixed in later
+			 * version...
 			 */
-			//layoutByAnnotationButton.setEnabled(!node.isLeaf());
-			//addSharedAnnotationEdgesButton.setEnabled(!node.isLeaf());
-			
+			// layoutByAnnotationButton.setEnabled(!node.isLeaf());
+			// addSharedAnnotationEdgesButton.setEnabled(!node.isLeaf());
 			if (!node.isLeaf())
 				return;
 
@@ -774,18 +877,15 @@ public class OntologyMapperDialog extends JDialog {
 					.hasNext();) {
 				((NodeView) nvi.next()).setSelected(false);
 			}
-			TreePath[] selectedPaths = goAttributeTree
-					.getSelectionPaths();
+			TreePath[] selectedPaths = goAttributeTree.getSelectionPaths();
 			HashMap selectionHash = extractAnnotationsFromSelection(selectedPaths);
 			for (Iterator nvi = networkView.getNodeViewsIterator(); nvi
 					.hasNext();) {
 				// get the particular node view
 				NodeView nv = (NodeView) nvi.next();
-//				String nodeLabel = nodeAttributes.getStringAttribute(nv
-//						.getNode().getIdentifier(),
-//						Semantics.CANONICAL_NAME);
+
 				String nodeLabel = nv.getNode().getIdentifier();
-				
+
 				if (nodeLabel == null) {
 					continue;
 				}
@@ -805,8 +905,8 @@ public class OntologyMapperDialog extends JDialog {
 						break; // no point in checking other attributes
 					} else if (type == CyAttributes.TYPE_SIMPLE_LIST) {
 						boolean hit = false;
-						List attributeList = nodeAttributes
-								.getAttributeList(nodeLabel, name);
+						List attributeList = nodeAttributes.getAttributeList(
+								nodeLabel, name);
 						for (Iterator ali = attributeList.iterator(); ali
 								.hasNext();) {
 							if (categoryList.contains(ali.next())) {
@@ -837,17 +937,16 @@ public class OntologyMapperDialog extends JDialog {
 		 * Processing) "KEGG Metabolic Pathway (level 2)" -> (Amino Acid
 		 * Metabolism, Nucleotide Metabolism)
 		 * 
-		 * this method is brittle, and will fail if the structure of the
-		 * tree changes: it expects level 0: root level 1: a standard
-		 * annotation name (see above) level 2: standard annotation category
-		 * name (also see above)
+		 * this method is brittle, and will fail if the structure of the tree
+		 * changes: it expects level 0: root level 1: a standard annotation name
+		 * (see above) level 2: standard annotation category name (also see
+		 * above)
 		 */
 		protected HashMap extractAnnotationsFromSelection(TreePath[] paths) {
 			HashMap hash = new HashMap();
 
 			for (int i = 0; i < paths.length; i++) {
-				String annotationName = paths[i].getPathComponent(1)
-						.toString();
+				String annotationName = paths[i].getPathComponent(1).toString();
 				String annotationValue = paths[i].getPathComponent(2)
 						.toString();
 				Vector list;
@@ -865,8 +964,4 @@ public class OntologyMapperDialog extends JDialog {
 		// ----------------------------------------------------------------------------------------
 	} // inner class SelectNodesTreeSelectionListener
 
-
-
-
 }
-
