@@ -171,7 +171,7 @@ public class LogLikelihoodScoreModel<NodeType extends Comparable<? super NodeTyp
 	assert(srcNode != null && destNode != null && graph != null);
 
 	if ( graph == null )
-		return Double.MIN_VALUE; 
+		return Double.NEGATIVE_INFINITY; 
 
 	assert(graph.isNode(srcNode) && graph.isNode(destNode));
 

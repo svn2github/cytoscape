@@ -187,40 +187,113 @@ public class ColorCodingPathSearchTest extends TestCase {
 
 	}
 
-	public void testSegmentation() {
+	public void testBeginNodes() {
 		System.out.println();
-		System.out.println("testConstraint");
+		System.out.println("testBeginNodes");
 
 		ScoreModel<String,Double> edgeScore = new SimpleEdgeScoreModel<String>();
 		ColorCodingPathSearch<String> colorCoding = new ColorCodingPathSearch<String>(4);
 
-		Map<String,Integer> minSegmentMap = new HashMap<String,Integer>();
-		Map<String,Integer> maxSegmentMap = new HashMap<String,Integer>();
-
-		minSegmentMap.put("a",0);
-		minSegmentMap.put("b",0);
-		minSegmentMap.put("c",0);
-		minSegmentMap.put("d",1);
-		minSegmentMap.put("e",1);
-		minSegmentMap.put("f",2);
-		minSegmentMap.put("g",2);
-		minSegmentMap.put("h",3);
-		minSegmentMap.put("i",3);
-	
-		colorCoding.setSegments(minSegmentMap,minSegmentMap);
+		Set<String> begin = new HashSet<String>();
+		begin.add("a");
+		colorCoding.setBeginNodes(begin);
 
 		List<Graph<String,Double>> res = colorCoding.searchGraph(graph,edgeScore);
+
+		assertEquals("num solutions", 9,res.size());
 
 		for( Graph<String,Double> gg : res ) { 
 			System.out.println("-------------------------------------------");
 			System.out.println(gg.toString());
+			assertTrue("graph contains node: " + gg.toString(), gg.isNode("a"));
+
+			// now make sure that the begin node only appears once in the 
+			// set of edges
+			Map<String,Integer> counts = new HashMap<String,Integer>(); 
+			
+			for ( String n : gg.getNodes() ) 
+				counts.put(n,0);
+
+			for ( Edge<String,Double> e : gg.getEdges() ) {
+				counts.put( e.getSourceNode(), counts.get( e.getSourceNode() ).intValue() + 1 );	
+				counts.put( e.getTargetNode(), counts.get( e.getTargetNode() ).intValue() + 1 );	
+			}
+			assertEquals("number of a nodes",1,counts.get("a").intValue());
 		}
+	}
 
-		Collections.reverse(res);
+	public void testEndNodes() {
+		System.out.println();
+		System.out.println("testEndNodes");
+		ScoreModel<String,Double> edgeScore = new SimpleEdgeScoreModel<String>();
+		ColorCodingPathSearch<String> colorCoding = new ColorCodingPathSearch<String>(4);
 
-		//assertEquals("num solutions ", 9 ,res.size());
+		Set<String> end = new HashSet<String>();
+		end.add("c");
+		colorCoding.setEndNodes(end);
 
-		//fail();
+		List<Graph<String,Double>> res = colorCoding.searchGraph(graph,edgeScore);
+
+		assertEquals("num solutions", 9,res.size());
+
+		for( Graph<String,Double> gg : res ) { 
+			System.out.println("-------------------------------------------");
+			System.out.println(gg.toString());
+			assertTrue("graph contains node: " + gg.toString(), gg.isNode("c"));
+
+			// now make sure that the begin node only appears once in the 
+			// set of edges
+			Map<String,Integer> counts = new HashMap<String,Integer>(); 
+			
+			for ( String n : gg.getNodes() ) 
+				counts.put(n,0);
+
+			for ( Edge<String,Double> e : gg.getEdges() ) {
+				counts.put( e.getSourceNode(), counts.get( e.getSourceNode() ).intValue() + 1 );	
+				counts.put( e.getTargetNode(), counts.get( e.getTargetNode() ).intValue() + 1 );	
+			}
+			assertEquals("number of a nodes",1,counts.get("c").intValue());
+		}
+	}
+
+	public void testBeginAndEndNodes() {
+		System.out.println();
+		System.out.println("testBeginAndEndNodes");
+		ScoreModel<String,Double> edgeScore = new SimpleEdgeScoreModel<String>();
+		ColorCodingPathSearch<String> colorCoding = new ColorCodingPathSearch<String>(4);
+
+		Set<String> end = new HashSet<String>();
+		end.add("c");
+		colorCoding.setEndNodes(end);
+
+		Set<String> begin = new HashSet<String>();
+		begin.add("e");
+		colorCoding.setBeginNodes(begin);
+
+		List<Graph<String,Double>> res = colorCoding.searchGraph(graph,edgeScore);
+
+		assertEquals("num solutions", 4,res.size());
+
+		for( Graph<String,Double> gg : res ) { 
+			System.out.println("-------------------------------------------");
+			System.out.println(gg.toString());
+			assertTrue("graph contains end node: " + gg.toString(), gg.isNode("c"));
+			assertTrue("graph contains begin node: " + gg.toString(), gg.isNode("e"));
+
+			// now make sure that the begin node only appears once in the 
+			// set of edges
+			Map<String,Integer> counts = new HashMap<String,Integer>(); 
+			
+			for ( String n : gg.getNodes() ) 
+				counts.put(n,0);
+
+			for ( Edge<String,Double> e : gg.getEdges() ) {
+				counts.put( e.getSourceNode(), counts.get( e.getSourceNode() ).intValue() + 1 );	
+				counts.put( e.getTargetNode(), counts.get( e.getTargetNode() ).intValue() + 1 );	
+			}
+			assertEquals("number of a nodes",1,counts.get("c").intValue());
+			assertEquals("number of a nodes",1,counts.get("e").intValue());
+		}
 	}
 
 

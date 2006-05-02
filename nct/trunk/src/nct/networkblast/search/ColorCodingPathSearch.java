@@ -149,6 +149,16 @@ public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>
 	 */
 	Map<NodeType,Integer> minSegmentMap;
 
+	/** 
+	 *
+	 */
+	Set<NodeType> beginSet;
+
+	/** 
+	 *
+	 */
+	Set<NodeType> endSet;
+
 	/**
 	 * @param size the integer size of paths to search for
 	 */
@@ -198,6 +208,9 @@ public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>
 
 		maxSegmentMap = null;
 		minSegmentMap = null;
+
+		beginSet = null;
+		endSet = null;
 	}
 
 	/**
@@ -226,6 +239,22 @@ public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>
 	public void setSegments(Map<NodeType,Integer> maxSegmentMap, Map<NodeType,Integer> minSegmentMap) {	
 		this.maxSegmentMap = maxSegmentMap;
 		this.minSegmentMap = minSegmentMap;
+	}
+
+	/**
+	 * This methods defines a set of nodes from which one must BEGIN every path.
+	 * @param beginSet The set containing the beginning nodes.
+	 */
+	public void setBeginNodes(Set<NodeType> beginSet) {
+		this.beginSet = beginSet;
+	}
+
+	/**
+	 * This methods defines a set of nodes from which one must END every path.
+	 * @param endSet The set containing the ending nodes.
+	 */
+	public void setEndNodes(Set<NodeType> endSet) {
+		this.endSet = endSet;
 	}
 
 	/**
@@ -279,7 +308,7 @@ public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>
 			path.add( templ ); 
 		}
 
-		double currentMinScore = Double.MIN_VALUE;
+		double currentMinScore = Double.NEGATIVE_INFINITY;
 
 		if ( numSolutions == 0 )
 			numSolutions = numNodes;
@@ -292,12 +321,12 @@ public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>
 
 		for ( int x = 0; x < numTrials; x++ ) {
 			log.config("trial " + x);
-			System.out.println("trial " + x);
+			//System.out.println("trial " + x);
 
 			// re-initialize storage
 			for ( int i = 0; i < numNodes; i++ )	{
 				for ( int j = 0; j <= colorSet; j++ ) {
-					W[i][j] = Double.MIN_VALUE; 
+					W[i][j] = Double.NEGATIVE_INFINITY; 
 					path.get(i).set(j,null); 
 				}
 			}
@@ -307,8 +336,6 @@ public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>
 			// dynamic programming over all color combinations
 			for ( int i = 0; i < orderedColorSetList.length; i++ ) {
 				int colorCombo = orderedColorSetList[i];
-				if ( colorCombo == 0 )
-					continue;
 
 				for (NodeType node: nodeSet) { 
 					int nodeColor = getNodeColor(node);
@@ -320,6 +347,14 @@ public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>
 
 					int prevCombo = colorCombo - nodeColor;
 					//System.out.println("prevcolor combo " + prevCombo);
+
+					// for the first color combinations initialize the score
+					// and skip the rest of the processing
+					if ( prevCombo == 0 ) {
+						if ( beginSet == null || beginSet.contains(node) ) 
+							W[nodeIndex(node)][nodeColor] = 0;
+						continue;
+					}
 
 					// now compare the node to all of its neighbors that are 
 					// within the color combination excluding the node color
@@ -343,10 +378,12 @@ public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>
 
 			// traceback through the W matrix to extract the actual path
 			for (NodeType node: nodeSet) {
+				if ( endSet != null && !endSet.contains(node) )
+					continue;
 				int color = colorSet;
 				int nodeInd = nodeIndex(node); 
 				if ( W[nodeInd][color] > currentMinScore || resultSet.size() < numSolutions ) {
-					System.out.println("trial " + x + " curr min: " + currentMinScore + "  w: " + W[nodeInd][color]);
+					//System.out.println("trial " + x + " curr min: " + currentMinScore + "  w: " + W[nodeInd][color]);
 					Graph<NodeType,Double> sg = new BasicGraph<NodeType,Double>();
 					sg.setScore( W[nodeInd][color] );
 					int constraintCount = 0;
@@ -373,14 +410,14 @@ public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>
 					//
 					// However, this bit of code only takes a fraction (~5%) of the
 					// overall time of this method.
-					System.out.println("evaluating: " + sg.toString());
+					//System.out.println("evaluating: " + sg.toString());
 					if ( sg.numberOfNodes() == pathSize && checkConstraint(constraintCount) ) {
 						resultSet.add(sg);
-						System.out.println("Adding!");
-						System.out.println("result set size: " + resultSet.size());
+						//System.out.println("Adding!");
+						//System.out.println("result set size: " + resultSet.size());
 						if ( resultSet.size() > numSolutions ) {
 							resultSet.remove(resultSet.first());
-							System.out.println("Removing!");
+							//System.out.println("Removing!");
 						}
 					} else 
 						sg = null; // space concerns
@@ -431,22 +468,20 @@ public class ColorCodingPathSearch<NodeType extends Comparable<? super NodeType>
 	}
 
 	/**
-	 * This method returns and array of ints that represent all two color combinations
+	 * This method returns and array of ints that represent all one color combinations, 
+	 * all two color combinations
 	 * followed by all 3 color combinations, through to all (pathSize - 1) color combinations.
 	 * This method returns an array of ints ordered such that when considered as a 
-	 * bit mask, the first values only contain 2 true bits (e.g. 3,5,6,9,10,12), followed
+	 * bit mask, the first values only contain 1 true bit (1,2,4,8) , the second values
+	 * all contain 2 true bits (e.g. 3,5,6,9,10,12), followed
 	 * by all ints that contain only 3 true bits (e.g. 7,11,13,14).  This repeats until
-	 * pathSize number of bits is found (an array of size pathSize^2 - 1).  We ignore
-	 * the int values with only 1 true bit (e.g. 1,2,4,8) because these represent a
-	 * single color and not a combination.
+	 * pathSize number of bits is found (an array of size pathSize^2 - 1).  
 	 */
 	private int[] getOrderedColorSetList() {
 		int twoPath = twoToTheN(pathSize);
-		int[] colors = new int[twoPath - pathSize - 1];
+		int[] colors = new int[twoPath - 1];
 		int index = 0;
-		// We only care about combinations with more than
-		// two bits through the single combination with pathSize bits.
-		for ( int i = 2; i <= pathSize; i++ ) 
+		for ( int i = 1; i <= pathSize; i++ ) 
 			// Check each int between 1 and 2^pathSize - 1.  
 			for ( int j = 1; j < twoPath; j++ ) {
 				int x = j;

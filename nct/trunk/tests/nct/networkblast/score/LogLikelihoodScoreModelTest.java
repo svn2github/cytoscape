@@ -63,8 +63,8 @@ public class LogLikelihoodScoreModelTest extends TestCase {
     public void testscoreEdge() {
 
 	assertEquals(0.0, s.scoreEdge(null, null, h));
-	assertEquals(Double.MIN_VALUE, s.scoreEdge(null, null, null));
-	assertEquals(Double.MIN_VALUE, s.scoreEdge("a", "c", null));
+	assertEquals(Double.NEGATIVE_INFINITY, s.scoreEdge(null, null, null));
+	assertEquals(Double.NEGATIVE_INFINITY, s.scoreEdge("a", "c", null));
 	assertEquals(0.0, s.scoreEdge("a", null, h));
 	assertEquals(0.0, s.scoreEdge("a", "c", h));
 	assertEquals(0.0, s.scoreEdge("a", "x", h)); // edge doesn't exist

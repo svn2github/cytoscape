@@ -352,7 +352,7 @@ public class NewComplexSearch<NodeType extends Comparable<? super NodeType>> imp
 	// Find the potential node with the highest score. 
 	private void findMaxPotentialNode() {
 		maxNode = null;
-		maxScore = Double.MIN_VALUE;
+		maxScore = Double.NEGATIVE_INFINITY;
 		for (NodeType testNode: potentialNodeScores.keySet()) {
 			double testScore = potentialNodeScores.get(testNode).doubleValue();
 			if ( testScore > maxScore ) {
@@ -365,7 +365,7 @@ public class NewComplexSearch<NodeType extends Comparable<? super NodeType>> imp
 	// Find the solution node with the lowest score. 
 	private boolean findMinSolutionNode() {
 		minNode = null;
-		minScore = Double.MAX_VALUE;
+		minScore = Double.POSITIVE_INFINITY;
 		for (NodeType testNode: solnNodeScores.keySet()) {
 //			System.out.println("min checking " + testNode.toString());
 			if ( seedNodes.contains(testNode) ) {
