@@ -130,9 +130,7 @@ public final class GraphRenderer
           if (floatBuff1[0] != floatBuff1[2] &&
               floatBuff1[1] != floatBuff1[3]) { runningNodeCount++; } }
         renderNodeCount = runningNodeCount;
-        renderEdgeCount = totalEdgeCount;
-        nodeHits = nodePositions.queryOverlap
-          (xMin, yMin, xMax, yMax, null, 0, false); }
+        renderEdgeCount = totalEdgeCount; }
       else if (renderEdges < 0) {
         int runningNodeCount = 0;
         for (int i = 0; i < visibleNodeCount; i++) {
@@ -140,9 +138,7 @@ public final class GraphRenderer
           if (floatBuff1[0] != floatBuff1[2] &&
               floatBuff1[1] != floatBuff1[3]) { runningNodeCount++; } }
         renderNodeCount = runningNodeCount;
-        renderEdgeCount = 0;
-        nodeHits = nodePositions.queryOverlap
-          (xMin, yMin, xMax, yMax, null, 0, false); }
+        renderEdgeCount = 0; }
       else {
         int runningNodeCount = 0;
         int runningEdgeCount = 0;
@@ -161,7 +157,6 @@ public final class GraphRenderer
           nodeBuff.put(node); }
         renderNodeCount = runningNodeCount;
         renderEdgeCount = runningEdgeCount;
-        nodeHits = null;
         nodeBuff.empty(); }
     }
 
