@@ -168,33 +168,28 @@ public class LogLikelihoodScoreModel<NodeType extends Comparable<? super NodeTyp
      */
     public double scoreEdge(NodeType srcNode, NodeType destNode, Graph<NodeType,Double> graph) {
 
-	assert(srcNode != null && destNode != null && graph != null);
-
-	if ( graph == null )
-		return Double.NEGATIVE_INFINITY; 
-
-	assert(graph.isNode(srcNode) && graph.isNode(destNode));
-
-	if (srcNode == destNode) 
-	    return 0.0; // is this right?
-	
-	if ( !graph.isEdge(srcNode,destNode) )
-		return 0.0; // is this right?
+	if ( graph == null || srcNode == null || destNode == null || 
+	     !graph.isNode(srcNode) || !graph.isNode(destNode) )
+		return Double.NEGATIVE_INFINITY; // is this right?
 
 	// ok, now actually start doing stuff
 	if (!graphMap.containsKey(graph)) 
 		scoreGraph(graph);
 
     	GraphProbs probs = graphMap.get(graph);
+
+	if (srcNode == destNode) 
+		return 0.0; // is this right?
+
 	int numOfNodes = graph.numberOfNodes();
 
 	// formula from paper 
 
-	//
-	// proteinComplexModel = Mc
-	// nullModel = Mn
-	// 
-	double weight = graph.getEdgeWeight(srcNode, destNode);
+	double weight; 
+	if ( graph.isEdge(srcNode,destNode) )
+		weight = graph.getEdgeWeight(srcNode, destNode);
+	else
+		weight = probs.pTrueGivenNotObs; 
 	double exDegSrcNode = calcExpectedNodeDegree(srcNode,graph); 
 	double exDegDestNode = calcExpectedNodeDegree(destNode,graph); 
 	double nullTruth = 1.0 / (1 + (2 * (Math.round(probs.exNumInt - exDegSrcNode - exDegDestNode + 1)) / (exDegSrcNode * exDegDestNode))); 

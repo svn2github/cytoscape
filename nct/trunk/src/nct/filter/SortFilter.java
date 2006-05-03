@@ -34,20 +34,36 @@ import nct.graph.Graph;
  */
 
 public class SortFilter<NodeType extends Comparable<? super NodeType>, WeightType extends Comparable<? super WeightType>> implements Filter<NodeType,WeightType> {
-    /**
-     * Given a List of Graphs, it sorts the graphs based on the comparable implementation 
-     * of the graph. 
-     * @param solutions the List of Graphs to sort
-     */
-    public List<Graph<NodeType,WeightType>> filter(List<Graph<NodeType,WeightType>> solutions) {
-	if (solutions == null) {
-	    return null;
-	} else if (solutions.size() == 0) {
-	    return new ArrayList<Graph<NodeType,WeightType>>();
+
+	private boolean reverse;
+	/**
+	 * SortFilter constructor. The first element will be the least.
+	 * @param reverse Whether or not to reverse the sort so that the first element is the
+	 * greatest and the last element is the least.
+	 */
+	public SortFilter(boolean reverse) {
+		this.reverse = reverse;
 	}
-	Collections.sort(solutions);
-	//System.out.println("unfiltered set size: " + solutions.size());
-	//System.out.println("filtered set size: " + solutions.size());
-	return solutions;
-    }
+
+	/**
+	 * Given a List of Graphs, it sorts the graphs based on the comparable implementation 
+	 * of the graph. 
+	 * @param solutions the List of Graphs to sort
+	 */
+	public List<Graph<NodeType,WeightType>> filter(List<Graph<NodeType,WeightType>> solutions) {
+		if (solutions == null) {
+			return null;
+		} else if (solutions.size() == 0) {
+			return new ArrayList<Graph<NodeType,WeightType>>();
+		}
+		Collections.sort(solutions);
+
+		if ( reverse )
+			Collections.reverse(solutions);
+
+		//System.out.println("unfiltered set size: " + solutions.size());
+		//System.out.println("filtered set size: " + solutions.size());
+
+		return solutions;
+	}
 }

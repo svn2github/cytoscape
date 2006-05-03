@@ -28,6 +28,8 @@ package nct.visualization.cytoscape;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.CyNetwork;
+import cytoscape.CyNode;
+import cytoscape.CyEdge;
 import cytoscape.data.CyAttributes;
 import cytoscape.giny.CytoscapeRootGraph;
 import cytoscape.giny.PhoebeNetworkView;
@@ -51,6 +53,7 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 
 import nct.graph.Graph;
+import nct.graph.basic.BasicGraph;
 import nct.graph.Edge;
 
 /**
@@ -70,6 +73,37 @@ public class CytoscapeConverter {
 		edgeIdMap = new HashMap<String,Map<String,Integer>>(); 
 		nodeAttrs = Cytoscape.getNodeAttributes();
 		edgeAttrs = Cytoscape.getEdgeAttributes();
+	}
+
+	public static Graph<String,Double> convert(CyNetwork network) {
+		Graph<String,Double> graph = new BasicGraph<String,Double>();
+
+		if ( network == null )
+			return graph; 
+
+		for ( Iterator it = network.nodesIterator(); it.hasNext(); ) {
+			CyNode node = (CyNode) it.next();
+			graph.addNode(node.getIdentifier());
+		}
+
+		for ( Iterator it = network.edgesIterator(); it.hasNext(); ) {
+			CyEdge edge = (CyEdge) it.next();
+
+			Double weight;
+			try {
+
+			String weightString = edgeAttrs.getStringAttribute( edge.getIdentifier(), "interaction" );
+			weight = Double.parseDouble(weightString);
+
+			} catch (Exception e) { 
+				weight = new Double(1.0);
+			}
+
+			graph.addEdge( edge.getSource().getIdentifier(), edge.getTarget().getIdentifier(), weight);
+
+		}
+
+		return graph;
 	}
 
 	/**

@@ -26,6 +26,7 @@
 package nct.visualization.cytoscape.dual;
 
 import cytoscape.CytoscapeInit;
+import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 import cytoscape.data.CyAttributes;
 import cytoscape.giny.CytoscapeRootGraph;
@@ -69,7 +70,7 @@ public class DualLayout {
 	public static void create(Graph<String,Double> graph, String style, String outFile, String outThumbFile, String vizmapFileLoc ) {
 
 		CyNetwork cyNetwork  = CytoscapeConverter.convert(graph);
-		CyNetwork splitGraph = CytoscapeConverter.convert(null); 
+		CyNetwork splitGraph = Cytoscape.createNetwork("splitGraph"); 
 		DualLayoutTask task = new DualLayoutTask(cyNetwork);
 		task.splitNetwork(splitGraph);
 		PhoebeNetworkView view = new PhoebeNetworkView(splitGraph,"Title");

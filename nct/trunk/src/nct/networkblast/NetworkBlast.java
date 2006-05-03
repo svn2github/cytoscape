@@ -153,6 +153,7 @@ public class NetworkBlast {
 			// initialize filter
 			Filter<String,Double> dupeFilter = new DuplicateThresholdFilter<String,Double>(dupeThreshold);
 			Filter<String,Double> dupeNodeFilter = new UniqueCompatNodeFilter();
+			Filter<String,Double> sortFilter = new SortFilter<String,Double>(true);
 
 			// initialize the randomization classes
 			GraphRandomizer<String,Double> homologyShuffle = new EdgeWeightShuffle<String,Double>(randomNG);
@@ -203,7 +204,8 @@ public class NetworkBlast {
 
 				if ( filterDuplicateComplexNodes ) 
 					resultComplexes = dupeNodeFilter.filter(resultComplexes);
-
+				resultPaths = sortFilter.filter(resultPaths);
+				resultComplexes = sortFilter.filter(resultComplexes);
 
 				print("found " + resultPaths.size() + " filtered paths");
 				print("found " + resultComplexes.size() + " filtered complexes");
@@ -223,18 +225,18 @@ public class NetworkBlast {
 	
 					print("writing results to file: " + zname + ".zip" );
 					ZIPSIFWriter<String,Double> zipper = new ZIPSIFWriter<String,Double>(zname);
-					int ct = 1;		
+					int ct = 0;		
 					for ( Graph<String,Double> p : resultPaths )
 						zipper.add(p, "path_" + ct++);
 
-					ct = 1;		
+					ct = 0;		
 					for ( Graph<String,Double> p : resultComplexes )
 						zipper.add(p, "complex_" + ct++);
 
 					zipper.add(compatGraph,"compat_graph");
 					zipper.add(homologyGraph,"homology_graph");
 
-					ct = 1;
+					ct = 0;
 					for ( Graph<String,Double> spec : inputSpecies )
 						zipper.add( spec, "interaction_graph_" + ct++ );
 
