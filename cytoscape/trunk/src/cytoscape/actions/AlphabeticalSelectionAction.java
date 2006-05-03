@@ -85,6 +85,7 @@ public class AlphabeticalSelectionAction
       CyNetworkUtilities.selectNodesStartingWith( Cytoscape.getCurrentNetwork(),
                                                   search_string,
                                                   Cytoscape.getCurrentNetworkView() );
+      Cytoscape.getCurrentNetworkView().updateView();
       return;
     }
 
