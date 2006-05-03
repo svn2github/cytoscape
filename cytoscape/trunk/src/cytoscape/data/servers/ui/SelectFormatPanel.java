@@ -4,7 +4,7 @@
  * Created on 2006/04/04, 11:47
  */
 
-package cytoscape.util.swing;
+package cytoscape.data.servers.ui;
 
 import java.io.IOException;
 import java.net.MalformedURLException;

@@ -4,7 +4,7 @@
  * Created on 2006/04/13, 16:08
  */
 
-package cytoscape.util.swing;
+package cytoscape.data.servers.ui;
 
 import java.io.BufferedReader;
 import java.io.IOException;

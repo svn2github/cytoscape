@@ -35,13 +35,14 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package cytoscape.util.swing;
+package cytoscape.data.servers.ui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
 import com.nexes.wizard.WizardPanelDescriptor;
+
 
 /*
  * This panel is for new Gene Ontology data formats. Ask user a OBO file and

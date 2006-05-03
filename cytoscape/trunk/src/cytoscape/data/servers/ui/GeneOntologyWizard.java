@@ -35,7 +35,7 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package cytoscape.util.swing;
+package cytoscape.data.servers.ui;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -51,6 +51,7 @@ import com.nexes.wizard.WizardPanelDescriptor;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
+import cytoscape.actions.MapOntologyAction;
 import cytoscape.data.annotation.OntologyMapperDialog;
 import cytoscape.data.servers.BioDataServer;
 import cytoscape.task.Task;
@@ -161,9 +162,8 @@ public class GeneOntologyWizard {
 
 			// Show annotation window
 			//AnnotationGui antGui = new AnnotationGui();
-			OntologyMapperDialog omd = new OntologyMapperDialog(Cytoscape.getDesktop(), false);
-			//antGui.actionPerformed(null);
-			omd.show();
+			MapOntologyAction mapGO = new MapOntologyAction();
+			mapGO.actionPerformed(null);
 
 		}
 		return ret;

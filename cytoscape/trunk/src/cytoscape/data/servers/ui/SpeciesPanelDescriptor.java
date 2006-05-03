@@ -1,5 +1,5 @@
 /*
- File: BioDataServerPanel1Descriptor.java 
+ File: SpeicesPanelDescriptor.java 
  
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
  
@@ -35,48 +35,34 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package cytoscape.util.swing;
-
-import java.awt.Dimension;
+package cytoscape.data.servers.ui;
 
 import com.nexes.wizard.WizardPanelDescriptor;
 
 
-/**
- * First panel for the Gene Ontology Wizard.
- * 
- *  - Ask user to choose type of the data format.
- *  
- * @author kono
- *
- */
-public class SelectFormatPanelDescriptor extends WizardPanelDescriptor {
+public class SpeciesPanelDescriptor extends WizardPanelDescriptor {
 
-	public static final String IDENTIFIER = "INTRODUCTION_PANEL";
-	SelectFormatPanel startPanel;
+	public static final String IDENTIFIER = "SPECIES_PANEL";
+	SpeciesPanel speciesPanel;
 
-	public SelectFormatPanelDescriptor() {
-		super(IDENTIFIER, new SelectFormatPanel());
+	public SpeciesPanelDescriptor() {
+
+		speciesPanel = new SpeciesPanel();
+		setPanelDescriptorIdentifier(IDENTIFIER);
+		setPanelComponent(speciesPanel);
 	}
 
 	public Object getNextPanelDescriptor() {
-		String fileType = null;
-		startPanel = new SelectFormatPanel();
-
-		startPanel = (SelectFormatPanel) super.getPanelComponent();
-		startPanel.setPreferredSize(new Dimension(450, 450));
-		
-		fileType = startPanel.getFileFormatRadioButtonSelected();
-
-		if (fileType.equals("oboAndGa")) {
-			return OboPanelDescriptor.IDENTIFIER;
-		} else {
-			return ManifestFileSelectionPanelDescriptor.IDENTIFIER;
-		}
+		return FINISH;
 	}
 
+	// back leads to the 1st panel.
 	public Object getBackPanelDescriptor() {
-		return null;
+		return AnotationPanelDescriptor.IDENTIFIER;
 	}
 
+	public void aboutToDisplayPanel() {
+		getWizard().setNextFinishButtonEnabled(true);
+		getWizard().setBackButtonEnabled(true);
+	}
 }

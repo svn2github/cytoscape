@@ -4,7 +4,7 @@
  * Created on April 4, 2006, 1:13 PM
  */
 
-package cytoscape.util.swing;
+package cytoscape.data.servers.ui;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -32,6 +32,8 @@ import javax.swing.table.TableCellRenderer;
 
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
+import cytoscape.data.Semantics;
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.FileUtil;
 
@@ -51,10 +53,12 @@ public class AnotationPanel extends javax.swing.JPanel {
 	// "DB_Object_Name", "DB_Object_Synonym", "DB_Object_Type",
 	// "taxon", "Date", "Assigned_by"};
 
-	//String[] columnNames = { "DB_Object_Symbol", "DB_Object_Synonym" };
+	// String[] columnNames = { "DB_Object_Symbol", "DB_Object_Synonym" };
 	String[] columnNames = { "GO's Canonical Name", "Synonyms in GA File" };
 	private File oboFile = null;
 	private HashMap gaFiles = null;
+	
+	private CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 
 	/** Creates new form GeneOntologyPanel2 */
 	public AnotationPanel() {
@@ -78,13 +82,13 @@ public class AnotationPanel extends javax.swing.JPanel {
 		nodeNameList = new javax.swing.JList();
 		jPanel2 = new javax.swing.JPanel();
 		previewScrollPane = new javax.swing.JScrollPane();
-		
+
 		previewTable = new JTable() {
 			public boolean isCellEditable(int row, int column) {
 				return false;
 			}
 		};
-		
+
 		headerScrollPane = new javax.swing.JScrollPane();
 		headerEditorPane = new javax.swing.JEditorPane();
 		oboTextField = new javax.swing.JTextField();
@@ -96,10 +100,10 @@ public class AnotationPanel extends javax.swing.JPanel {
 
 		gaButton = new javax.swing.JButton();
 		jPanel1 = new javax.swing.JPanel();
-		
+
 		flipCheckBox = new javax.swing.JCheckBox();
 		flipCheckBox.setEnabled(false);
-		
+
 		speciesComboBox = new javax.swing.JComboBox();
 
 		setPreferredSize(new java.awt.Dimension(350, 300));
@@ -144,9 +148,14 @@ public class AnotationPanel extends javax.swing.JPanel {
 				.createTitledBorder("Header Preview"));
 		headerScrollPane.setViewportView(headerEditorPane);
 		headerEditorPane.setContentType("text/html");
-		headerEditorPane.setText("<html><body>No Gene Association File Selected.<br>" +
-				"<strong>(<font color=\"red\">RED</font> entries will be used for mapping)</strong></body></html>");
-		
+		headerEditorPane
+				.setText("<html><body>No Gene Association File Selected.<br>"
+						+ "<strong>(<font color=\"red\">RED</font> entries will be used for mapping)</strong></body></html>");
+		headerEditorPane
+				.setText("<html><body>Each node ID will be tested against each GO Symbol and GO Synonym for a match. <br>" +
+						" NOTE: If Transfer checkbox is unchecked, each node ID <strong>must</strong> have defined a Species " +
+						"attribute that matches the GO Taxon </body></html>");
+
 		// Layout information
 		org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(
 				jPanel2);
@@ -187,10 +196,10 @@ public class AnotationPanel extends javax.swing.JPanel {
 				return list.get(i);
 			}
 		});
-		nodeNameList.setEnabled(false);
+		nodeNameList.setEnabled(true);
 		nodeNameList
 				.setToolTipText("These node names will be used for mapping.");
-
+		
 		jScrollPane3.setViewportView(gaList);
 
 		gaButton.setText("Add");
@@ -331,7 +340,7 @@ public class AnotationPanel extends javax.swing.JPanel {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 		}
 		flipCheckBox.setEnabled(true);
 	}
@@ -442,10 +451,30 @@ public class AnotationPanel extends javax.swing.JPanel {
 		ArrayList nodes = (ArrayList) Cytoscape.getCyNodesList();
 		ArrayList nodeNames = new ArrayList();
 		Iterator it = nodes.iterator();
+		boolean isSpecies = false;
+		String[] attributeNames = nodeAttributes.getAttributeNames();
+		for(int i=0; i<attributeNames.length; i++) {
+			if(attributeNames[i].equals(Semantics.SPECIES)) {
+				isSpecies = true;
+				break;
+			}
+		}
+		
+		String nodeName = null;
+		String entry = null;
+		CyNode node = null;
 		while (it.hasNext()) {
-			CyNode node = (CyNode) it.next();
-			String nodeName = node.getIdentifier();
-			nodeNames.add(nodeName);
+			node = (CyNode) it.next();
+			nodeName = node.getIdentifier();
+			
+			// Check Species
+			if(isSpecies == false) {
+				entry = nodeName + " = " + "No Species attr.";
+			} else {
+				entry = nodeName + " = " + nodeAttributes.getStringAttribute(nodeName, Semantics.SPECIES);
+			}
+			
+			nodeNames.add(entry);
 		}
 		return nodeNames;
 
@@ -524,7 +553,7 @@ public class AnotationPanel extends javax.swing.JPanel {
 }
 
 /*
- * Cell rendere for preview table
+ * Cell renderer for preview table
  * 
  */
 class PreviewTableCellRenderer extends JLabel implements TableCellRenderer {
