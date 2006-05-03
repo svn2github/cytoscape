@@ -2,6 +2,10 @@ package cytoscape.data.annotation;
 
 import giny.view.NodeView;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Enumeration;
@@ -14,7 +18,9 @@ import java.util.TreeSet;
 import java.util.Vector;
 
 import javax.swing.JDialog;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -30,8 +36,8 @@ import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
-import cytoscape.data.annotation.AnnotationGui.Gui.SelectNodesTreeSelectionListener;
 import cytoscape.data.servers.BioDataServer;
+import cytoscape.util.OpenBrowser;
 import cytoscape.view.CyNetworkView;
 
 /*
@@ -49,8 +55,9 @@ public class OntologyMapperDialog extends JDialog {
 	public static final String GO_MOLECULAR_FUNCTION = "GO Molecular Function";
 	public static final String GO_BIOLOGICAL_PROCESS = "GO Biological Process";
 	public static final String GO_CELLULAR_COMPONENT = "GO Cellular Component";
-	
-	public static final int MAX_LEVEL = 15;
+
+	// URL of AmiGO. This can be changed.
+	private static final String AMIGO_URL = "http://www.godatabase.org/cgi-bin/amigo/go.cgi?view=details&search_constraint=terms&depth=0&query=";
 
 	protected BioDataServer dataServer;
 	protected String defaultSpecies;
@@ -59,13 +66,9 @@ public class OntologyMapperDialog extends JDialog {
 	private TreePath annotationPath;
 	private String currentAnnotationCategory;
 
-	private HashMap appliedOntologies;
-	
-	private List goAttributes;
-
 	private CyNetworkView networkView;
 	private CyNetwork network;
-	
+
 	private CyAttributes nodeAttributes;
 
 	public OntologyMapperDialog() {
@@ -84,10 +87,8 @@ public class OntologyMapperDialog extends JDialog {
 
 	private void initDataStructures() {
 
-		appliedOntologies = new HashMap();
-		goAttributes = new ArrayList();
 		nodeAttributes = Cytoscape.getNodeAttributes();
-		
+
 		networkView = Cytoscape.getCurrentNetworkView();
 		network = networkView.getNetwork();
 		dataServer = Cytoscape.getBioDataServer();
@@ -97,35 +98,38 @@ public class OntologyMapperDialog extends JDialog {
 
 		defaultSpecies = CytoscapeInit.getProperty("defaultSpeciesName");
 	}
-	
+
 	private void appendCurrentAnnotaions() {
-		
+
 		String[] attributeNames = nodeAttributes.getAttributeNames();
-		
-		
-		
-		for(int idx=0; idx<attributeNames.length; idx++) {
+
+		for (int idx = 0; idx < attributeNames.length; idx++) {
 			Set allTerms = new TreeSet();
-			if(attributeNames[idx].startsWith(GO_MOLECULAR_FUNCTION) ||
-					attributeNames[idx].startsWith(GO_BIOLOGICAL_PROCESS) ||
-					attributeNames[idx].startsWith(GO_CELLULAR_COMPONENT)) {
-				goAttributes.add(attributeNames[idx]);
-				
+			if (attributeNames[idx].startsWith(GO_MOLECULAR_FUNCTION)
+					|| attributeNames[idx].startsWith(GO_BIOLOGICAL_PROCESS)
+					|| attributeNames[idx].startsWith(GO_CELLULAR_COMPONENT)) {
+
 				// Need to pick all attributes to get unique values...
 				Iterator it = Cytoscape.getRootGraph().nodesIterator();
-				while(it.hasNext()) {
+				while (it.hasNext()) {
 					CyNode node = (CyNode) it.next();
 					String nodeID = node.getIdentifier();
-					List listAttr = nodeAttributes.getAttributeList(nodeID, attributeNames[idx]);
-					if(listAttr != null && listAttr.size() != 0) {
+					List listAttr = nodeAttributes.getAttributeList(nodeID,
+							attributeNames[idx]);
+					if (listAttr != null && listAttr.size() != 0) {
 						allTerms.addAll(listAttr);
 					}
 				}
 			}
-			
+
 			// Now append the list
-			if(allTerms.size()!=0) {
-				appendToSelectionTree(attributeNames[idx], allTerms);
+			if (allTerms.size() != 0) {
+				String species = defaultSpecies;
+				String[] parts = attributeNames[idx].split(" ");
+				String curator = parts[0].trim();
+				String annotationType = parts[1] + " " + parts[2];
+				AnnotationDescription aDesc = new AnnotationDescription(species, curator, annotationType);
+				appendToSelectionTree(attributeNames[idx], allTerms, aDesc);
 			}
 		}
 	}
@@ -170,6 +174,10 @@ public class OntologyMapperDialog extends JDialog {
 		goAttributeTree = this.createNodeSelectionTree();
 		goAttributeTree
 				.addTreeSelectionListener(new SelectNodesTreeSelectionListener());
+
+		goAttributeTree.addMouseListener(new PopupMenuListener());
+		goAttributeTree
+				.setToolTipText("Click to select nodes, or right click to open context menu.");
 
 		goAttributeScrollPane.setBorder(javax.swing.BorderFactory
 				.createTitledBorder(null, "GO Data as Attributes",
@@ -216,6 +224,21 @@ public class OntologyMapperDialog extends JDialog {
 			}
 		});
 
+		amigoLink = new JMenuItem("Search this GO term in AmiGO...");
+		amigoLink.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+
+				OpenBrowser.openURL(getURL());
+			}
+
+		});
+		contextMenu = new JPopupMenu();
+		contextMenu.add(amigoLink);
+		//
+		// Layout
+		//
 		org.jdesktop.layout.GroupLayout buttonPanelLayout = new org.jdesktop.layout.GroupLayout(
 				buttonPanel);
 		buttonPanel.setLayout(buttonPanelLayout);
@@ -274,7 +297,7 @@ public class OntologyMapperDialog extends JDialog {
 						buttonPanelLayout.createSequentialGroup()
 								.addContainerGap(103, Short.MAX_VALUE).add(
 										applyButton).add(23, 23, 23).add(
-												removeButton).add(23, 23, 23).add(
+										removeButton).add(23, 23, 23).add(
 										applyAllButton).add(123, 123, 123).add(
 										okButton)));
 
@@ -319,44 +342,102 @@ public class OntologyMapperDialog extends JDialog {
 
 	}
 
+	private String getURL() {
+		DefaultMutableTreeNode node = (DefaultMutableTreeNode) goAttributeTree
+				.getLastSelectedPathComponent();
+		String nodeLabel = node.getUserObject().toString();
+		String[] parts = nodeLabel.split("=");
+		return AMIGO_URL + parts[0].trim();
+	}
+
 	private void removeButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		// TODO add your handling code here:
 
 		DefaultTreeModel model = (DefaultTreeModel) goAttributeTree.getModel();
-		
+
 		TreePath[] selectedPaths = goAttributeTree.getSelectionPaths();
-		
-		
-		if(selectedPaths == null || selectedPaths.length == 0) {
+
+		if (selectedPaths == null || selectedPaths.length == 0) {
 			return;
 		}
-		for(int idx=0; idx<selectedPaths.length; idx++) {
-			String annotationLevelName = selectedPaths[idx].getPathComponent(1).toString();
-			System.out.println("Removing Attribute: " + annotationLevelName);
-			DefaultMutableTreeNode lastPath = 
-				(DefaultMutableTreeNode)selectedPaths[idx].getPathComponent(1);
+		for (int idx = 0; idx < selectedPaths.length; idx++) {
+			String annotationLevelName = selectedPaths[idx].getPathComponent(1)
+					.toString();
+			
+			DefaultMutableTreeNode lastPath = (DefaultMutableTreeNode) selectedPaths[idx]
+					.getPathComponent(1);
 			lastPath.removeFromParent();
 			model.reload();
-			
-			
+
 			// Remove from CyAttribute
-			if(annotationLevelName != null) {
+			if (annotationLevelName != null) {
 				nodeAttributes.deleteAttribute(annotationLevelName);
 			}
-			
+
 		}
 	}
 
+	/*
+	 * Apply all annotation in the category (Celluar Component, Biological
+	 * Process, or Molecular Function)
+	 * 
+	 * This means, annotation in all levels will be mapped onto node attributes.
+	 */
 	private void applyAllButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		// TODO add your handling code here:
 
+		if(annotationPath == null) {
+			return;
+		} 
+		
+		// first, create a Set object of all annotations.
+		DefaultMutableTreeNode node1 = (DefaultMutableTreeNode) annotationPath
+				.getPathComponent(1);
+		AnnotationDescription aDesc = (AnnotationDescription) node1
+				.getUserObject();
+		
+		if (aDesc == null)
+			return;
+
+		Set uniqueAnnotationValues = new HashSet();
+		currentAnnotationCategory = aDesc.getCurator() + " " + aDesc.getType();
+
+		uniqueAnnotationValues = addAllAnnotationToNodes(aDesc,
+				currentAnnotationCategory);
+
+		if (uniqueAnnotationValues.size() == 0) {
+			showNoMatchErrorDialog();
+		} // Mod by kono end (10/20/2005)
+
+		if (uniqueAnnotationValues != null && uniqueAnnotationValues.size() > 0) {
+			appendToSelectionTree(currentAnnotationCategory,
+					uniqueAnnotationValues, aDesc);
+		}
+	}
+
+	private String formatGOID(Integer id) {
+		String formattedID = "GO:";
+		String idString = id.toString();
+		if (idString.length() != 7) {
+			int length = idString.length();
+			for (int idx = 0; idx < 7 - length; idx++) {
+				formattedID = formattedID + "0";
+			}
+		}
+		formattedID = formattedID + idString;
+		return formattedID;
 	}
 
 	/*
 	 * This method will be called by Apply Button ( >> ).
 	 */
-	private void applyButtonActionPerformed(java.awt.event.ActionEvent evt) {	
-
+	private void applyButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		
+		if(annotationPath == null) {
+			return;
+		} else if(annotationPath.getPathComponent(1) == annotationPath.getLastPathComponent()) {
+			System.out.println("branch root!!");
+			return;
+		}
+		
 		DefaultMutableTreeNode node1 = (DefaultMutableTreeNode) annotationPath
 				.getPathComponent(1);
 		AnnotationDescription aDesc = (AnnotationDescription) node1
@@ -364,33 +445,36 @@ public class OntologyMapperDialog extends JDialog {
 		DefaultMutableTreeNode node2 = (DefaultMutableTreeNode) annotationPath
 				.getPathComponent(2);
 
+		
+		
 		int level = ((Integer) node2.getUserObject()).intValue();
+
 		if (aDesc == null)
 			return;
 
-		currentAnnotationCategory = addAnnotationToNodes(aDesc, level);
+		String baseAnnotationName = aDesc.getCurator() + " " + aDesc.getType();
+		currentAnnotationCategory = baseAnnotationName + " (Level " + level
+				+ ")";
+		Set uniqueAnnotationValues = addAnnotationToNodes(aDesc, level,
+				currentAnnotationCategory);
 
-		Object[] uniqueAnnotationValues = null;
-		
-		
 		/*
-		 * Error checking:
-		 *  - If the GO term in the level is already in the 
-		 *     right tree, do not append.
+		 * Error checking: - If the GO term in the level is already in the right
+		 * tree, do not append.
 		 */
-		DefaultMutableTreeNode root = (DefaultMutableTreeNode) goAttributeTree.getModel().getRoot();
+		DefaultMutableTreeNode root = (DefaultMutableTreeNode) goAttributeTree
+				.getModel().getRoot();
 		DefaultTreeModel model = (DefaultTreeModel) goAttributeTree.getModel();
-		
+
 		// Extract levels
-		
-		for(int idx=0; idx<model.getChildCount(root); idx++) {
+
+		for (int idx = 0; idx < model.getChildCount(root); idx++) {
 			String childrenName = model.getChild(root, idx).toString();
-			
-			if(childrenName.equals(currentAnnotationCategory)) {
-				JOptionPane.showMessageDialog(
-						this , "The annotation is already imported." , "Error!" ,
-						JOptionPane.INFORMATION_MESSAGE
-					);
+
+			if (childrenName.equals(currentAnnotationCategory)) {
+				JOptionPane.showMessageDialog(this,
+						"The annotation is already imported.", "Error!",
+						JOptionPane.INFORMATION_MESSAGE);
 				return;
 			}
 		}
@@ -398,6 +482,24 @@ public class OntologyMapperDialog extends JDialog {
 		CyAttributes nodeAtts = Cytoscape.getNodeAttributes();
 		Iterator it = Cytoscape.getRootGraph().nodesIterator();
 		HashSet values = new HashSet();
+
+		Annotation anno = dataServer.getAnnotation(aDesc);
+		Ontology onto = anno.getOntology();
+		HashMap terms = onto.getTerms();
+
+		// Build Reverse Hash
+		HashMap reverse = new HashMap();
+		Set termIDs = terms.keySet();
+
+		Iterator termIt = termIDs.iterator();
+		while (termIt.hasNext()) {
+			Object id = termIt.next();
+			OntologyTerm term = (OntologyTerm) terms.get(id);
+			// System.out.println("ID = " + formatGOID((Integer) id) + ", term =
+			// " + term.getName());
+			reverse.put(term.getName(), id);
+		}
+
 		while (it.hasNext()) {
 			CyNode node = (CyNode) it.next();
 			byte type = nodeAtts.getType(currentAnnotationCategory);
@@ -411,53 +513,81 @@ public class OntologyMapperDialog extends JDialog {
 						currentAnnotationCategory);
 				if (vals.size() > 0) {
 					Object val = vals.get(0);
-					if (val instanceof String)
-						values.addAll(vals);
+					if (val instanceof String) {
+						Iterator listIt = vals.iterator();
+						while (listIt.hasNext()) {
+							String termName = (String) listIt.next();
+							String treeNode = formatGOID((Integer) reverse
+									.get(termName))
+									+ " = " + termName;
+
+							values.add(treeNode);
+						}
+					}
 				}
 			}
 
 		}// while it.hasNext
 
-		uniqueAnnotationValues = values.toArray();
-
-		if (uniqueAnnotationValues.length == 0) {
-			// System.err.println( "No match exception" + e1 );
-			JOptionPane
-					.showMessageDialog(
-							null,
-							"There is no match between the selected annotation \n"
-									+ "and current nodes in the network.\n"
-									+ "\nMake sure that your network data file \n"
-									+ "and Gene Association files use same naming scheme.\n\n"
-									+ "Please compare the 3rd column of Gene Association\n"
-									+ "file (DB_Object_Symbol) and node names in your network.",
-							"No match in Gene Ontology Database",
-							JOptionPane.ERROR_MESSAGE);
-
+		if (uniqueAnnotationValues.size() == 0) {
+			showNoMatchErrorDialog();
 		} // Mod by kono end (10/20/2005)
 
-		if (uniqueAnnotationValues != null && uniqueAnnotationValues.length > 0
-				&& uniqueAnnotationValues[0].getClass() == String.class) {
-			java.util.Arrays.sort(uniqueAnnotationValues,
-					(Comparator) String.CASE_INSENSITIVE_ORDER);
+		if (uniqueAnnotationValues != null && uniqueAnnotationValues.size() > 0) {
 			appendToSelectionTree(currentAnnotationCategory,
-					uniqueAnnotationValues);
+					uniqueAnnotationValues, aDesc);
 		}
 	}
-	
-	protected void appendToSelectionTree(String currentAnnotationCategory, 
-			Set uniqueAnnotationValues) {
-		this.appendToSelectionTree(currentAnnotationCategory, 
-				uniqueAnnotationValues.toArray());
+
+	private void showNoMatchErrorDialog() {
+		JOptionPane
+				.showMessageDialog(
+						null,
+						"There is no match between the selected annotation \n"
+								+ "and current nodes in the network.\n"
+								+ "\nMake sure that your network data file \n"
+								+ "and Gene Association files use same naming scheme.\n\n"
+								+ "Please compare the 3rd column of Gene Association\n"
+								+ "file (DB_Object_Symbol) and node names in your network.",
+						"No match in Gene Ontology Database",
+						JOptionPane.ERROR_MESSAGE);
 	}
 
 	protected void appendToSelectionTree(String currentAnnotationCategory,
-			Object[] uniqueAnnotationValues) {
+			Set uniqueAnnotationValues, AnnotationDescription aDesc) {
+
+		HashSet values = new HashSet();
+
+		Annotation anno = dataServer.getAnnotation(aDesc);
+		Ontology onto = anno.getOntology();
+		HashMap terms = onto.getTerms();
+
+		// Build Reverse Hash
+		HashMap reverse = new HashMap();
+		Set termIDs = terms.keySet();
+
+		Iterator termIt = termIDs.iterator();
+		while (termIt.hasNext()) {
+			Object id = termIt.next();
+			OntologyTerm term = (OntologyTerm) terms.get(id);
+			// System.out.println("ID = " + formatGOID((Integer) id) + ", term =
+			// " + term.getName());
+			reverse.put(term.getName(), id);
+		}
+		
+		
+		
 		DefaultMutableTreeNode branch = new DefaultMutableTreeNode(
 				currentAnnotationCategory);
 
-		for (int i = 0; i < uniqueAnnotationValues.length; i++)
-			branch.add(new DefaultMutableTreeNode(uniqueAnnotationValues[i]));
+		Iterator it = uniqueAnnotationValues.iterator();
+		while (it.hasNext()) {
+			String termName = (String) it.next();
+			String treeNode = formatGOID((Integer) reverse
+					.get(termName))
+					+ " = " + termName;
+			branch.add(new DefaultMutableTreeNode(treeNode));
+		}
 
 		DefaultMutableTreeNode root = (DefaultMutableTreeNode) goAttributeTree
 				.getModel().getRoot();
@@ -465,12 +595,11 @@ public class OntologyMapperDialog extends JDialog {
 		model.insertNodeInto(branch, root, root.getChildCount());
 		goAttributeTree.scrollPathToVisible(new TreePath(branch.getPath()));
 		model.reload();
-
-	} // appendToSelectionTree
+	}
 
 	private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		// TODO add your handling code here:
-		this.dispose();
+		this.setVisible(false);
 	}
 
 	// Variables declaration - do not modify
@@ -490,10 +619,13 @@ public class OntologyMapperDialog extends JDialog {
 	private javax.swing.JButton removeAllButton;
 	private javax.swing.JButton removeButton;
 
+	private JPopupMenu contextMenu;
+	private JMenuItem amigoLink;
+
 	// End of variables declaration
 
 	/*
-	 * Build GO Server Tree
+	 * Build GO Server Tree (On the LEFT)
 	 * 
 	 * This tree is based on data in BioDataServer Object.
 	 * 
@@ -511,6 +643,9 @@ public class OntologyMapperDialog extends JDialog {
 		return tree;
 	}
 
+	/*
+	 * Create nodes for the GO Server Tree.
+	 */
 	protected void createTreeNodes(DefaultMutableTreeNode root,
 			AnnotationDescription[] descriptions)
 	// for each of the descriptions, and only if the description is of a
@@ -553,6 +688,34 @@ public class OntologyMapperDialog extends JDialog {
 
 	} // createTreeNodes
 
+	/*
+	 * Incomplete. This will be used to view GO terms as tree structure.
+	 */
+	protected void buildOntologyTree() {
+		Annotation anno = dataServer.getAnnotation(annotationDescriptions[0]);
+		Ontology onto = anno.getOntology();
+		Set keys = onto.getTerms().keySet();
+		Iterator it = keys.iterator();
+
+		System.out.println("Ontology for: " + anno.getType() + " ::: "
+				+ anno.getOntologyType());
+
+		// Traverse tree
+
+		// depthFirst();
+		DefaultMutableTreeNode node;
+
+		while (it.hasNext()) {
+			Object key = it.next();
+			OntologyTerm goTerm = onto.getTerm(((Integer) key).intValue());
+			node = new DefaultMutableTreeNode(goTerm.getName());
+		}
+	}
+
+	private void depthFirst(int[] children) {
+
+	}
+
 	protected JTree createNodeSelectionTree() {
 		DefaultMutableTreeNode root = new DefaultMutableTreeNode(
 				"Annotations Categories");
@@ -587,49 +750,29 @@ public class OntologyMapperDialog extends JDialog {
 	 * Methods called by actions
 	 * 
 	 */
-
 	/*
 	 * Map BDS object to CyAttributes. TODO: Support Synonym
 	 * 
 	 */
-	public String addAnnotationToNodes(AnnotationDescription aDesc, int level) {
+	public Set addAnnotationToNodes(AnnotationDescription aDesc, int level,
+			String annotationNameAtLevel) {
 
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 		// something like "GO biological process" or "KEGG metabolic pathway"
-		String baseAnnotationName = aDesc.getCurator() + " " + aDesc.getType();
-		String annotationNameAtLevel = baseAnnotationName + " (Level " + level
-				+ ")";
-		String annotationNameForLeafIDs = baseAnnotationName + " leaf IDs";
 
 		// make a fresh start
 		nodeAttributes.deleteAttribute(annotationNameAtLevel);
-		nodeAttributes.deleteAttribute(annotationNameForLeafIDs);
 
 		Iterator it = Cytoscape.getRootGraph().nodesIterator();
-		ArrayList nodeLabels = new ArrayList();
+		TreeSet allTerms = new TreeSet();
+
 		while (it.hasNext()) {
 			CyNode node = (CyNode) it.next();
-			// String nodeLabel = nodeAttributes.getStringAttribute(node
-			// .getIdentifier(), Semantics.CANONICAL_NAME);
-			String nodeLabel = node.getIdentifier();
-			if (nodeLabel != null)
-				nodeLabels.add(nodeLabel);
-		}
-
-		String[] nodeLabelArray = (String[]) nodeLabels
-				.toArray(new String[nodeLabels.size()]);
-
-		int unAnnotatedNodeCount = 0;
-		for (int i = 0; i < nodeLabelArray.length; i++) {
-
-			// System.out.println("Applying: " + nodeLabelArray[i] + ", aDesc =
-			// " + aDesc.toString() );
+			String label = node.getIdentifier();
 
 			String[][] fullAnnotations = dataServer.getAllAnnotations(aDesc,
-					nodeLabelArray[i]);
-			if (fullAnnotations.length == 0)
-				unAnnotatedNodeCount++;
-			else {
+					label);
+			if (fullAnnotations.length != 0) {
 				String[] uniqueAnnotationsAtLevel = collapseToUniqueAnnotationsAtLevel(
 						fullAnnotations, level);
 
@@ -637,161 +780,69 @@ public class OntologyMapperDialog extends JDialog {
 				List annotsList = new ArrayList();
 				if (uniqueAnnotationsAtLevel.length == 0) {
 					// No attribute available for this node
-					nodeAttributes.setAttribute(nodeLabelArray[i],
-							annotationNameAtLevel, "");
+					nodeAttributes.setAttribute(label, annotationNameAtLevel,
+							"");
 				} else {
 					// Extract all values in the current level
 					for (int j = 0; j < uniqueAnnotationsAtLevel.length; j++) {
-
-						// System.out.print("node cn = " + canonicalNodeNames[i]
-						// + ", and an@level = " + annotationNameAtLevel);
-						// System.out.println(", an value@level = "
-						// + uniqueAnnotationsAtLevel[j]);
-
-						// we can do this because at the begining of the method
-						// we deleted the attribute annotationNameAtLevel:
-						// annotsList =
-						// nodeAttributes.getAttributeList(canonicalNodeNames[i],
-						// annotationNameAtLevel);
-
-						// annotsList =
-						// nodeAttributes.getAttributeList(canonicalNodeNames[i],
-						// annotationNameAtLevel);
-						//					
-						// if(annotsList == null){
-						// annotsList = new ArrayList();
-						// //nodeAttributes.setAttributeList(canonicalNodeNames[i],
-						// annotationNameAtLevel,annotsList);
-						// annotsList.add(uniqueAnnotationsAtLevel[j]);
-						// }
-						// System.out.println(" " +
-						// uniqueAnnotationsAtLevel[j]);
 						annotsList.add(uniqueAnnotationsAtLevel[j]);
-
-					}// for j
+					}
 
 					if (annotsList.size() != 0) {
-						nodeAttributes.setAttributeList(nodeLabelArray[i],
+						nodeAttributes.setAttributeList(label,
 								annotationNameAtLevel, annotsList);
+						allTerms.addAll(annotsList);
 					}
 				}
-				int[] annotationIDs = dataServer.getClassifications(aDesc,
-						nodeLabelArray[i]);
-				Integer[] integerArray = new Integer[annotationIDs.length];
-				for (int j = 0; j < annotationIDs.length; j++)
-					integerArray[j] = new Integer(annotationIDs[j]);
+				// int[] annotationIDs = dataServer.getClassifications(aDesc,
+				// nodeLabelArray[i]);
+				// Integer[] integerArray = new Integer[annotationIDs.length];
+				// for (int j = 0; j < annotationIDs.length; j++)
+				// integerArray[j] = new Integer(annotationIDs[j]);
 			} // else: this node is annotated
 		} // for i
 
-		// System.err
-		// .println("Warning: a method has been called whose functionality "
-		// + "has been partially removed "
-		// + "(AnnotationGui.addAnnotationToNodes()).");
-
-		// network.endActivity(callerID);
-
-		return annotationNameAtLevel;
-
-		// CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
-		//
-		// // something like "GO biological process" or "KEGG metabolic pathway"
-		// String baseAnnotationName = aDesc.getCurator() + " " +
-		// aDesc.getType();
-		// String annotationNameAtLevel = baseAnnotationName + " (Level " +
-		// level
-		// + ")";
-		// String annotationNameForLeafIDs = baseAnnotationName + " leaf IDs";
-		//
-		// // This is necessary since Thesaurus needs species name.
-		// String species = aDesc.getSpecies();
-		//
-		// // make a fresh start
-		// nodeAttributes.deleteAttribute(annotationNameAtLevel);
-		// nodeAttributes.deleteAttribute(annotationNameForLeafIDs);
-		//
-		// Iterator it = Cytoscape.getRootGraph().nodesIterator();
-		// ArrayList canonicals = new ArrayList();
-		// while (it.hasNext()) {
-		// CyNode node = (CyNode) it.next();
-		// String canonical = nodeAttributes.getStringAttribute(node
-		// .getIdentifier(), Semantics.CANONICAL_NAME);
-		// if (canonical != null)
-		// canonicals.add(canonical);
-		// }
-		//
-		// String[] canonicalNodeNames = (String[]) canonicals
-		// .toArray(new String[canonicals.size()]);
-		//
-		// int unAnnotatedNodeCount = 0;
-		// for (int i = 0; i < canonicalNodeNames.length; i++) {
-		// String[][] fullAnnotations = dataServer.getAllAnnotations(aDesc,
-		// canonicalNodeNames[i]);
-		// if (fullAnnotations.length == 0)
-		// unAnnotatedNodeCount++;
-		// else {
-		// String[] uniqueAnnotationsAtLevel =
-		// collapseToUniqueAnnotationsAtLevel(
-		// fullAnnotations, level);
-		//
-		// // List to save values in the current level
-		// List annotsList = new ArrayList();
-		// if (uniqueAnnotationsAtLevel.length == 0) {
-		// // No attribute available for this node
-		// nodeAttributes.setAttribute(canonicalNodeNames[i],
-		// annotationNameAtLevel, "");
-		// } else {
-		// // Extract all values in the current level
-		// for (int j = 0; j < uniqueAnnotationsAtLevel.length; j++) {
-		//
-		// System.out.println("node cn = " + canonicalNodeNames[i]
-		// + ", and an@level = " + annotationNameAtLevel);
-		//
-		// String[] syno = dataServer.getAllCommonNames(species,
-		// canonicalNodeNames[i]);
-		//
-		// for (int idx = 0; idx < syno.length; idx++) {
-		// System.out.println("Syno = " + syno[idx]);
-		// }
-		//
-		// // System.out.println(", an value@level = "
-		// // + uniqueAnnotationsAtLevel[j]);
-		//
-		// // we can do this because at the begining of the method
-		// // we deleted the attribute annotationNameAtLevel:
-		// annotsList = nodeAttributes.getAttributeList(
-		// canonicalNodeNames[i], annotationNameAtLevel);
-		//
-		// // annotsList = nodeAttributes.getAttributeList(
-		// // canonicalNodeNames[i], annotationNameAtLevel);
-		//
-		// if (annotsList == null) {
-		// annotsList = new ArrayList();
-		// nodeAttributes.setAttributeList(
-		// canonicalNodeNames[i],
-		// annotationNameAtLevel, annotsList);
-		// annotsList.add(uniqueAnnotationsAtLevel[j]);
-		// }
-		// annotsList.add(uniqueAnnotationsAtLevel[j]);
-		//
-		// }// for j
-		//
-		// if (annotsList.size() != 0) {
-		// nodeAttributes.setAttributeList(canonicalNodeNames[i],
-		// annotationNameAtLevel, annotsList);
-		// }
-		// }
-		//
-		// int[] annotationIDs = dataServer.getClassifications(aDesc,
-		// canonicalNodeNames[i]);
-		// Integer[] integerArray = new Integer[annotationIDs.length];
-		// for (int j = 0; j < annotationIDs.length; j++)
-		// integerArray[j] = new Integer(annotationIDs[j]);
-		// } // else: this node is annotated
-		// } // for i
-		//
-		// return annotationNameAtLevel;
+		return allTerms;
 
 	} // addAnnotationToNodes
+
+	public Set addAllAnnotationToNodes(AnnotationDescription aDesc,
+			String annotationName) {
+
+		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+
+		Iterator it = Cytoscape.getRootGraph().nodesIterator();
+
+		// This is for all terms in the category.
+		TreeSet allTerms = new TreeSet();
+
+		TreeSet uniqueTerms;
+		while (it.hasNext()) {
+			uniqueTerms = new TreeSet();
+			CyNode node = (CyNode) it.next();
+			String label = node.getIdentifier();
+			String[][] fullAnnotations = dataServer.getAllAnnotations(aDesc,
+					label);
+			if (fullAnnotations.length != 0) {
+				ArrayList termList = new ArrayList();
+				for (int i = 0; i < fullAnnotations.length; i++) {
+					for (int j = 0; j < fullAnnotations[i].length; j++) {
+						termList.add(fullAnnotations[i][j]);
+					}
+				}
+				uniqueTerms.addAll(termList);
+			}
+			ArrayList convertedList = new ArrayList();
+			convertedList.addAll(uniqueTerms);
+
+			if (convertedList.size() != 0) {
+				nodeAttributes.setAttributeList(label, annotationName,
+						convertedList);
+			}
+			allTerms.addAll(uniqueTerms);
+		}
+		return allTerms;
+	}
 
 	/**
 	 * return only the unique categories (typically representing gene
@@ -845,10 +896,58 @@ public class OntologyMapperDialog extends JDialog {
 			if (!node.isLeaf())
 				return;
 			annotationPath = goServerTree.getSelectionPaths()[0];
-			// annotateNodesButton.setEnabled(true);
 		}
 
 	} // 
+
+	class PopupMenuListener implements MouseListener {
+
+		public void mouseClicked(MouseEvent arg0) {
+			// TODO Auto-generated method stub
+			DefaultMutableTreeNode node = (DefaultMutableTreeNode) goAttributeTree
+					.getLastSelectedPathComponent();
+			if (node == null)
+				return;
+
+			/*
+			 * These functions are removed from 2.3 Maybe fixed in later
+			 * version...
+			 */
+			// layoutByAnnotationButton.setEnabled(!node.isLeaf());
+			// addSharedAnnotationEdgesButton.setEnabled(!node.isLeaf());
+			if (!node.isLeaf())
+				return;
+
+			if (javax.swing.SwingUtilities.isRightMouseButton(arg0)) {
+				contextMenu.show(arg0.getComponent(), arg0.getX(), arg0.getY());
+
+			} else if (javax.swing.SwingUtilities.isMiddleMouseButton(arg0)) {
+			} else if (javax.swing.SwingUtilities.isLeftMouseButton(arg0)) {
+			}
+
+		}
+
+		public void mouseEntered(MouseEvent arg0) {
+			// TODO Auto-generated method stub
+
+		}
+
+		public void mouseExited(MouseEvent arg0) {
+			// TODO Auto-generated method stub
+
+		}
+
+		public void mousePressed(MouseEvent arg0) {
+			// TODO Auto-generated method stub
+
+		}
+
+		public void mouseReleased(MouseEvent arg0) {
+			// TODO Auto-generated method stub
+
+		}
+
+	}
 
 	/*
 	 * Used for selecting nodes from GO Annotation tree.
@@ -949,6 +1048,10 @@ public class OntologyMapperDialog extends JDialog {
 				String annotationName = paths[i].getPathComponent(1).toString();
 				String annotationValue = paths[i].getPathComponent(2)
 						.toString();
+
+				String[] parts = annotationValue.split("=");
+				annotationValue = parts[1].trim();
+
 				Vector list;
 				if (!hash.containsKey(annotationName)) {
 					list = new Vector();
@@ -961,7 +1064,9 @@ public class OntologyMapperDialog extends JDialog {
 			return hash;
 
 		} // extractAnnotationsFromSelection
+
 		// ----------------------------------------------------------------------------------------
+
 	} // inner class SelectNodesTreeSelectionListener
 
 }
