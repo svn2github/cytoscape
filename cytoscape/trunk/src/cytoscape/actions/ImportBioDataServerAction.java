@@ -42,8 +42,8 @@ package cytoscape.actions;
 
 import java.awt.event.ActionEvent;
 
+import cytoscape.data.servers.ui.GeneOntologyWizard;
 import cytoscape.util.CytoscapeAction;
-import cytoscape.util.swing.GeneOntologyWizard;
 
 /**
  * Action allows the loading of a BioDataServer from the gui.
