@@ -94,6 +94,8 @@ public class OntologyMapperDialog extends JDialog {
 		dataServer = Cytoscape.getBioDataServer();
 
 		annotationDescriptions = dataServer.getAnnotationDescriptions();
+		
+		//
 		Semantics.applyNamingServices(network);
 
 		defaultSpecies = CytoscapeInit.getProperty("defaultSpeciesName");
@@ -445,8 +447,6 @@ public class OntologyMapperDialog extends JDialog {
 		DefaultMutableTreeNode node2 = (DefaultMutableTreeNode) annotationPath
 				.getPathComponent(2);
 
-		
-		
 		int level = ((Integer) node2.getUserObject()).intValue();
 
 		if (aDesc == null)

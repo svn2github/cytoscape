@@ -46,6 +46,10 @@ import javax.swing.ImageIcon;
 
 import cytoscape.Cytoscape;
 import cytoscape.data.annotation.OntologyMapperDialog;
+import cytoscape.task.Task;
+import cytoscape.task.TaskMonitor;
+import cytoscape.task.ui.JTaskConfig;
+import cytoscape.task.util.TaskManager;
 import cytoscape.util.CytoscapeAction;
 
 /*
@@ -53,13 +57,11 @@ import cytoscape.util.CytoscapeAction;
  */
 public class MapOntologyAction extends CytoscapeAction {
 
-	OntologyMapperDialog god;
-
 	public MapOntologyAction() {
 		super("Map Ontology...");
 		setPreferredMenu("File.Import.Ontology");
 	}
-	
+
 	public MapOntologyAction(boolean isMenu, ImageIcon icon) {
 		super("Map Ontology...", icon);
 		setPreferredMenu("File.Import.Ontology");
@@ -71,7 +73,73 @@ public class MapOntologyAction extends CytoscapeAction {
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
 	public void actionPerformed(ActionEvent e) {
-		god = new OntologyMapperDialog(Cytoscape.getDesktop(),false);
-		god.show();
+
+		// Create Task
+		MapOntologyTask task = new MapOntologyTask();
+
+		// Configure JTask Dialog Pop-Up Box
+		JTaskConfig jTaskConfig = new JTaskConfig();
+
+		jTaskConfig.displayCancelButton(true);
+		jTaskConfig.setOwner(Cytoscape.getDesktop());
+		jTaskConfig.displayCloseButton(true);
+		jTaskConfig.displayStatus(true);
+		jTaskConfig.setAutoDispose(true);
+
+		// Execute Task in New Thread; pop open JTask Dialog Box.
+		TaskManager.executeTask(task, jTaskConfig);
 	}
 }
+
+class MapOntologyTask implements Task {
+
+	private OntologyMapperDialog god;
+	private TaskMonitor taskMonitor;
+
+	MapOntologyTask() {
+	}
+
+	/**
+	 * Executes Task
+	 */
+	public void run() {
+		taskMonitor.setStatus("Building Ontology Mapper...");
+		taskMonitor.setPercentCompleted(-1);
+
+		god = new OntologyMapperDialog(Cytoscape.getDesktop(), false);
+
+		taskMonitor.setPercentCompleted(100);
+		taskMonitor.setStatus("Showing mapper...");
+
+		god.show();
+	}
+
+	/**
+	 * Halts the Task: Not Currently Implemented.
+	 */
+	public void halt() {
+		// Task can not currently be halted.
+	}
+
+	/**
+	 * Sets the Task Monitor.
+	 * 
+	 * @param taskMonitor
+	 *            TaskMonitor Object.
+	 */
+	public void setTaskMonitor(TaskMonitor taskMonitor)
+			throws IllegalThreadStateException {
+		this.taskMonitor = taskMonitor;
+	}
+
+	/**
+	 * Gets the Task Title.
+	 * 
+	 * @return Task Title.
+	 */
+	public String getTitle() {
+		return new String("Building Mapper");
+	}
+
+} // End of SaveSessionAction
+
