@@ -482,35 +482,39 @@ public final class GraphRenderer
         final int nodeHitCount = nodeHits.numRemaining();
         for (int i = 0; i < nodeHitCount; i++) {
           final int node = nodeHits.nextExtents(floatBuff1, 0);
-          grafx.drawNodeLow(floatBuff1[0], floatBuff1[1],
-                            floatBuff1[2], floatBuff1[3],
-                            nodeDetails.colorLowDetail(node)); } }
+          if (floatBuff1[0] != floatBuff1[2] &&
+              floatBuff1[1] != floatBuff1[3]) {
+            grafx.drawNodeLow(floatBuff1[0], floatBuff1[1],
+                              floatBuff1[2], floatBuff1[3],
+                              nodeDetails.colorLowDetail(node)); } } }
 
       else { // High detail.
         while (nodeHits.numRemaining() > 0) {
           final int node = nodeHits.nextExtents(floatBuff1, 0);
 
-          // Compute visual attributes that do not depend on LOD.
-          final byte shape = nodeDetails.shape(node);
-          final Paint fillPaint = nodeDetails.fillPaint(node);
+          if (floatBuff1[0] != floatBuff1[2] &&
+              floatBuff1[1] != floatBuff1[3]) {
+            // Compute visual attributes that do not depend on LOD.
+            final byte shape = nodeDetails.shape(node);
+            final Paint fillPaint = nodeDetails.fillPaint(node);
 
-          // Compute node border information.
-          final float borderWidth;
-          final Paint borderPaint;
-          if ((lodBits & LOD_NODE_BORDERS) == 0) { // Not rendering borders.
-            borderWidth = 0.0f;
-            borderPaint = null; }
-          else { // Rendering node borders.
-            borderWidth = nodeDetails.borderWidth(node);
-            if (borderWidth == 0.0f) {
+            // Compute node border information.
+            final float borderWidth;
+            final Paint borderPaint;
+            if ((lodBits & LOD_NODE_BORDERS) == 0) { // Not rendering borders.
+              borderWidth = 0.0f;
               borderPaint = null; }
-            else {
-              borderPaint = nodeDetails.borderPaint(node); } }
+            else { // Rendering node borders.
+              borderWidth = nodeDetails.borderWidth(node);
+              if (borderWidth == 0.0f) {
+                borderPaint = null; }
+              else {
+                borderPaint = nodeDetails.borderPaint(node); } }
 
-          // Draw the node.
-          grafx.drawNodeFull(shape, floatBuff1[0], floatBuff1[1],
-                             floatBuff1[2], floatBuff1[3], fillPaint,
-                             borderWidth, borderPaint);
+            // Draw the node.
+            grafx.drawNodeFull(shape, floatBuff1[0], floatBuff1[1],
+                               floatBuff1[2], floatBuff1[3], fillPaint,
+                               borderWidth, borderPaint); }
 
           // Take care of custom graphic rendering.
           if ((lodBits & LOD_CUSTOM_GRAPHICS) != 0) {
