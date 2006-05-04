@@ -44,6 +44,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Paint;
+import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.io.Writer;
 import java.math.BigInteger;
@@ -80,6 +81,7 @@ import cytoscape.generated2.ObjectFactory;
 import cytoscape.generated2.RdfRDF;
 import cytoscape.view.CyNetworkView;
 import cytoscape.visual.LineType;
+import ding.view.DGraphView;
 
 /**
  * 
@@ -115,7 +117,10 @@ public class XGMMLWriter {
 	protected static int EDGE = 2;
 	protected static int NETWORK = 3;
 
-	protected static final String BACKGROUND = "backgroundColor";
+	public static final String BACKGROUND = "backgroundColor";
+	public static final String GRAPH_VIEW_ZOOM = "GRAPH_VIEW_ZOOM";
+	public static final String GRAPH_VIEW_CENTER_X = "GRAPH_VIEW_CENTER_X";
+	public static final String GRAPH_VIEW_CENTER_Y = "GRAPH_VIEW_CENTER_Y";
 
 	private CyAttributes nodeAttributes;
 	private CyAttributes edgeAttributes;
@@ -301,7 +306,14 @@ public class XGMMLWriter {
 	// write out network attributes
 	protected void writeNetworkAttributes() throws JAXBException {
 
+		// these are attributes that live inside CyAttributes
 		attributeWriter(NETWORK, network.getIdentifier(), null);
+
+		// lets also write the zoom
+		saveViewZoom();
+
+		// save the center of the view
+		saveViewCenter();
 	}
 
 	// Expand metanode information
@@ -1133,6 +1145,49 @@ public class XGMMLWriter {
 		return lineType;
 	}
 
+	/**
+	 * Saves the zoom level.
+	 */
+	private void saveViewZoom() throws JAXBException {
+
+		// the attribute to write
+		Att attr = objFactory.createAtt();
+
+		// lets get the zoom value
+		Double dAttr = new Double(networkView.getZoom());
+
+		// set the attribute name, label, and value
+		attr.setName(GRAPH_VIEW_ZOOM);
+		attr.setLabel(FLOAT_TYPE);
+		if (dAttr != null) attr.setValue(dAttr.toString());
+
+		// add attribute to graph object
+		graph.getAtt().add(attr);
+	}
+
+	/**
+	 * Saves the view center coordinates.
+	 */
+	private void saveViewCenter() throws JAXBException {
+
+		// attribute names
+		String[] coordinates = { GRAPH_VIEW_CENTER_X, GRAPH_VIEW_CENTER_Y };
+
+		// the view center
+		Point2D center = ((DGraphView)networkView).getCenter();
+
+		// process both x & y coordinates
+		for (int lc = 0; lc < 2; lc++) {
+			// the attribute to write - x coord
+			Att attr = objFactory.createAtt();
+			double doubleCoord = (lc == 0) ? center.getX() : center.getY();
+			Double coord = new Double(doubleCoord);
+			attr.setName(coordinates[lc]);
+			attr.setLabel(FLOAT_TYPE);
+			if (coord != null) attr.setValue(coord.toString());
+			graph.getAtt().add(attr);
+		}
+	}
 }
 
 class NamespacePrefixMapperImpl extends NamespacePrefixMapper {
