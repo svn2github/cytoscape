@@ -1,44 +1,41 @@
-
 /*
-  File: InteractionsReader.java 
-  
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-  
-  The Cytoscape Consortium is: 
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Pasteur Institute
-  - Agilent Technologies
-  
-  This library is free software; you can redistribute it and/or modify it
-  under the terms of the GNU Lesser General Public License as published
-  by the Free Software Foundation; either version 2.1 of the License, or
-  any later version.
-  
-  This library is distributed in the hope that it will be useful, but
-  WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
-  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
-  documentation provided hereunder is on an "as is" basis, and the
-  Institute for Systems Biology and the Whitehead Institute 
-  have no obligations to provide maintenance, support,
-  updates, enhancements or modifications.  In no event shall the
-  Institute for Systems Biology and the Whitehead Institute 
-  be liable to any party for direct, indirect, special,
-  incidental or consequential damages, including lost profits, arising
-  out of the use of this software and its documentation, even if the
-  Institute for Systems Biology and the Whitehead Institute 
-  have been advised of the possibility of such damage.  See
-  the GNU Lesser General Public License for more details.
-  
-  You should have received a copy of the GNU Lesser General Public License
-  along with this library; if not, write to the Free Software Foundation,
-  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ File: InteractionsReader.java 
+ 
+ Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+ 
+ The Cytoscape Consortium is: 
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Pasteur Institute
+ - Agilent Technologies
+ 
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+ 
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute 
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute 
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute 
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+ 
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+ */
 
 // InteractionsReader:  from semi-structured text file, into an array of Interactions
-
-
 //------------------------------
 // $Revision$
 // $Date$
@@ -54,8 +51,6 @@ import giny.view.GraphView;
 import giny.view.NodeView;
 
 import java.io.IOException;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -68,8 +63,8 @@ import cytoscape.data.CyAttributes;
 import cytoscape.data.Interaction;
 import cytoscape.data.servers.BioDataServer;
 import cytoscape.task.TaskMonitor;
-import cytoscape.util.PercentUtil;
 import cytoscape.util.FileUtil;
+import cytoscape.util.PercentUtil;
 
 /**
  * Reader for graphs in the interactions file format. Given the filename,
@@ -101,7 +96,7 @@ public class InteractionsReader implements GraphReader {
 	 * Interactions Reader Constructor Creates a new Interactions Reader This
 	 * constructor assumes a Y-Files graph is wanted. If not then use the other
 	 * constructor to say so.
-	 *
+	 * 
 	 * @param dataServer
 	 *            a BioDataServer
 	 * @param species
@@ -120,7 +115,7 @@ public class InteractionsReader implements GraphReader {
 	 * Interactions Reader Constructor Creates a new Interactions Reader This
 	 * constructor assumes a Y-Files graph is wanted. If not then use the other
 	 * constructor to say so.
-	 *
+	 * 
 	 * @param dataServer
 	 *            a BioDataServer
 	 * @param species
@@ -144,30 +139,40 @@ public class InteractionsReader implements GraphReader {
 		this.is_zip = is_zip;
 	}
 
+	/*
+	 * KONO: 5/4/2006 Since we removed the term "canonicalName," dataserver and
+	 * species name is no longer necessary.
+	 */
+	public InteractionsReader(String filename) {
+		this.filename = filename;
+	}
+
 	public void layout(GraphView view) {
-          double distanceBetweenNodes = 50.0d;
-          int columns = (int) Math.sqrt(view.nodeCount());
-          Iterator nodeViews = view.getNodeViewsIterator();
-          double currX = 0.0d;
-          double currY = 0.0d;
-          int count = 0;
-          while (nodeViews.hasNext()) {
-            NodeView nView = (NodeView) nodeViews.next();
-            nView.setOffset(currX, currY);
-            count++;
-            if (count == columns) {
-              count = 0;
-              currX = 0.0d;
-              currY += distanceBetweenNodes; }
-            else {
-              currX += distanceBetweenNodes; } }
+		double distanceBetweenNodes = 50.0d;
+		int columns = (int) Math.sqrt(view.nodeCount());
+		Iterator nodeViews = view.getNodeViewsIterator();
+		double currX = 0.0d;
+		double currY = 0.0d;
+		int count = 0;
+		while (nodeViews.hasNext()) {
+			NodeView nView = (NodeView) nodeViews.next();
+			nView.setOffset(currX, currY);
+			count++;
+			if (count == columns) {
+				count = 0;
+				currX = 0.0d;
+				currY += distanceBetweenNodes;
+			} else {
+				currX += distanceBetweenNodes;
+			}
+		}
 	}
 
 	// ----------------------------------------------------------------------------------------
 	public void read(boolean canonicalize) throws IOException {
 		String rawText;
 		if (!is_zip) {
-			rawText = FileUtil.getInputString(filename); 
+			rawText = FileUtil.getInputString(filename);
 		} else {
 			rawText = zip_entry;
 		}
@@ -220,28 +225,22 @@ public class InteractionsReader implements GraphReader {
 		}
 
 		return result;
-
 	}
 
-	// -------------------------------------------------------------------------------------------
+	/*
+	 * KONO: 5/4/2006 "Canonical Name" is no longer used in Cytoscape. Use ID
+	 * instead.
+	 */
 	protected String canonicalizeName(String name) {
 
 		String canonicalName = name;
 		if (dataServer != null) {
 			canonicalName = dataServer.getCanonicalName(species, name);
-			// added by iliana 11.14.2002
-			// for some strange reason the server returned a null canonical name
 			if (canonicalName == null) {
 				canonicalName = name;
 			}
-			// System.out.println (" -- canonicalizeName from server: " +
-			// canonicalName);
 		}
-		// System.out.println("the canonicalName for " + name + " is " +
-		// canonicalName);
-		// System.out.flush();
 		return canonicalName;
-
 	} // canonicalizeName
 
 	// -------------------------------------------------------------------------------------------
@@ -266,7 +265,7 @@ public class InteractionsReader implements GraphReader {
 				if (canonicalize)
 					targetNodeName = canonicalizeName(targetNodeName);
 				nodeNameSet.add(targetNodeName); // does nothing if already
-													// there
+				// there
 				edgeCount++;
 			}
 			if (taskMonitor != null) {
@@ -290,17 +289,9 @@ public class InteractionsReader implements GraphReader {
 						counter, nodeNameSet.size()));
 				counter++;
 			}
-
 			// use the static method
 			Node node = (Node) Cytoscape.getCyNode(nodeName, true);
 			node_indices.add(node.getRootGraphIndex());
-			// nodes.put(nodeName, node);
-
-			// int node_i = Cytoscape.getRootGraph().createNode();
-			// Node node = Cytoscape.getRootGraph().getNode( node_i);
-			// node.setIdentifier(nodeName);
-			// Cytoscape.getNodeNetworkData().addNameMapping(nodeName, node);
-
 		}
 
 		// ---------------------------------------------------------------------------
@@ -329,9 +320,6 @@ public class InteractionsReader implements GraphReader {
 
 			String interactionType = interaction.getType();
 
-			// giny.model.Node sourceNode = (giny.model.Node) nodes.get
-			// (nodeName);
-
 			String[] targets = interaction.getTargets();
 			for (int t = 0; t < targets.length; t++) {
 
@@ -340,30 +328,12 @@ public class InteractionsReader implements GraphReader {
 				else
 					targetNodeName = targets[t];
 
-				// Node targetNode = (Node) nodes.get (targetNodeName);
 				String edgeName = nodeName + " (" + interactionType + ") "
 						+ targetNodeName;
 				Edge edge = (Edge) Cytoscape.getCyEdge(nodeName, edgeName,
 						targetNodeName, interactionType);
 				edges.put(edge.getRootGraphIndex(), 0);
 
-				// System.out.println( "edge: "+edge.getRootGraphIndex() );
-
-				// int previousMatchingEntries =
-				// Cytoscape.getEdgeNetworkData().countIdentical(edgeName);
-				// Edge edge =
-				// Cytoscape.getRootGraph().getEdge(Cytoscape.getRootGraph().createEdge
-				// (sourceNode, targetNode));
-				// int previousMatchingEntries =
-				// Cytoscape.getEdgeNetworkData().countIdentical(edgeName);
-				// if ( previousMatchingEntries > 0 ) {
-				// edgeName = edgeName + "_" + previousMatchingEntries;
-				// } else {
-				// Cytoscape.getEdgeNetworkData().add ("interaction", edgeName,
-				// interactionType);
-				// Cytoscape.getEdgeNetworkData().addNameMapping (edgeName,
-				// edge);
-				// }
 			} // for t
 		} // for i
 
