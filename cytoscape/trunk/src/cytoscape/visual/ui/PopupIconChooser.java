@@ -117,8 +117,8 @@ public class PopupIconChooser {
 		    }
 		});
 	    JScrollPane listScroller = new JScrollPane(iconList) ;
-	    listScroller.setPreferredSize(new Dimension(150, 50));
-	    listScroller.setMinimumSize(new Dimension(150,50));
+	    listScroller.setPreferredSize(new Dimension(150, 52));
+	    listScroller.setMinimumSize(new Dimension(150,52));
 	    listScroller.setAlignmentX(JPanel.LEFT_ALIGNMENT);
 	    listScroller.setAlignmentY(JPanel.BOTTOM_ALIGNMENT);
 	    iconList.ensureIndexIsVisible(iconList.getSelectedIndex());

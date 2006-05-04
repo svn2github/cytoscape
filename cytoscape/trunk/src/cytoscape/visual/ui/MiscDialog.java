@@ -169,13 +169,10 @@ public class MiscDialog {
     HashMap h = new HashMap();
     h.put("ELLIPSE", (Object) new Byte (ShapeNodeRealizer.ELLIPSE));
     h.put("ROUND_RECT", (Object) new Byte (ShapeNodeRealizer.ROUND_RECT));
-    h.put("RECT_3D", (Object) new Byte (ShapeNodeRealizer.RECT_3D));
     h.put("RECTANGLE", (Object) new Byte (ShapeNodeRealizer.RECT));
     h.put("DIAMOND", (Object) new Byte (ShapeNodeRealizer.DIAMOND));
     h.put("HEXAGON", (Object) new Byte (ShapeNodeRealizer.HEXAGON));
     h.put("OCTAGON", (Object) new Byte (ShapeNodeRealizer.OCTAGON));
-    h.put("TRAPEZOID", (Object) new Byte (ShapeNodeRealizer.TRAPEZOID));
-    h.put("TRAPEZOID_2", (Object) new Byte (ShapeNodeRealizer.TRAPEZOID_2));
     h.put("PARALLELOGRAM", (Object) new Byte (ShapeNodeRealizer.PARALLELOGRAM));
     h.put("TRIANGLE", (Object) new Byte (ShapeNodeRealizer.TRIANGLE));
     return h;
@@ -185,43 +182,33 @@ public class MiscDialog {
     HashMap h = new HashMap();
     h.put((Object) new Byte (ShapeNodeRealizer.ELLIPSE), "ELLIPSE");
     h.put((Object) new Byte (ShapeNodeRealizer.ROUND_RECT), "ROUND_RECT");
-    h.put((Object) new Byte (ShapeNodeRealizer.RECT_3D), "RECT_3D");
     h.put((Object) new Byte (ShapeNodeRealizer.RECT), "RECTANGLE");
     h.put((Object) new Byte (ShapeNodeRealizer.DIAMOND), "DIAMOND");
     h.put((Object) new Byte (ShapeNodeRealizer.HEXAGON), "HEXAGON");
     h.put((Object) new Byte (ShapeNodeRealizer.OCTAGON), "OCTAGON");
-    h.put((Object) new Byte (ShapeNodeRealizer.TRAPEZOID), "TRAPEZOID");
-    h.put((Object) new Byte (ShapeNodeRealizer.TRAPEZOID_2), "TRAPEZOID_2");
     h.put((Object) new Byte (ShapeNodeRealizer.PARALLELOGRAM), "PARALLELOGRAM");
     h.put((Object) new Byte (ShapeNodeRealizer.TRIANGLE), "TRIANGLE");
     return h;
   }
 
   public static ImageIcon[] getShapeIcons() {
-    ImageIcon [] shapeIcons = new ImageIcon [11];  // Array of icons for the list
+    ImageIcon [] shapeIcons = new ImageIcon [8];  // Array of icons for the list
     shapeIcons[0] = new ImageIcon(locateImage("ellipse.jpg"),
                                   "ELLIPSE");
     shapeIcons[1] = new ImageIcon(locateImage("round_rect.jpg"),
                                   "ROUND_RECT");
-    shapeIcons[2] = new ImageIcon(locateImage("rect_3d.jpg"),
-                                  "RECT_3D");
-    shapeIcons[3] = new ImageIcon(locateImage("rect.jpg"),
+    shapeIcons[2] = new ImageIcon(locateImage("rect.jpg"),
                                   "RECTANGLE");
-    shapeIcons[4] = new ImageIcon(locateImage("diamond.jpg"),
+    shapeIcons[3] = new ImageIcon(locateImage("diamond.jpg"),
                                   "DIAMOND");
-    shapeIcons[5] = new ImageIcon(locateImage("hexagon.jpg"),
+    shapeIcons[4] = new ImageIcon(locateImage("hexagon.jpg"),
                                   "HEXAGON");
-    shapeIcons[6] = new ImageIcon(locateImage("octagon.jpg"),
+    shapeIcons[5] = new ImageIcon(locateImage("octagon.jpg"),
                                   "OCTAGON");
-    shapeIcons[7] = new ImageIcon(locateImage("trapezoid.jpg"),
-                                  "TRAPEZOID");
-    shapeIcons[8] = new ImageIcon(locateImage("trapezoid_2.jpg"),
-                                  "TRAPEZOID_2");
-    shapeIcons[9] = new ImageIcon(locateImage("parallelogram.jpg"),
+    shapeIcons[6] = new ImageIcon(locateImage("parallelogram.jpg"),
                                   "PARALLELOGRAM");
-    shapeIcons[10] = new ImageIcon(locateImage("triangle.jpg"),
-                                   "TRIANGLE");
-
+    shapeIcons[7] = new ImageIcon(locateImage("triangle.jpg"),
+                                  "TRIANGLE");
     return shapeIcons;
   }
 
