@@ -42,7 +42,7 @@ class InnerCanvas extends Component
   final IntStack m_stack2 = new IntStack();
   final Object m_lock;
   DGraphView m_view;
-  GraphLOD m_lod;
+  final GraphLOD[] m_lod = new GraphLOD[1];
   final IntHash m_hash;
   Image m_img;
   GraphGraphics m_grafx;
@@ -52,18 +52,20 @@ class InnerCanvas extends Component
   double m_scaleFactor;
   private int m_lastRenderDetail = 0;
   private Rectangle m_selectionRect = null;
+  final boolean[] m_printingTextAsShape = new boolean[1];
 
   InnerCanvas(Object lock, DGraphView view)
   {
     super();
     m_lock = lock;
     m_view = view;
-    m_lod = new GraphLOD(); // Default LOD.
+    m_lod[0] = new GraphLOD(); // Default LOD.
     m_hash = new IntHash();
     m_bgPaint = Color.white;
     m_xCenter = 0.0d;
     m_yCenter = 0.0d;
     m_scaleFactor = 1.0d;
+    m_printingTextAsShape[0] = true;
     addMouseListener(this);
     addMouseMotionListener(this);
   }
@@ -97,7 +99,7 @@ class InnerCanvas extends Component
         m_lastRenderDetail =
           GraphRenderer.renderGraph((FixedGraph) m_view.m_drawPersp,
                                     m_view.m_spacial,
-                                    m_lod,
+                                    m_lod[0],
                                     m_view.m_nodeDetails,
                                     m_view.m_edgeDetails,
                                     m_hash,
@@ -137,17 +139,51 @@ class InnerCanvas extends Component
   {
     final ImageImposter img = new ImageImposter(g, getWidth(), getHeight());
     synchronized (m_lock) {
-      GraphRenderer.renderGraph((FixedGraph) m_view.m_drawPersp,
-                                m_view.m_spacial,
-                                m_lod,
-                                m_view.m_nodeDetails,
-                                m_view.m_edgeDetails,
-                                m_hash,
-                                new GraphGraphics(img, false),
-                                m_bgPaint,
-                                m_xCenter,
-                                m_yCenter,
-                                m_scaleFactor); }
+      GraphRenderer.renderGraph
+        ((FixedGraph) m_view.m_drawPersp,
+         m_view.m_spacial,
+         new GraphLOD() {
+           public byte renderEdges(int visibleNodeCount,
+                                   int totalNodeCount,
+                                   int totalEdgeCount) {
+             return m_lod[0].renderEdges(visibleNodeCount,
+                                         totalNodeCount,
+                                         totalEdgeCount); }
+           public boolean detail(int renderNodeCount,
+                                 int renderEdgeCount) {
+             return true; }
+           public boolean nodeBorders(int renderNodeCount,
+                                      int renderEdgeCount) {
+             return true; }
+           public boolean nodeLabels(int renderNodeCount,
+                                     int renderEdgeCount) {
+             return true; }
+           public boolean customGraphics(int renderNodeCount,
+                                         int renderEdgeCount) {
+             return true; }
+           public boolean edgeArrows(int renderNodeCount,
+                                     int renderEdgeCount) {
+             return true; }
+           public boolean dashedEdges(int renderNodeCount,
+                                      int renderEdgeCount) {
+             return true; }
+           public boolean edgeAnchors(int renderNodeCount,
+                                      int renderEdgeCount) {
+             return true; }
+           public boolean edgeLabels(int renderNodeCount,
+                                     int renderEdgeCount) {
+             return true; }
+           public boolean textAsShape(int renderNodeCount,
+                                      int renderEdgeCount) {
+             return m_printingTextAsShape[0]; } },
+         m_view.m_nodeDetails,
+         m_view.m_edgeDetails,
+         m_hash,
+         new GraphGraphics(img, false),
+         m_bgPaint,
+         m_xCenter,
+         m_yCenter,
+         m_scaleFactor); }
   }
 
   private int m_currMouseButton = 0;

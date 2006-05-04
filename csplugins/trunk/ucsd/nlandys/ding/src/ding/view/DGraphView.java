@@ -924,13 +924,24 @@ public class DGraphView implements GraphView
   public void setGraphLOD(GraphLOD lod)
   {
     synchronized (m_lock) {
-      m_canvas.m_lod = lod;
+      m_canvas.m_lod[0] = lod;
       m_contentChanged = true; }
   }
 
   public GraphLOD getGraphLOD()
   {
-    return m_canvas.m_lod;
+    return m_canvas.m_lod[0];
+  }
+
+  public void setPrintingTextAsShape(boolean textAsShape)
+  {
+    synchronized (m_lock) {
+      m_canvas.m_printingTextAsShape[0] = textAsShape; }
+  }
+
+  public boolean getPrintingTextAsShape()
+  {
+    return m_canvas.m_printingTextAsShape[0];
   }
 
   /**
