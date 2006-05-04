@@ -196,27 +196,23 @@ public final class GraphRenderer
     // labels.  A label is not necessarily on top of every edge; it is only
     // on top of the edge it belongs to.
     if (renderEdges >= 0) {
-      final SpacialEntry2DEnumerator nodeHitsTemp;
+      final SpacialEntry2DEnumerator nodeHits;
       if (renderEdges > 0) {
         // We want to render edges in the same order (back to front) that
         // we would use to render just edges on visible nodes; this is assuming
         // that our spacial index has the subquery order-preserving property.
-        nodeHitsTemp = nodePositions.queryOverlap
+        nodeHits = nodePositions.queryOverlap
           (Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY,
            Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY,
            null, 0, false); }
       else { // renderEdges == 0.
-        if (nodeHits == null) {
-          nodeHitsTemp = nodePositions.queryOverlap
-            (xMin, yMin, xMax, yMax, null, 0, false); }
-        else {
-          nodeHitsTemp = nodeHits;
-          nodeHits = null; } }
+        nodeHits = nodePositions.queryOverlap
+          (xMin, yMin, xMax, yMax, null, 0, false); }
 
       if ((lodBits & LOD_HIGH_DETAIL) == 0) { // Low detail.
-        final int nodeHitCount = nodeHitsTemp.numRemaining();
+        final int nodeHitCount = nodeHits.numRemaining();
         for (int i = 0; i < nodeHitCount; i++) {
-          final int node = nodeHitsTemp.nextExtents(floatBuff1, 0);
+          final int node = nodeHits.nextExtents(floatBuff1, 0);
 
           // Casting to double and then back we could achieve better accuracy
           // at the expense of performance.
@@ -241,8 +237,8 @@ public final class GraphRenderer
           nodeBuff.put(node); } }
 
       else { // High detail.
-        while (nodeHitsTemp.numRemaining() > 0) {
-          final int node = nodeHitsTemp.nextExtents(floatBuff1, 0);
+        while (nodeHits.numRemaining() > 0) {
+          final int node = nodeHits.nextExtents(floatBuff1, 0);
           final byte nodeShape = nodeDetails.shape(node);
           final IntEnumerator touchingEdges =
             graph.edgesAdjacent(node, true, true, true);
@@ -479,9 +475,8 @@ public final class GraphRenderer
     // Render nodes and labels.  A label is not necessarily on top of every
     // node; it is only on top of the node it belongs to.
     {
-      if (nodeHits == null) {
-        nodeHits = nodePositions.queryOverlap
-          (xMin, yMin, xMax, yMax, null, 0, false); }
+      final SpacialEntry2DEnumerator nodeHits = nodePositions.queryOverlap
+        (xMin, yMin, xMax, yMax, null, 0, false);
 
       if ((lodBits & LOD_HIGH_DETAIL) == 0) { // Low detail.
         final int nodeHitCount = nodeHits.numRemaining();
