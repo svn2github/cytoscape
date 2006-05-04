@@ -20,6 +20,8 @@ import cern.colt.map.*;
 
 import cytoscape.view.*;
 
+import cytoscape.task.TaskMonitor;
+
 public class JGraphLayoutWrapper {
 
   public static final int ANNEALING       = 0;
@@ -33,14 +35,35 @@ public class JGraphLayoutWrapper {
 
   int layout_type = 0;
   protected GraphView graphView;
+  private TaskMonitor m_taskMonitor;
+  private boolean m_haveTaskMonitor;
 
   public JGraphLayoutWrapper ( GraphView view, int layout_type) {
     this.graphView = ( GraphView )view;
     this.layout_type = layout_type;
   }
 
+  /**
+   * Allows a user to set a taskMonitor which can be used to provide
+   * visual feedback with regards to the progress made during a call
+   * to doLayout().
+   *
+   * @param taskMonitor a hook that a parent application may pass in
+   *   to get information regarding what percentage of the layout
+   *   has been completed etc., or <code>null</code> to stop this layout
+   *   algorithm from reporting how much progress it has made.
+   **/
+  public void setTaskMonitor(TaskMonitor taskMonitor)
+  {
+	  if (taskMonitor != null) {
+		  m_taskMonitor = taskMonitor;
+		  m_haveTaskMonitor = true;
+	  }
+  }
+
   public void doLayout ( )
   {
+	double currentProgress = 0, percentProgressPerIter = 0;
     GraphPerspective perspective = graphView.getGraphPerspective();
     Map j_giny_node_map = new HashMap( PrimeFinder.nextPrime( perspective.getNodeCount() ) );
     Map giny_j_node_map = new HashMap( PrimeFinder.nextPrime( perspective.getNodeCount() ) );
@@ -49,6 +72,10 @@ public class JGraphLayoutWrapper {
     Iterator node_iterator = perspective.nodesIterator();
     Iterator edge_iterator = perspective.edgesIterator();
 
+    if (m_haveTaskMonitor) {
+		m_taskMonitor.setStatus("Executing Layout");
+		m_taskMonitor.setPercentCompleted((int)currentProgress);
+	}
 
     // Construct Model and Graph
     //
@@ -61,6 +88,13 @@ public class JGraphLayoutWrapper {
 
    
     Set cells = new HashSet();
+
+	// update progress bar
+	if (m_haveTaskMonitor) {
+		currentProgress = 20;
+		m_taskMonitor.setPercentCompleted((int)currentProgress);
+		percentProgressPerIter = 20 / (double) (graphView.getNodeViewCount());
+	}
 
     // create Vertices
     while ( node_iterator.hasNext() ) {
@@ -84,8 +118,19 @@ public class JGraphLayoutWrapper {
 
       cells.add( jcell );
 
+	  // update progress bar
+	  if (m_haveTaskMonitor) {
+		  currentProgress += percentProgressPerIter;
+		  m_taskMonitor.setPercentCompleted((int)currentProgress);
+	  }
+
     }
     
+	// update progress bar
+    if (m_haveTaskMonitor) {
+		percentProgressPerIter = 20 / (double) (graphView.getEdgeViewCount());
+	}
+
     while ( edge_iterator.hasNext() ) {
       
       giny.model.Edge giny = ( giny.model.Edge )edge_iterator.next();
@@ -118,12 +163,18 @@ public class JGraphLayoutWrapper {
       
       cells.add( jedge );
 
+	  // update progress bar
+	  if (m_haveTaskMonitor) {
+		  currentProgress += percentProgressPerIter;
+		  m_taskMonitor.setPercentCompleted((int)currentProgress);
+	  }
+
     }
 
     // now do the layout
     JGraphLayoutAlgorithm layout = null;
 
-    if      ( layout_type == ANNEALING )
+    if ( layout_type == ANNEALING )
       layout = new AnnealingLayoutAlgorithm();
     else if ( layout_type == MOEN )
       layout = new MoenLayoutAlgorithm();
@@ -139,12 +190,20 @@ public class JGraphLayoutWrapper {
       layout = new SugiyamaLayoutAlgorithm();
     else if ( layout_type == TREE )
       layout = new TreeLayoutAlgorithm();
-    
+
     layout.run( graph, cells.toArray());
     GraphLayoutCache cache = graph.getGraphLayoutCache();
 
     CellView cellViews[] = graph.getGraphLayoutCache().getAllDescendants(
                              graph.getGraphLayoutCache().getRoots());
+
+	// update progress bar
+	if (m_haveTaskMonitor) {
+		currentProgress = 80;
+		m_taskMonitor.setPercentCompleted((int)currentProgress);
+		percentProgressPerIter = 20 / (double) (cellViews.length);
+	}
+
     for (int i = 0; i < cellViews.length; i++)
     {
       CellView cell_view = cellViews[i];
@@ -158,7 +217,11 @@ public class JGraphLayoutWrapper {
         node_view.setYPosition( rect.getY(), false );
         node_view.setNodePosition( true );
         
-       
+		// update progress bar
+		if (m_haveTaskMonitor) {
+			currentProgress += percentProgressPerIter;
+			m_taskMonitor.setPercentCompleted((int)currentProgress);
+		}
       }
     }
 
