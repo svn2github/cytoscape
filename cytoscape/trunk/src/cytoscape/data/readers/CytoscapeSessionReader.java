@@ -384,7 +384,6 @@ public class CytoscapeSessionReader {
 				CyNode node = (CyNode) nodeIt.next();
 
 				if (node.getIdentifier().equals(nodeID)) {
-					// System.out.println("Selected nodes found! " + nodeID);
 					network.setFlagged(node, true);
 				}
 			}
@@ -428,12 +427,6 @@ public class CytoscapeSessionReader {
 				networkStream = (InputStream) jarConnection.getContent();
 			}
 
-			// if (networkStream == null) {
-			// System.out.println("!!!!!!!!!NS NULL!!!!!");
-			// System.out.println("SessionSource = "
-			// + sessionSource.getClass().toString());
-			// }
-
 			CyNetwork new_network = this.createNetwork(parent, childFile,
 					networkStream, Cytoscape.FILE_XGMML, CytoscapeInit
 							.getProperty("defaultSpeciesName"), childNet
@@ -455,7 +448,6 @@ public class CytoscapeSessionReader {
 
 			// network = createChildNetwork(childNet, network);
 			if (childNet.getChild().size() == 0) {
-				// System.out.println("!!!!!!!!!leaf");
 			} else {
 				walkTree(childNet, new_network, sessionSource);
 			}
@@ -467,20 +459,15 @@ public class CytoscapeSessionReader {
 			InputStream is, int file_type, String species, boolean viewAvailable)
 			throws IOException, JAXBException {
 
+		// Create reader and read an XGMML file
 		XGMMLReader reader;
 		reader = new XGMMLReader(is);
-
-		// Have the GraphReader read the given file
 		reader.read();
 
 		// Get the RootGraph indices of the nodes and
 		// Edges that were just created
 		final int[] nodes = reader.getNodeIndicesArray();
 		final int[] edges = reader.getEdgeIndicesArray();
-
-		File file = new File(location);
-		// final String title = file.getName();
-		// final String id = reader.getNetworkID();
 
 		// Create the CyNetwork
 		// First, set the view threshold to 0. By doing so, we can disable
@@ -507,16 +494,6 @@ public class CytoscapeSessionReader {
 		// Reset back to the real View Threshold
 		CytoscapeInit.setViewThreshold(realThreshold);
 
-		// Store "network property" in the clientdata data structure
-		// network.putClientData("XGMML", reader);
-
-		Object[] ret_val = new Object[3];
-		ret_val[0] = network;
-		ret_val[1] = file.toURI();
-		ret_val[2] = new Integer(file_type);
-		// Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null,
-		// ret_val);
-
 		// Conditionally, Create the CyNetworkView
 
 		if (viewAvailable == true) {
@@ -534,8 +511,6 @@ public class CytoscapeSessionReader {
 					DingNetworkView view = (DingNetworkView) Cytoscape
 							.getCurrentNetworkView();
 					view.setGraphLOD(new CyGraphLOD());
-					// PCanvas pCanvas = view.getCanvas();
-					// pCanvas.setVisible(true);
 				}
 			});
 
@@ -572,19 +547,9 @@ public class CytoscapeSessionReader {
 		final DingNetworkView view = new DingNetworkView(cyNetwork, cyNetwork
 				.getTitle());
 
-		// Start of Hack: Hide the View
-		// PCanvas pCanvas = view.getCanvas();
-		// pCanvas.setVisible(false);
-		// End of Hack
-
 		view.setIdentifier(cyNetwork.getIdentifier());
 		Cytoscape.getNetworkViewMap().put(cyNetwork.getIdentifier(), view);
 		view.setTitle(cyNetwork.getTitle());
-
-		// if Squiggle function enabled, enable squiggling on the created view
-		// if (Cytoscape.isSquiggleEnabled()) {
-		// view.getSquiggleHandler().beginSquiggling();
-		// }
 
 		// set the selection mode on the view
 		Cytoscape.setSelectionMode(Cytoscape.getSelectionMode(), view);
@@ -592,25 +557,6 @@ public class CytoscapeSessionReader {
 		Cytoscape.firePropertyChange(
 				cytoscape.view.CytoscapeDesktop.NETWORK_VIEW_CREATED, null,
 				view);
-
-		// PLayer layer = view.getCanvas().getLayer();
-		// PBounds pb = layer.getFullBounds();
-		// if (!pb.isEmpty()) {
-		// view.getCanvas().getCamera().animateViewToCenterBounds(pb, true,
-		// 500);
-		// }
-
-		// Fit the network
-		DingNetworkView currentGraphView = (DingNetworkView) Cytoscape
-				.getNetworkView(cyNetwork.getIdentifier());
-		FitContentAction fca = new FitContentAction();
-
-		if ((cyNetwork.getNodeCount() > 0) && (cyNetwork.getNodeCount() < 200)) {
-			currentGraphView.fitContent();
-		} else {
-			// view.getCanvas().getCamera().animateViewToCenterBounds(
-			// view.getCanvas().getLayer().getFullBounds(), true, 50l);
-		}
 	}
 
 }
