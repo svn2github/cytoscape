@@ -18,7 +18,7 @@ public final class DrawNodeShapes extends Frame
   {
     EventQueue.invokeAndWait(new Runnable() {
         public void run() {
-          for (int i = 0; i < 7; i++) {
+          for (int i = 0; i <= 7; i++) {
             Frame f = new DrawNodeShapes(i);
             f.show();
             f.move(i * 10, i * 10);
@@ -62,7 +62,7 @@ public final class DrawNodeShapes extends Frame
   {
     m_grafx.clear(Color.white, 0.0d, 0.0d, 1.0d);
     m_grafx.drawNodeFull(m_shape, -28.0f, -28.0f, 28.0f, 28.0f,
-                         Color.yellow, 2.0f, Color.black);
+                         Color.yellow, 3.5f, Color.black);
   }
 
 }
