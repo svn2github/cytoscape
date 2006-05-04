@@ -45,6 +45,7 @@ import giny.view.GraphView;
 import giny.view.NodeView;
 
 import java.awt.Color;
+import java.awt.geom.Point2D;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -78,6 +79,7 @@ import cytoscape.generated2.Graphics;
 import cytoscape.generated2.RdfRDF;
 import cytoscape.generated2.impl.AttImpl;
 import cytoscape.visual.LineType;
+import cytoscape.data.writers.XGMMLWriter;
 
 /**
  * XGMMLReader. This version is Metanode-compatible.
@@ -130,6 +132,9 @@ public class XGMMLReader implements GraphReader {
 
 	private RdfRDF metadata;
 	private String backgroundColor;
+	private Double graphViewZoom;
+	private Double graphViewCenterX;
+	private Double graphViewCenterY;
 
 	InputStream networkStream;
 
@@ -261,10 +266,20 @@ public class XGMMLReader implements GraphReader {
 			if (curAtt.getName().equals("networkMetadata")) {
 				metadata = (RdfRDF) (curAtt.getContent().get(0));
 
-			} else if (curAtt.getName().equals("backgroundColor")) {
+			}
+			else if (curAtt.getName().equals(XGMMLWriter.BACKGROUND)) {
 				// System.out.println("Background color is " +
 				// curAtt.getValue());
 				backgroundColor = curAtt.getValue();
+			}
+			else if (curAtt.getName().equals(XGMMLWriter.GRAPH_VIEW_ZOOM)) {
+				graphViewZoom = new Double(curAtt.getValue());
+			}
+			else if (curAtt.getName().equals(XGMMLWriter.GRAPH_VIEW_CENTER_X)){
+				graphViewCenterX = new Double(curAtt.getValue());
+			}
+			else if (curAtt.getName().equals(XGMMLWriter.GRAPH_VIEW_CENTER_Y)){
+				graphViewCenterY = new Double(curAtt.getValue());
 			}
 			else {
 				readAttribute(networkCyAttributes, network.getId(), curAtt);
@@ -545,6 +560,25 @@ public class XGMMLReader implements GraphReader {
 
 	protected void readEdge() {
 
+	}
+
+	/**
+	 * Returns the zoom level read from the the xgmml file.
+	 *
+	 * @return Double
+	 */
+	public Double getGraphViewZoomLevel() {
+		return graphViewZoom;
+	}
+
+	/**
+	 * Returns the graph view center.
+	 *
+	 * @return Double
+	 */
+	public Point2D getGraphViewCenter() {
+		return new Point2D.Double(graphViewCenterX.doubleValue(),
+								  graphViewCenterY.doubleValue());
 	}
 
 	/**
