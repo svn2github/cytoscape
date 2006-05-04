@@ -50,6 +50,7 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
+import java.awt.geom.Point2D;
 
 import javax.swing.SwingUtilities;
 import javax.xml.bind.JAXBContext;
@@ -70,6 +71,8 @@ import cytoscape.generated.NetworkTree;
 import cytoscape.generated.Node;
 import cytoscape.generated.SelectedNodes;
 import cytoscape.view.CyNetworkView;
+
+import ding.view.DGraphView;
 
 /**
  * Cytoscape Session Reader. This class expands cys file and read all files in
@@ -551,6 +554,14 @@ public class CytoscapeSessionReader {
 
 			curView.fitContent();
 		}
+
+		// set zoom
+		CyNetworkView curView = Cytoscape.getNetworkView(network.getIdentifier());
+		curView.setZoom(reader.getGraphViewZoomLevel().doubleValue());
+		
+		// set view center
+		Point2D center = reader.getGraphViewCenter();
+		((DGraphView)curView).setCenter(center.getX(), center.getY());
 
 		return network;
 	}
