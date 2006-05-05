@@ -102,6 +102,8 @@ public class VisualMappingManager extends SubjectBase {
 			defStyle = "default";
 
 		VisualStyle vs = catalog.getVisualStyle(defStyle);
+		if(vs == null)
+			vs = catalog.getVisualStyle("default");
 		setVisualStyle(vs);
 
 	}

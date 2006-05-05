@@ -49,6 +49,7 @@ import javax.swing.event.ChangeEvent;
 import cytoscape.visual.calculators.*;
 import cytoscape.visual.mappings.*;
 import cytoscape.visual.ui.*;
+import cytoscape.data.Semantics;
 
 //----------------------------------------------------------------------------
 /**
@@ -59,51 +60,67 @@ import cytoscape.visual.ui.*;
 public class CalculatorCatalog {
 
 	Map nodeColorCalculators = new HashMap();
+
 	List nodeColorListeners = new Vector(2, 1);
 
 	Map nodeLineTypeCalculators = new HashMap();
+
 	List nodeLineTypeListeners = new Vector(1, 1);
 
 	Map nodeShapeCalculators = new HashMap();
+
 	List nodeShapeListeners = new Vector(1, 1);
 
 	Map nodeSizeCalculators = new HashMap();
+
 	List nodeSizeListeners = new Vector(2, 1);
 
 	Map nodeLabelCalculators = new HashMap();
+
 	List nodeLabelListeners = new Vector(1, 1);
 
 	Map nodeLabelColorCalculators = new HashMap();
+
 	List nodeLabelColorListeners = new Vector(1, 1);
 
 	Map nodeToolTipCalculators = new HashMap();
+
 	List nodeToolTipListeners = new Vector(1, 1);
 
 	Map nodeFontFaceCalculators = new HashMap();
+
 	List nodeFontFaceListeners = new Vector(1, 1);
 
 	Map nodeFontSizeCalculators = new HashMap();
+
 	List nodeFontSizeListeners = new Vector(1, 1);
 
 	Map edgeColorCalculators = new HashMap();
+
 	List edgeColorListeners = new Vector(1, 1);
 
 	Map edgeLineTypeCalculators = new HashMap();
+
 	List edgeLineTypeListeners = new Vector(1, 1);
 
 	Map edgeArrowCalculators = new HashMap();
+
 	List edgeArrowListeners = new Vector(2, 1);
 
 	Map edgeLabelCalculators = new HashMap();
+
 	List edgeLabelListeners = new Vector(1, 1);
 
 	Map edgeToolTipCalculators = new HashMap();
+
 	List edgeToolTipListeners = new Vector(1, 1);
 
 	Map edgeFontFaceCalculators = new HashMap();
+
 	List edgeFontFaceListeners = new Vector(1, 1);
 
 	Map edgeFontSizeCalculators = new HashMap();
+
 	List edgeFontSizeListeners = new Vector(1, 1);
 
 	Map visualStyles = new HashMap();
@@ -548,7 +565,8 @@ public class CalculatorCatalog {
 	}
 
 	public VisualStyle getVisualStyle(String name) {
-		if (name != null && name.equals("default") && !visualStyles.containsKey(name))
+		if (name != null && name.equals("default")
+				&& !visualStyles.containsKey(name))
 			createDefaultVisualStyle();
 		return (VisualStyle) visualStyles.get(name);
 	}
@@ -1003,16 +1021,28 @@ public class CalculatorCatalog {
 		return checkName(name, edgeFontSizeCalculators);
 	}
 
-        public void createDefaultVisualStyle() {
-		System.out.println("Creating default visual style");
+	public void createDefaultVisualStyle() {
+		// System.out.println("Creating default visual style");
 		VisualStyle defaultVS = new VisualStyle("default");
+		// Commented by iavila on 5.5.06
 		// setup the default to at least put canonical names on the nodes
-		String cName = "Common Names";
-		NodeLabelCalculator nlc = getNodeLabelCalculator(cName);
+		// String cName = "Common Names";
+		// NodeLabelCalculator nlc = getNodeLabelCalculator(cName);
+		// if (nlc == null) {
+		// PassThroughMapping m = new PassThroughMapping("",
+		// AbstractCalculator.ID);
+		// nlc = new GenericNodeLabelCalculator(cName, m);
+		// }
+
+		// Use Semantics.LABEL instead for node labels
+		String label = Semantics.LABEL;
+		NodeLabelCalculator nlc = getNodeLabelCalculator(label);
 		if (nlc == null) {
-			PassThroughMapping m = new PassThroughMapping("", AbstractCalculator.ID);
-			nlc = new GenericNodeLabelCalculator(cName, m);
+			PassThroughMapping m = 
+				new PassThroughMapping("",AbstractCalculator.ID);
+			nlc = new GenericNodeLabelCalculator(label, m);
 		}
+
 		defaultVS.getNodeAppearanceCalculator().setNodeLabelCalculator(nlc);
 		addVisualStyle(defaultVS);
 	}
