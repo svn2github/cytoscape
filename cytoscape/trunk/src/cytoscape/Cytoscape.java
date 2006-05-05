@@ -299,7 +299,7 @@ public abstract class Cytoscape {
 
 			SaveSessionAction saveAction = new SaveSessionAction();
 			saveAction.actionPerformed(null);
-			
+
 			return true;
 		} else {
 			System.out.println("ConfirmQuit = " + false);
@@ -385,42 +385,40 @@ public abstract class Cytoscape {
 	}
 
 	/**
-	 * @param alias
+	 * @param nodeID
 	 *            an alias of a node
 	 * @param create
 	 *            will create a node if one does not exist
 	 * @return will always return a node, if <code>create</code> is true
+	 * 
+	 * KONO: 5/4/2006 Since we removed the canonicalName, no "canonicalization"
+	 * is necessary. This method uses given nodeID as the identifier.
+	 * 
 	 */
-	public static CyNode getCyNode(String alias, boolean create) {
+	public static CyNode getCyNode(String nodeID, boolean create) {
 
-		String old_name = alias;
-		alias = canonicalizeName(alias);
+		CyNode node = Cytoscape.getRootGraph().getNode(nodeID);
 
-		CyNode node = Cytoscape.getRootGraph().getNode(alias);
+		// If the node is already exists,return it.
 		if (node != null) {
-			// System.out.print(".");
 			return node;
 		}
-		// node does not exist, create one
 
+		// And if we do not have to create new one, just return null
 		if (!create) {
 			return null;
 		}
 
-		// System.out.print( "|" );
-		node = (CyNode) Cytoscape.getRootGraph().getNode(
-				Cytoscape.getRootGraph().createNode());
-		node.setIdentifier(alias);
-		// the following statement should be removed when Semantics.CANONICAL_NAME
-		// is removed on or about April 2007:
-		getNodeAttributes()
-				.setAttribute(alias, Semantics.CANONICAL_NAME, alias);
-		// System.out.println( node.getRootGraphIndex()+" = Node: "+node+" alias
-		// :"+alias+" old_name: "+old_name );
-		// if ( old_name != alias )
-		// setNodeAttributeValue( node, "alias", old_name );
-		// Cytoscape.getNodeNetworkData().addNameMapping(alias, node);
-		Semantics.assignNodeAliases(node, null, null);
+		// Now, create a new node.
+		node = (CyNode) getRootGraph().getNode(Cytoscape.getRootGraph().createNode());
+		node.setIdentifier(nodeID);
+		
+		/*
+		 * We do not need canonicalName anymore.  If necessary, user should
+		 * create one from Attribute Browser.
+		 */
+		// getNodeAttributes().setAttribute(nodeID,Semantics.CANONICAL_NAME,nodeID);
+		
 		return node;
 	}
 
@@ -726,16 +724,11 @@ public abstract class Cytoscape {
 	private static String canonicalizeName(String name) {
 		String canonicalName = name;
 
-		// System.out.println( "Biodataserver is: "+bioDataServer+" species is:
-		// "+species );
-
 		if (bioDataServer != null) {
 			canonicalName = bioDataServer.getCanonicalName(species, name);
 			if (canonicalName == null) {
-				// System.out.println( "canonicalName was null for "+name );
 				canonicalName = name;
 			}
-			// System.out.println( name+" canonicalized to: "+canonicalName );
 		}
 		return canonicalName;
 	}
