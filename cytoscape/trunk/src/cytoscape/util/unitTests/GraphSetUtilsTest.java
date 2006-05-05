@@ -17,7 +17,7 @@ import giny.model.RootGraph;
 
 public class GraphSetUtilsTest extends TestCase {
 protected List networklist;
-protected int a,b,c,d,e,ab,bc,ac,bd,be,cd,ce;
+protected int a,b,c,d,e,ab,bc,ac,bd,be,cd;
 protected CyNetwork net1; 
 protected CyNetwork net2;
 	
@@ -103,18 +103,17 @@ public void testDifference(){
 	
 	
 	assertTrue (x.containsNode(x.getNode(a)));
-// TODO this should be fals, but isn't
-/*	assertFalse (x.containsNode(x.getNode(b)));
-	assertFalse (x.containsNode(x.getNode(c)));
-	assertFalse (x.containsNode(x.getNode(d)));
-	assertFalse (x.containsNode(x.getNode(e)));
+	assertTrue (x.containsNode(x.getNode(b)));
+	assertTrue (x.containsNode(x.getNode(c)));
+	assertNull (x.getNode(d));
+	assertNull (x.getNode(e));
 	
-	assertFalse (x.containsEdge(x.getEdge(ab)));
-	assertFalse (x.containsEdge(x.getEdge(bc)));
-	assertFalse (x.containsEdge(x.getEdge(ac)));
-	assertFalse (x.containsEdge(x.getEdge(be)));
-	assertFalse (x.containsEdge(x.getEdge(bd)));
-	*/
+	assertTrue (x.containsEdge(x.getEdge(ab)));
+	assertNull (x.getEdge(bc));
+	assertTrue (x.containsEdge(x.getEdge(ac)));
+	assertNull (x.getEdge(be));
+	assertNull (x.getEdge(bd));
+	
 
 
 }// testDifference
@@ -128,8 +127,6 @@ public void testUnion(){
 	assertTrue (y.containsEdge(y.getEdge(bc)));
 	assertTrue (y.containsEdge(y.getEdge(ac)));
 	assertTrue (y.containsEdge(y.getEdge(bd)));
-// TODO the edge ce doesnt exist 
-//	assertTrue (y.containsEdge(y.getEdge(ce)));
 	
 	assertTrue (y.containsNode(y.getNode(a)));
 	assertTrue (y.containsNode(y.getNode(b)));
