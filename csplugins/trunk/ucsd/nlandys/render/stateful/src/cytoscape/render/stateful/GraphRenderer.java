@@ -679,11 +679,17 @@ public final class GraphRenderer
       srcOffset = 0.0f; }
     final float srcXAdj, srcYAdj;
     synchronized (s_floatBuff) {
-      if (!grafx.computeEdgeIntersection
-          (srcNodeShape, srcNodeExtents[0], srcNodeExtents[1],
-           srcNodeExtents[2], srcNodeExtents[3], srcOffset,
-           srcXOut, srcYOut, s_floatBuff)) {
-        return false; }
+      if (srcNodeExtents[0] == srcNodeExtents[2] ||
+          srcNodeExtents[1] == srcNodeExtents[3]) {
+        if (!_computeEdgeIntersection
+            (srcX, srcY, srcOffset, srcXOut, srcYOut, s_floatBuff)) {
+          return false; } }
+      else {
+        if (!grafx.computeEdgeIntersection
+            (srcNodeShape, srcNodeExtents[0], srcNodeExtents[1],
+             srcNodeExtents[2], srcNodeExtents[3], srcOffset,
+             srcXOut, srcYOut, s_floatBuff)) {
+          return false; } }
       srcXAdj = s_floatBuff[0];
       srcYAdj = s_floatBuff[1]; }
     final float trgOffset;
@@ -695,11 +701,17 @@ public final class GraphRenderer
       trgOffset = 0.0f; }
     final float trgXAdj, trgYAdj;
     synchronized (s_floatBuff) {
-      if (!grafx.computeEdgeIntersection
-          (trgNodeShape, trgNodeExtents[0], trgNodeExtents[1],
-           trgNodeExtents[2], trgNodeExtents[3], trgOffset,
-           trgXOut, trgYOut, s_floatBuff)) {
-        return false; }
+      if (trgNodeExtents[0] == trgNodeExtents[2] ||
+          trgNodeExtents[1] == trgNodeExtents[3]) {
+        if (!_computeEdgeIntersection
+            (trgX, trgY, trgOffset, trgXOut, trgYOut, s_floatBuff)) {
+          return false; } }
+      else {
+        if (!grafx.computeEdgeIntersection
+            (trgNodeShape, trgNodeExtents[0], trgNodeExtents[1],
+             trgNodeExtents[2], trgNodeExtents[3], trgOffset,
+             trgXOut, trgYOut, s_floatBuff)) {
+          return false; } }
       trgXAdj = s_floatBuff[0];
       trgYAdj = s_floatBuff[1]; }
     if (anchors == null &&
@@ -786,6 +798,27 @@ public final class GraphRenderer
                          s_floatBuff2[offset - 2], s_floatBuff2[offset - 1]);
           break; } }
       rtnVal.closePath(); }
+  }
+
+  public static final boolean _computeEdgeIntersection(final float nodeX,
+                                                       final float nodeY,
+                                                       final float offset,
+                                                       final float ptX,
+                                                       final float ptY,
+                                                       final float[] returnVal)
+  {
+    if (offset == 0.0f) {
+      returnVal[0] = nodeX;
+      returnVal[1] = nodeY;
+      return true; }
+    else {
+      final double dX = ptX - nodeX;
+      final double dY = ptY - nodeY;
+      final double len = Math.sqrt(dX * dX + dY * dY);
+      if (len < offset) { return false; }
+      returnVal[0] = (float) ((dX / len) * offset + nodeX);
+      returnVal[1] = (float) ((dY / len) * offset + nodeY);
+      return true; }
   }
 
 }
