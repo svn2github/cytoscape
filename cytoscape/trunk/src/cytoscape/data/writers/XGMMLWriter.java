@@ -309,11 +309,13 @@ public class XGMMLWriter {
 		// these are attributes that live inside CyAttributes
 		attributeWriter(NETWORK, network.getIdentifier(), null);
 
-		// lets also write the zoom
-		saveViewZoom();
+		if (networkView != null) {
+			// lets also write the zoom
+			saveViewZoom();
 
-		// save the center of the view
-		saveViewCenter();
+			// save the center of the view
+			saveViewCenter();
+		}
 	}
 
 	// Expand metanode information
