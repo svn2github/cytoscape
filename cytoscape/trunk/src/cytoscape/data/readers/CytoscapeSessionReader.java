@@ -530,13 +530,17 @@ public class CytoscapeSessionReader {
 			curView.fitContent();
 		}
 
-		// set zoom
 		CyNetworkView curView = Cytoscape.getNetworkView(network.getIdentifier());
-		curView.setZoom(reader.getGraphViewZoomLevel().doubleValue());
+		if (curView != null) {
+
+			//set view zoom
+			Double zoomLevel = reader.getGraphViewZoomLevel();
+			if (zoomLevel != null) curView.setZoom(zoomLevel.doubleValue());
 		
-		// set view center
-		Point2D center = reader.getGraphViewCenter();
-		((DGraphView)curView).setCenter(center.getX(), center.getY());
+			// set view center
+			Point2D center = reader.getGraphViewCenter();
+			if (center != null) ((DGraphView)curView).setCenter(center.getX(), center.getY());
+		}
 
 		return network;
 	}

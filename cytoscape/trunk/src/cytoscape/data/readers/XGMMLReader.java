@@ -568,7 +568,9 @@ public class XGMMLReader implements GraphReader {
 	 * @return Double
 	 */
 	public Double getGraphViewZoomLevel() {
-		return graphViewZoom;
+
+		// lets be explicit
+		return (graphViewZoom != null) ? graphViewZoom : null;
 	}
 
 	/**
@@ -577,8 +579,11 @@ public class XGMMLReader implements GraphReader {
 	 * @return Double
 	 */
 	public Point2D getGraphViewCenter() {
-		return new Point2D.Double(graphViewCenterX.doubleValue(),
-								  graphViewCenterY.doubleValue());
+
+		// be explicit
+		return (graphViewCenterX != null && graphViewCenterY != null) ?
+			new Point2D.Double(graphViewCenterX.doubleValue(),
+							   graphViewCenterY.doubleValue()) : null;
 	}
 
 	/**
