@@ -84,7 +84,6 @@ public void testIntersection(){
 	
 	assertTrue (n.containsEdge(n.getEdge(bc)));
 	assertTrue (n.containsEdge(n.getEdge(bd)));
-	//assertFalse (n.containsEdge(n.getEdge(ab)));
 	assertNull (n.getEdge(ab));
 	assertNull (n.getEdge(be));
 	
