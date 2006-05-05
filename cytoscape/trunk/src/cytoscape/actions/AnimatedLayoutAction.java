@@ -41,7 +41,7 @@ package cytoscape.actions;
 import java.awt.event.ActionEvent;
 import javax.swing.*;
 
-import cytoscape.view.NetworkView;
+import cytoscape.view.CyNetworkView;
 import cytoscape.dialogs.GraphObjectSelection;
 
 import phoebe.*;
@@ -57,9 +57,10 @@ import cytoscape.ding.DingNetworkView;
 
 public class AnimatedLayoutAction extends AbstractAction {
 
-  NetworkView networkView;
+  CyNetworkView networkView;
+  
   boolean bool = false;
-  public AnimatedLayoutAction ( NetworkView networkView ) {
+  public AnimatedLayoutAction ( CyNetworkView networkView ) {
     super("Animate Layout");
     this.networkView = networkView;
   }

@@ -51,7 +51,7 @@ import giny.model.GraphPerspective;
 import giny.view.GraphView;
 
 import cytoscape.CyNetwork;
-import cytoscape.view.NetworkView;
+import cytoscape.view.CyNetworkView;
 //-------------------------------------------------------------------------
 /**
  * Giny version of the original class. Note that the original version was
@@ -63,9 +63,9 @@ import cytoscape.view.NetworkView;
  * graph and view should be clarified.
  */
 public class DeleteSelectedAction extends AbstractAction {
-    NetworkView networkView;
+    CyNetworkView networkView;
     
-    public DeleteSelectedAction(NetworkView networkView) {
+    public DeleteSelectedAction(CyNetworkView networkView) {
         super("Delete Selected Nodes and Edges");
         this.networkView = networkView;
     }

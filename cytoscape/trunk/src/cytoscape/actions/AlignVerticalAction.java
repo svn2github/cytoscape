@@ -49,12 +49,12 @@ import java.util.*;
 
 import giny.view.*;
 
-import cytoscape.view.NetworkView;
+import cytoscape.view.CyNetworkView;
 //-------------------------------------------------------------------------
 public class AlignVerticalAction extends AbstractAction {
-    NetworkView networkView;
+    CyNetworkView networkView;
     
-    public AlignVerticalAction(NetworkView networkView) {
+    public AlignVerticalAction(CyNetworkView networkView) {
         super("Vertical");
         this.networkView = networkView;
     }
