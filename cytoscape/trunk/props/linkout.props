@@ -1,0 +1,12 @@
+#Linkout  Property File
+#Sat Apr 08 17:45:50 EDT 2006
+url.Pubmed=http\://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd\=Search&db\=PubMed&term\=%ID%
+url.yeast.BioGRID=http://www.thebiogrid.org/search.php?keywords=%ID%&searchbutton=GO&organismid=4932
+url.yeast.iHOP=http\://www.ihop-net.org/UniPub/iHOP/?search\=%ID%&field\=all&ncbi_tax_id\=0
+url.mouse.Entrez=http\://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd\=Search&db\=Protein&term\=%ID%&doptcmdl\=GenPept
+url.human.iHOP=http\://www.ihop-net.org/UniPub/iHOP/?search\=%ID%&field\=all&ncbi_tax_id\=0
+url.yeast.SGD=http\://db.yeastgenome.org/cgi-bin/locus.pl?locus\=%ID%
+url.human.Entrez=http\://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd\=Search&db\=Protein&term\=%ID%&doptcmdl\=GenPept
+url.mouse.MGI=http://www.informatics.jax.org/javawi2/servlet/WIFetch?page=searchTool&query=%ID%&selectedQuery=Genes+and+Markers
+url.BioGRID=http://www.thebiogrid.org/search.php?keywords=%ID%&searchbutton=GO&organismid=0
+url.google=http://www.google.com/search?hl=en&q=%ID%&btnG=Google+Search
