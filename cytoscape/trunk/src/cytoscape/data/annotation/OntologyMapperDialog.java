@@ -98,7 +98,7 @@ public class OntologyMapperDialog extends JDialog {
 		//
 		Semantics.applyNamingServices(network);
 
-		defaultSpecies = CytoscapeInit.getProperty("defaultSpeciesName");
+		defaultSpecies = CytoscapeInit.getProperties().getProperty("defaultSpeciesName");
 	}
 
 	private void appendCurrentAnnotaions() {

@@ -50,6 +50,8 @@ import java.io.FileWriter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import cytoscape.Cytoscape;
+
 /**
  * Configures the Mac OS X Info.plist file associated with Cytoscape.
  * This enables us to run a "Macified" version of Cytoscape, with its
@@ -148,7 +150,7 @@ public class MacAppConfig {
         } catch (FileNotFoundException e) {
             System.out.println("Cannot find:  " + configFile);
             System.out.println("Try running:  'ant mac' first.");
-            System.exit(-1);
+            Cytoscape.exit(-1);
         }
         return doc;
     }

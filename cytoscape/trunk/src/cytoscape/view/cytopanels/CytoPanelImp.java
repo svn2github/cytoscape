@@ -77,6 +77,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.util.ArrayList;
 
+import cytoscape.Cytoscape;
+
 /**
  * The CytoPanel class extends JPanel to provide the following functionality:
  * <UL>
@@ -773,7 +775,7 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 			if (cytoPanelContainer == null){
 				System.out.println("CytoPanel::DockCytoPanel() -" +
 								   "cytoPanelContainer reference has not been set!");
-				System.exit(1);
+				Cytoscape.exit(1);
 			}
 			cytoPanelContainer.insertCytoPanel(this, compassDirection);
 

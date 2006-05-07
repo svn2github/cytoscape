@@ -130,6 +130,23 @@ public abstract class CytoscapePlugin {
         System.out.println( "IllegalAccessException");
           System.out.println(e);
           e.printStackTrace();
+      } catch (Exception e) {
+    	  // Here's a bit of Java strangeness: newInstance() throws
+    	  // two exceptions (above) -- however, it also propagates any exception
+    	  // that occurs during the creation of that new instance. Here,
+    	  // we need to catch whatever other exceptions might be thrown --
+    	  // for example, attempting to load an older plugin that looks
+    	  // for the class cytoscape.CyWindow, which is no longer defined,
+    	  // propagates a ClassNotFoundException (which, if we don't
+    	  // catch causes the application to crash). 
+    	  System.err.println("Unchecked '" + e.getClass().getName() +
+    			             "'exception while attempting to load plugin.");
+    	  System.err.println("This may happen when loading a plugin written for a different " +
+    			             "version of Cytoscape than this one, or if the plugin is dependent " +
+    			             "on another plugin that isn't available. Consult the documentation " +
+    			             "for the plugin or contact the plugin author for more information.");
+    	  System.err.println(e);
+    	  e.printStackTrace();
       }
       if ( object == null ) {
         System.out.println( "Instantiation seems to have failed" );

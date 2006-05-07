@@ -68,7 +68,7 @@ public class CreateNetworkViewAction extends CytoscapeAction {
     public static void createViewFromCurrentNetwork(CyNetwork cyNetwork) {
         NumberFormat formatter = new DecimalFormat("#,###,###");
         if (cyNetwork.getNodeCount()
-                > Integer.parseInt(CytoscapeInit.getProperty("secondaryViewThreshold"))) {
+                > Integer.parseInt(CytoscapeInit.getProperties().getProperty("secondaryViewThreshold"))) {
             int n = JOptionPane.showConfirmDialog(Cytoscape.getDesktop(),
                     "Network contains "
                     + formatter.format(cyNetwork.getNodeCount())

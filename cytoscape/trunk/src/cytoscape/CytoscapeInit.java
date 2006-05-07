@@ -145,7 +145,8 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 		// see if we are in headless mode
 		// show splash screen, if appropriate
                 System.out.println("init mode: " + initParams.getMode() );
-                if ( initParams.getMode() == CyInitParams.GUI ) {
+                if ( initParams.getMode() == CyInitParams.GUI ||
+                     initParams.getMode() == CyInitParams.EMBEDDED_WINDOW ) {
 
 			ImageIcon image = new ImageIcon(this.getClass().getResource(
 					"/cytoscape/images/CytoscapeSplashScreen.png"));
@@ -208,7 +209,8 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 
 		loadPlugins();
 
-		if ( initParams.getMode() == CyInitParams.GUI ) {
+		if ( initParams.getMode() == CyInitParams.GUI || 
+		     initParams.getMode() == CyInitParams.EMBEDDED_WINDOW ) {
 			WindowUtilities.hideSplash();
 		}
 
@@ -219,14 +221,33 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 		return true;
 	}
 
+	/**
+	 * Returns the CyInitParams object used to initialize Cytoscape.
+	 */
+	public static CyInitParams getCyInitParams() {
+		return initParams;
+	}
+
+	/**
+	 * Returns the properties used by Cytoscape, the result of cytoscape.props and
+	 * command line options.
+	 */
 	public static Properties getProperties() {
 		return properties;
 	}
 
+	/**
+	 * @deprecated Use getProperties().setProperty( ) instead.  Since this
+	 * method never made it into a release, it will be removed Summer 2006.
+	 */
 	public static void setProperty(String key, String value) {
 		properties.setProperty(key,value);
 	}
 
+	/**
+	 * @deprecated Use getProperties().getProperty( ) instead.  Since this
+	 * method never made it into a release, it will be removed Summer 2006.
+	 */
 	public static String getProperty(String key) {
 		return properties.getProperty(key);
 	}
@@ -349,10 +370,10 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 
 	/**
 	 * @deprecated Will be removed April 2007.  
-	 * Use CytoscapeDesktop.parseViewType(CytoscapeInit.getProperty("viewType"));
+	 * Use CytoscapeDesktop.parseViewType(CytoscapeInit.getProperties().getProperty("viewType"));
 	 */
 	public static int getViewType() {
-		return CytoscapeDesktop.parseViewType(CytoscapeInit.getProperty("viewType"));
+		return CytoscapeDesktop.parseViewType(properties.getProperty("viewType"));
 	}
 
 	/**
@@ -398,7 +419,7 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 	 * @param threshold
 	 *            value, indicating number of nodes.
 	 * @deprecated Will be removed April 2007. 
-	 * Use setProperty( "secondaryViewThreshold", thresh ) instead.
+	 * Use getProperties().setProperty( "secondaryViewThreshold", thresh ) instead.
 	 */
 	public static void setSecondaryViewThreshold(int threshold) {
 		secondaryViewThreshold = threshold;
@@ -406,14 +427,14 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 
 	// View Only Variables
 	/**
-	 * @deprecated Will be removed April 2007. Use getProperty( "TODO" ) instead.
+	 * @deprecated Will be removed April 2007. Use getProperties().getProperty( "TODO" ) instead.
 	 */
 	public static String getVizmapPropertiesLocation() {
 		return vizmapPropertiesLocation;
 	}
 
 	/**
-	 * @deprecated Will be removed April 2007. Use getProperty( "defaultVisualStyle" ) instead.
+	 * @deprecated Will be removed April 2007. Use getProperties().getProperty( "defaultVisualStyle" ) instead.
 	 */
 	public static String getDefaultVisualStyle() {
 		return properties.getProperty("defaultVisualStyle");
@@ -697,7 +718,7 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 
 	/**
 	 * @deprecated Will be removed April 2007. This doesn't do anything. 
-	 * To set the default species name use setProperty("defaultSpeciesName", newName),
+	 * To set the default species name use getProperties().setProperty("defaultSpeciesName", newName),
 	 * which you were presumably doing already.
 	 */
 	public static void setDefaultSpeciesName() {

@@ -49,6 +49,7 @@ package cytoscape.data.unitTests;
 import cytoscape.data.ExpressionData;
 import cytoscape.data.mRNAMeasurement;
 import cytoscape.unitTests.AllTests;
+import cytoscape.Cytoscape;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
@@ -152,7 +153,7 @@ public class ExpressionDataTest extends TestCase {
             System.err.println
                     ("error! ExpressionDataTest cannot read relative directory '" +
                     testDataDir + "'");
-            System.exit(1);
+            Cytoscape.exit(1);
         }
 
         junit.textui.TestRunner.run(new TestSuite(ExpressionDataTest.class));

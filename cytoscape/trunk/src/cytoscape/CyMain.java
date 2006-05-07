@@ -98,7 +98,7 @@ public class CyMain implements CyInitParams {
 
 		if ( !initializer.init(this) ) {
 			printHelp();
-			System.exit(1);
+			Cytoscape.exit(1);
 		}
 	} 
 
@@ -180,18 +180,18 @@ public class CyMain implements CyInitParams {
 		} catch (ParseException e) {
 			System.err.println("Parsing command line failed: " + e.getMessage());
 			printHelp();
-			System.exit(0);
+			Cytoscape.exit(0);
 		}
 
 		// use what is found on the command line to set values
 		if ( line.hasOption("h") ) {
 			printHelp();
-			System.exit(0); 
+			Cytoscape.exit(0); 
 		}
 
 		if ( line.hasOption("v") ) {
 			System.out.println("Cytoscape version: 2.3");
-			System.exit(0); 
+			Cytoscape.exit(0); 
 		}
 
 		if ( line.hasOption("H") ) {

@@ -69,7 +69,7 @@ public class CyGraphLOD extends GraphLOD implements PropertyChangeListener
 	}
 
 	protected int getInt(String key, int defaultValue) {
-		String val = CytoscapeInit.getProperty(key);
+		String val = CytoscapeInit.getProperties().getProperty(key);
 		if ( val == null )
 			return defaultValue;
 
@@ -82,7 +82,7 @@ public class CyGraphLOD extends GraphLOD implements PropertyChangeListener
 	}
 
 	protected boolean getBoolean(String key, boolean defaultValue) {
-		String val = CytoscapeInit.getProperty(key);
+		String val = CytoscapeInit.getProperties().getProperty(key);
 		if ( val == null )
 			return defaultValue;
 

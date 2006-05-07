@@ -327,6 +327,10 @@ public class CytoscapeSessionReader {
 			InputStream networkStream = null;
 
 			if (cysessionSource.getClass() == URL.class) {
+				// Problem: targetNetwork improperly uses the file separator
+				// FS for URLs and one Windows machine FS is '\'
+				// Fix: for URLs, replace '\' with '/'
+				targetNetwork = targetNetwork.replace('\\', '/');
 				URL targetNetworkURL = (URL) networkURLs.get(targetNetwork);
 				JarURLConnection jarConnection = (JarURLConnection) (targetNetworkURL)
 						.openConnection();
@@ -472,7 +476,9 @@ public class CytoscapeSessionReader {
 		// Create the CyNetwork
 		// First, set the view threshold to 0. By doing so, we can disable
 		// the auto-creating of the CyNetworkView.
-		int realThreshold = CytoscapeInit.getViewThreshold();
+		
+		int realThreshold = Integer.valueOf(CytoscapeInit.getProperties().getProperty("viewThreshold","5000")).intValue();
+		
 		CytoscapeInit.setViewThreshold(0);
 
 		CyNetwork network = null;

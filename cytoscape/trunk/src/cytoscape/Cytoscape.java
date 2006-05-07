@@ -77,6 +77,7 @@ import cytoscape.util.FileUtil;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.visual.VisualMappingManager;
+import cytoscape.init.CyInitParams;
 
 /**
  * This class, Cytoscape is <i>the</i> primary class in the API.
@@ -234,30 +235,52 @@ public abstract class Cytoscape {
 
 	/**
 	 * Shuts down Cytoscape, after giving plugins time to react.
+	 * @deprecated Use exit(returnVal) instead.  This will be removed
+	 * in Sept 2006.
 	 */
 	public static void exit() {
-		// AJK: 09/12/05 BEGIN
-		// prompt the user about saving modified files before quitting
-		if (confirmQuit()) {
-			System.out.println("Cytoscape Exiting....");
-			try {
-				firePropertyChange(CYTOSCAPE_EXIT, null, "now");
-			} catch (Exception e) {
-				System.out.println("Errors on close, closed anyways.");
-			}
-			System.exit(0);
-		}
-		// System.exit(0);
-		// AJK: 09/12/05 END
+		exit(0);
 	}
 
-	/*
-	 * AJK: 09/12/05 BEGIN prompt the user about saving modified files before
-	 * quitting
-	 * 
-	 * KONO: 04/18/2006 Now Cytoscape always ask user if session is not saved.
-	 * 
-	 * @return
+	/**
+	 * Shuts down Cytoscape, after giving plugins time to react.
+	 * @param returnVal The return value. Zero indicates success,
+	 * non-zero otherwise.
+	 */
+	public static void exit(int returnVal) {
+
+		int mode = CytoscapeInit.getCyInitParams().getMode();
+
+		if (mode == CyInitParams.EMBEDDED_WINDOW ||
+		    mode == CyInitParams.GUI ) {
+			// prompt the user about saving modified files before quitting
+			if (confirmQuit()) {
+				try {
+					firePropertyChange(CYTOSCAPE_EXIT, null, "now");
+				} catch (Exception e) {
+					System.out.println("Errors on close, closed anyways.");
+				}
+
+				System.out.println("Cytoscape Exiting....");
+				if (mode == CyInitParams.EMBEDDED_WINDOW) {                                                                                    
+					// don't system exit since we are running as part 
+					// of a bigger application. Instead, dispose of the
+					// desktop.
+					getDesktop().dispose();
+				} else {
+					System.exit(returnVal);
+				}
+			}
+			// if we get here, we're not quitting!
+
+		} else {
+			System.out.println("Cytoscape Exiting....");
+			System.exit(returnVal);
+		}
+	}
+
+	/**
+	 * Prompt the user about saving modified files before quitting.
 	 */
 	private static boolean confirmQuit() {
 		String msg = "You have made modifications to the following networks:\n";
@@ -306,8 +329,6 @@ public abstract class Cytoscape {
 			return false; // default if dialog box is closed
 		}
 	}
-
-	// AJK: 09/12/05 END
 
 	// --------------------//
 	// Root Graph Methods
@@ -737,7 +758,7 @@ public abstract class Cytoscape {
 	 * @deprecated argh!...
 	 */
 	public static void setSpecies() {
-		species = CytoscapeInit.getProperty("defaultSpeciesName");
+		species = CytoscapeInit.getProperties().getProperty("defaultSpeciesName");
 	}
 
 	// --------------------//
@@ -816,7 +837,7 @@ public abstract class Cytoscape {
 		if (defaultDesktop == null) {
 			// System.out.println( " Defaultdesktop created: "+defaultDesktop );
 			defaultDesktop = new CytoscapeDesktop(CytoscapeDesktop
-					.parseViewType(CytoscapeInit.getProperty("viewType")));
+					.parseViewType(CytoscapeInit.getProperties().getProperty("viewType")));
 		}
 		return defaultDesktop;
 	}
@@ -998,7 +1019,7 @@ public abstract class Cytoscape {
 
 		firePropertyChange(NETWORK_CREATED, p_id, network.getIdentifier());
 		if (network.getNodeCount() < Integer.parseInt(CytoscapeInit
-				.getProperty("viewThreshold"))
+				.getProperties().getProperty("viewThreshold"))
 				&& create_view) {
 			createNetworkView(network);
 		}

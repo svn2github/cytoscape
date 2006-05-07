@@ -50,6 +50,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import cytoscape.data.readers.GMLReader2;
 import cytoscape.unitTests.AllTests;
+import cytoscape.Cytoscape;
 
 //-----------------------------------------------------------------------------------------
 public class GMLReaderTest extends TestCase {
@@ -104,7 +105,7 @@ public class GMLReaderTest extends TestCase {
 		if (args.length != 1) {
 			System.out
 					.println("Error!  must supply path to test data directory on command line");
-			System.exit(0);
+			Cytoscape.exit(0);
 		}
 
 		testDataDir = args[0];

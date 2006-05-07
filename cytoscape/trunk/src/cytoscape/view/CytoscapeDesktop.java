@@ -845,7 +845,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 
 	public static int parseViewType(String vt) {
 		int type = -1;
-		if (vt.equals("tabbed"))
+		if (vt == null || vt.equals("tabbed"))
 			type = TABBED_VIEW;
 		else if (vt.equals("internal"))
 			type = INTERNAL_VIEW;

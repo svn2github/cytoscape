@@ -154,7 +154,7 @@ public class Semantics {
 			return;
 		}
 
-		String defaultSpecies = CytoscapeInit.getProperty("defaultSpeciesName");
+		String defaultSpecies = CytoscapeInit.getProperties().getProperty("defaultSpeciesName");
 		if (defaultSpecies == null) {
 			return;
 		} // we have no value to set
@@ -227,7 +227,7 @@ public class Semantics {
 		if (species == null) {
 			species = nodeAttributes.getStringAttribute(id, SPECIES);
 			if (species == null) {
-				species = CytoscapeInit.getProperty("defaultSpeciesName");
+				species = CytoscapeInit.getProperties().getProperty("defaultSpeciesName");
 			}
 		}
 		// Check for the case when we don't have a default species
@@ -442,7 +442,7 @@ public class Semantics {
 					SPECIES);
 		}
 		BioDataServer bioDataServer = Cytoscape.getBioDataServer();
-		species = CytoscapeInit.getProperty("defaultSpeciesName");
+		species = CytoscapeInit.getProperties().getProperty("defaultSpeciesName");
 		if (species != null) {
 			String[] synonyms = bioDataServer.getAllCommonNames(species, name);
 			returnList.addAll(Arrays.asList(synonyms));

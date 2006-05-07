@@ -153,7 +153,7 @@ public void checkState ( boolean n1, boolean n2, boolean e1, boolean e2 ) {
 
 public static void main ( String[] args )  {
   junit.textui.TestRunner.run (new TestSuite (CytoscapeViewTests.class));
-  System.exit(0);
+  Cytoscape.exit(0);
 }
 //------------------------------------------------------------------------------
 }

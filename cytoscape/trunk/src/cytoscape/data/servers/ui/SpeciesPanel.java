@@ -28,7 +28,7 @@ public class SpeciesPanel extends JPanel {
 	
 	/** Creates new form SpeciesPanel */
 	public SpeciesPanel() {
-		currentSpeciesName = CytoscapeInit.getProperty("defaultSpeciesName");
+		currentSpeciesName = CytoscapeInit.getProperties().getProperty("defaultSpeciesName");
 		initComponents();
 	}
 
@@ -154,16 +154,16 @@ public class SpeciesPanel extends JPanel {
 		// TODO add your handling code here:
 		if (overwriteComboBox.isEnabled() == false) {
 			overwriteComboBox.setEnabled(true);
-			CytoscapeInit.setProperty("defaultSpeciesName",
+			CytoscapeInit.getProperties().setProperty("defaultSpeciesName",
 					(String) overwriteComboBox.getSelectedItem());
 		} else {
 			overwriteComboBox.setEnabled(false);
-			CytoscapeInit.setProperty("defaultSpeciesName", currentSpeciesName);
+			CytoscapeInit.getProperties().setProperty("defaultSpeciesName", currentSpeciesName);
 		}
 	}
 	private void overwriteComboBoxActionPerformed(java.awt.event.ActionEvent evt) {
 		String species = (String) overwriteComboBox.getSelectedItem();
-		CytoscapeInit.setProperty("defaultSpeciesName", species );
+		CytoscapeInit.getProperties().setProperty("defaultSpeciesName", species );
 	}
 
 	private void setTaxonomyTable() {
