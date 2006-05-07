@@ -735,8 +735,8 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 	public static File getConfigDirectoy() {
 		File dir = null;
 		try {
-			File parent_dir = new File(System.getProperty("user.home"),
-					".cytoscape");
+			String dirName = properties.getProperty("alternative.config.dir", System.getProperty("user.home"));
+			File parent_dir = new File(dirName, ".cytoscape");
 			if (parent_dir.mkdir())
 				System.err.println("Parent_Dir: " + parent_dir + " created.");
 
