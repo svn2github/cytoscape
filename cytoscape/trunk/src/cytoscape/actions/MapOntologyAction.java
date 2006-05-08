@@ -117,13 +117,13 @@ class MapOntologyTask implements Task {
 	 * Executes Task
 	 */
 	public void run() {
-		taskMonitor.setStatus("Building Ontology Mapper...");
+		taskMonitor.setStatus("Building Ontology Mapper.  Please wait...");
 		taskMonitor.setPercentCompleted(-1);
 
 		god = new OntologyMapperDialog(Cytoscape.getDesktop(), false);
 
 		taskMonitor.setPercentCompleted(100);
-		taskMonitor.setStatus("Showing mapper...");
+		taskMonitor.setStatus("Building mapper...");
 
 		god.show();
 	}
