@@ -270,6 +270,8 @@ public abstract class Cytoscape {
 				} else {
 					System.exit(returnVal);
 				}
+			} else {
+				return;
 			}
 			// if we get here, we're not quitting!
 
@@ -309,7 +311,7 @@ public abstract class Cytoscape {
 		// Confirm user to save current session or not.
 		//
 		msg = "Do you want to exit without saving session?";
-		Object[] options = { "Yes, quit anyway.", "No, save current session." };
+		Object[] options = { "Yes, quit anyway.", "No, save current session.", "Cancel"};
 		int n = JOptionPane.showOptionDialog(Cytoscape.getDesktop(), msg,
 				"Save Networks Before Quitting?", JOptionPane.YES_NO_OPTION,
 				JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
@@ -325,7 +327,6 @@ public abstract class Cytoscape {
 
 			return true;
 		} else {
-			System.out.println("ConfirmQuit = " + false);
 			return false; // default if dialog box is closed
 		}
 	}
