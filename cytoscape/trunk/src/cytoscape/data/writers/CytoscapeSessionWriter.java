@@ -113,6 +113,7 @@ public class CytoscapeSessionWriter {
 	public final int EDGE = 2;
 
 	private static final String DEFAULT_VS_NAME = "default";
+	private static final String DEFAULT_VS_NAME_KEY_NAME = "defaultVisualStyle";
 
 	// Number of Cytopanels. Currently, we have 3 panels.
 	private static final int CYTOPANEL_COUNT = 3;
@@ -312,6 +313,15 @@ public class CytoscapeSessionWriter {
 			cyProp = new File(CYPROP_FILE);
 			FileOutputStream output = new FileOutputStream(cyProp);
 			prop = CytoscapeInit.getProperties();
+			// if it exists, replace defaultVisualStyle with current visual style
+			CyNetworkView curView = (CyNetworkView) Cytoscape.getCurrentNetworkView();
+			if (curView != null){
+				VisualStyle curVS = curView.getVisualStyle();
+				if (curVS != null) {
+					String visualStyleName = curVS.getName();
+					prop.setProperty(DEFAULT_VS_NAME_KEY_NAME, visualStyleName);
+				}
+			}
 			prop.store(output, "Cytoscape Property File");
 		} catch (Exception ex) {
 			System.out.println("Cytoscape.Props Write error");
