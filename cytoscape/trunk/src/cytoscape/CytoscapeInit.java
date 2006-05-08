@@ -195,13 +195,17 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 		}
 
 		// load any specified data attribute files
-		Cytoscape.loadAttributes(
-				(String[])initParams.getNodeAttributeFiles().toArray(new String[] {}),
-				(String[])initParams.getEdgeAttributeFiles().toArray(new String[] {}),
-				canonicalize, 
-				bds,
-				properties.getProperty("defaultSpeciesName"));
-
+		try { 
+			Cytoscape.loadAttributes(
+					(String[])initParams.getNodeAttributeFiles().toArray(new String[] {}),
+					(String[])initParams.getEdgeAttributeFiles().toArray(new String[] {}),
+					canonicalize, 
+					bds,
+					properties.getProperty("defaultSpeciesName"));
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			System.out.println("failure loading specified attributes");
+		}
 
 		Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
 
