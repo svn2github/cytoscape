@@ -86,9 +86,9 @@ public class SampleNetwork1
       gateway = m_graph.nodeCreate();
       internet = m_graph.nodeCreate();
       m_rtree.insert(b_net, 33, 10, 100, 11);
-      m_rtree.insert(b_bsdi, 42.5f, 10, 43.5f, 11);
-      m_rtree.insert(b_sun, 66.5f, 10, 67.5f, 11);
-      m_rtree.insert(b_svr4, 90.5f, 10, 91.5f, 11);
+      m_rtree.insert(b_bsdi, 43.0f, 11, 43.0f, 11);
+      m_rtree.insert(b_sun, 67.0f, 11, 67.0f, 11);
+      m_rtree.insert(b_svr4, 91.0f, 11, 91.0f, 11);
       m_rtree.insert(slip, 5, 15, 17, 25);
       m_rtree.insert(bsdi, 37, 15, 49, 25);
       m_rtree.insert(sun, 61, 15, 73, 25);
