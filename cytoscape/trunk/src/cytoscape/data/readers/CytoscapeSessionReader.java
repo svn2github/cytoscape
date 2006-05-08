@@ -534,12 +534,8 @@ public class CytoscapeSessionReader {
 						.getVisualStyle().getName());
 
 			curView.fitContent();
-		}
 
-		CyNetworkView curView = Cytoscape.getNetworkView(network.getIdentifier());
-		if (curView != null) {
-
-			//set view zoom
+			// set view zoom
 			Double zoomLevel = reader.getGraphViewZoomLevel();
 			if (zoomLevel != null) curView.setZoom(zoomLevel.doubleValue());
 		
