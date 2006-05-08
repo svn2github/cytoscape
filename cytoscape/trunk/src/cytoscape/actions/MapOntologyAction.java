@@ -43,8 +43,10 @@ package cytoscape.actions;
 import java.awt.event.ActionEvent;
 
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 
 import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
 import cytoscape.data.annotation.OntologyMapperDialog;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
@@ -74,6 +76,18 @@ public class MapOntologyAction extends CytoscapeAction {
 	 */
 	public void actionPerformed(ActionEvent e) {
 
+		if(Cytoscape.getCyNodesList().size() == 0 || Cytoscape.getBioDataServer() == null) {
+			JOptionPane
+			.showMessageDialog(
+					null,
+					"There is no network data in memory.\n" +
+					"Please import/create a network before using GO Mapper.",
+					"No Networks in Memory",
+					JOptionPane.ERROR_MESSAGE);
+			
+			return;
+		}
+		
 		// Create Task
 		MapOntologyTask task = new MapOntologyTask();
 
