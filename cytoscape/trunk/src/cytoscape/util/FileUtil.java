@@ -39,20 +39,19 @@
 package cytoscape.util;
 
 import java.awt.FileDialog;
-import javax.swing.JFileChooser;
-import java.io.InputStream;
-import java.io.FileInputStream;
 import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.Iterator;
 import java.util.Iterator;
 
+import javax.swing.JFileChooser;
 
-import cytoscape.*;
+import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
 
 /**
  * Provides a platform-dependent way to open files. Mainly

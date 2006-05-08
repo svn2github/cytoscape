@@ -46,8 +46,6 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
-import javax.swing.JOptionPane;
-
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
@@ -56,17 +54,16 @@ import cytoscape.data.readers.GraphReader;
 import cytoscape.data.readers.InteractionsReader;
 import cytoscape.data.readers.XGMMLReader;
 import cytoscape.data.servers.BioDataServer;
+import cytoscape.dialogs.ImportNetworkDialog;
 import cytoscape.dialogs.VisualStyleBuilderDialog;
-import cytoscape.ding.DingNetworkView;
 import cytoscape.ding.CyGraphLOD;
+import cytoscape.ding.DingNetworkView;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
-import cytoscape.util.CyFileFilter;
 import cytoscape.util.CyNetworkNaming;
 import cytoscape.util.CytoscapeAction;
-import cytoscape.util.FileUtil;
 import cytoscape.view.CyMenus;
 
 /**
@@ -133,7 +130,8 @@ public class ImportGraphFileAction extends CytoscapeAction {
 		}
 
 		// Create LoadNetwork Task
-		LoadNetworkTask task = new LoadNetworkTask(new File(name), fileType);
+		LoadNetworkTask task = new LoadNetworkTask(new File(name), fileType,
+				false);
 
 		// Configure JTask Dialog Pop-Up Box
 		JTaskConfig jTaskConfig = new JTaskConfig();
@@ -167,30 +165,17 @@ public class ImportGraphFileAction extends CytoscapeAction {
 	// MLC 09/19/05 END.
 	public void actionPerformed(ActionEvent e) {
 
-		// Create FileFilters
-		CyFileFilter intFilter = new CyFileFilter();
-		CyFileFilter gmlFilter = new CyFileFilter();
-		CyFileFilter xgmmlFilter = new CyFileFilter();
-		CyFileFilter graphFilter = new CyFileFilter();
+		// open new dialog
+		ImportNetworkDialog fd = new ImportNetworkDialog(
+				Cytoscape.getDesktop(), true);
+		fd.show();
 
-		// Add accepted File Extensions
-		gmlFilter.addExtension("gml");
-		gmlFilter.setDescription("GML files");
-		xgmmlFilter.addExtension("xgmml");
-		xgmmlFilter.addExtension("xml");
-		xgmmlFilter.setDescription("XGMML files");
-		intFilter.addExtension("sif");
-		intFilter.setDescription("Interaction files");
-		graphFilter.addExtension("sif");
-		graphFilter.addExtension("gml");
-		graphFilter.addExtension("xml");
-		graphFilter.addExtension("xgmml");
-		graphFilter.setDescription("All network files");
+		if (fd.getStatus() == false) {
+			return;
+		}
 
-		// Get the file name
-		File file = FileUtil.getFile("Import Network File", FileUtil.LOAD,
-				new CyFileFilter[] { xgmmlFilter, gmlFilter, intFilter,
-						graphFilter });
+		File file = fd.getFile();
+		boolean vsSwitch = fd.getVSFlag();
 
 		// if the name is not null, then load
 		if (file != null) {
@@ -207,19 +192,19 @@ public class ImportGraphFileAction extends CytoscapeAction {
 			}
 
 			// Create LoadNetwork Task
-			LoadNetworkTask task = new LoadNetworkTask(file, fileType);
+			LoadNetworkTask task = new LoadNetworkTask(file, fileType, vsSwitch);
 
 			// Configure JTask Dialog Pop-Up Box
 			JTaskConfig jTaskConfig = new JTaskConfig();
 			jTaskConfig.setOwner(Cytoscape.getDesktop());
 			jTaskConfig.displayCloseButton(true);
 			jTaskConfig.displayStatus(true);
-			if (file.getName().endsWith(".gml") ) {
+			if (file.getName().endsWith(".gml")) {
 				jTaskConfig.setAutoDispose(true);
 			} else {
 				jTaskConfig.setAutoDispose(false);
 			}
-			
+
 			// Execute Task in New Thread; pops open JTask Dialog Box.
 			TaskManager.executeTask(task, jTaskConfig);
 		}
@@ -232,6 +217,8 @@ public class ImportGraphFileAction extends CytoscapeAction {
 class LoadNetworkTask implements Task {
 	private File file;
 	private int fileType;
+	private boolean vsSwitch;
+
 	private CyNetwork cyNetwork;
 	private TaskMonitor taskMonitor;
 
@@ -245,9 +232,10 @@ class LoadNetworkTask implements Task {
 	 * @param fileType
 	 *            FileType, e.g. Cytoscape.FILE_SIF or Cytoscape.FILE_GML.
 	 */
-	public LoadNetworkTask(File file, int fileType) {
+	public LoadNetworkTask(File file, int fileType, boolean vsSwitch) {
 		this.file = file;
 		this.fileType = fileType;
+		this.vsSwitch = vsSwitch;
 	}
 
 	/**
@@ -258,7 +246,7 @@ class LoadNetworkTask implements Task {
 
 		try {
 			cyNetwork = this.createNetwork(file.getAbsolutePath(), fileType,
-					Cytoscape.getBioDataServer(), CytoscapeInit
+					Cytoscape.getBioDataServer(), CytoscapeInit.getProperties()
 							.getProperty("defaultSpeciesName"));
 
 			if (cyNetwork != null) {
@@ -274,20 +262,12 @@ class LoadNetworkTask implements Task {
 			}
 			taskMonitor.setPercentCompleted(100);
 
-			if (file.getName().endsWith(".gml")) {
-				String message[] = {
-						"Do you want to generate new Visual Style",
-						"from this GML graphics data?" };
-				int value = JOptionPane.showConfirmDialog(Cytoscape
-						.getDesktop(), message, "Visual Style Builder",
-						JOptionPane.YES_NO_OPTION);
+			if (file.getName().endsWith(".gml") && vsSwitch == true) {
+				VisualStyleBuilderDialog vsd = new VisualStyleBuilderDialog(
+						cyNetwork.getTitle(), reader, Cytoscape.getDesktop(),
+						true);
+				vsd.show();
 
-				if (value == JOptionPane.YES_OPTION) {
-					VisualStyleBuilderDialog vsd = new VisualStyleBuilderDialog(
-							cyNetwork.getTitle(), reader, Cytoscape
-									.getDesktop(), true);
-					vsd.show();
-				}
 			}
 
 		} catch (IOException e) {
