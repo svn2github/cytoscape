@@ -25,10 +25,11 @@ public class SpeciesPanel extends JPanel {
 	// Resource Location
 	private static final String TAXON_RESOURCE_FILE = "/cytoscape/resources/tax_report.txt";
 	private String currentSpeciesName;
-	
+
 	/** Creates new form SpeciesPanel */
 	public SpeciesPanel() {
-		currentSpeciesName = CytoscapeInit.getProperties().getProperty("defaultSpeciesName");
+		currentSpeciesName = CytoscapeInit.getProperties().getProperty(
+				"defaultSpeciesName");
 		initComponents();
 	}
 
@@ -43,14 +44,18 @@ public class SpeciesPanel extends JPanel {
 		jSeparator1 = new javax.swing.JSeparator();
 		overwriteCheckBox = new javax.swing.JCheckBox();
 		overwriteComboBox = new javax.swing.JComboBox();
+		messageScrollPane = new javax.swing.JScrollPane();
+		messageEditorPane = new javax.swing.JEditorPane();
+
 		setTaxonomyTable();
 		overwriteComboBox.setEditable(false);
 		overwriteComboBox.setEnabled(false);
-		overwriteComboBox.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				overwriteComboBoxActionPerformed(evt);
-			}
-		});
+		overwriteComboBox
+				.addActionListener(new java.awt.event.ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						overwriteComboBoxActionPerformed(evt);
+					}
+				});
 
 		jLabel1.setFont(new java.awt.Font("Dialog", 1, 14));
 		jLabel1.setText("Default Species Name");
@@ -67,87 +72,55 @@ public class SpeciesPanel extends JPanel {
 					}
 				});
 
-		org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(
-				this);
-		this.setLayout(layout);
-		layout
-				.setHorizontalGroup(layout
-						.createParallelGroup(
-								org.jdesktop.layout.GroupLayout.LEADING)
-						.add(
-								layout
-										.createSequentialGroup()
-										.addContainerGap()
-										.add(
-												layout
-														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.LEADING)
-														.add(
-																layout
-																		.createSequentialGroup()
-																		.add(
-																				layout
-																						.createParallelGroup(
-																								org.jdesktop.layout.GroupLayout.LEADING)
-																						.add(
-																								jLabel1,
-																								org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																								239,
-																								Short.MAX_VALUE)
-																						.add(
-																								jSeparator1,
-																								org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																								239,
-																								Short.MAX_VALUE))
-																		.addContainerGap())
-														.add(
-																layout
-																		.createSequentialGroup()
-																		.add(
-																				overwriteCheckBox,
-																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																				215,
-																				Short.MAX_VALUE)
-																		.add(
-																				36,
-																				36,
-																				36))
-														.add(
-																layout
-																		.createSequentialGroup()
-																		.add(
-																				overwriteComboBox,
-																				0,
-																				222,
-																				Short.MAX_VALUE)
-																		.add(
-																				29,
-																				29,
-																				29)))));
-		layout.setVerticalGroup(layout.createParallelGroup(
-				org.jdesktop.layout.GroupLayout.LEADING).add(
-				layout.createSequentialGroup().addContainerGap().add(jLabel1)
-						.addPreferredGap(
-								org.jdesktop.layout.LayoutStyle.RELATED).add(
-								jSeparator1,
-								org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-								10,
-								org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(
-								org.jdesktop.layout.LayoutStyle.RELATED).add(
-								overwriteCheckBox,
-								org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-								13,
-								org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(
-								org.jdesktop.layout.LayoutStyle.RELATED).add(
-								overwriteComboBox,
-								org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-								25,
-								org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-						.addContainerGap(
-								org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-								Short.MAX_VALUE)));
+		messageScrollPane
+				.setHorizontalScrollBarPolicy(javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		messageEditorPane.setEditable(false);
+		messageEditorPane.setContentType("text/html");
+		messageEditorPane.setText("<html><body><strong><u>Note</u></strong><br>" +
+				"The property <strong><i>defaultSpeciesName</i></strong>" +
+				" will be used <br>only when a node does not have an attribute <strong><i>species</i></strong>.<br><br>" +
+				"If you select a species name from this list, the value<br>" +
+				"will be used as the <strong><i>defaultSpeciesname</i></strong>." +
+				"</body></html>");
+		
+		messageScrollPane.setViewportView(messageEditorPane);
+
+		// Layout
+		org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(layout.createSequentialGroup()
+                .addContainerGap()
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(layout.createSequentialGroup()
+                        .add(overwriteCheckBox, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
+                        .add(36, 36, 36))
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                            .add(org.jdesktop.layout.GroupLayout.LEADING, jSeparator1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 362, Short.MAX_VALUE)
+                            .add(org.jdesktop.layout.GroupLayout.LEADING, overwriteComboBox, 0, 362, Short.MAX_VALUE)
+                            .add(org.jdesktop.layout.GroupLayout.LEADING, messageScrollPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 362, Short.MAX_VALUE)
+                            .add(jLabel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 362, Short.MAX_VALUE))
+                        .addContainerGap())))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(layout.createSequentialGroup()
+                .addContainerGap()
+                .add(jLabel1)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jSeparator1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 10, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(overwriteCheckBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 13, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(overwriteComboBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(messageScrollPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+		
+		
 	}// </editor-fold>
 
 	private void overwriteCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {
@@ -158,12 +131,15 @@ public class SpeciesPanel extends JPanel {
 					(String) overwriteComboBox.getSelectedItem());
 		} else {
 			overwriteComboBox.setEnabled(false);
-			CytoscapeInit.getProperties().setProperty("defaultSpeciesName", currentSpeciesName);
+			CytoscapeInit.getProperties().setProperty("defaultSpeciesName",
+					currentSpeciesName);
 		}
 	}
+
 	private void overwriteComboBoxActionPerformed(java.awt.event.ActionEvent evt) {
 		String species = (String) overwriteComboBox.getSelectedItem();
-		CytoscapeInit.getProperties().setProperty("defaultSpeciesName", species );
+		CytoscapeInit.getProperties()
+				.setProperty("defaultSpeciesName", species);
 	}
 
 	private void setTaxonomyTable() {
@@ -211,6 +187,8 @@ public class SpeciesPanel extends JPanel {
 	private javax.swing.JLabel jLabel1;
 	private javax.swing.JSeparator jSeparator1;
 	private javax.swing.JCheckBox overwriteCheckBox;
+	private javax.swing.JEditorPane messageEditorPane;
+	private javax.swing.JScrollPane messageScrollPane;
 	// End of variables declaration
 
 }
