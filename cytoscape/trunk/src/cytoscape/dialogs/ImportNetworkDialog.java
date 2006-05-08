@@ -240,12 +240,10 @@ public class ImportNetworkDialog extends javax.swing.JDialog {
 		if(file != null) {
 			networkFileNameTextField.setText(file.getAbsolutePath());
 			networkFileNameTextField.setToolTipText(file.getAbsolutePath());
-		}
-		
-		if(file.getName().endsWith(".gml")) {
-			vsBuilderCheckBox.setEnabled(true);
-		}
-		
+			if(file.getName().endsWith(".gml")) {
+				vsBuilderCheckBox.setEnabled(true);
+			}
+		} 
 	}
 
 	// Variables declaration - do not modify

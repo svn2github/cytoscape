@@ -207,6 +207,8 @@ public class ImportGraphFileAction extends CytoscapeAction {
 
 			// Execute Task in New Thread; pops open JTask Dialog Box.
 			TaskManager.executeTask(task, jTaskConfig);
+		} else {
+			return;
 		}
 	}
 }
