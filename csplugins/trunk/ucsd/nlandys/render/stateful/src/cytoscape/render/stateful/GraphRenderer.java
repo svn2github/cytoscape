@@ -310,10 +310,13 @@ public final class GraphRenderer
                    floatBuff3, floatBuff4)) {
                 continue; }
 
+              final float srcXAdj = floatBuff3[0];
+              final float srcYAdj = floatBuff3[1];
+              final float trgXAdj = floatBuff4[0];
+              final float trgYAdj = floatBuff4[1];
               grafx.drawEdgeFull(srcArrow, srcArrowSize, srcArrowPaint,
                                  trgArrow, trgArrowSize, trgArrowPaint,
-                                 floatBuff3[0], floatBuff3[1],
-                                 anchors, floatBuff4[0], floatBuff4[1],
+                                 srcXAdj, srcYAdj, anchors, trgXAdj, trgYAdj,
                                  thickness, segPaint, dashLength);
 
               // Take care of label rendering.
@@ -346,17 +349,17 @@ public final class GraphRenderer
                   final double edgeAnchorPointY;
                   { // Compute edgeAnchorPointX and edgeAnchorPointY.
                     if (edgeAnchor == EdgeDetails.EDGE_ANCHOR_SOURCE) {
-                      edgeAnchorPointX = floatBuff3[0];
-                      edgeAnchorPointY = floatBuff3[1]; }
+                      edgeAnchorPointX = srcXAdj;
+                      edgeAnchorPointY = srcYAdj; }
                     else if (edgeAnchor == EdgeDetails.EDGE_ANCHOR_TARGET) {
-                      edgeAnchorPointX = floatBuff4[0];
-                      edgeAnchorPointY = floatBuff4[1]; }
+                      edgeAnchorPointX = trgXAdj;
+                      edgeAnchorPointY = trgYAdj; }
                     else if (edgeAnchor == EdgeDetails.EDGE_ANCHOR_MIDPOINT)
                     {
                       grafx.getEdgePath(srcArrow, srcArrowSize,
                                         trgArrow, trgArrowSize,
-                                        floatBuff3[0], floatBuff3[1], anchors,
-                                        floatBuff4[0], floatBuff4[1], path2d);
+                                        srcXAdj, srcYAdj, anchors,
+                                        trgXAdj, trgYAdj, path2d);
 
                       // Count the number of path segments.  This count
                       // includes the initial SEG_MOVETO.  So, for example, a
