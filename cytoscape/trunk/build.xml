@@ -654,6 +654,8 @@
               todir="${release.dir}/plugins"/>
     </target>
 
+    <target name="all" depends="release"/>
+
     <target name="release-extras" depends="release"
             description="add extra plugins into release">
         <echo>
