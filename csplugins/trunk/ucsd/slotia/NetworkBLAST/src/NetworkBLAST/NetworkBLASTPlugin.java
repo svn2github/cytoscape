@@ -30,8 +30,11 @@ import java.awt.event.ActionEvent;
 
 public class NetworkBLASTPlugin extends CytoscapePlugin
 {
+  private NetworkBLASTDialog m_dialog = null;
+  
   public NetworkBLASTPlugin()
   {
+    m_dialog = new NetworkBLASTDialog(Cytoscape.getDesktop(), true);
     initializeMenuItem();
   }
 
@@ -44,7 +47,31 @@ public class NetworkBLASTPlugin extends CytoscapePlugin
   {
     JMenu pluginMenu = Cytoscape.getDesktop().getCyMenus().getMenuBar()
     			        .getMenu("Plugins");
-    JMenuItem pluginItem = new JMenuItem(new NetworkBLASTAction());
-    pluginMenu.add(pluginItem);
+
+    JMenu nbMenu = new JMenu("NetworkBLAST");
+    
+    JMenuItem aboutMenuItem = new JMenuItem(new NetworkBLASTAction(
+                                          "About", 0, m_dialog));
+    JMenuItem comptMenuItem = new JMenuItem(new NetworkBLASTAction(
+                                          "Generate Compatiblity Graph",
+					  1, m_dialog));
+    JMenuItem pathMenuItem = new JMenuItem(new NetworkBLASTAction(
+                                          "Path Search",
+					  2, m_dialog));
+    JMenuItem compMenuItem = new JMenuItem(new NetworkBLASTAction(
+                                          "Complex Search",
+					  3, m_dialog));
+    JMenuItem scoreMenuItem = new JMenuItem(new NetworkBLASTAction(
+                                          "Score Model Settings",
+					  4, m_dialog));
+    nbMenu.add(aboutMenuItem);
+    nbMenu.addSeparator();
+    nbMenu.add(comptMenuItem);
+    nbMenu.add(pathMenuItem);
+    nbMenu.add(compMenuItem);
+    nbMenu.addSeparator();
+    nbMenu.add(scoreMenuItem);
+    
+    pluginMenu.add(nbMenu);
   }
 }

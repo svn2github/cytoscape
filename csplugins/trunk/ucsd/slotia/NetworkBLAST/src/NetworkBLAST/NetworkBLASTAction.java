@@ -16,20 +16,24 @@ import java.awt.event.ActionEvent;
 
 public class NetworkBLASTAction extends AbstractAction
 {
-  private NetworkBLASTDialog m_dialog = null;
+  private NetworkBLASTDialog m_dialog;
+  private int m_tabIndex;
   
-  public NetworkBLASTAction()
+  public NetworkBLASTAction(String _name, int _tabIndex,
+                            NetworkBLASTDialog _dialog)
   {
-    super("NetworkBLAST");
+    super(_name);
+    m_dialog = _dialog;
+    m_tabIndex = _tabIndex;
   }
 
-  public void actionPerformed(ActionEvent e)
+  public void actionPerformed(ActionEvent _e)
   {
-    if (!checkForNetworks()) return;
+    if (!this.checkForNetworks()) return;
     
-    m_dialog = new NetworkBLASTDialog();
-    updateComboBoxes();
-    m_dialog.getJDialog().show();
+    this.updateComboBoxes();
+    m_dialog.switchToTab(m_tabIndex);
+    m_dialog.show();
   }
 
   /**
@@ -62,21 +66,30 @@ public class NetworkBLASTAction extends AbstractAction
 
   private void updateComboBoxes()
   {
-    JComboBox jComboBox = m_dialog.getJComboBox();
-    JComboBox jComboBox1 = m_dialog.getJComboBox1();
-    JComboBox jComboBox2 = m_dialog.getJComboBox2();
- 
-    jComboBox.removeAllItems();
-    jComboBox1.removeAllItems();
-    jComboBox2.removeAllItems();
+    JComboBox jComboBoxes[] =
+    {
+      m_dialog.getComp_graphComboBox(),
+      m_dialog.getCompt_graph1ComboBox(),
+      m_dialog.getCompt_graph2ComboBox(),
+      m_dialog.getCompt_homgraphComboBox(),
+      m_dialog.getPath_graphComboBox()
+    };
+
+    for (int j = 0; j < jComboBoxes.length; j++)
+    {
+      jComboBoxes[j].removeAllItems();
+    }
 
     Object networks[] = Cytoscape.getNetworkSet().toArray();
     for (int i = 0; i < networks.length; i++)
     {
       CyNetwork network = (CyNetwork) networks[i];
-      jComboBox.addItem(new NetworkItem(network.getTitle(), network));
-      jComboBox1.addItem(new NetworkItem(network.getTitle(), network));
-      jComboBox2.addItem(new NetworkItem(network.getTitle(), network));
+      NetworkItem item = new NetworkItem(network.getTitle(), network);
+      
+      for (int j = 0; j < jComboBoxes.length; j++)
+      {
+        jComboBoxes[j].addItem(item);
+      }
     }
   }
 
