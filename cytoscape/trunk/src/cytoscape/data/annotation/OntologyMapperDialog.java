@@ -204,7 +204,8 @@ public class OntologyMapperDialog extends JDialog {
 			}
 		});
 
-		applyAllButton.setText("Applly All");
+		applyAllButton.setText("Apply All");
+		applyAllButton.setToolTipText("Apply all annotations in the selected category.");
 		applyAllButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				applyAllButtonActionPerformed(evt);
