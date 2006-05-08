@@ -15,16 +15,20 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -34,6 +38,7 @@ import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
+import cytoscape.util.BioDataServerUtil;
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.FileUtil;
 
@@ -43,8 +48,9 @@ import cytoscape.util.FileUtil;
  */
 public class AnotationPanel extends javax.swing.JPanel {
 
-	private final String FS = System.getProperty("file.separator");
 	private final String LS = System.getProperty("line.separator");
+
+	private static final String TAXON_RESOURCE_FILE = "/cytoscape/resources/tax_report.txt";
 
 	// For Gene Association preview table
 	// String[] columnNames = {"DB", "DB_Object_ID", "DB_Object_Symbol",
@@ -54,18 +60,25 @@ public class AnotationPanel extends javax.swing.JPanel {
 	// "taxon", "Date", "Assigned_by"};
 
 	// String[] columnNames = { "DB_Object_Symbol", "DB_Object_Synonym" };
-	String[] columnNames = { "GO's Canonical Name", "Synonyms in GA File" };
+	String[] columnNames = { "GO's Canonical Name", "Synonyms in GA File",
+			"Species (NCBI Taxon ID)" };
 	private File oboFile = null;
 	private HashMap gaFiles = null;
-	
+
 	private CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+
+	private BioDataServerUtil bdsu;
+	private HashMap taxonMap = null;
+	private HashMap nodeSpeciesMap;
+	private HashMap synoMap;
 
 	/** Creates new form GeneOntologyPanel2 */
 	public AnotationPanel() {
 		initComponents();
-
+		nodeSpeciesMap = new HashMap();
+		synoMap = new HashMap();
 		gaFiles = new HashMap();
-
+		bdsu = new BioDataServerUtil();
 	}
 
 	/**
@@ -82,6 +95,20 @@ public class AnotationPanel extends javax.swing.JPanel {
 		nodeNameList = new javax.swing.JList();
 		jPanel2 = new javax.swing.JPanel();
 		previewScrollPane = new javax.swing.JScrollPane();
+
+		// This if for sync. species name with GO annotation.
+		speciesCheckBox = new JCheckBox();
+		speciesCheckBox.setFont(new java.awt.Font("Dialog", 1, 10));
+		speciesCheckBox.setText("Transfer GO Species Name to Nodes");
+		speciesCheckBox.setBorder(javax.swing.BorderFactory.createEmptyBorder(
+				0, 0, 0, 0));
+		speciesCheckBox.setMargin(new java.awt.Insets(0, 0, 0, 0));
+		speciesCheckBox.setEnabled(false);
+		speciesCheckBox.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				speciesCheckBoxActionPerformed(evt);
+			}
+		});
 
 		previewTable = new JTable() {
 			public boolean isCellEditable(int row, int column) {
@@ -113,7 +140,7 @@ public class AnotationPanel extends javax.swing.JPanel {
 		jSplitPane1.setDividerLocation(130);
 		jSplitPane1.setDividerSize(5);
 		jScrollPane2.setBorder(javax.swing.BorderFactory.createTitledBorder(
-				null, "Nodes in memory",
+				null, "Node IDs and Species",
 				javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
 				javax.swing.border.TitledBorder.DEFAULT_POSITION,
 				new java.awt.Font("Serif", 1, 10)));
@@ -148,13 +175,13 @@ public class AnotationPanel extends javax.swing.JPanel {
 				.createTitledBorder("Header Preview"));
 		headerScrollPane.setViewportView(headerEditorPane);
 		headerEditorPane.setContentType("text/html");
+		
 		headerEditorPane
-				.setText("<html><body>No Gene Association File Selected.<br>"
-						+ "<strong>(<font color=\"red\">RED</font> entries will be used for mapping)</strong></body></html>");
-		headerEditorPane
-				.setText("<html><body>Each node ID will be tested against each GO Symbol and GO Synonym for a match. <br>" +
-						" NOTE: If Transfer checkbox is unchecked, each node ID <strong>must</strong> have defined a Species " +
-						"attribute that matches the GO Taxon </body></html>");
+				.setText("<html><body>" +
+						"Each node ID will be tested against each GO Symbol and GO Synonym for a match. <br><br>"
+						+ " NOTE: If Transfer checkbox is unchecked, each node ID <strong><font color=\"red\">must</font></strong> " +
+						"have defined a Species attribute that matches the GO Taxon ID." +
+						"</body></html>");
 
 		// Layout information
 		org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(
@@ -185,21 +212,11 @@ public class AnotationPanel extends javax.swing.JPanel {
 				javax.swing.border.TitledBorder.DEFAULT_POSITION,
 				new java.awt.Font("Serif", 1, 10)));
 
-		nodeNameList.setModel(new javax.swing.AbstractListModel() {
-			ArrayList list = (ArrayList) getNodeList();
-
-			public int getSize() {
-				return list.size();
-			}
-
-			public Object getElementAt(int i) {
-				return list.get(i);
-			}
-		});
+		nodeNameList.setModel(new NodeListModel(getNodeList()));
 		nodeNameList.setEnabled(true);
 		nodeNameList
 				.setToolTipText("These node names will be used for mapping.");
-		
+
 		jScrollPane3.setViewportView(gaList);
 
 		gaButton.setText("Add");
@@ -245,7 +262,7 @@ public class AnotationPanel extends javax.swing.JPanel {
 																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
 																56,
 																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-														.add(flipCheckBox))));
+														.add(speciesCheckBox))));
 		upperPanelLayout
 				.setVerticalGroup(upperPanelLayout
 						.createParallelGroup(
@@ -266,7 +283,7 @@ public class AnotationPanel extends javax.swing.JPanel {
 																		.addPreferredGap(
 																				org.jdesktop.layout.LayoutStyle.RELATED)
 																		.add(
-																				flipCheckBox))
+																				speciesCheckBox))
 														.add(
 																jScrollPane3,
 																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
@@ -343,6 +360,7 @@ public class AnotationPanel extends javax.swing.JPanel {
 
 		}
 		flipCheckBox.setEnabled(true);
+		speciesCheckBox.setEnabled(true);
 	}
 
 	protected void oboButtonMouseClicked() {
@@ -374,6 +392,13 @@ public class AnotationPanel extends javax.swing.JPanel {
 		}
 	}
 
+	private void speciesCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {
+		if (speciesCheckBox.isSelected() == true) {
+			System.out.println("Sync!");
+			syncSpecies();
+		}
+	}
+
 	private void gaListMouseClicked(java.awt.event.MouseEvent evt) {
 		// TODO add your handling code here:
 		try {
@@ -386,6 +411,88 @@ public class AnotationPanel extends javax.swing.JPanel {
 			e.printStackTrace();
 		}
 
+	}
+
+	private void syncSpecies() {
+
+		if (nodeSpeciesMap == null) {
+			return;
+		} else if (nodeSpeciesMap.size() == 0) {
+			return;
+		}
+
+		
+		
+		
+		ArrayList nodeNames = new ArrayList();
+		Iterator it = Cytoscape.getRootGraph().nodesIterator();
+		
+		
+		
+		
+		String nodeName = null;
+		String entry = null;
+		String speciesName = null;
+		boolean synoFlag = false;
+
+		CyNode node = null;
+		while (it.hasNext()) {
+			node = (CyNode) it.next();
+			nodeName = node.getIdentifier();
+			speciesName = (String) nodeSpeciesMap.get(nodeName);
+			// Search synonym map
+			if (speciesName == null) {
+				String alias = (String) synoMap.get(nodeName);
+				if (alias != null) {
+					speciesName = (String) nodeSpeciesMap.get(alias);
+					if (speciesName != null) {
+						synoFlag = true;
+					}
+
+				}
+			}
+
+			// Check Species
+			if (speciesName == null) {
+				entry = nodeName + " = " + "No species data";
+			} else if (synoFlag == true) {
+				entry = nodeName + " = " + speciesName + " (Mapped by synonym)";
+				nodeAttributes.setAttribute(nodeName, Semantics.SPECIES,
+						speciesName);
+			} else {
+				entry = nodeName + " = " + speciesName;
+				nodeAttributes.setAttribute(nodeName, Semantics.SPECIES,
+						speciesName);
+			}
+			nodeNames.add(entry);
+			synoFlag = false;
+		}
+
+		// Create new node list
+		nodeNameList.setModel(new NodeListModel(nodeNames));
+		nodeNameList.repaint();
+	}
+
+	private HashMap buildSpeciesHash() throws IOException {
+		HashMap speceisHash = new HashMap();
+		Set keys = gaFiles.keySet();
+		Iterator fileIt = keys.iterator();
+		while (fileIt.hasNext()) {
+			String line = null;
+			File annotationFile = (File) fileIt.next();
+			BufferedReader br = new BufferedReader(new FileReader(
+					annotationFile));
+			while ((line = br.readLine()) != null) {
+				if (line.startsWith("!")) {
+					continue;
+				} else {
+
+				}
+			}
+
+		}
+
+		return speceisHash;
 	}
 
 	private void showPreview(String fileName) throws IOException {
@@ -416,6 +523,10 @@ public class AnotationPanel extends javax.swing.JPanel {
 		return header.trim();
 	}
 
+	/*
+	 * Create a preview table for the selected Gene Association File.
+	 * 
+	 */
 	private void buildPreviewTable(BufferedReader br) throws IOException {
 
 		String line;
@@ -424,15 +535,51 @@ public class AnotationPanel extends javax.swing.JPanel {
 		String[] rowString;
 		Vector data = new Vector();
 		Vector cn = new Vector();
+		BufferedReader spListReader = null;
 
-		while ((line = br.readLine()) != null || idx < 50) {
+		try {
+
+			URL taxURL = getClass().getResource(TAXON_RESOURCE_FILE);
+			spListReader = new BufferedReader(new InputStreamReader(taxURL
+					.openStream()));
+
+			System.out.println("Taxonomy table found in jar file...");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		HashMap taxonMap = bdsu.getTaxonMap(spListReader);
+		String[] taxonID = null;
+
+		while ((line = br.readLine()) != null) {
 			rowString = line.split("\t");
 			Vector row = new Vector();
+			String taxonName = null;
 			for (int i = 0; i < rowString.length; i++) {
-				if (i == 2 || i == 10) {
+				if (i == 2) {
 					row.add(rowString[i]);
+				} else if (i == 10) {
+					row.add(rowString[i]);
+
+//					System.out.println("!!!!!!! Making SynoMap = " + row.get(0)
+//							+ " = " + rowString[i]);
+					// This is the Synonym field.
+					String[] syno = rowString[i].split("\\|");
+					for (int j = 0; j < syno.length; j++) {
+						synoMap.put(syno[j].trim(), row.get(0));
+					}
+
+				} else if (i == 12) {
+					// This is a taxon ID.
+					// We need to convert this into species name
+					taxonID = rowString[i].split(":");
+					// System.out.println("!!!!!!! taxon ID = " + taxonID[0] +
+					// ", " + taxonID[1]);
+					taxonName = (String) taxonMap.get(taxonID[1]);
+					row.add(taxonName + " (" + taxonID[1] + ")");
 				}
 			}
+
+			nodeSpeciesMap.put(row.get(0), taxonName);
 			data.add(row);
 			idx++;
 		}
@@ -453,27 +600,30 @@ public class AnotationPanel extends javax.swing.JPanel {
 		Iterator it = nodes.iterator();
 		boolean isSpecies = false;
 		String[] attributeNames = nodeAttributes.getAttributeNames();
-		for(int i=0; i<attributeNames.length; i++) {
-			if(attributeNames[i].equals(Semantics.SPECIES)) {
+		for (int i = 0; i < attributeNames.length; i++) {
+			if (attributeNames[i].equals(Semantics.SPECIES)) {
 				isSpecies = true;
 				break;
 			}
 		}
-		
+
 		String nodeName = null;
 		String entry = null;
 		CyNode node = null;
 		while (it.hasNext()) {
 			node = (CyNode) it.next();
 			nodeName = node.getIdentifier();
-			
+
 			// Check Species
-			if(isSpecies == false) {
+			if (isSpecies == false) {
 				entry = nodeName + " = " + "No Species attr.";
 			} else {
-				entry = nodeName + " = " + nodeAttributes.getStringAttribute(nodeName, Semantics.SPECIES);
+				entry = nodeName
+						+ " = "
+						+ nodeAttributes.getStringAttribute(nodeName,
+								Semantics.SPECIES);
 			}
-			
+
 			nodeNames.add(entry);
 		}
 		return nodeNames;
@@ -492,7 +642,6 @@ public class AnotationPanel extends javax.swing.JPanel {
 			StringTokenizer st = new StringTokenizer(curLine, "|");
 			st.nextToken();
 			name1 = st.nextToken().trim();
-			// name2 = st.nextToken().trim();
 			speciesComboBox.addItem(name1);
 
 		}
@@ -547,9 +696,29 @@ public class AnotationPanel extends javax.swing.JPanel {
 	private javax.swing.JTextField oboTextField;
 	private javax.swing.JScrollPane previewScrollPane;
 
+	private javax.swing.JCheckBox speciesCheckBox;
+
 	private DefaultListModel gaListModel;
 	private DefaultTableModel previewTableModel;
 	// End of variables declaration
+
+	// Inner class
+	class NodeListModel extends javax.swing.AbstractListModel {
+
+		List list;
+
+		NodeListModel(List list) {
+			this.list = list;
+		}
+
+		public int getSize() {
+			return list.size();
+		}
+
+		public Object getElementAt(int i) {
+			return list.get(i);
+		}
+	}
 }
 
 /*
