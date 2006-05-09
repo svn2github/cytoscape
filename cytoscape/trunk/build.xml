@@ -206,6 +206,8 @@
                includeAntRuntime="false" 
 	       deprecation="yes"
 	       >
+	       <!--
+	       -->
             <classpath refid="classpath"/>
             <include name="cytoscape/**"/>
         </javac>
