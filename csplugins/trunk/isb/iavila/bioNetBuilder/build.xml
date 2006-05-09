@@ -2,7 +2,6 @@
     <description>
     This build.xml file compiles and creates jars for the BioNetBuilder plugin
     </description>
-	<taskdef resource="genjar.properties" classpath="/Developer/Java/Ant/lib/GenJar.jar"/>
     <!-- Set the global properties for this build -->
 	<property name = "basedir" value = "."/>
 	<property name = "plugin.name" value = "BioNetBuilderPlugin"/>
