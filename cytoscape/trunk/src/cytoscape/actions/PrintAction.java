@@ -44,15 +44,19 @@
 
 package cytoscape.actions;
 
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.PrintJob;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 
-import java.awt.print.PageFormat;
 import java.awt.print.PrinterJob;
 
 import cytoscape.giny.*;
 
 import cytoscape.Cytoscape;
+import cytoscape.ding.DingNetworkView;
 import cytoscape.view.CyNetworkView;
 import cytoscape.util.*;
 import cytoscape.util.CytoscapeAction;
@@ -68,10 +72,11 @@ public class PrintAction extends CytoscapeAction  {
     }
 
     public void actionPerformed(ActionEvent e) {
-
-// 	    Phoeb*NetworkView phoebeView = ( Phoeb*NetworkView )Cytoscape.getCurrentNetworkView();
-// 	    phoebeView.getCanvas().getLayer().print();
-     	
+      PrinterJob printJob = PrinterJob.getPrinterJob();
+      printJob.setPrintable((DingNetworkView) Cytoscape.getCurrentNetworkView());
+      if (printJob.printDialog()) {
+        try { printJob.print(); }
+        catch (Exception exc) { exc.printStackTrace(); } }
     } // actionPerformed
 }
 
