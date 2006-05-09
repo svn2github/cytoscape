@@ -115,7 +115,7 @@ public class CyMain implements CyInitParams {
 	                                .withDescription( "Load a cytoscape session (.cys) file.")
 	                                .withValueSeparator(' ')
 	                                .withArgName("file")
-	                                .hasArg()
+	                                .hasArg() // only allow one session!!!
 					.create("s"));
 
 		options.addOption(OptionBuilder
@@ -123,7 +123,7 @@ public class CyMain implements CyInitParams {
 	                                .withDescription( "Load a network file (any format).")
 	                                .withValueSeparator(' ')
 	                                .withArgName("file")
-	                                .hasArg()
+	                                .hasArgs()
 					.create("N"));
 
 		options.addOption(OptionBuilder
@@ -131,21 +131,21 @@ public class CyMain implements CyInitParams {
 	                                .withDescription( "Load an edge attributes file (edge attribute format).")
 	                                .withValueSeparator(' ')
 	                                .withArgName("file")
-	                                .hasArg()
+	                                .hasArgs()
 					.create("e"));
 		options.addOption(OptionBuilder
 	                                .withLongOpt("node-attrs")
 	                                .withDescription( "Load a node attributes file (node attribute format).")
 	                                .withValueSeparator(' ')
 	                                .withArgName("file")
-	                                .hasArg()
+	                                .hasArgs()
 					.create("n"));
 		options.addOption(OptionBuilder
 	                                .withLongOpt("matrix")
 	                                .withDescription( "Load a node attribute matrix file (table).")
 	                                .withValueSeparator(' ')
 	                                .withArgName("file")
-	                                .hasArg()
+	                                .hasArgs()
 					.create("m"));
 
 
@@ -154,7 +154,7 @@ public class CyMain implements CyInitParams {
 	                                .withDescription( "Load a plugin jar file, directory of jar files, plugin class name, or plugin jar URL.")
 	                                .withValueSeparator(' ')
 	                                .withArgName("file")
-	                                .hasArg()
+	                                .hasArgs()
 					.create("p"));
 
 		options.addOption(OptionBuilder
@@ -162,14 +162,14 @@ public class CyMain implements CyInitParams {
 	                                .withDescription( "Load cytoscape properties file (Java properties format) or individual property: -P name=value.")
 	                                .withValueSeparator(' ')
 	                                .withArgName("file")
-	                                .hasArg()
+	                                .hasArgs()
 					.create("P"));
 		options.addOption(OptionBuilder
 	                                .withLongOpt("vizmap")
 	                                .withDescription( "Load vizmap properties file (Java properties format).")
 	                                .withValueSeparator(' ')
 	                                .withArgName("file")
-	                                .hasArg()
+	                                .hasArgs()
 					.create("V"));
 
 		// try to parse the cmd line
