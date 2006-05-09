@@ -203,8 +203,7 @@ public class CytoscapeSessionWriter {
 	}
 
 	/**
-	 * Write currnt session to a cys file.
-	 * 
+	 * Write current session to a cys file.
 	 */
 	public void write() {
 
@@ -244,7 +243,7 @@ public class CytoscapeSessionWriter {
 			}
 		}
 
-		// 
+		//
 		// Next, create CySession file to save states.
 		//
 		try {
