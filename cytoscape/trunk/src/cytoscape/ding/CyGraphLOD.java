@@ -247,7 +247,8 @@ public class CyGraphLOD extends GraphLOD implements PropertyChangeListener
   public boolean dashedEdges(final int renderNodeCount,
                              final int renderEdgeCount)
   {
-    return renderDashedEdges;
+//     return renderDashedEdges;
+    return true;
   }
 
   /**
