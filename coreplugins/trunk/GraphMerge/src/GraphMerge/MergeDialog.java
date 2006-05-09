@@ -279,8 +279,7 @@ class MergeDialog extends JDialog {
 
 		JScrollPane leftPane = new JScrollPane(unselectedNetworkList);
 		leftPane.setBorder(new TitledBorder("Available Networks"));
-		leftPane.setMinimumSize(new Dimension(LIST_WIDTH, 100));
-		leftPane.setMaximumSize(new Dimension(LIST_WIDTH, 100));
+		leftPane.setPreferredSize(new Dimension(LIST_WIDTH, 100));
 		centerPanel.add(leftPane);
 		JPanel lrButtonPanel = new JPanel();
 		lrButtonPanel.setLayout(new BoxLayout(lrButtonPanel, BoxLayout.Y_AXIS));
@@ -289,8 +288,7 @@ class MergeDialog extends JDialog {
 		centerPanel.add(lrButtonPanel);
 		JScrollPane rightPane = new JScrollPane(networkList);
 		rightPane.setBorder(new TitledBorder("Selected Networks"));
-		rightPane.setMinimumSize(new Dimension(LIST_WIDTH, 100));
-		rightPane.setMaximumSize(new Dimension(LIST_WIDTH, 100));
+		rightPane.setPreferredSize(new Dimension(LIST_WIDTH, 100));
 		centerPanel.add(rightPane);
 		JPanel udButtonPanel = new JPanel();
 		udButtonPanel.setLayout(new BoxLayout(udButtonPanel, BoxLayout.Y_AXIS));
@@ -325,7 +323,7 @@ class MergeDialog extends JDialog {
 		southPanel.add(ok);
 		getContentPane().add(southPanel, BorderLayout.SOUTH);
 		setSize(new Dimension(2 * LIST_WIDTH + DIALOG_SPACE, 180));
-		setResizable(false);
+		setResizable(true);
 		// this.pack();
 	}
 	public String getOperation() {
