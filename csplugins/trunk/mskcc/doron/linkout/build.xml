@@ -20,8 +20,8 @@
     <property name="nowarn" value="false"/>
     <property name="fork" value="false"/>
     <property name="linkout.root.dir" value="."/>
-    <property name="linkout.lib.dir" value="${linkout.root.dir}/lib"/>
-    <property name="cytoscape.lib.dir" value="${linkout.root.dir}/lib"/>
+    <property name="linkout.lib.dir" value="${linkout.root.dir}/../../../../cytoscape/lib"/>
+    <property name="cytoscape.lib.dir" value="${linkout.root.dir}/../../../../cytoscape"/>
     <!--property name="cytoscape.plugin.dir" value="${linkout.root.dir}/../../../../cytoscape/plugins"/-->
     <path id="project.class.path">
       <pathelement path="${java.class.path}/"/>

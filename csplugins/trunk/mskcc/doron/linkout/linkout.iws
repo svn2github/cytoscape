@@ -153,7 +153,7 @@
       <file leaf-file-name="LinkOut.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/LinkOut.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="271" column="23" selection-start="9187" selection-end="9187" vertical-scroll-proportion="0.30769232">
+            <state line="303" column="23" selection-start="10142" selection-end="10142" vertical-scroll-proportion="5.517451">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -164,7 +164,7 @@
       <file leaf-file-name="LinkOutPlugin.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/LinkOutPlugin.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="48" column="0" selection-start="1252" selection-end="1252" vertical-scroll-proportion="0.7912088">
+            <state line="74" column="8" selection-start="1991" selection-end="1991" vertical-scroll-proportion="0.8376328">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -204,7 +204,7 @@
   </component>
   <component name="ModuleEditorState">
     <option name="LAST_EDITED_MODULE_NAME" value="linkout" />
-    <option name="LAST_EDITED_TAB_NAME" value="Libraries (Classpath)" />
+    <option name="LAST_EDITED_TAB_NAME" value="Paths" />
   </component>
   <component name="NamedScopeManager" />
   <component name="PackagesPane">
@@ -292,38 +292,6 @@
         <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
       </PATH_ELEMENT>
     </PATH>
-    <PATH>
-      <PATH_ELEMENT>
-        <option name="myItemId" value="linkout.ipr" />
-        <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-      </PATH_ELEMENT>
-      <PATH_ELEMENT>
-        <option name="myItemId" value="linkout" />
-        <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
-      </PATH_ELEMENT>
-      <PATH_ELEMENT>
-        <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$" />
-        <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-      </PATH_ELEMENT>
-    </PATH>
-    <PATH>
-      <PATH_ELEMENT>
-        <option name="myItemId" value="linkout.ipr" />
-        <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-      </PATH_ELEMENT>
-      <PATH_ELEMENT>
-        <option name="myItemId" value="linkout" />
-        <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
-      </PATH_ELEMENT>
-      <PATH_ELEMENT>
-        <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$" />
-        <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-      </PATH_ELEMENT>
-      <PATH_ELEMENT>
-        <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/src" />
-        <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-      </PATH_ELEMENT>
-    </PATH>
   </component>
   <component name="ProjectReloadState">
     <option name="STATE" value="0" />
@@ -360,6 +328,22 @@
   <component name="RestoreUpdateTree" />
   <component name="RunManager">
     <activeType name="Application" />
+    <configuration selected="false" default="true" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <module name="" />
+    </configuration>
+    <configuration selected="false" default="true" type="Remote" factoryName="Remote">
+      <option name="USE_SOCKET_TRANSPORT" value="true" />
+      <option name="SERVER_MODE" value="false" />
+      <option name="SHMEM_ADDRESS" value="javadebug" />
+      <option name="HOST" value="localhost" />
+      <option name="PORT" value="5005" />
+    </configuration>
     <configuration selected="false" default="true" type="#com.intellij.j2meplugin.run.J2MEConfigurationType" factoryName="J2ME">
       <module name="" />
       <USER_OPTIONS />
@@ -377,14 +361,22 @@
       <option name="TO_START" />
       <option name="SELECTION" value="0" />
     </configuration>
-    <configuration selected="false" default="true" type="Application" factoryName="Application">
+    <configuration selected="false" default="true" type="Applet" factoryName="Applet">
+      <module name="" />
       <option name="MAIN_CLASS_NAME" />
+      <option name="HTML_FILE_NAME" />
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <option name="VM_PARAMETERS" />
-      <option name="PROGRAM_PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
+    </configuration>
+    <configuration selected="false" default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
       <module name="" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
     </configuration>
     <configuration selected="false" default="true" type="JUnit" factoryName="JUnit">
       <module name="" />
@@ -401,30 +393,6 @@
       <option name="TEST_SEARCH_SCOPE">
         <value defaultName="wholeProject" />
       </option>
-    </configuration>
-    <configuration selected="false" default="true" type="Applet" factoryName="Applet">
-      <module name="" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="HTML_FILE_NAME" />
-      <option name="HTML_USED" value="false" />
-      <option name="WIDTH" value="400" />
-      <option name="HEIGHT" value="300" />
-      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
-      <option name="VM_PARAMETERS" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-    </configuration>
-    <configuration selected="false" default="true" type="Remote" factoryName="Remote">
-      <option name="USE_SOCKET_TRANSPORT" value="true" />
-      <option name="SERVER_MODE" value="false" />
-      <option name="SHMEM_ADDRESS" value="javadebug" />
-      <option name="HOST" value="localhost" />
-      <option name="PORT" value="5005" />
-    </configuration>
-    <configuration selected="false" default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
-      <module name="" />
-      <option name="VM_PARAMETERS" />
-      <option name="PROGRAM_PARAMETERS" />
     </configuration>
     <configuration selected="true" default="false" name="Linkout-test" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="csplugins.mskcc.doron.linkout.LinkOutTester" />
@@ -488,15 +456,15 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="359" y="57" width="1063" height="890" extended-state="0" />
+    <frame x="475" y="78" width="1003" height="821" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="CVS" active="false" anchor="bottom" auto_hide="false" internal_type="docked" type="docked" visible="false" weight="0.33" order="8" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="docked" type="docked" visible="false" weight="0.32889965" order="7" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="docked" type="docked" visible="false" weight="0.25812808" order="0" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="docked" type="docked" visible="false" weight="0.25759163" order="0" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="docked" type="docked" visible="false" weight="0.32786885" order="1" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="docked" type="docked" visible="false" weight="0.24953096" order="1" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="docked" type="docked" visible="false" weight="0.32660782" order="8" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="docked" type="docked" visible="false" weight="0.32596686" order="8" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="docked" type="docked" visible="false" weight="0.4" order="6" />
       <window_info id="Module Dependencies" active="false" anchor="right" auto_hide="false" internal_type="docked" type="docked" visible="false" weight="0.33" order="3" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="docked" type="docked" visible="false" weight="0.33" order="8" />
@@ -669,7 +637,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/LinkOut.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="271" column="23" selection-start="9187" selection-end="9187" vertical-scroll-proportion="0.30769232">
+        <state line="303" column="23" selection-start="10142" selection-end="10142" vertical-scroll-proportion="5.517451">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -678,7 +646,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/LinkOutPlugin.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="48" column="0" selection-start="1252" selection-end="1252" vertical-scroll-proportion="0.7912088">
+        <state line="74" column="8" selection-start="1991" selection-end="1991" vertical-scroll-proportion="0.8376328">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

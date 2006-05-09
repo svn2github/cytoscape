@@ -1,14 +1,21 @@
-/*$Id*/
+/*$Id$*/
 package csplugins.mskcc.doron;
 
 import cytoscape.*;
 import cytoscape.view.*;
 import cytoscape.plugin.*;
+import ding.view.*;
+
+import javax.swing.*;
+import java.awt.event.*;
+import java.io.*;
+import java.awt.*;
 import java.beans.*;
 
 /**
  * Linkout plugin for customized url links
- **/
+ * this is the old implementation of the plugin using previous node context menu
+ **
 public class LinkOutPlugin
   extends 
     CytoscapePlugin 
@@ -20,9 +27,9 @@ public class LinkOutPlugin
     System.out.println("Initialized LinkOutPlugin");
   }
 
-  /*TODO - This implementation does not work with the cytoscape-2.3
-  *see 'TooltipsAndContextMenusForRender' RFC for future implementation
-  **/
+  //Note - This implementation does not work with the cytoscape-2.3
+  //see 'TooltipsAndContextMenusForRender' on Cytoscape wiki for future implementation
+  //
   public void propertyChange ( PropertyChangeEvent e ) {
 
     if ( e.getPropertyName() ==  CytoscapeDesktop.NETWORK_VIEW_CREATED ) {
@@ -44,8 +51,41 @@ public class LinkOutPlugin
 
 }
 
+*************************/
+
+/**
+ * LinkOut plugin for customized URL links
+ * **/
+public class LinkOutPlugin
+        extends CytoscapePlugin
+        implements NodeContextMenuListener {
+
+    public LinkOutPlugin () {
+        try{
+        ((DGraphView)Cytoscape.getCurrentNetworkView()).addNodeContextMenuListener(this);
+
+        }
+        catch (ClassCastException e){
+            System.out.println(e.getMessage());
+            return;
+        }
+    }
+
+    public void addNodeContextMenuItems (Point pt, Object nodeView, JPopupMenu menu){
+        
+        LinkOut lo= new LinkOut();
+        if(menu==null){
+            menu=new JPopupMenu();
+        }
+        menu.add(lo.AddLinks(nodeView));
+    }
+}
+
 /*
 $Log$
+Revision 1.2  2006/05/09 22:32:47  betel
+New implementation of LinkOutPlugin with new context menu interface and addition of linkout.props
+
 Revision 1.1  2006/05/08 17:15:22  betel
 Initial deposit of linkout source code
 

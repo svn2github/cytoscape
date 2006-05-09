@@ -10,6 +10,7 @@ import java.util.*;
 import giny.model.*;
 import giny.view.*;
 import phoebe.*;
+import ding.view.*;
 import edu.umd.cs.piccolo.*;
 import edu.umd.cs.piccolo.activities.*;
 import javax.swing.*;
@@ -47,7 +48,7 @@ public class LinkOut {
 
     //null constractor
     public LinkOut(){
-        System.out.println("LinkOut Initialized");
+
     }
 
     /**
@@ -56,15 +57,13 @@ public class LinkOut {
     * @param PNode object
     * @return none
     */
-    public static JMenuItem AddLinks(Object[] args, PNode node){
-
-
-
+//    public static JMenuItem AddLinks(Object[] args, PNode node){
+    public static JMenuItem AddLinks(Object node){
 
         /*CyPropertiesReader propReader = new CyPropertiesReader("linkout.props");
         propReader.readProperties(propReader.getPropertiesLocation());
         Properties prop=propReader.getProperties();*/
-
+        System.out.println("Called AddLinks");
         ReadProperties(propertiesLocation);
 
         JMenu top_menu=new JMenu("LinkOut");
@@ -86,9 +85,12 @@ public class LinkOut {
 
                 //add Node label to the URL
                 String nodelabel;
-                final PNode mynode=node;
-                if (mynode instanceof PNodeView){
-                    nodelabel=( (PNodeView)mynode).getLabel().getText();
+
+                //final PNode mynode=node;
+                final DNodeView mynode=(DNodeView)node;
+
+                if (mynode instanceof DNodeView){
+                    nodelabel=( (DNodeView)mynode).getLabel().getText();
                 }
 
                 else { //TODO find alternate name
@@ -124,6 +126,8 @@ public class LinkOut {
             top_menu.add(new JMenuItem(url));
             System.err.println("NullPointerException: " + e.getMessage());
         }
+
+
         return top_menu;
     }
 
@@ -297,7 +301,7 @@ public class LinkOut {
         if (!propsFound){
             System.out.println("Couldn't find linkout.props file in "+System.getProperty ("user.dir") +
                     ", "+  System.getProperty ("CYTOSCAPE_HOME") +
-                    ", .cytoscape");
+                    "or ~/.cytoscape");
         }
 
     }
@@ -307,6 +311,9 @@ public class LinkOut {
 
 /*
 $Log$
+Revision 1.2  2006/05/09 22:32:47  betel
+New implementation of LinkOutPlugin with new context menu interface and addition of linkout.props
+
 Revision 1.1  2006/05/08 17:15:22  betel
 Initial deposit of linkout source code
 
