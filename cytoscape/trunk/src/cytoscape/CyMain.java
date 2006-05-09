@@ -107,7 +107,8 @@ public class CyMain implements CyInitParams {
 		// create the options
 		options.addOption("h", "help", false, "Print this message.");
 		options.addOption("v", "version", false, "Print the version number.");
-		options.addOption("H", "headless", false, "Run in headless (no gui) mode.");
+// commented out until we actually support doing anything in headless mode
+//		options.addOption("H", "headless", false, "Run in headless (no gui) mode.");
 
 		options.addOption(OptionBuilder
 	                                .withLongOpt("session")
@@ -259,7 +260,7 @@ public class CyMain implements CyInitParams {
 
 	protected void printHelp() {
 		HelpFormatter formatter = new HelpFormatter();
-		formatter.printHelp("java -Xmx256M -jar cytoscape.jar [OPTIONS]", options);
+		formatter.printHelp("java -Xmx512M -jar cytoscape.jar [OPTIONS]", options);
 	}
 
 
