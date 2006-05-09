@@ -598,6 +598,8 @@
               todir="${release.dir}/sampleData"/>
         <copy file="testData/galFiltered.sif"
               todir="${release.dir}/sampleData"/>
+        <copy file="testData/galFiltered.cys"
+              todir="${release.dir}/sampleData"/>
         <copy file="testData/yeastHighQuality.sif"
               todir="${release.dir}/sampleData"/>
         <copy file="testData/galFiltered.edgeAttrs1" 
