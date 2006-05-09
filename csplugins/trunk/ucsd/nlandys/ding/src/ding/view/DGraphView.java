@@ -22,17 +22,20 @@ import giny.view.GraphViewChangeListener;
 import giny.view.NodeView;
 import java.awt.Component;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Paint;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
+import java.awt.print.PageFormat;
+import java.awt.print.Printable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-public class DGraphView implements GraphView
+public class DGraphView implements GraphView, Printable
 {
 
   final Object m_lock = new Object();
@@ -1066,6 +1069,18 @@ public class DGraphView implements GraphView
   public void removeViewportChangeListener(ViewportChangeListener l)
   {
     m_vLis[0] = ViewportChangeListenerChain.remove(m_vLis[0], l);
+  }
+
+  public int print(Graphics g, PageFormat pageFormat, int page)
+  {
+    if (page == 0) {
+      ((Graphics2D) g).translate(pageFormat.getImageableX(),
+                                 pageFormat.getImageableY());
+      g.clipRect(0, 0, getComponent().getWidth(), getComponent().getHeight());
+      getComponent().print(g);
+      return PAGE_EXISTS; }
+    else {
+      return NO_SUCH_PAGE; }
   }
 
 }
