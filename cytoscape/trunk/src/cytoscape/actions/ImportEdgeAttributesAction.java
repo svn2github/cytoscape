@@ -41,15 +41,15 @@
 // $Author$
 package cytoscape.actions;
 
+import java.awt.event.ActionEvent;
+import java.io.File;
+
 import cytoscape.Cytoscape;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.FileUtil;
-
-import java.awt.event.ActionEvent;
-import java.io.File;
 
 /* 
  * Added by T. Ideker April 16, 2003
@@ -77,14 +77,14 @@ public class ImportEdgeAttributesAction extends CytoscapeAction {
         CyFileFilter nf = new CyFileFilter();
 
         // get the file name
-        File file = FileUtil.getFile("Load Edge Attributes",
+        File[] files = FileUtil.getFiles("Load Edge Attributes",
                     FileUtil.LOAD, new CyFileFilter[]{nf});
 
-        if (file != null) {
+        if (files != null) {
 
             //  Create Load Attributes Task
             ImportAttributesTask task = new ImportAttributesTask
-                    (file,
+                    (files,
                     ImportAttributesTask.EDGE_ATTRIBUTES);
 
             //  Configure JTask Dialog Pop-Up Box

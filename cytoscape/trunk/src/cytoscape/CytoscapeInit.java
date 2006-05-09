@@ -195,7 +195,7 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 		}
 
 		// load any specified data attribute files
-		try { 
+		try {
 			Cytoscape.loadAttributes(
 					(String[])initParams.getNodeAttributeFiles().toArray(new String[] {}),
 					(String[])initParams.getEdgeAttributeFiles().toArray(new String[] {}),
@@ -206,6 +206,7 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 			ex.printStackTrace();
 			System.out.println("failure loading specified attributes");
 		}
+
 
 		Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
 
@@ -457,7 +458,7 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 				String plugin = pargs[i];
 				URL url;
 				try {
-					if (plugin.matches(FileUtil.urlPattern())) {
+					if (plugin.matches(FileUtil.urlPattern)) {
 						url = jarURL(plugin);
 					} else {
 						File pf = new File(plugin);
@@ -497,7 +498,7 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 			if ( plugin.endsWith(".jar") ) {
 
 				// If the name doesn't match a url, turn it into one. 
-				if ( !plugin.matches( FileUtil.urlPattern() ) ) {
+				if ( !plugin.matches( FileUtil.urlPattern ) ) {
 					pluginURLs.add( jarURL(f.getAbsolutePath()) );
 				} else { 
 					pluginURLs.add( jarURL(plugin) );
@@ -533,7 +534,7 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 				for (int j=0; j < allLines.length; j++) {
 					String pluginLoc = allLines[j];
 					if ( pluginLoc.endsWith( ".jar" ) ) {
-						if ( pluginLoc.matches( FileUtil.urlPattern() ) ) 
+						if ( pluginLoc.matches( FileUtil.urlPattern ) ) 
 							pluginURLs.add( pluginLoc );
 						else
 							System.err.println( "Plugin location specified in " + plugin + " is not a valid url: " + pluginLoc  + " -- NOT adding it.");
@@ -817,7 +818,7 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 		URL url = null;
 		try {
 			String uString;
-			if ( urlString.matches( FileUtil.urlPattern() ) )
+			if ( urlString.matches( FileUtil.urlPattern ) )
 				uString = "jar:" + urlString + "!/";	
 			else 
 				uString = "jar:file:" + urlString + "!/";	
@@ -836,7 +837,7 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 		try { 
 			String sessionName = "";
 			if ( sessionFile != null ) {
-				if ( sessionFile.matches( FileUtil.urlPattern() ) ) {
+				if ( sessionFile.matches( FileUtil.urlPattern ) ) {
 					URL u = new URL(sessionFile);
 					reader = new CytoscapeSessionReader(u);
 					sessionName = u.getFile();

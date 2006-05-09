@@ -81,14 +81,13 @@ public class ImportNodeAttributesAction extends CytoscapeAction {
         CyFileFilter nf = new CyFileFilter();
 
         // get the file name
-        File file = FileUtil.getFile("Import Node Attributes",
+        File[] files = FileUtil.getFiles("Import Node Attributes",
                     FileUtil.LOAD, new CyFileFilter[]{nf});
 
-        if (file != null) {
-
+        if (files != null) {
             //  Create Load Attributes Task
             ImportAttributesTask task = 
-            	new ImportAttributesTask (file, ImportAttributesTask.NODE_ATTRIBUTES);
+            	new ImportAttributesTask (files, ImportAttributesTask.NODE_ATTRIBUTES);
 
             //  Configure JTask Dialog Pop-Up Box
             JTaskConfig jTaskConfig = new JTaskConfig();
@@ -109,7 +108,7 @@ public class ImportNodeAttributesAction extends CytoscapeAction {
  */
 class ImportAttributesTask implements Task {
     private TaskMonitor taskMonitor;
-    private File file;
+    private File[] files;
     private int type;
     static final int NODE_ATTRIBUTES = 0;
     static final int EDGE_ATTRIBUTES = 1;
@@ -119,8 +118,8 @@ class ImportAttributesTask implements Task {
      * @param file File Object.
      * @param type NODE_ATTRIBUTES or EDGE_ATTRIBUTES
      */
-    ImportAttributesTask (File file, int type) {
-        this.file = file;
+    ImportAttributesTask (File[] files, int type) {
+        this.files = files;
         this.type = type;
     }
 
@@ -134,7 +133,7 @@ class ImportAttributesTask implements Task {
             //  Get Defaults.
             BioDataServer bioDataServer = Cytoscape.getBioDataServer();
             String speciesName = CytoscapeInit.getProperties().getProperty("defaultSpeciesName");
-            boolean canonicalize = !CytoscapeInit.noCanonicalization();
+            boolean canonicalize = ! Boolean.getBoolean(CytoscapeInit.getProperties().getProperty("canonicalizeNames"));
 
             //  Read in Data
             
@@ -143,24 +142,27 @@ class ImportAttributesTask implements Task {
             // so we need to find a different way of monitoring this task:
             // attributes.setTaskMonitor(taskMonitor);
           
-            if ( type == NODE_ATTRIBUTES ) 
-                Cytoscape.loadAttributes( new String[] { file.getAbsolutePath() },
-                                          new String[] {},
-                                          canonicalize,
-                                          bioDataServer,
-                                          speciesName );
-            else if ( type == EDGE_ATTRIBUTES ) 
-                Cytoscape.loadAttributes( new String[] {},
-	                                      new String[] { file.getAbsolutePath() },
-                                          canonicalize,
-                                          bioDataServer,
-                                          speciesName );
-            else
-                throw new Exception("Unknown attribute type: " + Integer.toString(type) );
+            for (int i=0; i<files.length; ++i) {
+	            taskMonitor.setPercentCompleted(100*i/files.length);
+	            if ( type == NODE_ATTRIBUTES ) 
+	                Cytoscape.loadAttributes( new String[] { files[i].getAbsolutePath() },
+	                                          new String[] {},
+	                                          canonicalize,
+	                                          bioDataServer,
+	                                          speciesName );
+	            else if ( type == EDGE_ATTRIBUTES ) 
+	                Cytoscape.loadAttributes( new String[] {},
+		                                      new String[] { files[i].getAbsolutePath() },
+	                                          canonicalize,
+	                                          bioDataServer,
+	                                          speciesName );
+	            else
+	                throw new Exception("Unknown attribute type: " + Integer.toString(type) );
+	        }
 
             //  Inform others via property change event.
-            Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null );
             taskMonitor.setPercentCompleted(100);
+            Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null );
             taskMonitor.setStatus("Done");
         } catch (Exception e) {
             taskMonitor.setException(e, e.getMessage());

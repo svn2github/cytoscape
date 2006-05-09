@@ -63,6 +63,12 @@ public abstract class FileUtil {
   public static int LOAD = FileDialog.LOAD;
   public static int SAVE = FileDialog.SAVE;
   public static int CUSTOM = LOAD + SAVE;
+  
+  /**
+   * A string that defines a simplified java regular expression for a URL.
+   * This may need to be updated to be more precise.
+   */
+  public static final String urlPattern = "^(jar\\:)?(\\w+\\:\\/+\\S+)(\\!\\/\\S*)?$";
 
 
   /**
@@ -122,6 +128,89 @@ public abstract class FileUtil {
                                 CyFileFilter[] filters,
                                 String start_dir,
                                 String custom_approve_text ) {
+    File[] result = getFiles(title,
+    		load_save_custom,
+    		filters,
+    		start_dir,
+    		custom_approve_text,
+    		false);
+    
+    return (result.length <= 0) ? null : result[0];
+  }
+
+  /**
+   * Returns an array of File objects, this method should be used instead
+   * of rolling your own JFileChooser.
+   *
+   * @return the location of the selcted file
+   * @param title the title of the dialog box
+   * @param load_save_custom a flag for the type of file dialog
+   * @param filters an array of CyFileFilters that let you filter
+   *                based on extension
+   */
+  public static File[] getFiles ( String title, 
+          int load_save_custom,
+        CyFileFilter[] filters ) {
+	   return getFiles( title,
+	            load_save_custom,
+	            filters,
+	            null,
+	            null,
+	            true);	  
+  }
+
+  /**
+   * Returns a list of File objects, this method should be used instead
+   * of rolling your own JFileChooser.
+   *
+   * @return and array of selected files, or null if none are selected
+   * @param title the title of the dialog box
+   * @param load_save_custom a flag for the type of file dialog
+   * @param filters an array of CyFileFilters that let you filter
+   *                based on extension
+   * @param start_dir an alternate start dir, if null the default
+   *                  cytoscape MUD will be used
+   * @param custom_approve_text if this is a custom dialog, then
+   *                            custom text should be on the approve
+   *                            button.
+   */
+  public static File[] getFiles ( String title, 
+                                int load_save_custom,
+                                CyFileFilter[] filters,
+                                String start_dir,
+                                String custom_approve_text) {
+	  return getFiles (title, 
+              load_save_custom,
+              filters,
+              start_dir,
+              custom_approve_text,
+              true);
+  }
+  
+ /**
+   * Returns a list of File objects, this method should be used instead
+   * of rolling your own JFileChooser.
+   *
+   * @return and array of selected files, or null if none are selected
+   * @param title the title of the dialog box
+   * @param load_save_custom a flag for the type of file dialog
+   * @param filters an array of CyFileFilters that let you filter
+   *                based on extension
+   * @param start_dir an alternate start dir, if null the default
+   *                  cytoscape MUD will be used
+   * @param custom_approve_text if this is a custom dialog, then
+   *                            custom text should be on the approve
+   *                            button.
+   * @param multiselect Enable selection of multiple files (Macs are
+   *                    still limited to a single file because we use
+   *                    FileDialog there -- is this fixed in Java 1.5?)
+   */
+  public static File[] getFiles ( String title, 
+                                int load_save_custom,
+                                CyFileFilter[] filters,
+                                String start_dir,
+                                String custom_approve_text,
+                                boolean multiselect) {
 
     File start = null;
     if ( start_dir == null ) {
@@ -152,10 +241,11 @@ public abstract class FileUtil {
       fileFilter.setDescription("All network files");
       chooser.setFilenameFilter( fileFilter );
 
-      chooser.show();
+      chooser.setVisible(true);
       
       if ( chooser.getFile() != null ) {
-        File result = new File(chooser.getDirectory()+"/"+ chooser.getFile() );
+        File[] result = new File[1];
+        result[0] = new File(chooser.getDirectory()+"/"+ chooser.getFile() );
         if (chooser.getDirectory() != null) {
             CytoscapeInit.setMRUD( new File( chooser.getDirectory() ) );
         }
@@ -166,6 +256,9 @@ public abstract class FileUtil {
     } else {
       // this is not a mac, use the Swing based file dialog
       JFileChooser chooser = new JFileChooser( start );
+      
+      // set multiple selection, if applicable
+      chooser.setMultiSelectionEnabled(multiselect);
         
       // set the dialog title
       chooser.setDialogTitle( title );
@@ -175,19 +268,36 @@ public abstract class FileUtil {
         chooser.addChoosableFileFilter( filters[i] );
       }
 
-      File result = null;
+      File[] result = null;
+      File   tmp    = null;
+      
       // set the dialog type
       if ( load_save_custom == LOAD ) {
-        if ( chooser.showOpenDialog( Cytoscape.getDesktop() ) == chooser.APPROVE_OPTION ) {
-          result = chooser.getSelectedFile();
+        if ( chooser.showOpenDialog( Cytoscape.getDesktop() ) == JFileChooser.APPROVE_OPTION ) {
+          if (multiselect)
+             result = chooser.getSelectedFiles();
+          else if ((tmp = chooser.getSelectedFile()) != null) {
+        	  result = new File[1];
+        	  result[0] = tmp;
+          }
         }
       } else if ( load_save_custom == SAVE ) {
-        if ( chooser.showSaveDialog( Cytoscape.getDesktop() ) == chooser.APPROVE_OPTION ) {
-          result = chooser.getSelectedFile();
+        if ( chooser.showSaveDialog( Cytoscape.getDesktop() ) == JFileChooser.APPROVE_OPTION ) {
+            if (multiselect)
+                result = chooser.getSelectedFiles();
+             else if ((tmp = chooser.getSelectedFile()) != null) {
+           	  result = new File[1];
+           	  result[0] = tmp;
+             }
         }
       } else {
-        if ( chooser.showDialog( Cytoscape.getDesktop(), custom_approve_text ) == chooser.APPROVE_OPTION ) {
-          result = chooser.getSelectedFile();
+        if ( chooser.showDialog( Cytoscape.getDesktop(), custom_approve_text ) == JFileChooser.APPROVE_OPTION ) {
+            if (multiselect)
+                result = chooser.getSelectedFiles();
+             else if ((tmp = chooser.getSelectedFile()) != null) {
+           	  result = new File[1];
+           	  result[0] = tmp;
+             }
         }
       }
 
@@ -202,7 +312,7 @@ public abstract class FileUtil {
   public static InputStream getInputStream(String name) {
   	InputStream in = null;
 	try {
-		if ( name.matches( urlPattern() ) ) { 
+		if ( name.matches( urlPattern ) ) { 
 			URL u = new URL(name);
 			in = u.openStream();
 		} else
@@ -228,16 +338,6 @@ public abstract class FileUtil {
 	}
 	System.out.println("couldn't create string from '" + filename + "'");
 	return null;
-  }
-
-  /**
-
-  /**
-   * Returns a string that defines a simplified java regular expression for a URL.
-   * This may need to be updated to be more precise.
-   */
-  public static String urlPattern() {
-	return "^(jar\\:)?(\\w+\\:\\/+\\S+)(\\!\\/\\S*)?$";
   }
 
 }
