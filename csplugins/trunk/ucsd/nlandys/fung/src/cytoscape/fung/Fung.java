@@ -27,6 +27,7 @@ public final class Fung
   final ObjArray m_edgeViewStorage = new ObjArray();
 
   private TopologyChangeListener m_topLis = null;
+  private ViewportChangeListener m_viewLis = null;
   final NodeViewDefaults m_nodeDefaults;
   final EdgeViewDefaults m_directedEdgeDefaults;
   final EdgeViewDefaults m_undirectedEdgeDefaults;
@@ -88,7 +89,21 @@ public final class Fung
                                          final TopologyChangeListener listener)
   {
     synchronized (m_lock) {
-      m_topLis = TopologyChangeListenerChain.add(m_topLis, listener); }
+      m_topLis = TopologyChangeListenerChain.remove(m_topLis, listener); }
+  }
+
+  public final void addViewportChangeListener(
+                                         final ViewportChangeListener listener)
+  {
+    synchronized (m_lock) {
+      m_viewLis = ViewportChangeListenerChain.add(m_viewLis, listener); }
+  }
+
+  public final void removeViewportChangeListener(
+                                         final ViewportChangeListener listener)
+  {
+    synchronized (m_lock) {
+      m_viewLis = ViewportChangeListenerChain.remove(m_viewLis, listener); }
   }
 
   public final Component getComponent()
