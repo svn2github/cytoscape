@@ -6,6 +6,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import cytoscape.CytoscapeInit;
 import cytoscape.Cytoscape;
+import java.util.regex.Pattern; 
+import java.util.regex.Matcher; 
 
 /**
  * An instance of this class defines the level of detail that goes into
@@ -88,7 +90,10 @@ public class CyGraphLOD extends GraphLOD implements PropertyChangeListener
 
 		boolean ret = defaultValue;
 		try {
-			ret = Boolean.getBoolean(val);
+			if ( Pattern.compile("true",Pattern.CASE_INSENSITIVE).matcher(val).matches() )
+				ret = true;
+			else
+				ret = false;
 		} catch ( Exception e) { e.printStackTrace(); }
 
 		return ret;
@@ -247,8 +252,7 @@ public class CyGraphLOD extends GraphLOD implements PropertyChangeListener
   public boolean dashedEdges(final int renderNodeCount,
                              final int renderEdgeCount)
   {
-//     return renderDashedEdges;
-    return true;
+     return renderDashedEdges;
   }
 
   /**
