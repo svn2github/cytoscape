@@ -220,7 +220,7 @@ public abstract class FileUtil {
     }
 
     String osName = System.getProperty("os.name" );
-    System.out.println( "Os name: "+osName );
+    //System.out.println( "Os name: "+osName );
     if ( osName.startsWith( "Mac" ) ) {
     
       // this is a Macintosh, use the AWT style file dialog
