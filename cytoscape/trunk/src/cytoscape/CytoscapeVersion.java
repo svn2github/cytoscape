@@ -49,9 +49,9 @@ package cytoscape;
 public class CytoscapeVersion {
 
   /** */
-  public static String version = "2.2";
-  private String versionString = "2.2";
-  private String dateString = "2005.09.01";
+  public static String version = "2.3";
+  private String versionString = "2.3";
+  private String dateString = "2006.06.01";
   // would need ant or build script to modify this value
   // maybe dateString should serve this purpose?
   //private String buildDate = "2003/09/18";
@@ -77,6 +77,10 @@ public class CytoscapeVersion {
       "0.97  (2002/12/05) added LGPL to all source",
       "1.0   (2003/03/05) added visual styles UI, attributes filter.",
       "1.1   (2003/05/12) jar loader; visual styles.",
+      "2.0   (2004) now using GINY",
+      "2.1   (2005) many speed improvements.",
+      "2.2   (2005/11) more bug fixes.",
+      "2.3   (2005/06) new (faster) rendering engine."
       };
 
 //-----------------------------------------------------------------------------------
