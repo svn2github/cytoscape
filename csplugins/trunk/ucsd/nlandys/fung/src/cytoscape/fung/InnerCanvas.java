@@ -5,14 +5,14 @@ import cytoscape.render.immed.GraphGraphics;
 import cytoscape.render.stateful.GraphLOD;
 import cytoscape.render.stateful.GraphRenderer;
 import cytoscape.util.intr.IntHash;
-import java.awt.Canvas;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Paint;
 import java.awt.image.BufferedImage;
 
-final class InnerCanvas extends Canvas
+final class InnerCanvas extends Component
 {
 
   private final Fung m_fung;
@@ -24,6 +24,8 @@ final class InnerCanvas extends Canvas
   double m_xCenter;
   double m_yCenter;
   double m_scaleFactor;
+  boolean m_viewportChanged = false;
+  private int m_lastRenderDetail = 0;
 
   InnerCanvas(final Fung fung)
   {
@@ -47,17 +49,7 @@ final class InnerCanvas extends Canvas
       synchronized (m_fung.m_lock) {
         m_img = img;
         m_grafx = grafx;
-        GraphRenderer.renderGraph(m_fung.m_graphModel.m_graph,
-                                  m_fung.m_rtree,
-                                  m_lod,
-                                  m_fung.m_nodeDetails,
-                                  m_fung.m_edgeDetails,
-                                  m_hash,
-                                  m_grafx,
-                                  m_bgPaint,
-                                  m_xCenter,
-                                  m_yCenter,
-                                  m_scaleFactor); } }
+        m_viewportChanged = true; } }
   }
 
   public final void update(final Graphics g)

@@ -139,7 +139,8 @@ public final class Fung
   {
     synchronized (m_lock) {
       m_canvas.m_xCenter = pt.getX();
-      m_canvas.m_yCenter = pt.getY(); }
+      m_canvas.m_yCenter = pt.getY();
+      m_canvas.m_viewportChanged = true; }
   }
 
   public final Point2D getCenter()
@@ -150,7 +151,8 @@ public final class Fung
   public final void setScaleFactor(final double scaleFactor)
   {
     synchronized (m_lock) {
-      m_canvas.m_scaleFactor = scaleFactor; }
+      m_canvas.m_scaleFactor = scaleFactor;
+      m_canvas.m_viewportChanged = true; }
   }
 
   public final double getScaleFactor()
