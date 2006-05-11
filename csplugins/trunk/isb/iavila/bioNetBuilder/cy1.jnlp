@@ -4,7 +4,7 @@
    href="cy1.jnlp">
   <information>
     <title>BioNetBuilder WebStart</title>
-    <vendor>Cytoscape Collaboration</vendor>
+    <vendor>Institute For Systems Biology</vendor>
     <homepage href="index.html"/>
     <offline-allowed/>
   </information>
@@ -24,6 +24,7 @@
  <jar href="lib/wizard.jar"/>
  <jar href="lib/violinstrings-1.0.2.jar"/>
  <jar href="lib/tclib.jar"/>
+ <jar href="lib/swing-layout-1.0.jar"/>
  <jar href="lib/swingunit.jar"/>
  <jar href="lib/sax.jar"/>
  <jar href="lib/relaxngDatatype.jar"/>
@@ -35,8 +36,6 @@
  <jar href="lib/junit.jar"/>
  <jar href="lib/jnlp.jar"/>
  <jar href="lib/jhall.jar"/>
- <jar href="lib/jfreechart-common-0.9.5.jar"/>
- <jar href="lib/jfreechart-0.9.20.jar"/>
  <jar href="lib/jdom.jar"/>
  <jar href="lib/jax-qname.jar"/>
  <jar href="lib/jaxb-xjc.jar"/>
@@ -55,8 +54,10 @@
  <jar href="lib/freehep-graphics2d.jar"/>
  <jar href="lib/freehep-base.jar"/>
  <jar href="lib/fing.jar"/>
+ <jar href="lib/exesto.jar"/>
  <jar href="lib/dom.jar"/>
  <jar href="lib/ding.jar"/>
+ <jar href="lib/data-aux.jar"/>
  <jar href="lib/cytoscape-util-intr.jar"/>
  <jar href="lib/cytoscape-task.jar"/>
  <jar href="lib/cytoscape-render-stateful.jar"/>
@@ -77,26 +78,24 @@
  
 <jar href="plugins/browser.jar"/>
 <jar href="plugins/cpath.jar"/>
-<jar href="plugins/data-aux.jar"/>
-<jar href="plugins/exesto.jar"/>
 <jar href="plugins/filter.jar"/>
 <jar href="plugins/yLayouts.jar"/>
 <jar href="plugins/bionetbuilder.jar"/>
 
   </resources>
   <application-desc main-class="cytoscape.CyMain">
-	<argument>-rp</argument>
+	<argument>-p</argument>
 	<argument>browser.BrowserPlugin</argument>
-    <argument>-rp</argument>
+    <argument>-p</argument>
 	<argument>csplugins.dataviewer.plugin.CPathPlugIn</argument>
-	<argument>-rp</argument>
+	<argument>-p</argument>
 	<argument>filter.cytoscape.CsFilter</argument>
-	<argument>-rp</argument>
+	<argument>-p</argument>
 	<argument>yfiles.YFilesLayoutPlugin</argument>
-	<argument>-rp</argument>
+	<argument>-p</argument>
 	<argument>org.isb.bionet.BioNetPlugin</argument>
-    <argument>--xml-rpc-props</argument>
-    <argument>http://db.systemsbiology.net/cytoscape/bioNetBuilder/webstart/xmlrpc.props</argument>
+    <argument>-P</argument>
+    <argument>xml-rpc-props=http://db.systemsbiology.net/cytoscape/bioNetBuilder/xmlrpc.props</argument>
   </application-desc>
 </jnlp>
 
