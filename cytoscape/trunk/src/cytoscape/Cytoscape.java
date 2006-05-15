@@ -438,9 +438,15 @@ public abstract class Cytoscape {
 		/*
 		 * We do not need canonicalName anymore.  If necessary, user should
 		 * create one from Attribute Browser.
+		 *
+		 * NOTE:
+		 *
+		 * The following statement referencing CANONICAL_NAME should not be
+		 * deleted until its removed from the core (Semantics.java)
+		 * on April, 2007 _DO NOT DELETE UNTIL THEN_
 		 */
-		// getNodeAttributes().setAttribute(nodeID,Semantics.CANONICAL_NAME,nodeID);
-		
+		getNodeAttributes().setAttribute(nodeID,Semantics.CANONICAL_NAME,nodeID);
+
 		return node;
 	}
 
