@@ -6,3 +6,4 @@ lib:cytoscape-render-immed.jar
 lib:cytoscape-render-stateful.jar
 lib:cytoscape-util-intr.jar
 lib:giny.jar
+lib:phoebe.jar

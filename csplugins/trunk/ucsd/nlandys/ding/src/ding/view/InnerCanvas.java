@@ -27,6 +27,34 @@ import java.awt.geom.Line2D;
 import java.awt.geom.PathIterator;
 import java.awt.image.BufferedImage;
 
+// AJK: 04/02/06 BEGIN                                                          
+import phoebe.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetEvent;
+import java.awt.dnd.DropTarget;
+import java.awt.*;
+import java.util.*;
+import java.awt.event.*;
+
+// AJK: 04/26/06 BEGIN                                                          
+//    for tooltips                                                              
+import javax.swing.AbstractAction;
+import javax.swing.JPopupMenu;
+import javax.swing.JToolTip;
+import javax.swing.JComponent;
+import javax.swing.JTextPane;
+import javax.swing.JTextArea;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import giny.model.Node;
+
+// AJK: 04/26/06 END
+
 class InnerCanvas extends Component
   implements MouseListener, MouseMotionListener
 {
