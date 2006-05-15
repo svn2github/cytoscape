@@ -146,11 +146,14 @@ public class XGMMLWriter {
 	// Default CSS file name. Will be distributed with Cytoscape 2.3.
 	private static final String CSS_FILE = "base.css";
 
-	protected static final String FLOAT_TYPE = "float";
-	protected static final String INT_TYPE = "int";
+	// These types are permitted by the XGMML standard
+	protected static final String FLOAT_TYPE = "real";
+	protected static final String INT_TYPE = "integer";
 	protected static final String STRING_TYPE = "string";
-	protected static final String BOOLEAN_TYPE = "boolean";
 	protected static final String LIST_TYPE = "list";
+	
+	// These types are not permitted by the XGMML standard
+	protected static final String BOOLEAN_TYPE = "boolean";
 	protected static final String MAP_TYPE = "map";
 	protected static final String COMPLEX_TYPE = "complex";
 
@@ -401,21 +404,24 @@ public class XGMMLWriter {
 		if (attType == CyAttributes.TYPE_FLOATING) {
 			Double dAttr = attributes.getDoubleAttribute(id, attributeName);
 			attr.setName(attributeName);
-			attr.setLabel(FLOAT_TYPE);
+			attr.setLabel(attributeName);
+			attr.setType(FLOAT_TYPE);
 			if (dAttr != null) attr.setValue(dAttr.toString());
 		}
 		// process integer
 		else if (attType == CyAttributes.TYPE_INTEGER) {
 			Integer iAttr = attributes.getIntegerAttribute(id, attributeName);
 			attr.setName(attributeName);
-			attr.setLabel(INT_TYPE);
+			attr.setLabel(attributeName);
+			attr.setType(INT_TYPE);
 			if (iAttr != null) attr.setValue(iAttr.toString());
 		}
 		// process string
 		else if (attType == CyAttributes.TYPE_STRING) {
 			String sAttr = attributes.getStringAttribute(id, attributeName);
 			attr.setName(attributeName);
-			attr.setLabel(STRING_TYPE);
+			attr.setLabel(attributeName);
+			attr.setType(STRING_TYPE);
 			if (sAttr != null) {
 				attr.setValue(sAttr.toString());
 			}
@@ -427,7 +433,8 @@ public class XGMMLWriter {
 		else if (attType == CyAttributes.TYPE_BOOLEAN) {
 			Boolean bAttr = attributes.getBooleanAttribute(id, attributeName);
 			attr.setName(attributeName);
-			attr.setLabel(BOOLEAN_TYPE);
+			attr.setLabel(attributeName);
+			attr.setType(BOOLEAN_TYPE);
 			if (bAttr != null) attr.setValue(bAttr.toString());
 		}
 		// process simple list
@@ -436,7 +443,8 @@ public class XGMMLWriter {
 			List listAttr = attributes.getAttributeList(id, attributeName);
 			// set attribute name and label
 			attr.setName(attributeName);
-			attr.setLabel(LIST_TYPE);
+			attr.setLabel(attributeName);
+			attr.setType(LIST_TYPE);
 			// interate through the list
 			Iterator listIt = listAttr.iterator();
 			while (listIt.hasNext()) {
@@ -446,7 +454,7 @@ public class XGMMLWriter {
 				Att memberAttr = objFactory.createAtt();
 				// set child attribute value & label
 				memberAttr.setValue(obj.toString());
-				memberAttr.setLabel(checkType(obj));
+				memberAttr.setType(checkType(obj));
 				// add child attribute to parent
 				attr.getContent().add(memberAttr);
 			}
@@ -457,7 +465,8 @@ public class XGMMLWriter {
 			Map mapAttr = attributes.getAttributeMap(id, attributeName);
 			// set our attribute name and label
 			attr.setName(attributeName);
-			attr.setLabel(MAP_TYPE);
+			attr.setLabel(attributeName);
+			attr.setType(MAP_TYPE);
 			// interate through the map
 			Iterator mapIt = mapAttr.keySet().iterator();
 			while (mapIt.hasNext()) {
@@ -468,7 +477,7 @@ public class XGMMLWriter {
 				Att memberAttr = objFactory.createAtt();
 				// set child attribute name, label, and value
 				memberAttr.setName(key);
-				memberAttr.setLabel(checkType(mapAttr.get(key)));
+				memberAttr.setType(checkType(mapAttr.get(key)));
 				memberAttr.setValue(mapAttr.get(key).toString());
 				// add child attribute to parent
 				attr.getContent().add(memberAttr);
@@ -507,7 +516,8 @@ public class XGMMLWriter {
 		byte[] dimTypes = mmapDef.getAttributeKeyspaceDimensionTypes(attributeName);
 
 		// set top level attribute name, label
-		attrToReturn.setLabel(COMPLEX_TYPE);
+		attrToReturn.setType(COMPLEX_TYPE);
+		attrToReturn.setLabel(attributeName);
 		attrToReturn.setName(attributeName);
 		attrToReturn.setValue(String.valueOf(dimTypes.length));
 
@@ -526,7 +536,8 @@ public class XGMMLWriter {
 			// create an Att instance for this key
 			// and set its name, label, & value
 			Att thisKeyAttr = objFactory.createAtt();
-			thisKeyAttr.setLabel(getType(dimTypes[0]));
+			thisKeyAttr.setType(getType(dimTypes[0]));
+			thisKeyAttr.setLabel(key.toString());
 			thisKeyAttr.setName(key.toString());
 			thisKeyAttr.setValue(String.valueOf(thisKeyMap.size()));
 			// now lets walk the keys structure and add to its attributes content
@@ -651,7 +662,8 @@ public class XGMMLWriter {
 				// we need to create an instance of Att to return
 				attrToReturn = objFactory.createAtt();
 				// we have a another map
-				attrToReturn.setLabel(getType(dimTypes[dimTypesIndex]));
+				attrToReturn.setType(getType(dimTypes[dimTypesIndex]));
+				attrToReturn.setLabel((String)key);
 				attrToReturn.setName((String)key);
 				attrToReturn.setValue(String.valueOf(((Map)possibleAttributeValue).size()));
 				// walk the next map
@@ -671,12 +683,13 @@ public class XGMMLWriter {
 				attrToReturn = parentAttr;
 				// create our key attribute
 				Att keyAttr = objFactory.createAtt();
-				keyAttr.setLabel(getType(dimTypes[dimTypesIndex]));
+				keyAttr.setType(getType(dimTypes[dimTypesIndex]));
+				keyAttr.setLabel(key.toString());				
 				keyAttr.setName(key.toString());
 				keyAttr.setValue(String.valueOf(1));
 				// create our value attribute
 				Att valueAttr = objFactory.createAtt();
-				valueAttr.setLabel(attributeType);
+				valueAttr.setType(attributeType);
 				valueAttr.setValue(possibleAttributeValue.toString());
 				keyAttr.getContent().add(valueAttr);
 				attrToReturn.getContent().add(keyAttr);
@@ -1160,7 +1173,8 @@ public class XGMMLWriter {
 
 		// set the attribute name, label, and value
 		attr.setName(GRAPH_VIEW_ZOOM);
-		attr.setLabel(FLOAT_TYPE);
+		attr.setLabel(GRAPH_VIEW_ZOOM);
+		attr.setType(FLOAT_TYPE);
 		if (dAttr != null) attr.setValue(dAttr.toString());
 
 		// add attribute to graph object
@@ -1185,7 +1199,8 @@ public class XGMMLWriter {
 			double doubleCoord = (lc == 0) ? center.getX() : center.getY();
 			Double coord = new Double(doubleCoord);
 			attr.setName(coordinates[lc]);
-			attr.setLabel(FLOAT_TYPE);
+			attr.setLabel(coordinates[lc]);
+			attr.setType(FLOAT_TYPE);
 			if (coord != null) attr.setValue(coord.toString());
 			graph.getAtt().add(attr);
 		}

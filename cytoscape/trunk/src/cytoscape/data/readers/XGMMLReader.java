@@ -112,11 +112,14 @@ public class XGMMLReader implements GraphReader {
 	protected static String PARALELLOGRAM = "parallelogram";
 	protected static String TRIANGLE = "triangle";
 
-	protected static final String FLOAT_TYPE = "float";
-	protected static final String INT_TYPE = "int";
+	// These types are permitted by the XGMML standard
+	protected static final String FLOAT_TYPE = "real";
+	protected static final String INT_TYPE = "integer";
 	protected static final String STRING_TYPE = "string";
-	protected static final String BOOLEAN_TYPE = "boolean";
 	protected static final String LIST_TYPE = "list";
+	
+	//These types are not permitted by the XGMML standard
+	protected static final String BOOLEAN_TYPE = "boolean";
 	protected static final String MAP_TYPE = "map";
 	protected static final String COMPLEX_TYPE = "complex";
 
@@ -953,7 +956,7 @@ public class XGMMLReader implements GraphReader {
 	private void readAttribute(CyAttributes attributes, String targetName, Att curAtt) {
 
 		// check args
-		String dataType = curAtt.getLabel();
+		String dataType = curAtt.getType();
 		if (dataType == null) return;
 		// null value only ok when type is list or map
 		if (!dataType.equals(LIST_TYPE) &&
@@ -1128,16 +1131,16 @@ public class XGMMLReader implements GraphReader {
 	 */
 	private Object createObjectFromAttName(AttImpl item){
 		
-		if (item.getLabel().equals(STRING_TYPE)) {
+		if (item.getType().equals(STRING_TYPE)) {
 			return new String(item.getName());
 		}
-		else if (item.getLabel().equals(INT_TYPE)) {
+		else if (item.getType().equals(INT_TYPE)) {
 			return new Integer(item.getName());
 		}
-		else if (item.getLabel().equals(FLOAT_TYPE)) {
+		else if (item.getType().equals(FLOAT_TYPE)) {
 			return new Double(item.getName());
 		}
-		else if (item.getLabel().equals(BOOLEAN_TYPE)) {
+		else if (item.getType().equals(BOOLEAN_TYPE)) {
 			return new Boolean(item.getName());
 		}
 
@@ -1154,16 +1157,16 @@ public class XGMMLReader implements GraphReader {
 	 */
 	private Object createObjectFromAttValue(AttImpl item){
 		
-		if (item.getLabel().equals(STRING_TYPE)) {
+		if (item.getType().equals(STRING_TYPE)) {
 			return new String(item.getValue());
 		}
-		else if (item.getLabel().equals(INT_TYPE)) {
+		else if (item.getType().equals(INT_TYPE)) {
 			return new Integer(item.getValue());
 		}
-		else if (item.getLabel().equals(FLOAT_TYPE)) {
+		else if (item.getType().equals(FLOAT_TYPE)) {
 			return new Double(item.getValue());
 		}
-		else if (item.getLabel().equals(BOOLEAN_TYPE)) {
+		else if (item.getType().equals(BOOLEAN_TYPE)) {
 			return new Boolean(item.getValue());
 		}
 
@@ -1180,16 +1183,16 @@ public class XGMMLReader implements GraphReader {
 	 */
 	private byte getMultHashMapTypeFromAtt(Att item){
 		
-		if (item.getLabel().equals(STRING_TYPE)) {
+		if (item.getType().equals(STRING_TYPE)) {
 			return MultiHashMapDefinition.TYPE_STRING;
 		}
-		else if (item.getLabel().equals(INT_TYPE)) {
+		else if (item.getType().equals(INT_TYPE)) {
 			return MultiHashMapDefinition.TYPE_INTEGER;
 		}
-		else if (item.getLabel().equals(FLOAT_TYPE)) {
+		else if (item.getType().equals(FLOAT_TYPE)) {
 			return MultiHashMapDefinition.TYPE_FLOATING_POINT;
 		}
-		else if (item.getLabel().equals(BOOLEAN_TYPE)) {
+		else if (item.getType().equals(BOOLEAN_TYPE)) {
 			return MultiHashMapDefinition.TYPE_BOOLEAN;
 		}
 

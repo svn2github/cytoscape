@@ -38,19 +38,13 @@
 
 package cytoscape.actions;
 
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.Set;
 
 import javax.swing.JOptionPane;
 import javax.xml.bind.JAXBException;
 
-import cytoscape.CyNetwork;
-import cytoscape.view.CyNetworkView;
 import cytoscape.Cytoscape;
 import cytoscape.data.readers.CytoscapeSessionReader;
 import cytoscape.task.Task;
@@ -61,7 +55,6 @@ import cytoscape.util.CyFileFilter;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.FileUtil;
 import cytoscape.view.CyMenus;
-import cytoscape.visual.VisualStyle;
 
 /**
  * Open session file. This class will load all networks and session state in the
@@ -81,7 +74,7 @@ public class OpenSessionAction extends CytoscapeAction {
 		super("Open");
 		setPreferredMenu("File");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_O, ActionEvent.CTRL_MASK);
-		this.windowMenu = windowMenu;
+		this.windowMenu = null;
 	}
 
 	public OpenSessionAction(CyMenus windowMenu, boolean label) {
@@ -220,16 +213,6 @@ class OpenSessionTask implements Task {
 				.setTitle(
 						"Cytoscape Desktop (Session Name: "
 								+ shortName.getName() + ")");
-
-		// this is a hack to force update of visual style using style just loaded
-		CyNetworkView curView = (CyNetworkView) Cytoscape.getCurrentNetworkView();
-		if (curView != null){
-			VisualStyle curVS = curView.getVisualStyle();
-			if (curVS != null) {
-				Cytoscape.getVisualMappingManager().setVisualStyle(curVS);
-				curView.redrawGraph(false, true);
-			}
-		}
 	}
 
 	/**
