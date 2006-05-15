@@ -742,22 +742,23 @@ public class DGraphView implements GraphView, Printable
     return true;
   }
 
-  public Object[] getContextMethods(String className, boolean plusSuperclass)
-  {
+  // AJK: 04/25/06 BEGIN
+  //     for context menu
+
+  public Object[] getContextMethods(String className, boolean plusSuperclass) {
     return null;
   }
 
-  public Object[] getContextMethods(String className, Object[] methods)
-  {
+  public Object[] getContextMethods(String className, Object[] methods) {
     return null;
   }
 
   public boolean addContextMethod(String className, String methodClassName,
-                                  String methodName, Object[] args,
-                                  ClassLoader loader)
-  {
+                                  String methodName, Object[] args, ClassLoader loader) {
     return false;
   }
+
+  // AJK: 04/25/06 END
 
   public void setAllNodePropertyData(int nodeInx, Object[] data)
   {
@@ -1082,5 +1083,54 @@ public class DGraphView implements GraphView, Printable
     else {
       return NO_SUCH_PAGE; }
   }
+
+  // AJK: 04/02/06 BEGIN
+  public InnerCanvas getCanvas() {
+    return m_canvas;
+  }
+
+  /**
+   * utility that returns the nodeView that is located at input point
+   * @param pt
+   */
+  public NodeView getPickedNodeView(Point2D pt) {
+    NodeView nv = null;
+    double[] locn = new double[2];
+    locn[0] = pt.getX();
+    locn[1] = pt.getY();
+    int chosenNode = 0;
+    xformComponentToNodeCoords(locn);
+
+    final IntStack nodeStack = new IntStack();
+    getNodesIntersectingRectangle(
+                                  (float) locn[0],
+                                  (float) locn[1],
+                                  (float) locn[0],
+                                  (float) locn[1],
+                                  (m_canvas.getLastRenderDetail() & GraphRenderer.LOD_HIGH_DETAIL) == 0,
+                                  nodeStack);
+
+    chosenNode = (nodeStack.size() > 0) ? nodeStack.peek() : 0;
+    if (chosenNode != 0) {
+      nv = getNodeView(chosenNode);
+    }
+
+    return nv;
+  }
+
+  // AJK: 04/25/06 END
+  // AJK: 04/27/06 BEGIN
+  //   for context menus
+  public void addNodeContextMenuListener (NodeContextMenuListener l)
+  {
+    System.out.println("Adding NodeContextListener: " + l);
+    getCanvas().addNodeContextMenuListener(l);
+  }
+
+  public void removeNodeContextMenuListener (NodeContextMenuListener l)
+  {
+    getCanvas().removeNodeContextMenuListener(l);
+  }
+  // AJK: 04/27/06 END
 
 }

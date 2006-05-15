@@ -55,8 +55,9 @@ import giny.model.Node;
 
 // AJK: 04/26/06 END
 
-class InnerCanvas extends Component
-  implements MouseListener, MouseMotionListener
+public class InnerCanvas extends JComponent
+  implements MouseListener, MouseMotionListener,
+             java.awt.dnd.DropTargetListener, PhoebeCanvasDroppable
 {
 
   final double[] m_ptBuff = new double[2];
@@ -82,6 +83,17 @@ class InnerCanvas extends Component
   private Rectangle m_selectionRect = null;
   final boolean[] m_printingTextAsShape = new boolean[1];
 
+  //AJK: 04/02/06 BEGIN
+  private DropTarget dropTarget;
+
+  private String CANVAS_DROP = "CanvasDrop";
+
+  public Vector listeners = new Vector();
+  //       AJK: 04/02/06 END
+
+  // AJK: 04/27/06 for context menus
+  public Vector nodeContextMenuListeners = new Vector();
+
   InnerCanvas(Object lock, DGraphView view)
   {
     super();
@@ -96,6 +108,12 @@ class InnerCanvas extends Component
     m_printingTextAsShape[0] = true;
     addMouseListener(this);
     addMouseMotionListener(this);
+
+    // AJK: 04/02/06 BEGIN
+    dropTarget = new DropTarget(this, // component
+                                DnDConstants.ACTION_COPY, // actions
+                                this); // DropTargetListener
+    // AJK: 04/02/06 END
   }
 
   public void reshape(int x, int y, int width, int height)
@@ -338,7 +356,9 @@ class InnerCanvas extends Component
     else if (e.getButton() == MouseEvent.BUTTON3) {
       m_currMouseButton = 3;
       m_lastXMousePos = e.getX();
-      m_lastYMousePos = e.getY(); }
+      m_lastYMousePos = e.getY();
+      // AJK 04/27/08: for node context menus
+      processNodeContextMenuEvent(e); }
   }
 
   public void mouseReleased(MouseEvent e)
@@ -465,9 +485,20 @@ class InnerCanvas extends Component
       repaint(); }
   }
 
+  // AJK: 05/02/06 BEGIN
+
   public void mouseMoved(MouseEvent e)
   {
+    NodeView nv = m_view.getPickedNodeView (e.getPoint());
+
+    if (nv != null)
+      {
+        setToolTipText(((DNodeView) nv).getToolTip());
+        getToolTipText(e);
+      }
   }
+
+// AJK: 05/02/06 END
 
   // Puts [last drawn] edges intersecting onto m_stack2; as RootGraph indices.
   // Depends on the state of several member variables, such as m_hash.
@@ -590,6 +621,162 @@ class InnerCanvas extends Component
                  (yMax - yMin) + segThicknessDiv2 * 2)) {
               m_stack2.push(~edge); } } }
         m_hash.put(node); } }
+  }
+
+  // AJK: 04/02/06 BEGIN
+
+  /**
+   * default dragEnter handler.  Accepts the drag.
+   * @param dte the DropTargetDragEvent
+   *
+   */
+  public void dragEnter (java.awt.dnd.DropTargetDragEvent dte)
+  {
+    dte.acceptDrag(DnDConstants.ACTION_COPY);
+  }
+
+  /**
+   * default dragExit handler.  Does nothing, can be overridden.
+   * @param dte the DropTargetDragEvent
+   *
+   */
+  public void dragExit (java.awt.dnd.DropTargetEvent dte)
+  {
+  }
+
+  /**
+   * default dropActionChanged handler.  Does nothing, can be overridden.
+   * @param dte the DropTargetDragEvent
+   *
+   */
+  public void dropActionChanged (java.awt.dnd.DropTargetDragEvent dte)
+  {
+  }
+
+  /**
+   * default dragOver handler.  Does nothing, can be overridden.
+   * @param dte the DropTargetDragEvent
+   *
+   */
+  public void dragOver (java.awt.dnd.DropTargetDragEvent dte)
+  {
+  }
+
+  /**
+   * default drop handler.  Accepts drop, builds a transferable, creates and
+   * fires a PhoebeCanvasDropEvent, then calls dropComplete().
+   * @param dte the DropTargetDragEvent
+   *
+   */
+  public void drop (java.awt.dnd.DropTargetDropEvent dte)
+  {
+    dte.acceptDrop(DnDConstants.ACTION_COPY);
+
+    Transferable t = dte.getTransferable();
+
+    Point pt = dte.getLocation();
+
+    PhoebeCanvasDropEvent event =
+      new PhoebeCanvasDropEvent (this,   // we are the event source
+                                 t, // item dropped
+                                 pt // location
+                                 );
+    processPhoebeCanvasDropEvent (event);
+
+    dte.dropComplete(true);
+  }
+
+  /**
+   * adds a listener to the store of PhoebeCanvasDropTargetListeners
+   * @param l the PhoebeCanvasDropTargetListener
+   *
+   */
+  public void addPhoebeCanvasDropListener (PhoebeCanvasDropListener l)
+  {
+    listeners.addElement(l);
+  }
+
+  /**
+   * removes a listener from the store of PhoebeCanvasDropTargetListeners
+   * @param l the PhoebeCanvasDropTargetListener
+   *
+   */
+  public void removePhoebeCanvasDropListener (PhoebeCanvasDropListener l)
+  {
+    listeners.removeElement(l);
+  }
+
+  /**
+   * handles a PhoebeCanvasDropEvent.  For each listerner, calls its itemDropped() method
+   * @param event the PhoebeCanvasDropEvent
+   *
+   */
+  protected synchronized void processPhoebeCanvasDropEvent (PhoebeCanvasDropEvent event)
+  {
+    Enumeration e = listeners.elements();
+    while (e.hasMoreElements())
+      {
+        PhoebeCanvasDropListener l = (PhoebeCanvasDropListener)
+          e.nextElement();
+        l.itemDropped(event);
+      }
+  }
+  // AJK: 04/02/06 END
+
+  // AJK: 04/27/06 BEGIN
+  // for node context menus
+  /**
+   * adds a listener to the store of NodeContextMenuListeners
+   * @param l the NodeContextMenuListener
+   *
+   */
+  public void addNodeContextMenuListener (NodeContextMenuListener l)
+  {
+    nodeContextMenuListeners.addElement(l);
+  }
+
+  /**
+   * removes a listener from the store of NodeContextMenuListeners
+   * @param l the NodeContextMenuListener
+   *
+   */
+  public void removeNodeContextMenuListener (NodeContextMenuListener l)
+  {
+    nodeContextMenuListeners.removeElement(l);
+  }
+
+  /**
+   * handles a NodeContextMenuEvent.  For each listerner, calls its itemDropped() method
+   * @param event the NodeContextMenuEvent
+   *
+   */
+  protected synchronized void processNodeContextMenuEvent (MouseEvent event)
+  {
+    NodeView nv = m_view.getPickedNodeView (event.getPoint());
+    //         System.out.println ("   over selected nodeview: " + nv);
+    if (nv != null)
+      {
+        String nodeLabel = nv.getNode().getIdentifier();
+        JPopupMenu menu = new JPopupMenu(nodeLabel);
+        menu.setLabel(nodeLabel);
+        Enumeration e = nodeContextMenuListeners.elements();
+        while (e.hasMoreElements())
+          {
+            NodeContextMenuListener l = (NodeContextMenuListener) e.nextElement();
+            System.out.println ("Adding context menu items for NodeContextMenuListener: " + l);
+            //                              EventListener l = (EventListener) e.nextElement();
+            l.addNodeContextMenuItems (event.getPoint(), nv, menu);
+          }
+        // Display PopupMenu
+        menu.show(this, event.getX(), event.getY());
+      }
+  }
+
+  // AJK: 04/27/06 END
+
+  public int getLastRenderDetail ()
+  {
+    return m_lastRenderDetail;
   }
 
 }

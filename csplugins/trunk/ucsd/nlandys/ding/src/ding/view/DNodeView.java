@@ -37,6 +37,9 @@ class DNodeView implements NodeView, Label
   float m_hiddenXMax;
   float m_hiddenYMax;
 
+  // AJK: 04/26/06 for tooltip
+  String m_toolTipText = null;
+
   /*
    * @param inx the RootGraph index of node (a negative number).
    */
@@ -444,10 +447,19 @@ class DNodeView implements NodeView, Label
       m_view.m_contentChanged = true; }
   }
 
-  public void setToolTip(String tip)
+  // AJK: 04/26/06 BEGIN
+  //    for tooltip
+  public void setToolTip (String tip)
   {
+    m_toolTipText = tip;
   }
 
+  public String getToolTip ()
+  {
+    return m_toolTipText;
+  }
+
+  // AJK: 04/26/06 END
 
   // Interface giny.view.Label:
 
