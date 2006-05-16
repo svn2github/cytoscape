@@ -253,23 +253,27 @@ public class ZipMultipleFiles {
 		return null;
 	}
 
-	public InputStream readVizmap() throws IOException {
+	/**
+	 * Reads a file contained within a zip file and returns an InputStream.
+	 * @param zipName The name of the zip file to read.
+	 * @param fileNameRegEx A regular expression that identifies the file to be read. In
+	 * general this should just be the file name you're looking for.  If more than one
+	 * file matches the regular expression, only the first will be returned. If you're looking
+	 * for a specific file remeber to build your regular expression correctly. For example, if
+	 * you're looking for the file 'vizmap.props', make your regular expression '.*vizmap.props'
+	 * to accomodate any clutter from the zip file.
+	 * @return An InputStream of the zip entry identified by the regular expression
+	 * or null if nothing matches.
+	 */
+	public static InputStream readFile(String zipName, String fileNameRegEx ) throws IOException {
 
-		ZipEntry zent = null;
-		ZipFile sessionZipFile = null;
-
-		try {
-			sessionZipFile = new ZipFile(zipFileName);
-			Enumeration zipEntries = sessionZipFile.entries();
-			while (zipEntries.hasMoreElements()) {
-				zent = (ZipEntry) zipEntries.nextElement();
-				if (zent.getName().endsWith("vizmap.props")) {
-					return sessionZipFile.getInputStream(zent);
-				}
+		ZipFile sessionZipFile = new ZipFile(zipName);
+		Enumeration zipEntries = sessionZipFile.entries();
+		while (zipEntries.hasMoreElements()) {
+			ZipEntry zent = (ZipEntry) zipEntries.nextElement();
+			if (zent.getName().matches(fileNameRegEx)) {
+				return sessionZipFile.getInputStream(zent);
 			}
-
-		} catch (IOException e) {
-			System.err.println(e);
 		}
 
 		return null;

@@ -156,11 +156,10 @@ public abstract class CalculatorCatalogFactory {
 								
 							} else if(vizmapSource.getClass() == String.class) {
 								try {
-									
-									ZipMultipleFiles zipUtil = new ZipMultipleFiles(
-											(String)vizmapSource);
-									vizmapProps.load(zipUtil.readVizmap());
-									
+									InputStream is = ZipMultipleFiles.readFile((String)vizmapSource,".*vizmap.props");
+									if ( is != null )
+										vizmapProps.load(is);
+
 								} catch (FileNotFoundException e1) {
 									// TODO Auto-generated catch block
 									e1.printStackTrace();

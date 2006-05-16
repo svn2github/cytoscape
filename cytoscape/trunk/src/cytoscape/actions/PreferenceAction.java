@@ -60,18 +60,14 @@ public class PreferenceAction extends CytoscapeAction  {
 
     public final static String MENU_LABEL = "Preferences...";
     
-    private PreferencesDialog preferencesDialog = null;
-    
     public PreferenceAction () {
         super (MENU_LABEL);
         setPreferredMenu( "Edit" );
     }
 
     public void actionPerformed(ActionEvent e) {
-	if (preferencesDialog == null) {
-            preferencesDialog = new PreferencesDialog(
+	PreferencesDialog preferencesDialog = new PreferencesDialog(
 			(JFrame)Cytoscape.getDesktop());
-	}
 	preferencesDialog.refresh();
         preferencesDialog.setVisible(true);
 

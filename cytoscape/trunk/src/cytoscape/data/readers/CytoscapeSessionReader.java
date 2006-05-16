@@ -71,6 +71,8 @@ import cytoscape.generated.NetworkTree;
 import cytoscape.generated.Node;
 import cytoscape.generated.SelectedNodes;
 import cytoscape.view.CyNetworkView;
+import cytoscape.view.CyNetworkView;
+import cytoscape.util.FileUtil;
 
 import ding.view.DGraphView;
 
@@ -96,6 +98,7 @@ public class CytoscapeSessionReader {
 
 	private URL cysessionFileURL = null;
 	private URL vizmapFileURL = null;
+	private URL cytoscapePropsURL = null;
 
 	public static final String CYSESSION = "cysession.xml";
 
@@ -162,6 +165,9 @@ public class CytoscapeSessionReader {
 			} else if (entryName.endsWith("vizmap.props")) {
 				vizmapFileURL = new URL("jar:" + sourceName.toString() + "!/"
 						+ entryName);
+			} else if (entryName.endsWith("cytoscape.props")) {
+				cytoscapePropsURL = new URL("jar:" + sourceName.toString() + "!/"
+						+ entryName);
 			} else if (entryName.endsWith(XGMML_EXT)) {
 				URL networkURL = new URL("jar:" + sourceName.toString() + "!/"
 						+ entryName);
@@ -188,8 +194,13 @@ public class CytoscapeSessionReader {
 	 * @throws JAXBException
 	 */
 	private boolean unzipSessionFromURL() throws IOException, JAXBException {
+	
+		// restore vizmap.props
+		Cytoscape.firePropertyChange(Cytoscape.SESSION_LOADED, null, vizmapFileURL);
 
-		restoreVizmap(vizmapFileURL);
+		// restore cytoscape properties
+		CytoscapeInit.getProperties().load( cytoscapePropsURL.openStream() );
+
 		loadCySession(cysessionFileURL);
 
 		// Set VS for each network view
@@ -223,14 +234,17 @@ public class CytoscapeSessionReader {
 		String cysessionFileName = null;
 
 		for (Enumeration e = cysFile.entries(); e.hasMoreElements();) {
-			String curEntry = e.nextElement().toString();
+			ZipEntry zent = (ZipEntry)e.nextElement();
+			String curEntry = zent.toString(); 
 			if (curEntry.endsWith("xml")) {
 				cysessionFileName = curEntry;
 
 			} else if (curEntry.endsWith("vizmap.props")) {
 				// We should restore VIZMAP first since it will be used by
 				// Graph Layout.
-				restoreVizmap(curEntry);
+				Cytoscape.firePropertyChange(Cytoscape.SESSION_LOADED, null, fileName);
+			} else if (curEntry.endsWith("cytoscape.props")) {
+				CytoscapeInit.getProperties().load( cysFile.getInputStream(zent) );	
 			}
 		}
 
@@ -251,16 +265,6 @@ public class CytoscapeSessionReader {
 		}
 
 		return true;
-	}
-
-	private void restoreVizmap(String vizmapName) throws IOException {
-		// Tell the target file name to CalculatorCatalog
-		Cytoscape.firePropertyChange(Cytoscape.SESSION_LOADED, null, fileName);
-	}
-
-	private void restoreVizmap(URL vizmapURL) throws IOException {
-		// Tell the target file name to CalculatorCatalog
-		Cytoscape.firePropertyChange(Cytoscape.SESSION_LOADED, null, vizmapURL);
 	}
 
 	private boolean loadCySession(Object cysessionSource) throws JAXBException,
