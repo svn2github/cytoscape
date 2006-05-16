@@ -4,6 +4,7 @@ import cytoscape.geom.rtree.RTree;
 import cytoscape.geom.spacial.MutableSpacialIndex2D;
 import cytoscape.geom.spacial.SpacialEntry2DEnumerator;
 import cytoscape.graph.fixed.FixedGraph;
+import cytoscape.render.immed.EdgeAnchors;
 import cytoscape.render.immed.GraphGraphics;
 import cytoscape.render.stateful.GraphLOD;
 import cytoscape.render.stateful.GraphRenderer;
@@ -92,6 +93,7 @@ public class DGraphView implements GraphView, Printable
     m_canvas = new InnerCanvas(m_lock, this);
     m_selectedNodes = new IntBTree();
     m_selectedEdges = new IntBTree();
+    addGraphViewChangeListener(new EdgeSelectListener());
   }
 
   public GraphPerspective getGraphPerspective()
@@ -1132,5 +1134,29 @@ public class DGraphView implements GraphView, Printable
     getCanvas().removeNodeContextMenuListener(l);
   }
   // AJK: 04/27/06 END
+
+  private final class EdgeSelectListener implements GraphViewChangeListener
+  {
+    public void graphViewChanged(GraphViewChangeEvent evt)
+    {
+      if (evt.getType() == GraphViewChangeEvent.EDGES_SELECTED_TYPE) {
+        final int[] selectedEdges = evt.getSelectedEdgeIndices();
+        synchronized (m_lock) {
+          final float[] arr = new float[2];
+          for (int i = 0; i < selectedEdges.length; i++) {
+            final EdgeAnchors anchors =
+              m_edgeDetails.anchors(~selectedEdges[i]);
+            for (int j = 0; j < anchors.numAnchors(); j++) {
+              anchors.getAnchor(j, arr, 0);
+              final int newNode = getRootGraph().createNode();
+              m_drawPersp.restoreNode(newNode);
+              m_spacial.insert(~newNode, arr[0] - 3.0f, arr[1] - 3.0f,
+                               arr[0] + 3.0f, arr[1] + 3.0f);
+            } } }
+      }
+      else if (evt.getType() == GraphViewChangeEvent.EDGES_UNSELECTED_TYPE) {
+      }
+    }
+  }
 
 }
