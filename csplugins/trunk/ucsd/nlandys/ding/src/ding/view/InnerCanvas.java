@@ -27,7 +27,7 @@ import java.awt.geom.Line2D;
 import java.awt.geom.PathIterator;
 import java.awt.image.BufferedImage;
 
-// AJK: 04/02/06 BEGIN                                                          
+// AJK: 04/02/06 BEGIN
 import phoebe.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -41,8 +41,8 @@ import java.awt.*;
 import java.util.*;
 import java.awt.event.*;
 
-// AJK: 04/26/06 BEGIN                                                          
-//    for tooltips                                                              
+// AJK: 04/26/06 BEGIN
+//    for tooltips
 import javax.swing.AbstractAction;
 import javax.swing.JPopupMenu;
 import javax.swing.JToolTip;
