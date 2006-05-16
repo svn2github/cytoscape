@@ -4,15 +4,11 @@
 package linkout;
 
 import cytoscape.*;
-//import cytoscape.view.*;
 import cytoscape.plugin.*;
 import ding.view.*;
 
 import javax.swing.*;
-import java.awt.event.*;
-import java.io.*;
 import java.awt.*;
-import java.beans.*;
 
 /**
  * Linkout plugin for customized url links
@@ -66,7 +62,6 @@ public class LinkOutPlugin
 
         try{
             ((DGraphView)Cytoscape.getCurrentNetworkView()).addNodeContextMenuListener(this);
-            System.out.println("Linkout added to context menu listener");
         }
         catch (ClassCastException e){
             System.out.println(e.getMessage());
@@ -75,8 +70,6 @@ public class LinkOutPlugin
     }
 
     public void addNodeContextMenuItems (Point pt, Object nodeView, JPopupMenu menu){
-
-        System.out.println("Calling addNodeContextMenuItems");
         LinkOut lo= new LinkOut();
         if(menu==null){
             menu=new JPopupMenu();
@@ -87,6 +80,9 @@ public class LinkOutPlugin
 
 /*
 $Log$
+Revision 1.2  2006/05/16 22:21:40  betel
+Corrections to work with new nodeContextMenuListener
+
 Revision 1.1  2006/05/11 22:42:28  betel
 Initial deposit of linkout to pre-coreplugins
 

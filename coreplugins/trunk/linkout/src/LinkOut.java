@@ -4,21 +4,13 @@
 package linkout;
 
 import cytoscape.*;
-//import cytoscape.view.*;
 import cytoscape.util.*;
-//import cytoscape.init.*;
 import java.util.*;
-//import giny.model.*;
-//import giny.view.*;
-//import phoebe.*;
-import ding.view.*;
-//import edu.umd.cs.piccolo.*;
-//import edu.umd.cs.piccolo.activities.*;
+import giny.view.*;
+//import ding.view.*;
 import javax.swing.*;
 import java.awt.event.*;
 import java.io.*;
-//import java.awt.*;
-
 
 /**
 * Generates links to external web pages specified in the cytoscape.props file.
@@ -54,17 +46,15 @@ public class LinkOut {
 
     /**
     * Fills the URL hash map with the <key> = <values> from cytoscape.props file
-    * @param args
-    * @param PNode object
+    * @param Object object
     * @return none
     */
 //    public static JMenuItem AddLinks(Object[] args, PNode node){
     public static JMenuItem AddLinks(Object node){
 
-        /*CyPropertiesReader propReader = new CyPropertiesReader("linkout.props");
-        propReader.readProperties(propReader.getPropertiesLocation());
-        Properties prop=propReader.getProperties();*/
-        System.out.println("linkout.AddLinks called with node "+((DNodeView)node).getLabel().getText());
+
+        System.out.println("linkout.AddLinks called with node "+((NodeView)node).getLabel().getText());
+        //System.out.println("linkout.AddLinks called with node "+node.getClass().getName());
         ReadProperties(propertiesLocation);
 
         JMenu top_menu=new JMenu("LinkOut");
@@ -88,15 +78,10 @@ public class LinkOut {
                 String nodelabel;
 
                 //final PNode mynode=node;
-                final DNodeView mynode=(DNodeView)node;
-                //TODO- remove if statement
-                if (mynode instanceof DNodeView){
-                    nodelabel=( (DNodeView)mynode).getLabel().getText();
-                }
+                final NodeView mynode=(NodeView)node;
 
-                else { //TODO find alternate name
-                    nodelabel="SomethingSomething";
-                }
+                //node label
+                nodelabel=mynode.getLabel().getText();
 
                 //Replace %ID% mark with the node label
                 final String fUrl=url.replaceFirst("%ID%",nodelabel);
@@ -302,7 +287,7 @@ public class LinkOut {
         if (!propsFound){
             System.out.println("Couldn't find linkout.props file in "+System.getProperty ("user.dir") +
                     ", "+  System.getProperty ("CYTOSCAPE_HOME") +
-                    "or ~/.cytoscape");
+                    " or in ~/.cytoscape");
         }
 
     }
@@ -312,6 +297,9 @@ public class LinkOut {
 
 /*
 $Log$
+Revision 1.2  2006/05/16 22:21:40  betel
+Corrections to work with new nodeContextMenuListener
+
 Revision 1.1  2006/05/11 22:42:28  betel
 Initial deposit of linkout to pre-coreplugins
 

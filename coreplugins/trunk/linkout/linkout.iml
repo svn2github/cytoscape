@@ -13,7 +13,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/cytoscape-geom-rtree.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/cytoscape.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -22,7 +22,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/jaxb-impl.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/violinstrings-1.0.2.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -31,7 +31,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/freehep-graphicsio-gif.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/sax.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -40,7 +40,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/jfreechart-common-0.9.5.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/getopt.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -49,7 +49,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/cytoscape-geom-spacial.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/colt.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -58,7 +58,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/xsdlib.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/jaxb-libs.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -67,7 +67,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/sax.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/commons-cli-1.x-cytoscape-custom.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -76,7 +76,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/junit.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/namespace.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -85,7 +85,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/coltginy.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/jaxb-api.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -94,7 +94,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/xml-apis.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/fing.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -103,7 +103,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/glf.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/data-aux.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -112,7 +112,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/jaxb-xjc.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/dom.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -121,7 +121,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/freehep-graphicsio.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/com-nerius-math-xform.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -130,7 +130,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/com-nerius-math-xform.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/xalan.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -139,7 +139,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/colt.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/swingunit.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -148,7 +148,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/freehep-graphicsio-ps.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/freehep-graphicsio-pdf.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -157,7 +157,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/jaxb-libs.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/cytoscape-cruft-obo.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -166,7 +166,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/jdom.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/xercesImpl-jwsdp.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -175,7 +175,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/dom.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/cytoscape-render-export.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -184,7 +184,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/wizard.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/cytoscape-graph-dynamic.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -193,7 +193,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/cytoscape-graph-dynamic.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/relaxngDatatype.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -202,7 +202,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/looks-1.1.3.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/xsdlib.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -211,7 +211,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/cytoscape-graph-legacy.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/jaxb-xjc.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -220,7 +220,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/xalan.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/freehep-base.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -229,7 +229,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/getopt.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/cytoscape-graph-legacy.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -238,7 +238,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/cytoscape-graph-layout.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/glf.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -247,7 +247,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/jaxb-api.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/xml-apis.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -256,7 +256,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/freehep-base.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/swing-layout-1.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -265,7 +265,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/concurrent.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/xercesImpl.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -274,7 +274,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/cytoscape-graph-fixed.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/cytoscape-render-immed.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -283,7 +283,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/cytoscape-render-immed.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/cytoscape-render-stateful.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -292,7 +292,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/relaxngDatatype.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/xercesImpl-new.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -301,7 +301,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/swing-layout-1.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/jaxb-impl.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -310,7 +310,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/jax-qname.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/freehep-graphicsio-gif.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -319,7 +319,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/jhall.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/jdom.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -328,7 +328,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/xmlParserAPIs.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/freehep-graphicsio.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -337,7 +337,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/namespace.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/coltginy.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -346,7 +346,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/xercesImpl.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/jnlp.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -355,7 +355,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/jnlp.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/freehep-graphics2d.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -364,7 +364,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/freehep-graphicsio-swf.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/jhall.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -373,7 +373,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/freehep-graphicsio-pdf.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/xmlParserAPIs.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -382,7 +382,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/xercesImpl-jwsdp.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/jax-qname.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -391,7 +391,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/cytoscape-cruft-obo.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/concurrent.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -400,7 +400,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/cytoscape-task.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/phoebe.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -409,7 +409,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/xercesImpl-new.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/exesto.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -418,7 +418,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/freehep-graphicsio-svg.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/piccolox.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -427,7 +427,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/cytoscape-render-export.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/cytoscape-graph-fixed.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -436,7 +436,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/ding.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/freehep-graphicsio-swf.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -445,7 +445,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/violinstrings-1.0.2.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/cytoscape-geom-spacial.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -454,7 +454,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/swingunit.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/junit.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -463,7 +463,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/fing.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/cytoscape-util-intr.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -472,7 +472,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/cytoscape-render-stateful.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/cytoscape-task.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -481,7 +481,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/giny.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/piccolo.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -490,7 +490,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/jfreechart-0.9.20.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/freehep-graphicsio-ps.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -499,7 +499,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/tclib.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/wizard.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -508,7 +508,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/piccolo.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/looks-1.1.3.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -517,7 +517,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/cytoscape-util-intr.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/cytoscape-geom-rtree.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -526,7 +526,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/commons-cli-1.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/tclib.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -535,7 +535,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/freehep-graphics2d.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/giny.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -544,7 +544,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/piccolox.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/freehep-graphicsio-svg.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -553,7 +553,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/lib/phoebe.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/cytoscape-graph-layout.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -562,7 +562,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../cytoscape/cytoscape.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../cabernet_temp/cytoscape/lib/ding.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
