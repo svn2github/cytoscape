@@ -297,32 +297,30 @@ public class CytoscapeSessionWriter {
 	}
 
 	public void preparePropFiles() {
-		// Prepare vizmap
 
-		Cytoscape.firePropertyChange(Cytoscape.SAVE_VIZMAP_PROPS, null, null);
-
+		// Prepare vizmap properties file
 		VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
 		CalculatorCatalog catalog = vizmapper.getCalculatorCatalog();
 
 		vizProp = new File(VIZMAP_FILE);
 		CalculatorIO.storeCatalog(catalog, vizProp);
 
-		// Prepare property file
-        FileOutputStream output = null;
-        try {
+		// Prepare cytoscape properties file
+        	FileOutputStream output = null;
+		try {
 			cyProp = new File(CYPROP_FILE);
 			output = new FileOutputStream(cyProp);
 			prop = CytoscapeInit.getProperties();
 			prop.store(output, "Cytoscape Property File");
 		} catch (Exception ex) {
-			System.out.println("Cytoscape.Props Write error");
+			System.out.println("session_cytoscape.props Write error");
 			ex.printStackTrace();
 		} finally {
-            if (output != null) {
-                try {
-                    output.close();
-                } catch (IOException ioe) {
-			    }
+		if (output != null) {
+               		try {
+				output.close();
+			} catch (IOException ioe) {
+		}
             }
         }
 
