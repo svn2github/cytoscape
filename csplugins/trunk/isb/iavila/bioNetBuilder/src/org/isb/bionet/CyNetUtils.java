@@ -38,8 +38,10 @@ public class CyNetUtils {
         System.out.println("CyNetUtils.makeNewNetwork: Num node_ids = " + node_ids.size() + " num interactions = " + interactions.size());
         
         CyNetwork net = null;
-        IntArrayList nodes = new IntArrayList();
-        IntArrayList edges = new IntArrayList();
+        //IntArrayList nodes = new IntArrayList();
+        //IntArrayList edges = new IntArrayList();
+        List nodeList = new ArrayList();
+        List edgeList = new ArrayList();
         HashSet nodeIDs = new HashSet();
         HashSet edgeIDs = new HashSet();
         
@@ -52,7 +54,8 @@ public class CyNetUtils {
                 throw new IllegalStateException("Could not create/find node with ID = " + nodeID);
             }
             nodeIDs.add(node.getIdentifier());
-            nodes.add(node.getRootGraphIndex());
+            //nodes.add(node.getRootGraphIndex());
+            nodeList.add(node);
         }
         
         System.out.println("CyNetUtilities.makeNewNetwork: Created " + nodeIDs.size() + " nodes from starting nodes.");
@@ -63,20 +66,24 @@ public class CyNetUtils {
             Hashtable interaction = (Hashtable)it.next();
             CyEdge edge = createEdge(interaction);
             if(edge == null){continue;}
-            int sourceIndex = edge.getSource().getRootGraphIndex(); 
-            int targetIndex = edge.getTarget().getRootGraphIndex();
-            if(!nodes.contains(sourceIndex)) nodes.add(sourceIndex);
-            if(!nodes.contains(targetIndex)) nodes.add(targetIndex);
-            edges.add(edge.getRootGraphIndex());
+            //int sourceIndex = edge.getSource().getRootGraphIndex(); 
+            //int targetIndex = edge.getTarget().getRootGraphIndex();
+            if(!nodeList.contains(edge.getSource())) nodeList.add(edge.getSource());
+            if(!nodeList.contains(edge.getTarget())) nodeList.add(edge.getTarget());
+            //if(!nodes.contains(sourceIndex)) nodes.add(sourceIndex);
+            //if(!nodes.contains(targetIndex)) nodes.add(targetIndex);
+            //edges.add(edge.getRootGraphIndex());
+            edgeList.add(edge);
             edgeIDs.add(edge.getIdentifier());
             nodeIDs.add(edge.getSource().getIdentifier());
             nodeIDs.add(edge.getTarget().getIdentifier());
         }//whie it.hasNext
         
         // Create the network with the nodes and edges
-        nodes.trimToSize();
-        edges.trimToSize();
-        net = Cytoscape.createNetwork(nodes.elements(), edges.elements(), networkName);
+        //nodes.trimToSize();
+        //edges.trimToSize();
+        //net = Cytoscape.createNetwork(nodes.elements(), edges.elements(), networkName);
+        net = Cytoscape.createNetwork(nodeList,edgeList,networkName);
         setNodeLabelAndAliases(net,nodeIDs,synClient,labelOps);
         createAttributes(nodeIDs,edgeIDs,synClient,atts);
         
@@ -176,8 +183,10 @@ public class CyNetUtils {
             }
         }//while it
         edges.trimToSize();
-        net.restoreNodes(nodes.elements());
-        net.restoreEdges(edges.elements());
+        if(nodes.size() > 0)
+            net.restoreNodes(nodes.elements());
+        if(edges.size() > 0)
+            net.restoreEdges(edges.elements());
       
         setNodeLabelAndAliases(net,nodeIDs,synClient,labelOps);
         createAttributes(nodeIDs,edgeIDs,synClient,atts);
@@ -229,7 +238,7 @@ public class CyNetUtils {
         // For testing:
         CyEdge edge = Cytoscape.getCyEdge(node1, node2, Semantics.INTERACTION, type, false);
         if(edge != null){
-            //System.out.println("Edge (" + node1.getIdentifier() + " " + type + " " + node2.getIdentifier() + ") exists.");
+            System.out.println("Edge [" + node1.getIdentifier() + " " + type + " " + node2.getIdentifier() + "] exists:" + edge.getIdentifier());
             edges++;
         }
         edge = Cytoscape.getCyEdge(node1, node2, Semantics.INTERACTION, type, true);
@@ -237,9 +246,10 @@ public class CyNetUtils {
         if(edge == null){
             throw new IllegalStateException("CyEdge with nodes " + node1 + " and " + node2 + " of type " + type + " is null!");
             
-        }
+        }//else{
+        //    System.err.println("Created edge " + edge);
+        //}
        
-        
         // Now lets see what other information the interaction has to set as an edge/node attribute
         Object [] keys = interaction.keySet().toArray();
         for(int i = 0; i < keys.length; i++){

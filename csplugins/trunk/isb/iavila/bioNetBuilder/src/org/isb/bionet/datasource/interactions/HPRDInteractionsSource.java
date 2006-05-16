@@ -98,26 +98,35 @@ public class HPRDInteractionsSource extends SimpleInteractionsSource implements 
     public Vector makeInteractions (ResultSet rs){
         Vector interactions = new Vector();
         try{
+            String [] unknownCols = getUnknownColumnNames(rs);
             while(rs.next()){
-               String i1 =  rs.getString(1);
+               String i1 =  rs.getString(SimpleInteractionsSource.INTERACTOR1);
                int index = i1.indexOf(":");
                
                if(index < 0){
                    i1 = SynonymsSource.REFSEQ_ID + ":" + i1;
                }
                
-               String i2 =  rs.getString(3);
+               String i2 =  rs.getString(SimpleInteractionsSource.INTERACTOR2);
                index = i2.indexOf(":");
                if(index < 0){
                    i2 = SynonymsSource.REFSEQ_ID + ":" + i2;
                }
                
-               String type = rs.getString(2);
+               String type = rs.getString(SimpleInteractionsSource.INTERACTION_TYPE);
                Hashtable intr = new Hashtable();
                intr.put(INTERACTOR_1, i1);
                intr.put(INTERACTOR_2, i2);
-               intr.put(INTERACTION_TYPE, type);
+               intr.put(InteractionsDataSource.INTERACTION_TYPE, type);
                intr.put(SOURCE, NAME);
+               
+               // Add the rest of the columns that we don't recognize
+               for(int i = 0; i < unknownCols.length; i++){
+                   String value = rs.getString(unknownCols[i]);
+                   if(value.length() > 0)
+                       intr.put(unknownCols[i],value);
+               }
+            
                interactions.add(intr);
             }
         }catch(Exception e){

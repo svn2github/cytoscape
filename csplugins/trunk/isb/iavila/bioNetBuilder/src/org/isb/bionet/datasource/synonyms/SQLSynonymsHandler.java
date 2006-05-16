@@ -719,34 +719,60 @@ public class SQLSynonymsHandler extends SQLDBHandler implements SynonymsSource {
     }
     
     protected Hashtable refseqToGi (Vector ids){
+        
         Iterator it = ids.iterator();
         if(!it.hasNext()) return new Hashtable(); 
-        String inStatement = "";
+        String inStatementForProtIds = "";
+        String inStatementForNucleotideIds = "";
+        
         while(it.hasNext()){
             String id = (String)it.next();
             int index = id.indexOf(REFSEQ_ID + ":");
             if(index >= 0){
                 id = id.substring(index + REFSEQ_ID.length()+ 1);
-                if(inStatement.length() == 0) inStatement = "\"" + id + "\"";
-                else inStatement += ",\"" + id + "\"";
+                int index2 = id.indexOf("P_");
+                if(index2 >= 0){
+                    if(inStatementForProtIds.length() == 0) inStatementForProtIds = "\"" + id + "\"";
+                    else inStatementForProtIds += ",\"" + id + "\"";
+                }else{
+                    if(inStatementForNucleotideIds.length() == 0) inStatementForNucleotideIds = "\"" + id + "\"";
+                    else inStatementForNucleotideIds += ",\"" + id + "\"";
+                }
             }
         }//while
-        if(inStatement.length() == 0) return new Hashtable();
-        String sql = "SELECT accession, protgi FROM refseq_accession WHERE accession IN (" + inStatement + ")";
-        ResultSet rs = query(sql);
         Hashtable accToGi =  new Hashtable();
+        String sql = "";
+        ResultSet rs = null;
+        if(inStatementForProtIds.length() > 0){
+            sql = "SELECT accession, protgi FROM refseq_accession WHERE accession IN (" + inStatementForProtIds + ")";
+            rs = query(sql);
+            try{
+                while(rs.next()){
+                    String acc = REFSEQ_ID + ":" + rs.getString(1);
+                    String gi = GI_ID + ":" + rs.getString(2);
+                    Vector gis = (Vector)accToGi.get(acc);
+                    if(gis == null) { gis = new Vector(); accToGi.put(acc,gis);}
+                    gis.add(gi);
+                }
+            }catch(Exception e){
+                e.printStackTrace();
+                return new Hashtable();
+            }
+        }
+        
+        if(inStatementForNucleotideIds.length() == 0) return accToGi;
+        sql = "SELECT codedby, protgi FROM refseq_codedby WHERE codedby IN (" + inStatementForNucleotideIds + ")";
+        rs = query(sql);
         try{
             while(rs.next()){
-                String acc = REFSEQ_ID + ":" + rs.getString(1);
+                String codedBy = REFSEQ_ID + ":" + rs.getString(1);
                 String gi = GI_ID + ":" + rs.getString(2);
-                Vector gis = (Vector)accToGi.get(acc);
-                if(gis == null) { gis = new Vector(); accToGi.put(acc,gis);}
+                Vector gis = (Vector)accToGi.get(codedBy);
+                if(gis == null) { gis = new Vector(); accToGi.put(codedBy,gis);}
                 gis.add(gi);
             }
-        }catch(Exception e){
-            e.printStackTrace();
-            return new Hashtable();
-        }
+        }catch(Exception e){e.printStackTrace(); return new Hashtable();}
+        
         return accToGi;
     }
     

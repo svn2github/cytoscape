@@ -18,6 +18,7 @@ import org.isb.bionet.gui.ServerConnectionDialog;
 import org.isb.bionet.gui.wizard.*;
 import org.isb.iavila.ontology.xmlrpc.*;
 import java.io.IOException;
+import java.util.Properties;
 
 /**
  * 
@@ -26,8 +27,8 @@ import java.io.IOException;
 public class BioNetPlugin extends CytoscapePlugin {
     
     public static final String VERSION = "BETA";
-    public static final String PROPS_FILE_ARG_SHORT = "-xr";
-    public static final String PROPS_FILE_ARG_LONG = "--xml-rpc-props";
+    public static final String PROPS_FILE_KEY_SHORT = "xr";
+    public static final String PROPS_FILE_KEY_LONG = "xml-rpc-props";
     protected InteractionDataClient interactionsClient;
     protected GOClient goClient;
     protected SynonymsClient synClient;
@@ -67,14 +68,27 @@ public class BioNetPlugin extends CytoscapePlugin {
      * Tries to find plugin arguments from the Cytoscape command line and handles them appropriately
      */
     protected void parsePluginArgs (){
-        String [] args = CytoscapeInit.getArgs();
-        for(int i = 0; i < args.length; i++){
-            if((args[i].equals(PROPS_FILE_ARG_LONG) || args[i].equals(PROPS_FILE_ARG_SHORT)) && i+1 < args.length){
-                String xmlRpcPropsFilePath = args[i+1];
-                System.out.println("Reading properties from " + xmlRpcPropsFilePath);
-                DataClientFactory.readProperties(xmlRpcPropsFilePath);
-            }
-        }//for i
+        
+        Properties props = CytoscapeInit.getProperties();
+        String xmlRpcPropsFilePath = null;
+        if(props.containsKey(PROPS_FILE_KEY_LONG)){
+            xmlRpcPropsFilePath = (String)props.get(PROPS_FILE_KEY_LONG);
+        }else if(props.containsKey(PROPS_FILE_KEY_SHORT)){
+            xmlRpcPropsFilePath = (String)props.get(PROPS_FILE_KEY_SHORT);
+        }
+        if(xmlRpcPropsFilePath != null){
+            System.out.println("Reading properties from " + xmlRpcPropsFilePath);
+            DataClientFactory.readProperties(xmlRpcPropsFilePath);
+        }
+        
+//        String [] args = CytoscapeInit.getArgs();
+//        for(int i = 0; i < args.length; i++){
+//            if((args[i].equals(PROPS_FILE_ARG_LONG) || args[i].equals(PROPS_FILE_ARG_SHORT)) && i+1 < args.length){
+//                String xmlRpcPropsFilePath = args[i+1];
+//                System.out.println("Reading properties from " + xmlRpcPropsFilePath);
+//                DataClientFactory.readProperties(xmlRpcPropsFilePath);
+//            }
+//        }//for i
     }
     
     /**

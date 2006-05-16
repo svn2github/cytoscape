@@ -23,15 +23,43 @@ import org.isb.bionet.datasource.synonyms.*;
  * | taxid2          | int(11)     | YES  | MUL | NULL    |       |
  * +-----------------+-------------+------+-----+---------+-------+
  * <p>
- * Interactions sources can extend this class to add more specific behaviour.
+ * Interactions sources can extend this class to add more specific behaviour, and, the type of id for interactors is RefSeq.<br>
+ * It is OK if the interactions table contains more columns than the ones specified above, as long as it contains id,i1,interactionType,i2,taxid1,taxid2
  * 
  * @author Iliana Avila-Campillo
  *
  */
 public class SimpleInteractionsSource extends SQLDBHandler implements InteractionsDataSource {
     
+    /**
+     * The name of this data source
+     */
     public static final String NAME = "SimpleInteractionsSource";
+    /**
+     * The type of ID that this datasource expects interactors to be in
+     */
     public static final String ID_TYPE = SynonymsSource.REFSEQ_ID;
+    /**
+     * The name of the columnin the interactions table that represents interactor1 in an interaction
+     */
+    public static final String INTERACTOR1 = "i1";
+    /**
+     * The name of the column in the interactions table that represents interactor2 in an interaction
+     */
+    public static final String INTERACTOR2 = "i2";
+    /**
+     * The name of the column in the interactions table that represents the interaction type 
+     */
+    public static final String INTERACTION_TYPE = "interactionType";
+    /**
+     * The name of the column in the interactions table that represents the taxid for interactor1
+     */
+    public static final String TAXID1 = "taxid1";
+    /**
+     * The name of the column in the interactions table that represents the taxid for interactor2
+     */
+    public static final String TAXID2 = "taxid2";
+    
     
     /**
      * Empty constructor
@@ -132,34 +160,77 @@ public class SimpleInteractionsSource extends SQLDBHandler implements Interactio
     }
     
     /**
+     * Finds and returns the names of columns in rs that are not one of INTERACTOR1, INTERACTOR2, and INTERACTION_TYPE
+     * @param rs a ResultSet of a query
+     * @return an array of String names of columns in rs that are not one of INTERACTOR1, INTERACTOR2, and INTERACTION_TYPE
+     */
+    protected String [] getUnknownColumnNames (ResultSet rs){
+        String [] unknownColNamesArray = new String[0];
+        try{
+            
+            int numCols = rs.getMetaData().getColumnCount();
+            List unknownColNames = new ArrayList();
+            for(int i = 1; i <= numCols; i++){
+                String colName = rs.getMetaData().getColumnName(i);
+                if(!colName.equals(INTERACTOR1) && !colName.equals(INTERACTOR2) && !colName.equals(INTERACTION_TYPE)){
+                    unknownColNames.add(colName);
+                }
+            }
+            if(unknownColNames.size() > 0){
+                unknownColNamesArray = (String[])unknownColNames.toArray(new String[unknownColNames.size()]);
+            }
+            
+        }catch(Exception e){e.printStackTrace(); return new String[0];}
+        
+        return unknownColNamesArray;
+    }
+    
+    /**
      * Sets SOURCE to this.NAME. Extending classes may want to write their own makeInteractions method
      * 
-     * @param rs has columns: i1, type, i2 (all strings)
-     * @return
+     * @param rs has columns with this labels: i1, type, i2 (all strings)
+     * @return a Vector of Hashtables, each representing an interaction
+     * <p>
+     * Each Hashtable representing an interactions contains these key,value pairs:<br>
+     * INTERACTOR_1 -->String<br>
+     * INTERACTOR_2 -->String<br>
+     * INTERACTION_TYPE --> String<br>
+     * SOURCE --> String<br>
+     * The rest of the columns in the given ResultSet are also included with a key equal to the column name.
      */
     public Vector makeInteractions (ResultSet rs){
         Vector interactions = new Vector();
         try{
+            
+            String [] unknownColNamesArray = getUnknownColumnNames(rs);
             while(rs.next()){
-               String i1 =  rs.getString(1);
+                
+               String i1 =  rs.getString(INTERACTOR1);
                int index = i1.indexOf(":");
                
                if(index < 0){
                    i1 = SynonymsSource.REFSEQ_ID + ":" + i1;
                }
                
-               String i2 =  rs.getString(3);
+               String i2 =  rs.getString(INTERACTOR2);
                index = i2.indexOf(":");
                if(index < 0){
                    i2 = SynonymsSource.REFSEQ_ID + ":" + i2;
                }
                
-               String type = rs.getString(2);
+               String type = rs.getString(INTERACTION_TYPE);
                Hashtable intr = new Hashtable();
                intr.put(INTERACTOR_1, i1);
                intr.put(INTERACTOR_2, i2);
                intr.put(INTERACTION_TYPE, type);
                intr.put(SOURCE, NAME);
+               
+               // Add the rest of the columns that we don't recognize
+               for(int i = 0; i < unknownColNamesArray.length; i++){
+                   String value = rs.getString(unknownColNamesArray[i]);
+                   intr.put(unknownColNamesArray[i],value);
+               }
+               
                interactions.add(intr);
             }
         }catch(Exception e){
@@ -171,7 +242,7 @@ public class SimpleInteractionsSource extends SQLDBHandler implements Interactio
     
     /**
      * Adds a REFSEQ_ID: prefix to each id in the result set. Extending classes may want to have their own makeInteractors method
-     * @param rs has 1 column (interactor)
+     * @param rs has 1 column for the interactor ID
      * @return a Vector of unique interactors
      */
     public Vector makeInteractors (ResultSet rs){
@@ -222,7 +293,7 @@ public class SimpleInteractionsSource extends SQLDBHandler implements Interactio
      * Each implementing class can add additional entries to the Hashtables
      */
     public Vector getAllInteractions (String taxid){
-        String sql = "SELECT i1,interactionType,i2 FROM interactions WHERE taxid1 = " + taxid + " AND taxid2 = " + taxid;
+        String sql = "SELECT * FROM interactions WHERE taxid1 = " + taxid + " AND taxid2 = " + taxid;
         ResultSet rs = query(sql);
         Vector interactions = makeInteractions(rs);
         return interactions;
@@ -362,7 +433,7 @@ public class SimpleInteractionsSource extends SQLDBHandler implements Interactio
         if(it.hasNext()) inInteractors = "\"" + (String)it.next() + "\"";
         while(it.hasNext()) inInteractors +=  ",\"" + (String)it.next() + "\"";
      
-        String sql = "SELECT i1,interactionType,i2 FROM interactions WHERE i1 IN (" +inInteractors + ") OR i2 IN (" + inInteractors + 
+        String sql = "SELECT * FROM interactions WHERE i1 IN (" +inInteractors + ") OR i2 IN (" + inInteractors + 
             ") AND taxid1 = " + taxid + " AND taxid2 = " + taxid;
         ResultSet rs = query(sql);
         Vector interactions = makeInteractions(rs);
@@ -438,7 +509,7 @@ public class SimpleInteractionsSource extends SQLDBHandler implements Interactio
         if(it.hasNext()) inInteractors = "\"" + (String)it.next() + "\"";
         while(it.hasNext()) inInteractors +=  ",\"" + (String)it.next() + "\"";
      
-        String sql = "SELECT i1,interactionType,i2 FROM interactions WHERE ( i1 IN (" +inInteractors + ") AND i2 IN (" + inInteractors + ") ) OR " +
+        String sql = "SELECT * FROM interactions WHERE ( i1 IN (" +inInteractors + ") AND i2 IN (" + inInteractors + ") ) OR " +
             "( i2 IN (" +inInteractors + ") AND i1 IN (" + inInteractors + ") ) AND taxid1 = " + taxid + " AND taxid2 = " + taxid;
         ResultSet rs = query(sql);
         Vector interactions = makeInteractions(rs);
