@@ -65,16 +65,40 @@ public class AnotationPanel extends javax.swing.JPanel {
 	private File oboFile = null;
 	private HashMap gaFiles = null;
 
-	private CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+	private CyAttributes nodeAttributes;
 
 	private BioDataServerUtil bdsu;
 	private HashMap taxonMap = null;
 	private HashMap nodeSpeciesMap;
 	private HashMap synoMap;
+	
+	private boolean isSpecies;
+	private HashMap originalSpecies;
 
 	/** Creates new form GeneOntologyPanel2 */
 	public AnotationPanel() {
 		initComponents();
+		originalSpecies = new HashMap();
+		nodeAttributes = Cytoscape.getNodeAttributes();
+		String[] attrNames = nodeAttributes.getAttributeNames();
+		isSpecies = false;
+		for(int i=0; i<attrNames.length; i++) {
+			if(attrNames[i].equals(Semantics.SPECIES)){
+				isSpecies = true;
+				break;
+			}
+		}
+		
+		if(isSpecies) {
+			Iterator it = Cytoscape.getRootGraph().nodesIterator();
+			while(it.hasNext()) {
+				CyNode node = (CyNode) it.next();
+				String nodeId = node.getIdentifier();
+				originalSpecies.put(nodeId, nodeAttributes.getStringAttribute(nodeId, Semantics.SPECIES));
+			}
+			
+		}
+		
 		nodeSpeciesMap = new HashMap();
 		synoMap = new HashMap();
 		gaFiles = new HashMap();
@@ -175,13 +199,13 @@ public class AnotationPanel extends javax.swing.JPanel {
 				.createTitledBorder("Header Preview"));
 		headerScrollPane.setViewportView(headerEditorPane);
 		headerEditorPane.setContentType("text/html");
-		
+
 		headerEditorPane
-				.setText("<html><body>" +
-						"Each node ID will be tested against each GO Symbol and GO Synonym for a match. <br><br>"
-						+ " NOTE: If Transfer checkbox is unchecked, each node ID <strong><font color=\"red\">must</font></strong> " +
-						"have defined a Species attribute that matches the GO Taxon ID." +
-						"</body></html>");
+				.setText("<html><body>"
+						+ "Each node ID will be tested against each GO Symbol and GO Synonym for a match. <br><br>"
+						+ " NOTE: If Transfer checkbox is unchecked, each node ID <strong><font color=\"red\">must</font></strong> "
+						+ "have defined a Species attribute that matches the GO Taxon ID."
+						+ "</body></html>");
 
 		// Layout information
 		org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(
@@ -394,8 +418,10 @@ public class AnotationPanel extends javax.swing.JPanel {
 
 	private void speciesCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {
 		if (speciesCheckBox.isSelected() == true) {
-			System.out.println("Sync!");
-			syncSpecies();
+			//System.out.println("Sync!");
+			syncSpecies(true);
+		} else {
+			syncSpecies(false);
 		}
 	}
 
@@ -413,23 +439,51 @@ public class AnotationPanel extends javax.swing.JPanel {
 
 	}
 
-	private void syncSpecies() {
+	
+	private void restoreSpecies() {
+		
+			ArrayList nodeNames = new ArrayList();
+			nodeAttributes.deleteAttribute(Semantics.SPECIES);
+			Iterator it = Cytoscape.getRootGraph().nodesIterator();
+			
+			String nodeName = null;
+			String entry = null;
+			CyNode node = null;
+			while (it.hasNext()) {
+				node = (CyNode) it.next();
+				nodeName = node.getIdentifier();
+				if(isSpecies == false) {
+					entry = nodeName + " = " + "No species data";
+				} else {
+					entry = nodeName + " = " + originalSpecies.get(nodeName).toString();
+				}
+				nodeNames.add(entry);
+			}
+			
+			nodeNameList.setModel(new NodeListModel(nodeNames));
+			nodeNameList.repaint();
+	
+		
+	}
+	
 
+	private void syncSpecies(boolean syncFlag) {
+
+		// Sync is Unchecked
+		if(syncFlag == false) {
+			restoreSpecies();
+			return;
+		}
+		
 		if (nodeSpeciesMap == null) {
 			return;
 		} else if (nodeSpeciesMap.size() == 0) {
 			return;
 		}
 
-		
-		
-		
 		ArrayList nodeNames = new ArrayList();
 		Iterator it = Cytoscape.getRootGraph().nodesIterator();
-		
-		
-		
-		
+
 		String nodeName = null;
 		String entry = null;
 		String speciesName = null;
@@ -560,8 +614,9 @@ public class AnotationPanel extends javax.swing.JPanel {
 				} else if (i == 10) {
 					row.add(rowString[i]);
 
-//					System.out.println("!!!!!!! Making SynoMap = " + row.get(0)
-//							+ " = " + rowString[i]);
+					// System.out.println("!!!!!!! Making SynoMap = " +
+					// row.get(0)
+					// + " = " + rowString[i]);
 					// This is the Synonym field.
 					String[] syno = rowString[i].split("\\|");
 					for (int j = 0; j < syno.length; j++) {
@@ -598,14 +653,7 @@ public class AnotationPanel extends javax.swing.JPanel {
 		ArrayList nodes = (ArrayList) Cytoscape.getCyNodesList();
 		ArrayList nodeNames = new ArrayList();
 		Iterator it = nodes.iterator();
-		boolean isSpecies = false;
-		String[] attributeNames = nodeAttributes.getAttributeNames();
-		for (int i = 0; i < attributeNames.length; i++) {
-			if (attributeNames[i].equals(Semantics.SPECIES)) {
-				isSpecies = true;
-				break;
-			}
-		}
+		
 
 		String nodeName = null;
 		String entry = null;

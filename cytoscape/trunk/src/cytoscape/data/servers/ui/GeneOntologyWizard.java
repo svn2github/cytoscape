@@ -118,9 +118,9 @@ public class GeneOntologyWizard {
 				.registerWizardPanel(OboPanelDescriptor.IDENTIFIER,
 						oboDescriptor);
 		
-		speciesDescriptor = new SpeciesPanelDescriptor();
-		wizard.registerWizardPanel(SpeciesPanelDescriptor.IDENTIFIER,
-				speciesDescriptor);
+//		speciesDescriptor = new SpeciesPanelDescriptor();
+//		wizard.registerWizardPanel(SpeciesPanelDescriptor.IDENTIFIER,
+//				speciesDescriptor);
 		
 		// Set the start panel
 		wizard.setCurrentPanel(SelectFormatPanelDescriptor.IDENTIFIER);
