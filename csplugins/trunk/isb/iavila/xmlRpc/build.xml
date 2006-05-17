@@ -66,38 +66,21 @@
 
     <!-- jar target -->
     <target name="jar" description="Creates a jar that contains only xmlRpc classes">
-     <mkdir dir="${jar}"/>
-     <jar jarfile="${jar}/xmlrpc.jar">
+     
+    	<mkdir dir="${jar}"/>
+    	
+    	<unjar overwrite="Yes" dest = "${build}">
+    	 <fileset dir = "${local.lib}">
+    		<include name="**/*.jar"/>
+    	 </fileset>
+    	</unjar>
+    	
+    	<jar jarfile="${jar}/xmlrpc.jar">
        <fileset dir="${build}"/>
      </jar>
     </target>
 	
-	<!-- dist target, DOES NOT WORK!!!!-->
-	<target name = "dist" depends="compile" description="Makes stand-alone jar of the plug-in for distribution, NOT WORKING">
-	 <mkdir dir = "${dist}"/>
-     
-	 <!-- unjar all of the jars that are in the local library -->
-     <unjar dest="${local.lib}/temp">
-	  <fileset dir="${local.lib}">
-	   <include name="**/*.jar"/>
-	  </fileset>
-	 </unjar>
-		
-	 <jar jarfile="${dist}/xmlrpc.jar"> 	
-	 	
-	 	<fileset dir="${local.lib}/temp">
-	      <include name="**/*.*"/>
-	    </fileset>
-	 	
-	 	<fileset dir="${build}">
-	 	  <include name="**/*.*"/>
-	 	</fileset>
-	 
-	 </jar>
-	 
-	 <delete dir = "${local.lib}/temp"/>
-	</target>
-
+	
 	<!-- Run a class MYCLASS (from the ${build} directory) with the command line 'MY ARGS' via:
 	             ant run -Dclass=${class} -Dargs='MY ARGS' -->
 	<target name="runserver" depends="jar">
@@ -113,13 +96,13 @@
 		    <echo message="Calling server.listServices..."/>
 		    <java classname="org.apache.xmlrpc.XmlRpcClientLite" fork="no" failonerror="no">
 		         <classpath refid="classpath"/>
-		    	     <arg line = "http://localhost:${server.args}"/>
+		    	     <arg line = "http://localhost:8081"/>
 		         <arg line="server.listServices"/>
 		    </java>
 			<echo message="Calling server.listServiceCommands server..."/>
 		    <java classname="org.apache.xmlrpc.XmlRpcClientLite" fork="no" failonerror="no">
 				  <classpath refid="classpath"/>
-				  <arg line = "http://localhost:${server.args}"/>
+				  <arg line = "http://localhost:8081"/>
 				  <arg line="server.listServiceCommands"/>
 			      <arg line = "server"/>
 		    </java>
@@ -127,7 +110,7 @@
 		    <echo message="Calling server.hasService interactions..."/>
 	        <java classname="org.apache.xmlrpc.XmlRpcClientLite" fork="no" failonerror="no">
 			      <classpath refid="classpath"/>
-				  <arg line = "http://localhost:${server.args}"/>
+				  <arg line = "http://localhost:8081"/>
 				  <arg line="server.hasService"/>
 				  <arg line = "interactions"/>
 		    </java>
@@ -135,7 +118,7 @@
 		    <echo message="Calling server.shutdown..."/>
 			<java classname="org.apache.xmlrpc.XmlRpcClientLite" fork="no" failonerror="no">
 				 <classpath refid="classpath"/>
-				 <arg line = "http://localhost:${server.args}"/>
+				 <arg line = "http://localhost:8081"/>
 			     <arg line="server.shutdown"/>
 			</java>
 		    <echo message = "---------- Done testing ----------"/>

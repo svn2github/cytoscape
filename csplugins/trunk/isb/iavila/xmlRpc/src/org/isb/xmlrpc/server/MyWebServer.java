@@ -3,12 +3,16 @@ package org.isb.xmlrpc.server;
 import java.io.IOException;
 import java.util.*;
 import java.lang.reflect.*;
+import java.net.InetAddress;
+import org.isb.xmlrpc.util.*;
+import utils.*;
 import org.apache.xmlrpc.WebServer;
 import org.apache.xmlrpc.SystemHandler;
 import org.apache.xmlrpc.XmlRpc;
+import org.apache.xmlrpc.XmlRpcServer;
 
-import org.isb.xmlrpc.util.*;
-import utils.*;
+// For 3.0
+//import org.apache.xmlrpc.webserver.*;
 
 /**
  * Class <code>MyWebServer</code>, keeps hashes of services (service name to
@@ -90,18 +94,34 @@ public class MyWebServer {
 	 *             if the web-server can't start on the specified port
 	 */
 	public MyWebServer(int port, String xmlrpc_props) throws IOException {
-
-		
-
+        // Default number of threads is 100, but I am not sure if this method is setting the
+        // number of threads for running handler's methods
+        //System.out.println("Num of threads = " + XmlRpc.getMaxThreads());
+        //XmlRpc.setMaxThreads(20);
+        //System.out.println("Num of threads after setting to 20 = " + XmlRpc.getMaxThreads());
+        
 		System.out.print("Attempting to start XML-RPC server on port " + port
 				+ "...");
-		webserver = new WebServer(port);
-		System.out.println("...success!");
+        
+		
+        //Try to set number of threads...
+        //XmlRpcServer xmlRpcServer = new XmlRpcServer();
+        //System.out.println("default num threads = " + xmlRpcServer.getMaxThreads());
+		//xmlRpcServer.setMaxThreads(100);
+		//System.out.println("new num threads = " + xmlRpcServer.getMaxThreads());
+        //System.out.println("getLocalHost() = " + InetAddress.getLocalHost());
+        //webserver = new WebServer(port,InetAddress.getLocalHost(),xmlRpcServer);// when done like this, host can't be http://localhost:8084
+        
+        webserver = new WebServer(port); 
+		
+        System.out.println("...success!");
 
 		System.out.print("Registering the server as a handler (service \""
 				+ SERVICE_NAME + "\")...");
-		webserver.addHandler(SERVICE_NAME, this);
-		System.out.println("...success!");
+
+        webserver.addHandler(SERVICE_NAME, this);
+		
+        System.out.println("...success!");
 
 		services = new Hashtable();
 		services.put(SERVICE_NAME, this);

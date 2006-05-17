@@ -27,7 +27,6 @@ public abstract class MyDataClient {
      * The actual client that sends requests to the server
      */
 	protected XmlRpcClient client;
-
 	/**
 	 * For multi-call settings
 	 */
@@ -41,6 +40,7 @@ public abstract class MyDataClient {
 	 */
 	public MyDataClient(String server_url) throws XmlRpcException,
 			java.net.MalformedURLException {
+        
 		client = new XmlRpcClient(server_url);
         System.out.println("Successfully created a client to server with URL = " + client.getURL());
 	}
@@ -63,7 +63,7 @@ public abstract class MyDataClient {
 		if (nCallsPerBatch > 0)
 			out = doMultiCall(method, params);
 		else
-			out = client.execute(method, params); // synchronous execute (waits until it gets a reponse from the server)
+			out = client.execute(method, params); // synchronous execute (waits until it gets a reponse from the server
             //out = client.executeAsync(method,params,AsyncObject); //asynchronous execute (returns immediately)
         }catch (XmlRpcException xmlex ){
             xmlex.printStackTrace();

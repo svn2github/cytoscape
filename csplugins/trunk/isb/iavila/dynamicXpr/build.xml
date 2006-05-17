@@ -8,12 +8,14 @@
    <property name = "jar"  location = "jar"/>
    <property name = "dist" location = "dist"/>
 	
+	<property name = "cytoscape22" value="../../../../cytoscape-v2.2"/>
+	<property name = "cytoscape22.plugins" value="../../../../cytoscape-v2.2/plugins/extras"/>	
 	<property name = "cytoscape21" value="../../../../C2.1/source"/>
     <property name = "cytoscapeCVS" value ="../../../../cytoscape"/>
     <property name = "cytoscape21.plugins" value ="../../../../C2.1/source/plugins"/> 
 	<property name = "cytoscapeCVS.plugins" value ="../../../../cytoscape/plugins"/>
-	<property name = "cytoscape" value = "${cytoscapeCVS}"/>
-	<property name = "cytoscape.plugins" value = "${cytoscapeCVS.plugins}"/>
+	<property name = "cytoscape" value = "${cytoscape22}"/>
+	<property name = "cytoscape.plugins" value = "${cytoscape22.plugins}"/>
 	
 	
    <path id = "classpath">
@@ -68,7 +70,7 @@
 		<fileset dir="${local.lib}/temp"/>
 		<fileset dir="${build}"/>
 	 </jar>
-	 <copy todir="${cytoscape.plugin.dir}" file="dist/dynxpr.jar"/>
+	 <copy todir="${cytoscape.plugins}" file="dist/dynxpr.jar"/>
 	 <delete dir = "${local.lib}/temp"/>
 	</target>
 

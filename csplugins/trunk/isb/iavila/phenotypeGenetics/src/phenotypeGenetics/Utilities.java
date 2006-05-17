@@ -46,10 +46,10 @@ public class Utilities {
     //  Cycle through the edges
     for(int i = 0; i < edges.length; i++){
       CyEdge testEdge = edges[i];
-      boolean edge12 = ( (node1 == testEdge.getSourceNode()) &&
-                         (node2 == testEdge.getTargetNode()) );
-      boolean edge21 = ( (node2 == testEdge.getSourceNode()) &&
-                         (node1 == testEdge.getTargetNode()) );
+      boolean edge12 = ( (node1 == testEdge.getSource()) &&
+                         (node2 == testEdge.getTarget()) );
+      boolean edge21 = ( (node2 == testEdge.getSource()) &&
+                         (node1 == testEdge.getTarget()) );
       if ( edge12 || edge21 ) {
         theEdge = testEdge;
       }

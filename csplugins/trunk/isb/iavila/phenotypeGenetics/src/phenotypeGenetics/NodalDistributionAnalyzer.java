@@ -92,9 +92,9 @@ public class NodalDistributionAnalyzer {
             }
             
             if(mode.isDirectional()){
-              if (node == edge.getSourceNode() ) {
+              if (node == edge.getSource() ) {
                 updateNodeDist( edgeType+"+", alleleName, nodeDistribution);
-              } else if ( node == edge.getTargetNode() ) {
+              } else if ( node == edge.getTarget() ) {
                 updateNodeDist( edgeType+"-", alleleName, nodeDistribution);
               } else {
                 throw new IllegalStateException(alleleName + " is neither source nor target.");

@@ -308,7 +308,7 @@ public class StatementCalculator{
       throw new IllegalStateException("edgeType " + edgeType + " had no Mode!");
     }
     if(mode.isDirectional()){
-      if(node == edge.getSourceNode()){ 
+      if(node == edge.getSource()){ 
         edgeType += "+";
       }else{ 
         edgeType += "-"; 

@@ -3,6 +3,7 @@ package org.isb.xmlrpc.handler.db;
 import java.sql.*;
 import java.util.*;
 
+
 /**
  * A handler for any SQL based database, it requires a fully described database
  * URL of the form jdbc:<subprotocol>:<subname>, and a JDBC driver for the
@@ -203,7 +204,9 @@ public class SQLDBHandler implements DBHandler {
         ResultSet rs = null;
         try {
             Statement st = this.connection.createStatement();
+            
             rs = st.executeQuery(sql_statement);
+            
             return rs;
         } catch (Exception e) {
             e.printStackTrace();

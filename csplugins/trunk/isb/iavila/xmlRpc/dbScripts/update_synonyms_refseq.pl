@@ -214,16 +214,32 @@ sub populateProteinTables(){
 				
 				#/coded_by="NC_001911.1:5718..7118"
 				#/coded_by="complement(NC_004988.1:5906..6484)"
-				if($line =~ /^\s+\/coded_by="complement/){
+				#/coded_by="join(NC_234122.1:432..4321)"
+				#/coded_by="join(complement(NC_423234.2:3432..1234)"
+				#/coded_by="complement(join..."
+				
+				if($line =~ m/\(/){
+					# contains at least one "("
 					chomp $line;
-					@fields = split /\(/,$line;
-					@fields2 = split /:/,$fields[1];
-					push @codedby, $fields2[0];
+					@fields = split /\(/, $line;
+					# the actual ID will be in positions 1 or 2
+					if($fields[1] =~ m/_/){
+						# get rid of the version and what comes after the version
+						$fields[1] =~ s/\.[0-9]+:.+$//g;
+						push @codedby,$fields[1];
+					}elsif($fields[2] =~ m/_/){
+						# get rid of the version and what comes after the version
+						$fields[2] =~ s/\.[0-9]+:.+$//g;
+						push @codedby,$fields[2];
+					}
+										
 				}else{
 					chomp $line;
 					@fields = split /=/,$line;
 					@fields2 = split /:/,$fields[1];
 					$fields2[0] =~ s/"//g;
+					# get rid of the version
+					$fields2[0] =~ s/\.[0-9]+$//g;
 					push @codedby, $fields2[0];
 				}
 			}elsif($line =~ /^\s+\/gene=/){

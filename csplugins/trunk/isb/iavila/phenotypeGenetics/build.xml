@@ -4,12 +4,13 @@
    <property name = "src" location = "src"/>
    <property name = "build" location = "build"/>
    <property name = "build.compiler" value = "modern"/>
-   <property name = "cytoscape.lib" location = "../../../../C2.1/cytoscape-v2.1"/>
+   <property name = "cytoscape.lib" location = "../../../../cytoscape-v2.2/"/>
+	
    <property name = "cytoscape.lib.dev" location = "../../../../cytoscape"/>
    <property name = "local.lib" location = "lib"/>
    <property name = "dist" location = "dist"/>
 
-   <property name="cytoscape.plugin.dir" value="../../../../C2.1/plugins"/>
+   <property name="cytoscape.plugin.dir" value="../../../../cytoscape-v2.2/plugins/extras"/>
 
    <path id = "classpath_compile">
        <fileset dir = "${cytoscape.lib}">

@@ -230,8 +230,9 @@ public class MutualInfoCalculator{
                                           nodeA_id + " does not exist in CyNetwork!");
         }
         
-        if ( nodeA == theEdge.getSourceNode() ) {
-          edgeTypeA = edgeType + "+";
+       // if ( nodeA == theEdge.getSourceNode() ) {
+        if(nodeA == theEdge.getSource()){
+         edgeTypeA = edgeType + "+";
           edgeTypeB = edgeType + "-";
           flagA = "s";
           flagB = "t";
@@ -523,10 +524,10 @@ public class MutualInfoCalculator{
     while ( !nodeFound ){
       iE ++;
       theEdge = edges[iE];
-      if ( ( (theEdge.getSourceNode() == allele1.getNode()) && 
-             (theEdge.getTargetNode() == allele2.getNode()) ) ||
-           ( (theEdge.getSourceNode() == allele2.getNode()) && 
-             (theEdge.getTargetNode() == allele1.getNode()) ) ) {
+      if ( ( (theEdge.getSource() == allele1.getNode()) && 
+             (theEdge.getTarget() == allele2.getNode()) ) ||
+           ( (theEdge.getSource() == allele2.getNode()) && 
+             (theEdge.getTarget() == allele1.getNode()) ) ) {
         nodeFound = true;
       }
     }
