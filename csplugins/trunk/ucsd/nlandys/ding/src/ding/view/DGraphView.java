@@ -1148,37 +1148,21 @@ public class DGraphView implements GraphView, Printable
     public void graphViewChanged(GraphViewChangeEvent evt)
     {
       if (evt.getType() == GraphViewChangeEvent.EDGES_SELECTED_TYPE ||
-          evt.getType() == GraphViewChangeEvent.EDGES_RESTORED_TYPE) {
+          evt.getType() == GraphViewChangeEvent.EDGES_RESTORED_TYPE)
+      {
         final int[] edges;
         if (evt.getType() == GraphViewChangeEvent.EDGES_SELECTED_TYPE) {
           edges = evt.getSelectedEdgeIndices(); }
         else { // EDGES_RESTORED_TYPE
           edges = evt.getRestoredEdgeIndices(); }
-        final float[] arr = new float[2];
         synchronized (m_lock) {
           for (int i = 0; i < edges.length; i++) {
             if (!getEdgeView(edges[i]).isSelected()) { continue; }
-            final EdgeAnchors anchors =
-              m_edgeDetails.anchors(~edges[i]);
-            for (int j = 0; j < anchors.numAnchors(); j++) {
-              anchors.getAnchor(j, arr, 0);
-              final int newNode = getRootGraph().createNode();
-              m_drawPersp.restoreNode(newNode);
-              m_spacial.insert(~newNode, arr[0] - 3.0f, arr[1] - 3.0f,
-                               arr[0] + 3.0f, arr[1] + 3.0f);
-              m_selectedAnchors.insert(newNode);
-              {
-                ArrayList list =
-                  (ArrayList) m_anchor1Map.get(new Integer(edges[i]));
-                if (list == null) {
-                  list = new ArrayList();
-                  m_anchor1Map.put(new Integer(edges[i]), list); }
-                list.add(new Integer(newNode));
-              }
-            } } }
+            drawAnchors(edges[i]); } }
       }
       else if (evt.getType() == GraphViewChangeEvent.EDGES_UNSELECTED_TYPE ||
-               evt.getType() == GraphViewChangeEvent.EDGES_HIDDEN_TYPE) {
+               evt.getType() == GraphViewChangeEvent.EDGES_HIDDEN_TYPE)
+      {
         final int[] edges;
         if (evt.getType() == GraphViewChangeEvent.EDGES_UNSELECTED_TYPE) {
           edges = evt.getUnselectedEdgeIndices(); }
@@ -1186,18 +1170,48 @@ public class DGraphView implements GraphView, Printable
           edges = evt.getHiddenEdgeIndices(); }
         synchronized (m_lock) {
           for (int i = 0; i < edges.length; i++) {
-            final ArrayList list =
-              (ArrayList) m_anchor1Map.remove(new Integer(edges[i]));
-            if (list == null) { continue; }
-            final Iterator elms = list.iterator();
-            while (elms.hasNext()) {
-              final int anchorNode = ((Integer) elms.next()).intValue();
-              m_selectedAnchors.delete(anchorNode);
-              m_spacial.delete(~anchorNode);
-              getRootGraph().removeNode(anchorNode);
-            } } }
+            undrawAnchors(edges[i]); } }
       }
     }
+  }
+
+  // Should synchronize around m_lock.
+  void drawAnchors(int edge)
+  {
+    float[] arr = null;
+    final EdgeAnchors anchors = m_edgeDetails.anchors(~edge);
+    if (anchors == null) { return; }
+    for (int j = 0; j < anchors.numAnchors(); j++) {
+      if (arr == null) { arr = new float[2]; }
+      anchors.getAnchor(j, arr, 0);
+      final int newNode = getRootGraph().createNode();
+      m_drawPersp.restoreNode(newNode);
+      m_spacial.insert(~newNode, arr[0] - 3.0f, arr[1] - 3.0f,
+                       arr[0] + 3.0f, arr[1] + 3.0f);
+      m_selectedAnchors.insert(newNode);
+      {
+        ArrayList list =
+          (ArrayList) m_anchor1Map.get(new Integer(edge));
+        if (list == null) {
+          list = new ArrayList();
+          m_anchor1Map.put(new Integer(edge), list); }
+        list.add(new Integer(newNode));
+      } }
+  }
+
+  // Should synchronize around m_lock.
+  boolean undrawAnchors(int edge)
+  {
+    final ArrayList list =
+      (ArrayList) m_anchor1Map.remove(new Integer(edge));
+    if (list == null) { return false; }
+    final Iterator elms = list.iterator();
+    while (elms.hasNext()) {
+      final int anchorNode = ((Integer) elms.next()).intValue();
+      m_selectedAnchors.delete(anchorNode);
+      m_spacial.delete(~anchorNode);
+      getRootGraph().removeNode(anchorNode); }
+    return true;
   }
 
 }
