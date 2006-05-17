@@ -280,8 +280,8 @@ public class NetworkBuilderWizard {
                     if(edgeSourcesPanel != null)
                         edgeSourcesPanel.setTaxids(taxonomyPanel.getSelectedSpeciesTaxids());
                       
-                      if(nodeSourcesPanel != null)
-                          nodeSourcesPanel.getCytoscapeGoDialog().setSelectedSpeciesTaxid((String)taxonomyPanel.getSelectedSpeciesTaxids().get(0));
+                      //if(nodeSourcesPanel != null)
+                          //    nodeSourcesPanel.getCytoscapeGoDialog().setSelectedSpeciesTaxid((String)taxonomyPanel.getSelectedSpeciesTaxids().get(0));
                       
                     if(onLastStep){
                         FINISH_ACTION.actionPerformed(event);
@@ -560,6 +560,7 @@ public class NetworkBuilderWizard {
         HashSet alternateIds = new HashSet();
         while(it.hasNext()){
             String gi = (String)it.next();
+            //System.err.println("Getting the ALTERNATE_UID_ATT for " + gi);
             String alternateGis = (String)nodeAtts.getStringAttribute(gi,CyNetUtils.ALTERNATE_UID_ATT);
             if(alternateGis == null) continue;
             String [] allGis = alternateGis.split("|");
@@ -758,11 +759,13 @@ public class NetworkBuilderWizard {
             while(it2.hasNext()){
                 obj = it2.next();
                 String id = (String)obj;
-                if(nodeAtts.getStringAttribute(id,"dataSource") != null) {
+                //System.err.println("Getting dataSource attribute value for " + id);
+                if(id != null && nodeAtts.getStringAttribute(id,"dataSource") != null) {
                     //System.out.println("dataSource attribute is already assigned for " + id);
                     continue;
                 }
-                nodeAtts.setAttribute(id,"dataSource",sourceName);
+                if(id != null)
+                    nodeAtts.setAttribute(id,"dataSource",sourceName);
             }//it2
         }//it
         

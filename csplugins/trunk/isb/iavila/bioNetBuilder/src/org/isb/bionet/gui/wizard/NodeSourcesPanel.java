@@ -89,7 +89,7 @@ public class NodeSourcesPanel extends JPanel {
                     Vector netNodes = new Vector();
                     while(it.hasNext()){
                         CyNode node = (CyNode)it.next();
-                        String nodeName = Cytoscape.getNodeAttributes().getStringAttribute(node.getIdentifier(), Semantics.CANONICAL_NAME);
+                        String nodeName = node.getIdentifier();//Cytoscape.getNodeAttributes().getStringAttribute(node.getIdentifier(), Semantics.CANONICAL_NAME);
                         if(!netNodes.contains(nodeName))
                             netNodes.add(nodeName);
                     }//while it
@@ -103,7 +103,8 @@ public class NodeSourcesPanel extends JPanel {
                     Vector netNodes = new Vector();
                     while(it.hasNext()){
                         CyNode node = (CyNode)it.next();
-                        String nodeName = Cytoscape.getNodeAttributes().getStringAttribute(node.getIdentifier(), Semantics.CANONICAL_NAME);
+                        String nodeName = node.getIdentifier();
+                        //Cytoscape.getNodeAttributes().getStringAttribute(node.getIdentifier(), Semantics.CANONICAL_NAME);
                         if(!netNodes.contains(nodeName))
                             netNodes.add(nodeName);
                     }//while it
@@ -139,9 +140,8 @@ public class NodeSourcesPanel extends JPanel {
     public Vector getAllNodes (){
        
         // TODO: Do checks: selected networks species must match to the species the user selected in this sesion
-        // TODO: Nodes from annotations!
-      
         Vector startingNodes = new Vector();
+        
         if(useList.isSelected()){
             Vector myListNodes = getNodesFromMyList();
             if(myListNodes != null) startingNodes.addAll(myListNodes);
@@ -154,9 +154,11 @@ public class NodeSourcesPanel extends JPanel {
                     Iterator it = nodeNets[i].nodesIterator();
                     while(it.hasNext()){
                         CyNode node = (CyNode)it.next();
-                        String nodeName = Cytoscape.getNodeAttributes().getStringAttribute(node.getIdentifier(), Semantics.CANONICAL_NAME);
-                        if(!startingNodes.contains(nodeName))
+                        //System.out.println(node.getIdentifier() + " = " + Cytoscape.getNodeAttributes().getStringAttribute(node.getIdentifier(), Semantics.CANONICAL_NAME));
+                        String nodeName = node.getIdentifier();
+                        if(nodeName != null && !startingNodes.contains(nodeName)){
                             startingNodes.add(nodeName);
+                        }
                     }//while it
                 }//for i
             }else{
@@ -165,8 +167,10 @@ public class NodeSourcesPanel extends JPanel {
                     Iterator it = nodeNets[i].getFlaggedNodes().iterator();
                     while(it.hasNext()){
                         CyNode node = (CyNode)it.next();
-                        String nodeName = Cytoscape.getNodeAttributes().getStringAttribute(node.getIdentifier(), Semantics.CANONICAL_NAME);
-                        if(!startingNodes.contains(nodeName))
+                        //System.out.println(node.getIdentifier() + " = " + Cytoscape.getNodeAttributes().getStringAttribute(node.getIdentifier(), Semantics.CANONICAL_NAME));
+                        String nodeName = node.getIdentifier(); 
+                        //Cytoscape.getNodeAttributes().getStringAttribute(node.getIdentifier(), Semantics.CANONICAL_NAME);
+                        if(nodeName != null && !startingNodes.contains(nodeName))
                             startingNodes.add(nodeName);
                     }//while it
                 }//for i
@@ -184,6 +188,7 @@ public class NodeSourcesPanel extends JPanel {
           startingNodes.addAll(this.taxonomyDialog.getGeneIDs());
         }
         
+        //System.err.println("getAllNodes returning " + startingNodes);
         return startingNodes;
     }
     
@@ -321,10 +326,12 @@ public class NodeSourcesPanel extends JPanel {
         annotsButton.addActionListener(new AbstractAction(){
             
             public void actionPerformed (ActionEvent event){
-                //JOptionPane.showMessageDialog(NodeSourcesPanel.this, "Not implemented yet!", "Oops!", JOptionPane.ERROR_MESSAGE);
                 if(annotationsDialog == null){
                     createAnnotationsDialog(goClient);
                 }
+                // set the species
+                //              if(nodeSourcesPanel != null)
+                getCytoscapeGoDialog().setSelectedSpeciesTaxid( (String)getTaxonomySearchDialog().getTaxonomyPanel().getSelectedSpeciesTaxids().get(0) );
                 annotationsDialog.pack();
                 annotationsDialog.setLocationRelativeTo(NodeSourcesPanel.this);
                 annotationsDialog.setVisible(true);

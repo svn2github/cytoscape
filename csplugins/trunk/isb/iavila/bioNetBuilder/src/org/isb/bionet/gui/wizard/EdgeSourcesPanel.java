@@ -263,6 +263,7 @@ public class EdgeSourcesPanel extends JPanel {
         Vector startingNodes = new Vector();
         if(this.nodes != null && this.nodes.size() > 0){
             startingNodes.addAll(this.nodes);
+            it = this.nodes.iterator();
             while(it.hasNext()){
                 String gi = (String)it.next();
                 String alternateGis = (String)nodeAtts.getStringAttribute(gi,CyNetUtils.ALTERNATE_UID_ATT);
@@ -272,6 +273,8 @@ public class EdgeSourcesPanel extends JPanel {
                     if(!startingNodes.contains(allGis[i])) startingNodes.add(allGis[i]);        
             }//while it
         }
+        
+        //System.err.println("startingNodes.size() = " + startingNodes.size() + " and this.nodes = " + this.nodes);
         
         // Get the taxid for the interactions
         if(this.taxids == null || taxids.size() == 0) return;  
@@ -320,8 +323,9 @@ public class EdgeSourcesPanel extends JPanel {
                     // Get their first neighbors
                     try{
                         // fnCB can only be selected if this.nodes has elements
+                        //System.err.println("getting fn, this.nodes = " + this.nodes);
                             if(args.size() > 0){
-                                adjacentNodes = this.interactionsClient.getFirstNeighbors(this.nodes,species,args, sourceClass);
+                                adjacentNodes = this.interactionsClient.getFirstNeighbors(this.nodes,species,args,sourceClass);
                             }else{
                                 adjacentNodes = this.interactionsClient.getFirstNeighbors(this.nodes,species, sourceClass);
                             }
@@ -622,7 +626,7 @@ public class EdgeSourcesPanel extends JPanel {
                                 Boolean OK = (Boolean)interactionsClient.callSourceMethod(sourceClass,"authenticate",args);
                                 ok = OK.booleanValue();
                             }catch(Exception e){e.printStackTrace();}
-                            System.out.println("SourceClass " + sourceClass + " authenticated: " + ok);
+                            //System.out.println("SourceClass " + sourceClass + " authenticated: " + ok);
                             if(!ok){
                                 JOptionPane.showMessageDialog(EdgeSourcesPanel.this,"Unauthorised user and password.","Not authorised.",JOptionPane.ERROR_MESSAGE);
                                 button.setEnabled(false);

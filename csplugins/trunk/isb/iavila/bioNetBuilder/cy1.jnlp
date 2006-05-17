@@ -85,7 +85,7 @@
   </resources>
   <application-desc main-class="cytoscape.CyMain">
 	<argument>-p</argument>
-	<argument>browser.BrowserPlugin</argument>
+	<argument>browser.AttributeBrowserPlugin</argument>
     <argument>-p</argument>
 	<argument>csplugins.dataviewer.plugin.CPathPlugIn</argument>
 	<argument>-p</argument>
