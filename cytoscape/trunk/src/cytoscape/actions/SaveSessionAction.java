@@ -70,11 +70,17 @@ public class SaveSessionAction extends CytoscapeAction {
 	 * Constructor.
 	 * 
 	 */
-	public SaveSessionAction() {
-		super("Save");
+	public SaveSessionAction(String label) {
+		super(label);
 		setPreferredMenu("File");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_S, ActionEvent.CTRL_MASK);
 	}
+
+
+        public SaveSessionAction() {
+               super();
+	}
+
 
 	// If no current session file exists, open dialog box to save new session,
 	// and if it exists, overwrite the file.

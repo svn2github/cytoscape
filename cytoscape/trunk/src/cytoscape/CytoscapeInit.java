@@ -837,11 +837,14 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 		try { 
 			String sessionName = "";
 			if ( sessionFile != null ) {
+				Cytoscape.createNewSession();
+
 				if ( sessionFile.matches( FileUtil.urlPattern ) ) {
 					URL u = new URL(sessionFile);
 					reader = new CytoscapeSessionReader(u);
 					sessionName = u.getFile();
 				} else {
+					Cytoscape.setCurrentSessionFileName(sessionFile);
 					reader = new CytoscapeSessionReader(sessionFile);
 		                	File shortName = new File(sessionFile);
 					sessionName = shortName.getName();

@@ -698,9 +698,9 @@ public class CyMenus implements GraphViewChangeListener {
 
 		// Session Save/Open
 		fileMenu.add(new JSeparator());
-		menuSaveSessionAction = new SaveSessionAction();
+		menuSaveSessionAction = new SaveSessionAction("Save");
 		menuOpenSessionAction = new OpenSessionAction();
-		menuSaveSessionAsAction = new SaveSessionAsAction();
+		menuSaveSessionAsAction = new SaveSessionAsAction("Save As...");
 		menuOpenSessionAction.setPreferredIndex(1);
 		menuSaveSessionAction.setPreferredIndex(2);
 		menuSaveSessionAsAction.setPreferredIndex(3);
@@ -823,7 +823,7 @@ public class CyMenus implements GraphViewChangeListener {
 		openSessionButton.setRolloverEnabled(true);
 
 		//saveButton = toolBar.add(new ExportAsGMLAction(false));
-		saveButton = toolBar.add(new SaveSessionAsAction(this, false));
+		saveButton = toolBar.add(new SaveSessionAction());
 		saveButton.setToolTipText("Save Current Session As...");
 		saveButton.setIcon(new ImageIcon(getClass().getResource(
 				"images/new/save36.gif")));
