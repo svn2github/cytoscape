@@ -184,7 +184,7 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 		BioDataServer bds = Cytoscape.loadBioDataServer(properties.getProperty("bioDataServer"));
 
 		// Load all requested networks
-		boolean canonicalize = Boolean.getBoolean(properties.getProperty("canonicalizeNames"));
+		boolean canonicalize = properties.getProperty("canonicalizeNames").equals("true");
 		for (Iterator i = initParams.getGraphFiles().iterator(); i.hasNext();) {
 			String net = (String) i.next();
 			System.out.println("Load: " + net);
@@ -192,6 +192,11 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 			CyNetwork network = Cytoscape.createNetwork(net,
 					Cytoscape.FILE_BY_SUFFIX, canonicalize, bds,
 					properties.getProperty("defaultSpeciesName"));
+
+			// be careful not to assume that a view has been created
+			if ( initParams.getMode() == CyInitParams.GUI || 
+			     initParams.getMode() == CyInitParams.EMBEDDED_WINDOW ) 
+				Cytoscape.getCurrentNetworkView().fitContent();
 		}
 
 		// load any specified data attribute files
@@ -206,9 +211,6 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 			ex.printStackTrace();
 			System.out.println("failure loading specified attributes");
 		}
-
-
-		Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
 
 		loadExpressionFiles();
 
@@ -330,7 +332,7 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 	 * @deprecated Will be removed April 2007. Use getProperty( "canonicalizeNames" ) instead.
 	 */
 	public static boolean noCanonicalization() {
-		return !Boolean.getBoolean(getProperty( "canonicalizeNames" ));
+		return properties.getProperty( "canonicalizeNames" ).equals("true");
 	}
 
 	/**
@@ -830,14 +832,16 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 		return url;
 	}
 
-	private void loadSessionFile() {
+	private boolean loadSessionFile() {
 		String sessionFile = initParams.getSessionFile();
 		CytoscapeSessionReader reader = null;
 
 		try { 
 			String sessionName = "";
 			if ( sessionFile != null ) {
+				Cytoscape.setSessionState(Cytoscape.SESSION_OPENED);
 				Cytoscape.createNewSession();
+				Cytoscape.setSessionState(Cytoscape.SESSION_NEW);
 
 				if ( sessionFile.matches( FileUtil.urlPattern ) ) {
 					URL u = new URL(sessionFile);
@@ -854,6 +858,7 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 			if ( reader != null ) {
 				reader.read();
 		                Cytoscape.getDesktop().setTitle("Cytoscape Desktop (Session Name: " + sessionName + ")");
+				return true;
 				
 			} else
 				System.out.println("couldn't create session from file: '" + sessionFile + "'");
@@ -862,6 +867,7 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 			e.printStackTrace();
 			System.out.println("couldn't create session from file: '" + sessionFile + "'");
 		}
+		return false;
 	}
 
 	private static void initProperties() {

@@ -532,6 +532,7 @@ public class CytoscapeSessionReader {
 				Cytoscape.getDesktop().getVizMapUI().getStyleSelector()
 						.resetStyles(curVS);
 				Cytoscape.getDesktop().getVizMapUI().visualStyleChanged();
+				Cytoscape.getVisualMappingManager().setVisualStyle(curVS);
 
 			} else
 				curView.setVisualStyle(Cytoscape.getVisualMappingManager()

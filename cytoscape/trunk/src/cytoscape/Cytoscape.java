@@ -65,6 +65,7 @@ import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.Semantics;
 import cytoscape.data.readers.CyAttributesReader;
 import cytoscape.data.readers.GMLReader2;
+import cytoscape.data.readers.XGMMLReader;
 import cytoscape.data.readers.GraphReader;
 import cytoscape.data.readers.InteractionsReader;
 import cytoscape.data.servers.BioDataServer;
@@ -1184,6 +1185,10 @@ public abstract class Cytoscape {
 		} else if (file_type == FILE_GML
 				|| (file_type == FILE_BY_SUFFIX && location.endsWith("gml"))) {
 			reader = new GMLReader2(location);
+		} else if (file_type == FILE_XGMML
+				|| (file_type == FILE_BY_SUFFIX && location.endsWith("xgmml")) 
+				|| (file_type == FILE_BY_SUFFIX && location.endsWith("xml"))) {
+			reader = new XGMMLReader(location); 
 		} else {
 			// TODO: come up with a really good way of supporting arbitrary
 			// file types via plugin support.
@@ -1366,6 +1371,7 @@ public abstract class Cytoscape {
 					InputStreamReader reader = new InputStreamReader(FileUtil
 							.getInputStream(nodeAttrLocations[i]));
 					CyAttributesReader.loadAttributes(nodeAttributes, reader);
+					firePropertyChange(ATTRIBUTES_CHANGED, null, null);
 				} catch (Exception e) {
 					throw new IllegalArgumentException(
 							"Failure loading node attribute data: "
@@ -1381,6 +1387,7 @@ public abstract class Cytoscape {
 					InputStreamReader reader = new InputStreamReader(FileUtil
 							.getInputStream(edgeAttrLocations[j]));
 					CyAttributesReader.loadAttributes(edgeAttributes, reader);
+					firePropertyChange(ATTRIBUTES_CHANGED, null, null);
 				} catch (Exception e) {
 					throw new IllegalArgumentException(
 							"Failure loading edge attribute data: "
@@ -1389,7 +1396,6 @@ public abstract class Cytoscape {
 			}
 		}
 
-		firePropertyChange(ATTRIBUTES_CHANGED, null, null);
 	}
 
 	/**
@@ -1604,6 +1610,8 @@ public abstract class Cytoscape {
 
 	/**
 	 * Utility method to enable Squiggle function.
+	 * @deprecated Squiggle is gone and we don't expect the functionality to return. 
+	 * if this causes major problems, let us know.  This method will be removed Sept 2006.
 	 */
 	public static void enableSquiggle() {
 
@@ -1615,6 +1623,8 @@ public abstract class Cytoscape {
 
 	/**
 	 * Utility method to disable Squiggle function.
+	 * @deprecated Squiggle is gone and we don't expect the functionality to return. 
+	 * if this causes major problems, let us know.  This method will be removed Sept 2006.
 	 */
 	public static void disableSquiggle() {
 
@@ -1627,6 +1637,8 @@ public abstract class Cytoscape {
 	/**
 	 * Returns the value of the global flag to indicate whether the Squiggle
 	 * function is enabled.
+	 * @deprecated Squiggle is gone and we don't expect the functionality to return. 
+	 * if this causes major problems, let us know.  This method will be removed Sept 2006.
 	 */
 	public static boolean isSquiggleEnabled() {
 		return squiggleEnabled;

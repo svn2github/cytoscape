@@ -80,7 +80,7 @@ public class DingNetworkView extends DGraphView implements CyNetworkView
     // }
 
     // Just copying this line from the old implementation.
-    Cytoscape.getDesktop().getVizMapManager().applyAppearances();
+    Cytoscape.getVisualMappingManager().applyAppearances();
     updateView();
   }
 
