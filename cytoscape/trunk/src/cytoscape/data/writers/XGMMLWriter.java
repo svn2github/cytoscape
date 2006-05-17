@@ -95,6 +95,7 @@ public class XGMMLWriter {
 	// Package to be used for data binding.
 	static final String PACKAGE_NAME = "cytoscape.generated2";
 	static final String METADATA_NAME = "networkMetadata";
+	private static final String METADATA_ATTR_NAME = "Network Metadata";
 
 	// GML-Compatible Pre-defined Shapes
 	protected static String RECTANGLE = "rectangle";
@@ -355,7 +356,7 @@ public class XGMMLWriter {
 						targetNode.setName("base");
 					}
 				} else {
-					Att attr = createAttribute(id, nodeAttributes, nodeAttNames, i);
+					Att attr = createAttribute(id, nodeAttributes, nodeAttNames[i]);
 					targetNode.getAtt().add(attr);
 				}
 			}
@@ -364,7 +365,7 @@ public class XGMMLWriter {
 		else if (type == EDGE){
 			// process each attribute type
 			for (int i = 0; i < edgeAttNames.length; i++) {
-				Att attr = createAttribute(id, edgeAttributes, edgeAttNames, i);
+				Att attr = createAttribute(id, edgeAttributes, edgeAttNames[i]);
 				Edge targetEdge = (Edge) target;
 				targetEdge.getAtt().add(attr);
 			}
@@ -373,8 +374,11 @@ public class XGMMLWriter {
 		else if (type == NETWORK) {
 			// process each attribute type
 			for (int i = 0; i < networkAttNames.length; i++) {
-				Att attr = createAttribute(id, networkAttributes, networkAttNames, i);
-				graph.getAtt().add(attr);
+				// ignore Metadata object.
+				if(!networkAttNames[i].equals(METADATA_ATTR_NAME)) {
+					Att attr = createAttribute(id, networkAttributes, networkAttNames[i]);
+					graph.getAtt().add(attr);
+				}
 			}
 		}
 	}
@@ -390,12 +394,9 @@ public class XGMMLWriter {
 	 *
 	 * @throws JAXBException
 	 */
-	private Att createAttribute(String id, CyAttributes attributes, String[] attNames, int attNamesIndex)
+	private Att createAttribute(String id, CyAttributes attributes, String attributeName)
 		throws JAXBException {
-
-		// set attribute name
-		String attributeName = attNames[attNamesIndex];
-
+		
 		// create an attribute and its type
 		Att attr = objFactory.createAtt();
 		byte attType = attributes.getType(attributeName);
