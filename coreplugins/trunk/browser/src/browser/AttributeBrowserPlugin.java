@@ -1,13 +1,12 @@
 package browser;
 
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.KeyStroke;
 
 import cytoscape.Cytoscape;
-import cytoscape.data.CyAttributes;
-import cytoscape.data.Semantics;
 import cytoscape.plugin.CytoscapePlugin;
 
 /**
@@ -16,16 +15,15 @@ import cytoscape.plugin.CytoscapePlugin;
  * This Plugin is an attribute browser with smaller GUI. All functions are based
  * on Rowan's code.
  */
-public class BrowserPlugin extends CytoscapePlugin {
+public class AttributeBrowserPlugin extends CytoscapePlugin {
+
+	public static Color DEFAULT_NODE_COLOR = Color.YELLOW;
+	public static Color DEFAULT_EDGE_COLOR = Color.RED;
 
 	// Constructor
-	public BrowserPlugin() {
+	public AttributeBrowserPlugin() {
 
 		initialize();
-		
-		// Turn On Data menu
-		//Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("Data")
-		//		.setEnabled(true);
 
 		JCheckBoxMenuItem switchBrowserView = new JCheckBoxMenuItem(
 				new DisplayNetworkTreeAction());
@@ -51,17 +49,18 @@ public class BrowserPlugin extends CytoscapePlugin {
 
 	}
 
-	// Call 2 tables, node and edges.
+	// Call 3 tables, nodes, edges and network.
 	// The DataTable class actually creates all CytoPanels.
 	// For this version of browser, it creates Cytopanel3 only.
 	// Filter functions are implemented as an Advanced Window.
 	protected void initialize() {
-		
+
 		DataTable table_nodes = new DataTable(Cytoscape.getNodeAttributes(),
 				DataTable.NODES);
 		DataTable table_edges = new DataTable(Cytoscape.getEdgeAttributes(),
 				DataTable.EDGES);
-	
+		DataTable table_network = new DataTable(Cytoscape
+				.getNetworkAttributes(), DataTable.NETWORK);
 	}
 
 }

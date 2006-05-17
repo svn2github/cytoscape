@@ -11,8 +11,10 @@
     <tstamp/>
     <property name="browser.Name" value="browser"/>
     <property name="browser.name" value="browser"/>
-    <property name="browser.version" value="0.6"/>
+    <property name="browser.version" value="0.7"/>
     <property name="browser.year" value="200"/>
+  	
+  	
 
     <echo message="Building ${browser.name} version ${browser.version}."/>
 
@@ -25,9 +27,8 @@
     <property name="browser.root.dir" value="."/>
     <property name="browser.lib.dir" value="${browser.root.dir}/lib"/>
   	
-  	
   	<!-- You need to modify this line to point to Cytoscape directory.  -->
-    <property name="cytoscape.dir" value="${browser.root.dir}/../../cytoscape"/>
+    <property name="cytoscape.dir" value="${browser.root.dir}/../Fresh"/>
   	
   	
     <property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib"/>
@@ -86,11 +87,10 @@
       <pathelement location="${cytoscape.lib.dir}/fing.jar"/>
       <pathelement location="${cytoscape.lib.dir}/phoebe.jar"/>
       <pathelement location="${cytoscape.lib.dir}/piccolo.jar"/>
-      <pathelement location="${cytoscape.lib.dir}/piccolox.jar"/>      
+      <pathelement location="${cytoscape.lib.dir}/piccolox.jar"/>
+    	<pathelement location="${cytoscape.lib.dir}/swing-layout-1.0.jar"/> 
       <pathelement path="${project.class.path}/"/>
     </path>
-
-  
 
   </target>
 
@@ -117,6 +117,10 @@
   <!-- Creates the browser.jar file                                           -->
   <!-- =================================================================== -->
   <target name="browser" depends="compile-browser"  >
+  	<!-- copy over images -->
+		<copy todir="${browser.classes.dir}/browser/images">
+  	            <fileset dir="${browser.root.dir}/images"/>
+  	</copy>
     <jar destfile="browser.jar" manifest="${browser.manifest.dir}/browser.manifest">
       <fileset
         dir="${browser.classes.dir}"

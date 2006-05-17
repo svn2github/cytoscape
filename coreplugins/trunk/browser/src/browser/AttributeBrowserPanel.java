@@ -13,11 +13,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -38,19 +38,21 @@ import javax.swing.event.SwingPropertyChangeSupport;
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
 
+import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.actions.ImportEdgeAttributesAction;
 import cytoscape.actions.ImportExpressionMatrixAction;
 import cytoscape.actions.ImportNodeAttributesAction;
+import cytoscape.actions.MapOntologyAction;
 import cytoscape.data.CyAttributes;
-import cytoscape.data.annotation.AnnotationGui;
-
 import cytoscape.dialogs.NetworkMetaDataDialog;
-
 
 public class AttributeBrowserPanel extends JPanel implements
 		PropertyChangeListener, ListSelectionListener, ListDataListener,
 		ActionListener {
+
+	public static final int NORMAL_VIEW = 1;
+	public static final int NETWORK_VIEW = 2;
 
 	// Global Variables
 	CyAttributes data;
@@ -70,6 +72,7 @@ public class AttributeBrowserPanel extends JPanel implements
 
 	protected SwingPropertyChangeSupport pcs = new SwingPropertyChangeSupport(
 			this);
+	
 	private JPopupMenu attributeSelectionPopupMenu = null;
 
 	private JScrollPane jScrollPane = null;
@@ -93,12 +96,12 @@ public class AttributeBrowserPanel extends JPanel implements
 	private JButton importButton = null;
 	private JButton metadataButton = null;
 
-	private int graphObjectType;
+	private int objectType;
 	private AttributeModel model;
 
 	private String attributeType = null;
 
-	private Object[] selectedObj;
+	private JCheckBox networkAttrView = null;
 
 	public AttributeBrowserPanel() {
 		super();
@@ -110,7 +113,7 @@ public class AttributeBrowserPanel extends JPanel implements
 	public AttributeBrowserPanel(CyAttributes data, AttributeModel a_model,
 			LabelModel l_model, int got) {
 		this.data = data;
-		this.graphObjectType = got;
+		this.objectType = got;
 		this.model = a_model;
 
 		initialize(a_model);
@@ -126,7 +129,6 @@ public class AttributeBrowserPanel extends JPanel implements
 		BorderLayout layout = new BorderLayout();
 		this.setLayout(layout);
 
-		// this.setSize(300, 40);
 		this.setPreferredSize(new java.awt.Dimension(210, 46));
 		this.setBorder(new javax.swing.border.SoftBevelBorder(
 				javax.swing.border.BevelBorder.RAISED));
@@ -138,6 +140,11 @@ public class AttributeBrowserPanel extends JPanel implements
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(
 				this);
 	}
+	
+	
+	
+	
+	
 
 	public String getSelectedAttribute() {
 		return attributeList.getSelectedValue().toString();
@@ -180,6 +187,19 @@ public class AttributeBrowserPanel extends JPanel implements
 
 	public void propertyChange(PropertyChangeEvent e) {
 		// updateLists();
+		
+		if ((e.getPropertyName().equals(Cytoscape.NETWORK_LOADED) ||
+				e.getPropertyName().equals(Cytoscape.NETWORK_DESTROYED) ||
+				e.getPropertyName().equals(Cytoscape.DATASERVER_CHANGED) ) && objectType == DataTable.NODES){
+			if(Cytoscape.getBioDataServer() == null) {
+				goButton.setEnabled(false);
+			} else if (Cytoscape.getBioDataServer().getAnnotationCount() == 0 || 
+					Cytoscape.getNetworkSet().size() == 0) {
+				goButton.setEnabled(false);
+			} else {
+				goButton.setEnabled(true);
+			}
+		}
 
 	}
 
@@ -328,89 +348,197 @@ public class AttributeBrowserPanel extends JPanel implements
 
 			jToolBar = new JToolBar();
 			jToolBar.setPreferredSize(new java.awt.Dimension(200, 55));
-			jToolBar.setFloatable(true);
+			jToolBar.setFloatable(false);
 			jToolBar.setOrientation(JToolBar.HORIZONTAL);
-
-			// selectButton = getSelectButton();
-			// createNewButton = getNewButton();
-			// deleteButton = getDeleteButton();
-			// importButton = getImportButton();
-			// goButton = getGOButton();
-			// matrixButton = getMatrixButton();
 
 			GroupLayout buttonBarLayout = new GroupLayout(jToolBar);
 			jToolBar.setLayout(buttonBarLayout);
-			//
-			buttonBarLayout.setHorizontalGroup(buttonBarLayout
-					.createParallelGroup(GroupLayout.LEADING).add(
-							buttonBarLayout.createSequentialGroup()
-							.add(getSelectButton(),
-									GroupLayout.PREFERRED_SIZE,
-									GroupLayout.DEFAULT_SIZE,
-									GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(LayoutStyle.RELATED)
-							.add(getNewButton())
-							.addPreferredGap(LayoutStyle.RELATED)
-							.add(getDeleteButton())
-							.addPreferredGap(LayoutStyle.RELATED, 350,Short.MAX_VALUE)
-							.add(getMetadataButton(),
-									GroupLayout.PREFERRED_SIZE, 40,
-									GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(LayoutStyle.RELATED)
-							.add(getImportButton(),
-									GroupLayout.PREFERRED_SIZE, 40,
-									GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(LayoutStyle.RELATED)
-							.add(getGOButton(),
-									GroupLayout.PREFERRED_SIZE, 40,
-									GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(LayoutStyle.RELATED)
-							.add(getMatrixButton())));
-			buttonBarLayout
-					.setVerticalGroup(buttonBarLayout
-							.createParallelGroup(
-									org.jdesktop.layout.GroupLayout.LEADING)
-							.add(
-									org.jdesktop.layout.GroupLayout.BASELINE,
-									selectButton,
-									org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-									37,
-									org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-							.add(
-									org.jdesktop.layout.GroupLayout.BASELINE,
-									createNewButton,
-									org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-									37, Short.MAX_VALUE)
-							.add(
-									org.jdesktop.layout.GroupLayout.BASELINE,
-									deleteButton,
-									org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-									37, Short.MAX_VALUE)
-							
-							.add(
-									buttonBarLayout
-											.createParallelGroup(
-													org.jdesktop.layout.GroupLayout.BASELINE)
-										    .add(
-													metadataButton,
-													org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-													36,
-													org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-											.add(
-													matrixButton,
-													org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-													36,
-													org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-											.add(
-													importButton,
-													org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-													36,
-													org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-											.add(
-													goButton,
-													org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-													36,
-													org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)));
+
+			// Layout information.
+			if (objectType == DataTable.NODES) {
+				buttonBarLayout.setHorizontalGroup(buttonBarLayout
+						.createParallelGroup(GroupLayout.LEADING).add(
+								buttonBarLayout.createSequentialGroup().add(
+										getSelectButton(),
+										GroupLayout.PREFERRED_SIZE,
+										GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(LayoutStyle.RELATED)
+										.add(getNewButton()).addPreferredGap(
+												LayoutStyle.RELATED).add(
+												getDeleteButton())
+										.addPreferredGap(LayoutStyle.RELATED,
+												350, Short.MAX_VALUE)
+										.add(getImportButton(),
+												GroupLayout.PREFERRED_SIZE, 40,
+												GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(LayoutStyle.RELATED)
+										.add(getGOButton(),
+												GroupLayout.PREFERRED_SIZE, 40,
+												GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(LayoutStyle.RELATED)
+										.add(getMatrixButton())));
+				buttonBarLayout
+						.setVerticalGroup(buttonBarLayout
+								.createParallelGroup(
+										org.jdesktop.layout.GroupLayout.LEADING)
+								.add(
+										org.jdesktop.layout.GroupLayout.BASELINE,
+										selectButton,
+										org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+										37,
+										org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+								.add(
+										org.jdesktop.layout.GroupLayout.BASELINE,
+										createNewButton,
+										org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+										37, Short.MAX_VALUE)
+								.add(
+										org.jdesktop.layout.GroupLayout.BASELINE,
+										deleteButton,
+										org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+										37, Short.MAX_VALUE)
+
+								.add(
+										buttonBarLayout
+												.createParallelGroup(
+														org.jdesktop.layout.GroupLayout.BASELINE)
+												.add(
+														matrixButton,
+														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+														36,
+														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+												.add(
+														importButton,
+														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+														36,
+														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+												.add(
+														goButton,
+														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+														36,
+														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)));
+
+			} else if(objectType == DataTable.NETWORK){
+				buttonBarLayout.setHorizontalGroup(buttonBarLayout
+						.createParallelGroup(GroupLayout.LEADING).add(
+								buttonBarLayout.createSequentialGroup().add(
+										getSelectButton(),
+										GroupLayout.PREFERRED_SIZE,
+										GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(LayoutStyle.RELATED)
+										.add(getNewButton()).addPreferredGap(
+												LayoutStyle.RELATED).add(
+												getDeleteButton())
+										.addPreferredGap(LayoutStyle.RELATED,
+												320, Short.MAX_VALUE).add(
+												getnetworkAttrView(),
+												GroupLayout.PREFERRED_SIZE, 120,
+												GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(LayoutStyle.RELATED)
+										.add(getMetadataButton(),
+												GroupLayout.PREFERRED_SIZE, 40,
+												GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(LayoutStyle.RELATED)
+										.add(getImportButton(),
+												GroupLayout.PREFERRED_SIZE, 40,
+												GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(LayoutStyle.RELATED)));
+
+			
+				buttonBarLayout
+						.setVerticalGroup(buttonBarLayout
+								.createParallelGroup(
+										org.jdesktop.layout.GroupLayout.LEADING)
+								.add(
+										org.jdesktop.layout.GroupLayout.BASELINE,
+										selectButton,
+										org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+										37,
+										org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+								.add(
+										org.jdesktop.layout.GroupLayout.BASELINE,
+										createNewButton,
+										org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+										37, Short.MAX_VALUE)
+								.add(
+										org.jdesktop.layout.GroupLayout.BASELINE,
+										deleteButton,
+										org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+										37, Short.MAX_VALUE)
+
+								.add(
+										buttonBarLayout
+												.createParallelGroup(
+														org.jdesktop.layout.GroupLayout.BASELINE)
+												.add(
+														networkAttrView,
+														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+														36,
+														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+												.add(
+														metadataButton,
+														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+														36,
+														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+												.add(
+														importButton,
+														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+														36,
+														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)));
+			} else {
+				// Layout for edges
+				buttonBarLayout.setHorizontalGroup(buttonBarLayout
+						.createParallelGroup(GroupLayout.LEADING).add(
+								buttonBarLayout.createSequentialGroup().add(
+										getSelectButton(),
+										GroupLayout.PREFERRED_SIZE,
+										GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(LayoutStyle.RELATED)
+										.add(getNewButton()).addPreferredGap(
+												LayoutStyle.RELATED).add(
+												getDeleteButton())
+										.addPreferredGap(LayoutStyle.RELATED,
+												350, Short.MAX_VALUE)
+										.add(getImportButton(),
+												GroupLayout.PREFERRED_SIZE, 40,
+												GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(LayoutStyle.RELATED)));
+
+			
+				buttonBarLayout
+						.setVerticalGroup(buttonBarLayout
+								.createParallelGroup(
+										org.jdesktop.layout.GroupLayout.LEADING)
+								.add(
+										org.jdesktop.layout.GroupLayout.BASELINE,
+										selectButton,
+										org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+										37,
+										org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+								.add(
+										org.jdesktop.layout.GroupLayout.BASELINE,
+										createNewButton,
+										org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+										37, Short.MAX_VALUE)
+								.add(
+										org.jdesktop.layout.GroupLayout.BASELINE,
+										deleteButton,
+										org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+										37, Short.MAX_VALUE)
+
+								.add(
+										buttonBarLayout
+												.createParallelGroup(
+														org.jdesktop.layout.GroupLayout.BASELINE)
+												.add(
+														importButton,
+														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+														36,
+														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)));
+			}
 
 		}
 		return jToolBar;
@@ -424,12 +552,15 @@ public class AttributeBrowserPanel extends JPanel implements
 	private JButton getSelectButton() {
 		if (selectButton == null) {
 			selectButton = new JButton();
-			selectButton.setFont(new java.awt.Font("Dialog",
-					java.awt.Font.PLAIN, 12));
-			selectButton
-					.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+			// selectButton.setFont(new java.awt.Font("Dialog",
+			// java.awt.Font.PLAIN, 12));
+			// selectButton
+			// .setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 			selectButton.setMargin(new java.awt.Insets(2, 2, 2, 2));
-			selectButton.setText("Select");
+			// selectButton.setText("Select");
+			selectButton.setIcon(new javax.swing.ImageIcon(getClass()
+					.getResource("images/select32.png")));
+			selectButton.setToolTipText("Select Attributes");
 			selectButton.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(java.awt.event.MouseEvent e) {
 					// TODO Auto-generated Event stub mouseClicked()
@@ -445,10 +576,9 @@ public class AttributeBrowserPanel extends JPanel implements
 	private JButton getImportButton() {
 		if (importButton == null) {
 			importButton = new JButton();
-			importButton
-					.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-					"images/folder.png")));
-			importButton.setToolTipText("Import attributes from file");
+			importButton.setIcon(new javax.swing.ImageIcon(getClass()
+					.getResource("images/folder32.png")));
+			importButton.setToolTipText("Import attributes from file...");
 			importButton.setMargin(new java.awt.Insets(2, 2, 2, 2));
 			importButton.addMouseListener(new java.awt.event.MouseAdapter() {
 				public void mouseClicked(java.awt.event.MouseEvent e) {
@@ -462,20 +592,43 @@ public class AttributeBrowserPanel extends JPanel implements
 
 	}
 
+	private JCheckBox getnetworkAttrView() {
+		if (networkAttrView == null) {
+			networkAttrView = new JCheckBox();
+			networkAttrView.setText("All Networks");
+			networkAttrView.setToolTipText("Switch the table format: single network or all");
+
+			networkAttrView.addMouseListener(new java.awt.event.MouseAdapter() {
+				public void mouseClicked(java.awt.event.MouseEvent e) {
+					changeNetworkAttrView();
+				}
+			});
+		}
+		return networkAttrView;
+
+	}
+
+	private void changeNetworkAttrView() {
+		
+	}
+
 	private JButton getGOButton() {
 		if (goButton == null) {
 			goButton = new JButton();
-			goButton
-					.setIcon(new javax.swing.ImageIcon(getClass().getResource(
+			goButton.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 					"images/go_new32.png")));
-			goButton.setToolTipText("Map Ontology");
+			goButton.setToolTipText("Map Ontology...");
 			goButton.setMargin(new java.awt.Insets(2, 2, 2, 2));
 			goButton.setMaximumSize(new java.awt.Dimension(40, 40));
 			goButton.setMinimumSize(new java.awt.Dimension(40, 40));
+			goButton.setEnabled(false);
 			goButton.addMouseListener(new java.awt.event.MouseAdapter() {
 				public void mouseClicked(java.awt.event.MouseEvent e) {
 					// TODO Auto-generated Event stub mouseClicked()
-					mapOntology();
+					if(goButton.isEnabled() == true) {
+						mapOntology();
+					}
+					
 					// jPopupMenu.show(e.getComponent(), e.getX(), e.getY());
 				}
 			});
@@ -486,10 +639,9 @@ public class AttributeBrowserPanel extends JPanel implements
 	private JButton getMatrixButton() {
 		if (matrixButton == null) {
 			matrixButton = new JButton();
-			matrixButton
-					.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-							"images/microarraySmall.png")));
-			matrixButton.setToolTipText("Import Microarray Data");
+			matrixButton.setIcon(new javax.swing.ImageIcon(getClass()
+					.getResource("images/microarraySmall.png")));
+			matrixButton.setToolTipText("Import Expression Matrix Data...");
 			matrixButton.setMargin(new java.awt.Insets(2, 2, 2, 2));
 
 			matrixButton.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -507,23 +659,23 @@ public class AttributeBrowserPanel extends JPanel implements
 	private JButton getMetadataButton() {
 		if (metadataButton == null) {
 			metadataButton = new JButton();
-			metadataButton
-					.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-							"images/metadata32.png")));
+			metadataButton.setIcon(new javax.swing.ImageIcon(getClass()
+					.getResource("images/metadata32.png")));
 			metadataButton.setToolTipText("Edit Network Meta Data");
 			metadataButton.setMargin(new java.awt.Insets(2, 2, 2, 2));
 
 			metadataButton.addMouseListener(new java.awt.event.MouseAdapter() {
 				public void mouseClicked(java.awt.event.MouseEvent e) {
 					// TODO Auto-generated Event stub mouseClicked()
-					if(Cytoscape.getNetworkSet().size() == 0) {
-						// no network available.  Show error
-						JOptionPane.showMessageDialog(null, "No network available.", "Error!",
+					if (Cytoscape.getNetworkSet().size() == 0) {
+						// no network available. Show error
+						JOptionPane.showMessageDialog(null,
+								"No network available.", "Error!",
 								JOptionPane.ERROR_MESSAGE);
 					} else {
 						editMetadata();
 					}
-					
+
 					// jPopupMenu.show(e.getComponent(), e.getX(), e.getY());
 				}
 			});
@@ -531,13 +683,13 @@ public class AttributeBrowserPanel extends JPanel implements
 		return metadataButton;
 
 	}
-	
+
 	protected void editMetadata() {
-		NetworkMetaDataDialog mdd = new NetworkMetaDataDialog(Cytoscape.getDesktop(), false, 
-				Cytoscape.getCurrentNetwork());
+		NetworkMetaDataDialog mdd = new NetworkMetaDataDialog(Cytoscape
+				.getDesktop(), false, Cytoscape.getCurrentNetwork());
 		mdd.show();
 	}
-	
+
 	protected void importAttributes() {
 
 		Object cytoPanelObject = Cytoscape.getDesktop().getCytoPanel(
@@ -563,8 +715,8 @@ public class AttributeBrowserPanel extends JPanel implements
 	}
 
 	protected void mapOntology() {
-		AnnotationGui antGui = new AnnotationGui();
-		antGui.actionPerformed(null);
+		MapOntologyAction moa = new MapOntologyAction();
+		moa.actionPerformed(null);
 	}
 
 	/**
@@ -575,15 +727,17 @@ public class AttributeBrowserPanel extends JPanel implements
 	private JButton getDeleteButton() {
 		if (deleteButton == null) {
 			deleteButton = new JButton();
-			deleteButton.setFont(new java.awt.Font("Dialog",
-					java.awt.Font.PLAIN, 12));
-			deleteButton
-					.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-//			deleteButton
-//					.setIcon(new ImageIcon(
-//							"/cellar/users/kono/workspace/Test23/images/new/delete16.gif"));
-			 deleteButton.setText("Delete");
-
+			// deleteButton.setFont(new java.awt.Font("Dialog",
+			// java.awt.Font.PLAIN, 12));
+			// deleteButton
+			// .setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+			// deleteButton
+			// .setIcon(new ImageIcon(
+			// "/cellar/users/kono/workspace/Test23/images/new/delete16.gif"));
+			// deleteButton.setText("Delete");
+			deleteButton.setIcon(new javax.swing.ImageIcon(getClass()
+					.getResource("images/delete32.png")));
+			deleteButton.setToolTipText("Delete Attributes...");
 			// Create pop-up window for deletion
 			deleteButton.addMouseListener(new java.awt.event.MouseAdapter() {
 				public void mouseClicked(java.awt.event.MouseEvent e) {
@@ -602,9 +756,9 @@ public class AttributeBrowserPanel extends JPanel implements
 							.getDesktop(), true,
 							getAttributeArray(attributeType), attributeType);
 
-					if (attributeType.equalsIgnoreCase("node")) {
-						selectedObj = attributeList.getSelectedValues();
-					}
+					// if (attributeType.equalsIgnoreCase("node")) {
+					// selectedObj = attributeList.getSelectedValues();
+					// }
 
 					dDialog.show();
 					model.sortAtttributes();
@@ -644,28 +798,27 @@ public class AttributeBrowserPanel extends JPanel implements
 					} else {
 						model.sortAtttributes();
 
-						 int index =
-						 attributeList.locationToIndex(e.getPoint());
-						
-						 Integer indexObj = new Integer(index);
-						
-						 // is this selected? if so remove it.
-						 if (indices.contains(indexObj)) {
-						 indices.remove(indexObj);
-						 }
-						
-						 // otherwise add it to our list
-						 else
-						 indices.add(indexObj);
-						
-						 // copy to an int array
-						 int[] arr = new int[indices.size()];
-						 for (int i = 0; i < arr.length; i++) {
-						 int item = ((Integer) indices.get(i)).intValue();
-						 arr[i] = item;
-						 }
-						 // set selected indices
-						 attributeList.setSelectedIndices(arr);
+						int index = attributeList.locationToIndex(e.getPoint());
+
+						Integer indexObj = new Integer(index);
+
+						// is this selected? if so remove it.
+						if (indices.contains(indexObj)) {
+							indices.remove(indexObj);
+						}
+
+						// otherwise add it to our list
+						else
+							indices.add(indexObj);
+
+						// copy to an int array
+						int[] arr = new int[indices.size()];
+						for (int i = 0; i < arr.length; i++) {
+							int item = ((Integer) indices.get(i)).intValue();
+							arr[i] = item;
+						}
+						// set selected indices
+						attributeList.setSelectedIndices(arr);
 					}
 
 				}
@@ -699,14 +852,16 @@ public class AttributeBrowserPanel extends JPanel implements
 	private JButton getNewButton() {
 		if (createNewButton == null) {
 			createNewButton = new JButton();
-			createNewButton.setText("New");
+			// createNewButton.setText("New");
 			createNewButton.setFont(new java.awt.Font("Dialog",
 					java.awt.Font.PLAIN, 12));
 			createNewButton
 					.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 			createNewButton.setMargin(new java.awt.Insets(2, 2, 2, 2));
-
-			createNewButton.setSize(new java.awt.Dimension(100, 27));
+			createNewButton.setToolTipText("Create New Attribute");
+			// createNewButton.setSize(new java.awt.Dimension(100, 27));
+			createNewButton.setIcon(new javax.swing.ImageIcon(getClass()
+					.getResource("images/new32.png")));
 			createNewButton.addMouseListener(new java.awt.event.MouseAdapter() {
 				public void mouseClicked(java.awt.event.MouseEvent e) {
 					// TODO Auto-generated Event stub mouseClicked()
@@ -725,7 +880,7 @@ public class AttributeBrowserPanel extends JPanel implements
 		boolean dupFlag = true;
 
 		String name = null;
-		
+
 		while (dupFlag == true) {
 			name = JOptionPane.showInputDialog(this,
 					"Please enter new attribute name: ", "Create New " + type
@@ -749,35 +904,71 @@ public class AttributeBrowserPanel extends JPanel implements
 					}
 				}
 			}
-			
+
 		}
-		
+
 		if (name != null) {
-			// Object objects = tableModel.getObjects();
 			Object objects = null;
 
-			if (graphObjectType == DataTable.NODES) {
+			Iterator i;
+
+			if (objectType == DataTable.NODES) {
 				objects = Cytoscape.getCyNodesList();
-			} else {
+				i = ((List) objects).iterator();
+			} else if (objectType == DataTable.EDGES) {
 				objects = Cytoscape.getCyEdgesList();
+				i = ((List) objects).iterator();
+			} else {
+				objects = Cytoscape.getNetworkSet();
+				i = ((Set) objects).iterator();
 			}
 
-			for (Iterator i = ((List) objects).iterator(); i.hasNext();) {
-				GraphObject go = (GraphObject) i.next();
-				if (type.equals("String")) {
+			if (objectType == DataTable.NETWORK) {
+				while (i.hasNext()) {
+					CyNetwork network = (CyNetwork) i.next();
+					if (type.equals("String")) {
+						// data.setAttribute(go.getIdentifier(), name, new
+						// String(""));
+						data.setAttribute(network.getIdentifier(), name,
+								new String());
+					} else if (type.equals("Floating Point")) {
+						data.setAttribute(network.getIdentifier(), name,
+								new Double(0));
+					} else if (type.equals("Integer")) {
+						data.setAttribute(network.getIdentifier(), name,
+								new Integer(0));
+					} else if (type.equals("Boolean")) {
+						data.setAttribute(network.getIdentifier(), name,
+								new Boolean(false));
+					} else {
+						data.setAttribute(network.getIdentifier(), name,
+								new String(""));
+					}
 
-					data.setAttribute(go.getIdentifier(), name, new String(""));
-				} else if (type.equals("Floating Point")) {
-					data.setAttribute(go.getIdentifier(), name, new Double(0));
-				} else if (type.equals("Integer")) {
-					data.setAttribute(go.getIdentifier(), name, new Integer(0));
-				} else if (type.equals("Boolean")) {
-					data.setAttribute(go.getIdentifier(), name, new Boolean(
-							false));
-				} else {
-					data.setAttribute(go.getIdentifier(), name, new String(""));
 				}
+			} else {
+				while (i.hasNext()) {
+					GraphObject go = (GraphObject) i.next();
+					if (type.equals("String")) {
+						// data.setAttribute(go.getIdentifier(), name, new
+						// String(""));
+						data.setAttribute(go.getIdentifier(), name,
+								new String());
+					} else if (type.equals("Floating Point")) {
+						data.setAttribute(go.getIdentifier(), name, new Double(
+								0));
+					} else if (type.equals("Integer")) {
+						data.setAttribute(go.getIdentifier(), name,
+								new Integer(0));
+					} else if (type.equals("Boolean")) {
+						data.setAttribute(go.getIdentifier(), name,
+								new Boolean(false));
+					} else {
+						data.setAttribute(go.getIdentifier(), name, new String(
+								""));
+					}
 
+				}
 			}
 
 		}

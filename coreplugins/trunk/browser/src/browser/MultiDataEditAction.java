@@ -183,7 +183,12 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 				// TODO: HANDLE
 			}
 		}
-		table.setTable();
+		if(graphObjectType != DataTable.NETWORK) {
+			table.setTable();
+		} else {
+			table.setNetworkTable();
+		}
+		
 	} // initEdit
 
 	/**
@@ -205,8 +210,6 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 
 		for (Iterator i = objects.iterator(); i.hasNext();) {
 			GraphObject go = (GraphObject) i.next();
-
-			// System.out.println("Values: ID = " + go.getIdentifier() + ", " );
 
 			Object value = getAttributeValue(go.getIdentifier(), attributeFrom);
 			new_values.add(value);

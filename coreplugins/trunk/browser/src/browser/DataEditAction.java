@@ -1,8 +1,5 @@
 package browser;
 
-import java.util.List;
-import java.util.Map;
-
 import javax.swing.JOptionPane;
 import javax.swing.undo.AbstractUndoableEdit;
 
@@ -16,7 +13,7 @@ public class DataEditAction extends AbstractUndoableEdit {
 	final Object old_value;
 	final Object new_value;
 	final String[] keys;
-	final int graphObjectType;
+	final int objectType;
 	final DataTableModel table;
 
 	public DataEditAction(DataTableModel table, String object,
@@ -28,7 +25,7 @@ public class DataEditAction extends AbstractUndoableEdit {
 		this.keys = keys;
 		this.old_value = old_value;
 		this.new_value = new_value;
-		this.graphObjectType = graphObjectType;
+		this.objectType = graphObjectType;
 
 		redo();
 
@@ -118,16 +115,24 @@ public class DataEditAction extends AbstractUndoableEdit {
 
 		CyAttributes data;
 
-		if (graphObjectType == 0) {
+		if (objectType == DataTable.NODES) {
 			// node
 			data = Cytoscape.getNodeAttributes();
-		} else {
+		} else if(objectType == DataTable.EDGES){
 			// edge
 			data = Cytoscape.getEdgeAttributes();
-		}
+ 		} else {
+ 			// This is a network attr.
+ 			data = Cytoscape.getNetworkAttributes();
+ 		}
 
 		setAttributeValue(data, object, attribute, new_value);
-		table.setTable();
+		
+		if(objectType != DataTable.NETWORK) {
+			table.setTable();
+		} else {
+			table.setNetworkTable();
+		}
 	}
 
 	// this sets the old value
@@ -135,16 +140,24 @@ public class DataEditAction extends AbstractUndoableEdit {
 
 		CyAttributes data;
 
-		if (graphObjectType == 0) {
+		if (objectType == DataTable.NODES) {
 			// node
 			data = Cytoscape.getNodeAttributes();
-		} else {
+		} else if (objectType == DataTable.EDGES) {
 			// edge
 			data = Cytoscape.getEdgeAttributes();
+		} else {
+			// Network attr
+			data = Cytoscape.getNetworkAttributes();
 		}
 
 		setAttributeValue(data, object, attribute, old_value);
-		table.setTable();
+		
+		if(objectType != DataTable.NETWORK) {
+			table.setTable();
+		} else {
+			table.setNetworkTable();
+		}
 	}
 
 }

@@ -1,91 +1,209 @@
 package browser;
 
+import giny.model.Edge;
 import giny.model.GraphObject;
+import giny.model.Node;
+import giny.view.EdgeView;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Vector;
 
 import javax.swing.table.DefaultTableModel;
 
+import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
+import cytoscape.data.Semantics;
 import cytoscape.data.attr.MultiHashMapListener;
+
 /**
  * @author kono Actual data manipulation is implemented here.
  */
 public class DataTableModel extends DefaultTableModel implements
-		SortTableModel, MultiHashMapListener{
+		SortTableModel, MultiHashMapListener {
 
+	public static Color DEFAULT_NODE_COLOR = Color.YELLOW;
+	public static Color DEFAULT_EDGE_COLOR = Color.RED;
+
+	//	 Property for this browser.  One for each panel.
+	private Properties props;
+	
 	private CyAttributes data;
-	private List graph_objects;
-	private List attributes;
+	private List graphObjects;
+	private List attributeNames;
 
 	public static final String LS = System.getProperty("line.separator");
 
-	private int graphObjectType = 0;
+	private static final Boolean DEFAULT_FLAG = new Boolean(false);
+
+	private int objectType = 0;
+
+	// will be used by internal selection.
+	private HashMap internalSelection = null;
 
 	public DataTableModel() {
+		initProperties();
 	}
 
 	public DataTableModel(int rows, int cols) {
 		super(rows, cols);
+		initProperties();
 	}
 
 	public DataTableModel(Object[][] data, Object[] names) {
 		super(data, names);
+		initProperties();
 	}
 
 	public DataTableModel(Object[] names, int rows) {
 		super(names, rows);
+		initProperties();
 	}
 
 	public DataTableModel(Vector names, int rows) {
 		super(names, rows);
+		initProperties();
 	}
 
 	public DataTableModel(Vector data, Vector names) {
 		super(data, names);
+		initProperties();
+	}
+	
+	/*
+	 * Initialize properties for Browser Plugin.
+	 */
+	private void initProperties() {
+		props = new Properties();
+		props.setProperty("colorSwitch", "off");
+		props.setProperty("defaultNodeColor", this.DEFAULT_NODE_COLOR.toString());
+		props.setProperty("defaultEdgeColor", this.DEFAULT_EDGE_COLOR.toString());
+	}
+	
+	protected void setColorSwitch(boolean flag) {
+		if(flag) {
+			props.setProperty("colorSwitch", "on");
+		} else {
+			props.setProperty("colorSwitch", "off");
+		}
+	}
+	
+	protected boolean getColorSwitch() {
+		if(props.getProperty("colorSwitch").equals("on")) {
+			return true;
+		}else {
+			return false;
+		}
 	}
 
 	// Accept CyAttributes and create table
-	// Source of bug?
 	public void setTableData(CyAttributes data, List graph_objects,
-			List attributes) {
+			List attributeNames, int objectType) {
 		this.data = data;
-		this.graph_objects = graph_objects;
-		this.attributes = attributes;
+		this.graphObjects = graph_objects;
+		this.attributeNames = attributeNames;
+		this.objectType = objectType;
 		data.getMultiHashMap().addDataListener(this);
-		setTable();
+
+		if (objectType == DataTable.NETWORK) {
+			setNetworkTable();
+		} else {
+			setTable();
+		}
+	}
+
+	public Map getSelectionArray() {
+		return internalSelection;
+	}
+
+	public void setSelectionArray(String key, boolean flag) {
+		internalSelection.put(key, new Boolean(flag));
+	}
+
+	public void resetSelectionFlags() {
+
+		if (this.objectType != DataTable.NETWORK) {
+			Iterator it = graphObjects.iterator();
+			while (it.hasNext()) {
+				GraphObject obj = (GraphObject) it.next();
+				String id = obj.getIdentifier();
+
+				internalSelection.put(id, DEFAULT_FLAG);
+			}
+		}
 	}
 
 	public List getObjects() {
-		return graph_objects;
+		return graphObjects;
 	}
 
 	public void setTableData(List graph_objects, List attributes) {
 
-		this.graph_objects = graph_objects;
-		this.attributes = attributes;
-		setTable();
+		this.graphObjects = graph_objects;
+		this.attributeNames = attributes;
+		if (this.objectType != DataTable.NETWORK) {
+			setTable();
+		} else {
+			setNetworkTable();
+		}
+
 	}
 
 	public void setTableDataAttributes(List attributes) {
-		this.attributes = attributes;
-		setTable();
+		this.attributeNames = attributes;
+		if (this.objectType != DataTable.NETWORK) {
+			setTable();
+		} else {
+			setNetworkTable();
+		}
 	}
 
 	public void setTableDataObjects(List graph_objects) {
-		this.graph_objects = graph_objects;
-		setTable();
-
+		this.graphObjects = graph_objects;
+		if (this.objectType != DataTable.NETWORK) {
+			setTable();
+		} else {
+			setNetworkTable();
+		}
 	}
 
-	public void setGraphObjectType(int got) {
-		graphObjectType = got;
+	public void setObjectType(int ot) {
+		objectType = ot;
+	}
+
+	protected void setNetworkTable() {
+
+		if(Cytoscape.getCurrentNetwork() == null) {
+			return;
+		}
+		
+		String networkName = Cytoscape.getCurrentNetwork().getIdentifier();
+
+
+		int att_length = attributeNames.size();
+		// Attribute names will be the row id, and num. of column is always
+		Object[][] data_vector = new Object[att_length][2];
+		Object[] column_names = new Object[2];
+
+		column_names[0] = "Network Attribute Name";
+		column_names[1] = "Value";
+
+		for (int i = 0; i < att_length; i++) {
+			String attributeName = (String) attributeNames.get(i);
+			byte type = data.getType(attributeName);
+
+			data_vector[i][0] = attributeName;
+			Object value = getAttributeValue(type, networkName, attributeName);
+			data_vector[i][1] = value;
+		}
+		setDataVector(data_vector, column_names);
+		
 	}
 
 	// Fill the cells in the table
@@ -93,42 +211,68 @@ public class DataTableModel extends DefaultTableModel implements
 	//
 	protected void setTable() {
 
-		int att_length = attributes.size() + 1;
-		int go_length = graph_objects.size();
+		internalSelection = new HashMap();
+		Iterator it = graphObjects.iterator();
+		while (it.hasNext()) {
+			GraphObject obj = (GraphObject) it.next();
+			String id = obj.getIdentifier();
+
+			internalSelection.put(id, DEFAULT_FLAG);
+
+			if (objectType == DataTable.NODES) {
+				Node targetNode = Cytoscape.getCyNode(id);
+				Cytoscape.getCurrentNetworkView().getNodeView(targetNode)
+						.setSelectedPaint(DEFAULT_NODE_COLOR);
+			} else {
+				String[] edgeNameParts = id.split(" ");
+				String interaction = edgeNameParts[1].substring(1,
+						edgeNameParts[1].length() - 1);
+				Node source = Cytoscape.getCyNode(edgeNameParts[0]);
+				Node target = Cytoscape.getCyNode(edgeNameParts[2]);
+				Edge targetEdge = Cytoscape.getCyEdge(source, target,
+						Semantics.INTERACTION, interaction, false);
+				if (targetEdge != null) {
+					EdgeView edgeView = Cytoscape.getCurrentNetworkView()
+							.getEdgeView(targetEdge);
+					if (edgeView != null) {
+						edgeView.setSelectedPaint(DEFAULT_EDGE_COLOR);
+					}
+				}
+
+			}
+
+		}
+
+		int att_length = attributeNames.size() + 1;
+		int go_length = graphObjects.size();
 
 		Object[][] data_vector = new Object[go_length][att_length];
 		Object[] column_names = new Object[att_length];
 
 		// Set column names (attribute names)
 		// System.out.println("Debug: testsection start.");
-		column_names[0] = "ID";
+		column_names[0] = DataTable.ID;
 		for (int j = 0; j < go_length; ++j) {
-			GraphObject obj = (GraphObject) graph_objects.get(j);
+			GraphObject obj = (GraphObject) graphObjects.get(j);
 
 			data_vector[j][0] = obj.getIdentifier();
-
-			// System.out.print("Debug: ID = " + data_vector[j][0] + " and cn =
-			// " );
-			// System.out.println(data.getStringAttribute((String)
-			// data_vector[j][0], Semantics.CANONICAL_NAME));
-
 		}
 
 		// Set actual data
-		for (int i1 = 0; i1 < attributes.size(); ++i1) {
+		for (int i1 = 0; i1 < attributeNames.size(); ++i1) {
 			int i = i1 + 1;
-			column_names[i] = attributes.get(i1);
-			String attribute = (String) attributes.get(i1);
+			column_names[i] = attributeNames.get(i1);
+			String attributeName = (String) attributeNames.get(i1);
 
-			byte type = data.getType(attribute);
+			byte type = data.getType(attributeName);
 			// System.out.println("Debug: col name = " + column_names[i] + "
 			// TYPE is " + type );
 
 			for (int j = 0; j < go_length; ++j) {
-				GraphObject obj = (GraphObject) graph_objects.get(j);
+				GraphObject obj = (GraphObject) graphObjects.get(j);
 
 				Object value = getAttributeValue(type, obj.getIdentifier(),
-						attribute);
+						attributeName);
 				//				
 				// ArrayList testlist = (ArrayList) value;
 				// value = testlist.get(0);
@@ -144,10 +288,6 @@ public class DataTableModel extends DefaultTableModel implements
 		setDataVector(data_vector, column_names);
 
 	}
-
-//	public String exportTable() {
-//		return exportTable("\t", LS);
-//	}
 
 	public Object getAttributeValue(byte type, String id, String att) {
 		if (type == CyAttributes.TYPE_INTEGER)
@@ -165,56 +305,8 @@ public class DataTableModel extends DefaultTableModel implements
 		return null;
 	}
 
-//	public String exportTable(String element_delim, String eol_delim) {
-//		
-//		StringBuffer export = new StringBuffer();
-//
-//		int att_length = attributes.size() + 1;
-//		int go_length = graph_objects.size();
-//
-//		Object[][] data_vector = new Object[go_length][att_length];
-//		Object[] column_names = new Object[att_length];
-//
-//		column_names[0] = "ID";
-//		for (int j = 0; j < go_length; ++j) {
-//			GraphObject obj = (GraphObject) graph_objects.get(j);
-//
-//			data_vector[j][0] = obj.getIdentifier();
-//		}
-//
-//		for (int i1 = 0; i1 < attributes.size(); ++i1) {
-//			int i = i1 + 1;
-//			column_names[i] = attributes.get(i1);
-//			String attribute = (String) attributes.get(i1);
-//			byte type = data.getType(attribute);
-//			for (int j = 0; j < go_length; ++j) {
-//				GraphObject obj = (GraphObject) graph_objects.get(j);
-//
-//				Object value = getAttributeValue(type, obj.getIdentifier(),
-//						attribute);
-//				data_vector[j][i] = value;
-//			}
-//		}
-//
-//		for (int i = 0; i < column_names.length; ++i) {
-//			export.append(column_names[i] + element_delim);
-//		}
-//		export.append(eol_delim);
-//
-//		for (int i = 0; i < data_vector.length; i++) {
-//			for (int j = 0; j < data_vector[i].length; ++j) {
-//				export.append(data_vector[i][j] + element_delim);
-//			}
-//			export.append(eol_delim);
-//		}
-//		// StringSelection contents = new StringSelection(export.toString());
-//		// clipboard.setContents(contents, this);
-//		return export.toString();
-//
-//	}
-
 	public List getGraphObjects() {
-		return graph_objects;
+		return graphObjects;
 	}
 
 	public Class getObjectTypeAt(String colName) {
@@ -298,21 +390,27 @@ public class DataTableModel extends DefaultTableModel implements
 	 * write to the temp object
 	 */
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-		// System.out.println( "SetValueAt row "+rowIndex+" :
-		// "+getValueAt(rowIndex, columnIndex )+" column "+columnIndex+" :
-		// "+attributes.get( columnIndex - 1)+ "ID: "+getValueAt( rowIndex, 0 )
-		// );
 
-		// TODO: set the edit
-		// super.setValueAt( aValue, rowIndex, columnIndex );
-
-		DataEditAction edit = new DataEditAction(this, (String) getValueAt(
-				rowIndex, 0), (String) attributes.get(columnIndex - 1), null,
-				getValueAt(rowIndex, columnIndex), aValue, graphObjectType);
+		DataEditAction edit = null;
+		
+		if(this.objectType != DataTable.NETWORK) {
+			edit = new DataEditAction(this, (String) getValueAt(
+					rowIndex, 0), (String) attributeNames.get(columnIndex - 1),
+					null, getValueAt(rowIndex, columnIndex), aValue, objectType);
+		} else {
+			edit = new DataEditAction(
+											this,
+											Cytoscape.getCurrentNetwork().getIdentifier(),
+											(String)this.getValueAt(rowIndex, 0),
+											null,
+											getValueAt(rowIndex, columnIndex), 
+											aValue,
+											objectType
+										);
+		}
+		
 		cytoscape.Cytoscape.getDesktop().addEdit(edit);
 
 	}
-
-	
 
 }

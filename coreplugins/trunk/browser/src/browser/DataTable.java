@@ -1,20 +1,34 @@
 package browser;
 
+import giny.view.EdgeView;
+import giny.view.NodeView;
+
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.GridLayout;
+import java.awt.Font;
+import java.awt.Point;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 
-import javax.swing.JFrame;
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 import javax.swing.SwingConstants;
+import javax.swing.table.TableCellRenderer;
 
+import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
+import cytoscape.data.Semantics;
 import cytoscape.view.cytopanels.CytoPanelListener;
 import cytoscape.view.cytopanels.CytoPanelState;
 
@@ -30,10 +44,17 @@ import cytoscape.view.cytopanels.CytoPanelState;
  */
 public class DataTable {
 
+	public static final String ID = "ID";
+	public static final Color NON_EDITIBLE_COLOR = new Color(235, 235, 235);
+
+	private static final int LIST_MAX = 3;
+
 	// Panels to be added on the CytoPanels
 	ModPanel modPanel;
 	SelectPanel selectionPanel;
 	DataTableModel tableModel;
+
+	boolean coloring;
 
 	// Small toolbar panel on the top of browser
 	AttributeBrowserPanel attributePanel2;
@@ -51,30 +72,37 @@ public class DataTable {
 
 	public static int NODES = 0;
 	public static int EDGES = 1;
+
+	// Special panel needed for network attributes
+	public static int NETWORK = 2;
+
 	private String type = null;
-	
-	public int graphObjectType;
 
-	public DataTable(CyAttributes data, int graphObjectType) {
+	public int tableObjectType;
 
+	public DataTable(CyAttributes data, int tableObjectType) {
+		
 		// set up CytoscapeData Object and GraphObject Type
 		this.data = data;
-		this.graphObjectType = graphObjectType;
+		this.tableObjectType = tableObjectType;
 
 		// Make display title
 		type = "Node";
-		if (graphObjectType != NODES)
+		if (tableObjectType == EDGES) {
 			type = "Edge";
+		} else if (tableObjectType == NETWORK) {
+			type = "Network";
+		}
 
 		// Create table model.
 		tableModel = (DataTableModel) makeModel(data);
-		tableModel.setGraphObjectType(graphObjectType);
+		tableModel.setObjectType(tableObjectType);
 
 		// List of attributes and labels: CytoPanel 1
 
 		// Toolbar for selecting attributes and create new attribute.
-		attributePanel2 = new AttributeBrowserPanel(data, new AttributeModel(data),
-				new LabelModel(data), graphObjectType);
+		attributePanel2 = new AttributeBrowserPanel(data, new AttributeModel(
+				data), new LabelModel(data), tableObjectType);
 		attributePanel2.setTableModel(tableModel);
 
 		// the attribute table display: CytoPanel 2, horizontal SOUTH panel.
@@ -86,22 +114,68 @@ public class DataTable {
 				javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
 				javax.swing.border.TitledBorder.DEFAULT_POSITION, null, null));
 
-		JScrollPane mainTable = new JScrollPane(new JSortTable(tableModel));
-		mainPanel.setName( type + "AttributeBrowser" );
+		JSortTable attributeTable = new JSortTable(tableModel, tableObjectType);
+		// public String getToolTipText(MouseEvent me) {
+		// Point pt = me.getPoint();
+		// int row = rowAtPoint(pt);
+		// int col = columnAtPoint(pt);
+		//
+		// if (row < 0) {
+		// return null;
+		// } else {
+		// Object targetObject = getValueAt(row, col);
+		//
+		// if (targetObject.getClass() == ArrayList.class) {
+		//
+		// int counter = 0;
+		// ArrayList listAttribute = (ArrayList) targetObject;
+		// String ttText = "<html>";
+		// Iterator it = listAttribute.iterator();
+		//
+		// while (it.hasNext()) {
+		// String text = (it.next()).toString();
+		// ttText = ttText + text;
+		// counter++;
+		// if (counter > LIST_MAX) {
+		// ttText = ttText
+		// + "<br>"
+		// + "<font size=\"3\" color=\"yellow\">Click cell to view full
+		// listing...</font>";
+		// return ttText + "</html>";
+		// } else if (counter < listAttribute.size()) {
+		// ttText = ttText + "<br>";
+		// }
+		// }
+		// return ttText + "</html>";
+		// }
+		// return null;
+		// }
+		// }
+		// };
+
+		
+
+		// If this is a network attribute browser, do not allow to swap
+		// column.
+		if (this.tableObjectType == DataTable.NETWORK) {
+			attributeTable.getTableHeader().setReorderingAllowed(false);
+		}
+
+		JScrollPane mainTable = new JScrollPane(attributeTable);
+		mainPanel.setName(type + "AttributeBrowser");
 		mainPanel.add(mainTable, java.awt.BorderLayout.CENTER);
 		mainPanel.add(attributePanel2, java.awt.BorderLayout.NORTH);
 		// BrowserPanel mainPanel = new BrowserPanel(new
 		// JSortTable(tableModel));
 
 		//
-		// Advanced Window: CytoPanel 2
+		// Advanced Window: CytoPanel 3
 		//
 		JTabbedPane advancedPanel = new JTabbedPane();
-		advancedPanel.setPreferredSize(new Dimension(200,100));
-		
-		modPanel = new ModPanel(data, tableModel,
-				graphObjectType);
-		selectionPanel = new SelectPanel(tableModel, graphObjectType);
+		advancedPanel.setPreferredSize(new Dimension(200, 100));
+
+		modPanel = new ModPanel(data, tableModel, tableObjectType);
+		selectionPanel = new SelectPanel(tableModel, tableObjectType);
 		advancedPanel.add("Selection", selectionPanel);
 		advancedPanel.add("Modification", modPanel);
 
@@ -112,16 +186,24 @@ public class DataTable {
 		Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST).add(
 				type + "Attr Mod/ Object Select", advancedPanel);
 
-		
 		// Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH).add(
 		// type + " Attribute Browser", mainPanel);
 		//		
 
 		// Add main browser panel to CytoPanel 2 (SOUTH)
+
 		Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH).add(
 				type + " Attribute Browser", mainPanel);
 
-	
+		// if(this.tableObjectType == this.NETWORK) {
+		// String netName = Cytoscape.getCurrentNetwork().getTitle();
+		// Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH).add(
+		// "Network Attributes for " + netName, mainPanel);
+		// } else {
+		// Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH).add(
+		// type + " Attribute Browser", mainPanel);
+		// }
+
 		// Get indexes for the panels.
 		modPanelIndex = Cytoscape.getDesktop()
 				.getCytoPanel(SwingConstants.EAST).indexOfComponent(
@@ -194,10 +276,8 @@ public class DataTable {
 		}
 	}
 
-
-
 	public int getGraphObjectType() {
-		return graphObjectType;
+		return tableObjectType;
 	}
 
 	public CyAttributes getData() {
@@ -208,30 +288,30 @@ public class DataTable {
 	// Make sort model by using given CyAttributes
 	//
 	protected SortTableModel makeModel(CyAttributes data) {
-
-		List attributes = Arrays.asList(data.getAttributeNames());
-		List graph_objects = getFlaggedGraphObjects();
-
+		List attributeNames = Arrays.asList(data.getAttributeNames());
 		DataTableModel model = new DataTableModel();
-		model.setTableData(data, graph_objects, attributes);
+		List graph_objects = getSelectedGraphObjects();
+		if (tableObjectType == this.NETWORK) {
+			model.setTableData(data, null, attributeNames, tableObjectType);
+		} else {
+			model.setTableData(data, graph_objects, attributeNames,
+					tableObjectType);
+		}
+
 		return model;
 	}
 
-	private List getFlaggedGraphObjects() {
-		if (graphObjectType == NODES) {
-//			return new ArrayList(Cytoscape.getCurrentNetwork()
-//					.getFlaggedNodes());
-			return new ArrayList(Cytoscape.getCurrentNetwork().getSelectedNodes());
+	private List getSelectedGraphObjects() {
+		if (tableObjectType == NODES) {
+			// return new ArrayList(Cytoscape.getCurrentNetwork()
+			// .getFlaggedNodes());
+			return new ArrayList(Cytoscape.getCurrentNetwork()
+					.getSelectedNodes());
 		} else {
-			return new ArrayList(Cytoscape.getCurrentNetwork().getSelectedEdges());
+			return new ArrayList(Cytoscape.getCurrentNetwork()
+					.getSelectedEdges());
 		}
 	}
 
-	public static void main(String[] args) {
-		JFrame frame = new JFrame("JSortTable Test");
-		frame.getContentPane().setLayout(new GridLayout());
-		frame.getContentPane().add(new JSortTableTest());
-		frame.pack();
-		frame.show();
-	}
 }
+
