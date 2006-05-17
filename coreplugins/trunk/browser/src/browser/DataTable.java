@@ -47,8 +47,10 @@ public class DataTable {
 	public static final String ID = "ID";
 	public static final Color NON_EDITIBLE_COLOR = new Color(235, 235, 235);
 
-	private static final int LIST_MAX = 3;
-
+	//	 View mode for network panel
+	public static final int ALL_VIEW = 1;
+	public static final int SINGLE_VIEW = 2;
+	
 	// Panels to be added on the CytoPanels
 	ModPanel modPanel;
 	SelectPanel selectionPanel;
@@ -57,7 +59,7 @@ public class DataTable {
 	boolean coloring;
 
 	// Small toolbar panel on the top of browser
-	AttributeBrowserPanel attributePanel2;
+	AttributeBrowserPanel attributeBrowserPanel;
 
 	// Index number for the panels
 	int attributePanelIndex;
@@ -101,9 +103,9 @@ public class DataTable {
 		// List of attributes and labels: CytoPanel 1
 
 		// Toolbar for selecting attributes and create new attribute.
-		attributePanel2 = new AttributeBrowserPanel(data, new AttributeModel(
+		attributeBrowserPanel = new AttributeBrowserPanel(data, new AttributeModel(
 				data), new LabelModel(data), tableObjectType);
-		attributePanel2.setTableModel(tableModel);
+		attributeBrowserPanel.setTableModel(tableModel);
 
 		// the attribute table display: CytoPanel 2, horizontal SOUTH panel.
 		JPanel mainPanel = new JPanel(); // Container for table and toolbar.
@@ -115,45 +117,6 @@ public class DataTable {
 				javax.swing.border.TitledBorder.DEFAULT_POSITION, null, null));
 
 		JSortTable attributeTable = new JSortTable(tableModel, tableObjectType);
-		// public String getToolTipText(MouseEvent me) {
-		// Point pt = me.getPoint();
-		// int row = rowAtPoint(pt);
-		// int col = columnAtPoint(pt);
-		//
-		// if (row < 0) {
-		// return null;
-		// } else {
-		// Object targetObject = getValueAt(row, col);
-		//
-		// if (targetObject.getClass() == ArrayList.class) {
-		//
-		// int counter = 0;
-		// ArrayList listAttribute = (ArrayList) targetObject;
-		// String ttText = "<html>";
-		// Iterator it = listAttribute.iterator();
-		//
-		// while (it.hasNext()) {
-		// String text = (it.next()).toString();
-		// ttText = ttText + text;
-		// counter++;
-		// if (counter > LIST_MAX) {
-		// ttText = ttText
-		// + "<br>"
-		// + "<font size=\"3\" color=\"yellow\">Click cell to view full
-		// listing...</font>";
-		// return ttText + "</html>";
-		// } else if (counter < listAttribute.size()) {
-		// ttText = ttText + "<br>";
-		// }
-		// }
-		// return ttText + "</html>";
-		// }
-		// return null;
-		// }
-		// }
-		// };
-
-		
 
 		// If this is a network attribute browser, do not allow to swap
 		// column.
@@ -164,7 +127,7 @@ public class DataTable {
 		JScrollPane mainTable = new JScrollPane(attributeTable);
 		mainPanel.setName(type + "AttributeBrowser");
 		mainPanel.add(mainTable, java.awt.BorderLayout.CENTER);
-		mainPanel.add(attributePanel2, java.awt.BorderLayout.NORTH);
+		mainPanel.add(attributeBrowserPanel, java.awt.BorderLayout.NORTH);
 		// BrowserPanel mainPanel = new BrowserPanel(new
 		// JSortTable(tableModel));
 
@@ -194,15 +157,6 @@ public class DataTable {
 
 		Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH).add(
 				type + " Attribute Browser", mainPanel);
-
-		// if(this.tableObjectType == this.NETWORK) {
-		// String netName = Cytoscape.getCurrentNetwork().getTitle();
-		// Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH).add(
-		// "Network Attributes for " + netName, mainPanel);
-		// } else {
-		// Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH).add(
-		// type + " Attribute Browser", mainPanel);
-		// }
 
 		// Get indexes for the panels.
 		modPanelIndex = Cytoscape.getDesktop()
@@ -289,7 +243,7 @@ public class DataTable {
 	//
 	protected SortTableModel makeModel(CyAttributes data) {
 		List attributeNames = Arrays.asList(data.getAttributeNames());
-		DataTableModel model = new DataTableModel();
+		DataTableModel model = new DataTableModel(ALL_VIEW);
 		List graph_objects = getSelectedGraphObjects();
 		if (tableObjectType == this.NETWORK) {
 			model.setTableData(data, null, attributeNames, tableObjectType);

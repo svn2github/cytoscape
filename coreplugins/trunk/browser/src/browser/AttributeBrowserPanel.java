@@ -50,9 +50,8 @@ import cytoscape.dialogs.NetworkMetaDataDialog;
 public class AttributeBrowserPanel extends JPanel implements
 		PropertyChangeListener, ListSelectionListener, ListDataListener,
 		ActionListener {
-
-	public static final int NORMAL_VIEW = 1;
-	public static final int NETWORK_VIEW = 2;
+	
+	private int viewMode;
 
 	// Global Variables
 	CyAttributes data;
@@ -125,7 +124,7 @@ public class AttributeBrowserPanel extends JPanel implements
 	 * @return void
 	 */
 	private void initialize(AttributeModel a_model) {
-
+		
 		BorderLayout layout = new BorderLayout();
 		this.setLayout(layout);
 
@@ -165,7 +164,7 @@ public class AttributeBrowserPanel extends JPanel implements
 			tableModel.setTableDataAttributes(Arrays.asList(atts));
 
 		} catch (Exception ex) {
-			// System.out.println("EX!");
+			System.out.println("EX!");
 			attributeList.clearSelection();
 
 		}
@@ -597,10 +596,10 @@ public class AttributeBrowserPanel extends JPanel implements
 			networkAttrView = new JCheckBox();
 			networkAttrView.setText("All Networks");
 			networkAttrView.setToolTipText("Switch the table format: single network or all");
-
+			networkAttrView.setEnabled(false);
 			networkAttrView.addMouseListener(new java.awt.event.MouseAdapter() {
 				public void mouseClicked(java.awt.event.MouseEvent e) {
-					changeNetworkAttrView();
+					//changeNetworkAttrView();
 				}
 			});
 		}
@@ -609,6 +608,11 @@ public class AttributeBrowserPanel extends JPanel implements
 	}
 
 	private void changeNetworkAttrView() {
+		if(networkAttrView.isSelected() == true) {
+			System.out.println("Tablemomode changed");
+			tableModel = new DataTableModel(DataTable.ALL_VIEW);
+			
+		}
 		
 	}
 

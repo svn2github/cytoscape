@@ -17,6 +17,7 @@ import java.util.Vector;
 
 import javax.swing.table.DefaultTableModel;
 
+import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
@@ -42,48 +43,51 @@ public class DataTableModel extends DefaultTableModel implements
 
 	private static final Boolean DEFAULT_FLAG = new Boolean(false);
 
-	private int objectType = 0;
+	private int objectType = DataTable.NODES;
+	private int tableMode;
 
 	// will be used by internal selection.
 	private HashMap internalSelection = null;
 
-	public DataTableModel() {
-		initProperties();
+	public DataTableModel(int mode) {
+		initialize(mode);
 	}
 
-	public DataTableModel(int rows, int cols) {
+	public DataTableModel(int rows, int cols, int mode) {
 		super(rows, cols);
-		initProperties();
+		initialize(mode);
 	}
 
-	public DataTableModel(Object[][] data, Object[] names) {
+	public DataTableModel(Object[][] data, Object[] names, int mode) {
 		super(data, names);
-		initProperties();
+		initialize(mode);
 	}
 
-	public DataTableModel(Object[] names, int rows) {
+	public DataTableModel(Object[] names, int rows, int mode) {
 		super(names, rows);
-		initProperties();
+		initialize(mode);
 	}
 
-	public DataTableModel(Vector names, int rows) {
+	public DataTableModel(Vector names, int rows, int mode) {
 		super(names, rows);
-		initProperties();
+		initialize(mode);
 	}
 
-	public DataTableModel(Vector data, Vector names) {
+	public DataTableModel(Vector data, Vector names, int mode) {
 		super(data, names);
-		initProperties();
+		initialize(mode);
 	}
 	
 	/*
 	 * Initialize properties for Browser Plugin.
 	 */
-	private void initProperties() {
+	private void initialize(int mode) {
 		props = new Properties();
 		props.setProperty("colorSwitch", "off");
 		props.setProperty("defaultNodeColor", this.DEFAULT_NODE_COLOR.toString());
 		props.setProperty("defaultEdgeColor", this.DEFAULT_EDGE_COLOR.toString());
+		
+		tableMode = mode;
 	}
 	
 	protected void setColorSwitch(boolean flag) {
@@ -205,6 +209,50 @@ public class DataTableModel extends DefaultTableModel implements
 		setDataVector(data_vector, column_names);
 		
 	}
+	
+	protected void setAllNetworkTable() {
+
+		int att_length = attributeNames.size() + 1;
+		int networkCount = Cytoscape.getNetworkSet().size();
+
+		Object[][] data_vector = new Object[networkCount][att_length];
+		Object[] column_names = new Object[att_length];
+		column_names[0] = DataTable.ID;
+		
+		internalSelection = new HashMap();
+		Iterator it = Cytoscape.getNetworkSet().iterator();
+		int k = 0;
+		while (it.hasNext()) {
+			CyNetwork network = (CyNetwork) it.next();
+			String id = network.getIdentifier();
+
+			data_vector[k][0] = id;
+			k++;
+
+		}
+
+		// Set actual data
+		for (int idx = 0; idx < attributeNames.size(); ++idx) {
+			int i = idx + 1;
+			column_names[i] = attributeNames.get(idx);
+			String attributeName = (String) attributeNames.get(idx);
+
+			byte type = data.getType(attributeName);
+			it = Cytoscape.getNetworkSet().iterator();
+			int j = 0;
+			while(it.hasNext()) {
+				CyNetwork network = (CyNetwork) it.next();
+				Object value = getAttributeValue(type, network.getIdentifier(),
+						attributeName);		
+
+				data_vector[j][i] = value;
+				j++;
+			}
+		}
+
+		setDataVector(data_vector, column_names);
+	}
+
 
 	// Fill the cells in the table
 	// *** need to add an argument to copy edge attribute name correctly.
