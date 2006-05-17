@@ -275,6 +275,7 @@ class LoadGeneOntologyTask implements Task {
 					.toString());
 		}
 		taskMonitor.setPercentCompleted(100);
+		Cytoscape.firePropertyChange(Cytoscape.DATASERVER_CHANGED, null, null);
 	}
 
 	private void informUserOfServerStats(BioDataServer server) {

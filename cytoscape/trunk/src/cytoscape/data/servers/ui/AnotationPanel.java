@@ -202,8 +202,8 @@ public class AnotationPanel extends javax.swing.JPanel {
 
 		headerEditorPane
 				.setText("<html><body>"
-						+ "Each node ID will be tested against each GO Symbol and GO Synonym for a match. <br><br>"
-						+ " NOTE: If Transfer checkbox is unchecked, each node ID <strong><font color=\"red\">must</font></strong> "
+						+ "<blink><u><strong>Important Note</strong></u></blink><br>Each node ID will be tested against each GO Symbol and GO Synonym for a match. <br><br>"
+						+ "If Transfer checkbox is unchecked, each node ID <strong><font color=\"red\">must</font></strong> "
 						+ "have defined a Species attribute that matches the GO Taxon ID."
 						+ "</body></html>");
 

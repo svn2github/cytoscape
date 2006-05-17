@@ -97,6 +97,7 @@ public abstract class Cytoscape {
 	//
 	public static String NETWORK_CREATED = "NETWORK_CREATED";
 	public static String ATTRIBUTES_CHANGED = "ATTRIBUTES_CHANGED";
+	public static String DATASERVER_CHANGED = "DATASERVER_CHANGED";
 	public static String EXPRESSION_DATA_LOADED = "EXPRESSION_DATA_LOADED";
 	public static String NETWORK_DESTROYED = "NETWORK_DESTROYED";
 	public static String CYTOSCAPE_EXIT = "CYTOSCAPE_EXIT";
