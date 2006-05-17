@@ -55,8 +55,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
-import java.util.Random;
 import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
@@ -73,13 +73,21 @@ import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
 import cytoscape.data.attr.MultiHashMap;
 import cytoscape.data.attr.MultiHashMapDefinition;
+import cytoscape.data.writers.XGMMLWriter;
 import cytoscape.generated2.Att;
+import cytoscape.generated2.Date;
+import cytoscape.generated2.Description;
+import cytoscape.generated2.Format;
 import cytoscape.generated2.Graph;
 import cytoscape.generated2.Graphics;
+import cytoscape.generated2.Identifier;
+import cytoscape.generated2.RdfDescription;
 import cytoscape.generated2.RdfRDF;
+import cytoscape.generated2.Source;
+import cytoscape.generated2.Title;
+import cytoscape.generated2.Type;
 import cytoscape.generated2.impl.AttImpl;
 import cytoscape.visual.LineType;
-import cytoscape.data.writers.XGMMLWriter;
 
 /**
  * XGMMLReader. This version is Metanode-compatible.
@@ -89,8 +97,7 @@ import cytoscape.data.writers.XGMMLWriter;
  */
 public class XGMMLReader implements GraphReader {
 
-	Random rdn = new Random();
-
+	private static final String METADATA_ATTR_NAME = "Network Metadata";
 	// Graph Tags
 	protected static String GRAPH = "graph";
 	protected static String NODE = "node";
@@ -260,19 +267,18 @@ public class XGMMLReader implements GraphReader {
 		// Extract Network Attributes
 		// Currently, supported attribute data type is RDF metadata only.
 		List networkAttributes = network.getAtt();
-
+		System.out.println("Network = " + network.getLabel() );
+		
+		
 		for (int i = 0; i < networkAttributes.size(); i++) {
 			Att curAtt = (Att) networkAttributes.get(i);
 
-			// System.out.println("Network Attribute found: " +
-			// curAtt.getName());
+			 
 			if (curAtt.getName().equals("networkMetadata")) {
 				metadata = (RdfRDF) (curAtt.getContent().get(0));
-
+				networkCyAttributes.setAttributeMap(network.getId(), METADATA_ATTR_NAME, this.rdf2map(metadata) );
 			}
 			else if (curAtt.getName().equals(XGMMLWriter.BACKGROUND)) {
-				// System.out.println("Background color is " +
-				// curAtt.getValue());
 				backgroundColor = curAtt.getValue();
 			}
 			else if (curAtt.getName().equals(XGMMLWriter.GRAPH_VIEW_ZOOM)) {
@@ -483,12 +489,12 @@ public class XGMMLReader implements GraphReader {
 			}
 		}
 		edgeNameSet = null;
-
-		Iterator nit = Cytoscape.getRootGraph().nodesIterator();
-		while (nit.hasNext()) {
-			CyNode testnode = (CyNode) nit.next();
-			// System.out.println("ROOT LIST: " + testnode.getIdentifier());
-		}
+//
+//		Iterator nit = Cytoscape.getRootGraph().nodesIterator();
+//		while (nit.hasNext()) {
+//			CyNode testnode = (CyNode) nit.next();
+//			// System.out.println("ROOT LIST: " + testnode.getIdentifier());
+//		}
 
 		if (metanodeMap.size() != 0) {
 
@@ -723,29 +729,12 @@ public class XGMMLReader implements GraphReader {
 			}
 
 		}
-		// int rnd = rdn.nextInt(7);
-		// if (rnd == 0) {
-		// nodeView.setShape(NodeView.ELLIPSE);
-		// } else if (rnd == 1) {
-		// nodeView.setShape(NodeView.RECTANGLE);
-		// } else if (rnd == 2) {
-		// nodeView.setShape(NodeView.DIAMOND);
-		// } else if (rnd == 3) {
-		// nodeView.setShape(NodeView.HEXAGON);
-		// } else if (rnd == 4) {
-		// nodeView.setShape(NodeView.OCTAGON);
-		// } else if (rnd == 5) {
-		// nodeView.setShape(NodeView.PARALELLOGRAM);
-		// } else if (rnd == 6) {
-		// nodeView.setShape(NodeView.TRIANGLE);
-		// }
 
 		// This object includes non-GML graphics property.
 
 		if (graphics.getAtt().size() != 0) {
 			Att localGraphics = (Att) graphics.getAtt().get(0);
 			Iterator it = localGraphics.getContent().iterator();
-			Random trans = new Random();
 
 			// Extract edge graphics attributes one by one.
 			while (it.hasNext()) {
@@ -795,8 +784,6 @@ public class XGMMLReader implements GraphReader {
 						.getSource());
 				String targetNodeName = (String) nodeMap.get(curEdge
 						.getTarget());
-				// String label = curEdge.getLabel();
-				String label = "pp";
 
 				Iterator itrIt = curEdge.getAtt().iterator();
 				Att interaction = null;
@@ -1199,4 +1186,47 @@ public class XGMMLReader implements GraphReader {
 		// outta here
 		return -1;
 	}
+	
+	/**
+	 * Convert RDF object into Map
+	 */
+	private Map rdf2map(RdfRDF rdf) {
+		
+		
+		HashMap map = new HashMap();
+		RdfDescription dc = (RdfDescription) rdf.getDescription().get(0);
+	
+		Iterator it = dc.getDcmes().iterator();
+		while(it.hasNext()) {
+			Object entry = it.next();
+			// This is a hack: extract label from class name
+			String className = entry.getClass().toString();
+			String[] parts = className.split("\\.");
+			parts = parts[parts.length-1].split("Impl");
+			
+			String label = parts[0];
+			if (label.startsWith("Date")) {
+				map.put(label, ((Date)entry).getContent().get(0).toString());
+			} else if (label.startsWith("Title")) {
+				Title title = (Title) entry;
+				map.put(label, title.getContent().get(0).toString());
+			} else if (label.startsWith("Identifier")) {
+				map.put(label, ((Identifier) entry).getContent().get(0).toString());
+			} else if (label.startsWith("Description")) {
+				map.put(label, ((Description) entry).getContent().get(0).toString());
+			} else if (label.startsWith("Source")) {
+				map.put(label, ((Source) entry).getContent().get(0).toString());
+			} else if (label.startsWith("Type")) {
+				map.put(label, ((Type) entry).getContent().get(0).toString());
+			} else if (label.startsWith("Format")) {
+				map.put(label, ((Format) entry).getContent().get(0).toString());
+			} else {
+				//
+			}
+			
+		}
+		return map;
+	}
+	
+	
 }

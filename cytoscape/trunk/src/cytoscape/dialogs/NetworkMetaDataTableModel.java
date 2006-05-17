@@ -8,12 +8,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.Vector;
 
 import javax.swing.table.DefaultTableModel;
 import javax.xml.bind.JAXBException;
 
 import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
+import cytoscape.data.readers.MetadataParser;
 import cytoscape.generated2.Date;
 import cytoscape.generated2.Description;
 import cytoscape.generated2.Format;
@@ -36,8 +38,9 @@ import cytoscape.generated2.impl.TypeImpl;
  *
  */
 public class NetworkMetaDataTableModel extends DefaultTableModel {
-
+	private static final String METADATA_ATTR_NAME = "Network Metadata";
 	private CyNetwork network;
+	private CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
 
 	Object[][] dataVector;
 	HashMap data;
@@ -60,55 +63,26 @@ public class NetworkMetaDataTableModel extends DefaultTableModel {
 	 * 
 	 */
 
-//	public NetworkMetaDataTableModel(int rows, int cols) {
-//		super(rows, cols);
-//	}
-//
-//	public NetworkMetaDataTableModel(Object[][] data, Object[] names) {
-//		super(data, names);
-//	}
-//
-//	public NetworkMetaDataTableModel(Object[] names, int rows) {
-//		super(names, rows);
-//	}
-//
-//	public NetworkMetaDataTableModel(Vector names, int rows) {
-//		super(names, rows);
-//	}
-//
-//	public NetworkMetaDataTableModel(Vector data, Vector names) {
-//		super(data, names);
-//	}
-//
-//	public NetworkMetaDataTableModel() {
-//		super();
-//	}
-
 	public NetworkMetaDataTableModel(CyNetwork network) {
 		super();
-
 		this.network = network;
-
 	}
 
 	/*
 	 * Initialize data
 	 */
-	protected void initialize() throws JAXBException {
-		data = loadMetadata();
-	}
+//	protected void initialize() throws JAXBException {
+//		data = loadMetadata();
+//	}
 
 	public void setTableData() {
 
 		boolean isNew = false;
 
-		if (network.getClientDataNames().contains("RDF") == false ||
-				network.getClientData("RDF") == null) {
-
+		if (networkAttributes.getAttributeMap(network.getIdentifier(),METADATA_ATTR_NAME) == null) {
 			isNew = true;
 		}
 
-		// data.getMultiHashMap().addDataListener(this);
 		try {
 			setTable(isNew);
 		} catch (JAXBException e) {
@@ -130,14 +104,20 @@ public class NetworkMetaDataTableModel extends DefaultTableModel {
 		if (isNew) {
 			dataVector = new Object[defaultEntries.length][2];
 			data = createNewMetadata();
+			Set keySet = data.keySet();
+
+			// "-1" is necessary since data includes desctiption.
+			dataVector = new Object[keySet.size()][2];
+			description = "N/A";
 		} else {
-			data = loadMetadata();
+			data = (HashMap) networkAttributes.getAttributeMap(network.getIdentifier(), METADATA_ATTR_NAME);
+			Set keySet = data.keySet();
+
+			// "-1" is necessary since data includes desctiption.
+			dataVector = new Object[keySet.size()][2];
+			
+			description = (String) data.get("Description");
 		}
-
-		Set keySet = data.keySet();
-
-		dataVector = new Object[keySet.size()][2];
-
 		// Set actual data
 
 		// Order vector based on the labels
@@ -146,11 +126,13 @@ public class NetworkMetaDataTableModel extends DefaultTableModel {
 			String key = defaultEntries[i];
 			dataVector[i][0] = key;
 			dataVector[i][1] = data.get(key);
-//			System.out.println("Debug: value = " + data.get(key) + ", key is "
-//					+ key);
+			System.out.println("Debug: value = " + data.get(key) + ", key is "
+					+ key);
 		}
 
 		setDataVector(dataVector, columnHeader);
+		
+		
 
 	}
 
@@ -191,10 +173,14 @@ public class NetworkMetaDataTableModel extends DefaultTableModel {
 	/*
 	 * Load data from JAXB object
 	 */
-	public HashMap loadMetadata() throws JAXBException {
+	public HashMap loadMetadata() throws JAXBException, URISyntaxException {
 
 		// Load RDF Metadata from network's client data
-		RdfRDF metadata = (RdfRDF) network.getClientData("RDF");
+		
+		MetadataParser mdp = new MetadataParser(network);
+		
+		
+		RdfRDF metadata = mdp.getMetadata();
 		HashMap dataMap = new HashMap();
 
 		// Get metadata from RDF data object

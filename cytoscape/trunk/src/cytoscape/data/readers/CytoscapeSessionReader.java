@@ -345,7 +345,7 @@ public class CytoscapeSessionReader {
 			}
 
 			CyNetwork rootNetwork = this.createNetwork(null, targetNetwork,
-					networkStream, Cytoscape.FILE_XGMML, CytoscapeInit
+					networkStream, Cytoscape.FILE_XGMML, CytoscapeInit.getProperties()
 							.getProperty("defaultSpeciesName"), targetRoot
 							.isViewAvailable());
 
@@ -436,7 +436,7 @@ public class CytoscapeSessionReader {
 			}
 
 			CyNetwork new_network = this.createNetwork(parent, childFile,
-					networkStream, Cytoscape.FILE_XGMML, CytoscapeInit
+					networkStream, Cytoscape.FILE_XGMML, CytoscapeInit.getProperties()
 							.getProperty("defaultSpeciesName"), childNet
 							.isViewAvailable());
 
@@ -494,12 +494,10 @@ public class CytoscapeSessionReader {
 			network = Cytoscape.createNetwork(nodes, edges, reader
 					.getNetworkID(), parent);
 		}
-
-		// Store network Metadata
-		network.putClientData("RDF", reader.getNetworkMetadata());
-		network.putClientData(
-				"metaNodeViewer.model.GPMetaNodeFactory.metaNodeRindices",
-				reader.getMetanodeList());
+		
+//		network.putClientData(
+//				"metaNodeViewer.model.GPMetaNodeFactory.metaNodeRindices",
+//				reader.getMetanodeList());
 
 		// Reset back to the real View Threshold
 		CytoscapeInit.setViewThreshold(realThreshold);

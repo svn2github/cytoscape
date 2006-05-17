@@ -6,6 +6,7 @@
 
 package cytoscape.dialogs;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Vector;
 
@@ -20,6 +21,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
 import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
 import cytoscape.dialogs.NetworkMetaDataTableModel;
 import cytoscape.generated2.Date;
 import cytoscape.generated2.Description;
@@ -38,6 +41,7 @@ import cytoscape.generated2.Type;
  */
 public class NetworkMetaDataDialog extends javax.swing.JDialog implements TableModelListener{
 
+	private static final String METADATA_ATTR_NAME = "Network Metadata";
 	private final String XGMML_PACKAGE = "cytoscape.generated2";
 	private final String DEFAULT_ABOUT = "sample";
 	
@@ -194,10 +198,14 @@ public class NetworkMetaDataDialog extends javax.swing.JDialog implements TableM
 	//
 	private void update() throws JAXBException {
 
-		JAXBContext jc = JAXBContext.newInstance(XGMML_PACKAGE);
+		//JAXBContext jc = JAXBContext.newInstance(XGMML_PACKAGE);
 		ObjectFactory objFactory = new ObjectFactory();
 		RdfRDF metadata = objFactory.createRdfRDF();
 		RdfDescription dc = objFactory.createRdfDescription();
+		
+		CyAttributes networkAttr = Cytoscape.getNetworkAttributes();
+		
+		HashMap rdfMap = new HashMap();
 		
 		dc.setAbout(DEFAULT_ABOUT);
 
@@ -208,14 +216,26 @@ public class NetworkMetaDataDialog extends javax.swing.JDialog implements TableM
 			String label = (String) row.get(0);
 			Object value = row.get(1);
 
-			dc.getDcmes().add(set(label, value));
+			if(label != null) {
+				rdfMap.put(label, value);
+				
+				dc.getDcmes().add(set(label, value));
+			}
+			
 		}
 
 		dc.getDcmes().add(set("Description", descriptionEditorPane.getText()));
-
+		rdfMap.put("Description", descriptionEditorPane.getText());
 		metadata.getDescription().add(dc);
-		network.putClientData("RDF", metadata);
-
+		//network.putClientData("RDF", metadata);
+		
+		Iterator test = rdfMap.keySet().iterator();
+		while(test.hasNext()) {
+			Object a = test.next();
+			if(a!=null) 
+			System.out.println("Key = " + a.toString() +", " + rdfMap.get(a).toString());
+		}
+		networkAttr.setAttributeMap(network.getIdentifier(), METADATA_ATTR_NAME, rdfMap);
 	}
 
 	private Object set(String label, Object value) throws JAXBException {

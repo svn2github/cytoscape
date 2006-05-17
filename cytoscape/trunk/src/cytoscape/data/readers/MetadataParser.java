@@ -1,40 +1,39 @@
-
 /*
-  File: MetadataParser.java 
-  
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-  
-  The Cytoscape Consortium is: 
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Pasteur Institute
-  - Agilent Technologies
-  
-  This library is free software; you can redistribute it and/or modify it
-  under the terms of the GNU Lesser General Public License as published
-  by the Free Software Foundation; either version 2.1 of the License, or
-  any later version.
-  
-  This library is distributed in the hope that it will be useful, but
-  WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
-  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
-  documentation provided hereunder is on an "as is" basis, and the
-  Institute for Systems Biology and the Whitehead Institute 
-  have no obligations to provide maintenance, support,
-  updates, enhancements or modifications.  In no event shall the
-  Institute for Systems Biology and the Whitehead Institute 
-  be liable to any party for direct, indirect, special,
-  incidental or consequential damages, including lost profits, arising
-  out of the use of this software and its documentation, even if the
-  Institute for Systems Biology and the Whitehead Institute 
-  have been advised of the possibility of such damage.  See
-  the GNU Lesser General Public License for more details.
-  
-  You should have received a copy of the GNU Lesser General Public License
-  along with this library; if not, write to the Free Software Foundation,
-  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ File: MetadataParser.java 
+ 
+ Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+ 
+ The Cytoscape Consortium is: 
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Pasteur Institute
+ - Agilent Technologies
+ 
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+ 
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute 
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute 
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute 
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+ 
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+ */
 
 package cytoscape.data.readers;
 
@@ -44,11 +43,14 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import javax.xml.bind.JAXBException;
 
 import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
 import cytoscape.generated2.Date;
 import cytoscape.generated2.Description;
 import cytoscape.generated2.Format;
@@ -70,9 +72,12 @@ public class MetadataParser {
 
 	private String metadataLabel;
 	private CyNetwork network;
-
-	// 
 	private RdfRDF metadata;
+
+	private CyAttributes networkAttributes;
+	Map mapRDF;
+	
+	private static final String DEF_META_LABEL = "Network Metadata";
 
 	// Metadata used in cytoscape. This is a subset of dublin core.
 	private static String[] defaultLabels = { "Title", "Identifier", "Source",
@@ -84,15 +89,15 @@ public class MetadataParser {
 	private static final String DEF_FORMAT = "Cytoscape-XGMML";
 
 	public MetadataParser(CyNetwork network) {
-		this.metadataLabel = "RDF";
-		this.network = network;
-		this.metadata = (RdfRDF) network.getClientData(metadataLabel);
+		this(network, DEF_META_LABEL);
 	}
 
 	public MetadataParser(CyNetwork network, String metadataLabel) {
 		this.metadataLabel = metadataLabel;
 		this.network = network;
-		this.metadata = (RdfRDF) network.getClientData(metadataLabel);
+		networkAttributes = Cytoscape.getNetworkAttributes();
+		mapRDF = networkAttributes.getAttributeMap(network.getIdentifier(),
+				metadataLabel);
 	}
 
 	/**
@@ -128,35 +133,32 @@ public class MetadataParser {
 		}
 		return dataMap;
 	}
-
+	
+	
 	public RdfRDF getMetadata() throws JAXBException, URISyntaxException {
+		ObjectFactory objFactory = new ObjectFactory();
+		metadata = objFactory.createRdfRDF();
+		RdfDescription dc = objFactory.createRdfDescription();
+		dc.setAbout(DEF_URI);
 
-		if (metadata != null) {
-			return metadata;
-		} else {
-			ObjectFactory objFactory = new ObjectFactory();
-			metadata = objFactory.createRdfRDF();
-			RdfDescription dc = objFactory.createRdfDescription();
-			dc.setAbout(DEF_URI);
-
-			HashMap dataMap = makeNewMetadataMap();
-
-			Set labels = dataMap.keySet();
-			Object value = null;
-			String key = null;
-
-			Iterator it = labels.iterator();
-			while (it.hasNext()) {
-				key = (String) it.next();
-				value = dataMap.get(key);
-				dc.getDcmes().add(set(key, value));
-			}
-
-			metadata.getDescription().add(dc);
-
-			network.putClientData(metadataLabel, metadata);
-			return metadata;
+		if (mapRDF == null || mapRDF.keySet().size() == 0) {
+			mapRDF = makeNewMetadataMap();
 		}
+
+		Set labels = mapRDF.keySet();
+		Object value = null;
+		String key = null;
+
+		Iterator it = labels.iterator();
+		while (it.hasNext()) {
+			key = (String) it.next();
+			value = mapRDF.get(key);
+			dc.getDcmes().add(set(key, value));
+		}
+
+		metadata.getDescription().add(dc);
+		networkAttributes.setAttributeMap(network.getIdentifier(), metadataLabel, mapRDF);
+		return metadata;
 	}
 
 	private Object set(String label, Object value) throws JAXBException {
