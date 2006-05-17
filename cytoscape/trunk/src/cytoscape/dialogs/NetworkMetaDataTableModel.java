@@ -126,8 +126,8 @@ public class NetworkMetaDataTableModel extends DefaultTableModel {
 			String key = defaultEntries[i];
 			dataVector[i][0] = key;
 			dataVector[i][1] = data.get(key);
-			System.out.println("Debug: value = " + data.get(key) + ", key is "
-					+ key);
+//			System.out.println("Debug: value = " + data.get(key) + ", key is "
+//					+ key);
 		}
 
 		setDataVector(dataVector, columnHeader);
