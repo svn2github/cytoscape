@@ -134,6 +134,30 @@ public class MetadataParser {
 		return dataMap;
 	}
 	
+	protected HashMap makeMetadataMap() throws URISyntaxException {
+
+		HashMap dataMap = new HashMap();
+		
+		for (int i = 0; i < defaultLabels.length; i++) {
+			if (defaultLabels[i] == "Date") {
+				dataMap.put(defaultLabels[i], mapRDF.get("Date"));
+			} else if (defaultLabels[i] == "Title") {
+				dataMap.put(defaultLabels[i], network.getTitle());
+			} else if (defaultLabels[i] == "Source") {
+				dataMap.put(defaultLabels[i], mapRDF.get("Source"));
+			} else if (defaultLabels[i] == "Type") {
+				dataMap.put(defaultLabels[i], mapRDF.get("Type"));
+			} else if (defaultLabels[i] == "Format") {
+				dataMap.put(defaultLabels[i], mapRDF.get("Format"));
+			} else if (defaultLabels[i] == "Description") {
+				dataMap.put(defaultLabels[i], mapRDF.get("Description"));
+			} else if(defaultLabels[i] == "Identifier") {
+				dataMap.put(defaultLabels[i], mapRDF.get("Identifier"));
+			}
+		}
+		return dataMap;
+	}
+	
 	
 	public RdfRDF getMetadata() throws JAXBException, URISyntaxException {
 		ObjectFactory objFactory = new ObjectFactory();
@@ -143,8 +167,10 @@ public class MetadataParser {
 
 		if (mapRDF == null || mapRDF.keySet().size() == 0) {
 			mapRDF = makeNewMetadataMap();
+		} else {
+			mapRDF = makeMetadataMap();
 		}
-
+		
 		Set labels = mapRDF.keySet();
 		Object value = null;
 		String key = null;
@@ -153,7 +179,8 @@ public class MetadataParser {
 		while (it.hasNext()) {
 			key = (String) it.next();
 			value = mapRDF.get(key);
-			dc.getDcmes().add(set(key, value));
+			//System.out.println("#########(key, val) = " + key + ", " + value);
+			dc.getDcmes().add(set(key.trim(), value));
 		}
 
 		metadata.getDescription().add(dc);
@@ -204,6 +231,11 @@ public class MetadataParser {
 		} else {
 			return true;
 		}
+	}
+	
+	
+	public void dumpMetadata() {
+		
 	}
 
 }
