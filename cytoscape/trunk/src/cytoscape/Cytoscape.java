@@ -449,12 +449,6 @@ public abstract class Cytoscape {
 		 */
 		getNodeAttributes().setAttribute(nodeID,Semantics.CANONICAL_NAME,nodeID);
 
-
-		/*
-		 * Semantics.LABEL is now the only attribute supported in the core.
-		 */
-		getNodeAttributes().setAttribute(nodeID,Semantics.LABEL,nodeID);
-
 		return node;
 	}
 
