@@ -267,7 +267,8 @@ public class InnerCanvas extends JComponent
           chosenNode = (m_stack.size() > 0) ? m_stack.peek() : 0; }
         if (m_view.m_edgeSelection && chosenNode == 0) {
           computeEdgesIntersecting(m_lastXMousePos - 1, m_lastYMousePos - 1,
-                                   m_lastXMousePos + 1, m_lastYMousePos + 1);
+                                   m_lastXMousePos + 1, m_lastYMousePos + 1,
+                                   m_stack2);
           chosenEdge = (m_stack2.size() > 0) ? m_stack2.peek() : 0; }
         if ((!e.isShiftDown()) && // If shift is down never unselect.
             ((chosenNode == 0 && chosenEdge == 0) || // Mouse missed all.
@@ -400,7 +401,8 @@ public class InnerCanvas extends JComponent
                 computeEdgesIntersecting
                   (m_selectionRect.x, m_selectionRect.y,
                    m_selectionRect.x + m_selectionRect.width,
-                   m_selectionRect.y + m_selectionRect.height);
+                   m_selectionRect.y + m_selectionRect.height,
+                   m_stack2);
                 selectedEdges = new int[m_stack2.size()];
                 final IntEnumerator edges = m_stack2.elements();
                 for (int i = 0; i < selectedEdges.length; i++) {
@@ -505,10 +507,11 @@ public class InnerCanvas extends JComponent
   // Clobbers m_stack and m_ptBuff.
   // The rectangle extents are in component coordinate space.
   // IMPORTANT: Code that calls this method should be holding m_lock.
-  private final void computeEdgesIntersecting(final int xMini,
-                                              final int yMini,
-                                              final int xMaxi,
-                                              final int yMaxi)
+  final void computeEdgesIntersecting(final int xMini,
+                                      final int yMini,
+                                      final int xMaxi,
+                                      final int yMaxi,
+                                      final IntStack stack)
   {
     m_ptBuff[0] = xMini;
     m_ptBuff[1] = yMaxi;
@@ -527,14 +530,15 @@ public class InnerCanvas extends JComponent
       m_stack.push(edgeNodesEnum.nextInt()); }
     m_hash.empty();
     edgeNodesEnum = m_stack.elements();
-    m_stack2.empty();
+    stack.empty();
     final FixedGraph graph = (FixedGraph) m_view.m_drawPersp;
     if ((m_lastRenderDetail &
          GraphRenderer.LOD_HIGH_DETAIL) == 0) {
       // We won't need to look up arrows and their sizes.
       for (int i = 0; i < edgeNodesCount; i++) {
         final int node = edgeNodesEnum.nextInt(); // Positive.
-        m_view.m_spacial.exists(node, m_view.m_extentsBuff, 0);
+        if (!m_view.m_spacial.exists(node, m_view.m_extentsBuff, 0)) {
+          continue; /* Will happen if e.g. node was removed. */ }
         final float nodeX =
           (m_view.m_extentsBuff[0] + m_view.m_extentsBuff[2]) / 2;
         final float nodeY =
@@ -555,12 +559,13 @@ public class InnerCanvas extends JComponent
             m_line.setLine(nodeX, nodeY, otherNodeX, otherNodeY);
             if (m_line.intersects(xMin, yMin, xMax - xMin,
                                   yMax - yMin)) {
-              m_stack2.push(~edge); } } }
+              stack.push(~edge); } } }
         m_hash.put(node); } }
     else { // Last render high detail.
       for (int i = 0; i < edgeNodesCount; i++) {
         final int node = edgeNodesEnum.nextInt(); // Positive.
-        m_view.m_spacial.exists(node, m_view.m_extentsBuff, 0);
+        if (!m_view.m_spacial.exists(node, m_view.m_extentsBuff, 0)) {
+          continue; /* Will happen if e.g. node was removed. */ }
         final byte nodeShape = m_view.m_nodeDetails.shape(node);
         final IntEnumerator touchingEdges =
           graph.edgesAdjacent(node, true, true, true);
@@ -619,7 +624,7 @@ public class InnerCanvas extends JComponent
                 (xMin - segThicknessDiv2, yMin - segThicknessDiv2,
                  (xMax - xMin) + segThicknessDiv2 * 2,
                  (yMax - yMin) + segThicknessDiv2 * 2)) {
-              m_stack2.push(~edge); } } }
+              stack.push(~edge); } } }
         m_hash.put(node); } }
   }
 

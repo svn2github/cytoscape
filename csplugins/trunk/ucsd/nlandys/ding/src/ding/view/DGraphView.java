@@ -1011,6 +1011,13 @@ public class DGraphView implements GraphView, Printable
           else { returnVal.push(~node); } } } }
   }
 
+  public void queryDrawnEdges(int xMin, int yMin, int xMax, int yMax,
+                              IntStack returnVal)
+  {
+    synchronized (m_lock) {
+      m_canvas.computeEdgesIntersecting(xMin, yMin, xMax, yMax, returnVal); }
+  }
+
   /**
    * Extents of the nodes.
    */
