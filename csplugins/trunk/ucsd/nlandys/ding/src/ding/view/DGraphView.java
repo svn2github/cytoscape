@@ -1127,6 +1127,20 @@ public class DGraphView implements GraphView, Printable
     return nv;
   }
 
+  public EdgeView getPickedEdgeView(Point2D pt) {
+    EdgeView ev = null;
+    final IntStack edgeStack = new IntStack();
+    queryDrawnEdges((int) pt.getX(), (int) pt.getY(),
+                    (int) pt.getX(), (int) pt.getY(),
+                    edgeStack);
+    int chosenEdge = 0;
+    chosenEdge = (edgeStack.size() > 0) ? edgeStack.peek() : 0;
+    if (chosenEdge != 0) {
+      ev = getEdgeView(chosenEdge);
+    }
+    return ev;
+  }
+
   // AJK: 04/25/06 END
   // AJK: 04/27/06 BEGIN
   //   for context menus
@@ -1141,6 +1155,17 @@ public class DGraphView implements GraphView, Printable
     getCanvas().removeNodeContextMenuListener(l);
   }
   // AJK: 04/27/06 END
+
+  public void addEdgeContextMenuListener(EdgeContextMenuListener l)
+  {
+    System.out.println("Adding EdgeContextListener: " + l);
+    getCanvas().addEdgeContextMenuListener(l);
+  }
+
+  public void removeEdgeContextMenuListener(EdgeContextMenuListener l)
+  {
+    getCanvas().removeEdgeContextMenuListener(l);
+  }
 
   // Key is an Integer, which is the GraphPerspective index of an edge
   // containing visible edge anchors.

@@ -11,6 +11,7 @@ import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntHash;
 import cytoscape.util.intr.IntStack;
 import giny.view.GraphViewChangeListener;
+import giny.view.EdgeView;
 import giny.view.NodeView;
 import java.awt.Color;
 import java.awt.Component;
@@ -93,6 +94,8 @@ public class InnerCanvas extends JComponent
 
   // AJK: 04/27/06 for context menus
   public Vector nodeContextMenuListeners = new Vector();
+
+  public Vector edgeContextMenuListeners = new Vector();
 
   InnerCanvas(Object lock, DGraphView view)
   {
@@ -359,7 +362,8 @@ public class InnerCanvas extends JComponent
       m_lastXMousePos = e.getX();
       m_lastYMousePos = e.getY();
       // AJK 04/27/08: for node context menus
-      processNodeContextMenuEvent(e); }
+      processNodeContextMenuEvent(e);
+      processEdgeContextMenuEvent(e); }
   }
 
   public void mouseReleased(MouseEvent e)
@@ -750,6 +754,16 @@ public class InnerCanvas extends JComponent
     nodeContextMenuListeners.removeElement(l);
   }
 
+  public void addEdgeContextMenuListener(EdgeContextMenuListener l)
+  {
+    edgeContextMenuListeners.addElement(l);
+  }
+
+  public void removeEdgeContextMenuListener(EdgeContextMenuListener l)
+  {
+    edgeContextMenuListeners.removeElement(l);
+  }
+
   /**
    * handles a NodeContextMenuEvent.  For each listerner, calls its itemDropped() method
    * @param event the NodeContextMenuEvent
@@ -771,6 +785,26 @@ public class InnerCanvas extends JComponent
             System.out.println ("Adding context menu items for NodeContextMenuListener: " + l);
             //                              EventListener l = (EventListener) e.nextElement();
             l.addNodeContextMenuItems (event.getPoint(), nv, menu);
+          }
+        // Display PopupMenu
+        menu.show(this, event.getX(), event.getY());
+      }
+  }
+
+  protected synchronized void processEdgeContextMenuEvent(MouseEvent event)
+  {
+    EdgeView ev = m_view.getPickedEdgeView(event.getPoint());
+    if (ev != null)
+      {
+        String edgeLabel = ev.getEdge().getIdentifier();
+        JPopupMenu menu = new JPopupMenu(edgeLabel);
+        menu.setLabel(edgeLabel);
+        Enumeration e = edgeContextMenuListeners.elements();
+        while (e.hasMoreElements())
+          {
+            EdgeContextMenuListener l = (EdgeContextMenuListener) e.nextElement();
+            System.out.println("Adding context menu items for EdgeContextMenuListener: " + l);
+            l.addEdgeContextMenuItems(event.getPoint(), ev, menu);
           }
         // Display PopupMenu
         menu.show(this, event.getX(), event.getY());
