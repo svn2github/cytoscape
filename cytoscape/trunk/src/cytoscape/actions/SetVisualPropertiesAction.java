@@ -56,7 +56,7 @@ public class SetVisualPropertiesAction extends CytoscapeAction   {
 
    
   public SetVisualPropertiesAction ( ImageIcon icon ) {
-    super("Set VizMapper\u2122", icon );
+    super("Open VizMapper\u2122", icon );
     setPreferredMenu( "View" );
   }
   
