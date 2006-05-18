@@ -182,6 +182,7 @@ public class FilterUsePanel extends JPanel
           SwingUtilities.invokeLater(new Runnable(){
               public void run(){
                 testObjects();
+                Cytoscape.getCurrentNetworkView().updateView();
               }
             });}});
     apply.setEnabled(false);
