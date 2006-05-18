@@ -115,6 +115,11 @@ public class Semantics {
 	public static final String BIOLOGICAL_PROCESS = "biological_process";
 	public static final String CELLULAR_COMPONENT = "cellular_component";
 
+	/**
+	 * @deprecated Use {@link CyNode.getIdentifier()} instead.
+	 * 
+	 * This attribute will be removed in April, 2007.
+	 */
 	public static final String LABEL = "label";
 
 	/**
