@@ -616,16 +616,10 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
   public void setHandles(List bendPoints)
   {
     synchronized (m_view.m_lock) {
-      m_anchors.clear();
+      removeAllHandles();
       for (int i = 0; i < bendPoints.size(); i++) {
         final Point2D nextPt = (Point2D) bendPoints.get(i);
-        final Point2D addThis = new Point2D.Float();
-        addThis.setLocation(nextPt);
-        m_anchors.add(addThis); }
-      if (m_view.m_drawPersp.getEdge(~m_inx) != null &&
-          isSelected()) {
-        m_view.undrawAnchors(~m_inx);
-        m_view.drawAnchors(~m_inx); }
+        addHandle(nextPt); }
       m_view.m_contentChanged = true; }
   }
 
@@ -645,8 +639,6 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
     synchronized (m_view.m_lock) {
       final Point2D movePt = (Point2D) m_anchors.get(inx);
       movePt.setLocation(pt);
-      if (m_view.undrawAnchors(~m_inx)) {
-        m_view.drawAnchors(~m_inx); }
       m_view.m_contentChanged = true; }
   }
 
@@ -674,10 +666,6 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
       final Point2D addThis = new Point2D.Float();
       addThis.setLocation(pt);
       m_anchors.add(addThis);
-      if (m_view.m_drawPersp.getEdge(~m_inx) != null &&
-          isSelected()) {
-        m_view.undrawAnchors(~m_inx);
-        m_view.drawAnchors(~m_inx); }
       m_view.m_contentChanged = true; }
   }
 
@@ -687,10 +675,6 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
       final Point2D addThis = new Point2D.Float();
       addThis.setLocation(pt);
       m_anchors.add(insertInx, addThis);
-      if (m_view.m_drawPersp.getEdge(~m_inx) != null &&
-          isSelected()) {
-        m_view.undrawAnchors(~m_inx);
-        m_view.drawAnchors(~m_inx); }
       m_view.m_contentChanged = true; }
   }
 
@@ -703,26 +687,19 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
         final Point2D.Float currPt = (Point2D.Float) m_anchors.get(i);
         if (x == currPt.x && y == currPt.y) {
           m_anchors.remove(i);
-          if (m_view.undrawAnchors(~m_inx)) {
-            m_view.drawAnchors(~m_inx); }
           m_view.m_contentChanged = true;
           break; } } }
   }
 
   public void removeHandle(int inx)
   {
-    synchronized (m_view.m_lock) {
-      m_anchors.remove(inx);
-      if (m_view.undrawAnchors(~m_inx)) {
-        m_view.drawAnchors(~m_inx); }
-      m_view.m_contentChanged = true; }
+    synchronized (m_view.m_lock) { m_anchors.remove(inx); }
   }
 
   public void removeAllHandles()
   {
     synchronized (m_view.m_lock) {
       m_anchors.clear();
-      m_view.undrawAnchors(~m_inx);
       m_view.m_contentChanged = true; }
   }
 
