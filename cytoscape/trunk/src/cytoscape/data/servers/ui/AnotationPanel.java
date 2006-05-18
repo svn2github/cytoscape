@@ -60,8 +60,7 @@ public class AnotationPanel extends javax.swing.JPanel {
 	// "taxon", "Date", "Assigned_by"};
 
 	// String[] columnNames = { "DB_Object_Symbol", "DB_Object_Synonym" };
-	String[] columnNames = { "GO's Canonical Name", "Synonyms in GA File",
-			"Species (NCBI Taxon ID)" };
+	String[] columnNames = { "GO Symbol", "GO Synonym", "GO Taxon ID" };
 	private File oboFile = null;
 	private HashMap gaFiles = null;
 
