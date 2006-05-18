@@ -608,9 +608,9 @@ public class AnotationPanel extends javax.swing.JPanel {
 			Vector row = new Vector();
 			String taxonName = null;
 			for (int i = 0; i < rowString.length; i++) {
-				if (i == 2) {
+				if (i == 2 && rowString[i] != null) {
 					row.add(rowString[i]);
-				} else if (i == 10) {
+				} else if (i == 10 && rowString[i] != null) {
 					row.add(rowString[i]);
 
 					// System.out.println("!!!!!!! Making SynoMap = " +
@@ -622,14 +622,20 @@ public class AnotationPanel extends javax.swing.JPanel {
 						synoMap.put(syno[j].trim(), row.get(0));
 					}
 
-				} else if (i == 12) {
+				} else if (i == 12 && rowString[i] != null) {
 					// This is a taxon ID.
 					// We need to convert this into species name
 					taxonID = rowString[i].split(":");
 					// System.out.println("!!!!!!! taxon ID = " + taxonID[0] +
 					// ", " + taxonID[1]);
-					taxonName = (String) taxonMap.get(taxonID[1]);
-					row.add(taxonName + " (" + taxonID[1] + ")");
+					if(taxonID.length != 2) {
+						row.add("ERROR!: Invalid Taxon ID " + rowString[i]);
+					} else if (taxonID.length == 2){
+						taxonName = (String) taxonMap.get(taxonID[1]);
+						row.add(taxonName + " (" + taxonID[1] + ")");
+					} else {
+						row.add("ERROR!: Invalid Taxon ID " + rowString[i]);
+					}
 				}
 			}
 
