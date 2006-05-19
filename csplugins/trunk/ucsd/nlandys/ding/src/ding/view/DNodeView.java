@@ -201,7 +201,13 @@ class DNodeView implements NodeView, Label
       m_view.m_spacial.delete(m_inx);
       m_view.m_spacial.insert(m_inx, xMin, m_view.m_extentsBuff[1],
                               xMax, m_view.m_extentsBuff[3]);
-      m_view.m_contentChanged = true;
+      final double w = ((double) xMax) - xMin;
+      final double h = ((double) m_view.m_extentsBuff[3]) -
+        m_view.m_extentsBuff[1];
+      if (Math.max(w, h) < 2.0d * Math.min(w, h) &&
+          getShape() == NodeView.ROUNDED_RECTANGLE) {
+        setShape(NodeView.RECTANGLE); }
+      m_view.m_contentChanged = true; 
       return true; }
   }
 
@@ -228,6 +234,12 @@ class DNodeView implements NodeView, Label
       m_view.m_spacial.delete(m_inx);
       m_view.m_spacial.insert(m_inx, m_view.m_extentsBuff[0], yMin,
                               m_view.m_extentsBuff[2], yMax);
+      final double w = ((double) m_view.m_extentsBuff[2]) -
+        m_view.m_extentsBuff[0];
+      final double h = ((double) yMax) - yMin;
+      if (Math.max(w, h) < 2.0d * Math.min(w, h) &&
+          getShape() == NodeView.ROUNDED_RECTANGLE) {
+        setShape(NodeView.RECTANGLE); }
       m_view.m_contentChanged = true;
       return true; }
   }
