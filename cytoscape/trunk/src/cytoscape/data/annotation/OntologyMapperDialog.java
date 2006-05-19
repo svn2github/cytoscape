@@ -157,8 +157,6 @@ public class OntologyMapperDialog extends JDialog {
 		addEdgesButton = new javax.swing.JButton();
 		deleteCreatedButton = new javax.swing.JButton();
 		okButton = new javax.swing.JButton();
-		jScrollPane3 = new javax.swing.JScrollPane();
-		jList1 = new javax.swing.JList();
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 		setTitle("Ontology Mapper");
@@ -461,16 +459,16 @@ public class OntologyMapperDialog extends JDialog {
 		boolean rootFlag = false;
 		Set uniqueAnnotationValues = null;
 		AnnotationDescription aDesc = null;
-		
+
 		if (annotationPath == null) {
 			return;
 		} else if (annotationPath.getPathComponent(1) == annotationPath
 				.getLastPathComponent()) {
 			rootFlag = true;
 
-			DefaultMutableTreeNode node1 = (DefaultMutableTreeNode) annotationPath.getPathComponent(1);
-			aDesc = (AnnotationDescription) node1
-					.getUserObject();
+			DefaultMutableTreeNode node1 = (DefaultMutableTreeNode) annotationPath
+					.getPathComponent(1);
+			aDesc = (AnnotationDescription) node1.getUserObject();
 
 			if (aDesc == null)
 				return;
@@ -484,8 +482,7 @@ public class OntologyMapperDialog extends JDialog {
 		} else {
 			DefaultMutableTreeNode node1 = (DefaultMutableTreeNode) annotationPath
 					.getPathComponent(1);
-			aDesc = (AnnotationDescription) node1
-					.getUserObject();
+			aDesc = (AnnotationDescription) node1.getUserObject();
 			DefaultMutableTreeNode node2 = (DefaultMutableTreeNode) annotationPath
 					.getPathComponent(2);
 
@@ -601,7 +598,9 @@ public class OntologyMapperDialog extends JDialog {
 	protected void appendToSelectionTree(String currentAnnotationCategory,
 			Set uniqueAnnotationValues, AnnotationDescription aDesc) {
 
-		HashSet values = new HashSet();
+		if (dataServer == null) {
+			return;
+		}
 
 		Annotation anno = dataServer.getAnnotation(aDesc);
 		Ontology onto = anno.getOntology();
@@ -654,8 +653,6 @@ public class OntologyMapperDialog extends JDialog {
 	private javax.swing.JTree goAttributeTree;
 	private javax.swing.JScrollPane goServerScrollPane;
 	private javax.swing.JTree goServerTree;
-	private javax.swing.JList jList1;
-	private javax.swing.JScrollPane jScrollPane3;
 	private javax.swing.JButton layoutButton;
 	private javax.swing.JButton okButton;
 	private javax.swing.JButton removeAllButton;
