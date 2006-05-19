@@ -183,7 +183,7 @@ public class DingNetworkView extends DGraphView implements CyNetworkView
   public boolean applyVizMap(EdgeView edge_view, VisualStyle style)
   {
     VisualStyle old_style = Cytoscape.getDesktop().setVisualStyle(style);
-    Cytoscape.getDesktop().getVizMapManager().vizmapEdge(edge_view, this);
+    Cytoscape.getVisualMappingManager().vizmapEdge(edge_view, this);
     Cytoscape.getDesktop().setVisualStyle(old_style);
     return true;
   }
@@ -196,7 +196,7 @@ public class DingNetworkView extends DGraphView implements CyNetworkView
   public boolean applyVizMap(NodeView node_view, VisualStyle style)
   {
     VisualStyle old_style = Cytoscape.getDesktop().setVisualStyle(style);
-    Cytoscape.getDesktop().getVizMapManager().vizmapNode(node_view, this);
+    Cytoscape.getVisualMappingManager().vizmapNode(node_view, this);
     Cytoscape.getDesktop().setVisualStyle(old_style);
     return true;
   }

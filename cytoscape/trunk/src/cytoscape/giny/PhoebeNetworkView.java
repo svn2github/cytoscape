@@ -302,13 +302,13 @@ public class PhoebeNetworkView
    
   public void redrawGraph() {
 
-    Cytoscape.getDesktop().getVizMapManager().applyAppearances();
+    Cytoscape.getVisualMappingManager().applyAppearances();
     getCanvas().setInteracting( true );
     //getCanvas().paintImmediately();
     getCanvas().setInteracting( false );
 
-  //   if (getVizMapManager() != null && this.visualMapperEnabled) {
-//         getVizMapManager().applyAppearances();
+  //   if (ggetVisualMappingManager() != null && this.visualMapperEnabled) {
+//         getVisualMappingManager().applyAppearances();
 //     }
   }
 
@@ -421,7 +421,7 @@ public class PhoebeNetworkView
    */
   public boolean applyVizMap ( EdgeView edge_view, VisualStyle style ) {
     VisualStyle old_style = Cytoscape.getDesktop().setVisualStyle( style );
-    Cytoscape.getDesktop().getVizMapManager().vizmapEdge( edge_view, this );
+    Cytoscape.getVisualMappingManager().vizmapEdge( edge_view, this );
     Cytoscape.getDesktop().setVisualStyle( old_style );
     return true;
   }
@@ -452,7 +452,7 @@ public class PhoebeNetworkView
    */
   public boolean applyVizMap ( NodeView node_view, VisualStyle style ) {
     VisualStyle old_style = Cytoscape.getDesktop().setVisualStyle( style );
-    Cytoscape.getDesktop().getVizMapManager().vizmapNode( node_view, this );
+    Cytoscape.getVisualMappingManager().vizmapNode( node_view, this );
     Cytoscape.getDesktop().setVisualStyle( old_style );
     return true;
   }
