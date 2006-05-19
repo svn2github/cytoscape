@@ -55,13 +55,15 @@ public class LinkOutPlugin
  * LinkOut plugin for customized URL links
  * **/
 public class LinkOutPlugin
-        extends CytoscapePlugin
-        implements NodeContextMenuListener {
+        extends CytoscapePlugin  {
 
     public LinkOutPlugin () {
 
         try{
-            ((DGraphView)Cytoscape.getCurrentNetworkView()).addNodeContextMenuListener(this);
+            //((DGraphView)Cytoscape.getCurrentNetworkView()).addNodeContextMenuListener(this);
+            LinkOutNetworkListener m_listener=new LinkOutNetworkListener();
+            Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(m_listener);
+
         }
         catch (ClassCastException e){
             System.out.println(e.getMessage());
@@ -69,19 +71,12 @@ public class LinkOutPlugin
         }
     }
 
-    public void addNodeContextMenuItems (Point pt, Object nodeView, JPopupMenu menu){
-        LinkOut lo= new LinkOut();
-        if(menu==null){
-            menu=new JPopupMenu();
-        }
-        menu.add(lo.AddLinks(nodeView));
-    }
 }
 
 /*
 $Log$
-Revision 1.2  2006/05/16 22:21:40  betel
-Corrections to work with new nodeContextMenuListener
+Revision 1.3  2006/05/19 21:51:29  betel
+New implementation of LinkOut with network-view listener
 
 Revision 1.1  2006/05/11 22:42:28  betel
 Initial deposit of linkout to pre-coreplugins

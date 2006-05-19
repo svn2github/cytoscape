@@ -7,27 +7,23 @@ import cytoscape.*;
 import cytoscape.util.*;
 import java.util.*;
 import giny.view.*;
-//import ding.view.*;
 import javax.swing.*;
 import java.awt.event.*;
 import java.io.*;
 
 /**
 * Generates links to external web pages specified in the cytoscape.props file.
-* Nodes can be linked to external web pages by specifying web resources in the properties file
+* Nodes can be linked to external web pages by specifying web resources in the linkout.properties file
 * The format for a weblink is in the form of a <key> = <value> pair where <key> is the name of the
 * website (e.g. NCBI, E!, PubMed, SGD,etc) and <value> is the URL. The key name must be preceded by the keyword "url." to distinguish
 * this property from other properties.
-* In the URL string the placeholder <?> will be replaced with the node identifier. It is the users responsibility
+* In the URL string the placeholder %ID% will be replaced with the node identifier. It is the users responsibility
 * to ensure that the URL is correct and the node's name will match the required query value.
 * Examples:
-*	url.NCBI=http\://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd\=Search&db\=Protein&term\=<?>&doptcmdl\=GenPept
-*	url.SGD=http\://db.yeastgenome.org/cgi-bin/locus.pl?locus\=<?>
-*	url.E\!Ensamble=http\://www.ensembl.org/Homo_sapiens/textview?species\=all&idx\=All&q\=<?>
-*	url.Pubmed=http\://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd\=Search&db\=PubMed&term\=<?>
-*	url.TheOnion=http\://www.theonion.com
-* @param map	Hash map stores the name=url pairs
-* @param marker	Keyword that marks a property to be added to LinkOut
+*	url.NCBI=http\://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd\=Search&db\=Protein&term\=%ID%&doptcmdl\=GenPept
+*	url.SGD=http\://db.yeastgenome.org/cgi-bin/locus.pl?locus\=%ID%
+*	url.E\!Ensamble=http\://www.ensembl.org/Homo_sapiens/textview?species\=all&idx\=All&q\=%ID%
+*	url.Pubmed=http\://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd\=Search&db\=PubMed&term\=%ID%
 *
 */
 public class LinkOut {
@@ -46,7 +42,7 @@ public class LinkOut {
 
     /**
     * Fills the URL hash map with the <key> = <values> from cytoscape.props file
-    * @param Object object
+    * @param Object object NodeView object
     * @return none
     */
 //    public static JMenuItem AddLinks(Object[] args, PNode node){
@@ -178,7 +174,8 @@ public class LinkOut {
      * Search for an existing JmenuItem that is nested within a higher level JMenu
      * @param name String the name of the jmenu item
      * @param menu JMenu the parent JMenu to search in
-     * @return JMenuItem if found, null otherwise*/
+     * @return JMenuItem if found, null otherwise
+     * */
     private static JMenuItem GetMenuItem(String name, JMenu menu) {
         int count=menu.getMenuComponentCount();
         if(count==0){
@@ -264,6 +261,7 @@ public class LinkOut {
         }
 
         //4. Try ~/.cytoscape
+        //TODO- this section ain't working properly
         if ( !propsFound ) {
             file = CytoscapeInit.getConfigFile( "linkout.props" );
             propertiesLocation = file.toString();
@@ -297,8 +295,8 @@ public class LinkOut {
 
 /*
 $Log$
-Revision 1.2  2006/05/16 22:21:40  betel
-Corrections to work with new nodeContextMenuListener
+Revision 1.3  2006/05/19 21:51:29  betel
+New implementation of LinkOut with network-view listener
 
 Revision 1.1  2006/05/11 22:42:28  betel
 Initial deposit of linkout to pre-coreplugins
