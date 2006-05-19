@@ -60,7 +60,7 @@ import giny.model.*;
 
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
-import cytoscape.view.NetworkView;
+import cytoscape.view.CyNetworkView;
 import cytoscape.actions.GinyUtils;
 //--------------------------------------------------------------------------------------
 /**
@@ -70,7 +70,7 @@ import cytoscape.actions.GinyUtils;
  */
 public class GinyEdgeControlDialog extends JDialog {
 
-  NetworkView networkView;
+  CyNetworkView networkView;
   GraphView view;
   String [] edgeNames;
   HashMap edgeNamesHash;
@@ -78,11 +78,11 @@ public class GinyEdgeControlDialog extends JDialog {
   CyAttributes edgeAttributes;
   JTree tree;
 //--------------------------------------------------------------------------------------
-public GinyEdgeControlDialog (NetworkView networkView,
+public GinyEdgeControlDialog (CyNetworkView networkView,
                           HashMap edgeNamesHash, String title)
 
 {
-  super (networkView.getMainFrame (), false);
+  super ();
   this.networkView = networkView;
   this.edgeNamesHash = edgeNamesHash;
   this.view = networkView.getView();
