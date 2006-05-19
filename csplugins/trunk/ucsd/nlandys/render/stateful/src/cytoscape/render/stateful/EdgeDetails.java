@@ -130,6 +130,23 @@ public class EdgeDetails
     return null; }
 
   /**
+   * For edges with anchors, the anchors can be rendered as discs.  To render
+   * an anchor, return a positive value in this method.  If zero is returned
+   * no edge anchor is rendered.  By default this method returns zero.
+   */
+  public float anchorSize(final int edge, final int anchorInx) {
+    return 0.0f; }
+
+  /**
+   * Returns the paint to use when rendering an edge anchor.  The output of
+   * this method is ignored if anchorSize(edge, anchorInx) returned zero;
+   * otherwise, a non-null value must be returned.  By default this method
+   * returns null.
+   */
+  public Paint anchorPaint(final int edge, final int anchorInx) {
+    return null; }
+
+  /**
    * Returns the thickness of the edge segment.
    * <font color="red">By default this method returns zero.</font>
    * Take note of certain constraints specified in
