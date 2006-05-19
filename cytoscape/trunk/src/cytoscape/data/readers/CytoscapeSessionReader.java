@@ -37,7 +37,7 @@
 
 package cytoscape.data.readers;
 
-import java.io.File;
+import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.JarURLConnection;
@@ -50,7 +50,6 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
-import java.awt.geom.Point2D;
 
 import javax.swing.SwingUtilities;
 import javax.xml.bind.JAXBContext;
@@ -61,7 +60,6 @@ import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-import cytoscape.actions.FitContentAction;
 import cytoscape.ding.CyGraphLOD;
 import cytoscape.ding.DingNetworkView;
 import cytoscape.generated.Child;
@@ -71,9 +69,6 @@ import cytoscape.generated.NetworkTree;
 import cytoscape.generated.Node;
 import cytoscape.generated.SelectedNodes;
 import cytoscape.view.CyNetworkView;
-import cytoscape.view.CyNetworkView;
-import cytoscape.util.FileUtil;
-
 import ding.view.DGraphView;
 
 /**
@@ -166,8 +161,8 @@ public class CytoscapeSessionReader {
 				vizmapFileURL = new URL("jar:" + sourceName.toString() + "!/"
 						+ entryName);
 			} else if (entryName.endsWith("cytoscape.props")) {
-				cytoscapePropsURL = new URL("jar:" + sourceName.toString() + "!/"
-						+ entryName);
+				cytoscapePropsURL = new URL("jar:" + sourceName.toString()
+						+ "!/" + entryName);
 			} else if (entryName.endsWith(XGMML_EXT)) {
 				URL networkURL = new URL("jar:" + sourceName.toString() + "!/"
 						+ entryName);
@@ -185,6 +180,8 @@ public class CytoscapeSessionReader {
 		} else if (sourceObject.getClass() == URL.class) {
 			unzipSessionFromURL();
 		}
+
+		Cytoscape.firePropertyChange(Cytoscape.SESSION_LOADED, null, null);
 	}
 
 	/**
@@ -194,12 +191,13 @@ public class CytoscapeSessionReader {
 	 * @throws JAXBException
 	 */
 	private boolean unzipSessionFromURL() throws IOException, JAXBException {
-	
+
 		// restore vizmap.props
-		Cytoscape.firePropertyChange(Cytoscape.SESSION_LOADED, null, vizmapFileURL);
+		Cytoscape.firePropertyChange(Cytoscape.VIZMAP_RESTORED, null,
+				vizmapFileURL);
 
 		// restore cytoscape properties
-		CytoscapeInit.getProperties().load( cytoscapePropsURL.openStream() );
+		CytoscapeInit.getProperties().load(cytoscapePropsURL.openStream());
 
 		loadCySession(cysessionFileURL);
 
@@ -234,17 +232,19 @@ public class CytoscapeSessionReader {
 		String cysessionFileName = null;
 
 		for (Enumeration e = cysFile.entries(); e.hasMoreElements();) {
-			ZipEntry zent = (ZipEntry)e.nextElement();
-			String curEntry = zent.toString(); 
+			ZipEntry zent = (ZipEntry) e.nextElement();
+			String curEntry = zent.toString();
 			if (curEntry.endsWith("xml")) {
 				cysessionFileName = curEntry;
 
 			} else if (curEntry.endsWith("vizmap.props")) {
 				// We should restore VIZMAP first since it will be used by
 				// Graph Layout.
-				Cytoscape.firePropertyChange(Cytoscape.SESSION_LOADED, null, fileName);
+				Cytoscape.firePropertyChange(Cytoscape.VIZMAP_RESTORED, null,
+						fileName);
 			} else if (curEntry.endsWith("cytoscape.props")) {
-				CytoscapeInit.getProperties().load( cysFile.getInputStream(zent) );	
+				CytoscapeInit.getProperties()
+						.load(cysFile.getInputStream(zent));
 			}
 		}
 
@@ -345,9 +345,9 @@ public class CytoscapeSessionReader {
 			}
 
 			CyNetwork rootNetwork = this.createNetwork(null, targetNetwork,
-					networkStream, Cytoscape.FILE_XGMML, CytoscapeInit.getProperties()
-							.getProperty("defaultSpeciesName"), targetRoot
-							.isViewAvailable());
+					networkStream, Cytoscape.FILE_XGMML, CytoscapeInit
+							.getProperties().getProperty("defaultSpeciesName"),
+					targetRoot.isViewAvailable());
 
 			networkStream.close();
 
@@ -436,9 +436,9 @@ public class CytoscapeSessionReader {
 			}
 
 			CyNetwork new_network = this.createNetwork(parent, childFile,
-					networkStream, Cytoscape.FILE_XGMML, CytoscapeInit.getProperties()
-							.getProperty("defaultSpeciesName"), childNet
-							.isViewAvailable());
+					networkStream, Cytoscape.FILE_XGMML, CytoscapeInit
+							.getProperties().getProperty("defaultSpeciesName"),
+					childNet.isViewAvailable());
 
 			networkStream.close();
 
@@ -480,9 +480,11 @@ public class CytoscapeSessionReader {
 		// Create the CyNetwork
 		// First, set the view threshold to 0. By doing so, we can disable
 		// the auto-creating of the CyNetworkView.
-		
-		int realThreshold = Integer.valueOf(CytoscapeInit.getProperties().getProperty("viewThreshold","5000")).intValue();
-		
+
+		int realThreshold = Integer.valueOf(
+				CytoscapeInit.getProperties().getProperty("viewThreshold",
+						"5000")).intValue();
+
 		CytoscapeInit.setViewThreshold(0);
 
 		CyNetwork network = null;
@@ -494,10 +496,10 @@ public class CytoscapeSessionReader {
 			network = Cytoscape.createNetwork(nodes, edges, reader
 					.getNetworkID(), parent);
 		}
-		
-//		network.putClientData(
-//				"metaNodeViewer.model.GPMetaNodeFactory.metaNodeRindices",
-//				reader.getMetanodeList());
+
+		// network.putClientData(
+		// "metaNodeViewer.model.GPMetaNodeFactory.metaNodeRindices",
+		// reader.getMetanodeList());
 
 		// Reset back to the real View Threshold
 		CytoscapeInit.setViewThreshold(realThreshold);
@@ -540,11 +542,13 @@ public class CytoscapeSessionReader {
 
 			// set view zoom
 			Double zoomLevel = reader.getGraphViewZoomLevel();
-			if (zoomLevel != null) curView.setZoom(zoomLevel.doubleValue());
-		
+			if (zoomLevel != null)
+				curView.setZoom(zoomLevel.doubleValue());
+
 			// set view center
 			Point2D center = reader.getGraphViewCenter();
-			if (center != null) ((DGraphView)curView).setCenter(center.getX(), center.getY());
+			if (center != null)
+				((DGraphView) curView).setCenter(center.getX(), center.getY());
 		}
 
 		return network;
