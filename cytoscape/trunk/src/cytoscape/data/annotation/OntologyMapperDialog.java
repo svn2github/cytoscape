@@ -7,7 +7,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -94,11 +93,12 @@ public class OntologyMapperDialog extends JDialog {
 		dataServer = Cytoscape.getBioDataServer();
 
 		annotationDescriptions = dataServer.getAnnotationDescriptions();
-		
+
 		//
 		Semantics.applyNamingServices(network);
 
-		defaultSpecies = CytoscapeInit.getProperties().getProperty("defaultSpeciesName");
+		defaultSpecies = CytoscapeInit.getProperties().getProperty(
+				"defaultSpeciesName");
 	}
 
 	private void appendCurrentAnnotaions() {
@@ -130,7 +130,8 @@ public class OntologyMapperDialog extends JDialog {
 				String[] parts = attributeNames[idx].split(" ");
 				String curator = parts[0].trim();
 				String annotationType = parts[1] + " " + parts[2];
-				AnnotationDescription aDesc = new AnnotationDescription(species, curator, annotationType);
+				AnnotationDescription aDesc = new AnnotationDescription(
+						species, curator, annotationType);
 				appendToSelectionTree(attributeNames[idx], allTerms, aDesc);
 			}
 		}
@@ -162,7 +163,7 @@ public class OntologyMapperDialog extends JDialog {
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 		setTitle("Ontology Mapper");
 		goServerScrollPane.setBorder(javax.swing.BorderFactory
-				.createTitledBorder(null, "Onyologies in Local GO Server",
+				.createTitledBorder(null, "Ontologies in Local GO Server",
 						javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
 						javax.swing.border.TitledBorder.DEFAULT_POSITION,
 						new java.awt.Font("Serif", 1, 12)));
@@ -198,6 +199,7 @@ public class OntologyMapperDialog extends JDialog {
 
 		removeButton.setFont(new java.awt.Font("Serif", 1, 12));
 		removeButton.setText("<<");
+		removeButton.setEnabled(false);
 		removeButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				removeButtonActionPerformed(evt);
@@ -205,7 +207,9 @@ public class OntologyMapperDialog extends JDialog {
 		});
 
 		applyAllButton.setText("Apply All");
-		applyAllButton.setToolTipText("Apply all annotations in the selected category.");
+		applyAllButton
+				.setToolTipText("Apply all annotations in the selected category.");
+		applyButton.setEnabled(false);
 		applyAllButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				applyAllButtonActionPerformed(evt);
@@ -365,7 +369,7 @@ public class OntologyMapperDialog extends JDialog {
 		for (int idx = 0; idx < selectedPaths.length; idx++) {
 			String annotationLevelName = selectedPaths[idx].getPathComponent(1)
 					.toString();
-			
+
 			DefaultMutableTreeNode lastPath = (DefaultMutableTreeNode) selectedPaths[idx]
 					.getPathComponent(1);
 			lastPath.removeFromParent();
@@ -387,32 +391,52 @@ public class OntologyMapperDialog extends JDialog {
 	 */
 	private void applyAllButtonActionPerformed(java.awt.event.ActionEvent evt) {
 
-		if(annotationPath == null) {
-			return;
-		} 
-		
-		// first, create a Set object of all annotations.
-		DefaultMutableTreeNode node1 = (DefaultMutableTreeNode) annotationPath
-				.getPathComponent(1);
-		AnnotationDescription aDesc = (AnnotationDescription) node1
-				.getUserObject();
-		
-		if (aDesc == null)
-			return;
+		int rootNodeCount = goServerTree.getModel().getChildCount(
+				goServerTree.getModel().getRoot());
+		for (int i = 0; i < rootNodeCount; i++) {
 
-		Set uniqueAnnotationValues = new HashSet();
-		currentAnnotationCategory = aDesc.getCurator() + " " + aDesc.getType();
+			// first, create a Set object of all annotations.
+			DefaultMutableTreeNode node1 = (DefaultMutableTreeNode) goServerTree
+					.getModel().getChild(goServerTree.getModel().getRoot(), i);
+			AnnotationDescription aDesc = (AnnotationDescription) node1
+					.getUserObject();
 
-		uniqueAnnotationValues = addAllAnnotationToNodes(aDesc,
-				currentAnnotationCategory);
+			if (aDesc == null)
+				return;
 
-		if (uniqueAnnotationValues.size() == 0) {
-			showNoMatchErrorDialog();
-		} // Mod by kono end (10/20/2005)
+			Set uniqueAnnotationValues = new HashSet();
+			currentAnnotationCategory = aDesc.getCurator() + " "
+					+ aDesc.getType();
 
-		if (uniqueAnnotationValues != null && uniqueAnnotationValues.size() > 0) {
-			appendToSelectionTree(currentAnnotationCategory,
-					uniqueAnnotationValues, aDesc);
+			DefaultMutableTreeNode root = (DefaultMutableTreeNode) goAttributeTree
+					.getModel().getRoot();
+			DefaultTreeModel model = (DefaultTreeModel) goAttributeTree
+					.getModel();
+
+			// Extract levels
+			boolean skipFlag = false;
+			for (int idx = 0; idx < model.getChildCount(root); idx++) {
+				String childrenName = model.getChild(root, idx).toString();
+
+				if (childrenName.equals(currentAnnotationCategory)) {
+					skipFlag = true;
+				}
+			}
+
+			if (skipFlag == false) {
+				uniqueAnnotationValues = addAllAnnotationToNodes(aDesc,
+						currentAnnotationCategory);
+
+				if (uniqueAnnotationValues.size() == 0) {
+					showNoMatchErrorDialog();
+				}
+
+				if (uniqueAnnotationValues != null
+						&& uniqueAnnotationValues.size() > 0) {
+					appendToSelectionTree(currentAnnotationCategory,
+							uniqueAnnotationValues, aDesc);
+				}
+			}
 		}
 	}
 
@@ -433,31 +457,51 @@ public class OntologyMapperDialog extends JDialog {
 	 * This method will be called by Apply Button ( >> ).
 	 */
 	private void applyButtonActionPerformed(java.awt.event.ActionEvent evt) {
+
+		boolean rootFlag = false;
+		Set uniqueAnnotationValues = null;
+		AnnotationDescription aDesc = null;
 		
-		if(annotationPath == null) {
+		if (annotationPath == null) {
 			return;
-		} else if(annotationPath.getPathComponent(1) == annotationPath.getLastPathComponent()) {
-			System.out.println("branch root!!");
-			return;
+		} else if (annotationPath.getPathComponent(1) == annotationPath
+				.getLastPathComponent()) {
+			rootFlag = true;
+
+			DefaultMutableTreeNode node1 = (DefaultMutableTreeNode) annotationPath.getPathComponent(1);
+			aDesc = (AnnotationDescription) node1
+					.getUserObject();
+
+			if (aDesc == null)
+				return;
+
+			uniqueAnnotationValues = new HashSet();
+			currentAnnotationCategory = aDesc.getCurator() + " "
+					+ aDesc.getType();
+			uniqueAnnotationValues = addAllAnnotationToNodes(aDesc,
+					currentAnnotationCategory);
+
+		} else {
+			DefaultMutableTreeNode node1 = (DefaultMutableTreeNode) annotationPath
+					.getPathComponent(1);
+			aDesc = (AnnotationDescription) node1
+					.getUserObject();
+			DefaultMutableTreeNode node2 = (DefaultMutableTreeNode) annotationPath
+					.getPathComponent(2);
+
+			int level = ((Integer) node2.getUserObject()).intValue();
+
+			if (aDesc == null)
+				return;
+
+			String baseAnnotationName = aDesc.getCurator() + " "
+					+ aDesc.getType();
+			currentAnnotationCategory = baseAnnotationName + " (Level " + level
+					+ ")";
+
+			uniqueAnnotationValues = addAnnotationToNodes(aDesc, level,
+					currentAnnotationCategory);
 		}
-		
-		DefaultMutableTreeNode node1 = (DefaultMutableTreeNode) annotationPath
-				.getPathComponent(1);
-		AnnotationDescription aDesc = (AnnotationDescription) node1
-				.getUserObject();
-		DefaultMutableTreeNode node2 = (DefaultMutableTreeNode) annotationPath
-				.getPathComponent(2);
-
-		int level = ((Integer) node2.getUserObject()).intValue();
-
-		if (aDesc == null)
-			return;
-
-		String baseAnnotationName = aDesc.getCurator() + " " + aDesc.getType();
-		currentAnnotationCategory = baseAnnotationName + " (Level " + level
-				+ ")";
-		Set uniqueAnnotationValues = addAnnotationToNodes(aDesc, level,
-				currentAnnotationCategory);
 
 		/*
 		 * Error checking: - If the GO term in the level is already in the right
@@ -575,17 +619,14 @@ public class OntologyMapperDialog extends JDialog {
 			// " + term.getName());
 			reverse.put(term.getName(), id);
 		}
-		
-		
-		
+
 		DefaultMutableTreeNode branch = new DefaultMutableTreeNode(
 				currentAnnotationCategory);
 
 		Iterator it = uniqueAnnotationValues.iterator();
 		while (it.hasNext()) {
 			String termName = (String) it.next();
-			String treeNode = formatGOID((Integer) reverse
-					.get(termName))
+			String treeNode = formatGOID((Integer) reverse.get(termName))
 					+ " = " + termName;
 			branch.add(new DefaultMutableTreeNode(treeNode));
 		}
@@ -892,10 +933,16 @@ public class OntologyMapperDialog extends JDialog {
 
 			DefaultMutableTreeNode node = (DefaultMutableTreeNode) goServerTree
 					.getLastSelectedPathComponent();
-			if (node == null)
+			if (node == null) {
+				applyButton.setEnabled(false);
 				return;
-			if (!node.isLeaf())
+			}
+			if (!node.isLeaf()) {
+				applyButton.setEnabled(true);
+				annotationPath = goServerTree.getSelectionPaths()[0];
 				return;
+			}
+			applyButton.setEnabled(true);
 			annotationPath = goServerTree.getSelectionPaths()[0];
 		}
 
@@ -956,10 +1003,13 @@ public class OntologyMapperDialog extends JDialog {
 	class SelectNodesTreeSelectionListener implements TreeSelectionListener {
 
 		public void valueChanged(TreeSelectionEvent e) {
+
 			DefaultMutableTreeNode node = (DefaultMutableTreeNode) goAttributeTree
 					.getLastSelectedPathComponent();
-			if (node == null)
+			if (node == null) {
+				removeButton.setEnabled(false);
 				return;
+			}
 
 			/*
 			 * These functions are removed from 2.3 Maybe fixed in later
@@ -967,8 +1017,10 @@ public class OntologyMapperDialog extends JDialog {
 			 */
 			// layoutByAnnotationButton.setEnabled(!node.isLeaf());
 			// addSharedAnnotationEdgesButton.setEnabled(!node.isLeaf());
-			if (!node.isLeaf())
+			if (!node.isLeaf()) {
+				removeButton.setEnabled(true);
 				return;
+			}
 
 			CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 
@@ -1025,6 +1077,7 @@ public class OntologyMapperDialog extends JDialog {
 				}// mi iterator
 			}// nvi iterator
 
+			removeButton.setEnabled(false);
 			networkView.redrawGraph(false, false);
 
 		} // valueChanged
