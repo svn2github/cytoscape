@@ -102,7 +102,7 @@ public class BackgroundColorAction extends CytoscapeAction {
      * @param newColor New Color
      */
     private void synchronizeVisualStyle(Color newColor) {
-        VisualMappingManager vmm = Cytoscape.getDesktop().getVizMapManager();
+        VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
         if (vmm != null) {
             VisualStyle style = vmm.getVisualStyle();
             if (style != null) {

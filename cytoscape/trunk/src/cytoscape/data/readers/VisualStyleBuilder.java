@@ -148,8 +148,7 @@ public class VisualStyleBuilder {
 
 	public void buildStyle() {
 
-		CytoscapeDesktop cyDesktop = Cytoscape.getDesktop();
-		VisualMappingManager vizmapper = cyDesktop.getVizMapManager();
+		VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
 		catalog = vizmapper.getCalculatorCatalog();
 
 		setNodeMaps(vizmapper);

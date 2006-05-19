@@ -75,8 +75,7 @@ class ExportVizmapTask implements Task {
 		taskMonitor.setStatus("Saving Network...");
 		taskMonitor.setPercentCompleted(-1);
 		Cytoscape.firePropertyChange(Cytoscape.SESSION_SAVED, null, null);
-		CytoscapeDesktop cyDesktop = Cytoscape.getDesktop();
-		VisualMappingManager vizmapper = cyDesktop.getVizMapManager();
+		VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
 		CalculatorCatalog catalog = vizmapper.getCalculatorCatalog();
 
 		File userVizmapFile = new File(fileName);
