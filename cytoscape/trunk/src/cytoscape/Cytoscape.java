@@ -1739,16 +1739,25 @@ public abstract class Cytoscape {
 			destroyNetwork(net);
 		}
 
+		// Clear node attributes
 		CyAttributes nodeAttributes = getNodeAttributes();
 		String[] nodeAttrNames = nodeAttributes.getAttributeNames();
 		for (int i = 0; i < nodeAttrNames.length; i++) {
 			nodeAttributes.deleteAttribute(nodeAttrNames[i]);
 		}
 
+		// Clear edge attributes
 		CyAttributes edgeAttributes = getEdgeAttributes();
 		String[] edgeAttrNames = edgeAttributes.getAttributeNames();
 		for (int i = 0; i < edgeAttrNames.length; i++) {
 			edgeAttributes.deleteAttribute(edgeAttrNames[i]);
+		}
+		
+		// Clear network attributes
+		CyAttributes networkAttributes = getNetworkAttributes();
+		String[] networkAttrNames = networkAttributes.getAttributeNames();
+		for (int i = 0; i < networkAttrNames.length; i++) {
+			networkAttributes.deleteAttribute(networkAttrNames[i]);
 		}
 
 		getDesktop().setTitle("Cytoscape Desktop (New Session)");
