@@ -153,6 +153,17 @@ public class DiscreteMapping extends SubjectBase implements ObjectMapping {
         treeMap.putAll(map);
     }
 
+    // AJK: 05/05/06 BEGIN
+    /**
+     * gets all map values
+     * 
+     */
+    public Map getAll () {
+        return treeMap;
+    }    
+    // AJK: 05/05/06 END
+
+    
     /**
      * Gets the Range Class.
      * Required by the ObjectMapping interface.
