@@ -46,13 +46,13 @@ package cytoscape.actions;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 
-import cytoscape.view.NetworkView;
+import cytoscape.view.CyNetworkView;
 //-------------------------------------------------------------------------
 public class UnHideSelectedAction extends AbstractAction  {
 
-    NetworkView networkView;
+    CyNetworkView networkView;
 
-    public UnHideSelectedAction(NetworkView networkView) {
+    public UnHideSelectedAction(CyNetworkView networkView) {
         super ("Un Hide selection");
         this.networkView = networkView;
     }

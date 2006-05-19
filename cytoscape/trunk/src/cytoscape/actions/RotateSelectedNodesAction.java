@@ -46,7 +46,7 @@ package cytoscape.actions;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 
-import cytoscape.view.NetworkView;
+import cytoscape.view.CyNetworkView;
 import cytoscape.dialogs.PhoebeNodeControl;
 //-------------------------------------------------------------------------
 /**
@@ -55,9 +55,9 @@ import cytoscape.dialogs.PhoebeNodeControl;
  * added by dramage 2002-08-20
  */
 public class RotateSelectedNodesAction extends AbstractAction {
-    NetworkView networkView;
+    CyNetworkView networkView;
     
-    public RotateSelectedNodesAction (NetworkView networkView) {
+    public RotateSelectedNodesAction (CyNetworkView networkView) {
         super("Rotate Selected Nodes");
         this.networkView = networkView;
     }
