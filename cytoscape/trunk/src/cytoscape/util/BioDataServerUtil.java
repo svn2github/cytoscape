@@ -47,6 +47,9 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.StringTokenizer;
 
+import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
+
 // Provides some utility methods for the BDS classes.
 //
 public class BioDataServerUtil {
@@ -68,7 +71,8 @@ public class BioDataServerUtil {
 		String sp = null;
 		String curLine = null;
 
-		while (null != (curLine = gaRd.readLine().trim())) {
+		while (null != (curLine = gaRd.readLine())) {
+			curLine.trim();
 			// Skip comment
 			if (curLine.startsWith("!")) {
 				// do nothing
@@ -77,7 +81,7 @@ public class BioDataServerUtil {
 				StringTokenizer st = new StringTokenizer(curLine, "\t");
 				while (st.hasMoreTokens()) {
 					String curToken = st.nextToken();
-					if (curToken.startsWith("taxon")) {
+					if (curToken.startsWith("taxon") || curToken.startsWith("Taxon")) {
 						st = new StringTokenizer(curToken, ":");
 						st.nextToken();
 						curToken = st.nextToken();
@@ -112,7 +116,9 @@ public class BioDataServerUtil {
 
 		taxRd.readLine();
 
-		while (null != (curLine = taxRd.readLine().trim())) {
+		while (null != (curLine = taxRd.readLine())) {
+			curLine.trim();
+			
 			StringTokenizer st = new StringTokenizer(curLine, "|");
 			String[] oneEntry = new String[st.countTokens()];
 			int counter = 0;
@@ -138,11 +144,12 @@ public class BioDataServerUtil {
 
 		txName = getSpecies(taxonFileReader, gaReader);
 		if (txName == null) {
+			txName = CytoscapeInit.getProperties().getProperty("defaultSpeciesName");
 			System.out
-					.println("Warning: Cannot recognized speices.  Speices field is set to \"unknown.\"");
+					.println("Warning: Cannot recognize speices.  Speices field is set to defaultSpeciesName (" + txName + ")");
 			System.out
 					.println("Warning: Please check your tax_report.txt file.");
-			txName = "unknown";
+			
 		}
 
 		return txName;
@@ -161,7 +168,9 @@ public class BioDataServerUtil {
 
 			taxonFileRd.readLine();
 
-			while (null != (curLine = taxonFileRd.readLine().trim())) {
+			while (null != (curLine = taxonFileRd.readLine())) {
+				curLine.trim();
+				
 				StringTokenizer st = new StringTokenizer(curLine, "|");
 				String[] oneEntry = new String[st.countTokens()];
 				int counter = 0;
@@ -219,7 +228,8 @@ public class BioDataServerUtil {
 		try {
 			htmlPageReader = new BufferedReader(new InputStreamReader(taxonURL
 					.openStream()));
-			while ((curLine = htmlPageReader.readLine().trim()) != null) {
+			while ((curLine = htmlPageReader.readLine()) != null) {
+				curLine.trim();
 				// System.out.println("HTML:" + curLine);
 				if (curLine.startsWith("<title>Taxonomy")) {
 					System.out.println("HTML:" + curLine);

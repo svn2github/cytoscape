@@ -861,16 +861,11 @@ class PreviewTableCellRenderer extends JLabel implements TableCellRenderer {
 				}
 			}
 			setText((value == null) ? "" : newValue.toString());
-			if (col == 1) {
-				this.setToolTipText(synonym[0] + " will be used for mapping.");
-			}
+			
 
 		} else {
 			setText((value == null) ? "" : value.toString());
-			if (col == 0) {
-				setToolTipText((value == null) ? "" : value.toString()
-						+ " will be used for mapping.");
-			}
+			
 		}
 		return this;
 	}

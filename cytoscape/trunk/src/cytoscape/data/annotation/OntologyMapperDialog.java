@@ -603,6 +603,10 @@ public class OntologyMapperDialog extends JDialog {
 		}
 
 		Annotation anno = dataServer.getAnnotation(aDesc);
+		
+		if(anno == null) {
+			return;
+		}
 		Ontology onto = anno.getOntology();
 		HashMap terms = onto.getTerms();
 
