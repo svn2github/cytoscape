@@ -319,6 +319,20 @@ public final class GraphRenderer
                                  srcXAdj, srcYAdj, anchors, trgXAdj, trgYAdj,
                                  thickness, segPaint, dashLength);
 
+              // Take care of edge anchor rendering.
+              if (anchors != null) {
+                for (int k = 0; k < anchors.numAnchors(); k++) {
+                  final float anchorSize;
+                  if ((anchorSize = edgeDetails.anchorSize(edge, k)) > 0.0f) {
+                    anchors.getAnchor(k, floatBuff4, 0);
+                    grafx.drawNodeFull
+                      (GraphGraphics.SHAPE_ELLIPSE,
+                       (float) (floatBuff4[0] - (anchorSize / 2.0d)),
+                       (float) (floatBuff4[1] - (anchorSize / 2.0d)),
+                       (float) (floatBuff4[0] + (anchorSize / 2.0d)),
+                       (float) (floatBuff4[1] + (anchorSize / 2.0d)),
+                       edgeDetails.anchorPaint(edge, k), 0.0f, null); } } }
+
               // Take care of label rendering.
               if ((lodBits & LOD_EDGE_LABELS) != 0) {
 
