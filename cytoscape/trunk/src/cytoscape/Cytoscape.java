@@ -106,6 +106,7 @@ public abstract class Cytoscape {
 	// KONO: 03/10/2006 For vizmap saving and loading
 	public static String SESSION_SAVED = "SESSION_SAVED";
 	public static String SESSION_LOADED = "SESSION_LOADED";
+	public static String VIZMAP_RESTORED = "VIZMAP_RESTORED";
 
 	public static String SAVE_VIZMAP_PROPS = "SAVE_VIZMAP_PROPS";
 	public static String VIZMAP_LOADED = "VIZMAP_LOADED";
