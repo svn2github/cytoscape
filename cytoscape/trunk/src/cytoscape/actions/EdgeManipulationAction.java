@@ -54,15 +54,15 @@ import java.util.HashSet;
 
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
-import cytoscape.view.NetworkView;
+import cytoscape.view.CyNetworkView;
 import cytoscape.dialogs.GinyEdgeControlDialog;
 
 //-------------------------------------------------------------------------
 public class EdgeManipulationAction extends AbstractAction {
 
-	NetworkView networkView;
+	CyNetworkView networkView;
 
-	public EdgeManipulationAction(NetworkView networkView) {
+	public EdgeManipulationAction(CyNetworkView networkView) {
 		super("Edge select or hide by attributes...");
 		this.networkView = networkView;
 	}
@@ -93,7 +93,7 @@ public class EdgeManipulationAction extends AbstractAction {
 			JDialog dialog = new GinyEdgeControlDialog(networkView,
 					attributesTree, "Edge Selection Control");
 			dialog.pack();
-			dialog.setLocationRelativeTo(networkView.getMainFrame());
+			dialog.setLocationRelativeTo(networkView.getComponent());
 			dialog.setVisible(true);
 		} else {
 			JOptionPane
