@@ -50,6 +50,7 @@ import cytoscape.util.CytoscapeAction;
 
 
 public class ExitAction extends CytoscapeAction {
+	protected int returnVal;
        
   public ExitAction () {
     super("Quit");
@@ -58,7 +59,7 @@ public class ExitAction extends CytoscapeAction {
   }
     
   public void actionPerformed (ActionEvent e) {
-    Cytoscape.exit();
+    Cytoscape.exit(returnVal);
   }
 }
 

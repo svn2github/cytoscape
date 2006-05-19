@@ -84,6 +84,7 @@ import cytoscape.visual.ui.VizMapUI;
 public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 
 	protected long lastPluginRegistryUpdate;
+	protected int returnVal;
 	// --------------------//
 	// Static variables
 
@@ -370,13 +371,13 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 
 		final CytoscapeDesktop thisWindow = this;
 		// AJK: 09/13/05 BEGIN
-		// don't automatically close window. Let Cytoscape.exit() handle this,
+		// don't automatically close window. Let Cytoscape.exit(returnVal) handle this,
 		// based upon user confirmation.
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		// AJK: 09/13/05 END
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent we) {
-				Cytoscape.exit();
+				Cytoscape.exit(returnVal);
 			}
 
 			public void windowClosed() {
