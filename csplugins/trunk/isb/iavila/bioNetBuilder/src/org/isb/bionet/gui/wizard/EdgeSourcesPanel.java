@@ -8,17 +8,16 @@ import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import javax.swing.*;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 
-import org.apache.xmlrpc.XmlRpcException;
 import org.isb.bionet.CyNetUtils;
 import org.isb.bionet.datasource.interactions.*;
 import org.isb.bionet.datasource.synonyms.*;
 import org.isb.bionet.gui.*;
 
-import utils.MyUtils;
-import utils.UserPasswordDialog;
 
-import java.sql.SQLException;
+import utils.UserPasswordDialog;
 import java.util.*;
 
 import cytoscape.*;
@@ -101,6 +100,8 @@ public class EdgeSourcesPanel extends JPanel {
      */
     protected Hashtable authenticatedEdgeSources;
     
+    protected static boolean DEBUG = false;
+    
     /**
      * 
      * @param interactions_client
@@ -116,6 +117,14 @@ public class EdgeSourcesPanel extends JPanel {
             Vector tax_ids,
             Vector nodeIds) {
         
+    		if(DEBUG){
+    			// redirect System.err to a file
+    			try{
+    				FileOutputStream fos = new FileOutputStream("errorLog.txt");
+    				System.setErr(new PrintStream(fos));
+    			}catch(Exception e){e.printStackTrace();}
+    		}
+    	
         this.interactionsClient = interactions_client;
         this.synonymsClient = synonyms_client;
         this.taxids = tax_ids;
@@ -187,9 +196,9 @@ public class EdgeSourcesPanel extends JPanel {
      *
      */
     public boolean isSourceAuthenticated (String source_class){
-        //System.out.println("authenticatedEdgeSources.contains(" + source_class + ") = " + this.authenticatedEdgeSources.contains(source_class));
+        //System.err.println("authenticatedEdgeSources.contains(" + source_class + ") = " + this.authenticatedEdgeSources.contains(source_class));
         if(this.authenticatedEdgeSources.containsKey(source_class)){
-            //System.out.println("his.authenticatedEdgeSources.get(source_class) =" + this.authenticatedEdgeSources.get(source_class));
+            //System.err.println("his.authenticatedEdgeSources.get(source_class) =" + this.authenticatedEdgeSources.get(source_class));
             return( (Boolean)this.authenticatedEdgeSources.get(source_class) ).booleanValue();
         }
         return true;
@@ -247,9 +256,10 @@ public class EdgeSourcesPanel extends JPanel {
             String sourceClass = (String)this.buttonToSourceClass.get(b);
             if(sourceClass != null){
                 JTextField tf = (JTextField)this.buttonToTextField.get(b);
-                //System.out.println("isSourceAuthenticated(" + sourceClass + ") = " + isSourceAuthenticated(sourceClass));
+                //System.err.println("isSourceAuthenticated(" + sourceClass + ") = " + isSourceAuthenticated(sourceClass));
                 if(isSourceSelected(sourceClass) && isSourceAuthenticated(sourceClass)){
                     sourceClassToField.put(sourceClass,tf);
+                    //System.err.println("Selected source =" + sourceClass);
                     numSelectedSources++;
                 }else{
                     //  Not selected, so set its edge number to 0 and skip
@@ -299,6 +309,8 @@ public class EdgeSourcesPanel extends JPanel {
             if(dialog != null){
                 args = dialog.getArgsTable();
             }
+            //System.err.println("Args for " + sourceClass + " are " + args);
+            
             sourceClassToArgs.put(sourceClass,args); // to be used later
             
             Vector sourceInteractions = null;
@@ -320,6 +332,7 @@ public class EdgeSourcesPanel extends JPanel {
                 // We have starting nodes
                 Vector adjacentNodes = null;
                 if(this.fnCB.isSelected()){
+                		//System.err.println("Getting adjacent nodes...");
                     // Get their first neighbors
                     try{
                         // fnCB can only be selected if this.nodes has elements
@@ -352,6 +365,7 @@ public class EdgeSourcesPanel extends JPanel {
                 
                 try{
                     // This takes a long time...
+                		//System.err.println("Getting connecting interactions for source " + sourceClass + " num nodes to connect = " + nodesToConnectForSource.size());
                     if(args.size() > 0){
                         sourceInteractions = 
                             (Vector)this.interactionsClient.getConnectingInteractions(nodesToConnectForSource, species, args, sourceClass);
@@ -361,34 +375,50 @@ public class EdgeSourcesPanel extends JPanel {
                     }
                 }catch(Exception e){e.printStackTrace();}
                 
+                //System.err.println("--------- Num interactions for " + sourceClass + " is " + sourceInteractions.size());
+                
                 // Accumulate the new nodeIDs if needed:
                 if(nodesToConnect != null){
                     boolean alternateIdsExist = false;
                     Iterator it2 = sourceInteractions.iterator();
-                    int oldSize = nodesToConnect.size();
                     while(it2.hasNext()){
                         Hashtable interaction = (Hashtable)it2.next();
                         String id1 = (String)interaction.get(InteractionsDataSource.INTERACTOR_1);
                         String id2 = (String)interaction.get(InteractionsDataSource.INTERACTOR_2);
-                        Vector id1alternates = (Vector)interaction.get(InteractionsDataSource.INTERACTOR_1_IDS);
-                        Vector id2alternates = (Vector)interaction.get(InteractionsDataSource.INTERACTOR_2_IDS);
                         nodesToConnect.add(id1);
                         nodesToConnect.add(id2);
-                        if(id1alternates != null) nodesToConnect.addAll(id1alternates);
-                        if(id2alternates != null) nodesToConnect.addAll(id2alternates);
-                    }//while it
-                    
-                    if(nodesToConnect.size() > oldSize) alternateIdsExist = true;
-                    args.put("alternateIDs",new Boolean(alternateIdsExist));
+                        Vector id1alternates = (Vector)interaction.get(InteractionsDataSource.INTERACTOR_1_IDS);
+                   	   Vector id2alternates = (Vector)interaction.get(InteractionsDataSource.INTERACTOR_2_IDS);
+                   	   if(id1alternates != null){
+                   		   if(!alternateIdsExist) id1alternates.remove(id1);
+                   		   if(id1alternates.size() > 0){
+                   			   alternateIdsExist = true;
+                   			   nodesToConnect.addAll(id1alternates);
+                   		   }
+                   	   }
+                   	   if(id2alternates != null){
+                   		   if(!alternateIdsExist) id2alternates.remove(id2);
+                   		   if(id2alternates.size() > 0){
+                   			   alternateIdsExist = true;
+                   			   nodesToConnect.addAll(id2alternates);
+                   		   }
+                   	   }
+                   	   
+                    }//while it2
+         
                     if(!alternateIdsExist){
-                        JTextField tf = (JTextField)sourceClassToField.get(sourceClass);
-                        tf.setText(Integer.toString(sourceInteractions.size()));
+                    	//System.err.println("Alternate IDs do NOT exist. Setting num interactions for " + sourceClass + " to " + sourceInteractions.size());
+                    	JTextField tf = (JTextField)sourceClassToField.get(sourceClass);
+                    	tf.setText(Integer.toString(sourceInteractions.size()));
                     }
+            
                 }else{
                     // we have starting nodes and only one edge source
-                    JTextField tf = (JTextField)sourceClassToField.get(sourceClass);
-                    tf.setText(Integer.toString(sourceInteractions.size()));
+                		//System.err.println("Only one source selected, num edges = " + sourceInteractions.size());
+                		JTextField tf = (JTextField)sourceClassToField.get(sourceClass);
+                		tf.setText(Integer.toString(sourceInteractions.size()));
                 }
+        
                  
             }//else
                 
@@ -406,6 +436,7 @@ public class EdgeSourcesPanel extends JPanel {
                 if(!alternateIDs.booleanValue()) continue;
                 int numInteractions = 0;
                 try{
+                		//System.err.println("There were alternate ids, getting NumConnectingInteracions for " + sourceClass);
                     if(args.size() > 0){  
                         numInteractions = this.interactionsClient.getNumConnectingInteractions(new Vector(nodesToConnect), species, args, sourceClass);
                     }else{
@@ -414,6 +445,7 @@ public class EdgeSourcesPanel extends JPanel {
                 }catch(Exception e){
                     e.printStackTrace();
                 }
+                //System.err.println("Setting num interactions of " + sourceClass +" to " + numInteractions);
                 JTextField tf = (JTextField)sourceClassToField.get(sourceClass);
                 tf.setText(Integer.toString(numInteractions));
             }//while it
@@ -438,7 +470,7 @@ public class EdgeSourcesPanel extends JPanel {
           
             final String sourceClass = (String) it.next();
            
-            //System.out.print("-----------" + sourceClass + "-------------\n");
+            //System.err.print("-----------" + sourceClass + "-------------\n");
             String buttonName = (String) this.sourceToName.get(sourceClass);
             
             boolean enabled = this.taxids.size() > 0;
@@ -462,9 +494,9 @@ public class EdgeSourcesPanel extends JPanel {
                        });// AbstractAction
                 boolean requiresPassword = false;
                 try{
-                    //System.out.println("Calling callSourceMethod ( "+sourceClass +", requiresPassword, new Vector()...");
+                    //System.err.println("Calling callSourceMethod ( "+sourceClass +", requiresPassword, new Vector()...");
                     Boolean rp = (Boolean)this.interactionsClient.callSourceMethod(sourceClass,"requiresPassword",new Vector());
-                    //System.out.println("got " + rp);
+                    //System.err.println("got " + rp);
                     requiresPassword = rp.booleanValue();
                 }catch(Exception e){
                     e.printStackTrace();
@@ -472,7 +504,7 @@ public class EdgeSourcesPanel extends JPanel {
                 }
                if(requiresPassword){
                    this.authenticatedEdgeSources.put(sourceClass,Boolean.FALSE);
-                   //System.out.println("---------------authenticatedEdgeSources.get("+sourceClass+") = " + this.authenticatedEdgeSources.get(sourceClass));
+                   //System.err.println("---------------authenticatedEdgeSources.get("+sourceClass+") = " + this.authenticatedEdgeSources.get(sourceClass));
                }
             }else if(buttonName.equals(DipInteractionsSource.NAME)){
                 final DipGui dDialog = new DipGui();
@@ -626,7 +658,7 @@ public class EdgeSourcesPanel extends JPanel {
                                 Boolean OK = (Boolean)interactionsClient.callSourceMethod(sourceClass,"authenticate",args);
                                 ok = OK.booleanValue();
                             }catch(Exception e){e.printStackTrace();}
-                            //System.out.println("SourceClass " + sourceClass + " authenticated: " + ok);
+                            //System.err.println("SourceClass " + sourceClass + " authenticated: " + ok);
                             if(!ok){
                                 JOptionPane.showMessageDialog(EdgeSourcesPanel.this,"Unauthorised user and password.","Not authorised.",JOptionPane.ERROR_MESSAGE);
                                 button.setEnabled(false);

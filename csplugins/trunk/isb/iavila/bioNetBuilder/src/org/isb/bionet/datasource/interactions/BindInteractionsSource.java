@@ -99,14 +99,14 @@ public class BindInteractionsSource extends SimpleInteractionsSource implements 
         Vector interactions = new Vector();
         try{
             while(rs.next()){
-               String i1 =  rs.getString(INTERACTOR1);
+               String i1 =  rs.getString(SimpleInteractionsSource.INTERACTOR1);
                int index = i1.indexOf(":");
                
                if(index < 0){
                    i1 = SynonymsSource.REFSEQ_ID + ":" + i1;
                }
                
-               String i2 =  rs.getString(INTERACTOR2);
+               String i2 =  rs.getString(SimpleInteractionsSource.INTERACTOR2);
                index = i2.indexOf(":");
                if(index < 0){
                    i2 = SynonymsSource.REFSEQ_ID + ":" + i2;
@@ -169,6 +169,8 @@ public class BindInteractionsSource extends SimpleInteractionsSource implements 
      return new Vector(filtered);
     }
     
+    // Methods that take a Hashtable args. The ones that do not take this argument are handled by SimpleInteractionsSource
+    
     //------------------------ get interactions en masse --------------------
     
     /**
@@ -192,7 +194,7 @@ public class BindInteractionsSource extends SimpleInteractionsSource implements 
         if(it.hasNext()) interactionTypes = "\"" + (String)it.next() + "\"";
         while(it.hasNext()) interactionTypes += "," + "\"" + (String)it.next() + "\"";
         
-        String sql = "SELECT i1, interactionType, i2 FROM interactions WHERE interactionType IN (" + interactionTypes + ") AND taxid1 = " + taxid + " AND taxid2 = " + taxid;
+        String sql = "SELECT * FROM interactions WHERE interactionType IN (" + interactionTypes + ") AND taxid1 = " + taxid + " AND taxid2 = " + taxid;
         ResultSet rs = query(sql);
         return makeInteractions(rs);
         
