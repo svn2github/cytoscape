@@ -129,7 +129,7 @@ public abstract class CalculatorCatalogFactory {
 								System.out.println("Vizmap saved to: "
 										+ propertiesFile);
 							}
-						} else if (e.getPropertyName() == Cytoscape.SESSION_LOADED) {
+						} else if (e.getPropertyName() == Cytoscape.VIZMAP_RESTORED) {
 
 							// 
 							vizmapProps.clear();
