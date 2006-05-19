@@ -566,7 +566,6 @@ public class AnotationPanel extends javax.swing.JPanel {
 
 		while ((line = br.readLine()) != null) {
 			if (line.startsWith("!")) {
-				System.out.println(line);
 				header = header + line + LS;
 			} else {
 				break;
