@@ -296,11 +296,11 @@ class LoadNetworkTask implements Task {
 		sb.append(" nodes and " + formatter.format(newNetwork.getEdgeCount()));
 		sb.append(" edges.\n\n");
 
-		if (newNetwork.getNodeCount() < CytoscapeInit.getViewThreshold()) {
-			sb.append("Network is under " + CytoscapeInit.getViewThreshold()
+		if (newNetwork.getNodeCount() < Integer.parseInt(CytoscapeInit.getProperties().getProperty( "viewThreshold" ))) {
+			sb.append("Network is under " + CytoscapeInit.getProperties().getProperty( "viewThreshold" )
 					+ " nodes.  A view will be automatically created.");
 		} else {
-			sb.append("Network is over " + CytoscapeInit.getViewThreshold()
+			sb.append("Network is over " + CytoscapeInit.getProperties().getProperty( "viewThreshold" )
 					+ " nodes.  A view has not been created."
 					+ "  If you wish to view this network, use "
 					+ "\"Create View\" from the \"Edit\" menu.");
@@ -385,7 +385,7 @@ class LoadNetworkTask implements Task {
 		// Create the CyNetwork
 		// First, set the view threshold to 0. By doing so, we can disable
 		// the auto-creating of the CyNetworkView.
-		int realThreshold = CytoscapeInit.getViewThreshold();
+		int realThreshold = Integer.parseInt(CytoscapeInit.getProperties().getProperty( "viewThreshold" ));
 		CytoscapeInit.setViewThreshold(0);
 
 		CyNetwork network = null;
@@ -417,7 +417,7 @@ class LoadNetworkTask implements Task {
 		// MLC 09/19/05 END.
 
 		// Conditionally, Create the CyNetworkView
-		if (network.getNodeCount() < CytoscapeInit.getViewThreshold()) {
+		if (network.getNodeCount() < Integer.parseInt(CytoscapeInit.getProperties().getProperty("viewThreshold" ))) {
 			createCyNetworkView(network);
 
 			// Layout Network

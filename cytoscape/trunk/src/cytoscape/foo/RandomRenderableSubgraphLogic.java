@@ -51,7 +51,7 @@ public class RandomRenderableSubgraphLogic
 
   public static void justDoIt(CyNetwork foo)
   {
-    final int threshold = CytoscapeInit.getViewThreshold();
+    final int threshold = Integer.parseInt(CytoscapeInit.getProperties().getProperty( "viewThreshold" ));
     final CyNetwork currentNetwork = foo;
     final int currentNodeCount = currentNetwork.getNodeCount();
 //     if (currentNodeCount < threshold)
