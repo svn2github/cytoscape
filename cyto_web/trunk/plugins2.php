@@ -362,6 +362,73 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 					<hr>
 				</td>
 			</tr>
+
+			<tr>
+				<td valign="top" width="20%">
+					<b>GenePro Plugin</b><font size="-1">
+						<br>
+						Version: 1
+						<br>
+						Release Date: April, 2006</font>
+				</td>
+				<td valign="top" width="40%">
+					<p>
+GenePro is a Cytoscape 2.2 plugin for the visualization and analysis of  
+protein-protein interaction networks and functional modules.
+</p><ul>
+<li>Networks can be visualized at two levels of resolution.  At the level  
+      of functional modules, each cluster appears as a node.  Double clicking  
+      a cluster loads a new network showing the local interactions within  
+      that cluster, and the nearest neighbors.</li>
+<li>The distribution of a cluster's members within a second network can  
+      be visualized using "Pie Nodes", where each cluster (node) appears  
+      as a pie chart illustrating how that cluster's members are  
+      distributed within a second network.  Visual cues indicate cluster and  
+      interaction attributes. </li>
+<li>Gene expression data can be superimposed on clusters, to show how the  
+      cluster responds to various conditions, or how the cluster members  
+      respond to a single condition.</li>
+</ul>
+<br>
+Released by:
+<br>
+<br>
+Wodak Laboratory  
+<br>
+Centre for Computational Biology  
+<br>
+The Hospital for Sick Children,  
+<br>
+Toronto, Canada
+<br>
+<br>
+in association with:
+<br>
+
+<br>
+Dept. of Biochemistry and the Dept. of Medical Genetics and  
+<br>
+Microbiology,  
+<br>
+University of Toronto  
+<br>
+Toronto, Canada
+
+					<p></p>
+				</td>
+				<td valign="top" width="20%">
+				Verified to work in 2.2.
+				</td>
+				<td valign="top" width="20%">
+					[<a href="http://genepro.ccb.sickkids.ca/">Download</a>]
+				</td>
+			</tr>
+			<tr>
+				<td colspan="4">
+					<hr>
+				</td>
+			</tr>
+
 			<tr>
 				<td width="20%" valign="top">
 					<b>Graph Merge Plugin</b><font size="-1">
