@@ -307,9 +307,7 @@ class LoadGeneOntologyTask implements Task {
 		}
 
 		status = "Summary of the Gene Ontology Server:\n\n" + newMessage
-				+ "Default Species Name is set to "
-				+ CytoscapeInit.getProperties().getProperty("defaultSpeciesName") + "\n\n"
-				+ "Gene Ontology Server loaded successfully.";
+				+ "\n\nGene Ontology Server loaded successfully.";
 
 		taskMonitor.setStatus(status);
 	}

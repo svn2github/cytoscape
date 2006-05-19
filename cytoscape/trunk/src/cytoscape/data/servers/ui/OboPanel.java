@@ -239,7 +239,6 @@ public class OboPanel extends javax.swing.JPanel {
 
 		while ((line = br.readLine()) != null) {
 			if (!(line.startsWith("[Term]"))) {
-				System.out.println(line);
 				header = header + line + LS;
 			} else {
 				break;
