@@ -452,7 +452,13 @@ class DNodeView implements NodeView, Label
       case NodeView.RECTANGLE:
         nativeShape = GraphGraphics.SHAPE_RECTANGLE; break;
       case NodeView.ROUNDED_RECTANGLE:
-        nativeShape = GraphGraphics.SHAPE_ROUNDED_RECTANGLE; break;
+        final double width = getWidth();
+        final double height = getHeight();
+        if (Math.max(width, height) < 2.0d * Math.min(width, height)) {
+          nativeShape = GraphGraphics.SHAPE_RECTANGLE; }
+        else {
+          nativeShape = GraphGraphics.SHAPE_ROUNDED_RECTANGLE; }
+        break;
       default:
         nativeShape = -1; }
       m_view.m_nodeDetails.overrideShape(m_inx, nativeShape);
