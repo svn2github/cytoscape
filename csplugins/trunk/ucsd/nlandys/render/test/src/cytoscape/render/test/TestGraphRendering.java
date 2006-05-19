@@ -225,6 +225,10 @@ public class TestGraphRendering
           return arrowColor; }
         public EdgeAnchors anchors(int edge) {
           return (EdgeAnchors) anchorsHash.get(edge); }
+//         public float anchorSize(int edge, int anchorInx) {
+//           return thickness * 3; }
+//         public Paint anchorPaint(int edge, int anchorInx) {
+//           return color; }
         public float segmentThickness(int edge) { return thickness; }
         public Paint segmentPaint(int edge) { return color; }
         public int labelCount(int edge) { return 1; }
