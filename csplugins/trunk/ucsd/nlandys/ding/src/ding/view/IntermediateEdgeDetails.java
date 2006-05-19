@@ -2,6 +2,7 @@ package ding.view;
 
 import cytoscape.render.stateful.EdgeDetails;
 import java.awt.Font;
+import java.awt.Color;
 import java.awt.Paint;
 
 class IntermediateEdgeDetails extends EdgeDetails
@@ -36,6 +37,11 @@ class IntermediateEdgeDetails extends EdgeDetails
   public float segmentThickness(int edge)
   {
     return DEdgeView.DEFAULT_EDGE_THICKNESS;
+  }
+
+  public Paint segmentPaint(int edge)
+  {
+    return DEdgeView.DEFAULT_EDGE_PAINT;
   }
 
   public String labelText(int edge, int labelInx)

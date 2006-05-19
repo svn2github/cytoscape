@@ -1167,6 +1167,17 @@ public class DGraphView implements GraphView, Printable
     getCanvas().removeEdgeContextMenuListener(l);
   }
 
+  private final class EdgeSelectListener implements GraphViewChangeListener
+  {
+    public void graphViewChanged(GraphViewChangeEvent evt)
+    {
+      if (evt.getType() == GraphViewChangeEvent.EDGES_SELECTED_TYPE) {
+      }
+      else if (evt.getType() == GraphViewChangeEvent.EDGES_UNSELECTED_TYPE) {
+      }
+    }
+  }
+
 //   // Key is an Integer, which is the GraphPerspective index of an edge
 //   // containing visible edge anchors.
 //   // Value is an ArrayList of Integer, where each Integer is the

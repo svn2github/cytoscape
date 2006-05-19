@@ -152,6 +152,11 @@ class DEdgeDetails extends IntermediateEdgeDetails
     return (EdgeAnchors) (m_view.getEdgeView(~edge));
   }
 
+  public Paint anchorPaint(int edge, int anchorInx)
+  {
+    return null;
+  }
+
   public float segmentThickness(int edge)
   {
     final Object o = m_segmentThicknesses.get(new Integer(edge));
