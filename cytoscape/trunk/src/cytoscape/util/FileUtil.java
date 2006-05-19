@@ -135,7 +135,7 @@ public abstract class FileUtil {
     		custom_approve_text,
     		false);
     
-    return (result.length <= 0) ? null : result[0];
+    return (result == null || result.length <= 0) ? null : result[0];
   }
 
   /**
