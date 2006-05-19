@@ -30,6 +30,7 @@ import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
@@ -51,7 +52,10 @@ public class AnotationPanel extends javax.swing.JPanel {
 	private final String LS = System.getProperty("line.separator");
 
 	private static final String TAXON_RESOURCE_FILE = "/cytoscape/resources/tax_report.txt";
-
+	private static final String BIOLOGICAL_PROCESS = "P";
+	private static final String MOLECULAR_FUNCTION = "F";
+	private static final String CELLULAR_COMPONENT = "C";
+	
 	// For Gene Association preview table
 	// String[] columnNames = {"DB", "DB_Object_ID", "DB_Object_Symbol",
 	// "Qualifier", "GO ID", "DB:Reference",
@@ -60,7 +64,7 @@ public class AnotationPanel extends javax.swing.JPanel {
 	// "taxon", "Date", "Assigned_by"};
 
 	// String[] columnNames = { "DB_Object_Symbol", "DB_Object_Synonym" };
-	String[] columnNames = { "GO Symbol", "GO Synonym", "GO Taxon ID" };
+	String[] columnNames = { "GO Symbol", "GO Term", "GO Aspect", "GO Synonym", "GO Taxon ID" };
 	private File oboFile = null;
 	private HashMap gaFiles = null;
 
@@ -582,8 +586,7 @@ public class AnotationPanel extends javax.swing.JPanel {
 	private void buildPreviewTable(BufferedReader br) throws IOException {
 
 		String line;
-		int idx = 0;
-
+		
 		String[] rowString;
 		Vector data = new Vector();
 		Vector cn = new Vector();
@@ -602,6 +605,9 @@ public class AnotationPanel extends javax.swing.JPanel {
 		HashMap taxonMap = bdsu.getTaxonMap(spListReader);
 		String[] taxonID = null;
 
+		boolean aspectErrorFlag = false;
+		boolean taxonErrorFlag = false;
+		
 		while ((line = br.readLine()) != null) {
 			rowString = line.split("\t");
 			Vector row = new Vector();
@@ -609,6 +615,19 @@ public class AnotationPanel extends javax.swing.JPanel {
 			for (int i = 0; i < rowString.length; i++) {
 				if (i == 2 && rowString[i] != null) {
 					row.add(rowString[i]);
+				} else if(i==4 && rowString[i] != null) {
+					row.add(rowString[i]);
+				} else if(i==8) {
+					if(rowString[i].equalsIgnoreCase(BIOLOGICAL_PROCESS)) {
+						row.add("Biological Process (" + BIOLOGICAL_PROCESS + ")");
+					} else if(rowString[i].equalsIgnoreCase(CELLULAR_COMPONENT)) {
+						row.add("Cellular Component (" + CELLULAR_COMPONENT + ")");
+					} else if(rowString[i].equalsIgnoreCase(MOLECULAR_FUNCTION)) {
+						row.add("Molecular Function (" + MOLECULAR_FUNCTION + ")");
+					} else {
+						row.add("Error!: Invalid Aspect");
+						aspectErrorFlag = true;
+					}
 				} else if (i == 10 && rowString[i] != null) {
 					row.add(rowString[i]);
 
@@ -629,18 +648,19 @@ public class AnotationPanel extends javax.swing.JPanel {
 					// ", " + taxonID[1]);
 					if(taxonID.length != 2) {
 						row.add("ERROR!: Invalid Taxon ID " + rowString[i]);
+						taxonErrorFlag = true;
 					} else if (taxonID.length == 2){
 						taxonName = (String) taxonMap.get(taxonID[1]);
 						row.add(taxonName + " (" + taxonID[1] + ")");
 					} else {
 						row.add("ERROR!: Invalid Taxon ID " + rowString[i]);
+						taxonErrorFlag = true;
 					}
 				}
 			}
 
 			nodeSpeciesMap.put(row.get(0), taxonName);
 			data.add(row);
-			idx++;
 		}
 
 		for (int i = 0; i < columnNames.length; i++) {
@@ -651,6 +671,26 @@ public class AnotationPanel extends javax.swing.JPanel {
 
 		previewTable.setDefaultRenderer(Object.class,
 				new PreviewTableCellRenderer(0));
+		
+		if(taxonErrorFlag == true || aspectErrorFlag == true) {
+			gaFileErrorHandler(taxonErrorFlag, aspectErrorFlag);
+		}
+	}
+	
+	private void gaFileErrorHandler(boolean taxonFlag, boolean aspectFlag) {
+		if(taxonFlag == true) {
+			JOptionPane.showMessageDialog(
+					this , "Some Taxonomy IDs are invalid." , "Warning" ,
+					JOptionPane.INFORMATION_MESSAGE
+				);
+		}
+		
+		if(aspectFlag == true) {
+			JOptionPane.showMessageDialog(
+					this , "This file contains invalid GO Aspects." , "Error!" ,
+					JOptionPane.INFORMATION_MESSAGE
+				);
+		}
 	}
 
 	private List getNodeList() {
