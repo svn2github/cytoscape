@@ -61,6 +61,13 @@ import edu.umd.cs.piccolo.*;
 import edu.umd.cs.piccolo.event.*;
 import edu.umd.cs.piccolo.nodes.*;
 
+//AJK: 05/19/06 BEGIN
+//for context menus
+import ding.view.NodeContextMenuListener;
+import ding.view.EdgeContextMenuListener;
+//AJK: 05/19/06 END
+
+
 public class PhoebeNetworkView 
   extends 
     PGraphView

@@ -23,6 +23,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+// AJK: 05/19/06 BEGIN
+//     for context menus
+import ding.view.NodeContextMenuListener;
+import ding.view.EdgeContextMenuListener;
+// AJK: 05/19/06 END
+
+
 public class DingNetworkView extends DGraphView implements CyNetworkView
 {
 
@@ -314,13 +321,23 @@ public class DingNetworkView extends DGraphView implements CyNetworkView
     layout.doLayout();
   }
   // AJK: 05/19/06 BEGIN
-  //   for context menus (just a compilation stub)
-  public void addNodeContextMenuListener (NodeContextMenuListener l) {};
+  //   for context menus
+  public void addNodeContextMenuListener (NodeContextMenuListener l)
+  {
+	  super.addNodeContextMenuListener(l);
+  }
 
-  public void removeNodeContextMenuListener (NodeContextMenuListener l){};
+  public void removeNodeContextMenuListener (NodeContextMenuListener l)  {
+	  super.removeNodeContextMenuListener(l);
+  }
 
-  public void addEdgeContextMenuListener(EdgeContextMenuListener l){};
+  public void addEdgeContextMenuListener(EdgeContextMenuListener l)  {
+	  super.addEdgeContextMenuListener(l);
+  }
  
-  public void removeEdgeContextMenuListener(EdgeContextMenuListener l){};
+  public void removeEdgeContextMenuListener(EdgeContextMenuListener l)  {
+	  super.removeEdgeContextMenuListener(l);
+  }
   // AJK: 05/19/06 END
+
 }
