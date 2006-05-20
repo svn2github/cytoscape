@@ -631,6 +631,16 @@ public class PhoebeNetworkView
     }
     return inverse;
   }
+  // AJK: 05/19/06 BEGIN
+  //   for context menus (just a compilation stub)
+  public void addNodeContextMenuListener (NodeContextMenuListener l) {};
 
+  public void removeNodeContextMenuListener (NodeContextMenuListener l){};
+
+  public void addEdgeContextMenuListener(EdgeContextMenuListener l){};
+ 
+  public void removeEdgeContextMenuListener(EdgeContextMenuListener l){};
+  // AJK: 05/19/06 END
+  
   
 }
