@@ -436,10 +436,6 @@ public class AttributeBrowserPanel extends JPanel implements
 												GroupLayout.PREFERRED_SIZE, 120,
 												GroupLayout.PREFERRED_SIZE)
 										.addPreferredGap(LayoutStyle.RELATED)
-										.add(getMetadataButton(),
-												GroupLayout.PREFERRED_SIZE, 40,
-												GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(LayoutStyle.RELATED)
 										.add(getImportButton(),
 												GroupLayout.PREFERRED_SIZE, 40,
 												GroupLayout.PREFERRED_SIZE)
@@ -473,11 +469,6 @@ public class AttributeBrowserPanel extends JPanel implements
 														org.jdesktop.layout.GroupLayout.BASELINE)
 												.add(
 														networkAttrView,
-														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-														36,
-														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-												.add(
-														metadataButton,
 														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
 														36,
 														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)

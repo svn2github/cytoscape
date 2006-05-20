@@ -32,9 +32,6 @@ public class DisplayAdvancedWindowAction extends CytoscapeAction {
 		CytoPanelState curState = Cytoscape.getDesktop().getCytoPanel(
 				SwingConstants.EAST).getState();
 
-		JCheckBoxMenuItem menuItem = null;
-		menuItem = (JCheckBoxMenuItem) Cytoscape.getDesktop().getCyMenus()
-				.getMenuBar().getMenu("CytoPanels").getItem(2);
 
 		int targetIndex = 0;
 
@@ -44,20 +41,17 @@ public class DisplayAdvancedWindowAction extends CytoscapeAction {
 					CytoPanelState.FLOAT);
 			Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST)
 					.setSelectedIndex(targetIndex);
-			menuItem.setSelected(true);
-
-			// System.out.println("Counter = " + menuItem.toString());
-
+			
 			// Case 2: Panel is in the Dock
 		} else if (curState == CytoPanelState.DOCK) {
 			Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST).setState(
 					CytoPanelState.HIDE);
-			menuItem.setSelected(false);
+			//menuItem.setSelected(false);
 			// Case 3: Panel is FLOAT
 		} else {
 			Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST).setState(
 					CytoPanelState.HIDE);
-			menuItem.setSelected(false);
+			//menuItem.setSelected(false);
 		}
 
 	}// action performed

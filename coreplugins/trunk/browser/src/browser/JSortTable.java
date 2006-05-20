@@ -48,6 +48,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -73,6 +74,7 @@ import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
+import cytoscape.dialogs.NetworkMetaDataDialog;
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.FileUtil;
 import cytoscape.view.cytopanels.CytoPanelState;
@@ -86,8 +88,6 @@ public class JSortTable extends JTable implements MouseListener, ActionListener 
 
 	private JPopupMenu cellMenu;
 	private JScrollPane cellContentListPane;
-	
-	
 
 	private JMenuItem copyMenuItem = null;
 	private JMenu exportMenu = null;
@@ -179,10 +179,11 @@ public class JSortTable extends JTable implements MouseListener, ActionListener 
 		setKeyStroke();
 
 		this.setDefaultRenderer(Object.class, new BrowserTableCellRenderer(
-				false, objectType)); /**
-	     * @param args the command line arguments
-	     */
-	   
+				false, objectType));
+		/**
+		 * @param args
+		 *            the command line arguments
+		 */
 
 		// excelHandler = new CopyToExcel(this);
 	}
@@ -222,7 +223,8 @@ public class JSortTable extends JTable implements MouseListener, ActionListener 
 
 			coloringMenuItem = new JCheckBoxMenuItem("On/Off Coloring");
 
-			showAdvancedWindow = new JCheckBoxMenuItem("Show Advanced Window");
+			// showAdvancedWindow = new JCheckBoxMenuItem("Show Advanced
+			// Window");
 
 			copyMenuItem.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -231,22 +233,22 @@ public class JSortTable extends JTable implements MouseListener, ActionListener 
 				}
 			});
 
-			showAdvancedWindow
-					.addActionListener(new java.awt.event.ActionListener() {
-						public void actionPerformed(java.awt.event.ActionEvent e) {
-							// System.out.println("actionPerformed()"); // TODO
-							// Auto-generated Event stub actionPerformed()
-							if (showAdvancedWindow.isSelected() == true) {
-								Cytoscape.getDesktop().getCytoPanel(
-										SwingConstants.EAST).setState(
-										CytoPanelState.FLOAT);
-							} else {
-								Cytoscape.getDesktop().getCytoPanel(
-										SwingConstants.EAST).setState(
-										CytoPanelState.HIDE);
-							}
-						}
-					});
+			// showAdvancedWindow
+			// .addActionListener(new java.awt.event.ActionListener() {
+			// public void actionPerformed(java.awt.event.ActionEvent e) {
+			// // System.out.println("actionPerformed()"); // TODO
+			// // Auto-generated Event stub actionPerformed()
+			// if (showAdvancedWindow.isSelected() == true) {
+			// Cytoscape.getDesktop().getCytoPanel(
+			// SwingConstants.EAST).setState(
+			// CytoPanelState.FLOAT);
+			// } else {
+			// Cytoscape.getDesktop().getCytoPanel(
+			// SwingConstants.EAST).setState(
+			// CytoPanelState.HIDE);
+			// }
+			// }
+			// });
 
 			exportCellsMenuItem
 					.addActionListener(new java.awt.event.ActionListener() {
@@ -304,9 +306,11 @@ public class JSortTable extends JTable implements MouseListener, ActionListener 
 											.getCyNode(selectedName);
 
 									selectedMap.put(selectedName, selectedNode);
-									Cytoscape.getCurrentNetworkView()
-											.getNodeView(selectedNode)
-											.setSelectedPaint(Color.GREEN);
+									if (Cytoscape.getCurrentNetworkView() != null) {
+										Cytoscape.getCurrentNetworkView()
+												.getNodeView(selectedNode)
+												.setSelectedPaint(Color.GREEN);
+									}
 								} else {
 									// Edge selectedEdge =
 									// Cytoscape.getCyEdge((String)
@@ -324,9 +328,11 @@ public class JSortTable extends JTable implements MouseListener, ActionListener 
 											Semantics.INTERACTION, interaction,
 											false);
 									selectedMap.put(selectedName, selectedEdge);
-									Cytoscape.getCurrentNetworkView()
-											.getEdgeView(selectedEdge)
-											.setSelectedPaint(Color.GREEN);
+									if (Cytoscape.getCurrentNetworkView() != null) {
+										Cytoscape.getCurrentNetworkView()
+												.getEdgeView(selectedEdge)
+												.setSelectedPaint(Color.GREEN);
+									}
 								}
 							}
 
@@ -367,8 +373,9 @@ public class JSortTable extends JTable implements MouseListener, ActionListener 
 										.setSelectedEdgeState(
 												nonSelectedObjects, false);
 							}
-
-							Cytoscape.getCurrentNetworkView().updateView();
+							if (Cytoscape.getCurrentNetworkView() != null) {
+								Cytoscape.getCurrentNetworkView().updateView();
+							}
 						}
 					});
 
@@ -376,12 +383,14 @@ public class JSortTable extends JTable implements MouseListener, ActionListener 
 					.addActionListener(new java.awt.event.ActionListener() {
 						public void actionPerformed(java.awt.event.ActionEvent e) {
 
-							if (coloringMenuItem.isSelected() == true) {
-								System.out.println("color ON");
-								setNewRenderer(true);
-							} else {
-								System.out.println("color OFF");
-								setNewRenderer(false);
+							if (Cytoscape.getCurrentNetworkView() != null) {
+								if (coloringMenuItem.isSelected() == true) {
+									System.out.println("color ON");
+									setNewRenderer(true);
+								} else {
+									System.out.println("color OFF");
+									setNewRenderer(false);
+								}
 							}
 						}
 					});
@@ -395,8 +404,8 @@ public class JSortTable extends JTable implements MouseListener, ActionListener 
 			rightClickPopupMenu.add(exportMenu);
 			rightClickPopupMenu.addSeparator();
 			rightClickPopupMenu.add(coloringMenuItem);
-			rightClickPopupMenu.addSeparator();
-			rightClickPopupMenu.add(showAdvancedWindow);
+
+			// rightClickPopupMenu.add(showAdvancedWindow);
 			// rightClickPopupMenu1.add(getJMenuItem4());
 		}
 		return rightClickPopupMenu;
@@ -578,8 +587,10 @@ public class JSortTable extends JTable implements MouseListener, ActionListener 
 								selectedName, true);
 						Node selectedNode = Cytoscape.getCyNode(selectedName);
 
-						Cytoscape.getCurrentNetworkView().getNodeView(
-								selectedNode).setSelectedPaint(Color.GREEN);
+						if (Cytoscape.getCurrentNetworkView() != null) {
+							Cytoscape.getCurrentNetworkView().getNodeView(
+									selectedNode).setSelectedPaint(Color.GREEN);
+						}
 
 					} else if (objectType == DataTable.EDGES) {
 						// Edge selectedEdge = Cytoscape.getCyEdge((String)
@@ -590,13 +601,17 @@ public class JSortTable extends JTable implements MouseListener, ActionListener 
 						Node target = Cytoscape.getCyNode(edgeNameParts[2]);
 						Edge selectedEdge = Cytoscape.getCyEdge(source, target,
 								Semantics.INTERACTION, interaction, false);
-						Cytoscape.getCurrentNetworkView().getEdgeView(
-								selectedEdge).setSelectedPaint(Color.GREEN);
+						if (Cytoscape.getCurrentNetworkView() != null) {
+							Cytoscape.getCurrentNetworkView().getEdgeView(
+									selectedEdge).setSelectedPaint(Color.GREEN);
+						}
 					} else {
 						// For network, do nothing.
 					}
 				}
-				Cytoscape.getCurrentNetworkView().updateView();
+				if (Cytoscape.getCurrentNetworkView() != null) {
+					Cytoscape.getCurrentNetworkView().updateView();
+				}
 			}
 		});
 
@@ -609,8 +624,10 @@ public class JSortTable extends JTable implements MouseListener, ActionListener 
 				Node selectedNode = Cytoscape.getCyNode((String) dataModel
 						.getValueAt(idx, idLocation));
 				// Set to the original color
-				Cytoscape.getCurrentNetworkView().getNodeView(selectedNode)
-						.setSelectedPaint(Color.YELLOW);
+				if (Cytoscape.getCurrentNetworkView() != null) {
+					Cytoscape.getCurrentNetworkView().getNodeView(selectedNode)
+							.setSelectedPaint(Color.YELLOW);
+				}
 			} else if (objectType == DataTable.EDGES) {
 				String selectedEdgeName = (String) dataModel.getValueAt(idx,
 						idLocation);
@@ -621,8 +638,10 @@ public class JSortTable extends JTable implements MouseListener, ActionListener 
 				Node target = Cytoscape.getCyNode(edgeNameParts[2]);
 				Edge selectedEdge = Cytoscape.getCyEdge(source, target,
 						Semantics.INTERACTION, interaction, false);
-				Cytoscape.getCurrentNetworkView().getEdgeView(selectedEdge)
-						.setSelectedPaint(Color.RED);
+				if (Cytoscape.getCurrentNetworkView() != null) {
+					Cytoscape.getCurrentNetworkView().getEdgeView(selectedEdge)
+							.setSelectedPaint(Color.RED);
+				}
 			} else {
 				// For network attr, we do not have to do anything.
 			}
@@ -693,6 +712,9 @@ public class JSortTable extends JTable implements MouseListener, ActionListener 
 
 		// List tester = new ArrayList();
 		Class tester = model.getObjectTypeAt(this.getColumnName(column));
+		// System.out.println("Obj type = " + tester.toString());
+
+		Object value = model.getValueAt(row, column);
 
 		if (tester != null && tester.equals(List.class)) {
 			int idCol = 0;
@@ -713,42 +735,52 @@ public class JSortTable extends JTable implements MouseListener, ActionListener 
 			arrayList = contents;
 			Object[] listItems = arrayList.toArray();
 			if (listItems.length != 0) {
-				
+
 				cellContentListPane = new JScrollPane();
 				JList listContents = new JList(listItems);
-				listContents.addMouseListener(new MouseListener(){
+				listContents.addMouseListener(new MouseListener() {
 					public void mouseClicked(MouseEvent e) {
 						// hide if right click
 						if (javax.swing.SwingUtilities.isRightMouseButton(e)) {
 							cellMenu.setVisible(false);
-						} else if (javax.swing.SwingUtilities.isLeftMouseButton(e)
-										&& getSelectedRows().length != 0) {
+						} else if (javax.swing.SwingUtilities
+								.isLeftMouseButton(e)
+								&& getSelectedRows().length != 0) {
 						}
-						
+
 					}
+
 					public void mouseExited(MouseEvent event) {
 					}
+
 					public void mouseReleased(MouseEvent event) {
 					}
+
 					public void mousePressed(MouseEvent event) {
 					}
+
 					public void mouseEntered(MouseEvent event) {
 					}
-				}
-				);
+				});
 				cellContentListPane.setPreferredSize(new Dimension(200, 100));
-				cellContentListPane.setBorder(javax.swing.BorderFactory
-						.createTitledBorder(
-								null,
-								idField,
-								javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
-								javax.swing.border.TitledBorder.DEFAULT_POSITION,
-								null, null));
+				cellContentListPane
+						.setBorder(javax.swing.BorderFactory
+								.createTitledBorder(
+										null,
+										idField,
+										javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
+										javax.swing.border.TitledBorder.DEFAULT_POSITION,
+										null, null));
 				cellContentListPane.setViewportView(listContents);
-				
+
 				cellMenu.add(cellContentListPane);
 				cellMenu.show(e.getComponent(), e.getX(), e.getY());
 			}
+		} else if (value.getClass() == HashMap.class
+				&& model.getValueAt(row, 0).equals("Network Metadata")) {
+			NetworkMetaDataDialog mdd = new NetworkMetaDataDialog(Cytoscape
+					.getDesktop(), false, Cytoscape.getCurrentNetwork());
+			mdd.setVisible(true);
 		}
 	}
 
@@ -801,6 +833,9 @@ public class JSortTable extends JTable implements MouseListener, ActionListener 
 class BrowserTableCellRenderer extends JLabel implements TableCellRenderer {
 	private Font labelFont = new Font("Sans-serif", Font.BOLD, 14);
 	private Font normalFont = new Font("Sans-serif", Font.PLAIN, 12);
+	private final Color metadataBackground = new Color(255, 210, 255);
+
+	private static final String METADATA_ATTR_NAME = "Network Metadata";
 
 	private int type = DataTable.NODES;
 	private boolean coloring;
@@ -829,13 +864,18 @@ class BrowserTableCellRenderer extends JLabel implements TableCellRenderer {
 			return this;
 		}
 
-		if (coloring == false) {
-			if (table.getColumnName(column).equals(DataTable.ID) || 
-					table.getColumnName(column)
-					.equals("Network Attribute Name")) {
+		if (coloring == false || type == DataTable.NETWORK) {
+			if (table.getColumnName(column).equals(DataTable.ID)
+					|| (table.getColumnName(column).equals(
+							"Network Attribute Name") && !value
+							.equals("Network Metadata"))) {
 				setFont(labelFont);
 				setBackground(DataTable.NON_EDITIBLE_COLOR);
 
+			} else if (type == DataTable.NETWORK
+					&& value.equals("Network Metadata")) {
+				setBackground(metadataBackground);
+				setFont(labelFont);
 			} else {
 				setFont(normalFont);
 				setBackground(table.getBackground());
@@ -845,7 +885,7 @@ class BrowserTableCellRenderer extends JLabel implements TableCellRenderer {
 		} else {
 
 			setForeground(table.getForeground());
-			
+
 			if (type == DataTable.NODES) {
 				/*
 				 * Render color node cells
@@ -863,7 +903,6 @@ class BrowserTableCellRenderer extends JLabel implements TableCellRenderer {
 					setFont(normalFont);
 					setBackground(table.getBackground());
 				}
-				
 
 			} else if (type == DataTable.EDGES) {
 				/*
@@ -901,7 +940,7 @@ class BrowserTableCellRenderer extends JLabel implements TableCellRenderer {
 				 * Render Network cells
 				 */
 
-				//for now, no special scheme available.
+				// for now, no special scheme available.
 			}
 		}
 		return this;

@@ -1,101 +1,89 @@
 package browser;
 
-import cytoscape.data.*;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Vector;
 
-import filter.model.FilterManager;
+import javax.swing.ComboBoxModel;
+import javax.swing.ListModel;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 
-import java.util.*;
-import javax.swing.*;
-import javax.swing.event.*;
+import cytoscape.data.CyAttributes;
+import exesto.AttributeTags;
+import exesto.TagListener;
 
-import cytoscape.data.attr.*;
+public class LabelModel implements ListModel, ComboBoxModel, TagListener {
 
-import exesto.*;
+	Vector listeners = new Vector();
+	CyAttributes data;
 
-public class LabelModel 
-  implements ListModel,
-             ComboBoxModel,
-             TagListener {
+	Vector tags;
+	Object selection = null;
 
-  Vector listeners = new Vector();
-  CyAttributes data;
+	public LabelModel(CyAttributes data) {
+		this.data = data;
+		AttributeTags.addTagListener(this);
+		sortTags();
+	}
 
-  Vector tags;
-  Object selection = null;
-  
-  public LabelModel ( CyAttributes data ) {
-    this.data = data;
-    AttributeTags.addTagListener( this );
-    sortTags();
-  }
+	protected void sortTags() {
 
-  protected void sortTags () {
-    
-    tags = new Vector( AttributeTags.getTagNames( data ) );
-    Collections.sort( tags );
-    notifyListeners 
-      ( new ListDataEvent ( this,
-                            ListDataEvent.CONTENTS_CHANGED,
-                            0,
-                            tags.size() ) );
-  }
+		tags = new Vector(AttributeTags.getTagNames(data));
+		Collections.sort(tags);
+		notifyListeners(new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED,
+				0, tags.size()));
+	}
 
-  // implements ListModel
-  
-  public Object getElementAt ( int i ) {
-    if ( i > tags.size() )
-      return null;
+	// implements ListModel
 
-    return tags.get(i);
-  }
+	public Object getElementAt(int i) {
+		if (i > tags.size())
+			return null;
 
-  public int getSize () {
-    return tags.size();
-  }
+		return tags.get(i);
+	}
 
-  // implements ComboBoxModel
-  
-  public void setSelectedItem ( Object anItem ) {
-    selection = anItem;
-  }
-  
-  
-  public Object getSelectedItem () {
-    return selection;
-  }
-  
+	public int getSize() {
+		return tags.size();
+	}
 
+	// implements ComboBoxModel
 
+	public void setSelectedItem(Object anItem) {
+		selection = anItem;
+	}
 
-  // implements CyDataDefinitionListener
+	public Object getSelectedItem() {
+		return selection;
+	}
 
-  public void tagStateChange ( ) {
-    sortTags();
-  }
-    
- 
+	// implements CyDataDefinitionListener
 
-  //implements ListModel
+	public void tagStateChange() {
+		sortTags();
+	}
 
-  public void addListDataListener(ListDataListener l){
-    listeners.add(l);
-  }
-    
-  public void removeListDataListener(ListDataListener l){
-    listeners.remove(l);
-  }
+	// implements ListModel
 
+	public void addListDataListener(ListDataListener l) {
+		listeners.add(l);
+	}
 
-  public void notifyListeners(ListDataEvent e){
-    for(Iterator listenIt = listeners.iterator();listenIt.hasNext();){
-      if(e.getType() == ListDataEvent.CONTENTS_CHANGED){
-        ((ListDataListener)listenIt.next()).contentsChanged(e);
-      }else if(e.getType() == ListDataEvent.INTERVAL_ADDED){
-        ((ListDataListener)listenIt.next()).intervalAdded(e);
-      }else if(e.getType() == ListDataEvent.INTERVAL_REMOVED){
-        ((ListDataListener)listenIt.next()).intervalRemoved(e);
-      }
-    }
-  }
+	public void removeListDataListener(ListDataListener l) {
+		listeners.remove(l);
+	}
+
+	public void notifyListeners(ListDataEvent e) {
+		for (Iterator listenIt = listeners.iterator(); listenIt.hasNext();) {
+			if (e.getType() == ListDataEvent.CONTENTS_CHANGED) {
+				((ListDataListener) listenIt.next()).contentsChanged(e);
+			} else if (e.getType() == ListDataEvent.INTERVAL_ADDED) {
+				((ListDataListener) listenIt.next()).intervalAdded(e);
+			} else if (e.getType() == ListDataEvent.INTERVAL_REMOVED) {
+				((ListDataListener) listenIt.next()).intervalRemoved(e);
+			}
+		}
+	}
 
 }

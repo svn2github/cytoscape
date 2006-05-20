@@ -21,8 +21,6 @@ import javax.swing.border.TitledBorder;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
-import cytoscape.data.FlagEvent;
-import cytoscape.data.FlagEventListener;
 import cytoscape.data.SelectEvent;
 import cytoscape.data.SelectEventListener;
 import cytoscape.view.CytoscapeDesktop;
@@ -30,7 +28,7 @@ import filter.model.Filter;
 import filter.model.FilterManager;
 
 public class SelectPanel extends JPanel implements PropertyChangeListener,
-		ActionListener, FlagEventListener, SelectEventListener {
+		ActionListener, SelectEventListener {
 	public static int NODES = 0;
 	public static int EDGES = 1;
 	int graphObjectType;
@@ -78,20 +76,23 @@ public class SelectPanel extends JPanel implements PropertyChangeListener,
 
 	}
 
-	public void onFlagEvent(FlagEvent event) {
+	public void onSelectEvent(SelectEvent event) {
+		
+		//System.out.println("##############Browser catch: " + event.getTargetType());
+		
 		if (mirrorSelection.isSelected()) {
 			if (graphObjectType == NODES
-					&& (event.getTargetType() == FlagEvent.SINGLE_NODE || event
-							.getTargetType() == FlagEvent.NODE_SET)) {
+					&& (event.getTargetType() == SelectEvent.SINGLE_NODE || event
+							.getTargetType() == SelectEvent.NODE_SET)) {
 				// node selection
 				tableModel.setTableDataObjects(new ArrayList(Cytoscape
-						.getCurrentNetwork().getFlaggedNodes()));
+						.getCurrentNetwork().getSelectedNodes()));
 			} else if (graphObjectType == EDGES
-					&& (event.getTargetType() == FlagEvent.SINGLE_EDGE || event
-							.getTargetType() == FlagEvent.EDGE_SET)) {
+					&& (event.getTargetType() == SelectEvent.SINGLE_EDGE || event
+							.getTargetType() == SelectEvent.EDGE_SET)) {
 				// edge selection
 				tableModel.setTableDataObjects(new ArrayList(Cytoscape
-						.getCurrentNetwork().getFlaggedEdges()));
+						.getCurrentNetwork().getSelectedEdges()));
 			}
 		}
 	}
@@ -122,8 +123,7 @@ public class SelectPanel extends JPanel implements PropertyChangeListener,
 	private List getGraphObjectList(CyNetwork network) {
 		if (graphObjectType == NODES) {
 			return network.nodesList();
-		}
-		else
+		} else
 			return network.edgesList();
 	}
 
@@ -141,35 +141,55 @@ public class SelectPanel extends JPanel implements PropertyChangeListener,
 			return Cytoscape.getRootGraph().getEdgeCount();
 	}
 
+	/*
+	 * Catch events here!
+	 * 
+	 * (non-Javadoc)
+	 * 
+	 * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
+	 */
 	public void propertyChange(PropertyChangeEvent e) {
 
 		if (e.getPropertyName().equals(Cytoscape.NETWORK_CREATED)
 				|| e.getPropertyName().equals(Cytoscape.NETWORK_DESTROYED)) {
 			updateNetworkBox();
-			tableModel.setTableDataObjects(new ArrayList());
-		}
+			// tableModel.setTableDataObjects(new ArrayList());
 
-		else if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUSED
+		} else if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUSED
+				|| e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUS
 				|| e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED
-				|| e.getPropertyName() == Cytoscape.NETWORK_LOADED) {
-
+				|| e.getPropertyName() == Cytoscape.NETWORK_LOADED
+				|| e.getPropertyName().equals(Cytoscape.NETWORK_CREATED)
+				|| e.getPropertyName().equals(Cytoscape.NETWORK_DESTROYED)) {
+			
+			//System.out.println("**************Browser catch: " + e.getPropertyName());
+			
 			if (current_network != null) {
-				current_network.removeFlagEventListener(this);
+				// current_network.removeFlagEventListener(this);
+				current_network.removeSelectEventListener(this);
 			}
 			current_network = Cytoscape.getCurrentNetwork();
 			if (current_network != null) {
-				current_network.addFlagEventListener(this);
+				// current_network.addFlagEventListener(this);
+				current_network.addSelectEventListener(this);
 			}
 
 			if (Cytoscape.getCurrentNetwork() != null) {
 				if (graphObjectType == NODES) {
 					// node selection
+					// tableModel.setTableDataObjects(new ArrayList(Cytoscape
+					// .getCurrentNetwork().getFlaggedNodes()));
 					tableModel.setTableDataObjects(new ArrayList(Cytoscape
-							.getCurrentNetwork().getFlaggedNodes()));
+							.getCurrentNetwork().getSelectedNodes()));
 				} else if (graphObjectType == EDGES) {
 					// edge selection
+					// tableModel.setTableDataObjects(new ArrayList(Cytoscape
+					// .getCurrentNetwork().getFlaggedEdges()));
 					tableModel.setTableDataObjects(new ArrayList(Cytoscape
-							.getCurrentNetwork().getFlaggedEdges()));
+							.getCurrentNetwork().getSelectedEdges()));
+				} else {
+					// Network Attribute
+					tableModel.setTableDataObjects(null);
 				}
 			}
 
@@ -200,11 +220,6 @@ public class SelectPanel extends JPanel implements PropertyChangeListener,
 		}
 		DefaultComboBoxModel model = new DefaultComboBoxModel(vector);
 		return new JComboBox(model);
-	}
-
-	public void onSelectEvent(SelectEvent arg0) {
-		// TODO Auto-generated method stub
-		System.out.println("Action.Select!!");
 	}
 
 }

@@ -4,6 +4,7 @@ import giny.model.Edge;
 import giny.model.GraphObject;
 import giny.model.Node;
 import giny.view.EdgeView;
+import giny.view.NodeView;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -269,8 +270,13 @@ public class DataTableModel extends DefaultTableModel implements
 
 			if (objectType == DataTable.NODES) {
 				Node targetNode = Cytoscape.getCyNode(id);
-				Cytoscape.getCurrentNetworkView().getNodeView(targetNode)
-						.setSelectedPaint(DEFAULT_NODE_COLOR);
+				if(Cytoscape.getCurrentNetworkView() != null) {
+					NodeView nv = Cytoscape.getCurrentNetworkView().getNodeView(targetNode);
+					if(nv != null) {
+						nv.setSelectedPaint(DEFAULT_NODE_COLOR);
+					}
+							
+				}
 			} else {
 				String[] edgeNameParts = id.split(" ");
 				String interaction = edgeNameParts[1].substring(1,
@@ -279,7 +285,7 @@ public class DataTableModel extends DefaultTableModel implements
 				Node target = Cytoscape.getCyNode(edgeNameParts[2]);
 				Edge targetEdge = Cytoscape.getCyEdge(source, target,
 						Semantics.INTERACTION, interaction, false);
-				if (targetEdge != null) {
+				if (targetEdge != null && Cytoscape.getCurrentNetworkView() != null) {
 					EdgeView edgeView = Cytoscape.getCurrentNetworkView()
 							.getEdgeView(targetEdge);
 					if (edgeView != null) {
@@ -408,7 +414,7 @@ public class DataTableModel extends DefaultTableModel implements
 	}
 
 	public boolean isCellEditable(int rowIndex, int colIndex) {
-		// System.out.println("row = " + rowIndex + ", col = " + colIndex);
+		
 
 		Class objectType = null;
 		Object selectedObj = this.getValueAt(rowIndex, colIndex);
@@ -420,10 +426,11 @@ public class DataTableModel extends DefaultTableModel implements
 		}
 
 		if (objectType != null) {
-
 			if (colIndex == 0) {
 				return false;
 			} else if (objectType == ArrayList.class) {
+				return false;
+			} else if(objectType == HashMap.class) {
 				return false;
 			} else {
 				return true;
