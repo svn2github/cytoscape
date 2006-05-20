@@ -9,6 +9,8 @@ import java.awt.event.*;
 import java.util.*;
 import java.awt.*;
 import java.awt.datatransfer.Transferable;
+import giny.view.NodeView;
+
 
 
 import javax.swing.JPopupMenu;
@@ -30,6 +32,6 @@ public interface NodeContextMenuListener extends EventListener {
 	 * method for responding to a drop
 	 * @param event the PhoebeCanvasDropEvent
 	 */
-	void addNodeContextMenuItems (Point pt, Object nodeView, JPopupMenu menu);
+	void addNodeContextMenuItems (NodeView nodeView, JPopupMenu menu);
 
 }
