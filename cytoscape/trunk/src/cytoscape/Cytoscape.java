@@ -780,7 +780,8 @@ public abstract class Cytoscape {
 	 * getCurrentNetworkView
 	 */
 	public static CyNetwork getCurrentNetwork() {
-		if (currentNetworkID == null)
+		if (currentNetworkID == null || 
+		    !(getNetworkMap().containsKey(currentNetworkID)))
 			return nullNetwork;
 
 		CyNetwork network = (CyNetwork) getNetworkMap().get(currentNetworkID);
@@ -799,7 +800,7 @@ public abstract class Cytoscape {
 	 *         no such network
 	 */
 	public static CyNetwork getNetwork(String id) {
-		if (getNetworkMap().containsKey(id))
+		if (id != null && getNetworkMap().containsKey(id))
 			return (CyNetwork) getNetworkMap().get(id);
 		return nullNetwork;
 	}
@@ -809,7 +810,8 @@ public abstract class Cytoscape {
 	 *         returns null
 	 */
 	public static CyNetworkView getNetworkView(String network_id) {
-		if (network_id == null)
+		if (network_id == null || 
+		    !(getNetworkViewMap().containsKey(network_id)))
 			return nullNetworkView;
 
 		CyNetworkView nview = (CyNetworkView) getNetworkViewMap().get(
@@ -829,7 +831,8 @@ public abstract class Cytoscape {
 	 * from getCurrentNetwork
 	 */
 	public static CyNetworkView getCurrentNetworkView() {
-		if (currentNetworkViewID == null)
+		if (currentNetworkViewID == null || 
+		    !(getNetworkViewMap().containsKey(currentNetworkViewID)))
 			return nullNetworkView;
 
 		// System.out.println( "Cytoscape returning current network view:
@@ -924,6 +927,9 @@ public abstract class Cytoscape {
 	public static void destroyNetwork(CyNetwork network, boolean destroy_unique) {
 
 		getNetworkMap().remove(network.getIdentifier());
+		if ( getNetworkMap().size() <= 0 )
+			currentNetworkID = null;
+
 		if (viewExists(network.getIdentifier()))
 			destroyNetworkView(network);
 		firePropertyChange(NETWORK_DESTROYED, null, network.getIdentifier());
@@ -988,6 +994,9 @@ public abstract class Cytoscape {
 
 		getNetworkViewMap().remove(view.getIdentifier());
 
+		if ( getNetworkViewMap().size() <= 0 )
+			currentNetworkViewID = null;
+
 		// System.out.println( "gone from hash: "+view.getIdentifier()+" :
 		// "+getNetworkViewMap().get( view.getIdentifier() ) );
 
@@ -997,6 +1006,7 @@ public abstract class Cytoscape {
 		view = null;
 		// TODO: do we want here?
 		System.gc();
+
 	}
 
 	/**
