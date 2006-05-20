@@ -205,6 +205,7 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 	                ret_val[2] = new Integer(0);
 
 			Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, ret_val);
+
 		}
 
 		// load any specified data attribute files
