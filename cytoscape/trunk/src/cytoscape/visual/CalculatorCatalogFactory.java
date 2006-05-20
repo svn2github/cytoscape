@@ -97,7 +97,6 @@ public abstract class CalculatorCatalogFactory {
 		calculatorCatalog.addMapping("Passthrough Mapper",
 				PassThroughMapping.class);
 
-		boolean propsFound = false;
 		vizmapProps = CytoscapeInit.getVisualProperties();
 
 		// now load using the constructed Properties object (ok if it is empty)
@@ -175,6 +174,7 @@ public abstract class CalculatorCatalogFactory {
 							
 							CalculatorIO.loadCalculators(vizmapProps,
 									calculatorCatalog);
+							Cytoscape.getDesktop().resetVizMapUI();
 							Cytoscape.getDesktop().getVizMapUI()
 									.getStyleSelector().resetStyles();
 							Cytoscape.getDesktop().getVizMapUI()
