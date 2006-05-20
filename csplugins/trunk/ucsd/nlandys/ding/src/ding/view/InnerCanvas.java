@@ -784,7 +784,7 @@ public class InnerCanvas extends JComponent
             NodeContextMenuListener l = (NodeContextMenuListener) e.nextElement();
             System.out.println ("Adding context menu items for NodeContextMenuListener: " + l);
             //                              EventListener l = (EventListener) e.nextElement();
-            l.addNodeContextMenuItems (event.getPoint(), nv, menu);
+            l.addNodeContextMenuItems (nv, menu);
           }
         // Display PopupMenu
         menu.show(this, event.getX(), event.getY());
@@ -804,7 +804,7 @@ public class InnerCanvas extends JComponent
           {
             EdgeContextMenuListener l = (EdgeContextMenuListener) e.nextElement();
             System.out.println("Adding context menu items for EdgeContextMenuListener: " + l);
-            l.addEdgeContextMenuItems(event.getPoint(), ev, menu);
+            l.addEdgeContextMenuItems(ev, menu);
           }
         // Display PopupMenu
         menu.show(this, event.getX(), event.getY());
