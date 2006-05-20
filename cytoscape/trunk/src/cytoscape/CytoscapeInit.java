@@ -197,6 +197,10 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 			if ( initParams.getMode() == CyInitParams.GUI || 
 			     initParams.getMode() == CyInitParams.EMBEDDED_WINDOW ) 
 				Cytoscape.getCurrentNetworkView().fitContent();
+		
+			// This is for browser and other plugins.
+
+			Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, network);
 		}
 
 		// load any specified data attribute files
@@ -220,9 +224,6 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 		     initParams.getMode() == CyInitParams.EMBEDDED_WINDOW ) {
 			WindowUtilities.hideSplash();
 		}
-
-		// This is for browser and other plugins.
-		Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, null);
 
 		System.out.println("Cytoscape initialized successfully.");
 		return true;
