@@ -199,8 +199,12 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 				Cytoscape.getCurrentNetworkView().fitContent();
 		
 			// This is for browser and other plugins.
+	                Object[] ret_val = new Object[3];
+	                ret_val[0] = network;
+	                ret_val[1] = net;  
+	                ret_val[2] = new Integer(0);
 
-			Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, network);
+			Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, ret_val);
 		}
 
 		// load any specified data attribute files
