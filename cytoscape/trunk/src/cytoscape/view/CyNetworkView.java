@@ -44,6 +44,14 @@ import cytoscape.layout.*;
 import java.util.*;
 import cytoscape.visual.*;
 
+// AJK: 05/19/06 BEGIN
+//     for context menus
+import ding.view.NodeContextMenuListener;
+import ding.view.EdgeContextMenuListener;
+
+
+//
+
 /**
  * CyNetworkView is responsible for actually getting a graph to show up on the screen.<BR>
  *<BR>
@@ -221,5 +229,16 @@ public interface CyNetworkView extends GraphView {
   public void setVisualStyle(String VSName);
   
   public VisualStyle getVisualStyle();
+  
+  // AJK: 05/19/06 BEGIN
+  //   for context menus
+  public void addNodeContextMenuListener (NodeContextMenuListener l);
+
+  public void removeNodeContextMenuListener (NodeContextMenuListener l);
+
+  public void addEdgeContextMenuListener(EdgeContextMenuListener l);
+ 
+  public void removeEdgeContextMenuListener(EdgeContextMenuListener l);
+  // AJK: 05/19/06 END
   
 }
