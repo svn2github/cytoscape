@@ -42,6 +42,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.JarURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -107,6 +108,8 @@ public class CytoscapeSessionReader {
 	int cnt;
 
 	Cysession session;
+	
+	List networkList;
 
 	// Stores networkName as the key and value is visualStyleName associated
 	// with it.
@@ -124,6 +127,7 @@ public class CytoscapeSessionReader {
 	public CytoscapeSessionReader(String filename) {
 		this.fileName = filename;
 		this.sourceObject = fileName;
+		this.networkList = new ArrayList();
 
 		vsMap = new HashMap();
 		vsMapByName = new HashMap();
@@ -131,6 +135,8 @@ public class CytoscapeSessionReader {
 
 	public CytoscapeSessionReader(URL sourceName) {
 		this.sourceObject = sourceName;
+		this.networkList = new ArrayList();
+		
 		vsMap = new HashMap();
 		vsMapByName = new HashMap();
 
@@ -181,7 +187,7 @@ public class CytoscapeSessionReader {
 			unzipSessionFromURL();
 		}
 
-		Cytoscape.firePropertyChange(Cytoscape.SESSION_LOADED, null, null);
+		Cytoscape.firePropertyChange(Cytoscape.SESSION_LOADED, null, networkList);
 	}
 
 	/**
@@ -357,6 +363,8 @@ public class CytoscapeSessionReader {
 			}
 			vsMap.put(rootNetwork.getIdentifier(), vsName);
 
+			networkList.add(rootNetwork.getIdentifier());
+			
 			// Set selected nodes & edges
 			SelectedNodes sNodes = (SelectedNodes) targetRoot
 					.getSelectedNodes();
@@ -443,7 +451,7 @@ public class CytoscapeSessionReader {
 			networkStream.close();
 
 			vsMap.put(new_network.getIdentifier(), vsName);
-
+			networkList.add(new_network.getIdentifier());
 			//
 			// Set selected/hidden nodes & edges
 			//
