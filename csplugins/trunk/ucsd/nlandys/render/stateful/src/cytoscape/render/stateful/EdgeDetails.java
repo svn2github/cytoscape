@@ -130,7 +130,7 @@ public class EdgeDetails
     return null; }
 
   /**
-   * For edges with anchors, the anchors can be rendered as discs.  To render
+   * For edges with anchors, the anchors can be rendered as squares.  To render
    * an anchor, return a positive value in this method.  If zero is returned
    * no edge anchor is rendered.  By default this method returns zero.
    */
