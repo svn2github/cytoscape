@@ -142,8 +142,8 @@ public class NetworkMetaDataDialog extends javax.swing.JDialog implements TableM
 				org.jdesktop.layout.GroupLayout.LEADING).add(
 				org.jdesktop.layout.GroupLayout.TRAILING,
 				layout.createSequentialGroup().addContainerGap(201,
-						Short.MAX_VALUE).add(cancelButton).addPreferredGap(
-						org.jdesktop.layout.LayoutStyle.RELATED).add(okButton)
+						Short.MAX_VALUE).add(okButton).addPreferredGap(
+						org.jdesktop.layout.LayoutStyle.RELATED).add(cancelButton)
 						.addContainerGap()).add(jPanel1,
 				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -232,8 +232,8 @@ public class NetworkMetaDataDialog extends javax.swing.JDialog implements TableM
 		Iterator test = rdfMap.keySet().iterator();
 		while(test.hasNext()) {
 			Object a = test.next();
-			if(a!=null) 
-			System.out.println("Key = " + a.toString() +", " + rdfMap.get(a).toString());
+			//if(a!=null) 
+			//System.out.println("Key = " + a.toString() +", " + rdfMap.get(a).toString());
 		}
 		networkAttr.setAttributeMap(network.getIdentifier(), METADATA_ATTR_NAME, rdfMap);
 	}
