@@ -57,6 +57,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
@@ -68,7 +69,9 @@ import cytoscape.generated.Cysession;
 import cytoscape.generated.Network;
 import cytoscape.generated.NetworkTree;
 import cytoscape.generated.Node;
+import cytoscape.generated.SelectedEdges;
 import cytoscape.generated.SelectedNodes;
+import cytoscape.generated2.Edge;
 import cytoscape.view.CyNetworkView;
 import ding.view.DGraphView;
 
@@ -352,6 +355,11 @@ public class CytoscapeSessionReader {
 			if (sNodes != null) {
 				setSelectedNodes(rootNetwork, sNodes);
 			}
+			
+			SelectedEdges sEdges = (SelectedEdges) targetRoot.getSelectedEdges();
+			if(sEdges != null) {
+				setSelectedEdges(rootNetwork, sEdges);
+			}
 			if (cysessionSource.getClass() == URL.class) {
 				walkTree(targetRoot, rootNetwork, cysessionSource);
 			} else if (cysessionSource.getClass() == String.class) {
@@ -402,6 +410,28 @@ public class CytoscapeSessionReader {
 
 	}
 
+	private void setSelectedEdges(CyNetwork network, SelectedEdges selected) {
+
+		Iterator it = selected.getEdge().iterator();
+		while (it.hasNext()) {
+			//System.out.println("Class===== " + it.next().toString());
+			cytoscape.generated.Edge selectedEdge = (cytoscape.generated.Edge) it.next();
+			String edgeID = selectedEdge.getId();
+			Iterator edgeIt = network.edgesIterator();
+
+			while (edgeIt.hasNext()) {
+				CyEdge edge = (CyEdge) edgeIt.next();
+
+				if (edge.getIdentifier().equals(edgeID)) {
+					network.setFlagged(edge, true);
+				}
+			}
+
+		}
+
+	}
+	
+	
 	// Load the root network and then create its children.
 	private void walkTree(Network currentNetwork, CyNetwork parent,
 			Object sessionSource) throws JAXBException, IOException {
@@ -454,6 +484,10 @@ public class CytoscapeSessionReader {
 				setSelectedNodes(new_network, sNodes);
 			}
 
+			SelectedEdges sEdges = (SelectedEdges) childNet.getSelectedEdges();
+			if(sEdges != null) {
+				setSelectedEdges(new_network, sEdges);
+			}
 			// Re-create
 
 			// network = createChildNetwork(childNet, network);
