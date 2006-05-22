@@ -108,7 +108,7 @@ public class CytoscapeSessionReader {
 	int cnt;
 
 	Cysession session;
-	
+
 	List networkList;
 
 	// Stores networkName as the key and value is visualStyleName associated
@@ -136,7 +136,7 @@ public class CytoscapeSessionReader {
 	public CytoscapeSessionReader(URL sourceName) {
 		this.sourceObject = sourceName;
 		this.networkList = new ArrayList();
-		
+
 		vsMap = new HashMap();
 		vsMapByName = new HashMap();
 
@@ -181,13 +181,19 @@ public class CytoscapeSessionReader {
 	}
 
 	public void read() throws IOException, JAXBException {
+		Cytoscape.getDesktop().getNetworkPanel().getTreeTable().setVisible(
+				false);
+
 		if (sourceObject.getClass() == String.class) {
 			unzipSessionFromFile();
 		} else if (sourceObject.getClass() == URL.class) {
 			unzipSessionFromURL();
 		}
 
-		Cytoscape.firePropertyChange(Cytoscape.SESSION_LOADED, null, networkList);
+		Cytoscape.firePropertyChange(Cytoscape.SESSION_LOADED, null,
+				networkList);
+		Cytoscape.getDesktop().getNetworkPanel().getTreeTable()
+				.setVisible(true);
 	}
 
 	/**
@@ -338,7 +344,7 @@ public class CytoscapeSessionReader {
 			vsMap.put(rootNetwork.getIdentifier(), vsName);
 
 			networkList.add(rootNetwork.getIdentifier());
-			
+
 			// Set selected nodes & edges
 			SelectedNodes sNodes = (SelectedNodes) targetRoot
 					.getSelectedNodes();
@@ -505,7 +511,8 @@ public class CytoscapeSessionReader {
 		if (viewAvailable == true) {
 			createCyNetworkView(network);
 
-			if (Cytoscape.getNetworkView(network.getIdentifier()) != Cytoscape.getNullNetworkView()) {
+			if (Cytoscape.getNetworkView(network.getIdentifier()) != Cytoscape
+					.getNullNetworkView()) {
 				reader
 						.layout(Cytoscape.getNetworkView(network
 								.getIdentifier()));
