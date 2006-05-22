@@ -86,11 +86,11 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 
 		CyNetworkView new_view = Cytoscape.getNetworkView(new_network
 				.getIdentifier());
-		if (new_view == null) {
+		if (new_view == Cytoscape.getNullNetworkView()) {
 			return;
 		}
 
-		if (current_network_view != null) {
+		if (current_network_view != Cytoscape.getNullNetworkView()) {
 
 			Iterator i = new_network.nodesIterator();
 			while (i.hasNext()) {
