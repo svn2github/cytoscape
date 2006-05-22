@@ -421,7 +421,7 @@ class LoadNetworkTask implements Task {
 			createCyNetworkView(network);
 
 			// Layout Network
-			if (Cytoscape.getNetworkView(network.getIdentifier()) != null) {
+			if (Cytoscape.getNetworkView(network.getIdentifier()) != Cytoscape.getNullNetworkView()) {
 				reader
 						.layout(Cytoscape.getNetworkView(network
 								.getIdentifier()));
