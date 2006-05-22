@@ -101,6 +101,7 @@ public abstract class Cytoscape {
 	public static String DATASERVER_CHANGED = "DATASERVER_CHANGED";
 	public static String EXPRESSION_DATA_LOADED = "EXPRESSION_DATA_LOADED";
 	public static String NETWORK_DESTROYED = "NETWORK_DESTROYED";
+	public static String CYTOSCAPE_INITIALIZED = "CYTOSCAPE_INITIALIZED";
 	public static String CYTOSCAPE_EXIT = "CYTOSCAPE_EXIT";
 
 	// KONO: 03/10/2006 For vizmap saving and loading
@@ -236,6 +237,15 @@ public abstract class Cytoscape {
 	protected static VisualMappingManager VMM = new VisualMappingManager(
 			nullNetworkView);
 
+	
+	/**
+	 * Returns a nullNetworkView object.
+	 */
+	public static CyNetworkView getNullNetworkView() {
+		return nullNetworkView;
+	}
+	
+	
 	/**
 	 * Shuts down Cytoscape, after giving plugins time to react.
 	 * @deprecated Use exit(returnVal) instead.  This will be removed
