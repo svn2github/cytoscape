@@ -55,6 +55,8 @@ import cytoscape.util.CyFileFilter;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.FileUtil;
 import cytoscape.view.CyMenus;
+import cytoscape.view.CyNetworkView;
+import cytoscape.visual.VisualStyle;
 
 /**
  * Open session file. This class will load all networks and session state in the
@@ -213,6 +215,16 @@ class OpenSessionTask implements Task {
 				.setTitle(
 						"Cytoscape Desktop (Session Name: "
 								+ shortName.getName() + ")");
+
+		// this is a hack to force update of visual style using style just loaded
+		CyNetworkView curView = (CyNetworkView) Cytoscape.getCurrentNetworkView();
+		if (curView != null){
+			VisualStyle curVS = curView.getVisualStyle();
+			if (curVS != null) {
+				Cytoscape.getVisualMappingManager().setVisualStyle(curVS);
+				curView.redrawGraph(false, true);
+			}
+		}
 	}
 
 	/**
