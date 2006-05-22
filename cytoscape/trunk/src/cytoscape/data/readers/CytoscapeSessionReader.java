@@ -207,19 +207,6 @@ public class CytoscapeSessionReader {
 
 		loadCySession(cysessionFileURL);
 
-		// Set VS for each network view
-		Set networkIDSet = vsMap.keySet();
-		String currentNetworkID = null;
-		Iterator it = networkIDSet.iterator();
-		while (it.hasNext()) {
-			currentNetworkID = (String) it.next();
-			CyNetworkView targetView = Cytoscape
-					.getNetworkView(currentNetworkID);
-			if (targetView != null) {
-				targetView.setVisualStyle((String) vsMap.get(currentNetworkID));
-				targetView.applyVizmapper(targetView.getVisualStyle());
-			}
-		}
 
 		return true;
 	}
@@ -256,19 +243,6 @@ public class CytoscapeSessionReader {
 
 		cysFile.close();
 		loadCySession(cysessionFileName);
-
-		// Set VS for each network view
-		Set networkIDSet = vsMap.keySet();
-		String currentNetworkID = null;
-		Iterator it = networkIDSet.iterator();
-		while (it.hasNext()) {
-			currentNetworkID = (String) it.next();
-			CyNetworkView targetView = Cytoscape
-					.getNetworkView(currentNetworkID);
-			if (targetView != null) {
-				targetView.setVisualStyle((String) vsMap.get(currentNetworkID));
-			}
-		}
 
 		return true;
 	}
@@ -381,6 +355,20 @@ public class CytoscapeSessionReader {
 
 		if (sessionFile != null) {
 			sessionFile.close();
+		}
+
+		// Set VS for each network view
+		Set networkIDSet = vsMap.keySet();
+		String currentNetworkID = null;
+		Iterator it2 = networkIDSet.iterator();
+		while (it2.hasNext()) {
+			currentNetworkID = (String) it2.next();
+			CyNetworkView targetView = Cytoscape
+					.getNetworkView(currentNetworkID);
+			if (targetView != null) {
+				targetView.setVisualStyle((String) vsMap.get(currentNetworkID));
+				targetView.applyVizmapper(targetView.getVisualStyle());
+			}
 		}
 
 		// Traverse network tree
