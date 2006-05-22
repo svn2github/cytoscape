@@ -197,10 +197,6 @@ public class CytoscapeSessionWriter {
 
 	}
 
-	private void getGUIStates() {
-
-	}
-
 	/**
 	 * Write currnt session to a cys file.
 	 * 
@@ -306,7 +302,7 @@ public class CytoscapeSessionWriter {
 		CalculatorIO.storeCatalog(catalog, vizProp);
 
 		// Prepare cytoscape properties file
-        	FileOutputStream output = null;
+		FileOutputStream output = null;
 		try {
 			cyProp = new File(CYPROP_FILE);
 			output = new FileOutputStream(cyProp);
@@ -316,13 +312,13 @@ public class CytoscapeSessionWriter {
 			System.out.println("session_cytoscape.props Write error");
 			ex.printStackTrace();
 		} finally {
-		if (output != null) {
-               		try {
-				output.close();
-			} catch (IOException ioe) {
+			if (output != null) {
+				try {
+					output.close();
+				} catch (IOException ioe) {
+				}
+			}
 		}
-            }
-        }
 
 	}
 
@@ -436,7 +432,7 @@ public class CytoscapeSessionWriter {
 				.getUserObject().toString()));
 		CyNetworkView curView = (CyNetworkView) viewMap.get(curNet
 				.getIdentifier());
-		
+
 		if (!node.getUserObject().toString().equals("Network Root")) {
 			String visualStyleName = null;
 			if (curView != null) {
@@ -455,7 +451,7 @@ public class CytoscapeSessionWriter {
 		}
 
 		if (Cytoscape.getNetworkView((String) networkMap.get(node
-				.getUserObject().toString())) == null) {
+				.getUserObject().toString())) == Cytoscape.getNullNetworkView()) {
 			curNode.setViewAvailable(false);
 		} else {
 			curNode.setViewAvailable(true);
@@ -497,13 +493,13 @@ public class CytoscapeSessionWriter {
 				CyNetworkView leafView = Cytoscape
 						.getNetworkView((String) networkMap.get(child
 								.getUserObject().toString()));
-//				CyNetworkView leafView = (CyNetworkView) viewMap.get(curNet
-//						.getIdentifier());
-//				leafView = (CyNetworkView) viewMap.get(leafView.getNetwork()
-//						.getIdentifier());
+				// CyNetworkView leafView = (CyNetworkView) viewMap.get(curNet
+				// .getIdentifier());
+				// leafView = (CyNetworkView) viewMap.get(leafView.getNetwork()
+				// .getIdentifier());
 
 				String leafVisualStyleName = null;
-				if (leafView != null) {
+				if (leafView != Cytoscape.getNullNetworkView()) {
 					VisualStyle leafVS = leafView.getVisualStyle();
 					if (leafVS != null) {
 						leafVisualStyleName = leafVS.getName();
@@ -514,9 +510,6 @@ public class CytoscapeSessionWriter {
 					leafVisualStyleName = DEFAULT_VS_NAME;
 				}
 				leaf.setVisualStyle(leafVisualStyleName);
-				System.out.println("Saving Association: " + leaf.getId()
-						+ " --> " + leafVisualStyleName);
-
 				String targetID = (String) networkMap.get(child.getUserObject()
 						.toString());
 
@@ -528,7 +521,7 @@ public class CytoscapeSessionWriter {
 				CyNetworkView curNetworkView = Cytoscape
 						.getNetworkView(targetID);
 
-				if (curNetworkView == null) {
+				if (curNetworkView == Cytoscape.getNullNetworkView()) {
 					leaf.setViewAvailable(false);
 				} else {
 					leaf.setViewAvailable(true);
@@ -615,17 +608,18 @@ public class CytoscapeSessionWriter {
 
 		// Extract hidden nodes and edges
 		CyNetworkView curNetworkView = Cytoscape.getNetworkView(targetID);
-		HiddenNodes hn = (HiddenNodes) getHiddenObjects(NODE, curNetworkView);
-		HiddenEdges he = (HiddenEdges) getHiddenObjects(EDGE, curNetworkView);
-		if (hn != null) {
+		if (curNetworkView != Cytoscape.getNullNetworkView()) {
 
-			System.out.println("!!!HN is not null");
-
-			curNode.setHiddenNodes(hn);
-		}
-		if (he != null) {
-			System.out.println("!!!HE is not null");
-			curNode.setHiddenEdges(he);
+			HiddenNodes hn = (HiddenNodes) getHiddenObjects(NODE,
+					curNetworkView);
+			HiddenEdges he = (HiddenEdges) getHiddenObjects(EDGE,
+					curNetworkView);
+			if (hn != null) {
+				curNode.setHiddenNodes(hn);
+			}
+			if (he != null) {
+				curNode.setHiddenEdges(he);
+			}
 		}
 
 		// Add current network to the list.
@@ -718,10 +712,10 @@ public class CytoscapeSessionWriter {
 			SelectedNodes sn = factory.createSelectedNodes();
 			List sNodeList = sn.getNode();
 
-			Set flaggedNodes = curNet.getFlaggedNodes();
+			Set selectedNodes = curNet.getSelectedNodes();
 
-			if (flaggedNodes.size() != 0) {
-				Iterator iterator = flaggedNodes.iterator();
+			if (selectedNodes.size() != 0) {
+				Iterator iterator = selectedNodes.iterator();
 				CyNode targetNode = null;
 				while (iterator.hasNext()) {
 					targetNode = (CyNode) iterator.next();
@@ -743,10 +737,10 @@ public class CytoscapeSessionWriter {
 			SelectedEdges se = factory.createSelectedEdges();
 			List sEdgeList = se.getEdge();
 
-			Set flaggedEdges = curNet.getFlaggedEdges();
+			Set selectedEdges = curNet.getSelectedEdges();
 
-			if (flaggedEdges.size() != 0) {
-				Iterator iterator = flaggedEdges.iterator();
+			if (selectedEdges.size() != 0) {
+				Iterator iterator = selectedEdges.iterator();
 				CyEdge targetEdge = null;
 				while (iterator.hasNext()) {
 					targetEdge = (CyEdge) iterator.next();

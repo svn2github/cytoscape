@@ -267,7 +267,7 @@ public class XGMMLReader implements GraphReader {
 		// Extract Network Attributes
 		// Currently, supported attribute data type is RDF metadata only.
 		List networkAttributes = network.getAtt();
-		System.out.println("Network = " + network.getLabel() );
+		System.out.println("Loading Network: " + network.getLabel() );
 		
 		
 		for (int i = 0; i < networkAttributes.size(); i++) {

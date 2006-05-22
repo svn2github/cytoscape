@@ -50,10 +50,10 @@ import java.io.Writer;
 import java.math.BigInteger;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -67,10 +67,9 @@ import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
+import cytoscape.data.ExpressionData;
 import cytoscape.data.attr.MultiHashMap;
 import cytoscape.data.attr.MultiHashMapDefinition;
-import cytoscape.data.ExpressionData;
-import cytoscape.data.Semantics;
 import cytoscape.data.readers.MetadataParser;
 import cytoscape.generated2.Att;
 import cytoscape.generated2.Edge;
@@ -152,7 +151,7 @@ public class XGMMLWriter {
 	protected static final String INT_TYPE = "integer";
 	protected static final String STRING_TYPE = "string";
 	protected static final String LIST_TYPE = "list";
-	
+
 	// These types are not permitted by the XGMML standard
 	protected static final String BOOLEAN_TYPE = "boolean";
 	protected static final String MAP_TYPE = "map";
@@ -296,7 +295,10 @@ public class XGMMLWriter {
 			if (networkView != null) {
 				EdgeView curEdgeView = networkView.getEdgeView(curEdge);
 
-				jxbEdge.setGraphics(getGraphics(EDGE, curEdgeView));
+				Graphics edgeGraphics = getGraphics(EDGE, curEdgeView);
+				if(edgeGraphics != null) {
+					jxbEdge.setGraphics(edgeGraphics);
+				}
 			}
 			attributeWriter(EDGE, curEdge.getIdentifier(), jxbEdge);
 
@@ -330,10 +332,13 @@ public class XGMMLWriter {
 	/**
 	 * Extract attributes and map it to JAXB object
 	 * 
-	 * @param type    - type of attribute (node, edge, network)
-	 * @param id      - id of node, edge, network (key into CyAttributes)
-     * @param target  - jaxb object
-	 *
+	 * @param type -
+	 *            type of attribute (node, edge, network)
+	 * @param id -
+	 *            id of node, edge, network (key into CyAttributes)
+	 * @param target -
+	 *            jaxb object
+	 * 
 	 * @throws JAXBException
 	 */
 	protected void attributeWriter(int type, String id, Object target)
@@ -356,13 +361,14 @@ public class XGMMLWriter {
 						targetNode.setName("base");
 					}
 				} else {
-					Att attr = createAttribute(id, nodeAttributes, nodeAttNames[i]);
+					Att attr = createAttribute(id, nodeAttributes,
+							nodeAttNames[i]);
 					targetNode.getAtt().add(attr);
 				}
 			}
 		}
 		// process type edge
-		else if (type == EDGE){
+		else if (type == EDGE) {
 			// process each attribute type
 			for (int i = 0; i < edgeAttNames.length; i++) {
 				Att attr = createAttribute(id, edgeAttributes, edgeAttNames[i]);
@@ -375,8 +381,9 @@ public class XGMMLWriter {
 			// process each attribute type
 			for (int i = 0; i < networkAttNames.length; i++) {
 				// ignore Metadata object.
-				if(!networkAttNames[i].equals(METADATA_ATTR_NAME)) {
-					Att attr = createAttribute(id, networkAttributes, networkAttNames[i]);
+				if (!networkAttNames[i].equals(METADATA_ATTR_NAME)) {
+					Att attr = createAttribute(id, networkAttributes,
+							networkAttNames[i]);
 					graph.getAtt().add(attr);
 				}
 			}
@@ -386,17 +393,21 @@ public class XGMMLWriter {
 	/**
 	 * Creates an attribute to write into XGMML file.
 	 * 
-	 * @param id            - id of node, edge or network
-	 * @param attributes    - CyAttributes to load
-	 * @param attNames      - ref to attribute names array
-	 * @param attNamesIndex - index into attribute names array
-	 * @return att          - Att to return (gets written into xgmml file)
-	 *
+	 * @param id -
+	 *            id of node, edge or network
+	 * @param attributes -
+	 *            CyAttributes to load
+	 * @param attNames -
+	 *            ref to attribute names array
+	 * @param attNamesIndex -
+	 *            index into attribute names array
+	 * @return att - Att to return (gets written into xgmml file)
+	 * 
 	 * @throws JAXBException
 	 */
-	private Att createAttribute(String id, CyAttributes attributes, String attributeName)
-		throws JAXBException {
-		
+	private Att createAttribute(String id, CyAttributes attributes,
+			String attributeName) throws JAXBException {
+
 		// create an attribute and its type
 		Att attr = objFactory.createAtt();
 		byte attType = attributes.getType(attributeName);
@@ -407,7 +418,8 @@ public class XGMMLWriter {
 			attr.setName(attributeName);
 			attr.setLabel(attributeName);
 			attr.setType(FLOAT_TYPE);
-			if (dAttr != null) attr.setValue(dAttr.toString());
+			if (dAttr != null)
+				attr.setValue(dAttr.toString());
 		}
 		// process integer
 		else if (attType == CyAttributes.TYPE_INTEGER) {
@@ -415,7 +427,8 @@ public class XGMMLWriter {
 			attr.setName(attributeName);
 			attr.setLabel(attributeName);
 			attr.setType(INT_TYPE);
-			if (iAttr != null) attr.setValue(iAttr.toString());
+			if (iAttr != null)
+				attr.setValue(iAttr.toString());
 		}
 		// process string
 		else if (attType == CyAttributes.TYPE_STRING) {
@@ -425,8 +438,7 @@ public class XGMMLWriter {
 			attr.setType(STRING_TYPE);
 			if (sAttr != null) {
 				attr.setValue(sAttr.toString());
-			}
-			else if (attributeName == "nodeType"){
+			} else if (attributeName == "nodeType") {
 				attr.setValue(NORMAL);
 			}
 		}
@@ -436,7 +448,8 @@ public class XGMMLWriter {
 			attr.setName(attributeName);
 			attr.setLabel(attributeName);
 			attr.setType(BOOLEAN_TYPE);
-			if (bAttr != null) attr.setValue(bAttr.toString());
+			if (bAttr != null)
+				attr.setValue(bAttr.toString());
 		}
 		// process simple list
 		else if (attType == CyAttributes.TYPE_SIMPLE_LIST) {
@@ -473,7 +486,7 @@ public class XGMMLWriter {
 			while (mapIt.hasNext()) {
 				// get the attribute from the map
 				Object obj = mapIt.next();
-				String key = (String)obj;
+				String key = (String) obj;
 				// create a "child" attribute to store in xgmml file
 				Att memberAttr = objFactory.createAtt();
 				// set child attribute name, label, and value
@@ -494,17 +507,21 @@ public class XGMMLWriter {
 	}
 
 	/**
-	 * Creates an attribute to write into XGMML file from an attribute whose type is COMPLEX.
+	 * Creates an attribute to write into XGMML file from an attribute whose
+	 * type is COMPLEX.
 	 * 
-	 * @param id            - id of node, edge or network
-	 * @param attributes    - CyAttributes to load
-	 * @param attributeName - name of attribute
-	 * @return att          - Att to return (gets written into xgmml file)
-	 *
+	 * @param id -
+	 *            id of node, edge or network
+	 * @param attributes -
+	 *            CyAttributes to load
+	 * @param attributeName -
+	 *            name of attribute
+	 * @return att - Att to return (gets written into xgmml file)
+	 * 
 	 * @throws JAXBException
 	 */
-	private Att createComplexAttribute(String id, CyAttributes attributes, String attributeName)
-		throws JAXBException {
+	private Att createComplexAttribute(String id, CyAttributes attributes,
+			String attributeName) throws JAXBException {
 
 		// the attribute to return
 		Att attrToReturn = objFactory.createAtt();
@@ -514,7 +531,8 @@ public class XGMMLWriter {
 		MultiHashMapDefinition mmapDef = attributes.getMultiHashMapDefinition();
 
 		// get number & types of dimensions
-		byte[] dimTypes = mmapDef.getAttributeKeyspaceDimensionTypes(attributeName);
+		byte[] dimTypes = mmapDef
+				.getAttributeKeyspaceDimensionTypes(attributeName);
 
 		// set top level attribute name, label
 		attrToReturn.setType(COMPLEX_TYPE);
@@ -523,17 +541,20 @@ public class XGMMLWriter {
 		attrToReturn.setValue(String.valueOf(dimTypes.length));
 
 		// grab the complex attribute structure
-		Map complexAttributeStructure = getComplexAttributeStructure(mmap, id, attributeName, null, 0, dimTypes.length);
+		Map complexAttributeStructure = getComplexAttributeStructure(mmap, id,
+				attributeName, null, 0, dimTypes.length);
 
 		// determine val type, get its string equilvalent to store in xgmml
-		String valTypeStr = getType(mmapDef.getAttributeValueType(attributeName));
+		String valTypeStr = getType(mmapDef
+				.getAttributeValueType(attributeName));
 
 		// walk the structure
-		Iterator complexAttributeIt = complexAttributeStructure.keySet().iterator();
+		Iterator complexAttributeIt = complexAttributeStructure.keySet()
+				.iterator();
 		while (complexAttributeIt.hasNext()) {
 			// grab the next key and map to add to xgmml
 			Object key = complexAttributeIt.next();
-			Map thisKeyMap = (Map)complexAttributeStructure.get(key);
+			Map thisKeyMap = (Map) complexAttributeStructure.get(key);
 			// create an Att instance for this key
 			// and set its name, label, & value
 			Att thisKeyAttr = objFactory.createAtt();
@@ -541,9 +562,13 @@ public class XGMMLWriter {
 			thisKeyAttr.setLabel(key.toString());
 			thisKeyAttr.setName(key.toString());
 			thisKeyAttr.setValue(String.valueOf(thisKeyMap.size()));
-			// now lets walk the keys structure and add to its attributes content
-			thisKeyAttr.getContent().add(walkComplexAttributeStructure(null, thisKeyMap, valTypeStr, dimTypes, 1));
-			// this keys attribute should get added to the attribute we wil return
+			// now lets walk the keys structure and add to its attributes
+			// content
+			thisKeyAttr.getContent().add(
+					walkComplexAttributeStructure(null, thisKeyMap, valTypeStr,
+							dimTypes, 1));
+			// this keys attribute should get added to the attribute we wil
+			// return
 			attrToReturn.getContent().add(thisKeyAttr);
 		}
 
@@ -554,37 +579,45 @@ public class XGMMLWriter {
 	/**
 	 * Returns a map where the key(s) are each key in the attribute key space,
 	 * and the value is another map or the attribute value.
-	 *
-	 * For example,  if the following key:
+	 * 
+	 * For example, if the following key:
 	 * 
 	 * {externalref1}{authors}{1} pointed to the following value:
-	 *
+	 * 
 	 * "author 1 name",
-	 *
-	 * Then we would have a Map where the key is externalref1,
-	 * the value is a Map where the key is {authors},
-	 * the value is a Map where the key is {1},
+	 * 
+	 * Then we would have a Map where the key is externalref1, the value is a
+	 * Map where the key is {authors}, the value is a Map where the key is {1},
 	 * the value is "author 1 name".
 	 * 
-	 * @param mmap          - reference to MultiHashMap used by CyAttributes
-	 * @param id            - id of node, edge or network
-	 * @param attributeName - name of attribute
-	 * @param keys          - array of objects which store attribute keys
-	 * @param keysIndex     - index into keys array we should add the next key
-	 * @param numKeyDimensions - the number of keys used for given attribute name
-	 * @return Map             - ref to Map interface 
+	 * @param mmap -
+	 *            reference to MultiHashMap used by CyAttributes
+	 * @param id -
+	 *            id of node, edge or network
+	 * @param attributeName -
+	 *            name of attribute
+	 * @param keys -
+	 *            array of objects which store attribute keys
+	 * @param keysIndex -
+	 *            index into keys array we should add the next key
+	 * @param numKeyDimensions -
+	 *            the number of keys used for given attribute name
+	 * @return Map - ref to Map interface
 	 */
-	private Map getComplexAttributeStructure(MultiHashMap mmap, String id, String attributeName, Object[] keys, int keysIndex, int numKeyDimensions) {
+	private Map getComplexAttributeStructure(MultiHashMap mmap, String id,
+			String attributeName, Object[] keys, int keysIndex,
+			int numKeyDimensions) {
 
 		// out of here if we've interated through all dimTypes
-		if (keysIndex == numKeyDimensions) return null;
+		if (keysIndex == numKeyDimensions)
+			return null;
 
 		// the hashmap to return
 		Map keyHashMap = new HashMap();
 
 		// create a new object array to store keys for this interation
 		// copy all exisiting keys into it
-		Object[] newKeys = new Object[keysIndex+1];
+		Object[] newKeys = new Object[keysIndex + 1];
 		for (int lc = 0; lc < keysIndex; lc++) {
 			newKeys[lc] = keys[lc];
 		}
@@ -594,8 +627,11 @@ public class XGMMLWriter {
 		while (keyspan.hasNext()) {
 			Object newKey = keyspan.next();
 			newKeys[keysIndex] = newKey;
-			Map nextLevelMap = getComplexAttributeStructure(mmap, id, attributeName, newKeys, keysIndex+1, numKeyDimensions);
-			Object objectToStore = (nextLevelMap == null) ? mmap.getAttributeValue(id, attributeName, newKeys) : nextLevelMap;
+			Map nextLevelMap = getComplexAttributeStructure(mmap, id,
+					attributeName, newKeys, keysIndex + 1, numKeyDimensions);
+			Object objectToStore = (nextLevelMap == null) ? mmap
+					.getAttributeValue(id, attributeName, newKeys)
+					: nextLevelMap;
 			keyHashMap.put(newKey, objectToStore);
 		}
 
@@ -604,53 +640,60 @@ public class XGMMLWriter {
 	}
 
 	/**
-	 * Walks a complex attribute map and creates a complex attribute on behalf of createComplexAttribute().
+	 * Walks a complex attribute map and creates a complex attribute on behalf
+	 * of createComplexAttribute().
 	 * 
-	 * @param parentAttr                - ref to a parentAttr we will be adding to (in certain cases this can be null)
-	 * @param complexAttributeStructure - ref to Map returned from a prior call to getComplexAttributeStructure.
-	 * @param attributeType             - the type (string, boolean, float, int) of the attribute value this tree describes
-	 * @param dimTypes                  - a byte array returned from a prior call to getAttributeKeyspaceDimensionTypes(attributeName);
-	 * @param dimTypesIndex             - the index into the dimTypes array we are should work on
-	 * @return att                      - ref to Att which describes the complex type attribute.  An example/description is as follows:
-	 *
-	 * For an arbitrarily complex data structure, like a pseudo hash with the following structure:
-	 *
+	 * @param parentAttr -
+	 *            ref to a parentAttr we will be adding to (in certain cases
+	 *            this can be null)
+	 * @param complexAttributeStructure -
+	 *            ref to Map returned from a prior call to
+	 *            getComplexAttributeStructure.
+	 * @param attributeType -
+	 *            the type (string, boolean, float, int) of the attribute value
+	 *            this tree describes
+	 * @param dimTypes -
+	 *            a byte array returned from a prior call to
+	 *            getAttributeKeyspaceDimensionTypes(attributeName);
+	 * @param dimTypesIndex -
+	 *            the index into the dimTypes array we are should work on
+	 * @return att - ref to Att which describes the complex type attribute. An
+	 *         example/description is as follows:
+	 * 
+	 * For an arbitrarily complex data structure, like a pseudo hash with the
+	 * following structure:
+	 * 
 	 * {"externalref1"}->{"authors"}->{1}->"author1 name";
 	 * {"externalref1"}->{"authors"}->{2}->"author2 name";
 	 * {"externalref1"}->{"authors"}->{3}->"author3 name";
-	 *
-	 * where the keys externalref1 and authors are strings, and keys 1, 2, 3 are integers,
-	 * and the values (author1 name, author2 name, author3 name) are strings, we would have the 
-	 * following attributes written to the xgmml file:
 	 * 
-	 *    <att label="complex" name="publication references" value="3">
-     *        <att label="string" name="externalref1" value="1">
-     *            <att label="string" name="authors" value="3">
-     *                <att label="int" name="2" value="1">
-     *                    <att label="string" value="author2 name"/>
-     *                </att>
-     *                <att label="int" name="1" value="1">
-     *                    <att label="string" value="author1 name"/>
-	 *                </att>
-     *                <att label="int" name="3" value="1">
-     *                    <att label="string" value="author3 name"/>
-     *                </att>
-     *            </att>
-     *        </att>
-     *    </att>
-	 *
-	 * Notes:
-	 * - value attribute property for keys is assigned the number of sub-elements the key references
-	 * - value attribute property for values is equal to the value
-	 * - name attribute property for attributes is only set for keys, and the value of this property is the key name.
-	 * - label attribute property is equal to the data type of the key or value.
-	 * - name attribute properties are only set for keys
-	 *
+	 * where the keys externalref1 and authors are strings, and keys 1, 2, 3 are
+	 * integers, and the values (author1 name, author2 name, author3 name) are
+	 * strings, we would have the following attributes written to the xgmml
+	 * file:
+	 * 
+	 * <att label="complex" name="publication references" value="3"> <att
+	 * label="string" name="externalref1" value="1"> <att label="string"
+	 * name="authors" value="3"> <att label="int" name="2" value="1"> <att
+	 * label="string" value="author2 name"/> </att> <att label="int" name="1"
+	 * value="1"> <att label="string" value="author1 name"/> </att> <att
+	 * label="int" name="3" value="1"> <att label="string" value="author3
+	 * name"/> </att> </att> </att> </att>
+	 * 
+	 * Notes: - value attribute property for keys is assigned the number of
+	 * sub-elements the key references - value attribute property for values is
+	 * equal to the value - name attribute property for attributes is only set
+	 * for keys, and the value of this property is the key name. - label
+	 * attribute property is equal to the data type of the key or value. - name
+	 * attribute properties are only set for keys
+	 * 
 	 * @throws JAXBException
 	 * @throws IllegalArgumentException
 	 */
-	private Att walkComplexAttributeStructure(Att parentAttr, Map complexAttributeStructure, String attributeType, byte[] dimTypes, int dimTypesIndex) 
-		throws JAXBException, IllegalArgumentException {
+	private Att walkComplexAttributeStructure(Att parentAttr,
+			Map complexAttributeStructure, String attributeType,
+			byte[] dimTypes, int dimTypesIndex) throws JAXBException,
+			IllegalArgumentException {
 
 		// att to return
 		Att attrToReturn = null;
@@ -659,33 +702,38 @@ public class XGMMLWriter {
 		while (mapIt.hasNext()) {
 			Object key = mapIt.next();
 			Object possibleAttributeValue = complexAttributeStructure.get(key);
-			if (possibleAttributeValue instanceof Map){
+			if (possibleAttributeValue instanceof Map) {
 				// we need to create an instance of Att to return
 				attrToReturn = objFactory.createAtt();
 				// we have a another map
 				attrToReturn.setType(getType(dimTypes[dimTypesIndex]));
-				attrToReturn.setLabel((String)key);
-				attrToReturn.setName((String)key);
-				attrToReturn.setValue(String.valueOf(((Map)possibleAttributeValue).size()));
+				attrToReturn.setLabel((String) key);
+				attrToReturn.setName((String) key);
+				attrToReturn.setValue(String
+						.valueOf(((Map) possibleAttributeValue).size()));
 				// walk the next map
-				// note: we check returned attribute address to make sure we are not adding to ourselves
-				Att returnedAttribute = walkComplexAttributeStructure(attrToReturn,
-																	  (Map)possibleAttributeValue,
-																	  attributeType, dimTypes, dimTypesIndex+1);
+				// note: we check returned attribute address to make sure we are
+				// not adding to ourselves
+				Att returnedAttribute = walkComplexAttributeStructure(
+						attrToReturn, (Map) possibleAttributeValue,
+						attributeType, dimTypes, dimTypesIndex + 1);
 				// if this is a new att, add it to the Att we will be returning
-				if (returnedAttribute != attrToReturn) attrToReturn.getContent().add(returnedAttribute);
-			}
-			else {
-				// if we are here, we must be adding attributes to the parentAttr
+				if (returnedAttribute != attrToReturn)
+					attrToReturn.getContent().add(returnedAttribute);
+			} else {
+				// if we are here, we must be adding attributes to the
+				// parentAttr
 				if (parentAttr == null) {
-					throw new IllegalArgumentException("Att argument should not be null.");
+					throw new IllegalArgumentException(
+							"Att argument should not be null.");
 				}
-				// the attribute to return this round is our parent, we just attach stuff to it
+				// the attribute to return this round is our parent, we just
+				// attach stuff to it
 				attrToReturn = parentAttr;
 				// create our key attribute
 				Att keyAttr = objFactory.createAtt();
 				keyAttr.setType(getType(dimTypes[dimTypesIndex]));
-				keyAttr.setLabel(key.toString());				
+				keyAttr.setLabel(key.toString());
 				keyAttr.setName(key.toString());
 				keyAttr.setValue(String.valueOf(1));
 				// create our value attribute
@@ -703,7 +751,11 @@ public class XGMMLWriter {
 
 	protected Graphics getGraphics(int type, Object target)
 			throws JAXBException {
-
+		
+		if(target == null) {
+			return null;
+		}
+		
 		Graphics graphics = objFactory.createGraphics();
 
 		if (type == NODE) {
@@ -950,9 +1002,11 @@ public class XGMMLWriter {
 			// Add graphics if available
 			if (networkView != null) {
 				NodeView curNodeView = networkView.getNodeView(curNode);
-				jxbNode.setGraphics(getGraphics(NODE, curNodeView));
+				if(curNodeView != null) {
+					jxbNode.setGraphics(getGraphics(NODE, curNodeView));
+				}
 			}
-			
+
 			attributeWriter(NODE, curNode.getIdentifier(), jxbNode);
 			if (isMetanode(curNode)) {
 				nodeList.add(curNode);
@@ -983,8 +1037,8 @@ public class XGMMLWriter {
 		String targetnodeID = Integer.toString(node.getRootGraphIndex());
 		jxbNode.setId(targetnodeID);
 		jxbNode.setLabel(node.getIdentifier());
-		
-		if(networkView != null) {
+
+		if (networkView != null) {
 			NodeView curNodeView = networkView.getNodeView(node);
 			jxbNode.setGraphics(getGraphics(NODE, curNodeView));
 		}
@@ -1100,18 +1154,23 @@ public class XGMMLWriter {
 	}
 
 	/**
-	 * Given a byte describing a MultiHashMapDefinition TYPE_*,
-	 * return the proper XGMMLWriter type.
-	 *
-	 * @param dimType - byte as described in MultiHashMapDefinition
+	 * Given a byte describing a MultiHashMapDefinition TYPE_*, return the
+	 * proper XGMMLWriter type.
+	 * 
+	 * @param dimType -
+	 *            byte as described in MultiHashMapDefinition
 	 * @return String
 	 */
 	private String getType(byte dimType) {
 
-		if (dimType == MultiHashMapDefinition.TYPE_BOOLEAN) return BOOLEAN_TYPE;
-		if (dimType == MultiHashMapDefinition.TYPE_FLOATING_POINT) return FLOAT_TYPE;
-		if (dimType == MultiHashMapDefinition.TYPE_INTEGER) return INT_TYPE;
-		if (dimType == MultiHashMapDefinition.TYPE_STRING) return STRING_TYPE;
+		if (dimType == MultiHashMapDefinition.TYPE_BOOLEAN)
+			return BOOLEAN_TYPE;
+		if (dimType == MultiHashMapDefinition.TYPE_FLOATING_POINT)
+			return FLOAT_TYPE;
+		if (dimType == MultiHashMapDefinition.TYPE_INTEGER)
+			return INT_TYPE;
+		if (dimType == MultiHashMapDefinition.TYPE_STRING)
+			return STRING_TYPE;
 
 		// houston we have a problem
 		return null;
@@ -1176,7 +1235,8 @@ public class XGMMLWriter {
 		attr.setName(GRAPH_VIEW_ZOOM);
 		attr.setLabel(GRAPH_VIEW_ZOOM);
 		attr.setType(FLOAT_TYPE);
-		if (dAttr != null) attr.setValue(dAttr.toString());
+		if (dAttr != null)
+			attr.setValue(dAttr.toString());
 
 		// add attribute to graph object
 		graph.getAtt().add(attr);
@@ -1191,7 +1251,7 @@ public class XGMMLWriter {
 		String[] coordinates = { GRAPH_VIEW_CENTER_X, GRAPH_VIEW_CENTER_Y };
 
 		// the view center
-		Point2D center = ((DGraphView)networkView).getCenter();
+		Point2D center = ((DGraphView) networkView).getCenter();
 
 		// process both x & y coordinates
 		for (int lc = 0; lc < 2; lc++) {
@@ -1202,7 +1262,8 @@ public class XGMMLWriter {
 			attr.setName(coordinates[lc]);
 			attr.setLabel(coordinates[lc]);
 			attr.setType(FLOAT_TYPE);
-			if (coord != null) attr.setValue(coord.toString());
+			if (coord != null)
+				attr.setValue(coord.toString());
 			graph.getAtt().add(attr);
 		}
 	}

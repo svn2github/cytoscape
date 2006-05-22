@@ -517,7 +517,7 @@ public class CytoscapeSessionReader {
 		if (viewAvailable == true) {
 			createCyNetworkView(network);
 
-			if (Cytoscape.getNetworkView(network.getIdentifier()) != null) {
+			if (Cytoscape.getNetworkView(network.getIdentifier()) != Cytoscape.getNullNetworkView()) {
 				reader
 						.layout(Cytoscape.getNetworkView(network
 								.getIdentifier()));
