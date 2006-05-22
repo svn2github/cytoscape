@@ -21,6 +21,7 @@ import giny.view.GraphView;
 import giny.view.GraphViewChangeEvent;
 import giny.view.GraphViewChangeListener;
 import giny.view.NodeView;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -40,6 +41,8 @@ public class DGraphView implements GraphView, Printable
 {
 
   static final float DEFAULT_ANCHOR_SIZE = 7.0f;
+  static final Paint DEFAULT_ANCHOR_SELECTED_PAINT = Color.red;
+  static final Paint DEFAULT_ANCHOR_UNSELECTED_PAINT = Color.black;
 
   final Object m_lock = new Object();
   final float[] m_extentsBuff = new float[4];
@@ -71,7 +74,6 @@ public class DGraphView implements GraphView, Printable
   final IntBTree m_selectedEdges; // Positive.
   boolean m_contentChanged = false;
   boolean m_viewportChanged = false;
-  private float m_anchorSize = DEFAULT_ANCHOR_SIZE;
 
   final GraphViewChangeListener[] m_lis = new GraphViewChangeListener[1];
   final ContentChangeListener[] m_cLis = new ContentChangeListener[1];
@@ -1260,15 +1262,19 @@ public class DGraphView implements GraphView, Printable
 //     return true;
 //   }
 
-  public float getAnchorSize()
+  public final float getAnchorSize()
   {
-    return m_anchorSize;
+    return DEFAULT_ANCHOR_SIZE;
   }
 
-  public void setAnchorSize(float size)
+  public final Paint getAnchorSelectedPaint()
   {
-    synchronized (m_lock) {
-      m_anchorSize = size; }
+    return DEFAULT_ANCHOR_SELECTED_PAINT;
+  }
+
+  public final Paint getAnchorUnselectedPaint()
+  {
+    return DEFAULT_ANCHOR_UNSELECTED_PAINT;
   }
 
 }

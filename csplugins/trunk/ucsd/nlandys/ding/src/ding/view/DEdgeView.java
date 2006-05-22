@@ -2,6 +2,7 @@ package ding.view;
 
 import cytoscape.render.immed.EdgeAnchors;
 import cytoscape.render.immed.GraphGraphics;
+import cytoscape.util.intr.IntBTree;
 import giny.model.Edge;
 import giny.view.Bend;
 import giny.view.EdgeView;
@@ -41,6 +42,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
   int m_targetEdgeEnd; // Ditto.
   final ArrayList m_anchors; // A list of Point2D objects.
   int m_lineType;
+  final IntBTree m_unselectedAnchors;
 
   /*
    * @param inx the RootGraph index of edge (a negative number).
@@ -60,6 +62,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
     m_targetEdgeEnd = EdgeView.NO_END;
     m_anchors = new ArrayList();
     m_lineType = EdgeView.STRAIGHT_LINES;
+    m_unselectedAnchors = new IntBTree(3);
   }
 
   public int getGraphPerspectiveIndex()
