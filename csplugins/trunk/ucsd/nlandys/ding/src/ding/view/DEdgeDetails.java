@@ -162,11 +162,10 @@ class DEdgeDetails extends IntermediateEdgeDetails
 
   public Paint anchorPaint(int edge, int anchorInx)
   {
-    if (((DEdgeView) (m_view.getEdgeView(~edge))).
-        m_unselectedAnchors.count(anchorInx) > 0) {
-      return m_view.getAnchorUnselectedPaint(); }
-    else {
+    if (m_view.m_selectedAnchors.count((edge << 6) | anchorInx) > 0) {
       return m_view.getAnchorSelectedPaint(); }
+    else {
+      return m_view.getAnchorUnselectedPaint(); }
   }
 
   public float segmentThickness(int edge)

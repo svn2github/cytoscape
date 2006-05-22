@@ -4,7 +4,7 @@ import cytoscape.geom.rtree.RTree;
 import cytoscape.geom.spacial.MutableSpacialIndex2D;
 import cytoscape.geom.spacial.SpacialEntry2DEnumerator;
 import cytoscape.graph.fixed.FixedGraph;
-// import cytoscape.render.immed.EdgeAnchors;
+import cytoscape.render.immed.EdgeAnchors;
 import cytoscape.render.immed.GraphGraphics;
 import cytoscape.render.stateful.GraphLOD;
 import cytoscape.render.stateful.GraphRenderer;
@@ -58,6 +58,7 @@ public class DGraphView implements GraphView, Printable
   GraphPerspective m_structPersp; // Graph of all views (even hidden ones).
 
   MutableSpacialIndex2D m_spacial;
+  MutableSpacialIndex2D m_spacialA;
   DNodeDetails m_nodeDetails;
   DEdgeDetails m_edgeDetails;
   HashMap m_nodeViewMap;
@@ -72,6 +73,7 @@ public class DGraphView implements GraphView, Printable
   boolean m_edgeSelection = true;
   final IntBTree m_selectedNodes; // Positive.
   final IntBTree m_selectedEdges; // Positive.
+  final IntBTree m_selectedAnchors;
   boolean m_contentChanged = false;
   boolean m_viewportChanged = false;
 
@@ -87,6 +89,7 @@ public class DGraphView implements GraphView, Printable
     m_structPersp = m_perspective.getRootGraph().createGraphPerspective
       ((int[]) null, (int[]) null);
     m_spacial = new RTree();
+    m_spacialA = new RTree();
     m_nodeDetails = new DNodeDetails();
     m_edgeDetails = new DEdgeDetails(this);
     m_nodeViewMap = new HashMap();
@@ -98,6 +101,7 @@ public class DGraphView implements GraphView, Printable
     m_canvas = new InnerCanvas(m_lock, this);
     m_selectedNodes = new IntBTree();
     m_selectedEdges = new IntBTree();
+    m_selectedAnchors = new IntBTree();
 //     addGraphViewChangeListener(new EdgeSelectListener());
   }
 
@@ -1172,11 +1176,30 @@ public class DGraphView implements GraphView, Printable
     getCanvas().removeEdgeContextMenuListener(l);
   }
 
+  private final float[] m_anchorsBuff = new float[2];
+
   private final class EdgeSelectListener implements GraphViewChangeListener
   {
     public void graphViewChanged(GraphViewChangeEvent evt)
     {
       if (evt.getType() == GraphViewChangeEvent.EDGES_SELECTED_TYPE) {
+        final int[] edges = evt.getSelectedEdgeIndices();
+        synchronized (m_lock) {
+          for (int i = 0; i < edges.length; i++) {
+            final EdgeAnchors anchors = m_edgeDetails.anchors(~edges[i]);
+            if (anchors == null) { continue; }
+            for (int j = 0; j < anchors.numAnchors(); j++) {
+              anchors.getAnchor(j, m_anchorsBuff, 0);
+              m_spacialA.insert((~edges[i] << 6) | j,
+                                (float) (m_anchorsBuff[0] -
+                                         getAnchorSize() / 2.0d),
+                                (float) (m_anchorsBuff[1] -
+                                         getAnchorSize() / 2.0d),
+                                (float) (m_anchorsBuff[0] +
+                                         getAnchorSize() / 2.0d),
+                                (float) (m_anchorsBuff[1] +
+                                         getAnchorSize() / 2.0d));
+              m_selectedAnchors.insert((~edges[i] << 6) | j); } } }
       }
       else if (evt.getType() == GraphViewChangeEvent.EDGES_UNSELECTED_TYPE) {
       }
