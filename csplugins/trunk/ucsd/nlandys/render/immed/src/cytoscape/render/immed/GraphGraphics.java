@@ -79,9 +79,9 @@ public final class GraphGraphics
   public static final byte ARROW_MONO = -7;
 
   /**
-   * This value is currently 100.
+   * This value is currently 64.
    */
-  public static final int MAX_EDGE_ANCHORS = 100;
+  public static final int MAX_EDGE_ANCHORS = 64;
 
   /*
    * A constant for controlling how cubic Bezier curves are drawn; This
