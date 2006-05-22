@@ -270,7 +270,7 @@ public class DataTableModel extends DefaultTableModel implements
 
 			if (objectType == DataTable.NODES) {
 				Node targetNode = Cytoscape.getCyNode(id);
-				if(Cytoscape.getCurrentNetworkView() != null) {
+				if(Cytoscape.getCurrentNetworkView() != Cytoscape.getNullNetworkView()) {
 					NodeView nv = Cytoscape.getCurrentNetworkView().getNodeView(targetNode);
 					if(nv != null) {
 						nv.setSelectedPaint(DEFAULT_NODE_COLOR);
@@ -285,7 +285,7 @@ public class DataTableModel extends DefaultTableModel implements
 				Node target = Cytoscape.getCyNode(edgeNameParts[2]);
 				Edge targetEdge = Cytoscape.getCyEdge(source, target,
 						Semantics.INTERACTION, interaction, false);
-				if (targetEdge != null && Cytoscape.getCurrentNetworkView() != null) {
+				if (targetEdge != null && Cytoscape.getCurrentNetworkView() != Cytoscape.getNullNetworkView()) {
 					EdgeView edgeView = Cytoscape.getCurrentNetworkView()
 							.getEdgeView(targetEdge);
 					if (edgeView != null) {

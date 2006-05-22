@@ -722,14 +722,6 @@ public class AttributeBrowserPanel extends JPanel implements
 	private JButton getDeleteButton() {
 		if (deleteButton == null) {
 			deleteButton = new JButton();
-			// deleteButton.setFont(new java.awt.Font("Dialog",
-			// java.awt.Font.PLAIN, 12));
-			// deleteButton
-			// .setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-			// deleteButton
-			// .setIcon(new ImageIcon(
-			// "/cellar/users/kono/workspace/Test23/images/new/delete16.gif"));
-			// deleteButton.setText("Delete");
 			deleteButton.setIcon(new javax.swing.ImageIcon(getClass()
 					.getResource("images/delete32.png")));
 			deleteButton.setToolTipText("Delete Attributes...");
@@ -757,13 +749,6 @@ public class AttributeBrowserPanel extends JPanel implements
 
 					dDialog.show();
 					model.sortAtttributes();
-
-					// Reset objects
-					// attributeList = null;
-					// attributeSelectionPopupMenu = null;
-					// attributeList = getJList1(model);
-					// attributeSelectionPopupMenu =
-					// getAttributeSelectionPopupMenu(model);
 					valueChanged(null);
 					// getAttributeSelectionPopupMenu(model);
 

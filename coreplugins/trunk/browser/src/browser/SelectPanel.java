@@ -78,8 +78,6 @@ public class SelectPanel extends JPanel implements PropertyChangeListener,
 
 	public void onSelectEvent(SelectEvent event) {
 		
-		//System.out.println("##############Browser catch: " + event.getTargetType());
-		
 		if (mirrorSelection.isSelected()) {
 			if (graphObjectType == NODES
 					&& (event.getTargetType() == SelectEvent.SINGLE_NODE || event
@@ -121,6 +119,7 @@ public class SelectPanel extends JPanel implements PropertyChangeListener,
 	}
 
 	private List getGraphObjectList(CyNetwork network) {
+		
 		if (graphObjectType == NODES) {
 			return network.nodesList();
 		} else
@@ -151,7 +150,8 @@ public class SelectPanel extends JPanel implements PropertyChangeListener,
 	public void propertyChange(PropertyChangeEvent e) {
 
 		if (e.getPropertyName().equals(Cytoscape.NETWORK_CREATED)
-				|| e.getPropertyName().equals(Cytoscape.NETWORK_DESTROYED)) {
+				|| e.getPropertyName().equals(Cytoscape.NETWORK_DESTROYED)
+				|| e.getPropertyName().equals(Cytoscape.CYTOSCAPE_INITIALIZED)) {
 			updateNetworkBox();
 			// tableModel.setTableDataObjects(new ArrayList());
 
@@ -160,7 +160,9 @@ public class SelectPanel extends JPanel implements PropertyChangeListener,
 				|| e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED
 				|| e.getPropertyName() == Cytoscape.NETWORK_LOADED
 				|| e.getPropertyName().equals(Cytoscape.NETWORK_CREATED)
-				|| e.getPropertyName().equals(Cytoscape.NETWORK_DESTROYED)) {
+				|| e.getPropertyName().equals(Cytoscape.NETWORK_DESTROYED)
+				|| e.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_DESTROYED)
+				|| e.getPropertyName().equals(Cytoscape.CYTOSCAPE_INITIALIZED)) {
 			
 			//System.out.println("**************Browser catch: " + e.getPropertyName());
 			
