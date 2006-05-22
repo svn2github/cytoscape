@@ -254,7 +254,7 @@ public class JTreeTable extends JTable {
 			try {
 				super.paint(g);
 			} catch (Exception e) {
-				System.err.print("");
+				//System.err.println("********************");
 				
 			}
 		}

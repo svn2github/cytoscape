@@ -63,8 +63,6 @@ public class DeselectAllAction extends CytoscapeAction {
 		// GinyUtils.deselectAllEdges( Cytoscape.getCurrentNetworkView() );
 		Cytoscape.getCurrentNetwork().unselectAllNodes();
 		Cytoscape.getCurrentNetwork().unselectAllEdges();
-		if (Cytoscape.getCurrentNetworkView() != null) {
-			Cytoscape.getCurrentNetworkView().updateView();
-		}
+		Cytoscape.getCurrentNetworkView().updateView();
 	}
 }
