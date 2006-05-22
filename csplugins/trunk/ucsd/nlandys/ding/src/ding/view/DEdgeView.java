@@ -748,4 +748,6 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
     anchorArr[offset + 1] = anchor.y;
   }
 
+  // Auxillary methods for edge anchors.
+
 }

@@ -152,9 +152,17 @@ class DEdgeDetails extends IntermediateEdgeDetails
     return (EdgeAnchors) (m_view.getEdgeView(~edge));
   }
 
+  public float anchorSize(int edge, int anchorInx)
+  {
+    if (m_view.getEdgeView(~edge).isSelected()) {
+      return m_view.getAnchorSize(); }
+    else {
+      return 0.0f; }
+  }
+
   public Paint anchorPaint(int edge, int anchorInx)
   {
-    return null;
+    return Color.black;
   }
 
   public float segmentThickness(int edge)

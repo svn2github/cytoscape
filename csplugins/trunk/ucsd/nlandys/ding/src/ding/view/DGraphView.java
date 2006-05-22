@@ -39,6 +39,8 @@ import java.util.List;
 public class DGraphView implements GraphView, Printable
 {
 
+  static final float DEFAULT_ANCHOR_SIZE = 7.0f;
+
   final Object m_lock = new Object();
   final float[] m_extentsBuff = new float[4];
   final GeneralPath m_path = new GeneralPath();
@@ -69,6 +71,7 @@ public class DGraphView implements GraphView, Printable
   final IntBTree m_selectedEdges; // Positive.
   boolean m_contentChanged = false;
   boolean m_viewportChanged = false;
+  private float m_anchorSize = DEFAULT_ANCHOR_SIZE;
 
   final GraphViewChangeListener[] m_lis = new GraphViewChangeListener[1];
   final ContentChangeListener[] m_cLis = new ContentChangeListener[1];
@@ -1256,5 +1259,16 @@ public class DGraphView implements GraphView, Printable
 //       getRootGraph().removeNode(anchorNode); }
 //     return true;
 //   }
+
+  public float getAnchorSize()
+  {
+    return m_anchorSize;
+  }
+
+  public void setAnchorSize(float size)
+  {
+    synchronized (m_lock) {
+      m_anchorSize = size; }
+  }
 
 }
