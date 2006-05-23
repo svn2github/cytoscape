@@ -411,8 +411,10 @@ public class EdgeSourcesPanel extends JPanel {
                     	JTextField tf = (JTextField)sourceClassToField.get(sourceClass);
                     	tf.setText(Integer.toString(sourceInteractions.size()));
                     }
-            
-                }else{
+                    
+                    args.put("alternateIDs", new Boolean(alternateIdsExist));
+                  
+                }else{ // else nodesToConnect != null
                     // we have starting nodes and only one edge source
                 		//System.err.println("Only one source selected, num edges = " + sourceInteractions.size());
                 		JTextField tf = (JTextField)sourceClassToField.get(sourceClass);
