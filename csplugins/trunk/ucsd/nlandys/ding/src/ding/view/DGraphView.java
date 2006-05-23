@@ -102,7 +102,6 @@ public class DGraphView implements GraphView, Printable
     m_selectedNodes = new IntBTree();
     m_selectedEdges = new IntBTree();
     m_selectedAnchors = new IntBTree();
-//     addGraphViewChangeListener(new EdgeSelectListener());
   }
 
   public GraphPerspective getGraphPerspective()
@@ -1177,119 +1176,6 @@ public class DGraphView implements GraphView, Printable
   }
 
   final float[] m_anchorsBuff = new float[2];
-
-  private final class EdgeSelectListener implements GraphViewChangeListener
-  {
-    public void graphViewChanged(GraphViewChangeEvent evt)
-    {
-      if (evt.getType() == GraphViewChangeEvent.EDGES_SELECTED_TYPE) {
-        final int[] edges = evt.getSelectedEdgeIndices();
-        synchronized (m_lock) {
-          for (int i = 0; i < edges.length; i++) {
-            final DEdgeView ev = (DEdgeView) getEdgeView(edges[i]);
-            for (int j = 0; j < ev.m_anchors.size(); j++) {
-              ev.getHandleInternal(j, m_anchorsBuff);
-              m_spacialA.insert((~edges[i] << 6) | j,
-                                (float) (m_anchorsBuff[0] -
-                                         getAnchorSize() / 2.0d),
-                                (float) (m_anchorsBuff[1] -
-                                         getAnchorSize() / 2.0d),
-                                (float) (m_anchorsBuff[0] +
-                                         getAnchorSize() / 2.0d),
-                                (float) (m_anchorsBuff[1] +
-                                         getAnchorSize() / 2.0d));
-              m_selectedAnchors.insert((~edges[i] << 6) | j); } } }
-      }
-      else if (evt.getType() == GraphViewChangeEvent.EDGES_UNSELECTED_TYPE) {
-        final int[] edges = evt.getUnselectedEdgeIndices();
-        synchronized (m_lock) {
-          for (int i = 0; i < edges.length; i++) {
-            final DEdgeView ev = (DEdgeView) getEdgeView(edges[i]);
-            for (int j = 0; j < ev.numHandles(); j++) {
-              m_selectedAnchors.delete((~edges[i] << 6) | j);
-              m_spacialA.delete((~edges[i] << 6) | j); } } }
-      }
-    }
-  }
-
-//   // Key is an Integer, which is the GraphPerspective index of an edge
-//   // containing visible edge anchors.
-//   // Value is an ArrayList of Integer, where each Integer is the
-//   // GraphPerspective index of a node corresponding to a drawn edge anchor.
-//   private final HashMap m_anchor1Map = new HashMap();
-
-//   private final IntBTree m_selectedAnchors = new IntBTree();
-
-//   private final class EdgeSelectListener implements GraphViewChangeListener
-//   {
-//     public void graphViewChanged(GraphViewChangeEvent evt)
-//     {
-//       if (evt.getType() == GraphViewChangeEvent.EDGES_SELECTED_TYPE ||
-//           evt.getType() == GraphViewChangeEvent.EDGES_RESTORED_TYPE)
-//       {
-//         final int[] edges;
-//         if (evt.getType() == GraphViewChangeEvent.EDGES_SELECTED_TYPE) {
-//           edges = evt.getSelectedEdgeIndices(); }
-//         else { // EDGES_RESTORED_TYPE
-//           edges = evt.getRestoredEdgeIndices(); }
-//         synchronized (m_lock) {
-//           for (int i = 0; i < edges.length; i++) {
-//             if (!getEdgeView(edges[i]).isSelected()) { continue; }
-//             drawAnchors(edges[i]); } }
-//       }
-//       else if (evt.getType() == GraphViewChangeEvent.EDGES_UNSELECTED_TYPE ||
-//                evt.getType() == GraphViewChangeEvent.EDGES_HIDDEN_TYPE)
-//       {
-//         final int[] edges;
-//         if (evt.getType() == GraphViewChangeEvent.EDGES_UNSELECTED_TYPE) {
-//           edges = evt.getUnselectedEdgeIndices(); }
-//         else { // EDGES_HIDDEN_TYPE
-//           edges = evt.getHiddenEdgeIndices(); }
-//         synchronized (m_lock) {
-//           for (int i = 0; i < edges.length; i++) {
-//             undrawAnchors(edges[i]); } }
-//       }
-//     }
-//   }
-
-//   // Should synchronize around m_lock.
-//   void drawAnchors(int edge)
-//   {
-//     float[] arr = null;
-//     final EdgeAnchors anchors = m_edgeDetails.anchors(~edge);
-//     if (anchors == null) { return; }
-//     for (int j = 0; j < anchors.numAnchors(); j++) {
-//       if (arr == null) { arr = new float[2]; }
-//       anchors.getAnchor(j, arr, 0);
-//       final int newNode = getRootGraph().createNode();
-//       m_drawPersp.restoreNode(newNode);
-//       m_spacial.insert(~newNode, arr[0] - 3.0f, arr[1] - 3.0f,
-//                        arr[0] + 3.0f, arr[1] + 3.0f);
-//       m_selectedAnchors.insert(newNode);
-//       {
-//         ArrayList list =
-//           (ArrayList) m_anchor1Map.get(new Integer(edge));
-//         if (list == null) {
-//           list = new ArrayList();
-//           m_anchor1Map.put(new Integer(edge), list); }
-//         list.add(new Integer(newNode));
-//       } }
-//   }
-
-//   // Should synchronize around m_lock.
-//   boolean undrawAnchors(int edge)
-//   {
-//     final ArrayList list =
-//       (ArrayList) m_anchor1Map.remove(new Integer(edge));
-//     if (list == null) { return false; }
-//     final Iterator elms = list.iterator();
-//     while (elms.hasNext()) {
-//       final int anchorNode = ((Integer) elms.next()).intValue();
-//       m_selectedAnchors.delete(anchorNode);
-//       m_spacial.delete(~anchorNode);
-//       getRootGraph().removeNode(anchorNode); }
-//     return true;
-//   }
 
   public final float getAnchorSize()
   {
