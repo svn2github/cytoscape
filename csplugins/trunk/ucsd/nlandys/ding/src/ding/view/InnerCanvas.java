@@ -26,6 +26,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
 import java.awt.geom.PathIterator;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 
 // AJK: 04/02/06 BEGIN
@@ -336,6 +337,12 @@ public class InnerCanvas extends JComponent
           m_button1NodeDrag = true;
           m_view.m_contentChanged = true; }
         if (chosenEdge != 0) {
+          if (e.isControlDown()) {
+            m_ptBuff[0] = m_lastXMousePos;
+            m_ptBuff[1] = m_lastYMousePos;
+            m_view.xformComponentToNodeCoords(m_ptBuff);
+            ((DEdgeView) m_view.getEdgeView(chosenEdge)).addHandle
+              (new Point2D.Float((float) m_ptBuff[0], (float) m_ptBuff[1])); }
           final boolean wasSelected =
             m_view.getEdgeView(chosenEdge).isSelected();
           if (wasSelected && e.isShiftDown()) {
