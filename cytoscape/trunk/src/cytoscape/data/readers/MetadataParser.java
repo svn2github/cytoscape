@@ -109,7 +109,7 @@ public class MetadataParser {
 	 * @throws URISyntaxException
 	 * 
 	 */
-	protected HashMap makeNewMetadataMap() throws URISyntaxException {
+	public HashMap makeNewMetadataMap() throws URISyntaxException {
 
 		HashMap dataMap = new HashMap();
 		for (int i = 0; i < defaultLabels.length; i++) {
