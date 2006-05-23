@@ -160,7 +160,7 @@ public class CalculatorFactory {
      * by the newCalculator method.
      */
     public static Properties getProperties(Calculator c, String baseKey) {
-        if (c == null) {return null;}
+        if (c == null || baseKey == null) {return null;}
         Properties newProps = c.getProperties(baseKey);
         String classKey = baseKey + ".class";
         String className = c.getClass().getName();
