@@ -639,9 +639,21 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
   public void moveHandle(int inx, Point2D pt)
   {
     synchronized (m_view.m_lock) {
-      final Point2D movePt = (Point2D) m_anchors.get(inx);
-      movePt.setLocation(pt);
+      moveHandleInternal(inx, pt.getX(), pt.getY());
       m_view.m_contentChanged = true; }
+  }
+
+  final void moveHandleInternal(int inx, double x, double y)
+  {
+    final Point2D movePt = (Point2D) m_anchors.get(inx);
+    movePt.setLocation(x, y);
+  }
+
+  final void getHandleInternal(int inx, float[] buff)
+  {
+    final Point2D.Float pt = (Point2D.Float) m_anchors.get(inx);
+    buff[0] = pt.x;
+    buff[1] = pt.y;
   }
 
   public Point2D getSourceHandlePoint()

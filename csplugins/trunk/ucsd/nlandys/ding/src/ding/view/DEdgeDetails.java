@@ -162,6 +162,8 @@ class DEdgeDetails extends IntermediateEdgeDetails
 
   public Paint anchorPaint(int edge, int anchorInx)
   {
+    if (((DEdgeView) (m_view.getEdgeView(~edge))).m_lineType ==
+        DEdgeView.STRAIGHT_LINES) { anchorInx = anchorInx / 2; }
     if (m_view.m_selectedAnchors.count((edge << 6) | anchorInx) > 0) {
       return m_view.getAnchorSelectedPaint(); }
     else {

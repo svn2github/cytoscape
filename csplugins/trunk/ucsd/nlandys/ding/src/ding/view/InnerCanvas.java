@@ -462,7 +462,18 @@ public class InnerCanvas extends JComponent
             final double oldXPos = nv.getXPosition();
             final double oldYPos = nv.getYPosition();
             nv.setOffset(oldXPos + deltaX, oldYPos + deltaY); }
-          if (selectedNodes.length > 0) {
+          final IntEnumerator anchorsToMove = m_view.m_selectedAnchors.
+            searchRange(Integer.MIN_VALUE, Integer.MAX_VALUE, false);
+          while (anchorsToMove.numRemaining() > 0) {
+            final int edgeAndAnchor = anchorsToMove.nextInt();
+            final int edge = edgeAndAnchor >>> 6;
+            final int anchorInx = edgeAndAnchor & 0x0000003f;
+            final DEdgeView ev = (DEdgeView) m_view.getEdgeView(~edge);
+            ev.getHandleInternal(anchorInx, m_floatBuff1);
+            ev.moveHandleInternal(anchorInx, m_floatBuff1[0] + deltaX,
+                                  m_floatBuff1[1] + deltaY); }
+          if (selectedNodes.length > 0 ||
+              m_view.m_selectedAnchors.size() > 0) {
             m_view.m_contentChanged = true; } } }
       if (m_selectionRect != null) {
         final int x = Math.min(m_lastXMousePos, e.getX());
