@@ -37,7 +37,7 @@ public class ScoreDistributionThread extends Thread{
    */
   public void run() {
     int i;
-    JFrame mainFrame = Cytoscape.getDesktop().getMainFrame();
+    JFrame mainFrame = Cytoscape.getDesktop();
     String inputValue = JOptionPane.showInputDialog(mainFrame, "Number of runs");
     int numberOfRuns = Integer.parseInt(inputValue);
     PrintStream p = null;	

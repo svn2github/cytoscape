@@ -119,7 +119,7 @@ public class ActiveModulesUI extends CytoscapePlugin {
      public RandomizeAndRunAction () { super ("Active Modules: Score Distribution"); }
      
      public void actionPerformed (ActionEvent e) {
-       JFrame mainFrame = Cytoscape.getDesktop().getMainFrame ();
+       JFrame mainFrame = Cytoscape.getDesktop();
        activePaths = new ActivePaths(Cytoscape.getCurrentNetwork(),apfParams);
        Thread t = new ScoreDistributionThread(Cytoscape.getCurrentNetwork(),activePaths,apfParams);
        t.start();	
