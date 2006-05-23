@@ -59,74 +59,41 @@ import cytoscape.data.Semantics;
  */
 public class CalculatorCatalog {
 
-	Map nodeColorCalculators = new HashMap();
-
-	List nodeColorListeners = new Vector(2, 1);
-
-	Map nodeLineTypeCalculators = new HashMap();
-
-	List nodeLineTypeListeners = new Vector(1, 1);
-
-	Map nodeShapeCalculators = new HashMap();
-
-	List nodeShapeListeners = new Vector(1, 1);
-
-	Map nodeSizeCalculators = new HashMap();
-
-	List nodeSizeListeners = new Vector(2, 1);
-
-	Map nodeLabelCalculators = new HashMap();
-
-	List nodeLabelListeners = new Vector(1, 1);
-
-	Map nodeLabelColorCalculators = new HashMap();
-
-	List nodeLabelColorListeners = new Vector(1, 1);
-
-	Map nodeToolTipCalculators = new HashMap();
-
-	List nodeToolTipListeners = new Vector(1, 1);
-
-	Map nodeFontFaceCalculators = new HashMap();
-
-	List nodeFontFaceListeners = new Vector(1, 1);
-
-	Map nodeFontSizeCalculators = new HashMap();
-
-	List nodeFontSizeListeners = new Vector(1, 1);
-
-	Map edgeColorCalculators = new HashMap();
-
-	List edgeColorListeners = new Vector(1, 1);
-
-	Map edgeLineTypeCalculators = new HashMap();
-
-	List edgeLineTypeListeners = new Vector(1, 1);
-
-	Map edgeArrowCalculators = new HashMap();
-
-	List edgeArrowListeners = new Vector(2, 1);
-
-	Map edgeLabelCalculators = new HashMap();
-
-	List edgeLabelListeners = new Vector(1, 1);
-
-	Map edgeToolTipCalculators = new HashMap();
-
-	List edgeToolTipListeners = new Vector(1, 1);
-
-	Map edgeFontFaceCalculators = new HashMap();
-
-	List edgeFontFaceListeners = new Vector(1, 1);
-
-	Map edgeFontSizeCalculators = new HashMap();
-
-	List edgeFontSizeListeners = new Vector(1, 1);
-
-	Map visualStyles = new HashMap();
-
+	Map nodeColorCalculators ;
+	List nodeColorListeners ;
+	Map nodeLineTypeCalculators ;
+	List nodeLineTypeListeners ;
+	Map nodeShapeCalculators ;
+	List nodeShapeListeners ;
+	Map nodeSizeCalculators ;
+	List nodeSizeListeners ;
+	Map nodeLabelCalculators ;
+	List nodeLabelListeners ;
+	Map nodeLabelColorCalculators ;
+	List nodeLabelColorListeners ;
+	Map nodeToolTipCalculators ;
+	List nodeToolTipListeners ;
+	Map nodeFontFaceCalculators ;
+	List nodeFontFaceListeners ;
+	Map nodeFontSizeCalculators ;
+	List nodeFontSizeListeners;
+	Map edgeColorCalculators ;
+	List edgeColorListeners ;
+	Map edgeLineTypeCalculators ;
+	List edgeLineTypeListeners ;
+	Map edgeArrowCalculators ;
+	List edgeArrowListeners ;
+	Map edgeLabelCalculators ;
+	List edgeLabelListeners ;
+	Map edgeToolTipCalculators ;
+	List edgeToolTipListeners ;
+	Map edgeFontFaceCalculators ;
+	List edgeFontFaceListeners ;
+	Map edgeFontSizeCalculators ;
+	List edgeFontSizeListeners ;
+	Map visualStyles ;
 	// mapping database
-	Map mappers = new HashMap();
+	Map mappers; 
 
 	/**
 	 * Only one <code>ChangeEvent</code> is needed per catalog instance since
@@ -136,9 +103,11 @@ public class CalculatorCatalog {
 	protected transient ChangeEvent changeEvent;
 
 	public CalculatorCatalog() {
+		clear();
 	}
 
 	public CalculatorCatalog(Properties props) {
+		clear();
 		// should read calculators from their description in the properties
 		// object
 	}
