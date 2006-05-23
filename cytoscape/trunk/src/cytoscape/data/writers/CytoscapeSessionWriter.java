@@ -93,7 +93,7 @@ import cytoscape.visual.CalculatorIO;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
 
-/*
+/**
  * Write session states into files.
  * 
  * Basic functions of this class are: 1. Create network files 2. Create session
@@ -103,10 +103,11 @@ import cytoscape.visual.VisualStyle;
  * @author kono
  * 
  */
-
 public class CytoscapeSessionWriter {
 
-	// Thereshold to switch (zip) compression methods.
+	/*
+	 * Thereshold to switch (zip) compression methods.
+	 */
 	public final int COMPRESSION_SWITCH = 20000;
 
 	// Enumerate types (node & edge)
@@ -180,9 +181,12 @@ public class CytoscapeSessionWriter {
 	HashMap viewMap = (HashMap) Cytoscape.getNetworkViewMap();
 	HashMap visualStyleMap;
 
-	//
-	// Constructor.
-	//
+	/**
+	 * Constructor.
+	 * 
+	 * @param sessionName
+	 *            Filename of the session.
+	 */
 	public CytoscapeSessionWriter(String sessionName) {
 		this.sessionFileName = sessionName;
 		this.sessionDirName = null;
@@ -196,7 +200,7 @@ public class CytoscapeSessionWriter {
 	}
 
 	/**
-	 * Write currnt session to a cys file.
+	 * Write current session to a local .cys file.
 	 * 
 	 * @throws Exception
 	 * 
@@ -244,8 +248,12 @@ public class CytoscapeSessionWriter {
 		// Prepare property files for saving
 		preparePropFiles();
 
+		// Zip the session into a .cys file.
 		zipUtil = new ZipMultipleFiles(sessionFileName, targetFiles,
 				sessionDirName);
+
+		// Switch compression method based on the size of the network.
+		// This is for performance.
 		if ((Cytoscape.getCyNodesList().size() + Cytoscape.getCyEdgesList()
 				.size()) < COMPRESSION_SWITCH) {
 			zipUtil.compress();
@@ -254,7 +262,11 @@ public class CytoscapeSessionWriter {
 		}
 	}
 
-	// Initialize objects for data binding
+	/**
+	 * Initialize objects for the marshaller.
+	 * 
+	 * @throws JAXBException
+	 */
 	private void initObjectsForDataBinding() throws JAXBException {
 		factory = new ObjectFactory();
 
@@ -270,7 +282,11 @@ public class CytoscapeSessionWriter {
 		sState.setCytopanels(cps);
 	}
 
-	public void preparePropFiles() {
+	/**
+	 * Prepare .props files.
+	 * 
+	 */
+	private void preparePropFiles() {
 		// Prepare vizmap properties file
 		VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
 		CalculatorCatalog catalog = vizmapper.getCalculatorCatalog();
@@ -296,31 +312,34 @@ public class CytoscapeSessionWriter {
 				}
 			}
 		}
-
 	}
 
-	// Determine file location of the prop files
-	public void makeXGMML(String xgmmlFile, CyNetwork network,
+	/**
+	 * Determine file location of the prop files
+	 */
+	private void makeXGMML(String xgmmlFile, CyNetwork network,
 			CyNetworkView view) throws IOException {
-			
+
 		XGMMLWriter wt = new XGMMLWriter(network, view);
 		FileWriter fileWriter2 = null;
-        try {
+		try {
 			fileWriter2 = new FileWriter(xgmmlFile);
 			wt.write(fileWriter2);
 		} catch (JAXBException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-            fileWriter2.close();
-        }
-		
+			fileWriter2.close();
+		}
+
 	}
 
-	//
-	// Create CySession.xml file.
-	//
-	public void createCySession(String sessionName) throws Exception {
+	/**
+	 * Create cysession.xml file.
+	 * 
+	 * @param sessionName
+	 * @throws Exception
+	 */
+	private void createCySession(String sessionName) throws Exception {
 
 		JAXBContext jc = JAXBContext.newInstance(packageName);
 
@@ -333,26 +352,24 @@ public class CytoscapeSessionWriter {
 		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 
 		FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(CYSESSION_FILE_NAME);
-            // Write session file
-            m.marshal(session, fos);
-        } finally {
-            fos.close();
-        }
+		try {
+			fos = new FileOutputStream(CYSESSION_FILE_NAME);
+			// Write session file
+			m.marshal(session, fos);
+		} finally {
+			fos.close();
+		}
 	}
 
-	// Get information about the current session status.
-	// This includes the following:
-	// 1. List of networks opened/created by the user.
-	// 2. Status of the network.
-	// 3. relationship between network-attributes
-	//
-	// Build GML file into xml
-
-	//
-	// Extract current NetworkPanel state for saving.
-	//
+	/**
+	 * Get information about the current session status.
+	 * 
+	 * This includes the following: 1. List of networks opened/created by the
+	 * user. 2. Status of the network. 3. relationship between
+	 * network-attributes Build GML file into xml
+	 * 
+	 * Extract current NetworkPanel state for saving.
+	 */
 	private void getNetworkTree() throws Exception {
 
 		// Tree table storeed in the Network Panel
@@ -361,8 +378,6 @@ public class CytoscapeSessionWriter {
 		// Get network panel
 		CytoscapeDesktop cyDesktop = Cytoscape.getDesktop();
 		NetworkPanel netPanel = cyDesktop.getNetworkPanel();
-
-		// Make hash to ID <--> network name conversion
 
 		// Get list of networks
 		treeTable = netPanel.getTreeTable();
@@ -376,9 +391,6 @@ public class CytoscapeSessionWriter {
 			String networkName = network.getTitle();
 
 			networkMap.put(networkName, networkID);
-
-			// DefaultMutableTreeNode parent = (DefaultMutableTreeNode) netPanel
-			// .getNetworkNode(networkID).getParent();
 		}
 
 		if (treeTable != null) {
@@ -387,19 +399,16 @@ public class CytoscapeSessionWriter {
 					.getNetworkNode(TREE_ROOT);
 
 			walkTree(root);
-
-		} else
-			System.out.println("Tree is empty.");
+		}
 	}
 
-	//
-	// Visit all tree node and save the status in the model.
-	//
 	/**
+	 * Visit all tree node and save the status in the model.
+	 * 
 	 * @param node
 	 * @throws JAXBException
 	 */
-	protected void walkTree(DefaultMutableTreeNode node) throws JAXBException {
+	private void walkTree(DefaultMutableTreeNode node) throws JAXBException {
 
 		// Check number of children for this node.
 		int childCount = node.getChildCount();
@@ -556,7 +565,6 @@ public class CytoscapeSessionWriter {
 		// Add hidden/selected nodes and edges
 		//
 
-		// Extract selected node information
 		String targetID = (String) networkMap.get(node.getUserObject()
 				.toString());
 		CyNetwork targetNetwork = Cytoscape.getNetwork(targetID);
@@ -573,7 +581,6 @@ public class CytoscapeSessionWriter {
 		 * vn.getNode().add(viewableNode); } curNode.setViewableNodes(vn); }
 		 */
 
-		// Extract selected nodes and edges
 		SelectedNodes sn = (SelectedNodes) getSelectedObjects(NODE,
 				targetNetwork);
 		if (sn != null) {
@@ -606,6 +613,15 @@ public class CytoscapeSessionWriter {
 		netList.add(curNode);
 	}
 
+	/**
+	 * 
+	 * @param type
+	 *            Type of the object (node or edge)
+	 * @param view
+	 *            Current network view.
+	 * @return JAXB object (HiddenNodes or HiddenEdges)
+	 * @throws JAXBException
+	 */
 	private Object getHiddenObjects(int type, CyNetworkView view)
 			throws JAXBException {
 
@@ -635,7 +651,6 @@ public class CytoscapeSessionWriter {
 				}
 			}
 
-			// System.out.println("Total hidden == " + hn.getNode().size());
 			if (hn.getNode().size() != 0) {
 				return hn;
 			} else {
@@ -659,11 +674,7 @@ public class CytoscapeSessionWriter {
 					curEdgeName = targetEdge.getIdentifier();
 					cytoscape.generated.Edge tempEdge = factory.createEdge();
 					tempEdge.setId(curEdgeName);
-
 					hEdgeList.add(tempEdge);
-					System.out
-							.println("hidden edge found: " + tempEdge.getId());
-
 					// Keep them hidden...
 					view.hideGraphObject(eview);
 				}
@@ -679,9 +690,16 @@ public class CytoscapeSessionWriter {
 		return null;
 	}
 
-	//
-	// List all selected nodes and edges in the session file.
-	//
+	/**
+	 * List all selected nodes and edges in the session file.
+	 * 
+	 * @param type
+	 *            Tyoe if object (node or edge)
+	 * @param curNet
+	 *            Current network
+	 * @return
+	 * @throws JAXBException
+	 */
 	private Object getSelectedObjects(int type, CyNetwork curNet)
 			throws JAXBException {
 
@@ -725,7 +743,6 @@ public class CytoscapeSessionWriter {
 					tempEdge.setId(curEdgeName);
 
 					sEdgeList.add(tempEdge);
-					// System.out.println("======edge ID is " + curEdgeName);
 				}
 
 				return se;
@@ -733,25 +750,26 @@ public class CytoscapeSessionWriter {
 				return null;
 			}
 		}
-
 		return null;
 	}
 
-	//
-	// Extract states of the 3 Cytopanels.
-	//
-	// Note:
-	// We will store the states of plugins near future.
-	// The location of those states will be stored here.
-	//
+	/**
+	 * Extract states of the 3 Cytopanels.
+	 * 
+	 * @return
+	 * @throws JAXBException
+	 * 
+	 * Note: We will store the states of plugins near future. The location of
+	 * those states will be stored here.
+	 */
 	private Cytopanels getCytoPanelStates() throws JAXBException {
 		Cytopanels cps = factory.createCytopanels();
 		List cytoPanelList = cps.getCytopanel();
 
 		String[] cytopanelStates = new String[CYTOPANEL_COUNT + 1];
 		int[] selectedPanels = new int[CYTOPANEL_COUNT + 1];
-		// Extract states of 3 panels.
 
+		// Extract states of 3 panels.
 		cytopanelStates[1] = Cytoscape.getDesktop().getCytoPanel(
 				SwingConstants.WEST).getState().toString();
 		selectedPanels[1] = Cytoscape.getDesktop().getCytoPanel(
