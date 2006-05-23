@@ -391,7 +391,8 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		statusBar.setBorder(new EmptyBorder(0, 7, 5, 7));
 		statusBar.setForeground(new Color(75, 75, 75));
 		panel.add(statusBar, BorderLayout.SOUTH);
-		setStatusBarMsg("Welcome to Cytoscape " + CytoscapeVersion.version);
+		setStatusBarMsg("Welcome to Cytoscape " + CytoscapeVersion.version +
+		"              Left-click + drag  to  ZOOM             Middle-click + drag  to  PAN");
 	}
 
 	/**
