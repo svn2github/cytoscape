@@ -199,7 +199,7 @@ public class CytoscapeSessionWriter {
 
 	/**
 	 * Write currnt session to a cys file.
-	 * 
+	 *
 	 */
 	public void write() {
 
@@ -239,7 +239,7 @@ public class CytoscapeSessionWriter {
 			}
 		}
 
-		// 
+		//
 		// Next, create CySession file to save states.
 		//
 		try {
@@ -327,14 +327,16 @@ public class CytoscapeSessionWriter {
 			CyNetworkView view) throws IOException {
 
 		XGMMLWriter wt = new XGMMLWriter(network, view);
-		try {
-			FileWriter fileWriter2 = new FileWriter(xgmmlFile);
+        FileWriter fileWriter2 = null;
+        try {
+			fileWriter2 = new FileWriter(xgmmlFile);
 			wt.write(fileWriter2);
-			fileWriter2.close();
 		} catch (JAXBException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		} finally {
+            fileWriter2.close();
+        }
 	}
 
 	//
@@ -357,9 +359,15 @@ public class CytoscapeSessionWriter {
 
 		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 
-		// Write session file
-		m.marshal(session, new FileOutputStream(CYSESSION_FILE_NAME));
-	}
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(CYSESSION_FILE_NAME);
+            // Write session file
+            m.marshal(session, fos);
+        } finally {
+            fos.close();
+        }
+    }
 
 	// Get information about the current session status.
 	// This includes the following:
