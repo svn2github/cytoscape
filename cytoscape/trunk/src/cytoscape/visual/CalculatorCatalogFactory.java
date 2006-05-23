@@ -137,9 +137,12 @@ public abstract class CalculatorCatalogFactory {
 			} else if ( e.getPropertyName() == Cytoscape.VIZMAP_RESTORED ||
 			            e.getPropertyName() == Cytoscape.VIZMAP_LOADED ) {
 
-				// get the new vizmap.props and apply it the existing properties 
-				vizmapProps.clear();
+				// only clear the existing vizmap.props if we're restoring
+				// from a session file
+				if ( e.getPropertyName() == Cytoscape.VIZMAP_RESTORED )
+					vizmapProps.clear();
 
+				// get the new vizmap.props and apply it the existing properties 
 				Object vizmapSource = e.getNewValue();
 				try {
 					if(vizmapSource.getClass() == URL.class) {
