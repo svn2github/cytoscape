@@ -51,6 +51,8 @@ public class DataTable {
 	public static final int ALL_VIEW = 1;
 	public static final int SINGLE_VIEW = 2;
 	
+	public static final String NETWORK_METADATA = "Network Metadata";
+	
 	// Panels to be added on the CytoPanels
 	ModPanel modPanel;
 	SelectPanel selectionPanel;

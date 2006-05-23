@@ -769,7 +769,10 @@ public class JSortTable extends JTable implements MouseListener, ActionListener 
 				cellMenu.show(e.getComponent(), e.getX(), e.getY());
 			}
 		} else if (value.getClass() == HashMap.class
-				&& model.getValueAt(row, 0).equals("Network Metadata")) {
+				&& model.getValueAt(row, 0).equals(DataTable.NETWORK_METADATA)) {
+			if(model.getValueAt(row, column) == null) {
+				System.out.println("Metadata not available for this network.  Creating new one...");
+			}
 			NetworkMetaDataDialog mdd = new NetworkMetaDataDialog(Cytoscape
 					.getDesktop(), false, Cytoscape.getCurrentNetwork());
 			mdd.setVisible(true);
