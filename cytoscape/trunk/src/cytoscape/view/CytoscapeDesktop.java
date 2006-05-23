@@ -197,6 +197,19 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	// Association between network and VS.
 	protected HashMap vsAssociationMap;
 
+	protected JPanel main_panel;
+
+	// This is used to keep track of the visual style combo box in EXTERNAL_VIEW
+	// mode only.  Basically, we need to remove the styleBox and create a new one
+	// each time a session is loaded.  To do this, we need to know which component
+	// to remove.
+	protected JComboBox currentStyleBox = null;
+
+	// This is used to keep track of the visual style combo box in every other mode
+	// This is the index of the box in the toolbar.  We use this so that we can 
+	// add and remove the stylebox from the same place.
+	protected int styleBoxIndex = -1;
+
 	// ----------------------------------------//
 	// Constructors
 	// ----------------------------------------//
@@ -233,7 +246,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		// help as we create components
 		cyHelpBroker = new CyHelpBroker();
 
-		JPanel main_panel = new JPanel();
+		main_panel = new JPanel();
 
 		main_panel.setLayout(new BorderLayout());
 		// enable context-sensitive help generally
@@ -325,56 +338,15 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 			setJMenuBar(cyMenus.getMenuBar());
 		}
 
-		/*
-		 * leave following code commented out for now - until CytoPanels
-		 * integration is correct
-		 */
-		/*
-		 * if ( VIEW_TYPE == TABBED_VIEW ) { // eveything gets put into this one
-		 * window //JScrollPane scroll_panel = new JScrollPane( networkPanel );
-		 * JScrollPane scroll_tab = new JScrollPane(
-		 * networkViewManager.getTabbedPane() );
-		 * 
-		 * 
-		 * JSplitPane split = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT,
-		 * false, networkPanel, scroll_tab ); split.setOneTouchExpandable( true ); //
-		 * JSplitPane split = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT, //
-		 * false, // networkPanel, // networkViewManager.getTabbedPane() );
-		 * main_panel.add( split, BorderLayout.CENTER );
-		 * main_panel.add(cyMenus.getToolBar(), BorderLayout.NORTH);
-		 * setJMenuBar(cyMenus.getMenuBar()); }
-		 * 
-		 * else if ( VIEW_TYPE == INTERNAL_VIEW ) { // eveything gets put into
-		 * this one window JSplitPane split = new JSplitPane(
-		 * JSplitPane.HORIZONTAL_SPLIT, false, networkPanel,
-		 * networkViewManager.getDesktopPane() ); main_panel.add( split,
-		 * BorderLayout.CENTER ); main_panel.add(cyMenus.getToolBar(),
-		 * BorderLayout.NORTH); setJMenuBar(cyMenus.getMenuBar()); }
-		 * 
-		 * else if ( VIEW_TYPE == EXTERNAL_VIEW ) { // just the NetworkPanel and
-		 * the Menus get put into the Main Pane main_panel.add( networkPanel );
-		 * cyMenus.getToolBar().setOrientation( JToolBar.VERTICAL );
-		 * main_panel.add(cyMenus.getToolBar(), BorderLayout.EAST);
-		 * 
-		 * 
-		 * //if ( !System.getProperty("os.name").startsWith( "Mac" ) ) { //
-		 * JFrame menuFrame = new JFrame("Cytoscape Menus"); //
-		 * menuFrame.setJMenuBar(cyMenus.getMenuBar()); // menuFrame.setSize(
-		 * 400, 60 ); // menuFrame.setVisible( true ); //} else {
-		 * setJMenuBar(cyMenus.getMenuBar()); //}
-		 *  }
-		 */
-
-		// ------------------------------//
 		// Set up the VizMapper
-		setupVizMapper(main_panel);
+		setupVizMapper();
 
 		final CytoscapeDesktop thisWindow = this;
-		// AJK: 09/13/05 BEGIN
+
 		// don't automatically close window. Let Cytoscape.exit(returnVal) handle this,
 		// based upon user confirmation.
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-		// AJK: 09/13/05 END
+		
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent we) {
 				Cytoscape.exit(returnVal);
@@ -414,11 +386,11 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		(new Thread(birdViewEnabler)).start();
 	}
 
-	private void initStatusBar(JPanel main_panel) {
+	private void initStatusBar(JPanel panel) {
 		statusBar = new JLabel();
 		statusBar.setBorder(new EmptyBorder(0, 7, 5, 7));
 		statusBar.setForeground(new Color(75, 75, 75));
-		main_panel.add(statusBar, BorderLayout.SOUTH);
+		panel.add(statusBar, BorderLayout.SOUTH);
 		setStatusBarMsg("Welcome to Cytoscape " + CytoscapeVersion.version);
 	}
 
@@ -493,24 +465,15 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		return vizMapUI;
 	}
 
-	public void resetVizMapUI() {
-		vizMapUI = new VizMapUI(vizMapper, this);
-	}
-
 	/**
 	 * Create the VizMapper and the UI for it.
 	 */
-	protected void setupVizMapper(JPanel panel) {
-
-		// TODO:
-		// why does the vizmapper care whicih network is focused
+	public void setupVizMapper() {
 
 		this.vizMapper = Cytoscape.getVisualMappingManager();
-		// this.vizMapper = new VisualMappingManager(
-		// Cytoscape.getCurrentNetworkView() );
 
 		// create the VizMapUI
-		resetVizMapUI();	
+		vizMapUI = new VizMapUI(vizMapper, this);
 
 		// In order for the VizMapper to run when the StyleSelector is
 		// run, it needs to listen to the selector.
@@ -525,12 +488,28 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 				.getPreferredSize().getHeight());
 		styleBox.setMaximumSize(newSize);
 		styleBox.setPreferredSize(newSize);
+
 		if (VIEW_TYPE == EXTERNAL_VIEW) {
-			panel.add(styleBox, BorderLayout.SOUTH);
+			if ( currentStyleBox != null )
+				main_panel.remove( currentStyleBox );
+
+			main_panel.add(styleBox, BorderLayout.SOUTH);
+			currentStyleBox = styleBox;
+			
 		} else {
 			JToolBar toolBar = cyMenus.getToolBar();
-			toolBar.add(styleBox);
-			toolBar.addSeparator();
+
+			// first time
+			if ( styleBoxIndex == -1 ) {
+				toolBar.add(styleBox);
+				styleBoxIndex = toolBar.getComponentCount() - 1;
+				toolBar.addSeparator();
+
+			// subsequent times
+			} else {
+				toolBar.remove(styleBoxIndex);
+				toolBar.add(styleBox, styleBoxIndex);
+			}
 		}
 	}
 
