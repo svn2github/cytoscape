@@ -40,7 +40,7 @@ import java.util.List;
 public class DGraphView implements GraphView, Printable
 {
 
-  static final float DEFAULT_ANCHOR_SIZE = 7.0f;
+  static final float DEFAULT_ANCHOR_SIZE = 9.0f;
   static final Paint DEFAULT_ANCHOR_SELECTED_PAINT = Color.red;
   static final Paint DEFAULT_ANCHOR_UNSELECTED_PAINT = Color.black;
 
@@ -102,7 +102,7 @@ public class DGraphView implements GraphView, Printable
     m_selectedNodes = new IntBTree();
     m_selectedEdges = new IntBTree();
     m_selectedAnchors = new IntBTree();
-    addGraphViewChangeListener(new EdgeSelectListener());
+//     addGraphViewChangeListener(new EdgeSelectListener());
   }
 
   public GraphPerspective getGraphPerspective()
@@ -1176,7 +1176,7 @@ public class DGraphView implements GraphView, Printable
     getCanvas().removeEdgeContextMenuListener(l);
   }
 
-  private final float[] m_anchorsBuff = new float[2];
+  final float[] m_anchorsBuff = new float[2];
 
   private final class EdgeSelectListener implements GraphViewChangeListener
   {
@@ -1189,18 +1189,25 @@ public class DGraphView implements GraphView, Printable
             final DEdgeView ev = (DEdgeView) getEdgeView(edges[i]);
             for (int j = 0; j < ev.m_anchors.size(); j++) {
               ev.getHandleInternal(j, m_anchorsBuff);
-//               m_spacialA.insert((~edges[i] << 6) | j,
-//                                 (float) (m_anchorsBuff[0] -
-//                                          getAnchorSize() / 2.0d),
-//                                 (float) (m_anchorsBuff[1] -
-//                                          getAnchorSize() / 2.0d),
-//                                 (float) (m_anchorsBuff[0] +
-//                                          getAnchorSize() / 2.0d),
-//                                 (float) (m_anchorsBuff[1] +
-//                                          getAnchorSize() / 2.0d));
+              m_spacialA.insert((~edges[i] << 6) | j,
+                                (float) (m_anchorsBuff[0] -
+                                         getAnchorSize() / 2.0d),
+                                (float) (m_anchorsBuff[1] -
+                                         getAnchorSize() / 2.0d),
+                                (float) (m_anchorsBuff[0] +
+                                         getAnchorSize() / 2.0d),
+                                (float) (m_anchorsBuff[1] +
+                                         getAnchorSize() / 2.0d));
               m_selectedAnchors.insert((~edges[i] << 6) | j); } } }
       }
       else if (evt.getType() == GraphViewChangeEvent.EDGES_UNSELECTED_TYPE) {
+        final int[] edges = evt.getUnselectedEdgeIndices();
+        synchronized (m_lock) {
+          for (int i = 0; i < edges.length; i++) {
+            final DEdgeView ev = (DEdgeView) getEdgeView(edges[i]);
+            for (int j = 0; j < ev.numHandles(); j++) {
+              m_selectedAnchors.delete((~edges[i] << 6) | j);
+              m_spacialA.delete((~edges[i] << 6) | j); } } }
       }
     }
   }

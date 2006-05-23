@@ -254,8 +254,10 @@ public class InnerCanvas extends JComponent
       int[] unselectedEdges = null;
       int chosenNode = 0;
       int chosenEdge = 0;
+      int chosenAnchor = -1;
       byte chosenNodeSelected = 0;
       byte chosenEdgeSelected = 0;
+      byte chosenAnchorSelected = 0;
       synchronized (m_lock) {
         if (m_view.m_nodeSelection) {
           m_ptBuff[0] = m_lastXMousePos;
@@ -268,16 +270,29 @@ public class InnerCanvas extends JComponent
              (m_lastRenderDetail & GraphRenderer.LOD_HIGH_DETAIL) == 0,
              m_stack);
           chosenNode = (m_stack.size() > 0) ? m_stack.peek() : 0; }
-        if (m_view.m_edgeSelection && chosenNode == 0) {
+        if (m_view.m_edgeSelection && chosenNode == 0 &&
+            (m_lastRenderDetail & GraphRenderer.LOD_EDGE_ANCHORS) != 0) {
+          m_ptBuff[0] = m_lastXMousePos;
+          m_ptBuff[1] = m_lastYMousePos;
+          m_view.xformComponentToNodeCoords(m_ptBuff);
+          final IntEnumerator hits = m_view.m_spacialA.queryOverlap
+            ((float) m_ptBuff[0], (float) m_ptBuff[1],
+             (float) m_ptBuff[0], (float) m_ptBuff[1],
+             null, 0, false);
+          chosenAnchor = (hits.numRemaining() > 0) ? hits.nextInt() : -1; }
+        if (m_view.m_edgeSelection && chosenNode == 0 && chosenAnchor < 0) {
           computeEdgesIntersecting(m_lastXMousePos - 1, m_lastYMousePos - 1,
                                    m_lastXMousePos + 1, m_lastYMousePos + 1,
                                    m_stack2);
           chosenEdge = (m_stack2.size() > 0) ? m_stack2.peek() : 0; }
         if ((!e.isShiftDown()) && // If shift is down never unselect.
-            ((chosenNode == 0 && chosenEdge == 0) || // Mouse missed all.
+            ((chosenNode == 0 && chosenEdge == 0 &&
+              chosenAnchor < 0) || // Mouse missed all.
              // Not [we hit something but it was already selected].
              !((chosenNode != 0 &&
                 m_view.getNodeView(chosenNode).isSelected()) ||
+               (chosenAnchor >= 0 &&
+                m_view.m_selectedAnchors.count(chosenAnchor) > 0) ||
                (chosenEdge != 0 &&
                 m_view.getEdgeView(chosenEdge).isSelected())))) {
           if (m_view.m_nodeSelection) { // Unselect all selected nodes.
@@ -309,6 +324,17 @@ public class InnerCanvas extends JComponent
             chosenNodeSelected = (byte) 1; }
           m_button1NodeDrag = true;
           m_view.m_contentChanged = true; }
+        if (chosenAnchor >= 0) {
+          final boolean wasSelected =
+            m_view.m_selectedAnchors.count(chosenAnchor) > 0;
+          if (wasSelected && e.isShiftDown()) {
+            m_view.m_selectedAnchors.delete(chosenAnchor);
+            chosenAnchorSelected = (byte) -1; }
+          else if (!wasSelected) {
+            m_view.m_selectedAnchors.insert(chosenAnchor);
+            chosenAnchorSelected = (byte) 1; }
+          m_button1NodeDrag = true;
+          m_view.m_contentChanged = true; }
         if (chosenEdge != 0) {
           final boolean wasSelected =
             m_view.getEdgeView(chosenEdge).isSelected();
@@ -320,7 +346,7 @@ public class InnerCanvas extends JComponent
             chosenEdgeSelected = (byte) 1; }
           m_button1NodeDrag = true;
           m_view.m_contentChanged = true; }
-        if (chosenNode == 0 && chosenEdge == 0) {
+        if (chosenNode == 0 && chosenEdge == 0 && chosenAnchor < 0) {
           m_selectionRect =
             new Rectangle(m_lastXMousePos, m_lastYMousePos, 0, 0);
           m_button1NodeDrag = false; } }
@@ -392,8 +418,14 @@ public class InnerCanvas extends JComponent
                   ((float) xMin, (float) yMin, (float) xMax, (float) yMax,
                    (m_lastRenderDetail & GraphRenderer.LOD_HIGH_DETAIL) == 0,
                    m_stack);
-                selectedNodes = new int[m_stack.size()];
-                final IntEnumerator nodes = m_stack.elements();
+                m_stack2.empty();
+                final IntEnumerator nodesXSect = m_stack.elements();
+                while (nodesXSect.numRemaining() > 0) {
+                  final int nodeXSect = nodesXSect.nextInt();
+                  if (m_view.m_selectedNodes.count(~nodeXSect) == 0) {
+                    m_stack2.push(nodeXSect); } }
+                selectedNodes = new int[m_stack2.size()];
+                final IntEnumerator nodes = m_stack2.elements();
                 for (int i = 0; i < selectedNodes.length; i++) {
                   selectedNodes[i] = nodes.nextInt(); }
                 for (int i = 0; i < selectedNodes.length; i++) {
@@ -402,13 +434,40 @@ public class InnerCanvas extends JComponent
                 if (selectedNodes.length > 0) {
                   m_view.m_contentChanged = true; } }
               if (m_view.m_edgeSelection) {
+                if ((m_lastRenderDetail &
+                     GraphRenderer.LOD_EDGE_ANCHORS) != 0) {
+                  m_ptBuff[0] = m_selectionRect.x;
+                  m_ptBuff[1] = m_selectionRect.y + m_selectionRect.height;
+                  m_view.xformComponentToNodeCoords(m_ptBuff);
+                  final double xMin = m_ptBuff[0];
+                  final double yMin = m_ptBuff[1];
+                  m_ptBuff[0] = m_selectionRect.x + m_selectionRect.width;
+                  m_ptBuff[1] = m_selectionRect.y;
+                  m_view.xformComponentToNodeCoords(m_ptBuff);
+                  final double xMax = m_ptBuff[0];
+                  final double yMax = m_ptBuff[1];
+                  final IntEnumerator hits = m_view.m_spacialA.queryOverlap
+                    ((float) xMin, (float) yMin, (float) xMax, (float) yMax,
+                     null, 0, false);
+                  if (hits.numRemaining() > 0) {
+                    m_view.m_contentChanged = true; }
+                  while (hits.numRemaining() > 0) {
+                    final int hit = hits.nextInt();
+                    if (m_view.m_selectedAnchors.count(hit) == 0) {
+                      m_view.m_selectedAnchors.insert(hit); } } }
                 computeEdgesIntersecting
                   (m_selectionRect.x, m_selectionRect.y,
                    m_selectionRect.x + m_selectionRect.width,
                    m_selectionRect.y + m_selectionRect.height,
                    m_stack2);
-                selectedEdges = new int[m_stack2.size()];
-                final IntEnumerator edges = m_stack2.elements();
+                m_stack.empty();
+                final IntEnumerator edgesXSect = m_stack2.elements();
+                while (edgesXSect.numRemaining() > 0) {
+                  final int edgeXSect = edgesXSect.nextInt();
+                  if (m_view.m_selectedEdges.count(~edgeXSect) == 0) {
+                    m_stack.push(edgeXSect); } }
+                selectedEdges = new int[m_stack.size()];
+                final IntEnumerator edges = m_stack.elements();
                 for (int i = 0; i < selectedEdges.length; i++) {
                   selectedEdges[i] = edges.nextInt(); }
                 for (int i = 0; i < selectedEdges.length; i++) {
@@ -517,7 +576,7 @@ public class InnerCanvas extends JComponent
 
 // AJK: 05/02/06 END
 
-  // Puts [last drawn] edges intersecting onto m_stack2; as RootGraph indices.
+  // Puts [last drawn] edges intersecting onto stack; as RootGraph indices.
   // Depends on the state of several member variables, such as m_hash.
   // Clobbers m_stack and m_ptBuff.
   // The rectangle extents are in component coordinate space.

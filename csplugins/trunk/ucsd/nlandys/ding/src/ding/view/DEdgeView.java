@@ -288,6 +288,15 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
       m_view.m_edgeDetails.overrideColorLowDetail
         (m_inx, (Color) m_selectedPaint); }
     m_view.m_selectedEdges.insert(m_inx);
+    for (int j = 0; j < numHandles(); j++) {
+      getHandleInternal(j, m_view.m_anchorsBuff);
+      m_view.m_spacialA.insert
+        ((m_inx << 6) | j,
+         (float) (m_view.m_anchorsBuff[0] - m_view.getAnchorSize() / 2.0d),
+         (float) (m_view.m_anchorsBuff[1] - m_view.getAnchorSize() / 2.0d),
+         (float) (m_view.m_anchorsBuff[0] + m_view.getAnchorSize() / 2.0d),
+         (float) (m_view.m_anchorsBuff[1] + m_view.getAnchorSize() / 2.0d));
+      m_view.m_selectedAnchors.insert((m_inx << 6) | j); }
     return true;
   }
 
@@ -319,6 +328,9 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
       m_view.m_edgeDetails.overrideColorLowDetail
         (m_inx, (Color) m_unselectedPaint); }
     m_view.m_selectedEdges.delete(m_inx);
+    for (int j = 0; j < numHandles(); j++) {
+      m_view.m_selectedAnchors.delete((m_inx << 6) | j);
+      m_view.m_spacialA.delete((m_inx << 6) | j); }
     return true;
   }
 
@@ -614,6 +626,12 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
 
 
   // Interface giny.view.Bend:
+
+  public int numHandles()
+  {
+    synchronized (m_view.m_lock) {
+      return m_anchors.size(); }
+  }
 
   public void setHandles(List bendPoints)
   {
