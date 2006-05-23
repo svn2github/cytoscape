@@ -124,8 +124,8 @@ public class XGMMLReader implements GraphReader {
 	protected static final String INT_TYPE = "integer";
 	protected static final String STRING_TYPE = "string";
 	protected static final String LIST_TYPE = "list";
-	
-	//These types are not permitted by the XGMML standard
+
+	// These types are not permitted by the XGMML standard
 	protected static final String BOOLEAN_TYPE = "boolean";
 	protected static final String MAP_TYPE = "map";
 	protected static final String COMPLEX_TYPE = "complex";
@@ -267,30 +267,23 @@ public class XGMMLReader implements GraphReader {
 		// Extract Network Attributes
 		// Currently, supported attribute data type is RDF metadata only.
 		List networkAttributes = network.getAtt();
-		System.out.println("Loading Network: " + network.getLabel() );
-		
-		
+
 		for (int i = 0; i < networkAttributes.size(); i++) {
 			Att curAtt = (Att) networkAttributes.get(i);
 
-			 
 			if (curAtt.getName().equals("networkMetadata")) {
 				metadata = (RdfRDF) (curAtt.getContent().get(0));
-				networkCyAttributes.setAttributeMap(network.getId(), METADATA_ATTR_NAME, this.rdf2map(metadata) );
-			}
-			else if (curAtt.getName().equals(XGMMLWriter.BACKGROUND)) {
+				networkCyAttributes.setAttributeMap(network.getId(),
+						METADATA_ATTR_NAME, this.rdf2map(metadata));
+			} else if (curAtt.getName().equals(XGMMLWriter.BACKGROUND)) {
 				backgroundColor = curAtt.getValue();
-			}
-			else if (curAtt.getName().equals(XGMMLWriter.GRAPH_VIEW_ZOOM)) {
+			} else if (curAtt.getName().equals(XGMMLWriter.GRAPH_VIEW_ZOOM)) {
 				graphViewZoom = new Double(curAtt.getValue());
-			}
-			else if (curAtt.getName().equals(XGMMLWriter.GRAPH_VIEW_CENTER_X)){
+			} else if (curAtt.getName().equals(XGMMLWriter.GRAPH_VIEW_CENTER_X)) {
 				graphViewCenterX = new Double(curAtt.getValue());
-			}
-			else if (curAtt.getName().equals(XGMMLWriter.GRAPH_VIEW_CENTER_Y)){
+			} else if (curAtt.getName().equals(XGMMLWriter.GRAPH_VIEW_CENTER_Y)) {
 				graphViewCenterY = new Double(curAtt.getValue());
-			}
-			else {
+			} else {
 				readAttribute(networkCyAttributes, network.getId(), curAtt);
 			}
 		}
@@ -321,8 +314,6 @@ public class XGMMLReader implements GraphReader {
 	 * @param network
 	 */
 	protected void createGraph(Graph network) {
-
-		ArrayList metanodes = new ArrayList();
 
 		// Check capacity
 		Cytoscape.ensureCapacity(nodes.size(), edges.size());
@@ -457,14 +448,13 @@ public class XGMMLReader implements GraphReader {
 							if (itrValue == null) {
 								itrValue = "pp";
 							}
-							
+
 							break;
 						}
 					}
 
 					edge = Cytoscape.getCyEdge(node_1, node_2,
 							Semantics.INTERACTION, itrValue, true);
-					
 
 					// Add interaction to CyAttributes
 					edgeAttributes.setAttribute(edge.getIdentifier(),
@@ -489,12 +479,12 @@ public class XGMMLReader implements GraphReader {
 			}
 		}
 		edgeNameSet = null;
-//
-//		Iterator nit = Cytoscape.getRootGraph().nodesIterator();
-//		while (nit.hasNext()) {
-//			CyNode testnode = (CyNode) nit.next();
-//			// System.out.println("ROOT LIST: " + testnode.getIdentifier());
-//		}
+		//
+		// Iterator nit = Cytoscape.getRootGraph().nodesIterator();
+		// while (nit.hasNext()) {
+		// CyNode testnode = (CyNode) nit.next();
+		// // System.out.println("ROOT LIST: " + testnode.getIdentifier());
+		// }
 
 		if (metanodeMap.size() != 0) {
 
@@ -573,7 +563,7 @@ public class XGMMLReader implements GraphReader {
 
 	/**
 	 * Returns the zoom level read from the the xgmml file.
-	 *
+	 * 
 	 * @return Double
 	 */
 	public Double getGraphViewZoomLevel() {
@@ -584,15 +574,15 @@ public class XGMMLReader implements GraphReader {
 
 	/**
 	 * Returns the graph view center.
-	 *
+	 * 
 	 * @return Double
 	 */
 	public Point2D getGraphViewCenter() {
 
 		// be explicit
-		return (graphViewCenterX != null && graphViewCenterY != null) ?
-			new Point2D.Double(graphViewCenterX.doubleValue(),
-							   graphViewCenterY.doubleValue()) : null;
+		return (graphViewCenterX != null && graphViewCenterY != null) ? new Point2D.Double(
+				graphViewCenterX.doubleValue(), graphViewCenterY.doubleValue())
+				: null;
 	}
 
 	/**
@@ -627,7 +617,7 @@ public class XGMMLReader implements GraphReader {
 				vsb.buildStyle();
 			}
 		}
-		
+
 	}
 
 	/**
@@ -928,51 +918,51 @@ public class XGMMLReader implements GraphReader {
 
 		while (it.hasNext()) {
 			Object curAtt = it.next();
-			readAttribute(attributes, targetName, (Att)curAtt);
+			readAttribute(attributes, targetName, (Att) curAtt);
 		}
 	}
 
 	/**
-	 * Reads an attribute from the xggml file 
-	 * and sets it within CyAttributes.
+	 * Reads an attribute from the xggml file and sets it within CyAttributes.
 	 * 
-	 * @param attributes - CyAttributes to load
-	 * @param targetName - key into CyAttributes
-	 * @param curAtt     - the attribute read out of xgmml file
+	 * @param attributes -
+	 *            CyAttributes to load
+	 * @param targetName -
+	 *            key into CyAttributes
+	 * @param curAtt -
+	 *            the attribute read out of xgmml file
 	 */
-	private void readAttribute(CyAttributes attributes, String targetName, Att curAtt) {
+	private void readAttribute(CyAttributes attributes, String targetName,
+			Att curAtt) {
 
 		// check args
 		String dataType = curAtt.getType();
-		if (dataType == null) return;
+		if (dataType == null)
+			return;
 		// null value only ok when type is list or map
-		if (!dataType.equals(LIST_TYPE) &&
-			!dataType.equals(MAP_TYPE) &&
-			curAtt.getValue() == null) return;
+		if (!dataType.equals(LIST_TYPE) && !dataType.equals(MAP_TYPE)
+				&& curAtt.getValue() == null)
+			return;
 
 		// string
 		if (dataType.equals(STRING_TYPE)) {
-			attributes.setAttribute(targetName,
-									curAtt.getName(),
-									curAtt.getValue());
+			attributes.setAttribute(targetName, curAtt.getName(), curAtt
+					.getValue());
 		}
 		// integer
 		else if (dataType.equals(INT_TYPE)) {
-			attributes.setAttribute(targetName,
-									curAtt.getName(),
-									new Integer(curAtt.getValue()));
+			attributes.setAttribute(targetName, curAtt.getName(), new Integer(
+					curAtt.getValue()));
 		}
 		// float
 		else if (dataType.equals(FLOAT_TYPE)) {
-			attributes.setAttribute(targetName,
-									curAtt.getName(),
-									new Double(curAtt.getValue()));
+			attributes.setAttribute(targetName, curAtt.getName(), new Double(
+					curAtt.getValue()));
 		}
 		// boolean
 		else if (dataType.equals(BOOLEAN_TYPE)) {
-			attributes.setAttribute(targetName,
-									curAtt.getName(),
-									new Boolean(curAtt.getValue()));
+			attributes.setAttribute(targetName, curAtt.getName(), new Boolean(
+					curAtt.getValue()));
 		}
 		// list
 		else if (dataType.equals(LIST_TYPE)) {
@@ -981,8 +971,9 @@ public class XGMMLReader implements GraphReader {
 			while (listIt.hasNext()) {
 				Object listItem = listIt.next();
 				if (listItem != null && listItem.getClass() == AttImpl.class) {
-					Object itemClassObject = createObjectFromAttValue((AttImpl)listItem);
-					if (itemClassObject != null) listAttr.add(itemClassObject);
+					Object itemClassObject = createObjectFromAttValue((AttImpl) listItem);
+					if (itemClassObject != null)
+						listAttr.add(itemClassObject);
 				}
 			}
 			attributes.setAttributeList(targetName, curAtt.getName(), listAttr);
@@ -991,12 +982,13 @@ public class XGMMLReader implements GraphReader {
 		else if (dataType.equals(MAP_TYPE)) {
 			HashMap mapAttr = new HashMap();
 			Iterator mapIt = curAtt.getContent().iterator();
-			while (mapIt.hasNext()){
+			while (mapIt.hasNext()) {
 				Object mapItem = mapIt.next();
 				if (mapItem != null && mapItem.getClass() == AttImpl.class) {
-					Object mapClassObject = createObjectFromAttValue((AttImpl)mapItem);
+					Object mapClassObject = createObjectFromAttValue((AttImpl) mapItem);
 					if (mapClassObject != null) {
-						mapAttr.put(((AttImpl)mapItem).getName(), mapClassObject);
+						mapAttr.put(((AttImpl) mapItem).getName(),
+								mapClassObject);
 					}
 				}
 			}
@@ -1005,39 +997,48 @@ public class XGMMLReader implements GraphReader {
 		// complex type
 		else if (dataType.equals(COMPLEX_TYPE)) {
 			String attributeName = curAtt.getName();
-			int numKeys = new Integer((String)curAtt.getValue()).intValue();
-			defineComplexAttribute(attributeName, attributes, curAtt, null, 0, numKeys);
-			createComplexAttribute(attributeName, attributes, targetName, curAtt, null, 0, numKeys);
+			int numKeys = new Integer((String) curAtt.getValue()).intValue();
+			defineComplexAttribute(attributeName, attributes, curAtt, null, 0,
+					numKeys);
+			createComplexAttribute(attributeName, attributes, targetName,
+					curAtt, null, 0, numKeys);
 		}
 	}
 
 	/**
-	 * Determines the complex attribute keyspace and 
-	 * defines a cyattribute for the complex attribute
-	 * based on its keyspace.
+	 * Determines the complex attribute keyspace and defines a cyattribute for
+	 * the complex attribute based on its keyspace.
 	 * 
-	 * @param attributeName            - attribute name
-	 * @param attributes               - CyAttributes to load
-	 * @param curAtt                   - the attribute read out of xgmml file
-	 * @param attributeDefintion       - byte[] which stores attribute key space definition
-	 * @param attributeDefinitionCount - the number of keys we've discovered so far
-	 * @param numKeys                  - the number of keys to discover
+	 * @param attributeName -
+	 *            attribute name
+	 * @param attributes -
+	 *            CyAttributes to load
+	 * @param curAtt -
+	 *            the attribute read out of xgmml file
+	 * @param attributeDefintion -
+	 *            byte[] which stores attribute key space definition
+	 * @param attributeDefinitionCount -
+	 *            the number of keys we've discovered so far
+	 * @param numKeys -
+	 *            the number of keys to discover
 	 */
-	private void defineComplexAttribute(String attributeName, CyAttributes attributes, Att curAtt,
-										byte[] attributeDefinition, int attributeDefinitionCount, int numKeys) {
+	private void defineComplexAttribute(String attributeName,
+			CyAttributes attributes, Att curAtt, byte[] attributeDefinition,
+			int attributeDefinitionCount, int numKeys) {
 
 		// if necessary, init attribute definition
-		if (attributeDefinition == null){
+		if (attributeDefinition == null) {
 			attributeDefinition = new byte[numKeys];
 		}
 
 		// get current interaction interator and attribute
 		Iterator complexIt = curAtt.getContent().iterator();
-		Att complexItem = (Att)complexIt.next();
-		if (attributeDefinitionCount < numKeys){
+		Att complexItem = (Att) complexIt.next();
+		if (attributeDefinitionCount < numKeys) {
 			attributeDefinition[attributeDefinitionCount++] = getMultHashMapTypeFromAtt(complexItem);
 			if (attributeDefinitionCount < numKeys) {
-				defineComplexAttribute(attributeName, attributes, complexItem, attributeDefinition, attributeDefinitionCount, numKeys);
+				defineComplexAttribute(attributeName, attributes, complexItem,
+						attributeDefinition, attributeDefinitionCount, numKeys);
 			}
 		}
 
@@ -1045,30 +1046,40 @@ public class XGMMLReader implements GraphReader {
 		if (attributeDefinitionCount == numKeys) {
 			// go one more level deep to get value(s) type
 			Iterator nextComplexIt = complexItem.getContent().iterator();
-			Att nextComplexItem = (Att)nextComplexIt.next();
+			Att nextComplexItem = (Att) nextComplexIt.next();
 			byte valueType = getMultHashMapTypeFromAtt(nextComplexItem);
-			MultiHashMapDefinition mhmd = attributes.getMultiHashMapDefinition();
+			MultiHashMapDefinition mhmd = attributes
+					.getMultiHashMapDefinition();
 			mhmd.defineAttribute(attributeName, valueType, attributeDefinition);
 		}
 	}
 
 	/**
-	 * Reads a complex attribute from the xggml file 
-	 * and sets it within CyAttributes.
+	 * Reads a complex attribute from the xggml file and sets it within
+	 * CyAttributes.
 	 * 
-	 * @param attributeName   - attribute name
-	 * @param attributes      - CyAttributes to load
-	 * @param targetName      - the key for the complex attribute we set (node id, edge id, network id, etc)
-	 * @param curAtt          - the attribute read out of xgmml file
-	 * @param keySpace        - byte[] which stores keyspace
-	 * @param keySpaceCount   - the number of keys in the keyspace we've discovered so far
-	 * @param numKeySpaceKeys - the number of key space keys to discover
+	 * @param attributeName -
+	 *            attribute name
+	 * @param attributes -
+	 *            CyAttributes to load
+	 * @param targetName -
+	 *            the key for the complex attribute we set (node id, edge id,
+	 *            network id, etc)
+	 * @param curAtt -
+	 *            the attribute read out of xgmml file
+	 * @param keySpace -
+	 *            byte[] which stores keyspace
+	 * @param keySpaceCount -
+	 *            the number of keys in the keyspace we've discovered so far
+	 * @param numKeySpaceKeys -
+	 *            the number of key space keys to discover
 	 */
-	private void createComplexAttribute(String attributeName, CyAttributes attributes, String targetName,
-										Att curAtt, Object[] keySpace, int keySpaceCount, int numKeySpaceKeys) {
+	private void createComplexAttribute(String attributeName,
+			CyAttributes attributes, String targetName, Att curAtt,
+			Object[] keySpace, int keySpaceCount, int numKeySpaceKeys) {
 
 		// if necessary, init keySpace array
-		if (keySpace == null){
+		if (keySpace == null) {
 			keySpace = new Object[numKeySpaceKeys];
 		}
 
@@ -1077,31 +1088,37 @@ public class XGMMLReader implements GraphReader {
 		// interate over this attributes tree
 		while (complexIt.hasNext()) {
 			Object complexItemObj = complexIt.next();
-			if (complexItemObj != null && complexItemObj.getClass() == AttImpl.class) {
-				AttImpl complexItem = (AttImpl)complexItemObj;
+			if (complexItemObj != null
+					&& complexItemObj.getClass() == AttImpl.class) {
+				AttImpl complexItem = (AttImpl) complexItemObj;
 				// add this key to the keyspace
 				keySpace[keySpaceCount] = createObjectFromAttName(complexItem);
 				// recurse if we still have keys to go
-				if (keySpaceCount+1 < numKeySpaceKeys-1) {
-					createComplexAttribute(attributeName, attributes, targetName,
-										   complexItem,keySpace, keySpaceCount+1, numKeySpaceKeys);
-				}
-				else {
-					// ok, if we are here, we've gotten all the keys but the last level
+				if (keySpaceCount + 1 < numKeySpaceKeys - 1) {
+					createComplexAttribute(attributeName, attributes,
+							targetName, complexItem, keySpace,
+							keySpaceCount + 1, numKeySpaceKeys);
+				} else {
+					// ok, if we are here, we've gotten all the keys but the
+					// last level
 					MultiHashMap mhm = attributes.getMultiHashMap();
 					// interate through last level keys
-					Iterator nextComplexIt = complexItem.getContent().iterator();
+					Iterator nextComplexIt = complexItem.getContent()
+							.iterator();
 					while (nextComplexIt.hasNext()) {
 						Object nextComplexItemObj = nextComplexIt.next();
-						if (nextComplexItemObj != null && nextComplexItemObj.getClass() == AttImpl.class) {
-							// get last level key and set in keyspace 
-							AttImpl nextComplexItem = (AttImpl)nextComplexItemObj;
-							keySpace[keySpaceCount+1] = createObjectFromAttName(nextComplexItem);
+						if (nextComplexItemObj != null
+								&& nextComplexItemObj.getClass() == AttImpl.class) {
+							// get last level key and set in keyspace
+							AttImpl nextComplexItem = (AttImpl) nextComplexItemObj;
+							keySpace[keySpaceCount + 1] = createObjectFromAttName(nextComplexItem);
 							// now grab the value - there can only be one
-							Iterator complexValueIterator = nextComplexItem.getContent().iterator();
+							Iterator complexValueIterator = nextComplexItem
+									.getContent().iterator();
 							Object complexValue = complexValueIterator.next();
-							Object valueToStore = createObjectFromAttValue((AttImpl)complexValue);
-							mhm.setAttributeValue(targetName, attributeName, valueToStore, keySpace);
+							Object valueToStore = createObjectFromAttValue((AttImpl) complexValue);
+							mhm.setAttributeValue(targetName, attributeName,
+									valueToStore, keySpace);
 						}
 					}
 				}
@@ -1110,24 +1127,22 @@ public class XGMMLReader implements GraphReader {
 	}
 
 	/**
-	 * Creates an object of an appropriate class,
-	 * with value derived from attribute name.
-	 *
-	 * @param item - AttImpl
-	 * @return     - Object
+	 * Creates an object of an appropriate class, with value derived from
+	 * attribute name.
+	 * 
+	 * @param item -
+	 *            AttImpl
+	 * @return - Object
 	 */
-	private Object createObjectFromAttName(AttImpl item){
-		
+	private Object createObjectFromAttName(AttImpl item) {
+
 		if (item.getType().equals(STRING_TYPE)) {
 			return new String(item.getName());
-		}
-		else if (item.getType().equals(INT_TYPE)) {
+		} else if (item.getType().equals(INT_TYPE)) {
 			return new Integer(item.getName());
-		}
-		else if (item.getType().equals(FLOAT_TYPE)) {
+		} else if (item.getType().equals(FLOAT_TYPE)) {
 			return new Double(item.getName());
-		}
-		else if (item.getType().equals(BOOLEAN_TYPE)) {
+		} else if (item.getType().equals(BOOLEAN_TYPE)) {
 			return new Boolean(item.getName());
 		}
 
@@ -1136,24 +1151,22 @@ public class XGMMLReader implements GraphReader {
 	}
 
 	/**
-	 * Creates an object of an appropriate class,
-	 * with value derived from attribute value.
-	 *
-	 * @param item - AttImpl
-	 * @return     - Object
+	 * Creates an object of an appropriate class, with value derived from
+	 * attribute value.
+	 * 
+	 * @param item -
+	 *            AttImpl
+	 * @return - Object
 	 */
-	private Object createObjectFromAttValue(AttImpl item){
-		
+	private Object createObjectFromAttValue(AttImpl item) {
+
 		if (item.getType().equals(STRING_TYPE)) {
 			return new String(item.getValue());
-		}
-		else if (item.getType().equals(INT_TYPE)) {
+		} else if (item.getType().equals(INT_TYPE)) {
 			return new Integer(item.getValue());
-		}
-		else if (item.getType().equals(FLOAT_TYPE)) {
+		} else if (item.getType().equals(FLOAT_TYPE)) {
 			return new Double(item.getValue());
-		}
-		else if (item.getType().equals(BOOLEAN_TYPE)) {
+		} else if (item.getType().equals(BOOLEAN_TYPE)) {
 			return new Boolean(item.getValue());
 		}
 
@@ -1162,58 +1175,57 @@ public class XGMMLReader implements GraphReader {
 	}
 
 	/**
-	 * Given an attribute, method returns a
-	 * MultiHashMapDefinition byte corresponding to its type.
-	 *
-	 * @param item - Att
-	 * @return     - byte
+	 * Given an attribute, method returns a MultiHashMapDefinition byte
+	 * corresponding to its type.
+	 * 
+	 * @param item -
+	 *            Att
+	 * @return - byte
 	 */
-	private byte getMultHashMapTypeFromAtt(Att item){
-		
+	private byte getMultHashMapTypeFromAtt(Att item) {
+
 		if (item.getType().equals(STRING_TYPE)) {
 			return MultiHashMapDefinition.TYPE_STRING;
-		}
-		else if (item.getType().equals(INT_TYPE)) {
+		} else if (item.getType().equals(INT_TYPE)) {
 			return MultiHashMapDefinition.TYPE_INTEGER;
-		}
-		else if (item.getType().equals(FLOAT_TYPE)) {
+		} else if (item.getType().equals(FLOAT_TYPE)) {
 			return MultiHashMapDefinition.TYPE_FLOATING_POINT;
-		}
-		else if (item.getType().equals(BOOLEAN_TYPE)) {
+		} else if (item.getType().equals(BOOLEAN_TYPE)) {
 			return MultiHashMapDefinition.TYPE_BOOLEAN;
 		}
 
 		// outta here
 		return -1;
 	}
-	
+
 	/**
 	 * Convert RDF object into Map
 	 */
 	private Map rdf2map(RdfRDF rdf) {
-		
-		
+
 		HashMap map = new HashMap();
 		RdfDescription dc = (RdfDescription) rdf.getDescription().get(0);
-	
+
 		Iterator it = dc.getDcmes().iterator();
-		while(it.hasNext()) {
+		while (it.hasNext()) {
 			Object entry = it.next();
 			// This is a hack: extract label from class name
 			String className = entry.getClass().toString();
 			String[] parts = className.split("\\.");
-			parts = parts[parts.length-1].split("Impl");
-			
+			parts = parts[parts.length - 1].split("Impl");
+
 			String label = parts[0];
 			if (label.startsWith("Date")) {
-				map.put(label, ((Date)entry).getContent().get(0).toString());
+				map.put(label, ((Date) entry).getContent().get(0).toString());
 			} else if (label.startsWith("Title")) {
 				Title title = (Title) entry;
 				map.put(label, title.getContent().get(0).toString());
 			} else if (label.startsWith("Identifier")) {
-				map.put(label, ((Identifier) entry).getContent().get(0).toString());
+				map.put(label, ((Identifier) entry).getContent().get(0)
+						.toString());
 			} else if (label.startsWith("Description")) {
-				map.put(label, ((Description) entry).getContent().get(0).toString());
+				map.put(label, ((Description) entry).getContent().get(0)
+						.toString());
 			} else if (label.startsWith("Source")) {
 				map.put(label, ((Source) entry).getContent().get(0).toString());
 			} else if (label.startsWith("Type")) {
@@ -1223,10 +1235,9 @@ public class XGMMLReader implements GraphReader {
 			} else {
 				//
 			}
-			
+
 		}
 		return map;
 	}
-	
-	
+
 }

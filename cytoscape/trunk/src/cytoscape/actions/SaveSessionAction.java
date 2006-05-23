@@ -40,6 +40,7 @@ package cytoscape.actions;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.io.IOException;
 
 import javax.xml.bind.JAXBException;
 
@@ -165,7 +166,12 @@ class SaveSessionTask implements Task {
 		taskMonitor.setStatus("Saving Session...");
 		taskMonitor.setPercentCompleted(-1);
 
-		sw.write();
+		try {
+			sw.writeSessionToDisk();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		taskMonitor.setPercentCompleted(100);
 		taskMonitor.setStatus("Session successfully saved to:  " + fileName);

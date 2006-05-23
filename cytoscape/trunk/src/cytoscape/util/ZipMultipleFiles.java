@@ -39,15 +39,19 @@ package cytoscape.util;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.zip.Adler32;
+import java.util.zip.CheckedOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
@@ -129,8 +133,9 @@ public class ZipMultipleFiles {
 		// Delete the temp directory
 	}
 
+
 	// Compress the files into one zipped file.
-	public void compress() {
+	public void compress() throws IOException {
 
 		ByteArrayOutputStream baos = null;
 		ZipOutputStream zos = null;
@@ -139,83 +144,83 @@ public class ZipMultipleFiles {
 		FileOutputStream fos = null;
 		BufferedOutputStream bos = null;
 
-		try {
+		baos = new ByteArrayOutputStream();
+		zos = new ZipOutputStream(baos);
 
-			baos = new ByteArrayOutputStream();
-			zos = new ZipOutputStream(baos);
+		ArrayList al = new ArrayList();
 
-			ArrayList al = new ArrayList();
+		for (int i = 0; i < fileCount; i++) {
 
-			for (int i = 0; i < fileCount; i++) {
+			byte[] buf = getFileBytes(files[i]);
+			zent = new ZipEntry(sessionDirName + FS + files[i]);
 
-				byte[] buf = getFileBytes(files[i]);
-				zent = new ZipEntry(sessionDirName + FS + files[i]);
+			al.add(zent);
+			zos.putNextEntry(zent);
 
-				al.add(zent);
-				zos.putNextEntry(zent);
-
-				zos.write(buf, 0, buf.length);
-				zos.closeEntry();
-			}
-
-			try {
-				zos.close();
-			} catch (Exception e) {
-			}
-
-			try {
-				baos.close();
-			} catch (Exception e) {
-			}
-
-			baos = new ByteArrayOutputStream();
-			zos = new ZipOutputStream(baos);
-
-			for (int i = 0; i < fileCount; i++) {
-				byte[] buf = getFileBytes(files[i]);
-
-				zent = (ZipEntry) al.get(i);
-				zos.putNextEntry(zent);
-				zos.write(buf, 0, buf.length);
-				zos.closeEntry();
-			}
-
-			zos.finish();
-
-			byte[] bufResult = baos.toByteArray();
-
-			fos = new FileOutputStream(zipFileName);
-			bos = new BufferedOutputStream(fos);
-			bos.write(bufResult, 0, bufResult.length);
-
-		} catch (IOException e) {
-			System.err.println(e);
-		} finally {
-
-			try {
-				zos.close();
-			} catch (Exception e) {
-			}
-
-			try {
-				baos.close();
-			} catch (Exception e) {
-			}
-
-			try {
-				bos.close();
-			} catch (Exception e) {
-			}
-
-			try {
-				fos.close();
-			} catch (Exception e) {
-			}
+			zos.write(buf, 0, buf.length);
+			zos.closeEntry();
 		}
+
+		zos.close();
+
+		baos.close();
+
+		baos = new ByteArrayOutputStream();
+		zos = new ZipOutputStream(baos);
+
+		for (int i = 0; i < fileCount; i++) {
+			byte[] buf = getFileBytes(files[i]);
+
+			zent = (ZipEntry) al.get(i);
+			zos.putNextEntry(zent);
+			zos.write(buf, 0, buf.length);
+			zos.closeEntry();
+		}
+
+		zos.finish();
+
+		byte[] bufResult = baos.toByteArray();
+
+		fos = new FileOutputStream(zipFileName);
+		bos = new BufferedOutputStream(fos);
+		bos.write(bufResult, 0, bufResult.length);
+
+		zos.close();
+		baos.close();
+		bos.close();
+		fos.close();
 
 		clean();
 	}
 
+	
+	/**
+	 * This method will be used when a network is huge. (Slower in small
+	 * networks, but faster in huge ones.)
+	 * 
+	 * @throws IOException
+	 */
+	public void compress2() throws IOException {
+		FileOutputStream f = new FileOutputStream(zipFileName);
+		CheckedOutputStream csum = new CheckedOutputStream(f, new Adler32());
+		ZipOutputStream out = new ZipOutputStream(
+				new BufferedOutputStream(csum));
+
+		// Can't read the above comment, though
+		for (int i = 0; i < fileCount; i++) {
+			System.out.println("Writing file " + files[i]);
+			BufferedReader in = new BufferedReader(new FileReader(files[i]));
+			out.putNextEntry(new ZipEntry(sessionDirName + FS + files[i]));
+			int c;
+			while ((c = in.read()) != -1)
+				out.write(c);
+			in.close();
+		}
+		out.close();
+		
+		clean();
+	}
+	
 	private byte[] getFileBytes(String filename) {
 		File file = null;
 		FileInputStream fis = null;
@@ -255,17 +260,23 @@ public class ZipMultipleFiles {
 
 	/**
 	 * Reads a file contained within a zip file and returns an InputStream.
-	 * @param zipName The name of the zip file to read.
-	 * @param fileNameRegEx A regular expression that identifies the file to be read. In
-	 * general this should just be the file name you're looking for.  If more than one
-	 * file matches the regular expression, only the first will be returned. If you're looking
-	 * for a specific file remeber to build your regular expression correctly. For example, if
-	 * you're looking for the file 'vizmap.props', make your regular expression '.*vizmap.props'
-	 * to accomodate any clutter from the zip file.
-	 * @return An InputStream of the zip entry identified by the regular expression
-	 * or null if nothing matches.
+	 * 
+	 * @param zipName
+	 *            The name of the zip file to read.
+	 * @param fileNameRegEx
+	 *            A regular expression that identifies the file to be read. In
+	 *            general this should just be the file name you're looking for.
+	 *            If more than one file matches the regular expression, only the
+	 *            first will be returned. If you're looking for a specific file
+	 *            remeber to build your regular expression correctly. For
+	 *            example, if you're looking for the file 'vizmap.props', make
+	 *            your regular expression '.*vizmap.props' to accomodate any
+	 *            clutter from the zip file.
+	 * @return An InputStream of the zip entry identified by the regular
+	 *         expression or null if nothing matches.
 	 */
-	public static InputStream readFile(String zipName, String fileNameRegEx ) throws IOException {
+	public static InputStream readFile(String zipName, String fileNameRegEx)
+			throws IOException {
 
 		ZipFile sessionZipFile = new ZipFile(zipName);
 		Enumeration zipEntries = sessionZipFile.entries();
