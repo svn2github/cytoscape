@@ -1,7 +1,9 @@
+/*$Id$*/
 package linkout;
 
-import ding.view.NodeContextMenuListener;
+import ding.view.*;
 import javax.swing.*;
+import giny.view.NodeView;
 import java.awt.*;
 
 /**
@@ -10,17 +12,16 @@ import java.awt.*;
  */
 public class LinkOutContextMenuListener implements NodeContextMenuListener {
 
-    public void LinkOutContextMenuListener(){
+    public LinkOutContextMenuListener(){
         //System.out.println("[LinkOutContextMenuListener]: Constructor called");
     }
 
     /**
      *
-     * @param pt Point coordinates on the canvas
      * @param nodeView The clicked NodeView
      * @param menu popup menu to add the LinkOut menu
      */
-    public void addNodeContextMenuItems (Point pt, Object nodeView, JPopupMenu menu){
+    public void addNodeContextMenuItems (NodeView nodeView, JPopupMenu menu){
         //System.out.println("[LinkOutContextMenuListener]: addNodeContextMenuItem called");
 
         
@@ -32,3 +33,8 @@ public class LinkOutContextMenuListener implements NodeContextMenuListener {
     }
 
 }
+
+/*$Log$
+ *Revision 1.2  2006/05/23 20:39:42  betel
+ *Changes for compatibility with latest ding library
+ **/

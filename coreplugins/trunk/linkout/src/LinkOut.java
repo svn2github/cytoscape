@@ -7,6 +7,7 @@ import cytoscape.*;
 import cytoscape.util.*;
 import java.util.*;
 import giny.view.*;
+import giny.view.NodeView;
 import javax.swing.*;
 import java.awt.event.*;
 import java.io.*;
@@ -42,11 +43,11 @@ public class LinkOut {
 
     /**
     * Fills the URL hash map with the <key> = <values> from cytoscape.props file
-    * @param Object object NodeView object
+    * @param NodeView node
     * @return none
     */
 //    public static JMenuItem AddLinks(Object[] args, PNode node){
-    public static JMenuItem AddLinks(Object node){
+    public static JMenuItem AddLinks(NodeView node){
 
 
         System.out.println("linkout.AddLinks called with node "+((NodeView)node).getLabel().getText());
@@ -295,8 +296,8 @@ public class LinkOut {
 
 /*
 $Log$
-Revision 1.3  2006/05/19 21:51:29  betel
-New implementation of LinkOut with network-view listener
+Revision 1.4  2006/05/23 20:39:42  betel
+Changes for compatibility with latest ding library
 
 Revision 1.1  2006/05/11 22:42:28  betel
 Initial deposit of linkout to pre-coreplugins
