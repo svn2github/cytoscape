@@ -359,7 +359,6 @@ public class DGraphView implements GraphView, Printable
   public NodeView removeNodeView(int nodeInx)
   {
     final int[] hiddenEdgeInx;
-    final int[] unselectedEdgeInx;
     final DNodeView returnThis;
     synchronized (m_lock) {
       // We have to query edges in the m_structPersp, not m_drawPersp because
@@ -367,15 +366,8 @@ public class DGraphView implements GraphView, Printable
       hiddenEdgeInx =
         m_structPersp.getAdjacentEdgeIndicesArray(nodeInx, true, true, true);
       if (hiddenEdgeInx == null) { return null; }
-      m_canvas.m_stack.empty();
       for (int i = 0; i < hiddenEdgeInx.length; i++) {
-        DEdgeView ev = removeEdgeViewInternal(hiddenEdgeInx[i]);
-        if (ev.isSelected()) { m_canvas.m_stack.push(hiddenEdgeInx[i]); } }
-      unselectedEdgeInx = new int[m_canvas.m_stack.size()];
-      final IntEnumerator unselectedEdges = m_canvas.m_stack.elements();
-      int inx = 0;
-      while (unselectedEdges.numRemaining() > 0) {
-        unselectedEdgeInx[inx++] = unselectedEdges.nextInt(); }
+        removeEdgeViewInternal(hiddenEdgeInx[i]); }
       returnThis = (DNodeView) m_nodeViewMap.remove(new Integer(nodeInx));
       // If this node was hidden, it won't be in m_drawPersp.
       m_drawPersp.hideNode(nodeInx);
@@ -388,9 +380,6 @@ public class DGraphView implements GraphView, Printable
       m_contentChanged = true; }
     final GraphViewChangeListener listener = m_lis[0];
     if (listener != null) {
-      if (unselectedEdgeInx.length > 0) {
-        listener.graphViewChanged
-          (new GraphViewEdgesUnselectedEvent(this, unselectedEdgeInx)); }
       if (hiddenEdgeInx.length > 0) {
         listener.graphViewChanged
           (new GraphViewEdgesHiddenEvent(this, hiddenEdgeInx)); }
@@ -413,19 +402,12 @@ public class DGraphView implements GraphView, Printable
   public EdgeView removeEdgeView(int edgeInx)
   {
     final DEdgeView returnThis;
-    final boolean wasSelected;
     synchronized (m_lock) {
       returnThis = removeEdgeViewInternal(edgeInx);
-      if (returnThis != null) {
-        wasSelected = returnThis.isSelected();
-        m_contentChanged = true; } }
+      if (returnThis != null) { m_contentChanged = true; } }
     if (returnThis != null) {
       final GraphViewChangeListener listener = m_lis[0];
       if (listener != null) {
-        if (wasSelected) {
-          listener.graphViewChanged
-            (new GraphViewEdgesUnselectedEvent
-             (this, new int[] { returnThis.getRootGraphIndex() })); }
         listener.graphViewChanged
           (new GraphViewEdgesHiddenEvent
            (this, new int[] { returnThis.getRootGraphIndex() })); } }
@@ -437,15 +419,12 @@ public class DGraphView implements GraphView, Printable
   {
     final DEdgeView returnThis =
       (DEdgeView) m_edgeViewMap.remove(new Integer(edgeInx));
-    if (returnThis == null) { return null; }
+    if (returnThis == null) { return returnThis; }
     // If this edge view was hidden, it won't be in m_drawPersp.
     m_drawPersp.hideEdge(edgeInx);
     m_structPersp.hideEdge(edgeInx);
     m_edgeDetails.unregisterEdge(~edgeInx);
-    if (m_selectedEdges.delete(~edgeInx)) {
-      for (int j = 0; j < returnThis.numHandles(); j++) {
-        m_selectedAnchors.delete(((~edgeInx) << 6) | j);
-        m_spacialA.delete(((~edgeInx) << 6) | j); } }
+    m_selectedEdges.delete(~edgeInx);
     returnThis.m_view = null;
     return returnThis;
   }
