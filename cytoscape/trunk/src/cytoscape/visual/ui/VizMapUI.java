@@ -548,16 +548,6 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 						// that updates the currentStyle held by this class
 						VMM.setVisualStyle(newStyle);
 
-//						System.out
-//								.println("@@@@@VS is "
-//										+ newStyle.getName()
-//										+ ", and netview is "
-//										+ Cytoscape.getCurrentNetworkView()
-//												.getIdentifier()
-//										+ ", networkName is "
-//										+ Cytoscape.getCurrentNetwork()
-//												.getIdentifier());
-
 						// this call will apply the new visual style
 						// VMM.getNetworkView().redrawGraph(false, true);
 						Cytoscape.getNetworkView(
@@ -587,22 +577,6 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 		 * Update the style combo box model. This method only rebuilds the combo
 		 * box: it does not trigger any events.
 		 */
-		protected void refreshStyleComboBox() {
-			/*
-			 * When we remove and add the elements in the following code, it
-			 * triggers events caught by the StyleSelectionListener. To get
-			 * around this, we set a boolean flag to tell the listener to ignore
-			 * these events
-			 */
-			this.rebuilding = true;
-			this.styleComboModel.removeAllElements();
-			for (Iterator styleIter = styles.iterator(); styleIter.hasNext();) {
-				this.styleComboModel.addElement(styleIter.next());
-			}
-			this.styleComboModel.setSelectedItem(currentStyle);
-			this.rebuilding = false;
-		}
-
 		protected void refreshStyleComboBox(VisualStyle selectedStyle) {
 			/*
 			 * When we remove and add the elements in the following code, it
@@ -615,7 +589,10 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 			for (Iterator styleIter = styles.iterator(); styleIter.hasNext();) {
 				this.styleComboModel.addElement(styleIter.next());
 			}
-			this.styleComboModel.setSelectedItem(selectedStyle);
+			if ( selectedStyle != null )
+				this.styleComboModel.setSelectedItem(selectedStyle);
+			else
+				this.styleComboModel.setSelectedItem(currentStyle);
 			this.rebuilding = false;
 		}
 
@@ -625,7 +602,7 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 		public void resetStyles() {
 			// reset local style collection
 			styles = catalog.getVisualStyles();
-			refreshStyleComboBox();
+			refreshStyleComboBox(null);
 		}
 
 		public void resetStyles(String selected) {
