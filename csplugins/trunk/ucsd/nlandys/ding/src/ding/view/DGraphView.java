@@ -369,13 +369,14 @@ public class DGraphView implements GraphView, Printable
       for (int i = 0; i < hiddenEdgeInx.length; i++) {
         removeEdgeViewInternal(hiddenEdgeInx[i]); }
       returnThis = (DNodeView) m_nodeViewMap.remove(new Integer(nodeInx));
+      returnThis.unselectInternal();
       // If this node was hidden, it won't be in m_drawPersp.
       m_drawPersp.hideNode(nodeInx);
       m_structPersp.hideNode(nodeInx);
       m_nodeDetails.unregisterNode(~nodeInx);
       // If this node was hidden, it won't be in m_spacial.
       m_spacial.delete(~nodeInx);
-      m_selectedNodes.delete(~nodeInx);
+//       m_selectedNodes.delete(~nodeInx);
       returnThis.m_view = null;
       m_contentChanged = true; }
     final GraphViewChangeListener listener = m_lis[0];
@@ -420,11 +421,12 @@ public class DGraphView implements GraphView, Printable
     final DEdgeView returnThis =
       (DEdgeView) m_edgeViewMap.remove(new Integer(edgeInx));
     if (returnThis == null) { return returnThis; }
+    returnThis.unselectInternal();
     // If this edge view was hidden, it won't be in m_drawPersp.
     m_drawPersp.hideEdge(edgeInx);
     m_structPersp.hideEdge(edgeInx);
     m_edgeDetails.unregisterEdge(~edgeInx);
-    m_selectedEdges.delete(~edgeInx);
+//     m_selectedEdges.delete(~edgeInx);
     returnThis.m_view = null;
     return returnThis;
   }
@@ -633,6 +635,7 @@ public class DGraphView implements GraphView, Printable
       synchronized (m_lock) {
         edgeInx = ((DEdgeView) obj).getRootGraphIndex();
         if (m_drawPersp.hideEdge(edgeInx) == 0) { return false; }
+        ((DEdgeView) obj).unselectInternal();
         m_contentChanged = true; }
       if (fireListenerEvents) {
         final GraphViewChangeListener listener = m_lis[0];
@@ -652,6 +655,7 @@ public class DGraphView implements GraphView, Printable
         for (int i = 0; i < edges.length; i++) {
           hideGraphObjectInternal(m_edgeViewMap.get(new Integer(edges[i])),
                                   false); }
+        nView.unselectInternal();
         m_spacial.exists(~nodeInx, m_extentsBuff, 0);
         nView.m_hiddenXMin = m_extentsBuff[0];
         nView.m_hiddenYMin = m_extentsBuff[1];
