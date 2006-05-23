@@ -8,11 +8,7 @@ import cytoscape.view.*;
 
 public class DistPanel extends JPanel {
 
-  CyNetworkView window;
-
-  public DistPanel ( CyNetworkView window ) {
-
-    this.window = window;
+  public DistPanel ( ) {
 
     ImageIcon hari =  new ImageIcon( getClass().getResource("/H_DIST_RIGHT.gif") );
     ImageIcon haci =  new ImageIcon( getClass().getResource("/H_DIST_CENTER.gif") );
@@ -21,13 +17,13 @@ public class DistPanel extends JPanel {
     ImageIcon vaci =  new ImageIcon( getClass().getResource("/V_DIST_CENTER.gif") );
     ImageIcon vabi =  new ImageIcon( getClass().getResource("/V_DIST_BOTTOM.gif") );
 
-    HDistRight har = new HDistRight( window, hari );
-    HDistCenter hac = new HDistCenter( window, haci );
-    HDistLeft hal = new HDistLeft( window, hali );
+    HDist har = new HDist( hari );
+    HDist hac = new HDist( haci );
+    HDist hal = new HDist( hali );
 
-    VDistTop vat = new VDistTop( window, vati );
-    VDistCenter vac = new VDistCenter( window, vaci );
-    VDistBottom vab = new VDistBottom( window, vabi );
+    VDist vat = new VDist( vati );
+    VDist vac = new VDist( vaci );
+    VDist vab = new VDist( vabi );
 
     JPanel h_panel = new JPanel();
     h_panel.add( createJButton( har, "Horizontal Right") );

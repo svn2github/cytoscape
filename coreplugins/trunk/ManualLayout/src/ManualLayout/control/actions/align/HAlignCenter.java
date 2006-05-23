@@ -12,66 +12,19 @@ import java.util.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-public class HAlignCenter extends CytoscapeAction {
+import ManualLayout.control.actions.AbstractControlAction;
 
- protected CyNetworkView window;
+public class HAlignCenter extends AbstractControlAction {
 
-  public HAlignCenter ( CyNetworkView window, ImageIcon icon ) {
-    super( "", icon );
-    this.window = window;
+  public HAlignCenter( ImageIcon i ) {
+    super(i);
   }
 
-  public void actionPerformed ( ActionEvent e ) {
-   
-    GraphView view = window.getView();
-    
-    double min, max;
-    double h, w;
-    double value;
-    NodeView node_view;
-    Iterator sel_nodes;
-    sel_nodes = view.getSelectedNodes().iterator();
-
-    if ( !sel_nodes.hasNext() ) {
-      // cancel if no selected nodes
-      return;
-    }
-
-    node_view = ( NodeView )sel_nodes.next();
-    w = node_view.getWidth();
-    h = node_view.getHeight();
-    min = node_view.getXPosition();
-    max = min; 
-
+  protected void control(List nodes) {
+    Iterator sel_nodes = nodes.iterator();
+    double mid = ( X_min + (X_max - X_min) / 2 );
     while ( sel_nodes.hasNext() ) {
-      node_view = ( NodeView )sel_nodes.next();
-      w = node_view.getWidth();
-      h = node_view.getHeight();
-      value = node_view.getXPosition();
-      
-      if ( value > max )
-        max = value;
-
-      if ( value < min ) 
-        min = value;
-    }
-
-    min = ( min + (max - min) / 2 );
-    sel_nodes = view.getSelectedNodes().iterator();
-    while ( sel_nodes.hasNext() ) {
-      ( ( NodeView )sel_nodes.next() ).setXPosition( min );
+      ( ( NodeView )sel_nodes.next() ).setXPosition( mid );
     }                       
-    view.updateView();
-  
   }
-
-  public boolean isInToolBar () {
-    return false;
-  }
-
-  public boolean isInMenuBar () {
-    return false;
-  }
-
-
 }

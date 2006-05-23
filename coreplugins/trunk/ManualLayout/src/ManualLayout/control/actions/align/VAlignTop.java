@@ -12,54 +12,18 @@ import java.util.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-public class VAlignTop extends CytoscapeAction {
+import ManualLayout.control.actions.AbstractControlAction;
 
- protected CyNetworkView window;
+public class VAlignTop extends AbstractControlAction {
 
-  public VAlignTop ( CyNetworkView window, ImageIcon icon ) {
-    super( "", icon );
-    this.window = window;
+  public VAlignTop( ImageIcon i ) {
+    super(i);
   }
 
-  public void actionPerformed ( ActionEvent e ) {
-   
-    GraphView view = window.getView();
-    
-    double min, max;
-    double h, w;
-    double value;
-    NodeView node_view;
-    Iterator sel_nodes;
-    sel_nodes = view.getSelectedNodes().iterator();
-
-    if ( !sel_nodes.hasNext() ) {
-      // cancel if no selected nodes
-      return;
-    }
-
-				min = Double.POSITIVE_INFINITY; 
+  protected void control(List nodes) {
+    Iterator sel_nodes = nodes.iterator();
     while ( sel_nodes.hasNext() ) {
-      node_view = ( NodeView )sel_nodes.next();
-      value = node_view.getYPosition();
-      if ( value < min ) 
-        min = value;
-    }
-
-    sel_nodes = view.getSelectedNodes().iterator();
-    while ( sel_nodes.hasNext() ) {
-      ( ( NodeView )sel_nodes.next() ).setYPosition( min );
+      ( ( NodeView )sel_nodes.next() ).setYPosition( Y_max );
     }                       
-    view.updateView();
-  
   }
-
-  public boolean isInToolBar () {
-    return false;
-  }
-
-  public boolean isInMenuBar () {
-    return false;
-  }
-
-
 }

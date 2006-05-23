@@ -8,11 +8,7 @@ import cytoscape.view.*;
 
 public class AlignPanel extends JPanel {
 
-  CyNetworkView window;
-
-  public AlignPanel ( CyNetworkView window ) {
-
-    this.window = window;
+  public AlignPanel ( ) {
 
     ImageIcon hari =  new ImageIcon( getClass().getResource("/H_ALIGN_RIGHT.gif") );
     ImageIcon haci =  new ImageIcon( getClass().getResource("/H_ALIGN_CENTER.gif") );
@@ -21,13 +17,13 @@ public class AlignPanel extends JPanel {
     ImageIcon vaci =  new ImageIcon( getClass().getResource("/V_ALIGN_CENTER.gif") );
     ImageIcon vabi =  new ImageIcon( getClass().getResource("/V_ALIGN_BOTTOM.gif") );
 
-    HAlignRight har = new HAlignRight( window, hari );
-    HAlignCenter hac = new HAlignCenter( window, haci );
-    HAlignLeft hal = new HAlignLeft( window, hali );
+    HAlignRight har = new HAlignRight( hari );
+    HAlignCenter hac = new HAlignCenter( haci );
+    HAlignLeft hal = new HAlignLeft( hali );
 
-    VAlignTop vat = new VAlignTop( window, vati );
-    VAlignCenter vac = new VAlignCenter( window, vaci );
-    VAlignBottom vab = new VAlignBottom( window, vabi );
+    VAlignTop vat = new VAlignTop( vati );
+    VAlignCenter vac = new VAlignCenter( vaci );
+    VAlignBottom vab = new VAlignBottom( vabi );
 
     JPanel h_panel = new JPanel();
     h_panel.add( createJButton( hal, "Horizontal Left") );   

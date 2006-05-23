@@ -14,11 +14,9 @@ import java.awt.*;
 public class ControlAction extends AbstractAction {
 
   JFrame frame;
-  protected CyNetworkView window;
 
   public ControlAction (  ) {
     super( "Align and Distribute" );
-    this.window = Cytoscape.getCurrentNetworkView();
   }
 
   
@@ -32,8 +30,8 @@ public class ControlAction extends AbstractAction {
       panel.setBorder(javax.swing.BorderFactory
                                 .createEmptyBorder(5,5,5,5));
 
-      AlignPanel ap = new AlignPanel( window );
-      DistPanel dp = new DistPanel( window );
+      AlignPanel ap = new AlignPanel();
+      DistPanel dp = new DistPanel();
 
       panel.add( ap, BorderLayout.NORTH );
       panel.add( dp, BorderLayout.SOUTH );
