@@ -431,10 +431,7 @@ public class AttributeBrowserPanel extends JPanel implements
 												LayoutStyle.RELATED).add(
 												getDeleteButton())
 										.addPreferredGap(LayoutStyle.RELATED,
-												320, Short.MAX_VALUE).add(
-												getnetworkAttrView(),
-												GroupLayout.PREFERRED_SIZE, 120,
-												GroupLayout.PREFERRED_SIZE)
+												320, Short.MAX_VALUE)
 										.addPreferredGap(LayoutStyle.RELATED)
 										.add(getImportButton(),
 												GroupLayout.PREFERRED_SIZE, 40,
@@ -467,11 +464,6 @@ public class AttributeBrowserPanel extends JPanel implements
 										buttonBarLayout
 												.createParallelGroup(
 														org.jdesktop.layout.GroupLayout.BASELINE)
-												.add(
-														networkAttrView,
-														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-														36,
-														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
 												.add(
 														importButton,
 														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,

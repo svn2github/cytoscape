@@ -155,16 +155,14 @@ public class SelectPanel extends JPanel implements PropertyChangeListener,
 			updateNetworkBox();
 			// tableModel.setTableDataObjects(new ArrayList());
 
-		} else if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUSED
-				|| e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUS
+		} else if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUS
 				|| e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED
-				|| e.getPropertyName() == Cytoscape.NETWORK_LOADED
 				|| e.getPropertyName().equals(Cytoscape.NETWORK_CREATED)
 				|| e.getPropertyName().equals(Cytoscape.NETWORK_DESTROYED)
 				|| e.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_DESTROYED)
-				|| e.getPropertyName().equals(Cytoscape.CYTOSCAPE_INITIALIZED)) {
+				|| e.getPropertyName().equals(Cytoscape.ATTRIBUTES_CHANGED)) {
 			
-			//System.out.println("**************Browser catch: " + e.getPropertyName());
+			//System.out.println("#########Signal = " + e.getPropertyName());
 			
 			if (current_network != null) {
 				// current_network.removeFlagEventListener(this);

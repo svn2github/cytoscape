@@ -72,7 +72,9 @@ import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
+import cytoscape.data.readers.MetadataParser;
 import cytoscape.dialogs.NetworkMetaDataDialog;
+import cytoscape.generated2.RdfRDF;
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.FileUtil;
 
@@ -770,8 +772,18 @@ public class JSortTable extends JTable implements MouseListener, ActionListener 
 			}
 		} else if (value.getClass() == HashMap.class
 				&& model.getValueAt(row, 0).equals(DataTable.NETWORK_METADATA)) {
-			if(model.getValueAt(row, column) == null) {
-				System.out.println("Metadata not available for this network.  Creating new one...");
+			
+			// Special case: Network Metadata Cell
+			if(((HashMap)value).isEmpty()) {
+				System.out.println("Metadata is not available for this network.  Creating new one...");
+				MetadataParser mdp = new MetadataParser(Cytoscape.getCurrentNetwork());
+				try {
+					Cytoscape.getNetworkAttributes().setAttributeMap(Cytoscape.getCurrentNetwork().getIdentifier(), 
+							DataTable.NETWORK_METADATA, mdp.makeNewMetadataMap());
+					Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
+				} catch(Exception uriE) {
+					
+				}
 			}
 			NetworkMetaDataDialog mdd = new NetworkMetaDataDialog(Cytoscape
 					.getDesktop(), false, Cytoscape.getCurrentNetwork());
