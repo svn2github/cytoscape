@@ -483,10 +483,6 @@ public class CytoscapeSessionWriter {
 				CyNetworkView leafView = Cytoscape
 						.getNetworkView((String) networkMap.get(child
 								.getUserObject().toString()));
-				// CyNetworkView leafView = (CyNetworkView) viewMap.get(curNet
-				// .getIdentifier());
-				// leafView = (CyNetworkView) viewMap.get(leafView.getNetwork()
-				// .getIdentifier());
 
 				String leafVisualStyleName = null;
 				if (leafView != Cytoscape.getNullNetworkView()) {
@@ -515,43 +511,45 @@ public class CytoscapeSessionWriter {
 					leaf.setViewAvailable(false);
 				} else {
 					leaf.setViewAvailable(true);
+				}
 
-					/*
-					 * This is for Metanode. Will be used in the future...
-					 * 
-					 * Iterator it = targetNetwork.nodesIterator();
-					 * ViewableNodes vn = factory.createViewableNodes(); while
-					 * (it.hasNext()) { String viewableID = ((CyNode) it.next())
-					 * .getIdentifier(); Node viewableNode =
-					 * factory.createNode(); viewableNode.setId(viewableID);
-					 * vn.getNode().add(viewableNode); }
-					 * leaf.setViewableNodes(vn);
-					 */
+				/*
+				 * This is for Metanode. Will be used in the future...
+				 * 
+				 * Iterator it = targetNetwork.nodesIterator(); ViewableNodes vn =
+				 * factory.createViewableNodes(); while (it.hasNext()) { String
+				 * viewableID = ((CyNode) it.next()) .getIdentifier(); Node
+				 * viewableNode = factory.createNode();
+				 * viewableNode.setId(viewableID);
+				 * vn.getNode().add(viewableNode); } leaf.setViewableNodes(vn);
+				 */
 
-					// Add selected & hidden nodes/edges here!!
-					SelectedNodes sn = (SelectedNodes) getSelectedObjects(NODE,
-							targetNetwork);
+				/*
+				 * Add selected & hidden nodes/edges foe leaf
+				 * nodes.
+				 */
+				SelectedNodes sn = (SelectedNodes) getSelectedObjects(NODE,
+						targetNetwork);
 
-					if (sn != null) {
-						leaf.setSelectedNodes(sn);
-					}
-					SelectedEdges se = (SelectedEdges) getSelectedObjects(EDGE,
-							targetNetwork);
+				if (sn != null) {
+					leaf.setSelectedNodes(sn);
+				}
+				SelectedEdges se = (SelectedEdges) getSelectedObjects(EDGE,
+						targetNetwork);
 
-					if (se != null) {
-						leaf.setSelectedEdges(se);
-					}
+				if (se != null) {
+					leaf.setSelectedEdges(se);
+				}
 
-					HiddenNodes hn = (HiddenNodes) getHiddenObjects(NODE,
-							curNetworkView);
-					HiddenEdges he = (HiddenEdges) getHiddenObjects(EDGE,
-							curNetworkView);
-					if (hn != null) {
-						leaf.setHiddenNodes(hn);
-					}
-					if (he != null) {
-						leaf.setHiddenEdges(he);
-					}
+				HiddenNodes hn = (HiddenNodes) getHiddenObjects(NODE,
+						curNetworkView);
+				HiddenEdges he = (HiddenEdges) getHiddenObjects(EDGE,
+						curNetworkView);
+				if (hn != null) {
+					leaf.setHiddenNodes(hn);
+				}
+				if (he != null) {
+					leaf.setHiddenEdges(he);
 				}
 
 				netList.add(leaf);
