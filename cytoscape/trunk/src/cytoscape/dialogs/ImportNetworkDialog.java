@@ -63,7 +63,7 @@ public class ImportNetworkDialog extends javax.swing.JDialog {
 		titleLabel.setText("Import Network File");
 
 		networkFileNameTextField.setText("Please select a network file...");
-
+		
 		selectNetworkFileButton.setText("Select");
 		selectNetworkFileButton
 				.addActionListener(new java.awt.event.ActionListener() {
@@ -92,6 +92,7 @@ public class ImportNetworkDialog extends javax.swing.JDialog {
 				importButtonActionPerformed(evt);
 			}
 		});
+		importButton.setEnabled(false);
 
 		org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(
 				getContentPane());
@@ -202,7 +203,7 @@ public class ImportNetworkDialog extends javax.swing.JDialog {
 		status = false;
 		this.dispose();
 	}
-
+	
 	private void importButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		// TODO add your handling code here:
 		status = true;
@@ -240,6 +241,7 @@ public class ImportNetworkDialog extends javax.swing.JDialog {
 		if(file != null) {
 			networkFileNameTextField.setText(file.getAbsolutePath());
 			networkFileNameTextField.setToolTipText(file.getAbsolutePath());
+			importButton.setEnabled(true);
 			if(file.getName().endsWith(".gml")) {
 				vsBuilderCheckBox.setEnabled(true);
 			}
