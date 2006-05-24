@@ -104,7 +104,8 @@ and the following data files:
   expression dataset.  This dataset contains P values to describe the significance of
   each observed change in expression.
 </UL>
-Please download these files to your local computer before starting.
+Before starting, please download these files to your local computer by
+right-clicking on the hyperlinks.
 <P>
 This tutorial and accompanying lectures were delivered at <a href=
 "http://www.csc.fi/suomi/info/index.phtml.en">CSC</a>, the Finnish

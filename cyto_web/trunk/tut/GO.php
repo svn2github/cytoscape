@@ -90,7 +90,8 @@ Bioinformatics</A> in 2005.
 <A HREF="GO/galFiltered.symbol.sif">galFiltered.symbol.sif</A>: a version of the file
 galFiltered.sif used in the introductory tutorials. In this
 version, the yeast locus tags are replaced with the corresponding
-gene symbols. Please download this file before you start.
+gene symbols. Please download this file before you start by right-clicking on 
+the hyperlink.
 </li>
 </ul>
 

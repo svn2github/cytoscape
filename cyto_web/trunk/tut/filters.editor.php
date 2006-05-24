@@ -64,7 +64,8 @@ and the following datasets:
     <LI>Its attribute set <A HREF="filters.editor/RUAL.na">RUAL.na</A>, 
         available at the same site.
 </UL>
-Before starting, please download these datasets to your computer.
+Before starting, please download these datasets to your computer by 
+right-clicking on the links to the files.
 
 <P>Begin by clicking here:&nbsp; <font size=+1> <a
 href="webstart/cyto2.2.060106.jnlp">WEB START</a> </font>&nbsp;

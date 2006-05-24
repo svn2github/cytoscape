@@ -65,7 +65,7 @@ This tutorial features this dataset
     http://www.cytoscape.org/ cgi-bin/moin.cgi/Data_Sets/</A>
     Before starting, please download this dataset and its companion
     attribute file <A HREF="getting.started/RUAL.na">RUAL.na</A> to 
-    your computer.
+    your local computer by right-clicking on the links for the files.
 <p>
 Begin by clicking here: 
 &nbsp;

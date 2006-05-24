@@ -471,7 +471,8 @@ use the Agilent Literature Search plugin to verify other interactions
 against the literature.  This section illustrates how.
 <ol>
 <li> Download the file <A HREF="litsearch/BINDHumanSubset.sif">
-BINDHumanSubset.sif</A> to your local computer.  This is a sample
+BINDHumanSubset.sif</A> to your local computer by right-clicking on the 
+hyperlink.  This is a sample
 set of interactions from the <A HREF="http://bind.ca/"BIND</A> database.
 <li> <B>Important:</B> this functionality relies on parameters 
 defined in the last use of the Literature Search plugin, in this 

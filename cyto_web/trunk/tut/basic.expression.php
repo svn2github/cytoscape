@@ -83,8 +83,8 @@ file contains a subset of the data from
 
 For further information on these datasets, see <a href=
 "http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&amp;db=PubMed&amp;list_uids=11340206&amp;dopt=Abstract">
-Science 2001 292:929-34</a>. Please download these data files to
-your local disk before starting. 
+Science 2001 292:929-34</a>. Before starting, please download these data 
+files to your local disk by right-clicking on the links.
 
 <p>Begin by clicking here: <a href=
 "webstart/cyto2.2.060106.jnlp">WEB START</a> (approximate download
