@@ -169,7 +169,21 @@ class DNodeView implements NodeView, Label
   public void setBorder(Stroke stroke)
   {
     if (stroke instanceof BasicStroke) {
-      setBorderWidth(((BasicStroke) stroke).getLineWidth()); }
+      synchronized (m_view.m_lock) {
+        setBorderWidth(((BasicStroke) stroke).getLineWidth());
+        final float[] dashArray = ((BasicStroke) stroke).getDashArray();
+        if (dashArray != null && dashArray.length >= 1) {
+          final Paint oldP = m_view.m_nodeDetails.borderPaint(m_inx);
+          if (!(oldP instanceof Color)) { return; }
+          double runningTotal = 0;
+          for (int i = 0; i < dashArray.length; i++) {
+            runningTotal += dashArray[i]; }
+          final float average = (float) (runningTotal / dashArray.length);
+          final Paint p = new java.awt.GradientPaint
+            (0.0f, 0.0f, (Color) oldP,
+             average, average, new Color(0.0f, 0.0f, 0.0f, 0.0f),
+             true);
+          setBorderPaint(p); } } }
   }
 
   public Stroke getBorder()
