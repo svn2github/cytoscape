@@ -292,8 +292,7 @@ public class InnerCanvas extends JComponent
              // Not [we hit something but it was already selected].
              !((chosenNode != 0 &&
                 m_view.getNodeView(chosenNode).isSelected()) ||
-               (chosenAnchor >= 0 &&
-                m_view.m_selectedAnchors.count(chosenAnchor) > 0) ||
+               chosenAnchor >= 0 ||
                (chosenEdge != 0 &&
                 m_view.getEdgeView(chosenEdge).isSelected())))) {
           if (m_view.m_nodeSelection) { // Unselect all selected nodes.
