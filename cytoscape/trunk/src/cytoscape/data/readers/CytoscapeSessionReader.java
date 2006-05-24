@@ -71,7 +71,6 @@ import cytoscape.generated.NetworkTree;
 import cytoscape.generated.Node;
 import cytoscape.generated.SelectedEdges;
 import cytoscape.generated.SelectedNodes;
-import cytoscape.generated2.Edge;
 import cytoscape.view.CyNetworkView;
 import ding.view.DGraphView;
 
@@ -84,11 +83,15 @@ import ding.view.DGraphView;
  */
 public class CytoscapeSessionReader {
 
-	private static final int NUM_STATE_FILES = 3;
 	private final String PACKAGE_NAME = "cytoscape.generated";
+	
+	public static final String CYSESSION = "cysession.xml";
+	
 	private static final String PROP_EXT = ".props";
 	private static final String XML_EXT = ".xml";
 	private static final String XGMML_EXT = ".xgmml";
+	
+	private final String FS = System.getProperty("file.separator");
 
 	private String fileName;
 	private Object sourceObject;
@@ -98,17 +101,9 @@ public class CytoscapeSessionReader {
 	private URL cysessionFileURL = null;
 	private URL vizmapFileURL = null;
 	private URL cytoscapePropsURL = null;
-
-	public static final String CYSESSION = "cysession.xml";
-
-	private final String FS = System.getProperty("file.separator");
-
+	
 	HashMap netMap;
-
 	String sessionID;
-
-	// for testing
-	int cnt;
 
 	Cysession session;
 
@@ -120,12 +115,14 @@ public class CytoscapeSessionReader {
 	HashMap vsMapByName;
 
 	/**
-	 * Constructor.
+	 * Constructor for local files.
 	 * 
 	 * @param filename
 	 *            Name of .cys file.
 	 * @throws JAXBException
 	 * @throws Exception
+	 * 
+	 * This constructor is for loading local session file.
 	 */
 	public CytoscapeSessionReader(String filename) {
 		this.fileName = filename;
@@ -136,22 +133,30 @@ public class CytoscapeSessionReader {
 		vsMapByName = new HashMap();
 	}
 
-	public CytoscapeSessionReader(URL sourceName) {
+	/**
+	 * Constructor for remote file (specified by an URL)
+	 * 
+	 * @param sourceName
+	 * @throws IOException
+	 * 
+	 *  This is for remote session file (URL).
+	 */
+	public CytoscapeSessionReader(URL sourceName) throws IOException {
 		this.sourceObject = sourceName;
 		this.networkList = new ArrayList();
 
 		vsMap = new HashMap();
 		vsMapByName = new HashMap();
-
-		try {
-			extractEntry((URL) sourceObject);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+		
+		extractEntry((URL) sourceObject);
 	}
 
+	/**
+	 * Extract Zip entries in the remote file
+	 *  
+	 * @param sourceName
+	 * @throws IOException
+	 */
 	private void extractEntry(URL sourceName) throws IOException {
 		ZipInputStream zis = null;
 		zis = new ZipInputStream(sourceName.openStream());
@@ -176,13 +181,17 @@ public class CytoscapeSessionReader {
 				URL networkURL = new URL("jar:" + sourceName.toString() + "!/"
 						+ entryName);
 				networkURLs.put(entryName, networkURL);
-				// System.out.println("*************EntryName: " +
-				// networkURL.toString());
 			}
 		}
 		zis.close();
 	}
 
+	/**
+	 * Read a session file.
+	 * 
+	 * @throws IOException
+	 * @throws JAXBException
+	 */
 	public void read() throws IOException, JAXBException {
 		Cytoscape.getDesktop().getNetworkPanel().getTreeTable().setVisible(
 				false);
@@ -193,8 +202,13 @@ public class CytoscapeSessionReader {
 			unzipSessionFromURL();
 		}
 
+		// Send message with list of loaded networks.
 		Cytoscape.firePropertyChange(Cytoscape.SESSION_LOADED, null,
 				networkList);
+		// Send signal to others
+		Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
+		Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, null);
+		
 		Cytoscape.getDesktop().getNetworkPanel().getTreeTable()
 				.setVisible(true);
 	}
@@ -215,7 +229,6 @@ public class CytoscapeSessionReader {
 		CytoscapeInit.getProperties().load(cytoscapePropsURL.openStream());
 
 		loadCySession(cysessionFileURL);
-
 
 		return true;
 	}
@@ -306,7 +319,6 @@ public class CytoscapeSessionReader {
 		List rootTrees = root.getChild();
 		Iterator rootIt = rootTrees.iterator();
 
-		cnt = 0;
 		while (rootIt.hasNext()) {
 			Child curNet = (Child) rootIt.next();
 			String curNetName = curNet.getId();
@@ -355,9 +367,10 @@ public class CytoscapeSessionReader {
 			if (sNodes != null) {
 				setSelectedNodes(rootNetwork, sNodes);
 			}
-			
-			SelectedEdges sEdges = (SelectedEdges) targetRoot.getSelectedEdges();
-			if(sEdges != null) {
+
+			SelectedEdges sEdges = (SelectedEdges) targetRoot
+					.getSelectedEdges();
+			if (sEdges != null) {
 				setSelectedEdges(rootNetwork, sEdges);
 			}
 			if (cysessionSource.getClass() == URL.class) {
@@ -414,8 +427,9 @@ public class CytoscapeSessionReader {
 
 		Iterator it = selected.getEdge().iterator();
 		while (it.hasNext()) {
-			//System.out.println("Class===== " + it.next().toString());
-			cytoscape.generated.Edge selectedEdge = (cytoscape.generated.Edge) it.next();
+			// System.out.println("Class===== " + it.next().toString());
+			cytoscape.generated.Edge selectedEdge = (cytoscape.generated.Edge) it
+					.next();
 			String edgeID = selectedEdge.getId();
 			Iterator edgeIt = network.edgesIterator();
 
@@ -430,14 +444,11 @@ public class CytoscapeSessionReader {
 		}
 
 	}
-	
-	
+
 	// Load the root network and then create its children.
 	private void walkTree(Network currentNetwork, CyNetwork parent,
 			Object sessionSource) throws JAXBException, IOException {
-
-		cnt++;
-
+		
 		// Get the list of children under this root
 		List children = currentNetwork.getChild();
 
@@ -485,7 +496,7 @@ public class CytoscapeSessionReader {
 			}
 
 			SelectedEdges sEdges = (SelectedEdges) childNet.getSelectedEdges();
-			if(sEdges != null) {
+			if (sEdges != null) {
 				setSelectedEdges(new_network, sEdges);
 			}
 			// Re-create
