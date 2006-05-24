@@ -668,7 +668,7 @@ public class CyMenus implements GraphViewChangeListener {
 	private void fillMenuBar() {
 
 		// fill the New submenu
-		newSubMenu2.add("Empty Network");
+		//newSubMenu2.add("Empty Network");  // This should be added by the Editor
 		addAction(new NewSessionAction());
 		addAction(new NewWindowSelectedNodesOnlyAction());
 		addAction(new NewWindowSelectedNodesEdgesAction());
