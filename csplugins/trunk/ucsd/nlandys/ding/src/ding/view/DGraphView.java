@@ -944,6 +944,7 @@ public class DGraphView implements GraphView, Printable
     synchronized (m_lock) {
       m_canvas.m_lod[0] = lod;
       m_contentChanged = true; }
+    updateView();
   }
 
   public GraphLOD getGraphLOD()
