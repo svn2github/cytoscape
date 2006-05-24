@@ -1735,7 +1735,7 @@ public abstract class Cytoscape {
 	}
 
 	/**
-	 * Once session writer is called, the file name is stored here.
+	 * Set the current session name.
 	 * 
 	 * @param newName
 	 */
@@ -1751,6 +1751,10 @@ public abstract class Cytoscape {
 		return sessionState;
 	}
 
+	/**
+	 * Clear all networks and attributes and start a 
+	 * new session.
+	 */
 	public static void createNewSession() {
 		Set netSet = getNetworkSet();
 		Iterator it = netSet.iterator();
@@ -1780,10 +1784,7 @@ public abstract class Cytoscape {
 		for (int i = 0; i < networkAttrNames.length; i++) {
 			networkAttributes.deleteAttribute(networkAttrNames[i]);
 		}
-
-		getDesktop().setTitle("Cytoscape Desktop (New Session)");
+		
 		setCurrentSessionFileName(null);
-
 	}
-
 }

@@ -65,7 +65,10 @@ public class NewSessionAction extends CytoscapeAction {
 					JOptionPane.WARNING_MESSAGE, null);
 
 			if (result == JOptionPane.YES_OPTION) {
+				Cytoscape.setSessionState(Cytoscape.SESSION_OPENED);
 				Cytoscape.createNewSession();
+				Cytoscape.getDesktop().setTitle("Cytoscape Desktop (New Session)");
+				Cytoscape.setSessionState(Cytoscape.SESSION_NEW);
 			} else {
 				return;
 			}

@@ -163,7 +163,7 @@ class SaveSessionTask implements Task {
 	 * Executes Task
 	 */
 	public void run() {
-		taskMonitor.setStatus("Saving Session...");
+		taskMonitor.setStatus("Saving Session.\n\nIf Session file is large, it takes a while.\nPlease be patient...");
 		taskMonitor.setPercentCompleted(-1);
 
 		try {
@@ -178,7 +178,7 @@ class SaveSessionTask implements Task {
 		
 		// Show the session Name as the window title.
 		File shortName = new File(fileName);
-		Cytoscape.getDesktop().setTitle("Cytoscape Desktop (Session Name: " + shortName.getName() + ")" );
+		Cytoscape.getDesktop().setTitle("Cytoscape Desktop (Session: " + shortName.getName() + ")" );
 	}
 
 	/**
