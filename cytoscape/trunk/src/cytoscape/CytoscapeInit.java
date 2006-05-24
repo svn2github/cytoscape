@@ -54,6 +54,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.jar.JarFile;
+import java.lang.Thread;
 
 import javax.swing.ImageIcon;
 
@@ -779,22 +780,38 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 	}
 
 	private static void loadStaticProperties(String defaultName, Properties props ) {
-		if ( props == null )
+		if ( props == null ) {
+			System.out.println("input props is null");
 			props = new Properties();
+		}
 
 		String tryName = "";
                 try {
                         // load the props from the jar file
                         tryName = "cytoscape.jar";
-                        URL vmu = ClassLoader.getSystemClassLoader().getSystemResource(defaultName);
+
+			// This somewhat unusual way of getting the ClassLoader is because
+			// other methods don't work from WebStart. 
+			ClassLoader cl = Thread.currentThread().getContextClassLoader(); 
+
+                        URL vmu = null;
+			if ( cl != null )
+				vmu = cl.getResource(defaultName);
+			else
+				System.out.println("ClassLoader for reading cytoscape.jar is null"); 
+
                         if ( vmu != null )
                                 props.load(vmu.openStream());
+			else
+				System.out.println("couldn't read " + defaultName + " from " + tryName); 
 
                         // load the props file from $HOME/.cytoscape 
                         tryName = "$HOME/.cytoscape";
                         File vmp = CytoscapeInit.getConfigFile(defaultName);
                         if (vmp != null)
                                 props.load(new FileInputStream(vmp));
+			else
+				System.out.println("couldn't read " + defaultName + " from " + tryName); 
 
                 } catch (IOException ioe) {
                         System.err.println("couldn't open " + tryName
