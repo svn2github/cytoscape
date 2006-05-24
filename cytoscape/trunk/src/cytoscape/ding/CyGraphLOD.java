@@ -37,8 +37,12 @@ public class CyGraphLOD extends GraphLOD implements PropertyChangeListener
 	}
 
 	public void propertyChange(PropertyChangeEvent e) {
-		if ( e.getPropertyName() == Cytoscape.PREFERENCES_UPDATED ) 
-			init();
+          if ( e.getPropertyName() == Cytoscape.PREFERENCES_UPDATED ) {
+            init();
+            java.util.Map networkViewMap = cytoscape.Cytoscape.getNetworkViewMap();
+            java.util.Iterator foo = networkViewMap.values().iterator();
+            while (foo.hasNext()) {
+              ((ding.view.DGraphView) foo.next()).setGraphLOD(this); } }
 	}
 
 	protected void init() {
