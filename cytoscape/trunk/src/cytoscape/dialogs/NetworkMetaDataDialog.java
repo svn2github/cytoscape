@@ -11,19 +11,16 @@ import java.util.Iterator;
 import java.util.Vector;
 
 import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
-import cytoscape.dialogs.NetworkMetaDataTableModel;
 import cytoscape.generated2.Date;
 import cytoscape.generated2.Description;
 import cytoscape.generated2.Format;
@@ -36,32 +33,31 @@ import cytoscape.generated2.Title;
 import cytoscape.generated2.Type;
 
 /**
+ * Dialog to display Network Metadata attribute.
  * 
  * @author kono
  */
-public class NetworkMetaDataDialog extends javax.swing.JDialog implements TableModelListener{
+public class NetworkMetaDataDialog extends javax.swing.JDialog implements
+		TableModelListener {
 
 	private static final String METADATA_ATTR_NAME = "Network Metadata";
-	private final String XGMML_PACKAGE = "cytoscape.generated2";
-	private final String DEFAULT_ABOUT = "sample";
-	
+	private final String DEFAULT_ABOUT = "http://www.cytoscape.org/";
+
 	NetworkMetaDataTableModel metaTM;
-	private ListSelectionModel lsm = null;
 
 	int[] selection = null;
 
 	private CyNetwork network;
 	String description;
-	
-	
+
 	/** Creates new form MetadataDialog */
-	public NetworkMetaDataDialog(java.awt.Frame parent, boolean modal, CyNetwork network) {
+	public NetworkMetaDataDialog(java.awt.Frame parent, boolean modal,
+			CyNetwork network) {
 		super(parent, modal);
 		this.network = network;
 		metaTM = new NetworkMetaDataTableModel(network);
 		metaTM.setTableData();
 		description = metaTM.getDescription();
-		//description = network.getClientData("RDF");
 		
 		initComponents();
 	}
@@ -73,9 +69,9 @@ public class NetworkMetaDataDialog extends javax.swing.JDialog implements TableM
 	 */
 	// <editor-fold defaultstate="collapsed" desc=" Generated Code ">
 	private void initComponents() {
-		
+
 		this.setTitle("Network Metadata Editor");
-		
+
 		okButton = new javax.swing.JButton();
 		cancelButton = new javax.swing.JButton();
 		jPanel1 = new javax.swing.JPanel();
@@ -122,7 +118,7 @@ public class NetworkMetaDataDialog extends javax.swing.JDialog implements TableM
 		jSplitPane1.setDividerLocation(120);
 		jSplitPane1.setDividerSize(5);
 		jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
-		
+
 		jScrollPane1.setViewportView(getMetadataTable());
 
 		jSplitPane1.setTopComponent(jScrollPane1);
@@ -143,8 +139,8 @@ public class NetworkMetaDataDialog extends javax.swing.JDialog implements TableM
 				org.jdesktop.layout.GroupLayout.TRAILING,
 				layout.createSequentialGroup().addContainerGap(201,
 						Short.MAX_VALUE).add(okButton).addPreferredGap(
-						org.jdesktop.layout.LayoutStyle.RELATED).add(cancelButton)
-						.addContainerGap()).add(jPanel1,
+						org.jdesktop.layout.LayoutStyle.RELATED).add(
+						cancelButton).addContainerGap()).add(jPanel1,
 				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 				.add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
@@ -192,21 +188,22 @@ public class NetworkMetaDataDialog extends javax.swing.JDialog implements TableM
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
 		this.dispose();
 	}
+
 	
-	//
 	private void update() throws JAXBException {
 
-		//JAXBContext jc = JAXBContext.newInstance(XGMML_PACKAGE);
+		// JAXBContext jc = JAXBContext.newInstance(XGMML_PACKAGE);
 		ObjectFactory objFactory = new ObjectFactory();
 		RdfRDF metadata = objFactory.createRdfRDF();
 		RdfDescription dc = objFactory.createRdfDescription();
-		
+
 		CyAttributes networkAttr = Cytoscape.getNetworkAttributes();
-		
+
 		HashMap rdfMap = new HashMap();
-		
+
 		dc.setAbout(DEFAULT_ABOUT);
 
 		Vector dataVector = metaTM.getDataVector();
@@ -216,26 +213,28 @@ public class NetworkMetaDataDialog extends javax.swing.JDialog implements TableM
 			String label = (String) row.get(0);
 			Object value = row.get(1);
 
-			if(label != null) {
+			if (label != null) {
 				rdfMap.put(label, value);
-				
+
 				dc.getDcmes().add(set(label, value));
 			}
-			
+
 		}
 
 		dc.getDcmes().add(set("Description", descriptionEditorPane.getText()));
 		rdfMap.put("Description", descriptionEditorPane.getText());
 		metadata.getDescription().add(dc);
-		//network.putClientData("RDF", metadata);
-		
+		// network.putClientData("RDF", metadata);
+
 		Iterator test = rdfMap.keySet().iterator();
-		while(test.hasNext()) {
+		while (test.hasNext()) {
 			Object a = test.next();
-			//if(a!=null) 
-			//System.out.println("Key = " + a.toString() +", " + rdfMap.get(a).toString());
+			// if(a!=null)
+			// System.out.println("Key = " + a.toString() +", " +
+			// rdfMap.get(a).toString());
 		}
-		networkAttr.setAttributeMap(network.getIdentifier(), METADATA_ATTR_NAME, rdfMap);
+		networkAttr.setAttributeMap(network.getIdentifier(),
+				METADATA_ATTR_NAME, rdfMap);
 	}
 
 	private Object set(String label, Object value) throws JAXBException {
@@ -273,11 +272,10 @@ public class NetworkMetaDataDialog extends javax.swing.JDialog implements TableM
 		return newObj;
 	}
 
-	
 	private JTable getMetadataTable() {
 		if (metadataTable == null) {
 			metaTM.addTableModelListener(new metadataTableListener());
-			
+
 			metadataTable = new JTable(metaTM);
 
 			metadataTable.setRowSelectionAllowed(true);
@@ -319,9 +317,6 @@ public class NetworkMetaDataDialog extends javax.swing.JDialog implements TableM
 		}
 
 	}
-
-	
-	
 
 	// Variables declaration - do not modify
 	private javax.swing.JButton okButton;
