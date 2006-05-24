@@ -99,7 +99,7 @@ follows:</p>
 
 <ol>
 <li>Go to the <a href=
-"http://www.agilent.com/labs/research/mtl/projects/sysbio/sysinformatics/downloadv2.html">
+"http://www.cytoscape.org/download_agilent_literature_search_v2.php?file=litsearch_v2">
 plugin license page</a></li>
 
 <li>Read the license agreement and fill out the short form below,

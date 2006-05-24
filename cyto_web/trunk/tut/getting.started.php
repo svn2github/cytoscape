@@ -122,7 +122,7 @@ region that intersects them.</P>
 Notice that the very bottom of this network is hidden by CytoPanel 2, which is labeled
 <B>Node Attribute Browser</B>.  Move this panel into a separate window, as follows:</P>
 <OL>
-	<LI><P>Locate the <B>Float Window</B> control in the upper left corner of
+	<LI><P>Locate the <B>Float Window</B> control in the upper right corner of
 	CytoPanel 2, shown: <IMG SRC="getting.started/Fig4.png" WIDTH="5%" BORDER=1><BR CLEAR=LEFT></P>
 
 	<LI><P>Click
@@ -198,10 +198,10 @@ companion attribute file maps these numeric IDs to standard gene
 names. Load this attribute file as follows:</P>
 <OL>
 	<LI><P>Under the <B>File</B> menu, select <B>Load</B>, and then <B>Node Attributes</B>.	</P>
-	<LI><P>Select the file <A HREF="RUAL.na">RUAL.na</A>, and click <B>Open</B>.  </P>
+	<LI><P>Select the file <A HREF="getting.started/RUAL.na">RUAL.na</A>, and click <B>Open</B>.  </P>
 	<LI><P>A popup window labeled <B>Loading Node Attributes</B> will appear.  When this
 	window reports <B>Status: Done</B>, click <B>Close</B>.</P>
-	<LI><P>Look at the file	<A HREF="RUAL.na">RUAL.na</A> with your favorite text 
+	<LI><P>Look at the file	<A HREF="getting.started/RUAL.na">RUAL.na</A> with your favorite text 
 	editor to examine its format.</P>
 </OL>
 View these attributes in Cytoscape as follows:
