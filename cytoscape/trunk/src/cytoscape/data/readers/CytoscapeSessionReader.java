@@ -62,6 +62,7 @@ import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
+import cytoscape.data.Semantics;
 import cytoscape.ding.CyGraphLOD;
 import cytoscape.ding.DingNetworkView;
 import cytoscape.generated.Child;
@@ -405,44 +406,42 @@ public class CytoscapeSessionReader {
 
 	private void setSelectedNodes(CyNetwork network, SelectedNodes selected) {
 
+		List selectedNodeList = new ArrayList();
+
 		Iterator it = selected.getNode().iterator();
 		while (it.hasNext()) {
 			Node selectedNode = (Node) it.next();
 			String nodeID = selectedNode.getId();
-			Iterator nodeIt = network.nodesIterator();
-
-			while (nodeIt.hasNext()) {
-				CyNode node = (CyNode) nodeIt.next();
-
-				if (node.getIdentifier().equals(nodeID)) {
-					network.setFlagged(node, true);
-				}
-			}
-
+			selectedNodeList.add(Cytoscape.getCyNode(nodeID, false));
 		}
-
+		network.setSelectedNodeState(selectedNodeList, true);
 	}
 
 	private void setSelectedEdges(CyNetwork network, SelectedEdges selected) {
 
+		String edgeID = null;
+		String[] parts = null;
+		CyEdge targetEdge = null;
+		List selectedEdgeList = new ArrayList();
+		
 		Iterator it = selected.getEdge().iterator();
 		while (it.hasNext()) {
-			// System.out.println("Class===== " + it.next().toString());
+			
 			cytoscape.generated.Edge selectedEdge = (cytoscape.generated.Edge) it
 					.next();
-			String edgeID = selectedEdge.getId();
-			Iterator edgeIt = network.edgesIterator();
-
-			while (edgeIt.hasNext()) {
-				CyEdge edge = (CyEdge) edgeIt.next();
-
-				if (edge.getIdentifier().equals(edgeID)) {
-					network.setFlagged(edge, true);
+			edgeID = selectedEdge.getId();
+			parts = edgeID.split(" ");
+			if(parts.length == 3) {
+				CyNode source = Cytoscape.getCyNode(parts[0], false);
+				CyNode target = Cytoscape.getCyNode(parts[2], false);
+				String interaction = parts[1].substring(1, parts[1].length()-1);
+				targetEdge = Cytoscape.getCyEdge(source, target, Semantics.INTERACTION, interaction, false);
+				if(targetEdge != null) {
+					selectedEdgeList.add(targetEdge);
 				}
 			}
-
 		}
-
+		network.setSelectedEdgeState(selectedEdgeList, true);
 	}
 
 	// Load the root network and then create its children.
