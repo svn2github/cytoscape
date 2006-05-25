@@ -1,6 +1,8 @@
 package ding.view;
 
+import cytoscape.graph.fixed.FixedGraph;
 import cytoscape.render.immed.EdgeAnchors;
+import cytoscape.util.intr.IntIterator;
 import cytoscape.util.intr.IntObjHash;
 import java.awt.Color;
 import java.awt.Font;
@@ -149,12 +151,48 @@ class DEdgeDetails extends IntermediateEdgeDetails
 
   public EdgeAnchors anchors(int edge)
   {
-    return (EdgeAnchors) (m_view.getEdgeView(~edge));
+    final EdgeAnchors returnThis = (EdgeAnchors) (m_view.getEdgeView(~edge));
+    if (returnThis.numAnchors() > 0) { return returnThis; }
+    final FixedGraph graph = (FixedGraph) m_view.m_drawPersp;
+    if (graph.edgeSource(edge) == graph.edgeTarget(edge)) { // Self-edge.
+      final int node = graph.edgeSource(edge);
+      m_view.m_spacial.exists(node, m_view.m_extentsBuff, 0);
+      final double w = ((double) m_view.m_extentsBuff[2]) -
+        m_view.m_extentsBuff[0];
+      final double h = ((double) m_view.m_extentsBuff[3]) -
+        m_view.m_extentsBuff[1];
+      final double x = (((double) m_view.m_extentsBuff[0]) +
+                        m_view.m_extentsBuff[2]) / 2.0d;
+      final double y = (((double) m_view.m_extentsBuff[1]) +
+                        m_view.m_extentsBuff[3]) / 2.0d;
+      final double nodeSize = Math.max(w, h);
+      int i = 0;
+      final IntIterator selfEdges = graph.edgesConnecting
+        (node, node, true, true, true);
+      while (selfEdges.hasNext()) {
+        final int e2 = selfEdges.nextInt();
+        if (e2 == edge) { break; }
+        i++; }
+      final int inx = i;
+      return new EdgeAnchors() {
+          public int numAnchors() {
+            return 2; }
+          public void getAnchor(int anchorInx, float[] anchorArr, int offset) {
+            if (anchorInx == 0) {
+              anchorArr[offset] = (float) (x - (inx + 3) * nodeSize / 2.0d);
+              anchorArr[offset + 1] = (float) y; }
+            else if (anchorInx == 1) {
+              anchorArr[offset] = (float) x;
+              anchorArr[offset + 1] = (float) (y - (inx + 3) *
+                                               nodeSize / 2.0d); }
+          } }; }
+    return returnThis;
   }
 
   public float anchorSize(int edge, int anchorInx)
   {
-    if (m_view.getEdgeView(~edge).isSelected()) {
+    if (m_view.getEdgeView(~edge).isSelected() &&
+        ((DEdgeView) m_view.getEdgeView(~edge)).numAnchors() > 0) {
       return m_view.getAnchorSize(); }
     else {
       return 0.0f; }
