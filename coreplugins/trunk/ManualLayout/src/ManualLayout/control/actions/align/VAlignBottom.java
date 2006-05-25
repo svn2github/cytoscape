@@ -23,7 +23,15 @@ public class VAlignBottom extends AbstractControlAction {
   protected void control(List nodes) {
     Iterator sel_nodes = nodes.iterator();
     while ( sel_nodes.hasNext() ) {
-       ( ( NodeView )sel_nodes.next() ).setYPosition( Y_min );
-    }                       
+      NodeView n = ( NodeView )sel_nodes.next();
+      double h = n.getHeight()/2;
+      n.setYPosition( Y_min + h );
+    }
+  }
+
+  protected double getY(NodeView n) {
+    double y = n.getYPosition();
+    double h = n.getHeight()/2;
+    return y-h;
   }
 }

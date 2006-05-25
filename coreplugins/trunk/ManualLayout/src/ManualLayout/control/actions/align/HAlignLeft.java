@@ -27,7 +27,15 @@ public class HAlignLeft extends AbstractControlAction {
   protected void control(List nodes) {
     Iterator sel_nodes = nodes.iterator();
     while ( sel_nodes.hasNext() ) {
-      ( ( NodeView )sel_nodes.next() ).setXPosition( X_min );
+      NodeView n = ( NodeView )sel_nodes.next();
+      double w = n.getWidth()/2; 
+      n.setXPosition( X_min + w );
     }                       
+  }
+
+  protected double getX(NodeView n) {
+    double x = n.getXPosition();
+    double w = n.getWidth()/2;
+    return x-w;
   }
 }
