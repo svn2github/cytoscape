@@ -172,7 +172,8 @@ class DEdgeDetails extends IntermediateEdgeDetails
       while (selfEdges.hasNext()) {
         final int e2 = selfEdges.nextInt();
         if (e2 == edge) { break; }
-        i++; }
+        if (((EdgeAnchors) m_view.getEdgeView(~e2)).numAnchors() == 0) {
+          i++; } }
       final int inx = i;
       return new EdgeAnchors() {
           public int numAnchors() {
@@ -190,12 +191,15 @@ class DEdgeDetails extends IntermediateEdgeDetails
       final IntIterator otherEdges = graph.edgesConnecting
         (graph.edgeSource(edge), graph.edgeTarget(edge),
          true, true, true);
-      final int firstOtherEdge = otherEdges.nextInt();
-      if (firstOtherEdge == edge) { break; }
-      int i = 1;
+      int otherEdge = otherEdges.nextInt();
+      if (otherEdge == edge) { break; }
+      int i =
+        ((EdgeAnchors) m_view.getEdgeView(~otherEdge)).numAnchors() == 0 ?
+        1 : 0;
       while (true) {
-        if (edge == otherEdges.nextInt()) { break; }
-        i++; }
+        if (edge == (otherEdge = otherEdges.nextInt())) { break; }
+        if (((EdgeAnchors) m_view.getEdgeView(~otherEdge)).numAnchors() == 0) {
+          i++; } }
       final int inx = i;
       m_view.m_spacial.exists(graph.edgeSource(edge), m_view.m_extentsBuff, 0);
       final double srcW = ((double) m_view.m_extentsBuff[2]) -
