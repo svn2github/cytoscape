@@ -186,6 +186,54 @@ class DEdgeDetails extends IntermediateEdgeDetails
               anchorArr[offset + 1] = (float) (y - (inx + 3) *
                                                nodeSize / 2.0d); }
           } }; }
+    while (true) {
+      final IntIterator otherEdges = graph.edgesConnecting
+        (graph.edgeSource(edge), graph.edgeTarget(edge),
+         true, true, true);
+      final int firstOtherEdge = otherEdges.nextInt();
+      if (firstOtherEdge == edge) { break; }
+      int i = 1;
+      while (true) {
+        if (edge == otherEdges.nextInt()) { break; }
+        i++; }
+      final int inx = i;
+      m_view.m_spacial.exists(graph.edgeSource(edge), m_view.m_extentsBuff, 0);
+      final double srcW = ((double) m_view.m_extentsBuff[2]) -
+        m_view.m_extentsBuff[0];
+      final double srcH = ((double) m_view.m_extentsBuff[3]) -
+        m_view.m_extentsBuff[1];
+      final double srcX = (((double) m_view.m_extentsBuff[0]) +
+                           m_view.m_extentsBuff[2]) / 2.0d;
+      final double srcY = (((double) m_view.m_extentsBuff[1]) +
+                           m_view.m_extentsBuff[3]) / 2.0d;
+      m_view.m_spacial.exists(graph.edgeTarget(edge), m_view.m_extentsBuff, 0);
+      final double trgW = ((double) m_view.m_extentsBuff[2]) -
+        m_view.m_extentsBuff[0];
+      final double trgH = ((double) m_view.m_extentsBuff[3]) -
+        m_view.m_extentsBuff[1];
+      final double trgX = (((double) m_view.m_extentsBuff[0]) +
+                           m_view.m_extentsBuff[2]) / 2.0d;
+      final double trgY = (((double) m_view.m_extentsBuff[1]) +
+                           m_view.m_extentsBuff[3]) / 2.0d;
+      final double nodeSize =
+        Math.max(Math.max(Math.max(srcW, srcH), trgW), trgH);
+      final double midX = (srcX + trgX) / 2;
+      final double midY = (srcY + trgY) / 2;
+      final double dx = trgX - srcX;
+      final double dy = trgY - srcY;
+      final double len = Math.sqrt(dx * dx + dy * dy);
+      if (((float) len) == 0.0f) { break; }
+      final double normX = dx / len;
+      final double normY = dy / len;
+      final double factor = ((inx + 1) / 2) *
+        (inx % 2 == 0 ? 1 : -1) * nodeSize;
+      final double anchorX = midX + factor * normY;
+      final double anchorY = midY - factor * normX;
+      return new EdgeAnchors() {
+          public int numAnchors() { return 1; }
+          public void getAnchor(int inx, float[] arr, int off) {
+            arr[off] = (float) anchorX;
+            arr[off + 1] = (float) anchorY; } }; }
     return returnThis;
   }
 
