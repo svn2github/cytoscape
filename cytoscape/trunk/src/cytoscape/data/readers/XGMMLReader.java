@@ -783,7 +783,7 @@ public class XGMMLReader implements GraphReader {
 
 	}
 
-	protected void layoutEdgeGraphics(GraphView myView, Graphics graphics,
+protected void layoutEdgeGraphics(GraphView myView, Graphics graphics,
 			EdgeView edgeView) {
 
 		edgeView.setStrokeWidth(((Number) graphics.getWidth()).floatValue());
@@ -815,6 +815,43 @@ public class XGMMLReader implements GraphReader {
 					} else if (attName.equals("edgeLineType")) {
 						edgeView.setStroke(LineType.parseLineTypeText(value)
 								.getStroke());
+					} else if(attName.equals("edgeBend")) {
+						// Restore bend info
+						
+						Iterator handleIt = edgeGraphics.getContent().iterator();
+						List handleList = new ArrayList();
+						while(handleIt.hasNext()) {
+							Object curObj = handleIt.next();
+							if(curObj.getClass() == AttImpl.class) {
+								
+								AttImpl handle = (AttImpl) curObj;
+								Iterator pointIt = handle.getContent().iterator();
+								double x = 0;
+								double y = 0;
+								boolean xFlag = false, yFlag = false;
+								while(pointIt.hasNext()) {
+									Object coordObj = pointIt.next();
+									if(coordObj.getClass() == AttImpl.class) {
+										AttImpl point = (AttImpl) coordObj;
+										if(point.getName().equals("x")) {
+											x = Double.parseDouble(point.getValue());
+											xFlag = true;
+										} else if(point.getName().equals("y")) {
+											y = Double.parseDouble(point.getValue());
+											yFlag = true;
+										}
+									}
+								}
+								if(xFlag == true && yFlag == true) {
+									Point2D handlePoint = new Point2D.Double(x, y);
+									handleList.add(handlePoint);
+								}
+								//System.out.println("Restore bend: " + x + ", " + y);
+							}
+						}
+						if(handleList.size() != 0) {
+							edgeView.getBend().setHandles(handleList);
+						}
 					}
 				}
 			}
@@ -822,11 +859,9 @@ public class XGMMLReader implements GraphReader {
 
 		// edgeView.setSourceEdgeEnd(((Number) graphics.get)
 		// .intValue());
-	}
-
-	/**
-	 * Part of interface contract
-	 */
+	}	/**
+		 * Part of interface contract
+		 */
 	public int[] getNodeIndicesArray() {
 		giny_nodes.trimToSize();
 		return giny_nodes.elements();
@@ -1216,7 +1251,7 @@ public class XGMMLReader implements GraphReader {
 		}
 		return map;
 	}
-	
+
 	public void setNetworkAttributes(CyNetwork cyNetwork) {
 		// Extract Network Attributes
 		// Currently, supported attribute data type is RDF metadata only.
@@ -1238,7 +1273,8 @@ public class XGMMLReader implements GraphReader {
 			} else if (curAtt.getName().equals(XGMMLWriter.GRAPH_VIEW_CENTER_Y)) {
 				graphViewCenterY = new Double(curAtt.getValue());
 			} else {
-				readAttribute(networkCyAttributes, cyNetwork.getIdentifier(), curAtt);
+				readAttribute(networkCyAttributes, cyNetwork.getIdentifier(),
+						curAtt);
 			}
 		}
 	}

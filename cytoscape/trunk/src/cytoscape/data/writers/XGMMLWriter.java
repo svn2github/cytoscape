@@ -37,6 +37,7 @@
 
 package cytoscape.data.writers;
 
+import giny.view.Bend;
 import giny.view.EdgeView;
 import giny.view.NodeView;
 
@@ -852,6 +853,9 @@ public class XGMMLWriter {
 			Att edgeLineType = objFactory.createAtt();
 			Att sourceArrowColor = objFactory.createAtt();
 			Att targetArrowColor = objFactory.createAtt();
+			
+			// Bend
+			Att bend = objFactory.createAtt();
 
 			sourceArrow.setName("sourceArrow");
 			targetArrow.setName("targetArrow");
@@ -859,6 +863,7 @@ public class XGMMLWriter {
 			edgeLineType.setName("edgeLineType");
 			sourceArrowColor.setName("sourceArrowColor");
 			targetArrowColor.setName("targetArrowColor");
+			bend.setName("edgeBend");
 
 			sourceArrow.setValue(Integer.toString(curEdgeView
 					.getSourceEdgeEnd()));
@@ -869,7 +874,31 @@ public class XGMMLWriter {
 					.setValue(encodeFont(curEdgeView.getLabel().getFont()));
 
 			edgeLineType.setValue(lineTypeBuilder(curEdgeView).toString());
-
+			
+			
+			// Extract bend information
+			Bend bendData = curEdgeView.getBend();
+			List handles = bendData.getHandles();
+			
+			Iterator bendIt = handles.iterator();
+			while(bendIt.hasNext()) {
+				java.awt.geom.Point2D handle = (Point2D) bendIt.next();
+				Att handlePoint = objFactory.createAtt();
+				Att handleX = objFactory.createAtt();
+				Att handleY = objFactory.createAtt();
+				
+				handlePoint.setName("handle");
+				handleX.setName("x");
+				handleY.setName("y");
+				
+				handleX.setValue(Double.toString(handle.getX()));
+				handleY.setValue(Double.toString(handle.getY()));
+				handlePoint.getContent().add(handleX);
+				handlePoint.getContent().add(handleY);
+				bend.getContent().add(handlePoint);
+			}
+			
+			
 			// System.out.println("Source Color is :" +
 			// curEdgeView.getSourceEdgeEndPaint().toString());
 			// System.out.println("Target Color is :" +
@@ -891,6 +920,7 @@ public class XGMMLWriter {
 			cytoscapeEdgeAttr.getContent().add(edgeLineType);
 			cytoscapeEdgeAttr.getContent().add(sourceArrowColor);
 			cytoscapeEdgeAttr.getContent().add(targetArrowColor);
+			cytoscapeEdgeAttr.getContent().add(bend);
 
 			graphics.getAtt().add(cytoscapeEdgeAttr);
 
