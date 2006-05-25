@@ -542,6 +542,10 @@ public class CytoscapeSessionReader {
 			network = Cytoscape.createNetwork(nodes, edges, reader
 					.getNetworkID(), parent);
 		}
+		
+		// Set network Attributes here, not in the read() method in XGMMLReader!
+		// Otherwise, ID mismatch may happen.
+		reader.setNetworkAttributes(network);
 
 		// network.putClientData(
 		// "metaNodeViewer.model.GPMetaNodeFactory.metaNodeRindices",

@@ -201,7 +201,7 @@ public class XGMMLWriter {
 		graph = objFactory.createGraph();
 
 		graphAtt = objFactory.createAtt();
-		graph.setId(network.getIdentifier());
+		graph.setId(network.getTitle());  // This is the name of network, NOT rootgraph index!!
 		graph.setLabel(network.getTitle());
 
 		// Metadata

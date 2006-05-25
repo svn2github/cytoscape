@@ -392,6 +392,7 @@ class LoadNetworkTask implements Task {
 		if (file_type == Cytoscape.FILE_XGMML) {
 			network = Cytoscape.createNetwork(nodes, edges,
 					((XGMMLReader) reader).getNetworkName());
+			((XGMMLReader) reader).setNetworkAttributes(network);
 		} else {
 			network = Cytoscape.createNetwork(nodes, edges, CyNetworkNaming
 					.getSuggestedNetworkTitle(title));

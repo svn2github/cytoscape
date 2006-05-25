@@ -66,6 +66,7 @@ import javax.xml.bind.Unmarshaller;
 import cern.colt.list.IntArrayList;
 import cern.colt.map.OpenIntIntHashMap;
 import cytoscape.CyEdge;
+import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
@@ -263,30 +264,6 @@ public class XGMMLReader implements GraphReader {
 		networkName = network.getLabel();
 
 		rootNodes = new ArrayList();
-
-		// Extract Network Attributes
-		// Currently, supported attribute data type is RDF metadata only.
-		List networkAttributes = network.getAtt();
-
-		for (int i = 0; i < networkAttributes.size(); i++) {
-			Att curAtt = (Att) networkAttributes.get(i);
-
-			if (curAtt.getName().equals("networkMetadata")) {
-				metadata = (RdfRDF) (curAtt.getContent().get(0));
-				networkCyAttributes.setAttributeMap(network.getId(),
-						METADATA_ATTR_NAME, this.rdf2map(metadata));
-			} else if (curAtt.getName().equals(XGMMLWriter.BACKGROUND)) {
-				backgroundColor = curAtt.getValue();
-			} else if (curAtt.getName().equals(XGMMLWriter.GRAPH_VIEW_ZOOM)) {
-				graphViewZoom = new Double(curAtt.getValue());
-			} else if (curAtt.getName().equals(XGMMLWriter.GRAPH_VIEW_CENTER_X)) {
-				graphViewCenterX = new Double(curAtt.getValue());
-			} else if (curAtt.getName().equals(XGMMLWriter.GRAPH_VIEW_CENTER_Y)) {
-				graphViewCenterY = new Double(curAtt.getValue());
-			} else {
-				readAttribute(networkCyAttributes, network.getId(), curAtt);
-			}
-		}
 
 		// Get all nodes and edges as one List object.
 		List nodesAndEdges = network.getNodeOrEdge();
@@ -1238,6 +1215,32 @@ public class XGMMLReader implements GraphReader {
 
 		}
 		return map;
+	}
+	
+	public void setNetworkAttributes(CyNetwork cyNetwork) {
+		// Extract Network Attributes
+		// Currently, supported attribute data type is RDF metadata only.
+		List networkAttributes = network.getAtt();
+
+		for (int i = 0; i < networkAttributes.size(); i++) {
+			Att curAtt = (Att) networkAttributes.get(i);
+
+			if (curAtt.getName().equals("networkMetadata")) {
+				metadata = (RdfRDF) (curAtt.getContent().get(0));
+				networkCyAttributes.setAttributeMap(cyNetwork.getIdentifier(),
+						METADATA_ATTR_NAME, this.rdf2map(metadata));
+			} else if (curAtt.getName().equals(XGMMLWriter.BACKGROUND)) {
+				backgroundColor = curAtt.getValue();
+			} else if (curAtt.getName().equals(XGMMLWriter.GRAPH_VIEW_ZOOM)) {
+				graphViewZoom = new Double(curAtt.getValue());
+			} else if (curAtt.getName().equals(XGMMLWriter.GRAPH_VIEW_CENTER_X)) {
+				graphViewCenterX = new Double(curAtt.getValue());
+			} else if (curAtt.getName().equals(XGMMLWriter.GRAPH_VIEW_CENTER_Y)) {
+				graphViewCenterY = new Double(curAtt.getValue());
+			} else {
+				readAttribute(networkCyAttributes, cyNetwork.getIdentifier(), curAtt);
+			}
+		}
 	}
 
 }
