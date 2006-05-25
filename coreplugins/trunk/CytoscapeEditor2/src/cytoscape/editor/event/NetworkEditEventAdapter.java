@@ -7,16 +7,17 @@ package cytoscape.editor.event;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 
-import cytoscape.editor.CytoscapeEditor;
-
-import phoebe.PGraphView;
 import phoebe.PhoebeCanvasDropEvent;
 import phoebe.PhoebeCanvasDropListener;
-import edu.umd.cs.piccolo.PCanvas;
-import edu.umd.cs.piccolo.event.PBasicInputEventHandler;
-import edu.umd.cs.piccolo.event.PInputEvent;
-import edu.umd.cs.piccolox.util.PNodeLocator;
+import cytoscape.editor.CytoscapeEditor;
+import ding.view.DGraphView;
+import ding.view.InnerCanvas;
 
 /**
  * 
@@ -27,22 +28,32 @@ import edu.umd.cs.piccolox.util.PNodeLocator;
  * and button press events.  All editors must include a network edit event handler class that extends the
  * <b>NetworkEditEventAdapter</b> class.  
  * 
+ *  * revised: 04/15/2006 to integrate with Cytoscape 2.3 renderer
+ *     Phase 1: switch underlying node identification and edge drawing code
+ *     Phase 2: remove dependencies upon Piccolo
+ *     
  * @author Allan Kuchinsky
  * @version 1.0
  * 
  */
 public class NetworkEditEventAdapter 
-   extends PBasicInputEventHandler implements
+   // AJK: 04/15/06 for Cytoscape 2.3
+//   extends PBasicInputEventHandler implements
+     implements MouseListener, MouseMotionListener, 
 		ActionListener,
 		PhoebeCanvasDropListener,
+		KeyListener,
 		cytoscape.data.attr.MultiHashMapListener
 		{
 
-	protected PCanvas canvas;
 
+	// AJK: 04/15/06 revise for Cytoscape-2.3 renderer
+/*	protected PCanvas canvas;
 	protected PGraphView view;
-
 	PNodeLocator locator;
+	*/
+	protected InnerCanvas canvas;
+	protected DGraphView view;
 
 	CytoscapeEditor _caller;
 	
@@ -56,10 +67,18 @@ public class NetworkEditEventAdapter
 	 * adds an input event listener to the view's canvas
 	 * @param view a Cytoscape network view
 	 */
-	public void start(PGraphView view) {
+
+//	public void start(PGraphView view) {
+	public void start (DGraphView view) {
 		this.view = view;
 		this.canvas = view.getCanvas();
-		canvas.addInputEventListener(this);
+        // AJK: 04/15/06 for Cytoscape 2.3
+//		canvas.addInputEventListener(this);
+		canvas.addMouseListener(this);
+		canvas.addMouseMotionListener(this);
+		System.out.println("Mouse and MotionListeners added to " + canvas);
+		System.out.println("Canvas has total number of Listeners = " + 
+				canvas.getMouseListeners().length);
 	}
 
 	/**
@@ -69,7 +88,10 @@ public class NetworkEditEventAdapter
 	 */
 	public void stop() {
 		if (canvas != null) {
-			canvas.removeInputEventListener(this);
+			// AJKL: 04/15/06 for Cytoscape 2.3
+//			canvas.removeInputEventListener(this);
+			canvas.removeMouseListener(this);
+			canvas.removeMouseMotionListener(this);
 			this.view = null;
 			this.canvas = null;
 		}
@@ -80,11 +102,16 @@ public class NetworkEditEventAdapter
 	 * 
 	 * @return the current canvas
 	 */
-	public PCanvas getCanvas() {
+	
+//	public PCanvas getCanvas() {
+	public InnerCanvas getCanvas() {
 		return canvas;
 	}
 
 
+
+// AJK: 04/15/06 replace for Cytoscape 2.3
+	 /*
 	public void mousePressed(PInputEvent e) {
 //		System.out.println ("Calling mousePressed on: " + super.getClass());
 		super.mousePressed(e);
@@ -107,8 +134,26 @@ public class NetworkEditEventAdapter
 		super.mouseDragged (e);
 
 	}
+*/
+	 public void mouseExited(MouseEvent e) {}	 
+	 public void mouseEntered (MouseEvent e) {}
+	 public void mousePressed(MouseEvent e) {}
+	 public void mouseMoved(MouseEvent e) {}
+	 public void mouseDragged (MouseEvent e) {}
+	 public void mouseClicked(MouseEvent e) {}
+	 public void mouseReleased (MouseEvent e) {}
+	 
+		public void keyPressed(KeyEvent event) {
+		}
+
+		public void keyReleased(KeyEvent event) {
+		}
+
+		public void keyTyped(KeyEvent event) {
+		}
 
 
+	
 	/**
 	 * method for rendering an edge under construction as the user moves the mouse
 	 * typically this may be done via a rubberband-line that udpates as the mouse position changes
@@ -176,7 +221,8 @@ public class NetworkEditEventAdapter
 	/**
 	 * @return Returns the view.
 	 */
-	public PGraphView getView() {
+//	public PGraphView getView() {
+	public DGraphView getView() {
 		return view;
 	}
 
@@ -184,7 +230,8 @@ public class NetworkEditEventAdapter
 	/**
 	 * @param view The view to set.
 	 */
-	public void setView(PGraphView view) {
+//	public void setView(PGraphView view) {
+    public void setView (DGraphView view) {
 		this.view = view;
 	}
 

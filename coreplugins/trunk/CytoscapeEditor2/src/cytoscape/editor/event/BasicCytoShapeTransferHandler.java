@@ -5,13 +5,11 @@
 package cytoscape.editor.event;
 
 import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.DragGestureListener;
 
 import javax.swing.JComponent;
-import javax.swing.JList;
 import javax.swing.TransferHandler;
 
 import cytoscape.editor.impl.BasicCytoShapeEntity;

@@ -57,6 +57,7 @@ public class NewNetworkAction extends CytoscapeAction {
 	public void actionPerformed(ActionEvent e) {
 
 		CytoscapeEditor cyEditor = CytoscapeEditorManager.getCurrentEditor();
+
 		if (cyEditor == null) {
 
 			String expDescript = "You must first set up an editor for Cytoscape via the File->SetEditor menu item.";

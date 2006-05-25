@@ -7,7 +7,6 @@ package cytoscape.editor.actions;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
 

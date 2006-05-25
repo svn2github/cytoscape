@@ -4,9 +4,6 @@
  */
 package cytoscape.editor.event;
 
-import edu.umd.cs.piccolo.PNode;
-import edu.umd.cs.piccolo.nodes.PPath;
-import edu.umd.cs.piccolox.util.PFixedWidthStroke;
 import giny.view.NodeView;
 
 import java.awt.Color;
@@ -18,16 +15,17 @@ import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.util.Iterator;
 
-import phoebe.PGraphView;
 import phoebe.PhoebeCanvasDropEvent;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.editor.CytoscapeEditor;
-import cytoscape.editor.CytoscapeEditorManager;
 import cytoscape.editor.editors.SimpleBioMoleculeEditor;
 import cytoscape.editor.impl.BasicCytoShapeEntity;
 import cytoscape.editor.impl.ShapePalette;
 import cytoscape.view.CyNetworkView;
+import ding.view.DGraphView;
+import edu.umd.cs.piccolo.nodes.PPath;
+import edu.umd.cs.piccolox.util.PFixedWidthStroke;
 
 /**
  * 
@@ -87,11 +85,16 @@ public class PaletteNetworkEditEventHandler extends
 	public void itemDropped (PhoebeCanvasDropEvent e) {
 		
 		// AJK: 11/20/05 return if we're not dropping into the currently active view
-		PGraphView thisView = this.getView();
-		if (thisView != ((PGraphView) Cytoscape.getCurrentNetworkView()))
-		{
-			return;
-		}
+		// AJK: 04/02/06 go from PGraphView to DGraphView
+		
+//		PGraphView thisView = this.getView();
+//		if (thisView != ((PGraphView) Cytoscape.getCurrentNetworkView()))
+//		{
+//			return;
+//		}
+		
+		
+
 		
 //		System.out.println ("Item dropped at: " + e.getLocation());
 //		System.out.println ("Bounds of current view are: " +
@@ -106,8 +109,12 @@ public class PaletteNetworkEditEventHandler extends
 		
 	
 		Point location = e.getLocation();
-		Point2D locn = (Point2D) location.clone();
+		
+		// AJK: 04/02/06 BEGIN
+/*		Point2D locn = (Point2D) location.clone();
 		locn = canvas.getCamera().localToView(locn);
+*/		// AJK: 04/02/06 END
+		
 		Transferable t = e.getTransferable();
 		 
 		BasicCytoShapeEntity myShape = null;
@@ -169,6 +176,8 @@ public class PaletteNetworkEditEventHandler extends
 			// need to handle nodes and edges differently 
 			String attributeName = myShape.getAttributeName();
 			String attributeValue = myShape.getAttributeValue();
+			
+			System.out.println("Item dropped of type: " + attributeName);
 
 			args = new Object []{ "LOCATION", location};
 			if (attributeName.equals(this.NODE_TYPE)
@@ -183,9 +192,32 @@ public class PaletteNetworkEditEventHandler extends
 						attributeName, attributeValue);
 			    counter++;				
 				double zoom = Cytoscape.getCurrentNetworkView().getZoom();
+	
 				Cytoscape.getCurrentNetwork().restoreNode(cn);		
 				NodeView nv = Cytoscape.getCurrentNetworkView().getNodeView(cn);
-				nv.setOffset(locn.getX(), locn.getY());
+				// AJK: 04/02/06
+//				nv.setOffset(locn.getX(), locn.getY());
+				nv.setOffset(location.x, location.y);
+			    DGraphView dview = (DGraphView) Cytoscape.getCurrentNetworkView();
+//			    double zoomFactor = dview.getZoom();
+//			    Point2D dCenter = dview.getCenter();
+//			    Rectangle2D dBounds = (Rectangle2D) dview.getCanvas().getBounds();
+//			    System.out.println("item dropped at local coordinate: " + location.x + "," + location.y);
+//			    System.out.println("bounds are at: " + dBounds.getMinX() + "," + 
+//			    		dBounds.getMinY() + " " + dBounds.getMaxX() + "," + dBounds.getMaxY());
+//                System.out.println("zoom factor is: " + zoomFactor);			    
+			    
+			    double [] locn = new double[2];
+                locn [0] = location.getX();
+                locn [1] = location.getY();
+                dview.xformComponentToNodeCoords(locn);
+                nv.setOffset(locn[0], locn[1]);
+			    
+//			    nv.setOffset(xlocn, ylocn);
+			    System.out.println("Offset set to: " + locn[0] + "," + locn[1]);
+				
+				// AJK: 04/02/06 END
+				
 			}
 			else if (attributeName.equals(this.EDGE_TYPE))
 			{
@@ -209,7 +241,7 @@ public class PaletteNetworkEditEventHandler extends
 	{
 		Point location = e.getLocation();
 		Point2D locn = (Point2D) location.clone();
-		locn = canvas.getCamera().localToView(locn);
+//		locn = canvas.getCamera().localToView(locn);
 		
 		editEvent = this;
 //		if (getMode() != SELECT_MODE) {
@@ -228,9 +260,9 @@ public class PaletteNetworkEditEventHandler extends
 		// if we reach this point, then the edge shape has been dropped onto a nod3e
 		nextPoint = e.getLocation();
 		boolean onNode = true;
-		locator.setNode((PNode) targetNode);
-		nextPoint = locator.locatePoint(nextPoint);
-		nextPoint = ((PNode) targetNode).localToGlobal(nextPoint);
+//		locator.setNode((PNode) targetNode);
+//		nextPoint = locator.locatePoint(nextPoint);
+//		nextPoint = ((PNode) targetNode).localToGlobal(nextPoint);
 		if (onNode && !(edgeStarted)) {
 			// Begin Edge creation			
 			setHandlingEdgeDrop(true);
@@ -239,7 +271,7 @@ public class PaletteNetworkEditEventHandler extends
 			setEdgeStarted(true);
 			setNode(targetNode);
 			edge = new PPath();			
-			getCanvas().getLayer().addChild(edge);
+//			getCanvas().getLayer().addChild(edge);
 
 			edge.setStroke(new PFixedWidthStroke(3));
 			edge.setPaint(Color.black);
@@ -261,8 +293,18 @@ public class PaletteNetworkEditEventHandler extends
 	 */
 	public NodeView findEdgeDropTarget (Point2D location)
 	{
-		double locnX = location.getX();
-		double locnY = location.getY();
+//		double locnX = location.getX();
+//		double locnY = location.getY();
+		
+		double[] locn = new double[2];
+		locn[0] = location.getX();
+		locn[1] = location.getY();
+		int chosenNode = 0;
+		this.getView().xformComponentToNodeCoords(locn);
+		double locnX = locn[0];
+    	double locnY = locn[1];
+	
+		
 		Iterator it = Cytoscape.getCurrentNetworkView().getNodeViewsIterator();
 		NodeView nv;
 		while (it.hasNext())

@@ -4,15 +4,13 @@
  */
 package cytoscape.editor.actions;
 
-import edu.umd.cs.piccolo.PNode;
-import giny.view.NodeView;
-
 import javax.swing.JMenuItem;
 
 import phoebe.PEdgeView;
-
 import cytoscape.CyEdge;
 import cytoscape.view.CyNetworkView;
+import edu.umd.cs.piccolo.PNode;
+import giny.view.NodeView;
 
 /**
  * 
@@ -25,6 +23,10 @@ import cytoscape.view.CyNetworkView;
  * 
  *  
  */
+
+
+// AJK: 04/27/06 update for new ding renderer
+
 public class EdgeAction {
 	public EdgeAction() {
 	}

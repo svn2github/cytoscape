@@ -7,8 +7,6 @@ package cytoscape.editor.actions;
 import javax.swing.JMenuItem;
 
 import phoebe.PNodeView;
-
-
 import cytoscape.CyNode;
 import cytoscape.view.CyNetworkView;
 import edu.umd.cs.piccolo.PNode;

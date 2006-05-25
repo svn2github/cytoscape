@@ -4,8 +4,6 @@
  */
 package cytoscape.editor.impl;
 
-import giny.view.EdgeView;
-
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
@@ -105,6 +103,17 @@ public class CytoShapeIcon implements Icon {
 						y + ((9 * height) / 16) }
 				, 7);
 				}
+			else if (_arrowType == Arrow.COLOR_DELTA)
+			{
+				g.setColor(Color.BLUE);
+				g.fillPolygon(new int[] { x, x + ((3 * width) / 4),  x + ((3 * width) / 4),
+				  x + width, x + ((3 * width) / 4), x + ((3 * width) / 4), x },
+				  new int [] { y + ((7 * height) / 16), y + ((7 * height) / 16),
+						y + ((5 * height) / 16), y + height / 2, 
+						y + ((11 * height) / 16), y + ((9 * height) / 16),
+						y + ((9 * height) / 16) }
+				, 7);
+				}
 			else if (_arrowType == Arrow.BLACK_CIRCLE)
 			{
 				g.fillRect(x, y + ((7 * height) / 16), (13 * (width / 16)), height / 8);
@@ -116,7 +125,10 @@ public class CytoShapeIcon implements Icon {
 				g.fillRect(x, y + ((7 * height) / 16), (15 * (width / 16)), height / 8);
 				g.fillRect(x + (15 * (width / 16)), y + ((5 * height) / 16), width / 16, height * 6 / 16);
 			}
-			return;
+			else if (_arrowType == Arrow.NONE)
+			{
+				g.fillRect(x, y + ((7 * height) / 16), (15 * (width / 16)), height / 8);
+			}			return;
 		}
 	    
 	    g.setColor(_color);

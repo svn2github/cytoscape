@@ -9,6 +9,7 @@ package cytoscape.editor.editors;
 import java.awt.Color;
 
 import cytoscape.Cytoscape;
+import cytoscape.data.Semantics;
 import cytoscape.visual.Arrow;
 import cytoscape.visual.CalculatorCatalog;
 import cytoscape.visual.EdgeAppearanceCalculator;
@@ -17,6 +18,7 @@ import cytoscape.visual.NodeAppearanceCalculator;
 import cytoscape.visual.ShapeNodeRealizer;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
+import cytoscape.visual.calculators.GenericEdgeArrowCalculator;
 import cytoscape.visual.calculators.GenericEdgeLabelCalculator;
 import cytoscape.visual.calculators.GenericNodeColorCalculator;
 import cytoscape.visual.calculators.GenericNodeLabelCalculator;
@@ -48,6 +50,10 @@ public class MapBioMoleculeEditorToVisualStyle {
      */
     public static final String EDGE_TYPE =
             "EDGE_TYPE";
+    
+    public static final String ACTIVATION = "Activation";
+    public static final String INHIBITION = "Inhibition";
+    public static final String CATALYSIS = "Catalysis";
 
     /**
 	     * Creates a New BioMolecule VizMapper.
@@ -63,40 +69,64 @@ public class MapBioMoleculeEditorToVisualStyle {
 	        VisualStyle existingStyle = catalog.getVisualStyle
 	                (BIOMOLECULE_VISUAL_STYLE);
 
-	        //  If the BioPAX Visual Style already exists, use this one instead.
-	        //  The user may have tweaked the out-of-the box mapping, and we don't
-	        //  want to over-ride these tweaks.
 	        if (existingStyle != null) {
-	            manager.setVisualStyle(existingStyle);
+ 
+//	            manager.setVisualStyle(existingStyle);
 	        } else {
 	            VisualStyle bpVisualStyle = new VisualStyle(BIOMOLECULE_VISUAL_STYLE);
-	            NodeAppearanceCalculator nac = new NodeAppearanceCalculator();
-	            nac.setDefaultNodeLabelColor(Color.BLACK);
-	            EdgeAppearanceCalculator eac = new EdgeAppearanceCalculator();
-	            GlobalAppearanceCalculator gac = new GlobalAppearanceCalculator();
-	            gac.setDefaultBackgroundColor(new Color (204,204,255));
-
-	            createNodeShape(nac);
-	            createNodeLabel(nac);
-	            createNodeColor(nac);
-//	            createEdgeLabel(eac);
-	            createTargetArrows(eac);
-
-	            bpVisualStyle.setNodeAppearanceCalculator(nac);
-	            bpVisualStyle.setEdgeAppearanceCalculator(eac);
-	            bpVisualStyle.setGlobalAppearanceCalculator(gac);
+	            // AJK: 03/29/06 define fields of visual style 
+	            defineVisualStyle (bpVisualStyle, manager, catalog);
 	            manager.setVisualStyle(bpVisualStyle);
 
 	            //  The visual style must be added to the Global Catalog
 	            //  in order for it to be written out to vizmap.props upon user exit
-	            catalog.addVisualStyle(bpVisualStyle);
+	            catalog.addVisualStyle(bpVisualStyle);	 
+	            
+	            // try setting the visual style to BioMolecule
+	            Cytoscape.getDesktop().setVisualStyle(bpVisualStyle);
 	        }
+	    }
+	    
+	    public void defineVisualStyle (VisualStyle bpVisualStyle, VisualMappingManager manager,
+	    	CalculatorCatalog catalog)
+	    {
+            NodeAppearanceCalculator nac = new NodeAppearanceCalculator();
+            nac.setDefaultNodeLabelColor(Color.BLACK);
+            EdgeAppearanceCalculator eac = new EdgeAppearanceCalculator();
+            GlobalAppearanceCalculator gac = new GlobalAppearanceCalculator();
+            gac.setDefaultBackgroundColor(new Color (204,204,255));
+
+            createNodeShape(nac);
+            createNodeLabel(nac);
+            createNodeColor(nac);
+            createTargetArrows(eac);
+
+            bpVisualStyle.setNodeAppearanceCalculator(nac);
+            bpVisualStyle.setEdgeAppearanceCalculator(eac);
+            bpVisualStyle.setGlobalAppearanceCalculator(gac);
+     	
 	    }
 
 	    private void createTargetArrows(EdgeAppearanceCalculator eac) {
 	    	
-	    	eac.setDefaultEdgeTargetArrow(Arrow.COLOR_DELTA);
-	    	
+//	    	eac.setDefaultEdgeTargetArrow(Arrow.COLOR_DELTA);
+	        DiscreteMapping discreteMapping = new DiscreteMapping
+            (Arrow.NONE,
+                    EDGE_TYPE,
+                    ObjectMapping.EDGE_MAPPING);
+
+	
+
+	    	discreteMapping.putMapValue(ACTIVATION, Arrow.COLOR_DELTA);
+	    	discreteMapping.putMapValue(CATALYSIS, Arrow.BLACK_CIRCLE);
+	        discreteMapping.putMapValue(INHIBITION, Arrow.BLACK_T);
+
+	        GenericEdgeArrowCalculator edgeTargetArrowCalculator =
+                new GenericEdgeArrowCalculator("BioMoleculeEditor target arrows",
+                discreteMapping);
+        eac.setEdgeTargetArrowCalculator(edgeTargetArrowCalculator);
+        System.out.println ("Set edge target arrow calculator to " + edgeTargetArrowCalculator);
+
 	    }
 
 	    private void createEdgeLabel(EdgeAppearanceCalculator eac) {
@@ -113,9 +143,16 @@ public class MapBioMoleculeEditorToVisualStyle {
 	    private void createNodeLabel(NodeAppearanceCalculator nac) {
 	        PassThroughMapping passThroughMapping = new PassThroughMapping("",
 	                ObjectMapping.NODE_MAPPING);
+	        
+	        // AJK: 05/09/06 BEGIN
+	        //      change canonicalName to Label
+//	        passThroughMapping.setControllingAttributeName
+//	                ("canonicalName", null, false);
 	        passThroughMapping.setControllingAttributeName
-	                ("canonicalName", null, false);
- 
+            (Semantics.LABEL, null, false);
+	        // AJK: 05/09/06 END
+
+	        // AJK: 05/09/96 END
 	        GenericNodeLabelCalculator nodeLabelCalculator =
 	                new GenericNodeLabelCalculator("BioMoleculeEditor ID Label"
 	                , passThroughMapping);
@@ -123,7 +160,6 @@ public class MapBioMoleculeEditorToVisualStyle {
 	    }
 
 	    private void createNodeShape(NodeAppearanceCalculator nac) {
-	        //  Create a New Discrete Mapper, for mapping BioPAX Type to Shape
 	        DiscreteMapping discreteMapping = new DiscreteMapping
 	                (new Byte(ShapeNodeRealizer.RECT),
 	                        NODE_TYPE,
@@ -131,8 +167,8 @@ public class MapBioMoleculeEditorToVisualStyle {
 	        
 	            discreteMapping.putMapValue("biochemicalReaction",
 	                    new Byte(ShapeNodeRealizer.ELLIPSE));
-	            discreteMapping.putMapValue("catalysis",
-	                    new Byte(ShapeNodeRealizer.ROUND_RECT));
+//	            discreteMapping.putMapValue("catalyst",
+//	                    new Byte(ShapeNodeRealizer.ROUND_RECT));
 	            discreteMapping.putMapValue("protein",
 	                    new Byte(ShapeNodeRealizer.RECT));
 	            discreteMapping.putMapValue("smallMolecule",
@@ -145,7 +181,6 @@ public class MapBioMoleculeEditorToVisualStyle {
 	    }
 
 	    private void createNodeColor(NodeAppearanceCalculator nac) {
-	        //  Create a New Discrete Mapper, for mapping BioPAX Type to Shape
 	        DiscreteMapping discreteMapping = new DiscreteMapping
 	                (Color.WHITE,
 	                        NODE_TYPE,
@@ -153,8 +188,8 @@ public class MapBioMoleculeEditorToVisualStyle {
 	        
 	            discreteMapping.putMapValue("biochemicalReaction",
 	                    new Color (204, 0, 61));
-	            discreteMapping.putMapValue("catalysis",
-	                    new Color(0, 163, 0));
+//	            discreteMapping.putMapValue("catalyst",
+//	                    new Color(0, 163, 0));
 	            discreteMapping.putMapValue("protein",
 	                    new Color (0, 102, 255));
 	            discreteMapping.putMapValue("smallMolecule",

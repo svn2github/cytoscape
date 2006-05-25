@@ -7,8 +7,6 @@ package cytoscape.editor.impl;
 import giny.model.GraphPerspectiveChangeEvent;
 import giny.model.GraphPerspectiveChangeListener;
 
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -20,11 +18,13 @@ import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
+import cytoscape.data.FlagEvent;
+import cytoscape.data.FlagEventListener;
 import cytoscape.editor.CytoscapeEditor;
 import cytoscape.editor.CytoscapeEditorFactory;
 import cytoscape.editor.CytoscapeEditorManager;
 import cytoscape.editor.InvalidEditorException;
-import cytoscape.editor.event.BasicNetworkEditEventHandler;
+import cytoscape.editor.actions.SetEditorAction;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.visual.VisualMappingManager;
@@ -40,11 +40,12 @@ import cytoscape.visual.VisualStyle;
  *  
  */
 public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
-		ChangeListener, GraphPerspectiveChangeListener
+		ChangeListener, GraphPerspectiveChangeListener, FlagEventListener
 //		,MouseMotionListener
 		
 		{
 
+	
 	/**
 	 * register interest in NETWORK_VIEW_FOCUSED and NETWORK_VIEW_CREATED events
 	 * AJK: 10/15/05 register interestin visual style change event
@@ -79,7 +80,7 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
 
 		boolean newEditor = false;
 
-//		System.out.println("Got stateChange event: " + e);
+		System.out.println("Got stateChange event: " + e);
 
 		if (!CytoscapeEditorManager.isEditingEnabled()) {
 			return;
@@ -137,20 +138,26 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
 			if (editorForStyle != null) {
 				CyNetworkView view = Cytoscape.getCurrentNetworkView();
 				CytoscapeEditor editorForView = CytoscapeEditorManager.getEditorForView(
-						Cytoscape.getCurrentNetworkView());				
+						Cytoscape.getCurrentNetworkView());	
+				System.out.println ("Got editor for view: " + editorForView);
 				
 
 				if ((editorForView == editorForStyle) && 
 						(editorForView == CytoscapeEditorManager.getCurrentEditor())){
 					// AJK: 10/21/05 don't switch palette if visual style doesn't change
 					//               and editor is unchanged
-										return;
+					
+					// AJK: 05/05/06 don't return, always initialize controls, because
+					//           we may have same editor (DEFAULT_EDITOR_TYPE) but
+					//           different visual style
+//										return;
 				}
 				
 								
 				if ((editorForView != null)
 						&& (!CytoscapeEditorManager.isSettingUpEditor())) {
 
+					System.out.println("Disabling controls for editor: " + editorForView);
 					editorForView.disableControls(null);
 				}
 				// AJK: 10/21/05 always build a new shape palette when changing
@@ -165,6 +172,11 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
 				CytoscapeEditorManager.setEventHandlerForView(view);
 			}
 		}
+	}
+	
+	public void onFlagEvent (FlagEvent e)
+	{
+		System.out.println ("Got flagged object: " + e.getTarget());
 	}
 	
 //	// AJK: 11/25/05 BEGIN
@@ -199,9 +211,13 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
 			CyNetwork net = Cytoscape.getNetwork(netId);
 //			CyNetwork net = Cytoscape.getCurrentNetwork();
 			net.addGraphPerspectiveChangeListener(this);
-			System.out.println ("Added graph perspective change listener to: " + net);
+			net.addFlagEventListener(this);
+			
+
+//			System.out.println ("Added graph perspective change listener to: " + net);
 		}
 		if (e.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_CREATED)) {
+
 		} else if (e.getPropertyName().equals(Cytoscape.ATTRIBUTES_CHANGED)) {
 			// implement ATTRIBUTES_CHANGED handler
 			//			System.out.println("Property changed: " + e.getPropertyName());
@@ -259,7 +275,69 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener,
 				//    			palette.getUndoButton().setAction(CytoscapeEditorManager.getUndoActionForView(view));
 				//    			palette.getRedoButton().setAction(CytoscapeEditorManager.getRedoActionForView(view));
 			}
-
+			
+			// AJK: 05/19/06 BEGIN
+			//      try to set editor from the visual style
+//			String visualStyle = 
+//				CytoscapeEditorManager.getVisualStyleForNetwork 
+//				(view.getNetwork().getTitle()
+//						.substring(0, 
+//								view.getNetwork().getTitle().lastIndexOf(".")));
+//			System.out.println ("Getting visual style for network: " +
+//					view.getNetwork().getTitle()
+//					.substring(0, 
+//							view.getNetwork().getTitle().lastIndexOf(".")));
+//			System.out.println("Got network's visual style: " + visualStyle);
+//			if (visualStyle != null)
+//			{
+//				String editorType =
+//					CytoscapeEditorManager.getEditorTypeForVisualStyleName(visualStyle);
+//				System.out.println("Got visual style's editor type: " + editorType);
+//				if (editorType == null) // just try getting editor type with same name as visual style
+//				{
+//					editorType = visualStyle;
+//				}
+//				if (editorType != null)
+//				{
+//					try
+//					{
+//						cyEditor = CytoscapeEditorFactory.INSTANCE.getEditor(editorType);
+//						System.out.println("Got editor for editorType: " + editorType 
+//								+ " = " + cyEditor);
+//					}
+//					catch (InvalidEditorException ex) {}
+//					if (cyEditor == null)
+//					{
+//						try
+//						{
+//							cyEditor = CytoscapeEditorFactory.INSTANCE.getEditor
+//							(CytoscapeEditorManager.DEFAULT_EDITOR_TYPE);
+//						}
+//						catch (InvalidEditorException ex) {}
+//					}
+//				}
+//			}
+//			// AJK: 05/19/06 END
+			// AJK: 05/22/06 BEGIN
+			//   try to create an editor for the network view
+//			if (cyEditor == null) {
+//				VisualStyle style = view.getVisualStyle();
+//				SetEditorAction setEditor = new SetEditorAction(
+//						style.getName(), CytoscapeEditorFactory.INSTANCE);
+//				setEditor.actionPerformed(null);
+//				CytoscapeEditorManager.setupNewNetworkView(view);
+//				return;
+//			}
+			if (cyEditor == null)
+			{
+				try
+				{
+					cyEditor = CytoscapeEditorFactory.INSTANCE.getEditor
+					(CytoscapeEditorManager.DEFAULT_EDITOR_TYPE);
+				}
+				catch (InvalidEditorException ex) {}
+			}			// AJK: 05/22/06 END
+			
 			if (cyEditor == null) {
 				cyEditor = CytoscapeEditorManager.getCurrentEditor();
 				if (cyEditor == null) {

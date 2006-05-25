@@ -6,12 +6,7 @@
  */
 package cytoscape.editor.actions;
 
-import giny.model.Edge;
-import giny.model.Node;
-
 import java.awt.event.ActionEvent;
-import java.util.Iterator;
-import java.util.Set;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;

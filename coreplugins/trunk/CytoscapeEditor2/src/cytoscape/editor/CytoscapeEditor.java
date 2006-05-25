@@ -8,14 +8,9 @@ import giny.model.Node;
 
 import java.util.List;
 
-import javax.swing.JOptionPane;
-
 import cytoscape.CyEdge;
-import cytoscape.CyNetwork;
 import cytoscape.CyNode;
-import cytoscape.Cytoscape;
-import cytoscape.CytoscapeModifiedNetworkManager;
-import cytoscape.editor.event.NetworkEditEventAdapter;
+import cytoscape.data.FlagEventListener;
 
 /**
  * 
@@ -35,7 +30,7 @@ import cytoscape.editor.event.NetworkEditEventAdapter;
  * @version 1.0
  *  
  */
-public interface CytoscapeEditor {
+public interface CytoscapeEditor extends FlagEventListener {
 
 	
 	/**

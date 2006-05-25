@@ -13,17 +13,16 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.geom.Point2D;
 import java.io.IOException;
 
-import phoebe.PGraphView;
 import phoebe.PhoebeCanvasDropEvent;
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.editor.CytoscapeEditor;
-import cytoscape.editor.CytoscapeEditorManager;
 import cytoscape.editor.impl.BasicCytoShapeEntity;
 import cytoscape.editor.impl.ShapePalette;
 import cytoscape.view.CyNetworkView;
+import ding.view.DGraphView;
 import edu.umd.cs.piccolo.event.PInputEvent;
 import giny.model.Node;
 import giny.view.NodeView;
@@ -71,9 +70,10 @@ public class BioPAXNetworkEditEventHandler extends
 	}
 		
 		
-	public CyNode createNode (PInputEvent e)
+//	public CyNode createNode (PInputEvent e)
+	public CyNode createNode (Point2D location)
 	{
-		CyNode cn = super.createNode(e);
+		CyNode cn = super.createNode(location);
 		CyNetwork net = Cytoscape.getCurrentNetwork();
 		nodeAttribs.setAttribute(cn.getIdentifier(), "BIOPAX_NAME",
 				cn.getIdentifier());
@@ -107,7 +107,7 @@ public class BioPAXNetworkEditEventHandler extends
 		edgeAttribs.setAttribute(myEdge.getIdentifier(), "BIOPAX_EDGE_TYPE",
 				this.getEdgeAttributeValue());		//				Cytoscape.getCurrentNetwork().restoreEdge(myEdge);
 
-		getCanvas().getLayer().removeChild(edge);
+//		getCanvas().getLayer().removeChild(edge);
 		edge = null;
 		node = null;
 		if (isHandlingEdgeDrop()) {
@@ -121,7 +121,8 @@ public class BioPAXNetworkEditEventHandler extends
 		// redraw graph so that the correct arrow is shown (but only if network is small enough to see the edge...
 		if (Cytoscape.getCurrentNetwork().getNodeCount() <= 100)
 		{
-			Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
+//			Cytoscape.getDesktop().redrawGraph(true, true);
+			Cytoscape.getCurrentNetworkView ().redrawGraph(true, true);
 			
 		}
 				
@@ -139,8 +140,10 @@ public class BioPAXNetworkEditEventHandler extends
 	public void itemDropped (PhoebeCanvasDropEvent e) {
 				
 		// AJK: 11/20/05 return if we're not dropping into the currently active view
-		PGraphView thisView = this.getView();
-		if (thisView != ((PGraphView) Cytoscape.getCurrentNetworkView()))
+//		PGraphView thisView = this.getView();
+		DGraphView thisView = this.getView();
+
+		if (thisView != ((DGraphView) Cytoscape.getCurrentNetworkView()))
 		{
 			return;
 		}
@@ -155,7 +158,7 @@ public class BioPAXNetworkEditEventHandler extends
 				Cytoscape.getCurrentNetworkView().getComponent().getBounds());
 		
 		Point2D locn = (Point2D) location.clone();
-		locn = canvas.getCamera().localToView(locn);
+//		locn = canvas.getCamera().localToView(locn);
 		Transferable t = e.getTransferable();
 		 
 		BasicCytoShapeEntity myShape = null;

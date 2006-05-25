@@ -4,10 +4,9 @@
  */
 package cytoscape.editor;
 
-import giny.model.Node;
+import giny.model.GraphPerspective;
 
 import java.awt.Color;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -15,19 +14,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.swing.JOptionPane;
 import javax.swing.undo.UndoManager;
 import javax.swing.undo.UndoableEdit;
 
-import phoebe.PGraphView;
 import phoebe.PhoebeCanvas;
 import cern.colt.list.IntArrayList;
-import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
-import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.CytoscapeModifiedNetworkManager;
+import cytoscape.data.CyAttributes;
 import cytoscape.editor.actions.NewNetworkAction;
 import cytoscape.editor.actions.RedoAction;
 import cytoscape.editor.actions.RestoreAction;
@@ -36,9 +32,11 @@ import cytoscape.editor.actions.UndoAction;
 import cytoscape.editor.event.NetworkEditEventAdapter;
 import cytoscape.editor.impl.CytoscapeEditorManagerSupport;
 import cytoscape.editor.impl.ShapePalette;
-import cytoscape.giny.PhoebeNetworkView;
 import cytoscape.view.CyNetworkView;
 import cytoscape.visual.VisualStyle;
+import ding.view.DGraphView;
+import ding.view.InnerCanvas;
+
 
 /**
  * The <b>CytoscapeEditorManager </b> is the central class in the editor
@@ -81,7 +79,7 @@ public abstract class CytoscapeEditorManager {
 	private static UndoManager undo;
 
 	/**
-	 * extension to support one UndoManager per NetworkView
+	 * extension to support one Manager per NetworkView
 	 */
 	private static UndoManager currentUndoManager;
 
@@ -239,6 +237,11 @@ public abstract class CytoscapeEditorManager {
 	 */
 	protected static HashMap networkHiddenEdgesMap = new HashMap();
 	
+	/**
+	 * associates a network with the visual style used to edit it
+	 */
+//	protected static HashMap networkVisualStyleMap = new HashMap();
+	
 	
 
 	/**
@@ -376,6 +379,7 @@ public abstract class CytoscapeEditorManager {
 	public static void register(String editorName,
 			String networkEditAdapterName, String visualStyleName) {
 		register(editorName, networkEditAdapterName);
+		System.out.println ("Setting editor type: " + editorName + " for visual style: " + visualStyleName);
 		CytoscapeEditorManager.setEditorTypeForVisualStyleName(visualStyleName,
 				editorName);
 	}
@@ -414,7 +418,8 @@ public abstract class CytoscapeEditorManager {
 	 *         and edges in the current view, false otherwise.
 	 */
 	public static boolean hasContextMethods(CyNetworkView view) {
-		Object[] methods = view.getContextMethods("class phoebe.PNodeView",
+// AJK: 04/26/06 update for ding renderer
+		Object[] methods = view.getContextMethods("class ding.view.DNodeView",
 				false);
 		//		System.out.println("Checking for context methods: Methods[] = "
 		//				+ methods);
@@ -450,17 +455,18 @@ public abstract class CytoscapeEditorManager {
 	public static void setupNewNetworkView(CyNetworkView newView) {
 
 		// AJK: 11/25/05 comment this out.  Don't put delete items on 
-//		if (!hasContextMethods(newView)) {
-//			newView.addContextMethod("class phoebe.PNodeView",
-//					"cytoscape.editor.actions.NodeAction",
-//					"getContextMenuItem", new Object[] { newView },
-//					CytoscapeInit.getClassLoader());
-//
-//			newView.addContextMethod("class phoebe.PEdgeView",
+		// AJK: 04/27/06 uncomment to test for new ding renderer
+		if (!hasContextMethods(newView)) {
+			newView.addContextMethod("class ding.view.DNodeView",
+					"cytoscape.editor.actions.NodeAction",
+					"getContextMenuItem", new Object[] { newView },
+					CytoscapeInit.getClassLoader());
+
+//			newView.addContextMethod("class ding.view.DEdgeView",
 //					"cytoscape.editor.actions.EdgeAction",
 //					"getContextMenuItem", new Object[] { newView },
 //					CytoscapeInit.getClassLoader());
-//		}  
+		}  
 
 		// AJK: 09/09/05: BEGIN
 		//    comment this out; just use newView's bounds to set bounds for canvas
@@ -474,8 +480,17 @@ public abstract class CytoscapeEditorManager {
 
 		CytoscapeEditor cyEditor = CytoscapeEditorManager.getCurrentEditor();
 
-		PhoebeCanvas canvas = ((PhoebeCanvas) ((PhoebeNetworkView) newView)
-				.getCanvas());
+		// AJK: 04/02/06 BEGIN
+//		PhoebeCanvas canvas = ((PhoebeCanvas) ((PhoebeNetworkView) newView)
+//				.getCanvas());
+		
+		
+		GraphPerspective wiw = newView.getGraphPerspective();
+		ding.view.DGraphView wiwx = (DGraphView) newView;
+		ding.view.InnerCanvas canvas = wiwx.getCanvas();
+		
+		// AJK: 04/02/06 END
+		
 		NetworkEditEventAdapter event = CytoscapeEditorManager
 				.getViewNetworkEditEventAdapter(newView);
 		if (event == null) {
@@ -484,7 +499,8 @@ public abstract class CytoscapeEditorManager {
 			CytoscapeEditorManager.setViewNetworkEditEventAdapter(newView,
 					event);
 
-			event.start((PGraphView) newView);
+			// AJK: 04/02/06 comment out eventstart? 
+//			event.start((PGraphView) newView);
 			canvas.addPhoebeCanvasDropListener(event);
 
 			// AJK: 09/09/05: BEGIN
@@ -507,8 +523,12 @@ public abstract class CytoscapeEditorManager {
 		//				newView.getComponent().getHeight() / 2);
 
 		//	
-		canvas.getLayer().setBounds(newView.getComponent().getBounds());
 
+		// AJK: 04/02/06 BEGIN
+//		canvas.getLayer().setBounds(newView.getComponent().getBounds());
+		canvas.getBounds();
+        // AJK: 04/02/06 END
+		
 		//		Color myColor = new Color(225, 225, 250);
 		Color myColor = new Color(225, 250, 200);
 
@@ -516,6 +536,15 @@ public abstract class CytoscapeEditorManager {
 		//		canvas.getCamera().setPaint(myColor);
 
 		canvas.setEnabled(true);
+		
+//		// set the visualStyle being used as the network's default visual style
+//		VisualStyle style = newView.getVisualStyle();
+//		if (style != null)
+//		{
+//			String styleName = style.getName();
+//			setVisualStyleforNetwork (newView.getNetwork().getIdentifier(), styleName);
+//			
+//		}
 
 	}
 
@@ -535,18 +564,22 @@ public abstract class CytoscapeEditorManager {
 		while (it.hasNext()) {
 			Object key = it.next();
 			Object entryObj = viewMap.get(key);
-			//			System.out.println("Got entry obj = " + entryObj);
-			if (entryObj instanceof PhoebeNetworkView) {
+//						System.out.println("Got entry obj = " + entryObj);
+//			if (entryObj instanceof PhoebeNetworkView) {
 
-				PhoebeNetworkView entryView = (PhoebeNetworkView) entryObj;
-				PhoebeCanvas canvas = ((PhoebeCanvas) entryView.getCanvas());
+//				PhoebeNetworkView entryView = (PhoebeNetworkView) entryObj;
+//				PhoebeCanvas canvas = ((PhoebeCanvas) entryView.getCanvas());
+				DGraphView entryView = (DGraphView) entryObj;
+				InnerCanvas canvas = ((InnerCanvas) entryView.getCanvas());
 				NetworkEditEventAdapter oldEvent = CytoscapeEditorManager
-						.getViewNetworkEditEventAdapter(entryView);
+						.getViewNetworkEditEventAdapter((CyNetworkView) entryView);
 
 				if (oldEvent != null) // remove event from this canvas
 				{
 
-					canvas.removeInputEventListener(oldEvent);
+//					canvas.removeInputEventListener(oldEvent);
+					canvas.removeMouseListener(oldEvent);
+					canvas.removeMouseMotionListener(oldEvent);
 					canvas.removePhoebeCanvasDropListener(oldEvent);
 				}
 
@@ -555,27 +588,36 @@ public abstract class CytoscapeEditorManager {
 				NetworkEditEventAdapter newEvent = CytoscapeEditorFactory.INSTANCE
 						.getNetworkEditEventAdapter(cyEditor);
 				CytoscapeEditorManager.setViewNetworkEditEventAdapter(
-						entryView, newEvent);
+						(CyNetworkView) entryView, newEvent);
 
-				newEvent.start((PGraphView) entryView);
+				newEvent.start((DGraphView) entryView);
 				canvas.addPhoebeCanvasDropListener(newEvent);
+				canvas.addMouseListener(newEvent);
+				canvas.addMouseMotionListener(newEvent);
+				System.out.println("Mouse and MotionListeners added to " + canvas);
+				System.out.println("Canvas has total number of Listeners = " + 
+						canvas.getMouseListeners().length);	
 			}
-		}
+//		}
 	}
 
 	public static void setEventHandlerForView(CyNetworkView view) {
 
-		if (view instanceof PhoebeNetworkView) {
+//		if (view instanceof PhoebeNetworkView) {
 
-			PhoebeNetworkView thisView = (PhoebeNetworkView) view;
-			PhoebeCanvas canvas = ((PhoebeCanvas) thisView.getCanvas());
+//			PhoebeNetworkView thisView = (PhoebeNetworkView) view;
+//			PhoebeCanvas canvas = ((PhoebeCanvas) thisView.getCanvas());
+			DGraphView thisView = (DGraphView) view;
+			InnerCanvas canvas = ((InnerCanvas) thisView.getCanvas());
 			NetworkEditEventAdapter oldEvent = CytoscapeEditorManager
-					.getViewNetworkEditEventAdapter(thisView);
+					.getViewNetworkEditEventAdapter((CyNetworkView) thisView);
 
 			if (oldEvent != null) // remove event from this canvas
 			{
 
-				canvas.removeInputEventListener(oldEvent);
+//				canvas.removeInputEventListener(oldEvent);
+				canvas.removeMouseListener(oldEvent);
+				canvas.removeMouseMotionListener(oldEvent);
 				canvas.removePhoebeCanvasDropListener(oldEvent);
 			}
 
@@ -583,17 +625,24 @@ public abstract class CytoscapeEditorManager {
 					.getCurrentEditor();
 			NetworkEditEventAdapter newEvent = CytoscapeEditorFactory.INSTANCE
 					.getNetworkEditEventAdapter(cyEditor);
-			CytoscapeEditorManager.setViewNetworkEditEventAdapter(thisView,
+			CytoscapeEditorManager.setViewNetworkEditEventAdapter((CyNetworkView) thisView,
 					newEvent);
 			
 			// AJK: 11/20/05 set View for event handler, to help trap events that are outside 
 			//               current view
-			newEvent.setView((PGraphView) view);
+			newEvent.setView((DGraphView) view);
 			
 
-			newEvent.start((PGraphView) thisView);
+			newEvent.start((DGraphView) thisView);
 			canvas.addPhoebeCanvasDropListener(newEvent);
-		}
+			
+			// adding mouseListeners here is redundant, since it is done in event.start() method
+//			canvas.addMouseListener(newEvent);
+//			canvas.addMouseMotionListener(newEvent);
+			System.out.println("Mouse and MotionListeners added to " + canvas);
+			System.out.println("Canvas has total number of Mouse Listeners = " + 
+					canvas.getMouseListeners().length);
+//		}
 	}
 
 	/**
@@ -704,6 +753,24 @@ public abstract class CytoscapeEditorManager {
 		return null;
 	}
 
+
+	/**
+	 * returns the type of editor that is associated with a network
+	 * @param net
+	 * @return
+	 */
+	public static String getEditorTypeForNetwork(CyNetwork net) {
+		CytoscapeEditor ed = getEditorForNetwork (net);
+		if (ed == null)
+		{
+			return null;
+		}
+		else
+		{
+			return ed.getEditorName();
+		}
+	}
+
 	/**
 	 * set the editor for a Cytoscape network
 	 * 
@@ -713,7 +780,21 @@ public abstract class CytoscapeEditorManager {
 	 *            the editor to be assigned to the Cytoscape network
 	 */
 	public static void setEditorForNetwork(CyNetwork net, CytoscapeEditor editor) {
-		editorViewMap.put(net, editor);
+		// AJK: 02/07/06 BUG, should be editorNetworkMap.
+//		editorViewMap.put(net, editor);
+		editorNetworkMap.put(net, editor);
+		
+	}
+	
+	
+	/**
+	 * 
+	 * @param net
+	 * @param editorType
+	 */
+	public static void setEditorTypeForNetwork (CyNetwork net, String editorType)
+	{
+		// TODO: need to setup a new editor for the input network
 	}
 
 	/**
@@ -833,6 +914,31 @@ public abstract class CytoscapeEditorManager {
 	}
 	
 	
+//	/**
+//	 * 
+//	 * @param network
+//	 * @return CytoscapeVisualStyle that is associated with this CyNetwork
+//	 */
+//	public static String getVisualStyleForNetwork (String networkName) {
+//		Object obj = networkVisualStyleMap.get(networkName);
+//		if (obj != null) {
+//			return obj.toString();
+//		} else {
+//			return null;
+//		}
+//	}
+//
+//	/**
+//	 * sets the visual style that is to be associated with a network. this
+//	 * 
+//	 * @param networkName
+//	 * @param vizStyle
+//	 */
+//	public static void setVisualStyleforNetwork(String networkName,
+//			String vizStyle) {
+//		networkVisualStyleMap.put(networkName, vizStyle);
+//	}	
+//	
 	/**
 	 * returns nodes hidden from network
 	 * @param net
@@ -1078,6 +1184,8 @@ public abstract class CytoscapeEditorManager {
 		// AJK: 11/17/05 comment this out for 2.2 release.  Deal with undo later
 //		cytoscape.util.UndoManager undo = Cytoscape.getDesktop().undo;
 //		undo.addEdit (edit, Cytoscape.getCurrentNetworkView());
+		// AJK: 02/22/06 
+		Cytoscape.getDesktop().undo.addEdit(edit);
 	}
 
 	/**
@@ -1270,4 +1378,42 @@ public abstract class CytoscapeEditorManager {
 	public static void setSettingUpEditor(boolean settingUpEditor) {
 		CytoscapeEditorManager.settingUpEditor = settingUpEditor;
 	}
+	
+	
+	/**
+	 * reset attributes for a CyNode whose identifier has been reset, 
+	 * basically by copying over attributes from
+	 * old identifier to new identifier
+	 * @param oldId old node identifier
+	 * @param newId new node identifier
+	 * @param attrs attributes
+	 * 
+	 */
+	  public static void resetAttributes(String oldId, String newId, CyAttributes attrs)
+	  {
+		
+	        final String[] attrNames = attrs.getAttributeNames();
+	        for (int i = 0; i < attrNames.length; i++) {
+	          final byte type = attrs.getType(attrNames[i]);
+	          if (attrs.hasAttribute(oldId, attrNames[i])) {
+	            if (type == CyAttributes.TYPE_SIMPLE_LIST) {
+	              List l = attrs.getAttributeList(oldId, attrNames[i]);
+	              if (l != null && l.size() > 0) {
+	            	  attrs.setAttributeList(newId, attrNames[i], l);
+		      } }
+	            else if (type == CyAttributes.TYPE_SIMPLE_MAP) {
+		              Map m = attrs.getAttributeMap(oldId, attrNames[i]);
+		              if (m != null) {
+		            	  attrs.setAttributeMap (newId, attrNames[i], m);
+			      } }
+	            else if (type == CyAttributes.TYPE_BOOLEAN) {
+	              attrs.setAttribute(newId, attrNames[i],attrs.getBooleanAttribute(oldId, attrNames[i])); }
+	            else if (type == CyAttributes.TYPE_INTEGER) {
+	              attrs.setAttribute(newId, attrNames[i],attrs.getIntegerAttribute(oldId, attrNames[i])); }
+	            else if (type == CyAttributes.TYPE_FLOATING) {
+	              attrs.setAttribute(newId, attrNames[i],attrs.getDoubleAttribute(oldId, attrNames[i])); }
+	            else if (type == CyAttributes.TYPE_STRING) {
+	              attrs.setAttribute(newId, attrNames[i],attrs.getStringAttribute(oldId, attrNames[i])); } } }
+	 
+	  }
 }

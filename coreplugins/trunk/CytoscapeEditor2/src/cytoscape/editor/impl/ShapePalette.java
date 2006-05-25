@@ -7,12 +7,8 @@ package cytoscape.editor.impl;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.dnd.DragGestureListener;
-import java.awt.dnd.DragGestureRecognizer;
-import java.awt.dnd.DragSource;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.HashMap;
 
 import javax.swing.BorderFactory;
@@ -85,6 +81,7 @@ public class ShapePalette extends JPanel
 	public ShapePalette() {
 		super();
 		
+
 
 		
 	    _controlPane = new JPanel();
@@ -161,7 +158,9 @@ public class ShapePalette extends JPanel
 
 		this.add(_controlPane);
 		this.setBackground(Cytoscape.getDesktop().getBackground());
-		this.setVisible(true);		
+		this.setVisible(true);	
+		
+	
 	}
   
 	
@@ -266,6 +265,14 @@ public class ShapePalette extends JPanel
 	 */
 	public void showPalette() {
 		
+		// AJK: 05/25/06 BEGIN
+		//     store and restore current tab in WEST Cytopanel
+		int currentCytoPanelIdx = 
+			Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).getSelectedIndex();
+		
+		// AJK: 05/25/06 END
+		
+		
 		// remove old existing editor palette from Cytopanel and replace with new one
         int idx = Cytoscape.getDesktop().getCytoPanel( SwingConstants.WEST ).indexOfComponent("Editor");
         System.out.println ("index of current palette = " + idx);
@@ -307,6 +314,13 @@ public class ShapePalette extends JPanel
 		*/
 		
 		this.setVisible(true);
+		
+		// AJK: 05/25/06 BEGIN
+		//     store and restore current tab in WEST Cytopanel
+		 
+		Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).setSelectedIndex(currentCytoPanelIdx);
+		
+		// AJK: 05/25/06 END	
 
 //		Cytoscape.getDesktop().getNetworkPanel().setNavigator(this);
 //

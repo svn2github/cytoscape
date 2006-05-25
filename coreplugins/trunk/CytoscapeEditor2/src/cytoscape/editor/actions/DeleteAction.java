@@ -4,25 +4,19 @@
  */
 package cytoscape.editor.actions;
 
-import edu.umd.cs.piccolo.PNode;
-import giny.view.EdgeView;
-import giny.view.NodeView;
-
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
-import javax.swing.undo.AbstractUndoableEdit;
-import javax.swing.undo.UndoManager;
-
-import phoebe.PEdgeView;
 
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
-import cytoscape.editor.CytoscapeEditorManager;
 import cytoscape.view.CyNetworkView;
+import edu.umd.cs.piccolo.PNode;
+import giny.view.EdgeView;
+import giny.view.NodeView;
 
 /**
  * 
@@ -49,7 +43,7 @@ public class DeleteAction extends // CytoscapeAction {
 	 * action for deleting selected Cytoscape nodes and edges
 	 */
 	public DeleteAction() {
-//		super("Delete Selected Nodes and Edges");
+		super("Delete Selected Nodes and Edges");
 	}
 
 	/**
@@ -60,7 +54,7 @@ public class DeleteAction extends // CytoscapeAction {
 	 *            the object to be deleted
 	 */
 	public DeleteAction(Object obj) {
-//		super("Delete Selected Nodes and Edges");
+		super("Delete Selected Nodes and Edges");
 		_cyObj = obj;
 	}
 
@@ -74,7 +68,7 @@ public class DeleteAction extends // CytoscapeAction {
 	 *            the name of the object to be deleted
 	 */
 	public DeleteAction(Object obj, String label) {
-//		super("Delete Selected Nodes and Edges");
+		super("Delete Selected Nodes and Edges");
 		_cyObj = obj;
 		_label = label;
 	}
