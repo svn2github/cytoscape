@@ -879,10 +879,11 @@ class BrowserTableCellRenderer extends JLabel implements TableCellRenderer {
 				setFont(labelFont);
 				setBackground(DataTable.NON_EDITIBLE_COLOR);
 
-			} else if (type == DataTable.NETWORK
-					&& value.equals("Network Metadata")) {
-				setBackground(metadataBackground);
-				setFont(labelFont);
+			} else if (type == DataTable.NETWORK && value != null) {
+				if(value.equals("Network Metadata")) {
+					setBackground(metadataBackground);
+					setFont(labelFont);
+				}
 			} else {
 				setFont(normalFont);
 				setBackground(table.getBackground());

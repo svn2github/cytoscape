@@ -183,15 +183,15 @@ public class DataTableModel extends DefaultTableModel implements
 	}
 
 	protected void setNetworkTable() {
-
+		
 		if(Cytoscape.getCurrentNetwork() == null) {
 			return;
 		}
 		
 		String networkName = Cytoscape.getCurrentNetwork().getIdentifier();
-
-
+		
 		int att_length = attributeNames.size();
+		
 		// Attribute names will be the row id, and num. of column is always
 		Object[][] data_vector = new Object[att_length][2];
 		Object[] column_names = new Object[2];
@@ -207,8 +207,8 @@ public class DataTableModel extends DefaultTableModel implements
 			Object value = getAttributeValue(type, networkName, attributeName);
 			data_vector[i][1] = value;
 		}
-		setDataVector(data_vector, column_names);
 		
+		setDataVector(data_vector, column_names);
 	}
 	
 	protected void setAllNetworkTable() {
@@ -277,7 +277,7 @@ public class DataTableModel extends DefaultTableModel implements
 					}
 							
 				}
-			} else {
+			} else if(objectType == DataTable.EDGES) {
 				String[] edgeNameParts = id.split(" ");
 				String interaction = edgeNameParts[1].substring(1,
 						edgeNameParts[1].length() - 1);
@@ -344,6 +344,7 @@ public class DataTableModel extends DefaultTableModel implements
 	}
 
 	public Object getAttributeValue(byte type, String id, String att) {
+		
 		if (type == CyAttributes.TYPE_INTEGER)
 			return data.getIntegerAttribute(id, att);
 		else if (type == CyAttributes.TYPE_FLOATING)
@@ -467,5 +468,4 @@ public class DataTableModel extends DefaultTableModel implements
 		cytoscape.Cytoscape.getDesktop().addEdit(edit);
 
 	}
-
 }

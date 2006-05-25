@@ -140,11 +140,6 @@ public class AttributeBrowserPanel extends JPanel implements
 				this);
 	}
 	
-	
-	
-	
-	
-
 	public String getSelectedAttribute() {
 		return attributeList.getSelectedValue().toString();
 	}
@@ -164,9 +159,7 @@ public class AttributeBrowserPanel extends JPanel implements
 			tableModel.setTableDataAttributes(Arrays.asList(atts));
 
 		} catch (Exception ex) {
-			System.out.println("EX!");
 			attributeList.clearSelection();
-
 		}
 	}
 
@@ -534,12 +527,9 @@ public class AttributeBrowserPanel extends JPanel implements
 	private JButton getSelectButton() {
 		if (selectButton == null) {
 			selectButton = new JButton();
-			// selectButton.setFont(new java.awt.Font("Dialog",
-			// java.awt.Font.PLAIN, 12));
-			// selectButton
-			// .setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+			
 			selectButton.setMargin(new java.awt.Insets(2, 2, 2, 2));
-			// selectButton.setText("Select");
+			
 			selectButton.setIcon(new javax.swing.ImageIcon(getClass()
 					.getResource("images/select32.png")));
 			selectButton.setToolTipText("Select Attributes");
@@ -763,11 +753,13 @@ public class AttributeBrowserPanel extends JPanel implements
 				ArrayList indices = new ArrayList();
 
 				public void mouseClicked(java.awt.event.MouseEvent e) {
-					// TODO Auto-generated Event stub mouseClicked()
+					
 					if (javax.swing.SwingUtilities.isRightMouseButton(e)) {
-
+						// Right click
 						attributeSelectionPopupMenu.setVisible(false);
 					} else {
+						
+						// Left click
 						model.sortAtttributes();
 
 						int index = attributeList.locationToIndex(e.getPoint());

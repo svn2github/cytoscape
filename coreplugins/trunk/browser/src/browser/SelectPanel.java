@@ -38,7 +38,7 @@ public class SelectPanel extends JPanel implements PropertyChangeListener,
 	Map titleIdMap;
 	JCheckBox mirrorSelection;
 
-	CyNetwork current_network;
+	CyNetwork currentNetwork;
 
 	public SelectPanel(DataTableModel tableModel, int graphObjectType) {
 
@@ -120,10 +120,21 @@ public class SelectPanel extends JPanel implements PropertyChangeListener,
 
 	private List getGraphObjectList(CyNetwork network) {
 		
+		Iterator it = null;
+		List objList = new ArrayList();
+		
 		if (graphObjectType == NODES) {
-			return network.nodesList();
-		} else
-			return network.edgesList();
+			it = network.nodesIterator();
+		} else if(graphObjectType == EDGES) {
+			it = network.edgesIterator();
+		} else {
+			return null;
+		}
+		
+		while(it.hasNext()) {
+			objList.add(it.next());
+		}
+		return objList;
 	}
 
 	private Iterator getGraphObjectIterator() {
@@ -140,10 +151,8 @@ public class SelectPanel extends JPanel implements PropertyChangeListener,
 			return Cytoscape.getRootGraph().getEdgeCount();
 	}
 
-	/*
-	 * Catch events here!
-	 * 
-	 * (non-Javadoc)
+	/**
+	 * Catch property change events here.
 	 * 
 	 * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
 	 */
@@ -153,55 +162,40 @@ public class SelectPanel extends JPanel implements PropertyChangeListener,
 				|| e.getPropertyName().equals(Cytoscape.NETWORK_DESTROYED)
 				|| e.getPropertyName().equals(Cytoscape.CYTOSCAPE_INITIALIZED)) {
 			updateNetworkBox();
-			// tableModel.setTableDataObjects(new ArrayList());
+			tableModel.setTableDataObjects(new ArrayList());
 
 		} else if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUS
-				|| e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED
-				|| e.getPropertyName().equals(Cytoscape.NETWORK_CREATED)
-				|| e.getPropertyName().equals(Cytoscape.NETWORK_DESTROYED)
-				|| e.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_DESTROYED)
+				//|| e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED
+				//|| e.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_DESTROYED)
 				|| e.getPropertyName().equals(Cytoscape.ATTRIBUTES_CHANGED)) {
 			
-			//System.out.println("#########Signal = " + e.getPropertyName());
+			if (currentNetwork != null) {
+				currentNetwork.removeSelectEventListener(this);
+			}
 			
-			if (current_network != null) {
-				// current_network.removeFlagEventListener(this);
-				current_network.removeSelectEventListener(this);
-			}
-			current_network = Cytoscape.getCurrentNetwork();
-			if (current_network != null) {
-				// current_network.addFlagEventListener(this);
-				current_network.addSelectEventListener(this);
-			}
-
-			if (Cytoscape.getCurrentNetwork() != null) {
+			// Change the target network
+			currentNetwork = Cytoscape.getCurrentNetwork();
+			if (currentNetwork != null) {
+				currentNetwork.addSelectEventListener(this);
+			
 				if (graphObjectType == NODES) {
-					// node selection
-					// tableModel.setTableDataObjects(new ArrayList(Cytoscape
-					// .getCurrentNetwork().getFlaggedNodes()));
 					tableModel.setTableDataObjects(new ArrayList(Cytoscape
 							.getCurrentNetwork().getSelectedNodes()));
 				} else if (graphObjectType == EDGES) {
-					// edge selection
-					// tableModel.setTableDataObjects(new ArrayList(Cytoscape
-					// .getCurrentNetwork().getFlaggedEdges()));
 					tableModel.setTableDataObjects(new ArrayList(Cytoscape
 							.getCurrentNetwork().getSelectedEdges()));
 				} else {
 					// Network Attribute
-					tableModel.setTableDataObjects(null);
+					tableModel.setTableDataObjects(new ArrayList());
 				}
 			}
-
 		}
-
 	}
 
 	protected void updateNetworkBox() {
 		Iterator i = Cytoscape.getNetworkSet().iterator();
 		Vector vector = new Vector();
 		while (i.hasNext()) {
-			// System.out.println( i.next().getClass() );
 			CyNetwork net = (CyNetwork) i.next();
 			titleIdMap.put(net.getTitle(), net.getIdentifier());
 			vector.add(net.getTitle());
