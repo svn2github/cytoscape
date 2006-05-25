@@ -43,9 +43,11 @@ package cytoscape.actions;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.io.File;
 
 import cytoscape.Cytoscape;
 import cytoscape.data.ExpressionData;
+import cytoscape.dialogs.ImportAttributeMatrixDialog;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
@@ -53,11 +55,13 @@ import cytoscape.task.util.TaskManager;
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.FileUtil;
+import cytoscape.view.CyMenus;
 
 /**
  * User has requested loading of an Expression Matrix File.
  */
 public class ImportExpressionMatrixAction extends CytoscapeAction {
+    protected CyMenus windowMenu;
 
 	/**
 	 * Constructor.
@@ -66,6 +70,7 @@ public class ImportExpressionMatrixAction extends CytoscapeAction {
 		super("Attribute Matrix...");
 		setPreferredMenu("File.Import");
 		setAcceleratorCombo(KeyEvent.VK_E, ActionEvent.CTRL_MASK);
+		setName("load");
 	}
 
 	/**
@@ -76,32 +81,33 @@ public class ImportExpressionMatrixAction extends CytoscapeAction {
 	 */
 	public void actionPerformed(ActionEvent e) {
 
-		CyFileFilter filter = new CyFileFilter();
-		filter.addExtension("mrna");
-		filter.addExtension("mRNA");
-		filter.addExtension("pvals");
-		filter.setDescription("Expression Matrix files");
+		// open new dialog
+		ImportAttributeMatrixDialog amd 
+		    = new ImportAttributeMatrixDialog(
+						      Cytoscape.getDesktop(), 
+						      true);
+		amd.show();
 
-		// get the file name
-		final String name;
-		try {
-			name = FileUtil.getFile("Load Expression Matrix File",
-					FileUtil.LOAD, new CyFileFilter[] { filter }).toString();
-		} catch (Exception exp) {
-			// this is because the selection was canceled
+		if (amd.getStatus() == false) {
 			return;
 		}
 
-		// Create the LoadExpressionTask
-		ImportExpressionDataTask task = new ImportExpressionDataTask(name);
-		JTaskConfig jTaskConfig = new JTaskConfig();
-		jTaskConfig.setOwner(Cytoscape.getDesktop());
-		jTaskConfig.displayCloseButton(true);
-		jTaskConfig.displayStatus(true);
-		jTaskConfig.setAutoDispose(false);
+		String filename = amd.getFilename();
+		if (filename == null) {
+		    return;
+		} else {
 
-		// Start Loading in a new Thread; and pop-open JTask Dialog Box.
-		TaskManager.executeTask(task, jTaskConfig);
+		    // Create the LoadExpressionTask
+		    ImportExpressionDataTask task = new ImportExpressionDataTask(filename);
+		    JTaskConfig jTaskConfig = new JTaskConfig();
+		    jTaskConfig.setOwner(Cytoscape.getDesktop());
+		    jTaskConfig.displayCloseButton(true);
+		    jTaskConfig.displayStatus(true);
+		    jTaskConfig.setAutoDispose(false);
+		    
+		    // Start Loading in a new Thread; and pop-open JTask Dialog Box.
+		    TaskManager.executeTask(task, jTaskConfig);
+		}
 	}
 }
 
@@ -110,7 +116,7 @@ public class ImportExpressionMatrixAction extends CytoscapeAction {
  */
 class ImportExpressionDataTask implements Task {
 	private TaskMonitor taskMonitor;
-	private String fileName;
+	private String filename;
 
 	/**
 	 * Constructor.
@@ -118,8 +124,8 @@ class ImportExpressionDataTask implements Task {
 	 * @param fileName
 	 *            File name containing expression data.
 	 */
-	public ImportExpressionDataTask(String fileName) {
-		this.fileName = fileName;
+	public ImportExpressionDataTask(String filename) {
+		this.filename = filename;
 	}
 
 	/**
@@ -129,7 +135,7 @@ class ImportExpressionDataTask implements Task {
 		taskMonitor.setStatus("Analyzing Expression Data File...");
 		try {
 			// Read in Expression Data File
-			ExpressionData expressionData = new ExpressionData(fileName,
+			ExpressionData expressionData = new ExpressionData(filename,
 					taskMonitor);
 			Cytoscape.setExpressionData(expressionData);
 
