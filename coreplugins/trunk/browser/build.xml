@@ -28,7 +28,7 @@
     <property name="browser.lib.dir" value="${browser.root.dir}/lib"/>
   	
   	<!-- You need to modify this line to point to Cytoscape directory.  -->
-    <property name="cytoscape.dir" value="${browser.root.dir}/../Fresh"/>
+    <property name="cytoscape.dir" value="${browser.root.dir}/../../cytoscape"/>
   	
   	
     <property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib"/>
@@ -76,7 +76,7 @@
       <pathelement location="${cytoscape.lib.dir}/glf.jar"/>
       <pathelement location="${cytoscape.lib.dir}/com-nerius-math-xform.jar"/> 
       <pathelement location="${cytoscape.lib.dir}/concurrent.jar"/>
-      <pathelement location="${cytoscape.plugin.dir}/core/exesto.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/exesto.jar"/>
       <pathelement location="${cytoscape.lib.dir}/cytoscape-graph-dynamic.jar"/>
       <pathelement location="${cytoscape.lib.dir}/cytoscape-graph-fixed.jar"/>
       <pathelement location="${cytoscape.lib.dir}/cytoscape-graph-layout.jar"/>
