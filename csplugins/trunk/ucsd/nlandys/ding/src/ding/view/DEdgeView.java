@@ -703,10 +703,15 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
 
   public void addHandle(Point2D pt)
   {
+    addHandleFoo(pt);
+  }
+
+  public int addHandleFoo(Point2D pt)
+  {
     synchronized (m_view.m_lock) {
       if (m_anchors.size() == 0) {
         addHandle(0, pt);
-        return; }
+        return 0; }
       final Point2D sourcePt =
         m_view.getNodeView
         (~((FixedGraph) m_view.m_structPersp).edgeSource(m_inx)).getOffset();
@@ -733,7 +738,8 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
       if (lastCand < bestDist) {
         bestDist = lastCand;
         bestInx = m_anchors.size(); }
-      addHandle(bestInx, pt); }
+      addHandle(bestInx, pt);
+      return bestInx; }
   }
 
   public void addHandle(int insertInx, Point2D pt)
