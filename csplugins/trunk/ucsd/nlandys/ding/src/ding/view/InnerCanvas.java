@@ -342,7 +342,8 @@ public class InnerCanvas extends JComponent
             m_button1NodeDrag = true; }
           m_view.m_contentChanged = true; }
         if (chosenEdge != 0) {
-          if (e.isControlDown()) {
+          if (e.isControlDown() &&
+              ((m_lastRenderDetail & GraphRenderer.LOD_EDGE_ANCHORS) != 0)) {
             m_ptBuff[0] = m_lastXMousePos;
             m_ptBuff[1] = m_lastYMousePos;
             m_view.xformComponentToNodeCoords(m_ptBuff);
