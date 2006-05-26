@@ -335,17 +335,33 @@ public class InnerCanvas extends JComponent
             if (wasSelected && e.isShiftDown()) {
               m_view.m_selectedAnchors.delete(chosenAnchor); }
             else if (!wasSelected) {
+              if (!e.isShiftDown()) { // Unselect all other anchors on edge.
+                final int edge = chosenAnchor >>> 6;
+                final int numHandles =
+                  ((DEdgeView) m_view.getEdgeView(~edge)).numHandles();
+                for (int i = 0; i < numHandles; i++) {
+                  m_view.m_selectedAnchors.delete((edge << 6) | i); } }
               m_view.m_selectedAnchors.insert(chosenAnchor); }
             m_button1NodeDrag = true; }
           m_view.m_contentChanged = true; }
         if (chosenEdge != 0) {
           if (e.isControlDown() &&
               ((m_lastRenderDetail & GraphRenderer.LOD_EDGE_ANCHORS) != 0)) {
+            // Unselect all other handles.
+            final int numHandles =
+              ((DEdgeView) m_view.getEdgeView(chosenEdge)).numHandles();
+            for (int i = 0; i < numHandles; i++) {
+              m_view.m_selectedAnchors.delete
+                (((~chosenEdge) << 6) | i); }
             m_ptBuff[0] = m_lastXMousePos;
             m_ptBuff[1] = m_lastYMousePos;
             m_view.xformComponentToNodeCoords(m_ptBuff);
-            ((DEdgeView) m_view.getEdgeView(chosenEdge)).addHandle
-              (new Point2D.Float((float) m_ptBuff[0], (float) m_ptBuff[1])); }
+            final int chosenInx =
+              ((DEdgeView) m_view.getEdgeView(chosenEdge)).addHandleFoo
+              (new Point2D.Float((float) m_ptBuff[0], (float) m_ptBuff[1]));
+//             m_view.m_selectedAnchors.insert
+//               (((~chosenEdge) << 6) | chosenInx);
+          }
           final boolean wasSelected =
             m_view.getEdgeView(chosenEdge).isSelected();
           if (wasSelected && e.isShiftDown()) {
@@ -367,7 +383,8 @@ public class InnerCanvas extends JComponent
                 // because we performed the exact same edge anchor query
                 // earlier in this method and it produced no hits.  The
                 // anchor(s) hit here are all unselected.
-                m_view.m_selectedAnchors.insert(hits.nextInt()); } } }
+                m_view.m_selectedAnchors.insert(hits.nextInt()); } }
+          }
           m_button1NodeDrag = true;
           m_view.m_contentChanged = true; }
         if (chosenNode == 0 && chosenEdge == 0 && chosenAnchor < 0) {
