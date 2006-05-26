@@ -5,17 +5,8 @@
 package cytoscape.editor;
 
 import java.awt.event.ActionEvent;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.Properties;
 
 import javax.swing.AbstractAction;
-import javax.swing.JMenuItem;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;

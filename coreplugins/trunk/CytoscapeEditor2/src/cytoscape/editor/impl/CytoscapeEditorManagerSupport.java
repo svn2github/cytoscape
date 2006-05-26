@@ -24,7 +24,6 @@ import cytoscape.editor.CytoscapeEditor;
 import cytoscape.editor.CytoscapeEditorFactory;
 import cytoscape.editor.CytoscapeEditorManager;
 import cytoscape.editor.InvalidEditorException;
-import cytoscape.editor.actions.SetEditorAction;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.visual.VisualMappingManager;

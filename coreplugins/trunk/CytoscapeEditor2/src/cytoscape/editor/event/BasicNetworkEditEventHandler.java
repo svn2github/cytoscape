@@ -8,6 +8,7 @@ import ding.view.DGraphView;
 import ding.view.InnerCanvas;
 import edu.umd.cs.piccolo.nodes.PPath;
 import giny.model.Node;
+import giny.view.EdgeView;
 import giny.view.NodeView;
 
 import java.awt.Color;
@@ -265,6 +266,17 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter
 
 			// nextPoint = e.getPickedNode().localToGlobal(nextPoint);
 		}
+		
+		// if we have control-clicked on an edge, then just return
+		// because the user wants to add an anchor, not add a node
+		if (e.isControlDown())
+		{
+			if (view.getPickedEdgeView(nextPoint) != null)
+			{
+				return;
+			}
+		}
+		
 
 		if (onNode && !edgeStarted && (e.isControlDown())) {
 			// begin edge creation

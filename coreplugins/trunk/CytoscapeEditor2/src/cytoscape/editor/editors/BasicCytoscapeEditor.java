@@ -6,7 +6,6 @@ import giny.view.NodeView;
 
 import java.awt.Cursor;
 import java.awt.Image;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
