@@ -258,7 +258,6 @@ public class InnerCanvas extends JComponent
       int chosenAnchor = -1;
       byte chosenNodeSelected = 0;
       byte chosenEdgeSelected = 0;
-      byte chosenAnchorSelected = 0;
       synchronized (m_lock) {
         if (m_view.m_nodeSelection) {
           m_ptBuff[0] = m_lastXMousePos;
@@ -334,11 +333,9 @@ public class InnerCanvas extends JComponent
             final boolean wasSelected =
               m_view.m_selectedAnchors.count(chosenAnchor) > 0;
             if (wasSelected && e.isShiftDown()) {
-              m_view.m_selectedAnchors.delete(chosenAnchor);
-              chosenAnchorSelected = (byte) -1; }
+              m_view.m_selectedAnchors.delete(chosenAnchor); }
             else if (!wasSelected) {
-              m_view.m_selectedAnchors.insert(chosenAnchor);
-              chosenAnchorSelected = (byte) 1; }
+              m_view.m_selectedAnchors.insert(chosenAnchor); }
             m_button1NodeDrag = true; }
           m_view.m_contentChanged = true; }
         if (chosenEdge != 0) {
