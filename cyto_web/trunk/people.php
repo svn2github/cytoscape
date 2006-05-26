@@ -79,7 +79,7 @@
     <td><img src="people_photos/gary.jpg"></img></td>
     <td><img src="people_photos/ethan.jpg"></img></td>
     <td><img src="people_photos/rowan.jpg"></img></td>
-    <td><img src="people_photos/printing.jpg"></img></td>
+    <td><img src="people_photos/mike.jpg"></img></td>
     <td><img src="people_photos/printing.jpg"></img></td>
   </tr>
   <tr><td colspan=6>&nbsp;</td></tr>
