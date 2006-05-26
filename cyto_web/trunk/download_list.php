@@ -59,9 +59,9 @@
 			from our CVS server are provided below.
 			When prompted for a password for anonymous, simply press the
 			Enter key.
-			<P>cvs -d :pserver:anonymous@bordeaux.ucsd.edu:/cvsdir5 login
-			<BR>cvs -d :pserver:anonymous@bordeaux.ucsd.edu:/cvsdir5 co cytoscape
-			<BR>cvs -d :pserver:anonymous@bordeaux.ucsd.edu:/cvsdir5 logout
+			<P>cvs -d :pserver:anonymous@cabernet.ucsd.edu:/cvsdir5 login
+			<BR>cvs -d :pserver:anonymous@cabernet.ucsd.edu:/cvsdir5 co cytoscape
+			<BR>cvs -d :pserver:anonymous@cabernet.ucsd.edu:/cvsdir5 logout
 			</P>
 </div>
 <? include "footer.php"; ?>
