@@ -749,6 +749,8 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
     synchronized (m_view.m_lock) {
       m_anchors.remove(inx);
       if (m_selected) {
+        m_view.m_spacialA.delete((m_inx << 6) | inx);
+        m_view.m_selectedAnchors.delete((m_inx << 6) | inx);
         for (int j = inx; j < m_anchors.size(); j++) {
           m_view.m_spacialA.exists((m_inx << 6) | (j + 1),
                                    m_view.m_extentsBuff, 0);
