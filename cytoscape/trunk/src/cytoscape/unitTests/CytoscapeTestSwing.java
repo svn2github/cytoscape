@@ -74,7 +74,7 @@ public class CytoscapeTestSwing extends TestCase {
 
 	public void testOpenCysFile() throws ExecuteException {
 		// Use keyword substitution.
-		scenario.setTestSetting("OPEN_CYS_FILE","FILE_TO_OPEN","galFiltered.sif.cys");
+		scenario.setTestSetting("OPEN_CYS_FILE","FILE_TO_OPEN","galFiltered.cys");
 		EventPlayer player = new EventPlayer(scenario);
 		player.run(robot, "OPEN_CYS_FILE");
 
