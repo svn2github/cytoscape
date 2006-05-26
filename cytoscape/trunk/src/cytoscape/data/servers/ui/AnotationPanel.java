@@ -687,7 +687,7 @@ public class AnotationPanel extends javax.swing.JPanel {
 		
 		if(aspectFlag == true) {
 			JOptionPane.showMessageDialog(
-					this , "This file contains invalid GO Aspects." , "Error!" ,
+					this , "This file contains invalid GO Aspects.\n Aspects in OBO file will be used instead." , "Warning!" ,
 					JOptionPane.INFORMATION_MESSAGE
 				);
 		}
