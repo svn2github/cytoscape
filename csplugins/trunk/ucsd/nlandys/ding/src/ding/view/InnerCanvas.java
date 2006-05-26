@@ -354,8 +354,25 @@ public class InnerCanvas extends JComponent
             ((DEdgeView) m_view.getEdgeView(chosenEdge)).unselectInternal();
             chosenEdgeSelected = (byte) -1; }
           else if (!wasSelected) {
-            ((DEdgeView) m_view.getEdgeView(chosenEdge)).selectInternal(true);
-            chosenEdgeSelected = (byte) 1; }
+            ((DEdgeView) m_view.getEdgeView(chosenEdge)).selectInternal(false);
+            chosenEdgeSelected = (byte) 1;
+            if ((m_lastRenderDetail & GraphRenderer.LOD_EDGE_ANCHORS) != 0) {
+              m_ptBuff[0] = m_lastXMousePos;
+              m_ptBuff[1] = m_lastYMousePos;
+              m_view.xformComponentToNodeCoords(m_ptBuff);
+              final IntEnumerator hits = m_view.m_spacialA.queryOverlap
+                ((float) m_ptBuff[0], (float) m_ptBuff[1],
+                 (float) m_ptBuff[0], (float) m_ptBuff[1],
+                 null, 0, false);
+              if (hits.numRemaining() > 0) { // We hit an anchor that has just
+                // been inserted due to the edge selection.  We know this
+                // because we performed the exact same edge anchor query
+                // earlier in this method and it produced no hits.  The
+                // anchor(s) hit here are all unselected.
+                m_view.m_selectedAnchors.insert(hits.nextInt());
+              }
+            }
+          }
           m_button1NodeDrag = true;
           m_view.m_contentChanged = true; }
         if (chosenNode == 0 && chosenEdge == 0 && chosenAnchor < 0) {
