@@ -59,6 +59,7 @@ import cytoscape.cruft.obo.BiologicalProcessAnnotationReader;
 import cytoscape.cruft.obo.CellularComponentAnnotationReader;
 import cytoscape.cruft.obo.MolecularFunctionAnnotationReader;
 import cytoscape.cruft.obo.OboOntologyReader;
+import cytoscape.cruft.obo.OboOntologyReader2;
 import cytoscape.cruft.obo.SynonymReader;
 import cytoscape.data.annotation.Annotation;
 import cytoscape.data.annotation.AnnotationDescription;
@@ -99,6 +100,7 @@ public class BioDataServer {
 
 	HashMap attributeMap; // Manage which ontoligies are mapped as
 							// CyAttributes.
+	HashMap ontologyTypeMap;
 
 	BioDataServerUtil bdsu; // Utilities for the Biodataserver
 	BufferedReader taxonFileReader;
@@ -120,6 +122,7 @@ public class BioDataServer {
 	public BioDataServer(String serverName) throws Exception {
 
 		attributeMap = new HashMap();
+		ontologyTypeMap = new HashMap();
 
 		bdsu = new BioDataServerUtil();
 
@@ -377,6 +380,27 @@ public class BioDataServer {
 					oboReader);
 			list.add(reader.getOntology());
 			oboReader.close();
+			
+			BufferedReader oboReader2 = new BufferedReader(
+					new OboOntologyReader2(new FileReader(filename)));
+			String line;
+			String[] parts = null;
+			
+			while ((line = oboReader2.readLine()) != null) {
+				
+				parts = line.split("=");
+				if(parts.length==2) {
+					//System.out.println("ID = " + parts[0] + ", " + parts[1]);
+					if(parts[1].equals("biological_process")) {
+						ontologyTypeMap.put(parts[0], "P");
+					} else if(parts[1].equals("molecular_function")) {
+						ontologyTypeMap.put(parts[0], "F");
+					} else if(parts[1].equals("cellular_component")) {
+						ontologyTypeMap.put(parts[0], "C");
+					}
+				}
+			}
+			oboReader2.close();
 
 		}
 		return (Ontology[]) list.toArray(new Ontology[0]);
@@ -442,15 +466,15 @@ public class BioDataServer {
 
 			// Reader for the "gene_association" file
 			BufferedReader bpRd = new BufferedReader(
-					new BiologicalProcessAnnotationReader(taxonName,
+					new BiologicalProcessAnnotationReader(taxonName, ontologyTypeMap,
 							new FileReader(filename)));
 
 			BufferedReader ccRd = new BufferedReader(
-					new CellularComponentAnnotationReader(taxonName,
+					new CellularComponentAnnotationReader(taxonName, ontologyTypeMap,
 							new FileReader(filename)));
 
 			BufferedReader mfRd = new BufferedReader(
-					new MolecularFunctionAnnotationReader(taxonName,
+					new MolecularFunctionAnnotationReader(taxonName, ontologyTypeMap,
 							new FileReader(filename)));
 
 			AnnotationFlatFileReader bpReader = new AnnotationFlatFileReader(
