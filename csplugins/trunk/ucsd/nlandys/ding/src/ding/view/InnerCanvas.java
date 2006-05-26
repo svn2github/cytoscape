@@ -370,10 +370,7 @@ public class InnerCanvas extends JComponent
                 // because we performed the exact same edge anchor query
                 // earlier in this method and it produced no hits.  The
                 // anchor(s) hit here are all unselected.
-                m_view.m_selectedAnchors.insert(hits.nextInt());
-              }
-            }
-          }
+                m_view.m_selectedAnchors.insert(hits.nextInt()); } } }
           m_button1NodeDrag = true;
           m_view.m_contentChanged = true; }
         if (chosenNode == 0 && chosenEdge == 0 && chosenAnchor < 0) {
