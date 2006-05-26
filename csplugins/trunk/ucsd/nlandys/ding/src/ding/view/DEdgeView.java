@@ -265,7 +265,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
   {
     final boolean somethingChanged;
     synchronized (m_view.m_lock) {
-      somethingChanged = selectInternal();
+      somethingChanged = selectInternal(true);
       if (somethingChanged) { m_view.m_contentChanged = true; } }
     if (somethingChanged) {
       final GraphViewChangeListener listener = m_view.m_lis[0];
@@ -276,7 +276,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
   }
 
   // Should synchronize around m_view.m_lock.
-  boolean selectInternal()
+  boolean selectInternal(boolean selectAnchors)
   {
     if (m_selected) { return false; }
     m_selected = true;
@@ -297,7 +297,8 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
          (float) (m_view.m_anchorsBuff[1] - m_view.getAnchorSize() / 2.0d),
          (float) (m_view.m_anchorsBuff[0] + m_view.getAnchorSize() / 2.0d),
          (float) (m_view.m_anchorsBuff[1] + m_view.getAnchorSize() / 2.0d));
-      m_view.m_selectedAnchors.insert((m_inx << 6) | j); }
+      if (selectAnchors) {
+        m_view.m_selectedAnchors.insert((m_inx << 6) | j); } }
     return true;
   }
 

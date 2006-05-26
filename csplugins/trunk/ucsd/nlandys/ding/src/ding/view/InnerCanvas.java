@@ -354,7 +354,7 @@ public class InnerCanvas extends JComponent
             ((DEdgeView) m_view.getEdgeView(chosenEdge)).unselectInternal();
             chosenEdgeSelected = (byte) -1; }
           else if (!wasSelected) {
-            ((DEdgeView) m_view.getEdgeView(chosenEdge)).selectInternal();
+            ((DEdgeView) m_view.getEdgeView(chosenEdge)).selectInternal(true);
             chosenEdgeSelected = (byte) 1; }
           m_button1NodeDrag = true;
           m_view.m_contentChanged = true; }
@@ -484,7 +484,7 @@ public class InnerCanvas extends JComponent
                   selectedEdges[i] = edges.nextInt(); }
                 for (int i = 0; i < selectedEdges.length; i++) {
                   ((DEdgeView) m_view.getEdgeView(selectedEdges[i])).
-                    selectInternal(); }
+                    selectInternal(true); }
                 if (selectedEdges.length > 0) {
                   m_view.m_contentChanged = true; } } } }
           m_selectionRect = null;
