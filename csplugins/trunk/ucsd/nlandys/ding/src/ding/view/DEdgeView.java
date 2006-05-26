@@ -1,5 +1,6 @@
 package ding.view;
 
+import cytoscape.graph.fixed.FixedGraph;
 import cytoscape.render.immed.EdgeAnchors;
 import cytoscape.render.immed.GraphGraphics;
 import cytoscape.util.intr.IntBTree;
@@ -702,7 +703,36 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
   public void addHandle(Point2D pt)
   {
     synchronized (m_view.m_lock) {
-      addHandle(m_anchors.size(), pt); }
+      if (m_anchors.size() == 0) {
+        addHandle(0, pt);
+        return; }
+      final Point2D sourcePt =
+        m_view.getNodeView
+        (~((FixedGraph) m_view.m_structPersp).edgeSource(m_inx)).getOffset();
+      final Point2D targetPt =
+        m_view.getNodeView
+        (~((FixedGraph) m_view.m_structPersp).edgeTarget(m_inx)).getOffset();
+      double bestDist =
+        pt.distance(sourcePt) + pt.distance((Point2D) m_anchors.get(0)) -
+        sourcePt.distance((Point2D) m_anchors.get(0));
+      int bestInx = 0;
+      for (int i = 1; i < m_anchors.size(); i++) {
+        final double distCand =
+          pt.distance((Point2D) m_anchors.get(i - 1)) +
+          pt.distance((Point2D) m_anchors.get(i)) -
+          ((Point2D) m_anchors.get(i)).distance
+          ((Point2D) m_anchors.get(i - 1));
+        if (distCand < bestDist) {
+          bestDist = distCand;
+          bestInx = i; } }
+      final double lastCand =
+        pt.distance(targetPt) +
+        pt.distance((Point2D) m_anchors.get(m_anchors.size() - 1)) -
+        targetPt.distance((Point2D) m_anchors.get(m_anchors.size() - 1));
+      if (lastCand < bestDist) {
+        bestDist = lastCand;
+        bestInx = m_anchors.size(); }
+      addHandle(bestInx, pt); }
   }
 
   public void addHandle(int insertInx, Point2D pt)
