@@ -759,7 +759,6 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
              m_view.m_extentsBuff[2], m_view.m_extentsBuff[3]);
           if (m_view.m_selectedAnchors.delete((m_inx << 6) | (j - 1))) {
             m_view.m_selectedAnchors.insert((m_inx << 6) | j); } }
-        m_view.m_selectedAnchors.insert((m_inx << 6) | insertInx);
         m_view.m_spacialA.insert
           ((m_inx << 6) | insertInx,
            (float) (addThis.x - m_view.getAnchorSize() / 2.0d),
