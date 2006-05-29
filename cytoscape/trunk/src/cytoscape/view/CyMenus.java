@@ -69,6 +69,7 @@ import javax.swing.event.MenuListener;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.actions.AlphabeticalSelectionAction;
+import cytoscape.actions.BendSelectedEdgesAction;
 import cytoscape.actions.BirdsEyeViewAction;
 import cytoscape.actions.CloneGraphInNewWindowAction;
 import cytoscape.actions.CreateNetworkViewAction;
@@ -108,7 +109,6 @@ import cytoscape.actions.NewWindowSelectedNodesOnlyAction;
 import cytoscape.actions.OpenSessionAction;
 import cytoscape.actions.PreferenceAction;
 import cytoscape.actions.PrintAction;
-//import cytoscape.actions.RotationScaleLayoutAction;
 import cytoscape.actions.SaveSessionAction;
 import cytoscape.actions.SaveSessionAsAction;
 import cytoscape.actions.SelectAllAction;
@@ -118,6 +118,7 @@ import cytoscape.actions.SelectFirstNeighborsAction;
 import cytoscape.actions.SelectionModeAction;
 import cytoscape.actions.SetVisualPropertiesAction;
 import cytoscape.actions.ShowAllAction;
+import cytoscape.actions.StraightenSelectedEdgesAction;
 import cytoscape.actions.ToggleVisualMapperAction;
 import cytoscape.actions.UnHideSelectedEdgesAction;
 import cytoscape.actions.UnHideSelectedNodesAction;
@@ -756,6 +757,8 @@ public class CyMenus implements GraphViewChangeListener {
 		addAction(new UnHideSelectedEdgesAction());
 		addAction(new SelectAllEdgesAction());
 		addAction(new DeSelectAllEdgesAction());
+                addAction(new BendSelectedEdgesAction());
+                addAction(new StraightenSelectedEdgesAction());
 
 		selectMenu.addSeparator();
 
