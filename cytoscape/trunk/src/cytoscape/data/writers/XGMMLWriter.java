@@ -862,6 +862,9 @@ public class XGMMLWriter {
 			
 			// Bend
 			Att bend = objFactory.createAtt();
+			
+			// Curved (Bezier Curves) or Straight line
+			Att curved = objFactory.createAtt();
 
 			sourceArrow.setName("sourceArrow");
 			targetArrow.setName("targetArrow");
@@ -870,6 +873,7 @@ public class XGMMLWriter {
 			sourceArrowColor.setName("sourceArrowColor");
 			targetArrowColor.setName("targetArrowColor");
 			bend.setName("edgeBend");
+			curved.setName("curved");
 
 			sourceArrow.setValue(Integer.toString(curEdgeView
 					.getSourceEdgeEnd()));
@@ -904,6 +908,14 @@ public class XGMMLWriter {
 				bend.getContent().add(handlePoint);
 			}
 			
+			// Set curved or not
+			if(curEdgeView.getLineType() == EdgeView.CURVED_LINES) {
+				curved.setValue("CURVED_LINES");
+			} else if(curEdgeView.getLineType() == EdgeView.STRAIGHT_LINES) {
+				curved.setValue("STRAIGHT_LINES");
+			}
+		
+			
 			
 			// System.out.println("Source Color is :" +
 			// curEdgeView.getSourceEdgeEndPaint().toString());
@@ -927,6 +939,7 @@ public class XGMMLWriter {
 			cytoscapeEdgeAttr.getContent().add(sourceArrowColor);
 			cytoscapeEdgeAttr.getContent().add(targetArrowColor);
 			cytoscapeEdgeAttr.getContent().add(bend);
+			cytoscapeEdgeAttr.getContent().add(curved);
 
 			graphics.getAtt().add(cytoscapeEdgeAttr);
 
