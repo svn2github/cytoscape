@@ -248,6 +248,9 @@ public class InnerCanvas extends JComponent
   public void mousePressed(MouseEvent e)
   {
     if (e.getButton() == MouseEvent.BUTTON1) {
+      // It's too complicated to correctly handle both control and shift
+      // simultaneously.
+      if (e.isShiftDown() && e.isControlDown()) { return; }
       m_currMouseButton = 1;
       m_lastXMousePos = e.getX();
       m_lastYMousePos = e.getY();
