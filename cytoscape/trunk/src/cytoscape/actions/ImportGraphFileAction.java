@@ -168,7 +168,9 @@ public class ImportGraphFileAction extends CytoscapeAction {
 		// open new dialog
 		ImportNetworkDialog fd = new ImportNetworkDialog(
 				Cytoscape.getDesktop(), true);
-		fd.show();
+		fd.pack();
+		fd.setLocationRelativeTo(Cytoscape.getDesktop());
+		fd.setVisible(true);
 
 		if (fd.getStatus() == false) {
 			return;

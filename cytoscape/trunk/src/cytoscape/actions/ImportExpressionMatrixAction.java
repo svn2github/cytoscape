@@ -86,6 +86,8 @@ public class ImportExpressionMatrixAction extends CytoscapeAction {
 		    = new ImportAttributeMatrixDialog(
 						      Cytoscape.getDesktop(), 
 						      true);
+		amd.pack();
+		amd.setLocationRelativeTo(Cytoscape.getDesktop());
 		amd.show();
 
 		if (amd.getStatus() == false) {
