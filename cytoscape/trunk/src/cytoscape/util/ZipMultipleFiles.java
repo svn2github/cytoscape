@@ -67,7 +67,6 @@ import java.util.zip.ZipOutputStream;
  * @author kono
  * 
  */
-
 public class ZipMultipleFiles {
 	private String zipFileName;
 	private String[] files;
@@ -152,7 +151,8 @@ public class ZipMultipleFiles {
 		for (int i = 0; i < fileCount; i++) {
 
 			byte[] buf = getFileBytes(files[i]);
-			zent = new ZipEntry(sessionDirName + FS + files[i]);
+			//zent = new ZipEntry(sessionDirName + FS + files[i]);
+			zent = new ZipEntry(sessionDirName + "/" + files[i]);
 
 			al.add(zent);
 			zos.putNextEntry(zent);

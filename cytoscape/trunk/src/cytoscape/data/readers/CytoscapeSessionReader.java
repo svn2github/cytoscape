@@ -328,7 +328,8 @@ public class CytoscapeSessionReader {
 			vsMapByName.put(targetRoot.getId(), targetRoot.getVisualStyle());
 
 			// Create a root network here.
-			String targetNetwork = sessionID + FS + targetRoot.getFilename();
+			//String targetNetwork = sessionID + FS + targetRoot.getFilename();
+			String targetNetwork = sessionID + "/" + targetRoot.getFilename();
 
 			InputStream networkStream = null;
 
