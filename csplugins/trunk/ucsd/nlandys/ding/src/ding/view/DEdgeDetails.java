@@ -2,8 +2,10 @@ package ding.view;
 
 import cytoscape.graph.fixed.FixedGraph;
 import cytoscape.render.immed.EdgeAnchors;
+import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntIterator;
 import cytoscape.util.intr.IntObjHash;
+import cytoscape.util.intr.MinIntHeap;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Paint;
@@ -149,6 +151,8 @@ class DEdgeDetails extends IntermediateEdgeDetails
     else { m_targetArrowPaints.put(new Integer(edge), paint); }
   }
 
+  private final MinIntHeap m_heap = new MinIntHeap();
+
   public EdgeAnchors anchors(int edge)
   {
     final EdgeAnchors returnThis = (EdgeAnchors) (m_view.getEdgeView(~edge));
@@ -188,9 +192,15 @@ class DEdgeDetails extends IntermediateEdgeDetails
                                                nodeSize / 2.0d); }
           } }; }
     while (true) {
-      final IntIterator otherEdges = graph.edgesConnecting
-        (graph.edgeSource(edge), graph.edgeTarget(edge),
-         true, true, true);
+      {
+        final IntIterator otherEdges = graph.edgesConnecting
+          (graph.edgeSource(edge), graph.edgeTarget(edge),
+           true, true, true);
+        m_heap.empty();
+        while (otherEdges.hasNext()) {
+          m_heap.toss(otherEdges.nextInt()); }
+      }
+      final IntEnumerator otherEdges = m_heap.orderedElements(false);
       int otherEdge = otherEdges.nextInt();
       if (otherEdge == edge) { break; }
       int i =
