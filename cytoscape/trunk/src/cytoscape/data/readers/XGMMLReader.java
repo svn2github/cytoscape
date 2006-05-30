@@ -815,6 +815,12 @@ protected void layoutEdgeGraphics(GraphView myView, Graphics graphics,
 					} else if (attName.equals("edgeLineType")) {
 						edgeView.setStroke(LineType.parseLineTypeText(value)
 								.getStroke());
+					} else if(attName.equals("curved")) {
+						if(value.equals("STRAIGHT_LINES")) {
+							edgeView.setLineType(EdgeView.STRAIGHT_LINES);
+						} else if(value.equals("CURVED_LINES")) {
+							edgeView.setLineType(EdgeView.CURVED_LINES);
+						}
 					} else if(attName.equals("edgeBend")) {
 						// Restore bend info
 						
