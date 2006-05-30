@@ -152,6 +152,7 @@ class DEdgeDetails extends IntermediateEdgeDetails
   }
 
   private final MinIntHeap m_heap = new MinIntHeap();
+  private final float[] m_extentsBuff = new float[4];
 
   public EdgeAnchors anchors(int edge)
   {
@@ -160,15 +161,11 @@ class DEdgeDetails extends IntermediateEdgeDetails
     final FixedGraph graph = (FixedGraph) m_view.m_drawPersp;
     if (graph.edgeSource(edge) == graph.edgeTarget(edge)) { // Self-edge.
       final int node = graph.edgeSource(edge);
-      m_view.m_spacial.exists(node, m_view.m_extentsBuff, 0);
-      final double w = ((double) m_view.m_extentsBuff[2]) -
-        m_view.m_extentsBuff[0];
-      final double h = ((double) m_view.m_extentsBuff[3]) -
-        m_view.m_extentsBuff[1];
-      final double x = (((double) m_view.m_extentsBuff[0]) +
-                        m_view.m_extentsBuff[2]) / 2.0d;
-      final double y = (((double) m_view.m_extentsBuff[1]) +
-                        m_view.m_extentsBuff[3]) / 2.0d;
+      m_view.m_spacial.exists(node, m_extentsBuff, 0);
+      final double w = ((double) m_extentsBuff[2]) - m_extentsBuff[0];
+      final double h = ((double) m_extentsBuff[3]) - m_extentsBuff[1];
+      final double x = (((double) m_extentsBuff[0]) + m_extentsBuff[2]) / 2.0d;
+      final double y = (((double) m_extentsBuff[1]) + m_extentsBuff[3]) / 2.0d;
       final double nodeSize = Math.max(w, h);
       int i = 0;
       final IntIterator selfEdges = graph.edgesConnecting
@@ -211,24 +208,20 @@ class DEdgeDetails extends IntermediateEdgeDetails
         if (((EdgeAnchors) m_view.getEdgeView(~otherEdge)).numAnchors() == 0) {
           i++; } }
       final int inx = i;
-      m_view.m_spacial.exists(graph.edgeSource(edge), m_view.m_extentsBuff, 0);
-      final double srcW = ((double) m_view.m_extentsBuff[2]) -
-        m_view.m_extentsBuff[0];
-      final double srcH = ((double) m_view.m_extentsBuff[3]) -
-        m_view.m_extentsBuff[1];
-      final double srcX = (((double) m_view.m_extentsBuff[0]) +
-                           m_view.m_extentsBuff[2]) / 2.0d;
-      final double srcY = (((double) m_view.m_extentsBuff[1]) +
-                           m_view.m_extentsBuff[3]) / 2.0d;
-      m_view.m_spacial.exists(graph.edgeTarget(edge), m_view.m_extentsBuff, 0);
-      final double trgW = ((double) m_view.m_extentsBuff[2]) -
-        m_view.m_extentsBuff[0];
-      final double trgH = ((double) m_view.m_extentsBuff[3]) -
-        m_view.m_extentsBuff[1];
-      final double trgX = (((double) m_view.m_extentsBuff[0]) +
-                           m_view.m_extentsBuff[2]) / 2.0d;
-      final double trgY = (((double) m_view.m_extentsBuff[1]) +
-                           m_view.m_extentsBuff[3]) / 2.0d;
+      m_view.m_spacial.exists(graph.edgeSource(edge), m_extentsBuff, 0);
+      final double srcW = ((double) m_extentsBuff[2]) - m_extentsBuff[0];
+      final double srcH = ((double) m_extentsBuff[3]) - m_extentsBuff[1];
+      final double srcX = (((double) m_extentsBuff[0]) +
+                           m_extentsBuff[2]) / 2.0d;
+      final double srcY = (((double) m_extentsBuff[1]) +
+                           m_extentsBuff[3]) / 2.0d;
+      m_view.m_spacial.exists(graph.edgeTarget(edge), m_extentsBuff, 0);
+      final double trgW = ((double) m_extentsBuff[2]) - m_extentsBuff[0];
+      final double trgH = ((double) m_extentsBuff[3]) - m_extentsBuff[1];
+      final double trgX = (((double) m_extentsBuff[0]) +
+                           m_extentsBuff[2]) / 2.0d;
+      final double trgY = (((double) m_extentsBuff[1]) +
+                           m_extentsBuff[3]) / 2.0d;
       final double nodeSize =
         Math.max(Math.max(Math.max(srcW, srcH), trgW), trgH);
       final double midX = (srcX + trgX) / 2;
