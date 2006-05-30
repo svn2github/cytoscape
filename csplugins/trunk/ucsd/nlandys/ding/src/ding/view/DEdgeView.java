@@ -108,6 +108,8 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
         if (dashArr != null && dashArr.length > 0) {
           m_view.m_edgeDetails.overrideSegmentDashLength
             (m_inx, dashArr[0]); }
+        else {
+          m_view.m_edgeDetails.overrideSegmentDashLength(m_inx, -1.0f); }
         m_view.m_contentChanged = true; } }
   }
 
