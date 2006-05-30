@@ -97,7 +97,7 @@ import cytoscape.visual.mappings.PassThroughMapping;
  * generated when you call this class. The new style saves all visual features
  * (like node shape) and will not be lost even after other style selected.
  */
-public class GMLReader2 implements GraphReader {
+public class GMLReader implements GraphReader {
 	/**
 	 * The following are all taken to be reserved keywords for gml (note that
 	 * not all of them are actually keywords according to the spec)
@@ -218,7 +218,7 @@ public class GMLReader2 implements GraphReader {
 	 * @param filename
 	 *            File name.
 	 */
-	public GMLReader2(String filename) {
+	public GMLReader(String filename) {
 		this.filename = filename;
 
 		// Set new style name
@@ -235,7 +235,7 @@ public class GMLReader2 implements GraphReader {
 	 * @param taskMonitor
 	 *            TaskMonitor Object.
 	 */
-	public GMLReader2(String filename, TaskMonitor taskMonitor) {
+	public GMLReader(String filename, TaskMonitor taskMonitor) {
 		this.filename = filename;
 
 		// Set new style name

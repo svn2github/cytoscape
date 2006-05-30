@@ -64,7 +64,7 @@ import cytoscape.data.ExpressionData;
 import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.Semantics;
 import cytoscape.data.readers.CyAttributesReader;
-import cytoscape.data.readers.GMLReader2;
+import cytoscape.data.readers.GMLReader;
 import cytoscape.data.readers.XGMMLReader;
 import cytoscape.data.readers.GraphReader;
 import cytoscape.data.readers.InteractionsReader;
@@ -1199,7 +1199,7 @@ public abstract class Cytoscape {
 			reader = new InteractionsReader(biodataserver, species, location);
 		} else if (file_type == FILE_GML
 				|| (file_type == FILE_BY_SUFFIX && location.endsWith("gml"))) {
-			reader = new GMLReader2(location);
+			reader = new GMLReader(location);
 		} else if (file_type == FILE_XGMML
 				|| (file_type == FILE_BY_SUFFIX && location.endsWith("xgmml")) 
 				|| (file_type == FILE_BY_SUFFIX && location.endsWith("xml"))) {

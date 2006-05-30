@@ -101,24 +101,24 @@ public class GMLWriter {
 		KeyValue graph = null, creator = null, version = null;
 		for (Iterator it = oldList.iterator(); it.hasNext();) {
 			KeyValue keyVal = (KeyValue) it.next();
-			if (keyVal.key.equals(GMLReader2.GRAPH)) {
+			if (keyVal.key.equals(GMLReader.GRAPH)) {
 				graph = keyVal;
-			} else if (keyVal.key.equals(GMLReader2.CREATOR)) {
+			} else if (keyVal.key.equals(GMLReader.CREATOR)) {
 				creator = keyVal;
-			} else if (keyVal.key.equals(GMLReader2.VERSION)) {
+			} else if (keyVal.key.equals(GMLReader.VERSION)) {
 				version = keyVal;
 			}
 		}
 		if (creator == null) {
-			creator = new KeyValue(GMLReader2.CREATOR, null);
+			creator = new KeyValue(GMLReader.CREATOR, null);
 			oldList.add(creator);
 		}
 		if (version == null) {
-			version = new KeyValue(GMLReader2.VERSION, null);
+			version = new KeyValue(GMLReader.VERSION, null);
 			oldList.add(version);
 		}
 		if (graph == null) {
-			graph = new KeyValue(GMLReader2.GRAPH, new Vector());
+			graph = new KeyValue(GMLReader.GRAPH, new Vector());
 			oldList.add(graph);
 		}
 		/*
@@ -136,16 +136,16 @@ public class GMLWriter {
 		 */
 		List graph_list = (List) graph.value;
 		while (!newNodes.isEmpty()) {
-			KeyValue nodePair = new KeyValue(GMLReader2.NODE, new Vector());
+			KeyValue nodePair = new KeyValue(GMLReader.NODE, new Vector());
 			graph_list.add(nodePair);
-			((List) nodePair.value).add(new KeyValue(GMLReader2.ROOT_INDEX,
+			((List) nodePair.value).add(new KeyValue(GMLReader.ROOT_INDEX,
 					newNodes.iterator().next()));
 			writeGraphNode(network, view, (List) nodePair.value);
 		}
 		while (!newEdges.isEmpty()) {
-			KeyValue edgePair = new KeyValue(GMLReader2.EDGE, new Vector());
+			KeyValue edgePair = new KeyValue(GMLReader.EDGE, new Vector());
 			graph_list.add(edgePair);
-			((List) edgePair.value).add(new KeyValue(GMLReader2.ROOT_INDEX,
+			((List) edgePair.value).add(new KeyValue(GMLReader.ROOT_INDEX,
 					newEdges.iterator().next()));
 			writeGraphEdge(network, view, (List) edgePair.value);
 		}
@@ -165,11 +165,11 @@ public class GMLWriter {
 			 * the perpsective, then we must remove it from the ojbect tree.
 			 * Also do the same thing for the edges.
 			 */
-			if (keyVal.key.equals(GMLReader2.NODE)) {
+			if (keyVal.key.equals(GMLReader.NODE)) {
 				if (!writeGraphNode(network, view, (List) keyVal.value)) {
 					it.remove();
 				}
-			} else if (keyVal.key.equals(GMLReader2.EDGE)) {
+			} else if (keyVal.key.equals(GMLReader.EDGE)) {
 				if (!writeGraphEdge(network, view, (List) keyVal.value)) {
 					it.remove();
 				}
@@ -193,13 +193,13 @@ public class GMLWriter {
 		KeyValue idPair = null;
 		for (Iterator it = oldList.iterator(); it.hasNext();) {
 			KeyValue keyVal = (KeyValue) it.next();
-			if (keyVal.key.equals(GMLReader2.ROOT_INDEX)) {
+			if (keyVal.key.equals(GMLReader.ROOT_INDEX)) {
 				root_index = (Integer) keyVal.value;
-			} else if (keyVal.key.equals(GMLReader2.GRAPHICS)) {
+			} else if (keyVal.key.equals(GMLReader.GRAPHICS)) {
 				graphicsPair = keyVal;
-			} else if (keyVal.key.equals(GMLReader2.LABEL)) {
+			} else if (keyVal.key.equals(GMLReader.LABEL)) {
 				labelPair = keyVal;
-			} else if (keyVal.key.equals(GMLReader2.ID)) {
+			} else if (keyVal.key.equals(GMLReader.ID)) {
 				idPair = keyVal;
 			}
 		}
@@ -224,7 +224,7 @@ public class GMLWriter {
 		 * Update or create the id key-value pair for this list
 		 */
 		if (idPair == null) {
-			idPair = new KeyValue(GMLReader2.ID, null);
+			idPair = new KeyValue(GMLReader.ID, null);
 			oldList.add(idPair);
 		}
 		idPair.value = root_index;
@@ -236,7 +236,7 @@ public class GMLWriter {
 		 */
 		if (view != null) {
 			if (graphicsPair == null) {
-				graphicsPair = new KeyValue(GMLReader2.GRAPHICS, new Vector());
+				graphicsPair = new KeyValue(GMLReader.GRAPHICS, new Vector());
 				oldList.add(graphicsPair);
 			}
 			writeGraphNodeGraphics(network, view.getNodeView(node),
@@ -248,7 +248,7 @@ public class GMLWriter {
 		 * to mean the canoncial name
 		 */
 		if (labelPair == null) {
-			labelPair = new KeyValue(GMLReader2.LABEL, null);
+			labelPair = new KeyValue(GMLReader.LABEL, null);
 			oldList.add(labelPair);
 		}
 		labelPair.value = node.getIdentifier();
@@ -275,15 +275,15 @@ public class GMLWriter {
 
 		for (Iterator it = oldList.iterator(); it.hasNext();) {
 			KeyValue keyVal = (KeyValue) it.next();
-			if (keyVal.key.equals(GMLReader2.GRAPHICS)) {
+			if (keyVal.key.equals(GMLReader.GRAPHICS)) {
 				graphicsPair = keyVal;
-			} else if (keyVal.key.equals(GMLReader2.LABEL)) {
+			} else if (keyVal.key.equals(GMLReader.LABEL)) {
 				labelPair = keyVal;
-			} else if (keyVal.key.equals(GMLReader2.ROOT_INDEX)) {
+			} else if (keyVal.key.equals(GMLReader.ROOT_INDEX)) {
 				root_index = (Integer) keyVal.value;
-			} else if (keyVal.key.equals(GMLReader2.SOURCE)) {
+			} else if (keyVal.key.equals(GMLReader.SOURCE)) {
 				sourcePair = keyVal;
-			} else if (keyVal.key.equals(GMLReader2.TARGET)) {
+			} else if (keyVal.key.equals(GMLReader.TARGET)) {
 				targetPair = keyVal;
 			}
 		}
@@ -301,27 +301,27 @@ public class GMLWriter {
 
 		newEdges.remove(root_index);
 		if (targetPair == null) {
-			targetPair = new KeyValue(GMLReader2.TARGET, null);
+			targetPair = new KeyValue(GMLReader.TARGET, null);
 			oldList.add(targetPair);
 		}
 		targetPair.value = new Integer(edge.getTarget().getRootGraphIndex());
 
 		if (sourcePair == null) {
-			sourcePair = new KeyValue(GMLReader2.SOURCE, null);
+			sourcePair = new KeyValue(GMLReader.SOURCE, null);
 			oldList.add(sourcePair);
 		}
 		sourcePair.value = new Integer(edge.getSource().getRootGraphIndex());
 
 		if (view != null) {
 			if (graphicsPair == null) {
-				graphicsPair = new KeyValue(GMLReader2.GRAPHICS, new Vector());
+				graphicsPair = new KeyValue(GMLReader.GRAPHICS, new Vector());
 				// will eventually make a new graphics pair here
 			}
 			writeGraphEdgeGraphics(network, view.getEdgeView(edge),
 					(List) graphicsPair.value);
 		}
 		if (labelPair == null) {
-			labelPair = new KeyValue(GMLReader2.LABEL, null);
+			labelPair = new KeyValue(GMLReader.LABEL, null);
 			oldList.add(labelPair);
 		}
 		
@@ -343,55 +343,55 @@ public class GMLWriter {
 		KeyValue x = null, y = null, w = null, h = null, type = null, fill = null, outline = null, outline_width = null;
 		for (Iterator it = oldList.iterator(); it.hasNext();) {
 			KeyValue keyVal = (KeyValue) it.next();
-			if (keyVal.key.equals(GMLReader2.X)) {
+			if (keyVal.key.equals(GMLReader.X)) {
 				x = keyVal;
-			} else if (keyVal.key.equals(GMLReader2.Y)) {
+			} else if (keyVal.key.equals(GMLReader.Y)) {
 				y = keyVal;
-			} else if (keyVal.key.equals(GMLReader2.W)) {
+			} else if (keyVal.key.equals(GMLReader.W)) {
 				w = keyVal;
-			} else if (keyVal.key.equals(GMLReader2.H)) {
+			} else if (keyVal.key.equals(GMLReader.H)) {
 				h = keyVal;
-			} else if (keyVal.key.equals(GMLReader2.TYPE)) {
+			} else if (keyVal.key.equals(GMLReader.TYPE)) {
 				type = keyVal;
-			} else if (keyVal.key.equals(GMLReader2.FILL)) {
+			} else if (keyVal.key.equals(GMLReader.FILL)) {
 				fill = keyVal;
-			} else if (keyVal.key.equals(GMLReader2.OUTLINE)) {
+			} else if (keyVal.key.equals(GMLReader.OUTLINE)) {
 				outline = keyVal;
-			} else if (keyVal.key.equals(GMLReader2.OUTLINE_WIDTH)) {
+			} else if (keyVal.key.equals(GMLReader.OUTLINE_WIDTH)) {
 				outline_width = keyVal;
 			}
 		}
 
 		if (x == null) {
-			x = new KeyValue(GMLReader2.X, null);
+			x = new KeyValue(GMLReader.X, null);
 			oldList.add(x);
 		}
 		if (y == null) {
-			y = new KeyValue(GMLReader2.Y, null);
+			y = new KeyValue(GMLReader.Y, null);
 			oldList.add(y);
 		}
 		if (w == null) {
-			w = new KeyValue(GMLReader2.W, null);
+			w = new KeyValue(GMLReader.W, null);
 			oldList.add(w);
 		}
 		if (h == null) {
-			h = new KeyValue(GMLReader2.H, null);
+			h = new KeyValue(GMLReader.H, null);
 			oldList.add(h);
 		}
 		if (fill == null) {
-			fill = new KeyValue(GMLReader2.FILL, null);
+			fill = new KeyValue(GMLReader.FILL, null);
 			oldList.add(fill);
 		}
 		if (type == null) {
-			type = new KeyValue(GMLReader2.TYPE, null);
+			type = new KeyValue(GMLReader.TYPE, null);
 			oldList.add(type);
 		}
 		if (outline == null) {
-			outline = new KeyValue(GMLReader2.OUTLINE, null);
+			outline = new KeyValue(GMLReader.OUTLINE, null);
 			oldList.add(outline);
 		}
 		if (outline_width == null) {
-			outline_width = new KeyValue(GMLReader2.OUTLINE_WIDTH, null);
+			outline_width = new KeyValue(GMLReader.OUTLINE_WIDTH, null);
 			oldList.add(outline_width);
 		}
 
@@ -404,25 +404,25 @@ public class GMLWriter {
 		outline_width.value = new Double(nodeView.getBorderWidth());
 		switch (nodeView.getShape()) {
 		case NodeView.RECTANGLE:
-			type.value = GMLReader2.RECTANGLE;
+			type.value = GMLReader.RECTANGLE;
 			break;
 		case NodeView.ELLIPSE:
-			type.value = GMLReader2.ELLIPSE;
+			type.value = GMLReader.ELLIPSE;
 			break;
 		case NodeView.DIAMOND:
-			type.value = GMLReader2.DIAMOND;
+			type.value = GMLReader.DIAMOND;
 			break;
 		case NodeView.HEXAGON:
-			type.value = GMLReader2.HEXAGON;
+			type.value = GMLReader.HEXAGON;
 			break;
 		case NodeView.OCTAGON:
-			type.value = GMLReader2.OCTAGON;
+			type.value = GMLReader.OCTAGON;
 			break;
 		case NodeView.PARALELLOGRAM:
-			type.value = GMLReader2.PARALELLOGRAM;
+			type.value = GMLReader.PARALELLOGRAM;
 			break;
 		case NodeView.TRIANGLE:
-			type.value = GMLReader2.TRIANGLE;
+			type.value = GMLReader.TRIANGLE;
 			break;
 		}
 	}
@@ -432,48 +432,48 @@ public class GMLWriter {
 		KeyValue width = null, fill = null, line = null, type = null, source_arrow = null, target_arrow = null;
 		for (Iterator it = oldList.iterator(); it.hasNext();) {
 			KeyValue keyVal = (KeyValue) it.next();
-			if (keyVal.key.equals(GMLReader2.WIDTH)) {
+			if (keyVal.key.equals(GMLReader.WIDTH)) {
 				width = keyVal;
-			} else if (keyVal.key.equals(GMLReader2.FILL)) {
+			} else if (keyVal.key.equals(GMLReader.FILL)) {
 				fill = keyVal;
-			} else if (keyVal.key.equals(GMLReader2.LINE)) {
+			} else if (keyVal.key.equals(GMLReader.LINE)) {
 				line = keyVal;
-			} else if (keyVal.key.equals(GMLReader2.TYPE)) {
+			} else if (keyVal.key.equals(GMLReader.TYPE)) {
 				type = keyVal;
-			} else if (keyVal.key.equals(GMLReader2.SOURCE_ARROW)) {
+			} else if (keyVal.key.equals(GMLReader.SOURCE_ARROW)) {
 				source_arrow = keyVal;
-			} else if (keyVal.key.equals(GMLReader2.TARGET_ARROW)) {
+			} else if (keyVal.key.equals(GMLReader.TARGET_ARROW)) {
 				target_arrow = keyVal;
 			}
 		}
 
 		if (width == null) {
-			width = new KeyValue(GMLReader2.WIDTH, null);
+			width = new KeyValue(GMLReader.WIDTH, null);
 			oldList.add(width);
 		}
 		width.value = new Double(edgeView.getStrokeWidth());
 
 		if (fill == null) {
-			fill = new KeyValue(GMLReader2.FILL, null);
+			fill = new KeyValue(GMLReader.FILL, null);
 			oldList.add(fill);
 		}
 		fill.value = getColorHexString((Color) edgeView.getUnselectedPaint());
 
 		if (type == null) {
-			type = new KeyValue(GMLReader2.TYPE, null);
+			type = new KeyValue(GMLReader.TYPE, null);
 			oldList.add(type);
 		}
 		switch (edgeView.getLineType()) {
 		case EdgeView.STRAIGHT_LINES:
-			type.value = GMLReader2.STRAIGHT_LINES;
+			type.value = GMLReader.STRAIGHT_LINES;
 			break;
 		case EdgeView.CURVED_LINES:
-			type.value = GMLReader2.CURVED_LINES;
+			type.value = GMLReader.CURVED_LINES;
 			break;
 		}
 
 		if (line == null) {
-			line = new KeyValue(GMLReader2.LINE, null);
+			line = new KeyValue(GMLReader.LINE, null);
 			oldList.add(line);
 		}
 		Point2D[] pointsArray = edgeView.getBend().getDrawPoints();
@@ -483,22 +483,22 @@ public class GMLWriter {
 		// and reverse the order x
 		for (int idx = pointsArray.length - 2; idx > 0; idx--) {
 			Vector coords = new Vector(2);
-			coords.add(new KeyValue(GMLReader2.X, new Double(pointsArray[idx]
+			coords.add(new KeyValue(GMLReader.X, new Double(pointsArray[idx]
 					.getX())));
-			coords.add(new KeyValue(GMLReader2.Y, new Double(pointsArray[idx]
+			coords.add(new KeyValue(GMLReader.Y, new Double(pointsArray[idx]
 					.getY())));
-			points.add(new KeyValue(GMLReader2.POINT, coords));
+			points.add(new KeyValue(GMLReader.POINT, coords));
 		}
 		line.value = points;
 
 		if (source_arrow == null) {
-			source_arrow = new KeyValue(GMLReader2.SOURCE_ARROW, null);
+			source_arrow = new KeyValue(GMLReader.SOURCE_ARROW, null);
 			oldList.add(source_arrow);
 		}
 		source_arrow.value = new Integer(edgeView.getSourceEdgeEnd());
 
 		if (target_arrow == null) {
-			target_arrow = new KeyValue(GMLReader2.TARGET_ARROW, null);
+			target_arrow = new KeyValue(GMLReader.TARGET_ARROW, null);
 			oldList.add(target_arrow);
 		}
 		target_arrow.value = new Integer(edgeView.getTargetEdgeEnd());

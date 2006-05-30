@@ -2,34 +2,15 @@ package cytoscape.actions;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.io.IOException;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 
-import javax.swing.SwingUtilities;
-
-import phoebe.PGraphView;
-
-import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
-import cytoscape.data.readers.GMLReader2;
-import cytoscape.data.readers.GraphReader;
-import cytoscape.data.readers.InteractionsReader;
-import cytoscape.data.readers.XGMMLReader;
-import cytoscape.data.servers.BioDataServer;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 import cytoscape.util.CyFileFilter;
-import cytoscape.util.CyNetworkNaming;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.FileUtil;
-import cytoscape.view.CyMenus;
-import edu.umd.cs.piccolo.PCanvas;
-import edu.umd.cs.piccolo.PLayer;
-import edu.umd.cs.piccolo.util.PBounds;
 
 public class ImportVizmapAction extends CytoscapeAction {
 	public ImportVizmapAction() {

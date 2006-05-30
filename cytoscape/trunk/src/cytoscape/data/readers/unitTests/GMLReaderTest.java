@@ -48,7 +48,7 @@ package cytoscape.data.readers.unitTests;
 import giny.model.RootGraph;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import cytoscape.data.readers.GMLReader2;
+import cytoscape.data.readers.GMLReader;
 import cytoscape.unitTests.AllTests;
 import cytoscape.Cytoscape;
 
@@ -75,7 +75,7 @@ public class GMLReaderTest extends TestCase {
 	// ------------------------------------------------------------------------------
 	public void testSmallGraphRead() throws Exception {
 		AllTests.standardOut("testSmallGraphRead");
-		GMLReader2 reader = new GMLReader2("testData/gal.gml");
+		GMLReader reader = new GMLReader("testData/gal.gml");
 		reader.read();
 		RootGraph network = reader.getRootGraph();
 
@@ -89,7 +89,7 @@ public class GMLReaderTest extends TestCase {
 	// -------------------------------------------------------------------------
 	public void testMediumGraphRead() throws Exception {
 		AllTests.standardOut("testMediumGraphRead");
-		GMLReader2 reader = new GMLReader2("testData/noLabels.gml");
+		GMLReader reader = new GMLReader("testData/noLabels.gml");
 		reader.read();
 		RootGraph network = reader.getRootGraph();
 

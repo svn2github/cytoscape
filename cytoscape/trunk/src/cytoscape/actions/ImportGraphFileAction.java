@@ -49,7 +49,7 @@ import java.text.NumberFormat;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-import cytoscape.data.readers.GMLReader2;
+import cytoscape.data.readers.GMLReader;
 import cytoscape.data.readers.GraphReader;
 import cytoscape.data.readers.InteractionsReader;
 import cytoscape.data.readers.XGMMLReader;
@@ -363,7 +363,7 @@ class LoadNetworkTask implements Task {
 			reader = new InteractionsReader(biodataserver, species, location,
 					taskMonitor);
 		} else if (file_type == Cytoscape.FILE_GML) {
-			reader = new GMLReader2(location, taskMonitor);
+			reader = new GMLReader(location, taskMonitor);
 		} else if (file_type == Cytoscape.FILE_XGMML) {
 			reader = new XGMMLReader(location);
 		} else {

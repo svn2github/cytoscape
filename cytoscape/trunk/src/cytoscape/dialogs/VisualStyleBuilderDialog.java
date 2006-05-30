@@ -12,7 +12,7 @@ import java.util.Set;
 import javax.swing.JOptionPane;
 
 import cytoscape.Cytoscape;
-import cytoscape.data.readers.GMLReader2;
+import cytoscape.data.readers.GMLReader;
 import cytoscape.data.readers.GraphReader;
 
 /**
@@ -23,14 +23,14 @@ public class VisualStyleBuilderDialog extends javax.swing.JDialog {
 
 	private String mapperSuffix;
 	private String VSName;
-	private GMLReader2 gmlReader;
+	private GMLReader gmlReader;
 
 	/** Creates new form VisualStyleBuilderDialog */
 
 	public VisualStyleBuilderDialog(String networkName, GraphReader reader,
 			java.awt.Frame parent, boolean modal) {
 		super(parent, modal);
-		gmlReader = (GMLReader2) reader;
+		gmlReader = (GMLReader) reader;
 
 		String modName = "";
 		String[] removeDot = networkName.split("\\.");
