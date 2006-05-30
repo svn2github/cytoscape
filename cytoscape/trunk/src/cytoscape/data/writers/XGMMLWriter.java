@@ -108,6 +108,11 @@ public class XGMMLWriter {
 	protected static String PARALELLOGRAM = "parallelogram";
 	protected static String TRIANGLE = "triangle";
 
+	// Node types
+	protected static String NORMAL = "normal";
+	protected static String METANODE = "metanode";
+	protected static String REFERENCE = "reference";
+
 	// Object types
 	protected static int NODE = 1;
 	protected static int EDGE = 2;
@@ -130,7 +135,7 @@ public class XGMMLWriter {
 
 	private ArrayList nodeList;
 	private ArrayList metanodeList;
-       private HashMap edgeMap;
+	private ArrayList edgeList;
 
 	JAXBContext jc;
 	ObjectFactory objFactory;
@@ -163,8 +168,8 @@ public class XGMMLWriter {
 		networkAttributes = Cytoscape.getNetworkAttributes();
 
 		nodeList = new ArrayList();
-               // metanodeList = new ArrayList();
-               edgeMap = new HashMap();
+		metanodeList = new ArrayList();
+		edgeList = new ArrayList();
 
 		nodeAttNames = nodeAttributes.getAttributeNames();
 		edgeAttNames = edgeAttributes.getAttributeNames();
@@ -271,26 +276,11 @@ public class XGMMLWriter {
 		Iterator it = network.edgesIterator();
 
 		CyEdge curEdge = null;
+		Edge jxbEdge = null;
+
 		while (it.hasNext()) {
 			curEdge = (CyEdge) it.next();
-                       writeEdge(curEdge);
-                       // Is this edge in the edge map already?
-                       if (edgeMap.containsKey(curEdge.getIdentifier())) {
-                               // Yes, remove it
-                               edgeMap.remove(curEdge.getIdentifier());
-                       }
-               }
-
-               // The edges left should all be from collapsed metaNodes
-               it = edgeMap.keySet().iterator();
-               while (it.hasNext()) {
-                       curEdge = (CyEdge)edgeMap.get(it.next());
-                       writeEdge(curEdge);
-               }
-       }
-
-       private void writeEdge(CyEdge curEdge) throws JAXBException {
-               Edge jxbEdge = objFactory.createEdge();
+			jxbEdge = objFactory.createEdge();
 
 			jxbEdge.setId(curEdge.getIdentifier());
 			jxbEdge.setLabel(curEdge.getIdentifier());
@@ -313,7 +303,11 @@ public class XGMMLWriter {
 			}
 			attributeWriter(EDGE, curEdge.getIdentifier(), jxbEdge);
 
+			edgeList.add(curEdge);
 			graph.getNodeOrEdge().add(jxbEdge);
+
+		}
+
 	}
 
 	// write out network attributes
@@ -446,7 +440,7 @@ public class XGMMLWriter {
 			if (sAttr != null) {
 				attr.setValue(sAttr.toString());
 			} else if (attributeName == "nodeType") {
-                               attr.setValue("normal");
+				attr.setValue(NORMAL);
 			}
 		}
 		// process boolean
@@ -862,9 +856,6 @@ public class XGMMLWriter {
 			
 			// Bend
 			Att bend = objFactory.createAtt();
-			
-			// Curved (Bezier Curves) or Straight line
-			Att curved = objFactory.createAtt();
 
 			sourceArrow.setName("sourceArrow");
 			targetArrow.setName("targetArrow");
@@ -873,7 +864,6 @@ public class XGMMLWriter {
 			sourceArrowColor.setName("sourceArrowColor");
 			targetArrowColor.setName("targetArrowColor");
 			bend.setName("edgeBend");
-			curved.setName("curved");
 
 			sourceArrow.setValue(Integer.toString(curEdgeView
 					.getSourceEdgeEnd()));
@@ -908,14 +898,6 @@ public class XGMMLWriter {
 				bend.getContent().add(handlePoint);
 			}
 			
-			// Set curved or not
-			if(curEdgeView.getLineType() == EdgeView.CURVED_LINES) {
-				curved.setValue("CURVED_LINES");
-			} else if(curEdgeView.getLineType() == EdgeView.STRAIGHT_LINES) {
-				curved.setValue("STRAIGHT_LINES");
-			}
-		
-			
 			
 			// System.out.println("Source Color is :" +
 			// curEdgeView.getSourceEdgeEndPaint().toString());
@@ -939,7 +921,6 @@ public class XGMMLWriter {
 			cytoscapeEdgeAttr.getContent().add(sourceArrowColor);
 			cytoscapeEdgeAttr.getContent().add(targetArrowColor);
 			cytoscapeEdgeAttr.getContent().add(bend);
-			cytoscapeEdgeAttr.getContent().add(curved);
 
 			graphics.getAtt().add(cytoscapeEdgeAttr);
 
@@ -1059,6 +1040,7 @@ public class XGMMLWriter {
 			attributeWriter(NODE, curNode.getIdentifier(), jxbNode);
 			if (isMetanode(curNode)) {
 				nodeList.add(curNode);
+				metanodeList.add(curNode);
 				expandChildren(curNode);
 			} else {
 				nodeList.add(curNode);
@@ -1107,6 +1089,7 @@ public class XGMMLWriter {
 					childrenIndices[i]);
 
 			if (isMetanode(childNode)) {
+				metanodeList.add(childNode);
 				nodeList.add(childNode);
 				expandChildren(childNode);
 
@@ -1126,53 +1109,19 @@ public class XGMMLWriter {
 	 * 
 	 */
 	private void writeMetanodes() throws JAXBException {
-               // TODO: when the API gets sorted out, this should
-               // come from the MetaNodeFactory.METANODES_IN_NETWORK
-               String MetaNodeKey = "metaNodeViewer.model.GPMetaNodeFactory.metaNodeRindices";
-
-               // Two pass approach. First, walk through the list
-               // and see if any of the children of a metanode are
-               // themselves a metanode.  If so, remove them from
-               // the list & will pick them up on recursion
-               metanodeList = (ArrayList)network.getClientData(MetaNodeKey);
 		Iterator it = metanodeList.iterator();
-               HashMap embeddedMetaList = new HashMap();
-               while (it.hasNext()) {
-                       CyNode curNode = (CyNode) it.next();
-                       int[] childrenIndices = network.getRootGraph()
-                                       .getNodeMetaChildIndicesArray(curNode.getRootGraphIndex());
-                       for (int i = 0; i < childrenIndices.length; i++) {
-                               CyNode childNode = (CyNode) network.getRootGraph().getNode(
-                                               childrenIndices[i]);
-                               if (isMetanode(childNode)) {
-                                       // System.out.println("Adding "+childNode.getIdentifier()+" to skip list");
-                                       embeddedMetaList.put(childNode.getIdentifier(), childNode);
-                               }
-                       }
-               }
 
-               // Reset the iterator
-               it = metanodeList.iterator();
 		while (it.hasNext()) {
 			CyNode curNode = (CyNode) it.next();
-                       // System.out.println("Metanode "+curNode.getIdentifier());
-                       // Is this an embedded metaNode?
-                       if (embeddedMetaList.containsKey(curNode.getIdentifier()))
-                               continue; // Yes, skip it
-
-                       graph.getAtt().add(writeMetanode(curNode));
-               }
-       }
-
-       private Node writeMetanode(CyNode curNode) throws JAXBException {
 			Node jxbNode = null;
 			jxbNode = buildJAXBNode(curNode);
 
-               // System.out.println("Writing Metanode "+curNode.getIdentifier());
+			jxbNode.setName("metaNode");
 
 			int[] childrenIndices = network.getRootGraph()
 					.getNodeMetaChildIndicesArray(curNode.getRootGraphIndex());
 			Att children = objFactory.createAtt();
+			children.setName("metanodeChildren");
 			Graph subGraph = objFactory.createGraph();
 
 			for (int i = 0; i < childrenIndices.length; i++) {
@@ -1181,29 +1130,18 @@ public class XGMMLWriter {
 
 				childNode = (CyNode) network.getRootGraph().getNode(
 						childrenIndices[i]);
-                       // String targetnodeID = Integer.toString(childNode.getRootGraphIndex());
-                       if (!isMetanode(childNode)) {
 				childJxbNode = objFactory.createNode();
-                               childJxbNode.setHref("#"+childNode.getIdentifier());
-                       } else {
-                               // We have an embedded metanode -- recurse
-                               childJxbNode = writeMetanode(childNode);
-                       }
+				childJxbNode.setId(childNode.getIdentifier());
 
+				childJxbNode.setName("reference");
 				subGraph.getNodeOrEdge().add(childJxbNode);
+
 			}
 			children.getContent().add(subGraph);
 			jxbNode.getAtt().add(children);
-
-               // Finally add any edges from this sub-network
-               Iterator it = curNode.getGraphPerspective().getRootGraph().edgesIterator();
-               while (it.hasNext()) {
-                       CyEdge curEdge = (CyEdge)it.next();
-                       // System.out.println("Found edge "+curEdge.getIdentifier());
-                       edgeMap.put(curEdge.getIdentifier(),curEdge);
+			graph.getAtt().add(jxbNode);
 		}
 
-               return jxbNode;
 	}
 
 	/**

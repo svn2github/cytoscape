@@ -68,7 +68,6 @@ import cern.colt.map.OpenIntIntHashMap;
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
-import cytoscape.view.CyNetworkView;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.data.CyAttributes;
@@ -159,7 +158,7 @@ public class XGMMLReader implements GraphReader {
 
 	ArrayList rootNodes;
 
-       ArrayList metaTree;
+	HashMap metanodeMap;
 
 	CyAttributes nodeAttributes;
 	CyAttributes edgeAttributes;
@@ -170,12 +169,6 @@ public class XGMMLReader implements GraphReader {
 
 	private HashMap nodeMap;
 
-       private int debugLevel = 1;     // Change this for more verbose output
-                                       // 1 = normal, 2 = node info, 4 = edge info,
-                                       // 8 = metanode info, 16 = attribute info
-                                       // or set property XGMMLdebugLevel
-       private int nextID = 0;         // Used to assign ID's to nodes that didn't have them
-
 	Properties prop = CytoscapeInit.getProperties();
 	String vsbSwitch = prop.getProperty("visualStyleBuilder");
 
@@ -183,7 +176,7 @@ public class XGMMLReader implements GraphReader {
 
 		this.fileName = fileName;
 		try {
-                       debug(1,"Opening stream for " + fileName);
+			// System.out.println("Opening stream for " + fileName);
 			networkStream = new FileInputStream(fileName);
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -191,7 +184,7 @@ public class XGMMLReader implements GraphReader {
 		}
 		this.networkName = null;
 
-               this.metaTree = new ArrayList();
+		this.metanodeMap = new HashMap();
 		this.nodeGraphicsMap = new HashMap();
 		this.edgeGraphicsMap = new HashMap();
 	}
@@ -201,7 +194,7 @@ public class XGMMLReader implements GraphReader {
 		this.networkName = null;
 		this.networkStream = is;
 
-               this.metaTree = new ArrayList();
+		this.metanodeMap = new HashMap();
 		this.nodeGraphicsMap = new HashMap();
 		this.edgeGraphicsMap = new HashMap();
 	}
@@ -213,7 +206,7 @@ public class XGMMLReader implements GraphReader {
 		this.networkName = null;
 		this.networkStream = is;
 
-               this.metaTree = new ArrayList();
+		this.metanodeMap = new HashMap();
 
 		this.nodeGraphicsMap = new HashMap();
 		this.edgeGraphicsMap = new HashMap();
@@ -255,10 +248,6 @@ public class XGMMLReader implements GraphReader {
 	 * @throws IOException
 	 */
 	private void readXGMML() throws JAXBException, IOException {
-               String dbLevel = prop.getProperty("XGMMLdebugLevel");
-               if (dbLevel != null) {
-                       debugLevel = (new Integer(dbLevel)).intValue();
-               }
 
 		nodeAttributes = Cytoscape.getNodeAttributes();
 		edgeAttributes = Cytoscape.getEdgeAttributes();
@@ -276,89 +265,24 @@ public class XGMMLReader implements GraphReader {
 
 		rootNodes = new ArrayList();
 
-               // Two passes:
-               //      Pass 1: recursive descent to get all nodes and edges.  We build
-               //              the complete list of nodes and the list of edges.  Along
-               //              the way, we also build a list of metaNodes, and handle
-               //              all node attributes
-               //      Pass 2: walk the node and edge list and add them to the network.
+		// Get all nodes and edges as one List object.
+		List nodesAndEdges = network.getNodeOrEdge();
 
-
-               // Pass 1
 		// Split the list into two: node and edge list
 		nodes = new ArrayList();
 		edges = new ArrayList();
-               getNodesAndEdges(network, null);
-
-               // Pass 2
-               // Build the network
-               createGraph(network);
-       }
-
-       /**
-        * Recursively build the list of nodes and edges
-        *
-        * @param network
-        * @param metanodes
-        */
-       protected void getNodesAndEdges(Graph network, cytoscape.generated2.Node parent) {
-               // Get all nodes and edges as one List object.
-               List nodesAndEdges = network.getNodeOrEdge();
-
-               List metaChildren = new ArrayList();
-
 		Iterator it = nodesAndEdges.iterator();
 		while (it.hasNext()) {
 			Object curObj = it.next();
 			if (curObj.getClass() == cytoscape.generated2.impl.NodeImpl.class) {
-                               // Add the node to the list.  Note that this could be
-                               // recursive if this node contains a <graph>
-                               addNode((cytoscape.generated2.Node) curObj);
-
-                               // Add the object to the metaNode tree.  Links will be resolved
-                               // later
-                               metaChildren.add(curObj);
+				nodes.add(curObj);
 			} else {
 				edges.add(curObj);
 			}
 		}
-               if (parent != null) {
-                       metaTree.add(parent.getLabel());
-                       metaTree.add(metaChildren);
-               }
-       }
 
-       protected void addNode(cytoscape.generated2.Node curNode) {
-               String label = (String) curNode.getLabel();
-               String nodeId = (String) curNode.getId();
-
-               debug(2,"Looking at node "+label);
-
-               // Sanity check the node
-               if (nodeId == null && curNode.getHref() == null) {
-                       // Generate an Id?
-                       if (label != null) {
-                               curNode.setId(label);
-                       } else {
-                               curNode.setId("CyNode-"+nextID);
-                               nextID++;
-                       }
-               } else if (curNode.getHref() != null) {
-                       // This is a link. We don't want to handle
-                       // either attributes or add it to the network
-                       // map
-                       return;
-               }
-
-               if (label == null) {
-                       // Cytoscape uses the label as its internal identifier
-                       curNode.setLabel(curNode.getId());
-               }
-
-               nodes.add(curNode);
-
-               // Read our attributes.  We might recurse from here!
-               readAttributes(curNode.getLabel(), curNode.getAtt(), NODE, curNode);
+		// Build the network
+		createGraph(network);
 	}
 
 	/**
@@ -389,15 +313,38 @@ public class XGMMLReader implements GraphReader {
 			cytoscape.generated2.Node curNode = (cytoscape.generated2.Node) nodes
 					.get(idx);
 
+			String nodeType = curNode.getName();
+
 			String label = (String) curNode.getLabel();
 
-                       debug(2,"Processing Node: " + label + " ("+ curNode.getId() + ")");
+			readAttributes(label, curNode.getAtt(), NODE);
+
+			// System.out.println("Node Name: " + label + ", ID is "
+			// + Cytoscape.getCyNode(label, true).getRootGraphIndex());
 
 			nodeMap.put(curNode.getId(), label);
 
-                       debug(2,"Node Name: " + label + ", ID is "
-                         + Cytoscape.getCyNode(label, true).getRootGraphIndex());
+			// nodeMap.put(curNode.getId(), label);
+			if (nodeType != null) {
+				if (nodeType.equals("metaNode")) {
 
+					// List of child nodes under this parent node.
+					List children = null;
+
+					Iterator it = curNode.getAtt().iterator();
+					while (it.hasNext()) {
+						Att curAttr = (Att) it.next();
+
+						if (curAttr.getName().equals("metanodeChildren")) {
+							Graph subgraph = (Graph) curAttr.getContent()
+									.get(0);
+							children = subgraph.getNodeOrEdge();
+							metanodeMap.put(label, children);
+						}
+					}
+				}
+
+			}
 			if (nodeNameSet.add(curNode.getId())) {
 				Node node = (Node) Cytoscape.getCyNode(label, true);
 
@@ -448,12 +395,10 @@ public class XGMMLReader implements GraphReader {
 				}
 
 				int duplicate_count = 1;
-                               String tEdgeName = new String(edgeName);
-                               while (!edgeNameSet.add(tEdgeName)) {
-                                       tEdgeName = edgeName + "_" + duplicate_count;
+				while (!edgeNameSet.add(edgeName)) {
+					edgeName = edgeName + "_" + duplicate_count;
 					duplicate_count += 1;
 				}
-                               edgeName = tEdgeName;
 
 				Edge edge = Cytoscape.getRootGraph().getEdge(edgeName);
 
@@ -463,8 +408,6 @@ public class XGMMLReader implements GraphReader {
 							.getSource());
 					String targetName = (String) nodeMap.get(curEdge
 							.getTarget());
-
-                                       debug(2, "Getting nodes "+sourceName+" and "+targetName);
 
 					Node node_1 = Cytoscape.getRootGraph().getNode(sourceName);
 					Node node_2 = Cytoscape.getRootGraph().getNode(targetName);
@@ -477,8 +420,7 @@ public class XGMMLReader implements GraphReader {
 					String itrValue = "pp";
 					while (it.hasNext()) {
 						interaction = (Att) it.next();
-                                               if (interaction.getName() != null
-                                                   && interaction.getName().equals("interaction")) {
+						if (interaction.getName().equals("interaction")) {
 							itrValue = interaction.getValue();
 							if (itrValue == null) {
 								itrValue = "pp";
@@ -498,10 +440,9 @@ public class XGMMLReader implements GraphReader {
 
 				// Set correct ID, canonical name and interaction name
 				edge.setIdentifier(edgeName);
-                               curEdge.setId(edgeName);
-                               debug(4, "Edge Data: " + edge.getIdentifier());
+				// System.out.println("Edge Data: " + edge.getIdentifier());
 
-                               readAttributes(edgeName, curEdge.getAtt(), EDGE, null);
+				readAttributes(edgeName, curEdge.getAtt(), EDGE);
 
 				giny_edges.add(edge.getRootGraphIndex());
 				// ((KeyValue) edge_root_index_pairs.get(idx)).value = (new
@@ -519,55 +460,39 @@ public class XGMMLReader implements GraphReader {
 		// Iterator nit = Cytoscape.getRootGraph().nodesIterator();
 		// while (nit.hasNext()) {
 		// CyNode testnode = (CyNode) nit.next();
-               // debug(2, "ROOT LIST: " + testnode.getIdentifier());
+		// // System.out.println("ROOT LIST: " + testnode.getIdentifier());
 		// }
+
+		if (metanodeMap.size() != 0) {
+
+			Set keySet = metanodeMap.keySet();
+			Iterator it = keySet.iterator();
+			while (it.hasNext()) {
+				String key = (String) it.next();
+				createMetaNode(key, (List) metanodeMap.get(key));
+			}
 		}
 
-       /**
-        * Create the metanodes from the list of children.  Note that the order metaNodes
-        * are processed is very important.  This assumes that the lowest-level metaNode
-        * is processed first, which results in the placeholder <--> metaNode swap happening
-        * before any parent metanode processing happens.  This allows the child metanodes to
-        * be correctly included in the parent's child list.
-        *
-        * @param name
-        * @param children
-        * @param cy_net
-        *
-        */
-       private CyNode createMetaNode(String name, List children, CyNetwork cy_net) {
-               // TODO: when metanodes become part of the core, get
-               // this from the metanode factory
-               String MetaNodeKey = "metaNodeViewer.model.GPMetaNodeFactory.metaNodeRindices";
-               debug(8, "Metanode = " + name);
-               // Get the actual node of the parent
-               Node parent = (Node) Cytoscape.getCyNode(name, false);
+	}
 
+	private CyNode createMetaNode(String name, List children) {
 		Iterator it = children.iterator();
+		// System.out.println("Metanode = " + name);
 
 		int[] childrenNodeIndices = new int[children.size()];
 		int counter = 0;
 
 		while (it.hasNext()) {
-                       cytoscape.generated2.Node childNode =
-                               (cytoscape.generated2.Node) it.next();
 
-                       String targetNode = childNode.getHref();
-                       if (targetNode == null || !targetNode.startsWith("#")) {
-                               targetNode =  childNode.getId();
-                       } else {
-                               String childLabel = (String)nodeMap.get(targetNode.substring(1));
-                               debug(8, "+------ child href = "+targetNode+" = "
-                                  +targetNode.substring(1) + " points to: "+childLabel);
-                               targetNode = targetNode.substring(1);
-                       }
+			cytoscape.generated2.Node childNode = (cytoscape.generated2.Node) it
+					.next();
 
 			Node targetChildNode = Cytoscape.getRootGraph().getNode(
-                                               (String)nodeMap.get(targetNode));
+					childNode.getId());
 
-                       debug(8,"+------- child = "
-                         + targetChildNode.getRootGraphIndex() + ": "
-                         + targetChildNode.getIdentifier());
+			// System.out.println("+------- child = "
+			// + targetChildNode.getRootGraphIndex() + ": "
+			// + targetChildNode.getIdentifier());
 
 			childrenNodeIndices[counter] = targetChildNode.getRootGraphIndex();
 			counter++;
@@ -580,40 +505,19 @@ public class XGMMLReader implements GraphReader {
 		if (edgeIndices != null) {
 			for (int i = 0; i < edgeIndices.length; i++) {
 
-                               debug(4, "!! Edge: "
-                                 + Cytoscape.getRootGraph().getEdge(edgeIndices[i])
-                                 .getIdentifier());
+				// System.out.println("!! Edge: "
+				// + Cytoscape.getRootGraph().getEdge(edgeIndices[i])
+				// .getIdentifier());
 
 				// if (edgeIndices[i] > 0) {
 				// int rootEdgeIndex =
-                               //              Cytoscape.getRootGraph().getRootGraphEdgeIndex(edgeIndices[i]);
+				// Cytoscape.getRootGraph().getgetRootGraphEdgeIndex(edgeIndices[i]);
 				// edgeIndices[i] = rootEdgeIndex;
 				// }// if rootEdgeIndex > 0
 			}// for i
 		}
 
-               int rgParentNodeIndex = Cytoscape.getRootGraph().createNode(childrenNodeIndices, edgeIndices);
-               CyNode metaNode = (CyNode)Cytoscape.getRootGraph().getNode(rgParentNodeIndex);
-               debug(8, "Parent node: "+rgParentNodeIndex);
-               if (metaNode == null) {
-                       throw new IllegalStateException(
-                               "CyNode from RootGraph with index = "
-                               + rgParentNodeIndex + " is null!!!");
-               }
-
-               // Remember that this RootGraph node belongs to cyNetwork
-               ArrayList rootNodes = (ArrayList) cy_net.getClientData(MetaNodeKey);
-               if (rootNodes == null) {
-                       rootNodes = new ArrayList();
-                       cy_net.putClientData(MetaNodeKey,rootNodes);
-               }
-
-               // Delete the parent we made as a placeholder
-               String parentId = parent.getIdentifier();
-               cy_net.removeNode(parent.getRootGraphIndex(),true);
-               metaNode.setIdentifier(parentId);
-
-               rootNodes.add(metaNode);
+		rootNodes.add(Cytoscape.getRootGraph().getNode(name));
 
 		return null;
 	}
@@ -668,16 +572,6 @@ public class XGMMLReader implements GraphReader {
 		if (myView == null || myView.nodeCount() == 0) {
 			return;
 		}
-
-               // Now that we have a network (and a view), handle
-               // the metanodes.  Note that this must be done in
-               // depth-first order!
-               for (int i = 0; i < metaTree.size(); i++) {
-                       String name = (String)metaTree.get(i++);
-                       List children = (List)metaTree.get(i);
-                       debug(8, "metaTree name = "+name);
-                       createMetaNode(name, children ,((CyNetworkView)myView).getNetwork());
-               }
 
 		// Set background clolor
 		if (backgroundColor != null) {
@@ -738,8 +632,8 @@ public class XGMMLReader implements GraphReader {
 
 			if (graphics != null && view != null) {
 				layoutNodeGraphics(myView, graphics, view);
-                       } else if (graphics == null && view != null) {
-                               debug(1, "Graphics info is not available for "
+			} else if (graphics == null) {
+				System.out.println("Graphics info is not available for "
 						+ view.getLabel().getText());
 			}
 
@@ -843,8 +737,8 @@ public class XGMMLReader implements GraphReader {
 
 			edgeGraphicsMap.put(edgeID, graphics);
 
-                       debug(4, "Edge info@@@: " + edgeID +", " +
-                         curEdge.getSource() + "-" + curEdge.getTarget());
+			// System.out.println("Edge info@@@: " + edgeID +", " +
+			// curEdge.getSource() + "-" + curEdge.getTarget());
 
 			int rootindex = 0;
 			view = null;
@@ -871,7 +765,7 @@ public class XGMMLReader implements GraphReader {
 				}
 				edgeID = sourceNodeName + " (" + itrValue + ") "
 						+ targetNodeName;
-                               debug(4, "Edge info2: " + edgeID);
+				System.out.println("Edge info2: " + edgeID);
 				testEdge = Cytoscape.getRootGraph().getEdge(edgeID);
 				if (testEdge != null) {
 					rootindex = testEdge.getRootGraphIndex();
@@ -883,7 +777,7 @@ public class XGMMLReader implements GraphReader {
 			if (graphics != null && view != null) {
 				layoutEdgeGraphics(myView, graphics, view);
 			} else if (graphics == null) {
-                               debug(1, "Null Graphics!!");
+				// System.out.println("Null Graphics!!");
 			}
 		}
 
@@ -921,12 +815,6 @@ protected void layoutEdgeGraphics(GraphView myView, Graphics graphics,
 					} else if (attName.equals("edgeLineType")) {
 						edgeView.setStroke(LineType.parseLineTypeText(value)
 								.getStroke());
-					} else if(attName.equals("curved")) {
-						if(value.equals("STRAIGHT_LINES")) {
-							edgeView.setLineType(EdgeView.STRAIGHT_LINES);
-						} else if(value.equals("CURVED_LINES")) {
-							edgeView.setLineType(EdgeView.CURVED_LINES);
-						}
 					} else if(attName.equals("edgeBend")) {
 						// Restore bend info
 						
@@ -1029,8 +917,7 @@ protected void layoutEdgeGraphics(GraphView myView, Graphics graphics,
 		return null;
 	}
 
-       private void readAttributes(String targetName, List attrList, String type,
-                                       cytoscape.generated2.Node parent) {
+	private void readAttributes(String targetName, List attrList, String type) {
 
 		CyAttributes attributes = null;
 
@@ -1043,7 +930,7 @@ protected void layoutEdgeGraphics(GraphView myView, Graphics graphics,
 
 		while (it.hasNext()) {
 			Object curAtt = it.next();
-                       readAttribute(attributes, targetName, (Att) curAtt, type, parent);
+			readAttribute(attributes, targetName, (Att) curAtt);
 		}
 	}
 
@@ -1056,36 +943,24 @@ protected void layoutEdgeGraphics(GraphView myView, Graphics graphics,
 	 *            key into CyAttributes
 	 * @param curAtt -
 	 *            the attribute read out of xgmml file
-        * @param type       -
-        *              the attribute type (for recursion)
-        * @param parent     -
-        *              the parent of this graph (for metaNode support)
 	 */
-       private void readAttribute(CyAttributes attributes, String targetName, Att curAtt,
-                       String type, cytoscape.generated2.Node parent) {
+	private void readAttribute(CyAttributes attributes, String targetName,
+			Att curAtt) {
 
 		// check args
 		String dataType = curAtt.getType();
-               debug(16, "Found "+targetName+" attribute: "+curAtt.getName());
-
-		// null value only ok when type is list or map
-               if ((dataType == null || (!dataType.equals(LIST_TYPE) &&
-                       !dataType.equals(MAP_TYPE))) &&
-                       curAtt.getValue() == null) {
-                       // See if we actually have a naked <att> around
-                       // some embedded attributes
-                       readEmbeddedAtt(targetName, curAtt, type, parent);
+		if (dataType == null)
 			return;
-               }
+		// null value only ok when type is list or map
+		if (!dataType.equals(LIST_TYPE) && !dataType.equals(MAP_TYPE)
+				&& curAtt.getValue() == null)
+			return;
 
-               // string (string is default data type according to the spec)
-               if (dataType == null || dataType.equals(STRING_TYPE)) {
-                       if (curAtt.getValue() != null) {
-                               debug(16, " String attribute = "+curAtt.getValue());
+		// string
+		if (dataType.equals(STRING_TYPE)) {
 			attributes.setAttribute(targetName, curAtt.getName(), curAtt
 					.getValue());
 		}
-               }
 		// integer
 		else if (dataType.equals(INT_TYPE)) {
 			attributes.setAttribute(targetName, curAtt.getName(), new Integer(
@@ -1130,8 +1005,6 @@ protected void layoutEdgeGraphics(GraphView myView, Graphics graphics,
 				}
 			}
 			attributes.setAttributeMap(targetName, curAtt.getName(), mapAttr);
-                       // Skip over check for embedded content
-                       return;
 		}
 		// complex type
 		else if (dataType.equals(COMPLEX_TYPE)) {
@@ -1142,9 +1015,6 @@ protected void layoutEdgeGraphics(GraphView myView, Graphics graphics,
 			createComplexAttribute(attributeName, attributes, targetName,
 					curAtt, null, 0, numKeys);
 		}
-               // Check the content of this attribute -- we might either have embedded attributes /OR/
-               // an embedded graph.  Deal with it either way.
-               readEmbeddedAtt(targetName, curAtt, type, parent);
 	}
 
 	/**
@@ -1404,60 +1274,9 @@ protected void layoutEdgeGraphics(GraphView myView, Graphics graphics,
 				graphViewCenterY = new Double(curAtt.getValue());
 			} else {
 				readAttribute(networkCyAttributes, cyNetwork.getIdentifier(),
-                                               curAtt, "network", null);
-                       }
-               }
-       }
-
-       /**
-        * Handle embedded attributes
-        *
-        * @param targetName -
-        *              key into CyAttributes
-        * @param curAtt -
-        *              the attribute read out of xgmml file
-        * @param type -
-        *              the attribute type (for recursion)
-        * @param parent -
-        *              the parent of this graph (for metaNode support)
-        */
-       private void readEmbeddedAtt(String targetName, Att curAtt, String type,
-                                    cytoscape.generated2.Node parent) {
-               if (curAtt.getContent() == null) {
-                       return;
-               }
-
-               List attrs = new ArrayList();
-               Iterator childIt = curAtt.getContent().iterator();
-               while (childIt.hasNext()) {
-                       Object curObj = childIt.next();
-                       if (curObj.getClass() == cytoscape.generated2.impl.AttImpl.class) {
-                               debug(16, "Embedded attribute");
-                               attrs.add(curObj);
-                       } else if (curObj.getClass() == cytoscape.generated2.impl.GraphImpl.class) {
-                               debug(16, "Embedded graph");
-                               // Recurse
-                               getNodesAndEdges((cytoscape.generated2.Graph)curObj, parent);
-                       }
-               }
-               if (attrs.size() > 0) {
-                       readAttributes(targetName, attrs, type, parent);
-               }
+						curAtt);
 			}
-
-       /**
-        * Handle debug output, print out message if
-        * debugLevel is high enough.
-        *
-        * @param level - int
-        * @param message - String
-        */
-       private void debug (int level, String message) {
-               if ( (debugLevel & level) != 0 ) {
-                       System.out.println(message);
 		}
 	}
 
-
 }
-
