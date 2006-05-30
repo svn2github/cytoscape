@@ -47,7 +47,6 @@ public class ImportAttributeMatrixDialog extends javax.swing.JDialog {
 	}
     }
 
-    private JComboBox combo;
     
     /** Creates new form AttributeMatrixImportDialog */
     public ImportAttributeMatrixDialog(java.awt.Frame parent, boolean modal) {
@@ -57,6 +56,9 @@ public class ImportAttributeMatrixDialog extends javax.swing.JDialog {
 	pack();
     }
 
+    public String getKeyAttributeName() {
+	return currentKeyAttributeName;
+    }
     
     public String getFilename() {
         String attributeMatrixFilename = attributeMatrixFileNameTextField.getText();
