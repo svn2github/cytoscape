@@ -1,44 +1,43 @@
-
 /*
-  File: GMLReader2.java 
-  
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-  
-  The Cytoscape Consortium is: 
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Pasteur Institute
-  - Agilent Technologies
-  
-  This library is free software; you can redistribute it and/or modify it
-  under the terms of the GNU Lesser General Public License as published
-  by the Free Software Foundation; either version 2.1 of the License, or
-  any later version.
-  
-  This library is distributed in the hope that it will be useful, but
-  WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
-  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
-  documentation provided hereunder is on an "as is" basis, and the
-  Institute for Systems Biology and the Whitehead Institute 
-  have no obligations to provide maintenance, support,
-  updates, enhancements or modifications.  In no event shall the
-  Institute for Systems Biology and the Whitehead Institute 
-  be liable to any party for direct, indirect, special,
-  incidental or consequential damages, including lost profits, arising
-  out of the use of this software and its documentation, even if the
-  Institute for Systems Biology and the Whitehead Institute 
-  have been advised of the possibility of such damage.  See
-  the GNU Lesser General Public License for more details.
-  
-  You should have received a copy of the GNU Lesser General Public License
-  along with this library; if not, write to the Free Software Foundation,
-  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ File: GMLReader2.java 
+ 
+ Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+ 
+ The Cytoscape Consortium is: 
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Pasteur Institute
+ - Agilent Technologies
+ 
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+ 
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute 
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute 
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute 
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+ 
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+ */
 
 package cytoscape.data.readers;
 
-//-----------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------------------
 import giny.model.Edge;
 import giny.model.Node;
 import giny.model.RootGraph;
@@ -54,19 +53,16 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
 import java.util.Set;
 import java.util.Vector;
 
 import cern.colt.list.IntArrayList;
 import cern.colt.map.OpenIntIntHashMap;
 import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
 import cytoscape.task.TaskMonitor;
 import cytoscape.util.PercentUtil;
-import cytoscape.view.CytoscapeDesktop;
 import cytoscape.visual.Arrow;
 import cytoscape.visual.CalculatorCatalog;
 import cytoscape.visual.EdgeAppearanceCalculator;
@@ -165,9 +161,9 @@ public class GMLReader implements GraphReader {
 	protected static String CREATOR = "Creator";
 
 	private String mapSuffix;
-	
+
 	private Color DEF_COLOR = new Color(153, 153, 255);
-	
+
 	// GML file name
 	String filename;
 
@@ -257,7 +253,7 @@ public class GMLReader implements GraphReader {
 		System.out.println("Target GML file is " + target);
 
 		mapSuffix = " for " + filename;
-		
+
 		return target.concat("_GML_style");
 	}
 
@@ -299,7 +295,8 @@ public class GMLReader implements GraphReader {
 		String cName = "GML Labels" + mapSuffix;
 		NodeLabelCalculator nlc = catalog.getNodeLabelCalculator(cName);
 		if (nlc == null) {
-			PassThroughMapping m = new PassThroughMapping("", AbstractCalculator.ID);
+			PassThroughMapping m = new PassThroughMapping("",
+					AbstractCalculator.ID);
 			nlc = new GenericNodeLabelCalculator(cName, m);
 		}
 		nac.setNodeLabelCalculator(nlc);
@@ -312,8 +309,7 @@ public class GMLReader implements GraphReader {
 				ObjectMapping.NODE_MAPPING);
 		nodeShapeMapping.setControllingAttributeName(AbstractCalculator.ID,
 				vizmapper.getNetwork(), false);
-		
-		
+
 		for (int i = 0; i < node_names.size(); i++) {
 			String key = (String) node_names.get(i);
 			Byte value;
@@ -337,7 +333,7 @@ public class GMLReader implements GraphReader {
 				ObjectMapping.NODE_MAPPING);
 		nodeColorMapping.setControllingAttributeName(AbstractCalculator.ID,
 				vizmapper.getNetwork(), true);
-		
+
 		for (int i = 0; i < node_names.size(); i++) {
 			String key = (String) node_names.get(i);
 			String col;
@@ -486,8 +482,8 @@ public class GMLReader implements GraphReader {
 		//
 		DiscreteMapping edgeLineTypeMapping = new DiscreteMapping(
 				LineType.LINE_1, ObjectMapping.EDGE_MAPPING);
-		edgeLineTypeMapping.setControllingAttributeName(
-				AbstractCalculator.ID, vizmapper.getNetwork(), false);
+		edgeLineTypeMapping.setControllingAttributeName(AbstractCalculator.ID,
+				vizmapper.getNetwork(), false);
 
 		for (int i = 0; i < edge_names.size(); i++) {
 			String key = (String) edge_names.get(i);
@@ -557,17 +553,17 @@ public class GMLReader implements GraphReader {
 	//
 	// Apply node and edge maps by creating new visual style.
 	public void applyMaps(String mapSuffix, String VSName) {
-		//CytoscapeDesktop cyDesktop = Cytoscape.getDesktop();
-//		VisualMappingManager vizmapper = cyDesktop.getVizMapManager();
-		
-		if(VSName != null) {
+		// CytoscapeDesktop cyDesktop = Cytoscape.getDesktop();
+		// VisualMappingManager vizmapper = cyDesktop.getVizMapManager();
+
+		if (VSName != null) {
 			styleName = VSName;
 		}
-		
-		if(mapSuffix != null) {
+
+		if (mapSuffix != null) {
 			this.mapSuffix = mapSuffix;
 		}
-		
+
 		VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
 		catalog = vizmapper.getCalculatorCatalog();
 
@@ -582,7 +578,7 @@ public class GMLReader implements GraphReader {
 
 		catalog.addVisualStyle(gmlstyle);
 		vizmapper.setVisualStyle(gmlstyle);
-		
+
 		Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 	}
 
@@ -598,10 +594,10 @@ public class GMLReader implements GraphReader {
 		try {
 			keyVals = (new GMLParser(filename)).parseList();
 		} catch (Exception io) {
-		  io.printStackTrace();
-		  if ( taskMonitor != null )
-                  	taskMonitor.setException(io, io.getMessage());
-		  throw new RuntimeException(io.getMessage());
+			io.printStackTrace();
+			if (taskMonitor != null)
+				taskMonitor.setException(io, io.getMessage());
+			throw new RuntimeException(io.getMessage());
 		}
 		initializeStructures();
 
@@ -615,13 +611,13 @@ public class GMLReader implements GraphReader {
 		// 3 Apply the new VS to the current window of Cytoscape
 		//
 		extract(); // Extract node & edge attributes
-//		Properties prop = CytoscapeInit.getProperties();
-//		String vsbSwitch = prop.getProperty("visualStyleBuilder");
-//		if(vsbSwitch != null) {
-//			if(vsbSwitch.equals("on")) {
-//				applyMaps(null, null); // generate new VS and apply it.
-//			}
-//		}
+		// Properties prop = CytoscapeInit.getProperties();
+		// String vsbSwitch = prop.getProperty("visualStyleBuilder");
+		// if(vsbSwitch != null) {
+		// if(vsbSwitch.equals("on")) {
+		// applyMaps(null, null); // generate new VS and apply it.
+		// }
+		// }
 		releaseStructures();
 	}
 
@@ -712,25 +708,19 @@ public class GMLReader implements GraphReader {
 						.get(sources.get(idx)));
 				String targetName = (String) node_labels.get(gml_id2order
 						.get(targets.get(idx)));
-				String edgeName = sourceName + " (" + label
-						+ ") " + targetName;
-				
-				// If () is not required, we need to use this...
-//				String edgeName = sourceName + " " + label + " " + targetName;
-				
+				String edgeName = sourceName + " (" + label + ") " + targetName;
+
 				int duplicate_count = 1;
 				while (!edgeNameSet.add(edgeName)) {
 					edgeName = sourceName + " (" + label + ") " + targetName
 							+ "_" + duplicate_count;
-//					edgeName = sourceName + " " + label + " " + targetName
-//						+ "_" + duplicate_count;
-					
+
 					duplicate_count += 1;
 				}
 
 				// String tempstr = "E name is :" + idx + "==" + edgeName;
 				edge_names.add(idx, edgeName);
-				
+
 				Edge edge = Cytoscape.getRootGraph().getEdge(edgeName);
 
 				if (edge == null) {
@@ -740,17 +730,13 @@ public class GMLReader implements GraphReader {
 					// (rootGraph.createEdge(node_1, node_2));
 					edge = Cytoscape.getCyEdge(node_1, node_2,
 							Semantics.INTERACTION, label, true);
-
-					//					
-					// edgeAttributes.set(Semantics.INTERACTION, edgeName,
-					// label);
-					// edgeAttributes.addNameMapping(edgeName, edge);
 				}
 
 				// Set correct ID, canonical name and interaction name
 				edge.setIdentifier(edgeName);
-				edgeAttributes.setAttribute(edgeName, Semantics.INTERACTION, label);
-				
+				edgeAttributes.setAttribute(edgeName, Semantics.INTERACTION,
+						label);
+
 				giny_edges.add(edge.getRootGraphIndex());
 				((KeyValue) edge_root_index_pairs.get(idx)).value = (new Integer(
 						edge.getRootGraphIndex()));
@@ -944,7 +930,7 @@ public class GMLReader implements GraphReader {
 	}
 
 	protected void extractNode(List list) {
-		Integer root_index = null;
+		
 		List graphics_list = null;
 		String label = null;
 
@@ -956,7 +942,6 @@ public class GMLReader implements GraphReader {
 				if (keyVal.value == null) {
 					return;
 				}
-				root_index = (Integer) keyVal.value;
 			} else if (keyVal.key.equals(GRAPHICS)) {
 				graphics_list = (List) keyVal.value;
 			} else if (keyVal.key.equals(LABEL)) {
@@ -978,7 +963,6 @@ public class GMLReader implements GraphReader {
 	}
 
 	protected void extractEdge(List list, String edgeName) {
-		EdgeView edgeView = null;
 		List graphics_list = null;
 
 		for (Iterator it = list.iterator(); it.hasNext();) {
@@ -1005,10 +989,6 @@ public class GMLReader implements GraphReader {
 		String edgeName = null;
 		// Count the current edge
 		int ePtr = 0;
-		// for( int i = 0; i < edge_names.size(); i++ ) {
-		// System.out.println( (String)edge_names.get(i) );
-		// }
-		// System.out.println( tempstr );
 
 		for (Iterator it = list.iterator(); it.hasNext();) {
 			final KeyValue keyVal = (KeyValue) it.next();
