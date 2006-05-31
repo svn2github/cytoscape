@@ -470,7 +470,7 @@
         </path>
 
         <java classname="cytoscape.unitTests.AllTests"
-              classpathref="junit.classpath" fork="true">
+              classpathref="junit.classpath" fork="true" maxmemory="512m">
             <arg line="-ui"/>
         </java>
     </target>
