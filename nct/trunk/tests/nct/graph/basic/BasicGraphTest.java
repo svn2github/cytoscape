@@ -378,6 +378,8 @@ public class BasicGraphTest extends TestCase {
 
 	assertEquals(25.0, dupe.getScore().doubleValue(),0.0001);
 	assertEquals("homer", dupe.getId());
+
+	assertEquals(0,g.compareTo(dupe));
     }
 
     public static Test suite() {

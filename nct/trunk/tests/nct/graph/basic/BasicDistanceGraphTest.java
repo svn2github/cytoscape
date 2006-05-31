@@ -123,6 +123,8 @@ public class BasicDistanceGraphTest extends TestCase {
 	assertEquals((byte)1,dupe.getDistance("one","two"));
 	assertEquals((byte)1,dupe.getDistance("two","three"));
 	assertEquals((byte)2,dupe.getDistance("one","three"));
+
+	assertEquals(0,g.compareTo(dupe));
     }
 
    

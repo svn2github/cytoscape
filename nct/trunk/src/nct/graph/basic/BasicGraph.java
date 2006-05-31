@@ -362,16 +362,7 @@ public class BasicGraph<NodeType extends Comparable<? super NodeType>,WeightType
 	 * @return A clone of this graph.
 	 */
 	public BasicGraph<NodeType,WeightType> clone() {
-
-		BasicGraph<NodeType,WeightType> clon = new BasicGraph<NodeType,WeightType>(this.id);
-		clon.setScore(this.getScore());
-
-		for ( NodeType node: getNodes() ) 
-			clon.addNode(node);
-
-                for ( Edge<NodeType,WeightType> edge: getEdges() )
-			clon.addEdge(edge.getSourceNode(),edge.getTargetNode(),edge.getWeight(),edge.getDescription());
-		return clon;
+		return new BasicGraph<NodeType,WeightType>(this);
 	} 
 
 
