@@ -38,7 +38,7 @@ public class BasicGraphTest extends TestCase {
     BasicGraph<String,Double> g;
     protected void setUp() {
 	NetworkBlast.setUpLogging(Level.WARNING);
-	g = new BasicGraph<String,Double>();
+	g = new BasicGraph<String,Double>("homer");
     }
 
     public void testaddNode() {
@@ -327,19 +327,57 @@ public class BasicGraphTest extends TestCase {
 	g.addEdge("three","one",1.0);
 	assertEquals(3, g.numberOfEdges());
 
-	assertTrue("expect 'first', got: " + g.getEdgeDescription("one","two"), g.getEdgeDescription("one","two").equals("first"));
-	assertTrue("expect 'first', got: " + g.getEdgeDescription("two","one"), g.getEdgeDescription("two","one").equals("first"));
-	assertTrue("expect 'second', got: " + g.getEdgeDescription("two","three"), g.getEdgeDescription("two","three").equals("second"));
-	assertTrue("expect 'second', got: " + g.getEdgeDescription("three","two"), g.getEdgeDescription("three","two").equals("second"));
-	assertTrue("expect '1.0', got: " + g.getEdgeDescription("one","three"), g.getEdgeDescription("one","three").equals("1.0") );
-	assertTrue("expect '1.0', got: " + g.getEdgeDescription("three","one"), g.getEdgeDescription("three","one").equals("1.0") );
+	assertEquals("edge desc","first", g.getEdgeDescription("one","two"));
+	assertEquals("edge desc","first", g.getEdgeDescription("two","one"));
+	assertEquals("edge desc","second", g.getEdgeDescription("two","three"));
+	assertEquals("edge desc","second", g.getEdgeDescription("three","two"));
+	assertEquals("edge desc","1.0", g.getEdgeDescription("one","three"));
+	assertEquals("edge desc","1.0", g.getEdgeDescription("three","one"));
 
 	g.setEdgeDescription("one","three","homer");
 
-	assertTrue("expect 'homer', got: " + g.getEdgeDescription("one","three"), g.getEdgeDescription("one","three").equals("homer"));
-	assertTrue("expect 'homer', got: " + g.getEdgeDescription("three","one"), g.getEdgeDescription("three","one").equals("homer"));
+	assertEquals("edge desc for new desc", "homer", g.getEdgeDescription("one","three"));
+	assertEquals("edge desc for new desc", "homer", g.getEdgeDescription("three","one"));
 
-	assertNull("expect 'null', got: " + g.getEdgeDescription("four","one"), g.getEdgeDescription("four","one") );
+	assertNull("edge description for non-existant edge", g.getEdgeDescription("four","one") );
+    }
+
+    public void testCopyConstructor() {
+    	g.addNode("one");
+    	g.addNode("two");
+    	g.addNode("three");
+	assertEquals(3, g.numberOfNodes());
+	g.addEdge("one","two",1.0,"first");
+	g.addEdge("two","three",2.0,"second");
+	g.addEdge("three","one",4.0);
+	assertEquals(3, g.numberOfEdges());
+
+	g.setScore(25.0);
+	assertEquals(25.0, g.getScore().doubleValue(),0.0001);
+
+	Graph<String,Double> dupe = new BasicGraph<String,Double>(g);
+
+	assertEquals(3, dupe.numberOfNodes());
+	assertEquals(3, dupe.numberOfEdges());
+
+	// edge desc
+	assertEquals("edge desc","first", dupe.getEdgeDescription("one","two"));
+	assertEquals("edge desc","first", dupe.getEdgeDescription("two","one"));
+	assertEquals("edge desc","second", dupe.getEdgeDescription("two","three"));
+	assertEquals("edge desc","second", dupe.getEdgeDescription("three","two"));
+	assertEquals("edge desc","4.0", dupe.getEdgeDescription("one","three"));
+	assertEquals("edge desc","4.0", dupe.getEdgeDescription("three","one"));
+
+	// edge weight
+	assertEquals("edge weight",1.0,dupe.getEdgeWeight("one","two"));
+	assertEquals("edge weight",1.0,dupe.getEdgeWeight("two","one"));
+	assertEquals("edge weight",2.0,dupe.getEdgeWeight("two","three"));
+	assertEquals("edge weight",2.0,dupe.getEdgeWeight("three","two"));
+	assertEquals("edge weight",4.0,dupe.getEdgeWeight("one","three"));
+	assertEquals("edge weight",4.0,dupe.getEdgeWeight("three","one"));
+
+	assertEquals(25.0, dupe.getScore().doubleValue(),0.0001);
+	assertEquals("homer", dupe.getId());
     }
 
     public static Test suite() {

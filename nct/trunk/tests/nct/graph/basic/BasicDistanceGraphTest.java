@@ -37,7 +37,7 @@ public class BasicDistanceGraphTest extends TestCase {
     BasicDistanceGraph<String,Double> g;
     protected void setUp() {
         NetworkBlast.setUpLogging(Level.WARNING);
-	g = new BasicDistanceGraph<String,Double>();
+	g = new BasicDistanceGraph<String,Double>("homer");
     }
 
     public void testgetDistance() {
@@ -83,6 +83,48 @@ public class BasicDistanceGraphTest extends TestCase {
 	assertEquals((byte)3, g.getDistance("C", "F"));  // check distant
 	assertEquals((byte)3, g.getDistance("F", "C"));  // check distant bidir
     }
+
+    public void testCopyConstructor() {
+        g.addNode("one");
+        g.addNode("two");
+        g.addNode("three");
+        assertEquals(3, g.numberOfNodes());
+        g.addEdge("one","two",1.0,"first");
+        g.addEdge("two","three",2.0,"second");
+        assertEquals(2, g.numberOfEdges());
+
+        g.setScore(25.0);
+        assertEquals(25.0, g.getScore().doubleValue(),0.0001);
+
+	assertEquals((byte)1,g.getDistance("one","two"));
+	assertEquals((byte)1,g.getDistance("two","three"));
+	assertEquals((byte)2,g.getDistance("one","three"));
+
+        DistanceGraph<String,Double> dupe = new BasicDistanceGraph<String,Double>(g);
+
+        assertEquals(3, dupe.numberOfNodes());
+        assertEquals(2, dupe.numberOfEdges());
+
+        // edge desc
+        assertEquals("edge desc","first", dupe.getEdgeDescription("one","two"));
+        assertEquals("edge desc","first", dupe.getEdgeDescription("two","one"));
+        assertEquals("edge desc","second", dupe.getEdgeDescription("two","three"));
+        assertEquals("edge desc","second", dupe.getEdgeDescription("three","two"));
+
+        // edge weight
+        assertEquals("edge weight",1.0,dupe.getEdgeWeight("one","two"));
+        assertEquals("edge weight",1.0,dupe.getEdgeWeight("two","one"));
+        assertEquals("edge weight",2.0,dupe.getEdgeWeight("two","three"));
+        assertEquals("edge weight",2.0,dupe.getEdgeWeight("three","two"));
+
+        assertEquals(25.0, dupe.getScore().doubleValue(),0.0001);
+        assertEquals("homer", dupe.getId());
+
+	assertEquals((byte)1,dupe.getDistance("one","two"));
+	assertEquals((byte)1,dupe.getDistance("two","three"));
+	assertEquals((byte)2,dupe.getDistance("one","three"));
+    }
+
    
     public static Test suite() {
 	return new TestSuite(BasicDistanceGraphTest.class);

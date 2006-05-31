@@ -91,6 +91,23 @@ public class BasicGraph<NodeType extends Comparable<? super NodeType>,WeightType
 
 
         /**
+         * Copy Constructor.
+         * @param g The graph that should be copied into this graph.
+         */
+        public BasicGraph(Graph<NodeType,WeightType> g) {
+
+                this(g.getId());
+                setScore(g.getScore());
+
+                for ( NodeType node: g.getNodes() )
+                        addNode(node);
+
+                for ( Edge<NodeType,WeightType> edge: g.getEdges() )
+			addEdge(edge.getSourceNode(),edge.getTargetNode(),edge.getWeight(),edge.getDescription());
+        }
+
+
+        /**
          * Adds a node to the graph.
          * @param node The node to add.
          * @return true if node successfully added, false otherwise.
@@ -352,10 +369,8 @@ public class BasicGraph<NodeType extends Comparable<? super NodeType>,WeightType
 		for ( NodeType node: getNodes() ) 
 			clon.addNode(node);
 
-		for ( NodeType node: getNodes() ) 
-			for ( NodeType neighbor: getNeighbors(node) )
-				clon.addEdge(node,neighbor,getEdgeWeight(node,neighbor));
-
+                for ( Edge<NodeType,WeightType> edge: getEdges() )
+			clon.addEdge(edge.getSourceNode(),edge.getTargetNode(),edge.getWeight(),edge.getDescription());
 		return clon;
 	} 
 

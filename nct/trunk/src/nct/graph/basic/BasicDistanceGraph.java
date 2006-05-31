@@ -29,6 +29,7 @@ import java.util.*;
 import java.lang.*;
 
 import nct.graph.DistanceGraph;
+import nct.graph.Graph;
 
 /**
  * An extension of BasicGraph that calculates the minimum distance
@@ -63,6 +64,17 @@ public class BasicDistanceGraph<NodeType extends Comparable<? super NodeType>,We
 		// We don't create the maps now because we need to wait for 
 		// edges and nodes to be added.
 	}
+
+
+        /**
+         * Copy Constructor.
+         * @param g The graph that should be copied into this graph.
+         */
+        public BasicDistanceGraph(Graph<NodeType,WeightType> g) {
+                super(g);
+                distMap = new HashMap<NodeType,Map<NodeType,Byte>>();
+        }
+
 
 	/**
 	 * Returns the minimum distance between the specified nodes.
