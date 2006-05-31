@@ -11,6 +11,7 @@ public final class NodeViewDefaults
   public final static Color DEFAULT_COLOR_LOW_DETAIL = Color.red;
   public final static byte DEFAULT_SHAPE = NodeView.SHAPE_ELLIPSE;
   public final static Paint DEFAULT_FILL_PAINT = Color.red;
+  public final static Paint DEFAULT_SELECTED_FILL_PAINT = Color.yellow;
   public final static double DEFAULT_BORDER_WIDTH = 1.0d;
   public final static Paint DEFAULT_BORDER_PAINT = Color.black;
 
@@ -19,14 +20,15 @@ public final class NodeViewDefaults
   final Color m_colorLowDetail;
   final byte m_shape;
   final Paint m_fillPaint;
+  final Paint m_selectedFillPaint;
   final float m_borderWidth;
   final Paint m_borderPaint;
 
   public NodeViewDefaults()
   {
     this(DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_COLOR_LOW_DETAIL,
-         DEFAULT_SHAPE, DEFAULT_FILL_PAINT, DEFAULT_BORDER_WIDTH,
-         DEFAULT_BORDER_PAINT);
+         DEFAULT_SHAPE, DEFAULT_FILL_PAINT, DEFAULT_SELECTED_FILL_PAINT,
+         DEFAULT_BORDER_WIDTH, DEFAULT_BORDER_PAINT);
   }
 
   public NodeViewDefaults(final double width,
@@ -34,6 +36,7 @@ public final class NodeViewDefaults
                           final Color colorLowDetail,
                           final byte shape,
                           final Paint fillPaint,
+                          final Paint selectedFillPaint,
                           final double borderWidth,
                           final Paint borderPaint)
   {
@@ -67,6 +70,9 @@ public final class NodeViewDefaults
     m_fillPaint = fillPaint;
     if (m_fillPaint == null) {
       throw new NullPointerException("fillPaint is null"); }
+    m_selectedFillPaint = selectedFillPaint;
+    if (m_selectedFillPaint == null) {
+      throw new NullPointerException("selectedFillPaint is null"); }
     m_borderWidth = (float) borderWidth;
     if (!(m_borderWidth >= 0.0f)) {
       throw new IllegalArgumentException("borderWidth is negative"); }
@@ -101,6 +107,11 @@ public final class NodeViewDefaults
   public final Paint getFillPaint()
   {
     return m_fillPaint;
+  }
+
+  public final Paint getSelectedFillPaint()
+  {
+    return m_selectedFillPaint;
   }
 
   public final double getBorderWidth()

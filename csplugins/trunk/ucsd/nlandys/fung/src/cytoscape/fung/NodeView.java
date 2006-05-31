@@ -24,11 +24,17 @@ public final class NodeView
 
   Fung m_fung; // Not final so that we can destroy reference.
   private final int m_node;
+  private boolean m_selected;
+  private Paint m_fillPaint;
+  private Paint m_selectedFillPaint;
 
   NodeView(final Fung fung, final int node)
   {
     m_fung = fung;
     m_node = node;
+    m_selected = false;
+    m_fillPaint = m_fung.m_nodeDefaults.m_fillPaint;
+    m_selectedFillPaint = m_fung.m_nodeDefaults.m_selectedFillPaint;
   }
 
   public final int getNode()
@@ -165,14 +171,35 @@ public final class NodeView
 
   public final Paint getFillPaint()
   {
-    synchronized (m_fung.m_lock) {
-      return m_fung.m_nodeDetails.fillPaint(m_node); }
+    return m_fillPaint;
   }
 
   public final void setFillPaint(final Paint fillPaint)
   {
     synchronized (m_fung.m_lock) {
-      m_fung.m_nodeDetails.overrideFillPaint(m_node, fillPaint); }
+      if (fillPaint == null) {
+        m_fillPaint = m_fung.m_nodeDefaults.m_fillPaint; }
+      else {
+        m_fillPaint = fillPaint; }
+      if (!isSelected()) {
+        m_fung.m_nodeDetails.overrideFillPaint(m_node, m_fillPaint); } }
+  }
+
+  public final Paint getSelectedFillPaint()
+  {
+    return m_selectedFillPaint;
+  }
+
+  public final void setSelectedFillPaint(final Paint selectedFillPaint)
+  {
+    synchronized (m_fung.m_lock) {
+      if (selectedFillPaint == null) {
+        m_selectedFillPaint = m_fung.m_nodeDefaults.m_selectedFillPaint; }
+      else {
+        m_selectedFillPaint = selectedFillPaint; }
+      if (isSelected()) {
+        m_fung.m_nodeDetails.overrideFillPaint(m_node,
+                                               m_selectedFillPaint); } }
   }
 
   public final double getBorderWidth()
@@ -250,6 +277,11 @@ public final class NodeView
       if (v.size() == 0) {
         m_fung.m_nodeDetails.m_labels.remove(new Integer(m_node)); }
       return returnThis; }
+  }
+
+  public boolean isSelected()
+  {
+    return m_selected;
   }
 
 }
