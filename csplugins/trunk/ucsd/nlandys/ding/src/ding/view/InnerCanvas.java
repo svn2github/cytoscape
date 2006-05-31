@@ -597,20 +597,23 @@ public class InnerCanvas extends JComponent
   public void mouseMoved(MouseEvent e)
   {
     NodeView nv = m_view.getPickedNodeView (e.getPoint());
-
+    boolean toolTipSet = false;
     if (nv != null)
       {
         setToolTipText(((DNodeView) nv).getToolTip());
-        getToolTipText(e);
+        toolTipSet = true;
       }
     else {
       if ((m_lastRenderDetail & GraphRenderer.LOD_HIGH_DETAIL) != 0) {
         EdgeView ev = m_view.getPickedEdgeView(e.getPoint());
         if (ev != null) {
           setToolTipText(((DEdgeView) ev).getToolTip());
+          toolTipSet = true;
         }
       }
     }
+    if (!toolTipSet) {
+      setToolTipText(null); }
   }
 
 // AJK: 05/02/06 END
