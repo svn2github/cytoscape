@@ -34,7 +34,7 @@ import cytoscape.util.FileUtil;
 public class ImportAttributeMatrixDialog extends javax.swing.JDialog {
 
     private boolean status;
-    private String currentKeyAttributeName;
+    private String currentKeyAttributeName = "ID";
     
     
     private DefaultComboBoxModel keyAttributeModel = new DefaultComboBoxModel();
