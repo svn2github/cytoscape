@@ -135,7 +135,7 @@ public class FlagAndSelectionHandler implements FlagEventListener, GraphViewChan
           //System.out.println( event.getSelectedNodeIndices()+" <- nodes selected" );
           int[] nodes = event.getSelectedNodeIndices();
           for ( int i = 0; i < nodes.length; ++i ) {
-            //System.out.println( "Selected mnode: "+nodes[i]);
+//             System.out.println( "Selected mnode: "+nodes[i]);
           }
             //Node[] selNodes = event.getSelectedNodes();
             //List selList = Arrays.asList(selNodes);
@@ -152,12 +152,16 @@ public class FlagAndSelectionHandler implements FlagEventListener, GraphViewChan
             //}
 
             flagFilter.setFlaggedNodes(selList, true);
-        } else if (event.isNodesUnselectedType()) {
+        } else if (event.isNodesUnselectedType() || event.isNodesHiddenType()) {
             //Node[] unselNodes = event.getUnselectedNodes();
             //List unselList = Arrays.asList(unselNodes);
           //System.out.println( "nodes UNse;ected" );
-
-            int[] unselIndices = event.getUnselectedNodeIndices();
+          
+            int[] unselIndices;
+            if (event.isNodesUnselectedType()) {
+              unselIndices = event.getUnselectedNodeIndices(); }
+            else {
+              unselIndices = event.getHiddenNodeIndices(); }
             List unselList = new ArrayList();
             for (int index = 0; index < unselIndices.length; index++) {
                 Node node = rootGraph.getNode(unselIndices[index]);
@@ -175,10 +179,14 @@ public class FlagAndSelectionHandler implements FlagEventListener, GraphViewChan
                 selList.add(edge);
             }
             flagFilter.setFlaggedEdges(selList, true);
-        } else if (event.isEdgesUnselectedType()) {
+        } else if (event.isEdgesUnselectedType() || event.isEdgesHiddenType()) {
             //Edge[] unselEdges = event.getUnselectedEdges();
             //List unselList = Arrays.asList(unselEdges);
-            int[] unselIndices = event.getUnselectedEdgeIndices();
+            int[] unselIndices;
+            if (event.isEdgesUnselectedType()) {
+              unselIndices = event.getUnselectedEdgeIndices(); }
+            else {
+              unselIndices = event.getHiddenEdgeIndices(); }
             List unselList = new ArrayList();
             for (int index = 0; index < unselIndices.length; index++) {
                 Edge edge = rootGraph.getEdge(unselIndices[index]);
