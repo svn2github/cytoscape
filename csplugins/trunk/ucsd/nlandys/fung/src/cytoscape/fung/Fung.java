@@ -5,6 +5,7 @@ import cytoscape.geom.spacial.SpacialEntry2DEnumerator;
 import cytoscape.graph.dynamic.DynamicGraph;
 import cytoscape.graph.dynamic.util.DynamicGraphFactory;
 import cytoscape.render.stateful.GraphLOD;
+import cytoscape.util.intr.IntBTree;
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntIterator;
 import cytoscape.util.intr.IntStack;
@@ -34,6 +35,7 @@ public final class Fung
   final SpecificNodeDetails m_nodeDetails;
   final SpecificEdgeDetails m_edgeDetails;
   private final InnerCanvas m_canvas;
+  final IntBTree m_selectedNodes;
 
   // Is there a way to do this without this hack?
   // I want the instance of Fung to be accessible from within the
@@ -61,6 +63,7 @@ public final class Fung
     m_nodeDetails = new SpecificNodeDetails(this);
     m_edgeDetails = new SpecificEdgeDetails(this);
     m_canvas = new InnerCanvas(this);
+    m_selectedNodes = new IntBTree();
   }
 
   public final NodeViewDefaults getNodeViewDefaults()

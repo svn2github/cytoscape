@@ -24,7 +24,6 @@ public final class NodeView
 
   Fung m_fung; // Not final so that we can destroy reference.
   private final int m_node;
-  private boolean m_selected;
   private Paint m_fillPaint;
   private Paint m_selectedFillPaint;
 
@@ -32,7 +31,6 @@ public final class NodeView
   {
     m_fung = fung;
     m_node = node;
-    m_selected = false;
     m_fillPaint = m_fung.m_nodeDefaults.m_fillPaint;
     m_selectedFillPaint = m_fung.m_nodeDefaults.m_selectedFillPaint;
   }
@@ -281,7 +279,8 @@ public final class NodeView
 
   public boolean isSelected()
   {
-    return m_selected;
+    synchronized (m_fung.m_lock) {
+      return m_fung.m_selectedNodes.count(m_node) > 0; }
   }
 
 }
