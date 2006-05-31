@@ -603,6 +603,14 @@ public class InnerCanvas extends JComponent
         setToolTipText(((DNodeView) nv).getToolTip());
         getToolTipText(e);
       }
+    else {
+      if ((m_lastRenderDetail & GraphRenderer.LOD_HIGH_DETAIL) != 0) {
+        EdgeView ev = m_view.getPickedEdgeView(e.getPoint());
+        if (ev != null) {
+          setToolTipText(((DEdgeView) ev).getToolTip());
+        }
+      }
+    }
   }
 
 // AJK: 05/02/06 END

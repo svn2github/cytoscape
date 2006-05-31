@@ -44,6 +44,8 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
   final ArrayList m_anchors; // A list of Point2D objects.
   int m_lineType;
 
+  String m_toolTipText = null;
+
   /*
    * @param inx the RootGraph index of edge (a negative number).
    */
@@ -566,6 +568,12 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
 
   public void setToolTip(String tip)
   {
+    m_toolTipText = tip;
+  }
+
+  public String getToolTip()
+  {
+    return m_toolTipText;
   }
 
 
