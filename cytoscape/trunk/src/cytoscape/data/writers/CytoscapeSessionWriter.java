@@ -44,6 +44,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -94,17 +95,23 @@ import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
 
 /**
- * Write session states into files.
+ * Write session states into files.<br>
+ * Basic functions of this class are:<br>
+ * <ul>
+ * <li> 1. Create network files</li>
+ * <li> 2. Create session state file</li>
+ * <li> 3. Get properties file locations</li>
+ * <li> 4. Zip them into one session file "*.cys" </li>
+ * </ul>
  * 
- * Basic functions of this class are: 1. Create network files 2. Create session
- * state file 3. Get properties file locations 4. Zip them into one session file
- * "*.cys"
- * 
+ * @version 1.0
+ * @since 2.3
+ * @see cytoscape.data.readers.XGMMLReader
  * @author kono
  * 
  */
-public class CytoscapeSessionWriter {
 
+public class CytoscapeSessionWriter {
 	/*
 	 * Thereshold to switch (zip) compression methods.
 	 */
@@ -316,9 +323,11 @@ public class CytoscapeSessionWriter {
 
 	/**
 	 * Determine file location of the prop files
+	 * @throws URISyntaxException 
+	 * @throws JAXBException 
 	 */
 	private void makeXGMML(String xgmmlFile, CyNetwork network,
-			CyNetworkView view) throws IOException {
+			CyNetworkView view) throws IOException, JAXBException, URISyntaxException {
 
 		XGMMLWriter wt = new XGMMLWriter(network, view);
 		FileWriter fileWriter2 = null;

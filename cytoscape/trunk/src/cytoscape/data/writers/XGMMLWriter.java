@@ -68,7 +68,6 @@ import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
-import cytoscape.data.ExpressionData;
 import cytoscape.data.attr.MultiHashMap;
 import cytoscape.data.attr.MultiHashMapDefinition;
 import cytoscape.data.readers.MetadataParser;
@@ -85,8 +84,12 @@ import ding.view.DGraphView;
 
 /**
  * 
- * Write network and attributes in a streme.
+ * Write network and attributes in XGMML format and <br>
+ * marshall it in a streme.<br>
  * 
+ * @version 1.0
+ * @since 2.3
+ * @see cytoscape.data.readers.XGMMLReader
  * @author kono
  * 
  */
@@ -142,9 +145,8 @@ public class XGMMLWriter {
 
 	MetadataParser mdp;
 	Graph graph = null;
-	ExpressionData expression;
 
-	// Default CSS file name. Will be distributed with Cytoscape 2.3.
+	// Default CSS file name. Maybe used in the future.
 	private static final String CSS_FILE = "base.css";
 
 	// These types are permitted by the XGMML standard
@@ -158,10 +160,21 @@ public class XGMMLWriter {
 	protected static final String MAP_TYPE = "map";
 	protected static final String COMPLEX_TYPE = "complex";
 
-	public XGMMLWriter(CyNetwork network, CyNetworkView view) {
+	/**
+	 * Constructor.<br>
+	 * Initialize data objects to be saved in XGMML file.<br>
+	 * 
+	 * @param network
+	 *            CyNetwork object to be saved.
+	 * @param view
+	 *            CyNetworkView for the network.
+	 * @throws URISyntaxException
+	 * @throws JAXBException
+	 */
+	public XGMMLWriter(CyNetwork network, CyNetworkView view)
+			throws JAXBException, URISyntaxException {
 		this.network = network;
 		this.networkView = view;
-		expression = Cytoscape.getExpressionData();
 
 		nodeAttributes = Cytoscape.getNodeAttributes();
 		edgeAttributes = Cytoscape.getEdgeAttributes();
@@ -175,19 +188,11 @@ public class XGMMLWriter {
 		edgeAttNames = edgeAttributes.getAttributeNames();
 		networkAttNames = networkAttributes.getAttributeNames();
 
-		try {
-			initialize();
-		} catch (JAXBException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		initialize();
 	}
 
 	/**
-	 * Generate JAXB objects for the XGMML file.
+	 * Make JAXB-generated objects for the XGMML file.
 	 * 
 	 * @throws JAXBException
 	 * @throws URISyntaxException
@@ -202,7 +207,8 @@ public class XGMMLWriter {
 		graph = objFactory.createGraph();
 
 		graphAtt = objFactory.createAtt();
-		graph.setId(network.getTitle());  // This is the name of network, NOT rootgraph index!!
+		graph.setId(network.getTitle()); // This is the name of network, NOT
+											// rootgraph index!!
 		graph.setLabel(network.getTitle());
 
 		// Metadata
@@ -222,20 +228,20 @@ public class XGMMLWriter {
 					.getBackgroundPaint()));
 			graph.getAtt().add(globalGraphics);
 		}
-
 	}
 
 	/**
-	 * Write the XGMML file.
+	 * Write the XGMML file.<br>
+	 * This method creates all JAXB objects from Cytoscape internal<br>
+	 * data structure, and them marshall it into an XML (XGMML) document.<br>
 	 * 
 	 * @param writer
-	 *            :Witer to create XGMML file
+	 *            Witer to create XGMML file
 	 * @throws JAXBException
 	 * @throws IOException
 	 */
 	public void write(Writer writer) throws JAXBException, IOException {
 
-		// writeNodes(nodeIt);
 		writeBaseNodes();
 		writeMetanodes();
 
@@ -269,9 +275,13 @@ public class XGMMLWriter {
 
 		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 		m.marshal(graph, writer);
-
 	}
 
+	/**
+	 * Map Cytoscape edge data into JAXB object.<br>
+	 * 
+	 * @throws JAXBException
+	 */
 	private void writeEdges() throws JAXBException {
 		Iterator it = network.edgesIterator();
 
@@ -285,9 +295,6 @@ public class XGMMLWriter {
 			jxbEdge.setId(curEdge.getIdentifier());
 			jxbEdge.setLabel(curEdge.getIdentifier());
 
-			// jxbEdge.setSource(curEdge.getSource().getIdentifier());
-			// jxbEdge.setTarget(curEdge.getTarget().getIdentifier());
-
 			jxbEdge.setSource(Integer.toString(curEdge.getSource()
 					.getRootGraphIndex()));
 			jxbEdge.setTarget(Integer.toString(curEdge.getTarget()
@@ -297,7 +304,7 @@ public class XGMMLWriter {
 				EdgeView curEdgeView = networkView.getEdgeView(curEdge);
 
 				Graphics edgeGraphics = getGraphics(EDGE, curEdgeView);
-				if(edgeGraphics != null) {
+				if (edgeGraphics != null) {
 					jxbEdge.setGraphics(edgeGraphics);
 				}
 			}
@@ -305,13 +312,15 @@ public class XGMMLWriter {
 
 			edgeList.add(curEdge);
 			graph.getNodeOrEdge().add(jxbEdge);
-
 		}
-
 	}
 
-	// write out network attributes
-	protected void writeNetworkAttributes() throws JAXBException {
+	/**
+	 * Map network CyAttributes to JAXB Att object.
+	 * 
+	 * @throws JAXBException
+	 */
+	private void writeNetworkAttributes() throws JAXBException {
 
 		// these are attributes that live inside CyAttributes
 		attributeWriter(NETWORK, network.getIdentifier(), null);
@@ -323,11 +332,6 @@ public class XGMMLWriter {
 			// save the center of the view
 			saveViewCenter();
 		}
-	}
-
-	// Expand metanode information
-	protected void writeMetanode() {
-
 	}
 
 	/**
@@ -750,13 +754,22 @@ public class XGMMLWriter {
 		return attrToReturn;
 	}
 
-	protected Graphics getGraphics(int type, Object target)
-			throws JAXBException {
-		
-		if(target == null) {
+	/**
+	 * Get Graphics object mapped from node/edge views.<br>
+	 * 
+	 * @param type
+	 *            Object type. NODE or EDGE.
+	 * @param target
+	 *            Object view.
+	 * @return JAXB-generated Graphics object.
+	 * @throws JAXBException
+	 */
+	private Graphics getGraphics(int type, Object target) throws JAXBException {
+
+		if (target == null) {
 			return null;
 		}
-		
+
 		Graphics graphics = objFactory.createGraphics();
 
 		if (type == NODE) {
@@ -853,13 +866,13 @@ public class XGMMLWriter {
 			Att edgeLineType = objFactory.createAtt();
 			Att sourceArrowColor = objFactory.createAtt();
 			Att targetArrowColor = objFactory.createAtt();
-			
+
 			// Bend
 			Att bend = objFactory.createAtt();
 
 			// Curved (Bezier Curves) or Straight line
 			Att curved = objFactory.createAtt();
-			
+
 			sourceArrow.setName("sourceArrow");
 			targetArrow.setName("targetArrow");
 			edgeLabelFont.setName("edgeLabelFont");
@@ -878,37 +891,35 @@ public class XGMMLWriter {
 					.setValue(encodeFont(curEdgeView.getLabel().getFont()));
 
 			edgeLineType.setValue(lineTypeBuilder(curEdgeView).toString());
-			
-			
+
 			// Extract bend information
 			Bend bendData = curEdgeView.getBend();
 			List handles = bendData.getHandles();
-			
+
 			Iterator bendIt = handles.iterator();
-			while(bendIt.hasNext()) {
+			while (bendIt.hasNext()) {
 				java.awt.geom.Point2D handle = (Point2D) bendIt.next();
 				Att handlePoint = objFactory.createAtt();
 				Att handleX = objFactory.createAtt();
 				Att handleY = objFactory.createAtt();
-				
+
 				handlePoint.setName("handle");
 				handleX.setName("x");
 				handleY.setName("y");
-				
+
 				handleX.setValue(Double.toString(handle.getX()));
 				handleY.setValue(Double.toString(handle.getY()));
 				handlePoint.getContent().add(handleX);
 				handlePoint.getContent().add(handleY);
 				bend.getContent().add(handlePoint);
 			}
-			
+
 			// Set curved or not
 			if (curEdgeView.getLineType() == EdgeView.CURVED_LINES) {
 				curved.setValue("CURVED_LINES");
 			} else if (curEdgeView.getLineType() == EdgeView.STRAIGHT_LINES) {
 				curved.setValue("STRAIGHT_LINES");
 			}
-			
 
 			sourceArrowColor.setValue(paint2string(curEdgeView
 					.getSourceEdgeEndPaint()));
@@ -921,7 +932,7 @@ public class XGMMLWriter {
 			cytoscapeEdgeAttr.getContent().add(edgeLineType);
 			cytoscapeEdgeAttr.getContent().add(sourceArrowColor);
 			cytoscapeEdgeAttr.getContent().add(targetArrowColor);
-			if(bend.getContent().size() != 0) {
+			if (bend.getContent().size() != 0) {
 				cytoscapeEdgeAttr.getContent().add(bend);
 			}
 			cytoscapeEdgeAttr.getContent().add(curved);
@@ -933,7 +944,15 @@ public class XGMMLWriter {
 		return null;
 	}
 
-	protected void expand(CyNode node, Node metanode, int[] childrenIndices)
+	/**
+	 * This is for metanode. Currently, this is not used.
+	 * 
+	 * @param node
+	 * @param metanode
+	 * @param childrenIndices
+	 * @throws JAXBException
+	 */
+	private void expand(CyNode node, Node metanode, int[] childrenIndices)
 			throws JAXBException {
 		CyNode childNode = null;
 		Att children = objFactory.createAtt();
@@ -960,13 +979,8 @@ public class XGMMLWriter {
 				metanode.setGraphics(getGraphics(NODE, networkView
 						.getNodeView(node)));
 			} else {
-
-				// System.out.print("This is a metanode!: "
-				// + jxbChildNode.getLabel() + ", number = "
-				// + childrenIndices.length);
 				expand(childNode, jxbChildNode, grandChildrenIndices);
 			}
-
 		}
 		attributeWriter(NODE, metanode.getId(), metanode);
 
@@ -974,8 +988,14 @@ public class XGMMLWriter {
 		metanode.getAtt().add(children);
 	}
 
-	// Convert number to shape string
-	protected String number2shape(int type) {
+	/**
+	 * Convert enumerated shapes into human-readable string.<br>
+	 * 
+	 * @param type
+	 *            Enumerated node shape.
+	 * @return Shape in string.
+	 */
+	private String number2shape(int type) {
 		if (type == NodeView.ELLIPSE) {
 			return ELLIPSE;
 		} else if (type == NodeView.RECTANGLE) {
@@ -995,7 +1015,14 @@ public class XGMMLWriter {
 		}
 	}
 
-	protected String paint2string(Paint p) {
+	/**
+	 * Convert color (paint) to RGB string.<br>
+	 * 
+	 * @param p
+	 *            Paint object to be converted.
+	 * @return Color in RGB string.
+	 */
+	private String paint2string(Paint p) {
 
 		Color c = (Color) p;
 		return ("#"// +Integer.toHexString(c.getRGB());
@@ -1005,16 +1032,13 @@ public class XGMMLWriter {
 	}
 
 	/**
-	 * Returns all nodes in this network.
+	 * Map CyNode data onto JAXB objects.<br>
 	 * 
 	 * @throws JAXBException
-	 * 
-	 * 
 	 */
 	private void writeBaseNodes() throws JAXBException {
 
 		Node jxbNode = null;
-
 		CyNode curNode = null;
 
 		Iterator it = network.nodesIterator();
@@ -1024,9 +1048,6 @@ public class XGMMLWriter {
 			jxbNode = objFactory.createNode();
 
 			String targetnodeID = Integer.toString(curNode.getRootGraphIndex());
-			// System.out.println("nodeID ======== " + targetnodeID);
-
-			// jxbNode.setId(curNode.getIdentifier());
 
 			jxbNode.setId(targetnodeID);
 			jxbNode.setLabel(curNode.getIdentifier());
@@ -1035,7 +1056,7 @@ public class XGMMLWriter {
 			// Add graphics if available
 			if (networkView != null) {
 				NodeView curNodeView = networkView.getNodeView(curNode);
-				if(curNodeView != null) {
+				if (curNodeView != null) {
 					jxbNode.setGraphics(getGraphics(NODE, curNodeView));
 				}
 			}
@@ -1051,18 +1072,16 @@ public class XGMMLWriter {
 			}
 
 		}
-
-		// int count = 0;
-		// Iterator it2 = metanodeList.iterator();
-		// while (it2.hasNext()) {
-		// CyNode test = (CyNode) it2.next();
-		// count++;
-		// System.out.println("%%%%% it test count: " + count + ", "
-		// + test.getIdentifier());
-		// }
-
 	}
 
+	/**
+	 * Build a JAXB Node object from a CyNode.<br>
+	 * 
+	 * @param node
+	 *            CyNode to be mapped.
+	 * @return JAXB Node object.
+	 * @throws JAXBException
+	 */
 	private Node buildJAXBNode(CyNode node) throws JAXBException {
 		Node jxbNode = null;
 
@@ -1079,6 +1098,12 @@ public class XGMMLWriter {
 		return jxbNode;
 	}
 
+	/**
+	 * This is for Metanodes.
+	 * 
+	 * @param node
+	 * @throws JAXBException
+	 */
 	private void expandChildren(CyNode node) throws JAXBException {
 
 		CyNode childNode = null;
@@ -1164,6 +1189,13 @@ public class XGMMLWriter {
 		}
 	}
 
+	/**
+	 * Encode font into a human-readable string.<br>
+	 * 
+	 * @param font
+	 *            Font object.
+	 * @return String extracted from the given Font object.
+	 */
 	private String encodeFont(Font font) {
 		// Encode font into "fontname-style-pointsize" string
 		String fontString = font.getName() + "-" + font.getStyle() + "-"
@@ -1172,6 +1204,13 @@ public class XGMMLWriter {
 		return fontString;
 	}
 
+	/**
+	 * Check the type of Attributes.
+	 * 
+	 * @param obj
+	 * @return Attribute type in string.
+	 * 
+	 */
 	private String checkType(Object obj) {
 		if (obj.getClass() == String.class) {
 			return STRING_TYPE;
@@ -1209,6 +1248,15 @@ public class XGMMLWriter {
 		return null;
 	}
 
+	/**
+	 * Get line type of the given edge.<br>
+	 * NOTE: This is not a GINY's line type!<br>
+	 * 
+	 * @param view
+	 *            EdgeView
+	 * @return LineType of the edge
+	 * 
+	 */
 	private LineType lineTypeBuilder(EdgeView view) {
 
 		LineType lineType = LineType.LINE_1;
