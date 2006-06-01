@@ -310,9 +310,52 @@ public final class EdgeView
         (Vector) m_fung.m_edgeDetails.m_anchors.get(new Integer(m_edge));
       boolean newVec = false;
       if (v == null) { v = new Vector(); newVec = true; }
+      if (v.size() == GraphGraphics.MAX_EDGE_ANCHORS / 2) {
+        throw new IllegalStateException("too many anchors already on edge"); }
       v.add(inx, new Point2D.Float((float) x, (float) y));
       if (newVec) {
         m_fung.m_edgeDetails.m_anchors.put(new Integer(m_edge), v); } }
+  }
+
+  public final int addAnchor(final double x, final double y)
+  {
+    synchronized (m_fung.m_lock) {
+      if (getAnchorCount() == 0) {
+        addAnchor(0, x, y);
+        return 0; }
+      final Point2D newPt = new Point2D.Double(x, y);
+      final NodeView srcNode =
+        m_fung.getNodeView(m_fung.getGraphModel().edgeSource(m_edge));
+      final Point2D srcLoc = new Point2D.Double
+        (srcNode.getXPosition(), srcNode.getYPosition());
+      final NodeView trgNode =
+        m_fung.getNodeView(m_fung.getGraphModel().edgeTarget(m_edge));
+      final Point2D trgLoc = new Point2D.Double
+        (trgNode.getXPosition(), trgNode.getYPosition());
+      final Vector anchors = (Vector)
+        m_fung.m_edgeDetails.m_anchors.get(new Integer(m_edge));
+      double bestDist =
+        newPt.distance(srcLoc) + newPt.distance((Point2D) anchors.get(0)) -
+        srcLoc.distance((Point2D) anchors.get(0));
+      int bestInx = 0;
+      for (int i = 1; i < anchors.size(); i++) {
+        final double distCand =
+          newPt.distance((Point2D) anchors.get(i - 1)) +
+          newPt.distance((Point2D) anchors.get(i)) -
+          ((Point2D) anchors.get(i)).distance
+          ((Point2D) anchors.get(i - 1));
+        if (distCand < bestDist) {
+          bestDist = distCand;
+          bestInx = i; } }
+      final double lastCand =
+        newPt.distance(trgLoc) +
+        newPt.distance((Point2D) anchors.get(anchors.size() - 1)) -
+        trgLoc.distance((Point2D) anchors.get(anchors.size() - 1));
+      if (lastCand < bestDist) {
+        bestDist = lastCand;
+        bestInx = anchors.size(); }
+      addAnchor(bestInx, x, y);
+      return bestInx; }
   }
 
   public final void removeAnchor(final int inx)
