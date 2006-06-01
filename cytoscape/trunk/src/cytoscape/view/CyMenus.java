@@ -218,7 +218,7 @@ public class CyMenus implements GraphViewChangeListener {
 	/**
 	 * Returns the menu with items related to data operations.
 	 */
-	public JMenu getDataMenu() {
+	public JMenu getViewMenu() {
 		return viewMenu;
 	}
 
