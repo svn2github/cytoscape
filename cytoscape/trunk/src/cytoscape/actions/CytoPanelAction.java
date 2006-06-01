@@ -165,7 +165,7 @@ public class CytoPanelAction extends CytoscapeAction implements CytoPanelListene
 	 * to sync. menuitem created by plugins and core.
 	 * 
 	 * @param on
-	 * @param menuItem
+	 * 			ON/OFF the checkbox created by browser plugin.
 	 */
 	private void syncCheckbox(boolean on) {
 		JCheckBoxMenuItem targetCheckbox = null;
