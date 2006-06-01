@@ -46,6 +46,10 @@ package cytoscape.actions;
 // imports
 import java.awt.event.ActionEvent;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JMenu;
+import javax.swing.SwingConstants;
+
+import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.view.cytopanels.CytoPanelState;
@@ -102,10 +106,12 @@ public class CytoPanelAction extends CytoscapeAction implements CytoPanelListene
 			else{
 				cytoPanel.setState(CytoPanelState.FLOAT);
 			}
+			syncCheckbox(true);
 		}
 		else{
 			cytoPanelPrevState = cytoPanel.getState();
 			cytoPanel.setState(CytoPanelState.HIDE);
+			syncCheckbox(false);
 		}
 	}
 
@@ -152,5 +158,46 @@ public class CytoPanelAction extends CytoscapeAction implements CytoPanelListene
      */
     public void onComponentSelected(int componentIndex){
 	}
+    
+    /**
+	 * Find menu item, and sync check box.
+	 * This is a hack, but currently, this is the only way
+	 * to sync. menuitem created by plugins and core.
+	 * 
+	 * @param on
+	 * @param menuItem
+	 */
+	private void syncCheckbox(boolean on) {
+		JCheckBoxMenuItem targetCheckbox = null;
+		JMenu targetMenu = Cytoscape.getDesktop().getCyMenus().getViewMenu();
+		int menuCount = targetMenu.getMenuComponentCount();
+		
+		// Find the location of menu item
+		for(int i=0; i<menuCount; i++) {
+			
+			Object component = targetMenu.getMenuComponent(i);
+			
+			if(component.getClass().equals(JCheckBoxMenuItem.class)) {
+				if(cytoPanel.equals(Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST)) && ((JCheckBoxMenuItem)component).getText().equals("Show/Hide network tree viewer")) {
+					targetCheckbox = ((JCheckBoxMenuItem)component);
+				} else if(cytoPanel.equals(Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH)) && ((JCheckBoxMenuItem)component).getText().equals("Show/Hide attribute browser")) {
+					targetCheckbox = ((JCheckBoxMenuItem)component);
+				} else if(cytoPanel.equals(Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST)) && ((JCheckBoxMenuItem)component).getText().equals("Show/Hide advanced window")) {
+					targetCheckbox = ((JCheckBoxMenuItem)component);
+				}
+			}
+		}
+		
+		if(targetCheckbox == null) {
+			return;
+		}
+		
+		if(on == true) {
+			targetCheckbox.setSelected(true);
+		} else {
+			targetCheckbox.setSelected(false);
+		}
+	}
+    
 }
 
