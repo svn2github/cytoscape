@@ -2,12 +2,15 @@ package metanodePlugin;
 
 import metanodePlugin.ui.MNcollapserDialog;
 import javax.swing.AbstractAction;
+import javax.swing.JPopupMenu;
 import java.awt.event.ActionEvent;
 import cytoscape.*;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.plugin.CytoscapePlugin;
 import java.beans.*;
+import ding.view.*;
+import giny.view.*;
 
 /**
  * A plug-in that provides operations to create meta-nodes,
@@ -18,19 +21,26 @@ import java.beans.*;
 
 public class MetaNodeViewerCytoPlugin 
 extends CytoscapePlugin 
-implements PropertyChangeListener {
+implements NodeContextMenuListener, PropertyChangeListener {
 	
 	protected static final String pluginTitle = "MetaNodes Plugin";
-    public static final String VERSION = "1.0";
+	public static final String VERSION = "1.0";
+	protected MNcollapserDialog dialog;
 	
 	/**
 	 * Constructor.
 	 */
 	public MetaNodeViewerCytoPlugin (){
 		
-		Cytoscape.getDesktop().getSwingPropertyChangeSupport().addPropertyChangeListener( CytoscapeDesktop.NETWORK_VIEW_CREATED, this );
+		try {
+			// Add ourselves to the network view created change list
+			Cytoscape.getDesktop().getSwingPropertyChangeSupport()
+				.addPropertyChangeListener( CytoscapeDesktop.NETWORK_VIEW_CREATED, this);
+		} catch (ClassCastException e) {
+			System.out.println(e.getMessage());
+		}
 		
-		final MNcollapserDialog dialog = new MNcollapserDialog();
+		dialog = new MNcollapserDialog();
 		dialog.setResizable(false);
 		
 		// Add the plugin to the plugins menu
@@ -44,23 +54,28 @@ implements PropertyChangeListener {
 				}
 		);
 	}//constructor
+
+	/**
+	 * Implements propertyChange
+	 * @param e
+	 **/
+	public void propertyChange ( PropertyChangeEvent e ) {
+		if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED) {
+			((DGraphView)Cytoscape.getCurrentNetworkView()).addNodeContextMenuListener(this);
+		}
+	}
 	
 	/**
-	 * Implements PropertyChangeListener.propertyChange
-	 * @param e
+	 * Implements addNodeContextMenuItems
+	 * @param nodeView
+	 * @param menu
 	 */
-	public void propertyChange ( PropertyChangeEvent e ){
-		
-		if ( e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED ){
-			// Add menu to the context dialog
-			CyNetworkView view = ( CyNetworkView )e.getNewValue();
-			view.addContextMethod( "class phoebe.PNodeView",
-					"metaNodeViewer.ui.AbstractMetaNodeMenu",
-					"getAbstractMetaNodeMenu",
-					new Object[] { view } ,
-					CytoscapeInit.getClassLoader() );
+	public void addNodeContextMenuItems (NodeView nodeView, JPopupMenu menu) {
+		if (menu == null) {
+			menu = new JPopupMenu();
 		}
-	}//propertyChange
+		System.err.println("MetaNodeViewerPlugin.addNodeContextMenuItems called");
+		menu.add(this.dialog.getMenu(nodeView));
+	}
 
-	
 }//class MetaNodeViewerCytoPlugin

@@ -151,14 +151,9 @@ public class CollapseSelectedNodesAction extends AbstractAction {
                                             boolean multiple_edges){
 		
 		CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
-        Iterator it = cyNetwork.getFlaggedNodes().iterator();
-		// Pop-up a dialog if there are no selected nodes and return
-		ArrayList selectedNodes = new ArrayList();
-        while(it.hasNext()){
-            selectedNodes.add(it.next());
-        }
-        
-        if(selectedNodes.size() == 0) {
+        Iterator it = cyNetwork.getSelectedNodes().iterator();
+
+		if (!it.hasNext()) {
 			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
 			"Please select one or more nodes.");
 			return;
@@ -166,23 +161,32 @@ public class CollapseSelectedNodesAction extends AbstractAction {
 		
       
         if(collapse_existent_parents){
-            List parentMetanodes = new ArrayList();
-            it = selectedNodes.iterator();
-            if(collapse_recursively){
-                while(it.hasNext()) parentMetanodes.addAll(MetaNodeUtils.getRootParents(cyNetwork,(CyNode)it.next()));
-            }else{
-                while(it.hasNext()) parentMetanodes.addAll(MetaNodeUtils.getParents(cyNetwork,(CyNode)it.next()));
+            Map parentMetanodes = new HashMap();
+            // it = selectedNodes.iterator();
+			while (it.hasNext()) {
+				List parentList = null;
+            	if(collapse_recursively){
+                	parentList = MetaNodeUtils.getRootParents(cyNetwork,(CyNode)it.next());
+            	}else{
+                	parentList = MetaNodeUtils.getParents(cyNetwork,(CyNode)it.next());
+				}
+				// Add the nodes to the map
+				Iterator it2 = parentList.iterator();
+				while (it2.hasNext()) {
+					CyNode parentNode = (CyNode)it2.next();
+					parentMetanodes.put(parentNode, parentNode);
+				}
             }
             if(parentMetanodes.size() == 0){ 
                 JOptionPane.showMessageDialog(Cytoscape.getDesktop(),"The selected nodes do not have parent meta-nodes.");
                 return;
             }
             if(parentMetanodes.size() > 0){
-                it = parentMetanodes.iterator();
+                it = parentMetanodes.values().iterator();
                 while(it.hasNext()) MetaNodeUtils.collapseMetaNode(cyNetwork,(CyNode)it.next(),multiple_edges);
             }
         }else{
-            CyNetwork subnet = Cytoscape.getRootGraph().createNetwork(selectedNodes, new ArrayList());
+            CyNetwork subnet = Cytoscape.getRootGraph().createNetwork(cyNetwork.getSelectedNodes(), new ArrayList());
             CyNode metanode = MetaNodeUtils.createMetaNode(cyNetwork,subnet);
             MetaNodeUtils.collapseMetaNode(cyNetwork,metanode,multiple_edges);
         }

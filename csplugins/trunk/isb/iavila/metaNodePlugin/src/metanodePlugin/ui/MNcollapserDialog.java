@@ -259,12 +259,13 @@ public class MNcollapserDialog extends JFrame {
 	 * @return a JMenu with operations to create new meta-nodes, destroy
 	 *         meta-nodes, collapse to meta-nodes and expand children.
 	 */
-	public JMenu getMenu(Object[] args, PNode node) {
+	public JMenu getMenu(Object nodeView) {
 		JMenu menu = new JMenu("Meta-Node Operations");
 		menu.add(this.createMetaNodeAction);
 		menu.add(this.destroyMetaNodeAction);
 		menu.add(this.collapseAction);
 		menu.add(this.expandAction);
+		System.out.println("MNcollapserDialog getMenu called");
 		return menu;
 	}// getMenu
 }// class MNcollapserDialog

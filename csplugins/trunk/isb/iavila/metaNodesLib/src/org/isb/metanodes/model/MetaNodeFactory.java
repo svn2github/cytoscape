@@ -38,11 +38,11 @@ import org.isb.metanodes.data.*;
 public class MetaNodeFactory {
 	/**
 	 * The key to obtain a cern.colt.list.IntArrayList that contains RootGraph indices of meta-nodes for a
-	 * given CyNetwork through <code>CyNetwork.getClientData(String key)</code>
+	 * given CyNetwork through <code>Cytoscape.getNetworkAttributes(String key)</code>
 	 * This is necessary because all CyNetworks belong to the same RootGraph which contains the meta-nodes, so
 	 * we need to know which meta-nodes belong to which CyNetworks.
 	 */
-	public static final String METANODES_IN_NETWORK = "metaNodeViewer.model.GPMetaNodeFactory.metaNodeRindices";
+	public static final String METANODES_IN_NETWORK = "__metaNodeRindices";
 	private static final GPMetaNodeFactory gpMetaNodeFactory = new GPMetaNodeFactory();
 	
   /**

@@ -61,10 +61,6 @@ public class SimpleMetaNodeAttributesHandler implements
         String common_name = getCommonMetaName(node, cy_net);
         CyAttributes nodeAtts = Cytoscape.getNodeAttributes();
         node.setIdentifier(unique_name);
-        nodeAtts.setAttribute(node.getIdentifier(), Semantics.CANONICAL_NAME,
-                unique_name);
-        nodeAtts.setAttribute(node.getIdentifier(), Semantics.COMMON_NAME,
-                common_name);
         // OLD:
         // Cytoscape.getNodeNetworkData().addNameMapping(unique_name, node);
         // cy_net.setNodeAttributeValue(node, Semantics.COMMON_NAME,
@@ -90,8 +86,7 @@ public class SimpleMetaNodeAttributesHandler implements
         if (node == null)
             return false;
         CyAttributes nodeAtts = Cytoscape.getNodeAttributes();
-        String metaName = nodeAtts.getStringAttribute(node.getIdentifier(),
-                Semantics.CANONICAL_NAME);
+        String metaName = node.getIdentifier();
         if (metaName == null) {
             metaName = assignName(cy_network, node);
         }
@@ -101,10 +96,6 @@ public class SimpleMetaNodeAttributesHandler implements
         String[] childrenAtts = nodeAtts.getAttributeNames();
         for (int i = 0; i < childrenAtts.length; i++) {
             String attrName = childrenAtts[i];
-            if (attrName.equals(Semantics.CANONICAL_NAME)
-                    || attrName.equals(Semantics.COMMON_NAME)) {
-                continue; // reserved
-            }
 
             // iterate over children, constructing set of values for this attr
             HashSet uniqueValues = new HashSet();
@@ -199,7 +190,7 @@ public class SimpleMetaNodeAttributesHandler implements
         for (Iterator it = children.iterator(); it.hasNext();) {
             count++;
             CyNode child = (CyNode) it.next();
-            commonName += Cytoscape.getNodeAttributes().getStringAttribute(child.getIdentifier(),Semantics.CANONICAL_NAME);
+            commonName += child.getIdentifier();
             // if (it.hasNext() && (count % 3) == 0) commonName += '\n';
             if (it.hasNext())
                 commonName += ",";
@@ -221,8 +212,6 @@ public class SimpleMetaNodeAttributesHandler implements
             if (metaEdge == null || childEdge == null) {
                 throw new NullPointerException("metaEdge or childEdge is null");
             }
-            // String childEdgeName = (String) Cytoscape.getEdgeAttributeValue(
-            // childEdge, Semantics.CANONICAL_NAME);
             String metaEdgeName = "unknown";
 
             // infer the metaNode and use it to name the metaEdge
@@ -240,27 +229,19 @@ public class SimpleMetaNodeAttributesHandler implements
                     && rootGraph.nodeMetaChildrenList(
                             sourceNode.getRootGraphIndex()).size() > 0) {
                 
-                metaEdgeName = Cytoscape.getNodeAttributes().getStringAttribute(sourceNode.getIdentifier(),Semantics.CANONICAL_NAME)
-                        + " ("
-                        + interaction
-                        + ") "
-                        + Cytoscape.getNodeAttributes().getStringAttribute(targetNode.getIdentifier(),Semantics.CANONICAL_NAME);
+                metaEdgeName = sourceNode.getIdentifier()+" ("+interaction+") "+targetNode.getIdentifier();
             
             } else if (rootGraph.nodeMetaChildrenList(targetNode
                     .getRootGraphIndex()) != null
                     && rootGraph.nodeMetaChildrenList(
                             targetNode.getRootGraphIndex()).size() > 0) {
-               
-                metaEdgeName = Cytoscape.getNodeAttributes().getStringAttribute(sourceNode.getIdentifier(),Semantics.CANONICAL_NAME)
-                + " ("
-                + interaction
-                + ") "
-                + Cytoscape.getNodeAttributes().getStringAttribute(targetNode.getIdentifier(),Semantics.CANONICAL_NAME);
+                
+                metaEdgeName = sourceNode.getIdentifier()+" ("+interaction+") "+targetNode.getIdentifier();
             
             
             }
+            metaEdge.setIdentifier(metaEdgeName);
 
-           Cytoscape.getEdgeAttributes().setAttribute(metaEdge.getIdentifier(),Semantics.CANONICAL_NAME,metaEdgeName);
            
             // Transfer attributes b/w edges--
             // if edge name redundant, merge attrs with existing name and remove
@@ -271,9 +252,6 @@ public class SimpleMetaNodeAttributesHandler implements
             for (int i = 0; i < allAttrNames.length; i++) {
                 String attrName = allAttrNames[i];
                 if (attrName.equals(Semantics.INTERACTION))
-                    continue; // reserved
-
-                if (attrName.equals(Semantics.CANONICAL_NAME))
                     continue; // reserved
 
                 HashSet uniqueValues = new HashSet();

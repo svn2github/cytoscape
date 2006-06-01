@@ -984,10 +984,20 @@ public class AbstractMetaNodeModeler {
 
         // It is a meta-node, remember that it is no longer a meta-node of
         // cy_net
-        ArrayList metaNodesForNetwork = (ArrayList) cy_net
-                .getClientData(MetaNodeFactory.METANODES_IN_NETWORK);
+        CyAttributes netAttributes = Cytoscape.getNetworkAttributes();
+        ArrayList metaNodesForNetwork = (ArrayList) netAttributes
+                .getAttributeList(cy_net.getIdentifier(), MetaNodeFactory.METANODES_IN_NETWORK);
         if (metaNodesForNetwork != null) {
-            metaNodesForNetwork.remove(meta_node);
+            Iterator it = metaNodesForNetwork.iterator();
+            Integer match = null;
+            while (it.hasNext()) {
+                Integer meta = (Integer)it.next();
+                if ( meta.intValue() == meta_node.getRootGraphIndex() ) {
+                    match = meta;
+                    break;
+                }
+            }
+            if (match != null) metaNodesForNetwork.remove(match);
         }
 
         // If recursive, get all the descendants of this meta-node, and remove
@@ -1300,14 +1310,14 @@ public class AbstractMetaNodeModeler {
         edge.setIdentifier(edge_name);
 
         // Store Edge Name Mapping within GOB.
-        Cytoscape.getEdgeNetworkData().addNameMapping(edge_name, edge);
+        // Cytoscape.getEdgeNetworkData().addNameMapping(edge_name, edge);
 
         // store edge id as INTERACTION / CANONICAL_NAME Attributes
         CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
         edgeAttributes.setAttribute(edge_name, Semantics.INTERACTION,
                 (String) META_EDGE_INTERACTION);
-        edgeAttributes.setAttribute(edge_name, Semantics.CANONICAL_NAME,
-                edge_name);
+        //edgeAttributes.setAttribute(edge_name, Semantics.CANONICAL_NAME,
+        //        edge_name);
         return edge;
     }
 

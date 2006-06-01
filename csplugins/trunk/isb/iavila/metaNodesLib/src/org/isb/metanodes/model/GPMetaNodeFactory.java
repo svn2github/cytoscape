@@ -31,6 +31,7 @@ package org.isb.metanodes.model;
 import org.isb.metanodes.data.*;
 import giny.model.*;
 import cytoscape.*;
+import cytoscape.data.*;
 
 import java.util.*;
 
@@ -161,6 +162,9 @@ public class GPMetaNodeFactory {
 			return null;
 		}// check args
 
+		// Get the list of network attributes
+		CyAttributes netAttributes = Cytoscape.getNetworkAttributes();
+
         int [] childrenNodeIndices = new int[children.size()];
         for(int i = 0; i < children.size(); i++) childrenNodeIndices[i] = ( (CyNode)children.get(i) ).getRootGraphIndex();
         
@@ -185,12 +189,15 @@ public class GPMetaNodeFactory {
         if(metaNode == null) throw new IllegalStateException("CyNode from RootGraph with index = " + rgParentNodeIndex + " is null!!!");
         
 		// Remember that this RootGraph node belongs to cyNetwork
-		ArrayList rootNodes = (ArrayList) cy_net.getClientData(MetaNodeFactory.METANODES_IN_NETWORK);
-		if (rootNodes == null) {
+		ArrayList rootNodes = (ArrayList) netAttributes.getAttributeList(cy_net.getIdentifier(),MetaNodeFactory.METANODES_IN_NETWORK);
+		if (rootNodes == null || rootNodes.isEmpty()) {
 			rootNodes = new ArrayList();
-			cy_net.putClientData(MetaNodeFactory.METANODES_IN_NETWORK,rootNodes);
 		}
-		rootNodes.add(metaNode);
+		rootNodes.add(new Integer(metaNode.getRootGraphIndex()));
+	    netAttributes.setAttributeList(cy_net.getIdentifier(),MetaNodeFactory.METANODES_IN_NETWORK,rootNodes);
+        if (DEBUG) {
+            System.err.println("GPMetaNodeFactory: Added metanode ID "+metaNode.getRootGraphIndex()+" to "+cy_net.getIdentifier());
+        }
 
 		// Assign a default name if necessary
 		if (getAssignDefaultNames()) {
@@ -240,15 +247,17 @@ public class GPMetaNodeFactory {
         // Create a network and set it for the node
         CyNetwork childnet = Cytoscape.getRootGraph().createNetwork(children,edges);
         node.setGraphPerspective(childnet);
+
+		// Get the list of network attributes
+		CyAttributes netAttributes = Cytoscape.getNetworkAttributes();
         
         // Remember that this RootGraph node belongs to cyNetwork
-        ArrayList rootNodes = (ArrayList) cy_net.getClientData(MetaNodeFactory.METANODES_IN_NETWORK);
+		ArrayList rootNodes = (ArrayList) netAttributes.getAttributeList(cy_net.getIdentifier(),MetaNodeFactory.METANODES_IN_NETWORK);
         if (rootNodes == null) {
             rootNodes = new ArrayList();
-            cy_net.putClientData(MetaNodeFactory.METANODES_IN_NETWORK,rootNodes);
-        }
-        rootNodes.add(node);
-        
+		}
+		rootNodes.add( new Integer(node.getRootGraphIndex()) );
+		netAttributes.setAttributeList(cy_net.getIdentifier(),MetaNodeFactory.METANODES_IN_NETWORK,rootNodes);
     }
 
 	/**

@@ -103,7 +103,7 @@ public class UncollapseSelectedNodesAction extends AbstractAction {
 			boolean temporary){
         
         CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
-        Iterator it = cyNetwork.getFlaggedNodes().iterator();
+        Iterator it = cyNetwork.getSelectedNodes().iterator();
         // Pop-up a dialog if there are no selected nodes and return
         ArrayList selectedNodes = new ArrayList();
         while(it.hasNext()){

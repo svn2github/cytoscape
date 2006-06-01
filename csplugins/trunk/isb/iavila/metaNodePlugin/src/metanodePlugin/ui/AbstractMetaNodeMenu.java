@@ -44,8 +44,8 @@ public class AbstractMetaNodeMenu {
 		AbstractMetaNodeMenu.dialog = dialog;
 	}//AbstractMetaNodeMenu
 	
-	public static JMenu getAbstractMetaNodeMenu (Object [] args, PNode pnode){
-		return AbstractMetaNodeMenu.dialog.getMenu(args,pnode);
+	public static JMenu getAbstractMetaNodeMenu (Object [] args){
+		return AbstractMetaNodeMenu.dialog.getMenu(args);
 	}//getAbstractMetaNodeMenu
 	
 }//AbstractMetaNodeMenu

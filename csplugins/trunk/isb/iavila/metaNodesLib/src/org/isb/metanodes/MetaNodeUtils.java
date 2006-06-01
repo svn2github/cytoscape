@@ -31,6 +31,7 @@ import org.isb.metanodes.model.MetaNodeFactory;
 import org.isb.metanodes.model.MetaNodeModelerFactory;
 import cytoscape.*;
 import cytoscape.view.*;
+import cytoscape.data.*;
 import cytoscape.layout.*;
 import giny.view.*;
 
@@ -289,7 +290,7 @@ public class MetaNodeUtils {
 	  public static List getParents (CyNetwork network, CyNode child){
 	      RootGraph rootGraph = network.getRootGraph();
 	      ArrayList parentNodes = new ArrayList();
-	      ArrayList metaNodesForNetwork = (ArrayList)network.getClientData(MetaNodeFactory.METANODES_IN_NETWORK);
+	      List metaNodesForNetwork = (ArrayList)getAllMetaNodes(network);
 	      if(metaNodesForNetwork != null){
 	          int [] parents = rootGraph.getNodeMetaParentIndicesArray(child.getRootGraphIndex());
 	          for(int j = 0; j < parents.length; j++){
@@ -297,7 +298,7 @@ public class MetaNodeUtils {
 	                  parentNodes.add(rootGraph.getNode(parents[j]));
 	              }
 	          }//for j
-	      }// metaNodesForNetwork != null
+	      }// metaNodeIDsForNetwork != null
         return parentNodes;
       }
       
@@ -310,16 +311,16 @@ public class MetaNodeUtils {
        */
       public static boolean hasParents (CyNetwork network, CyNode node){
           RootGraph rootGraph = network.getRootGraph();
-          ArrayList metaNodesForNetwork = (ArrayList)network.getClientData(MetaNodeFactory.METANODES_IN_NETWORK);
+          List metaNodesForNetwork = (ArrayList)getAllMetaNodes(network);
           if(metaNodesForNetwork != null){
               int [] parents = rootGraph.getNodeMetaParentIndicesArray(node.getRootGraphIndex());
               for(int j = 0; j < parents.length; j++){
-                  if( metaNodesForNetwork.contains(rootGraph.getNode(parents[j])) ){
+	          if( metaNodesForNetwork.contains(rootGraph.getNode(parents[j])) ){
                      return true;
                   }
               }//for j
               
-          }// metaNodesForNetwork != null
+          }// metaNodeIDsForNetwork != null
         
         return false;
       }
@@ -406,8 +407,28 @@ public class MetaNodeUtils {
        * @return a List of CyNodes that are metanodes in the given network
        */
       public static List getAllMetaNodes (CyNetwork network){
-          List metaNodesForNetwork = (ArrayList)network.getClientData(MetaNodeFactory.METANODES_IN_NETWORK); 
+          RootGraph rootGraph = network.getRootGraph();
+          Iterator it = getAllMetaNodeIDs(network).iterator();
+          ArrayList metaNodesForNetwork = new ArrayList();
+          while (it.hasNext()) {
+              metaNodesForNetwork.add((CyNode)rootGraph.getNode(((Integer)it.next()).intValue()));
+          }
           return metaNodesForNetwork;
+      }
+
+      /**
+       * Returns indices of nodes that are metanodes in the given network, whether they are collapsed or expanded
+       *
+       * @param network the CyNetwork in which to look for metanodes
+       * @return a List of indices for CyNodes that are metanodes in the given network
+       */
+      public static List getAllMetaNodeIDs (CyNetwork network){
+          CyAttributes netAttributes = Cytoscape.getNetworkAttributes();
+          ArrayList metaNodeIDsForNetwork = (ArrayList)netAttributes.getAttributeList(network.getIdentifier(),MetaNodeFactory.METANODES_IN_NETWORK); 
+          if (metaNodeIDsForNetwork == null) {
+              metaNodeIDsForNetwork = new ArrayList();
+          }
+          return metaNodeIDsForNetwork;
       }
       
 }//MetaNodeUtils

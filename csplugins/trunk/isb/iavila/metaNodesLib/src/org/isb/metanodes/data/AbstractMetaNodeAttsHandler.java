@@ -71,8 +71,8 @@ public class AbstractMetaNodeAttsHandler extends SimpleMetaNodeAttributesHandler
     String uniqueName = createMetaNodeUI(metaNodeRindex);
     String alias = createMetaNodeAlias(cy_net,metaNodeRindex);
     node.setIdentifier(uniqueName);
-    Cytoscape.getNodeAttributes().setAttribute(node.getIdentifier(), Semantics.CANONICAL_NAME,uniqueName);
-    Cytoscape.getNodeAttributes().setAttribute(node.getIdentifier(), Semantics.COMMON_NAME,alias);
+    // Cytoscape.getNodeAttributes().setAttribute(node.getIdentifier(), Semantics.CANONICAL_NAME,uniqueName);
+    // Cytoscape.getNodeAttributes().setAttribute(node.getIdentifier(), Semantics.COMMON_NAME,alias);
     
     if(DEBUG){
       System.err.println("meta-node " + metaNodeRindex + " canonical name = " + uniqueName 
@@ -98,11 +98,7 @@ public class AbstractMetaNodeAttsHandler extends SimpleMetaNodeAttributesHandler
   	}
     SortedSet sortedNodes = IntraDegreeComparator.sortNodes(cy_net, children);
     CyNode highestNode = (CyNode)sortedNodes.first();
-    String alias = Cytoscape.getNodeAttributes().getStringAttribute(highestNode.getIdentifier(), Semantics.COMMON_NAME);
-    if(alias == null){
-      alias = Cytoscape.getNodeAttributes().getStringAttribute(highestNode.getIdentifier(), Semantics.CANONICAL_NAME);
-    }
-    return alias;
+    return highestNode.getIdentifier();
   }//createMetaNodeAlias
   
   /**

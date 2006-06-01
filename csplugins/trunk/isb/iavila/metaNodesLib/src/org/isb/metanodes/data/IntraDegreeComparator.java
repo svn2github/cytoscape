@@ -74,8 +74,8 @@ public class IntraDegreeComparator implements Comparator{
         if(object1 instanceof CyNode && object2 instanceof CyNode){
 			node1 = (CyNode)object1;
 			node2 = (CyNode)object2;
-			canonical1 = nodeAtts.getStringAttribute(node1.getIdentifier(),Semantics.CANONICAL_NAME);
-			canonical2 = nodeAtts.getStringAttribute(node2.getIdentifier(),Semantics.CANONICAL_NAME);
+			canonical1 = node1.getIdentifier();
+			canonical2 = node2.getIdentifier();
 			rindex1 = rootGraph.getIndex(node1);
 			rindex2 = rootGraph.getIndex(node2);
 			if(rindex1 == rindex2){
@@ -111,11 +111,7 @@ public class IntraDegreeComparator implements Comparator{
 			node1MType = (String)o1;
 			node2MType = (String)o2;
 			if(node1MType.equals("metabolite") && node2MType.equals("protein")){
-				String commonName = null ;
-				Object cn =  nodeAtts.getStringAttribute(node2.getIdentifier(),Semantics.COMMON_NAME);
-				if(cn != null){
-					commonName = (String)cn;
-				}
+				String commonName =  node2.getIdentifier();
 				if( commonName != null && !commonName.equals(canonical2) ){
 					// the second node is a protein and has a common name, so it wins
 					return 1;
@@ -124,11 +120,7 @@ public class IntraDegreeComparator implements Comparator{
 					return -1;
 				}
 			}else if(node1MType.equals("protein") && node2MType.equals("metabolite")){
-				String commonName = null;
-				Object cn =  nodeAtts.getStringAttribute(node1.getIdentifier(),Semantics.COMMON_NAME);
-				if(cn != null){
-					commonName = (String)cn;
-				}
+				String commonName =  node1.getIdentifier();
 				if( commonName != null && !commonName.equals(canonical1) ){
 					// the first node is a protein and has a common name, so it wins
 					return -1;
@@ -166,8 +158,8 @@ public class IntraDegreeComparator implements Comparator{
 		// The overall degrees are the same
 		// Fourth tie breaker: which one has a common name (it is not the case that 
 		// one is a protein and the other one a metabolite)
-		String commonName1 = nodeAtts.getStringAttribute(node1.getIdentifier(),Semantics.COMMON_NAME);
-		String commonName2 = nodeAtts.getStringAttribute(node2.getIdentifier(),Semantics.COMMON_NAME);
+		String commonName1 = node1.getIdentifier();
+		String commonName2 = node2.getIdentifier();
 		
 		boolean firstIsCommonName = (commonName1 != null && !commonName1.equals(canonical1));
 		boolean secondIsCommonName = (commonName2 != null && !commonName2.equals(canonical2));

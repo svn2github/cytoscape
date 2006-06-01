@@ -57,8 +57,7 @@ public class VisualStyleFactory {
    */
   public static VisualStyle createAbstractMetaNodeVisualStyle (CyNetwork network){
     
-    CytoscapeDesktop cyDesktop = Cytoscape.getDesktop();
-    VisualMappingManager vmManager = cyDesktop.getVizMapManager();
+    VisualMappingManager vmManager = Cytoscape.getVisualMappingManager();
     NodeAppearanceCalculator nodeAppCalc = new NodeAppearanceCalculator();
     EdgeAppearanceCalculator edgeAppCalc = new EdgeAppearanceCalculator();
     CalculatorCatalog calculatorCatalog = vmManager.getCalculatorCatalog();
