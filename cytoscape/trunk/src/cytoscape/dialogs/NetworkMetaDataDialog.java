@@ -6,16 +6,17 @@
 
 package cytoscape.dialogs;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Vector;
 
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
-import javax.swing.table.DefaultTableColumnModel;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 import javax.xml.bind.JAXBException;
 
 import cytoscape.CyNetwork;
@@ -33,9 +34,13 @@ import cytoscape.generated2.Title;
 import cytoscape.generated2.Type;
 
 /**
- * Dialog to display Network Metadata attribute.
+ * Dialog for editing network metadata in RDF<br>
  * 
+ * @version 1.0
+ * @since 2.3
+ * @see cytoscape.dialogs.NetworkMetaDataTableModel
  * @author kono
+ *
  */
 public class NetworkMetaDataDialog extends javax.swing.JDialog implements
 		TableModelListener {
@@ -50,15 +55,24 @@ public class NetworkMetaDataDialog extends javax.swing.JDialog implements
 	private CyNetwork network;
 	String description;
 
-	/** Creates new form MetadataDialog */
+	/**
+	 * Creates new form MetadataDialog
+	 * 
+	 * @throws URISyntaxException
+	 */
 	public NetworkMetaDataDialog(java.awt.Frame parent, boolean modal,
 			CyNetwork network) {
 		super(parent, modal);
 		this.network = network;
 		metaTM = new NetworkMetaDataTableModel(network);
-		metaTM.setTableData();
+		try {
+			metaTM.setTable();
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		description = metaTM.getDescription();
-		
+
 		initComponents();
 	}
 
@@ -70,20 +84,21 @@ public class NetworkMetaDataDialog extends javax.swing.JDialog implements
 	// <editor-fold defaultstate="collapsed" desc=" Generated Code ">
 	private void initComponents() {
 
+		Font titleFont = new Font("SansSerif", Font.BOLD, 14);
+
 		this.setTitle("Network Metadata Editor");
 
 		okButton = new javax.swing.JButton();
 		cancelButton = new javax.swing.JButton();
 		jPanel1 = new javax.swing.JPanel();
 		titleLabel = new javax.swing.JLabel();
-		jSplitPane1 = new javax.swing.JSplitPane();
-		jScrollPane1 = new javax.swing.JScrollPane();
-		jTable1 = new javax.swing.JTable();
-		jScrollPane2 = new javax.swing.JScrollPane();
-		descriptionEditorPane = new javax.swing.JEditorPane();
+		mainSplitPane = new javax.swing.JSplitPane();
+		metadataTableScrollPane = new javax.swing.JScrollPane();
+		descriptionScrollPane = new javax.swing.JScrollPane();
+		descriptionTextArea = new javax.swing.JTextArea();
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-		okButton.setText("OK");
+		okButton.setText("Update");
 		okButton.addMouseListener(new java.awt.event.MouseAdapter() {
 			public void mouseClicked(java.awt.event.MouseEvent evt) {
 				okButtonMouseClicked(evt);
@@ -93,11 +108,13 @@ public class NetworkMetaDataDialog extends javax.swing.JDialog implements
 		cancelButton.setText("Cancel");
 		cancelButton.addMouseListener(new java.awt.event.MouseAdapter() {
 			public void mouseClicked(java.awt.event.MouseEvent evt) {
-				jButton2MouseClicked(evt);
+				cancelButtonMouseClicked(evt);
 			}
 		});
 
-		titleLabel.setText("Network Meta Data for " + network.getTitle());
+		titleLabel.setText("Network Metadata for " + network.getTitle());
+		titleLabel.setFont(titleFont);
+		titleLabel.setForeground(Color.BLUE);
 
 		org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(
 				jPanel1);
@@ -106,30 +123,38 @@ public class NetworkMetaDataDialog extends javax.swing.JDialog implements
 				org.jdesktop.layout.GroupLayout.LEADING).add(
 				jPanel1Layout.createSequentialGroup().addContainerGap().add(
 						titleLabel,
-						org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 220,
+						org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 500,
 						org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-						.addContainerGap(190, Short.MAX_VALUE)));
+						.addContainerGap(5, Short.MAX_VALUE)));
 		jPanel1Layout.setVerticalGroup(jPanel1Layout.createParallelGroup(
 				org.jdesktop.layout.GroupLayout.LEADING).add(
 				jPanel1Layout.createSequentialGroup().addContainerGap(
 						org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 						Short.MAX_VALUE).add(titleLabel)));
 
-		jSplitPane1.setDividerLocation(120);
-		jSplitPane1.setDividerSize(5);
-		jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+		mainSplitPane.setDividerLocation(120);
+		mainSplitPane.setDividerSize(5);
+		mainSplitPane.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
 
-		jScrollPane1.setViewportView(getMetadataTable());
+		metadataTableScrollPane.setViewportView(getMetadataTable());
 
-		jSplitPane1.setTopComponent(jScrollPane1);
+		mainSplitPane.setTopComponent(metadataTableScrollPane);
 
-		jScrollPane2.setBorder(null);
-		descriptionEditorPane.setBorder(javax.swing.BorderFactory
+		descriptionScrollPane.setBorder(null);
+		descriptionScrollPane.setBorder(javax.swing.BorderFactory
 				.createTitledBorder("Description"));
-		descriptionEditorPane.setText(description);
-		jScrollPane2.setViewportView(descriptionEditorPane);
 
-		jSplitPane1.setRightComponent(jScrollPane2);
+		descriptionTextArea.setText(description);
+		descriptionTextArea.setLineWrap(true);
+		descriptionTextArea.setWrapStyleWord(false);
+		descriptionTextArea.setTabSize(4);
+		descriptionTextArea.setEditable(true);
+
+		descriptionScrollPane.setViewportView(descriptionTextArea);
+		descriptionScrollPane
+				.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
+		mainSplitPane.setRightComponent(descriptionScrollPane);
 
 		org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(
 				getContentPane());
@@ -143,8 +168,9 @@ public class NetworkMetaDataDialog extends javax.swing.JDialog implements
 						cancelButton).addContainerGap()).add(jPanel1,
 				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-				.add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-						343, Short.MAX_VALUE));
+				.add(mainSplitPane,
+						org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 343,
+						Short.MAX_VALUE));
 		layout
 				.setVerticalGroup(layout
 						.createParallelGroup(
@@ -160,7 +186,7 @@ public class NetworkMetaDataDialog extends javax.swing.JDialog implements
 										.addPreferredGap(
 												org.jdesktop.layout.LayoutStyle.RELATED)
 										.add(
-												jSplitPane1,
+												mainSplitPane,
 												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 												339, Short.MAX_VALUE)
 										.addPreferredGap(
@@ -175,7 +201,7 @@ public class NetworkMetaDataDialog extends javax.swing.JDialog implements
 		pack();
 	}// </editor-fold>
 
-	private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {
+	private void cancelButtonMouseClicked(java.awt.event.MouseEvent evt) {
 		// TODO add your handling code here:
 		this.dispose();
 	}
@@ -192,10 +218,8 @@ public class NetworkMetaDataDialog extends javax.swing.JDialog implements
 		this.dispose();
 	}
 
-	
 	private void update() throws JAXBException {
 
-		// JAXBContext jc = JAXBContext.newInstance(XGMML_PACKAGE);
 		ObjectFactory objFactory = new ObjectFactory();
 		RdfRDF metadata = objFactory.createRdfRDF();
 		RdfDescription dc = objFactory.createRdfDescription();
@@ -221,18 +245,11 @@ public class NetworkMetaDataDialog extends javax.swing.JDialog implements
 
 		}
 
-		dc.getDcmes().add(set("Description", descriptionEditorPane.getText()));
-		rdfMap.put("Description", descriptionEditorPane.getText());
+		dc.getDcmes().add(set("Description", descriptionTextArea.getText()));
+		rdfMap.put("Description", descriptionTextArea.getText());
 		metadata.getDescription().add(dc);
 		// network.putClientData("RDF", metadata);
 
-		Iterator test = rdfMap.keySet().iterator();
-		while (test.hasNext()) {
-			Object a = test.next();
-			// if(a!=null)
-			// System.out.println("Key = " + a.toString() +", " +
-			// rdfMap.get(a).toString());
-		}
 		networkAttr.setAttributeMap(network.getIdentifier(),
 				METADATA_ATTR_NAME, rdfMap);
 	}
@@ -277,14 +294,7 @@ public class NetworkMetaDataDialog extends javax.swing.JDialog implements
 			metaTM.addTableModelListener(new metadataTableListener());
 
 			metadataTable = new JTable(metaTM);
-
 			metadataTable.setRowSelectionAllowed(true);
-			metadataTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-
-			TableColumnModel colModel = (DefaultTableColumnModel) metadataTable
-					.getColumnModel();
-			TableColumn col = colModel.getColumn(0);
-			col.setPreferredWidth(20);
 		}
 
 		return metadataTable;
@@ -304,31 +314,20 @@ public class NetworkMetaDataDialog extends javax.swing.JDialog implements
 	class metadataTableListener implements TableModelListener {
 
 		public void tableChanged(TableModelEvent arg0) {
-			// TODO Auto-generated method stub
 
-			int row = arg0.getFirstRow();
-			int col = arg0.getColumn();
-
-			System.out.println("Value changed!!!!!:  " + arg0.getType() + "   "
-					+ row + ", " + col);
-			if (col >= 0 && row >= 0) {
-				System.out.println("Value = " + metaTM.getValueAt(row, col));
-			}
 		}
-
 	}
 
 	// Variables declaration - do not modify
 	private javax.swing.JButton okButton;
 	private javax.swing.JButton cancelButton;
-	private javax.swing.JEditorPane descriptionEditorPane;
+	private javax.swing.JTextArea descriptionTextArea;
 	private javax.swing.JLabel titleLabel;
 	private javax.swing.JPanel jPanel1;
-	private javax.swing.JScrollPane jScrollPane1;
-	private javax.swing.JScrollPane jScrollPane2;
-	private javax.swing.JSplitPane jSplitPane1;
-	private javax.swing.JTable jTable1;
-	private JTable metadataTable = null;
+	private javax.swing.JScrollPane metadataTableScrollPane;
+	private javax.swing.JScrollPane descriptionScrollPane;
+	private javax.swing.JSplitPane mainSplitPane;
+	private JTable metadataTable;
 	// End of variables declaration
 
 }
