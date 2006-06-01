@@ -185,6 +185,19 @@ public final class Fung
     m_canvas.repaint();
   }
 
+  /**
+   * Places all selected nodes onto the stack specified.
+   */
+  public final void getSelectedNodes(final IntStack returnVal)
+  {
+    synchronized (m_lock) {
+      final IntEnumerator selectedNodes = m_selectedNodes.searchRange
+        (Integer.MIN_VALUE, Integer.MAX_VALUE, false);
+      final int count = selectedNodes.numRemaining();
+      for (int i = 0; i < count; i++) {
+        returnVal.push(selectedNodes.nextInt()); } }
+  }
+
   public final void getNodesIntersectingRectangle(
                                       final Rectangle2D queryRect,
                                       final boolean treatNodeShapesAsRectangle,
