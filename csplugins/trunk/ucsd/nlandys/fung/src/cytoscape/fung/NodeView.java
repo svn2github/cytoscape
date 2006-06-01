@@ -4,7 +4,6 @@ import cytoscape.render.immed.GraphGraphics;
 import java.awt.Color;
 import java.awt.Paint;
 import java.awt.geom.Dimension2D;
-import java.awt.geom.Point2D;
 import java.util.Vector;
 
 public final class NodeView
@@ -40,13 +39,19 @@ public final class NodeView
     return m_node;
   }
 
-  public final void getLocation(final double[] p)
+  public final double getXPosition()
   {
     synchronized (m_fung.m_lock) {
       m_fung.m_rtree.exists(m_node, m_fung.m_extentsBuff, 0);
-      p[0] = (((double) m_fung.m_extentsBuff[0]) +
-              m_fung.m_extentsBuff[2]) / 2.0d;
-      p[1] = (((double) m_fung.m_extentsBuff[1]) +
+      return (((double) m_fung.m_extentsBuff[0]) +
+              m_fung.m_extentsBuff[2]) / 2.0d; }
+  }
+
+  public final double getYPosition()
+  {
+    synchronized (m_fung.m_lock) {
+      m_fung.m_rtree.exists(m_node, m_fung.m_extentsBuff, 0);
+      return (((double) m_fung.m_extentsBuff[1]) +
               m_fung.m_extentsBuff[3]) / 2.0d; }
   }
 
@@ -75,14 +80,18 @@ public final class NodeView
       m_fung.m_rtree.insert(m_node, xMin, yMin, xMax, yMax); }
   }
 
-  /**
-   */
-  public final void getSize(final double[] d)
+  public final double getWidth()
   {
     synchronized (m_fung.m_lock) {
       m_fung.m_rtree.exists(m_node, m_fung.m_extentsBuff, 0);
-      d[0] = ((double) m_fung.m_extentsBuff[2]) - m_fung.m_extentsBuff[0];
-      d[1] = ((double) m_fung.m_extentsBuff[3]) - m_fung.m_extentsBuff[1]; }
+      return ((double) m_fung.m_extentsBuff[2]) - m_fung.m_extentsBuff[0]; }
+  }
+
+  public final double getHeight()
+  {
+    synchronized (m_fung.m_lock) {
+      m_fung.m_rtree.exists(m_node, m_fung.m_extentsBuff, 0);
+      return ((double) m_fung.m_extentsBuff[3]) - m_fung.m_extentsBuff[1]; }
   }
 
   public final void setSize(final double width, final double height)
@@ -158,10 +167,9 @@ public final class NodeView
         throw new IllegalArgumentException("shape is not recognized"); }
       { // Reconcile node shape if rounded rectangle.
         if (shape == SHAPE_ROUNDED_RECTANGLE) {
-          getSize(m_fung.m_doubleBuff);
-          if (!(Math.max(m_fung.m_doubleBuff[0], m_fung.m_doubleBuff[1]) <
-                2.0d * Math.min(m_fung.m_doubleBuff[0],
-                                m_fung.m_doubleBuff[1]))) {
+          final double w = getWidth();
+          final double h = getHeight();
+          if (!(Math.max(w, h) < 2.0d * Math.min(w, h))) {
             shape = SHAPE_RECTANGLE; } }
       }
       m_fung.m_nodeDetails.overrideShape(m_node, shape); }
@@ -214,9 +222,9 @@ public final class NodeView
         throw new IllegalArgumentException
           ("borderWidth must be positive or zero"); }
       { // Reconcile border width with size.
-        getSize(m_fung.m_doubleBuff);
-        final double borderWidthConstraint =
-          Math.min(m_fung.m_doubleBuff[0], m_fung.m_doubleBuff[1]) / 6.0d;
+        final double w = getWidth();
+        final double h = getHeight();
+        final double borderWidthConstraint = Math.min(w, h) / 6.0d;
         if (borderWidthConstraint < (double) fBorderWidth) {
           fBorderWidth = (float) borderWidthConstraint; }
       }

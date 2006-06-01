@@ -20,7 +20,6 @@ public final class Fung
 
   final Object m_lock = new Object();
   final float[] m_extentsBuff = new float[4];
-  final double[] m_doubleBuff = new double[2];
   final GeneralPath m_path = new GeneralPath();
   final FungDynamicGraph m_graphModel = new FungDynamicGraph();
   final RTree m_rtree = new RTree();
