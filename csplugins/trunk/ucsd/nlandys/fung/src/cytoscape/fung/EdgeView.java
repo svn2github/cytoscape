@@ -281,7 +281,7 @@ public final class EdgeView
       return ((Vector) v).size(); }
   }
 
-  public final void getAnchor(final int inx, final double[] p)
+  public final double getAnchorXPosition(final int inx)
   {
     synchronized (m_fung.m_lock) {
       final Vector v =
@@ -289,7 +289,18 @@ public final class EdgeView
       if (v == null) {
         throw new IndexOutOfBoundsException("no anchors set on this edge"); }
       final Point2D pt = (Point2D) v.get(inx);
-      p[0] = pt.getX(); p[1] = pt.getY(); }
+      return pt.getX(); }
+  }
+
+  public final double getAnchorYPosition(final int inx)
+  {
+    synchronized (m_fung.m_lock) {
+      final Vector v =
+        (Vector) m_fung.m_edgeDetails.m_anchors.get(new Integer(m_edge));
+      if (v == null) {
+        throw new IndexOutOfBoundsException("no anchors set on this edge"); }
+      final Point2D pt = (Point2D) v.get(inx);
+      return pt.getY(); }
   }
 
   public final void addAnchor(final int inx, final double x, final double y)
