@@ -541,26 +541,54 @@ class DNodeView implements NodeView, Label
 
   // Custom graphics stuff.
 
+  /**
+   * Returns the number of custom graphic objects currently set on this
+   * node view.
+   */
   public int getCustomGraphicCount()
   {
     return 0;
   }
 
-  public Shape getCustomGraphicShape(int inx)
+  /**
+   * Returns the shape of the custom graphic object at specified index on
+   * this node view.  The index parameter must be in the range
+   * [0, getCustomGraphicCount()-1].
+   */
+  public Shape getCustomGraphicShape(int index)
   {
     return null;
   }
 
-  public Paint getCustomGraphicPaint(int inx)
+  /**
+   * Returns the paint on the custom graphic object at specified index on
+   * this node view.  The index parameter must be in the range
+   * [0, getCustomGraphicCount()-1].
+   */
+  public Paint getCustomGraphicPaint(int index)
   {
     return null;
   }
 
-  public void removeCustomGraphic(int inx)
+  /**
+   * Removes the custom graphic object at specified index.  The index parameter
+   * must be in the range [0, getCustomGraphicCount()-1].  Once the object
+   * at specified index is removed, all object remaining and at a higher index
+   * will be shifted such that their index is decreased by one.
+   */
+  public void removeCustomGraphic(int index)
   {
   }
 
-  public void addCustomGraphic(Shape s, Paint p, int inx)
+  /**
+   * Adds a custom graphic object at specified index.  The index of an object
+   * is only important in that objects with lower index are rendered before
+   * objects with higher index; if objects overlap, this order may be important
+   * to consider.  A custom graphic object consists of the specified shape
+   * that is filled with the specified paint; the shape is placed relative to
+   * this node's location.
+   */
+  public void addCustomGraphic(Shape s, Paint p, int index)
   {
     if (inx < 0) { inx = 0; }
     else if (inx > getCustomGraphicCount() - 1) {
