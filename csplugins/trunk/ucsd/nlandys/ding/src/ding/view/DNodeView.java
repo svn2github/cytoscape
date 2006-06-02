@@ -11,6 +11,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Paint;
+import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
@@ -536,6 +537,34 @@ class DNodeView implements NodeView, Label
     synchronized (m_view.m_lock) {
       m_view.m_nodeDetails.overrideLabelFont(m_inx, 0, font);
       m_view.m_contentChanged = true; }
+  }
+
+  // Custom graphics stuff.
+
+  public int getCustomGraphicCount()
+  {
+    return 0;
+  }
+
+  public Shape getCustomGraphicShape(int inx)
+  {
+    return null;
+  }
+
+  public Paint getCustomGraphicPaint(int inx)
+  {
+    return null;
+  }
+
+  public void removeCustomGraphic(int inx)
+  {
+  }
+
+  public void addCustomGraphic(Shape s, Paint p, int inx)
+  {
+    if (inx < 0) { inx = 0; }
+    else if (inx > getCustomGraphicCount() - 1) {
+      inx = getCustomGraphicCount() - 1; }
   }
 
 }
