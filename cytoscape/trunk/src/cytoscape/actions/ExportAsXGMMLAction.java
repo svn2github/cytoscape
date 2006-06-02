@@ -42,6 +42,7 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Set;
 
 import javax.swing.JOptionPane;
@@ -182,12 +183,8 @@ class ExportAsXGMMLTask implements Task {
 
 		try {
 			saveGraph();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JAXBException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (Exception e) {
+			taskMonitor.setException(e, "Cannot export graph as XGMML.");
 		}
 
 		taskMonitor.setPercentCompleted(100);
@@ -232,8 +229,9 @@ class ExportAsXGMMLTask implements Task {
 	 * 
 	 * @throws IOException
 	 * @throws JAXBException
+	 * @throws URISyntaxException 
 	 */
-	private void saveGraph() throws IOException, JAXBException {
+	private void saveGraph() throws IOException, JAXBException, URISyntaxException {
 
 		FileWriter fileWriter = new FileWriter(fileName);
 		XGMMLWriter writer = new XGMMLWriter(network, view);
