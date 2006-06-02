@@ -97,7 +97,7 @@ public class SaveSessionAsAction extends CytoscapeAction {
 		JTaskConfig jTaskConfig = new JTaskConfig();
 		jTaskConfig.setOwner(Cytoscape.getDesktop());
 		jTaskConfig.displayCloseButton(true);
-		jTaskConfig.displayCancelButton(true);
+		jTaskConfig.displayCancelButton(false);
 		jTaskConfig.displayStatus(true);
 		jTaskConfig.setAutoDispose(false);
 
