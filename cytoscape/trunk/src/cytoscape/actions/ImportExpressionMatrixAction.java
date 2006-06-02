@@ -67,7 +67,7 @@ public class ImportExpressionMatrixAction extends CytoscapeAction {
 	 * Constructor.
 	 */
 	public ImportExpressionMatrixAction() {
-		super("Attribute Matrix...");
+		super("Attribute/Expression Matrix...");
 		setPreferredMenu("File.Import");
 		setAcceleratorCombo(KeyEvent.VK_E, ActionEvent.CTRL_MASK);
 		setName("load");
@@ -95,12 +95,13 @@ public class ImportExpressionMatrixAction extends CytoscapeAction {
 		}
 
 		String filename = amd.getFilename();
-		if (filename == null) {
+		String keyAttributeName = amd.getKeyAttributeName();
+		if (filename == null || keyAttributeName == null) {
 		    return;
 		} else {
 
 		    // Create the LoadExpressionTask
-		    ImportExpressionDataTask task = new ImportExpressionDataTask(filename);
+		    ImportExpressionDataTask task = new ImportExpressionDataTask(filename, keyAttributeName);
 		    JTaskConfig jTaskConfig = new JTaskConfig();
 		    jTaskConfig.setOwner(Cytoscape.getDesktop());
 		    jTaskConfig.displayCloseButton(true);
@@ -119,6 +120,7 @@ public class ImportExpressionMatrixAction extends CytoscapeAction {
 class ImportExpressionDataTask implements Task {
 	private TaskMonitor taskMonitor;
 	private String filename;
+        private String keyAttributeName;
 
 	/**
 	 * Constructor.
@@ -126,8 +128,9 @@ class ImportExpressionDataTask implements Task {
 	 * @param fileName
 	 *            File name containing expression data.
 	 */
-	public ImportExpressionDataTask(String filename) {
+	public ImportExpressionDataTask(String filename, String keyAttributeName) {
 		this.filename = filename;
+		this.keyAttributeName = keyAttributeName;
 	}
 
 	/**
@@ -138,12 +141,14 @@ class ImportExpressionDataTask implements Task {
 		try {
 			// Read in Expression Data File
 			ExpressionData expressionData = new ExpressionData(filename,
-					taskMonitor);
+									   keyAttributeName,
+									   taskMonitor);
 			Cytoscape.setExpressionData(expressionData);
 
 			// Copy Expression Data to Attributes
-			taskMonitor.setStatus("Mapping Expression Data to "
-					+ "Node Attributes...");
+			taskMonitor.setStatus("Mapping Expression Data to"
+					+ " Nodes according to "
+					+ keyAttributeName);
 			expressionData.copyToAttribs(Cytoscape.getNodeAttributes(),
 					taskMonitor);
 			Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null,

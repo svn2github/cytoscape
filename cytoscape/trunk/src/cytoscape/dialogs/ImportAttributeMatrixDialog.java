@@ -6,30 +6,31 @@
 
 package cytoscape.dialogs;
 
-import java.awt.BorderLayout;
-import java.awt.GridBagConstraints;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
-import java.util.Collection;
 import java.util.Iterator;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
-import javax.swing.JPanel;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import cytoscape.Cytoscape;
-import cytoscape.data.Semantics;
-import cytoscape.dialogs.GridBagGroup;
-import cytoscape.dialogs.MiscGB;
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.FileUtil;
 
 /**
  * 
- * @author kono
+ * This class prompts the user for data for entry of the attribute matrix, 
+ * which includes expression data as a use case.  The user supplies two
+ * things: a filename, and a "key attribute name".  This key attribute
+ * establishes the correspondence between nodes in the network and data
+ * in the attribute matrix.  For example, when inputting expression data, 
+ * the data might be listed by probe set.  The user might enter a "probe set"
+ * attribute for relating the expression data to nodes on the graph.
+ *
+ * The key attribute name defaults to "ID".
+ *
+ * @author cline
  */
 public class ImportAttributeMatrixDialog extends javax.swing.JDialog {
 
@@ -42,8 +43,7 @@ public class ImportAttributeMatrixDialog extends javax.swing.JDialog {
 
     protected class KeyAttributeListener implements ItemListener {
 	public void itemStateChanged(ItemEvent event) {
-	    // currentKeyAttributeName = (String) keyAttributeBox.getSelectedItem();
-	    System.out.println("Point 1, attr now " + keyAttributeBox.getSelectedItem());
+	    currentKeyAttributeName = (String) keyAttributeBox.getSelectedItem();
 	}
     }
 
@@ -76,7 +76,7 @@ public class ImportAttributeMatrixDialog extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">
     private void initComponents() {
         
-        this.setTitle("Import an AttributeMatrix");
+        this.setTitle("Import an Attribute/Expression Matrix");
         
         titleLabel = new javax.swing.JLabel();
         attributeMatrixFileNameTextField = new javax.swing.JTextField();
@@ -87,11 +87,11 @@ public class ImportAttributeMatrixDialog extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         titleLabel.setFont(new java.awt.Font("Dialog", 1, 14));
-        titleLabel.setText("Import AttributeMatrix File");
+        titleLabel.setText("Import Attribute/Expression Matrix File");
 
-        attributeMatrixFileNameTextField.setText("Please select an attribute matrix file...");
+        attributeMatrixFileNameTextField.setText("Please select an attribute or expression matrix file...");
 	attributeSelectionSliderLabel = new javax.swing.JLabel();
-	attributeSelectionSliderLabel.setText("Map attribute matrix values to nodes using...");
+	attributeSelectionSliderLabel.setText("Assign values to nodes using...");
 
         selectAttributeMatrixFileButton.setText("Select");
         selectAttributeMatrixFileButton
@@ -114,6 +114,7 @@ public class ImportAttributeMatrixDialog extends javax.swing.JDialog {
                 importButtonActionPerformed(evt);
             }
         });
+	importButton.setEnabled(false);
 
 	keyAttributeBox = new JComboBox(keyAttributeModel);
 	keyAttributeBox.setBounds(10, 75, 260, 20);
@@ -267,6 +268,7 @@ public class ImportAttributeMatrixDialog extends javax.swing.JDialog {
         if(file != null) {
             attributeMatrixFileNameTextField.setText(file.getAbsolutePath());
             attributeMatrixFileNameTextField.setToolTipText(file.getAbsolutePath());
+	    importButton.setEnabled(true);
         } 
     }
 

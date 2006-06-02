@@ -55,6 +55,8 @@ import cytoscape.util.FileUtil;
 
 import java.io.*;
 import java.util.*;
+import cytoscape.Cytoscape;
+import cytoscape.CyNode;
 
 //--------------------------------------------------------------------
 
@@ -140,7 +142,17 @@ public class ExpressionData implements Serializable {
      */
     public static final int UNKNOWN = 3;
 
+    private static final String DEFAULT_KEY_ATTRIBUTE = "ID";
+
     protected int significanceType = 3;
+
+    /*
+     * the key attribute name is the attribute by which the expression data is 
+     * matched to the node name.  For instance, this might be a commercial
+     * probe set ID.
+     */
+    String keyAttributeName = DEFAULT_KEY_ATTRIBUTE;
+    private boolean mappingByAttribute = false;
 
     String filename;
     int numGenes;
@@ -164,6 +176,7 @@ public class ExpressionData implements Serializable {
      */
     public ExpressionData() {
         filename = null;
+	keyAttributeName = DEFAULT_KEY_ATTRIBUTE;
         numGenes = 0;
         numConds = 0;
         extraTokens = 0;
@@ -184,9 +197,25 @@ public class ExpressionData implements Serializable {
         extraTokens = 0;
         haveSigValues = false;
         this.initDataStructures();
-        this.loadData(filename);
+        this.loadData(filename, DEFAULT_KEY_ATTRIBUTE);
     }
 
+
+    /**
+     * Constructor. Loads the specified filename into memory.
+     *
+     * @param filename Name of Expression Data File.
+     * @throws IOException Error opening/parsing the expression data file.
+     */
+    public ExpressionData(String filename, String keyAttributeName) throws IOException {
+        this.filename = null;
+        numGenes = 0;
+        numConds = 0;
+        extraTokens = 0;
+        haveSigValues = false;
+        this.initDataStructures();
+        this.loadData(filename, keyAttributeName);
+    }
     /**
      * Constructor. Loads the specified file into memory, and reports its
      * progress to the specified TaskMonitor Object. This option is useful for
@@ -197,7 +226,7 @@ public class ExpressionData implements Serializable {
      * @param taskMonitor TaskMonitor for reporting/monitoring progress.
      * @throws IOException Error opening/parsing the expression data file.
      */
-    public ExpressionData(String filename, TaskMonitor taskMonitor)
+    public ExpressionData(String filename, String keyAttributeName, TaskMonitor taskMonitor)
             throws IOException {
         this.taskMonitor = taskMonitor;
         this.filename = null;
@@ -206,7 +235,7 @@ public class ExpressionData implements Serializable {
         extraTokens = 0;
         haveSigValues = false;
         this.initDataStructures();
-        this.loadData(filename);
+        this.loadData(filename, keyAttributeName);
     }
 
     /**
@@ -270,120 +299,6 @@ public class ExpressionData implements Serializable {
         allMeasurements = new Vector(0, expand);
     }
 
-    public boolean oldLoadData(String filename) throws IOException {
-        if (filename == null) {
-            return false;
-        }
-        BufferedReader input;
-        input = new BufferedReader(new FileReader(filename), MAX_LINE_SIZE);
-
-        String headerLine = this.readOneLine(input);
-        if (isHeaderLineNull(headerLine, input, filename)) {
-            return false;
-        }
-        // added by iliana (iavila@systemsbiology.org) on 11.25.2002
-        if (isHeaderLineMTXHeader(headerLine)) {
-            headerLine = this.readOneLine(input);
-        }
-        boolean expectPvals = doesHeaderLineHaveDuplicates(headerLine);
-        StringTokenizer headerTok = new StringTokenizer(headerLine);
-        int numTokens = headerTok.countTokens();
-        // if we expect p-values, 4 is the minimum number.
-        // if we don't, 3 is the minimum number. Ergo:
-        // either way, we need 3, and if we expectPvals, we need 4.
-        if ((numTokens < 3) || ((numTokens < 4) && expectPvals)) {
-            StringBuffer msg = new StringBuffer();
-            msg.append("Bad header format in data file " + filename);
-            msg.append("\nNumber of tokens parsed: " + numTokens);
-            for (int i = 0; i < numTokens; i++) {
-                msg.append("\nToken " + i + ": " + headerTok.nextToken());
-            }
-            throw new IOException(msg.toString());
-        }
-
-        double tmpF = numTokens / 2.0;
-        int tmpI = (int) Math.rint(tmpF);
-        int numberOfConditions;
-        int haveExtraTokens = 0;
-        if (expectPvals) {
-            if (tmpI == tmpF) {// missing numSigConds field
-                numberOfConditions = (numTokens - 2) / 2;
-                haveExtraTokens = 0;
-            } else {
-                numberOfConditions = (numTokens - 3) / 2;
-                haveExtraTokens = 1;
-            }
-        } else {
-            numberOfConditions = numTokens - 2;
-        }
-
-        /* eat the first two tokens from the header line */
-        headerTok.nextToken();
-        headerTok.nextToken();
-        /* the next numConds tokens are the condition names */
-        Vector cNames = new Vector(numberOfConditions);
-        for (int i = 0; i < numberOfConditions; i++) {
-            cNames.add(headerTok.nextToken());
-        }
-        /*
-         * the next numConds tokens should duplicate the previous list of
-         * condition names
-         */
-        if (expectPvals) {
-            for (int i = 0; i < numberOfConditions; i++) {
-                String title = headerTok.nextToken();
-                if (!(title.equals(cNames.get(i)))) {
-                    StringBuffer msg = new StringBuffer();
-                    msg.append("Expecting both ratios and p-values.\n");
-                    msg.append("Condition name mismatch in header line"
-                            + " of data file " + filename + ": "
-                            + cNames.get(i) + " vs. " + title);
-                    throw new IOException(msg.toString());
-                }
-            }
-        }
-
-        /* OK, we have a reasonable header; clobber all old information */
-        this.filename = filename;
-        this.numConds = numberOfConditions;
-        this.extraTokens = haveExtraTokens;
-        /* wipe old data */
-        initDataStructures();
-        /* store condition names */
-        condNames = cNames;
-        for (int i = 0; i < numConds; i++) {
-            condNameToIndex.put(condNames.get(i), new Integer(i));
-        }
-
-        /* parse rest of file line by line */
-        String oneLine = this.readOneLine(input);
-        int lineCount = 1;
-        while (oneLine != null) {
-            lineCount++;
-            parseOneLine(oneLine, lineCount, expectPvals);
-            oneLine = this.readOneLine(input);
-        }
-
-        /* save numGenes and build hash of gene names to indices */
-        this.numGenes = geneNames.size();
-        for (int i = 0; i < geneNames.size(); i++) {
-            geneNameToIndex.put(geneNames.get(i), new Integer(i));
-        }
-
-        /* trim capacity of data structures for efficiency */
-        geneNames.trimToSize();
-        geneDescripts.trimToSize();
-        allMeasurements.trimToSize();
-
-        /* try to close file */
-        try {
-            input.close();
-        } catch (IOException e) {
-        }
-
-        return true;
-    }// oldLoadData
-
     /**
      * Loads the Specified File into memory.
      *
@@ -391,9 +306,19 @@ public class ExpressionData implements Serializable {
      * @return always returns true, indicating succesful load.
      * @throws IOException Error loading / parsing the Expression Data File.
      */
-    public boolean loadData(String filename) throws IOException {
+    public boolean loadData(String filename, String keyAttributeName) throws IOException {
+
+	Hashtable attributeToId = new Hashtable();
+
         if (filename == null)
             return false;
+
+	boolean mappingByKeyAttribute = false;
+
+	if (!keyAttributeName.equals(DEFAULT_KEY_ATTRIBUTE)) {
+	    mappingByKeyAttribute = true;
+	    attributeToId = getAttributeToIdList(keyAttributeName);
+	}
 
         String rawText = FileUtil.getInputString(filename);
         String[] lines = rawText.split(System.getProperty("line.separator"));
@@ -495,13 +420,15 @@ public class ExpressionData implements Serializable {
                 taskMonitor.setPercentCompleted((int) percentComplete);
             }
 
-            parseOneLine(lines[i], lineCount, expectPvals);
+            parseOneLine(lines[i], lineCount, expectPvals, mappingByKeyAttribute, attributeToId);
         }
 
         /* save numGenes and build hash of gene names to indices */
         this.numGenes = geneNames.size();
         for (int i = 0; i < geneNames.size(); i++) {
-            geneNameToIndex.put(geneNames.get(i), new Integer(i));
+	    if (geneNames.get(i) != null) {
+		geneNameToIndex.put(geneNames.get(i), new Integer(i));
+	    }
         }
 
         /* trim capacity of data structures for efficiency */
@@ -510,6 +437,47 @@ public class ExpressionData implements Serializable {
         allMeasurements.trimToSize();
         return true;
     }
+
+
+    private Object getAttributeValue(byte type, String id, String att) {
+	if (type == CyAttributes.TYPE_INTEGER)
+	    return Cytoscape.getNodeAttributes().getIntegerAttribute(id, att);
+	else if (type == CyAttributes.TYPE_FLOATING)
+	    return Cytoscape.getNodeAttributes().getDoubleAttribute(id, att);
+	else if (type == CyAttributes.TYPE_BOOLEAN)
+	    return Cytoscape.getNodeAttributes().getBooleanAttribute(id, att);
+	else if (type == CyAttributes.TYPE_STRING)
+	    return Cytoscape.getNodeAttributes().getStringAttribute(id, att);
+	else if (type == CyAttributes.TYPE_SIMPLE_LIST)
+	    return Cytoscape.getNodeAttributes().getAttributeList(id, att);
+	else if (type == CyAttributes.TYPE_SIMPLE_MAP)
+	    return Cytoscape.getNodeAttributes().getAttributeMap(id, att);
+	return null;
+    }
+
+
+    private Hashtable getAttributeToIdList(String keyAttributeName) {
+
+	Hashtable attributeToIdList = new Hashtable();
+	List allNodes = Cytoscape.getCyNodesList();
+	byte attributeType = Cytoscape.getNodeAttributes().getType(keyAttributeName);
+	for (Iterator ii = allNodes.iterator(); ii.hasNext(); ) {
+	    CyNode node = (CyNode) ii.next();
+	    String nodeName = node.getIdentifier();
+	    Object attrValue = getAttributeValue(attributeType, nodeName, 
+						 keyAttributeName);
+	    if (attrValue != null) {
+		String attributeValue = getAttributeValue(attributeType, 
+						      nodeName, 
+						      keyAttributeName).toString();
+		if (attributeValue != null) {
+		    attributeToIdList.put(attributeValue, nodeName);
+		}
+	    }
+	}
+	return(attributeToIdList);
+    }
+
 
     private boolean doesHeaderLineHaveDuplicates(String hline) {
         boolean retval = false;
@@ -566,7 +534,8 @@ public class ExpressionData implements Serializable {
         return s;
     }
 
-    private void parseOneLine(String oneLine, int lineCount, boolean sig_vals)
+    private void parseOneLine(String oneLine, int lineCount, boolean sig_vals, 
+			      boolean mappingByAttribute, Hashtable attributeToId)
             throws IOException {
         StringTokenizer strtok = new StringTokenizer(oneLine);
         int numTokens = strtok.countTokens();
@@ -574,9 +543,9 @@ public class ExpressionData implements Serializable {
         if (numTokens == 0) {
             return;
         }
-        /* first token is gene name, or NumSigGenes */
-        String gName = strtok.nextToken();
-        if (gName.startsWith("NumSigGenes")) {
+        /* first token is gene name (or identifying attribute), or NumSigGenes */
+        String firstToken = strtok.nextToken();
+        if (firstToken.startsWith("NumSigGenes")) {
             return;
         }
 
@@ -585,6 +554,13 @@ public class ExpressionData implements Serializable {
             throw new IOException("Warning: parse error on line " + lineCount
                     + "  tokens read: " + numTokens);
         }
+
+	String gName;
+	if (mappingByAttribute) {
+	    gName = (String) attributeToId.get(firstToken);
+	} else {
+	    gName = firstToken;
+	}
 
         geneNames.add(gName);
         /* store descriptor token */
@@ -607,9 +583,6 @@ public class ExpressionData implements Serializable {
 
         Vector measurements = new Vector(numConds);
         for (int i = 0; i < numConds; i++) {
-
-            // System.out.println("*****EXP = " + expData[i] + "Sig = " +
-            // sigData[i] );
 
             mRNAMeasurement m = new mRNAMeasurement(expData[i], sigData[i]);
             measurements.add(m);
@@ -897,6 +870,9 @@ public class ExpressionData implements Serializable {
      * @return Vector of mRNAMeasurement Objects.
      */
     public Vector getMeasurements(String gene) {
+	if (gene == null) {
+	    return null;
+	}
         Integer geneIndex = (Integer) geneNameToIndex.get(gene);
         if (geneIndex == null) {
             return null;
