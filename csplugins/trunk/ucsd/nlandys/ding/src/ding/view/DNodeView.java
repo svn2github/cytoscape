@@ -37,8 +37,8 @@ class DNodeView implements NodeView, Label
   float m_hiddenYMin;
   float m_hiddenXMax;
   float m_hiddenYMax;
-//   ArrayList m_graphicShapes;
-//   ArrayList m_graphicPaints;
+  ArrayList m_graphicShapes;
+  ArrayList m_graphicPaints;
 
   // AJK: 04/26/06 for tooltip
   String m_toolTipText = null;
@@ -53,6 +53,8 @@ class DNodeView implements NodeView, Label
     m_selected = false;
     m_unselectedPaint = m_view.m_nodeDetails.fillPaint(m_inx);
     m_selectedPaint = Color.yellow;
+    m_graphicShapes = null;
+    m_graphicPaints = null;
   }
 
   public GraphView getGraphView()
@@ -541,7 +543,7 @@ class DNodeView implements NodeView, Label
       m_view.m_contentChanged = true; }
   }
 
-  // Custom graphics stuff.
+  // Custom graphic stuff.
 
   /**
    * Returns the number of custom graphic objects currently set on this
@@ -549,7 +551,9 @@ class DNodeView implements NodeView, Label
    */
   public int getCustomGraphicCount()
   {
-    return 0;
+    synchronized (m_view.m_lock) {
+      if (m_graphicShapes == null) { return 0; }
+      return m_graphicShapes.size(); }
   }
 
   /**
@@ -559,7 +563,8 @@ class DNodeView implements NodeView, Label
    */
   public Shape getCustomGraphicShape(int index)
   {
-    return null;
+    synchronized (m_view.m_lock) {
+      return (Shape) m_graphicShapes.get(index); }
   }
 
   /**
@@ -569,7 +574,8 @@ class DNodeView implements NodeView, Label
    */
   public Paint getCustomGraphicPaint(int index)
   {
-    return null;
+    synchronized (m_view.m_lock) {
+      return (Paint) m_graphicPaints.get(index); }
   }
 
   /**
@@ -580,6 +586,12 @@ class DNodeView implements NodeView, Label
    */
   public void removeCustomGraphic(int index)
   {
+    synchronized (m_view.m_lock) {
+      m_graphicShapes.remove(index);
+      m_graphicPaints.remove(index);
+      if (m_graphicShapes.size() == 0) {
+        m_graphicShapes = null;
+        m_graphicPaints = null; } }
   }
 
   /**
@@ -592,9 +604,17 @@ class DNodeView implements NodeView, Label
    */
   public void addCustomGraphic(Shape s, Paint p, int index)
   {
-    if (index < 0) { index = 0; }
-    else if (index > getCustomGraphicCount() - 1) {
-      index = getCustomGraphicCount() - 1; }
+    if (s == null || p == null) {
+      throw new NullPointerException("shape and paint must be non-null"); }
+    synchronized (m_view.m_lock) {
+      if (index < 0) { index = 0; }
+      else if (index > getCustomGraphicCount() - 1) {
+        index = getCustomGraphicCount() - 1; }
+      if (m_graphicShapes == null) {
+        m_graphicShapes = new ArrayList();
+        m_graphicPaints = new ArrayList(); }
+      m_graphicShapes.add(index, s);
+      m_graphicPaints.add(index, p); }
   }
 
 }

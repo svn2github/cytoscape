@@ -90,7 +90,7 @@ public class DGraphView implements GraphView, Printable
       ((int[]) null, (int[]) null);
     m_spacial = new RTree();
     m_spacialA = new RTree();
-    m_nodeDetails = new DNodeDetails();
+    m_nodeDetails = new DNodeDetails(this);
     m_edgeDetails = new DEdgeDetails(this);
     m_nodeViewMap = new HashMap();
     m_edgeViewMap = new HashMap();

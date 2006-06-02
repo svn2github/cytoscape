@@ -5,6 +5,7 @@ import cytoscape.util.intr.IntObjHash;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Paint;
+import java.awt.Shape;
 import java.util.HashMap;
 
 /*
@@ -13,6 +14,8 @@ import java.util.HashMap;
  */
 class DNodeDetails extends IntermediateNodeDetails
 {
+
+  final DGraphView m_view;
 
   final IntObjHash m_colorsLowDetail = new IntObjHash();
   final Object m_deletedEntry = new Object();
@@ -27,6 +30,11 @@ class DNodeDetails extends IntermediateNodeDetails
   final HashMap m_labelTexts = new HashMap();
   final HashMap m_labelFonts = new HashMap();
   final HashMap m_labelPaints = new HashMap();
+
+  DNodeDetails(DGraphView view)
+  {
+    m_view = view;
+  }
 
   void unregisterNode(int node)
   {
@@ -217,6 +225,24 @@ class DNodeDetails extends IntermediateNodeDetails
         paint.equals(super.labelPaint(node, labelInx))) {
       m_labelPaints.remove(new Long(key)); }
     else { m_labelPaints.put(new Long(key), paint); }
+  }
+
+  public int graphicCount(int node)
+  {
+    final DNodeView nv = (DNodeView) m_view.getNodeView(~node);
+    return nv.getCustomGraphicCount();
+  }
+
+  public Shape graphicShape(int node, int inx)
+  {
+    final DNodeView nv = (DNodeView) m_view.getNodeView(~node);
+    return nv.getCustomGraphicShape(inx);
+  }
+
+  public Paint graphicPaint(int node, int inx)
+  {
+    final DNodeView nv = (DNodeView) m_view.getNodeView(~node);
+    return nv.getCustomGraphicPaint(inx);
   }
 
 }
