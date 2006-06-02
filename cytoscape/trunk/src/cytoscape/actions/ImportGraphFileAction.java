@@ -65,6 +65,7 @@ import cytoscape.task.util.TaskManager;
 import cytoscape.util.CyNetworkNaming;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CyMenus;
+import cytoscape.data.readers.GMLException;
 
 /**
  * User has requested loading of an Expression Matrix File. Could be SIF File or
@@ -275,6 +276,8 @@ class LoadNetworkTask implements Task {
 			}
 
 		} catch (IOException e) {
+			taskMonitor.setException(e, "Unable to load network file.");
+		} catch (GMLException e) {
 			taskMonitor.setException(e, "Unable to load network file.");
 		}
 	}
