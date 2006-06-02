@@ -56,9 +56,11 @@ public class DisplayAttributeBrowserAction extends CytoscapeAction {
 					CytoPanelState.DOCK);
 			Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH)
 					.setSelectedIndex(targetIndex);
+			DisplayAdvancedWindowAction.syncCheckbox(true, 2);
 		} else {
 			Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH).setState(
 					CytoPanelState.HIDE);
+			DisplayAdvancedWindowAction.syncCheckbox(false, 2);
 		}
 
 	}// action performed

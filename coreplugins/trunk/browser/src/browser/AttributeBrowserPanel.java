@@ -50,8 +50,6 @@ import cytoscape.dialogs.NetworkMetaDataDialog;
 public class AttributeBrowserPanel extends JPanel implements
 		PropertyChangeListener, ListSelectionListener, ListDataListener,
 		ActionListener {
-	
-	private int viewMode;
 
 	// Global Variables
 	CyAttributes data;
@@ -725,11 +723,9 @@ public class AttributeBrowserPanel extends JPanel implements
 							.getDesktop(), true,
 							getAttributeArray(attributeType), attributeType);
 
-					// if (attributeType.equalsIgnoreCase("node")) {
-					// selectedObj = attributeList.getSelectedValues();
-					// }
-
-					dDialog.show();
+					dDialog.pack();
+					dDialog.setLocationRelativeTo(Cytoscape.getDesktop());
+					dDialog.setVisible(true);
 					model.sortAtttributes();
 					valueChanged(null);
 					// getAttributeSelectionPopupMenu(model);

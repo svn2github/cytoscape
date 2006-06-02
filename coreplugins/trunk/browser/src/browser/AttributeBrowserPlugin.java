@@ -20,35 +20,40 @@ public class AttributeBrowserPlugin extends CytoscapePlugin {
 	public static Color DEFAULT_NODE_COLOR = Color.YELLOW;
 	public static Color DEFAULT_EDGE_COLOR = Color.RED;
 
-	// Constructor
+	/**
+	 * 
+	 *
+	 */
 	public AttributeBrowserPlugin() {
 
 		initialize();
 
 		JCheckBoxMenuItem switchBrowserView = new JCheckBoxMenuItem(
-				new DisplayNetworkTreeAction());
+				new DisplayNetworkPanelAction());
 
 		JCheckBoxMenuItem switchNetworkTreeView = new JCheckBoxMenuItem(
 				new DisplayAttributeBrowserAction());
 
 		JCheckBoxMenuItem switchAdvancedView = new JCheckBoxMenuItem(
 				new DisplayAdvancedWindowAction());
-
+		
+		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("View").add(
+				switchNetworkTreeView, 0);
+		
+		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("View").add(
+				switchBrowserView, 0);
+		
+		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("View").add(
+				switchAdvancedView, 0);
+		
 		switchBrowserView.setSelected(true);
 		switchNetworkTreeView.setSelected(true);
 
 		switchNetworkTreeView.setAccelerator(KeyStroke.getKeyStroke(
 				KeyEvent.VK_F5, 0));
 
-		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("View").add(
-				switchBrowserView, 0);
-		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("View").add(
-				switchNetworkTreeView, 0);
-		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("View").add(
-				switchAdvancedView, 0);
-
 	}
-
+	
 	// Call 3 tables, nodes, edges and network.
 	// The DataTable class actually creates all CytoPanels.
 	// For this version of browser, it creates Cytopanel3 only.

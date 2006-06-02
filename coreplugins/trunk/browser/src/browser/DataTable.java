@@ -113,11 +113,24 @@ public class DataTable {
 		JPanel mainPanel = new JPanel(); // Container for table and toolbar.
 		mainPanel.setLayout(new BorderLayout());
 		mainPanel.setPreferredSize(new java.awt.Dimension(400, 180));
-		mainPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null,
+		if(tableObjectType == NETWORK && Cytoscape.getCurrentNetwork() != null) {
+			if(Cytoscape.getCurrentNetwork().getTitle().equals("0")) {
+				mainPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null,
+						type + " Attribute Browser",
+						javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
+						javax.swing.border.TitledBorder.DEFAULT_POSITION, null, null));
+			} else {
+				mainPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null,
+					type + " Attribute Browser (" + Cytoscape.getCurrentNetwork().getTitle() + ")",
+					javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
+					javax.swing.border.TitledBorder.DEFAULT_POSITION, null, null));
+			}
+		} else {
+			mainPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null,
 				type + " Attribute Browser",
 				javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
 				javax.swing.border.TitledBorder.DEFAULT_POSITION, null, null));
-
+		}
 		JSortTable attributeTable = new JSortTable(tableModel, tableObjectType);
 
 		// If this is a network attribute browser, do not allow to swap

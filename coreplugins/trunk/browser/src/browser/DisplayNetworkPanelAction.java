@@ -17,9 +17,9 @@ import cytoscape.view.cytopanels.CytoPanelState;
  * @author kono
  * 
  */
-public class DisplayNetworkTreeAction extends CytoscapeAction {
+public class DisplayNetworkPanelAction extends CytoscapeAction {
 
-	public DisplayNetworkTreeAction() {
+	public DisplayNetworkPanelAction() {
 		super("Show/Hide network tree viewer");
 //		setPreferredMenu("Data");
 		
@@ -39,10 +39,13 @@ public class DisplayNetworkTreeAction extends CytoscapeAction {
 					CytoPanelState.DOCK);
 			Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST)
 					.setSelectedIndex(targetIndex);
+			
+			DisplayAdvancedWindowAction.syncCheckbox(true, 1);
 
 		} else {
 			Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).setState(
 					CytoPanelState.HIDE);
+			DisplayAdvancedWindowAction.syncCheckbox(false, 1);
 		}
 
 	}// action performed

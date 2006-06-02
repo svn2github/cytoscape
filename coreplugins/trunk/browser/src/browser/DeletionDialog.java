@@ -100,11 +100,11 @@ public class DeletionDialog extends JDialog {
 																layout
 																		.createSequentialGroup()
 																		.add(
-																				cancelButton)
+																				deleteButton)
 																		.addPreferredGap(
 																				org.jdesktop.layout.LayoutStyle.RELATED)
 																		.add(
-																				deleteButton)
+																				cancelButton)
 																		.addContainerGap())
 														.add(
 																org.jdesktop.layout.GroupLayout.TRAILING,

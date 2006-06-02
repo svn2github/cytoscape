@@ -77,7 +77,7 @@ public class SelectPanel extends JPanel implements PropertyChangeListener,
 	}
 
 	public void onSelectEvent(SelectEvent event) {
-		
+
 		if (mirrorSelection.isSelected()) {
 			if (graphObjectType == NODES
 					&& (event.getTargetType() == SelectEvent.SINGLE_NODE || event
@@ -119,19 +119,19 @@ public class SelectPanel extends JPanel implements PropertyChangeListener,
 	}
 
 	private List getGraphObjectList(CyNetwork network) {
-		
+
 		Iterator it = null;
 		List objList = new ArrayList();
-		
+
 		if (graphObjectType == NODES) {
 			it = network.nodesIterator();
-		} else if(graphObjectType == EDGES) {
+		} else if (graphObjectType == EDGES) {
 			it = network.edgesIterator();
 		} else {
 			return null;
 		}
-		
-		while(it.hasNext()) {
+
+		while (it.hasNext()) {
 			objList.add(it.next());
 		}
 		return objList;
@@ -165,19 +165,18 @@ public class SelectPanel extends JPanel implements PropertyChangeListener,
 			tableModel.setTableDataObjects(new ArrayList());
 
 		} else if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUS
-				//|| e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED
-				//|| e.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_DESTROYED)
+				|| e.getPropertyName().equals(Cytoscape.SESSION_LOADED)
 				|| e.getPropertyName().equals(Cytoscape.ATTRIBUTES_CHANGED)) {
-			
+
 			if (currentNetwork != null) {
 				currentNetwork.removeSelectEventListener(this);
 			}
-			
+
 			// Change the target network
 			currentNetwork = Cytoscape.getCurrentNetwork();
 			if (currentNetwork != null) {
 				currentNetwork.addSelectEventListener(this);
-			
+
 				if (graphObjectType == NODES) {
 					tableModel.setTableDataObjects(new ArrayList(Cytoscape
 							.getCurrentNetwork().getSelectedNodes()));

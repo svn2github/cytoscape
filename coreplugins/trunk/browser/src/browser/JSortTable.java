@@ -773,20 +773,9 @@ public class JSortTable extends JTable implements MouseListener, ActionListener 
 		} else if (value.getClass() == HashMap.class
 				&& model.getValueAt(row, 0).equals(DataTable.NETWORK_METADATA)) {
 			
-			// Special case: Network Metadata Cell
-			if(((HashMap)value).isEmpty()) {
-				System.out.println("Metadata is not available for this network.  Creating new one...");
-				MetadataParser mdp = new MetadataParser(Cytoscape.getCurrentNetwork());
-				try {
-					Cytoscape.getNetworkAttributes().setAttributeMap(Cytoscape.getCurrentNetwork().getIdentifier(), 
-							DataTable.NETWORK_METADATA, mdp.makeNewMetadataMap());
-					Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
-				} catch(Exception uriE) {
-					
-				}
-			}
 			NetworkMetaDataDialog mdd = new NetworkMetaDataDialog(Cytoscape
 					.getDesktop(), false, Cytoscape.getCurrentNetwork());
+			mdd.setLocationRelativeTo(Cytoscape.getDesktop());
 			mdd.setVisible(true);
 		}
 	}
