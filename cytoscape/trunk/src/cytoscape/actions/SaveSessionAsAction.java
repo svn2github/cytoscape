@@ -47,8 +47,13 @@ import cytoscape.util.CytoscapeAction;
 import cytoscape.util.FileUtil;
 
 /**
- * "Save Session As" Action -- Same as SaveSessionAction, but always opens file
- * chooser.
+ * Same as SaveSessionAction, but always opens file chooser.<br>
+ * 
+ * @version 1.0
+ * @since 2.3
+ * @see cytoscape.actions.SaveSessionAction
+ * @see cytoscape.data.writers.CytoscapeSessionWriter
+ * @author kono
  */
 public class SaveSessionAsAction extends CytoscapeAction {
 
@@ -56,8 +61,9 @@ public class SaveSessionAsAction extends CytoscapeAction {
 	public static String SESSION_EXT = ".cys";
 
 	/**
-	 * Constructor.
+	 * Constructor.<br>
 	 * 
+	 * @param label Label for menu item
 	 */
 	public SaveSessionAsAction(String label) {
 		super(label);
@@ -70,8 +76,11 @@ public class SaveSessionAsAction extends CytoscapeAction {
 		super();
 	}
 
-	// If no current session file exists, open dialog box to save new session,
-	// and if it exists, overwrite the file.
+	/**
+	 * If no current session file exists, open dialog box to save new session, 
+	 * and if it exists, overwrite the file.
+	 * 
+	 */
 	public void actionPerformed(ActionEvent e) {
 
 		String name; // file name
@@ -104,5 +113,5 @@ public class SaveSessionAsAction extends CytoscapeAction {
 		// Execute Task in New Thread; pop open JTask Dialog Box.
 		TaskManager.executeTask(task, jTaskConfig);
 	}
-} // SaveAsGMLAction
+} // End of SaveSessionAsAction
 
