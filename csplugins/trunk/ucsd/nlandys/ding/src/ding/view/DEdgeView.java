@@ -41,7 +41,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
   Paint m_targetSelectedPaint;
   int m_sourceEdgeEnd; // One of the EdgeView edge end constants.
   int m_targetEdgeEnd; // Ditto.
-  final ArrayList m_anchors; // A list of Point2D objects.
+  ArrayList m_anchors; // A list of Point2D objects.
   int m_lineType;
 
   String m_toolTipText = null;
@@ -62,7 +62,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
     m_targetSelectedPaint = DEFAULT_ARROW_PAINT;
     m_sourceEdgeEnd = EdgeView.NO_END;
     m_targetEdgeEnd = EdgeView.NO_END;
-    m_anchors = new ArrayList();
+    m_anchors = null;
     m_lineType = EdgeView.STRAIGHT_LINES;
   }
 
@@ -642,6 +642,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
   public int numHandles()
   {
     synchronized (m_view.m_lock) {
+      if (m_anchors == null) { return 0; }
       return m_anchors.size(); }
   }
 
@@ -659,6 +660,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
   {
     synchronized (m_view.m_lock) {
       final ArrayList returnThis = new ArrayList();
+      if (m_anchors == null) { return returnThis; }
       for (int i = 0; i < m_anchors.size(); i++) {
         final Point2D addThis = new Point2D.Float();
         addThis.setLocation((Point2D) m_anchors.get(i));
@@ -677,13 +679,13 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
   {
     final Point2D movePt = (Point2D) m_anchors.get(inx);
     movePt.setLocation(x, y);
-    m_view.m_spacialA.delete((m_inx << 6) | inx);
-    m_view.m_spacialA.insert
-      ((m_inx << 6) | inx,
-       (float) (x - m_view.getAnchorSize() / 2.0d),
-       (float) (y - m_view.getAnchorSize() / 2.0d),
-       (float) (x + m_view.getAnchorSize() / 2.0d),
-       (float) (y + m_view.getAnchorSize() / 2.0d));
+    if (m_view.m_spacialA.delete((m_inx << 6) | inx)) {
+      m_view.m_spacialA.insert
+        ((m_inx << 6) | inx,
+         (float) (x - m_view.getAnchorSize() / 2.0d),
+         (float) (y - m_view.getAnchorSize() / 2.0d),
+         (float) (x + m_view.getAnchorSize() / 2.0d),
+         (float) (y + m_view.getAnchorSize() / 2.0d)); }
   }
 
   final void getHandleInternal(int inx, float[] buff)
@@ -696,7 +698,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
   public Point2D getSourceHandlePoint()
   {
     synchronized (m_view.m_lock) {
-      if (m_anchors.size() == 0) { return null; }
+      if (m_anchors == null || m_anchors.size() == 0) { return null; }
       final Point2D returnThis = new Point2D.Float();
       returnThis.setLocation((Point2D) m_anchors.get(0));
       return returnThis; }
@@ -705,7 +707,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
   public Point2D getTargetHandlePoint()
   {
     synchronized (m_view.m_lock) {
-      if (m_anchors.size() == 0) { return null; }
+      if (m_anchors == null || m_anchors.size() == 0) { return null; }
       final Point2D returnThis = new Point2D.Float();
       returnThis.setLocation((Point2D) m_anchors.get(m_anchors.size() - 1));
       return returnThis; }
@@ -719,7 +721,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
   public int addHandleFoo(Point2D pt)
   {
     synchronized (m_view.m_lock) {
-      if (m_anchors.size() == 0) {
+      if (m_anchors == null || m_anchors.size() == 0) {
         addHandle(0, pt);
         return 0; }
       final Point2D sourcePt =
@@ -757,6 +759,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
     synchronized (m_view.m_lock) {
       final Point2D.Float addThis = new Point2D.Float();
       addThis.setLocation(pt);
+      if (m_anchors == null) { m_anchors = new ArrayList(); }
       m_anchors.add(insertInx, addThis);
       if (m_selected) {
         for (int j = m_anchors.size() - 1; j > insertInx; j--) {
@@ -783,6 +786,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
     synchronized (m_view.m_lock) {
       final float x = (float) pt.getX();
       final float y = (float) pt.getY();
+      if (m_anchors == null) { return; }
       for (int i = 0; i < m_anchors.size(); i++) {
         final Point2D.Float currPt = (Point2D.Float) m_anchors.get(i);
         if (x == currPt.x && y == currPt.y) {
@@ -807,17 +811,19 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
              m_view.m_extentsBuff[2], m_view.m_extentsBuff[3]);
           if (m_view.m_selectedAnchors.delete((m_inx << 6) | (j + 1))) {
             m_view.m_selectedAnchors.insert((m_inx << 6) | j); } } }
+      if (m_anchors.size() == 0) { m_anchors = null; }
       m_view.m_contentChanged = true; }
   }
 
   public void removeAllHandles()
   {
     synchronized (m_view.m_lock) {
+      if (m_anchors == null) { return; }
       if (m_selected) {
         for (int j = 0; j < m_anchors.size(); j++) {
           m_view.m_spacialA.delete((m_inx << 6) | j);
           m_view.m_selectedAnchors.delete((m_inx << 6) | j); } }
-      m_anchors.clear();
+      m_anchors = null;
       m_view.m_contentChanged = true; }
   }
 
@@ -826,6 +832,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
     synchronized (m_view.m_lock) {
       final float x = (float) pt.getX();
       final float y = (float) pt.getY();
+      if (m_anchors == null) { return false; }
       for (int i = 0; i < m_anchors.size(); i++) {
         final Point2D.Float currPt = (Point2D.Float) m_anchors.get(i);
         if (x == currPt.x && y == currPt.y) {
@@ -836,7 +843,8 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
   public Point2D[] getDrawPoints()
   {
     synchronized (m_view.m_lock) {
-      final Point2D[] returnThis = new Point2D[m_anchors.size()];
+      final Point2D[] returnThis =
+        new Point2D[m_anchors == null ? 0 : m_anchors.size()];
       for (int i = 0; i < returnThis.length; i++) {
         returnThis[i] = new Point2D.Float();
         returnThis[i].setLocation((Point2D) m_anchors.get(i)); }
@@ -848,6 +856,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors
 
   public int numAnchors()
   {
+    if (m_anchors == null) { return 0; }
     if (m_lineType == EdgeView.CURVED_LINES) {
       return m_anchors.size(); }
     else { // EdgeView.STRAIGHT_LINES.
