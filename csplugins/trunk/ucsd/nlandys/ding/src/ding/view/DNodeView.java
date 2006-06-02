@@ -37,6 +37,8 @@ class DNodeView implements NodeView, Label
   float m_hiddenYMin;
   float m_hiddenXMax;
   float m_hiddenYMax;
+//   ArrayList m_graphicShapes;
+//   ArrayList m_graphicPaints;
 
   // AJK: 04/26/06 for tooltip
   String m_toolTipText = null;
@@ -590,9 +592,9 @@ class DNodeView implements NodeView, Label
    */
   public void addCustomGraphic(Shape s, Paint p, int index)
   {
-    if (inx < 0) { inx = 0; }
-    else if (inx > getCustomGraphicCount() - 1) {
-      inx = getCustomGraphicCount() - 1; }
+    if (index < 0) { index = 0; }
+    else if (index > getCustomGraphicCount() - 1) {
+      index = getCustomGraphicCount() - 1; }
   }
 
 }
