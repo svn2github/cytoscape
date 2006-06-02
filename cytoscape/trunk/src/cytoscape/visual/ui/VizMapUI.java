@@ -335,14 +335,14 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 
 			// rename style button
 			JButton renStyle = new JButton("Rename");
-			renStyle.addActionListener(new RenStyleListener());
+			renStyle.addActionListener(new RenameStyleListener());
 			MiscGB.insert(styleGBG, renStyle, 2, 1, 1, 1, 1, 0,
 					GridBagConstraints.HORIZONTAL);
 			renStyle.setToolTipText("Rename the current style");
 
 			// remove style button
 			JButton rmStyle = new JButton("Delete");
-			rmStyle.addActionListener(new RmStyleListener());
+			rmStyle.addActionListener(new RemoveStyleListener());
 			MiscGB.insert(styleGBG, rmStyle, 3, 1, 1, 1, 1, 0,
 					GridBagConstraints.HORIZONTAL);
 			rmStyle.setToolTipText("Delete the current style");
@@ -439,19 +439,34 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 			}
 		}
 
-		protected class RenStyleListener extends AbstractAction {
+		/**
+		 * Rename a Visual Style<br>
+		 *
+		 */
+		protected class RenameStyleListener extends AbstractAction {
 			public void actionPerformed(ActionEvent e) {
+				String oldName = currentStyle.getName();
 				String name = getStyleName(currentStyle);
+				
+				//System.out.println("******** Old VS name = " + oldName + ", New VS name = " + name);
+				
 				if (name == null) {
 					return;
 				}
+				
+				// no need to inform the VMM, since only the name changed <-- This is VERY wrong!
+				// We need to update calatog AND VMM.
 				currentStyle.setName(name);
+				
+				catalog.removeVisualStyle(oldName);
+				catalog.addVisualStyle(currentStyle);
 				resetStyles(); // rebuild the combo box
-				// no need to inform the VMM, since only the name changed
+				
+				VMM.setVisualStyle(currentStyle);
 			}
 		}
 
-		protected class RmStyleListener extends AbstractAction {
+		protected class RemoveStyleListener extends AbstractAction {
 			public void actionPerformed(ActionEvent e) {
 				if (styles.size() == 1) {
 					JOptionPane.showMessageDialog(myself,

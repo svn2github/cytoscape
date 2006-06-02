@@ -45,23 +45,21 @@ package cytoscape.visual;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
-import java.net.JarURLConnection;
-import java.net.URL;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
+import cytoscape.util.FileUtil;
 import cytoscape.util.ZipMultipleFiles;
 import cytoscape.visual.mappings.ContinuousMapping;
 import cytoscape.visual.mappings.DiscreteMapping;
 import cytoscape.visual.mappings.PassThroughMapping;
-import cytoscape.util.FileUtil;
 
 /**
  * This class provides a static method for reading a CalculatorCatalog object
@@ -85,8 +83,9 @@ public abstract class CalculatorCatalogFactory {
 	 * specified by the options in the supplied CytoscapeConfig object. The
 	 * catalog will be properly initialized with known mapping types and a
 	 * default visual style (named "default").
+	 * 
 	 * @deprecated The vmName parameter is no longer used - just use
-	 * loadCalculatorCatalog().  Will be removed 10/06.
+	 *             loadCalculatorCatalog(). Will be removed 10/06.
 	 */
 	public static CalculatorCatalog loadCalculatorCatalog(String vmName) {
 
@@ -94,68 +93,91 @@ public abstract class CalculatorCatalogFactory {
 
 		initCatalog();
 
-		// make sure a default visual style exists, creating as needed
-		VisualStyle defaultVS = calculatorCatalog.getVisualStyle("default");
-
-		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(new VizMapListener());
+		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(
+				new VizMapListener());
 
 		return calculatorCatalog;
 	}
 
-
 	private static void initCatalog() {
-		
-		calculatorCatalog.clear(); 
+
+		calculatorCatalog.clear();
 
 		calculatorCatalog.addMapping("Discrete Mapper", DiscreteMapping.class);
-		calculatorCatalog.addMapping("Continuous Mapper", ContinuousMapping.class);
-		calculatorCatalog.addMapping("Passthrough Mapper", PassThroughMapping.class);
+		calculatorCatalog.addMapping("Continuous Mapper",
+				ContinuousMapping.class);
+		calculatorCatalog.addMapping("Passthrough Mapper",
+				PassThroughMapping.class);
 
 		CalculatorIO.loadCalculators(vizmapProps, calculatorCatalog);
 	}
 
-
+	/**
+	 * Catch the signal and save/load VS.
+	 *
+	 */
 	private static class VizMapListener implements PropertyChangeListener {
 
 		public void propertyChange(PropertyChangeEvent e) {
 
 			if (e.getPropertyName() == Cytoscape.SAVE_VIZMAP_PROPS) {
-				File propertiesFile = CytoscapeInit.getConfigFile("vizmap.props");
+				/*
+				 * This section is for saving VS in a vizmap.props file.
+				 * 
+				 * If signal contains no new value, Cytoscape consider it as
+				 * a default file.  Otherwise, save it as a user file.
+				 */
+				File propertiesFile = null;
+				if(e.getNewValue() == null) {
+					propertiesFile = CytoscapeInit.getConfigFile("vizmap.props");
+				} else {
+					propertiesFile = new File((String) e.getNewValue());
+				}
+				
 				if (propertiesFile != null) {
 
-					// Testing
 					Set test = calculatorCatalog.getVisualStyleNames();
 					Iterator it = test.iterator();
+					System.out.println("Saving the following Visual Styles: ");
 					while (it.hasNext()) {
-						System.out.println("Saving Visual Style: " + it.next().toString());
+						System.out.println("    - " + it.next().toString());
 					}
 
-					CalculatorIO.storeCatalog(calculatorCatalog,propertiesFile);
+					CalculatorIO
+							.storeCatalog(calculatorCatalog, propertiesFile);
 					System.out.println("Vizmap saved to: " + propertiesFile);
 				}
 
-			} else if ( e.getPropertyName() == Cytoscape.VIZMAP_RESTORED ||
-			            e.getPropertyName() == Cytoscape.VIZMAP_LOADED ) {
+			} else if (e.getPropertyName() == Cytoscape.VIZMAP_RESTORED
+					|| e.getPropertyName() == Cytoscape.VIZMAP_LOADED) {
 
+				/*
+				 * This section is for restoring VS from a file.
+				 */
+				
 				// only clear the existing vizmap.props if we're restoring
 				// from a session file
-				if ( e.getPropertyName() == Cytoscape.VIZMAP_RESTORED )
+				if (e.getPropertyName() == Cytoscape.VIZMAP_RESTORED)
 					vizmapProps.clear();
 
-				// get the new vizmap.props and apply it the existing properties 
+				// get the new vizmap.props and apply it the existing properties
 				Object vizmapSource = e.getNewValue();
 				try {
-					if(vizmapSource.getClass() == URL.class) {
-						vizmapProps.load( ((URL)vizmapSource).openStream() );
-					} else if(vizmapSource.getClass() == String.class) {
-						// if its a RESTORED event the vizmap file will be in a zip file.
-						if ( e.getPropertyName() == Cytoscape.VIZMAP_RESTORED ) {
-							InputStream is = ZipMultipleFiles.readFile((String)vizmapSource,".*vizmap.props");
-							if ( is != null )
+					if (vizmapSource.getClass() == URL.class) {
+						vizmapProps.load(((URL) vizmapSource).openStream());
+					} else if (vizmapSource.getClass() == String.class) {
+						// if its a RESTORED event the vizmap file will be in a
+						// zip file.
+						if (e.getPropertyName() == Cytoscape.VIZMAP_RESTORED) {
+							InputStream is = ZipMultipleFiles.readFile(
+									(String) vizmapSource, ".*vizmap.props");
+							if (is != null)
 								vizmapProps.load(is);
-						// if its a LOADED event the vizmap file will be a normal file.
+							// if its a LOADED event the vizmap file will be a
+							// normal file.
 						} else {
-							vizmapProps.load( FileUtil.getInputStream((String)vizmapSource));
+							vizmapProps.load(FileUtil
+									.getInputStream((String) vizmapSource));
 						}
 					}
 
@@ -167,10 +189,13 @@ public abstract class CalculatorCatalogFactory {
 
 				initCatalog();
 
-				System.out .println("Restoring Saved Vizmapper from: " + vizmapSource.toString());
+				System.out.println("Restoring saved visual styles from: "
+						+ vizmapSource.toString());
 				Cytoscape.getDesktop().setupVizMapper();
-				Cytoscape.getDesktop().getVizMapUI().getStyleSelector().resetStyles();
-				Cytoscape.getDesktop().getVizMapUI().getStyleSelector().repaint();
+				Cytoscape.getDesktop().getVizMapUI().getStyleSelector()
+						.resetStyles();
+				Cytoscape.getDesktop().getVizMapUI().getStyleSelector()
+						.repaint();
 				Cytoscape.getDesktop().getVizMapUI().refreshUI();
 			}
 		}

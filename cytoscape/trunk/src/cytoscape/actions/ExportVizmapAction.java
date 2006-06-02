@@ -1,10 +1,8 @@
 package cytoscape.actions;
 
 import java.awt.event.ActionEvent;
-import java.io.File;
 
 import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
@@ -12,17 +10,24 @@ import cytoscape.task.util.TaskManager;
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.FileUtil;
-import cytoscape.view.CytoscapeDesktop;
-import cytoscape.visual.CalculatorCatalog;
-import cytoscape.visual.CalculatorIO;
-import cytoscape.visual.VisualMappingManager;
 
+/**
+ * Export visual styles as a vizmap.props file<br>
+ * 
+ * @version 0.8
+ * @since 2.3
+ * @author kono
+ * 
+ */
 public class ExportVizmapAction extends CytoscapeAction {
 	public ExportVizmapAction() {
 		super("Vizmap Property File");
 		setPreferredMenu("File.Export");
 	}
 
+	/**
+	 * Get file name and execute the saving task<br>
+	 */
 	public void actionPerformed(ActionEvent e) {
 
 		String name;
@@ -45,12 +50,12 @@ public class ExportVizmapAction extends CytoscapeAction {
 		jTaskConfig.setOwner(Cytoscape.getDesktop());
 		jTaskConfig.displayCloseButton(true);
 		jTaskConfig.displayStatus(true);
+		jTaskConfig.displayCancelButton(false);
 		jTaskConfig.setAutoDispose(false);
 
 		// Execute Task in New Thread; pop open JTask Dialog Box.
 		TaskManager.executeTask(task, jTaskConfig);
 	}
-
 }
 
 /**
@@ -58,7 +63,6 @@ public class ExportVizmapAction extends CytoscapeAction {
  */
 class ExportVizmapTask implements Task {
 	private String fileName;
-	private String originalName;
 	private TaskMonitor taskMonitor;
 
 	/**
@@ -72,18 +76,14 @@ class ExportVizmapTask implements Task {
 	 * Executes Task
 	 */
 	public void run() {
-		taskMonitor.setStatus("Saving Network...");
+		taskMonitor.setStatus("Saving Visual Styles...");
 		taskMonitor.setPercentCompleted(-1);
-		Cytoscape.firePropertyChange(Cytoscape.SESSION_SAVED, null, null);
-		VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
-		CalculatorCatalog catalog = vizmapper.getCalculatorCatalog();
-
-		File userVizmapFile = new File(fileName);
-		CalculatorIO.storeCatalog(catalog, userVizmapFile);
+		
+		Cytoscape.firePropertyChange(Cytoscape.SAVE_VIZMAP_PROPS, null,
+				fileName);
 
 		taskMonitor.setPercentCompleted(100);
 		taskMonitor.setStatus("Vizmaps successfully saved to:  " + fileName);
-
 	}
 
 	/**
@@ -112,5 +112,4 @@ class ExportVizmapTask implements Task {
 	public String getTitle() {
 		return new String("Saving Vizmap");
 	}
-
 }
