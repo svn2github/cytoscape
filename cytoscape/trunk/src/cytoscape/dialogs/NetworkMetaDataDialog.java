@@ -34,7 +34,7 @@ import cytoscape.generated2.Title;
 import cytoscape.generated2.Type;
 
 /**
- * Dialog for editing network metadata in RDF<br>
+ * Dialog for editing network metadata in RDF.<br>
  * 
  * @version 1.0
  * @since 2.3
@@ -248,7 +248,6 @@ public class NetworkMetaDataDialog extends javax.swing.JDialog implements
 		dc.getDcmes().add(set("Description", descriptionTextArea.getText()));
 		rdfMap.put("Description", descriptionTextArea.getText());
 		metadata.getDescription().add(dc);
-		// network.putClientData("RDF", metadata);
 
 		networkAttr.setAttributeMap(network.getIdentifier(),
 				METADATA_ATTR_NAME, rdfMap);

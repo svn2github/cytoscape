@@ -93,6 +93,9 @@ import cytoscape.visual.LineType;
 /**
  * XGMMLReader. This version is Metanode-compatible.
  * 
+ * @version 1.0
+ * @since 2.3
+ * @see cytoscape.data.writers.XGMMLWriter
  * @author kono
  * 
  */

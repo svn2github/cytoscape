@@ -12,6 +12,9 @@ import cytoscape.data.readers.MetadataParser;
  * 
  * Table model for the Network Metadata Dialog.
  * 
+ * @version 1.0
+ * @since 2.3
+ * @see cytoscape.dialogs.NetworkMetaDataDialog
  * @author kono
  * 
  */
