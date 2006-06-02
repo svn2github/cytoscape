@@ -50,7 +50,7 @@ public class CyGraphLOD extends GraphLOD implements PropertyChangeListener
 		renderAllEdges = (byte)getInt("render.renderAllEdges",0);
 		fullDetailThreshold =  getInt("render.fullDetailThreshold",1200);
 		nodeBorderThreshold = getInt("render.nodeBorderThreshold",200);
-		nodeLabelThreshold = getInt("render.nodeLabelThreshold",60);
+		nodeLabelThreshold = getInt("render.nodeLabelThreshold",100);
 		customGraphicsThreshold = getInt("render.customGraphicsThreshold",60);
 		edgeArrowThreshold = getInt("render.edgeArrowThreshold",300);
 		edgeLabelThreshold = getInt("render.edgeLabelThreshold",80);
