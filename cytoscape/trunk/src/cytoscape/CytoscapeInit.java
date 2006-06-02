@@ -232,6 +232,7 @@ public class CytoscapeInit { //implements PropertyChangeListener {
 		}
 
 		System.out.println("Cytoscape initialized successfully.");
+		Cytoscape.firePropertyChange(Cytoscape.CYTOSCAPE_INITIALIZED, null, null);
 		return true;
 	}
 
