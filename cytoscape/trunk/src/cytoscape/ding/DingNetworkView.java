@@ -49,6 +49,32 @@ public class DingNetworkView extends DGraphView implements CyNetworkView
       addNodeView(nodes[i]); }
     for (int i = 0; i < edges.length; i++) {
       addEdgeView(edges[i]); }
+//     for (int i = 0; i < nodes.length; i++) {
+//       ding.view.DNodeView nv = (ding.view.DNodeView) getNodeView(nodes[i]);
+//       java.awt.geom.GeneralPath path = new java.awt.geom.GeneralPath();
+//       path.moveTo(0.0f, 0.0f);
+//       path.lineTo(10.0f, 0.0f);
+//       path.lineTo(0.0f, 10.0f);
+//       path.closePath();
+//       nv.addCustomGraphic(path, java.awt.Color.yellow, 0);
+//       path = new java.awt.geom.GeneralPath();
+//       path.moveTo(0.0f, 0.0f);
+//       path.lineTo(0.0f, 10.0f);
+//       path.lineTo(-10.0f, 0.0f);
+//       path.closePath();
+//       nv.addCustomGraphic(path, java.awt.Color.red, 0);
+//       path = new java.awt.geom.GeneralPath();
+//       path.moveTo(0.0f, 0.0f);
+//       path.lineTo(-10.0f, 0.0f);
+//       path.lineTo(0.0f, -10.0f);
+//       path.closePath();
+//       nv.addCustomGraphic(path, java.awt.Color.blue, 0);
+//       path = new java.awt.geom.GeneralPath();
+//       path.moveTo(0.0f, 0.0f);
+//       path.lineTo(0.0f, -10.0f);
+//       path.lineTo(10.0f, 0.0f);
+//       path.closePath();
+//       nv.addCustomGraphic(path, java.awt.Color.green, 0); }
     new FlagAndSelectionHandler(((CyNetwork) getNetwork()).getFlagger(), this);
   }
 
