@@ -608,8 +608,8 @@ public class DNodeView implements NodeView, Label
       throw new NullPointerException("shape and paint must be non-null"); }
     synchronized (m_view.m_lock) {
       if (index < 0) { index = 0; }
-      else if (index > getCustomGraphicCount() - 1) {
-        index = getCustomGraphicCount() - 1; }
+      else if (index > getCustomGraphicCount()) {
+        index = getCustomGraphicCount(); }
       if (m_graphicShapes == null) {
         m_graphicShapes = new ArrayList();
         m_graphicPaints = new ArrayList(); }
