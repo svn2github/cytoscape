@@ -17,7 +17,7 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
-class DNodeView implements NodeView, Label
+public class DNodeView implements NodeView, Label
 {
 
   static final float DEFAULT_WIDTH = 20.0f;
