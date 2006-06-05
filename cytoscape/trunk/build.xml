@@ -220,8 +220,8 @@
 	<!-- copy resources/ directory to build area -->
 	<echo>Copying resources/ directory to build</echo>
 	<copy todir="${build.classes}/cytoscape/resources">
-	  <fileset dir="${basedir}/resources"/>
-		<fileset file="${basedir}/props/tax_report.txt"/>
+           <fileset dir="${basedir}/resources"/>
+           <fileset file="${basedir}/props/tax_report.txt"/>
 	</copy>
 
 
@@ -563,18 +563,8 @@
             Copying over all property files.
             ---------------------------------------
         </echo>
-	<!--
-        <copy file="${basedir}/props/cytoscape.props"
-              tofile="${release.dir}/cytoscape.props"/>
-        <copy file="${basedir}/props/vizmap.props"
-              tofile="${release.dir}/vizmap.props"/>
-              -->
         <copy file="${basedir}/props/linkout.props"
               tofile="${release.dir}/linkout.props"/>
-    		 <copy file="${basedir}/props/tax_report.txt"
-    	         tofile="${release.dir}/tax_report.txt"/>
-    	   <copy file="${basedir}/props/tax_report.txt"
-    	    	         tofile="${release.dir}/annotation/tax_report.txt"/>
     	
         <!-- Copy over Txt/PDF files -->
         <echo>
@@ -636,6 +626,8 @@
             	    <include name="gene_association.goa_human"/>
             </fileset>
         </copy>
+    	<copy file="${basedir}/props/tax_report.txt"
+              tofile="${release.dir}/annotation/tax_report.txt"/>
 
         <!-- Copy over Third Party Licenses -->
         <echo>
@@ -891,8 +883,8 @@
               tofile="${webstart.dir}/vizmap.props"/>
         <copy file="${basedir}/linkout.props"
               tofile="${webstart.dir}/linkout.props"/>
-    	   <copy file="${basedir}/tax_report.txt"
-    	              tofile="${webstart.dir}/tax_report.txt"/>
+        <copy file="${basedir}/tax_report.txt"
+              tofile="${webstart.dir}/tax_report.txt"/>
 
         <!-- Copy over Webstart PlugIns -->
         <echo>
