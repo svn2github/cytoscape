@@ -1,127 +1,112 @@
-
 /*
-  File: AttributeSaverDialog.java 
-  
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-  
-  The Cytoscape Consortium is: 
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Pasteur Institute
-  - Agilent Technologies
-  
-  This library is free software; you can redistribute it and/or modify it
-  under the terms of the GNU Lesser General Public License as published
-  by the Free Software Foundation; either version 2.1 of the License, or
-  any later version.
-  
-  This library is distributed in the hope that it will be useful, but
-  WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
-  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
-  documentation provided hereunder is on an "as is" basis, and the
-  Institute for Systems Biology and the Whitehead Institute 
-  have no obligations to provide maintenance, support,
-  updates, enhancements or modifications.  In no event shall the
-  Institute for Systems Biology and the Whitehead Institute 
-  be liable to any party for direct, indirect, special,
-  incidental or consequential damages, including lost profits, arising
-  out of the use of this software and its documentation, even if the
-  Institute for Systems Biology and the Whitehead Institute 
-  have been advised of the possibility of such damage.  See
-  the GNU Lesser General Public License for more details.
-  
-  You should have received a copy of the GNU Lesser General Public License
-  along with this library; if not, write to the Free Software Foundation,
-  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ File: AttributeSaverDialog.java 
+ 
+ Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+ 
+ The Cytoscape Consortium is: 
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Pasteur Institute
+ - Agilent Technologies
+ 
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+ 
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute 
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute 
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute 
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+ 
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+ */
 
 package cytoscape.data;
 
-import cytoscape.Cytoscape;
-import cytoscape.CyNetwork;
-import cytoscape.data.attr.MultiHashMap;
-import cytoscape.plugin.CytoscapePlugin;
-import cytoscape.CytoscapeInit;
-
-import javax.swing.AbstractAction;
-import javax.swing.JButton;
-import javax.swing.DefaultCellEditor;
-import javax.swing.JLabel;
-import javax.swing.JDialog;
-import javax.swing.JList;
-import javax.swing.JTextField;
-import javax.swing.JTree;
-import javax.swing.JScrollPane;
-import javax.swing.JFileChooser;
-import javax.swing.BoxLayout;
-import javax.swing.JOptionPane;
-import javax.swing.JTable;
-import javax.swing.event.MouseInputAdapter;
-import javax.swing.event.TableModelEvent;
-import javax.swing.tree.TreePath;
-import javax.swing.table.TableModel;
-import javax.swing.event.TableModelListener;
-
-import java.awt.Container;
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
-import java.awt.event.FocusEvent;
-import java.awt.event.MouseEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-
-import java.util.HashMap;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
-import java.util.Collection;
-import java.util.Collections;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.util.LinkedList;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.TableModel;
+
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
+import cytoscape.data.attr.MultiHashMap;
 
 /**
- * This class provides a Dialog box to save various attributes
+ * Dialog box to save various attributes.<br>
+ * 
+ * @version 1.1
  */
-
 public class AttributeSaverDialog extends JDialog {
 	/**
 	 * Default suffix for node attribute files
 	 */
-	protected static String NODE_SUFFIX = ".NA";
+	protected static final String NODE_SUFFIX = ".NA";
+
 	/**
 	 * Default suffix for edge attribute files
 	 */
-	protected static String EDGE_SUFFIX = ".EA";
+	protected static final String EDGE_SUFFIX = ".EA";
 
 	/**
 	 * The max preferred size for the jscrollpane, will not let the jtable
 	 * expand past this point
 	 */
-	protected static int MAX_PREFERRED_SIZE = 100;
+	protected static final int MAX_PREFERRED_SIZE = 100;
 
 	/**
 	 * Constant ot specify nodes
 	 */
-	protected static int NODES = 0;
+	protected static final int NODES = 0;
 
 	/**
 	 * Constant to specify edges
 	 */
-	protected static int EDGES = 1;
+	protected static final int EDGES = 1;
 
 	/**
 	 * Show a dialog of hte specified type, see above constants
 	 */
-	protected static void showDialog(int type) {
-		AttributeSaverDialog dialog = new AttributeSaverDialog(type);
+	protected static void showDialog(final int type) {
+		final AttributeSaverDialog dialog = new AttributeSaverDialog(type);
 		dialog.setVisible(true);
-		return;
 	}
 
 	/**
@@ -158,27 +143,18 @@ public class AttributeSaverDialog extends JDialog {
 		Container contentPane = getContentPane();
 		contentPane.setLayout(new BorderLayout());
 
-		// get the current CyNetwork
-		CyNetwork currentNetwork = Cytoscape.getCurrentNetwork();
-
-		// get the graph attributes
-                String[] edgeAttributes = Cytoscape.getEdgeAttributes().getAttributeNames();
-// 		String[] edgeAttributes = currentNetwork.getEdgeAttributesList();
-                String[] nodeAttributes = Cytoscape.getNodeAttributes().getAttributeNames();
-// 		String[] nodeAttributes = currentNetwork.getNodeAttributesList();
-
 		// create the objects which will maintain the state of the dialog
 		String suffix = null;
 		String[] attributes = null;
 		if (type == NODES) {
 			suffix = NODE_SUFFIX;
-                        attributes = Cytoscape.getNodeAttributes().getAttributeNames();
-// 			attributes = currentNetwork.getNodeAttributesList();
+			attributes = Cytoscape.getNodeAttributes().getAttributeNames();
+			// attributes = currentNetwork.getNodeAttributesList();
 		} // end of if ()
 		else {
 			suffix = EDGE_SUFFIX;
-                        attributes = Cytoscape.getEdgeAttributes().getAttributeNames();
-// 			attributes = currentNetwork.getEdgeAttributesList();
+			attributes = Cytoscape.getEdgeAttributes().getAttributeNames();
+			// attributes = currentNetwork.getEdgeAttributesList();
 		} // end of else
 
 		state = new AttributeSaverState(attributes, suffix, type, Cytoscape
@@ -193,14 +169,19 @@ public class AttributeSaverDialog extends JDialog {
 		JButton saveButton = new JButton("Choose Directory and Save");
 		saveButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
-				JFileChooser myChooser = new JFileChooser(CytoscapeInit
+				final JFileChooser myChooser = new JFileChooser(CytoscapeInit
 						.getMRUD());
 				myChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 				if (myChooser.showOpenDialog(Cytoscape.getDesktop()) == JFileChooser.APPROVE_OPTION) {
 					state.setSaveDirectory(myChooser.getSelectedFile());
 					CytoscapeInit.setMRUD(myChooser.getSelectedFile());
-					int count = state.writeState(attributeTable
-							.getSelectedRows());
+					int count = 0;
+					try {
+						count = state.writeState(attributeTable.getSelectedRows());
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
 							"Successfully saved " + count + " files");
 					AttributeSaverDialog.this.dispose();
@@ -210,8 +191,6 @@ public class AttributeSaverDialog extends JDialog {
 
 		JPanel centerPanel = new JPanel();
 		JScrollPane scrollPane = new JScrollPane(attributeTable);
-		// scrollPane.setPreferredSize(new
-		// Dimension(MAX_PREFERRED_SIZE,(int)Math.min(MAX_PREFERRED_SIZE,attributeTable.getPreferredSize().getHeight()+attributeTable.getRowCount()*attributeTable.getRowMargin()+attributeTable.getRowHeight())));
 		scrollPane.setPreferredSize(new Dimension(MAX_PREFERRED_SIZE,
 				MAX_PREFERRED_SIZE));
 		centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
@@ -231,7 +210,7 @@ public class AttributeSaverDialog extends JDialog {
 }
 
 /**
- * Holds the state associated with the dialog
+ * Holds the state associated with the dialog.<br>
  */
 class AttributeSaverState implements TableModel {
 	public static String newline = System.getProperty("line.separator");
@@ -312,21 +291,27 @@ class AttributeSaverState implements TableModel {
 	/**
 	 * Set the directory where the files will be saved to
 	 */
-	public void setSaveDirectory(File saveDirectory) {
+	public void setSaveDirectory(final File saveDirectory) {
 		this.saveDirectory = saveDirectory;
 	}
 
 	/**
 	 * Write out the state for the given attributes
 	 * 
+	 * @param selectedRows
+	 * 
 	 * @return number of files successfully saved, the better way to do this
 	 *         would just be to throw the error and display a specific message
 	 *         for each failure, but oh well.
+	 * @throws IOException 
+	 * 
 	 */
-	public int writeState(int[] selectedRows) {
+	public int writeState(int[] selectedRows) throws IOException {
 		List graphObjects = null;
 
 		CyAttributes cyAttributes = null;
+		
+		
 
 		if (type == AttributeSaverDialog.NODES) {
 			cyAttributes = Cytoscape.getNodeAttributes();
@@ -334,39 +319,37 @@ class AttributeSaverState implements TableModel {
 		} else {
 			cyAttributes = Cytoscape.getEdgeAttributes();
 			graphObjects = Cytoscape.getCyEdgesList();
-		} // end of else
+		}
 
-		Vector canonicalNames = new Vector();
+		
+		List objectIDs = new ArrayList();
+		String objectID = null;
 		for (Iterator objIt = graphObjects.iterator(); objIt.hasNext();) {
-			String canonicalName = cyAttributes.getStringAttribute
-                          (((giny.model.GraphObject) objIt.next()).getIdentifier(), "canonicalName");
-			if (canonicalName != null) {
-				canonicalNames.add(canonicalName);
-			} // end of if ()
-			else {
-				System.err.println("Canonical name not found");
-			} // end of else
-		} // end of for ()
+			objectID = ((giny.model.GraphObject) objIt.next()).getIdentifier();
+			if (objectID != null) {
+				objectIDs.add(objectID);
+			}
+		}
 
 		int count = 0;
 		for (int idx = 0; idx < attributes.size(); idx++) {
 			if (((Boolean) booleans.get(idx)).booleanValue()) {
-				try {
-					String attribute = (String) attributes.get(idx);
-					// File attributeFile = new
-					// File(saveDirectory,(String)attribute2File.get(attribute));
+				
+					final String attribute = (String) attributes.get(idx);
+					
 					File attributeFile = new File(saveDirectory,
 							(String) filenames.get(idx));
 					FileWriter fileWriter = new FileWriter(attributeFile);
 					fileWriter.write(attribute + newline);
 					MultiHashMap attributeMap = cyAttributes.getMultiHashMap();
 					if (attributeMap != null) {
-						for (Iterator canonicalIt = canonicalNames.iterator(); canonicalIt
+						for (Iterator canonicalIt = objectIDs.iterator(); canonicalIt
 								.hasNext();) {
 							String name = (String) canonicalIt.next();
-							//Object value = attributeMap..get(name);
-							Object value = attributeMap.getAttributeValue(name,attribute,null);
-							
+							// Object value = attributeMap..get(name);
+							Object value = attributeMap.getAttributeValue(name,
+									attribute, null);
+
 							if (value != null) {
 								if (value instanceof Collection) {
 									String result = name + " = ";
@@ -384,19 +367,12 @@ class AttributeSaverState implements TableModel {
 									fileWriter.write(name + " = " + value
 											+ newline);
 								}
-							} else {
-								// System.err.println("Value was null for
-								// "+name);
 							}
 						}
-					} else {
-						// System.err.println("Attribute name map is null");
 					}
 					fileWriter.close();
 					count++;
-				} catch (Exception e) {
-					e.printStackTrace();
-				} // end of try-catch
+				
 			}
 		} // end of for ()
 		return count;
@@ -464,7 +440,7 @@ class AttributeSaverState implements TableModel {
 		return false;
 	}
 
-	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+	public void setValueAt(final Object aValue, final int rowIndex, final int columnIndex) {
 		switch (columnIndex) {
 		case ATTRIBUTE_COLUMN:
 			throw new RuntimeException("Cell is not editable");
