@@ -1,6 +1,6 @@
 ################################################
 # CYTOSCAPE INSTALLATION INSTRUCTIONS          #
-# Cytoscape v. 2.1, Feb., 2005                 #
+# Cytoscape v. 2.3, June., 2006                 #
 # http://www.cytoscape.org                     #
 #                                              # 
 # (c) The Cytoscape Collaboration              #
@@ -13,8 +13,9 @@ LICENSE AGREEMENT AND DISCLAIMER #####################################
 
 Cytoscape is a collaborative effort between the Institute for Systems
 Biology, the University of California at San Diego, Memorial Sloan-
-Kettering Cancer Center and the Institut Pasteur.  It is available at 
-http://www.cytoscape.org and provided to all users free of charge.
+Kettering Cancer Center, the Institut Pasteur, and Agilent Technologies.  
+It is available at http://www.cytoscape.org and provided to all users 
+free of charge.
 
 Users of Cytoscape must first agree to the license agreement provided
 in the file "LICENSE.txt".
@@ -41,12 +42,10 @@ species such as the yeast S. cerevisiae.
 a compressed archive containing the following files and directories:
 
 INSTALL.txt ............ Quick-start installation instructions (this file)
-Cytoscape2_1Manual.pdf.. Overview and details of Cytoscape functionality
+Cytoscape2_3Manual.pdf.. Overview and details of Cytoscape functionality
 LICENSE.txt ............ The license agreement
 
 cytoscape.jar .......... Main Cytoscape application (Java archive)
-cytoscape.props ........ User-configurable properties and preferences
-vizmap.props ........... User-configurable visualization preferences
 
 cytoscape.sh ........... Shell script used to run Cytoscape (Linux)*
 cytoscape.bat .......... Shell script used to run Cytoscape (Windows)
@@ -58,8 +57,15 @@ the Cytoscape application.
 sampleData/
    galFiltered.gml ..... Sample molecular interaction network file *
    galFiltered.sif ..... Identical network in Simple Interaction Format *
+   galFiltered.cys ..... Cytoscape session file containing galFiltered
+                         data.       
    galExpData.pvals .... Sample gene expression matrix file *
+   galFiltered.*attr*... Various sample attribute files for the 
+                         galFiltered data.
    BINDyeast.sif ....... Network of all yeast protein-protein
+                         interactions in the BIND database as of 
+                         July, 2004 **
+   BINDhuman.sif ....... Network of all human protein-protein
                          interactions in the BIND database as of 
                          July, 2004 **
    yeastHighQuality.sif  Set of high-quality yeast interactions as
