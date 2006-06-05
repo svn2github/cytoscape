@@ -350,7 +350,7 @@ public class CytoscapeSessionWriter {
 	 */
 	private void createCySession(String sessionName) throws Exception {
 
-		JAXBContext jc = JAXBContext.newInstance(packageName);
+		JAXBContext jc = JAXBContext.newInstance(packageName, this.getClass().getClassLoader());
 
 		initObjectsForDataBinding();
 		session.setId(sessionName);

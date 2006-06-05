@@ -209,7 +209,7 @@ public class XGMMLWriter {
 		Att formatVersion = null;
 		Att globalGraphics = null;
 
-		jc = JAXBContext.newInstance(PACKAGE_NAME);
+		jc = JAXBContext.newInstance(PACKAGE_NAME, this.getClass().getClassLoader());
 		graph = objFactory.createGraph();
 		
 		graphAtt = objFactory.createAtt();

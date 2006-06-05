@@ -284,7 +284,7 @@ public class CytoscapeSessionReader {
 			is = sessionFile.getInputStream(csxml);
 		}
 
-		JAXBContext jc = JAXBContext.newInstance(PACKAGE_NAME);
+		JAXBContext jc = JAXBContext.newInstance(PACKAGE_NAME, this.getClass().getClassLoader());
 		Unmarshaller u = jc.createUnmarshaller();
 
 		session = (Cysession) u.unmarshal(is);

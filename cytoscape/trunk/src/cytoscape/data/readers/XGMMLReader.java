@@ -233,7 +233,7 @@ public class XGMMLReader implements GraphReader {
 		networkCyAttributes = Cytoscape.getNetworkAttributes();
 
 		// Use JAXB-generated methods to create data structure
-		JAXBContext jc = JAXBContext.newInstance(XGMML_PACKAGE);
+		JAXBContext jc = JAXBContext.newInstance(XGMML_PACKAGE, this.getClass().getClassLoader());
 		// Unmarshall the XGMML file
 		Unmarshaller u = jc.createUnmarshaller();
 
