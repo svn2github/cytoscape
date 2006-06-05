@@ -124,7 +124,6 @@ import cytoscape.actions.UnHideSelectedEdgesAction;
 import cytoscape.actions.UnHideSelectedNodesAction;
 import cytoscape.actions.ZoomAction;
 import cytoscape.actions.ZoomSelectedAction;
-import cytoscape.data.annotation.AnnotationGui;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.CytoscapeMenuBar;
 import cytoscape.util.CytoscapeToolBar;
@@ -133,12 +132,10 @@ import cytoscape.view.cytopanels.CytoPanel;
 //------------------------------------------------------------------------------
 /**
  * This class creates the menu and tool bars for a Cytoscape window object. It
- * also provides access to individual menus and items.
- * 
- * Feb. 21, 2006 Refactored by kono@ucsd.edu
+ * also provides access to individual menus and items.<br><br>
  * 
  * Now addAction takes one more optional argument to specify index. Plugin
- * writers can use this function to specify the location of the menu item.
+ * writers can use this function to specify the location of the menu item.<br>
  * 
  */
 public class CyMenus implements GraphViewChangeListener {
@@ -979,5 +976,4 @@ public class CyMenus implements GraphViewChangeListener {
 		hb.enableHelp(vizButton, "toolbar-setVisProps", null);
 
 	}
-
 }
