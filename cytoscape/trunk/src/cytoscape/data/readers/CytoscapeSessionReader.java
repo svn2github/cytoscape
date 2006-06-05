@@ -88,7 +88,6 @@ public class CytoscapeSessionReader {
 	
 	public static final String CYSESSION = "cysession.xml";
 	
-	private static final String PROP_EXT = ".props";
 	private static final String XML_EXT = ".xml";
 	private static final String XGMML_EXT = ".xgmml";
 	
@@ -194,8 +193,7 @@ public class CytoscapeSessionReader {
 	 * @throws JAXBException
 	 */
 	public void read() throws IOException, JAXBException {
-		Cytoscape.getDesktop().getNetworkPanel().getTreeTable().setVisible(
-				false);
+		
 
 		if (sourceObject.getClass() == String.class) {
 			unzipSessionFromFile();
@@ -209,9 +207,6 @@ public class CytoscapeSessionReader {
 		// Send signal to others
 		Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
 		Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, null);
-		
-		Cytoscape.getDesktop().getNetworkPanel().getTreeTable()
-				.setVisible(true);
 	}
 
 	/**
@@ -293,7 +288,9 @@ public class CytoscapeSessionReader {
 		Unmarshaller u = jc.createUnmarshaller();
 
 		session = (Cysession) u.unmarshal(is);
-		is.close();
+		if (is != null) {
+			is.close();
+		}
 
 		// Session ID is the name of folder which contains everything
 		// for this session.
@@ -352,7 +349,10 @@ public class CytoscapeSessionReader {
 							.getProperties().getProperty("defaultSpeciesName"),
 					targetRoot.isViewAvailable());
 
-			networkStream.close();
+			if(networkStream != null) {
+				networkStream.close();
+			}
+			
 
 			String vsName = targetRoot.getVisualStyle();
 			if (vsName == null) {
@@ -483,8 +483,9 @@ public class CytoscapeSessionReader {
 							.getProperties().getProperty("defaultSpeciesName"),
 					childNet.isViewAvailable());
 
-			networkStream.close();
-
+			if(networkStream != null) {
+				networkStream.close();
+			}
 			vsMap.put(new_network.getIdentifier(), vsName);
 			networkList.add(new_network.getIdentifier());
 			//

@@ -88,7 +88,7 @@ import ding.view.DGraphView;
  * marshall it in a streme.<br>
  * 
  * @version 1.0
- * @since 2.3
+ * @since Cytoscape 2.3
  * @see cytoscape.data.readers.XGMMLReader
  * @author kono
  * 
@@ -96,30 +96,35 @@ import ding.view.DGraphView;
 public class XGMMLWriter {
 
 	// Package to be used for data binding.
-	static final String PACKAGE_NAME = "cytoscape.generated2";
-	static final String METADATA_NAME = "networkMetadata";
+	private static final String PACKAGE_NAME = "cytoscape.generated2";
+	
+	// File format version.  For compatibility.
+	private static final String FORMAT_VERSION = "documentVersion";
+	private static final float VERSION = (float) 1.0;
+	
+	private static final String METADATA_NAME = "networkMetadata";
 	private static final String METADATA_ATTR_NAME = "Network Metadata";
 
 	// GML-Compatible Pre-defined Shapes
-	protected static String RECTANGLE = "rectangle";
-	protected static String ELLIPSE = "ellipse";
-	protected static String LINE = "Line"; // This is the Polyline object.
-	protected static String POINT = "point";
-	protected static String DIAMOND = "diamond";
-	protected static String HEXAGON = "hexagon";
-	protected static String OCTAGON = "octagon";
-	protected static String PARALELLOGRAM = "parallelogram";
-	protected static String TRIANGLE = "triangle";
+	protected static final String RECTANGLE = "rectangle";
+	protected static final String ELLIPSE = "ellipse";
+	protected static final String LINE = "Line"; // This is the Polyline object.
+	protected static final String POINT = "point";
+	protected static final String DIAMOND = "diamond";
+	protected static final String HEXAGON = "hexagon";
+	protected static final String OCTAGON = "octagon";
+	protected static final String PARALELLOGRAM = "parallelogram";
+	protected static final String TRIANGLE = "triangle";
 
 	// Node types
-	protected static String NORMAL = "normal";
-	protected static String METANODE = "metanode";
-	protected static String REFERENCE = "reference";
+	protected static final String NORMAL = "normal";
+	protected static final String METANODE = "metanode";
+	protected static final String REFERENCE = "reference";
 
 	// Object types
-	protected static int NODE = 1;
-	protected static int EDGE = 2;
-	protected static int NETWORK = 3;
+	protected static final int NODE = 1;
+	protected static final int EDGE = 2;
+	protected static final int NETWORK = 3;
 
 	public static final String BACKGROUND = "backgroundColor";
 	public static final String GRAPH_VIEW_ZOOM = "GRAPH_VIEW_ZOOM";
@@ -201,12 +206,20 @@ public class XGMMLWriter {
 		objFactory = new ObjectFactory();
 		RdfRDF metadata = null;
 		Att graphAtt = null;
+		Att formatVersion = null;
 		Att globalGraphics = null;
 
 		jc = JAXBContext.newInstance(PACKAGE_NAME);
 		graph = objFactory.createGraph();
-
+		
 		graphAtt = objFactory.createAtt();
+		
+		// Document version.  This maybe used in the later versions.
+		formatVersion = objFactory.createAtt();
+		formatVersion.setName(FORMAT_VERSION);
+		formatVersion.setValue(Float.toString(VERSION));
+		graph.getAtt().add(formatVersion);
+		
 		graph.setId(network.getTitle()); // This is the name of network, NOT
 											// rootgraph index!!
 		graph.setLabel(network.getTitle());
@@ -442,7 +455,7 @@ public class XGMMLWriter {
 			attr.setLabel(attributeName);
 			attr.setType(STRING_TYPE);
 			if (sAttr != null) {
-				attr.setValue(sAttr.toString());
+				attr.setValue(sAttr);
 			} else if (attributeName == "nodeType") {
 				attr.setValue(NORMAL);
 			}
@@ -826,12 +839,14 @@ public class XGMMLWriter {
 			} else {
 				// System.out.println("##Border is DASHED LINE");
 				String dashArray = null;
+				StringBuffer dashBuf = new StringBuffer();
 				for (int i = 0; i < dash.length; i++) {
-					dashArray = Double.toString(dash[i]);
+					dashBuf.append(Double.toString(dash[i]));
 					if (i < dash.length - 1) {
-						dashArray = dashArray + ",";
+						dashBuf.append(",");
 					}
 				}
+				dashArray = dashBuf.toString();
 				borderLineType.setValue(dashArray);
 			}
 			cytoscapeNodeAttr.getContent().add(transparency);

@@ -67,7 +67,7 @@ public class OpenSessionAction extends CytoscapeAction {
 	protected CyMenus windowMenu;
 
 	// Extension for the new cytoscape session file
-	public static String SESSION_EXT = "cys";
+	public static final String SESSION_EXT = "cys";
 
 	/**
 	 * Constructor.
@@ -196,21 +196,24 @@ class OpenSessionTask implements Task {
 	 * @throws Exception
 	 */
 	public void run() {
-		taskMonitor.setStatus("Opening Session File.\n\nIf Session file is large, it takes a while.\nPlease be patient...");
+		taskMonitor.setStatus("Opening Session File.\n\nIt may take a while.\nPlease wait...");
 		taskMonitor.setPercentCompleted(-1);
 
 		CytoscapeSessionReader sr = new CytoscapeSessionReader(fileName);
 
+		// Turn off the network panel
+		Cytoscape.getDesktop().getNetworkPanel().getTreeTable().setVisible(
+				false);
+		
 		try {
 			sr.read();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-
 			taskMonitor.setException(e, "Cannot open the session file.");
-
 		} catch (JAXBException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			taskMonitor.setException(e, "Cannot unmarshall document.");
+		} finally {
+			Cytoscape.getDesktop().getNetworkPanel().getTreeTable().setVisible(
+					true);
 		}
 
 		taskMonitor.setPercentCompleted(100);
@@ -246,7 +249,7 @@ class OpenSessionTask implements Task {
 	 * @return Task Title.
 	 */
 	public String getTitle() {
-		return new String("Opening Session File");
+		return "Opening Session File";
 	}
 
 }

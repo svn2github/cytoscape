@@ -94,7 +94,7 @@ import cytoscape.visual.LineType;
  * XGMMLReader. This version is Metanode-compatible.
  * 
  * @version 1.0
- * @since 2.3
+ * @since Cytoscape 2.3
  * @see cytoscape.data.writers.XGMMLWriter
  * @author kono
  * 
@@ -103,25 +103,25 @@ public class XGMMLReader implements GraphReader {
 
 	private static final String METADATA_ATTR_NAME = "Network Metadata";
 	// Graph Tags
-	protected static String GRAPH = "graph";
-	protected static String NODE = "node";
-	protected static String EDGE = "edge";
-	protected static String GRAPHICS = "graphics";
-	protected static String LABEL = "label";
-	protected static String SOURCE = "source";
-	protected static String TARGET = "target";
+	protected static final String GRAPH = "graph";
+	protected static final String NODE = "node";
+	protected static final String EDGE = "edge";
+	protected static final String GRAPHICS = "graphics";
+	protected static final String LABEL = "label";
+	protected static final String SOURCE = "source";
+	protected static final String TARGET = "target";
 
 	// Shapes used in Cytoscape (not GML standard)
 	// In GML, they are called "type"
-	protected static String RECTANGLE = "rectangle";
-	protected static String ELLIPSE = "ellipse";
-	protected static String LINE = "Line"; // This is the Polyline object.
-	protected static String POINT = "point";
-	protected static String DIAMOND = "diamond";
-	protected static String HEXAGON = "hexagon";
-	protected static String OCTAGON = "octagon";
-	protected static String PARALELLOGRAM = "parallelogram";
-	protected static String TRIANGLE = "triangle";
+	protected static final String RECTANGLE = "rectangle";
+	protected static final String ELLIPSE = "ellipse";
+	protected static final String LINE = "Line"; // This is the Polyline object.
+	protected static final String POINT = "point";
+	protected static final String DIAMOND = "diamond";
+	protected static final String HEXAGON = "hexagon";
+	protected static final String OCTAGON = "octagon";
+	protected static final String PARALELLOGRAM = "parallelogram";
+	protected static final String TRIANGLE = "triangle";
 
 	// These types are permitted by the XGMML standard
 	protected static final String FLOAT_TYPE = "real";
@@ -692,9 +692,7 @@ public class XGMMLReader implements GraphReader {
 					String value = nodeGraphics.getValue();
 
 					if (attName.equals("nodeTransparency")) {
-						// nodeView.setTransparency(trans.nextFloat());
-					} else if (attName.equals("borderLineType")) {
-
+						nodeView.setTransparency(Float.parseFloat(value));
 					}
 				}
 			}
@@ -753,10 +751,8 @@ public class XGMMLReader implements GraphReader {
 
 			}
 
-			if (graphics != null && view != null) {
+			if (graphics != null && view != Cytoscape.getNullNetworkView()) {
 				layoutEdgeGraphics(myView, graphics, view);
-			} else if (graphics == null) {
-				// System.out.println("Null Graphics!!");
 			}
 		}
 
@@ -1131,7 +1127,7 @@ protected void layoutEdgeGraphics(GraphView myView, Graphics graphics,
 	private Object createObjectFromAttName(AttImpl item) {
 
 		if (item.getType().equals(STRING_TYPE)) {
-			return new String(item.getName());
+			return item.getName();
 		} else if (item.getType().equals(INT_TYPE)) {
 			return new Integer(item.getName());
 		} else if (item.getType().equals(FLOAT_TYPE)) {
@@ -1155,7 +1151,7 @@ protected void layoutEdgeGraphics(GraphView myView, Graphics graphics,
 	private Object createObjectFromAttValue(AttImpl item) {
 
 		if (item.getType().equals(STRING_TYPE)) {
-			return new String(item.getValue());
+			return item.getValue();
 		} else if (item.getType().equals(INT_TYPE)) {
 			return new Integer(item.getValue());
 		} else if (item.getType().equals(FLOAT_TYPE)) {

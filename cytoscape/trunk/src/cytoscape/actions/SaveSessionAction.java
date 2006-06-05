@@ -55,7 +55,7 @@ import cytoscape.util.FileUtil;
  * Write current states into a CYS file.<br>
  * 
  * @version 1.0
- * @since 2.3
+ * @since Cytoscape 2.3
  * @see cytoscape.data.writers.CytoscapeSessionWriter
  * @author kono
  * 
@@ -208,7 +208,7 @@ class SaveSessionTask implements Task {
 	 * @return Task Title.
 	 */
 	public String getTitle() {
-		return new String("Saving Cytoscape Session");
+		return "Saving Cytoscape Session";
 	}
 
 } // End of SaveSessionTask
