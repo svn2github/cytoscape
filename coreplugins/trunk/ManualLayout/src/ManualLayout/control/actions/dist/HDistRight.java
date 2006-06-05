@@ -33,14 +33,14 @@ public class HDistRight extends AbstractControlAction {
     for ( int i = 0; i < nodes.size(); i++ ) {
       NodeView n = ( NodeView )nodes.get(i);
       double w = n.getWidth()/2;
-      n.setXPosition( X_min + i*d + w );
+      n.setXPosition( X_min + i*d - w );
     }
   }
 
   protected double getX(NodeView n) {
     double x = n.getXPosition();
     double w = n.getWidth()/2;
-    return x-w;
+    return x+w;
   }
 }
 
