@@ -46,6 +46,7 @@ import javax.xml.bind.JAXBException;
 
 import cytoscape.Cytoscape;
 import cytoscape.data.readers.CytoscapeSessionReader;
+import cytoscape.data.readers.GMLException;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
@@ -208,9 +209,17 @@ class OpenSessionTask implements Task {
 		try {
 			sr.read();
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 			taskMonitor.setException(e, "Cannot open the session file.");
 		} catch (JAXBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 			taskMonitor.setException(e, "Cannot unmarshall document.");
+		} catch (GMLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			taskMonitor.setException(e, "Session file too large! Increase memory allocated to java.");
 		} finally {
 			Cytoscape.getDesktop().getNetworkPanel().getTreeTable().setVisible(
 					true);

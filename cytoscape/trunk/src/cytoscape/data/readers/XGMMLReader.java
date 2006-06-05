@@ -228,6 +228,8 @@ public class XGMMLReader implements GraphReader {
 	 */
 	private void readXGMML() throws JAXBException, IOException {
 
+		try {
+
 		nodeAttributes = Cytoscape.getNodeAttributes();
 		edgeAttributes = Cytoscape.getEdgeAttributes();
 		networkCyAttributes = Cytoscape.getNetworkAttributes();
@@ -262,6 +264,20 @@ public class XGMMLReader implements GraphReader {
 
 		// Build the network
 		createGraph(network);
+		
+                // It's not generally a good idea to catch OutOfMemoryErrors, but
+                // in this case, where we know the culprit (a file that is too large),
+                // we can at least try to degrade gracefully.
+                } catch (OutOfMemoryError oe) {
+                        network = null;
+                        edges = null;
+                        nodes = null;
+                        nodeIDMap = null;
+                        nodeMap = null;
+                        System.gc();
+                        throw new GMLException("Out of memory error caught! The network being loaded is too large for the current memory allocation.  Use the -Xmx flag for the java virtual machine to increase the amount of memory available, e.g. java -Xmx1G cytoscape.jar -p plugins ....");
+                }
+
 	}
 
 	/**
