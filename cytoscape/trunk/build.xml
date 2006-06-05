@@ -285,6 +285,7 @@
     <target name="doc-private" description="Runs JavaDoc.">
         <javadoc destdir="${javadoc.private.dir}"
                  source="1.4"
+		 breakiterator="true"
                  classpathref="classpath"
                  link="http://java.sun.com/j2se/1.4.2/docs/api/">
 
@@ -307,8 +308,9 @@
     <target name="doc" description="Runs JavaDoc.">
         <javadoc destdir="${javadoc.public.dir}"
                  source="1.4"
-                 Windowtitle="Cytoscape 2.2 API"
-                 header="Cytoscape 2.2 (c) 2004 ISB, MSKCC, UCSD"
+		 breakiterator="true"
+                 Windowtitle="Cytoscape ${version} API"
+                 header="Cytoscape ${version} (c) 2004 ISB, MSKCC, UCSD"
                  footer="www.cytoscape.org"
                  classpathref="classpath"
 		 access="public">
@@ -342,7 +344,7 @@
 
          <link href="http://java.sun.com/j2se/1.4.2/docs/api/" />
          <link href="http://csbi.sourceforge.net/API/" />
-         <doctitle>Cytoscape 2.2 API</doctitle>
+         <doctitle>Cytoscape ${version} API</doctitle>
          </javadoc>
     </target>
 
@@ -584,7 +586,6 @@
         <copy file="user_docs/INSTALL.txt" todir="${release.dir}"/>
         <copy file="user_docs/LICENSE.txt" todir="${release.dir}"/>
         <copy file="user_docs/Cytoscape2_2Manual.pdf" todir="${release.dir}"/>
-        <!--<copy file="user_docs/Cyto-2.2-Features.pdf" todir="${release.dir}"/>-->
 
         <!-- Copy over Sample Data Files -->
         <echo>
