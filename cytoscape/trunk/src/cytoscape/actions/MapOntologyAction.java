@@ -41,12 +41,13 @@
 package cytoscape.actions;
 
 import java.awt.event.ActionEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
 import cytoscape.data.annotation.OntologyMapperDialog;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
@@ -57,16 +58,24 @@ import cytoscape.util.CytoscapeAction;
 /*
  * Ontology Mapper will be invoked from this action.
  */
-public class MapOntologyAction extends CytoscapeAction {
+public class MapOntologyAction extends CytoscapeAction implements PropertyChangeListener {
 
 	public MapOntologyAction() {
 		super("Map Ontology...");
-		setPreferredMenu("File.Import.Ontology");
+		initMenu();
 	}
 
 	public MapOntologyAction(boolean isMenu, ImageIcon icon) {
 		super("Map Ontology...", icon);
+		initMenu();
+	}
+
+	private void initMenu() {
+		super.setEnabled(false);
 		setPreferredMenu("File.Import.Ontology");
+		
+		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(
+				this);
 	}
 
 	/*
@@ -76,18 +85,18 @@ public class MapOntologyAction extends CytoscapeAction {
 	 */
 	public void actionPerformed(ActionEvent e) {
 
-		if(Cytoscape.getCyNodesList().size() == 0 || Cytoscape.getBioDataServer() == null) {
+		if (Cytoscape.getCyNodesList().size() == 0
+				|| Cytoscape.getBioDataServer() == null) {
 			JOptionPane
-			.showMessageDialog(
-					null,
-					"There is no network data in memory.\n" +
-					"Please import/create a network before using GO Mapper.",
-					"No Networks in Memory",
-					JOptionPane.ERROR_MESSAGE);
-			
+					.showMessageDialog(
+							Cytoscape.getDesktop(),
+							"There is no network data in memory.\n"
+									+ "Please import/create a network before using GO Mapper.",
+							"No Networks in Memory", JOptionPane.ERROR_MESSAGE);
+
 			return;
 		}
-		
+
 		// Create Task
 		MapOntologyTask task = new MapOntologyTask();
 
@@ -102,6 +111,22 @@ public class MapOntologyAction extends CytoscapeAction {
 
 		// Execute Task in New Thread; pop open JTask Dialog Box.
 		TaskManager.executeTask(task, jTaskConfig);
+	}
+
+	public void propertyChange(PropertyChangeEvent e) {
+		// TODO Auto-generated method stub
+		if ((e.getPropertyName().equals(Cytoscape.NETWORK_LOADED)
+				|| e.getPropertyName().equals(Cytoscape.NETWORK_DESTROYED) || e
+				.getPropertyName().equals(Cytoscape.DATASERVER_CHANGED))) {
+			if (Cytoscape.getBioDataServer() == null) {
+				super.setEnabled(false);
+			} else if (Cytoscape.getBioDataServer().getAnnotationCount() == 0
+					|| Cytoscape.getNetworkSet().size() == 0) {
+				super.setEnabled(false);
+			} else {
+				super.setEnabled(true);
+			}
+		}
 	}
 }
 
