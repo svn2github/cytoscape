@@ -78,7 +78,7 @@ public class ScaleAction extends AbstractAction
     jDialog.setContentPane(jContentPane);
     jDialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     jDialog.setResizable(false);
-    jDialog.setModal(true);
+    jDialog.setModal(false);
 
     // set up interface logic
 
