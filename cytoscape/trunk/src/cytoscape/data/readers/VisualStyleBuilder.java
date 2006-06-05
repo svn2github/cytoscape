@@ -48,11 +48,9 @@ import java.util.List;
 import java.util.Map;
 
 import cytoscape.Cytoscape;
-import cytoscape.data.Semantics;
 import cytoscape.generated2.Att;
 import cytoscape.generated2.Graphics;
 import cytoscape.generated2.impl.AttImpl;
-import cytoscape.view.CytoscapeDesktop;
 import cytoscape.visual.Arrow;
 import cytoscape.visual.CalculatorCatalog;
 import cytoscape.visual.EdgeAppearanceCalculator;
