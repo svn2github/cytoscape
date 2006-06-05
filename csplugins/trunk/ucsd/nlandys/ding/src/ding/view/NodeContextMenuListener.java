@@ -30,7 +30,6 @@ public interface NodeContextMenuListener extends EventListener {
 
 	/**
 	 * method for responding to a drop
-	 * @param event the PhoebeCanvasDropEvent
 	 */
 	void addNodeContextMenuItems (NodeView nodeView, JPopupMenu menu);
 

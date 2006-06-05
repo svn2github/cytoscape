@@ -18,7 +18,6 @@ public interface EdgeContextMenuListener extends EventListener {
 
 	/**
 	 * method for responding to a drop
-	 * @param event the PhoebeCanvasDropEvent
 	 */
 	void addEdgeContextMenuItems (EdgeView edgeView, JPopupMenu menu);
 

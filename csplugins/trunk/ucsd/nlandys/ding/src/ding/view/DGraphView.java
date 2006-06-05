@@ -973,11 +973,15 @@ public class DGraphView implements GraphView, Printable
    * potentially beneath it.<p>
    * HINT: To perform a point query simply set xMin equal to xMax and yMin
    * equal to yMax.
-   * @param xMin a boundary of the query rectangle: the minimum X coordinate.
-   * @param yMin a boundary of the query rectangle: the minimum Y coordinate.
-   * @param xMax a boundary of the query rectangle: the maximum X coordinate.
-   * @param yMax a boundary of the query rectangle: the maximum Y coordinate.
-   * @param treatNodeShapeAsRectangle if true, nodes are treated as rectangles
+   * @param xMinimum a boundary of the query rectangle: the minimum X
+   *   coordinate.
+   * @param yMinimum a boundary of the query rectangle: the minimum Y
+   *   coordinate.
+   * @param xMaximum a boundary of the query rectangle: the maximum X
+   *   coordinate.
+   * @param yMaximum a boundary of the query rectangle: the maximum Y
+   *   coordinate.
+   * @param treatNodeShapesAsRectangle if true, nodes are treated as rectangles
    *   for purposes of the query computation; if false, true node shapes are
    *   respected, at the expense of slowing down the query by a constant
    *   factor.
