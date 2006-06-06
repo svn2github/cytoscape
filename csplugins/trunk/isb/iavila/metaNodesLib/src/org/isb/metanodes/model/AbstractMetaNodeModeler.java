@@ -60,7 +60,7 @@ public class AbstractMetaNodeModeler {
     protected static final boolean REPORT_TIME = false;
 
     // Types of meta-edges
-    protected static final String TRANSFERRED_EDGE_INTERACTION = "tr";
+    protected static final String TRANSFERRED_EDGE_INTERACTION = "tr"; // not currently used
     
     protected static final String CHILD_OF_EDGE_INTERACTION = "childOf";
     
@@ -895,10 +895,9 @@ public class AbstractMetaNodeModeler {
                 	continue; // go to the next child-edge
                 }
                 
-                String interactionType = TRANSFERRED_EDGE_INTERACTION + ":" + 
-                		Cytoscape.getEdgeAttributes().getStringAttribute(childEdge.getIdentifier(),Semantics.INTERACTION);
+                String interactionType = Cytoscape.getEdgeAttributes().getStringAttribute(childEdge.getIdentifier(),Semantics.INTERACTION);
                 
-                if(getCreateMetaRelationshipEdges() && isMetaNode(otherNode)){
+                if(getCreateMetaRelationshipEdges() && interactionType.equals(CHILD_OF_EDGE_INTERACTION) && isMetaNode(otherNode)){
                 		// This is a childNode that two metanodes are sharing
                 		// If the other metaNode has a sharedMember edge to this metanode, continue
                 	  ArrayList otherProcessedEdges = (ArrayList) this.metaNodeToProcessedEdges
