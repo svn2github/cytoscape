@@ -823,7 +823,6 @@ public class AbstractMetaNodeModeler {
 	                    otherNode = targetNode;
 	                }
 	                
-	                
 	                if(otherNode == node){metaNodeToChildEdge = childEdge;}
 	            }
            }
@@ -897,7 +896,7 @@ public class AbstractMetaNodeModeler {
                 }
                 
                 String interactionType = TRANSFERRED_EDGE_INTERACTION + ":" + 
-                		Cytoscape.getNodeAttributes().getStringAttribute(childEdge.getIdentifier(),Semantics.INTERACTION);
+                		Cytoscape.getEdgeAttributes().getStringAttribute(childEdge.getIdentifier(),Semantics.INTERACTION);
                 
                 if(getCreateMetaRelationshipEdges() && isMetaNode(otherNode)){
                 		// This is a childNode that two metanodes are sharing
